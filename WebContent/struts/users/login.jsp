@@ -13,43 +13,39 @@ fieldset.form input.login {
 }
 </style>
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 <script type="text/javascript">
 $(function() {
-	$('ol.fieldhelp-list :input').focus(function() {
-		var parent = $(this).parent();
-		parent.addClass('fieldhelp-focused');
-		var offset = parent.position();
-		parent.find('.fieldhelp').css({top: offset.top + 'px', left: (parent.width()+offset.left+40) +'px'});
-	}).blur(function() {
-		$(this).parent().removeClass('fieldhelp-focused');
-	});
+	$('#username').focus();
 });
 </script>
 </head>
-<body onload="document.forms['login'].username.focus();">
+<body>
 
 <s:include value="../actionMessages.jsp"></s:include>
 
-<s:form id="login" cssStyle="width: 500px;">
-	<fieldset class="form">
-	<h2 class="formLegend">Login to PICS Organizer</h2>
-	<ol class="fieldhelp-list">
-		<li>
-			<label>Username:</label>
-			<s:textfield name="username" cssClass="login" />
-		</li>
-		<li><label>Password:</label> <s:password name="password" cssClass="login" /></li>
-	</ol>
-	</fieldset>
-	<fieldset class="form submit">
-		<input type="submit" class="picsbutton positive" name="button" value="Login" />
-	</fieldset>
-
+<div style="width:500px;">
+	<s:form id="login">
+		<fieldset class="form">
+		<h2 class="formLegend">Login to PICS Organizer</h2>
+		<ol>
+			<li>
+				<label>Username:</label>
+				<s:textfield id="username" name="username" cssClass="login" tabindex="1"/>
+			</li>
+			<li><label>Password:</label> <s:password name="password" cssClass="login" tabindex="2"/></li>
+		</ol>
+		</fieldset>
+		<fieldset class="form submit">
+			<input type="submit" class="picsbutton positive" name="button" value="Login" tabindex="3"/>
+		</fieldset>
+	</s:form>
+	
 	<div class="info">
 		<p>Forget your login information? <a href="AccountRecovery.action">Click here to recover it</a></p>
 		<p>Are you a contractor? <a href="ContractorRegistration.action">Click to Register your company</a></p>
 	</div>
-</s:form>
+</div>
 
 </body>
 </html>
