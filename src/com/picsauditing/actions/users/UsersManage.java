@@ -59,7 +59,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	protected Report search = null;
 	protected List<User> userList = null;
 	
-	protected String moveToAccount = null;
+	protected int moveToAccount = 0;
 
 	protected String isGroup = "";
 	protected String isActive = "Yes";
@@ -181,7 +181,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				addActionError("You have selected an invalid user, please try again.");
 				return SUCCESS;
 			}
-			if(account.getName()!=moveToAccount){
+			if(account.getId()!=moveToAccount){
 				// accounts are different so we are moving to a new account
 				//user.setOwnedPermissions(null);
 				List<UserAccess> userAccessList = userAccessDAO.findByUser(user.getId());
@@ -204,7 +204,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 					userAccessDAO.remove(next);
 				}
 				//get new account
-				account = accountDAO.findWhere("a.name = '"+moveToAccount+"'").get(0);
+				account = accountDAO.find(moveToAccount);
 				user.setAccount(account);
 				userDAO.save(user);
 			}
@@ -714,6 +714,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		if(user!=null){
 			if(permissions.isAdmin()){
 				String like = (String) ((String[])ActionContext.getContext().getParameters().get("q"))[0];
+				if(like==null)
+					like = "";
 				
 				// don't use hibernate to pull up accounts
 				SelectAccount sql = new SelectAccount();				
@@ -726,11 +728,11 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		return null;
 	}
 
-	public String getMoveToAccount() {
+	public int getMoveToAccount() {
 		return moveToAccount;
 	}
 
-	public void setMoveToAccount(String moveToAccount) {
+	public void setMoveToAccount(int moveToAccount) {
 		this.moveToAccount = moveToAccount;
 	}
 }

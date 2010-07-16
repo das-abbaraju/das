@@ -26,7 +26,9 @@ var permTypes = new Array();
 	<s:if test="grantFlag == true">permTypes['<s:property value="opPerm"/>'] = new Array("<s:property value="opPerm.helpText"/>",<s:property value="opPerm.usesView()"/>,<s:property value="opPerm.usesEdit()"/>,<s:property value="opPerm.usesDelete()"/>);</s:if>
 </s:iterator>
 $(function(){
-	$('#accountMoveSuggest').autocomplete('UsersManageAjax.action?user.id=<s:property value="user.id"/>&button=Suggest');
+	$('#accountMoveSuggest').autocomplete('UsersManageAjax.action?user.id=<s:property value="user.id"/>&button=Suggest').result(function(event, data){
+		$('#moveToAccount').val(data[1])
+	});
 });
 </script>
 <style type="text/css">
@@ -285,8 +287,9 @@ div.autocomplete ul li {
 				</li>
 				<!-- Move User to Account -->
 				<s:if test="permissions.isAdmin()">
+					<s:hidden name="moveToAccount" id="moveToAccount" />
 					<li><label>Move User to Account:</label>
-						<s:textfield id="accountMoveSuggest" name="moveToAccount" /><br/>
+						<s:textfield id="accountMoveSuggest" /><br/>
 						<button type="submit" name="button" class="picsbutton utility" value="Move" 
 							onclick="return confirm('Are you sure you want to move this user?');">Move User</button>
 					</li>
