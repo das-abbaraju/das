@@ -287,8 +287,6 @@ div.autocomplete ul li {
 				<s:if test="permissions.isAdmin()">
 					<li><label>Move User to Account:</label>
 						<s:textfield id="accountMoveSuggest" name="moveToAccount" /><br/>
-					</li>
-					<li>
 						<button type="submit" name="button" class="picsbutton utility" value="Move" 
 							onclick="return confirm('Are you sure you want to move this user?');">Move User</button>
 					</li>

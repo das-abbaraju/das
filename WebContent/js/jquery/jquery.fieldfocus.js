@@ -6,12 +6,12 @@
 (function($){
 	$.fn.fieldfocus = function() {
 		return $(this).live('focus', function() {
-			var parent = $(this).parent();
+			var parent = $(this).parents('li');
 			parent.addClass('fieldhelp-focused');
 			var pos = parent.position();
 			parent.find('.fieldhelp').css({top: pos.top + 'px', left: (parent.width()+pos.left+40) +'px'});
 		}).live('blur', function() {
-			$(this).parent().removeClass('fieldhelp-focused');
+			$(this).parents('li').removeClass('fieldhelp-focused');
 		});
 	}
 	$.fn.helpstay = function() {
@@ -25,7 +25,7 @@
 			var handler;
 			handler = function() {
 				target.removeClass('mousedown');
-				$('body').unbind('mouseup', handler);
+				$('body').unbind('mouseup', handler);c
 			}
 			$('body').bind('mouseup', handler);
 		});
@@ -42,11 +42,13 @@
 })(jQuery)
 
 jQuery(function(){
-	$('fieldset.form ol :input:not(:button)').fieldfocus();
-	$('fieldset.form ol .fieldhelp').helpstay();
+	$('fieldset.form ol li :input:not(:button)').fieldfocus();
+	$('fieldset.form ol li .fieldhelp').helpstay();
 	$('.required :input').requiredfields();
 	
 	$('fieldset.form ol li').live('click', function() {
-		$(this).find(':input').trigger('focus');
+		console.log($(this).find(':input'));
+		$(this).not('.fieldhelp-focused').find(':input:first').focus();
 	});
+	 
 });
