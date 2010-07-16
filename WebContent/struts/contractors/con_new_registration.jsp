@@ -66,7 +66,7 @@ pre {
 	padding: 10px 5px 10px 5px;
 	border-top: 2px solid #4686BF;
 	border-bottom: 2px solid #4686BF;
-	width: 95%
+	min-width: 400px;
 }
 
 <s:if test="newContractor.city == null ||newContractor.city.length == 0">
@@ -77,10 +77,10 @@ pre {
 </style>
 
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 
 <script type="text/javascript">
+var show=false;
 $(document).ready(function() {
 	$('.fancybox').fancybox();
 	$('.cluetip').cluetip({
@@ -123,6 +123,11 @@ $(function() {
 			$('.address-zip').hide();
 	});
 	$('#addToNotes').keyup(function() {
+		if(show==false){
+			if(){
+
+			}
+		}			
 		var d = new Date();
 		var dateString = (d.getMonth() + 1 < 10 ? "0" : "") + (d.getMonth() + 1) + "/" +
 				(d.getDate() < 10 ? "0" : "") + (d.getDate()) + "/" + d.getFullYear();
@@ -428,16 +433,18 @@ function getMatches(requestID) {
 						<div>
 							<s:textarea name="addToNotes" cols="30" rows="3" id="addToNotes" />
 						</div>
+						<div class="fieldhelp">
+						<h3>Notes</h3>
+						<p>Information about this registration request</p>
+						</div>
+					</li>
+					<li>
 						<div id="notesHere">
 							<pre id="addHere"></pre>
 							<s:if test="newContractor.notes.length() > 0">
 								<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
 							</s:if>
-						</div>
-						<div class="fieldhelp">
-						<h3>Notes</h3>
-						<p>Information about this registration request</p>
-						</div>
+						</div>					
 					</li>
 				</ol>
 				</fieldset>
