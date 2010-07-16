@@ -207,7 +207,7 @@ div.autocomplete ul li {
 			<s:hidden name="user.isActive" />
 		</s:if>
 		<fieldset class="form">
-			<h2 class="formLegend"><span><s:if test="user.group">Group</s:if> <s:else>User</s:else> Details</span></h2>
+		<h2 class="formLegend"><s:if test="user.group">Group</s:if><s:else>User</s:else> Details</h2>
 		<ol>
 			<s:if test="account.users.size() > 1">
 				<s:if test="user.id > 0">
@@ -221,46 +221,49 @@ div.autocomplete ul li {
 				size="30" />
 			</li>
 			<s:if test="user.isGroup.toString() == 'No'">
-				<li><label>Email:</label> <s:textfield name="user.email"
-					size="40" /></li>
-				<li><label>Username:</label> <s:textfield
-					name="user.username" size="30"
-					onchange="checkUsername(this.value);" /> <span
-					id="username_status"></span></li>
+				<li><label>Email:</label>
+					<s:textfield name="user.email" size="40" />
+				</li>
+				<li><label>Username:</label>
+					<s:textfield name="user.username" size="30" onchange="checkUsername(this.value);" />
+					<span id="username_status"></span>
+				</li>
 				<s:if test="user.id == 0">
-					<li><label>&nbsp;</label> <s:checkbox
-						id="sendActivationEmail" name="sendActivationEmail" /><label
-						for="sendActivationEmail" class="checkbox">Send
-					Activation Email</label></li>
+					<li><label>Send Activation Email</label>
+						<s:checkbox id="sendActivationEmail" name="sendActivationEmail" />
+					</li>
 				</s:if>
-				<s:if test="user.id > 0">
-					<s:if test="hasProfileEdit">
-						<li><label>&nbsp;</label> <a class="picsbutton"
-							href="?button=resetPassword&user.id=<s:property value="user.id"/>">Send
-						Reset Password Email</a></li>
-					</s:if>
-					<li><label>&nbsp;</label> <input id="manual_password"
-						type="checkbox" onclick="$('.user-password').toggle()">
-					<label for="manual_password" class="checkbox">Manually
-					Set Password</label></li>
-				</s:if>
-				<li class="user-password"><label>Password:</label> <s:password
-					name="password1" value="" /></li>
-				<li class="user-password"><label>Confirm Password:</label> <s:password
-					name="password2" value="" /></li>
-				<li><label for="user.phone">Phone:</label> <s:textfield
-					name="user.phone" size="15" />(optional)</li>
-				<li><label for="user.fax">Fax:</label> <s:textfield
-					name="user.fax" size="15" />(optional)</li>
+				<li><label>Manually Set Password</label> 
+					<input id="manual_password" type="checkbox" onclick="$('.user-password').toggle()">
+				</li>
+				<li class="user-password"><label>Password:</label>
+					<s:password name="password1" value="" />
+				</li>
+				<li class="user-password">
+					<label>Confirm Password:</label>
+					<s:password name="password2" value="" />
+				</li>
+				<li><label for="user.phone">Phone:</label>
+					<s:textfield name="user.phone" size="15" />
+				</li>
+				<li><label for="user.fax">Fax:</label>
+					<s:textfield name="user.fax" size="15" />
+				</li>
 				<s:if test="user.account.id != 1100">
-				<li><label>&nbsp;Primary Contact:</label> <s:checkbox
-						id="setPrimaryAccount" name="setPrimaryAccount" /><label
-						for="setPrimaryAccount" class="checkbox">Set User as Primary Contact</label></li>
+				<li><label>&nbsp;Primary Contact:</label>
+					<s:checkbox id="setPrimaryAccount" name="setPrimaryAccount" />
+					<div class="fieldhelp">
+						<h2>Primary Contact</h2>
+						<p>Set User as Primary Contact</p>
+					</div>
+				</li>
 				</s:if>		
 				<s:if test="account.contractor">
-					<li><label>User Role:</label><s:checkbox
-						id="conAdmin" name="conAdmin" /><label
-						for="conAdmin" class="checkbox"><b><s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.description"/> </b><i>(<s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.helpText"/>)</i></label></li>
+					<li><label>User Role:</label>
+						<s:checkbox id="conAdmin" name="conAdmin"/>
+						<label for="conAdmin" class="checkbox">
+						<b><s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.description"/></b>
+						<i>(<s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.helpText"/>)</i></label></li>
 					<li><label>&nbsp;</label> <s:checkbox
 						id="conBilling" name="conBilling" /><label
 						for="conBilling" class="checkbox"><b><s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.description"/></b><i> (<s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.helpText"/>)</i></label></li>
@@ -277,8 +280,9 @@ div.autocomplete ul li {
 				</s:if>
 			</s:if>
 			<s:if test="user.id > 0">
-				<li><label>Active</label> <s:radio theme="pics"
-					list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio></li>
+				<li><label>Active:</label>
+					<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio>
+				</li>
 				<!-- Move User to Account -->
 				<s:if test="permissions.isAdmin()">
 					<li><label>Move User to Account:</label>
@@ -289,31 +293,33 @@ div.autocomplete ul li {
 							onclick="return confirm('Are you sure you want to move this user?');">Move User</button>
 					</li>
 				</s:if>
+				<s:if test="hasProfileEdit">
+					<li><label>&nbsp;</label>
+						<a class="picsbutton" href="?button=resetPassword&user.id=<s:property value="user.id"/>">Send Reset Password Email</a>
+						<s:if test="!user.group">
+							<pics:permission perm="SwitchUser">
+								<a class="picsbutton" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch to this User</a>
+							</pics:permission>
+						</s:if>
+					</li>
+				</s:if>
 			</s:if>
 			<s:else>
 				<s:hidden name="user.isActive" value="true" />
 			</s:else>
 		</ol>
-		<s:if test="user.id > 0 && !user.group">
-			<pics:permission perm="SwitchUser">
-				<a class="picsbutton"
-					href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch
-				to this User</a>
-			</pics:permission>
-		</s:if>
+		</fieldset>
 		<fieldset class="form submit">
-		<button id="SaveButton" class="picsbutton positive" type="submit"
-			name="button" value="Save">Save</button>
-		<pics:permission perm="EditUsers" type="Delete">
-			<s:if test="user.id > 0 && !account.contractor">
-				<button type="submit" name="button" class="picsbutton negative"
-					value="Delete"
-					onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
-			</s:if>
-		</pics:permission>
+			<button id="SaveButton" class="picsbutton positive" type="submit"
+				name="button" value="Save">Save</button>
+			<pics:permission perm="EditUsers" type="Delete">
+				<s:if test="user.id > 0 && !account.contractor">
+					<button type="submit" name="button" class="picsbutton negative"
+						value="Delete"
+						onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
+				</s:if>
+			</pics:permission>
 		</fieldset>
-		</fieldset>
-
 	</s:form>
 			
 	<br clear="all">
