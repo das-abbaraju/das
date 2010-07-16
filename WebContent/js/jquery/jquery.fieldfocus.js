@@ -47,7 +47,6 @@ jQuery(function(){
 	$('.required :input').requiredfields();
 	
 	$('fieldset.form ol li').live('click', function() {
-		console.log($(this).find(':input'));
 		$(this).not('.fieldhelp-focused').find(':input:first').focus();
 	});
 	 
