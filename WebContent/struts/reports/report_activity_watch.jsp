@@ -119,10 +119,10 @@ $(function() {
 							<s:textfield id="newContractor" />
 						</li>
 					</ol>
-					<div>
-						<input type="submit" value="Add" name="button" class="picsbutton positive" />
-						<input type="button" onclick="$('#addWatch').hide(); $('#addLink').show(); return false;" value="Cancel" class="picsbutton negative" />
-					</div>
+				</fieldset>
+				<fieldset class="form submit">
+					<input type="submit" value="Add" name="button" class="picsbutton positive" />
+					<input type="button" onclick="$('#addWatch').hide(); $('#addLink').show(); return false;" value="Cancel" class="picsbutton negative" />
 				</fieldset>
 			</s:form>
 		</td><td>

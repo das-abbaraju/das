@@ -103,14 +103,11 @@
 	<div id="user_message" style="display:none;">
 		<form id="response_form" method="post" action="" style="width:650px;">
 			<fieldset class="form">
-				<label style="width:5em;">&nbsp;</label>
-				<span>We apologize for this inconvenience.<br/></span>
-				<label style="width:5em;">&nbsp;</label>
-				<span>If you continue to receive this message and believe it is an error, please report it to<br/></span>
-				<label style="width:5em;">&nbsp;</label>
-				<span>us using the form below or call Customer Service at 949.387.1940 extension 1<br/></span>
-				<div style="padding:5px 0 5px 0;">
-					<label style="width:5em;"><span>Priority:</span></label>
+				<div style="padding:2ex;">
+					We apologize for this inconvenience.<br />If you continue to receive this message and 
+					believe it is an error, please report it to us using the form below or call Customer 
+					Service at 949.387.1940 extension 1
+					<label style="padding-top: 2ex;">Priority:</label>
 					<span>
 						Low&nbsp;&nbsp;&nbsp;
 						<input type="radio" name="priority" value="1" checked />1
@@ -120,24 +117,23 @@
 						<input type="radio" name="priority" value="5" />5
 						&nbsp;&nbsp;&nbsp;High<br/>
 					</span>
-				</div>
-				<label style="width:5em;">&nbsp;</label>Please tell us what you were trying to do:<br/>
-				<label style="width:5em;">&nbsp;</label>
-				<div>
-				<table>
-					<tr>
-						<td>
-							<textarea id="user_message" name="user_message" rows="3" cols="40" style="color:#464646;font-size:12px;font-weight:bold;"></textarea>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span>
-								<input class="picsbutton" style="float:right;" type="submit" value="Submit" onclick="$('#backButton').fadeIn(1500)"/>
-							</span>
-						</td>
-					</tr>		
-				</table>
+					Please tell us what you were trying to do:
+					<div>
+					<table>
+						<tr>
+							<td>
+								<textarea id="user_message" name="user_message" rows="3" cols="40" style="color:#464646;font-size:12px;font-weight:bold;"></textarea>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span>
+									<input class="picsbutton" style="float:right;" type="submit" value="Submit" onclick="$('#backButton').fadeIn(1500)"/>
+								</span>
+							</td>
+						</tr>		
+					</table>
+					</div>
 				</div>
 			</fieldset>
 		</form>

@@ -153,38 +153,26 @@
 		<fieldset class="form" >
 			<h2 class="formLegend">Please help us by reporting this error</h2>
 			<div>
-				<s:if test="!permissions.loggedIn">
-					<div style="padding-top:40px;">
+				<div style="padding:2ex;">
+					<s:if test="!permissions.loggedIn">
 						<label style="width:5em;"><span>Name:</span></label>
 						<input type="text" id="user_name" size="25" style="color:#464646;font-size:12px;font-weight:bold;"/>
 						<br/>
 						<label style="width:5em;"><span>Email:</span></label>
 						<input type="text" id="from_address" size="25" style="color:#464646;font-size:12px;font-weight:bold;"/>
 						<br/>
-					</div>
-				</s:if>
-	
-				<div <s:if test="permissions.loggedIn">style="padding-top:35px;"</s:if>><label style="width:5em;">Optional:</label>Please tell us what you were trying to do:<br/>
+					</s:if>
+					<label style="width:5em;">Optional:</label>Please tell us what you were trying to do:<br/>
 					<label style="width:5em;">&nbsp;</label>
 					<div>
-					<table>
-						<tr>
-							<td>
-								<textarea id="user_message" name="user_message" rows="3" cols="40" style="color:#464646;font-size:12px;font-weight:bold;"></textarea>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<span>
-									<input class="picsbutton" style="float:right;" type="submit" value="Report to PICS Engineers" onclick="$('#backButton').fadeIn(1500)"/>
-									<input class="picsbutton" style="float:right;" type="button" value="&lt;&lt; Back" onclick="window.history.back().back()" />
-								</span>
-							</td>
-						</tr>		
-					</table>
+						<textarea id="user_message" name="user_message" rows="3" cols="40" style="color:#464646;font-size:12px;font-weight:bold;"></textarea>
 					</div>
 				</div>
 			</div>
+		</fieldset>
+		<fieldset class="form submit">
+			<input class="picsbutton" type="button" value="&lt;&lt; Back" onclick="window.history.back().back()" />
+			<input class="picsbutton" type="submit" value="Report to PICS Engineers" onclick="$('#backButton').fadeIn(1500)"/>
 		</fieldset>
 	</form>
 	<input id="backButton" class="picsbutton" style="float:left; display:none;" type="button" value="&lt;&lt; Back" onclick="window.history.back().back()" />

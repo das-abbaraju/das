@@ -123,7 +123,7 @@ $(function() {
 	<s:form id="addNewForm">
 		<s:hidden name="userID" id="userID" />
 		<s:hidden name="conID" id="conID" />
-		<fieldset class="form bottom">
+		<fieldset class="form">
 			<h2 class="formLegend">Add New Contractor Watch</h2>
 			<ol>
 				<li>
@@ -135,10 +135,10 @@ $(function() {
 					<input type="text" id="addContractor" />
 				</li>
 			</ol>
-			<div align="center">
-				<input type="submit" value="Save" name="button" class="picsbutton positive" />
-				<input type="button" value="Cancel" onclick="$('#addNewForm').hide(); $('#addNewLink').show();" class="picsbutton negative" />
-			</div>
+		</fieldset>
+		<fieldset class="form submit">
+			<input type="submit" value="Save" name="button" class="picsbutton positive" />
+			<input type="button" value="Cancel" onclick="$('#addNewForm').hide(); $('#addNewLink').show();" class="picsbutton" />
 		</fieldset>
 	</s:form>
 </pics:permission>
