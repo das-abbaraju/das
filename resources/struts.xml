@@ -904,6 +904,12 @@
 			class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
 			<result>/struts/reports/report_forcedflags.jsp</result>
 		</action>
+		
+		<action name="ReportConForcedFlagsCSV"
+			class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
 
 		<action name="ReportUserPermissionMatrix"
 			class="com.picsauditing.actions.report.ReportUserPermissionMatrix">

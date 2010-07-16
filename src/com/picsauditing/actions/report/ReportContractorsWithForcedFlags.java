@@ -1,6 +1,8 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.util.excel.ExcelCellType;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportContractorsWithForcedFlags extends ReportAccount {
@@ -59,5 +61,24 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		sql.addField("u.name AS forcedBy");
 		sql.addField("fa.name AS forcedByAccount");
 		orderByDefault = "o.name, a.name";
+		
+		if (download) {
+			sql.addField("ff.forceFlag");
+		}
+	}
+	
+	@Override
+	protected void addExcelColumns() {
+		super.addExcelColumns();
+		
+		if (permissions.isAdmin())
+			excelSheet.addColumn(new ExcelColumn("opName"));
+		
+		excelSheet.addColumn(new ExcelColumn("forceFlag", "Flag"));
+		excelSheet.addColumn(new ExcelColumn("fLabel", "Flag Issue"));
+		excelSheet.addColumn(new ExcelColumn("forcedBy", "Forced By"));
+		excelSheet.addColumn(new ExcelColumn("forceBegin", "Start Date", ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("forceend", "End Date", ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("forceend", "End Date", ExcelCellType.Date));
 	}
 }
