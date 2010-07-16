@@ -122,7 +122,7 @@ $(function(){
 		</s:iterator>
 		</ul>
 		
-		<a id="manage_audit_types_add_new_category" href="ManageCategory.action?button=AddNew&parentID=<s:property value="auditType.id"/>&category.auditType.id=<s:property value="auditType.id"/>">Add New Category</a>
+		<a id="manage_audit_types_add_new_category" class="add" href="ManageCategory.action?button=AddNew&parentID=<s:property value="auditType.id"/>&category.auditType.id=<s:property value="auditType.id"/>">Add New Category</a>
 		<div id="list-info"></div>
 	</div>
 	<s:if test="auditType.categories.size > 1">

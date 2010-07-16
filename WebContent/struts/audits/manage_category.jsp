@@ -79,9 +79,8 @@ $(function(){
 			</s:iterator>
 		</ul>
 		
-		<a href="AuditCat.action?catID=<s:property value="category.id" />">Preview Category</a>&nbsp;&nbsp;
-		<a href="ManageSubCategory.action?button=AddNew&parentID=<s:property value="category.id"/>&subCategory.category.id=<s:property value="category.id"/>">Add
-			New Sub Category</a>
+		<a class="preview" href="AuditCat.action?catID=<s:property value="category.id" />">Preview Category</a>&nbsp;&nbsp;
+		<a class="add" href="ManageSubCategory.action?button=AddNew&parentID=<s:property value="category.id"/>&subCategory.category.id=<s:property value="category.id"/>">Add New Sub Category</a>
 		<div id="list-info"></div>
 	</div>
 </s:if>

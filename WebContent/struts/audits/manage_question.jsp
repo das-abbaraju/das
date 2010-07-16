@@ -123,7 +123,7 @@ function showText(qID, textid) {
 					</tr>
 					</s:iterator>
 					<tr>
-						<td colspan="2" style="text-align:center"><a href="#" onclick="showText(<s:property value="id"/>, 0); return false;">Add New Translation</a></td>
+						<td colspan="2" style="text-align:center"><a class="add" href="#" onclick="showText(<s:property value="id"/>, 0); return false;">Add New Translation</a></td>
 					</tr>
 				</table>
 			</s:if>
@@ -173,7 +173,7 @@ function showText(qID, textid) {
 					</tr>
 					</s:iterator>
 					<tr>
-						<td colspan="2" style="text-align:center"><a href="#" onclick="showText(<s:property value="id"/>, 0); return false;">Add New Translation</a></td>
+						<td colspan="2" style="text-align:center"><a class="add" href="#" onclick="showText(<s:property value="id"/>, 0); return false;">Add New Translation</a></td>
 					</tr>
 				</table>
 			</s:if>

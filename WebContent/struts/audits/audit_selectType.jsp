@@ -22,7 +22,7 @@
 	<td><a href="ManageAuditType.action?id=<s:property value="id"/>"><s:property value="auditName"/></a></td>
 </tr>
 </s:iterator>
-<tr><td class="center" colspan="3"><a href="?button=Add New">Add New</a></td></tr>
+<tr><td class="center" colspan="3"><a class="add" href="?button=Add New">Add New</a></td></tr>
 </table>
 </body>
 </html>

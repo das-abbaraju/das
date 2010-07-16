@@ -107,7 +107,7 @@ $(function(){
 		</s:iterator>
 		</ul>
 		
-		<a href="ManageQuestion.action?button=AddNew&parentID=<s:property value="subCategory.id"/>&question.subCategory.id=<s:property value="subCategory.id"/>">Add New Question</a>
+		<a class="add" href="ManageQuestion.action?button=AddNew&parentID=<s:property value="subCategory.id"/>&question.subCategory.id=<s:property value="subCategory.id"/>">Add New Question</a>
 		<div id="list-info"></div>
 	</div>
 </s:if>
