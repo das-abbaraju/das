@@ -103,7 +103,7 @@ $(function(){
 		<ul id="list" title="Drag and drop to change order">
 		<s:iterator value="subCategory.questions">
 		    <li id="item_<s:property value="id"/>"><s:property value="number"/>.
-		    <a href="ManageQuestion.action?id=<s:property value="id"/>"><s:property value="question.length()>100 ? question.substring(0,97) + '...' : question"/></a></li>
+		    <a href="ManageQuestion.action?id=<s:property value="id"/>"><s:if test="question != null"><s:property value="question.length()>100 ? question.substring(0,97) + '...' : question"/></s:if><s:else>Question has no text</s:else></a></li>
 		</s:iterator>
 		</ul>
 		
