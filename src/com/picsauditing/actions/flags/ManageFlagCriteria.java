@@ -172,4 +172,8 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		return new String[] { FlagCriteria.BOOLEAN, FlagCriteria.DATE, FlagCriteria.NUMBER, FlagCriteria.STRING };
 	}
 
+	public String[] getCriteriaCategory() {
+		return new String[] {"Audits", "Insurance", "Insurance Criteria", "Paperwork", "Safety", "Statistics"};
+	}
+
 }
