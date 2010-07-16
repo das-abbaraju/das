@@ -223,8 +223,8 @@ function updateExpDate() {
 		</s:if>
 	
 		<fieldset class="form">
-		<legend><span><s:if test="cc == null">Add</s:if><s:else>Replace</s:else>
-		 Credit Card</span></legend>
+		<h2 class="formLegend"><span><s:if test="cc == null">Add</s:if><s:else>Replace</s:else>
+		 Credit Card</span></h2>
 		<ol>
 			<li><label>Type:</label>
 				<s:radio theme="pics" list="creditCardTypes" name="ccName"/>
@@ -238,13 +238,11 @@ function updateExpDate() {
 				<s:textfield id="ccexp" name="ccexp" cssStyle="display: none" />
 				<span id="ccexpError" class="Red" style="display:none"> </span>
 			</li>
-			<li>
-			<div>
-				<input type="submit" class="picsbutton positive" name="button" value="Submit"/>
-				<br clear="all">
-			</div>
-			</li>
 		</ol>
+		</fieldset>
+		<fieldset class="form submit">
+			<input type="submit" class="picsbutton positive" name="button" value="Submit"/>
+			<br clear="all">
 		</fieldset>
 	</form>
 </s:if>

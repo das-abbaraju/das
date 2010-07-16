@@ -38,14 +38,14 @@
 		</ol>
 		</fieldset>
 
-		<fieldset class="form">
+		<fieldset class="form bottom">
 		<h2 class="formLegend">Facilities</h2>
 		<ol>
 			<li><label>Requested By:</label> <s:property value="requestedBy.name" /></li>
 			<li><label>Risk Level:</label> <s:property value="contractor.riskLevel" /></li>
 			<li><label>Facilities:</label> <s:property value="contractor.payingFacilities" /> paying operator(s)<br />
 			<br />
-			<ul style="position: relative; left: 11em; list-style-type: disc;">
+			<ul style="position: relative; left: 1em; list-style-type: disc;">
 				<s:iterator value="contractor.nonCorporateOperators">
 					<s:if test="operatorAccount.status.activeDemo">
 						<li>

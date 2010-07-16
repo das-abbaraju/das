@@ -61,6 +61,14 @@ pre {
 	margin-bottom: 10px;
 }
 
+#notesHere{
+	background: #FFFF99;
+	padding: 10px 5px 10px 5px;
+	border-top: 2px solid #4686BF;
+	border-bottom: 2px solid #4686BF;
+	width: 95%
+}
+
 <s:if test="newContractor.city == null ||newContractor.city.length == 0">
 .address-zip {
 	display: none;
@@ -293,7 +301,11 @@ function getMatches(requestID) {
 						</s:if>
 					</li>
 					<li><label for="taxID">Tax ID:</label>
-						<s:textfield name="newContractor.taxID" size="9" maxLength="9" id="taxID" /> (Optional)
+						<s:textfield name="newContractor.taxID" size="9" maxLength="9" id="taxID" />
+						<div class="fieldhelp">
+						<h3>Tax ID</h3>
+						<p>Optional field for Tax ID</p>
+						</div>
 					</li>
 					<s:if test="assignedCSR != null">
 						<li><label>Assigned PICS CSR:</label>
@@ -312,14 +324,31 @@ function getMatches(requestID) {
 							onchange="countryChanged(this.value)" />
 					</li>
 					<li id="state_li"></li>
-					<li><label for="city">City:</label><s:textfield name="newContractor.city" size="20" id="city" cssClass="show-address"/> (Optional)</li>
-					<li class="address-zip"><label for="address">Address:</label>
-						<s:textfield name="newContractor.address" size="35" id="address" /> (Optional)</li>
-					<li class="address-zip"><label for="zip">Zip:</label><s:textfield name="newContractor.zip" size="7" id="zip" /> (Optional)</li>		
+					<li>
+						<label for="city">City:</label>
+						<s:textfield name="newContractor.city" size="20" id="city" cssClass="show-address"/>
+						<div class="fieldhelp">
+						<h3>City</h3>
+						<p>Optional field for City</p>
+						</div>
+					</li>
+					<li class="address-zip">
+						<label for="address">Address:</label>
+						<s:textfield name="newContractor.address" size="35" id="address" />
+						<div class="fieldhelp">
+						<h3>Address</h3>
+						<p>Optional field for Address</p>
+						</div>
+					</li>
+					<li class="address-zip">
+						<label for="zip">Zip:</label><s:textfield name="newContractor.zip" size="7" id="zip" />
+						<div class="fieldhelp">
+						<h3>Zip</h3>
+						<p>Optional field for Zip</p>
+						</div>
+					</li>		
 				</ol>
 				</fieldset>
-			</td>
-			<td style="padding-left: 10px">
 				<fieldset class="form">
 				<h2 class="formLegend">Request Summary</h2>
 				<ol>
@@ -396,18 +425,26 @@ function getMatches(requestID) {
 							<s:select headerKey="0" headerValue="Select a preformatted note to add it to the Notes section" 
 								list="noteReason" id="noteReason" onchange="fillNotes()" cssStyle="margin-bottom: 10px;" />
 						</s:if>
-						<s:textarea name="addToNotes" cols="30" rows="3" id="addToNotes" />
-						<pre id="addHere"></pre>
-						<s:if test="newContractor.notes.length() > 0">
-							<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
-						</s:if>
+						<div>
+							<s:textarea name="addToNotes" cols="30" rows="3" id="addToNotes" />
+						</div>
+						<div id="notesHere">
+							<pre id="addHere"></pre>
+							<s:if test="newContractor.notes.length() > 0">
+								<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
+							</s:if>
+						</div>
+						<div class="fieldhelp">
+						<h3>Notes</h3>
+						<p>Information about this registration request</p>
+						</div>
 					</li>
 				</ol>
 				</fieldset>
 			</td>
 		</tr>
 	</table>
-	<div style="padding-top: 10px;">
+	<fieldset class="forms submit">
 	  	<input type="submit" class="picsbutton positive" name="button" value="Save" />
 	  	<s:if test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0)">
 		  	<input type="submit" class="picsbutton negative" name="button" value="Close Request" />
@@ -415,7 +452,7 @@ function getMatches(requestID) {
 		<s:elseif test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">
 			<input type="submit" class="picsbutton" name="button" value="Return To Operator" />
 		</s:elseif>
-	</div>	
+	</fieldset>
 </s:form>
 
 <div style="display: none" id="load"></div>

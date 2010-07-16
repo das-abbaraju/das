@@ -8,6 +8,7 @@
 	href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/reports.css?v=<s:property value="version"/>" />
+<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 <s:include value="../jquery.jsp" />
 <script type="text/javascript"
 	src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
@@ -290,6 +291,11 @@ div.autocomplete ul li {
 					<s:hidden name="moveToAccount" id="moveToAccount" />
 					<li><label>Move User to Account:</label>
 						<s:textfield id="accountMoveSuggest" /><br/>
+						<div class="fieldhelp">
+							<h3>Move User to Account</h3>
+							<p>The name of the account you wish to move the user to.  
+							This field will autocomplete as you type.</p>
+						</div>
 						<button type="submit" name="button" class="picsbutton utility" value="Move" 
 							onclick="return confirm('Are you sure you want to move this user?');">Move User</button>
 					</li>

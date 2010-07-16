@@ -27,7 +27,7 @@
 			</li>
 			<li>
 				<label>Category:</label>
-				<s:textfield name="criteria.category"/>
+				<s:select list="criteriaCategory" value="criteria.category" name="criteria.category" />
 			</li>
 			<li>
 				<label>Display Order:</label>
