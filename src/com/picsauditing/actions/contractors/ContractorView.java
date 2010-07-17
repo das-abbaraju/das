@@ -31,6 +31,7 @@ import com.picsauditing.mail.EmailSender;
 
 @SuppressWarnings("serial")
 public class ContractorView extends ContractorActionSupport {
+
 	private AuditBuilder auditBuilder;
 	private OperatorTagDAO operatorTagDAO;
 	private ContractorTagDAO contractorTagDAO;
@@ -71,13 +72,13 @@ public class ContractorView extends ContractorActionSupport {
 		if ("RemoveTag".equals(button)) {
 			contractorTagDAO.remove(tagId);
 		}
-		
-		if(tagId > 0) {
+
+		if (tagId > 0) {
 			boolean requiresCompetency = false;
-			for(ContractorTag conTag : contractor.getOperatorTags()) {
-				if(conTag.getTag().getId() == 142) {
-					for(ContractorOperator contractorOperator : contractor.getOperators()) {
-						if(contractorOperator.getOperatorAccount().isRequiresCompetencyReview()) {
+			for (ContractorTag conTag : contractor.getOperatorTags()) {
+				if (conTag.getTag().getId() == 142) {
+					for (ContractorOperator contractorOperator : contractor.getOperators()) {
+						if (contractorOperator.getOperatorAccount().isRequiresCompetencyReview()) {
 							requiresCompetency = true;
 							break;
 						}
@@ -134,7 +135,7 @@ public class ContractorView extends ContractorActionSupport {
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(60);
 			emailQueue.setFromAddress("billing@picsauditing.com");
-			if(permissions.isOperator())
+			if (permissions.isOperator())
 				emailQueue.setViewableById(permissions.getTopAccountID());
 			else
 				emailQueue.setViewableById(Account.EVERYONE);
@@ -155,10 +156,12 @@ public class ContractorView extends ContractorActionSupport {
 					operatorTags.remove(contractorTag.getTag());
 			}
 		}
-		if (contractor.getNonCorporateOperators().size() > 0) {
-			auditBuilder.setUser(getUser());
-			auditBuilder.buildAudits(this.contractor);
-		}
+		// TJA, I'm removing this code. I really think it's over kill since we
+		// are constantly recalculating stuff on the Cron
+		// if (contractor.getNonCorporateOperators().size() > 0) {
+		// auditBuilder.setUser(getUser());
+		// auditBuilder.buildAudits(this.contractor);
+		// }
 
 		this.subHeading = "Contractor Details";
 
