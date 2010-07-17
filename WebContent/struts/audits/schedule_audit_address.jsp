@@ -23,7 +23,6 @@ var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 }
 
 .calculatedAddress {
-	display: none;
 }
 </style>
 
@@ -53,11 +52,11 @@ var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 	<fieldset class="form">
 	<h2 class="formLegend">Enter the Audit Location</h2>
 	<ol>
-		<li><label>Address:</label> <s:textfield id="conAudit_address" name="conAudit.address" size="50" value="%{conAudit.contractorAccount.address}"/> No PO Boxes</li>
+		<li class="calculatedAddress"><label>Address:</label> <s:textfield id="conAudit_address" name="conAudit.address" size="50" value="%{conAudit.contractorAccount.address}"/> No PO Boxes</li>
 		<li><label>Address 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" value="%{conAudit.contractorAccount.address2}"/> Suite/Apartment</li>
-		<li class="calculatedAddress"><label>City:</label> <s:textfield id="conAudit_city" name="conAudit.city" /></li>
+		<li class="calculatedAddress"><label>City:</label> <s:textfield id="conAudit_city" name="conAudit.city" value="%{conAudit.contractorAccount.city}" /></li>
 		<li class="calculatedAddress"><label>State/Province:</label> <s:textfield id="conAudit_state"
-			name="conAudit.state" size="6" /></li>
+			name="conAudit.state" size="6" value="%{conAudit.contractorAccount.state}" /></li>
 		<li><label>Zip or Postal Code:</label> <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" value="%{conAudit.contractorAccount.zip}"/></li>
 		<li class="calculatedAddress"><label>Country:</label> <s:select id="conAudit_country" name="conAudit.country"
 			value="locale.country" list="countryList" listKey="isoCode" listValue="name"/></li>

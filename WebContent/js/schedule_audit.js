@@ -36,7 +36,7 @@ function verifyAddress() {
 		var geocoder = new GClientGeocoder();
 		if (geocoder) {
 			startThinking({message: "Validating Address"});
-			var address = $("#conAudit_address").val() + ", " + $("#conAudit_zip").val();
+			var address = $("#conAudit_address").val() + ", " + $("#conAudit_city").val() + ", " + $("#conAudit_state").val() + ", " + $("#conAudit_zip").val();
 			geocoder.getLocations(
 				address,
 				function(matches) {
@@ -49,7 +49,9 @@ function verifyAddress() {
 						var detail = matches.Placemark[0].AddressDetails;
 						var latlong = matches.Placemark[0].Point.coordinates;
 						if (detail.Accuracy < 8) {
-							throw("Address (" + address + ") could not be found accurately");
+							// Submitting city, state, zip, address, and country
+							// Accepting Google's best guess on approximate matches
+							//throw("Address (" + address + ") could not be found accurately");
 						}
 
 						$("#conAudit_latitude").val(latlong[1]);
