@@ -368,7 +368,7 @@ div.autocomplete ul li {
 					<s:iterator value="recentLogins">
 						<tr>
 							<td><s:date name="loginDate" /></td>
-							<td><s:property value="remoteAddress" /></td>
+							<td><a href="http://www.hostip.info/?spip=<s:property value="remoteAddress" />"><s:property value="remoteAddress" /></a></td>
 							<td><s:if test="admin.id > 0">Login by <s:property
 									value="admin.name" /> from <s:property
 									value="admin.account.name" />
