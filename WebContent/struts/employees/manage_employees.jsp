@@ -7,7 +7,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min"></script>
 
 <script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>

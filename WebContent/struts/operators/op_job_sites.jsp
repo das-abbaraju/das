@@ -22,10 +22,6 @@ fieldset.form label {
 .newValue {
 	display: none;
 }
-
-fieldset.form {
-	width: auto;
-}
 </style>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
@@ -214,50 +210,6 @@ $(function() {
 					</s:if>
 				</tbody>
 			</table>
-			<s:if test="canEdit">
-				<div id="editProject"></div>
-				<a onclick="$('#editProject:visible').hide(); $('#addJobSite').show(); $('#addLink').hide(); return false;"
-					href="#" id="addLink" class="add">Add New Project</a>
-				<div id="addJobSite" style="display: none; clear: both;">
-					<s:form id="newJobSite" method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
-						<s:hidden name="id" />
-						<fieldset class="form bottom">
-							<h2 class="formLegend">Add New Project</h2>
-							<ol>
-								<li><label>Label<span class="redMain">*</span>:</label>
-									<s:textfield name="siteLabel" size="20" maxlength="15" />
-								</li>
-								<li><label>Name<span class="redMain">*</span>:</label>
-									<s:textfield name="siteName" size="20" maxlength="255" />
-								</li>
-								<li><label>City:</label>
-									<s:textfield name="siteCity" size="20" maxlength="30" />
-								</li>
-								<li><label>Country:</label>
-									<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode"
-										headerValue="- Country -" headerKey="" listValue="name"
-										onchange="getStates(this.value);"></s:select>
-								</li>
-								<li class="loadStates"><label>State:</label>
-									<s:select list="getStateList('US')" id="state_sel" name="state.isoCode" 
-										headerKey="" headerValue="- State -" listKey="isoCode" listValue="name" value="stateString"/>
-								</li>
-								<li><label>Start Date:</label>
-									<s:textfield name="siteStart" size="20" cssClass="datepicker" />
-								</li>
-								<li><label>End Date:</label>
-									<s:textfield name="siteEnd" size="20" cssClass="datepicker" />
-								</li>
-							</ol>
-							<div style="text-align: center; margin: 0px auto;">
-								<input type="submit" value="Save" class="picsbutton positive" name="button" />
-								<button onclick="$('#addLink').show(); $('#addJobSite').hide(); return false;"
-									class="picsbutton negative">Cancel</button>
-							</div>
-						</fieldset>
-					</s:form>
-				</div>
-			</s:if>
 		</td>
 		<td rowspan="2">
 			<div id="jobSiteTasks"></div>
@@ -267,6 +219,50 @@ $(function() {
 		</td>
 	</tr>
 </table>
+<s:if test="canEdit"><div style="width: 50%;">
+	<div id="editProject"></div>
+	<a onclick="$('#editProject:visible').hide(); $('#addJobSite').show(); $('#addLink').hide(); return false;"
+		href="#" id="addLink" class="add">Add New Project</a>
+	<div id="addJobSite" style="display: none; clear: both;">
+		<s:form id="newJobSite" method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
+			<s:hidden name="id" />
+			<fieldset class="form">
+				<h2 class="formLegend">Add New Project</h2>
+				<ol>
+					<li><label>Label<span class="redMain">*</span>:</label>
+						<s:textfield name="siteLabel" size="20" maxlength="15" />
+					</li>
+					<li><label>Name<span class="redMain">*</span>:</label>
+						<s:textfield name="siteName" size="20" maxlength="255" />
+					</li>
+					<li><label>City:</label>
+						<s:textfield name="siteCity" size="20" maxlength="30" />
+					</li>
+					<li><label>Country:</label>
+						<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode"
+							headerValue="- Country -" headerKey="" listValue="name"
+							onchange="getStates(this.value);"></s:select>
+					</li>
+					<li class="loadStates"><label>State:</label>
+						<s:select list="getStateList('US')" id="state_sel" name="state.isoCode" 
+							headerKey="" headerValue="- State -" listKey="isoCode" listValue="name" value="stateString"/>
+					</li>
+					<li><label>Start Date:</label>
+						<s:textfield name="siteStart" size="20" cssClass="datepicker" />
+					</li>
+					<li><label>End Date:</label>
+						<s:textfield name="siteEnd" size="20" cssClass="datepicker" />
+					</li>
+				</ol>
+			</fieldset>
+			<fieldset class="form submit">
+				<input type="submit" value="Save" class="picsbutton positive" name="button" />
+				<button onclick="$('#addLink').show(); $('#addJobSite').hide(); return false;"
+					class="picsbutton negative">Cancel</button>
+			</fieldset>
+		</s:form>
+	</div>
+</div></s:if>
 <s:if test="inactiveSites.size() > 0">
 	<div>
 		<h3>Past Projects</h3>

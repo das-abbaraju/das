@@ -5,7 +5,8 @@ $('.datepicker').datepicker();
 <s:form id="editJobSite" method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
 	<s:hidden name="id" />
 	<s:hidden name="siteID" />
-	<fieldset class="form bottom">
+	<div>
+	<fieldset class="form">
 		<h2 class="formLegend">Edit Project</h2>
 		<ol>
 			<li><label>Label<span class="redMain">*</span>:</label>
@@ -37,13 +38,14 @@ $('.datepicker').datepicker();
 				class="datepicker" />
 			</li>
 		</ol>
-		<div style="text-align: center; margin: 0px auto;">
-			<input type="submit" value="Update" class="picsbutton positive" name="button" />
-			<button onclick=" $('#editJobSite').hide(); return false;"
-				class="picsbutton negative">Cancel</button>
-			<s:if test="siteID!=0">
-				<input type="submit" value="Remove" class="picsbutton negative" name="button" />
-			</s:if>
-		</div>
 	</fieldset>
+	<fieldset class="form submit">
+		<input type="submit" value="Update" class="picsbutton positive" name="button" />
+		<button onclick=" $('#editJobSite').hide(); return false;"
+			class="picsbutton">Cancel</button>
+		<s:if test="siteID!=0">
+			<input type="submit" value="Remove" class="picsbutton negative" name="button" />
+		</s:if>
+	</fieldset>
+	</div>
 </s:form>

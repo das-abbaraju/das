@@ -11,9 +11,6 @@
 <a href="#" type="button" class="goback"><< Back</a>
 <form id="itemform" method="post">
 	<s:hidden name="id"/>
-	<table>
-	<tr>
-	<td style="vertical-align: top">
 	<fieldset class="form">
 		<h2 class="formLegend">General</h2>
 		<ol>
@@ -64,16 +61,6 @@
 			</li>
 		</ol>
 	</fieldset>
-	<fieldset class="form submit">
-		<input type="submit" name="button" value="Save" class="picsbutton positive"/>
-		<s:if test="criteria.id > 0">
-		<input type="submit" name="button" value="Delete" class="picsbutton negative"/>
-		</s:if>
-		<input type="button" value="Cancel" class="picsbutton goback"/>
-	</fieldset>
-	</td>
-	<td style="width: 20px;"></td>
-	<td style="vertical-align: top">
 	<fieldset class="form">
 		<h2 class="formLegend">Audit | Question</h2>
 		<ol>
@@ -128,7 +115,11 @@
 			</li>
 		</ol>
 	</fieldset>
-	</td>
-	</tr>
-	</table>
+	<fieldset class="form submit">
+		<input type="submit" name="button" value="Save" class="picsbutton positive"/>
+		<s:if test="criteria.id > 0">
+		<input type="submit" name="button" value="Delete" class="picsbutton negative"/>
+		</s:if>
+		<input type="button" value="Cancel" class="picsbutton goback"/>
+	</fieldset>
 </form>

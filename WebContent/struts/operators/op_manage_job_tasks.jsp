@@ -148,7 +148,7 @@ function sort(a, b, sortBy) {
 				<div id="addJobTask" style="display: none; clear: both;">
 					<s:form id="newJobTask" method="POST" enctype="multipart/form-data">
 						<s:hidden name="id" />
-						<fieldset class="form bottom" >
+						<fieldset class="form" >
 							<h2 class="formLegend">Add New Job Task</h2>
 							<ol>
 								<li><label>Label:</label>
@@ -164,11 +164,11 @@ function sort(a, b, sortBy) {
 									<s:select list="#{'L/G':'L/G','L':'L','G':'G'}" name="newTask.taskType"></s:select>
 								</li>
 							</ol>
-							<div style="text-align: center; margin: 0px auto;">
-								<input type="submit" value="Save" class="picsbutton positive" name="button" />
-								<button onclick="$('#addLink').show(); $('#addJobTask').hide(); return false;"
-									class="picsbutton negative">Cancel</button>
-							</div>
+						</fieldset>
+						<fieldset class="form submit">
+							<input type="submit" value="Save" class="picsbutton positive" name="button" />
+							<button onclick="$('#addLink').show(); $('#addJobTask').hide(); return false;"
+								class="picsbutton negative">Cancel</button>
 						</fieldset>
 					</s:form>
 				</div>

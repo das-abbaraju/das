@@ -106,7 +106,7 @@ $(function() {
 			<td style="vertical-align: top" id="roleCell"><s:form>
 				<s:hidden name="id" />
 				<s:hidden name="role.id" />
-				<fieldset class="form bottom">
+				<fieldset class="form">
 				<h2 class="formLegend">Define Role</h2>
 				<ol>
 					<li><label>Role:</label> <s:textfield id="roleInputBox" name="role.name" size="35"/></li>

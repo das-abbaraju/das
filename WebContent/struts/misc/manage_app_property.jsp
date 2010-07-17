@@ -58,6 +58,7 @@ function save(prop) {
 <div id="addNew">
 	<s:form>
 		<fieldset class="form">
+			<h2 class="formLegend">Add New App Property</h2>
 			<ol>
 				<li>
 					<label>Property:</label>
@@ -68,6 +69,8 @@ function save(prop) {
 					<input type="text" name="newValue" />
 				</li>
 			</ol>
+		</fieldset>
+		<fieldset class="form submit">
 			<input type="submit" value="Save" name="button" class="picsbutton positive" />
 		</fieldset>
 	</s:form>

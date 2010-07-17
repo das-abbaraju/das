@@ -90,7 +90,7 @@ function go(type, id) {
 <s:form id="form1">
 	<s:hidden name="conID" />
 	<s:hidden name="button" value="Update List" />
-	<fieldset class="form bottom">
+	<fieldset class="form">
 		<table id="formTable">
 			<tr>
 				<td>
@@ -100,8 +100,6 @@ function go(type, id) {
 								multiple="true" name="selectedCompetencies" size="10" />
 						</li>
 					</ol>
-					<input type="button" onclick="getData(); return false;" class="picsbutton positive" value="View"
-						style="margin-left: 10px">
 				</td>
 				<td>
 					<ol>
@@ -121,6 +119,10 @@ function go(type, id) {
 				</td>
 			</tr>
 		</table>
+	</fieldset>
+	<fieldset class="form submit">
+		<input type="button" onclick="getData(); return false;" class="picsbutton positive" value="View"
+			style="margin-left: 10px">
 	</fieldset>
 </s:form>
 <div id="competencyTable"></div>
