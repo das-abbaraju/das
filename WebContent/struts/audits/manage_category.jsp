@@ -46,13 +46,19 @@ $(function(){
 			<li><label># Required:</label>
 				<s:property value="category.numRequired"/>
 			</li>
-			<li><label>Apply on Question:</label>
-				<s:textfield name="applyOnQuestionID" />
-				<s:if test="applyOnQuestionID > 0"><a href="ManageQuestion.action?id=<s:property value="applyOnQuestionID" />">Show</a></s:if>
-			</li>
-			<li><label>When Answer is:</label>
-				<s:textfield name="category.applyOnAnswer" />
-			</li>
+			<s:if test="category.auditType.dynamicCategories">
+				<li><label>Apply on Question:</label>
+					<s:textfield name="applyOnQuestionID" />
+					<s:if test="applyOnQuestionID > 0"><a href="ManageQuestion.action?id=<s:property value="applyOnQuestionID" />">Show</a></s:if>
+					<div class="fieldhelp">
+					<h3>Apply on Question</h3>
+					<p>This field is only available on audits with dynamic categories</p>
+					</div>
+				</li>
+				<li><label>When Answer is:</label>
+					<s:textfield name="category.applyOnAnswer" />
+				</li>
+			</s:if>
 		</ol>
 	</fieldset>
 	<fieldset class="form submit">
