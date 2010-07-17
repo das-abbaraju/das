@@ -82,6 +82,11 @@ pre {
 <script type="text/javascript">
 var show=false;
 $(document).ready(function() {
+	$('#notesHere').hide();
+	<s:if test="newContractor.notes.length() > 0">
+		show = true;
+		$('#notesHere').show();		
+	</s:if>
 	$('.fancybox').fancybox();
 	$('.cluetip').cluetip({
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
@@ -124,9 +129,8 @@ $(function() {
 	});
 	$('#addToNotes').keyup(function() {
 		if(show==false){
-			if(){
-
-			}
+			show=true;
+			$('#notesHere').show();
 		}			
 		var d = new Date();
 		var dateString = (d.getMonth() + 1 < 10 ? "0" : "") + (d.getMonth() + 1) + "/" +
