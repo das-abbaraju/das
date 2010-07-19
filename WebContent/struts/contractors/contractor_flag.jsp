@@ -96,7 +96,6 @@ fieldset.form {
 
 </style>
 <s:include value="../jquery.jsp" />
-<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 
 <script type="text/javascript">
 $(function() {

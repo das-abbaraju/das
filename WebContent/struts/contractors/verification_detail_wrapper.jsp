@@ -3,7 +3,6 @@
 <html>
 <head>
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/jquery/scrollTo/jquery.scrollTo-min.js"></script>
 <script src="js/validate_contractor.js?v=<s:property value="version"/>" type="text/javascript"></script>
 <script src="js/FusionCharts.js" type="text/javascript"></script>
 
@@ -141,7 +140,7 @@
 		};
 		$.post('ContractorAuditSaveAjax.action', data, function() {
 				$('#verification_audit').empty();
-				//$('#auditHeader').scrollTo();
+				$('#auditHeader').scrollTo();
 				refreshNoteCategory(<s:property value="id"/>, '<s:property value="noteCategory"/>');
 			}
 		);

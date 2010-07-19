@@ -12,7 +12,6 @@ fieldset.form input.login {
 }
 </style>
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 <script type="text/javascript">
 $(function() {
 	$('#username').focus();

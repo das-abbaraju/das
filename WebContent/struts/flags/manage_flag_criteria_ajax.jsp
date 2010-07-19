@@ -2,9 +2,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
-
-
 <s:if test="criteria != null">
 <s:include value="../actionMessages.jsp"/>
 </s:if>

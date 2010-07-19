@@ -7,8 +7,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
-
 <script type="text/javascript">
 	function checkUsername(username) {
 		startThinking({div: 'username_status', message: 'checking availability of username...'});
