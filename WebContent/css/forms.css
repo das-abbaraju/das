@@ -222,6 +222,10 @@ fieldset.form div.fieldhelp p {
  * Jump To Styles for form headers
  * 
  */
+ 
+ h2.formLegend span.form-title {
+ 	float: left;
+ }
 
  h2.formLegend span.jump-to {
  	float: right;

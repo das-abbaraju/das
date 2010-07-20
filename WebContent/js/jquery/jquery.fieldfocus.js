@@ -41,23 +41,26 @@
 	}
 	$.fn.jumpTo = function() {
 		var me = $(this);
-		var addInnerSpan = function(e) {
+		var addInnerSpan;
+		addInnerSpan = function(e) {
 			var headers = $('<ul>').addClass('jump-header-list');
-			me.each(function(i, v) {
-				var h = $('<li>').text($(v).text());
-				$(v).addClass('jump-location-'+i);
-				h.bind('mouseover', function() {
+			$(me.selector).each(function(i, v) {
+				var h = $(v);
+				if (!h.is('.jump-header')) {
+					h.addClass('jump-header').html($('<span>').addClass('form-title').html(h.html()));
+				}
+				var l = $('<li>').text(h.find('.form-title').text());
+				l.bind('mouseover', function() {
 					$(this).addClass('hover');
 				}).bind('mouseout', function() {
 					$(this).removeClass('hover');
 				}).bind('click', function() {
-					$.scrollTo(me.filter(':eq('+i+')'));
+					$.scrollTo(h);
 				});
-				headers.append(h);
+				headers.append(l);
 			});
 			$('<span>').addClass('jump-to').text('Jump To').bind('mouseover', function() {
 				var me = $(this).addClass('hover');
-				var pos = me.position();
 			}).bind('mouseout', function() {
 				$(this).removeClass('hover');
 			}).append(headers).appendTo(e);
