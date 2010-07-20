@@ -129,8 +129,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 			String noteText = "";
 			if (button.equalsIgnoreCase("Force Overall Flag")) {
-				if (forceFlag.equals(co.getForceFlag()))
-					addActionError("You didn't change the flag color");
 				if (forceEnd == null)
 					addActionError("You didn't specify an end date");
 				if (Strings.isEmpty(forceNote))
@@ -177,8 +175,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			} else if ("Force Individual Flag".equals(button)) {
 				FlagData flagData = flagDataDAO.find(dataID);
 
-				if (forceFlag.equals(flagData.getFlag()))
-					addActionError("You didn't change the flag color");
 				if (forceEnd == null)
 					addActionError("You didn't specify an end date");
 				if (getActionErrors().size() > 0) {
