@@ -280,22 +280,22 @@ span.jump-to ul.jump-header-list li.hover {
  	display: block;
  }
  
- ul.jump-header-list li.top {
+ ul.jump-header-list li.jump-top {
  
  }
  
- ul.jump-header-list li.up {
+ ul.jump-header-list li.jump-up {
  
  }
  
- ul.jump-header-list li.current {
+ ul.jump-header-list li.jump-current {
  
  }
  
- ul.jump-header-list li.down {
+ ul.jump-header-list li.jump-down {
  
  }
  
- ul.jump-header-list li.bottom {
+ ul.jump-header-list li.jump-bottom {
  
  }

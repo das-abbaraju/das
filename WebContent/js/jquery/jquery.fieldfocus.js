@@ -43,8 +43,8 @@
 		var me = $(this);
 		var addInnerSpan;
 		addInnerSpan = function(e) {
-			var hlist = [{text: 'Top', e: $(me.selector).parents('form:first'), type: 'top'}];
-			var type = 'up';
+			var hlist = [{text: 'Top', e: $(me.selector).parents('form:first'), type: 'jump-top'}];
+			var type = 'jump-up';
 			$(me.selector).each(function(i, v){
 				var h = $(v);
 				if (!h.is('.jump-header')) {
@@ -52,12 +52,12 @@
 				}
 				var hTitle = h.find('.form-title').text();
 				if (hTitle == $(e).find('.form-title').text())
-					type = 'current';
-				else if (type == 'current')
-					type = 'down';
+					type = 'jump-current';
+				else if (type == 'jump-current')
+					type = 'jump-down';
 				hlist.push({text: hTitle, e: h, type: type});
 			});
-			hlist.push({text: 'Bottom', e: $('fieldset.form.submit'), type: 'bottom'});
+			hlist.push({text: 'Bottom', e: $('fieldset.form.submit'), type: 'jump-bottom'});
 			var headers = $('<ul>').addClass('jump-header-list');
 			$.each(hlist, function(i, v) {
 				var l = $('<li>').text(v.text).addClass(v.type);
