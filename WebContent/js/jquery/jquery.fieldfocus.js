@@ -60,14 +60,12 @@
 			hlist.push({text: 'Bottom', e: $('fieldset.form.submit'), type: 'jump-bottom'});
 			var headers = $('<ul>').addClass('jump-header-list');
 			$.each(hlist, function(i, v) {
-				var l = $('<li>').text(v.text).addClass(v.type);
-				l.bind('mouseover', function() {
-					$(this).addClass('hover');
-				}).bind('mouseout', function() {
-					$(this).removeClass('hover');
-				}).bind('click', function() {
-					$.scrollTo(v.e, 800, {axis: 'y'});
-				});
+				var a = $('<a>').text(v.text).addClass(v.type)
+							.click(function(e) {
+								e.preventDefault();
+								$.scrollTo(v.e, 800, {axis: 'y'});
+							});
+				var l = $('<li>').append(a);
 				headers.append(l);
 			});
 			$('<span>').addClass('jump-to').text('Jump To').bind('mouseover', function() {
