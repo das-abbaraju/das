@@ -255,7 +255,6 @@ fieldset.form div.fieldhelp p {
  	display: none;
  	position: absolute;
  	right:5px;
- 	text-align:right;
  	background-color: #ececec;
  	color: #464646;
  	list-style: none;
@@ -270,6 +269,9 @@ fieldset.form div.fieldhelp p {
 span.jump-to ul.jump-header-list li {
 	white-space: nowrap;
 	padding:0px 6px 0px 4px;
+	cursor:pointer;
+	padding-left:16px;
+	padding-right:6px;
 }
 
 span.jump-to ul.jump-header-list li.hover {
@@ -279,24 +281,36 @@ span.jump-to ul.jump-header-list li.hover {
  
  span.jump-to.hover ul.jump-header-list {
  	display: block;
+ 	cursor:pointer;
  }
  
  ul.jump-header-list li.jump-top {
- 
+ 	background: url(../images/arrow-up-top.png) no-repeat left center;
+ 	color:#012142;
+ 	font-weight:bold;
  }
  
- ul.jump-header-list li.jump-up {
- 
+ ul.jump-header-list li.jump-up.hover {
+ 	background: url(../images/arrow-up.png) no-repeat left center;
  }
  
  ul.jump-header-list li.jump-current {
  	font-weight: bold;
+ 	background-color: #ffc;
+ 	border-top:1px solid white;
+ 	border-bottom:1px solid white;
  }
  
- ul.jump-header-list li.jump-down {
+  ul.jump-header-list li.jump-current.hover {
+ 	background: url(../images/arrow-right.png) no-repeat left center;
+ }
  
+ ul.jump-header-list li.jump-down.hover {
+ 	background: url(../images/arrow-down.png) no-repeat left center;
  }
  
  ul.jump-header-list li.jump-bottom {
- 
+ 	background: url(../images/arrow-down-bottom.png) no-repeat left center;
+ 	color:#012142;
+ 	font-weight:bold;
  }

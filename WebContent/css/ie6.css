@@ -25,3 +25,27 @@ div.caoGroup {
 }
 
 fieldset.form h2.formLegend {width: 100%;}
+
+ h2.formLegend span.jump-to {
+ 	background: url(../images/arrow-360.gif) no-repeat right center;
+ }
+
+ ul.jump-header-list li.jump-top {
+ 	background: url(../images/arrow-up-top.gif) no-repeat left center;
+ }
+ 
+ ul.jump-header-list li.jump-up.hover {
+ 	background: url(../images/arrow-up.gif) no-repeat left center;
+ }
+ 
+  ul.jump-header-list li.jump-current.hover {
+ 	background: url(../images/arrow-right.gif) no-repeat left center;
+ }
+ 
+ ul.jump-header-list li.jump-down.hover {
+ 	background: url(../images/arrow-down.gif) no-repeat left center;
+ }
+ 
+ ul.jump-header-list li.jump-bottom {
+ 	background: url(../images/arrow-down-bottom.gif) no-repeat left center;
+ }
