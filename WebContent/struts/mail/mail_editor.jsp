@@ -30,9 +30,11 @@
 &nbsp;&nbsp;&nbsp;
 <br />
 <s:textarea name="templateBody" rows="20" onkeyup="dirtyOn();" />
+<s:if test="!editTemplate">
 	<br />
 	Reply to:
 	<s:radio name="fromMyAddress" list="#{'false':'info@picsauditing.com','true':permissions.email}" value="%{fromMyAddress}" ></s:radio><br />
+</s:if>
 <s:if test="templateAllowsVelocity">
 	<div class="info">This template allows velocity tags</div>
 </s:if>

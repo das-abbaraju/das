@@ -1328,6 +1328,18 @@
 			class="com.picsauditing.mail.EmailUnsubscribe">
 			<result>struts/mail/unsubscribe_email.jsp</result>
 		</action>
+		
+		<action name="EditEmailTemplate"
+			class="com.picsauditing.mail.MassMailer">
+			<param name="editTemplate">true</param>
+			<result>struts/mail/emailTemplateEdit.jsp</result>
+		</action>
+		
+		<action name="EditEmailTemplateAjax"
+			class="com.picsauditing.mail.MassMailer">
+			<param name="editTemplate">true</param>
+			<result>struts/mail/editTemplateList.jsp</result>
+		</action>
 
 		<!-- Charts and Graphs -->
 		<action name="ChartXMLFlagCount"

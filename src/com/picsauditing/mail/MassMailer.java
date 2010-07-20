@@ -44,25 +44,27 @@ public class MassMailer extends PicsActionSupport {
 
 	private int templateID = 0; // 0 means no template selected at all
 	private int removeID;
+	private int previewID = 0;
 	final public static int BLANK_EMAIL = -1;
 	private String templateName;
 	private String templateSubject;
 	private String templateBody;
 	private OpPerms recipient;
 	private boolean templateAllowsVelocity;
-	private EmailQueue emailPreview;
+	private boolean fromMyAddress = true;
+	private boolean editTemplate = false;
+	
 	private List<EmailTemplate> emailTemplates = null;
 	private List<Token> picsTags = null;
-	private int previewID = 0;
-	private boolean fromMyAddress = true;
-
 	private List<BasicDynaBean> data = new ArrayList<BasicDynaBean>();
 	private ArrayList<SelectOption> list = new ArrayList<SelectOption>();
+	
 	private EmailQueueDAO emailQueueDAO;
 	private EmailTemplateDAO emailTemplateDAO;
-
 	private TokenDAO tokenDAO;
+	
 	private EmailBuilder emailBuilder;
+	private EmailQueue emailPreview;
 
 	public MassMailer(EmailQueueDAO emailQueueDAO, EmailTemplateDAO emailTemplateDAO, TokenDAO tokenDAO) {
 		this.emailQueueDAO = emailQueueDAO;
@@ -80,7 +82,12 @@ public class MassMailer extends PicsActionSupport {
 		// Start the main logic for actions that require passing the contractors
 		// in
 		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
-		type = wizardSession.getListType();
+		if(!editTemplate)
+			type = wizardSession.getListType();
+		else if(type==null){
+			addActionMessage("Please select a template or start with a blank email to get started");
+			return SUCCESS;
+		}
 
 		if (getEmailTemplates().size() == 0) {
 			// This account has no email templates, just start with a blank one
@@ -131,7 +138,7 @@ public class MassMailer extends PicsActionSupport {
 		if (ids == null || ids.size() == 0)
 			ids = wizardSession.getIds();
 
-		if (ids == null || ids.size() == 0) {
+		if (!editTemplate && (ids == null || ids.size() == 0)) {
 			String url = "EmailWizard.action";
 			if (type != null)
 				url += "?type=" + type;
@@ -179,7 +186,7 @@ public class MassMailer extends PicsActionSupport {
 
 		// At this point if ids is empty then we've removed all possible contractors
 		// So return a message and url and finish
-		if(ids.isEmpty()){
+		if(!editTemplate && ids.isEmpty()){
 			String url = "EmailWizard.action";
 			if (type != null)
 				url += "?type=" + type;
@@ -187,6 +194,11 @@ public class MassMailer extends PicsActionSupport {
 					"<a href=\"" + url + "\">Click here</a> " +
 					"to go back to the Email Wizzard");
 			return SUCCESS;
+		}
+		
+		if(editTemplate){
+			// if editing a template then we can exit here
+			return SUCCESS;			
 		}
 		
 		// We aren't previewing, sending, or editing, so just get the list from
@@ -408,5 +420,13 @@ public class MassMailer extends PicsActionSupport {
 
 	public void setRemoveID(int removeID) {
 		this.removeID = removeID;
+	}
+
+	public void setEditTemplate(boolean editTemplate) {
+		this.editTemplate = editTemplate;
+	}
+
+	public boolean isEditTemplate() {
+		return editTemplate;
 	}
 }

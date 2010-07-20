@@ -76,7 +76,11 @@ function removeCon(id){
 	$('#con_sel_list').load('MassMailerAjax.action', {removeID: id, button: 'removeCon'});
 }
 
-function chooseTemplate(id) {
+function chooseTemplate(id){
+	chooseTemplate(id, false);
+}
+
+function chooseTemplate(id, edit) {
 	$('#messages').html("");
 	
 	templateID = id;
@@ -91,7 +95,8 @@ function chooseTemplate(id) {
 	var data = {
 			button: 'MailEditorAjax',
 			templateID: id,
-			type: type
+			type: type,
+			editTemplate: edit
 	};
 
 	$('#draftEmail').html('<img src="images/ajax_process2.gif" />');

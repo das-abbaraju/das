@@ -68,7 +68,7 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 			if (Strings.isEmpty(template.getBody()))
 				addActionError("Please enter a body");
 
-			if (this.getActionErrors().size() > 0) {
+			if (hasActionErrors()) { // change
 				emailTemplateDAO.clear(); // don't save
 				return BLANK;
 			}
