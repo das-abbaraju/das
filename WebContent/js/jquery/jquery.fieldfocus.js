@@ -25,7 +25,7 @@
 			var handler;
 			handler = function() {
 				target.removeClass('mousedown');
-				$('body').unbind('mouseup', handler);c
+				$('body').unbind('mouseup', handler);
 			}
 			$('body').bind('mouseup', handler);
 		});
@@ -43,19 +43,30 @@
 		var me = $(this);
 		var addInnerSpan;
 		addInnerSpan = function(e) {
-			var headers = $('<ul>').addClass('jump-header-list');
-			$(me.selector).each(function(i, v) {
+			var hlist = [{text: 'Top', e: $(me.selector).parents('form:first'), type: 'top'}];
+			var type = 'up';
+			$(me.selector).each(function(i, v){
 				var h = $(v);
 				if (!h.is('.jump-header')) {
 					h.addClass('jump-header').html($('<span>').addClass('form-title').html(h.html()));
 				}
-				var l = $('<li>').text(h.find('.form-title').text());
+				var hTitle = h.find('.form-title').text();
+				if (hTitle == $(e).find('.form-title').text())
+					type = 'current';
+				else if (type == 'current')
+					type = 'down';
+				hlist.push({text: hTitle, e: h, type: type});
+			});
+			hlist.push({text: 'Bottom', e: $('fieldset.form.submit'), type: 'bottom'});
+			var headers = $('<ul>').addClass('jump-header-list');
+			$.each(hlist, function(i, v) {
+				var l = $('<li>').text(v.text).addClass(v.type);
 				l.bind('mouseover', function() {
 					$(this).addClass('hover');
 				}).bind('mouseout', function() {
 					$(this).removeClass('hover');
 				}).bind('click', function() {
-					$.scrollTo(h, 800, {axis: 'y'});
+					$.scrollTo(v.e, 800, {axis: 'y'});
 				});
 				headers.append(l);
 			});

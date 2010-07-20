@@ -279,3 +279,23 @@ span.jump-to ul.jump-header-list li.hover {
  span.jump-to.hover ul.jump-header-list {
  	display: block;
  }
+ 
+ ul.jump-header-list li.top {
+ 
+ }
+ 
+ ul.jump-header-list li.up {
+ 
+ }
+ 
+ ul.jump-header-list li.current {
+ 
+ }
+ 
+ ul.jump-header-list li.down {
+ 
+ }
+ 
+ ul.jump-header-list li.bottom {
+ 
+ }
