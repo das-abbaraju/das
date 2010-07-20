@@ -264,6 +264,7 @@ fieldset.form div.fieldhelp p {
  	border-top:2px solid #012142;
  	border-bottom:2px solid #012142;
  	font-weight:normal;
+	z-index: 1005;
  }
  
 span.jump-to ul.jump-header-list li {
@@ -289,7 +290,7 @@ span.jump-to ul.jump-header-list li.hover {
  }
  
  ul.jump-header-list li.jump-current {
- 
+ 	font-weight: bold;
  }
  
  ul.jump-header-list li.jump-down {
