@@ -55,7 +55,7 @@
 				}).bind('mouseout', function() {
 					$(this).removeClass('hover');
 				}).bind('click', function() {
-					$.scrollTo(h);
+					$.scrollTo(h, 800, {axis: 'y'});
 				});
 				headers.append(l);
 			});
