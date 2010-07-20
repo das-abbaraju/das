@@ -243,7 +243,8 @@ fieldset.form div.fieldhelp p {
  	margin-right: 5px;
  	display: none;
  	padding-right: 18px;
- 	background: url(../images/arrow_right.gif) no-repeat right center;
+ 	background: url(../images/arrow-360.png) no-repeat right center;
+ 	background-color:#012142;
  }
  
  h2.formLegend.hover span.jump-to {
@@ -253,6 +254,8 @@ fieldset.form div.fieldhelp p {
  span.jump-to ul.jump-header-list {
  	display: none;
  	position: absolute;
+ 	right:5px;
+ 	text-align:right;
  	background-color: #ececec;
  	color: #464646;
  	list-style: none;
