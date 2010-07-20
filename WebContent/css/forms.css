@@ -16,7 +16,17 @@ fieldset.alt {
 	background-color: #F0F0F0;
 }
 
-fieldset.form h2.formLegend {color: white;font-weight:bold;font-size:125%;display:block;background-color:#81b2da;padding:0.2em 0;text-indent:5px;letter-spacing:0px;}
+fieldset.form h2.formLegend {
+	color: white;
+	font-weight:bold;
+	font-size:125%;
+	display:block;
+	background-color:#81b2da;
+	padding:0.2em 0;
+	text-indent:5px;
+	letter-spacing:0px;
+	min-height:25px;
+	height:expression(this.height<25?25:true);}
 
 fieldset.form legend {
 	color: white;
@@ -222,7 +232,7 @@ fieldset.form div.fieldhelp p {
  * Jump To Styles for form headers
  * 
  */
- 
+  
  h2.formLegend span.form-title {
  	float: left;
  }
