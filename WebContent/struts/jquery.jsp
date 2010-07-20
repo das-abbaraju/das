@@ -26,6 +26,7 @@
 <script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.js"></script>
 <link type="text/css" rel="stylesheet" href="js/jquery/cluetip/jquery.cluetip.css" media="screen">
 
+<script type="text/javascript" src="js/jquery/scrollTo/jquery.scrollTo-min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 
 <script type="text/javascript">

@@ -83,18 +83,8 @@ $(function() {
 #item {
 	display: none;
 }
-#item fieldset.form {
-	clear: none;
-}
 #thinking {
 	float: right;	
-}
-.mcdropdown_wrapper {
-	clear: left;
-	padding-top: 10px;
-}
-.mcdropdown_wrapper input {
-	font-size: 12px !important;
 }
 </style>
 </head>

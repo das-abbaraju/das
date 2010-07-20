@@ -216,3 +216,44 @@ fieldset.form div.fieldhelp p {
 	clear : both;
 	line-height:16px;
 }
+
+
+/* 
+ * Jump To Styles for form headers
+ * 
+ */
+
+ h2.formLegend span.jump-to {
+ 	float: right;
+ 	font-size: 80%;
+ 	margin-right: 5px;
+ 	display: none;
+ 	padding-right: 18px;
+ 	background: url(../images/arrow_right.gif) no-repeat right center;
+ }
+ 
+ h2.formLegend.hover span.jump-to {
+ 	display: inline;
+ }
+ 
+ span.jump-to ul.jump-header-list {
+ 	display: none;
+ 	position: absolute;
+ 	border: 2px solid black;
+ 	background-color: #dedede;
+ 	color: #222222;
+ 	list-style: none;
+ }
+ 
+span.jump-to ul.jump-header-list li {
+	white-space: nowrap;
+}
+
+span.jump-to ul.jump-header-list li.hover {
+	background-color: #a27771;
+	color: white;
+}
+ 
+ span.jump-to.hover ul.jump-header-list {
+ 	display: block;
+ }

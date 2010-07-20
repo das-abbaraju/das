@@ -39,6 +39,37 @@
 				me.parent().addClass('hasdata');
 		} );
 	}
+	$.fn.jumpTo = function() {
+		var me = $(this);
+		var addInnerSpan = function(e) {
+			var headers = $('<ul>').addClass('jump-header-list');
+			me.each(function(i, v) {
+				var h = $('<li>').text($(v).text());
+				$(v).addClass('jump-location-'+i);
+				h.bind('mouseover', function() {
+					$(this).addClass('hover');
+				}).bind('mouseout', function() {
+					$(this).removeClass('hover');
+				}).bind('click', function() {
+					$.scrollTo(me.filter(':eq('+i+')'));
+				});
+				headers.append(h);
+			});
+			$('<span>').addClass('jump-to').text('Jump To').bind('mouseover', function() {
+				var me = $(this).addClass('hover');
+				var pos = me.position();
+			}).bind('mouseout', function() {
+				$(this).removeClass('hover');
+			}).append(headers).appendTo(e);
+		}
+		return me.live('mouseover', function() {
+			if ($(this).find('span.jump-to').size() == 0)
+				addInnerSpan(this);
+			$(this).addClass('hover');
+		}).live('mouseout', function() {
+			$(this).removeClass('hover');
+		});
+	}
 })(jQuery)
 
 jQuery(function(){
@@ -49,5 +80,7 @@ jQuery(function(){
 	$('fieldset.form ol li').live('click', function() {
 		$(this).not('.fieldhelp-focused').find(':input:first').focus();
 	});
+	
+	$('fieldset.form h2.formLegend').jumpTo();
 	 
 });
