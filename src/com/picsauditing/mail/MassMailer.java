@@ -11,12 +11,14 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.TokenDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.ListType;
@@ -252,6 +254,13 @@ public class MassMailer extends PicsActionSupport {
 		if (ListType.Contractor.equals(type)) {
 			ContractorAccountDAO dao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
 			ContractorAccount contractor = dao.find(id);
+			ContractorOperator co = null;
+			
+			if (permissions.isOperator()) {
+				ContractorOperatorDAO coDAO = (ContractorOperatorDAO) SpringUtils.getBean("ContractorOperatorDAO");
+				co = coDAO.find(id, permissions.getAccountId());
+				emailBuilder.addToken("flagColor", co.getFlagColor());
+			}
 
 			if (recipient != null && !recipient.equals(OpPerms.ContractorAdmin)) {
 				// Send the emails to the right recipients?
@@ -265,7 +274,6 @@ public class MassMailer extends PicsActionSupport {
 			}
 			else
 				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
-
 		}
 		if (ListType.Audit.equals(type)) {
 			ContractorAuditDAO dao = (ContractorAuditDAO) SpringUtils.getBean("ContractorAuditDAO");

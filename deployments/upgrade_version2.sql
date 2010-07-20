@@ -78,3 +78,5 @@ join pqfquestion_text t1 on q1.id = t1.questionID
 join pqfquestions q2 on q2.number = q1.number and q2.subcategoryid = 485
 where q1.id in (2447, 2448);
 
+-- PICS-415
+update `token` set `velocityCode`='${flagColor}' where `tokenID`='8';
