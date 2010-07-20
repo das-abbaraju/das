@@ -70,7 +70,7 @@
 
 	<s:if test="filter.showOfficeIn">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_officeIn'); return false;">State/Province</a> =
+			onclick="toggleBox('form1_officeIn'); return false;">Office In State/Province</a> =
 		<span id="form1_officeIn_query">ALL</span><br />
 		<span id="form1_officeIn_select" style="display: none"
 			class="clearLink"> <s:select id="form1_officeIn"
@@ -83,7 +83,7 @@
 
 	<s:if test="filter.showWorksIn">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_worksIn'); return false;">Works In</a> = <span
+			onclick="toggleBox('form1_worksIn'); return false;">Works In State/Province</a> = <span
 			id="form1_worksIn_query">ALL</span><br />
 		<span id="form1_worksIn_select" style="display: none"
 			class="clearLink"> <s:select id="form1_worksIn"
@@ -96,8 +96,7 @@
 
 	<s:if test="filter.showLicensedIn">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed
-		In</a> = <span id="form1_stateLicensedIn_query">ALL</span><br />
+			onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed In State/Province</a> = <span id="form1_stateLicensedIn_query">ALL</span><br />
 		<span id="form1_stateLicensedIn_select" style="display: none"
 			class="clearLink"> <s:select id="form1_stateLicensedIn"
 			list="filter.stateLicensesList" cssClass="forms"
