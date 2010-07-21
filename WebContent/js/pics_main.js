@@ -34,7 +34,15 @@ function openWindow(url, wndName)
 
 function clearText(thefield)
 {
-	thefield.value = "";
+	// if field is in the form - string -
+	// then remove text, else select it
+	var patt1 = /^-[^-]*-$/;
+	var str = thefield.value;
+	str = str.trim();
+	if(str.match(patt1)!=null)	
+		thefield.value = "";
+	else 
+		thefield.select();
 }
 
 function startThinking( args ) {
