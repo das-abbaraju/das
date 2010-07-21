@@ -19,6 +19,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.util.Strings;
 
 public class ExcelSheet {
 	private String name = "Report";
@@ -142,7 +143,10 @@ public class ExcelSheet {
 					else
 						c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
 				} catch (Exception e) {
-					c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
+					if (!Strings.isEmpty(row.get(column.getName()).toString()))
+						c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
+					else
+						c.setCellValue(new HSSFRichTextString(""));
 				}
 				columnCount++;
 			}
