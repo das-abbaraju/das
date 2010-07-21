@@ -43,6 +43,8 @@
 		var me = $(this);
 		var addInnerSpan;
 		addInnerSpan = function(e) {
+			if ($(me.selector).size() < 3)
+				return;
 			var hlist = [{text: 'Top', e: $(me.selector).parents('form:first'), type: 'jump-top'}];
 			var type = 'jump-up';
 			$(me.selector).each(function(i, v){
