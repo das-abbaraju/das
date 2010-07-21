@@ -290,7 +290,8 @@ table.report tr.hurdle td {
 					</pics:permission>
 				<s:iterator value="value">
 					<li>
-						<a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.auditName"/><s:if test="auditFor != null"> <s:property value="auditFor"/></s:if></a>
+						<a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.auditName"/>
+						<s:if test="auditFor != null"> <s:property value="auditFor"/></s:if><s:else><s:date name="effectiveDate" format="MMM yyyy" /></s:else></a>
 						<s:if test="key == 'InsureGUARD'">
 							<s:property value="getSynopsis(co.operatorAccount)"/>
 						</s:if>
