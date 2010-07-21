@@ -266,51 +266,109 @@ fieldset.form div.fieldhelp p {
 	z-index: 1005;
  }
  
-span.jump-to ul.jump-header-list li {
+span.jump-to ul.jump-header-list li a:link {
 	white-space: nowrap;
-	padding:0px 6px 0px 4px;
 	cursor:pointer;
-	padding-left:16px;
-	padding-right:6px;
+	display:block;
+	width:100%;
+	color: #464646;
 }
 
-span.jump-to ul.jump-header-list li.hover {
-	background-color: #ffff99;
-	color: #000;
-}
  
  span.jump-to.hover ul.jump-header-list {
  	display: block;
  	cursor:pointer;
  }
  
- ul.jump-header-list li.jump-top {
+  span.jump-to.hover ul.jump-header-list li {
+ 	
+ }
+ 
+ ul.jump-header-list li.jump-top a {
  	background: url(../images/arrow-up-top.png) no-repeat left center;
  	color:#012142;
  	font-weight:bold;
+ 	padding-left:16px;
+	display:block;
  }
  
- ul.jump-header-list li.jump-up.hover {
+ul.jump-header-list li.jump-top a:hover {
+ 	background: url(../images/arrow-up-top.png) no-repeat left center;
+ 	color:#012142;
+ 	font-weight:bold;
+ 	text-decoration:none;
+	display:block;
+	background-color: #ffff99;
+	padding-left:16px;
+ }
+ 
+   ul.jump-header-list li.jump-up a {
+ 	padding-left:16px;
+	display:block;
+	color: #464646;
+   }
+ 
+  ul.jump-header-list li.jump-up a:hover {
  	background: url(../images/arrow-up.png) no-repeat left center;
+ 	text-decoration:none;
+ 	padding-left:16px;
+	display:block;
+	background-color: #ffff99;
+	color: #000;
  }
+
  
- ul.jump-header-list li.jump-current {
+ ul.jump-header-list li.jump-current a {
  	font-weight: bold;
  	background-color: #ffc;
  	border-top:1px solid white;
  	border-bottom:1px solid white;
+ 	display:block;
+ 	padding-left:16px;
+	display:block;
  }
  
-  ul.jump-header-list li.jump-current.hover {
+  ul.jump-header-list li.jump-current a:hover {
  	background: url(../images/arrow-right.png) no-repeat left center;
+ 	text-decoration:none;
+ 	background-color: #ffff99;
+ 	border-top:1px solid white;
+ 	border-bottom:1px solid white;
+ 	padding-left:16px;
+	display:block;
+	color: #000;
  }
  
- ul.jump-header-list li.jump-down.hover {
+ul.jump-header-list li.jump-down a {
+ 	padding-left:16px;
+	display:block;
+	color: #464646;
+   }
+ 
+ ul.jump-header-list li.jump-down a:hover {
  	background: url(../images/arrow-down.png) no-repeat left center;
+ 	text-decoration:none;
+ 	padding-left:16px;
+	display:block;
+	background-color: #ffff99;
+	color: #000;
  }
  
- ul.jump-header-list li.jump-bottom {
+ ul.jump-header-list li.jump-bottom a {
  	background: url(../images/arrow-down-bottom.png) no-repeat left center;
  	color:#012142;
  	font-weight:bold;
+ 	display:block;
+	padding-left:16px;
  }
+ 
+  ul.jump-header-list li.jump-bottom a:hover {
+ 	background: url(../images/arrow-down-bottom.png) no-repeat left center;
+ 	color:#012142;
+ 	font-weight:bold;
+ 	text-decoration:none;
+	display:block;
+	padding-left:16px;
+	background-color: #ffff99;
+ }
+ 

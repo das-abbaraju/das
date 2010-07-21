@@ -26,23 +26,40 @@ div.caoGroup {
 
 fieldset.form h2.formLegend {width: 100%;}
 
+ ul.jump-header-list li a:link,  ul.jump-header-list li a:visited {
+	background-color: transparent;
+	color: #464646;
+ }
+
+ ul.jump-header-list li a:hover,  ul.jump-header-list li a:active {
+ 	text-decoration:none;
+	background-color: #ffff99;
+	color: #000;
+ }
+
+
  h2.formLegend span.jump-to {
  	background: url(../images/arrow-360.gif) no-repeat right center;
  }
 
  ul.jump-header-list li.jump-top {
  	background: url(../images/arrow-up-top.gif) no-repeat left center;
+ 	
  }
  
- ul.jump-header-list li.jump-up.hover {
+ ul.jump-header-list li.jump-up a:hover {
  	background: url(../images/arrow-up.gif) no-repeat left center;
  }
  
-  ul.jump-header-list li.jump-current.hover {
+  ul.jump-header-list li.jump-current {
+
+ }
+ 
+  ul.jump-header-list li.jump-current a:hover {
  	background: url(../images/arrow-right.gif) no-repeat left center;
  }
  
- ul.jump-header-list li.jump-down.hover {
+ ul.jump-header-list li.jump-down a:hover {
  	background: url(../images/arrow-down.gif) no-repeat left center;
  }
  
