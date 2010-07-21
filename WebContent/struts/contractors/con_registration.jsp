@@ -58,7 +58,7 @@ $(function(){
 </head>
 <body>
 <s:include value="registrationHeader.jsp"></s:include>
-<span class="redMain"><img src="images/required.png" /> Indicates required information</span>
+<span class="redMain required-info">Indicates required information</span>
 <s:form method="POST">
 <s:hidden name="requestID" />
 	<br clear="all" />

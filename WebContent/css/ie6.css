@@ -26,41 +26,46 @@ div.caoGroup {
 
 fieldset.form h2.formLegend {width: 100%;}
 
-ul.jump-header-list li a:link,  ul.jump-header-list li a:visited {
-	background-color: transparent;
-	color: #464646;
+/* 
+ * required icon fix
+ */
+fieldset.form ol li.required {
+	background: inherit url(../images/required.gif) no-repeat right 28px;	
 }
 
-ul.jump-header-list li a:hover,  ul.jump-header-list li a:active {
-	text-decoration:none;
-	background-color: #ffff99;
-	color: #000;
+.required-info {
+	background: inherit url(../images/required.gif) no-repeat left center;	
+}
+
+/* 
+ * Jump To Styles for form headers
+ */
+ul.jump-header-list {
+	top:28px;
 }
 
 h2.formLegend span.jump-to {
 	background: url(../images/arrow-360.gif) no-repeat right center;
+	background-color: #012142;
 }
 
-ul.jump-header-list li.jump-top {
+ul.jump-header-list li a.jump-top {
 	background: url(../images/arrow-up-top.gif) no-repeat left center;
 }
+
+ul.jump-header-list li a.jump-bottom {
+	background: url(../images/arrow-down-bottom.gif) no-repeat left center;
+}
  
-ul.jump-header-list li.jump-up a:hover {
+ul.jump-header-list li.hover a.jump-up {
 	background: url(../images/arrow-up.gif) no-repeat left center;
 }
 
-ul.jump-header-list li.jump-current {
-
-}
- 
-ul.jump-header-list li.jump-current a:hover {
+ul.jump-header-list li.hover a.jump-current {
 	background: url(../images/arrow-right.gif) no-repeat left center;
 }
  
-ul.jump-header-list li.jump-down a:hover {
+ul.jump-header-list li.hover a.jump-down {
 	background: url(../images/arrow-down.gif) no-repeat left center;
 }
  
-ul.jump-header-list li.jump-bottom {
-	background: url(../images/arrow-down-bottom.gif) no-repeat left center;
-}

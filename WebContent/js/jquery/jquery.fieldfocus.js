@@ -57,7 +57,8 @@
 					type = 'jump-down';
 				hlist.push({text: hTitle, e: h, type: type});
 			});
-			hlist.push({text: 'Bottom', e: $('fieldset.form.submit'), type: 'jump-bottom'});
+			if ($('fieldset.form.submit').size() > 0)
+				hlist.push({text: 'Bottom', e: $('fieldset.form.submit'), type: 'jump-bottom'});
 			var headers = $('<ul>').addClass('jump-header-list');
 			$.each(hlist, function(i, v) {
 				var a = $('<a>').text(v.text).addClass(v.type)
@@ -65,20 +66,24 @@
 								e.preventDefault();
 								$.scrollTo(v.e, 800, {axis: 'y'});
 							});
-				var l = $('<li>').append(a);
+				var l = $('<li>').append(a).hover(function() {
+					$(this).addClass('hover');
+				}, function() {
+					$(this).removeClass('hover');
+				});
 				headers.append(l);
 			});
-			$('<span>').addClass('jump-to').text('Jump To').bind('mouseover', function() {
+			$('<span>').addClass('jump-to').text('Jump To').bind('mouseenter', function() {
 				var me = $(this).addClass('hover');
-			}).bind('mouseout', function() {
+			}).bind('mouseleave', function() {
 				$(this).removeClass('hover');
 			}).append(headers).appendTo(e);
 		}
-		return me.live('mouseover', function() {
+		return me.live('mouseenter', function() {
 			if ($(this).find('span.jump-to').size() == 0)
 				addInnerSpan(this);
 			$(this).addClass('hover');
-		}).live('mouseout', function() {
+		}).live('mouseleave', function() {
 			$(this).removeClass('hover');
 		});
 	}

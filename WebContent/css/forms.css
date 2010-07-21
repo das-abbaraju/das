@@ -64,6 +64,11 @@ fieldset.form ol li.required {
 	background: url(../images/required.png) no-repeat right 28px;	
 }
 
+.required-info {
+	padding-left: 20px;
+	background: url(../images/required.png) no-repeat left center;	
+}
+
 fieldset.form ol li.required.hasdata {
 	background-image: none;
 }
@@ -227,10 +232,8 @@ fieldset.form div.fieldhelp p {
 	line-height:16px;
 }
 
-
 /* 
  * Jump To Styles for form headers
- * 
  */
   
 h2.formLegend span.form-title {
@@ -250,6 +253,7 @@ h2.formLegend span.jump-to {
  
 fieldset.form h2.hover span.jump-to {
 	display: inline;
+	cursor: pointer;
 }
 
 span.jump-to ul.jump-header-list {
@@ -267,103 +271,61 @@ span.jump-to ul.jump-header-list {
 }
  
 span.jump-to ul.jump-header-list li a:link {
+	display:block;
 	white-space: nowrap;
 	cursor:pointer;
-	display:block;
 	width:100%;
 	color: #464646;
 }
 
 span.jump-to.hover ul.jump-header-list {
 	display: block;
-	cursor:pointer;
 	z-index: 1005;
 }
- 
-ul.jump-header-list li.jump-top a {
+
+ul.jump-header-list li a {
+	display:block;
+	padding-left:16px;
+	padding-right: 4px;
+	color: #464646;
+	text-decoration:none;
+}
+
+ul.jump-header-list li.hover {
+	background-color: #ffff99;
+	cursor: pointer;
+}
+
+ul.jump-header-list li a.jump-top {
 	background: url(../images/arrow-up-top.png) no-repeat left center;
 	color:#012142;
 	font-weight:bold;
-	padding-left:16px;
-	display:block;
 }
 
-ul.jump-header-list li.jump-top a:hover {
- 	background: url(../images/arrow-up-top.png) no-repeat left center;
- 	color:#012142;
- 	font-weight:bold;
- 	text-decoration:none;
-	display:block;
-	background-color: #ffff99;
-	padding-left:16px;
+ul.jump-header-list li a.jump-bottom {
+	background: url(../images/arrow-down-bottom.png) no-repeat left center;
+	color:#012142;
+	font-weight:bold;
 }
- 
-ul.jump-header-list li.jump-up a {
-	padding-left:16px;
-	display:block;
-	color: #464646;
-}
- 
-ul.jump-header-list li.jump-up a:hover {
+
+ul.jump-header-list li.hover a.jump-up {
 	background: url(../images/arrow-up.png) no-repeat left center;
-	text-decoration:none;
-	padding-left:16px;
-	display:block;
-	background-color: #ffff99;
 	color: #000;
 }
  
- ul.jump-header-list li.jump-current a {
+ ul.jump-header-list li a.jump-current {
 	font-weight: bold;
 	background-color: #ffc;
 	border-top:1px solid white;
 	border-bottom:1px solid white;
-	display:block;
-	padding-left:16px;
-	display:block;
  }
  
-ul.jump-header-list li.jump-current a:hover {
+ul.jump-header-list li.hover a.jump-current {
 	background: url(../images/arrow-right.png) no-repeat left center;
-	text-decoration:none;
-	background-color: #ffff99;
-	border-top:1px solid white;
-	border-bottom:1px solid white;
-	padding-left:16px;
-	display:block;
 	color: #000;
 }
  
-ul.jump-header-list li.jump-down a {
-	padding-left:16px;
-	display:block;
-	color: #464646;
-  }
-
-ul.jump-header-list li.jump-down a:hover {
+ul.jump-header-list li.hover a.jump-down {
 	background: url(../images/arrow-down.png) no-repeat left center;
-	text-decoration:none;
-	padding-left:16px;
-	display:block;
-	background-color: #ffff99;
 	color: #000;
 }
-
-ul.jump-header-list li.jump-bottom a {
-	background: url(../images/arrow-down-bottom.png) no-repeat left center;
-	color:#012142;
-	font-weight:bold;
-	display:block;
-	padding-left:16px;
-}
-
-ul.jump-header-list li.jump-bottom a:hover {
-	background: url(../images/arrow-down-bottom.png) no-repeat left center;
-	color:#012142;
-	font-weight:bold;
-	text-decoration:none;
-	display:block;
-	padding-left:16px;
-	background-color: #ffff99;
-}
- 
