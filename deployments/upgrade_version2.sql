@@ -80,3 +80,6 @@ where q1.id in (2447, 2448);
 
 -- PICS-415
 update `token` set `velocityCode`='${flagColor}' where `tokenID`='8';
+
+-- PICS-630/805 --
+update accounts set nameIndex = replace(nameIndex, ' ', '');

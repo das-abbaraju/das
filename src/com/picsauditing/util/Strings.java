@@ -288,17 +288,17 @@ public class Strings {
 
 		// Remove all quotes
 		name = name.replaceAll("[\\'\\\"]", "");
-		// Replace all non letters/digits with spaces
-		name = name.replaceAll("\\W", " ");
-		name = name.replaceAll("_", " ");
-		// Collapse multiple spaces into one space
-		name = name.replaceAll(" +", " ");
-		name = name.trim();
 		// Take out "the" at the beginning of the sentences, llc & inc (in
 		// multiple variations) at the end of sentences
 		name = name.replaceAll("^THE ", "");
 		name = name.replaceAll(" L ?L ?C$", "");
 		name = name.replaceAll(" I ?N ?C$", "");
+		// Remove all non-alphanumeric characters
+		name = name.replaceAll("\\W", "");
+		name = name.replaceAll("_", "");
+		// Change multiple spaces into nothing
+		name = name.replaceAll(" +", "");
+		name = name.trim();
 
 		// System.out.println(name);
 
