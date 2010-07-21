@@ -19,7 +19,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.WaitingOn;
-import com.picsauditing.util.Strings;
 
 public class ExcelSheet {
 	private String name = "Report";
@@ -45,7 +44,7 @@ public class ExcelSheet {
 	public void removeColumn(String name) {
 		// TODO
 		Iterator<ExcelColumn> i = columns.values().iterator();
-		
+
 		while (i.hasNext()) {
 			ExcelColumn column = i.next();
 			if (column.getName().equals(name))
@@ -139,14 +138,10 @@ public class ExcelSheet {
 						else if ("waitingOn".equals(column.getName()))
 							value = WaitingOn.valueOf((Integer) row.get(column.getName())).toString();
 						c.setCellValue(new HSSFRichTextString(value));
-					}
-					else
+					} else
 						c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
 				} catch (Exception e) {
-					if (!Strings.isEmpty(row.get(column.getName()).toString()))
-						c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
-					else
-						c.setCellValue(new HSSFRichTextString(""));
+					c.setCellValue((row.get(column.getName()) != null) ? row.get(column.getName()).toString() : "");
 				}
 				columnCount++;
 			}
