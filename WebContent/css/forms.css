@@ -233,38 +233,38 @@ fieldset.form div.fieldhelp p {
  * 
  */
   
- h2.formLegend span.form-title {
- 	float: left;
- }
+h2.formLegend span.form-title {
+	float: left;
+}
 
- h2.formLegend span.jump-to {
- 	float: right;
- 	font-size: 80%;
- 	margin-right: 5px;
- 	display: none;
- 	padding-right: 18px;
- 	background: url(../images/arrow-360.png) no-repeat right center;
- 	background-color:#012142;
- }
- 
- h2.formLegend.hover span.jump-to {
- 	display: inline;
- }
- 
- span.jump-to ul.jump-header-list {
- 	display: none;
- 	position: absolute;
- 	right:5px;
- 	background-color: #ececec;
- 	color: #464646;
- 	list-style: none;
- 	margin-left:-5px;
- 	line-height:28px;
- 	border-top:2px solid #012142;
- 	border-bottom:2px solid #012142;
- 	font-weight:normal;
+h2.formLegend span.jump-to {
+	float: right;
+	font-size: 80%;
+	margin-right: 5px;
+	display: none;
+	padding-right: 18px;
+	background: url(../images/arrow-360.png) no-repeat right center;
+	background-color:#012142;
 	z-index: 1005;
- }
+}
+ 
+fieldset.form h2.hover span.jump-to {
+	display: inline;
+}
+
+span.jump-to ul.jump-header-list {
+	display: none;
+	position: absolute;
+	right:5px;
+	background-color: #ececec;
+	color: #464646;
+	list-style: none;
+	margin-left:-5px;
+	line-height:28px;
+	border-top:2px solid #012142;
+	border-bottom:2px solid #012142;
+	font-weight:normal;
+}
  
 span.jump-to ul.jump-header-list li a:link {
 	white-space: nowrap;
@@ -274,24 +274,20 @@ span.jump-to ul.jump-header-list li a:link {
 	color: #464646;
 }
 
+span.jump-to.hover ul.jump-header-list {
+	display: block;
+	cursor:pointer;
+	z-index: 1005;
+}
  
- span.jump-to.hover ul.jump-header-list {
- 	display: block;
- 	cursor:pointer;
- }
- 
-  span.jump-to.hover ul.jump-header-list li {
- 	
- }
- 
- ul.jump-header-list li.jump-top a {
- 	background: url(../images/arrow-up-top.png) no-repeat left center;
- 	color:#012142;
- 	font-weight:bold;
- 	padding-left:16px;
+ul.jump-header-list li.jump-top a {
+	background: url(../images/arrow-up-top.png) no-repeat left center;
+	color:#012142;
+	font-weight:bold;
+	padding-left:16px;
 	display:block;
- }
- 
+}
+
 ul.jump-header-list li.jump-top a:hover {
  	background: url(../images/arrow-up-top.png) no-repeat left center;
  	color:#012142;
@@ -300,75 +296,74 @@ ul.jump-header-list li.jump-top a:hover {
 	display:block;
 	background-color: #ffff99;
 	padding-left:16px;
- }
+}
  
-   ul.jump-header-list li.jump-up a {
- 	padding-left:16px;
+ul.jump-header-list li.jump-up a {
+	padding-left:16px;
 	display:block;
 	color: #464646;
-   }
+}
  
-  ul.jump-header-list li.jump-up a:hover {
- 	background: url(../images/arrow-up.png) no-repeat left center;
- 	text-decoration:none;
- 	padding-left:16px;
+ul.jump-header-list li.jump-up a:hover {
+	background: url(../images/arrow-up.png) no-repeat left center;
+	text-decoration:none;
+	padding-left:16px;
 	display:block;
 	background-color: #ffff99;
 	color: #000;
- }
-
+}
  
  ul.jump-header-list li.jump-current a {
- 	font-weight: bold;
- 	background-color: #ffc;
- 	border-top:1px solid white;
- 	border-bottom:1px solid white;
- 	display:block;
- 	padding-left:16px;
+	font-weight: bold;
+	background-color: #ffc;
+	border-top:1px solid white;
+	border-bottom:1px solid white;
+	display:block;
+	padding-left:16px;
 	display:block;
  }
  
-  ul.jump-header-list li.jump-current a:hover {
- 	background: url(../images/arrow-right.png) no-repeat left center;
- 	text-decoration:none;
- 	background-color: #ffff99;
- 	border-top:1px solid white;
- 	border-bottom:1px solid white;
- 	padding-left:16px;
+ul.jump-header-list li.jump-current a:hover {
+	background: url(../images/arrow-right.png) no-repeat left center;
+	text-decoration:none;
+	background-color: #ffff99;
+	border-top:1px solid white;
+	border-bottom:1px solid white;
+	padding-left:16px;
 	display:block;
 	color: #000;
- }
+}
  
 ul.jump-header-list li.jump-down a {
- 	padding-left:16px;
+	padding-left:16px;
 	display:block;
 	color: #464646;
-   }
- 
- ul.jump-header-list li.jump-down a:hover {
- 	background: url(../images/arrow-down.png) no-repeat left center;
- 	text-decoration:none;
- 	padding-left:16px;
+  }
+
+ul.jump-header-list li.jump-down a:hover {
+	background: url(../images/arrow-down.png) no-repeat left center;
+	text-decoration:none;
+	padding-left:16px;
 	display:block;
 	background-color: #ffff99;
 	color: #000;
- }
- 
- ul.jump-header-list li.jump-bottom a {
- 	background: url(../images/arrow-down-bottom.png) no-repeat left center;
- 	color:#012142;
- 	font-weight:bold;
- 	display:block;
+}
+
+ul.jump-header-list li.jump-bottom a {
+	background: url(../images/arrow-down-bottom.png) no-repeat left center;
+	color:#012142;
+	font-weight:bold;
+	display:block;
 	padding-left:16px;
- }
- 
-  ul.jump-header-list li.jump-bottom a:hover {
- 	background: url(../images/arrow-down-bottom.png) no-repeat left center;
- 	color:#012142;
- 	font-weight:bold;
- 	text-decoration:none;
+}
+
+ul.jump-header-list li.jump-bottom a:hover {
+	background: url(../images/arrow-down-bottom.png) no-repeat left center;
+	color:#012142;
+	font-weight:bold;
+	text-decoration:none;
 	display:block;
 	padding-left:16px;
 	background-color: #ffff99;
- }
+}
  
