@@ -264,9 +264,11 @@ function checkReason(id) {
 								<li>
 									<button class="picsbutton positive" type="submit" name="button" value="Force Overall Flag">Force Overall Flag</button>
 								</li>
-								<s:if test="permissions.corporate">
-									<s:checkbox id="overRAll_main" name="overrideAll"/><label for="overRAll_main">Override the Flag for all <s:property value="permissions.accountName" /> sites </label><br/>
-								</s:if>
+								<li>
+									<s:if test="permissions.corporate">
+										<s:checkbox id="overRAll_main" name="overrideAll"/><label for="overRAll_main">Override the Flag for all <s:property value="permissions.accountName" /> sites </label><br/>
+									</s:if>
+								</li>
 								</ol>
 								</fieldset>
 							</s:form>

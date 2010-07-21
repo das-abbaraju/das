@@ -175,6 +175,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 							+ co.getOperatorAccount().getName();
 				}
 			} else if ("Force Individual Flag".equals(button)) {
+				if(forceFlag==null){
+					addActionError("You did not choose a flag color");
+					return SUCCESS;
+				}					
 				FlagData flagData = flagDataDAO.find(dataID);
 
 				if (forceFlag.equals(co.getForceFlag()))
@@ -222,7 +226,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 							getFlagDataOverrides().remove(flagCriteria);
 						}
 					}
-					if (overrideAll == true) {
+					if (overrideAll) {
 						if (flagDataOverride.getOperator().getId() == permissions
 								.getAccountId()) {
 							flagDataOverrideDAO.remove(flagDataOverride);
@@ -244,7 +248,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			getNoteDao().save(note);
 			String redirectUrl = "ContractorFlag.action?id=" + id + "%26opID=" + opID;
 			return redirect("ContractorCronAjax.action?conID=" + id + "&opID="
-					+ opID + "&button=ConFlag&steps=Flag&steps=WaitingOn"+"&redirectUrl=" +
+					+ opID + "&steps=Flag&steps=WaitingOn"+"&redirectUrl=" +
 					redirectUrl);
 		}
 
