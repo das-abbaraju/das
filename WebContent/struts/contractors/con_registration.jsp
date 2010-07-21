@@ -106,7 +106,7 @@ $(function(){
 								the first 9-digits of your 15 character Business Number
 								
 							</div>
-							<span id="taxId_status"></span>
+							<div id="taxId_status"></div>
 						</li>
 						<li><label>Web URL:</label> 
 							<s:textfield name="contractor.webUrl" size="35" />
