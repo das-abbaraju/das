@@ -40,9 +40,13 @@ input {
 	*padding-left: 20px;
 }
 
+fieldset.form { position: static; }
+
+span.jump-to { position: relative; }
+
 /* 
  * Jump To Styles for form headers - IE7 hack
  */
 ul.jump-header-list {
-	*top:28px;
+	*top:24px;
 }
