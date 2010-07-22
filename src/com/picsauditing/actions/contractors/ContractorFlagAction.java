@@ -16,8 +16,8 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.FlagDataOverrideDAO;
+import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
@@ -29,6 +29,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
+import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -43,6 +44,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected FlagDataOverrideDAO flagDataOverrideDAO;
 	protected OperatorAccountDAO opDAO;
 	protected FacilitiesDAO facDAO;
+	protected NaicsDAO naicsDAO;
 
 	protected int opID;
 	protected ContractorOperator co;
@@ -60,12 +62,13 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDao,
 			FlagDataDAO flagDataDAO, FlagDataOverrideDAO flagDataOverrideDAO,
-			FacilitiesDAO facDAO) {
+			FacilitiesDAO facDAO, NaicsDAO naicsDAO) {
 		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
 		this.flagDataDAO = flagDataDAO;
 		this.flagDataOverrideDAO = flagDataOverrideDAO;
 		this.facDAO = facDAO;
+		this.naicsDAO = naicsDAO;
 	}
 
 	public String execute() throws Exception {
@@ -175,10 +178,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 							+ co.getOperatorAccount().getName();
 				}
 			} else if ("Force Individual Flag".equals(button)) {
-				if(forceFlag==null){
+				if (forceFlag == null) {
 					addActionError("You did not choose a flag color");
 					return SUCCESS;
-				}					
+				}
 				FlagData flagData = flagDataDAO.find(dataID);
 
 				if (forceFlag.equals(co.getForceFlag()))
@@ -246,10 +249,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				note.setBody(forceNote);
 
 			getNoteDao().save(note);
-			String redirectUrl = "ContractorFlag.action?id=" + id + "%26opID=" + opID;
+			String redirectUrl = "ContractorFlag.action?id=" + id + "%26opID="
+					+ opID;
 			return redirect("ContractorCronAjax.action?conID=" + id + "&opID="
-					+ opID + "&steps=Flag&steps=WaitingOn"+"&redirectUrl=" +
-					redirectUrl);
+					+ opID + "&steps=Flag&steps=WaitingOn" + "&redirectUrl="
+					+ redirectUrl);
 		}
 
 		PicsLogger.stop();
@@ -275,23 +279,23 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public FlagColor[] getFlagList() {
 		return FlagColor.values();
 	}
-	
-	public ArrayList<String> getUnusedFlagColors(int id){
+
+	public ArrayList<String> getUnusedFlagColors(int id) {
 		FlagData flagData = flagDataDAO.find(id);
 		ArrayList<String> fColor = FlagColor.getValuesWithDefault();
-		if(flagData!=null)
+		if (flagData != null)
 			fColor.remove(flagData.getFlag().name());
 		fColor.remove(FlagColor.Clear.name());
-		return fColor;		
+		return fColor;
 	}
-	
-	public ArrayList<String> getUnusedCoFlag(){
+
+	public ArrayList<String> getUnusedCoFlag() {
 		FlagColor fc = co.getFlagColor();
 		ArrayList<String> fColor = FlagColor.getValuesWithDefault();
-		if(fc!=null)
+		if (fc != null)
 			fColor.remove(fc.name());
 		fColor.remove(FlagColor.Clear.name());
-		return fColor;		
+		return fColor;
 	}
 
 	public String getAction() {
@@ -436,11 +440,12 @@ public class ContractorFlagAction extends ContractorActionSupport {
 							&& fco.getCriteria().equals(f.getCriteria())) {
 						answer += " and must be less than ";
 						if (fc.getOshaRateType().equals(OshaRateType.LwcrNaics))
-							answer += (f.getContractor().getNaics().getLwcr() * Float
+							answer += (getIndustryAverage(true, f.getContractor().getNaics()) * Float
 									.parseFloat(fco.criteriaValue())) / 100;
-						if (fc.getOshaRateType().equals(OshaRateType.TrirNaics))
-							answer += (f.getContractor().getNaics().getTrir() * Float
+						if (fc.getOshaRateType().equals(OshaRateType.TrirNaics)) {
+							answer += (getIndustryAverage(false, f.getContractor().getNaics()) * Float
 									.parseFloat(fco.criteriaValue())) / 100;
+						}
 					}
 				}
 				answer += " for industry code "
@@ -533,5 +538,35 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			return true;
 
 		return false;
+	}
+	
+	private float getIndustryAverage(boolean lwcr, Naics naics) {
+		naics = getBroaderNaics(lwcr, naics);
+		
+		if (naics == null)
+			return 0;
+		if (lwcr)
+			return naics.getLwcr();
+		else
+			return naics.getTrir();
+	}
+	
+	private Naics getBroaderNaics(boolean lwcr, Naics naics) {
+		String code = naics.getCode();
+		if (Strings.isEmpty(code))
+			return null;
+		
+		if ((lwcr && naics.getLwcr() > 0) || (!lwcr && naics.getTrir() > 0))
+			return naics;
+		else {
+			Naics naics2 = naicsDAO.find(code.substring(0, code.length() - 1));
+			if (naics2 == null)
+				return null;
+			
+			if ((lwcr && naics2.getLwcr() > 0) || (!lwcr && naics2.getTrir() > 0))
+				return naics2;
+			else
+				return getBroaderNaics(lwcr, naics2);
+		}
 	}
 }
