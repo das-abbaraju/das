@@ -42,6 +42,10 @@ input {
 
 fieldset.form { position: static; }
 
+.fieldhelp {
+	*filter:progid:DXImageTransform.Microsoft.DropShadow(Color=#666666, OffX=4, OffY=4);	
+}
+
 span.jump-to { position: relative; }
 
 /* 

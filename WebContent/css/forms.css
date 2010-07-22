@@ -187,9 +187,8 @@ fieldset.form ol li.fieldhelp-focused {
 	-webkit-box-shadow: 3px 3px 4px #666;
 	box-shadow: 3px 3px 4px #666;
 	/* For IE 8 */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#666666')";
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color=#666666)";
 	/* For IE 5.5 - 7 */
-	filter: progid: DXImageTransform.Microsoft.Shadow (Strength = 4, Direction = 135, Color = '#666666');
 }
 
 fieldset.form ol li .fieldhelp {
@@ -208,9 +207,7 @@ fieldset.form ol li .fieldhelp.hover, fieldset.form ol li .fieldhelp.mousedown {
 }
 
 fieldset.form div.fieldhelp {
-	list-style-type: disc;
 	margin-left: 10px;
-	list-style-position: inside;
 	float:none;
 	clear:both;
 }
@@ -224,7 +221,7 @@ fieldset.form div.fieldhelp li {
 	list-style-position: inside;
 	font-size: inherit;
 	padding: 0;
-	width: auto;
+	width: 100%;
 }
 
 fieldset.form div.fieldhelp p {

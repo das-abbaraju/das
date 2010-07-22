@@ -31,6 +31,10 @@ fieldset.form h2.formLegend {width: 100%;}
 
 fieldset.form ol li { z-index: 1000; }
 
+.fieldhelp {
+	filter:progid:DXImageTransform.Microsoft.DropShadow(Color=#666666, OffX=4, OffY=4);	
+}
+
 /* 
  * required icon fix
  */
