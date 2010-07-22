@@ -15,9 +15,9 @@
 		});
 	}
 	$.fn.helpstay = function() {
-		return $(this).live('mouseover', function() {
+		return $(this).live('mouseenter', function() {
 			$(this).addClass('hover');
-		}).live('mouseout', function(e) {
+		}).live('mouseleave', function(e) {
 			$(this).removeClass('hover');
 		}).live('mousedown', function() {
 			var target = $(this);
@@ -97,7 +97,7 @@ jQuery(function(){
 	$('.required :input').requiredfields();
 	
 	$('fieldset.form ol li').live('click', function() {
-		$(this).not('.fieldhelp-focused').find(':input:first').focus();
+		$(this).not('.fieldhelp-focused').find(':input:first:not(:disabled)').focus();
 	});
 	
 	$('fieldset.form h2.formLegend').jumpTo();
