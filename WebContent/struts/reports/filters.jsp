@@ -591,6 +591,12 @@
 			name="filter.incidenceRate" cssClass="forms" size="10"
 			onfocus="clearText(this)" /></div>
 	</s:if>
+	
+	<s:if test="filter.showIncidenceRateAvg">
+		<div class="filterOption">Incidence Rate Average <s:textfield
+			name="filter.incidenceRateAvg" cssClass="forms" size="10"
+			onfocus="clearText(this)" /></div>
+	</s:if>
 
 	<s:if test="filter.showCohsStats">
 		<div class="filterOption">Cad7 <s:textfield name="filter.cad7"

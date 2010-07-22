@@ -37,6 +37,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showEmrRange = false;
 	protected boolean showTrirRange = false;
 	protected boolean showIncidenceRate = false;
+	protected boolean showIncidenceRateAvg = false;
 	protected boolean showAMBest = false;
 	protected boolean showVerifiedAnnualUpdates = false;
 	protected boolean showShaType = false;
@@ -75,6 +76,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected float minTRIR = 0;
 	protected float maxTRIR = 100;
 	protected double incidenceRate = -1;
+	protected double incidenceRateAvg = -1;
 	protected int amBestRating;
 	protected int amBestClass;
 	protected int verifiedAnnualUpdate = 1;
@@ -575,6 +577,22 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setIncidenceRate(double incidenceRate) {
 		this.incidenceRate = incidenceRate;
+	}
+	
+	public boolean isShowIncidenceRateAvg() {
+		return showIncidenceRateAvg;
+	}
+	
+	public void setShowIncidenceRateAvg(boolean showIncidenceRateAvg) {
+		this.showIncidenceRateAvg = showIncidenceRateAvg;
+	}
+	
+	public double getIncidenceRateAvg() {
+		return incidenceRateAvg;
+	}
+	
+	public void setIncidenceRateAvg(double incidenceRateAvg) {
+		this.incidenceRateAvg = incidenceRateAvg;
 	}
 
 	public int[] getPqfTypeID() {

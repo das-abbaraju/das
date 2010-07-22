@@ -17,6 +17,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		super.buildQuery();
 
 		getFilter().setShowIncidenceRate(true);
+		getFilter().setShowIncidenceRateAvg(true);
 		getFilter().setShowShaType(true);
 		getFilter().setShowShaLocation(true);
 		getFilter().setShowCohsStats(true);
@@ -24,6 +25,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		sql.addJoin("JOIN osha_audit os ON os.auditID = ca.id");
 		sql.addJoin("JOIN naics n ON n.code = a.naics");
 		sql.addWhere("(os.recordableTotal*200000/os.manHours > " + getFilter().getIncidenceRate() + ")");
+		sql.addWhere("c.trirAverage > " + getFilter().getIncidenceRateAvg());
 		sql.addField("os.location");
 		sql.addField("os.description");
 		sql.addField("os.SHAType");
