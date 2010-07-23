@@ -312,17 +312,15 @@ public class PicsMenu {
 			subMenu.addChild("EMR Rates (Graph)", "GraphEmrRates.action?years=2009");
 			subMenu.addChild("EMR Rates", "ReportEmrRates.action?filter.auditFor=2009");
 		}
-		if (permissions.hasPermission(OpPerms.TRIRReport)) {
-			subMenu.addChild("TRIR Rates (Graph)", "GraphTrirRates.action");
-			subMenu.addChild("TRIR Rates", "ReportTrirRates.action");
-		}
 		if (permissions.hasPermission(OpPerms.FatalitiesReport)) {
 			final String url = "ReportFatalities.action?filter.auditFor=2009&filter.shaType=OSHA&filter.shaLocation=Corporate";
 			subMenu.addChild("Fatalities", url);
 		}
 		if (permissions.hasPermission(OpPerms.ForcedFlagsReport))
 			subMenu.addChild("Forced Flags", "ReportContractorsWithForcedFlags.action");
-		if (permissions.hasPermission(OpPerms.FatalitiesReport)) {
+
+		if (permissions.hasPermission(OpPerms.TRIRReport)) {
+			subMenu.addChild("Incidence Rates (Graph)", "GraphTrirRates.action");
 			final String url = "ReportIncidenceRate.action?filter.auditFor=2009&filter.shaType=OSHA&filter.shaLocation=Corporate";
 			subMenu.addChild("Incidence Rates", url);
 		}

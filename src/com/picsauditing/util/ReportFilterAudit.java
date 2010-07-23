@@ -35,7 +35,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showExpiredLicense = false;
 	protected boolean showAuditFor = false;
 	protected boolean showEmrRange = false;
-	protected boolean showTrirRange = false;
 	protected boolean showIncidenceRate = false;
 	protected boolean showIncidenceRateAvg = false;
 	protected boolean showAMBest = false;
@@ -73,10 +72,10 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected String[] auditFor;
 	protected float minEMR = 0;
 	protected float maxEMR = 100;
-	protected float minTRIR = 0;
-	protected float maxTRIR = 100;
 	protected double incidenceRate = -1;
+	protected double incidenceRateMax = 100;
 	protected double incidenceRateAvg = -1;
+	protected double incidenceRateAvgMax = 100;
 	protected int amBestRating;
 	protected int amBestClass;
 	protected int verifiedAnnualUpdate = 1;
@@ -538,30 +537,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setShowEmrRange(boolean showEmrRange) {
 		this.showEmrRange = showEmrRange;
 	}
-	
-	public float getMinTRIR() {
-		return minTRIR;
-	}
-
-	public void setMinTRIR(float minTRIR) {
-		this.minTRIR = minTRIR;
-	}
-
-	public float getMaxTRIR() {
-		return maxTRIR;
-	}
-
-	public void setMaxTRIR(float maxTRIR) {
-		this.maxTRIR = maxTRIR;
-	}
-	
-	public boolean isShowTrirRange() {
-		return showTrirRange;
-	}
-	
-	public void setShowTrirRange(boolean showTrirRange) {
-		this.showTrirRange = showTrirRange;
-	}
 
 	public boolean isShowIncidenceRate() {
 		return showIncidenceRate;
@@ -579,6 +554,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.incidenceRate = incidenceRate;
 	}
 	
+	public double getIncidenceRateMax() {
+		return incidenceRateMax;
+	}
+	
+	public void setIncidenceRateMax(double incidenceRateMax) {
+		this.incidenceRateMax = incidenceRateMax;
+	}
+	
 	public boolean isShowIncidenceRateAvg() {
 		return showIncidenceRateAvg;
 	}
@@ -593,6 +576,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	
 	public void setIncidenceRateAvg(double incidenceRateAvg) {
 		this.incidenceRateAvg = incidenceRateAvg;
+	}
+	
+	public double getIncidenceRateAvgMax() {
+		return incidenceRateAvgMax;
+	}
+	
+	public void setIncidenceRateAvgMax(double incidenceRateAvgMax) {
+		this.incidenceRateAvgMax = incidenceRateAvgMax;
 	}
 
 	public int[] getPqfTypeID() {

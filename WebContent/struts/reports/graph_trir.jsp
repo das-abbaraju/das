@@ -2,15 +2,16 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>TRIR Rates</title>
+<title>Incidence Rates (Graph)</title>
 <script src="js/FusionCharts.js" type="text/javascript"></script>
 </head>
 <body>
-<h1>TRIR Rates</h1>
+<h1>Incidence Rates (Graph)</h1>
 
 <div id="search">
 <s:form>
-<s:select list="shaTypes" cssClass="forms" name="shaType" headerKey="" headerValue="- Osha Type -" />
+<s:select list="shaTypes" cssClass="forms" name="shaType" multiple="true" />
+<s:select list="allYears" cssClass="forms" name="years" multiple="true" />
 <s:select list="chartTypeList" name="chartType" />
 <s:submit value="Refresh" />
 </s:form>

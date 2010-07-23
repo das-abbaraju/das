@@ -587,15 +587,17 @@
 	</s:if>
 
 	<s:if test="filter.showIncidenceRate">
-		<div class="filterOption">Incidence Rate <s:textfield
-			name="filter.incidenceRate" cssClass="forms" size="10"
-			onfocus="clearText(this)" /></div>
+		<div class="filterOption">Incidence Rate
+			<s:textfield name="filter.incidenceRate" cssClass="forms" size="10" onfocus="clearText(this)" /> To
+			<s:textfield name="filter.incidenceRateMax" cssClass="forms" size="10" onfocus="clearText(this)" />
+		</div>
 	</s:if>
 	
 	<s:if test="filter.showIncidenceRateAvg">
-		<div class="filterOption">Incidence Rate Average <s:textfield
-			name="filter.incidenceRateAvg" cssClass="forms" size="10"
-			onfocus="clearText(this)" /></div>
+		<div class="filterOption">3 Year Average
+			<s:textfield name="filter.incidenceRateAvg" cssClass="forms" size="10" onfocus="clearText(this)" /> To
+			<s:textfield name="filter.incidenceRateAvgMax" cssClass="forms" size="10" onfocus="clearText(this)" />
+		</div>
 	</s:if>
 
 	<s:if test="filter.showCohsStats">

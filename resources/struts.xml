@@ -757,23 +757,6 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 		
-		<action name="GraphTrirRates"
-			class="com.picsauditing.actions.chart.GraphTrirRates">
-			<result>struts/reports/graph_trir.jsp</result>
-		</action>
-		
-		<action name="ReportTrirRates"
-			class="com.picsauditing.actions.report.ReportTrirRates">
-			<param name="filter.ajax">true</param>
-			<param name="filter.destinationAction">ReportTrirRates</param>
-			<result>struts/reports/report_trir.jsp</result>
-		</action>
-
-		<action name="ReportTrirRatesAjax"
-			class="com.picsauditing.actions.report.ReportTrirRates">
-			<result>struts/reports/report_trir_data.jsp</result>
-		</action>
-
 		<action name="ReportFatalities"
 			class="com.picsauditing.actions.report.ReportFatalities">
 			<param name="filter.ajax">true</param>
@@ -828,6 +811,11 @@
 			class="com.picsauditing.actions.report.ReportContractorOperatorFlag">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
+		</action>
+		
+		<action name="GraphTrirRates"
+			class="com.picsauditing.actions.chart.GraphTrirRates">
+			<result>struts/reports/graph_trir.jsp</result>
 		</action>
 		
 		<action name="ReportIncidenceRate"

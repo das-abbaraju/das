@@ -9,7 +9,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 
 	@Override
 	public void checkPermissions() throws Exception {
-		permissions.tryPermission(OpPerms.FatalitiesReport);
+		permissions.tryPermission(OpPerms.TRIRReport);
 	}
 
 	@Override
@@ -24,8 +24,11 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 
 		sql.addJoin("JOIN osha_audit os ON os.auditID = ca.id");
 		sql.addJoin("JOIN naics n ON n.code = a.naics");
-		sql.addWhere("(os.recordableTotal*200000/os.manHours > " + getFilter().getIncidenceRate() + ")");
-		sql.addWhere("c.trirAverage > " + getFilter().getIncidenceRateAvg());
+		sql.addWhere("(os.recordableTotal*200000/os.manHours >= " + getFilter().getIncidenceRate() + ")");
+		sql.addWhere("(os.recordableTotal*200000/os.manHours < " + getFilter().getIncidenceRateMax() + ")");
+		sql.addWhere("(c.trirAverage >= " + getFilter().getIncidenceRateAvg() + "AND c.trirAverage < " + 
+				getFilter().getIncidenceRateAvgMax() + ")" + 
+				(getFilter().getIncidenceRateAvg() == -1.0f ? " OR c.trirAverage IS NULL" : ""));
 		sql.addField("os.location");
 		sql.addField("os.description");
 		sql.addField("os.SHAType");

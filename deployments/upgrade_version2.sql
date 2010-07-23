@@ -25,13 +25,6 @@ insert into widget_user
 values
 (null, 33, 959, 1, 2, 37, null);
 
--- PICS-788, Operator Admin and Operator Basic users
-insert into useraccess 
-(accessID, userID, accessType, viewFlag, editFlag, deleteFlag, grantFlag, lastUpdate, grantedByID)
-values
-(null, 1553, 'TRIRReport', 1, null, null, 1, now(), 941),
-(null, 1554, 'TRIRReport', 1, null, null, 1, now(), 941);
-
 -- Start Canadian annual update conversion --
 update audit_type set auditName = 'Annual Update US' where id = 11;
 
@@ -83,3 +76,9 @@ update `token` set `velocityCode`='${flagColor}' where `tokenID`='8';
 
 -- PICS-630/805 --
 update accounts set nameIndex = replace(nameIndex, ' ', '');
+
+-- PICS-788, PICS-42: Update TRIR report to Incidence Report (Graph), change permission on Incidence Rate Report
+insert into pics_stage.useraccess 
+(accessID, userID, accessType, viewFlag, editFlag, deleteFlag, grantFlag, lastUpdate, grantedByID)
+select null, ua.userID, 'TRIRReport', ua.viewFlag, ua.editFlag, ua.deleteFlag, ua.grantFlag, now(), 941
+from useraccess ua where ua.accessType = 'FatalitiesReport';
