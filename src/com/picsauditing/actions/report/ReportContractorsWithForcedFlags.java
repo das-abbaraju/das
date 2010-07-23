@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
@@ -60,6 +61,12 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		sql.addField("u.id as forcedById"); 
 		sql.addField("u.name AS forcedBy");
 		sql.addField("fa.name AS forcedByAccount");
+		
+		if (filterOn(getFilter().getOperator())) {
+			String list = Strings.implode(getFilter().getOperator(), ",");
+			sql.addWhere("o.id IN (" + list + ")");
+		}
+		
 		orderByDefault = "o.name, a.name";
 		
 		if (download) {
