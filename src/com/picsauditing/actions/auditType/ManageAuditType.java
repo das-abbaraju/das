@@ -103,9 +103,11 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	@Override
 	public void prepare() throws Exception {
 
-		String[] ids = (String[]) ActionContext.getContext().getParameters().get("id");
+		String[] ids = (String[]) ActionContext.getContext().getParameters()
+				.get("id");
 
-		String[] parentIds = (String[]) ActionContext.getContext().getParameters().get("parentID");
+		String[] parentIds = (String[]) ActionContext.getContext()
+				.getParameters().get("parentID");
 
 		if (ids != null && ids.length > 0) {
 			int thisId = Integer.parseInt(ids[0]);
@@ -125,7 +127,8 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		try {
 			if (auditType == null)
 				return false;
-			if (auditType.getAuditName() == null || auditType.getAuditName().length() == 0) {
+			if (auditType.getAuditName() == null
+					|| auditType.getAuditName().length() == 0) {
 				addActionError("Audit name is required");
 				return false;
 			}
@@ -137,7 +140,8 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 			if (emailTemplateID == null) {
 				auditType.setTemplate(null);
-			} else if (auditType.getTemplate() == null || auditType.getTemplate().getId() != emailTemplateID) {
+			} else if (auditType.getTemplate() == null
+					|| auditType.getTemplate().getId() != emailTemplateID) {
 				auditType.setTemplate(emailTemplateDAO.find(emailTemplateID));
 			}
 
