@@ -153,13 +153,11 @@ function checkReason(id) {
 
 <!-- OVERALL FLAG -->
 
-<s:if test="permissions.contractor">
-<div class="helpOnRight" style="clear: right;">
+<div id="cluetip2">
 		The minimum requirements set by <s:property value="co.operatorAccount.name"/> are listed in this page. 
 		If any requirements exceed the acceptable threshold or answer, those requirements will be flagged. The overall flag color is set to Red if any requirement is flagged Red. 
 		It is set to Amber if any requirement is flagged Amber. If no requirement is Red or Amber, then the overall flag color will be Green.
 </div>
-</s:if>
 <div id="info-box">
 	<div class="info">
 		<s:form>
@@ -180,7 +178,7 @@ function checkReason(id) {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Flag Status
+				Flag Status <span style="float: right;"><a href="#" onclick="return false;" class="cluetip help" rel="#cluetip2" title="Flag Help"></a></span>
 			</div>
 			<div class="panel_content">
 				<div class="bigFlagIcon">
