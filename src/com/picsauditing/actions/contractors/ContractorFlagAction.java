@@ -93,22 +93,22 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 		if (!permissions.isAdmin()) {
 			// cant' view unrelated co links
-			if (permissions.isCorporate()) {
+			if (permissions.isOperatorCorporate()) {
 				// check to see if corporate id pulls anything with this op id,
 				// if not then give error
-				Facility f = facDAO.findByCorpOp(permissions.getAccountId(),
+				Facility f = facDAO.findByCorpOp(permissions.getTopAccountID(),
 						opID);
 				if (f == null) {
 					addActionError("You do not have permission to view this Facility");
 					return BLANK;
 				}
-
-			} else if (opID != permissions.getAccountId()) {
-				// check to see if opID and id match
-				addActionError("You do not have permission to view this Facility");
-				return BLANK;
-			}
-
+			} else {
+				if (id != permissions.getAccountId()) {
+					// check to see if con id and id match
+					addActionError("You do not have permission to view this Facility");
+					return BLANK;
+				}				
+			}	
 		}
 
 		if (button != null) {
