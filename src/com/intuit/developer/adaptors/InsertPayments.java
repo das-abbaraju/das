@@ -105,15 +105,12 @@ public class InsertPayments extends PaymentAdaptor {
 			} else {
 				payment.getPaymentMethodRef().setFullName("Braintree Credit");
 
-				if (cardType.equals("Visa") || cardType.equals("Mastercard")) {
-					payment.getPaymentMethodRef().setFullName("Braintree VISA/MC");
-					payment.getDepositToAccountRef().setFullName("VISA/MC Merchant Account");
+				if (cardType.equals("Visa") || cardType.equals("Mastercard") || cardType.equals("Discover")) {
+					payment.getPaymentMethodRef().setFullName("Braintree VISA/MC/DISC");
+					payment.getDepositToAccountRef().setFullName("VISA/MC/DISC Merchant Account");
 				} else if (cardType.equals("American Express")) {
 					payment.getPaymentMethodRef().setFullName("Braintree AMEX");
 					payment.getDepositToAccountRef().setFullName("Amex Merchant Account");
-				} else if (cardType.equals("Discover")) {
-					payment.getPaymentMethodRef().setFullName("Braintree DISCOVER");
-					payment.getDepositToAccountRef().setFullName("Discover Merchant Account");
 				}
 				payment.setRefNumber(paymentJPA.getTransactionID());
 				// payment.setMemo("CC number: " + paymentJPA.getCcNumber());

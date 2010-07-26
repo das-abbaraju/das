@@ -93,12 +93,10 @@ public class UpdatePayments extends PaymentAdaptor {
 			} else {
 				payment.getPaymentMethodRef().setFullName("Braintree Credit");
 				
-				if (cardType.equals("Visa") || cardType.equals("Mastercard")) {
-					payment.getPaymentMethodRef().setFullName("Braintree VISA/MC");
+				if (cardType.equals("Visa") || cardType.equals("Mastercard") || cardType.equals("Discover")) {
+					payment.getPaymentMethodRef().setFullName("Braintree VISA/MC/DISC");
 				} else if (cardType.equals("American Express")) {
 					payment.getPaymentMethodRef().setFullName("Braintree AMEX");
-				} else if (cardType.equals("Discover")) {
-					payment.getPaymentMethodRef().setFullName("Braintree DISCOVER");
 				}
 				payment.setRefNumber(paymentJPA.getTransactionID());
 				//payment.setMemo("CC number: " + paymentJPA.getCcNumber());
