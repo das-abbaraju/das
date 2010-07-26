@@ -568,7 +568,7 @@ public class ContractorCron extends PicsActionSupport {
 		contractorDAO.save(contractor);
 	}
 
-	public void runCSRAssignment(ContractorAccount contractor) {
+	private void runCSRAssignment(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.CSRAssignment))
 			return;
 

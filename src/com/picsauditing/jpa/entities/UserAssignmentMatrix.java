@@ -73,7 +73,7 @@ public class UserAssignmentMatrix extends BaseTable {
 	public void setPostalEnd(String postalEnd) {
 		this.postalEnd = postalEnd;
 	}
-
+	
 	@Override
 	public String toString() {
 		return String.format("%s state:%s, country:%s, zip:%s-%s", user.getName(), state, country, postalStart,

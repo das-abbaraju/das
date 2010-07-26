@@ -30,10 +30,18 @@ public class UserAssignmentMatrixDAO extends PicsDAO {
 	}
 
 	public List<UserAssignmentMatrix> findByContractor(ContractorAccount contractor) {
-		Query q = em.createQuery("FROM UserAssignmentMatrix WHERE (state = :state AND country = :country) "
-				+ "OR (state IS null AND country = :country) " + "OR (postalEnd IS null AND postalStart = :postal) "
-				+ "OR :postal BETWEEN postalStart AND postalEnd");
+		String where = "(country is null OR country = :country)";
+		where += " AND (state is null OR state = :state)";
+		// If you want the assignment to be based on any zip code starting with
+		// 9, then use 9% in the postalStart
+		where += " AND (postalStart is null OR postalStart < :postal OR :postal LIKE postalStart)";
+		// postalEnd works the same way as postalStart but with the added
+		// wildcard. This allows us to include 92604-1234 even though the end is
+		// 92604
+		where += " AND (postalEnd is null OR postalEnd > :postal OR :postal LIKE CONCAT(postalEnd, '%') )";
+		Query q = em.createQuery("FROM UserAssignmentMatrix WHERE " + where);
 
+		// TODO implement comparable on UserAssignmentMatrix and return the first entry
 		q.setParameter("state", contractor.getState());
 		q.setParameter("country", contractor.getCountry());
 		q.setParameter("postal", contractor.getZip());
