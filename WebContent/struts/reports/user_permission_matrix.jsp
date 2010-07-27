@@ -3,6 +3,7 @@
 <head>
 <title>User Permissions Matrix</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<script type="text/javascript" src="js/jquery/jquery.fixedheader.js"></script>
 </head>
 <body>
 <h1>User Permissions Matrix</h1>
