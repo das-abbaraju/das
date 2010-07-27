@@ -410,11 +410,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 					if (fco.getCriteria().equals(fc) && fco.getCriteria().equals(f.getCriteria())) {
 						answer += " and must be less than ";
 						if (fc.getOshaRateType().equals(OshaRateType.LwcrNaics))
-							answer += (getIndustryAverage(true, f.getContractor().getNaics()) * Float.parseFloat(fco
-									.criteriaValue())) / 100;
+							answer += (getBroaderNaics(true, f.getContractor().getNaics()).getLwcr() *
+									Float.parseFloat(fco.criteriaValue())) / 100;
 						if (fc.getOshaRateType().equals(OshaRateType.TrirNaics)) {
-							answer += (getIndustryAverage(false, f.getContractor().getNaics()) * Float.parseFloat(fco
-									.criteriaValue())) / 100;
+							answer += (getBroaderNaics(false, f.getContractor().getNaics()).getTrir() * 
+									Float.parseFloat(fco.criteriaValue())) / 100;
 						}
 					}
 				}
@@ -506,34 +506,13 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 		return false;
 	}
-
-	private float getIndustryAverage(boolean lwcr, Naics naics) {
-		naics = getBroaderNaics(lwcr, naics);
-
-		if (naics == null)
-			return 0;
-		if (lwcr)
-			return naics.getLwcr();
-		else
-			return naics.getTrir();
-	}
-
+	
 	private Naics getBroaderNaics(boolean lwcr, Naics naics) {
-		String code = naics.getCode();
-		if (Strings.isEmpty(code))
-			return null;
-
-		if ((lwcr && naics.getLwcr() > 0) || (!lwcr && naics.getTrir() > 0))
+		if ((lwcr && naics.getLwcr() > 0) || (!lwcr && naics.getTrir() > 0) || naics == null)
 			return naics;
 		else {
-			Naics naics2 = naicsDAO.find(code.substring(0, code.length() - 1));
-			if (naics2 == null)
-				return null;
-
-			if ((lwcr && naics2.getLwcr() > 0) || (!lwcr && naics2.getTrir() > 0))
-				return naics2;
-			else
-				return getBroaderNaics(lwcr, naics2);
+			Naics naics2 = naicsDAO.find(naics.getCode().substring(0, naics.getCode().length() - 1));
+			return getBroaderNaics(lwcr, naics2);
 		}
 	}
 }
