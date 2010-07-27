@@ -363,8 +363,7 @@ public class AuditDataSave extends AuditActionSupport {
 			if (newDate == null) {
 				addActionError("Invalid Date Format");
 				return false;
-			} else if (newDate.after(DateBean.parseDate("9999-12-31"))
-					|| newDate.before(DateBean.parseDate("0001-01-01"))) {
+			} else if (newDate.after(DateBean.parseDate("9999-12-31"))) {
 				addActionError("Date Out Of Range");
 				return false;
 			} else
