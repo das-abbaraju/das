@@ -15,6 +15,7 @@ import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -201,8 +202,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
 			String accountName = f.getAccountName().trim();
 			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
-					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + accountName + "%' OR a.id = '" + accountName
-					+ "'", accountName));
+					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Utilities.escapeQuotes(accountName)
+					+ "%' OR a.id = '" + Utilities.escapeQuotes(accountName) + "'", accountName));
 			sql.addField("a.dbaName");
 		}
 

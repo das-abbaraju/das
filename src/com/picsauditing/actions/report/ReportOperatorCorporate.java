@@ -6,6 +6,7 @@ import java.util.List;
 import javax.naming.NoPermissionException;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -148,8 +149,8 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
 			String accountName = f.getAccountName().trim();
 			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
-					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + accountName + "%' OR a.id = '" + 
-					accountName + "'", accountName));
+					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Utilities.escapeQuotes(accountName) + "%' OR a.id = '" + 
+					Utilities.escapeQuotes(accountName) + "'", accountName));
 			sql.addField("a.dbaName");
 		}
 
