@@ -246,7 +246,7 @@ public class PicsMenu {
 		}
 
 		if (permissions.hasPermission(OpPerms.EmailQueue))
-			subMenu.addChild("Email Queue", "EmailQueueList.action");
+			subMenu.addChild("Email Queue", "EmailQueueList.action?filter.status=Pending");
 
 		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
 			subMenu.addChild("Flag Criteria", "ManageFlagCriteriaOperator.action");
