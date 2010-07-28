@@ -7,17 +7,16 @@ import java.util.TreeMap;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.users.UserAccountRole;
-import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.jpa.entities.AccountUser;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class OperatorPicsContactsWidget extends PicsActionSupport {
-	private OperatorAccountDAO opDAO;
+	private AccountUserDAO amDAO;
 	
-	public OperatorPicsContactsWidget(OperatorAccountDAO opDAO) {
-		this.opDAO = opDAO;
+	public OperatorPicsContactsWidget(AccountUserDAO amDAO) {
+		this.amDAO = amDAO;
 	}
 	
 	public String execute() throws Exception {
@@ -29,11 +28,12 @@ public class OperatorPicsContactsWidget extends PicsActionSupport {
 	}
 	
 	public Map<UserAccountRole, List<User>> getContacts() {
-		OperatorAccount op = opDAO.find(permissions.getAccountId());
+		List<AccountUser> users = amDAO.findByAccountCurrent(permissions.getAccountId());
+		
 		List<User> salesReps = new ArrayList<User>();
 		List<User> accountManagers = new ArrayList<User>();
 		
-		for (AccountUser au : op.getAccountUsers()) {
+		for (AccountUser au : users) {
 			if (au.getRole().equals(UserAccountRole.PICSAccountRep))
 				accountManagers.add(au.getUser());
 			else
