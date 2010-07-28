@@ -2,49 +2,46 @@
 <table class="footerNav">
 	<tr>
 		<td colspan="3">&nbsp;</td>
-		<td class="current"><a
+		<td class="current" height="30"><a class="category_list"
 			href="Audit.action?auditID=<s:property value="auditID"/>">Up to
-		Category List</a> / <a
+		Category List</a> | <a
 			href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=View">View
 		All</a></td>
 		<td colspan="3"></td>
 	</tr>
 	<s:if test="catDataID > 0">
 		<tr>
-			<td class="arrows" rowspan="2">&lt;&lt;</td>
-
+			<td class="arrows"></td>
 			<td class="previous"><s:if test="previousCategory != null">
-			<b>PREVIOUS CATEGORY</b><br />
-				<a
+				<a class="prev"
 					href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="previousCategory.id"/>&mode=<s:property value="mode"/>"><s:property
 					value="previousCategory.category.category" /></a>
 			</s:if> <s:else>
-				<a href="Audit.action?auditID=<s:property value="auditID"/>">START</a>
+				<a class="prev" href="Audit.action?auditID=<s:property value="auditID"/>">START</a>
 			</s:else></td>
-			<td style="width: 8%;" class="previous"><s:if test="previousAudit">
+			<td style="width: 20%;" class="previous"><s:if test="previousAudit">
 				<a href="Audit.action?auditID=<s:property value="previousAudit.id"/>&mode=<s:property value="mode"/>"
-				><s:property value="previousAudit.auditFor" /><br /><s:property
+				><s:property value="previousAudit.auditFor" />&nbsp;<s:property
 					value="currentCategory.category.category" /></a>
 			</s:if></td>
-			<td class="current"><a
-				href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="currentCategory.id"/>&mode=<s:property value="mode"/>"><s:property
-				value="conAudit.auditFor" /><br /><s:property
+			<td class="current"><a class="currentCat"
+				href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="currentCategory.id"/>&mode=<s:property value="mode"/>"> <s:property
+				value="conAudit.auditFor" />&nbsp;<s:property
 				value="currentCategory.category.category" /></a></td>
 
-			<td style="width: 8%;" class="next"><s:if test="nextAudit != null">
+			<td style="width: 20%;" class="next"><s:if test="nextAudit != null">
 				<a href="Audit.action?auditID=<s:property value="nextAudit.id"/>&mode=<s:property value="mode"/>"
-				><s:property value="nextAudit.auditFor" /><br /><s:property
+				> <s:property value="nextAudit.auditFor" />&nbsp;<s:property
 					value="currentCategory.category.category" /></a>
 			</s:if></td>
 			<td class="next"><s:if test="nextCategory != null">
-			<b>NEXT CATEGORY</b><br />
-				<a
+				<a class="nxt"
 					href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="nextCategory.id"/>&mode=<s:property value="mode"/>"><s:property
 					value="nextCategory.category.category" /></a>
 			</s:if> <s:else>
-				<a href="Audit.action?auditID=<s:property value="auditID"/>">FINISH</a>
+				<a class="nxt" href="Audit.action?auditID=<s:property value="auditID"/>">FINISH</a>
 			</s:else></td>
-			<td class="arrows">&gt;&gt;</td>
+			<td class="arrows"></td>
 		</tr>
 	</s:if>
 </table>

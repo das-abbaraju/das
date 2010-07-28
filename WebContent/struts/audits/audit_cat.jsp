@@ -154,7 +154,7 @@ label.policy {
 			<s:if test="#cao.isVisibleTo(permissions)">
 				<s:if test="#cao.visible">
 					<div class="caoGroup" id="cao<s:property value="id"/>">
-						<h3 style="margin-left: 40px"><s:property value="#cao.operator.name" /></h3>
+						<h4 style="margin-left: 40px"><s:property value="#cao.operator.name" /></h4>
 						<div style="position: absolute; right: 0; top: 0; float: left;" id="thinking_<s:property value="#cao.id"/>"></div>
 						<div id="cao_<s:property value="#cao.id"/>" style="margin-left: 20px; margin-bottom: 20px; background-color: #F9F9F9;">
 							<s:include value="audit_cat_cao.jsp"/>

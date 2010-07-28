@@ -127,7 +127,7 @@
 	</s:if>
 	<s:if test="#q.questionType == 'AMBest'">
 		<input type="hidden" id="ambest_naic_code" />
-		<s:textfield id="ambest_autocomplete" name="answer%{#q.id}" value="%{#a.answer}" size="75" />
+		<s:textfield id="ambest_autocomplete" name="answer%{#q.id}" value="%{#a.answer}" size="50" />
 		
 		<script type="text/javascript"> 
 			$('#ambest_autocomplete').autocomplete('AmBestSuggestAjax.action',
