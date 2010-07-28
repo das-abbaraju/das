@@ -1556,7 +1556,7 @@
 		</action>
 		
 		<action name="SendGridEvents"
-			class="com.picsauditing.actions.mail.SendGridEvents">
+			class="com.picsauditing.mail.SendGridEvents">
 			<result>/struts/blank.jsp</result>
 		</action>
 
