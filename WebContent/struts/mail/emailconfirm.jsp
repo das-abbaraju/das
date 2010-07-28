@@ -12,7 +12,7 @@ You have sent <s:property value="ids.size()"/> emails to the queue.<br/>
 </div>
 <div class="instructions">
 If you want to view the list of your emails in the email queue, please click on 
-<a href="EmailQueueList.action">Email Queue</a>.<br /><br /> 
+<a href="EmailQueueList.action?filter.status=Pending">Email Queue</a>.<br /><br /> 
 
 If you want to send more emails, please click on 
 <a href="EmailWizard.action">Email Wizard</a>.
