@@ -43,6 +43,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	protected int nameId;
 	protected String name;
 	protected Map<String, Integer> foreignKeys = new HashMap<String, Integer>();
+	protected Map<UserAccountRole, List<AccountUser>> managers;
 
 	protected FacilitiesDAO facilitiesDAO;
 	protected OperatorFormDAO formDAO;
@@ -473,5 +474,38 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 			managers.put(UserAccountRole.PICSSalesRep, srs);
 		
 		return managers;
+	}
+	
+	public Map<UserAccountRole, List<AccountUser>> getPreviousManagers() {
+		if (managers == null) {
+			List<AccountUser> aus = operator.getAccountUsers();
+			List<AccountUser> ams = new ArrayList<AccountUser>();
+			List<AccountUser> srs = new ArrayList<AccountUser>();
+			
+			for (AccountUser au : aus) {
+				if (au.getEndDate().before(new Date())) {
+					if (au.getRole().equals(UserAccountRole.PICSAccountRep))
+						ams.add(au);
+					else
+						srs.add(au);
+				}
+			}
+			
+			managers = new HashMap<UserAccountRole, List<AccountUser>>();
+			if (ams.size() > 0)
+				managers.put(UserAccountRole.PICSAccountRep, ams);
+			if (srs.size() > 0)
+				managers.put(UserAccountRole.PICSSalesRep, srs);
+		}
+		
+		return managers;
+	}
+	
+	public boolean isCurrent(Date startDate, Date endDate) {
+		Date now = new Date();
+		if (now.after(startDate) && now.before(endDate))
+			return true;
+		
+		return false;
 	}
 }

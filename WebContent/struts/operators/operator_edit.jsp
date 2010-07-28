@@ -259,7 +259,7 @@ $(function() {
 							<tbody>
 								<s:iterator value="operator.accountUsers" status="role">
 									<s:hidden value="%{role}" name="accountRole" />
-									<s:if test="role.description == 'Sales Representative'">
+									<s:if test="role.description == 'Sales Representative' && isCurrent(startDate, endDate)">
 										<tr>
 											<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
 												value="user.name" /></td>
@@ -316,7 +316,7 @@ $(function() {
 							</thead>
 							<tbody>
 								<s:iterator value="operator.accountUsers" status="role">
-									<s:if test="role.description == 'Account Manager'">
+									<s:if test="role.description == 'Account Manager' && isCurrent(startDate, endDate)">
 										<tr>
 											<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
 												value="user.name" /></td>
@@ -359,6 +359,36 @@ $(function() {
 								</tr>
 							</tbody>
 						</table>
+						
+						<s:if test="previousManagers.keySet().size() > 0">
+							<li><nobr><label>Previous Representatives: </label></nobr></li>
+							<table class="report">
+								<thead>
+									<tr>
+										<td>User</td>
+										<td>Role</td>
+										<td>Percent</td>
+										<td>Start</td>
+										<td>End</td>
+									</tr>
+								</thead>
+								<tbody>
+									<s:iterator value="previousManagers.keySet()" id="key">
+										<s:iterator value="previousManagers.get(#key)">
+											<s:if test="!isCurrent(startDate, endDate)">
+												<tr>
+													<td><s:property value="user.name" /></td>
+													<td><s:property value="#key.description" /></td>
+													<td><s:property value="ownerPercent" />%</td>
+													<td><s:date name="startDate" format="MM/dd/yyyy" /></td>
+													<td><s:date name="endDate" format="MM/dd/yyyy" /></td>
+												</tr>
+											</s:if>
+										</s:iterator>
+									</s:iterator>
+								</tbody>
+							</table>
+						</s:if>
 					</ol>
 					</fieldset>
 				</pics:permission>
