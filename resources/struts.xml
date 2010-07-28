@@ -1554,6 +1554,11 @@
 			class="com.picsauditing.actions.operators.OperatorFlagsCalculator">
 			<result>/struts/blank.jsp</result>
 		</action>
+		
+		<action name="SendGridEvents"
+			class="com.picsauditing.actions.mail.SendGridEvents">
+			<result>/struts/blank.jsp</result>
+		</action>
 
 		<!-- Flags -->
 		<action name="ManageFlagCriteria"
