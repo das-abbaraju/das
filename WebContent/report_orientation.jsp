@@ -7,8 +7,8 @@
 <script type="text/javascript" src="js/jquery/util/jquery-utils.js"></script>
 <script type="text/javascript" src="js/jquery/gritter/jquery.gritter.js"></script>
 
-<script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.2.1.pack.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/fancybox/jquery.fancybox.css"/>
+<script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/fancybox/jquery.fancybox-1.3.1.css" />
 
 <link rel="stylesheet" href="js/jquery/jquery-ui/jquery-ui-1.7.2.custom.css">
 <link rel="stylesheet" type="text/css" href="js/jquery/gritter/css/gritter.css" />
