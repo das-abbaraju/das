@@ -19,10 +19,13 @@
 <div>
 <s:property value="report.pageLinks" escape="false" />
 </div>
+<s:form>
+<s:hidden name="opID" />
 <table class="report">
 	<thead>
 	<tr>
-		<td colspan="2">Contractor Name</td>
+		<th colspan="2">Contractor Name</th>
+		<th></th>
 	</tr>
 	</thead>
 	<tbody>
@@ -35,10 +38,21 @@
 				class="contractorQuick" title="<s:property value="get('name')" />"
 				><s:property value="get('name')" /></a>
 			</td>
+			<td><s:checkbox name="contractors" fieldValue="%{get('id')}" />
 		</tr>
 	</s:iterator>
+	<s:if test="data.size() > 0">
+		<tr>
+			<td colspan="3" class="right">
+				<s:select list="operator.tags" listKey="id" listValue="%{isRequired(id) ? tag + ' (required tag)' : tag}"
+					headerValue="- Contractor Tags -" headerKey="0" name="tagID" />
+				<input type="submit" class="picsbutton positive" value="Save" name="button" />
+			</td>
+		</tr>
+	</s:if>
 	</tbody>
 </table>
+</s:form>
 <div>
 <s:property value="report.pageLinks" escape="false" />
 </div>
