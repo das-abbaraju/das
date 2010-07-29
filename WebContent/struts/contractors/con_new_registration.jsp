@@ -8,6 +8,8 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+<script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/fancybox/jquery.fancybox-1.3.1.css" />
 <style type="text/css">
 #operatorForms {
 	overflow: auto;
