@@ -32,19 +32,19 @@ $(function(){
 					}
 				},
 				onfind: function(d, count) {
-					startThinking({div:'think',message:'Searching...'});
+					startThinking({message:'Searching...'});
 					if (count > 0)
 						$('.'+type,s).not('.selected_'+type).hide();
 					$('.'+d.id,s).show().addClass('selected_'+type);
-					stopThinking({div:'think'});
+					stopThinking();
 				},
 				onremove: function(d, count) {
-					startThinking({div:'think',message:'Removing...'});
+					startThinking({message:'Removing...'});
 					var f = $('.'+d.id,s);
 					f.not('selected_'+type	).removeClass('selected_'+type).hide();
 					if (count == 0)
 						$('.'+type,s).show();
-					stopThinking({div:'think'});
+					stopThinking();
 				}
 			});
 	}
@@ -128,7 +128,7 @@ div.filterOption input {
 		href="?button=download&accountId=<s:property value="accountId"/>">Download</a>
 </div>
 <div style="height:22px;">
-	<div class="right" id="think"></div>
+	<div class="right" id="mainThinkingDiv"></div>
 </div>
 
 <table class="report" id="matrix">
