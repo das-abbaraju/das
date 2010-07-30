@@ -21,6 +21,7 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
@@ -37,20 +38,18 @@ public class UserAccess implements java.io.Serializable, Comparable<UserAccess> 
 	private Date lastUpdate;
 	private User grantedBy;
 
-	
-	public UserAccess() {}
-	
-	
-	public UserAccess( UserAccess other ) {
-		setUser( other.getUser() );
+	public UserAccess() {
+	}
+
+	public UserAccess(UserAccess other) {
+		setUser(other.getUser());
 		setOpPerm(other.getOpPerm());
 		setViewFlag(other.getViewFlag());
 		setEditFlag(other.getEditFlag());
 		setDeleteFlag(other.getDeleteFlag());
 		setGrantFlag(other.getGrantFlag());
 	}
-	
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "accessID")
@@ -147,5 +146,28 @@ public class UserAccess implements java.io.Serializable, Comparable<UserAccess> 
 		if (o.getOpPerm() == null)
 			return -1;
 		return opPerm.getDescription().compareToIgnoreCase(o.getOpPerm().getDescription());
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder s = new StringBuilder();
+		if (Boolean.TRUE.equals(getViewFlag()))
+			s.append("V");
+		if (Boolean.TRUE.equals(getEditFlag())) {
+			if (s.length() > 0)
+				s.append(" ");
+			s.append("E");
+		}
+		if (Boolean.TRUE.equals(getDeleteFlag())) {
+			if (s.length() > 0)
+				s.append(" ");
+			s.append("D");
+		}
+		if (Boolean.TRUE.equals(getGrantFlag())) {
+			if (s.length() > 0)
+				s.append(" ");
+			s.append("G");
+		}
+		return s.toString();
 	}
 }

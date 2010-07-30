@@ -7,25 +7,17 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp" />
+<script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
+<script type="text/javascript" src="js/FixedHeader/FixedHeader.min.js"></script>
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <script type="text/javascript" src="js/jquery/autocompletefb/jquery.autocompletefb.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocompletefb/jquery.autocompletefb.css" />
 <script type="text/javascript">
-$(function(){
-	var sortList = $('#list').sortable({
-		update: function() {
-			$('#list-info').load('OrderAuditChildrenAjax.action?id=<s:property value="subCategory.id"></s:property>&type=AuditSubCategory', 
-				sortList.sortable('serialize'), 
-				function() {sortList.effect('highlight', {color: '#FFFF11'}, 1000);}
-			);
-		}
-	});
-});
-
-var data = <s:property value="data" escape="false"/>;
-var initCountries = <s:property value="initialCountries" escape="false"/>;
-var acfb;
+var ac_users = <s:property value="tableDisplay.rowsJSON" escape="false"/>;
+var ac_permissions = <s:property value="tableDisplay.colsJSON" escape="false"/>;
+var users_acfb, permissions_acfb;
 $(function(){
 	function acfbuild(cls,url){
 		var ix = $("input"+cls);
@@ -33,25 +25,20 @@ $(function(){
 		
 		return $("ul"+cls).autoCompletefb({
 				urlLookup:url,
-				delimeter: '|',
 				acOptions: {
 					matchContains: true,
-					formatItem: function(row,index,count){
-						return row.name + ' (' + row.id + ')';
+					formatItem: function(row,index,count) {
+						return row.name;
 					},
-					formatResult: function(row,index,count){
-						return row.id;
+					formatResult: function(row,index,count) {
+						return row.name;
 					}
 				}
 			});
 	}
-	acfb = acfbuild('.countries', data);
-	acfb.init(initCountries);
+	users_acfb = acfbuild('.users', ac_users);
+	users_permissions_acfbacfb = acfbuild('.permissions', ac_permissions);
 
-	$('form#save').submit(function() {
-			$(this).find('[name=countries]').val(acfb.getData());
-		}
-	);
 });
 </script>
 
@@ -85,75 +72,68 @@ text-align:left;
 
 fieldset.form {border:none;background-color:transparent;clear:both;}
 
+div.filterOption input {
+	float: left;
+	clear: both;
+}
 </style>
 </head>
 <body>
 
 <h1>User Permissions Matrix</h1>
-<div id="manage_controls">
+
 <div id="search">
-<div class="clear"></div>
-<s:form id="form1" method="get" cssStyle="width: 800px;">
-	<s:hidden name="id" />
-	<s:hidden name="parentID" value="%{subCategory.category.id}" />
-	<s:hidden name="subCategory.category.id" />
-		<fieldset class="form">
-		<div class="filterOption">
-			<h4>Search by user/group:</h4>
-				<s:hidden name="countries" value="%{subCategory.countries}"/>
-				<s:textfield size="50" cssClass="countries"/>
-			</div>
+	<div class="clear"></div>
+	<s:form id="form1" method="get" cssStyle="width: 800px;">
+			<fieldset class="form">
 			<div class="filterOption">
-			<h4>Search by permission:</h4>
-				<s:hidden name="countries" value="%{subCategory.countries}"/>
-				<s:textfield size="50" cssClass="countries"/>
+				<h4>Search by user/group:</h4>
+					<s:hidden name="users" value=""/>
+					<s:textfield size="50" cssClass="users"/>
 				</div>
-			<div class="search-btn">
-			<button class="picsbutton positive" type="submit" name="button" value="Search">Search</button>
-			</div>
-		</fieldset>
-</s:form>
-<div class="table-key">
-<h4>Key</h4>
-<ul>
-<li>V = View</li>
-<li>E = Edit</li>
-<li>D = Delete</li>
-<li>G = Grant</li>
-</ul></div>
-<div class="clear"></div>
+			<div class="filterOption">
+				<h4>Search by permission:</h4>
+					<s:hidden name="permissions" value=""/>
+					<s:textfield size="50" cssClass="permissions"/>
+					</div>
+			</fieldset>
+	</s:form>
+	<div class="table-key">
+		<h4>Key</h4>
+		<ul>
+			<li>V = View</li>
+			<li>E = Edit</li>
+			<li>D = Delete</li>
+			<li>G = Grant</li>
+		</ul>
 	</div>
+	<div class="clear"></div>
+</div>
 <div style="height:15px;"></div>
-<table class="report">
+
+<table class="report" id="matrix">
 	<thead>
 	<tr>
-		<td colspan="2">User/Group</td>
-		<s:iterator value="perms">
-			<td><s:property value="description" /></td>
+		<th>User/Group</th>
+		<s:iterator value="tableDisplay.cols">
+			<th class="<s:property/>"><s:property value="description" /></th>
 		</s:iterator>
 	</tr>
 	</thead>
-	<s:iterator value="users" status="stat">
-		<tr>
-			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><a href="UsersManage.action?accountId=<s:property value="accountID"/>&user.id=<s:property value="id"/>">
-					<s:property value="name" /></a>
+	<tbody>
+	<s:iterator value="tableDisplay.rows" id="user">
+		<tr class="<s:property value="#user.id"/>">
+			<td>
+				<a href="UsersManage.action?accountId=<s:property value="#user.accountId"/>&user.id=<s:property value="#user.id"/>"><s:property value="#user.name" /></a>
 			</td>
-			<s:iterator value="perms">
-				<td>
-				<s:iterator value="permissions">
-					<s:if test="[1].equals(opPerm)">
-						<s:if test="viewFlag==true">V</s:if>
-						<s:if test="editFlag==true">E</s:if>
-						<s:if test="deleteFlag==true">D</s:if>
-						<s:if test="grantFlag==true">G</s:if>
-					</s:if>
-				</s:iterator>
+			<s:iterator value="tableDisplay.cols" id="perm">
+				<td class="<s:property value="#perm"/>">
+					<s:property value="tableDisplay.get(#user, #perm)"/>
 				</td>
 			</s:iterator>
 		</tr>
 	</s:iterator>
+	</tbody>
 </table>
-
 </body>
 </html>

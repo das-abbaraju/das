@@ -86,6 +86,5 @@ ul.acfb-holder li.acfb-data {
 
 /* PICS fix*/
 ul.acfb-holder li {
-	clear: none;
 	width: auto;
 }
