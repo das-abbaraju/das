@@ -7,9 +7,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp" />
-<script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
-<script type="text/javascript" src="js/FixedHeader/FixedHeader.min.js"></script>
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <script type="text/javascript" src="js/jquery/autocompletefb/jquery.autocompletefb.js"></script>
@@ -35,25 +32,26 @@ $(function(){
 					}
 				},
 				onfind: function(d, count) {
-					$('#think').think({message:'Searching...'});
+					startThinking({div:'think',message:'Searching...'});
 					if (count > 0)
-						$(type,s).not('.selected').hide();
-					$('.'+d.id,s).show().addClass('selected');
-					$('#think').unthink();
+						$('.'+type,s).not('.selected_'+type).hide();
+					$('.'+d.id,s).show().addClass('selected_'+type);
+					stopThinking({div:'think'});
 				},
 				onremove: function(d, count) {
-					$('#think').think({message:'Removing...'});
-					var f = $('.'+d,s);
-					f.not('selected').removeClass('selected').hide();
+					startThinking({div:'think',message:'Removing...'});
+					var f = $('.'+d.id,s);
+					f.not('selected_'+type	).removeClass('selected_'+type).hide();
 					if (count == 0)
-						$(type,s).show();
-					$('#think').unthink();
+						$('.'+type,s).show();
+					stopThinking({div:'think'});
 				}
 			});
 	}
-	users_acfb = acfbuild('.users', ac_users, '.userdata');
-	users_permissions_acfbacfb = acfbuild('.permissions', ac_permissions, '.permdata');
+	users_acfb = acfbuild('.users', ac_users, 'userdata');
+	users_permissions_acfbacfb = acfbuild('.permissions', ac_permissions, 'permdata');
 
+	$('#form1').submit(function(e){e.preventDefault()});
 });
 </script>
 
@@ -109,7 +107,7 @@ div.filterOption input {
 				</div>
 			<div class="filterOption">
 				<h4>Search by permission:</h4>
-					<s:hidden name="permissions" value=""/>
+					<s:hidden name="perms" value=""/>
 					<s:textfield size="50" cssClass="permissions"/>
 					</div>
 			</fieldset>
@@ -146,7 +144,7 @@ div.filterOption input {
 	<s:iterator value="tableDisplay.rows" id="user">
 		<tr class="<s:property value="#user.id"/> userdata">
 			<td>
-				<a href="UsersManage.action?accountId=<s:property value="#user.accountId"/>&user.id=<s:property value="#user.id"/>"><s:property value="#user.name" /></a>
+				<a href="UsersManage.action?accountId=<s:property value="#user.account.id"/>&user.id=<s:property value="#user.id"/>"><s:property value="#user.name" /></a>
 			</td>
 			<s:iterator value="tableDisplay.cols" id="perm">
 				<td class="<s:property value="#perm"/> permdata">

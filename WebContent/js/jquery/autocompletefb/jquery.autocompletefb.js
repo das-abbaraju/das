@@ -50,7 +50,7 @@ jQuery.fn.autoCompletefb = function(options)
 			return tmp.acfb;
 		},
 		removeFind : function(o){
-			var d = $(o).parent().attr('id');
+			var d = {id:$(o).parent().attr('id'), name:$(o).parent().find('span').text()};
 			$(o).unbind('click').parent().remove();
 			$(settings.inputClass,tmp).focus();
 			count--;
@@ -58,6 +58,8 @@ jQuery.fn.autoCompletefb = function(options)
 			return tmp.acfb;
 		},
 		addFind : function(d){
+			if ($('#'+d.id+'.'+settings.foundClass).size() != 0)
+				return;
 			var f = settings.foundClass.replace(/\./,'');
 			var v = '<li class="'+f+'" id="'+settings.acOptions.formatResult(d)+'"><span>'+settings.acOptions.formatItem(d)+'</span> <img class="p" src="images/delete.gif"/></li>';
 			var x = $(settings.inputClass,tmp).before(v);
