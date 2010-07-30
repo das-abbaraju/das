@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -214,10 +213,10 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	public String getFuzzyDate(Date d) {
 		return DateBean.getFuzzyDate(d);
 	}
-	
+
 	public Date parseDate(String date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		
+
 		try {
 			return sdf.parse(date);
 		} catch (Exception e) {
@@ -359,20 +358,20 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	public boolean isDebugging() {
 		return "1".equals(System.getProperty("pics.debug"));
 	}
-	
-	public Collection<String> internalGetAlertMessages(){
-		if(alertMessages==null){
+
+	public Collection<String> internalGetAlertMessages() {
+		if (alertMessages == null) {
 			alertMessages = new ArrayList<String>();
 		}
 		return alertMessages;
 	}
-	
-	public synchronized void addAlertMessage(String anAlertMessage){
+
+	public synchronized void addAlertMessage(String anAlertMessage) {
 		internalGetAlertMessages().add(anAlertMessage);
 	}
-	
-	public synchronized boolean hasAlertMessages(){
-		return (alertMessages!=null) && !alertMessages.isEmpty();
+
+	public synchronized boolean hasAlertMessages() {
+		return (alertMessages != null) && !alertMessages.isEmpty();
 	}
 
 	public synchronized Collection<String> getAlertMessages() {

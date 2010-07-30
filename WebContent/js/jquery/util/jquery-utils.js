@@ -17,4 +17,17 @@
 
 	return $(this);
   }
+	$.fn.think = function(options) {
+		var settings = {
+			message: 'Communicating with PICS...',
+			img: 'images/ajax_process.gif'
+		};
+		$.extend(settings, options);
+		$(this).empty().append($('<img/>').attr('src', settings.img)).append(' '+settings.message).addClass('thinking');
+	}
+	$.fn.unthink = function() {
+		if (!$(this).is('.thinking'))
+			return $(this);
+		return $(this).empty();
+	}
 })(jQuery)

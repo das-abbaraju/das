@@ -24,10 +24,12 @@ jQuery.fn.autoCompletefb = function(options)
 		acOptions  : {formatItem: function(d){return d;}, formatResult: function(d){return d;}},
 		foundClass : ".acfb-data",
 		inputClass : ".acfb-input",
-		delimeter  : ","
+		delimeter  : ",",
+		onfind     : function(d,count) {},
+		onremove   : function(d,count) {}
 	}
 	if(options) jQuery.extend(settings, options);
-	
+	var count=0;
 	var acfb = 
 	{
 		params  : settings,
@@ -48,8 +50,11 @@ jQuery.fn.autoCompletefb = function(options)
 			return tmp.acfb;
 		},
 		removeFind : function(o){
+			var d = $(o).parent().attr('id');
 			$(o).unbind('click').parent().remove();
 			$(settings.inputClass,tmp).focus();
+			count--;
+			settings.onremove(d,count);
 			return tmp.acfb;
 		},
 		addFind : function(d){
@@ -59,6 +64,8 @@ jQuery.fn.autoCompletefb = function(options)
 			$('.p',x[0].previousSibling).click(function(){
 				acfb.removeFind(this);
 			});
+			count++;
+			settings.onfind(d,count);
 		},
 		init : function(a) {
 			$.each(a, function (k,v){
@@ -74,8 +81,8 @@ jQuery.fn.autoCompletefb = function(options)
 	
 	$(settings.inputClass,tmp).autocomplete(settings.urlLookup,settings.acOptions);
 	$(settings.inputClass,tmp).result(function(e,d,f){
-		acfb.addFind(d);
 		$(settings.inputClass,tmp).val('').focus();
+		acfb.addFind(d);
 	});
 
 	return acfb;

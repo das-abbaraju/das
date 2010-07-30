@@ -19,10 +19,10 @@ var ac_users = <s:property value="tableDisplay.rowsJSON" escape="false"/>;
 var ac_permissions = <s:property value="tableDisplay.colsJSON" escape="false"/>;
 var users_acfb, permissions_acfb;
 $(function(){
-	function acfbuild(cls,url){
+	function acfbuild(cls,url,type){
 		var ix = $("input"+cls);
 		ix.addClass('acfb-input').wrap('<ul class="'+cls.replace(/\./,'')+' acfb-holder"></ul>');
-		
+		var s = $('#matrix');
 		return $("ul"+cls).autoCompletefb({
 				urlLookup:url,
 				acOptions: {
@@ -31,13 +31,28 @@ $(function(){
 						return row.name;
 					},
 					formatResult: function(row,index,count) {
-						return row.name;
+						return row.id;
 					}
+				},
+				onfind: function(d, count) {
+					$('#think').think({message:'Searching...'});
+					if (count > 0)
+						$(type,s).not('.selected').hide();
+					$('.'+d.id,s).show().addClass('selected');
+					$('#think').unthink();
+				},
+				onremove: function(d, count) {
+					$('#think').think({message:'Removing...'});
+					var f = $('.'+d,s);
+					f.not('selected').removeClass('selected').hide();
+					if (count == 0)
+						$(type,s).show();
+					$('#think').unthink();
 				}
 			});
 	}
-	users_acfb = acfbuild('.users', ac_users);
-	users_permissions_acfbacfb = acfbuild('.permissions', ac_permissions);
+	users_acfb = acfbuild('.users', ac_users, '.userdata');
+	users_permissions_acfbacfb = acfbuild('.permissions', ac_permissions, '.permdata');
 
 });
 </script>
@@ -72,6 +87,7 @@ text-align:left;
 
 fieldset.form {border:none;background-color:transparent;clear:both;}
 
+fieldset.form div.filterOption {width: 350px; padding-bottom: 10px;}
 div.filterOption input {
 	float: left;
 	clear: both;
@@ -109,25 +125,31 @@ div.filterOption input {
 	</div>
 	<div class="clear"></div>
 </div>
-<div style="height:15px;"></div>
+<div class="right">
+	<a class="excel" title="Download all Permissions to a CSV file"
+		href="?button=download&accountId=<s:property value="accountId"/>">Download</a>
+</div>
+<div style="height:22px;">
+	<div class="right" id="think"></div>
+</div>
 
 <table class="report" id="matrix">
 	<thead>
 	<tr>
 		<th>User/Group</th>
 		<s:iterator value="tableDisplay.cols">
-			<th class="<s:property/>"><s:property value="description" /></th>
+			<th class="<s:property/> permdata"><s:property value="description" /></th>
 		</s:iterator>
 	</tr>
 	</thead>
 	<tbody>
 	<s:iterator value="tableDisplay.rows" id="user">
-		<tr class="<s:property value="#user.id"/>">
+		<tr class="<s:property value="#user.id"/> userdata">
 			<td>
 				<a href="UsersManage.action?accountId=<s:property value="#user.accountId"/>&user.id=<s:property value="#user.id"/>"><s:property value="#user.name" /></a>
 			</td>
 			<s:iterator value="tableDisplay.cols" id="perm">
-				<td class="<s:property value="#perm"/>">
+				<td class="<s:property value="#perm"/> permdata">
 					<s:property value="tableDisplay.get(#user, #perm)"/>
 				</td>
 			</s:iterator>

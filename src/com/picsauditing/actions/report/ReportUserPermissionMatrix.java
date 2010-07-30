@@ -6,6 +6,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.servlet.ServletOutputStream;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -26,17 +37,18 @@ public class ReportUserPermissionMatrix extends ReportActionSupport {
 	private TableDisplay tableDisplay;
 
 	public ReportUserPermissionMatrix(UserDAO userDAO) {
+		setReportName("User Permissions Matrix");
 		this.userDAO = userDAO;
 	}
 
-	public String execute() {
+	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 
-		PicsLogger.start("ReportUserPermissionMatrix");
 		if (accountID == 0 || !permissions.hasPermission(OpPerms.AllOperators))
 			accountID = permissions.getAccountId();
 
+		PicsLogger.start("ReportUserPermissionMatrix");
 		perms = new TreeSet<OpPerms>();
 		users = userDAO.findByAccountID(accountID, "Yes", "");
 		for (User user : users) {
@@ -47,8 +59,23 @@ public class ReportUserPermissionMatrix extends ReportActionSupport {
 				perms.add(access.getOpPerm());
 			}
 		}
-
 		PicsLogger.stop();
+
+		if ("download".equals(button)) {
+			HSSFWorkbook wb = getTableDisplay().buildWorkbook();
+			String filename = getReportName();
+			filename += ".xls";
+
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			wb.write(outstream);
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+
+			return null;
+		}
+
 		return SUCCESS;
 	}
 
@@ -142,6 +169,60 @@ public class ReportUserPermissionMatrix extends ReportActionSupport {
 			}
 
 			return j;
+		}
+
+		public HSSFWorkbook buildWorkbook() {
+			HSSFWorkbook wb = new HSSFWorkbook();
+			HSSFSheet sheet = wb.createSheet();
+
+			HSSFDataFormat df = wb.createDataFormat();
+			HSSFFont font = wb.createFont();
+			font.setFontHeightInPoints((short) 12);
+
+			HSSFFont headerFont = wb.createFont();
+			headerFont.setFontHeightInPoints((short) 12);
+			headerFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+
+			HSSFCellStyle headerStyle = wb.createCellStyle();
+			headerStyle.setFont(headerFont);
+			headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+
+			wb.setSheetName(0, getReportName());
+
+			int rowNumber = 0;
+
+			{
+				// Add the Column Headers to the top of the report
+				int columnCount = 1;
+				HSSFRow r = sheet.createRow(rowNumber);
+				rowNumber++;
+				for (OpPerms col : this.cols) {
+					HSSFCell c = r.createCell(columnCount++);
+					c.setCellValue(new HSSFRichTextString(col.toString()));
+					c.setCellStyle(headerStyle);
+				}
+			}
+
+			for (User row : rows) {
+				HSSFRow r = sheet.createRow(rowNumber++);
+				int colNumber = 0;
+				HSSFCell header = r.createCell(colNumber++);
+				header.setCellValue(new HSSFRichTextString(row.getName()));
+				for (OpPerms col : cols) {
+					HSSFCell c = r.createCell(colNumber++);
+					if (data.get(row, col) != null)
+						c.setCellValue(new HSSFRichTextString(data.get(row, col).toString()));
+				}
+			}
+
+			for (short c = 0; c < cols.size(); c++) {
+				HSSFCellStyle cellStyle = wb.createCellStyle();
+				cellStyle.setDataFormat(df.getFormat("@"));
+				sheet.setDefaultColumnStyle(c, cellStyle);
+				sheet.autoSizeColumn(c);
+			}
+
+			return wb;
 		}
 	}
 
