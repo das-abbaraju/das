@@ -30,7 +30,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Account extends BaseTable implements Comparable<Account>, JSONable {
+public class Account extends BaseTable implements Comparable<Account>, JSONable, Indexable {
 
 	static public int EVERYONE = 1;
 	static public int PRIVATE = 2;
@@ -61,6 +61,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable 
 	protected User primaryContact;
 	protected boolean requiresOQ = false;
 	protected boolean requiresCompetencyReview = false;
+	protected boolean needsIndexing = true;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -335,6 +336,14 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable 
 		this.requiresOQ = requiresOQ;
 	}
 	
+	public boolean isNeedsIndexing(){
+		return needsIndexing;
+	}
+	
+	public void setNeedsIndexing(boolean needsIndex){
+		this.needsIndexing = needsIndex;
+	}
+	
 	/**
 	 * Are they subject to Competency Reviews, and 
 	 * if Contractor, do they work for an operator who does too?
@@ -527,5 +536,69 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable 
 	@Override
 	public String toString() {
 		return name + "(" + id + ")";
+	}
+
+	@Transient
+	public List<String> getIndexValues() {
+		List<String> l = new ArrayList<String>();
+		// id
+		l.add(String.valueOf(this.id));
+		// name
+		String[] sA = this.name.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").replaceAll("\\s+", " ").split(" ");
+		for(String s : sA){
+			if(s!=null && !s.isEmpty())
+				l.add(s);
+		}
+		// dba
+		if(this.dbaName!=null && !this.dbaName.equals(this.name)){
+			sA = this.dbaName.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").replaceAll("\\s+", " ").split(" ");
+			for(String s : sA){
+				if(s!=null && !s.isEmpty())
+					l.add(s);
+			}
+		}
+		// city
+		if(this.city!=null && !this.city.isEmpty())
+			l.add(this.city.toUpperCase().replaceAll("\\W", ""));
+		// state
+		if(this.state!=null && !this.state.isoCode.isEmpty()){
+			l.add(this.state.isoCode);
+			l.add(this.state.getEnglish().toUpperCase());
+		}
+		// zip
+		if(this.zip!=null && !this.zip.isEmpty())
+			l.add(this.zip);
+		// country
+		if(this.country!=null && !this.country.isoCode.isEmpty()){
+			l.add(this.country.isoCode);
+			l.add(this.country.getEnglish().toUpperCase());
+		}
+		// phone
+		if(this.phone!=null && !this.phone.isEmpty()){
+			String p = Strings.stripPhoneNumber(this.phone);
+			if(p.length()>=10 && !p.matches("\\W"))
+				l.add(p);
+		}
+		// email l.add(this.);
+		// web_URL
+		if(this.webUrl!=null && !this.webUrl.isEmpty()){
+			String s = this.webUrl.toUpperCase();
+			l.add(s.replaceAll("^(HTTP://)(W{3})|^(W{3}.)|\\W", ""));
+		}
+		// industry
+		if(this.industry!=null && !this.industry.getDescription().isEmpty())
+			l.add(this.industry.getDescription().toUpperCase());
+		l.remove(" ");
+		l.remove("");
+		return l;
+	}
+
+	@Transient
+	public String getIndexType() {
+		if(type.equals("Corporate"))
+			return "CO";
+		if(type.equals("Assessment"))
+			return "AS";
+		return type.substring(0, 1);
 	}
 }

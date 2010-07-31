@@ -38,13 +38,14 @@ import com.picsauditing.util.log.PicsLogger;
 @Entity
 @Table(name = "users")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class User extends BaseTable implements java.io.Serializable, Comparable<User>, JSONable {
+public class User extends BaseTable implements java.io.Serializable, Comparable<User>, JSONable, Indexable {
 	public static String DEFAULT_AUDITOR = "- Auditor -";
 	public static int SYSTEM = 1;
 	public static int GROUP_ADMIN = 10;
 	public static int GROUP_AUDITOR = 11;
 	public static int GROUP_CSR = 959;
 	public static int CONTRACTOR = 12;
+	protected boolean needsIndexing = true;
 	private static final int GROUP_SU = 9; // Group that automatically has ALL
 	// permissions
 	public static int INDEPENDENT_CONTRACTOR = 11265;
@@ -625,5 +626,62 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	@Override
 	public String toString() {
 		return account.toString() + ": " + name + "(" + (isGroup() ? "G" : "U") + id + ")";
+	}
+
+	@Transient
+	public String getIndexType() {
+		if(this.isGroup())
+			return "G";
+		else
+			return "U";
+	}
+
+	@Transient
+	public List<String> getIndexValues() {
+		List<String> l = new ArrayList<String>();
+		String temp = "";
+		// id
+		l.add(String.valueOf(this.id));
+		// username
+		temp = this.username;
+		if (temp!=null && !temp.isEmpty()) {
+			int atIndex = temp.indexOf('@');
+			if (atIndex > 0)
+				l.add(this.username.toUpperCase().substring(0, atIndex).replaceAll("\\W", ""));
+			else
+				l.add(this.username.toUpperCase().replaceAll("\\W", ""));
+		}
+		// email
+		temp = this.email;
+		if (temp!=null && !temp.isEmpty()) {
+			String[] sA = temp.toUpperCase().split("@");
+			for (String s : sA) {
+				if (s != null && !s.isEmpty())
+					l.add(s.replaceAll("\\W", "")); // strip non word characters out
+			}
+		}
+		// name
+		String[]sA1 = this.name.replaceAll("[^a-zA-Z0-9\\s]", "").replaceAll("\\s+", " ").split(" ");
+		for(String s :sA1){
+			if(s!=null && !s.isEmpty())
+				l.add(s.toUpperCase());
+		}
+		// phoneIndex
+		temp = this.phoneIndex;
+		if (temp!=null && !temp.isEmpty()) {
+			l.add(temp.replaceAll("\\D", ""));
+		}
+		l.remove(" ");
+		l.remove("");
+		return l;
+	}
+
+	@Override
+	public boolean isNeedsIndexing() {
+		return needsIndexing;
+	}
+
+	public void setNeedsIndexing(boolean needsIndexing) {
+		this.needsIndexing = needsIndexing;
 	}
 }
