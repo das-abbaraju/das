@@ -69,7 +69,9 @@ public class PicsMenu {
 						subMenu.addChild("Employee Competencies", "EmployeeCompetencies.action");
 					}
 					if (permissions.isRequiresOQ()) {
+						subMenu = menu.addChild("Operator Qualification");
 						subMenu.addChild("OQ by Employee", "ReportOQEmployees.action");
+						subMenu.addChild("Recent OQ Changes", "ReportOQChanges.action");
 					}
 				}
 

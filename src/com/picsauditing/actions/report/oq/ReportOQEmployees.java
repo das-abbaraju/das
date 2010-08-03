@@ -36,6 +36,9 @@ public class ReportOQEmployees extends PicsActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		
+		if (permissions.isContractor())
+			conID = permissions.getAccountId();
 
 		String where = "e.active = 1 ";
 		if (conID > 0)
@@ -43,12 +46,20 @@ public class ReportOQEmployees extends PicsActionSupport {
 		if (jobSiteID > 0)
 			where += " AND e IN (SELECT employee FROM EmployeeSite WHERE operator.id = " + permissions.getAccountId()
 					+ " AND jobSite.id = " + jobSiteID + ")";
-		else
-			where += " AND e IN (SELECT employee FROM EmployeeSite WHERE operator.id = " + permissions.getAccountId()
-					+ ")";
+		else {
+			if (permissions.isOperatorCorporate())
+				where += " AND e IN (SELECT employee FROM EmployeeSite WHERE operator.id = "
+					+ permissions.getAccountId() + ")";
+		}
 
 		employees = employeeDAO.findWhere(where + " ORDER BY e.lastName, e.firstName");
-		jobSiteTasks = siteTaskDAO.findByJob(jobSiteID);
+		
+		if (permissions.isContractor() || permissions.isAdmin())
+			jobSiteTasks = siteTaskDAO.findByEmployeeAccount(conID);
+		else if (permissions.isOperatorCorporate() && jobSiteID == 0)
+			jobSiteTasks = siteTaskDAO.findByOperator(permissions.getAccountId());
+		else
+			jobSiteTasks = siteTaskDAO.findByJob(jobSiteID);
 
 		qualifications = qualificationDAO.find(employees, jobSiteTasks);
 		return SUCCESS;

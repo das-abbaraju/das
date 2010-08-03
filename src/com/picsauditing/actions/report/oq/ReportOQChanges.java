@@ -10,6 +10,7 @@ import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
 public class ReportOQChanges extends PicsActionSupport {
 
 	private List<BasicDynaBean> dataCriteria;
@@ -38,7 +39,7 @@ public class ReportOQChanges extends PicsActionSupport {
 		sql.addOrderBy("test.qualificationType, test.qualificationMethod");
 
 		if (permissions.isContractor()) {
-			SelectSQL subSelect = new SelectSQL("employee");
+			SelectSQL subSelect = new SelectSQL("employee e");
 			subSelect.addJoin("JOIN employee_site es ON es.employeeID = e.id AND es.jobSiteID > 0 "
 					+ "AND es.effectiveDate <= NOW() and es.expirationDate > NOW()");
 			subSelect.addJoin("JOIN job_site_task jst ON jst.jobID = es.jobSiteID "
@@ -62,7 +63,7 @@ public class ReportOQChanges extends PicsActionSupport {
 		sql.addOrderBy("js.label");
 
 		if (permissions.isContractor()) {
-			SelectSQL subSelect = new SelectSQL("employee");
+			SelectSQL subSelect = new SelectSQL("employee e");
 			subSelect.addJoin("JOIN employee_site es ON es.employeeID = e.id AND es.jobSiteID > 0 "
 					+ "AND es.effectiveDate <= NOW() and es.expirationDate > NOW()");
 			subSelect.addField("es.jobSiteID");
