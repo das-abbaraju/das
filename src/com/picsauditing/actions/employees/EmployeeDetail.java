@@ -5,8 +5,12 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import com.opensymphony.xwork2.Preparable;
@@ -18,6 +22,8 @@ import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.JobCompetencyDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
+import com.picsauditing.jpa.entities.AssessmentResult;
+import com.picsauditing.jpa.entities.AssessmentTest;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
@@ -25,6 +31,7 @@ import com.picsauditing.jpa.entities.EmployeeQualification;
 import com.picsauditing.jpa.entities.EmployeeRole;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
+import com.picsauditing.jpa.entities.JobTaskCriteria;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
 import com.picsauditing.util.SpringUtils;
@@ -40,6 +47,8 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 	protected Employee employee;
 	protected TreeSet<OperatorCompetency> opComps;
 	protected List<EmployeeCompetency> competencies;
+	protected List<EmployeeQualification> tasks;
+	protected Map<EmployeeQualification, List<AssessmentResult>> qualification;
 	protected DoubleMap<OperatorCompetency, JobRole, Boolean> map = new DoubleMap<OperatorCompetency, JobRole, Boolean>();
 
 	public EmployeeDetail(EmployeeDAO employeeDAO, EmployeeCompetencyDAO ecDAO, EmployeeRoleDAO erDAO,
@@ -142,22 +151,65 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 	}
 	
 	public List<EmployeeQualification> getJobTasks() {
-		List<EmployeeQualification> tasks = 
-			new ArrayList<EmployeeQualification>(employee.getEmployeeQualifications());
-		
-		Iterator<EmployeeQualification> iterator = tasks.iterator();
-		while (iterator.hasNext()) {
-			EmployeeQualification e = iterator.next();
+		if (tasks == null) {
+			tasks = new ArrayList<EmployeeQualification>(employee.getEmployeeQualifications());
 			
-			if (e.getEffectiveDate() != null && e.getExpirationDate() != null && 
-					(e.getEffectiveDate().after(new Date()) || e.getExpirationDate().before(new Date()))) {
-				iterator.remove();
+			Iterator<EmployeeQualification> iterator = tasks.iterator();
+			while (iterator.hasNext()) {
+				EmployeeQualification e = iterator.next();
+				
+				if (e.getEffectiveDate() != null && e.getExpirationDate() != null && 
+						(e.getEffectiveDate().after(new Date()) || e.getExpirationDate().before(new Date()))) {
+					iterator.remove();
+				}
+			}
+			
+			Collections.sort(tasks, new SortTaskByLabel());
+		}
+		
+		return tasks;
+	}
+	
+	public Map<EmployeeQualification, List<AssessmentResult>> getQualification() {
+		if (qualification == null) {
+			qualification = new HashMap<EmployeeQualification, List<AssessmentResult>>();
+			tasks = getJobTasks();
+
+			Set<AssessmentTest> taken = new HashSet<AssessmentTest>();
+			List<AssessmentResult> results = employee.getAssessmentResults();
+			for (AssessmentResult result : results) {
+				if (result.isCurrent())
+					taken.add(result.getAssessmentTest());
+			}
+			
+			// Get job task criteria, get tests (required), look at assessment results
+			for (EmployeeQualification task : tasks) {
+				Map<Integer, Set<JobTaskCriteria>> criterias = task.getTask().getJobTaskCriteriaMap(new Date());
+				
+				for (Integer key : criterias.keySet()) {
+					Set<JobTaskCriteria> currentGroup = criterias.get(key);
+					
+					Set<AssessmentTest> tests = new HashSet<AssessmentTest>();
+					for (JobTaskCriteria criteria : currentGroup) {
+						tests.add(criteria.getAssessmentTest());
+					}
+					
+					if (taken.containsAll(tests)) {
+						// Find the results that satisfy this qualification?
+						for (AssessmentResult result : results) {
+							if (tests.contains(result.getAssessmentTest())) {
+								if (qualification.get(task) == null)
+									qualification.put(task, new ArrayList<AssessmentResult>());
+								
+								qualification.get(task).add(result);
+							}
+						}
+					}
+				}
 			}
 		}
 		
-		Collections.sort(tasks, new SortTaskByLabel());
-		
-		return tasks;
+		return qualification;
 	}
 	
 	private class SortTaskByLabel implements Comparator<EmployeeQualification> {

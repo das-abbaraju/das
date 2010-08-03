@@ -39,8 +39,19 @@
 			max-height: 150px;
 			height: expression(this.height > 150 ? 150 : true);
 		}
+		.assessmentResults {
+			display: none;
+		}
 	</style>
 	<s:include value="../jquery.jsp"/>
+	<script type="text/javascript">
+		function showHideResults() {
+			if ($('.assessmentResults').is(':visible'))
+				$('.assessmentResults').hide();
+			else
+				$('.assessmentResults').show();
+		}
+	</script>
 </head>
 <body>
 	<s:include value="../actionMessages.jsp"/>
@@ -207,38 +218,31 @@
 							</thead>
 							<tbody>
 								<s:iterator value="jobTasks" id="quals">
-									<tr>
+									<tr class="jt_<s:property value="#quals.id" />">
 										<td><s:property value="#quals.task.label" />: <s:property value="#quals.task.name" /></td>
 										<td class="center">
-											<s:if test="#quals.qualified"><img src="images/okCheck.gif" alt="Qualified" /></s:if>
+											<s:if test="#quals.qualified"><a href="#" onclick="$('.jt_<s:property value="#quals.id" />.assessmentResults').toggle(); return false;">
+												<img src="images/okCheck.gif" alt="Qualified" />
+											</a></s:if>
 											<s:else><img src="images/notOkCheck.gif" alt="Not Qualified" /></s:else>
 										</td>
 									</tr>
+									<s:if test="#quals.qualified">
+										<tr class="jt_<s:property value="#quals.id" /> assessmentResults">
+											<td colspan="2">
+												<s:iterator value="qualification.get(#quals)" id="results">
+													<b><s:property value="#results.assessmentTest.qualificationMethod" /> - <s:property value="#results.assessmentTest.qualificationType" /></b><s:if test="#results.assessmentTest.effectiveDate != null && #results.assessmentTest.expirationDate != null">,
+													Effective: <b><s:date name="#results.assessmentTest.effectiveDate" format="MM/dd/yyyy" /> -
+														<s:date name="#results.assessmentTest.expirationDate" format="MM/dd/yyyy" /></b></s:if>
+													<br />
+												</s:iterator>
+											</td>
+										</tr>
+									</s:if>
 								</s:iterator>
 							</tbody>
 						</table>
-					</s:if>
-					<s:if test="employee.assessmentResults.size() > 0">
-						<table class="report">
-							<thead>
-								<tr>
-									<th>Assessment Results</th>
-									<th>Effective</th>
-								</tr>
-							</thead>
-							<tbody>
-								<s:iterator value="employee.assessmentResults" id="results">
-									<tr>
-										<td><s:property value="#results.assessmentTest.assessmentCenter.name" />: <s:property value="#results.assessmentTest.qualificationType" /> - <s:property value="#results.assessmentTest.qualificationMethod" /></td>
-										<td><s:date name="#results.effectiveDate" format="MM/dd/yyyy" /></td>
-									</tr>
-								</s:iterator>
-							</tbody>
-						</table>
-						<pics:permission perm="DevelopmentEnvironment">
-							<a href="EmployeeAssessmentResults.action?id=<s:property value="employee.account.id" />&employeeID=<s:property value="employee.id" />"
-								style="margin-left: 10px;">View All Assessment Results</a>
-						</pics:permission>
+						<a href="#" onclick="showHideResults(); return false;">See/Hide all qualifications</a>
 					</s:if>
 				</td>
 			</tr>

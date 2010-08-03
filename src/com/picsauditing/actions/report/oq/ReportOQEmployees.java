@@ -1,6 +1,9 @@
 package com.picsauditing.actions.report.oq;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmployeeDAO;
@@ -8,6 +11,7 @@ import com.picsauditing.dao.EmployeeQualificationDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeQualification;
+import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.util.DoubleMap;
@@ -20,6 +24,7 @@ public class ReportOQEmployees extends PicsActionSupport {
 	private List<Employee> employees;
 	private List<JobSiteTask> jobSiteTasks;
 	private DoubleMap<Employee, JobTask, EmployeeQualification> qualifications;
+	private Map<JobSite, List<JobSiteTask>> jobSites;
 
 	private JobSiteTaskDAO siteTaskDAO;
 	private EmployeeDAO employeeDAO;
@@ -93,4 +98,18 @@ public class ReportOQEmployees extends PicsActionSupport {
 		return qualifications;
 	}
 
+	public Map<JobSite, List<JobSiteTask>> getJobSites() {
+		if (jobSites == null) {
+			jobSites = new HashMap<JobSite, List<JobSiteTask>>();
+			
+			for (JobSiteTask task : jobSiteTasks) {
+				if (jobSites.get(task.getJob()) == null)
+					jobSites.put(task.getJob(), new ArrayList<JobSiteTask>());
+				
+				jobSites.get(task.getJob()).add(task);
+			}
+		}
+		
+		return jobSites;
+	}
 }
