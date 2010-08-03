@@ -21,6 +21,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -43,6 +44,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 	private List<OperatorAccount> searchResults = null;
 
 	private String msg = null;
+	
+	private ContractorType type = ContractorType.Onsite;
 
 	public ContractorFacilities(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			OperatorAccountDAO operatorDao, FacilityChanger facilityChanger, ContractorOperatorDAO contractorOperatorDAO) {
@@ -114,8 +117,12 @@ public class ContractorFacilities extends ContractorActionSupport {
 							if (co.getOperatorAccount().equals(opToAdd))
 								linked = true;
 						}
-						if (!linked)
-							searchResults.add(opToAdd);
+						if (!linked) {
+							if (contractor.isOnsiteServices() && opToAdd.isOnsiteServices()
+									|| contractor.isOffsiteServices() && opToAdd.isOffsiteServices()
+									|| contractor.isMaterialSupplier() && opToAdd.isMaterialSupplier())
+								searchResults.add(opToAdd);
+						}
 					}
 				} else if (contractor.getOperators().size() == 0) {
 					List<BasicDynaBean> data = SmartFacilitySuggest.getFirstFacility(contractor);
@@ -123,10 +130,22 @@ public class ContractorFacilities extends ContractorActionSupport {
 					searchResults = new ArrayList<OperatorAccount>();
 					for (BasicDynaBean d : data) {
 						OperatorAccount o = new OperatorAccount();
+						
+						if (d.get("onsiteServices").equals(1))
+							o.setOnsiteServices(true);
+						if (d.get("offsiteServices").equals(1))
+							o.setOffsiteServices(true);
+						if (d.get("materialSupplier").equals(1))
+							o.setMaterialSupplier(true);
+						
 						o.setId(Integer.parseInt(d.get("opID").toString()));
 						o.setName(d.get("name").toString());
 						o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
-						searchResults.add(o);
+						
+						if (contractor.isOnsiteServices() && o.isOnsiteServices()
+								|| contractor.isOffsiteServices() && o.isOffsiteServices()
+								|| contractor.isMaterialSupplier() && o.isMaterialSupplier())
+							searchResults.add(o);
 					}
 
 					addActionMessage("This list of operators was generated based on your location. "
@@ -137,10 +156,22 @@ public class ContractorFacilities extends ContractorActionSupport {
 					searchResults = new ArrayList<OperatorAccount>();
 					for (BasicDynaBean d : data) {
 						OperatorAccount o = new OperatorAccount();
+						
+						if (d.get("onsiteServices").equals("1"))
+							o.setOnsiteServices(true);
+						if (d.get("offsiteServices").equals("1"))
+							o.setOffsiteServices(true);
+						if (d.get("materialSupplier").equals("1"))
+							o.setMaterialSupplier(true);
+						
 						o.setId(Integer.parseInt(d.get("opID").toString()));
 						o.setName(d.get("name").toString());
 						o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
-						searchResults.add(o);
+						
+						if (contractor.isOnsiteServices() && o.isOnsiteServices()
+								|| contractor.isOffsiteServices() && o.isOffsiteServices()
+								|| contractor.isMaterialSupplier() && o.isMaterialSupplier())
+							searchResults.add(o);
 					}
 
 					addActionMessage("This list of operators is generated based on the operators you currently have selected."
@@ -185,8 +216,19 @@ public class ContractorFacilities extends ContractorActionSupport {
 			facilityChanger.setPermissions(permissions);
 
 			if (button.equals("addOperator")) {
-				facilityChanger.add();
-				recalculate = true;
+				// Check to make sure the contractor's types match the one passed in
+				if (type.equals(ContractorType.Onsite) && contractor.isOnsiteServices()
+						|| type.equals(ContractorType.Offsite) && contractor.isOffsiteServices()
+						|| type.equals(ContractorType.Supplier) && contractor.isMaterialSupplier()) {
+					facilityChanger.setType(type);
+					facilityChanger.add();
+					recalculate = true;
+				}
+				else {
+					// Not sure when this happens
+					addActionError("The service you have selected for this operator doesn't match what " +
+							"you selected for your company. Please choose another option.");
+				}
 			}
 
 			if (button.equals("removeOperator")) {
@@ -247,6 +289,14 @@ public class ContractorFacilities extends ContractorActionSupport {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
+	
+	public ContractorType getType() {
+		return type;
+	}
+	
+	public void setType(ContractorType type) {
+		this.type = type;
+	}
 
 	public InvoiceFee getCurrentMembership() {
 		InvoiceFee invoiceFee = BillingCalculatorSingle.calculateAnnualFeeForContractor(contractor, new InvoiceFee());
@@ -259,5 +309,18 @@ public class ContractorFacilities extends ContractorActionSupport {
 			return true;
 		}
 		return false;
+	}
+	
+	public int getTypeCount(OperatorAccount op) {
+		int count = 0;
+		
+		if (contractor.isOnsiteServices() && op.isOnsiteServices())
+			count++;
+		if (contractor.isOffsiteServices() && op.isOffsiteServices())
+			count++;
+		if (contractor.isMaterialSupplier() && op.isMaterialSupplier())
+			count++;
+		
+		return count;
 	}
 }

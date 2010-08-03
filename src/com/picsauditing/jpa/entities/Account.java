@@ -62,6 +62,10 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	protected boolean requiresOQ = false;
 	protected boolean requiresCompetencyReview = false;
 	protected boolean needsIndexing = true;
+	// TODO: Do we want do default this?
+	protected boolean onsiteServices = true;
+	protected boolean offsiteServices = false;
+	protected boolean materialSupplier = false;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -342,6 +346,30 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	
 	public void setNeedsIndexing(boolean needsIndex){
 		this.needsIndexing = needsIndex;
+	}
+	
+	public boolean isOnsiteServices() {
+		return onsiteServices;
+	}
+	
+	public void setOnsiteServices(boolean onsiteServices) {
+		this.onsiteServices = onsiteServices;
+	}
+	
+	public boolean isOffsiteServices() {
+		return offsiteServices;
+	}
+	
+	public void setOffsiteServices(boolean offsiteServices) {
+		this.offsiteServices = offsiteServices;
+	}
+	
+	public boolean isMaterialSupplier() {
+		return materialSupplier;
+	}
+	
+	public void setMaterialSupplier(boolean materialSupplier) {
+		this.materialSupplier = materialSupplier;
 	}
 	
 	/**

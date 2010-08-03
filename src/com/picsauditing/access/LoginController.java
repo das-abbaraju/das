@@ -285,7 +285,7 @@ public class LoginController extends PicsActionSupport {
 		String url = null;
 		if (permissions.isContractor() && !user.getAccount().getStatus().isActiveDemo()) {
 			ContractorAccount cAccount = (ContractorAccount) user.getAccount();
-			if (cAccount.getRiskLevel() == null)
+			if (cAccount.getRiskLevel() == null && !cAccount.isMaterialSupplier())
 				url = "ContractorRegistrationServices.action?id=" + cAccount.getId();
 			else if (cAccount.getNonCorporateOperators().size() == 0)
 				url = "ContractorFacilities.action?id=" + cAccount.getId();

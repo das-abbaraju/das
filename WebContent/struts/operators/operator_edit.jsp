@@ -185,6 +185,14 @@ $(function() {
 					name="operator.requiresOQ" /></li>
 				<li><label>Requires Competency Review:</label> <s:checkbox
 					name="operator.requiresCompetencyReview" /></li>
+				<s:if test="!operator.corporate">
+					<li><label>Uses Onsite Service Contractors:</label>
+						<s:checkbox name="operator.onsiteServices" /></li>
+					<li><label>Uses Offsite Service Contractors:</label>
+						<s:checkbox name="operator.offsiteServices" /></li>
+					<li><label>Uses Material Suppliers:</label>
+						<s:checkbox name="operator.materialSupplier" /></li>
+				</s:if>
 			</ol>
 			</fieldset>
 			<fieldset class="form">

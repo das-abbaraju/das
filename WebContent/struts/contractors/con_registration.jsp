@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ page language="java" errorPage="../../exception_handler.jsp"%>
 <html>
 <head>
 <title>Contractor Registration</title>
@@ -49,6 +49,19 @@ function changeState(country) {
 	else
 		$('#taxIdLabel').text('Tax Number:');
 		
+}
+
+// Probably a better way to do this
+function updateHeader() {
+	if ($('input#materialSupplier').is(':checked')) {
+		$('#step2').hide();
+		$('span.vendor').show();
+		$('span.service').hide();
+	} else {
+		$('#step2').show();
+		$('span.vendor').hide();
+		$('span.service').show();
+	}
 }
 
 $(function(){
@@ -184,6 +197,23 @@ $(function(){
 								This is your company's primary trade. You will have the opportunity to select additional trades later on.
 							</div>
 						</li>
+						<s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
+							<li class="required"><label><s:property value="#conType.type" />:</label>
+								<s:if test="#conType == 'Onsite'">
+									<s:checkbox name="contractor.onsiteService" />
+								</s:if>
+								<s:elseif test="#conType == 'Offsite'">
+									<s:checkbox name="contractor.offsiteService" />
+								</s:elseif>
+								<s:else>
+									<s:checkbox name="contractor.materialSupplier" onclick="updateHeader();" id="materialSupplier" />
+								</s:else>
+								<div class="fieldhelp">
+									<h3><s:property value="#conType.type" /></h3>
+									<s:property value="#conType.description" />
+								</div>
+							</li>
+						</s:iterator>
 					</ol>
 				</fieldset>
 				<fieldset class="form">

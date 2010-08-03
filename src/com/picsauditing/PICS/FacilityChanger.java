@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
+import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -46,6 +47,7 @@ public class FacilityChanger {
 	private OperatorAccount operator;
 	private Permissions permissions;
 	private User user;
+	private ContractorType type = ContractorType.Onsite;
 
 	public FacilityChanger(ContractorAccountDAO contractorAccountDAO, OperatorAccountDAO operatorAccountDAO,
 			ContractorOperatorDAO contractorOperatorDAO, NoteDAO noteDAO, AuditBuilder auditBuilder, 
@@ -72,6 +74,7 @@ public class FacilityChanger {
 		// permissions.tryPermission(OpPerms.SearchContractors, OpType.Edit);
 
 		ContractorOperator co = new ContractorOperator();
+		co.setContractorType(type);
 		co.setContractorAccount(contractor);
 		co.setOperatorAccount(operator);
 
@@ -213,6 +216,14 @@ public class FacilityChanger {
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
 		user = new User(permissions.getUserId());
+	}
+	
+	public ContractorType getType() {
+		return type;
+	}
+	
+	public void setType(ContractorType type) {
+		this.type = type;
 	}
 	
 	private void checkOQ() {

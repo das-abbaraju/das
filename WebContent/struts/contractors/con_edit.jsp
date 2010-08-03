@@ -20,6 +20,13 @@ function countryChanged(country) {
 $(function() {
 	changeState($("#contractorCountry").val());
 	$('.datepicker').datepicker();
+	$('.cluetip').cluetip({
+		closeText: "<img src='images/cross.png' width='16' height='16'>",
+		arrows: true,
+		cluetipClass: 'jtip',
+		local: true,
+		clickThrough: false
+	});
 });
 
 </script>
@@ -203,6 +210,26 @@ $(function() {
 					<li><label>Upgrade Date:</label>
 						<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" 
 							value="<s:date name="contractor.lastUpgradeDate" format="MM/dd/yyyy" />" />
+					</li>
+					<li><label>Contractor Type:</label>
+						<s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
+							<s:if test="#conType.toString() == 'Onsite'">
+								<s:checkbox name="contractor.onsiteServices" /><s:property value="#conType.type" />
+							</s:if>
+							<s:elseif test="#conType.toString() == 'Offsite'">
+								<s:checkbox name="contractor.offsiteServices" /><s:property value="#conType.type" />
+							</s:elseif>
+							<s:else>
+								<s:checkbox name="contractor.materialSupplier" /><s:property value="#conType.type" />
+							</s:else>
+						</s:iterator>
+						<div class="fieldhelp">
+							<h3>Contractor Type</h3>
+							<s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
+								<h5><s:property value="#conType.type" /></h5>
+								<s:property value="#conType.description" /><br />
+							</s:iterator>
+						</div>
 					</li>
 				</ol>
 				</fieldset>
