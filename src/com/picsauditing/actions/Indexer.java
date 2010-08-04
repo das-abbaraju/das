@@ -26,6 +26,8 @@ public class Indexer extends PicsActionSupport {
 	private String toRun = null;
 	private int start = 0;
 	private int end = 0;
+	private static boolean isRunning = false;
+	private static boolean stop = false;
 	
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
@@ -44,6 +46,16 @@ public class Indexer extends PicsActionSupport {
 	}
 	@Override
 	public String execute() throws SQLException {
+		if(stop){
+			clearMessages();
+			addActionMessage("Indexer Stopped!");
+			return SUCCESS;
+		}
+		if(isRunning){
+			addActionMessage("Indexer Already Running");
+			return SUCCESS;
+		} else
+			isRunning = true;
 		System.out.println("Starting Indexer");
 		indexTables = new HashMap<String, IndexableDAO>();
 		// if not specified then we will run all tables to check the index
@@ -99,69 +111,61 @@ public class Indexer extends PicsActionSupport {
 		List<IndexObject> l = null; // our list of ids
 		List<Integer> savedIds = new ArrayList<Integer>(); // will store the last ids to be ran per batch
 		for(int i=0; i<ids.size(); i++){
+			if(stop){
+				clearMessages();
+				addActionMessage("Indexer Stopped!");
+				return;
+			}
 			// Retrieve id from bean
 			int id = 0;
 			try {
 				id = Integer.parseInt(ids.get(i).get("id").toString());
-			} catch (Exception e1) {
-				// Could not cast to int, check
-				System.out.println("Could not cast to int: "+ids.get(i).get("id")+" of class "+ids.get(i).get("id").getClass().getName());
-				e1.printStackTrace();
-			}
-			Indexable table = (Indexable)dao.find(id);	
-			if(table==null) // not a supported entity or could not pull up record
-				continue;
-			// try/catch here so that if we get an exception we can still
-			// try to run the remaining rows
-			try{ 
-				l = table.getIndexValues();				
-			} catch(Exception e){
-				System.out.println("Problem parsing values for id: "+id);
-				continue;
-			}
-			// TODO check to delete old entries first
-			queryDelete.append(id).append(" AND indexType = '").append(table.getIndexType()).append("'");
-			try {
-				if (db.executeUpdate(queryDelete.toString())>0) {
-					System.out.println("deleted using: "+queryDelete.toString());
+				Indexable table = (Indexable) dao.find(id);
+				if (table == null) // not a supported entity or could not pull up record
+					continue;
+				l = table.getIndexValues();
+				queryDelete.append(id).append(" AND indexType = '").append(table.getIndexType()).append("'");
+				if (db.executeUpdate(queryDelete.toString()) > 0) {
+					System.out.println("deleted using: "
+							+ queryDelete.toString());
 				}
 				queryDelete.setLength(0);
 				queryDelete.append("DELETE FROM app_index WHERE foreignKey = ");
-			} catch (SQLException e1) {
-				System.out.println("Could not delete "+table.getIndexType()+"-"+id);
-				continue;
-			}
-			// build the queries to insert
-			for(IndexObject s : l){
-				queryIndex.append("('").append(table.getIndexType()).append("',").append(id).append(",'").append(s.getValue()).append("','").append(s.getWeight()).append("'),");
-				queryStats.append("('").append(table.getIndexType()).append("','").append(s.getValue()).append("',").append(1).append("),");
-			}
-			batch++;
-			// add the id to the list of ids for saving
-			savedIds.add(id);
-			if(batch>=RUN_NUM){ // if we have this number of rows added, run the queries
-				try { // try to run, catch exception so we can unsave the rows
-					db.executeInsert(queryIndex.substring(0, queryIndex.length()-1));
-					db.executeInsert(queryStats.substring(0, queryStats.length()-1));
-				} catch (SQLException e) {
-					System.out.println("Error with "+queryIndex.toString());
-					e.printStackTrace();
+				// build the queries to insert
+				for (IndexObject s : l) {
+					queryIndex.append("('").append(table.getIndexType())
+							.append("',").append(id).append(",'").append(
+									s.getValue()).append("','").append(
+									s.getWeight()).append("'),");
+					queryStats.append("('").append(table.getIndexType())
+							.append("','").append(s.getValue()).append("',")
+							.append(1).append("),");
 				}
-				// save the ids here
-				for(int idToSave : savedIds){
-					table = (Indexable)dao.find(idToSave);	
-					if(table!=null){
-						table.setNeedsIndexing(false);
-						dao.save((BaseTable)table);
+				batch++;
+				// add the id to the list of ids for saving
+				savedIds.add(id);
+				if (batch >= RUN_NUM) { // if we have this number of rows added, run the queries
+					db.executeInsert(queryIndex.substring(0, queryIndex.length() - 1));
+					db.executeInsert(queryStats.substring(0, queryStats.length() - 1));
+					// save the ids here
+					for (int idToSave : savedIds) {
+						table = (Indexable) dao.find(idToSave);
+						if (table != null) {
+							table.setNeedsIndexing(false);
+							dao.save((BaseTable) table);
+						}
 					}
+					System.out.println("Saving ids");
+					queryIndex.setLength(0);
+					queryStats.setLength(0);
+					queryIndex.append("INSERT IGNORE INTO app_index VALUES");
+					queryStats.append("INSERT IGNORE INTO app_index_stats VALUES");
+					savedIds.clear(); // no error, clear list
+					batch = 0;
 				}
-				System.out.println("Saving ids");
-				queryIndex.setLength(0);
-				queryStats.setLength(0);
-				queryIndex.append("INSERT IGNORE INTO app_index VALUES");
-				queryStats.append("INSERT IGNORE INTO app_index_stats VALUES");
-				savedIds.clear(); // no error, clear list
-				batch = 0;
+			} catch (SQLException e) {
+				System.out.println("Last insert failed");
+				e.printStackTrace();
 			}
 		}
 		if(batch!=0){
@@ -169,7 +173,9 @@ public class Indexer extends PicsActionSupport {
 				db.executeInsert(queryIndex.substring(0, queryIndex.length()-1));
 				db.executeInsert(queryStats.substring(0, queryStats.length()-1));
 			} catch (SQLException e) {
+				System.out.println("Last insert failed");
 				e.printStackTrace();
+				return;
 			}			
 			// save the ids here
 			for(int idToSave : savedIds){
@@ -224,6 +230,18 @@ public class Indexer extends PicsActionSupport {
 	}
 	public void setEnd(int end) {
 		this.end = end;
+	}
+	public static boolean isRunning() {
+		return isRunning;
+	}
+	public static void setRunning(boolean isRunning) {
+		Indexer.isRunning = isRunning;
+	}
+	public static boolean isStop() {
+		return stop;
+	}
+	public static void setStop(boolean stop) {
+		Indexer.stop = stop;
 	}
 
 }
