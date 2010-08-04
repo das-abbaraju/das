@@ -10,7 +10,7 @@ abstract public class AbstractElement {
 	 */
 	protected static void append(StringBuilder xml, String name, String value) {
 		if (value != null) {
-			value = value.replaceAll("&", "and");
+			value = value.replaceAll("&", "&amp;");
 			value = value.replaceAll("'", "&apos;");
 			
 			xml.append(" ").append(name).append("='").append(value).append("'");
