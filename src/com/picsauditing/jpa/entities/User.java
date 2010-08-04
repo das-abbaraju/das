@@ -30,6 +30,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.util.IndexObject;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -637,19 +638,24 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	}
 
 	@Transient
-	public List<String> getIndexValues() {
-		List<String> l = new ArrayList<String>();
+	public List<IndexObject> getIndexValues() {
+		List<IndexObject> l = new ArrayList<IndexObject>();	
 		String temp = "";
+		// type
+		if(this.isGroup())
+			l.add(new IndexObject("GROUP", 2));
+		else
+			l.add(new IndexObject("USER",2));
 		// id
-		l.add(String.valueOf(this.id));
+		l.add(new IndexObject(String.valueOf(this.id),10));
 		// username
 		temp = this.username;
 		if (temp!=null && !temp.isEmpty()) {
 			int atIndex = temp.indexOf('@');
 			if (atIndex > 0)
-				l.add(this.username.toUpperCase().substring(0, atIndex).replaceAll("\\W", ""));
+				l.add(new IndexObject(temp.toUpperCase().substring(0, atIndex).replaceAll("\\W", ""),6));
 			else
-				l.add(this.username.toUpperCase().replaceAll("\\W", ""));
+				l.add(new IndexObject(temp.toUpperCase().replaceAll("\\W", ""),6));
 		}
 		// email
 		temp = this.email;
@@ -657,22 +663,20 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 			String[] sA = temp.toUpperCase().split("@");
 			for (String s : sA) {
 				if (s != null && !s.isEmpty())
-					l.add(s.replaceAll("\\W", "")); // strip non word characters out
+					l.add(new IndexObject(s.replaceAll("\\W", ""),5)); // strip non word characters out
 			}
 		}
 		// name
 		String[]sA1 = this.name.replaceAll("[^a-zA-Z0-9\\s]", "").replaceAll("\\s+", " ").split(" ");
 		for(String s :sA1){
 			if(s!=null && !s.isEmpty())
-				l.add(s.toUpperCase());
+				l.add(new IndexObject(s.toUpperCase(),7));
 		}
 		// phoneIndex
 		temp = this.phoneIndex;
 		if (temp!=null && !temp.isEmpty()) {
-			l.add(temp.replaceAll("\\D", ""));
+			l.add(new IndexObject(temp.replaceAll("\\D", ""),2));
 		}
-		l.remove(" ");
-		l.remove("");
 		return l;
 	}
 

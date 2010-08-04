@@ -28,6 +28,7 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.util.IndexObject;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 
@@ -51,6 +52,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private int percentVerified;
 	private float score;
 	private boolean manuallyAdded;
+	protected boolean needsIndexing = true;
 	private String auditFor;
 	private Date lastRecalculation;
 
@@ -792,4 +794,28 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public void setConductedOnsite(boolean conductedOnsite) {
 		auditLocation = conductedOnsite ? "Onsite" : "Web";
 	}
+
+	@Transient
+	public String getIndexType() {
+		return "AU";
+	}
+
+//	@Transient
+//	public List<IndexObject> getIndexValues() {
+//		List<IndexObject> l = new ArrayList<IndexObject>();
+//		String temp = "";
+//		// id
+//		l.add(new IndexObject(String.valueOf(this.id),10));
+//		return l;
+//	}
+
+//	@Override
+//	public boolean isNeedsIndexing() {
+//		return needsIndexing;
+//	}
+//	
+//	@Override
+//	public void setNeedsIndexing(boolean needsIndexing) {
+//		this.needsIndexing = needsIndexing;
+//	}
 }

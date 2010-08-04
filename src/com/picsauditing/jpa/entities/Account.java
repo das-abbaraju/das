@@ -23,6 +23,7 @@ import org.hibernate.annotations.Type;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.util.IndexObject;
 import com.picsauditing.util.Luhn;
 import com.picsauditing.util.Strings;
 
@@ -567,57 +568,62 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	}
 
 	@Transient
-	public List<String> getIndexValues() {
-		List<String> l = new ArrayList<String>();
+	public List<IndexObject> getIndexValues() {
+		List<IndexObject> l = new ArrayList<IndexObject>();
+		// type
+		l.add(new IndexObject(this.type.toUpperCase(), 2));
 		// id
-		l.add(String.valueOf(this.id));
+		l.add(new IndexObject(String.valueOf(this.id), 10));
 		// name
-		String[] sA = this.name.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").replaceAll("\\s+", " ").split(" ");
+		String[] sA = this.name.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
 		for(String s : sA){
 			if(s!=null && !s.isEmpty())
-				l.add(s);
+				l.add(new IndexObject(s, 7));
 		}
 		// dba
 		if(this.dbaName!=null && !this.dbaName.equals(this.name)){
-			sA = this.dbaName.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").replaceAll("\\s+", " ").split(" ");
+			sA = this.dbaName.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
 			for(String s : sA){
 				if(s!=null && !s.isEmpty())
-					l.add(s);
+					l.add(new IndexObject(s, 7));
 			}
 		}
 		// city
-		if(this.city!=null && !this.city.isEmpty())
-			l.add(this.city.toUpperCase().replaceAll("\\W", ""));
+		if(this.city!=null && !this.city.isEmpty()){
+			sA =this.city.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
+			for(String s : sA){
+				if(s!=null && !s.isEmpty())
+					l.add(new IndexObject(s, 3));
+			}
+		}
 		// state
 		if(this.state!=null && !this.state.isoCode.isEmpty()){
-			l.add(this.state.isoCode);
-			l.add(this.state.getEnglish().toUpperCase());
+			l.add(new IndexObject(this.state.isoCode, 4));
+			l.add(new IndexObject(this.state.getEnglish().toUpperCase(), 4));
 		}
 		// zip
 		if(this.zip!=null && !this.zip.isEmpty())
-			l.add(this.zip);
+			l.add(new IndexObject(this.zip, 3));
 		// country
 		if(this.country!=null && !this.country.isoCode.isEmpty()){
-			l.add(this.country.isoCode);
-			l.add(this.country.getEnglish().toUpperCase());
+			l.add(new IndexObject(this.country.isoCode, 3));
+			l.add(new IndexObject(this.country.getEnglish().toUpperCase(), 3));
 		}
 		// phone
 		if(this.phone!=null && !this.phone.isEmpty()){
 			String p = Strings.stripPhoneNumber(this.phone);
 			if(p.length()>=10 && !p.matches("\\W"))
-				l.add(p);
+				l.add(new IndexObject(p, 2));
 		}
 		// email l.add(this.);
 		// web_URL
 		if(this.webUrl!=null && !this.webUrl.isEmpty()){
 			String s = this.webUrl.toUpperCase();
-			l.add(s.replaceAll("^(HTTP://)(W{3})|^(W{3}.)|\\W", ""));
+			l.add(new IndexObject(s.replaceAll("^(HTTP://)(W{3})|^(W{3}.)|\\W", ""),4));
 		}
 		// industry
 		if(this.industry!=null && !this.industry.getDescription().isEmpty())
-			l.add(this.industry.getDescription().toUpperCase());
-		l.remove(" ");
-		l.remove("");
+			l.add(new IndexObject(this.industry.getDescription().toUpperCase(), 3));
 		return l;
 	}
 

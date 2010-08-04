@@ -21,17 +21,19 @@ import javax.persistence.Transient;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.util.IndexObject;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
-public class Employee extends BaseTable {
+public class Employee extends BaseTable implements Indexable {
 
 	private String firstName;
 	private String lastName;
 	private Account account;
 	private EmployeeClassification classification = EmployeeClassification.FullTime;
 	private boolean active = true;
+	private boolean needsIndexing = false;
 	private Date hireDate;
 	private Date fireDate;
 	private String title;
@@ -284,5 +286,52 @@ public class Employee extends BaseTable {
 	@Override
 	public String toString() {
 		return (firstName + " " + lastName).trim() + " (" + id + ")";
+	}
+
+	@Transient
+	public String getIndexType() {
+		return "E";
+	}
+
+	@Transient
+	public List<IndexObject> getIndexValues() {
+		List<IndexObject> l = new ArrayList<IndexObject>();	
+		String temp = "";
+		// type
+		l.add(new IndexObject("EMPLOYEE", 2));
+		// id
+		l.add(new IndexObject(String.valueOf(this.id),10));
+		// name
+		temp = this.firstName;
+		if (temp!=null && !temp.isEmpty())
+			l.add(new IndexObject(temp.toUpperCase().replaceAll("\\W", ""),7));
+		temp = this.lastName;
+		if (temp!=null && !temp.isEmpty())
+			l.add(new IndexObject(temp.toUpperCase().replaceAll("\\W", ""),7));
+		// email
+		temp = this.email;
+		if (temp!=null && !temp.isEmpty()) {
+			String[] sA = temp.toUpperCase().split("@");
+			for (String s : sA) {
+				if (s != null && !s.isEmpty())
+					l.add(new IndexObject(s.replaceAll("\\W", ""),5)); // strip non word characters out
+			}
+		}
+		// phone
+		temp = this.phone;
+		if (temp!=null && !temp.isEmpty()) {
+			l.add(new IndexObject(Strings.stripPhoneNumber(temp).replaceAll("\\D", ""),2));
+		}
+		return l;
+	}
+
+	@Override
+	public boolean isNeedsIndexing() {
+		return needsIndexing;
+	}
+
+	@Override
+	public void setNeedsIndexing(boolean needsIndexing) {
+		this.needsIndexing = needsIndexing;		
 	}
 }

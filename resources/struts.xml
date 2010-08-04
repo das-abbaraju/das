@@ -476,6 +476,12 @@
 			class="com.picsauditing.actions.report.ReportAccountQuick">
 			<result>struts/reports/contractors_search.jsp</result>
 		</action>
+		
+		<!-- New Search Feature -->
+		<action name="HeaderSearchAjax"
+			class="com.picsauditing.search.MainSearch">
+			<result>struts/search.jsp</result>
+		</action>
 
 		<!-- Contractor List -->
 		<action name="ContractorList"
@@ -1520,7 +1526,12 @@
 		
 		<action name="ManageAppProperty"
 			class="com.picsauditing.actions.ManageAppProperty">
-			<result>/struts/misc/manage_app_property.jsp</result>
+			<result>/struts/blank.jsp</result>
+		</action>
+		
+		<action name="RunIndexer"
+			class="com.picsauditing.actions.Indexer">
+			<result>/struts/blank.jsp</result>		
 		</action>
 
 		<!-- Other Stuff -->
