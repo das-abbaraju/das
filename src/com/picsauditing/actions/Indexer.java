@@ -24,6 +24,8 @@ public class Indexer extends PicsActionSupport {
 
 	private int id = 0;
 	private String toRun = null;
+	private int start = 0;
+	private int end = 0;
 	
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
@@ -32,7 +34,7 @@ public class Indexer extends PicsActionSupport {
 	
 	private List<String> list;
 	private static Map<String, IndexableDAO> indexTables;
-	private static final int RUN_NUM = 100;
+	private static final int RUN_NUM = 50;
 	
 	public Indexer(AccountDAO accountDAO, UserDAO userDAO, EmployeeDAO empDAO, ContractorAuditDAO conAudDAO) {
 		this.accountDAO = accountDAO;
@@ -42,6 +44,7 @@ public class Indexer extends PicsActionSupport {
 	}
 	@Override
 	public String execute() throws SQLException {
+		System.out.println("Starting Indexer");
 		indexTables = new HashMap<String, IndexableDAO>();
 		// if not specified then we will run all tables to check the index
 		if(toRun==null){
@@ -119,7 +122,9 @@ public class Indexer extends PicsActionSupport {
 			// TODO check to delete old entries first
 			queryDelete.append(id).append(" AND indexType = '").append(table.getIndexType()).append("'");
 			try {
-				db.executeUpdate(queryDelete.toString());
+				if (db.executeUpdate(queryDelete.toString())>0) {
+					System.out.println("deleted using: "+queryDelete.toString());
+				}
 				queryDelete.setLength(0);
 				queryDelete.append("DELETE FROM app_index WHERE foreignKey = ");
 			} catch (SQLException e1) {
@@ -139,17 +144,18 @@ public class Indexer extends PicsActionSupport {
 					db.executeInsert(queryIndex.substring(0, queryIndex.length()-1));
 					db.executeInsert(queryStats.substring(0, queryStats.length()-1));
 				} catch (SQLException e) {
-					// whenever we have an error we will unset the rows that we have saved since the last batch ran
-					for(int idToUnSave : savedIds){
-						table = (Indexable)dao.find(idToUnSave);	
-						if(table!=null){
-							table.setNeedsIndexing(true);
-							dao.save((BaseTable)table);
-						}
-					}
-					System.out.println("Unsaving ids");
+					System.out.println("Error with "+queryIndex.toString());
 					e.printStackTrace();
 				}
+				// save the ids here
+				for(int idToSave : savedIds){
+					table = (Indexable)dao.find(idToSave);	
+					if(table!=null){
+						table.setNeedsIndexing(false);
+						dao.save((BaseTable)table);
+					}
+				}
+				System.out.println("Saving ids");
 				queryIndex.setLength(0);
 				queryStats.setLength(0);
 				queryIndex.append("INSERT IGNORE INTO app_index VALUES");
@@ -157,21 +163,22 @@ public class Indexer extends PicsActionSupport {
 				savedIds.clear(); // no error, clear list
 				batch = 0;
 			}
-			table.setNeedsIndexing(false);
-			dao.save((BaseTable)table);
 		}
 		if(batch!=0){
 			try {
 				db.executeInsert(queryIndex.substring(0, queryIndex.length()-1));
 				db.executeInsert(queryStats.substring(0, queryStats.length()-1));
 			} catch (SQLException e) {
-				for(int idToUnSave : savedIds){
-					Indexable table = (Indexable)dao.find(idToUnSave);	
-					table.setNeedsIndexing(false);
-					dao.save((BaseTable)table);						
-				}
 				e.printStackTrace();
 			}			
+			// save the ids here
+			for(int idToSave : savedIds){
+				Indexable table = (Indexable)dao.find(idToSave);	
+				if(table!=null){
+					table.setNeedsIndexing(false);
+					dao.save((BaseTable)table);
+				}
+			}
 		}
 		System.out.println("Fin");
 		Long t2 = System.currentTimeMillis();
@@ -182,6 +189,10 @@ public class Indexer extends PicsActionSupport {
 		SelectSQL sql = new SelectSQL(tblName);
 		sql.addField("id");
 		sql.addWhere("needsIndexing = 1");	
+		if(end>0 && start>=0){
+			sql.addWhere("id > "+start);
+			sql.addWhere("id < "+end);
+		}
 		sql.addOrderBy("id");
 		Database db = new Database();
 		return db.select(sql.toString(), false);
@@ -201,6 +212,18 @@ public class Indexer extends PicsActionSupport {
 
 	public void setToRun(String toRun) {
 		this.toRun = toRun;
+	}
+	public int getStart() {
+		return start;
+	}
+	public void setStart(int start) {
+		this.start = start;
+	}
+	public int getEnd() {
+		return end;
+	}
+	public void setEnd(int end) {
+		this.end = end;
 	}
 
 }
