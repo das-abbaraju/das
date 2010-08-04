@@ -10,7 +10,8 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfquestion_text")
-public class AuditQuestionText extends BaseTable implements java.io.Serializable {
+public class AuditQuestionText extends BaseTable implements
+		java.io.Serializable {
 	private AuditQuestion auditQuestion;
 	private Locale locale = AuditQuestion.DEFAULT_LOCALE;
 	private String question;
@@ -24,10 +25,18 @@ public class AuditQuestionText extends BaseTable implements java.io.Serializable
 		this.question = question;
 	}
 
-	public AuditQuestionText(AuditQuestion auditQuestion, String question, Locale locale) {
+	public AuditQuestionText(AuditQuestion auditQuestion, String question,
+			Locale locale) {
 		this.auditQuestion = auditQuestion;
 		this.question = question;
 		this.locale = locale;
+	}
+
+	public AuditQuestionText(AuditQuestionText a, AuditQuestion aq) {
+		this.auditQuestion = aq;
+		this.locale = a.getLocale();
+		this.question = a.getQuestion();
+		this.requirement = a.getRequirement();
 	}
 
 	@ManyToOne(optional = false)

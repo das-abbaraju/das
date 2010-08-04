@@ -20,12 +20,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.util.Strings;
 
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfsubcategories")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditSubCategory extends BaseTable implements java.io.Serializable, Comparable<AuditSubCategory> {
+public class AuditSubCategory extends BaseTable implements
+		java.io.Serializable, Comparable<AuditSubCategory> {
 
 	private String subCategory;
 	private AuditCategory category;
@@ -34,6 +34,18 @@ public class AuditSubCategory extends BaseTable implements java.io.Serializable,
 	private String countries;
 
 	private List<AuditQuestion> questions;
+
+	public AuditSubCategory() {
+
+	}
+
+	public AuditSubCategory(AuditSubCategory a, AuditCategory ac) {
+		this.countries = a.getCountries();
+		this.helpText = a.getHelpText();
+		this.number = a.getNumber();
+		this.subCategory = a.getSubCategory();
+		this.category = ac;
+	}
 
 	public String getSubCategory() {
 		return subCategory;
@@ -106,14 +118,16 @@ public class AuditSubCategory extends BaseTable implements java.io.Serializable,
 		if (cmp != 0)
 			return cmp;
 
-		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
+		return new Integer(getNumber())
+				.compareTo(new Integer(other.getNumber()));
 	}
 
 	@Transient
 	public String[] getCountriesArray() {
 		if (Strings.isEmpty(countries))
 			return new String[] {};
-		return countries.replaceFirst("^[!]?\\|", "").replaceAll("\\|$", "").split("\\|");
+		return countries.replaceFirst("^[!]?\\|", "").replaceAll("\\|$", "")
+				.split("\\|");
 	}
 
 	@Transient

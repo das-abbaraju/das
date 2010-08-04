@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
@@ -42,8 +43,8 @@ public class ManageQuestion extends ManageSubCategory {
 			AuditCategoryDAO auditCategoryDao, AuditSubCategoryDAO auditSubCategoryDao,
 			AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO, CountryDAO countryDAO,
 			AuditQuestionTextDAO questionTextDAO) {
-		super(emailTemplateDAO, auditTypeDao, auditCategoryDao, auditSubCategoryDao, auditQuestionDao, countryDAO);
-		this.auditQuestionDao = auditQuestionDao;
+		super(emailTemplateDAO, auditTypeDao, auditCategoryDao, auditSubCategoryDao, auditQuestionDao, countryDAO,
+				questionTextDAO);
 		this.auditDataDAO = auditDataDAO;
 		this.questionTextDAO = questionTextDAO;
 	}
@@ -103,7 +104,7 @@ public class ManageQuestion extends ManageSubCategory {
 	@Override
 	protected void load(int id) {
 		if (id != 0) {
-			load(auditQuestionDao.find(id));
+			load(auditQuestionDAO.find(id));
 		}
 	}
 
@@ -164,7 +165,7 @@ public class ManageQuestion extends ManageSubCategory {
 				question.setSubCategory(subCategory);
 			if (!Strings.isEmpty(countries))
 				question.setCountriesArray(countries.split("\\|"), exclude);
-			question = auditQuestionDao.save(question);
+			question = auditQuestionDAO.save(question);
 			id = question.getSubCategory().getId();
 
 			recalculateCategory();
@@ -183,7 +184,7 @@ public class ManageQuestion extends ManageSubCategory {
 			}
 			subCategory.getQuestions().remove(question);
 			id = question.getSubCategory().getId();
-			auditQuestionDao.remove(question.getId());
+			auditQuestionDAO.remove(question.getId());
 
 			recalculateCategory();
 			return true;
@@ -191,6 +192,96 @@ public class ManageQuestion extends ManageSubCategory {
 			addActionError(e.getMessage());
 		}
 		return false;
+	}
+	
+	@Override
+	protected boolean copy() {
+		try {
+			if (targetID == 0) {
+				addActionMessage("Please Select SubCategory to copy to");
+				return false;
+			}
+			// if (auditTypeDAO.findWhere(
+			// // ADD CHECK FOR EXISTING CATEGORY!!
+			// "auditName LIKE '" + auditType.getAuditName() + "'")
+			// .size() > 0) {
+			// addActionMessage("The Category Name is not Unique");
+			// return false;
+			// }
+
+			AuditSubCategory targetSubCategory = auditSubCategoryDAO.find(targetID);
+			AuditQuestion aq = copyAuditQuestion(question, targetSubCategory);
+
+			addActionMessage("Copied the Question only. <a href=\"ManageQuestion.action?id="
+					+ aq.getId() + "\">Go to this Question?</a>");
+			return true;
+
+		} catch (Exception e) {
+			addActionError(e.getMessage());
+		}
+		return false;
+	}
+
+	@Override
+	protected boolean copyAll() {
+		try {
+			if (targetID == 0) {
+				addActionMessage("Please Select SubCategory to copy to");
+				return false;
+			}
+			// if (auditTypeDAO.findWhere(
+			// // ADD CHECK FOR EXISTING CATEGORY!!
+			// "auditName LIKE '" + auditType.getAuditName() + "'")
+			// .size() > 0) {
+			// addActionMessage("The Category Name is not Unique");
+			// return false;
+			// }
+
+			int id = copyAllRecursive();
+
+			addActionMessage("Copied all related Questions. <a href=\"ManageQuestion.action?id="
+					+ id + "\">Go to this Question?</a>");
+			return true;
+
+		} catch (Exception e) {
+			addActionError(e.getMessage());
+		}
+		return false;
+	}
+
+	@Override
+	protected boolean move() {
+		try {
+			if (targetID == 0) {
+				addActionMessage("Please Select SubCategory to move to");
+				return false;
+			}
+
+			AuditSubCategory targetSubCategory = auditSubCategoryDAO.find(targetID);
+			question.setSubCategory(targetSubCategory);
+			auditQuestionDAO.save(question);
+
+			addActionMessage("Question Moved Successfully. <a href=\"ManageQuestion.action?id="
+					+ question.getId() + "\">Go to this Question?</a>");
+			return true;
+
+		} catch (Exception e) {
+			addActionError(e.getMessage());
+		}
+		return false;
+	}
+
+	@Transactional
+	@Override
+	protected int copyAllRecursive() {
+		AuditSubCategory targetSubCategory = auditSubCategoryDAO.find(targetID);
+
+		// Copying Question
+		AuditQuestion questionCopy = copyAuditQuestion(question, targetSubCategory);
+
+		auditQuestionDAO.save(questionCopy);
+
+		return questionCopy.getId();
 	}
 
 	private void recalculateCategory() {
@@ -211,7 +302,7 @@ public class ManageQuestion extends ManageSubCategory {
 			}
 			category.setNumQuestions(numQuestions);
 			category.setNumRequired(numRequired);
-			auditCategoryDao.save(category);
+			auditQuestionDAO.save(category);
 		}
 	}
 

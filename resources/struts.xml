@@ -100,7 +100,8 @@
 		
 		<!-- <action name="error404" class="com.picsauditing.actions.Error404">
 			<result>struts/errors/404error.jsp</result>
-		</action> -->
+		</action>
+-->
 
 		<!-- Dashboard -->
 		<action name="Home" class="com.picsauditing.actions.Home">
@@ -1139,6 +1140,12 @@
 				<param name="actionName">ManageAuditType</param>
 			</result>
 		</action>
+		
+		<action name="ManageAuditTypeAjax"
+			class="com.picsauditing.actions.auditType.ManageAuditType">
+			<result>struts/audits/manage_audit_type_copy.jsp</result>
+			<result name="copied">struts/audits/manage_audit_type_copy.jsp</result>
+		</action>
 
 		<action name="ManageCategory"
 			class="com.picsauditing.actions.auditType.ManageCategory">
@@ -1155,6 +1162,18 @@
 				<param name="id">${id}</param>
 			</result>
 		</action>
+		
+		<action name="ManageCategoryCopyAjax"
+			class="com.picsauditing.actions.auditType.ManageCategory">
+			<result>struts/audits/manage_category_copy.jsp</result>
+			<result name="copied">struts/audits/manage_category_copy.jsp</result>
+		</action>
+
+		<action name="ManageCategoryMoveAjax"
+			class="com.picsauditing.actions.auditType.ManageCategory">
+			<result>struts/audits/manage_category_move.jsp</result>
+			<result name="moved">struts/audits/manage_category_move.jsp</result>
+		</action>
 
 		<action name="ManageSubCategory"
 			class="com.picsauditing.actions.auditType.ManageSubCategory">
@@ -1170,6 +1189,18 @@
 				<param name="actionName">ManageCategory</param>
 				<param name="id">${id}</param>
 			</result>
+		</action>
+
+		<action name="ManageSubCategoryCopyAjax"
+			class="com.picsauditing.actions.auditType.ManageSubCategory">
+			<result>struts/audits/manage_subcategory_copy.jsp</result>
+			<result name="copied">struts/audits/manage_subcategory_copy.jsp</result>
+		</action>
+
+		<action name="ManageSubCategoryMoveAjax"
+			class="com.picsauditing.actions.auditType.ManageSubCategory">
+			<result>struts/audits/manage_subcategory_move.jsp</result>
+			<result name="moved">struts/audits/manage_subcategory_move.jsp</result>
 		</action>
 
 		<action name="ManageQuestion"
@@ -1194,6 +1225,17 @@
 			<result name="saved">struts/audits/manage_question_text.jsp</result>
 		</action>
 		
+		<action name="ManageQuestionCopyAjax"
+			class="com.picsauditing.actions.auditType.ManageQuestion">
+			<result>struts/audits/manage_question_copy.jsp</result>
+			<result name="copied">struts/audits/manage_question_copy.jsp</result>
+		</action>
+
+		<action name="ManageQuestionMoveAjax"
+			class="com.picsauditing.actions.auditType.ManageQuestion">
+			<result>struts/audits/manage_question_move.jsp</result>
+			<result name="moved">struts/audits/manage_question_move.jsp</result>
+		</action>
 
 		<action name="OrderAuditChildrenAjax"
 			class="com.picsauditing.actions.auditType.OrderAuditChildren">
@@ -1469,7 +1511,15 @@
 			<result>/struts/misc/ambest_suggest.jsp</result>
 		</action>
 
+		<action name="AuditCategorySuggestAjax"
+			class="com.picsauditing.actions.AuditCategorySuggest">
+			<result>/struts/misc/audit_category_suggest.jsp</result>
+		</action>
 
+		<action name="AuditSubCategorySuggestAjax"
+			class="com.picsauditing.actions.AuditSubCategorySuggest">
+			<result>/struts/misc/audit_subcategory_suggest.jsp</result>
+		</action>
 
 		<!-- Crons and Scheduled Tasks -->
 

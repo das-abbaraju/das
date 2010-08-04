@@ -53,6 +53,97 @@ $(function(){
 		}
 	);
 });
+
+function copySubCategory(atypeID) {
+	$('#copy_audit').load('ManageSubCategoryCopyAjax.action', {button: 'text', 'id': atypeID},
+		function() {
+			$(this).dialog({
+				modal: true, 
+				title: 'Copy SubCategory',
+				width: '55%',
+				close: function(event, ui) {
+					$(this).dialog('destroy');
+					location.reload();
+				},
+				buttons: {
+					Cancel: function() {
+						$(this).dialog('close');
+					},
+					'Copy All': function() {
+						var data = $('form#textForm').serialize();
+						data += "&button=CopyAll&originalID="+atypeID;
+						startThinking( {div: 'copy_audit', message: 'Copying SubCategory...' } );
+						$.ajax(
+							{
+								url: 'ManageSubCategoryCopyAjax.action',
+								data: data,
+								complete: function() {
+									stopThinking( {div: 'copy_audit' } );
+									$(this).dialog('close');
+									location.reload();
+								}
+							}
+						);
+					},
+					'Copy Only Category': function() {
+						var data = $('form#textForm').serialize();
+						data += "&button=Copy&originalID="+atypeID;
+						startThinking( {div: 'copy_audit', message: 'Copying SubCategory...' } );
+						$.ajax(
+							{
+								url: 'ManageSubCategoryCopyAjax.action',
+								data: data,
+								complete: function() {
+									stopThinking( {div: 'copy_audit' } );
+									$(this).dialog('close');
+									location.reload();
+								}
+							}
+						);
+					}
+				}
+			});
+		}
+	);
+}
+
+function moveSubCategory(atypeID) {
+	$('#copy_audit').load('ManageSubCategoryMoveAjax.action', {button: 'text', 'id': atypeID},
+		function() {
+			$(this).dialog({
+				modal: true, 
+				title: 'Move SubCategory',
+				width: '55%',
+				close: function(event, ui) {
+					$(this).dialog('destroy');
+					location.reload();
+				},
+				buttons: {
+					Cancel: function() {
+						$(this).dialog('close');
+					},
+					'Move SubCategory': function() {
+						var data = $('form#textForm').serialize();
+						data += "&button=Move&originalID="+atypeID;
+						startThinking( {div: 'copy_audit', message: 'Moving Category...' } );
+						$.ajax(
+							{
+								url: 'ManageSubCategoryMoveAjax.action',
+								data: data,
+								complete: function() {
+									stopThinking( {div: 'copy_audit' } );
+									$(this).dialog('close');
+									location.reload();
+								}
+							}
+						);
+					}
+				}
+			});
+		}
+	);
+}
+
 </script>
 </head>
 <body>
@@ -91,6 +182,8 @@ $(function(){
 		<fieldset class="form submit">
 			<div>
 				<button class="picsbutton positive" name="button" type="submit" value="save">Save</button>
+				<input type="button" class="picsbutton" value="Copy" onclick="copySubCategory(<s:property value="id"/>)"/>
+				<input type="button" class="picsbutton" value="Move" onclick="moveSubCategory(<s:property value="id"/>)"/>
 			<s:if test="subCategory.questions.size == 0">
 				<button name="button" class="picsbutton negative" type="submit" value="delete">Delete</button>
 			</s:if>
@@ -111,5 +204,8 @@ $(function(){
 		<div id="list-info"></div>
 	</div>
 </s:if>
+
+<div id="copy_audit" class="thinking"></div>
+
 </body>
 </html>

@@ -82,6 +82,96 @@ function showText(qID, textid) {
 		}
 	);
 }
+
+function copyQuestion(atypeID) {
+	$('#copy_audit').load('ManageQuestionCopyAjax.action', {button: 'text', 'id': atypeID},
+		function() {
+			$(this).dialog({
+				modal: true, 
+				title: 'Copy Question',
+				width: '55%',
+				close: function(event, ui) {
+					$(this).dialog('destroy');
+					location.reload();
+				},
+				buttons: {
+					Cancel: function() {
+						$(this).dialog('close');
+					},
+					'Copy All': function() {
+						var data = $('form#textForm').serialize();
+						data += "&button=CopyAll&originalID="+atypeID;
+						startThinking( {div: 'copy_audit', message: 'Copying Question...' } );
+						$.ajax(
+							{
+								url: 'ManageQuestionCopyAjax.action',
+								data: data,
+								complete: function() {
+									stopThinking( {div: 'copy_audit' } );
+									$(this).dialog('close');
+									location.reload();
+								}
+							}
+						);
+					},
+					'Copy Only Question': function() {
+						var data = $('form#textForm').serialize();
+						data += "&button=Copy&originalID="+atypeID;
+						startThinking( {div: 'copy_audit', message: 'Copying Question...' } );
+						$.ajax(
+							{
+								url: 'ManageQuestionCopyAjax.action',
+								data: data,
+								complete: function() {
+									stopThinking( {div: 'copy_audit' } );
+									$(this).dialog('close');
+									location.reload();
+								}
+							}
+						);
+					}
+				}
+			});
+		}
+	);
+}
+
+function moveQuestion(atypeID) {
+	$('#copy_audit').load('ManageQuestionMoveAjax.action', {button: 'text', 'id': atypeID},
+		function() {
+			$(this).dialog({
+				modal: true, 
+				title: 'Move Question',
+				width: '55%',
+				close: function(event, ui) {
+					$(this).dialog('destroy');
+					location.reload();
+				},
+				buttons: {
+					Cancel: function() {
+						$(this).dialog('close');
+					},
+					'Move Question': function() {
+						var data = $('form#textForm').serialize();
+						data += "&button=Move&originalID="+atypeID;
+						startThinking( {div: 'copy_audit', message: 'Moving Question...' } );
+						$.ajax(
+							{
+								url: 'ManageQuestionMoveAjax.action',
+								data: data,
+								complete: function() {
+									stopThinking( {div: 'copy_audit' } );
+									$(this).dialog('close');
+									location.reload();
+								}
+							}
+						);
+					}
+				}
+			});
+		}
+	);
+}
 </script>
 </head>
 <body>
@@ -296,6 +386,8 @@ function showText(qID, textid) {
 	<fieldset class="form submit">
 		<div>
 			<button class="picsbutton positive" name="button" type="submit" value="save">Save</button>
+			<input type="button" class="picsbutton" value="Copy" onclick="copyQuestion(<s:property value="id"/>)"/>
+			<input type="button" class="picsbutton" value="Move" onclick="moveQuestion(<s:property value="id"/>)"/>
 		<s:if test="question.id > 0">
 			<button name="button" class="picsbutton negative" type="submit" value="delete">Delete</button>
 		</s:if>
@@ -304,6 +396,6 @@ function showText(qID, textid) {
 </s:form>
 
 <div id="question_texts"></div>
-
+<div id="copy_audit" class="thinking"></div>
 </body>
 </html>

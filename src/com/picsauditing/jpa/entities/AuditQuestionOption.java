@@ -13,11 +13,23 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "pqfoptions")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditQuestionOption extends BaseTable implements java.io.Serializable {
+public class AuditQuestionOption extends BaseTable implements
+		java.io.Serializable {
 	private AuditQuestion auditQuestion;
 	private String optionName;
 	private YesNo visible;
 	private int number;
+
+	public AuditQuestionOption() {
+
+	}
+
+	public AuditQuestionOption(AuditQuestionOption a, AuditQuestion aq) {
+		a.auditQuestion = aq;
+		this.number = a.getNumber();
+		this.optionName = a.getOptionName();
+		this.visible = a.getVisible();
+	}
 
 	@ManyToOne
 	@JoinColumn(name = "questionID", nullable = false)

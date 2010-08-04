@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +25,8 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "pqfcategories")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditCategory extends BaseTable implements java.io.Serializable, Comparable<AuditCategory> {
+public class AuditCategory extends BaseTable implements java.io.Serializable,
+		Comparable<AuditCategory> {
 
 	public static final int WORK_HISTORY = 6;
 	public static final int OSHA_AUDIT = 151;
@@ -55,6 +57,24 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	 */
 	private Date validDate = null;
 	private Set<String> countries = null;
+
+	public AuditCategory() {
+
+	}
+
+	public AuditCategory(AuditCategory a, AuditType at) {
+		this.applyOnAnswer = a.getApplyOnAnswer();
+		this.applyOnQuestion = a.getApplyOnQuestion();
+		this.auditType = a.getAuditType();
+		this.category = a.getCategory();
+		if (a.getCountries() != null)
+			this.countries = new HashSet<String>(a.getCountries());
+		this.number = a.getNumber();
+		this.numQuestions = a.getNumQuestions();
+		this.numRequired = a.getNumRequired();
+		this.validDate = a.getValidDate();
+		this.auditType = at;
+	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "auditTypeID", nullable = false)
@@ -134,7 +154,8 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	public List<AuditSubCategory> getValidSubCategories() {
 		List<AuditSubCategory> list = new ArrayList<AuditSubCategory>();
 		for (AuditSubCategory subCategory : getSubCategories())
-			if (Strings.isInCountries(subCategory.getCountries(), countries) && subCategory.hasValidQuestions())
+			if (Strings.isInCountries(subCategory.getCountries(), countries)
+					&& subCategory.hasValidQuestions())
 				list.add(subCategory);
 		return list;
 	}
@@ -190,7 +211,8 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		if (cmp != 0)
 			return cmp;
 
-		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
+		return new Integer(getNumber())
+				.compareTo(new Integer(other.getNumber()));
 	}
 
 }

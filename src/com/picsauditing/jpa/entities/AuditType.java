@@ -22,7 +22,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "audit_type")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditType extends BaseTable implements Comparable<AuditType>, java.io.Serializable {
+public class AuditType extends BaseTable implements Comparable<AuditType>,
+		java.io.Serializable {
 
 	public static final int PQF = 1;
 	public static final int DESKTOP = 2;
@@ -40,6 +41,24 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public static String DEFAULT_AUDITTYPE = "- Audit -";
 
 	public AuditType() {
+	}
+
+	public AuditType(AuditType a) {
+		this.account = a.getAccount();
+		this.auditName = a.getAuditName();
+		this.canContractorEdit = a.isCanContractorEdit();
+		this.canContractorView = a.isCanContractorView();
+		this.classType = a.getClassType();
+		this.description = a.getDescription();
+		this.displayOrder = a.getDisplayOrder();
+		this.hasAuditor = a.isHasAuditor();
+		this.hasMultiple = a.isHasMultiple();
+		this.hasRequirements = a.isHasRequirements();
+		this.isScheduled = a.isScheduled();
+		this.monthsToExpire = a.getMonthsToExpire();
+		this.mustVerify = a.isMustVerify();
+		this.renewable = a.isRenewable();
+		this.template = a.getTemplate();
 	}
 
 	public AuditType(String name) {
@@ -276,7 +295,8 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 			return getClassType().ordinal() - o.getClassType().ordinal();
 		}
 
-		int i = new Integer(this.getDisplayOrder()).compareTo(new Integer(o.getDisplayOrder()));
+		int i = new Integer(this.getDisplayOrder()).compareTo(new Integer(o
+				.getDisplayOrder()));
 		if (i == 0)
 			return new Integer(this.getId()).compareTo(new Integer(o.getId()));
 

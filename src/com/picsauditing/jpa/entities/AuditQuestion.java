@@ -34,16 +34,19 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "pqfquestions")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion> {
+public class AuditQuestion extends BaseTable implements
+		Comparable<AuditQuestion> {
 	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 	static public final int EMR = 2034;
 	static public final int MANUAL_PQF = 1331;
 	static public final int OQ_EMPLOYEES = 894;
 	static public final int COR = 2954;
 
-	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest", "Check Box", "Country", "Date",
-			"Decimal Number", "File", "FileCertificate", "Industry", "License", "Main Work", "Money", "Number",
-			"Office Location", "Radio", "Service", "State", "Text", "Text Area", "Yes/No", "Yes/No/NA" };
+	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest",
+			"Check Box", "Country", "Date", "Decimal Number", "File",
+			"FileCertificate", "Industry", "License", "Main Work", "Money",
+			"Number", "Office Location", "Radio", "Service", "State", "Text",
+			"Text Area", "Yes/No", "Yes/No/NA" };
 
 	private AuditSubCategory subCategory;
 	private int number;
@@ -85,6 +88,50 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 
 	private List<AuditQuestion> dependentQuestions;
 
+	public AuditQuestion() {
+
+	}
+
+	public AuditQuestion(AuditQuestion a, AuditSubCategory asc) {
+		this.columnHeader = a.getColumnHeader();
+		this.countries = a.getCountries();
+		this.criteria = a.getCriteria();
+		this.criteriaAnswer = a.getCriteriaAnswer();
+		if (a.getDependentQuestions() != null)
+			this.dependentQuestions = new ArrayList<AuditQuestion>(a
+					.getDependentQuestions());
+		this.dependsOnAnswer = a.getDependsOnAnswer();
+		this.dependsOnQuestion = a.getDependsOnQuestion();
+		this.effectiveDate = a.getEffectiveDate();
+		this.expirationDate = a.getExpirationDate();
+		this.hasRequirement = a.getHasRequirement();
+		this.helpPage = a.getHelpPage();
+		this.isGroupedWithPrevious = a.getIsGroupedWithPrevious();
+		this.isRedFlagQuestion = a.getIsRedFlagQuestion();
+		this.isRequired = a.getIsRequired();
+		this.isVisible = a.getIsVisible();
+		this.linkText1 = a.getLinkText1();
+		this.linkText2 = a.getLinkText2();
+		this.linkText3 = a.getLinkText3();
+		this.linkText4 = a.getLinkText4();
+		this.linkText5 = a.getLinkText5();
+		this.linkText6 = a.getLinkText6();
+		this.linkUrl1 = a.getLinkUrl1();
+		this.linkUrl2 = a.getLinkUrl2();
+		this.linkUrl3 = a.getLinkUrl3();
+		this.linkUrl4 = a.getLinkUrl4();
+		this.linkUrl5 = a.getLinkUrl5();
+		this.linkUrl6 = a.getLinkUrl6();
+		this.number = a.getNumber();
+		this.okAnswer = a.getOkAnswer();
+		this.questionType = a.getQuestionType();
+		this.riskLevel = a.getRiskLevel();
+		this.showComment = a.isShowComment();
+		this.title = a.getTitle();
+		this.uniqueCode = a.getUniqueCode();
+		this.subCategory = asc;
+	}
+
 	@Transient
 	public AuditType getAuditType() {
 		return subCategory.getCategory().getAuditType();
@@ -92,7 +139,8 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 
 	@Transient
 	public String getExpandedNumber() {
-		return subCategory.getCategory().getNumber() + "." + subCategory.getNumber() + "." + number;
+		return subCategory.getCategory().getNumber() + "."
+				+ subCategory.getNumber() + "." + number;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -414,7 +462,8 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 	@Transient
 	public AuditQuestionText getQuestionText() {
 		try {
-			Permissions permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+			Permissions permissions = (Permissions) ActionContext.getContext()
+					.getSession().get("permissions");
 			for (AuditQuestionText questionText : questionTexts) {
 				if (permissions.getLocale().equals(questionText.getLocale()))
 					return questionText;
@@ -548,9 +597,12 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 
 	@Transient
 	public boolean isValid() {
-		if (getSubCategory().getCategory().getValidDate().after(getEffectiveDate())
-				&& getSubCategory().getCategory().getValidDate().before(getExpirationDate())
-				&& Strings.isInCountries(countries, getSubCategory().getCategory().getCountries()))
+		if (getSubCategory().getCategory().getValidDate().after(
+				getEffectiveDate())
+				&& getSubCategory().getCategory().getValidDate().before(
+						getExpirationDate())
+				&& Strings.isInCountries(countries, getSubCategory()
+						.getCategory().getCountries()))
 			return true;
 		return false;
 	}
@@ -566,14 +618,16 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 		if (cmp != 0)
 			return cmp;
 
-		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
+		return new Integer(getNumber())
+				.compareTo(new Integer(other.getNumber()));
 	}
 
 	@Transient
 	public String[] getCountriesArray() {
 		if (Strings.isEmpty(countries))
 			return new String[] {};
-		return countries.replaceFirst("^[!]?\\|", "").replaceAll("\\|$", "").split("\\|");
+		return countries.replaceFirst("^[!]?\\|", "").replaceAll("\\|$", "")
+				.split("\\|");
 	}
 
 	@Transient

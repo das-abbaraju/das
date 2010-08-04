@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
 <title>Manage Audit Types</title>
@@ -25,6 +25,59 @@ $(function(){
 		clickThrough: false
 	});
 });
+
+function copyAuditType(atypeID) {
+	$('#copy_audit').load('ManageAuditTypeAjax.action', {button: 'text', 'id': atypeID},
+		function() {
+			$(this).dialog({
+				modal: true, 
+				title: 'Copy Audit Type',
+				width: '55%',
+				close: function(event, ui) {
+					$(this).dialog('destroy');
+					location.reload();
+				},
+				buttons: {
+					Cancel: function() {
+						$(this).dialog('close');
+					},
+					'Copy All': function() {
+						var data = $('form#textForm').serialize();
+						data += "&button=CopyAll&originalID="+atypeID;
+						startThinking( {div: 'copy_audit', message: 'Copying Audit Type...' } );
+						$.ajax(
+							{
+								url: 'ManageAuditTypeAjax.action',
+								data: data,
+								complete: function() {
+									stopThinking( {div: 'copy_audit' } );
+									$(this).dialog('close');
+									location.reload();
+								}
+							}
+						);
+					},
+					'Copy Only Audit Type': function() {
+						var data = $('form#textForm').serialize();
+						data += "&button=Copy&originalID="+atypeID;
+						startThinking( {div: 'copy_audit', message: 'Copying Audit Type...' } );
+						$.ajax(
+							{
+								url: 'ManageAuditTypeAjax.action',
+								data: data,
+								complete: function() {
+									stopThinking( {div: 'copy_audit' } );
+									$(this).dialog('close');
+									location.reload();
+								}
+							}
+						);
+					}
+				}
+			});
+		}
+	);
+}
 </script>
 </head>
 <body>
@@ -106,6 +159,7 @@ $(function(){
 	<br clear="all">
 	<div>
 		<input type="submit" class="picsbutton positive" name="button" value="Save"/>
+		<input type="button" class="picsbutton" value="Copy" onclick="copyAuditType(<s:property value="id"/>)"/>
 		<s:if test="auditType.id > 0 && auditType.categories.size == 0">
 			<input id="deleteButton" type="submit" class="picsbutton negative" name="button" value="Delete"/>
 		</s:if>
@@ -129,5 +183,8 @@ $(function(){
 		<br clear="all" />
 	</s:if>
 </s:if>
+
+<div id="copy_audit" class="thinking"></div>
+
 </body>
 </html>
