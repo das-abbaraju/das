@@ -161,10 +161,10 @@
 				<tr>
 					<td></td>
 					<s:iterator value="verificationAudits">
-						<s:if test="auditType.classType.annualUpdate">
+						<s:if test="auditType.annualAddendum">
 							<td class="center">
 								<input type="button" value="Verify" onclick="showAudit(<s:property value="id"/>); return false;"/>
-							</td>
+							</td>	
 						</s:if>
 					</s:iterator>
 				</tr>

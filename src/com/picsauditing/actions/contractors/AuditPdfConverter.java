@@ -43,7 +43,6 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
-import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -54,7 +53,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditPdfConverter extends ContractorActionSupport {
-
 	private Map<String, File> attachments = new TreeMap<String, File>();
 	private AuditDataDAO auditDataDAO;
 	protected AuditCategoryDataDAO catDataDao;
@@ -108,9 +106,8 @@ public class AuditPdfConverter extends ContractorActionSupport {
 			conName.setAlignment(Element.ALIGN_CENTER);
 			document.add(conName);
 			for (ContractorAudit conAudit : contractor.getAudits()) {
-				AuditTypeClass auditClass = conAudit.getAuditType().getClassType();
-				if (permissions.canSeeAudit(conAudit.getAuditType()) && !conAudit.getAuditStatus().isExpired()
-						&& (auditClass.isPqf() || auditClass.isAnnualUpdate())) {
+				if (!conAudit.getAuditStatus().isExpired()
+						&& (conAudit.getAuditType().isPqf() || conAudit.getAuditType().isAnnualAddendum())) {
 					List<AuditCatData> aList = new ArrayList<AuditCatData>();
 					String auditName = conAudit.getAuditType().getAuditName() + " - ";
 					if (conAudit.getAuditType().isPqf())

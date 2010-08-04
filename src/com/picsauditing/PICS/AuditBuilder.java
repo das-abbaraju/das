@@ -3,13 +3,18 @@ package com.picsauditing.PICS;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import com.picsauditing.dao.AuditCategoryDAO;
+import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -19,6 +24,7 @@ import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -28,7 +34,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
@@ -38,7 +43,6 @@ import com.picsauditing.util.log.PicsLogger;
  * 
  */
 public class AuditBuilder {
-
 	private boolean fillAuditCategories = true;
 	private User user = null;
 	private ContractorAccount contractor = null;
@@ -47,13 +51,18 @@ public class AuditBuilder {
 	private AuditDataDAO auditDataDAO;
 	private AuditCategoryDAO auditCategoryDAO;
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
+	private AuditCategoryDataDAO auditCategoryDataDAO;
+	private AuditTypeDAO auditTypeDAO;
 
 	public AuditBuilder(ContractorAuditDAO cAuditDAO, AuditDataDAO auditDataDAO, AuditCategoryDAO auditCategoryDAO,
-			ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
+			ContractorAuditOperatorDAO contractorAuditOperatorDAO, AuditCategoryDataDAO auditCategoryDataDAO,
+			AuditTypeDAO auditTypeDAO) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
+		this.auditCategoryDataDAO = auditCategoryDataDAO;
+		this.auditTypeDAO = auditTypeDAO;
 	}
 
 	public void buildAudits(ContractorAccount con) {
@@ -62,23 +71,11 @@ public class AuditBuilder {
 		List<ContractorAudit> currentAudits = contractor.getAudits();
 
 		if (contractor.isAcceptsBids()) {
-			Set<AuditType> auditTypeList = new HashSet<AuditType>();
-			for (ContractorOperator co : contractor.getNonCorporateOperators()) {
-				if (co.getOperatorAccount().getStatus().isActiveDemo()) {
-					for (AuditOperator ao : co.getOperatorAccount().getVisibleAudits()) {
-						if (ao.getAuditType().getClassType().isAnnualUpdate()) {
-							auditTypeList.add(ao.getAuditType());
-						}
-					}
-				}
-			}
-
-			for (AuditType auditType : auditTypeList) {
-				int year = DateBean.getCurrentYear();
-				addAnnualAddendum(currentAudits, year - 1, auditType);
-				addAnnualAddendum(currentAudits, year - 2, auditType);
-				addAnnualAddendum(currentAudits, year - 3, auditType);
-			}
+			int year = DateBean.getCurrentYear();
+			AuditType auditType = auditTypeDAO.find(AuditType.ANNUALADDENDUM);
+			addAnnualAddendum(currentAudits, year - 1, auditType);
+			addAnnualAddendum(currentAudits, year - 2, auditType);
+			addAnnualAddendum(currentAudits, year - 3, auditType);
 			return;
 		}
 
@@ -173,9 +170,10 @@ public class AuditBuilder {
 					corAudit = audit;
 			}
 		}
+
 		int year = DateBean.getCurrentYear();
 		for (AuditType auditType : auditTypeList) {
-			if (auditType.getClassType().isAnnualUpdate()) {
+			if (auditType.isAnnualAddendum()) {
 				addAnnualAddendum(currentAudits, year - 1, auditType);
 				addAnnualAddendum(currentAudits, year - 2, auditType);
 				addAnnualAddendum(currentAudits, year - 3, auditType);
@@ -283,7 +281,8 @@ public class AuditBuilder {
 				// sure it's still needed
 				boolean needed = false;
 
-				if (conAudit.getAuditType().isPqf() || conAudit.getAuditType().getId() == AuditType.WELCOME)
+				if (conAudit.getAuditType().isPqf() || conAudit.getAuditType().getId() == AuditType.WELCOME
+						|| conAudit.getAuditType().isAnnualAddendum())
 					needed = true;
 
 				for (AuditType auditType : auditTypeList) {
@@ -459,17 +458,30 @@ public class AuditBuilder {
 	 */
 	public void fillAuditCategories(ContractorAudit conAudit, boolean forceRecalculation) {
 		// If Bidding Contractor recalculate only for Annual Update
-		if (!conAudit.getAuditType().getClassType().isAnnualUpdate() && conAudit.getContractorAccount().isAcceptsBids()) {
+		if (!conAudit.getAuditType().isAnnualAddendum() && conAudit.getContractorAccount().isAcceptsBids()) {
 			return;
 		}
 
 		if (!forceRecalculation) {
-			if (conAudit.getAuditStatus().isExpired())
-				return;
-			if (conAudit.getAuditStatus().isExempt())
-				return;
-			if (conAudit.getAuditStatus().isActive() && !conAudit.getAuditType().isPqf())
-				return;
+			if (conAudit.getAuditType().isPqf()) {
+				// Only Active and Pending PQFs should be recalculated
+				if (conAudit.getAuditStatus().isSubmitted())
+					return;
+				if (conAudit.getAuditStatus().isResubmitted())
+					return;
+				if (conAudit.getAuditStatus().isExpired())
+					return;
+				if (conAudit.getAuditStatus().isExempt())
+					return;
+			} else if (conAudit.getAuditType().isAnnualAddendum()) {
+				if (!conAudit.getAuditStatus().isPending() && !conAudit.getAuditStatus().isIncomplete())
+					return;
+			} else {
+				// Other Audits should only consider Pending
+				if (!conAudit.getAuditStatus().isPending()
+						&& conAudit.getAuditType().getClassType() == AuditTypeClass.Audit)
+					return;
+			}
 		}
 
 		PicsLogger.start("AuditCategories", "auditID=" + conAudit.getId() + " type="
@@ -486,11 +498,82 @@ public class AuditBuilder {
 				if (!categories.contains(category))
 					naCategories.add(category);
 			}
-		} else if (conAudit.getAuditType().isDesktop()) {
+		} else if (conAudit.getAuditType().isAnnualAddendum()) {
+
+			Map<Integer, Integer> dependencies = new HashMap<Integer, Integer>();
+			dependencies.put(AuditCategory.OSHA_AUDIT, 2064);
+			dependencies.put(AuditCategory.MSHA, 2065);
+			dependencies.put(AuditCategory.CANADIAN_STATISTICS, 2066);
+			dependencies.put(AuditCategory.EMR, 2033);
+			dependencies.put(AuditCategory.LOSS_RUN, 2033);
+			dependencies.put(AuditCategory.WCB, 2967);
+			dependencies.put(AuditCategory.CITATIONS, 3546);
+			int auditID = conAudit.getId();
+
+			AnswerMap answers = null;
+			answers = auditDataDAO.findAnswers(auditID, new Vector<Integer>(dependencies.values()));
+
+			for (AuditCategory cat : conAudit.getAuditType().getCategories()) {
+
+				boolean include = false;
+
+				if (answers != null && dependencies.get(cat.getId()) != null) {
+					AuditData answer = null;
+					try {
+						int questionID = dependencies.get(cat.getId());
+						answer = answers.get(questionID);
+					} catch (NullPointerException ignoreNulls) {
+					}
+
+					if (answer == null)
+						include = false;
+					else {
+						if (answer.getQuestion().getId() == 2033) {
+							if (conAudit.getContractorAccount().getCountry().getIsoCode().equals("US")) {
+								if ("No".equals(answer.getAnswer()) && cat.getId() == AuditCategory.LOSS_RUN) {
+									include = true;
+								} else if ("Yes".equals(answer.getAnswer()) && cat.getId() == AuditCategory.EMR) {
+									include = true;
+								}
+							} else {
+								include = false;
+							}
+						} else {
+							if ("Yes".equals(answer.getAnswer())) {
+								include = true;
+							}
+						}
+					}
+
+				} else if (dependencies.get(cat.getId()) == null) {
+					include = true;
+				}
+
+				if (include) {
+					categories.add(cat);
+				}
+
+			}
+			Iterator<AuditCatData> iterator = conAudit.getCategories().iterator();
+			while (iterator.hasNext()) {
+				AuditCatData auditCatData = iterator.next();
+				if (removeCategory("No", answers.get(2064), auditCatData, AuditCategory.OSHA_AUDIT)
+						|| removeCategory("No", answers.get(2065), auditCatData, AuditCategory.MSHA)
+						|| removeCategory("No", answers.get(2066), auditCatData, AuditCategory.CANADIAN_STATISTICS)
+						|| removeCategory("No", answers.get(2033), auditCatData, AuditCategory.EMR)
+						|| removeCategory("Yes", answers.get(2033), auditCatData, AuditCategory.LOSS_RUN)
+						|| removeCategory("No", answers.get(2967), auditCatData, AuditCategory.WCB)
+						|| removeCategory("No", answers.get(3546), auditCatData, AuditCategory.CITATIONS)) {
+					iterator.remove();
+					auditCategoryDataDAO.remove(auditCatData.getId());
+				}
+			}
+		}
+
+		else if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
 			int pqfAuditID = 0;
 			for (ContractorAudit audits : conAudit.getContractorAccount().getAudits()) {
-				if (audits.getAuditType().isPqf()) {
-					// Only one PQF ever exists
+				if (audits.getAuditType().isPqf() && audits.getAuditStatus().isActiveSubmitted()) {
 					pqfAuditID = audits.getId();
 				}
 			}
@@ -513,49 +596,7 @@ public class AuditBuilder {
 					PicsLogger.log("Include  " + category.getCategory());
 			}
 		} else {
-			List<Integer> dependentQuestions = new ArrayList<Integer>();
-			for (AuditCategory cat : conAudit.getAuditType().getCategories()) {
-				if (cat.getApplyOnQuestion() != null)
-					dependentQuestions.add(cat.getApplyOnQuestion().getId());
-				else
-					categories.add(cat);
-			}
-
-			if (dependentQuestions.size() > 0) {
-				AnswerMap answers = auditDataDAO.findAnswers(conAudit.getId(), dependentQuestions);
-
-				for (AuditCategory cat : conAudit.getAuditType().getCategories()) {
-					if (cat.getApplyOnQuestion() == null) {
-					} else {
-						boolean include = false;
-
-						AuditData answer = null;
-						try {
-							answer = answers.get(cat.getApplyOnQuestion().getId());
-						} catch (NullPointerException ignoreNulls) {
-						}
-
-						if (Strings.isEmpty(cat.getApplyOnAnswer())) {
-							// If there's no answer, then include the category
-							if (answer == null || Strings.isEmpty(answer.getAnswer()))
-								include = true;
-						} else {
-							// If answer matches, then include the category
-							if (answer != null && cat.getApplyOnAnswer().equals(answer.getAnswer()))
-								include = true;
-						}
-						String message = cat.getCategory() + " based on answer to question "
-								+ cat.getApplyOnQuestion().getId();
-						if (include) {
-							PicsLogger.log("Include  " + message);
-							categories.add(cat);
-						} else {
-							PicsLogger.log("Don't include  " + message);
-							naCategories.add(cat);
-						}
-					}
-				}
-			}
+			categories.addAll(conAudit.getAuditType().getCategories());
 		}
 
 		PicsLogger.log("Categories to be included: " + categories.size());
@@ -643,7 +684,7 @@ public class AuditBuilder {
 	public void addAnnualAddendum(List<ContractorAudit> currentAudits, int year, AuditType auditType) {
 		boolean found = false;
 		for (ContractorAudit cAudit : currentAudits) {
-			if (cAudit.getAuditType().equals(auditType) && year == Integer.parseInt(cAudit.getAuditFor())) {
+			if (cAudit.getAuditType().isAnnualAddendum() && year == Integer.parseInt(cAudit.getAuditFor())) {
 				if (cAudit.getAuditStatus().equals(AuditStatus.Expired))
 					// this should never happen actually...but just incase
 					cAudit.changeStatus(AuditStatus.Pending, user);
@@ -662,6 +703,14 @@ public class AuditBuilder {
 			cAuditDAO.save(annualAudit);
 			currentAudits.add(annualAudit);
 		}
+	}
+
+	public boolean removeCategory(String answer, AuditData auditData, AuditCatData auditCatData, int categoryID) {
+		if (auditData != null) {
+			if (answer.equals(auditData.getAnswer()) && auditCatData.getCategory().getId() == categoryID)
+				return true;
+		}
+		return false;
 	}
 
 	private ContractorAudit createAudit(AuditType auditType) {

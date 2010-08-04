@@ -26,10 +26,11 @@ import com.picsauditing.util.FileUtils;
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
  * allows users to change the status of an audit.
+ * 
+ * @author Trevor
+ * 
  */
-@SuppressWarnings("serial")
 public class ContractorAuditCopy extends ContractorAuditAction {
-
 	protected String contractorSelect = "";
 	private boolean hasDuplicate = false;
 
@@ -59,7 +60,7 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 			for (ContractorAudit existingAudit : auditList) {
 				if (existingAudit.getAuditType().equals(conAudit.getAuditType())
 						&& !existingAudit.getAuditStatus().equals(AuditStatus.Expired)
-						&& !existingAudit.getAuditType().getClassType().isAnnualUpdate()) {
+						&& !existingAudit.getAuditType().isAnnualAddendum()) {
 					// We already have an existing audit that we should delete
 					// first
 					this

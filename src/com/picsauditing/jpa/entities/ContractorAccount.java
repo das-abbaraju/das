@@ -134,7 +134,6 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public List<ContractorOperator> getNonCorporateOperators() {
 		return new Grepper<ContractorOperator>() {
-
 			@Override
 			public boolean check(ContractorOperator t) {
 				return !t.getOperatorAccount().isCorporate();
@@ -506,11 +505,11 @@ public class ContractorAccount extends Account implements JSONable {
 
 	// Other relationships //
 
+	@ManyToOne
+	@JoinColumn(name = "welcomeAuditor_id")
 	/**
 	 * The CSR
 	 */
-	@ManyToOne
-	@JoinColumn(name = "welcomeAuditor_id")
 	public User getAuditor() {
 		return auditor;
 	}
@@ -533,7 +532,7 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public OshaOrganizer getOshaOrganizer() {
 		if (oshaOrganizer == null) {
-			oshaOrganizer = new OshaOrganizer(getAnnualUpdatesSorted());
+			oshaOrganizer = new OshaOrganizer(getSortedAudits());
 		}
 		return oshaOrganizer;
 	}
@@ -548,20 +547,18 @@ public class ContractorAccount extends Account implements JSONable {
 
 		emrs = new TreeMap<String, AuditData>();
 		int number = 0;
-		for (ContractorAudit audit : getAnnualUpdatesSorted()) {
-			if (audit.getAuditType().isUsAnnualUpdate()) {
-				if (number < 4) {
-					// Store the EMR rates into a map for later use
-					for (AuditData answer : audit.getData()) {
-						if (answer.getQuestion().getId() == AuditQuestion.EMR
-								|| (answer.getQuestion().getId() == 2033 && "No".equals(answer.getAnswer()))) {
-							if (!Strings.isEmpty(answer.getAnswer())) {
-								number++;
-								if (answer.getQuestion().getId() == 2033)
-									emrs.put(audit.getAuditFor(), null);
-								else
-									emrs.put(audit.getAuditFor(), answer);
-							}
+		for (ContractorAudit audit : getSortedAudits()) {
+			if (number < 4) {
+				// Store the EMR rates into a map for later use
+				for (AuditData answer : audit.getData()) {
+					if (answer.getQuestion().getId() == AuditQuestion.EMR
+							|| (answer.getQuestion().getId() == 2033 && "No".equals(answer.getAnswer()))) {
+						if (!Strings.isEmpty(answer.getAnswer())) {
+							number++;
+							if (answer.getQuestion().getId() == 2033)
+								emrs.put(audit.getAuditFor(), null);
+							else
+								emrs.put(audit.getAuditFor(), answer);
 						}
 					}
 				}
@@ -598,16 +595,11 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 	}
 
-	/**
-	 * Get a list of sorted Annual Updates
-	 * 
-	 * @return
-	 */
 	@Transient
-	private List<ContractorAudit> getAnnualUpdatesSorted() {
+	public List<ContractorAudit> getSortedAudits() {
 		List<ContractorAudit> annualAList = new ArrayList<ContractorAudit>();
 		for (ContractorAudit contractorAudit : getAudits()) {
-			if (contractorAudit.getAuditType().getClassType().isAnnualUpdate()
+			if (contractorAudit.getAuditType().isAnnualAddendum()
 					&& (contractorAudit.getAuditStatus().isActiveSubmitted()
 							|| contractorAudit.getAuditStatus().isResubmitted() || contractorAudit.getAuditStatus()
 							.isIncomplete())) {
@@ -658,7 +650,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setAgreementDate(Date agreementDate) {
 		this.agreementDate = agreementDate;
 	}
-
+	
 	@ManyToOne
 	@JoinColumn(name = "agreedBy")
 	public User getAgreedBy() {
@@ -885,18 +877,18 @@ public class ContractorAccount extends Account implements JSONable {
 			return "Renewal Overdue";
 		if (daysUntilRenewal < 45)
 			return "Renewal";
-
-		if (hasPastDueInvoice())
+		
+		if(hasPastDueInvoice())
 			return "Past Due";
 
 		return "Current";
 	}
-
+	
 	@Transient
-	public Boolean hasPastDueInvoice() {
-		for (Invoice in : invoices) {
-			if (in.getStatus().equals(TransactionStatus.Unpaid)) {
-				if (in.getDueDate().before(new Date())) {
+	public Boolean hasPastDueInvoice(){
+		for(Invoice in : invoices){
+			if(in.getStatus().equals(TransactionStatus.Unpaid)){
+				if(in.getDueDate().before(new Date())){
 					return true;
 				}
 			}
@@ -977,7 +969,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return agreementDate.after(USER_AGREEMENT_CHANGED);
 	}
-
+	
 	@Transient
 	public boolean isAgreed() {
 		return (agreementDate != null);

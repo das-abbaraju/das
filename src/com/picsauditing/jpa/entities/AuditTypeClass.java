@@ -15,10 +15,6 @@ public enum AuditTypeClass {
 		return PQF == this;
 	}
 
-	public boolean isAnnualUpdate() {
-		return AnnualUpdate == this;
-	}
-
 	public boolean isAudit() {
 		return Audit == this;
 	}

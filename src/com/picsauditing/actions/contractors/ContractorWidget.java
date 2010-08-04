@@ -187,13 +187,10 @@ public class ContractorWidget extends ContractorActionSupport {
 										+ "\">review and re-submit your " + auditName + auditFor + "</a>");
 							}
 						}
-						if (conAudit.getAuditType().getClassType().isAnnualUpdate()
+						if (conAudit.getAuditType().isAnnualAddendum()
 								&& (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete())) {
-							String whatText = conAudit.getAuditType().getAuditName();
-							if (conAudit.getAuditType().isUsAnnualUpdate())
-								whatText = "EMR and/or OSHA forms";
 							String text = "Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-									+ "\">upload and submit your " + whatText + " for " + conAudit.getAuditFor()
+									+ "\">upload and submit your EMR and/or OSHA forms for " + conAudit.getAuditFor()
 									+ " </a>";
 							if (conAudit.getAuditFor().equals(Integer.toString(DateBean.getCurrentYear() - 1))) {
 								text += "<br/><b>NOTE: <a href=\"http://help.picsauditing.com/wiki/Annual_Updates\">Click here to watch the Annual Update tutorial</a></b>";

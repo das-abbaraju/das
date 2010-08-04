@@ -46,7 +46,7 @@ public class ContractorFlagETL {
 		for (FlagCriteria fc : distinctFlagCriteria) {
 			if (fc.getQuestion() != null) {
 				AuditType type = fc.getQuestion().getAuditType();
-				if (type != null && !type.getClassType().isAnnualUpdate()) {
+				if (type != null && !type.isAnnualAddendum()) {
 					PicsLogger.log("Found question for evaluation: " + fc.getQuestion());
 					criteriaQuestionSet.add(fc.getQuestion().getId());
 				}
@@ -70,7 +70,7 @@ public class ContractorFlagETL {
 					// so it's operator specific and we can't calculate exact
 					// data here. Just put in a place holder row
 					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, "true"));
-				} else if (flagCriteria.getAuditType().getClassType().isAnnualUpdate()) {
+				} else if (flagCriteria.getAuditType().isAnnualAddendum()) {
 					// Annual Update Audit
 					int count = 0;
 

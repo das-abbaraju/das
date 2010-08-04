@@ -234,7 +234,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 				currentCategory.getCategory().setCountries(permissions.getAccountCountries());
 		}
 
-		if (conAudit.getAuditType().getClassType().isAnnualUpdate()) {
+		if (conAudit.getAuditType().isAnnualAddendum()) {
 
 			String auditFor = conAudit.getAuditFor();
 

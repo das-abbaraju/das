@@ -28,7 +28,7 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.util.IndexObject;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 
@@ -81,7 +81,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public static int MC_CLOSING_ID = 1029;
 	public static int DD_CLOSING_ID = 9615;
 	public static int JM_CLOSING_ID = 11503;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
 	public AuditType getAuditType() {
@@ -186,11 +186,10 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			return;
 		Integer months = getAuditType().getMonthsToExpire();
 		if (months != null && months > 0) {
-			if(getAuditType().getClassType().isPqf()) {
-				 expiresDate = DateBean.getMarchOfThatYear(DateBean.addMonths(getCompletedDate(), months));
-			}
-			else
-			 expiresDate = DateBean.addMonths(getCompletedDate(), months);
+			if (getAuditType().getClassType().isPqf()) {
+				expiresDate = DateBean.getMarchOfThatYear(DateBean.addMonths(getCompletedDate(), months));
+			} else
+				expiresDate = DateBean.addMonths(getCompletedDate(), months);
 		} else {
 			// check months first, then do date if empty
 			expiresDate = DateBean.getMarchOfNextYear(new Date());
@@ -225,12 +224,12 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public void setClosingAuditor(User closingAuditor) {
 		this.closingAuditor = closingAuditor;
-		if(closingAuditor != null){
-			if(closingAuditor.getId() == 10600) // Mike Casey
+		if (closingAuditor != null) {
+			if (closingAuditor.getId() == 10600) // Mike Casey
 				this.closingAuditor = new User(MC_CLOSING_ID);
-			else if(closingAuditor.getId() == 910) // Dennis Dooley
+			else if (closingAuditor.getId() == 910) // Dennis Dooley
 				this.closingAuditor = new User(DD_CLOSING_ID);
-			else if(closingAuditor.getId() == 902) // John McCaughey
+			else if (closingAuditor.getId() == 902) // John McCaughey
 				this.closingAuditor = new User(JM_CLOSING_ID);
 		}
 	}
@@ -372,6 +371,15 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			return this.percentVerified;
 
 		return 100;
+	}
+
+	@Transient
+	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
+	public boolean isCanView(Permissions permissions) {
+		if (permissions.isContractor() && (getAuditType().isCanContractorView() == false))
+			return false;
+		else
+			return true;
 	}
 
 	/**
@@ -651,7 +659,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		String statusDescription = "";
 		if (auditStatus.isActive())
 			if (auditType.isMustVerify())
-				if (auditType.isPqf() || auditType.getClassType().isAnnualUpdate())
+				if (auditType.isPqf() || auditType.isAnnualAddendum())
 					statusDescription = "Annual requirements have been verified. " + this.getAuditType().getClassType()
 							+ " is closed.";
 				else
@@ -800,22 +808,22 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		return "AU";
 	}
 
-//	@Transient
-//	public List<IndexObject> getIndexValues() {
-//		List<IndexObject> l = new ArrayList<IndexObject>();
-//		String temp = "";
-//		// id
-//		l.add(new IndexObject(String.valueOf(this.id),10));
-//		return l;
-//	}
+	// @Transient
+	// public List<IndexObject> getIndexValues() {
+	// List<IndexObject> l = new ArrayList<IndexObject>();
+	// String temp = "";
+	// // id
+	// l.add(new IndexObject(String.valueOf(this.id),10));
+	// return l;
+	// }
 
-//	@Override
-//	public boolean isNeedsIndexing() {
-//		return needsIndexing;
-//	}
-//	
-//	@Override
-//	public void setNeedsIndexing(boolean needsIndexing) {
-//		this.needsIndexing = needsIndexing;
-//	}
+	// @Override
+	// public boolean isNeedsIndexing() {
+	// return needsIndexing;
+	// }
+	//	
+	// @Override
+	// public void setNeedsIndexing(boolean needsIndexing) {
+	// this.needsIndexing = needsIndexing;
+	// }
 }

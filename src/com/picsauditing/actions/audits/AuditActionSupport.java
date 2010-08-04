@@ -195,7 +195,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return true;
 
 		if (permissions.isContractor()) {
-			if ((type.getClassType().isAnnualUpdate() || type.getId() == 99)
+			if ((type.isAnnualAddendum() || type.getId() == 99)
 					&& conAudit.getAuditStatus().isActiveSubmitted())
 				// contractors can't modify annual updates that are already verified or submitted
 				return false;

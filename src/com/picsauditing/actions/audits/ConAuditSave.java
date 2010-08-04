@@ -47,11 +47,11 @@ public class ConAuditSave extends AuditActionSupport {
 			conAudit.changeStatus(AuditStatus.Active, getUser());
 			note = "Verified and Activated the " + conAudit.getAuditType().getAuditName();
 			
-			if (conAudit.getAuditType().getClassType().isAnnualUpdate()
+			if (conAudit.getAuditType().isAnnualAddendum()
 					&& DateBean.getCurrentYear() - 1 == Integer.parseInt(conAudit.getAuditFor())) {
 				// We're activating the most recent year's audit (ie 2008)
 				for (ContractorAudit audit : contractor.getAudits()) {
-					if (audit.getAuditType().equals(conAudit.getAuditType())
+					if (audit.getAuditType().isAnnualAddendum()
 							&& Integer.parseInt(audit.getAuditFor()) < DateBean.getCurrentYear() - 3
 							&& !audit.getAuditStatus().isExpired()) {
 						// Any annual audit before 2006 (ie 2005)
@@ -79,7 +79,7 @@ public class ConAuditSave extends AuditActionSupport {
 				conAudit.setPercentComplete(99);
 				auditDao.save(conAudit);
 			}
-			if (conAudit.getAuditType().isUsAnnualUpdate()) {
+			if (conAudit.getAuditType().isAnnualAddendum()) {
 				for (AuditCatData aCatData : conAudit.getCategories()) {
 					if (aCatData.getCategory().getId() == AuditCategory.EMR
 							|| aCatData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION

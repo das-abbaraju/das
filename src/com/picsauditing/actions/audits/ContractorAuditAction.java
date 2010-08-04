@@ -1,10 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -89,7 +86,7 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 			}
 		}
 
-		if (conAudit.getAuditType().getClassType().isAnnualUpdate() && conAudit.getAuditStatus().isSubmitted()) {
+		if (conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().isSubmitted()) {
 			for (AuditCatData auditCatData : conAudit.getCategories()) {
 				if (!auditCatData.isAppliesB()) {
 					if (auditCatData.getCategory().isSha()) {

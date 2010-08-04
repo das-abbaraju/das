@@ -70,7 +70,7 @@ public class VerifyView extends ContractorActionSupport {
 					pqfQuestions.put(ad.getQuestion().getId(), ad);
 				}
 			}
-			if (conAudit.getAuditType().isUsAnnualUpdate()) {
+			if (conAudit.getAuditType().isAnnualAddendum()) {
 				AuditData auditData = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
 					if (auditData != null && "Yes".equals(auditData.getAnswer()) && oshaAudit.isCorporate()
@@ -82,7 +82,7 @@ public class VerifyView extends ContractorActionSupport {
 			}
 		}
 		for (ContractorAudit conAudit : getVerificationAudits()) {
-			if (conAudit.getAuditType().isUsAnnualUpdate()) {
+			if (conAudit.getAuditType().isAnnualAddendum()) {
 				for (AuditData auditData : conAudit.getData()) {
 					int categoryID = auditData.getQuestion().getSubCategory().getCategory().getId();
 					if (categoryID != AuditCategory.CITATIONS
@@ -115,7 +115,7 @@ public class VerifyView extends ContractorActionSupport {
 		StringBuffer sb = new StringBuffer("");
 
 		for (ContractorAudit conAudit : getVerificationAudits()) {
-			if (conAudit.getAuditType().isUsAnnualUpdate()) {
+			if (conAudit.getAuditType().isAnnualAddendum()) {
 				sb.append("\n\n");
 				sb.append(conAudit.getAuditFor() + " Annual Update");
 				sb.append("\n");
