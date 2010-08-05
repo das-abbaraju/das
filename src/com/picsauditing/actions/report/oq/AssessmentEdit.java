@@ -111,6 +111,7 @@ public class AssessmentEdit extends AccountActionSupport implements Preparable {
 					center.setRequiresCompetencyReview(false);
 				}
 
+				center.setNeedsIndexing(true);
 				center = accountDAO.save(center);
 				id = center.getId();
 

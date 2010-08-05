@@ -8,6 +8,7 @@ public interface Indexable {
 	public boolean isNeedsIndexing();
 	public List<IndexObject> getIndexValues(); 
 	public String getIndexType();
+	public String getReturnType();
 	public int getId();
 	public void setNeedsIndexing(boolean b);
 }

@@ -34,13 +34,23 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<%=version%>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=<%=version%>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/contractorstatistics.css?v=<%=version%>" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 
 <script src="js/chrome.js" type="text/javascript" ></script>
 <script type="text/javascript" src="js/pics_main.js?v=<%=version%>"></script>
 <script type="text/javascript" src="js/notes.js?v=<%=version%>"></script>
 
 <decorator:head />
+<style>
+.searchAction{
+	float: right;
+	background: red;
+	width: 10px;
+	margin-top: 5px;
+}
+</style>
 
+<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <!--CSS FIXES FOR INTERNET EXPLORER -->
 <!--[if IE]>
 	<link rel="stylesheet" href="css/ie.css" type="text/css" />
@@ -51,6 +61,52 @@
 	<link rel="stylesheet" href="css/ie6.css" type="text/css" />
 <![endif]-->
 
+<script>
+$(function(){
+	$('#search_box').autocomplete('HeaderSearchAjax.action', {
+		width: 325, 
+		scroll: false, 
+		max: 11,
+		formatItem: function(data,i,count){
+			return format(data, i);						
+		},
+		formatResult: function(data,i,count){
+			return data[3];
+		}
+	}).result(function(event, data){
+		getResult(data);
+	});
+});
+function getResult(data){
+	if(data==null){
+		return;
+	}
+	if(data[0]=='account')
+		var accType = data[1];
+	location.href='HeaderSearchAjax.action?button=getResult&searchID='+data[2]+'&searchType='+data[0]+'&accType='+accType;	
+}
+function format(row, i){
+	if(row[0]=='account'){
+		var rStr = "<div style=\"float: left; margin-right: 5px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
+			")</span></div>"+row[3]+"<br/> at ("+row[4]+")";
+		return rStr;
+		//return 'account!';//do account format here
+	}
+	if(row[0]=='user'){
+		var rStr = "<div class=\"searchAction\">A</div><div style=\"float: left; margin-right: 23px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
+			")</span></div><div style=\"\">"+row[3]+"<br/> at ("+row[4]+")</div>";
+		return rStr;
+		//return 'user!';//do user format here
+	}
+	if(row[0]=='employee'){
+		var rStr = "<div class=\"searchAction\">A</div><div style=\"float: left; margin-right: 10px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
+			")</span></div><div style=\"\">"+row[3]+"<br/> at ("+row[4]+")</div>";
+		return rStr;
+		//return 'employee!';//do employee format here
+	}
+	return row[0];
+}
+</script>
 </head>
 <body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />">
 <div id="bodywrap">
@@ -68,9 +124,9 @@
 </td>
 <% if (permissions.isActive() && !permissions.isContractor()) { %>
 	<td id="headersearch">
-		<form action="ContractorSearch.action" method="get">
-			<input name="filter.accountName" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
-			<input type="submit" value="Search" id="search_button" />
+		<form action=HeaderSearchAjax.action method="get">
+			<input name="searchText" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
+			<input type="submit" value="Search" id="search_button" onclick="getResult(null)" />
 		</form>
 	</td>
 <% } %>

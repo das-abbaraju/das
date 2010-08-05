@@ -28,6 +28,12 @@ public class Indexer extends PicsActionSupport {
 	private int end = 0;
 	private static boolean isRunning = false;
 	private static boolean stop = false;
+	private static boolean runStats = false;
+	private static String[] statsQueryBuilder1 = {"TRUNCATE TABLE app_index_stats;",
+		"INSERT INTO app_index_stats SELECT indexType, NULL, count(distinct foreignKey) FROM app_index GROUP BY indexType;",
+		"INSERT INTO app_index_stats SELECT NULL, value, count(*) FROM app_index GROUP BY value;",
+		"INSERT INTO app_index_stats SELECT indexType, value, count(*) FROM app_index GROUP BY indexType, value;",
+		"ANALYZE TABLE app_index, app_index_stats;"};
 	
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
@@ -80,6 +86,13 @@ public class Indexer extends PicsActionSupport {
 			// for each table get those rows that need indexing
 			// and pass the list of ids in and run the indexer
 			runIndexer(getIndexable(entry.getKey()), entry.getValue());
+		}
+		if(runStats){
+			runStats = false;
+			Database db = new Database();
+			for(String s : statsQueryBuilder1){
+				db.executeInsert(s);										
+			}	
 		}
 		return SUCCESS;
 	}
@@ -172,29 +185,30 @@ public class Indexer extends PicsActionSupport {
 				e.printStackTrace();
 			}
 		}
-		if(batch!=0){
-			try {
+		try {
+			if(batch!=0){
 				db.executeInsert(queryIndex.substring(0, queryIndex.length()-1));
-				db.executeInsert(queryStats.substring(0, queryStats.length()-1));
-			} catch (SQLException e) {
-				System.out.println("Last insert failed");
-				e.printStackTrace();
-				return;
-			}			
-			// save the ids here
-			for(int idToSave : savedIds){
-				Indexable table = (Indexable)dao.find(idToSave);	
-				if(table!=null){
-					table.setNeedsIndexing(false);
-					dao.save((BaseTable)table);
+				db.executeInsert(queryStats.substring(0, queryStats.length()-1));		
+				// save the ids here
+				for(int idToSave : savedIds){
+					Indexable table = (Indexable)dao.find(idToSave);	
+					if(table!=null){
+						table.setNeedsIndexing(false);
+						dao.save((BaseTable)table);
+					}
 				}
 			}
+		} catch (SQLException e) {
+			System.out.println("Last insert failed");
+			e.printStackTrace();
+			return;
+		}finally{
+			System.out.println("Fin");
+			Long t2 = System.currentTimeMillis();
+			System.out.println("Time to complete: "+(t2-t1)/1000f);		
+			stop = false;
+			isRunning = false;
 		}
-		System.out.println("Fin");
-		Long t2 = System.currentTimeMillis();
-		System.out.println("Time to complete: "+(t2-t1)/1000f);		
-		stop = false;
-		isRunning = false;
 	}
 	
 	public List<BasicDynaBean> getIndexable(String tblName) throws SQLException{

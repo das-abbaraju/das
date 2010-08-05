@@ -688,4 +688,9 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public void setNeedsIndexing(boolean needsIndexing) {
 		this.needsIndexing = needsIndexing;
 	}
+
+	@Transient
+	public String getReturnType() {
+		return "user";
+	}
 }

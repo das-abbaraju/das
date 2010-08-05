@@ -635,4 +635,9 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 			return "AS";
 		return type.substring(0, 1);
 	}
+
+	@Transient
+	public String getReturnType() {
+		return "account";
+	}
 }

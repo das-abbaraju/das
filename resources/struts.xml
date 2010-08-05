@@ -481,7 +481,7 @@
 		<!-- New Search Feature -->
 		<action name="HeaderSearchAjax"
 			class="com.picsauditing.search.MainSearch">
-			<result>struts/search.jsp</result>
+			<result>struts/blank.jsp</result>
 		</action>
 
 		<!-- Contractor List -->

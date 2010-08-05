@@ -334,4 +334,9 @@ public class Employee extends BaseTable implements Indexable {
 	public void setNeedsIndexing(boolean needsIndexing) {
 		this.needsIndexing = needsIndexing;		
 	}
+
+	@Transient
+	public String getReturnType() {
+		return "employee";
+	}
 }

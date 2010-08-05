@@ -206,6 +206,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				//get new account
 				account = accountDAO.find(moveToAccount);
 				user.setAccount(account);
+				user.setNeedsIndexing(true);
 				userDAO.save(user);
 			}
 			redirect("UsersManage.action?accountID="+user.getAccount().getId()+"&user.id="+user.getId()+"&msg=You have sucessfully moved " +
