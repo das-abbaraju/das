@@ -1,10 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,14 +9,11 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
@@ -42,37 +36,28 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 	public static final int CITATIONS = 278;
 
 	private AuditType auditType;
-	private String category;
+	private AuditCategory parent;
+	private String name;
 	private int number;
 	private int numRequired;
 	private int numQuestions;
-	private AuditQuestion applyOnQuestion = null;
-	private String applyOnAnswer;
-
-	List<AuditSubCategory> subCategories;
+	private boolean pageBreak = false;
+	
+	private List<AuditCategory> subCategories = new ArrayList<AuditCategory>();
 
 	/**
 	 * This is a transient field that allows us to figure out which categories,
 	 * subcategories and questions should be displayed
 	 */
-	private Date validDate = null;
-	private Set<String> countries = null;
-
 	public AuditCategory() {
 
 	}
 
 	public AuditCategory(AuditCategory a, AuditType at) {
-		this.applyOnAnswer = a.getApplyOnAnswer();
-		this.applyOnQuestion = a.getApplyOnQuestion();
 		this.auditType = a.getAuditType();
-		this.category = a.getCategory();
-		if (a.getCountries() != null)
-			this.countries = new HashSet<String>(a.getCountries());
 		this.number = a.getNumber();
 		this.numQuestions = a.getNumQuestions();
 		this.numRequired = a.getNumRequired();
-		this.validDate = a.getValidDate();
 		this.auditType = at;
 	}
 
@@ -85,14 +70,24 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 	public void setAuditType(AuditType auditType) {
 		this.auditType = auditType;
 	}
-
-	@Column(name = "category", nullable = false)
-	public String getCategory() {
-		return this.category;
+	
+	@ManyToOne
+	@JoinColumn(name = "parentID")
+	public AuditCategory getParent() {
+		return parent;
+	}
+	
+	public void setParent(AuditCategory parent) {
+		this.parent = parent;
 	}
 
-	public void setCategory(String category) {
-		this.category = category;
+	@Column(name = "name", nullable = false)
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Column(nullable = false)
@@ -121,72 +116,23 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 	public void setNumQuestions(int numQuestions) {
 		this.numQuestions = numQuestions;
 	}
-
-	@ManyToOne
-	@JoinColumn(name = "applyOnQID")
-	public AuditQuestion getApplyOnQuestion() {
-		return applyOnQuestion;
+	
+	@Column(nullable = false)
+	public boolean isPageBreak() {
+		return pageBreak;
 	}
-
-	public void setApplyOnQuestion(AuditQuestion applyOnQuestion) {
-		this.applyOnQuestion = applyOnQuestion;
+	
+	public void setPageBreak(boolean pageBreak) {
+		this.pageBreak = pageBreak;
 	}
-
-	public String getApplyOnAnswer() {
-		return applyOnAnswer;
-	}
-
-	public void setApplyOnAnswer(String applyOnAnswer) {
-		this.applyOnAnswer = applyOnAnswer;
-	}
-
-	@OneToMany(mappedBy = "category")
-	@OrderBy("number")
-	public List<AuditSubCategory> getSubCategories() {
+	
+	@OneToMany(mappedBy = "parentID")
+	public List<AuditCategory> getSubCategories() {
 		return subCategories;
 	}
 
-	public void setSubCategories(List<AuditSubCategory> subCategories) {
+	public void setSubCategories(List<AuditCategory> subCategories) {
 		this.subCategories = subCategories;
-	}
-
-	@Transient
-	public List<AuditSubCategory> getValidSubCategories() {
-		List<AuditSubCategory> list = new ArrayList<AuditSubCategory>();
-		for (AuditSubCategory subCategory : getSubCategories())
-			if (Strings.isInCountries(subCategory.getCountries(), countries)
-					&& subCategory.hasValidQuestions())
-				list.add(subCategory);
-		return list;
-	}
-
-	@Transient
-	public boolean hasValidSubcategories() {
-		for (AuditSubCategory subCategory : subCategories) {
-			if (subCategory.hasValidQuestions())
-				return true;
-		}
-		return false;
-	}
-
-	@Transient
-	public Date getValidDate() {
-		if (validDate == null)
-			return new Date();
-		return validDate;
-	}
-
-	public void setValidDate(Date validDate) {
-		this.validDate = validDate;
-	}
-
-	@Transient
-	public Set<String> getCountries() {
-		return countries;
-	}
-
-	public void setCountries(Set<String> countries) {
-		this.countries = countries;
 	}
 
 	@Transient

@@ -1,7 +1,15 @@
 package com.picsauditing.jpa.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 
 @SuppressWarnings("serial")
 @Entity
@@ -14,6 +22,8 @@ public class AuditCatDecisionTable extends BaseDecisionTable {
 	private ContractorType contractorType;
 	private ContractorTag tag;
 
+	@ManyToOne
+	@JoinColumn(name = "catID", nullable = false)
 	public AuditCategory getAuditCategory() {
 		return auditCategory;
 	}
@@ -22,6 +32,9 @@ public class AuditCatDecisionTable extends BaseDecisionTable {
 		this.auditCategory = auditCategory;
 	}
 
+	@Column(name = "industry", length = 50)
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.LowMedHigh") })
+	@Enumerated(EnumType.STRING)
 	public LowMedHigh getRisk() {
 		return risk;
 	}
@@ -30,6 +43,8 @@ public class AuditCatDecisionTable extends BaseDecisionTable {
 		this.risk = risk;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "opID")
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
 	}
@@ -38,6 +53,8 @@ public class AuditCatDecisionTable extends BaseDecisionTable {
 		this.operatorAccount = operatorAccount;
 	}
 
+	@Enumerated(EnumType.ORDINAL)
+	@Column(name = "accountType")
 	public ContractorType getContractorType() {
 		return contractorType;
 	}
@@ -50,6 +67,8 @@ public class AuditCatDecisionTable extends BaseDecisionTable {
 		return tag;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "tagID")
 	public void setTag(ContractorTag tag) {
 		this.tag = tag;
 	}

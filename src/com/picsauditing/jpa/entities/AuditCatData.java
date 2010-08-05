@@ -18,25 +18,24 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "pqfcatdata")
+@Table(name = "audit_cat_data")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
 public class AuditCatData extends BaseTable implements java.io.Serializable {
-	private AuditCategory category;
 	private ContractorAudit audit;
-	private YesNo applies = YesNo.Yes;
-	private int percentCompleted = 0;
-	private int percentVerified = 0;
-	private int percentClosed = 0;
+	private AuditCategory category;
 	private int requiredCompleted = 0;
 	private int numRequired = 0;
 	private int numAnswered = 0;
+	private boolean applies = true;
+	private int percentCompleted = 0;
+	private int percentVerified = 0;
+	private int percentClosed = 0;
 	private boolean override = false;
-
 	private float score = 0;
 	private int scoreCount = 0;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "catID", nullable = false)
+	@JoinColumn(name = "categoryID", nullable = false)
 	public AuditCategory getCategory() {
 		return category;
 	}
@@ -55,20 +54,12 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 		this.audit = audit;
 	}
 
-	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	public YesNo getApplies() {
+	public boolean isApplies() {
 		return applies;
 	}
 
-	@Transient
-	public boolean isAppliesB() {
-		if (!audit.getAuditType().isDynamicCategories())
-			return true;
-		return applies.equals(YesNo.Yes);
-	}
-	
-	public void setApplies(YesNo applies) {
+	public void setApplies(boolean applies) {
 		this.applies = applies;
 	}
 
@@ -170,7 +161,6 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 	}
 
 	@Transient
-	@SuppressWarnings("serial")
 	public String getPrintableScore() {
 		
 		if( getScoreCount() > 0 ) {
