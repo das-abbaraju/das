@@ -12,12 +12,6 @@ public class IndexObject {
 	public IndexObject() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	public IndexObject set(String value, int weight){
-		this.value = value;
-		this.weight = weight;
-		return this;
-	}
 
 	public String getValue() {
 		return value;

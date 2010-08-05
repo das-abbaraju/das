@@ -372,6 +372,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				addActionMessage(AccountRecovery.sendActivationEmail(user, permissions));
 
 			try {
+				user.setNeedsIndexing(true);
 				user = userDAO.save(user);
 				addActionMessage("User saved successfully.");
 				if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)

@@ -46,37 +46,33 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			searchTerm = "";
 	}
 
-	public String execute(){
-		String query = buildQuery(searchTerm);	
+	public String execute() throws SQLException{
+		String query = buildQuery(searchTerm);
+		System.out.println("--query--");
+		System.out.println(query);
 		List<BasicDynaBean> queryList = null;	
-		try {
-			queryList = db.select(query, true);
-			System.out.println(db.getAllRows());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		queryList = db.select(query, true);
+		System.out.println(db.getAllRows());
 		getResults(queryList);
 		return SUCCESS;
 	}
 	private void getResults(List<BasicDynaBean> queryList) {
 		// TODO Auto-generated method stub 
-		IndexableDAO dao = new IndexableDAO();
 		for(BasicDynaBean bdb : queryList){
 			String str = "";
 			String check = (String)bdb.get("indexType");
 			if(check.equals("A")||check.equals("AS")||check.equals("C")||check.equals("CO")||check.equals("O")){ // account
 				Account a = accountDAO.find(Integer.parseInt(bdb.get("foreignKey").toString()));	
-				str = a.getType()+": "+a.getName()+" ("+a.getId()+")";
+				str = a.getType()+": "+a.getName()+" ("+a.getId()+") "+bdb.get("score");
 			}else if(check.equals("U")){
 				User u = userDAO.find(Integer.parseInt(bdb.get("foreignKey").toString()));
-				str ="User: "+u.getName()+u.getId();				
+				str ="User: "+u.getName()+" ("+u.getId()+") "+bdb.get("score");				
 			} else if(check.equals("G")){
 				User u = userDAO.find(Integer.parseInt(bdb.get("foreignKey").toString()));
-				str ="User Group: "+u.getName()+" ("+u.getId()+")";				
+				str ="User Group: "+u.getName()+" ("+u.getId()+") "+bdb.get("score");				
 			} else if(check.equals("E")){
 				Employee e = empDAO.find(Integer.parseInt(bdb.get("foreignKey").toString()));
-				str = "Employee: "+e.getDisplayName()+" ("+e.getId()+")";
+				str = "Employee: "+e.getDisplayName()+" ("+e.getId()+") "+bdb.get("score");
 			}
 			fullList.add(str);
 		}
@@ -108,7 +104,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			sb.append("+");
 			sb.append("v").append(i+1).append(".total/i").append(i+1).append(".weight");
 		}
-		sb.append(")) score");
+		sb.append(")) score, (i1.value = '").append(sA[0]).append("') m");
 		sql.addField(sb.toString());
 		sb.setLength(0);
 		sb.append("JOIN ").append(indexStats).append(" t ON i1.indexType = t.indexType AND t.value IS NULL\n");
@@ -127,7 +123,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		}
 		sql.addWhere("i1.value LIKE '"+sA[0]+"%'");
 		sql.addGroupBy("i1.foreignKey, i1.indexType");
-		sql.addOrderBy("score");
+		sql.addOrderBy("m DESC, score, foreignKey");
 		sql.setLimit(10);
 		
 		return sql.toString();

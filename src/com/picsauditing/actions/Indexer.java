@@ -46,12 +46,14 @@ public class Indexer extends PicsActionSupport {
 	}
 	@Override
 	public String execute() throws SQLException {
-		if(stop){
-			clearMessages();
-			addActionMessage("Indexer Stopped!");
-			return SUCCESS;
-		}
 		if(isRunning){
+			if(stop){
+				clearMessages();
+				addActionMessage("Indexer Stopped!");
+				stop = false;
+				isRunning = false;
+				return SUCCESS;
+			}
 			addActionMessage("Indexer Already Running");
 			return SUCCESS;
 		} else
@@ -114,6 +116,8 @@ public class Indexer extends PicsActionSupport {
 			if(stop){
 				clearMessages();
 				addActionMessage("Indexer Stopped!");
+				stop = false;
+				isRunning = false;
 				return;
 			}
 			// Retrieve id from bean
@@ -189,6 +193,8 @@ public class Indexer extends PicsActionSupport {
 		System.out.println("Fin");
 		Long t2 = System.currentTimeMillis();
 		System.out.println("Time to complete: "+(t2-t1)/1000f);		
+		stop = false;
+		isRunning = false;
 	}
 	
 	public List<BasicDynaBean> getIndexable(String tblName) throws SQLException{

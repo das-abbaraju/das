@@ -254,6 +254,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 					operator.setPrimaryContact(userDAO.find(contactID));
 				}
 
+				operator.setNeedsIndexing(true);
 				operator = operatorDao.save(operator);
 				id = operator.getId();
 

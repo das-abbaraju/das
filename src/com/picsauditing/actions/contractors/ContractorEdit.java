@@ -187,7 +187,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					if (contactID > 0 && contactID != contractor.getPrimaryContact().getId()) {
 						contractor.setPrimaryContact(userDAO.find(contactID));
 					}
-
+					contractor.setNeedsIndexing(true);
 					accountDao.save(contractor);
 
 					addActionMessage("Successfully modified " + contractor.getName());

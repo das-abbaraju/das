@@ -128,6 +128,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 			employee.setAuditColumns(permissions);
 
+			employee.setNeedsIndexing(true);
 			employeeDAO.save(employee);
 
 			redirect("ManageEmployees.action?employee.id=" + employee.getId());
