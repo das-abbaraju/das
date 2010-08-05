@@ -98,23 +98,7 @@ function copyQuestion(atypeID) {
 					Cancel: function() {
 						$(this).dialog('close');
 					},
-					'Copy All': function() {
-						var data = $('form#textForm').serialize();
-						data += "&button=CopyAll&originalID="+atypeID;
-						startThinking( {div: 'copy_audit', message: 'Copying Question...' } );
-						$.ajax(
-							{
-								url: 'ManageQuestionCopyAjax.action',
-								data: data,
-								complete: function() {
-									stopThinking( {div: 'copy_audit' } );
-									$(this).dialog('close');
-									location.reload();
-								}
-							}
-						);
-					},
-					'Copy Only Question': function() {
+					'Copy Question': function() {
 						var data = $('form#textForm').serialize();
 						data += "&button=Copy&originalID="+atypeID;
 						startThinking( {div: 'copy_audit', message: 'Copying Question...' } );

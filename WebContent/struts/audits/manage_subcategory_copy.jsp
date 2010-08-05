@@ -16,10 +16,6 @@ $(function(){
 </script>
 <s:form id="textForm">
 
-	<s:hidden name="id" />
-	<s:hidden name="parentID" value="%{subCategory.category.id}" />
-	<s:hidden name="subCategory.category.id" />
-
 	<fieldset class="form" style="border: none">
 		<h2 class="formLegend">Copy To:</h2>
 		<ol>

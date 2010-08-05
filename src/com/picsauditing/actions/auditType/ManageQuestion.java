@@ -8,7 +8,6 @@ import java.util.Locale;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
@@ -39,11 +38,13 @@ public class ManageQuestion extends ManageSubCategory {
 	protected String defaultQuestion;
 	protected String defaultRequirement;
 
-	public ManageQuestion(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDao,
-			AuditCategoryDAO auditCategoryDao, AuditSubCategoryDAO auditSubCategoryDao,
-			AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO, CountryDAO countryDAO,
-			AuditQuestionTextDAO questionTextDAO) {
-		super(emailTemplateDAO, auditTypeDao, auditCategoryDao, auditSubCategoryDao, auditQuestionDao, countryDAO,
+	public ManageQuestion(EmailTemplateDAO emailTemplateDAO,
+			AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
+			AuditSubCategoryDAO auditSubCategoryDao,
+			AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO,
+			CountryDAO countryDAO, AuditQuestionTextDAO questionTextDAO) {
+		super(emailTemplateDAO, auditTypeDao, auditCategoryDao,
+				auditSubCategoryDao, auditQuestionDao, countryDAO,
 				questionTextDAO);
 		this.auditDataDAO = auditDataDAO;
 		this.questionTextDAO = questionTextDAO;
@@ -72,7 +73,8 @@ public class ManageQuestion extends ManageSubCategory {
 			permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
 			boolean found = false;
 			for (AuditQuestionText text : question.getQuestionTexts()) {
-				if (text.getLocale().equals(questionText.getLocale()) && text.getId() != questionText.getId()) {
+				if (text.getLocale().equals(questionText.getLocale())
+						&& text.getId() != questionText.getId()) {
 					found = true;
 					break;
 				}
@@ -155,7 +157,8 @@ public class ManageQuestion extends ManageSubCategory {
 			if (dependsOnQuestionID == 0)
 				question.setDependsOnQuestion(null);
 			else if (question.getDependsOnQuestion() == null
-					|| dependsOnQuestionID != question.getDependsOnQuestion().getId()) {
+					|| dependsOnQuestionID != question.getDependsOnQuestion()
+							.getId()) {
 				// dependsOnQuestionID has changed
 				question.setDependsOnQuestion(new AuditQuestion());
 				question.getDependsOnQuestion().setId(dependsOnQuestionID);
@@ -177,7 +180,8 @@ public class ManageQuestion extends ManageSubCategory {
 	protected boolean delete() {
 		try {
 			// TODO check to see if AuditData exists for this question first
-			List<AuditData> list = auditDataDAO.findByQuestionID(question.getId());
+			List<AuditData> list = auditDataDAO.findByQuestionID(question
+					.getId());
 			if (list.size() > 0) {
 				addActionError("Deleting Questions is not supported just yet.");
 				return false;
@@ -193,7 +197,7 @@ public class ManageQuestion extends ManageSubCategory {
 		}
 		return false;
 	}
-	
+
 	@Override
 	protected boolean copy() {
 		try {
@@ -201,46 +205,13 @@ public class ManageQuestion extends ManageSubCategory {
 				addActionMessage("Please Select SubCategory to copy to");
 				return false;
 			}
-			// if (auditTypeDAO.findWhere(
-			// // ADD CHECK FOR EXISTING CATEGORY!!
-			// "auditName LIKE '" + auditType.getAuditName() + "'")
-			// .size() > 0) {
-			// addActionMessage("The Category Name is not Unique");
-			// return false;
-			// }
 
-			AuditSubCategory targetSubCategory = auditSubCategoryDAO.find(targetID);
+			AuditSubCategory targetSubCategory = auditSubCategoryDAO
+					.find(targetID);
 			AuditQuestion aq = copyAuditQuestion(question, targetSubCategory);
 
 			addActionMessage("Copied the Question only. <a href=\"ManageQuestion.action?id="
 					+ aq.getId() + "\">Go to this Question?</a>");
-			return true;
-
-		} catch (Exception e) {
-			addActionError(e.getMessage());
-		}
-		return false;
-	}
-
-	@Override
-	protected boolean copyAll() {
-		try {
-			if (targetID == 0) {
-				addActionMessage("Please Select SubCategory to copy to");
-				return false;
-			}
-			// if (auditTypeDAO.findWhere(
-			// // ADD CHECK FOR EXISTING CATEGORY!!
-			// "auditName LIKE '" + auditType.getAuditName() + "'")
-			// .size() > 0) {
-			// addActionMessage("The Category Name is not Unique");
-			// return false;
-			// }
-
-			int id = copyAllRecursive();
-
-			addActionMessage("Copied all related Questions. <a href=\"ManageQuestion.action?id="
-					+ id + "\">Go to this Question?</a>");
 			return true;
 
 		} catch (Exception e) {
@@ -257,7 +228,8 @@ public class ManageQuestion extends ManageSubCategory {
 				return false;
 			}
 
-			AuditSubCategory targetSubCategory = auditSubCategoryDAO.find(targetID);
+			AuditSubCategory targetSubCategory = auditSubCategoryDAO
+					.find(targetID);
 			question.setSubCategory(targetSubCategory);
 			auditQuestionDAO.save(question);
 
@@ -271,19 +243,6 @@ public class ManageQuestion extends ManageSubCategory {
 		return false;
 	}
 
-	@Transactional
-	@Override
-	protected int copyAllRecursive() {
-		AuditSubCategory targetSubCategory = auditSubCategoryDAO.find(targetID);
-
-		// Copying Question
-		AuditQuestion questionCopy = copyAuditQuestion(question, targetSubCategory);
-
-		auditQuestionDAO.save(questionCopy);
-
-		return questionCopy.getId();
-	}
-
 	private void recalculateCategory() {
 		Date today = new Date();
 		if (category != null && category.getId() > 0) {
@@ -293,7 +252,8 @@ public class ManageQuestion extends ManageSubCategory {
 			int numRequired = 0;
 			for (AuditSubCategory subCat : category.getSubCategories()) {
 				for (AuditQuestion tempQuestion : subCat.getQuestions()) {
-					if (today.after(tempQuestion.getEffectiveDate()) && today.before(tempQuestion.getExpirationDate())) {
+					if (today.after(tempQuestion.getEffectiveDate())
+							&& today.before(tempQuestion.getExpirationDate())) {
 						numQuestions++;
 						if ("Yes".equals(tempQuestion.getIsRequired()))
 							numRequired++;

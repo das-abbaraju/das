@@ -2,11 +2,6 @@
 <s:include value="../actionMessages.jsp"/>
 
 <script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
-<script type="text/javascript">
-$(function(){
-	$('#catName').val($('#catName').val()+'_Copy');
-});
-</script>
 <s:form id="textForm">
 <fieldset class="form" style="border: none">
 	<h2 class="formLegend">Copy To:</h2>

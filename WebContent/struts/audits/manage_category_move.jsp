@@ -19,6 +19,10 @@
 	</ol>
 </fieldset>
 <fieldset class="form" style="border: none">
+	<s:hidden name="id" />
+	<s:hidden name="parentID" value="%{category.auditType.id}" />
+	<s:hidden name="category.auditType.id" />
+
 	<h2 class="formLegend">Category:</h2>
 	<ol>
 		<li><label>ID:</label>

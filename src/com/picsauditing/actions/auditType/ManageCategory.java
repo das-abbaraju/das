@@ -118,13 +118,6 @@ public class ManageCategory extends ManageAuditType {
 				addActionMessage("Please Select Category to copy to");
 				return false;
 			}
-			// if (auditTypeDAO.findWhere(
-			// // ADD CHECK FOR EXISTING CATEGORY!!
-			// "auditName LIKE '" + auditType.getAuditName() + "'")
-			// .size() > 0) {
-			// addActionMessage("The Category Name is not Unique");
-			// return false;
-			// }
 
 			int id = copyAllRecursive();
 
