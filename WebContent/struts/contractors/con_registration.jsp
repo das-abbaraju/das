@@ -100,7 +100,7 @@ $(function(){
 							<s:select list="countryList" id="contractorCountry"
 								name="contractor.country.isoCode"
 								onchange="changeCountry(this.value);"
-								value="locale.country" headerKey="" headerValue="- Country -"
+								headerKey="" headerValue="- Country -"
 								listKey="isoCode" listValue="name" />
 							<div class="fieldhelp">
 								<h3>Country</h3>
