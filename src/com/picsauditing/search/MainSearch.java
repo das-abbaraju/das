@@ -67,7 +67,8 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 					redirect("FacilitiesEdit.action?id="+searchID);
 				}				
 			} else if(searchType.equals("user")){
-				redirect("UsersManage.action?id="+searchID);
+				User u = userDAO.find(searchID);
+				redirect("UsersManage.action?accountId="+u.getAccount().getId()+"&user.id="+searchID);
 			} else if(searchType.equals("employee")){
 				redirect("ManageEmployees.action?employee.id="+searchID);
 			}
