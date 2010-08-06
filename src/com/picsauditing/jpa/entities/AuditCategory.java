@@ -44,6 +44,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 	private boolean pageBreak = false;
 	
 	private List<AuditCategory> subCategories = new ArrayList<AuditCategory>();
+	private List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
 
 	/**
 	 * This is a transient field that allows us to figure out which categories,
@@ -133,6 +134,15 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 
 	public void setSubCategories(List<AuditCategory> subCategories) {
 		this.subCategories = subCategories;
+	}
+	
+	@OneToMany(mappedBy = "categoryID")
+	public List<AuditQuestion> getQuestions() {
+		return questions;
+	}
+	
+	public void setQuestions(List<AuditQuestion> questions) {
+		this.questions = questions;
 	}
 
 	@Transient

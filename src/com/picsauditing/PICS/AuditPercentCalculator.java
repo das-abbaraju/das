@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -13,12 +12,10 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.Strings;
 
 public class AuditPercentCalculator {
 	private AuditDataDAO auditDataDao;
@@ -33,14 +30,9 @@ public class AuditPercentCalculator {
 		if (catData == null)
 			return;
 
-		if ("Yes".equals(catData.isAppliesB())) {
+		if (catData.isApplies()) {
 			return;
 		}
-
-		catData.getCategory().setValidDate(catData.getAudit().getValidDate());
-
-		Set<String> countries = catData.getAudit().getContractorAccount().getCountries();
-		catData.getCategory().setCountries(countries);
 
 		int requiredAnsweredCount = 0;
 		int answeredCount = 0;
@@ -51,12 +43,12 @@ public class AuditPercentCalculator {
 
 		// Get a list of questions/answers for this category
 		List<Integer> questionIDs = new ArrayList<Integer>();
-		for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
+		for (AuditCategory subCategory : catData.getCategory().getSubCategories()) {
 			for (AuditQuestion question : subCategory.getQuestions()) {
 				questionIDs.add(question.getId());
-				if ("Depends".equals(question.getIsRequired()) && question.getDependsOnQuestion() != null) {
-					int dependsOnQID = question.getDependsOnQuestion().getId();
-					questionIDs.add(dependsOnQID);
+				if ("Depends".equals(question.isRequired()) && question.getRequiredQuestion() != null) {
+					int RequiredQID = question.getRequiredQuestion().getId();
+					questionIDs.add(RequiredQID);
 				}
 			}
 		}
@@ -76,25 +68,22 @@ public class AuditPercentCalculator {
 
 			// Get a list of questions/answers for this category
 			Date validDate = catData.getAudit().getValidDate();
-			for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
+			for (AuditCategory subCategory : catData.getCategory().getSubCategories()) {
 				for (AuditQuestion question : subCategory.getQuestions()) {
-					if (question.isVisible() 
-							&& validDate.after(question.getEffectiveDate()) 
-							&& validDate.before(question.getExpirationDate())
-							&& Strings.isInCountries(question.getCountries(), countries)) {
-
+					if (question.isVisible() && validDate.after(question.getEffectiveDate()) 
+							&& validDate.before(question.getExpirationDate())) {
 						boolean isRequired = false;
 
 						AuditData answer = answers.get(question.getId());
-						isRequired = "Yes".equals(question.getIsRequired());
-						if ("Depends".equals(question.getIsRequired()) && question.getDependsOnQuestion() != null
-								&& question.getDependsOnAnswer() != null) {
-							if (question.getDependsOnAnswer().equals("NULL")) {
-								AuditData otherAnswer = answers.get(question.getDependsOnQuestion().getId());
+						isRequired = true == question.isRequired();
+						if (question.isRequired() && question.getRequiredQuestion() != null
+								&& question.getRequiredAnswer() != null) {
+							if (question.getRequiredAnswer().equals("NULL")) {
+								AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
 								if (otherAnswer == null)
 									isRequired = true;
-							} else if (question.getDependsOnAnswer().equals("NOTNULL")) {
-								AuditData otherAnswer = answers.get(question.getDependsOnQuestion().getId());
+							} else if (question.getRequiredAnswer().equals("NOTNULL")) {
+								AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
 								if (otherAnswer != null)
 									isRequired = true;
 							} else {
@@ -102,9 +91,9 @@ public class AuditPercentCalculator {
 								// question's answer
 								// Use the parentAnswer, so we get answers in
 								// the same tuple as this one
-								AuditData otherAnswer = answers.get(question.getDependsOnQuestion().getId());
+								AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
 								if (otherAnswer != null
-										&& question.getDependsOnAnswer().equals(otherAnswer.getAnswer()))
+										&& question.getRequiredAnswer().equals(otherAnswer.getAnswer()))
 									isRequired = true;
 							}
 						}
@@ -124,7 +113,7 @@ public class AuditPercentCalculator {
 									requiredAnsweredCount++;
 							}
 
-							if (answer.getQuestion().isHasRequirementB()) {
+							if (answer.getQuestion().isHasRequirement()) {
 								if (answer.isOK())
 									verifiedCount++;
 							} else {
@@ -193,7 +182,7 @@ public class AuditPercentCalculator {
 		}
 
 		for (AuditCatData data : conAudit.getCategories()) {
-			if (!conAudit.getAuditType().isDynamicCategories() || data.isAppliesB()) {
+			if (!conAudit.getAuditType().isDynamicCategories() || data.isApplies()) {
 				// The category applies or the audit type doesn't have dynamic
 				// categories
 				required += data.getNumRequired();

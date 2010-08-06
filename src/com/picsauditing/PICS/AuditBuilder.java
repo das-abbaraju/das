@@ -32,7 +32,6 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -586,14 +585,14 @@ public class AuditBuilder {
 			List<AuditCategory> allCategories = auditCategoryDAO.findByAuditTypeID(conAudit.getAuditType().getId());
 			PicsLogger.log("Categories to be included:");
 			for (AuditCategory category : categories)
-				PicsLogger.log("  " + category.getId() + " " + category.getCategory());
+				PicsLogger.log("  " + category.getId() + " " + category.getName());
 
 			for (AuditCategory category : allCategories) {
 				if (!categories.contains(category)) {
-					PicsLogger.log("Don't include  " + category.getCategory());
+					PicsLogger.log("Don't include  " + category.getName());
 					naCategories.add(category);
 				} else
-					PicsLogger.log("Include  " + category.getCategory());
+					PicsLogger.log("Include  " + category.getName());
 			}
 		} else {
 			categories.addAll(conAudit.getAuditType().getCategories());
@@ -607,11 +606,11 @@ public class AuditBuilder {
 		for (AuditCatData catData : conAudit.getCategories()) {
 			if (!catData.isOverride()) {
 				if (categories.contains(catData.getCategory())) {
-					PicsLogger.log(catData.getCategory().getCategory() + " should be Yes, was " + catData.getApplies());
-					catData.setApplies(YesNo.Yes);
+					PicsLogger.log(catData.getCategory().getName() + " should be true, was " + catData.isApplies());
+					catData.setApplies(true);
 				} else {
-					PicsLogger.log(catData.getCategory().getCategory() + " should be No, was " + catData.getApplies());
-					catData.setApplies(YesNo.No);
+					PicsLogger.log(catData.getCategory().getName() + " should be false, was " + catData.isApplies());
+					catData.setApplies(false);
 				}
 			}
 			// This category is already there, remove it so we don't add it
@@ -626,7 +625,7 @@ public class AuditBuilder {
 			AuditCatData catData = new AuditCatData();
 			catData.setCategory(category);
 			catData.setAudit(conAudit);
-			catData.setApplies(YesNo.Yes);
+			catData.setApplies(true);
 			catData.setOverride(false);
 			catData.setAuditColumns(new User(User.SYSTEM));
 			if (category.getNumRequired() == 0)
@@ -641,7 +640,7 @@ public class AuditBuilder {
 			AuditCatData catData = new AuditCatData();
 			catData.setCategory(category);
 			catData.setAudit(conAudit);
-			catData.setApplies(YesNo.No);
+			catData.setApplies(false);
 			catData.setOverride(false);
 			catData.setAuditColumns(new User(User.SYSTEM));
 			if (category.getNumRequired() == 0)

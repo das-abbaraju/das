@@ -159,7 +159,7 @@ public class EntityFactory {
 
 	static public AuditQuestion makeAuditQuestion() {
 		AuditQuestion question = new AuditQuestion();
-		question.setDefaultQuestion("jUnit Question");
+		question.setName("jUnit Question");
 		return question;
 	}
 

@@ -312,4 +312,9 @@ public class AuditQuestion extends BaseHistory {
 	public String getExpandedNumber() {
 		return "" + number;
 	}
+	
+	@Transient
+	public boolean isVisible() {
+		return this.equals(visibleQuestion);
+	}
 }
