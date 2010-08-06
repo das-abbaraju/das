@@ -82,3 +82,23 @@ insert into pics_stage.useraccess
 (accessID, userID, accessType, viewFlag, editFlag, deleteFlag, grantFlag, lastUpdate, grantedByID)
 select null, ua.userID, 'TRIRReport', ua.viewFlag, ua.editFlag, ua.deleteFlag, ua.grantFlag, now(), 941
 from useraccess ua where ua.accessType = 'FatalitiesReport';
+
+-- Audit Changes
+insert into audit_category
+select id, auditTypeID, null parent, category name, number, numRequired, numQuestions, null helpText, createdBy, updatedBy, creationDate, updateDate, false pageBreak, null legacyID
+from `pics_yesterday`.pqfcategories;
+
+insert into audit_category
+  (parentID, name, number, numRequired, numQuestions, helpText, createdBy, updatedBy, creationDate, updateDate, pageBreak, legacyID)
+select
+  categoryID parentID, subCategory name, number, -1 numRequired, -1 numQuestions, helpText, createdBy, updatedBy, creationDate, updateDate, true pageBreak, id legacyID
+from `pics_yesterday`.pqfsubcategories;
+
+insert into audit_question
+select q.id, c.id categoryID, q.number, t.question name, q.createdBy, q.updatedBy, q.creationDate, q.updateDate, q.effectiveDate, q.expirationDate, q.questionType, (q.hasRequirement = 'Yes') hasRequirement, q.okAnswer, (q.isRequired = 'Yes') required, q.dependsOnQID, q.dependsOnAnswer, null visibleQuestion, null visibleAnswer, q.columnHeader, q.uniqueCode, q.title, (q.isGroupedWithPrevious = 'Yes') groupedWithPrevious, (q.isRedFlagQuestion = 'Yes') flaggable, q.showComment, q.riskLevel, q.helpPage, t.requirement
+from `pics_yesterday`.pqfquestions q
+  left join `pics_yesterday`.pqfquestion_text t
+    on q.id = t.questionID
+      and t.locale = 'en'
+  left join audit_category c
+    on c.legacyID = q.subCategoryID;
