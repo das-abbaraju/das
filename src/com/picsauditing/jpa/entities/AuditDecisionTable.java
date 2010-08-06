@@ -1,6 +1,10 @@
 package com.picsauditing.jpa.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
@@ -14,6 +18,8 @@ public class AuditDecisionTable extends BaseDecisionTable {
 	private ContractorType contractorType;
 	private ContractorTag tag;
 
+	@ManyToOne
+	@JoinColumn(name = "auditTypeID")
 	public AuditType getAuditType() {
 		return auditType;
 	}
@@ -22,6 +28,7 @@ public class AuditDecisionTable extends BaseDecisionTable {
 		this.auditType = auditType;
 	}
 
+	@Enumerated(EnumType.ORDINAL)
 	public LowMedHigh getRisk() {
 		return risk;
 	}
@@ -30,6 +37,8 @@ public class AuditDecisionTable extends BaseDecisionTable {
 		this.risk = risk;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "opID")
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
 	}
@@ -38,6 +47,8 @@ public class AuditDecisionTable extends BaseDecisionTable {
 		this.operatorAccount = operatorAccount;
 	}
 
+	@JoinColumn(name = "accountType")
+	@Enumerated(EnumType.ORDINAL)
 	public ContractorType getContractorType() {
 		return contractorType;
 	}
@@ -46,6 +57,8 @@ public class AuditDecisionTable extends BaseDecisionTable {
 		this.contractorType = contractorType;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "tagID")
 	public ContractorTag getTag() {
 		return tag;
 	}

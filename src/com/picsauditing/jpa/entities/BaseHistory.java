@@ -21,16 +21,6 @@ public abstract class BaseHistory extends BaseTable {
 
 	protected Date effectiveDate;
 	protected Date expirationDate;
-	protected String test = "test";
-
-	@Transient
-	public void setTest(String test){
-		this.test = test;
-	}
-	@Transient
-	public String getTest(){
-		return test;
-	}
 	
 	@Temporal(TemporalType.DATE)
 	public Date getEffectiveDate() {

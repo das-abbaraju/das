@@ -1,14 +1,9 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,23 +14,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.util.Strings;
-
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "pqfquestions")
+@Table(name = "audit_question")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditQuestion extends BaseTable implements
-		Comparable<AuditQuestion> {
+public class AuditQuestion extends BaseHistory {
 	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 	static public final int EMR = 2034;
 	static public final int MANUAL_PQF = 1331;
@@ -48,109 +36,46 @@ public class AuditQuestion extends BaseTable implements
 			"Number", "Office Location", "Radio", "Service", "State", "Text",
 			"Text Area", "Yes/No", "Yes/No/NA" };
 
-	private AuditSubCategory subCategory;
+	private AuditCategory auditCategory;
 	private int number;
+	private String name;
+	private String questionType;
+	private boolean hasRequirement;
+	private String okAnswer;
+	private boolean required;
+	private AuditQuestion requiredQuestion;
+	private String requiredAnswer;
+	private AuditQuestion visibleQuestion;
+	private String visibleAnswer;
 	private String columnHeader;
 	private String uniqueCode;
-	private Date effectiveDate = new Date();
-	private Date expirationDate;
-	private YesNo hasRequirement = YesNo.No;
-	private String okAnswer;
-	private YesNo isRedFlagQuestion = YesNo.No;
-	private String isRequired;
-	private AuditQuestion dependsOnQuestion = null;
-	private String dependsOnAnswer;
-	private String questionType;
 	private String title;
-	private YesNo isVisible = YesNo.Yes;
-	private YesNo isGroupedWithPrevious = YesNo.No;
+	private boolean groupedWithPrevious;
+	private boolean flaggable;
+	private boolean showComment;
 	private LowMedHigh riskLevel = null;
-	private String linkUrl1;
-	private String linkText1;
-	private String linkUrl2;
-	private String linkText2;
-	private String linkUrl3;
-	private String linkText3;
-	private String linkUrl4;
-	private String linkText4;
-	private String linkUrl5;
-	private String linkText5;
-	private String linkUrl6;
-	private String linkText6;
-	private boolean showComment = false;
-
-	protected List<AuditQuestionOption> options;
-	protected List<AuditQuestionText> questionTexts = new ArrayList<AuditQuestionText>();
+	private String helpPage;
+	private String requirement;
+	
 	private String criteria;
 	private String criteriaAnswer;
-	private String helpPage;
-	private String countries;
 
-	private List<AuditQuestion> dependentQuestions;
+	private List<AuditQuestion> requiredQuestions;
+	private List<AuditQuestion> visibleQuestions;
+	protected List<AuditQuestionOption> options;
 
 	public AuditQuestion() {
 
 	}
 
-	public AuditQuestion(AuditQuestion a, AuditSubCategory asc) {
-		this.columnHeader = a.getColumnHeader();
-		this.countries = a.getCountries();
-		this.criteria = a.getCriteria();
-		this.criteriaAnswer = a.getCriteriaAnswer();
-		if (a.getDependentQuestions() != null)
-			this.dependentQuestions = new ArrayList<AuditQuestion>(a
-					.getDependentQuestions());
-		this.dependsOnAnswer = a.getDependsOnAnswer();
-		this.dependsOnQuestion = a.getDependsOnQuestion();
-		this.effectiveDate = a.getEffectiveDate();
-		this.expirationDate = a.getExpirationDate();
-		this.hasRequirement = a.getHasRequirement();
-		this.helpPage = a.getHelpPage();
-		this.isGroupedWithPrevious = a.getIsGroupedWithPrevious();
-		this.isRedFlagQuestion = a.getIsRedFlagQuestion();
-		this.isRequired = a.getIsRequired();
-		this.isVisible = a.getIsVisible();
-		this.linkText1 = a.getLinkText1();
-		this.linkText2 = a.getLinkText2();
-		this.linkText3 = a.getLinkText3();
-		this.linkText4 = a.getLinkText4();
-		this.linkText5 = a.getLinkText5();
-		this.linkText6 = a.getLinkText6();
-		this.linkUrl1 = a.getLinkUrl1();
-		this.linkUrl2 = a.getLinkUrl2();
-		this.linkUrl3 = a.getLinkUrl3();
-		this.linkUrl4 = a.getLinkUrl4();
-		this.linkUrl5 = a.getLinkUrl5();
-		this.linkUrl6 = a.getLinkUrl6();
-		this.number = a.getNumber();
-		this.okAnswer = a.getOkAnswer();
-		this.questionType = a.getQuestionType();
-		this.riskLevel = a.getRiskLevel();
-		this.showComment = a.isShowComment();
-		this.title = a.getTitle();
-		this.uniqueCode = a.getUniqueCode();
-		this.subCategory = asc;
-	}
-
-	@Transient
-	public AuditType getAuditType() {
-		return subCategory.getCategory().getAuditType();
-	}
-
-	@Transient
-	public String getExpandedNumber() {
-		return subCategory.getCategory().getNumber() + "."
-				+ subCategory.getNumber() + "." + number;
-	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "subCategoryID", nullable = false)
-	public AuditSubCategory getSubCategory() {
-		return this.subCategory;
+	@JoinColumn(name = "categoryID", nullable = false)
+	public AuditCategory getAuditCategory() {
+		return this.auditCategory;
 	}
 
-	public void setSubCategory(AuditSubCategory subCategory) {
-		this.subCategory = subCategory;
+	public void setAuditCategory(AuditCategory auditCategory) {
+		this.auditCategory = auditCategory;
 	}
 
 	@Column(nullable = false)
@@ -162,60 +87,13 @@ public class AuditQuestion extends BaseTable implements
 		this.number = number;
 	}
 
-	@Enumerated(EnumType.STRING)
-	public YesNo getHasRequirement() {
-		return this.hasRequirement;
+	@Column(nullable = false)
+	public String getName() {
+		return name;
 	}
 
-	@Transient
-	public boolean isHasRequirementB() {
-		if (Strings.isEmpty(getRequirement()))
-			return false;
-		return YesNo.Yes.equals(hasRequirement);
-	}
-
-	public void setHasRequirement(YesNo hasRequirement) {
-		this.hasRequirement = hasRequirement;
-	}
-
-	public String getOkAnswer() {
-		return this.okAnswer;
-	}
-
-	public void setOkAnswer(String okAnswer) {
-		this.okAnswer = okAnswer;
-	}
-
-	/**
-	 * Yes, No, Depends
-	 * 
-	 * @return
-	 */
-	public String getIsRequired() {
-		return this.isRequired;
-	}
-
-	public void setIsRequired(String isRequired) {
-		this.isRequired = isRequired;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "dependsOnQID")
-	public AuditQuestion getDependsOnQuestion() {
-		return dependsOnQuestion;
-	}
-
-	public void setDependsOnQuestion(AuditQuestion dependsOnQuestion) {
-		this.dependsOnQuestion = dependsOnQuestion;
-	}
-
-	@Column(name = "dependsOnAnswer")
-	public String getDependsOnAnswer() {
-		return this.dependsOnAnswer;
-	}
-
-	public void setDependsOnAnswer(String dependsOnAnswer) {
-		this.dependsOnAnswer = dependsOnAnswer;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Column(nullable = false)
@@ -227,203 +105,75 @@ public class AuditQuestion extends BaseTable implements
 		this.questionType = questionType;
 	}
 
-	@Enumerated(EnumType.STRING)
-	public YesNo getIsVisible() {
-		return this.isVisible;
+	public void setHasRequirement(boolean hasRequirement) {
+		this.hasRequirement = hasRequirement;
 	}
 
-	@Transient
-	public boolean isVisible() {
-		return YesNo.Yes.equals(isVisible);
+	@Column(nullable = false)
+	public boolean isHasRequirement() {
+		return hasRequirement;
 	}
 
-	public void setIsVisible(YesNo isVisible) {
-		this.isVisible = isVisible;
+	public String getOkAnswer() {
+		return this.okAnswer;
 	}
 
-	@Column(name = "title", length = 250)
-	public String getTitle() {
-		return this.title;
+	public void setOkAnswer(String okAnswer) {
+		this.okAnswer = okAnswer;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	@Column(nullable = false)
+	public boolean isRequired() {
+		return required;
 	}
 
-	@Enumerated(EnumType.STRING)
-	public YesNo getIsGroupedWithPrevious() {
-		return this.isGroupedWithPrevious;
+	public void setRequired(boolean required) {
+		this.required = required;
 	}
 
-	public void setIsGroupedWithPrevious(YesNo isGroupedWithPrevious) {
-		this.isGroupedWithPrevious = isGroupedWithPrevious;
+	@ManyToOne
+	@JoinColumn(name = "requiredQuestion")
+	public AuditQuestion getRequiredQuestion() {
+		return requiredQuestion;
 	}
 
-	public String getLinkUrl1() {
-		return this.linkUrl1;
+	public void setRequiredQuestion(AuditQuestion requiredQuestion) {
+		this.requiredQuestion = requiredQuestion;
 	}
 
-	public void setLinkUrl1(String linkUrl1) {
-		this.linkUrl1 = linkUrl1;
+	public String getRequiredAnswer() {
+		return requiredAnswer;
 	}
 
-	public String getLinkText1() {
-		return this.linkText1;
+	public void setRequiredAnswer(String requiredAnswer) {
+		this.requiredAnswer = requiredAnswer;
 	}
 
-	public void setLinkText1(String linkText1) {
-		this.linkText1 = linkText1;
+	@ManyToOne
+	@JoinColumn(name = "visibleQuestion")
+	public AuditQuestion getVisibleQuestion() {
+		return visibleQuestion;
 	}
 
-	public String getLinkUrl2() {
-		return this.linkUrl2;
+	public void setVisibleQuestion(AuditQuestion visibleQuestion) {
+		this.visibleQuestion = visibleQuestion;
 	}
 
-	public void setLinkUrl2(String linkUrl2) {
-		this.linkUrl2 = linkUrl2;
+	public String getVisibleAnswer() {
+		return visibleAnswer;
 	}
 
-	public String getLinkText2() {
-		return this.linkText2;
+	public void setVisibleAnswer(String visibleAnswer) {
+		this.visibleAnswer = visibleAnswer;
 	}
 
-	public void setLinkText2(String linkText2) {
-		this.linkText2 = linkText2;
+	@Column(length = 30)
+	public String getColumnHeader() {
+		return columnHeader;
 	}
 
-	public String getLinkUrl3() {
-		return this.linkUrl3;
-	}
-
-	public void setLinkUrl3(String linkUrl3) {
-		this.linkUrl3 = linkUrl3;
-	}
-
-	public String getLinkText3() {
-		return this.linkText3;
-	}
-
-	public void setLinkText3(String linkText3) {
-		this.linkText3 = linkText3;
-	}
-
-	public String getLinkUrl4() {
-		return this.linkUrl4;
-	}
-
-	public void setLinkUrl4(String linkUrl4) {
-		this.linkUrl4 = linkUrl4;
-	}
-
-	public String getLinkText4() {
-		return this.linkText4;
-	}
-
-	public void setLinkText4(String linkText4) {
-		this.linkText4 = linkText4;
-	}
-
-	public String getLinkUrl5() {
-		return this.linkUrl5;
-	}
-
-	public void setLinkUrl5(String linkUrl5) {
-		this.linkUrl5 = linkUrl5;
-	}
-
-	public String getLinkText5() {
-		return this.linkText5;
-	}
-
-	public void setLinkText5(String linkText5) {
-		this.linkText5 = linkText5;
-	}
-
-	public String getLinkUrl6() {
-		return this.linkUrl6;
-	}
-
-	public void setLinkUrl6(String linkUrl6) {
-		this.linkUrl6 = linkUrl6;
-	}
-
-	public String getLinkText6() {
-		return this.linkText6;
-	}
-
-	public void setLinkText6(String linkText6) {
-		this.linkText6 = linkText6;
-	}
-
-	@Temporal(TemporalType.DATE)
-	public Date getEffectiveDate() {
-		return effectiveDate;
-	}
-
-	public void setEffectiveDate(Date effectiveDate) {
-		this.effectiveDate = effectiveDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	public Date getExpirationDate() {
-		return expirationDate;
-	}
-
-	public void setExpirationDate(Date expirationDate) {
-		this.expirationDate = expirationDate;
-	}
-
-	@Enumerated(EnumType.STRING)
-	public YesNo getIsRedFlagQuestion() {
-		return this.isRedFlagQuestion;
-	}
-
-	public void setIsRedFlagQuestion(YesNo isRedFlagQuestion) {
-		this.isRedFlagQuestion = isRedFlagQuestion;
-	}
-
-	@Transient
-	public String getQuestion() {
-		try {
-			return getQuestionText().getQuestion();
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	@Transient
-	public String getRequirement() {
-		try {
-			return getQuestionText().getRequirement();
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	@Transient
-	public void setDefaultQuestion(String question) {
-		AuditQuestionText qText = getQuestionText(DEFAULT_LOCALE);
-		if (qText == null) {
-			qText = new AuditQuestionText();
-			qText.setAuditQuestion(this);
-			qText.setLocale(DEFAULT_LOCALE);
-			questionTexts.add(qText);
-		}
-
-		qText.setQuestion(question);
-	}
-
-	@Transient
-	public void setDefaultRequirement(String requirement) {
-		AuditQuestionText qText = getQuestionText(DEFAULT_LOCALE);
-		if (qText == null) {
-			qText = new AuditQuestionText();
-			qText.setAuditQuestion(this);
-			qText.setLocale(DEFAULT_LOCALE);
-			questionTexts.add(qText);
-		}
-
-		qText.setRequirement(requirement);
+	public void setColumnHeader(String columnHeader) {
+		this.columnHeader = columnHeader;
 	}
 
 	@Column(length = 50)
@@ -435,84 +185,35 @@ public class AuditQuestion extends BaseTable implements
 		this.uniqueCode = uniqueCode;
 	}
 
-	@OneToMany(mappedBy = "dependsOnQuestion")
-	public List<AuditQuestion> getDependentQuestions() {
-		return dependentQuestions;
+	@Column(name = "title", length = 250)
+	public String getTitle() {
+		return this.title;
 	}
 
-	public void setDependentQuestions(List<AuditQuestion> dependentQuestions) {
-		this.dependentQuestions = dependentQuestions;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	@OneToMany(mappedBy = "auditQuestion")
-	@OrderBy("number")
-	public List<AuditQuestionOption> getOptions() {
-		return options;
+	@Column(nullable = false)
+	public boolean isGroupedWithPrevious() {
+		return groupedWithPrevious;
 	}
 
-	@OneToMany(mappedBy = "auditQuestion", cascade = { CascadeType.ALL })
-	public List<AuditQuestionText> getQuestionTexts() {
-		return questionTexts;
+	public void setGroupedWithPrevious(boolean groupedWithPrevious) {
+		this.groupedWithPrevious = groupedWithPrevious;
 	}
 
-	public void setQuestionTexts(List<AuditQuestionText> questionTexts) {
-		this.questionTexts = questionTexts;
+	@Column(nullable = false)
+	public boolean isFlaggable() {
+		return flaggable;
 	}
 
-	@Transient
-	public AuditQuestionText getQuestionText() {
-		try {
-			Permissions permissions = (Permissions) ActionContext.getContext()
-					.getSession().get("permissions");
-			for (AuditQuestionText questionText : questionTexts) {
-				if (permissions.getLocale().equals(questionText.getLocale()))
-					return questionText;
-			}
-
-			// Try to find based on the language only
-			Locale l = new Locale(permissions.getLocale().getLanguage());
-			for (AuditQuestionText questionText : questionTexts) {
-				if (l.equals(questionText.getLocale()))
-					return questionText;
-			}
-
-			throw new Exception("Not Found");
-		} catch (Exception returnDefault) {
-			for (AuditQuestionText questionText : questionTexts) {
-				if (DEFAULT_LOCALE.equals(questionText.getLocale()))
-					return questionText;
-			}
-		}
-
-		return null;
-	}
-
-	@Transient
-	public AuditQuestionText getQuestionText(Locale l) {
-		AuditQuestionText text = null;
-		for (AuditQuestionText auditQuestionText : questionTexts) {
-			if (auditQuestionText.getLocale().equals(l)) {
-				text = auditQuestionText;
-				break;
-			}
-		}
-		return text;
-	}
-
-	@Transient
-	public List<AuditQuestionOption> getOptionsVisible() {
-		List<AuditQuestionOption> options = new ArrayList<AuditQuestionOption>();
-		for (AuditQuestionOption o : getOptions())
-			if (o.isVisibleB())
-				options.add(o);
-		return options;
-	}
-
-	public void setOptions(List<AuditQuestionOption> options) {
-		this.options = options;
+	public void setFlaggable(boolean flaggable) {
+		this.flaggable = flaggable;
 	}
 
 	@Enumerated(EnumType.ORDINAL)
+	@Column(nullable = false)
 	public boolean isShowComment() {
 		return showComment;
 	}
@@ -530,15 +231,6 @@ public class AuditQuestion extends BaseTable implements
 		this.riskLevel = risk;
 	}
 
-	@Column(length = 30)
-	public String getColumnHeader() {
-		return columnHeader;
-	}
-
-	public void setColumnHeader(String columnHeader) {
-		this.columnHeader = columnHeader;
-	}
-
 	@Column(length = 100)
 	public String getHelpPage() {
 		return helpPage;
@@ -548,33 +240,12 @@ public class AuditQuestion extends BaseTable implements
 		this.helpPage = helpPage;
 	}
 
-	public String getCountries() {
-		return countries;
+	public void setRequirement(String requirement) {
+		this.requirement = requirement;
 	}
 
-	public void setCountries(String countries) {
-		this.countries = countries;
-	}
-
-	@Transient
-	public String getColumnHeaderOrQuestion() {
-		if (columnHeader != null && columnHeader.length() > 0)
-			return columnHeader;
-		if (getQuestion() == null)
-			return "";
-		return getQuestion();
-	}
-
-	@Transient
-	public String getShortQuestion() {
-		String columnText = getQuestion();
-
-		if (columnText.length() > 45) {
-			columnText = columnText.substring(0, 45);
-			columnText += " [...]";
-		}
-
-		return getExpandedNumber() + ": " + columnText;
+	public String getRequirement() {
+		return requirement;
 	}
 
 	@Transient
@@ -595,63 +266,50 @@ public class AuditQuestion extends BaseTable implements
 		this.criteriaAnswer = criteriaAnswer;
 	}
 
-	@Transient
-	public boolean isValid() {
-		if (getSubCategory().getCategory().getValidDate().after(
-				getEffectiveDate())
-				&& getSubCategory().getCategory().getValidDate().before(
-						getExpirationDate())
-				&& Strings.isInCountries(countries, getSubCategory()
-						.getCategory().getCountries()))
-			return true;
-		return false;
+	@OneToMany(mappedBy = "requiredQuestion")
+	public List<AuditQuestion> getRequiredQuestions() {
+		return requiredQuestions;
 	}
 
-	@Override
-	public int compareTo(AuditQuestion other) {
-		if (other == null) {
-			return 1;
-		}
+	public void setRequiredQuestions(List<AuditQuestion> requiredQuestions) {
+		this.requiredQuestions = requiredQuestions;
+	}
 
-		int cmp = getSubCategory().compareTo(other.getSubCategory());
+	@OneToMany(mappedBy = "visibleQuestion")
+	public List<AuditQuestion> getVisibleQuestions() {
+		return visibleQuestions;
+	}
 
-		if (cmp != 0)
-			return cmp;
+	public void setVisibleQuestions(List<AuditQuestion> visibleQuestions) {
+		this.visibleQuestions = visibleQuestions;
+	}
 
-		return new Integer(getNumber())
-				.compareTo(new Integer(other.getNumber()));
+	@OneToMany(mappedBy = "auditQuestion")
+	@OrderBy("number")
+	public List<AuditQuestionOption> getOptions() {
+		return options;
 	}
 
 	@Transient
-	public String[] getCountriesArray() {
-		if (Strings.isEmpty(countries))
-			return new String[] {};
-		return countries.replaceFirst("^[!]?\\|", "").replaceAll("\\|$", "")
-				.split("\\|");
+	public List<AuditQuestionOption> getOptionsVisible() {
+		List<AuditQuestionOption> options = new ArrayList<AuditQuestionOption>();
+		for (AuditQuestionOption o : getOptions())
+			if (o.isVisibleB())
+				options.add(o);
+		return options;
+	}
+
+	public void setOptions(List<AuditQuestionOption> options) {
+		this.options = options;
 	}
 
 	@Transient
-	public void setCountriesArray(String[] countryArray, boolean exclude) {
-		Set<String> countrySet = new HashSet<String>();
-		Collections.addAll(countrySet, countryArray);
-		countrySet.remove("");
-		String tmp = null;
-		if (countrySet.size() > 0) {
-			tmp = "";
-			if (exclude)
-				tmp += "!";
-			tmp += "|";
-
-			for (String country : countrySet) {
-				tmp += country + "|";
-			}
-		}
-
-		countries = tmp;
+	public AuditType getAuditType() {
+		return auditCategory.getAuditType();
 	}
 
-	@Override
-	public String toString() {
-		return getQuestionText().toString();
+	@Transient
+	public String getExpandedNumber() {
+		return "" + number;
 	}
 }

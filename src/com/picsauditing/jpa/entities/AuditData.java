@@ -128,7 +128,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 	@Transient
 	public boolean isOK() {
-		if (!question.isHasRequirementB())
+		if (!question.isHasRequirement())
 			return true;
 
 		if (answer == null || question.getOkAnswer() == null)
@@ -158,7 +158,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	public boolean isHasRequirements() {
 		if (!audit.getAuditType().isHasRequirements())
 			return false;
-		if (!getQuestion().isHasRequirementB())
+		if (!getQuestion().isHasRequirement())
 			return false;
 		return (YesNo.Yes.equals(wasChanged) || isRequirementOpen());
 	}
@@ -177,14 +177,14 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		return false;
 	}
 
-	@Transient
+/*	@Transient
 	public boolean isRequired() {
 		String isRequired = question.getIsRequired();
 		if (isRequired.equals("Yes"))
 			return true;
 
 		if (isRequired.equals("Depends")) {
-			if (question.getDependsOnQuestion() == null)
+			if (question.getr == null)
 				return false;
 			String dependsOnAnswer = question.getDependsOnAnswer();
 			if (dependsOnAnswer == null)
@@ -206,7 +206,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 				return true;
 		}
 		return false;
-	}
+	}*/
 
 	/**
 	 * Get a unique ID for this answer regardless if it has been saved or not
@@ -277,12 +277,13 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 			return 1;
 		}
 
-		int cmp = getQuestion().compareTo(other.getQuestion());
+		//int cmp = getQuestion().compareTo(other.getQuestion());
 
-		if (cmp != 0)
-			return cmp;
-
-		return new Integer(getId()).compareTo(new Integer(other.getId()));
+//		if (cmp != 0)
+//			return cmp;
+//
+//		return new Integer(getId()).compareTo(new Integer(other.getId()));
+		return 0;
 	}
 
 	@Override
