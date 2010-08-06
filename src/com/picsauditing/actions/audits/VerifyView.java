@@ -84,10 +84,10 @@ public class VerifyView extends ContractorActionSupport {
 		for (ContractorAudit conAudit : getVerificationAudits()) {
 			if (conAudit.getAuditType().isAnnualAddendum()) {
 				for (AuditData auditData : conAudit.getData()) {
-					int categoryID = auditData.getQuestion().getSubCategory().getCategory().getId();
+					int categoryID = auditData.getQuestion().getAuditCategory().getId();
 					if (categoryID != AuditCategory.CITATIONS
 							|| (categoryID == AuditCategory.CITATIONS
-									&& (auditData.getQuestion().getIsRequired().equals("Yes"))
+									&& (auditData.getQuestion().isRequired())
 									|| (auditData.getQuestion().getId() == 3565 && auditData.isAnswered())
 									|| (auditData.getQuestion().getId() == 3566 && auditData.isAnswered())
 									|| (auditData.getQuestion().getId() == 3567 && auditData.isAnswered()) || (auditData
@@ -130,10 +130,9 @@ public class VerifyView extends ContractorActionSupport {
 				}
 				for (AuditData auditData : conAudit.getData()) {
 					if (auditData.getQuestion().getId() != 2447 && auditData.getQuestion().getId() != 2448) {
-						int categoryID = auditData.getQuestion().getSubCategory().getCategory().getId();
+						int categoryID = auditData.getQuestion().getAuditCategory().getId();
 						if (categoryID != AuditCategory.CITATIONS
-								|| (categoryID == AuditCategory.CITATIONS && auditData.getQuestion().getIsRequired()
-										.equals("Yes"))) {
+								|| (categoryID == AuditCategory.CITATIONS && auditData.getQuestion().isRequired())) {
 							if (!auditData.isVerified()) {
 								sb.append(auditData.getQuestion().getColumnHeaderOrQuestion());
 								sb.append(" : " + auditData.getComment());
@@ -147,10 +146,15 @@ public class VerifyView extends ContractorActionSupport {
 				List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 				for (AuditData ad : temp) {
 					if (!ad.isVerified()) {
-						sb.append(ad.getQuestion().getSubCategory().getCategory().getNumber() + "."
-								+ ad.getQuestion().getSubCategory().getNumber() + "." + ad.getQuestion().getNumber());
-						sb.append(":" + ad.getQuestion().getSubCategory().getSubCategory() + "/"
-								+ ad.getQuestion().getColumnHeaderOrQuestion());
+						sb.append(ad.getQuestion().getAuditCategory().getNumber() + "."
+								+ ad.getQuestion().getAuditCategory().getNumber() + "." + ad.getQuestion().getNumber());
+						for(AuditCategory ac : ad.getQuestion().getAuditCategory().getSubCategories()){
+							if(ad.getQuestion().getAuditCategory().getId()==ac.getParent().getId()){
+								sb.append(":" + ad.getQuestion().getAuditCategory() + "/"
+										+ ad.getQuestion().getColumnHeaderOrQuestion());
+							}
+								
+						}
 						sb.append("\n");
 						sb.append("Comment : " + ad.getComment());
 						sb.append("\n");

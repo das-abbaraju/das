@@ -49,7 +49,7 @@ public class ContractorAuditLegacy {
 		boolean isComplete = true;
 		
 		for(AuditCatData catData : this.audit.getCategories()) {
-			if (catData.getApplies().equals(YesNo.No) || catData.getPercentCompleted() < 100)
+			if (catData.isApplies() || catData.getPercentCompleted() < 100)
 				isComplete = false;
 		}
 		return isComplete;
@@ -72,7 +72,7 @@ public class ContractorAuditLegacy {
 	public void updatePercentageCompleted(int catID) {
 		for(AuditCatData catData : this.audit.getCategories()) {
 			if (catData.getCategory().getId() == catID) {
-				if (catData.getApplies().equals(YesNo.No)) {
+				if (catData.isApplies()) {
 					return;
 				}
 				break;
