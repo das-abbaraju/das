@@ -97,7 +97,7 @@ public class ManageDesktopMatrix extends PicsActionSupport {
 						}
 					}
 					if (matrix.getCategory() != null && matrix.getQuestion() != null) {
-						addActionMessage("Added "+matrix.getCategory().getCategory()+" for "+matrix.getQuestion().getQuestion());
+						addActionMessage("Added "+matrix.getCategory().getName()+" for "+matrix.getQuestion().getName());
 
 						desktopMatrixDAO.save(matrix);
 						
@@ -111,7 +111,7 @@ public class ManageDesktopMatrix extends PicsActionSupport {
 					for (DesktopMatrix matrix : matrixData) {
 						if (matrix.getCategory().getId() == categoryID
 								&& matrix.getQuestion().getId() == questionID) {
-							addActionMessage("Removed "+matrix.getCategory().getCategory()+" for "+matrix.getQuestion().getQuestion());
+							addActionMessage("Removed "+matrix.getCategory().getName()+" for "+matrix.getQuestion().getName());
 							desktopMatrixDAO.remove(matrix);
 							data.get(categoryID).put(questionID, false);
 							//matrixData.remove(matrix);
