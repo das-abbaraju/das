@@ -10,6 +10,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditFileDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
@@ -58,10 +59,10 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 			openReqs = new ArrayList<AuditData>();
 			AnswerMap answerMap = auditDataDao.findAnswers(auditID);
 			for (AuditCatData auditCatData : getCategories()) {
-				if (auditCatData.isAppliesB()) {
-					for (AuditSubCategory auditSubCategory : auditCatData.getCategory().getValidSubCategories()) {
-						for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
-							if (auditQuestion.isVisible() && auditQuestion.isValid()) {
+				if (auditCatData.isApplies()) {
+					for (AuditCategory auditCategory : auditCatData.getCategory().getSubCategories()) {
+						for (AuditQuestion auditQuestion : auditCategory.getQuestions()) {
+							if (auditQuestion.isVisible()) { // removed is valid
 								AuditData auditData = answerMap.get(auditQuestion.getId());
 								if (auditData != null) {
 									if (auditData.isHasRequirements() && auditData.isRequirementOpen()) {
@@ -86,8 +87,8 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 	}
 
 	public String getFileDesc(AuditQuestion auditQuestion) {
-		return auditQuestion.getSubCategory().getCategory().getNumber() + "."
-				+ auditQuestion.getSubCategory().getNumber() + "." + auditQuestion.getNumber();
+		return auditQuestion.getAuditCategory().getNumber() + "."
+				+ auditQuestion.getAuditCategory().getNumber() + "." + auditQuestion.getNumber();
 	}
 
 	public AuditCatData getAuditCatData(int auditID, int catID) {

@@ -71,7 +71,7 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 			if (applyCategoryID > 0) {
 				for (AuditCatData data : conAudit.getCategories()) {
 					if (data.getId() == applyCategoryID) {
-						data.setApplies(YesNo.Yes);
+						data.setApplies(true);
 						data.setOverride(true);
 					}
 				}
@@ -79,7 +79,7 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 			if (removeCategoryID > 0) {
 				for (AuditCatData data : conAudit.getCategories()) {
 					if (data.getId() == removeCategoryID) {
-						data.setApplies(YesNo.No);
+						data.setApplies(true);
 						data.setOverride(true);
 					}
 				}
@@ -88,7 +88,7 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 
 		if (conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().isSubmitted()) {
 			for (AuditCatData auditCatData : conAudit.getCategories()) {
-				if (!auditCatData.isAppliesB()) {
+				if (!auditCatData.isApplies()) {
 					if (auditCatData.getCategory().isSha()) {
 						switch (auditCatData.getCategory().getId()) {
 						case AuditCategory.OSHA_AUDIT:

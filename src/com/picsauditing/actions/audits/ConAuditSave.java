@@ -68,7 +68,7 @@ public class ConAuditSave extends AuditActionSupport {
 			if (conAudit.getAuditType().isPqf()) {
 				List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
 				for (AuditData auditData : temp) {
-					AuditCategory auditCategory = auditData.getQuestion().getSubCategory().getCategory();
+					AuditCategory auditCategory = auditData.getQuestion().getAuditCategory();
 					for (AuditCatData aCatData : conAudit.getCategories()) {
 						if (aCatData.getCategory() == auditCategory && aCatData.getPercentVerified() < 100) {
 							aCatData.setRequiredCompleted(aCatData.getRequiredCompleted() - 1);
