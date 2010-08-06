@@ -7,11 +7,8 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.AuditSubCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 
 @SuppressWarnings("serial")
@@ -22,13 +19,11 @@ public class OrderAuditChildren extends PicsActionSupport {
 	
 	protected AuditTypeDAO auditTypeDAO;
 	protected AuditCategoryDAO auditCategoryDAO;
-	protected AuditSubCategoryDAO auditSubCategoryDAO;
 	protected AuditQuestionDAO auditQuestionDAO;
 	
-	public OrderAuditChildren(AuditTypeDAO auditTypeDAO, AuditCategoryDAO auditCategoryDAO, AuditSubCategoryDAO auditSubCategoryDAO) {
+	public OrderAuditChildren(AuditTypeDAO auditTypeDAO, AuditCategoryDAO auditCategoryDAO) {
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
-		this.auditSubCategoryDAO = auditSubCategoryDAO;
 	}	
 	
 	public String execute() {
@@ -56,20 +51,11 @@ public class OrderAuditChildren extends PicsActionSupport {
 		// Change the Order numbers of the AuditSubCategories
 		if (type.equals("AuditCategory")) {
 			AuditCategory auditCategory = auditCategoryDAO.find(id);
-			for (AuditSubCategory subCategory : auditCategory.getSubCategories()) {
+			for (AuditCategory subCategory : auditCategory.getSubCategories()) {
 				subCategory.setNumber(list.get(subCategory.getId()));
 			}
 			auditCategoryDAO.save(auditCategory);
 		}
-		
-		// Change the Order numbers of the AuditQuestions
-		if (type.equals("AuditSubCategory")) {
-			AuditSubCategory auditSubCategory = auditSubCategoryDAO.find(id);
-			for (AuditQuestion question : auditSubCategory.getQuestions()) {
-				question.setNumber((short)list.get(question.getId()).intValue());
-			}
-			auditSubCategoryDAO.save(auditSubCategory);
-		}		
 
 		return SUCCESS;
 	}
