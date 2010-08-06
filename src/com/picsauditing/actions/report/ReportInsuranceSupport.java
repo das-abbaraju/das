@@ -129,7 +129,7 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 				// add the answers, keyed by auditid
 				for (AuditData answer : answers) {
 					String uniqueCode = answer.getQuestion().getUniqueCode();
-					if (answer.getQuestion().getSubCategory().getSubCategory().equals("Policy Limits"))
+					if (answer.getQuestion().getAuditCategory().getName().equals("Policy Limits"))
 						uniqueCode = "Limits";
 
 					if (answer.getQuestion().getQuestionType().equals("AMBest")) {

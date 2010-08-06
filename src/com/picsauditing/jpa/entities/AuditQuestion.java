@@ -317,4 +317,13 @@ public class AuditQuestion extends BaseHistory {
 	public boolean isVisible() {
 		return this.equals(visibleQuestion);
 	}
+	
+	@Transient
+	public String getColumnHeaderOrQuestion() {
+		if (columnHeader != null && columnHeader.length() > 0)
+			return columnHeader;
+		if (getName() == null)
+			return "";
+		return getName();
+	}
 }

@@ -53,7 +53,7 @@ public class ReportAnswerSearch extends ReportAccount {
 		questions = new ArrayList<AuditQuestion>();
 		questions.addAll(newQuestions);
 		for (AuditQuestion question : questions) {
-			sql.addAuditQuestion(question.getId(), question.getSubCategory().getCategory().getAuditType()
+			sql.addAuditQuestion(question.getId(), question.getAuditCategory().getAuditType()
 					.getId(), true);
 			if (question.getCriteria() != null && question.getCriteria().length() > 0) {
 				String qSearch = "q" + question.getId() + ".answer ";
@@ -80,7 +80,7 @@ public class ReportAnswerSearch extends ReportAccount {
 		super.addExcelColumns();
 		int i = 30;
 		for(AuditQuestion auditQuestion : questions) {
-			excelSheet.addColumn(new ExcelColumn("answer"+auditQuestion.getId(), auditQuestion.getQuestion()), i);
+			excelSheet.addColumn(new ExcelColumn("answer"+auditQuestion.getId(), auditQuestion.getName()), i);
 			i++;
 		}
 	}
