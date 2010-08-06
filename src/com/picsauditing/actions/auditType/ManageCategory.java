@@ -5,12 +5,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditQuestionTextDAO;
-import com.picsauditing.dao.AuditSubCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 
 @SuppressWarnings("serial")
@@ -20,11 +18,10 @@ public class ManageCategory extends ManageAuditType {
 
 	public ManageCategory(EmailTemplateDAO emailTemplateDAO,
 			AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
-			AuditSubCategoryDAO auditSubCategoryDao,
 			AuditQuestionDAO auditQuestionDao,
 			AuditQuestionTextDAO auditQuestionTextDao) {
 		super(emailTemplateDAO, auditTypeDao, auditCategoryDao,
-				auditSubCategoryDao, auditQuestionDao, auditQuestionTextDao);
+				auditQuestionDao, auditQuestionTextDao);
 	}
 
 	@Override
@@ -46,8 +43,8 @@ public class ManageCategory extends ManageAuditType {
 
 	public boolean save() {
 		if (category != null) {
-			if (category.getCategory() == null
-					|| category.getCategory().length() == 0) {
+			if (category.getName() == null
+					|| category.getName().length() == 0) {
 				this.addActionError("Category name is required");
 				return false;
 			}
@@ -165,14 +162,10 @@ public class ManageCategory extends ManageAuditType {
 		// Copying Subcategories
 		if (originalAudit.getSubCategories() == null)
 			return categoryCopy.getId();
-		for (AuditSubCategory subcategory : originalAudit.getSubCategories()) {
-			AuditSubCategory subcategoryCopy = copyAuditSubCategory(
-					subcategory, categoryCopy);
-
+		
 			// Copying Questions
-			for (AuditQuestion question : subcategory.getQuestions())
-				copyAuditQuestion(question, subcategoryCopy);
-		}
+		for (AuditQuestion question : categoryCopy.getQuestions())
+			copyAuditQuestion(question, categoryCopy);
 
 		auditCategoryDAO.save(categoryCopy);
 
