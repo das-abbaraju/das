@@ -136,12 +136,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco.setAuditColumns(permissions);
 				fco.setCriteria(fc);
 				fco.setFlag(newFlag);
-				
-				if (tagID > 0) {
-					OperatorTag tag = new OperatorTag();
-					tag.setId(tagID);
-					fco.setTag(tag);
-				}
 					
 				if (!newHurdle.equals("undefined"))
 					fco.setHurdle(Strings.formatNumber(newHurdle));
@@ -169,13 +163,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				if (!newHurdle.equals(fco.getHurdle())) {
 					fco.setHurdle(newHurdle);
 				}
-				
-				if (tagID > 0) {
-					OperatorTag tag = new OperatorTag();
-					tag.setId(tagID);
-					fco.setTag(tag);
-				} else // Making sure it's deleted?
-					fco.setTag(null);
 				
 				if (!checkExists(fco.getCriteria())) {
 					fco.setLastCalculated(null);
@@ -401,10 +388,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		List<FlagCriteriaOperator> existing = operator.getFlagCriteriaInherited();
 		for (FlagCriteriaOperator c : existing) {
 			if (c.getCriteria().equals(fc)) {
-				if (((c.getTag() == null) || (c.getTag() != null && c.getTag().getId() == tagID)) 
-						&& c.getFlag().equals(newFlag)) {
-					return true;
-				}
+				return true;
 			}
 		}
 		
