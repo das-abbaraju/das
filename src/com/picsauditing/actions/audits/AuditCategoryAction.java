@@ -89,14 +89,11 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		if (auditID == 0 && catID > 0) {
 			// Just Preview the Audit
 			AuditCategory auditCategory = auditCategoryDAO.find(catID);
-			for (AuditSubCategory auditSubCategory : auditCategory.getSubCategories()) {
-				for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
-				}
-			}
+			
 			categories = new ArrayList<AuditCatData>();
 			AuditCatData catData = new AuditCatData();
 			catData.setCategory(auditCategory);
-			catData.setApplies(YesNo.Yes);
+			catData.setApplies(true);
 			categories.add(catData);
 			mode = EDIT;
 			PicsLogger.stop();
@@ -120,14 +117,15 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 					catID = catData.getCategory().getId();
 
 					List<Integer> questionIDs = new ArrayList<Integer>();
-					for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
-						for (AuditQuestion question : subCategory.getQuestions()) {
+					for (AuditCategory subCategory : catData.getCategory().getSubCategories()) {
+						/*for (AuditQuestion question : subCategory()) {
 							questionIDs.add(question.getId());
-							if ("Depends".equals(question.getIsRequired()) && question.getDependsOnQuestion() != null) {
+							if ("Depends".equals(question.isRequired()) && question.getRequiredQuestion() != null) {
 								int dependsOnQID = question.getDependsOnQuestion().getId();
 								questionIDs.add(dependsOnQID);
 							}
-						}
+						}*/
+						
 					}
 					// Get a map of all answers in this audit
 					answerMap = auditDataDao.findAnswers(catData.getAudit().getId(), questionIDs);
@@ -139,7 +137,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 					}
 
 				} else {
-					if (catData.isAppliesB()) {
+					if (catData.isApplies()) {
 						if (currentCategory == null)
 							previousCategory = catData;
 						else if (nextCategory == null)
@@ -228,10 +226,6 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 			} else {
 				auditPercentCalculator.updatePercentageCompleted(currentCategory);
 			}
-			if (permissions.isPicsEmployee())
-				currentCategory.getCategory().setCountries(contractor.getCountries());
-			else
-				currentCategory.getCategory().setCountries(permissions.getAccountCountries());
 		}
 
 		if (conAudit.getAuditType().isAnnualAddendum()) {

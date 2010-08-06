@@ -146,8 +146,8 @@ public class AuditDataSave extends AuditActionSupport {
 
 			auditID = auditData.getAudit().getId();
 			// Load Dependent questions
-			auditData.getQuestion().getDependsOnQuestion();
-			auditData.getQuestion().getDependentQuestions();
+			auditData.getQuestion().getRequiredQuestion();
+			auditData.getQuestion().getRequiredQuestions();
 			auditData.setAuditColumns(permissions);
 			if ("reload".equals(button)) {
 				loadAnswerMap();
@@ -210,7 +210,7 @@ public class AuditDataSave extends AuditActionSupport {
 					auditDao.save(tempAudit);
 				}
 				if (tempAudit.getAuditType().isAnnualAddendum()) {
-					if (auditData.getQuestion().getSubCategory().getCategory().getId() == AuditCategory.GENERAL_INFORMATION) {
+					if (auditData.getQuestion().getAuditCategory().getId() == AuditCategory.GENERAL_INFORMATION) {
 						auditBuilder.fillAuditCategories(tempAudit, true);
 					}
 					if (tempAudit.getAuditStatus().isActive()) {
@@ -234,7 +234,7 @@ public class AuditDataSave extends AuditActionSupport {
 				catData = catDataDao.find(catDataID);
 			} else if (toggleVerify) {
 				List<AuditCatData> catDatas = catDataDao.findAllAuditCatData(auditData.getAudit().getId(), auditData
-						.getQuestion().getSubCategory().getCategory().getId());
+						.getQuestion().getAuditCategory().getId());
 
 				if (catDatas != null && catDatas.size() != 0) {
 					catData = catDatas.get(0);
@@ -260,8 +260,8 @@ public class AuditDataSave extends AuditActionSupport {
 	private void loadAnswerMap() {
 		List<Integer> questionIds = new ArrayList<Integer>();
 		questionIds.add(auditData.getQuestion().getId());
-		if (auditData.getQuestion().getIsRequired().equals("Depends"))
-			questionIds.add(auditData.getQuestion().getDependsOnQuestion().getId());
+		if (auditData.getQuestion().isRequired())
+			questionIds.add(auditData.getQuestion().getRequiredQuestion().getId());
 		answerMap = auditDataDao.findAnswers(auditID, questionIds);
 	}
 
