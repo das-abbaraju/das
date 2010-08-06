@@ -105,7 +105,7 @@ public class ManagePQFMatrix extends PicsActionSupport {
 						}
 					}
 					if (row.getCategory() != null && row.getOperatorAccount() != null) {
-						addActionMessage("Added "+row.getCategory().getCategory()+" for "+row.getOperatorAccount().getName()+" - "+risk);
+						addActionMessage("Added "+row.getCategory().getName()+" for "+row.getOperatorAccount().getName()+" - "+risk);
 						auditCatOperatorDAO.save(row);
 						
 						setMapValue(operatorID, categoryID, risk, true);
@@ -118,7 +118,7 @@ public class ManagePQFMatrix extends PicsActionSupport {
 								&& row.getRiskLevel().equals(risk)) {
 							auditCatOperatorDAO.remove(row);
 							setMapValue(operatorID, categoryID, risk, false);
-							addActionMessage("Removed "+row.getCategory().getCategory()+" for "+row.getOperatorAccount().getName()+" - "+risk);
+							addActionMessage("Removed "+row.getCategory().getName()+" for "+row.getOperatorAccount().getName()+" - "+risk);
 						}
 					}
 				}
