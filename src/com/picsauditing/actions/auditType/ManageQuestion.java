@@ -16,23 +16,22 @@ import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditQuestionTextDAO;
-import com.picsauditing.dao.AuditSubCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditQuestionText;
-import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageQuestion extends ManageSubCategory {
+public class ManageQuestion extends ManageCategory {
 
 	protected AuditDataDAO auditDataDAO;
 	protected AuditQuestionTextDAO questionTextDAO;
-	private int dependsOnQuestionID = 0;
+	private int requiredQuestionID = 0;
 
 	protected AuditQuestionText questionText;
 	protected String defaultQuestion;
@@ -40,12 +39,10 @@ public class ManageQuestion extends ManageSubCategory {
 
 	public ManageQuestion(EmailTemplateDAO emailTemplateDAO,
 			AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
-			AuditSubCategoryDAO auditSubCategoryDao,
 			AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO,
 			CountryDAO countryDAO, AuditQuestionTextDAO questionTextDAO) {
 		super(emailTemplateDAO, auditTypeDao, auditCategoryDao,
-				auditSubCategoryDao, auditQuestionDao, countryDAO,
-				questionTextDAO);
+				auditQuestionDao, questionTextDAO);
 		this.auditDataDAO = auditDataDAO;
 		this.questionTextDAO = questionTextDAO;
 	}
@@ -72,13 +69,13 @@ public class ManageQuestion extends ManageSubCategory {
 		if ("saveText".equals(button)) {
 			permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
 			boolean found = false;
-			for (AuditQuestionText text : question.getQuestionTexts()) {
+			/*for (AuditQuestionText text : question.getQuestionTexts()) {
 				if (text.getLocale().equals(questionText.getLocale())
 						&& text.getId() != questionText.getId()) {
 					found = true;
 					break;
 				}
-			}
+			}*/
 			if (found) {
 				addActionError("There is already a translation for that language/country.");
 				return SUCCESS;
@@ -86,7 +83,7 @@ public class ManageQuestion extends ManageSubCategory {
 			questionText.setAuditQuestion(question);
 			questionText.setAuditColumns(permissions);
 			questionTextDAO.save(questionText);
-			question.getQuestionTexts().add(questionText);
+			//question.getQuestionTexts().add(questionText);
 			// TODO: This is a temporary fix - it will be changed when there is
 			// more time.
 			if (save()) {
@@ -117,14 +114,14 @@ public class ManageQuestion extends ManageSubCategory {
 
 	protected void load(AuditQuestion o) {
 		this.question = o;
-		if (question.getDependsOnQuestion() != null)
-			dependsOnQuestionID = question.getDependsOnQuestion().getId();
-		load(question.getSubCategory());
+		if (question.getRequiredQuestion() != null)
+			requiredQuestionID = question.getRequiredQuestion().getId();
+		load(question.getAuditCategory());
 	}
 
 	public boolean save() {
 		if (question != null) {
-			if (question.getId() == 0) {
+			/*if (question.getId() == 0) {
 				if (!Strings.isEmpty(defaultQuestion))
 					question.setDefaultQuestion(defaultQuestion);
 				if (!Strings.isEmpty(defaultRequirement)) {
@@ -134,11 +131,11 @@ public class ManageQuestion extends ManageSubCategory {
 					}
 					question.setDefaultRequirement(defaultRequirement);
 				}
-			}
-			if (question.getQuestionTexts().size() == 0) {
+			}*/
+			/*if (question.getQuestionTexts().size() == 0) {
 				this.addActionError("Question is required");
 				return false;
-			}
+			}*/
 			if (question.getNumber() == 0) {
 				int maxID = 0;
 				for (AuditQuestion sibling : subCategory.getQuestions()) {
@@ -154,22 +151,20 @@ public class ManageQuestion extends ManageSubCategory {
 			if (question.getExpirationDate() == null)
 				question.setExpirationDate(DateBean.getEndOfTime());
 
-			if (dependsOnQuestionID == 0)
-				question.setDependsOnQuestion(null);
-			else if (question.getDependsOnQuestion() == null
-					|| dependsOnQuestionID != question.getDependsOnQuestion()
+			if (requiredQuestionID == 0)
+				question.setRequiredQuestion(null);
+			else if (question.getRequiredQuestion() == null
+					|| requiredQuestionID != question.getRequiredQuestion()
 							.getId()) {
 				// dependsOnQuestionID has changed
-				question.setDependsOnQuestion(new AuditQuestion());
-				question.getDependsOnQuestion().setId(dependsOnQuestionID);
+				question.setRequiredQuestion(new AuditQuestion());
+				question.getRequiredQuestion().setId(requiredQuestionID);
 			}
 			subCategory.getQuestions().add(question);
-			if (question.getSubCategory() == null)
-				question.setSubCategory(subCategory);
-			if (!Strings.isEmpty(countries))
-				question.setCountriesArray(countries.split("\\|"), exclude);
+			if (question.getAuditCategory() == null)
+				question.setAuditCategory(subCategory);
 			question = auditQuestionDAO.save(question);
-			id = question.getSubCategory().getId();
+			id = question.getAuditCategory().getId();
 
 			recalculateCategory();
 			return true;
@@ -187,7 +182,7 @@ public class ManageQuestion extends ManageSubCategory {
 				return false;
 			}
 			subCategory.getQuestions().remove(question);
-			id = question.getSubCategory().getId();
+			id = question.getAuditCategory().getId();
 			auditQuestionDAO.remove(question.getId());
 
 			recalculateCategory();
@@ -206,7 +201,7 @@ public class ManageQuestion extends ManageSubCategory {
 				return false;
 			}
 
-			AuditSubCategory targetSubCategory = auditSubCategoryDAO
+			AuditCategory targetSubCategory = auditCategoryDAO
 					.find(targetID);
 			AuditQuestion aq = copyAuditQuestion(question, targetSubCategory);
 
@@ -228,9 +223,9 @@ public class ManageQuestion extends ManageSubCategory {
 				return false;
 			}
 
-			AuditSubCategory targetSubCategory = auditSubCategoryDAO
+			AuditCategory targetSubCategory = auditCategoryDAO
 					.find(targetID);
-			question.setSubCategory(targetSubCategory);
+			question.setAuditCategory(targetSubCategory);
 			auditQuestionDAO.save(question);
 
 			addActionMessage("Question Moved Successfully. <a href=\"ManageQuestion.action?id="
@@ -250,12 +245,12 @@ public class ManageQuestion extends ManageSubCategory {
 			// Renumber the category
 			int numQuestions = 0;
 			int numRequired = 0;
-			for (AuditSubCategory subCat : category.getSubCategories()) {
+			for (AuditCategory subCat : category.getSubCategories()) {
 				for (AuditQuestion tempQuestion : subCat.getQuestions()) {
 					if (today.after(tempQuestion.getEffectiveDate())
 							&& today.before(tempQuestion.getExpirationDate())) {
 						numQuestions++;
-						if ("Yes".equals(tempQuestion.getIsRequired()))
+						if (tempQuestion.isRequired())
 							numRequired++;
 					}
 				}
@@ -266,33 +261,16 @@ public class ManageQuestion extends ManageSubCategory {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public JSONArray getInitialCountries() {
-		JSONArray json = new JSONArray();
-
-		for (String c : question.getCountriesArray()) {
-			Country country = countryDAO.find(c);
-			if (country != null) {
-				JSONObject o = new JSONObject();
-				o.put("id", country.getIsoCode());
-				o.put("name", country.getName(permissions.getLocale()));
-				json.add(o);
-			}
-		}
-
-		return json;
-	}
-
 	public String[] getQuestionTypes() {
 		return AuditQuestion.TYPE_ARRAY;
 	}
 
-	public int getDependsOnQuestionID() {
-		return dependsOnQuestionID;
+	public int getRequiredQuestionID() {
+		return requiredQuestionID;
 	}
 
-	public void setDependsOnQuestionID(int dependsOnQuestionID) {
-		this.dependsOnQuestionID = dependsOnQuestionID;
+	public void setRequiredQuestionID(int requiredQuestionID) {
+		this.requiredQuestionID = requiredQuestionID;
 	}
 
 	public AuditQuestionText getQuestionText() {
