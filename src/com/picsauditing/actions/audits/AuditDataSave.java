@@ -58,7 +58,7 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	public String execute() throws Exception {
-
+		
 		if (catDataID == 0) {
 			addActionError("Missing catDataID");
 			return BLANK;
@@ -69,7 +69,6 @@ public class AuditDataSave extends AuditActionSupport {
 				return LOGIN;
 
 			getUser();
-
 			AuditData newCopy = null;
 			if (auditData.getId() > 0) {
 				newCopy = auditDataDao.find(auditData.getId());
@@ -82,6 +81,7 @@ public class AuditDataSave extends AuditActionSupport {
 						.getId());
 			}
 
+			loadAnswerMap();
 			if (newCopy == null) {
 				// insert mode
 				AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
@@ -234,7 +234,7 @@ public class AuditDataSave extends AuditActionSupport {
 				catData = catDataDao.find(catDataID);
 			} else if (toggleVerify) {
 				List<AuditCatData> catDatas = catDataDao.findAllAuditCatData(auditData.getAudit().getId(), auditData
-						.getQuestion().getAuditCategory().getId());
+						.getQuestion().getAuditCategory().getParent().getId());
 
 				if (catDatas != null && catDatas.size() != 0) {
 					catData = catDatas.get(0);
@@ -247,7 +247,7 @@ public class AuditDataSave extends AuditActionSupport {
 				auditPercentCalculator.percentCalculateComplete(conAudit);
 			}
 
-			loadAnswerMap();
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -261,7 +261,7 @@ public class AuditDataSave extends AuditActionSupport {
 		List<Integer> questionIds = new ArrayList<Integer>();
 		questionIds.add(auditData.getQuestion().getId());
 		if (auditData.getQuestion().isRequired())
-			questionIds.add(auditData.getQuestion().getRequiredQuestion().getId());
+			questionIds.add(auditData.getQuestion().getId());
 		answerMap = auditDataDao.findAnswers(auditID, questionIds);
 	}
 

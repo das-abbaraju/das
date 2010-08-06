@@ -332,7 +332,7 @@ public class AuditQuestion extends BaseHistory {
 
 	@Transient
 	public String getExpandedNumber() {
-		return "" + number;
+		return auditCategory.getParent().getNumber()+"."+auditCategory.getNumber()+"."+ number;
 	}
 	
 	@Transient

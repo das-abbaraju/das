@@ -8,17 +8,17 @@
 	<s:if test="#q.isRequired == 'Yes'">
 		<s:set name="questionStillRequired" value="true" />
 	</s:if>
-	<s:if test="#q.isRequired == 'Depends' && #q.dependsOnQuestion.id > 0">
-		<s:set name="dependsAnswer" value="answerMap.get(#q.dependsOnQuestion.id)" />
-		<s:if test="#q.dependsOnAnswer == 'NULL' && (#dependsAnswer == null || #dependsAnswer.answer == '')">
+	<s:if test="#q.required && #q.requiredQuestion.id > 0">
+		<s:set name="dependsAnswer" value="answerMap.get(#q.requiredQuestion.id)" />
+		<s:if test="#q.requiredAnswer == 'NULL' && (#dependsAnswer == null || #dependsAnswer.answer == '')">
         	<% // Policies must have either Policy Expiration Date OR In Good Standing %>
            	<s:set name="questionStillRequired" value="true" />
         </s:if>
-		<s:if test="#q.dependsOnAnswer == 'NOTNULL' && #dependsAnswer != null">
+		<s:if test="#q.requiredAnswer == 'NOTNULL' && #dependsAnswer != null">
         	<% // If dependsOnQuestion is a textfield, textbox or a select box etc where the dependsOnAnswer is not null %>
            	<s:set name="questionStillRequired" value="true" />
         </s:if>
-		<s:if test="#dependsAnswer != null && #q.dependsOnAnswer == #dependsAnswer.answer">
+		<s:if test="#dependsAnswer != null && #q.requiredAnswer == #dependsAnswer.answer">
 			<s:set name="questionStillRequired" value="true" />
 		</s:if>
 	</s:if>
@@ -32,14 +32,8 @@
 	<a name="q<s:property value="#q.required"/>"></a>
 	<span class="questionNumber"><s:property value="#q.expandedNumber"/></span>
 	
-	<s:property value="#q.question" escape="false"/>
+	<s:property value="#q.name" escape="false"/>
 	<br />
-	<s:if test="#q.linkUrl1 != null && #q.linkUrl1.length() > 0"><a href="http://<s:property value="#q.linkUrl1"/>" target="_BLANK" title="opens in new window"><s:property value="#q.linkText1"/></a></s:if>
-	<s:if test="#q.linkUrl2 != null && #q.linkUrl2.length() > 0"><a href="http://<s:property value="#q.linkUrl2"/>" target="_BLANK" title="opens in new window"><s:property value="#q.linkText2"/></a></s:if>
-	<s:if test="#q.linkUrl3 != null && #q.linkUrl3.length() > 0"><a href="http://<s:property value="#q.linkUrl3"/>" target="_BLANK" title="opens in new window"><s:property value="#q.linkText3"/></a></s:if>
-	<s:if test="#q.linkUrl4 != null && #q.linkUrl4.length() > 0"><a href="http://<s:property value="#q.linkUrl4"/>" target="_BLANK" title="opens in new window"><s:property value="#q.linkText4"/></a></s:if>
-	<s:if test="#q.linkUrl5 != null && #q.linkUrl5.length() > 0"><a href="http://<s:property value="#q.linkUrl5"/>" target="_BLANK" title="opens in new window"><s:property value="#q.linkText5"/></a></s:if>
-	<s:if test="#q.linkUrl6 != null && #q.linkUrl6.length() > 0"><a href="http://<s:property value="#q.linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="#q.linkText6"/></a></s:if>
 	<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
 </span>
 
@@ -50,9 +44,11 @@
 <div class="answer">
 	<input type="hidden" id="<s:property value="#q.id"/>_answerID" value="<s:property value="#a.id"/>" />
 	<input type="hidden" id="<s:property value="#q.id"/>_questionID" value="<s:property value="#q.id"/>" />
+	Answer: <s:property value="%{#a.id}"/> end
 	<s:if test="mode == 'Verify'">
 		<s:property value="%{#a.answer}"/>
 	</s:if>
+	<s:property value="#q.questionType" />
 	<s:if test="#q.questionType == 'Text Area'">
 		<s:textarea cols="70" rows="4" name="answer%{#q.id}" value="%{#a.answer}" cssStyle="margin-left: 80px;"
 			onchange="saveAnswer('%{#q.id}', this);">
@@ -175,7 +171,7 @@
 		</nobr>
 	</s:if>
 	
-	<s:if test="#a.verified && !#q.hasRequirementB">
+	<s:if test="#a.verified && !#q.hasRequirement">
 		<span class="verified">
 			Answer verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" />
 		</span>

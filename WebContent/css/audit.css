@@ -38,6 +38,7 @@ span.question {
 	color: #012142;
 	padding-left: 20px;
 	padding-right: 15px;
+	clear: both;
 }
 
 #content div.subquestion {

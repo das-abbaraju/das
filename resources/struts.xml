@@ -1516,11 +1516,6 @@
 			<result>/struts/misc/audit_category_suggest.jsp</result>
 		</action>
 
-		<action name="AuditSubCategorySuggestAjax"
-			class="com.picsauditing.actions.AuditSubCategorySuggest">
-			<result>/struts/misc/audit_subcategory_suggest.jsp</result>
-		</action>
-
 		<!-- Crons and Scheduled Tasks -->
 
 		<action name="Cron" class="com.picsauditing.actions.Cron">

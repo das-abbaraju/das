@@ -20,23 +20,17 @@
 		</s:if>
 	</s:if>
 </s:if>
-
+<% //TODO check stuff here %>
 <s:if test="questionStillRequired">
 	<span class="printrequired"><img src="images/yellow_star.gif"></span>
 </s:if>
 <span class="question<s:if test="questionStillRequired"> required</s:if>">
 	<a name="q<s:property value="#q.id"/>"></a>
-	<s:property value="#q.subCategory.category.number"/>.<s:property value="#q.subCategory.number"/>.<s:property value="#q.number"/>&nbsp;&nbsp;
+	<s:property value="#q.auditCategory.parent.number"/>.<s:property value="#q.auditCategory.number"/>.<s:property value="#q.number"/>&nbsp;&nbsp;
 	
-	<s:property value="#q.question" escape="false"/>
+	<s:property value="#q.name" escape="false"/>
 	<br />
 	<s:if test="#q.helpPage.length() > 0"><a href="http://help.picsauditing.com/wiki/<s:property value="#q.helpPage"/>" class="help" target="_BLANK" title="opens in new window">Help Center</a></s:if>
-	<s:if test="#q.linkUrl1.length() > 0"><a href="http://<s:property value="#q.linkUrl1"/>" target="_BLANK" title="opens in new window"><s:property value="#q.linkText1"/></a></s:if>
-	<s:if test="#q.linkUrl2.length() > 0"><a href="http://<s:property value="#q.linkUrl2"/>" target="_BLANK" title="opens in new window"><s:property value="#q.linkText2"/></a></s:if>
-	<s:if test="#q.linkUrl3.length() > 0"><a href="http://<s:property value="#q.linkUrl3"/>" target="_BLANK" title="opens in new window"><s:property value="#q.linkText3"/></a></s:if>
-	<s:if test="#q.linkUrl4.length() > 0"><a href="http://<s:property value="#q.linkUrl4"/>" target="_BLANK" title="opens in new window"><s:property value="#q.linkText4"/></a></s:if>
-	<s:if test="#q.linkUrl5.length() > 0"><a href="http://<s:property value="#q.linkUrl5"/>" target="_BLANK" title="opens in new window"><s:property value="#q.linkText5"/></a></s:if>
-	<s:if test="#q.linkUrl6.length() > 0"><a href="http://<s:property value="#q.linkUrl6"/>" target="_BLANK" title="opens in new window"><s:property value="#q.linkText6"/></a></s:if>
 	<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
 </span>
 
@@ -91,7 +85,7 @@
 		</s:if>
 	</s:else>
 	
-	<s:if test="#a.verified && !#q.hasRequirementB">
+	<s:if test="#a.verified && !#q.hasRequirement">
 		<span class="verified">
 			Answer verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" />
 		</span>

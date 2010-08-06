@@ -15,29 +15,29 @@
 			<td class="previous"><s:if test="previousCategory != null">
 				<a class="prev"
 					href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="previousCategory.id"/>&mode=<s:property value="mode"/>"><s:property
-					value="previousCategory.category.category" /></a>
+					value="previousCategory.category.name" /></a>
 			</s:if> <s:else>
 				<a class="prev" href="Audit.action?auditID=<s:property value="auditID"/>">START</a>
 			</s:else></td>
 			<td style="width: 20%;" class="previous"><s:if test="previousAudit">
 				<a href="Audit.action?auditID=<s:property value="previousAudit.id"/>&mode=<s:property value="mode"/>"
 				><s:property value="previousAudit.auditFor" />&nbsp;<s:property
-					value="currentCategory.category.category" /></a>
+					value="currentCategory.category.name" /></a>
 			</s:if></td>
 			<td class="current"><a class="currentCat"
 				href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="currentCategory.id"/>&mode=<s:property value="mode"/>"> <s:property
 				value="conAudit.auditFor" />&nbsp;<s:property
-				value="currentCategory.category.category" /></a></td>
+				value="currentCategory.category.name" /></a></td>
 
 			<td style="width: 20%;" class="next"><s:if test="nextAudit != null">
 				<a href="Audit.action?auditID=<s:property value="nextAudit.id"/>&mode=<s:property value="mode"/>"
 				> <s:property value="nextAudit.auditFor" />&nbsp;<s:property
-					value="currentCategory.category.category" /></a>
+					value="currentCategory.category.name" /></a>
 			</s:if></td>
 			<td class="next"><s:if test="nextCategory != null">
 				<a class="nxt"
 					href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="nextCategory.id"/>&mode=<s:property value="mode"/>"><s:property
-					value="nextCategory.category.category" /></a>
+					value="nextCategory.category.name" /></a>
 			</s:if> <s:else>
 				<a class="nxt" href="Audit.action?auditID=<s:property value="auditID"/>">FINISH</a>
 			</s:else></td>

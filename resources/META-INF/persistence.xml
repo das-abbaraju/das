@@ -15,7 +15,6 @@
 		<class>com.picsauditing.jpa.entities.AuditQuestion</class>
 		<class>com.picsauditing.jpa.entities.AuditQuestionOption</class>
 		<class>com.picsauditing.jpa.entities.AuditStatus</class>
-		<class>com.picsauditing.jpa.entities.AuditSubCategory</class>
 		<class>com.picsauditing.jpa.entities.AuditType</class>
 		<class>com.picsauditing.jpa.entities.AuditTypeClass</class>
 		<class>com.picsauditing.jpa.entities.BaseTable</class>

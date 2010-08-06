@@ -460,8 +460,9 @@ public class AuditBuilder {
 		if (!conAudit.getAuditType().isAnnualAddendum() && conAudit.getContractorAccount().isAcceptsBids()) {
 			return;
 		}
-
-		if (!forceRecalculation) {
+			
+		// TODO Ask what this is
+		/*if (!forceRecalculation) {
 			if (conAudit.getAuditType().isPqf()) {
 				// Only Active and Pending PQFs should be recalculated
 				if (conAudit.getAuditStatus().isSubmitted())
@@ -481,7 +482,7 @@ public class AuditBuilder {
 						&& conAudit.getAuditType().getClassType() == AuditTypeClass.Audit)
 					return;
 			}
-		}
+		}*/
 
 		PicsLogger.start("AuditCategories", "auditID=" + conAudit.getId() + " type="
 				+ conAudit.getAuditType().getAuditName());

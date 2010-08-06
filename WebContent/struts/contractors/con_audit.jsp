@@ -20,10 +20,10 @@
 			<th>Num</th>
 		</s:if>
 			<th>Category</th>
-		<s:if test="conAudit.auditStatus.pending || conAudit.auditStatus.incomplete || conAudit.auditType.pqf">
+		<s:if test="conAudit.auditType.pqf">
 			<th colspan="2">Complete</th>
 		</s:if>
-		<s:if test="conAudit.auditStatus.submitted && conAudit.auditType.hasRequirements">
+		<s:if test="conAudit.auditType.hasRequirements">
 			<th colspan="2">Requirements</th>
 		</s:if>
 		<s:if test="canApply">
@@ -35,17 +35,17 @@
 		</tr>
 	</thead>
 	<s:iterator value="categories" status="rowStatus">
-		<s:if test="appliesB">
+		<s:if test="applies">
 			<tr>
 			<s:if test="!conAudit.auditType.pqf">
 				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></a></td>
 				</s:if>
-				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
-			<s:if test="conAudit.auditStatus.pending || conAudit.auditStatus.incomplete || conAudit.auditType.pqf">
+				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.name" /></a></td>
+			<s:if test="conAudit.auditType.pqf">
 				<td class="right"><s:property value="percentCompleted" />%</td>
 				<td><s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
 			</s:if>
-			<s:if test="conAudit.auditStatus.submitted && conAudit.auditType.hasRequirements">
+			<s:if test="conAudit.auditType.hasRequirements">
 				<td class="right"><s:property value="percentVerified" />%</td>
 				<td><s:if test="percentVerified == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
 			</s:if>
@@ -59,16 +59,16 @@
 		</s:if>
 	</s:iterator>
 	<s:iterator value="categories" status="rowStatus">
-		<s:if test="!appliesB && permissions.picsEmployee">
+		<s:if test="!applies && permissions.picsEmployee">
 			<tr>
 			<s:if test="!conAudit.auditType.pqf">
 				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></a></td>
 				</s:if>
-				<td><a class="inactive" href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
-				<s:if test="conAudit.auditStatus.pending || conAudit.auditType.pqf">
+				<td><a class="inactive" href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.name" /></a></td>
+				<s:if test="conAudit.auditType.pqf">
 					<td class="center" colspan="2">N/A</td>
 				</s:if>
-				<s:if test="conAudit.auditStatus.submitted && conAudit.auditType.hasRequirements">
+				<s:if test="conAudit.auditType.hasRequirements">
 					<td colspan="2"></td>
 				</s:if>
 				<s:if test="canApply">

@@ -21,7 +21,6 @@
 	<bean id="AuditorScheduleDAO" class="com.picsauditing.dao.AuditorScheduleDAO"/>
 	<bean id="AuditorVacationDAO" class="com.picsauditing.dao.AuditorVacationDAO"/>
 	<bean id="AuditCategoryDAO" class="com.picsauditing.dao.AuditCategoryDAO"/>
-	<bean id="AuditSubCategoryDAO" class="com.picsauditing.dao.AuditSubCategoryDAO"/>
 	<bean id="AuditCategoryDataDAO" class="com.picsauditing.dao.AuditCategoryDataDAO"/>
 	<bean id="AuditCatOperatorDAO" class="com.picsauditing.dao.AuditCatOperatorDAO"/>
 	<bean id="AuditOperatorDAO" class="com.picsauditing.dao.AuditOperatorDAO"/>

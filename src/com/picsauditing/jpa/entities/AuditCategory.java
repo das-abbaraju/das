@@ -142,7 +142,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 		this.pageBreak = pageBreak;
 	}
 	
-	@OneToMany(mappedBy = "parentID")
+	@OneToMany(mappedBy = "parent")
 	public List<AuditCategory> getSubCategories() {
 		return subCategories;
 	}
@@ -151,7 +151,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 		this.subCategories = subCategories;
 	}
 	
-	@OneToMany(mappedBy = "categoryID")
+	@OneToMany(mappedBy = "auditCategory")
 	public List<AuditQuestion> getQuestions() {
 		return questions;
 	}
@@ -159,7 +159,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 	public void setQuestions(List<AuditQuestion> questions) {
 		this.questions = questions;
 	}
-
+	
 	@Transient
 	public boolean isSha() {
 		if (id == OSHA_AUDIT)
