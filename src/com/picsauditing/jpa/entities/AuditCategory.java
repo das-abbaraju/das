@@ -62,6 +62,21 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 		this.auditType = at;
 	}
 
+	public AuditCategory(AuditCategory a) {
+		// TODO Auto-generated constructor stub
+	 	this.auditType = a.auditType;
+	 	this.parent = a.parent;
+	 	this.name = a.name;
+	 	this.number = a.getNumber();
+	 	this.numRequired = a.numRequired;
+	 	this.numQuestions = a.numQuestions;
+	 	this.pageBreak = a.pageBreak;
+	 	this.subCategories = a.subCategories;
+	 	this.questions = a.questions;
+	 	
+		
+	}
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "auditTypeID", nullable = false)
 	public AuditType getAuditType() {

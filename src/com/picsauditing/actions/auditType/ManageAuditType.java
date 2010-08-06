@@ -13,15 +13,12 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditQuestionTextDAO;
-import com.picsauditing.dao.AuditSubCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditQuestionOption;
-import com.picsauditing.jpa.entities.AuditQuestionText;
-import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.EmailTemplate;
@@ -34,7 +31,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected int id = 0;
 	protected AuditType auditType = null;
 	protected AuditCategory category = null;
-	protected AuditSubCategory subCategory = null;
+	protected AuditCategory subCategory = null;
 	protected AuditQuestion question = null;
 	protected String operatorID;
 	protected int originalID = 0;
@@ -46,19 +43,16 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected AuditTypeDAO auditTypeDAO;
 	protected EmailTemplateDAO emailTemplateDAO;
 	protected AuditCategoryDAO auditCategoryDAO;
-	protected AuditSubCategoryDAO auditSubCategoryDAO;
 	protected AuditQuestionDAO auditQuestionDAO;
 	protected AuditQuestionTextDAO auditQuestionTextDAO;
 
 	public ManageAuditType(EmailTemplateDAO emailTemplateDAO,
 			AuditTypeDAO auditTypeDAO, AuditCategoryDAO auditCategoryDAO,
-			AuditSubCategoryDAO auditSubCategoryDAO,
 			AuditQuestionDAO auditQuestionDAO,
 			AuditQuestionTextDAO auditQuestionTextDAO) {
 		this.emailTemplateDAO = emailTemplateDAO;
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
-		this.auditSubCategoryDAO = auditSubCategoryDAO;
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.auditQuestionTextDAO = auditQuestionTextDAO;
 	}
@@ -274,18 +268,11 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 		// Copying Categories
 		for (AuditCategory category : categories) {
-			AuditCategory categoryCopy = copyAuditCategory(category,
-					auditTypeCopy);
+			AuditCategory categoryCopy = copyAuditCategory(category, auditTypeCopy);
 
-			// Copying Subcategories
-			for (AuditSubCategory subcategory : category.getSubCategories()) {
-				AuditSubCategory subcategoryCopy = copyAuditSubCategory(
-						subcategory, categoryCopy);
-
-				// Copying Questions
-				for (AuditQuestion question : subcategory.getQuestions())
-					copyAuditQuestion(question, subcategoryCopy);
-			}
+			// Copying Questions
+			for (AuditQuestion question : categoryCopy.getQuestions())
+				copyAuditQuestion(question, categoryCopy);
 		}
 
 		auditTypeDAO.save(auditTypeCopy);
@@ -316,37 +303,20 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		return copy;
 	}
 
-	// Copy this audit subcategory to this audit category
-	@Transactional
-	protected AuditSubCategory copyAuditSubCategory(AuditSubCategory a,
-			AuditCategory ac) {
-		AuditSubCategory copy = new AuditSubCategory(a, ac);
-		copy.setAuditColumns(permissions);
-
-		if (ac.getSubCategories() == null)
-			ac.setSubCategories(new ArrayList<AuditSubCategory>());
-		ac.getSubCategories().add(copy);
-		
-		auditSubCategoryDAO.save(copy);
-		
-		return copy;
-	}
-
 	// Copy this audit question to this audit subcategory
 	@Transactional
-	protected AuditQuestion copyAuditQuestion(AuditQuestion a,
-			AuditSubCategory asc) {
+	protected AuditQuestion copyAuditQuestion(AuditQuestion a, AuditCategory asc) {
 		AuditQuestion copy = new AuditQuestion(a, asc);
 		copy.setAuditColumns(permissions);
 		auditQuestionDAO.save(copy);
 
-		for (AuditQuestionText text : a.getQuestionTexts()) {
+		/*for (AuditQuestionText text : a.getQuestionTexts()) {
 			AuditQuestionText aqtCopy = new AuditQuestionText(text, copy);
 			aqtCopy.setAuditColumns(permissions);
 
 			copy.getQuestionTexts().add(aqtCopy);
 			auditQuestionTextDAO.save(aqtCopy);
-		}
+		}*/
 
 		if (a.getOptions() != null && copy.getOptions() == null)
 			copy.setOptions(new ArrayList<AuditQuestionOption>());
@@ -403,14 +373,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	public void setCategory(AuditCategory category) {
 		this.category = category;
-	}
-
-	public AuditSubCategory getSubCategory() {
-		return subCategory;
-	}
-
-	public void setSubCategory(AuditSubCategory subCategory) {
-		this.subCategory = subCategory;
 	}
 
 	public AuditQuestion getQuestion() {

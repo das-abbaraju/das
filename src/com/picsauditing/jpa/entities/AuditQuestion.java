@@ -67,6 +67,28 @@ public class AuditQuestion extends BaseHistory {
 	public AuditQuestion() {
 
 	}
+	public AuditQuestion (AuditQuestion a, AuditCategory ac){
+		this.number = a.number;
+		this.name = a.name;
+		this.questionType = a.questionType;
+		this.hasRequirement = a.hasRequirement;
+		this.okAnswer = a.okAnswer;
+		this.required = a.required;
+		this.requiredQuestion = a.requiredQuestion;
+		this.requiredAnswer = a.requiredAnswer;
+		this.visibleQuestion = a.visibleQuestion;
+		this.visibleAnswer = a.visibleAnswer;
+		this.columnHeader = a.columnHeader;
+		this.uniqueCode = a.uniqueCode;
+		this.title = a.title;
+		this.groupedWithPrevious = a.groupedWithPrevious;
+		this.flaggable = a.flaggable;
+		this.showComment = a.showComment;
+		this.riskLevel = a.riskLevel;
+		this.helpPage = a.helpPage;
+		this.requirement = a.requirement;		
+		this.auditCategory = ac;
+	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "categoryID", nullable = false)
