@@ -305,9 +305,9 @@ public class ContractorCron extends PicsActionSupport {
 		List<String> subContract = new ArrayList<String>();
 		for (AuditData auditData : servicesPerformed) {
 			if (auditData.getAnswer().startsWith("C"))
-				selfPerform.add(auditData.getQuestion().getQuestion());
+				selfPerform.add(auditData.getQuestion().getName());
 			if (auditData.getAnswer().endsWith("S"))
-				subContract.add(auditData.getQuestion().getQuestion());
+				subContract.add(auditData.getQuestion().getName());
 		}
 		contractor.setTradesSelf(Strings.implode(selfPerform, ";"));
 		contractor.setTradesSub(Strings.implode(subContract, ";"));
