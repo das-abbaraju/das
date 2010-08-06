@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -40,9 +39,9 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -123,16 +122,10 @@ public class AuditPdfConverter extends ContractorActionSupport {
 					else
 						aList = conAudit.getCategories();
 					for (AuditCatData auditCatData : aList) {
-						if (auditCatData.isAppliesB() && auditCatData.getPercentCompleted() > 0) {
-							if (conAudit.getAuditType().isPqf())
-								auditCatData.getCategory().setValidDate(new Date());
-							else
-								auditCatData.getCategory().setValidDate(conAudit.getCreationDate());
-
-							auditCatData.getCategory().setCountries(permissions.getAccountCountries());
+						if (auditCatData.isApplies() && auditCatData.getPercentCompleted() > 0) {
 							Paragraph categoryParagraph = new Paragraph("Category "
 									+ auditCatData.getCategory().getNumber() + " - "
-									+ auditCatData.getCategory().getCategory(), categoryFont);
+									+ auditCatData.getCategory().getName(), categoryFont);
 							categoryParagraph.setIndentationLeft(10);
 							document.add(categoryParagraph);
 
@@ -277,55 +270,53 @@ public class AuditPdfConverter extends ContractorActionSupport {
 
 	private void addAuditData(Document document, AuditCatData auditCatData, AnswerMap answerMap)
 			throws DocumentException {
-		for (AuditSubCategory auditSubCategory : auditCatData.getCategory().getValidSubCategories()) {
+		for (AuditCategory auditSubCategory : auditCatData.getCategory().getSubCategories()) {
 			Paragraph subCategoryParagraph = new Paragraph(20, "Sub Category "
-					+ auditSubCategory.getCategory().getNumber() + " - " + auditSubCategory.getSubCategory(),
+					+ auditSubCategory.getNumber() + " - " + auditSubCategory.getName(),
 					subCategoryFont);
 			subCategoryParagraph.setIndentationLeft(20);
 			document.add(subCategoryParagraph);
 			for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
-				if (auditQuestion.isValid()) {
-					if (!Strings.isEmpty(auditQuestion.getTitle())) {
-						Paragraph questionTitleParagraph = new Paragraph(20, auditQuestion.getTitle(),
-								questionTitleFont);
-						questionTitleParagraph.setIndentationLeft(30);
-						document.add(questionTitleParagraph);
-					}
-					Paragraph questionAnswer = new Paragraph();
-					questionAnswer.setIndentationLeft(30);
-					String questionLine = "";
-					if ("Yes".equals(auditQuestion.getIsRequired()))
-						questionLine += "*";
-					questionLine += auditCatData.getCategory().getNumber() + "."
-							+ auditQuestion.getSubCategory().getNumber() + "." + auditQuestion.getNumber() + " "
-							+ auditQuestion.getQuestion();
+				if (!Strings.isEmpty(auditQuestion.getTitle())) {
+					Paragraph questionTitleParagraph = new Paragraph(20, auditQuestion.getTitle(),
+							questionTitleFont);
+					questionTitleParagraph.setIndentationLeft(30);
+					document.add(questionTitleParagraph);
+				}
+				Paragraph questionAnswer = new Paragraph();
+				questionAnswer.setIndentationLeft(30);
+				String questionLine = "";
+				if ("Yes".equals(auditQuestion.isRequired()))
+					questionLine += "*";
+				questionLine += auditCatData.getCategory().getNumber() + "."
+						+ auditQuestion.getAuditCategory().getNumber() + "." + auditQuestion.getNumber() + " "
+						+ auditQuestion.getName();
 
-					Chunk question = new Chunk(questionLine, questionFont);
-					questionAnswer.add(question);
-					if (answerMap.get(auditQuestion.getId()) != null) {
-						AuditData auditData = answerMap.get(auditQuestion.getId());
-						if (!Strings.isEmpty(auditData.getAnswer())) {
-							if (auditQuestion.getQuestionType().startsWith("File")) {
-								if (auditData.getAnswer().length() > 0) {
-									Anchor anchor = new Anchor("View File", FontFactory.getFont(FontFactory.COURIER,
-											10, Font.UNDERLINE, new Color(0, 0, 255)));
-									anchor
-											.setReference("http://www.picsorganizer.com/DownloadAuditData.action?auditID="
-													+ auditData.getAudit().getId() + "&answer.id=" + auditData.getId());
-									anchor.setName("View File");
-									questionAnswer.add(anchor);
-								} else {
-									questionAnswer.add(new Chunk("File Not Uploaded", answerFont));
-								}
+				Chunk question = new Chunk(questionLine, questionFont);
+				questionAnswer.add(question);
+				if (answerMap.get(auditQuestion.getId()) != null) {
+					AuditData auditData = answerMap.get(auditQuestion.getId());
+					if (!Strings.isEmpty(auditData.getAnswer())) {
+						if (auditQuestion.getQuestionType().startsWith("File")) {
+							if (auditData.getAnswer().length() > 0) {
+								Anchor anchor = new Anchor("View File", FontFactory.getFont(FontFactory.COURIER,
+										10, Font.UNDERLINE, new Color(0, 0, 255)));
+								anchor
+										.setReference("http://www.picsorganizer.com/DownloadAuditData.action?auditID="
+												+ auditData.getAudit().getId() + "&answer.id=" + auditData.getId());
+								anchor.setName("View File");
+								questionAnswer.add(anchor);
 							} else {
-								Chunk answer = new Chunk(auditData.getAnswer(), answerFont);
-								questionAnswer.add("   ");
-								questionAnswer.add(answer);
+								questionAnswer.add(new Chunk("File Not Uploaded", answerFont));
 							}
+						} else {
+							Chunk answer = new Chunk(auditData.getAnswer(), answerFont);
+							questionAnswer.add("   ");
+							questionAnswer.add(answer);
 						}
 					}
-					document.add(questionAnswer);
 				}
+				document.add(questionAnswer);
 			}
 		}
 	}

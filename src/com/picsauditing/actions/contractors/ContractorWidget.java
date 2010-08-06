@@ -354,7 +354,7 @@ public class ContractorWidget extends ContractorActionSupport {
 		for (ContractorAudit contractorAudit : contractor.getAudits()) {
 			if (contractorAudit.getAuditType().isPqf()) {
 				for (AuditCatData auditCatData : contractorAudit.getCategories()) {
-					if (auditCatData.getCategory().getId() == 2 && auditCatData.isAppliesB())
+					if (auditCatData.getCategory().getId() == 2 && auditCatData.isApplies())
 						return auditCatData;
 				}
 			}

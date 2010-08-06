@@ -15,7 +15,6 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.NcmsCategory;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.Strings;
 
 @Transactional
@@ -94,9 +93,9 @@ public class AuditCategoryDataDAO extends PicsDAO {
 			List<AuditCatData> categories = new ArrayList<AuditCatData>();
 			AuditCatData data = new AuditCatData();
 			data.setAudit(contractorAudit);
-			data.setApplies(YesNo.Yes);
+			data.setApplies(true);
 			AuditCategory cat = new AuditCategory();
-			cat.setCategory("Error Occurred Getting Categories");
+			cat.setName("Error Occurred Getting Categories");
 			data.setCategory(cat);
 			categories.add(data);
 			return categories;
@@ -113,7 +112,6 @@ public class AuditCategoryDataDAO extends PicsDAO {
 	/**
 	 * Get a list of NCMS categories and their statuses for a given contractor.
 	 */
-	@SuppressWarnings("unchecked")
 	public List<NcmsCategory> findNcmsCategories(int conID) throws Exception {
 		List<NcmsCategory> categories = new ArrayList<NcmsCategory>();
 		if (conID == 0)

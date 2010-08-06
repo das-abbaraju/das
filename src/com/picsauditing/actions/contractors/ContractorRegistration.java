@@ -304,7 +304,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		catData.setCategory(new AuditCategory());
 		catData.getCategory().setId(CategoryID);
 		catData.setAudit(audit);
-		catData.setApplies(YesNo.Yes);
+		catData.setApplies(true);
 		catData.setOverride(false);
 		catData.setNumRequired(1);
 		catData.setAuditColumns(new User(User.SYSTEM));
