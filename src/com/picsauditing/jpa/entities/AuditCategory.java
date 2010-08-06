@@ -17,7 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "pqfcategories")
+@Table(name = "audit_category")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditCategory extends BaseTable implements java.io.Serializable,
 		Comparable<AuditCategory> {
