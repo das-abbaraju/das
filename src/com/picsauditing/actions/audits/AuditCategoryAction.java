@@ -19,6 +19,7 @@ import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.MultiYearScope;
@@ -114,13 +115,13 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 
 					List<Integer> questionIDs = new ArrayList<Integer>();
 					for (AuditCategory subCategory : catData.getCategory().getSubCategories()) {
-						/*for (AuditQuestion question : subCategory()) {
+						for (AuditQuestion question : subCategory.getQuestions()) {
 							questionIDs.add(question.getId());
-							if ("Depends".equals(question.isRequired()) && question.getRequiredQuestion() != null) {
-								int dependsOnQID = question.getDependsOnQuestion().getId();
+							if (question.isRequired() && question.getRequiredQuestion() != null) {
+								int dependsOnQID = question.getRequiredQuestion().getId();
 								questionIDs.add(dependsOnQID);
 							}
-						}*/
+						}
 						
 					}
 					// Get a map of all answers in this audit
