@@ -42,14 +42,12 @@
 		</s:if>
 	</s:iterator>
 	<s:iterator value="#category.subCategories" id="category">
-			<div class="audit_category">
-				<s:include value="audit_cat_view.jsp"/>
-				<% /* 
-				<s:if test="helpText != null && helpText.length() > 0">
-					<div class="alert"><s:property value="helpText" escape="false"/></div>
-				</s:if> 
-				*/%>
-				<s:if test="id == 461"><a href="JobCompetencyMatrix.action?id=<s:property value="contractor.id"/>" target="_BLANK" title="opens in new window">Job Competency Matrix</a></s:if>
-			</div>
+		<s:include value="audit_cat_view.jsp"/>
+		<% /* 
+		<s:if test="helpText != null && helpText.length() > 0">
+			<div class="alert"><s:property value="helpText" escape="false"/></div>
+		</s:if> 
+		<s:if test="id == 461"><a href="JobCompetencyMatrix.action?id=<s:property value="contractor.id"/>" target="_BLANK" title="opens in new window">Job Competency Matrix</a></s:if>
+		*/%>
 	</s:iterator>
 </div>
