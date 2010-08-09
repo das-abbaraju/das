@@ -9,6 +9,7 @@ import java.util.Vector;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
@@ -35,12 +36,12 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 	private boolean hasDuplicate = false;
 
 	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			ContractorAuditOperatorDAO caoDAO, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
-			AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder,
+			ContractorAuditOperatorDAO caoDAO, AuditCategoryDAO categoryDAO, AuditCategoryDataDAO catDataDao,
+			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, CertificateDAO certificateDao,
 			OshaAuditDAO oshaAuditDAO) {
-		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder,
-				contractorAuditOperatorDAO, certificateDao, oshaAuditDAO);
+		super(accountDao, auditDao, caoDAO, categoryDAO, catDataDao, auditDataDao, auditPercentCalculator,
+				auditBuilder, contractorAuditOperatorDAO, certificateDao, oshaAuditDAO);
 	}
 
 	public String execute() throws Exception {

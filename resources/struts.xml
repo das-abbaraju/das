@@ -992,7 +992,7 @@
 
 		<action name="AuditDataSaveAjax"
 			class="com.picsauditing.actions.audits.AuditDataSave">
-			<result>struts/audits/audit_cat_edit_ajax.jsp</result>
+			<result>struts/audits/audit_question_edit_ajax.jsp</result>
 		</action>
 		<action name="AuditToggleVerifyAjax"
 			class="com.picsauditing.actions.audits.AuditDataSave">

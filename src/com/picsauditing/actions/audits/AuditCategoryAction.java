@@ -67,11 +67,12 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 	private List<ContractorAudit> activePendingEditableAudits = null;
 
 	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			ContractorAuditOperatorDAO caoDAO, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
-			AuditPercentCalculator auditPercentCalculator, AuditCategoryDAO auditCategoryDAO,
-			OshaAuditDAO oshaAuditDAO, AuditBuilder auditBuilder, CertificateDAO certificateDao) {
-		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder,
-				certificateDao);
+			ContractorAuditOperatorDAO caoDAO, AuditCategoryDAO categoryDAO, AuditCategoryDataDAO catDataDao,
+			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
+			AuditCategoryDAO auditCategoryDAO, OshaAuditDAO oshaAuditDAO, AuditBuilder auditBuilder,
+			CertificateDAO certificateDao) {
+		super(accountDao, auditDao, caoDAO, categoryDAO, catDataDao, auditDataDao, auditPercentCalculator,
+				auditBuilder, certificateDao);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 	}
@@ -86,7 +87,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		if (auditID == 0 && catID > 0) {
 			// Just Preview the Audit
 			AuditCategory auditCategory = auditCategoryDAO.find(catID);
-			
+
 			categories = new ArrayList<AuditCatData>();
 			AuditCatData catData = new AuditCatData();
 			catData.setCategory(auditCategory);
@@ -122,7 +123,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 								questionIDs.add(dependsOnQID);
 							}
 						}
-						
+
 					}
 					// Get a map of all answers in this audit
 					answerMap = auditDataDao.findAnswers(catData.getAudit().getId(), questionIDs);

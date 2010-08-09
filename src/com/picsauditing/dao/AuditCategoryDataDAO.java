@@ -1,8 +1,10 @@
 package com.picsauditing.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Query;
@@ -46,7 +48,9 @@ public class AuditCategoryDataDAO extends PicsDAO {
 		if (contractorAudit.getAuditType().isPqf()) {
 			// This is a PQF, so it has special query criteria
 			if (!permissions.isAdmin()) // TODO change this to be a permission
-				where += "AND d.applies = 'Yes' "; // Show only the admins the full PQF
+				where += "AND d.applies = 'Yes' "; // Show only the admins the
+			// full
+			// PQF
 
 			// Contractors can see their full PQF
 			if (!permissions.isContractor()) {
@@ -59,16 +63,17 @@ public class AuditCategoryDataDAO extends PicsDAO {
 					if (permissions.isOperator()) {
 						query = em.createQuery("SELECT inheritAuditCategories.id FROM OperatorAccount WHERE id = :id");
 					} else {
-						query = em.createQuery("SELECT operator.inheritAuditCategories.id FROM Facility f WHERE corporate.id = :id");
+						query = em
+								.createQuery("SELECT operator.inheritAuditCategories.id FROM Facility f WHERE corporate.id = :id");
 					}
 					query.setParameter("id", permissions.getAccountId());
 					for (Object row : query.getResultList()) {
 						inheritCategories.add(Integer.parseInt(row.toString()));
 					}
-					
+
 					where += "AND d.category IN (SELECT o.category FROM AuditCatOperator o "
-						+ "WHERE o.category.auditType.id = 1 AND o.riskLevel = :risk " +
-								"AND o.operatorAccount.id IN (" + Strings.implode(inheritCategories, ",") + ") )";
+							+ "WHERE o.category.auditType.id = 1 AND o.riskLevel = :risk "
+							+ "AND o.operatorAccount.id IN (" + Strings.implode(inheritCategories, ",") + ") )";
 				}
 			}
 		}
@@ -102,6 +107,14 @@ public class AuditCategoryDataDAO extends PicsDAO {
 		}
 	}
 
+	public Map<AuditCategory, AuditCatData> findByAuditMap(ContractorAudit contractorAudit, Permissions permissions) {
+		Map<AuditCategory, AuditCatData> map = new HashMap<AuditCategory, AuditCatData>();
+		for (AuditCatData data : findByAudit(contractorAudit, permissions)) {
+			map.put(data.getCategory(), data);
+		}
+		return map;
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<AuditCatData> findAllAuditCatData(int auditID, int catID) {
 		String selectQuery = "FROM AuditCatData d " + "WHERE d.category.id=" + catID + " AND d.audit.id=" + auditID;
@@ -112,6 +125,7 @@ public class AuditCategoryDataDAO extends PicsDAO {
 	/**
 	 * Get a list of NCMS categories and their statuses for a given contractor.
 	 */
+	@SuppressWarnings("unchecked")
 	public List<NcmsCategory> findNcmsCategories(int conID) throws Exception {
 		List<NcmsCategory> categories = new ArrayList<NcmsCategory>();
 		if (conID == 0)
@@ -121,10 +135,10 @@ public class AuditCategoryDataDAO extends PicsDAO {
 		for (String columnName : NcmsCategory.columns)
 			sql.append("`").append(columnName).append("`,");
 		sql.append(" 1 FROM NCMS_Desktop WHERE conID=" + conID);
-		
+
 		Query query = em.createNativeQuery(sql.toString());
 
-		List results = query.getResultList();
+		List<Object> results = query.getResultList();
 
 		for (Object o : results) {
 			Object[] data = (Object[]) o;

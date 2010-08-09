@@ -19,8 +19,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "audit_category")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditCategory extends BaseTable implements java.io.Serializable,
-		Comparable<AuditCategory> {
+public class AuditCategory extends BaseTable implements java.io.Serializable, Comparable<AuditCategory> {
 
 	public static final int WORK_HISTORY = 6;
 	public static final int OSHA_AUDIT = 151;
@@ -42,7 +41,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 	private int numRequired;
 	private int numQuestions;
 	private boolean pageBreak = false;
-	
+
 	private List<AuditCategory> subCategories = new ArrayList<AuditCategory>();
 	private List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
 
@@ -64,17 +63,16 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 
 	public AuditCategory(AuditCategory a) {
 		// TODO Auto-generated constructor stub
-	 	this.auditType = a.auditType;
-	 	this.parent = a.parent;
-	 	this.name = a.name;
-	 	this.number = a.getNumber();
-	 	this.numRequired = a.numRequired;
-	 	this.numQuestions = a.numQuestions;
-	 	this.pageBreak = a.pageBreak;
-	 	this.subCategories = a.subCategories;
-	 	this.questions = a.questions;
-	 	
-		
+		this.auditType = a.auditType;
+		this.parent = a.parent;
+		this.name = a.name;
+		this.number = a.getNumber();
+		this.numRequired = a.numRequired;
+		this.numQuestions = a.numQuestions;
+		this.pageBreak = a.pageBreak;
+		this.subCategories = a.subCategories;
+		this.questions = a.questions;
+
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -86,13 +84,13 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 	public void setAuditType(AuditType auditType) {
 		this.auditType = auditType;
 	}
-	
+
 	@ManyToOne
 	@JoinColumn(name = "parentID")
 	public AuditCategory getParent() {
 		return parent;
 	}
-	
+
 	public void setParent(AuditCategory parent) {
 		this.parent = parent;
 	}
@@ -132,16 +130,16 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 	public void setNumQuestions(int numQuestions) {
 		this.numQuestions = numQuestions;
 	}
-	
+
 	@Column(nullable = false)
 	public boolean isPageBreak() {
 		return pageBreak;
 	}
-	
+
 	public void setPageBreak(boolean pageBreak) {
 		this.pageBreak = pageBreak;
 	}
-	
+
 	@OneToMany(mappedBy = "parent")
 	public List<AuditCategory> getSubCategories() {
 		return subCategories;
@@ -150,16 +148,16 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 	public void setSubCategories(List<AuditCategory> subCategories) {
 		this.subCategories = subCategories;
 	}
-	
+
 	@OneToMany(mappedBy = "auditCategory")
 	public List<AuditQuestion> getQuestions() {
 		return questions;
 	}
-	
+
 	public void setQuestions(List<AuditQuestion> questions) {
 		this.questions = questions;
 	}
-	
+
 	@Transient
 	public boolean isSha() {
 		if (id == OSHA_AUDIT)
@@ -182,8 +180,12 @@ public class AuditCategory extends BaseTable implements java.io.Serializable,
 		if (cmp != 0)
 			return cmp;
 
-		return new Integer(getNumber())
-				.compareTo(new Integer(other.getNumber()));
+		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
+	}
+
+	@Override
+	public String toString() {
+		return getNumber() + " " + name;
 	}
 
 }

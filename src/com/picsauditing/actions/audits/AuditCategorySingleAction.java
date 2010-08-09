@@ -2,18 +2,20 @@ package com.picsauditing.actions.audits;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
+import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.Certificate;
@@ -21,7 +23,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -38,15 +39,18 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 	protected int opID;
 	protected ContractorAuditOperatorDAO caoDAO;
+	protected AuditCategoryDAO categoryDAO;
 
 	public AuditCategorySingleAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			ContractorAuditOperatorDAO caoDAO, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
-			AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder, CertificateDAO certificateDao) {
+			ContractorAuditOperatorDAO caoDAO, AuditCategoryDAO categoryDAO, AuditCategoryDataDAO catDataDao,
+			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder,
+			CertificateDAO certificateDao) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.auditBuilder = auditBuilder;
 		this.caoDAO = caoDAO;
 		this.certificateDao = certificateDao;
+		this.categoryDAO = categoryDAO;
 	}
 
 	public String execute() throws Exception {
@@ -144,7 +148,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			String notes = conAudit.getAuditType().getAuditName() + " Submitted";
 			if (!Strings.isEmpty(conAudit.getAuditFor()))
 				notes += " for " + conAudit.getAuditFor();
-			
+
 			if (conAudit.getAuditType().getTemplate() != null) {
 				EmailBuilder emailBuilder = new EmailBuilder();
 				emailBuilder.setTemplate(conAudit.getAuditType().getTemplate());
@@ -153,11 +157,12 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				if (conAudit.getAuditType().getClassType().isAudit())
 					emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 				EmailSender.send(emailBuilder.build());
-				
+
 				notes += " and email sent to " + emailBuilder.getSentTo();
 			}
 
-			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
+			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, getViewableByAccount(conAudit
+					.getAuditType().getAccount()));
 		}
 
 		if (auditStatus.equals(AuditStatus.Active)) {
@@ -172,7 +177,8 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				EmailSender.send(email);
 			}
 			addNote(conAudit.getContractorAccount(), "Closed the requirements and Activated the "
-					+ conAudit.getAuditType().getAuditName(), NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
+					+ conAudit.getAuditType().getAuditName(), NoteCategory.Audits, getViewableByAccount(conAudit
+					.getAuditType().getAccount()));
 		}
 
 		conAudit.changeStatus(auditStatus, getUser());
@@ -270,6 +276,14 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			return false;
 		return true;
 
+	}
+
+	public List<AuditCategory> getAuditCategories() {
+		return categoryDAO.findByAuditTypeID(conAudit.getAuditType().getId());
+	}
+
+	public Map<AuditCategory, AuditCatData> getCatDataMap() {
+		return catDataDao.findByAuditMap(conAudit, permissions);
 	}
 
 	public AuditStatus getAuditStatus() {
