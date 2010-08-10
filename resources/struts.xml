@@ -1195,12 +1195,6 @@
 			</result>
 		</action>
 		
-		<action name="ManageQuestionAjax"
-			class="com.picsauditing.actions.auditType.ManageQuestion">
-			<result>struts/audits/manage_question_text.jsp</result>
-			<result name="saved">struts/audits/manage_question_text.jsp</result>
-		</action>
-		
 		<action name="ManageQuestionCopyAjax"
 			class="com.picsauditing.actions.auditType.ManageQuestion">
 			<result>struts/audits/manage_question_copy.jsp</result>

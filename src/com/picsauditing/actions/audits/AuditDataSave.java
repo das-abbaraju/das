@@ -147,7 +147,6 @@ public class AuditDataSave extends AuditActionSupport {
 			auditID = auditData.getAudit().getId();
 			// Load Dependent questions
 			auditData.getQuestion().getRequiredQuestion();
-			auditData.getQuestion().getRequiredQuestions();
 			auditData.setAuditColumns(permissions);
 			if ("reload".equals(button)) {
 				loadAnswerMap();

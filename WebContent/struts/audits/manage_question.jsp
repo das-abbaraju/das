@@ -7,82 +7,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
-<script type="text/javascript" src="js/jquery/autocompletefb/jquery.autocompletefb.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocompletefb/jquery.autocompletefb.css" />
 <script type="text/javascript">
-//var data = <s:property value="data" escape="false"/>;
-//var initCountries = <s:property value="initialCountries" escape="false"/>;
-var acfb;
-var forceRefresh = false;
-$(function(){
-	function acfbuild(cls,url){
-		var ix = $("input"+cls);
-		ix.addClass('acfb-input').wrap('<ul class="'+cls.replace(/\./,'')+' acfb-holder"></ul>');
-		
-		return $("ul"+cls).autoCompletefb({
-				urlLookup:url,
-				delimeter: '|',
-				acOptions: {
-					matchContains: true,
-					formatItem: function(row,index,count){
-						return row.name + ' (' + row.id + ')';
-					},
-					formatResult: function(row,index,count){
-						return row.id;
-					}
-				}
-			});
-	}
-	//acfb = acfbuild('.countries', data);
-	//acfb.init(initCountries);
-
-	$('form#save').submit(function() {
-			//$(this).find('[name=countries]').val(acfb.getData());
-		}
-	);
-});
-
-function showText(qID, textid) {
-	
-	$('#question_texts').load('ManageQuestionAjax.action', {button: 'text', 'id': qID, 'questionText.id': textid},
-		function() {
-			$(this).dialog({
-				modal: true, 
-				title: 'Edit Question Text',
-				width: '50%',
-				close: function(event, ui) {
-					$(this).dialog('destroy');
-					if (forceRefresh)
-						location.reload();
-				},
-				buttons: {
-					Save: function() {
-						var pars = $('form#textForm').serialize();
-						$('#question_texts').load('ManageQuestionAjax.action', pars);
-						forceRefresh = true;
-					},
-					Delete: function() {
-						$.ajax({
-							url: 'ManageQuestionAjax.action',
-							data: {button: 'removeText', 'questionText.id': $('form#textForm input[name=questionText.id]').val()},
-							complete: function() {
-								$(this).dialog('close');
-								location.reload();
-							}
-						}
-					);
-					},
-					Cancel: function() {
-						$(this).dialog('close');
-					}
-				}
-			});
-		}
-	);
-}
-
 function copyQuestion(atypeID) {
 	$('#copy_audit').load('ManageQuestionCopyAjax.action', {button: 'text', 'id': atypeID},
 		function() {
@@ -216,14 +141,14 @@ function moveQuestion(atypeID) {
 			<s:if test="requiredQuestionID > 0"><a href="?id=<s:property value="requiredQuestionID" />">Show</a></s:if>
 			<div class="fieldhelp">
 				<h3>Required by Question</h3>
-				<p>The number of the question that requires this question.</p>
+				<p>The question that determines whether or not this question is required.</p>
 			</div>
 		</li>
 		<li><label>Required Answer:</label>
 			<s:textfield name="question.requiredAnswer" />
 			<div class="fieldhelp">
 				<h3>Required Answer</h3>
-				<p>The answer that is required for this question.</p>
+				<p>If the "Required by Question" has this answer, this question will become a required question.</p>
 			</div>
 		</li>
 		<li><label>Question Type:</label>
@@ -239,14 +164,14 @@ function moveQuestion(atypeID) {
 			<s:textfield name="question.visibleQuestion" />
 			<div class="fieldhelp">
 				<h3>Visible Question</h3>
-				<p>Until the question in this field is answerd with the visible answer this question will not show.</p>
+				<p>The question that determines whether or not this question is visible.</p>
 			</div>
 		</li>
 		<li><label>Visible Answer:</label>
 			<s:textfield name="question.visibleAnswer" />
 			<div class="fieldhelp">
 				<h3>Visible Answer</h3>
-				<p>Until this answer is met for the visible question this question will not show.</p>
+				<p>If the "Visible" has this answer, this question will become a required question.</p>
 			</div>
 		</li>
 		<li><label>Grouped with Previous:</label>
