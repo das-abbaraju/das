@@ -24,15 +24,15 @@ function selectCrumb(selector, url) {
 
 	<s:if test="category != null">
 		<s:if test="category.id > 0">
-			<s:iterator value="getAncestors(category.id)" id="current">
-				&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain<s:if test="#current.id == category.id"> current</s:if>" href="ManageCategory.action?id=<s:property value="#current.id"/>"><s:property value="#current.name"/></a>
+			<s:iterator value="category.ancestors" id="current">
+				&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain<s:if test="category.id == #current.id"> current</s:if>" href="ManageCategory.action?id=<s:property value="#current.id"/>"><s:property value="#current.name"/></a>
 			</s:iterator>
 		</s:if>
 	</s:if>
 
 	<s:if test="categoryParent != null && categoryParent.id > 0">
-		<s:iterator value="getAncestors(categoryParent.id)" id="current">
-			&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain<s:if test="#current.id == category.id"> current</s:if>" href="ManageCategory.action?id=<s:property value="#current.id"/>"><s:property value="#current.name"/></a>
+		<s:iterator value="categoryParent.ancestors" id="current">
+			&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain<s:if test="categoryParent.id == #current.id"> current</s:if>" href="ManageCategory.action?id=<s:property value="#current.id"/>"><s:property value="#current.name"/></a>
 		</s:iterator>
 	</s:if>
 	

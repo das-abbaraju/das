@@ -150,6 +150,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	}
 
 	@OneToMany(mappedBy = "parent")
+	@OrderBy("number")
 	public List<AuditCategory> getSubCategories() {
 		return subCategories;
 	}
@@ -198,4 +199,19 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		return getNumber() + " " + name;
 	}
 
+	@Transient
+	public List<AuditCategory> getAncestors() {
+		List<AuditCategory> ancestors = new ArrayList<AuditCategory>();
+		addAncestors(ancestors, this);
+
+		return ancestors;
+	}
+
+	@Transient
+	private void addAncestors(List<AuditCategory> ancestors, AuditCategory category) {
+		if (category.getParent() != null)
+			addAncestors(ancestors, category.getParent());
+
+		ancestors.add(category);
+	}
 }

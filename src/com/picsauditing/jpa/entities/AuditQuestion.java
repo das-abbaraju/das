@@ -23,7 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "audit_question")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditQuestion extends BaseHistory {
+public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion> {
 	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 	static public final int EMR = 2034;
 	static public final int MANUAL_PQF = 1331;
@@ -347,5 +347,19 @@ public class AuditQuestion extends BaseHistory {
 		if (getName() == null)
 			return "";
 		return getName();
+	}
+	
+	@Override
+	public int compareTo(AuditQuestion other) {
+		if (other == null) {
+			return 1;
+		}
+
+		int cmp = getAuditCategory().compareTo(other.getAuditCategory());
+
+		if (cmp != 0)
+			return cmp;
+
+		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
 	}
 }

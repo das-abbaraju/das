@@ -191,7 +191,7 @@ $(function(){
 						<li class="required"><label>Main Trade:</label>
 							<s:select list="tradeList"
 								name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" 
-								listKey="question" listValue="question" />
+								listKey="name" listValue="name" />
 							<div class="fieldhelp">
 								<h3>Trade</h3>
 								This is your company's primary trade. You will have the opportunity to select additional trades later on.

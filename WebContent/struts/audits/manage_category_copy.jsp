@@ -1,7 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <s:include value="../actionMessages.jsp"/>
 
-<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 <s:form id="textForm">
 <fieldset class="form" style="border: none">
 	<h2 class="formLegend">Copy To:</h2>
@@ -28,7 +27,7 @@
 				<s:else>NEW</s:else>
 		</li>
 		<li><label>Category Name:</label>
-			<s:textfield id="catName" name="category.category" size="30" />
+			<s:textfield id="catName" name="category.name" size="30" />
 		</li>
 		<li><label># of Questions:</label>
 			<s:property value="category.numQuestions"/>

@@ -137,7 +137,7 @@ function moveCategory(atypeID) {
 	</s:if>
 	<s:if test="categoryParent != null">
 		<s:hidden name="categoryParent.id" />
-		<s:hidden name="parentID" value="%{getAncestors(categoryParent.id).get(0).auditType.id}" />
+		<s:hidden name="parentID" value="%{categoryParent.ancestors.get(0).auditType.id}" />
 	</s:if>
 	<fieldset class="form">
 	<h2 class="formLegend">Category</h2>
@@ -187,19 +187,7 @@ function moveCategory(atypeID) {
 
 <s:if test="id != 0">
 	<div>
-		<h1>Questions</h1>
-		<ul class="list" id="listQ" title="Drag and drop to change order">
-		<s:iterator value="category.questions">
-		    <li id="item_<s:property value="id"/>"><s:property value="number"/>.
-		    <a href="ManageQuestion.action?id=<s:property value="id"/>"><s:if test="name != null"><s:property value="name.length()>100 ? name.substring(0,97) + '...' : name"/></s:if><s:else>Question has no text</s:else></a></li>
-		</s:iterator>
-		</ul>
-		
-		<a class="add" href="ManageQuestion.action?button=AddNew&parentID=<s:property value="category.id"/>&question.category.id=<s:property value="category.id"/>">Add New Question</a>
-		<div id="listQ-info"></div>
-	</div>
-	<div>
-		<h1>Subcategories</h1>
+		<h3>Subcategories</h3>
 		<ul class="list" id="list" title="Drag and drop to change order">
 			<s:iterator value="category.subCategories">
 				<li id="item_<s:property value="id"/>" title="Drag and drop to change order">
@@ -213,8 +201,21 @@ function moveCategory(atypeID) {
 		<s:if test="category.subCategories.size() > 0">
 			<a class="preview" href="AuditCat.action?catID=<s:property value="category.id" />">Preview Category</a>&nbsp;&nbsp;
 		</s:if>
-		<a class="add" href="ManageCategory.action?button=AddNew&parentID=<s:property value="getAncestors(category.id).get(0).auditType.id"/>&categoryParent.id=<s:property value="category.id" />">Add New Sub Category</a>
+		<a class="add" href="ManageCategory.action?button=AddNew&parentID=<s:property value="category.ancestors.get(0).auditType.id"/>&categoryParent.id=<s:property value="category.id" />">Add New Sub Category</a>
 		<div id="list-info"></div>
+	</div>
+	<br clear="both" />
+	<div>
+		<h3>Questions</h3>
+		<ul class="list" id="listQ" title="Drag and drop to change order">
+		<s:iterator value="category.questions">
+		    <li id="item_<s:property value="id"/>"><s:property value="number"/>.
+		    <a href="ManageQuestion.action?id=<s:property value="id"/>"><s:if test="name != null"><s:property value="name.length()>100 ? name.substring(0,97) + '...' : name"/></s:if><s:else>Question has no text</s:else></a></li>
+		</s:iterator>
+		</ul>
+		
+		<a class="add" href="ManageQuestion.action?button=AddNew&parentID=<s:property value="category.id"/>&question.category.id=<s:property value="category.id"/>">Add New Question</a>
+		<div id="listQ-info"></div>
 	</div>
 </s:if>
 

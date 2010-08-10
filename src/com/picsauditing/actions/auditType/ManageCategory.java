@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditQuestionTextDAO;
@@ -15,11 +17,11 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 
 @SuppressWarnings("serial")
-public class ManageCategory extends ManageAuditType {
+public class ManageCategory extends ManageAuditType implements Preparable {
 
 	protected AuditCategory categoryParent;
 	protected Integer applyOnQuestionID;
-	private List<AuditCategory> ancestors;
+	private int targetCategoryID = 0;
 
 	public ManageCategory(EmailTemplateDAO emailTemplateDAO,
 			AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
@@ -27,6 +29,18 @@ public class ManageCategory extends ManageAuditType {
 			AuditQuestionTextDAO auditQuestionTextDao) {
 		super(emailTemplateDAO, auditTypeDao, auditCategoryDao,
 				auditQuestionDao, auditQuestionTextDao);
+	}
+	
+	@Override
+	public void prepare() throws Exception {
+		super.prepare();
+		
+		String[] categoryParents = (String[]) ActionContext.getContext().getParameters().get("categoryParent.id");
+		
+		if (categoryParents != null && categoryParents.length > 0) {
+			int thisId = Integer.parseInt(categoryParents[0]);
+			categoryParent = auditCategoryDAO.find(thisId);
+		}
 	}
 
 	@Override
@@ -43,36 +57,48 @@ public class ManageCategory extends ManageAuditType {
 
 	protected void load(AuditCategory newCategory) {
 		this.category = newCategory;
-		ancestors = getAncestors(category.getId());
+		List<AuditCategory> ancestors = category.getAncestors();
 		// Assuming that the earliest ancestor has the general audit type.
 		super.load(ancestors.get(0).getAuditType());
 	}
 
 	public boolean save() {
 		if (category != null) {
-			if (category.getName() == null
-					|| category.getName().length() == 0) {
+			List<AuditCategory> ancestors = null;
+
+			if (category.getName() == null || category.getName().length() == 0) {
 				this.addActionError("Category name is required");
 				return false;
 			}
+
+			if (categoryParent != null) {
+				category.setParent(categoryParent);
+				ancestors = categoryParent.getAncestors();
+				id = ancestors.get(0).getAuditType().getId();
+			} else
+				id = category.getAuditType().getId();
+
 			if (category.getNumber() == 0) {
 				int maxID = 0;
-				for (AuditCategory sibling : auditType.getCategories()) {
-					if (sibling.getNumber() > maxID)
-						maxID = sibling.getNumber();
+				if (category.getAuditType() != null) {
+					for (AuditCategory sibling : category.getAuditType().getCategories()) {
+						if (sibling.getNumber() > maxID)
+							maxID = sibling.getNumber();
+					}
+				} else if (categoryParent != null && ancestors.size() > 0) {
+					// Ancestors should be loaded
+					categoryParent = ancestors.get(ancestors.size() - 1);
+					for (AuditCategory sibling : categoryParent.getSubCategories()) {
+						if (sibling.getNumber() > maxID)
+							maxID = sibling.getNumber();
+					}
 				}
 				category.setNumber(maxID + 1);
 			}
-			if (categoryParent != null) {
-				category.setParent(categoryParent);
-				id = getAncestors(categoryParent.getId()).get(0).getAuditType().getId();
-			}
-			else
-				id = category.getAuditType().getId();
-			
+
 			category.setAuditColumns(permissions);
 			category = auditCategoryDAO.save(category);
-			
+
 			return true;
 		}
 		return false;
@@ -85,7 +111,11 @@ public class ManageCategory extends ManageAuditType {
 				return false;
 			}
 
-			id = category.getAuditType().getId();
+			if (category.getAuditType() != null)
+				id = category.getAuditType().getId();
+			else
+				id = category.getAncestors().get(0).getAuditType().getId();
+
 			auditCategoryDAO.remove(category.getId());
 			return true;
 		} catch (Exception e) {
@@ -97,7 +127,7 @@ public class ManageCategory extends ManageAuditType {
 	@Override
 	protected boolean copy() {
 		try {
-			if (targetID == 0) {
+			if (targetID == 0 && targetCategoryID == 0) {
 				addActionMessage("Please Select Category to copy to");
 				return false;
 			}
@@ -108,12 +138,29 @@ public class ManageCategory extends ManageAuditType {
 			// addActionMessage("The Category Name is not Unique");
 			// return false;
 			// }
+			AuditCategory ac = null;
 
-			AuditType targetAudit = auditTypeDAO.find(targetID);
-			AuditCategory ac = copyAuditCategory(category, targetAudit);
+			if (targetID > 0) {
+				AuditType targetAudit = auditTypeDAO.find(targetID);
+				ac = copyAuditCategory(category, targetAudit);
 
-			addActionMessage("Copied the Category only. <a href=\"ManageCategory.action?id="
-					+ ac.getId() + "\">Go to this Category?</a>");
+			}
+			if (targetCategoryID > 0) {
+				AuditCategory targetCategory = auditCategoryDAO.find(targetCategoryID);
+				ac = new AuditCategory(category);
+				ac.setAuditColumns(permissions);
+				
+				if (targetCategory.getSubCategories() == null)
+					targetCategory.setSubCategories(new ArrayList<AuditCategory>());
+				
+				targetCategory.getSubCategories().add(ac);
+				ac = auditCategoryDAO.save(ac);
+				auditCategoryDAO.save(targetCategory);
+			}
+			
+			addActionMessage("Copied the Category only. <a href=\"ManageCategory.action?id=" + ac.getId()
+					+ "\">Go to this Category?</a>");
+			
 			return true;
 
 		} catch (Exception e) {
@@ -193,28 +240,19 @@ public class ManageCategory extends ManageAuditType {
 	public void setCategoryParent(AuditCategory categoryParent) {
 		this.categoryParent = categoryParent;
 	}
-	
+
+	public int getTargetCategoryID() {
+		return targetCategoryID;
+	}
+
+	public void setTargetCategoryID(int targetCategoryID) {
+		this.targetCategoryID = targetCategoryID;
+	}
+
 	public int getNumberRequired(AuditCategory category) {
 		if (category.getNumRequired() <= 0 && category.getParent().getId() != category.getId())
 			return getNumberRequired(category.getParent());
 		
 		return category.getNumRequired();
-	}
-	
-	public List<AuditCategory> getAncestors(int categoryID) {
-		if (ancestors == null) {
-			ancestors = new ArrayList<AuditCategory>();
-			AuditCategory current = auditCategoryDAO.find(categoryID);
-			addAncestors(current);
-		}
-		
-		return ancestors;
-	}
-	
-	public void addAncestors(AuditCategory category) {
-		if (category.getParent() != null)
-			addAncestors(category.getParent());
-		
-		ancestors.add(category);
 	}
 }
