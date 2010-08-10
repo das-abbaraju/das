@@ -640,4 +640,16 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	public String getReturnType() {
 		return "account";
 	}
+	
+	@Transient
+	public String getSearchText(boolean full){
+		StringBuilder sb = new StringBuilder();
+		if(full){
+			sb.append(this.id).append("\t").append(this.name).append(" ");
+		} else {
+			sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(this.name).append('|')
+			.append(this.city).append(", ").append(this.state).append("\n");
+		}
+		return sb.toString();
+	}
 }

@@ -1,8 +1,23 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<s:iterator value="dataList" id="result">
-<s:if test="#result.getReturnType().equals('account')"><s:property value="#result.getReturnType()"/>|<s:property value="#result.type"/>|<s:property value="#result.id"/>|<s:property value="#result.name"/></s:if>
-<s:if test="#result.getReturnType().equals('user')"><s:property value="#result.getReturnType()"/>|User<s:if test="#result.isGroup()"> Group</s:if>|<s:property value="#result.id"/>|<s:property value="#result.name"/>|<s:property value="#result.account.name"/></s:if>
-<s:if test="#result.getReturnType().equals('employee')"><s:property value="#result.getReturnType()"/>|Employee|<s:property value="#result.id"/>|<s:property value="#result.displayName"/>|<s:property value="#result.account.name"/></s:if>
+<s:if test="accountList.size() > 0">
+Accounts<br/>
+<s:iterator value="accountList" id="result">
+<s:property value="get('id')" /> -- <s:property value="get('name')" /> <br/>
 </s:iterator>
+<br />---
+</s:if>
+<s:if test="employeeList.size() > 0">
+Employee<br/>
+<s:iterator value="employeeList" id="result">
+<s:property value="get('id')" /> -- <s:property value="get('name')" /> -- <s:property value="get('accName')" /> <br/>
+</s:iterator>
+<br />---
+</s:if>
+<s:if test="userList.size() > 0">
+Users<br/>
+<s:iterator value="userList" id="result">
+<s:property value="get('id')" /> -- <s:property value="get('name')" /> -- <s:property value="get('accName')" /> <br/>
+</s:iterator>
+</s:if>

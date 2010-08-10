@@ -3,12 +3,19 @@ package com.picsauditing.search;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.report.oq.ReportOQ.Base;
 import com.picsauditing.dao.AccountDAO;
@@ -21,6 +28,10 @@ import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.DoubleMap;
+import com.picsauditing.util.Strings;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class MainSearch extends PicsActionSupport implements Preparable {
@@ -28,13 +39,19 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	protected String searchTerm;
 	
 	protected int searchID = 0;
+	protected int totalRows;
 	protected String searchType = "";
 	protected String accType = "";
 	
 	protected final String indexTable = "app_index";
 	protected final String indexStats = "app_index_stats";
 	
-	protected String fullList = "";
+	protected String autoResults = "";
+	protected List<String> fullList;
+	protected List<BasicDynaBean> accountList;
+	protected List<BasicDynaBean> employeeList;
+	protected List<BasicDynaBean> userList;
+	protected TreeSet<HashMap<BasicDynaBean, Float>> scoreSet;
 	protected Database db = new Database();
 	
 	private AccountDAO accountDAO;
@@ -71,19 +88,76 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				redirect("UsersManage.action?accountId="+u.getAccount().getId()+"&user.id="+searchID);
 			} else if(searchType.equals("employee")){
 				redirect("ManageEmployees.action?employee.id="+searchID);
-			}
-			
+			}			
+			return BLANK;
+		} else if("fullSearch".equals(button)){
+			String query = buildQuery(searchTerm, false, "i1.indexType, m DESC, score, foreignKey");
+			List<BasicDynaBean> queryList = db.select(query, true);
+			getFullResults(queryList);
+			return SUCCESS;			
 		} else {
-			String query = buildQuery(searchTerm);
+			String query = buildQuery(searchTerm, true, null);
 			System.out.println("--query--");
 			System.out.println(query);
-			List<BasicDynaBean> queryList = null;	
-			queryList = db.select(query, true);
+			List<BasicDynaBean> queryList = db.select(query, true);
 			System.out.println(db.getAllRows());
 			getResults(queryList);
 			return BLANK;
 		}
-		return SUCCESS;
+	}
+	@SuppressWarnings("unchecked")
+	private void getFullResults(List<BasicDynaBean> queryList) {
+		HashMap<BasicDynaBean, Float> scoreMap = new HashMap<BasicDynaBean, Float>();  // id, type, score
+		for(BasicDynaBean bdb : queryList){ 
+			String check = (String)bdb.get("indexType");
+			int qID = Integer.parseInt(bdb.get("foreignKey").toString());
+			float score = Float.parseFloat(bdb.get("score").toString());
+			if(check.equals("A")||check.equals("AS")||check.equals("C")||check.equals("CO")||check.equals("O")){ // account
+				scoreMap.put(getSingleResult("accounts a", "a.id, a.name", qID, null), score);
+			}else if(check.equals("U") || check.equals("G")){ // user
+				scoreMap.put(getSingleResult("users u", "u.id, u.name, a.name AS accName ", qID, "JOIN accounts a on u.accountID = a.id"), score);
+			} else if(check.equals("E")){ // employee
+				scoreMap.put(getSingleResult("employee e", "e.id, CONCAT(e.firstName,' ',e.lastName) AS name, a.name AS accName ", qID, "JOIN accounts a on e.accountID = a.id"), score);		
+			}
+		}
+		scoreSet = new TreeSet(new Comparator() {
+			public int compare(Object m, Object m1){
+				return ((Comparable)((Map.Entry)m).getValue()).compareTo((Comparable)((Map.Entry)m1).getValue());
+			}
+		});
+		scoreSet.addAll((Collection<? extends HashMap<BasicDynaBean, Float>>) scoreMap);
+	}
+	private List<BasicDynaBean> getList(String from, String fields, List<?> list, String join){
+		Database db = new Database();
+		List<BasicDynaBean> result = new ArrayList<BasicDynaBean>();
+		SelectSQL sql = new SelectSQL(from);
+		sql.addField(fields);
+		sql.addWhere(from.substring(from.length()-1, from.length())+".id IN ("+Strings.implode(list)+")");
+		sql.addOrderBy(from.substring(from.length()-1, from.length())+".id");
+		if(join!=null)
+			sql.addJoin(join);
+		try {
+			result = db.select(sql.toString(), false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	private BasicDynaBean getSingleResult(String from, String fields, int id, String join){
+		Database db = new Database();
+		List<BasicDynaBean> result = new ArrayList<BasicDynaBean>();
+		SelectSQL sql = new SelectSQL(from);
+		sql.addField(fields);
+		sql.addWhere(from.substring(from.length()-1, from.length())+".id = "+id);
+		sql.addOrderBy(from.substring(from.length()-1, from.length())+".id");
+		if(join!=null)
+			sql.addJoin(join);
+		try {
+			result = db.select(sql.toString(), false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result.get(0);
 	}
 	private void getResults(List<BasicDynaBean> queryList) {
 		// TODO Auto-generated method stub 
@@ -92,17 +166,13 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			String check = (String)bdb.get("indexType");
 			if(check.equals("A")||check.equals("AS")||check.equals("C")||check.equals("CO")||check.equals("O")){ // account
 				Account a = accountDAO.find(Integer.parseInt(bdb.get("foreignKey").toString()));	
-				sb.append(a.getReturnType()).append('|').append(a.getType()).append('|').append(a.getId()).append('|').append(a.getName()).append('|')
-					.append(a.getCity()).append(", ").append(a.getState()).append("\n");
-			}else if(check.equals("U")){ // user
+				sb.append(a.getSearchText(false));
+			}else if(check.equals("U") || check.equals("G")){ // user
 				User u = userDAO.find(Integer.parseInt(bdb.get("foreignKey").toString()));
-				sb.append(u.getReturnType()).append('|').append("User").append('|').append(u.getId()).append('|').append(u.getName()).append('|').append(u.getAccount().getName()).append("\n");
-			} else if(check.equals("G")){ // user group
-				User u = userDAO.find(Integer.parseInt(bdb.get("foreignKey").toString()));	
-				sb.append(u.getReturnType()).append('|').append("User Group").append('|').append(u.getId()).append('|').append(u.getName()).append('|').append(u.getAccount().getName()).append("\n");
+				sb.append(u.getSearchText(false).toString());
 			} else if(check.equals("E")){ // employee
 				Employee e = empDAO.find(Integer.parseInt(bdb.get("foreignKey").toString()));
-				sb.append(e.getReturnType()).append('|').append("Employee").append('|').append(e.getId()).append('|').append(e.getDisplayName()).append('|').append(e.getAccount().getName()).append("\n");
+				sb.append(e.getSearchText(false));
 			}
 		}
 		output = sb.toString();
@@ -113,7 +183,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 //		ms.buildQuery("bob pet");
 	}
 	
-	public String buildQuery(String check){
+	public String buildQuery(String check, boolean limit, String orderby){
 		SelectSQL sql = new SelectSQL(indexTable+" i1");
 		if(check==null || check.isEmpty())
 			return null;
@@ -152,8 +222,12 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		}
 		sql.addWhere("i1.value LIKE '"+sA[0]+"%'");
 		sql.addGroupBy("i1.foreignKey, i1.indexType");
-		sql.addOrderBy("m DESC, score, foreignKey");
-		sql.setLimit(10);
+		if(orderby == null)
+			sql.addOrderBy("m DESC, score, foreignKey");
+		else
+			sql.addOrderBy(orderby);
+		if(limit)
+			sql.setLimit(10);
 		
 		return sql.toString();
 	}
@@ -181,7 +255,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	}
 
 	public String getDataList() {
-		return fullList;
+		return autoResults;
 	}
 
 	public int getSearchID() {
@@ -206,5 +280,53 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	public void setAccType(String accType) {
 		this.accType = accType;
+	}
+
+	public String getSearchTerm() {
+		return searchTerm;
+	}
+
+	public void setSearchTerm(String searchTerm) {
+		this.searchTerm = searchTerm;
+	}
+
+	public int getTotalRows() {
+		return totalRows;
+	}
+
+	public void setTotalRows(int totalRows) {
+		this.totalRows = totalRows;
+	}
+
+	public List<String> getFullList() {
+		return fullList;
+	}
+	
+	public void setFullList(List<String> accountsList) {
+		this.fullList = accountsList;
+	}
+
+	public List<BasicDynaBean> getAccountList() {
+		return accountList;
+	}
+
+	public void setAccountList(List<BasicDynaBean> accountList) {
+		this.accountList = accountList;
+	}
+
+	public List<BasicDynaBean> getEmployeeList() {
+		return employeeList;
+	}
+
+	public void setEmployeeList(List<BasicDynaBean> employeeList) {
+		this.employeeList = employeeList;
+	}
+
+	public List<BasicDynaBean> getUserList() {
+		return userList;
+	}
+
+	public void setUserList(List<BasicDynaBean> userList) {
+		this.userList = userList;
 	}
 }

@@ -60,8 +60,8 @@ public class AuditQuestion extends BaseHistory {
 	private String criteria;
 	private String criteriaAnswer;
 
-	private List<AuditQuestion> requiredQuestions;
-	private List<AuditQuestion> visibleQuestions;
+	private List<AuditQuestion> dependsRequired;
+	private List<AuditQuestion> dependsVisible;
 	protected List<AuditQuestionOption> options;
 
 	public AuditQuestion() {
@@ -289,21 +289,21 @@ public class AuditQuestion extends BaseHistory {
 	}
 
 	@OneToMany(mappedBy = "requiredQuestion")
-	public List<AuditQuestion> getRequiredQuestions() {
-		return requiredQuestions;
+	public List<AuditQuestion> getDependsRequired() {
+		return dependsRequired;
 	}
 
-	public void setRequiredQuestions(List<AuditQuestion> requiredQuestions) {
-		this.requiredQuestions = requiredQuestions;
+	public void setDependsRequired(List<AuditQuestion> requiredQuestions) {
+		this.dependsRequired = requiredQuestions;
 	}
 
 	@OneToMany(mappedBy = "visibleQuestion")
-	public List<AuditQuestion> getVisibleQuestions() {
-		return visibleQuestions;
+	public List<AuditQuestion> getDependsVisible() {
+		return dependsVisible;
 	}
 
-	public void setVisibleQuestions(List<AuditQuestion> visibleQuestions) {
-		this.visibleQuestions = visibleQuestions;
+	public void setDependsVisible(List<AuditQuestion> visibleQuestions) {
+		this.dependsVisible = visibleQuestions;
 	}
 
 	@OneToMany(mappedBy = "auditQuestion")

@@ -78,9 +78,6 @@ $(function(){
 	});
 });
 function getResult(data){
-	if(data==null){
-		return;
-	}
 	if(data[0]=='account')
 		var accType = data[1];
 	location.href='HeaderSearchAjax.action?button=getResult&searchID='+data[2]+'&searchType='+data[0]+'&accType='+accType;	
@@ -124,8 +121,9 @@ function format(row, i){
 </td>
 <% if (permissions.isActive() && !permissions.isContractor()) { %>
 	<td id="headersearch">
-		<form action=HeaderSearchAjax.action method="get">
-			<input name="searchText" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
+		<form action=HeaderSearch.action method="post">
+			<input type="hidden" value="fullSearch" name="button" />
+			<input name="searchTerm" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
 			<input type="submit" value="Search" id="search_button" onclick="getResult(null)" />
 		</form>
 	</td>

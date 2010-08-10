@@ -693,4 +693,17 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public String getReturnType() {
 		return "user";
 	}
+	@Transient
+	public String getSearchText(boolean full){
+		StringBuilder sb = new StringBuilder();
+		if(full){
+			sb.append(this.id).append("\t").append(this.name).append(" at ").append(this.account.name);
+		} else {
+			sb.append(this.getReturnType()).append('|').append("User");
+			if(!this.isGroup())
+				sb.append(" Group");
+			sb.append('|').append(this.id).append('|').append(this.name).append('|').append(this.account.name).append("\n");
+		}
+		return sb.toString();
+	}
 }

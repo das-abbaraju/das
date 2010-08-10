@@ -180,11 +180,12 @@ public class Employee extends BaseTable implements Indexable {
 	public List<EmployeeRole> getEmployeeRoles() {
 		return employeeRoles;
 	}
+
 	@Transient
-	public boolean isPrevAssigned(){
-		for(EmployeeSite site : employeeSites){
-			if(!site.isCurrent())
-				return true;				
+	public boolean isPrevAssigned() {
+		for (EmployeeSite site : employeeSites) {
+			if (!site.isCurrent())
+				return true;
 		}
 		return false;
 	}
@@ -207,7 +208,8 @@ public class Employee extends BaseTable implements Indexable {
 		return employeeQualifications;
 	}
 
-	public void setEmployeeQualifications(Set<EmployeeQualification> employeeQualifications) {
+	public void setEmployeeQualifications(
+			Set<EmployeeQualification> employeeQualifications) {
 		this.employeeQualifications = employeeQualifications;
 	}
 
@@ -219,27 +221,28 @@ public class Employee extends BaseTable implements Indexable {
 	public void setAssessmentResults(List<AssessmentResult> assessmentResults) {
 		this.assessmentResults = assessmentResults;
 	}
+
 	@Temporal(TemporalType.DATE)
 	public Date getTwicExpiration() {
 		return twicExpiration;
 	}
-	
+
 	public void setTwicExpiration(Date twicExpiration) {
 		this.twicExpiration = twicExpiration;
 	}
-	
+
 	public int getNeedsRecalculation() {
 		return needsRecalculation;
 	}
-	
+
 	public void setNeedsRecalculation(int needsRecalculation) {
 		this.needsRecalculation = needsRecalculation;
 	}
-	
+
 	public Date getLastRecalculation() {
 		return lastRecalculation;
 	}
-	
+
 	public void setLastRecalculation(Date lastRecalculation) {
 		this.lastRecalculation = lastRecalculation;
 	}
@@ -252,7 +255,8 @@ public class Employee extends BaseTable implements Indexable {
 		json.put("firstName", firstName);
 		json.put("lastName", lastName);
 		json.put("account", account.toJSON());
-		json.put("classification", classification == null ? null : classification.toString());
+		json.put("classification", classification == null ? null
+				: classification.toString());
 		json.put("status", active);
 		json.put("hireDate", hireDate == null ? null : hireDate.getTime());
 		json.put("fireDate", fireDate == null ? null : fireDate.getTime());
@@ -263,7 +267,8 @@ public class Employee extends BaseTable implements Indexable {
 		json.put("ssn", Strings.maskSSN(ssn));
 		json.put("birthDate", birthDate == null ? null : birthDate.getTime());
 		json.put("photo", photo);
-		json.put("twicExpiration", twicExpiration == null ? null : twicExpiration.getTime());
+		json.put("twicExpiration", twicExpiration == null ? null
+				: twicExpiration.getTime());
 
 		return json;
 	}
@@ -282,7 +287,7 @@ public class Employee extends BaseTable implements Indexable {
 			}
 		};
 	}
-	
+
 	@Override
 	public String toString() {
 		return (firstName + " " + lastName).trim() + " (" + id + ")";
@@ -295,32 +300,37 @@ public class Employee extends BaseTable implements Indexable {
 
 	@Transient
 	public List<IndexObject> getIndexValues() {
-		List<IndexObject> l = new ArrayList<IndexObject>();	
+		List<IndexObject> l = new ArrayList<IndexObject>();
 		String temp = "";
 		// type
 		l.add(new IndexObject("EMPLOYEE", 2));
 		// id
-		l.add(new IndexObject(String.valueOf(this.id),10));
+		l.add(new IndexObject(String.valueOf(this.id), 10));
 		// name
 		temp = this.firstName;
-		if (temp!=null && !temp.isEmpty())
-			l.add(new IndexObject(temp.toUpperCase().replaceAll("\\W", ""),7));
+		if (temp != null && !temp.isEmpty())
+			l.add(new IndexObject(temp.toUpperCase().replaceAll("\\W", ""), 7));
 		temp = this.lastName;
-		if (temp!=null && !temp.isEmpty())
-			l.add(new IndexObject(temp.toUpperCase().replaceAll("\\W", ""),7));
+		if (temp != null && !temp.isEmpty())
+			l.add(new IndexObject(temp.toUpperCase().replaceAll("\\W", ""), 7));
 		// email
 		temp = this.email;
-		if (temp!=null && !temp.isEmpty()) {
+		if (temp != null && !temp.isEmpty()) {
 			String[] sA = temp.toUpperCase().split("@");
 			for (String s : sA) {
 				if (s != null && !s.isEmpty())
-					l.add(new IndexObject(s.replaceAll("\\W", ""),5)); // strip non word characters out
+					l.add(new IndexObject(s.replaceAll("\\W", ""), 5)); // strip
+				// non
+				// word
+				// characters
+				// out
 			}
 		}
 		// phone
 		temp = this.phone;
-		if (temp!=null && !temp.isEmpty()) {
-			l.add(new IndexObject(Strings.stripPhoneNumber(temp).replaceAll("\\D", ""),2));
+		if (temp != null && !temp.isEmpty()) {
+			l.add(new IndexObject(Strings.stripPhoneNumber(temp).replaceAll(
+					"\\D", ""), 2));
 		}
 		return l;
 	}
@@ -332,11 +342,26 @@ public class Employee extends BaseTable implements Indexable {
 
 	@Override
 	public void setNeedsIndexing(boolean needsIndexing) {
-		this.needsIndexing = needsIndexing;		
+		this.needsIndexing = needsIndexing;
 	}
 
 	@Transient
 	public String getReturnType() {
 		return "employee";
+	}
+
+	@Transient
+	public String getSearchText(boolean full) {
+		StringBuilder sb = new StringBuilder();
+		if (full) {
+			sb.append(this.id).append("\t").append(this.getDisplayName())
+				.append(" at ").append(this.account.name);
+		} else {
+			sb.append(this.getReturnType()).append('|').append("Employee")
+					.append('|').append(this.id).append('|').append(
+							this.getDisplayName()).append('|').append(
+							this.account.name).append("\n");
+		}
+		return sb.toString();
 	}
 }

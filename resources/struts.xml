@@ -483,6 +483,10 @@
 			class="com.picsauditing.search.MainSearch">
 			<result>struts/blank.jsp</result>
 		</action>
+		<action name="HeaderSearch"
+			class="com.picsauditing.search.MainSearch">
+			<result>struts/search.jsp</result>
+		</action>
 
 		<!-- Contractor List -->
 		<action name="ContractorList"
