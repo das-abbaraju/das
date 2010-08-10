@@ -9,6 +9,7 @@ import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 
 @SuppressWarnings("serial")
@@ -56,6 +57,15 @@ public class OrderAuditChildren extends PicsActionSupport {
 			}
 			auditCategoryDAO.save(auditCategory);
 		}
+		
+		// Change the Order numbers of the AuditQuestions
+		if (type.equals("AuditCategoryQuestions")) {
+			AuditCategory auditSubCategory = auditCategoryDAO.find(id);
+			for (AuditQuestion question : auditSubCategory.getQuestions()) {
+				question.setNumber(list.get(question.getId()));
+			}
+			auditCategoryDAO.save(auditSubCategory);
+		}		
 
 		return SUCCESS;
 	}

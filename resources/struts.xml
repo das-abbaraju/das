@@ -1175,34 +1175,6 @@
 			<result name="moved">struts/audits/manage_category_move.jsp</result>
 		</action>
 
-		<action name="ManageSubCategory"
-			class="com.picsauditing.actions.auditType.ManageSubCategory">
-			<result>struts/audits/manage_subcategory.jsp</result>
-			<result name="top">
-				struts/audits/audit_selectType.jsp
-			</result>
-			<result name="saved" type="redirectAction">
-				<param name="actionName">ManageCategory</param>
-				<param name="id">${id}</param>
-			</result>
-			<result name="deleted" type="redirectAction">
-				<param name="actionName">ManageCategory</param>
-				<param name="id">${id}</param>
-			</result>
-		</action>
-
-		<action name="ManageSubCategoryCopyAjax"
-			class="com.picsauditing.actions.auditType.ManageSubCategory">
-			<result>struts/audits/manage_subcategory_copy.jsp</result>
-			<result name="copied">struts/audits/manage_subcategory_copy.jsp</result>
-		</action>
-
-		<action name="ManageSubCategoryMoveAjax"
-			class="com.picsauditing.actions.auditType.ManageSubCategory">
-			<result>struts/audits/manage_subcategory_move.jsp</result>
-			<result name="moved">struts/audits/manage_subcategory_move.jsp</result>
-		</action>
-
 		<action name="ManageQuestion"
 			class="com.picsauditing.actions.auditType.ManageQuestion">
 			<result>struts/audits/manage_question.jsp</result>

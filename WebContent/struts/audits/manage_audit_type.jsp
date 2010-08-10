@@ -169,9 +169,9 @@ function copyAuditType(atypeID) {
 
 <s:if test="id > 0">
 	<div>
-		<ul id="list">
+		<ul id="list" class="list">
 		<s:iterator value="auditType.categories">
-		    <li id="item_<s:property value="id"/>" title="Drag and drop to change order"><s:property value="number"/>. <a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="category.trim().length() == 0 ? 'empty' : category"/> </a></li>
+		    <li id="item_<s:property value="id"/>" title="Drag and drop to change order"><s:property value="number"/>. <a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="name.trim().length() == 0 ? 'empty' : name"/> </a></li>
 		</s:iterator>
 		</ul>
 		

@@ -76,7 +76,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "auditTypeID", nullable = false)
+	@JoinColumn(name = "auditTypeID")
 	public AuditType getAuditType() {
 		return this.auditType;
 	}

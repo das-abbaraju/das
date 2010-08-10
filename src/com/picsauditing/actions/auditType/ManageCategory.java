@@ -1,5 +1,8 @@
 package com.picsauditing.actions.auditType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.dao.AuditCategoryDAO;
@@ -14,7 +17,9 @@ import com.picsauditing.jpa.entities.AuditType;
 @SuppressWarnings("serial")
 public class ManageCategory extends ManageAuditType {
 
+	protected AuditCategory categoryParent;
 	protected Integer applyOnQuestionID;
+	private List<AuditCategory> ancestors;
 
 	public ManageCategory(EmailTemplateDAO emailTemplateDAO,
 			AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
@@ -38,7 +43,9 @@ public class ManageCategory extends ManageAuditType {
 
 	protected void load(AuditCategory newCategory) {
 		this.category = newCategory;
-		load(category.getAuditType());
+		ancestors = getAncestors(category.getId());
+		// Assuming that the earliest ancestor has the general audit type.
+		super.load(ancestors.get(0).getAuditType());
 	}
 
 	public boolean save() {
@@ -56,9 +63,16 @@ public class ManageCategory extends ManageAuditType {
 				}
 				category.setNumber(maxID + 1);
 			}
+			if (categoryParent != null) {
+				category.setParent(categoryParent);
+				id = getAncestors(categoryParent.getId()).get(0).getAuditType().getId();
+			}
+			else
+				id = category.getAuditType().getId();
+			
 			category.setAuditColumns(permissions);
 			category = auditCategoryDAO.save(category);
-			id = category.getAuditType().getId();
+			
 			return true;
 		}
 		return false;
@@ -170,5 +184,37 @@ public class ManageCategory extends ManageAuditType {
 		auditCategoryDAO.save(categoryCopy);
 
 		return categoryCopy.getId();
+	}
+	
+	public AuditCategory getCategoryParent() {
+		return categoryParent;
+	}
+	
+	public void setCategoryParent(AuditCategory categoryParent) {
+		this.categoryParent = categoryParent;
+	}
+	
+	public int getNumberRequired(AuditCategory category) {
+		if (category.getNumRequired() <= 0 && category.getParent().getId() != category.getId())
+			return getNumberRequired(category.getParent());
+		
+		return category.getNumRequired();
+	}
+	
+	public List<AuditCategory> getAncestors(int categoryID) {
+		if (ancestors == null) {
+			ancestors = new ArrayList<AuditCategory>();
+			AuditCategory current = auditCategoryDAO.find(categoryID);
+			addAncestors(current);
+		}
+		
+		return ancestors;
+	}
+	
+	public void addAncestors(AuditCategory category) {
+		if (category.getParent() != null)
+			addAncestors(category.getParent());
+		
+		ancestors.add(category);
 	}
 }

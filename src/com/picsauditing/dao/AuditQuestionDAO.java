@@ -89,7 +89,7 @@ public class AuditQuestionDAO extends PicsDAO {
 	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findQuestionByType(String questionType) {
 		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE t.questionType = ? ORDER BY "
-				+ "t.subCategory.category.number,t.subCategory.number,t.number");
+				+ "t.auditCategory.parent.number,t.auditCategory.number,t.number");
 		query.setParameter(1, questionType);
 		return query.getResultList();
 

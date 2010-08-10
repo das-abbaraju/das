@@ -155,13 +155,13 @@ fieldset.form input.input-edit-field {
 }
 
 /** Sortable list items **/
-#list {
+.list {
 	margin: 0px;
 	padding: 0px;
 	list-style-type: none;
 }
 
-#list li {
+.list li {
 	margin: 5px;
 	padding: 10px;
 	border: 1px solid #888;

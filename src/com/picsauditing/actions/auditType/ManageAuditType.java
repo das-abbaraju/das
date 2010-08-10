@@ -160,6 +160,9 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 			int thisId = Integer.parseInt(parentIds[0]);
 			loadParent(thisId);
 		}
+		
+		if ("AddNew".equals(button))
+			category = new AuditCategory();
 	}
 
 	public boolean save() {

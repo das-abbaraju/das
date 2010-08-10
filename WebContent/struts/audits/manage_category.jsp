@@ -6,6 +6,12 @@
 <title>Manage Category</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<style type="text/css">
+.subCategories {
+	position: relative;
+	padding-left: 2em;
+}
+</style>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 $(function(){
@@ -14,6 +20,15 @@ $(function(){
 			$('#list-info').load('OrderAuditChildrenAjax.action?id=<s:property value="category.id"></s:property>&type=AuditCategory', 
 				sortList.sortable('serialize'), 
 				function() {sortList.effect('highlight', {color: '#FFFF11'}, 1000);}
+			);
+		}
+	});
+
+	var sortListQ = $('#listQ').sortable({
+		update: function() {
+			$('#listQ-info').load('OrderAuditChildrenAjax.action?id=<s:property value="category.id"/>&type=AuditCategoryQuestions', 
+				sortListQ.sortable('serialize'), 
+				function() {sortListQ.effect('highlight', {color: '#FFFF11'}, 1000);}
 			);
 		}
 	});
@@ -116,8 +131,14 @@ function moveCategory(atypeID) {
 
 <s:form id="save">
 	<s:hidden name="id" />
-	<s:hidden name="parentID" value="%{category.auditType.id}" />
-	<s:hidden name="category.auditType.id" />
+	<s:if test="category.auditType != null">
+		<s:hidden name="category.auditType.id" />
+		<s:hidden name="parentID" value="%{category.auditType.id}" />
+	</s:if>
+	<s:if test="categoryParent != null">
+		<s:hidden name="categoryParent.id" />
+		<s:hidden name="parentID" value="%{getAncestors(categoryParent.id).get(0).auditType.id}" />
+	</s:if>
 	<fieldset class="form">
 	<h2 class="formLegend">Category</h2>
 		<ol>
@@ -128,13 +149,13 @@ function moveCategory(atypeID) {
 					<s:else>NEW</s:else>
 			</li>
 			<li><label>Category Name:</label>
-				<s:textfield name="category.category" size="30" />
+				<s:textfield name="category.name" size="30" />
 			</li>
 			<li><label># of Questions:</label>
 				<s:property value="category.numQuestions"/>
 			</li>
 			<li><label># Required:</label>
-				<s:property value="category.numRequired"/>
+				<s:property value="getNumberRequired(category)"/>
 			</li>
 			<s:if test="category.auditType.dynamicCategories">
 				<li><label>Apply on Question:</label>
@@ -156,7 +177,7 @@ function moveCategory(atypeID) {
 			<input type="submit" class="picsbutton positive" name="button" value="Save"/>
 			<input type="button" class="picsbutton" value="Copy" onclick="copyCategory(<s:property value="id"/>)"/>
 			<input type="button" class="picsbutton" value="Move" onclick="moveCategory(<s:property value="id"/>)"/>
-				<s:if test="category.subCategories.size == 0">
+				<s:if test="category.subCategories.size() == 0">
 					<input type="submit" class="picsbutton negative" name="button" value="Delete"/>
 				</s:if>
 			<input type="submit" class="picsbutton" name="button" value="UpdateAllAuditsCategories"/>	
@@ -166,19 +187,33 @@ function moveCategory(atypeID) {
 
 <s:if test="id != 0">
 	<div>
-		<ul id="list" title="Drag and drop to change order">
-			<s:iterator value="category.subCategories">
-				<li id="item_<s:property value="id"/>"
-					title="Drag and drop to change order"><s:property
-					value="number" />.
-					<a
-					href="ManageSubCategory.action?id=<s:property value="id"/>"><s:property
-					value="subCategory" /></a></li>
-			</s:iterator>
+		<h1>Questions</h1>
+		<ul class="list" id="listQ" title="Drag and drop to change order">
+		<s:iterator value="category.questions">
+		    <li id="item_<s:property value="id"/>"><s:property value="number"/>.
+		    <a href="ManageQuestion.action?id=<s:property value="id"/>"><s:if test="name != null"><s:property value="name.length()>100 ? name.substring(0,97) + '...' : name"/></s:if><s:else>Question has no text</s:else></a></li>
+		</s:iterator>
 		</ul>
 		
-		<a class="preview" href="AuditCat.action?catID=<s:property value="category.id" />">Preview Category</a>&nbsp;&nbsp;
-		<a class="add" href="ManageSubCategory.action?button=AddNew&parentID=<s:property value="category.id"/>&subCategory.category.id=<s:property value="category.id"/>">Add New Sub Category</a>
+		<a class="add" href="ManageQuestion.action?button=AddNew&parentID=<s:property value="category.id"/>&question.category.id=<s:property value="category.id"/>">Add New Question</a>
+		<div id="listQ-info"></div>
+	</div>
+	<div>
+		<h1>Subcategories</h1>
+		<ul class="list" id="list" title="Drag and drop to change order">
+			<s:iterator value="category.subCategories">
+				<li id="item_<s:property value="id"/>" title="Drag and drop to change order">
+					<s:property value="number" />.
+					<a href="ManageCategory.action?id=<s:property value="id"/>">
+						<s:property value="name" />
+					</a>
+				</li>
+			</s:iterator>
+		</ul>
+		<s:if test="category.subCategories.size() > 0">
+			<a class="preview" href="AuditCat.action?catID=<s:property value="category.id" />">Preview Category</a>&nbsp;&nbsp;
+		</s:if>
+		<a class="add" href="ManageCategory.action?button=AddNew&parentID=<s:property value="getAncestors(category.id).get(0).auditType.id"/>&categoryParent.id=<s:property value="category.id" />">Add New Sub Category</a>
 		<div id="list-info"></div>
 	</div>
 </s:if>
