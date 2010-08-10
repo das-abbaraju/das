@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -158,6 +159,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	}
 
 	@OneToMany(mappedBy = "auditCategory")
+	@OrderBy("number")
 	public List<AuditQuestion> getQuestions() {
 		return questions;
 	}
