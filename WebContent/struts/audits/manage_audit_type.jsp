@@ -12,7 +12,7 @@ $(function(){
 	var sortList = $('#list').sortable({
 		update: function() {
 			$('#list-info').load('OrderAuditChildrenAjax.action?id=<s:property value="auditType.id"/>&type=AuditType', 
-				sortList.sortable('serialize'), 
+				sortList.sortable('serialize').replace(/\[|\]/g,''), 
 				function() {sortList.effect('highlight', {color: '#FFFF11'}, 1000);}
 			);
 		}

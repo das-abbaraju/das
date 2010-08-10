@@ -3,7 +3,6 @@ package com.picsauditing.actions.auditType;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -15,29 +14,29 @@ import com.picsauditing.jpa.entities.AuditType;
 @SuppressWarnings("serial")
 public class OrderAuditChildren extends PicsActionSupport {
 	protected Map<Integer, Integer> list = new HashMap<Integer, Integer>();
+	protected Integer[] item = {};
 	protected int id;
 	protected String type;
-	
+
 	protected AuditTypeDAO auditTypeDAO;
 	protected AuditCategoryDAO auditCategoryDAO;
 	protected AuditQuestionDAO auditQuestionDAO;
-	
+
 	public OrderAuditChildren(AuditTypeDAO auditTypeDAO, AuditCategoryDAO auditCategoryDAO) {
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
-	}	
-	
+	}
+
 	public String execute() {
-		if (type==null)
+		if (type == null)
 			return SUCCESS;
-		
-		String[] listString = (String[]) ActionContext.getContext().getParameters().get("item[]");
-		for(int i=0; i < listString.length; i++) {
+
+		for (int i = 0; i < item.length; i++) {
 
 			try {
-				int id = Integer.parseInt(listString[i]);
-				list.put(id, i+1);
-			} catch(Exception e){}
+				list.put(item[i], i + 1);
+			} catch (Exception e) {
+			}
 		}
 
 		// Change the Order numbers of the AuditCategories
@@ -47,8 +46,8 @@ public class OrderAuditChildren extends PicsActionSupport {
 				category.setNumber(list.get(category.getId()));
 			}
 			auditTypeDAO.save(auditType);
-		}		
-		
+		}
+
 		// Change the Order numbers of the AuditSubCategories
 		if (type.equals("AuditCategory")) {
 			AuditCategory auditCategory = auditCategoryDAO.find(id);
@@ -57,7 +56,7 @@ public class OrderAuditChildren extends PicsActionSupport {
 			}
 			auditCategoryDAO.save(auditCategory);
 		}
-		
+
 		// Change the Order numbers of the AuditQuestions
 		if (type.equals("AuditCategoryQuestions")) {
 			AuditCategory auditSubCategory = auditCategoryDAO.find(id);
@@ -65,9 +64,17 @@ public class OrderAuditChildren extends PicsActionSupport {
 				question.setNumber(list.get(question.getId()));
 			}
 			auditCategoryDAO.save(auditSubCategory);
-		}		
+		}
 
 		return SUCCESS;
+	}
+
+	public Integer[] getItem() {
+		return item;
+	}
+
+	public void setItem(Integer[] item) {
+		this.item = item;
 	}
 
 	public int getId() {

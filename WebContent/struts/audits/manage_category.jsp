@@ -17,8 +17,8 @@
 $(function(){
 	var sortList = $('#list').sortable({
 		update: function() {
-			$('#list-info').load('OrderAuditChildrenAjax.action?id=<s:property value="category.id"></s:property>&type=AuditCategory', 
-				sortList.sortable('serialize'), 
+			$('#list-info').load('OrderAuditChildrenAjax.action?id=<s:property value="category.id"/>&type=AuditCategory', 
+				sortList.sortable('serialize').replace(/\[|\]/g,''), 
 				function() {sortList.effect('highlight', {color: '#FFFF11'}, 1000);}
 			);
 		}
@@ -27,7 +27,7 @@ $(function(){
 	var sortListQ = $('#listQ').sortable({
 		update: function() {
 			$('#listQ-info').load('OrderAuditChildrenAjax.action?id=<s:property value="category.id"/>&type=AuditCategoryQuestions', 
-				sortListQ.sortable('serialize'), 
+				sortListQ.sortable('serialize').replace(/\[|\]/g,''), 
 				function() {sortListQ.effect('highlight', {color: '#FFFF11'}, 1000);}
 			);
 		}
