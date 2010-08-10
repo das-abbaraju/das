@@ -12,8 +12,8 @@
 <script type="text/javascript" src="js/jquery/autocompletefb/jquery.autocompletefb.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocompletefb/jquery.autocompletefb.css" />
 <script type="text/javascript">
-var data = <s:property value="data" escape="false"/>;
-var initCountries = <s:property value="initialCountries" escape="false"/>;
+//var data = <s:property value="data" escape="false"/>;
+//var initCountries = <s:property value="initialCountries" escape="false"/>;
 var acfb;
 var forceRefresh = false;
 $(function(){
@@ -35,11 +35,11 @@ $(function(){
 				}
 			});
 	}
-	acfb = acfbuild('.countries', data);
-	acfb.init(initCountries);
+	//acfb = acfbuild('.countries', data);
+	//acfb.init(initCountries);
 
 	$('form#save').submit(function() {
-			$(this).find('[name=countries]').val(acfb.getData());
+			//$(this).find('[name=countries]').val(acfb.getData());
 		}
 	);
 });
@@ -129,7 +129,6 @@ function moveQuestion(atypeID) {
 				width: '55%',
 				close: function(event, ui) {
 					$(this).dialog('destroy');
-					location.reload();
 				},
 				buttons: {
 					Cancel: function() {
@@ -163,13 +162,6 @@ function moveQuestion(atypeID) {
 
 <s:form id="save">
 	<s:hidden name="id" />
-	<s:hidden name="parentID" value="%{subCategory.id}" />
-	<s:hidden name="subCategory.id" />
-	<fieldset class="form submit">
-		<div>
-			<button class="picsbutton positive" name="button" type="submit" value="save">Save</button>
-		</div>
-	</fieldset>
 	<fieldset class="form">
 	<h2 class="formLegend">Question</h2>
 	<ol>
@@ -181,30 +173,9 @@ function moveQuestion(atypeID) {
 				NEW
 			</s:else>
 		</li>
-		<li><label>Text:</label>
-			<s:if test="question.id > 0">
-				<table class="report" style="clear: none">
-				<thead>
-					<tr>
-						<th>Locale</th>
-						<th>Question</th>
-					</tr>
-				</thead>
-					<s:iterator value="question.questionTexts">
-					<tr class="clickable" onclick="showText(<s:property value="auditQuestion.id"/>, <s:property value="id"/>)">
-						<td><s:property value="locale"/></td>
-						<td><s:property value="question"/></td>
-					</tr>
-					</s:iterator>
-					<tr>
-						<td colspan="2" style="text-align:center"><a class="add" href="#" onclick="showText(<s:property value="id"/>, 0); return false;">Add New Translation</a></td>
-					</tr>
-				</table>
-			</s:if>
-			<s:else>
-				<s:textarea name="defaultQuestion" rows="3" cols="65"/>
-			</s:else>
-		</li>
+		<li><label>Name:</label>
+			<s:textfield name="question.name" />
+		</li>		
 		<li><label>Effective Date:</label>
 			<s:textfield name="question.effectiveDate" value="%{ question.effectiveDate && getText('short_dates', {question.effectiveDate})}"/>
 		</li>
@@ -226,66 +197,60 @@ function moveQuestion(atypeID) {
 			<s:textfield name="question.uniqueCode" size="20" maxlength="50"/>
 		</li>
 		<li><label>Has Requirement:</label>
-			<s:checkbox name="question.hasRequirement" value="question.hasRequirement.name() == 'Yes' ? true : false"/>
+			<s:checkbox name="question.hasRequirement"/>
 		</li>
 		<li><label>OK Answer:</label>
 			<s:textfield name="question.okAnswer" />
 		</li>
-		<li><label>Requirement:</label>
-			<s:if test="question.id > 0">
-				<table class="report" style="clear: none">
-				<thead>
-					<tr>
-						<th>Locale</th>
-						<th>Requirement</th>
-					</tr>
-				</thead>
-					<s:iterator value="question.questionTexts">
-					<tr class="clickable" onclick="showText(<s:property value="auditQuestion.id"/>, <s:property value="id"/>)">
-						<td><s:property value="locale"/></td>
-						<td><s:property value="requirement"/></td>
-					</tr>
-					</s:iterator>
-					<tr>
-						<td colspan="2" style="text-align:center"><a class="add" href="#" onclick="showText(<s:property value="id"/>, 0); return false;">Add New Translation</a></td>
-					</tr>
-				</table>
-			</s:if>
-			<s:else>
-				<s:textarea name="defaultRequirement" rows="3" cols="65"/>
-			</s:else>
+		<li><label>Requirement</label>
+			<s:textfield name="question.requirement" />
 		</li>
 		<li><label>Flaggable:</label>
-			<s:checkbox name="question.isRedFlagQuestion" value="question.isRedFlagQuestion.name() == 'Yes' ? true : false"/>
+			<s:checkbox name="question.flaggable"/>
 		</li>
 		<li><label>Required:</label>
-			<s:select list="#{'No':'No','Yes':'Yes','Depends':'Depends'}" name="question.isRequired" />
+			<s:checkbox name="question.required" />
 		</li>
-		<li><label>Depends on Question:</label>
-			<s:textfield name="dependsOnQuestionID" />
-			<s:if test="dependsOnQuestionID > 0"><a href="?id=<s:property value="dependsOnQuestionID" />">Show</a></s:if>
+		<li><label>Required by Question:</label>
+			<s:textfield name="requiredQuestionID" />
+			<s:if test="requiredQuestionID > 0"><a href="?id=<s:property value="requiredQuestionID" />">Show</a></s:if>
+			<div class="fieldhelp">
+				<h3>Required by Question</h3>
+				<p>The number of the question that requires this question.</p>
+			</div>
 		</li>
-		<li><label>Depends on Answer:</label>
-			<s:textfield name="question.dependsOnAnswer" />
+		<li><label>Required Answer:</label>
+			<s:textfield name="question.requiredAnswer" />
+			<div class="fieldhelp">
+				<h3>Required Answer</h3>
+				<p>The answer that is required for this question.</p>
+			</div>
 		</li>
 		<li><label>Question Type:</label>
 			<s:select list="questionTypes" name="question.questionType" />
 		</li>
-		
-		<s:if test="subCategory.id == 40">
-			<li><label>Risk Level:</label>
-				<s:select list="@com.picsauditing.jpa.entities.LowMedHigh@values()" name="question.riskLevel" />
-			</li>
-		</s:if>
-		
+		<li><label>Risk Level:</label>
+			<s:select list="@com.picsauditing.jpa.entities.LowMedHigh@values()" name="question.riskLevel" />
+		</li>		
 		<li><label>Title:</label>
 			<s:textfield name="question.title" size="65"/>
 		</li>
-		<li><label>Visible:</label>
-			<s:checkbox name="question.isVisible" value="question.isVisible.name() == 'Yes' ? true : false"/>
+		<li><label>Visible Question:</label>
+			<s:textfield name="question.visibleQuestion" />
+			<div class="fieldhelp">
+				<h3>Visible Question</h3>
+				<p>Until the question in this field is answerd with the visible answer this question will not show.</p>
+			</div>
+		</li>
+		<li><label>Visible Answer:</label>
+			<s:textfield name="question.visibleAnswer" />
+			<div class="fieldhelp">
+				<h3>Visible Answer</h3>
+				<p>Until this answer is met for the visible question this question will not show.</p>
+			</div>
 		</li>
 		<li><label>Grouped with Previous:</label>
-			<s:checkbox name="question.isGroupedWithPrevious" value="question.isGroupedWithPrevious.name() == 'Yes' ? true : false"/>
+			<s:checkbox name="question.groupedWithPrevious"/>
 		</li>
 		<li><label>Show Comments:</label>
 			<s:checkbox name="question.showComment" value="question.showComment"/>
@@ -296,75 +261,7 @@ function moveQuestion(atypeID) {
 				<s:if test="question.helpPage.length() > 0"><a href="http://help.picsauditing.com/wiki/<s:property value="question.helpPage"/>">Help Center</a></s:if>
 				<s:else>help.picsauditing.com/wiki/???</s:else>
 			</div>
-		</li>
-		<li><label>Countries:</label>
-			<s:hidden name="countries" value="%{question.countries}"/>
-			<s:textfield size="50" cssClass="countries"/>
-		</li>
-		<li><label>Exclude Countries:</label>
-			<s:checkbox name="exclude" label="Exclude Countries" value="question.countries.startsWith('!')" />
-		</li>			
-	</ol>
-	</fieldset>
-<!--
-	<fieldset class="form">
-	<h2 class="formLegend">Question Texts</h2>
-	<ol>
-		<s:iterator value="question.questionTexts" status="stat">
-			<li><label>Locale:</label>
-				<s:select list="localeList" listValue="displayName" name="question.questionTexts[%{#stat.index}].locale" value="%{locale}"/>
-			</li>
-			<li><label>Question:</label>
-				<s:textarea name="question.questionTexts[%{#stat.index}].question" value="%{question}" rows="3" cols="65"/>
-			</li>
-			<li><label>Requirement:</label>
-				<s:textarea name="question.questionTexts[%{#stat.index}].requirement" value="%{requirement}" rows="3" cols="65"/>
-			</li>
-		</s:iterator>
-	</ol>
-	<a href="#text_<s:property value="question.questionTexts.size()"/>" onclick="newText(<s:property value="question.questionTexts.size()"/>); return false">Add New Text Entry</a>
-	</fieldset>
--->
- 
-	<fieldset class="form">
-	<h2 class="formLegend">Useful Links</h2>
-	<ol>
-		<li><label>URL 1:</label>
-			<s:textfield name="question.linkUrl1" size="65"/>
-		</li>
-		<li><label>Label 1:</label>
-			<s:textfield name="question.linkText1" size="25"/>
-		</li>
-		<li><label>URL 2:</label>
-			<s:textfield name="question.linkUrl2" size="65"/>
-		</li>	
-		<li><label>Label 2:</label>
-			<s:textfield name="question.linkText2" size="25"/>
 		</li>		
-		<li><label>URL 3:</label>
-			<s:textfield name="question.linkUrl3" size="65"/>
-		</li>	
-		<li><label>Label 3:</label>
-			<s:textfield name="question.linkText3" size="25"/>
-		</li>
-		<li><label>URL 4:</label>
-			<s:textfield name="question.linkUrl4" size="65"/>
-		</li>	
-		<li><label>Label 4:</label>
-			<s:textfield name="question.linkText4" size="25"/>
-		</li>
-		<li><label>URL 5:</label>
-			<s:textfield name="question.linkUrl5" size="65"/>
-		</li>	
-		<li><label>Label 5:</label>
-			<s:textfield name="question.linkText5" size="25"/>
-		</li>
-		<li><label>URL 6:</label>
-			<s:textfield name="question.linkUrl6" size="65"/>
-		</li>	
-		<li><label>Label 6:</label>
-			<s:textfield name="question.linkText6" size="25"/>
-		</li>									
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">
@@ -379,7 +276,6 @@ function moveQuestion(atypeID) {
 	</fieldset>
 </s:form>
 
-<div id="question_texts"></div>
-<div id="copy_audit" class="thinking"></div>
+<div id="copy_audit"></div>
 </body>
 </html>
