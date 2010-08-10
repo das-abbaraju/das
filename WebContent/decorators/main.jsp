@@ -1,7 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<%@page import="java.net.InetAddress"%><html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+<%@page import="java.net.InetAddress"%>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
 <%@page import="com.picsauditing.dao.AppPropertyDAO"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page import="com.picsauditing.jpa.entities.AppProperty"%>
@@ -19,6 +20,7 @@
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
 	String version = com.picsauditing.actions.PicsActionSupport.getVersion();
+	String protocol = URLUtils.getProtocol(request);
 	MenuComponent menu = PicsMenu.getMenu(permissions);
 	AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
 	AppProperty appProperty = appPropertyDAO.find("SYSTEM.MESSAGE");
@@ -34,9 +36,9 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<%=version%>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=<%=version%>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/contractorstatistics.css?v=<%=version%>" />
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 
-<script src="js/chrome.js" type="text/javascript" ></script>
+<script type="text/javascript" src="<%=protocol%>://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/chrome.js"></script>
 <script type="text/javascript" src="js/pics_main.js?v=<%=version%>"></script>
 <script type="text/javascript" src="js/notes.js?v=<%=version%>"></script>
 
@@ -50,7 +52,6 @@
 }
 </style>
 
-<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <!--CSS FIXES FOR INTERNET EXPLORER -->
 <!--[if IE]>
 	<link rel="stylesheet" href="css/ie.css" type="text/css" />
@@ -61,6 +62,8 @@
 	<link rel="stylesheet" href="css/ie6.css" type="text/css" />
 <![endif]-->
 
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script>
 $(function(){
 	$('#search_box').autocomplete('HeaderSearchAjax.action', {
