@@ -113,6 +113,14 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		this.number = number;
 	}
 
+	@Transient
+	public String getFullNumber() {
+		if (parent == null)
+			return "" + number;
+
+		return parent.getFullNumber() + "." + number;
+	}
+
 	@Column(nullable = false)
 	public int getNumRequired() {
 		return this.numRequired;

@@ -8,9 +8,9 @@
 		<s:include value="audit_cat_sha.jsp"></s:include>
 	</s:if>
 	
-	<h2><s:property value="#category.number"/> - <s:property value="#category.name"/></h2>
+	<h2><s:property value="#category.fullNumber"/>) <s:property value="#category.name"/></h2>
 	<s:set name="shaded" value="true" scope="action"/>
-	<s:iterator value="questions">
+	<s:iterator value="#category.questions">
 		<s:if test="title != null && title.length() > 0">
 			<h4 class="groupTitle">
 				<s:property value="title" escape="false"/>
