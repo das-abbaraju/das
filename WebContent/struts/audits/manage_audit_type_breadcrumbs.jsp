@@ -1,20 +1,4 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<script type="text/javascript">
-function selectCrumb(selector, url) {
-	var id = $F(selector);
-	if (id > 0) {
-		window.location = url + '.action?id=' + id;
-	}
-}
-</script>
-<style>
-<!--
-#breadcrumbs {
-
-}
--->
-</style>
-
 <h1>Manage Audit Types
 	<s:if test="auditType != null"><span class="sub"><s:property value="auditType.auditName"/></span></s:if>
 </h1>
