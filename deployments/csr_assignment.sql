@@ -82,3 +82,10 @@ JOIN generalcontractors g2 on g1.subID = g2.subID and g1.id != g2.id
 JOIN accounts a1 ON a1.id = g1.genID AND a1.type = 'Operator' 
 JOIN accounts a2 ON a2.id = g2.genID AND a2.type = 'Operator' 
 GROUP BY g1.genID, g2.genID;
+
+-- rebuild stats for AppIndex
+TRUNCATE TABLE app_index_stats;
+INSERT INTO app_index_stats SELECT indexType, NULL, count(distinct foreignKey) FROM app_index GROUP BY indexType;
+INSERT INTO app_index_stats SELECT NULL, value, count(*) FROM app_index GROUP BY value;
+INSERT INTO app_index_stats SELECT indexType, value, count(*) FROM app_index GROUP BY indexType, value;
+ANALYZE TABLE app_index, app_index_stats;
