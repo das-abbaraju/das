@@ -1,7 +1,7 @@
 -- Ashley Prather
 update contractor_info c, accounts a set welcomeAuditor_id = 22223
 where c.id = a.id
-and a.state in ('AK','AZ','HI','ID','MT','NM','NV','OR','UT','WY') 
+and a.state in ('AK','AZ','CO','HI','ID','MT','NM','NV','OR','UT','WA','WY') 
 AND a.country = 'US';
 
 -- Derrick Piper
@@ -12,12 +12,12 @@ and (a.state in ('TX'));
 -- Estevan Orozco
 update contractor_info c, accounts a set welcomeAuditor_id = 940
 where c.id = a.id
-and (a.state in ('CA','GU','PR','WA') OR a.country not in ('US','CA'));
+and (a.state in ('AS','CA','GU','MP','PR','UM','VI') OR a.country not in ('US','CA'));
 
 -- Kaitlyn O'Malley
 update contractor_info c, accounts a set welcomeAuditor_id = 11067
 where c.id = a.id
-and a.state in ('AR','CO','IA','KS','LA','MO','ND','NE','OK','SD','WI')
+and a.state in ('AR','IA','KS','LA','MO','ND','NE','OK','SD','WI')
 AND a.country = 'US';
 
 -- Chris Jimenez
@@ -35,7 +35,7 @@ AND a.country = 'US';
 -- Valeree Claudio
 update contractor_info c, accounts a set welcomeAuditor_id = 8397
 where c.id = a.id
-and a.state in ('CT','DE','MA','MD','ME','NC','NH','NJ','NY','PA','RI','SC','VA','VT','WV')
+and a.state in ('CT','DC','DE','MA','MD','ME','NC','NH','NJ','NY','PA','RI','SC','VA','VT','WV')
 AND a.country = 'US';
 
 -- Gary Abenaim
@@ -82,10 +82,3 @@ JOIN generalcontractors g2 on g1.subID = g2.subID and g1.id != g2.id
 JOIN accounts a1 ON a1.id = g1.genID AND a1.type = 'Operator' 
 JOIN accounts a2 ON a2.id = g2.genID AND a2.type = 'Operator' 
 GROUP BY g1.genID, g2.genID;
-
--- rebuild stats for AppIndex
-TRUNCATE TABLE app_index_stats;
-INSERT INTO app_index_stats SELECT indexType, NULL, count(distinct foreignKey) FROM app_index GROUP BY indexType;
-INSERT INTO app_index_stats SELECT NULL, value, count(*) FROM app_index GROUP BY value;
-INSERT INTO app_index_stats SELECT indexType, value, count(*) FROM app_index GROUP BY indexType, value;
-ANALYZE TABLE app_index, app_index_stats;
