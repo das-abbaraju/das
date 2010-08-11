@@ -217,7 +217,7 @@ function moveCategory(atypeID) {
 		</s:iterator>
 		</ul>
 		
-		<a class="add" href="ManageQuestion.action?button=AddNew&parentID=<s:property value="category.id"/>&question.category.id=<s:property value="category.id"/>">Add New Question</a>
+		<a class="add" href="ManageQuestion.action?button=AddNew&parentID=<s:property value="category.id"/>&categoryParent.id=<s:property value="category.id"/>&question.category.id=<s:property value="category.id"/>">Add New Question</a>
 		<div id="listQ-info"></div>
 	</div>
 </s:if>

@@ -17,8 +17,8 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 public class ManageQuestion extends ManageCategory {
 
 	protected AuditDataDAO auditDataDAO;
-	private int requiredQuestionID = 0;
-	private int visibleQuestionID = 0;
+	private Integer requiredQuestionID;
+	private Integer visibleQuestionID;
 
 	public ManageQuestion(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDao,
 			AuditCategoryDAO auditCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO) {
@@ -62,14 +62,14 @@ public class ManageQuestion extends ManageCategory {
 			if (question.getExpirationDate() == null)
 				question.setExpirationDate(DateBean.getEndOfTime());
 
-			if (requiredQuestionID == 0)
+			if (requiredQuestionID == null || requiredQuestionID == 0)
 				question.setRequiredQuestion(null);
 			else if (question.getRequiredQuestion() == null
 					|| requiredQuestionID != question.getRequiredQuestion().getId()) {
 				question.setRequiredQuestion(auditQuestionDAO.find(requiredQuestionID));
 			}
 
-			if (visibleQuestionID == 0)
+			if (visibleQuestionID == null || visibleQuestionID == 0)
 				question.setRequiredQuestion(null);
 			else if (question.getVisibleQuestion() == null
 					|| visibleQuestionID != question.getVisibleQuestion().getId()) {
@@ -181,19 +181,19 @@ public class ManageQuestion extends ManageCategory {
 		return AuditQuestion.TYPE_ARRAY;
 	}
 
-	public int getRequiredQuestionID() {
+	public Integer getRequiredQuestionID() {
 		return requiredQuestionID;
 	}
 
-	public void setRequiredQuestionID(int requiredQuestionID) {
+	public void setRequiredQuestionID(Integer requiredQuestionID) {
 		this.requiredQuestionID = requiredQuestionID;
 	}
 
-	public int getVisibleQuestionID() {
+	public Integer getVisibleQuestionID() {
 		return visibleQuestionID;
 	}
 
-	public void setVisibleQuestionID(int visibleQuestionID) {
+	public void setVisibleQuestionID(Integer visibleQuestionID) {
 		this.visibleQuestionID = visibleQuestionID;
 	}
 }
