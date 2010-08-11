@@ -100,7 +100,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 					LowMedHigh riskLevel = LowMedHigh.Low;
 					for (AuditData auditData : auditList) {
 						AuditQuestion q = auditData.getQuestion();
-						if (q.getAuditCategory().getId() == 269) {
+						if (q.getCategory().getId() == 269) {
 							// Subcategory is RISK ASSESSMENT
 							AuditData aData = answerMap.get(q.getId());
 							riskLevel = getRiskLevel(aData, riskLevel);

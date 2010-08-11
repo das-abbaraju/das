@@ -204,10 +204,10 @@ function moveCategory(atypeID) {
 		<s:if test="category.subCategories.size() > 0">
 			<a class="preview" href="AuditCat.action?catID=<s:property value="category.id" />">Preview Category</a>&nbsp;&nbsp;
 		</s:if>
-		<a class="add" href="ManageCategory.action?button=AddNew&parentID=<s:property value="category.ancestors.get(0).auditType.id"/>&categoryParent.id=<s:property value="category.id" />">Add New Sub Category</a>
+		<a class="add" href="ManageCategory.action?button=AddNew&parentID=<s:property value="category.parentAuditType.id"/>&categoryParent.id=<s:property value="category.id" />">Add New Sub Category</a>
 		<div id="list-info"></div>
 	</div>
-	<br clear="both" />
+	<br clear="all" />
 	<div>
 		<h3>Questions</h3>
 		<ul class="list" id="listQ" title="Drag and drop to change order">

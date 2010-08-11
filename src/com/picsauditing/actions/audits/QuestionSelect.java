@@ -42,7 +42,7 @@ public class QuestionSelect extends PicsActionSupport {
 		for (AuditQuestion q : questionList) {
 			if (q.getAuditType().isPqf() && !permissions.seesAllContractors()) {
 				for (AuditCatOperator auditCatOperator : getAuditCatOperatorList()) {
-					if (q.getAuditCategory() == auditCatOperator.getCategory()) {
+					if (q.getCategory() == auditCatOperator.getCategory()) {
 						questions.add(q);
 					}
 				}

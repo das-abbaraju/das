@@ -53,7 +53,7 @@ public class ReportAnswerSearch extends ReportAccount {
 		questions = new ArrayList<AuditQuestion>();
 		questions.addAll(newQuestions);
 		for (AuditQuestion question : questions) {
-			sql.addAuditQuestion(question.getId(), question.getAuditCategory().getAuditType()
+			sql.addAuditQuestion(question.getId(), question.getCategory().getAuditType()
 					.getId(), true);
 			if (question.getCriteria() != null && question.getCriteria().length() > 0) {
 				String qSearch = "q" + question.getId() + ".answer ";

@@ -97,6 +97,14 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		this.parent = parent;
 	}
 
+	@Transient
+	public AuditType getParentAuditType() {
+		if (auditType == null)
+			return parent.getParentAuditType();
+
+		return auditType;
+	}
+
 	@Column(name = "name", nullable = false)
 	public String getName() {
 		return this.name;
@@ -160,7 +168,15 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		this.subCategories = subCategories;
 	}
 
-	@OneToMany(mappedBy = "auditCategory")
+	@Transient
+	public List<AuditCategory> getSiblings() {
+		if (auditType != null)
+			return auditType.getCategories();
+		else
+			return parent.getSubCategories();
+	}
+
+	@OneToMany(mappedBy = "category")
 	@OrderBy("number")
 	public List<AuditQuestion> getQuestions() {
 		return questions;

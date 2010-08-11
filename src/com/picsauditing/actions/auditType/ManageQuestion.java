@@ -42,7 +42,7 @@ public class ManageQuestion extends ManageCategory {
 		this.question = o;
 		if (question.getRequiredQuestion() != null)
 			requiredQuestionID = question.getRequiredQuestion().getId();
-		load(question.getAuditCategory());
+		load(question.getCategory());
 	}
 
 	public boolean save() {
@@ -76,11 +76,11 @@ public class ManageQuestion extends ManageCategory {
 				question.setVisibleQuestion(auditQuestionDAO.find(visibleQuestionID));
 			}
 
-			if (question.getAuditCategory() == null)
-				question.setAuditCategory(category);
+			if (question.getCategory() == null)
+				question.setCategory(category);
 
 			question = auditQuestionDAO.save(question);
-			id = question.getAuditCategory().getId();
+			id = question.getCategory().getId();
 
 			recalculateCategory();
 			return true;
@@ -96,7 +96,7 @@ public class ManageQuestion extends ManageCategory {
 				addActionError("Deleting Questions is not supported just yet.");
 				return false;
 			}
-			id = question.getAuditCategory().getId();
+			id = question.getCategory().getId();
 			auditQuestionDAO.remove(question.getId());
 
 			recalculateCategory();
@@ -137,7 +137,7 @@ public class ManageQuestion extends ManageCategory {
 			}
 
 			AuditCategory targetSubCategory = auditCategoryDAO.find(targetID);
-			question.setAuditCategory(targetSubCategory);
+			question.setCategory(targetSubCategory);
 			auditQuestionDAO.save(question);
 
 			addActionMessage("Question Moved Successfully. <a href=\"ManageQuestion.action?id=" + question.getId()
@@ -170,6 +170,11 @@ public class ManageQuestion extends ManageCategory {
 			category.setNumRequired(numRequired);
 			auditQuestionDAO.save(category);
 		}
+	}
+
+	@Override
+	protected String getRedirectURL() {
+		return "ManageCategory.action?id=" + question.getCategory().getId();
 	}
 
 	public String[] getQuestionTypes() {

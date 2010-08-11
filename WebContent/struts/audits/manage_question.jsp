@@ -87,7 +87,7 @@ function moveQuestion(atypeID) {
 
 <s:form id="save">
 	<s:hidden name="id" />
-	<s:hidden name="parentID" />
+	<s:hidden name="parentID" value="%{question.category.id}"/>
 	<fieldset class="form">
 	<h2 class="formLegend">Question</h2>
 	<ol>

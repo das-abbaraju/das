@@ -209,7 +209,7 @@ public class AuditDataSave extends AuditActionSupport {
 					auditDao.save(tempAudit);
 				}
 				if (tempAudit.getAuditType().isAnnualAddendum()) {
-					if (auditData.getQuestion().getAuditCategory().getId() == AuditCategory.GENERAL_INFORMATION) {
+					if (auditData.getQuestion().getCategory().getId() == AuditCategory.GENERAL_INFORMATION) {
 						auditBuilder.fillAuditCategories(tempAudit, true);
 					}
 					if (tempAudit.getAuditStatus().isActive()) {
@@ -233,7 +233,7 @@ public class AuditDataSave extends AuditActionSupport {
 				catData = catDataDao.find(catDataID);
 			} else if (toggleVerify) {
 				List<AuditCatData> catDatas = catDataDao.findAllAuditCatData(auditData.getAudit().getId(), auditData
-						.getQuestion().getAuditCategory().getParent().getId());
+						.getQuestion().getCategory().getParent().getId());
 
 				if (catDatas != null && catDatas.size() != 0) {
 					catData = catDatas.get(0);

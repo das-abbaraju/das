@@ -34,7 +34,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 			"Decimal Number", "File", "FileCertificate", "Industry", "License", "Main Work", "Money", "Number",
 			"Office Location", "Radio", "Service", "State", "Text", "Text Area", "Yes/No", "Yes/No/NA" };
 
-	private AuditCategory auditCategory;
+	private AuditCategory category;
 	private int number;
 	private String name;
 	private String questionType;
@@ -86,19 +86,19 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.riskLevel = a.riskLevel;
 		this.helpPage = a.helpPage;
 		this.requirement = a.requirement;
+		this.category = ac;
 		this.effectiveDate = a.effectiveDate;
 		this.expirationDate = a.expirationDate;
-		this.auditCategory = ac;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "categoryID", nullable = false)
-	public AuditCategory getAuditCategory() {
-		return this.auditCategory;
+	public AuditCategory getCategory() {
+		return this.category;
 	}
 
-	public void setAuditCategory(AuditCategory auditCategory) {
-		this.auditCategory = auditCategory;
+	public void setCategory(AuditCategory auditCategory) {
+		this.category = auditCategory;
 	}
 
 	@Column(nullable = false)
@@ -328,12 +328,12 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	@Transient
 	public AuditType getAuditType() {
-		return auditCategory.getAuditType();
+		return category.getAuditType();
 	}
 
 	@Transient
 	public String getExpandedNumber() {
-		return auditCategory.getParent().getNumber() + "." + auditCategory.getNumber() + "." + number;
+		return category.getParent().getNumber() + "." + category.getNumber() + "." + number;
 	}
 
 	@Transient
@@ -356,7 +356,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 			return 1;
 		}
 
-		int cmp = getAuditCategory().compareTo(other.getAuditCategory());
+		int cmp = getCategory().compareTo(other.getCategory());
 
 		if (cmp != 0)
 			return cmp;

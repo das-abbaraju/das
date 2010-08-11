@@ -289,7 +289,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 				if ("Yes".equals(auditQuestion.isRequired()))
 					questionLine += "*";
 				questionLine += auditCatData.getCategory().getNumber() + "."
-						+ auditQuestion.getAuditCategory().getNumber() + "." + auditQuestion.getNumber() + " "
+						+ auditQuestion.getCategory().getNumber() + "." + auditQuestion.getNumber() + " "
 						+ auditQuestion.getName();
 
 				Chunk question = new Chunk(questionLine, questionFont);

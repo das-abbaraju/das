@@ -122,14 +122,14 @@ public class VerifyAudit extends AuditActionSupport {
 		int questionid = auditQuestion.getId();
 		if(questionid == 2447 || questionid == 2448)
 			return false;
-		for(AuditCategory ac : auditQuestion.getAuditCategory().getSubCategories()){
-			if(ac.getParent().getId() == auditQuestion.getAuditCategory().getId()){
+		for(AuditCategory ac : auditQuestion.getCategory().getSubCategories()){
+			if(ac.getParent().getId() == auditQuestion.getCategory().getId()){
 				if (ac.getId() != AuditCategory.CITATIONS)
 					return true;				
 			}			
 		}
-		for(AuditCategory ac : auditQuestion.getAuditCategory().getSubCategories()){
-			if(ac.getParent().getId() == auditQuestion.getAuditCategory().getId()){
+		for(AuditCategory ac : auditQuestion.getCategory().getSubCategories()){
+			if(ac.getParent().getId() == auditQuestion.getCategory().getId()){
 				if (ac.getId() == AuditCategory.CITATIONS){
 					if(auditQuestion.isRequired())
 						return true;

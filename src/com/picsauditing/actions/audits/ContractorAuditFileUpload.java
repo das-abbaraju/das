@@ -86,8 +86,8 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 	}
 
 	public String getFileDesc(AuditQuestion auditQuestion) {
-		return auditQuestion.getAuditCategory().getNumber() + "."
-				+ auditQuestion.getAuditCategory().getNumber() + "." + auditQuestion.getNumber();
+		return auditQuestion.getCategory().getNumber() + "."
+				+ auditQuestion.getCategory().getNumber() + "." + auditQuestion.getNumber();
 	}
 
 	public AuditCatData getAuditCatData(int auditID, int catID) {

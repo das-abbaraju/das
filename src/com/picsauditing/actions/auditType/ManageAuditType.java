@@ -63,7 +63,8 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				if (save()) {
 					addActionMessage("Successfully saved"); // default message
 					new AuditTypeCache();
-					return "saved";
+					this.redirect(getRedirectURL());
+					return BLANK;
 				}
 			}
 			if (button.equalsIgnoreCase("delete")) {
@@ -71,16 +72,19 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				if (delete()) {
 					addActionMessage("Successfully removed"); // default message
 					new AuditTypeCache();
-					return "deleted";
+					this.redirect(getDeletedRedirectURL());
+					return BLANK;
 				}
 			}
 			if (button.equalsIgnoreCase("updateAllAudits")) {
 				auditTypeDAO.updateAllAudits(id);
-				return "saved";
+				this.redirect(getRedirectURL());
+				return BLANK;
 			}
 			if (button.equalsIgnoreCase("updateAllAuditsCategories")) {
 				auditTypeDAO.updateAllCategories(auditType.getId(), id);
-				return "saved";
+				this.redirect(getRedirectURL());
+				return BLANK;
 			}
 			if (button.equalsIgnoreCase("Copy")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
@@ -323,6 +327,14 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		auditQuestionDAO.save(copy);
 
 		return copy;
+	}
+
+	protected String getRedirectURL() {
+		return "ManageAuditType.action?id=" + id;
+	}
+
+	protected String getDeletedRedirectURL() {
+		return "ManageAuditType.action";
 	}
 
 	// GETTERS && SETTERS

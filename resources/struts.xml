@@ -1136,13 +1136,6 @@
 			<result name="top">
 				struts/audits/audit_selectType.jsp
 			</result>
-			<result name="saved" type="redirectAction">
-				<param name="actionName">ManageAuditType</param>
-				<param name="id">${id}</param>
-			</result>
-			<result name="deleted" type="redirectAction">
-				<param name="actionName">ManageAuditType</param>
-			</result>
 		</action>
 		
 		<action name="ManageAuditTypeAjax"
@@ -1156,14 +1149,6 @@
 			<result>struts/audits/manage_category.jsp</result>
 			<result name="top">
 				struts/audits/audit_selectType.jsp
-			</result>
-			<result name="saved" type="redirectAction">
-				<param name="actionName">ManageAuditType</param>
-				<param name="id">${id}</param>
-			</result>
-			<result name="deleted" type="redirectAction">
-				<param name="actionName">ManageAuditType</param>
-				<param name="id">${id}</param>
 			</result>
 		</action>
 		
@@ -1184,14 +1169,6 @@
 			<result>struts/audits/manage_question.jsp</result>
 			<result name="top">
 				struts/audits/audit_selectType.jsp
-			</result>
-			<result name="saved" type="redirectAction">
-				<param name="actionName">ManageSubCategory</param>
-				<param name="id">${id}</param>
-			</result>
-			<result name="deleted" type="redirectAction">
-				<param name="actionName">ManageSubCategory</param>
-				<param name="id">${id}</param>
 			</result>
 		</action>
 		
@@ -1221,7 +1198,6 @@
 			class="com.picsauditing.actions.auditType.ManageDesktopMatrix">
 			<result>struts/audits/desktop_matrix.jsp</result>
 		</action>
-
 
 
 		<!-- Users -->

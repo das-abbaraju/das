@@ -84,7 +84,7 @@ public class VerifyView extends ContractorActionSupport {
 		for (ContractorAudit conAudit : getVerificationAudits()) {
 			if (conAudit.getAuditType().isAnnualAddendum()) {
 				for (AuditData auditData : conAudit.getData()) {
-					int categoryID = auditData.getQuestion().getAuditCategory().getId();
+					int categoryID = auditData.getQuestion().getCategory().getId();
 					if (categoryID != AuditCategory.CITATIONS
 							|| (categoryID == AuditCategory.CITATIONS
 									&& (auditData.getQuestion().isRequired())
@@ -130,7 +130,7 @@ public class VerifyView extends ContractorActionSupport {
 				}
 				for (AuditData auditData : conAudit.getData()) {
 					if (auditData.getQuestion().getId() != 2447 && auditData.getQuestion().getId() != 2448) {
-						int categoryID = auditData.getQuestion().getAuditCategory().getId();
+						int categoryID = auditData.getQuestion().getCategory().getId();
 						if (categoryID != AuditCategory.CITATIONS
 								|| (categoryID == AuditCategory.CITATIONS && auditData.getQuestion().isRequired())) {
 							if (!auditData.isVerified()) {
@@ -146,11 +146,11 @@ public class VerifyView extends ContractorActionSupport {
 				List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 				for (AuditData ad : temp) {
 					if (!ad.isVerified()) {
-						sb.append(ad.getQuestion().getAuditCategory().getNumber() + "."
-								+ ad.getQuestion().getAuditCategory().getNumber() + "." + ad.getQuestion().getNumber());
-						for(AuditCategory ac : ad.getQuestion().getAuditCategory().getSubCategories()){
-							if(ad.getQuestion().getAuditCategory().getId()==ac.getParent().getId()){
-								sb.append(":" + ad.getQuestion().getAuditCategory() + "/"
+						sb.append(ad.getQuestion().getCategory().getNumber() + "."
+								+ ad.getQuestion().getCategory().getNumber() + "." + ad.getQuestion().getNumber());
+						for(AuditCategory ac : ad.getQuestion().getCategory().getSubCategories()){
+							if(ad.getQuestion().getCategory().getId()==ac.getParent().getId()){
+								sb.append(":" + ad.getQuestion().getCategory() + "/"
 										+ ad.getQuestion().getColumnHeaderOrQuestion());
 							}
 								
