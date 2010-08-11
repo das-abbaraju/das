@@ -87,6 +87,7 @@ function moveQuestion(atypeID) {
 
 <s:form id="save">
 	<s:hidden name="id" />
+	<s:hidden name="parentID" />
 	<fieldset class="form">
 	<h2 class="formLegend">Question</h2>
 	<ol>
@@ -99,7 +100,7 @@ function moveQuestion(atypeID) {
 			</s:else>
 		</li>
 		<li><label>Name:</label>
-			<s:textfield name="question.name" />
+			<s:textarea name="question.name" />
 		</li>		
 		<li><label>Effective Date:</label>
 			<s:textfield name="question.effectiveDate" value="%{ question.effectiveDate && getText('short_dates', {question.effectiveDate})}"/>
@@ -151,17 +152,8 @@ function moveQuestion(atypeID) {
 				<p>If the "Required by Question" has this answer, this question will become a required question.</p>
 			</div>
 		</li>
-		<li><label>Question Type:</label>
-			<s:select list="questionTypes" name="question.questionType" />
-		</li>
-		<li><label>Risk Level:</label>
-			<s:select list="@com.picsauditing.jpa.entities.LowMedHigh@values()" name="question.riskLevel" />
-		</li>		
-		<li><label>Title:</label>
-			<s:textfield name="question.title" size="65"/>
-		</li>
 		<li><label>Visible Question:</label>
-			<s:textfield name="question.visibleQuestion" />
+			<s:textfield name="visibleQuestionID" />
 			<div class="fieldhelp">
 				<h3>Visible Question</h3>
 				<p>The question that determines whether or not this question is visible.</p>
@@ -173,6 +165,15 @@ function moveQuestion(atypeID) {
 				<h3>Visible Answer</h3>
 				<p>If the "Visible" has this answer, this question will become a required question.</p>
 			</div>
+		</li>
+		<li><label>Question Type:</label>
+			<s:select list="questionTypes" name="question.questionType" />
+		</li>
+		<li><label>Risk Level:</label>
+			<s:select list="@com.picsauditing.jpa.entities.LowMedHigh@values()" name="question.riskLevel" />
+		</li>		
+		<li><label>Title:</label>
+			<s:textfield name="question.title" size="65"/>
 		</li>
 		<li><label>Grouped with Previous:</label>
 			<s:checkbox name="question.groupedWithPrevious"/>

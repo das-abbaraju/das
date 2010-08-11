@@ -12,7 +12,6 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.AuditQuestionTextDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -31,7 +30,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected int id = 0;
 	protected AuditType auditType = null;
 	protected AuditCategory category = null;
-	protected AuditCategory subCategory = null;
 	protected AuditQuestion question = null;
 	protected String operatorID;
 	protected int originalID = 0;
@@ -44,17 +42,13 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected EmailTemplateDAO emailTemplateDAO;
 	protected AuditCategoryDAO auditCategoryDAO;
 	protected AuditQuestionDAO auditQuestionDAO;
-	protected AuditQuestionTextDAO auditQuestionTextDAO;
 
-	public ManageAuditType(EmailTemplateDAO emailTemplateDAO,
-			AuditTypeDAO auditTypeDAO, AuditCategoryDAO auditCategoryDAO,
-			AuditQuestionDAO auditQuestionDAO,
-			AuditQuestionTextDAO auditQuestionTextDAO) {
+	public ManageAuditType(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDAO,
+			AuditCategoryDAO auditCategoryDAO, AuditQuestionDAO auditQuestionDAO) {
 		this.emailTemplateDAO = emailTemplateDAO;
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditQuestionDAO = auditQuestionDAO;
-		this.auditQuestionTextDAO = auditQuestionTextDAO;
 	}
 
 	public String execute() throws Exception {
@@ -118,12 +112,12 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 			auditType = new AuditType();
 			return SUCCESS;
 		}
-		
+
 		if ("AddNew".equals(button)) {
 			category = new AuditCategory();
 			return SUCCESS;
 		}
-		
+
 		if (auditType != null) {
 			return SUCCESS;
 		}
@@ -148,11 +142,9 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	@Override
 	public void prepare() throws Exception {
 
-		String[] ids = (String[]) ActionContext.getContext().getParameters()
-				.get("id");
+		String[] ids = (String[]) ActionContext.getContext().getParameters().get("id");
 
-		String[] parentIds = (String[]) ActionContext.getContext()
-				.getParameters().get("parentID");
+		String[] parentIds = (String[]) ActionContext.getContext().getParameters().get("parentID");
 
 		if (ids != null && ids.length > 0) {
 			int thisId = Integer.parseInt(ids[0]);
@@ -172,8 +164,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		try {
 			if (auditType == null)
 				return false;
-			if (auditType.getAuditName() == null
-					|| auditType.getAuditName().length() == 0) {
+			if (auditType.getAuditName() == null || auditType.getAuditName().length() == 0) {
 				addActionError("Audit name is required");
 				return false;
 			}
@@ -185,8 +176,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 			if (emailTemplateID == null) {
 				auditType.setTemplate(null);
-			} else if (auditType.getTemplate() == null
-					|| auditType.getTemplate().getId() != emailTemplateID) {
+			} else if (auditType.getTemplate() == null || auditType.getTemplate().getId() != emailTemplateID) {
 				auditType.setTemplate(emailTemplateDAO.find(emailTemplateID));
 			}
 
@@ -215,20 +205,18 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		}
 		return false;
 	}
-	
+
 	protected boolean copy() {
 		try {
-			if (auditTypeDAO.findWhere(
-					"auditName LIKE '" + auditType.getAuditName() + "'")
-					.size() > 0) {
+			if (auditTypeDAO.findWhere("auditName LIKE '" + auditType.getAuditName() + "'").size() > 0) {
 				addActionMessage("The Audit Name is not Unique");
 				return false;
 			}
 
 			AuditType a = copyAuditType(auditType);
 
-			addActionMessage("Copied the Audit Type only. <a href=\"ManageAuditType.action?id="
-					+ a.getId() + "\">Go to this Audit?</a>");
+			addActionMessage("Copied the Audit Type only. <a href=\"ManageAuditType.action?id=" + a.getId()
+					+ "\">Go to this Audit?</a>");
 			return true;
 
 		} catch (Exception e) {
@@ -236,12 +224,10 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		}
 		return false;
 	}
-	
+
 	protected boolean copyAll() {
 		try {
-			if (auditTypeDAO.findWhere(
-					"auditName LIKE '" + auditType.getAuditName() + "'")
-					.size() > 0) {
+			if (auditTypeDAO.findWhere("auditName LIKE '" + auditType.getAuditName() + "'").size() > 0) {
 				addActionMessage("The Audit Name is not Unique");
 				return false;
 			}
@@ -258,7 +244,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		}
 		return false;
 	}
-	
+
 	protected boolean move() {
 		return false;
 	}
@@ -269,8 +255,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		AuditType auditTypeCopy = copyAuditType(auditType);
 
 		AuditType originalAudit = auditTypeDAO.find(originalID);
-		List<AuditCategory> categories = auditCategoryDAO
-				.findByAuditTypeID(originalAudit.getId());
+		List<AuditCategory> categories = auditCategoryDAO.findByAuditTypeID(originalAudit.getId());
 
 		// Copying Categories
 		for (AuditCategory category : categories) {
@@ -285,7 +270,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 		return auditTypeCopy.getId();
 	}
-	
+
 	@Transactional
 	protected AuditType copyAuditType(AuditType a) {
 		AuditType copy = new AuditType(a);
@@ -303,9 +288,9 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		if (at.getCategories() == null)
 			at.setCategories(new ArrayList<AuditCategory>());
 		at.getCategories().add(copy);
-		
+
 		auditCategoryDAO.save(copy);
-		
+
 		return copy;
 	}
 
@@ -316,25 +301,25 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		copy.setAuditColumns(permissions);
 		auditQuestionDAO.save(copy);
 
-		/*for (AuditQuestionText text : a.getQuestionTexts()) {
-			AuditQuestionText aqtCopy = new AuditQuestionText(text, copy);
-			aqtCopy.setAuditColumns(permissions);
-
-			copy.getQuestionTexts().add(aqtCopy);
-			auditQuestionTextDAO.save(aqtCopy);
-		}*/
+		/*
+		 * for (AuditQuestionText text : a.getQuestionTexts()) {
+		 * AuditQuestionText aqtCopy = new AuditQuestionText(text, copy);
+		 * aqtCopy.setAuditColumns(permissions);
+		 * 
+		 * copy.getQuestionTexts().add(aqtCopy);
+		 * auditQuestionTextDAO.save(aqtCopy); }
+		 */
 
 		if (a.getOptions() != null && copy.getOptions() == null)
 			copy.setOptions(new ArrayList<AuditQuestionOption>());
 		for (AuditQuestionOption questionOption : a.getOptions()) {
-			AuditQuestionOption aqoCopy = new AuditQuestionOption(
-					questionOption, copy);
+			AuditQuestionOption aqoCopy = new AuditQuestionOption(questionOption, copy);
 			aqoCopy.setAuditColumns(permissions);
 
 			copy.getOptions().add(questionOption);
 			auditQuestionDAO.save(aqoCopy);
 		}
-		
+
 		auditQuestionDAO.save(copy);
 
 		return copy;

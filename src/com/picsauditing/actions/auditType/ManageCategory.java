@@ -9,7 +9,6 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.AuditQuestionTextDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -20,23 +19,19 @@ import com.picsauditing.jpa.entities.AuditType;
 public class ManageCategory extends ManageAuditType implements Preparable {
 
 	protected AuditCategory categoryParent;
-	protected Integer applyOnQuestionID;
 	private int targetCategoryID = 0;
 
-	public ManageCategory(EmailTemplateDAO emailTemplateDAO,
-			AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
-			AuditQuestionDAO auditQuestionDao,
-			AuditQuestionTextDAO auditQuestionTextDao) {
-		super(emailTemplateDAO, auditTypeDao, auditCategoryDao,
-				auditQuestionDao, auditQuestionTextDao);
+	public ManageCategory(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDao,
+			AuditCategoryDAO auditCategoryDao, AuditQuestionDAO auditQuestionDao) {
+		super(emailTemplateDAO, auditTypeDao, auditCategoryDao, auditQuestionDao);
 	}
-	
+
 	@Override
 	public void prepare() throws Exception {
 		super.prepare();
-		
+
 		String[] categoryParents = (String[]) ActionContext.getContext().getParameters().get("categoryParent.id");
-		
+
 		if (categoryParents != null && categoryParents.length > 0) {
 			int thisId = Integer.parseInt(categoryParents[0]);
 			categoryParent = auditCategoryDAO.find(thisId);
@@ -149,18 +144,18 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 				AuditCategory targetCategory = auditCategoryDAO.find(targetCategoryID);
 				ac = new AuditCategory(category);
 				ac.setAuditColumns(permissions);
-				
+
 				if (targetCategory.getSubCategories() == null)
 					targetCategory.setSubCategories(new ArrayList<AuditCategory>());
-				
+
 				targetCategory.getSubCategories().add(ac);
 				ac = auditCategoryDAO.save(ac);
 				auditCategoryDAO.save(targetCategory);
 			}
-			
+
 			addActionMessage("Copied the Category only. <a href=\"ManageCategory.action?id=" + ac.getId()
 					+ "\">Go to this Category?</a>");
-			
+
 			return true;
 
 		} catch (Exception e) {
@@ -201,8 +196,8 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 			category.setAuditType(targetAudit);
 			auditCategoryDAO.save(category);
 
-			addActionMessage("Moved Category Successfully. <a href=\"ManageCategory.action?id="
-					+ category.getId() + "\">Go to this Category?</a>");
+			addActionMessage("Moved Category Successfully. <a href=\"ManageCategory.action?id=" + category.getId()
+					+ "\">Go to this Category?</a>");
 			return true;
 
 		} catch (Exception e) {
@@ -223,8 +218,8 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 		// Copying Subcategories
 		if (originalAudit.getSubCategories() == null)
 			return categoryCopy.getId();
-		
-			// Copying Questions
+
+		// Copying Questions
 		for (AuditQuestion question : categoryCopy.getQuestions())
 			copyAuditQuestion(question, categoryCopy);
 
@@ -232,11 +227,11 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 
 		return categoryCopy.getId();
 	}
-	
+
 	public AuditCategory getCategoryParent() {
 		return categoryParent;
 	}
-	
+
 	public void setCategoryParent(AuditCategory categoryParent) {
 		this.categoryParent = categoryParent;
 	}
@@ -252,7 +247,7 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 	public int getNumberRequired(AuditCategory category) {
 		if (category.getNumRequired() <= 0 && category.getParent().getId() != category.getId())
 			return getNumberRequired(category.getParent());
-		
+
 		return category.getNumRequired();
 	}
 }
