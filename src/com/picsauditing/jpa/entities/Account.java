@@ -590,11 +590,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 		}
 		// city
 		if(this.city!=null && !this.city.isEmpty()){
-			sA =this.city.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
-			for(String s : sA){
-				if(s!=null && !s.isEmpty())
-					l.add(new IndexObject(s, 3));
-			}
+			l.add(new IndexObject(this.city.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", ""), 3));
 		}
 		// state
 		if(this.state!=null && !this.state.isoCode.isEmpty()){
@@ -642,14 +638,10 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	}
 	
 	@Transient
-	public String getSearchText(boolean full){
+	public String getSearchText(){
 		StringBuilder sb = new StringBuilder();
-		if(full){
-			sb.append(this.id).append("\t").append(this.name).append(" ");
-		} else {
-			sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(this.name).append('|')
+		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(this.name).append('|')
 			.append(this.city).append(", ").append(this.state).append("\n");
-		}
 		return sb.toString();
 	}
 }

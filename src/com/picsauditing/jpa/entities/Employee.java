@@ -351,17 +351,12 @@ public class Employee extends BaseTable implements Indexable {
 	}
 
 	@Transient
-	public String getSearchText(boolean full) {
+	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
-		if (full) {
-			sb.append(this.id).append("\t").append(this.getDisplayName())
-				.append(" at ").append(this.account.name);
-		} else {
-			sb.append(this.getReturnType()).append('|').append("Employee")
-					.append('|').append(this.id).append('|').append(
-							this.getDisplayName()).append('|').append(
-							this.account.name).append("\n");
-		}
+		sb.append(this.getReturnType()).append('|').append("Employee")
+				.append('|').append(this.id).append('|').append(
+						this.getDisplayName()).append('|').append(
+						this.account.name).append("\n");
 		return sb.toString();
 	}
 }

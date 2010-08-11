@@ -124,8 +124,8 @@ function format(row, i){
 </td>
 <% if (permissions.isActive() && !permissions.isContractor()) { %>
 	<td id="headersearch">
-		<form action=HeaderSearch.action method="post">
-			<input type="hidden" value="fullSearch" name="button" />
+		<form action=Search.action method="GET">
+			<input type="hidden" value="search" name="button" />
 			<input name="searchTerm" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
 			<input type="submit" value="Search" id="search_button" onclick="getResult(null)" />
 		</form>

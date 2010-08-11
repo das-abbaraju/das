@@ -1,23 +1,56 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-
-<s:if test="accountList.size() > 0">
-Accounts<br/>
-<s:iterator value="accountList" id="result">
-<s:property value="get('id')" /> -- <s:property value="get('name')" /> <br/>
-</s:iterator>
-<br />---
-</s:if>
-<s:if test="employeeList.size() > 0">
-Employee<br/>
-<s:iterator value="employeeList" id="result">
-<s:property value="get('id')" /> -- <s:property value="get('name')" /> -- <s:property value="get('accName')" /> <br/>
-</s:iterator>
-<br />---
-</s:if>
-<s:if test="userList.size() > 0">
-Users<br/>
-<s:iterator value="userList" id="result">
-<s:property value="get('id')" /> -- <s:property value="get('name')" /> -- <s:property value="get('accName')" /> <br/>
-</s:iterator>
-</s:if>
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<script type="text/javascript">
+function changePage(form, start){
+	var data = {
+		button: 'search',
+		startIndex: (start-1)*100,
+		searchTerm: $('#hiddenSearchTerm').val()
+	};
+	startThinking( {div: 'pageResults', message: 'Getting Results', type: 'large' } );
+	$('#pageResults').load('SearchAjax.action #pageResults', data);
+}
+</script>
+<h2>Search Results</h2>
+<s:hidden id="hiddenSearchTerm" value="%{searchTerm}" />
+<div id="filterSuggest">
+	<div id="info" style="">You searched for: <s:property value="searchTerm" /><br/>
+		<s:if test="commonFilterSuggest.size() > 0">
+			Try adding
+			<s:iterator value="commonFilterSuggest" id="sug">
+				<a href="Search.action?button=search&searchTerm=<s:property value="searchTerm.replace(' ','+')"/>+<s:property value="#sug.replace(' ','-').toLowerCase()"/>"><s:property value="#sug.toLowerCase()"/></a> 
+			</s:iterator>
+			to your search?
+		</s:if>
+	</div>
+</div>
+<div id="pageResults">
+	<div id="pageLinks"><s:property value="pageLinks" escape="false"/></div>
+		<table class="report">
+			<thead>
+				<tr>
+					<td>Type</td>
+					<td>Result</td>
+				</tr>
+			</thead>
+			<s:iterator value="fullList" id="result" status="row">
+				<tr>
+					<s:if test="#result.returnType=='account'">
+						<td><s:property value="#result.type"/></td>
+						<td><s:property value="#result.name"/></td>
+					</s:if>
+					<s:if test="#result.returnType=='user'">
+						<td>User<s:if test="#result.isGroup()"> Group</s:if></td>
+						<td><s:property value="#result.name"/> at <s:property value="#result.account.name"/></td>
+					</s:if>
+					<s:if test="#result.returnType=='employee'">
+						<td>Employee</td>
+						<td><<s:property value="#result.displayName"/> at <s:property value="#result.account.name"/></td>
+					</s:if>
+				</tr>
+			</s:iterator>
+		</table>
+	<div id="pageLinks"><s:property value="pageLinks" escape="false"/></div>
+</div>
