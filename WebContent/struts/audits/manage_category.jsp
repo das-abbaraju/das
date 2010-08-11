@@ -6,6 +6,7 @@
 <title>Manage Category</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/mcdropdown/css/jquery.mcdropdown.css" />
 <style type="text/css">
 .subCategories {
 	position: relative;
@@ -13,6 +14,8 @@
 }
 </style>
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="js/jquery/mcdropdown/jquery.mcdropdown.min.js"></script>
 <script type="text/javascript">
 $(function(){
 	var sortList = $('#list').sortable({
@@ -28,7 +31,7 @@ $(function(){
 		update: function() {
 			$('#listQ-info').load('OrderAuditChildrenAjax.action?id=<s:property value="category.id"/>&type=AuditCategoryQuestions', 
 				sortListQ.sortable('serialize').replace(/\[|\]/g,''), 
-				function() {sortListQ.effect('highlight', {color: '#FFFF11'}, 1000);}
+				function() {sortListQ.effect('hig+hlight', {color: '#FFFF11'}, 1000);}
 			);
 		}
 	});
@@ -220,6 +223,14 @@ function moveCategory(atypeID) {
 </s:if>
 
 <div id="copy_audit" class="thinking"></div>
+
+<ul id="allCategories" class="mcdropdown_menu">
+	<s:iterator value="category.ancestors.get(0).auditType.categories">
+		<li rel="<s:property value="id" />"><s:property value="number" />. <s:property value="name" />
+			<s:include value="manage_category_subcategories.jsp" />
+		</li>
+	</s:iterator>
+</ul>
 
 </body>
 </html>

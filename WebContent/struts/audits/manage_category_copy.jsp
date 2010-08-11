@@ -1,5 +1,10 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<s:include value="../actionMessages.jsp"/>
+
+<script type="text/javascript"> 
+$(function (){ 
+    $("#parentCategory").mcDropdown("#allCategories", {delim: ", ", allowParentSelect: true}); 
+}); 
+</script>
 
 <s:form id="textForm">
 <fieldset class="form" style="border: none">
@@ -15,8 +20,12 @@
 				listValue="auditName"
 			/>
 		</li>
+		<li style="min-width: 350px;"><label>Parent Category:</label>
+			<input type="text" name="targetCategoryID" id="parentCategory" value="" />
+		</li>
 	</ol>
 </fieldset>
+
 <fieldset class="form" style="border: none">
 	<h2 class="formLegend">New Category:</h2>
 	<ol>

@@ -86,6 +86,8 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.riskLevel = a.riskLevel;
 		this.helpPage = a.helpPage;
 		this.requirement = a.requirement;
+		this.effectiveDate = a.effectiveDate;
+		this.expirationDate = a.expirationDate;
 		this.auditCategory = ac;
 	}
 

@@ -1,6 +1,5 @@
 package com.picsauditing.actions.auditType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -142,15 +141,20 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 			}
 			if (targetCategoryID > 0) {
 				AuditCategory targetCategory = auditCategoryDAO.find(targetCategoryID);
+				
+				int number = 1;
+				if (targetCategory.getSubCategories() != null) {
+					for (AuditCategory subCategory : targetCategory.getSubCategories()) {
+						if (number < subCategory.getNumber())
+							number = subCategory.getNumber() + 1;
+					}
+				}
+				
+				ac.setNumber(number);
 				ac = new AuditCategory(category);
 				ac.setAuditColumns(permissions);
-
-				if (targetCategory.getSubCategories() == null)
-					targetCategory.setSubCategories(new ArrayList<AuditCategory>());
-
-				targetCategory.getSubCategories().add(ac);
+				ac.setParent(targetCategory);
 				ac = auditCategoryDAO.save(ac);
-				auditCategoryDAO.save(targetCategory);
 			}
 
 			addActionMessage("Copied the Category only. <a href=\"ManageCategory.action?id=" + ac.getId()
@@ -167,7 +171,7 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 	@Override
 	protected boolean copyAll() {
 		try {
-			if (targetID == 0) {
+			if (targetID == 0 && targetCategoryID == 0) {
 				addActionMessage("Please Select Category to copy to");
 				return false;
 			}
@@ -210,22 +214,60 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 	@Override
 	protected int copyAllRecursive() {
 		AuditCategory originalAudit = auditCategoryDAO.find(originalID);
-		AuditType targetAudit = auditTypeDAO.find(targetID);
+		AuditCategory categoryCopy = null;
 
-		// Copying Category
-		AuditCategory categoryCopy = copyAuditCategory(category, targetAudit);
-
-		// Copying Subcategories
-		if (originalAudit.getSubCategories() == null)
-			return categoryCopy.getId();
-
-		// Copying Questions
-		for (AuditQuestion question : categoryCopy.getQuestions())
-			copyAuditQuestion(question, categoryCopy);
-
-		auditCategoryDAO.save(categoryCopy);
+		if (targetID > 0) {
+			AuditType targetAudit = auditTypeDAO.find(targetID);
+			
+			int number = 1;
+			for (AuditCategory cat : targetAudit.getCategories()) {
+				if (number < cat.getNumber())
+					number = cat.getNumber() + 1;
+			}
+	
+			// Copying Category
+			categoryCopy = copyTree(originalAudit, null, number);
+			categoryCopy.setAuditType(targetAudit);
+			categoryCopy = auditCategoryDAO.save(categoryCopy);
+		}
+		
+		if (targetCategoryID > 0) {
+			AuditCategory parent = auditCategoryDAO.find(targetCategoryID);
+			
+			int number = 1;
+			for (AuditCategory cat : parent.getSubCategories()) {
+				if (number < cat.getNumber())
+					number = cat.getNumber() + 1;
+			}
+			
+			categoryCopy = copyTree(originalAudit, parent, number);
+		}
 
 		return categoryCopy.getId();
+	}
+
+	@Transactional
+	protected AuditCategory copyTree(AuditCategory category, AuditCategory parent, int categoryNumber) {
+		AuditCategory categoryCopy = new AuditCategory(category);
+		categoryCopy.setParent(parent);
+		categoryCopy.setNumber(categoryNumber);
+		categoryCopy.setAuditColumns(permissions);
+		categoryCopy = auditCategoryDAO.save(categoryCopy);
+		
+		for (AuditQuestion question : category.getQuestions()) {
+			AuditQuestion questionCopy = new AuditQuestion(question, categoryCopy);
+			questionCopy.setAuditColumns(permissions);
+			auditQuestionDAO.save(questionCopy);
+		}
+		
+		int number = 1;
+		for (AuditCategory subCategory : category.getSubCategories()) {
+			// categoryCopy is a brand new category with no subcategories
+			copyTree(subCategory, categoryCopy, number);
+			number++;
+		}
+		
+		return categoryCopy;
 	}
 
 	public AuditCategory getCategoryParent() {

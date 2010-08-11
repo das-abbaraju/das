@@ -71,8 +71,9 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		this.numRequired = a.numRequired;
 		this.numQuestions = a.numQuestions;
 		this.pageBreak = a.pageBreak;
-		this.subCategories = a.subCategories;
-		this.questions = a.questions;
+		// TODO I don't think this works the way it should
+//		this.subCategories = a.subCategories;
+//		this.questions = a.questions;
 
 	}
 
