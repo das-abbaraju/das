@@ -23,18 +23,16 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "audit_question")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion> {
+public class AuditQuestion extends BaseHistory implements Comparable<AuditQuestion> {
 	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 	static public final int EMR = 2034;
 	static public final int MANUAL_PQF = 1331;
 	static public final int OQ_EMPLOYEES = 894;
 	static public final int COR = 2954;
 
-	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest",
-			"Check Box", "Country", "Date", "Decimal Number", "File",
-			"FileCertificate", "Industry", "License", "Main Work", "Money",
-			"Number", "Office Location", "Radio", "Service", "State", "Text",
-			"Text Area", "Yes/No", "Yes/No/NA" };
+	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest", "Check Box", "Country", "Date",
+			"Decimal Number", "File", "FileCertificate", "Industry", "License", "Main Work", "Money", "Number",
+			"Office Location", "Radio", "Service", "State", "Text", "Text Area", "Yes/No", "Yes/No/NA" };
 
 	private AuditCategory auditCategory;
 	private int number;
@@ -56,7 +54,7 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 	private LowMedHigh riskLevel = null;
 	private String helpPage;
 	private String requirement;
-	
+
 	private String criteria;
 	private String criteriaAnswer;
 
@@ -67,7 +65,8 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 	public AuditQuestion() {
 
 	}
-	public AuditQuestion (AuditQuestion a, AuditCategory ac){
+
+	public AuditQuestion(AuditQuestion a, AuditCategory ac) {
 		this.number = a.number;
 		this.name = a.name;
 		this.questionType = a.questionType;
@@ -86,7 +85,7 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 		this.showComment = a.showComment;
 		this.riskLevel = a.riskLevel;
 		this.helpPage = a.helpPage;
-		this.requirement = a.requirement;		
+		this.requirement = a.requirement;
 		this.auditCategory = ac;
 	}
 
@@ -332,14 +331,14 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 
 	@Transient
 	public String getExpandedNumber() {
-		return auditCategory.getParent().getNumber()+"."+auditCategory.getNumber()+"."+ number;
+		return auditCategory.getParent().getNumber() + "." + auditCategory.getNumber() + "." + number;
 	}
-	
+
 	@Transient
 	public boolean isVisible() {
 		return this.equals(visibleQuestion);
 	}
-	
+
 	@Transient
 	public String getColumnHeaderOrQuestion() {
 		if (columnHeader != null && columnHeader.length() > 0)
@@ -348,7 +347,7 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 			return "";
 		return getName();
 	}
-	
+
 	@Override
 	public int compareTo(AuditQuestion other) {
 		if (other == null) {
