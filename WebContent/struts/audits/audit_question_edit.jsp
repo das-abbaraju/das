@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<s:set name="divID" value="'q'+#q.id" />
 <%@ page language="java" errorPage="exception_handler.jsp" pageEncoding="UTF-8"%>
+<s:set name="divID" value="'q'+#q.id" />
 <div class="thinking" id="thinking_<s:property value="#q.id"/>"></div>
 
 <s:set name="questionStillRequired" value="false" />

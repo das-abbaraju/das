@@ -273,7 +273,7 @@ public class OperatorAccount extends Account {
 			for (FlagCriteriaOperator c : getInheritInsuranceCriteria().getFlagCriteria()) {
 				if (c.getCriteria().getQuestion() != null) {
 					if (c.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()
-							&& c.getCriteria().getQuestion().isVisible())
+							&& c.getCriteria().getQuestion().isCurrent())
 						criteriaList.add(c);
 				}
 			}
@@ -282,7 +282,7 @@ public class OperatorAccount extends Account {
 		for (FlagCriteriaOperator c : getInheritFlagCriteria().getFlagCriteria()) {
 			if (c.getCriteria().getQuestion() != null) {
 				if (!c.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()
-						&& c.getCriteria().getQuestion().isVisible())
+						&& c.getCriteria().getQuestion().isCurrent())
 					criteriaList.add(c);
 			}
 			if (c.getCriteria().getOshaType() != null) {

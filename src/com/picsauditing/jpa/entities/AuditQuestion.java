@@ -337,11 +337,6 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	}
 
 	@Transient
-	public boolean isVisible() {
-		return this.equals(visibleQuestion);
-	}
-
-	@Transient
 	public String getColumnHeaderOrQuestion() {
 		if (columnHeader != null && columnHeader.length() > 0)
 			return columnHeader;

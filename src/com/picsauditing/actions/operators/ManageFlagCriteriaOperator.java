@@ -295,7 +295,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				// Check questions
 				AuditQuestion aq = fc.getQuestion();
 				if (auditTypes.contains(aq.getAuditType())) {
-					if (aq.isVisible())
+					if (aq.isCurrent())
 						addableCriteria.add(fc);
 				}
 			} else if (fc.getOshaType() != null && fc.getOshaType().equals(operator.getOshaType()))
