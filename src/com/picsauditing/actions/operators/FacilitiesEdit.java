@@ -113,9 +113,13 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				else
 					accountUser = salesRep;
 				accountUser.setAccount(operator);
-				accountUser.setStartDate(new Date());
+				// First of this month to next year, minus a day
+				// Feb 1st, 2010 to Jan 31st, 2011
 				Calendar calendar = Calendar.getInstance();
-				calendar.add(Calendar.YEAR, 20);
+				calendar.set(Calendar.DATE, 1);
+				accountUser.setStartDate(calendar.getTime());
+				calendar.add(Calendar.YEAR, 1);
+				calendar.add(Calendar.DATE, -1);
 				accountUser.setEndDate(calendar.getTime());
 				accountUser.setAuditColumns(permissions);
 				operator.getAccountUsers().add(accountUser);
