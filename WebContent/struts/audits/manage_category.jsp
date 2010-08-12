@@ -158,7 +158,7 @@ function moveCategory(atypeID) {
 				<s:property value="category.numQuestions"/>
 			</li>
 			<li><label># Required:</label>
-				<s:property value="getNumberRequired(category)"/>
+				<s:property value="category.numRequired"/>
 			</li>
 			<li><label>Page Break:</label>
 				<s:checkbox name="category.pageBreak"/>

@@ -41,6 +41,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	private int number;
 	private int numRequired;
 	private int numQuestions;
+	private String helpText;
 	private boolean pageBreak = false;
 
 	private List<AuditCategory> subCategories = new ArrayList<AuditCategory>();
@@ -59,6 +60,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		this.number = a.getNumber();
 		this.numQuestions = a.getNumQuestions();
 		this.numRequired = a.getNumRequired();
+		this.helpText = a.getHelpText();
 		this.auditType = at;
 	}
 
@@ -70,6 +72,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		this.number = a.getNumber();
 		this.numRequired = a.numRequired;
 		this.numQuestions = a.numQuestions;
+		this.helpText = a.getHelpText();
 		this.pageBreak = a.pageBreak;
 		// TODO I don't think this works the way it should
 //		this.subCategories = a.subCategories;
@@ -147,6 +150,14 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 
 	public void setNumQuestions(int numQuestions) {
 		this.numQuestions = numQuestions;
+	}
+	
+	public String getHelpText() {
+		return helpText;
+	}
+	
+	public void setHelpText(String helpText) {
+		this.helpText = helpText;
 	}
 
 	@Column(nullable = false)

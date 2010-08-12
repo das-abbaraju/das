@@ -67,6 +67,7 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 
 			if (categoryParent != null) {
 				category.setParent(categoryParent);
+				category.setAuditType(null);
 				ancestors = categoryParent.getAncestors();
 				id = ancestors.get(0).getAuditType().getId();
 			} else
@@ -260,6 +261,7 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 	protected AuditCategory copyTree(AuditCategory category, AuditCategory parent, int categoryNumber) {
 		AuditCategory categoryCopy = new AuditCategory(category);
 		categoryCopy.setParent(parent);
+		categoryCopy.setAuditType(null);
 		categoryCopy.setNumber(categoryNumber);
 		categoryCopy.setAuditColumns(permissions);
 		categoryCopy = auditCategoryDAO.save(categoryCopy);
@@ -307,12 +309,5 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 
 	public void setTargetCategoryID(int targetCategoryID) {
 		this.targetCategoryID = targetCategoryID;
-	}
-
-	public int getNumberRequired(AuditCategory category) {
-		if (category.getNumRequired() <= 0 && category.getParent().getId() != category.getId())
-			return getNumberRequired(category.getParent());
-
-		return category.getNumRequired();
 	}
 }
