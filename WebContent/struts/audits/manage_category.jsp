@@ -160,6 +160,12 @@ function moveCategory(atypeID) {
 			<li><label># Required:</label>
 				<s:property value="getNumberRequired(category)"/>
 			</li>
+			<li><label>Page Break:</label>
+				<s:checkbox name="category.pageBreak"/>
+			</li>
+			<li><label>Help Text:</label>
+				<s:textarea name="category.helpText"/>
+			</li>
 			<s:if test="category.auditType.dynamicCategories">
 				<li><label>Apply on Question:</label>
 					<s:textfield name="applyOnQuestionID" />
