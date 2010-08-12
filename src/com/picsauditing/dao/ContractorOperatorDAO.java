@@ -47,7 +47,7 @@ public class ContractorOperatorDAO extends PicsDAO {
 	public List<ContractorOperator> findNewContractorOperators(int opID, int limit){
 		if(limit < 0)
 			limit = 1;
-		Query query = em.createQuery("FROM ContractorOperator WHERE genID = " + opID + " AND contractor.status LIKE 'Active' ORDER BY creationDate DESC");
+		Query query = em.createQuery("FROM ContractorOperator WHERE genID = " + opID + " AND contractorAccount.status LIKE 'Active' ORDER BY creationDate DESC");
 		query.setMaxResults(limit);
 		return query.getResultList();
 	}
