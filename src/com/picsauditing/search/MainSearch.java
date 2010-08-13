@@ -3,24 +3,21 @@ package com.picsauditing.search;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.actions.CorporateWidget;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.Indexable;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.LinkBuilder;
 
@@ -35,6 +32,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	protected String searchType = "";
 	protected String accType = "";
 	protected String pageLinks;
+	protected String orderBy = null;
 	
 	private final int PAGEBREAK = 100;	
 
@@ -45,17 +43,16 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	protected List<Indexable> fullList;
 	protected boolean fullSearch = false;
 	protected Database db = new Database();
+	protected Hashtable<Integer, Integer> ht;
 
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
 	private EmployeeDAO empDAO;
-	private OperatorAccountDAO operatorAccountDAO;
 
-	public MainSearch(AccountDAO accountDAO, UserDAO userDAO, EmployeeDAO empDAO, OperatorAccountDAO operatorAccountDAO) {
+	public MainSearch(AccountDAO accountDAO, UserDAO userDAO, EmployeeDAO empDAO) {
 		this.accountDAO = accountDAO;
 		this.userDAO = userDAO;
 		this.empDAO = empDAO;
-		this.operatorAccountDAO = operatorAccountDAO;
 	}
 
 	@Override
@@ -89,6 +86,15 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			return BLANK;
 		} else if ("search".equals(button)) { // full view and paging
 			fullSearch = true;
+			if(permissions.isCorporate()){
+				String str = "SELECT gc.subID id FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID ="+permissions.getAccountId()+" GROUP BY id";
+				List<BasicDynaBean> temp = db.select(str, false);
+				ht = new Hashtable<Integer, Integer>(temp.size());
+				for(BasicDynaBean bdb: temp){
+					int value = Integer.parseInt(bdb.get("id").toString());
+					ht.put(value, value);
+				}
+			}
 			fullList = new ArrayList<Indexable>();
 			String query = buildQuery(searchTerm, startIndex, 100, false);
 			List<BasicDynaBean> queryList = db.select(query, true);
@@ -149,29 +155,13 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				else sb.append(e.getSearchText());
 			}
 		}
-		if(!fullSearch){
-			output = sb.toString();
-			if(totalRows>9)
-				output+="FULL|Showing 10 of "+totalRows+". Click to see All|"+searchTerm.replace(" ", "+");			
-		}
+		if(!fullSearch)
+			output = sb.toString()+"FULL|Click to see All|"+searchTerm.replace(" ", "+");
+		
 	}
-
-	private void getFullResults(List<BasicDynaBean> queryList) {
-		fullList = new ArrayList<Indexable>();
-		for (BasicDynaBean bdb : queryList) {
-			String check = (String) bdb.get("indexType");
-			int qID = Integer.parseInt(bdb.get("foreignKey").toString());
-			if (check.equals("A") || check.equals("AS") || check.equals("C") || check.equals("CO") || check.equals("O")) { // account
-				Account a = accountDAO.find(qID);
-				fullList.add(a);
-			} else if (check.equals("U") || check.equals("G")) { // user
-				User u = userDAO.find(qID);
-				fullList.add(u);
-			} else if (check.equals("E")) { // employee
-				Employee e = empDAO.find(qID);
-				fullList.add(e);
-			}
-		}
+	
+	public boolean checkCon(int id){
+		return ht.containsValue(id);	
 	}
 
 	private void buildPages(int total, int start, int end, int page) {
@@ -214,9 +204,11 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		if (sA.length > 1)
 			sortSearchTerms(sA);
 		StringBuilder sb = new StringBuilder();
+		if(permissions.isOperatorCorporate())
+			sb.append("rName,");
 		sb.append("i1.foreignKey");
 		if(!buildCommon){
-			sb.append(",i1.indexType, min(t.total*(v1.total/i1.weight");
+			sb.append(",i1.indexType, min(t.total*(v1.total/i1.weight"); // TODO change weight from / to *
 			for (int i = 1; i < sA.length; i++) {
 				sb.append("+");
 				sb.append("v").append(i + 1).append(".total/i").append(i + 1).append(".weight");
@@ -244,31 +236,34 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		}
 		sb.setLength(0);
 		if(permissions.isCorporate()){
-			sb.append("\nJOIN (((select f.opID cID, 'O' rType FROM facilities f WHERE f.corporateID =").append(permissions.getAccountId()).append(')');
+			sb.append("\nJOIN ((\nSELECT a.name rName, a.id id, acc.rType FROM accounts a JOIN\n")
+				.append("((SELECT f.opID id, 'O' rType FROM facilities f WHERE f.corporateID =").append(permissions.getAccountId()).append(')');
 			sb.append("\nUNION\n").append("(SELECT a.id, IF(a.type = 'Corporate', 'CO', 'O') rType FROM accounts a JOIN operators o USING(id) WHERE o.parentID =")
-				.append(permissions.getAccountId()).append("))\n");
+				.append(permissions.getAccountId()).append(")) AS acc on a.id = acc.id\n)\n");
 			// here
 			if(fullSearch){
-				sb.append("UNION\n(SELECT id, 'C' rType FROM accounts WHERE type = 'Contractor')\n");
+				sb.append("UNION\n(SELECT name rName, id, 'C' rType FROM accounts WHERE type = 'Contractor')\n");
 			} else{
-				sb.append("UNION\n(SELECT gc.subID cID, 'C' rType FROM generalcontractors gc\nJOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
-					.append(permissions.getAccountId()).append(" GROUP BY cID)\n"); // here				
+				sb.append("UNION\n(SELECT a.name rName, a.id, acc.rType FROM accounts a JOIN\n")
+					.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc\nJOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
+					.append(permissions.getAccountId()).append(" GROUP BY id) AS acc on a.id = acc.id)\n"); // here				
 			}
-			sb.append("UNION\n(SELECT u.id, IF(u.isGroup='Yes','G','U') rType FROM users u JOIN\n((select f.opID cID FROM facilities f WHERE f.corporateID =")
-				.append(permissions.getAccountId()).append(")\nUNION\n(SELECT o.id cID FROM operators o WHERE o.parentID =").append(permissions.getAccountId())
-				.append(")\n) AS t ON u.accountID = t.cID)");
-			sb.append("\nUNION\n(\nSELECT e.id, 'E' rType FROM employee e join\n((SELECT f.opID cID FROM facilities f WHERE f.corporateID =").append(permissions.getAccountId())
-				.append(")\nUNION\n(SELECT o.id cID from operators o where o.parentID =").append(permissions.getAccountId()).append(")\n")
+			sb.append("UNION\n(SELECT u.name rName, u.id, IF(u.isGroup='Yes','G','U') rType FROM users u JOIN\n((select f.opID id FROM facilities f WHERE f.corporateID =")
+				.append(permissions.getAccountId()).append(")\nUNION\n(SELECT o.id id FROM operators o WHERE o.parentID =").append(permissions.getAccountId())
+				.append(")\n) AS t ON u.accountID = t.id)");
+			sb.append("\nUNION\n(\nSELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e join\n((SELECT f.opID id FROM facilities f WHERE f.corporateID =")
+				.append(permissions.getAccountId()).append(")\nUNION\n(SELECT o.id id from operators o where o.parentID =").append(permissions.getAccountId()).append(")\n")
 				.append("UNION\n(select gc.subID FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID =").append(permissions.getAccountId())
-				.append(")\n) AS rE on e.accountID = rE.cID)\n");
-			sb.append(") AS r1\nON i1.foreignKey = r1.cID AND i1.indexType = r1.rType");
+				.append(")\n) AS rE on e.accountID = rE.id)\n");
+			sb.append(") AS r1\nON i1.foreignKey = r1.id AND i1.indexType = r1.rType");
 			sql.addJoin(sb.toString());
 			sb.setLength(0);
 		} else if(permissions.isOperator()){
-			sb.append("\nJOIN ((\nSELECT gc.subID cID, 'C' rType FROM generalcontractors gc WHERE gc.genID =").append(permissions.getAccountId()).append(')');
-			sb.append("\nUNION\n(SELECT u.id cID, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.accountID =").append(permissions.getAccountId()).append(')');
-			sb.append("\nUNION\n(SELECT e.id, 'E' rType FROM employee e JOIN generalcontractors gc ON gc.subID = e.accountID WHERE gc.genID =")
-				.append(permissions.getAccountId()).append(")\n) AS r1\nON i1.foreignKey = r1.cID AND i1.indexType = r1.rType");
+			sb.append("\nJOIN ((\nSELECT a.name rName, a.id, acc.rType FROM accounts a JOIN \n")
+				.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc WHERE gc.genID =").append(permissions.getAccountId()).append(") AS acc ON a.id = acc.id)");
+			sb.append("\nUNION\n(SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.accountID =").append(permissions.getAccountId()).append(')');
+			sb.append("\nUNION\n(SELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e JOIN generalcontractors gc ON gc.subID = e.accountID WHERE gc.genID =")
+				.append(permissions.getAccountId()).append(")\n) AS r1\nON i1.foreignKey = r1.id AND i1.indexType = r1.rType");
 			sql.addJoin(sb.toString());
 			sb.setLength(0);
 		}
@@ -278,7 +273,11 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			sql.addOrderBy("foreignKey");
 			return sql.toString();
 		}
-		sql.addOrderBy("m DESC, score, foreignKey");
+		if(orderBy!=null)
+			sql.addOrderBy(Utilities.escapeQuotes(orderBy)
+				+"m DESC, score, foreignKey");
+		else
+			sql.addOrderBy("m DESC, score, foreignKey");
 		sql.setLimit(limit);
 		sql.setStartRow(start);
 
@@ -385,5 +384,13 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	public void setCommonFilterSuggest(List<String> commonFilterSuggest) {
 		this.commonFilterSuggest = commonFilterSuggest;
+	}
+
+	public String getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(String orderBy) {
+		this.orderBy = orderBy;
 	}
 }

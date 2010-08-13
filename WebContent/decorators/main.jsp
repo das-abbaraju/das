@@ -100,12 +100,12 @@ function format(row, i){
 		return rStr;
 	}
 	if(row[0]=='user'){
-		var rStr = "<div class=\"searchAction\">A</div><div style=\"float: left; margin-right: 23px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
+		var rStr = "<div style=\"float: left; margin-right: 23px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
 			")</span></div><div style=\"\">"+row[3]+"<br/> at ("+row[4]+")</div>";
 		return rStr;
 	}
 	if(row[0]=='employee'){
-		var rStr = "<div class=\"searchAction\">A</div><div style=\"float: left; margin-right: 10px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
+		var rStr = "<div style=\"float: left; margin-right: 10px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
 			")</span></div><div style=\"\">"+row[3]+"<br/> at ("+row[4]+")</div>";
 		return rStr;
 	}
@@ -113,6 +113,11 @@ function format(row, i){
 		return row[1];
 	}
 	return row[0];
+}
+function buildAction(type, id){
+	if(type=='user'){
+		return '<div class="searchAction" onclick="location.href("Login.action?button=login&switchToUser='+id+')">S</div>';
+	}
 }
 </script>
 </head>
