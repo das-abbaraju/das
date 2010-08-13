@@ -1142,7 +1142,12 @@
 			<result>struts/audits/manage_audit_type_copy.jsp</result>
 			<result name="copied">struts/audits/manage_audit_type_copy.jsp</result>
 		</action>
-
+<!-- 
+		<action name="ManageAuditTypeHierarchy"
+			class="com.picsauditing.actions.auditType.ManageAuditTypeHierarchy">
+			<result>struts/audits/manage_audit_type_hierarchy.jsp</result>
+		</action>
+-->
 		<action name="ManageCategory"
 			class="com.picsauditing.actions.auditType.ManageCategory">
 			<result>struts/audits/manage_category.jsp</result>
