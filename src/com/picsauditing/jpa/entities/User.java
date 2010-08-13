@@ -697,9 +697,14 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public String getSearchText(){
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.getReturnType()).append('|').append("User");
-		if(!this.isGroup())
+		if(this.isGroup())
 			sb.append(" Group");
 		sb.append('|').append(this.id).append('|').append(this.name).append('|').append(this.account.name).append("\n");
 		return sb.toString();
+	}
+
+	@Transient
+	public String getViewLink() {
+		return "UsersManage.action?accountId="+this.getAccount().getId()+"&user.id="+this.id;
 	}
 }

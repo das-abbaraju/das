@@ -11,4 +11,5 @@ public interface Indexable {
 	public String getReturnType();
 	public int getId();
 	public void setNeedsIndexing(boolean b);
+	public String getViewLink();
 }

@@ -359,4 +359,9 @@ public class Employee extends BaseTable implements Indexable {
 						this.account.name).append("\n");
 		return sb.toString();
 	}
+
+	@Transient
+	public String getViewLink() {
+		return "ManageEmployees.action?employee.id="+this.id;
+	}
 }

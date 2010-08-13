@@ -32,10 +32,6 @@ public class PermissionQueryBuilderUser extends PermissionQueryBuilder {
 
 		// For Operators and Corporate (hard ones)
 		String subquery = "";
-		
-		if(permissions.isOperator()){
-			return "";			
-		}
 
 		if (permissions.isOperator()) {
 			if (queryLanguage == HQL)

@@ -9,14 +9,17 @@ import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.actions.CorporateWidget;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.Indexable;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.LinkBuilder;
@@ -40,16 +43,19 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	protected List<String> commonFilterSuggest = new ArrayList<String>();
 	protected List<Indexable> fullList;
+	protected boolean fullSearch = false;
 	protected Database db = new Database();
 
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
 	private EmployeeDAO empDAO;
+	private OperatorAccountDAO operatorAccountDAO;
 
-	public MainSearch(AccountDAO accountDAO, UserDAO userDAO, EmployeeDAO empDAO) {
+	public MainSearch(AccountDAO accountDAO, UserDAO userDAO, EmployeeDAO empDAO, OperatorAccountDAO operatorAccountDAO) {
 		this.accountDAO = accountDAO;
 		this.userDAO = userDAO;
 		this.empDAO = empDAO;
+		this.operatorAccountDAO = operatorAccountDAO;
 	}
 
 	@Override
@@ -60,6 +66,9 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	}
 
 	public String execute() throws SQLException, IOException {
+		if(!forceLogin())
+			return LOGIN;
+		
 		if ("getResult".equals(button)) {
 			if (searchType.equals("account")) {
 				if ("Contractor".equals(accType)) {
@@ -78,8 +87,10 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				redirect("ManageEmployees.action?employee.id=" + searchID);
 			}
 			return BLANK;
-		} else if ("search".equals(button)) {
-			String query = buildQuery(searchTerm, startIndex, 100, true);
+		} else if ("search".equals(button)) { // full view and paging
+			fullSearch = true;
+			fullList = new ArrayList<Indexable>();
+			String query = buildQuery(searchTerm, startIndex, 100, false);
 			List<BasicDynaBean> queryList = db.select(query, true);
 			totalRows = db.getAllRows();
 			String commonTermQuery = buildCommonTermQuery(searchTerm, totalRows);
@@ -88,12 +99,17 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				List<BasicDynaBean> commonList = db.select(commonTermQuery, false);
 				buildCommonSuggest(commonList, searchTerm);
 			}
-			buildPages();
-			getFullResults(queryList);
+			getResults(queryList);
+			int end = 0;
+			if(totalRows-(startIndex+1)<PAGEBREAK)
+				end = totalRows;
+			else end = startIndex + PAGEBREAK;
+			buildPages(totalRows, startIndex+1, end, startIndex/100+1);
 			return SUCCESS;
-		} else {
-			String query = buildQuery(searchTerm, 0, 10, true);
+		} else { // autosuggest/complete
+			String query = buildQuery(searchTerm, 0, 10, false);
 			List<BasicDynaBean> queryList = db.select(query, true);
+			totalRows = db.getAllRows();
 			getResults(queryList);
 			return BLANK;
 		}
@@ -115,18 +131,29 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		StringBuilder sb = new StringBuilder();
 		for (BasicDynaBean bdb : queryList) {
 			String check = (String) bdb.get("indexType");
+			int key = Integer.parseInt(bdb.get("foreignKey").toString());
 			if (check.equals("A") || check.equals("AS") || check.equals("C") || check.equals("CO") || check.equals("O")) { // account
-				Account a = accountDAO.find(Integer.parseInt(bdb.get("foreignKey").toString()));
-				sb.append(a.getSearchText());
+				Account a = accountDAO.find(key);
+				if(fullSearch)
+					fullList.add(a);
+				else sb.append(a.getSearchText());
 			} else if (check.equals("U") || check.equals("G")) { // user
-				User u = userDAO.find(Integer.parseInt(bdb.get("foreignKey").toString()));
-				sb.append(u.getSearchText());
+				User u = userDAO.find(key);
+				if(fullSearch)
+					fullList.add(u);
+				else sb.append(u.getSearchText());
 			} else if (check.equals("E")) { // employee
-				Employee e = empDAO.find(Integer.parseInt(bdb.get("foreignKey").toString()));
-				sb.append(e.getSearchText());
+				Employee e = empDAO.find(key);
+				if(fullSearch)
+					fullList.add(e);
+				else sb.append(e.getSearchText());
 			}
 		}
-		output = sb.toString();
+		if(!fullSearch){
+			output = sb.toString();
+			if(totalRows>9)
+				output+="FULL|Showing 10 of "+totalRows+". Click to see All|"+searchTerm.replace(" ", "+");			
+		}
 	}
 
 	private void getFullResults(List<BasicDynaBean> queryList) {
@@ -147,12 +174,13 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		}
 	}
 
-	private void buildPages() {
-		pageLinks = LinkBuilder.getPageNOfXLinks(totalRows, PAGEBREAK, startIndex+1, (startIndex)+100, startIndex/100+1);
+	private void buildPages(int total, int start, int end, int page) {
+		pageLinks = LinkBuilder.getPageNOfXLinks(total, PAGEBREAK, start, end, page);
+		//pageLinks = LinkBuilder.getPageNOfXLinks(totalRows, PAGEBREAK, startIndex+1, (startIndex)+100, startIndex/100+1);
 	}
 	
 	public String buildCommonTermQuery(String check, int total){
-		String sub = buildQuery(check, null, null, false);
+		String sub = buildQuery(check, null, null, true);
 		StringBuilder cSb = new StringBuilder();
 		cSb.append("SELECT a.value term, COUNT(a.value) cc FROM ").append(indexTable).append(" a JOIN (");
 		cSb.append(sub).append(") AS r1 ON a.foreignKey = r1.foreignKey\nWHERE a.value NOT IN " +
@@ -171,13 +199,13 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	 * @param limit
 	 * 		Limit for Search
 	 * @param buildCommon
-	 * 		If True then we build a query to grab the most common queries
+	 * 		If True then skip over total rows and various other parts of query
 	 * @return
 	 * 		A string that is the query to run using db.select
 	 */
-	public String buildQuery(String check, Integer start, Integer limit, boolean isFull) {
+	public String buildQuery(String check, Integer start, Integer limit, boolean buildCommon) {
 		SelectSQL sql = new SelectSQL(indexTable + " i1");
-		if(isFull)
+		if(!buildCommon)
 			sql.setSQL_CALC_FOUND_ROWS(true);
 		if (check == null || check.isEmpty())
 			return null;
@@ -187,7 +215,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			sortSearchTerms(sA);
 		StringBuilder sb = new StringBuilder();
 		sb.append("i1.foreignKey");
-		if(isFull){
+		if(!buildCommon){
 			sb.append(",i1.indexType, min(t.total*(v1.total/i1.weight");
 			for (int i = 1; i < sA.length; i++) {
 				sb.append("+");
@@ -214,9 +242,39 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			sb.append(" AND ").append(iTerm).append(".value = ").append(vTerm).append(".value");
 			sql.addJoin(sb.toString());
 		}
+		sb.setLength(0);
+		if(permissions.isCorporate()){
+			sb.append("\nJOIN (((select f.opID cID, 'O' rType FROM facilities f WHERE f.corporateID =").append(permissions.getAccountId()).append(')');
+			sb.append("\nUNION\n").append("(SELECT a.id, IF(a.type = 'Corporate', 'CO', 'O') rType FROM accounts a JOIN operators o USING(id) WHERE o.parentID =")
+				.append(permissions.getAccountId()).append("))\n");
+			// here
+			if(fullSearch){
+				sb.append("UNION\n(SELECT id, 'C' rType FROM accounts WHERE type = 'Contractor')\n");
+			} else{
+				sb.append("UNION\n(SELECT gc.subID cID, 'C' rType FROM generalcontractors gc\nJOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
+					.append(permissions.getAccountId()).append(" GROUP BY cID)\n"); // here				
+			}
+			sb.append("UNION\n(SELECT u.id, IF(u.isGroup='Yes','G','U') rType FROM users u JOIN\n((select f.opID cID FROM facilities f WHERE f.corporateID =")
+				.append(permissions.getAccountId()).append(")\nUNION\n(SELECT o.id cID FROM operators o WHERE o.parentID =").append(permissions.getAccountId())
+				.append(")\n) AS t ON u.accountID = t.cID)");
+			sb.append("\nUNION\n(\nSELECT e.id, 'E' rType FROM employee e join\n((SELECT f.opID cID FROM facilities f WHERE f.corporateID =").append(permissions.getAccountId())
+				.append(")\nUNION\n(SELECT o.id cID from operators o where o.parentID =").append(permissions.getAccountId()).append(")\n")
+				.append("UNION\n(select gc.subID FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID =").append(permissions.getAccountId())
+				.append(")\n) AS rE on e.accountID = rE.cID)\n");
+			sb.append(") AS r1\nON i1.foreignKey = r1.cID AND i1.indexType = r1.rType");
+			sql.addJoin(sb.toString());
+			sb.setLength(0);
+		} else if(permissions.isOperator()){
+			sb.append("\nJOIN ((\nSELECT gc.subID cID, 'C' rType FROM generalcontractors gc WHERE gc.genID =").append(permissions.getAccountId()).append(')');
+			sb.append("\nUNION\n(SELECT u.id cID, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.accountID =").append(permissions.getAccountId()).append(')');
+			sb.append("\nUNION\n(SELECT e.id, 'E' rType FROM employee e JOIN generalcontractors gc ON gc.subID = e.accountID WHERE gc.genID =")
+				.append(permissions.getAccountId()).append(")\n) AS r1\nON i1.foreignKey = r1.cID AND i1.indexType = r1.rType");
+			sql.addJoin(sb.toString());
+			sb.setLength(0);
+		}
 		sql.addWhere("i1.value LIKE '" + sA[0] + "%'");
 		sql.addGroupBy("i1.foreignKey, i1.indexType");
-		if(!isFull){
+		if(buildCommon){
 			sql.addOrderBy("foreignKey");
 			return sql.toString();
 		}

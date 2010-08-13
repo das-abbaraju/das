@@ -640,8 +640,23 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	@Transient
 	public String getSearchText(){
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(this.name).append('|')
-			.append(this.city).append(", ").append(this.state).append("\n");
+		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(this.name).append('|');
+		if(this.city!=null)
+			sb.append(this.city);
+		if(this.state!=null)
+			sb.append(", ").append(this.state).append("\n");
 		return sb.toString();
+	}
+
+	@Transient
+	public String getViewLink() {
+		if(this.type.equals("Contractor")){
+			return("ContractorView.action?id="+this.id);
+		} else if(this.type.equals("Operator") || this.type.equals("Corporate")){
+			return("FacilitiesEdit.action?id="+this.id);
+		} else if(this.type.equals("Assessment")){
+			return("AssessmentCenterEdit.action?id="+this.id);
+		} 
+		return "";
 	}
 }

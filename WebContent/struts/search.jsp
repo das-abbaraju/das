@@ -39,15 +39,15 @@ function changePage(form, start){
 				<tr>
 					<s:if test="#result.returnType=='account'">
 						<td><s:property value="#result.type"/></td>
-						<td><s:property value="#result.name"/></td>
+						<td><a href="<s:property value="#result.getViewLink()"/>"><s:property value="#result.name"/></a></td>
 					</s:if>
 					<s:if test="#result.returnType=='user'">
 						<td>User<s:if test="#result.isGroup()"> Group</s:if></td>
-						<td><s:property value="#result.name"/> at <s:property value="#result.account.name"/></td>
+						<td><a href="<s:property value="#result.getViewLink()"/>"><s:property value="#result.name"/> at <s:property value="#result.account.name"/></a></td>
 					</s:if>
 					<s:if test="#result.returnType=='employee'">
 						<td>Employee</td>
-						<td><<s:property value="#result.displayName"/> at <s:property value="#result.account.name"/></td>
+						<td><a href="<s:property value="#result.getViewLink()"/>"><s:property value="#result.displayName"/> at <s:property value="#result.account.name"/></a></td>
 					</s:if>
 				</tr>
 			</s:iterator>

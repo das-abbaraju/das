@@ -74,6 +74,8 @@ $(function(){
 			return format(data, i);						
 		},
 		formatResult: function(data,i,count){
+			if(data[0]=='FULL')
+				return " ";
 			return data[3];
 		}
 	}).result(function(event, data){
@@ -81,6 +83,10 @@ $(function(){
 	});
 });
 function getResult(data){
+	if(data[0]=='FULL'){
+		location.href='Search.action?button=search&searchTerm='+data[2];
+		return;	
+	}	
 	if(data[0]=='account')
 		var accType = data[1];
 	location.href='HeaderSearchAjax.action?button=getResult&searchID='+data[2]+'&searchType='+data[0]+'&accType='+accType;	
@@ -88,21 +94,23 @@ function getResult(data){
 function format(row, i){
 	if(row[0]=='account'){
 		var rStr = "<div style=\"float: left; margin-right: 5px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
-			")</span></div>"+row[3]+"<br/> at ("+row[4]+")";
+			")</span></div>"+row[3];
+		if(row[4]!=null)
+			rStr+="<br/> at ("+row[4]+")";
 		return rStr;
-		//return 'account!';//do account format here
 	}
 	if(row[0]=='user'){
 		var rStr = "<div class=\"searchAction\">A</div><div style=\"float: left; margin-right: 23px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
 			")</span></div><div style=\"\">"+row[3]+"<br/> at ("+row[4]+")</div>";
 		return rStr;
-		//return 'user!';//do user format here
 	}
 	if(row[0]=='employee'){
 		var rStr = "<div class=\"searchAction\">A</div><div style=\"float: left; margin-right: 10px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
 			")</span></div><div style=\"\">"+row[3]+"<br/> at ("+row[4]+")</div>";
 		return rStr;
-		//return 'employee!';//do employee format here
+	}
+	if(row[0]=='FULL'){
+		return row[1];
 	}
 	return row[0];
 }
@@ -124,7 +132,7 @@ function format(row, i){
 </td>
 <% if (permissions.isActive() && !permissions.isContractor()) { %>
 	<td id="headersearch">
-		<form action=Search.action method="GET">
+		<form action=Search.action method="get">
 			<input type="hidden" value="search" name="button" />
 			<input name="searchTerm" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
 			<input type="submit" value="Search" id="search_button" onclick="getResult(null)" />
