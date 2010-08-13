@@ -71,7 +71,7 @@
 		</fieldset>
 		<div class="clear"></div>
 	</div>
-	<div class="question" id="fileQuestion<s:property value="#cao.id"/>">
+	<div class="clearfix question" id="fileQuestion<s:property value="#cao.id"/>">
 		<span class="question<s:if test="#required && #cao.certificate == null"> required</s:if>">1.3.1&nbsp;&nbsp;
 			Upload a Certificate of Insurance or other supporting documentation
 			for this policy.
@@ -107,7 +107,7 @@
 		<br clear="all"/>
 		<div class="clear"></div>
 	</div>
-	<div class="question shaded" id="caoValid<s:property value="#cao.id"/>">
+	<div class="clearfix question shaded" id="caoValid<s:property value="#cao.id"/>">
 		<span class="question<s:if test="#required && #cao.valid == null"> required</s:if>">1.3.2&nbsp;&nbsp;
 		
 			This insurance policy complies with all additional <s:property value="#cao.operator.name"/> requirements.
@@ -140,7 +140,7 @@
 	</div>
 	<s:if test="permissions.contractor">
 		<div class="question" id="remarks<s:property value="#cao.id"/>">
-			<span class="question<s:if test="#required && !#cao.valid.isTrue() && #cao.reason == null"> required</s:if>">
+			<span class="clearfix question<s:if test="#required && !#cao.valid.isTrue() && #cao.reason == null"> required</s:if>">
 			1.3.3&nbsp;&nbsp;Contractor Remarks:
 			</span>
 			<div class="answer">

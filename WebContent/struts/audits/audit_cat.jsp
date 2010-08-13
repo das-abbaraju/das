@@ -137,7 +137,7 @@ label.policy {
 	<br clear="all"/>
 	<pics:permission perm="InsuranceVerification">
 		<s:if test="conAudit.auditType.classType.policy">
-			<div class="buttons" style="float:right">
+			<div class="buttons" style="text-align:right">
 				<s:if test="nextPolicyID > 0">
 					<a class="picsbutton button" href="AuditCat.action?auditID=<s:property value="nextPolicyID"/>"> Next Policy &gt;</a>
 				</s:if>
