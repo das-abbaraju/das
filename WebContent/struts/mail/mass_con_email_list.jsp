@@ -4,7 +4,7 @@
 <s:include value="../actionMessages.jsp" />
 
 <h3><s:property value="type" /> (<s:property value="list.size()"/> entries)</h3>
-<s:hidden name="sendSize" value="%{list.size()}" />
+<s:hidden name="sendSize" id="sendSize" value="%{list.size()}" />
 <table class="report" style="width: 85%; min-width: 400px;">
 	<thead>
 		<tr>
