@@ -3,8 +3,10 @@ package com.picsauditing.search;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
@@ -311,10 +313,11 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	private String[] buildTerm(String check) {
 		String[] sA = check.toUpperCase().split("\\s+|@");
+		Set<String> test = new HashSet<String>();
 		for (int i = 0; i < sA.length; i++) {
-			sA[i] = sA[i].replaceAll("^(HTTP://)(W{3})|^(HTTP://)|^(W{3}.)|\\W", "").replaceAll("[^a-zA-Z0-9\\s]", "");
+			test.add(sA[i].replaceAll("^(HTTP://)(W{3})|^(HTTP://)|^(W{3}.)|\\W", "").replaceAll("[^a-zA-Z0-9\\s]", ""));
 		}
-		return sA;
+		return test.toArray(new String[0]);
 	}
 
 	private void sortSearchTerms(String[] sA) {
