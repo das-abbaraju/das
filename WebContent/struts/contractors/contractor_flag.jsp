@@ -237,7 +237,7 @@ function checkReason(id) {
 						</s:if>
 						<s:else>
 							<div id="override" style="display: none">
-							<s:form id="form_override">
+							<s:form id="form_override" enctype="multipart/form-data" method="POST">
 								<s:hidden name="id" />
 								<s:hidden name="opID" />
 								<fieldset class="form">
@@ -254,11 +254,14 @@ function checkReason(id) {
 									<span class="label-txt">Reason:</span> 
 									<s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea><br />
 									<div class="fieldhelp">
-									<h3>Reason</h3>
-			                     <p class="redMain">* All Fields are required</p>									
-								</div>
-								</li>	
-								
+										<h3>Reason</h3>
+					                    <p class="redMain">* All Fields are required</p>									
+									</div>
+								</li>
+								<li>
+									<span class="label-txt">File Attachment:</span>
+									<s:file name="file" id="%{id}"></s:file>
+								</li>
 								<li>
 									<button class="picsbutton positive" type="submit" name="button" value="Force Overall Flag">Force Overall Flag</button>
 								</li>
@@ -311,7 +314,7 @@ function checkReason(id) {
 			<s:iterator id="key" value="getflagDataMap().keySet()">
 				<s:iterator id="data" value="getflagDataMap().get(#key)">
 					<s:if test="#data.flag.toString() == 'Red' || #data.flag.toString() == 'Amber' || isFlagDataOverride(#data)">
-					<s:set name="flagoverride" value="%{isFlagDataOverride(#data)}"/>
+						<s:set name="flagoverride" value="%{isFlagDataOverride(#data)}"/>
 						<tr class="<s:property value="#data.flag" />">
 							<td class="center" <pics:permission perm="EditForcedFlags">rowspan="2"</pics:permission>>
 								<s:property value="#data.flag.smallIcon" escape="false" />
@@ -386,9 +389,9 @@ function checkReason(id) {
 						</tr>
 						<pics:permission perm="EditForcedFlags">
 							<tr id="<s:property value="%{#data.id}" />_override" class="_override_ clickable">
-								<td colspan="4">
+								<td colspan="3">
 									<div class="override_form">
-										<form method="post">
+										<form enctype="multipart/form-data" method="POST">
 											<s:hidden value="%{#data.id}" name="dataID" />
 											<s:if test="canForceDataFlag(#flagoverride)">
 											<fieldset class="form">
@@ -408,7 +411,11 @@ function checkReason(id) {
 															<h3>Reason</h3>
 	                     								<p class="redMain">* All Fields are required</p>									
 														</div>
-													</li>	
+													</li>
+													<li>
+														<span class="label-txt">File Attachment:</span>
+														<s:file name="file" id="%{#data.id}_file"></s:file>
+													</li>
 													<li>
 														<button class="picsbutton positive" type="submit" name="button" value="Force Individual Flag"
 															onclick="return checkReason(<s:property value="%{#data.id}" />);">Force Individual Flag</button>

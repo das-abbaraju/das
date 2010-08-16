@@ -1,5 +1,7 @@
 package com.picsauditing.actions.contractors;
 
+import java.io.File;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -35,6 +38,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaRateType;
+import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -58,6 +62,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected int dataID;
 	protected Map<String, List<FlagData>> flagDataMap;
 	protected Map<FlagCriteria, List<FlagDataOverride>> flagDataOverride;
+	
+	private File file;
+	private String fileContentType;
+	private String fileFileName;
+	private InputStream inputStream;
 
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDao, FlagDataDAO flagDataDAO,
@@ -226,13 +235,20 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 			co.setFlagLastUpdated(new Date());
 			co.setAuditColumns(permissions);
-			contractorOperatorDao.save(co);
 			note.setSummary(noteText);
 
 			if (!Strings.isEmpty(forceNote))
 				note.setBody(forceNote);
 
+			// Check if there's an attachment
+			note = getNoteDao().save(note);
+			if (!isFileOkay(note))
+				return SUCCESS;
+			
+			// If everything's okay, now save
 			getNoteDao().save(note);
+			contractorOperatorDao.save(co);
+			
 			String redirectUrl = "ContractorFlag.action?id=" + id + "%26opID=" + opID;
 			return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID + "&steps=Flag&steps=WaitingOn"
 					+ "&redirectUrl=" + redirectUrl);
@@ -326,6 +342,39 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	public void setDataID(int dataID) {
 		this.dataID = dataID;
+	}
+	
+	// Note file attachment?
+	public File getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
+	}
+
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileFileName() {
+		return fileFileName;
+	}
+
+	public void setFileFileName(String fileFileName) {
+		this.fileFileName = fileFileName;
+	}
+
+	public InputStream getInputStream() {
+		return inputStream;
+	}
+
+	public void setInputStream(InputStream inputStream) {
+		this.inputStream = inputStream;
 	}
 
 	public boolean isCanSeeAudit(AuditType auditType) {
@@ -514,5 +563,40 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			Naics naics2 = naicsDAO.find(naics.getCode().substring(0, naics.getCode().length() - 1));
 			return getBroaderNaics(lwcr, naics2);
 		}
+	}
+	
+	private boolean isFileOkay(Note note) {
+		if (file != null) {
+			String extension = "";
+			if (fileFileName.indexOf(".") != -1) {
+				extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
+			}
+
+			// will fail for "" too
+			if (!FileUtils.checkFileExtension(extension)) {
+				addActionError("File type not supported.");
+				return false;
+			}
+			// delete old files
+			File[] files = getFiles(note.getId());
+			for (File file : files)
+				FileUtils.deleteFile(file);
+
+			try {
+				FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(note.getId()),
+						PICSFileType.note_attachment.filename(note.getId()), extension, true);
+			} catch (Exception e) {
+				return false;
+			}
+
+			note.setAttachment(fileFileName);
+		}
+		
+		return true;
+	}
+	
+	private File[] getFiles(int noteID) {
+		File dir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(noteID));
+		return FileUtils.getSimilarFiles(dir, PICSFileType.note_attachment.filename(noteID));
 	}
 }
