@@ -41,7 +41,6 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	protected List<String> commonFilterSuggest = new ArrayList<String>();
 	protected List<Indexable> fullList;
-	protected boolean fullSearch = false;
 	protected Database db = new Database();
 	protected Hashtable<Integer, Integer> ht;
 
@@ -85,7 +84,6 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			}
 			return BLANK;
 		} else if ("search".equals(button)) { // full view and paging
-			fullSearch = true;
 			if(permissions.isCorporate()){
 				String str = "SELECT gc.subID id FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID ="+permissions.getAccountId()+" GROUP BY id";
 				List<BasicDynaBean> temp = db.select(str, false);
@@ -95,8 +93,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 					ht.put(value, value);
 				}
 			}
-			fullList = new ArrayList<Indexable>();
-			String query = buildQuery(searchTerm, startIndex, 100, false);
+			String query = buildQuery(searchTerm, startIndex, 100, false, true);
 			List<BasicDynaBean> queryList = db.select(query, true);
 			totalRows = db.getAllRows();
 			String commonTermQuery = buildCommonTermQuery(searchTerm, totalRows);
@@ -105,7 +102,9 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				List<BasicDynaBean> commonList = db.select(commonTermQuery, false);
 				buildCommonSuggest(commonList, searchTerm);
 			}
-			getResults(queryList);
+			fullList= getFullResults(queryList);
+			if(fullList==null) 
+				return SUCCESS;
 			int end = 0;
 			if(totalRows-(startIndex+1)<PAGEBREAK)
 				end = totalRows;
@@ -113,7 +112,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			buildPages(totalRows, startIndex+1, end, startIndex/100+1);
 			return SUCCESS;
 		} else { // autosuggest/complete
-			String query = buildQuery(searchTerm, 0, 10, false);
+			String query = buildQuery(searchTerm, 0, 10, false, false);
 			List<BasicDynaBean> queryList = db.select(query, true);
 			totalRows = db.getAllRows();
 			getResults(queryList);
@@ -132,6 +131,38 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			commonFilterSuggest.add(term);
 		}
 	}
+	private List<Indexable> getFullResults(List<BasicDynaBean> queryList) throws IOException{
+		if(queryList.size()==1){ // only one result
+			String type = queryList.get(0).get("indexType").toString();;
+			int key = Integer.parseInt(queryList.get(0).get("foreignKey").toString());
+			String url = "Search.action?button=getResult&searchID="+key+"&searchType=";
+			if (type.equals("A") || type.equals("AS") || type.equals("C") || type.equals("CO") || type.equals("O")) { // account
+				Account a = accountDAO.find(key);
+				redirect(url+"account&accType="+a.getType());
+			} else if (type.equals("U") || type.equals("G")) { // user
+				redirect(url+"user");
+			} else if (type.equals("E")) { // employee
+				redirect(url+"employee");
+			}
+			return null;
+		}
+		List<Indexable> temp = new ArrayList<Indexable>();
+		for (BasicDynaBean bdb : queryList) {
+			String check = (String) bdb.get("indexType");
+			int key = Integer.parseInt(bdb.get("foreignKey").toString());
+			if (check.equals("A") || check.equals("AS") || check.equals("C") || check.equals("CO") || check.equals("O")) { // account
+				Account a = accountDAO.find(key);
+				temp.add(a);
+			} else if (check.equals("U") || check.equals("G")) { // user
+				User u = userDAO.find(key);
+				temp.add(u);
+			} else if (check.equals("E")) { // employee
+				Employee e = empDAO.find(key);
+				temp.add(e);
+			}
+		}		
+		return temp;
+	}
 
 	private void getResults(List<BasicDynaBean> queryList) {
 		StringBuilder sb = new StringBuilder();
@@ -140,23 +171,16 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			int key = Integer.parseInt(bdb.get("foreignKey").toString());
 			if (check.equals("A") || check.equals("AS") || check.equals("C") || check.equals("CO") || check.equals("O")) { // account
 				Account a = accountDAO.find(key);
-				if(fullSearch)
-					fullList.add(a);
-				else sb.append(a.getSearchText());
+				sb.append(a.getSearchText());
 			} else if (check.equals("U") || check.equals("G")) { // user
 				User u = userDAO.find(key);
-				if(fullSearch)
-					fullList.add(u);
-				else sb.append(u.getSearchText());
+				sb.append(u.getSearchText());
 			} else if (check.equals("E")) { // employee
 				Employee e = empDAO.find(key);
-				if(fullSearch)
-					fullList.add(e);
-				else sb.append(e.getSearchText());
+				sb.append(e.getSearchText());
 			}
 		}
-		if(!fullSearch)
-			output = sb.toString()+"FULL|Click to see All|"+searchTerm.replace(" ", "+");
+		output = sb.toString()+"FULL|Click to do a full search|"+searchTerm.replace(" ", "+");
 		
 	}
 	
@@ -170,7 +194,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	}
 	
 	public String buildCommonTermQuery(String check, int total){
-		String sub = buildQuery(check, null, null, true);
+		String sub = buildQuery(check, null, null, true, true);
 		StringBuilder cSb = new StringBuilder();
 		cSb.append("SELECT a.value term, COUNT(a.value) cc FROM ").append(indexTable).append(" a JOIN (");
 		cSb.append(sub).append(") AS r1 ON a.foreignKey = r1.foreignKey\nWHERE a.value NOT IN " +
@@ -190,10 +214,12 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	 * 		Limit for Search
 	 * @param buildCommon
 	 * 		If True then skip over total rows and various other parts of query
+	 * @param fullSearch
+	 * 		True for full search, false for 10 result ajax search
 	 * @return
 	 * 		A string that is the query to run using db.select
 	 */
-	public String buildQuery(String check, Integer start, Integer limit, boolean buildCommon) {
+	public String buildQuery(String check, Integer start, Integer limit, boolean buildCommon, boolean fullSearch) {
 		SelectSQL sql = new SelectSQL(indexTable + " i1");
 		if(!buildCommon)
 			sql.setSQL_CALC_FOUND_ROWS(true);
@@ -274,8 +300,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			return sql.toString();
 		}
 		if(orderBy!=null)
-			sql.addOrderBy(Utilities.escapeQuotes(orderBy)
-				+"m DESC, score, foreignKey");
+			sql.addOrderBy("rName, m DESC, score, foreignKey");
 		else
 			sql.addOrderBy("m DESC, score, foreignKey");
 		sql.setLimit(limit);
