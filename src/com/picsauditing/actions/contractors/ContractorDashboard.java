@@ -28,6 +28,7 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
+import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -66,6 +67,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private ContractorTagDAO contractorTagDAO;
 	private InvoiceItemDAO invoiceItemDAO;
 	private UserDAO userDAO;
+	private NaicsDAO naicsDAO;
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
 
@@ -90,7 +92,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public ContractorDashboard(AuditBuilder auditBuilder, ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO, FlagDataDAO flagDataDAO,
 			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO, InvoiceItemDAO invoiceItemDAO,
-			UserDAO userDAO) {
+			UserDAO userDAO, NaicsDAO naicsDAO) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.contractorOperatorDAO = contractorOperatorDAO;
@@ -100,6 +102,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		this.contractorTagDAO = contractorTagDAO;
 		this.invoiceItemDAO = invoiceItemDAO;
 		this.userDAO = userDAO;
+		this.naicsDAO = naicsDAO;
 		this.subHeading = "Account Summary";
 	}
 
@@ -423,10 +426,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 			String ind = "Industry";
 			auditForSet.add(ind);
+			
 			if (data.get(OshaRateType.TrirAbsolute.getDescription()) != null)
-				put(OshaRateType.TrirAbsolute.getDescription(), ind, format(contractor.getNaics().getTrir()));
+				put(OshaRateType.TrirAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(false, contractor.getNaics())));
 			if (data.get(OshaRateType.LwcrAbsolute.getDescription()) != null)
-				put(OshaRateType.LwcrAbsolute.getDescription(), ind, format(contractor.getNaics().getLwcr()));
+				put(OshaRateType.LwcrAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(true, contractor.getNaics())));
 
 			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
 			for (ContractorOperator co : contractorOperators) {
