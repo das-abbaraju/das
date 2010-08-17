@@ -166,7 +166,7 @@ public class ContractorWidget extends ContractorActionSupport {
 						&& (conAudit.getAuditType().isPqf() || conAudit.isManuallyAdded() || auditTypeList
 								.contains(conAudit.getAuditType()))) {
 					if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
-						if (conAudit.getAuditType().getClassType().isPqf()) {
+						if (conAudit.getAuditType().getClassType().isPqf() && conAudit.getAuditType().isCanContractorEdit()) {
 							if (conAudit.getAuditType().isPqf())
 								auditName = "Pre-Qualification Form";
 							else
@@ -190,7 +190,7 @@ public class ContractorWidget extends ContractorActionSupport {
 						if (conAudit.getAuditType().isAnnualAddendum()
 								&& (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete())) {
 							String text = "Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-									+ "\">upload and submit your EMR and/or OSHA forms for " + conAudit.getAuditFor()
+									+ "\">review and submit your annual update for " + conAudit.getAuditFor()
 									+ " </a>";
 							if (conAudit.getAuditFor().equals(Integer.toString(DateBean.getCurrentYear() - 1))) {
 								text += "<br/><b>NOTE: <a href=\"http://help.picsauditing.com/wiki/Annual_Updates\">Click here to watch the Annual Update tutorial</a></b>";
