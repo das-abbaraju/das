@@ -18,10 +18,12 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	protected boolean showCountry = false;
 	protected boolean showHandledBy = false;
 	protected boolean showFollowUpDate = true;
+	protected boolean showViewAll = false;
 	
 	protected int open = 1;
 	protected String handledBy;
 	protected Date followUpDate;
+	protected boolean viewAll = false;
 	
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
@@ -36,6 +38,9 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 			this.setShowCountry(true);
 			this.setShowOperator(true);
 		}
+		
+		if (permissions.hasGroup(981) || permissions.hasGroup(959))
+			this.setShowViewAll(true);
 	}
 	
 	// Booleans
@@ -79,6 +84,14 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 		this.showFollowUpDate = showFollowUpDate;
 	}
 	
+	public boolean isShowViewAll() {
+		return showViewAll;
+	}
+	
+	public void setShowViewAll(boolean showAll) {
+		this.showViewAll = showAll;
+	}
+	
 	// Parameters
 	public int getOpen() {
 		return open;
@@ -102,6 +115,14 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	
 	public void setFollowUpDate(Date followUpDate) {
 		this.followUpDate = followUpDate;
+	}
+	
+	public boolean isViewAll() {
+		return viewAll;
+	}
+	
+	public void setViewAll(boolean viewAll) {
+		this.viewAll = viewAll;
 	}
 	
 	// Lists
