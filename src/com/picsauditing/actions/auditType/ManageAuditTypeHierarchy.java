@@ -44,14 +44,13 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 		if ("json".equals(button)) {
 			if ("category".equals(type)) {
 				AuditCategory category = auditCategoryDAO.find(nodeID);
-				json = new JSONObject();
-				JSONArray children = new JSONArray();
+				JSONArray result = new JSONArray();
 				for (final AuditQuestion q : category.getQuestions()) {
-					children.add(q.getNumber() + ". " + q.getName());
+					result.add(q.getNumber() + ". " + q.getName());
 				}
 
 				for (final AuditCategory cat : category.getSubCategories()) {
-					children.add(new JSONObject() {
+					result.add(new JSONObject() {
 						{
 							put("attr", new JSONObject() {
 								{
@@ -63,12 +62,12 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 						}
 					});
 				}
-				json.put("children", children);
-			} else if ("question".equals(type)) {
+
+				json.put("result", result);
 			} else {
-				json = new JSONObject();
-				json.put("data", auditType.getAuditName());
-				json.put("state", "open");
+				JSONObject result = new JSONObject();
+				result.put("data", auditType.getAuditName());
+				result.put("state", "open");
 				JSONArray children = new JSONArray();
 				for (final AuditCategory cat : auditType.getCategories()) {
 					children.add(new JSONObject() {
@@ -83,7 +82,9 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 						}
 					});
 				}
-				json.put("children", children);
+				result.put("children", children);
+
+				json.put("result", result);
 			}
 
 			return JSON;

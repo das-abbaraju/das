@@ -25,7 +25,7 @@ $(function() {
 				"url": 'ManageAuditTypeHierarchyAjax.action',
 				"dataType": "json",
 				"success": function(data) {
-					return data.children;
+					return data.result;
 				},
 				"data": function(node) {
 					if (node.attr) {
@@ -60,7 +60,8 @@ $(function() {
 				}
 			}
 		},
-		plugins: ["themes", "json_data", "ui", "dnd", "types"]
+		"contextmenu": {},
+		plugins: ["themes", "json_data", "ui", "dnd", "types", "contextmenu"]
 	})
 	.bind("remove.jstree", function (e, data) {
 		console.log(data);
@@ -72,16 +73,13 @@ $(function() {
 </script>
 </head>
 <body>
+<h2>Manage Hierarchy</h2>
 
 <s:form id="audit-form" method="get">
 <s:select id="audit-list" list="auditTypeList" headerKey="" headerValue="- Audit Type -" listKey="id" listValue="auditName" name="id" />
 </s:form>
 
-<s:if test="auditType != null">
-	<h2><s:property value="auditType.auditName" /></h2>
-	<div id="audit-tree">
-	</div>
-</s:if>
+<div id="audit-tree"></div>
 
 </body>
 </html>
