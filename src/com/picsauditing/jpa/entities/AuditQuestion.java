@@ -18,6 +18,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.json.simple.JSONObject;
 
 @SuppressWarnings("serial")
 @Entity
@@ -357,5 +358,15 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 			return cmp;
 
 		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject toJSON(boolean full) {
+		JSONObject j = super.toJSON(full);
+		j.put("category", category.toJSON());
+		j.put("name", name);
+
+		return j;
 	}
 }

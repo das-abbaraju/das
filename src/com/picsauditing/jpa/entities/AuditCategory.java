@@ -15,6 +15,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 @SuppressWarnings("serial")
 @Entity
@@ -75,8 +77,8 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		this.helpText = a.getHelpText();
 		this.pageBreak = a.pageBreak;
 		// TODO I don't think this works the way it should
-//		this.subCategories = a.subCategories;
-//		this.questions = a.questions;
+		// this.subCategories = a.subCategories;
+		// this.questions = a.questions;
 
 	}
 
@@ -151,11 +153,11 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	public void setNumQuestions(int numQuestions) {
 		this.numQuestions = numQuestions;
 	}
-	
+
 	public String getHelpText() {
 		return helpText;
 	}
-	
+
 	public void setHelpText(String helpText) {
 		this.helpText = helpText;
 	}
@@ -222,11 +224,6 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
 	}
 
-	@Override
-	public String toString() {
-		return getNumber() + " " + name;
-	}
-
 	@Transient
 	public List<AuditCategory> getAncestors() {
 		List<AuditCategory> ancestors = new ArrayList<AuditCategory>();
@@ -241,5 +238,36 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 			addAncestors(ancestors, category.getParent());
 
 		ancestors.add(category);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject toJSON(boolean full) {
+		JSONObject j = super.toJSON(full);
+		j.put("auditType", auditType == null ? null : auditType.toJSON());
+		j.put("parent", parent == null ? null : parent.toJSON());
+		j.put("name", name);
+
+		if (full) {
+			JSONArray qArray = new JSONArray();
+			for (AuditQuestion q : questions) {
+				qArray.add(q.toJSON());
+			}
+			j.put("questions", qArray);
+
+			JSONArray subArray = new JSONArray();
+			for (AuditCategory sub : subCategories) {
+				subArray.add(sub.toJSON());
+			}
+
+			j.put("subCategories", subArray);
+		}
+
+		return j;
+	}
+
+	@Override
+	public String toString() {
+		return getNumber() + " " + name;
 	}
 }

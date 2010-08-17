@@ -2,10 +2,15 @@ package com.picsauditing.actions.auditType;
 
 import java.util.List;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 
 @SuppressWarnings("serial")
@@ -18,6 +23,8 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 	private List<AuditType> auditTypeList;
 	private AuditType auditType;
 	private int id;
+	private String type;
+	private int nodeID;
 
 	public ManageAuditTypeHierarchy(AuditTypeDAO auditTypeDAO, AuditCategoryDAO auditCategoryDAO,
 			AuditQuestionDAO auditQuestionDAO) {
@@ -26,11 +33,62 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 		this.auditQuestionDAO = auditQuestionDAO;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+
 		auditType = auditTypeDAO.find(id);
+
+		if ("json".equals(button)) {
+			if ("category".equals(type)) {
+				AuditCategory category = auditCategoryDAO.find(nodeID);
+				json = new JSONObject();
+				JSONArray children = new JSONArray();
+				for (final AuditQuestion q : category.getQuestions()) {
+					children.add(q.getNumber() + ". " + q.getName());
+				}
+
+				for (final AuditCategory cat : category.getSubCategories()) {
+					children.add(new JSONObject() {
+						{
+							put("attr", new JSONObject() {
+								{
+									put("id", "category_" + cat.getId());
+								}
+							});
+							put("data", cat.getName());
+							put("state", "closed");
+						}
+					});
+				}
+				json.put("children", children);
+			} else if ("question".equals(type)) {
+			} else {
+				json = new JSONObject();
+				json.put("data", auditType.getAuditName());
+				json.put("state", "open");
+				JSONArray children = new JSONArray();
+				for (final AuditCategory cat : auditType.getCategories()) {
+					children.add(new JSONObject() {
+						{
+							put("attr", new JSONObject() {
+								{
+									put("id", "category_" + cat.getId());
+								}
+							});
+							put("data", cat.getName());
+							put("state", "closed");
+						}
+					});
+				}
+				json.put("children", children);
+			}
+
+			return JSON;
+		}
+
 		return SUCCESS;
 	}
 
@@ -58,4 +116,19 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 		this.id = id;
 	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public int getNodeID() {
+		return nodeID;
+	}
+
+	public void setNodeID(int nodeID) {
+		this.nodeID = nodeID;
+	}
 }

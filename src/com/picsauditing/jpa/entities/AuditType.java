@@ -17,13 +17,14 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_type")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditType extends BaseTable implements Comparable<AuditType>,
-		java.io.Serializable {
+public class AuditType extends BaseTable implements Comparable<AuditType>, java.io.Serializable {
 
 	public static final int PQF = 1;
 	public static final int DESKTOP = 2;
@@ -295,12 +296,29 @@ public class AuditType extends BaseTable implements Comparable<AuditType>,
 			return getClassType().ordinal() - o.getClassType().ordinal();
 		}
 
-		int i = new Integer(this.getDisplayOrder()).compareTo(new Integer(o
-				.getDisplayOrder()));
+		int i = new Integer(this.getDisplayOrder()).compareTo(new Integer(o.getDisplayOrder()));
 		if (i == 0)
 			return new Integer(this.getId()).compareTo(new Integer(o.getId()));
 
 		return i;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject toJSON(boolean full) {
+		JSONObject j = super.toJSON(full);
+		j.put("auditName", auditName);
+		j.put("displayOrder", displayOrder);
+
+		if (full) {
+			JSONArray categoriesArray = new JSONArray();
+			for (AuditCategory c : categories) {
+				categoriesArray.add(c.toJSON());
+			}
+			j.put("categories", categoriesArray);
+		}
+		
+		return j;
 	}
 
 	@Override
