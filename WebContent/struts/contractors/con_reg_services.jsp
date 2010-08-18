@@ -36,7 +36,7 @@ display:none}
 	<s:set name="a" value="answerMap.get(#q.id)" />
 	<s:set name="shaded" value="!#shaded" scope="action" />
 	<div id="node_<s:property value="#q.id"/>"
-		class="clearfix question <s:if test="#shaded">shaded</s:if>"><s:include value="../audits/audit_cat_edit.jsp"></s:include></div>
+		class="clearfix question <s:if test="#shaded">shaded</s:if>"><s:include value="../audits/audit_question_edit.jsp"></s:include></div>
 </s:iterator>
 <h3 class="subCategory">Services Performed</h3>
 <h4 class="groupTitle">
@@ -45,11 +45,11 @@ Please select the services your company performs<br>
 </h4>
 <s:iterator value="serviceQuestions">
 	<s:set name="q" value="[0]" />
-	<s:if test="#q.visible">
+	<s:if test="#q.current">
 		<s:set name="a" value="answerMap.get(#q.id)" />
 		<s:set name="shaded" value="!#shaded" scope="action" />
 		<div id="node_<s:property value="#q.id"/>"
-			class="clearfix question <s:if test="#shaded">shaded</s:if>" style="padding-bottom:0px;"><s:include value="../audits/audit_cat_edit.jsp"></s:include></div>
+			class="clearfix question <s:if test="#shaded">shaded</s:if>" style="padding-bottom:0px;"><s:include value="../audits/audit_question_edit.jsp"></s:include></div>
 	</s:if>
 </s:iterator>
 

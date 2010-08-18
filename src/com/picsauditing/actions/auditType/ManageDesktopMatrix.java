@@ -144,15 +144,15 @@ public class ManageDesktopMatrix extends PicsActionSupport {
 	}
 	
 	public List<AuditQuestion> getTypeOfWork() {
-		return auditQuestionDAO.findBySubCategory(85);
+		return auditQuestionDAO.findByCategory(413);
 	}
 	
 	public List<AuditQuestion> getIndustries() {
-		return auditQuestionDAO.findBySubCategory(84);
+		return auditQuestionDAO.findByCategory(412);
 	}
 	
 	public List<AuditQuestion> getServicesPerformed() {
-		return auditQuestionDAO.findBySubCategory(40);
+		return auditQuestionDAO.findByCategory(379);
 	}
 
 	public Map<Integer, Map<Integer, Boolean>> getData() {

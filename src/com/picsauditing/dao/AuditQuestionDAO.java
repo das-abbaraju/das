@@ -41,11 +41,11 @@ public class AuditQuestionDAO extends PicsDAO {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<AuditQuestion> findWhere(String where) {
+	public List<AuditQuestion> findWhere(String where) { 
 		if (where == null)
 			where = "";
 		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE " + where + " ORDER BY "
-				+ "t.subCategory.category.number,t.subCategory.number,t.number");
+				+ "t.category, t.number");
 		query.setMaxResults(100);
 		return query.getResultList();
 
@@ -53,8 +53,8 @@ public class AuditQuestionDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findFlaggableQuestions() {
-		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE isRedFlagQuestion = 'Yes' ORDER BY "
-				+ "t.subCategory.category.number,t.subCategory.number,t.number");
+		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE flaggable = TRUE ORDER BY "
+				+ "t.category,t.number");
 		return query.getResultList();
 	}
 
@@ -72,24 +72,16 @@ public class AuditQuestionDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<AuditQuestion> findBySubCategory(int subCategoryID) {
-		Query query = em.createQuery("select t FROM AuditQuestion t WHERE t.subCategory.id = ?" + "ORDER BY t.number");
-		query.setParameter(1, subCategoryID);
-		return query.getResultList();
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<AuditQuestion> findBySubCategories(int[] subCategoryIDs) {
-		String ids = Strings.implode(subCategoryIDs, ",");
-		Query query = em.createQuery("select t FROM AuditQuestion t WHERE t.subCategory.id IN (" + ids + ") "
-				+ "ORDER BY t.subCategory.category.number, t.subCategory.number, t.number");
+	public List<AuditQuestion> findByCategory(int categoryID) {
+		Query query = em.createQuery("select t FROM AuditQuestion t WHERE t.category.id = ? " + "ORDER BY t.number");
+		query.setParameter(1, categoryID);
 		return query.getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findQuestionByType(String questionType) {
 		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE t.questionType = ? ORDER BY "
-				+ "t.category.parent.number,t.category.number,t.number");
+				+ "t.category, t.number");
 		query.setParameter(1, questionType);
 		return query.getResultList();
 

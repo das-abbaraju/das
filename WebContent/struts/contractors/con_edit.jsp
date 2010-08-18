@@ -131,7 +131,7 @@ $(function() {
 						<s:property value="contractor.naics.code"/>
 					</li>
 					<li><label>Main Trade:</label>
-						<s:select cssStyle="font-size: 12px;" list="tradeList" name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" listKey="question" listValue="question"/>
+						<s:select cssStyle="font-size: 12px;" list="tradeList" name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" listKey="name" listValue="name"/>
 					</li>
 					<li><label>Risk Level:</label>
 						<s:property value="contractor.riskLevel"/>
