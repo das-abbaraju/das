@@ -62,11 +62,11 @@ function changePage(form, start){
 										<s:else><a class="add" href="ContractorFacilities.action?id=<s:property value="#result.id"/>">Add</a></s:else>
 								</s:if>
 								<s:else>
-									No available action
+									No Available Action
 								</s:else>
 							</s:if>
 							<s:else>
-								No Available action
+								No Available Action
 							</s:else>					
 						</td>
 					</s:if>
@@ -78,13 +78,14 @@ function changePage(form, start){
 								<a href="Login.action?button=login&switchToUser=<s:property value="#result.id"/>">Switch to this User</a>
 							</pics:permission>
 							<pics:permission perm="SwitchUser" negativeCheck="true">
-								No Action available
+								No Available Action
 							</pics:permission>
 						</td>
 					</s:if>
 					<s:if test="#result.returnType=='employee'">
 						<td>Employee</td>
 						<td><a href="<s:property value="#result.getViewLink()"/>"><s:property value="#result.displayName"/> at <s:property value="#result.account.name"/></a></td>
+						<td>No Available Action</td>
 					</s:if>
 				</tr>
 			</s:iterator>

@@ -215,7 +215,7 @@ public class Indexer extends PicsActionSupport {
 		SelectSQL sql = new SelectSQL(tblName);
 		sql.addField("id");
 		sql.addWhere("needsIndexing = 1");	
-		if(end>0 && start>=0){
+		if(end>0 && start>=0 && (end>start)){
 			sql.addWhere("id > "+start);
 			sql.addWhere("id < "+end);
 		}
