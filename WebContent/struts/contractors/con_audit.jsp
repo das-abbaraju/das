@@ -81,14 +81,6 @@
 	</s:iterator>
 </table>
 
-<!-- 
-<ol>
-<s:iterator value="auditCategories" id="category">
-	<li><s:include value="con_audit_cat.jsp"/></li>
-</s:iterator>
-</ol>
- -->
-
 <s:if test="!@com.picsauditing.util.Strings@isEmpty(auditorNotes)">
 	<div class="info">
 		<b>Safety Professional Notes:</b> <s:property value="auditorNotes"/>
