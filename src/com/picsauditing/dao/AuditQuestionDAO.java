@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.BaseHistory;
 import com.picsauditing.util.Strings;
 
 @Transactional
@@ -60,13 +61,15 @@ public class AuditQuestionDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findByQuestion(String question, Permissions permissions) {
-		String where = "SELECT auditQuestion FROM AuditQuestionText t WHERE t.question LIKE ? AND t.auditQuestion.isVisible = 'Yes'";
+		String where = "SELECT t FROM AuditQuestion t WHERE t.name LIKE ? AND t.effectiveDate < NOW() AND t.expirationDate > NOW()";
 		if (permissions.isOperatorCorporate()) {
-			where += " AND t.auditQuestion.subCategory.category.auditType.id IN ("
-					+ Strings.implode(permissions.getCanSeeAudit(), ",") + ")";
+			where += " AND t.category.parentAuditType.id IN :canSeeAudits";
 		}
 		Query query = em.createQuery(where);
 		query.setParameter(1, "%" + Utilities.escapeQuotes(question) + "%");
+		if (permissions.isOperatorCorporate()) {
+			query.setParameter("canSeeAudits", permissions.getCanSeeAudit());
+		}
 
 		return query.getResultList();
 	}
