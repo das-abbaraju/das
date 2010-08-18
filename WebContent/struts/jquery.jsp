@@ -27,6 +27,8 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
+		$.ajaxSettings.traditional = true;
+
 	    if($.browser.mozilla) 
 	         $("form").attr("autocomplete", "off");
 

@@ -24,16 +24,18 @@ $(function(){
 				sortList.sortable('serialize').replace(/\[|\]/g,''), 
 				function() {sortList.effect('highlight', {color: '#FFFF11'}, 1000);}
 			);
-		}
+		},
+		axis: 'y'
 	});
 
 	var sortListQ = $('#listQ').sortable({
 		update: function() {
 			$('#listQ-info').load('OrderAuditChildrenAjax.action?id=<s:property value="category.id"/>&type=AuditCategoryQuestions', 
 				sortListQ.sortable('serialize').replace(/\[|\]/g,''), 
-				function() {sortListQ.effect('hig+hlight', {color: '#FFFF11'}, 1000);}
+				function() {sortListQ.effect('highlight', {color: '#FFFF11'}, 1000);}
 			);
-		}
+		},
+		axis: 'y'
 	});
 });
 
