@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -9,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.BaseHistory;
-import com.picsauditing.util.Strings;
 
 @Transactional
 public class AuditQuestionDAO extends PicsDAO {
@@ -42,7 +41,7 @@ public class AuditQuestionDAO extends PicsDAO {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<AuditQuestion> findWhere(String where) { 
+	public List<AuditQuestion> findWhere(String where) {
 		if (where == null)
 			where = "";
 		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE " + where + " ORDER BY "
@@ -61,17 +60,22 @@ public class AuditQuestionDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findByQuestion(String question, Permissions permissions) {
-		String where = "SELECT t FROM AuditQuestion t WHERE t.name LIKE ? AND t.effectiveDate < NOW() AND t.expirationDate > NOW()";
-		if (permissions.isOperatorCorporate()) {
-			where += " AND t.category.parentAuditType.id IN :canSeeAudits";
-		}
+		String where = "SELECT t FROM AuditQuestion t WHERE t.name LIKE :name AND t.effectiveDate < NOW() AND t.expirationDate > NOW()";
 		Query query = em.createQuery(where);
-		query.setParameter(1, "%" + Utilities.escapeQuotes(question) + "%");
+		query.setParameter("name", "%" + Utilities.escapeQuotes(question) + "%");
+
+		List<AuditQuestion> result = query.getResultList();
+
 		if (permissions.isOperatorCorporate()) {
-			query.setParameter("canSeeAudits", permissions.getCanSeeAudit());
+			Iterator<AuditQuestion> iter = result.iterator();
+			while (iter.hasNext()) {
+				AuditQuestion q = iter.next();
+				if (!permissions.getCanSeeAudit().contains(q.getAuditType().getId()))
+					iter.remove();
+			}
 		}
 
-		return query.getResultList();
+		return result;
 	}
 
 	@SuppressWarnings("unchecked")
