@@ -65,6 +65,8 @@ public enum OpPerms {
 	MyCalendar("My Calendar", "View and Edit your Calendar", true, true, true, false, false),
 	Holidays("Holidays", "Manage the Holiday schedule for PICS", false, false, true, false, false),
 	ManageCalendars("Manage Safety Professional Calendars", "Allows user to edit all Safety Professional calendars", true, true, true, false, false),
+	ManageCategoryRules("Manage Category Rules", "Allows user to view and edit Category Rules for Audits and other documents", true, true, true, false, false),
+	ManageAuditTypeRules("Manage AuditType Rules", "Allows user to view and edit Audit Type Rules for Audits and other documents", true, true, true, false, false),
 
 	// Insurance
 	InsuranceCerts("Insurance Certificates", "Allows users to view (Read), upload (Edit), and delete insurance certificates", true, true, true, false, true),

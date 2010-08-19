@@ -1203,6 +1203,15 @@
 			class="com.picsauditing.actions.auditType.ManageDesktopMatrix">
 			<result>struts/audits/desktop_matrix.jsp</result>
 		</action>
+		
+		<action name="CategoryRuleEditor"
+			class="com.picsauditing.actions.auditType.CategoryRuleEditor">
+			<result>struts/audits/rules/category_rule_editor.jsp</result>
+		</action>
+		<action name="CategoryRuleSearch"
+			class="com.picsauditing.actions.auditType.CategoryRuleSearch">
+			<result>struts/audits/rules/category_rule_search.jsp</result>
+		</action>
 
 
 		<!-- Users -->

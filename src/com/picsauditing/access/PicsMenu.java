@@ -234,6 +234,12 @@ public class PicsMenu {
 			subMenu.addChild("PQF Matrix", "ManagePQFMatrix.action");
 			subMenu.addChild("Flag Criteria", "ManageFlagCriteria.action");
 		}
+		if (permissions.hasPermission(OpPerms.ManageAuditTypeRules)) {
+			subMenu.addChild("Audit Type Rules", "ManageAuditTypeRules.action");
+		}
+		if (permissions.hasPermission(OpPerms.ManageCategoryRules)) {
+			subMenu.addChild("Category Rules", "CategoryRuleSearch.action");
+		}
 
 		if (permissions.seesAllContractors()) {
 			subMenu.addChild("Email Subscriptions", "ReportEmailSubscription.action");
