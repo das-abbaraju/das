@@ -988,10 +988,6 @@
 			class="com.picsauditing.actions.audits.AuditCategoryAction">
 			<result>struts/audits/audit_cat_policy_submit.jsp</result>
 		</action>
-		<action name="CaoEditAjax"
-			class="com.picsauditing.actions.audits.ManageCao">
-			<result>struts/contractors/cao_edit.jsp</result>
-		</action>
 
 		<action name="AuditDataSaveAjax"
 			class="com.picsauditing.actions.audits.AuditDataSave">
