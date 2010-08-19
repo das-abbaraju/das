@@ -75,15 +75,12 @@ $(function() {
 			"disable_selecting_children": true,
 			"select_multiple_modifier": "shift"
 		},
-		"contextmenu": {},
-		plugins: ["themes", "json_data", "ui", "dnd", "types", "crrm", "contextmenu"]
+		plugins: ["themes", "json_data", "ui", "dnd", "types", "crrm"]
 	})
 	.bind("remove.jstree", function (e, data) {
 		alert("remove node");
 	})
 	.bind("move_node.jstree", function (e, data) {
-		/*console.log(data);
-		console.log(data.inst._get_children(data.rslt.np));*/
 		var np = data.rslt.np.attr('id').split('_');
 		var types=[], ids=[], ops=[];
 		data.inst._get_children(data.rslt.np).each(function(i) {
@@ -106,11 +103,16 @@ $(function() {
 				parentID: np[1]
 			},
 			success: function(r) {
-				data.inst.refresh(data.rslt.np);
-				data.inst.refresh(data.rslt.op);
-				$(ops).unique().each(function() {
-					data.inst.refresh(this);
-				});
+				if (r.success) {
+					data.inst.refresh(data.rslt.np);
+					data.inst.refresh(data.rslt.op);
+					$(ops).unique().each(function() {
+						data.inst.refresh(this);
+						$.jstree._open_node(this);
+					});
+				} else {
+					$.jstree.rollback(data.rlbk);
+				}
 			}
 		});
 	});
