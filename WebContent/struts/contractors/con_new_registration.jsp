@@ -100,6 +100,76 @@ $(document).ready(function() {
 });
 
 $(function() {
+	$('.checkReq').change(function() {
+		var ele = $(this);
+		var term = ele.val();
+		var fType = ele.attr('name').substr(ele.attr('name').indexOf('.')+1, ele.attr('name').length);
+		$('#_'+fType).hide();
+		startThinking( {div: 'think_'+fType, message: 'Checking for matches', type: 'small' } );
+		if(fType=='name' || fType=='phone') var type = 'C';
+		else if(fType=='contact' || fType=='email') var type = 'U';
+		$.getJSON(
+			'RequestNewContractorAjax.action',
+			{term: term, type: type, button: 'ajaxcheck'},
+			function(json){
+				if(json==null)
+					return;
+				var result = json.result;
+				if(result!=null) {
+					var used = result[2];
+					var usedList = $('<div>');
+					var usedStr = '';
+					for(var i=0; i<used.length; i++){
+						usedStr += used[i].used+' ' ;
+					}
+					usedList.append('Matching on these words:').append('<br/>');
+					usedList.append($('<div>').append(usedStr).css('font','italic').css('color','#A84D10'));
+					var unused = result[1];
+					var matchList = $('<div>');
+					if(unused.length>0){
+						var unusedList =$('<div>');
+						var uStr = '';
+						for(var i=0; i<unused.length; i++){
+							uStr += unused[i].unused+', ' ;
+						}
+						uStr = uStr.substr(0, uStr.length-2);
+						unusedList.append('These words found no matches, you might want to check to see if they are misspelled').append('<br/>');
+						unusedList.append(uStr).append('<br/>'); 
+						matchList.append(unusedList);
+					}
+					matchList.append(usedList);
+					matchList.append('If you see the company below then you do not need to request for them to register.  Click on their name to be taken to their page')
+					.append('<br/>');
+					var ul = $('<ul>');
+					for(var i=3; i<result.length; i++){
+						var id=result[i].id;
+						var name=result[i].name;
+						if(result[i].add)
+							ul.append($('<li>').append($('<a>').attr('href','ContractorFacilities.action?id='+id).append(name)));
+						else
+							ul.append($('<li>').append($('<a>').attr('href','ContractorView.action?id='+id).append(name)));
+					}
+					matchList.append(ul);
+					var hasResults = $('#match_'+fType).attr('matched');
+					if(hasResults!=null)
+						$('#match_'+fType).html(' ');
+					$('#match_'+fType).attr('matched', 'true').css('width','600px').append($('<h2>').text('Potential Matches'))
+						.append($('<div>').attr('id','inner_'+fType).append(matchList)).hide();
+					var link = $('#_'+fType);
+					if(!link.length>0){
+						link = $('<div>').attr('id','_'+fType).append($('<a>').attr('href','#').css('float', 'left').text('Click to view possible matches').click(function(e){
+							e.preventDefault();
+							$.facebox({div: '#match_'+fType});
+						}));
+					}
+					ele.parent().append(link);
+					link.show();
+				}
+				
+			}
+		);
+		stopThinking( {div: 'think_'+fType} );
+	});
 	changeState($("#newContractorCountry").val());
 	$('.datepicker').datepicker({
 		showOn: 'button',
@@ -246,12 +316,12 @@ function getMatches(requestID) {
 	</div>
 </s:if>
 
-<s:if test="newContractor.matchCount > 0 && newContractor.contractor == null && newContractor.open">
+<% /*<s:if test="newContractor.matchCount > 0 && newContractor.contractor == null && newContractor.open">
 	<div id="potentialMatches" class="info">
 		This contractor has <a name="potentialMatches" class="normal">potential matching accounts</a> in PICS.
 		<a href="#" onclick="getMatches(<s:property value="requestID" />); return false;">Click here to view a list of matching accounts.</a>
 	</div>
-</s:if>
+</s:if> */ %>
 
 <s:form id="saveContractorForm">
 	<s:hidden name="requestID"/>
@@ -263,10 +333,14 @@ function getMatches(requestID) {
 				<h2 class="formLegend">Company Information</h2>
 				<ol>
 					<li><label>Company Name:</label>
-						<s:textfield name="newContractor.name" size="35" />
+						<s:textfield cssClass="checkReq" name="newContractor.name" size="35" />
+						<div id="think_name"></div>
+						<div id="match_name"></div>
 					</li>
 					<li><label>Contact Name:</label>
-						<s:textfield name="newContractor.contact" />
+						<s:textfield cssClass="checkReq" name="newContractor.contact" />
+						<div id="think_contact"></div>
+						<div id="match_contact"></div>
 						<br />
 					</li>
 					<s:if test="newContractor.phone == null && newContractor.email == null">
@@ -278,13 +352,15 @@ function getMatches(requestID) {
 					</s:if>
 					<li>
 						<label>Phone:</label>
-						<s:textfield name="newContractor.phone" size="20" />
+						<s:textfield cssClass="checkReq" name="newContractor.phone" size="20" />
 						<s:if test="newContractor.id > 0 && newContractor.phone != null && newContractor.phone.length() > 0 && !permissions.operatorCorporate">
 							<input type="submit" class="picsbutton" name="button" value="Contacted By Phone" />
 						</s:if>
+						<div id="think_phone"></div>
+						<div id="match_phone"></div>
 					</li>
 					<li><label for="email">Email:</label>
-						<s:textfield name="newContractor.email" size="30" id="email" />
+						<s:textfield cssClass="checkReq" name="newContractor.email" size="30" id="email" />
 						<s:if test="newContractor.id > 0 && newContractor.email.length() > 0 && !permissions.operatorCorporate">
 							<input type="button" onclick="$('#email_preview').toggle(); return false;" class="picsbutton" value="Edit Email" />
 							<table id="email_preview">
@@ -310,9 +386,11 @@ function getMatches(requestID) {
 								<tr><td colspan="2"><input type="submit" name="button" class="picsbutton positive" value="Send Email" /></td></tr>
 							</table>
 						</s:if>
+						<div id="think_email"></div>
+						<div id="match_email"></div>
 					</li>
 					<li><label for="taxID">Tax ID:</label>
-						<s:textfield name="newContractor.taxID" size="9" maxLength="9" id="taxID" />
+						<s:textfield cssClass="checkReq" name="newContractor.taxID" size="9" maxLength="9" id="taxID" />
 						<div class="fieldhelp">
 						<h3>Tax ID</h3>
 						<p>Optional field for Tax ID</p>

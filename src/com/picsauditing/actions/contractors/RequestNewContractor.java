@@ -2,14 +2,20 @@ package com.picsauditing.actions.contractors;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
@@ -43,6 +49,8 @@ import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.MainSearch;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -71,6 +79,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected State state;
 	protected EmailTemplate template;
 	protected List<ContractorAccount> potentialMatches;
+	
+	protected String term;
+	protected String type;
+	
+	protected List<String> unusedTerms;
+	protected List<String> usedTerms;
+	
+	protected boolean continueCheck = true;
 	
 	private String[] names = new String[] { "ContractorName",
 			"ContractorPhone", "ContractorEmail", "RequestedByOperator",
@@ -135,6 +151,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			state = stateDAO.find(stateIsos[0]);
 	}
 
+	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
@@ -143,6 +160,63 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		template = templateDAO.find(83);
 
 		if (button != null) {
+			if("ajaxcheck".equals(button)){
+				MainSearch gap = new MainSearch();
+				List<BasicDynaBean> matches = newGap(gap, term, type);
+				if(matches!=null && !matches.isEmpty()) // results
+					continueCheck = false;
+				else return null;
+				Database db = new Database();
+				JSONArray result = new JSONArray();
+				List<Integer> ids = new ArrayList<Integer>();
+				StringBuilder query = new StringBuilder();
+				result.add(continueCheck);
+				if("C".equalsIgnoreCase(type))
+					query.append("SELECT a.id, a.name FROM accounts a WHERE a.id IN ("); 
+				else if("U".equalsIgnoreCase(type))
+					query.append("SELECT a.id, a.name FROM accounts a JOIN users u ON a.id = u.accountID WHERE a.id IN(");
+				for(BasicDynaBean bdb : matches){
+					int id = Integer.parseInt(bdb.get("foreignKey").toString());
+					ids.add(id);
+				}		
+				JSONArray jObj = new JSONArray();
+				for(final String str : unusedTerms){
+					jObj.add(new JSONObject(){
+						{
+							put("unused", str);
+						}
+					});
+				}
+				result.add(jObj);
+				jObj = new JSONArray();
+				for(final String str : usedTerms){
+					jObj.add(new JSONObject(){
+						{
+							put("used", str);
+						}
+					});
+				}
+				result.add(jObj);
+				query.append(Strings.implode(ids, ",")).append(')');
+				List<BasicDynaBean> cons = db.select(query.toString(), false);
+				final Hashtable<Integer, Integer> ht = gap.getConIds(permissions);			
+				for(BasicDynaBean bdb : cons){
+					final String name = bdb.get("name").toString();
+					final String id = bdb.get("id").toString();
+					result.add(new JSONObject(){
+						{
+							put("name", name);
+							put("id", id);
+							if(ht.containsKey(id))
+								put("add",false);
+							else
+								put("add",true);
+						}
+					});
+				}
+				json.put("result", result);
+				return JSON;
+			}
 			if (button.equals("Save")) {
 				if (Strings.isEmpty(newContractor.getName()))
 					addActionError("Please fill the contractor Name");
@@ -528,6 +602,38 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		return null;
 	}
 	
+	public List<BasicDynaBean> newGap(MainSearch gap, String term, String type){
+		// tax id
+		// run on all terms in name, remove term till we get results
+		// if no results then move to user name and email
+		// if too many results combine user name with account to whittle down results
+		unusedTerms = new ArrayList<String>();
+		usedTerms = new ArrayList<String>();
+		type = "'"+Utilities.escapeQuotes(type)+"'";
+		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
+		Database db = new Database();
+		List<String> termsArray = gap.sortSearchTerms(gap.buildTerm(term, false, false), true);
+		while(results.isEmpty() && termsArray.size()>0){
+			String query = gap.buildQuery(null, termsArray, "i1.indexType = "+type, null, 20, false, true);
+			try {
+				results = db.select(query, false);
+			} catch (SQLException e) {
+				System.out.println("Error running query in RequestNewCon");
+				e.printStackTrace();
+				return null;
+			}
+			if(!gap.getNullTerms().isEmpty()){
+				unusedTerms.addAll(gap.getNullTerms());
+				termsArray.removeAll(gap.getNullTerms());
+			}
+			usedTerms = termsArray;
+			termsArray=termsArray.subList(0, termsArray.size()-1);						
+			//termsArray.subList(1, termsArray.size());
+		}
+		return results;
+		
+	}
+	
 	public boolean worksForOperator(int conID) {
 		if (permissions.isOperatorCorporate()) {
 			OperatorAccount operator = operatorAccountDAO.find(permissions.getAccountId());
@@ -655,5 +761,21 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		} catch (Exception e) {
 			System.out.println("Unable to open file: /forms/" + filename);
 		}
+	}
+
+	public String getTerm() {
+		return term;
+	}
+
+	public void setTerm(String term) {
+		this.term = term;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

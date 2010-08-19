@@ -495,7 +495,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	
 	public List<AuditQuestion> getQuestionsByAuditList() {
 		AuditQuestionDAO auditQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
-		return auditQuestionDAO.findWhere("t.category.parentAuditType.id = 81 AND t.current = TRUE");
+		return auditQuestionDAO.findWhere("t.category.parentAuditType.id = 81 AND t.effectiveDate < NOW() AND t.expirationDate > NOW()");
 	}
 	
 	public boolean isShowAuditFor() {

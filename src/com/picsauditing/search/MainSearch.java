@@ -48,7 +48,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	protected List<String> commonFilterSuggest = new ArrayList<String>();
 	protected List<Indexable> fullList;
 	protected Hashtable<Integer, Integer> ht;
-	protected Stack<String> nullTerms = new Stack<String>();
+	protected List<String> nullTerms = new ArrayList<String>();
 
 	protected Database db = new Database();
 	
@@ -99,16 +99,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			
 			List<String> terms = buildTerm(searchTerm, true, false);
 			// if corporate then build list of contractors in their system
-			if(permissions.isCorporate()){
-				String str = "SELECT gc.subID id FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID ="+permissions.getAccountId()+" GROUP BY id";
-				List<BasicDynaBean> temp = db.select(str, false);
-				ht = new Hashtable<Integer, Integer>(temp.size());
-				// add them to a ht for O(1) lookup time
-				for(BasicDynaBean bdb: temp){
-					int value = Integer.parseInt(bdb.get("id").toString());
-					ht.put(value, value);
-				}
-			}
+			ht = getConIds(permissions);
 			String query = buildQuery(permissions, terms, null, startIndex, 100, false, true);
 			List<BasicDynaBean> queryList = db.select(query, true);
 			totalRows = db.getAllRows();
@@ -139,6 +130,30 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			
 			return BLANK;
 		}
+	}
+	
+	public Hashtable<Integer, Integer> getConIds(Permissions perm){
+		Hashtable<Integer, Integer> results = new Hashtable<Integer, Integer>();
+		String conQuery = "";
+		if (perm.isCorporate()) {
+			conQuery = "SELECT gc.subID id FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID ="
+					+ perm.getAccountId() + " GROUP BY id";
+		} else if(perm.isOperator()){
+			conQuery = "SELECT gc.subID id FROM generalcontractors gc WHERE gc.opID = "+perm.getAccountId();
+		} else return results;
+		List<BasicDynaBean> temp;
+		try {
+			temp = db.select(conQuery, false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		results = new Hashtable<Integer, Integer>(temp.size());
+		for(BasicDynaBean bdb: temp){
+			int value = Integer.parseInt(bdb.get("id").toString());
+			results.put(value, value);
+		}
+		return results;
 	}
 
 	private void buildCommonSuggest(List<BasicDynaBean> commonList, String check) {
@@ -404,6 +419,10 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			int index = Integer.parseInt(l.get(i).get("term").toString());
 			array.add(terms.get(index)); 
 		}
+		if(onlyValid){
+			if(terms.removeAll(array))
+				nullTerms.addAll(terms);
+		}
 		return array;
 
 	}
@@ -488,11 +507,11 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		this.orderBy = orderBy;
 	}
 
-	public Stack<String> getNullTerms() {
+	public List<String> getNullTerms() {
 		return nullTerms;
 	}
 
-	public void setNullTerms(Stack<String> nullTerms) {
+	public void setNullTerms(List<String> nullTerms) {
 		this.nullTerms = nullTerms;
 	}
 }

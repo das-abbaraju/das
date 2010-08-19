@@ -70,7 +70,7 @@ $(function(){
 		width: 325, 
 		scroll: false, 
 		max: 11,
-		delay: 150,
+		delay: 200,
 		formatItem: function(data,i,count){
 			return format(data, i);						
 		},
