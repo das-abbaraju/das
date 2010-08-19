@@ -92,6 +92,11 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			"The contractor wants to register but keeps delaying", "The company is no longer in business",
 			"We were unable to locate this company" };
 	
+	private String picsSignature = "PICS\nP.O. Box 51387\nIrvine CA 92619-1387\nTel: (949)387-1940\n"
+		+ "Fax: (949)269-9153\nhttp://www.picsauditing.com\nemail: info@picsauditing.com "
+		+ "(Please add this email address to your address book to prevent it from being labeled " 
+		+ "as spam)";
+	
 	public RequestNewContractor(ContractorRegistrationRequestDAO crrDAO, OperatorAccountDAO operatorAccountDAO,
 			UserDAO userDAO, CountryDAO countryDAO, StateDAO stateDAO, ContractorAccountDAO contractorAccountDAO,
 			AccountDAO accountDAO) {
@@ -224,8 +229,22 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				if (potentialMatches.size() > 0)
 					newContractor.setMatchCount(potentialMatches.size());
 				
-				if (newContractor.getId() == 0)
+				if (newContractor.getId() == 0) {
+					if (!Strings.isEmpty(newContractor.getEmail())) {
+						newContractor.setAuditColumns(permissions);
+						newContractor = crrDAO.save(newContractor);
+						
+						EmailQueue emailQueue = createEmail();
+						List<OperatorForm> forms = getForms();
+						
+						if (forms.size() == 1 && emailQueue != null) {
+							String filename = forms.get(0).getFile();
+							addAttachments(emailQueue, filename);
+						}
+					}
+					
 					redirect = true;
+				}
 			}
 			
 			if (button.equals("MatchingList")) {
@@ -265,68 +284,11 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 			if (button.equals("Send Email") || button.equals("Contacted By Phone")) {
 				if (button.equals("Send Email")) {
-					// Point to the contractor registration page with some information pre-filled
-					String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button=" +
-							"request&requestID=" + newContractor.getId();
+					EmailQueue emailQueue = createEmail();
 					
-					String picsSignature = "PICS\nP.O. Box 51387\nIrvine CA 92619-1387\nTel: (949)387-1940\n"
-						+ "Fax: (949)269-9153\nhttp://www.picsauditing.com\nemail: info@picsauditing.com "
-						+ "(Please add this email address to your address book to prevent it from being labeled "
-						+ "as spam)";
-					
-					String[] fields = new String[] { newContractor.getName(), newContractor.getPhone(), 
-							newContractor.getEmail(), newContractor.getRequestedBy().getName(), 
-							newContractor.getRequestedByUser() != null ? 
-								newContractor.getRequestedByUser().getName() : 
-									newContractor.getRequestedByUserOther(), newContractor.getContact(),
-							newContractor.getTaxID(), newContractor.getAddress(), newContractor.getCity(),
-							newContractor.getState().getEnglish(), newContractor.getZip(),
-							newContractor.getCountry().getEnglish(), maskDateFormat(newContractor.getDeadline()),
-							requestLink, picsSignature };
-					
-					if (Strings.isEmpty(emailBody) || Strings.isEmpty(emailSubject)) {
-						// Operator Request for Registration
-						if (Strings.isEmpty(emailBody))
-							emailBody = template.getBody();
-						if (Strings.isEmpty(emailSubject))
-							emailSubject = template.getSubject();
-					}
-					
-					for (int i = 0; i < names.length; i++) {
-						emailBody = emailBody.replace("<" + names[i] + ">", fields[i] != null ? fields[i] : "");
-						emailSubject = emailSubject.replace("<" + names[i] + ">", 
-								fields[i] != null ? fields[i] : "");
-					}
-
-					EmailQueue emailQueue = new EmailQueue();
-					emailQueue.setPriority(80);
-					emailQueue.setFromAddress(getAssignedCSR().getEmail());
-					emailQueue.setToAddresses(newContractor.getEmail());
-					emailQueue.setBody(emailBody);
-					emailQueue.setSubject(emailSubject);
-					EmailSender.send(emailQueue);
-
-					// Need to do an update to where these files are stored.
-					if (filenames != null) {
+					if (filenames != null && emailQueue != null) {
 						for (String filename : filenames) {
-							try {
-								EmailAttachment attachment = new EmailAttachment();
-								File file = new File(getFtpDir() + "/forms/" + filename);
-
-								byte[] bytes = new byte[(int) file.length()];
-								FileInputStream fis = new FileInputStream(file);
-								fis.read(bytes);
-
-								attachment.setFileName(getFtpDir() + "/forms/" + filename);
-								attachment.setContent(bytes);
-								attachment.setFileSize((int) file.length());
-								attachment.setEmailQueue(emailQueue);
-								EmailAttachmentDAO attachmentDAO = 
-									(EmailAttachmentDAO) SpringUtils.getBean("EmailAttachmentDAO");
-								attachmentDAO.save(attachment);
-							} catch (Exception e) {
-								System.out.println("Unable to open file: /forms/" + filename);
-							}
+							addAttachments(emailQueue, filename);
 						}
 					}
 					
@@ -522,7 +484,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		
 		Iterator<OperatorForm> iterator = forms.iterator();
 		while (iterator.hasNext()) {
-			if (!iterator.next().getFormName().toLowerCase().contains("letter"))
+			if (!iterator.next().getFormName().toLowerCase().contains("*"))
 				iterator.remove();
 		}
 		
@@ -622,5 +584,76 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	
 	public void setNoteReason(String[] noteReason) {
 		this.noteReason = noteReason;
+	}
+	
+	private EmailQueue createEmail() {
+		String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button="
+			+ "request&requestID=" + newContractor.getId();
+		// Point to the contractor registration page with some information pre-filled
+		String[] fields = new String[] {
+				newContractor.getName(), newContractor.getPhone(), newContractor.getEmail(),
+				newContractor.getRequestedBy().getName(),
+				newContractor.getRequestedByUser() != null ? newContractor.getRequestedByUser().getName()
+						: newContractor.getRequestedByUserOther(), newContractor.getContact(),
+				newContractor.getTaxID(), newContractor.getAddress(), newContractor.getCity(),
+				newContractor.getState().getEnglish(), newContractor.getZip(), newContractor.getCountry().getEnglish(),
+				maskDateFormat(newContractor.getDeadline()), requestLink, picsSignature };
+
+		if (Strings.isEmpty(emailBody) || Strings.isEmpty(emailSubject)) {
+			// Operator Request for Registration
+			if (Strings.isEmpty(emailBody))
+				emailBody = getEmailBody();
+			if (Strings.isEmpty(emailSubject))
+				emailSubject = getEmailSubject();
+		}
+
+		for (int i = 0; i < names.length; i++) {
+			emailBody = emailBody.replace("<" + names[i] + ">", fields[i] != null ? fields[i] : "");
+			emailSubject = emailSubject.replace("<" + names[i] + ">", fields[i] != null ? fields[i] : "");
+		}
+
+		EmailQueue emailQueue = new EmailQueue();
+		emailQueue.setPriority(80);
+		
+		emailQueue.setFromAddress(getAssignedCSR() == null ? "info@picsauditing.com" : getAssignedCSR().getEmail());
+		emailQueue.setToAddresses(newContractor.getEmail());
+		
+		if (newContractor.getRequestedByUser() != null && !Strings.isEmpty(newContractor.getRequestedByUser().getEmail()))
+			emailQueue.setCcAddresses(newContractor.getRequestedByUser().getEmail());
+		
+		emailQueue.setBody(emailBody);
+		emailQueue.setSubject(emailSubject);
+		try {
+			EmailSender.send(emailQueue);
+			return emailQueue;
+		} catch (Exception e1) {
+			addActionError("Could not send email with subject '" + emailSubject + "' to " + newContractor.getEmail());
+		}
+		
+		return null;
+	}
+	
+	private void addAttachments(EmailQueue emailQueue, String filename) {
+		try {
+			EmailAttachment attachment = new EmailAttachment();
+			File file = new File(getFtpDir() + "/forms/" + filename);
+
+			byte[] bytes = new byte[(int) file.length()];
+			FileInputStream fis = new FileInputStream(file);
+			fis.read(bytes);
+
+			attachment.setFileName(getFtpDir() + "/forms/" + filename);
+			attachment.setContent(bytes);
+			attachment.setFileSize((int) file.length());
+			attachment.setEmailQueue(emailQueue);
+			EmailAttachmentDAO attachmentDAO = 
+				(EmailAttachmentDAO) SpringUtils.getBean("EmailAttachmentDAO");
+			attachmentDAO.save(attachment);
+			
+			newContractor.setNotes(prepend("Sent email on request creation", 
+					newContractor.getNotes()));
+		} catch (Exception e) {
+			System.out.println("Unable to open file: /forms/" + filename);
+		}
 	}
 }

@@ -305,7 +305,7 @@ function getMatches(requestID) {
 									<td>Fields: <s:select list="tokens" onchange="addToken(this.value);"></s:select></td>
 								</tr>
 								<tr><td colspan="2">
-									<s:textarea cols="60" rows="10" name="emailBody" id="email_body"></s:textarea>
+									<s:textarea cols="120" rows="10" name="emailBody" id="email_body" cssStyle="width: 600px;"></s:textarea>
 								</td></tr>
 								<tr><td colspan="2"><input type="submit" name="button" class="picsbutton positive" value="Send Email" /></td></tr>
 							</table>
