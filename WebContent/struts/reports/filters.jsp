@@ -684,6 +684,13 @@
 		</div>
 	</s:if>
 
+	<s:if test="filter.showViewAll">
+		<br clear="all" />
+		<div class="filterOption">
+			<label><s:checkbox name="filter.viewAll" /> Show All Registration Requests</label>
+		</div>
+	</s:if>
+
 	<s:if test="filter.showInvoiceDueDate">
 		<br clear="all">
 		<div class="filterOption"><a href="#"
