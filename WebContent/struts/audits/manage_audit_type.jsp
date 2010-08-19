@@ -84,7 +84,10 @@ function copyAuditType(atypeID) {
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
 
 <s:if test="auditType.id > 0">
-	<div><a href="AuditOperator.action?aID=<s:property value="auditType.id"/>">Edit Operator Access</a></div>
+	<div>
+		<a href="AuditOperator.action?aID=<s:property value="auditType.id"/>">Edit Operator Access</a>
+		<a href="ManageAuditTypeHierarchy.action?id=<s:property value="auditType.id"/>">Manage Hierarchy</a>
+	</div>
 </s:if>
 <s:form id="save">
 <s:hidden name="id"></s:hidden>
