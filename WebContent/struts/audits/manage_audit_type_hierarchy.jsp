@@ -82,14 +82,13 @@ $(function() {
 	})
 	.bind("move_node.jstree", function (e, data) {
 		var np = data.rslt.np.attr('id').split('_');
-		var types=[], ids=[], ops=[];
+		var types=[], ids=[];
 		data.inst._get_children(data.rslt.np).each(function(i) {
 			var n = $(this).attr('id').split('_');
 			types.push(n[0]);
 			ids.push(n[1]);
-			ops.push(data.inst._get_parent(this));
 		});
-
+		startThinking();
 		$.ajax({
 			async: false,
 			type: 'POST',
@@ -106,13 +105,11 @@ $(function() {
 				if (r.success) {
 					data.inst.refresh(data.rslt.np);
 					data.inst.refresh(data.rslt.op);
-					$(ops).unique().each(function() {
-						data.inst.refresh(this);
-						$.jstree._open_node(this);
-					});
+					data.inst.open_node(data.rslt.op);
 				} else {
 					$.jstree.rollback(data.rlbk);
 				}
+				stopThinking();
 			}
 		});
 	});
@@ -135,6 +132,8 @@ $(function() {
 		headerValue="- Audit Type -" listKey="id" listValue="auditName"
 		name="id" />
 </s:form>
+
+<div id="mainThinkingDiv" class="right"></div>
 
 <s:if test="auditType != null">
 	<div id="audit-tree"></div>
