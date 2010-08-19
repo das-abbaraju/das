@@ -1,6 +1,5 @@
 package com.picsauditing.actions.auditType;
 
-import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.DateBean;
@@ -151,23 +150,8 @@ public class ManageQuestion extends ManageCategory {
 	}
 
 	private void recalculateCategory() {
-		Date today = new Date();
 		if (category != null && category.getId() > 0) {
-
-			// Renumber the category
-			int numQuestions = 0;
-			int numRequired = 0;
-			for (AuditCategory subCat : category.getSubCategories()) {
-				for (AuditQuestion tempQuestion : subCat.getQuestions()) {
-					if (today.after(tempQuestion.getEffectiveDate()) && today.before(tempQuestion.getExpirationDate())) {
-						numQuestions++;
-						if (tempQuestion.isRequired())
-							numRequired++;
-					}
-				}
-			}
-			category.setNumQuestions(numQuestions);
-			category.setNumRequired(numRequired);
+			category.recalculateQuestions();
 			auditQuestionDAO.save(category);
 		}
 	}

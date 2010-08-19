@@ -118,6 +118,14 @@ $(function() {
 	});
 });
 </script>
+<style>
+.required a {
+	color: red !important;
+}
+.not-current a {
+	text-decoration: line-through;
+}
+</style>
 </head>
 <body>
 <h2>Manage Hierarchy</h2>

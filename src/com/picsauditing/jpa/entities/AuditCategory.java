@@ -154,6 +154,19 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		this.numQuestions = numQuestions;
 	}
 
+	@Transient
+	public void recalculateQuestions() {
+		numQuestions = 0;
+		numRequired = 0;
+		for (AuditQuestion question : questions) {
+			if (question.isCurrent()) {
+				numQuestions++;
+				if (question.isRequired())
+					numRequired++;
+			}
+		}
+	}
+
 	public String getHelpText() {
 		return helpText;
 	}
@@ -210,20 +223,6 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		return false;
 	}
 
-	@Override
-	public int compareTo(AuditCategory other) {
-		if (other == null) {
-			return 1;
-		}
-
-		int cmp = getAuditType().compareTo(other.getAuditType());
-
-		if (cmp != 0)
-			return cmp;
-
-		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
-	}
-
 	@Transient
 	public List<AuditCategory> getAncestors() {
 		List<AuditCategory> ancestors = new ArrayList<AuditCategory>();
@@ -264,6 +263,20 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		}
 
 		return j;
+	}
+
+	@Override
+	public int compareTo(AuditCategory other) {
+		if (other == null) {
+			return 1;
+		}
+
+		int cmp = getAuditType().compareTo(other.getAuditType());
+
+		if (cmp != 0)
+			return cmp;
+
+		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
 	}
 
 	@Override

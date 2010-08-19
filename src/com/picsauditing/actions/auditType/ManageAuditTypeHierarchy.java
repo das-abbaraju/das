@@ -1,9 +1,8 @@
 package com.picsauditing.actions.auditType;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,7 +14,6 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.quickbooks.qbxml.APAccountRef;
 
 @SuppressWarnings("serial")
 public class ManageAuditTypeHierarchy extends PicsActionSupport {
@@ -61,8 +59,10 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 							put("data", q.getNumber() + ". " + q.getName());
 							put("attr", new JSONObject() {
 								{
-									put("id", "question_" + q.getId() + "_" + q.getNumber());
+									put("id", "question_" + q.getId());
 									put("rel", "question");
+									put("class", (q.isRequired() ? "required" : "")
+											+ (!q.isCurrent() ? "not-current" : ""));
 								}
 							});
 						}
@@ -74,7 +74,7 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 						{
 							put("attr", new JSONObject() {
 								{
-									put("id", "category_" + cat.getId() + "_" + cat.getNumber());
+									put("id", "category_" + cat.getId());
 									put("rel", "category");
 								}
 							});
@@ -101,7 +101,7 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 						{
 							put("attr", new JSONObject() {
 								{
-									put("id", "category_" + cat.getId() + "_" + cat.getNumber());
+									put("id", "category_" + cat.getId());
 									put("rel", "category");
 								}
 							});
@@ -117,34 +117,6 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 
 			return JSON;
 		} else if ("move".equals(button)) {
-			/*
-			 * if ("category".equals(type)) { AuditCategory category =
-			 * auditCategoryDAO.find(nodeID);
-			 * 
-			 * if ("audit".equals(parentType)) { category.setParent(null);
-			 * category.setAuditType(auditTypeDAO.find(parentID)); } else if
-			 * ("category".equals(parentType)) { category.setAuditType(null);
-			 * category.setParent(auditCategoryDAO.find(parentID)); }
-			 * 
-			 * category.setNumber(number);
-			 * 
-			 * for (AuditCategory sibling : category.getSiblings()) { if
-			 * (sibling.getNumber() >= number)
-			 * sibling.setNumber(sibling.getNumber() + 1); }
-			 * 
-			 * auditCategoryDAO.save(category);
-			 * 
-			 * } else if ("question".equals(type)) { AuditQuestion question =
-			 * auditQuestionDAO.find(nodeID); if ("category".equals(parentType))
-			 * { question.setCategory(auditCategoryDAO.find(parentID));
-			 * question.setNumber(number);
-			 * 
-			 * for (AuditQuestion sibling :
-			 * question.getCategory().getQuestions()) { if (sibling.getNumber()
-			 * >= number) sibling.setNumber(sibling.getNumber() + 1); }
-			 * 
-			 * auditQuestionDAO.save(question); } }
-			 */
 
 			if (types.length > 0 && types.length == ids.length) {
 
@@ -154,8 +126,8 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 				int questionNumber = 0;
 				int categoryNumber = 0;
 
-				List<AuditType> oldParentAudits = new ArrayList<AuditType>();
-				List<AuditCategory> oldParentCategories = new ArrayList<AuditCategory>();
+				Set<AuditType> oldParentAudits = new HashSet<AuditType>();
+				Set<AuditCategory> oldParentCategories = new HashSet<AuditCategory>();
 
 				for (int i = 0; i < types.length; i++) {
 					if (types[i].equals("question")) {
@@ -210,6 +182,7 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 						}
 					}
 
+					category.recalculateQuestions();
 					auditCategoryDAO.save(category);
 				}
 
