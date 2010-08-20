@@ -17,6 +17,7 @@
 	<bean id="AssessmentResultDAO" class="com.picsauditing.dao.AssessmentResultDAO"/>
 	<bean id="AssessmentTestDAO" class="com.picsauditing.dao.AssessmentTestDAO"/>
 	<bean id="AuditDataDAO" class="com.picsauditing.dao.AuditDataDAO"/>
+	<bean id="AuditDecisionTableDAO" class="com.picsauditing.dao.AuditDecisionTableDAO"/>
 	<bean id="AuditorAvailabilityDAO" class="com.picsauditing.dao.AuditorAvailabilityDAO"/>
 	<bean id="AuditorScheduleDAO" class="com.picsauditing.dao.AuditorScheduleDAO"/>
 	<bean id="AuditorVacationDAO" class="com.picsauditing.dao.AuditorVacationDAO"/>

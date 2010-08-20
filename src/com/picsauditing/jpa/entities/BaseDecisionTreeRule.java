@@ -1,12 +1,12 @@
 package com.picsauditing.jpa.entities;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.MappedSuperclass;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "audit_dt")
-public class BaseDecisionTable extends BaseTable {
+@MappedSuperclass
+public abstract class BaseDecisionTreeRule extends BaseTable {
 
 	protected int priority;
 	protected boolean include = true;
@@ -26,5 +26,7 @@ public class BaseDecisionTable extends BaseTable {
 	public void setInclude(boolean include) {
 		this.include = include;
 	}
+	
+	abstract public void calculatePriority();
 
 }

@@ -13,8 +13,8 @@ import org.hibernate.annotations.Type;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "audit_cat_dt")
-public class AuditCatDecisionTable extends BaseDecisionTable {
+@Table(name = "audit_category_rule")
+public class AuditCategoryRule extends BaseDecisionTreeRule {
 
 	private AuditCategory auditCategory;
 	private LowMedHigh risk;
@@ -71,6 +71,11 @@ public class AuditCatDecisionTable extends BaseDecisionTable {
 	@JoinColumn(name = "tagID")
 	public void setTag(ContractorTag tag) {
 		this.tag = tag;
+	}
+
+	@Override
+	public void calculatePriority() {
+		this.priority = 100;
 	}
 
 }

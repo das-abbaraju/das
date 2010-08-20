@@ -9,8 +9,8 @@ import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "audit_dt")
-public class AuditDecisionTable extends BaseDecisionTable {
+@Table(name = "audit_type_rule")
+public class AuditTypeRule extends BaseDecisionTreeRule {
 
 	private AuditType auditType;
 	private LowMedHigh risk;
@@ -65,6 +65,10 @@ public class AuditDecisionTable extends BaseDecisionTable {
 
 	public void setTag(ContractorTag tag) {
 		this.tag = tag;
+	}
+
+	@Override
+	public void calculatePriority() {
 	}
 
 }
