@@ -139,7 +139,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			conQuery = "SELECT gc.subID id FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID ="
 					+ perm.getAccountId() + " GROUP BY id";
 		} else if(perm.isOperator()){
-			conQuery = "SELECT gc.subID id FROM generalcontractors gc WHERE gc.opID = "+perm.getAccountId();
+			conQuery = "SELECT gc.subID id FROM generalcontractors gc WHERE gc.genID = "+perm.getAccountId();
 		} else return results;
 		List<BasicDynaBean> temp;
 		try {

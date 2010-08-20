@@ -13,7 +13,7 @@ import com.picsauditing.jpa.entities.User;
 
 @Transactional
 @SuppressWarnings("unchecked")
-public class UserDAO extends IndexableDAO {
+public class UserDAO extends IndexableDAO{
 	public User save(User o) {
 		if (o.getId() == 0) {
 			em.persist(o);

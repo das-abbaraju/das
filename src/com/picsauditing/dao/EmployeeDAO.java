@@ -12,7 +12,7 @@ import com.picsauditing.util.Strings;
 
 @Transactional
 @SuppressWarnings("unchecked")
-public class EmployeeDAO extends IndexableDAO {
+public class EmployeeDAO extends IndexableDAO{
 
 	public Employee find(int id) {
 		return em.find(Employee.class, id);

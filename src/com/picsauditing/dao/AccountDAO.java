@@ -7,6 +7,7 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
 
@@ -94,5 +95,5 @@ public class AccountDAO extends IndexableDAO {
 		Query query = em.createQuery("FROM Account a " + where + " ORDER BY a.id");
 		query.setMaxResults(limit);
 		return query.getResultList();
-	}	
+	}
 }

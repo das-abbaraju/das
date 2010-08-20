@@ -38,17 +38,15 @@ public class Indexer extends PicsActionSupport {
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
 	private EmployeeDAO empDAO;
-	private ContractorAuditDAO conAuditDAO;
 	
 	private List<String> list;
 	private static Map<String, IndexableDAO> indexTables;
 	private static final int RUN_NUM = 50;
 	
-	public Indexer(AccountDAO accountDAO, UserDAO userDAO, EmployeeDAO empDAO, ContractorAuditDAO conAudDAO) {
+	public Indexer(AccountDAO accountDAO, UserDAO userDAO, EmployeeDAO empDAO) {
 		this.accountDAO = accountDAO;
 		this.userDAO = userDAO;
 		this.empDAO = empDAO;
-		this.conAuditDAO = conAudDAO;
 	}
 	@Override
 	public String execute() throws SQLException {
