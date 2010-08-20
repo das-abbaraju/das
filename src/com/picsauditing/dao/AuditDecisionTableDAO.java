@@ -16,19 +16,26 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	}
 
 	public List<AuditCategoryRule> getLessGranular(AuditCategoryRule rule) {
-		String where = "";
+		String where = "WHERE a.priority < " + rule.getPriority();
+		if (rule.getAuditType() == null)
+			where += " AND auditTypeID IS NULL";
+		if (rule.getAuditCategory() == null)
+			where += " AND catID IS NULL";
+		
 		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY a.priority");
 		return query.getResultList();
 	}
 
 	public List<AuditCategoryRule> getMoreGranular(AuditCategoryRule rule) {
-		String where = "";
+		String where = "WHERE a.priority > " + rule.getPriority();
+		
 		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY a.priority");
 		return query.getResultList();
 	}
 
 	public List<AuditCategoryRule> getSimilar(AuditCategoryRule rule) {
-		String where = "";
+		String where = "WHERE a.priority = " + rule.getPriority();
+		
 		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY a.priority");
 		return query.getResultList();
 	}

@@ -8,12 +8,12 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_category_rule")
-public class AuditCategoryRule extends AuditTypeRule {
+public class AuditCategoryRule extends AuditRule {
 
 	private AuditCategory auditCategory;
 
 	@ManyToOne
-	@JoinColumn(name = "catID", nullable = false)
+	@JoinColumn(name = "catID")
 	public AuditCategory getAuditCategory() {
 		return auditCategory;
 	}
