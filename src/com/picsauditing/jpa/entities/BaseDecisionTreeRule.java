@@ -6,7 +6,7 @@ import javax.persistence.MappedSuperclass;
 @SuppressWarnings("serial")
 @Entity
 @MappedSuperclass
-public abstract class BaseDecisionTreeRule extends BaseTable {
+public abstract class BaseDecisionTreeRule extends BaseHistory {
 
 	protected int priority;
 	protected boolean include = true;
