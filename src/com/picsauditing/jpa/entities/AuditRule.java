@@ -16,7 +16,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected LowMedHigh risk;
 	protected OperatorAccount operatorAccount;
 	protected ContractorType contractorType;
-	protected ContractorTag tag;
+	protected OperatorTag tag;
 	protected AuditQuestion question;
 	protected QuestionComparator questionComparator = QuestionComparator.Equals;
 	protected String questionAnswer;
@@ -62,11 +62,11 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 	@ManyToOne
 	@JoinColumn(name = "tagID")
-	public ContractorTag getTag() {
+	public OperatorTag getTag() {
 		return tag;
 	}
 
-	public void setTag(ContractorTag tag) {
+	public void setTag(OperatorTag tag) {
 		this.tag = tag;
 	}
 
@@ -110,9 +110,14 @@ public class AuditRule extends BaseDecisionTreeRule {
 		if (auditType != null)
 			// Hundred
 			priority += 105;
-		if (operatorAccount != null)
-			// Hundreds
-			priority += 110;
+		if (operatorAccount != null) {
+			if (operatorAccount.isCorporate())
+				// Dozens to a hundred
+				priority += 104;
+			else
+				// Hundreds-thousand
+				priority += 110;
+		}
 		
 		if (question != null && questionComparator != null)
 			// Potentially thousands but probably only hundreds
