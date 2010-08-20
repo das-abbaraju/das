@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeSite;
+import com.picsauditing.jpa.entities.EmployeeSiteTask;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 @Transactional
@@ -55,5 +56,12 @@ public class EmployeeSiteDAO extends PicsDAO {
 		q.setParameter("operatorID", operatorID);
 
 		return (EmployeeSite) q.getSingleResult();
+	}
+	
+	public List<EmployeeSiteTask> findTasksByEmployeeSite(int employeeID) {
+		Query q = em.createQuery("FROM EmployeeSiteTask WHERE employeeSite.employee.id = ?");
+		q.setParameter(1, employeeID);
+		
+		return q.getResultList();
 	}
 }

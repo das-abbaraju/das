@@ -42,6 +42,30 @@
 		.assessmentResults {
 			display: none;
 		}
+		
+		table.jobSiteTasks {
+			font-size: 12px;
+			line-height: 12px;
+			border-collapse: collapse;
+			border: 1px solid #B3B3B3;
+			display: none;
+		}
+		
+		table.jobSiteTasks th {
+			background-color: #ECECEC;
+			color: #A84D10;
+			text-align: center;
+			font-weight: bold;
+		}
+		
+		table.jobSiteTasks td {
+			text-align: left;
+		}
+		
+		table.jobSiteTasks th, table.jobSiteTasks td {
+			border: 1px solid #B3B3B3;
+			padding: 4px;
+		}
 	</style>
 	<s:include value="../jquery.jsp"/>
 	<script type="text/javascript">
@@ -116,7 +140,42 @@
 															<s:if test="#sites.orientationDate!=null" >
 																<span style="padding-left: 8px;" >Orientation: <s:property value="#sites.orientationDate" /></span><br />
 															</s:if>
+															<a href="#" onclick="$('#jst_<s:property value="#sites.id" />').toggle('slow'); return false;" class="preview">View/Hide Site Tasks</a>
 														</span>
+														<table class="jobSiteTasks" id="jst_<s:property value="#sites.id" />">
+															<thead>
+																<tr>
+																	<th colspan="2">Task</th>
+																	<s:if test="hasAssignments"><th>Assigned</th></s:if>
+																	<th>Qualified</th>
+																</tr>
+															</thead>
+															<tbody>
+																<s:iterator value="tasks.get(#sites.jobSite)" id="task">
+																	<tr>
+																		<td style="text-align: center; font-weight: bold;"><s:property value="#task.label" /></td>
+																		<td><s:property value="#task.name" /></td>
+																		<s:if test="hasAssignments">
+																			<td style="text-align: center">
+																				<s:if test="assigned.get(#sites.jobSite, #task)">
+																					<img src="images/okCheck.gif" alt="Assigned" />
+																				</s:if>
+																			</td>
+																		</s:if>
+																		<td style="text-align: center;">
+																			<s:iterator value="jobTasks" id="qual">
+																				<s:if test="#qual.task == #task && #qual.qualified">
+																					<img src="images/okCheck.gif" alt="Qualified" />
+																				</s:if>
+																				<s:elseif test="#qual.task == #task && !#qual.qualified">
+																					<img src="images/notOkCheck.gif" alt="Not Qualified" />
+																				</s:elseif>
+																			</s:iterator>
+																		</td>
+																	</tr>
+																</s:iterator>
+															</tbody>
+														</table>
 													</td>
 												</tr>
 											</s:if>
@@ -209,17 +268,19 @@
 						</div>
 					</s:if>
 					<s:if test="employee.employeeQualifications.size() > 0">
+						<s:set name="qualCount" value="0" />
 						<table class="report">
 							<thead>
 								<tr>
-									<th>Job Tasks</th>
+									<th colspan="2">All Job Tasks</th>
 									<th>Qualified</th>
 								</tr>
 							</thead>
 							<tbody>
 								<s:iterator value="jobTasks" id="quals">
 									<tr class="jt_<s:property value="#quals.id" />">
-										<td><s:property value="#quals.task.label" />: <s:property value="#quals.task.name" /></td>
+										<td class="center" style="font-weight: bold;"><s:property value="#quals.task.label" /></td>
+										<td><s:property value="#quals.task.name" /></td>
 										<td class="center">
 											<s:if test="#quals.qualified"><a href="#" onclick="$('.jt_<s:property value="#quals.id" />.assessmentResults').toggle(); return false;">
 												<img src="images/okCheck.gif" alt="Qualified" />
@@ -228,6 +289,7 @@
 										</td>
 									</tr>
 									<s:if test="#quals.qualified">
+										<s:set name="qualCount" value="#qualCount + 1" />
 										<tr class="jt_<s:property value="#quals.id" /> assessmentResults">
 											<td colspan="2">
 												<s:iterator value="qualification.get(#quals)" id="results">
@@ -242,7 +304,9 @@
 								</s:iterator>
 							</tbody>
 						</table>
-						<a href="#" onclick="showHideResults(); return false;">See/Hide all qualifications</a>
+						<s:if test="#qualCount > 0">
+							<a href="#" onclick="showHideResults(); return false;">See/Hide all qualifications</a>
+						</s:if>
 					</s:if>
 				</td>
 			</tr>

@@ -2,8 +2,6 @@ package com.picsauditing.jpa.entities;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -29,9 +27,6 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 	private Date orientationDate;
 	private Date orientationExpiration;
 
-	private Date effectiveDate;
-	private Date expirationDate;
-
 	private int[] monthsToExp = {36, 24, 12, 6, 0};
 	private int months;
 
@@ -43,7 +38,6 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 //		monthsToExp.put(4, 6);
 	}
 
-	@SuppressWarnings("null")
 	@Transient
 	public int getMonthsToExp() {
 		if (orientationDate == null || orientationExpiration == null) {

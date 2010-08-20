@@ -30,7 +30,7 @@ import org.json.simple.JSONObject;
 @Table(name = "job_task")
 @PrimaryKeyJoinColumn(name = "id")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class JobTask extends BaseTable {
+public class JobTask extends BaseTable implements Comparable<JobTask> {
 
 	private OperatorAccount operator;
 	private String label;
@@ -214,8 +214,18 @@ public class JobTask extends BaseTable {
 		return false;
 	}
 
+	@Transient
 	@Override
 	public String toString() {
 		return label + " (" + id + ")";
+	}
+	
+	@Transient
+	@Override
+	public int compareTo(JobTask o) {
+		if (this.displayOrder == o.getDisplayOrder())
+			return this.label.compareTo(o.getLabel());
+		
+		return this.displayOrder - o.getDisplayOrder();
 	}
 }

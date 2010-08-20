@@ -56,12 +56,12 @@ function show(id) {
 }
 
 function addJobRole(id) {
-	startThinking({div: 'thinking_roles', message: 'Adding Job Role'})
+	startThinking({div: 'thinking_roles', message: 'Adding Job Role'});
 	$('#employee_role').load('ManageEmployeesAjax.action', {button: 'addRole', 'employee.id': employeeID, childID: id});
 }
 
 function addJobSite(id) {
-	startThinking({div: 'thinking_sites', message: 'Assigning Employee to Job Site'})
+	startThinking({div: 'thinking_sites', message: 'Assigning Employee to Job Site'});
 	$('#employee_site').load('ManageEmployeesAjax.action', {button: 'addSite', 'employee.id': employeeID, childID: id});
 }
 
@@ -71,9 +71,20 @@ function removeJobRole(id) {
 }
 
 function removeJobSite(id) {
-	startThinking({div: 'thinking_sites', message: 'Removing Employee from Job Site'})
+	startThinking({div: 'thinking_sites', message: 'Removing Employee from Job Site'});
 	$('#employee_site').load('ManageEmployeesAjax.action', {button: 'removeSite', 'employee.id': employeeID, childID: id});
 }
+
+function newJobSite() {
+	var opID = $('#opID').val();
+
+	if (opID == '' || opID == undefined)
+		opID = <s:property value="employee == null ? id : employee.account.id" />;
+	
+	startThinking({div: 'thinking_sites', message: 'Adding New Job Site'})
+	$('#employee_site').load('ManageEmployeesAjax.action?' + $('#newJobSiteForm').serialize(), {button: 'newSite', 'employee.id': employeeID, opID: opID});
+}
+
 function editAssignedSites(id) {
 	startThinking({div: 'thinking_sites', message: 'Editing Assigned Sites for Employee'})
 	$('#employee_site').load('ManageEmployeesAjax.action', 
@@ -87,6 +98,37 @@ function showUpload(){
 	pars = 'scrollbars=yes,resizable=yes,width=900,height=700,toolbar=0,directories=0,menubar=0';
 	photoUpload = window.open(url,title,pars);
 	photoUpload.focus();
+}
+
+function viewTasks(employeeSiteID) {
+	var data = {
+		button: 'View Tasks',
+		'employeeSite.id': employeeSiteID,
+		'employee.id': employeeID
+	};
+
+	startThinking({div: 'siteTasks', message: 'Loading Job Tasks for Site'});
+	$('#siteTasks').load('ManageEmployeesAjax.action', data);
+}
+
+function assignTask(employeeSiteID, taskID, checkboxOn) {
+	if (checkboxOn) {
+		var data = {
+			button: 'Add Task',
+			'employee.id': employeeID,
+			'employeeSite.id': employeeSiteID,
+			taskID: taskID
+		}
+		$('#siteTasks').load('ManageEmployeesAjax.action', data);
+	} else {
+		var data = {
+			button: 'Remove Task',
+			'employee.id': employeeID,
+			'employeeSite.id': employeeSiteID,
+			taskID: taskID
+		}
+		$('#siteTasks').load('ManageEmployeesAjax.action', data);
+	}
 }
 
 $(function() {
@@ -173,12 +215,6 @@ div.dataTables_length { width: 35%; }
 			</s:if>
 			<s:if test="employee != null">
 				<td style="vertical-align:top;">
-				<s:if test="employee.id > 0"><a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">View Profile Page</a>
-					<a href="#" onclick="return false;" class="cluetip help" rel="#cluetip1" title="View Profile Page"></a>
-					<div id="cluetip1">
-						Each Employee has a Profile Page visible to other employees and operators.
-					</div>
-				</s:if>
 					<s:form id="employeeForm">
 						<s:hidden name="id"/>
 						<s:hidden name="employee.id"/>
@@ -326,9 +362,7 @@ div.dataTables_length { width: 35%; }
 								</div>
 							</s:if>
 						</s:if>
-						
 						<div style="float:left">
-							<h3>Assigned Sites</h3>
 							<div id="employee_site">
 								<s:include value="manage_employee_sites.jsp"/>
 							</div>

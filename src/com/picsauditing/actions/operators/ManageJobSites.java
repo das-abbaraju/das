@@ -21,7 +21,6 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.State;
-import com.picsauditing.quickbooks.qbxml.JobsAndEstimatesPreferences;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")

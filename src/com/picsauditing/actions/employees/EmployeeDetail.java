@@ -1,7 +1,6 @@
 package com.picsauditing.actions.employees;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -19,8 +18,11 @@ import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmployeeCompetencyDAO;
 import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.EmployeeQualificationDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
+import com.picsauditing.dao.EmployeeSiteDAO;
 import com.picsauditing.dao.JobCompetencyDAO;
+import com.picsauditing.dao.JobSiteTaskDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.AssessmentResult;
 import com.picsauditing.jpa.entities.AssessmentTest;
@@ -29,8 +31,11 @@ import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.EmployeeQualification;
 import com.picsauditing.jpa.entities.EmployeeRole;
+import com.picsauditing.jpa.entities.EmployeeSiteTask;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
+import com.picsauditing.jpa.entities.JobSite;
+import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.jpa.entities.JobTaskCriteria;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
@@ -43,6 +48,9 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 	protected EmployeeRoleDAO erDAO;
 	protected JobCompetencyDAO jcDAO;
 	protected OperatorCompetencyDAO competencyDAO;
+	protected EmployeeQualificationDAO qualDAO;
+	protected JobSiteTaskDAO siteTaskDAO;
+	protected EmployeeSiteDAO esDAO;
 	
 	protected Employee employee;
 	protected TreeSet<OperatorCompetency> opComps;
@@ -50,14 +58,21 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 	protected List<EmployeeQualification> tasks;
 	protected Map<EmployeeQualification, List<AssessmentResult>> qualification;
 	protected DoubleMap<OperatorCompetency, JobRole, Boolean> map = new DoubleMap<OperatorCompetency, JobRole, Boolean>();
-
-	public EmployeeDetail(EmployeeDAO employeeDAO, EmployeeCompetencyDAO ecDAO, EmployeeRoleDAO erDAO,
-			JobCompetencyDAO jcDAO, OperatorCompetencyDAO competencyDAO) {
+	protected Map<JobSite, List<JobTask>> tasksByJob;
+	protected DoubleMap<JobSite, JobTask, Boolean> assigned;
+	protected Boolean hasAssignments;
+	
+	public EmployeeDetail(EmployeeDAO employeeDAO, EmployeeCompetencyDAO ecDAO, 
+			EmployeeRoleDAO erDAO, JobCompetencyDAO jcDAO, OperatorCompetencyDAO competencyDAO,
+			EmployeeQualificationDAO qualDAO, JobSiteTaskDAO siteTaskDAO, EmployeeSiteDAO esDAO) {
 		this.employeeDAO = employeeDAO;
 		this.ecDAO = ecDAO;
 		this.erDAO = erDAO;
 		this.jcDAO = jcDAO;
 		this.competencyDAO = competencyDAO;
+		this.qualDAO = qualDAO;
+		this.siteTaskDAO = siteTaskDAO;
+		this.esDAO = esDAO;
 	}
 
 	@Override
@@ -85,20 +100,6 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
-	}
-	
-	public int getAge() {
-		Calendar now = Calendar.getInstance();
-		Calendar dob = Calendar.getInstance();
-		
-		dob.setTime(employee.getBirthDate());
-		
-		// terrible approximation
-		int age = now.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
-		if (now.get(Calendar.DAY_OF_YEAR) <= dob.get(Calendar.DAY_OF_YEAR))
-			age--;
-		
-		return age;
 	}
 	
 	public TreeSet<OperatorCompetency> getOpComps() {
@@ -158,10 +159,8 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 			while (iterator.hasNext()) {
 				EmployeeQualification e = iterator.next();
 				
-				if (e.getEffectiveDate() != null && e.getExpirationDate() != null && 
-						(e.getEffectiveDate().after(new Date()) || e.getExpirationDate().before(new Date()))) {
+				if (e.getEffectiveDate() != null && e.getExpirationDate() != null && !e.isCurrent())
 					iterator.remove();
-				}
 			}
 			
 			Collections.sort(tasks, new SortTaskByLabel());
@@ -210,6 +209,48 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 		}
 		
 		return qualification;
+	}
+	
+	public Map<JobSite, List<JobTask>> getTasks() {
+		if (tasksByJob == null) {
+			tasksByJob = siteTaskDAO.findByEmployee(employee.getId());
+		}
+		
+		return tasksByJob;
+	}
+	
+	public DoubleMap<JobSite, JobTask, Boolean> getAssigned() {
+		if (assigned == null) {
+			assigned = new DoubleMap<JobSite, JobTask, Boolean>();
+			tasksByJob = getTasks();
+			
+			List<EmployeeSiteTask> assignedTasks = esDAO.findTasksByEmployeeSite(employee.getId());
+			
+			boolean match = false;
+			for (JobSite key : tasksByJob.keySet()) {
+				for (JobTask task : tasksByJob.get(key)) {
+					match = false;
+					
+					for (EmployeeSiteTask assignedTask : assignedTasks) {
+						if (assignedTask.getEmployeeSite().getJobSite().equals(key) 
+								&& assignedTask.getTask().equals(task))
+							match = true;
+					}
+					
+					assigned.put(key, task, match);
+				}
+			}
+		}
+		
+		return assigned;
+	}
+	
+	public Boolean isHasAssignments() {
+		if (hasAssignments == null) {
+			hasAssignments = esDAO.findTasksByEmployeeSite(employee.getId()).size() > 0;
+		}
+		
+		return hasAssignments;
 	}
 	
 	private class SortTaskByLabel implements Comparator<EmployeeQualification> {

@@ -2,6 +2,7 @@ package com.picsauditing.actions.employees;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -23,16 +24,23 @@ import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.EmployeeSiteDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.JobSiteDAO;
+import com.picsauditing.dao.JobSiteTaskDAO;
+import com.picsauditing.dao.JobTaskDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.BaseHistory;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeRole;
 import com.picsauditing.jpa.entities.EmployeeSite;
+import com.picsauditing.jpa.entities.EmployeeSiteTask;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.JobSite;
+import com.picsauditing.jpa.entities.JobSiteTask;
+import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.DoubleMap;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
@@ -46,6 +54,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	private JobSiteDAO jobSiteDAO;
 	private EmployeeSiteDAO employeeSiteDAO;
 	private OperatorAccountDAO operatorAccountDAO;
+	private JobSiteTaskDAO siteTaskDAO;
+	private JobTaskDAO taskDAO;
 
 	protected Employee employee;
 	protected String ssn;
@@ -57,10 +67,24 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	protected int childID;
 	protected Set<JobRole> unusedJobRoles;
-
+	
+	// Add site
+	private String siteLabel;
+	private String siteName;
+	private Date siteStart;
+	private Date siteStop;
+	private int opID;
+	private int jobID;
+	
+	// Add/Remove tasks per site
+	private EmployeeSite employeeSite;
+	private int taskID;
+	private List<JobTask> siteTasks;
+	private DoubleMap<EmployeeSite, JobTask, Boolean> assignedTask;
+	
 	public ManageEmployees(AccountDAO accountDAO, EmployeeDAO employeeDAO, JobRoleDAO roleDAO,
-			EmployeeRoleDAO employeeRoleDAO, EmployeeSiteDAO employeeSiteDAO, OperatorAccountDAO operatorAccountDAO,
-			JobSiteDAO jobSiteDAO) {
+			EmployeeRoleDAO employeeRoleDAO, EmployeeSiteDAO employeeSiteDAO, JobTaskDAO taskDAO,
+			OperatorAccountDAO operatorAccountDAO, JobSiteDAO jobSiteDAO, JobSiteTaskDAO siteTaskDAO) {
 		this.accountDAO = accountDAO;
 		this.employeeDAO = employeeDAO;
 		this.roleDAO = roleDAO;
@@ -68,6 +92,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		this.jobSiteDAO = jobSiteDAO;
 		this.employeeSiteDAO = employeeSiteDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
+		this.siteTaskDAO = siteTaskDAO;
+		this.taskDAO = taskDAO;
 	}
 
 	@Override
@@ -75,6 +101,11 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		int employeeID = getParameter("employee.id");
 		if (employeeID > 0) {
 			employee = employeeDAO.find(employeeID);
+		}
+
+		int employeeSiteID = getParameter("employeeSite.id");
+		if (employeeSiteID > 0) {
+			employeeSite = employeeSiteDAO.find(employeeSiteID);
 		}
 
 		if (employee != null) {
@@ -107,12 +138,39 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			permissions.tryPermission(OpPerms.AllOperators);
 
 		this.subHeading = account.getName();
+		
+		if ("View Tasks".equals(button) || "Add Task".equals(button) || "Remove Task".equals(button)) {
+			if ("Add Task".equals(button)) {
+				EmployeeSiteTask est = new EmployeeSiteTask();
+				JobTask task = taskDAO.find(taskID);
+				est.setEmployeeSite(employeeSite);
+				est.setTask(task);
+				est.setAuditColumns(permissions);
+				employeeSiteDAO.save(est);
+			}
+			
+			if ("Remove Task".equals(button)) {
+				List<EmployeeSiteTask> ests = 
+					employeeSiteDAO.findTasksByEmployeeSite(employee.getId());
+				JobTask task = taskDAO.find(taskID);
+				
+				Iterator<EmployeeSiteTask> iterator = ests.iterator();
+				while (iterator.hasNext()) {
+					EmployeeSiteTask est = iterator.next();
+					
+					if (est.getEmployeeSite().equals(employeeSite) && est.getTask().equals(task)) {
+						iterator.remove();
+						employeeSiteDAO.remove(est);
+						break;
+					}
+				}
+			}
 
-		if ("Add".equals(button)) {
-			employee = new Employee();
-
-			return SUCCESS;
+			return "tasks";
 		}
+
+		if ("Add".equals(button))
+			employee = new Employee();
 
 		if ("Save".equals(button)) {
 			if (employee.getAccount() == null) {
@@ -160,8 +218,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				} else
 					addActionError("Employee already has " + jobRole.getName() + " as a Job Role");
 			}
-
-			return SUCCESS;
 		}
 
 		if ("removeRole".equals(button)) {
@@ -173,8 +229,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 					employeeRoleDAO.remove(e);
 				}
 			}
-
-			return SUCCESS;
 		}
 
 		if ("addSite".equals(button)) {
@@ -201,7 +255,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				EmployeeSite es = employeeSiteDAO.find(childID);
 
 				if (es != null) {
-					if (es.getEffectiveDate().before(EmployeeSite.getMidnightToday())) {
+					if (es.getEffectiveDate() != null && es.getEffectiveDate().before(EmployeeSite.getMidnightToday())) {
 						es.expire();
 						employeeSiteDAO.save(es);
 					} else {
@@ -247,6 +301,31 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				employeeSiteDAO.save(es);
 			}
 
+			return "sites";
+		}
+		
+		if ("newSite".equals(button)) {
+			if (!Strings.isEmpty(siteLabel) && !Strings.isEmpty(siteName) && employee != null && opID > 0) {
+				OperatorAccount op = operatorAccountDAO.find(opID);
+				
+				JobSite site = new JobSite();
+				site.setLabel(siteLabel);
+				site.setName(siteName);
+				site.setOperator(op);
+				site.setProjectStart(siteStart);
+				site.setProjectStop(siteStop);
+				site = jobSiteDAO.save(site);
+				
+				EmployeeSite es = new EmployeeSite();
+				es.setAuditColumns(permissions);
+				es.setJobSite(site);
+				es.setEmployee(employee);
+				es.setOperator(op);
+				es.setEffectiveDate(siteStart);
+				es.setExpirationDate(BaseHistory.END_OF_TIME);
+				employeeSiteDAO.save(es);
+			}
+			
 			return "sites";
 		}
 
@@ -302,7 +381,80 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public void setChildID(int childID) {
 		this.childID = childID;
 	}
-
+	
+	public int getOpID() {
+		return opID;
+	}
+	
+	public void setOpID(int opID) {
+		this.opID = opID;
+	}
+	
+	public String getSiteName() {
+		return siteName;
+	}
+	
+	public void setSiteName(String siteName) {
+		this.siteName = siteName;
+	}
+	
+	public String getSiteLabel() {
+		return siteLabel;
+	}
+	
+	public void setSiteLabel(String siteLabel) {
+		this.siteLabel = siteLabel;
+	}
+	
+	public Date getSiteStart() {
+		if (siteStart == null)
+			siteStart = new Date();
+		
+		return siteStart;
+	}
+	
+	public void setSiteStart(Date siteStart) {
+		this.siteStart = siteStart;
+	}
+	
+	public Date getSiteStop() {
+		if (siteStop == null) {
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.YEAR, 3);
+			siteStop = cal.getTime();
+		}
+		
+		return siteStop;
+	}
+	
+	public void setSiteStop(Date siteStop) {
+		this.siteStop = siteStop;
+	}
+	
+	public int getJobID() {
+		return jobID;
+	}
+	
+	public void setJobID(int jobID) {
+		this.jobID = jobID;
+	}
+	
+	public EmployeeSite getEmployeeSite() {
+		return employeeSite;
+	}
+	
+	public void setEmployeeSite(EmployeeSite employeeSite) {
+		this.employeeSite = employeeSite;
+	}
+	
+	public int getTaskID() {
+		return taskID;
+	}
+	
+	public void setTaskID(int taskID) {
+		this.taskID = taskID;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public JSONArray getEmployeeData() {
 		return new JSONArray() {
@@ -386,6 +538,46 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	public String getEmpPhoto() {
 		return getFileName(employee.getId()) + employee.getPhoto();
+	}
+	
+	public List<JobTask> getSiteTasks() {
+		if (siteTasks == null) {
+			List<JobSiteTask> jobSiteTasks = siteTaskDAO.findByJob(employeeSite.getJobSite().getId());
+			siteTasks = new ArrayList<JobTask>();
+			
+			for (JobSiteTask jobSiteTask : jobSiteTasks) {
+				siteTasks.add(jobSiteTask.getTask());
+			}
+		}
+		
+		return siteTasks;
+	}
+	
+	public DoubleMap<EmployeeSite, JobTask, Boolean> getAssignedTask() {
+		if (assignedTask == null) {
+			assignedTask = new DoubleMap<EmployeeSite, JobTask, Boolean>();
+		
+			List<EmployeeSite> sites = employeeSiteDAO.findSitesByEmployee(employee);
+			List<EmployeeSiteTask> assigned = employeeSiteDAO.findTasksByEmployeeSite(employee.getId());
+			
+			boolean match = false;
+			for (EmployeeSite site : sites) {
+				for (JobTask task : getSiteTasks()) {
+					match = false;
+					
+					for (EmployeeSiteTask est : assigned) {
+						if (est.getEmployeeSite().equals(site) && est.getTask().equals(task)) {
+							match = true;
+							break;
+						}
+					}
+					
+					assignedTask.put(site, task, match);
+				}
+			}
+		}
+		
+		return assignedTask;
 	}
 
 	@SuppressWarnings("unchecked")

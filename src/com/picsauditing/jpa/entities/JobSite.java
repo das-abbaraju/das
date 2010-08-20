@@ -13,7 +13,7 @@ import javax.persistence.Transient;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "job_site")
-public class JobSite extends BaseTable {
+public class JobSite extends BaseTable implements Comparable<JobSite> {
 
 	private OperatorAccount operator;
 	private String label;
@@ -113,5 +113,14 @@ public class JobSite extends BaseTable {
 		
 		// Neither are filled in so assume the project is active?
 		return true;
+	}
+	
+	@Transient
+	@Override
+	public int compareTo(JobSite o) {
+		if (this.label.equals(o.getLabel()))
+			return this.name.compareTo(o.getName());
+		
+		return this.label.compareTo(o.getLabel());
 	}
 }
