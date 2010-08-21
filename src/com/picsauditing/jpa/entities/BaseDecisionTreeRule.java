@@ -26,7 +26,7 @@ public abstract class BaseDecisionTreeRule extends BaseHistory {
 	public void setInclude(boolean include) {
 		this.include = include;
 	}
-	
+
 	abstract public void calculatePriority();
 
 }

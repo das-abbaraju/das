@@ -28,11 +28,11 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			return BLANK;
 
 		rule = dao.findAuditCategoryRule(id);
-		
+
 		if (button != null) {
 			// TODO handle things like merge and delete right here
 		}
-		
+
 		lessGranular = dao.getLessGranular(rule);
 		moreGranular = dao.getMoreGranular(rule);
 		similar = dao.getSimilar(rule);

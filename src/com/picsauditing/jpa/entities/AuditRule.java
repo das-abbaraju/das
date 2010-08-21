@@ -6,6 +6,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -31,6 +32,13 @@ public class AuditRule extends BaseDecisionTreeRule {
 		this.auditType = auditType;
 	}
 
+	@Transient
+	public String getAuditTypeLabel() {
+		if (auditType == null)
+			return "*";
+		return auditType.getAuditName();
+	}
+
 	@Enumerated(EnumType.ORDINAL)
 	public LowMedHigh getRisk() {
 		return risk;
@@ -38,6 +46,13 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 	public void setRisk(LowMedHigh risk) {
 		this.risk = risk;
+	}
+
+	@Transient
+	public String getRiskLabel() {
+		if (risk == null)
+			return "*";
+		return risk.toString();
 	}
 
 	@ManyToOne
@@ -50,6 +65,13 @@ public class AuditRule extends BaseDecisionTreeRule {
 		this.operatorAccount = operatorAccount;
 	}
 
+	@Transient
+	public String getOperatorAccountLabel() {
+		if (operatorAccount == null)
+			return "*";
+		return operatorAccount.getName();
+	}
+
 	@JoinColumn(name = "accountType")
 	@Enumerated(EnumType.ORDINAL)
 	public ContractorType getContractorType() {
@@ -58,6 +80,13 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 	public void setContractorType(ContractorType contractorType) {
 		this.contractorType = contractorType;
+	}
+
+	@Transient
+	public String getContractorTypeLabel() {
+		if (contractorType == null)
+			return "*";
+		return contractorType.toString();
 	}
 
 	@ManyToOne
@@ -70,6 +99,13 @@ public class AuditRule extends BaseDecisionTreeRule {
 		this.tag = tag;
 	}
 
+	@Transient
+	public String getTagLabel() {
+		if (tag == null)
+			return "*";
+		return tag.getTag();
+	}
+
 	@ManyToOne
 	@JoinColumn(name = "questionID")
 	public AuditQuestion getQuestion() {
@@ -78,6 +114,13 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 	public void setQuestion(AuditQuestion question) {
 		this.question = question;
+	}
+
+	@Transient
+	public String getQuestionLabel() {
+		if (question == null)
+			return "*";
+		return question.getName();
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -89,12 +132,26 @@ public class AuditRule extends BaseDecisionTreeRule {
 		this.questionComparator = questionComparator;
 	}
 
+	@Transient
+	public String getQuestionComparatorLabel() {
+		if (questionComparator == null)
+			return "*";
+		return questionComparator.toString();
+	}
+
 	public String getQuestionAnswer() {
 		return questionAnswer;
 	}
 
 	public void setQuestionAnswer(String questionAnswer) {
 		this.questionAnswer = questionAnswer;
+	}
+
+	@Transient
+	public String getQuestionAnswerLabel() {
+		if (questionAnswer == null)
+			return "*";
+		return questionAnswer;
 	}
 
 	@Override
@@ -118,7 +175,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 				// Hundreds-thousand
 				priority += 110;
 		}
-		
+
 		if (question != null && questionComparator != null)
 			// Potentially thousands but probably only hundreds
 			priority += 125;

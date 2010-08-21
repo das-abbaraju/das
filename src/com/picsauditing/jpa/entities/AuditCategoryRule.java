@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -20,6 +21,13 @@ public class AuditCategoryRule extends AuditRule {
 
 	public void setAuditCategory(AuditCategory auditCategory) {
 		this.auditCategory = auditCategory;
+	}
+
+	@Transient
+	public String getAuditCategoryLabel() {
+		if (auditCategory == null)
+			return "*";
+		return auditCategory.getName();
 	}
 
 	@Override
