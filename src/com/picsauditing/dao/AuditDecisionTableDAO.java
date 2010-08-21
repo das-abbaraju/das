@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.util.Strings;
@@ -29,38 +30,45 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	}
 
 	public List<AuditCategoryRule> getLessGranular(AuditCategoryRule rule, Date queryDate) {
-		String where = "WHERE a.priority < " + rule.getPriority();
+		String where = "WHERE a.id != " + rule.getId() + " AND a.priority < " + rule.getPriority();
 		where += " AND effectiveDate <= :queryDate AND expirationDate > :queryDate";
 
-		if (rule.getAuditType() == null)
-			where += " AND auditType IS NULL";
-		if (rule.getAuditCategory() == null)
-			where += " AND auditCategory IS NULL";
-		if (rule.getContractorType() == null)
-			where += " AND contractorType IS NULL";
-
-		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY a.priority");
-		query.setParameter("queryDate", queryDate);
-		return query.getResultList();
-	}
-
-	public List<AuditCategoryRule> getMoreGranular(AuditCategoryRule rule) {
-		return getMoreGranular(rule, new Date());
-	}
-
-	public List<AuditCategoryRule> getMoreGranular(AuditCategoryRule rule, Date queryDate) {
-		String where = "WHERE a.priority > " + rule.getPriority();
-		where += " AND effectiveDate <= :queryDate AND expirationDate > :queryDate";
-
+		where += " AND (auditType IS NULL";
 		if (rule.getAuditType() != null)
-			where += " AND auditType.id = " + rule.getAuditType().getId();
+			where += " OR auditType.id = " + rule.getAuditType().getId();
+		where += " )";
+		
+		where += " AND (auditCategory IS NULL";
 		if (rule.getAuditCategory() != null)
-			where += " AND auditCategory.id = " + rule.getAuditCategory().getId();
+			where += " OR auditCategory.id = " + rule.getAuditCategory().getId();
+		where += " )";
+		
+		where += " AND (operatorAccount IS NULL";
+		if (rule.getOperatorAccount() != null)
+			where += " OR operatorAccount.id = " + rule.getOperatorAccount().getId();
+		where += " )";
+
+		where += " AND (risk IS NULL";
+		if (rule.getRisk() != null)
+			where += " OR risk = " + rule.getRisk().ordinal();
+		where += " )";
+		
+		where += " AND (contractorType IS NULL";
 		if (rule.getContractorType() != null)
-			where += " AND contractorType = '" + rule.getContractorType().toString() + "'";
+			where += " OR contractorType = '" + rule.getContractorType().toString() + "'";
+		where += " )";
+
+		where += " AND (question IS NULL";
+		if (rule.getQuestion() != null)
+			where += " OR question.id = " + rule.getQuestion().getId();
+		where += " )";
+		
+		where += " AND (tag IS NULL";
+		if (rule.getTag() != null)
+			where += " OR tag.id = " + rule.getTag().getId();
+		where += " )";
 
 		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY a.priority");
-		query.setMaxResults(100);
 		query.setParameter("queryDate", queryDate);
 		return query.getResultList();
 	}
@@ -70,15 +78,43 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	}
 
 	public List<AuditCategoryRule> getSimilar(AuditCategoryRule rule, Date queryDate) {
-		String where = "WHERE a.priority = " + rule.getPriority();
+		String where = "WHERE a.id != " + rule.getId() + " AND a.priority = " + rule.getPriority();
+		where += " AND effectiveDate <= :queryDate AND expirationDate > :queryDate";
+
+		where += " AND auditType.id " + (rule.getAuditType() == null ? "IS NULL" : "= " + rule.getAuditType().getId());
+		where += " AND auditCategory.id " + (rule.getAuditCategory() == null ? "IS NULL" : "= " + rule.getAuditCategory().getId());
+		where += " AND operatorAccount.id " + (rule.getOperatorAccount() == null ? "IS NULL" : "= " + rule.getOperatorAccount().getId());
+		where += " AND contractorType " + (rule.getContractorType() == null ? "IS NULL" : "= '" + rule.getContractorType().toString() + "'");
+		where += " AND risk " + (rule.getRisk() == null ? "IS NULL" : "= " + rule.getRisk().ordinal());
+		
+		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY a.priority");
+		query.setMaxResults(100);
+		query.setParameter("queryDate", queryDate);
+		return query.getResultList();
+	}
+
+	public List<AuditCategoryRule> getMoreGranular(AuditCategoryRule rule) {
+		return getMoreGranular(rule, new Date());
+	}
+
+	public List<AuditCategoryRule> getMoreGranular(AuditCategoryRule rule, Date queryDate) {
+		String where = "WHERE a.id != " + rule.getId();
 		where += " AND effectiveDate <= :queryDate AND expirationDate > :queryDate";
 
 		if (rule.getAuditType() != null)
 			where += " AND auditType.id = " + rule.getAuditType().getId();
 		if (rule.getAuditCategory() != null)
 			where += " AND auditCategory.id = " + rule.getAuditCategory().getId();
+		if (rule.getOperatorAccount() != null)
+			where += " AND operatorAccount.id = " + rule.getOperatorAccount().getId();
 		if (rule.getContractorType() != null)
 			where += " AND contractorType = '" + rule.getContractorType().toString() + "'";
+		if (rule.getQuestion() != null)
+			where += " AND question.id = " + rule.getQuestion().getId();
+		if (rule.getTag() != null)
+			where += " AND tag.id = " + rule.getTag().getId();
+		if (rule.getRisk() != null)
+			where += " AND risk = " + rule.getRisk().ordinal();
 
 		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY a.priority");
 		query.setMaxResults(100);
@@ -86,7 +122,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<AuditTypeRule> getApplicable(ContractorAccount contractor) {
+	public List<AuditTypeRule> getApplicableAuditRules(ContractorAccount contractor) {
 		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW()";
 
 		where += " AND (risk IS NULL";
@@ -115,7 +151,43 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
 		where += ")";
 
-		Query query = em.createQuery("SELECT a FROM AuditTypeRule a " + where + " ORDER BY a.priority");
+		Query query = em.createQuery("SELECT a FROM AuditTypeRule a " + where + " ORDER BY a.priority DESC");
+		return query.getResultList();
+	}
+
+	public List<AuditCategoryRule> getApplicableCategoryRules(ContractorAudit conAudit) {
+		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW()";
+		
+		ContractorAccount contractor = conAudit.getContractorAccount();
+		where += " AND (risk IS NULL";
+		if (contractor.getRiskLevel() != null)
+			where += " OR risk = " + contractor.getRiskLevel().ordinal();
+		where += ")";
+
+		where += " AND (contractorType IS NULL";
+		if (contractor.isOnsiteServices())
+			where += " OR contractorType = 'Onsite'";
+		if (contractor.isOffsiteServices())
+			where += " OR contractorType = 'Offsite'";
+		if (contractor.isMaterialSupplier())
+			where += " OR contractorType = 'Supplier'";
+		where += ")";
+
+		Set<Integer> operatorIDs = new HashSet<Integer>();
+		for (ContractorOperator co : contractor.getOperators()) {
+			operatorIDs.add(co.getOperatorAccount().getId());
+			for (Facility facility : co.getOperatorAccount().getCorporateFacilities()) {
+				operatorIDs.add(facility.getCorporate().getId());
+			}
+		}
+		where += " AND (opID IS NULL";
+		if (operatorIDs.size() > 0)
+			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
+		where += ")";
+		
+		where += " AND (auditType IS NULL || auditType.id = " + conAudit.getId() + ")";
+
+		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY a.priority DESC");
 		return query.getResultList();
 	}
 }

@@ -14,23 +14,26 @@ import java.util.Vector;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.log.PicsLogger;
@@ -42,6 +45,7 @@ import com.picsauditing.util.log.PicsLogger;
  * 
  */
 public class AuditBuilder {
+
 	private boolean fillAuditCategories = true;
 	private User user = null;
 	private ContractorAccount contractor = null;
@@ -52,16 +56,18 @@ public class AuditBuilder {
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
 	private AuditCategoryDataDAO auditCategoryDataDAO;
 	private AuditTypeDAO auditTypeDAO;
+	private AuditDecisionTableDAO auditDecisionTableDAO;
 
 	public AuditBuilder(ContractorAuditDAO cAuditDAO, AuditDataDAO auditDataDAO, AuditCategoryDAO auditCategoryDAO,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, AuditCategoryDataDAO auditCategoryDataDAO,
-			AuditTypeDAO auditTypeDAO) {
+			AuditTypeDAO auditTypeDAO, AuditDecisionTableDAO auditDecisionTableDAO) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
 		this.auditCategoryDataDAO = auditCategoryDataDAO;
 		this.auditTypeDAO = auditTypeDAO;
+		this.auditDecisionTableDAO = auditDecisionTableDAO;
 	}
 
 	public void buildAudits(ContractorAccount con) {
@@ -136,19 +142,28 @@ public class AuditBuilder {
 		// Note: this is a lot of iterating over JPA Entities, my assumption
 		// is that the operators and auditTypes will be really cached well
 		Set<AuditType> auditTypeList = new HashSet<AuditType>();
-		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
-			if (co.getOperatorAccount().getStatus().isActiveDemo()) {
-				// We used to also check to see that the contractor is approved,
-				// But now we just add in advance of being approved
-				// (co.getOperatorAccount().getApprovesRelationships().equals(YesNo.No)
-				// || co.getWorkStatus().equals("Y"))
-				for (AuditOperator ao : co.getOperatorAccount().getVisibleAudits()) {
-					if (ao.isRequiredFor(contractor) && ao.getAuditType().getId() != AuditType.PQF
-							&& ao.getAuditType().getId() != AuditType.WELCOME) {
-						PicsLogger
-								.log(co.getOperatorAccount().getName() + " needs " + ao.getAuditType().getAuditName());
-						auditTypeList.add(ao.getAuditType());
-					}
+
+		List<AuditTypeRule> rules = auditDecisionTableDAO.getApplicableAuditRules(contractor);
+		Set<AuditQuestion> questionAnswersNeeded = new HashSet<AuditQuestion>();
+		Set<OperatorTag> tagsNeeded = new HashSet<OperatorTag>();
+		for (AuditTypeRule auditTypeRule : rules) {
+			if (auditTypeRule.getQuestion() != null)
+				questionAnswersNeeded.add(auditTypeRule.getQuestion());
+			if (auditTypeRule.getTag() != null)
+				tagsNeeded.add(auditTypeRule.getTag());
+		}
+		// TODO get the answers and tags that are Needed and prune the rules
+
+		{
+			Set<AuditType> allCandidateAuditTypes = new HashSet<AuditType>();
+			for (AuditTypeRule rule : rules) {
+				if (rule.getAuditType() != null)
+					allCandidateAuditTypes.add(rule.getAuditType());
+			}
+
+			for (AuditType auditType : allCandidateAuditTypes) {
+				if (isApplicable(rules, auditType)) {
+					auditTypeList.add(auditType);
 				}
 			}
 		}
@@ -316,11 +331,29 @@ public class AuditBuilder {
 		if (fillAuditCategories) {
 			/** Generate Categories * */
 			for (ContractorAudit conAudit : currentAudits) {
-				fillAuditOperators(conAudit);
 				fillAuditCategories(conAudit, false);
+				fillAuditOperators(conAudit);
 			}
 		}
 		PicsLogger.stop();
+	}
+
+	private boolean isApplicable(List<AuditTypeRule> rules, AuditType auditType) {
+		for (AuditTypeRule rule : rules) {
+			if (rule.getAuditType() == null || rule.getAuditType().equals(auditType)) {
+				return rule.isInclude();
+			}
+		}
+		return false;
+	}
+
+	private boolean isApplicable(List<AuditCategoryRule> rules, AuditCategory auditCategory) {
+		for (AuditCategoryRule rule : rules) {
+			if (rule.getAuditCategory() == null || rule.getAuditCategory().equals(auditCategory)) {
+				return rule.isInclude();
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -460,29 +493,23 @@ public class AuditBuilder {
 		if (!conAudit.getAuditType().isAnnualAddendum() && conAudit.getContractorAccount().isAcceptsBids()) {
 			return;
 		}
-			
+
 		// TODO Ask what this is
-		/*if (!forceRecalculation) {
-			if (conAudit.getAuditType().isPqf()) {
-				// Only Active and Pending PQFs should be recalculated
-				if (conAudit.getAuditStatus().isSubmitted())
-					return;
-				if (conAudit.getAuditStatus().isResubmitted())
-					return;
-				if (conAudit.getAuditStatus().isExpired())
-					return;
-				if (conAudit.getAuditStatus().isExempt())
-					return;
-			} else if (conAudit.getAuditType().isAnnualAddendum()) {
-				if (!conAudit.getAuditStatus().isPending() && !conAudit.getAuditStatus().isIncomplete())
-					return;
-			} else {
-				// Other Audits should only consider Pending
-				if (!conAudit.getAuditStatus().isPending()
-						&& conAudit.getAuditType().getClassType() == AuditTypeClass.Audit)
-					return;
-			}
-		}*/
+		/*
+		 * if (!forceRecalculation) { if (conAudit.getAuditType().isPqf()) { //
+		 * Only Active and Pending PQFs should be recalculated if
+		 * (conAudit.getAuditStatus().isSubmitted()) return; if
+		 * (conAudit.getAuditStatus().isResubmitted()) return; if
+		 * (conAudit.getAuditStatus().isExpired()) return; if
+		 * (conAudit.getAuditStatus().isExempt()) return; } else if
+		 * (conAudit.getAuditType().isAnnualAddendum()) { if
+		 * (!conAudit.getAuditStatus().isPending() &&
+		 * !conAudit.getAuditStatus().isIncomplete()) return; } else { // Other
+		 * Audits should only consider Pending if
+		 * (!conAudit.getAuditStatus().isPending() &&
+		 * conAudit.getAuditType().getClassType() == AuditTypeClass.Audit)
+		 * return; } }
+		 */
 
 		PicsLogger.start("AuditCategories", "auditID=" + conAudit.getId() + " type="
 				+ conAudit.getAuditType().getAuditName());
@@ -490,113 +517,32 @@ public class AuditBuilder {
 		Set<AuditCategory> categories = new HashSet<AuditCategory>();
 		Set<AuditCategory> naCategories = new HashSet<AuditCategory>();
 
-		if (conAudit.getAuditType().isPqf()) {
-			List<AuditCategory> pqfCategories = auditCategoryDAO.findPqfCategories(conAudit.getContractorAccount());
-			categories.addAll(pqfCategories);
+		List<AuditCategoryRule> categoryRules = auditDecisionTableDAO.getApplicableCategoryRules(conAudit);
 
-			for (AuditCategory category : conAudit.getAuditType().getCategories()) {
-				if (!categories.contains(category))
-					naCategories.add(category);
-			}
-		} else if (conAudit.getAuditType().isAnnualAddendum()) {
+		// TODO If the auditType is a Desktop, then make sure the PQF is
+		// ActiveSubmitted. Maybe we should add this to the ruleSet
 
-			Map<Integer, Integer> dependencies = new HashMap<Integer, Integer>();
-			dependencies.put(AuditCategory.OSHA_AUDIT, 2064);
-			dependencies.put(AuditCategory.MSHA, 2065);
-			dependencies.put(AuditCategory.CANADIAN_STATISTICS, 2066);
-			dependencies.put(AuditCategory.EMR, 2033);
-			dependencies.put(AuditCategory.LOSS_RUN, 2033);
-			dependencies.put(AuditCategory.WCB, 2967);
-			dependencies.put(AuditCategory.CITATIONS, 3546);
-			int auditID = conAudit.getId();
+		// TODO Fill in the tag and questions
+		// Map<Integer, Integer> dependencies = new HashMap<Integer, Integer>();
+		// dependencies.put(AuditCategory.OSHA_AUDIT, 2064);
+		// dependencies.put(AuditCategory.MSHA, 2065);
+		// dependencies.put(AuditCategory.CANADIAN_STATISTICS, 2066);
+		// dependencies.put(AuditCategory.EMR, 2033);
+		// dependencies.put(AuditCategory.LOSS_RUN, 2033);
+		// dependencies.put(AuditCategory.WCB, 2967);
+		// dependencies.put(AuditCategory.CITATIONS, 3546);
+		// int auditID = conAudit.getId();
+		//
+		// AnswerMap answers = null;
+		// answers = auditDataDAO.findAnswers(auditID, new
+		// Vector<Integer>(dependencies.values()));
 
-			AnswerMap answers = null;
-			answers = auditDataDAO.findAnswers(auditID, new Vector<Integer>(dependencies.values()));
-
-			for (AuditCategory cat : conAudit.getAuditType().getCategories()) {
-
-				boolean include = false;
-
-				if (answers != null && dependencies.get(cat.getId()) != null) {
-					AuditData answer = null;
-					try {
-						int questionID = dependencies.get(cat.getId());
-						answer = answers.get(questionID);
-					} catch (NullPointerException ignoreNulls) {
-					}
-
-					if (answer == null)
-						include = false;
-					else {
-						if (answer.getQuestion().getId() == 2033) {
-							if (conAudit.getContractorAccount().getCountry().getIsoCode().equals("US")) {
-								if ("No".equals(answer.getAnswer()) && cat.getId() == AuditCategory.LOSS_RUN) {
-									include = true;
-								} else if ("Yes".equals(answer.getAnswer()) && cat.getId() == AuditCategory.EMR) {
-									include = true;
-								}
-							} else {
-								include = false;
-							}
-						} else {
-							if ("Yes".equals(answer.getAnswer())) {
-								include = true;
-							}
-						}
-					}
-
-				} else if (dependencies.get(cat.getId()) == null) {
-					include = true;
-				}
-
-				if (include) {
-					categories.add(cat);
-				}
-
-			}
-			Iterator<AuditCatData> iterator = conAudit.getCategories().iterator();
-			while (iterator.hasNext()) {
-				AuditCatData auditCatData = iterator.next();
-				if (removeCategory("No", answers.get(2064), auditCatData, AuditCategory.OSHA_AUDIT)
-						|| removeCategory("No", answers.get(2065), auditCatData, AuditCategory.MSHA)
-						|| removeCategory("No", answers.get(2066), auditCatData, AuditCategory.CANADIAN_STATISTICS)
-						|| removeCategory("No", answers.get(2033), auditCatData, AuditCategory.EMR)
-						|| removeCategory("Yes", answers.get(2033), auditCatData, AuditCategory.LOSS_RUN)
-						|| removeCategory("No", answers.get(2967), auditCatData, AuditCategory.WCB)
-						|| removeCategory("No", answers.get(3546), auditCatData, AuditCategory.CITATIONS)) {
-					iterator.remove();
-					auditCategoryDataDAO.remove(auditCatData.getId());
-				}
-			}
-		}
-
-		else if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
-			int pqfAuditID = 0;
-			for (ContractorAudit audits : conAudit.getContractorAccount().getAudits()) {
-				if (audits.getAuditType().isPqf() && audits.getAuditStatus().isActiveSubmitted()) {
-					pqfAuditID = audits.getId();
-				}
-			}
-
-			if (pqfAuditID > 0) {
-				List<AuditCategory> desktopCategories = auditCategoryDAO.findDesktopCategories(pqfAuditID);
-				categories.addAll(desktopCategories);
-			}
-
-			List<AuditCategory> allCategories = auditCategoryDAO.findByAuditTypeID(conAudit.getAuditType().getId());
-			PicsLogger.log("Categories to be included:");
-			for (AuditCategory category : categories)
-				PicsLogger.log("  " + category.getId() + " " + category.getName());
-
-			for (AuditCategory category : allCategories) {
-				if (!categories.contains(category)) {
-					PicsLogger.log("Don't include  " + category.getName());
-					naCategories.add(category);
-				} else
-					PicsLogger.log("Include  " + category.getName());
-			}
-		} else {
-			categories.addAll(conAudit.getAuditType().getCategories());
+		for (AuditCategory category : conAudit.getAuditType().getCategories()) {
+			// TODO include the subcategories too (recursively)
+			if (isApplicable(categoryRules, category))
+				categories.add(category);
+			else
+				naCategories.add(category);
 		}
 
 		PicsLogger.log("Categories to be included: " + categories.size());
@@ -605,6 +551,8 @@ public class AuditBuilder {
 		// Now we know which categories should be there, figure out which ones
 		// actually are and make adjustments
 		for (AuditCatData catData : conAudit.getCategories()) {
+			// TODO What about the overrides? What does it mean to override
+			// (show/hide) a category with more than one CAO.
 			if (!catData.isOverride()) {
 				if (categories.contains(catData.getCategory())) {
 					PicsLogger.log(catData.getCategory().getName() + " should be true, was " + catData.isApplies());
