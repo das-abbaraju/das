@@ -5,41 +5,35 @@
 <head>
 <link rel="stylesheet" href="css/reports.css"/>
 <style>
-	tr.less-granular {
-		background-color: #87cefa;	
+	tr.less-granular td {
+		font-style: italic;
 	}
 	tr.less-granular.on {
-		background-color: #87cefa;	
+		background-color: #9DEB95;	
 	}
 	tr.less-granular.off {
-		background-color: #87cefa;	
+		background-color: #FFABA6;	
 	}
-	tr.current-rule {
-		background-color: #00ff7f;	
+	tr.current-rule td {
+		font-weight: bold;
 	}
 	tr.current-rule.on {
-		background-color: #00ff7f;	
+		background-color: #9DEB95;
 	}
 	tr.current-rule.off {
-		background-color: #00ff7f;	
-	}
-	tr.similar-rules {
-		background-color: #00fafa;	
+		background-color: #FFABA6;
 	}
 	tr.similar-rules.on {
-		background-color: #00fafa;	
+		background-color: maroon;	
 	}
 	tr.similar-rules.off {
-		background-color: #00fafa;	
-	}
-	tr.more-granular {
-		background-color: #ffc0cb;	
+		background-color: navy;	
 	}
 	tr.more-granular.on {
-		background-color: #ffc0cb;	
+		background-color: #9DEB95;	
 	}
 	tr.more-granular.off {
-		background-color: #ffc0cb;	
+		background-color: #FFABA6;	
 	}
 	tr.rule-header td {
 		font-weight: bold;
@@ -70,12 +64,12 @@ $(function() {
 		<td>Include</td>
 		<td>Audit Type</td>
 		<td>Category</td>
-		<td>Account Type</td>
+		<td>Account</td>
 		<td>Operator</td>
 		<td>Risk</td>
 		<td>Tag</td>
 		<td>Question</td>
-		<td>Question Comparator</td>
+		<td></td>
 		<td>Answer</td>
 		<td></td>
 	</tr>
@@ -103,7 +97,7 @@ $(function() {
 						<a href="?button=merge">Merge</a>
 					</s:if>
 					<s:if test="'More Granular' == key">
-						<a href="?button=delete">Delete</a>
+						<a class="remove" href="?button=delete">Delete</a>
 					</s:if>
 				</td>
 			</tr>
