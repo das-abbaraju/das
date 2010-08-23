@@ -235,7 +235,7 @@ public class PicsMenu {
 			subMenu.addChild("Flag Criteria", "ManageFlagCriteria.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageAuditTypeRules)) {
-			subMenu.addChild("Audit Type Rules", "ManageAuditTypeRules.action");
+			subMenu.addChild("Audit Type Rules", "AuditTypeRuleSearch.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageCategoryRules)) {
 			subMenu.addChild("Category Rules", "CategoryRuleSearch.action");

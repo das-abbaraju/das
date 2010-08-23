@@ -4,8 +4,10 @@ import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.LowMedHigh;
 
 @SuppressWarnings("serial")
-public class ReportFilterCategoryRule extends ReportFilter {
+public class ReportFilterAuditRule extends ReportFilter {
 
+	protected boolean showCategory = true;
+	
 	protected Integer riskLevel = null;
 	protected String accountType = null;
 	protected String auditType = null;
@@ -75,6 +77,14 @@ public class ReportFilterCategoryRule extends ReportFilter {
 
 	public void setTag(String tag) {
 		this.tag = tag;
+	}
+
+	public boolean isShowCategory() {
+		return showCategory;
+	}
+
+	public void setShowCategory(boolean showCategory) {
+		this.showCategory = showCategory;
 	}
 
 }

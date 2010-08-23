@@ -15,7 +15,7 @@
 			<tr>
 				<td>Include</td>
 				<td>Audit Type</td>
-				<td>Category</td>
+				<s:if test="filter.showCategory"><td>Category</td></s:if>
 				<td>Account Type</td>
 				<td>Operator</td>
 				<td>Risk</td>
@@ -24,10 +24,10 @@
 		</thead>
 		<tbody>
 			<s:iterator value="data" status="stat">
-				<tr class="clickable" onclick="window.location='CategoryRuleEditor.action?id=<s:property value="get('id')"/>'">
+				<tr class="clickable" onclick="window.location='<s:property value="actionUrl"/><s:property value="get('id')"/>'">
 					<td><s:if test="get('include')==1">Yes</s:if><s:else>No</s:else></td>					
 					<td><s:property value="get('audit_type')"/></td>					
-					<td><s:property value="get('category')"/></td>					
+					<s:if test="filter.showCategory"><td><s:property value="get('category')"/></td></s:if>				
 					<td><s:property value="get('account_type')"/></td>					
 					<td><s:property value="get('operator')"/></td>					
 					<td><s:property value="getRisk(get('risk'))"/></td>					

@@ -4,15 +4,15 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Manage Category Rules</title>
+<title>Manage <s:property value="ruleType" /></title>
 <s:include value="../../reports/reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
 $(function() {
 	$('.searchAuto').each(function(){
-		$(this).autocomplete('CategoryRuleSearchAjax.action', {
-			extraParams: {fieldName: $(this).attr('id'), button: 'getAjax'},
+		$(this).autocomplete('<s:property value="filter.destinationAction" />Ajax.action', {
+			extraParams: {fieldName: $(this).attr('id'), button: 'searchAuto'},
 			formatResult: function(data,i,count){
 				return data;
 			}
@@ -24,7 +24,7 @@ $(function() {
 </head>
 <body>
 
-<h1>Manage Category Rules</h1>
+<h1>Manage <s:property value="ruleType" /></h1>
 
 <div id="search">
 <s:form id="form1"
@@ -43,9 +43,11 @@ $(function() {
 		Audit Type: <s:textfield cssClass="searchAuto" id="auditType" name="filter.auditType"/>
 	</div>
 	
-	<div class="filterOption">  <!-- Auto Complete -->
-		Category: <s:textfield cssClass="searchAuto" id="category" name="filter.category"/>
-	</div>
+	<s:if test="filter.showCategory">
+		<div class="filterOption">  <!-- Auto Complete -->
+			Category: <s:textfield cssClass="searchAuto" id="category" name="filter.category"/>
+		</div>
+	</s:if>
 	
 	<div class="filterOption">
 	<s:if test="filter.accountType==NULL">
@@ -74,7 +76,7 @@ $(function() {
 </div> 
 
 <div id="report_data">
-<s:include value="category_rule_search_data.jsp"></s:include>
+<s:include value="audit_rule_search_data.jsp"></s:include>
 </div>
 
 
