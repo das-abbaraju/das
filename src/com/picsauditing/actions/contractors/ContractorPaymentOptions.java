@@ -88,6 +88,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		if ("Mark this Credit Card Invalid".equals(button)) {
 			contractor.setCcOnFile(false);
 		}
+		if ("Mark this Credit Card Valid".equals(button)) {
+			contractor.setCcOnFile(true);
+		}
 
 		if ("I Agree".equals(button)) {
 			if (!permissions.isAdmin()
