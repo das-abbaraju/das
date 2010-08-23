@@ -1,5 +1,6 @@
 package com.picsauditing.actions.auditType;
 
+import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
@@ -33,9 +34,9 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			// TODO handle things like merge and delete right here
 		}
 
-		lessGranular = dao.getLessGranular(rule);
-		moreGranular = dao.getMoreGranular(rule);
-		similar = dao.getSimilar(rule);
+		lessGranular = dao.getLessGranular(rule, new Date());
+		moreGranular = dao.getMoreGranular(rule, new Date());
+		//similar = dao.getSimilar(rule, new Date());
 
 		return SUCCESS;
 	}
