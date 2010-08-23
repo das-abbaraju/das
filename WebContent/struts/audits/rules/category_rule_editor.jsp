@@ -8,13 +8,37 @@
 	tr.less-granular {
 		background-color: #87cefa;	
 	}
+	tr.less-granular.on {
+		background-color: #87cefa;	
+	}
+	tr.less-granular.off {
+		background-color: #87cefa;	
+	}
 	tr.current-rule {
+		background-color: #00ff7f;	
+	}
+	tr.current-rule.on {
+		background-color: #00ff7f;	
+	}
+	tr.current-rule.off {
 		background-color: #00ff7f;	
 	}
 	tr.similar-rules {
 		background-color: #00fafa;	
 	}
+	tr.similar-rules.on {
+		background-color: #00fafa;	
+	}
+	tr.similar-rules.off {
+		background-color: #00fafa;	
+	}
 	tr.more-granular {
+		background-color: #ffc0cb;	
+	}
+	tr.more-granular.on {
+		background-color: #ffc0cb;	
+	}
+	tr.more-granular.off {
 		background-color: #ffc0cb;	
 	}
 	tr.rule-header td {
@@ -63,7 +87,7 @@ $(function() {
 			<td colspan="11" class="center"> <s:property value="key"/> </td>
 		</tr>
 		<s:iterator value="value" id="r">
-			<tr class="<s:property value="key.toLowerCase().replaceAll(' ', '-')"/> clickable" onclick="location.href='?id=<s:property value="#r.id"/>'">
+			<tr class="<s:property value="key.toLowerCase().replaceAll(' ', '-')"/> clickable<s:if test="include"> on</s:if><s:else> off</s:else>" onclick="location.href='?id=<s:property value="#r.id"/>'">
 				<td><s:property value="include"/></td>
 				<td><s:property value="auditTypeLabel"/></td>
 				<td><s:property value="auditCategoryLabel"/></td>
