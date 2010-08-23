@@ -24,7 +24,7 @@
 		</thead>
 		<tbody>
 			<s:iterator value="data" status="stat">
-				<tr>
+				<tr class="clickable" onclick="window.location='CategoryRuleEditor.action?id=<s:property value="get('id')"/>'">
 					<td><s:if test="get('include')==1">Yes</s:if><s:else>No</s:else></td>					
 					<td><s:property value="get('audit_type')"/></td>					
 					<td><s:property value="get('category')"/></td>					
