@@ -21,4 +21,17 @@ public enum ContractorType {
 	public String getDescription() {
 		return description;
 	}
+
+	public static String[] getValues(boolean addBlank){
+		String[] result;
+		if(addBlank){	
+			result = new String[values().length+1];
+			result[result.length-1] = "*";
+		}else 
+			result = new String[values().length];
+		for(int i=0; i<values().length; i++){
+			result[i] =values()[i].name();
+		}
+		return result;
+	}
 }

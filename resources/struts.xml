@@ -1212,6 +1212,10 @@
 			class="com.picsauditing.actions.auditType.CategoryRuleSearch">
 			<result>struts/audits/rules/category_rule_search.jsp</result>
 		</action>
+		<action name="CategoryRuleSearchAjax"
+			class="com.picsauditing.actions.auditType.CategoryRuleSearch">
+			<result>struts/audits/rules/category_rule_search_data.jsp</result>
+		</action>
 
 
 		<!-- Users -->
