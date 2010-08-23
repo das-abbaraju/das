@@ -120,11 +120,13 @@ $(function() {
 				<td>
 					<table class="inner">
 					<s:iterator value="getPercentOn('catID')">
-						<tr class="hide-hover">
-							<td><s:property value="get('catID')"/></td>
-							<td><s:property value="get('percentOn')"/></td>
-							<td class="hide-hover"><a href="?button=create&rule.auditCategory.id=<s:property value="get('catID')"/>">Create</a></td>
-						</tr>
+						<s:if test="include ? get('percentOn') < .3 : get('percentOn') > .3">
+							<tr class="hide-hover">
+								<td class="right"><s:property value="get('catID')"/></td>
+								<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
+								<td class="hide-hover"><a href="?button=create&rule.auditCategory.id=<s:property value="get('catID')"/>">Create</a></td>
+							</tr>
+						</s:if>
 					</s:iterator>
 					</table>
 				</td>
@@ -132,33 +134,39 @@ $(function() {
 				<td>
 					<table class="inner">
 					<s:iterator value="getPercentOn('opID')">
-						<tr class="hide-hover">
-							<td><s:property value="get('opID')"/></td>
-							<td><s:property value="get('percentOn')"/></td>
-							<td class="hide-hover"><a href="?button=create&rule.operatorAccount.id=<s:property value="get('opID')"/>">Create</a></td>
-						</tr>
+						<s:if test="include ? get('percentOn') < .3 : get('percentOn') > .3">
+							<tr class="hide-hover">
+								<td class="right"><s:property value="get('opID')"/></td>
+								<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
+								<td class="hide-hover"><a href="?button=create&rule.operatorAccount.id=<s:property value="get('opID')"/>">Create</a></td>
+							</tr>
+						</s:if>
 					</s:iterator>
 					</table>
 				</td>
 				<td>
 					<table class="inner">
 					<s:iterator value="getPercentOn('risk')">
-						<tr class="hide-hover">
-							<td><s:property value="get('risk')"/></td>
-							<td><s:property value="get('percentOn')"/></td>
-							<td class="hide-hover"><a href="?button=create&rule.risk=<s:property value="get('risk')"/>">Create</a></td>
-						</tr>
+						<s:if test="include ? get('percentOn') < .3 : get('percentOn') > .3">
+							<tr class="hide-hover">
+								<td class="right"><s:property value="get('risk')"/></td>
+									<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
+								<td class="hide-hover"><a href="?button=create&rule.risk=<s:property value="get('risk')"/>">Create</a></td>
+							</tr>
+						</s:if>
 					</s:iterator>
 					</table>
 				</td>
 				<td>
 					<table class="inner">
 					<s:iterator value="getPercentOn('tagID')">
-						<tr class="hide-hover">
-							<td><s:property value="get('tagID')"/></td>
-							<td><s:property value="get('percentOn')"/></td>
-							<td class="hide-hover"><a href="?button=create&rule.tag.id<s:property value="get('tagID')"/>">Create</a></td>
-						</tr>
+						<s:if test="include ? get('percentOn') < .3 : get('percentOn') > .3">
+							<tr class="hide-hover">
+								<td class="right"><s:property value="get('tagID')"/></td>
+									<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
+								<td class="hide-hover"><a href="?button=create&rule.tag.id<s:property value="get('tagID')"/>">Create</a></td>
+							</tr>
+						</s:if>
 					</s:iterator>
 					</table>
 				</td>
