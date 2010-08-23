@@ -3,16 +3,11 @@ package com.picsauditing.PICS;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
-import com.picsauditing.dao.AuditCategoryDAO;
-import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -35,7 +30,6 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
@@ -52,26 +46,23 @@ public class AuditBuilder {
 
 	private ContractorAuditDAO cAuditDAO;
 	private AuditDataDAO auditDataDAO;
-	private AuditCategoryDAO auditCategoryDAO;
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
-	private AuditCategoryDataDAO auditCategoryDataDAO;
 	private AuditTypeDAO auditTypeDAO;
 	private AuditDecisionTableDAO auditDecisionTableDAO;
 
-	public AuditBuilder(ContractorAuditDAO cAuditDAO, AuditDataDAO auditDataDAO, AuditCategoryDAO auditCategoryDAO,
-			ContractorAuditOperatorDAO contractorAuditOperatorDAO, AuditCategoryDataDAO auditCategoryDataDAO,
-			AuditTypeDAO auditTypeDAO, AuditDecisionTableDAO auditDecisionTableDAO) {
+	public AuditBuilder(ContractorAuditDAO cAuditDAO, AuditDataDAO auditDataDAO,
+			ContractorAuditOperatorDAO contractorAuditOperatorDAO, AuditTypeDAO auditTypeDAO,
+			AuditDecisionTableDAO auditDecisionTableDAO) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
-		this.auditCategoryDAO = auditCategoryDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
-		this.auditCategoryDataDAO = auditCategoryDataDAO;
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditDecisionTableDAO = auditDecisionTableDAO;
 	}
 
 	public void buildAudits(ContractorAccount con) {
 		this.contractor = con;
+		PicsLogger.addRuntimeRule("BuildAudits");
 		PicsLogger.start("BuildAudits", " conID=" + contractor.getId());
 		List<ContractorAudit> currentAudits = contractor.getAudits();
 
@@ -134,7 +125,7 @@ public class AuditBuilder {
 		}
 
 		// Get the answer for DOT employees from Pqfdata
-		AuditData oqEmployees = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), AuditQuestion.OQ_EMPLOYEES);
+		AuditData oqEmployees = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), AuditQuestion.OQ_EMPLOYEES); // TODO we don't need this here anymore
 		AuditData hasCOR = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), 2954);
 
 		/** Add other Audits and Policy Types **/

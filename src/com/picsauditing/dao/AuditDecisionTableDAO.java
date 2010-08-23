@@ -207,7 +207,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
 		where += ")";
 		
-		where += " AND (auditType IS NULL || auditType.id = " + conAudit.getId() + ")";
+		where += " AND (auditType IS NULL OR auditType.id = " + conAudit.getAuditType().getId() + ")";
 
 		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY a.priority DESC");
 		return query.getResultList();
