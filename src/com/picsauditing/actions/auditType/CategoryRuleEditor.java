@@ -16,6 +16,7 @@ import com.picsauditing.search.SelectSQL;
 public class CategoryRuleEditor extends PicsActionSupport {
 
 	private int id = 0;
+	private boolean categoryRule = true;
 
 	private AuditCategoryRule rule = null;
 	private List<AuditCategoryRule> lessGranular;
@@ -94,6 +95,14 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	public List<AuditCategoryRule> getSimilar() {
 		return similar;
+	}
+
+	public boolean isCategoryRule() {
+		return categoryRule;
+	}
+
+	public void setCategoryRule(boolean categoryRule) {
+		this.categoryRule = categoryRule;
 	}
 
 }

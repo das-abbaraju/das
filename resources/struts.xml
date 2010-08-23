@@ -1206,20 +1206,24 @@
 		<!-- Rules Entries -->
 		<action name="CategoryRuleEditor"
 			class="com.picsauditing.actions.auditType.CategoryRuleEditor">
-			<result>struts/audits/rules/category_rule_editor.jsp</result>
+			<result>struts/audits/rules/audit_rule_editor.jsp</result>
 		</action>
 		<action name="CategoryRuleSearch"
 			class="com.picsauditing.actions.auditType.CategoryRuleSearch">
-			<param name="ruleType">"Category Rules"</param>
+			<param name="ruleType">Category Rules</param>
 			<result>struts/audits/rules/audit_rule_search.jsp</result>
 		</action>
 		<action name="CategoryRuleSearchAjax"
 			class="com.picsauditing.actions.auditType.CategoryRuleSearch">		
-			<param name="ruleType">"Audit Type Rules"</param>
+			<param name="ruleType">Audit Type Rules</param>
 			<result name="autocomp">struts/blank.jsp</result>
 			<result>struts/audits/rules/audit_rule_search_data.jsp</result>
 		</action>
 		
+		<action name="AuditTypeRuleEditor"
+			class="com.picsauditing.actions.auditType.AuditTypeRuleEditor">
+			<result>struts/audits/rules/audit_rule_editor.jsp</result>
+		</action>
 		<action name="AuditTypeRuleSearch"
 			class="com.picsauditing.actions.auditType.AuditTypeRuleSearch">			
 			<param name="ruleType">Audit Type Rules</param>

@@ -11,8 +11,14 @@
 <script type="text/javascript">
 $(function() {
 	$('.searchAuto').each(function(){
+		var field =  $(this).attr('id');
+		if(field=='operator')
+			var num = 100;
+		else
+			var num = 10;
 		$(this).autocomplete('<s:property value="filter.destinationAction" />Ajax.action', {
-			extraParams: {fieldName: $(this).attr('id'), button: 'searchAuto'},
+			extraParams: {fieldName: field, button: 'searchAuto'},
+			max: num,
 			formatResult: function(data,i,count){
 				return data;
 			}
@@ -33,14 +39,19 @@ $(function() {
 	<s:hidden name="filter.destinationAction" />
 	<s:hidden name="showPage" value="1" />
 
-	<div class="filterOption"> 
-		<button id="searchfilter" type="submit" name="button" value="Search"
-			class="picsbutton positive" onclick="$('[name=showPage]').val(1)">Search</button>	
-	</div>
+	
+	<button id="searchfilter" type="submit" name="button" value="Search"
+		class="picsbutton positive" onclick="$('[name=showPage]').val(1)">Search</button>
+			
 	<br clear="all" />
 	
+	<div class="filterOption">
+		Audit Type: <s:textfield id="auditType" name="filter.auditType"/>
+	</div>
+	
 	<div class="filterOption">  <!-- Auto Complete -->
-		Audit Type: <s:textfield cssClass="searchAuto" id="auditType" name="filter.auditType"/>
+		Include:
+		<s:select cssClass="forms" list="#{'2':'Any','1':'Yes','0':'No'}" name="filter.include" value="filter.include" />
 	</div>
 	
 	<s:if test="filter.showCategory">

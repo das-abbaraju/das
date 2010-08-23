@@ -69,8 +69,10 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		Database db = new Database();
 		if("auditType".equals(fieldName)){
 			str = "SELECT auditName name FROM audit_type WHERE auditName LIKE '"+search+"%'";
+		} else if("category".equals(fieldName)){
+			str = "SELECT ac.name name FROM audit_category ac WHERE ac.name LIKE '"+search+"%'";
 		} else if("operator".equals(fieldName)){
-			str = "SELECT a.name FROM accounts a WHERE a.name LIKE '"+search+"%' AND type='Operator'";
+			str = "SELECT a.name FROM accounts a WHERE a.name LIKE '"+search+"%' AND type='Operator' OR type='Corporate'";
 		} else if("tag".equals(fieldName)){
 			str = "SELECT tag name FROM operator_tag WHERE tag LIKE '"+search+"%'";
 		}	
@@ -102,6 +104,9 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		}
 		if(filterOn(filter.getTag())){
 			report.addFilter(new SelectFilter("tag", "ot.tag = '?'", String.valueOf(filter.getTag())));
+		}
+		if(filterOn(filter.getInclude())){
+			report.addFilter(new SelectFilter("include", "include = '?'", String.valueOf(filter.getInclude())));
 		}
 	}
 

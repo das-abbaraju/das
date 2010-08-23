@@ -9,12 +9,13 @@ public class ReportFilterAuditRule extends ReportFilter {
 	protected boolean showCategory = true;
 	
 	protected Integer riskLevel = null;
+	protected Integer include;
 	protected String accountType = null;
 	protected String auditType = null;
 	protected String category = null;
 	protected String operator = null;
 	protected String tag = null;
-	
+		
 	protected String[] accountTypeList = ContractorType.getValues(true);
 
 	public Integer getRiskLevel() {
@@ -85,6 +86,17 @@ public class ReportFilterAuditRule extends ReportFilter {
 
 	public void setShowCategory(boolean showCategory) {
 		this.showCategory = showCategory;
+	}
+
+	public Integer getInclude() {
+		return include;
+	}
+
+	public void setInclude(Integer include) {
+		if(include==2)
+			this.include = null;
+		else
+			this.include = include;
 	}
 
 }
