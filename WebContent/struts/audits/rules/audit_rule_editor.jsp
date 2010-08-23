@@ -117,7 +117,7 @@ $(function() {
 			<tr class="rule-percents">
 				<td></td>
 				<td></td>
-				<td>
+				<s:if test="categoryRule"><td>
 					<table class="inner">
 					<s:iterator value="getPercentOn('catID')">
 						<tr class="hide-hover">
@@ -128,6 +128,7 @@ $(function() {
 					</s:iterator>
 					</table>
 				</td>
+				</s:if>
 				<td></td>
 				<td>
 					<table class="inner">
