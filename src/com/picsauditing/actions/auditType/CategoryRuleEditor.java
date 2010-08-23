@@ -30,14 +30,21 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	}
 
 	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
 
 		if (id == 0)
 			return BLANK;
 
-		rule = dao.findAuditCategoryRule(id);
+		if (rule == null)
+			rule = dao.findAuditCategoryRule(id);
 
 		if (button != null) {
 			if ("create".equals(button)) {
+				AuditCategoryRule source = dao.findAuditCategoryRule(id);
+				rule.merge(source);
+				rule.calculatePriority();
+				rule.setAuditColumns(permissions);
 				dao.save(rule);
 				this.redirect("?id=" + rule.getId());
 				return BLANK;

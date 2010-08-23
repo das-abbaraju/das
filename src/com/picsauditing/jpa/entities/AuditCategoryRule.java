@@ -42,4 +42,10 @@ public class AuditCategoryRule extends AuditRule {
 		}
 	}
 
+	public void merge(AuditCategoryRule source) {
+		super.merge(source);
+		if (auditCategory == null)
+			auditCategory = source.auditCategory;
+	}
+
 }

@@ -19,7 +19,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected ContractorType contractorType;
 	protected OperatorTag tag;
 	protected AuditQuestion question;
-	protected QuestionComparator questionComparator = QuestionComparator.Equals;
+	protected QuestionComparator questionComparator;
 	protected String questionAnswer;
 
 	@ManyToOne
@@ -184,4 +184,23 @@ public class AuditRule extends BaseDecisionTreeRule {
 			priority += 130;
 	}
 
+	public void merge(AuditRule source) {
+		super.merge(source);
+		if (auditType == null)
+			auditType = source.auditType;
+		if (risk == null)
+			risk = source.risk;
+		if (operatorAccount == null)
+			operatorAccount = source.operatorAccount;
+		if (contractorType == null)
+			contractorType = source.contractorType;
+		if (tag == null)
+			tag = source.tag;
+		if (question == null)
+			question = source.question;
+		if (questionComparator == null)
+			questionComparator = source.questionComparator;
+		if (questionAnswer == null)
+			questionAnswer = source.questionAnswer;
+	}
 }

@@ -124,7 +124,7 @@ $(function() {
 							<tr class="hide-hover">
 								<td class="right"><s:property value="get('catID')"/></td>
 								<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
-								<td class="hide-hover"><a href="?button=create&rule.auditCategory.id=<s:property value="get('catID')"/>">Create</a></td>
+								<td class="hide-hover"><a href="?id=<s:property value="id"/>&button=create&rule.auditCategory.id=<s:property value="get('catID')"/>">Create</a></td>
 							</tr>
 						</s:if>
 					</s:iterator>
@@ -138,7 +138,7 @@ $(function() {
 							<tr class="hide-hover">
 								<td class="right"><s:property value="get('opID')"/></td>
 								<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
-								<td class="hide-hover"><a href="?button=create&rule.operatorAccount.id=<s:property value="get('opID')"/>">Create</a></td>
+								<td class="hide-hover"><a href="?id=<s:property value="id"/>&button=create&rule.operatorAccount.id=<s:property value="get('opID')"/>">Create</a></td>
 							</tr>
 						</s:if>
 					</s:iterator>
@@ -151,7 +151,7 @@ $(function() {
 							<tr class="hide-hover">
 								<td class="right"><s:property value="get('risk')"/></td>
 									<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
-								<td class="hide-hover"><a href="?button=create&rule.risk=<s:property value="get('risk')"/>">Create</a></td>
+								<td class="hide-hover"><a href="?id=<s:property value="id"/>&button=create&rule.risk=<s:property value="get('risk')"/>">Create</a></td>
 							</tr>
 						</s:if>
 					</s:iterator>
@@ -164,7 +164,7 @@ $(function() {
 							<tr class="hide-hover">
 								<td class="right"><s:property value="get('tagID')"/></td>
 									<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
-								<td class="hide-hover"><a href="?button=create&rule.tag.id<s:property value="get('tagID')"/>">Create</a></td>
+								<td class="hide-hover"><a href="?id=<s:property value="id"/>&button=create&rule.tag.id<s:property value="get('tagID')"/>">Create</a></td>
 							</tr>
 						</s:if>
 					</s:iterator>

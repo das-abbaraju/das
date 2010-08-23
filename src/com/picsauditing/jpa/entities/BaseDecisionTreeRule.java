@@ -29,4 +29,8 @@ public abstract class BaseDecisionTreeRule extends BaseHistory {
 
 	abstract public void calculatePriority();
 
+	public void merge(BaseDecisionTreeRule source) {
+		include = source.include;
+	}
+
 }
