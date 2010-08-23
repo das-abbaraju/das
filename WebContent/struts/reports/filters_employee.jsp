@@ -29,10 +29,6 @@
 		Company Name: <s:textfield name="filter.accountName" size="35" />
 	</div>
 	</s:if>
-
-	<br/>
-	<br/>
-
 	<s:if test="filter.showFirstName">
 	<div class="filterOption">
 		First Name: <s:textfield name="filter.firstName" />

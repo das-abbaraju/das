@@ -49,6 +49,8 @@
 			border-collapse: collapse;
 			border: 1px solid #B3B3B3;
 			display: none;
+			margin-top: 5px;
+			margin-bottom: 5px;
 		}
 		
 		table.jobSiteTasks th {
@@ -94,9 +96,12 @@
 							<td style="vertical-align: middle; padding: 0px 5px;">
 								<h2><s:property value="employee.displayName" /></h2>
 								<s:property value="employee.title" /><br />
-								<s:if test="permissions.admin || (permissions.operatorCorporate && canViewContractor(employee.account.id)) || permissions.accountIdString == employee.account.id">
+								<s:if test="employee.account.contractor && (permissions.admin || (permissions.operatorCorporate && canViewContractor) || permissions.accountId == employee.account.id)">
 									<a href="ContractorView.action?id=<s:property value="employee.account.id" />"><s:property value="employee.account.name" /></a><br />
 								</s:if>
+								<s:elseif test="employee.account.operatorCorporate && (permissions.admin || permissions.accountId == employee.account.id)">
+									<a href="FacilitiesEdit.action?id=<s:property value="employee.account.id" />"><s:property value="employee.account.name" /></a><br />
+								</s:elseif>
 								<s:else>
 									<s:property value="employee.account.name" />
 								</s:else>
@@ -278,11 +283,11 @@
 							</thead>
 							<tbody>
 								<s:iterator value="jobTasks" id="quals">
-									<tr class="jt_<s:property value="#quals.id" />">
+									<tr>
 										<td class="center" style="font-weight: bold;"><s:property value="#quals.task.label" /></td>
 										<td><s:property value="#quals.task.name" /></td>
 										<td class="center">
-											<s:if test="#quals.qualified"><a href="#" onclick="$('.jt_<s:property value="#quals.id" />.assessmentResults').toggle(); return false;">
+											<s:if test="#quals.qualified"><a href="#" onclick="$('#jt_<s:property value="#quals.id" />').toggle(); return false;">
 												<img src="images/okCheck.gif" alt="Qualified" />
 											</a></s:if>
 											<s:else><img src="images/notOkCheck.gif" alt="Not Qualified" /></s:else>
@@ -290,8 +295,8 @@
 									</tr>
 									<s:if test="#quals.qualified">
 										<s:set name="qualCount" value="#qualCount + 1" />
-										<tr class="jt_<s:property value="#quals.id" /> assessmentResults">
-											<td colspan="2">
+										<tr id="jt_<s:property value="#quals.id" />" class="assessmentResults">
+											<td colspan="3">
 												<s:iterator value="qualification.get(#quals)" id="results">
 													<b><s:property value="#results.assessmentTest.qualificationMethod" /> - <s:property value="#results.assessmentTest.qualificationType" /></b><s:if test="#results.assessmentTest.effectiveDate != null && #results.assessmentTest.expirationDate != null">,
 													Effective: <b><s:date name="#results.assessmentTest.effectiveDate" format="MM/dd/yyyy" /> -

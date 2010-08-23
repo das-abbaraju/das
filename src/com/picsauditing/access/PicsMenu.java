@@ -70,7 +70,7 @@ public class PicsMenu {
 					}
 					if (permissions.isRequiresOQ()) {
 						subMenu = menu.addChild("Operator Qualification");
-						subMenu.addChild("OQ by Employee", "ReportOQEmployees.action");
+						subMenu.addChild("OQ by Employee", "ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
 						subMenu.addChild("Recent OQ Changes", "ReportOQChanges.action");
 					}
 				}
@@ -354,7 +354,7 @@ public class PicsMenu {
 
 		if (permissions.isRequiresOQ()) {
 			subMenu.addChild("OQ by Contractor/Site", "ReportOQ.action");
-			subMenu.addChild("OQ by Employee", "ReportOQEmployees.action");
+			subMenu.addChild("OQ by Employee", "ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
 		}
 		
 		if (permissions.isOperatorCorporate() || permissions.isAdmin())

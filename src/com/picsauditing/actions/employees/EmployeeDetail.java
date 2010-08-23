@@ -130,9 +130,9 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 		return opComps;
 	}
 	
-	public boolean canViewContractor(int conID) {
+	public boolean isCanViewContractor() {
 		ContractorOperatorDAO coDAO = (ContractorOperatorDAO) SpringUtils.getBean("ContractorOperatorDAO");
-		ContractorOperator co = coDAO.find(conID, permissions.getAccountId());
+		ContractorOperator co = coDAO.find(employee.getAccount().getId(), permissions.getAccountId());
 		
 		if (co != null)
 			return true;

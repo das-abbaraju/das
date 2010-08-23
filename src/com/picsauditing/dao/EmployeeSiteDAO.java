@@ -64,4 +64,11 @@ public class EmployeeSiteDAO extends PicsDAO {
 		
 		return q.getResultList();
 	}
+	
+	public List<EmployeeSiteTask> findTasksByOperator(int opID) {
+		Query q = em.createQuery("FROM EmployeeSiteTask WHERE employeeSite.operator.id = ?");
+		q.setParameter(1, opID);
+		
+		return q.getResultList();
+	}
 }
