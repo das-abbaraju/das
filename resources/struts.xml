@@ -1214,6 +1214,7 @@
 		</action>
 		<action name="CategoryRuleSearchAjax"
 			class="com.picsauditing.actions.auditType.CategoryRuleSearch">
+			<result name="autocomp">struts/blank.jsp</result>
 			<result>struts/audits/rules/category_rule_search_data.jsp</result>
 		</action>
 

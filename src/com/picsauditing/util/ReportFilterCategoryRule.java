@@ -8,6 +8,11 @@ public class ReportFilterCategoryRule extends ReportFilter {
 
 	protected Integer riskLevel = null;
 	protected String accountType = null;
+	protected String auditType = null;
+	protected String category = null;
+	protected String operator = null;
+	protected String tag = null;
+	
 	protected String[] accountTypeList = ContractorType.getValues(true);
 
 	public Integer getRiskLevel() {
@@ -38,6 +43,38 @@ public class ReportFilterCategoryRule extends ReportFilter {
 
 	public void setAccountTypeList(String[] accountTypeList) {
 		this.accountTypeList = accountTypeList;
+	}
+
+	public String getAuditType() {
+		return auditType;
+	}
+
+	public void setAuditType(String auditType) {
+		this.auditType = auditType;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getOperator() {
+		return operator;
+	}
+
+	public void setOperator(String operator) {
+		this.operator = operator;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
 	}
 
 }

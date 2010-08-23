@@ -57,7 +57,7 @@ public class CategoryRuleSearch extends ReportActionSupport implements Preparabl
 			}
 			output = sb.toString();
 			
-			return BLANK;
+			return "autocomp";
 		}
 
 		sql.addField("acr.id");
@@ -81,10 +81,22 @@ public class CategoryRuleSearch extends ReportActionSupport implements Preparabl
 
 	private void addFilterToSQL() {
 		if(filterOn(filter.getAccountType())){
-			report.addFilter(new SelectFilter("accountType", "accountType = ?", String.valueOf(ContractorType.valueOf(filter.getAccountType()).ordinal())));
+			report.addFilter(new SelectFilter("accountType", "acr.accountType = ?", String.valueOf(ContractorType.valueOf(filter.getAccountType()).ordinal())));
 		}
 		if(filterOn(filter.getRiskLevel())){
-			report.addFilter(new SelectFilter("riskLevel", "risk = ?", String.valueOf(filter.getRiskLevel())));
+			report.addFilter(new SelectFilter("riskLevel", "acr.risk = ?", String.valueOf(filter.getRiskLevel())));
+		}
+		if(filterOn(filter.getAuditType())){
+			report.addFilter(new SelectFilter("audit_type", "aty.auditName = '?'", String.valueOf(filter.getAuditType())));
+		}
+		if(filterOn(filter.getCategory())){
+			report.addFilter(new SelectFilter("category", "ac.name = '?'", String.valueOf(filter.getCategory())));
+		}
+		if(filterOn(filter.getOperator())){
+			report.addFilter(new SelectFilter("operator", "a.name = '?'", String.valueOf(filter.getOperator())));
+		}
+		if(filterOn(filter.getTag())){
+			report.addFilter(new SelectFilter("tag", "ot.tag = '?'", String.valueOf(filter.getTag())));
 		}
 	}
 

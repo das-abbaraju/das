@@ -12,18 +12,13 @@
 $(function() {
 	$('.searchAuto').each(function(){
 		$(this).autocomplete('CategoryRuleSearchAjax.action', {
-			delay: 200,
-			extraParams: {fieldName: $(this).find('input').attr('id'), button: 'getAjax'},
+			extraParams: {fieldName: $(this).attr('id'), button: 'getAjax'},
 			formatResult: function(data,i,count){
 				return data;
 			}
 		});
 	});
 });
-
-function autoCompleteField(field){
-	
-}
 
 </script>
 </head>
@@ -44,12 +39,12 @@ function autoCompleteField(field){
 	</div>
 	<br clear="all" />
 	
-	<div class="filterOption searchAuto">  <!-- Auto Complete -->
-		Audit Type: <s:textfield id="auditType" />
+	<div class="filterOption">  <!-- Auto Complete -->
+		Audit Type: <s:textfield cssClass="searchAuto" id="auditType" name="filter.auditType"/>
 	</div>
 	
-	<div class="filterOption searchAuto">  <!-- Auto Complete -->
-		Category: <s:textfield />
+	<div class="filterOption">  <!-- Auto Complete -->
+		Category: <s:textfield cssClass="searchAuto" id="category" name="filter.category"/>
 	</div>
 	
 	<div class="filterOption">
@@ -62,16 +57,16 @@ function autoCompleteField(field){
 		Account Type: <s:select cssClass="forms" list="filter.accountTypeList" name="filter.accountType" value="acT" />
 	</div>
 	
-	<div class="filterOption searchAuto">  <!-- Auto Complete -->
-		Operator: <s:textfield />
+	<div class="filterOption">  <!-- Auto Complete -->
+		Operator: <s:textfield cssClass="searchAuto" id="operator" name="filter.operator"/>
 	</div>	
 	
 	<div class="filterOption">Risk: 
 		<s:select cssClass="forms" list="#{'0':'*','1':'Low','2':'Medium','3':'High'}" name="filter.riskLevel" value="filter.riskLevel" />
 	</div>
 	
-	<div class="filterOption searchAuto"> <!-- Auto Complete -->
-		Tag: <s:textfield />
+	<div class="filterOption"> <!-- Auto Complete -->
+		Tag: <s:textfield cssClass="searchAuto" id="tag" name="filter.tag"/>
 	</div>
 	
 	<br clear="all" />
