@@ -16,6 +16,7 @@
 	}
 	tr.current-rule td {
 		font-weight: bold;
+		font-size: 15px;
 	}
 	tr.current-rule.on {
 		background-color: #9DEB95;
@@ -82,7 +83,7 @@ $(function() {
 		</tr>
 		<s:iterator value="value" id="r">
 			<tr class="<s:property value="key.toLowerCase().replaceAll(' ', '-')"/> clickable<s:if test="include"> on</s:if><s:else> off</s:else>" onclick="location.href='?id=<s:property value="#r.id"/>'">
-				<td><s:property value="include"/></td>
+				<td><s:property value="include ? 'Yes' : 'No'"/></td>
 				<td><s:property value="auditTypeLabel"/></td>
 				<td><s:property value="auditCategoryLabel"/></td>
 				<td><s:property value="contractorTypeLabel"/></td>
