@@ -78,8 +78,14 @@ function removeJobSite(id) {
 function newJobSite() {
 	var opID = $('#opID').val();
 
-	if (opID == '' || opID == undefined)
-		opID = <s:property value="employee == null ? id : employee.account.id" />;
+	if (opID == '' || opID == undefined) {
+		<s:if test="employee.id > 0">
+			opID = <s:property value="employee.account.id" />;
+		</s:if>
+		<s:else>
+			opID = <s:property value="id" />;
+		</s:else>
+	}
 	
 	startThinking({div: 'thinking_sites', message: 'Adding New Job Site'})
 	$('#employee_site').load('ManageEmployeesAjax.action?' + $('#newJobSiteForm').serialize(), {button: 'newSite', 'employee.id': employeeID, opID: opID});
