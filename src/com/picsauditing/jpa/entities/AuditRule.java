@@ -8,6 +8,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
+import org.jboss.util.Strings;
+
 @SuppressWarnings("serial")
 @Entity
 @MappedSuperclass
@@ -21,6 +23,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected AuditQuestion question;
 	protected QuestionComparator questionComparator;
 	protected String questionAnswer;
+	protected Boolean acceptsBids;
 
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
@@ -154,6 +157,21 @@ public class AuditRule extends BaseDecisionTreeRule {
 		return questionAnswer;
 	}
 
+	public Boolean getAcceptsBids() {
+		return acceptsBids;
+	}
+
+	public void setAcceptsBids(Boolean acceptsBids) {
+		this.acceptsBids = acceptsBids;
+	}
+
+	@Transient
+	public String getAcceptsBidsLabel() {
+		if (acceptsBids == null)
+			return "*";
+		return acceptsBids ? "Yes" : "No";
+	}
+
 	@Override
 	public void calculatePriority() {
 		priority = 0;
@@ -182,6 +200,26 @@ public class AuditRule extends BaseDecisionTreeRule {
 		if (tag != null)
 			// Several per operator, potentially thousands
 			priority += 130;
+	}
+
+	@Transient
+	public boolean isMatchingAnswer(AuditData data) {
+		if (data == null)
+			return questionComparator.equals(QuestionComparator.Empty);
+
+		String answer = data.getAnswer();
+		switch (questionComparator) {
+		case Empty:
+			return Strings.isEmpty(answer);
+		case NotEmpty:
+			return !Strings.isEmpty(answer);
+		case NotEquals:
+			return !questionAnswer.equals(answer);
+		case Verified:
+			return data.isVerified();
+		default:
+			return questionAnswer.equals(answer);
+		}
 	}
 
 	public void merge(AuditRule source) {

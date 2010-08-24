@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.dao.AuditDataDAO;
@@ -13,6 +14,7 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -27,6 +29,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
@@ -49,15 +52,17 @@ public class AuditBuilder {
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
 	private AuditTypeDAO auditTypeDAO;
 	private AuditDecisionTableDAO auditDecisionTableDAO;
+	private ContractorTagDAO contractorTagDAO;
 
 	public AuditBuilder(ContractorAuditDAO cAuditDAO, AuditDataDAO auditDataDAO,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, AuditTypeDAO auditTypeDAO,
-			AuditDecisionTableDAO auditDecisionTableDAO) {
+			AuditDecisionTableDAO auditDecisionTableDAO, ContractorTagDAO contractorTagDAO) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditDecisionTableDAO = auditDecisionTableDAO;
+		this.contractorTagDAO = contractorTagDAO;
 	}
 
 	public void buildAudits(ContractorAccount con) {
@@ -66,45 +71,13 @@ public class AuditBuilder {
 		PicsLogger.start("BuildAudits", " conID=" + contractor.getId());
 		List<ContractorAudit> currentAudits = contractor.getAudits();
 
-		if (contractor.isAcceptsBids()) {
-			int year = DateBean.getCurrentYear();
-			AuditType auditType = auditTypeDAO.find(AuditType.ANNUALADDENDUM);
-			addAnnualAddendum(currentAudits, year - 1, auditType);
-			addAnnualAddendum(currentAudits, year - 2, auditType);
-			addAnnualAddendum(currentAudits, year - 3, auditType);
-			return;
-		}
-
-		List<AuditStatus> okStatuses = new ArrayList<AuditStatus>();
-		okStatuses.add(AuditStatus.Active);
-		okStatuses.add(AuditStatus.Pending);
-		okStatuses.add(AuditStatus.Submitted);
-		okStatuses.add(AuditStatus.Exempt);
-		okStatuses.add(AuditStatus.Resubmitted);
-		okStatuses.add(AuditStatus.Incomplete);
-
-		/** *** Welcome Call *** */
-		if (DateBean.getDateDifference(contractor.getCreationDate()) > -90) {
-			// Create the welcome call for all accounts created in the past 90
-			// days
-			boolean needsWelcome = true;
-			for (ContractorAudit conAudit : currentAudits) {
-				if (conAudit.getAuditType().getId() == AuditType.WELCOME) {
-					needsWelcome = false;
-					break;
-				}
-			}
-			if (needsWelcome) {
-				ContractorAudit welcomeCall = createAudit(AuditType.WELCOME);
-				welcomeCall.setExpiresDate(DateBean.addMonths(new Date(), 3));
-				cAuditDAO.save(welcomeCall);
-				currentAudits.add(welcomeCall);
-			}
-		}
-
+		// TODO Add rule for Annual Update needed by acceptsBids and everything else is acceptsBids = No
+		// TODO test Welcome Call Audits
+		
 		/** *** PQF *** */
 		// Find the PQF audit for this contractor
 		// Only ever create ONE PQF audit
+		// TODO we should probably take this part out. I don't think it's needed anymore
 		ContractorAudit pqfAudit = null;
 		for (ContractorAudit conAudit : currentAudits) {
 			if (conAudit.getAuditType().isPqf()) {
@@ -117,15 +90,16 @@ public class AuditBuilder {
 				break;
 			}
 		}
-		if (pqfAudit == null) {
-			PicsLogger.log("adding PQF");
-			pqfAudit = createAudit(AuditType.PQF);
-			cAuditDAO.save(pqfAudit);
-			currentAudits.add(pqfAudit);
-		}
 
 		// Get the answer for DOT employees from Pqfdata
-		AuditData oqEmployees = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), AuditQuestion.OQ_EMPLOYEES); // TODO we don't need this here anymore
+		AuditData oqEmployees = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), AuditQuestion.OQ_EMPLOYEES);
+		// TODO
+		// we
+		// don't
+		// need
+		// this
+		// here
+		// anymore
 		AuditData hasCOR = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), 2954);
 
 		/** Add other Audits and Policy Types **/
@@ -135,15 +109,59 @@ public class AuditBuilder {
 		Set<AuditType> auditTypeList = new HashSet<AuditType>();
 
 		List<AuditTypeRule> rules = auditDecisionTableDAO.getApplicableAuditRules(contractor);
-		Set<AuditQuestion> questionAnswersNeeded = new HashSet<AuditQuestion>();
-		Set<OperatorTag> tagsNeeded = new HashSet<OperatorTag>();
-		for (AuditTypeRule auditTypeRule : rules) {
-			if (auditTypeRule.getQuestion() != null)
-				questionAnswersNeeded.add(auditTypeRule.getQuestion());
-			if (auditTypeRule.getTag() != null)
-				tagsNeeded.add(auditTypeRule.getTag());
+		boolean priorityRecalculated = false;
+		Set<Integer> questionAnswersNeeded = new HashSet<Integer>();
+		Set<Integer> tagsNeeded = new HashSet<Integer>();
+		for (AuditTypeRule rule : rules) {
+			int previousPriority = rule.getPriority();
+			rule.calculatePriority();
+			if (previousPriority != rule.getPriority()) {
+				System.out.println("WARNING!! The priority was incorrect. You should rerun AuditBuilder");
+				auditDecisionTableDAO.save(rule);
+				priorityRecalculated = true;
+			}
+			if (rule.getQuestion() != null)
+				questionAnswersNeeded.add(rule.getQuestion().getId());
+			if (rule.getTag() != null)
+				tagsNeeded.add(rule.getTag().getId());
 		}
-		// TODO get the answers and tags that are Needed and prune the rules
+		if (priorityRecalculated) {
+			// Exit now rather than risk running rules that have a wrong
+			// priority. This is here mainly to support data conversion.
+			// Eventually this should never happen.
+			return;
+		}
+		if (questionAnswersNeeded.size() > 0) {
+			// Find out the answers to the needed questions and remove any rules
+			// that don't apply
+			Map<Integer, AuditData> contractorAnswers = auditDataDAO.findAnswersByContractor(con.getId(),
+					questionAnswersNeeded);
+			Iterator<AuditTypeRule> iterator = rules.iterator();
+			while (iterator.hasNext()) {
+				AuditTypeRule auditTypeRule = iterator.next();
+				if (auditTypeRule.getQuestion() != null) {
+					if (!auditTypeRule.isMatchingAnswer(contractorAnswers.get(auditTypeRule.getQuestion().getId()))) {
+						iterator.remove();
+					}
+				}
+			}
+		}
+		if (tagsNeeded.size() > 0) {
+			// Find out which tags this contractor is using from the set of
+			// potential operator tags and remove any rules that don't apply
+			List<ContractorTag> contractorTags = contractorTagDAO.getContractorTags(con.getId(), tagsNeeded);
+			Set<OperatorTag> opTags = new HashSet<OperatorTag>();
+			for (ContractorTag contractorTag : contractorTags) {
+				opTags.add(contractorTag.getTag());
+			}
+			Iterator<AuditTypeRule> iterator = rules.iterator();
+			while (iterator.hasNext()) {
+				AuditTypeRule auditTypeRule = iterator.next();
+				if (auditTypeRule.getTag() != null && !opTags.contains(auditTypeRule.getTag())) {
+					iterator.remove();
+				}
+			}
+		}
 
 		{
 			Set<AuditType> allCandidateAuditTypes = new HashSet<AuditType>();
@@ -201,7 +219,7 @@ public class AuditBuilder {
 								cAuditDAO.save(conAudit);
 							}
 						} else {
-							if (okStatuses.contains(conAudit.getAuditStatus()) && !conAudit.willExpireSoon())
+							if (!conAudit.getAuditStatus().isExpired() && !conAudit.willExpireSoon())
 								// The audit is still valid for at least another
 								// 60 days
 								found = true;
