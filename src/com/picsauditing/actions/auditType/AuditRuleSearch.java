@@ -1,20 +1,23 @@
 package com.picsauditing.actions.auditType;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.report.ReportActionSupport;
+import com.picsauditing.dao.AuditCategoryDAO;
+import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.search.Database;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterAuditRule;
@@ -31,16 +34,28 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 	protected String fieldName = "";
 	protected String search = "";
 	protected String ruleType = "";
+	
+	protected AuditTypeDAO auditTypeDao;
+	protected AuditCategoryDAO auditCatDao;
+	protected OperatorAccountDAO operator;
+	protected OperatorTagDAO opTagDao;
 
+	public AuditRuleSearch(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCatDao, 
+			OperatorAccountDAO operator, OperatorTagDAO opTagDao){
+		this.auditTypeDao = auditTypeDao;
+		this.auditCatDao = auditCatDao;
+		this.operator = operator;
+		this.opTagDao = opTagDao;		
+	}
+	
 	@Override
 	public void prepare() throws Exception {
 		String[] qA = (String[]) ActionContext.getContext().getParameters().get("q");
 		if (qA != null)
-			search = qA[0];		
+			search = Utilities.escapeQuotes(qA[0]);		
 	}
 	
 	public String execute() throws Exception {	
-
 		if("searchAuto".equals(button)){
 			return runAutoAjax();
 		}
@@ -65,24 +80,27 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 	}
 
 	protected String runAutoAjax() throws SQLException {
-		String str = "";
-		Database db = new Database();
+		List<? extends BaseTable> returnAjax = null;
 		if("auditType".equals(fieldName)){
-			str = "SELECT auditName name FROM audit_type WHERE auditName LIKE '"+search+"%'";
+			returnAjax = auditTypeDao.findWhere("t.auditName LIKE '"+search+"%'");
 		} else if("category".equals(fieldName)){
-			str = "SELECT ac.name name FROM audit_category ac WHERE ac.name LIKE '"+search+"%'";
+			returnAjax = auditCatDao.findCategoryNames(search, 100);
 		} else if("operator".equals(fieldName)){
-			str = "SELECT a.name FROM accounts a WHERE a.name LIKE '"+search+"%' AND type='Operator' OR type='Corporate'";
+			returnAjax = operator.findWhere(true, "a.name LIKE '"+search+"%'");
 		} else if("tag".equals(fieldName)){
-			str = "SELECT tag name FROM operator_tag WHERE tag LIKE '"+search+"%'";
-		}	
-		List<BasicDynaBean> re = db.select(str, false);
-		Set<String> se = new HashSet<String>();
+			returnAjax = opTagDao.findWhere(OperatorTag.class, "t.tag LIKE '"+search+"%'", 50);
+		}
 		StringBuilder sb = new StringBuilder();
-		for(BasicDynaBean bdb : re){
-			String name = bdb.get("name").toString();
-			if(se.add(name))
-				sb.append(name).append("\n");
+		for(BaseTable bt : returnAjax){
+			if(bt instanceof AuditType){
+				sb.append("audit").append("|").append(((AuditType)bt).getAuditName()).append("|").append(((AuditType)bt).getId()).append("\n");
+			} else if(bt instanceof AuditCategory){
+				sb.append("cat").append("|").append(((AuditCategory)bt).getFullyQualifiedName()).append("|").append(((AuditCategory)bt).getId()).append("\n");
+			} else if(bt instanceof OperatorAccount){
+				sb.append("op").append("|").append(((OperatorAccount)bt).getName()).append("|").append(((OperatorAccount)bt).getId()).append("\n");
+			} else if(bt instanceof OperatorTag){
+				sb.append("tag").append("|").append(((OperatorTag)bt).getTag()).append("|").append(((OperatorTag)bt).getId()).append("\n");
+			}
 		}
 		output = sb.toString();
 		
@@ -96,17 +114,17 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		if(filterOn(filter.getRiskLevel())){
 			report.addFilter(new SelectFilter("riskLevel", "a_search.risk = ?", String.valueOf(filter.getRiskLevel())));
 		}
-		if(filterOn(filter.getAuditType())){
-			report.addFilter(new SelectFilter("audit_type", "aty.auditName = '?'", String.valueOf(filter.getAuditType())));
+		if(filterOn(filter.getAuditTypeID()) && filter.getAuditTypeID()>0){
+			report.addFilter(new SelectFilter("audit_type", "aty.id= ?", String.valueOf(filter.getAuditTypeID())));
 		}
-		if(filterOn(filter.getOperator())){
-			report.addFilter(new SelectFilter("operator", "a.name = '?'", String.valueOf(filter.getOperator())));
+		if(filterOn(filter.getOpID()) && filter.getOpID()>0){
+			report.addFilter(new SelectFilter("operator", "a.id = ?", String.valueOf(filter.getOpID())));
 		}
-		if(filterOn(filter.getTag())){
-			report.addFilter(new SelectFilter("tag", "ot.tag = '?'", String.valueOf(filter.getTag())));
+		if(filterOn(filter.getTagID()) && filter.getTagID()>0){
+			report.addFilter(new SelectFilter("tag", "ot.id = ?", String.valueOf(filter.getTagID())));
 		}
 		if(filterOn(filter.getInclude())){
-			report.addFilter(new SelectFilter("include", "include = '?'", String.valueOf(filter.getInclude())));
+			report.addFilter(new SelectFilter("include", "include = ?", String.valueOf(filter.getInclude())));
 		}
 	}
 

@@ -73,7 +73,7 @@ $(function() {
 	<tr>
 		<td>Include</td>
 		<td>Audit Type</td>
-		<td>Category</td>
+		<s:if test="categoryRule"><td>Category</td></s:if>
 		<td>Account</td>
 		<td>Operator</td>
 		<td>Risk</td>
@@ -95,7 +95,7 @@ $(function() {
 			<tr class="<s:property value="key.toLowerCase().replaceAll(' ', '-')"/> clickable<s:if test="include"> on</s:if><s:else> off</s:else>" onclick="location.href='?id=<s:property value="#r.id"/>'">
 				<td><s:property value="include ? 'Yes' : 'No'"/></td>
 				<td><s:property value="auditTypeLabel"/></td>
-				<td><s:property value="auditCategoryLabel"/></td>
+				<s:if test="categoryRule"><td><s:property value="auditCategoryLabel"/></td></s:if>
 				<td><s:property value="contractorTypeLabel"/></td>
 				<td><s:property value="operatorAccountLabel"/></td>
 				<td><s:property value="riskLabel"/></td>

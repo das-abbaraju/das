@@ -1,7 +1,6 @@
 package com.picsauditing.util;
 
 import com.picsauditing.jpa.entities.ContractorType;
-import com.picsauditing.jpa.entities.LowMedHigh;
 
 @SuppressWarnings("serial")
 public class ReportFilterAuditRule extends ReportFilter {
@@ -10,11 +9,17 @@ public class ReportFilterAuditRule extends ReportFilter {
 	
 	protected Integer riskLevel = null;
 	protected Integer include;
+	
 	protected String accountType = null;
 	protected String auditType = null;
 	protected String category = null;
 	protected String operator = null;
 	protected String tag = null;
+	
+	protected int auditTypeID;
+	protected int catID;
+	protected int opID;
+	protected int tagID;
 		
 	protected String[] accountTypeList = ContractorType.getValues(true);
 
@@ -53,6 +58,8 @@ public class ReportFilterAuditRule extends ReportFilter {
 	}
 
 	public void setAuditType(String auditType) {
+		if(auditType==null || auditType.isEmpty())
+			auditTypeID = 0;
 		this.auditType = auditType;
 	}
 
@@ -61,6 +68,8 @@ public class ReportFilterAuditRule extends ReportFilter {
 	}
 
 	public void setCategory(String category) {
+		if(category==null || category.isEmpty())
+			catID = 0;
 		this.category = category;
 	}
 
@@ -69,6 +78,8 @@ public class ReportFilterAuditRule extends ReportFilter {
 	}
 
 	public void setOperator(String operator) {
+		if(operator==null || operator.isEmpty())
+			opID = 0;
 		this.operator = operator;
 	}
 
@@ -77,6 +88,8 @@ public class ReportFilterAuditRule extends ReportFilter {
 	}
 
 	public void setTag(String tag) {
+		if(tag==null || tag.isEmpty())
+			tagID = 0;
 		this.tag = tag;
 	}
 
@@ -97,6 +110,42 @@ public class ReportFilterAuditRule extends ReportFilter {
 			this.include = null;
 		else
 			this.include = include;
+	}
+
+	public int getAuditTypeID() {
+		return auditTypeID;
+	}
+
+	public void setAuditTypeID(int auditTypeID) {
+		this.auditTypeID = auditTypeID;
+	}
+
+	public int getCatID() {
+		return catID;
+	}
+
+	public void setCatID(int catID) {
+		this.catID = catID;
+	}
+
+	public int getOpID() {
+		return opID;
+	}
+
+	public void setOpID(int opID) {
+		this.opID = opID;
+	}
+
+	public int getTagID() {
+		return tagID;
+	}
+
+	public void setTagID(int tagID) {
+		this.tagID = tagID;
+	}
+
+	public void setRiskLevel(Integer riskLevel) {
+		this.riskLevel = riskLevel;
 	}
 
 }

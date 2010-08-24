@@ -135,6 +135,15 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 
 		return parent.getFullNumber() + "." + number;
 	}
+	
+	@Transient
+	public String getFullyQualifiedName(){
+		if(parent == null)
+			return getAuditType().getAuditName()+" - "+name;
+		
+		return parent.getFullyQualifiedName() +" : "+name;
+	}
+	
 
 	@Column(nullable = false)
 	public int getNumRequired() {

@@ -36,6 +36,13 @@ public class AuditCategoryDAO extends PicsDAO {
 		Query query = em.createQuery(sql);
 		return query.getResultList();
     }
+	public List<AuditCategory> findCategoryNames(String categoryName, int limit) {
+		String sql = "SELECT c FROM AuditCategory c WHERE c.name LIKE '%" + categoryName + "%'";
+		Query query = em.createQuery(sql);
+		if(limit>0)
+			query.setMaxResults(limit);
+		return query.getResultList();
+    }
 
 	public List<AuditCategory> findByAuditTypeID(int id) {
 		String sql = "SELECT c FROM AuditCategory c WHERE c.auditType.id = :auditTypeID";

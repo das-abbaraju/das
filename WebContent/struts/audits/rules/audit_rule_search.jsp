@@ -19,13 +19,41 @@ $(function() {
 		$(this).autocomplete('<s:property value="filter.destinationAction" />Ajax.action', {
 			extraParams: {fieldName: field, button: 'searchAuto'},
 			max: num,
+			width: 200,
+			formatItem : function(data,i,count){
+				return data[1]
+			},
 			formatResult: function(data,i,count){
-				return data;
+				return data[1];
 			}
+		}).result(function(event, data){
+			event.preventDefault();
+			getManageResult(data);
 		});
 	});
 });
-
+function getManageResult(data){
+	if(data[0]=='audit'){
+		$('input[name=filter.auditTypeID]').val(data[2]);
+	} else if(data[0]=='cat'){
+		$('input[name=filter.catID]').val(data[2]);
+	} else if(data[0]=='op'){
+		$('input[name=filter.opID]').val(data[2]);
+	} else if(data[0]=='tag'){
+		$('input[name=filter.tagID]').val(data[2]);
+	}	
+}
+function clearFilter(){
+	$('input[name=filter.auditTypeID]').val(0);
+	$('input[name=filter.catID]').val(0);
+	$('input[name=filter.opID]').val(0);
+	$('input[name=filter.tagID]').val(0);
+	
+	$('input[name=filter.auditType]').val("");		
+	$('input[name=filter.category]').val("");		
+	$('input[name=filter.operator]').val("");		
+	$('input[name=filter.tag]').val("");		
+}
 </script>
 </head>
 <body>
@@ -37,16 +65,22 @@ $(function() {
 	action="%{filter.destinationAction}">
 	<s:hidden name="orderBy" />
 	<s:hidden name="filter.destinationAction" />
+	<s:hidden name="filter.auditTypeID" />
+	<s:hidden name="filter.catID" />
+	<s:hidden name="filter.opID" />
+	<s:hidden name="filter.tagID" />
 	<s:hidden name="showPage" value="1" />
 
 	
 	<button id="searchfilter" type="submit" name="button" value="Search"
 		class="picsbutton positive" onclick="$('[name=showPage]').val(1)">Search</button>
-			
+	
+	<button id="clear" 
+		class="picsbutton" onclick="clearFilter(); return false;">Clear Filter</button>
 	<br clear="all" />
 	
 	<div class="filterOption">
-		Audit Type: <s:textfield id="auditType" name="filter.auditType"/>
+		Audit Type: <s:textfield cssClass="searchAuto" id="auditType" name="filter.auditType"/>
 	</div>
 	
 	<div class="filterOption">  <!-- Auto Complete -->
