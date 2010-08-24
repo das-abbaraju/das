@@ -1,6 +1,8 @@
 package com.picsauditing.jpa.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
@@ -11,6 +13,8 @@ public class AuditTypeRule extends AuditRule {
 	private AuditType dependentAuditType;
 	private AuditStatus dependentAuditStatus;
 
+	@ManyToOne
+	@JoinColumn(name = "dependentAuditTypeID")
 	public AuditType getDependentAuditType() {
 		return dependentAuditType;
 	}

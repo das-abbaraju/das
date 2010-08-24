@@ -78,6 +78,7 @@ $(function() {
 		<td>Operator</td>
 		<td>Risk</td>
 		<td>Tag</td>
+		<td>Bid-Only</td>
 		<td>Question</td>
 		<td></td>
 		<td>Answer</td>
@@ -99,6 +100,7 @@ $(function() {
 				<td><s:property value="operatorAccountLabel"/></td>
 				<td><s:property value="riskLabel"/></td>
 				<td><s:property value="tagLabel"/></td>
+				<td><s:property value="acceptsBisLabel"/></td>
 				<td><s:property value="questionLabel"/></td>
 				<td><s:property value="questionComparatorLabel"/></td>
 				<td><s:property value="questionAnswerLabel"/></td>
@@ -170,6 +172,7 @@ $(function() {
 					</s:iterator>
 					</table>
 				</td>
+				<td></td>
 				<td></td>
 				<td></td>
 				<td></td>

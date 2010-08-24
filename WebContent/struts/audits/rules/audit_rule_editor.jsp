@@ -76,6 +76,7 @@ $(function() {
 		<td>Operator</td>
 		<td>Risk</td>
 		<td>Tag</td>
+		<td>Bid-Only</td>
 		<td>Question</td>
 		<td></td>
 		<td>Answer</td>
@@ -86,7 +87,7 @@ $(function() {
 <s:iterator value="#{'Less Granular': lessGranular, 'Current Rule': rule, 'Similar Rules': similar, 'More Granular': moreGranular}">
 	<s:if test="'Current Rule' == key || value.size() > 0">
 		<tr class="rule-header clickable <s:property value="key.toLowerCase().replaceAll(' ', '-')"/>">
-			<td colspan="11" class="center"> <s:property value="key"/> </td>
+			<td colspan="12" class="center"> <s:property value="key"/> </td>
 		</tr>
 		<s:iterator value="value" id="r">
 			<tr class="<s:property value="key.toLowerCase().replaceAll(' ', '-')"/> clickable<s:if test="include"> on</s:if><s:else> off</s:else>" onclick="location.href='?id=<s:property value="#r.id"/>'">
@@ -97,6 +98,7 @@ $(function() {
 				<td><s:property value="operatorAccountLabel"/></td>
 				<td><s:property value="riskLabel"/></td>
 				<td><s:property value="tagLabel"/></td>
+				<td><s:property value="acceptsBidsLabel"/></td>
 				<td><s:property value="questionLabel"/></td>
 				<td><s:property value="questionComparatorLabel"/></td>
 				<td><s:property value="questionAnswerLabel"/></td>
@@ -174,6 +176,7 @@ $(function() {
 						</table>
 					</s:if>
 				</td>
+				<td></td>
 				<td></td>
 				<td></td>
 				<td></td>
