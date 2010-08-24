@@ -27,6 +27,8 @@ public class CategoryRuleSearch extends AuditRuleSearch {
 		if(!permissions.hasPermission(OpPerms.ManageCategoryRules))
 			throw new NoRightsException(OpPerms.ManageCategoryRules, OpType.View);
 
+		filter.setShowDependentAuditStatus(false);
+		filter.setShowDependentAuditType(false);
 		sql =  new SelectSQL("audit_category_rule a_search");
 		actionUrl = "CategoryRuleEditor.action?id=";
 		filter.setShowCategory(true);

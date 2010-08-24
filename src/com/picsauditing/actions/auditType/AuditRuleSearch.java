@@ -74,6 +74,7 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		sql.addField("IFNULL(a.name,'*') operator");
 		sql.addField("IFNULL(a_search.risk,'*') risk");
 		sql.addField("IFNULL(ot.tag,'*') tag");
+		sql.addField("a_search.acceptsBids bid");
 		sql.addJoin("LEFT JOIN audit_type aty ON aty.id = a_search.auditTypeID");
 		sql.addJoin("LEFT JOIN operator_tag ot ON ot.id = a_search.tagID");
 		sql.addJoin("LEFT JOIN accounts a ON a.id = a_search.opID");
@@ -85,7 +86,9 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 			returnAjax = auditTypeDao.findWhere("t.auditName LIKE '"+search+"%'");
 		} else if("category".equals(fieldName)){
 			returnAjax = auditCatDao.findCategoryNames(search, 100);
-		} else if("operator".equals(fieldName)){
+		} else if("dependentAuditType".equals(fieldName)){
+			returnAjax = auditTypeDao.findWhere("t.auditName LIKE '"+search+"%'");
+		}else if("operator".equals(fieldName)){
 			returnAjax = operator.findWhere(true, "a.name LIKE '"+search+"%'");
 		} else if("tag".equals(fieldName)){
 			returnAjax = opTagDao.findWhere(OperatorTag.class, "t.tag LIKE '"+search+"%'", 50);
@@ -93,7 +96,7 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		StringBuilder sb = new StringBuilder();
 		for(BaseTable bt : returnAjax){
 			if(bt instanceof AuditType){
-				sb.append("audit").append("|").append(((AuditType)bt).getAuditName()).append("|").append(((AuditType)bt).getId()).append("\n");
+				sb.append(fieldName).append("|").append(((AuditType)bt).getAuditName()).append("|").append(((AuditType)bt).getId()).append("\n");
 			} else if(bt instanceof AuditCategory){
 				sb.append("cat").append("|").append(((AuditCategory)bt).getFullyQualifiedName()).append("|").append(((AuditCategory)bt).getId()).append("\n");
 			} else if(bt instanceof OperatorAccount){
@@ -108,10 +111,10 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 	}
 
 	protected void addFilterToSQL() {
-		if(filterOn(filter.getAccountType())){
-			report.addFilter(new SelectFilter("accountType", "a_search.accountType = ?", String.valueOf(ContractorType.valueOf(filter.getAccountType()).ordinal())));
+		if(filterOn(filter.getAccountType()) && filter.getAccountType()>0){
+			report.addFilter(new SelectFilter("accountType", "a_search.accountType = ?", String.valueOf(filter.getAccountType())));
 		}
-		if(filterOn(filter.getRiskLevel())){
+		if(filterOn(filter.getRiskLevel()) && filter.getRiskLevel()>0){
 			report.addFilter(new SelectFilter("riskLevel", "a_search.risk = ?", String.valueOf(filter.getRiskLevel())));
 		}
 		if(filterOn(filter.getAuditTypeID()) && filter.getAuditTypeID()>0){
@@ -125,6 +128,9 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		}
 		if(filterOn(filter.getInclude())){
 			report.addFilter(new SelectFilter("include", "include = ?", String.valueOf(filter.getInclude())));
+		}
+		if(filter.isBid()){
+			report.addFilter(new SelectFilter("bidOnly", "acceptsBids = ?", String.valueOf(filter.isBid())));
 		}
 	}
 

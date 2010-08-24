@@ -7,6 +7,7 @@ import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
@@ -30,5 +31,21 @@ public class AuditTypeRuleSearch extends AuditRuleSearch {
 		actionUrl = "AuditTypeRuleEditor.action?id=";
 		filter.setShowCategory(false);
 		return super.execute();
+	}
+	
+	@Override
+	public void buildQuery(){
+		sql.addField("IFNULL(a_search.dependentAuditStatus, '*') dependentAuditStatus");
+		sql.addField("IFNULL(daty.auditName, '*') dependentAuditType");
+		sql.addJoin("LEFT JOIN audit_type daty ON daty.id = a_search.dependentAuditTypeID");
+		super.buildQuery();
+	}
+	
+	@Override
+	protected void addFilterToSQL() {
+		super.addFilterToSQL();
+		if(filterOn(filter.getDependentAuditStatus()) && filter.getDependentAuditStatus()>0){
+			report.addFilter(new SelectFilter("auditStatus", "a_search.dependentAuditStatus = ?", String.valueOf(filter.getDependentAuditStatus())));
+		}
 	}
 }

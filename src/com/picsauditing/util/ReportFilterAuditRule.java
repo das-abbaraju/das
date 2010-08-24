@@ -1,55 +1,69 @@
 package com.picsauditing.util;
 
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorType;
+import com.picsauditing.jpa.entities.LowMedHigh;
 
 @SuppressWarnings("serial")
 public class ReportFilterAuditRule extends ReportFilter {
 
 	protected boolean showCategory = true;
+	protected boolean showDependentAuditType = true;
+	protected boolean showDependentAuditStatus = true;
 	
-	protected Integer riskLevel = null;
 	protected Integer include;
 	
-	protected String accountType = null;
 	protected String auditType = null;
+	protected String dependentAuditType = null;
 	protected String category = null;
 	protected String operator = null;
 	protected String tag = null;
+	
+	protected Integer dependentAuditStatus = null;
+	protected Integer accountType = null;
+	protected Integer riskLevel = null;
 	
 	protected int auditTypeID;
 	protected int catID;
 	protected int opID;
 	protected int tagID;
+	protected int dependentAuditTypeID;
+	
+	protected boolean bid;
 		
-	protected String[] accountTypeList = ContractorType.getValues(true);
+	protected ContractorType[] accountTypeList = ContractorType.values();
+	protected AuditStatus[] dependentAuditStatusList = AuditStatus.values(); //.getValuesWithDefault();
+	protected LowMedHigh[] riskLevelList = LowMedHigh.values();
 
 	public Integer getRiskLevel() {
 		return riskLevel;
 	}
 
 	public void setRiskLevel(int riskLevel) {
-		if(riskLevel==0)
-			this.riskLevel = null;
-		else
-			this.riskLevel = riskLevel;
+		this.riskLevel = riskLevel;
+	}
+	
+	public Integer getDependentAuditStatus() {
+		return dependentAuditStatus;
 	}
 
-	public String getAccountType() {
+	public void setDependentAuditStatus(int dependentAuditStatus) {
+			this.dependentAuditStatus = dependentAuditStatus; // adjust for default value in list
+	}
+
+	public Integer getAccountType() {
 		return accountType;
 	}
 
-	public void setAccountType(String accountType) {
-		if("*".equals(accountType))
-			this.accountType = null;
-		else
-			this.accountType = accountType;
+	public void setAccountType(int accountType) {
+		this.accountType = accountType;
 	}
 
-	public String[] getAccountTypeList() {
+	public ContractorType[] getAccountTypeList() {
 		return accountTypeList;
 	}
 
-	public void setAccountTypeList(String[] accountTypeList) {
+	public void setAccountTypeList(ContractorType[] accountTypeList) {
 		this.accountTypeList = accountTypeList;
 	}
 
@@ -144,8 +158,62 @@ public class ReportFilterAuditRule extends ReportFilter {
 		this.tagID = tagID;
 	}
 
-	public void setRiskLevel(Integer riskLevel) {
-		this.riskLevel = riskLevel;
+	public boolean isBid() {
+		return bid;
+	}
+
+	public void setBid(boolean bid) {
+		this.bid = bid;
+	}
+
+	public boolean isShowDependentAuditType() {
+		return showDependentAuditType;
+	}
+
+	public void setShowDependentAuditType(boolean showDependentAuditType) {
+		this.showDependentAuditType = showDependentAuditType;
+	}
+
+	public boolean isShowDependentAuditStatus() {
+		return showDependentAuditStatus;
+	}
+
+	public void setShowDependentAuditStatus(boolean showDependentAuditStatus) {
+		this.showDependentAuditStatus = showDependentAuditStatus;
+	}
+
+	public String getDependentAuditType() {
+		return dependentAuditType;
+	}
+
+	public void setDependentAuditType(String dependentAuditType) {
+		if(dependentAuditType==null || dependentAuditType.isEmpty())
+			dependentAuditTypeID = 0;
+		this.dependentAuditType = dependentAuditType;
+	}
+
+	public int getDependentAuditTypeID() {
+		return dependentAuditTypeID;
+	}
+
+	public void setDependentAuditTypeID(int dependentAuditTypeID) {
+		this.dependentAuditTypeID = dependentAuditTypeID;
+	}
+
+	public AuditStatus[] getDependentAuditStatusList() {
+		return dependentAuditStatusList;
+	}
+
+	public void setDependentAuditStatusList(AuditStatus[] dependentAuditStatusList) {
+		this.dependentAuditStatusList = dependentAuditStatusList;
+	}
+
+	public LowMedHigh[] getRiskLevelList() {
+		return riskLevelList;
+	}
+
+	public void setRiskLevelList(LowMedHigh[] riskLevelList) {
+		this.riskLevelList = riskLevelList;
 	}
 
 }

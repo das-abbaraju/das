@@ -33,8 +33,10 @@ $(function() {
 	});
 });
 function getManageResult(data){
-	if(data[0]=='audit'){
+	if(data[0]=='auditType'){
 		$('input[name=filter.auditTypeID]').val(data[2]);
+	} else if(data[0]=='dependentAuditType'){
+		$('input[name=filter.dependentAuditTypeID]').val(data[2]);
 	} else if(data[0]=='cat'){
 		$('input[name=filter.catID]').val(data[2]);
 	} else if(data[0]=='op'){
@@ -45,11 +47,13 @@ function getManageResult(data){
 }
 function clearFilter(){
 	$('input[name=filter.auditTypeID]').val(0);
+	$('input[name=filter.dependentAuditTypeID]').val(0);
 	$('input[name=filter.catID]').val(0);
 	$('input[name=filter.opID]').val(0);
 	$('input[name=filter.tagID]').val(0);
 	
 	$('input[name=filter.auditType]').val("");		
+	$('input[name=filter.dependentAuditTypeID]').val("");		
 	$('input[name=filter.category]').val("");		
 	$('input[name=filter.operator]').val("");		
 	$('input[name=filter.tag]').val("");		
@@ -66,6 +70,7 @@ function clearFilter(){
 	<s:hidden name="orderBy" />
 	<s:hidden name="filter.destinationAction" />
 	<s:hidden name="filter.auditTypeID" />
+	<s:hidden name="filter.dependentAuditTypeID" />
 	<s:hidden name="filter.catID" />
 	<s:hidden name="filter.opID" />
 	<s:hidden name="filter.tagID" />
@@ -80,7 +85,7 @@ function clearFilter(){
 	<br clear="all" />
 	
 	<div class="filterOption">
-		Audit Type: <s:textfield cssClass="searchAuto" id="auditType" name="filter.auditType"/>
+		Audit Type: <s:textfield cssClass="searchAuto forms" id="auditType" name="filter.auditType"/>
 	</div>
 	
 	<div class="filterOption">  <!-- Auto Complete -->
@@ -90,31 +95,45 @@ function clearFilter(){
 	
 	<s:if test="filter.showCategory">
 		<div class="filterOption">  <!-- Auto Complete -->
-			Category: <s:textfield cssClass="searchAuto" id="category" name="filter.category"/>
+			Category: <s:textfield cssClass="searchAuto forms" id="category" name="filter.category"/>
 		</div>
 	</s:if>
 	
 	<div class="filterOption">
-	<s:if test="filter.accountType==NULL">
-		<s:set var="acT" value='"*"' />
-	</s:if>
-	<s:else>
-		<s:set var="acT" value='filter.accountType' />
-	</s:else>
-		Account Type: <s:select cssClass="forms" list="filter.accountTypeList" name="filter.accountType" value="acT" />
+		Account Type: <s:select cssClass="forms" list="filter.accountTypeList" name="filter.accountType"
+		 	listKey="ordinal()" listValue="name()" headerKey="-1" headerValue="*" />
 	</div>
 	
 	<div class="filterOption">  <!-- Auto Complete -->
-		Operator: <s:textfield cssClass="searchAuto" id="operator" name="filter.operator"/>
+		Operator: <s:textfield cssClass="searchAuto forms" id="operator" name="filter.operator"/>
 	</div>	
 	
 	<div class="filterOption">Risk: 
-		<s:select cssClass="forms" list="#{'0':'*','1':'Low','2':'Medium','3':'High'}" name="filter.riskLevel" value="filter.riskLevel" />
+		<s:select cssClass="forms" list="filter.riskLevelList" name="filter.riskLevel" value="filter.riskLevel"
+			listKey="ordinal()" listValue="name()" headerKey="-1" headerValue="*" />
 	</div>
 	
 	<div class="filterOption"> <!-- Auto Complete -->
-		Tag: <s:textfield cssClass="searchAuto" id="tag" name="filter.tag"/>
+		Tag: <s:textfield cssClass="searchAuto forms" id="tag" name="filter.tag"/>
 	</div>
+	
+	<div class="filterOption"> <!-- Auto Complete -->
+		Bid-Only: <s:checkbox label="Bid-Only" name="filter.bid" value="filter.bid" />
+	</div>
+	
+	<s:if test="filter.showDependentAuditType">
+		<div class="filterOption">  <!-- Auto Complete -->
+			Dependent Audit Type: <s:textfield cssClass="searchAuto forms" id="dependentAuditType" name="filter.dependentAuditType"/>
+		</div>
+	</s:if>
+	
+	<s:if test="filter.showDependentAuditStatus">
+		<div class="filterOption">  <!-- Auto Complete -->
+			Dependent Audit Status: 
+			<s:select cssClass="forms" list="filter.dependentAuditStatusList" name="filter.dependentAuditStatus"
+				listKey="ordinal()" listValue="name()" headerKey="-1" headerValue="*" />
+		</div>
+	</s:if>
 	
 	<br clear="all" />
 </s:form>
