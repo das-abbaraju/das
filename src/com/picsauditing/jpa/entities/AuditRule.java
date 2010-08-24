@@ -201,7 +201,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 			// Several per operator, potentially thousands
 			priority += 130;
 	}
-
+	
 	@Transient
 	public boolean isMatchingAnswer(AuditData data) {
 		if (data == null)
@@ -223,7 +223,6 @@ public class AuditRule extends BaseDecisionTreeRule {
 	}
 
 	public void merge(AuditRule source) {
-		super.merge(source);
 		if (auditType == null)
 			auditType = source.auditType;
 		if (risk == null)

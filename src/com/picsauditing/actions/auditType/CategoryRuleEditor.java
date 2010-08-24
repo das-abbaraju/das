@@ -22,6 +22,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	private List<AuditCategoryRule> lessGranular;
 	private List<AuditCategoryRule> moreGranular;
 	private List<AuditCategoryRule> similar;
+	private Date date = new Date();
 
 	private AuditDecisionTableDAO dao;
 
@@ -43,16 +44,36 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			if ("create".equals(button)) {
 				AuditCategoryRule source = dao.findAuditCategoryRule(id);
 				rule.merge(source);
+				rule.setEffectiveDate(new Date());
 				rule.calculatePriority();
 				rule.setAuditColumns(permissions);
 				dao.save(rule);
-				this.redirect("?id=" + rule.getId());
+				this.redirect("CategoryRuleEditor.action?id=" + rule.getId());
+				return BLANK;
+			}
+			if ("delete".equals(button)) {
+				String redirect = "";
+				List<AuditCategoryRule> lGranular = dao.getLessGranular(rule, date);
+				if (lGranular.size() > 0)
+					redirect = "CategoryRuleEditor.action?id=" + lGranular.get(lGranular.size() - 1).getId();
+				else {
+					redirect = "CategoryRuleSearch.action";
+					if (rule.getAuditCategory() != null)
+						redirect += "filter.category=" + rule.getAuditCategory().getName() + "&";
+					if (rule.getAuditType() != null)
+						redirect += "filter.auditType=" + rule.getAuditType().getAuditName() + "&";
+				}
+
+				rule.setExpirationDate(new Date());
+				rule.setAuditColumns(permissions);
+				dao.save(rule);
+				this.redirect(redirect);
 				return BLANK;
 			}
 		}
 
-		lessGranular = dao.getLessGranular(rule, new Date());
-		moreGranular = dao.getMoreGranular(rule, new Date());
+		lessGranular = dao.getLessGranular(rule, date);
+		moreGranular = dao.getMoreGranular(rule, date);
 		// similar = dao.getSimilar(rule, new Date());
 
 		return SUCCESS;
@@ -61,7 +82,8 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	public List<BasicDynaBean> getPercentOn(String field) throws SQLException {
 		Database db = new Database();
 		SelectSQL sql = new SelectSQL("audit_category_rule");
-		sql.addWhere("auditTypeID = " + rule.getAuditType().getId());
+		if (rule.getAuditType() != null)
+			sql.addWhere("auditTypeID = " + rule.getAuditType().getId());
 		sql.addWhere("id <> " + id);
 		sql.addWhere(field + " IS NOT NULL");
 		sql.addGroupBy(field);
@@ -110,6 +132,14 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	public void setCategoryRule(boolean categoryRule) {
 		this.categoryRule = categoryRule;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 }

@@ -41,14 +41,12 @@
 		font-size: 120%;
 		background-color: #f9f9f9;	
 	}
+	tr.rule-percents {
+		height: 0px;
+		overflow-y: auto;
+	}
 	tr.rule-percents td {
 		vertical-align:top;
-	}
-	td.hide-hover {
-		display: none;
-	}
-	tr.hide-hover:hover td.hide-hover {
-		display: table-cell;
 	}
 </style>
 <script type="text/javascript">
@@ -106,8 +104,8 @@ $(function() {
 					<s:if test="'Similar Rules' == key">
 						<a href="?button=merge">Merge</a>
 					</s:if>
-					<s:if test="'More Granular' == key">
-						<a class="remove" href="?button=delete">Delete</a>
+					<s:if test="'More Granular' == key || 'Current Rule' == key">
+						<a class="remove" href="?id=<s:property value="id"/>&button=delete">Delete</a>
 					</s:if>
 				</td>
 			</tr>
@@ -117,51 +115,64 @@ $(function() {
 			<tr class="rule-percents">
 				<td></td>
 				<td></td>
-				<s:if test="categoryRule"><td>
-					<table class="inner">
-					<s:iterator value="getPercentOn('catID')">
-						<tr class="hide-hover">
-							<td><s:property value="get('catID')"/></td>
-							<td><s:property value="get('percentOn')"/></td>
-							<td class="hide-hover"><a href="?button=create&rule.auditCategory.id=<s:property value="get('catID')"/>">Create</a></td>
-						</tr>
-					</s:iterator>
-					</table>
-				</td>
+				<s:if test="categoryRule">
+					<td>
+						<s:if test="rule.auditCategory == null">
+							<table class="inner">
+							<s:iterator value="getPercentOn('catID')">
+								<s:if test="rule.include ? get('percentOn') < .3 : get('percentOn') > .3">
+									<tr class="clickable" onclick="location.href='?id=<s:property value="id"/>&button=create&rule.include=<s:property value="!rule.include"/>&rule.auditCategory.id=<s:property value="get('catID')"/>'">
+										<td class="right"><s:property value="get('catID')"/></td>
+										<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
+									</tr>
+								</s:if>
+							</s:iterator>
+							</table>
+						</s:if>
+					</td>
 				</s:if>
 				<td></td>
 				<td>
-					<table class="inner">
-					<s:iterator value="getPercentOn('opID')">
-						<tr class="hide-hover">
-							<td><s:property value="get('opID')"/></td>
-							<td><s:property value="get('percentOn')"/></td>
-							<td class="hide-hover"><a href="?button=create&rule.operatorAccount.id=<s:property value="get('opID')"/>">Create</a></td>
-						</tr>
-					</s:iterator>
-					</table>
+					<s:if test="rule.operatorAccount == null">
+						<table class="inner">
+						<s:iterator value="getPercentOn('opID')">
+							<s:if test="rule.include ? get('percentOn') < .3 : get('percentOn') > .3">
+								<tr class="clickable" onclick="location.href='?id=<s:property value="id"/>&button=create&rule.include=<s:property value="!rule.include"/>&rule.operatorAccount.id=<s:property value="get('opID')"/>'">
+									<td class="right"><s:property value="get('opID')"/></td>
+									<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
+								</tr>
+							</s:if>
+						</s:iterator>
+						</table>
+					</s:if>
 				</td>
 				<td>
-					<table class="inner">
-					<s:iterator value="getPercentOn('risk')">
-						<tr class="hide-hover">
-							<td><s:property value="get('risk')"/></td>
-							<td><s:property value="get('percentOn')"/></td>
-							<td class="hide-hover"><a href="?button=create&rule.risk=<s:property value="get('risk')"/>">Create</a></td>
-						</tr>
-					</s:iterator>
-					</table>
+					<s:if test="rule.risk == null">
+						<table class="inner">
+						<s:iterator value="getPercentOn('risk')">
+							<s:if test="rule.include ? get('percentOn') < .3 : get('percentOn') > .3">
+								<tr class="clickable" onclick="location.href='?id=<s:property value="id"/>&button=create&rule.include=<s:property value="!rule.include"/>&rule.risk=<s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('risk'))"/>'">
+									<td class="right"><s:property value="get('risk')"/></td>
+									<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
+								</tr>
+							</s:if>
+						</s:iterator>
+						</table>
+					</s:if>
 				</td>
 				<td>
-					<table class="inner">
-					<s:iterator value="getPercentOn('tagID')">
-						<tr class="hide-hover">
-							<td><s:property value="get('tagID')"/></td>
-							<td><s:property value="get('percentOn')"/></td>
-							<td class="hide-hover"><a href="?button=create&rule.tag.id<s:property value="get('tagID')"/>">Create</a></td>
-						</tr>
-					</s:iterator>
-					</table>
+					<s:if test="rule.tag == null">
+						<table class="inner">
+						<s:iterator value="getPercentOn('tagID')">
+							<s:if test="rule.include ? get('percentOn') < .3 : get('percentOn') > .3">
+								<tr class="clickable" onclick="location.href='?id=<s:property value="id"/>&button=create&rule.include=<s:property value="!rule.include"/>&rule.tag.id=<s:property value="get('tagID')"/>'">
+									<td class="right"><s:property value="get('tagID')"/></td>
+									<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
+								</tr>
+							</s:if>
+						</s:iterator>
+						</table>
+					</s:if>
 				</td>
 				<td></td>
 				<td></td>
