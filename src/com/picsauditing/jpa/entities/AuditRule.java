@@ -201,7 +201,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 			// Several per operator, potentially thousands
 			priority += 130;
 	}
-	
+
 	@Transient
 	public boolean isMatchingAnswer(AuditData data) {
 		if (data == null)

@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -28,5 +29,10 @@ public abstract class BaseDecisionTreeRule extends BaseHistory {
 	}
 
 	abstract public void calculatePriority();
+
+	@Transient
+	public int getDepth() {
+		return (int) Math.floor(priority / 100.0);
+	}
 
 }
