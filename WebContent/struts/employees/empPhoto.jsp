@@ -18,7 +18,7 @@ jQuery(document).ready(function(){
 		aspectRatio: 1,
 		minSize: [150,150]
 	});
-	stepID =<s:property value="step"/> 
+	stepID =<s:property value="step"/> ;
 	setStep(stepID);
 	
 });
@@ -72,8 +72,6 @@ function setStep(id){
 </div>
 <a class="picsbutton" href="ManageEmployees.action?employee.id=<s:property value="employee.id"/>">&lt;&lt; Back to Manage Employee</a>
 <s:include value="../actionMessages.jsp" />
-<s:if test="step==2 & employee.photo == null">
-</s:if>
 <br />
 <s:if test="showSavePhoto()">
 	
@@ -98,7 +96,9 @@ function setStep(id){
 		<fieldset class="form submit">
 			<button class="picsbutton positive uploadStep" onclick="checkPhoto();" name="button" value="Upload" type="submit">Upload Photo</button>
 			<s:if test="showSavePhoto()">
-				<button class="picsbutton positive cropStep" name="button" type="submit" value="Save">Crop Photo</button>
+				<s:if test="employee.photo ==null">
+					<button class="picsbutton positive cropStep" name="button" type="submit" value="Save">Crop Photo</button>
+				</s:if>
 				<button class="picsbutton negative cropStep" name="button" type="submit" value="Delete"
 					onclick="return confirm('Are you sure you want to delete this photo? This action cannot be undone.');">Delete Photo</button>
 			</s:if>
