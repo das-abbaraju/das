@@ -170,7 +170,7 @@ input[type=submit] {
 						</s:if> </span></td>
 						<s:if test="edit">
 							<td><s:textfield name="invoice.items[%{#stat.index}].description" value="%{description}" size="30" />
-							(optional description) <pics:permission perm="InvoiceEdit" type="Edit">
+							(optional description) <pics:permission perm="Billing" type="Edit">
 								<s:if test="invoiceFee.feeClass == 'Membership' && invoiceFee.fee != contractor.newMembershipLevel.fee">
 									<div class="buttons"><a
 										href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />&button=Change to"
