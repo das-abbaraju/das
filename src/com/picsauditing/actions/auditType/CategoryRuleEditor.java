@@ -171,7 +171,10 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		sql.addWhere("effectiveDate <= NOW() AND expirationDate > NOW()");
 		sql.addGroupBy(field);
 
-		sql.addField(field);
+		if ("risk".equals(field))
+			sql.addField("CASE risk WHEN 1 THEN 'Low' WHEN 2 THEN 'Med' WHEN 3 THEN 'High' ELSE NULL END AS risk");
+		else
+			sql.addField(field);
 		sql.addField("SUM(include) includeTotal");
 		sql.addField("COUNT(*) total");
 		sql.addField("SUM(include)/COUNT(*) percentOn");
