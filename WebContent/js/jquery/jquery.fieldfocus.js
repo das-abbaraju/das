@@ -97,7 +97,7 @@ jQuery(function(){
 	$('.required :input').requiredfields();
 	
 	$('fieldset.form ol li').live('click', function() {
-		$(this).not('.fieldhelp-focused').find(':input:first:not(:disabled)').focus();
+		$(this).not('.fieldhelp-focused').find(':input:visible:first:not(:disabled)').focus();
 	});
 	
 	$('fieldset.form h2.formLegend').jumpTo();

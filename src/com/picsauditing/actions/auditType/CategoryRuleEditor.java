@@ -34,13 +34,21 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
-		if (id == 0)
-			return BLANK;
-
-		if (rule == null)
+		if (rule == null) {
+			if (id == 0)
+				return SUCCESS;
 			rule = dao.findAuditCategoryRule(id);
+		}
 
 		if (button != null) {
+			if ("new".equals(button)) {
+				rule.setEffectiveDate(new Date());
+				rule.calculatePriority();
+				rule.setAuditColumns(permissions);
+				dao.save(rule);
+				this.redirect("CategoryRuleEditor.action?id=" + rule.getId());
+				return BLANK;
+			}
 			if ("create".equals(button)) {
 				AuditCategoryRule source = dao.findAuditCategoryRule(id);
 				rule.merge(source);
