@@ -97,3 +97,9 @@ update audit_type_rule set priority = priority + 104 where opID > 0;
 update audit_type_rule set priority = priority + 130 where tagID > 0;
 
 delete from audit_category_rule where opID > 0 and opID not in (select id from accounts);
+
+-- levels --
+update audit_category_rule a1 set level = (if(catID is null, 0, 1) + if(auditTypeID is null, 0, 1) +
+if(risk is null, 0, 1) + if(opID is null, 0, 1) +
+if(tagID is null, 0, 1) + if(questionID is null, 0, 1) +
+if(contractorType is null, 0, 1) + if(acceptsBids is null, 0, 1));
