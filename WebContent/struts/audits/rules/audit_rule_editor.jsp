@@ -202,75 +202,28 @@ $(function() {
 					</td>
 				</tr>
 			</s:iterator>
-			
+						
 			<s:if test="'Current Rule' == key">
 				<tr class="rule-percents">
-					<td></td>
-					<td></td>
-					<s:if test="categoryRule">
+					<s:iterator value="columns" id="col"> <!-- all columns -->
 						<td>
-							<s:if test="rule.auditCategory == null">
-								<table class="inner">
-								<s:iterator value="getPercentOn('catID')">
-									<s:if test="rule.include ? get('percentOn') < .3 : get('percentOn') > .3">
-										<tr class="clickable" onclick="location.href='?id=<s:property value="id"/>&button=create&rule.include=<s:property value="!rule.include"/>&rule.auditCategory.id=<s:property value="get('catID')"/>'">
-											<td class="right"><s:property value="get('catID')"/></td>
-											<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
-										</tr>
-									</s:if>
+							<s:if test="#col.value!=null">
+								<s:iterator value="#col.value" id="entry"> <!-- iterate over value, is a map with 1 entry -->
+									<table class="inner">
+										<s:iterator value="%{getPercentOn(#entry.key)}">
+											<s:if test="rule.include ? get('percentOn') < .3 : get('percentOn') > .3">
+												<tr class="clickable" onclick="location.href='?button=create&id=<s:property value="id"/><s:property value="#entry.value"/><s:property value="%{get(#entry.key)}"/>'">
+													<td class="right"><s:property value="%{get(#entry.key)}"/></td>
+													<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
+												</tr>
+											</s:if>
+										</s:iterator>
+									</table>
 								</s:iterator>
-								</table>
 							</s:if>
 						</td>
-					</s:if>
-					<td></td>
-					<td>
-						<s:if test="rule.operatorAccount == null">
-							<table class="inner">
-							<s:iterator value="getPercentOn('opID')">
-								<s:if test="rule.include ? get('percentOn') < .3 : get('percentOn') > .3">
-									<tr class="clickable" onclick="location.href='?id=<s:property value="id"/>&button=create&rule.include=<s:property value="!rule.include"/>&rule.operatorAccount.id=<s:property value="get('opID')"/>'">
-										<td class="right"><s:property value="get('opID')"/></td>
-										<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
-									</tr>
-								</s:if>
-							</s:iterator>
-							</table>
-						</s:if>
-					</td>
-					<td>
-						<s:if test="rule.risk == null">
-							<table class="inner">
-							<s:iterator value="getPercentOn('risk')">
-								<s:if test="rule.include ? get('percentOn') < .3 : get('percentOn') > .3">
-									<tr class="clickable" onclick="location.href='?id=<s:property value="id"/>&button=create&rule.include=<s:property value="!rule.include"/>&rule.risk=<s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('risk'))"/>'">
-										<td class="right"><s:property value="get('risk')"/></td>
-										<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
-									</tr>
-								</s:if>
-							</s:iterator>
-							</table>
-						</s:if>
-					</td>
-					<td>
-						<s:if test="rule.tag == null">
-							<table class="inner">
-							<s:iterator value="getPercentOn('tagID')">
-								<s:if test="rule.include ? get('percentOn') < .3 : get('percentOn') > .3">
-									<tr class="clickable" onclick="location.href='?id=<s:property value="id"/>&button=create&rule.include=<s:property value="!rule.include"/>&rule.tag.id=<s:property value="get('tagID')"/>'">
-										<td class="right"><s:property value="get('tagID')"/></td>
-										<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
-									</tr>
-								</s:if>
-							</s:iterator>
-							</table>
-						</s:if>
-					</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
+					</s:iterator>
+					<td></td> <!-- delete column -->
 				</tr>
 			</s:if>
 		</s:if>

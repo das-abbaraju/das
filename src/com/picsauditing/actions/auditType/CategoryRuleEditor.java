@@ -2,7 +2,10 @@ package com.picsauditing.actions.auditType;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
@@ -25,6 +28,8 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	private Date date = new Date();
 
 	private AuditDecisionTableDAO dao;
+	
+	private Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String,String>>();
 
 	public CategoryRuleEditor(AuditDecisionTableDAO auditDecisionTableDAO) {
 		this.dao = auditDecisionTableDAO;
@@ -34,11 +39,16 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
-		if (rule == null) {
+		if (id == 0)
+			return BLANK;
+
+		if (rule == null){
 			if (id == 0)
 				return SUCCESS;
 			rule = dao.findAuditCategoryRule(id);
 		}
+		
+		addFields();
 
 		if (button != null) {
 			if ("new".equals(button)) {
@@ -83,8 +93,48 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		lessGranular = dao.getLessGranular(rule, date);
 		moreGranular = dao.getMoreGranular(rule, date);
 		// similar = dao.getSimilar(rule, new Date());
-
 		return SUCCESS;
+	}
+
+	private void addFields() {
+		//include
+		columns.put("include", null);
+		//audit_type
+		columns.put("audit_type", null);
+		//category
+		if(rule.getAuditCategory()==null){
+			Map<String, String> m = new HashMap<String, String>();
+			m.put("catID", "&rule.include="+!rule.isInclude()+"&rule.auditCategory.id=");
+			columns.put("category", m);
+		} else columns.put("category", null);
+		//account
+		columns.put("account", null);
+		//operator
+		if(rule.getOperatorAccount()==null){
+			Map<String, String> m = new HashMap<String, String>();
+			m.put("opID", "&rule.include="+!rule.isInclude()+"&rule.operatorAccount.id=");
+			columns.put("operator", m);
+		} else columns.put("operator", null);
+		//risk
+		if(rule.getRisk()==null){
+			Map<String, String> m = new HashMap<String, String>();
+			m.put("risk", "&rule.include="+!rule.isInclude()+"&rule.risk=");
+			columns.put("risk", m);
+		} else columns.put("risk", null);
+		//tag
+		if(rule.getTag()==null){
+			Map<String, String> m = new HashMap<String, String>();
+			m.put("tagID", "&rule.include="+!rule.isInclude()+"&rule.tag.id=");
+			columns.put("tag", m);
+		} else columns.put("tag", null);
+		//bid-onl7
+		columns.put("bid", null);
+		//question
+		columns.put("question", null);
+		//comp
+		columns.put("comp", null);
+		//answer
+		columns.put("answer", null);
 	}
 
 	public List<BasicDynaBean> getPercentOn(String field) throws SQLException {
@@ -148,6 +198,14 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public Map<String, Map<String, String>> getColumns() {
+		return columns;
+	}
+
+	public void setColumns(Map<String, Map<String, String>> columns) {
+		this.columns = columns;
 	}
 
 }
