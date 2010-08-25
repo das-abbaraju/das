@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
@@ -69,7 +70,7 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		sql.addField("a_search.id");
 		sql.addField("a_search.include");
 		sql.addField("IFNULL(aty.auditName,'*') audit_type");
-		sql.addField("IFNULL(a_search.accountType,'*') account_type");
+		sql.addField("IFNULL(a_search.contractorType,'*') con_type");
 		sql.addField("IFNULL(a.name,'*') operator");
 		sql.addField("IFNULL(a_search.risk,'*') risk");
 		sql.addField("IFNULL(ot.tag,'*') tag");
@@ -109,9 +110,9 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		return "autocomp";
 	}
 
-	protected void addFilterToSQL() {
-		if(filterOn(filter.getAccountType()) && filter.getAccountType()>0){
-			report.addFilter(new SelectFilter("accountType", "a_search.accountType = ?", String.valueOf(filter.getAccountType())));
+	protected void addFilterToSQL() throws Exception {
+		if(filterOn(filter.getContractorType()) && filter.getContractorType()>0){
+			report.addFilter(new SelectFilter("accountType", "a_search.contractorType = ?", String.valueOf(filter.getContractorType())));
 		}
 		if(filterOn(filter.getRiskLevel()) && filter.getRiskLevel()>0){
 			report.addFilter(new SelectFilter("riskLevel", "a_search.risk = ?", String.valueOf(filter.getRiskLevel())));
@@ -130,6 +131,9 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		}
 		if(filter.isBid()){
 			report.addFilter(new SelectFilter("bidOnly", "acceptsBids = ?", String.valueOf(filter.isBid())));
+		}
+		if(filterOn(filter.getCheckDate())){
+			report.addFilter(new SelectFilter("effectiveDate", "effectiveDate <= '?' AND expirationDate >= '?'", String.valueOf(DateBean.toDBFormat(filter.getCheckDate()))+" 24:00:00"));
 		}
 	}
 

@@ -42,7 +42,7 @@ public class AuditTypeRuleSearch extends AuditRuleSearch {
 	}
 	
 	@Override
-	protected void addFilterToSQL() {
+	protected void addFilterToSQL() throws Exception {
 		super.addFilterToSQL();
 		if(filterOn(filter.getDependentAuditStatus()) && filter.getDependentAuditStatus()>0){
 			report.addFilter(new SelectFilter("auditStatus", "a_search.dependentAuditStatus = ?", String.valueOf(filter.getDependentAuditStatus())));

@@ -42,7 +42,7 @@ public class CategoryRuleSearch extends AuditRuleSearch {
 		sql.addJoin("LEFT JOIN audit_category ac ON ac.id = a_search.catID");
 	}
 	@Override
-	protected void addFilterToSQL() {
+	protected void addFilterToSQL() throws Exception {
 		super.addFilterToSQL();
 		if(filterOn(filter.getCatID()) && filter.getCatID()>0){
 			report.addFilter(new SelectFilter("category", "ac.id = ?", String.valueOf(filter.getCatID())));

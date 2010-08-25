@@ -1,5 +1,8 @@
 package com.picsauditing.util;
 
+import java.util.Date;
+
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -20,8 +23,10 @@ public class ReportFilterAuditRule extends ReportFilter {
 	protected String tag = null;
 	
 	protected Integer dependentAuditStatus = null;
-	protected Integer accountType = null;
+	protected Integer contractorType = null;
 	protected Integer riskLevel = null;
+	
+	protected Date checkDate = null;
 	
 	protected int auditTypeID;
 	protected int catID;
@@ -31,7 +36,7 @@ public class ReportFilterAuditRule extends ReportFilter {
 	
 	protected boolean bid;
 		
-	protected ContractorType[] accountTypeList = ContractorType.values();
+	protected ContractorType[] contractorTypeList = ContractorType.values();
 	protected AuditStatus[] dependentAuditStatusList = AuditStatus.values(); //.getValuesWithDefault();
 	protected LowMedHigh[] riskLevelList = LowMedHigh.values();
 
@@ -51,20 +56,20 @@ public class ReportFilterAuditRule extends ReportFilter {
 			this.dependentAuditStatus = dependentAuditStatus; // adjust for default value in list
 	}
 
-	public Integer getAccountType() {
-		return accountType;
+	public Integer getContractorType() {
+		return contractorType;
 	}
 
-	public void setAccountType(int accountType) {
-		this.accountType = accountType;
+	public void setContractorType(int contractorType) {
+		this.contractorType = contractorType;
 	}
 
-	public ContractorType[] getAccountTypeList() {
-		return accountTypeList;
+	public ContractorType[] getContractorTypeList() {
+		return contractorTypeList;
 	}
 
-	public void setAccountTypeList(ContractorType[] accountTypeList) {
-		this.accountTypeList = accountTypeList;
+	public void setContractorTypeList(ContractorType[] contractorTypeList) {
+		this.contractorTypeList = contractorTypeList;
 	}
 
 	public String getAuditType() {
@@ -214,6 +219,14 @@ public class ReportFilterAuditRule extends ReportFilter {
 
 	public void setRiskLevelList(LowMedHigh[] riskLevelList) {
 		this.riskLevelList = riskLevelList;
+	}
+
+	public Date getCheckDate() {
+		return checkDate;
+	}
+
+	public void setCheckDate(String checkDate) {
+		this.checkDate = DateBean.parseDate(checkDate);
 	}
 
 }

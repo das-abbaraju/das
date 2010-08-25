@@ -16,7 +16,7 @@
 				<td>Include</td>
 				<td>Audit Type</td>
 				<s:if test="filter.showCategory"><td>Category</td></s:if>
-				<td>Account Type</td>
+				<td>Contractor Type</td>
 				<td>Operator</td>
 				<s:if test="filter.showDependentAuditType"><td>Dependent Audit Type</td></s:if>
 				<s:if test="filter.showDependentAuditStatus"><td>Dependent Audit Status</td></s:if>
@@ -27,11 +27,11 @@
 		</thead>
 		<tbody>
 			<s:iterator value="data" status="stat">
-				<tr class="clickable" onclick="window.location='<s:property value="actionUrl"/><s:property value="get('id')"/>'">
+				<tr class="clickable" onclick="window.location='<s:property value="actionUrl"/><s:property value="get('id')"/><s:if test="filter.checkDate!=null">&date=<s:property value="filter.checkDate"/></s:if>'">
 					<td><s:if test="get('include')==1">Yes</s:if><s:else>No</s:else></td>					
 					<td><s:property value="get('audit_type')"/></td>					
 					<s:if test="filter.showCategory"><td><s:property value="get('category')"/></td></s:if>				
-					<td><s:property value="get('account_type')"/></td>					
+					<td><s:property value="get('con_type')"/></td>					
 					<td><s:property value="get('operator')"/></td>		
 					<s:if test="filter.showDependentAuditType"><td><s:property value="get('dependentAuditType')"/></td></s:if>
 					<s:if test="filter.showDependentAuditStatus"><td><s:property value="get('dependentAuditStatus')"/></td></s:if>			

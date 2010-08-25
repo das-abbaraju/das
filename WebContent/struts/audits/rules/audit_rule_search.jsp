@@ -10,6 +10,18 @@
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
 $(function() {
+	$('.datepicker').datepicker({
+			changeMonth: true,
+			changeYear:true,
+			yearRange: '1940:2010',
+			showOn: 'button',
+			buttonImage: 'images/icon_calendar.gif',
+			buttonImageOnly: true,
+			buttonText: 'Choose a date...',
+			constrainInput: true,
+			showAnim: 'fadeIn'
+	});
+	
 	$('.searchAuto').each(function(){
 		var field =  $(this).attr('id');
 		if(field=='operator')
@@ -46,17 +58,11 @@ function getManageResult(data){
 	}	
 }
 function clearFilter(){
-	$('input[name=filter.auditTypeID]').val(0);
-	$('input[name=filter.dependentAuditTypeID]').val(0);
-	$('input[name=filter.catID]').val(0);
-	$('input[name=filter.opID]').val(0);
-	$('input[name=filter.tagID]').val(0);
-	
-	$('input[name=filter.auditType]').val("");		
-	$('input[name=filter.dependentAuditTypeID]').val("");		
-	$('input[name=filter.category]').val("");		
-	$('input[name=filter.operator]').val("");		
-	$('input[name=filter.tag]').val("");		
+	$('#searchFilterOptions input:hidden').val(0);
+	$('#searchFilterOptions input').not(':hidden').val("");		
+	$('select[name=filter.include]').val(2);
+	$('select[name=filter.contractorType]').val(-1);
+	$('select[name=filter.riskLevel]').val(-1);
 }
 </script>
 </head>
@@ -67,13 +73,6 @@ function clearFilter(){
 <div id="search">
 <s:form id="form1"
 	action="%{filter.destinationAction}">
-	<s:hidden name="orderBy" />
-	<s:hidden name="filter.destinationAction" />
-	<s:hidden name="filter.auditTypeID" />
-	<s:hidden name="filter.dependentAuditTypeID" />
-	<s:hidden name="filter.catID" />
-	<s:hidden name="filter.opID" />
-	<s:hidden name="filter.tagID" />
 	<s:hidden name="showPage" value="1" />
 
 	
@@ -84,56 +83,69 @@ function clearFilter(){
 		class="picsbutton" onclick="clearFilter(); return false;">Clear Filter</button>
 	<br clear="all" />
 	
-	<div class="filterOption">
-		Audit Type: <s:textfield cssClass="searchAuto forms" id="auditType" name="filter.auditType"/>
-	</div>
-	
-	<div class="filterOption">  <!-- Auto Complete -->
-		Include:
-		<s:select cssClass="forms" list="#{'2':'Any','1':'Yes','0':'No'}" name="filter.include" value="filter.include" />
-	</div>
-	
-	<s:if test="filter.showCategory">
-		<div class="filterOption">  <!-- Auto Complete -->
-			Category: <s:textfield cssClass="searchAuto forms" id="category" name="filter.category"/>
+	<div id="searchFilterOptions">	
+	<s:hidden name="orderBy" />
+	<s:hidden name="filter.destinationAction" />
+	<s:hidden name="filter.auditTypeID" />
+	<s:hidden name="filter.dependentAuditTypeID" />
+	<s:hidden name="filter.catID" />
+	<s:hidden name="filter.opID" />
+	<s:hidden name="filter.tagID" />
+		<div class="filterOption">
+			Audit Type: <s:textfield cssClass="searchAuto forms" id="auditType" name="filter.auditType"/>
 		</div>
-	</s:if>
-	
-	<div class="filterOption">
-		Account Type: <s:select cssClass="forms" list="filter.accountTypeList" name="filter.accountType"
-		 	listKey="ordinal()" listValue="name()" headerKey="-1" headerValue="*" />
-	</div>
-	
-	<div class="filterOption">  <!-- Auto Complete -->
-		Operator: <s:textfield cssClass="searchAuto forms" id="operator" name="filter.operator"/>
-	</div>	
-	
-	<div class="filterOption">Risk: 
-		<s:select cssClass="forms" list="filter.riskLevelList" name="filter.riskLevel" value="filter.riskLevel"
-			listKey="ordinal()" listValue="name()" headerKey="-1" headerValue="*" />
-	</div>
-	
-	<div class="filterOption"> <!-- Auto Complete -->
-		Tag: <s:textfield cssClass="searchAuto forms" id="tag" name="filter.tag"/>
-	</div>
-	
-	<div class="filterOption"> <!-- Auto Complete -->
-		Bid-Only: <s:checkbox label="Bid-Only" name="filter.bid" value="filter.bid" />
-	</div>
-	
-	<s:if test="filter.showDependentAuditType">
+		
 		<div class="filterOption">  <!-- Auto Complete -->
-			Dependent Audit Type: <s:textfield cssClass="searchAuto forms" id="dependentAuditType" name="filter.dependentAuditType"/>
+			Include:
+			<s:select cssClass="forms" list="#{'2':'Any','1':'Yes','0':'No'}" name="filter.include" value="filter.include" />
 		</div>
-	</s:if>
-	
-	<s:if test="filter.showDependentAuditStatus">
+		
+		<s:if test="filter.showCategory">
+			<div class="filterOption">  <!-- Auto Complete -->
+				Category: <s:textfield cssClass="searchAuto forms" id="category" name="filter.category"/>
+			</div>
+		</s:if>
+		
+		<div class="filterOption">
+			Account Type: <s:select cssClass="forms" list="filter.contractorTypeList" name="filter.contractorType"
+			 	listKey="ordinal()" listValue="name()" headerKey="-1" headerValue="*" />
+		</div>
+		
 		<div class="filterOption">  <!-- Auto Complete -->
-			Dependent Audit Status: 
-			<s:select cssClass="forms" list="filter.dependentAuditStatusList" name="filter.dependentAuditStatus"
+			Operator: <s:textfield cssClass="searchAuto forms" id="operator" name="filter.operator"/>
+		</div>	
+		
+		<div class="filterOption">Risk: 
+			<s:select cssClass="forms" list="filter.riskLevelList" name="filter.riskLevel" value="filter.riskLevel"
 				listKey="ordinal()" listValue="name()" headerKey="-1" headerValue="*" />
 		</div>
-	</s:if>
+		
+		<div class="filterOption"> <!-- Auto Complete -->
+			Tag: <s:textfield cssClass="searchAuto forms" id="tag" name="filter.tag"/>
+		</div>
+		
+		<div class="filterOption"> <!-- Auto Complete -->
+			Bid-Only: <s:checkbox label="Bid-Only" name="filter.bid" value="filter.bid" />
+		</div>
+		
+		<s:if test="filter.showDependentAuditType">
+			<div class="filterOption">  <!-- Auto Complete -->
+				Dependent Audit Type: <s:textfield cssClass="searchAuto forms" id="dependentAuditType" name="filter.dependentAuditType"/>
+			</div>
+		</s:if>
+		
+		<s:if test="filter.showDependentAuditStatus">
+			<div class="filterOption">  <!-- Auto Complete -->
+				Dependent Audit Status: 
+				<s:select cssClass="forms" list="filter.dependentAuditStatusList" name="filter.dependentAuditStatus"
+					listKey="ordinal()" listValue="name()" headerKey="-1" headerValue="*" />
+			</div>
+		</s:if>
+		
+		<div class="filterOption"> 
+				Effective Date: <s:textfield cssClass="datepicker forms" name="filter.checkDate" />
+		</div>
+	</div>
 	
 	<br clear="all" />
 </s:form>
