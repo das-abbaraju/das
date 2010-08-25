@@ -100,7 +100,7 @@ $(function() {
 
 <body>
 
-<s:if test="rule == null">
+<s:if test="rule == null || button == 'edit'">
 	<div class="new">
 		<s:form method="post" id="rule_form">
 			<s:hidden name="button" value="new"/>
@@ -154,6 +154,8 @@ $(function() {
 </s:if>
 
 <s:else>
+	<a class="add" href="?button=edit">Create New Rule</a>
+
 	<table class="report">
 	<thead>
 		<tr>
