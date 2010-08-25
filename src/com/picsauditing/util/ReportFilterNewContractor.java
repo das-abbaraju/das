@@ -16,7 +16,7 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	protected boolean showOpen = true;
 	protected boolean showState = false;
 	protected boolean showCountry = false;
-	protected boolean showHandledBy = false;
+	protected boolean showHandledBy = true;
 	protected boolean showFollowUpDate = true;
 	protected boolean showViewAll = false;
 	
@@ -29,7 +29,6 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 		this.permissions = permissions;
 		
 		if (permissions.isOperatorCorporate()) {
-			this.setShowHandledBy(true);
 			this.setShowConAuditor(true);
 		} else if (permissions.hasGroup(981)) {
 			// Administrators only?

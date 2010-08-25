@@ -537,7 +537,7 @@ function getMatches(requestID) {
 	</table>
 	<fieldset class="forms submit">
 	  	<input type="submit" class="picsbutton positive" name="button" value="Save" />
-	  	<s:if test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0)">
+	  	<s:if test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0) || newContractor.handledBy.toString() == 'Operator'">
 		  	<input type="submit" class="picsbutton negative" name="button" value="Close Request" />
 		</s:if>
 		<s:elseif test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">

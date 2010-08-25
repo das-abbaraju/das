@@ -95,7 +95,9 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 				}
 				where += ")";
 				sql.addWhere(where);
-				sql.addWhere("cr.handledBy = 'PICS'");
+				
+				if (Strings.isEmpty(filter.getHandledBy()))
+					sql.addWhere("cr.handledBy = 'PICS'");
 			} else { // Account Managers and Sales Reps
 				filter.setShowConAuditor(true);
 				filter.setShowState(true);
@@ -107,7 +109,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 				}
 			}
 		}
-
+		
 		sql.setFromTable("contractor_registration_request cr");
 		sql.addJoin("JOIN accounts op ON op.id = cr.requestedByID");
 		sql.addJoin("LEFT JOIN users u ON u.id = cr.requestedByUserID");
