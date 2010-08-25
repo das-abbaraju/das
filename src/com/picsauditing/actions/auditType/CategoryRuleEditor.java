@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -196,8 +197,8 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		return date;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setDate(String dateString) {
+		this.date = DateBean.parseDate(dateString);
 	}
 
 	public Map<String, Map<String, String>> getColumns() {
