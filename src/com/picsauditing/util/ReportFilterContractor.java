@@ -55,6 +55,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showMinorityOwned = false;
 	protected boolean showWorkStatus = false;
 	protected boolean showInsuranceLimits = false;
+	protected boolean showOQ = false;
+	protected boolean showHSE = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -90,6 +92,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected String alCombinedSingle = DEFAULT_AMOUNT;
 	protected String wcEachAccident = DEFAULT_AMOUNT;
 	protected String exEachOccurrence = DEFAULT_AMOUNT;
+	protected boolean oq = false;
+	protected boolean hse = false;
 
 	// private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO)
 	// SpringUtils.getBean("AuditQuestionDAO");
@@ -277,6 +281,22 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowWorkStatus(boolean showWorkStatus) {
 		this.showWorkStatus = showWorkStatus;
+	}
+	
+	public boolean isShowOQ() {
+		return showOQ;
+	}
+	
+	public void setShowOQ(boolean showOQ) {
+		this.showOQ = showOQ;
+	}
+	
+	public boolean isShowHSE() {
+		return showHSE;
+	}
+	
+	public void setShowHSE(boolean showHSE) {
+		this.showHSE = showHSE;
 	}
 
 	public String getPerformedBy() {
@@ -646,5 +666,21 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public static String getDefaultSelectPerformedBy() {
 		return DEFAULT_SELECT_PERFORMED_BY;
+	}
+	
+	public boolean isOq() {
+		return oq;
+	}
+	
+	public void setOq(boolean oq) {
+		this.oq = oq;
+	}
+	
+	public boolean isHse() {
+		return hse;
+	}
+	
+	public void setHse(boolean hse) {
+		this.hse = hse;
 	}
 }

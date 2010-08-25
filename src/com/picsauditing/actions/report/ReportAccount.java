@@ -410,6 +410,12 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 			sql.addGroupBy("a.id");
 		}
+		
+		if (getFilter().isOq() && permissions.isOperatorCorporate())
+			sql.addWhere("a.requiresOQ = 1");
+		
+		if (getFilter().isHse() && permissions.isOperatorCorporate())
+			sql.addWhere("a.requiresCompetencyReview = 1");
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {

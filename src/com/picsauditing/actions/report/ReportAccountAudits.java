@@ -12,6 +12,11 @@ public class ReportAccountAudits extends ReportAccount {
 	@Override
 	public void prepare() throws Exception {
 		super.prepare();
+		
+		if (permissions.isOperatorCorporate() && permissions.isRequiresOQ())
+			getFilter().setShowOQ(true);
+		if (permissions.isOperatorCorporate() && permissions.isRequiresCompetencyReview())
+			getFilter().setShowHSE(true);
 
 		getFilter().setShowInsuranceLimits(true);
 	}

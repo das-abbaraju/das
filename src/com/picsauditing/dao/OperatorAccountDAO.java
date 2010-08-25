@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -138,7 +139,8 @@ public class OperatorAccountDAO extends PicsDAO {
 			where += " AND workStatus = 'Y'";
 		}
 
-		Query query = em.createQuery("SELECT count(c) FROM ContractorAccount c " + "WHERE c.status = 'Active'"
+		Query query = em.createQuery("SELECT count(c) FROM ContractorAccount c " + "WHERE c.status "
+				+ (permissions.getAccountStatus().equals(AccountStatus.Demo) ? "IN ('Active', 'Demo') " : "= 'Active' ")
 				+ "AND c IN (SELECT contractorAccount FROM ContractorOperator WHERE " + where + ")");
 		query.setParameter(1, operator);
 		return Integer.parseInt(query.getSingleResult().toString());

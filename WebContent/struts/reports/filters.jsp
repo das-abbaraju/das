@@ -850,6 +850,16 @@
 		<div class="filterOption"><label><s:checkbox
 			name="filter.tradeInformation" /> Show Trade Info</label></div>
 	</s:if>
+	
+	<s:if test="filter.showOQ">
+		<div class="filterOption"><label><s:checkbox
+			name="filter.oq" /> Show OQ contractors</label></div>
+	</s:if>
+
+	<s:if test="filter.showHSE">
+		<div class="filterOption"><label><s:checkbox
+			name="filter.hse" /> Show contractors requiring competency reviews</label></div>
+	</s:if>
 
 	<pics:permission perm="DevelopmentEnvironment">
 		<div class="filterOption"><label>Query API</label> <s:textfield
