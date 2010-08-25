@@ -3,6 +3,7 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
+<title>Rule Editor</title>
 <link rel="stylesheet" href="css/reports.css"/>
 <link rel="stylesheet" href="css/forms.css"/>
 <s:include value="../../jquery.jsp"/>
@@ -99,6 +100,7 @@ $(function() {
 </head>
 
 <body>
+<s:include value="../../actionMessages.jsp"/>
 
 <s:if test="rule == null || button == 'edit'">
 	<div class="new">
@@ -185,7 +187,9 @@ $(function() {
 					<td><s:property value="auditTypeLabel"/></td>
 					<s:if test="categoryRule"><td><s:property value="auditCategoryLabel"/></td></s:if>
 					<td><s:property value="contractorTypeLabel"/></td>
-					<td><s:property value="operatorAccountLabel"/></td>
+					<td class="account<s:property value="operatorAccount.status"/>"><s:property value="operatorAccountLabel"/>
+						<s:if test="operatorAccount"><a href="FacilitiesEdit.action?id=<s:property value="operatorAccount.id"/>" target="_BLANK">^</a></s:if>
+					</td>
 					<td><s:property value="riskLabel"/></td>
 					<td><s:property value="tagLabel"/></td>
 					<td><s:property value="acceptsBidsLabel"/></td>
@@ -206,7 +210,7 @@ $(function() {
 					</td>
 				</tr>
 			</s:iterator>
-						
+			
 			<s:if test="'Current Rule' == key">
 				<tr class="rule-percents">
 					<s:iterator value="columns" id="col"> <!-- all columns -->
@@ -215,8 +219,8 @@ $(function() {
 								<s:iterator value="#col.value" id="entry"> <!-- iterate over value, is a map with 1 entry -->
 									<table class="inner">
 										<s:iterator value="getPercentOn(#entry.key)">
-											<tr class="clickable" onclick="location.href='?button=create&id=<s:property value="id"/>&rule.include=<s:property value="get('percentOn') > .5"/>&<s:property value="#entry.value"/><s:property value="get(#entry.key)"/>'">
-												<td class="right"><s:property value="%{get(#entry.key)}"/></td>
+											<tr>
+												<td class="right"><a href="?button=create&id=<s:property value="id"/>&rule.include=<s:property value="get('percentOn') > .5"/>&<s:property value="#entry.value"/><s:property value="get(#entry.key)"/>"><s:property value="%{get(#entry.key)}"/></a></td>
 												<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
 											</tr>
 										</s:iterator>
@@ -231,6 +235,10 @@ $(function() {
 		</s:if>
 	</s:iterator>
 	</table>
+	
+	<s:if test="moreGranular.size() == 100">
+		<div class="alert">Only displaying first 100 "More Granular" rules.</div>
+	</s:if>
 </s:else>
 
 </body>

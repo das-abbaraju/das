@@ -34,11 +34,8 @@ public class AuditCategoryRule extends AuditRule {
 	public void calculatePriority() {
 		super.calculatePriority();
 		if (auditCategory != null) {
-			if (auditType == null)
-				priority += 120;
-			else
-				// AuditType priority is already 105
-				priority += 15;
+			level++;
+			priority += 120;
 		}
 	}
 

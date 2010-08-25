@@ -39,7 +39,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " OR auditCategory.id = " + rule.getAuditCategory().getId();
 		where += " )";
 		
-		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY a.priority");
+		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY priority");
 		query.setParameter("queryDate", queryDate);
 		return query.getResultList();
 	}
@@ -47,13 +47,13 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	public List<AuditTypeRule> getLessGranular(AuditTypeRule rule, Date queryDate) {
 		String where = getLessGranularWhere(rule);
 
-		Query query = em.createQuery("SELECT a FROM AuditTypeRule a " + where + " ORDER BY a.priority");
+		Query query = em.createQuery("SELECT a FROM AuditTypeRule a " + where + " ORDER BY priority");
 		query.setParameter("queryDate", queryDate);
 		return query.getResultList();
 	}
 
 	private String getLessGranularWhere(AuditRule rule) {
-		String where = "WHERE a.id != " + rule.getId();
+		String where = "WHERE id != " + rule.getId();
 		where += " AND effectiveDate <= :queryDate AND expirationDate > :queryDate";
 		
 		where += " AND (auditType IS NULL";
@@ -90,7 +90,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 	/*
 	public List<AuditCategoryRule> getSimilar(AuditCategoryRule rule, Date queryDate) {
-		String where = "WHERE a.id != " + rule.getId() + " AND a.priority = " + rule.getPriority();
+		String where = "WHERE id != " + rule.getId() + " AND priority = " + rule.getPriority();
 		where += " AND effectiveDate <= :queryDate AND expirationDate > :queryDate";
 
 		where += " AND auditType.id " + (rule.getAuditType() == null ? "IS NULL" : "= " + rule.getAuditType().getId());
@@ -99,7 +99,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		where += " AND contractorType " + (rule.getContractorType() == null ? "IS NULL" : "= '" + rule.getContractorType().toString() + "'");
 		where += " AND risk " + (rule.getRisk() == null ? "IS NULL" : "= " + rule.getRisk().ordinal());
 		
-		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY a.priority");
+		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY priority");
 		query.setMaxResults(100);
 		query.setParameter("queryDate", queryDate);
 		return query.getResultList();
@@ -112,7 +112,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		if (rule.getAuditCategory() != null)
 			where += " AND auditCategory.id = " + rule.getAuditCategory().getId();
 		
-		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY a.priority");
+		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY priority");
 		query.setMaxResults(100);
 		query.setParameter("queryDate", queryDate);
 		return query.getResultList();
@@ -120,14 +120,14 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	public List<AuditTypeRule> getMoreGranular(AuditTypeRule rule, Date queryDate) {
 		String where = getMoreGranularWhere(rule);
 
-		Query query = em.createQuery("SELECT a FROM AuditTypeRule a " + where + " ORDER BY a.priority");
+		Query query = em.createQuery("SELECT a FROM AuditTypeRule a " + where + " ORDER BY priority");
 		query.setMaxResults(100);
 		query.setParameter("queryDate", queryDate);
 		return query.getResultList();
 	}
 
 	private String getMoreGranularWhere(AuditRule rule) {
-		String where = "WHERE a.id != " + rule.getId();
+		String where = "WHERE id != " + rule.getId();
 		where += " AND effectiveDate <= :queryDate AND expirationDate > :queryDate";
 
 		if (rule.getAuditType() != null)
@@ -174,7 +174,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
 		where += ")";
 
-		Query query = em.createQuery("SELECT a FROM AuditTypeRule a " + where + " ORDER BY a.priority DESC");
+		Query query = em.createQuery("SELECT a FROM AuditTypeRule a " + where + " ORDER BY priority DESC");
 		return query.getResultList();
 	}
 
@@ -210,7 +210,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		
 		where += " AND (auditType IS NULL OR auditType.id = " + conAudit.getAuditType().getId() + ")";
 
-		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY a.priority DESC");
+		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY priority DESC");
 		return query.getResultList();
 	}
 
@@ -222,7 +222,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		
 		where += " AND include = :include AND level = :level";
 
-		String updateString = "UPDATE AuditCategoryRule SET expirationDate = :queryDate, updateDate = :queryDate, updatedBy = :userID " + where;
+		String updateString = "UPDATE AuditCategoryRule SET expirationDate = :queryDate, updateDate = :queryDate, updatedBy.id = :userID " + where;
 		
 		Query query = em.createQuery(updateString);
 		query.setParameter("queryDate", new Date());

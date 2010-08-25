@@ -197,16 +197,23 @@ public class AuditRule extends BaseDecisionTreeRule {
 	@Override
 	public void calculatePriority() {
 		priority = 0;
+		level = 0;
 		// Order these by least unique to most unique
-		if (contractorType != null)
+		if (contractorType != null) {
 			// Only 2 or 3
 			priority += 101;
-		if (risk != null)
+			level++;
+		}
+		if (risk != null) {
 			// Only 3
 			priority += 102;
-		if (auditType != null)
+			level++;
+		}
+		if (auditType != null) {
 			// Hundred
 			priority += 105;
+			level++;
+		}
 		if (operatorAccount != null) {
 			if (operatorAccount.isCorporate())
 				// Dozens to a hundred
@@ -214,14 +221,19 @@ public class AuditRule extends BaseDecisionTreeRule {
 			else
 				// Hundreds-thousand
 				priority += 110;
+			level++;
 		}
 
-		if (question != null && questionComparator != null)
+		if (question != null && questionComparator != null) {
 			// Potentially thousands but probably only hundreds
 			priority += 125;
-		if (tag != null)
+			level++;
+		}
+		if (tag != null) {
 			// Several per operator, potentially thousands
 			priority += 130;
+			level++;
+		}
 	}
 
 	@Transient
