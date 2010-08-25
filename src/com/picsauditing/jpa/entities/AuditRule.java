@@ -51,6 +51,10 @@ public class AuditRule extends BaseDecisionTreeRule {
 		this.risk = risk;
 	}
 
+	public void setRisk(int risk) {
+		this.risk = LowMedHigh.getMap().get(risk);
+	}
+
 	@Transient
 	public String getRiskLabel() {
 		if (risk == null)
@@ -75,8 +79,26 @@ public class AuditRule extends BaseDecisionTreeRule {
 		return operatorAccount.getName();
 	}
 
-	@JoinColumn(name = "accountType")
-	@Enumerated(EnumType.ORDINAL)
+	/**
+	 * Does this rule apply to the given operator?
+	 * 
+	 * @param operator
+	 * @return
+	 */
+	@Transient
+	public boolean isApplies(OperatorAccount operator) {
+		if (this.operatorAccount == null)
+			return true;
+		if (this.operatorAccount.equals(operator))
+			return true;
+		for (Facility facility : operator.getCorporateFacilities()) {
+			if (this.operatorAccount.equals(facility.getCorporate()))
+				return true;
+		}
+		return false;
+	}
+
+	@Enumerated(EnumType.STRING)
 	public ContractorType getContractorType() {
 		return contractorType;
 	}

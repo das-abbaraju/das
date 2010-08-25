@@ -29,8 +29,8 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	private Date date = new Date();
 
 	private AuditDecisionTableDAO dao;
-	
-	private Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String,String>>();
+
+	private Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
 	public CategoryRuleEditor(AuditDecisionTableDAO auditDecisionTableDAO) {
 		this.dao = auditDecisionTableDAO;
@@ -43,17 +43,17 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		if (id == 0)
 			return BLANK;
 
-		if (rule == null){
+		if (rule == null) {
 			if (id == 0)
 				return SUCCESS;
 			rule = dao.findAuditCategoryRule(id);
 		}
-		
+
 		addFields();
 
 		if (button != null) {
 			if ("new".equals(button)) {
-				rule.setEffectiveDate(new Date());
+				rule.defaultDates();
 				rule.calculatePriority();
 				rule.setAuditColumns(permissions);
 				dao.save(rule);
@@ -63,7 +63,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			if ("create".equals(button)) {
 				AuditCategoryRule source = dao.findAuditCategoryRule(id);
 				rule.merge(source);
-				rule.setEffectiveDate(new Date());
+				rule.defaultDates();
 				rule.calculatePriority();
 				rule.setAuditColumns(permissions);
 				dao.save(rule);
@@ -89,6 +89,10 @@ public class CategoryRuleEditor extends PicsActionSupport {
 				this.redirect(redirect);
 				return BLANK;
 			}
+			if ("deleteChildren".equals(button)) {
+				int count = dao.deleteChildren(rule, permissions);
+				addActionMessage("Archived " + count + (count == 1 ? "rule" : "rules"));
+			}
 		}
 
 		lessGranular = dao.getLessGranular(rule, date);
@@ -98,43 +102,47 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	}
 
 	private void addFields() {
-		//include
+		// include
 		columns.put("include", null);
-		//audit_type
+		// audit_type
 		columns.put("audit_type", null);
-		//category
-		if(rule.getAuditCategory()==null){
+		// category
+		if (rule.getAuditCategory() == null) {
 			Map<String, String> m = new HashMap<String, String>();
-			m.put("catID", "&rule.include="+!rule.isInclude()+"&rule.auditCategory.id=");
+			m.put("catID", "rule.auditCategory.id=");
 			columns.put("category", m);
-		} else columns.put("category", null);
-		//account
+		} else
+			columns.put("category", null);
+		// account
 		columns.put("account", null);
-		//operator
-		if(rule.getOperatorAccount()==null){
+		// operator
+		if (rule.getOperatorAccount() == null) {
 			Map<String, String> m = new HashMap<String, String>();
-			m.put("opID", "&rule.include="+!rule.isInclude()+"&rule.operatorAccount.id=");
+			m.put("opID", "rule.operatorAccount.id=");
 			columns.put("operator", m);
-		} else columns.put("operator", null);
-		//risk
-		if(rule.getRisk()==null){
+		} else
+			columns.put("operator", null);
+		// risk
+		if (rule.getRisk() == null) {
 			Map<String, String> m = new HashMap<String, String>();
-			m.put("risk", "&rule.include="+!rule.isInclude()+"&rule.risk=");
+			m.put("risk", "rule.risk=");
 			columns.put("risk", m);
-		} else columns.put("risk", null);
-		//tag
-		if(rule.getTag()==null){
+		} else
+			columns.put("risk", null);
+		// tag
+		if (rule.getTag() == null) {
 			Map<String, String> m = new HashMap<String, String>();
-			m.put("tagID", "&rule.include="+!rule.isInclude()+"&rule.tag.id=");
+			m.put("tagID", "rule.tag.id=");
 			columns.put("tag", m);
-		} else columns.put("tag", null);
-		//bid-onl7
+		} else
+			columns.put("tag", null);
+		// bid-onl7
 		columns.put("bid", null);
-		//question
+		// question
 		columns.put("question", null);
-		//comp
+		// comp
 		columns.put("comp", null);
-		//answer
+		// answer
 		columns.put("answer", null);
 	}
 
@@ -143,8 +151,24 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		SelectSQL sql = new SelectSQL("audit_category_rule");
 		if (rule.getAuditType() != null)
 			sql.addWhere("auditTypeID = " + rule.getAuditType().getId());
+		if (rule.getAuditCategory() != null)
+			sql.addWhere("catID = " + rule.getAuditCategory().getId());
+		if (rule.getOperatorAccount() != null)
+			sql.addWhere("opID = " + rule.getOperatorAccount().getId());
+		if (rule.getRisk() != null)
+			sql.addWhere("risk = " + rule.getRisk().ordinal());
+		if (rule.getTag() != null)
+			sql.addWhere("tagID = " + rule.getTag().getId());
+		if (rule.getQuestion() != null)
+			sql.addWhere("questionID = " + rule.getQuestion().getId());
+		if (rule.getContractorType() != null)
+			sql.addWhere("contractorType = '" + rule.getContractorType() + "'");
+		if (rule.getAcceptsBids() != null)
+			sql.addWhere("acceptsBids = " + (rule.getAcceptsBids() ? 1 : 0));
+
 		sql.addWhere("id <> " + id);
 		sql.addWhere(field + " IS NOT NULL");
+		sql.addWhere("effectiveDate <= NOW() AND expirationDate > NOW()");
 		sql.addGroupBy(field);
 
 		sql.addField(field);

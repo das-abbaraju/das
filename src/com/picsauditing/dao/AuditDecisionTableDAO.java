@@ -9,6 +9,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditTypeRule;
@@ -211,5 +212,23 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY a.priority DESC");
 		return query.getResultList();
+	}
+
+	public int deleteChildren(AuditCategoryRule rule, Permissions permissions) {
+		String where = getMoreGranularWhere(rule);
+
+		if (rule.getAuditCategory() != null)
+			where += " AND auditCategory.id = " + rule.getAuditCategory().getId();
+		
+		where += " AND include = :include AND level = :level";
+
+		String updateString = "UPDATE AuditCategoryRule SET expirationDate = :queryDate, updateDate = :queryDate, updatedBy = :userID " + where;
+		
+		Query query = em.createQuery(updateString);
+		query.setParameter("queryDate", new Date());
+		query.setParameter("userID", permissions.getUserId());
+		query.setParameter("include", rule.isInclude());
+		query.setParameter("level", rule.getLevel() + 1);
+		return query.executeUpdate();
 	}
 }

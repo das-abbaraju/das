@@ -19,8 +19,8 @@ public class AuditCategoryRule extends AuditRule {
 		return auditCategory;
 	}
 
-	public void setAuditCategory(AuditCategory auditCategory) {
-		this.auditCategory = auditCategory;
+	public void setAuditCategory(AuditCategory category) {
+		this.auditCategory = category;
 	}
 
 	@Transient

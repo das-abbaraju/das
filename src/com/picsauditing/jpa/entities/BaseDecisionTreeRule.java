@@ -7,9 +7,10 @@ import javax.persistence.Transient;
 @SuppressWarnings("serial")
 @Entity
 @MappedSuperclass
-public abstract class BaseDecisionTreeRule extends BaseHistory {
+public abstract class BaseDecisionTreeRule extends BaseHistoryTime implements Comparable<BaseDecisionTreeRule> {
 
 	protected int priority;
+	protected int level;
 	protected boolean include = true;
 
 	public int getPriority() {
@@ -18,6 +19,14 @@ public abstract class BaseDecisionTreeRule extends BaseHistory {
 
 	public void setPriority(int priority) {
 		this.priority = priority;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 
 	public boolean isInclude() {
@@ -35,4 +44,8 @@ public abstract class BaseDecisionTreeRule extends BaseHistory {
 		return (int) Math.floor(priority / 100.0);
 	}
 
+	@Override
+	public int compareTo(BaseDecisionTreeRule o) {
+		return priority - o.priority;
+	}
 }

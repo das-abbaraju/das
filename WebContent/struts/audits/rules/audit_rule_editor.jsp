@@ -199,6 +199,10 @@ $(function() {
 						<s:if test="'More Granular' == key || 'Current Rule' == key">
 							<a class="remove" href="?id=<s:property value="id"/>&button=delete">Delete</a>
 						</s:if>
+						<s:if test="'Current Rule' == key">
+							<br /><a class="remove" href="?id=<s:property value="id"/>&button=deleteChildren">Delete All</a>
+							<br /><a class="edit" href="?id=<s:property value="id"/>&button=edit">Edit</a>
+						</s:if>
 					</td>
 				</tr>
 			</s:iterator>
@@ -210,13 +214,11 @@ $(function() {
 							<s:if test="#col.value!=null">
 								<s:iterator value="#col.value" id="entry"> <!-- iterate over value, is a map with 1 entry -->
 									<table class="inner">
-										<s:iterator value="%{getPercentOn(#entry.key)}">
-											<s:if test="rule.include ? get('percentOn') < .3 : get('percentOn') > .3">
-												<tr class="clickable" onclick="location.href='?button=create&id=<s:property value="id"/><s:property value="#entry.value"/><s:property value="%{get(#entry.key)}"/>'">
-													<td class="right"><s:property value="%{get(#entry.key)}"/></td>
-													<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
-												</tr>
-											</s:if>
+										<s:iterator value="getPercentOn(#entry.key)">
+											<tr class="clickable" onclick="location.href='?button=create&id=<s:property value="id"/>&rule.include=<s:property value="get('percentOn') > .5"/>&<s:property value="#entry.value"/><s:property value="get(#entry.key)"/>'">
+												<td class="right"><s:property value="%{get(#entry.key)}"/></td>
+												<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
+											</tr>
 										</s:iterator>
 									</table>
 								</s:iterator>
