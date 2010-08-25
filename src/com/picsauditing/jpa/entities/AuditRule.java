@@ -51,10 +51,6 @@ public class AuditRule extends BaseDecisionTreeRule {
 		this.risk = risk;
 	}
 
-	public void setRisk(int risk) {
-		this.risk = LowMedHigh.getMap().get(risk);
-	}
-
 	@Transient
 	public String getRiskLabel() {
 		if (risk == null)
