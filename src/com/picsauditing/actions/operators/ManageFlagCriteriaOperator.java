@@ -136,8 +136,11 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco.setAuditColumns(permissions);
 				fco.setCriteria(fc);
 				fco.setFlag(newFlag);
+				
+				if (Strings.isEmpty(newHurdle))
+					newHurdle = null;
 					
-				if (!newHurdle.equals("undefined"))
+				if (newHurdle != null)
 					fco.setHurdle(Strings.formatNumber(newHurdle));
 				
 				if (!checkExists(fc)) {
@@ -159,10 +162,12 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco.setUpdateDate(new Date());
 				fco.setUpdatedBy(getUser());
 				fco.setFlag(newFlag);
+				
+				if (Strings.isEmpty(newHurdle))
+					newHurdle = null;
 
-				if (!newHurdle.equals(fco.getHurdle())) {
+				if (newHurdle != null && !newHurdle.equals(fco.getHurdle()))
 					fco.setHurdle(newHurdle);
-				}
 				
 				if (!checkExists(fco.getCriteria())) {
 					fco.setLastCalculated(null);

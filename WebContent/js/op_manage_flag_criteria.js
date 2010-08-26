@@ -21,7 +21,7 @@ function addCriteria(criteriaID) {
 			id: $('#form1_id').val(),
 			criteriaID: criteriaID,
 			newFlag: $('#'+criteriaID).find("[name='newFlag']").val(),
-			newHurdle: hurdle == null ? '' : hurdle
+			newHurdle: hurdle == undefined ? '' : hurdle
 		};
 	
 	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data, 
@@ -44,7 +44,7 @@ function submitHurdle(tdCell) {
 			button: 'save',
 			id: $('#form1_id').val(),
 			criteriaID: criteriaID,
-			newHurdle: hurdle,
+			newHurdle: hurdle == undefined ? '' : hurdle,
 			newFlag: flag
 	};
 	

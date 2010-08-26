@@ -12,7 +12,7 @@
 	</thead>
 	<tbody>
 		<s:if test="affected.size() == 0">
-			<tr><td colspan="4" class="center">No Impact</td></tr>
+			<tr><td <s:property value="(affected.get(0).flagData.criteria.allowCustomValue ? 3 : 2) + (override ? 1 : 0)" />" class="center">No Impact</td></tr>
 		</s:if>
 		<s:else>
 			<s:iterator value="affected" status="stat" id="fdo">
@@ -36,7 +36,7 @@
 					</s:if>
 				</tr>
 			</s:iterator>
-			<tr><td colspan="<s:property value="affected.get(0).flagData.criteria.allowCustomValue ? 4 : 3" />" class="center">
+			<tr><td colspan="<s:property value="(affected.get(0).flagData.criteria.allowCustomValue ? 3 : 2) + (override ? 1 : 0)" />" class="center">
 				<a href="#" onclick="downloadImpact(<s:property value="flagCriteriaOperator.id"/>); return false;"
 					class="excel">Download this list</a></td></tr>
 		</s:else>
