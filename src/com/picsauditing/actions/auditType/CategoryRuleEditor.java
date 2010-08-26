@@ -12,6 +12,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -56,7 +57,12 @@ public class CategoryRuleEditor extends PicsActionSupport implements Preparable 
 			if (id == 0)
 				return SUCCESS;
 			rule = dao.findAuditCategoryRule(id);
+			if (rule == null) {
+				throw new RecordNotFoundException("rule");
+			}
 		}
+		rule.calculatePriority();
+		dao.save(rule);
 
 		addFields();
 
@@ -76,6 +82,7 @@ public class CategoryRuleEditor extends PicsActionSupport implements Preparable 
 				rule.calculatePriority();
 				rule.setAuditColumns(permissions);
 				dao.save(rule);
+				dao.deleteChildren(rule, permissions);
 				this.redirect("CategoryRuleEditor.action?id=" + rule.getId());
 				return BLANK;
 			}

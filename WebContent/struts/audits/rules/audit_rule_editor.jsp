@@ -231,7 +231,8 @@ $(function() {
 										<s:iterator value="getPercentOn(#entry.key)">
 											<tr>
 												<td class="right"><a href="?button=create&id=<s:property value="id"/>&rule.include=<s:property value="get('percentOn') > .5"/>&<s:property value="#entry.value"/><s:property value="get(#entry.key)"/>"><s:property value="%{get(#entry.key)}"/></a></td>
-												<td class="right" title="<s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/>"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
+												<td class="right"><s:property value="%{new java.text.DecimalFormat('#,##0.0').format(get('percentOn')*100)}"/>%</td>
+												<td><s:property value="get('includeTotal')"/> out of <s:property value="get('total')"/></td>
 											</tr>
 										</s:iterator>
 									</table>

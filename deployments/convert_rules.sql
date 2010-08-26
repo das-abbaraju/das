@@ -15,9 +15,11 @@ select 1, catID, opID, riskLevel, onFlag,
 from temp_pqfopmatrix_full;
 
 insert into audit_category_rule (auditTypeID, catID, questionID, include, effectiveDate, expirationDate, createdBy, creationDate, updatedBy, updateDate)
-select 2, categoryID, questionID, 1,
+select 2, c.categoryID, q.questionID, CASE WHEN m.id > 0 THEN 1 ELSE 0 END,
 	'2000-01-01', '4000-01-01', 1, now(), 1, now()
-from desktopmatrix;
+from (select DISTINCT categoryID from pics_yesterday.desktopmatrix) c
+join (select DISTINCT questionID from pics_yesterday.desktopmatrix) q
+left join pics_yesterday.desktopmatrix m on m.categoryID = c.categoryID and m.questionID = q.questionID;
 
 insert into audit_type_rule (auditTypeID, opID, risk, tagID, include)
 select auditTypeID, opID, null, tagID, canSee from audit_operator
@@ -42,6 +44,6 @@ level = (if(catID is null, 0, 1) + if(auditTypeID is null, 0, 1) +
 	if(contractorType is null, 0, 1) + if(acceptsBids is null, 0, 1)),
 priority = (if(catID is null, 0, 120) + if(auditTypeID is null, 0, 105) +
 	if(risk is null, 0, 102) + if(opID is null, 0, 104) +
-	if(questionID is null, 0, 125);
+	if(questionID is null, 0, 125));
 
 delete from audit_category_rule where opID > 0 and opID not in (select id from accounts);
