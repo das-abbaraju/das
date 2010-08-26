@@ -31,4 +31,10 @@ public class AuditTypeRule extends AuditRule {
 		this.dependentAuditStatus = dependentAuditStatus;
 	}
 
+	public void update(AuditTypeRule source) {
+		super.update(source);
+		dependentAuditType = source.dependentAuditType;
+		dependentAuditStatus = source.dependentAuditStatus;
+	}
+
 }

@@ -270,4 +270,15 @@ public class AuditRule extends BaseDecisionTreeRule {
 		if (questionAnswer == null)
 			questionAnswer = source.questionAnswer;
 	}
+
+	public void update(AuditRule source) {
+		auditType = source.auditType;
+		risk = source.risk;
+		operatorAccount = source.operatorAccount;
+		contractorType = source.contractorType;
+		tag = source.tag;
+		question = source.question;
+		questionComparator = source.questionComparator;
+		questionAnswer = source.questionAnswer;
+	}
 }

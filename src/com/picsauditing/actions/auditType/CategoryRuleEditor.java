@@ -1,6 +1,5 @@
 package com.picsauditing.actions.auditType;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,7 +9,6 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
@@ -20,7 +18,7 @@ import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
-public class CategoryRuleEditor extends PicsActionSupport implements Preparable {
+public class CategoryRuleEditor extends PicsActionSupport {
 
 	private int id = 0;
 	private boolean categoryRule = true;
@@ -39,23 +37,11 @@ public class CategoryRuleEditor extends PicsActionSupport implements Preparable 
 		this.dao = auditDecisionTableDAO;
 	}
 
-	@Override
-	public void prepare() throws Exception {
-		int ruleID = this.getParameter("rule.id");
-		if (ruleID > 0)
-			rule = dao.findAuditCategoryRule(ruleID);
-	}
-
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 
-		if (id == 0)
-			return BLANK;
-
 		if (rule == null) {
-			if (id == 0)
-				return SUCCESS;
 			rule = dao.findAuditCategoryRule(id);
 			if (rule == null) {
 				throw new RecordNotFoundException("rule");
@@ -67,11 +53,19 @@ public class CategoryRuleEditor extends PicsActionSupport implements Preparable 
 		addFields();
 
 		if (button != null) {
-			if ("new".equals(button)) {
-				rule.defaultDates();
-				rule.calculatePriority();
-				rule.setAuditColumns(permissions);
-				dao.save(rule);
+			if ("Save".equals(button)) {
+				if (rule.getId() == 0) {
+					rule.defaultDates();
+					rule.calculatePriority();
+					rule.setAuditColumns(permissions);
+					dao.save(rule);
+				} else {
+					AuditCategoryRule acr = dao.findAuditCategoryRule(rule.getId());
+					acr.update(rule);
+					acr.calculatePriority();
+					acr.setAuditColumns(permissions);
+					dao.save(acr);
+				}
 				this.redirect("CategoryRuleEditor.action?id=" + rule.getId());
 				return BLANK;
 			}

@@ -44,5 +44,10 @@ public class AuditCategoryRule extends AuditRule {
 		if (auditCategory == null)
 			auditCategory = source.auditCategory;
 	}
+	
+	public void update(AuditCategoryRule source) {
+		super.update(source);
+		auditCategory = source.auditCategory;
+	}
 
 }

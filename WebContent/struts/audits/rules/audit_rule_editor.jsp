@@ -110,7 +110,6 @@ $(function() {
 <s:if test="rule == null || button == 'edit'">
 	<div class="new">
 		<s:form method="post" id="rule_form">
-			<s:hidden name="button" value="new"/>
 			<s:hidden name="rule.id"/>
 			<fieldset class="form">
 				<h2 class="formLegend">New Category Rule</h2>
@@ -120,7 +119,7 @@ $(function() {
 					</li>
 					<li><label>Audit Type</label>
 						<input type="text" class="searchAuto" id="auditType"  value="<s:property value="rule.auditType.auditName"/>"/>
-						<s:hidden name="rule.auditType.id" id="audit_hidden"/>
+						<s:hidden name="rule.auditType.id" id="auditType_hidden"/>
 						<a href="#" class="clearfield">Clear Field</a>
 					</li>
 					<li><label>Category</label>
@@ -159,7 +158,7 @@ $(function() {
 				</ol>
 			</fieldset>
 			<fieldset class="form submit">
-				<input type="submit" class="picsbutton positive" value="Save"/>
+				<input type="submit" class="picsbutton positive" name="button" value="Save"/>
 			</fieldset>
 		</s:form>
 	</div>
