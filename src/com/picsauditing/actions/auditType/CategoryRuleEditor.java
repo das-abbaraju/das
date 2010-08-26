@@ -1,5 +1,6 @@
 package com.picsauditing.actions.auditType;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
@@ -17,7 +19,7 @@ import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
-public class CategoryRuleEditor extends PicsActionSupport {
+public class CategoryRuleEditor extends PicsActionSupport implements Preparable {
 
 	private int id = 0;
 	private boolean categoryRule = true;
@@ -34,6 +36,13 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	public CategoryRuleEditor(AuditDecisionTableDAO auditDecisionTableDAO) {
 		this.dao = auditDecisionTableDAO;
+	}
+
+	@Override
+	public void prepare() throws Exception {
+		int ruleID = this.getParameter("rule.id");
+		if (ruleID > 0)
+			rule = dao.findAuditCategoryRule(ruleID);
 	}
 
 	public String execute() throws Exception {
