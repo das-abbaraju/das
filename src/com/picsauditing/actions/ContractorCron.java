@@ -15,7 +15,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorFlagETL;
@@ -71,7 +71,7 @@ public class ContractorCron extends PicsActionSupport {
 	private FlagDataOverrideDAO flagDataOverrideDAO;
 
 	private AuditPercentCalculator auditPercentCalculator;
-	private AuditBuilder auditBuilder;
+	private AuditBuilderController auditBuilder;
 	private ContractorFlagETL contractorFlagETL;
 	private FlagDataCalculator flagDataCalculator;
 	private AppPropertyDAO appPropertyDAO;
@@ -87,7 +87,7 @@ public class ContractorCron extends PicsActionSupport {
 
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL,
+			AuditBuilderController auditBuilder, ContractorFlagETL contractorFlagETL,
 			ContractorOperatorDAO contractorOperatorDAO, AppPropertyDAO appPropertyDAO,
 			FlagDataOverrideDAO flagDataOverrideDAO, UserAssignmentMatrixDAO userAssignmentMatrixDAO) {
 		this.dao = contractorDAO;

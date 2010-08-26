@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -40,7 +40,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 	private List<AuditType> auditTypeList;
 	private AuditTypeClass auditClass = AuditTypeClass.Policy;
 
-	private AuditBuilder auditBuilder;
+	private AuditBuilderController auditBuilder;
 
 	private Map<ContractorAudit, List<ContractorAuditOperator>> requested = new HashMap<ContractorAudit, List<ContractorAuditOperator>>();
 	private Map<ContractorAudit, List<ContractorAuditOperator>> current = new HashMap<ContractorAudit, List<ContractorAuditOperator>>();
@@ -48,7 +48,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 	private Set<ContractorAudit> others = new HashSet<ContractorAudit>();
 
 	public ConInsureGuard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
-			AuditBuilder auditBuilder, CertificateDAO certificateDAO, ContractorAuditOperatorDAO caoDao) {
+			AuditBuilderController auditBuilder, CertificateDAO certificateDAO, ContractorAuditOperatorDAO caoDao) {
 		super(accountDao, auditDao);
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditBuilder = auditBuilder;

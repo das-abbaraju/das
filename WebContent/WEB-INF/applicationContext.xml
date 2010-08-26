@@ -86,7 +86,7 @@
 	<bean id="WebcamDAO" class="com.picsauditing.dao.WebcamDAO"/>
 	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
 
-	<bean id="AuditBuilder" class="com.picsauditing.PICS.AuditBuilder" scope="prototype"/>
+	<bean id="AuditBuilderController" class="com.picsauditing.PICS.AuditBuilderController" scope="prototype"/>
 	<bean id="AuditPercentCalculator" class="com.picsauditing.PICS.AuditPercentCalculator" scope="prototype"/>
 	<bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
 	<bean id="BillingCalculatorSingle" class="com.picsauditing.PICS.BillingCalculatorSingle" scope="prototype"/>

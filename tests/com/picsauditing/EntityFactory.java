@@ -36,9 +36,12 @@ import com.picsauditing.mail.SubscriptionTimePeriod;
  * 
  */
 public class EntityFactory {
+	
+	static private int counter = 1;
 
 	static public OperatorAccount makeOperator() {
 		OperatorAccount operator = new OperatorAccount();
+		operator.setId(counter++);
 		operator.setStatus(AccountStatus.Active);
 		operator.setName("Operator Unit Test");
 		operator.setApprovesRelationships(YesNo.No);
@@ -50,13 +53,14 @@ public class EntityFactory {
 	}
 
 	/**
-	 * Create an active, Medium Risk Level ContractorAccount named Contractor Unit Test
+	 * Create an active, Medium Risk Level ContractorAccount named Contractor
+	 * Unit Test
 	 * 
 	 * @return
 	 */
 	static public ContractorAccount makeContractor() {
 		ContractorAccount contractor = new ContractorAccount();
-		//contractor.setActive('Y');
+		// contractor.setActive('Y');
 		contractor.setStatus(AccountStatus.Active);
 		contractor.setName("Contractor Unit Test");
 		contractor.setRiskLevel(LowMedHigh.Med);
@@ -73,7 +77,8 @@ public class EntityFactory {
 	}
 
 	/**
-	 * Make an AuditOperator that canSee = true, canEdit = false, AuditStatus = Active, and RiskLevel = Medium
+	 * Make an AuditOperator that canSee = true, canEdit = false, AuditStatus =
+	 * Active, and RiskLevel = Medium
 	 * 
 	 * @param auditTypeID
 	 * @param operator
@@ -103,23 +108,33 @@ public class EntityFactory {
 		conAudit.setAuditStatus(AuditStatus.Active);
 		return conAudit;
 	}
-	
+
 	static public ContractorAudit makeAnnualUpdate(int auditTypeID, ContractorAccount contractor, String auditFor) {
 		ContractorAudit conAudit = new ContractorAudit();
 		conAudit.setAuditType(makeAuditType(auditTypeID));
 		conAudit.setContractorAccount(contractor);
 		conAudit.setAuditStatus(AuditStatus.Active);
-		conAudit.setAuditFor(auditFor); 
+		conAudit.setAuditFor(auditFor);
 		return conAudit;
 	}
-	
+
 	static public AuditCatData addCategories(ContractorAudit conAudit, int categoryID) {
-		AuditCatData  auditCatData = new AuditCatData();
+		AuditCatData auditCatData = new AuditCatData();
 		auditCatData.setAudit(conAudit);
 		auditCatData.setCategory(new AuditCategory());
 		auditCatData.getCategory().setId(categoryID);
 		auditCatData.setPercentCompleted(100);
 		return auditCatData;
+	}
+
+	static public AuditCategory addCategories(AuditType auditType, int categoryID, String name) {
+		AuditCategory auditCategory = new AuditCategory();
+		auditCategory.setId(categoryID);
+		auditCategory.setAuditType(auditType);
+		auditType.getCategories().add(auditCategory);
+		auditCategory.setName(name == null ? "Test Category " + categoryID : name);
+		auditCategory.setNumber(auditType.getCategories().get(auditType.getCategories().size() - 1).getNumber() + 1);
+		return auditCategory;
 	}
 
 	static public OshaAudit makeShaLogs(ContractorAudit conAudit, int manHours) {
@@ -133,7 +148,6 @@ public class EntityFactory {
 		oshaAudit.setRecordableTotal(134);
 		return oshaAudit;
 	}
-
 
 	static public AuditType makeAuditType(int auditTypeID) {
 		AuditType auditType = new AuditType();
@@ -171,7 +185,9 @@ public class EntityFactory {
 	}
 
 	/**
-	 * Creates a fee that would normally be stored in the database without having to access a DAO
+	 * Creates a fee that would normally be stored in the database without
+	 * having to access a DAO
+	 * 
 	 * @param feeID
 	 * @return
 	 */
@@ -211,14 +227,15 @@ public class EntityFactory {
 
 		return fee;
 	}
-	
-	static public EmailSubscription makeEmailSubscription(User user, Subscription subscription, SubscriptionTimePeriod timePeriod) {
+
+	static public EmailSubscription makeEmailSubscription(User user, Subscription subscription,
+			SubscriptionTimePeriod timePeriod) {
 		EmailSubscription sub = new EmailSubscription();
-		
+
 		sub.setUser(user);
 		sub.setSubscription(subscription);
 		sub.setTimePeriod(timePeriod);
-		
+
 		return sub;
 	}
 }

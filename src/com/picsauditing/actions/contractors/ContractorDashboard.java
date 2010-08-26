@@ -16,7 +16,7 @@ import java.util.TreeMap;
 
 import org.apache.struts2.ServletActionContext;
 
-import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.ContractorFlagCriteriaList;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.OpPerms;
@@ -59,7 +59,7 @@ import com.picsauditing.mail.EmailSender;
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
 
-	private AuditBuilder auditBuilder;
+	private AuditBuilderController auditBuilder;
 	private ContractorOperatorDAO contractorOperatorDAO;
 	private AuditDataDAO dataDAO;
 	private FlagDataDAO flagDataDAO;
@@ -89,7 +89,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	private OshaDisplay oshaDisplay;
 
-	public ContractorDashboard(AuditBuilder auditBuilder, ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+	public ContractorDashboard(AuditBuilderController auditBuilder, ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO, FlagDataDAO flagDataDAO,
 			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO, InvoiceItemDAO invoiceItemDAO,
 			UserDAO userDAO, NaicsDAO naicsDAO) {

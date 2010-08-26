@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -34,7 +33,6 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	protected AuditStatus auditStatus = null;
 	protected AuditPercentCalculator auditPercentCalculator;
 	protected CertificateDAO certificateDao;
-	protected AuditBuilder auditBuilder;
 	private boolean hasStatusChanged = false;
 
 	protected int opID;
@@ -43,11 +41,9 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 	public AuditCategorySingleAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorAuditOperatorDAO caoDAO, AuditCategoryDAO categoryDAO, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder,
-			CertificateDAO certificateDao) {
+			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator, CertificateDAO certificateDao) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditPercentCalculator = auditPercentCalculator;
-		this.auditBuilder = auditBuilder;
 		this.caoDAO = caoDAO;
 		this.certificateDao = certificateDao;
 		this.categoryDAO = categoryDAO;

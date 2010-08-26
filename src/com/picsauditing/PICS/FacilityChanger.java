@@ -14,7 +14,6 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorType;
@@ -32,15 +31,13 @@ import com.picsauditing.mail.EmailSender;
 
 /**
  * Adds and removed contractors from operator accounts
- * 
- * @author Trevor
  */
 public class FacilityChanger {
+
 	private ContractorOperatorDAO contractorOperatorDAO;
 	private ContractorAccountDAO contractorAccountDAO;
 	private OperatorAccountDAO operatorAccountDAO;
 	private NoteDAO noteDAO;
-	private AuditBuilder auditBuilder;
 	private AuditDataDAO auditDataDAO;
 
 	private ContractorAccount contractor;
@@ -50,13 +47,12 @@ public class FacilityChanger {
 	private ContractorType type = ContractorType.Onsite;
 
 	public FacilityChanger(ContractorAccountDAO contractorAccountDAO, OperatorAccountDAO operatorAccountDAO,
-			ContractorOperatorDAO contractorOperatorDAO, NoteDAO noteDAO, AuditBuilder auditBuilder, 
-			FlagDataDAO flagDataDAO, AuditDataDAO auditDataDAO) {
+			ContractorOperatorDAO contractorOperatorDAO, NoteDAO noteDAO, FlagDataDAO flagDataDAO,
+			AuditDataDAO auditDataDAO) {
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.noteDAO = noteDAO;
-		this.auditBuilder = auditBuilder;
 		this.auditDataDAO = auditDataDAO;
 	}
 
@@ -112,19 +108,12 @@ public class FacilityChanger {
 				// then let's assume they want to be part of PICS
 				contractor.setRenew(true);
 			}
-			if (contractor.getStatus().isActiveDemo()) {
-				for (ContractorAudit cAudit : contractor.getAudits()) {
-					if (cAudit.getAuditType().isPqf()) {
-						auditBuilder.fillAuditCategories(cAudit, true);
-					}
-				}
-			}
 		}
 
 		contractor.setLastUpgradeDate(new Date());
 		checkOQ();
-		contractor.incrementRecalculation();
-		
+		contractor.incrementRecalculation(10);
+
 		contractorAccountDAO.save(contractor);
 	}
 
@@ -150,17 +139,9 @@ public class FacilityChanger {
 							+ co.getOperatorAccount().getName() + "'s db");
 
 					checkOQ();
-					contractor.incrementRecalculation();
+					contractor.incrementRecalculation(5);
 
 					contractorAccountDAO.save(contractor);
-
-					if (!contractor.isAcceptsBids() && contractor.getStatus().isActiveDemo()) {
-						for (ContractorAudit cAudit : contractor.getAudits()) {
-							if (cAudit.getAuditType().isPqf()) {
-								auditBuilder.fillAuditCategories(cAudit, true);
-							}
-						}
-					}
 					return true;
 				}
 			}
@@ -217,15 +198,15 @@ public class FacilityChanger {
 		this.permissions = permissions;
 		user = new User(permissions.getUserId());
 	}
-	
+
 	public ContractorType getType() {
 		return type;
 	}
-	
+
 	public void setType(ContractorType type) {
 		this.type = type;
 	}
-	
+
 	private void checkOQ() {
 		boolean requiresOQ = false;
 		boolean requiresCompetency = false;
@@ -235,13 +216,15 @@ public class FacilityChanger {
 			if (co1.getOperatorAccount().isRequiresCompetencyReview())
 				requiresCompetency = true;
 		}
-		
+
 		contractor.setRequiresOQ(false);
 		if (requiresOQ) {
-			AuditData oqAuditData = auditDataDAO.findAnswerByConQuestion(contractor.getId(), AuditQuestion.OQ_EMPLOYEES);
-			contractor.setRequiresOQ(oqAuditData == null || oqAuditData.getAnswer() == null || oqAuditData.getAnswer().equals("Yes"));
+			AuditData oqAuditData = auditDataDAO
+					.findAnswerByConQuestion(contractor.getId(), AuditQuestion.OQ_EMPLOYEES);
+			contractor.setRequiresOQ(oqAuditData == null || oqAuditData.getAnswer() == null
+					|| oqAuditData.getAnswer().equals("Yes"));
 		}
-		
+
 		contractor.setRequiresCompetencyReview(false);
 		if (requiresCompetency) {
 			for (ContractorTag tag : contractor.getOperatorTags()) {

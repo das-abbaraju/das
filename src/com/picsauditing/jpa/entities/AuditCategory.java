@@ -49,16 +49,11 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	private List<AuditCategory> subCategories = new ArrayList<AuditCategory>();
 	private List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
 
-	/**
-	 * This is a transient field that allows us to figure out which categories,
-	 * subcategories and questions should be displayed
-	 */
 	public AuditCategory() {
 
 	}
 
 	public AuditCategory(AuditCategory a, AuditType at) {
-		this.auditType = a.getAuditType();
 		this.number = a.getNumber();
 		this.numQuestions = a.getNumQuestions();
 		this.numRequired = a.getNumRequired();
@@ -67,7 +62,6 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	}
 
 	public AuditCategory(AuditCategory a) {
-		// TODO Auto-generated constructor stub
 		this.auditType = a.auditType;
 		this.parent = a.parent;
 		this.name = a.name;
@@ -76,10 +70,6 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		this.numQuestions = a.numQuestions;
 		this.helpText = a.getHelpText();
 		this.pageBreak = a.pageBreak;
-		// TODO I don't think this works the way it should
-		// this.subCategories = a.subCategories;
-		// this.questions = a.questions;
-
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.BrainTreeServiceErrorResponseException;
@@ -53,7 +53,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	private AppPropertyDAO appPropDAO;
 	private NoteDAO noteDAO;
 	private InvoiceItemDAO invoiceItemDAO;
-	private AuditBuilder auditBuilder;
+	private AuditBuilderController auditBuilder;
 
 	private BrainTreeService paymentService = new BrainTreeService();
 
@@ -62,7 +62,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 	public ContractorRegistrationFinish(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			InvoiceDAO invoiceDAO, InvoiceFeeDAO invoiceFeeDAO, PaymentDAO paymentDAO, AppPropertyDAO appPropDAO,
-			NoteDAO noteDAO, InvoiceItemDAO invoiceItemDAO, AuditBuilder auditBuilder) {
+			NoteDAO noteDAO, InvoiceItemDAO invoiceItemDAO, AuditBuilderController auditBuilder) {
 		super(accountDao, auditDao);
 		this.invoiceDAO = invoiceDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;

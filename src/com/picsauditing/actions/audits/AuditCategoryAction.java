@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.struts2.ServletActionContext;
 
-import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDAO;
@@ -69,10 +68,9 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorAuditOperatorDAO caoDAO, AuditCategoryDAO categoryDAO, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
-			AuditCategoryDAO auditCategoryDAO, OshaAuditDAO oshaAuditDAO, AuditBuilder auditBuilder,
-			CertificateDAO certificateDao) {
+			AuditCategoryDAO auditCategoryDAO, OshaAuditDAO oshaAuditDAO, CertificateDAO certificateDao) {
 		super(accountDao, auditDao, caoDAO, categoryDAO, catDataDao, auditDataDao, auditPercentCalculator,
-				auditBuilder, certificateDao);
+				certificateDao);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 	}
@@ -201,7 +199,6 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 
 			if (OshaTypeConverter.getTypeFromCategory(currentCategory.getCategory().getId()) != null) {
 				boolean hasOshaCorporate = false;
-				int percentComplete = 0;
 				for (OshaAudit osha : conAudit.getOshas()) {
 					if (osha.isCorporate() && matchesType(currentCategory.getCategory().getId(), osha.getType())) {
 						hasOshaCorporate = true;

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.struts2.ServletActionContext;
 
-import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.dao.AuditCategoryDAO;
@@ -41,12 +40,12 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 	private int removeCategoryID = 0;
 
 	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			ContractorAuditOperatorDAO caoDAO, AuditCategoryDAO categoryDAO, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
-			AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder,
+			ContractorAuditOperatorDAO caoDAO, AuditCategoryDAO categoryDAO, AuditCategoryDataDAO catDataDao,
+			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, CertificateDAO certificateDao,
 			OshaAuditDAO oshaAuditDAO) {
 		super(accountDao, auditDao, caoDAO, categoryDAO, catDataDao, auditDataDao, auditPercentCalculator,
-				auditBuilder, certificateDao);
+				certificateDao);
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 	}
@@ -56,10 +55,6 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 			return LOGIN;
 
 		this.findConAudit();
-
-		// Some stuff like rebuilding categories and percentages doesn't have to
-		// be done everytime
-		auditBuilder.fillAuditCategories(conAudit, "recalculate".equals(button));
 
 		if (isSingleCat())
 			ServletActionContext.getResponse().sendRedirect(

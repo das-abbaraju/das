@@ -3,10 +3,9 @@ package com.picsauditing.actions.audits;
 import java.util.Date;
 
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
@@ -18,9 +17,9 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 	private ContractorAccount ca = null;
 	private ContractorAccountDAO dao;
 	private int auditorId;
-	private AuditBuilder auditBuilder;
+	private AuditBuilderController auditBuilder;
 
-	public ContractorSave(ContractorAccountDAO dao, AuditBuilder auditBuilder) {
+	public ContractorSave(ContractorAccountDAO dao, AuditBuilderController auditBuilder) {
 		this.dao = dao;
 		this.auditBuilder = auditBuilder;
 	}

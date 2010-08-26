@@ -1,7 +1,6 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +22,9 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 
+@SuppressWarnings("serial")
 public class AuditActionSupport extends ContractorActionSupport {
+
 	protected int auditID = 0;
 	protected ContractorAudit conAudit;
 	protected AuditCategoryDataDAO catDataDao;
@@ -32,9 +33,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected String descriptionOsMs;
 	private Map<Integer, AuditData> hasManual;
 
-	public AuditActionSupport(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao) {
+	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
 		super(accountDao, auditDao);
 		this.catDataDao = catDataDao;
 		this.auditDataDao = auditDataDao;
@@ -52,15 +52,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.isPicsEmployee())
 			return;
 		if (permissions.isOperator() || permissions.isCorporate()) {
-			if (!permissions.getCanSeeAudit().contains(
-					conAudit.getAuditType().getId()))
-				throw new NoRightsException(conAudit.getAuditType()
-						.getAuditName());
+			if (!permissions.getCanSeeAudit().contains(conAudit.getAuditType().getId()))
+				throw new NoRightsException(conAudit.getAuditType().getAuditName());
 		}
 		if (permissions.isContractor()) {
 			if (!conAudit.getAuditType().isCanContractorView())
-				throw new NoRightsException(conAudit.getAuditType()
-						.getAuditName());
+				throw new NoRightsException(conAudit.getAuditType().getAuditName());
 		}
 	}
 
@@ -122,18 +119,18 @@ public class AuditActionSupport extends ContractorActionSupport {
 		// and which categories have subcategories
 		// We don't actually loop through the all the questions just yet, that's
 		// later
-		
-		// No longer being used		
-		/*for (AuditCatData catData : categories) {
-			if (conAudit.getAuditType().getClassType().isPqf())
-				catData.getCategory().setValidDate(new Date());
-			else
-				catData.getCategory().setValidDate(conAudit.getCreationDate());
-			if(permissions.isPicsEmployee())
-				catData.getCategory().setCountries(contractor.getCountries());
-			else
-				catData.getCategory().setCountries(permissions.getAccountCountries());
-		}*/
+
+		// No longer being used
+		/*
+		 * for (AuditCatData catData : categories) { if
+		 * (conAudit.getAuditType().getClassType().isPqf())
+		 * catData.getCategory().setValidDate(new Date()); else
+		 * catData.getCategory().setValidDate(conAudit.getCreationDate());
+		 * if(permissions.isPicsEmployee())
+		 * catData.getCategory().setCountries(contractor.getCountries()); else
+		 * catData
+		 * .getCategory().setCountries(permissions.getAccountCountries()); }
+		 */
 
 		return categories;
 	}
@@ -147,12 +144,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public Map<Integer, AuditData> getDataForSafetyManual() {
 		int questionID = AuditQuestion.MANUAL_PQF;
-		if(conAudit.getAuditType().getId() == AuditType.BPIISNCASEMGMT) {
-			questionID = 3477; 
+		if (conAudit.getAuditType().getId() == AuditType.BPIISNCASEMGMT) {
+			questionID = 3477;
 		}
-		Map<Integer, AuditData> answers = auditDataDao
-				.findAnswersForSafetyManual(conAudit.getContractorAccount()
-						.getId(), questionID);
+		Map<Integer, AuditData> answers = auditDataDao.findAnswersForSafetyManual(conAudit.getContractorAccount()
+				.getId(), questionID);
 		if (answers == null || answers.size() == 0)
 			return null;
 		return answers;
@@ -169,8 +165,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public boolean isCanVerify() {
 		if (!conAudit.getAuditType().isMustVerify())
 			return false;
-		if (conAudit.getAuditType().isPqf()
-				&& conAudit.getAuditStatus().isActiveSubmitted())
+		if (conAudit.getAuditType().isPqf() && conAudit.getAuditStatus().isActiveSubmitted())
 			if (permissions.isAuditor())
 				return true;
 
@@ -180,7 +175,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public boolean isCanEdit() {
 		if (conAudit.getAuditStatus().isExpired())
 			return false;
-		
+
 		AuditType type = conAudit.getAuditType();
 
 		if (type.getClassType().isPolicy()) {
@@ -191,15 +186,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		// Auditors can edit their assigned audits
-		if (type.isHasAuditor() && !type.isCanContractorEdit()
-				&& conAudit.getAuditor() != null
+		if (type.isHasAuditor() && !type.isCanContractorEdit() && conAudit.getAuditor() != null
 				&& permissions.getUserId() == conAudit.getAuditor().getId())
 			return true;
 
 		if (permissions.isContractor()) {
-			if ((type.isAnnualAddendum() || type.getId() == 99)
-					&& conAudit.getAuditStatus().isActiveSubmitted())
-				// contractors can't modify annual updates that are already verified or submitted
+			if ((type.isAnnualAddendum() || type.getId() == 99) && conAudit.getAuditStatus().isActiveSubmitted())
+				// contractors can't modify annual updates that are already
+				// verified or submitted
 				return false;
 
 			return type.isCanContractorEdit();
@@ -209,7 +203,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (permissions.getCanEditAudits().contains(type.getId())) {
 				if (type.getClassType().isPolicy() && isPolicyWithOtherOperators())
 					return false;
-				
+
 				return true;
 			}
 			return false;
@@ -224,19 +218,24 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	/**
 	 * 
-	 * @return true if the current users is an operator and there is a visible cao belonging to another operator
+	 * @return true if the current users is an operator and there is a visible
+	 *         cao belonging to another operator
 	 */
 	public boolean isPolicyWithOtherOperators() {
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (cao.isVisible()) {
 				if (!permissions.getVisibleCAOs().contains(cao.getOperator().getId())) {
 					// This logic is somewhat complex so here's an example:
-					// BASF Freeport Hub has access to many operators 
-					// who use either BASF Corporate and BASF Catalyst insurance requirements
-					// If this contractor policy is visible (needed) for Paramount, 
+					// BASF Freeport Hub has access to many operators
+					// who use either BASF Corporate and BASF Catalyst insurance
+					// requirements
+					// If this contractor policy is visible (needed) for
+					// Paramount,
 					// then the policy is locked down.
-					// One potential flaw is that if the other CAO happens to be BASF Canada, 
-					// which is not part of the Freeport Hub, then the policy will be locked for BASF Freeport.
+					// One potential flaw is that if the other CAO happens to be
+					// BASF Canada,
+					// which is not part of the Freeport Hub, then the policy
+					// will be locked for BASF Freeport.
 					return true;
 				}
 			}

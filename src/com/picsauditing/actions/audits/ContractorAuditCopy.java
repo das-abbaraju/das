@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDAO;
@@ -28,20 +27,20 @@ import com.picsauditing.util.FileUtils;
  * Used by Audit.action to show a list of categories for a given audit. Also
  * allows users to change the status of an audit.
  * 
- * @author Trevor
- * 
  */
+@SuppressWarnings("serial")
 public class ContractorAuditCopy extends ContractorAuditAction {
+
 	protected String contractorSelect = "";
 	private boolean hasDuplicate = false;
 
 	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorAuditOperatorDAO caoDAO, AuditCategoryDAO categoryDAO, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder,
+			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, CertificateDAO certificateDao,
 			OshaAuditDAO oshaAuditDAO) {
 		super(accountDao, auditDao, caoDAO, categoryDAO, catDataDao, auditDataDao, auditPercentCalculator,
-				auditBuilder, contractorAuditOperatorDAO, certificateDao, oshaAuditDAO);
+				contractorAuditOperatorDAO, certificateDao, oshaAuditDAO);
 	}
 
 	public String execute() throws Exception {

@@ -25,6 +25,7 @@ import org.json.simple.JSONObject;
 @Table(name = "audit_question")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditQuestion extends BaseHistory implements Comparable<AuditQuestion> {
+
 	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 	static public final int EMR = 2034;
 	static public final int MANUAL_PQF = 1331;
@@ -368,5 +369,17 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		j.put("name", name);
 
 		return j;
+	}
+
+	/**
+	 * Return true if there are category rules that require immediate
+	 * recalculation when the answer to this question changes
+	 * 
+	 * @return
+	 */
+	@Transient
+	public boolean isRecalculateCategories() {
+		// TODO figure out how to calculate and/or save this
+		return false;
 	}
 }

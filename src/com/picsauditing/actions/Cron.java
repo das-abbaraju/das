@@ -18,6 +18,7 @@ import javax.persistence.NoResultException;
 import org.apache.commons.net.ftp.FTPClient;
 
 import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
@@ -55,7 +56,7 @@ public class Cron extends PicsActionSupport {
 	static protected User system = new User(User.SYSTEM);
 	protected OperatorAccountDAO operatorDAO = null;
 	protected AppPropertyDAO appPropDao = null;
-	protected AuditBuilder auditBuilder = null;
+	protected AuditBuilderController auditBuilder = null;
 	protected ContractorAuditDAO contractorAuditDAO = null;
 	protected ContractorAccountDAO contractorAccountDAO = null;
 	protected NoteDAO noteDAO = null;
@@ -66,7 +67,7 @@ public class Cron extends PicsActionSupport {
 
 	protected boolean flagsOnly = false;
 
-	public Cron(OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilder ab,
+	public Cron(OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilderController ab,
 			ContractorAuditDAO contractorAuditDAO, ContractorAccountDAO contractorAccountDAO,
 			AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO) {
 		this.operatorDAO = ops;
