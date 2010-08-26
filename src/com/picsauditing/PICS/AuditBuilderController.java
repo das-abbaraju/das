@@ -246,28 +246,32 @@ public class AuditBuilderController {
 		Set<OperatorAccount> governingBodies = builder.getAuditTypes(conAudit.getAuditType()).governingBodies;
 
 		// Add CAOs that don't yet exist
-		for (OperatorAccount operator : governingBodies) {
-			PicsLogger.log("Evaluating CAO for " + operator.getName());
-
-			// Now find the existing cao record for this operator (if one
-			// exists)
-			boolean exists = false;
-			for (ContractorAuditOperator cao : conAudit.getOperators()) {
-				if (cao.getOperator().equals(operator)) {
-					exists = true;
+		if (governingBodies != null) {
+			for (OperatorAccount operator : governingBodies) {
+				if (operator != null) {
+					PicsLogger.log("Evaluating CAO for " + operator.getName());
+		
+					// Now find the existing cao record for this operator (if one
+					// exists)
+					boolean exists = false;
+					for (ContractorAuditOperator cao : conAudit.getOperators()) {
+						if (cao.getOperator().equals(operator)) {
+							exists = true;
+						}
+					}
+		
+					if (!exists) {
+						// If we don't have one, then add it
+						PicsLogger.log("Adding missing cao");
+						ContractorAuditOperator cao = new ContractorAuditOperator();
+						cao.setAudit(conAudit);
+						cao.setOperator(operator);
+						cao.setAuditColumns(user);
+						conAudit.getOperators().add(cao);
+						cao.setStatus(CaoStatus.Pending);
+						contractorAuditOperatorDAO.save(cao);
+					}
 				}
-			}
-
-			if (!exists) {
-				// If we don't have one, then add it
-				PicsLogger.log("Adding missing cao");
-				ContractorAuditOperator cao = new ContractorAuditOperator();
-				cao.setAudit(conAudit);
-				cao.setOperator(operator);
-				cao.setAuditColumns(user);
-				conAudit.getOperators().add(cao);
-				cao.setStatus(CaoStatus.Pending);
-				contractorAuditOperatorDAO.save(cao);
 			}
 		}
 

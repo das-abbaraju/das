@@ -11,11 +11,9 @@ import java.util.Set;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.BaseDecisionTreeRule;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -124,13 +122,15 @@ public class AuditBuilder {
 	private void includeCategory(AuditCategory category, List<AuditCategoryRule> categoryRules) {
 		AuditTypeDetail detail = this.auditTypes.get(category.getAuditType());
 
-		for (OperatorAccount operator : detail.operators.keySet()) {
-			AuditCategoryRule rule = getApplicable(categoryRules, category, operator);
-			if (rule != null && rule.isInclude()) {
-				detail.categories.add(category);
-
-				if (rule.getOperatorAccount() != null)
-					detail.operators.put(operator, rule.getOperatorAccount());
+		if (detail != null) {
+			for (OperatorAccount operator : detail.operators.keySet()) {
+				AuditCategoryRule rule = getApplicable(categoryRules, category, operator);
+				if (rule != null && rule.isInclude()) {
+					detail.categories.add(category);
+	
+					if (rule.getOperatorAccount() != null)
+						detail.operators.put(operator, rule.getOperatorAccount());
+				}
 			}
 		}
 
