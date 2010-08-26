@@ -478,6 +478,11 @@ a.watch {
 	padding-left:17px;
 }
 
+a.clearfield {
+	background: url('../images/clear.png') no-repeat left center;
+	padding-left:17px;
+}
+
 label.tooltipped {
 	background: url('../images/icon_text_alert.png') no-repeat left center;
 	zoom: 1;

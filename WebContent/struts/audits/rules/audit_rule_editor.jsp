@@ -50,6 +50,11 @@ $(function() {
 	$('#rule_form').submit(function() {
 		$('input[name]',this).each(function() {if ($(this).blank()) $(this).remove()});
 	});
+
+	$('a.clearfield').click(function(e) {
+		e.preventDefault();
+		$('input', $(this).parent()).val('');
+	});
 });
 </script>
 <style>
@@ -106,6 +111,7 @@ $(function() {
 	<div class="new">
 		<s:form method="post" id="rule_form">
 			<s:hidden name="button" value="new"/>
+			<s:hidden name="rule.id"/>
 			<fieldset class="form">
 				<h2 class="formLegend">New Category Rule</h2>
 				<ol>
@@ -113,26 +119,30 @@ $(function() {
 						<s:checkbox name="rule.include"/>
 					</li>
 					<li><label>Audit Type</label>
-						<input type="text" class="searchAuto" id="auditType"/>
+						<input type="text" class="searchAuto" id="auditType"  value="<s:property value="rule.auditType.auditName"/>"/>
 						<s:hidden name="rule.auditType.id" id="audit_hidden"/>
+						<a href="#" class="clearfield">Clear Field</a>
 					</li>
 					<li><label>Category</label>
-						<input type="text" class="searchAuto" id="category"/>
+						<input type="text" class="searchAuto" id="category" value="<s:property value="rule.auditCategory.name"/>"/>
 						<s:hidden name="rule.auditCategory.id" id="cat_hidden"/>
+						<a href="#" class="clearfield">Clear Field</a>
 					</li>
 					<li><label>Account Type</label>
 						<s:select name="rule.contractorType" list="@com.picsauditing.jpa.entities.ContractorType@values()" listValue="type" headerKey="" headerValue=""/>
 					</li>
 					<li><label>Operator</label>
-						<input type="text" class="searchAuto" id="operator"/>
+						<input type="text" class="searchAuto" id="operator" value="<s:property value="rule.operatorAccount.name"/>"/>
 						<s:hidden name="rule.operatorAccount.id" id="operator_hidden"/>
+						<a href="#" class="clearfield">Clear Field</a>
 					</li>
 					<li><label>Risk</label>
 						<s:select name="rule.risk" list="#{'':'','Low':'Low','Med':'Med','High':'High'}"/>
 					</li>
 					<li><label>Tag</label>
-						<input type="text" class="searchAuto" id="tag"/>
+						<input type="text" class="searchAuto" id="tag" value="<s:property value="rule.tag.tag"/>"/>
 						<s:hidden name="rule.tag" id="tag_hidden"/>
+						<a href="#" class="clearfield">Clear Field</a>
 					</li>
 					<li><label>Bid-Only</label>
 						<s:select name="rule.acceptsBids" list="#{'':'','false':'No','true':'Yes'}"/>

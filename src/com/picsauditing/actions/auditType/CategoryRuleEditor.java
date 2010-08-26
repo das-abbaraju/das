@@ -91,7 +91,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			}
 			if ("deleteChildren".equals(button)) {
 				int count = dao.deleteChildren(rule, permissions);
-				addActionMessage("Archived " + count + (count == 1 ? " rule" : " rules"));
+				addActionMessage("Archived " + count + (count == 1 ? "rule" : "rules"));
 			}
 		}
 
@@ -170,7 +170,6 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		sql.addWhere(field + " IS NOT NULL");
 		sql.addWhere("effectiveDate <= NOW() AND expirationDate > NOW()");
 		sql.addGroupBy(field);
-		sql.setHavingClause("COUNT(*) > 1");
 
 		if ("risk".equals(field))
 			sql.addField("CASE risk WHEN 1 THEN 'Low' WHEN 2 THEN 'Med' WHEN 3 THEN 'High' ELSE NULL END AS risk");
