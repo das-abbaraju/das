@@ -145,7 +145,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		return where;
 	}
 
-	public List<AuditTypeRule> getApplicableAuditRules(ContractorAccount contractor) {
+	public List<AuditTypeRule> getApplicableAuditTypeRules(ContractorAccount contractor) {
 		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW()";
 
 		where += " AND (risk IS NULL";
@@ -219,6 +219,24 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 		if (rule.getAuditCategory() != null)
 			where += " AND auditCategory.id = " + rule.getAuditCategory().getId();
+		
+		where += " AND include = :include AND level = :level";
+
+		String updateString = "UPDATE AuditCategoryRule SET expirationDate = :queryDate, updateDate = :queryDate, updatedBy.id = :userID " + where;
+		
+		Query query = em.createQuery(updateString);
+		query.setParameter("queryDate", new Date());
+		query.setParameter("userID", permissions.getUserId());
+		query.setParameter("include", rule.isInclude());
+		query.setParameter("level", rule.getLevel() + 1);
+		return query.executeUpdate();
+	}
+	
+	public int deleteChildren(AuditTypeRule rule, Permissions permissions) {
+		String where = getMoreGranularWhere(rule);
+
+		if (rule.getAuditType() != null)
+			where += " AND auditType = " + rule.getAuditType().getId();
 		
 		where += " AND include = :include AND level = :level";
 

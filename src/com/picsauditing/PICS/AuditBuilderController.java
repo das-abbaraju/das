@@ -136,7 +136,7 @@ public class AuditBuilderController {
 	}
 
 	private List<AuditTypeRule> getAuditTypeRules() {
-		List<AuditTypeRule> rules = auditDecisionTableDAO.getApplicableAuditRules(contractor);
+		List<AuditTypeRule> rules = auditDecisionTableDAO.getApplicableAuditTypeRules(contractor);
 		Set<Integer> questionAnswersNeeded = new HashSet<Integer>();
 		Set<Integer> tagsNeeded = new HashSet<Integer>();
 		for (AuditTypeRule rule : rules) {

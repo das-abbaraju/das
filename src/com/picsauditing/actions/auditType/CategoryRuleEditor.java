@@ -9,40 +9,47 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
+import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
 public class CategoryRuleEditor extends PicsActionSupport {
+	
+	protected int id = 0;
+	protected boolean categoryRule = true;
+	protected boolean auditTypeRule = false;
 
-	private int id = 0;
-	private boolean categoryRule = true;
+	protected AuditCategoryRule rule = null;
+	protected List<AuditCategoryRule> lessGranular;
+	protected List<AuditCategoryRule> moreGranular;
+	protected List<AuditRule> similar;
+	protected Date date = new Date();
 
-	private AuditCategoryRule rule = null;
-	private List<AuditCategoryRule> lessGranular;
-	private List<AuditCategoryRule> moreGranular;
-	private List<AuditCategoryRule> similar;
-	private Date date = new Date();
+	protected AuditDecisionTableDAO dao;
 
-	private AuditDecisionTableDAO dao;
+	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
-	private Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
-	public CategoryRuleEditor(AuditDecisionTableDAO auditDecisionTableDAO) {
-		this.dao = auditDecisionTableDAO;
+	public CategoryRuleEditor(AuditDecisionTableDAO dao) {
+		this.dao = dao;
 	}
 
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 
+		if (id == 0)
+			return BLANK;
+
 		if (rule == null) {
-			rule = dao.findAuditCategoryRule(id);
+			if (id == 0)
+				return SUCCESS;
+			rule = (AuditCategoryRule) dao.findAuditCategoryRule(id);
 			if (rule == null) {
 				throw new RecordNotFoundException("rule");
 			}
@@ -60,22 +67,30 @@ public class CategoryRuleEditor extends PicsActionSupport {
 					rule.setAuditColumns(permissions);
 					dao.save(rule);
 				} else {
-					AuditCategoryRule acr = dao.findAuditCategoryRule(rule.getId());
+					AuditRule acr = dao.findAuditCategoryRule(rule.getId());
 					acr.update(rule);
 					acr.calculatePriority();
 					acr.setAuditColumns(permissions);
 					dao.save(acr);
 				}
-				this.redirect("CategoryRuleEditor.action?id=" + rule.getId());
+				this.redirect("CategoryRuleEditor.action?id=" + rule.getId()); // move out
 				return BLANK;
 			}
 			if ("create".equals(button)) {
-				AuditCategoryRule source = dao.findAuditCategoryRule(id);
+				AuditRule source = dao.findAuditCategoryRule(id);
 				rule.merge(source);
-				rule.defaultDates();
-				rule.calculatePriority();
-				rule.setAuditColumns(permissions);
-				dao.save(rule);
+				if (rule.getId() == 0) {
+					rule.defaultDates();
+					rule.calculatePriority();
+					rule.setAuditColumns(permissions);
+					dao.save(rule);
+				} else {
+					AuditRule acr = dao.findAuditCategoryRule(rule.getId());
+					acr.update(rule);
+					acr.calculatePriority();
+					acr.setAuditColumns(permissions);
+					dao.save(acr);
+				}
 				dao.deleteChildren(rule, permissions);
 				this.redirect("CategoryRuleEditor.action?id=" + rule.getId());
 				return BLANK;
@@ -87,12 +102,11 @@ public class CategoryRuleEditor extends PicsActionSupport {
 					redirect = "CategoryRuleEditor.action?id=" + lGranular.get(lGranular.size() - 1).getId();
 				else {
 					redirect = "CategoryRuleSearch.action";
-					if (rule.getAuditCategory() != null)
-						redirect += "filter.category=" + rule.getAuditCategory().getName() + "&";
+					if (((AuditCategoryRule)rule).getAuditCategory() != null)
+						redirect += "filter.category=" + ((AuditCategoryRule)rule).getAuditCategory().getName() + "&";
 					if (rule.getAuditType() != null)
 						redirect += "filter.auditType=" + rule.getAuditType().getAuditName() + "&";
 				}
-
 				rule.setExpirationDate(new Date());
 				rule.setAuditColumns(permissions);
 				dao.save(rule);
@@ -101,7 +115,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			}
 			if ("deleteChildren".equals(button)) {
 				int count = dao.deleteChildren(rule, permissions);
-				addActionMessage("Archived " + count + (count == 1 ? "rule" : "rules"));
+				addActionMessage("Archived " + count + (count == 1 ? " rule" : " rules"));
 			}
 		}
 
@@ -110,14 +124,14 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		// similar = dao.getSimilar(rule, new Date());
 		return SUCCESS;
 	}
-
-	private void addFields() {
+	
+	protected void addFields() {
 		// include
 		columns.put("include", null);
 		// audit_type
 		columns.put("audit_type", null);
 		// category
-		if (rule.getAuditCategory() == null) {
+		if (((AuditCategoryRule)rule).getAuditCategory() == null) {
 			Map<String, String> m = new HashMap<String, String>();
 			m.put("catID", "rule.auditCategory.id=");
 			columns.put("category", m);
@@ -155,14 +169,12 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		// answer
 		columns.put("answer", null);
 	}
-
+	
 	public List<BasicDynaBean> getPercentOn(String field) throws SQLException {
 		Database db = new Database();
 		SelectSQL sql = new SelectSQL("audit_category_rule");
 		if (rule.getAuditType() != null)
 			sql.addWhere("auditTypeID = " + rule.getAuditType().getId());
-		if (rule.getAuditCategory() != null)
-			sql.addWhere("catID = " + rule.getAuditCategory().getId());
 		if (rule.getOperatorAccount() != null)
 			sql.addWhere("opID = " + rule.getOperatorAccount().getId());
 		if (rule.getRisk() != null)
@@ -180,6 +192,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		sql.addWhere(field + " IS NOT NULL");
 		sql.addWhere("effectiveDate <= NOW() AND expirationDate > NOW()");
 		sql.addGroupBy(field);
+		sql.setHavingClause("COUNT(*) > 1");
 
 		if ("risk".equals(field))
 			sql.addField("CASE risk WHEN 1 THEN 'Low' WHEN 2 THEN 'Med' WHEN 3 THEN 'High' ELSE NULL END AS risk");
@@ -190,6 +203,9 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		sql.addField("SUM(include)/COUNT(*) percentOn");
 
 		sql.addOrderBy("percentOn DESC");
+		
+		if (rule.getAuditCategory() != null)
+			sql.addWhere("catID = " + rule.getAuditCategory().getId());
 
 		return db.select(sql.toString(), false);
 	}
@@ -200,6 +216,14 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public boolean isCategoryRule() {
+		return categoryRule;
+	}
+
+	public void setCategoryRule(boolean categoryRule) {
+		this.categoryRule = categoryRule;
 	}
 
 	public AuditCategoryRule getRule() {
@@ -214,28 +238,24 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		return lessGranular;
 	}
 
+	public void setLessGranular(List<AuditCategoryRule> lessGranular) {
+		this.lessGranular = lessGranular;
+	}
+
 	public List<AuditCategoryRule> getMoreGranular() {
 		return moreGranular;
 	}
 
-	public List<AuditCategoryRule> getSimilar() {
-		return similar;
-	}
-
-	public boolean isCategoryRule() {
-		return categoryRule;
-	}
-
-	public void setCategoryRule(boolean categoryRule) {
-		this.categoryRule = categoryRule;
+	public void setMoreGranular(List<AuditCategoryRule> moreGranular) {
+		this.moreGranular = moreGranular;
 	}
 
 	public Date getDate() {
 		return date;
 	}
 
-	public void setDate(String dateString) {
-		this.date = DateBean.parseDate(dateString);
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	public Map<String, Map<String, String>> getColumns() {
@@ -244,6 +264,14 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	public void setColumns(Map<String, Map<String, String>> columns) {
 		this.columns = columns;
+	}
+
+	public boolean isAuditTypeRule() {
+		return auditTypeRule;
+	}
+
+	public void setAuditTypeRule(boolean auditTypeRule) {
+		this.auditTypeRule = auditTypeRule;
 	}
 
 }
