@@ -1,0 +1,49 @@
+tr.on {
+	background-color: #9DEB95;	
+}
+tr.off {
+	background-color: #FFABA6;	
+}
+tr.less-granular td {
+	font-style: italic;
+}
+tr.less-granular.on {
+	background-color: #9DEB95;	
+}
+tr.less-granular.off {
+	background-color: #FFABA6;	
+}
+tr.current-rule td {
+	font-weight: bold;
+	font-size: 15px;
+}
+tr.current-rule.on {
+	background-color: #9DEB95;
+}
+tr.current-rule.off {
+	background-color: #FFABA6;
+}
+tr.similar-rules.on {
+	background-color: maroon;	
+}
+tr.similar-rules.off {
+	background-color: navy;	
+}
+tr.more-granular.on {
+	background-color: #9DEB95;	
+}
+tr.more-granular.off {
+	background-color: #FFABA6;	
+}
+tr.rule-header td {
+	font-weight: bold;
+	font-size: 120%;
+	background-color: #f9f9f9;	
+}
+tr.rule-percents {
+	height: 0px;
+	overflow-y: auto;
+}
+tr.rule-percents td {
+	vertical-align:top;
+}
