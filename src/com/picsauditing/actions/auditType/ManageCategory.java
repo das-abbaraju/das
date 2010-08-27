@@ -7,11 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.dao.AuditCategoryDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 
 @SuppressWarnings("serial")
@@ -21,8 +23,8 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 	private int targetCategoryID = 0;
 
 	public ManageCategory(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDao,
-			AuditCategoryDAO auditCategoryDao, AuditQuestionDAO auditQuestionDao) {
-		super(emailTemplateDAO, auditTypeDao, auditCategoryDao, auditQuestionDao);
+			AuditCategoryDAO auditCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDecisionTableDAO ruleDAO) {
+		super(emailTemplateDAO, auditTypeDao, auditCategoryDao, auditQuestionDao, ruleDAO);
 	}
 
 	@Override
@@ -143,7 +145,7 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 			}
 			if (targetCategoryID > 0) {
 				AuditCategory targetCategory = auditCategoryDAO.find(targetCategoryID);
-				
+
 				int number = 1;
 				if (targetCategory.getSubCategories().size() > 0) {
 					for (AuditCategory subCategory : targetCategory.getSubCategories()) {
@@ -151,7 +153,7 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 							number = subCategory.getNumber() + 1;
 					}
 				}
-				
+
 				ac = new AuditCategory(category);
 				ac.setNumber(number);
 				ac.setAuditColumns(permissions);
@@ -203,7 +205,7 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 				category.setAuditType(targetAudit);
 				auditCategoryDAO.save(category);
 			}
-			
+
 			if (targetCategoryID > 0) {
 				AuditCategory parent = auditCategoryDAO.find(targetCategoryID);
 				category.setParent(parent);
@@ -229,28 +231,28 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 
 		if (targetID > 0) {
 			AuditType targetAudit = auditTypeDAO.find(targetID);
-			
+
 			int number = 1;
 			for (AuditCategory cat : targetAudit.getCategories()) {
 				if (number < cat.getNumber())
 					number = cat.getNumber() + 1;
 			}
-	
+
 			// Copying Category
 			categoryCopy = copyTree(originalAudit, null, number);
 			categoryCopy.setAuditType(targetAudit);
 			categoryCopy = auditCategoryDAO.save(categoryCopy);
 		}
-		
+
 		if (targetCategoryID > 0) {
 			AuditCategory parent = auditCategoryDAO.find(targetCategoryID);
-			
+
 			int number = 1;
 			for (AuditCategory cat : parent.getSubCategories()) {
 				if (number < cat.getNumber())
 					number = cat.getNumber() + 1;
 			}
-			
+
 			categoryCopy = copyTree(originalAudit, parent, number);
 		}
 
@@ -265,20 +267,20 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 		categoryCopy.setNumber(categoryNumber);
 		categoryCopy.setAuditColumns(permissions);
 		categoryCopy = auditCategoryDAO.save(categoryCopy);
-		
+
 		for (AuditQuestion question : category.getQuestions()) {
 			AuditQuestion questionCopy = new AuditQuestion(question, categoryCopy);
 			questionCopy.setAuditColumns(permissions);
 			auditQuestionDAO.save(questionCopy);
 		}
-		
+
 		int number = 1;
 		for (AuditCategory subCategory : category.getSubCategories()) {
 			// categoryCopy is a brand new category with no subcategories
 			copyTree(subCategory, categoryCopy, number);
 			number++;
 		}
-		
+
 		return categoryCopy;
 	}
 
@@ -297,6 +299,15 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 
 	public AuditCategory getCategoryParent() {
 		return categoryParent;
+	}
+
+	@Override
+	public List<? extends AuditRule> getRelatedRules() {
+		if (relatedRules == null) {
+			relatedRules = ruleDAO.findByCategory(category.getId());
+		}
+
+		return relatedRules;
 	}
 
 	public void setCategoryParent(AuditCategory categoryParent) {

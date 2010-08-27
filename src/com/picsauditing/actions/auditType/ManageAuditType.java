@@ -11,6 +11,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
@@ -18,6 +19,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditQuestionOption;
+import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.EmailTemplate;
@@ -42,13 +44,17 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected EmailTemplateDAO emailTemplateDAO;
 	protected AuditCategoryDAO auditCategoryDAO;
 	protected AuditQuestionDAO auditQuestionDAO;
+	protected AuditDecisionTableDAO ruleDAO;
+
+	List<? extends AuditRule> relatedRules;
 
 	public ManageAuditType(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDAO,
-			AuditCategoryDAO auditCategoryDAO, AuditQuestionDAO auditQuestionDAO) {
+			AuditCategoryDAO auditCategoryDAO, AuditQuestionDAO auditQuestionDAO, AuditDecisionTableDAO ruleDAO) {
 		this.emailTemplateDAO = emailTemplateDAO;
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditQuestionDAO = auditQuestionDAO;
+		this.ruleDAO = ruleDAO;
 	}
 
 	public String execute() throws Exception {
@@ -119,10 +125,10 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 		if ("AddNew".equals(button)) {
 			category = new AuditCategory();
-			
+
 			if (auditType != null && auditType.getId() > 0)
 				category.setAuditType(auditType);
-			
+
 			return SUCCESS;
 		}
 
@@ -339,6 +345,14 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	protected String getDeletedRedirectURL() {
 		return "ManageAuditType.action";
+	}
+
+	public List<? extends AuditRule> getRelatedRules() {
+		if (relatedRules == null) {
+			relatedRules = ruleDAO.findByAuditType(auditType.getId());
+		}
+
+		return relatedRules;
 	}
 
 	// GETTERS && SETTERS

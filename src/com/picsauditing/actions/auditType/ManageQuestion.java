@@ -5,6 +5,7 @@ import java.util.List;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
@@ -20,8 +21,9 @@ public class ManageQuestion extends ManageCategory {
 	private Integer visibleQuestionID;
 
 	public ManageQuestion(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDao,
-			AuditCategoryDAO auditCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO) {
-		super(emailTemplateDAO, auditTypeDao, auditCategoryDao, auditQuestionDao);
+			AuditCategoryDAO auditCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO,
+			AuditDecisionTableDAO ruleDAO) {
+		super(emailTemplateDAO, auditTypeDao, auditCategoryDao, auditQuestionDao, ruleDAO);
 		this.auditDataDAO = auditDataDAO;
 	}
 

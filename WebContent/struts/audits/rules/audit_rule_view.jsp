@@ -12,8 +12,10 @@
 	<td><s:property value="riskLabel"/></td>
 	<td><s:property value="tagLabel"/></td>
 	<td><s:property value="acceptsBidsLabel"/></td>
-	<s:if test="auditTypeRule"><td><s:property value="dependentAuditTypeLabel"/></td>
-	<td><s:property value="dependentAuditStatusLabel"/></td></s:if>
+	<s:if test="auditTypeRule">
+		<td><s:property value="dependentAuditTypeLabel"/></td>
+		<td><s:property value="dependentAuditStatusLabel"/></td>
+	</s:if>
 	<td><s:property value="questionLabel"/></td>
 	<td><s:property value="questionComparatorLabel"/></td>
 	<td><s:property value="questionAnswerLabel"/></td>
