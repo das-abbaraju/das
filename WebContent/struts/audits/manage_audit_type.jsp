@@ -189,32 +189,26 @@ function copyAuditType(atypeID) {
 	<pics:permission perm="ManageAuditTypeRules">
 		<div>
 			<h3>Related Rules</h3>
-			<s:if test="relatedRules.size() >= 50">
+			<s:if test="relatedRules.size() == 0">
 				<div class="alert">
-					There are too many rules to display here. <a href="AuditTypeRuleSearch.action?filter.auditType=<s:property value="auditType.auditName"/>&filter.auditTypeID=<s:property value="auditType.id"/>">Click here to view all rules for <s:property value="auditType.auditName"/>.</a>
+					There are no rules for this audit type. <a href="AuditTypeRuleEditor.action?button=edit&rule.auditType.id=<s:property value="auditType.id"/>&rule.auditType.auditName=<s:property value="auditType.auditName"/>">Click here to create a rule for <s:property value="auditType.auditName"/></a>
 				</div>
 			</s:if>
-			<table class="report">
-				<thead>
-					<tr>
-						<td>Include</td>
-						<td>Audit Type</td>
-						<td>Account</td>
-						<td>Operator</td>
-						<td>Risk</td>
-						<td>Tag</td>
-						<td>Bid-Only</td>
-						<td>Question</td>
-						<td></td>
-						<td>Answer</td>
-					</tr>
-				</thead>
-				<s:set name="ruleURL" value="'AuditTypeRuleEditor.action'"/>
-				<s:set name="auditTypeRule" value="true"/>
-				<s:iterator value="relatedRules" id="r">
-					<s:include value="rules/audit_rule_view.jsp"/>
-				</s:iterator>
-			</table>
+			<s:else>
+				<s:if test="relatedRules.size() >= 50">
+					<div class="alert">
+						There are too many rules to display here. <a href="AuditTypeRuleSearch.action?filter.auditType=<s:property value="auditType.auditName"/>&filter.auditTypeID=<s:property value="auditType.id"/>">Click here to view all rules for <s:property value="auditType.auditName"/>.</a>
+					</div>
+				</s:if>
+				<table class="report">
+					<s:set name="ruleURL" value="'AuditTypeRuleEditor.action'"/>
+					<s:set name="categoryRule" value="false"/>
+					<s:include value="rules/audit_rule_header.jsp"/>
+					<s:iterator value="relatedRules" id="r">
+						<s:include value="rules/audit_rule_view.jsp"/>
+					</s:iterator>
+				</table>
+			</s:else>
 		</div>
 	</pics:permission>
 </s:if>

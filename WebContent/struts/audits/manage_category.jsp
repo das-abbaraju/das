@@ -233,33 +233,26 @@ function moveCategory(atypeID) {
 	<pics:permission perm="ManageCategoryRules">
 		<div>
 			<h3>Related Rules</h3>
-			<s:if test="relatedRules.size() >= 50">
+			<s:if test="relatedRules.size() == 0">
 				<div class="alert">
-					There are too many rules to display here. <a href="CategoryRuleSearch.action?filter.category=<s:property value="category.name"/>&filter.catID=<s:property value="category.id"/>">Click here to view all rules for <s:property value="category.name"/>.</a>
+					There are no rules for this category. <a href="CategoryRuleEditor.action?button=edit&rule.auditCategory.id=<s:property value="category.id"/>&rule.auditCategory.name=<s:property value="category.name"/>">Click here to create a rule for <s:property value="category.name"/></a>
 				</div>
 			</s:if>
-			<table class="report">
-				<thead>
-					<tr>
-						<td>Include</td>
-						<td>Audit Type</td>
-						<td>Category</td>
-						<td>Account</td>
-						<td>Operator</td>
-						<td>Risk</td>
-						<td>Tag</td>
-						<td>Bid-Only</td>
-						<td>Question</td>
-						<td></td>
-						<td>Answer</td>
-					</tr>
-				</thead>
-				<s:set name="ruleURL" value="'CategoryRuleEditor.action'"/>
-				<s:set name="categoryRule" value="true"/>
-				<s:iterator value="relatedRules" id="r">
-					<s:include value="rules/audit_rule_view.jsp"/>
-				</s:iterator>
-			</table>
+			<s:else>
+				<s:if test="relatedRules.size() >= 50">
+					<div class="alert">
+						There are too many rules to display here. <a href="CategoryRuleSearch.action?filter.category=<s:property value="category.name"/>&filter.catID=<s:property value="category.id"/>">Click here to view all rules for <s:property value="category.name"/>.</a>
+					</div>
+				</s:if>
+				<table class="report">
+					<s:set name="ruleURL" value="'CategoryRuleEditor.action'"/>
+					<s:set name="categoryRule" value="true"/>
+					<s:include value="rules/audit_rule_header.jsp"/>
+					<s:iterator value="relatedRules" id="r">
+						<s:include value="rules/audit_rule_view.jsp"/>
+					</s:iterator>
+				</table>
+			</s:else>
 		</div>
 	</pics:permission>
 </s:if>
