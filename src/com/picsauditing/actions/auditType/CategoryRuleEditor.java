@@ -22,7 +22,6 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	
 	protected int id = 0;
 	protected boolean categoryRule = true;
-	protected boolean auditTypeRule = false;
 
 	protected AuditCategoryRule rule = null;
 	protected List<AuditCategoryRule> lessGranular;
@@ -265,13 +264,4 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	public void setColumns(Map<String, Map<String, String>> columns) {
 		this.columns = columns;
 	}
-
-	public boolean isAuditTypeRule() {
-		return auditTypeRule;
-	}
-
-	public void setAuditTypeRule(boolean auditTypeRule) {
-		this.auditTypeRule = auditTypeRule;
-	}
-
 }

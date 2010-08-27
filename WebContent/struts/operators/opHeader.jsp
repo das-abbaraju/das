@@ -31,6 +31,14 @@
 		<li><a href="OperatorTags.action?id=<s:property value="operator.id"/>"
 			<s:if test="requestURI.contains('operator_tags')">class="current"</s:if>>Tags</a></li>
 	</pics:permission>
+	<pics:permission perm="ManageCategoryRules">
+		<li><a href="OperatorCategoryRules.action?id=<s:property value="operator.id"/>"
+			<s:if test="requestURI.contains('CategoryRules')">class="current"</s:if>>Category Rules</a></li>
+	</pics:permission>
+	<pics:permission perm="ManageAuditTypeRules">
+		<li><a href="OperatorAuditTypeRules.action?id=<s:property value="operator.id"/>"
+			<s:if test="requestURI.contains('AuditTypeRules')">class="current"</s:if>>Audit Type Rules</a></li>
+	</pics:permission>
 	<li><a href="ContractorList.action?filter.status=Active&filter.status=Demo<s:property value="operatorIds"/>">Contractors</a></li>
 </ul>
 </div>

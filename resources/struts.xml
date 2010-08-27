@@ -681,6 +681,17 @@
 			<result>struts/operators/report_untaggedcontractors.jsp</result>
 		</action>
 		
+		<action name="OperatorAuditTypeRules"
+			class="com.picsauditing.actions.operators.OperatorViewRules">
+			<param name="type">auditType</param>
+			<result>struts/operators/operator_view_rules.jsp</result>
+		</action>
+		<action name="OperatorCategoryRules"
+			class="com.picsauditing.actions.operators.OperatorViewRules">
+			<param name="type">category</param>
+			<result>struts/operators/operator_view_rules.jsp</result>
+		</action>
+				
 		<action name="AccountNameEditAjax"
 			class="com.picsauditing.actions.operators.FacilitiesEdit">
 			<result>/struts/operators/operator_names.jsp</result>
