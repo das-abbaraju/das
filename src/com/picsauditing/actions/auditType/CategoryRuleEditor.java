@@ -42,19 +42,17 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
-		if (id == 0)
+		if (id == 0&& !"edit".equals(button))
 			return BLANK;
 
 		if (rule == null) {
-			if (id == 0)
-				return SUCCESS;
 			rule = (AuditCategoryRule) dao.findAuditCategoryRule(id);
 			if (rule == null) {
 				throw new RecordNotFoundException("rule");
 			}
+			rule.calculatePriority();
+			dao.save(rule);
 		}
-		rule.calculatePriority();
-		dao.save(rule);
 
 		addFields();
 

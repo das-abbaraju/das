@@ -19,7 +19,7 @@ import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
 public class AuditTypeRuleEditor extends PicsActionSupport {
-	
+
 	protected int id = 0;
 	protected boolean categoryRule = false;
 
@@ -32,28 +32,26 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	protected AuditDecisionTableDAO dao;
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
-	
+
 	public AuditTypeRuleEditor(AuditDecisionTableDAO dao) {
 		this.dao = dao;
 	}
-	
+
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 
-		if (id == 0)
+		if (id == 0 && !"edit".equals(button))
 			return BLANK;
 
 		if (rule == null) {
-			if (id == 0)
-				return SUCCESS;
 			rule = (AuditTypeRule) dao.findAuditTypeRule(id);
 			if (rule == null) {
 				throw new RecordNotFoundException("rule");
 			}
+			rule.calculatePriority();
+			dao.save(rule);
 		}
-		rule.calculatePriority();
-		dao.save(rule);
 
 		addFields();
 
@@ -71,7 +69,8 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 					acr.setAuditColumns(permissions);
 					dao.save(acr);
 				}
-				this.redirect("CategoryRuleEditor.action?id=" + rule.getId()); // move out
+				this.redirect("CategoryRuleEditor.action?id=" + rule.getId()); // move
+																				// out
 				return BLANK;
 			}
 			if ("create".equals(button)) {
@@ -120,19 +119,19 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		// similar = dao.getSimilar(rule, new Date());
 		return SUCCESS;
 	}
-	
+
 	protected void addFields() {
 		// include
 		columns.put("include", null);
 		// audit_type
 		columns.put("audit_type", null);
 		// category
-		/*if (((AuditCategoryRule)rule).getAuditCategory() == null) {
-			Map<String, String> m = new HashMap<String, String>();
-			m.put("catID", "rule.auditCategory.id=");
-			columns.put("category", m);
-		} else
-			columns.put("category", null);*/
+		/*
+		 * if (((AuditCategoryRule)rule).getAuditCategory() == null) {
+		 * Map<String, String> m = new HashMap<String, String>(); m.put("catID",
+		 * "rule.auditCategory.id="); columns.put("category", m); } else
+		 * columns.put("category", null);
+		 */
 		// account
 		columns.put("account", null);
 		// operator
@@ -165,7 +164,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		// answer
 		columns.put("answer", null);
 	}
-	
+
 	public List<BasicDynaBean> getPercentOn(String field) throws SQLException {
 		Database db = new Database();
 		SelectSQL sql = new SelectSQL("audit_type_rule");
@@ -199,7 +198,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		sql.addField("SUM(include)/COUNT(*) percentOn");
 
 		sql.addOrderBy("percentOn DESC");
-		
+
 		return db.select(sql.toString(), false);
 	}
 
