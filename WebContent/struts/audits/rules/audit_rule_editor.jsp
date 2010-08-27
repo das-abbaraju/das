@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="css/reports.css"/>
 <link rel="stylesheet" href="css/forms.css"/>
 <s:include value="../../jquery.jsp"/>
+<link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
@@ -57,51 +58,6 @@ $(function() {
 	});
 });
 </script>
-<style>
-	tr.less-granular td {
-		font-style: italic;
-	}
-	tr.less-granular.on {
-		background-color: #9DEB95;	
-	}
-	tr.less-granular.off {
-		background-color: #FFABA6;	
-	}
-	tr.current-rule td {
-		font-weight: bold;
-		font-size: 15px;
-	}
-	tr.current-rule.on {
-		background-color: #9DEB95;
-	}
-	tr.current-rule.off {
-		background-color: #FFABA6;
-	}
-	tr.similar-rules.on {
-		background-color: maroon;	
-	}
-	tr.similar-rules.off {
-		background-color: navy;	
-	}
-	tr.more-granular.on {
-		background-color: #9DEB95;	
-	}
-	tr.more-granular.off {
-		background-color: #FFABA6;	
-	}
-	tr.rule-header td {
-		font-weight: bold;
-		font-size: 120%;
-		background-color: #f9f9f9;	
-	}
-	tr.rule-percents {
-		height: 0px;
-		overflow-y: auto;
-	}
-	tr.rule-percents td {
-		vertical-align:top;
-	}
-</style>
 </head>
 
 <body>
@@ -187,9 +143,11 @@ $(function() {
 		</tr>
 	</thead>
 	
+	<s:set name="showAction" value="true"/>
 	<s:iterator value="#{'Less Granular': lessGranular, 'Current Rule': rule, 'Similar Rules': similar, 'More Granular': moreGranular}">
 		<s:if test="'Current Rule' == key || value.size() > 0">
-			<tr class="rule-header clickable <s:property value="key.toLowerCase().replaceAll(' ', '-')"/>">
+			<s:set name="ruleclass" value="%{key.toLowerCase().replaceAll(' ', '-')}"/>
+			<tr class="rule-header clickable <s:property value="#ruleclass"/>">
 				<td colspan="12" class="center"> <s:property value="key"/> </td>
 			</tr>
 			<s:iterator value="value" id="r">
