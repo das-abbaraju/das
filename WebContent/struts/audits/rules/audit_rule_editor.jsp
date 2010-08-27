@@ -124,27 +124,11 @@ $(function() {
 	<a class="add" href="?button=edit">Create New Rule</a>
 
 	<table class="report">
-	<thead>
-		<tr>
-			<td>Include</td>
-			<td>Audit Type</td>
-			<s:if test="categoryRule"><td>Category</td></s:if>
-			<td>Account</td>
-			<td>Operator</td>
-			<td>Risk</td>
-			<td>Tag</td>
-			<td>Bid-Only</td>
-			<s:if test="!categoryRule"><td>Dependent Audit Type</td></s:if>
-			<s:if test="!categoryRule"><td>Dependent Audit Status</td></s:if>
-			<td>Question</td>
-			<td></td>
-			<td>Answer</td>
-			<td></td>
-		</tr>
-	</thead>
-	
+
 	<s:set name="showAction" value="true"/>
-	<s:iterator value="#{'Less Granular': lessGranular, 'Current Rule': rule, 'Similar Rules': similar, 'More Granular': moreGranular}">
+	<s:include value="audit_rule_header.jsp"/>
+	
+	<s:iterator value="#{'Less Granular': lessGranular, 'Current Rule': rule, 'More Granular': moreGranular}">
 		<s:if test="'Current Rule' == key || value.size() > 0">
 			<s:set name="ruleclass" value="%{key.toLowerCase().replaceAll(' ', '-')}"/>
 			<tr class="rule-header clickable <s:property value="#ruleclass"/>">
