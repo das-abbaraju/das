@@ -137,11 +137,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco.setCriteria(fc);
 				fco.setFlag(newFlag);
 				
-				if (Strings.isEmpty(newHurdle))
-					newHurdle = null;
-					
-				if (newHurdle != null)
-					fco.setHurdle(Strings.formatNumber(newHurdle));
+				if (fc.isAllowCustomValue() && !Strings.isEmpty(newHurdle) && !newHurdle.equals("undefined")) {
+					if (fc.getDataType().equals("number")) // Custom values can only be set on number datatypes
+						fco.setHurdle(Strings.formatNumber(newHurdle));
+				}
 				
 				if (!checkExists(fc)) {
 					fco.setOperator(operator);
@@ -163,11 +162,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco.setUpdatedBy(getUser());
 				fco.setFlag(newFlag);
 				
-				if (Strings.isEmpty(newHurdle))
-					newHurdle = null;
-
-				if (newHurdle != null && !newHurdle.equals(fco.getHurdle()))
-					fco.setHurdle(newHurdle);
+				if (fco.getCriteria().isAllowCustomValue() && !Strings.isEmpty(newHurdle) && !newHurdle.equals("undefined")) {
+					if (fco.getCriteria().getDataType().equals("number"))
+						fco.setHurdle(Strings.formatNumber(newHurdle));
+				}
 				
 				if (!checkExists(fco.getCriteria())) {
 					fco.setLastCalculated(null);
