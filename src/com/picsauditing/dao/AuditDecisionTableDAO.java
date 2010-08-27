@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
 
 @Transactional
@@ -43,6 +44,19 @@ public class AuditDecisionTableDAO extends PicsDAO {
 				.createQuery("FROM AuditCategoryRule r WHERE r.auditCategory.id = :categoryID ORDER BY r.priority");
 		query.setParameter("categoryID", categoryID);
 		query.setMaxResults(50);
+		return query.getResultList();
+	}
+	
+	public List<AuditTypeRule> findAuditTypeRulesByOperator(int opID){
+		Query query = em.createQuery("FROM AuditTypeRule r WHERE r.operatorAccount.id = :operatorID ORDER BY r.priority");
+		query.setParameter("operatorID", opID);
+		query.setMaxResults(50);		
+		return query.getResultList();
+	}
+	public List<AuditCategoryRule> findAuditCategoryRulesByOperator(int opID){
+		Query query = em.createQuery("FROM AuditCategoryRule r WHERE r.operatorAccount.id = :operatorID ORDER BY r.priority");
+		query.setParameter("operatorID", opID);
+		query.setMaxResults(50);		
 		return query.getResultList();
 	}
 
