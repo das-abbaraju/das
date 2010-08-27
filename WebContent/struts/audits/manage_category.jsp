@@ -230,36 +230,38 @@ function moveCategory(atypeID) {
 		<a class="add" href="ManageQuestion.action?button=AddNew&parentID=<s:property value="category.id"/>&categoryParent.id=<s:property value="category.id"/>&question.category.id=<s:property value="category.id"/>">Add New Question</a>
 		<div id="listQ-info"></div>
 	</div>
-	<div>
-		<h3>Related Rules</h3>
-		<s:if test="relatedRules.size() >= 50">
-			<div class="alert">
-				There are too many rules to display here. <a href="CategoryRuleSearch.action?filter.category=<s:property value="category.name"/>&filter.catID=<s:property value="category.id"/>">Click here to view all rules for <s:property value="category.name"/>.</a>
-			</div>
-		</s:if>
-		<table class="report">
-			<thead>
-				<tr>
-					<td>Include</td>
-					<td>Audit Type</td>
-					<td>Category</td>
-					<td>Account</td>
-					<td>Operator</td>
-					<td>Risk</td>
-					<td>Tag</td>
-					<td>Bid-Only</td>
-					<td>Question</td>
-					<td></td>
-					<td>Answer</td>
-				</tr>
-			</thead>
-			<s:set name="ruleURL" value="'CategoryRuleEditor.action'"/>
-			<s:set name="categoryRule" value="true"/>
-			<s:iterator value="relatedRules" id="r">
-				<s:include value="rules/audit_rule_view.jsp"/>
-			</s:iterator>
-		</table>
-	</div>
+	<pics:permission perm="ManageCategoryRules">
+		<div>
+			<h3>Related Rules</h3>
+			<s:if test="relatedRules.size() >= 50">
+				<div class="alert">
+					There are too many rules to display here. <a href="CategoryRuleSearch.action?filter.category=<s:property value="category.name"/>&filter.catID=<s:property value="category.id"/>">Click here to view all rules for <s:property value="category.name"/>.</a>
+				</div>
+			</s:if>
+			<table class="report">
+				<thead>
+					<tr>
+						<td>Include</td>
+						<td>Audit Type</td>
+						<td>Category</td>
+						<td>Account</td>
+						<td>Operator</td>
+						<td>Risk</td>
+						<td>Tag</td>
+						<td>Bid-Only</td>
+						<td>Question</td>
+						<td></td>
+						<td>Answer</td>
+					</tr>
+				</thead>
+				<s:set name="ruleURL" value="'CategoryRuleEditor.action'"/>
+				<s:set name="categoryRule" value="true"/>
+				<s:iterator value="relatedRules" id="r">
+					<s:include value="rules/audit_rule_view.jsp"/>
+				</s:iterator>
+			</table>
+		</div>
+	</pics:permission>
 </s:if>
 
 <div id="copy_audit" class="thinking"></div>
