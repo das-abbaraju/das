@@ -145,10 +145,12 @@ table.report tr.hurdle td {
 	<div class="info">This is your profile page that the operators see when they look up your account. 
 	Use the dropdown below to view the page from your operator's point of view.</div>
 </s:if>
-<s:if test="contractor.hasPastDueInvoice()">
-	<div class="alert">
-		This Contractor has an open past due invoice
-	</div>
+<s:if test="permissions.admin">
+	<s:if test="contractor.hasPastDueInvoice()">
+		<div class="alert">
+			This Contractor has an open past due invoice
+		</div>
+	</s:if>
 </s:if>
 
 <table>

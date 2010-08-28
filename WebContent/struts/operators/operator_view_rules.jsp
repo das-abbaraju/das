@@ -19,34 +19,17 @@
 	<div class="alert">
 		There are too many rules to display here.
 		<s:if test="categoryRule">			
-			<s:set name="searchURL" value="'AuditTypeRuleSearch.action'"/>	
+			<s:set name="searchURL" value="'CategoryRuleSearch.action'"/>	
 		</s:if> 
 		<s:else>
-			<s:set name="searchURL" value="'CategoryRuleSearch.action'"/>
+			<s:set name="searchURL" value="'AuditTypeRuleSearch.action'"/>
 		</s:else>
 		<a href="<s:property value="#searchURL"/>?filter.opID=<s:property value="operator.id"/>">Click here to view all rules for <s:property value="operator.name"/>.</a>
 	</div>
 </s:if>
 <s:if test="relatedRules.size()>0">
 	<table class="report">
-		<thead>
-			<tr>
-				<td>Include</td>
-				<td>Audit Type</td>
-				<s:if test="categoryRule"><td>Category</td></s:if>
-				<td>Account</td>
-				<td>Operator</td>
-				<td>Risk</td>
-				<td>Tag</td>
-				<td>Bid-Only</td>
-				<s:if test="!categoryRule"><td>Dependent Audit Type</td></s:if>
-				<s:if test="!categoryRule"><td>Dependent Audit Status</td></s:if>
-				<td>Question</td>
-				<td></td>
-				<td>Answer</td>
-				<td></td>
-			</tr>
-		</thead>
+		<s:include value="../audits/rules/audit_rule_header.jsp"/>
 		<tbody>
 		<s:if test="categoryRule">
 				<s:set name="ruleURL" value="'CategoryRuleEditor.action'"/>

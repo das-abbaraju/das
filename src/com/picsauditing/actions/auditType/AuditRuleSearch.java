@@ -63,7 +63,18 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		addFilterToSQL();		
 		run(sql);
 		
+		checkFields();
+		
 		return SUCCESS;
+	}
+
+	protected void checkFields() {
+		if(filter.getOpID()>0)
+			filter.setOperator(operator.find(filter.getOpID()).getName());
+		if(filter.getAuditTypeID()>0)
+			filter.setAuditType(auditTypeDao.find(filter.getAuditTypeID()).getAuditName());
+		if(filter.getTagID()>0)
+			filter.setAuditType(opTagDao.find(filter.getTagID()).getTag());
 	}
 
 	protected void buildQuery() {

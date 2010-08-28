@@ -48,4 +48,11 @@ public class CategoryRuleSearch extends AuditRuleSearch {
 			report.addFilter(new SelectFilter("category", "ac.id = ?", String.valueOf(filter.getCatID())));
 		}
 	}
+	
+	@Override
+	protected void checkFields() {
+		super.checkFields();
+		if(filter.getCatID()>0)
+			filter.setCategory(auditCatDao.find(filter.getCatID()).getName());
+	}
 }

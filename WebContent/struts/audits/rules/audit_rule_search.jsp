@@ -107,7 +107,7 @@ function clearFilter(){
 		</s:if>
 		
 		<div class="filterOption">
-			Account Type: <s:select cssClass="forms" list="filter.contractorTypeList" name="filter.contractorType"
+			Contractor Type: <s:select cssClass="forms" list="filter.contractorTypeList" name="filter.contractorType"
 			 	listKey="ordinal()" listValue="name()" headerKey="-1" headerValue="*" />
 		</div>
 		
