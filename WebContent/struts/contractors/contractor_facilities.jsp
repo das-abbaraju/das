@@ -25,7 +25,27 @@
 		
 		return false;
 	}
-	function addOperator( conId, opId) {
+	function addOperator( conId, opId ) {
+		// Changes status if contractor refuses bid only upgrade
+		var r = true;
+		
+		// Validating bid-only contractor and operator
+		var validationData = {id: conId, button: 'validateBidOnly', 'operator.id': opId};
+		$.ajax({
+			url: 'ContractorFacilityAjax.action', 
+			data: validationData,
+			async: false,
+			dataType: "json",
+	        success: function(result) {
+				if(result.isBidOnlyContractor && !result.isBidOnlyOperator)
+					r = confirm("The Operator you have selected does not accept Bid-Only Contractors. Would you like to Upgrade this Account to a Regular Account and Add this Operator?\n\nNote: There will be a fee upgrade when changing from a Bid Only account to a Regular Account");
+	        }
+		});
+
+		// if contractor declined upgrade, then exit w/o adding
+		if(r == false)
+			return;
+
 		startThinking( {div: 'thinkingDiv', message: 'Linking contractor and operator' } );
 		var data= {id: conId, button: 'addOperator', 'operator.id': opId, type: $('#results_' + opId + ' input[name=type]:checked').val()};
 		$.ajax({
@@ -101,7 +121,8 @@
 			}
 		});
 		return false;
-	}	
+	}
+		
 </script>
 
 <style>

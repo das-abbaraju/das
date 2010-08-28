@@ -47,8 +47,10 @@ public class ContractorFacilities extends ContractorActionSupport {
 	
 	private ContractorType type = ContractorType.Onsite;
 
-	public ContractorFacilities(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			OperatorAccountDAO operatorDao, FacilityChanger facilityChanger, ContractorOperatorDAO contractorOperatorDAO) {
+	public ContractorFacilities(ContractorAccountDAO accountDao,
+			ContractorAuditDAO auditDao, OperatorAccountDAO operatorDao,
+			FacilityChanger facilityChanger,
+			ContractorOperatorDAO contractorOperatorDAO) {
 		super(accountDao, auditDao);
 		this.operatorDao = operatorDao;
 		this.contractorOperatorDAO = contractorOperatorDAO;
@@ -57,6 +59,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 		this.noteCategory = NoteCategory.OperatorChanges;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
@@ -91,7 +94,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 		}
 
 		if (contractor.getNonCorporateOperators().size() == 1) {
-			contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
+			contractor.setRequestedBy(contractor.getNonCorporateOperators()
+					.get(0).getOperatorAccount());
 			accountDao.save(contractor);
 		}
 		if (button != null) {
@@ -181,18 +185,29 @@ public class ContractorFacilities extends ContractorActionSupport {
 				return "search";
 			}
 
+			if (button.equals("validateBidOnly")) {
+				json.put("isBidOnlyOperator", operatorDao
+						.find(operator.getId()).isAcceptsBids());
+				json.put("isBidOnlyContractor", accountDao.find(
+						contractor.getId()).isAcceptsBids());
+				return "json";
+			}
+
 			if (button.equals("load")) {
-				currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
+				currentOperators = contractorOperatorDAO.findByContractor(id,
+						permissions);
 				return button;
 			}
 
 			if ("request".equals(button)) {
 				if (operator.getId() > 0) {
 					contractor.setRequestedBy(operator);
-					if (contractor.isAcceptsBids() && !contractor.getRequestedBy().isAcceptsBids()) {
+					if (contractor.isAcceptsBids()
+							&& !contractor.getRequestedBy().isAcceptsBids()) {
 						contractor.setAcceptsBids(false);
 						contractor.setRenew(true);
-						InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+						InvoiceFee fee = BillingCalculatorSingle
+								.calculateAnnualFee(contractor);
 						contractor.setNewMembershipLevel(fee);
 					}
 					accountDao.save(contractor);
@@ -203,7 +218,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 			if (button.equals("SwitchToTrialAccount")) {
 				contractor.setAcceptsBids(true);
 				contractor.setRenew(false);
-				InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+				InvoiceFee fee = BillingCalculatorSingle
+						.calculateAnnualFee(contractor);
 				contractor.setNewMembershipLevel(fee);
 				accountDao.save(contractor);
 				return SUCCESS;
@@ -238,14 +254,16 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 			if (recalculate) {
 				findContractor();
-				InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+				InvoiceFee fee = BillingCalculatorSingle
+						.calculateAnnualFee(contractor);
 
 				contractor.setNewMembershipLevel(fee);
 				accountDao.save(contractor);
 			}
 		}
 
-		currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
+		currentOperators = contractorOperatorDAO.findByContractor(id,
+				permissions);
 
 		return SUCCESS;
 	}
@@ -299,15 +317,26 @@ public class ContractorFacilities extends ContractorActionSupport {
 	}
 
 	public InvoiceFee getCurrentMembership() {
-		InvoiceFee invoiceFee = BillingCalculatorSingle.calculateAnnualFeeForContractor(contractor, new InvoiceFee());
-		InvoiceFeeDAO invoiceFeeDAO = (InvoiceFeeDAO) SpringUtils.getBean("InvoiceFeeDAO");
+		InvoiceFee invoiceFee = BillingCalculatorSingle
+				.calculateAnnualFeeForContractor(contractor, new InvoiceFee());
+		InvoiceFeeDAO invoiceFeeDAO = (InvoiceFeeDAO) SpringUtils
+				.getBean("InvoiceFeeDAO");
 		return invoiceFeeDAO.find(invoiceFee.getId());
 	}
 
 	public boolean isTrialContractor() {
-		if (contractor.getStatus().isPending() && contractor.getRequestedBy().isAcceptsBids()) {
+		// Enforcing that bid-only contractors should not be associated with an
+		// operator which does not accept bid-only
+		for (ContractorOperator co : contractor.getOperators())
+			if (!co.getOperatorAccount().isAcceptsBids())
+				return false;
+		// All current Operators accept bid-only
+
+		// This is called after the co has been created and set. So no need to
+		// check current operator. Current operator should be in list already.
+		if (contractor.getStatus().isPending() && !contractor.isAcceptsBids())
 			return true;
-		}
+
 		return false;
 	}
 	
