@@ -5,6 +5,7 @@
 <head>
 <title><s:property value="operator.name" /> Tags</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 $(function() {
@@ -80,6 +81,61 @@ function checkRemove(id){
 	<button type="submit" name="button" value="Save" class="picsbutton positive">Save</button>
 	</div>
 </s:form>
+
+<br/>
+<br/>
+
+<pics:permission perm="ManageAuditTypeRules">
+	<div>
+		<h3>Related Audit Type Rules</h3>
+		<s:if test="relatedAuditTypeRules.size() == 0">
+			<div class="alert">
+				There are no Audit Type rules for any of the above tags. <a href="AuditTypeRuleEditor.action?button=edit&rule.include=true">Click here to create an Audit Type Rule.</a>
+			</div>
+		</s:if>
+		<s:else>
+			<s:if test="relatedRules.size() >= 50">
+				<div class="alert">
+					There are too many rules to display here. <a href="AuditTypeRuleSearch.action">Click here to Search for Audit Type Rules.</a>
+				</div>
+			</s:if>
+			<table class="report">
+				<s:set name="ruleURL" value="'AuditTypeRuleEditor.action'"/>
+				<s:set name="auditTypeRule" value="true"/>
+				<s:include value="/struts/audits/rules/audit_rule_header.jsp"/>
+				<s:iterator value="relatedAuditTypeRules" id="r">
+					<s:include value="/struts/audits/rules/audit_rule_view.jsp"/>
+				</s:iterator>
+			</table>
+		</s:else>
+	</div>
+</pics:permission>
+
+<pics:permission perm="ManageCategoryRules">
+	<div>
+		<h3>Related Category Rules</h3>
+		<s:if test="relatedCategoryRules.size() == 0">
+			<div class="alert">
+				There are no Category rules for any of the above tags. <a href="CategoryRuleEditor.action?button=edit&rule.include=true">Click here to create a Category Rule.</a>
+			</div>
+		</s:if>
+		<s:else>
+			<s:if test="relatedCategoryRules.size() >= 50">
+				<div class="alert">
+					There are too many rules to display here. <a href="CategoryRuleSearch.action">Click here to Search for Category Rules.</a>
+				</div>
+			</s:if>
+			<table class="report">
+				<s:set name="ruleURL" value="'CategoryRuleEditor.action'"/>
+				<s:set name="categoryRule" value="true"/>
+				<s:include value="/struts/audits/rules/audit_rule_header.jsp"/>
+				<s:iterator value="relatedCategoryRules" id="r">
+					<s:include value="/struts/audits/rules/audit_rule_view.jsp"/>
+				</s:iterator>
+			</table>
+		</s:else>
+	</div>
+</pics:permission>
 
 </body>
 </html>
