@@ -212,7 +212,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		if (contractor.isMaterialSupplier())
 			where += " OR contractorType = 'Supplier'";
 		where += ")";
-
+		//blank comment
 		Set<Integer> operatorIDs = new HashSet<Integer>();
 		for (ContractorOperator co : contractor.getOperators()) {
 			operatorIDs.add(co.getOperatorAccount().getId());
