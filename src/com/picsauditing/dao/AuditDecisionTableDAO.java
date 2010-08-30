@@ -12,9 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorTag;
@@ -196,7 +196,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		return where;
 	}
 
-	public List<AuditTypeRule> getApplicableAuditTypeRules(ContractorAccount contractor) {
+	public List<AuditTypeRule> getApplicableAuditRules(ContractorAccount contractor) {
 		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW()";
 
 		where += " AND (risk IS NULL";
@@ -212,7 +212,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		if (contractor.isMaterialSupplier())
 			where += " OR contractorType = 'Supplier'";
 		where += ")";
-		//blank comment
+
 		Set<Integer> operatorIDs = new HashSet<Integer>();
 		for (ContractorOperator co : contractor.getOperators()) {
 			operatorIDs.add(co.getOperatorAccount().getId());
@@ -227,12 +227,17 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 		Query query = em.createQuery("SELECT a FROM AuditTypeRule a " + where + " ORDER BY priority DESC");
 		return query.getResultList();
+	}
+
+	public List<AuditCategoryRule> getApplicableCategoryRules(ContractorAccount contractor, AuditType auditType) {
+		Set<AuditType> auditTypes = new HashSet<AuditType>();
+		auditTypes.add(auditType);
+		return getApplicableCategoryRules(contractor, auditTypes);
 	}
 
-	public List<AuditCategoryRule> getApplicableCategoryRules(ContractorAudit conAudit) {
+	public List<AuditCategoryRule> getApplicableCategoryRules(ContractorAccount contractor, Set<AuditType> auditTypes) {
 		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW()";
 
-		ContractorAccount contractor = conAudit.getContractorAccount();
 		where += " AND (risk IS NULL";
 		if (contractor.getRiskLevel() != null)
 			where += " OR risk = " + contractor.getRiskLevel().ordinal();
@@ -259,7 +264,11 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
 		where += ")";
 
-		where += " AND (auditType IS NULL OR auditType.id = " + conAudit.getAuditType().getId() + ")";
+		where += " AND (auditType IS NULL OR auditType.id IN (0";
+		for (AuditType auditType : auditTypes) {
+			where += "," + auditType.getId();
+		}
+		where += "))";
 
 		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY priority DESC");
 		return query.getResultList();
@@ -302,5 +311,4 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		query.setParameter("level", rule.getLevel() + 1);
 		return query.executeUpdate();
 	}
-
 }
