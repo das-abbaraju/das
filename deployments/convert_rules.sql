@@ -21,22 +21,6 @@ from (select DISTINCT categoryID from pics_yesterday.desktopmatrix) c
 join (select DISTINCT questionID from pics_yesterday.desktopmatrix) q
 left join pics_yesterday.desktopmatrix m on m.categoryID = c.categoryID and m.questionID = q.questionID;
 
-insert into audit_type_rule (auditTypeID, opID, risk, tagID, include)
-select auditTypeID, opID, null, tagID, canSee from audit_operator
-where minRiskLevel = 1;
-
-insert into audit_type_rule (auditTypeID, opID, risk, tagID, include)
-select auditTypeID, opID, 2, tagID, canSee from audit_operator
-where minRiskLevel = 2;
-
-insert into audit_type_rule (auditTypeID, opID, risk, tagID, include)
-select auditTypeID, opID, 2, tagID, canSee from audit_operator
-where minRiskLevel = 3;
-
-insert into audit_type_rule (auditTypeID, opID, risk, tagID, include)
-select auditTypeID, opID, 3, tagID, canSee from audit_operator
-where minRiskLevel = 3;
-
 update audit_category_rule set 
 level = (if(catID is null, 0, 1) + if(auditTypeID is null, 0, 1) +
 	if(risk is null, 0, 1) + if(opID is null, 0, 1) +
@@ -47,3 +31,29 @@ priority = (if(catID is null, 0, 120) + if(auditTypeID is null, 0, 105) +
 	if(questionID is null, 0, 125));
 
 delete from audit_category_rule where opID > 0 and opID not in (select id from accounts);
+
+truncate table audit_type_rule;
+
+insert into audit_type_rule (auditTypeID, opID, risk, tagID, include, effectiveDate, expirationDate, createdBy, creationDate, updatedBy, updateDate)
+select a.auditTypeID, o.opID, r.risk, ao.tagID, CASE WHEN ao.canSee is null then 0 else ao.canSee end,
+	'2000-01-01', '4000-01-01', 1, now(), 1, now()
+from (select distinct auditTypeID from pics_yesterday.audit_operator) a
+join (select distinct opID from pics_yesterday.audit_operator ao) o
+join (select 1 risk union select 2 union select 3) r
+left join pics_yesterday.audit_operator ao on a.auditTypeID = ao.auditTypeID AND o.opID = ao.opID AND r.risk >= ao.minRiskLevel;
+
+insert into audit_type_rule (auditTypeID, include, effectiveDate, expirationDate, createdBy, creationDate, updatedBy, updateDate)
+select auditTypeID, case when sum(include) > 500 then 1 else 0 end,
+	'2000-01-01', '4000-01-01', 1, now(), 1, now()
+from audit_type_rule
+group by auditTypeID;
+
+update audit_type_rule set 
+level = (if(auditTypeID is null, 0, 1) +
+	if(risk is null, 0, 1) + if(opID is null, 0, 1) +
+	if(tagID is null, 0, 1) + if(questionID is null, 0, 1) +
+	if(contractorType is null, 0, 1) + if(acceptsBids is null, 0, 1)),
+priority = (if(auditTypeID is null, 0, 105) +
+	if(risk is null, 0, 102) + if(opID is null, 0, 104) +
+	if(questionID is null, 0, 125));
+
