@@ -135,7 +135,8 @@ public class ContractorAccount extends Account implements JSONable {
 	public List<OperatorAccount> getOperatorAccounts() {
 		List<OperatorAccount> list = new ArrayList<OperatorAccount>();
 		for (ContractorOperator co : operators) {
-			list.add(co.getOperatorAccount());
+			if (co.getOperatorAccount().isOperator())
+				list.add(co.getOperatorAccount());
 		}
 		return list;
 	}

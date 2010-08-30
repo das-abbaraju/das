@@ -216,8 +216,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		if (contractor.getNonCorporateOperators().size() > 0) {
-			auditBuilder.setUser(getUser());
-			auditBuilder.buildAudits(this.contractor);
+			auditBuilder.buildAudits(this.contractor, getUser());
 		}
 
 		if (opID == 0 && permissions.isOperatorCorporate())

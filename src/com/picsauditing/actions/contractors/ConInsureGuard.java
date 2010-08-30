@@ -124,8 +124,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 							NoteCategory.Insurance, getViewableByAccount(conAudit.getAuditType().getAccount()));
 
 					contractor.getAudits().add(conAudit);
-					auditBuilder.setUser(getUser());
-					auditBuilder.buildAudits(contractor);
+					auditBuilder.buildAudits(contractor, getUser());
 
 					if (permissions.isOperatorCorporate() && conAudit.getId() > 0) {
 						boolean hasCao = false;

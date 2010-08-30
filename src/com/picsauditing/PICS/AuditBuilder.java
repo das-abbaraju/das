@@ -22,25 +22,24 @@ import com.picsauditing.util.log.PicsLogger;
  */
 public class AuditBuilder {
 
-	private Map<AuditType, AuditTypeDetail> auditTypes = new HashMap<AuditType, AuditTypeDetail>();
-
 	public class AuditTypeDetail {
 
-		public Map<OperatorAccount, OperatorAccount> operators = new HashMap<OperatorAccount, OperatorAccount>();
+		public AuditTypeRule rule;
+		public Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+	}
+
+	public class AuditCategoriesDetail {
+
+		public List<AuditCategoryRule> rules;
+		public Map<OperatorAccount, AuditCategoryRule> operators = new HashMap<OperatorAccount, AuditCategoryRule>();
 		public Set<OperatorAccount> governingBodies = new HashSet<OperatorAccount>();
 		public Set<AuditCategory> categories = new HashSet<AuditCategory>();
 	}
 
-	public Map<AuditType, AuditTypeDetail> getAuditTypes() {
-		return auditTypes;
-	}
-
-	public AuditTypeDetail getAuditTypes(AuditType auditType) {
-		return auditTypes.get(auditType);
-	}
-
 	public Map<AuditType, AuditTypeDetail> calculateRequiredAuditTypes(List<AuditTypeRule> rules,
 			Collection<OperatorAccount> operators) {
+		Map<AuditType, AuditTypeDetail> auditTypes = new HashMap<AuditType, AuditTypeDetail>();
+		
 		PicsLogger.start("getRequiredAuditTypes");
 
 		sortRules(rules);
@@ -60,8 +59,10 @@ public class AuditBuilder {
 		for (AuditType auditType : allCandidateAuditTypes) {
 			auditTypes.put(auditType, new AuditTypeDetail());
 			for (OperatorAccount operator : operators) {
-				if (isApplicable(rules, auditType, operator)) {
-					auditTypes.get(auditType).operators.put(operator, null);
+				AuditTypeRule rule = getApplicable(rules, auditType, operator);
+				if (rule.isInclude()) {
+					auditTypes.get(auditType).operators.add(operator);
+					auditTypes.get(auditType).rule = rule;
 				}
 			}
 			if (auditTypes.get(auditType).operators.size() == 0)
@@ -75,27 +76,23 @@ public class AuditBuilder {
 	/**
 	 * Determine which categories should be on a given audit
 	 * 
-	 * @param conAudit
+	 * @param rules
+	 *            Make sure that these rules are filtered for the requested
+	 *            contractorAudit
 	 */
-	public void getRequiredCategories(AuditType auditType, List<AuditCategoryRule> rules) {
+	public AuditCategoriesDetail getDetail(AuditType auditType, List<AuditCategoryRule> rules) {
+		AuditCategoriesDetail detail = new AuditCategoriesDetail();
 		sortRules(rules);
-
-		AuditTypeDetail detail = auditTypes.get(auditType);
-		if (detail == null) {
-			auditTypes.put(auditType, new AuditTypeDetail());
-			detail = auditTypes.get(auditType);
-		} else {
-			detail.categories.clear();
-			detail.governingBodies.clear();
-		}
-
+		detail.rules = rules;
 		// Figure out which categories are required
 		for (AuditCategory category : auditType.getCategories()) {
-			includeCategory(category, rules);
+			includeCategory(detail, category, rules);
 		}
 
-		// this is nice because it converts the collection into a distinct set
-		detail.governingBodies.addAll(detail.operators.values());
+		for (AuditCategoryRule rule : detail.operators.values()) {
+			detail.governingBodies.add(rule.getOperatorAccount());
+		}
+		return detail;
 	}
 
 	/**
@@ -108,34 +105,29 @@ public class AuditBuilder {
 	 * @param operator
 	 * @return
 	 */
-	static private boolean isApplicable(List<AuditTypeRule> rules, AuditType auditType, OperatorAccount operator) {
+	static private AuditTypeRule getApplicable(List<AuditTypeRule> rules, AuditType auditType, OperatorAccount operator) {
 		for (AuditTypeRule rule : rules) {
 			if (rule.getAuditType().equals(auditType)) {
 				if (rule.isApplies(operator))
 					// Only consider rules for this operator
-					return rule.isInclude();
+					return rule;
 			}
 		}
-		return false;
+		return null;
 	}
 
-	private void includeCategory(AuditCategory category, List<AuditCategoryRule> categoryRules) {
-		AuditTypeDetail detail = this.auditTypes.get(category.getAuditType());
-
-		if (detail != null) {
-			for (OperatorAccount operator : detail.operators.keySet()) {
-				AuditCategoryRule rule = getApplicable(categoryRules, category, operator);
-				if (rule != null && rule.isInclude()) {
-					detail.categories.add(category);
-	
-					if (rule.getOperatorAccount() != null)
-						detail.operators.put(operator, rule.getOperatorAccount());
-				}
+	private void includeCategory(AuditCategoriesDetail detail, AuditCategory category,
+			List<AuditCategoryRule> categoryRules) {
+		for (OperatorAccount operator : detail.operators.keySet()) {
+			AuditCategoryRule rule = getApplicable(categoryRules, category, operator);
+			if (rule != null && rule.isInclude()) {
+				detail.categories.add(category);
+				detail.operators.put(operator, rule);
 			}
 		}
 
 		for (AuditCategory subCategory : category.getSubCategories()) {
-			includeCategory(subCategory, categoryRules);
+			includeCategory(detail, subCategory, categoryRules);
 		}
 	}
 
@@ -150,7 +142,8 @@ public class AuditBuilder {
 		return null;
 	}
 
-	// TODO evaluate how long this takes and eliminate this eventually
+	// TODO evaluate how long this takes or eliminate this once the converted
+	// rule priorities are properly calculated
 	static private void sortRules(List<? extends AuditRule> rules) {
 		for (BaseDecisionTreeRule rule : rules) {
 			rule.calculatePriority();
@@ -169,102 +162,62 @@ public class AuditBuilder {
 		 * // AuditData oqEmployees = //
 		 * auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), //
 		 * AuditQuestion.OQ_EMPLOYEES); // AuditData hasCOR = //
-		 * auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), 2954);
-		// Checking to see if the supplement COR or BPIISNCaseMgmt should be
-		// required for this contractor
-		ContractorAudit corAudit = null;
-		ContractorAudit BpIisnSpecific = null;
-		ContractorAudit HSECompetency = null;
-		for (ContractorAudit audit : currentAudits) {
-			if (auditTypeList.contains(audit.getAuditType())) {
-				if (audit.getAuditType().getId() == AuditType.BPIISNSPECIFIC)
-					BpIisnSpecific = audit;
-				else if (audit.getAuditType().getId() == 99)
-					HSECompetency = audit;
-				else if (audit.getAuditType().getId() == AuditType.COR && hasCOR != null
-						&& "Yes".equals(hasCOR.getAnswer()))
-					corAudit = audit;
-			}
-		}
-
-		// Find the PQF audit for this contractor
-		// Only ever create ONE PQF audit
-		// TODO we should probably take this part out. I don't think it's needed
-		// anymore
-		ContractorAudit pqfAudit = null;
-		for (ContractorAudit conAudit : currentAudits) {
-			if (conAudit.getAuditType().isPqf()) {
-				if (conAudit.getAuditStatus().equals(AuditStatus.Expired)) {
-					// This should never happen...but just in case
-					conAudit.changeStatus(AuditStatus.Pending, user);
-					cAuditDAO.save(conAudit);
-				}
-				pqfAudit = conAudit;
-				break;
-			}
-		}
-
-					switch (auditType.getId()) {
-					case AuditType.DESKTOP:
-						if (!pqfAudit.getAuditStatus().isActive()) {
-							insertNow = false;
-							break;
-						}
-						// If the contractor has answered Yes to the COR
-						// question
-						// don't create a Desktop Audit
-						if (hasCOR != null && "Yes".equals(hasCOR.getAnswer()))
-							insertNow = false;
-						break;
-					case AuditType.OFFICE:
-						if (!pqfAudit.getAuditStatus().isActiveSubmitted())
-							insertNow = false;
-						break;
-					case AuditType.DA:
-						if (!pqfAudit.getAuditStatus().isActiveSubmitted() || oqEmployees == null
-								|| !"Yes".equals(oqEmployees.getAnswer()))
-							insertNow = false;
-						break;
-					case AuditType.COR:
-						if (hasCOR == null || !"Yes".equals(hasCOR.getAnswer()))
-							insertNow = false;
-						break;
-					case AuditType.SUPPLEMENTCOR:
-						if (corAudit == null)
-							insertNow = false;
-						else if (!corAudit.getAuditStatus().isActive())
-							insertNow = false;
-						break;
-					case AuditType.BPIISNCASEMGMT:
-						if (BpIisnSpecific != null && !BpIisnSpecific.getAuditStatus().isActiveResubmittedExempt())
-							insertNow = false;
-						break;
-					case 100:
-						if (!HSECompetency.getAuditStatus().isActiveResubmittedExempt())
-							insertNow = false;
-						break;
-					default:
-						break;
-					}
-
-		// TODO If the auditType is a Desktop, then make sure the PQF is
-		// ActiveSubmitted. Maybe we should add this to the ruleSet
-
-		// TODO Fill in the tag and questions
-		// Map<Integer, Integer> dependencies = new HashMap<Integer, Integer>();
-		// dependencies.put(AuditCategory.OSHA_AUDIT, 2064);
-		// dependencies.put(AuditCategory.MSHA, 2065);
-		// dependencies.put(AuditCategory.CANADIAN_STATISTICS, 2066);
-		// dependencies.put(AuditCategory.EMR, 2033);
-		// dependencies.put(AuditCategory.LOSS_RUN, 2033);
-		// dependencies.put(AuditCategory.WCB, 2967);
-		// dependencies.put(AuditCategory.CITATIONS, 3546);
-		// int auditID = conAudit.getId();
-		//
-		// AnswerMap answers = null;
-		// answers = auditDataDAO.findAnswers(auditID, new
-		// Vector<Integer>(dependencies.values()));
-
+		 * auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), 2954); //
+		 * Checking to see if the supplement COR or BPIISNCaseMgmt should be //
+		 * required for this contractor ContractorAudit corAudit = null;
+		 * ContractorAudit BpIisnSpecific = null; ContractorAudit HSECompetency
+		 * = null; for (ContractorAudit audit : currentAudits) { if
+		 * (auditTypeList.contains(audit.getAuditType())) { if
+		 * (audit.getAuditType().getId() == AuditType.BPIISNSPECIFIC)
+		 * BpIisnSpecific = audit; else if (audit.getAuditType().getId() == 99)
+		 * HSECompetency = audit; else if (audit.getAuditType().getId() ==
+		 * AuditType.COR && hasCOR != null && "Yes".equals(hasCOR.getAnswer()))
+		 * corAudit = audit; } }
+		 * 
+		 * // Find the PQF audit for this contractor // Only ever create ONE PQF
+		 * audit // TODO we should probably take this part out. I don't think
+		 * it's needed // anymore ContractorAudit pqfAudit = null; for
+		 * (ContractorAudit conAudit : currentAudits) { if
+		 * (conAudit.getAuditType().isPqf()) { if
+		 * (conAudit.getAuditStatus().equals(AuditStatus.Expired)) { // This
+		 * should never happen...but just in case
+		 * conAudit.changeStatus(AuditStatus.Pending, user);
+		 * cAuditDAO.save(conAudit); } pqfAudit = conAudit; break; } }
+		 * 
+		 * switch (auditType.getId()) { case AuditType.DESKTOP: if
+		 * (!pqfAudit.getAuditStatus().isActive()) { insertNow = false; break; }
+		 * // If the contractor has answered Yes to the COR // question // don't
+		 * create a Desktop Audit if (hasCOR != null &&
+		 * "Yes".equals(hasCOR.getAnswer())) insertNow = false; break; case
+		 * AuditType.OFFICE: if (!pqfAudit.getAuditStatus().isActiveSubmitted())
+		 * insertNow = false; break; case AuditType.DA: if
+		 * (!pqfAudit.getAuditStatus().isActiveSubmitted() || oqEmployees ==
+		 * null || !"Yes".equals(oqEmployees.getAnswer())) insertNow = false;
+		 * break; case AuditType.COR: if (hasCOR == null ||
+		 * !"Yes".equals(hasCOR.getAnswer())) insertNow = false; break; case
+		 * AuditType.SUPPLEMENTCOR: if (corAudit == null) insertNow = false;
+		 * else if (!corAudit.getAuditStatus().isActive()) insertNow = false;
+		 * break; case AuditType.BPIISNCASEMGMT: if (BpIisnSpecific != null &&
+		 * !BpIisnSpecific.getAuditStatus().isActiveResubmittedExempt())
+		 * insertNow = false; break; case 100: if
+		 * (!HSECompetency.getAuditStatus().isActiveResubmittedExempt())
+		 * insertNow = false; break; default: break; }
+		 * 
+		 * // TODO If the auditType is a Desktop, then make sure the PQF is //
+		 * ActiveSubmitted. Maybe we should add this to the ruleSet
+		 * 
+		 * // TODO Fill in the tag and questions // Map<Integer, Integer>
+		 * dependencies = new HashMap<Integer, Integer>(); //
+		 * dependencies.put(AuditCategory.OSHA_AUDIT, 2064); //
+		 * dependencies.put(AuditCategory.MSHA, 2065); //
+		 * dependencies.put(AuditCategory.CANADIAN_STATISTICS, 2066); //
+		 * dependencies.put(AuditCategory.EMR, 2033); //
+		 * dependencies.put(AuditCategory.LOSS_RUN, 2033); //
+		 * dependencies.put(AuditCategory.WCB, 2967); //
+		 * dependencies.put(AuditCategory.CITATIONS, 3546); // int auditID =
+		 * conAudit.getId(); // // AnswerMap answers = null; // answers =
+		 * auditDataDAO.findAnswers(auditID, new //
+		 * Vector<Integer>(dependencies.values()));
 		 */
 	}
 }

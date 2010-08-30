@@ -1,13 +1,17 @@
 package com.picsauditing.PICS;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
+import com.picsauditing.PICS.AuditBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -32,13 +36,20 @@ import com.picsauditing.util.log.PicsLogger;
 
 /**
  * Properly add/remove all necessary audits for a given contractor.
+ * 
+ * This class has a lot more public methods than I would normally include.
+ * However the processing here must be much more transparent to enable proper
+ * troubleshooting. See AuditBuilderDebugger.
  */
 public class AuditBuilderController {
 
 	private User user = null;
 	private ContractorAccount contractor = null;
 
+	private List<AuditTypeRule> rules = null;
+	private Map<AuditType, AuditTypeDetail> requiredAuditTypes = null;
 	private AuditBuilder builder = new AuditBuilder();
+	private Map<AuditType, List<AuditCategoryRule>> categoryRuleCache;
 
 	private ContractorAuditDAO cAuditDAO;
 	private AuditDataDAO auditDataDAO;
@@ -56,20 +67,24 @@ public class AuditBuilderController {
 		this.contractorTagDAO = contractorTagDAO;
 	}
 
-	public void buildAudits(ContractorAccount con) {
+	public void setup(ContractorAccount con, User user) {
 		this.contractor = con;
+		if (user == null)
+			user = new User(User.SYSTEM);
+		this.user = user;
+	}
+
+	public void buildAudits(ContractorAccount con, User user) {
+		setup(con, user);
 		PicsLogger.addRuntimeRule("BuildAudits");
 		PicsLogger.start("BuildAudits", " conID=" + contractor.getId());
+
+		getAuditTypeRules();
+
 		List<ContractorAudit> currentAudits = contractor.getAudits();
-
-		List<AuditTypeRule> rules = getAuditTypeRules();
-
-		builder.calculateRequiredAuditTypes(rules, contractor.getOperatorAccounts());
-		Set<AuditType> auditTypeList = builder.getAuditTypes().keySet();
-
 		/* Add audits not already there */
 		int year = DateBean.getCurrentYear();
-		for (AuditType auditType : auditTypeList) {
+		for (AuditType auditType : getRequiredAuditTypeSet()) {
 			if (auditType.isAnnualAddendum()) {
 				addAnnualAddendum(currentAudits, year - 1, auditType);
 				addAnnualAddendum(currentAudits, year - 2, auditType);
@@ -113,7 +128,7 @@ public class AuditBuilderController {
 				// This auto audit hasn't been started yet, double check to make
 				// sure it's still needed
 
-				if (!auditTypeList.contains(conAudit.getAuditType())) {
+				if (!getRequiredAuditTypeSet().contains(conAudit.getAuditType())) {
 					if (conAudit.getData().size() == 0) {
 						PicsLogger.log("removing unneeded audit " + conAudit.getAuditType().getAuditName());
 						// TODO try removing the audits from the list if we can
@@ -135,48 +150,63 @@ public class AuditBuilderController {
 		PicsLogger.stop();
 	}
 
-	private List<AuditTypeRule> getAuditTypeRules() {
-		List<AuditTypeRule> rules = auditDecisionTableDAO.getApplicableAuditTypeRules(contractor);
-		Set<Integer> questionAnswersNeeded = new HashSet<Integer>();
-		Set<Integer> tagsNeeded = new HashSet<Integer>();
-		for (AuditTypeRule rule : rules) {
-			if (rule.getQuestion() != null)
-				questionAnswersNeeded.add(rule.getQuestion().getId());
-			if (rule.getTag() != null)
-				tagsNeeded.add(rule.getTag().getId());
-		}
-		if (questionAnswersNeeded.size() > 0) {
-			// Find out the answers to the needed questions and remove any rules
-			// that don't apply
-			Map<Integer, AuditData> contractorAnswers = auditDataDAO.findAnswersByContractor(contractor.getId(),
-					questionAnswersNeeded);
-			Iterator<AuditTypeRule> iterator = rules.iterator();
-			while (iterator.hasNext()) {
-				AuditTypeRule auditTypeRule = iterator.next();
-				if (auditTypeRule.getQuestion() != null) {
-					if (!auditTypeRule.isMatchingAnswer(contractorAnswers.get(auditTypeRule.getQuestion().getId()))) {
+	public List<AuditTypeRule> getAuditTypeRules() {
+		if (rules == null) {
+			rules = auditDecisionTableDAO.getApplicableAuditRules(contractor);
+			Set<Integer> questionAnswersNeeded = new HashSet<Integer>();
+			Set<Integer> tagsNeeded = new HashSet<Integer>();
+			for (AuditTypeRule rule : rules) {
+				if (rule.getQuestion() != null)
+					questionAnswersNeeded.add(rule.getQuestion().getId());
+				if (rule.getTag() != null)
+					tagsNeeded.add(rule.getTag().getId());
+			}
+			if (questionAnswersNeeded.size() > 0) {
+				// Find out the answers to the needed questions and remove any
+				// rules that don't apply
+				Map<Integer, AuditData> contractorAnswers = auditDataDAO.findAnswersByContractor(contractor.getId(),
+						questionAnswersNeeded);
+				Iterator<AuditTypeRule> iterator = rules.iterator();
+				while (iterator.hasNext()) {
+					AuditTypeRule auditTypeRule = iterator.next();
+					if (auditTypeRule.getQuestion() != null) {
+						if (!auditTypeRule.isMatchingAnswer(contractorAnswers.get(auditTypeRule.getQuestion().getId()))) {
+							iterator.remove();
+						}
+					}
+				}
+			}
+			if (tagsNeeded.size() > 0) {
+				// Find out which tags this contractor is using from the set of
+				// potential operator tags and remove any rules that don't apply
+				List<ContractorTag> contractorTags = contractorTagDAO.getContractorTags(contractor.getId(), tagsNeeded);
+				Set<OperatorTag> opTags = new HashSet<OperatorTag>();
+				for (ContractorTag contractorTag : contractorTags) {
+					opTags.add(contractorTag.getTag());
+				}
+				Iterator<AuditTypeRule> iterator = rules.iterator();
+				while (iterator.hasNext()) {
+					AuditTypeRule auditTypeRule = iterator.next();
+					if (auditTypeRule.getTag() != null && !opTags.contains(auditTypeRule.getTag())) {
 						iterator.remove();
 					}
 				}
 			}
-		}
-		if (tagsNeeded.size() > 0) {
-			// Find out which tags this contractor is using from the set of
-			// potential operator tags and remove any rules that don't apply
-			List<ContractorTag> contractorTags = contractorTagDAO.getContractorTags(contractor.getId(), tagsNeeded);
-			Set<OperatorTag> opTags = new HashSet<OperatorTag>();
-			for (ContractorTag contractorTag : contractorTags) {
-				opTags.add(contractorTag.getTag());
-			}
-			Iterator<AuditTypeRule> iterator = rules.iterator();
-			while (iterator.hasNext()) {
-				AuditTypeRule auditTypeRule = iterator.next();
-				if (auditTypeRule.getTag() != null && !opTags.contains(auditTypeRule.getTag())) {
-					iterator.remove();
-				}
-			}
+
 		}
 		return rules;
+	}
+
+	private Set<AuditType> getRequiredAuditTypeSet() {
+		return getRequiredAuditTypes().keySet();
+	}
+
+	public Map<AuditType, AuditTypeDetail> getRequiredAuditTypes() {
+		if (requiredAuditTypes == null) {
+			requiredAuditTypes = builder.calculateRequiredAuditTypes(getAuditTypeRules(), contractor
+					.getOperatorAccounts());
+		}
+		return requiredAuditTypes;
 	}
 
 	/**
@@ -185,29 +215,78 @@ public class AuditBuilderController {
 	 * 
 	 * @param conAudit
 	 */
-	private void fillAuditCategories(ContractorAudit conAudit) {
+	public void fillAuditCategories(ContractorAudit conAudit) {
 		PicsLogger.start("AuditCategories", "auditID=" + conAudit.getId() + " type="
 				+ conAudit.getAuditType().getAuditName());
 
-		List<AuditCategoryRule> categoryRules = auditDecisionTableDAO.getApplicableCategoryRules(conAudit);
-		builder.getRequiredCategories(conAudit.getAuditType(), categoryRules);
+		AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
 
-		// set of audit categories to be included in the audit
+		Set<AuditCategory> categoriesNeeded = detail.categories;
+
 		for (AuditCategory category : conAudit.getAuditType().getCategories()) {
-			Set<AuditCategory> categoriesNeeded = builder.getAuditTypes(conAudit.getAuditType()).categories;
 
 			AuditCatData catData = getCatData(conAudit, category);
 			if (catData.isOverride()) {
 				// TODO What about the overrides? What does it mean to override
 				// (show/hide) a category with more than one CAO.
-				return;
+			} else {
+				catData.setApplies(categoriesNeeded.contains(catData.getCategory()));
 			}
-
-			catData.setApplies(categoriesNeeded.contains(catData.getCategory()));
 		}
-
+		// Save all auditCatData rows at once
 		cAuditDAO.save(conAudit);
 		PicsLogger.stop();
+	}
+
+	public AuditCategoriesDetail getAuditCategoryDetail(ContractorAudit conAudit, AuditTypeDetail detail) {
+		List<AuditCategoryRule> originalList = getCategoryRules(conAudit.getContractorAccount(), conAudit
+				.getAuditType());
+		List<AuditCategoryRule> categoryRulesToUse = new ArrayList<AuditCategoryRule>();
+
+		Set<Integer> questionAnswersNeeded = new HashSet<Integer>();
+		Set<Integer> tagsNeeded = new HashSet<Integer>();
+		for (AuditCategoryRule rule : originalList) {
+			if (rule.getQuestion() != null) {
+				questionAnswersNeeded.add(rule.getQuestion().getId());
+			}
+			if (rule.getTag() != null) {
+				tagsNeeded.add(rule.getTag().getId());
+			}
+		}
+		for (AuditCategoryRule rule : originalList) {
+			if ((rule.getQuestion() == null || questionAnswersNeeded.contains(rule.getQuestion().getId()))
+					&& (rule.getTag() == null || tagsNeeded.contains(rule.getTag().getId()))) {
+				// TODO work out the logic for pruning rule lists based on
+				// questions and tags
+			}
+			categoryRulesToUse.add(rule);
+		}
+		return builder.getDetail(conAudit.getAuditType(), categoryRulesToUse);
+	}
+
+	private List<AuditCategoryRule> getCategoryRules(ContractorAccount contractor, AuditType auditType) {
+		if (categoryRuleCache == null) {
+			// The first time this runs, get all the applicable rules for all
+			// the required AuditTypes and then divide them up into their
+			// AuditType specific rule sets
+			categoryRuleCache = new HashMap<AuditType, List<AuditCategoryRule>>();
+			List<AuditCategoryRule> list = auditDecisionTableDAO.getApplicableCategoryRules(contractor,
+					getRequiredAuditTypeSet());
+			for (AuditType aType : getRequiredAuditTypeSet()) {
+				List<AuditCategoryRule> listForThis = new ArrayList<AuditCategoryRule>();
+				categoryRuleCache.put(auditType, listForThis);
+				for (AuditCategoryRule rule : list) {
+					if (rule.getAuditType() == null || rule.getAuditType().equals(aType))
+						listForThis.add(rule);
+				}
+			}
+		}
+		if (categoryRuleCache.get(auditType) == null) {
+			// Probably won't need this but if we're missing the specific
+			// auditType the go and query it now
+			categoryRuleCache.put(auditType, auditDecisionTableDAO.getApplicableCategoryRules(contractor, auditType));
+		}
+		return categoryRuleCache.get(auditType);
 	}
 
 	private AuditCatData getCatData(ContractorAudit conAudit, AuditCategory category) {
@@ -243,35 +322,31 @@ public class AuditBuilderController {
 
 		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require insurance.");
 
-		Set<OperatorAccount> governingBodies = builder.getAuditTypes(conAudit.getAuditType()).governingBodies;
+		AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
 
 		// Add CAOs that don't yet exist
-		if (governingBodies != null) {
-			for (OperatorAccount operator : governingBodies) {
-				if (operator != null) {
-					PicsLogger.log("Evaluating CAO for " + operator.getName());
+		for (OperatorAccount operator : detail.governingBodies) {
+			PicsLogger.log("Evaluating CAO for " + operator.getName());
+
+			// Now find the existing cao record for this operator (if one
+			// exists)
+			boolean exists = false;
+			for (ContractorAuditOperator cao : conAudit.getOperators()) {
+				if (cao.getOperator().equals(operator)) {
+					exists = true;
 		
-					// Now find the existing cao record for this operator (if one
-					// exists)
-					boolean exists = false;
-					for (ContractorAuditOperator cao : conAudit.getOperators()) {
-						if (cao.getOperator().equals(operator)) {
-							exists = true;
-						}
-					}
-		
-					if (!exists) {
-						// If we don't have one, then add it
-						PicsLogger.log("Adding missing cao");
-						ContractorAuditOperator cao = new ContractorAuditOperator();
-						cao.setAudit(conAudit);
-						cao.setOperator(operator);
-						cao.setAuditColumns(user);
-						conAudit.getOperators().add(cao);
-						cao.setStatus(CaoStatus.Pending);
-						contractorAuditOperatorDAO.save(cao);
-					}
 				}
+			}
+			if (!exists) {
+				// If we don't have one, then add it
+				PicsLogger.log("Adding missing cao");
+				ContractorAuditOperator cao = new ContractorAuditOperator();
+				cao.setAudit(conAudit);
+				cao.setOperator(operator);
+				cao.setAuditColumns(user);
+				conAudit.getOperators().add(cao);
+				cao.setStatus(CaoStatus.Pending);
+				contractorAuditOperatorDAO.save(cao);
 			}
 		}
 
@@ -279,7 +354,7 @@ public class AuditBuilderController {
 		Iterator<ContractorAuditOperator> iter = conAudit.getOperators().iterator();
 		while (iter.hasNext()) {
 			ContractorAuditOperator cao = iter.next();
-			if (!governingBodies.contains(cao.getOperator())) {
+			if (!detail.governingBodies.contains(cao.getOperator())) {
 				if (cao.getStatus().isTemporary()) {
 					contractorAuditOperatorDAO.remove(cao);
 					iter.remove();
@@ -305,19 +380,11 @@ public class AuditBuilderController {
 		List<ContractorAccount> contractors = cAuditDAO.findContractorsWithExpiringAudits();
 		for (ContractorAccount contractor : contractors) {
 			try {
-				buildAudits(contractor);
+				buildAudits(contractor, null);
 			} catch (Exception e) {
 				System.out.println("ERROR!! AuditBuiler.addAuditRenewals() " + e.getMessage());
 			}
 		}
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	public void addAnnualAddendum(List<ContractorAudit> currentAudits, int year, AuditType auditType) {

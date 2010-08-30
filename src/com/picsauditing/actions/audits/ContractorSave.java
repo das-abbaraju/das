@@ -35,7 +35,7 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 
 		if (auditorId > 0) {
 			ca.setAuditor(new User(auditorId));
-			auditBuilder.buildAudits(ca);
+			auditBuilder.buildAudits(ca, getUser());
 
 			for (ContractorAudit conAudit : ca.getAudits()) {
 				if (!conAudit.getAuditType().getClassType().isAudit()) {

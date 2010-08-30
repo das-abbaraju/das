@@ -294,7 +294,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runAuditBuilder(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.AuditBuilder))
 			return;
-		auditBuilder.buildAudits(contractor);
+		auditBuilder.buildAudits(contractor, getUser());
 	}
 
 	private void runTradeETL(ContractorAccount contractor) {
