@@ -1605,6 +1605,11 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
+		<action name="AuditBuilder"
+			class="com.picsauditing.actions.audits.AuditBuilderDebugger">
+			<result>struts/audits/audit_builder.jsp</result>
+		</action>
+
 		<!-- Flags -->
 		<action name="ManageFlagCriteria"
 			class="com.picsauditing.actions.flags.ManageFlagCriteria">
