@@ -102,3 +102,28 @@ from `pics_yesterday`.pqfquestions q
       and t.locale = 'en'
   left join audit_category c
     on c.legacyID = q.subCategoryID;
+    
+-- Move questions up a level where there is only a single subcategory
+update audit_question q
+  join (select
+          p.id    PID,
+          c.id    CID
+        from audit_category p
+          join audit_category c
+            on p.id = c.parentID
+        group by p.id
+        having count(c.id) = 1) t
+set q.categoryID = t.pid
+where q.categoryID = t.cid;
+
+-- Delete all Subcategoryies from the previous query. This cannot be run in MySQL
+-- the result can be pasted in
+delete from audit_question
+where id in (update audit_question q
+  join (select
+          c.id    CID
+        from audit_category p
+          join audit_category c
+            on p.id = c.parentID
+        group by p.id
+        having count(c.id) = 1)
