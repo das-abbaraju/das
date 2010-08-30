@@ -1,6 +1,7 @@
 package com.picsauditing.actions.auditType;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -34,6 +35,8 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 	protected String fieldName = "";
 	protected String search = "";
 	protected String ruleType = "";
+	
+	protected Date DefaultDate = new Date();
 	
 	protected AuditTypeDAO auditTypeDao;
 	protected AuditCategoryDAO auditCatDao;
@@ -145,6 +148,8 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		}
 		if(filterOn(filter.getCheckDate())){
 			report.addFilter(new SelectFilter("effectiveDate", "effectiveDate <= '?' AND expirationDate >= '?'", String.valueOf(DateBean.toDBFormat(filter.getCheckDate()))+" 24:00:00"));
+		} else{
+			report.addFilter(new SelectFilter("effectiveDate", "effectiveDate <= '?' AND expirationDate >= '?'", String.valueOf(DateBean.toDBFormat(DefaultDate))+" 24:00:00"));
 		}
 	}
 
