@@ -296,12 +296,9 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	public int deleteChildren(AuditTypeRule rule, Permissions permissions) {
 		String where = getMoreGranularWhere(rule);
 
-		if (rule.getAuditType() != null)
-			where += " AND auditType = " + rule.getAuditType().getId();
-
 		where += " AND include = :include AND level = :level";
 
-		String updateString = "UPDATE AuditCategoryRule SET expirationDate = :queryDate, updateDate = :queryDate, updatedBy.id = :userID "
+		String updateString = "UPDATE AuditTypeRule SET expirationDate = :queryDate, updateDate = :queryDate, updatedBy.id = :userID "
 				+ where;
 
 		Query query = em.createQuery(updateString);

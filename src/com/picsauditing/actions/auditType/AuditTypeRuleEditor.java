@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
@@ -28,6 +29,8 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	protected List<AuditTypeRule> moreGranular;
 	protected List<AuditTypeRule> similar;
 	protected Date date = new Date();
+	
+	protected String actionURL = "";
 
 	protected AuditDecisionTableDAO dao;
 
@@ -40,9 +43,10 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-
-		if (id == 0 && !"edit".equals(button))
-			return BLANK;
+		
+		actionURL = ServletActionContext.getActionMapping().getName();
+		/*if (id == 0 && !"edit".equals(button))
+			return BLANK;*/
 
 		if (rule == null) {
 			rule = (AuditTypeRule) dao.findAuditTypeRule(id);
@@ -69,7 +73,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 					acr.setAuditColumns(permissions);
 					dao.save(acr);
 				}
-				this.redirect("CategoryRuleEditor.action?id=" + rule.getId()); // move
+				this.redirect("AuditTypeRuleEditor.action?id=" + rule.getId()); // move
 																				// out
 				return BLANK;
 			}
@@ -157,7 +161,11 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 			columns.put("tag", null);
 		// bid-onl7
 		columns.put("bid", null);
-		// question
+		//dep audit type
+		columns.put("dependentType", null);		
+		//dep audit status
+		columns.put("dependentStatus", null);
+		//question
 		columns.put("question", null);
 		// comp
 		columns.put("comp", null);
@@ -264,5 +272,13 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 
 	public void setColumns(Map<String, Map<String, String>> columns) {
 		this.columns = columns;
+	}
+
+	public String getActionURL() {
+		return actionURL;
+	}
+
+	public void setActionURL(String actionURL) {
+		this.actionURL = actionURL;
 	}
 }

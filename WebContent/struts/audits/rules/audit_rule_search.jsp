@@ -13,9 +13,9 @@ $(function() {
 	$('.datepicker').datepicker({
 			changeMonth: true,
 			changeYear:true,
-			yearRange: '1940:2010',
+			yearRange: '1990:2100',
 			showOn: 'button',
-			buttonImage: 'images/icon_calendar.gif',
+			buttonImage: '../images/icon_calendar.gif',
 			buttonImageOnly: true,
 			buttonText: 'Choose a date...',
 			constrainInput: true,

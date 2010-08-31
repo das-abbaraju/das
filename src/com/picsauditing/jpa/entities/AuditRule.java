@@ -280,5 +280,6 @@ public class AuditRule extends BaseDecisionTreeRule {
 		question = source.question;
 		questionComparator = source.questionComparator;
 		questionAnswer = source.questionAnswer;
+		include = source.include;
 	}
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
@@ -29,6 +30,8 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	protected List<AuditRule> similar;
 	protected Date date = new Date();
 
+	protected String actionURL = "";
+	
 	protected AuditDecisionTableDAO dao;
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
@@ -42,8 +45,10 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
+		actionURL = ServletActionContext.getActionMapping().getName();
+		/*
 		if (id == 0&& !"edit".equals(button))
-			return BLANK;
+			return BLANK;*/
 
 		if (rule == null) {
 			rule = (AuditCategoryRule) dao.findAuditCategoryRule(id);
@@ -261,5 +266,13 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	public void setColumns(Map<String, Map<String, String>> columns) {
 		this.columns = columns;
+	}
+
+	public String getActionURL() {
+		return actionURL;
+	}
+
+	public void setActionURL(String actionURL) {
+		this.actionURL = actionURL;
 	}
 }
