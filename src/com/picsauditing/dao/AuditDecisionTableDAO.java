@@ -33,7 +33,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	}
 
 	public List<AuditTypeRule> findByAuditType(int auditTypeID) {
-		Query query = em.createQuery("FROM AuditTypeRule r WHERE r.auditType.id = :auditTypeID ORDER BY r.priority");
+		Query query = em.createQuery("FROM AuditTypeRule r WHERE r.auditType IS NULL OR r.auditType.id = :auditTypeID ORDER BY r.priority");
 		query.setParameter("auditTypeID", auditTypeID);
 		query.setMaxResults(50);
 		return query.getResultList();
@@ -41,21 +41,21 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 	public List<AuditCategoryRule> findByCategory(int categoryID) {
 		Query query = em
-				.createQuery("FROM AuditCategoryRule r WHERE r.auditCategory.id = :categoryID ORDER BY r.priority");
+				.createQuery("FROM AuditCategoryRule r WHERE r.auditCategory IS NULL OR r.auditCategory.id = :categoryID ORDER BY r.priority");
 		query.setParameter("categoryID", categoryID);
 		query.setMaxResults(50);
 		return query.getResultList();
 	}
 
 	public List<AuditTypeRule> findAuditTypeRulesByTags(List<OperatorTag> tags) {
-		Query query = em.createQuery("FROM AuditTypeRule r WHERE r.tag IN (:tags) ORDER BY r.priority");
+		Query query = em.createQuery("FROM AuditTypeRule r WHERE r.tag IS NULL OR r.tag IN (:tags) ORDER BY r.priority");
 		query.setParameter("tags", tags);
 		query.setMaxResults(50);
 		return query.getResultList();
 	}
 
 	public List<AuditCategoryRule> findCategoryRulesByTags(List<OperatorTag> tags) {
-		Query query = em.createQuery("FROM AuditCategoryRule r WHERE r.tag IN (:tags) ORDER BY r.priority");
+		Query query = em.createQuery("FROM AuditCategoryRule r WHERE t.tag IS NULL OR r.tag IN (:tags) ORDER BY r.priority");
 		query.setParameter("tags", tags);
 		query.setMaxResults(50);
 		return query.getResultList();
@@ -71,7 +71,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 	public List<AuditCategoryRule> findAuditCategoryRulesByOperator(int opID) {
 		Query query = em
-				.createQuery("FROM AuditCategoryRule r WHERE r.operatorAccount.id = :operatorID ORDER BY r.priority");
+				.createQuery("FROM AuditCategoryRule r WHERE r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID ORDER BY r.priority");
 		query.setParameter("operatorID", opID);
 		query.setMaxResults(50);
 		return query.getResultList();
