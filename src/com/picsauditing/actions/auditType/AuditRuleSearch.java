@@ -92,6 +92,7 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		sql.addJoin("LEFT JOIN audit_type aty ON aty.id = a_search.auditTypeID");
 		sql.addJoin("LEFT JOIN operator_tag ot ON ot.id = a_search.tagID");
 		sql.addJoin("LEFT JOIN accounts a ON a.id = a_search.opID");
+		sql.addOrderBy("a_search.priority");
 	}
 
 	protected String runAutoAjax() throws SQLException {
