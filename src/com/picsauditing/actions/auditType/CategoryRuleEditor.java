@@ -1,6 +1,8 @@
 package com.picsauditing.actions.auditType;
 
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -10,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
@@ -23,6 +26,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	
 	protected int id = 0;
 	protected boolean categoryRule = true;
+	protected boolean canEditDelete = true;
 
 	protected AuditCategoryRule rule = null;
 	protected List<AuditCategoryRule> lessGranular;
@@ -61,6 +65,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 				addAlertMessage("This rule will not go into effect until: "+rule.getEffectiveDate());				
 			} else if(rule.getExpirationDate().before(new Date())){
 				addAlertMessage("This rule is no long in effect, it was removed by "+rule.getUpdatedBy().getName());
+				canEditDelete = false;
 			}
 		}
 
@@ -285,5 +290,13 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	public void setActionURL(String actionURL) {
 		this.actionURL = actionURL;
+	}
+
+	public boolean isCanEditDelete() {
+		return canEditDelete;
+	}
+
+	public void setCanEditDelete(boolean canEditDelete) {
+		this.canEditDelete = canEditDelete;
 	}
 }

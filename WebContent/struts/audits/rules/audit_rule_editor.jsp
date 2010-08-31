@@ -126,7 +126,12 @@ $(function() {
 
 	<table class="report">
 
-	<s:set name="showAction" value="true"/>
+	<s:if test="canEditDelete">
+		<s:set name="showAction" value="true"/>
+	</s:if>
+	<s:else>
+		<s:set name="showAction" value="false"/>
+	</s:else>
 	<s:include value="audit_rule_header.jsp"/>
 	
 	<s:iterator value="#{'Less Granular': lessGranular, 'Current Rule': rule, 'More Granular': moreGranular}">
@@ -139,7 +144,7 @@ $(function() {
 				<s:include value="audit_rule_view.jsp"/>
 			</s:iterator>
 			
-			<s:if test="'Current Rule' == key">
+			<s:if test="'Current Rule' == key && canEditDelete">
 				<tr class="rule-percents">
 					<s:iterator value="columns" id="col"> <!-- all columns -->
 						<td>
