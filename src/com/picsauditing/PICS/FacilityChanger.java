@@ -138,6 +138,28 @@ public class FacilityChanger {
 					addNote("Unlinked " + co.getContractorAccount().getName() + " from "
 							+ co.getOperatorAccount().getName() + "'s db");
 
+					// If user is a non-billing user, notify billing to
+					// adjust invoice
+					if (!permissions.isContractor()
+							&& !permissions.hasGroup(958)
+							&& !co.getContractorAccount().isAcceptsBids()) { // Billing/Accounting
+						EmailBuilder emailBuilder = new EmailBuilder();
+						emailBuilder.setTemplate(47); // Notice of Facility Rem
+						emailBuilder.setPermissions(permissions);
+						emailBuilder.setContractor(co.getContractorAccount(),
+								OpPerms.ContractorAdmin);
+						emailBuilder.addToken("operator", co
+								.getOperatorAccount());
+						emailBuilder
+								.setFromAddress("\"IT\"<tbaker@picsauditing.com>");
+						emailBuilder
+								.setToAddresses("billing@picsauditing.com, aharker@picsauditing.com");
+
+						EmailQueue emailQueue = emailBuilder.build();
+						emailQueue.setPriority(60);
+						EmailSender.send(emailQueue);
+					}
+					
 					checkOQ();
 					contractor.incrementRecalculation(5);
 
