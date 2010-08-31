@@ -72,6 +72,10 @@ public class BillingDetail extends ContractorActionSupport {
 			invoiceTotal = invoiceTotal.add(item.getAmount());
 
 		if ("Create".equalsIgnoreCase(button)) {
+			if(invoiceTotal.compareTo(BigDecimal.ZERO) == 0){
+				addActionError("Cannot create an Invoice for zero dollars");
+				return SUCCESS;
+			}
 
 			Invoice invoice = new Invoice();
 			invoice.setAccount(contractor);

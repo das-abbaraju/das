@@ -108,9 +108,11 @@
 						</s:else>
 					</s:iterator>
 					<li><label>Total:</label> <s:property value="invoiceTotal" /> <s:property value="contractor.currency"/></li>
-					<li>
-					<div><input type="submit" class="picsbutton positive" name="button" value="Create" /></div>
-					</li>
+					<s:if test="invoiceTotal != 0">
+						<li>
+							<div><input type="submit" class="picsbutton positive" name="button" value="Create" /></div>
+						</li>
+					</s:if>
 				</ol>
 			</s:form> <s:if test="contractor.billingStatus == 'Current' && !contractor.status.activeDemo">
 				<s:form>
