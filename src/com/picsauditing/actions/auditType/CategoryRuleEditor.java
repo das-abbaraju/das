@@ -57,6 +57,11 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			}
 			rule.calculatePriority();
 			dao.save(rule);
+			if(rule.getEffectiveDate().after(new Date())){ // rule is not in effect yet
+				addAlertMessage("This rule will not go into effect until: "+rule.getEffectiveDate());				
+			} else if(rule.getExpirationDate().before(new Date())){
+				addAlertMessage("This rule is no long in effect, it was removed by "+rule.getUpdatedBy().getName());
+			}
 		}
 
 		addFields();
