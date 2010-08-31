@@ -192,7 +192,7 @@ public class ContractorWidget extends ContractorActionSupport {
 							String text = "Please <a href=\"Audit.action?auditID=" + conAudit.getId()
 									+ "\">review and submit your annual update for " + conAudit.getAuditFor()
 									+ " </a>";
-							if (conAudit.getAuditFor().equals(Integer.toString(DateBean.getCurrentYear() - 1))) {
+							if (conAudit.getAuditFor().equals(Integer.toString(DateBean.getCurrentYear() - 1)) && conAudit.getContractorAccount().worksIn("US")) {
 								text += "<br/><b>NOTE: <a href=\"http://help.picsauditing.com/wiki/Annual_Updates\">Click here to watch the Annual Update tutorial</a></b>";
 							}
 							openTasks.add(text);
