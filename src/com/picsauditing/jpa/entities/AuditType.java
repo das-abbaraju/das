@@ -20,6 +20,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.access.OpPerms;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_type")
@@ -41,6 +43,25 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	public static String DEFAULT_AUDITTYPE = "- Audit -";
 
+	protected String auditName;
+	protected AuditTypeClass classType = AuditTypeClass.Audit;
+	protected int displayOrder = 100;
+	protected String description;
+	protected boolean hasMultiple;
+	protected boolean isScheduled;
+	protected boolean hasAuditor;
+	protected boolean hasRequirements;
+	protected boolean canContractorView;
+	protected boolean canContractorEdit;
+	protected Integer monthsToExpire;
+	protected boolean mustVerify;
+	protected boolean renewable = true;
+	protected Account account;
+	protected EmailTemplate template;
+	protected OpPerms editPermission;
+
+	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
+
 	public AuditType() {
 	}
 
@@ -61,32 +82,14 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		this.renewable = a.isRenewable();
 		this.template = a.getTemplate();
 	}
-
+	
 	public AuditType(String name) {
 		this.auditName = name;
 	}
-
+	
 	public AuditType(int id) {
 		this.id = id;
 	}
-
-	protected String auditName;
-	protected AuditTypeClass classType = AuditTypeClass.Audit;
-	protected int displayOrder = 100;
-	protected String description;
-	protected boolean hasMultiple;
-	protected boolean isScheduled;
-	protected boolean hasAuditor;
-	protected boolean hasRequirements;
-	protected boolean canContractorView;
-	protected boolean canContractorEdit;
-	protected Integer monthsToExpire;
-	protected boolean mustVerify;
-	protected boolean renewable = true;
-	protected Account account;
-	protected EmailTemplate template;
-
-	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
 	public String getAuditName() {
 		return auditName;
@@ -234,6 +237,22 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	public void setCategories(List<AuditCategory> categories) {
 		this.categories = categories;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public OpPerms getEditPermission() {
+		return editPermission;
+	}
+	
+	public void setEditPermission(String editPermission) {
+		if(editPermission==null || editPermission.isEmpty())
+			this.editPermission = null;
+		else 
+			this.editPermission = OpPerms.valueOf(editPermission);
+	}
+
+	public void setEditPermission(OpPerms editPermission) {
+			this.editPermission = editPermission;
 	}
 
 	/**

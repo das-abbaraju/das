@@ -134,6 +134,17 @@ function copyAuditType(atypeID) {
 					<s:checkbox name="auditType.canContractorEdit" />
 				</li>
 				<li>
+					<label>Permission to Edit:</label>
+					<s:select name="auditType.editPermission" list="@com.picsauditing.access.OpPerms@values()" listValue="description" 
+						headerKey="" headerValue="None" listKey="name()"/>
+					<div class="fieldhelp">
+						<h3>Permission to Edit</h3>
+						<p>For Operators and PICS Admins this will restrict the ability to edit this audit
+						type to that permission.  Selecting 'none' will cancel this if you have already selected
+						a permission.</p>
+					</div>
+				</li>
+				<li>
 					<label>Required By Operator:</label>
 					<s:textfield name="operatorID" value="%{auditType.account.id}" />
 					<div class="fieldhelp">
