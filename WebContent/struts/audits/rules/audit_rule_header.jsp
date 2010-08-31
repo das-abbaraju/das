@@ -11,11 +11,8 @@
 		<td>Risk</td>
 		<td>Tag</td>
 		<td>Bid-Only</td>
-		<s:if test="!categoryRule"><td>Dependent Audit Type</td></s:if>
-		<s:if test="!categoryRule"><td>Dependent Audit Status</td></s:if>
-		<td>Question</td>
-		<td></td>
-		<td>Answer</td>
+		<s:if test="!categoryRule"><td colspan="2">Dependent Audit</td></s:if>
+		<td colspan="3">Question</td>
 		<s:if test="#showAction">
 			<td></td>
 		</s:if>

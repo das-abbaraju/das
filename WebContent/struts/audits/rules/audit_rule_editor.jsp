@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Rule Editor</title>
+<title><s:if test="categoryRule">Category </s:if><s:else>Audit Type </s:else>Rule Editor</title>
 <link rel="stylesheet" href="css/reports.css"/>
 <link rel="stylesheet" href="css/forms.css"/>
 <s:include value="../../jquery.jsp"/>
@@ -61,6 +61,7 @@ $(function() {
 </head>
 
 <body>
+<h1><s:if test="categoryRule">Category </s:if><s:else>Audit Type </s:else>Rule Editor</h1>
 <s:include value="../../actionMessages.jsp"/>
 
 <s:if test="rule == null || button == 'edit'">
@@ -132,7 +133,7 @@ $(function() {
 		<s:if test="'Current Rule' == key || value.size() > 0">
 			<s:set name="ruleclass" value="%{key.toLowerCase().replaceAll(' ', '-')}"/>
 			<tr class="rule-header clickable <s:property value="#ruleclass"/>">
-				<td colspan="12" class="center"> <s:property value="key"/> </td>
+				<td colspan="<s:if test="categoryRule">12</s:if><s:else>13</s:else>" class="center"> <s:property value="key"/> </td>
 			</tr>
 			<s:iterator value="value" id="r">
 				<s:include value="audit_rule_view.jsp"/>

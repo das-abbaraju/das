@@ -13,17 +13,17 @@ public class AuditTypeRule extends AuditRule {
 
 	private AuditType dependentAuditType;
 	private AuditStatus dependentAuditStatus;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "dependentAuditTypeID")
 	public AuditType getDependentAuditType() {
 		return dependentAuditType;
 	}
-	@Transient
-	public String getDependentAuditTypeLabel(){
-		return dependentAuditType==null ? "*" : dependentAuditType.toString();
-	}
 
+	@Transient
+	public String getDependentAuditTypeLabel() {
+		return dependentAuditType == null ? "*" : dependentAuditType.toString();
+	}
 
 	public void setDependentAuditType(AuditType dependentAuditType) {
 		this.dependentAuditType = dependentAuditType;
@@ -32,9 +32,10 @@ public class AuditTypeRule extends AuditRule {
 	public AuditStatus getDependentAuditStatus() {
 		return dependentAuditStatus;
 	}
+
 	@Transient
-	public String getDependentAuditStatusLabel(){
-		return dependentAuditStatus==null ? "*" : dependentAuditStatus.toString();
+	public String getDependentAuditStatusLabel() {
+		return dependentAuditStatus == null ? "*" : dependentAuditStatus.toString();
 	}
 
 	public void setDependentAuditStatus(AuditStatus dependentAuditStatus) {
