@@ -126,4 +126,10 @@ where id in (update audit_question q
           join audit_category c
             on p.id = c.parentID
         group by p.id
-        having count(c.id) = 1)
+        having count(c.id) = 1);
+        
+-- Update existing accounts (operator, contractor) to use onsite services
+-- Should we do this for all of these accounts?
+update accounts
+set onsiteServices = 1
+where type in ('Contractor', 'Operator');
