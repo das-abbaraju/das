@@ -17,6 +17,7 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -220,6 +221,11 @@ public class AuditBuilderController {
 				+ conAudit.getAuditType().getAuditName());
 
 		AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
+		if (detail == null) {
+			PicsLogger.log("missing detail for " + conAudit.getAuditType());
+			PicsLogger.stop();
+			return;
+		}
 
 		Set<AuditCategory> categoriesNeeded = detail.categories;
 
@@ -264,6 +270,8 @@ public class AuditBuilderController {
 		}
 		
 		AuditTypeDetail auditTypeDetail = getRequiredAuditTypes().get(conAudit.getAuditType());
+		if (auditTypeDetail == null)
+			return null;
 		return builder.getDetail(conAudit.getAuditType(), categoryRulesToUse, auditTypeDetail);
 	}
 
@@ -326,21 +334,31 @@ public class AuditBuilderController {
 		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require insurance.");
 
 		AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
+		
+		if (detail == null) {
+			PicsLogger.log("missing detail for " + conAudit.getAuditType());
+			PicsLogger.stop();
+			return;
+		}
+
+		if (detail.governingBodies.contains(null)) {
+			PicsLogger.log("Replacing null governing body with PICS Consortium account");
+			OperatorAccount operator = new OperatorAccount();
+			// PICS Consortium
+			operator.setId(4);
+			operator.setName("PICS Consortium");
+			detail.governingBodies.add(operator);
+			detail.governingBodies.remove(null);
+		}
 
 		// Add CAOs that don't yet exist
 		for (OperatorAccount operator : detail.governingBodies) {
+			
 			PicsLogger.log("Evaluating CAO for " + operator.getName());
 
 			// Now find the existing cao record for this operator (if one
 			// exists)
-			boolean exists = false;
-			for (ContractorAuditOperator cao : conAudit.getOperators()) {
-				if (cao.getOperator().equals(operator)) {
-					exists = true;
-		
-				}
-			}
-			if (!exists) {
+			if (!findOperator(conAudit, operator)) {
 				// If we don't have one, then add it
 				PicsLogger.log("Adding missing cao");
 				ContractorAuditOperator cao = new ContractorAuditOperator();
@@ -369,6 +387,16 @@ public class AuditBuilderController {
 		}
 
 		PicsLogger.stop();
+	}
+
+	private boolean findOperator(ContractorAudit conAudit, OperatorAccount operator) {
+		boolean exists = false;
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getOperator().equals(operator)) {
+				exists = true;
+			}
+		}
+		return exists;
 	}
 
 	public void fillAuditCategories(AuditData auditData) {

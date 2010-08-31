@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.struts2.ServletActionContext;
 
-import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -29,10 +28,10 @@ import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 
+// TODO remove this file
 @SuppressWarnings("serial")
 public class ContractorView extends ContractorActionSupport {
 
-	private AuditBuilder auditBuilder;
 	private OperatorTagDAO operatorTagDAO;
 	private ContractorTagDAO contractorTagDAO;
 	private ContractorOperatorDAO contractorOperatorDAO;
@@ -40,11 +39,10 @@ public class ContractorView extends ContractorActionSupport {
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
 
-	public ContractorView(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
+	public ContractorView(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO,
 			ContractorOperatorDAO contractorOperatorDAO, InvoiceItemDAO invoiceItemDAO) {
 		super(accountDao, auditDao);
-		this.auditBuilder = auditBuilder;
 		this.operatorTagDAO = operatorTagDAO;
 		this.contractorTagDAO = contractorTagDAO;
 		this.contractorOperatorDAO = contractorOperatorDAO;
