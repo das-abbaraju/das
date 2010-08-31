@@ -5,8 +5,8 @@
 <head>
 <title>Audit Builder</title>
 <s:include value="../jquery.jsp" />
-<link rel="stylesheet"
-	href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" href="css/rules.css?v=<s:property value="version"/>" />
 </head>
 <body>
 <h1>Audit Builder</h1>
@@ -69,11 +69,12 @@ Operators/Corporates:
 			<th></th>
 		</tr>
 	</thead>
+	<s:set name="ruleURL" value="'AuditTypeRuleEditor.action'"/><s:set name="categoryRule" value="false"/>
 	<s:iterator value="builder.requiredAuditTypes">
 		<tr>
 			<td><s:property value="key" /></td>
 			<td>
-				<b>Rule:</b><table><s:iterator value="value.rule"><s:include value="rules/audit_rule_view.jsp" /></s:iterator></table>
+				<b>Rule:</b><table><s:include value="rules/audit_rule_header.jsp"/><s:iterator value="value.rule" id="r"><s:include value="rules/audit_rule_view.jsp" /></s:iterator></table>
 				<b>Operators:</b> | <s:iterator value="value.operators"><s:property value="name"/> | </s:iterator>
 			</td>
 		</tr>
@@ -91,13 +92,14 @@ Operators/Corporates:
 		</tr>
 	</thead>
 	<tbody>
+	<s:set name="ruleURL" value="'CategoryRuleEditor.action'"/><s:set name="categoryRule" value="true"/>
 	<s:iterator value="auditCategoriesDetail">
 		<tr>
 			<td><s:property value="key.id" /> <s:property value="key.auditType" /> <s:date name="key.effectiveDate" format="yyyy" /></td>
 			<td>
 				<b>Operators:</b> <s:iterator value="value.operators"> <br /><s:property value="key"/> RuleID=<s:property value="value.id"/></s:iterator><br />
 				<b>Categories:</b> <s:iterator value="value.categories"><s:property value="name"/> | </s:iterator><br />
-				<b>Rules:</b> <table><s:iterator value="value.rules"><s:include value="rules/audit_rule_view.jsp" /></s:iterator></table>
+				<b>Rules:</b> <table><s:include value="rules/audit_rule_header.jsp"/><s:iterator value="value.rules" id="r"><s:include value="rules/audit_rule_view.jsp" /></s:iterator></table>
 				<b>Governing Bodies:</b> <s:iterator value="value.governingBodies"><s:property value="name"/> | </s:iterator><br />
 			</td>
 		</tr>
