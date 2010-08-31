@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmployeeDAO;
@@ -19,6 +20,7 @@ import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.IndexObject;
+import com.picsauditing.util.Strings;
 
 public class Indexer extends PicsActionSupport {
 
@@ -51,13 +53,6 @@ public class Indexer extends PicsActionSupport {
 	@Override
 	public String execute() throws SQLException {
 		if(isRunning){
-			if(stop){
-				clearMessages();
-				addActionMessage("Indexer Stopped!");
-				stop = false;
-				isRunning = false;
-				return SUCCESS;
-			}
 			addActionMessage("Indexer Already Running");
 			return SUCCESS;
 		} else
@@ -68,8 +63,7 @@ public class Indexer extends PicsActionSupport {
 		if(toRun==null){
 			indexTables.put("accounts", accountDAO);
 			indexTables.put("users", userDAO);		
-			indexTables.put("employee", empDAO);		
-//			indexTables.put("contractor_audit", conAuditDAO);	
+			indexTables.put("employee", empDAO);			
 		} else{
 			if(toRun.equals("accounts"))
 				indexTables.put("accounts", accountDAO);
@@ -77,13 +71,11 @@ public class Indexer extends PicsActionSupport {
 				indexTables.put("users", userDAO);
 			else if(toRun.equals("employee"))	
 				indexTables.put("employee", empDAO);
-//			else if(toRun.equals("conAudit"))	
-//				indexTables.put("contractor_audit", conAuditDAO);	
 		}
 		for(Entry<String, IndexableDAO> entry : indexTables.entrySet()){
 			// for each table get those rows that need indexing
 			// and pass the list of ids in and run the indexer
-			runIndexer(getIndexable(entry.getKey()), entry.getValue());
+			runIndexer(getIndexable(entry.getKey()), entry.getValue(), entry.getKey());
 		}
 		if(runStats){
 			runStats = false;
@@ -107,11 +99,11 @@ public class Indexer extends PicsActionSupport {
 		}
 	}
 	
-	public void runIndexer(List<BasicDynaBean> ids, IndexableDAO dao){
+	public void runIndexer(List<BasicDynaBean> ids, IndexableDAO dao, String tblName){
 		// batch is the number we use to control how many to run
 		int batch = 0;
 		Long t1 = System.currentTimeMillis();
-		if(ids==null){
+		if(ids==null || ids.isEmpty()){
 			System.out.println("Nothing to update");
 			return;
 		}
@@ -163,13 +155,15 @@ public class Indexer extends PicsActionSupport {
 					db.executeInsert(queryIndex.substring(0, queryIndex.length() - 1));
 					db.executeInsert(queryStats.substring(0, queryStats.length() - 1));
 					// save the ids here
-					for (int idToSave : savedIds) {
+					/*for (int idToSave : savedIds) {
 						table = (Indexable) dao.find(idToSave);
 						if (table != null) {
 							table.setNeedsIndexing(false);
 							dao.save((BaseTable) table);
 						}
-					}
+					}*/
+					String updateIndexing = "UPDATE "+tblName+" SET needsIndexing=0 WHERE id IN("+Strings.implode(savedIds)+")";
+					db.executeUpdate(updateIndexing);
 					System.out.println("Saving ids");
 					queryIndex.setLength(0);
 					queryStats.setLength(0);
@@ -188,13 +182,15 @@ public class Indexer extends PicsActionSupport {
 				db.executeInsert(queryIndex.substring(0, queryIndex.length()-1));
 				db.executeInsert(queryStats.substring(0, queryStats.length()-1));		
 				// save the ids here
-				for(int idToSave : savedIds){
-					Indexable table = (Indexable)dao.find(idToSave);	
-					if(table!=null){
+				/*for (int idToSave : savedIds) {
+					table = (Indexable) dao.find(idToSave);
+					if (table != null) {
 						table.setNeedsIndexing(false);
-						dao.save((BaseTable)table);
+						dao.save((BaseTable) table);
 					}
-				}
+				}*/
+			String updateIndexing = "UPDATE "+tblName+" SET needsIndexing=1 WHERE id IN("+Strings.implode(savedIds)+")";
+			db.executeUpdate(updateIndexing);
 			}
 		} catch (SQLException e) {
 			System.out.println("Last insert failed");
