@@ -238,7 +238,8 @@ public class AuditBuilderController {
 		PicsLogger.stop();
 	}
 
-	public AuditCategoriesDetail getAuditCategoryDetail(ContractorAudit conAudit, AuditTypeDetail detail) {
+	public AuditCategoriesDetail getAuditCategoryDetail(ContractorAudit conAudit) {
+		
 		List<AuditCategoryRule> originalList = getCategoryRules(conAudit.getContractorAccount(), conAudit
 				.getAuditType());
 		List<AuditCategoryRule> categoryRulesToUse = new ArrayList<AuditCategoryRule>();
@@ -261,7 +262,9 @@ public class AuditBuilderController {
 			}
 			categoryRulesToUse.add(rule);
 		}
-		return builder.getDetail(conAudit.getAuditType(), categoryRulesToUse);
+		
+		AuditTypeDetail auditTypeDetail = getRequiredAuditTypes().get(conAudit.getAuditType());
+		return builder.getDetail(conAudit.getAuditType(), categoryRulesToUse, auditTypeDetail);
 	}
 
 	private List<AuditCategoryRule> getCategoryRules(ContractorAccount contractor, AuditType auditType) {
@@ -274,7 +277,7 @@ public class AuditBuilderController {
 					getRequiredAuditTypeSet());
 			for (AuditType aType : getRequiredAuditTypeSet()) {
 				List<AuditCategoryRule> listForThis = new ArrayList<AuditCategoryRule>();
-				categoryRuleCache.put(auditType, listForThis);
+				categoryRuleCache.put(aType, listForThis);
 				for (AuditCategoryRule rule : list) {
 					if (rule.getAuditType() == null || rule.getAuditType().equals(aType))
 						listForThis.add(rule);

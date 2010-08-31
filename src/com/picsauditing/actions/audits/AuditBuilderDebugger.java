@@ -3,7 +3,6 @@ package com.picsauditing.actions.audits;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.PICS.AuditBuilder.AuditTypeDetail;
@@ -39,8 +38,7 @@ public class AuditBuilderDebugger extends ContractorActionSupport {
 		Map<ContractorAudit, AuditCategoriesDetail> list = new HashMap<ContractorAudit, AuditCategoriesDetail>();
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 			if (!conAudit.getAuditStatus().isExpired()) {
-				AuditTypeDetail detail = builder.getRequiredAuditTypes().get(conAudit.getAuditType());
-				list.put(conAudit, builder.getAuditCategoryDetail(conAudit, detail));
+				list.put(conAudit, builder.getAuditCategoryDetail(conAudit));
 			}
 		}
 		return list;
