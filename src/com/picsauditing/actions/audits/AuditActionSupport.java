@@ -198,6 +198,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 			return type.isCanContractorEdit();
 		}
+		
+		if (type.getEditPermission() != null && !permissions.hasPermission(type.getEditPermission()))
+			return false;
 
 		if (permissions.isOperatorCorporate()) {
 			if (permissions.getCanEditAudits().contains(type.getId())) {
