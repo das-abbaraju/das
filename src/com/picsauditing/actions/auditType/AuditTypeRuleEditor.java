@@ -29,7 +29,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	protected List<AuditTypeRule> moreGranular;
 	protected List<AuditTypeRule> similar;
 	protected Date date = new Date();
-	
+
 	protected String actionURL = "";
 
 	protected AuditDecisionTableDAO dao;
@@ -43,10 +43,11 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		actionURL = ServletActionContext.getActionMapping().getName();
-		/*if (id == 0 && !"edit".equals(button))
-			return BLANK;*/
+		/*
+		 * if (id == 0 && !"edit".equals(button)) return BLANK;
+		 */
 
 		if (rule == null) {
 			rule = (AuditTypeRule) dao.findAuditTypeRule(id);
@@ -55,10 +56,11 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 			}
 			rule.calculatePriority();
 			dao.save(rule);
-			if(rule.getEffectiveDate().after(new Date())){ // rule is not in effect yet
-				addAlertMessage("This rule will not go into effect until: "+rule.getEffectiveDate());				
-			} else if(rule.getExpirationDate().before(new Date())){
-				addAlertMessage("This rule is no long in effect, it was removed by "+rule.getUpdatedBy().getName());
+			if (rule.getEffectiveDate().after(new Date())) { // rule is not in
+																// effect yet
+				addAlertMessage("This rule will not go into effect until: " + rule.getEffectiveDate());
+			} else if (rule.getExpirationDate().before(new Date())) {
+				addAlertMessage("This rule is no long in effect, it was removed by " + rule.getUpdatedBy().getName());
 			}
 		}
 
@@ -79,7 +81,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 					dao.save(acr);
 				}
 				this.redirect("AuditTypeRuleEditor.action?id=" + rule.getId()); // move
-																				// out
+				// out
 				return BLANK;
 			}
 			if ("create".equals(button)) {
@@ -133,7 +135,13 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		// include
 		columns.put("include", null);
 		// audit_type
-		columns.put("audit_type", null);
+		if (rule.getAuditType() == null) {
+			Map<String, String> m = new HashMap<String, String>();
+			m.put("auditTypeID", "rule.auditType.id=");
+			columns.put("auditType", m);
+		} else {
+			columns.put("auditType", null);
+		}
 		// category
 		/*
 		 * if (((AuditCategoryRule)rule).getAuditCategory() == null) {
@@ -166,11 +174,11 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 			columns.put("tag", null);
 		// bid-onl7
 		columns.put("bid", null);
-		//dep audit type
-		columns.put("dependentType", null);		
-		//dep audit status
+		// dep audit type
+		columns.put("dependentType", null);
+		// dep audit status
 		columns.put("dependentStatus", null);
-		//question
+		// question
 		columns.put("question", null);
 		// comp
 		columns.put("comp", null);
@@ -286,4 +294,5 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	public void setActionURL(String actionURL) {
 		this.actionURL = actionURL;
 	}
+
 }

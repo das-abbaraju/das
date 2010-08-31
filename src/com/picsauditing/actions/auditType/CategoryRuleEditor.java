@@ -136,7 +136,13 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		// include
 		columns.put("include", null);
 		// audit_type
-		columns.put("audit_type", null);
+		if (rule.getAuditType() == null) {
+			Map<String, String> m = new HashMap<String, String>();
+			m.put("auditTypeID", "rule.auditType.id=");
+			columns.put("auditType", m);
+		} else {
+			columns.put("auditType", null);
+		}
 		// category
 		if (((AuditCategoryRule)rule).getAuditCategory() == null) {
 			Map<String, String> m = new HashMap<String, String>();

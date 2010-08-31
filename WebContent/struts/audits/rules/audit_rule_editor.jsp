@@ -122,7 +122,7 @@ $(function() {
 </s:if>
 
 <s:else>
-	<a class="add" href="?button=edit">Create New Rule</a>
+	<a class="add" href="?button=edit&rule.include=false">Create New Rule</a>
 
 	<table class="report">
 
