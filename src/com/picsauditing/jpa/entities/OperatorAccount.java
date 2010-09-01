@@ -297,6 +297,7 @@ public class OperatorAccount extends Account {
 
 	// TODO: get these to cache too
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
+	@Deprecated
 	@OneToMany(mappedBy = "operatorAccount")
 	public List<AuditOperator> getAudits() {
 		return audits;
@@ -327,6 +328,7 @@ public class OperatorAccount extends Account {
 		return forms;
 	}
 
+	@Deprecated
 	@Transient
 	public List<AuditOperator> getVisibleAudits() {
 		List<AuditOperator> requiredAudits = new ArrayList<AuditOperator>();
@@ -343,6 +345,7 @@ public class OperatorAccount extends Account {
 		return requiredAudits;
 	}
 
+	@Deprecated
 	@Transient
 	public Map<Integer, AuditOperator> getAuditMap() {
 		if (auditMap == null) {
