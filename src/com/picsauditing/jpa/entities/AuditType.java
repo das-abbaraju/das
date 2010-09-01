@@ -243,13 +243,6 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public OpPerms getEditPermission() {
 		return editPermission;
 	}
-	
-	public void setEditPermission(String editPermission) {
-		if(editPermission==null || editPermission.isEmpty())
-			this.editPermission = null;
-		else 
-			this.editPermission = OpPerms.valueOf(editPermission);
-	}
 
 	public void setEditPermission(OpPerms editPermission) {
 			this.editPermission = editPermission;

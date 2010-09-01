@@ -37,6 +37,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected int originalID = 0;
 	protected int targetID = 0;
 	protected Integer emailTemplateID;
+	protected String editPerm;
 
 	private List<AuditType> auditTypes = null;
 
@@ -194,6 +195,9 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				auditType.setTemplate(emailTemplateDAO.find(emailTemplateID));
 			}
 
+			if(editPerm!=null && !editPerm.isEmpty()){
+				auditType.setEditPermission(OpPerms.valueOf(editPerm));
+			} else auditType.setEditPermission(null);
 			auditType.setAuditColumns(permissions);
 			auditType = auditTypeDAO.save(auditType);
 			id = auditType.getId();
@@ -442,5 +446,16 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	public List<EmailTemplate> getTemplateList() {
 		return emailTemplateDAO.findAll();
+	}
+
+	public String getEditPerm() {
+		String result = "";
+		if(auditType.getEditPermission()!=null)
+			result = auditType.getEditPermission().name();
+		return result;
+	}
+
+	public void setEditPerm(String editPerm) {
+		this.editPerm = editPerm;
 	}
 }

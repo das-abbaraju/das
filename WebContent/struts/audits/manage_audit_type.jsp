@@ -135,8 +135,8 @@ function copyAuditType(atypeID) {
 				</li>
 				<li>
 					<label>Permission to Edit:</label>
-					<s:select name="auditType.editPermission" list="@com.picsauditing.access.OpPerms@values()" listValue="description" 
-						headerKey="" headerValue="None" listKey="name()"/>
+					<s:select name="editPerm" list="@com.picsauditing.access.OpPerms@values()" listValue="description" 
+						headerKey="" headerValue="None" listKey="name()" value="editPerm"/>
 					<div class="fieldhelp">
 						<h3>Permission to Edit</h3>
 						<p>For Operators and PICS Admins this will restrict the ability to edit this audit
