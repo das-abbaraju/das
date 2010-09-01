@@ -23,7 +23,7 @@ import com.picsauditing.util.Strings;
 public class ContractorAuditOperator extends BaseTable {
 	private ContractorAudit audit;
 	private OperatorAccount operator;
-	private CaoStatus status = CaoStatus.Pending;
+	private AuditStatus status = AuditStatus.Pending;
 	private User statusChangedBy = null;
 	private Date submittedDate;
 	private Date completedDate;
@@ -66,11 +66,11 @@ public class ContractorAuditOperator extends BaseTable {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	public CaoStatus getStatus() {
+	public AuditStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(CaoStatus status) {
+	public void setStatus(AuditStatus status) {
 		this.status = status;
 	}
 
