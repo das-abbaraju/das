@@ -94,7 +94,7 @@ public class AuditBuilder {
 		}
 
 		for (AuditCategoryRule rule : detail.operators.values()) {
-			detail.governingBodies.add(rule.getOperatorAccount());
+			detail.governingBodies.add(rule == null ? null : rule.getOperatorAccount());
 		}
 		return detail;
 	}
