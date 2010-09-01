@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
@@ -29,6 +30,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	protected List<AuditTypeRule> moreGranular;
 	protected List<AuditTypeRule> similar;
 	protected Date date = new Date();
+	protected Integer bidOnly = null;
 
 	protected AuditDecisionTableDAO dao;
 
@@ -43,7 +45,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 			return LOGIN;
 
 		if (rule == null) {
-			rule = (AuditTypeRule) dao.findAuditTypeRule(id);
+			rule = dao.findAuditTypeRule(id);
 			if (rule == null) {
 				throw new RecordNotFoundException("rule");
 			}
@@ -63,12 +65,14 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		if (button != null) {
 			if ("Save".equals(button)) {
 				if (rule.getId() == 0) {
+					setAcceptsBids();
 					rule.defaultDates();
 					rule.calculatePriority();
 					rule.setAuditColumns(permissions);
 					dao.save(rule);
 				} else {
 					AuditRule acr = dao.findAuditTypeRule(rule.getId());
+					setAcceptsBids();
 					acr.update(rule);
 					acr.calculatePriority();
 					acr.setAuditColumns(permissions);
@@ -123,6 +127,14 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		moreGranular = dao.getMoreGranular(rule, date);
 		// similar = dao.getSimilar(rule, new Date());
 		return SUCCESS;
+	}
+
+	private void setAcceptsBids() {
+		if(bidOnly>=0){
+			if(bidOnly==1)
+				rule.setAcceptsBids(true);
+			else rule.setAcceptsBids(false);
+		} else rule.setAcceptsBids(null);
 	}
 
 	protected void addFields() {
@@ -287,6 +299,20 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 
 	public void setCanEditDelete(boolean canEditDelete) {
 		this.canEditDelete = canEditDelete;
+	}
+
+	public Integer getBidOnly() {
+		Integer result = -1;
+		if(rule.getAcceptsBids()!=null){
+			if(rule.getAcceptsBids())
+				result = 1;
+			else result = 0;
+		}
+		return result;
+	}
+
+	public void setBidOnly(Integer bidOnly) {
+		this.bidOnly = bidOnly;
 	}
 
 }
