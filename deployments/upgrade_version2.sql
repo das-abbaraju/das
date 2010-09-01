@@ -133,3 +133,66 @@ where id in (update audit_question q
 update accounts
 set onsiteServices = 1
 where type in ('Contractor', 'Operator');
+
+-- Convert caos to insurance policy categories and questions
+
+create table temp_cao_conversion as
+select distinct ao.opID, ao.auditTypeID, ao.help
+from accounts a
+join operators o on a.id = o.id
+join audit_operator ao on ao.canSee = 1 and ao.opID = o.inheritInsurance
+join audit_type aType on aType.id = ao.auditTypeID and aType.classType = 'Policy'
+where a.status in ('Active','Pending') and a.type = 'Operator';
+
+update temp_cao_conversion set help = '' where help is null;
+
+insert into audit_category (auditTypeID, name, number, numRequired, numQuestions, createdBy, updatedBy, creationDate, updateDate, legacyID)
+select auditTypeID, a.name, 3, 2, 2, 941, 941, now(), now(), t.id
+from temp_cao_conversion t
+join accounts a on a.id = t.opID;
+
+insert into audit_category_rule 
+(priority, include, catID, auditTypeID, opID, createdBy, updatedBy, creationDate, updateDate, effectiveDate, expirationDate, level)
+select 315, 1, ac.id, t.auditTypeID, opID, 941, 941, now(), now(), now(), '4000-01-01', 3
+from temp_cao_conversion t
+join audit_category ac on ac.legacyID = t.id;
+
+insert into audit_question 
+(categoryID, number, name, createdBy, updatedBy, creationDate, updateDate, effectiveDate, expirationDate, questionType, hasRequirement, required, columnHeader, groupedWithPrevious, flaggable, showComment)
+select ac.id, 1, 'Upload a Certificate of Insurance or other supporting documentation for this policy.', 941, 941, now(), now(), now(), '4000-01-01', 'FileCertificate', 0, 1, 'Certificate', 0, 0, 0
+from temp_cao_conversion t
+join audit_category ac on ac.legacyID = t.id;
+
+insert into audit_question 
+(categoryID, number, name, createdBy, updatedBy, creationDate, updateDate, effectiveDate, expirationDate, questionType, hasRequirement, required, columnHeader, groupedWithPrevious, flaggable, showComment)
+select ac.id, 2, concat('This insurance policy complies with all additional ', trim(a.name), ' requirements. ', t.help), 941, 941, now(), now(), now(), '4000-01-01', 'Yes/No', 0, 1, 'Certificate', 0, 0, 0
+from temp_cao_conversion t
+join audit_category ac on ac.legacyID = t.id
+join accounts a on t.opID = a.id;
+
+-- TODO insert translations
+select 
+from audit_question;
+
+
+
+insert into pqfdata 
+(auditID, questionID, answer, dateVerified, auditorID, createdBy, creationDate, updatedBy, updateDate)
+select cao.auditID, q.id, cao.valid, cao.statusChangedDate, cao.statusChangedBy, cao.createdBy, cao.creationDate, cao.updatedBy, cao.updateDate
+from contractor_audit_operator cao
+join contractor_audit ca on ca.id = cao.auditID
+join audit_category ac on ac.auditTypeID = ca.auditTypeID
+join temp_cao_conversion t on t.auditTypeID = ca.auditTypeID and t.opID = cao.opID and ac.legacyID = t.id
+join audit_question q on q.categoryID = ac.id and q.number = 2
+where visible = 1 and valid > '';
+
+insert into pqfdata 
+(auditID, questionID, answer, dateVerified, auditorID, createdBy, creationDate, updatedBy, updateDate)
+select cao.auditID, q.id, certificateID, cao.statusChangedDate, cao.statusChangedBy, cao.createdBy, cao.creationDate, cao.updatedBy, cao.updateDate
+from contractor_audit_operator cao
+join contractor_audit ca on ca.id = cao.auditID
+join audit_category ac on ac.auditTypeID = ca.auditTypeID
+join temp_cao_conversion t on t.auditTypeID = ca.auditTypeID and t.opID = cao.opID and ac.legacyID = t.id
+join audit_question q on q.categoryID = ac.id and q.number = 1
+where visible = 1 and cao.certificateID > 0;
+

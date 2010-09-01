@@ -32,15 +32,27 @@ priority = (if(catID is null, 0, 120) + if(auditTypeID is null, 0, 105) +
 
 delete from audit_category_rule where opID > 0 and opID not in (select id from accounts);
 
+drop table temp_audit_type_rule;
+
+create table temp_audit_type_rule as
+select distinct ao.opID, ao.auditTypeID, ao.minRiskLevel, tagID
+from accounts a
+join operators o on a.id = o.id
+join audit_operator ao on ao.canSee = 1 and ao.opID = o.inheritAudits -- o.inheritInsurance
+join audit_type aType on aType.id = ao.auditTypeID and aType.classType != 'Policy'
+where a.status in ('Active','Pending') and a.type = 'Operator';
+
+TODO!! policy type conversion too
+
 truncate table audit_type_rule;
 
 insert into audit_type_rule (auditTypeID, opID, risk, tagID, include, effectiveDate, expirationDate, createdBy, creationDate, updatedBy, updateDate)
-select a.auditTypeID, o.opID, r.risk, ao.tagID, CASE WHEN ao.canSee is null then 0 else ao.canSee end,
+select a.auditTypeID, o.opID, r.risk, ao.tagID, CASE WHEN ao.opID is null then 0 else 1 end,
 	'2000-01-01', '4000-01-01', 1, now(), 1, now()
-from (select distinct auditTypeID from pics_yesterday.audit_operator) a
-join (select distinct opID from pics_yesterday.audit_operator ao) o
+from (select distinct auditTypeID from temp_audit_type_rule) a
+join (select distinct opID from temp_audit_type_rule) o
 join (select 1 risk union select 2 union select 3) r
-left join pics_yesterday.audit_operator ao on a.auditTypeID = ao.auditTypeID AND o.opID = ao.opID AND r.risk >= ao.minRiskLevel;
+left join temp_audit_type_rule ao on a.auditTypeID = ao.auditTypeID AND o.opID = ao.opID AND r.risk >= ao.minRiskLevel;
 
 insert into audit_type_rule (auditTypeID, include, effectiveDate, expirationDate, createdBy, creationDate, updatedBy, updateDate)
 select auditTypeID, case when sum(include) > 500 then 1 else 0 end,
