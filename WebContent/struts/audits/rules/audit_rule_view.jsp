@@ -12,7 +12,7 @@
 	<td><s:property value="riskLabel"/></td>
 	<td><s:property value="tagLabel"/></td>
 	<td><s:property value="acceptsBidsLabel"/></td>
-	<s:if test="!categoryRule">
+	<s:if test="categoryRule == false">
 		<td><s:property value="dependentAuditTypeLabel"/></td>
 		<td><s:property value="dependentAuditStatusLabel"/></td>
 	</s:if>

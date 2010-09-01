@@ -11,7 +11,7 @@
 		<td>Risk</td>
 		<td>Tag</td>
 		<td>Bid-Only</td>
-		<s:if test="!categoryRule"><td colspan="2">Dependent Audit</td></s:if>
+		<s:if test="categoryRule == false"><td colspan="2">Dependent Audit</td></s:if>
 		<td colspan="3">Question</td>
 		<s:if test="#showAction">
 			<td></td>
