@@ -13,6 +13,7 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.search.Database;
@@ -33,11 +34,13 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	protected Integer bidOnly = null;
 
 	protected AuditDecisionTableDAO dao;
+	protected OperatorAccountDAO opDAO;
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
-	public AuditTypeRuleEditor(AuditDecisionTableDAO dao) {
+	public AuditTypeRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO) {
 		this.dao = dao;
+		this.opDAO = opDAO;
 	}
 
 	public String execute() throws Exception {
@@ -65,14 +68,14 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		if (button != null) {
 			if ("Save".equals(button)) {
 				if (rule.getId() == 0) {
-					setAcceptsBids();
+					setFieldsOnSave();
 					rule.defaultDates();
 					rule.calculatePriority();
 					rule.setAuditColumns(permissions);
 					dao.save(rule);
 				} else {
 					AuditRule acr = dao.findAuditTypeRule(rule.getId());
-					setAcceptsBids();
+					setFieldsOnSave();
 					acr.update(rule);
 					acr.calculatePriority();
 					acr.setAuditColumns(permissions);
@@ -80,25 +83,6 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 				}
 				this.redirect("AuditTypeRuleEditor.action?id=" + rule.getId()); // move
 				// out
-				return BLANK;
-			}
-			if ("create".equals(button)) {
-				AuditRule source = dao.findAuditTypeRule(id);
-				rule.merge(source);
-				if (rule.getId() == 0) {
-					rule.defaultDates();
-					rule.calculatePriority();
-					rule.setAuditColumns(permissions);
-					dao.save(rule);
-				} else {
-					AuditRule acr = dao.findAuditTypeRule(rule.getId());
-					acr.update(rule);
-					acr.calculatePriority();
-					acr.setAuditColumns(permissions);
-					dao.save(acr);
-				}
-				dao.deleteChildren(rule, permissions);
-				this.redirect("AuditTypeRuleEditor.action?id=" + rule.getId());
 				return BLANK;
 			}
 			if ("delete".equals(button)) {
@@ -129,7 +113,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	private void setAcceptsBids() {
+	private void setFieldsOnSave() {
 		if(bidOnly>=0){
 			if(bidOnly==1)
 				rule.setAcceptsBids(true);

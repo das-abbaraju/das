@@ -91,7 +91,7 @@ $(function() {
 					</li>
 					<li><label>Operator</label>
 						<input type="text" class="searchAuto" id="operator" value="<s:property value="rule.operatorAccount.name"/>"/>
-						<s:hidden name="rule.operatorAccount.id" id="operator_hidden"/>
+						<s:hidden name="rule.operatorAccount.id" id="op_hidden"/>
 						<a href="#" class="clearfield">Clear Field</a>
 					</li>
 					<li><label>Risk</label>
@@ -99,14 +99,16 @@ $(function() {
 					</li>
 					<li><label>Tag</label>
 						<input type="text" class="searchAuto" id="tag" value="<s:property value="rule.tag.tag"/>"/>
-						<s:hidden name="rule.tag" id="tag_hidden"/>
+						<s:hidden name="rule.tag.id" id="tag_hidden"/>
 						<a href="#" class="clearfield">Clear Field</a>
 					</li>
 					<li><label>Bid-Only</label>
 						<s:select name="bidOnly" list="#{-1:'Any',0:'No',1:'Yes'}" value="bidOnly"/>
 					</li>
 					<li><label>Question</label>
-						<s:textfield name="rule.question"/>
+						<input type="text" class="searchAuto" id="question" value="<s:property value="rule.question.name"/>"/>
+						<s:hidden name="rule.question.id" id="question_hidden"/>
+						<a href="#" class="clearfield">Clear Field</a>
 					</li>
 					<li><label>Question Comparator</label>
 						<s:select name="rule.questionComparator" list="@com.picsauditing.jpa.entities.QuestionComparator@values()" headerKey="" headerValue=""/>

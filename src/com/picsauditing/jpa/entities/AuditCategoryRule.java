@@ -39,15 +39,15 @@ public class AuditCategoryRule extends AuditRule {
 		}
 	}
 
-	public void merge(AuditCategoryRule source) {
+	public void merge(AuditRule source) {
 		super.merge(source);
 		if (auditCategory == null)
-			auditCategory = source.auditCategory;
+			auditCategory = ((AuditCategoryRule)source).auditCategory;
 	}
 	
-	public void update(AuditCategoryRule source) {
+	public void update(AuditRule source) {
 		super.update(source);
-		auditCategory = source.auditCategory;
+		auditCategory = ((AuditCategoryRule)source).auditCategory;
 	}
 
 }

@@ -10,10 +10,12 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -22,6 +24,7 @@ import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterAuditRule;
+import com.picsauditing.util.SpringUtils;
 
 
 @SuppressWarnings("serial")
@@ -107,6 +110,8 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 			returnAjax = operator.findWhere(true, "a.name LIKE '"+search+"%'");
 		} else if("tag".equals(fieldName)){
 			returnAjax = opTagDao.findWhere(OperatorTag.class, "t.tag LIKE '"+search+"%'", 50);
+		} else if("question".equals(fieldName)){
+			returnAjax = ((AuditQuestionDAO)SpringUtils.getBean("AuditQuestionDAO")).findWhere("t.name LIKE '"+search+"%'");
 		}
 		StringBuilder sb = new StringBuilder();
 		for(BaseTable bt : returnAjax){
@@ -118,6 +123,8 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 				sb.append("op").append("|").append(((OperatorAccount)bt).getName()).append("|").append(((OperatorAccount)bt).getId()).append("\n");
 			} else if(bt instanceof OperatorTag){
 				sb.append("tag").append("|").append(((OperatorTag)bt).getTag()).append("|").append(((OperatorTag)bt).getId()).append("\n");
+			} else if(bt instanceof AuditQuestion){
+				sb.append("question").append("|").append(((AuditQuestion)bt).getName()).append("|").append(((AuditQuestion)bt).getId()).append("\n");
 			}
 		}
 		output = sb.toString();
