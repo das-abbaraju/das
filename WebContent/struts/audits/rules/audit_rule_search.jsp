@@ -97,7 +97,7 @@ function clearFilter(){
 		
 		<div class="filterOption">  <!-- Auto Complete -->
 			Include:
-			<s:select cssClass="forms" list="#{'2':'Any','1':'Yes','0':'No'}" name="filter.include" value="filter.include" />
+			<s:select cssClass="forms" list="#{'-1':'Any','1':'Yes','0':'No'}" name="filter.include" value="filter.include" />
 		</div>
 		
 		<s:if test="filter.showCategory">
@@ -125,7 +125,7 @@ function clearFilter(){
 		</div>
 		
 		<div class="filterOption"> <!-- Auto Complete -->
-			Bid-Only: <s:checkbox label="Bid-Only" name="filter.bid" value="filter.bid" />
+			Bid-Only: <s:select cssClass="forms" list="#{'-1':'Any',1:'Yes',0:'No'}" name="filter.bid" value="filter.bid" />
 		</div>
 		
 		<s:if test="filter.showDependentAuditType">

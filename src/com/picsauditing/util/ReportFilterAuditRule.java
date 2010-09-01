@@ -14,7 +14,8 @@ public class ReportFilterAuditRule extends ReportFilter {
 	protected boolean showDependentAuditType = true;
 	protected boolean showDependentAuditStatus = true;
 	
-	protected Integer include;
+	protected Integer include = null;
+	protected Integer bid = null;
 	
 	protected String auditType = null;
 	protected String dependentAuditType = null;
@@ -33,8 +34,6 @@ public class ReportFilterAuditRule extends ReportFilter {
 	protected int opID;
 	protected int tagID;
 	protected int dependentAuditTypeID;
-	
-	protected boolean bid;
 		
 	protected ContractorType[] contractorTypeList = ContractorType.values();
 	protected AuditStatus[] dependentAuditStatusList = AuditStatus.values(); //.getValuesWithDefault();
@@ -125,7 +124,7 @@ public class ReportFilterAuditRule extends ReportFilter {
 	}
 
 	public void setInclude(Integer include) {
-		if(include==2)
+		if(include<0)
 			this.include = null;
 		else
 			this.include = include;
@@ -163,12 +162,15 @@ public class ReportFilterAuditRule extends ReportFilter {
 		this.tagID = tagID;
 	}
 
-	public boolean isBid() {
+	public Integer isBid() {
 		return bid;
 	}
 
-	public void setBid(boolean bid) {
-		this.bid = bid;
+	public void setBid(Integer bid) {
+		if(bid<0)
+			this.bid = null;
+		else
+			this.bid = bid;
 	}
 
 	public boolean isShowDependentAuditType() {

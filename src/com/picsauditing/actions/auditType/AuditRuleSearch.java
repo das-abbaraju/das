@@ -88,7 +88,7 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		sql.addField("IFNULL(a.name,'*') operator");
 		sql.addField("IFNULL(a_search.risk,'*') risk");
 		sql.addField("IFNULL(ot.tag,'*') tag");
-		sql.addField("a_search.acceptsBids bid");
+		sql.addField("CASE a_search.acceptsBids WHEN 1 THEN 'True' WHEN 0 THEN 'False' ELSE '*' END bid");
 		sql.addJoin("LEFT JOIN audit_type aty ON aty.id = a_search.auditTypeID");
 		sql.addJoin("LEFT JOIN operator_tag ot ON ot.id = a_search.tagID");
 		sql.addJoin("LEFT JOIN accounts a ON a.id = a_search.opID");
@@ -144,13 +144,13 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		if(filterOn(filter.getInclude())){
 			report.addFilter(new SelectFilter("include", "include = ?", String.valueOf(filter.getInclude())));
 		}
-		if(filter.isBid()){
-			report.addFilter(new SelectFilter("bidOnly", "acceptsBids = ?", String.valueOf(filter.isBid())));
+		if(filterOn(filter.isBid())){
+			report.addFilter(new SelectFilter("bidOnly", "a_search.acceptsBids = ?", String.valueOf(filter.isBid())));
 		}
 		if(filterOn(filter.getCheckDate())){
-			report.addFilter(new SelectFilter("effectiveDate", "effectiveDate <= '?' AND expirationDate >= '?'", String.valueOf(DateBean.toDBFormat(filter.getCheckDate()))+" 24:00:00"));
+			report.addFilter(new SelectFilter("effectiveDate", "a_search.effectiveDate <= '? 24:00:00' AND a_search.expirationDate >= '? 00:00:00'", String.valueOf(DateBean.toDBFormat(filter.getCheckDate()))));
 		} else{
-			report.addFilter(new SelectFilter("effectiveDate", "effectiveDate <= '?' AND expirationDate >= '?'", String.valueOf(DateBean.toDBFormat(DefaultDate))+" 24:00:00"));
+			report.addFilter(new SelectFilter("effectiveDate", "a_search.effectiveDate <= '? 24:00:00' AND a_search.expirationDate >= '? 00:00:00'", String.valueOf(DateBean.toDBFormat(DefaultDate))+" 24:00:00"));
 		}
 	}
 
