@@ -304,7 +304,7 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 	@Override
 	public List<? extends AuditRule> getRelatedRules() {
 		if (relatedRules == null) {
-			relatedRules = ruleDAO.findByCategory(category.getId());
+			relatedRules = ruleDAO.findByCategory(category);
 		}
 
 		return relatedRules;

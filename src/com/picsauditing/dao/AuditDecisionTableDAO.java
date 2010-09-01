@@ -10,6 +10,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
@@ -32,30 +33,34 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		return em.find(AuditTypeRule.class, id);
 	}
 
-	public List<AuditTypeRule> findByAuditType(int auditTypeID) {
-		Query query = em.createQuery("FROM AuditTypeRule r WHERE r.auditType IS NULL OR r.auditType.id = :auditTypeID ORDER BY r.priority");
-		query.setParameter("auditTypeID", auditTypeID);
+	public List<AuditTypeRule> findByAuditType(AuditType auditType) {
+		Query query = em
+				.createQuery("FROM AuditTypeRule r WHERE r.auditType IS NULL OR r.auditType = :auditType ORDER BY r.priority");
+		query.setParameter("auditType", auditType);
 		query.setMaxResults(50);
 		return query.getResultList();
 	}
 
-	public List<AuditCategoryRule> findByCategory(int categoryID) {
+	public List<AuditCategoryRule> findByCategory(AuditCategory category) {
 		Query query = em
-				.createQuery("FROM AuditCategoryRule r WHERE r.auditCategory IS NULL OR r.auditCategory.id = :categoryID ORDER BY r.priority");
-		query.setParameter("categoryID", categoryID);
+				.createQuery("FROM AuditCategoryRule r WHERE (r.auditType IS NULL OR r.auditType = :auditType) AND (r.auditCategory IS NULL OR r.auditCategory = :category) ORDER BY r.priority");
+		query.setParameter("auditType", category.getAuditType());
+		query.setParameter("category", category);
 		query.setMaxResults(50);
 		return query.getResultList();
 	}
 
 	public List<AuditTypeRule> findAuditTypeRulesByTags(List<OperatorTag> tags) {
-		Query query = em.createQuery("FROM AuditTypeRule r WHERE r.tag IS NULL OR r.tag IN (:tags) ORDER BY r.priority");
+		Query query = em
+				.createQuery("FROM AuditTypeRule r WHERE r.tag IS NULL OR r.tag IN (:tags) ORDER BY r.priority");
 		query.setParameter("tags", tags);
 		query.setMaxResults(50);
 		return query.getResultList();
 	}
 
 	public List<AuditCategoryRule> findCategoryRulesByTags(List<OperatorTag> tags) {
-		Query query = em.createQuery("FROM AuditCategoryRule r WHERE t.tag IS NULL OR r.tag IN (:tags) ORDER BY r.priority");
+		Query query = em
+				.createQuery("FROM AuditCategoryRule r WHERE t.tag IS NULL OR r.tag IN (:tags) ORDER BY r.priority");
 		query.setParameter("tags", tags);
 		query.setMaxResults(50);
 		return query.getResultList();

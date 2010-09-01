@@ -349,7 +349,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	public List<? extends AuditRule> getRelatedRules() {
 		if (relatedRules == null) {
-			relatedRules = ruleDAO.findByAuditType(auditType.getId());
+			relatedRules = ruleDAO.findByAuditType(auditType);
 		}
 
 		return relatedRules;
