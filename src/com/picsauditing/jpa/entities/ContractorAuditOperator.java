@@ -25,13 +25,21 @@ public class ContractorAuditOperator extends BaseTable {
 	private OperatorAccount operator;
 	private CaoStatus status = CaoStatus.Pending;
 	private User statusChangedBy = null;
-	private Date statusChangedDate;
+	private Date submittedDate;
+	private Date completedDate;
+	private Date approvedDate;
+	private Date incompleteDate;
+	private int percentComplete;
+	private int percentVerified;
 	private boolean visible = true;
-	private YesNo valid = null;
-	private Certificate certificate;
 	private FlagColor flag = null;
 	private String notes;
 	private String reason;
+	// To be removed
+	private YesNo valid = null;
+	private Certificate certificate;
+	private Date statusChangedDate;
+
 
 	@ManyToOne
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
@@ -144,6 +152,54 @@ public class ContractorAuditOperator extends BaseTable {
 
 	public void setReason(String reason) {
 		this.reason = reason;
+	}
+
+	public Date getSubmittedDate() {
+		return submittedDate;
+	}
+
+	public void setSubmittedDate(Date submittedDate) {
+		this.submittedDate = submittedDate;
+	}
+
+	public Date getCompletedDate() {
+		return completedDate;
+	}
+
+	public void setCompletedDate(Date completedDate) {
+		this.completedDate = completedDate;
+	}
+
+	public Date getApprovedDate() {
+		return approvedDate;
+	}
+
+	public void setApprovedDate(Date approvedDate) {
+		this.approvedDate = approvedDate;
+	}
+
+	public Date getIncompleteDate() {
+		return incompleteDate;
+	}
+
+	public void setIncompleteDate(Date incompleteDate) {
+		this.incompleteDate = incompleteDate;
+	}
+
+	public int getPercentComplete() {
+		return percentComplete;
+	}
+
+	public void setPercentComplete(int percentComplete) {
+		this.percentComplete = percentComplete;
+	}
+
+	public int getPercentVerified() {
+		return percentVerified;
+	}
+
+	public void setPercentVerified(int percentVerified) {
+		this.percentVerified = percentVerified;
 	}
 
 	@Transient
