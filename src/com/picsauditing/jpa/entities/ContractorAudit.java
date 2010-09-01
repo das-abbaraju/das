@@ -39,17 +39,12 @@ import com.picsauditing.util.Strings;
 public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private AuditType auditType;
 	private ContractorAccount contractorAccount;
-	private AuditStatus auditStatus = AuditStatus.Pending;
 	private Date expiresDate;
 	private User auditor;
 	private User closingAuditor;
 	private Date assignedDate;
-	private Date completedDate;
-	private Date closedDate;
 	private Date paidDate;
 	private OperatorAccount requestingOpAccount;
-	private int percentComplete;
-	private int percentVerified;
 	private float score;
 	private boolean manuallyAdded;
 	protected boolean needsIndexing = true;
@@ -121,81 +116,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		this.operators = operators;
 	}
 
-	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.AuditStatus") })
-	@Enumerated(EnumType.STRING)
-	public AuditStatus getAuditStatus() {
-		return auditStatus;
-	}
-
-	/**
-	 * Don't use this! Use changeStatus instead
-	 * 
-	 * @param auditStatus
-	 * @see ContractorAudit.changeStatus()
-	 */
-	public void setAuditStatus(AuditStatus auditStatus) {
-		this.auditStatus = auditStatus;
-	}
-
-	@Transient
-	public void changeStatus(AuditStatus auditStatus, User user) {
-		// If we're changing the status to Submitted or Active, then we need
-		// to set the dates
-		if (auditStatus.isPending() || auditStatus.isIncomplete()) {
-			if (closedDate != null)
-				closedDate = null;
-			if (completedDate != null)
-				completedDate = null;
-			if (getAuditType().isRenewable()) {
-				expiresDate = null;
-			}
-		}
-		if (auditStatus.isSubmitted() || auditStatus.isResubmitted()) {
-			// If we're going "forward" then (re)set the completedDate
-			completedDate = new Date();
-			setExpirationDate();
-		}
-		if (auditStatus.isActive()) {
-			// If we're going "forward" then (re)set the closedDate
-			if (closedDate == null || this.auditStatus.isPendingSubmittedResubmitted())
-				closedDate = new Date();
-
-			if (completedDate == null)
-				// If we're closed, there should always be a completedDate,
-				// so fill it in if it hasn't already been set
-				completedDate = closedDate;
-			setExpirationDate();
-		}
-		if (auditStatus.isExempt()) {
-			setExpirationDate();
-		}
-		if (auditStatus.isExpired()) {
-			if (expiresDate == null)
-				// This should never happen, but if it does, let's just cleanup
-				// the date
-				expiresDate = new Date();
-		}
-
-		setAuditColumns(user);
-		setAuditStatus(auditStatus);
-	}
-
-	private void setExpirationDate() {
-		if (getExpiresDate() != null && !auditType.isRenewable())
-			// Example: Desktop with expiration date already set
-			return;
-		Integer months = getAuditType().getMonthsToExpire();
-		if (months != null && months > 0) {
-			if (getAuditType().getClassType().isPqf()) {
-				expiresDate = DateBean.getMarchOfThatYear(DateBean.addMonths(getCompletedDate(), months));
-			} else
-				expiresDate = DateBean.addMonths(getCompletedDate(), months);
-		} else {
-			// check months first, then do date if empty
-			expiresDate = DateBean.getMarchOfNextYear(new Date());
-		}
-	}
-
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getExpiresDate() {
 		return expiresDate;
@@ -252,24 +172,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		this.scheduledDate = scheduledDate;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date getCompletedDate() {
-		return completedDate;
-	}
-
-	public void setCompletedDate(Date completedDate) {
-		this.completedDate = completedDate;
-	}
-
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date getClosedDate() {
-		return closedDate;
-	}
-
-	public void setClosedDate(Date closedDate) {
-		this.closedDate = closedDate;
-	}
-
 	@Temporal(TemporalType.DATE)
 	public Date getPaidDate() {
 		return paidDate;
@@ -315,28 +217,16 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		this.needsCamera = needsCamera;
 	}
 
-	public int getPercentComplete() {
-		return percentComplete;
-	}
-
-	public void setPercentComplete(int percentComplete) {
-		this.percentComplete = percentComplete;
-	}
-
+	/**
+	 * We may need to move this over to CAO someday
+	 * @return
+	 */
 	public float getScore() {
 		return score;
 	}
 
 	public void setScore(float score) {
 		this.score = score;
-	}
-
-	public int getPercentVerified() {
-		return percentVerified;
-	}
-
-	public void setPercentVerified(int percentVerified) {
-		this.percentVerified = percentVerified;
 	}
 
 	// Child tables
@@ -360,18 +250,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	}
 
 	// TRANSIENT ///////////////////////////////
-
-	@Transient
-	public int getPercent() {
-		if (AuditStatus.Pending.equals(auditStatus))
-			return this.percentComplete;
-		if (AuditStatus.Submitted.equals(auditStatus))
-			return this.percentVerified;
-		if (AuditStatus.Resubmitted.equals(auditStatus))
-			return this.percentVerified;
-
-		return 100;
-	}
 
 	@Transient
 	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
@@ -418,25 +296,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		} else {
 			return daysToExpiration <= 60;
 		}
-	}
-
-	@Transient
-	public Date getEffectiveDate() {
-		if (getAuditType().getClassType() == AuditTypeClass.Policy)
-			return creationDate;
-
-		if (auditStatus.equals(AuditStatus.Exempt))
-			return creationDate;
-
-		if (auditStatus.equals(AuditStatus.Pending)) {
-			if (auditor != null && assignedDate != null)
-				return assignedDate;
-			return creationDate;
-		}
-		if (auditStatus.equals(AuditStatus.Submitted)
-				|| (auditType.isDesktop() || auditType.getId() == AuditType.OFFICE))
-			return completedDate;
-		return closedDate;
 	}
 
 	@Transient
@@ -655,122 +514,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	}
 
 	@Transient
-	public String getStatusDescription() {
-		String statusDescription = "";
-		if (auditStatus.isActive())
-			if (auditType.isMustVerify())
-				if (auditType.isPqf() || auditType.isAnnualAddendum())
-					statusDescription = "Annual requirements have been verified. " + this.getAuditType().getClassType()
-							+ " is closed.";
-				else
-					statusDescription = this.getAuditType().getClassType() + " has been verified.";
-			else if (auditType.isHasRequirements())
-				statusDescription = "All the requirements for this " + this.getAuditType().getClassType().toString()
-						+ " have been met. " + this.getAuditType().getClassType() + " closed.";
-			else
-				statusDescription = this.getAuditType().getClassType() + " closed.";
-
-		if (auditStatus.isExempt())
-			statusDescription = this.getAuditType().getClassType() + " is not required.";
-
-		if (auditStatus.isExpired())
-			statusDescription = this.getAuditType().getClassType() + " is no longer active.";
-
-		if (auditStatus.isPending())
-			if (auditType.isMustVerify())
-				statusDescription = this.getAuditType().getClassType() + " has not been submitted.";
-			else
-				statusDescription = this.getAuditType().getClassType() + " has not been started.";
-
-		if (auditStatus.isSubmitted())
-			if (contractorAccount.isAcceptsBids()) {
-				statusDescription = this.getAuditType().getClassType().toString() + " has been submitted.";
-			} else if (auditType.isMustVerify())
-				statusDescription = this.getAuditType().getClassType().toString()
-						+ " has been sent.  Awaiting verification.";
-			else
-				statusDescription = this.getAuditType().getClassType().toString()
-						+ " has been submitted but there are requirements pending.";
-
-		if (auditStatus.isResubmitted())
-			statusDescription = "Policy updated; pending approval of changes.";
-
-		if (auditStatus.isIncomplete())
-			statusDescription = "Rejected " + this.getAuditType().getClassType() + " during verification";
-		return statusDescription;
-	}
-
-	@Transient
-	public String getSynopsis() {
-		String synopsis = "";
-
-		if (isAboutToExpire()) {
-			synopsis = "Expires on " + DateBean.format(expiresDate, "MM/dd/YYYY");
-		}
-
-		if (auditType.isScheduled()) {
-			if (scheduledDate == null)
-				synopsis = "Waiting to be scheduled";
-			else if (scheduledDate.after(new Date()))
-				synopsis = "Scheduled for " + DateBean.format(scheduledDate, "MM/dd/YYYY");
-		}
-
-		if (!auditType.classType.isPolicy() && auditStatus.isPending()) {
-			if (auditType.isCanContractorEdit())
-				synopsis = "Waiting on contractor";
-			else
-				synopsis = "Pending";
-		}
-
-		if (auditStatus.isExempt()) {
-			synopsis = "Exempt";
-		}
-
-		if (auditStatus.isSubmitted()) {
-			if (!contractorAccount.isAcceptsBids()) {
-				if (auditType.isMustVerify())
-					synopsis = "Awaiting verification.";
-				else
-					synopsis = "Submitted pending requirements.";
-			}
-		}
-
-		if (auditStatus.isActive() || auditStatus.isResubmitted() || auditStatus.isIncomplete())
-			synopsis = auditStatus.toString();
-
-		return synopsis;
-	}
-
-	/**
-	 * Short description for insurance (need to know the opID)
-	 * 
-	 * @param opID
-	 * @return
-	 */
-	@Transient
-	public String getSynopsis(OperatorAccount o) {
-		String synopsis = "";
-
-		if (o.getId() > 0) {
-			for (ContractorAuditOperator cao : operators) {
-				if (cao.getOperator().getId() == o.getInheritInsurance().getId()) {
-					synopsis = cao.getStatus().toString();
-					break;
-				}
-			}
-		} else {
-			CaoStatus status = CaoStatus.Pending;
-			for (ContractorAuditOperator cao : operators) {
-				if (status.compareTo(cao.getStatus()) < 0)
-					status = cao.getStatus();
-			}
-			synopsis = status.toString();
-		}
-
-		return synopsis;
-	}
-
-	@Transient
 	public String getPrintableScore() {
 		int tempScore = Math.round(score);
 
@@ -807,23 +550,5 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public String getIndexType() {
 		return "AU";
 	}
-
-	// @Transient
-	// public List<IndexObject> getIndexValues() {
-	// List<IndexObject> l = new ArrayList<IndexObject>();
-	// String temp = "";
-	// // id
-	// l.add(new IndexObject(String.valueOf(this.id),10));
-	// return l;
-	// }
-
-	// @Override
-	// public boolean isNeedsIndexing() {
-	// return needsIndexing;
-	// }
-	//	
-	// @Override
-	// public void setNeedsIndexing(boolean needsIndexing) {
-	// this.needsIndexing = needsIndexing;
-	// }
+	
 }

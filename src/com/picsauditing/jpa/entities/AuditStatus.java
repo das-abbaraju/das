@@ -50,9 +50,17 @@ public enum AuditStatus {
 	public boolean isResubmitted() {
 		return this.equals(Resubmitted);
 	}
+	
+	public boolean isSubmittedResubmitted() {
+		return isSubmitted() || isResubmitted();
+	}
 
 	public boolean isIncomplete() {
 		return this.equals(Incomplete);
+	}
+
+	public boolean isComplete() {
+		return this.equals(Complete);
 	}
 
 	/**
