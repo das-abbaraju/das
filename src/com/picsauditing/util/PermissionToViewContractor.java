@@ -4,10 +4,13 @@ import java.util.List;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 
 public class PermissionToViewContractor {
+
 	private int id;
 	private Permissions permissions = null;
 
@@ -49,7 +52,7 @@ public class PermissionToViewContractor {
 			return false;
 		}
 
-		if (permissions.isOperator() || permissions.isCorporate()) {
+		if (permissions.isOperatorCorporate()) {
 			// If we want to look at their detail, like PQF data
 			// Then we have to add them first (generalContractors).
 			if (permissions.isCorporate()) {
@@ -67,10 +70,14 @@ public class PermissionToViewContractor {
 					return true;
 		}
 
+		// Now check to see if the User is assigned to an active audit
 		for (ContractorAudit audit : activeAudits) {
-			if (audit.getAuditor() != null && audit.getAuditor().getId() == permissions.getUserId())
-				if (audit.getAuditStatus().isPendingSubmitted() || audit.getAuditStatus().isIncomplete())
-					return true;
+			if (audit.getAuditor() != null && audit.getAuditor().getId() == permissions.getUserId()) {
+				for (ContractorAuditOperator cao : audit.getOperators()) {
+					if (cao.getStatus().before(AuditStatus.Complete))
+						return true;
+				}
+			}
 		}
 
 		return false;

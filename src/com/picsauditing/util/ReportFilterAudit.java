@@ -10,7 +10,6 @@ import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.OshaType;
 
 @SuppressWarnings("serial")
@@ -20,7 +19,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showAuditType = true;
 	protected boolean showPolicyType = false;
 	protected boolean showAuditStatus = true;
-	protected boolean showCaoStatus = false;
 	protected boolean showRecommendedFlag = false;
 	protected boolean showAuditor = true;
 	protected boolean showClosingAuditor = false;
@@ -44,14 +42,12 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showShaLocation = false;
 	protected boolean showCohsStats = false;
 	protected boolean showQuestionAnswer = false;
-	protected boolean showCaoStatusChangedDate = false;
 
 	// Filter values
 	protected int[] auditID;
 	protected int[] auditTypeID;
 	protected int[] pqfTypeID;
 	protected AuditStatus[] auditStatus;
-	protected CaoStatus[] caoStatus;
 	protected String recommendedFlag;
 	protected int[] auditorId;
 	protected int[] closingAuditorId;
@@ -88,7 +84,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected String answer = "No";
 	protected Date statusChangedDate1;
 	protected Date statusChangedDate2;
-	
+
 	public boolean isShowAuditType() {
 		return showAuditType;
 	}
@@ -103,14 +99,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShowAuditStatus(boolean showAuditStatus) {
 		this.showAuditStatus = showAuditStatus;
-	}
-	
-	public boolean isShowCaoStatus() {
-		return showCaoStatus;
-	}
-
-	public void setShowCaoStatus(boolean showCaoStatus) {
-		this.showCaoStatus = showCaoStatus;
 	}
 
 	public boolean isShowAuditor() {
@@ -192,7 +180,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setShowPolicyType(boolean showPolicyType) {
 		this.showPolicyType = showPolicyType;
 	}
-	
+
 	public boolean isShowRecommendedFlag() {
 		return showRecommendedFlag;
 	}
@@ -200,7 +188,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setShowRecommendedFlag(boolean showRecommendedFlag) {
 		this.showRecommendedFlag = showRecommendedFlag;
 	}
-	
+
 	public boolean isShowHasClosedDate() {
 		return showHasClosedDate;
 	}
@@ -208,7 +196,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setShowHasClosedDate(boolean showHasClosedDate) {
 		this.showHasClosedDate = showHasClosedDate;
 	}
-	
+
 	public boolean isShowClosingAuditor() {
 		return showClosingAuditor;
 	}
@@ -224,7 +212,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setShowAMBest(boolean showAMBest) {
 		this.showAMBest = showAMBest;
 	}
-	
+
 	public boolean isShowVerifiedAnnualUpdates() {
 		return showVerifiedAnnualUpdates;
 	}
@@ -240,11 +228,11 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setShowShaType(boolean showShaType) {
 		this.showShaType = showShaType;
 	}
-	
+
 	public boolean isShowShaTypeFlagCriteria() {
 		return showShaTypeFlagCriteria;
 	}
-	
+
 	public void setShowShaTypeFlagCriteria(boolean showShaTypeFlagCriteria) {
 		this.showShaTypeFlagCriteria = showShaTypeFlagCriteria;
 	}
@@ -273,14 +261,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.showQuestionAnswer = showQuestionAnswer;
 	}
 
-	public boolean isShowCaoStatusChangedDate() {
-		return showCaoStatusChangedDate;
-	}
-
-	public void setShowCaoStatusChangedDate(boolean showCaoStatusChangedDate) {
-		this.showCaoStatusChangedDate = showCaoStatusChangedDate;
-	}
-
 	public int[] getAuditID() {
 		return auditID;
 	}
@@ -303,14 +283,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setAuditStatus(AuditStatus[] auditStatus) {
 		this.auditStatus = auditStatus;
-	}
-	
-	public CaoStatus[] getCaoStatus() {
-		return caoStatus;
-	}
-
-	public void setCaoStatus(CaoStatus[] caoStatus) {
-		this.caoStatus = caoStatus;
 	}
 
 	public int[] getAuditorId() {
@@ -368,7 +340,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setClosedDate2(Date closedDate2) {
 		this.closedDate2 = closedDate2;
 	}
-	
+
 	public String getHasClosedDate() {
 		return hasClosedDate;
 	}
@@ -477,10 +449,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		return AuditStatus.values();
 	}
 
-	public CaoStatus[] getCaoStatusList() {
-		return CaoStatus.values();
-	}
-	
 	public Map<Integer, String> getAMBestClassList() {
 		return AmBest.financialMap;
 	}
@@ -492,12 +460,13 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public OshaType[] getOshaTypesList() {
 		return OshaType.values();
 	}
-	
+
 	public List<AuditQuestion> getQuestionsByAuditList() {
 		AuditQuestionDAO auditQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
-		return auditQuestionDAO.findWhere("t.category.parentAuditType.id = 81 AND t.effectiveDate < NOW() AND t.expirationDate > NOW()");
+		return auditQuestionDAO
+				.findWhere("t.category.parentAuditType.id = 81 AND t.effectiveDate < NOW() AND t.expirationDate > NOW()");
 	}
-	
+
 	public boolean isShowAuditFor() {
 		return showAuditFor;
 	}
@@ -529,11 +498,11 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setMaxEMR(float maxEMR) {
 		this.maxEMR = maxEMR;
 	}
-	
+
 	public boolean isShowEmrRange() {
 		return showEmrRange;
 	}
-	
+
 	public void setShowEmrRange(boolean showEmrRange) {
 		this.showEmrRange = showEmrRange;
 	}
@@ -553,35 +522,35 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setIncidenceRate(double incidenceRate) {
 		this.incidenceRate = incidenceRate;
 	}
-	
+
 	public double getIncidenceRateMax() {
 		return incidenceRateMax;
 	}
-	
+
 	public void setIncidenceRateMax(double incidenceRateMax) {
 		this.incidenceRateMax = incidenceRateMax;
 	}
-	
+
 	public boolean isShowIncidenceRateAvg() {
 		return showIncidenceRateAvg;
 	}
-	
+
 	public void setShowIncidenceRateAvg(boolean showIncidenceRateAvg) {
 		this.showIncidenceRateAvg = showIncidenceRateAvg;
 	}
-	
+
 	public double getIncidenceRateAvg() {
 		return incidenceRateAvg;
 	}
-	
+
 	public void setIncidenceRateAvg(double incidenceRateAvg) {
 		this.incidenceRateAvg = incidenceRateAvg;
 	}
-	
+
 	public double getIncidenceRateAvgMax() {
 		return incidenceRateAvgMax;
 	}
-	
+
 	public void setIncidenceRateAvgMax(double incidenceRateAvgMax) {
 		this.incidenceRateAvgMax = incidenceRateAvgMax;
 	}
@@ -633,11 +602,11 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setShaType(OshaType shaType) {
 		this.shaType = shaType;
 	}
-	
+
 	public OshaType getShaTypeFlagCriteria() {
 		return shaTypeFlagCriteria;
 	}
-	
+
 	public void setShaTypeFlagCriteria(OshaType shaTypeFlagCriteria) {
 		this.shaTypeFlagCriteria = shaTypeFlagCriteria;
 	}

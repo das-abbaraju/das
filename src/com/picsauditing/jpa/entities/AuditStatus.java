@@ -3,13 +3,13 @@ package com.picsauditing.jpa.entities;
 import java.util.ArrayList;
 
 public enum AuditStatus {
-	NotApplicable,
 	Pending,
+	Incomplete,
 	Submitted,
 	Resubmitted,
-	Incomplete,
 	Complete,
-	Approved;
+	Approved,
+	NotApplicable;
 
 	public static String DEFAULT = "- Audit Status -";
 
@@ -19,6 +19,10 @@ public enum AuditStatus {
 		for (AuditStatus value : AuditStatus.values())
 			values.add(value.name());
 		return values;
+	}
+	
+	public boolean before(AuditStatus o) {
+		return this.ordinal() < o.ordinal();
 	}
 
 	public boolean isApproved() {
