@@ -3,13 +3,13 @@ package com.picsauditing.jpa.entities;
 import java.util.ArrayList;
 
 public enum AuditStatus {
+	NotApplicable,
 	Pending,
-	Incomplete,
 	Submitted,
 	Resubmitted,
-	Active,
-	Exempt,
-	Expired;
+	Incomplete,
+	Complete,
+	Approved;
 
 	public static String DEFAULT = "- Audit Status -";
 
@@ -21,16 +21,22 @@ public enum AuditStatus {
 		return values;
 	}
 
+	public boolean isApproved() {
+		return this.equals(Approved);
+	}
+
+	@Deprecated
 	public boolean isActive() {
-		return this.equals(Active);
+		return isApproved();
 	}
 
+	public boolean isNotApplicable() {
+		return this.equals(NotApplicable);
+	}
+
+	@Deprecated
 	public boolean isExempt() {
-		return this.equals(Exempt);
-	}
-
-	public boolean isExpired() {
-		return this.equals(Expired);
+		return isNotApplicable();
 	}
 
 	public boolean isPending() {
@@ -54,14 +60,11 @@ public enum AuditStatus {
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public boolean isActiveResubmittedExempt() {
-		if (this.equals(Active))
-			return true;
-		if (this.equals(Exempt))
-			return true;
 		if (this.equals(Resubmitted))
 			return true;
-		return false;
+		return isActiveExempt();
 	}
 
 	/**
@@ -69,10 +72,11 @@ public enum AuditStatus {
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public boolean isActiveExempt() {
-		if (this.equals(Active))
+		if (isActive())
 			return true;
-		if (this.equals(Exempt))
+		if (isExempt())
 			return true;
 		return false;
 	}
@@ -82,6 +86,7 @@ public enum AuditStatus {
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public boolean isActiveExemptSubmitted() {
 		if (this.equals(Submitted))
 			return true;
@@ -93,12 +98,11 @@ public enum AuditStatus {
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public boolean isActiveSubmitted() {
 		if (this.equals(Submitted))
 			return true;
-		if (this.equals(Active))
-			return true;
-		return false;
+		return isActive();
 	}
 
 	/**
@@ -134,9 +138,8 @@ public enum AuditStatus {
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public boolean isPendingExpired() {
-		if (this.equals(Expired))
-			return true;
 		if (this.equals(Pending))
 			return true;
 		return false;
@@ -150,12 +153,11 @@ public enum AuditStatus {
 	 * @param minimumStatus
 	 * @return
 	 */
+	@Deprecated
 	public boolean isComplete(AuditStatus minimumStatus) {
-		if (this.equals(Expired))
-			return true;
-		if (this.equals(Active))
-			return true;
-		if (this.equals(Exempt))
+		// if (this.equals(Expired))
+		// return true;
+		if (isActiveExempt())
 			return true;
 		if (Submitted.equals(minimumStatus)) {
 			if (this.equals(Submitted))
