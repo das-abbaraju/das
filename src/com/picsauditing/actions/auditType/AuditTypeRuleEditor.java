@@ -1,7 +1,6 @@
 package com.picsauditing.actions.auditType;
 
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -9,9 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.struts2.ServletActionContext;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
@@ -33,8 +30,6 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	protected List<AuditTypeRule> similar;
 	protected Date date = new Date();
 
-	protected String actionURL = "";
-
 	protected AuditDecisionTableDAO dao;
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
@@ -47,11 +42,6 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
-		actionURL = ServletActionContext.getActionMapping().getName();
-		/*
-		 * if (id == 0 && !"edit".equals(button)) return BLANK;
-		 */
-
 		if (rule == null) {
 			rule = (AuditTypeRule) dao.findAuditTypeRule(id);
 			if (rule == null) {
@@ -60,10 +50,10 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 			rule.calculatePriority();
 			dao.save(rule);
 			if (rule.getEffectiveDate().after(new Date())) { // rule is not in
-																// effect yet
+				// effect yet
 				addAlertMessage("This rule will not go into effect until: " + rule.getEffectiveDate());
 			} else if (rule.getExpirationDate().before(new Date())) {
-				addAlertMessage("This rule is no long in effect, it was removed by " + rule.getUpdatedBy().getName());
+				addAlertMessage("This rule is no longer in effect, it was removed by " + rule.getUpdatedBy().getName());
 				canEditDelete = false;
 			}
 		}
@@ -289,14 +279,6 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 
 	public void setColumns(Map<String, Map<String, String>> columns) {
 		this.columns = columns;
-	}
-
-	public String getActionURL() {
-		return actionURL;
-	}
-
-	public void setActionURL(String actionURL) {
-		this.actionURL = actionURL;
 	}
 
 	public boolean isCanEditDelete() {

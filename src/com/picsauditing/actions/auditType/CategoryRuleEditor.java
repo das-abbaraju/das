@@ -1,8 +1,6 @@
 package com.picsauditing.actions.auditType;
 
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -10,9 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.struts2.ServletActionContext;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
@@ -23,7 +19,7 @@ import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
 public class CategoryRuleEditor extends PicsActionSupport {
-	
+
 	protected int id = 0;
 	protected boolean categoryRule = true;
 	protected boolean canEditDelete = true;
@@ -34,12 +30,9 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	protected List<AuditRule> similar;
 	protected Date date = new Date();
 
-	protected String actionURL = "";
-	
 	protected AuditDecisionTableDAO dao;
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
-
 
 	public CategoryRuleEditor(AuditDecisionTableDAO dao) {
 		this.dao = dao;
@@ -49,11 +42,6 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
-		actionURL = ServletActionContext.getActionMapping().getName();
-		/*
-		if (id == 0&& !"edit".equals(button))
-			return BLANK;*/
-
 		if (rule == null) {
 			rule = (AuditCategoryRule) dao.findAuditCategoryRule(id);
 			if (rule == null) {
@@ -61,10 +49,12 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			}
 			rule.calculatePriority();
 			dao.save(rule);
-			if(rule.getEffectiveDate().after(new Date())){ // rule is not in effect yet
-				addAlertMessage("This rule will not go into effect until: "+rule.getEffectiveDate());				
-			} else if(rule.getExpirationDate().before(new Date())){
-				addAlertMessage("This rule is no long in effect, it was removed by "+rule.getUpdatedBy().getName());
+
+			if (rule.getEffectiveDate().after(new Date())) { // rule is not in
+				// effect yet
+				addAlertMessage("This rule will not go into effect until: " + rule.getEffectiveDate());
+			} else if (rule.getExpirationDate().before(new Date())) {
+				addAlertMessage("This rule is no longer in effect, it was removed by " + rule.getUpdatedBy().getName());
 				canEditDelete = false;
 			}
 		}
@@ -85,7 +75,8 @@ public class CategoryRuleEditor extends PicsActionSupport {
 					acr.setAuditColumns(permissions);
 					dao.save(acr);
 				}
-				this.redirect("CategoryRuleEditor.action?id=" + rule.getId()); // move out
+				this.redirect("CategoryRuleEditor.action?id=" + rule.getId()); // move
+				// out
 				return BLANK;
 			}
 			if ("create".equals(button)) {
@@ -114,8 +105,8 @@ public class CategoryRuleEditor extends PicsActionSupport {
 					redirect = "CategoryRuleEditor.action?id=" + lGranular.get(lGranular.size() - 1).getId();
 				else {
 					redirect = "CategoryRuleSearch.action";
-					if (((AuditCategoryRule)rule).getAuditCategory() != null)
-						redirect += "filter.category=" + ((AuditCategoryRule)rule).getAuditCategory().getName() + "&";
+					if (((AuditCategoryRule) rule).getAuditCategory() != null)
+						redirect += "filter.category=" + ((AuditCategoryRule) rule).getAuditCategory().getName() + "&";
 					if (rule.getAuditType() != null)
 						redirect += "filter.auditType=" + rule.getAuditType().getAuditName() + "&";
 				}
@@ -136,7 +127,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		// similar = dao.getSimilar(rule, new Date());
 		return SUCCESS;
 	}
-	
+
 	protected void addFields() {
 		// include
 		columns.put("include", null);
@@ -149,7 +140,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			columns.put("auditType", null);
 		}
 		// category
-		if (((AuditCategoryRule)rule).getAuditCategory() == null) {
+		if (((AuditCategoryRule) rule).getAuditCategory() == null) {
 			Map<String, String> m = new HashMap<String, String>();
 			m.put("catID", "rule.auditCategory.id=");
 			columns.put("category", m);
@@ -187,7 +178,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		// answer
 		columns.put("answer", null);
 	}
-	
+
 	public List<BasicDynaBean> getPercentOn(String field) throws SQLException {
 		Database db = new Database();
 		SelectSQL sql = new SelectSQL("audit_category_rule");
@@ -221,7 +212,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		sql.addField("SUM(include)/COUNT(*) percentOn");
 
 		sql.addOrderBy("percentOn DESC");
-		
+
 		if (rule.getAuditCategory() != null)
 			sql.addWhere("catID = " + rule.getAuditCategory().getId());
 
@@ -282,14 +273,6 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	public void setColumns(Map<String, Map<String, String>> columns) {
 		this.columns = columns;
-	}
-
-	public String getActionURL() {
-		return actionURL;
-	}
-
-	public void setActionURL(String actionURL) {
-		this.actionURL = actionURL;
 	}
 
 	public boolean isCanEditDelete() {

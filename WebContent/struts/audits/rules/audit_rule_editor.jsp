@@ -18,7 +18,7 @@ $(function() {
 			var num = 100;
 		else
 			var num = 10;
-		$(this).autocomplete('<s:property value="actionURL"/>Ajax.action', {
+		$(this).autocomplete('<s:if test="categoryRule">Category</s:if><s:else>AuditType</s:else>RuleSearchAjax.action', {
 			extraParams: {fieldName: field, button: 'searchAuto'},
 			max: num,
 			width: 200,
