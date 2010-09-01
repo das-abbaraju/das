@@ -35,7 +35,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 	public List<AuditTypeRule> findByAuditType(AuditType auditType) {
 		Query query = em
-				.createQuery("FROM AuditTypeRule r WHERE r.auditType IS NULL OR r.auditType = :auditType ORDER BY r.priority");
+				.createQuery("FROM AuditTypeRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (r.auditType IS NULL OR r.auditType = :auditType) ORDER BY r.priority");
 		query.setParameter("auditType", auditType);
 		query.setMaxResults(50);
 		return query.getResultList();
@@ -43,7 +43,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 	public List<AuditCategoryRule> findByCategory(AuditCategory category) {
 		Query query = em
-				.createQuery("FROM AuditCategoryRule r WHERE (r.auditType IS NULL OR r.auditType = :auditType) AND (r.auditCategory IS NULL OR r.auditCategory = :category) ORDER BY r.priority");
+				.createQuery("FROM AuditCategoryRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (r.auditType IS NULL OR r.auditType = :auditType) AND (r.auditCategory IS NULL OR r.auditCategory = :category) ORDER BY r.priority");
 		query.setParameter("auditType", category.getAuditType());
 		query.setParameter("category", category);
 		query.setMaxResults(50);
@@ -52,7 +52,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 	public List<AuditTypeRule> findAuditTypeRulesByTags(List<OperatorTag> tags) {
 		Query query = em
-				.createQuery("FROM AuditTypeRule r WHERE r.tag IS NULL OR r.tag IN (:tags) ORDER BY r.priority");
+				.createQuery("FROM AuditTypeRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW())AND (r.tag IS NULL OR r.tag IN (:tags) ) ORDER BY r.priority");
 		query.setParameter("tags", tags);
 		query.setMaxResults(50);
 		return query.getResultList();
@@ -60,7 +60,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 	public List<AuditCategoryRule> findCategoryRulesByTags(List<OperatorTag> tags) {
 		Query query = em
-				.createQuery("FROM AuditCategoryRule r WHERE t.tag IS NULL OR r.tag IN (:tags) ORDER BY r.priority");
+				.createQuery("FROM AuditCategoryRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (t.tag IS NULL OR r.tag IN (:tags) ) ORDER BY r.priority");
 		query.setParameter("tags", tags);
 		query.setMaxResults(50);
 		return query.getResultList();
@@ -68,7 +68,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 	public List<AuditTypeRule> findAuditTypeRulesByOperator(int opID) {
 		Query query = em
-				.createQuery("FROM AuditTypeRule r WHERE r.operatorAccount.id = :operatorID ORDER BY r.priority");
+				.createQuery("FROM AuditTypeRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID) ORDER BY r.priority");
 		query.setParameter("operatorID", opID);
 		query.setMaxResults(50);
 		return query.getResultList();
@@ -76,7 +76,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 	public List<AuditCategoryRule> findAuditCategoryRulesByOperator(int opID) {
 		Query query = em
-				.createQuery("FROM AuditCategoryRule r WHERE r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID ORDER BY r.priority");
+				.createQuery("FROM AuditCategoryRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID) ORDER BY r.priority");
 		query.setParameter("operatorID", opID);
 		query.setMaxResults(50);
 		return query.getResultList();
