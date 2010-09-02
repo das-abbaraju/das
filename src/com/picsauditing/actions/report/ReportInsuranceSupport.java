@@ -96,7 +96,6 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 		getFilter().setShowCreatedDate(true);
 		getFilter().setShowExpiredDate(true);
 		getFilter().setShowPolicyType(true);
-		getFilter().setShowCaoStatus(true);
 		getFilter().setShowCaoStatusChangedDate(true);
 	}
 

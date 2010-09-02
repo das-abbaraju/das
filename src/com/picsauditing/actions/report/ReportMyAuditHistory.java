@@ -1,5 +1,6 @@
 package com.picsauditing.actions.report;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditStatus;
 
 @SuppressWarnings("serial")

@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../actionMessages.jsp" />
@@ -41,37 +42,37 @@
 	<s:if test="filter.showStatus">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_status'); return false;">Status</a> = <span
-			id="form1_status_query">ALL</span><br /><span id="form1_status_select"
-			style="display: none" class="clearLink"><s:select
+			id="form1_status_query">ALL</span><br />
+		<span id="form1_status_select" style="display: none" class="clearLink"><s:select
 			list="filter.statusList" multiple="true" cssClass="forms"
 			name="filter.status" id="form1_status" /><br />
 		<script type="text/javascript">updateQuery('form1_status');</script> <a
 			class="clearLink" href="#"
 			onclick="clearSelected('form1_status'); return false;">Clear</a> </span></div>
 	</s:if>
-	
+
 	<s:if test="filter.showType">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_type'); return false;">Type</a> = <span
-			id="form1_type_query">ALL</span><br /><span id="form1_type_select"
-			style="display: none" class="clearLink"><s:select
+			id="form1_type_query">ALL</span><br />
+		<span id="form1_type_select" style="display: none" class="clearLink"><s:select
 			list="filter.typeList" multiple="true" cssClass="forms"
 			name="filter.type" id="form1_type" /><br />
 		<script type="text/javascript">updateQuery('form1_type');</script> <a
 			class="clearLink" href="#"
 			onclick="clearSelected('form1_type'); return false;">Clear</a> </span></div>
 	</s:if>
-	
+
 	<s:if test="filter.showOpen">
-		<div class="filterOption"><span>Status =</span>
-			<s:select cssClass="forms" list="#{1:'Open',0:'Closed'}" name="filter.open" />
+		<div class="filterOption"><span>Status =</span> <s:select
+			cssClass="forms" list="#{1:'Open',0:'Closed'}" name="filter.open" />
 		</div>
 	</s:if>
 
 	<s:if test="filter.showOfficeIn">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_officeIn'); return false;">Office In State/Province</a> =
-		<span id="form1_officeIn_query">ALL</span><br />
+			onclick="toggleBox('form1_officeIn'); return false;">Office In
+		State/Province</a> = <span id="form1_officeIn_query">ALL</span><br />
 		<span id="form1_officeIn_select" style="display: none"
 			class="clearLink"> <s:select id="form1_officeIn"
 			list="filter.officeInList" cssClass="forms" name="filter.officeIn"
@@ -83,8 +84,8 @@
 
 	<s:if test="filter.showWorksIn">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_worksIn'); return false;">Works In State/Province</a> = <span
-			id="form1_worksIn_query">ALL</span><br />
+			onclick="toggleBox('form1_worksIn'); return false;">Works In
+		State/Province</a> = <span id="form1_worksIn_query">ALL</span><br />
 		<span id="form1_worksIn_select" style="display: none"
 			class="clearLink"> <s:select id="form1_worksIn"
 			list="filter.worksInList" cssClass="forms" name="filter.worksIn"
@@ -96,7 +97,8 @@
 
 	<s:if test="filter.showLicensedIn">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed In State/Province</a> = <span id="form1_stateLicensedIn_query">ALL</span><br />
+			onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed
+		In State/Province</a> = <span id="form1_stateLicensedIn_query">ALL</span><br />
 		<span id="form1_stateLicensedIn_select" style="display: none"
 			class="clearLink"> <s:select id="form1_stateLicensedIn"
 			list="filter.stateLicensesList" cssClass="forms"
@@ -113,10 +115,10 @@
 		<div class="filterOption">
 		<table>
 			<tr>
-				<td rowspan="2" style="vertical-align: top">Address: <s:textfield name="filter.city"
-					cssClass="forms" size="15" onfocus="clearText(this)" /> <s:textfield
-					name="filter.zip" cssClass="forms" size="5"
-					onfocus="clearText(this)" /></td>
+				<td rowspan="2" style="vertical-align: top">Address: <s:textfield
+					name="filter.city" cssClass="forms" size="15"
+					onfocus="clearText(this)" /> <s:textfield name="filter.zip"
+					cssClass="forms" size="5" onfocus="clearText(this)" /></td>
 				<td style="padding-left: 1ex;"><a href="#"
 					onclick="toggleBox('form1_state'); return false;">State</a> = <span
 					id="form1_state_query">ALL</span></td>
@@ -146,31 +148,31 @@
 		</table>
 		</div>
 	</s:if>
-	
+
 	<s:if test="filter.showState">
-		<div class="filterOption">
-			<a href="#" onclick="toggleBox('form1_state'); return false;">State</a> = 
-				<span id="form1_state_query">ALL</span><br />
-			<span id="form1_state_select" style="display: none" class="clearLink">
-				<s:select id="form1_state" name="filter.state" list="filter.stateList"
-					listKey="isoCode" listValue="name" cssClass="forms" multiple="true" size="15" /><br />
-				<script type="text/javascript">updateQuery('form1_state');</script>
-				<a class="clearLink" href="#" onclick="clearSelected('form1_state'); return false;">Clear</a>
-			</span>
-		</div>
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_state'); return false;">State</a> = <span
+			id="form1_state_query">ALL</span><br />
+		<span id="form1_state_select" style="display: none" class="clearLink">
+		<s:select id="form1_state" name="filter.state" list="filter.stateList"
+			listKey="isoCode" listValue="name" cssClass="forms" multiple="true"
+			size="15" /><br />
+		<script type="text/javascript">updateQuery('form1_state');</script> <a
+			class="clearLink" href="#"
+			onclick="clearSelected('form1_state'); return false;">Clear</a> </span></div>
 	</s:if>
-	
+
 	<s:if test="filter.showCountry">
-		<div class="filterOption">
-			<a href="#" onclick="toggleBox('form1_country'); return false;">Country</a> =
-				<span id="form1_country_query">ALL</span><br />
-			<span id="form1_country_select" style="display: none" class="clearLink">
-				<s:select id="form1_country" name="filter.country" list="filter.countryList"
-					listKey="isoCode" listValue="name" cssClass="forms" multiple="true"	size="15" /><br />
-				<script type="text/javascript">updateQuery('form1_country');</script>
-				<a class="clearLink" href="#" onclick="clearSelected('form1_country'); return false;">Clear</a>
-			</span>
-		</div>
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_country'); return false;">Country</a> = <span
+			id="form1_country_query">ALL</span><br />
+		<span id="form1_country_select" style="display: none"
+			class="clearLink"> <s:select id="form1_country"
+			name="filter.country" list="filter.countryList" listKey="isoCode"
+			listValue="name" cssClass="forms" multiple="true" size="15" /><br />
+		<script type="text/javascript">updateQuery('form1_country');</script>
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_country'); return false;">Clear</a> </span></div>
 	</s:if>
 
 	<s:if test="filter.showTaxID">
@@ -178,7 +180,7 @@
 			cssClass="forms" size="9" onfocus="clearText(this)"
 			title="must be 9 digits" /></div>
 	</s:if>
-	
+
 	<s:if test="filter.showIndustry">
 		<br clear="all" />
 		<div class="filterOption"><a href="#"
@@ -199,11 +201,12 @@
 			onclick="toggleBox('form1_trade'); return false;">Trade</a> = <span
 			id="form1_trade_query">ALL</span> <s:select
 			list="filter.tradePerformedByList" cssClass="forms"
-			name="filter.performedBy" value="filter.defaultSelectPerformedBy" /> <br />
+			name="filter.performedBy" value="filter.defaultSelectPerformedBy" />
+		<br />
 		<span id="form1_trade_select" style="display: none" class="clearLink">
 		<s:select id="form1_trade" list="filter.tradeList" listKey="id"
-			listValue="name" cssClass="forms" name="filter.trade"
-			multiple="true" size="10" /> <script type="text/javascript">updateQuery('form1_trade');</script>
+			listValue="name" cssClass="forms" name="filter.trade" multiple="true"
+			size="10" /> <script type="text/javascript">updateQuery('form1_trade');</script>
 		<br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_trade'); return false;">Clear</a> </span></div>
@@ -243,7 +246,7 @@
 			headerKey="" headerValue="- Waiting On -" cssClass="forms"
 			name="filter.waitingOn" /></div>
 	</s:if>
-	
+
 	<s:if test="filter.showRiskLevel">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_risklevel'); return false;">Risk Level</a>
@@ -341,8 +344,8 @@
 
 	<s:if test="filter.showAuditor">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_auditorId'); return false;">Safety Professionals</a> =
-		<span id="form1_auditorId_query">ALL</span><br />
+			onclick="toggleBox('form1_auditorId'); return false;">Safety
+		Professionals</a> = <span id="form1_auditorId_query">ALL</span><br />
 		<span id="form1_auditorId_select" style="display: none"
 			class="clearLink"> <s:select name="filter.auditorId"
 			cssClass="forms" list="auditorList" listKey="id" listValue="name"
@@ -384,8 +387,8 @@
 		<br clear="all" />
 		<div class="filterOption"><s:if test="filter.showOperatorSingle">
 			<s:select list="filter.operatorList" cssClass="forms"
-				name="filter.operatorSingle" listKey="id" listValue="name" headerKey="0"
-				headerValue="- Operator -" />
+				name="filter.operatorSingle" listKey="id" listValue="name"
+				headerKey="0" headerValue="- Operator -" />
 		</s:if> <s:else>
 			<a href="#" onclick="toggleBox('form1_operator'); return false;">Operators</a> =
 		<span id="form1_operator_query">ALL</span>
@@ -393,8 +396,10 @@
 			<span id="form1_operator_select" style="display: none"
 				class="clearLink"> <s:select id="form1_operator"
 				list="filter.operatorList" cssClass="forms" name="filter.operator"
-				listKey="id" listValue="name" multiple="true" size="%{filter.operatorList.size() < 25? filter.operatorList.size() : 25}" /> <script
-				type="text/javascript">updateQuery('form1_operator');</script> <br />
+				listKey="id" listValue="name" multiple="true"
+				size="%{filter.operatorList.size() < 25? filter.operatorList.size() : 25}" />
+			<script type="text/javascript">updateQuery('form1_operator');</script>
+			<br />
 			<a class="clearLink" href="#"
 				onclick="clearSelected('form1_operator'); return false;">Clear</a> </span>
 		</s:else></div>
@@ -536,7 +541,7 @@
 			cssClass="forms" name="filter.shaType" headerKey=""
 			headerValue="- Osha Type -" /></div>
 	</s:if>
-	
+
 	<s:if test="filter.showShaTypeFlagCriteria">
 		<br clear="all" />
 		<div class="filterOption"><s:select list="filter.oshaTypesList"
@@ -571,7 +576,7 @@
 		<a class="clearLink" href="#"
 			onclick="clearTextField('form1_emr'); return false;">Clear</a></span></div>
 	</s:if>
-	
+
 	<s:if test="filter.showTrirRange">
 		<br clear="all" />
 		<div class="filterOption"><a href="#"
@@ -587,17 +592,19 @@
 	</s:if>
 
 	<s:if test="filter.showIncidenceRate">
-		<div class="filterOption">Incidence Rate
-			<s:textfield name="filter.incidenceRate" cssClass="forms" size="10" onfocus="clearText(this)" /> To
-			<s:textfield name="filter.incidenceRateMax" cssClass="forms" size="10" onfocus="clearText(this)" />
-		</div>
+		<div class="filterOption">Incidence Rate <s:textfield
+			name="filter.incidenceRate" cssClass="forms" size="10"
+			onfocus="clearText(this)" /> To <s:textfield
+			name="filter.incidenceRateMax" cssClass="forms" size="10"
+			onfocus="clearText(this)" /></div>
 	</s:if>
-	
+
 	<s:if test="filter.showIncidenceRateAvg">
-		<div class="filterOption">3 Year Average
-			<s:textfield name="filter.incidenceRateAvg" cssClass="forms" size="10" onfocus="clearText(this)" /> To
-			<s:textfield name="filter.incidenceRateAvgMax" cssClass="forms" size="10" onfocus="clearText(this)" />
-		</div>
+		<div class="filterOption">3 Year Average <s:textfield
+			name="filter.incidenceRateAvg" cssClass="forms" size="10"
+			onfocus="clearText(this)" /> To <s:textfield
+			name="filter.incidenceRateAvgMax" cssClass="forms" size="10"
+			onfocus="clearText(this)" /></div>
 	</s:if>
 
 	<s:if test="filter.showCohsStats">
@@ -605,19 +612,6 @@
 			cssClass="forms" size="10" onfocus="clearText(this)" /> Neer <s:textfield
 			name="filter.neer" cssClass="forms" size="10"
 			onfocus="clearText(this)" /></div>
-	</s:if>
-
-	<s:if test="filter.showCaoStatus">
-		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_caoStatus'); return false;">Policy
-		Status </a> = <span id="form1_caoStatus_query">ALL</span><br />
-		<span id="form1_caoStatus_select" style="display: none"
-			class="clearLink"> <s:select id="form1_caoStatus"
-			list="filter.caoStatusList" cssClass="forms" name="filter.caoStatus"
-			multiple="true" size="5" /> <script type="text/javascript">updateQuery('form1_caoStatus');</script>
-		<br />
-		<a class="clearLink" href="#"
-			onclick="clearSelected('form1_caoStatus'); return false;">Clear</a> </span></div>
 	</s:if>
 
 	<s:if test="filter.showAMBest">
@@ -671,24 +665,22 @@
 	</s:if>
 
 	<s:if test="filter.showFollowUpDate">
-		<div class="filterOption">
-			<a href="#"	onclick="showTextBox('form1_followUpDate'); return false;">Follow Up Date</a>
-			<span id="form1_followUpDate_query">= ALL</span><br />
-			<span id="form1_followUpDate" style="display: none"
-				class="clearLink">Before: <s:textfield
-				cssClass="forms datepicker" size="10" id="form1_followUpDate2"
-				name="filter.followUpDate" /> <script type="text/javascript">textQuery('form1_followUpDate');</script>
-			<br />
-			<a class="clearLink" href="#"
-				onclick="clearTextField('form1_followUpDate'); return false;">Clear</a></span>
+		<div class="filterOption"><a href="#"
+			onclick="showTextBox('form1_followUpDate'); return false;">Follow
+		Up Date</a> <span id="form1_followUpDate_query">= ALL</span><br />
+		<span id="form1_followUpDate" style="display: none" class="clearLink">Before:
+		<s:textfield cssClass="forms datepicker" size="10"
+			id="form1_followUpDate2" name="filter.followUpDate" /> <script
+			type="text/javascript">textQuery('form1_followUpDate');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearTextField('form1_followUpDate'); return false;">Clear</a></span>
 		</div>
 	</s:if>
 
 	<s:if test="filter.showViewAll">
 		<br clear="all" />
-		<div class="filterOption">
-			<label><s:checkbox name="filter.viewAll" /> Show All Registration Requests</label>
-		</div>
+		<div class="filterOption"><label><s:checkbox
+			name="filter.viewAll" /> Show All Registration Requests</label></div>
 	</s:if>
 
 	<s:if test="filter.showInvoiceDueDate">
@@ -706,18 +698,19 @@
 			onclick="clearTextField('form1_invoiceDueDate'); return false;">Clear</a></span>
 		</div>
 	</s:if>
-	
+
 	<s:if test="filter.showCaoStatusChangedDate">
 		<br clear="all">
 		<div class="filterOption"><a href="#"
-			onclick="showTextBox('form1_statusChangedDate'); return false;">Status Changed Date
-			</a> <span id="form1_statusChangedDate_query">= ALL</span><br />
+			onclick="showTextBox('form1_statusChangedDate'); return false;">Status
+		Changed Date </a> <span id="form1_statusChangedDate_query">= ALL</span><br />
 		<span id="form1_statusChangedDate" style="display: none"
 			class="clearLink"><s:textfield cssClass="forms datepicker"
-			size="10" id="form1_statusChangedDate1" name="filter.statusChangedDate1" />
-		To:<s:textfield cssClass="forms datepicker" size="10"
-			id="form1_statusChangedDate2" name="filter.statusChangedDate2" /> <script
-			type="text/javascript">textQuery('form1_statusChangedDate');</script> <br />
+			size="10" id="form1_statusChangedDate1"
+			name="filter.statusChangedDate1" /> To:<s:textfield
+			cssClass="forms datepicker" size="10" id="form1_statusChangedDate2"
+			name="filter.statusChangedDate2" /> <script type="text/javascript">textQuery('form1_statusChangedDate');</script>
+		<br />
 		<a class="clearLink" href="#"
 			onclick="clearTextField('form1_statusChangedDate'); return false;">Clear</a></span>
 		</div>
@@ -728,111 +721,88 @@
 			list="filter.deactivationReasons" name="contractor.reason"
 			headerKey=" " headerValue="- Deactivation Reason -" cssClass="forms"
 			name="filter.deactivationReason" /></div>
-	</s:if>	
-	
-	<s:if test="filter.showInsuranceLimits">
-		<div class="filterOption">
-			<a href="#"	onclick="showInsuranceTextBoxes('form1_insuranceLimits'); return false;">Insurance Limits</a>
-			<span id="form1_insuranceLimits_query">= ALL</span><br />
-			<div
-				id="form1_insuranceLimits"
-				style="display: none"
-				class="clearLink">
-			<table>
-				<tr>
-					<td class="clearLink" title="General Liability - Each Occurence">GL Each Occurrence:</td>
-					<td>$<s:textfield 
-							id="form1_insuranceLimits1"
-							cssClass="forms"
-							title="Please enter a Number such as 5,000,000" 
-							name="filter.glEachOccurrence" 
-							onfocus="clearInsuranceText(this);"
-							onblur="resetEmptyField(this);"
-							onkeyup="isNumber(this,1);"
-							size="15" />
-						<span id="error1" class="redMain"></span>
-					</td>
-				</tr>
-				<tr>
-					<td class="clearLink" title="General Liability - General Aggregate">GL General Aggregate:</td>
-					<td>$<s:textfield
-							id="form1_insuranceLimits2"
-							cssClass="forms"
-							title="Please enter a Number such as 5,000,000" 
-							name="filter.glGeneralAggregate" 
-							onfocus="clearInsuranceText(this);" 
-							onblur="resetEmptyField(this);"
-							onkeyup="isNumber(this,2);"
-							size="15" />
-						<span id="error2" class="redMain"></span>
-					</td>
-				</tr>
-				<tr>
-					<td class="clearLink" title="Automobile Liability - Combined Single">AL Combined Single:</td>
-					<td>$<s:textfield
-							id="form1_insuranceLimits3"
-							cssClass="forms"
-							title="Please enter a Number such as 5,000,000" 
-							name="filter.alCombinedSingle" 
-							onfocus="clearInsuranceText(this);" 
-							onblur="resetEmptyField(this);"
-							onkeyup="isNumber(this,3);"
-							size="15" />
-						<span id="error3" class="redMain"></span>
-					</td>
-				</tr>
-				<tr>
-					<td class="clearLink" title="Workers Compensation - Each Accident">WC Each Accident:</td>
-					<td>$<s:textfield
-							id="form1_insuranceLimits4"
-							cssClass="forms"
-							title="Please enter a Number such as 5,000,000" 
-							name="filter.wcEachAccident" 
-							onfocus="clearInsuranceText(this);" 
-							onblur="resetEmptyField(this);"
-							onkeyup="isNumber(this,4);"
-							size="15" />
-						<span id="error4" class="redMain"></span>
-					</td>	
-				</tr>
-				<tr>
-					<td class="clearLink" title="Excess Liability - Each Occurence">EX Each Occurrence:</td>
-					<td>$<s:textfield 
-							id="form1_insuranceLimits5"
-							cssClass="forms"
-							title="Please enter a Number such as 5,000,000" 
-							name="filter.exEachOccurrence" 
-							onfocus="clearInsuranceText(this);" 
-							onblur="resetEmptyField(this);"
-							onkeyup="isNumber(this,5);"
-							size="15" />
-						<span id="error5" class="redMain"></span>
-					</td>
-				</tr>
-			</table>
-			<script type="text/javascript">insuranceLimitsTextQuery('form1_insuranceLimits');</script>
-			<a class="clearLink" href="#"
-				onclick="clearInsuranceTextFields('form1_insuranceLimits'); return false;">Clear</a>
-			</div>
-		</div>	
 	</s:if>
-	
+
+	<s:if test="filter.showInsuranceLimits">
+		<div class="filterOption"><a href="#"
+			onclick="showInsuranceTextBoxes('form1_insuranceLimits'); return false;">Insurance
+		Limits</a> <span id="form1_insuranceLimits_query">= ALL</span><br />
+		<div id="form1_insuranceLimits" style="display: none"
+			class="clearLink">
+		<table>
+			<tr>
+				<td class="clearLink" title="General Liability - Each Occurence">GL
+				Each Occurrence:</td>
+				<td>$<s:textfield id="form1_insuranceLimits1" cssClass="forms"
+					title="Please enter a Number such as 5,000,000"
+					name="filter.glEachOccurrence" onfocus="clearInsuranceText(this);"
+					onblur="resetEmptyField(this);" onkeyup="isNumber(this,1);"
+					size="15" /> <span id="error1" class="redMain"></span></td>
+			</tr>
+			<tr>
+				<td class="clearLink" title="General Liability - General Aggregate">GL
+				General Aggregate:</td>
+				<td>$<s:textfield id="form1_insuranceLimits2" cssClass="forms"
+					title="Please enter a Number such as 5,000,000"
+					name="filter.glGeneralAggregate"
+					onfocus="clearInsuranceText(this);" onblur="resetEmptyField(this);"
+					onkeyup="isNumber(this,2);" size="15" /> <span id="error2"
+					class="redMain"></span></td>
+			</tr>
+			<tr>
+				<td class="clearLink" title="Automobile Liability - Combined Single">AL
+				Combined Single:</td>
+				<td>$<s:textfield id="form1_insuranceLimits3" cssClass="forms"
+					title="Please enter a Number such as 5,000,000"
+					name="filter.alCombinedSingle" onfocus="clearInsuranceText(this);"
+					onblur="resetEmptyField(this);" onkeyup="isNumber(this,3);"
+					size="15" /> <span id="error3" class="redMain"></span></td>
+			</tr>
+			<tr>
+				<td class="clearLink" title="Workers Compensation - Each Accident">WC
+				Each Accident:</td>
+				<td>$<s:textfield id="form1_insuranceLimits4" cssClass="forms"
+					title="Please enter a Number such as 5,000,000"
+					name="filter.wcEachAccident" onfocus="clearInsuranceText(this);"
+					onblur="resetEmptyField(this);" onkeyup="isNumber(this,4);"
+					size="15" /> <span id="error4" class="redMain"></span></td>
+			</tr>
+			<tr>
+				<td class="clearLink" title="Excess Liability - Each Occurence">EX
+				Each Occurrence:</td>
+				<td>$<s:textfield id="form1_insuranceLimits5" cssClass="forms"
+					title="Please enter a Number such as 5,000,000"
+					name="filter.exEachOccurrence" onfocus="clearInsuranceText(this);"
+					onblur="resetEmptyField(this);" onkeyup="isNumber(this,5);"
+					size="15" /> <span id="error5" class="redMain"></span></td>
+			</tr>
+		</table>
+		<script type="text/javascript">insuranceLimitsTextQuery('form1_insuranceLimits');</script>
+		<a class="clearLink" href="#"
+			onclick="clearInsuranceTextFields('form1_insuranceLimits'); return false;">Clear</a>
+		</div>
+		</div>
+	</s:if>
+
 	<s:if test="filter.showQuestionAnswer">
 		<br clear="all">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_questionId'); return false;">Questions</a> =
-		<span id="form1_questionId_query">ALL</span><br />
+			onclick="toggleBox('form1_questionId'); return false;">Questions</a>
+		= <span id="form1_questionId_query">ALL</span><br />
 		<span id="form1_questionId_select" style="display: none"
 			class="clearLink"> <s:select name="filter.questionIds"
-			cssClass="forms" list="filter.questionsByAuditList" listKey="id" listValue="questionTexts.get(0).question"
-			multiple="true" size="23" id="form1_questionId" /> <script
-			type="text/javascript">updateQuery('form1_questionId');</script> <br />
+			cssClass="forms" list="filter.questionsByAuditList" listKey="id"
+			listValue="questionTexts.get(0).question" multiple="true" size="23"
+			id="form1_questionId" /> <script type="text/javascript">updateQuery('form1_questionId');</script>
+		<br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_questionId'); return false;">Clear</a></span>
-		</div><br clear="all">
-		<div class="filterOption">Answer: <s:textfield name="filter.answer"/></div>		
-	</s:if>	
-	
+		</div>
+		<br clear="all">
+		<div class="filterOption">Answer: <s:textfield
+			name="filter.answer" /></div>
+	</s:if>
+
 	<s:if test="filter.showConWithPendingAudits">
 		<br clear="all" />
 		<div class="filterOption"><label><s:checkbox
@@ -850,7 +820,7 @@
 		<div class="filterOption"><label><s:checkbox
 			name="filter.tradeInformation" /> Show Trade Info</label></div>
 	</s:if>
-	
+
 	<s:if test="filter.showOQ">
 		<div class="filterOption"><label><s:checkbox
 			name="filter.oq" /> Show OQ contractors</label></div>

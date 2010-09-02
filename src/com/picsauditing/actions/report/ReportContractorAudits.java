@@ -165,12 +165,6 @@ public class ReportContractorAudits extends ReportAccount {
 			setFiltered(true);
 		}
 
-		String caoStatusList = Strings.implodeForDB(f.getCaoStatus(), ",");
-		if (filterOn(caoStatusList)) {
-			sql.addWhere("cao.status IN (" + caoStatusList + ")");
-			setFiltered(true);
-		}
-
 		if (filterOn(f.getRecommendedFlag()))
 			report.addFilter(new SelectFilter("recommendedFlag", "cao.flag = '?'", f.getRecommendedFlag()));
 
