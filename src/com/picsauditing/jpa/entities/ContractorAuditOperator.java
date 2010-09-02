@@ -26,11 +26,7 @@ public class ContractorAuditOperator extends BaseTable {
 	private ContractorAudit audit;
 	private OperatorAccount operator;
 	private AuditStatus status = AuditStatus.Pending;
-	private User statusChangedBy = null;
-	private Date submittedDate;
-	private Date completedDate;
-	private Date approvedDate;
-	private Date incompleteDate;
+	private Date statusChangedDate;
 	private int percentComplete;
 	private int percentVerified;
 	private boolean visible = true;
@@ -85,56 +81,17 @@ public class ContractorAuditOperator extends BaseTable {
 	public void changeStatus(AuditStatus auditStatus, User user) {
 		// If we're changing the status to Submitted or Active, then we need
 		// to set the dates
-		Date today = new Date();
-		if (auditStatus.isIncomplete()) {
-			incompleteDate = today;
-		}
-		if (auditStatus.isSubmittedResubmitted()) {
-			submittedDate = today;
-		}
-		if (auditStatus.isComplete()) {
-			completedDate = today;
-		}
-		if (auditStatus.isApproved()) {
-			approvedDate = today;
-		}
-
+		statusChangedDate = new Date();
 		setAuditColumns(user);
-		setStatusChangedBy(user);
 		setStatus(auditStatus);
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "statusChangedBy")
-	public User getStatusChangedBy() {
-		return statusChangedBy;
-	}
-
-	public void setStatusChangedBy(User statusChangedBy) {
-		this.statusChangedBy = statusChangedBy;
 	}
 
 	@Transient
 	public Date getEffectiveDate() {
-		if (audit.getAuditType().getClassType() == AuditTypeClass.Policy)
-			return creationDate;
-
-		if (status.isApproved())
-			return approvedDate;
-
-		if (status.isComplete())
-			return completedDate;
-
-		if (status.isSubmittedResubmitted())
-			return submittedDate;
-
-		if (status.isIncomplete())
-			return incompleteDate;
-
 		if (status.isPending() && audit.getAuditor() != null)
 			return audit.getAssignedDate();
 
-		return creationDate;
+		return statusChangedDate;
 	}
 	
 
@@ -291,36 +248,13 @@ public class ContractorAuditOperator extends BaseTable {
 		this.reason = reason;
 	}
 
-	public Date getSubmittedDate() {
-		return submittedDate;
+
+	public Date getStatusChangedDate() {
+		return statusChangedDate;
 	}
 
-	public void setSubmittedDate(Date submittedDate) {
-		this.submittedDate = submittedDate;
-	}
-
-	public Date getCompletedDate() {
-		return completedDate;
-	}
-
-	public void setCompletedDate(Date completedDate) {
-		this.completedDate = completedDate;
-	}
-
-	public Date getApprovedDate() {
-		return approvedDate;
-	}
-
-	public void setApprovedDate(Date approvedDate) {
-		this.approvedDate = approvedDate;
-	}
-
-	public Date getIncompleteDate() {
-		return incompleteDate;
-	}
-
-	public void setIncompleteDate(Date incompleteDate) {
-		this.incompleteDate = incompleteDate;
+	public void setStatusChangedDate(Date statusChangedDate) {
+		this.statusChangedDate = statusChangedDate;
 	}
 
 	public int getPercentComplete() {
