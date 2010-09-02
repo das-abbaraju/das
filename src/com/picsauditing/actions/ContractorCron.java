@@ -436,17 +436,21 @@ public class ContractorCron extends PicsActionSupport {
 		}
 	}
 
+	/**
+	 * Calculate and save the recommended flag color for policies
+	 * @param contractor
+	 */
 	private void runPolicies(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.Policies))
 			return;
 
 		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 			for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
-				if (audit.getAuditType().getClassType().isPolicy() && !audit.getAuditStatus().isExpired()) {
+				if (audit.getAuditType().getClassType().isPolicy() && !audit.isExpired()) {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.isVisible()) {
 							if (cao.getOperator().equals(co.getOperatorAccount().getInheritInsurance())
-									&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
+									&& (cao.getStatus().isSubmitted() || cao.getStatus().isComplete())) {
 								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co
 										.getFlagDatas());
 

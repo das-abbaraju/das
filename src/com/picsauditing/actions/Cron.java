@@ -1,8 +1,5 @@
 package com.picsauditing.actions;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
@@ -15,9 +12,6 @@ import java.util.TreeMap;
 
 import javax.persistence.NoResultException;
 
-import org.apache.commons.net.ftp.FTPClient;
-
-import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
@@ -33,8 +27,6 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -46,6 +38,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.EbixLoader;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -61,6 +54,7 @@ public class Cron extends PicsActionSupport {
 	protected ContractorAccountDAO contractorAccountDAO = null;
 	protected NoteDAO noteDAO = null;
 	protected AuditPercentCalculator auditPercentCalculator;
+	private EbixLoader ebixLoader;
 
 	protected long startTime = 0L;
 	StringBuffer report = null;
@@ -69,7 +63,7 @@ public class Cron extends PicsActionSupport {
 
 	public Cron(OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilderController ab,
 			ContractorAuditDAO contractorAuditDAO, ContractorAccountDAO contractorAccountDAO,
-			AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO) {
+			AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO, EbixLoader ebixLoader) {
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
 		this.auditBuilder = ab;
@@ -77,6 +71,7 @@ public class Cron extends PicsActionSupport {
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.noteDAO = noteDAO;
+		this.ebixLoader = ebixLoader;
 	}
 
 	public String execute() throws Exception {
@@ -122,54 +117,8 @@ public class Cron extends PicsActionSupport {
 			}
 
 			try {
-				startTask("\nExpiring Audits...");
-				// TODO do mass update statements rather than query for loop
-				// update
-				/*
-				 * update contractor_audit set auditStatus = 'Expired' where
-				 * auditStatus IN ('Submitted','Exempt','Active') and
-				 * auditTypeID = 11 and expiresDate < NOW();
-				 * 
-				 * 
-				 * update contractor_audit set auditStatus = 'Pending',
-				 * closedDate = null, completedDate = null, expiresDate = null
-				 * where auditStatus IN ('Submitted','Exempt','Active') and
-				 * auditTypeID = 1 and expiresDate < NOW();
-				 */
-				String where = "expiresDate < NOW() AND auditStatus != 'Expired'";
-				List<ContractorAudit> conList = contractorAuditDAO.findWhere(250, where, "expiresDate");
-				for (ContractorAudit cAudit : conList) {
-					if (cAudit.getAuditType().isRenewable())
-						cAudit.changeStatus(AuditStatus.Pending, system);
-					else
-						cAudit.setAuditStatus(AuditStatus.Expired);
-					contractorAuditDAO.save(cAudit);
-				}
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
-			try {
-				// TODO - we should seriously consider removing this all
-				// together and just Activating 100% verified PQFs on submission
-				// This is needed because CSRs can verify a safety manual before
-				// the PQF is submitted and when the contractor
-				// finally submits the policy there's nothing to tell the CSR to
-				// activate it
-				startTask("\nActivating Pqf which are complete and verified...");
-				String where = "auditStatus = 'Submitted' AND auditTypeID IN (1) AND percentComplete = 100 AND percentVerified = 100";
-				List<ContractorAudit> conList = contractorAuditDAO.findWhere(10, where, "creationDate");
-				for (ContractorAudit cAudit : conList) {
-					cAudit.changeStatus(AuditStatus.Active, system);
-					contractorAuditDAO.save(cAudit);
-					stampNote(cAudit.getContractorAccount(), "Activated the " + cAudit.getAuditType().getAuditName(),
-							NoteCategory.Audits);
-				}
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
-			try {
+				// TODO we shouldn't recacluate audits, but only categories.
+				// This shouldn't be needed at all anymore
 				startTask("\nRecalculating all the categories for Audits...");
 				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
 				for (ContractorAudit cAudit : conList) {
@@ -223,15 +172,14 @@ public class Cron extends PicsActionSupport {
 		} catch (Throwable t) {
 			handleException(t);
 		}
-		
+
 		try {
 			startTask("\nDeleting Expired Individual Data Overrides...");
-			int count = contractorAuditDAO.deleteData(FlagDataOverride.class, "forceEnd < NOW()");
+			contractorAuditDAO.deleteData(FlagDataOverride.class, "forceEnd < NOW()");
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
 		}
-
 
 		report.append("\n\n\nCompleted Cron Job at: ");
 		report.append(new Date().toString());
@@ -321,121 +269,8 @@ public class Cron extends PicsActionSupport {
 	}
 
 	public void processEbixData() throws Exception {
-
 		PicsLogger.start("cron_ebix");
-
-		String server = appPropDao.find("huntsmansync.ftp.server").getValue();
-		String username = appPropDao.find("huntsmansync.ftp.user").getValue();
-		String password = appPropDao.find("huntsmansync.ftp.password").getValue();
-		String folder = appPropDao.find("huntsmansync.ftp.folder").getValue();
-
-		PicsLogger.log("Server: " + server);
-		PicsLogger.log("username: " + username);
-		PicsLogger.log("folder: " + folder);
-
-		// there may be other files in that folder. we can use this to filter
-		// down to the ones we want.
-		// String pattern =
-		// appPropDao.find("huntsmansync.ftp.filePattern").getValue();
-
-		FTPClient ftp = new FTPClient();
-
-		PicsLogger.log("logging in to server...");
-
-		ftp.connect(server);
-		ftp.enterLocalPassiveMode();
-
-		ftp.login(username, password);
-
-		ftp.changeWorkingDirectory(folder);
-
-		String[] names = ftp.listNames();
-
-		if (names != null) {
-
-			for (String fileName : names) {
-
-				PicsLogger.log("Processing file: " + fileName);
-
-				BufferedReader reader = null;
-
-				InputStream retrieveFileStream = ftp.retrieveFileStream(fileName);
-
-				if (retrieveFileStream != null) {
-
-					reader = new BufferedReader(new InputStreamReader(retrieveFileStream));
-
-					String line = null;
-
-					while ((line = reader.readLine()) != null) {
-
-						if (line.length() > 0) {
-
-							String[] data = line.split(",");
-							PicsLogger.log("Processing data: " + data[0] + "/" + data[1]);
-
-							int contractorId = 0;
-							try {
-								contractorId = Integer.parseInt(data[0]);
-							} catch (Exception ignoreStrings) {
-								// Sometimes we get ids that are strings like
-								// HC00000629
-							}
-
-							if (data.length == 2 && contractorId > 0) {
-
-								// the other field. comes in as a Y/N.
-								AuditStatus status = AuditStatus.Pending;
-								if (data[1].equals("Y"))
-									status = AuditStatus.Active;
-
-								try {
-
-									ContractorAccount conAccount = contractorAccountDAO.find(contractorId);
-									List<ContractorAudit> audits = contractorAuditDAO.findWhere(900, "auditType.id = "
-											+ AuditType.HUNTSMAN_EBIX + " and contractorAccount.id = "
-											+ conAccount.getId(), "");
-
-									if (audits == null || audits.size() == 0) {
-										PicsLogger.log("WARNING: Ebix record found for contractor "
-												+ conAccount.getId() + " but no Ebix Compliance audit was found");
-										continue;
-									}
-
-									for (ContractorAudit audit : audits) {
-										if (status != audit.getAuditStatus()) {
-											PicsLogger.log("Setting Ebix audit " + audit.getId() + " for contractor "
-													+ conAccount.getId() + " to " + status.name());
-											audit.setAuditStatus(status);
-											contractorAuditDAO.save(audit);
-
-											conAccount.incrementRecalculation();
-											contractorAccountDAO.save(conAccount);
-										} else {
-											PicsLogger.log("No change for Ebix audit " + audit.getId()
-													+ " for contractor " + conAccount.getId() + ", " + status.name());
-										}
-									}
-
-								} catch (Exception e) {
-									PicsLogger.log("ERROR: Error Processing Ebix for contractor " + data[0]);
-									e.printStackTrace();
-								}
-
-							} else {
-								PicsLogger.log("Bad Data Found : " + data);
-							}
-						}
-					}
-				} else {
-					PicsLogger.log("unable to open connection: " + ftp.getReplyCode() + ":" + ftp.getReplyString());
-				}
-			}
-		}
-
-		ftp.logout();
-		ftp.disconnect();
-
+		ebixLoader.load();
 		PicsLogger.stop();
 	}
 
@@ -513,7 +348,7 @@ public class Cron extends PicsActionSupport {
 			email.setPriority(30);
 			email.setViewableById(Account.EVERYONE);
 			emailQueueDAO.save(email);
-			
+
 			stampNote(cAccount, "No Action Email Notification sent to " + cAccount.getPrimaryContact().getEmail(),
 					NoteCategory.General);
 		}
