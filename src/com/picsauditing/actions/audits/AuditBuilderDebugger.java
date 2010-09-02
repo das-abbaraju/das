@@ -37,7 +37,7 @@ public class AuditBuilderDebugger extends ContractorActionSupport {
 	public Map<ContractorAudit, AuditCategoriesDetail> getAuditCategoriesDetail() {
 		Map<ContractorAudit, AuditCategoriesDetail> list = new HashMap<ContractorAudit, AuditCategoriesDetail>();
 		for (ContractorAudit conAudit : contractor.getAudits()) {
-			if (!conAudit.getAuditStatus().isExpired()) {
+			if (!conAudit.isExpired()) {
 				list.put(conAudit, builder.getAuditCategoryDetail(conAudit));
 			}
 		}

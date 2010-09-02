@@ -25,6 +25,10 @@ public enum AuditStatus {
 		return this.ordinal() < o.ordinal();
 	}
 
+	public boolean after(AuditStatus o) {
+		return this.ordinal() > o.ordinal();
+	}
+
 	public boolean isApproved() {
 		return this.equals(Approved);
 	}

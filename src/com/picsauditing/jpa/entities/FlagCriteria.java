@@ -30,6 +30,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 	private String description;
 	private String comparison;
 	private MultiYearScope multiYearScope = null;
+	// TODO change this to AuditStatus requiredStatus
 	protected boolean validationRequired;
 	private String defaultValue;
 	private boolean allowCustomValue = false;

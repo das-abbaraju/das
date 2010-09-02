@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -31,6 +31,7 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 public class FlagDataCalculator {
+
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
 	private Map<FlagCriteria, List<FlagCriteriaOperator>> operatorCriteria = null;
 	private Map<FlagCriteria, List<FlagDataOverride>> overrides = null;
@@ -107,7 +108,7 @@ public class FlagDataCalculator {
 
 		String answer = conCriteria.getAnswer();
 		if (criteria.getAuditType() != null) {
-			if(conCriteria.getContractor().getRiskLevel() == null)
+			if (conCriteria.getContractor().getRiskLevel() == null)
 				return null;
 			if (opCriteria.getMinRiskLevel().equals(LowMedHigh.None)) {
 				return null;
@@ -133,13 +134,13 @@ public class FlagDataCalculator {
 				// Audit is missing, but do we require it?
 				return true;
 			}
-			
+
 			// Policies are much harder because we have to look at CAOs
 			if (conCriteria.getContractor().getAudits() == null)
 				return null;
 			for (ContractorAudit conAudit : conCriteria.getContractor().getAudits()) {
 				if (conAudit.getAuditType().equals(criteria.getAuditType())) {
-					if (!conAudit.getAuditStatus().isExpired()) {
+					if (!conAudit.isExpired()) {
 						for (ContractorAuditOperator cao : conAudit.getOperators()) {
 							if (cao.getOperator().equals(opCriteria.getOperator())) {
 								// We've found the applicable cao
@@ -169,13 +170,11 @@ public class FlagDataCalculator {
 				if (dataType.equals("number")) {
 					float answer2 = Float.parseFloat(answer.replace(",", ""));
 					float hurdle2 = Float.parseFloat(hurdle.replace(",", ""));
-					if(criteria.getOshaRateType() != null && 
-							criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
-						return answer2 > (conCriteria.getContractor().getNaics().getLwcr()* hurdle2)/100;
+					if (criteria.getOshaRateType() != null && criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
+						return answer2 > (conCriteria.getContractor().getNaics().getLwcr() * hurdle2) / 100;
 					}
-					if(criteria.getOshaRateType() != null && 
-							criteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
-						return answer2 > (conCriteria.getContractor().getNaics().getTrir()* hurdle2)/100;
+					if (criteria.getOshaRateType() != null && criteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
+						return answer2 > (conCriteria.getContractor().getNaics().getTrir() * hurdle2) / 100;
 					}
 					if (comparison.equals("="))
 						return answer2 == hurdle2;
@@ -228,10 +227,10 @@ public class FlagDataCalculator {
 
 		ContractorAccount contractor = co.getContractorAccount();
 		OperatorAccount operator = co.getOperatorAccount();
-		
-		if(contractor.getRiskLevel() == null) 
+
+		if (contractor.getRiskLevel() == null)
 			return WaitingOn.Contractor;
-		
+
 		if (!contractor.getStatus().isActiveDemo())
 			return WaitingOn.Contractor; // This contractor is delinquent
 
@@ -268,53 +267,49 @@ public class FlagDataCalculator {
 					&& !fOperator.getFlag().equals(FlagColor.Green)) {
 				for (ContractorAudit conAudit : contractor.getAudits()) {
 					if (key.getAuditType().equals(conAudit.getAuditType())) {
-						AuditStatus auditStatus = conAudit.getAuditStatus();
-						if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-							if (!auditStatus.equals(AuditStatus.Expired)) {
-								// This is a Policy, find the CAO for this
-								// operator
-								for (ContractorAuditOperator cao : conAudit.getOperators()) {
-									if (cao.getOperator().equals(operator.getInheritInsurance()) && cao.isVisible()) {
-										if (cao.getStatus().isPending()) {
-											return WaitingOn.Contractor;
-										}
-										if (cao.getStatus().isSubmitted()) {
-											waitingOnPics = true;
-										}
-										if (cao.getStatus().isVerified()) {
-											waitingOnOperator = true;
-										}
-										if (cao.getStatus().isRejected())
-											return WaitingOn.Contractor;
-									} // if
-								} // for cao
-							} // end of policies
-						} else {
-							AuditStatus requiredStatus = AuditStatus.Active;
-							if (!key.isValidationRequired())
-								requiredStatus = AuditStatus.Submitted;
-							if (!auditStatus.isComplete(requiredStatus)) {
-								if (conAudit.getAuditType().getClassType().isPqf()
-										|| conAudit.getAuditType().isAnnualAddendum()) {
-									if (auditStatus.isPending() || auditStatus.isIncomplete())
-										// The contractor still needs to submit
-										// their PQF
+						if (!conAudit.isExpired()) {
+
+							ContractorAuditOperator cao = conAudit.getCao(operator.getOperatorHeirarchy());
+							if (cao.isVisible()) {
+								if (cao.getStatus().before(AuditStatus.Submitted)) {
+									if (conAudit.getAuditType().isCanContractorEdit())
 										return WaitingOn.Contractor;
-									waitingOnPics = true;
-								} else if (conAudit.getAuditType().getId() == AuditType.OFFICE)
-									// either needs to schedule the audit or
-									// close out RQs
-									return WaitingOn.Contractor;
-								else if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
-									if (auditStatus.equals(AuditStatus.Submitted))
+									OpPerms editPerm = conAudit.getAuditType().getEditPermission();
+									if (conAudit.getAuditType().getEditPermission() != null) {
+										if (editPerm.isForOperator())
+											waitingOnOperator = true;
+										else if (editPerm.isForAdmin())
+											waitingOnPics = true;
+									}
+								}
+
+								AuditStatus requiredStatus = AuditStatus.Submitted;
+								if (key.isValidationRequired())
+									requiredStatus = AuditStatus.Complete;
+								if (key.getAuditType().getClassType().isPolicy())
+									// We may want to move this to
+									// FlagOperatorCriteria
+									requiredStatus = AuditStatus.Approved;
+
+								if (cao.getStatus().before(requiredStatus)) {
+									if (cao.getStatus().isComplete()) {
+										waitingOnOperator = true;
+									} else if (conAudit.getAuditType().getId() == AuditType.OFFICE) {
+										// either needs to schedule the audit or
+										// close out RQs
+										return WaitingOn.Contractor;
+									} else if (conAudit.getAuditType().getId() == AuditType.DESKTOP
+											&& cao.getStatus().isSubmitted()) {
 										// contractor needs to close out RQs
 										return WaitingOn.Contractor;
-									waitingOnPics = true;
+									} else {
+										waitingOnPics = true;
+									}
 								}
 							}
 						}
-					}// end of audits
-				}
+					}
+				} // for
 			}
 		}
 		if (waitingOnPics)
@@ -380,14 +375,14 @@ public class FlagDataCalculator {
 	public OperatorAccount getOperator() {
 		return operator;
 	}
-	
+
 	private FlagDataOverride hasForceDataFlag(List<FlagDataOverride> flList, OperatorAccount operator) {
-		if(flList.size() > 0) {
-			for(FlagDataOverride flagDataOverride : flList) {
-				if(flagDataOverride.getOperator().equals(operator) && flagDataOverride.isInForce())
+		if (flList.size() > 0) {
+			for (FlagDataOverride flagDataOverride : flList) {
+				if (flagDataOverride.getOperator().equals(operator) && flagDataOverride.isInForce())
 					return flagDataOverride;
 			}
-			if(flList.get(0).isInForce())
+			if (flList.get(0).isInForce())
 				return flList.get(0);
 		}
 		return null;

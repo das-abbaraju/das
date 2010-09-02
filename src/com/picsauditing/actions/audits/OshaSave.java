@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -177,9 +178,11 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 			auditPercentCalculator.percentCalculateComplete(osha.getConAudit());
 			if (!button.equals("toggleVerify")) {
 				findConAudit();
-				if (conAudit.getAuditStatus().isActive()) {
-					conAudit.changeStatus(AuditStatus.Resubmitted, getUser());
-					auditDao.save(conAudit);
+				for (ContractorAuditOperator cao : conAudit.getOperators()) {
+					if (cao.getStatus().after(AuditStatus.Resubmitted)) {
+						cao.changeStatus(AuditStatus.Resubmitted, getUser());
+						auditDao.save(cao);
+					}
 				}
 			}
 		}

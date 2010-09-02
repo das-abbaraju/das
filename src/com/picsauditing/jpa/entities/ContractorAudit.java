@@ -11,8 +11,6 @@ import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -24,8 +22,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
@@ -37,6 +33,7 @@ import com.picsauditing.util.Strings;
 @Table(name = "contractor_audit")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class ContractorAudit extends BaseTable implements java.io.Serializable {
+
 	private AuditType auditType;
 	private ContractorAccount contractorAccount;
 	private Date expiresDate;
@@ -123,6 +120,13 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public void setExpiresDate(Date expiresDate) {
 		this.expiresDate = expiresDate;
+	}
+
+	@Transient
+	public boolean isExpired() {
+		if (expiresDate == null)
+			return false;
+		return expiresDate.before(new Date());
 	}
 
 	@ManyToOne
@@ -219,6 +223,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	/**
 	 * We may need to move this over to CAO someday
+	 * 
 	 * @return
 	 */
 	public float getScore() {
@@ -341,6 +346,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		}
 
 		Collections.sort(currentCaos, new Comparator<ContractorAuditOperator>() {
+
 			@Override
 			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
 				return o1.getOperator().compareTo(o2.getOperator());
@@ -518,6 +524,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		int tempScore = Math.round(score);
 
 		Map<Integer, String> map = new HashMap<Integer, String>() {
+
 			{
 				put(-1, "None");
 				put(0, "Red");
@@ -550,5 +557,25 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public String getIndexType() {
 		return "AU";
 	}
-	
+
+	@Transient
+	public ContractorAuditOperator getCao(OperatorAccount operator) {
+		return getCao(operator.getOperatorHeirarchy());
+	}
+
+	@Transient
+	public ContractorAuditOperator getCao(List<Integer> sortedCaoOperatorCandidates) {
+		for (Integer parent : sortedCaoOperatorCandidates) {
+			for (ContractorAuditOperator cao : this.operators) {
+				if (cao.getOperator().getId() == parent)
+					return cao;
+			}
+		}
+		for (ContractorAuditOperator cao : this.operators) {
+			if (cao.getOperator().getId() == OperatorAccount.PicsConsortium)
+				return cao;
+		}
+		return null;
+	}
+
 }

@@ -34,6 +34,8 @@ public class OperatorAccount extends Account {
 
 	public static final String DEFAULT_NAME = "- Operator -";
 
+	public static final int PicsConsortium = 4;
+
 	private OperatorAccount parent;
 
 	private OperatorAccount inheritFlagCriteria;
@@ -457,8 +459,8 @@ public class OperatorAccount extends Account {
 	}
 	
 	@Transient
-	public Account getTopAccount() {
-		Account topAccount = this;
+	public OperatorAccount getTopAccount() {
+		OperatorAccount topAccount = this;
 		if(this.getParent() != null)
 			topAccount = this.getParent();
 		
@@ -474,5 +476,23 @@ public class OperatorAccount extends Account {
 	@Transient
 	public boolean isInsureguardSubscriber(){
 		return canSeeInsurance.equals(YesNo.Yes);
+	}
+
+	@Transient
+	public List<Integer> getOperatorHeirarchy() {
+		List<Integer> list = new ArrayList<Integer>();
+		// Add myself
+		list.add(this.id);
+		
+		OperatorAccount topAccount = getTopAccount();
+		for (Facility facility : corporateFacilities) {
+			if (!facility.getCorporate().equals(topAccount))
+				// Add parent's that aren't my primary parent
+				list.add(facility.getCorporate().getId());
+		}
+		if (!topAccount.equals(this))
+			// Add my parent
+			list.add(topAccount.getId());
+		return list;
 	}
 }
