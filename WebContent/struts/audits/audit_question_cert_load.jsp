@@ -1,6 +1,9 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
-<s:if test="question != null"><s:set name="q" value="%{question}" /></s:if>
+<s:if test="question != null">
+	<s:set name="q" value="%{question}" />
+	<s:set name="a" value="answerMap.get(#q.id)" />
+</s:if>
 <s:form id="cert_form%{#q.id}">
 	<s:hidden name="auditID" value="%{conAudit.id}" />
 	<s:hidden name="question.id" value="%{#q.id}" />

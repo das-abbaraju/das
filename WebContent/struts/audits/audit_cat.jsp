@@ -85,54 +85,6 @@ label.policy {
 	</s:if>
 </s:iterator>
 
-<s:if test="conAudit.auditType.classType.policy">
-<!-- Once we remove the Sub Category 1.3 above, we can start displaying this header
-	<div class="subCategory">
-		<h3 class="subCategory">
-			Sub Category 1.3 - Operator Requirements &amp; File Uploads
-		</h3>
-	</div>
- -->
-	<s:if test="conAudit.operators.size() > 0">
-		<s:sort source="conAudit.operators" comparator="caoComparator">
-		<s:iterator id="cao">
-			<s:if test="#cao.isVisibleTo(permissions)">
-				<s:if test="#cao.visible">
-					<div class="caoGroup" id="cao<s:property value="id"/>">
-						<h4 style="margin-left: 40px"><s:property value="#cao.operator.name" /></h4>
-						<div style="position: absolute; right: 0; top: 0; float: left;" id="thinking_<s:property value="#cao.id"/>"></div>
-						<div id="cao_<s:property value="#cao.id"/>" style="margin-left: 20px; margin-bottom: 20px; background-color: #F9F9F9;">
-							<s:include value="audit_cat_cao.jsp"/>
-						</div>
-					</div>
-				</s:if>
-				<s:else>
-					<div class="caoGroup" id="cao<s:property value="id"/>">
-						<h3 style="margin-left: 40px"><s:property value="#cao.operator.name" /></h3>
-						<div style="position: absolute; right: 0; top: 0; float: left;" id="thinking_<s:property value="#cao.id"/>"></div>
-						<div id="cao_<s:property value="#cao.id"/>" style="margin-left: 20px; margin-bottom: 20px;">
-							<div class="info">
-								This policy is not required for this operator.
-								<s:form id="cao_form%{#cao.id}">
-									<s:hidden name="auditID" value="%{#cao.audit.id}"/>
-									<s:hidden name="cao.id" value="%{#cao.id}"/>
-									<s:hidden name="mode"/>
-									<input type="submit" class="picsbutton positive" name="button" value="Make Required"
-										onclick="saveCao('#cao_form<s:property value="#cao.id"/>', 'visible', 'cao_<s:property value="#cao.id"/>');return false;"/>
-								</s:form>
-							</div>
-						</div>
-					</div>
-				</s:else>
-			</s:if>
-		</s:iterator>
-		</s:sort>
-	</s:if>
-	<s:else>
-		<div class="alert">No operators are currently requesting your insurance.</div>
-	</s:else>
-</s:if>
-
 <s:if test="catDataID > 0">
 	<br clear="all"/>
 	<pics:permission perm="InsuranceVerification">
