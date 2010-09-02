@@ -5,14 +5,14 @@ import java.util.List;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.CaoStatus;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 
 	private ContractorAuditOperatorDAO caoDAO;
-	private CaoStatus caoStatus;
+	private AuditStatus caoStatus;
 
 	public InsuranceCertificateSubscription(Subscription subscription, SubscriptionTimePeriod timePeriod,
 			EmailSubscriptionDAO subscriptionDAO, ContractorAuditOperatorDAO caoDAO) {
@@ -24,10 +24,10 @@ public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 	@Override
 	protected void setup(Account a) {
 		if (subscription.equals(Subscription.PendingInsuranceCerts)) {
-			caoStatus = CaoStatus.Pending;
+			caoStatus = AuditStatus.Pending;
 		}
 		if (subscription.equals(Subscription.VerifiedInsuranceCerts)) {
-			caoStatus = CaoStatus.Verified;
+			caoStatus = AuditStatus.Complete;
 		}
 
 		if (a instanceof OperatorAccount) {

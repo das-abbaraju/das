@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.CaoStatus;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
@@ -77,7 +77,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	public List<ContractorAuditOperator> find(int opID, CaoStatus status, Date start, Date end) {
+	public List<ContractorAuditOperator> find(int opID, AuditStatus status, Date start, Date end) {
 		String query = "FROM ContractorAuditOperator WHERE operator.id = :opID AND status = :status AND ";
 		if (status.isPending()) {
 			query += "creationDate ";

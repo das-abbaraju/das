@@ -15,7 +15,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.CaoStatus;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -115,8 +115,8 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 				contractor = cao.getAudit().getContractorAccount();
 
 				if ("Submit".equals(button) || "Resubmit".equals(button)) {
-					if (cao.getAudit().getPercentComplete() == 100 && cao.isCanContractorSubmit()) {
-						cao.setStatus(CaoStatus.Submitted);
+					if (cao.getPercentComplete() == 100 && cao.isCanContractorSubmit()) {
+						cao.setStatus(AuditStatus.Submitted);
 						statusChanged = true;
 						button = "Save";
 						addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
@@ -130,7 +130,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 				}
 
 				if ("Verify".equals(button)) {
-					cao.setStatus(CaoStatus.Verified);
+					cao.setStatus(AuditStatus.Complete);
 					if (cao.getOperator().isAutoApproveInsurance()) {
 						if (cao.getFlag() == null) {
 							caoDAO.save(cao);
@@ -142,9 +142,9 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 									+ redirectURL);
 						}
 						if (cao.getFlag() == FlagColor.Green)
-							cao.setStatus(CaoStatus.Approved);
+							cao.setStatus(AuditStatus.Approved);
 						else if (cao.getFlag() == FlagColor.Red)
-							cao.setStatus(CaoStatus.Rejected);
+							cao.setStatus(AuditStatus.Incomplete);
 					}
 					cao.setAuditColumns(permissions);
 					statusChanged = true;
@@ -161,7 +161,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 						caoDAO.refresh(cao);
 						return SUCCESS;
 					} else {
-						cao.setStatus(CaoStatus.Rejected);
+						cao.setStatus(AuditStatus.Incomplete);
 						cao.setAuditColumns(permissions);
 						statusChanged = true;
 						button = "Save";
@@ -185,7 +185,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 				}
 
 				if ("Approve".equals(button)) {
-					cao.setStatus(CaoStatus.Approved);
+					cao.setStatus(AuditStatus.Approved);
 					statusChanged = true;
 					button = "Save";
 					addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
@@ -194,7 +194,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 				}
 
 				if ("NotApplicable".equals(button)) {
-					cao.setStatus(CaoStatus.NotApplicable);
+					cao.setStatus(AuditStatus.NotApplicable);
 					statusChanged = true;
 					button = "Save";
 				}
@@ -208,7 +208,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 					cao.setVisible(true);
 
 					if (cao.getStatus().isNotApplicable()) {
-						cao.setStatus(CaoStatus.Pending);
+						cao.setStatus(AuditStatus.Pending);
 						statusChanged = true;
 					}
 
@@ -232,7 +232,6 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 							cao.setNotes(null);
 
 						if (statusChanged) {
-							cao.setStatusChangedBy(getUser());
 							cao.setStatusChangedDate(new Date());
 							String text = " Changed " + cao.getAudit().getAuditType().getAuditName() + " status to "
 									+ cao.getStatus() + " for " + cao.getOperator().getName();

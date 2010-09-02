@@ -105,12 +105,12 @@ public class AuditPdfConverter extends ContractorActionSupport {
 			conName.setAlignment(Element.ALIGN_CENTER);
 			document.add(conName);
 			for (ContractorAudit conAudit : contractor.getAudits()) {
-				if (!conAudit.getAuditStatus().isExpired()
+				if (!conAudit.isExpired()
 						&& (conAudit.getAuditType().isPqf() || conAudit.getAuditType().isAnnualAddendum())) {
 					List<AuditCatData> aList = new ArrayList<AuditCatData>();
 					String auditName = conAudit.getAuditType().getAuditName() + " - ";
 					if (conAudit.getAuditType().isPqf())
-						auditName += DateBean.format(conAudit.getEffectiveDate(), "MMM yyyy");
+						auditName += DateBean.format(conAudit.getCreationDate(), "MMM yyyy");
 					else if (!Strings.isEmpty(conAudit.getAuditFor()))
 						auditName += conAudit.getAuditFor();
 					Paragraph name = new Paragraph(auditName, auditFont);
