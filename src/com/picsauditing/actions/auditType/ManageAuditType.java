@@ -15,6 +15,7 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
+import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -23,6 +24,7 @@ import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.util.AuditTypeCache;
 import com.picsauditing.util.Strings;
 
@@ -36,6 +38,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected String operatorID;
 	protected int originalID = 0;
 	protected int targetID = 0;
+	protected int workFlowID = 0;
 	protected Integer emailTemplateID;
 	protected String editPerm;
 
@@ -46,16 +49,19 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected AuditCategoryDAO auditCategoryDAO;
 	protected AuditQuestionDAO auditQuestionDAO;
 	protected AuditDecisionTableDAO ruleDAO;
+	protected WorkFlowDAO wfDAO;
 
 	List<? extends AuditRule> relatedRules;
+	List<Workflow> workFlowList = null;
 
 	public ManageAuditType(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDAO,
-			AuditCategoryDAO auditCategoryDAO, AuditQuestionDAO auditQuestionDAO, AuditDecisionTableDAO ruleDAO) {
+			AuditCategoryDAO auditCategoryDAO, AuditQuestionDAO auditQuestionDAO, AuditDecisionTableDAO ruleDAO, WorkFlowDAO wfDAO) {
 		this.emailTemplateDAO = emailTemplateDAO;
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.ruleDAO = ruleDAO;
+		this.wfDAO = wfDAO;
 	}
 
 	public String execute() throws Exception {
@@ -198,6 +204,9 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 			if(editPerm!=null && !editPerm.isEmpty()){
 				auditType.setEditPermission(OpPerms.valueOf(editPerm));
 			} else auditType.setEditPermission(null);
+			if(workFlowID>0){
+				auditType.setWorkFlow(wfDAO.find(workFlowID));
+			} else auditType.setWorkFlow(null);
 			auditType.setAuditColumns(permissions);
 			auditType = auditTypeDAO.save(auditType);
 			id = auditType.getId();
@@ -358,6 +367,13 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 		return relatedRules;
 	}
+	
+	public List<Workflow> getWorkFlowList(){
+		if(workFlowList==null){
+			workFlowList = wfDAO.findAll();
+		}
+		return workFlowList;
+	}
 
 	// GETTERS && SETTERS
 
@@ -457,5 +473,13 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	public void setEditPerm(String editPerm) {
 		this.editPerm = editPerm;
+	}
+
+	public int getWorkFlowID() {
+		return workFlowID;
+	}
+
+	public void setWorkFlowID(int workFlowID) {
+		this.workFlowID = workFlowID;
 	}
 }

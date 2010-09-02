@@ -339,7 +339,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		return auditName + "(" + id + ")";
 	}
 	
-	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "workflowID")
 	public Workflow getWorkFlow() {
 		return workFlow;

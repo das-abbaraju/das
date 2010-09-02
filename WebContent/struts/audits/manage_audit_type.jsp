@@ -143,6 +143,10 @@ function copyAuditType(atypeID) {
 						type to that permission.  Selecting 'none' will cancel this if you have already selected
 						a permission.</p>
 					</div>
+				</li>				
+				<li><label>Set Workflow:</label>
+					<s:select list="workFlowList" name="workFlowID" listKey="id" listValue="name" value="auditType.workFlow.id" 
+					headerKey="0" headerValue="- Select Workflow -" />
 				</li>
 				<li>
 					<label>Required By Operator:</label>
