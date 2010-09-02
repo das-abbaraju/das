@@ -86,6 +86,7 @@
 	<bean id="UserSwitchDAO" class="com.picsauditing.dao.UserSwitchDAO"/>
 	<bean id="WebcamDAO" class="com.picsauditing.dao.WebcamDAO"/>
 	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
+	<bean id="WorkFlowDAO" class="com.picsauditing.dao.WorkFlowDAO"/>
 
 	<bean id="AuditBuilderController" class="com.picsauditing.PICS.AuditBuilderController" scope="prototype"/>
 	<bean id="AuditPercentCalculator" class="com.picsauditing.PICS.AuditPercentCalculator" scope="prototype"/>
