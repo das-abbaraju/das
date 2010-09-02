@@ -5,14 +5,11 @@ import java.util.Iterator;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
@@ -35,17 +32,15 @@ public class ReportBiddingContractors extends ReportAccount {
 	protected ContractorAccountDAO contractorAccountDAO;
 	protected NoteDAO noteDAO;
 	protected ContractorOperatorDAO contractorOperatorDAO;
-	protected ContractorAuditDAO contractorAuditDAO;
 	protected InvoiceItemDAO invoiceItemDAO;
 	protected OperatorAccountDAO operatorAccountDAO;
 
-	public ReportBiddingContractors(ContractorAccountDAO contractorAccountDAO, NoteDAO noteDAO,
-			ContractorOperatorDAO contractorOperatorDAO, ContractorAuditDAO contractorAuditDAO,
+	public ReportBiddingContractors(ContractorAccountDAO contractorAccountDAO,
+			NoteDAO noteDAO, ContractorOperatorDAO contractorOperatorDAO,
 			InvoiceItemDAO invoiceItemDAO, OperatorAccountDAO operatorAccountDAO) {
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.noteDAO = noteDAO;
 		this.contractorOperatorDAO = contractorOperatorDAO;
-		this.contractorAuditDAO = contractorAuditDAO;
 		this.invoiceItemDAO = invoiceItemDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 	}
@@ -73,13 +68,6 @@ public class ReportBiddingContractors extends ReportAccount {
 			if ("Upgrade".equals(button)) {
 				cAccount.setAcceptsBids(false);
 				cAccount.setRenew(true);
-				for (ContractorAudit cAudit : cAccount.getAudits()) {
-					if (cAudit.getAuditType().isPqf() && !cAudit.getAuditStatus().isPending()) {
-						cAudit.changeStatus(AuditStatus.Pending, getUser());
-						contractorAuditDAO.save(cAudit);
-						break;
-					}
-				}
 
 				// Setting the payment Expires date to today
 				for (Invoice invoice : cAccount.getInvoices()) {
@@ -91,36 +79,44 @@ public class ReportBiddingContractors extends ReportAccount {
 					}
 				}
 
-				if (permissions.isOperator() && permissions.isApprovesRelationships()) {
+				if (permissions.isOperator()
+						&& permissions.isApprovesRelationships()) {
 					approveContractor(cAccount, permissions.getAccountId());
 				}
 
 				if (permissions.isCorporate()) {
-					OperatorAccount corporate = operatorAccountDAO.find(permissions.getAccountId());
+					OperatorAccount corporate = operatorAccountDAO
+							.find(permissions.getAccountId());
 					for (Facility facility : corporate.getOperatorFacilities()) {
-						if (YesNo.Yes.equals(facility.getOperator().getApprovesRelationships())) {
-							approveContractor(cAccount, facility.getOperator().getId());
+						if (YesNo.Yes.equals(facility.getOperator()
+								.getApprovesRelationships())) {
+							approveContractor(cAccount, facility.getOperator()
+									.getId());
 						}
 					}
 				}
 
 				templateId = 73; // Trial Contractor Account Approval
-				summary = "Upgraded and Approved the Bid Only Account for " + permissions.getAccountName()
+				summary = "Upgraded and Approved the Bid Only Account for "
+						+ permissions.getAccountName()
 						+ " and notified contractor via email.";
 			}
 			if ("Reject".equals(button)) {
 				cAccount.setRenew(false);
-				Iterator<ContractorOperator> cIterator = cAccount.getNonCorporateOperators().iterator();
+				Iterator<ContractorOperator> cIterator = cAccount
+						.getNonCorporateOperators().iterator();
 				while (cIterator.hasNext()) {
 					ContractorOperator co = cIterator.next();
-					if (co.getOperatorAccount().getId() == permissions.getAccountId()) {
+					if (co.getOperatorAccount().getId() == permissions
+							.getAccountId()) {
 						contractorOperatorDAO.remove(co);
 						cAccount.getOperators().remove(co);
 						break;
 					}
 				}
 				templateId = 75;// Trial Contractor Account Rejection
-				summary = "Rejected Contractor for the Bid Only Account for " + permissions.getAccountName();
+				summary = "Rejected Contractor for the Bid Only Account for "
+						+ permissions.getAccountName();
 			}
 
 			cAccount.incrementRecalculation();
@@ -142,12 +138,14 @@ public class ReportBiddingContractors extends ReportAccount {
 					EmailBuilder emailBuilder = new EmailBuilder();
 					emailBuilder.setTemplate(templateId);
 					emailBuilder.setPermissions(permissions);
-					emailBuilder.setContractor(cAccount, OpPerms.ContractorAdmin);
+					emailBuilder.setContractor(cAccount,
+							OpPerms.ContractorAdmin);
 					emailBuilder.addToken("permissions", permissions);
 					EmailQueue emailQueue = emailBuilder.build();
 					emailQueue.setPriority(100);
-					emailQueue.setFromAddress((templateId == 73) ? "PICS Billing <billing@picsauditing.com>"
-							: "PICS Info <info@picsauditing.com>");
+					emailQueue
+							.setFromAddress((templateId == 73) ? "PICS Billing <billing@picsauditing.com>"
+									: "PICS Info <info@picsauditing.com>");
 					emailQueue.setViewableById(permissions.getTopAccountID());
 					EmailSender.send(emailQueue);
 					addActionMessage(summary);
