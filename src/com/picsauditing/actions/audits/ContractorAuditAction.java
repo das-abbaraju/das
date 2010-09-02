@@ -14,6 +14,7 @@ import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -43,9 +44,9 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 			ContractorAuditOperatorDAO caoDAO, AuditCategoryDAO categoryDAO, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, CertificateDAO certificateDao,
-			OshaAuditDAO oshaAuditDAO) {
+			OshaAuditDAO oshaAuditDAO, OperatorAccountDAO opDAO) {
 		super(accountDao, auditDao, caoDAO, categoryDAO, catDataDao, auditDataDao, auditPercentCalculator,
-				certificateDao);
+				certificateDao, opDAO);
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 	}

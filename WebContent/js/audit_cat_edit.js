@@ -144,11 +144,17 @@ function showCertUpload(conid, certid, caoID) {
 	fileUpload.focus();
 }
 
-function showCertificates(conID, caoID) {
+function showCertificates(conID, caoID, button, catDataID) {
 	var data = {
 		id: conID,
 		caoID: caoID
 	};
+	
+	if (button != undefined)
+		data['button'] = button;
+	
+	if (catDataID != undefined)
+		data['catDataID'] = catDataID;
 	
 	startThinking({div:'certificates'+caoID, message:' Searching for Certificates'});
 	
@@ -179,4 +185,35 @@ function saveCert(certID, caoID) {
 	var form = "#cao_form"+caoID;
 	$("#cao_form"+caoID).find('[name=certID]').val(certID);
 	saveCao(form, 'Save', '#fileQuestion'+caoID);
+}
+
+function savePolicy(form, button, divName, dataID, catDataID) {
+	var data = {};
+	$.each($(form).serializeArray(), function(i, e) {
+		data[e.name] = e.value;
+	});
+	
+	data['button'] = button;
+	
+	if (dataID != undefined)
+		data['dataID'] = dataID;
+	
+	if (catDataID != undefined)
+		data['catDataID'] = catDataID;
+	
+	if (divName === undefined)
+		divName = '#auditHeader'+data['question.id'];
+	
+	$('#cert_'+data['question.id']).load('PolicySaveAjax.action', data, function(response, status){
+		if (status=='success')
+			$(divName).effect('highlight', {color: '#FFFF11'}, 1000);
+		else
+			alert('failed to save answer');
+	});
+}
+
+function saveCertQ(certID, questionID, button, dataID, catDataID) {
+	var form = "#cert_form"+questionID;
+	$(form).find('[name=certID]').val(certID);
+	savePolicy(form, (button == undefined || button == '') ? 'Save' : button, '#fileQuestion'+questionID, dataID, catDataID);
 }

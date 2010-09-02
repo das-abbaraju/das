@@ -313,6 +313,7 @@
 		<action name="ContractorCertificatesAjax"
 			class="com.picsauditing.actions.contractors.ContractorCertificates">
 			<result>struts/contractors/contractor_certificates.jsp</result>
+			<result name="question">struts/audits/audit_question_cert.jsp</result>
 		</action>
 		
 		<action name="ConPqfList"
@@ -995,6 +996,12 @@
 			class="com.picsauditing.actions.audits.AuditCategoryAction">
 			<result>struts/audits/audit_cat.jsp</result>
 		</action>
+		
+		<action name="AuditCatAjax"
+			class="com.picsauditing.actions.audits.AuditCategoryAction">
+			<result>struts/audits/audit_question_cert_load.jsp</result>
+		</action>
+		
 		<action name="AuditCatSubmitAjax"
 			class="com.picsauditing.actions.audits.AuditCategoryAction">
 			<result>struts/audits/audit_cat_policy_submit.jsp</result>

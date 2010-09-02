@@ -12,6 +12,7 @@ import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -23,6 +24,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
@@ -38,15 +40,18 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	protected int opID;
 	protected ContractorAuditOperatorDAO caoDAO;
 	protected AuditCategoryDAO categoryDAO;
+	protected OperatorAccountDAO opDAO;
 
 	public AuditCategorySingleAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorAuditOperatorDAO caoDAO, AuditCategoryDAO categoryDAO, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator, CertificateDAO certificateDao) {
+			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator, CertificateDAO certificateDao,
+			OperatorAccountDAO opDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.caoDAO = caoDAO;
 		this.certificateDao = certificateDao;
 		this.categoryDAO = categoryDAO;
+		this.opDAO = opDAO;
 	}
 
 	public String execute() throws Exception {
@@ -296,5 +301,27 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 	public void setOpID(int opID) {
 		this.opID = opID;
+	}
+	
+	// Get certificate
+	public Certificate getCertificate(String answerCertID) {
+		try {
+			int certID = Integer.parseInt(answerCertID);
+			
+			if (certID > 0)
+				return certificateDao.find(certID);
+		} catch (Exception e) {
+		}
+		
+		return null;
+	}
+	
+	public OperatorAccount findOperatorByName(String name) {
+		List<OperatorAccount> ops = opDAO.findWhere(true, "a.name = '" + name + "'", permissions);
+		
+		if (ops.size() == 1)
+			return ops.get(0);
+		
+		return null;
 	}
 }

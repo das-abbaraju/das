@@ -8,10 +8,13 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -34,18 +37,25 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 
 	protected ContractorAuditOperatorDAO caoDAO;
 	protected CertificateDAO certificateDao;
+	protected AuditQuestionDAO questionDAO;
 
 	protected ContractorAuditOperator cao;
 	protected int certID = 0;
 	protected Certificate certificate;
 	protected String mode;
 
+	// Custom policy categories and questions
+	protected AuditQuestion question;
+	protected int dataID = 0;
+	protected int catDataID = 0;
+
 	public PolicySave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, ContractorAuditDAO contractorAuditDAO, ContractorAuditOperatorDAO caoDAO,
-			CertificateDAO certificateDao) {
+			CertificateDAO certificateDao, AuditQuestionDAO questionDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.caoDAO = caoDAO;
 		this.certificateDao = certificateDao;
+		this.questionDAO = questionDAO;
 	}
 
 	@Override
@@ -54,6 +64,9 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 		if (caoID > 0)
 			this.cao = caoDAO.find(caoID);
 
+		int questionID = this.getParameter("question.id");
+		if (questionID > 0)
+			this.question = questionDAO.find(questionID);
 	}
 
 	@Override
@@ -64,6 +77,39 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 		boolean statusChanged = false;
 
 		if (button != null) {
+			if (question != null) {
+				this.findConAudit();
+
+				if ("Status".equals(button)) {
+					statusChanged = true;
+					button = "Save";
+				}
+
+				if ("Save".equals(button)) {
+					AuditData data = new AuditData();
+					data.setAuditColumns(permissions);
+					data.setAnswer(certID + "");
+					data.setAudit(conAudit);
+					data.setQuestion(question);
+					// TODO Do we need to set the auditor here?
+
+					auditDataDao.save(data);
+
+					if (certificate != null) {
+						certificate.updateExpirationDate();
+						certificateDao.save(certificate);
+					}
+				}
+
+				if ("Detach".equals(button) && dataID > 0) {
+					AuditData data = auditDataDao.find(dataID);
+					auditDataDao.remove(data);
+				}
+
+				return redirect("AuditCatAjax.action?button=Quick&auditID=" + conAudit.getId() 
+						+ "&catDataID=" + catDataID + "&question.id=" + question.getId());
+			}
+
 			if (cao != null) {
 				conAudit = cao.getAudit();
 				contractor = cao.getAudit().getContractorAccount();
@@ -229,6 +275,30 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 
 	public void setMode(String mode) {
 		this.mode = mode;
+	}
+
+	public AuditQuestion getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(AuditQuestion question) {
+		this.question = question;
+	}
+
+	public int getDataID() {
+		return dataID;
+	}
+
+	public void setDataID(int dataID) {
+		this.dataID = dataID;
+	}
+	
+	public int getCatDataID() {
+		return catDataID;
+	}
+	
+	public void setCatDataID(int catDataID) {
+		this.catDataID = catDataID;
 	}
 
 	public List<Certificate> getCertificates() {

@@ -13,6 +13,7 @@ public class ContractorCertificates extends ContractorActionSupport {
 	private CertificateDAO certificateDAO;
 
 	private int caoID;
+	private int catDataID;
 
 	private List<Certificate> certificates = null;
 
@@ -25,7 +26,11 @@ public class ContractorCertificates extends ContractorActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		
 		this.findContractor();
+		
+		if ("question".equals(button))
+			return button;
 
 		return SUCCESS;
 	}
@@ -37,7 +42,15 @@ public class ContractorCertificates extends ContractorActionSupport {
 	public void setCaoID(int caoID) {
 		this.caoID = caoID;
 	}
-
+	
+	public int getCatDataID() {
+		return catDataID;
+	}
+	
+	public void setCatDataID(int catDataID) {
+		this.catDataID = catDataID;
+	}
+	
 	public List<Certificate> getCertificates() {
 		if (certificates == null) {
 			certificates = certificateDAO.findByConId(contractor.getId(), permissions, false);

@@ -77,6 +77,23 @@
 	<s:if test="#q.questionType == 'Yes/No'">
 		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'Yes':'Yes','No':'No'}" name="answer%{#q.id}" value="%{#a.answer}" 
 			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#q.id}', this);"></s:radio>
+		<s:if test="#q.auditType.policy">
+			<s:set name="op" value="%{getOperatorByName(#q.category.name)}" />
+			<s:if test="#op != null && #op.id > 0">	
+				<div class="clearfix question shaded">
+					If it does NOT comply, please explain below.
+					<s:if test="#op.insuranceForms.size > 0">
+						<ul style="list-style:none">
+							<s:iterator value="#op.insuranceForms">
+								<li><a href="forms/<s:property value="file"/>" target="_BLANK" title="Opens in new Window"><s:property value="formName"/></a></li>
+							</s:iterator>
+						</ul>
+					</s:if>
+					<br clear="all"/>
+					<div class="clear"></div>
+				</div>
+			</s:if>
+		</s:if>
 	</s:if>
 	<s:if test="#q.questionType == 'Yes/No/NA'">
 		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="answer%{#q.id}" value="%{#a.answer}" 
@@ -153,7 +170,7 @@
 			
 		</s:else>
 	</s:if>
-	<s:if test="#q.questionType.startsWith('File')">
+	<s:if test="#q.questionType == 'File'">
 		<nobr>
 			<s:if test="#a.id > 0 && #a.answer.length() > 0">
 				<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.id=<s:property value="#a.id"/>" 
@@ -167,6 +184,11 @@
 					'<s:property value="#q.id"/>');"
 				title="Opens in new window (please disable your popup blocker)" />
 		</nobr>
+	</s:if>
+	<s:if test="#q.questionType == 'FileCertificate'">
+		<div id="cert_<s:property value="#q.id"/>">
+			<s:include value="audit_question_cert_load.jsp" />
+		</div>
 	</s:if>
 	
 	<s:if test="#a.verified && !#q.hasRequirement">

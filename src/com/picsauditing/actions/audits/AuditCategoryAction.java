@@ -15,6 +15,7 @@ import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -64,13 +65,17 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 	protected ContractorAuditOperator cao = null;
 
 	private List<ContractorAudit> activePendingEditableAudits = null;
+	
+	// Save the question for policy ajax calls?
+	// TODO: maybe the policy ajax calls are too complicated
+	private AuditQuestion question;
 
 	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorAuditOperatorDAO caoDAO, AuditCategoryDAO categoryDAO, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
+			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator, OperatorAccountDAO opDAO,
 			AuditCategoryDAO auditCategoryDAO, OshaAuditDAO oshaAuditDAO, CertificateDAO certificateDao) {
 		super(accountDao, auditDao, caoDAO, categoryDAO, catDataDao, auditDataDao, auditPercentCalculator,
-				certificateDao);
+				certificateDao, opDAO);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 	}
@@ -113,6 +118,13 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 					catID = catData.getCategory().getId();
 
 					List<Integer> questionIDs = new ArrayList<Integer>();
+					for (AuditQuestion question : catData.getCategory().getQuestions()) {
+						questionIDs.add(question.getId());
+						if (question.isRequired() && question.getRequiredQuestion() != null) {
+							int dependsOnQID = question.getRequiredQuestion().getId();
+							questionIDs.add(dependsOnQID);
+						}
+					}
 					for (AuditCategory subCategory : catData.getCategory().getSubCategories()) {
 						for (AuditQuestion question : subCategory.getQuestions()) {
 							questionIDs.add(question.getId());
@@ -121,7 +133,6 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 								questionIDs.add(dependsOnQID);
 							}
 						}
-
 					}
 					// Get a map of all answers in this audit
 					answerMap = auditDataDao.findAnswers(catData.getAudit().getId(), questionIDs);
@@ -341,6 +352,14 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 
 	public void setNextAudit(ContractorAudit nextAudit) {
 		this.nextAudit = nextAudit;
+	}
+	
+	public AuditQuestion getQuestion() {
+		return question;
+	}
+	
+	public void setQuestion(AuditQuestion question) {
+		this.question = question;
 	}
 
 	public OshaAudit getAverageOsha(OshaType oshaType) {
