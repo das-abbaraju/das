@@ -240,6 +240,8 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ManageCategoryRules)) {
 			subMenu.addChild("Category Rules", "CategoryRuleSearch.action");
 		}
+		if (permissions.hasPermission(OpPerms.ManageAuditWorkFlow))
+			subMenu.addChild("Manage Work FLow", "ManageAuditWorkFlow.action");
 
 		if (permissions.seesAllContractors()) {
 			subMenu.addChild("Email Subscriptions", "ReportEmailSubscription.action");

@@ -1221,6 +1221,16 @@
 			class="com.picsauditing.actions.auditType.ManageDesktopMatrix">
 			<result>struts/audits/desktop_matrix.jsp</result>
 		</action>
+		<action name="ManageAuditWorkFlow"
+			class="com.picsauditing.actions.auditType.ManageWorkFlow">
+			<result>struts/audits/manage_workflow.jsp</result>
+		</action>
+		
+		<action name="ManageAuditWorkFlowAjax"
+			class="com.picsauditing.actions.auditType.ManageWorkFlow">
+			<result>struts/audits/manage_workflow_steps.jsp</result>
+		</action>
+		
 		<!-- Rules Entries -->
 		<action name="CategoryRuleEditor"
 			class="com.picsauditing.actions.auditType.CategoryRuleEditor">

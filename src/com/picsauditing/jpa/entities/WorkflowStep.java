@@ -16,6 +16,7 @@ public class WorkflowStep extends BaseTable {
 	private AuditStatus oldStatus;
 	private AuditStatus newStatus;
 	private EmailTemplate emailTemplate;
+	private boolean noteRequired = false;
 
 	@ManyToOne
 	@JoinColumn(name = "workflowID", nullable = false)
@@ -54,5 +55,13 @@ public class WorkflowStep extends BaseTable {
 
 	public void setEmailTemplate(EmailTemplate emailTemplate) {
 		this.emailTemplate = emailTemplate;
+	}
+	
+	public boolean isNoteRequired() {
+		return noteRequired;
+	}
+	
+	public void setNoteRequired(boolean noteRequired) {
+		this.noteRequired = noteRequired;
 	}
 }
