@@ -59,6 +59,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	protected Account account;
 	protected EmailTemplate template;
 	protected OpPerms editPermission;
+	protected Workflow workFlow;
 
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
@@ -336,5 +337,15 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	@Override
 	public String toString() {
 		return auditName + "(" + id + ")";
+	}
+	
+	
+	@JoinColumn(name = "workflowID")
+	public Workflow getWorkFlow() {
+		return workFlow;
+	}
+
+	public void setWorkFlow(Workflow workFlow) {
+		this.workFlow = workFlow;
 	}
 }
