@@ -5,6 +5,7 @@
 
 <s:set name="workflowID" value="%{id}" />
 <s:if test="steps.size() > 0">
+<h3><s:property value="workFlow.name"/></h3>
 <table class="report" id="workflowStepsTable">
 	<thead>
 		<tr>
@@ -20,7 +21,7 @@
 			<tr id="<s:property value="id" />">
 				<td><s:select list="@com.picsauditing.jpa.entities.AuditStatus@getValuesWithDefault()" name="oldStatus" /></td>
 				<td><s:select list="@com.picsauditing.jpa.entities.AuditStatus@values()" listValue="name()" listKey="name()" name="newStatus" /></td>
-				<td><s:select list="emailTemplates" listValue="templateName" name="#step.emailTemplate.id" listKey="id" /></td>
+				<td><s:select list="emailTemplates" listValue="templateName" name="#step.emailTemplate.id" listKey="id" headerKey="0" headerValue="- Select A Template -" /></td>
 				<td class="center"><s:checkbox name="#step.noteRequired" /></td>
 				<td><a href="#" onclick="editStep(<s:property value="#step.id" />, <s:property value="#workflowID" />); return false;" class="save"></a></td>
 			</tr>
@@ -42,7 +43,7 @@
 				<li><label>New Status:</label>
 					<s:select list="@com.picsauditing.jpa.entities.AuditStatus@values()" listKey="name()" listValue="name()" name="newStatus" /></li>
 				<li><label>Email Template:</label>
-					<s:select list="emailTemplates" listValue="templateName" name="emailTemplateID" listKey="id" />
+					<s:select list="emailTemplates" listValue="templateName" name="emailTemplateID" listKey="id" headerKey="0" headerValue="- Select A Template -" />
 				</li>
 				<li><label>Note Required</label>
 					<s:checkbox name="noteRequired" /></li>

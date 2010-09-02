@@ -73,7 +73,9 @@ public class ManageWorkFlow extends PicsActionSupport {
 				ws.setAuditColumns(permissions);
 				ws.setOldStatus(oldStatus);
 				ws.setNewStatus(newStatus);
-				ws.setEmailTemplate(templateDAO.find(emailTemplateID));
+				if(emailTemplateID>0)
+					ws.setEmailTemplate(templateDAO.find(emailTemplateID));
+				else ws.setEmailTemplate(null);
 				ws.setNoteRequired(noteRequired);
 				workFlowDAO.save(ws);
 			}
@@ -87,7 +89,9 @@ public class ManageWorkFlow extends PicsActionSupport {
 				ws.setAuditColumns(permissions);
 				ws.setOldStatus(oldStatus);
 				ws.setNewStatus(newStatus);
-				ws.setEmailTemplate(templateDAO.find(emailTemplateID));
+				if(emailTemplateID>0)
+					ws.setEmailTemplate(templateDAO.find(emailTemplateID));
+				else ws.setEmailTemplate(null);
 				ws.setNoteRequired(noteRequired);
 				workFlowDAO.save(ws);
 			}

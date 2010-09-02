@@ -32,6 +32,7 @@ function addStep(){
 </script>
 </head>
 <body>
+<h1>Manage Workflow</h1>
 <table>
 	<tr>
 		<td>
