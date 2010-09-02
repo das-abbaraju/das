@@ -196,3 +196,8 @@ join temp_cao_conversion t on t.auditTypeID = ca.auditTypeID and t.opID = cao.op
 join audit_question q on q.categoryID = ac.id and q.number = 1
 where visible = 1 and cao.certificateID > 0;
 
+update audit_type set workflowID = 1;
+update audit_type set workflowID = 2 where hasRequirements = 1;
+update audit_type set workflowID = 3 where classType = 'Policy';
+update audit_type set workflowID = 4 where id = 1;
+update audit_type set workflowID = 5 where id = 11;
