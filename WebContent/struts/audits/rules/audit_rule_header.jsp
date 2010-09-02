@@ -6,7 +6,7 @@
 		<td>Include</td>
 		<td>Audit Type</td>
 		<s:if test="categoryRule"><td>Category</td></s:if>
-		<td>Account</td>
+		<td>Contractor Type</td>
 		<td>Operator</td>
 		<td>Risk</td>
 		<td>Tag</td>

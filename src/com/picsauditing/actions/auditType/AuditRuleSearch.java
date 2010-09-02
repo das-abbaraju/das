@@ -91,10 +91,12 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		sql.addField("IFNULL(a.name,'*') operator");
 		sql.addField("IFNULL(a_search.risk,'*') risk");
 		sql.addField("IFNULL(ot.tag,'*') tag");
+		sql.addField("IFNULL(aq.name,'*') question");
 		sql.addField("CASE a_search.acceptsBids WHEN 1 THEN 'True' WHEN 0 THEN 'False' ELSE '*' END bid");
 		sql.addJoin("LEFT JOIN audit_type aty ON aty.id = a_search.auditTypeID");
 		sql.addJoin("LEFT JOIN operator_tag ot ON ot.id = a_search.tagID");
 		sql.addJoin("LEFT JOIN accounts a ON a.id = a_search.opID");
+		sql.addJoin("LEFT JOIN audit_question aq ON aq.id = a_search.questionID");
 		sql.addOrderBy("a_search.priority");
 	}
 

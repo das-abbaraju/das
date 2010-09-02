@@ -18,11 +18,13 @@
 				<s:if test="filter.showCategory"><td>Category</td></s:if>
 				<td>Contractor Type</td>
 				<td>Operator</td>
-				<s:if test="filter.showDependentAuditType"><td>Dependent Audit Type</td></s:if>
-				<s:if test="filter.showDependentAuditStatus"><td>Dependent Audit Status</td></s:if>
 				<td>Risk</td>
 				<td>Tag</td>
 				<td>Bid-Only</td>
+				<s:if test="filter.showDependentAuditType">
+					<td colspan="2">Dependent Audit</td>
+				</s:if>
+				<td>Question</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -33,11 +35,14 @@
 					<s:if test="filter.showCategory"><td><s:property value="get('category')"/></td></s:if>				
 					<td><s:property value="get('con_type')"/></td>					
 					<td><s:property value="get('operator')"/></td>		
-					<s:if test="filter.showDependentAuditType"><td><s:property value="get('dependentAuditType')"/></td></s:if>
-					<s:if test="filter.showDependentAuditStatus"><td><s:property value="get('dependentAuditStatus')"/></td></s:if>			
 					<td><s:property value="getRisk(get('risk'))"/></td>					
 					<td><s:property value="get('tag')"/></td>					
-					<td><s:property value="get('bid')"/></td>					
+					<td><s:property value="get('bid')"/></td>
+					<s:if test="filter.showDependentAuditType">
+						<td><s:property value="get('dependentAuditType')"/></td>
+						<td><s:property value="get('dependentAuditStatus')"/></td>
+					</s:if>		
+					<td><s:property value="get('question')"/></td>						
 				</tr>
 			</s:iterator>
 		</tbody>
