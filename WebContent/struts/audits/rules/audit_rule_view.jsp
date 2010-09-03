@@ -25,7 +25,7 @@
 		<td><s:property value="dependentAuditStatusLabel"/></td>
 	</s:if>
 	<td><s:property value="questionLabel"/>
-		<a href="ManageQuestion.action?id=<s:property value="question.id"/>" target="_BLANK">^</a>
+		<s:if test="question"><a href="ManageQuestion.action?id=<s:property value="question.id"/>" target="_BLANK">^</a></s:if>
 	</td>
 	<td><s:property value="questionComparatorLabel"/></td>
 	<td><s:property value="questionAnswerLabel"/></td>
@@ -40,6 +40,7 @@
 			<s:if test="'Current Rule' == key">
 				<br /><a class="remove" href="?id=<s:property value="id"/>&button=deleteChildren">Delete All</a>
 				<br /><a class="edit" href="?id=<s:property value="id"/>&button=edit">Edit</a>
+				<br /><a class="add" href="?id=<s:property value="id"/>&button=copy">Copy</a>
 			</s:if>
 		</td>
 	</s:if>

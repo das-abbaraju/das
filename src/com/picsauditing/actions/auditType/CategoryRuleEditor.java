@@ -78,9 +78,16 @@ public class CategoryRuleEditor extends PicsActionSupport {
 					acr.setAuditColumns(permissions);
 					dao.save(acr);
 				}
-				this.redirect("CategoryRuleEditor.action?id=" + rule.getId()); // move
-				// out
+				this.redirect("CategoryRuleEditor.action?id=" + rule.getId());
 				return BLANK;
+			}
+			if ("copy".equals(button)) {
+				AuditCategoryRule acr = rule;
+				rule = new AuditCategoryRule();
+				rule.update(acr);
+				rule.setId(0);
+				button = "edit";
+				return SUCCESS;
 			}
 			if ("delete".equals(button)) {
 				String redirect = "";
@@ -113,11 +120,13 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	}
 
 	private void setAcceptsBids() {
-		if(bidOnly>=0){
-			if(bidOnly==1)
+		if (bidOnly >= 0) {
+			if (bidOnly == 1)
 				rule.setAcceptsBids(true);
-			else rule.setAcceptsBids(false);
-		} else rule.setAcceptsBids(null);
+			else
+				rule.setAcceptsBids(false);
+		} else
+			rule.setAcceptsBids(null);
 	}
 
 	protected void addFields() {
@@ -277,10 +286,11 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	public Integer getBidOnly() {
 		Integer result = -1;
-		if(rule.getAcceptsBids()!=null){
-			if(rule.getAcceptsBids())
+		if (rule.getAcceptsBids() != null) {
+			if (rule.getAcceptsBids())
 				result = 1;
-			else result = 0;
+			else
+				result = 0;
 		}
 		return result;
 	}

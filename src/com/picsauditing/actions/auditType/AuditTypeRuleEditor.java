@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
@@ -85,6 +84,14 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 				// out
 				return BLANK;
 			}
+			if ("copy".equals(button)) {
+				AuditTypeRule atr = rule;
+				rule = new AuditTypeRule();
+				rule.update(atr);
+				rule.setId(0);
+				button = "edit";
+				return SUCCESS;
+			}
 			if ("delete".equals(button)) {
 				String redirect = "";
 				List<AuditTypeRule> lGranular = dao.getLessGranular(rule, date);
@@ -114,11 +121,13 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	}
 
 	private void setFieldsOnSave() {
-		if(bidOnly>=0){
-			if(bidOnly==1)
+		if (bidOnly >= 0) {
+			if (bidOnly == 1)
 				rule.setAcceptsBids(true);
-			else rule.setAcceptsBids(false);
-		} else rule.setAcceptsBids(null);
+			else
+				rule.setAcceptsBids(false);
+		} else
+			rule.setAcceptsBids(null);
 	}
 
 	protected void addFields() {
@@ -287,10 +296,11 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 
 	public Integer getBidOnly() {
 		Integer result = -1;
-		if(rule.getAcceptsBids()!=null){
-			if(rule.getAcceptsBids())
+		if (rule.getAcceptsBids() != null) {
+			if (rule.getAcceptsBids())
 				result = 1;
-			else result = 0;
+			else
+				result = 0;
 		}
 		return result;
 	}
