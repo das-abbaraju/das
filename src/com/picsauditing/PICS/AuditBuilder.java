@@ -111,7 +111,7 @@ public class AuditBuilder {
 	 */
 	static private AuditTypeRule getApplicable(List<AuditTypeRule> rules, AuditType auditType, OperatorAccount operator) {
 		for (AuditTypeRule rule : rules) {
-			if (rule.getAuditType().equals(auditType)) {
+			if (rule.getAuditType() == null || rule.getAuditType().equals(auditType)) {
 				if (rule.isApplies(operator))
 					// Only consider rules for this operator
 					return rule;

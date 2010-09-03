@@ -260,8 +260,7 @@ public class PicsMenu {
 
 		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
 			subMenu.addChild("Flag Criteria", "ManageFlagCriteriaOperator.action");
-			// Visible CAOs uses visible inherited insurance criteria
-			if (permissions.getVisibleCAOs().size() > 0)
+			if (permissions.isCanSeeInsurance())
 				subMenu.addChild("Insurance Criteria", "ManageInsuranceCriteriaOperator.action");
 		}
 

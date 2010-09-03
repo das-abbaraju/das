@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -34,6 +35,7 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorActionSupport extends AccountActionSupport {
+
 	protected ContractorAccount contractor;
 	private List<ContractorAudit> contractorNonExpiredAudits = null;
 	protected ContractorAccountDAO accountDao;
@@ -187,9 +189,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
-						&& !audit.getAuditStatus().equals(AuditStatus.Exempt)) {
+						&& audit.getOperators().size() > 0) {
 					MenuComponent childMenu = createMenuItem(subMenu, audit);
-					String year = DateBean.format(audit.getEffectiveDate(), "yy");
+					String year = DateBean.format(audit.getCreationDate(), "yy");
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
 					childMenu.setName(linkText);
 					childMenu.setUrl("AuditCat.action?auditID=" + audit.getId() + "&catDataID="
@@ -208,8 +210,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM)
-						&& !audit.getAuditStatus().equals(AuditStatus.Exempt)) {
+				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM) && audit.getOperators().size() > 0) {
 					MenuComponent childMenu = createMenuItem(subMenu, audit);
 					String linkText = audit.getAuditType().getAuditName()
 							+ (audit.getAuditFor() == null ? "" : " " + audit.getAuditFor());
@@ -228,7 +229,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
 				if ((audit.getAuditType().getId() == AuditType.COR || audit.getAuditType().getId() == AuditType.SUPPLEMENTCOR)
-						&& !audit.getAuditStatus().equals(AuditStatus.Exempt)) {
+						&& audit.getOperators().size() > 0) {
 					MenuComponent childMenu = createMenuItem(subMenu, audit);
 					String linkText = audit.getAuditType().getAuditName()
 							+ (audit.getAuditFor() == null ? "" : " " + audit.getAuditFor());
@@ -247,7 +248,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit)) {
 					MenuComponent childMenu = createMenuItem(subMenu, audit);
 
-					String year = DateBean.format(audit.getEffectiveDate(), "yy");
+					String year = DateBean.format(audit.getCreationDate(), "yy");
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
 					if (!Strings.isEmpty(audit.getAuditFor()))
 						linkText = audit.getAuditFor() + " " + linkText;
@@ -266,7 +267,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		MenuComponent menuItem = subMenu.addChild(linkText, "Audit.action?auditID=" + audit.getId());
 		menuItem.setAuditId(audit.getId());
-		menuItem.setTitle(audit.getAuditStatus().toString());
 		if (isShowCheckIcon(audit))
 			menuItem.setCssClass("done");
 		return menuItem;
@@ -387,8 +387,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (permissions.isOnlyAuditor()) {
 			for (ContractorAudit audit : getActiveAudits()) {
 				if (audit.getAuditor() != null && audit.getAuditor().getId() == permissions.getUserId())
-					if (audit.getAuditStatus().isPendingSubmitted())
-						return true;
+					for (ContractorAuditOperator cao : audit.getOperators()) {
+						if (cao.getStatus().before(AuditStatus.Complete))
+							return true;
+					}
 			}
 			return false;
 		}
@@ -435,8 +437,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	/**
 	 * Get a list of Audits that the current user can see Operators can't see
-	 * each other's audits Contractors can't see the Welcome Call
-	 * This is a bit complicated but needs to look at permissions
+	 * each other's audits Contractors can't see the Welcome Call This is a bit
+	 * complicated but needs to look at permissions
+	 * 
 	 * @return
 	 */
 	public List<ContractorAudit> getAudits() {
@@ -480,13 +483,19 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	public boolean isShowCheckIcon(ContractorAudit conAudit) {
-		if (permissions.isContractor()) {
-			if (conAudit.getAuditStatus().isActive()) {
+		// TODO I'm really not sure how we should handle these check marks
+		// anymore. This needs serious review
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (permissions.isContractor()) {
+				if (conAudit.getAuditType().isCanContractorEdit()) {
+					if (cao.getStatus().before(AuditStatus.Complete))
+						return false;
+				} else if (conAudit.getAuditType().getWorkFlow().isHasSubmittedStep() && cao.getStatus().isSubmitted())
+					return true;
+			} else if (cao.getStatus().after(AuditStatus.Pending))
 				return true;
-			} else if (!conAudit.getAuditType().isHasRequirements() && conAudit.getAuditStatus().isSubmitted())
-				return true;
-		} else if (conAudit.getAuditStatus().isActive())
-			return true;
-		return false;
+			return false;
+		}
+		return true;
 	}
 }

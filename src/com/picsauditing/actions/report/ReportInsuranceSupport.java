@@ -58,6 +58,7 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 			sql.addJoin("JOIN accounts caoaccount on caoaccount.id = cao.opID");
 			sql.addField("caoaccount.name as caoName");
 
+			// TODO move this check up to ReportContractorAudit
 			if (permissions.getVisibleCAOs().size() > 0)
 				sql.addWhere("cao.opid IN (" + Strings.implode(permissions.getVisibleCAOs(), ",") + ")");
 			else {

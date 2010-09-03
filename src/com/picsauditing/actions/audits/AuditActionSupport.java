@@ -180,7 +180,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return true;
 
 		if (permissions.isContractor()) {
-			if ((type.isAnnualAddendum() || type.getId() == 99) && conAudit.getAuditStatus().isActiveSubmitted())
+			if ((type.isAnnualAddendum() || type.getId() == 99) && conAudit.isActiveSubmitted())
 				// contractors can't modify annual updates that are already
 				// verified or submitted
 				return false;
@@ -208,28 +208,36 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	}
 
+	@Deprecated
 	/**
 	 * 
 	 * @return true if the current users is an operator and there is a visible
 	 *         cao belonging to another operator
 	 */
 	public boolean isPolicyWithOtherOperators() {
+		return isAuditWithOtherOperators();
+	}
+
+	/**
+	 * 
+	 * @return true if the current users is an operator and there is a visible
+	 *         cao belonging to another operator
+	 */
+	public boolean isAuditWithOtherOperators() {
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.isVisible()) {
-				if (!permissions.getVisibleCAOs().contains(cao.getOperator().getId())) {
-					// This logic is somewhat complex so here's an example:
-					// BASF Freeport Hub has access to many operators
-					// who use either BASF Corporate and BASF Catalyst insurance
-					// requirements
-					// If this contractor policy is visible (needed) for
-					// Paramount,
-					// then the policy is locked down.
-					// One potential flaw is that if the other CAO happens to be
-					// BASF Canada,
-					// which is not part of the Freeport Hub, then the policy
-					// will be locked for BASF Freeport.
-					return true;
-				}
+			if (!permissions.getVisibleCAOs().contains(cao.getOperator().getId())) {
+				// This logic is somewhat complex so here's an example:
+				// BASF Freeport Hub has access to many operators
+				// who use either BASF Corporate and BASF Catalyst insurance
+				// requirements
+				// If this contractor policy is visible (needed) for
+				// Paramount,
+				// then the policy is locked down.
+				// One potential flaw is that if the other CAO happens to be
+				// BASF Canada,
+				// which is not part of the Freeport Hub, then the policy
+				// will be locked for BASF Freeport.
+				return true;
 			}
 		}
 

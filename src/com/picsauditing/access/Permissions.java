@@ -2,7 +2,9 @@ package com.picsauditing.access;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
@@ -43,11 +45,10 @@ public class Permissions implements Serializable {
 	private boolean forcePasswordReset = false;
 	private Set<Integer> groups = new HashSet<Integer>();
 	private Set<UserAccess> permissions = new TreeSet<UserAccess>();
-	private Set<Integer> canSeeAudits = new HashSet<Integer>();
-	private Set<Integer> canEditAudits = new HashSet<Integer>();
+	private boolean canSeeInsurance = false;
 	private Set<Integer> corporateParent = new HashSet<Integer>();
 	private Set<Integer> operatorChildren = new HashSet<Integer>();
-	private Set<Integer> visibleCAOs = new HashSet<Integer>();
+	private List<Integer> visibleCAOs = new ArrayList<Integer>();
 	private String username;
 	private String name;
 	private int accountID;
@@ -89,14 +90,13 @@ public class Permissions implements Serializable {
 		approvesRelationships = false;
 		requiresOQ = false;
 		requiresCompetencyReview = false;
+		canSeeInsurance = false;
 
 		adminID = 0;
 		topAccountID = 0;
 
 		permissions.clear();
 		groups.clear();
-		canSeeAudits.clear();
-		canEditAudits.clear();
 		visibleCAOs.clear();
 		corporateParent.clear();
 		operatorChildren.clear();
@@ -152,6 +152,7 @@ public class Permissions implements Serializable {
 				ContractorAccount contractor = (ContractorAccount) user.getAccount();
 				for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 					if (co.getOperatorAccount().getCountry() != null)
+						// TODO get rid of accountCountries
 						accountCountries.add(co.getOperatorAccount().getCountry().getIsoCode());
 				}
 			}
@@ -159,6 +160,8 @@ public class Permissions implements Serializable {
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
 
+				visibleCAOs = operator.getOperatorHeirarchy();
+				
 				if (operator.getCountry() != null)
 					accountCountries.add(operator.getCountry().getIsoCode());
 
@@ -176,9 +179,7 @@ public class Permissions implements Serializable {
 					}
 
 					if (operator.getCanSeeInsurance().isTrue())
-						visibleCAOs.add(operator.getInheritInsurance().getId());
-
-					loadAuditTypes(operator);
+						canSeeInsurance = true;
 				}
 				if (isCorporate()) {
 					// Supporting Hub Accounts to See other Connected Corporate
@@ -190,23 +191,7 @@ public class Permissions implements Serializable {
 						operatorChildren.add(facility.getOperator().getId());
 
 						if (facility.getOperator().getCanSeeInsurance().isTrue())
-							visibleCAOs.add(facility.getOperator().getInheritInsurance().getId());
-
-						/*
-						 * NOTE!!! There is a big hole here with this logic If
-						 * corporate has two operators A & B A uses PQF only B
-						 * uses PQF and Desktop Another Operator C uses PQF and
-						 * Desktop Contractor signs up for operators A & C
-						 * Corporate will be able to incorrectly see the desktop
-						 * for that Contractor
-						 * 
-						 * One solution would be to add CAOs for each audit and
-						 * operator This would allow us to restrict permissions
-						 * to view each audit for given operator or corporate
-						 * account. This could be useful if we want to
-						 * eventually sell access for an operator to each audit
-						 */
-						loadAuditTypes(facility.getOperator());
+							canSeeInsurance = true;
 					}
 				}
 			}
@@ -218,13 +203,6 @@ public class Permissions implements Serializable {
 				conProfileEdit.setViewFlag(true);
 				conProfileEdit.setEditFlag(true);
 				permissions.add(conProfileEdit);
-
-				// UserAccess conEditUsers = new UserAccess();
-				// conEditUsers.setOpPerm(OpPerms.EditUsers);
-				// conEditUsers.setViewFlag(true);
-				// conEditUsers.setEditFlag(true);
-				// conEditUsers.setDeleteFlag(true);
-				// permissions.add(conEditUsers);
 			}
 
 			for (UserGroup u : user.getGroups())
@@ -234,14 +212,6 @@ public class Permissions implements Serializable {
 			// All or nothing, if something went wrong, then clear it all
 			clear();
 			throw ex;
-		}
-	}
-
-	private void loadAuditTypes(OperatorAccount operator) {
-		for (AuditOperator auditOperator : operator.getVisibleAudits()) {
-			canSeeAudits.add(auditOperator.getAuditType().getId());
-			if (auditOperator.isCanEdit())
-				canEditAudits.add(auditOperator.getAuditType().getId());
 		}
 	}
 
@@ -321,7 +291,9 @@ public class Permissions implements Serializable {
 		return name;
 	}
 
+	@Deprecated
 	public Set<String> getAccountCountries() {
+		// This was around so we can figure out which questions should appear
 		return accountCountries;
 	}
 
@@ -479,11 +451,12 @@ public class Permissions implements Serializable {
 			return true;
 
 		// For Operators and corporate
-		if (canSeeAudits != null)
-			return canSeeAudits.contains(new Integer(auditType));
+//		if (canSeeAudits != null)
+//			return canSeeAudits.contains(new Integer(auditType));
 		return false;
 	}
 
+	@Deprecated
 	public boolean canSeeAudit(AuditType auditType) {
 		if (isContractor())
 			return auditType.isCanContractorView();
@@ -491,21 +464,19 @@ public class Permissions implements Serializable {
 			return true;
 
 		// For Operators and corporate
-		if (canSeeAudits != null)
-			return canSeeAudits.contains(auditType.getId());
+//		if (canSeeAudits != null)
+//			return canSeeAudits.contains(auditType.getId());
 		return false;
 	}
 
+	@Deprecated
 	public Set<Integer> getCanSeeAudit() {
-		if (canSeeAudits == null)
-			canSeeAudits = new HashSet<Integer>();
-		return canSeeAudits;
+		return null;
 	}
 
+	@Deprecated
 	public Set<Integer> getCanEditAudits() {
-		if (canEditAudits == null)
-			canEditAudits = new HashSet<Integer>();
-		return canEditAudits;
+		return null;
 	}
 
 	public boolean isApprovesRelationships() {
@@ -520,12 +491,13 @@ public class Permissions implements Serializable {
 		return operatorChildren;
 	}
 
-	public Set<Integer> getVisibleCAOs() {
+	public List<Integer> getVisibleCAOs() {
 		return visibleCAOs;
 	}
 
+	@Deprecated
 	public Set<Integer> getCanSeeAudits() {
-		return canSeeAudits;
+		return null;
 	}
 
 	public TimeZone getTimezone() {
@@ -566,5 +538,9 @@ public class Permissions implements Serializable {
 
 	public boolean isRequiresOQ() {
 		return requiresOQ;
+	}
+
+	public boolean isCanSeeInsurance() {
+		return canSeeInsurance;
 	}
 }

@@ -184,6 +184,7 @@ public class ReportActivityWatch extends ReportAccount {
 			String caos = "JOIN contractor_audit_operator cao ON cao.auditID = ca.id";
 			if (permissions.isOperatorCorporate()) {
 				sql2.addWhere("aType.id IN (" + Strings.implode(permissions.getCanSeeAudits(), ",") + ")");
+				// TODO move this check up to ReportContractorAudit
 				if (permissions.getVisibleCAOs().size() > 0)
 					caos += " AND cao.opID IN (" + Strings.implode(permissions.getVisibleCAOs(), ",") + ")";
 			}

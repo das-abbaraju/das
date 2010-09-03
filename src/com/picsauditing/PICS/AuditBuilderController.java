@@ -2,6 +2,7 @@ package com.picsauditing.PICS;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -273,7 +274,7 @@ public class AuditBuilderController {
 		AuditTypeDetail auditTypeDetail = getRequiredAuditTypes().get(conAudit.getAuditType());
 		if (auditTypeDetail == null)
 			return null;
-		return builder.getDetail(conAudit.getAuditType(), categoryRulesToUse, auditTypeDetail);
+		return builder.getDetail(conAudit.getAuditType(), categoryRulesToUse, auditTypeDetail.operators);
 	}
 
 	private List<AuditCategoryRule> getCategoryRules(ContractorAccount contractor, AuditType auditType) {

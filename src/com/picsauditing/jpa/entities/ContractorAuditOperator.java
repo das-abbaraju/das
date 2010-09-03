@@ -285,15 +285,10 @@ public class ContractorAuditOperator extends BaseTable {
 
 	@Transient
 	public boolean isVisibleTo(Permissions permissions) {
-		if (permissions.isOperatorCorporate()) {
-			return permissions.getVisibleCAOs().contains(operator.getId());
-		}
-
-		for (ContractorOperator co : audit.getContractorAccount().getNonCorporateOperators()) {
-			if (co.getOperatorAccount().getInheritInsurance().getId() == operator.getId())
-				return true;
-		}
-		return false;
+		if (permissions.isContractor() || permissions.isAdmin())
+			return true;
+		
+		return this.equals(audit.getCao(permissions.getVisibleCAOs()));
 	}
 
 	@Transient
