@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "workflow")
@@ -33,6 +34,15 @@ public class Workflow extends BaseTable {
 
 	public void setSteps(List<WorkflowStep> steps) {
 		this.steps = steps;
+	}
+	
+	@Transient
+	public WorkflowStep getStep(int stepID) {
+		for (WorkflowStep step : steps) {
+			if (step.getId() == stepID)
+				return step;
+		}
+		return null;
 	}
 
 }

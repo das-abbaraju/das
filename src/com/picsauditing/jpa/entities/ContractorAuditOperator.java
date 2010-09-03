@@ -78,11 +78,11 @@ public class ContractorAuditOperator extends BaseTable {
 	}
 
 	@Transient
-	public void changeStatus(AuditStatus auditStatus, User user) {
+	public void changeStatus(AuditStatus auditStatus, Permissions permissions) {
 		// If we're changing the status to Submitted or Active, then we need
 		// to set the dates
 		statusChangedDate = new Date();
-		setAuditColumns(user);
+		setAuditColumns(permissions);
 		setStatus(auditStatus);
 	}
 

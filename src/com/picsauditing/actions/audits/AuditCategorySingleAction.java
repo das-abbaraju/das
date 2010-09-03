@@ -67,121 +67,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			auditPercentCalculator.percentCalculateComplete(conAudit, conAudit.getAuditType().getClassType().equals(
 					AuditTypeClass.IM));
 
-		if ("Submit".equals(button)) {
-			hasStatusChanged = true;
-			if (conAudit.getPercentComplete() < 100) {
-				addActionError("Please complete the audit before you submit");
-				return SUCCESS;
-			}
-			if (conAudit.getAuditType().getClassType().isPolicy()) {
-				if (conAudit.getPercentComplete() == 100 && !conAudit.getAuditStatus().isExpired()) {
-					ContractorAuditOperator cao = caoDAO.find(conAudit.getId(), opID);
-					if (cao != null) {
-						cao.setStatus(CaoStatus.Submitted);
-						cao.setAuditColumns(permissions);
-						caoDAO.save(cao);
-						addActionMessage("The <strong>" + conAudit.getAuditType().getAuditName()
-								+ "</strong> Policy has been submitted for <strong>" + cao.getOperator().getName()
-								+ "</strong>.");
-					}
-				} else {
-					addActionError("The <strong>" + conAudit.getAuditType().getAuditName()
-							+ "</strong> policy is not complete. Please enter all required answers before submitting.");
-				}
-			} else if (conAudit.getAuditType().isPqf()) {
-				if (conAudit.getAuditStatus().isActive() && conAudit.getPercentVerified() == 100) {
-					// If the PQF is being resubmitted, but it's already
-					// verified and active, we don't need to reverify
-					auditStatus = AuditStatus.Active;
-				} else if (conAudit.getAuditStatus().isActiveResubmittedExempt())
-					auditStatus = AuditStatus.Resubmitted;
-				else
-					auditStatus = AuditStatus.Submitted;
-			} else if (conAudit.getAuditType().isHasRequirements() || conAudit.getAuditType().isMustVerify())
-				auditStatus = AuditStatus.Submitted;
-			else
-				auditStatus = AuditStatus.Active;
-			conAudit.setCompletedDate(new Date());
-		}
 
-		if ("Resubmit".equals(button)) {
-			// TODO: find out where we use this
-			hasStatusChanged = true;
-			if (conAudit.getAuditType().getClassType().isPolicy()) {
-				ContractorAuditOperator cao = caoDAO.find(conAudit.getId(), opID);
-				if (cao != null) {
-					cao.setStatus(CaoStatus.Submitted);
-					cao.setAuditColumns(permissions);
-					caoDAO.save(cao);
-					addActionMessage("The <strong>" + conAudit.getAuditType().getAuditName()
-							+ "</strong> Policy has been resubmitted  for <strong>" + cao.getOperator().getName()
-							+ "</strong>.");
-				}
-			} else {
-				conAudit.changeStatus(AuditStatus.Submitted, getUser());
-				auditDao.save(conAudit);
-				return SUCCESS;
-			}
-		}
-
-		if (!hasStatusChanged)
-			return SUCCESS;
-
-		// We're changing the status
-		if (auditStatus.equals(AuditStatus.Active)) {
-			conAudit.setClosedDate(new Date());
-			if (!conAudit.getAuditType().isHasMultiple()) {
-				// This audit can only have one active audit, expire the
-				// previous one
-				for (ContractorAudit oldAudit : conAudit.getContractorAccount().getAudits()) {
-					if (!oldAudit.equals(conAudit)) {
-						if (oldAudit.getAuditType().equals(conAudit.getAuditType())) {
-							oldAudit.changeStatus(AuditStatus.Expired, getUser());
-							auditDao.save(oldAudit);
-						}
-					}
-				}
-			}
-		}
-
-		if (auditStatus.equals(AuditStatus.Submitted)) {
-			String notes = conAudit.getAuditType().getAuditName() + " Submitted";
-			if (!Strings.isEmpty(conAudit.getAuditFor()))
-				notes += " for " + conAudit.getAuditFor();
-
-			if (conAudit.getAuditType().getTemplate() != null) {
-				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(conAudit.getAuditType().getTemplate());
-				emailBuilder.setPermissions(permissions);
-				emailBuilder.setConAudit(conAudit);
-				if (conAudit.getAuditType().getClassType().isAudit())
-					emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
-				EmailSender.send(emailBuilder.build());
-
-				notes += " and email sent to " + emailBuilder.getSentTo();
-			}
-
-			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, getViewableByAccount(conAudit
-					.getAuditType().getAccount()));
-		}
-
-		if (auditStatus.equals(AuditStatus.Active)) {
-			if (conAudit.getAuditType().isHasRequirements()) {
-				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(81); // Audit Completed
-				emailBuilder.setPermissions(permissions);
-				emailBuilder.setConAudit(conAudit);
-				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
-				EmailQueue email = emailBuilder.build();
-				email.setViewableById(getViewableByAccount(conAudit.getAuditType().getAccount()));
-				EmailSender.send(email);
-			}
-			addNote(conAudit.getContractorAccount(), "Closed the requirements and Activated the "
-					+ conAudit.getAuditType().getAuditName(), NoteCategory.Audits, getViewableByAccount(conAudit
-					.getAuditType().getAccount()));
-		}
-
-		conAudit.changeStatus(auditStatus, getUser());
 		auditDao.save(conAudit);
 
 		ContractorAccount contractorAccount = conAudit.getContractorAccount();
@@ -253,7 +139,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 	public boolean isHasSubmittedCaos() {
 		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
-			if (cao.getStatus() == CaoStatus.Submitted)
+			if (cao.getStatus().isSubmitted())
 				return true;
 		}
 		return false;
@@ -261,7 +147,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 	public boolean isHasRejectedCaos() {
 		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
-			if (cao.getStatus().isRejected())
+			if (cao.getStatus().isIncomplete())
 				return true;
 		}
 		return false;

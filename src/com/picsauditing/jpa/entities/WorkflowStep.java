@@ -7,6 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "workflow_step")
@@ -63,5 +64,11 @@ public class WorkflowStep extends BaseTable {
 	
 	public void setNoteRequired(boolean noteRequired) {
 		this.noteRequired = noteRequired;
+	}
+
+	@Transient
+	public String getButtonName() {
+		// TODO figure out if we want to store this on newStatus or have each step define their own button name
+		return newStatus.toString();
 	}
 }

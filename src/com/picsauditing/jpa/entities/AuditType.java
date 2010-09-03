@@ -50,11 +50,9 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	protected boolean hasMultiple;
 	protected boolean isScheduled;
 	protected boolean hasAuditor;
-	protected boolean hasRequirements;
 	protected boolean canContractorView;
 	protected boolean canContractorEdit;
 	protected Integer monthsToExpire;
-	protected boolean mustVerify;
 	protected boolean renewable = true;
 	protected Account account;
 	protected EmailTemplate template;
@@ -76,10 +74,8 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		this.displayOrder = a.getDisplayOrder();
 		this.hasAuditor = a.isHasAuditor();
 		this.hasMultiple = a.isHasMultiple();
-		this.hasRequirements = a.isHasRequirements();
 		this.isScheduled = a.isScheduled();
 		this.monthsToExpire = a.getMonthsToExpire();
-		this.mustVerify = a.isMustVerify();
 		this.renewable = a.isRenewable();
 		this.template = a.getTemplate();
 	}
@@ -155,14 +151,6 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		this.hasAuditor = hasAuditor;
 	}
 
-	public boolean isHasRequirements() {
-		return hasRequirements;
-	}
-
-	public void setHasRequirements(boolean hasRequirements) {
-		this.hasRequirements = hasRequirements;
-	}
-
 	public boolean isCanContractorView() {
 		return canContractorView;
 	}
@@ -185,14 +173,6 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	public void setMonthsToExpire(Integer monthsToExpire) {
 		this.monthsToExpire = monthsToExpire;
-	}
-
-	public boolean isMustVerify() {
-		return mustVerify;
-	}
-
-	public void setMustVerify(boolean mustVerify) {
-		this.mustVerify = mustVerify;
 	}
 
 	/**
@@ -348,4 +328,5 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public void setWorkFlow(Workflow workFlow) {
 		this.workFlow = workFlow;
 	}
+
 }
