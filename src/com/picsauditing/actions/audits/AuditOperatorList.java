@@ -14,7 +14,6 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -22,6 +21,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.AuditTypeCache;
 
 public class AuditOperatorList extends OperatorActionSupport {
+
 	private static final long serialVersionUID = -618269908092576272L;
 
 	protected int oID;
@@ -196,11 +196,6 @@ public class AuditOperatorList extends OperatorActionSupport {
 
 	public Map<Integer, LowMedHigh> getRiskLevelList() {
 		return LowMedHigh.getMap();
-	}
-
-	public AuditStatus[] getAuditStatusList() {
-		AuditStatus[] list = { AuditStatus.Active, AuditStatus.Submitted };
-		return list;
 	}
 
 	public FlagColor[] getFlagColorList() {

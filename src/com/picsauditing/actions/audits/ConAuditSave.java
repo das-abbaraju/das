@@ -21,9 +21,7 @@ import com.picsauditing.util.Strings;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
- * 
- * @author Trevor
- * 
+ * It's only used from verification_detail_wrapper.jsp
  */
 public class ConAuditSave extends AuditActionSupport {
 
@@ -38,6 +36,7 @@ public class ConAuditSave extends AuditActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		
+		// TODO Move this over to the CaoSave class
 		findConAudit();
 		String note = "";
 		if (auditStatus.equals(AuditStatus.Active.toString())) {

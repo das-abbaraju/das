@@ -1,8 +1,10 @@
 package com.picsauditing.util;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.SocketException;
 import java.util.List;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -14,6 +16,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.util.log.PicsLogger;
 
 public class EbixLoader {
@@ -22,13 +25,14 @@ public class EbixLoader {
 	private ContractorAuditDAO contractorAuditDAO;
 	private ContractorAccountDAO contractorAccountDAO;
 
-	public EbixLoader(AppPropertyDAO appPropDao, ContractorAuditDAO contractorAuditDAO, ContractorAccountDAO contractorAccountDAO) {
+	public EbixLoader(AppPropertyDAO appPropDao, ContractorAuditDAO contractorAuditDAO,
+			ContractorAccountDAO contractorAccountDAO) {
 		this.appPropDao = appPropDao;
 		this.contractorAuditDAO = contractorAuditDAO;
 		this.contractorAccountDAO = contractorAccountDAO;
 	}
 
-	public void load() {
+	public void load() throws SocketException, IOException {
 		String server = appPropDao.find("huntsmansync.ftp.server").getValue();
 		String username = appPropDao.find("huntsmansync.ftp.user").getValue();
 		String password = appPropDao.find("huntsmansync.ftp.password").getValue();
@@ -92,7 +96,7 @@ public class EbixLoader {
 								// the other field. comes in as a Y/N.
 								AuditStatus status = AuditStatus.Pending;
 								if (data[1].equals("Y"))
-									status = AuditStatus.Active;
+									status = AuditStatus.Complete;
 
 								try {
 									ContractorAccount conAccount = contractorAccountDAO.find(contractorId);
@@ -107,17 +111,20 @@ public class EbixLoader {
 									}
 
 									for (ContractorAudit audit : audits) {
-										if (status != audit.getAuditStatus()) {
-											PicsLogger.log("Setting Ebix audit " + audit.getId() + " for contractor "
-													+ conAccount.getId() + " to " + status.name());
-											audit.setAuditStatus(status);
-											contractorAuditDAO.save(audit);
+										PicsLogger.log("Setting Ebix audit " + audit.getId() + " for contractor "
+												+ conAccount.getId() + " to " + status.name());
+										for (ContractorAuditOperator cao : audit.getOperators()) {
+											if (status != cao.getStatus()) {
+												cao.setStatus(status);
+												contractorAuditDAO.save(audit);
 
-											conAccount.incrementRecalculation();
-											contractorAccountDAO.save(conAccount);
-										} else {
-											PicsLogger.log("No change for Ebix audit " + audit.getId()
-													+ " for contractor " + conAccount.getId() + ", " + status.name());
+												conAccount.incrementRecalculation();
+												contractorAccountDAO.save(conAccount);
+											} else {
+												PicsLogger.log("No change for Ebix audit " + audit.getId()
+														+ " for contractor " + conAccount.getId() + ", "
+														+ status.name());
+											}
 										}
 									}
 

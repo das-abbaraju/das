@@ -25,7 +25,6 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
-import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -101,7 +100,7 @@ public class AuditBuilderController {
 							// have one
 							found = true;
 						} else {
-							if (!conAudit.getAuditStatus().isExpired() && !conAudit.willExpireSoon())
+							if (!conAudit.isExpired() && !conAudit.willExpireSoon())
 								// The audit is still valid for at least another
 								// 60 days
 								found = true;
@@ -124,21 +123,23 @@ public class AuditBuilderController {
 			ContractorAudit conAudit = iter.next();
 			PicsLogger.log("checking to see if we still need existing " + conAudit.getAuditType().getAuditName()
 					+ " - #" + conAudit.getId());
-			if (conAudit.getAuditStatus().equals(AuditStatus.Pending) && conAudit.getPercentComplete() == 0
-					&& !conAudit.isManuallyAdded()) {
-				// This auto audit hasn't been started yet, double check to make
-				// sure it's still needed
+			if (!getRequiredAuditTypeSet().contains(conAudit.getAuditType())) {
+				boolean needed = false;
+				for (ContractorAuditOperator cao : conAudit.getOperators()) {
+					if (!cao.getStatus().isPending() && !cao.getStatus().isNotApplicable())
+						needed = true;
+					if (cao.getPercentComplete() >= 0)
+						needed = true;
+				}
 
-				if (!getRequiredAuditTypeSet().contains(conAudit.getAuditType())) {
-					if (conAudit.getData().size() == 0) {
-						PicsLogger.log("removing unneeded audit " + conAudit.getAuditType().getAuditName());
-						// TODO try removing the audits from the list if we can
-						// ContractorAudit removeMe = new ContractorAudit();
-						// removeMe.setId(auditID);
-						// contractor.getAudits().remove(removeMe);
-						cAuditDAO.remove(conAudit.getId());
-						iter.remove();
-					}
+				if (needed && conAudit.getData().size() == 0) {
+					PicsLogger.log("removing unneeded audit " + conAudit.getAuditType().getAuditName());
+					// TODO try removing the audits from the list if we can
+					// ContractorAudit removeMe = new ContractorAudit();
+					// removeMe.setId(auditID);
+					// contractor.getAudits().remove(removeMe);
+					cAuditDAO.remove(conAudit.getId());
+					iter.remove();
 				}
 			}
 		}
@@ -245,7 +246,7 @@ public class AuditBuilderController {
 	}
 
 	public AuditCategoriesDetail getAuditCategoryDetail(ContractorAudit conAudit) {
-		
+
 		List<AuditCategoryRule> originalList = getCategoryRules(conAudit.getContractorAccount(), conAudit
 				.getAuditType());
 		List<AuditCategoryRule> categoryRulesToUse = new ArrayList<AuditCategoryRule>();
@@ -268,7 +269,7 @@ public class AuditBuilderController {
 			}
 			categoryRulesToUse.add(rule);
 		}
-		
+
 		AuditTypeDetail auditTypeDetail = getRequiredAuditTypes().get(conAudit.getAuditType());
 		if (auditTypeDetail == null)
 			return null;
@@ -334,7 +335,7 @@ public class AuditBuilderController {
 		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require insurance.");
 
 		AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
-		
+
 		if (detail == null) {
 			PicsLogger.log("missing detail for " + conAudit.getAuditType());
 			PicsLogger.stop();
@@ -353,7 +354,7 @@ public class AuditBuilderController {
 
 		// Add CAOs that don't yet exist
 		for (OperatorAccount operator : detail.governingBodies) {
-			
+
 			PicsLogger.log("Evaluating CAO for " + operator.getName());
 
 			// Now find the existing cao record for this operator (if one
@@ -366,7 +367,7 @@ public class AuditBuilderController {
 				cao.setOperator(operator);
 				cao.setAuditColumns(user);
 				conAudit.getOperators().add(cao);
-				cao.setStatus(CaoStatus.Pending);
+				cao.setStatus(cao.getAudit().getAuditType().getWorkFlow().getFirstStep().getNewStatus());
 				contractorAuditOperatorDAO.save(cao);
 			}
 		}
@@ -376,13 +377,8 @@ public class AuditBuilderController {
 		while (iter.hasNext()) {
 			ContractorAuditOperator cao = iter.next();
 			if (!detail.governingBodies.contains(cao.getOperator())) {
-				if (cao.getStatus().isTemporary()) {
-					contractorAuditOperatorDAO.remove(cao);
-					iter.remove();
-				} else if (cao.isVisible()) {
-					cao.setVisible(false);
-					contractorAuditOperatorDAO.save(cao);
-				}
+				contractorAuditOperatorDAO.remove(cao);
+				iter.remove();
 			}
 		}
 
@@ -419,27 +415,22 @@ public class AuditBuilderController {
 	}
 
 	public void addAnnualAddendum(List<ContractorAudit> currentAudits, int year, AuditType auditType) {
-		boolean found = false;
 		for (ContractorAudit cAudit : currentAudits) {
 			if (cAudit.getAuditType().isAnnualAddendum() && year == Integer.parseInt(cAudit.getAuditFor())) {
-				if (cAudit.getAuditStatus().equals(AuditStatus.Expired))
-					// this should never happen actually...but just incase
-					cAudit.changeStatus(AuditStatus.Pending, user);
-				found = true;
+				// Do nothing. It's already here
+				return;
 			}
 		}
-		if (!found) {
-			Calendar startDate = Calendar.getInstance();
-			startDate.set(year, Calendar.DECEMBER, 31);
-			PicsLogger.log("Adding: " + auditType.getId() + auditType.getAuditName());
-			ContractorAudit annualAudit = createAudit(auditType);
-			annualAudit.setAuditFor(Integer.toString(year));
-			annualAudit.setCreationDate(startDate.getTime());
-			Date dateToExpire = DateBean.addMonths(startDate.getTime(), auditType.getMonthsToExpire());
-			annualAudit.setExpiresDate(dateToExpire);
-			cAuditDAO.save(annualAudit);
-			currentAudits.add(annualAudit);
-		}
+		Calendar startDate = Calendar.getInstance();
+		startDate.set(year, Calendar.DECEMBER, 31);
+		PicsLogger.log("Adding: " + auditType.getId() + auditType.getAuditName());
+		ContractorAudit annualAudit = createAudit(auditType);
+		annualAudit.setAuditFor(Integer.toString(year));
+		annualAudit.setCreationDate(startDate.getTime());
+		Date dateToExpire = DateBean.addMonths(startDate.getTime(), auditType.getMonthsToExpire());
+		annualAudit.setExpiresDate(dateToExpire);
+		cAuditDAO.save(annualAudit);
+		currentAudits.add(annualAudit);
 	}
 
 	public boolean removeCategory(String answer, AuditData auditData, AuditCatData auditCatData, int categoryID) {

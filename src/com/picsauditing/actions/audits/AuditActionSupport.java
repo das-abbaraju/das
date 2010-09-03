@@ -66,13 +66,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (conAudit == null)
 			throw new RecordNotFoundException("Audit " + this.auditID);
 
-		if (conAudit.getExpiresDate() != null) {
-			if (DateBean.getDateDifference(conAudit.getExpiresDate()) < 1) {
-				conAudit.setAuditStatus(AuditStatus.Expired);
-				auditDao.save(conAudit);
-			}
-		}
-
 		contractor = conAudit.getContractorAccount();
 		id = contractor.getId();
 		if (permissions.isContractor() && id != permissions.getAccountId())
@@ -103,11 +96,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public List<AuditCatData> getCategories() {
 		if (categories != null)
 			return categories;
-
-		if (conAudit.getAuditStatus().equals(AuditStatus.Exempt)) {
-			categories = new ArrayList<AuditCatData>();
-			return categories;
-		}
 
 		categories = catDataDao.findByAudit(conAudit, permissions);
 
