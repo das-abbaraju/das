@@ -9,7 +9,10 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
@@ -66,8 +69,20 @@ public class ReportBiddingContractors extends ReportAccount {
 			String summary = "";
 			int templateId = 0;
 			if ("Upgrade".equals(button)) {
+				// See also ContractorDashboard Upgrade to Full Membership
 				cAccount.setAcceptsBids(false);
 				cAccount.setRenew(true);
+				
+				for (ContractorAudit cAudit : cAccount.getAudits()) {
+					if (cAudit.getAuditType().isPqf()) {
+						for (ContractorAuditOperator cao : cAudit.getOperators()) {
+							if (cao.getStatus().after(AuditStatus.Pending)) {
+								cao.changeStatus(AuditStatus.Pending, permissions);
+								contractorAccountDAO.save(cao);
+							}
+						}
+					}
+				}
 
 				// Setting the payment Expires date to today
 				for (Invoice invoice : cAccount.getInvoices()) {

@@ -86,8 +86,7 @@ public class VerifyView extends ContractorActionSupport {
 				for (AuditData auditData : conAudit.getData()) {
 					int categoryID = auditData.getQuestion().getCategory().getId();
 					if (categoryID != AuditCategory.CITATIONS
-							|| (categoryID == AuditCategory.CITATIONS
-									&& (auditData.getQuestion().isRequired())
+							|| (categoryID == AuditCategory.CITATIONS && (auditData.getQuestion().isRequired())
 									|| (auditData.getQuestion().getId() == 3565 && auditData.isAnswered())
 									|| (auditData.getQuestion().getId() == 3566 && auditData.isAnswered())
 									|| (auditData.getQuestion().getId() == 3567 && auditData.isAnswered()) || (auditData
@@ -148,12 +147,12 @@ public class VerifyView extends ContractorActionSupport {
 					if (!ad.isVerified()) {
 						sb.append(ad.getQuestion().getCategory().getNumber() + "."
 								+ ad.getQuestion().getCategory().getNumber() + "." + ad.getQuestion().getNumber());
-						for(AuditCategory ac : ad.getQuestion().getCategory().getSubCategories()){
-							if(ad.getQuestion().getCategory().getId()==ac.getParent().getId()){
+						for (AuditCategory ac : ad.getQuestion().getCategory().getSubCategories()) {
+							if (ad.getQuestion().getCategory().getId() == ac.getParent().getId()) {
 								sb.append(":" + ad.getQuestion().getCategory() + "/"
 										+ ad.getQuestion().getColumnHeaderOrQuestion());
 							}
-								
+
 						}
 						sb.append("\n");
 						sb.append("Comment : " + ad.getComment());
@@ -265,7 +264,7 @@ public class VerifyView extends ContractorActionSupport {
 				}
 			}.grep(getActiveAudits());
 		}
-		
+
 		Collections.sort(verificationAudits, new Comparator<ContractorAudit>() {
 
 			@Override

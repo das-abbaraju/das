@@ -161,10 +161,12 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 			}
 
-			for (ContractorAudit conAudit : getActiveAudits()) {
-				if (conAudit.getAuditType().isCanContractorView()
-						&& (conAudit.getAuditType().isPqf() || conAudit.isManuallyAdded() || auditTypeList
-								.contains(conAudit.getAuditType()))) {
+			for (ContractorAudit conAudit : contractor.getAudits()) {
+				if (conAudit.getAuditType().isCanContractorView()) {
+					for (ContractorAuditOperator cao : conAudit.getOperators()) {
+						
+					}
+					
 					if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
 						if (conAudit.getAuditType().getClassType().isPqf() && conAudit.getAuditType().isCanContractorEdit()) {
 							if (conAudit.getAuditType().isPqf())

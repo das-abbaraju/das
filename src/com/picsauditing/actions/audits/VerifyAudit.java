@@ -15,6 +15,7 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 
 public class VerifyAudit extends AuditActionSupport {
+
 	private static final long serialVersionUID = -4976847934505647430L;
 	private List<AuditData> pqfQuestions = null;
 
@@ -83,21 +84,20 @@ public class VerifyAudit extends AuditActionSupport {
 
 	public Comparator<AuditData> getDataComparator() {
 		return new Comparator<AuditData>() {
+
 			@Override
 			public int compare(AuditData o1, AuditData o2) {
-				if( o1 == null ) return -1;
-				
+				if (o1 == null)
+					return -1;
+
 				return o1.compareTo(o2);
 			}
 		};
 	}
 
-	
-	
 	public boolean isShowApproveButton() {
-		if (conAudit.getAuditType().isPqf() 
-				&& (conAudit.getAuditStatus().isSubmitted()
-				|| conAudit.getAuditStatus().isResubmitted())
+		if (conAudit.getAuditType().isPqf()
+				&& (conAudit.getAuditStatus().isSubmitted() || conAudit.getAuditStatus().isResubmitted())
 				&& getPqfQuestions().size() == 0)
 			return true;
 		if (conAudit.getPercentVerified() == 100)
@@ -105,44 +105,44 @@ public class VerifyAudit extends AuditActionSupport {
 
 		return false;
 	}
-	
+
 	public OshaAudit getOsha() {
 		AuditData auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(), 2064);
 		if (auditData != null && "Yes".equals(auditData.getAnswer())) {
-			for(OshaAudit oshaAudit : conAudit.getOshas()) {
-				if(oshaAudit.getType().equals(OshaType.OSHA) && oshaAudit.isCorporate()) {
+			for (OshaAudit oshaAudit : conAudit.getOshas()) {
+				if (oshaAudit.getType().equals(OshaType.OSHA) && oshaAudit.isCorporate()) {
 					return oshaAudit;
-				}	
+				}
 			}
-		}		
+		}
 		return null;
 	}
-	
+
 	public boolean isShowQuestionToVerify(AuditQuestion auditQuestion, boolean isAnswered) {
 		int questionid = auditQuestion.getId();
-		if(questionid == 2447 || questionid == 2448)
+		if (questionid == 2447 || questionid == 2448)
 			return false;
-		for(AuditCategory ac : auditQuestion.getCategory().getSubCategories()){
-			if(ac.getParent().getId() == auditQuestion.getCategory().getId()){
+		for (AuditCategory ac : auditQuestion.getCategory().getSubCategories()) {
+			if (ac.getParent().getId() == auditQuestion.getCategory().getId()) {
 				if (ac.getId() != AuditCategory.CITATIONS)
-					return true;				
-			}			
+					return true;
+			}
 		}
-		for(AuditCategory ac : auditQuestion.getCategory().getSubCategories()){
-			if(ac.getParent().getId() == auditQuestion.getCategory().getId()){
-				if (ac.getId() == AuditCategory.CITATIONS){
-					if(auditQuestion.isRequired())
+		for (AuditCategory ac : auditQuestion.getCategory().getSubCategories()) {
+			if (ac.getParent().getId() == auditQuestion.getCategory().getId()) {
+				if (ac.getId() == AuditCategory.CITATIONS) {
+					if (auditQuestion.isRequired())
 						return true;
-					if(questionid == 3565 && isAnswered)
+					if (questionid == 3565 && isAnswered)
 						return true;
-					if(questionid == 3566 && isAnswered)
+					if (questionid == 3566 && isAnswered)
 						return true;
-					if(questionid == 3567 && isAnswered)
+					if (questionid == 3567 && isAnswered)
 						return true;
-					if(questionid == 3568 && isAnswered)
+					if (questionid == 3568 && isAnswered)
 						return true;
 				}
-			}			
+			}
 		}
 		return false;
 	}

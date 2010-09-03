@@ -340,6 +340,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public class AvailableSet {
+
 		public final Map<Date, List<AuditorAvailability>> days = new TreeMap<Date, List<AuditorAvailability>>();
 		private Date latest;
 

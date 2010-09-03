@@ -36,6 +36,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorWatch;
@@ -148,13 +149,17 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		if ("Upgrade to Full Membership".equals(button)) {
+			// See also ReportBiddingContractors Upgrade
 			contractor.setAcceptsBids(false);
 			contractor.setRenew(true);
 			for (ContractorAudit cAudit : contractor.getAudits()) {
-				if (cAudit.getAuditType().isPqf() && !cAudit.getAuditStatus().isPending()) {
-					cAudit.changeStatus(AuditStatus.Pending, getUser());
-					auditDao.save(cAudit);
-					break;
+				if (cAudit.getAuditType().isPqf()) {
+					for (ContractorAuditOperator cao : cAudit.getOperators()) {
+						if (cao.getStatus().after(AuditStatus.Pending)) {
+							cao.changeStatus(AuditStatus.Pending, permissions);
+							auditDao.save(cao);
+						}
+					}
 				}
 			}
 			// Setting the payment Expires date to today
