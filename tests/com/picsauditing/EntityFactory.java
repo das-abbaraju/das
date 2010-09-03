@@ -11,7 +11,6 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -36,7 +35,7 @@ import com.picsauditing.mail.SubscriptionTimePeriod;
  * 
  */
 public class EntityFactory {
-	
+
 	static private int counter = 1;
 
 	static public OperatorAccount makeOperator() {
@@ -105,7 +104,6 @@ public class EntityFactory {
 		ContractorAudit conAudit = new ContractorAudit();
 		conAudit.setAuditType(makeAuditType(auditTypeID));
 		conAudit.setContractorAccount(contractor);
-		conAudit.setAuditStatus(AuditStatus.Active);
 		return conAudit;
 	}
 
@@ -113,7 +111,6 @@ public class EntityFactory {
 		ContractorAudit conAudit = new ContractorAudit();
 		conAudit.setAuditType(makeAuditType(auditTypeID));
 		conAudit.setContractorAccount(contractor);
-		conAudit.setAuditStatus(AuditStatus.Active);
 		conAudit.setAuditFor(auditFor);
 		return conAudit;
 	}
@@ -166,7 +163,7 @@ public class EntityFactory {
 		ContractorAuditOperator cao = new ContractorAuditOperator();
 		cao.setAudit(conAudit);
 		cao.setOperator(operator);
-		cao.setStatus(CaoStatus.Approved);
+		cao.setStatus(AuditStatus.Approved);
 		cao.setFlag(FlagColor.Green);
 		conAudit.getOperators().add(cao);
 	}

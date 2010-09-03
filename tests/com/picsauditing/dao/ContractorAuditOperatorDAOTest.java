@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.CaoStatus;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -43,7 +43,7 @@ public class ContractorAuditOperatorDAOTest {
 		cao.setOperator(op);
 		cao.setAudit(ca);
 		cao.setFlag(FlagColor.Green);
-		cao.setStatus(CaoStatus.Approved);
+		cao.setStatus(AuditStatus.Approved);
 		cao.setAuditColumns(new User(2357)); // kpartridge
 
 		cao = caoDao.save(cao);
@@ -68,7 +68,6 @@ public class ContractorAuditOperatorDAOTest {
 			for (ContractorAuditOperator cao : caoList)
 				assertTrue(u.getAccount().getId() == cao.getAudit().getContractorAccount().getId());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -89,7 +88,6 @@ public class ContractorAuditOperatorDAOTest {
 			for (ContractorAuditOperator cao : caoList)
 				assertTrue(u.getAccount().getId() == cao.getOperator().getId());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

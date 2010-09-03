@@ -8,9 +8,9 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 
 public class FlagDataCalculatorTest extends TestCase {
+
 	/* Create the main variables */
 	private FlagDataCalculator calculator;
 	private FlagCriteriaContractor fcCon;
@@ -289,7 +290,7 @@ public class FlagDataCalculatorTest extends TestCase {
 		fc.setAuditType(at);
 		caoMap = new HashMap<AuditType, List<ContractorAuditOperator>>();
 		ContractorAuditOperator cao = new ContractorAuditOperator();
-		cao.setStatus(CaoStatus.Pending);
+		cao.setStatus(AuditStatus.Pending);
 		cao.setAudit(ca);
 		List<ContractorAuditOperator> caoList = new ArrayList<ContractorAuditOperator>();
 		caoList.add(cao);
@@ -299,7 +300,7 @@ public class FlagDataCalculatorTest extends TestCase {
 
 		caoMap = new HashMap<AuditType, List<ContractorAuditOperator>>();
 		cao = new ContractorAuditOperator();
-		cao.setStatus(CaoStatus.Approved);
+		cao.setStatus(AuditStatus.Approved);
 		cao.setAudit(ca);
 		caoList = new ArrayList<ContractorAuditOperator>();
 		caoList.add(cao);
