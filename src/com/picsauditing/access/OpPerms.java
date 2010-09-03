@@ -67,7 +67,7 @@ public enum OpPerms {
 	ManageCalendars("Manage Safety Professional Calendars", "Allows user to edit all Safety Professional calendars", true, true, true, false, false),
 	ManageCategoryRules("Manage Category Rules", "Allows user to view and edit Category Rules for Audits and other documents", true, true, true, false, false),
 	ManageAuditTypeRules("Manage AuditType Rules", "Allows user to view and edit Audit Type Rules for Audits and other documents", true, true, true, false, false),
-	ManageAuditWorkFlow("Manage Audit Work Flows", "Allows users to view and edit work flows used with Audit Types", true, false, true, false, false),
+	ManageAuditWorkFlow("Manage Audit Workflow", "Allows users to view and edit work flows used with Audit Types", true, true, true, false, false),
 
 	// Insurance
 	InsuranceCerts("Insurance Certificates", "Allows users to view (Read), upload (Edit), and delete insurance certificates", true, true, true, false, true),
