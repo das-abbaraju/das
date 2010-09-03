@@ -64,6 +64,7 @@
 
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js"></script>
 <script>
 $(function(){
 	$('#search_box').autocomplete('HeaderSearchAjax.action', {
@@ -71,6 +72,7 @@ $(function(){
 		scroll: false, 
 		max: 11,
 		delay: 200,
+		//extraParams: {mSearchTime: new Date(milliseconds)},
 		formatItem: function(data,i,count){
 			return format(data, i);						
 		},

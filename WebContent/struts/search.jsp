@@ -17,9 +17,9 @@ function changePage(form, start){
 <s:hidden id="hiddenSearchTerm" value="%{searchTerm}" />
 <div id="filterSuggest">
 	<div id="info" style="">You searched for: <s:property value="searchTerm" /><br/>
-		<s:if test="commonFilterSuggest.size() > 0">
+		<s:if test="searchEngine.commonFilterSuggest.size() > 0">
 			Try adding
-			<s:iterator value="commonFilterSuggest" id="sug">
+			<s:iterator value="searchEngine.commonFilterSuggest" id="sug">
 				<a href="Search.action?button=search&searchTerm=<s:property value="searchTerm.replace(' ','+')"/>+<s:property value="#sug.replace(' ','-').toLowerCase()"/>"><s:property value="#sug.toLowerCase()"/></a> 
 			</s:iterator>
 			to your search?
