@@ -1716,7 +1716,6 @@
 		<action name="CertificateUpload"
 			class="com.picsauditing.actions.contractors.CertificateFileUpload">
 			<result>struts/contractors/con_cert_upload.jsp</result>
-			<result name="success">struts/contractors/con_cert_upload.jsp</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 		

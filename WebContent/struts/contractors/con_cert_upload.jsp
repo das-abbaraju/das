@@ -52,6 +52,8 @@ function closePage() {
 					<s:hidden name="id" />
 					<s:hidden name="certID" />
 					<s:hidden name="caoID" />
+					<s:hidden name="questionID" />
+					<s:hidden name="auditID" />
 					<s:if test="certificate == null || certificate.caos == null || certificate.caos.size() == 0">
 						<div class="question">
 							<label>File:</label>

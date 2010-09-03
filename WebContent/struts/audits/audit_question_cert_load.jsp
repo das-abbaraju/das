@@ -34,7 +34,7 @@
 			</s:else> 
 			<br />
 			<s:if test="#editable">
-				<a href="#" class="add" onclick="showCertUpload(<s:property value="contractor.id" />, 0, <s:property value="#q.id"/>); return false;" title="Opens in new window (please disable your popup blocker)">Upload New File</a>&nbsp;&nbsp;
+				<a href="#" class="add" onclick="showCertUpload(<s:property value="contractor.id" />, 0, 0, <s:property value="#q.id"/>, <s:property value="auditID" />); return false;" title="Opens in new window (please disable your popup blocker)">Upload New File</a>&nbsp;&nbsp;
 				<a href="#" onclick="showCertificates(<s:property value="contractor.id"/>,<s:property value="#q.id"/>,'question'<s:if test="catDataID > 0">,<s:property value="catDataID" /></s:if>); return false;">Attach Existing File</a>
 			</s:if>
 		</div>

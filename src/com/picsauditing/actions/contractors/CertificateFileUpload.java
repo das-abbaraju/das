@@ -7,9 +7,13 @@ import org.apache.struts2.ServletActionContext;
 import org.jboss.util.Strings;
 
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
@@ -26,11 +30,19 @@ public class CertificateFileUpload extends ContractorActionSupport {
 	private Certificate certificate = null;
 	protected int caoID;
 	private boolean changed = false;
-
+	
+	// Save to audit data
+	private AuditQuestionDAO questionDAO;
+	private AuditDataDAO dataDAO;
+	private int questionID;
+	private int auditID;
+	
 	public CertificateFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			CertificateDAO certificateDAO) {
+			CertificateDAO certificateDAO, AuditQuestionDAO questionDAO, AuditDataDAO dataDAO) {
 		super(accountDao, auditDao);
 		this.certificateDAO = certificateDAO;
+		this.questionDAO = questionDAO;
+		this.dataDAO = dataDAO;
 	}
 
 	public String execute() throws Exception {
@@ -131,6 +143,21 @@ public class CertificateFileUpload extends ContractorActionSupport {
 							getFileName(certID), extension, true);
 					addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
 				}
+				
+				if (questionID > 0 && auditID > 0) {
+					AuditQuestion q = questionDAO.find(questionID);
+					AuditData d = dataDAO.findAnswerByConQuestion(id, questionID);
+					
+					if (d == null)
+						d = new AuditData();
+					
+					d.setAuditColumns(permissions);
+					d.setAnswer(certID + "");
+					d.setQuestion(q);
+					d.setAudit(auditDao.find(auditID));
+					
+					dataDAO.save(d);
+				}
 
 				changed = true;
 			}
@@ -216,5 +243,21 @@ public class CertificateFileUpload extends ContractorActionSupport {
 
 	public boolean isChanged() {
 		return changed;
+	}
+	
+	public int getQuestionID() {
+		return questionID;
+	}
+	
+	public void setQuestionID(int questionID) {
+		this.questionID = questionID;
+	}
+	
+	public int getAuditID() {
+		return auditID;
+	}
+	
+	public void setAuditID(int auditID) {
+		this.auditID = auditID;
 	}
 }
