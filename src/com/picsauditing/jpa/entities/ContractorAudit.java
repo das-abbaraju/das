@@ -579,7 +579,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	}
 
 	public boolean hasBeforeCaoStatus(AuditStatus auditStatus) {
-		for(ContractorAuditOperator cao : operators) {
+		for(ContractorAuditOperator cao : this.operators) {
 			if(cao.getStatus().before(auditStatus))
 				return true;
 		}
