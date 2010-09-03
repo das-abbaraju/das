@@ -1007,36 +1007,6 @@ a.blueHeader:link {
 	font-weight: bold;
 }
 
-div.autocomplete {
-	position: absolute;
-	background-color: white;
-	border: 1px solid #888;
-	margin: 0;
-	padding: 0;
-	z-index: 100;
-}
-
-div.autocomplete ul {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-}
-
-div.autocomplete ul li.selected {
-	background-color: #ffb;
-}
-
-div.autocomplete ul li {
-	list-style-type: none;
-	display: block;
-	margin: 0;
-	padding: 2px;
-	padding-left: 5px;
-	cursor: pointer;
-	font-size: 14px;
-	white-space: normal;
-}
-
 table.report tr.clickable:hover,table.notes tr.clickable:hover, .tr-hover-clickable {
 	background-color: #FFC;
 	color: black;
