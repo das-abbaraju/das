@@ -11,6 +11,7 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
+import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditRule;
@@ -23,8 +24,9 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 	private int targetCategoryID = 0;
 
 	public ManageCategory(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDao,
-			AuditCategoryDAO auditCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDecisionTableDAO ruleDAO) {
-		super(emailTemplateDAO, auditTypeDao, auditCategoryDao, auditQuestionDao, ruleDAO);
+			AuditCategoryDAO auditCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDecisionTableDAO ruleDAO,
+			WorkFlowDAO wfDAO) {
+		super(emailTemplateDAO, auditTypeDao, auditCategoryDao, auditQuestionDao, ruleDAO, wfDAO);
 	}
 
 	@Override
