@@ -151,8 +151,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanVerify() {
-		if (!conAudit.getAuditType().isMustVerify())
+		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
 			return false;
+		
 		if (conAudit.getAuditType().isPqf() && conAudit.getAuditStatus().isActiveSubmitted())
 			if (permissions.isAuditor())
 				return true;
@@ -161,7 +162,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanEdit() {
-		if (conAudit.getAuditStatus().isExpired())
+		if (conAudit.isExpired())
 			return false;
 
 		AuditType type = conAudit.getAuditType();

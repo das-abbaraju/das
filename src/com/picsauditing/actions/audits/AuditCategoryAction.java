@@ -20,6 +20,7 @@ import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.MultiYearScope;
@@ -65,7 +66,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 	protected ContractorAuditOperator cao = null;
 
 	private List<ContractorAudit> activePendingEditableAudits = null;
-	
+
 	// Save the question for policy ajax calls?
 	// TODO: maybe the policy ajax calls are too complicated
 	private AuditQuestion question;
@@ -353,11 +354,11 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 	public void setNextAudit(ContractorAudit nextAudit) {
 		this.nextAudit = nextAudit;
 	}
-	
+
 	public AuditQuestion getQuestion() {
 		return question;
 	}
-	
+
 	public void setQuestion(AuditQuestion question) {
 		this.question = question;
 	}
@@ -377,7 +378,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 	public int getNextPolicyID() {
 		if (nextPolicyID == null) {
 			for (ContractorAudit otherAudit : contractor.getAudits()) {
-				if (!conAudit.equals(otherAudit) && !otherAudit.getAuditStatus().isExpired()
+				if (!conAudit.equals(otherAudit) && !otherAudit.isExpired()
 						&& otherAudit.getAuditType().getClassType().isPolicy()) {
 					for (ContractorAuditOperator cao : otherAudit.getOperators()) {
 						if (cao.isVisible()) {
@@ -396,19 +397,14 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		if (activePendingEditableAudits == null) {
 			activePendingEditableAudits = new ArrayList<ContractorAudit>();
 			for (ContractorAudit ca : getActiveAudits()) {
-				if (ca.getAuditType().isCanContractorEdit()
-						&& (ca.getAuditStatus().isPending() || ca.getAuditStatus().isIncomplete()))
-					if (!ca.getAuditType().getClassType().isPolicy())
-						activePendingEditableAudits.add(ca);
-					else {
-						for (ContractorAuditOperator caOperator : ca.getCurrentOperators()) {
-							if (caOperator.getStatus().isPending()) {
-								activePendingEditableAudits.add(ca);
-								break;
-							}
+				if (ca.getAuditType().isCanContractorEdit()) {
+					for (ContractorAuditOperator cao : ca.getCurrentOperators()) {
+						if (cao.getStatus().before(AuditStatus.Submitted)) {
+							activePendingEditableAudits.add(ca);
+							break;
 						}
-
 					}
+				}
 			}
 		}
 

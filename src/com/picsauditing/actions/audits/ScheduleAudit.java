@@ -19,9 +19,11 @@ import com.picsauditing.dao.AuditorAvailabilityDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditorAvailability;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
@@ -81,15 +83,20 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		if (permissions.isAdmin() && "edit".equals(button)) {
 			if (conAudit.getScheduledDate() != null && conAudit.getScheduledDate().before(new Date()))
 				addActionMessage("This audit's scheduled appointment has already passed. ");
-			if (!conAudit.getAuditStatus().isPending())
-				addActionMessage("This audit has already been completed. It does not need to be rescheduled.");
+			for (ContractorAuditOperator cao : conAudit.getOperators()) {
+				if (cao.getStatus().after(AuditStatus.Pending)) {
+					addActionMessage("This has already been completed. It does not need to be rescheduled.");
+					return "edit";
+				}
+			}
 			return "edit";
 		}
 
-		if (!conAudit.getAuditStatus().isPending())
-			// This audit has already been completed. No reason to schedule it
-			// now
-			return "summary";
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus().after(AuditStatus.Pending)) {
+				return "summary";
+			}
+		}
 
 		if (button == null) {
 

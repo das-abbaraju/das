@@ -15,9 +15,9 @@ import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -38,9 +38,9 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 			ContractorAuditOperatorDAO caoDAO, AuditCategoryDAO categoryDAO, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, CertificateDAO certificateDao,
-			OshaAuditDAO oshaAuditDAO) {
+			OshaAuditDAO oshaAuditDAO, OperatorAccountDAO opDAO) {
 		super(accountDao, auditDao, caoDAO, categoryDAO, catDataDao, auditDataDao, auditPercentCalculator,
-				contractorAuditOperatorDAO, certificateDao, oshaAuditDAO);
+				contractorAuditOperatorDAO, certificateDao, oshaAuditDAO, opDAO);
 	}
 
 	public String execute() throws Exception {
@@ -58,8 +58,7 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 			List<ContractorAudit> auditList = new Vector<ContractorAudit>(nConAccount.getAudits());
 			auditDao.clear();
 			for (ContractorAudit existingAudit : auditList) {
-				if (existingAudit.getAuditType().equals(conAudit.getAuditType())
-						&& !existingAudit.getAuditStatus().equals(AuditStatus.Expired)
+				if (existingAudit.getAuditType().equals(conAudit.getAuditType()) && !existingAudit.isExpired()
 						&& !existingAudit.getAuditType().isAnnualAddendum()) {
 					// We already have an existing audit that we should delete
 					// first

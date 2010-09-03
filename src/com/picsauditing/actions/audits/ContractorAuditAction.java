@@ -26,9 +26,6 @@ import com.picsauditing.jpa.entities.OshaType;
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
  * allows users to change the status of an audit.
- * 
- * @author Trevor
- * 
  */
 @SuppressWarnings("serial")
 public class ContractorAuditAction extends AuditCategorySingleAction {
@@ -61,7 +58,7 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 			ServletActionContext.getResponse().sendRedirect(
 					"AuditCat.action?auditID=" + auditID + "&catDataID=" + getCategories().get(0).getId());
 
-		if (conAudit.getAuditType().isDynamicCategories() && permissions.isPicsEmployee()) {
+		if (permissions.isPicsEmployee()) {
 			isCanApply = true;
 
 			if (applyCategoryID > 0) {

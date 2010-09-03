@@ -180,7 +180,7 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 				findConAudit();
 				for (ContractorAuditOperator cao : conAudit.getOperators()) {
 					if (cao.getStatus().after(AuditStatus.Resubmitted)) {
-						cao.changeStatus(AuditStatus.Resubmitted, getUser());
+						cao.changeStatus(AuditStatus.Resubmitted, permissions);
 						auditDao.save(cao);
 					}
 				}
