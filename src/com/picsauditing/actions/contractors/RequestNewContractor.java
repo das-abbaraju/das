@@ -51,6 +51,7 @@ import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.MainSearch;
+import com.picsauditing.search.SearchEngine;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -161,8 +162,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 		if (button != null) {
 			if("ajaxcheck".equals(button)){
-				MainSearch gap = new MainSearch();
-				List<BasicDynaBean> matches = newGap(gap, term, type);
+				SearchEngine searchEngine = new SearchEngine(permissions);
+				List<BasicDynaBean> matches = newGap(searchEngine, term, type);
 				if(matches!=null && !matches.isEmpty()) // results
 					continueCheck = false;
 				else return null;
@@ -199,7 +200,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				result.add(jObj);
 				query.append(Strings.implode(ids, ",")).append(')');
 				List<BasicDynaBean> cons = db.select(query.toString(), false);
-				final Hashtable<Integer, Integer> ht = gap.getConIds(permissions);			
+				final Hashtable<Integer, Integer> ht = searchEngine.getConIds(permissions);			
 				for(BasicDynaBean bdb : cons){
 					final String name = bdb.get("name").toString();
 					final String id = bdb.get("id").toString();
@@ -602,19 +603,15 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		return null;
 	}
 	
-	public List<BasicDynaBean> newGap(MainSearch gap, String term, String type){
-		// tax id
-		// run on all terms in name, remove term till we get results
-		// if no results then move to user name and email
-		// if too many results combine user name with account to whittle down results
+	public List<BasicDynaBean> newGap(SearchEngine searchEngine, String term, String type){
 		unusedTerms = new ArrayList<String>();
 		usedTerms = new ArrayList<String>();
 		type = "'"+Utilities.escapeQuotes(type)+"'";
 		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
 		Database db = new Database();
-		List<String> termsArray = gap.sortSearchTerms(gap.buildTerm(term, false, false), true);
+		List<String> termsArray = searchEngine.sortSearchTerms(searchEngine.buildTerm(term, false, false), true);
 		while(results.isEmpty() && termsArray.size()>0){
-			String query = gap.buildQuery(null, termsArray, "i1.indexType = "+type, null, 20, false, true);
+			String query = searchEngine.buildQuery(null, termsArray, "i1.indexType = "+type, null, 20, false, true);
 			try {
 				results = db.select(query, false);
 			} catch (SQLException e) {
@@ -622,9 +619,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				e.printStackTrace();
 				return null;
 			}
-			if(!gap.getNullTerms().isEmpty()){
-				unusedTerms.addAll(gap.getNullTerms());
-				termsArray.removeAll(gap.getNullTerms());
+			if(!searchEngine.getNullTerms().isEmpty() && unusedTerms.isEmpty()){
+				unusedTerms.addAll(searchEngine.getNullTerms());
+				termsArray.removeAll(searchEngine.getNullTerms());
 			}
 			usedTerms = termsArray;
 			termsArray=termsArray.subList(0, termsArray.size()-1);						
