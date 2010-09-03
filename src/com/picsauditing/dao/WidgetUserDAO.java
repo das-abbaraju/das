@@ -35,11 +35,10 @@ public class WidgetUserDAO extends PicsDAO {
 
 	public List<WidgetUser> findByUser(Permissions permissions) {
 
-		Query query = em.createQuery("SELECT wu FROM WidgetUser wu WHERE wu.user.id = ? ORDER BY wu.sortOrder");
-		query.setParameter(1, permissions.getUserId());
+		Query query = em.createQuery("SELECT wu FROM WidgetUser wu WHERE wu.user.id = ? OR wu.user.id = ? ORDER BY wu.sortOrder");
+		query.setParameter(2, permissions.getUserId()); // user specific widgets / not groups
 
 		permissions.getAccountType();
-		// This will go away when we support per user configuration of dashboard
 		if (permissions.isPicsEmployee())
 			query.setParameter(1, 941); // tallred
 		if(permissions.hasGroup(959)) 

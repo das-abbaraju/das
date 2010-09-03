@@ -8,7 +8,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 
 @SuppressWarnings("serial")
 public class ContractorAuditsWidget extends PicsActionSupport {
-	ContractorAuditDAO dao;
+	protected ContractorAuditDAO dao;
 	private List<ContractorAudit> upcoming;
 	private List<ContractorAudit> closed;
 	private List<ContractorAudit> assigned;

@@ -197,6 +197,11 @@
 			<result>struts/widgets/requested_contractors.jsp</result>
 		</action>
 		
+		<action name="WynnewoodRatesAjax"
+			class="com.picsauditing.actions.operators.WynnewoodRatesWidget">
+			<result>struts/widgets/wynnewood_rates.jsp</result>
+		</action>
+		
 		<action name="ContractorWatchAjax"
 			class="com.picsauditing.actions.report.ReportActivityWatch">
 			<result>struts/widgets/contractor_watch.jsp</result>
