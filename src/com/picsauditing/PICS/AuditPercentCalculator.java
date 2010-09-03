@@ -3,27 +3,38 @@ package com.picsauditing.PICS;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.AnswerMap;
 
 public class AuditPercentCalculator {
+
 	private AuditDataDAO auditDataDao;
 	private AuditCategoryDataDAO catDataDao;
+	private AuditDecisionTableDAO auditRulesDAO;
 
-	public AuditPercentCalculator(AuditDataDAO auditDataDao, AuditCategoryDataDAO catDataDao) {
-		this.auditDataDao = auditDataDao;
-		this.catDataDao = catDataDao;
+	public AuditPercentCalculator(AuditDataDAO auditDataDAO, AuditCategoryDataDAO catDataDAO,
+			AuditDecisionTableDAO auditRulesDAO) {
+		this.auditDataDao = auditDataDAO;
+		this.catDataDao = catDataDAO;
+		this.auditRulesDAO = auditRulesDAO;
 	}
 
 	public void updatePercentageCompleted(AuditCatData catData) {
@@ -59,6 +70,7 @@ public class AuditPercentCalculator {
 		if (answers != null) {
 			@SuppressWarnings("serial")
 			Map<String, Integer> scoreMap = new HashMap<String, Integer>() {
+
 				{
 					put("Red", 0);
 					put("Yellow", 1);
@@ -70,7 +82,7 @@ public class AuditPercentCalculator {
 			Date validDate = catData.getAudit().getValidDate();
 			for (AuditCategory subCategory : catData.getCategory().getSubCategories()) {
 				for (AuditQuestion question : subCategory.getQuestions()) {
-					if (question.isCurrent() && validDate.after(question.getEffectiveDate()) 
+					if (question.isCurrent() && validDate.after(question.getEffectiveDate())
 							&& validDate.before(question.getExpirationDate())) {
 						boolean isRequired = false;
 
@@ -92,8 +104,7 @@ public class AuditPercentCalculator {
 								// Use the parentAnswer, so we get answers in
 								// the same tuple as this one
 								AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
-								if (otherAnswer != null
-										&& question.getRequiredAnswer().equals(otherAnswer.getAnswer()))
+								if (otherAnswer != null && question.getRequiredAnswer().equals(otherAnswer.getAnswer()))
 									isRequired = true;
 							}
 						}
@@ -119,7 +130,8 @@ public class AuditPercentCalculator {
 							} else {
 								if (answer.isVerified()) {
 									verifiedCount++;
-								} else if (isRequired && catData.getAudit().getAuditType().isHasRequirements()) {
+								} else if (isRequired
+										&& catData.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()) {
 									verifiedCount++;
 								}
 							}
@@ -170,66 +182,80 @@ public class AuditPercentCalculator {
 	}
 
 	public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats) {
-		int required = 0;
-		int answered = 0;
-		int verified = 0;
-
-		int scoreCount = 0;
-		float runningScore = 0;
-
 		if (recalcCats) {
 			recalcAllAuditCatDatas(conAudit);
 		}
 
-		for (AuditCatData data : conAudit.getCategories()) {
-			if (!conAudit.getAuditType().isDynamicCategories() || data.isApplies()) {
-				// The category applies or the audit type doesn't have dynamic
-				// categories
-				required += data.getNumRequired();
-				answered += data.getRequiredCompleted();
-				verified += (int) Math.round(data.getNumRequired() * data.getPercentVerified() / 100);
+		AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
 
-				if (data.getScoreCount() > 0) {
-					scoreCount += data.getScoreCount();
-					runningScore += (data.getScore() * data.getScoreCount());
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			int required = 0;
+			int answered = 0;
+			int verified = 0;
+
+			int scoreCount = 0;
+			float runningScore = 0;
+
+			for (AuditCatData data : conAudit.getCategories()) {
+				boolean applies = false;
+				if (data.isOverride())
+					applies = data.isApplies();
+				else
+					applies = detail.categories.contains(data.getCategory());
+
+				if (applies) {
+					required += data.getNumRequired();
+					answered += data.getRequiredCompleted();
+					verified += (int) Math.round(data.getNumRequired() * data.getPercentVerified() / 100);
+
+					if (data.getScoreCount() > 0) {
+						scoreCount += data.getScoreCount();
+						runningScore += (data.getScore() * data.getScoreCount());
+					}
 				}
 			}
-		}
 
-		if (scoreCount > 0) {
-			conAudit.setScore(runningScore / (float) scoreCount);
-		} else {
-			conAudit.setScore(-1);
-		}
+			// Eventually we'll move the score over to the cao
+			if (scoreCount > 0) {
+				conAudit.setScore(runningScore / (float) scoreCount);
+			} else {
+				conAudit.setScore(-1);
+			}
 
-		int percentComplete = 0;
-		int percentVerified = 0;
-		if (required > 0) {
-			percentComplete = (int) Math.floor(100 * answered / required);
-			if (percentComplete >= 100)
-				percentComplete = 100;
+			int percentComplete = 0;
+			int percentVerified = 0;
+			if (required > 0) {
+				percentComplete = (int) Math.floor(100 * answered / required);
+				if (percentComplete >= 100)
+					percentComplete = 100;
 
-			percentVerified = (int) Math.floor(100 * verified / required);
-			if (percentVerified >= 100)
-				percentVerified = 100;
+				percentVerified = (int) Math.floor(100 * verified / required);
+				if (percentVerified >= 100)
+					percentVerified = 100;
+			}
+			cao.setPercentComplete(percentComplete);
+			cao.setPercentVerified(percentVerified);
 		}
-		conAudit.setPercentComplete(percentComplete);
-		if (conAudit.getAuditType().isHasRequirements() || conAudit.getAuditType().isMustVerify()) {
-			if (conAudit.getAuditType().isPqf()) {
-				List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
-				verified = 0;
-				int verifiedTotal = 0;
-				for (AuditData auditData : temp) {
-					// either the pqf or the EMF for the annual addendum
-					if (auditData.isVerified()) {
-						verified++;
-					}
-					verifiedTotal++;
-				}
-				conAudit.setPercentVerified(Math.round((float) (100 * verified) / verifiedTotal));
-			} else
-				conAudit.setPercentVerified(percentVerified);
+	}
+
+	/**
+	 * Use the audit rule DAO to query a list of applicable rules and the figure
+	 * out which rules apply to which operators and categories
+	 * 
+	 * @param conAudit
+	 * @return
+	 */
+	private AuditCategoriesDetail getAuditCategoryDetail(ContractorAudit conAudit) {
+		List<AuditCategoryRule> applicableCategoryRules = auditRulesDAO.getApplicableCategoryRules(conAudit
+				.getContractorAccount(), conAudit.getAuditType());
+
+		AuditBuilder builder = new AuditBuilder();
+
+		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			operators.add(cao.getOperator());
 		}
+		return builder.getDetail(conAudit.getAuditType(), applicableCategoryRules, operators);
 	}
 
 	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {

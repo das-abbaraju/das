@@ -54,4 +54,12 @@ public class Workflow extends BaseTable {
 		return null;
 	}
 
+	@Transient
+	public boolean isHasSubmittedStep() {
+		for (WorkflowStep step : steps) {
+			if (step.getNewStatus().isSubmitted())
+				return true;
+		}
+		return false;
+	}
 }

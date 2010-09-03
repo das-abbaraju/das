@@ -80,11 +80,11 @@ public class AuditBuilder {
 	 *            Make sure that these rules are filtered for the requested
 	 *            contractorAudit
 	 */
-	public AuditCategoriesDetail getDetail(AuditType auditType, List<AuditCategoryRule> rules, AuditTypeDetail auditTypeDetail) {
+	public AuditCategoriesDetail getDetail(AuditType auditType, List<AuditCategoryRule> rules, Collection<OperatorAccount> operators) {
 		AuditCategoriesDetail detail = new AuditCategoriesDetail();
 		sortRules(rules);
 		detail.rules = rules;
-		for (OperatorAccount operator : auditTypeDetail.operators) {
+		for (OperatorAccount operator : operators) {
 			detail.operators.put(operator, null);
 		}
 		

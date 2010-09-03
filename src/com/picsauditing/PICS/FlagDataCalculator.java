@@ -108,6 +108,8 @@ public class FlagDataCalculator {
 
 		String answer = conCriteria.getAnswer();
 		if (criteria.getAuditType() != null) {
+			// TODO I don't think that requiring a risk level is going to work
+			// for vendors
 			if (conCriteria.getContractor().getRiskLevel() == null)
 				return null;
 			if (opCriteria.getMinRiskLevel().equals(LowMedHigh.None)) {
@@ -124,36 +126,56 @@ public class FlagDataCalculator {
 					return null;
 			}
 
-			if (!criteria.getAuditType().getClassType().isPolicy()) {
-				// All other Audits, PQF, etc, flag if it's missing
-				// return conCriteria.getAnswer().equals("false");
-				if (conCriteria.getAnswer().equals("true")) {
-					// We have this audit, don't flag
-					return false;
-				}
-				// Audit is missing, but do we require it?
-				return true;
-			}
-
-			// Policies are much harder because we have to look at CAOs
 			if (conCriteria.getContractor().getAudits() == null)
 				return null;
-			for (ContractorAudit conAudit : conCriteria.getContractor().getAudits()) {
-				if (conAudit.getAuditType().equals(criteria.getAuditType())) {
-					if (!conAudit.isExpired()) {
-						for (ContractorAuditOperator cao : conAudit.getOperators()) {
-							if (cao.getOperator().equals(opCriteria.getOperator())) {
-								// We've found the applicable cao
-								if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())
+
+			if (criteria.getAuditType().isAnnualAddendum()) {
+				// Annual Update Audit
+				int count = 0;
+
+				// Checking for at least 3 active annual updates
+				for (ContractorAudit ca : conCriteria.getContractor().getAudits()) {
+					if (ca.getAuditType().equals(criteria.getAuditType())) {
+						for (ContractorAuditOperator cao : ca.getOperators()) {
+							if (cao.getStatus().after(AuditStatus.Submitted))
+								count++;
+							else if (cao.getStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
+								count++;
+						}
+					}
+				}
+
+				return count < 3;
+			} else {
+				// Any other audit, PQF, or Policy
+				for (ContractorAudit ca : conCriteria.getContractor().getAudits()) {
+					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired()) {
+						for (ContractorAuditOperator cao : ca.getOperators()) {
+							// TODO Make sure we identify the right operator or
+							// corporate here
+							if (opCriteria.getOperator().equals(cao.getOperator())) {
+								if (cao.getStatus().after(AuditStatus.Submitted))
 									return false;
-								else
+								else if (!criteria.isValidationRequired() && cao.getStatus().isSubmitted())
+									return false;
+								else if (cao.getStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
+									return false;
+
+								if (!criteria.getAuditType().isHasMultiple())
+									// There aren't any more so we might as well
+									// return flagged right now
 									return true;
 							}
 						}
 					}
 				}
+				if (criteria.isFlaggableWhenMissing())
+					// isFlaggableWhenMissing would be really useful for Manual
+					// Audits or Implementation Audits
+					return true;
 			}
 			return null;
+
 		} else {
 
 			if (criteria.isValidationRequired() && !conCriteria.isVerified())

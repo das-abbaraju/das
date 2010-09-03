@@ -17,7 +17,6 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.util.SpringUtils;
@@ -25,8 +24,8 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 public class ContractorFlagETL {
+
 	private AuditDataDAO auditDataDao;
-	private FlagCriteriaDAO flagCriteriaDao;
 	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
 
 	private Set<FlagCriteria> distinctFlagCriteria = null;
@@ -37,7 +36,6 @@ public class ContractorFlagETL {
 	public ContractorFlagETL(FlagCriteriaDAO flagCriteriaDao, AuditDataDAO auditDataDao,
 			FlagCriteriaContractorDAO flagCriteriaContractorDao) {
 		this.auditDataDao = auditDataDao;
-		this.flagCriteriaDao = flagCriteriaDao;
 		this.flagCriteriaContractorDao = flagCriteriaContractorDao;
 
 		distinctFlagCriteria = flagCriteriaDao.getDistinctOperatorFlagCriteria();
@@ -63,51 +61,7 @@ public class ContractorFlagETL {
 		for (FlagCriteria flagCriteria : distinctFlagCriteria) {
 			PicsLogger.log("Starting to calculate = " + flagCriteria);
 			if (flagCriteria.getAuditType() != null) {
-				// Checking Audit Type
-				if (flagCriteria.getAuditType().getClassType().isPolicy()) {
-					// Insurance Audit
-					// Contractors are evaluated by their CAO,
-					// so it's operator specific and we can't calculate exact
-					// data here. Just put in a place holder row
-					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, "true"));
-				} else if (flagCriteria.getAuditType().isAnnualAddendum()) {
-					// Annual Update Audit
-					int count = 0;
-
-					// Checking for at least 3 active annual updates
-					for (ContractorAudit ca : contractor.getAudits()) {
-						if (ca.getAuditType().equals(flagCriteria.getAuditType())) {
-							if (ca.getAuditStatus().isActiveResubmittedExempt())
-								count++;
-							else if (ca.getAuditStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
-								count++;
-						}
-					}
-
-					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, (count >= 3 ? "true" : "false")));
-				} else {
-					// Any other audit, PQF/IM/Desktop/D&A/COR
-					Boolean hasProperStatus = null;
-					for (ContractorAudit ca : contractor.getAudits()) {
-						if (ca.getAuditType().equals(flagCriteria.getAuditType())) {
-							// I have a matching audit
-							if (hasProperStatus == null)
-								hasProperStatus = false;
-							if (ca.getAuditStatus().isActiveResubmittedExempt())
-								hasProperStatus = true;
-							else if (!flagCriteria.isValidationRequired() && ca.getAuditStatus().isSubmitted())
-								hasProperStatus = true;
-							else if (ca.getAuditType().getClassType().isPqf() && ca.getAuditStatus().isSubmitted()
-									&& ca.getContractorAccount().isAcceptsBids())
-								hasProperStatus = true;
-						}
-					}
-					// isFlaggableWhenMissing would be really useful for Manual
-					// Audits or Implementation Audits
-					if (hasProperStatus != null || flagCriteria.isFlaggableWhenMissing())
-						changes.add(new FlagCriteriaContractor(contractor, flagCriteria,
-								hasProperStatus == null ? "null" : hasProperStatus.toString()));
-				}
+				changes.add(new FlagCriteriaContractor(contractor, flagCriteria, "true"));
 			}
 
 			if (flagCriteria.getQuestion() != null) {
@@ -132,9 +86,9 @@ public class ContractorFlagETL {
 								answer = (average != null) ? Float.valueOf(Strings.formatNumber(average.getAnswer()))
 										: null;
 								for (AuditData year : years) {
-									if(year != null) {
-										answer2 += (answer2.isEmpty()) ? "Years: " + year.getAudit().getAuditFor() : ", "
-												+ year.getAudit().getAuditFor();
+									if (year != null) {
+										answer2 += (answer2.isEmpty()) ? "Years: " + year.getAudit().getAuditFor()
+												: ", " + year.getAudit().getAuditFor();
 									}
 								}
 								if (average == null || !average.isVerified())
@@ -142,9 +96,9 @@ public class ContractorFlagETL {
 								break;
 							case ThreeYearsAgo:
 								if (years.size() >= 3) {
-									if(years.get(years.size() - 3) != null) {
-										answer = Float.valueOf(Strings
-												.formatNumber(years.get(years.size() - 3).getAnswer()));
+									if (years.get(years.size() - 3) != null) {
+										answer = Float.valueOf(Strings.formatNumber(years.get(years.size() - 3)
+												.getAnswer()));
 										verified = years.get(years.size() - 3).isVerified();
 										answer2 = "Year: " + years.get(years.size() - 3).getAudit().getAuditFor();
 									}
@@ -152,9 +106,9 @@ public class ContractorFlagETL {
 								break;
 							case TwoYearsAgo:
 								if (years.size() >= 2) {
-									if(years.get(years.size() - 2) != null) {
-										answer = Float.valueOf(Strings
-												.formatNumber(years.get(years.size() - 2).getAnswer()));
+									if (years.get(years.size() - 2) != null) {
+										answer = Float.valueOf(Strings.formatNumber(years.get(years.size() - 2)
+												.getAnswer()));
 										verified = years.get(years.size() - 2).isVerified();
 										answer2 = "Year: " + years.get(years.size() - 2).getAudit().getAuditFor();
 									}
@@ -162,9 +116,9 @@ public class ContractorFlagETL {
 								break;
 							case LastYearOnly:
 								if (years.size() >= 1) {
-									if(years.get(years.size() - 1) != null) {
-										answer = Float.valueOf(Strings
-												.formatNumber(years.get(years.size() - 1).getAnswer()));
+									if (years.get(years.size() - 1) != null) {
+										answer = Float.valueOf(Strings.formatNumber(years.get(years.size() - 1)
+												.getAnswer()));
 										verified = years.get(years.size() - 1).isVerified();
 										answer2 = "Year: " + years.get(years.size() - 1).getAudit().getAuditFor();
 									}
