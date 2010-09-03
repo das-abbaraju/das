@@ -30,7 +30,7 @@ public class RejectedPoliciesWidget extends PicsActionSupport {
 		sql.addField("cao.statusChangedDate");
 		sql.addWhere("a.status = 'Active'");
 		sql.addWhere("atype.classType = 'Policy'");
-		sql.addWhere("ca.auditStatus != 'Expired'");
+		sql.addWhere("ca.expiresDate > NOW()");
 		sql.addWhere("cao.status = 'Rejected'");
 		sql.addWhere("cao.statusChangedDate < DATE_SUB(NOW(), INTERVAL 30 DAY)");
 		sql.addWhere("ca.auditorID = " + permissions.getUserId());

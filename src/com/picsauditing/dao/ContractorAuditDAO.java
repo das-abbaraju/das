@@ -230,7 +230,7 @@ public class ContractorAuditDAO extends IndexableDAO {
 	public List<ContractorAudit> findAuditsNeedingRecalculation() {
 		String hql = "SELECT ca FROM ContractorAudit ca "
 				+ "WHERE (ca.lastRecalculation IS NULL OR ca.lastRecalculation < :threeMonthsAgo) "
-				+ " AND ca.auditStatus != 'Expired'";
+				+ " AND ca.expiresDate > NOW()";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(100);
 

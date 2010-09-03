@@ -57,7 +57,7 @@ update contractor_audit ca, contractor_info c, contractor_audit_operator cao set
 where ca.conid = c.id
 and audittypeid in
 (select id from audit_type where (classtype in ('Policy')))
-and auditStatus != 'Expired'
+and expiresDate > NOW()
 and ca.id = cao.auditid
 and cao.status in ('Pending','Submitted');
 

@@ -37,7 +37,7 @@ public class ConCorAuditList extends ContractorActionSupport {
 					upComingAudits.add(contractorAudit);
 				else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
 					currentAudits.add(contractorAudit);
-				else if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
+				else if (contractorAudit.isExpired())
 					expiredAudits.add(contractorAudit);
 				else {
 					// There shouldn't be any others

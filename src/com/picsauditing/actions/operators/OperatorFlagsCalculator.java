@@ -25,7 +25,6 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -102,23 +101,21 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 				sql2.addJoin("JOIN contractor_audit ca ON ca.id = cao.auditID");
 				sql2.addField("ca.auditTypeID");
 				sql2.addField("ca.conID");
-				sql2.addField("ca.auditStatus");
 				sql2.addField("cao.status");
 				sql2.addWhere("ca.conID IN (" + Strings.implode(conIDs) + ")");
 				sql2.addWhere("cao.opID = " + flagCriteriaOperator.getOperator().getId());
-				sql2.addWhere("ca.auditStatus != 'Expired'");
+				sql2.addWhere("ca.expiresDate > NOW()");
 
 				List<BasicDynaBean> auditResults = db.select(sql2.toString(), false);
 				for (BasicDynaBean row : auditResults) {
 					int conID = Database.toInt(row, "conID");
 					ContractorAudit ca = new ContractorAudit();
 					ca.setAuditType(new AuditType(Database.toInt(row, "auditTypeID")));
-					ca.setAuditStatus(AuditStatus.valueOf(row.get("auditStatus").toString()));
 					{
 						ContractorAuditOperator cao = new ContractorAuditOperator();
 						cao.setAudit(ca);
 						cao.setOperator(flagCriteriaOperator.getOperator());
-						cao.setStatus(CaoStatus.valueOf(row.get("status").toString()));
+						cao.setStatus(AuditStatus.valueOf(row.get("status").toString()));
 						ca.setOperators(new ArrayList<ContractorAuditOperator>());
 						ca.getOperators().add(cao);
 					}

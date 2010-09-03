@@ -345,7 +345,7 @@ function checkReason(id) {
 								<s:if test="#data.criteria.auditType != null">
 									<s:iterator id="audit" value="contractor.audits">
 										<s:if test="#data.criteria.auditType == #audit.auditType">
-											<s:if test="#data.criteria.auditType.classType.policy && !(#audit.auditStatus.expired)">
+											<s:if test="#data.criteria.auditType.classType.policy && !(#audit.expired)">
 												<s:iterator value="#audit.operators">
 													<s:if test="visible && (co.operatorAccount.inheritInsurance == operator)">
 														<s:if test="isCanSeeAudit(#audit.auditType)">

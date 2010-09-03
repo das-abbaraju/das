@@ -190,7 +190,7 @@ public class ReportActivityWatch extends ReportAccount {
 			sql2.addJoin(caos);
 			sql2.addJoin("LEFT JOIN accounts oper on oper.id = cao.opID");
 			sql2.addWhere("cao.status != 'Pending' AND cao.visible = 1");
-			sql2.addWhere("ca.auditStatus != 'Expired'");
+			sql2.addWhere("ca.expiresDate > NOW()");
 			watchOptions.add("(" + sql2.toString() + ")");
 
 		}

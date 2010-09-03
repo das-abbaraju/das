@@ -66,7 +66,7 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 			}
 		}
 
-		sql.addWhere("ca.auditStatus != 'Expired'");
+		sql.addWhere("ca.expiresDate > NOW()");
 		
 		if(getFilter().getAmBestRating() > 0 || getFilter().getAmBestClass() > 0) {
 			sql.addJoin("JOIN pqfdata am ON am.auditid = ca.id");

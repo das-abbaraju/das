@@ -59,7 +59,7 @@ public class ConAuditList extends ContractorActionSupport {
 						upComingAudits.add(contractorAudit);
 					else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
 						currentAudits.add(contractorAudit);
-					else if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
+					else if (contractorAudit.isExpired())
 						expiredAudits.add(contractorAudit);
 					else {
 						// There shouldn't be any others
@@ -117,7 +117,7 @@ public class ConAuditList extends ContractorActionSupport {
 
 				if (auditClass != AuditTypeClass.IM) {
 					for (ContractorAudit conAudit : contractor.getAudits()) {
-						if (conAudit.getAuditType().getId() == selectedAudit && !conAudit.getAuditStatus().isExpired()) {
+						if (conAudit.getAuditType().getId() == selectedAudit && !conAudit.isExpired()) {
 							if ((selectedOperator == 0 && conAudit.getRequestingOpAccount() == null)
 									|| (conAudit.getRequestingOpAccount() != null && conAudit.getRequestingOpAccount()
 											.getId() == selectedOperator)) {
