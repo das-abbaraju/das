@@ -20,11 +20,25 @@ public enum AuditStatus {
 			values.add(value.name());
 		return values;
 	}
-	
+
+	/**
+	 * Pending, Incomplete, Submitted, Resubmitted, Complete, Approved,
+	 * NotApplicable
+	 * 
+	 * @param o
+	 * @return
+	 */
 	public boolean before(AuditStatus o) {
 		return this.ordinal() < o.ordinal();
 	}
 
+	/**
+	 * Pending, Incomplete, Submitted, Resubmitted, Complete, Approved,
+	 * NotApplicable
+	 * 
+	 * @param o
+	 * @return
+	 */
 	public boolean after(AuditStatus o) {
 		return this.ordinal() > o.ordinal();
 	}
@@ -58,7 +72,7 @@ public enum AuditStatus {
 	public boolean isResubmitted() {
 		return this.equals(Resubmitted);
 	}
-	
+
 	public boolean isSubmittedResubmitted() {
 		return isSubmitted() || isResubmitted();
 	}

@@ -14,6 +14,8 @@ import javax.persistence.Transient;
 @Table(name = "workflow")
 @SuppressWarnings("serial")
 public class Workflow extends BaseTable {
+	
+	public static int AUDIT_REQUIREMENTS_WORKFLOW = 2;
 
 	private String name;
 	private List<WorkflowStep> steps = new ArrayList<WorkflowStep>();
