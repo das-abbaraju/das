@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
@@ -252,9 +251,9 @@ public class ContractorAuditDAO extends IndexableDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ContractorAudit> findAuditsByOperator(int opID, int auditTypeID, AuditStatus auditStatus, WaitingOn waitingOnStatus) {
+	public List<ContractorAudit> findAuditsByOperator(int opID, int auditTypeID, WaitingOn waitingOnStatus) {
 		String hql = "SELECT ca FROM ContractorAudit ca "
-				+ "WHERE ca.auditType.id = :auditTypeID " + ((auditStatus != null) ? "AND ca.auditStatus = :auditStatus " : "")
+				+ "WHERE ca.auditType.id = :auditTypeID "
 				+ "AND ca.contractorAccount IN ("
 				+ "SELECT contractorAccount FROM ContractorOperator co "
 				+ "WHERE co.operatorAccount.id = :opID " + ((waitingOnStatus != null) ? "AND co.waitingOn = :waitingOnStatus " : "")
@@ -262,8 +261,6 @@ public class ContractorAuditDAO extends IndexableDAO {
 		Query query = em.createQuery(hql);
 		query.setParameter("auditTypeID", auditTypeID);
 		query.setParameter("opID", opID);
-		if(auditStatus != null)
-			query.setParameter("auditStatus", auditStatus);
 		if(waitingOnStatus != null)
 			query.setParameter("waitingOnStatus", waitingOnStatus);
 		query.setMaxResults(100);

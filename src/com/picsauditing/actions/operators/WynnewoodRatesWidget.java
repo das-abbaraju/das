@@ -9,7 +9,6 @@ import com.picsauditing.actions.audits.ContractorAuditsWidget;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.WaitingOn;
 
@@ -22,9 +21,9 @@ public class WynnewoodRatesWidget extends ContractorAuditsWidget {
 
 	public Map<ContractorAudit, ContractorAudit> getContractRates() {
 		List<ContractorAudit> waitingOnContracts = dao.findAuditsByOperator(
-				permissions.getAccountId(), 89, AuditStatus.Pending, WaitingOn.Operator);
+				permissions.getAccountId(), 89, WaitingOn.Operator);
 		List<ContractorAudit> rates = dao.findAuditsByOperator(permissions
-				.getAccountId(), 79, AuditStatus.Active, WaitingOn.Operator);
+				.getAccountId(), 79, WaitingOn.Operator);
 		Map<ContractorAudit, ContractorAudit> contractRateMap = new TreeMap<ContractorAudit, ContractorAudit>(getCaComparator());
 
 		// Creating Contract->Rate Map of all Pending Contracts where status is waiting on Operator
