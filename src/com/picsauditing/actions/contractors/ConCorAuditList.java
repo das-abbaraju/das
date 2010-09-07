@@ -1,13 +1,18 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.Strings;
@@ -16,9 +21,9 @@ import com.picsauditing.util.Strings;
 public class ConCorAuditList extends ContractorActionSupport {
 	private String auditFor;
 
-	public List<ContractorAudit> upComingAudits = new ArrayList<ContractorAudit>();
-	public List<ContractorAudit> currentAudits = new ArrayList<ContractorAudit>();
-	public List<ContractorAudit> expiredAudits = new ArrayList<ContractorAudit>();
+	private Map<ContractorAudit, List<ContractorAuditOperator>> requested = new HashMap<ContractorAudit, List<ContractorAuditOperator>>();
+	private Map<ContractorAudit, List<ContractorAuditOperator>> current = new HashMap<ContractorAudit, List<ContractorAuditOperator>>();
+	private Set<ContractorAudit> expiredAudits = new HashSet<ContractorAudit>();
 
 	public ConCorAuditList(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
 		super(accountDao, auditDao);
@@ -28,19 +33,28 @@ public class ConCorAuditList extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		findContractor();
-
 		for (ContractorAudit contractorAudit : getAudits()) {
 			// Only show COR Audits
 			if (contractorAudit.getAuditType().getId() == AuditType.COR) {
-				if (contractorAudit.getAuditStatus().isPendingSubmitted()
-						|| contractorAudit.getAuditStatus().isIncomplete())
-					upComingAudits.add(contractorAudit);
-				else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
-					currentAudits.add(contractorAudit);
-				else if (contractorAudit.isExpired())
+				if(contractorAudit.isExpired())
 					expiredAudits.add(contractorAudit);
 				else {
-					// There shouldn't be any others
+					ContractorAuditOperator caoList = contractorAudit.getCaos(permissions);
+					for(ContractorAuditOperator cao : caoList) {
+						if(cao.getStatus().before(AuditStatus.Resubmitted)) {
+							if (requested.get(cao.getAudit()) == null)
+								requested.put(cao.getAudit(), new ArrayList<ContractorAuditOperator>());
+							requested.get(cao.getAudit()).add(cao);
+						}
+						else if (cao.getStatus().after(AuditStatus.Complete) 
+								|| cao.getStatus().isResubmitted()) {
+							if (current.get(cao.getAudit()) == null)
+								current.put(cao.getAudit(), new ArrayList<ContractorAuditOperator>());
+
+							current.get(cao.getAudit()).add(cao);
+						}
+						
+					}
 				}
 			}
 		}
@@ -50,7 +64,7 @@ public class ConCorAuditList extends ContractorActionSupport {
 				boolean alreadyExists = false;
 
 				for (ContractorAudit conAudit : contractor.getAudits()) {
-					if (conAudit.getAuditType().getId() == AuditType.COR && !conAudit.getAuditStatus().isExpired()
+					if (conAudit.getAuditType().getId() == AuditType.COR && !conAudit.isExpired()
 							&& conAudit.getAuditFor().equals(auditFor)) {
 						alreadyExists = true;
 						break;
@@ -64,9 +78,6 @@ public class ConCorAuditList extends ContractorActionSupport {
 					conAudit.setAuditType(new AuditType(72));
 					conAudit.setAuditFor(this.auditFor);
 					conAudit.setContractorAccount(contractor);
-					conAudit.changeStatus(AuditStatus.Pending, getUser());
-					conAudit.setPercentComplete(0);
-					conAudit.setPercentVerified(0);
 					conAudit.setManuallyAdded(true);
 					conAudit = auditDao.save(conAudit);
 

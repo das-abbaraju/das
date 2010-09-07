@@ -18,7 +18,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Certificate;
@@ -65,10 +64,10 @@ public class ConInsureGuard extends ContractorActionSupport {
 		List<ContractorAuditOperator> caoList = getCaoList();
 
 		for (ContractorAuditOperator cao : caoList) {
-			if (cao.getAudit().getAuditStatus().isExpired()) {
+			if (cao.getAudit().isExpired()) {
 				expiredAudits.add(cao.getAudit());
-			} else if (cao.getStatus().isPending() || cao.getStatus().isSubmitted() || cao.getStatus().isVerified()
-					|| cao.getStatus().isRejected()) {
+			} else if (cao.getStatus().isPending() || cao.getStatus().isSubmitted() || cao.getStatus().isComplete()
+					|| cao.getStatus().isIncomplete()) {
 				if (requested.get(cao.getAudit()) == null)
 					requested.put(cao.getAudit(), new ArrayList<ContractorAuditOperator>());
 
@@ -94,7 +93,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 				// selectedOperator = permissions.getAccountId();
 
 				for (ContractorAudit conAudit : contractor.getAudits()) {
-					if (!conAudit.getAuditStatus().isExpired() && conAudit.getAuditType().getId() == selectedAudit
+					if (!conAudit.isExpired() && conAudit.getAuditType().getId() == selectedAudit
 							&& conAudit.getRequestingOpAccount() == null) {
 						alreadyExists = true;
 						break;
@@ -110,13 +109,10 @@ public class ConInsureGuard extends ContractorActionSupport {
 					conAudit.setAuditType(auditType);
 					conAudit.setAuditFor(this.auditFor);
 					conAudit.setContractorAccount(contractor);
-					conAudit.changeStatus(AuditStatus.Pending, getUser());
 					if (selectedOperator != 0) {
 						conAudit.setRequestingOpAccount(new OperatorAccount());
 						conAudit.getRequestingOpAccount().setId(selectedOperator);
 					}
-					conAudit.setPercentComplete(0);
-					conAudit.setPercentVerified(0);
 					conAudit.setManuallyAdded(true);
 					conAudit = auditDao.save(conAudit);
 
