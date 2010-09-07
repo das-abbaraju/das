@@ -63,6 +63,8 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private List<AuditQuestion> dependsRequired;
 	private List<AuditQuestion> dependsVisible;
 	protected List<AuditQuestionOption> options;
+	private List<AuditCategoryRule> auditCategoryRules;
+	private List<AuditTypeRule> auditTypeRules;
 
 	public AuditQuestion() {
 
@@ -309,6 +311,24 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.dependsVisible = visibleQuestions;
 	}
 
+	@OneToMany(mappedBy = "question")
+	public List<AuditCategoryRule> getAuditCategoryRules() {
+		return auditCategoryRules;
+	}
+
+	public void setAuditCategoryRules(List<AuditCategoryRule> auditCategoryRules) {
+		this.auditCategoryRules = auditCategoryRules;
+	}
+
+	@OneToMany(mappedBy = "question")
+	public List<AuditTypeRule> getAuditTypeRules() {
+		return auditTypeRules;
+	}
+
+	public void setAuditTypeRules(List<AuditTypeRule> auditTypeRules) {
+		this.auditTypeRules = auditTypeRules;
+	}
+
 	@OneToMany(mappedBy = "auditQuestion")
 	@OrderBy("number")
 	public List<AuditQuestionOption> getOptions() {
@@ -379,7 +399,10 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	 */
 	@Transient
 	public boolean isRecalculateCategories() {
-		// TODO figure out how to calculate and/or save this
+		if (getAuditCategoryRules().size() > 0)
+			return true;
+		if (getAuditTypeRules().size() > 0)
+			return true;
 		return false;
 	}
 }

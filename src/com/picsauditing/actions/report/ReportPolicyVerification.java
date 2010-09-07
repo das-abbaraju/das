@@ -42,7 +42,6 @@ public class ReportPolicyVerification extends ReportInsuranceSupport {
 		sql.addWhere("a.acceptsBids = 0");
 
 		getFilter().setShowStatus(false);
-		getFilter().setShowCaoStatus(false);
 	}
 
 	@Override

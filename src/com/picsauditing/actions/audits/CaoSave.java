@@ -2,6 +2,7 @@ package com.picsauditing.actions.audits;
 
 import java.util.Date;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -107,7 +108,7 @@ public class CaoSave extends AuditActionSupport {
 				// TODO decide where we're going to store the email template
 				emailBuilder.setTemplate(step.getEmailTemplate());
 				emailBuilder.setTemplate(conAudit.getAuditType().getTemplate());
-				
+
 				emailBuilder.setPermissions(permissions);
 				if (conAudit.getAuditType().getClassType().isAudit())
 					emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
@@ -115,26 +116,34 @@ public class CaoSave extends AuditActionSupport {
 					emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
 				// One day we may need to store the from and to into the
 				// workflow step
-				
+
 				emailBuilder.setContractor(cao.getAudit().getContractorAccount(), cao.getAudit().getAuditType()
 						.getClassType().isPolicy() ? OpPerms.ContractorInsurance : OpPerms.ContractorSafety);
 				// or??
 				emailBuilder.setConAudit(conAudit);
-				
+
 				emailBuilder.addToken("cao", cao);
 				EmailQueue email = emailBuilder.build();
 				email.setViewableBy(cao.getOperator());
 				EmailSender.send(email);
 			}
 
-			if (step.getNewStatus().after(AuditStatus.Submitted) && !conAudit.getAuditType().isHasMultiple()) {
-				// This audit can only have one active audit, expire the
-				// previous one
+			if (step.getNewStatus().after(AuditStatus.Submitted)) {
+				// Expire previous audits
+				int lastYear = DateBean.getCurrentYear() - 1;
 				for (ContractorAudit oldAudit : conAudit.getContractorAccount().getAudits()) {
-					if (!oldAudit.equals(conAudit)) {
+					if (!oldAudit.equals(conAudit) && !oldAudit.isExpired()) {
 						if (oldAudit.getAuditType().equals(conAudit.getAuditType())) {
-							oldAudit.setExpiresDate(new Date());
-							auditDao.save(oldAudit);
+							if (conAudit.getAuditType().isAnnualAddendum()) {
+								if (lastYear == Integer.parseInt(conAudit.getAuditFor())
+										&& Integer.parseInt(oldAudit.getAuditFor()) < lastYear - 2) {
+									oldAudit.setExpiresDate(new Date());
+									auditDao.save(oldAudit);
+								}
+							} else if (!conAudit.getAuditType().isHasMultiple()) {
+								oldAudit.setExpiresDate(new Date());
+								auditDao.save(oldAudit);
+							}
 						}
 					}
 				}

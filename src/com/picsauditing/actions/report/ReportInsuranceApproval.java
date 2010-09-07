@@ -72,6 +72,7 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 			return LOGIN;
 		
 		if ("save".equalsIgnoreCase(button)) {
+			// TODO Move this over to the new CaoSave class
 			AuditStatus newStatus = null;
 			if (newStatuses != null && newStatuses.size() > 0) {
 				try {
