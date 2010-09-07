@@ -281,6 +281,28 @@
 			headerKey="2" headerValue="- Credit Card -" cssClass="forms"
 			name="filter.ccOnFile" /></div>
 	</s:if>
+	
+	<s:if test="filter.showOperator">
+		<br clear="all" />
+		<div class="filterOption"><s:if test="filter.showOperatorSingle">
+			<s:select list="filter.operatorList" cssClass="forms"
+				name="filter.operatorSingle" listKey="id" listValue="name"
+				headerKey="0" headerValue="- Operator -" />
+		</s:if> <s:else>
+			<a href="#" onclick="toggleBox('form1_operator'); return false;">Operators</a> =
+		<span id="form1_operator_query">ALL</span>
+			<br />
+			<span id="form1_operator_select" style="display: none"
+				class="clearLink"> <s:select id="form1_operator"
+				list="filter.operatorList" cssClass="forms" name="filter.operator"
+				listKey="id" listValue="name" multiple="true"
+				size="%{filter.operatorList.size() < 25? filter.operatorList.size() : 25}" />
+			<script type="text/javascript">updateQuery('form1_operator');</script>
+			<br />
+			<a class="clearLink" href="#"
+				onclick="clearSelected('form1_operator'); return false;">Clear</a> </span>
+		</s:else></div>
+	</s:if>
 
 	<s:if test="filter.showAuditType">
 		<br clear="all" />
@@ -383,28 +405,6 @@
 		</span></div>
 	</s:if>
 
-	<s:if test="filter.showOperator">
-		<br clear="all" />
-		<div class="filterOption"><s:if test="filter.showOperatorSingle">
-			<s:select list="filter.operatorList" cssClass="forms"
-				name="filter.operatorSingle" listKey="id" listValue="name"
-				headerKey="0" headerValue="- Operator -" />
-		</s:if> <s:else>
-			<a href="#" onclick="toggleBox('form1_operator'); return false;">Operators</a> =
-		<span id="form1_operator_query">ALL</span>
-			<br />
-			<span id="form1_operator_select" style="display: none"
-				class="clearLink"> <s:select id="form1_operator"
-				list="filter.operatorList" cssClass="forms" name="filter.operator"
-				listKey="id" listValue="name" multiple="true"
-				size="%{filter.operatorList.size() < 25? filter.operatorList.size() : 25}" />
-			<script type="text/javascript">updateQuery('form1_operator');</script>
-			<br />
-			<a class="clearLink" href="#"
-				onclick="clearSelected('form1_operator'); return false;">Clear</a> </span>
-		</s:else></div>
-	</s:if>
-
 	<s:if test="filter.showConLicense">
 		<br clear="all" />
 		<div class="filterOption"><s:select name="filter.validLicense"
@@ -425,55 +425,6 @@
 		<br />
 		<a class="clearLink" href="#"
 			onclick="clearTextField('form1_createdDate'); return false;">Clear</a></span>
-		</div>
-	</s:if>
-
-	<s:if test="filter.showCompletedDate">
-		<div class="filterOption"><a href="#"
-			onclick="showTextBox('form1_completedDate'); return false;">Completed
-		Date</a> <span id="form1_completedDate_query">= ALL</span><br />
-		<span id="form1_completedDate" style="display: none" class="clearLink"><s:textfield
-			cssClass="forms datepicker" size="10" id="form1_completedDate1"
-			name="filter.completedDate1" /> To:<s:textfield
-			cssClass="forms datepicker" size="10" id="form1_completedDate2"
-			name="filter.completedDate2" /> <script type="text/javascript">textQuery('form1_completedDate');</script>
-		<br />
-		<a class="clearLink" href="#"
-			onclick="clearTextField('form1_completedDate'); return false;">Clear</a></span>
-		</div>
-	</s:if>
-
-	<s:if test="filter.showClosedDate">
-		<div class="filterOption"><a href="#"
-			onclick="showTextBox('form1_closedDate'); return false;">Closed
-		Date</a> <span id="form1_closedDate_query">= ALL</span><br />
-		<span id="form1_closedDate" style="display: none" class="clearLink"><s:textfield
-			cssClass="forms datepicker" size="10" id="form1_closedDate1"
-			name="filter.closedDate1" /> To:<s:textfield
-			cssClass="forms datepicker" size="10" id="form1_closedDate2"
-			name="filter.closedDate2" /> <script type="text/javascript">textQuery('form1_closedDate');</script>
-		<br />
-		<a class="clearLink" href="#"
-			onclick="clearTextField('form1_closedDate'); return false;">Clear</a></span>
-		</div>
-	</s:if>
-
-	<s:if test="filter.showHasClosedDate">
-		<div class="filterOption"><s:hidden name="filter.hasClosedDate" /></div>
-	</s:if>
-
-	<s:if test="filter.showExpiredDate">
-		<div class="filterOption"><a href="#"
-			onclick="showTextBox('form1_expiredDate'); return false;">Expired
-		Date</a> <span id="form1_expiredDate_query">= ALL</span><br />
-		<span id="form1_expiredDate" style="display: none" class="clearLink"><s:textfield
-			cssClass="forms datepicker" size="10" id="form1_expiredDate1"
-			name="filter.expiredDate1" /> To:<s:textfield
-			cssClass="forms datepicker" size="10" id="form1_expiredDate2"
-			name="filter.expiredDate2" /> <script type="text/javascript">textQuery('form1_expiredDate');</script>
-		<br />
-		<a class="clearLink" href="#"
-			onclick="clearTextField('form1_expiredDate'); return false;">Clear</a></span>
 		</div>
 	</s:if>
 

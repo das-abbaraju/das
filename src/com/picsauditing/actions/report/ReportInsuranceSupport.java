@@ -83,9 +83,6 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 		getFilter().setShowPrimaryInformation(true);
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowTrade(false);
-		getFilter().setShowCompletedDate(false);
-		getFilter().setShowClosedDate(false);
-		getFilter().setShowHasClosedDate(true);
 		getFilter().setShowPercentComplete(false);
 		getFilter().setShowAuditType(false);
 		getFilter().setShowAuditStatus(false);
@@ -95,7 +92,6 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 		getFilter().setShowFlagStatus(false);
 
 		getFilter().setShowCreatedDate(true);
-		getFilter().setShowExpiredDate(true);
 		getFilter().setShowPolicyType(true);
 		getFilter().setShowCaoStatusChangedDate(true);
 	}

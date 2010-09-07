@@ -45,9 +45,6 @@ public class ReportAnnualAddendum extends ReportAccount {
 		getFilter().setShowWorksIn(false);
 		getFilter().setShowOfficeIn(false);
 		getFilter().setShowCreatedDate(false);
-		getFilter().setShowCompletedDate(false);
-		getFilter().setShowClosedDate(false);
-		getFilter().setShowExpiredDate(false);
 		getFilter().setShowPercentComplete(false);
 		getFilter().setPendingPqfAnnualUpdate(false);
 	}

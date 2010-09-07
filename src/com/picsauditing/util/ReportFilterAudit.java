@@ -23,10 +23,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showAuditor = true;
 	protected boolean showClosingAuditor = false;
 	protected boolean showCreatedDate = true;
-	protected boolean showCompletedDate = true;
-	protected boolean showClosedDate = true;
-	protected boolean showHasClosedDate = false;
-	protected boolean showExpiredDate = true;
 	protected boolean showPercentComplete = true;
 	protected boolean showUnConfirmedAudits = false;
 	protected boolean showConLicense = false;
@@ -54,13 +50,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected int[] closingAuditorId;
 	protected Date createdDate1;
 	protected Date createdDate2;
-	protected Date completedDate1;
-	protected Date completedDate2;
-	protected Date closedDate1;
-	protected Date closedDate2;
-	protected String hasClosedDate;
-	protected Date expiredDate1;
-	protected Date expiredDate2;
 	protected String percentComplete1;
 	protected String percentComplete2;
 	protected boolean unScheduledAudits = false;
@@ -118,30 +107,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.showCreatedDate = showCreatedDate;
 	}
 
-	public boolean isShowCompletedDate() {
-		return showCompletedDate;
-	}
-
-	public void setShowCompletedDate(boolean showCompletedDate) {
-		this.showCompletedDate = showCompletedDate;
-	}
-
-	public boolean isShowClosedDate() {
-		return showClosedDate;
-	}
-
-	public void setShowClosedDate(boolean showClosedDate) {
-		this.showClosedDate = showClosedDate;
-	}
-
-	public boolean isShowExpiredDate() {
-		return showExpiredDate;
-	}
-
-	public void setShowExpiredDate(boolean showExpiredDate) {
-		this.showExpiredDate = showExpiredDate;
-	}
-
 	public boolean isShowPercentComplete() {
 		return showPercentComplete;
 	}
@@ -188,14 +153,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShowRecommendedFlag(boolean showRecommendedFlag) {
 		this.showRecommendedFlag = showRecommendedFlag;
-	}
-
-	public boolean isShowHasClosedDate() {
-		return showHasClosedDate;
-	}
-
-	public void setShowHasClosedDate(boolean showHasClosedDate) {
-		this.showHasClosedDate = showHasClosedDate;
 	}
 
 	public boolean isShowClosingAuditor() {
@@ -270,7 +227,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.showCaoStatusChangedDate = showCaoStatusChangedDate;
 	}
 
-
 	public int[] getAuditID() {
 		return auditID;
 	}
@@ -317,62 +273,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setCreatedDate2(Date createdDate2) {
 		this.createdDate2 = createdDate2;
-	}
-
-	public Date getCompletedDate1() {
-		return completedDate1;
-	}
-
-	public void setCompletedDate1(Date completedDate1) {
-		this.completedDate1 = completedDate1;
-	}
-
-	public Date getCompletedDate2() {
-		return completedDate2;
-	}
-
-	public void setCompletedDate2(Date completedDate2) {
-		this.completedDate2 = completedDate2;
-	}
-
-	public Date getClosedDate1() {
-		return closedDate1;
-	}
-
-	public void setClosedDate1(Date closedDate1) {
-		this.closedDate1 = closedDate1;
-	}
-
-	public Date getClosedDate2() {
-		return closedDate2;
-	}
-
-	public void setClosedDate2(Date closedDate2) {
-		this.closedDate2 = closedDate2;
-	}
-
-	public String getHasClosedDate() {
-		return hasClosedDate;
-	}
-
-	public void setHasClosedDate(String hasClosedDate) {
-		this.hasClosedDate = hasClosedDate;
-	}
-
-	public Date getExpiredDate1() {
-		return expiredDate1;
-	}
-
-	public void setExpiredDate1(Date expiredDate1) {
-		this.expiredDate1 = expiredDate1;
-	}
-
-	public Date getExpiredDate2() {
-		return expiredDate2;
-	}
-
-	public void setExpiredDate2(Date expiredDate2) {
-		this.expiredDate2 = expiredDate2;
 	}
 
 	public String getPercentComplete1() {

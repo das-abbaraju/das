@@ -40,6 +40,7 @@ public class ReportContractorAudits extends ReportAccount {
 	protected void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.ContractorDetails);
 		if (permissions.isCorporate() || permissions.isOperator()) {
+			// TODO: find out how to check permissions
 			if (permissions.getCanSeeAudit().size() == 0)
 				throw new Exception("Your account does not have access to any audits. Please contact PICS.");
 		}
@@ -57,11 +58,11 @@ public class ReportContractorAudits extends ReportAccount {
 			if (auditTypeClass == AuditTypeClass.Policy && permissions.isOperator()) {
 				sql.addField("cao.notes");
 			}
-			
+
 			if (permissions.isAdmin()) { // Only for admins?
 				sql.addGroupBy("ca.conID");
-				sql.addField("GROUP_CONCAT(atype.auditName ORDER BY atype.auditName ASC SEPARATOR ', ') " +
-						"AS groupAuditName");
+				sql.addField("GROUP_CONCAT(atype.auditName ORDER BY atype.auditName ASC SEPARATOR ', ') "
+						+ "AS groupAuditName");
 			}
 		}
 
@@ -91,6 +92,7 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addField("contact.email AS contactemail");
 
 		if (permissions.isCorporate() || permissions.isOperator()) {
+			// TODO: find out how to check permissions
 			sql.addWhere("atype.id IN (" + Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
 		}
 		if (auditTypeClass != null) {
@@ -103,10 +105,10 @@ public class ReportContractorAudits extends ReportAccount {
 
 		if (!permissions.isPicsEmployee())
 			getFilter().setShowAuditor(true);
-		
-		if(permissions.isPicsEmployee())
+
+		if (permissions.isPicsEmployee())
 			getFilter().setShowClosingAuditor(true);
-		
+
 		getFilter().setShowAuditFor(true);
 	}
 
@@ -120,12 +122,12 @@ public class ReportContractorAudits extends ReportAccount {
 		excelSheet.removeColumn("phone");
 
 		excelSheet.addColumn(new ExcelColumn("auditID", "Audit ID", ExcelCellType.Integer));
-		
+
 		if (permissions.isAdmin())
 			excelSheet.addColumn(new ExcelColumn("groupAuditName", "Audit Name"));
 		else
 			excelSheet.addColumn(new ExcelColumn("auditName", "Audit Name"));
-		
+
 		excelSheet.addColumn(new ExcelColumn("auditStatus", "Audit Status"));
 		excelSheet.addColumn(new ExcelColumn("createdDate", "Creation Date", ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("completedDate", "Completed Date", ExcelCellType.Date));
@@ -145,13 +147,12 @@ public class ReportContractorAudits extends ReportAccount {
 		super.addFilterToSQL();
 
 		ReportFilterAudit f = getFilter();
-		
+
 		String auditTypeList = Strings.implode(f.getAuditTypeID(), ",");
 		String pqfTypeList = Strings.implode(f.getPqfTypeID(), ",");
 		if (filterOn(auditTypeList) && filterOn(pqfTypeList)) {
-			auditTypeList += ","+ pqfTypeList;
-		}
-		else if(filterOn(pqfTypeList)) {
+			auditTypeList += "," + pqfTypeList;
+		} else if (filterOn(pqfTypeList)) {
 			auditTypeList = pqfTypeList;
 		}
 		if (filterOn(auditTypeList)) {
@@ -202,42 +203,6 @@ public class ReportContractorAudits extends ReportAccount {
 					.getCreatedDate2(), "M/d/yy")));
 		}
 
-		if (filterOn(f.getCompletedDate1())) {
-			report.addFilter(new SelectFilterDate("completedDate1", "ca.completedDate >= '?'", DateBean.format(f
-					.getCompletedDate1(), "M/d/yy")));
-		}
-
-		if (filterOn(f.getCompletedDate2())) {
-			report.addFilter(new SelectFilterDate("completedDate2", "ca.completedDate < '?'", DateBean.format(f
-					.getCompletedDate2(), "M/d/yy")));
-		}
-
-		if (filterOn(f.getClosedDate1())) {
-			report.addFilter(new SelectFilterDate("closedDate1", "ca.closedDate >= '?'", DateBean.format(f
-					.getClosedDate1(), "M/d/yy")));
-		}
-
-		if (filterOn(f.getClosedDate2())) {
-			report.addFilter(new SelectFilterDate("closedDate2", "ca.closedDate < '?'", DateBean.format(f
-					.getClosedDate2(), "M/d/yy")));
-		}
-
-		if (filterOn(f.getHasClosedDate())) {
-			if (f.getHasClosedDate().equals("true"))
-				sql.addWhere("ca.closedDate is not null ");
-			else
-				sql.addWhere("ca.closedDate is null ");
-		}
-
-		if (filterOn(f.getExpiredDate1())) {
-			report.addFilter(new SelectFilterDate("expiredDate1", "ca.expiresDate >= '?'", DateBean.format(f
-					.getExpiredDate1(), "M/d/yy")));
-		}
-
-		if (filterOn(f.getExpiredDate2())) {
-			report.addFilter(new SelectFilterDate("expiredDate2", "ca.expiresDate < '?'", DateBean.format(f
-					.getExpiredDate2(), "M/d/yy")));
-		}
 
 		if (filterOn(f.getPercentComplete1())) {
 			report
@@ -248,15 +213,15 @@ public class ReportContractorAudits extends ReportAccount {
 		if (filterOn(f.getPercentComplete2())) {
 			report.addFilter(new SelectFilter("percentComplete2", "ca.percentComplete < '?'", f.getPercentComplete2()));
 		}
-		
+
 		if (filterOn(f.getStatusChangedDate1())) {
-			report.addFilter(new SelectFilterDate("statusChangedDate1", "cao.statusChangedDate >= '?'", DateBean.format(f
-					.getStatusChangedDate1(), "M/d/yy")));
+			report.addFilter(new SelectFilterDate("statusChangedDate1", "cao.statusChangedDate >= '?'", DateBean
+					.format(f.getStatusChangedDate1(), "M/d/yy")));
 		}
 
 		if (filterOn(f.getStatusChangedDate2())) {
-			report.addFilter(new SelectFilterDate("statusChangedDate2", "cao.statusChangedDate < '?'", DateBean.format(f
-					.getStatusChangedDate2(), "M/d/yy")));
+			report.addFilter(new SelectFilterDate("statusChangedDate2", "cao.statusChangedDate < '?'", DateBean.format(
+					f.getStatusChangedDate2(), "M/d/yy")));
 		}
 	}
 
