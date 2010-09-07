@@ -33,9 +33,9 @@ public class WynnewoodRatesWidget extends ContractorAuditsWidget {
 					contractRateMap.put(contract, rate);
 
 		// Going through Contract and checking answers
-		if (permissions.getUserId() == 12293) { // Kevin Beam
+		if (permissions.hasGroup(26996)) { // Purchasing Admin
 			Map<ContractorAudit, ContractorAudit> kevinsAudits = new TreeMap<ContractorAudit, ContractorAudit>(getCaComparator());
-			// Checking answers related to Kevin
+			// Checking answers related to Purchasing
 			for (ContractorAudit contract : waitingOnContracts) {
 				boolean uploaded = false, kname = false, kapproved = false;
 				
@@ -51,15 +51,15 @@ public class WynnewoodRatesWidget extends ContractorAuditsWidget {
 						}
 					}
 
-					// Whittling Contract->Rate Map to only what Kevin needs to see
+					// Whittling Contract->Rate Map to only what Purchasing needs to see
 					if (!uploaded || !kname || !kapproved)
 						kevinsAudits.put(contract, contractRateMap.get(contract));
 				}
 			}
 			return kevinsAudits;
-		} else if (permissions.getUserId() == 20977) { // Johnnie Reddell
+		} else if (permissions.hasGroup(26995)) { // Maintenance Admin
 			Map<ContractorAudit, ContractorAudit> tomsAudits = new TreeMap<ContractorAudit, ContractorAudit>(getCaComparator());
-			// Checking answers related to Tom
+			// Checking answers related to Maintenance
 			for (ContractorAudit contract : waitingOnContracts) {
 				boolean uploaded = false, kname = false, kapproved = false, tname = false, tapproved = false;
 				
@@ -74,7 +74,7 @@ public class WynnewoodRatesWidget extends ContractorAuditsWidget {
 					}
 				}
 
-				// Whittling Contract->Rate Map to only what Tom needs to see
+				// Whittling Contract->Rate Map to only what Maintenance needs to see
 				if (uploaded && kname && kapproved && (!tname || !tapproved))
 					tomsAudits.put(contract, contractRateMap.get(contract));
 			}
