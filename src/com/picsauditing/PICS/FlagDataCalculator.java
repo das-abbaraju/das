@@ -193,10 +193,10 @@ public class FlagDataCalculator {
 					float answer2 = Float.parseFloat(answer.replace(",", ""));
 					float hurdle2 = Float.parseFloat(hurdle.replace(",", ""));
 					if (criteria.getOshaRateType() != null && criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
-						return answer2 > (conCriteria.getContractor().getNaics().getLwcr() * hurdle2) / 100;
+						return answer2 > (Utilities.getIndustryAverage(true, conCriteria.getContractor().getNaics())* hurdle2)/100;
 					}
 					if (criteria.getOshaRateType() != null && criteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
-						return answer2 > (conCriteria.getContractor().getNaics().getTrir() * hurdle2) / 100;
+						return answer2 > (Utilities.getIndustryAverage(false, conCriteria.getContractor().getNaics())* hurdle2)/100;
 					}
 					if (comparison.equals("="))
 						return answer2 == hurdle2;

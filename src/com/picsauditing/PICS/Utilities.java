@@ -3,6 +3,10 @@ package com.picsauditing.PICS;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.picsauditing.dao.NaicsDAO;
+import com.picsauditing.jpa.entities.Naics;
+import com.picsauditing.util.SpringUtils;
+
 /**
  * A set of generic Utilities. We should consider moving this into the Strings
  * class
@@ -119,5 +123,10 @@ public class Utilities {
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.DATE, -1);
 		return c.getTime();
+	}
+	
+	public static float getIndustryAverage(boolean lwcr, Naics naics){
+		NaicsDAO naicsDAO = (NaicsDAO) SpringUtils.getBean("NaicsDAO");
+		return naicsDAO.getIndustryAverage(lwcr, naics);
 	}
 }
