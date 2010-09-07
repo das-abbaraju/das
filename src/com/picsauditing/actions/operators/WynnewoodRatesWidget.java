@@ -57,7 +57,7 @@ public class WynnewoodRatesWidget extends ContractorAuditsWidget {
 				}
 			}
 			return kevinsAudits;
-		} else if (permissions.getUserId() == 20979) { // Tom Harris
+		} else if (permissions.getUserId() == 20977) { // Johnnie Reddell
 			Map<ContractorAudit, ContractorAudit> tomsAudits = new TreeMap<ContractorAudit, ContractorAudit>(getCaComparator());
 			// Checking answers related to Tom
 			for (ContractorAudit contract : waitingOnContracts) {
