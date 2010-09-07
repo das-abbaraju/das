@@ -201,3 +201,12 @@ update audit_type set workflowID = 2 where hasRequirements = 1;
 update audit_type set workflowID = 3 where classType = 'Policy';
 update audit_type set workflowID = 4 where id = 1;
 update audit_type set workflowID = 5 where id = 11;
+
+-- Conversion for Policy CAOs
+update contractor_audit_operator 
+set status = 'Incomplete'
+where status = 'Rejected';
+
+update contractor_audit_operator 
+set status = 'Complete'
+where status = 'Verified';
