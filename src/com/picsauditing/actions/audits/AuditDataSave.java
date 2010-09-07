@@ -27,6 +27,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
@@ -105,18 +106,18 @@ public class AuditDataSave extends AuditActionSupport {
 						}
 
 						newCopy.setAnswer(auditData.getAnswer());
-						if (newCopy.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()
-								&& newCopy.getAudit().getAuditStatus().equals(AuditStatus.Submitted)
-								&& permissions.isPicsEmployee()) {
-							newCopy.setWasChanged(YesNo.Yes);
+						if (newCopy.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep() && permissions.isPicsEmployee()) {
+							if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted) ) {
+								newCopy.setWasChanged(YesNo.Yes);
 
-							if (!toggleVerify) {
-								if (newCopy.isRequirementOpen()) {
-									newCopy.setDateVerified(null);
-									newCopy.setAuditor(null);
-								} else {
-									newCopy.setDateVerified(new Date());
-									newCopy.setAuditor(getUser());
+								if (!toggleVerify) {
+									if (newCopy.isRequirementOpen()) {
+										newCopy.setDateVerified(null);
+										newCopy.setAuditor(null);
+									} else {
+										newCopy.setDateVerified(new Date());
+										newCopy.setAuditor(getUser());
+									}
 								}
 							}
 						}
@@ -207,11 +208,11 @@ public class AuditDataSave extends AuditActionSupport {
 
 					auditDao.save(tempAudit);
 				}
-				if (tempAudit.getAuditType().isAnnualAddendum()) {
-					if (auditData.getQuestion().isRecalculateCategories())
-						auditBuilder.fillAuditCategories(auditData);
-					if (tempAudit.getAuditStatus().isActive()) {
-						tempAudit.changeStatus(AuditStatus.Resubmitted, getUser());
+				if (auditData.getQuestion().isRecalculateCategories())
+					auditBuilder.fillAuditCategories(auditData);
+				for (ContractorAuditOperator cao : tempAudit.getOperators()) {
+					if (cao.getStatus().after(AuditStatus.Resubmitted)) {
+						cao.changeStatus(AuditStatus.Resubmitted, permissions);
 						auditDao.save(tempAudit);
 					}
 				}
