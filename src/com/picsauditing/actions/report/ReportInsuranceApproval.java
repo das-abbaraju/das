@@ -15,7 +15,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.CaoStatus;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.util.Strings;
@@ -72,10 +72,10 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 			return LOGIN;
 		
 		if ("save".equalsIgnoreCase(button)) {
-			CaoStatus newStatus = null;
+			AuditStatus newStatus = null;
 			if (newStatuses != null && newStatuses.size() > 0) {
 				try {
-					newStatus = CaoStatus.valueOf( newStatuses.get(0) );	
+					newStatus = AuditStatus.valueOf( newStatuses.get(0) );	
 				}
 				catch( Exception emptyStringsDontTurnIntoEnumsVeryWell ) {}
 			}
@@ -93,7 +93,7 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 					}
 		
 					if (newStatus != null && !newStatus.equals(existing.getStatus())) {
-						if(newStatus.equals(CaoStatus.Rejected) 
+						if(newStatus.isIncomplete()
 								&& Strings.isEmpty(newVersion.getNotes())) {
 							dirty = false;
 							statusChanged = false;
@@ -103,7 +103,6 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 						else {
 							existing.setStatus(newStatus);
 							existing.setAuditColumns(permissions);
-							existing.setStatusChangedBy(getUser());
 							existing.setStatusChangedDate(new Date());
 							dirty = true;
 							statusChanged = true;
