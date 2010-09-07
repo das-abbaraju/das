@@ -67,7 +67,6 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			auditPercentCalculator.percentCalculateComplete(conAudit, conAudit.getAuditType().getClassType().equals(
 					AuditTypeClass.IM));
 
-
 		auditDao.save(conAudit);
 
 		ContractorAccount contractorAccount = conAudit.getContractorAccount();
@@ -115,13 +114,14 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			return false;
 		if (!isCanEdit())
 			return false;
-		if (conAudit.getPercentVerified() < 100)
-			return false;
-		if (conAudit.getAuditType().isMustVerify())
-			return false;
-		if (conAudit.getAuditStatus().equals(AuditStatus.Submitted)
-				|| conAudit.getAuditStatus().equals(AuditStatus.Resubmitted))
-			return true;
+		/*
+		 * TODO: Fix these changes to ContractorAudit if
+		 * (conAudit.getPercentVerified() < 100) return false; if
+		 * (conAudit.getAuditType().isMustVerify()) return false; if
+		 * (conAudit.getAuditStatus().equals(AuditStatus.Submitted) ||
+		 * conAudit.getAuditStatus().equals(AuditStatus.Resubmitted)) return
+		 * true;
+		 */
 		return false;
 	}
 
@@ -187,26 +187,26 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	public void setOpID(int opID) {
 		this.opID = opID;
 	}
-	
+
 	// Get certificate
 	public Certificate getCertificate(String answerCertID) {
 		try {
 			int certID = Integer.parseInt(answerCertID);
-			
+
 			if (certID > 0)
 				return certificateDao.find(certID);
 		} catch (Exception e) {
 		}
-		
+
 		return null;
 	}
-	
+
 	public OperatorAccount findOperatorByName(String name) {
 		List<OperatorAccount> ops = opDAO.findWhere(true, "a.name = '" + name + "'", permissions);
-		
+
 		if (ops.size() == 1)
 			return ops.get(0);
-		
+
 		return null;
 	}
 }

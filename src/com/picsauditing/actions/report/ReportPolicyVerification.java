@@ -12,7 +12,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 
 @SuppressWarnings("serial")
-public class ReportPolicyVerification extends ReportInsuranceSupport {
+public class ReportPolicyVerification extends ReportContractorAuditOperator {
 
 	public ReportPolicyVerification(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
 			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {

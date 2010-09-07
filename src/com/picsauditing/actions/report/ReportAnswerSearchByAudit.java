@@ -64,7 +64,6 @@ public class ReportAnswerSearchByAudit extends ReportContractorAudits {
 		getFilter().setShowAuditFor(false);
 		getFilter().setShowRegistrationDate(false);
 		getFilter().setShowAuditType(false);
-		getFilter().setShowPercentComplete(false);
 		getFilter().setShowAuditor(false); 
 		getFilter().setShowQuestionAnswer(true);
 	}

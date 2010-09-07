@@ -21,7 +21,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ReportInsuranceApproval extends ReportInsuranceSupport {
+public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 	protected ContractorAuditOperatorDAO conAuditOperatorDAO = null;
 	protected NoteDAO noteDao = null;
 	protected ContractorAccountDAO contractorAccountDAO;

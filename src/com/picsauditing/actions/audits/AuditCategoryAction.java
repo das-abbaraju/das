@@ -106,6 +106,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 
 		super.execute();
 
+		// TODO: No longer works for policies
 		if (isSingleCat()) {
 			catDataID = getCategories().get(0).getId();
 		}
@@ -174,17 +175,18 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 				categories = null;
 				getCategories();
 			}
-
-			if (mode == null && conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete())
-				mode = EDIT;
-			if (mode == null && conAudit.getAuditStatus().isActiveSubmitted() && conAudit.getAuditType().isPqf()
-					&& conAudit.isAboutToExpire())
-				mode = EDIT;
-			if (mode == null && conAudit.getAuditStatus().isSubmitted()) {
-				mode = EDIT;
-			}
-			if (mode == null && conAudit.getAuditType().getClassType().isPolicy() && isHasPendingCaos())
-				mode = EDIT;
+			/*
+			 * TODO: EDIT & VIEW Logic if (mode == null &&
+			 * conAudit.getAuditStatus().isPending() ||
+			 * conAudit.getAuditStatus().isIncomplete()) mode = EDIT; if (mode
+			 * == null && conAudit.getAuditStatus().isActiveSubmitted() &&
+			 * conAudit.getAuditType().isPqf() && conAudit.isAboutToExpire())
+			 * mode = EDIT; if (mode == null &&
+			 * conAudit.getAuditStatus().isSubmitted()) { mode = EDIT; } if
+			 * (mode == null &&
+			 * conAudit.getAuditType().getClassType().isPolicy() &&
+			 * isHasPendingCaos()) mode = EDIT;
+			 */
 
 		} else {
 			// When we want to show all categories

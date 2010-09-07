@@ -30,7 +30,7 @@ import com.picsauditing.util.excel.ExcelColumn;
 @SuppressWarnings("serial")
 public class ReportContractorAudits extends ReportAccount {
 	protected AuditTypeClass auditTypeClass = AuditTypeClass.Audit;
-	private ReportFilterAudit filter = new ReportFilterAudit();
+	protected ReportFilterAudit filter = new ReportFilterAudit();
 
 	public ReportContractorAudits() {
 		orderByDefault = "ca.creationDate DESC";
@@ -39,11 +39,13 @@ public class ReportContractorAudits extends ReportAccount {
 	@Override
 	protected void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.ContractorDetails);
-		if (permissions.isCorporate() || permissions.isOperator()) {
-			// TODO: find out how to check permissions
-			if (permissions.getCanSeeAudit().size() == 0)
-				throw new Exception("Your account does not have access to any audits. Please contact PICS.");
-		}
+		/*
+		 * if (permissions.isCorporate() || permissions.isOperator()) { // TODO:
+		 * find out how to check permissions if
+		 * (permissions.getCanSeeAudit().size() == 0) throw newException(
+		 * "Your account does not have access to any audits. Please contact PICS."
+		 * ); }
+		 */
 	}
 
 	@Override
@@ -91,10 +93,11 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addField("contact.phone AS contactphone");
 		sql.addField("contact.email AS contactemail");
 
-		if (permissions.isCorporate() || permissions.isOperator()) {
-			// TODO: find out how to check permissions
-			sql.addWhere("atype.id IN (" + Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
-		}
+		/*
+		 * if (permissions.isCorporate() || permissions.isOperator()) { // TODO:
+		 * find out how to check permissions sql.addWhere("atype.id IN (" +
+		 * Strings.implode(permissions.getCanSeeAudit(), ",") + ")"); }
+		 */
 		if (auditTypeClass != null) {
 			if (auditTypeClass == AuditTypeClass.Audit) {
 				sql.addWhere("atype.classType in ( 'Audit', 'IM', 'PQF' ) ");
@@ -160,12 +163,6 @@ public class ReportContractorAudits extends ReportAccount {
 			setFiltered(true);
 		}
 
-		String auditStatusList = Strings.implodeForDB(f.getAuditStatus(), ",");
-		if (filterOn(auditStatusList)) {
-			sql.addWhere("ca.auditStatus IN (" + auditStatusList + ")");
-			setFiltered(true);
-		}
-
 		if (filterOn(f.getRecommendedFlag()))
 			report.addFilter(new SelectFilter("recommendedFlag", "cao.flag = '?'", f.getRecommendedFlag()));
 
@@ -201,17 +198,6 @@ public class ReportContractorAudits extends ReportAccount {
 		if (filterOn(f.getCreatedDate2())) {
 			report.addFilter(new SelectFilterDate("createdDate2", "ca.creationDate < '?'", DateBean.format(f
 					.getCreatedDate2(), "M/d/yy")));
-		}
-
-
-		if (filterOn(f.getPercentComplete1())) {
-			report
-					.addFilter(new SelectFilter("percentComplete1", "ca.percentComplete >= '?'", f
-							.getPercentComplete1()));
-		}
-
-		if (filterOn(f.getPercentComplete2())) {
-			report.addFilter(new SelectFilter("percentComplete2", "ca.percentComplete < '?'", f.getPercentComplete2()));
 		}
 
 		if (filterOn(f.getStatusChangedDate1())) {

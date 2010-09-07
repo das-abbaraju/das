@@ -7,7 +7,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 
 @SuppressWarnings("serial")
-public class ReportPolicyList extends ReportInsuranceSupport {
+public class ReportPolicyList extends ReportContractorAuditOperator {
 
 	public ReportPolicyList(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
 			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
@@ -23,6 +23,7 @@ public class ReportPolicyList extends ReportInsuranceSupport {
 	public void buildQuery() {
 		super.buildQuery();
 
+		// TODO: Inheritance changes
 		if (permissions.hasPermission(OpPerms.AllContractors)) {
 			if (getFilter().getOperatorSingle() > 0) {
 				sql.addField("cao.status as caoStatus");

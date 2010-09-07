@@ -355,7 +355,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	@Transient
 	public String getExpandedNumber() {
-		return category.getParent().getNumber() + "." + category.getNumber() + "." + number;
+		return category.getFullNumber() + "." + number;
 	}
 
 	@Transient

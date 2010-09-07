@@ -79,7 +79,8 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 			}
 		}
 
-		if (conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().isSubmitted()) {
+		//TODO: fix this auditStatus reference
+		if (conAudit.getAuditType().isAnnualAddendum()/* && conAudit.getAuditStatus().isSubmitted()*/) {
 			for (AuditCatData auditCatData : conAudit.getCategories()) {
 				if (!auditCatData.isApplies()) {
 					if (auditCatData.getCategory().isSha()) {

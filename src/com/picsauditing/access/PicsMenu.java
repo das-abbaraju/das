@@ -193,6 +193,7 @@ public class PicsMenu {
 
 		subMenu = menu.addChild("InsureGUARD&trade;");
 		if (permissions.hasPermission(OpPerms.InsuranceCerts)) {
+			// TODO: Fix this string - is this needed?
 			final String url = "ReportPolicyList.action?filter.caoStatus=Approved&filter.caoStatus=Rejected&filter.caoStatus=Verified&filter.caoStatus=Submitted";
 			subMenu.addChild("Contractor Policies", url);
 		}

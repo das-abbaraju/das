@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <s:if test="conAudit.auditType.classType.policy">
-	<s:if test="mode == 'Edit' || (policyWithOtherOperators && (#a == null || #a.answer == null))">
+	<s:if test="mode == 'Edit' || (auditWithOtherOperators && (#a == null || #a.answer == null))">
 		<s:include value="audit_question_edit.jsp"></s:include>
 	</s:if>
 	<s:else>
