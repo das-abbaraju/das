@@ -99,7 +99,9 @@ public class ContractorFacilities extends ContractorActionSupport {
 			accountDao.save(contractor);
 		}
 		if (button != null) {
-			if (button.equals("search")) {
+			boolean recalculate = false;
+			
+			if (button.startsWith("search")) {
 				if (!Strings.isEmpty(operator.getName()) || !Strings.isEmpty(state)) {
 					String where = "";
 
@@ -181,8 +183,18 @@ public class ContractorFacilities extends ContractorActionSupport {
 					addActionMessage("This list of operators is generated based on the operators you currently have selected."
 							+ "To find a specific operator, use the search filters above");
 				}
-
-				return "search";
+				
+				if ("searchAddAll".equals(button)) {
+					facilityChanger.setContractor(contractor);
+					facilityChanger.setPermissions(permissions);
+					for (OperatorAccount o : searchResults) {
+						facilityChanger.setType(type);
+						facilityChanger.setOperator(o);
+						facilityChanger.add();
+						recalculate = true;
+					}
+				} else
+					return "search";
 			}
 
 			if (button.equals("validateBidOnly")) {
@@ -224,8 +236,6 @@ public class ContractorFacilities extends ContractorActionSupport {
 				accountDao.save(contractor);
 				return SUCCESS;
 			}
-
-			boolean recalculate = false;
 
 			facilityChanger.setContractor(contractor);
 			facilityChanger.setOperator(operator.getId());

@@ -12,18 +12,30 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 
 <script type="text/javascript">
-	function runSearch() {
+	function runSearch(button) {
+		if (button === undefined)
+			button = "search";
+		
 		startThinking( {div: 'thinkingSearchDiv', type:'large', message: 'Searching for matching facilities' } );
 		$('#results').empty();
 		var data= $('#facilitySearch').serialize();
-		data += "&button=search";
+		data += "&button=" + button;
 		$.post('ContractorFacilityAjax.action', data, function(text, status) {
 				stopThinking( {div: 'thinkingSearchDiv' } );
 				$('#results').html(text);
+				if (button != "search") {
+					reloadOperators(<s:property value="contractor.id" />);
+					runSearch();
+				}
 			}
 		);
 		
 		return false;
+	}
+	function addAllOperators () {
+		// Assuming that the search results are still valid...
+		// Do we need to check for this?
+		runSearch("searchAddAll");
 	}
 	function addOperator( conId, opId ) {
 		// Changes status if contractor refuses bid only upgrade

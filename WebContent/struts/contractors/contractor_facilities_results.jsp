@@ -3,7 +3,7 @@
 <s:set name="conID" value="contractor.id"/>
 <s:set name="con" value="contractor"/>
 
-<s:if test="searchResults.size == 0">
+<s:if test="searchResults.size() == 0">
 	<div class="alert">No Facilities Found</div>
 </s:if>
 <s:else>
@@ -39,6 +39,13 @@
 				class="add">Add</a></td>
 		</tr>
 	</s:iterator>
+	<s:if test="searchResults.size() > 1">
+		<tr>
+			<td colspan="3" class="right">
+				<a href="#" onclick="addAllOperators(); return false;" class="add">Add All Operators</a>
+			</td>
+		</tr>
+	</s:if>
 	</tbody>
 </table>
 
