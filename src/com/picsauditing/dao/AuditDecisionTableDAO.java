@@ -1,8 +1,10 @@
 package com.picsauditing.dao;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Query;
@@ -18,6 +20,7 @@ import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.util.Strings;
 
@@ -312,5 +315,21 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		query.setParameter("include", rule.isInclude());
 		query.setParameter("level", rule.getLevel() + 1);
 		return query.executeUpdate();
+	}
+
+	public Map<Integer, Integer> getGoverningBodyMap(OperatorAccount operator) {
+		String sql = "SELECT auditType.id, operatorAccount.id FROM AuditCategoryRule r "
+				+ "WHERE operatorAccount.id IN (" + Strings.implode(operator.getOperatorHeirarchy())
+				+ ") AND include = 1 GROUP BY auditType.id, operatorAccount.id";
+		Query query = em.createQuery(sql);
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		for (Object row : query.getResultList()) {
+			System.out.println(row);
+			int auditTypeID = row.hashCode();
+			int opID = row.hashCode();
+			if (!map.containsKey(auditTypeID))
+				map.put(auditTypeID, opID);
+		}
+		return map;
 	}
 }
