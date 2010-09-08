@@ -173,10 +173,7 @@ public class ContractorAuditOperator extends BaseTable {
 
 		if (status.isSubmitted()) {
 			if (!audit.getContractorAccount().isAcceptsBids()) {
-				if (audit.getAuditType().isMustVerify())
-					synopsis = "Awaiting verification.";
-				else
-					synopsis = "Submitted pending requirements.";
+				synopsis = "Awaiting verification or pending requirements.";
 			}
 		}
 
