@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,6 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	protected AuditStatus auditStatus = null;
 	protected AuditPercentCalculator auditPercentCalculator;
 	protected CertificateDAO certificateDao;
-	private boolean hasStatusChanged = false;
 
 	protected int opID;
 	protected ContractorAuditOperatorDAO caoDAO;
@@ -48,9 +48,6 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	}
 
 	public String execute() throws Exception {
-
-		if (auditStatus != null)
-			hasStatusChanged = true;
 
 		// Calculate and set the percent complete
 		if (conAudit.getLastRecalculation() == null) {
@@ -103,7 +100,11 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	}
 
 	public Map<AuditCategory, AuditCatData> getCatDataMap() {
-		return catDataDao.findByAuditMap(conAudit, permissions);
+		Map<AuditCategory, AuditCatData> catDataMap = new HashMap<AuditCategory, AuditCatData>();
+		for(AuditCatData catData : getCategories()) {
+			catDataMap.put(catData.getCategory(), catData);
+		}
+		return catDataMap;
 	}
 
 	public AuditStatus getAuditStatus() {

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -24,6 +25,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
@@ -603,10 +605,33 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	}
 
 	public boolean hasCaoStatusAfter(AuditStatus auditStatus) {
-		for(ContractorAuditOperator cao : this.operators) {
-			if(cao.getStatus().after(auditStatus))
+		for (ContractorAuditOperator cao : this.operators) {
+			if (cao.getStatus().after(auditStatus))
 				return true;
 		}
 		return false;
+	}
+
+	public List<AuditCatData> getApplicableCategories(Permissions permissions,
+			Set<AuditCategory> requiredCategories) {
+		List<AuditCatData> categories = new ArrayList<AuditCatData>();
+		for (AuditCatData auditCatData : getCategories()) {
+			if (auditCatData.getCategory().getId() == AuditCategory.WORK_HISTORY) {
+				if (permissions.hasPermission(OpPerms.ViewFullPQF))
+					categories.add(auditCatData);
+			} else if (permissions.isAdmin()) {
+				categories.add(auditCatData);
+			} else {
+				if (auditCatData.isApplies()) {
+					if (permissions.isOperatorCorporate()) {
+						if (requiredCategories.contains(auditCatData
+								.getCategory()))
+							categories.add(auditCatData);
+					} else
+						categories.add(auditCatData);
+				}
+			}
+		}
+		return categories;
 	}
 }

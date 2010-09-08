@@ -1,18 +1,13 @@
 package com.picsauditing.actions.audits;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.PICS.AuditBuilder;
-import com.picsauditing.PICS.AuditBuilderController;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -125,24 +120,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			requiredCategories = auditCategoryDetail.categories;
 		}
 
-		for (AuditCatData auditCatData : conAudit.getCategories()) {
-			if (auditCatData.getCategory().getId() == AuditCategory.WORK_HISTORY) {
-				if (permissions.hasPermission(OpPerms.ViewFullPQF))
-					categories.add(auditCatData);
-			} else if (permissions.isAdmin()) {
-				categories.add(auditCatData);
-			} else {
-				if (auditCatData.isApplies()) {
-					if (permissions.isOperatorCorporate()) {
-						if (requiredCategories.contains(auditCatData
-								.getCategory()))
-							categories.add(auditCatData);
-					} else
-						categories.add(auditCatData);
-				}
-			}
-		}
-		return categories;
+		return conAudit.getApplicableCategories(permissions, requiredCategories) ;
 	}
 
 	public boolean isHasSafetyManual() {
