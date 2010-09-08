@@ -1596,14 +1596,6 @@
 		</action>
 
 		<!-- Other Stuff -->
-		<action name="AuditOperator"
-			class="com.picsauditing.actions.audits.AuditOperatorList">
-			<result>struts/operators/audit_operator.jsp</result>
-		</action>
-		<action name="AuditOperatorSaveAjax"
-			class="com.picsauditing.actions.audits.AuditOperatorSave">
-			<result>struts/operators/audit_operator_save.jsp</result>
-		</action>
 		
 		<action name="ManageFlagCriteriaOperator"
 			class="com.picsauditing.actions.operators.ManageFlagCriteriaOperator">

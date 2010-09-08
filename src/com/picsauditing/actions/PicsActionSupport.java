@@ -33,6 +33,7 @@ import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
 public class PicsActionSupport extends ActionSupport implements RequestAware {
+
 	protected static String LOGIN_AJAX = "LoginAjax";
 	protected static String BLANK = "blank";
 	protected static String JSON = "json";
@@ -142,8 +143,10 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	}
 
 	public User getUser() {
-		if (user == null)
+		if (user == null) {
+			loadPermissions();
 			user = getUser(permissions.getUserId());
+		}
 		return user;
 	}
 
@@ -159,8 +162,8 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	}
 
 	public Account getAccount() {
-		loadPermissions();
 		if (account == null) {
+			loadPermissions();
 			AccountDAO dao = (AccountDAO) SpringUtils.getBean("AccountDAO");
 			account = dao.find(permissions.getAccountId(), permissions.getAccountType());
 		}

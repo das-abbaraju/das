@@ -304,8 +304,6 @@ public class PicsMenu {
 				|| permissions.hasPermission(OpPerms.ManageAssessment))
 			subMenu.addChild("Manage Accounts",
 					"ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending");
-		if (permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit))
-			subMenu.addChild("Assign Audit/Operator", "AuditOperator.action");
 
 		subMenu = menu.addChild("Reports");
 
