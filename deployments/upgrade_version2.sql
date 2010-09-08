@@ -210,3 +210,7 @@ where status = 'Rejected';
 update contractor_audit_operator 
 set status = 'Complete'
 where status = 'Verified';
+
+-- 
+insert into facilities (corporateID, opID) select 5, id from accounts where country = 'US' and type = 'Operator';
+insert into facilities (corporateID, opID) select 6, id from accounts where country = 'CA' and type = 'Operator';
