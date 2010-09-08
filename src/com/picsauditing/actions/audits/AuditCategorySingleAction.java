@@ -19,14 +19,8 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditCategorySingleAction extends AuditActionSupport {
@@ -76,55 +70,6 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 		return SUCCESS;
 	}
 
-	/**
-	 * Can the current user submit this audit in its current state?
-	 * 
-	 * @return
-	 */
-	public boolean isCanSubmit() {
-		if (!isCanEdit())
-			return false;
-		if (conAudit.getPercentComplete() < 100)
-			return false;
-		if (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete()) {
-			if (permissions.isContractor() && !conAudit.getContractorAccount().isPaymentMethodStatusValid()
-					&& conAudit.getContractorAccount().isMustPayB()) {
-				return false;
-			}
-			return true;
-		}
-		if (conAudit.getAuditType().getClassType().isPqf()) {
-			// PQFs are perpetual audits and can be renewed
-			if (permissions.isContractor()) {
-				// We don't allow admins to resubmit audits (only contractors)
-				if (conAudit.isAboutToExpire())
-					return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Can the current user submit this audit in its current state?
-	 * 
-	 * @return
-	 */
-	public boolean isCanClose() {
-		if (permissions.isContractor())
-			return false;
-		if (!isCanEdit())
-			return false;
-		/*
-		 * TODO: Fix these changes to ContractorAudit if
-		 * (conAudit.getPercentVerified() < 100) return false; if
-		 * (conAudit.getAuditType().isMustVerify()) return false; if
-		 * (conAudit.getAuditStatus().equals(AuditStatus.Submitted) ||
-		 * conAudit.getAuditStatus().equals(AuditStatus.Resubmitted)) return
-		 * true;
-		 */
-		return false;
-	}
-
 	public List<Certificate> getCertificates() {
 		return certificateDao.findByConId(contractor.getId(), permissions, false);
 	}
@@ -151,17 +96,6 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				return true;
 		}
 		return false;
-	}
-
-	public boolean isCanSubmitPolicy() {
-		if (!isCanEdit())
-			return false;
-
-		if (permissions.isContractor() && !conAudit.getContractorAccount().isPaymentMethodStatusValid()
-				&& conAudit.getContractorAccount().isMustPayB())
-			return false;
-		return true;
-
 	}
 
 	public List<AuditCategory> getAuditCategories() {

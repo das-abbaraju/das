@@ -173,7 +173,10 @@ public class ContractorAuditOperator extends BaseTable {
 
 		if (status.isSubmitted()) {
 			if (!audit.getContractorAccount().isAcceptsBids()) {
-				synopsis = "Awaiting verification or pending requirements.";
+				if (audit.getAuditType().getWorkFlow().isHasSubmittedStep())
+					synopsis = "Awaiting verification.";
+				else
+					synopsis = "Submitted pending requirements.";
 			}
 		}
 
@@ -292,5 +295,22 @@ public class ContractorAuditOperator extends BaseTable {
 	public boolean isCanContractorSubmit() {
 		return certificate != null && valid != null && (valid.isTrue() || !Strings.isEmpty(reason));
 	}
-
+	
+	public boolean canSubmitCao() {
+		if (this.getPercentComplete() < 100)
+			return false;
+		if (this.status.before(AuditStatus.Submitted)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean canVerifyCao() {
+		if (this.getPercentVerified() < 100)
+			return false;
+		if (this.status.isSubmittedResubmitted()) {
+			return true;
+		}
+		return false;
+	}
 }

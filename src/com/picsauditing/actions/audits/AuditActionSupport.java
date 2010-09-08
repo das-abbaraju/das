@@ -1,26 +1,38 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class AuditActionSupport extends ContractorActionSupport {
@@ -32,9 +44,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected List<AuditCatData> categories;
 	protected String descriptionOsMs;
 	private Map<Integer, AuditData> hasManual;
+	private List<AuditCategoryRule> rules = null;
 
-	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
+	public AuditActionSupport(ContractorAccountDAO accountDao,
+			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
+			AuditDataDAO auditDataDao) {
 		super(accountDao, auditDao);
 		this.catDataDao = catDataDao;
 		this.auditDataDao = auditDataDao;
@@ -52,12 +66,15 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.isPicsEmployee())
 			return;
 		if (permissions.isOperator() || permissions.isCorporate()) {
-			if (!permissions.getCanSeeAudit().contains(conAudit.getAuditType().getId()))
-				throw new NoRightsException(conAudit.getAuditType().getAuditName());
+			if (!permissions.getCanSeeAudit().contains(
+					conAudit.getAuditType().getId()))
+				throw new NoRightsException(conAudit.getAuditType()
+						.getAuditName());
 		}
 		if (permissions.isContractor()) {
 			if (!conAudit.getAuditType().isCanContractorView())
-				throw new NoRightsException(conAudit.getAuditType().getAuditName());
+				throw new NoRightsException(conAudit.getAuditType()
+						.getAuditName());
 		}
 	}
 
@@ -96,30 +113,35 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public List<AuditCatData> getCategories() {
 		if (categories != null)
 			return categories;
+		Set<AuditCategory> requiredCategories = null;
+		if (permissions.isOperatorCorporate()) {
+			AuditBuilder builder = new AuditBuilder();
+			Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+			OperatorAccount opAccount = (OperatorAccount) getUser()
+					.getAccount();
+			operators.add(opAccount);
+			AuditCategoriesDetail auditCategoryDetail = builder.getDetail(
+					conAudit.getAuditType(), getRules(), operators);
+			requiredCategories = auditCategoryDetail.categories;
+		}
 
-		categories = catDataDao.findByAudit(conAudit, permissions);
-
-		// For PQFs the valid date is today, for all other audits we use the
-		// creation date
-		// This is important when we figure out which questions should be
-		// display
-		// And therefore which subcategories have valid questions,
-		// and which categories have subcategories
-		// We don't actually loop through the all the questions just yet, that's
-		// later
-
-		// No longer being used
-		/*
-		 * for (AuditCatData catData : categories) { if
-		 * (conAudit.getAuditType().getClassType().isPqf())
-		 * catData.getCategory().setValidDate(new Date()); else
-		 * catData.getCategory().setValidDate(conAudit.getCreationDate());
-		 * if(permissions.isPicsEmployee())
-		 * catData.getCategory().setCountries(contractor.getCountries()); else
-		 * catData
-		 * .getCategory().setCountries(permissions.getAccountCountries()); }
-		 */
-
+		for (AuditCatData auditCatData : conAudit.getCategories()) {
+			if (auditCatData.getCategory().getId() == AuditCategory.WORK_HISTORY) {
+				if (permissions.hasPermission(OpPerms.ViewFullPQF))
+					categories.add(auditCatData);
+			} else if (permissions.isAdmin()) {
+				categories.add(auditCatData);
+			} else {
+				if (auditCatData.isApplies()) {
+					if (permissions.isOperatorCorporate()) {
+						if (requiredCategories.contains(auditCatData
+								.getCategory()))
+							categories.add(auditCatData);
+					} else
+						categories.add(auditCatData);
+				}
+			}
+		}
 		return categories;
 	}
 
@@ -135,8 +157,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (conAudit.getAuditType().getId() == AuditType.BPIISNCASEMGMT) {
 			questionID = 3477;
 		}
-		Map<Integer, AuditData> answers = auditDataDao.findAnswersForSafetyManual(conAudit.getContractorAccount()
-				.getId(), questionID);
+		Map<Integer, AuditData> answers = auditDataDao
+				.findAnswersForSafetyManual(conAudit.getContractorAccount()
+						.getId(), questionID);
 		if (answers == null || answers.size() == 0)
 			return null;
 		return answers;
@@ -150,63 +173,103 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return hasManual;
 	}
 
-	public boolean isCanVerify() {
-		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
-			return false;
-		//TODO: Fix this auditStatus
-		if (conAudit.getAuditType().isPqf()/* && conAudit.getAuditStatus().isActiveSubmitted()*/)
-			if (permissions.isAuditor())
-				return true;
-
-		return false;
-	}
-
-	public boolean isCanEdit() {
+	public boolean isCanEditAudit() {
 		if (conAudit.isExpired())
 			return false;
 
 		AuditType type = conAudit.getAuditType();
 
 		if (type.getClassType().isPolicy()) {
-			if (conAudit.willExpireSoon())
-				// Never let them edit the old policy
-				// But should we allow for exceptions?
-				return false;
+			// we don't want the contractors to edit the effective dates on the
+			// old policy
+			if (conAudit.willExpireSoon()) {
+				if (conAudit.hasCaoStatusAfter(AuditStatus.Submitted))
+					return false;
+			}
 		}
 
 		// Auditors can edit their assigned audits
-		if (type.isHasAuditor() && !type.isCanContractorEdit() && conAudit.getAuditor() != null
+		if (type.isHasAuditor() && !type.isCanContractorEdit()
+				&& conAudit.getAuditor() != null
 				&& permissions.getUserId() == conAudit.getAuditor().getId())
 			return true;
-
-		if (permissions.isContractor()) {
-			// TODO: fix the auditstatus here
-			if ((type.isAnnualAddendum() || type.getId() == 99)/* && conAudit.isActiveSubmitted()*/)
-				// contractors can't modify annual updates that are already
-				// verified or submitted
-				return false;
-
-			return type.isCanContractorEdit();
-		}
-		
-		if (type.getEditPermission() != null && !permissions.hasPermission(type.getEditPermission()))
-			return false;
-
-		if (permissions.isOperatorCorporate()) {
-			if (permissions.getCanEditAudits().contains(type.getId())) {
-				if (type.getClassType().isPolicy() && isPolicyWithOtherOperators())
-					return false;
-
-				return true;
-			}
-			return false;
-		}
 
 		if (permissions.seesAllContractors())
 			return true;
 
-		return false;
+		if (permissions.isContractor()) {
+			if ((type.isAnnualAddendum() || type.getId() == 99)) {
+				// contractors can't modify annual updates that are already
+				// verified or submitted
+				if (conAudit.hasCaoStatusAfter(AuditStatus.Submitted))
+					return false;
+			}
+			return type.isCanContractorEdit();
+		}
 
+		if (type.getEditPermission() != null)
+			return permissions.hasPermission(type.getEditPermission());
+
+		return false;
+	}
+
+	public boolean isCanSubmitAudit() {
+		if (!isCanEditAudit())
+			return false;
+
+		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
+			if (cao.canSubmitCao()) {
+				if (permissions.isContractor()) {
+					if (!conAudit.getContractorAccount()
+							.isPaymentMethodStatusValid()
+							&& conAudit.getContractorAccount().isMustPayB())
+						return false;
+				}
+				return true;
+			} else if (conAudit.getAuditType().isRenewable()) {
+				if (permissions.isContractor()) {
+					// We don't allow admins to resubmit audits (only
+					// contractors)
+					if (conAudit.isAboutToExpire())
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean isCanVerifyAudit() {
+		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
+			return false;
+
+		if (conAudit.getAuditType().isPqf()
+				&& conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+			if (permissions.isAuditor())
+				return true;
+
+		return false;
+	}
+
+	/**
+	 * Can the current user submit this audit in its current state?
+	 * 
+	 * @return
+	 */
+	public boolean isCanCloseAudit() {
+		if (permissions.isContractor())
+			return false;
+		if (!isCanEditAudit())
+			return false;
+
+		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
+			if (cao.canVerifyCao()) {
+				return true;
+			}
+		}
+		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
+			return false;
+
+		return false;
 	}
 
 	@Deprecated
@@ -226,7 +289,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	 */
 	public boolean isAuditWithOtherOperators() {
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (!permissions.getVisibleCAOs().contains(cao.getOperator().getId())) {
+			if (!permissions.getVisibleCAOs().contains(
+					cao.getOperator().getId())) {
 				// This logic is somewhat complex so here's an example:
 				// BASF Freeport Hub has access to many operators
 				// who use either BASF Corporate and BASF Catalyst insurance
@@ -253,5 +317,15 @@ public class AuditActionSupport extends ContractorActionSupport {
 			else
 				descriptionText = "OSHA Recordable";
 		return descriptionText;
+	}
+
+	protected List<AuditCategoryRule> getRules() {
+		if (rules == null) {
+			AuditDecisionTableDAO auditRulesDAO = (AuditDecisionTableDAO) SpringUtils
+					.getBean("AuditDecisionTableDAO");
+			rules = auditRulesDAO.getApplicableCategoryRules(conAudit
+					.getContractorAccount(), conAudit.getAuditType());
+		}
+		return rules;
 	}
 }
