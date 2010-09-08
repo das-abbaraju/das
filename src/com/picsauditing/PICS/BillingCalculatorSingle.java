@@ -5,14 +5,17 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
+import com.picsauditing.PICS.AuditBuilder.AuditTypeDetail;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Invoice;
@@ -20,8 +23,10 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.SpringUtils;
 
 public class BillingCalculatorSingle {
+
 	public static final Date CONTRACT_RENEWAL_TIMKEN = DateBean.parseDate("2010-09-01");
 	public static final Date CONTRACT_RENEWAL_BASF = DateBean.parseDate("2012-01-01");
 	public static final Date CONTRACT_RENEWAL_LOREAL = DateBean.parseDate("2010-07-01");
@@ -92,22 +97,15 @@ public class BillingCalculatorSingle {
 	static private boolean isAudited(ContractorAccount contractor) {
 		// We have at least one paying operator, let's see if they need to be
 		// audited
+		Map<AuditType, AuditTypeDetail> map = AuditBuilder.calculateRequiredAuditTypes(contractor);
 
-		for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
-			OperatorAccount operator = contractorOperator.getOperatorAccount();
-			if (operator.getDoContractorsPay() != null && !operator.getDoContractorsPay().equals("No")) {
-				// See if this operator requires this contractor to be audited
-				for (AuditOperator audit : operator.getInheritAudits().getAudits()) {
-					if (audit.isRequiredFor(contractor)) {
-						// This operator requires this audit and can see it
-
-						if (audit.getAuditType().getId() == AuditType.DESKTOP
-								|| audit.getAuditType().getId() == AuditType.OFFICE
-								|| audit.getAuditType().getClassType() == AuditTypeClass.IM)
-							return true;
-					}
-				}
-			}
+		for (AuditType auditType : map.keySet()) {
+			if (auditType.isDesktop())
+				return true;
+			if (auditType.getId() == AuditType.OFFICE)
+				return true;
+			if (auditType.getClassType() == AuditTypeClass.IM)
+				return true;
 		}
 		return false;
 	}
@@ -290,8 +288,8 @@ public class BillingCalculatorSingle {
 	static public boolean hasReducedActivation(ContractorAccount contractor) {
 		final Date now = new Date();
 		final OperatorAccount requestedBy = contractor.getRequestedBy();
-		
-		if(requestedBy == null)
+
+		if (requestedBy == null)
 			return false;
 		if (CONTRACT_RENEWAL_TIMKEN.after(now) && requestedBy.getName().startsWith("Timken"))
 			return true;
@@ -299,14 +297,14 @@ public class BillingCalculatorSingle {
 			return true;
 		if (CONTRACT_RENEWAL_SUNDYNE.after(now) && requestedBy.getName().startsWith("Sundyne"))
 			return true;
-		if (CONTRACT_RENEWAL_LOREAL.after(now) 
-				&& (requestedBy.getId() == 10970 || requestedBy.getId() == 10969 
-						|| requestedBy.getId() == 10913))
+		if (CONTRACT_RENEWAL_LOREAL.after(now)
+				&& (requestedBy.getId() == 10970 || requestedBy.getId() == 10969 || requestedBy.getId() == 10913))
 			return true;
 		return false;
 	}
 
-	static public boolean activateContractor(ContractorAccount contractor, Invoice invoice, ContractorAccountDAO accountDao) {
+	static public boolean activateContractor(ContractorAccount contractor, Invoice invoice,
+			ContractorAccountDAO accountDao) {
 		if (contractor.getStatus().isPendingDeactivated() && invoice.getStatus().isPaid()) {
 			for (InvoiceItem item : invoice.getItems()) {
 				if (item.getInvoiceFee().getFeeClass().equals("Activation")

@@ -21,7 +21,6 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;

@@ -5,8 +5,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.OpPerms;
@@ -17,7 +19,6 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AmBest;
-import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -127,11 +128,9 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				FlagCriteria fc = flagCriteriaDAO.find(criteriaID);
 				FlagCriteriaOperator fco = new FlagCriteriaOperator();
 				
-				List<AuditOperator> audits = operator.getAudits();
-				for (AuditOperator audit : audits) {
-					if (fc.getAuditType() != null && fc.getAuditType().equals(audit.getAuditType()))
-						fco.setMinRiskLevel(LowMedHigh.getMap().get(audit.getMinRiskLevel()));
-				}
+				// TODO Find the audit rule for this operator and see if there is a minRiskLevel
+				// Not sure if we still need this anymore
+				// fco.setMinRiskLevel(rule.getRisk());
 				
 				fco.setAuditColumns(permissions);
 				fco.setCriteria(fc);
@@ -271,7 +270,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			map.get(fco.getCriteria()).add(fco);
 		}
 		
-		List<AuditType> auditTypes = new ArrayList<AuditType>();
+		Set<AuditType> auditTypes = new HashSet<AuditType>();
 		// Get all ready viewable audit types
 		for (AuditOperator ao : operator.getVisibleAudits()) {
 			if (!auditTypes.contains(ao.getAuditType())) {

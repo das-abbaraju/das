@@ -8,13 +8,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.BaseDecisionTreeRule;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
@@ -36,10 +39,16 @@ public class AuditBuilder {
 		public Set<AuditCategory> categories = new HashSet<AuditCategory>();
 	}
 
+	/**
+	 * 
+	 * @param rules
+	 * @param operators
+	 * @return
+	 */
 	public Map<AuditType, AuditTypeDetail> calculateRequiredAuditTypes(List<AuditTypeRule> rules,
 			Collection<OperatorAccount> operators) {
 		Map<AuditType, AuditTypeDetail> auditTypes = new HashMap<AuditType, AuditTypeDetail>();
-		
+
 		PicsLogger.start("getRequiredAuditTypes");
 
 		sortRules(rules);
@@ -73,6 +82,14 @@ public class AuditBuilder {
 		return auditTypes;
 	}
 
+	static public Map<AuditType, AuditTypeDetail> calculateRequiredAuditTypes(ContractorAccount contractor) {
+		// This isn't super efficient, but it works
+		AuditBuilder builder = new AuditBuilder();
+		AuditDecisionTableDAO dao = (AuditDecisionTableDAO) SpringUtils.getBean("AuditDecisionTableDAO");
+		List<AuditTypeRule> rules = dao.getApplicableAuditRules(contractor);
+		return builder.calculateRequiredAuditTypes(rules, contractor.getOperatorAccounts());
+	}
+
 	/**
 	 * Determine which categories should be on a given audit
 	 * 
@@ -80,14 +97,15 @@ public class AuditBuilder {
 	 *            Make sure that these rules are filtered for the requested
 	 *            contractorAudit
 	 */
-	public AuditCategoriesDetail getDetail(AuditType auditType, List<AuditCategoryRule> rules, Collection<OperatorAccount> operators) {
+	public AuditCategoriesDetail getDetail(AuditType auditType, List<AuditCategoryRule> rules,
+			Collection<OperatorAccount> operators) {
 		AuditCategoriesDetail detail = new AuditCategoriesDetail();
 		sortRules(rules);
 		detail.rules = rules;
 		for (OperatorAccount operator : operators) {
 			detail.operators.put(operator, null);
 		}
-		
+
 		// Figure out which categories are required
 		for (AuditCategory category : auditType.getCategories()) {
 			includeCategory(detail, category, rules);

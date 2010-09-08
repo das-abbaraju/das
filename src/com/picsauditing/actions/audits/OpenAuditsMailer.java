@@ -7,9 +7,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -38,56 +36,39 @@ public class OpenAuditsMailer extends PicsActionSupport {
 	private int process(int nextID) {
 		// Only send this to Desktop, Office and D&A
 		String where = "contractorAccount.status = 'Active' AND auditType.id IN (2,3,6) "
-				+ "AND auditStatus = 'Submitted' AND id > " + nextID;
+				+ "AND id IN (SELECT audit.id FROM ContractorAuditOperator WHERE status = 'Submitted') AND id > "
+				+ nextID;
 		List<ContractorAudit> list = contractorAuditDAO.findWhere(100, where, "id");
+		if (list.size() == 0)
+			return 0;
+
 		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		EmailBuilder emailBuilder = new EmailBuilder();
 
 		nextID = 0;
 		for (ContractorAudit conAudit : list) {
-			boolean requiresAudit = false;
-			for (ContractorOperator contractorOperator : conAudit.getContractorAccount().getNonCorporateOperators()) {
-				if (contractorOperator.getOperatorAccount().getStatus().isActiveDemo()) {
-					for (AuditOperator auditOperator : contractorOperator.getOperatorAccount().getVisibleAudits()) {
-						if (conAudit.getAuditType() == auditOperator.getAuditType()
-								&& auditOperator.isRequiredFor(conAudit.getContractorAccount())) {
-							requiresAudit = true;
-							break;
-						}
-					}
-					if (requiresAudit)
-						break;
-				}
-			}
+			nextID = conAudit.getId();
+			try {
+				emailBuilder.clear();
+				emailBuilder.setTemplate(6);
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setConAudit(conAudit);
+				EmailQueue email = emailBuilder.build();
+				email.setPriority(10);
+				email.setFromAddress("audits@picsauditing.com");
+				email.setViewableById(Account.EVERYONE);
+				emailQueueDAO.save(email);
 
-			if (requiresAudit) {
-				nextID = conAudit.getId();
-				try {
-					// System.out.println("Sending openRequirements email to: ("
-					// + conAudit.getId() + ") "
-					// + conAudit.getContractorAccount().getName() + " " +
-					// conAudit.getAuditType().getAuditName());
-					emailBuilder.clear();
-					emailBuilder.setTemplate(6);
-					emailBuilder.setPermissions(permissions);
-					emailBuilder.setConAudit(conAudit);
-					EmailQueue email = emailBuilder.build();
-					email.setPriority(10);
-					email.setFromAddress("audits@picsauditing.com");
-					email.setViewableById(Account.EVERYONE);
-					emailQueueDAO.save(email);
+				Note note = new Note();
+				note.setAccount(conAudit.getContractorAccount());
+				note.setAuditColumns(permissions);
+				note.setSummary("Sent Open Requirements Reminder email to " + emailBuilder.getSentTo());
+				note.setNoteCategory(NoteCategory.Audits);
+				note.setViewableById(Account.EVERYONE);
+				noteDAO.save(note);
 
-					Note note = new Note();
-					note.setAccount(conAudit.getContractorAccount());
-					note.setAuditColumns(permissions);
-					note.setSummary("Sent Open Requirements Reminder email to " + emailBuilder.getSentTo());
-					note.setNoteCategory(NoteCategory.Audits);
-					note.setViewableById(Account.EVERYONE);
-					noteDAO.save(note);
-
-				} catch (Exception e) {
-					System.out.println("Error sending openRequirements email: " + e.getMessage());
-				}
+			} catch (Exception e) {
+				System.out.println("Error sending openRequirements email: " + e.getMessage());
 			}
 		}
 		return nextID;

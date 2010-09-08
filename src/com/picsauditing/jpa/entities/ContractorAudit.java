@@ -258,16 +258,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	// TRANSIENT ///////////////////////////////
 
-	@Transient
-	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
-	public boolean isCanView(Permissions permissions) {
-		if (permissions.isContractor()
-				&& (getAuditType().isCanContractorView() == false))
-			return false;
-		else
-			return true;
-	}
-
 	/**
 	 * 
 	 * 
@@ -322,8 +312,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		cal1.add(Calendar.WEEK_OF_YEAR, -2);
 		Calendar cal2 = Calendar.getInstance();
 		cal2.add(Calendar.DATE, 26);
-		if (expiresDate.after(cal1.getTime())
-				&& expiresDate.before(cal2.getTime()))
+		if (expiresDate.after(cal1.getTime()) && expiresDate.before(cal2.getTime()))
 			return true;
 		return false;
 	}
@@ -336,14 +325,12 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			// Check to see if the CAO is visible
 			if (cao.isVisible()) {
 				// BASF Corporate still needs insurance
-				for (ContractorOperator co : getContractorAccount()
-						.getNonCorporateOperators()) {
+				for (ContractorOperator co : getContractorAccount().getNonCorporateOperators()) {
 					// Iterate over gencon tables
 					// co.getOperatorAccount() == BASF Abbotsford that's
 					// attached to Ancon Marine
 					if (co.getOperatorAccount().getCanSeeInsurance().isTrue()
-							&& co.getOperatorAccount().getInheritInsurance()
-									.equals(cao.getOperator())) {
+							&& co.getOperatorAccount().getInheritInsurance().equals(cao.getOperator())) {
 						currentCaos.add(cao);
 						break;
 					}
@@ -351,15 +338,13 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			}
 		}
 
-		Collections.sort(currentCaos,
-				new Comparator<ContractorAuditOperator>() {
+		Collections.sort(currentCaos, new Comparator<ContractorAuditOperator>() {
 
-					@Override
-					public int compare(ContractorAuditOperator o1,
-							ContractorAuditOperator o2) {
-						return o1.getOperator().compareTo(o2.getOperator());
-					}
-				});
+			@Override
+			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
+				return o1.getOperator().compareTo(o2.getOperator());
+			}
+		});
 
 		return currentCaos;
 	}
@@ -426,8 +411,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			full.append(", ").append(city);
 		if (!Strings.isEmpty(state))
 			full.append(", ").append(state);
-		if (!Strings.isEmpty(country) && !country.equals("US")
-				&& !country.startsWith("United"))
+		if (!Strings.isEmpty(country) && !country.equals("US") && !country.startsWith("United"))
 			full.append(", ").append(country);
 		if (!Strings.isEmpty(zip))
 			full.append(" ").append(zip);
@@ -573,8 +557,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	}
 
 	@Transient
-	public ContractorAuditOperator getCao(
-			List<Integer> sortedCaoOperatorCandidates) {
+	public ContractorAuditOperator getCao(List<Integer> sortedCaoOperatorCandidates) {
 		for (Integer parent : sortedCaoOperatorCandidates) {
 			for (ContractorAuditOperator cao : this.operators) {
 				if (cao.getOperator().getId() == parent)
@@ -608,6 +591,22 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		for (ContractorAuditOperator cao : this.operators) {
 			if (cao.getStatus().after(auditStatus))
 				return true;
+		}
+		return false;
+	}
+
+	@Transient
+	public boolean isVisibleTo(Permissions permissions) {
+		if (permissions.isContractor() && (getAuditType().isCanContractorView() == false))
+			return false;
+
+		if (permissions.isAdmin())
+			return true;
+
+		for (ContractorAuditOperator cao : getOperators()) {
+			if (cao.isVisibleTo(permissions)) {
+				return true;
+			}
 		}
 		return false;
 	}

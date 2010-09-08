@@ -1,9 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -22,8 +20,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
-
-import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 @Entity
@@ -61,9 +57,7 @@ public class OperatorAccount extends Account {
 	private List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
 	private List<OperatorAccount> operatorChildren = new ArrayList<OperatorAccount>();
 	private List<OperatorTag> tags = new ArrayList<OperatorTag>();
-	private List<AuditOperator> audits = new ArrayList<AuditOperator>();
 	private List<OperatorForm> operatorForms = new ArrayList<OperatorForm>();
-	private Map<Integer, AuditOperator> auditMap = null;
 	private List<FlagCriteriaOperator> flagCriteria = new ArrayList<FlagCriteriaOperator>();
 	private List<JobSite> jobSites = new ArrayList<JobSite>();
 
@@ -297,18 +291,6 @@ public class OperatorAccount extends Account {
 		return criteriaList;
 	}
 
-	// TODO: get these to cache too
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-	@Deprecated
-	@OneToMany(mappedBy = "operatorAccount")
-	public List<AuditOperator> getAudits() {
-		return audits;
-	}
-
-	public void setAudits(List<AuditOperator> audits) {
-		this.audits = audits;
-	}
-
 	@OneToMany(mappedBy = "account")
 	public List<OperatorForm> getOperatorForms() {
 		return operatorForms;
@@ -328,35 +310,6 @@ public class OperatorAccount extends Account {
 		}
 
 		return forms;
-	}
-
-	@Deprecated
-	@Transient
-	public List<AuditOperator> getVisibleAudits() {
-		List<AuditOperator> requiredAudits = new ArrayList<AuditOperator>();
-		PicsLogger.log("getting visible pqf/audits from " + inheritAudits.getName());
-		for (AuditOperator ao : inheritAudits.getAudits())
-			if (ao.isCanSee() && !ao.getAuditType().getClassType().isPolicy())
-				requiredAudits.add(ao);
-		if (canSeeInsurance.isTrue()) {
-			PicsLogger.log("getting visible policies from " + inheritInsurance.getName());
-			for (AuditOperator ao : inheritInsurance.getAudits())
-				if (ao.isCanSee() && ao.getAuditType().getClassType().isPolicy())
-					requiredAudits.add(ao);
-		}
-		return requiredAudits;
-	}
-
-	@Deprecated
-	@Transient
-	public Map<Integer, AuditOperator> getAuditMap() {
-		if (auditMap == null) {
-			auditMap = new HashMap<Integer, AuditOperator>();
-			for (AuditOperator auditOperator : getAudits()) {
-				auditMap.put(auditOperator.getAuditType().getId(), auditOperator);
-			}
-		}
-		return auditMap;
 	}
 
 	@OneToMany(mappedBy = "operator")

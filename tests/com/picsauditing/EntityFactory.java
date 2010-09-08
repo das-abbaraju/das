@@ -6,7 +6,6 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -73,25 +72,6 @@ public class EntityFactory {
 		co.setOperatorAccount(operator);
 		contractor.getOperators().add(co);
 		return co;
-	}
-
-	/**
-	 * Make an AuditOperator that canSee = true, canEdit = false, AuditStatus =
-	 * Active, and RiskLevel = Medium
-	 * 
-	 * @param auditTypeID
-	 * @param operator
-	 * @return
-	 */
-	static public AuditOperator makeAuditOperator(int auditTypeID, OperatorAccount operator) {
-		AuditOperator ao = new AuditOperator();
-		ao.setOperatorAccount(operator);
-		ao.setAuditType(makeAuditType(auditTypeID));
-		ao.setCanSee(true);
-		ao.setCanEdit(false);
-		ao.setMinRiskLevel(2); // Medium Risk
-		operator.getAudits().add(ao);
-		return ao;
 	}
 
 	/**

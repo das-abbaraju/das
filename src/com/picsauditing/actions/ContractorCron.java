@@ -31,7 +31,6 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.dao.UserAssignmentMatrixDAO;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -193,9 +192,6 @@ public class ContractorCron extends PicsActionSupport {
 							PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
 									+ flagCriteriaOperator.getCriteria().getCategory());
 						}
-
-						for (AuditOperator auditOperator : operator.getVisibleAudits())
-							PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
 
 						if (runStep(ContractorCronStep.CorporateRollup)) {
 							for (Facility facility : operator.getCorporateFacilities()) {

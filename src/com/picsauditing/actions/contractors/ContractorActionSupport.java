@@ -17,7 +17,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -323,7 +322,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 						return true;
 					}
 				}
-
 			}
 			return false;
 		}
@@ -446,33 +444,18 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		List<ContractorAudit> temp = new ArrayList<ContractorAudit>();
 		try {
+			// Is this ever used? We should just make sure findContractor() has
+			// already been called
 			if (!accountDao.isContained(contractor))
 				findContractor();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		List<ContractorAudit> list = contractor.getAudits();
 		Set<AuditType> aTypes = new HashSet<AuditType>();
 
-		if (permissions.isContractor()) {
-			for (ContractorOperator conOperator : contractor.getNonCorporateOperators()) {
-				for (AuditOperator aOperator : conOperator.getOperatorAccount().getVisibleAudits()) {
-					aTypes.add(aOperator.getAuditType());
-				}
-			}
-		}
-
-		for (ContractorAudit contractorAudit : list) {
-			if (permissions.canSeeAudit(contractorAudit.getAuditType())) {
-				if (permissions.isContractor()) {
-					for (AuditType auditType : aTypes) {
-						if (auditType.equals(contractorAudit.getAuditType())) {
-							temp.add(contractorAudit);
-							break;
-						}
-					}
-				} else
-					temp.add(contractorAudit);
+		for (ContractorAudit contractorAudit : contractor.getAudits()) {
+			if (contractorAudit.isVisibleTo(permissions)) {
+				temp.add(contractorAudit);
 			}
 		}
 		return temp;
