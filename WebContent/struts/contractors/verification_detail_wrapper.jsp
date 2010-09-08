@@ -138,7 +138,7 @@
 			auditID: id,
 			auditStatus: auditStatus
 		};
-		$.post('ContractorAuditSaveAjax.action', data, function() {
+		$.post('CaoSaveAjax.action', data, function() {
 				$('#verification_audit').empty();
 				$('#auditHeader').scrollTo();
 				refreshNoteCategory(<s:property value="id"/>, '<s:property value="noteCategory"/>');

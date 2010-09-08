@@ -1132,8 +1132,8 @@
 			<result>struts/contractors/verification_audit.jsp</result>
 		</action>
 
-		<action name="ContractorAuditSaveAjax"
-			class="com.picsauditing.actions.audits.ConAuditSave">
+		<action name="CaoSaveAjax"
+			class="com.picsauditing.actions.audits.CaoSave">
 			<result>struts/blank.jsp</result>
 		</action>
 		
