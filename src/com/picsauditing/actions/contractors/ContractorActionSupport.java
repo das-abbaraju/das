@@ -223,7 +223,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (isRequiresCOR() && (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
 			// Add COR/SECOR
 			MenuComponent subMenu = new MenuComponent("COR/SECOR", "ConCorAuditList.action?id=" + id);
-			menu.add(subMenu);
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
@@ -237,6 +236,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 				}
 			}
 			PicsLogger.log("Found [" + subMenu.getChildren() + "] COR Audits");
+			if (subMenu.getChildren().size() > 0)
+				menu.add(subMenu);
 		}
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
@@ -306,7 +307,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * Only show the Integrity Management link for contractors who are linked to
 	 * an operator that subscribes to Integrity Management
 	 */
-	public boolean isRequiresIntegrityManagement() {
+	private boolean isRequiresIntegrityManagement() {
 		if (contractor.isAcceptsBids())
 			return false;
 
@@ -350,7 +351,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		return auditDataDAO;
 	}
 
-	public boolean isRequiresCOR() {
+	private boolean isRequiresCOR() {
 		boolean hasCOR = false;
 		if (!accountDao.isContained(getOperators().iterator().next()))
 			operators = null;
