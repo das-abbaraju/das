@@ -288,7 +288,8 @@ public class ContractorAuditOperator extends BaseTable {
 		if (permissions.isContractor() || permissions.isAdmin())
 			return true;
 		
-		return this.equals(audit.getCao(permissions.getVisibleCAOs()));
+		int governingBody = permissions.getAuditTypeGoverningBodies().get(audit.getAuditType().getId());
+		return operator.getId() == governingBody;
 	}
 
 	@Transient

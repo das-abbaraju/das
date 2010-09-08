@@ -14,14 +14,18 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.QuestionComparator;
 import com.picsauditing.util.Strings;
 
 @Transactional
@@ -223,10 +227,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 		Set<Integer> operatorIDs = new HashSet<Integer>();
 		for (ContractorOperator co : contractor.getOperators()) {
-			operatorIDs.add(co.getOperatorAccount().getId());
-			for (Facility facility : co.getOperatorAccount().getCorporateFacilities()) {
-				operatorIDs.add(facility.getCorporate().getId());
-			}
+			operatorIDs.addAll(co.getOperatorAccount().getOperatorHeirarchy());
 		}
 		where += " AND (opID IS NULL";
 		if (operatorIDs.size() > 0)
@@ -317,6 +318,34 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		return query.executeUpdate();
 	}
 
+	/**
+	 * Get a list of audits that are potentially visible to an operator
+	 * @param operator
+	 * @return
+	 */
+	public Set<Integer> getAuditTypes(OperatorAccount operator) {
+		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW() AND include = 1 AND auditType.id > 0";
+		
+		List<Integer> operatorIDs = operator.getOperatorHeirarchy();
+		where += " AND (opID IS NULL";
+		if (operatorIDs.size() > 0)
+			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
+		where += ")";
+
+		Query query = em.createQuery("SELECT DISTINCT a.auditType.id FROM AuditTypeRule a " + where + " ORDER BY priority DESC");
+		
+		Set<Integer> ids = new HashSet<Integer>();
+		for (Object id : query.getResultList()) {
+			ids.add(Integer.parseInt(id.toString()));
+		}
+		return ids;
+	}
+	
+	/**
+	 * 
+	 * @param operator
+	 * @return Map of AuditTypeID to OperatorID (aka governing body)
+	 */
 	public Map<Integer, Integer> getGoverningBodyMap(OperatorAccount operator) {
 		String sql = "SELECT auditType.id, operatorAccount.id FROM AuditCategoryRule r "
 				+ "WHERE operatorAccount.id IN (" + Strings.implode(operator.getOperatorHeirarchy())

@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,6 +21,9 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
+
+import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 @Entity
@@ -60,6 +64,7 @@ public class OperatorAccount extends Account {
 	private List<OperatorForm> operatorForms = new ArrayList<OperatorForm>();
 	private List<FlagCriteriaOperator> flagCriteria = new ArrayList<FlagCriteriaOperator>();
 	private List<JobSite> jobSites = new ArrayList<JobSite>();
+	private Set<Integer> visibleAuditTypes = null;
 
 	public OperatorAccount() {
 		this.type = "Operator";
@@ -447,5 +452,15 @@ public class OperatorAccount extends Account {
 			// Add my parent
 			list.add(topAccount.getId());
 		return list;
+	}
+	
+	@Transient
+	public Set<Integer> getVisibleAuditTypes() {
+		if (visibleAuditTypes == null) {
+			// This isn't pretty but it works
+			AuditDecisionTableDAO dao = (AuditDecisionTableDAO)SpringUtils.getBean("AuditDecisionTableDAO");
+			visibleAuditTypes = dao.getAuditTypes(this);
+		}
+		return visibleAuditTypes;
 	}
 }

@@ -150,31 +150,28 @@ public class Permissions implements Serializable {
 			accountName = user.getAccount().getName();
 			accountStatus = user.getAccount().getStatus();
 			requiresOQ = user.getAccount().isRequiresOQ();
-			requiresCompetencyReview = user.getAccount()
-					.isRequiresCompetencyReview();
+			requiresCompetencyReview = user.getAccount().isRequiresCompetencyReview();
 
 			if (isContractor()) {
-				ContractorAccount contractor = (ContractorAccount) user
-						.getAccount();
-				for (ContractorOperator co : contractor
-						.getNonCorporateOperators()) {
+				ContractorAccount contractor = (ContractorAccount) user.getAccount();
+				for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 					if (co.getOperatorAccount().getCountry() != null)
 						// TODO get rid of accountCountries
-						accountCountries.add(co.getOperatorAccount()
-								.getCountry().getIsoCode());
+						accountCountries.add(co.getOperatorAccount().getCountry().getIsoCode());
 				}
 			}
 
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
 
-				auditTypeGoverningBodies = getAuditTypeGoverningBodies(operator);
+				AuditDecisionTableDAO auditRulesDAO = (AuditDecisionTableDAO) SpringUtils
+						.getBean("AuditDecisionTableDAO");
+				auditTypeGoverningBodies = auditRulesDAO.getGoverningBodyMap(operator);
 
 				if (operator.getCountry() != null)
 					accountCountries.add(operator.getCountry().getIsoCode());
 
-				approvesRelationships = YesNo.Yes.equals(operator
-						.getApprovesRelationships());
+				approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
 
 				if (isOperator()) {
 					if (operator.getParent() != null)
@@ -199,8 +196,7 @@ public class Permissions implements Serializable {
 					for (Facility facility : operator.getOperatorFacilities()) {
 						operatorChildren.add(facility.getOperator().getId());
 
-						if (facility.getOperator().getCanSeeInsurance()
-								.isTrue())
+						if (facility.getOperator().getCanSeeInsurance().isTrue())
 							canSeeInsurance = true;
 					}
 				}
@@ -342,8 +338,7 @@ public class Permissions implements Serializable {
 		return this.hasPermission(opPerm, OpType.View);
 	}
 
-	public void tryPermission(OpPerms opPerm, OpType oType)
-			throws NoRightsException {
+	public void tryPermission(OpPerms opPerm, OpType oType) throws NoRightsException {
 		if (this.hasPermission(opPerm, oType))
 			return;
 		throw new NoRightsException(opPerm, oType);
@@ -353,9 +348,7 @@ public class Permissions implements Serializable {
 		this.tryPermission(opPerm, OpType.View);
 	}
 
-	public boolean loginRequired(
-			javax.servlet.http.HttpServletResponse response, String returnURL)
-			throws IOException {
+	public boolean loginRequired(javax.servlet.http.HttpServletResponse response, String returnURL) throws IOException {
 		if (this.loggedIn)
 			return true;
 		if (returnURL != null && returnURL.length() > 0) {
@@ -366,19 +359,16 @@ public class Permissions implements Serializable {
 		Cookie c = new Cookie("PICSCookiesEnabled", "true");
 		c.setMaxAge(60);
 		ServletActionContext.getResponse().addCookie(c);
-		response
-				.sendRedirect("Login.action?button=logout&msg=Your session has timed out. Please log back in");
+		response.sendRedirect("Login.action?button=logout&msg=Your session has timed out. Please log back in");
 		return false;
 	}
 
-	public boolean loginRequired(javax.servlet.http.HttpServletResponse response)
-			throws IOException {
+	public boolean loginRequired(javax.servlet.http.HttpServletResponse response) throws IOException {
 		return this.loginRequired(response, "");
 	}
 
-	public boolean loginRequired(
-			javax.servlet.http.HttpServletResponse response,
-			HttpServletRequest request) throws IOException {
+	public boolean loginRequired(javax.servlet.http.HttpServletResponse response, HttpServletRequest request)
+			throws IOException {
 		String url = request.getRequestURI();
 		if (request.getQueryString() != null)
 			url += "?" + request.getQueryString();
@@ -451,8 +441,7 @@ public class Permissions implements Serializable {
 	}
 
 	public boolean isInsuranceOnlyContractorUser() {
-		return (isContractor() && hasPermission(OpPerms.ContractorInsurance)
-				&& !hasPermission(OpPerms.ContractorAdmin)
+		return (isContractor() && hasPermission(OpPerms.ContractorInsurance) && !hasPermission(OpPerms.ContractorAdmin)
 				&& !hasPermission(OpPerms.ContractorBilling) && !hasPermission(OpPerms.ContractorSafety));
 	}
 
@@ -557,14 +546,7 @@ public class Permissions implements Serializable {
 		return canSeeInsurance;
 	}
 
-	/**
-	 * Map of AuditType.id to Cao.Operator.id
-	 * 
-	 * @return
-	 */
-	public Map<Integer, Integer> getAuditTypeGoverningBodies(OperatorAccount operator) {
-		AuditDecisionTableDAO auditRulesDAO = (AuditDecisionTableDAO) SpringUtils
-				.getBean("AuditDecisionTableDAO");
-		return auditRulesDAO.getGoverningBodyMap(operator);
+	public Map<Integer, Integer> getAuditTypeGoverningBodies() {
+		return auditTypeGoverningBodies;
 	}
 }

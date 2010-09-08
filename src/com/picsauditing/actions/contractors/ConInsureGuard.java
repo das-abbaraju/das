@@ -17,7 +17,6 @@ import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Certificate;
@@ -196,26 +195,6 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	public void setAuditFor(String auditFor) {
 		this.auditFor = auditFor;
-	}
-
-	public Set<AuditType> getRequiredAuditTypeNames() {
-		Set<AuditType> result = new HashSet<AuditType>();
-		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
-			for (AuditOperator ao : co.getOperatorAccount().getVisibleAudits()) {
-				if (ao.getAuditType().getClassType().isPolicy()) {
-					if (permissions.isOperatorCorporate()
-							&& permissions.getAccountId() == co.getOperatorAccount().getId()) {
-						if (ao.isCanSee() && ao.isCanEdit() && !result.contains(ao.getAuditType())) {
-							result.add(ao.getAuditType());
-						}
-					} else {
-						result.add(ao.getAuditType());
-
-					}
-				}
-			}
-		}
-		return result;
 	}
 
 	public List<Certificate> getCertificates() {
