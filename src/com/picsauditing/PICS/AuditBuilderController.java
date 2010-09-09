@@ -21,6 +21,7 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -31,6 +32,7 @@ import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
@@ -133,10 +135,6 @@ public class AuditBuilderController {
 
 				if (needed && conAudit.getData().size() == 0) {
 					PicsLogger.log("removing unneeded audit " + conAudit.getAuditType().getAuditName());
-					// TODO try removing the audits from the list if we can
-					// ContractorAudit removeMe = new ContractorAudit();
-					// removeMe.setId(auditID);
-					// contractor.getAudits().remove(removeMe);
 					cAuditDAO.remove(conAudit.getId());
 					iter.remove();
 				}
@@ -156,53 +154,68 @@ public class AuditBuilderController {
 
 	public List<AuditTypeRule> getAuditTypeRules() {
 		if (rules == null) {
-			rules = auditDecisionTableDAO.getApplicableAuditRules(contractor);
-			Set<Integer> questionAnswersNeeded = new HashSet<Integer>();
-			Set<Integer> tagsNeeded = new HashSet<Integer>();
-			for (AuditTypeRule rule : rules) {
-				if (rule.getQuestion() != null)
-					questionAnswersNeeded.add(rule.getQuestion().getId());
-				if (rule.getTag() != null)
-					tagsNeeded.add(rule.getTag().getId());
+			rules = new ArrayList<AuditTypeRule>();
+			for (AuditRule rule : pruneRules(auditDecisionTableDAO.getApplicableAuditRules(contractor), null)) {
+				rules.add((AuditTypeRule) rule);
 			}
-			if (questionAnswersNeeded.size() > 0) {
-				// Find out the answers to the needed questions and remove any
-				// rules that don't apply
-				Map<Integer, AuditData> contractorAnswers = auditDataDAO.findAnswersByContractor(contractor.getId(),
-						questionAnswersNeeded);
-				Iterator<AuditTypeRule> iterator = rules.iterator();
-				while (iterator.hasNext()) {
-					AuditTypeRule auditTypeRule = iterator.next();
-					if (auditTypeRule.getQuestion() != null) {
-						if (!auditTypeRule.isMatchingAnswer(contractorAnswers.get(auditTypeRule.getQuestion().getId()))) {
-							iterator.remove();
-						}
-					}
-				}
-			}
-			if (tagsNeeded.size() > 0) {
-				// Find out which tags this contractor is using from the set of
-				// potential operator tags and remove any rules that don't apply
-				List<ContractorTag> contractorTags = contractorTagDAO.getContractorTags(contractor.getId(), tagsNeeded);
-				Set<OperatorTag> opTags = new HashSet<OperatorTag>();
-				for (ContractorTag contractorTag : contractorTags) {
-					opTags.add(contractorTag.getTag());
-				}
-				Iterator<AuditTypeRule> iterator = rules.iterator();
-				while (iterator.hasNext()) {
-					AuditTypeRule auditTypeRule = iterator.next();
-					if (auditTypeRule.getTag() != null && !opTags.contains(auditTypeRule.getTag())) {
-						iterator.remove();
-					}
-				}
-			}
-
 		}
 		return rules;
 	}
 
 	private Set<AuditType> getRequiredAuditTypeSet() {
 		return getRequiredAuditTypes().keySet();
+	}
+
+	private List<AuditRule> pruneRules(List<? extends AuditRule> rules, ContractorAudit conAudit) {
+		Set<Integer> contractorAnswersNeeded = new HashSet<Integer>();
+		Set<Integer> auditAnswersNeeded = new HashSet<Integer>();
+		Set<Integer> tagsNeeded = new HashSet<Integer>();
+		for (AuditRule rule : rules) {
+			if (rule.getQuestion() != null) {
+				if (conAudit != null && conAudit.getAuditType().equals(rule.getQuestion().getAuditType()))
+					auditAnswersNeeded.add(rule.getQuestion().getId());
+				else
+					contractorAnswersNeeded.add(rule.getQuestion().getId());
+			}
+			if (rule.getTag() != null)
+				tagsNeeded.add(rule.getTag().getId());
+		}
+
+		Map<Integer, AuditData> contractorAnswers = null;
+		if (contractorAnswersNeeded.size() > 0) {
+			contractorAnswers = auditDataDAO.findAnswersByContractor(contractor.getId(), contractorAnswersNeeded);
+		}
+		if (auditAnswersNeeded.size() > 0) {
+			AnswerMap answerMap = auditDataDAO.findAnswers(conAudit.getId(), auditAnswersNeeded);
+			for (Integer questionID : auditAnswersNeeded) {
+				contractorAnswers.put(questionID, answerMap.get(questionID));
+			}
+		}
+		Set<OperatorTag> opTags = new HashSet<OperatorTag>();
+		if (tagsNeeded.size() > 0) {
+			List<ContractorTag> contractorTags = contractorTagDAO.getContractorTags(contractor.getId(), tagsNeeded);
+			for (ContractorTag contractorTag : contractorTags) {
+				opTags.add(contractorTag.getTag());
+			}
+		}
+
+		List<AuditRule> list = new ArrayList<AuditRule>();
+		for (AuditRule rule : rules) {
+			boolean valid = true;
+
+			if (rule.getQuestion() != null && !rule.isMatchingAnswer(contractorAnswers.get(rule.getQuestion().getId()))) {
+				valid = false;
+			}
+
+			if (rule.getTag() != null && !opTags.contains(rule.getTag())) {
+				valid = false;
+			}
+
+			if (valid)
+				list.add(rule);
+		}
+
+		return list;
 	}
 
 	public Map<AuditType, AuditTypeDetail> getRequiredAuditTypes() {
@@ -236,7 +249,6 @@ public class AuditBuilderController {
 
 			AuditCatData catData = getCatData(conAudit, category);
 			if (catData.isOverride()) {
-				// TODO What about the overrides? What does it mean to override
 				// (show/hide) a category with more than one CAO.
 			} else {
 				catData.setApplies(categoriesNeeded.contains(catData.getCategory()));
@@ -248,34 +260,17 @@ public class AuditBuilderController {
 	}
 
 	public AuditCategoriesDetail getAuditCategoryDetail(ContractorAudit conAudit) {
-
-		List<AuditCategoryRule> originalList = getCategoryRules(conAudit.getContractorAccount(), conAudit
-				.getAuditType());
-		List<AuditCategoryRule> categoryRulesToUse = new ArrayList<AuditCategoryRule>();
-
-		Set<Integer> questionAnswersNeeded = new HashSet<Integer>();
-		Set<Integer> tagsNeeded = new HashSet<Integer>();
-		for (AuditCategoryRule rule : originalList) {
-			if (rule.getQuestion() != null) {
-				questionAnswersNeeded.add(rule.getQuestion().getId());
-			}
-			if (rule.getTag() != null) {
-				tagsNeeded.add(rule.getTag().getId());
-			}
-		}
-		for (AuditCategoryRule rule : originalList) {
-			if ((rule.getQuestion() == null || questionAnswersNeeded.contains(rule.getQuestion().getId()))
-					&& (rule.getTag() == null || tagsNeeded.contains(rule.getTag().getId()))) {
-				// TODO work out the logic for pruning rule lists based on
-				// questions and tags
-			}
-			categoryRulesToUse.add(rule);
-		}
-
 		AuditTypeDetail auditTypeDetail = getRequiredAuditTypes().get(conAudit.getAuditType());
 		if (auditTypeDetail == null)
 			return null;
-		return builder.getDetail(conAudit.getAuditType(), categoryRulesToUse, auditTypeDetail.operators);
+
+		List<AuditCategoryRule> temp = getCategoryRules(conAudit.getContractorAccount(), conAudit.getAuditType());
+		List<AuditCategoryRule> rules = new ArrayList<AuditCategoryRule>();
+		for (AuditRule rule : pruneRules(temp, conAudit)) {
+			rules.add((AuditCategoryRule) rule);
+		}
+
+		return builder.getDetail(conAudit.getAuditType(), rules, auditTypeDetail.operators);
 	}
 
 	private List<AuditCategoryRule> getCategoryRules(ContractorAccount contractor, AuditType auditType) {
@@ -383,10 +378,10 @@ public class AuditBuilderController {
 				iter.remove();
 			}
 		}
-		
+
 		PicsLogger.stop();
 	}
-	
+
 	private boolean contains(Set<OperatorAccount> set, OperatorAccount operator) {
 		for (OperatorAccount operatorAccount : set) {
 			if (operatorAccount.getId() == operator.getId())
@@ -394,7 +389,7 @@ public class AuditBuilderController {
 		}
 		return false;
 	}
-	
+
 	private void fillAuditOperatorPermissions(ContractorAuditOperator cao) {
 		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 		operators.addAll(getRequiredAuditTypes().get(cao.getAudit().getAuditType()).operators);
