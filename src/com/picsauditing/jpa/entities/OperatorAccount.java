@@ -454,6 +454,10 @@ public class OperatorAccount extends Account {
 		return list;
 	}
 	
+	/**
+	 * Please use sparingly!! This does a call to a Spring loaded DAO
+	 * @return Set of AuditTypeIDs
+	 */
 	@Transient
 	public Set<Integer> getVisibleAuditTypes() {
 		if (visibleAuditTypes == null) {

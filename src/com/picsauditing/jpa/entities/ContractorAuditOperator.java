@@ -1,13 +1,17 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -36,6 +40,7 @@ public class ContractorAuditOperator extends BaseTable {
 	// To be removed
 	private YesNo valid = null;
 	private Certificate certificate;
+	private List<ContractorAuditOperatorPermission> caoPermissions = new ArrayList<ContractorAuditOperatorPermission>();
 
 	@ManyToOne
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
@@ -93,54 +98,48 @@ public class ContractorAuditOperator extends BaseTable {
 
 		return statusChangedDate;
 	}
-	
 
 	@Transient
 	// TODO rewrite this status description if needed
 	public String getStatusDescription() {
 		String statusDescription = "";
 		/*
-		if (status.isActive())
-			if (auditType.isMustVerify())
-				if (auditType.isPqf() || auditType.isAnnualAddendum())
-					statusDescription = "Annual requirements have been verified. " + this.getAuditType().getClassType()
-							+ " is closed.";
-				else
-					statusDescription = this.getAuditType().getClassType() + " has been verified.";
-			else if (auditType.isHasRequirements())
-				statusDescription = "All the requirements for this " + this.getAuditType().getClassType().toString()
-						+ " have been met. " + this.getAuditType().getClassType() + " closed.";
-			else
-				statusDescription = this.getAuditType().getClassType() + " closed.";
-
-		if (auditStatus.isExempt())
-			statusDescription = this.getAuditType().getClassType() + " is not required.";
-
-		if (auditStatus.isExpired())
-			statusDescription = this.getAuditType().getClassType() + " is no longer active.";
-
-		if (auditStatus.isPending())
-			if (auditType.isMustVerify())
-				statusDescription = this.getAuditType().getClassType() + " has not been submitted.";
-			else
-				statusDescription = this.getAuditType().getClassType() + " has not been started.";
-
-		if (auditStatus.isSubmitted())
-			if (contractorAccount.isAcceptsBids()) {
-				statusDescription = this.getAuditType().getClassType().toString() + " has been submitted.";
-			} else if (auditType.isMustVerify())
-				statusDescription = this.getAuditType().getClassType().toString()
-						+ " has been sent.  Awaiting verification.";
-			else
-				statusDescription = this.getAuditType().getClassType().toString()
-						+ " has been submitted but there are requirements pending.";
-
-		if (auditStatus.isResubmitted())
-			statusDescription = "Policy updated; pending approval of changes.";
-
-		if (auditStatus.isIncomplete())
-			statusDescription = "Rejected " + this.getAuditType().getClassType() + " during verification";
-			*/
+		 * if (status.isActive()) if (auditType.isMustVerify()) if
+		 * (auditType.isPqf() || auditType.isAnnualAddendum()) statusDescription
+		 * = "Annual requirements have been verified. " +
+		 * this.getAuditType().getClassType() + " is closed."; else
+		 * statusDescription = this.getAuditType().getClassType() +
+		 * " has been verified."; else if (auditType.isHasRequirements())
+		 * statusDescription = "All the requirements for this " +
+		 * this.getAuditType().getClassType().toString() + " have been met. " +
+		 * this.getAuditType().getClassType() + " closed."; else
+		 * statusDescription = this.getAuditType().getClassType() + " closed.";
+		 * 
+		 * if (auditStatus.isExempt()) statusDescription =
+		 * this.getAuditType().getClassType() + " is not required.";
+		 * 
+		 * if (auditStatus.isExpired()) statusDescription =
+		 * this.getAuditType().getClassType() + " is no longer active.";
+		 * 
+		 * if (auditStatus.isPending()) if (auditType.isMustVerify())
+		 * statusDescription = this.getAuditType().getClassType() +
+		 * " has not been submitted."; else statusDescription =
+		 * this.getAuditType().getClassType() + " has not been started.";
+		 * 
+		 * if (auditStatus.isSubmitted()) if (contractorAccount.isAcceptsBids())
+		 * { statusDescription = this.getAuditType().getClassType().toString() +
+		 * " has been submitted."; } else if (auditType.isMustVerify())
+		 * statusDescription = this.getAuditType().getClassType().toString() +
+		 * " has been sent.  Awaiting verification."; else statusDescription =
+		 * this.getAuditType().getClassType().toString() +
+		 * " has been submitted but there are requirements pending.";
+		 * 
+		 * if (auditStatus.isResubmitted()) statusDescription =
+		 * "Policy updated; pending approval of changes.";
+		 * 
+		 * if (auditStatus.isIncomplete()) statusDescription = "Rejected " +
+		 * this.getAuditType().getClassType() + " during verification";
+		 */
 		return statusDescription;
 	}
 
@@ -248,7 +247,6 @@ public class ContractorAuditOperator extends BaseTable {
 		this.reason = reason;
 	}
 
-
 	public Date getStatusChangedDate() {
 		return statusChangedDate;
 	}
@@ -283,11 +281,20 @@ public class ContractorAuditOperator extends BaseTable {
 		return 100;
 	}
 
+	@OneToMany(mappedBy = "cao", cascade = { CascadeType.ALL })
+	public List<ContractorAuditOperatorPermission> getCaoPermissions() {
+		return caoPermissions;
+	}
+
+	public void setCaoPermissions(List<ContractorAuditOperatorPermission> caoPermissions) {
+		this.caoPermissions = caoPermissions;
+	}
+
 	@Transient
 	public boolean isVisibleTo(Permissions permissions) {
 		if (permissions.isContractor() || permissions.isAdmin())
 			return true;
-		
+
 		int governingBody = permissions.getAuditTypeGoverningBodies().get(audit.getAuditType().getId());
 		return operator.getId() == governingBody;
 	}
@@ -296,7 +303,7 @@ public class ContractorAuditOperator extends BaseTable {
 	public boolean isCanContractorSubmit() {
 		return certificate != null && valid != null && (valid.isTrue() || !Strings.isEmpty(reason));
 	}
-	
+
 	public boolean canSubmitCao() {
 		if (this.getPercentComplete() < 100)
 			return false;
@@ -305,7 +312,7 @@ public class ContractorAuditOperator extends BaseTable {
 		}
 		return false;
 	}
-	
+
 	public boolean canVerifyCao() {
 		if (this.getPercentVerified() < 100)
 			return false;

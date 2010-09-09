@@ -13,6 +13,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -32,6 +33,14 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		return o;
 	}
 
+	public void insert(ContractorAuditOperatorPermission caop) {
+		em.persist(caop);
+	}
+
+	public void remove(ContractorAuditOperatorPermission caop) {
+		em.remove(caop);
+	}
+	
 	public ContractorAuditOperator find(int id) {
 		return em.find(ContractorAuditOperator.class, id);
 	}

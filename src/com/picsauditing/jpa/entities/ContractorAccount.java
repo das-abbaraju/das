@@ -131,6 +131,10 @@ public class ContractorAccount extends Account implements JSONable {
 		this.operators = operators;
 	}
 
+	/**
+	 * Only includes the operator accounts, not corporate accounts
+	 * @return
+	 */
 	@Transient
 	public List<OperatorAccount> getOperatorAccounts() {
 		List<OperatorAccount> list = new ArrayList<OperatorAccount>();

@@ -28,6 +28,9 @@ public class AuditBuilder {
 	public class AuditTypeDetail {
 
 		public AuditTypeRule rule;
+		/**
+		 * Operator Accounts, not corporate, may be the same as the CAO
+		 */
 		public Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 	}
 
@@ -42,7 +45,7 @@ public class AuditBuilder {
 	/**
 	 * 
 	 * @param rules
-	 * @param operators
+	 * @param operators a list of operators (not corporate) accounts associated with this contractor
 	 * @return
 	 */
 	public Map<AuditType, AuditTypeDetail> calculateRequiredAuditTypes(List<AuditTypeRule> rules,

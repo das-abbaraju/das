@@ -546,6 +546,10 @@ public class Permissions implements Serializable {
 		return canSeeInsurance;
 	}
 
+	/**
+	 * 
+	 * @return Map of AuditTypeID to OperatorID (aka governing body)
+	 */
 	public Map<Integer, Integer> getAuditTypeGoverningBodies() {
 		return auditTypeGoverningBodies;
 	}

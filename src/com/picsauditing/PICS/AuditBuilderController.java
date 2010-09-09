@@ -26,6 +26,7 @@ import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
@@ -74,7 +75,7 @@ public class AuditBuilderController {
 
 	public void buildAudits(ContractorAccount con, User user) {
 		setup(con, user);
-		PicsLogger.addRuntimeRule("BuildAudits");
+		// PicsLogger.addRuntimeRule("BuildAudits");
 		PicsLogger.start("BuildAudits", " conID=" + contractor.getId());
 
 		getAuditTypeRules();
@@ -146,6 +147,9 @@ public class AuditBuilderController {
 		for (ContractorAudit conAudit : currentAudits) {
 			fillAuditCategories(conAudit);
 			fillAuditOperators(conAudit);
+			for (ContractorAuditOperator cao : conAudit.getOperators()) {
+				fillAuditOperatorPermissions(cao);
+			}
 		}
 		PicsLogger.stop();
 	}
@@ -374,23 +378,57 @@ public class AuditBuilderController {
 		Iterator<ContractorAuditOperator> iter = conAudit.getOperators().iterator();
 		while (iter.hasNext()) {
 			ContractorAuditOperator cao = iter.next();
-			if (!detail.governingBodies.contains(cao.getOperator())) {
+			if (!contains(detail.governingBodies, cao.getOperator())) {
 				contractorAuditOperatorDAO.remove(cao);
 				iter.remove();
 			}
 		}
-
+		
 		PicsLogger.stop();
+	}
+	
+	private boolean contains(Set<OperatorAccount> set, OperatorAccount operator) {
+		for (OperatorAccount operatorAccount : set) {
+			if (operatorAccount.getId() == operator.getId())
+				return true;
+		}
+		return false;
+	}
+	
+	private void fillAuditOperatorPermissions(ContractorAuditOperator cao) {
+		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+		operators.addAll(getRequiredAuditTypes().get(cao.getAudit().getAuditType()).operators);
+
+		// Remove first
+		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+			if (operators.contains(caop.getOperator())) {
+				// It's already there, do nothing
+				operators.remove(caop.getOperator());
+			} else {
+				// Delete the caop and remove from cao.getCaoPermissions()
+				cao.getCaoPermissions().remove(caop);
+				contractorAuditOperatorDAO.remove(caop);
+			}
+		}
+
+		for (OperatorAccount operator : operators) {
+			// Insert the remaining operators
+			ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+			caop.setCao(cao);
+			caop.setOperator(operator);
+			cao.getCaoPermissions().add(caop);
+			contractorAuditOperatorDAO.insert(caop);
+		}
+		contractorAuditOperatorDAO.save(cao);
 	}
 
 	private boolean findOperator(ContractorAudit conAudit, OperatorAccount operator) {
-		boolean exists = false;
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (cao.getOperator().equals(operator)) {
-				exists = true;
+				return true;
 			}
 		}
-		return exists;
+		return false;
 	}
 
 	public void fillAuditCategories(AuditData auditData) {
