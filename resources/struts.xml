@@ -321,6 +321,16 @@
 			<result name="question">struts/audits/audit_question_cert.jsp</result>
 		</action>
 		
+		<action name="ContractorDocuments"
+			class="com.picsauditing.actions.contractors.ContractorDocuments">
+			<result>struts/contractors/contractor_documents.jsp</result>
+		</action>
+		
+		<action name="ContractorDocumentsAjax"
+			class="com.picsauditing.actions.contractors.ContractorDocuments">
+			<result>struts/contractors/contractor_documents_auditTypes.jsp</result>
+		</action>
+		
 		<action name="ConPqfList"
 			class="com.picsauditing.actions.contractors.ConAuditList">
 			<param name="auditClass">PQF</param>

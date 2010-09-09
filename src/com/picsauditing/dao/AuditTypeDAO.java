@@ -48,9 +48,13 @@ public class AuditTypeDAO extends PicsDAO {
 	public List<AuditType> findAll() {
 		return findWhere("");
 	}
+	
+	public List<AuditType> findAll(Permissions permissions, boolean canEdit, AuditTypeClass auditClass) {
+		return findAll(permissions, canEdit, auditClass, true);
+	}
 
 	@SuppressWarnings("unchecked")
-	public List<AuditType> findAll(Permissions permissions, boolean canEdit, AuditTypeClass auditClass) {
+	public List<AuditType> findAll(Permissions permissions, boolean canEdit, AuditTypeClass auditClass, boolean both) {
 		String where = "";
 
 		if (permissions.isOperatorCorporate()) {
@@ -74,7 +78,7 @@ public class AuditTypeDAO extends PicsDAO {
 				where += " AND ";
 			else
 				where = "WHERE ";
-			if(auditClass.equals(AuditTypeClass.Audit)) {
+			if(auditClass.equals(AuditTypeClass.Audit) && both) {
 				where += "t.classType IN ('PQF','Audit')";
 			}
 			else

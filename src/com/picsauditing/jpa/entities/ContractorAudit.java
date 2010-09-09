@@ -12,6 +12,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -106,7 +107,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		this.oshas = oshas;
 	}
 
-	@OneToMany(mappedBy = "audit", cascade = { CascadeType.REMOVE })
+	@OneToMany(mappedBy = "audit", cascade = { CascadeType.REMOVE }, fetch = FetchType.EAGER)
 	public List<ContractorAuditOperator> getOperators() {
 		return operators;
 	}
