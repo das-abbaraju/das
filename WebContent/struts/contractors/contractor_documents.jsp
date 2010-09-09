@@ -35,12 +35,6 @@
 	.hidden {
 		display: none;
 		font-size: smaller;
-		background-color: #f3f3f3;
-	}
-	
-	.header td {
-		color: #fff;
-		background-color: #013264;
 	}
 </style>
 </head>
@@ -108,10 +102,9 @@
 	<table class="report" id="<s:property value="#classType" />">
 		<thead>
 			<tr>
-				<th>Type</th>
-				<th>For</th>
-				<th colspan="2">Safety Professional</th>
-				<th colspan="2">Scheduled</th>
+				<th>Name</th>
+				<th>Safety Professional</th>
+				<th>Scheduled</th>
 				<th>View</th>
 				<s:if test="#classType.toString() == 'IM'">
 					<th>Score</th>
@@ -123,11 +116,10 @@
 				<s:iterator value="auditMap.get(#auditType)" id="audit">
 					<tr>
 						<td>
-							<a href="Audit.action?auditID=<s:property value="#audit.id" />"><s:property value="#auditType.auditName" /></a>
+							<a href="Audit.action?auditID=<s:property value="#audit.id" />"><s:property value="#auditType.auditName" /><s:if test="#audit.auditFor.length() > 0">: <s:property value="#audit.auditFor" /></s:if></a>
 						</td>
-						<td><s:property value="#audit.auditFor" /></td>
-						<td colspan="2"><s:property value="#audit.auditor.name" /></td>
-						<td colspan="2"><s:date name="#audit.scheduledDate" format="M/d/yy" /></td>
+						<td><s:property value="#audit.auditor.name" /></td>
+						<td><s:date name="#audit.scheduledDate" format="M/d/yy" /></td>
 						<td>
 							<a href="#" onclick="$('tr.row_'+<s:property value="#audit.id" />).toggle(); return false;">
 								<s:iterator value="counts.get(#audit).keySet()" id="status" status="stat">
@@ -139,39 +131,41 @@
 							<td><s:property value="imScores.get(#audit.auditName)" /></td>
 						</s:if>
 					</tr>
-					<tr class="row_<s:property value="#audit.id" /> hidden header">
-						<td class="center">Operator</td>
-						<td class="center">Updated</td>
-						<td class="center">% Complete</td>
-						<td class="center">Created</td>
-						<td class="center">Submitted</td>
-						<td class="center">Completed</td>
-						<td class="center">Status</td>
-						<s:if test="#classType.toString() == 'IM'">
-							<td class="center">Score</td>
-						</s:if>
+					<tr class="row_<s:property value="#audit.id" /> hidden">
+						<td colspan="<s:property value="#classType.toString() == 'IM' ? 5 : 4" />">
+							<table class="report" style="width: 95%; margin: 5px auto;">
+								<thead>
+									<tr>
+										<th>Operator</th>
+										<th>Status</th>
+										<th>Updated</th>
+										<s:if test="#classType.toString() == 'IM'">
+											<th>Score</th>
+										</s:if>
+									</tr>
+								</thead>
+								<tbody>
+									<s:iterator value="#audit.operators" id="cao">
+										<tr>
+											<td>
+												<pics:permission perm="ManageOperators">
+													<a href="FacilitiesEdit.action?id=<s:property value="#cao.operator.id"/>"><s:property value="#cao.operator.name"/></a>
+												</pics:permission>
+												<pics:permission perm="ManageOperators" negativeCheck="true">
+													<s:property value="#cao.operator.name" />
+												</pics:permission>
+											</td>
+											<td><s:property value="#cao.status" /></td>
+											<td><s:date name="#cao.statusChangedDate" format="M/d/yy" /></td>
+											<s:if test="#classType.toString() == 'IM'">
+												<td class="center"><s:property value="#audit.printableScore" /></td>
+											</s:if>
+										</tr>
+									</s:iterator>
+								</tbody>
+							</table>
+						</td>
 					</tr>
-					<s:iterator value="#audit.operators" id="cao">
-						<tr class="row_<s:property value="#audit.id" /> hidden">
-							<td>
-								<pics:permission perm="ManageOperators">
-									<a href="FacilitiesEdit.action?id=<s:property value="#cao.operator.id"/>"><s:property value="#cao.operator.name"/></a>
-								</pics:permission>
-								<pics:permission perm="ManageOperators" negativeCheck="true">
-									<s:property value="#cao.operator.name" />
-								</pics:permission>
-							</td>
-							<td><s:date name="#cao.statusChangedDate" format="M/d/yy" /></td>
-							<td class="right"><s:property value="#cao.percentComplete" /></td>
-							<td><s:date name="#cao.creationDate" format="M/d/yy" /></td>
-							<td><s:date name="#cao.submittedDate" format="M/d/yy" /></td>
-							<td><s:date name="#cao.completedDate" format="M/d/yy" /></td>
-							<td><s:property value="#cao.status" /></td>
-							<s:if test="#classType.toString() == 'IM'">
-								<td class="center"><s:property value="#audit.printableScore" /></td>
-							</s:if>
-						</tr>
-					</s:iterator>
 				</s:iterator>
 			</s:iterator>
 		</tbody>
