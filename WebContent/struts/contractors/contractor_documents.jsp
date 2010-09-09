@@ -23,12 +23,19 @@
 
 		$('#auditListLoad').load('ContractorDocumentsAjax.action', data);
 	}
+
+	function showAll(type) {
+		if ($('#' + type + ' tr.hidden:hidden').length > 0)
+			$('#'+type + ' tr.hidden').show();
+		else
+			$('#'+type + ' tr.hidden').hide();
+	}
 </script>
 <style type="text/css">
 	.hidden {
 		display: none;
 		font-size: smaller;
-		background-color: #f0f0f0;
+		background-color: #f3f3f3;
 	}
 	
 	.header td {
@@ -51,7 +58,7 @@
 					<li><label>Audit Class</label>
 						<s:select list="#{'PQF':'PQF','Audit':'Audit','IM':'Integrity Management'}" name="auditClass" onchange="getAuditList(this.value);" />
 					</li>
-					<li id="auditListLoad"></li>
+					<li id="auditListLoad"><script type="text/javascript">getAuditList('PQF');</script></li>
 					<li><label>For</label>
 						<s:textfield name="auditFor" maxlength="50" />
 					</li>
@@ -98,13 +105,13 @@
 			Integrity Management
 		</s:else>
 	</h3>
-	<table class="report">
+	<table class="report" id="<s:property value="#classType" />">
 		<thead>
 			<tr>
 				<th>Type</th>
 				<th>For</th>
 				<th colspan="2">Safety Professional</th>
-				<th>Scheduled</th>
+				<th colspan="2">Scheduled</th>
 				<th>View</th>
 				<s:if test="#classType.toString() == 'IM'">
 					<th>Score</th>
@@ -120,7 +127,7 @@
 						</td>
 						<td><s:property value="#audit.auditFor" /></td>
 						<td colspan="2"><s:property value="#audit.auditor.name" /></td>
-						<td><s:date name="#audit.scheduledDate" format="M/d/yy" /></td>
+						<td colspan="2"><s:date name="#audit.scheduledDate" format="M/d/yy" /></td>
 						<td>
 							<a href="#" onclick="$('tr.row_'+<s:property value="#audit.id" />).toggle(); return false;">
 								<s:iterator value="counts.get(#audit).keySet()" id="status" status="stat">
@@ -139,6 +146,10 @@
 						<td class="center">Created</td>
 						<td class="center">Submitted</td>
 						<td class="center">Completed</td>
+						<td class="center">Status</td>
+						<s:if test="#classType.toString() == 'IM'">
+							<td class="center">Score</td>
+						</s:if>
 					</tr>
 					<s:iterator value="#audit.operators" id="cao">
 						<tr class="row_<s:property value="#audit.id" /> hidden">
@@ -155,12 +166,17 @@
 							<td><s:date name="#cao.creationDate" format="M/d/yy" /></td>
 							<td><s:date name="#cao.submittedDate" format="M/d/yy" /></td>
 							<td><s:date name="#cao.completedDate" format="M/d/yy" /></td>
+							<td><s:property value="#cao.status" /></td>
+							<s:if test="#classType.toString() == 'IM'">
+								<td class="center"><s:property value="#audit.printableScore" /></td>
+							</s:if>
 						</tr>
 					</s:iterator>
 				</s:iterator>
 			</s:iterator>
 		</tbody>
 	</table>
+	<a href="#" onclick="showAll('<s:property value="#classType.toString()" />'); return false;" class="preview">View All</a>
 </s:iterator>
 
 <div id="notesList"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>

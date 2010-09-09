@@ -146,7 +146,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 				menuComponent.setAuditId(audit.getId());
 				menu.add(menuComponent);
 			} else if (pqfs.size() > 1) {
-				MenuComponent subMenu = new MenuComponent("PQF");
+				MenuComponent subMenu = new MenuComponent("PQF", "ContractorDocuments.action?id=" + id);
 				menu.add(subMenu);
 				for (ContractorAudit audit : pqfs) {
 					createMenuItem(subMenu, audit);
@@ -157,7 +157,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add the Annual Updates
-			MenuComponent subMenu = new MenuComponent("Annual Update");
+			MenuComponent subMenu = new MenuComponent("Annual Update", "ContractorDocuments.action?id=" + id);
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
@@ -201,7 +201,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add Integrity Management
-			MenuComponent subMenu = new MenuComponent("IM");
+			MenuComponent subMenu = new MenuComponent("IM", "ContractorDocuments.action?id=" + id);
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
@@ -218,7 +218,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add COR/SECOR
-			MenuComponent subMenu = new MenuComponent("COR/SECOR");
+			MenuComponent subMenu = new MenuComponent("COR/SECOR", "ContractorDocuments.action?id=" + id);
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
@@ -236,7 +236,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
 			// All Other Audits
-			MenuComponent subMenu = new MenuComponent("Audits", "ConAuditList.action?id=" + id);
+			MenuComponent subMenu = new MenuComponent("Audits", "ContractorDocuments.action?id=" + id);
 			for (ContractorAudit audit : auditList) {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit)) {
 					MenuComponent childMenu = createMenuItem(subMenu, audit);

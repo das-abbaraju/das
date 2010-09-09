@@ -324,31 +324,15 @@
 		<action name="ContractorDocuments"
 			class="com.picsauditing.actions.contractors.ContractorDocuments">
 			<result>struts/contractors/contractor_documents.jsp</result>
+			<result name="saved" type="redirectAction">
+				<param name="actionName">ContractorDocuments</param>
+				<param name="id">${id}</param>
+			</result>
 		</action>
 		
 		<action name="ContractorDocumentsAjax"
 			class="com.picsauditing.actions.contractors.ContractorDocuments">
 			<result>struts/contractors/contractor_documents_auditTypes.jsp</result>
-		</action>
-		
-		<action name="ConPqfList"
-			class="com.picsauditing.actions.contractors.ConAuditList">
-			<param name="auditClass">PQF</param>
-			<result>struts/contractors/contractor_audits.jsp</result>
-			<result name="saved" type="redirectAction">
-				<param name="actionName">ConPqfList</param>
-				<param name="id">${id}</param>
-			</result>
-		</action>
-
-		<action name="ConAuditList"
-			class="com.picsauditing.actions.contractors.ConAuditList">
-			<param name="auditClass">Audit</param>
-			<result>struts/contractors/contractor_audits.jsp</result>
-			<result name="saved" type="redirectAction">
-				<param name="actionName">ConAuditList</param>
-				<param name="id">${id}</param>
-			</result>
 		</action>
 
 		<action name="ConInsureGUARD"
@@ -360,30 +344,6 @@
 				<param name="actionName">ConInsureGUARD</param>
 				<param name="id">${id}</param>
 			</result>
-		</action>
-		
-		<action name="ConCorAuditList"
-			class="com.picsauditing.actions.contractors.ConCorAuditList">
-			<result>struts/contractors/contractor_cor_audits.jsp</result>
-			<result name="saved" type="redirectAction">
-				<param name="actionName">ConCorAuditList</param>
-				<param name="id">${id}</param>
-			</result>
-		</action>
-
-		<action name="ConIntegrityManagement"
-			class="com.picsauditing.actions.contractors.ConAuditList">
-			<param name="auditClass">IM</param>
-			<result>struts/contractors/contractor_integritymanagement.jsp</result>
-			<result name="saved" type="redirectAction">
-				<param name="actionName">ConIntegrityManagement</param>
-				<param name="id">${id}</param>
-			</result>
-		</action>
-
-		<action name="ConAnnualUpdates"
-			class="com.picsauditing.actions.contractors.ConAnnualUpdates">
-			<result>struts/contractors/contractor_annual_updates.jsp</result>
 		</action>
 
 		<action name="ContractorEdit"

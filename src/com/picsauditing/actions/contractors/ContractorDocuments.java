@@ -89,6 +89,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 				} else {
 					ContractorAudit conAudit = new ContractorAudit();
 
+					conAudit.setAuditColumns(permissions);
 					conAudit.setAuditType(auditType);
 					conAudit.setAuditFor(this.auditFor);
 					conAudit.setContractorAccount(contractor);
@@ -115,6 +116,8 @@ public class ContractorDocuments extends ContractorActionSupport {
 					addNote(conAudit.getContractorAccount(), "Added " + auditType.getAuditName() + " manually",
 							NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
 				}
+				
+				return "saved";
 			}
 		}
 		
@@ -199,8 +202,8 @@ public class ContractorDocuments extends ContractorActionSupport {
 
 		for (ContractorAudit audit : getAudits()) {
 			// Policies are still on their own page
-			if (!audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-				if (audit.isVisibleTo(permissions))
+			if (!audit.getAuditType().getClassType().equals(AuditTypeClass.Policy) && audit.isVisibleTo(permissions)) {
+				if (auditMap.get(audit.getAuditType()) == null)
 					auditMap.put(audit.getAuditType(), new ArrayList<ContractorAudit>());
 
 				auditMap.get(audit.getAuditType()).add(audit);
