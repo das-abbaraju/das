@@ -107,7 +107,7 @@ $(function() {
 		var fType = ele.attr('name').substr(ele.attr('name').indexOf('.')+1, ele.attr('name').length);
 		$('#_'+fType).hide();
 		startThinking( {div: 'think_'+fType, message: 'Checking for matches', type: 'small' } );
-		if(fType=='name' || fType=='phone') var type = 'C';
+		if(fType=='name' || fType=='phone' || fType=='taxID') var type = 'C';
 		else if(fType=='contact' || fType=='email') var type = 'U';
 		$.getJSON(
 			'RequestNewContractorAjax.action',
@@ -317,13 +317,6 @@ function getMatches(requestID) {
 	</div>
 </s:if>
 
-<% /*<s:if test="newContractor.matchCount > 0 && newContractor.contractor == null && newContractor.open">
-	<div id="potentialMatches" class="info">
-		This contractor has <a name="potentialMatches" class="normal">potential matching accounts</a> in PICS.
-		<a href="#" onclick="getMatches(<s:property value="requestID" />); return false;">Click here to view a list of matching accounts.</a>
-	</div>
-</s:if> */ %>
-
 <s:form id="saveContractorForm">
 	<s:hidden name="requestID"/>
 	<s:hidden name="conID" id="conID" />
@@ -396,6 +389,8 @@ function getMatches(requestID) {
 						<h3>Tax ID</h3>
 						<p>Optional field for Tax ID</p>
 						</div>
+						<div id="think_tax"></div>
+						<div id="match_tax"></div>
 					</li>
 					<s:if test="assignedCSR != null">
 						<li><label>Assigned PICS CSR:</label>
