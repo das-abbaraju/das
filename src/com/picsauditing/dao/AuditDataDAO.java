@@ -1,6 +1,7 @@
 package com.picsauditing.dao;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,12 +76,11 @@ public class AuditDataDAO extends PicsDAO {
 		if (questionIds.size() == 0)
 			return indexedResult;
 
-		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.contractorAccount.id = ? "
-				+ "AND d.audit.auditStatus NOT IN ('Expired','Exempt') "
-				+ "AND d.question.id IN (" + Strings.implode(questionIds) + ") ORDER BY d.audit.auditStatus DESC");
-		// Sort it first by Submitted, then by Active, so when we load the map
-		// the Active values will override the Submitted ones
-		query.setParameter(1, conID);
+		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.contractorAccount.id = :conID "
+				+ "AND (d.audit.expiresDate IS NULL OR d.audit.expiresDate < :today) "
+				+ "AND d.question.id IN (" + Strings.implode(questionIds) + ")");
+		query.setParameter("conID", conID);
+		query.setParameter("today", new Date());
 
 		List<AuditData> result = query.getResultList();
 
