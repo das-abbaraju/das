@@ -434,6 +434,13 @@ a.edit {
 	zoom: 1;
 }
 
+a.refresh {
+	padding-left: 17px;
+	margin-left: 2px;
+	background: url('../images/arrow-360.png') no-repeat left center;
+	zoom: 1;
+}
+
 a.save {
 	padding-left: 17px;
 	margin-left: 2px;

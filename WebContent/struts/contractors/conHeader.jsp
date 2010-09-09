@@ -56,116 +56,137 @@
 
 <s:if test="auditID > 0">
 <div id="auditHeader" class="auditHeader">
-	<fieldset>
-	<ul>
-		<li><label>Type:</label>
-			<s:property value="conAudit.auditType.auditName" />
-			 #<s:property value="conAudit.id" />
-		</li>
-		<li><label>Created:</label>
-			<s:date name="conAudit.creationDate" format="MMM d, yyyy" />
-		</li>
-		<s:if test="conAudit.expiresDate != null">
-			<li><label>Expires:</label>
-				<s:date name="conAudit.expiresDate" format="MMM d, yyyy" />
+	<div id="fieldsHead" style="width: 95%; margin-left: auto; margin-right:auto;">
+		<fieldset>
+		<ul>
+			<li><label>Type:</label>
+				<s:property value="conAudit.auditType.auditName" />
+				 #<s:property value="conAudit.id" />
 			</li>
-		</s:if>
-	</ul>
-	</fieldset>
-	<fieldset>
-	<ul>
-		<s:if test="!conAudit.auditType.classType.policy">
-			<li><label>Status:</label>
-				<s:property value="conAudit.auditStatus" />
+			<li><label>Created:</label>
+				<s:date name="conAudit.creationDate" format="MMM d, yyyy" />
 			</li>
-			<li><label>Description:</label>
-				<s:property value="conAudit.statusDescription" />
-			</li>
-			
-		</s:if>
-		<s:if test="conAudit.auditStatus.name() == 'Submitted'">
-			<s:if test="conAudit.auditType.PQF">
-				<li><label>Verified:</label>
-					<s:property value="conAudit.percentVerified" />%
+			<s:if test="conAudit.expiresDate != null">
+				<li><label>Expires:</label>
+					<s:date name="conAudit.expiresDate" format="MMM d, yyyy" />
 				</li>
 			</s:if>
-			<s:else>
-				<li><label>% Closed:</label>
-					<s:property value="conAudit.percentVerified" />%
+		</ul>
+		</fieldset>
+		<fieldset>
+		<ul>
+			<s:if test="!conAudit.auditType.classType.policy">
+				<li><label>Status:</label>
+					<s:property value="conAudit.auditStatus" />
 				</li>
-			</s:else>
-		</s:if>
-		<s:if test="conAudit.auditStatus.name() == 'Pending'">
-			<li><label>% Complete:</label>
-				<s:property value="conAudit.percentComplete" />%
-			</li>
-		</s:if>
-		<s:if test="conAudit.completedDate != null">
-			<li><label>Submitted:</label>
-				<s:date name="conAudit.completedDate" format="MMM d, yyyy" />
-			</li>
-		</s:if>
-		<s:if test="conAudit.auditType.scheduled && conAudit.scheduledDate != null">
-			<li><label>Scheduled:</label>
-				<s:date name="conAudit.scheduledDate"
-					format="MMM d, yyyy" /> <s:property
-					value="conAudit.auditLocation" />
-			</li>
-		</s:if>
-	</ul>
-	</fieldset>
-	<fieldset>
-	<ul>
-		<s:if test="conAudit.auditType.annualAddendum && conAudit.auditFor != null">
-			<li><label>For:</label>
-				<s:property value="conAudit.auditFor"/>
-			</li>
-		</s:if>
-		<s:if test="permissions.picsEmployee">
-			<s:if test="conAudit.auditType.hasAuditor">
-				<li><label>Safety Professional:</label>
-					<s:if test="conAudit.auditor.id > 0"><s:property value="conAudit.auditor.name" /></s:if>
-					<s:else><a href="AuditAssignments.action?auditID=<s:property value="auditID"/>">Not Assigned</a></s:else>
+				<li><label>Description:</label>
+					<s:property value="conAudit.statusDescription" />
 				</li>
-				<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0">
-					<li><label>Closing Safety Professional:</label>
-						<s:property value="conAudit.closingAuditor.name" />
+				
+			</s:if>
+			<s:if test="conAudit.auditStatus.name() == 'Submitted'">
+				<s:if test="conAudit.auditType.PQF">
+					<li><label>Verified:</label>
+						<s:property value="conAudit.percentVerified" />%
 					</li>
 				</s:if>
+				<s:else>
+					<li><label>% Closed:</label>
+						<s:property value="conAudit.percentVerified" />%
+					</li>
+				</s:else>
 			</s:if>
-		</s:if>
-		<s:if test="conAudit.auditType.showManual">
-			<li><label><nobr><s:if test="conAudit.auditType.id == 96">Management Plan</s:if>
-					   <s:else>Safety Manual</s:else>:</nobr></label>
-				<s:if test="hasSafetyManual">
-						<s:iterator value="safetyManualLink.values()">
-							<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK">Uploaded (<s:date name="updateDate" format="MMM yyyy"/>)</a>
-						</s:iterator>
-				</s:if>
-				<s:else>Not Uploaded</s:else>
-			</li>
-		</s:if>
-		<s:if test="conAudit.auditType.classType.name().equals('IM')">
-			<li><label>IM Score:</label>
-				<s:property value="conAudit.printableScore"/>
-			</li>
-		</s:if>
-		<s:if test="conAudit.requestingOpAccount">
-			<li><label>For:</label>
-				<s:property value="conAudit.requestingOpAccount.name" />
-			</li>
-		</s:if>
-		<s:iterator value="conAudit.operators" status="rowStatus">
-			<s:if test="visible && isVisibleTo(permissions)">
-				<li>
-					<label>Status:</label>
-						<s:property value="status"/>
-						<span style="font-size: 10px; white-space: nowrap;"><s:property value="@com.picsauditing.util.Strings@trim(operator.name, 30)" /></span>
+			<s:if test="conAudit.auditStatus.name() == 'Pending'">
+				<li><label>% Complete:</label>
+					<s:property value="conAudit.percentComplete" />%
 				</li>
 			</s:if>
-		</s:iterator>
-	</ul>
-	</fieldset>
+			<s:if test="conAudit.completedDate != null">
+				<li><label>Submitted:</label>
+					<s:date name="conAudit.completedDate" format="MMM d, yyyy" />
+				</li>
+			</s:if>
+			<s:if test="conAudit.auditType.scheduled && conAudit.scheduledDate != null">
+				<li><label>Scheduled:</label>
+					<s:date name="conAudit.scheduledDate"
+						format="MMM d, yyyy" /> <s:property
+						value="conAudit.auditLocation" />
+				</li>
+			</s:if>
+		</ul>
+		</fieldset>
+		<fieldset>
+		<ul>
+			<s:if test="conAudit.auditType.annualAddendum && conAudit.auditFor != null">
+				<li><label>For:</label>
+					<s:property value="conAudit.auditFor"/>
+				</li>
+			</s:if>
+			<s:if test="permissions.picsEmployee">
+				<s:if test="conAudit.auditType.hasAuditor">
+					<li><label>Safety Professional:</label>
+						<s:if test="conAudit.auditor.id > 0"><s:property value="conAudit.auditor.name" /></s:if>
+						<s:else><a href="AuditAssignments.action?auditID=<s:property value="auditID"/>">Not Assigned</a></s:else>
+					</li>
+					<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0">
+						<li><label>Closing Safety Professional:</label>
+							<s:property value="conAudit.closingAuditor.name" />
+						</li>
+					</s:if>
+				</s:if>
+			</s:if>
+			<s:if test="conAudit.auditType.showManual">
+				<li><label><nobr><s:if test="conAudit.auditType.id == 96">Management Plan</s:if>
+						   <s:else>Safety Manual</s:else>:</nobr></label>
+					<s:if test="hasSafetyManual">
+							<s:iterator value="safetyManualLink.values()">
+								<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK">Uploaded (<s:date name="updateDate" format="MMM yyyy"/>)</a>
+							</s:iterator>
+					</s:if>
+					<s:else>Not Uploaded</s:else>
+				</li>
+			</s:if>
+			<s:if test="conAudit.auditType.classType.name().equals('IM')">
+				<li><label>IM Score:</label>
+					<s:property value="conAudit.printableScore"/>
+				</li>
+			</s:if>
+			<s:if test="conAudit.requestingOpAccount">
+				<li><label>For:</label>
+					<s:property value="conAudit.requestingOpAccount.name" />
+				</li>
+			</s:if>
+		</ul>
+		</fieldset>
+	</div>
+	<div class="clear"></div>
+	<div id="statusBox" class="center">	
+		<table class="statusOpBox" style="width: 95%">
+			<thead>
+				<tr>
+					<th>Button</th>
+					<th>Operator</th>
+					<th>Progress</th>
+					<th>Status</th>
+					<th>Date</th>
+				</tr>
+			</thead>
+			<tbody>
+				<s:iterator value="conAudit.operators" status="rowStatus">
+					<s:if test="visible && isVisibleTo(permissions)">
+						<tr>
+							<td>Approve</td>
+							<td><s:property value="operator.name" /></td>								
+							<td>***********</td>
+							<td><s:property value="status"/></td>
+							<td>12/31/1999</td>
+						</tr>
+					</s:if>
+				</s:iterator>
+			</tbody>
+		</table>
+	</div>
+	<span style="float: right; padding-right: 10px;"><a href="#" class="refresh">Refresh</a></span>
 	<div class="clear"></div>
 </div>
 <div id="auditHeaderNav" class="auditHeaderNav noprint">

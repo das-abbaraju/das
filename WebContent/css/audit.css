@@ -123,6 +123,29 @@ table.report tr.na a {
 	font-style: italic;
 	color: #999;
 }
+/** Table for status **/
+table.statusOpBox {
+	background-color: #fff;
+	border: 2px solid #F6F6F0;		
+	color: #012142;
+	border-collapse:collapse;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 10px;
+}
+table.statusOpBox td {
+	border: 2px solid #F6F6F0;	
+	border-collapse:collapse;
+	font: 12px;
+	padding-left: 10px;
+}
+table.statusOpBox th {
+	border: 2px solid #F6F6F0;	
+	border-collapse:collapse;
+	text-align: center;
+	background-color: #aaa;
+	color: white;
+}
 
 /** Audit Header ***/
 #content div.auditHeader {
@@ -130,6 +153,8 @@ table.report tr.na a {
 	border-bottom: 2px solid #C3C3C3;
 	background-color: #F6F6F0;
 	margin-bottom: 10px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 div.auditHeader fieldset {
@@ -156,7 +181,6 @@ div.auditHeader fieldset label {
 	line-height: 19px;
 	margin-right: .7em;
 	margin-top:-2px;
-	width: 8em;
 	text-align: right;
 	font-weight: bold;
 	color: #012142;
@@ -253,13 +277,11 @@ table.footerNav td.current a.currentCat {
 	background-color:#d8d8d8;
 	padding:5px;
 	text-decoration:none;
-	}
-	
-
+}
 table.footerNav td.current a.category_list {
-background: url(../images/arrow-up.png) no-repeat left center;
-padding-left:16px;
-	}
+	background: url(../images/arrow-up.png) no-repeat left center;
+	padding-left:16px;
+}
 
 table.footerNav td.next {
 	width: 20%;
@@ -274,7 +296,68 @@ font-weight:bold;
 text-decoration:none;
 }
 /** END Category Header+Footer Navigation **/
+/** Audit SideNav **/
+div.auditHeaderSideNav{
+	float: left;
+	width: 400px;
+	border: 1px solid pink;	
+}
 
+div.auditHeaderSideNav ul{
+	list-style: none;	
+	width: 250px;
+	background-color: #F6F6F0;
+	border-bottom: 2px solid #bcbcbc;
+	margin: 0 0 20px 0;
+}
+div.auditHeaderSideNav li a{
+	text-decoration: none;	
+	padding: 10px 0px 10px 10px;
+	display: block;
+}
+div.auditHeaderSideNav li#head{
+	background-color: #A84D10;
+	padding: 4px 5px 4px 5px;
+	font-size: 18px;
+	padding: 6px 0 6px 10px;
+	color: #fff;
+	font-weight: bold;
+}
+div.auditHeaderSideNav li{
+	color: #012142;
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #bcbcbc;
+	font-size:0.9em;
+}
+div.auditHeaderSideNav li.notApplicable{
+	color: #012142;
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #bcbcbc;
+	font-size:0.9em;
+}
+
+div.auditHeaderSideNav li .current{
+	color: #fff;
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #bcbcbc;
+	font-size:0.9em;
+	background: #5D9BCE;
+}
+div.auditHeaderSideNav li:hover{
+	background: #d4d4d0;	
+	border-bottom: 1px solid #bcbcbc;
+	border-top: 1px solid #bcbcbc;
+}
+/** END Audit SideNav **/
+
+/** Audit ViewArea **/
+div.auditViewArea{
+	/*float: right;*/
+	min-width: 600px;
+	margin-left: 425px;
+	border: 1px solid blue;	
+}
+/** END Audit ViewArea **/
 /*** OSHA **/
 table.osha {
 	margin-top: 10px;
