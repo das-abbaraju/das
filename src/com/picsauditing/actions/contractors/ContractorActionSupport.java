@@ -16,8 +16,6 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -98,8 +96,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 			contractorNonExpiredAudits = new ArrayList<ContractorAudit>();
 			List<ContractorAudit> list = getAudits();
 			for (ContractorAudit contractorAudit : list) {
-				if (contractorAudit.getAuditType().isPqf() || !contractorAudit.isExpired())
-					contractorNonExpiredAudits.add(contractorAudit);
+				if (contractorAudit.getAuditType().isPqf() || !contractorAudit.isExpired()) {
+					if (contractorAudit.isVisibleTo(permissions))
+						contractorNonExpiredAudits.add(contractorAudit);
+				}
 			}
 		}
 		return contractorNonExpiredAudits;
@@ -146,7 +146,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 				menuComponent.setAuditId(audit.getId());
 				menu.add(menuComponent);
 			} else if (pqfs.size() > 1) {
-				MenuComponent subMenu = new MenuComponent("PQF", "ConPqfList.action?id=" + id);
+				MenuComponent subMenu = new MenuComponent("PQF");
 				menu.add(subMenu);
 				for (ContractorAudit audit : pqfs) {
 					createMenuItem(subMenu, audit);
@@ -157,8 +157,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add the Annual Updates
-			MenuComponent subMenu = new MenuComponent("Annual Update", "ConAnnualUpdates.action?id=" + id);
-			menu.add(subMenu);
+			MenuComponent subMenu = new MenuComponent("Annual Update");
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
@@ -176,7 +175,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			} catch (Exception e) {
 				PicsLogger.log("Failed to sort Annual Updates");
 			}
-			PicsLogger.log("Found [" + subMenu.getChildren() + "] Annual Updates");
+			addSubMenu(menu, subMenu);
 		}
 
 		if (isRequiresInsurance()
@@ -201,11 +200,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 			PicsLogger.log("Found [" + subMenu.getChildren() + "] Policies");
 		}
 
-		if (isRequiresIntegrityManagement()
-				&& (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add Integrity Management
-			MenuComponent subMenu = new MenuComponent("IM", "ConIntegrityManagement.action?id=" + id);
-			menu.add(subMenu);
+			MenuComponent subMenu = new MenuComponent("IM");
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
@@ -217,12 +214,12 @@ public class ContractorActionSupport extends AccountActionSupport {
 					iter.remove();
 				}
 			}
-			PicsLogger.log("Found [" + subMenu.getChildren() + "] IM Audits");
+			addSubMenu(menu, subMenu);
 		}
 
-		if (isRequiresCOR() && (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add COR/SECOR
-			MenuComponent subMenu = new MenuComponent("COR/SECOR", "ConCorAuditList.action?id=" + id);
+			MenuComponent subMenu = new MenuComponent("COR/SECOR");
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
@@ -235,15 +232,12 @@ public class ContractorActionSupport extends AccountActionSupport {
 					iter.remove();
 				}
 			}
-			PicsLogger.log("Found [" + subMenu.getChildren() + "] COR Audits");
-			if (subMenu.getChildren().size() > 0)
-				menu.add(subMenu);
+			addSubMenu(menu, subMenu);
 		}
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
 			// All Other Audits
 			MenuComponent subMenu = new MenuComponent("Audits", "ConAuditList.action?id=" + id);
-			menu.add(subMenu);
 			for (ContractorAudit audit : auditList) {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit)) {
 					MenuComponent childMenu = createMenuItem(subMenu, audit);
@@ -255,11 +249,18 @@ public class ContractorActionSupport extends AccountActionSupport {
 					childMenu.setName(linkText);
 				}
 			}
-			PicsLogger.log("Found [" + subMenu.getChildren() + "] Other Audits");
+			addSubMenu(menu, subMenu);
 		}
 		PicsLogger.stop();
 		resetActiveAudits();
 		return menu;
+	}
+
+	private void addSubMenu(List<MenuComponent> menu, MenuComponent subMenu) {
+		if (subMenu.getChildren().size() > 0) {
+			PicsLogger.log("Found [" + subMenu.getChildren() + "] " + subMenu.getName());
+			menu.add(subMenu);
+		}
 	}
 
 	private MenuComponent createMenuItem(MenuComponent subMenu, ContractorAudit audit) {
@@ -304,43 +305,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * Only show the Integrity Management link for contractors who are linked to
-	 * an operator that subscribes to Integrity Management
-	 */
-	private boolean isRequiresIntegrityManagement() {
-		if (contractor.isAcceptsBids())
-			return false;
-
-		if (!accountDao.isContained(getOperators().iterator().next()))
-			operators = null;
-
-		if (permissions.isOperator()) {
-			for (ContractorOperator insurContractors : getOperators()) {
-				OperatorAccount op = insurContractors.getOperatorAccount();
-				for (AuditOperator audit : op.getVisibleAudits()) {
-					if (audit.getAuditType().getClassType() == AuditTypeClass.IM
-							&& permissions.getAccountId() == op.getId()) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-		// If Contractor or admin, any operator requiring certs will see this
-		// If corporate, then the operators list is already restricted to my
-		// facilities
-		for (ContractorOperator insurContractors : getOperators()) {
-			OperatorAccount op = insurContractors.getOperatorAccount();
-			for (AuditOperator audit : op.getVisibleAudits()) {
-				if (audit.getAuditType().getClassType() == AuditTypeClass.IM) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
 	 * Only show the COR/SECOR link for contractors who have answered Yes to
 	 * that question and linked to an operator that subscribes to COR
 	 */
@@ -349,29 +313,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (auditDataDAO == null)
 			auditDataDAO = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
 		return auditDataDAO;
-	}
-
-	private boolean isRequiresCOR() {
-		boolean hasCOR = false;
-		if (!accountDao.isContained(getOperators().iterator().next()))
-			operators = null;
-
-		AuditData answer = getAuditDataDAO().findAnswerByConQuestion(id, AuditQuestion.COR);
-		if (answer != null && "Yes".equals(answer.getAnswer())) {
-			hasCOR = true;
-		}
-
-		if (hasCOR) {
-			for (ContractorOperator corContractors : getOperators()) {
-				OperatorAccount op = corContractors.getOperatorAccount();
-				for (AuditOperator audit : op.getVisibleAudits()) {
-					if (audit.getAuditType().getId() == AuditType.COR) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
 	}
 
 	public boolean isShowHeader() {

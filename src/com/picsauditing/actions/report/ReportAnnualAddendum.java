@@ -40,13 +40,11 @@ public class ReportAnnualAddendum extends ReportAccount {
 		getFilter().setShowIndustry(false);
 		getFilter().setShowWaitingOn(false);
 		getFilter().setShowAuditType(false);
-		getFilter().setShowAuditStatus(false);
 		getFilter().setShowAuditor(false);
 		getFilter().setShowLicensedIn(false);
 		getFilter().setShowWorksIn(false);
 		getFilter().setShowOfficeIn(false);
 		getFilter().setShowCreatedDate(false);
-		getFilter().setShowPercentComplete(false);
 		getFilter().setPendingPqfAnnualUpdate(false);
 	}
 

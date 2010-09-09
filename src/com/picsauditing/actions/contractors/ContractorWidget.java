@@ -6,9 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
@@ -28,7 +26,6 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.Workflow;
@@ -146,17 +143,6 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 			}
 			String auditName;
-			Set<AuditType> auditTypeList = new HashSet<AuditType>();
-			for (ContractorOperator co : contractor.getNonCorporateOperators()) {
-				if (co.getOperatorAccount().getStatus().isActiveDemo()) {
-					for (AuditOperator ao : co.getOperatorAccount().getVisibleAudits()) {
-						if (ao.isRequiredFor(contractor) && ao.getAuditType().getId() != AuditType.PQF
-								&& ao.getAuditType().getId() != AuditType.WELCOME) {
-							auditTypeList.add(ao.getAuditType());
-						}
-					}
-				}
-			}
 
 			for (ContractorAudit conAudit : contractor.getAudits()) {
 				if (conAudit.getAuditType().isCanContractorView() && !conAudit.isExpired()) {

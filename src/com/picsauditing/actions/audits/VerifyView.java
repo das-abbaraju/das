@@ -22,6 +22,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
@@ -256,11 +257,14 @@ public class VerifyView extends ContractorActionSupport {
 	public List<ContractorAudit> getVerificationAudits() {
 		if (verificationAudits == null) {
 			verificationAudits = new Grepper<ContractorAudit>() {
-
 				@Override
 				public boolean check(ContractorAudit t) {
-					return (t.getAuditStatus().isPendingSubmittedResubmitted() || t.getAuditStatus().isIncomplete())
-							&& (t.getAuditType().isMustVerify() && !t.getAuditType().getClassType().isPolicy());
+					if (t.getAuditType().getClassType().isPolicy())
+						return false;
+					if (!t.getAuditType().getWorkFlow().isHasSubmittedStep())
+						return false;
+					
+					return t.hasCaoStatusBefore(AuditStatus.Complete);
 				}
 			}.grep(getActiveAudits());
 		}

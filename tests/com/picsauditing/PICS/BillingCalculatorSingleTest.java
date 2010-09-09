@@ -43,13 +43,13 @@ public class BillingCalculatorSingleTest extends TestCase {
 
 		/***************************************************************************/
 
-		EntityFactory.makeAuditOperator(AuditType.DESKTOP, operator);
+		//EntityFactory.makeAuditOperator(AuditType.DESKTOP, operator);
 		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 		assertEquals("contractor should be at tier 1", InvoiceFee.FACILITIES1, fee.getId());
 
 		/***************************************************************************/
 
-		operator.getAudits().clear();
+		//operator.getAudits().clear();
 
 		operator.setDoContractorsPay("Multiple");
 		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
@@ -73,7 +73,7 @@ public class BillingCalculatorSingleTest extends TestCase {
 
 		/***************************************************************************/
 
-		EntityFactory.makeAuditOperator(AuditType.DESKTOP, operator);
+		//EntityFactory.makeAuditOperator(AuditType.DESKTOP, operator);
 		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 		assertEquals("contractor should be at 2-4 operators price since there is at least one audit now",
 				InvoiceFee.FACILITIES2, fee.getId());
@@ -128,7 +128,7 @@ public class BillingCalculatorSingleTest extends TestCase {
 		/***************************************************************************/
 
 		for (ContractorOperator o : contractor.getNonCorporateOperators()) {
-			o.getOperatorAccount().getAudits().clear();
+			//o.getOperatorAccount().getAudits().clear();
 		}
 
 		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);

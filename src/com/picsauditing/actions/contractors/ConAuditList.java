@@ -142,8 +142,6 @@ public class ConAuditList extends ContractorActionSupport {
 						conAudit.setRequestingOpAccount(new OperatorAccount());
 						conAudit.getRequestingOpAccount().setId(selectedOperator);
 					}
-					conAudit.setPercentComplete(0);
-					conAudit.setPercentVerified(0);
 					conAudit.setManuallyAdded(true);
 					conAudit = auditDao.save(conAudit);
 

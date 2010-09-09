@@ -294,9 +294,14 @@ public class ContractorAuditOperator extends BaseTable {
 	public boolean isVisibleTo(Permissions permissions) {
 		if (permissions.isContractor() || permissions.isAdmin())
 			return true;
-
-		int governingBody = permissions.getAuditTypeGoverningBodies().get(audit.getAuditType().getId());
-		return operator.getId() == governingBody;
+		
+		if (operator.getId() == permissions.getAccountId())
+			return true;
+		for (ContractorAuditOperatorPermission caop : caoPermissions) {
+			if (caop.getOperator().getId() == permissions.getAccountId())
+				return true;
+		}
+		return false;
 	}
 
 	@Transient

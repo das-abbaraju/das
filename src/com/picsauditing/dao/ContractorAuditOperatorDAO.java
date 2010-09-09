@@ -121,11 +121,13 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 	}
 
 	public static void saveNoteAndEmail(ContractorAuditOperator cao, Permissions permissions) {
+		// TODO Make sure this is moved over properly to work flow steps
+		/*
 		if (!cao.getStatus().isTemporary()) {
 			try {
 				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(33); // Insurance Approval Status
-				// Change
+				// Insurance Approval Status Change
+				emailBuilder.setTemplate(33);
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
 				emailBuilder.setContractor(cao.getAudit().getContractorAccount(), OpPerms.ContractorSafety);
@@ -149,5 +151,6 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 
 		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		noteDAO.save(note);
+		 */
 	}
 }

@@ -602,7 +602,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 		if (permissions.isAdmin())
 			return true;
-
+		
 		for (ContractorAuditOperator cao : getOperators()) {
 			if (cao.isVisibleTo(permissions)) {
 				return true;

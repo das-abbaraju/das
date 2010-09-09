@@ -29,6 +29,7 @@ import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Country;
@@ -195,11 +196,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			} else if (button.equalsIgnoreCase("Delete")) {
 				permissions.tryPermission(OpPerms.RemoveContractors);
 				findContractor();
+				
 				Iterator<ContractorAudit> auditList = contractor.getAudits().iterator();
-
 				while (auditList.hasNext()) {
 					ContractorAudit cAudit = auditList.next();
-					if (cAudit.getAuditStatus().isPending() && cAudit.getPercentComplete() == 0) {
+					if (!cAudit.hasCaoStatusAfter(AuditStatus.Pending)) {
 						auditList.remove();
 						auditDao.remove(cAudit);
 					}

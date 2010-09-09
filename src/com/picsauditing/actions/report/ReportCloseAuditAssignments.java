@@ -45,7 +45,6 @@ public class ReportCloseAuditAssignments extends ReportContractorAudits {
 		getFilter().setShowCcOnFile(false);
 		getFilter().setShowConWithPendingAudits(false);
 		getFilter().setShowAuditType(false);
-		getFilter().setShowAuditStatus(false);
 		getFilter().setShowAuditFor(false);
 	}
 	

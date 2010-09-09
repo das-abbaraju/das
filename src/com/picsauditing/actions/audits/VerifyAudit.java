@@ -11,6 +11,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 
@@ -93,17 +94,6 @@ public class VerifyAudit extends AuditActionSupport {
 				return o1.compareTo(o2);
 			}
 		};
-	}
-
-	public boolean isShowApproveButton() {
-		if (conAudit.getAuditType().isPqf()
-				&& (conAudit.getAuditStatus().isSubmitted() || conAudit.getAuditStatus().isResubmitted())
-				&& getPqfQuestions().size() == 0)
-			return true;
-		if (conAudit.getPercentVerified() == 100)
-			return true;
-
-		return false;
 	}
 
 	public OshaAudit getOsha() {

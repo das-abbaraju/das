@@ -198,10 +198,6 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 
 		if (mode == null)
 			mode = VIEW;
-		if (mode.equals(EDIT) && !isCanEdit())
-			mode = VIEW;
-		if (mode.equals(VERIFY) && !isCanVerify())
-			mode = VIEW;
 
 		if ("Quick".equals(button)) {
 			// used for testing

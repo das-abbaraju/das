@@ -57,14 +57,6 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 
 			sql.addJoin("JOIN accounts caoaccount on caoaccount.id = cao.opID");
 			sql.addField("caoaccount.name as caoName");
-
-			// TODO move this check up to ReportContractorAudit
-			if (permissions.getVisibleCAOs().size() > 0)
-				sql.addWhere("cao.opid IN (" + Strings.implode(permissions.getVisibleCAOs(), ",") + ")");
-			else {
-				addActionError("Your account doesn't have access to any policies. Your account may not be set up correctly.");
-				sql.addWhere("a.id = 0");
-			}
 		}
 
 		sql.addWhere("ca.expiresDate > NOW()");
@@ -83,11 +75,8 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 		getFilter().setShowPrimaryInformation(true);
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowTrade(false);
-		getFilter().setShowPercentComplete(false);
 		getFilter().setShowAuditType(false);
-		getFilter().setShowAuditStatus(false);
 		getFilter().setShowAuditor(false);
-		getFilter().setShowPercentComplete(false);
 		getFilter().setShowAuditFor(false);
 		getFilter().setShowFlagStatus(false);
 

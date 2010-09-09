@@ -26,8 +26,6 @@ import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.AuditOperator;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
@@ -314,15 +312,10 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		return complete;
 	}
 
+	@Deprecated
 	public Set<String> getRequiredAudits() {
 		Set<String> auditTypeList = new HashSet<String>();
-		for (ContractorOperator cOperator : contractor.getNonCorporateOperators()) {
-			for (AuditOperator aOperator : cOperator.getOperatorAccount().getVisibleAudits()) {
-				if (aOperator.isRequiredFor(contractor) && !aOperator.getAuditType().isAnnualAddendum()) {
-					auditTypeList.add(aOperator.getAuditType().getAuditName());
-				}
-			}
-		}
+		auditTypeList.add("Don't use this!! Call the AuditBuilder first and then show the contractor audits");
 		return auditTypeList;
 	}
 }

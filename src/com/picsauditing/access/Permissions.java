@@ -2,10 +2,8 @@ package com.picsauditing.access;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -495,11 +493,6 @@ public class Permissions implements Serializable {
 
 	public Set<Integer> getOperatorChildren() {
 		return operatorChildren;
-	}
-
-	@Deprecated
-	public Set<Integer> getCanSeeAudits() {
-		return null;
 	}
 
 	public TimeZone getTimezone() {

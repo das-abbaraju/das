@@ -54,8 +54,6 @@ public class ReportCompletePQF extends ReportContractorAudits {
 		getFilter().setShowStatus(false);
 		getFilter().setShowTrade(false);
 		getFilter().setShowClosingAuditor(false);
-		getFilter().setShowAuditStatus(false);
-		getFilter().setShowPercentComplete(true);
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowConWithPendingAudits(false);
