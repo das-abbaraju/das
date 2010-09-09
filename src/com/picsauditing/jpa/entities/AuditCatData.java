@@ -19,21 +19,22 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_cat_data")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="temp")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class AuditCatData extends BaseTable implements java.io.Serializable {
+
 	private ContractorAudit audit;
 	private AuditCategory category;
 	private int requiredCompleted = 0;
 	private int numRequired = 0;
 	private int numAnswered = 0;
+	private boolean override = false;
 	private boolean applies = true;
 	private int percentCompleted = 0;
 	private int percentVerified = 0;
 	private int percentClosed = 0;
-	private boolean override = false;
 	private float score = 0;
 	private int scoreCount = 0;
-	
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "categoryID", nullable = false)
 	public AuditCategory getCategory() {
@@ -54,6 +55,24 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 		this.audit = audit;
 	}
 
+	/**
+	 * If true, then allow for manually setting the isApplies field
+	 */
+	@Enumerated(EnumType.ORDINAL)
+	@Column(nullable = false)
+	public boolean isOverride() {
+		return override;
+	}
+
+	public void setOverride(boolean override) {
+		this.override = override;
+	}
+
+	/**
+	 * This is dynamically set by AuditBuilder.fillAuditCategories() when one or
+	 * more CAOs require this category. If Override==true, then the value must
+	 * be manually set
+	 */
 	@Column(nullable = false)
 	public boolean isApplies() {
 		return applies;
@@ -127,17 +146,6 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 		this.scoreCount = scoreCount;
 	}
 
-	@Enumerated(EnumType.ORDINAL)
-	@Column(nullable = false)
-	public boolean isOverride() {
-		return override;
-	}
-
-	public void setOverride(boolean override) {
-		this.override = override;
-	}
-
-
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
@@ -146,36 +154,24 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final AuditCatData other = (AuditCatData) obj;
-		if (id != other.id)
-			return false;
-		return true;
-	}
-
 	@Transient
 	public String getPrintableScore() {
-		
-		if( getScoreCount() > 0 ) {
-		
+
+		if (getScoreCount() > 0) {
+
 			int tempScore = Math.round(score);
-			
-			Map<Integer, String> map = new HashMap<Integer, String>() {{
-				put(0, "Red");
-				put(1, "Yellow");
-				put(2, "Green");
-			}};
-	
+
+			Map<Integer, String> map = new HashMap<Integer, String>() {
+
+				{
+					put(0, "Red");
+					put(1, "Yellow");
+					put(2, "Green");
+				}
+			};
+
 			return map.get(tempScore);
-		}
-		else {
+		} else {
 			return "-";
 		}
 	}

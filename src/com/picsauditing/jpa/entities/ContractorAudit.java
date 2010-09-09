@@ -305,6 +305,19 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	}
 
 	@Transient
+	public Date getEffectiveDate() {
+		for (ContractorAuditOperator cao : operators) {
+			if (cao.getStatus().equals(AuditStatus.Complete))
+				return cao.getStatusChangedDate();
+		}
+		for (ContractorAuditOperator cao : operators) {
+			if (cao.getStatus().after(AuditStatus.Incomplete))
+				return cao.getStatusChangedDate();
+		}
+		return creationDate;
+	}
+
+	@Transient
 	public boolean getExpiringPolicies() {
 		if (expiresDate == null)
 			return false;

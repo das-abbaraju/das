@@ -32,9 +32,6 @@ import com.picsauditing.util.log.PicsLogger;
 /**
  * Viewing audit Data including one or more categories and their subcategories
  * and data This handles View, Edit, and Verify all at the same time
- * 
- * @author Trevor
- * 
  */
 @SuppressWarnings("serial")
 public class AuditCategoryAction extends AuditCategorySingleAction {
@@ -102,17 +99,17 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 			return SUCCESS;
 		}
 
-		this.findConAudit();
+		findConAudit();
 
 		super.execute();
-
+		
 		// TODO: No longer works for policies
 		if (isSingleCat()) {
 			catDataID = getCategories().get(0).getId();
 		}
 
 		if (catDataID > 0 || catID > 0) {
-			for (AuditCatData catData : categories) {
+			for (AuditCatData catData : getCategories()) {
 				// We can open audits using either the catID or the catDataID
 				if (catData.getId() == catDataID || catData.getCategory().getId() == catID) {
 					// Set the other one that isn't set
