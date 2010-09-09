@@ -34,8 +34,7 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 	
 	public ReportInsuranceApproval(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
 			OperatorAccountDAO operatorAccountDAO, ContractorAuditOperatorDAO conAuditOperatorDAO, NoteDAO noteDao, ContractorAccountDAO contractorAccountDAO, AmBestDAO amBestDAO) {
-		// sql = new SelectContractorAudit();
-		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
+		super();
 		this.conAuditOperatorDAO = conAuditOperatorDAO;
 		this.noteDao = noteDao;
 		this.contractorAccountDAO = contractorAccountDAO;
@@ -71,6 +70,7 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		if (!forceLogin())
 			return LOGIN;
 		
+		// TODO move this to CaoSave
 		if ("save".equalsIgnoreCase(button)) {
 			// TODO Move this over to the new CaoSave class
 			AuditStatus newStatus = null;

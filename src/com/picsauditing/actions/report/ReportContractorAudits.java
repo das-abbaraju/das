@@ -70,15 +70,16 @@ public class ReportContractorAudits extends ReportAccount {
 
 		addFilterToSQL();
 
+		sql.addField("ca.id auditID");
 		sql.addField("ca.creationDate createdDate");
 		sql.addField("ca.expiresDate");
 		sql.addField("ca.scheduledDate");
-		sql.addField("ca.completedDate");
 		sql.addField("ca.assignedDate");
-		sql.addField("ca.closedDate");
 		sql.addField("ca.auditLocation");
-		sql.addField("ca.percentComplete");
-		sql.addField("ca.percentVerified");
+		// sql.addField("ca.completedDate");
+		// sql.addField("ca.closedDate");
+		// sql.addField("ca.percentComplete");
+		// sql.addField("ca.percentVerified");
 		sql.addField("ca.auditorID");
 		sql.addField("ca.auditFor");
 

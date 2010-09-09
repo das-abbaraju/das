@@ -1,24 +1,13 @@
 package com.picsauditing.actions.report;
 
-import com.picsauditing.util.ReportFilterAudit;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ReportAnnualAddendum extends ReportAccount {
-	private ReportFilterAudit filter = new ReportFilterAudit();
-
+public class ReportAnnualAddendum extends ReportContractorAuditOperator {
 	@Override
 	protected void buildQuery() {
 		super.buildQuery();
-		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		sql.addField("ca.id auditID");
-		sql.addField("ca.auditFor");
 		sql.addWhere("ca.auditTypeID = 11");
-		
-		// TODO: Does this need CAO filters?
-		String auditStatusList = Strings.implodeForDB(getFilter().getAuditStatus(), ",");
-		if (!Strings.isEmpty(auditStatusList))	
-			sql.addWhere("ca.auditStatus IN (" + auditStatusList + ")");
 		
 		String auditFor = Strings.implodeForDB(getFilter().getAuditFor(), ",");
 		if (!Strings.isEmpty(auditFor))
@@ -32,7 +21,6 @@ public class ReportAnnualAddendum extends ReportAccount {
 			sql.addWhere("os.location = '" + getFilter().getShaLocation() + "'");
 		}
 		
-		getFilter().setShowAuditFor(true);
 		getFilter().setShowVerifiedAnnualUpdates(true);
 
 		getFilter().setShowAddress(false);
@@ -46,13 +34,9 @@ public class ReportAnnualAddendum extends ReportAccount {
 		getFilter().setShowOfficeIn(false);
 		getFilter().setShowCreatedDate(false);
 		getFilter().setPendingPqfAnnualUpdate(false);
+		
 	}
 
-	@Override
-	public ReportFilterAudit getFilter() {
-		return filter;
-	}
-	
 	public void setVerifiedAnnualUpdateFilter(String columnName) {
 		if(getFilter().getVerifiedAnnualUpdate() > 0) {
 			if(getFilter().getVerifiedAnnualUpdate() == 1) {

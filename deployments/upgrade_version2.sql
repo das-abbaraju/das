@@ -218,16 +218,9 @@ insert into facilities (corporateID, opID) select 6, id from accounts where coun
 /*
  * BEGIN: CAO Conversion
  */
--- Pre-populate table
-insert into `pics_temp`.temp_cao
-            (include,
-             conID,
-             opID,
-             gbID,
-             auditTypeID,
-             auditID,
-             auditStatus)
-select
+TRUNCATE TABLE temp_cao;
+INSERT INTO temp_cao 
+SELECT NULL as id,
   0                  include,
   c.id               conID,
   o.id               opID,
@@ -235,24 +228,34 @@ select
   ca.auditTypeID,
   ca.id              auditID,
   ca.auditStatus
-from contractor_info c
-  join contractor_audit ca
-    on ca.conid = c.id
-  join generalcontractors gc
-    on gc.subid = c.id
-  join operators o
-    on o.id = gc.genid
-where auditTypeID not in(select
-                           id
-                         from audit_type
-                         where classtype = 'Policy')
-order by c.id, o.id, ca.auditTypeID;
+FROM contractor_info c
+JOIN contractor_audit ca ON ca.conid = c.id
+JOIN generalcontractors gc ON gc.subid = c.id
+JOIN operators o ON o.id = gc.genid
+JOIN accounts a ON a.id = gc.genid and a.type = 'Operator'
+WHERE auditTypeID NOT IN (SELECT id FROM audit_type WHERE classtype = 'Policy')
+-- and c.id < 100
+;
 
 -- Generate update statements for each rule
-select 
-concat('UPDATE `pics_temp`.temp_cao SET include = ', include, ifnull(concat(' WHERE gbID = ',opID), ''), ifnull(concat( CASE when opID is null then ' WHERE' else ' AND' end, ' auditTypeID = ', auditTypeID), ''), ';' ) 
-from audit_type_rule 
-order by priority;
+SELECT DISTINCT
+concat('UPDATE temp_cao SET include = ', include, ifnull(concat(' WHERE gbID = ',opID), ''), ifnull(concat( CASE when opID is null then ' WHERE' else ' AND' end, ' auditTypeID = ', auditTypeID), ''), ';' ) 
+FROM audit_type_rule ORDER BY priority;
+
+
+insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, createdBy, updatedBy, creationDate, updateDate)
+select distinct
+ ca.id            auditID,
+ t.gbID           opID,
+ ca.auditStatus   status,
+ ca.completedDate submittedDate,
+ ca.closedDate    completedDate,
+ createdBy, updatedBy, creationDate, updateDate
+from temp_cao t
+join contractor_audit ca on t.auditID = ca.id
+where t.include = 1
+and t.auditTypeID = 1
+;
 
 /*
  * END: CAO Conversion
