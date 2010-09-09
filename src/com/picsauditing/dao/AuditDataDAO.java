@@ -155,7 +155,7 @@ public class AuditDataDAO extends PicsDAO {
 		return mapData(query.getResultList());
 	}
 
-	public AnswerMap findAnswers(int auditID, List<Integer> questionIds) {
+	public AnswerMap findAnswers(int auditID, Collection<Integer> questionIds) {
 		if (questionIds.size() == 0)
 			return null;
 
