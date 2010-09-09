@@ -214,3 +214,46 @@ where status = 'Verified';
 -- 
 insert into facilities (corporateID, opID) select 5, id from accounts where country = 'US' and type = 'Operator';
 insert into facilities (corporateID, opID) select 6, id from accounts where country = 'CA' and type = 'Operator';
+
+/*
+ * BEGIN: CAO Conversion
+ */
+-- Pre-populate table
+insert into `pics_temp`.temp_cao
+            (include,
+             conID,
+             opID,
+             gbID,
+             auditTypeID,
+             auditID,
+             auditStatus)
+select
+  0                  include,
+  c.id               conID,
+  o.id               opID,
+  o.inheritAudits    gbid,
+  ca.auditTypeID,
+  ca.id              auditID,
+  ca.auditStatus
+from contractor_info c
+  join contractor_audit ca
+    on ca.conid = c.id
+  join generalcontractors gc
+    on gc.subid = c.id
+  join operators o
+    on o.id = gc.genid
+where auditTypeID not in(select
+                           id
+                         from audit_type
+                         where classtype = 'Policy')
+order by c.id, o.id, ca.auditTypeID;
+
+-- Generate update statements for each rule
+select 
+concat('UPDATE `pics_temp`.temp_cao SET include = ', include, ifnull(concat(' WHERE gbID = ',opID), ''), ifnull(concat( CASE when opID is null then ' WHERE' else ' AND' end, ' auditTypeID = ', auditTypeID), ''), ';' ) 
+from audit_type_rule 
+order by priority;
+
+/*
+ * END: CAO Conversion
+ */
