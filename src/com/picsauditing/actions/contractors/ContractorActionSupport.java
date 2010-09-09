@@ -182,7 +182,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 				&& (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorInsurance))) {
 			// Add InsureGUARD
 			MenuComponent subMenu = new MenuComponent("InsureGUARD&trade;", "ConInsureGUARD.action?id=" + id);
-			menu.add(subMenu);
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
@@ -197,7 +196,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 					iter.remove();
 				}
 			}
-			PicsLogger.log("Found [" + subMenu.getChildren() + "] Policies");
+			addSubMenu(menu, subMenu);
 		}
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
@@ -258,7 +257,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	private void addSubMenu(List<MenuComponent> menu, MenuComponent subMenu) {
 		if (subMenu.getChildren().size() > 0) {
-			PicsLogger.log("Found [" + subMenu.getChildren() + "] " + subMenu.getName());
+			PicsLogger.log("Found [" + subMenu.getChildren().size() + "] " + subMenu.getName()
+					+ (subMenu.getChildren().size() == 1 ? "" : "s"));
 			menu.add(subMenu);
 		}
 	}
