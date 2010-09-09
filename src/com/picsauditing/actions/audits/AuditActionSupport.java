@@ -41,9 +41,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private Map<Integer, AuditData> hasManual;
 	private List<AuditCategoryRule> rules = null;
 
-	public AuditActionSupport(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao) {
+	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
 		super(accountDao, auditDao);
 		this.catDataDao = catDataDao;
 		this.auditDataDao = auditDataDao;
@@ -55,22 +54,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 		this.findConAudit();
 
 		return SUCCESS;
-	}
-
-	protected void canSeeAudit() throws NoRightsException {
-		if (permissions.isPicsEmployee())
-			return;
-		if (permissions.isOperator() || permissions.isCorporate()) {
-			if (!permissions.getCanSeeAudit().contains(
-					conAudit.getAuditType().getId()))
-				throw new NoRightsException(conAudit.getAuditType()
-						.getAuditName());
-		}
-		if (permissions.isContractor()) {
-			if (!conAudit.getAuditType().isCanContractorView())
-				throw new NoRightsException(conAudit.getAuditType()
-						.getAuditName());
-		}
 	}
 
 	protected void findConAudit() throws Exception {
@@ -86,7 +69,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (!checkPermissionToView())
 			throw new NoRightsException("No Rights to View this Contractor");
 
-		canSeeAudit();
+		if (!conAudit.isVisibleTo(permissions))
+			throw new NoRightsException(conAudit.getAuditType().getAuditName());
 	}
 
 	public int getAuditID() {
@@ -112,15 +96,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.isOperatorCorporate()) {
 			AuditBuilder builder = new AuditBuilder();
 			Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-			OperatorAccount opAccount = (OperatorAccount) getUser()
-					.getAccount();
+			OperatorAccount opAccount = (OperatorAccount) getUser().getAccount();
 			operators.add(opAccount);
-			AuditCategoriesDetail auditCategoryDetail = builder.getDetail(
-					conAudit.getAuditType(), getRules(), operators);
+			AuditCategoriesDetail auditCategoryDetail = builder.getDetail(conAudit.getAuditType(), getRules(),
+					operators);
 			requiredCategories = auditCategoryDetail.categories;
 		}
 
-		return conAudit.getApplicableCategories(permissions, requiredCategories) ;
+		return conAudit.getApplicableCategories(permissions, requiredCategories);
 	}
 
 	public boolean isHasSafetyManual() {
@@ -135,9 +118,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (conAudit.getAuditType().getId() == AuditType.BPIISNCASEMGMT) {
 			questionID = 3477;
 		}
-		Map<Integer, AuditData> answers = auditDataDao
-				.findAnswersForSafetyManual(conAudit.getContractorAccount()
-						.getId(), questionID);
+		Map<Integer, AuditData> answers = auditDataDao.findAnswersForSafetyManual(conAudit.getContractorAccount()
+				.getId(), questionID);
 		if (answers == null || answers.size() == 0)
 			return null;
 		return answers;
@@ -167,8 +149,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		// Auditors can edit their assigned audits
-		if (type.isHasAuditor() && !type.isCanContractorEdit()
-				&& conAudit.getAuditor() != null
+		if (type.isHasAuditor() && !type.isCanContractorEdit() && conAudit.getAuditor() != null
 				&& permissions.getUserId() == conAudit.getAuditor().getId())
 			return true;
 
@@ -198,8 +179,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
 			if (cao.canSubmitCao()) {
 				if (permissions.isContractor()) {
-					if (!conAudit.getContractorAccount()
-							.isPaymentMethodStatusValid()
+					if (!conAudit.getContractorAccount().isPaymentMethodStatusValid()
 							&& conAudit.getContractorAccount().isMustPayB())
 						return false;
 				}
@@ -220,8 +200,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
 			return false;
 
-		if (conAudit.getAuditType().isPqf()
-				&& conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+		if (conAudit.getAuditType().isPqf() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
 			if (permissions.isAuditor())
 				return true;
 
@@ -287,10 +266,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	protected List<AuditCategoryRule> getRules() {
 		if (rules == null) {
-			AuditDecisionTableDAO auditRulesDAO = (AuditDecisionTableDAO) SpringUtils
-					.getBean("AuditDecisionTableDAO");
-			rules = auditRulesDAO.getApplicableCategoryRules(conAudit
-					.getContractorAccount(), conAudit.getAuditType());
+			AuditDecisionTableDAO auditRulesDAO = (AuditDecisionTableDAO) SpringUtils.getBean("AuditDecisionTableDAO");
+			rules = auditRulesDAO.getApplicableCategoryRules(conAudit.getContractorAccount(), conAudit.getAuditType());
 		}
 		return rules;
 	}
