@@ -661,6 +661,23 @@
 			<result>struts/reports/audit_list_data.jsp</result>
 		</action>
 		
+		<action name="ReportCAOList"
+			class="com.picsauditing.actions.report.ReportContractorAuditOperator">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportCAOList</param>
+			<result>struts/reports/cao_list.jsp</result>
+		</action>
+		
+		<action name="ReportCAOListCSV"
+			class="com.picsauditing.actions.report.ReportContractorAuditOperator">
+			<param name="download">true</param>
+		</action>
+		
+		<action name="ReportCAOListAjax"
+			class="com.picsauditing.actions.report.ReportContractorAuditOperator">
+			<result>struts/reports/cao_list_data.jsp</result>
+		</action>
+		
 		<action name="ReportOpenRequirements"
 			class="com.picsauditing.actions.report.ReportAuditOpenReqs">
 			<result>struts/reports/audit_openrequirements.jsp</result>

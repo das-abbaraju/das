@@ -22,11 +22,12 @@
 	<tr>
 		<td></td>
 	    <th><a href="javascript: changeOrderBy('form1','a.name');" >Contractor</a></th>
-	    <td><a href="javascript: changeOrderBy('form1','atype.auditName');" >Type</a></td>
-	    <td><a href="javascript: changeOrderBy('form1','ca.creationDate DESC');" >Created</a></td>
-	    <td><a href="javascript: changeOrderBy('form1','ca.expiresDate DESC');" >Expired</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','atype.auditName');" >Document Type</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','caoAccount.name');" >Scope</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','cao.status');" >Status</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','cao.statusChangedDate DESC');" >Date</a></td>
 	    <s:if test="permissions.picsEmployee">
-		    <td><a href="javascript: changeOrderBy('form1','auditor.name');" >Safety Professional</a></td>
+		    <td><a href="javascript: changeOrderBy('form1','auditor.name');" >Safety Pro</a></td>
 	    </s:if>
 		<s:if test="showContact">
 			<td>Primary Contact</td>
@@ -49,8 +50,9 @@
 		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 		<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
 		<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/> <s:property value="get('auditFor')"/></a></td>
-		<td class="center"><s:date name="get('createdDate')" format="M/d/yy" /></td>
-		<td class="center"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
+		<td><s:property value="get('caoAccountName')" /></td>
+		<td><s:property value="get('auditStatus')"/></td>
+		<td class="center"><s:date name="get('statusChangedDate')" format="M/d/yy" /></td>
 	    <s:if test="permissions.picsEmployee">
 			<td><s:property value="get('auditor_name')"/></td>
 		</s:if>

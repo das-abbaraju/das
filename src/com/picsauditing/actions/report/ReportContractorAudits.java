@@ -70,7 +70,6 @@ public class ReportContractorAudits extends ReportAccount {
 
 		addFilterToSQL();
 
-		sql.addField("ca.id auditID");
 		sql.addField("ca.creationDate createdDate");
 		sql.addField("ca.expiresDate");
 		sql.addField("ca.scheduledDate");
@@ -132,14 +131,9 @@ public class ReportContractorAudits extends ReportAccount {
 		else
 			excelSheet.addColumn(new ExcelColumn("auditName", "Audit Name"));
 
-		excelSheet.addColumn(new ExcelColumn("auditStatus", "Audit Status"));
 		excelSheet.addColumn(new ExcelColumn("createdDate", "Creation Date", ExcelCellType.Date));
-		excelSheet.addColumn(new ExcelColumn("completedDate", "Completed Date", ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("scheduledDate", "Schedule Date", ExcelCellType.Date));
-		excelSheet.addColumn(new ExcelColumn("closedDate", "Audit Closed Date", ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("expiresDate", "Date Expires", ExcelCellType.Date));
-		excelSheet.addColumn(new ExcelColumn("percentComplete", "Percent Complete", ExcelCellType.Integer));
-		excelSheet.addColumn(new ExcelColumn("percentVerified", "Percent Verified", ExcelCellType.Integer));
 		if (auditTypeClass.isPolicy() && permissions.isOperator()) {
 			excelSheet.addColumn(new ExcelColumn("caoStatus", "Op Status"));
 			excelSheet.addColumn(new ExcelColumn("notes", "Notes"));

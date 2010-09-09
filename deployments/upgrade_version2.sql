@@ -253,9 +253,74 @@ select distinct
  createdBy, updatedBy, creationDate, updateDate
 from temp_cao t
 join contractor_audit ca on t.auditID = ca.id
-where t.include = 1
-and t.auditTypeID = 1
-;
+where t.auditTypeID = 1;
+
+insert into contractor_audit_operator_permission (caoID, opID)
+select cao.id, t.opID from contractor_audit_operator cao
+join temp_cao t on cao.auditID = t.auditID and cao.opID = t.gbID and t.auditTypeID = 1;
+
+insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, createdBy, updatedBy, creationDate, updateDate)
+select distinct
+ ca.id            auditID,
+ 6                opID, -- PICS Canada
+ ca.auditStatus   status,
+ ca.completedDate submittedDate,
+ ca.closedDate    completedDate,
+ ca.createdBy, ca.updatedBy, ca.creationDate, ca.updateDate
+from temp_cao t
+join contractor_audit ca on t.auditID = ca.id
+join accounts o on t.opID = o.id
+where t.auditTypeID = 11
+and o.country = 'CA';
+
+insert into contractor_audit_operator_permission (caoID, opID)
+select cao.id, t.opID from contractor_audit_operator cao
+join temp_cao t on cao.auditID = t.auditID and t.auditTypeID = 11
+join accounts o on t.opID = o.id AND o.country = 'CA'
+where cao.opID = 6;
+
+insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, createdBy, updatedBy, creationDate, updateDate)
+select distinct
+ ca.id            auditID,
+ 5                opID, -- PICS US
+ ca.auditStatus   status,
+ ca.completedDate submittedDate,
+ ca.closedDate    completedDate,
+ ca.createdBy, ca.updatedBy, ca.creationDate, ca.updateDate
+from temp_cao t
+join contractor_audit ca on t.auditID = ca.id
+join accounts o on t.opID = o.id
+where t.auditTypeID = 11
+and o.country = 'US';
+
+insert into contractor_audit_operator_permission (caoID, opID)
+select cao.id, t.opID from contractor_audit_operator cao
+join temp_cao t on cao.auditID = t.auditID and t.auditTypeID = 11
+join accounts o on t.opID = o.id AND o.country = 'US'
+where cao.opID = 5;
+
+insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, createdBy, updatedBy, creationDate, updateDate)
+select distinct
+ ca.id            auditID,
+ 4                opID, -- PICS Global
+ ca.auditStatus   status,
+ ca.completedDate submittedDate,
+ ca.closedDate    completedDate,
+ ca.createdBy, ca.updatedBy, ca.creationDate, ca.updateDate
+from temp_cao t
+join contractor_audit ca on t.auditID = ca.id
+join accounts o on t.opID = o.id
+where t.auditTypeID not IN (1,11)
+and include = 1;
+
+insert into contractor_audit_operator_permission (caoID, opID)
+select cao.id, t.opID from contractor_audit_operator cao
+join temp_cao t on cao.auditID = t.auditID and t.auditTypeID NOT IN (1,11) and include = 1;
+
+update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedDate = ca.closedDate where cao.auditID = ca.id and cao.statusChangedDate is null and cao.status IN ('Complete','Active','Approved');
+update contractor_audit_operator set statusChangedDate = updateDate where statusChangedDate IS NULL;
+
+update contractor_audit_operator set status = 'Complete' where status IN ('Active','Expired');
 
 /*
  * END: CAO Conversion

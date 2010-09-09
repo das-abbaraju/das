@@ -22,7 +22,6 @@ public class SelectContractorAudit extends SelectAccount {
 		this.addField("ca.id auditID");
 		this.addField("ca.auditTypeID");
 		this.addField("atype.auditName");
-		this.addField("ca.auditStatus");
 
 	}
 

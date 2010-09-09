@@ -9,6 +9,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 
 	public ReportContractorAuditOperator() {
 		super();
+		orderByDefault = "cao.statusChangedDate DESC";
 		filter = new ReportFilterCAO();
 	}
 
@@ -21,6 +22,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		sql.addField("cao.id caoID");
 		sql.addField("cao.status auditStatus");
 		sql.addField("cao.statusChangedDate");
+		sql.addField("caoAccount.name caoAccountName");
 		getFilter().setShowCaoStatusChangedDate(true);
 	}
 
@@ -31,10 +33,10 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		ReportFilterCAO f = getFilter();
 
 		String auditStatusList = Strings.implodeForDB(f.getAuditStatus(), ",");
-		if (filterOn(auditStatusList)) {
+		if (Strings.isEmpty(auditStatusList))
+			sql.addWhere("cao.status != 'Pending'");
+		else
 			sql.addWhere("cao.status IN (" + auditStatusList + ")");
-			setFiltered(true);
-		}
 
 		if (filterOn(f.getPercentComplete1())) {
 			report

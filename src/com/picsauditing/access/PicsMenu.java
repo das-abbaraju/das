@@ -152,8 +152,10 @@ public class PicsMenu {
 		}
 
 		if (permissions.hasPermission(OpPerms.ContractorDetails)) {
-			final String url = "ReportAuditList.action?filter.auditStatus=Submitted&filter.auditStatus=Resubmitted&filter.auditStatus=Active";
+			String url = "ReportAuditList.action";
 			subMenu.addChild("Audit List", url);
+			url = "ReportCAOList.action";
+			subMenu.addChild("Audit List with Operators", url);
 		}
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?filter.status=Active");
