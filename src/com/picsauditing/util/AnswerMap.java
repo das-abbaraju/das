@@ -8,13 +8,9 @@ import java.util.Map;
 import com.picsauditing.jpa.entities.AuditData;
 
 /**
- * Two level map of questionID and rowID
- * 
- * @author Trevor
- * 
+ * This is a legacy class from when we used tuples. This is overkill now and should be removed.
  */
 public class AnswerMap {
-	//private Map<Integer, Map<Integer, List<AuditData>>> list = new HashMap<Integer, Map<Integer, List<AuditData>>>();
 	private Map<Integer, List<AuditData>> list = new HashMap<Integer, List<AuditData>>();
 	
 	public AnswerMap(List<AuditData> result) {

@@ -989,12 +989,6 @@
 		<action name="Audit"
 			class="com.picsauditing.actions.audits.ContractorAuditAction">
 			<result>struts/contractors/con_audit.jsp</result>
-			<result name="NCMS">
-				struts/contractors/con_auditNCMS.jsp
-			</result>
-			<result name="NoView">
-				struts/contractors/con_auditNoView.jsp
-			</result>
 		</action>
 
 		<action name="AuditCat"
