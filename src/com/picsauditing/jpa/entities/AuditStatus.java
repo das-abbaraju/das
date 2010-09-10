@@ -9,7 +9,8 @@ public enum AuditStatus {
 	Resubmitted,
 	Complete,
 	Approved,
-	NotApplicable;
+	NotApplicable,
+	Expired;
 
 	public static String DEFAULT = "- Audit Status -";
 
@@ -47,18 +48,8 @@ public enum AuditStatus {
 		return this.equals(Approved);
 	}
 
-	@Deprecated
-	public boolean isActive() {
-		return isApproved();
-	}
-
 	public boolean isNotApplicable() {
 		return this.equals(NotApplicable);
-	}
-
-	@Deprecated
-	public boolean isExempt() {
-		return isNotApplicable();
 	}
 
 	public boolean isPending() {
@@ -83,56 +74,6 @@ public enum AuditStatus {
 
 	public boolean isComplete() {
 		return this.equals(Complete);
-	}
-
-	/**
-	 * Is the status Active or Exempt
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public boolean isActiveResubmittedExempt() {
-		if (this.equals(Resubmitted))
-			return true;
-		return isActiveExempt();
-	}
-
-	/**
-	 * Is the status Active or Exempt
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public boolean isActiveExempt() {
-		if (isActive())
-			return true;
-		if (isExempt())
-			return true;
-		return false;
-	}
-
-	/**
-	 * Is the status Active or Exempt or Submitted
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public boolean isActiveExemptSubmitted() {
-		if (this.equals(Submitted))
-			return true;
-		return isActiveExempt();
-	}
-
-	/**
-	 * Is the status Active or Submitted
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public boolean isActiveSubmitted() {
-		if (this.equals(Submitted))
-			return true;
-		return isActive();
 	}
 
 	/**
@@ -163,38 +104,4 @@ public enum AuditStatus {
 		return false;
 	}
 
-	/**
-	 * Is the status Pending or Expired
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public boolean isPendingExpired() {
-		if (this.equals(Pending))
-			return true;
-		return false;
-	}
-
-	/**
-	 * if minimumStatus is Active, then return true if Active, Exempt<br>
-	 * if minimumStatus is Submitted, then return true if Submitted, Resubmitted
-	 * too
-	 * 
-	 * @param minimumStatus
-	 * @return
-	 */
-	@Deprecated
-	public boolean isComplete(AuditStatus minimumStatus) {
-		// if (this.equals(Expired))
-		// return true;
-		if (isActiveExempt())
-			return true;
-		if (Submitted.equals(minimumStatus)) {
-			if (this.equals(Submitted))
-				return true;
-			if (this.equals(Resubmitted))
-				return true;
-		}
-		return false;
-	}
 }
