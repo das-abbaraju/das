@@ -266,29 +266,6 @@ public class ContractorAuditController extends AuditActionSupport {
 		return false;
 	}
 
-	public boolean isCanEditCategory(AuditCatData auditCatData) {
-		if (permissions.isOperatorCorporate()) {
-			AuditBuilder builder = new AuditBuilder();
-			Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-			// Getting all the required Categories for all the operators other
-			// than this operator
-			for (OperatorAccount oper : auditCatData.getAudit()
-					.getContractorAccount().getOperatorAccounts()) {
-				if (!oper.equals(getOperatorAccount())) {
-					operators.add(oper);
-				}
-			}
-			AuditCategoriesDetail auditCategoryDetail = builder.getDetail(
-					conAudit.getAuditType(), getRules(), operators);
-			Set<AuditCategory> operatorCategories = auditCategoryDetail.categories;
-			if (operatorCategories.contains(auditCatData.getCategory()))
-				return true;
-			else
-				return false;
-		}
-		return true;
-	}
-
 	public boolean isCanEditAudit() {
 		if (conAudit.isExpired())
 			return false;
@@ -321,9 +298,11 @@ public class ContractorAuditController extends AuditActionSupport {
 			}
 			return type.isCanContractorEdit();
 		}
-
-		if (type.getEditPermission() != null)
-			return permissions.hasPermission(type.getEditPermission());
+		
+		if (type.getEditPermission() != null) {
+			if(permissions.hasPermission(type.getEditPermission()) && !isAuditWithOtherOperators())
+					return true;
+		}
 
 		return false;
 	}
