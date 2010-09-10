@@ -84,7 +84,7 @@ function showHideCats(){
 					<s:iterator value="categories" status="rowStatus">
 						<s:if test="applies">
 							<li class="applicable">
-								<a class="hist-category" href="#categoryID=<s:property value="id" />"><s:property value="category.name" />
+								<a class="hist-category" href="#categoryID=<s:property value="category.id" />"><s:property value="category.name" />
 								<s:if test="conAudit.auditType.pqf">
 									<span class="right">
 										<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
@@ -116,7 +116,7 @@ function showHideCats(){
 				<s:iterator value="categories" status="rowStatus">
 					<s:if test="!applies && permissions.picsEmployee">
 						<li class="notApplicable">
-						<a class="inactive" href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.name" /></a>
+						<a class="inactive" href="#categoryID=<s:property value="category.id" />"><s:property value="category.name" /></a>
 						<s:if test="canApply">
 							<%/*<td>
 							<s:form method="POST"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="applyCategoryID" value="%{id}"></s:hidden><s:submit value="Add"></s:submit></s:form>
