@@ -40,6 +40,22 @@
 	h3 {
 		margin-top: 1em;
 	}
+	
+	table.info {
+		font-size: smaller;
+		width: 96%;
+		margin: 2% auto;
+	}
+	
+	table.info tbody td, table.info thead th, table.info {
+		border: 1px solid #aaa;
+	}
+	
+	table.info thead th {
+		font-weight: normal;
+		background-color: #f3f3f3;
+		color: #A84D10;
+	}
 </style>
 </head>
 <body>
@@ -130,7 +146,7 @@
 					</tr>
 					<tr class="row_<s:property value="#audit.id" /> hidden">
 						<td colspan="4">
-							<table class="report" style="width: 96%; margin: 2% auto;">
+							<table class="report info">
 								<thead>
 									<tr>
 										<th>Operator</th>
