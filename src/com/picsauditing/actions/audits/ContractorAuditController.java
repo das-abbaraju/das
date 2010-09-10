@@ -40,7 +40,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	protected boolean onlyReq = false;
 	protected AnswerMap answerMap = null;
 	protected boolean previewAudit;
-	protected AuditCatData categoryData = null;
+	protected AuditCatData categoryData;
 	private AuditCategoryDAO auditCategoryDAO;
 	private AuditPercentCalculator auditPercentCalculator;
 	private OshaAuditDAO oshaAuditDAO;
@@ -63,17 +63,17 @@ public class ContractorAuditController extends AuditActionSupport {
 		this.findConAudit();
 
 		if (button != null) {
-			if (getCategoryID() > 0 && permissions.isPicsEmployee()) {
+			if (categoryID > 0 && permissions.isPicsEmployee()) {
 				if ("IncludeCategory".equals(button)) {
 					for (AuditCatData data : conAudit.getCategories()) {
-						if (data.getId() == getCategoryID()) {
+						if (data.getId() == categoryID) {
 							data.setApplies(true);
 							data.setOverride(true);
 						}
 					}
 					if ("UnincludeCategory".equals(button)) {
 						for (AuditCatData data : conAudit.getCategories()) {
-							if (data.getId() == getCategoryID()) {
+							if (data.getId() == categoryID) {
 								data.setApplies(false);
 								data.setOverride(true);
 							}
@@ -85,9 +85,9 @@ public class ContractorAuditController extends AuditActionSupport {
 				}
 				// Preview the Category from the manage audit type page
 				if ("PreviewCategory".equals(button)) {
-					if (auditID == 0 && getCategoryID() > 0) {
+					if (auditID == 0 && categoryID > 0) {
 						AuditCategory auditCategory = auditCategoryDAO
-								.find(getCategoryID());
+								.find(categoryID);
 						for (AuditCategory auditSubCategory : auditCategory
 								.getSubCategories()) {
 							for (AuditQuestion auditQuestion : auditSubCategory
@@ -106,8 +106,8 @@ public class ContractorAuditController extends AuditActionSupport {
 				}
 			}
 
-			if (getCategoryID() > 0) {
-				categoryData = catDataDao.findAuditCatData(auditID, getCategoryID());
+			if (categoryID > 0) {
+				categoryData = catDataDao.findAuditCatData(auditID, categoryID);
 				for (AuditCatData catData : getCategories()) {
 					// We can open audits using either the catID or the
 					// catDataID
@@ -236,6 +236,10 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	public void setOnlyReq(boolean onlyReq) {
 		this.onlyReq = onlyReq;
+	}
+
+	public AuditCatData getCategoryData() {
+		return categoryData;
 	}
 
 	public OshaAudit getAverageOsha(OshaType oshaType) {

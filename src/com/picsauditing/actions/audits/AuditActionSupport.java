@@ -32,7 +32,7 @@ import com.picsauditing.util.SpringUtils;
 public class AuditActionSupport extends ContractorActionSupport {
 
 	protected int auditID = 0;
-	private int categoryID = 0;
+	protected int categoryID = 0;
 	protected ContractorAudit conAudit;
 	protected AuditCategoryDataDAO catDataDao;
 	protected AuditDataDAO auditDataDao;
