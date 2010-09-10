@@ -341,12 +341,15 @@ div.auditHeaderSideNav li.notApplicable {
 	border-bottom: 1px solid #bcbcbc;
 	font-size:0.9em;
 }
-div.auditHeaderSideNav li#showHideCats{
+div.auditHeaderSideNav #showHideCats{
+	width: 240px;
+	margin-top: -20px;
 	background-color: #012142;
 	font-size: 14px;
 	padding: 6px 0 6px 10px;
 	color: #fff;
 	font-weight: bold;
+	cursor: pointer;
 }
 div.auditHeaderSideNav li .current{
 	color: #fff;

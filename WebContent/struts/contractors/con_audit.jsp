@@ -127,7 +127,7 @@ function showHideCats(){
 			</li>
 		</ul>
 		</div>
-		<div id="showHideCats" onclick="showHideCats(); return false;">Show Not Applicable Categories</div>
+		<div id="showHideCats" class="clickable" onclick="showHideCats(); return false;">Show Not Applicable Categories</div>
 	</div>
 	<div class="auditViewArea">
 		view area, load cats here
