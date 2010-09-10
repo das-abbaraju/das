@@ -20,7 +20,6 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -33,6 +32,7 @@ import com.picsauditing.util.SpringUtils;
 public class AuditActionSupport extends ContractorActionSupport {
 
 	protected int auditID = 0;
+	private int categoryID = 0;
 	protected ContractorAudit conAudit;
 	protected AuditCategoryDataDAO catDataDao;
 	protected AuditDataDAO auditDataDao;
@@ -174,5 +174,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 			rules = auditRulesDAO.getApplicableCategoryRules(conAudit.getContractorAccount(), conAudit.getAuditType());
 		}
 		return rules;
+	}
+	
+	public int getCategoryID() {
+		return categoryID;
+	}
+
+	public void setCategoryID(int categoryID) {
+		this.categoryID = categoryID;
 	}
 }

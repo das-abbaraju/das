@@ -1,13 +1,9 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
-import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDAO;
@@ -24,7 +20,6 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.MultiYearScope;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.AnswerMap;
@@ -37,7 +32,6 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class ContractorAuditController extends AuditActionSupport {
 
-	private int categoryID;
 	protected String mode = null;
 	static private String VIEW = "View";
 	static private String EDIT = "Edit";
@@ -69,17 +63,17 @@ public class ContractorAuditController extends AuditActionSupport {
 		this.findConAudit();
 
 		if (button != null) {
-			if (categoryID > 0 && permissions.isPicsEmployee()) {
+			if (getCategoryID() > 0 && permissions.isPicsEmployee()) {
 				if ("IncludeCategory".equals(button)) {
 					for (AuditCatData data : conAudit.getCategories()) {
-						if (data.getId() == categoryID) {
+						if (data.getId() == getCategoryID()) {
 							data.setApplies(true);
 							data.setOverride(true);
 						}
 					}
 					if ("UnincludeCategory".equals(button)) {
 						for (AuditCatData data : conAudit.getCategories()) {
-							if (data.getId() == categoryID) {
+							if (data.getId() == getCategoryID()) {
 								data.setApplies(false);
 								data.setOverride(true);
 							}
@@ -91,9 +85,9 @@ public class ContractorAuditController extends AuditActionSupport {
 				}
 				// Preview the Category from the manage audit type page
 				if ("PreviewCategory".equals(button)) {
-					if (auditID == 0 && categoryID > 0) {
+					if (auditID == 0 && getCategoryID() > 0) {
 						AuditCategory auditCategory = auditCategoryDAO
-								.find(categoryID);
+								.find(getCategoryID());
 						for (AuditCategory auditSubCategory : auditCategory
 								.getSubCategories()) {
 							for (AuditQuestion auditQuestion : auditSubCategory
@@ -112,8 +106,8 @@ public class ContractorAuditController extends AuditActionSupport {
 				}
 			}
 
-			if (categoryID > 0) {
-				categoryData = catDataDao.findAuditCatData(auditID, categoryID);
+			if (getCategoryID() > 0) {
+				categoryData = catDataDao.findAuditCatData(auditID, getCategoryID());
 				for (AuditCatData catData : getCategories()) {
 					// We can open audits using either the catID or the
 					// catDataID
@@ -178,14 +172,6 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		}
 		return SUCCESS;
-	}
-
-	public int getCategoryID() {
-		return categoryID;
-	}
-
-	public void setCategoryID(int categoryID) {
-		this.categoryID = categoryID;
 	}
 
 	public List<MenuComponent> getAuditMenu() {
