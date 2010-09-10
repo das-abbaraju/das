@@ -35,39 +35,39 @@ function showHideCats(){
 			<ul>
 			<li class="head">TOOLBAR</li>
 			<pics:permission perm="AuditEdit">
-						<li><a href="ConAuditMaintain.action?auditID=<s:property value="auditID" />"
+						<li><a class="edit" href="ConAuditMaintain.action?auditID=<s:property value="auditID" />"
 							<s:if test="requestURI.contains('audit_maintain.jsp')">class="current"</s:if>>System Edit</a></li>
 					</pics:permission>
 					<s:if test="conAudit.auditStatus.pendingSubmittedResubmitted || conAudit.auditStatus.incomplete && (conAudit.auditType.pqf || conAudit.auditType.annualAddendum)">
 						<pics:permission perm="AuditVerification">
-							<li><a href="VerifyView.action?id=<s:property value="id" />"
+							<li><a class="verify" href="VerifyView.action?id=<s:property value="id" />"
 							<s:if test="requestURI.contains('verif')">class="current"</s:if>>Verify</a></li>
 						</pics:permission>
 					</s:if>
 					<s:if test="conAudit.auditStatus.pending">
-						<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
+						<li><a class="preview" href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
 						Questions</a></li>
 					</s:if>
 					<s:if test="conAudit.auditType.hasRequirements && conAudit.auditStatus.activeSubmitted">
-						<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true" 
+						<li><a class="print" href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true" 
 							<s:if test="onlyReq && mode != 'Edit'">class="current"</s:if>>Print Requirements</a></li>
 						<s:if test="permissions.auditor">
-							<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true&mode=Edit"
+							<li><a class="edit" href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true&mode=Edit"
 							 <s:if test="onlyReq && mode == 'Edit'">class="current"</s:if>>Edit Requirements</a></li>
 						</s:if>
 						<s:if test="permissions.admin">
-							<li><a href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload Requirements</a></li>
+							<li><a class="file" href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload Requirements</a></li>
 						</s:if>
 						<s:elseif test="permissions.onlyAuditor">
-							<li><a href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload Requirements</a></li>
+							<li><a class="file" href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload Requirements</a></li>
 						</s:elseif>
 						<s:if test="permissions.operatorCorporate">
-							<li><a href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Review Requirements</a></li>
+							<li><a class="file" href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Review Requirements</a></li>
 						</s:if>
 					</s:if>
 					<s:if test="!singleCat">
 						<pics:permission perm="AllContractors">
-							<li><a href="?auditID=<s:property value="auditID"/>&button=recalculate">Recalculate Categories</a></li>
+							<li><a class="refresh" href="?auditID=<s:property value="auditID"/>&button=recalculate">Recalculate Categories</a></li>
 						</pics:permission>
 					</s:if>
 					<s:if test="(permissions.contractor || permissions.admin) && conAudit.auditStatus.pending && conAudit.auditType.scheduled">
@@ -83,7 +83,7 @@ function showHideCats(){
 				<ul class="nestedUL">
 					<s:iterator value="categories" status="rowStatus">
 						<s:if test="applies">
-							<li>
+							<li class="applicable">
 								<a class="hist-category" href="#categoryID=<s:property value="id" />"><s:property value="category.name" />
 								<s:if test="conAudit.auditType.pqf">
 									<span class="right">

@@ -433,6 +433,12 @@ a.edit {
 	background: url('../images/edit_pencil.png') no-repeat left center;
 	zoom: 1;
 }
+a.file {
+	padding-left: 17px;
+	margin-left: 2px;
+	background: url('../images/file.png') no-repeat left center;
+	zoom: 1;
+}
 
 a.refresh {
 	padding-left: 17px;
