@@ -186,7 +186,7 @@
 			</tbody>
 		</table>
 	</div>
-	<span style="float: right; padding-right: 10px;"><a href="#" class="refresh">Refresh</a></span>
+	<span style="float: right; padding-right: 25px;"><a href="#" class="refresh">Refresh</a></span>
 	<div class="clear"></div>
 </div>
 <div id="auditHeaderNav" class="auditHeaderNav noprint">

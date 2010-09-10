@@ -300,9 +300,13 @@ text-decoration:none;
 div.auditHeaderSideNav{
 	float: left;
 	width: 400px;
-	border: 1px solid pink;	
 }
 
+div.auditHeaderSideNav ul.nestedUL{
+	border: none;
+	padding: 0;
+	margin: 0;	
+}
 div.auditHeaderSideNav ul{
 	list-style: none;	
 	width: 250px;
@@ -315,9 +319,8 @@ div.auditHeaderSideNav li a{
 	padding: 10px 0px 10px 10px;
 	display: block;
 }
-div.auditHeaderSideNav li#head{
+div.auditHeaderSideNav li.head{
 	background-color: #A84D10;
-	padding: 4px 5px 4px 5px;
 	font-size: 18px;
 	padding: 6px 0 6px 10px;
 	color: #fff;
@@ -329,13 +332,22 @@ div.auditHeaderSideNav li{
 	border-bottom: 1px solid #bcbcbc;
 	font-size:0.9em;
 }
-div.auditHeaderSideNav li.notApplicable{
+div.auditHeaderSideNav li.noStyle, div.auditHeaderSideNav li.noStyle:hover{
+	border: none;
+}
+div.auditHeaderSideNav li.notApplicable {
 	color: #012142;
 	border-top: 1px solid #fff;
 	border-bottom: 1px solid #bcbcbc;
 	font-size:0.9em;
 }
-
+div.auditHeaderSideNav li#showHideCats{
+	background-color: #012142;
+	font-size: 14px;
+	padding: 6px 0 6px 10px;
+	color: #fff;
+	font-weight: bold;
+}
 div.auditHeaderSideNav li .current{
 	color: #fff;
 	border-top: 1px solid #fff;
@@ -344,9 +356,9 @@ div.auditHeaderSideNav li .current{
 	background: #5D9BCE;
 }
 div.auditHeaderSideNav li:hover{
-	background: #d4d4d0;	
-	border-bottom: 1px solid #bcbcbc;
-	border-top: 1px solid #bcbcbc;
+	background: #e7e7e0;	
+	border-bottom: 1px solid #ababab;
+	border-top: 1px solid #ababab;
 }
 /** END Audit SideNav **/
 
@@ -354,7 +366,7 @@ div.auditHeaderSideNav li:hover{
 div.auditViewArea{
 	/*float: right;*/
 	min-width: 600px;
-	margin-left: 425px;
+	margin-left: 300px;
 	border: 1px solid blue;	
 }
 /** END Audit ViewArea **/

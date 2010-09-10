@@ -8,6 +8,21 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
+<script>
+$(function(){
+	$('#naCats').hide();	
+	if($('.notApplicable').length>0)
+		$('#showHideCats').show();
+});
+function showHideCats(){
+	$('#appCats').toggle();
+	$('#naCats').toggle();
+	if($('#appCats').is(":hidden") )
+		$('#showHideCats').text("Show Applicable Categories");
+	else
+		$('#showHideCats').text("Show Not Applicable Categories");
+}
+</script>
 </head>
 <body>
 
@@ -16,7 +31,7 @@
 	<div id="auditHeaderSideNav" class="auditHeaderSideNav noprint">
 		<div id="toolbar">
 			<ul>
-			<li id="head">TOOLBAR</li>
+			<li class="head">TOOLBAR</li>
 			<pics:permission perm="AuditEdit">
 						<li><a href="ConAuditMaintain.action?auditID=<s:property value="auditID" />"
 							<s:if test="requestURI.contains('audit_maintain.jsp')">class="current"</s:if>>System Edit</a></li>
@@ -61,118 +76,64 @@
 		</div>
 		<div id="categories">
 		<ul>
-			<li id="head">CATEGORIES</li>
-			<s:iterator value="categories" status="rowStatus">
-				<s:if test="applies">
-					<li>
-						<a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.name" /></a>
-						<s:if test="conAudit.auditType.pqf">
-							<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
-							<s:else><s:property value="percentCompleted" />%</s:else>
+			<li class="head">CATEGORIES</li>			
+			<li id="appCats" class="noStyle"> 
+				<ul class="nestedUL">
+					<s:iterator value="categories" status="rowStatus">
+						<s:if test="applies">
+							<li>
+								<a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.name" />
+								<s:if test="conAudit.auditType.pqf">
+									<span style="float: right;">
+										<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
+										<s:else><s:property value="percentCompleted" />%</s:else>
+									</span>
+									<div class="clear"></div>
+								</s:if>
+								<s:if test="conAudit.auditType.hasRequirements">
+									<span style="float: right;">
+										<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
+										<s:else><s:property value="percentCompleted" />%</s:else>
+									</span>
+									<div class="clear"></div>
+								</s:if>
+								</a>
+								<% /*<s:if test="canApply">
+									<td><s:form method="POST"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="removeCategoryID" value="%{id}" /><s:submit value="Remove"></s:submit></s:form></td>
+								</s:if>*/%>
+								<s:if test="conAudit.auditType.id == 17">
+									<s:property value="printableScore"/>
+								</s:if>
+							</li>
 						</s:if>
-						<s:if test="conAudit.auditType.hasRequirements">
-							<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
-							<s:else><s:property value="percentCompleted" />%</s:else>
+					</s:iterator>
+				</ul>
+			</li>
+			<li id="naCats" class="noStyle"> 
+				<ul class="nestedUL">
+				<s:iterator value="categories" status="rowStatus">
+					<s:if test="!applies && permissions.picsEmployee">
+						<li class="notApplicable">
+						<a class="inactive" href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.name" /></a>
+						<s:if test="canApply">
+							<%/*<td>
+							<s:form method="POST"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="applyCategoryID" value="%{id}"></s:hidden><s:submit value="Add"></s:submit></s:form>
+							</td>*/ %>
 						</s:if>
-						<% /*<s:if test="canApply">
-							<td><s:form method="POST"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="removeCategoryID" value="%{id}" /><s:submit value="Remove"></s:submit></s:form></td>
-						</s:if>*/%>
-						<s:if test="conAudit.auditType.id == 17">
-							<s:property value="printableScore"/>
-						</s:if>
-					</li>
-				</s:if>
-			</s:iterator>
-			<%/*<s:iterator value="categories" status="rowStatus">
-				<s:if test="!applies && permissions.picsEmployee">
-					<li class="notApplicable">
-					<s:if test="!conAudit.auditType.pqf">
-						<a name="<s:property value="id" />"><s:property value="category.number" /></a>
+						</li>
 					</s:if>
-					<a class="inactive" href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.name" /></a>
-					<%/*<s:if test="canApply">
-						<td>
-						<s:form method="POST"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="applyCategoryID" value="%{id}"></s:hidden><s:submit value="Add"></s:submit></s:form>
-						</td>
-					</s:if>
-					</li>
-				</s:if>
-			</s:iterator>*/%>
+				</s:iterator>
+				</ul>
+			</li>
 		</ul>
 		</div>
+		<div id="showHideCats" onclick="showHideCats(); return false;">Show Not Applicable Categories</div>
 	</div>
 	<div class="auditViewArea">
 		view area, load cats here
 	</div>
 	<div class="clear"></div>
 </div>
-<table class="report" style="clear: none;">
-	<thead>
-		<tr>
-		<s:if test="!conAudit.auditType.pqf">
-			<th>Num</th>
-		</s:if>
-			<th>Category</th>
-		<s:if test="conAudit.auditType.pqf">
-			<th colspan="2">Complete</th>
-		</s:if>
-		<s:if test="conAudit.auditType.hasRequirements">
-			<th colspan="2">Requirements</th>
-		</s:if>
-		<s:if test="canApply">
-			<th>Apply</th>
-		</s:if>
-		<s:if test="conAudit.auditType.id == 17">
-			<th>Score</th>
-		</s:if>
-		</tr>
-	</thead>
-	<s:iterator value="categories" status="rowStatus">
-		<s:if test="applies">
-			<tr>
-			<s:if test="!conAudit.auditType.pqf">
-				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></a></td>
-				</s:if>
-				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.name" /></a></td>
-			<s:if test="conAudit.auditType.pqf">
-				<td class="right"><s:property value="percentCompleted" />%</td>
-				<td><s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
-			</s:if>
-			<s:if test="conAudit.auditType.hasRequirements">
-				<td class="right"><s:property value="percentVerified" />%</td>
-				<td><s:if test="percentVerified == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if></td>
-			</s:if>
-			<s:if test="canApply">
-				<td><s:form method="POST"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="removeCategoryID" value="%{id}" /><s:submit value="Remove"></s:submit></s:form></td>
-			</s:if>
-			<s:if test="conAudit.auditType.id == 17">
-				<th><s:property value="printableScore"/></th>
-			</s:if>
-			</tr>
-		</s:if>
-	</s:iterator>
-	<s:iterator value="categories" status="rowStatus">
-		<s:if test="!applies && permissions.picsEmployee">
-			<tr>
-			<s:if test="!conAudit.auditType.pqf">
-				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></a></td>
-				</s:if>
-				<td><a class="inactive" href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.name" /></a></td>
-				<s:if test="conAudit.auditType.pqf">
-					<td class="center" colspan="2">N/A</td>
-				</s:if>
-				<s:if test="conAudit.auditType.hasRequirements">
-					<td colspan="2"></td>
-				</s:if>
-				<s:if test="canApply">
-					<td>
-					<s:form method="POST"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="applyCategoryID" value="%{id}"></s:hidden><s:submit value="Add"></s:submit></s:form>
-					</td>
-				</s:if>
-			</tr>
-		</s:if>
-	</s:iterator>
-</table>
 
 <s:if test="!@com.picsauditing.util.Strings@isEmpty(auditorNotes)">
 	<div class="info">
