@@ -3,12 +3,14 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 
+<s:if test="#category == null"><s:set name="category" value="categoryData.category"/></s:if>
+
 <div class="audit_category">
 	<s:if test="#category.sha">
 		<s:include value="audit_cat_sha.jsp"></s:include>
 	</s:if>
 	<s:else>
-		<h2><s:property value="#category.fullNumber"/>) <s:property value="#category.name"/></h2>
+		<h2><s:property value="#category.fullNumber"/>. <s:property value="#category.name"/></h2>
 		<s:set name="shaded" value="true" scope="action"/>
 		<s:iterator value="#category.questions">
 			<s:if test="title != null && title.length() > 0">
