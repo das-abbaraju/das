@@ -40,7 +40,7 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, CertificateDAO certificateDao,
 			OshaAuditDAO oshaAuditDAO, OperatorAccountDAO opDAO) {
 		super(accountDao, auditDao, caoDAO, categoryDAO, catDataDao, auditDataDao, auditPercentCalculator,
-				contractorAuditOperatorDAO, certificateDao, oshaAuditDAO, opDAO);
+				contractorAuditOperatorDAO, certificateDao, opDAO);
 	}
 
 	public String execute() throws Exception {
