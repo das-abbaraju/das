@@ -308,7 +308,10 @@ public class PicsMenu {
 					"ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending");
 
 		subMenu = menu.addChild("Reports");
-
+		// TODO - remove these hacks
+		if (permissions.getAccountId() == 10850) {
+			subMenu.addChild("Orientation Video Report", "report_orientation.jsp");
+		}
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
 		if (permissions.hasPermission(OpPerms.ContractorLicenseReport))
