@@ -8,6 +8,8 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
+<script type="text/javascript" src="js/con_audit.js?v=<s:property value="version"/>"></script>
 <script>
 $(function(){
 	$('#naCats').hide();	
@@ -82,16 +84,16 @@ function showHideCats(){
 					<s:iterator value="categories" status="rowStatus">
 						<s:if test="applies">
 							<li>
-								<a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.name" />
+								<a class="hist-category" href="#categoryID=<s:property value="id" />"><s:property value="category.name" />
 								<s:if test="conAudit.auditType.pqf">
-									<span style="float: right;">
+									<span class="right">
 										<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
 										<s:else><s:property value="percentCompleted" />%</s:else>
 									</span>
 									<div class="clear"></div>
 								</s:if>
 								<s:if test="conAudit.auditType.hasRequirements">
-									<span style="float: right;">
+									<span class="right">
 										<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
 										<s:else><s:property value="percentCompleted" />%</s:else>
 									</span>
