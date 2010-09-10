@@ -29,18 +29,14 @@ import com.picsauditing.util.FileUtils;
  * 
  */
 @SuppressWarnings("serial")
-public class ContractorAuditCopy extends ContractorAuditAction {
+public class ContractorAuditCopy extends AuditActionSupport {
 
 	protected String contractorSelect = "";
 	private boolean hasDuplicate = false;
 
 	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			ContractorAuditOperatorDAO caoDAO, AuditCategoryDAO categoryDAO, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
-			ContractorAuditOperatorDAO contractorAuditOperatorDAO, CertificateDAO certificateDao,
-			OshaAuditDAO oshaAuditDAO, OperatorAccountDAO opDAO) {
-		super(accountDao, auditDao, caoDAO, categoryDAO, catDataDao, auditDataDao, auditPercentCalculator,
-				contractorAuditOperatorDAO, certificateDao, opDAO);
+			AuditCategoryDataDAO catDataDao,AuditDataDAO auditDataDao) {
+		super(accountDao, auditDao, catDataDao, auditDataDao);
 	}
 
 	public String execute() throws Exception {

@@ -170,10 +170,10 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 		oshaDAO.save(osha);
 
 		if (osha.isCorporate()) {
-			List<AuditCatData> catDataList = catDataDao.findAllAuditCatData(osha.getConAudit().getId(),
+			AuditCatData catData = catDataDao.findAuditCatData(osha.getConAudit().getId(),
 					OshaTypeConverter.getCategoryFromType(osha.getType()));
-			if (catDataList != null && catDataList.size() > 0) {
-				auditPercentCalculator.percentOshaComplete(osha, catDataList.get(0));
+			if (catData != null) {
+				auditPercentCalculator.percentOshaComplete(osha, catData);
 			}
 			auditPercentCalculator.percentCalculateComplete(osha.getConAudit());
 			if (!button.equals("toggleVerify")) {
