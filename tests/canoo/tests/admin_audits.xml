@@ -13,8 +13,6 @@
 				<!--
 				<storeProperty name="report_link" value="Audit List" />
 				&click_report;
-				<storeProperty name="report_link" value="NCMS Audits" />
-				&click_report;
 				<storeProperty name="report_link" value="Audit Calendar" />
 				&click_report;
 				<storeProperty name="report_link" value="Sched. &amp; Assign" />

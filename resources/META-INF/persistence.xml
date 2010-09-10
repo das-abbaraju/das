@@ -46,7 +46,6 @@
 		<class>com.picsauditing.jpa.entities.ListType</class>
 		<class>com.picsauditing.jpa.entities.LowMedHigh</class>
 		<class>com.picsauditing.jpa.entities.MultiYearScope</class>
-		<class>com.picsauditing.jpa.entities.NcmsCategory</class>
 		<class>com.picsauditing.jpa.entities.Note</class>
 		<class>com.picsauditing.jpa.entities.NoteCategory</class>
 		<class>com.picsauditing.jpa.entities.Notes</class>
