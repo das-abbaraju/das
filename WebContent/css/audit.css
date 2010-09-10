@@ -296,90 +296,80 @@ font-weight:bold;
 text-decoration:none;
 }
 /** END Category Header+Footer Navigation **/
+
 /** Audit SideNav **/
 div.auditHeaderSideNav{
 	float: left;
-	width: 400px;
 }
-
-div.auditHeaderSideNav ul.nestedUL{
-	border: none;
-	padding: 0;
-	margin: 0;	
-}
-div.auditHeaderSideNav ul{
+ul.vert-toolbar  {
 	list-style: none;	
-	width: 250px;
+	width: 280px;
 	background-color: #F6F6F0;
 	border-bottom: 2px solid #bcbcbc;
 	margin: 0 0 20px 0;
 }
-div.auditHeaderSideNav li a{
-	text-decoration: none;	
-	padding: 10px 0px 10px 20px;
-	display: block;
+ul.vert-toolbar li {
+	font-size:0.9em;
+	color: #012142;
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #bcbcbc;
 }
-div.auditHeaderSideNav li.head{
+ul.vert-toolbar li {
+	padding-left: 5px;
+	position: relative;
+}
+ul.vert-toolbar li.head {
+	padding: 6px 0 6px 10px;
 	background-color: #A84D10;
 	font-size: 18px;
-	padding: 6px 0 6px 10px;
-	color: #fff;
 	font-weight: bold;
-}
-div.auditHeaderSideNav li{
-	color: #012142;
-	border-top: 1px solid #fff;
-	border-bottom: 1px solid #bcbcbc;
-	font-size:0.9em;
-}
-div.auditHeaderSideNav li.noStyle, div.auditHeaderSideNav li.noStyle:hover{
-	border: none;
-}
-div.auditHeaderSideNav li.notApplicable {
-	color: #012142;
-	border-top: 1px solid #fff;
-	border-bottom: 1px solid #bcbcbc;
-	font-size:0.9em;
-}
-div.auditHeaderSideNav #showHideCats{
-	width: 240px;
-	margin-top: -20px;
-	background-color: #012142;
-	font-size: 14px;
-	padding: 6px 0 6px 10px;
 	color: #fff;
-	font-weight: bold;
+}
+ul.vert-toolbar li.head .hidden-button{
 	cursor: pointer;
+	display:none;
+	font-size: 0.5em;
+	position: absolute;
+	right:5px;
 }
-div.auditHeaderSideNav li .current{
-	color: #fff;
-	border-top: 1px solid #fff;
-	border-bottom: 1px solid #bcbcbc;
-	font-size:0.9em;
+ul.vert-toolbar li.head.over .hidden-button {
+	display: inline-block;
+}
+ul.vert-toolbar li .abs-right {
+	position: absolute;
+	right:5px;
+}
+ul.vert-toolbar li a {
+	text-decoration: none;	
+	padding-top: 10px;
+	padding-bottom: 10px;
+	display: block;
+	width: 88%;
+}
+ul.vert-toolbar li.current {
 	background: #5D9BCE;
 }
-div.auditHeaderSideNav li:hover{
-	background: #e7e7e0;	
-	border-bottom: 1px solid #ababab;
-	border-top: 1px solid #ababab;
-}
-div.auditHeaderSideNav li.head:hover{
-	background-color: #A84D10;
-	font-size: 18px;
-	padding: 6px 0 6px 10px;
+ul.vert-toolbar li.current a {
 	color: #fff;
-	font-weight: bold;
+}
+ul.vert-toolbar li.hover {
+	background-color: #e7e7e0;
+	border-bottom: 1px solid #ababab;
+ 	border-top: 1px solid #ababab;
+}
+div.auditHeaderSideNav #nacatlist{
+	display: none;
 }
 /** END Audit SideNav **/
 
 /** Audit ViewArea **/
 div.auditViewArea{
-	/*float: right;*/
 	min-width: 600px;
 	margin-left: 300px;
 	border: 1px solid blue;	
 }
 /** END Audit ViewArea **/
+
 /*** OSHA **/
 table.osha {
 	margin-top: 10px;

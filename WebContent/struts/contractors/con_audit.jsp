@@ -16,14 +16,6 @@ $(function(){
 	if($('.notApplicable').length>0)
 		$('#showHideCats').show();
 });
-function showHideCats(){
-	$('#appCats').toggle();
-	$('#naCats').toggle();
-	if($('#appCats').is(":hidden") )
-		$('#showHideCats').text("Show Applicable Categories");
-	else
-		$('#showHideCats').text("Show Not Applicable Categories");
-}
 </script>
 </head>
 <body>
@@ -31,109 +23,89 @@ function showHideCats(){
 <s:include value="../audits/audit_catHeader.jsp"/>
 <div id="auditContentArea" style="width: 100%">
 	<div id="auditHeaderSideNav" class="auditHeaderSideNav noprint">
-		<div id="toolbar">
-			<ul>
+		<ul id="toolbar" class="vert-toolbar">
 			<li class="head">TOOLBAR</li>
 			<pics:permission perm="AuditEdit">
-						<li><a class="edit" href="ConAuditMaintain.action?auditID=<s:property value="auditID" />"
-							<s:if test="requestURI.contains('audit_maintain.jsp')">class="current"</s:if>>System Edit</a></li>
-					</pics:permission>
-					<s:if test="conAudit.auditStatus.pendingSubmittedResubmitted || conAudit.auditStatus.incomplete && (conAudit.auditType.pqf || conAudit.auditType.annualAddendum)">
-						<pics:permission perm="AuditVerification">
-							<li><a class="verify" href="VerifyView.action?id=<s:property value="id" />"
-							<s:if test="requestURI.contains('verif')">class="current"</s:if>>Verify</a></li>
-						</pics:permission>
-					</s:if>
-					<s:if test="conAudit.auditStatus.pending">
-						<li><a class="preview" href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
-						Questions</a></li>
-					</s:if>
-					<s:if test="conAudit.auditType.hasRequirements && conAudit.auditStatus.activeSubmitted">
-						<li><a class="print" href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true" 
-							<s:if test="onlyReq && mode != 'Edit'">class="current"</s:if>>Print Requirements</a></li>
-						<s:if test="permissions.auditor">
-							<li><a class="edit" href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true&mode=Edit"
-							 <s:if test="onlyReq && mode == 'Edit'">class="current"</s:if>>Edit Requirements</a></li>
-						</s:if>
-						<s:if test="permissions.admin">
-							<li><a class="file" href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload Requirements</a></li>
-						</s:if>
-						<s:elseif test="permissions.onlyAuditor">
-							<li><a class="file" href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload Requirements</a></li>
-						</s:elseif>
-						<s:if test="permissions.operatorCorporate">
-							<li><a class="file" href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Review Requirements</a></li>
-						</s:if>
-					</s:if>
-					<s:if test="!singleCat">
-						<pics:permission perm="AllContractors">
-							<li><a class="refresh" href="?auditID=<s:property value="auditID"/>&button=recalculate">Recalculate Categories</a></li>
-						</pics:permission>
-					</s:if>
-					<s:if test="(permissions.contractor || permissions.admin) && conAudit.auditStatus.pending && conAudit.auditType.scheduled">
-						<li><a href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>"
-								<s:if test="requestURI.contains('schedule_audit')">class="current"</s:if>>Schedule Audit</a></li>
-					</s:if>
-			</ul>
-		</div>
-		<div id="categories">
-		<ul>
-			<li class="head">CATEGORIES</li>			
-			<li id="appCats" class="noStyle"> 
-				<ul class="nestedUL">
-					<s:iterator value="categories" status="rowStatus">
-						<s:if test="applies">
-							<li class="applicable">
-								<a class="hist-category" href="#categoryID=<s:property value="category.id" />"><s:property value="category.name" />
-								<s:if test="conAudit.auditType.pqf">
-									<span class="right">
-										<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
-										<s:else><s:property value="percentCompleted" />%</s:else>
-									</span>
-									<div class="clear"></div>
-								</s:if>
-								<s:if test="conAudit.auditType.hasRequirements">
-									<span class="right">
-										<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
-										<s:else><s:property value="percentCompleted" />%</s:else>
-									</span>
-									<div class="clear"></div>
-								</s:if>
-								</a>
-								<% /*<s:if test="canApply">
-									<td><s:form method="POST"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="removeCategoryID" value="%{id}" /><s:submit value="Remove"></s:submit></s:form></td>
-								</s:if>*/%>
-								<s:if test="conAudit.auditType.id == 17">
-									<s:property value="printableScore"/>
-								</s:if>
-							</li>
-						</s:if>
-					</s:iterator>
-				</ul>
-			</li>
-			<li id="naCats" class="noStyle"> 
-				<ul class="nestedUL">
-				<s:iterator value="categories" status="rowStatus">
-					<s:if test="!applies && permissions.picsEmployee">
-						<li class="notApplicable">
-						<a class="inactive" href="#categoryID=<s:property value="category.id" />"><s:property value="category.name" /></a>
-						<s:if test="canApply">
-							<%/*<td>
-							<s:form method="POST"><s:hidden name="auditID" value="%{auditID}" /><s:hidden name="applyCategoryID" value="%{id}"></s:hidden><s:submit value="Add"></s:submit></s:form>
-							</td>*/ %>
-						</s:if>
-						</li>
-					</s:if>
-				</s:iterator>
-				</ul>
-			</li>
+				<li><a class="edit" href="ConAuditMaintain.action?auditID=<s:property value="auditID" />"
+						<s:if test="requestURI.contains('audit_maintain.jsp')">class="current"</s:if>>System Edit</a></li>
+			</pics:permission>
+			<s:if test="conAudit.auditStatus.pendingSubmittedResubmitted || conAudit.auditStatus.incomplete && (conAudit.auditType.pqf || conAudit.auditType.annualAddendum)">
+				<pics:permission perm="AuditVerification">
+					<li><a class="verify" href="VerifyView.action?id=<s:property value="id" />"
+					<s:if test="requestURI.contains('verif')">class="current"</s:if>>Verify</a></li>
+				</pics:permission>
+			</s:if>
+			<s:if test="conAudit.auditStatus.pending">
+				<li><a class="preview" href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
+				Questions</a></li>
+			</s:if>
+			<s:if test="conAudit.auditType.hasRequirements && conAudit.auditStatus.activeSubmitted">
+				<li><a class="print" href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true" 
+					<s:if test="onlyReq && mode != 'Edit'">class="current"</s:if>>Print Requirements</a></li>
+				<s:if test="permissions.auditor">
+					<li><a class="edit" href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true&mode=Edit"
+					 <s:if test="onlyReq && mode == 'Edit'">class="current"</s:if>>Edit Requirements</a></li>
+				</s:if>
+				<s:if test="permissions.admin">
+					<li><a class="file" href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload Requirements</a></li>
+				</s:if>
+				<s:elseif test="permissions.onlyAuditor">
+					<li><a class="file" href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload Requirements</a></li>
+				</s:elseif>
+				<s:if test="permissions.operatorCorporate">
+					<li><a class="file" href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Review Requirements</a></li>
+				</s:if>
+			</s:if>
+			<s:if test="!singleCat">
+				<pics:permission perm="AllContractors">
+					<li><a class="refresh" href="?auditID=<s:property value="auditID"/>&button=recalculate">Recalculate Categories</a></li>
+				</pics:permission>
+			</s:if>
+			<s:if test="(permissions.contractor || permissions.admin) && conAudit.auditStatus.pending && conAudit.auditType.scheduled">
+				<li><a href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>"
+						<s:if test="requestURI.contains('schedule_audit')">class="current"</s:if>>Schedule Audit</a></li>
+			</s:if>
 		</ul>
-		</div>
-		<div id="showHideCats" class="clickable" onclick="showHideCats(); return false;">Show Not Applicable Categories</div>
+		<ul id="catlist" class="catlist vert-toolbar">
+			<li class="head">CATEGORIES <span class="hidden-button">Show N/A</span></li>			
+			<s:iterator value="categories" status="rowStatus">
+				<s:if test="applies">
+					<li class="applicable">
+						<a class="hist-category" href="#categoryID=<s:property value="category.id" />"><s:property value="category.name" />
+						<s:if test="conAudit.auditType.pqf">
+							<span class="abs-right">
+								<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
+								<s:else><s:property value="percentCompleted" />%</s:else>
+							</span>
+						</s:if>
+						<s:if test="conAudit.auditType.hasRequirements">
+							<span class="abs-right">
+								<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
+								<s:else><s:property value="percentCompleted" />%</s:else>
+							</span>
+						</s:if>
+						<s:if test="conAudit.auditType.id == 17">
+							<span class="abs-right">
+								<s:property value="printableScore"/>
+							</span>
+						</s:if>
+						</a>
+					</li>
+				</s:if>
+			</s:iterator>
+		</ul>
+		<ul id="nacatlist" class="catlist vert-toolbar">
+			<li class="head">N/A CATEGORIES <span class="hidden-button">Show Others</span></li>
+			<s:iterator value="categories" status="rowStatus">
+				<s:if test="!applies && permissions.picsEmployee">
+					<li class="notApplicable">
+						<a class="hist-category" href="#categoryID=<s:property value="category.id" />"><s:property value="category.name" /></a>
+					</li>
+				</s:if>
+			</s:iterator>
+		</ul>
 	</div>
-	<div class="auditViewArea">
-		view area, load cats here
-	</div>
+	<div class="auditViewArea"></div>
 	<div class="clear"></div>
 </div>
 

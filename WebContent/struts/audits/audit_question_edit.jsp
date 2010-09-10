@@ -37,10 +37,6 @@
 	<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
 </span>
 
-<s:if test="#q.questionType == 'Text Area'">
-	<br clear="all" />
-</s:if>
-
 <div class="answer">
 	<input type="hidden" id="<s:property value="#q.id"/>_answerID" value="<s:property value="#a.id"/>" />
 	<input type="hidden" id="<s:property value="#q.id"/>_questionID" value="<s:property value="#q.id"/>" />
@@ -148,12 +144,12 @@
 					return data[1];
 				}
 			}).result(function(event, data){
-					if (data[2]!="UNKNOWN")
-						$('#ambest_naic_code').val(data[2]);
-					else
-						$('#ambest_naic_code').val("");
-					saveAnswerComment('<s:property value="%{#q.id}"/>', $('#ambest_autocomplete')[0], $('#ambest_naic_code'));
-				});
+				if (data[2]!="UNKNOWN")
+					$('#ambest_naic_code').val(data[2]);
+				else
+					$('#ambest_naic_code').val("");
+				saveAnswerComment('<s:property value="%{#q.id}"/>', $('#ambest_autocomplete')[0], $('#ambest_naic_code'));
+			});
 		</script>
 		
 		<s:if test="#a.commentLength">
@@ -232,12 +228,10 @@
 		<s:set name="verifyDetailDisplay" value="'none'" />
 	</s:else>
 	
-	<input id="verifyButton_<s:property value="#q.id"/>" type="submit" onclick="return verifyAnswer(<s:property value="#q.id"/>, <s:property value="#a.id"/>);"
-	value="<s:property value="#attr.verifyText"/>" />
+	<input id="verifyButton_<s:property value="#q.id"/>" type="submit" onclick="return verifyAnswer(<s:property value="#q.id"/>, <s:property value="#a.id"/>);" value="<s:property value="#attr.verifyText"/>" />
 
-	<span id="verify_details_<s:property value="#q.id"/>"
-	style='display: <s:property value ="#attr.verifyDetailDisplay"/>;'
-	class="verified">Verified on <s:date name="#a.dateVerified"
-	format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" /></span>
+	<span id="verify_details_<s:property value="#q.id"/>" style='display: <s:property value ="#attr.verifyDetailDisplay"/>;' class="verified">
+		Verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" />
+	</span>
 </s:if>
 <div class="dependentQuestions hide" ><s:iterator value="#q.dependentQuestions"><s:if test="#q.subCategory.category == subCategory.category">,<s:property value="id"/></s:if></s:iterator></div>

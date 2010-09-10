@@ -115,6 +115,3 @@
 	<br clear="all"/>
 	<div class="error"><s:property value="#q.requirement" escape="false"/></div>
 </s:if>
-
-<br clear="all"/>
-<div class="clear"></div>
