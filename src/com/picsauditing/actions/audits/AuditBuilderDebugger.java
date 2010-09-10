@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
-import com.picsauditing.PICS.AuditBuilder.AuditTypeDetail;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;

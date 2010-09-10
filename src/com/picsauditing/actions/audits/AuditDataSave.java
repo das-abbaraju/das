@@ -40,7 +40,6 @@ public class AuditDataSave extends AuditActionSupport {
 	private AnswerMap answerMap;
 	private AuditQuestionDAO questionDao = null;
 	private NaicsDAO naicsDAO;
-	private int catDataID = 0;
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilderController auditBuilder;
 	private String mode;
@@ -59,8 +58,8 @@ public class AuditDataSave extends AuditActionSupport {
 
 	public String execute() throws Exception {
 		
-		if (catDataID == 0) {
-			addActionError("Missing catDataID");
+		if (getCategoryID() == 0) {
+			addActionError("Missing categoryID");
 			return BLANK;
 		}
 
@@ -146,7 +145,8 @@ public class AuditDataSave extends AuditActionSupport {
 
 			auditID = auditData.getAudit().getId();
 			// Load Dependent questions
-			auditData.getQuestion().getRequiredQuestion();
+			auditData.getQuestion().getDependsRequired();
+			auditData.getQuestion().getDependsVisible();  
 			auditData.setAuditColumns(permissions);
 			if ("reload".equals(button)) {
 				loadAnswerMap();
@@ -228,25 +228,19 @@ public class AuditDataSave extends AuditActionSupport {
 			// the ContractorAudit and AuditCatData
 			AuditCatData catData = null;
 
-			if (catDataID > 0) {
-				catData = catDataDao.find(catDataID);
+			if (categoryID > 0) {
+				catData = catDataDao.findAuditCatData(auditID, categoryID);
 			} else if (toggleVerify) {
-				List<AuditCatData> catDatas = catDataDao.findAllAuditCatData(auditData.getAudit().getId(), auditData
+				catData = catDataDao.findAuditCatData(auditData.getAudit().getId(), auditData
 						.getQuestion().getCategory().getParent().getId());
-
-				if (catDatas != null && catDatas.size() != 0) {
-					catData = catDatas.get(0);
-				}
 			}
 
 			if (catData != null) {
-				auditPercentCalculator.updatePercentageCompleted(catData);
 				conAudit = auditDao.find(auditData.getAudit().getId());
+				auditBuilder.fillAuditCategories(conAudit);
+				auditPercentCalculator.updatePercentageCompleted(catData);
 				auditPercentCalculator.percentCalculateComplete(conAudit);
 			}
-
-			
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			addActionError(e.getMessage());
@@ -258,8 +252,10 @@ public class AuditDataSave extends AuditActionSupport {
 	private void loadAnswerMap() {
 		List<Integer> questionIds = new ArrayList<Integer>();
 		questionIds.add(auditData.getQuestion().getId());
-		if (auditData.getQuestion().isRequired())
-			questionIds.add(auditData.getQuestion().getId());
+		if (auditData.getQuestion().getRequiredQuestion() != null)
+			questionIds.add(auditData.getQuestion().getRequiredQuestion().getId());
+		if (auditData.getQuestion().getVisibleQuestion() != null)
+			questionIds.add(auditData.getQuestion().getVisibleQuestion().getId());
 		answerMap = auditDataDao.findAnswers(auditID, questionIds);
 	}
 
@@ -285,10 +281,6 @@ public class AuditDataSave extends AuditActionSupport {
 
 	public void setAuditData(AuditData auditData) {
 		this.auditData = auditData;
-	}
-
-	public void setCatDataID(int catDataID) {
-		this.catDataID = catDataID;
 	}
 
 	public AnswerMap getAnswerMap() {
