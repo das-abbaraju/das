@@ -47,7 +47,7 @@ public class AuditDataDAO extends PicsDAO {
 
 	public List<AuditData> findDataByCategory(int auditID, int categoryID) {
 		Query query = em.createQuery("FROM AuditData d "
-				+ "WHERE d.audit.id = :auditID AND d.question.subCategory.category.id = :category ");
+				+ "WHERE d.audit.id = :auditID AND d.question.category.id = :category ");
 		query.setParameter("auditID", auditID);
 		query.setParameter("category", categoryID);
 
@@ -56,7 +56,7 @@ public class AuditDataDAO extends PicsDAO {
 	
 	public int removeDataByCategory(int auditID, int categoryID) {
 		Query query = em.createQuery("DELETE FROM AuditData d "
-				+ "WHERE d.audit.id = :auditID AND d.question.subCategory.category.id = :category ");
+				+ "WHERE d.audit.id = :auditID AND d.question.category.id = :category ");
 		query.setParameter("auditID", auditID);
 		query.setParameter("category", categoryID);
 		return query.executeUpdate();
@@ -182,7 +182,7 @@ public class AuditDataDAO extends PicsDAO {
 	public List<AuditData> findServicesPerformed(int conID) {
 		Query query = em
 				.createQuery("SELECT d FROM AuditData d "
-						+ "WHERE d.audit.contractorAccount.id = ? and d.question.subCategory.id = 40 AND d.question.isVisible = 'Yes' ");
+						+ "WHERE d.audit.contractorAccount.id = ? and d.question.category.id = 40 AND d.question.isVisible = 'Yes' ");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
@@ -195,7 +195,7 @@ public class AuditDataDAO extends PicsDAO {
 	 */
 	public List<AuditData> findPolicyData(List<Integer> auditIds) {
 
-		StringBuilder sb = new StringBuilder("SELECT d FROM AuditData d JOIN d.question q JOIN q.subCategory sub")
+		StringBuilder sb = new StringBuilder("SELECT d FROM AuditData d JOIN d.question q JOIN q.category cat")
 				.append(" WHERE d.audit.id in ( ").append(Strings.implode(auditIds, ",")).append(" ) ");
 
 		Query query = em.createQuery(sb.toString());

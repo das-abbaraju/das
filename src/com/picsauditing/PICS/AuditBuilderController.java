@@ -181,7 +181,7 @@ public class AuditBuilderController {
 				tagsNeeded.add(rule.getTag().getId());
 		}
 
-		Map<Integer, AuditData> contractorAnswers = null;
+		Map<Integer, AuditData> contractorAnswers = new HashMap<Integer, AuditData>();
 		if (contractorAnswersNeeded.size() > 0) {
 			contractorAnswers = auditDataDAO.findAnswersByContractor(contractor.getId(), contractorAnswersNeeded);
 		}

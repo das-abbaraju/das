@@ -84,12 +84,6 @@ function copyAuditType(atypeID) {
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
 
-<s:if test="auditType.id > 0">
-	<div>
-		<a href="AuditOperator.action?aID=<s:property value="auditType.id"/>">Edit Operator Access</a>
-		<a href="ManageAuditTypeHierarchy.action?id=<s:property value="auditType.id"/>">Manage Hierarchy</a>
-	</div>
-</s:if>
 <s:form id="save">
 <s:hidden name="id"></s:hidden>
 	<div>
@@ -102,12 +96,23 @@ function copyAuditType(atypeID) {
 				</li>
 				<li><label>Name:</label>
 					<s:textfield name="auditType.auditName"></s:textfield>
+					<div class="fieldhelp">
+						<h3>Audit Name</h3>
+						<p>The name of the document, policy type, audit, or operator specific form</p>
+					</div>
 				</li>
 				<li><label>Class:</label>
 					<s:select list="classList" name="auditType.classType" />
 				</li>
+				<li><label>Sort Order:</label>
+					<s:textfield name="auditType.displayOrder" />
+				</li>
 				<li><label>Description:</label>
 					<s:textfield name="auditType.description"></s:textfield>
+					<div class="fieldhelp">
+						<h3>Description</h3>
+						<p>An optional description used for reference. Currently this is not used anywhere.</p>
+					</div>
 				</li>
 				<li><label>Has Requirements:</label>
 					<s:checkbox name="auditType.hasRequirements" />
@@ -117,9 +122,17 @@ function copyAuditType(atypeID) {
 				</li>
 				<li><label>Has Multiple:</label>
 					<s:checkbox name="auditType.hasMultiple" />
+					<div class="fieldhelp">
+						<h3>Has Multiple</h3>
+						<p>Check this box if a given contractor can have more than one of these types of audits active at the same time. This is usually NOT checked.</p>
+					</div>
 				</li>
 				<li><label>Can Renew:</label>
 					<s:checkbox name="auditType.renewable" />
+					<div class="fieldhelp">
+						<h3>Can Renew</h3>
+						<p>Check this box if the document or audit is reusable at the end of its life. For example, PQF is renewable because we don't make them fill out a whole new PQF each year. GL Policy is NOT renewable because we force them to fill out a brand new policy each time. One major drawback to renewable audit types is they don't maintain a history of past audits.</p>
+					</div>
 				</li>
 				<li><label>Is Scheduled:</label>
 					<s:checkbox name="auditType.scheduled" />
@@ -153,14 +166,11 @@ function copyAuditType(atypeID) {
 					<s:textfield name="operatorID" value="%{auditType.account.id}" />
 					<div class="fieldhelp">
 						<h3>Required By Operator</h3>
-						<p>Add the operator or corporateID only if requested by 1 account.</p>
+						<p>Add the operator or corporateID only if requested by 1 account. We may be removing this field soon in favor of Audit Type Rules.</p>
 					</div>
 				</li>
 				<li><label>Months to Expire:</label>
 					<s:textfield name="auditType.monthsToExpire" /> 
-				</li>
-				<li><label>Order:</label>
-					<s:textfield name="auditType.displayOrder" />
 				</li>
 				<li><label>Email Template:</label>
 					<s:select list="templateList" name="emailTemplateID" 
@@ -173,16 +183,14 @@ function copyAuditType(atypeID) {
 				</li>
 			</ol>
 		</fieldset>
-		<br clear="all">
-	</div>
-	<br clear="all">
-	<div>
-		<input type="submit" class="picsbutton positive" name="button" value="Save"/>
-		<input type="button" class="picsbutton" value="Copy" onclick="copyAuditType(<s:property value="id"/>)"/>
-		<s:if test="auditType.id > 0 && auditType.categories.size == 0">
-			<input id="deleteButton" type="submit" class="picsbutton negative" name="button" value="Delete"/>
-		</s:if>
-		<input type="submit" class="picsbutton" name="button" value="UpdateAllAudits"/>
+		<fieldset class="form submit">
+			<input type="submit" class="picsbutton positive" name="button" value="Save"/>
+			<input type="button" class="picsbutton" value="Copy" onclick="copyAuditType(<s:property value="id"/>)"/>
+			<s:if test="auditType.id > 0 && auditType.categories.size == 0">
+				<input id="deleteButton" type="submit" class="picsbutton negative" name="button" value="Delete"/>
+			</s:if>
+			<input type="submit" class="picsbutton" name="button" value="UpdateAllAudits"/>
+		</fieldset>
 	</div>
 </s:form>
 
@@ -203,6 +211,7 @@ function copyAuditType(atypeID) {
 	</s:if>
 	<pics:permission perm="ManageAuditTypeRules">
 		<div>
+			<a class="edit" href="ManageAuditTypeHierarchy.action?id=<s:property value="auditType.id"/>">Manage Hierarchy</a>
 			<h3>Related Rules</h3>
 			<s:if test="relatedRules.size() == 0">
 				<div class="alert">

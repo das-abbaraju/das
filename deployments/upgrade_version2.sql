@@ -1,10 +1,3 @@
-/**
-update pqfquestions set isVisible = CASE isVisible WHEN 2 THEN 1 ELSE 0 END;
-update pqfquestions set hasRequirement = CASE hasRequirement WHEN 2 THEN 1 ELSE 0 END;
-update pqfquestions set isGroupedWithPrevious = CASE isGroupedWithPrevious WHEN 2 THEN 1 ELSE 0 END;
-update pqfquestions set isRedFlagQuestion = CASE isRedFlagQuestion WHEN 2 THEN 1 ELSE 0 END;
-**/
-
 /** Update the requiresOQ for all contractors
  * we don't want to run this yet 
 update accounts set requiresOQ = 1
@@ -13,6 +6,11 @@ join pqfdata pd on ca.id = pd.auditid
 where pd.questionid = 894
 and pd.answer = 'Yes');
 **/
+
+delete from pqfsubcategories where categoryID in (select id from pqfcategories WHERE auditTypeID = 18);
+delete from pqfcategories where auditTypeID = 18;
+delete from audit_category where auditTypeID = 18;
+delete from audit_type where id = 18;
 
 -- PICS-595: Waiting On
 insert into widget
@@ -325,3 +323,4 @@ update contractor_audit_operator set status = 'Complete' where status IN ('Activ
 /*
  * END: CAO Conversion
  */
+

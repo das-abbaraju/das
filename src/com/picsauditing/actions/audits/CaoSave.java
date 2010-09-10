@@ -1,7 +1,6 @@
 package com.picsauditing.actions.audits;
 
 import java.util.Date;
-import java.util.List;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
@@ -11,34 +10,35 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class CaoSave extends AuditActionSupport {
 
 	protected int caoID = 0;
 	protected int stepID = 0;
-	protected ContractorAuditOperatorDAO caoDAO;
 	private String note;
 
+	protected ContractorAuditOperatorDAO caoDAO;
+	protected OshaAuditDAO oshaAuditDAO;
+
 	public CaoSave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, ContractorAuditOperatorDAO caoDAO) {
+			AuditDataDAO auditDataDao, OshaAuditDAO oshaAuditDAO, ContractorAuditOperatorDAO caoDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.caoDAO = caoDAO;
+		this.oshaAuditDAO = oshaAuditDAO;
 	}
 
 	@Override
@@ -155,6 +155,28 @@ public class CaoSave extends AuditActionSupport {
 						}
 					}
 				}
+
+				for (AuditCatData auditCatData : conAudit.getCategories()) {
+					if (!auditCatData.isApplies()) {
+						PicsLogger.log("removing unused data for category " + auditCatData.getCategory().getName());
+						if (conAudit.getAuditType().isAnnualAddendum() && auditCatData.getCategory().isSha()) {
+							switch (auditCatData.getCategory().getId()) {
+							case AuditCategory.OSHA_AUDIT:
+								oshaAuditDAO.removeByType(conAudit.getId(), OshaType.OSHA);
+								break;
+							case AuditCategory.MSHA:
+								oshaAuditDAO.removeByType(conAudit.getId(), OshaType.MSHA);
+								break;
+							case AuditCategory.CANADIAN_STATISTICS:
+								oshaAuditDAO.removeByType(conAudit.getId(), OshaType.COHS);
+								break;
+							}
+						} else {
+							auditDataDao.removeDataByCategory(conAudit.getId(), auditCatData.getCategory().getId());
+						}
+					}
+				}
+
 			}
 
 			caoDAO.save(cao);
@@ -162,82 +184,64 @@ public class CaoSave extends AuditActionSupport {
 
 		return SUCCESS;
 	}
-	
+
 	public void temp() {
 		// TODO Move this over to the CaoSave class
 		/*
-		findConAudit();
-		String note = "";
-		if (auditStatus.equals(AuditStatus.Active.toString())) {
-			if(conAudit.getPercentComplete() < 100) 
-				return SUCCESS;
-			
-			conAudit.changeStatus(AuditStatus.Active, getUser());
-			note = "Verified and Activated the " + conAudit.getAuditType().getAuditName();
-			
-			if (conAudit.getAuditType().isAnnualAddendum()
-					&& DateBean.getCurrentYear() - 1 == Integer.parseInt(conAudit.getAuditFor())) {
-				// We're activating the most recent year's audit (ie 2008)
-				for (ContractorAudit audit : contractor.getAudits()) {
-					if (audit.getAuditType().isAnnualAddendum()
-							&& Integer.parseInt(audit.getAuditFor()) < DateBean.getCurrentYear() - 3
-							&& !audit.getAuditStatus().isExpired()) {
-						// Any annual audit before 2006 (ie 2005)
-						audit.setAuditStatus(AuditStatus.Expired);
-						auditDao.save(audit);
-					}
-				}
-			}
-		}
-		// TODO add a column to auditData to keep track when the contractor has
-		// changed the answer.
-		if (auditStatus.equals(AuditStatus.Incomplete.toString())) {
-			conAudit.changeStatus(AuditStatus.Incomplete, getUser());
-			if (conAudit.getAuditType().isPqf()) {
-				List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
-				for (AuditData auditData : temp) {
-					AuditCategory auditCategory = auditData.getQuestion().getCategory();
-					for (AuditCatData aCatData : conAudit.getCategories()) {
-						if (aCatData.getCategory() == auditCategory && aCatData.getPercentVerified() < 100) {
-							aCatData.setRequiredCompleted(aCatData.getRequiredCompleted() - 1);
-							aCatData.setPercentCompleted(99);
-						}
-					}
-				}
-				conAudit.setPercentComplete(99);
-				auditDao.save(conAudit);
-			}
-			if (conAudit.getAuditType().isAnnualAddendum()) {
-				for (AuditCatData aCatData : conAudit.getCategories()) {
-					if (aCatData.getCategory().getId() == AuditCategory.EMR
-							|| aCatData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION
-							|| aCatData.getCategory().getId() == AuditCategory.OSHA_AUDIT
-							|| aCatData.getCategory().getId() == AuditCategory.LOSS_RUN) {
-						if (aCatData.getPercentVerified() < 100) {
-							aCatData.setRequiredCompleted(aCatData.getRequiredCompleted() - 1);
-							aCatData.setPercentCompleted(99);
-							aCatData.setAuditColumns(permissions);
-						}
-					}
-				}
-				conAudit.setPercentComplete(99);
-				conAudit.setLastRecalculation(new Date());
-				auditDao.save(conAudit);
-			}
-			note = "Rejected " + conAudit.getAuditType().getAuditName();
-		}
-
-		if(!Strings.isEmpty(note)) {
-			if(!Strings.isEmpty(conAudit.getAuditFor())) 
-				note += " " + conAudit.getAuditFor();
-			addNote(contractor, note, NoteCategory.Audits, LowMedHigh.Low, true, Account.EVERYONE, getUser());
-		}
-
-		conAudit = auditDao.save(conAudit);
-		ContractorAccount contractorAccount = conAudit.getContractorAccount();
-		contractor.incrementRecalculation();
-		accountDao.save(contractorAccount);
-*/
+		 * findConAudit(); String note = ""; if
+		 * (auditStatus.equals(AuditStatus.Active.toString())) {
+		 * if(conAudit.getPercentComplete() < 100) return SUCCESS;
+		 * 
+		 * conAudit.changeStatus(AuditStatus.Active, getUser()); note =
+		 * "Verified and Activated the " +
+		 * conAudit.getAuditType().getAuditName();
+		 * 
+		 * if (conAudit.getAuditType().isAnnualAddendum() &&
+		 * DateBean.getCurrentYear() - 1 ==
+		 * Integer.parseInt(conAudit.getAuditFor())) { // We're activating the
+		 * most recent year's audit (ie 2008) for (ContractorAudit audit :
+		 * contractor.getAudits()) { if (audit.getAuditType().isAnnualAddendum()
+		 * && Integer.parseInt(audit.getAuditFor()) < DateBean.getCurrentYear()
+		 * - 3 && !audit.getAuditStatus().isExpired()) { // Any annual audit
+		 * before 2006 (ie 2005) audit.setAuditStatus(AuditStatus.Expired);
+		 * auditDao.save(audit); } } } } // TODO add a column to auditData to
+		 * keep track when the contractor has // changed the answer. if
+		 * (auditStatus.equals(AuditStatus.Incomplete.toString())) {
+		 * conAudit.changeStatus(AuditStatus.Incomplete, getUser()); if
+		 * (conAudit.getAuditType().isPqf()) { List<AuditData> temp =
+		 * auditDataDao.findCustomPQFVerifications(conAudit.getId()); for
+		 * (AuditData auditData : temp) { AuditCategory auditCategory =
+		 * auditData.getQuestion().getCategory(); for (AuditCatData aCatData :
+		 * conAudit.getCategories()) { if (aCatData.getCategory() ==
+		 * auditCategory && aCatData.getPercentVerified() < 100) {
+		 * aCatData.setRequiredCompleted(aCatData.getRequiredCompleted() - 1);
+		 * aCatData.setPercentCompleted(99); } } }
+		 * conAudit.setPercentComplete(99); auditDao.save(conAudit); } if
+		 * (conAudit.getAuditType().isAnnualAddendum()) { for (AuditCatData
+		 * aCatData : conAudit.getCategories()) { if
+		 * (aCatData.getCategory().getId() == AuditCategory.EMR ||
+		 * aCatData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION
+		 * || aCatData.getCategory().getId() == AuditCategory.OSHA_AUDIT ||
+		 * aCatData.getCategory().getId() == AuditCategory.LOSS_RUN) { if
+		 * (aCatData.getPercentVerified() < 100) {
+		 * aCatData.setRequiredCompleted(aCatData.getRequiredCompleted() - 1);
+		 * aCatData.setPercentCompleted(99);
+		 * aCatData.setAuditColumns(permissions); } } }
+		 * conAudit.setPercentComplete(99); conAudit.setLastRecalculation(new
+		 * Date()); auditDao.save(conAudit); } note = "Rejected " +
+		 * conAudit.getAuditType().getAuditName(); }
+		 * 
+		 * if(!Strings.isEmpty(note)) {
+		 * if(!Strings.isEmpty(conAudit.getAuditFor())) note += " " +
+		 * conAudit.getAuditFor(); addNote(contractor, note,
+		 * NoteCategory.Audits, LowMedHigh.Low, true, Account.EVERYONE,
+		 * getUser()); }
+		 * 
+		 * conAudit = auditDao.save(conAudit); ContractorAccount
+		 * contractorAccount = conAudit.getContractorAccount();
+		 * contractor.incrementRecalculation();
+		 * accountDao.save(contractorAccount);
+		 */
 	}
 
 	public int getCaoID() {

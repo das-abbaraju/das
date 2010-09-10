@@ -4,8 +4,7 @@ public enum AuditTypeClass {
 	PQF,
 	Audit,
 	Policy,
-	IM,
-	AnnualUpdate;
+	IM;
 
 	public boolean isPolicy() {
 		return Policy == this;
