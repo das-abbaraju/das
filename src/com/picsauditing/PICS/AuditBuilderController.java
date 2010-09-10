@@ -320,8 +320,7 @@ public class AuditBuilderController {
 	}
 
 	/**
-	 * For each audit (policy), get a list of operators who have InsureGUARD and
-	 * automatically require this policy, based on riskLevel
+	 * For each audit (policy), get a list of operators and create Contractor Audit Operator
 	 * 
 	 * @param conAudit
 	 * @param governingBodies
@@ -329,7 +328,7 @@ public class AuditBuilderController {
 	private void fillAuditOperators(ContractorAudit conAudit) {
 		PicsLogger.start("AuditOperators", conAudit.getAuditType().getAuditName());
 
-		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require insurance.");
+		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require a auditOperator.");
 
 		AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
 

@@ -273,18 +273,6 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		return (id == ANNUALADDENDUM);
 	}
 
-	@Transient
-	@Deprecated
-	public boolean isDynamicCategories() {
-		// All audits are dynamic now
-		return true;
-		// if (isPqf())
-		// return true;
-		// if (id == DESKTOP)
-		// return true;
-		// return false;
-	}
-
 	@Override
 	public int compareTo(AuditType o) {
 		if (!this.getClassType().equals(o.getClassType())) {

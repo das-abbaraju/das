@@ -85,7 +85,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return conAudit;
 	}
 
-	public boolean isSingleCat() {
+	public boolean isSinglePageAudit() {
 		return getCategories().size() == 1;
 	}
 
@@ -131,102 +131,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 		else
 			hasManual = getDataForSafetyManual();
 		return hasManual;
-	}
-
-	public boolean isCanEditAudit() {
-		if (conAudit.isExpired())
-			return false;
-
-		AuditType type = conAudit.getAuditType();
-
-		if (type.getClassType().isPolicy()) {
-			// we don't want the contractors to edit the effective dates on the
-			// old policy
-			if (conAudit.willExpireSoon()) {
-				if (conAudit.hasCaoStatusAfter(AuditStatus.Submitted))
-					return false;
-			}
-		}
-
-		// Auditors can edit their assigned audits
-		if (type.isHasAuditor() && !type.isCanContractorEdit() && conAudit.getAuditor() != null
-				&& permissions.getUserId() == conAudit.getAuditor().getId())
-			return true;
-
-		if (permissions.seesAllContractors())
-			return true;
-
-		if (permissions.isContractor()) {
-			if ((type.isAnnualAddendum() || type.getId() == 99)) {
-				// contractors can't modify annual updates that are already
-				// verified or submitted
-				if (conAudit.hasCaoStatusAfter(AuditStatus.Submitted))
-					return false;
-			}
-			return type.isCanContractorEdit();
-		}
-
-		if (type.getEditPermission() != null)
-			return permissions.hasPermission(type.getEditPermission());
-
-		return false;
-	}
-
-	public boolean isCanSubmitAudit() {
-		if (!isCanEditAudit())
-			return false;
-
-		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
-			if (cao.canSubmitCao()) {
-				if (permissions.isContractor()) {
-					if (!conAudit.getContractorAccount().isPaymentMethodStatusValid()
-							&& conAudit.getContractorAccount().isMustPayB())
-						return false;
-				}
-				return true;
-			} else if (conAudit.getAuditType().isRenewable()) {
-				if (permissions.isContractor()) {
-					// We don't allow admins to resubmit audits (only
-					// contractors)
-					if (conAudit.isAboutToExpire())
-						return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	public boolean isCanVerifyAudit() {
-		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
-			return false;
-
-		if (conAudit.getAuditType().isPqf() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
-			if (permissions.isAuditor())
-				return true;
-
-		return false;
-	}
-
-	/**
-	 * Can the current user submit this audit in its current state?
-	 * 
-	 * @return
-	 */
-	public boolean isCanCloseAudit() {
-		if (permissions.isContractor())
-			return false;
-		if (!isCanEditAudit())
-			return false;
-
-		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
-			if (cao.canVerifyCao()) {
-				return true;
-			}
-		}
-		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
-			return false;
-
-		return false;
 	}
 
 	/**

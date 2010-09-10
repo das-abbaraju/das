@@ -974,10 +974,10 @@
 
 		<!-- Audits View/Edit/Verify/Copy -->
 		<action name="Audit"
-			class="com.picsauditing.actions.audits.ContractorAuditAction">
+			class="com.picsauditing.actions.audits.ContractorAuditController">
 			<result>struts/contractors/con_audit.jsp</result>
 		</action>
-
+	
 		<action name="AuditCat"
 			class="com.picsauditing.actions.audits.AuditCategoryAction">
 			<result>struts/audits/audit_cat.jsp</result>
