@@ -1,13 +1,13 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.Vector;
 
 import com.picsauditing.access.OpPerms;
@@ -30,7 +30,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 	protected ContractorAuditOperatorDAO caoDAO;
 	
 	protected Map<AuditType, List<ContractorAudit>> auditMap;
-	protected Map<AuditTypeClass, Set<AuditType>> auditTypes;
+	protected Map<String, List<AuditType>> auditTypes;
 	protected Map<ContractorAudit, Map<AuditStatus, List<ContractorAuditOperator>>> counts;
 	protected Map<String, String> imScores = new HashMap<String, String>();
 	
@@ -39,6 +39,8 @@ public class ContractorDocuments extends ContractorActionSupport {
 	private String auditFor;
 	private List<AuditType> auditTypeList;
 	private AuditTypeClass auditClass;
+	
+	private final String ANNUAL_UPDATE = "AU";
 
 	public ContractorDocuments(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditTypeDAO auditTypeDAO, ContractorAuditOperatorDAO caoDAO) {
@@ -128,7 +130,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 		return auditMap;
 	}
 
-	public Map<AuditTypeClass, Set<AuditType>> getAuditTypes() {
+	public Map<String, List<AuditType>> getAuditTypes() {
 		return auditTypes;
 	}
 
@@ -197,7 +199,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 	private void setup() {
 		Map<String, List<ContractorAudit>> allIMAudits = new HashMap<String, List<ContractorAudit>>();
 		auditMap = new TreeMap<AuditType, List<ContractorAudit>>();
-		auditTypes = new TreeMap<AuditTypeClass, Set<AuditType>>();
+		auditTypes = new HashMap<String, List<AuditType>>();
 		counts = new HashMap<ContractorAudit, Map<AuditStatus, List<ContractorAuditOperator>>>();
 
 		for (ContractorAudit audit : getAudits()) {
@@ -207,11 +209,29 @@ public class ContractorDocuments extends ContractorActionSupport {
 					auditMap.put(audit.getAuditType(), new ArrayList<ContractorAudit>());
 
 				auditMap.get(audit.getAuditType()).add(audit);
+				
+				String auditTypeClass = audit.getAuditType().getClassType().toString();
+				// Put annual updates in their own category?
+				if (audit.getAuditType().getId() == AuditType.ANNUALADDENDUM)
+					auditTypeClass = ANNUAL_UPDATE;
+				
+				if (auditTypes.get(auditTypeClass) == null)
+					auditTypes.put(auditTypeClass, new ArrayList<AuditType>());
+				
+				if (!auditTypes.get(auditTypeClass).contains(audit.getAuditType()))
+					auditTypes.get(auditTypeClass).add(audit.getAuditType());
+				
+				// IM Audits
+				if (audit.getAuditType().getClassType() == AuditTypeClass.IM) {
+					List<ContractorAudit> imAudits = allIMAudits.get(audit.getAuditType().getAuditName());
 
-				if (auditTypes.get(audit.getAuditType().getClassType()) == null)
-					auditTypes.put(audit.getAuditType().getClassType(), new TreeSet<AuditType>());
-
-				auditTypes.get(audit.getAuditType().getClassType()).add(audit.getAuditType());
+					if (imAudits == null) {
+						imAudits = new Vector<ContractorAudit>();
+						allIMAudits.put(audit.getAuditType().getAuditName(), imAudits);
+					}
+					
+					imAudits.add(audit);
+				}
 			}
 
 			Map<AuditStatus, List<ContractorAuditOperator>> statusCount = new HashMap<AuditStatus, List<ContractorAuditOperator>>();
@@ -223,21 +243,20 @@ public class ContractorDocuments extends ContractorActionSupport {
 			}
 			
 			counts.put(audit, statusCount);
-			
-			// IM Audits
-			if (audit.getAuditType().getClassType().isPqf()) {
-				if (!audit.getAuditType().isAnnualAddendum()) {
-					if (audit.getAuditType().getClassType() == AuditTypeClass.IM) {
-						List<ContractorAudit> imAudits = allIMAudits.get(audit.getAuditType().getAuditName());
-
-						if (imAudits == null) {
-							imAudits = new Vector<ContractorAudit>();
-							allIMAudits.put(audit.getAuditType().getAuditName(), imAudits);
-						}
+		}
+		
+		for (AuditType type : auditMap.keySet()) {
+			if (type.getId() == AuditType.ANNUALADDENDUM) {
+				Collections.sort(auditMap.get(type), new Comparator<ContractorAudit>() {
+					public int compare(ContractorAudit o1, ContractorAudit o2) {
+						String s1 = o1.getAuditType().getAuditName() + o1.getAuditFor();
+						String s2 = o2.getAuditType().getAuditName() + o2.getAuditFor();
 						
-						imAudits.add(audit);
+						return (s2.compareTo(s1));
 					}
-				}
+				});
+				
+				break;
 			}
 		}
 		

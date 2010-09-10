@@ -36,6 +36,10 @@
 		display: none;
 		font-size: smaller;
 	}
+	
+	h3 {
+		margin-top: 1em;
+	}
 </style>
 </head>
 <body>
@@ -73,8 +77,8 @@
 </s:if>
 
 <s:iterator value="auditTypes.keySet()" id="classType">
-	<s:if test="#classType.toString() == 'IM' && imScores.keySet().size > 0">
-		<h3>Integrity Management Scores For This Contractor</h3>
+	<s:if test="#classType == 'IM' && imScores.keySet().size > 0">
+		<h3><a name="<s:property value="#classType" />">Overall Integrity Management</a></h3>
 		<table class="report">
 			<thead>
 			<tr>
@@ -92,23 +96,19 @@
 	</s:if>
 
 	<h3>
-		<s:if test="#classType.toString() != 'IM'">
-			<s:property value="#classType.toString()" />
-		</s:if>
+		<s:if test="#classType == 'IM'">Integrity Management Audits</s:if>
+		<s:elseif test="#classType == 'AU'">Annual Updates</s:elseif>
 		<s:else>
-			Integrity Management
+			<a name="<s:property value="#classType" />"><s:property value="#classType" /></a>
 		</s:else>
 	</h3>
-	<table class="report" id="<s:property value="#classType" />">
+	<table class="report" id="table_<s:property value="#classType" />">
 		<thead>
 			<tr>
 				<th>Name</th>
 				<th>Safety Professional</th>
 				<th>Scheduled</th>
 				<th>View</th>
-				<s:if test="#classType.toString() == 'IM'">
-					<th>Score</th>
-				</s:if>
 			</tr>
 		</thead>
 		<tbody>
@@ -127,19 +127,16 @@
 								</s:iterator>
 							</a>
 						</td>
-						<s:if test="#classType.toString() == 'IM'">
-							<td><s:property value="imScores.get(#audit.auditName)" /></td>
-						</s:if>
 					</tr>
 					<tr class="row_<s:property value="#audit.id" /> hidden">
-						<td colspan="<s:property value="#classType.toString() == 'IM' ? 5 : 4" />">
-							<table class="report" style="width: 95%; margin: 5px auto;">
+						<td colspan="4">
+							<table class="report" style="width: 96%; margin: 2% auto;">
 								<thead>
 									<tr>
 										<th>Operator</th>
 										<th>Status</th>
 										<th>Updated</th>
-										<s:if test="#classType.toString() == 'IM'">
+										<s:if test="#classType == 'IM'">
 											<th>Score</th>
 										</s:if>
 									</tr>
@@ -157,7 +154,7 @@
 											</td>
 											<td><s:property value="#cao.status" /></td>
 											<td><s:date name="#cao.statusChangedDate" format="M/d/yy" /></td>
-											<s:if test="#classType.toString() == 'IM'">
+											<s:if test="#classType == 'IM'">
 												<td class="center"><s:property value="#audit.printableScore" /></td>
 											</s:if>
 										</tr>
@@ -170,7 +167,7 @@
 			</s:iterator>
 		</tbody>
 	</table>
-	<a href="#" onclick="showAll('<s:property value="#classType.toString()" />'); return false;" class="preview">View All</a>
+	<a href="#" onclick="showAll('table_<s:property value="#classType" />'); return false;" class="preview">View All</a>
 </s:iterator>
 
 <div id="notesList"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
