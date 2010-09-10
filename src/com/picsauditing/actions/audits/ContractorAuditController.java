@@ -95,7 +95,7 @@ public class ContractorAuditController extends AuditActionSupport {
 						AuditCategory auditCategory = auditCategoryDAO
 								.find(categoryID);
 						for (AuditCategory auditSubCategory : auditCategory
-								.getSiblings()) {
+								.getSubCategories()) {
 							for (AuditQuestion auditQuestion : auditSubCategory
 									.getQuestions()) {
 							}
@@ -114,7 +114,7 @@ public class ContractorAuditController extends AuditActionSupport {
 
 			if (categoryID > 0) {
 				categoryData = catDataDao.findAuditCatData(auditID, categoryID);
-				for (AuditCatData catData : categories) {
+				for (AuditCatData catData : getCategories()) {
 					// We can open audits using either the catID or the
 					// catDataID
 					if (catData.equals(categoryData)) {
@@ -129,48 +129,26 @@ public class ContractorAuditController extends AuditActionSupport {
 						// Get a map of all answers in this audit
 						answerMap = auditDataDao.findAnswers(catData.getAudit()
 								.getId(), questionIDs);
-
-						if (mode == null
-								&& catData.getRequiredCompleted() < catData
-										.getNumRequired()) {
-							mode = EDIT;
-						}
 					}
 				}
-
-//				if (mode == null && conAudit.getAuditStatus().isPending()
-//						|| conAudit.getAuditStatus().isIncomplete())
-//					mode = EDIT;
-//				if (mode == null
-//						&& conAudit.getAuditStatus().isActiveSubmitted()
-//						&& conAudit.getAuditType().isPqf()
-//						&& conAudit.isAboutToExpire())
-//					mode = EDIT;
-//				if (mode == null && conAudit.getAuditStatus().isSubmitted()) {
-//					mode = EDIT;
-//				}
-//				if (mode == null
-//						&& conAudit.getAuditType().getClassType().isPolicy()
-//						&& isHasPendingCaos())
-//					mode = EDIT;
-
+				if (mode == null && isCanEditAudit())
+					mode = EDIT;
 			} else {
 				// When we want to show all categories
 				answerMap = auditDataDao.findAnswers(auditID);
 			}
 
-//			if (mode == null)
-//				mode = VIEW;
-//			if (mode.equals(EDIT) && !isCanEdit())
-//				mode = VIEW;
-//			if (mode.equals(VERIFY) && !isCanVerify())
-//				mode = VIEW;
+			if (mode == null)
+				mode = VIEW;
+			if (mode.equals(EDIT) && !isCanCloseAudit())
+				mode = VIEW;
+			if (mode.equals(VERIFY) && !isCanVerifyAudit())
+				mode = VIEW;
 
 			if (categoryData != null) {
 				if (OshaTypeConverter.getTypeFromCategory(categoryData
 						.getCategory().getId()) != null) {
 					boolean hasOshaCorporate = false;
-					int percentComplete = 0;
 					for (OshaAudit osha : conAudit.getOshas()) {
 						if (osha.isCorporate()
 								&& matchesType(categoryData.getCategory()
@@ -336,15 +314,11 @@ public class ContractorAuditController extends AuditActionSupport {
 			return true;
 
 		if (permissions.isContractor()) {
-			if ((type.isAnnualAddendum() || type.getId() == 99)) {
-				// contractors can't modify annual updates that are already
-				// verified or submitted
-				if (conAudit.hasCaoStatusAfter(AuditStatus.Submitted))
+			if (conAudit.getAuditType().getWorkFlow().getId() == 5
+					|| conAudit.getAuditType().getWorkFlow().getId() == 3) {
+				if (conAudit.hasCaoStatusAfter(AuditStatus.Resubmitted))
 					return false;
 			}
-			if (conAudit.getAuditType().isRenewable()
-					&& conAudit.isAboutToExpire())
-				return true;
 			return type.isCanContractorEdit();
 		}
 

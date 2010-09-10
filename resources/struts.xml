@@ -983,21 +983,6 @@
 			<result>struts/audits/audit_cat_view.jsp</result>
 		</action>
 	
-		<action name="AuditCat"
-			class="com.picsauditing.actions.audits.AuditCategoryAction">
-			<result>struts/audits/audit_cat.jsp</result>
-		</action>
-		
-		<action name="AuditCatAjax"
-			class="com.picsauditing.actions.audits.AuditCategoryAction">
-			<result>struts/audits/audit_question_cert_load.jsp</result>
-		</action>
-		
-		<action name="AuditCatSubmitAjax"
-			class="com.picsauditing.actions.audits.AuditCategoryAction">
-			<result>struts/audits/audit_cat_policy_submit.jsp</result>
-		</action>
-
 		<action name="AuditDataSaveAjax"
 			class="com.picsauditing.actions.audits.AuditDataSave">
 			<result>struts/audits/audit_question_edit_ajax.jsp</result>
