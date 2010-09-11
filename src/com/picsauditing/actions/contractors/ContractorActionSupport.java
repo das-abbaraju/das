@@ -191,8 +191,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 					String year = DateBean.format(audit.getCreationDate(), "yy");
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
 					childMenu.setName(linkText);
-					childMenu.setUrl("Audit.action?auditID=" + audit.getId() + "&catDataID="
-							+ audit.getCategories().get(0).getId());
+					childMenu.setUrl("Audit.action?auditID=" + audit.getId());
 					iter.remove();
 				}
 			}
