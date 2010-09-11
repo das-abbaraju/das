@@ -240,14 +240,14 @@ SELECT DISTINCT
 concat('UPDATE temp_cao SET include = ', include, ifnull(concat(' WHERE gbID = ',opID), ''), ifnull(concat( CASE when opID is null then ' WHERE' else ' AND' end, ' auditTypeID = ', auditTypeID), ''), ';' ) 
 FROM audit_type_rule ORDER BY priority;
 
-
-insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, createdBy, updatedBy, creationDate, updateDate)
+insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, visible, createdBy, updatedBy, creationDate, updateDate)
 select distinct
  ca.id            auditID,
  t.gbID           opID,
  ca.auditStatus   status,
  ca.completedDate submittedDate,
  ca.closedDate    completedDate,
+ 1                visible
  createdBy, updatedBy, creationDate, updateDate
 from temp_cao t
 join contractor_audit ca on t.auditID = ca.id
@@ -257,13 +257,14 @@ insert into contractor_audit_operator_permission (caoID, opID)
 select cao.id, t.opID from contractor_audit_operator cao
 join temp_cao t on cao.auditID = t.auditID and cao.opID = t.gbID and t.auditTypeID = 1;
 
-insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, createdBy, updatedBy, creationDate, updateDate)
+insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, visible, createdBy, updatedBy, creationDate, updateDate)
 select distinct
  ca.id            auditID,
  6                opID, -- PICS Canada
  ca.auditStatus   status,
  ca.completedDate submittedDate,
  ca.closedDate    completedDate,
+ 1                visible
  ca.createdBy, ca.updatedBy, ca.creationDate, ca.updateDate
 from temp_cao t
 join contractor_audit ca on t.auditID = ca.id
@@ -277,13 +278,14 @@ join temp_cao t on cao.auditID = t.auditID and t.auditTypeID = 11
 join accounts o on t.opID = o.id AND o.country = 'CA'
 where cao.opID = 6;
 
-insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, createdBy, updatedBy, creationDate, updateDate)
+insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, visible, createdBy, updatedBy, creationDate, updateDate)
 select distinct
  ca.id            auditID,
  5                opID, -- PICS US
  ca.auditStatus   status,
  ca.completedDate submittedDate,
  ca.closedDate    completedDate,
+ 1                visible
  ca.createdBy, ca.updatedBy, ca.creationDate, ca.updateDate
 from temp_cao t
 join contractor_audit ca on t.auditID = ca.id
@@ -297,13 +299,14 @@ join temp_cao t on cao.auditID = t.auditID and t.auditTypeID = 11
 join accounts o on t.opID = o.id AND o.country = 'US'
 where cao.opID = 5;
 
-insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, createdBy, updatedBy, creationDate, updateDate)
+insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, visible, createdBy, updatedBy, creationDate, updateDate)
 select distinct
  ca.id            auditID,
  4                opID, -- PICS Global
  ca.auditStatus   status,
  ca.completedDate submittedDate,
  ca.closedDate    completedDate,
+ 1                visible
  ca.createdBy, ca.updatedBy, ca.creationDate, ca.updateDate
 from temp_cao t
 join contractor_audit ca on t.auditID = ca.id
