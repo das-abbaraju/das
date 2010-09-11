@@ -48,4 +48,12 @@ public class AuditTypeRule extends AuditRule {
 		dependentAuditStatus = ((AuditTypeRule)source).dependentAuditStatus;
 	}
 
+	@Override
+	public String toString() {
+		String out = super.toString();
+		if (dependentAuditType != null)
+			out += " when AuditType " + dependentAuditType + " is " + dependentAuditStatus;
+		return out;
+	}
+
 }

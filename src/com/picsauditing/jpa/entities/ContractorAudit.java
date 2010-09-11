@@ -26,6 +26,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Location;
@@ -114,6 +115,15 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public void setOperators(List<ContractorAuditOperator> operators) {
 		this.operators = operators;
+	}
+	
+	@Transient
+	public List<ContractorAuditOperator> getOperatorsVisible() {
+		return new Grepper<ContractorAuditOperator>() {
+			public boolean check(ContractorAuditOperator t) {
+				return t.isVisible();
+			}
+		}.grep(this.operators);
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

@@ -42,12 +42,19 @@ public class AuditCategoryRule extends AuditRule {
 	public void merge(AuditRule source) {
 		super.merge(source);
 		if (auditCategory == null)
-			auditCategory = ((AuditCategoryRule)source).auditCategory;
-	}
-	
-	public void update(AuditRule source) {
-		super.update(source);
-		auditCategory = ((AuditCategoryRule)source).auditCategory;
+			auditCategory = ((AuditCategoryRule) source).auditCategory;
 	}
 
+	public void update(AuditRule source) {
+		super.update(source);
+		auditCategory = ((AuditCategoryRule) source).auditCategory;
+	}
+
+	@Override
+	public String toString() {
+		String out = super.toString();
+		if (auditCategory != null)
+			out += " and Category = " + auditCategory;
+		return out;
+	}
 }

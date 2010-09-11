@@ -22,6 +22,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditRule;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -79,7 +80,7 @@ public class AuditBuilderController {
 		setup(con, user);
 		// PicsLogger.addRuntimeRule("BuildAudits");
 		PicsLogger.start("BuildAudits", " conID=" + contractor.getId());
-
+		cAuditDAO.remove(175601);
 		getAuditTypeRules();
 
 		List<ContractorAudit> currentAudits = contractor.getAudits();
@@ -127,16 +128,16 @@ public class AuditBuilderController {
 			if (!getRequiredAuditTypeSet().contains(conAudit.getAuditType())) {
 				boolean needed = false;
 				for (ContractorAuditOperator cao : conAudit.getOperators()) {
-					if (!cao.getStatus().isPending() && !cao.getStatus().isNotApplicable())
+					if (cao.getStatus().after(AuditStatus.Pending) && cao.getStatus().before(AuditStatus.NotApplicable))
 						needed = true;
-					if (cao.getPercentComplete() >= 0)
+					else if (cao.getPercentComplete() >= 0)
 						needed = true;
 				}
 
-				if (needed && conAudit.getData().size() == 0) {
+				if (!needed && conAudit.getData().size() == 0) {
 					PicsLogger.log("removing unneeded audit " + conAudit.getAuditType().getAuditName());
-					cAuditDAO.remove(conAudit.getId());
 					iter.remove();
+					cAuditDAO.remove(conAudit);
 				}
 			}
 		}
@@ -368,13 +369,10 @@ public class AuditBuilderController {
 			}
 		}
 
-		// Remove unneeded CAOs
-		Iterator<ContractorAuditOperator> iter = conAudit.getOperators().iterator();
-		while (iter.hasNext()) {
-			ContractorAuditOperator cao = iter.next();
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (!contains(detail.governingBodies, cao.getOperator())) {
-				contractorAuditOperatorDAO.remove(cao);
-				iter.remove();
+				cao.setVisible(false);
+				contractorAuditOperatorDAO.save(cao);
 			}
 		}
 

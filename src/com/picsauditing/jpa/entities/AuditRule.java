@@ -283,4 +283,28 @@ public class AuditRule extends BaseDecisionTreeRule {
 		include = source.include;
 		acceptsBids = source.acceptsBids;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(include ? "Include" : "Exclude").append(" when");
+		
+		if (auditType != null)
+			sb.append(" and Audit Type = ").append(auditType);
+		if (risk != null)
+			sb.append(" and Contractor Risk = ").append(risk);
+		if (operatorAccount != null)
+			sb.append(" and for Operator ").append(operatorAccount);
+		if (contractorType != null)
+			sb.append(" and Contractor is ").append(contractorType);
+		if (tag != null)
+			sb.append(" and has tag ").append(tag);
+		if (question != null)
+			sb.append(" and ").append(question.getColumnHeaderOrQuestion()).append(" ").append(questionComparator).append(questionAnswer);
+		if (acceptsBids != null)
+			sb.append(" and Contactor is ").append(acceptsBids ? "bid-only" : "NOT bid-only");
+
+		return sb.toString();
+	}
 }

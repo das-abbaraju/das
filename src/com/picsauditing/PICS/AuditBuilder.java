@@ -45,7 +45,9 @@ public class AuditBuilder {
 	/**
 	 * 
 	 * @param rules
-	 * @param operators a list of operators (not corporate) accounts associated with this contractor
+	 * @param operators
+	 *            a list of operators (not corporate) accounts associated with
+	 *            this contractor
 	 * @return
 	 */
 	public Map<AuditType, AuditTypeDetail> calculateRequiredAuditTypes(List<AuditTypeRule> rules,
@@ -147,7 +149,8 @@ public class AuditBuilder {
 			AuditCategoryRule rule = getApplicable(categoryRules, category, operator);
 			if (rule != null && rule.isInclude()) {
 				detail.categories.add(category);
-				detail.operators.put(operator, rule);
+				if (rule.isMoreSpecific(detail.operators.get(operator)))
+					detail.operators.put(operator, rule);
 			}
 		}
 
@@ -230,19 +233,6 @@ public class AuditBuilder {
 		 * 
 		 * // TODO If the auditType is a Desktop, then make sure the PQF is //
 		 * ActiveSubmitted. Maybe we should add this to the ruleSet
-		 * 
-		 * // TODO Fill in the tag and questions // Map<Integer, Integer>
-		 * dependencies = new HashMap<Integer, Integer>(); //
-		 * dependencies.put(AuditCategory.OSHA_AUDIT, 2064); //
-		 * dependencies.put(AuditCategory.MSHA, 2065); //
-		 * dependencies.put(AuditCategory.CANADIAN_STATISTICS, 2066); //
-		 * dependencies.put(AuditCategory.EMR, 2033); //
-		 * dependencies.put(AuditCategory.LOSS_RUN, 2033); //
-		 * dependencies.put(AuditCategory.WCB, 2967); //
-		 * dependencies.put(AuditCategory.CITATIONS, 3546); // int auditID =
-		 * conAudit.getId(); // // AnswerMap answers = null; // answers =
-		 * auditDataDAO.findAnswers(auditID, new //
-		 * Vector<Integer>(dependencies.values()));
 		 */
 	}
 }
