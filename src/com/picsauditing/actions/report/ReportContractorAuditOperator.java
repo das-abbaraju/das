@@ -18,6 +18,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		super.buildQuery();
 
 		sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id");
+		sql.addWhere("cao.visible = 1");
 		sql.addJoin("JOIN accounts caoAccount ON cao.opID = caoAccount.id");
 		sql.addField("cao.id caoID");
 		sql.addField("cao.status auditStatus");

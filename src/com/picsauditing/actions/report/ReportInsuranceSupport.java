@@ -19,7 +19,7 @@ import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ReportInsuranceSupport extends ReportContractorAudits {
+public class ReportInsuranceSupport extends ReportContractorAuditOperator {
 
 	protected AuditDataDAO auditDataDao = null;
 	protected AuditQuestionDAO auditQuestionDao = null;
@@ -33,8 +33,6 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 
 	public ReportInsuranceSupport(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
 			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
-		// sql = new SelectContractorAudit();
-		this.auditDataDao = auditDataDao;
 		this.auditQuestionDao = auditQuestionDao;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.amBestDAO = amBestDAO;
@@ -45,36 +43,28 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 		auditTypeClass = AuditTypeClass.Policy;
 		super.buildQuery();
 
-		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
-		sql.addWhere("cao.visible = 1");
 		if (!permissions.hasPermission(OpPerms.AllContractors)) {
-			sql.addField("cao.status as caoStatus");
 			sql.addField("cao.notes as caoNotes");
-			sql.addField("cao.id as caoId");
 			sql.addField("cao.flag as caoRecommendedFlag");
 			sql.addField("cao.certificateID");
 			sql.addField("valid");
-
-			sql.addJoin("JOIN accounts caoaccount on caoaccount.id = cao.opID");
-			sql.addField("caoaccount.name as caoName");
 		}
 
 		sql.addWhere("ca.expiresDate > NOW()");
-		
-		if(getFilter().getAmBestRating() > 0 || getFilter().getAmBestClass() > 0) {
+
+		if (getFilter().getAmBestRating() > 0 || getFilter().getAmBestClass() > 0) {
 			sql.addJoin("JOIN pqfdata am ON am.auditid = ca.id");
 			sql.addJoin("JOIN pqfquestions pq ON pq.id = am.questionid");
 			sql.addJoin("JOIN ambest ambest ON ambest.naic = am.comment and ambest.companyName = am.answer");
 			sql.addWhere("pq.questionType = 'AMBest'");
-			if(getFilter().getAmBestRating() > 0)
+			if (getFilter().getAmBestRating() > 0)
 				sql.addWhere("ambest.ratingcode = " + getFilter().getAmBestRating());
-			if(getFilter().getAmBestClass() > 0)
+			if (getFilter().getAmBestClass() > 0)
 				sql.addWhere("ambest.financialCode =" + getFilter().getAmBestClass());
 		}
-		
+
 		getFilter().setShowPrimaryInformation(true);
 		getFilter().setShowTradeInformation(false);
-		getFilter().setShowTrade(false);
 		getFilter().setShowAuditType(false);
 		getFilter().setShowAuditor(false);
 		getFilter().setShowAuditFor(false);
@@ -82,7 +72,6 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 
 		getFilter().setShowCreatedDate(true);
 		getFilter().setShowPolicyType(true);
-		getFilter().setShowCaoStatusChangedDate(true);
 	}
 
 	/**
