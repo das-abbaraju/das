@@ -267,7 +267,7 @@
 		<div class="filterOption"><s:select
 			list="filter.operatorTagNamesList" cssClass="forms"
 			name="filter.operatorTagName" listKey="id" listValue="tag"
-			headerKey="0" headerValue="- Operator Tag -" /></div>
+			headerKey="0" headerValue="- Tag -" /></div>
 	</s:if>
 
 	<s:if test="filter.showHandledBy">

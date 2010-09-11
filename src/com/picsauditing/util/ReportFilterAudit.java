@@ -36,7 +36,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showShaLocation = false;
 	protected boolean showCohsStats = false;
 	protected boolean showQuestionAnswer = false;
-	protected boolean showCaoStatusChangedDate = false;
 
 	// Filter values
 	protected int[] auditID;
@@ -196,14 +195,6 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShowQuestionAnswer(boolean showQuestionAnswer) {
 		this.showQuestionAnswer = showQuestionAnswer;
-	}
-
-	public boolean isShowCaoStatusChangedDate() {
-		return showCaoStatusChangedDate;
-	}
-
-	public void setShowCaoStatusChangedDate(boolean showCaoStatusChangedDate) {
-		this.showCaoStatusChangedDate = showCaoStatusChangedDate;
 	}
 
 	public int[] getAuditID() {

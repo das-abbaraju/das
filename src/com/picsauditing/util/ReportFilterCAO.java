@@ -7,8 +7,10 @@ public class ReportFilterCAO extends ReportFilterAudit {
 
 	protected boolean showAuditStatus = true;
 	protected boolean showPercentComplete = true;
+	protected boolean showCaoStatusChangedDate = true;
+	protected boolean showCaoOperator = true;
 
-	protected AuditStatus[] auditStatus;
+	protected AuditStatus[] auditStatus = AuditStatus.valuesWithoutPendingExpired();
 	protected String percentComplete1;
 	protected String percentComplete2;
 
@@ -50,6 +52,22 @@ public class ReportFilterCAO extends ReportFilterAudit {
 
 	public void setPercentComplete2(String percentComplete2) {
 		this.percentComplete2 = percentComplete2;
+	}
+
+	public boolean isShowCaoStatusChangedDate() {
+		return showCaoStatusChangedDate;
+	}
+
+	public void setShowCaoStatusChangedDate(boolean showCaoStatusChangedDate) {
+		this.showCaoStatusChangedDate = showCaoStatusChangedDate;
+	}
+
+	public boolean isShowCaoOperator() {
+		return showCaoOperator;
+	}
+
+	public void setShowCaoOperator(boolean showCaoOperator) {
+		this.showCaoOperator = showCaoOperator;
 	}
 
 }

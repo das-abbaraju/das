@@ -76,6 +76,10 @@ public enum AuditStatus {
 		return this.equals(Complete);
 	}
 
+	public boolean isExpired() {
+		return this.equals(Expired);
+	}
+
 	/**
 	 * Is the status Pending or Submitted
 	 * 
@@ -102,6 +106,16 @@ public enum AuditStatus {
 		if (this.equals(Pending))
 			return true;
 		return false;
+	}
+	
+	static public AuditStatus[] valuesWithoutPendingExpired() {
+		AuditStatus[] statuses = new AuditStatus[AuditStatus.values().length - 2];
+		int i = 0;
+		for (AuditStatus status : AuditStatus.values()) {
+			if (status.after(AuditStatus.Pending) && status.before(AuditStatus.NotApplicable))
+				statuses[i++] = status;
+		}
+		return statuses;
 	}
 
 }

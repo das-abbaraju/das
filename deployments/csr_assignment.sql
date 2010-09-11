@@ -83,6 +83,11 @@ JOIN accounts a1 ON a1.id = g1.genID AND a1.type = 'Operator'
 JOIN accounts a2 ON a2.id = g2.genID AND a2.type = 'Operator' 
 GROUP BY g1.genID, g2.genID;
 
+update contractor_audit_operator set status = 'Expired' 
+where status != 'Expired' AND auditID IN (
+	select ca.id from contractor_audit ca JOIN audit_type aType ON aType.id = ca.auditTypeID where ca.expiresDate < NOW() AND aType.renewable = 0
+);
+
 -- rebuild stats for AppIndex
 TRUNCATE TABLE app_index_stats;
 INSERT INTO app_index_stats SELECT indexType, NULL, count(distinct foreignKey) FROM app_index GROUP BY indexType;

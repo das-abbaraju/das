@@ -23,7 +23,26 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		sql.addField("cao.status auditStatus");
 		sql.addField("cao.statusChangedDate");
 		sql.addField("caoAccount.name caoAccountName");
-		getFilter().setShowCaoStatusChangedDate(true);
+
+		if (permissions.isOperatorCorporate()) {
+			String opIDs = permissions.getAccountIdString();
+			if (permissions.isCorporate())
+				opIDs = Strings.implode(permissions.getOperatorChildren());
+
+			sql.addWhere("cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN (" + opIDs
+					+ "))");
+		}
+
+		getFilter().setShowOperator(false);
+		getFilter().setShowTrade(false);
+		getFilter().setShowLicensedIn(false);
+		getFilter().setShowWorksIn(false);
+		getFilter().setShowOfficeIn(false);
+		getFilter().setShowTaxID(false);
+		getFilter().setShowWaitingOn(true);
+		getFilter().setShowRegistrationDate(false);
+		getFilter().setShowIndustry(false);
+		getFilter().setShowAddress(false);
 	}
 
 	@Override
@@ -32,20 +51,21 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 
 		ReportFilterCAO f = getFilter();
 
-		String auditStatusList = Strings.implodeForDB(f.getAuditStatus(), ",");
-		if (Strings.isEmpty(auditStatusList))
-			sql.addWhere("cao.status != 'Pending'");
-		else
+		if (f.getAuditStatus().length > 0) {
+			String auditStatusList = Strings.implodeForDB(f.getAuditStatus(), ",");
 			sql.addWhere("cao.status IN (" + auditStatusList + ")");
+		}
 
 		if (filterOn(f.getPercentComplete1())) {
 			report
-					.addFilter(new SelectFilter("percentComplete1", "ca.percentComplete >= '?'", f
+					.addFilter(new SelectFilter("percentComplete1", "cao.percentComplete >= '?'", f
 							.getPercentComplete1()));
 		}
 
 		if (filterOn(f.getPercentComplete2())) {
-			report.addFilter(new SelectFilter("percentComplete2", "ca.percentComplete < '?'", f.getPercentComplete2()));
+			report
+					.addFilter(new SelectFilter("percentComplete2", "cao.percentComplete < '?'", f
+							.getPercentComplete2()));
 		}
 
 		if (getFilter().getAmBestRating() > 0 || getFilter().getAmBestClass() > 0) {
@@ -58,7 +78,6 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 			if (getFilter().getAmBestClass() > 0)
 				sql.addWhere("ambest.financialCode =" + getFilter().getAmBestClass());
 		}
-
 	}
 
 	@Override

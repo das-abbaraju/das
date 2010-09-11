@@ -318,7 +318,8 @@ join temp_cao t on cao.auditID = t.auditID and t.auditTypeID NOT IN (1,11) and i
 update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedDate = ca.closedDate where cao.auditID = ca.id and cao.statusChangedDate is null and cao.status IN ('Complete','Active','Approved');
 update contractor_audit_operator set statusChangedDate = updateDate where statusChangedDate IS NULL;
 
-update contractor_audit_operator set status = 'Complete' where status IN ('Active','Expired');
+update contractor_audit_operator set status = 'Complete' where status IN ('Active');
+
 
 /*
  * END: CAO Conversion
