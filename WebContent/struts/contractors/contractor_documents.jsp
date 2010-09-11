@@ -105,7 +105,7 @@
 			<s:iterator value="imScores.keySet()" status="auditStatus" id="key">
 				<tr>
 					<td><s:property value="#key"/></td>
-					<td><s:property value="imScores.get(#key)"/></td>
+					<td class="center"><s:property value="imScores.get(#key)"/></td>
 				</tr>
 			</s:iterator>
 		</table>
@@ -137,48 +137,52 @@
 						<td><s:property value="#audit.auditor.name" /></td>
 						<td><s:date name="#audit.scheduledDate" format="M/d/yy" /></td>
 						<td>
-							<a href="#" onclick="$('tr.row_'+<s:property value="#audit.id" />).toggle(); return false;">
-								<s:iterator value="counts.get(#audit).keySet()" id="status" status="stat">
-									<s:property value="counts.get(#audit).get(#status).size()" /> <s:property value="#status.toString()" /><s:if test="!#stat.last">,</s:if>
-								</s:iterator>
-							</a>
+							<s:if test="#audit.operators.size > 0">
+								<a href="#" onclick="$('tr.row_'+<s:property value="#audit.id" />).toggle(); return false;">
+									<s:iterator value="counts.get(#audit).keySet()" id="status" status="stat">
+										<s:property value="counts.get(#audit).get(#status).size()" /> <s:property value="#status.toString()" /><s:if test="!#stat.last">,</s:if>
+									</s:iterator>
+								</a>
+							</s:if>
 						</td>
 					</tr>
-					<tr class="row_<s:property value="#audit.id" /> hidden">
-						<td colspan="4">
-							<table class="report info">
-								<thead>
-									<tr>
-										<th>Operator</th>
-										<th>Status</th>
-										<th>Updated</th>
-										<s:if test="#classType == 'IM'">
-											<th>Score</th>
-										</s:if>
-									</tr>
-								</thead>
-								<tbody>
-									<s:iterator value="#audit.operators" id="cao">
+					<s:if test="#audit.operators.size > 0">
+						<tr class="row_<s:property value="#audit.id" /> hidden">
+							<td colspan="4">
+								<table class="report info">
+									<thead>
 										<tr>
-											<td>
-												<pics:permission perm="ManageOperators">
-													<a href="FacilitiesEdit.action?id=<s:property value="#cao.operator.id"/>"><s:property value="#cao.operator.name"/></a>
-												</pics:permission>
-												<pics:permission perm="ManageOperators" negativeCheck="true">
-													<s:property value="#cao.operator.name" />
-												</pics:permission>
-											</td>
-											<td><s:property value="#cao.status" /></td>
-											<td><s:date name="#cao.statusChangedDate" format="M/d/yy" /></td>
+											<th>Operator</th>
+											<th>Status</th>
+											<th>Updated</th>
 											<s:if test="#classType == 'IM'">
-												<td class="center"><s:property value="#audit.printableScore" /></td>
+												<th>Score</th>
 											</s:if>
 										</tr>
-									</s:iterator>
-								</tbody>
-							</table>
-						</td>
-					</tr>
+									</thead>
+									<tbody>
+										<s:iterator value="#audit.operators" id="cao">
+											<tr>
+												<td>
+													<pics:permission perm="ManageOperators">
+														<a href="FacilitiesEdit.action?id=<s:property value="#cao.operator.id"/>"><s:property value="#cao.operator.name"/></a>
+													</pics:permission>
+													<pics:permission perm="ManageOperators" negativeCheck="true">
+														<s:property value="#cao.operator.name" />
+													</pics:permission>
+												</td>
+												<td><s:property value="#cao.status" /></td>
+												<td><s:date name="#cao.statusChangedDate" format="M/d/yy" /></td>
+												<s:if test="#classType == 'IM'">
+													<td class="center"><s:property value="#audit.printableScore" /></td>
+												</s:if>
+											</tr>
+										</s:iterator>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+					</s:if>
 				</s:iterator>
 			</s:iterator>
 		</tbody>
