@@ -139,7 +139,7 @@ public class ContractorAuditController extends AuditActionSupport {
 
 			if (mode == null)
 				mode = VIEW;
-			if (mode.equals(EDIT) && !isCanCloseAudit())
+			if (mode.equals(EDIT) && !isCanEditAudit())
 				mode = VIEW;
 			if (mode.equals(VERIFY) && !isCanVerifyAudit())
 				mode = VIEW;
