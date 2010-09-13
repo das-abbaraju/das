@@ -9,7 +9,6 @@
 		<class>com.picsauditing.jpa.entities.AppProperty</class>
 		<class>com.picsauditing.jpa.entities.AssessmentTest</class>
 		<class>com.picsauditing.jpa.entities.AuditCategory</class>
-		<class>com.picsauditing.jpa.entities.AuditCatOperator</class>
 		<class>com.picsauditing.jpa.entities.AuditData</class>
 		<class>com.picsauditing.jpa.entities.AuditQuestion</class>
 		<class>com.picsauditing.jpa.entities.AuditQuestionOption</class>
@@ -22,7 +21,6 @@
 		<class>com.picsauditing.jpa.entities.ContractorAuditOperator</class>
 		<class>com.picsauditing.jpa.entities.ContractorOperator</class>
 		<class>com.picsauditing.jpa.entities.Country</class>
-		<class>com.picsauditing.jpa.entities.DesktopMatrix</class>
 		<class>com.picsauditing.jpa.entities.EmailAttachment</class>
 		<class>com.picsauditing.jpa.entities.EmailQueue</class>
 		<class>com.picsauditing.jpa.entities.EmailStatus</class>
