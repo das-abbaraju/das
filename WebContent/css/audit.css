@@ -129,9 +129,9 @@ table.statusOpBox {
 	border: 2px solid #F6F6F0;		
 	color: #012142;
 	border-collapse:collapse;
-	margin-left: auto;
-	margin-right: auto;
+	min-width: 70%;
 	margin-bottom: 10px;
+	margin-left: 25px;
 }
 table.statusOpBox td {
 	border: 2px solid #F6F6F0;	
@@ -298,9 +298,6 @@ text-decoration:none;
 /** END Category Header+Footer Navigation **/
 
 /** Audit SideNav **/
-div.auditHeaderSideNav{
-	float: left;
-}
 ul.vert-toolbar  {
 	list-style: none;	
 	width: 280px;
@@ -333,7 +330,7 @@ ul.vert-toolbar li.head .hidden-button{
 	right:5px;
 }
 ul.vert-toolbar li.head.over .hidden-button {
-	display: inline-block;
+	display: inline;
 }
 ul.vert-toolbar li .abs-right {
 	position: absolute;
@@ -357,18 +354,10 @@ ul.vert-toolbar li.hover {
 	border-bottom: 1px solid #ababab;
  	border-top: 1px solid #ababab;
 }
-div.auditHeaderSideNav #nacatlist{
+#nacatlist{
 	display: none;
 }
 /** END Audit SideNav **/
-
-/** Audit ViewArea **/
-div.auditViewArea{
-	min-width: 600px;
-	margin-left: 300px;
-	border: 1px solid blue;	
-}
-/** END Audit ViewArea **/
 
 /*** OSHA **/
 table.osha {

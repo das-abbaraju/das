@@ -59,9 +59,8 @@
 	<div id="fieldsHead" style="width: 95%; margin-left: auto; margin-right:auto;">
 		<fieldset>
 		<ul>
-			<li><label>Type:</label>
-				<s:property value="conAudit.auditType.auditName" />
-				 #<s:property value="conAudit.id" />
+			<li><label>ID:</label>
+				 <s:property value="conAudit.id" />
 			</li>
 			<li><label>Created:</label>
 				<s:date name="conAudit.creationDate" format="MMM d, yyyy" />
@@ -75,26 +74,10 @@
 		</fieldset>
 		<fieldset>
 		<ul>
-			<s:if test="!conAudit.auditType.classType.policy">
-				<li><label>Status:</label>
-					<s:property value="conAudit.auditStatus" />
+			<s:if test="conAudit.expiresDate != null">
+				<li><label>Expires:</label>
+					<s:date name="conAudit.expiresDate" format="MMM d, yyyy" />
 				</li>
-				<li><label>Description:</label>
-					<s:property value="conAudit.statusDescription" />
-				</li>
-				
-			</s:if>
-			<s:if test="conAudit.auditStatus.name() == 'Submitted'">
-				<s:if test="conAudit.auditType.PQF">
-					<li><label>Verified:</label>
-						<s:property value="conAudit.percentVerified" />%
-					</li>
-				</s:if>
-				<s:else>
-					<li><label>% Closed:</label>
-						<s:property value="conAudit.percentVerified" />%
-					</li>
-				</s:else>
 			</s:if>
 			<s:if test="conAudit.auditStatus.name() == 'Pending'">
 				<li><label>% Complete:</label>
@@ -161,25 +144,25 @@
 	</div>
 	<div class="clear"></div>
 	<div id="statusBox" class="center">	
-		<table class="statusOpBox" style="width: 95%">
+		<table class="statusOpBox" style="">
 			<thead>
 				<tr>
-					<th>Button</th>
 					<th>Operator</th>
 					<th>Progress</th>
 					<th>Status</th>
 					<th>Date</th>
+					<th>Button</th>
 				</tr>
 			</thead>
 			<tbody>
 				<s:iterator value="conAudit.operators" status="rowStatus">
 					<s:if test="visible && isVisibleTo(permissions)">
 						<tr>
-							<td>Approve</td>
 							<td><s:property value="operator.name" /></td>								
-							<td>***********</td>
+							<td><s:property value="percentComplete" /></td>
 							<td><s:property value="status"/></td>
-							<td>12/31/1999</td>
+							<td><s:property value="formatDate(statusChangedDate, 'MMMMM d, yyyy')" /></td>
+							<td>Approve</td>
 						</tr>
 					</s:if>
 				</s:iterator>
@@ -188,52 +171,6 @@
 	</div>
 	<span style="float: right; padding-right: 25px;"><a href="#" class="refresh">Refresh</a></span>
 	<div class="clear"></div>
-</div>
-<div id="auditHeaderNav" class="auditHeaderNav noprint">
-	<ul>
-		<pics:permission perm="AuditEdit">
-			<li><a href="ConAuditMaintain.action?auditID=<s:property value="auditID" />"
-				<s:if test="requestURI.contains('audit_maintain.jsp')">class="current"</s:if>>System Edit</a></li>
-		</pics:permission>
-		<s:if test="conAudit.auditStatus.pendingSubmittedResubmitted || conAudit.auditStatus.incomplete && (conAudit.auditType.pqf || conAudit.auditType.annualAddendum)">
-			<pics:permission perm="AuditVerification">
-				<li><a href="VerifyView.action?id=<s:property value="id" />"
-				<s:if test="requestURI.contains('verif')">class="current"</s:if>>Verify</a></li>
-			</pics:permission>
-		</s:if>
-		<s:if test="conAudit.auditStatus.pending">
-			<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
-			Questions</a></li>
-		</s:if>
-		<s:if test="conAudit.auditType.hasRequirements && conAudit.auditStatus.activeSubmitted">
-			<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true" 
-				<s:if test="onlyReq && mode != 'Edit'">class="current"</s:if>>Print Requirements</a></li>
-			<s:if test="permissions.auditor">
-				<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true&mode=Edit"
-				 <s:if test="onlyReq && mode == 'Edit'">class="current"</s:if>>Edit Requirements</a></li>
-			</s:if>
-			<s:if test="permissions.admin">
-				<li><a href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload Requirements</a></li>
-			</s:if>
-			<s:elseif test="permissions.onlyAuditor">
-				<li><a href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload Requirements</a></li>
-			</s:elseif>
-			<s:if test="permissions.operatorCorporate">
-				<li><a href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Review Requirements</a></li>
-			</s:if>
-		</s:if>
-		<s:if test="!singleCat">
-			<li><a href="Audit.action?auditID=<s:property value="auditID" />"
-				<s:if test="requestURI.contains('con_audit.jsp')">class="current"</s:if>>Categories</a></li>
-			<pics:permission perm="AllContractors">
-				<li><a href="?auditID=<s:property value="auditID"/>&button=recalculate">Recalculate Categories</a></li>
-			</pics:permission>
-		</s:if>
-		<s:if test="(permissions.contractor || permissions.admin) && conAudit.auditStatus.pending && conAudit.auditType.scheduled">
-			<li><a href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>"
-					<s:if test="requestURI.contains('schedule_audit')">class="current"</s:if>>Schedule Audit</a></li>
-		</s:if>
-	</ul>
 </div>
 </s:if>
 </s:if>
