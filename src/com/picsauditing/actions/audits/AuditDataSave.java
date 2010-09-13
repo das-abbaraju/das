@@ -11,7 +11,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.picsauditing.PICS.AuditBuilderController;
-import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -40,17 +39,15 @@ public class AuditDataSave extends AuditActionSupport {
 	private AnswerMap answerMap;
 	private AuditQuestionDAO questionDao = null;
 	private NaicsDAO naicsDAO;
-	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilderController auditBuilder;
 	private String mode;
 
 	private boolean toggleVerify = false;
 
 	public AuditDataSave(ContractorAccountDAO accountDAO, AuditDataDAO dao, AuditCategoryDataDAO catDataDao,
-			AuditPercentCalculator auditPercentCalculator, AuditQuestionDAO questionDao, ContractorAuditDAO auditDao,
+			AuditQuestionDAO questionDao, ContractorAuditDAO auditDao,
 			OshaAuditDAO oshaAuditDAO, NaicsDAO naicsDAO, AuditBuilderController auditBuilder) {
 		super(accountDAO, auditDao, catDataDao, dao);
-		this.auditPercentCalculator = auditPercentCalculator;
 		this.questionDao = questionDao;
 		this.naicsDAO = naicsDAO;
 		this.auditBuilder = auditBuilder;
@@ -233,13 +230,6 @@ public class AuditDataSave extends AuditActionSupport {
 			} else if (toggleVerify) {
 				catData = catDataDao.findAuditCatData(auditData.getAudit().getId(), auditData
 						.getQuestion().getCategory().getParent().getId());
-			}
-
-			if (catData != null) {
-				conAudit = auditDao.find(auditData.getAudit().getId());
-				auditBuilder.fillAuditCategories(conAudit);
-				auditPercentCalculator.updatePercentageCompleted(catData);
-				auditPercentCalculator.percentCalculateComplete(conAudit);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

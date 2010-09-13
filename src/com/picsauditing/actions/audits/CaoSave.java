@@ -2,6 +2,8 @@ package com.picsauditing.actions.audits;
 
 import java.util.Date;
 
+import com.picsauditing.PICS.AuditBuilderController;
+import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
@@ -33,12 +35,16 @@ public class CaoSave extends AuditActionSupport {
 
 	protected ContractorAuditOperatorDAO caoDAO;
 	protected OshaAuditDAO oshaAuditDAO;
+	private AuditPercentCalculator auditPercentCalculator;
+	private AuditBuilderController auditBuilder;
 
 	public CaoSave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, OshaAuditDAO oshaAuditDAO, ContractorAuditOperatorDAO caoDAO) {
+			AuditDataDAO auditDataDao, OshaAuditDAO oshaAuditDAO, ContractorAuditOperatorDAO caoDAO, AuditPercentCalculator auditPercentCalculator, AuditBuilderController auditBuilder) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.caoDAO = caoDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
+		this.auditPercentCalculator = auditPercentCalculator;
+		this.auditBuilder = auditBuilder;
 	}
 
 	@Override
@@ -181,7 +187,9 @@ public class CaoSave extends AuditActionSupport {
 
 			caoDAO.save(cao);
 		}
-
+	
+		auditBuilder.fillAuditCategories(conAudit);
+		auditPercentCalculator.percentCalculateComplete(conAudit, true);
 		return SUCCESS;
 	}
 
