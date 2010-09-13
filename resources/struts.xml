@@ -1188,15 +1188,6 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
-		<action name="ManagePQFMatrix"
-			class="com.picsauditing.actions.auditType.ManagePQFMatrix">
-			<result>struts/audits/pqf_matrix.jsp</result>
-		</action>
-
-		<action name="ManageDesktopMatrix"
-			class="com.picsauditing.actions.auditType.ManageDesktopMatrix">
-			<result>struts/audits/desktop_matrix.jsp</result>
-		</action>
 		<action name="ManageAuditWorkFlow"
 			class="com.picsauditing.actions.auditType.ManageWorkFlow">
 			<result>struts/audits/manage_workflow.jsp</result>

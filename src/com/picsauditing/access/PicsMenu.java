@@ -233,8 +233,6 @@ public class PicsMenu {
 			subMenu.addChild("Forms &amp; Docs", "manage_forms.jsp");
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
 			subMenu.addChild("Audit Definitions", "ManageAuditType.action");
-			subMenu.addChild("Manual Audit Matrix", "ManageDesktopMatrix.action");
-			subMenu.addChild("PQF Matrix", "ManagePQFMatrix.action");
 			subMenu.addChild("Flag Criteria", "ManageFlagCriteria.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageAuditTypeRules)) {

@@ -2,6 +2,7 @@ package com.picsauditing.dao;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Query;
 
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
 @Transactional
@@ -59,7 +61,7 @@ public class AuditQuestionDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<AuditQuestion> findByQuestion(String question, Permissions permissions) {
+	public List<AuditQuestion> findByQuestion(String question, Permissions permissions, Set<AuditCategory> auditCats) {
 		String where = "SELECT t FROM AuditQuestion t WHERE t.name LIKE :name AND t.effectiveDate < NOW() AND t.expirationDate > NOW()";
 		Query query = em.createQuery(where);
 		query.setParameter("name", "%" + Utilities.escapeQuotes(question) + "%");
@@ -70,7 +72,7 @@ public class AuditQuestionDAO extends PicsDAO {
 			Iterator<AuditQuestion> iter = result.iterator();
 			while (iter.hasNext()) {
 				AuditQuestion q = iter.next();
-				if (!permissions.getCanSeeAudit().contains(q.getAuditType().getId()))
+				if (!auditCats.contains(q.getCategory()))
 					iter.remove();
 			}
 		}

@@ -9,72 +9,52 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AuditCatOperatorDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.AuditCatOperator;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.OperatorAccount;
 
 @SuppressWarnings("serial")
 public class QuestionSelect extends PicsActionSupport {
 	private String questionName;
 	Set<AuditQuestion> questions;
 	protected AuditQuestionDAO auditQuestionDAO = null;
-	protected AuditCatOperatorDAO auditCatOperatorDAO = null;
-	protected OperatorAccountDAO operatorAccountDAO = null;
-	protected List<AuditCatOperator> auditCatOperatorList = null;
+	protected Set<AuditCategory> auditCategories = null;
+	protected AuditDecisionTableDAO auditDecisionTableDAO;
 
-	public QuestionSelect(AuditQuestionDAO auditQuestionDAO, AuditCatOperatorDAO auditCatOperatorDAO,
-			OperatorAccountDAO operatorAccountDAO) {
+	public QuestionSelect(AuditQuestionDAO auditQuestionDAO,
+			AuditDecisionTableDAO auditDecisionTableDAO) {
 		this.auditQuestionDAO = auditQuestionDAO;
-		this.auditCatOperatorDAO = auditCatOperatorDAO;
-		this.operatorAccountDAO = operatorAccountDAO;
+		this.auditDecisionTableDAO = auditDecisionTableDAO;
 	}
 
 	public String execute() throws Exception {
 		loadPermissions();
-
 		questions = new TreeSet<AuditQuestion>();
-		List<AuditQuestion> questionList = auditQuestionDAO.findByQuestion(questionName, permissions);
-		for (AuditQuestion q : questionList) {
-			if (q.getAuditType().isPqf() && !permissions.seesAllContractors()) {
-				for (AuditCatOperator auditCatOperator : getAuditCatOperatorList()) {
-					if (q.getCategory() == auditCatOperator.getCategory()) {
-						questions.add(q);
-					}
-				}
-			} else {
-				questions.add(q);
-			}
-		}
+		List<AuditQuestion> questionList = auditQuestionDAO.findByQuestion(
+				questionName, permissions, getAuditCategories());
+		questions.addAll(questionList);
+
 		return SUCCESS;
 	}
 
-	public List<AuditCatOperator> getAuditCatOperatorList() {
-		if (auditCatOperatorList == null) {
-			auditCatOperatorList = new ArrayList<AuditCatOperator>();
-			if (permissions.isOperator() || permissions.isCorporate()) {
-				OperatorAccount opAccount = operatorAccountDAO.find(permissions.getAccountId());
-				Set<Integer> operator = new HashSet<Integer>();
-				operator.add(opAccount.getInheritAuditCategories().getId());
-				if (permissions.isCorporate()) {
-					for (Facility facility : opAccount.getOperatorFacilities()) {
-						operator.add(facility.getOperator().getInheritAuditCategories().getId());
-					}
+	private Set<AuditCategory> getAuditCategories() {
+		if (auditCategories == null) {
+			auditCategories = new HashSet<AuditCategory>();
+			if (permissions.isOperatorCorporate()) {
+				List<AuditCategory> auditCategoryList = auditDecisionTableDAO
+						.getCategoriesByOperator(getOperatorAccount(),
+								permissions);
+				for (AuditCategory auditCategory : auditCategoryList) {
+					auditCategories.add(auditCategory);
+					auditCategories.addAll(auditCategory.getChildren());
 				}
-				int[] operatorIds = new int[operator.size()];
-				int index = 0;
-				for (int i : operator) {
-					operatorIds[index] = i;
-					index++;
-				}
-				auditCatOperatorList = auditCatOperatorDAO.find(operatorIds, null);
 			}
+			return auditCategories;
 		}
-		return auditCatOperatorList;
+
+		return auditCategories;
 	}
 
 	public String getQuestionName() {
@@ -93,7 +73,8 @@ public class QuestionSelect extends PicsActionSupport {
 		Map<AuditType, List<AuditQuestion>> questionMap = new TreeMap<AuditType, List<AuditQuestion>>();
 		for (AuditQuestion q : questions) {
 			if (questionMap.get(q.getAuditType()) == null)
-				questionMap.put(q.getAuditType(), new ArrayList<AuditQuestion>());
+				questionMap.put(q.getAuditType(),
+						new ArrayList<AuditQuestion>());
 
 			questionMap.get(q.getAuditType()).add(q);
 		}

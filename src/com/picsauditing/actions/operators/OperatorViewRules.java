@@ -5,7 +5,6 @@ import java.util.List;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditRule;

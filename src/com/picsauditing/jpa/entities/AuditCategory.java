@@ -1,7 +1,9 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -222,6 +224,24 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		return false;
 	}
 
+	@Transient
+	public Set<AuditCategory> getChildren() {
+		Set<AuditCategory> children = new HashSet<AuditCategory>();
+		addChildren(children, this);
+
+		return children;
+	}
+
+	@Transient
+	private void addChildren(Set<AuditCategory> children, AuditCategory category) {
+		if(category.getSubCategories().size() > 0) {
+			for(AuditCategory auditSubCategory :  category.getSubCategories()) {
+				children.add(auditSubCategory);
+				addChildren(children, auditSubCategory) ;
+			}
+		}
+	}
+	
 	@Transient
 	public List<AuditCategory> getAncestors() {
 		List<AuditCategory> ancestors = new ArrayList<AuditCategory>();

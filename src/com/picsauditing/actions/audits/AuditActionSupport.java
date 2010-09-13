@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
@@ -96,8 +97,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.isOperatorCorporate()) {
 			AuditBuilder builder = new AuditBuilder();
 			Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-			OperatorAccount opAccount = (OperatorAccount) getUser().getAccount();
-			operators.add(opAccount);
+			if(permissions.isCorporate()) {
+				for (Facility facility : getOperatorAccount().getOperatorFacilities()) {
+					operators.add(facility.getOperator());
+				}
+			}
+			else
+				operators.add(getOperatorAccount());
+
 			AuditCategoriesDetail auditCategoryDetail = builder.getDetail(conAudit.getAuditType(), getRules(),
 					operators);
 			requiredCategories = auditCategoryDetail.categories;

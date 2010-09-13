@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,18 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.QuestionComparator;
 import com.picsauditing.util.Strings;
 
 @Transactional
@@ -360,5 +357,26 @@ public class AuditDecisionTableDAO extends PicsDAO {
 				map.put(auditTypeID, opID);
 		}
 		return map;
+	}
+	
+	public List<AuditCategory> getCategoriesByOperator(OperatorAccount operator, Permissions permissions) {
+		String where = "WHERE  effectiveDate <= NOW() AND expirationDate > NOW()"; 
+		List<Integer> operatorIDs = new ArrayList<Integer>();
+		if(permissions.isOperator())
+			operatorIDs = operator.getOperatorHeirarchy();
+		if(permissions.isCorporate()) {
+			operatorIDs.add(operator.getId());
+			for(Facility facility  : operator.getOperatorFacilities()) {
+				operatorIDs.addAll(facility.getOperator().getOperatorHeirarchy());
+			}
+		}
+		where += " AND (opID IS NULL";
+		if (operatorIDs.size() > 0)
+			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
+		where += ")";
+
+		Query query = em.createQuery("SELECT DISTINCT a.auditCategory FROM AuditCategoryRule a " + where + " ORDER BY priority DESC");
+		
+		return query.getResultList();
 	}
 }

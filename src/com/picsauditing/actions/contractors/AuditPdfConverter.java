@@ -50,6 +50,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
@@ -128,11 +129,13 @@ public class AuditPdfConverter extends ContractorActionSupport {
 
 			Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 			Set<AuditCategory> requiredCategories = new HashSet<AuditCategory>();
-			if(permissions.isOperatorCorporate()) {
-				OperatorAccount opAccount = (OperatorAccount) getUser()
-						.getAccount();
-				operators.add(opAccount);
+			if(permissions.isCorporate()) {
+				for (Facility facility : getOperatorAccount().getOperatorFacilities()) {
+					operators.add(facility.getOperator());
+				}
 			}
+			else if(permissions.isOperator())
+				operators.add(getOperatorAccount());
 			
 			for (ContractorAudit conAudit : contractor.getAudits()) {
 				if (!conAudit.isExpired()

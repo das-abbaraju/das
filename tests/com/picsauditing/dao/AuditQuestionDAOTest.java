@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.HashSet;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -11,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -22,7 +24,8 @@ public class AuditQuestionDAOTest extends TestCase {
 
 	@Test
 	public void testFindByQuestion() {
-		List<AuditQuestion> questions = questionDAO.findByQuestion("What", new Permissions());
+		List<AuditQuestion> questions = questionDAO.findByQuestion("What",
+				new Permissions(), new HashSet<AuditCategory>());
 		assertTrue(questions.size() > 0);
 
 		for (AuditQuestion question : questions) {
