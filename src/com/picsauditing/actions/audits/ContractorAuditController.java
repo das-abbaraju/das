@@ -12,6 +12,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OshaAuditDAO;
+import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -22,6 +23,8 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.Workflow;
+import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -44,16 +47,18 @@ public class ContractorAuditController extends AuditActionSupport {
 	private AuditCategoryDAO auditCategoryDAO;
 	private AuditPercentCalculator auditPercentCalculator;
 	private OshaAuditDAO oshaAuditDAO;
+	protected WorkFlowDAO wfDAO;
 
 	public ContractorAuditController(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, AuditCategoryDAO auditCategoryDAO,
 			AuditPercentCalculator auditPercentCalculator,
-			OshaAuditDAO oshaAuditDAO) {
+			OshaAuditDAO oshaAuditDAO, WorkFlowDAO wfDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.oshaAuditDAO = oshaAuditDAO;
+		this.wfDAO = wfDAO;
 	}
 
 	public String execute() throws Exception {
@@ -354,5 +359,24 @@ public class ContractorAuditController extends AuditActionSupport {
 			return false;
 
 		return false;
+	}
+	
+	public List<String> getButtonSubmitList(){
+		
+		return null;
+	}
+	
+	public List<String> getValidButtons(int wfID, String status){
+		AuditStatus auditStatus = AuditStatus.valueOf(status);
+		List<String> results = new ArrayList<String>();
+		if(auditStatus!=null){
+			Workflow wf = wfDAO.find(wfID);
+			List<WorkflowStep> steps = wf.getSteps();
+			for (WorkflowStep workflowStep : steps) {
+				if(workflowStep.getOldStatus() == auditStatus)
+					results.add(workflowStep.getButtonName());
+			}
+		}
+		return results;
 	}
 }

@@ -136,7 +136,11 @@
 							<td><s:property value="percentComplete" /></td>
 							<td><s:property value="status"/></td>
 							<td><s:property value="formatDate(statusChangedDate, 'MMMMM d, yyyy')" default="N/A" /></td>
-							<td>Approve</td>
+							<td>
+								<s:iterator value="getValidButtons(conAudit.auditType.workFlow.id, status)">
+									<a href="#actionhere"><s:property/></a>
+								</s:iterator>
+							</td>
 						</tr>
 					</s:if>
 				</s:iterator>
