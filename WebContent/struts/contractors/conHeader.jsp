@@ -131,7 +131,7 @@
 			<tbody>
 				<s:iterator value="conAudit.operators" status="rowStatus">
 					<s:if test="visible && isVisibleTo(permissions)">
-						<tr>
+						<tr id="cao_<s:property value="id"/>">
 							<td><s:property value="operator.name" /></td>								
 							<td><s:property value="percentComplete" /></td>
 							<td><s:property value="status"/></td>

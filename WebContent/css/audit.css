@@ -315,7 +315,7 @@ ul.vert-toolbar li {
 	padding-left: 5px;
 	position: relative;
 }
-ul.vert-toolbar li .abs-right {
+ul.vert-toolbar li .cat-percent {
 	position: absolute;
 	right:5px;
 }

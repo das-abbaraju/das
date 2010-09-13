@@ -1,13 +1,4 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<script type="text/javascript">
-	function resubmitPqf(verifyCheckBox) {
-		if($(verifyCheckBox).is(':checked'))
-			$('#submit').attr({disabled:false});
-		else
-			$('#submit').attr({disabled:'disabled'});		
-	}
-</script>
-
 <s:if test="auditID > 0">
 	<s:include value="../contractors/conHeader.jsp" />
 	

@@ -10,13 +10,6 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript" src="js/con_audit.js?v=<s:property value="version"/>"></script>
-<script>
-$(function(){
-	$('#naCats').hide();	
-	if($('.notApplicable').length>0)
-		$('#showHideCats').show();
-});
-</script>
 </head>
 <body>
 
@@ -67,27 +60,27 @@ $(function(){
 							<s:if test="requestURI.contains('schedule_audit')">class="current"</s:if>>Schedule Audit</a></li>
 				</s:if>
 			</ul>
-			<s:if test="categories.size() >1">
+			<s:if test="categories.size() > 1">
 				<ul id="catlist" class="catlist vert-toolbar">
 					<li class="head">CATEGORIES <span class="hidden-button">Show N/A</span></li>			
 					<s:iterator value="categories" status="rowStatus">
 						<s:if test="applies">
-							<li class="applicable">
+							<li id="category_<s:property value="categoryID"/>">
 								<a class="hist-category" href="#categoryID=<s:property value="category.id" />"><s:property value="category.name" />
 								<s:if test="conAudit.auditType.pqf">
-									<span class="abs-right">
+									<span class="cat-percent">
 										<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
 										<s:else><s:property value="percentCompleted" />%</s:else>
 									</span>
 								</s:if>
 								<s:if test="conAudit.auditType.hasRequirements">
-									<span class="abs-right">
+									<span class="cat-percent">
 										<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
 										<s:else><s:property value="percentCompleted" />%</s:else>
 									</span>
 								</s:if>
 								<s:if test="conAudit.auditType.id == 17">
-									<span class="abs-right">
+									<span class="cat-percent">
 										<s:property value="printableScore"/>
 									</span>
 								</s:if>
@@ -100,7 +93,7 @@ $(function(){
 					<li class="head">N/A CATEGORIES <span class="hidden-button">Show Others</span></li>
 					<s:iterator value="categories" status="rowStatus">
 						<s:if test="!applies && permissions.picsEmployee">
-							<li class="notApplicable">
+							<li id="category_<s:property value="categoryID"/>">
 								<a class="hist-category" href="#categoryID=<s:property value="category.id" />"><s:property value="category.name" /></a>
 							</li>
 						</s:if>
@@ -108,7 +101,7 @@ $(function(){
 				</ul>
 			</s:if>
 		</td>
-		<td class="auditViewArea">
+		<td id="auditViewArea">
 		
 		</td>
 	</tr>

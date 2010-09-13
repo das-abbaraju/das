@@ -12,7 +12,7 @@
 	<s:else>
 		<h2><s:property value="#category.fullNumber"/>. <s:property value="#category.name"/></h2>
 		<s:set name="shaded" value="true" scope="action"/>
-		<s:iterator value="#category.questions">
+		<s:iterator value="#category.questions" id="q">
 			<s:if test="title != null && title.length() > 0">
 				<h4 class="groupTitle">
 					<s:property value="title" escape="false"/>
@@ -23,10 +23,9 @@
 					<s:include value="audit_cat_questions.jsp"></s:include>
 				</div>
 			</s:if>
-			<s:set name="q" value="[0]" />
 			<!-- Single Leaf Question -->
 			<s:set name="a" value="answerMap.get(#q.id)" />
-			<s:set name="visibleAnswer" value="answerMap.get(#q.requiredQuestion.id)" />
+			<s:set name="visibleAnswer" value="answerMap.get(#q.visibleQuestion.id)" />
 			<s:set name="visible" value="#q.visibleQuestion == null || #q.visibleAnswer == #visibleAnswer.answer" />
 			<s:if test="onlyReq && !#a.hasRequirements">
 				<s:set name="visible" value="false" />

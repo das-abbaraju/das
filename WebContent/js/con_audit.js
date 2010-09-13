@@ -19,8 +19,8 @@ $(function(){
 			$('a.hist-category:first').click();
 		else {
 			var data = $.deparam.querystring($.param.querystring(location.href, $.bbq.getState()));
-			data.button='adsf';
-			$('.auditViewArea').load('AuditAjax.action', data);
+			data.button='';
+			$('#auditViewArea').load('AuditAjax.action', data);
 		}
 	});
 	
