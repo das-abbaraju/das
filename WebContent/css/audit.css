@@ -146,7 +146,36 @@ table.statusOpBox th {
 	background-color: #aaa;
 	color: white;
 }
+table.statusOpBox td.progress{
+	vertical-align: middle;
+	padding: 0;
+}
+/** Table for ProgressBar **/
+table.progressTable {
+	border: 1px solid #012142;
+	border-collapse: collapse;
+	margin: 0;
+	margin-left: auto;
+	margin-right: auto;
+	width: 200px;
+	padding: 5px;
+}
+table.progressTable tr, table.progressTable td {
+	border: none;
+	border-collapse: collapse;
+	padding: 0;
+	margin: 0;
+}
 
+td.progressBar{
+	background: #5D9BCE;
+	height: 17px;
+}
+.progressPercent{
+	left: 25px;
+	position:absolute;
+	top:-2px;
+}
 /** Audit Header ***/
 #content div.auditHeader {
 	border-top: 2px solid #C3C3C3;

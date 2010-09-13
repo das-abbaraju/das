@@ -25,4 +25,12 @@ $(function(){
 	});
 	
 	$(window).trigger('hashchange');
+	
+	//$('a[rel*=facebox]').facebox({
+		//loading_image : 'loading.gif',
+		//close_image : 'closelabel.gif'
+	//});
+	
+	
+	
 });

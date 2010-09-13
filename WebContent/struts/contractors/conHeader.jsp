@@ -133,7 +133,12 @@
 					<s:if test="visible && isVisibleTo(permissions)">
 						<tr id="cao_<s:property value="id"/>">
 							<td><s:property value="operator.name" /></td>								
-							<td><s:property value="percentComplete" /></td>
+							<td class="progress nobr">
+								<div style="position: relative">
+									<table class="progressTable"><tr><td class="progressBar" style="width: <s:property value="percentComplete" />%"></td><td></td></tr></table>
+									<span class="progressPercent"><s:property value="percentComplete" />%</span>
+								</div>
+							</td>
 							<td><s:property value="status"/></td>
 							<td><s:property value="formatDate(statusChangedDate, 'MMMMM d, yyyy')" default="N/A" /></td>
 							<td>
