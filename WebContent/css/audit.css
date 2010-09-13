@@ -315,23 +315,6 @@ ul.vert-toolbar li {
 	padding-left: 5px;
 	position: relative;
 }
-ul.vert-toolbar li.head {
-	padding: 6px 0 6px 10px;
-	background-color: #A84D10;
-	font-size: 18px;
-	font-weight: bold;
-	color: #fff;
-}
-ul.vert-toolbar li.head .hidden-button{
-	cursor: pointer;
-	display:none;
-	font-size: 0.5em;
-	position: absolute;
-	right:5px;
-}
-ul.vert-toolbar li.head.over .hidden-button {
-	display: inline;
-}
 ul.vert-toolbar li .abs-right {
 	position: absolute;
 	right:5px;
@@ -353,6 +336,24 @@ ul.vert-toolbar li.hover {
 	background-color: #e7e7e0;
 	border-bottom: 1px solid #ababab;
  	border-top: 1px solid #ababab;
+}
+ul.vert-toolbar li.head {
+	padding: 6px 0 6px 10px;
+	background-color: #A84D10;
+	font-size: 18px;
+	font-weight: bold;
+	color: #fff;
+	border: 0;
+}
+ul.vert-toolbar li.head .hidden-button{
+	cursor: pointer;
+	display:none;
+	font-size: 0.5em;
+	position: absolute;
+	right:5px;
+}
+ul.vert-toolbar li.head.hover .hidden-button {
+	display: inline;
 }
 #nacatlist{
 	display: none;

@@ -1,7 +1,5 @@
 $(function(){
 	
-	$('ul.vert-toolbar li.head').live('mouseenter', function(){$(this).addClass('over');}).live('mouseleave', function(){$(this).removeClass('over');});
-
 	$('ul.vert-toolbar li.head .hidden-button').click(function() {
 		$('ul.catlist').toggle('slow');
 	});
@@ -14,7 +12,7 @@ $(function(){
 		return false;
 	});
 	
-	$('.vert-toolbar li:not(.head)').live('mouseenter', function(){$(this).addClass('hover');}).live('mouseleave', function(){$(this).removeClass('hover');});
+	$('.vert-toolbar li').live('mouseenter', function(){$(this).addClass('hover');}).live('mouseleave', function(){$(this).removeClass('hover');});
 	
 	$(window).bind('hashchange', function() {
 		if ($.bbq.getState().categoryID === undefined)
