@@ -62,62 +62,11 @@
 			<li><label>ID:</label>
 				 <s:property value="conAudit.id" />
 			</li>
-			<li><label>Created:</label>
-				<s:date name="conAudit.creationDate" format="MMM d, yyyy" />
-			</li>
-			<s:if test="conAudit.expiresDate != null">
-				<li><label>Expires:</label>
-					<s:date name="conAudit.expiresDate" format="MMM d, yyyy" />
+			<s:if test="conAudit.auditType.classType.name().equals('IM')">
+				<li><label>IM Score:</label>
+					<s:property value="conAudit.printableScore"/>
 				</li>
-			</s:if>
-		</ul>
-		</fieldset>
-		<fieldset>
-		<ul>
-			<s:if test="conAudit.expiresDate != null">
-				<li><label>Expires:</label>
-					<s:date name="conAudit.expiresDate" format="MMM d, yyyy" />
-				</li>
-			</s:if>
-			<s:if test="conAudit.auditStatus.name() == 'Pending'">
-				<li><label>% Complete:</label>
-					<s:property value="conAudit.percentComplete" />%
-				</li>
-			</s:if>
-			<s:if test="conAudit.completedDate != null">
-				<li><label>Submitted:</label>
-					<s:date name="conAudit.completedDate" format="MMM d, yyyy" />
-				</li>
-			</s:if>
-			<s:if test="conAudit.auditType.scheduled && conAudit.scheduledDate != null">
-				<li><label>Scheduled:</label>
-					<s:date name="conAudit.scheduledDate"
-						format="MMM d, yyyy" /> <s:property
-						value="conAudit.auditLocation" />
-				</li>
-			</s:if>
-		</ul>
-		</fieldset>
-		<fieldset>
-		<ul>
-			<s:if test="conAudit.auditType.annualAddendum && conAudit.auditFor != null">
-				<li><label>For:</label>
-					<s:property value="conAudit.auditFor"/>
-				</li>
-			</s:if>
-			<s:if test="permissions.picsEmployee">
-				<s:if test="conAudit.auditType.hasAuditor">
-					<li><label>Safety Professional:</label>
-						<s:if test="conAudit.auditor.id > 0"><s:property value="conAudit.auditor.name" /></s:if>
-						<s:else><a href="AuditAssignments.action?auditID=<s:property value="auditID"/>">Not Assigned</a></s:else>
-					</li>
-					<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0">
-						<li><label>Closing Safety Professional:</label>
-							<s:property value="conAudit.closingAuditor.name" />
-						</li>
-					</s:if>
-				</s:if>
-			</s:if>
+			</s:if>			
 			<s:if test="conAudit.auditType.showManual">
 				<li><label><nobr><s:if test="conAudit.auditType.id == 96">Management Plan</s:if>
 						   <s:else>Safety Manual</s:else>:</nobr></label>
@@ -129,14 +78,39 @@
 					<s:else>Not Uploaded</s:else>
 				</li>
 			</s:if>
-			<s:if test="conAudit.auditType.classType.name().equals('IM')">
-				<li><label>IM Score:</label>
-					<s:property value="conAudit.printableScore"/>
+		</ul>
+		</fieldset>
+		<fieldset>
+		<ul>
+			<s:if test="conAudit.expiresDate != null">
+				<li><label>Expires:</label>
+					<s:date name="conAudit.expiresDate" format="MMM d, yyyy" />
 				</li>
+			</s:if>			
+			<s:if test="permissions.picsEmployee">
+				<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0 && conAudit.closingAuditor.name != conAudit.auditor.name">
+					<li><label>Closing Auditor:</label>
+						<s:property value="conAudit.closingAuditor.name" />
+					</li>
+				</s:if>
 			</s:if>
-			<s:if test="conAudit.requestingOpAccount">
-				<li><label>For:</label>
-					<s:property value="conAudit.requestingOpAccount.name" />
+		</ul>
+		</fieldset>
+		<fieldset>
+		<ul>
+			<s:if test="permissions.picsEmployee">
+				<s:if test="conAudit.auditType.hasAuditor">
+					<li><label>Safety Professional:</label>
+						<s:if test="conAudit.auditor.id > 0"><s:property value="conAudit.auditor.name" /></s:if>
+						<s:else><a href="AuditAssignments.action?auditID=<s:property value="auditID"/>">Not Assigned</a></s:else>
+					</li>
+				</s:if>
+			</s:if>			
+			<s:if test="conAudit.auditType.scheduled && conAudit.scheduledDate != null">
+				<li><label>Scheduled:</label>
+					<s:date name="conAudit.scheduledDate"
+						format="MMM d, yyyy" /> <s:property
+						value="conAudit.auditLocation" />
 				</li>
 			</s:if>
 		</ul>
@@ -161,7 +135,7 @@
 							<td><s:property value="operator.name" /></td>								
 							<td><s:property value="percentComplete" /></td>
 							<td><s:property value="status"/></td>
-							<td><s:property value="formatDate(statusChangedDate, 'MMMMM d, yyyy')" /></td>
+							<td><s:property value="formatDate(statusChangedDate, 'MMMMM d, yyyy')" default="N/A" /></td>
 							<td>Approve</td>
 						</tr>
 					</s:if>
