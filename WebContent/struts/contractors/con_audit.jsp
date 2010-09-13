@@ -24,21 +24,21 @@
 					<li><a class="edit" href="ConAuditMaintain.action?auditID=<s:property value="auditID" />"
 							<s:if test="requestURI.contains('audit_maintain.jsp')">class="current"</s:if>>System Edit</a></li>
 				</pics:permission>
-				<s:if test="conAudit.auditStatus.pendingSubmittedResubmitted || conAudit.auditStatus.incomplete && (conAudit.auditType.pqf || conAudit.auditType.annualAddendum)">
+				<s:if test="canVerify">
 					<pics:permission perm="AuditVerification">
 						<li><a class="verify" href="VerifyView.action?id=<s:property value="id" />"
 						<s:if test="requestURI.contains('verif')">class="current"</s:if>>Verify</a></li>
 					</pics:permission>
 				</s:if>
-				<s:if test="conAudit.auditStatus.pending">
-					<li><a class="preview" href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
+				<s:if test="canPreview">
+					<li><a class="preview" href="Audit.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
 					Questions</a></li>
 				</s:if>
-				<s:if test="conAudit.auditType.hasRequirements && conAudit.auditStatus.activeSubmitted">
-					<li><a class="print" href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true" 
+				<s:if test="canViewRequirements">
+					<li><a class="print" href="Audit.action?auditID=<s:property value="auditID"/>&onlyReq=true" 
 						<s:if test="onlyReq && mode != 'Edit'">class="current"</s:if>>Print Requirements</a></li>
 					<s:if test="permissions.auditor">
-						<li><a class="edit" href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true&mode=Edit"
+						<li><a class="edit" href="Audit.action?auditID=<s:property value="auditID"/>&onlyReq=true&mode=Edit"
 						 <s:if test="onlyReq && mode == 'Edit'">class="current"</s:if>>Edit Requirements</a></li>
 					</s:if>
 					<s:if test="permissions.admin">
@@ -51,12 +51,12 @@
 						<li><a class="file" href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Review Requirements</a></li>
 					</s:if>
 				</s:if>
-				<s:if test="!singleCat">
+				<s:if test="!singlePageAudit">
 					<pics:permission perm="AllContractors">
 						<li><a class="refresh" href="?auditID=<s:property value="auditID"/>&button=recalculate">Recalculate Categories</a></li>
 					</pics:permission>
 				</s:if>
-				<s:if test="(permissions.contractor || permissions.admin) && conAudit.auditStatus.pending && conAudit.auditType.scheduled">
+				<s:if test="canSchedule">
 					<li><a href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>"
 							<s:if test="requestURI.contains('schedule_audit')">class="current"</s:if>>Schedule Audit</a></li>
 				</s:if>

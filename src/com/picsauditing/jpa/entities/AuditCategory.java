@@ -234,9 +234,9 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 
 	@Transient
 	private void addChildren(Set<AuditCategory> children, AuditCategory category) {
+		children.add(category);
 		if(category.getSubCategories().size() > 0) {
 			for(AuditCategory auditSubCategory :  category.getSubCategories()) {
-				children.add(auditSubCategory);
 				addChildren(children, auditSubCategory) ;
 			}
 		}
