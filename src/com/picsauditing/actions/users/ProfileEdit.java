@@ -137,14 +137,6 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		return userSwitchDao.findByUserId(u.getId());
 	}
 
-	public List<AuditType> getViewableAuditsList() {
-		AuditTypeDAO dao = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
-		String auditsList = Strings.implode(permissions.getCanSeeAudit(), ",");
-		if (auditsList.length() > 0)
-			return dao.findWhere("id IN (" + auditsList + ")");
-		return new ArrayList<AuditType>();
-	}
-
 	public List<UserLoginLog> getRecentLogins() {
 		UserLoginLogDAO loginLogDao = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");
 		return loginLogDao.findRecentLogins(u.getId(), 10);

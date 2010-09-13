@@ -16,12 +16,10 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
-import com.picsauditing.util.Strings;
 
 @Transactional
 public class ContractorAuditDAO extends IndexableDAO {
@@ -157,11 +155,11 @@ public class ContractorAuditDAO extends IndexableDAO {
 			return "";
 		if (permissions.isContractor())
 			return "";
-		if (permissions.getCanSeeAudit() == null)
+		if (permissions.getVisibleAuditTypes() == null)
 			return "AND 1=0";
 
 		String where = "AND auditType.id IN (0";
-		for (Integer id : permissions.getCanSeeAudit())
+		for (Integer id : permissions.getVisibleAuditTypes())
 			where += "," + id;
 		return where += ")";
 	}

@@ -82,7 +82,7 @@ public class ReportAccountAudits extends ReportAccount {
 	}
 
 	public boolean isPqfVisible() {
-		return permissions.canSeeAudit(AuditType.PQF);
+		return permissions.canSeeAudit(new AuditType(AuditType.PQF));
 	}
 
 	@Override

@@ -344,7 +344,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	 * @return Map of AuditTypeID to OperatorID (aka governing body)
 	 */
 	public Map<Integer, Integer> getGoverningBodyMap(OperatorAccount operator) {
-		String sql = "SELECT auditType.id, operatorAccount.id FROM AuditCategoryRule r "
+		String sql = "SELECT auditType.id, operatorAccount.id FROM AuditTypeRule r "
 				+ "WHERE operatorAccount.id IN (" + Strings.implode(operator.getOperatorHeirarchy())
 				+ ") AND include = 1 GROUP BY auditType.id, operatorAccount.id";
 		Query query = em.createQuery(sql);
@@ -360,23 +360,44 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	}
 	
 	public List<AuditCategory> getCategoriesByOperator(OperatorAccount operator, Permissions permissions) {
-		String where = "WHERE  effectiveDate <= NOW() AND expirationDate > NOW()"; 
+		String where = ""; 
 		List<Integer> operatorIDs = new ArrayList<Integer>();
 		if(permissions.isOperator())
 			operatorIDs = operator.getOperatorHeirarchy();
 		if(permissions.isCorporate()) {
-			operatorIDs.add(operator.getId());
-			for(Facility facility  : operator.getOperatorFacilities()) {
-				operatorIDs.addAll(facility.getOperator().getOperatorHeirarchy());
-			}
+			operatorIDs.addAll(permissions.getOperatorChildren());
 		}
-		where += " AND (opID IS NULL";
 		if (operatorIDs.size() > 0)
-			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
-		where += ")";
-
+			where += " WHERE opID IN (" + Strings.implode(operatorIDs, ",") + ")";
 		Query query = em.createQuery("SELECT DISTINCT a.auditCategory FROM AuditCategoryRule a " + where + " ORDER BY priority DESC");
 		
 		return query.getResultList();
+	}
+	
+	/**
+	 * Get a list of audits that are visible to an operator/corporate
+	 * @param operator
+	 * @return
+	 */
+	public Set<Integer> getVisibleAuditTypes(OperatorAccount operator) {
+		String where = "";
+		List<Integer> operatorIDs = new ArrayList<Integer>();
+		if(operator.isOperator())
+			operatorIDs.add(operator.getId());
+		if(operator.isCorporate()) {
+			for (Facility facility : operator.getOperatorFacilities()) {
+				operatorIDs.add(facility.getOperator().getId());
+			}	
+		}
+		if (operatorIDs.size() > 0)
+			where += " WHERE opID IN (" + Strings.implode(operatorIDs, ",") + ")";
+
+		Query query = em.createQuery("SELECT DISTINCT a.cao.audit.auditType.id FROM ContractorAuditOperatorPermission a " + where);
+		
+		Set<Integer> auditTypeIDs = new HashSet<Integer>();
+		for (Object id : query.getResultList()) {
+			auditTypeIDs.add(Integer.parseInt(id.toString()));
+		}
+		return auditTypeIDs;
 	}
 }

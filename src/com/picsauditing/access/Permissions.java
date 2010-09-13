@@ -2,10 +2,8 @@ package com.picsauditing.access;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeSet;
@@ -49,7 +47,7 @@ public class Permissions implements Serializable {
 	private boolean canSeeInsurance = false;
 	private Set<Integer> corporateParent = new HashSet<Integer>();
 	private Set<Integer> operatorChildren = new HashSet<Integer>();
-	private Map<Integer, Integer> auditTypeGoverningBodies = new HashMap<Integer, Integer>();
+	private Set<Integer> visibleAuditTypes = new HashSet<Integer>();
 
 	private String username;
 	private String name;
@@ -99,7 +97,7 @@ public class Permissions implements Serializable {
 
 		permissions.clear();
 		groups.clear();
-		auditTypeGoverningBodies.clear();
+		visibleAuditTypes.clear();
 		corporateParent.clear();
 		operatorChildren.clear();
 	}
@@ -164,8 +162,7 @@ public class Permissions implements Serializable {
 
 				AuditDecisionTableDAO auditRulesDAO = (AuditDecisionTableDAO) SpringUtils
 						.getBean("AuditDecisionTableDAO");
-				auditTypeGoverningBodies = auditRulesDAO.getGoverningBodyMap(operator);
-
+				visibleAuditTypes = auditRulesDAO.getVisibleAuditTypes(operator);
 				if (operator.getCountry() != null)
 					accountCountries.add(operator.getCountry().getIsoCode());
 
@@ -447,42 +444,6 @@ public class Permissions implements Serializable {
 		return permissions;
 	}
 
-	@Deprecated
-	public boolean canSeeAudit(int auditType) {
-		if (isContractor())
-			return true;
-		if (isPicsEmployee())
-			return true;
-
-		// For Operators and corporate
-		// if (canSeeAudits != null)
-		// return canSeeAudits.contains(new Integer(auditType));
-		return false;
-	}
-
-	@Deprecated
-	public boolean canSeeAudit(AuditType auditType) {
-		if (isContractor())
-			return auditType.isCanContractorView();
-		if (isPicsEmployee())
-			return true;
-
-		// For Operators and corporate
-		// if (canSeeAudits != null)
-		// return canSeeAudits.contains(auditType.getId());
-		return false;
-	}
-
-	@Deprecated
-	public Set<Integer> getCanSeeAudit() {
-		return null;
-	}
-
-	@Deprecated
-	public Set<Integer> getCanEditAudits() {
-		return null;
-	}
-
 	public boolean isApprovesRelationships() {
 		return approvesRelationships;
 	}
@@ -539,11 +500,20 @@ public class Permissions implements Serializable {
 		return canSeeInsurance;
 	}
 
+	public boolean canSeeAudit(AuditType auditType) {
+		if (isContractor())
+			return auditType.isCanContractorView();
+		if (isPicsEmployee())
+			return true;
+		if(isOperatorCorporate()) 
+			return getVisibleAuditTypes().contains(auditType.getId());
+		return false;
+	}
 	/**
 	 * 
 	 * @return Map of AuditTypeID to OperatorID (aka governing body)
 	 */
-	public Map<Integer, Integer> getAuditTypeGoverningBodies() {
-		return auditTypeGoverningBodies;
+	public Set<Integer> getVisibleAuditTypes() {
+		return visibleAuditTypes;
 	}
 }
