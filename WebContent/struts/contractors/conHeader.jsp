@@ -121,7 +121,9 @@
 		<table class="statusOpBox" style="">
 			<thead>
 				<tr>
-					<th>Operator</th>
+					<s:if test="conAudit.operators.size()>1">
+						<th>Operator</th>
+					</s:if>
 					<th>Progress</th>
 					<th>Status</th>
 					<th>Date</th>
@@ -131,8 +133,10 @@
 			<tbody>
 				<s:iterator value="conAudit.operators" status="rowStatus">
 					<s:if test="visible && isVisibleTo(permissions)">
-						<tr id="cao_<s:property value="id"/>">
-							<td><s:property value="operator.name" /></td>								
+						<tr id="cao_<s:property value="id"/>" class="caos">
+							<s:if test="conAudit.operators.size()>1">
+								<td><s:property value="operator.name" /></td>
+							</s:if>								
 							<td class="progress nobr">
 								<div style="position: relative">
 									<table class="progressTable"><tr><td class="progressBar" style="width: <s:property value="percentComplete" />%"></td><td></td></tr></table>
