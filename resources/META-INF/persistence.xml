@@ -19,6 +19,7 @@
 		<class>com.picsauditing.jpa.entities.ContractorAccount</class>
 		<class>com.picsauditing.jpa.entities.ContractorAudit</class>
 		<class>com.picsauditing.jpa.entities.ContractorAuditOperator</class>
+		<class>com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow</class>
 		<class>com.picsauditing.jpa.entities.ContractorOperator</class>
 		<class>com.picsauditing.jpa.entities.Country</class>
 		<class>com.picsauditing.jpa.entities.EmailAttachment</class>

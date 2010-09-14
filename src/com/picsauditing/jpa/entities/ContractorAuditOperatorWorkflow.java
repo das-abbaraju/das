@@ -17,19 +17,19 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class ContractorAuditOperatorWorkflow extends BaseTable {
 
-	private int caoID;
+	private ContractorAuditOperator cao;
 	private AuditStatus status;
 	private AuditStatus previousStatus;
 	private String notes;
 
 	@ManyToOne
 	@JoinColumn(name = "caoID", nullable = false)
-	public int getCaoID() {
-		return caoID;
+	public ContractorAuditOperator getCao() {
+		return cao;
 	}
 
-	public void setCaoID(int caoID) {
-		this.caoID = caoID;
+	public void setCao(ContractorAuditOperator cao) {
+		this.cao = cao;
 	}
 
 	@Enumerated(EnumType.STRING)

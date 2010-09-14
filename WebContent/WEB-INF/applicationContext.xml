@@ -30,6 +30,7 @@
 	<bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO"/>
 	<bean id="ContractorAuditFileDAO" class="com.picsauditing.dao.ContractorAuditFileDAO"/>
 	<bean id="ContractorAuditOperatorDAO" class="com.picsauditing.dao.ContractorAuditOperatorDAO"/>
+	<bean id="ContractorAuditOperatorWorkflowDAO" class="com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO"/>
 	<bean id="ContractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO"/>
 	<bean id="ContractorNoteDAO" class="com.picsauditing.dao.ContractorNoteDAO"/>
 	<bean id="ContractorOperatorDAO" class="com.picsauditing.dao.ContractorOperatorDAO"/>
