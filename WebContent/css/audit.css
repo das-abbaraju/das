@@ -1,12 +1,16 @@
 /** Audit Data ***/
 
+#bodyholder{
+	min-width: 1085px;
+}
+
 h3.subCategory {
 	font-size:22px;
 	color: #012142;
 }
 
 h4.groupTitle {
-	margin-left: 25px;
+	margin-left: 20px;
 	margin-top: 10px;
 	color: #A84D10;
 	font-weight: bold;
@@ -20,13 +24,14 @@ h4.groupTitle {
 
 div.question {
 	padding-bottom: 10px;
+	padding-top: 10px;
 }
 
 span.question {
 	float: left;
 	padding-left: 20px;
 	padding-right: 15px;
-	width: 60%;
+	width: 85%;
 	color: #111;
 }
 
@@ -45,7 +50,7 @@ span.question {
 }
 
 #content div.shaded, h4.shaded {
-	background-color: #EEEEEE;
+	background-color: #FFFFFF;
 }
 
 span.required {
@@ -129,7 +134,7 @@ table.statusOpBox {
 	border: 2px solid #F6F6F0;		
 	color: #012142;
 	border-collapse:collapse;
-	min-width: 70%;
+	width: 95%;
 	margin-bottom: 10px;
 	margin-left: 25px;
 }
@@ -138,13 +143,15 @@ table.statusOpBox td {
 	border-collapse:collapse;
 	font: 12px;
 	padding-left: 10px;
+	padding-right: 10px;
 }
 table.statusOpBox th {
 	border: 2px solid #F6F6F0;	
 	border-collapse:collapse;
-	text-align: center;
+	text-align: left;
 	background-color: #aaa;
 	color: white;
+	padding-left: 10px;
 }
 table.statusOpBox td.progress{
 	vertical-align: middle;
@@ -155,7 +162,8 @@ table.progressTable {
 	border: 1px solid #012142;
 	border-collapse: collapse;
 	margin: 0;
-	margin-left: 20px;
+	margin-left: 10px;
+	margin-right: 20px;
 	width: 200px;
 	padding: 5px;
 	background: #efefef;
@@ -182,7 +190,7 @@ td.progressBar{
 	border-top: 2px solid #C3C3C3;
 	border-bottom: 2px solid #C3C3C3;
 	background-color: #F6F6F0;
-	margin-bottom: 10px;
+	margin-bottom: 25px;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -202,8 +210,8 @@ div.auditHeader li {
 	clear: left;
 	width: 100%;
 	line-height:16px;
-	margin-bottom:8px;
-	margin-top:4px;
+	margin-bottom:10px;
+	margin-top:8px;
 }
 
 div.auditHeader fieldset label {
@@ -330,10 +338,10 @@ text-decoration:none;
 /** Audit SideNav **/
 ul.vert-toolbar  {
 	list-style: none;	
-	width: 280px;
+	width: 260px;
 	background-color: #F6F6F0;
 	border-bottom: 2px solid #bcbcbc;
-	margin: 0 0 20px 0;
+	margin: 0 30px 20px 0;
 }
 ul.vert-toolbar li {
 	font-size:0.9em;
@@ -344,15 +352,17 @@ ul.vert-toolbar li {
 ul.vert-toolbar li {
 	padding-left: 5px;
 	position: relative;
+	line-height: 16px;
 }
 ul.vert-toolbar li .cat-percent {
 	position: absolute;
 	right:5px;
+	color: #AEAEAE;
 }
 ul.vert-toolbar li a {
 	text-decoration: none;	
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-top: 12px;
+	padding-bottom: 12px;
 	display: block;
 	width: 88%;
 }
@@ -371,7 +381,7 @@ ul.vert-toolbar li.hover a {
 	color: rgb(168, 77, 16);
 }
 ul.vert-toolbar li.head {
-	padding: 6px 0 6px 10px;
+	padding: 14px 0 12px 10px;
 	background-color: #A84D10;
 	font-size: 18px;
 	font-weight: bold;
@@ -453,5 +463,26 @@ table.osha tfoot th {
 /*** END OSHA **/
 
 .audit_category {
-	padding-left: 20px;
+	padding-left: 5px;
+	margin-bottom: 20px;
+}
+
+#auditViewArea{
+	background-color: #F9FAF3;
+	padding: 5px 5px 0 0;
+	margin-top: 50px; 
+}
+
+.audit_category h2{
+	background-color: #5d9bce;
+	margin-bottom: 10px;
+	padding: 10px 0 5px 25px;
+	color: #FFFFFF;
+	letter-spacing: normal;
+	font-size: 24px;
+	line-height: 28px;
+}
+
+.audit_category .audit_category h2{
+	font-size: 22px;
 }
