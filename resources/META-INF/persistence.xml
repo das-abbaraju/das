@@ -47,7 +47,6 @@
 		<class>com.picsauditing.jpa.entities.MultiYearScope</class>
 		<class>com.picsauditing.jpa.entities.Note</class>
 		<class>com.picsauditing.jpa.entities.NoteCategory</class>
-		<class>com.picsauditing.jpa.entities.Notes</class>
 		<class>com.picsauditing.jpa.entities.NoteStatus</class>
 		<class>com.picsauditing.jpa.entities.OperatorAccount</class>
 		<class>com.picsauditing.jpa.entities.OperatorCompetency</class>
