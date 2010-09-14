@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.picsauditing.PICS.AuditBuilderController;
@@ -101,11 +102,11 @@ public class ContractorAuditController extends AuditActionSupport {
 									.getQuestions()) {
 							}
 						}
-						categories = new ArrayList<AuditCatData>();
+						categories = new HashMap<AuditCategory, AuditCatData>();
 						AuditCatData catData = new AuditCatData();
 						catData.setCategory(auditCategory);
 						catData.setApplies(true);
-						categories.add(catData);
+						categories.put(auditCategory, catData);
 						mode = EDIT;
 						PicsLogger.stop();
 						return SUCCESS;
@@ -115,7 +116,7 @@ public class ContractorAuditController extends AuditActionSupport {
 
 			if (categoryID > 0) {
 				categoryData = catDataDao.findAuditCatData(auditID, categoryID);
-				for (AuditCatData catData : getCategories()) {
+				for (AuditCatData catData : getCategories().values()) {
 					// We can open audits using either the catID or the
 					// catDataID
 					if (catData.equals(categoryData)) {

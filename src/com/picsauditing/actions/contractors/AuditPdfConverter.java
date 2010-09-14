@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -140,7 +141,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 			for (ContractorAudit conAudit : contractor.getAudits()) {
 				if (!conAudit.isExpired()
 						&& (conAudit.getAuditType().isPqf() || conAudit.getAuditType().isAnnualAddendum())) {
-					List<AuditCatData> aList = new ArrayList<AuditCatData>();
+					Map<AuditCategory,AuditCatData> aList = new HashMap<AuditCategory,AuditCatData>();
 					String auditName = conAudit.getAuditType().getAuditName() + " - ";
 					if (conAudit.getAuditType().isPqf())
 						auditName += DateBean.format(conAudit.getCreationDate(), "MMM yyyy");
@@ -158,7 +159,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 						requiredCategories = auditCategoryDetail.categories;
 					}
 					aList = conAudit.getApplicableCategories(permissions, requiredCategories);
-					for (AuditCatData auditCatData : aList) {
+					for (AuditCatData auditCatData : aList.values()) {
 						if (auditCatData.isApplies() && auditCatData.getPercentCompleted() > 0) {
 							Paragraph categoryParagraph = new Paragraph("Category "
 									+ auditCatData.getCategory().getNumber() + " - "

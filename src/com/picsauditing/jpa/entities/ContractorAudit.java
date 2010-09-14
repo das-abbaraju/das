@@ -635,25 +635,28 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		return false;
 	}
 
-	public List<AuditCatData> getApplicableCategories(Permissions permissions,
+	public Map<AuditCategory, AuditCatData> getApplicableCategories(Permissions permissions,
 			Set<AuditCategory> requiredCategories) {
-		List<AuditCatData> categories = new ArrayList<AuditCatData>();
+		Map<AuditCategory, AuditCatData> categories = new HashMap<AuditCategory, AuditCatData>();
 		for (AuditCatData auditCatData : getCategories()) {
+			boolean add = false;
 			if (auditCatData.getCategory().getId() == AuditCategory.WORK_HISTORY) {
 				if (permissions.hasPermission(OpPerms.ViewFullPQF))
-					categories.add(auditCatData);
+					 add = true;
 			} else if (permissions.isAdmin()) {
-				categories.add(auditCatData);
+				add = true;
 			} else {
 				if (auditCatData.isApplies()) {
 					if (permissions.isOperatorCorporate()) {
 						if (requiredCategories.contains(auditCatData
 								.getCategory()))
-							categories.add(auditCatData);
+							add = true;
 					} else
-						categories.add(auditCatData);
+						add = true;
 				}
 			}
+			if(add)
+				categories.put(auditCatData.getCategory(), auditCatData);
 		}
 		return categories;
 	}

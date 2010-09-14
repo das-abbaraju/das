@@ -1,5 +1,6 @@
 package com.picsauditing.actions.audits;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +38,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected ContractorAudit conAudit;
 	protected AuditCategoryDataDAO catDataDao;
 	protected AuditDataDAO auditDataDao;
-	protected List<AuditCatData> categories;
 	protected String descriptionOsMs;
 	private Map<Integer, AuditData> hasManual;
 	private List<AuditCategoryRule> rules = null;
+	protected Map<AuditCategory, AuditCatData> categories = null;
 
-	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao) {
+	public AuditActionSupport(ContractorAccountDAO accountDao,
+			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
+			AuditDataDAO auditDataDao) {
 		super(accountDao, auditDao);
 		this.catDataDao = catDataDao;
 		this.auditDataDao = auditDataDao;
@@ -90,27 +92,28 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return getCategories().size() == 1;
 	}
 
-	public List<AuditCatData> getCategories() {
+	public Map<AuditCategory, AuditCatData> getCategories() {
 		if (categories != null)
 			return categories;
 		Set<AuditCategory> requiredCategories = null;
 		if (permissions.isOperatorCorporate()) {
 			AuditBuilder builder = new AuditBuilder();
 			Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-			if(permissions.isCorporate()) {
-				for (Facility facility : getOperatorAccount().getOperatorFacilities()) {
+			if (permissions.isCorporate()) {
+				for (Facility facility : getOperatorAccount()
+						.getOperatorFacilities()) {
 					operators.add(facility.getOperator());
 				}
-			}
-			else
+			} else
 				operators.add(getOperatorAccount());
 
-			AuditCategoriesDetail auditCategoryDetail = builder.getDetail(conAudit.getAuditType(), getRules(),
-					operators);
+			AuditCategoriesDetail auditCategoryDetail = builder.getDetail(
+					conAudit.getAuditType(), getRules(), operators);
 			requiredCategories = auditCategoryDetail.categories;
 		}
 
-		return conAudit.getApplicableCategories(permissions, requiredCategories);
+		return conAudit
+				.getApplicableCategories(permissions, requiredCategories);
 	}
 
 	public boolean isHasSafetyManual() {
@@ -125,8 +128,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (conAudit.getAuditType().getId() == AuditType.BPIISNCASEMGMT) {
 			questionID = 3477;
 		}
-		Map<Integer, AuditData> answers = auditDataDao.findAnswersForSafetyManual(conAudit.getContractorAccount()
-				.getId(), questionID);
+		Map<Integer, AuditData> answers = auditDataDao
+				.findAnswersForSafetyManual(conAudit.getContractorAccount()
+						.getId(), questionID);
 		if (answers == null || answers.size() == 0)
 			return null;
 		return answers;
@@ -177,17 +181,48 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	protected List<AuditCategoryRule> getRules() {
 		if (rules == null) {
-			AuditDecisionTableDAO auditRulesDAO = (AuditDecisionTableDAO) SpringUtils.getBean("AuditDecisionTableDAO");
-			rules = auditRulesDAO.getApplicableCategoryRules(conAudit.getContractorAccount(), conAudit.getAuditType());
+			AuditDecisionTableDAO auditRulesDAO = (AuditDecisionTableDAO) SpringUtils
+					.getBean("AuditDecisionTableDAO");
+			rules = auditRulesDAO.getApplicableCategoryRules(conAudit
+					.getContractorAccount(), conAudit.getAuditType());
 		}
 		return rules;
 	}
-	
+
 	public int getCategoryID() {
 		return categoryID;
 	}
 
 	public void setCategoryID(int categoryID) {
 		this.categoryID = categoryID;
+	}
+
+	public Map<AuditCategory,Integer> calculatePercentComplete() {
+		Map<AuditCategory,Integer> percentComplete = new HashMap<AuditCategory,Integer>();
+		for(AuditCategory auditCategory : getCategories().keySet()) {
+			if(auditCategory.getParent()  == null) {
+				int percent = 0;
+				for(AuditCategory childCategory : auditCategory.getChildren()) {
+					percent += getCategories().get(childCategory).getPercentCompleted();
+				}
+				percentComplete.put(auditCategory, percent);
+			}
+		}
+		return percentComplete; 
+	}
+
+	public Map<AuditCategory,Integer> calculatePercentVerified() {
+		Map<AuditCategory,Integer> percentVerified = new HashMap<AuditCategory,Integer>();
+		for(AuditCategory auditCategory : getCategories().keySet()) {
+			if(auditCategory.getParent()  == null) {
+				int percent = 0;
+				for(AuditCategory childCategory : auditCategory.getChildren()) {
+					percent += getCategories().get(childCategory).getPercentVerified();
+				}
+				percentVerified.put(auditCategory, percent);
+			}
+		}
+		
+		return percentVerified; 
 	}
 }

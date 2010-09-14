@@ -1,6 +1,8 @@
 package com.picsauditing.actions.audits;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -271,5 +273,4 @@ public class CaoSave extends AuditActionSupport {
 	public void setNote(String note) {
 		this.note = note;
 	}
-
 }

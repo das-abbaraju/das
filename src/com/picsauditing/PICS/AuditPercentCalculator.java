@@ -30,8 +30,8 @@ public class AuditPercentCalculator {
 	private AuditCategoryDataDAO catDataDao;
 	private AuditDecisionTableDAO auditRulesDAO;
 
-	public AuditPercentCalculator(AuditDataDAO auditDataDAO, AuditCategoryDataDAO catDataDAO,
-			AuditDecisionTableDAO auditRulesDAO) {
+	public AuditPercentCalculator(AuditDataDAO auditDataDAO,
+			AuditCategoryDataDAO catDataDAO, AuditDecisionTableDAO auditRulesDAO) {
 		this.auditDataDao = auditDataDAO;
 		this.catDataDao = catDataDAO;
 		this.auditRulesDAO = auditRulesDAO;
@@ -54,17 +54,16 @@ public class AuditPercentCalculator {
 
 		// Get a list of questions/answers for this category
 		List<Integer> questionIDs = new ArrayList<Integer>();
-		for (AuditCategory subCategory : catData.getCategory().getSubCategories()) {
-			for (AuditQuestion question : subCategory.getQuestions()) {
+		for (AuditQuestion question : catData.getCategory().getQuestions()) {
+			questionIDs.add(question.getId());
+			if (question.getDependsRequired() != null)
 				questionIDs.add(question.getId());
-				if ("Depends".equals(question.isRequired()) && question.getRequiredQuestion() != null) {
-					int RequiredQID = question.getRequiredQuestion().getId();
-					questionIDs.add(RequiredQID);
-				}
-			}
+			if (question.getVisibleQuestion() != null)
+				questionIDs.add(question.getId());
 		}
 		// Get a map of all answers in this audit
-		AnswerMap answers = auditDataDao.findAnswers(catData.getAudit().getId(), questionIDs);
+		AnswerMap answers = auditDataDao.findAnswers(
+				catData.getAudit().getId(), questionIDs);
 		// System.out.println(answers);
 
 		if (answers != null) {
@@ -80,66 +79,95 @@ public class AuditPercentCalculator {
 
 			// Get a list of questions/answers for this category
 			Date validDate = catData.getAudit().getValidDate();
-			for (AuditCategory subCategory : catData.getCategory().getSubCategories()) {
-				for (AuditQuestion question : subCategory.getQuestions()) {
-					if (question.isCurrent() && validDate.after(question.getEffectiveDate())
-							&& validDate.before(question.getExpirationDate())) {
-						boolean isRequired = false;
+			for (AuditQuestion question : catData.getCategory().getQuestions()) {
+				if (question.isCurrent() && validDate.after(question.getEffectiveDate())
+						&& validDate.before(question.getExpirationDate())) {
+					boolean isRequired = false;
 
-						AuditData answer = answers.get(question.getId());
-						isRequired = true == question.isRequired();
-						if (question.isRequired() && question.getRequiredQuestion() != null
-								&& question.getRequiredAnswer() != null) {
-							if (question.getRequiredAnswer().equals("NULL")) {
-								AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
-								if (otherAnswer == null)
-									isRequired = true;
-							} else if (question.getRequiredAnswer().equals("NOTNULL")) {
-								AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
-								if (otherAnswer != null)
-									isRequired = true;
-							} else {
-								// This question is dependent on another
-								// question's answer
-								// Use the parentAnswer, so we get answers in
-								// the same tuple as this one
-								AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
-								if (otherAnswer != null && question.getRequiredAnswer().equals(otherAnswer.getAnswer()))
-									isRequired = true;
+					AuditData answer = answers.get(question.getId());
+					isRequired = true == question.isRequired();
+					// Getting all the dependsRequiredQuestions
+					if (question.getRequiredQuestion() != null && question.getRequiredAnswer() != null) {
+						if (question.getRequiredAnswer().equals("NULL")) {
+							AuditData otherAnswer = answers.get(question
+									.getRequiredQuestion().getId());
+							if (otherAnswer == null)
+								isRequired = true;
+						} else if (question.getRequiredAnswer().equals(
+								"NOTNULL")) {
+							AuditData otherAnswer = answers.get(question
+									.getRequiredQuestion().getId());
+							if (otherAnswer != null)
+								isRequired = true;
+						} else {
+							// This question is dependent on another
+							// question's answer
+							// Use the parentAnswer, so we get answers in
+							// the same tuple as this one
+							AuditData otherAnswer = answers.get(question
+									.getRequiredQuestion().getId());
+							if (otherAnswer != null
+									&& question.getRequiredAnswer().equals(
+											otherAnswer.getAnswer()))
+								isRequired = true;
+						}
+					}
+					// Getting all the dependsVisible  Questions
+					if (question.getVisibleQuestion() != null && question.getVisibleAnswer() != null) {
+						if (question.getVisibleAnswer().equals("NULL")) {
+							AuditData otherAnswer = answers.get(question
+									.getVisibleQuestion().getId());
+							if (otherAnswer == null)
+								isRequired = true;
+						} else if (question.getVisibleAnswer().equals(
+								"NOTNULL")) {
+							AuditData otherAnswer = answers.get(question
+									.getVisibleQuestion().getId());
+							if (otherAnswer != null)
+								isRequired = true;
+						} else {
+							AuditData otherAnswer = answers.get(question
+									.getVisibleQuestion().getId());
+							if (otherAnswer != null
+									&& question.getVisibleAnswer().equals(
+											otherAnswer.getAnswer()))
+								isRequired = true;
+						}
+					}
+
+					if (isRequired)
+						requiredCount++;
+
+					if (answer != null) {
+						if (answer.isAnswered()) {
+
+							if ("Radio".equals(question.getQuestionType())) {
+								Integer tempScore = scoreMap.get(answer
+										.getAnswer());
+								score += tempScore != null ? tempScore : -1000;
+							}
+
+							answeredCount++;
+							if (isRequired)
+								requiredAnsweredCount++;
+						}
+
+						if (answer.getQuestion().isHasRequirement()) {
+							if (answer.isOK())
+								verifiedCount++;
+						} else {
+							if (answer.isVerified()) {
+								verifiedCount++;
+							} else if (isRequired
+									&& catData.getAudit().getAuditType()
+											.getWorkFlow().isHasSubmittedStep()) {
+								verifiedCount++;
 							}
 						}
-						if (isRequired)
-							requiredCount++;
+					}
 
-						if (answer != null) {
-							if (answer.isAnswered()) {
-
-								if ("Radio".equals(question.getQuestionType())) {
-									Integer tempScore = scoreMap.get(answer.getAnswer());
-									score += tempScore != null ? tempScore : -1000;
-								}
-
-								answeredCount++;
-								if (isRequired)
-									requiredAnsweredCount++;
-							}
-
-							if (answer.getQuestion().isHasRequirement()) {
-								if (answer.isOK())
-									verifiedCount++;
-							} else {
-								if (answer.isVerified()) {
-									verifiedCount++;
-								} else if (isRequired
-										&& catData.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()) {
-									verifiedCount++;
-								}
-							}
-						}
-
-						if ("Radio".equals(question.getQuestionType())) {
-							scoreCount++;
-						}
+					if ("Radio".equals(question.getQuestionType())) {
+						scoreCount++;
 					}
 				}
 			}
@@ -149,7 +177,8 @@ public class AuditPercentCalculator {
 			catData.setRequiredCompleted(requiredAnsweredCount);
 
 			if (requiredCount > 0) {
-				int percentCompleted = (int) Math.floor((100 * requiredAnsweredCount) / requiredCount);
+				int percentCompleted = (int) Math
+						.floor((100 * requiredAnsweredCount) / requiredCount);
 				if (percentCompleted >= 100)
 					percentCompleted = 100;
 				if (catData.getAudit().getAuditType().isAnnualAddendum()
@@ -157,7 +186,8 @@ public class AuditPercentCalculator {
 						&& catData.getNumRequired() > 2) {
 					requiredCount = requiredCount - 2;
 				}
-				int percentVerified = (int) Math.floor((100 * verifiedCount) / requiredCount);
+				int percentVerified = (int) Math.floor((100 * verifiedCount)
+						/ requiredCount);
 				if (percentVerified >= 100)
 					percentVerified = 100;
 				catData.setPercentCompleted(percentCompleted);
@@ -181,7 +211,8 @@ public class AuditPercentCalculator {
 		percentCalculateComplete(conAudit, false);
 	}
 
-	public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats) {
+	public void percentCalculateComplete(ContractorAudit conAudit,
+			boolean recalcCats) {
 		if (recalcCats) {
 			recalcAllAuditCatDatas(conAudit);
 		}
@@ -206,7 +237,8 @@ public class AuditPercentCalculator {
 				if (applies) {
 					required += data.getNumRequired();
 					answered += data.getRequiredCompleted();
-					verified += (int) Math.round(data.getNumRequired() * data.getPercentVerified() / 100);
+					verified += (int) Math.round(data.getNumRequired()
+							* data.getPercentVerified() / 100);
 
 					if (data.getScoreCount() > 0) {
 						scoreCount += data.getScoreCount();
@@ -245,9 +277,11 @@ public class AuditPercentCalculator {
 	 * @param conAudit
 	 * @return
 	 */
-	private AuditCategoriesDetail getAuditCategoryDetail(ContractorAudit conAudit) {
-		List<AuditCategoryRule> applicableCategoryRules = auditRulesDAO.getApplicableCategoryRules(conAudit
-				.getContractorAccount(), conAudit.getAuditType());
+	private AuditCategoriesDetail getAuditCategoryDetail(
+			ContractorAudit conAudit) {
+		List<AuditCategoryRule> applicableCategoryRules = auditRulesDAO
+				.getApplicableCategoryRules(conAudit.getContractorAccount(),
+						conAudit.getAuditType());
 
 		AuditBuilder builder = new AuditBuilder();
 
@@ -255,7 +289,8 @@ public class AuditPercentCalculator {
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			operators.add(cao.getOperator());
 		}
-		return builder.getDetail(conAudit.getAuditType(), applicableCategoryRules, operators);
+		return builder.getDetail(conAudit.getAuditType(),
+				applicableCategoryRules, operators);
 	}
 
 	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
@@ -293,7 +328,8 @@ public class AuditPercentCalculator {
 			}
 
 		}
-		if (osha.getType().equals(OshaType.MSHA) || osha.getType().equals(OshaType.COHS)) {
+		if (osha.getType().equals(OshaType.MSHA)
+				|| osha.getType().equals(OshaType.COHS)) {
 			numRequired = 1;
 			if (osha.getManHours() > 0)
 				count++;
