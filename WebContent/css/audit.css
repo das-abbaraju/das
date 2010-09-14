@@ -155,10 +155,10 @@ table.progressTable {
 	border: 1px solid #012142;
 	border-collapse: collapse;
 	margin: 0;
-	margin-left: auto;
-	margin-right: auto;
+	margin-left: 20px;
 	width: 200px;
 	padding: 5px;
+	background: #efefef;
 }
 table.progressTable tr, table.progressTable td {
 	border: none;
@@ -169,12 +169,13 @@ table.progressTable tr, table.progressTable td {
 
 td.progressBar{
 	background: #5D9BCE;
-	height: 17px;
+	height: 19px;
 }
 .progressPercent{
 	left: 25px;
 	position:absolute;
 	top:-2px;
+	color: #3F3F5A;
 }
 /** Audit Header ***/
 #content div.auditHeader {
