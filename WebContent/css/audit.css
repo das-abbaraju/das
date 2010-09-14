@@ -366,6 +366,9 @@ ul.vert-toolbar li.hover {
 	border-bottom: 1px solid #ababab;
  	border-top: 1px solid #ababab;
 }
+ul.vert-toolbar li.hover a {
+	color: rgb(168, 77, 16);
+}
 ul.vert-toolbar li.head {
 	padding: 6px 0 6px 10px;
 	background-color: #A84D10;
