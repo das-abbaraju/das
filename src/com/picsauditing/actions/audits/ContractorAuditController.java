@@ -3,6 +3,8 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.actions.converters.OshaTypeConverter;
@@ -46,6 +48,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	protected AuditCatData categoryData;
 	private AuditCategoryDAO auditCategoryDAO;
 	private AuditPercentCalculator auditPercentCalculator;
+	private AuditBuilderController auditBuilder;
 	private OshaAuditDAO oshaAuditDAO;
 	protected WorkFlowDAO wfDAO;
 
@@ -53,12 +56,13 @@ public class ContractorAuditController extends AuditActionSupport {
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, AuditCategoryDAO auditCategoryDAO,
 			AuditPercentCalculator auditPercentCalculator,
-			OshaAuditDAO oshaAuditDAO, WorkFlowDAO wfDAO) {
+			OshaAuditDAO oshaAuditDAO, WorkFlowDAO wfDAO, AuditBuilderController auditBuilder) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.oshaAuditDAO = oshaAuditDAO;
 		this.wfDAO = wfDAO;
+		this.auditBuilder = auditBuilder;
 	}
 
 	public String execute() throws Exception {
@@ -86,15 +90,14 @@ public class ContractorAuditController extends AuditActionSupport {
 					}
 				}
 				if ("recalculate".equals(button)) {
-
+					auditBuilder.fillAuditCategories(conAudit);
 				}
 				// Preview the Category from the manage audit type page
 				if ("PreviewCategory".equals(button)) {
 					if (auditID == 0 && categoryID > 0) {
 						AuditCategory auditCategory = auditCategoryDAO
 								.find(categoryID);
-						for (AuditCategory auditSubCategory : auditCategory
-								.getSubCategories()) {
+						for (AuditCategory auditSubCategory : auditCategory.getChildren()) {
 							for (AuditQuestion auditQuestion : auditSubCategory
 									.getQuestions()) {
 							}
