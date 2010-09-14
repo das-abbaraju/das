@@ -3,7 +3,6 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.MenuComponent;
@@ -248,6 +247,14 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	public AuditCatData getCategoryData() {
 		return categoryData;
+	}
+	
+	public boolean isViewBlanks() {
+		return viewBlanks;
+	}
+	
+	public void setViewBlanks(boolean viewBlanks) {
+		this.viewBlanks = viewBlanks;
 	}
 
 	public OshaAudit getAverageOsha(OshaType oshaType) {
