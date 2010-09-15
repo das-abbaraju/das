@@ -68,7 +68,6 @@ public class WorkflowStep extends BaseTable {
 
 	@Transient
 	public String getButtonName() {
-		// TODO figure out if we want to store this on newStatus or have each step define their own button name
-		return newStatus.toString();
+		return newStatus.getButton();
 	}
 }
