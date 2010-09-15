@@ -3,6 +3,7 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -377,16 +378,12 @@ public class ContractorAuditController extends AuditActionSupport {
 		return null;
 	}
 	
-	public List<String> getValidButtons(int wfID, String status){
+	public Map<String, String> getValidButtons(String status){
 		AuditStatus auditStatus = AuditStatus.valueOf(status);
-		List<String> results = new ArrayList<String>();
-		if(auditStatus!=null){
-			Workflow wf = wfDAO.find(wfID);
-			List<WorkflowStep> steps = wf.getSteps();
-			for (WorkflowStep workflowStep : steps) {
-				if(workflowStep.getOldStatus() == auditStatus)
-					results.add(workflowStep.getButtonName());
-			}
+		Map<String, String> results = new HashMap<String, String>();
+		for (WorkflowStep workflowStep : conAudit.getAuditType().getWorkFlow().getSteps()) {
+			if(workflowStep.getOldStatus() == auditStatus)
+				results.put(workflowStep.getButtonName(), workflowStep.getNewStatus().name());
 		}
 		return results;
 	}
