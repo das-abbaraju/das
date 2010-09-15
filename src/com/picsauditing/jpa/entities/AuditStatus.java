@@ -3,17 +3,26 @@ package com.picsauditing.jpa.entities;
 import java.util.ArrayList;
 
 public enum AuditStatus {
-	Pending,
-	Incomplete,
-	Submitted,
-	Resubmitted,
-	Complete,
-	Approved,
-	NotApplicable,
-	Expired;
+	Pending("Pending"),
+	Incomplete("Reject"),
+	Submitted("Submit"),
+	Resubmitted("Resubmit"),
+	Complete("Complete"),
+	Approved("Approve"),
+	NotApplicable("NotApplicable"),
+	Expired("Expire");
 
+	private String button;
 	public static String DEFAULT = "- Audit Status -";
-
+	
+	private AuditStatus(String button) {
+		this.button = button;
+	}
+	
+	public String getButton() {
+		return button;
+	}
+	
 	public static ArrayList<String> getValuesWithDefault() {
 		ArrayList<String> values = new ArrayList<String>();
 		values.add(AuditStatus.DEFAULT);
