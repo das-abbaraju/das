@@ -64,32 +64,30 @@
 			<s:if test="categories.keySet().size > 1">
 				<ul id="catlist" class="catlist vert-toolbar">
 					<li class="head">CATEGORIES <span class="hidden-button">Show N/A</span></li>			
-					<s:iterator value="categories.keySet()" id="key">
-						<s:iterator value="categories.get(#key)" id="cat" status="rowStatus">
-							<s:if test="#cat.applies">
-								<li id="category_<s:property value="categoryID"/>">
-									<a class="hist-category" href="#categoryID=<s:property value="#cat.category.id" />"><s:property value="#cat.category.name" />
-									<s:if test="conAudit.auditType.pqf">
-										<span class="cat-percent">
-											<s:if test="#cat.percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
-											<s:else><s:property value="#cat.percentCompleted" />%</s:else>
-										</span>
-									</s:if>
-									<s:if test="conAudit.auditType.hasRequirements">
-										<span class="cat-percent">
-											<s:if test="#cat.percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
-											<s:else><s:property value="#cat.percentCompleted" />%</s:else>
-										</span>
-									</s:if>
-									<s:if test="conAudit.auditType.id == 17">
-										<span class="cat-percent">
-											<s:property value="printableScore"/>
-										</span>
-									</s:if>
-									</a>
-								</li>
-							</s:if>
-						</s:iterator>
+					<s:iterator value="categories">
+						<s:if test="value.applies">
+							<li id="category_<s:property value="key.id"/>">
+								<a class="hist-category" href="#categoryID=<s:property value="key.id" />"><s:property value="key.name" />
+								<s:if test="conAudit.auditType.pqf">
+									<span class="cat-percent">
+										<s:if test="value.percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
+										<s:else><s:property value="value.percentCompleted" />%</s:else>
+									</span>
+								</s:if>
+								<s:if test="conAudit.auditType.hasRequirements">
+									<span class="cat-percent">
+										<s:if test="value.percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
+										<s:else><s:property value="value.percentCompleted" />%</s:else>
+									</span>
+								</s:if>
+								<s:if test="conAudit.auditType.id == 17">
+									<span class="cat-percent">
+										<s:property value="value.printableScore"/>
+									</span>
+								</s:if>
+								</a>
+							</li>
+						</s:if>
 					</s:iterator>
 				</ul>
 				<ul id="nacatlist" class="catlist vert-toolbar">

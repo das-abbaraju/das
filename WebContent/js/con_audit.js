@@ -4,6 +4,16 @@ $(function(){
 		$('ul.catlist').toggle('slow');
 	});
 	
+	$('.vert-toolbar li').hover(
+		function() {
+			$(this).addClass('hover');
+		},
+		function(){
+			$(this).removeClass('hover');
+		}
+	);
+	
+	// ajax history
 	$('a.hist-category').live('click', function() {
 		$.bbq.pushState( $.param.fragment(this.href) );
 		var li = $(this).parents('li:first');
@@ -11,8 +21,6 @@ $(function(){
 		li.addClass('current');
 		return false;
 	});
-	
-	$('.vert-toolbar li').live('mouseenter', function(){$(this).addClass('hover');}).live('mouseleave', function(){$(this).removeClass('hover');});
 	
 	$(window).bind('hashchange', function() {
 		if ($.bbq.getState().categoryID === undefined)
