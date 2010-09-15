@@ -93,27 +93,26 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public Map<AuditCategory, AuditCatData> getCategories() {
-		if (categories != null)
-			return categories;
-		Set<AuditCategory> requiredCategories = null;
-		if (permissions.isOperatorCorporate()) {
-			AuditBuilder builder = new AuditBuilder();
-			Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-			if (permissions.isCorporate()) {
-				for (Facility facility : getOperatorAccount()
-						.getOperatorFacilities()) {
-					operators.add(facility.getOperator());
-				}
-			} else
-				operators.add(getOperatorAccount());
+		if (categories == null) {
+			Set<AuditCategory> requiredCategories = null;
+			if (permissions.isOperatorCorporate()) {
+				AuditBuilder builder = new AuditBuilder();
+				Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+				if (permissions.isCorporate()) {
+					for (Facility facility : getOperatorAccount().getOperatorFacilities()) {
+						operators.add(facility.getOperator());
+					}
+				} else
+					operators.add(getOperatorAccount());
 
-			AuditCategoriesDetail auditCategoryDetail = builder.getDetail(
-					conAudit.getAuditType(), getRules(), operators);
-			requiredCategories = auditCategoryDetail.categories;
+				AuditCategoriesDetail auditCategoryDetail = 
+					builder.getDetail(conAudit.getAuditType(), getRules(), operators);
+				requiredCategories = auditCategoryDetail.categories;
+			}
+
+			categories = conAudit.getApplicableCategories(permissions, requiredCategories);
 		}
-
-		return conAudit
-				.getApplicableCategories(permissions, requiredCategories);
+		return categories;
 	}
 
 	public boolean isHasSafetyManual() {

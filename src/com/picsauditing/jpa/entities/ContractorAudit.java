@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -637,7 +638,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public Map<AuditCategory, AuditCatData> getApplicableCategories(Permissions permissions,
 			Set<AuditCategory> requiredCategories) {
-		Map<AuditCategory, AuditCatData> categories = new HashMap<AuditCategory, AuditCatData>();
+		Map<AuditCategory, AuditCatData> categories = new TreeMap<AuditCategory, AuditCatData>();
 		for (AuditCatData auditCatData : getCategories()) {
 			boolean add = false;
 			if (auditCatData.getCategory().getId() == AuditCategory.WORK_HISTORY) {
@@ -648,16 +649,16 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			} else {
 				if (auditCatData.isApplies()) {
 					if (permissions.isOperatorCorporate()) {
-						if (requiredCategories.contains(auditCatData
-								.getCategory()))
+						if (requiredCategories.contains(auditCatData.getCategory()))
 							add = true;
 					} else
 						add = true;
 				}
 			}
-			if(add)
+			if (add)
 				categories.put(auditCatData.getCategory(), auditCatData);
 		}
+		
 		return categories;
 	}
 }
