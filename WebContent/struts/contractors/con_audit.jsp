@@ -61,41 +61,43 @@
 							<s:if test="requestURI.contains('schedule_audit')">class="current"</s:if>>Schedule Audit</a></li>
 				</s:if>
 			</ul>
-			<s:if test="categories.size() > 1">
+			<s:if test="categories.keySet().size > 1">
 				<ul id="catlist" class="catlist vert-toolbar">
 					<li class="head">CATEGORIES <span class="hidden-button">Show N/A</span></li>			
-					<s:iterator value="categories" status="rowStatus">
-						<s:if test="applies">
-							<li id="category_<s:property value="categoryID"/>">
-								<a class="hist-category" href="#categoryID=<s:property value="category.id" />"><s:property value="category.name" />
-								<s:if test="conAudit.auditType.pqf">
-									<span class="cat-percent">
-										<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
-										<s:else><s:property value="percentCompleted" />%</s:else>
-									</span>
-								</s:if>
-								<s:if test="conAudit.auditType.hasRequirements">
-									<span class="cat-percent">
-										<s:if test="percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
-										<s:else><s:property value="percentCompleted" />%</s:else>
-									</span>
-								</s:if>
-								<s:if test="conAudit.auditType.id == 17">
-									<span class="cat-percent">
-										<s:property value="printableScore"/>
-									</span>
-								</s:if>
-								</a>
-							</li>
-						</s:if>
+					<s:iterator value="categories.keySet()" id="key">
+						<s:iterator value="categories.get(#key)" id="cat" status="rowStatus">
+							<s:if test="#cat.applies">
+								<li id="category_<s:property value="categoryID"/>">
+									<a class="hist-category" href="#categoryID=<s:property value="#cat.category.id" />"><s:property value="#cat.category.name" />
+									<s:if test="conAudit.auditType.pqf">
+										<span class="cat-percent">
+											<s:if test="#cat.percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
+											<s:else><s:property value="#cat.percentCompleted" />%</s:else>
+										</span>
+									</s:if>
+									<s:if test="conAudit.auditType.hasRequirements">
+										<span class="cat-percent">
+											<s:if test="#cat.percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
+											<s:else><s:property value="#cat.percentCompleted" />%</s:else>
+										</span>
+									</s:if>
+									<s:if test="conAudit.auditType.id == 17">
+										<span class="cat-percent">
+											<s:property value="printableScore"/>
+										</span>
+									</s:if>
+									</a>
+								</li>
+							</s:if>
+						</s:iterator>
 					</s:iterator>
 				</ul>
 				<ul id="nacatlist" class="catlist vert-toolbar">
 					<li class="head">N/A CATEGORIES <span class="hidden-button">Show Others</span></li>
-					<s:iterator value="categories" status="rowStatus">
+					<s:iterator value="categories.keySet()" status="rowStatus" id="cat">
 						<s:if test="!applies && permissions.picsEmployee">
 							<li id="category_<s:property value="categoryID"/>">
-								<a class="hist-category" href="#categoryID=<s:property value="category.id" />"><s:property value="category.name" /></a>
+								<a class="hist-category" href="#categoryID=<s:property value="#cat.id" />"><s:property value="#cat.name" /></a>
 							</li>
 						</s:if>
 					</s:iterator>
