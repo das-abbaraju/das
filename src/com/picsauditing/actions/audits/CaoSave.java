@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.struts2.ServletActionContext;
+
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
@@ -15,6 +18,8 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.OshaAuditDAO;
+import com.picsauditing.dao.WorkFlowDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -22,6 +27,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -39,14 +45,17 @@ public class CaoSave extends AuditActionSupport {
 	protected OshaAuditDAO oshaAuditDAO;
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilderController auditBuilder;
+	private WorkFlowDAO wfDAO;
 
 	public CaoSave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, OshaAuditDAO oshaAuditDAO, ContractorAuditOperatorDAO caoDAO, AuditPercentCalculator auditPercentCalculator, AuditBuilderController auditBuilder) {
+			AuditDataDAO auditDataDao, OshaAuditDAO oshaAuditDAO, ContractorAuditOperatorDAO caoDAO,
+			AuditPercentCalculator auditPercentCalculator, AuditBuilderController auditBuilder, WorkFlowDAO wfDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.caoDAO = caoDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.auditBuilder = auditBuilder;
+		this.wfDAO = wfDAO;
 	}
 
 	@Override
@@ -62,6 +71,17 @@ public class CaoSave extends AuditActionSupport {
 		}
 
 		if (caoID > 0) {
+			if ("statusLoad".equals(button)) {
+				String buttonAction = ((String[]) ActionContext.getContext().getParameters().get("buttonAction"))[0];
+				ContractorAuditOperator cao = caoDAO.find(caoID);
+				if (cao != null) {
+					Account a = cao.getOperator();
+					output = buttonAction + " " + conAudit.getAuditType().getAuditName() + " for " + a.getName();
+				} else 
+					return ERROR;
+				return BLANK;
+			}
+
 			ContractorAuditOperator cao = null;
 			for (ContractorAuditOperator cao2 : conAudit.getOperators()) {
 				if (cao2.getId() == caoID) {
@@ -189,7 +209,7 @@ public class CaoSave extends AuditActionSupport {
 
 			caoDAO.save(cao);
 		}
-	
+
 		auditBuilder.fillAuditCategories(conAudit);
 		auditPercentCalculator.percentCalculateComplete(conAudit, true);
 		return SUCCESS;

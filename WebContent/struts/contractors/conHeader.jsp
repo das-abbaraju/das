@@ -14,6 +14,7 @@
 </s:elseif>
 </span></h1>
 <s:if test="showHeader">
+<s:hidden name="auditID" id="auditID" />
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<s:if test="!permissions.insuranceOnlyContractorUser">
@@ -145,9 +146,14 @@
 							</td>
 							<td><s:property value="status"/></td>
 							<td><s:property value="formatDate(statusChangedDate, 'MMMMM d, yyyy')" default="N/A" /></td>
-							<td>
-								<s:iterator value="getValidButtons(conAudit.auditType.workFlow.id, status)">
-									<a href="#actionhere"><s:property/></a>
+							<td class="buttonAction">
+								<s:iterator value="getValidButtons(status)" id="buttonActions">
+									<span class="singleButton">
+										<s:property value="#buttonActions.key" />
+										<s:hidden cssClass="bCaoID" name="id"/>
+										<s:hidden cssClass="bValue" name="#buttonActions.value" />
+										<s:hidden cssClass="bAction" name="#buttonActions.key" />
+									</span> 
 								</s:iterator>
 							</td>
 						</tr>
@@ -226,6 +232,9 @@
 		<li><a href="EmployeeAssessmentResults.action?id=<s:property value="id"/>">Assessment Results</a></li>
 	</pics:permission>
 </ul>
+</div>
+<div id="ajaxBox" style="display: none">
+	<div id="statusMessage"></div>
 </div>
 
 <s:iterator value="#auditMenu">

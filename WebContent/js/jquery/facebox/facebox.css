@@ -53,7 +53,7 @@
 
 #facebox .content {
 	height:25em;
-	overflow-y:scroll;
+	overflow-y:auto;
 	margin: 0;
 	padding: 45px;
 	font-family: Arial, Helvetica, sans-serif;
