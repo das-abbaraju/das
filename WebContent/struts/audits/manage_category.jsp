@@ -212,7 +212,7 @@ function moveCategory(atypeID) {
 			</s:iterator>
 		</ul>
 		<s:if test="category.subCategories.size() > 0">
-			<a class="preview" href="AuditCat.action?catID=<s:property value="category.id" />">Preview Category</a>&nbsp;&nbsp;
+			<a class="preview" href="AuditCatPreview.action?categoryID=<s:property value="category.id" />&button=PreviewCategory">Preview Category</a>&nbsp;&nbsp;
 		</s:if>
 		<a class="add" href="ManageCategory.action?button=AddNew&parentID=<s:property value="category.parentAuditType.id"/>&categoryParent.id=<s:property value="category.id" />">Add New Sub Category</a>
 		<div id="list-info"></div>

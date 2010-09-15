@@ -978,6 +978,11 @@
 			<result>struts/contractors/con_audit.jsp</result>
 		</action>
 
+		<action name="AuditCatPreview"
+			class="com.picsauditing.actions.audits.ContractorAuditController">
+			<result>struts/audits/audit_cat_view.jsp</result>
+		</action>
+
 		<action name="AuditAjax"
 			class="com.picsauditing.actions.audits.ContractorAuditController">
 			<result>struts/audits/audit_cat_view.jsp</result>

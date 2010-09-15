@@ -70,7 +70,8 @@ public class ContractorAuditController extends AuditActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
-		this.findConAudit();
+		if(auditID > 0)
+			this.findConAudit();
 
 		if (button != null) {
 			if (categoryID > 0 && permissions.isPicsEmployee()) {
@@ -104,12 +105,11 @@ public class ContractorAuditController extends AuditActionSupport {
 							}
 						}
 						categories = new HashMap<AuditCategory, AuditCatData>();
-						AuditCatData catData = new AuditCatData();
-						catData.setCategory(auditCategory);
-						catData.setApplies(true);
-						categories.put(auditCategory, catData);
+						categoryData = new AuditCatData();
+						categoryData.setCategory(auditCategory);
+						categoryData.setApplies(true);
+						categories.put(auditCategory, categoryData);
 						mode = EDIT;
-						PicsLogger.stop();
 						return SUCCESS;
 					}
 				}
