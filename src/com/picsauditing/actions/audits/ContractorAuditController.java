@@ -116,26 +116,18 @@ public class ContractorAuditController extends AuditActionSupport {
 			}
 
 			if (categoryID > 0) {
-				categoryData = catDataDao.findAuditCatData(auditID, categoryID);
-				for (AuditCatData catData : getCategories().values()) {
-					// We can open audits using either the catID or the
-					// catDataID
-					if (catData.equals(categoryData)) {
-						List<Integer> questionIDs = new ArrayList<Integer>();
-						for (AuditCategory subCategory : catData.getCategory()
-								.getSubCategories()) {
-							for (AuditQuestion question : subCategory
-									.getQuestions()) {
-								questionIDs.add(question.getId());
-							}
-						}
-						// Get a map of all answers in this audit
-						answerMap = auditDataDao.findAnswers(catData.getAudit()
-								.getId(), questionIDs);
+				AuditCategory auditCategory = auditCategoryDAO.find(categoryID);
+				List<Integer> questionIDs = new ArrayList<Integer>();
+				AuditCatData auditCatData = getCategories().get(auditCategory) ; 
+				for(AuditCategory childCategory : auditCatData.getCategory().getChildren()) {
+					for (AuditQuestion question : childCategory.getQuestions()) {
+						questionIDs.add(question.getId());
 					}
 				}
+				// Get a map of all answers in this audit
+				answerMap = auditDataDao.findAnswers(conAudit.getId(), questionIDs);
 				if (mode == null && isCanEditAudit())
-					mode = EDIT;
+						mode = EDIT;
 			} else {
 				// When we want to show all categories
 				answerMap = auditDataDao.findAnswers(auditID);
