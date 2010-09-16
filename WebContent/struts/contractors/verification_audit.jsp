@@ -1,7 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
-	<s:if test="showApproveButton">
+	<s:set name="showApproveButton" value="true" />
+	<s:set name="fullyVerified" value="true" />
+	<s:iterator value="conAudit.operators" id="cao">
+		<s:if test="!#cao.status.submittedResubmitted">
+			<s:set name="showApproveButton" value="false" />
+		</s:if>
+		<s:if test="#cao.percentVerified < 100">
+			<s:set name="fullyVerified" value="false" />
+		</s:if>
+	</s:iterator>
+
+	<s:if test="(#showApproveButton && pqfQuestions.size == 0) || #fullyVerified">
 		<s:set name="showApproveButton" value="'inline'"/>
 	</s:if>
 	<s:else>
@@ -12,7 +23,7 @@
 
 <div>
 	<button id="rejectButton" class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete');">Reject</button>
-	<button id="approveButton1" style="display: <s:property value="#attr.showApproveButton"/>;" class="picsbutton positive" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
+	<button style="display: <s:property value="#attr.showApproveButton"/>;" class="picsbutton positive approveButton" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
 </div>
 <br/>
 <s:if test="conAudit.auditType.pqf">
@@ -20,9 +31,9 @@
 	<h2 class="formLegend">PQF Questions</h2>
 	<s:iterator value="pqfQuestions">
 		<ol>
-			<li><s:property value="question.subCategory.subCategory"/><br />
-				<s:property value="question.subCategory.category.number"/>.<s:property value="question.subCategory.number"/>.<s:property value="question.number"/>
-				<s:property value="question.question"/></li>
+			<li><s:property value="question.category.name"/><br />
+				<s:property value="question.expandedNumber"/>
+				<s:property value="question.name"/></li>
 		 
 			<s:if test="question.questionType != 'File'">
 				<li><label>Answer:</label>			
@@ -32,11 +43,11 @@
 				<li><label>File:</label> 
 				<s:if test="answer.length() > 0">
 						<a href="DownloadAuditData.action?auditID=<s:property value="conAudit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK">View File</a>
-						<a href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=33&mode=Edit"	target="_BLANK">Change File</a>
+						<a href="Audit.action?auditID=<s:property value="conAudit.id" />&catID=33&mode=Edit"	target="_BLANK">Change File</a>
 					</s:if>
 					<s:else>
 						None. <a
-							href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=33&mode=Edit"
+							href="Audit.action?auditID=<s:property value="conAudit.id" />&catID=33&mode=Edit"
 							target="_BLANK">Upload New Files</a>
 					</s:else>
 				</li>
@@ -86,9 +97,9 @@
 		<s:if test="isShowQuestionToVerify(question, answered)">
 			<s:div id="qid_%{question.id}">
 			<ol>
-				<li><strong><s:property value="question.subCategory.subCategory"/></strong><br />
-					<s:property value="question.subCategory.category.number"/>.<s:property value="question.subCategory.number"/>.<s:property value="question.number"/>
-					<s:property value="question.question"/>
+				<li><strong><s:property value="question.category.name"/></strong><br />
+					<s:property value="question.expandedNumber"/>
+					<s:property value="question.name"/>
 					<br/>
 					<s:if test="question.id == 3563 || question.id == 3565 || question.id == 3566"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
 				</li>
@@ -101,11 +112,11 @@
 					<li><label>File:</label> 
 					<s:if test="answer.length() > 0">
 							<a href="DownloadAuditData.action?auditID=<s:property value="conAudit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK">View File</a>
-							<a href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=152&mode=Edit" target="_BLANK">Change File</a>
+							<a href="Audit.action?auditID=<s:property value="conAudit.id" />&catID=152&mode=Edit" target="_BLANK">Change File</a>
 						</s:if>
 						<s:else>
 							None. <a
-								href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=152&mode=Edit"
+								href="Audit.action?auditID=<s:property value="conAudit.id" />&catID=152&mode=Edit"
 								target="_BLANK">Upload New Files</a>
 						</s:else>
 				</s:else>
@@ -177,11 +188,11 @@
 				</li>
 				<li><label>File:</label> <s:if test="osha.fileUploaded">
 					<a href="#" onclick="openOsha(<s:property value="osha.id"/>); return false;"	target="_BLANK">View File</a>
-					<a href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=151&mode=Edit" target="_BLANK">Change File</a>
+					<a href="Audit.action?auditID=<s:property value="conAudit.id" />&catID=151&mode=Edit" target="_BLANK">Change File</a>
 				</s:if>
 				<s:else>
 					None. <a
-						href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=151&mode=Edit"
+						href="Audit.action?auditID=<s:property value="conAudit.id" />&catID=151&mode=Edit"
 						target="_BLANK">Upload New Files</a>
 				</s:else></li>
 				<li><label>Total Man Hours:</label> <s:textfield id="manHours_%{osha.id}"
@@ -207,5 +218,5 @@
 <br clear="all"/>
 <div>
 	<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete');">Reject</button>
-	<button id="approveButton2" style="display: <s:property value="#attr.showApproveButton"/>;" class="picsbutton positive" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
+	<button style="display: <s:property value="#attr.showApproveButton"/>;" class="picsbutton positive approveButton" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
 </div>

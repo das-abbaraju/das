@@ -116,13 +116,10 @@
 	
 	
 	function setApproveButton( newPercent ) {
-		if( newPercent == 100 ) {
-			$('#approveButton1').show();
-			$('#approveButton2').show();
-		} else {
-			$('#approveButton1').hide();
-			$('#approveButton2').hide();
-		}
+		if( newPercent == 100 )
+			$('.approveButton').show();
+		else
+			$('.approveButton').hide();
 		return false;
 	}
 	

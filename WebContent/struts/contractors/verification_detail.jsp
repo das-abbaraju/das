@@ -16,8 +16,8 @@
 						</tr>
 					</thead>
 					<tr>
-						<td><s:property value="question.subCategory.subCategory" />/<s:property
-							value="question.question" /></td>
+						<td><s:property value="question.category.name" />/<s:property
+							value="question.name" /></td>
 						<s:if test="verified">
 							<td class="center" style="color: #006400; font-weight: bold;"><s:property
 								value="answer" /></td>
