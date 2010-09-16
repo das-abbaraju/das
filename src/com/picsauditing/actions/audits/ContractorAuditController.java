@@ -14,9 +14,7 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.OshaAuditDAO;
-import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -29,7 +27,6 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.log.PicsLogger;
 
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
@@ -345,7 +342,13 @@ public class ContractorAuditController extends AuditActionSupport {
 		}
 		return false;
 	}
-
+	
+	public boolean isCanExempt() {
+		if(permissions.isAdmin())
+			return true;
+		return false;
+	}
+	
 	public boolean isCanVerifyAudit() {
 		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
 			return false;

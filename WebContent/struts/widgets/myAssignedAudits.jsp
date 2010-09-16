@@ -10,10 +10,10 @@
 	</thead>
 	<s:iterator value="newlyAssigned">
 		<tr>
-			<td><a href="ContractorView.action?id=<s:property value="contractorAccount.id"/>"><s:property value="contractorAccount.name"/></a></td>
-			<td><a href="Audit.action?auditID=<s:property value="id"/>"><nobr><s:property value="auditType.auditName"/></nobr></a></td>
-			<td><s:property value="auditStatus"/></td>
-			<td class="center"><s:date name="assignedDate" format="M/d/yy" /></td>
+			<td><a href="ContractorView.action?id=<s:property value="audit.contractorAccount.id"/>"><s:property value="audit.contractorAccount.name"/></a></td>
+			<td><a href="Audit.action?auditID=<s:property value="audit.id"/>"><nobr><s:property value="audit.auditType.auditName"/></nobr></a></td>
+			<td><s:property value="status"/></td>
+			<td class="center"><s:date name="audit.assignedDate" format="M/d/yy" /></td>
 		</tr>
 	</s:iterator>
 </table>

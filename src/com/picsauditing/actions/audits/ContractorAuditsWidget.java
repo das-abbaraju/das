@@ -3,17 +3,17 @@ package com.picsauditing.actions.audits;
 import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 
 @SuppressWarnings("serial")
 public class ContractorAuditsWidget extends PicsActionSupport {
-	protected ContractorAuditDAO dao;
-	private List<ContractorAudit> upcoming;
-	private List<ContractorAudit> closed;
-	private List<ContractorAudit> assigned;
+	protected ContractorAuditOperatorDAO dao;
+	private List<ContractorAuditOperator> upcoming;
+	private List<ContractorAuditOperator> closed;
+	private List<ContractorAuditOperator> assigned;
 
-	public ContractorAuditsWidget(ContractorAuditDAO dao) {
+	public ContractorAuditsWidget(ContractorAuditOperatorDAO dao) {
 		this.dao = dao;
 	}
 
@@ -25,21 +25,27 @@ public class ContractorAuditsWidget extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public List<ContractorAudit> getRecentlyClosed() {
-		if (closed == null)
-			closed = dao.findRecentlyClosed(10, permissions);
+	public List<ContractorAuditOperator> getRecentlyClosed() {
+		if (closed == null) {
+			String where = "cao.status = 'Complete' AND statusChangedDate < NOW()";
+			closed = dao.findByCaoStatus(10, permissions , where, "statusChangedDate DESC");
+		}	
 		return closed;
 	}
 
-	public List<ContractorAudit> getUpcoming() {
-		if (upcoming == null)
-			upcoming = dao.findNew(10, permissions);
+	public List<ContractorAuditOperator> getUpcoming() {
+		if (upcoming == null) {
+			String where = "cao.status IN ('Pending', 'Submitted')";
+			upcoming = dao.findByCaoStatus(10, permissions , where, "creationDate DESC");
+		}	
 		return upcoming;
 	}
 
-	public List<ContractorAudit> getNewlyAssigned() {
-		if (assigned == null)
-			assigned = dao.findNewlyAssigned(10, permissions);
+	public List<ContractorAuditOperator> getNewlyAssigned() {
+		if (assigned == null) {
+			String where = "cao.status IN ('Pending', 'Submitted') AND cao.audit.auditor.id = " + permissions.getUserId();
+			assigned = dao.findByCaoStatus(10, permissions , where, "cao.audit.assignedDate DESC");
+		}
 		return assigned;
 	}
 }

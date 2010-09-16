@@ -9,9 +9,6 @@ public class PermissionQueryBuilder {
 	protected int queryLanguage = SQL;
 	protected String accountAlias = "a"; // or contractorAccount
 	private boolean showPendingDeactivated = false;
-	private boolean onlyPendingAudits = true; // if auditor, then only show
-												// the pending or submitted
-												// audits
 	protected Permissions permissions;
 	private boolean workingFacilities = true;
 
@@ -82,8 +79,6 @@ public class PermissionQueryBuilder {
 						+ permissions.getUserId();
 			else
 				subquery = "SELECT conID FROM contractor_audit WHERE auditorID = " + permissions.getUserId();
-			if (this.onlyPendingAudits)
-				subquery += " AND auditStatus IN ('Pending','Incomplete','Submitted')";
 		}
 
 		// /////////////////////////
@@ -123,16 +118,6 @@ public class PermissionQueryBuilder {
 
 	public void setShowPendingDeactivated(boolean value) {
 		this.showPendingDeactivated = value;
-	}
-
-	/**
-	 * 
-	 * @param onlyPendingAudits
-	 *            Set to true (DEFAULT) if you want auditors to be restricted to
-	 *            "auditStatus IN ('Pending','Submitted')"
-	 */
-	public void setOnlyPendingAudits(boolean onlyPendingAudits) {
-		this.onlyPendingAudits = onlyPendingAudits;
 	}
 
 	public void setWorkingFacilities(boolean workingFacilities) {

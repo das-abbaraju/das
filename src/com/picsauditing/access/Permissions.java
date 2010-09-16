@@ -159,10 +159,7 @@ public class Permissions implements Serializable {
 
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
-
-				AuditDecisionTableDAO auditRulesDAO = (AuditDecisionTableDAO) SpringUtils
-						.getBean("AuditDecisionTableDAO");
-				visibleAuditTypes = auditRulesDAO.getVisibleAuditTypes(operator);
+				visibleAuditTypes =operator.getVisibleAuditTypes();
 				if (operator.getCountry() != null)
 					accountCountries.add(operator.getCountry().getIsoCode());
 

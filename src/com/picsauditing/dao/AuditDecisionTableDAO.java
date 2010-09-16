@@ -323,7 +323,14 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	public Set<Integer> getAuditTypes(OperatorAccount operator) {
 		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW() AND include = 1 AND auditType.id > 0";
 		
-		List<Integer> operatorIDs = operator.getOperatorHeirarchy();
+		Set<Integer> operatorIDs = new HashSet<Integer>();
+		if(operator.isCorporate()) {
+			for(Facility facility : operator.getOperatorFacilities()) {
+				operatorIDs.addAll(facility.getOperator().getOperatorHeirarchy());
+			}
+		} else
+			operatorIDs.addAll(operator.getOperatorHeirarchy());
+		
 		where += " AND (opID IS NULL";
 		if (operatorIDs.size() > 0)
 			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
@@ -372,32 +379,5 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		Query query = em.createQuery("SELECT DISTINCT a.auditCategory FROM AuditCategoryRule a " + where + " ORDER BY priority DESC");
 		
 		return query.getResultList();
-	}
-	
-	/**
-	 * Get a list of audits that are visible to an operator/corporate
-	 * @param operator
-	 * @return
-	 */
-	public Set<Integer> getVisibleAuditTypes(OperatorAccount operator) {
-		String where = "";
-		List<Integer> operatorIDs = new ArrayList<Integer>();
-		if(operator.isOperator())
-			operatorIDs.add(operator.getId());
-		if(operator.isCorporate()) {
-			for (Facility facility : operator.getOperatorFacilities()) {
-				operatorIDs.add(facility.getOperator().getId());
-			}	
-		}
-		if (operatorIDs.size() > 0)
-			where += " WHERE opID IN (" + Strings.implode(operatorIDs, ",") + ")";
-
-		Query query = em.createQuery("SELECT DISTINCT a.cao.audit.auditType.id FROM ContractorAuditOperatorPermission a " + where);
-		
-		Set<Integer> auditTypeIDs = new HashSet<Integer>();
-		for (Object id : query.getResultList()) {
-			auditTypeIDs.add(Integer.parseInt(id.toString()));
-		}
-		return auditTypeIDs;
 	}
 }

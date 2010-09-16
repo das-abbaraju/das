@@ -37,11 +37,11 @@ public class ContractorAuditOperator extends BaseTable {
 	private int percentVerified;
 	private boolean visible = true;
 	private FlagColor flag = null;
-	private String notes;
-	private String reason;
 	// To be removed
 	private YesNo valid = null;
 	private Certificate certificate;
+	private String notes;
+	private String reason;
 	private List<ContractorAuditOperatorPermission> caoPermissions = new ArrayList<ContractorAuditOperatorPermission>();
 
 	@ManyToOne

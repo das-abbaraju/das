@@ -75,10 +75,6 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addField("ca.scheduledDate");
 		sql.addField("ca.assignedDate");
 		sql.addField("ca.auditLocation");
-		// sql.addField("ca.completedDate");
-		// sql.addField("ca.closedDate");
-		// sql.addField("ca.percentComplete");
-		// sql.addField("ca.percentVerified");
 		sql.addField("ca.auditorID");
 		sql.addField("ca.auditFor");
 
@@ -93,11 +89,6 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addField("contact.phone AS contactphone");
 		sql.addField("contact.email AS contactemail");
 
-		/*
-		 * if (permissions.isCorporate() || permissions.isOperator()) { // TODO:
-		 * find out how to check permissions sql.addWhere("atype.id IN (" +
-		 * Strings.implode(permissions.getCanSeeAudit(), ",") + ")"); }
-		 */
 		if (auditTypeClass != null) {
 			if (auditTypeClass == AuditTypeClass.Audit) {
 				sql.addWhere("atype.classType in ( 'Audit', 'IM', 'PQF' ) ");

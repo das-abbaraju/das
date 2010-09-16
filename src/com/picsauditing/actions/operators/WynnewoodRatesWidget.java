@@ -7,22 +7,24 @@ import java.util.TreeMap;
 
 import com.picsauditing.actions.audits.ContractorAuditsWidget;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.WaitingOn;
 
 @SuppressWarnings("serial")
 public class WynnewoodRatesWidget extends ContractorAuditsWidget {
-	public WynnewoodRatesWidget(ContractorAuditDAO dao,
-			OperatorAccountDAO operatorDAO) {
+	private ContractorAuditDAO conAuditDAO;
+	
+	public WynnewoodRatesWidget(ContractorAuditOperatorDAO dao, ContractorAuditDAO conAuditDAO) {
 		super(dao);
+		this.conAuditDAO = conAuditDAO; 
 	}
 
 	public Map<ContractorAudit, ContractorAudit> getContractRates() {
-		List<ContractorAudit> waitingOnContracts = dao.findAuditsByOperator(
+		List<ContractorAudit> waitingOnContracts = conAuditDAO.findAuditsByOperator(
 				permissions.getAccountId(), 89, WaitingOn.Operator);
-		List<ContractorAudit> rates = dao.findAuditsByOperator(permissions
+		List<ContractorAudit> rates = conAuditDAO.findAuditsByOperator(permissions
 				.getAccountId(), 79, WaitingOn.Operator);
 		Map<ContractorAudit, ContractorAudit> contractRateMap = new TreeMap<ContractorAudit, ContractorAudit>(getCaComparator());
 

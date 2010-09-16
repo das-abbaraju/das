@@ -95,51 +95,14 @@ public class ContractorAuditDAO extends IndexableDAO {
 		return query.getResultList();
 	}
 
-	public ContractorAudit findActiveByContractor(int conID, int auditTypeID) {
-		try {
-			Query query = em.createQuery("SELECT t FROM ContractorAudit t "
-					+ "WHERE t.contractorAccount.id = ? AND auditType.id = ? "
-					+ "AND auditStatus IN ('Active','Exempt')");
-			query.setParameter(1, conID);
-			query.setParameter(2, auditTypeID);
-			return (ContractorAudit) query.getSingleResult();
-		} catch (NoResultException e) {
-			return null;
-		}
-	}
-
 	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findNonExpiredByContractor(int conID) {
 		Query query = em
 				.createQuery("SELECT t FROM ContractorAudit t "
 						+ "WHERE t.contractorAccount.id = ? "
-						+ "AND auditStatus <> 'Expired' ORDER BY t.auditType.displayOrder, t.auditType.auditName, t.auditFor, t.creationDate DESC");
+						+ "AND expiresDate < Now() ORDER BY t.auditType.displayOrder, t.auditType.auditName, t.auditFor, t.creationDate DESC");
 		query.setParameter(1, conID);
 		return query.getResultList();
-	}
-
-	public List<ContractorAudit> findNewlyAssigned(int limit, Permissions permissions) {
-		return findWhere(limit, "auditStatus IN ('Pending', 'Submitted') AND auditor.id = " + permissions.getUserId(),
-				"assignedDate DESC");
-	}
-
-	public List<ContractorAudit> findUpcoming(int limit, Permissions permissions) {
-		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
-		return findWhere(limit, "auditStatus = 'Pending' AND scheduledDate IS NOT NULL " + permQuery.toString()
-				+ getAuditWhere(permissions), "scheduledDate");
-	}
-
-	public List<ContractorAudit> findNew(int limit, Permissions permissions) {
-		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
-		return findWhere(limit, "auditStatus IN ('Pending', 'Submitted') " + permQuery.toString()
-				+ getAuditWhere(permissions), "creationDate DESC");
-	}
-
-	public List<ContractorAudit> findRecentlyClosed(int limit, Permissions permissions) {
-		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
-		permQuery.setOnlyPendingAudits(false);
-		return findWhere(limit, "auditStatus = 'Active' AND closedDate < NOW() " + permQuery.toString()
-				+ getAuditWhere(permissions), "closedDate DESC");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -148,20 +111,6 @@ public class ContractorAuditDAO extends IndexableDAO {
 				.createQuery("FROM ContractorAudit WHERE scheduledDate > NOW() AND needsCamera = TRUE AND auditLocation = 'Web' ORDER BY scheduledDate");
 
 		return q.getResultList();
-	}
-
-	private String getAuditWhere(Permissions permissions) {
-		if (permissions.isPicsEmployee())
-			return "";
-		if (permissions.isContractor())
-			return "";
-		if (permissions.getVisibleAuditTypes() == null)
-			return "AND 1=0";
-
-		String where = "AND auditType.id IN (0";
-		for (Integer id : permissions.getVisibleAuditTypes())
-			where += "," + id;
-		return where += ")";
 	}
 
 	@SuppressWarnings("unchecked")
@@ -266,7 +215,7 @@ public class ContractorAuditDAO extends IndexableDAO {
 				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate";
 		if (auditorID > 0)
 			hql += " AND ca.auditor.id = :auditorID";
-		hql += " AND ca.auditStatus != 'Exempt'";
+		hql += " AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status = 'NotApplicable' AND cao.visible = 1)";
 		hql += " ORDER BY ca.scheduledDate, ca.id";
 		Query query = em.createQuery(hql);
 
@@ -286,7 +235,7 @@ public class ContractorAuditDAO extends IndexableDAO {
 				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate ";
 		if (auditorID > 0)
 			hql += " AND ca.auditor.id = :auditorID ";
-		hql += " AND ca.auditStatus != 'Exempt'";
+		hql += " AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status != 'NotApplicable' AND cao.visible = 1)";
 		if (permissions.isOperatorCorporate()) {
 			PermissionQueryBuilder pqb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
 			pqb.setAccountAlias("ca.contractorAccount");
