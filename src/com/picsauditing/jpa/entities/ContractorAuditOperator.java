@@ -2,7 +2,9 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -307,6 +309,25 @@ public class ContractorAuditOperator extends BaseTable {
 	@Transient
 	public boolean isCanContractorSubmit() {
 		return certificate != null && valid != null && (valid.isTrue() || !Strings.isEmpty(reason));
+	}
+	
+	@Transient
+	public Map<String, Integer> getValidButtons(){
+		Map<String, Integer> results = new HashMap<String, Integer>();
+		for (WorkflowStep workflowStep : audit.getAuditType().getWorkFlow().getSteps()) {
+			if(workflowStep.getOldStatus() == status){
+				if(workflowStep.getNewStatus() == AuditStatus.Submitted){
+					if(percentComplete<100)
+						continue;
+				}
+				if(workflowStep.getNewStatus() == AuditStatus.Complete){
+					if(percentVerified<100)
+						continue;
+				}
+				results.put(workflowStep.getButtonName(), workflowStep.getId());
+			}
+		}
+		return results;
 	}
 
 	public boolean canSubmitCao() {

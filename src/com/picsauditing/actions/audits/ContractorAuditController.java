@@ -3,6 +3,7 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -50,6 +51,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilderController auditBuilder;
 	private OshaAuditDAO oshaAuditDAO;
+	private Map<Integer, Map<String, Integer>> validButtons = new HashMap<Integer, Map<String, Integer>>();
+	private Map<String, Integer> allActionMap = new HashMap<String, Integer>();
 
 	public ContractorAuditController(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
@@ -69,6 +72,9 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		if(auditID > 0)
 			this.findConAudit();
+		
+		if(conAudit!=null)
+			findValidButtons();
 
 		if (button != null) {
 			if (categoryID > 0 && permissions.isPicsEmployee()) {
@@ -173,6 +179,15 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		}
 		return SUCCESS;
+	}
+
+	private void findValidButtons() {
+		Map<Integer, Integer> numOcc = new HashMap<Integer, Integer>();
+		for(ContractorAuditOperator cao : conAudit.getOperators()){
+			//Map<String, Integer> tempMap = cao.getValidButtons();
+			validButtons.put(cao.getId(), cao.getValidButtons());
+		}
+		
 	}
 
 	public List<MenuComponent> getAuditMenu() {
