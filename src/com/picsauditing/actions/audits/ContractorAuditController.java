@@ -3,7 +3,6 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -14,6 +13,7 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -27,7 +27,6 @@ import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.Workflow;
-import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -51,18 +50,16 @@ public class ContractorAuditController extends AuditActionSupport {
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilderController auditBuilder;
 	private OshaAuditDAO oshaAuditDAO;
-	protected WorkFlowDAO wfDAO;
 
 	public ContractorAuditController(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, AuditCategoryDAO auditCategoryDAO,
 			AuditPercentCalculator auditPercentCalculator,
-			OshaAuditDAO oshaAuditDAO, WorkFlowDAO wfDAO, AuditBuilderController auditBuilder) {
+			OshaAuditDAO oshaAuditDAO, AuditBuilderController auditBuilder) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.oshaAuditDAO = oshaAuditDAO;
-		this.wfDAO = wfDAO;
 		this.auditBuilder = auditBuilder;
 	}
 
@@ -370,16 +367,6 @@ public class ContractorAuditController extends AuditActionSupport {
 	public List<String> getButtonSubmitList(){
 		
 		return null;
-	}
-	
-	public Map<String, String> getValidButtons(String status){
-		AuditStatus auditStatus = AuditStatus.valueOf(status);
-		Map<String, String> results = new HashMap<String, String>();
-		for (WorkflowStep workflowStep : conAudit.getAuditType().getWorkFlow().getSteps()) {
-			if(workflowStep.getOldStatus() == auditStatus)
-				results.put(workflowStep.getButtonName(), workflowStep.getNewStatus().name());
-		}
-		return results;
 	}
 	
 	public boolean isCanVerify() {

@@ -16,11 +16,13 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -28,6 +30,7 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
@@ -223,5 +226,25 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 		
 		return percentVerified; 
+	}
+
+	public Map<String, Integer> getValidButtons(String status, int caoID) {
+		AuditStatus auditStatus = AuditStatus.valueOf(status);
+		Map<String, Integer> results = new HashMap<String, Integer>();
+		ContractorAuditOperatorDAO conAuditOpDAO = (ContractorAuditOperatorDAO)SpringUtils.getBean("ContractorAuditOperatorDAO");
+		for (WorkflowStep workflowStep : conAudit.getAuditType().getWorkFlow().getSteps()) {
+			if(workflowStep.getOldStatus() == auditStatus){
+				if(workflowStep.getNewStatus() == AuditStatus.Submitted){
+					if(conAuditOpDAO.find(caoID).getPercentComplete()<100)
+						continue;
+				}
+				if(workflowStep.getNewStatus() == AuditStatus.Complete){
+					if(conAuditOpDAO.find(caoID).getPercentVerified()<100)
+						continue;
+				}
+				results.put(workflowStep.getButtonName(), workflowStep.getId());
+			}
+		}
+		return results;
 	}
 }
