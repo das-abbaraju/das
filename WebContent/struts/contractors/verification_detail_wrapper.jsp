@@ -10,6 +10,13 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" /> 
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/summaryreport.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+
+<style type="text/css">
+	small {
+		font-size: smaller;
+	}
+</style>
 
 <script type="text/javascript">
 	function toggleVerify(auditId, questionId, answerId) {
@@ -143,6 +150,28 @@
 		);
 		return false;
 	 }
+	 
+	function allApproveReject(id, auditStatus) {
+		var caoIDs = new Array(arguments.length - 2);
+		for (i = 2; i < arguments.length; i++) {
+			caoIDs[i - 2] = arguments[i];
+		}
+		
+		var data= {
+			auditID: id,
+			status: auditStatus,
+			caoIDs: caoIDs
+		};
+
+		$.post('CaoSaveAjax.action', data, function() {
+				$('#verification_audit').empty();
+				$('#auditHeader').scrollTo();
+				refreshNoteCategory(<s:property value="id"/>, '<s:property value="noteCategory"/>');
+			}
+		);
+		
+		return false;
+	}
 
 	function previewEmail() {
 		var data= {id: <s:property value="contractor.id"/>};

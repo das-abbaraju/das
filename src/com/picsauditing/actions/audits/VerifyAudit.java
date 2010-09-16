@@ -2,7 +2,9 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -11,14 +13,18 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.util.Strings;
 
 public class VerifyAudit extends AuditActionSupport {
 
 	private static final long serialVersionUID = -4976847934505647430L;
 	private List<AuditData> pqfQuestions = null;
+	private Map<OperatorAccount, List<ContractorAuditOperator>> caos;
+	private List<Integer> allCaoIDs;
 
 	public VerifyAudit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao) {
@@ -135,5 +141,29 @@ public class VerifyAudit extends AuditActionSupport {
 			}
 		}
 		return false;
+	}
+	
+	public Map<OperatorAccount, List<ContractorAuditOperator>> getCaos() {
+		if (caos == null) {
+			allCaoIDs = new ArrayList<Integer>();
+			caos = new HashMap<OperatorAccount, List<ContractorAuditOperator>>();
+			
+			for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
+				if (caos.get(cao.getOperator()) == null)
+					caos.put(cao.getOperator(), new ArrayList<ContractorAuditOperator>());
+				
+				caos.get(cao.getOperator()).add(cao);
+				allCaoIDs.add(cao.getId());
+			}
+		}
+		
+		return caos;
+	}
+	
+	public String getAllCaoIDs() {
+		if (allCaoIDs == null)
+			getCaos();
+		
+		return Strings.implode(allCaoIDs);
 	}
 }

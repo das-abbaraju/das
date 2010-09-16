@@ -41,22 +41,27 @@ public class CaoSave extends AuditActionSupport {
 	protected int stepID = 0;
 	private String note;
 	private List<Integer> caoIDs = new ArrayList<Integer>();
-	private NoteDAO noteDAO;
+	private AuditStatus status;
 
+	private NoteDAO noteDAO;
 	protected ContractorAuditOperatorDAO caoDAO;
 	protected OshaAuditDAO oshaAuditDAO;
+	protected WorkFlowDAO wfDAO;
+
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilderController auditBuilder;
 
 	public CaoSave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, OshaAuditDAO oshaAuditDAO, ContractorAuditOperatorDAO caoDAO,
-			AuditPercentCalculator auditPercentCalculator, AuditBuilderController auditBuilder, NoteDAO noteDAO) {
+			AuditPercentCalculator auditPercentCalculator, AuditBuilderController auditBuilder, NoteDAO noteDAO,
+			WorkFlowDAO wfDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.caoDAO = caoDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.auditBuilder = auditBuilder;
 		this.noteDAO = noteDAO;
+		this.wfDAO = wfDAO;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -71,15 +76,15 @@ public class CaoSave extends AuditActionSupport {
 			addActionError("You can't change an expired " + conAudit.getAuditType().getAuditName());
 			return SUCCESS;
 		}
-		
-		if (caoID > 0){
+
+		if (caoID > 0) {
 			if ("statusLoad".equals(button)) {
 				WorkflowStep step = conAudit.getAuditType().getWorkFlow().getStep(stepID);
 				ContractorAuditOperator cao = caoDAO.find(caoID);
 				if (cao != null) {
 					Account a = cao.getOperator();
-					json.put("message", step.getButtonName() + " " + conAudit.getAuditType().getAuditName()
-							+ " for " + a.getName());
+					json.put("message", step.getButtonName() + " " + conAudit.getAuditType().getAuditName() + " for "
+							+ a.getName());
 					if (step.isNoteRequired())
 						json.put("noteMessage", "Explain why you are changing the status to " + step.getNewStatus());
 				} else
@@ -90,9 +95,7 @@ public class CaoSave extends AuditActionSupport {
 		}
 
 		if (caoIDs.size() > 0) {
-			
 			for (Integer caoID : caoIDs) {
-
 				ContractorAuditOperator cao = null;
 				for (ContractorAuditOperator cao2 : conAudit.getOperators()) {
 					if (cao2.getId() == caoID) {
@@ -103,7 +106,17 @@ public class CaoSave extends AuditActionSupport {
 				if (cao == null)
 					throw new RecordNotFoundException("ContractorAuditOperator");
 
-				WorkflowStep step = conAudit.getAuditType().getWorkFlow().getStep(stepID);
+				WorkflowStep step = null;
+				if (stepID == 0) {
+					for (WorkflowStep w : conAudit.getAuditType().getWorkFlow().getSteps()) {
+						if (w.getOldStatus() != null && w.getOldStatus().equals(cao.getStatus())
+								&& w.getNewStatus().equals(status)) {
+							step = w;
+							break;
+						}
+					}
+				} else
+					step = conAudit.getAuditType().getWorkFlow().getStep(stepID);
 
 				if (step == null) {
 					addAlertMessage("No action specified");
@@ -220,14 +233,14 @@ public class CaoSave extends AuditActionSupport {
 				}
 				caoDAO.save(cao);
 				// TODO check if status are different, then save
-				if(prevStatus!=cao.getStatus()){
+				if (prevStatus != cao.getStatus()) {
 					// Stamping cao workflow
 					ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
-					if(!Strings.isEmpty(note)){
+					if (!Strings.isEmpty(note)) {
 						Note newNote = new Note();
 						newNote.setAccount(conAudit.getContractorAccount());
 						newNote.setAuditColumns(permissions);
-						newNote.setSummary("Changed Status from "+prevStatus+" to "+cao.getStatus());
+						newNote.setSummary("Changed Status from " + prevStatus + " to " + cao.getStatus());
 						newNote.setNoteCategory(NoteCategory.Audits);
 						newNote.setViewableBy(cao.getOperator());
 						newNote.setBody(note);
@@ -246,7 +259,7 @@ public class CaoSave extends AuditActionSupport {
 		auditBuilder.setup(conAudit.getContractorAccount(), getUser());
 		auditBuilder.fillAuditCategories(conAudit);
 		auditPercentCalculator.percentCalculateComplete(conAudit, true);
-		
+
 		if ("caoAjaxSave".equals(button))
 			return "caoTable";
 		return SUCCESS;
@@ -330,12 +343,20 @@ public class CaoSave extends AuditActionSupport {
 	public void setNote(String note) {
 		this.note = note;
 	}
-	
+
 	public List<Integer> getCaoIDs() {
 		return caoIDs;
 	}
-	
+
 	public void setCaoIDs(List<Integer> caoIDs) {
 		this.caoIDs = caoIDs;
+	}
+
+	public AuditStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(AuditStatus status) {
+		this.status = status;
 	}
 }

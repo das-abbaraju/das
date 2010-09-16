@@ -18,12 +18,36 @@
 	<s:else>
 		<s:set name="showApproveButton" value="'none'"/>
 	</s:else>
-<h2><s:property value="conAudit.auditFor" /> <s:property
-	value="conAudit.auditType.auditName" /></h2>
+<h2><s:property value="conAudit.auditFor" /> <s:property value="conAudit.auditType.auditName" /></h2>
+<br clear="all"/>
+<table class="report">
+	<thead>	
+		<tr>
+			<th colspan="2">Operators</th>
+		</tr>
+	</thead>
+	<tbody>
+		<s:iterator value="caos">
+			<tr>
+				<td><s:property value="key.name" /></td>
+				<td>
+					<s:set name="allVerified" value="true" />
+					<s:iterator value="value">
+						<s:if test="percentVerified < 100"><s:set name="allVerified" value="false" /></s:if>
+					</s:iterator>
+					<s:if test="allVerified">
+						<button class="picsbutton positive" name="button">Approve</button>
+					</s:if>
+					<button class="picsbutton negative" name="button">Reject</button>
+				</td>
+			</tr>
+		</s:iterator>
+	</tbody>
+</table>
 
 <div>
-	<button id="rejectButton" class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete');">Reject</button>
-	<button style="display: <s:property value="#attr.showApproveButton"/>;" class="picsbutton positive approveButton" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
+	<button class="picsbutton negative" name="button" onclick="return allApproveReject(<s:property value="conAudit.id"/>,'Incomplete',<s:property value="allCaoIDs" />);">Reject All</button>
+	<button style="display: <s:property value="#showApproveButton" />" class="picsbutton positive approveButton" name="button" onclick="return allApproveReject(<s:property value="conAudit.id"/>,'Approved',<s:property value="allCaoIDs" />);">Approve All</button>
 </div>
 <br/>
 <s:if test="conAudit.auditType.pqf">
@@ -216,7 +240,31 @@
 	</s:if>
 </s:else>
 <br clear="all"/>
+<table class="report">
+	<thead>	
+		<tr>
+			<th colspan="2">Operators</th>
+		</tr>
+	</thead>
+	<tbody>
+		<s:iterator value="caos">
+			<tr>
+				<td><s:property value="key.name" /></td>
+				<td>
+					<s:set name="allVerified" value="true" />
+					<s:iterator value="value">
+						<s:if test="percentVerified < 100"><s:set name="allVerified" value="false" /></s:if>
+					</s:iterator>
+					<s:if test="allVerified">
+						<button class="picsbutton positive" name="button">Approve</button>
+					</s:if>
+					<button class="picsbutton negative" name="button">Reject</button>
+				</td>
+			</tr>
+		</s:iterator>
+	</tbody>
+</table>
 <div>
-	<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete');">Reject</button>
-	<button style="display: <s:property value="#attr.showApproveButton"/>;" class="picsbutton positive approveButton" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
+	<button class="picsbutton negative" name="button" onclick="return allApproveReject(<s:property value="conAudit.id"/>,'Incomplete',<s:property value="allCaoIDs" />);">Reject All</button>
+	<button style="display: <s:property value="#showApproveButton" />" class="picsbutton positive approveButton" name="button" onclick="return allApproveReject(<s:property value="conAudit.id"/>,'Approved',<s:property value="allCaoIDs" />);">Approve All</button>
 </div>
