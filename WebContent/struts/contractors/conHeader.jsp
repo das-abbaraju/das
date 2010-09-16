@@ -1,5 +1,50 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
+<script type="text/javascript">
+$(function(){
+	$('.singleButton').bind('click', function(){
+		var buttonAction = $(this).children('.bAction').val();
+		var sID = $(this).children('.bStepID').val();
+		var cID = $(this).children('.bCaoID').val();
+		var data = {
+				auditID: $('#auditID').val(), button: 'statusLoad',
+				'buttonAction': buttonAction, caoID: cID, stepID: sID
+			};
+		$.getJSON('CaoSaveAjax.action', data, function(json){
+			if(json!=null){ // add length checking to note
+				var message = $('<span>').append(json.message);
+				var noteMessage = (json.noteMessage==null) ? '':json.noteMessage;
+				$('#statusMessage').html(message);
+				$('#statusMessage').append($('<form>')
+					.attr('id','changeStatusForm').append($('<textarea>', {
+						'cols': '30', 'rows': '3',
+						'name': 'addToNotes', 'id': 'addToNotes'
+					}).append(noteMessage)).css('width','400px')); 
+				$.facebox({div: '#ajaxBox'});
+				if(!$('#actionButtonFooter').length>0)
+					$('#facebox .faceFooter').append($('<div>').attr('id','actionButtonFooter').css('float','left'));
+				var footButton = $('<input>',{
+					'type': 'button', 'value': buttonAction, 
+					'class': 'picsbutton negative',	'id':'actionInput'
+				}).css('float','left');
+				$('#actionButtonFooter').html(footButton);
+				$('#actionInput').click(function(){
+					var data = {
+						note: $('#facebox #addToNotes').val(),
+						stepID: sID, caoID: cID,
+						auditID: $('#auditID').val(), button: 'caoAjaxSave'
+					}
+					$('#statusBox').load('CaoSaveAjax.action', data, function(){
+						jQuery(document).trigger('close.facebox');
+					});
+				});
+				$('#facebox .content').css('height','15em');
+			} else {
+			}
+		});	
+	});
+});
+</script>
 
 <s:set name="auditMenu" value="auditMenu"></s:set>
 
@@ -119,48 +164,7 @@
 	</div>
 	<div class="clear"></div>
 	<div id="statusBox" class="center">	
-		<table class="statusOpBox" style="">
-			<thead>
-				<tr>
-					<s:if test="conAudit.operators.size()>1">
-						<th>Operator</th>
-					</s:if>
-					<th>Progress</th>
-					<th>Status</th>
-					<th>Date</th>
-					<th>Button</th>
-				</tr>
-			</thead>
-			<tbody>
-				<s:iterator value="conAudit.operators" status="rowStatus">
-					<s:if test="visible && isVisibleTo(permissions)">
-						<tr id="cao_<s:property value="id"/>" class="caos">
-							<s:if test="conAudit.operators.size()>1">
-								<td><s:property value="operator.name" /></td>
-							</s:if>								
-							<td class="progress nobr">
-								<div style="position: relative">
-									<table class="progressTable"><tr><td class="progressBar" style="width: <s:property value="percentComplete" />%"></td><td></td></tr></table>
-									<span class="progressPercent"><s:property value="percentComplete" />%</span>
-								</div>
-							</td>
-							<td><s:property value="status"/></td>
-							<td><s:property value="formatDate(statusChangedDate, 'MMMMM d, yyyy')" default="N/A" /></td>
-							<td class="buttonAction">
-								<s:iterator value="getValidButtons(status)" id="buttonActions">
-									<span class="singleButton">
-										<s:property value="#buttonActions.key" />
-										<s:hidden cssClass="bCaoID" name="id"/>
-										<s:hidden cssClass="bValue" name="#buttonActions.value" />
-										<s:hidden cssClass="bAction" name="#buttonActions.key" />
-									</span> 
-								</s:iterator>
-							</td>
-						</tr>
-					</s:if>
-				</s:iterator>
-			</tbody>
-		</table>
+		<s:include value="caoTable.jsp"/>
 	</div>
 	<span style="float: right; padding-right: 25px;"><a href="#" class="refresh">Refresh</a></span>
 	<div class="clear"></div>
