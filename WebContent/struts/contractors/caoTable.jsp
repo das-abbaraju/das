@@ -14,7 +14,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<s:iterator value="conAudit.operators" status="rowStatus">
+		<s:iterator value="conAudit.operators" status="rowStatus" id="currentCao">
 			<s:if test="visible && isVisibleTo(permissions)">
 				<tr id="cao_<s:property value="id"/>" class="caos">
 					<s:if test="conAudit.operators.size()>1">
@@ -29,7 +29,7 @@
 					<td><s:property value="status"/></td>
 					<td><s:property value="formatDate(statusChangedDate, 'MMMMM d, yyyy')" default="N/A" /></td>
 					<td class="buttonAction">
-						<s:iterator value="getValidButtons(status, id)" id="buttonActions">
+						<s:iterator value="getValidButtons(status, #currentCao)" id="buttonActions">
 							<span class="singleButton">
 								<s:property value="#buttonActions.key" />
 								<s:hidden cssClass="bCaoID" name="%{id}_%{#buttonActions.key}" value="%{id}"/>
