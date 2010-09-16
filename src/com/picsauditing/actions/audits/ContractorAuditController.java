@@ -82,15 +82,17 @@ public class ContractorAuditController extends AuditActionSupport {
 							data.setOverride(true);
 						}
 					}
-					if ("UnincludeCategory".equals(button)) {
-						for (AuditCatData data : conAudit.getCategories()) {
-							if (data.getId() == categoryID) {
-								data.setApplies(false);
-								data.setOverride(true);
-							}
+				}
+				
+				if ("UnincludeCategory".equals(button)) {
+					for (AuditCatData data : conAudit.getCategories()) {
+						if (data.getId() == categoryID) {
+							data.setApplies(false);
+							data.setOverride(true);
 						}
 					}
 				}
+				
 				if ("recalculate".equals(button)) {
 					auditBuilder.fillAuditCategories(conAudit);
 				}
