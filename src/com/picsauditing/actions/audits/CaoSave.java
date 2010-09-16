@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
+import org.json.simple.JSONObject;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditBuilderController;
@@ -25,6 +26,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.Workflow;
@@ -58,6 +60,7 @@ public class CaoSave extends AuditActionSupport {
 		this.wfDAO = wfDAO;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
@@ -72,14 +75,16 @@ public class CaoSave extends AuditActionSupport {
 
 		if (caoID > 0) {
 			if ("statusLoad".equals(button)) {
-				String buttonAction = ((String[]) ActionContext.getContext().getParameters().get("buttonAction"))[0];
+				WorkflowStep step = conAudit.getAuditType().getWorkFlow().getStep(stepID);
 				ContractorAuditOperator cao = caoDAO.find(caoID);
 				if (cao != null) {
 					Account a = cao.getOperator();
-					output = buttonAction + " " + conAudit.getAuditType().getAuditName() + " for " + a.getName();
+					json.put("message", step.getButtonName() + " " + conAudit.getAuditType().getAuditName() + " for " + a.getName());
+					if(step.isNoteRequired())
+						json.put("noteMessage", "Explain why you are changing the status to "+step.getNewStatus());
 				} else 
 					return ERROR;
-				return BLANK;
+				return JSON;
 			}
 
 			ContractorAuditOperator cao = null;
@@ -124,7 +129,8 @@ public class CaoSave extends AuditActionSupport {
 			if (this.getActionErrors().size() > 0)
 				return SUCCESS;
 
-			// TODO stamp notes/caoWorkflow
+			// TODO stamp notes
+			AuditStatus prevStatus = cao.getStatus();
 			cao.changeStatus(step.getNewStatus(), permissions);
 
 			if (step.getNewStatus().isComplete()) {
@@ -206,8 +212,21 @@ public class CaoSave extends AuditActionSupport {
 				}
 
 			}
-
 			caoDAO.save(cao);
+			if ("caoAjaxSave".equals(button)) {
+				// Stamping cao workflow
+				ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
+				caoW.setCao(cao);
+				caoW.setAuditColumns(permissions);
+				caoW.setPreviousStatus(prevStatus);
+				caoW.setStatus(cao.getStatus());
+				if (!Strings.isEmpty(note))
+					caoW.setNotes(note);
+				caoDAO.save(caoW);
+				/*auditBuilder.fillAuditCategories(conAudit);
+				auditPercentCalculator.percentCalculateComplete(conAudit, true);*/
+				return "caoTable";
+			}
 		}
 
 		auditBuilder.fillAuditCategories(conAudit);
