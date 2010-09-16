@@ -228,18 +228,17 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return percentVerified; 
 	}
 
-	public Map<String, Integer> getValidButtons(String status, int caoID) {
+	public Map<String, Integer> getValidButtons(String status, ContractorAuditOperator cao) {
 		AuditStatus auditStatus = AuditStatus.valueOf(status);
 		Map<String, Integer> results = new HashMap<String, Integer>();
-		ContractorAuditOperatorDAO conAuditOpDAO = (ContractorAuditOperatorDAO)SpringUtils.getBean("ContractorAuditOperatorDAO");
 		for (WorkflowStep workflowStep : conAudit.getAuditType().getWorkFlow().getSteps()) {
 			if(workflowStep.getOldStatus() == auditStatus){
 				if(workflowStep.getNewStatus() == AuditStatus.Submitted){
-					if(conAuditOpDAO.find(caoID).getPercentComplete()<100)
+					if(cao.getPercentComplete()<100)
 						continue;
 				}
 				if(workflowStep.getNewStatus() == AuditStatus.Complete){
-					if(conAuditOpDAO.find(caoID).getPercentVerified()<100)
+					if(cao.getPercentVerified()<100)
 						continue;
 				}
 				results.put(workflowStep.getButtonName(), workflowStep.getId());
