@@ -14,6 +14,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -24,6 +25,8 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
@@ -38,22 +41,22 @@ public class CaoSave extends AuditActionSupport {
 	protected int stepID = 0;
 	private String note;
 	private List<Integer> caoIDs = new ArrayList<Integer>();
+	private NoteDAO noteDAO;
 
 	protected ContractorAuditOperatorDAO caoDAO;
 	protected OshaAuditDAO oshaAuditDAO;
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilderController auditBuilder;
-	private WorkFlowDAO wfDAO;
 
 	public CaoSave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, OshaAuditDAO oshaAuditDAO, ContractorAuditOperatorDAO caoDAO,
-			AuditPercentCalculator auditPercentCalculator, AuditBuilderController auditBuilder, WorkFlowDAO wfDAO) {
+			AuditPercentCalculator auditPercentCalculator, AuditBuilderController auditBuilder, NoteDAO noteDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.caoDAO = caoDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.auditBuilder = auditBuilder;
-		this.wfDAO = wfDAO;
+		this.noteDAO = noteDAO;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -69,24 +72,26 @@ public class CaoSave extends AuditActionSupport {
 			return SUCCESS;
 		}
 		
-		if (caoID > 0)
+		if (caoID > 0){
+			if ("statusLoad".equals(button)) {
+				WorkflowStep step = conAudit.getAuditType().getWorkFlow().getStep(stepID);
+				ContractorAuditOperator cao = caoDAO.find(caoID);
+				if (cao != null) {
+					Account a = cao.getOperator();
+					json.put("message", step.getButtonName() + " " + conAudit.getAuditType().getAuditName()
+							+ " for " + a.getName());
+					if (step.isNoteRequired())
+						json.put("noteMessage", "Explain why you are changing the status to " + step.getNewStatus());
+				} else
+					return ERROR;
+				return JSON;
+			}
 			caoIDs.add(caoID);
+		}
 
 		if (caoIDs.size() > 0) {
+			
 			for (Integer caoID : caoIDs) {
-				if ("statusLoad".equals(button)) {
-					WorkflowStep step = conAudit.getAuditType().getWorkFlow().getStep(stepID);
-					ContractorAuditOperator cao = caoDAO.find(caoID);
-					if (cao != null) {
-						Account a = cao.getOperator();
-						json.put("message", step.getButtonName() + " " + conAudit.getAuditType().getAuditName()
-								+ " for " + a.getName());
-						if (step.isNoteRequired())
-							json.put("noteMessage", "Explain why you are changing the status to " + step.getNewStatus());
-					} else
-						return ERROR;
-					return JSON;
-				}
 
 				ContractorAuditOperator cao = null;
 				for (ContractorAuditOperator cao2 : conAudit.getOperators()) {
@@ -126,7 +131,6 @@ public class CaoSave extends AuditActionSupport {
 					// addActionError("Please enter all required questions before submitting the policy.");
 					// }
 				}
-
 				if (this.getActionErrors().size() > 0)
 					return SUCCESS;
 
@@ -215,30 +219,36 @@ public class CaoSave extends AuditActionSupport {
 
 				}
 				caoDAO.save(cao);
-				if ("caoAjaxSave".equals(button)) {
+				// TODO check if status are different, then save
+				if(prevStatus!=cao.getStatus()){
 					// Stamping cao workflow
 					ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
+					if(!Strings.isEmpty(note)){
+						Note newNote = new Note();
+						newNote.setAccount(conAudit.getContractorAccount());
+						newNote.setAuditColumns(permissions);
+						newNote.setSummary("Changed Status from "+prevStatus+" to "+cao.getStatus());
+						newNote.setNoteCategory(NoteCategory.Audits);
+						newNote.setViewableBy(cao.getOperator());
+						newNote.setBody(note);
+						noteDAO.save(newNote);
+						caoW.setNotes(note);
+					}
 					caoW.setCao(cao);
 					caoW.setAuditColumns(permissions);
 					caoW.setPreviousStatus(prevStatus);
 					caoW.setStatus(cao.getStatus());
-					if (!Strings.isEmpty(note))
-						caoW.setNotes(note);
 					caoDAO.save(caoW);
-					/*
-					 * auditBuilder.fillAuditCategories(conAudit);
-					 * auditPercentCalculator.percentCalculateComplete(conAudit,
-					 * true);
-					 */
 				}
 			}
-			
-			if ("caoAjaxSave".equals(button))
-				return "caoTable";
 		}
 
+		auditBuilder.setup(conAudit.getContractorAccount(), getUser());
 		auditBuilder.fillAuditCategories(conAudit);
 		auditPercentCalculator.percentCalculateComplete(conAudit, true);
+		
+		if ("caoAjaxSave".equals(button))
+			return "caoTable";
 		return SUCCESS;
 	}
 
