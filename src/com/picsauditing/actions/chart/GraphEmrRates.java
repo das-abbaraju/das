@@ -38,11 +38,12 @@ public class GraphEmrRates extends ChartMSAction {
 		SelectSQL sql = new SelectSQL("accounts a");
 		sql.addJoin("JOIN contractor_audit pqf ON pqf.conID = a.id");
 		sql.addJoin("JOIN pqfdata d ON d.auditID = pqf.id");
+		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
 		sql.addField("pqf.auditFor as series");
 		sql.addField("floor(d.answer*10)/10 as label");
 		sql.addField("count(*) as value");
 		sql.addWhere("d.answer > 0");
-		sql.addWhere("pqf.auditStatus = 'Active' AND pqf.auditTypeID = 11");
+		sql.addWhere("cao.status = 'Complete' AND pqf.auditTypeID = 11");
 
 		sql.addWhere("d.questionID = " + AuditQuestion.EMR);
 		String auditFor = Strings.implodeForDB(getYears(), ",");

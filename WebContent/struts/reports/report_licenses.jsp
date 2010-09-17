@@ -44,8 +44,9 @@
 				<a href="ContractorView.action?id=<s:property value="[0].get('id')"/>">
 				<s:property value="[0].get('name')" /></a>
 			</td>
-			<td>
-				<a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditStatus')"/></a>
+			<td class="icon center">
+				<a href="Audit.action?auditID=<s:property value="get('auditID')"/>" style="icon"><img
+				src="images/icon_PQF.gif" width="20" height="20" border="0"></a>
 			</td>
 			<s:if test="filter.primaryInformation">
 				<td><s:property value="[0].get('contactname')"/></td>

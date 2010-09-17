@@ -44,28 +44,28 @@ where c.id = a.id
 and (a.country = 'CA');
 
 -- update auditor with CSR for these contractors for PQF and Annual Update
-update contractor_audit ca, contractor_info c set ca.auditorid =
-c.welcomeAuditor_id
-where ca.conid = c.id
-and auditTypeid in 
-(select id from audit_type where (classtype in ('PQF') or id
-in (9,11)))
-and auditStatus in ('Pending','Submitted','Incomplete');
-
--- update auditor with CSR for these contractors for Policies
 update contractor_audit ca, contractor_info c, contractor_audit_operator cao set ca.auditorid = c.welcomeAuditor_id
 where ca.conid = c.id
 and audittypeid in
 (select id from audit_type where (classtype in ('Policy')))
 and expiresDate > NOW()
 and ca.id = cao.auditid
+and cao.status in ('Pending','Submitted','Incomplete');
+
+-- update auditor with CSR for these contractors for Policies/PQfs/Annual Update and Welcome Call 
+update contractor_audit ca, contractor_info c, contractor_audit_operator cao set ca.auditorid = c.welcomeAuditor_id
+where ca.conid = c.id
+and audittypeid in
+(select id from audit_type where (classtype in ('Policy') or classtype in ('PQF') or id in (9,11)))
+and expiresDate > NOW()
+and ca.id = cao.auditid
 and cao.status in ('Pending','Submitted');
 
 -- Assigning Tiffany as BP IISN case management auditor
-update contractor_audit ca set ca.auditorid = 22222, ca.closingAuditorID = 22222
-where auditTypeid in 
-(select id from audit_type where id = 96)
-and auditStatus in ('Pending','Submitted','Incomplete');
+update contractor_audit ca,  contractor_audit_operator cao set ca.auditorid = 22222, ca.closingAuditorID = 22222
+where  ca.id = cao.auditid
+and auditTypeid in ()select id from audit_type where id = 96)
+and cao.status in ('Pending','Submitted','Incomplete');
 
 -- rebuild the stats for ContractorOperators
 TRUNCATE TABLE stats_gco_count; 
