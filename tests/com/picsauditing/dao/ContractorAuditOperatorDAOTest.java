@@ -36,7 +36,7 @@ public class ContractorAuditOperatorDAOTest {
 		OperatorAccount op = new OperatorAccount();
 		op.setId(16);
 
-		ContractorAudit ca = auditDao.findActiveByContractor(3, 1);
+		ContractorAudit ca = auditDao.findByContractor(3).get(0);
 
 		assertNotNull("Audit should not be null", ca);
 
