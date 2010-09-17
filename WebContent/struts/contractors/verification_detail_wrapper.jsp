@@ -137,21 +137,7 @@
         window.open(url,title,pars);
 	 }
 	 
-	 function changeAuditStatus(id, auditStatus) {
-		var data= {
-			auditID: id,
-			auditStatus: auditStatus
-		};
-		$.post('CaoSaveAjax.action', data, function() {
-				$('#verification_audit').empty();
-				$('#auditHeader').scrollTo();
-				refreshNoteCategory(<s:property value="id"/>, '<s:property value="noteCategory"/>');
-			}
-		);
-		return false;
-	 }
-	 
-	function allApproveReject(id, auditStatus) {
+	function changeAuditStatus(id, auditStatus) {
 		var caoIDs = new Array(arguments.length - 2);
 		for (i = 2; i < arguments.length; i++) {
 			caoIDs[i - 2] = arguments[i];
@@ -164,15 +150,14 @@
 		};
 
 		$.post('CaoSaveAjax.action', data, function() {
-				$('#verification_audit').empty();
-				$('#auditHeader').scrollTo();
-				refreshNoteCategory(<s:property value="id"/>, '<s:property value="noteCategory"/>');
-			}
-		);
-		
+			$('#verification_audit').empty();
+			$('#auditHeader').scrollTo();
+			refreshNoteCategory(<s:property value="id"/>, '<s:property value="noteCategory"/>');
+		});
+			
 		return false;
 	}
-
+	 
 	function previewEmail() {
 		var data= {id: <s:property value="contractor.id"/>};
 		$('#emailTemplate').html("<img src='images/ajax_process.gif' />")

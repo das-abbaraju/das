@@ -16,7 +16,6 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OshaAuditDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -39,8 +38,8 @@ public class CaoSave extends AuditActionSupport {
 	protected int caoID = 0;
 	protected int stepID = 0;
 	private String note;
-	private String noteMessage ="";
-	private String saveMessage ="";
+	private String noteMessage = "";
+	private String saveMessage = "";
 	private List<Integer> caoIDs = new ArrayList<Integer>();
 	private AuditStatus status;
 
@@ -75,24 +74,46 @@ public class CaoSave extends AuditActionSupport {
 			return SUCCESS;
 		}
 
-		if (caoID > 0) {
-			if ("statusLoad".equals(button)) {
-				WorkflowStep step = conAudit.getAuditType().getWorkFlow().getStep(stepID);
-				ContractorAuditOperator cao = caoDAO.find(caoID);
-				if (cao != null) {
-					Account a = cao.getOperator();
-					saveMessage+= step.getButtonName() + " " + conAudit.getAuditType().getAuditName() + " for "
-							+ a.getName()+"\n";
-					if (step.isNoteRequired())
-						noteMessage += "Explain why you are changing the status to " + step.getNewStatus();
-				} else
-					return ERROR;
-				return "caoNoteSave";
-			}
+		if (caoID > 0)
 			caoIDs.add(caoID);
-		}
 
 		if (caoIDs.size() > 0) {
+			if ("statusLoad".equals(button)) {
+				WorkflowStep step = null;
+				boolean noteRequired = false;
+				List<String> opNames = new ArrayList<String>();
+
+				if (stepID > 0) {
+					step = conAudit.getAuditType().getWorkFlow().getStep(stepID);
+					status = step.getNewStatus();
+					noteRequired = step.isNoteRequired();
+				} else {
+					for (ContractorAuditOperator cao : conAudit.getOperators()) {
+						if (caoIDs.contains(cao.getId())) {
+							opNames.add(cao.getOperator().getName());
+						
+							for (WorkflowStep s : conAudit.getAuditType().getWorkFlow().getSteps()) {
+								if (s.getOldStatus() != null && cao.getStatus().equals(s.getOldStatus()) 
+										&& status.equals(s.getNewStatus()) && s.isNoteRequired()) {
+									noteRequired = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+
+				if (!opNames.isEmpty()) {
+					saveMessage += status.getButton() + " " + conAudit.getAuditType().getAuditName() + " for "
+							+ Strings.implode(opNames, ", ") + "\n";
+					if (noteRequired)
+						noteMessage += "Explain why you are changing the status to " + status;
+				} else
+					return ERROR;
+
+				return "caoNoteSave";
+			}
+
 			for (Integer caoID : caoIDs) {
 
 				ContractorAuditOperator cao = caoDAO.find(caoID);
@@ -256,8 +277,8 @@ public class CaoSave extends AuditActionSupport {
 		if ("caoAjaxSave".equals(button))
 			return "caoTable";
 
-		if(conAudit!=null){
-			if(caoSteps==null)
+		if (conAudit != null) {
+			if (caoSteps == null)
 				getValidSteps();
 		}
 		return SUCCESS;

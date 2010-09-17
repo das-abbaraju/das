@@ -166,4 +166,16 @@ public class VerifyAudit extends AuditActionSupport {
 		
 		return Strings.implode(allCaoIDs);
 	}
+	
+	public String getOpCaoIDs(OperatorAccount op) {
+		if (op == null)
+			return null;
+		
+		List<Integer> caoIDs = new ArrayList<Integer>();
+		for (ContractorAuditOperator cao : caos.get(op)) {
+			caoIDs.add(cao.getId());
+		}
+		
+		return Strings.implode(caoIDs);
+	}
 }
