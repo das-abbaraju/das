@@ -39,6 +39,8 @@ public class CaoSave extends AuditActionSupport {
 	protected int caoID = 0;
 	protected int stepID = 0;
 	private String note;
+	private String noteMessage ="";
+	private String saveMessage ="";
 	private List<Integer> caoIDs = new ArrayList<Integer>();
 	private AuditStatus status;
 
@@ -79,13 +81,13 @@ public class CaoSave extends AuditActionSupport {
 				ContractorAuditOperator cao = caoDAO.find(caoID);
 				if (cao != null) {
 					Account a = cao.getOperator();
-					json.put("message", step.getButtonName() + " " + conAudit.getAuditType().getAuditName() + " for "
-							+ a.getName());
+					saveMessage+= step.getButtonName() + " " + conAudit.getAuditType().getAuditName() + " for "
+							+ a.getName()+"\n";
 					if (step.isNoteRequired())
-						json.put("noteMessage", "Explain why you are changing the status to " + step.getNewStatus());
+						noteMessage += "Explain why you are changing the status to " + step.getNewStatus();
 				} else
 					return ERROR;
-				return JSON;
+				return "caoNoteSave";
 			}
 			caoIDs.add(caoID);
 		}
@@ -354,5 +356,13 @@ public class CaoSave extends AuditActionSupport {
 
 	public void setStatus(AuditStatus status) {
 		this.status = status;
+	}
+
+	public String getNoteMessage() {
+		return noteMessage;
+	}
+
+	public String getSaveMessage() {
+		return saveMessage;
 	}
 }

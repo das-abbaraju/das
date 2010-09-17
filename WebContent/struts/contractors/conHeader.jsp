@@ -2,47 +2,36 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <script type="text/javascript">
 $(function(){
-	$('.singleButton').bind('click', function(){
+	 $('.singleButton').click(function() { 
 		var buttonAction = $(this).children('.bAction').val();
 		var sID = $(this).children('.bStepID').val();
 		var cID = $(this).children('.bCaoID').val();
 		var data = {
 				auditID: $('#auditID').val(), button: 'statusLoad',
 				'buttonAction': buttonAction, caoID: cID, stepID: sID
-			};
-		$.getJSON('CaoSaveAjax.action', data, function(json){
-			if(json!=null){ // add length checking to note
-				var message = $('<span>').append(json.message);
-				var noteMessage = (json.noteMessage==null) ? '':json.noteMessage;
-				$('#statusMessage').html(message);
-				$('#statusMessage').append($('<form>')
-					.attr('id','changeStatusForm').append($('<textarea>', {
-						'cols': '30', 'rows': '3',
-						'name': 'addToNotes', 'id': 'addToNotes'
-					}).append(noteMessage)).css('width','400px')); 
-				$.facebox({div: '#ajaxBox'});
-				if(!$('#actionButtonFooter').length>0)
-					$('#facebox .faceFooter').append($('<div>').attr('id','actionButtonFooter').css('float','left'));
-				var footButton = $('<input>',{
-					'type': 'button', 'value': buttonAction, 
-					'class': 'picsbutton negative',	'id':'actionInput'
-				}).css('float','left');
-				$('#actionButtonFooter').html(footButton);
-				$('#actionInput').click(function(){
-					var data = {
-						note: $('#facebox #addToNotes').val(),
-						stepID: sID, caoID: cID,
-						auditID: $('#auditID').val(), button: 'caoAjaxSave'
-					}
-					$('#statusBox').load('CaoSaveAjax.action', data, function(){
-						jQuery(document).trigger('close.facebox');
-					});
-				});
-				$('#facebox .content').css('height','15em');
-			} else {
-			}
-		});	
-	});
+		};
+		$('#noteAjax').load('CaoSaveAjax.action', data, function(){
+	        $.blockUI({ message:$('#ajaxDialog'), css: { width: '275px'} }); 
+	        $('#yesButton').val(buttonAction);
+		    $('#yesButton').click(function(){
+		        $.blockUI({message: 'Saving Status, please wait...'});
+		        var data = {
+	                note: $('#addToNotes').val(),
+	                stepID: sID, caoID: cID,
+	                auditID: $('#auditID').val(), button: 'caoAjaxSave'              				
+		        };
+		        $('#caoTable').load('CaoSaveAjax.action', data, function(){
+		            $.unblockUI();
+		        });
+		    });
+		     
+		    $('#noButton').click(function(){
+		        $.unblockUI();
+		        return false;
+		    });
+		});
+
+     }); 
 });
 </script>
 
@@ -163,7 +152,7 @@ $(function(){
 		</fieldset>
 	</div>
 	<div class="clear"></div>
-	<div id="statusBox" class="center">	
+	<div id="caoTable" class="center">	
 		<s:include value="caoTable.jsp"/>
 	</div>
 	<span style="float: right; padding-right: 25px;"><a href="#" class="refresh">Refresh</a></span>
@@ -237,8 +226,8 @@ $(function(){
 	</pics:permission>
 </ul>
 </div>
-<div id="ajaxBox" style="display: none">
-	<div id="statusMessage"></div>
+<div id="noteAjax">
+	
 </div>
 
 <s:iterator value="#auditMenu">
