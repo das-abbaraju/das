@@ -1,10 +1,11 @@
 $(function(){
 	
 	$('ul.vert-toolbar li.head .hidden-button').click(function() {
-		$('ul.catlist').toggle('slow');
+		var hidden = $('ul.catlist:hidden')
+		$('ul.catlist:visible').fadeOut('slow', function() { hidden.fadeIn('slow'); });
 	});
 	
-	$('.vert-toolbar li').hover(
+	$('.vert-toolbar li:not(li.head)').hover(
 		function() {
 			$(this).addClass('hover');
 		},
@@ -12,13 +13,22 @@ $(function(){
 			$(this).removeClass('hover');
 		}
 	);
+
+	if ($('#nacatlist li:not(li.head)').size() > 0) {
+		$('ul.catlist li.head').hover(
+			function() {
+				$(this).addClass('hover');
+			},
+			function(){
+				$(this).removeClass('hover');
+			}
+		);
+	}
 	
-	// ajax history
+	// AJAX HISTORY
+
 	$('a.hist-category').live('click', function() {
 		$.bbq.pushState( $.param.fragment(this.href) );
-		var li = $(this).parents('li:first');
-		li.siblings('li.current').removeClass('current');
-		li.addClass('current');
 		return false;
 	});
 	
@@ -28,10 +38,20 @@ $(function(){
 		else {
 			var data = $.deparam.querystring($.param.querystring(location.href, $.bbq.getState()));
 			data.button='';
-			$('#auditViewArea').load('AuditAjax.action', data);
+			$('#auditViewArea').block({'message': 'Fetching category...', centerY: false, css: {top: '20px'} }).load('AuditAjax.action', data, function() {
+				$('ul.catlist li.current').removeClass('current');
+				$('#category_'+$.bbq.getState().categoryID).addClass('current');
+				$(this).unblock();
+			});
 		}
 	});
 	
 	$(window).trigger('hashchange');
+	
+	// END AJAX HISTORY
+	
+	$('input.fileUpload').live('click', function() {
+		alert('show file upload for this: ' + $(this).attr('id'));
+	});
 	
 });

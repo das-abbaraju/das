@@ -7,16 +7,18 @@
 <s:property value="conAudit.contractorAccount.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript" src="js/jquery/facebox/facebox.js"></script>
+<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
 <script type="text/javascript" src="js/con_audit.js?v=<s:property value="version"/>"></script>
 </head>
 <body>
 
 <s:include value="../audits/audit_catHeader.jsp"/>
-<table style="width: 100%">
-	<tr style="width: 250px;">
+<table>
+	<tr>
 		<td id="auditHeaderSideNav" class="auditHeaderSideNav noprint" style="width: 250px;">
 			<ul id="toolbar" class="vert-toolbar"> 
 				<li class="head">TOOLBAR</li>
@@ -74,17 +76,18 @@
 										<s:else><s:property value="value.percentCompleted" />%</s:else>
 									</span>
 								</s:if>
-								<s:if test="conAudit.auditType.hasRequirements">
+								<s:elseif test="conAudit.auditType.workflow.hasSubmittedStep">
 									<span class="cat-percent">
-										<s:if test="value.percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
-										<s:else><s:property value="value.percentCompleted" />%</s:else>
+										<s:if test="value.percentVerified == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
+										<s:else><s:property value="value.percentVerified" />%</s:else>
 									</span>
-								</s:if>
-								<s:if test="conAudit.auditType.id == 17">
+								</s:elseif>
+								<s:elseif test="conAudit.auditType.id == 17">
 									<span class="cat-percent">
-										<s:property value="value.printableScore"/>
+										<s:if test="value.printableScore == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
+										<s:else><s:property value="value.printableScore" />%</s:else>
 									</span>
-								</s:if>
+								</s:elseif>
 								</a>
 							</li>
 						</s:if>
@@ -92,18 +95,18 @@
 				</ul>
 				<ul id="nacatlist" class="catlist vert-toolbar">
 					<li class="head">N/A CATEGORIES <span class="hidden-button">Show Others</span></li>
-					<s:iterator value="categories.keySet()" status="rowStatus" id="cat">
-						<s:if test="!applies && permissions.picsEmployee">
-							<li id="category_<s:property value="categoryID"/>">
-								<a class="hist-category" href="#categoryID=<s:property value="#cat.id" />"><s:property value="#cat.name" /></a>
+					<s:iterator value="categories" status="rowStatus">
+						<s:if test="!value.applies && permissions.picsEmployee">
+							<li id="category_<s:property value="key.id"/>">
+								<a class="hist-category" href="#categoryID=<s:property value="key.id" />"><s:property value="key.name" /></a>
 							</li>
 						</s:if>
 					</s:iterator>
 				</ul>
 			</s:if>
 		</td>
-		<td id="auditViewArea">
-		
+		<td>
+			<div id="auditViewArea"></div>
 		</td>
 	</tr>
 </table>
