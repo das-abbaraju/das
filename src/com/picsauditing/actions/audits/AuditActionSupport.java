@@ -16,7 +16,6 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -45,6 +44,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private Map<Integer, AuditData> hasManual;
 	private List<AuditCategoryRule> rules = null;
 	protected Map<AuditCategory, AuditCatData> categories = null;
+	protected Map<Integer, WorkflowStep> caoSteps = null;
 
 	public AuditActionSupport(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
@@ -77,6 +77,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 		if (!conAudit.isVisibleTo(permissions))
 			throw new NoRightsException(conAudit.getAuditType().getAuditName());
+		
 	}
 
 	public int getAuditID() {
@@ -227,23 +228,119 @@ public class AuditActionSupport extends ContractorActionSupport {
 		
 		return percentVerified; 
 	}
-
-	public Map<String, Integer> getValidButtons(String status, ContractorAuditOperator cao) {
-		AuditStatus auditStatus = AuditStatus.valueOf(status);
-		Map<String, Integer> results = new HashMap<String, Integer>();
-		for (WorkflowStep workflowStep : conAudit.getAuditType().getWorkFlow().getSteps()) {
-			if(workflowStep.getOldStatus() == auditStatus){
-				if(workflowStep.getNewStatus() == AuditStatus.Submitted){
-					if(cao.getPercentComplete()<100)
-						continue;
+	public void getValidSteps(){
+		if(caoSteps ==null)
+			caoSteps = new HashMap<Integer, WorkflowStep>();
+		for(ContractorAuditOperator cao : conAudit.getOperators()){
+			if(cao.isVisible() && cao.isVisibleTo(permissions)){
+				for (WorkflowStep workflowStep : conAudit.getAuditType().getWorkFlow().getSteps()) {
+					if(workflowStep.getOldStatus() == cao.getStatus()){
+						if(workflowStep.getNewStatus() == AuditStatus.Submitted){
+							if(!isCanSubmitAudit(cao))
+								continue;
+						}
+						if(workflowStep.getNewStatus() == AuditStatus.Complete){
+							if(!isCanCloseAudit(cao))
+								continue;
+						}
+						caoSteps.put(cao.getId(), workflowStep);
+					}
 				}
-				if(workflowStep.getNewStatus() == AuditStatus.Complete){
-					if(cao.getPercentVerified()<100)
-						continue;
-				}
-				results.put(workflowStep.getButtonName(), workflowStep.getId());
 			}
 		}
-		return results;
+	}
+	
+	public WorkflowStep getCurrentCaoStep(int caoID){
+		return caoSteps.get(caoID);
+	}
+
+	public boolean isCanEditAudit() {
+		if (conAudit.isExpired())
+			return false;
+	
+		AuditType type = conAudit.getAuditType();
+	
+		if (type.getClassType().isPolicy()) {
+			// we don't want the contractors to edit the effective dates on the
+			// old policy
+			if (conAudit.willExpireSoon()) {
+				if (conAudit.hasCaoStatusAfter(AuditStatus.Submitted))
+					return false;
+			}
+		}
+	
+		// Auditors can edit their assigned audits
+		if (type.isHasAuditor() && !type.isCanContractorEdit()
+				&& conAudit.getAuditor() != null
+				&& permissions.getUserId() == conAudit.getAuditor().getId())
+			return true;
+	
+		if (permissions.seesAllContractors())
+			return true;
+	
+		if (permissions.isContractor()) {
+			if (conAudit.getAuditType().getWorkFlow().getId() == 5
+					|| conAudit.getAuditType().getWorkFlow().getId() == 3) {
+				if (conAudit.hasCaoStatusAfter(AuditStatus.Resubmitted))
+					return false;
+			}
+			return type.isCanContractorEdit();
+		}
+		
+		if (type.getEditPermission() != null) {
+			if(permissions.hasPermission(type.getEditPermission()) && !isAuditWithOtherOperators())
+					return true;
+		}
+	
+		return false;
+	}
+
+	public boolean isCanSubmitAudit(ContractorAuditOperator cao) {
+		if (!isCanEditAudit())
+			return false;
+	
+		if (cao.canSubmitCao()) {
+			if (permissions.isContractor()) {
+				if (!conAudit.getContractorAccount()
+						.isPaymentMethodStatusValid()
+						&& conAudit.getContractorAccount().isMustPayB())
+					return false;
+			}
+			return true;
+		} else if (conAudit.getAuditType().isRenewable()) {
+			if (permissions.isContractor()) {
+				// We don't allow admins to resubmit audits (only
+				// contractors)
+				if (conAudit.isAboutToExpire())
+					return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isCanExempt() {
+		if(permissions.isAdmin())
+			return true;
+		return false;
+	}
+
+	/**
+	 * Can the current user submit this audit in its current state?
+	 * 
+	 * @return
+	 */
+	public boolean isCanCloseAudit(ContractorAuditOperator cao) {
+		if (permissions.isContractor())
+			return false;
+		if (!isCanEditAudit())
+			return false;
+	
+		if (cao.canVerifyCao()) {
+			return true;
+		}
+		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
+			return false;
+	
+		return false;
 	}
 }

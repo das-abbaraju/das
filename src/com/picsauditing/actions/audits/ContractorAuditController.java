@@ -20,7 +20,6 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -69,9 +68,6 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		if(auditID > 0)
 			this.findConAudit();
-		
-		if(conAudit!=null)
-			findValidButtons();
 
 		if (button != null) {
 			if (categoryID > 0 && permissions.isPicsEmployee()) {
@@ -177,18 +173,23 @@ public class ContractorAuditController extends AuditActionSupport {
 				}
 			}
 
+			return SUCCESS;
 		}
 		
-		
+		if(conAudit!=null){
+			if(caoSteps==null)
+				getValidSteps();
+		}
 		
 		return SUCCESS;
 	}
 
 	private void findValidButtons() {
-		Map<Integer, Integer> numOcc = new HashMap<Integer, Integer>();
+		// button, occurance
+		Map<String, Integer> numOcc = new HashMap<String, Integer>();
 		for(ContractorAuditOperator cao : conAudit.getOperators()){
 			//Map<String, Integer> tempMap = cao.getValidButtons();
-			validButtons.put(cao.getId(), cao.getValidButtons());
+			//validButtons.put(cao.getId(), cao.getValidButtons());
 		}
 		
 	}
@@ -283,78 +284,6 @@ public class ContractorAuditController extends AuditActionSupport {
 		return false;
 	}
 
-	public boolean isCanEditAudit() {
-		if (conAudit.isExpired())
-			return false;
-
-		AuditType type = conAudit.getAuditType();
-
-		if (type.getClassType().isPolicy()) {
-			// we don't want the contractors to edit the effective dates on the
-			// old policy
-			if (conAudit.willExpireSoon()) {
-				if (conAudit.hasCaoStatusAfter(AuditStatus.Submitted))
-					return false;
-			}
-		}
-
-		// Auditors can edit their assigned audits
-		if (type.isHasAuditor() && !type.isCanContractorEdit()
-				&& conAudit.getAuditor() != null
-				&& permissions.getUserId() == conAudit.getAuditor().getId())
-			return true;
-
-		if (permissions.seesAllContractors())
-			return true;
-
-		if (permissions.isContractor()) {
-			if (conAudit.getAuditType().getWorkFlow().getId() == 5
-					|| conAudit.getAuditType().getWorkFlow().getId() == 3) {
-				if (conAudit.hasCaoStatusAfter(AuditStatus.Resubmitted))
-					return false;
-			}
-			return type.isCanContractorEdit();
-		}
-		
-		if (type.getEditPermission() != null) {
-			if(permissions.hasPermission(type.getEditPermission()) && !isAuditWithOtherOperators())
-					return true;
-		}
-
-		return false;
-	}
-
-	public boolean isCanSubmitAudit() {
-		if (!isCanEditAudit())
-			return false;
-
-		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
-			if (cao.canSubmitCao()) {
-				if (permissions.isContractor()) {
-					if (!conAudit.getContractorAccount()
-							.isPaymentMethodStatusValid()
-							&& conAudit.getContractorAccount().isMustPayB())
-						return false;
-				}
-				return true;
-			} else if (conAudit.getAuditType().isRenewable()) {
-				if (permissions.isContractor()) {
-					// We don't allow admins to resubmit audits (only
-					// contractors)
-					if (conAudit.isAboutToExpire())
-						return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	public boolean isCanExempt() {
-		if(permissions.isAdmin())
-			return true;
-		return false;
-	}
-	
 	public boolean isCanVerifyAudit() {
 		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
 			return false;
@@ -367,33 +296,6 @@ public class ContractorAuditController extends AuditActionSupport {
 		return false;
 	}
 
-	/**
-	 * Can the current user submit this audit in its current state?
-	 * 
-	 * @return
-	 */
-	public boolean isCanCloseAudit() {
-		if (permissions.isContractor())
-			return false;
-		if (!isCanEditAudit())
-			return false;
-
-		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
-			if (cao.canVerifyCao()) {
-				return true;
-			}
-		}
-		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
-			return false;
-
-		return false;
-	}
-	
-	public List<String> getButtonSubmitList(){
-		
-		return null;
-	}
-	
 	public boolean isCanVerify() {
 		if(conAudit.getAuditType().isPqf() || conAudit.getAuditType().isAnnualAddendum())
 			return conAudit.hasCaoStatusBefore(AuditStatus.Complete);

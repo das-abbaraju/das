@@ -29,12 +29,12 @@
 					<td><s:property value="status"/></td>
 					<td><s:property value="formatDate(statusChangedDate, 'MMMMM d, yyyy')" default="N/A" /></td>
 					<td class="buttonAction">
-						<s:iterator value="validButtons" id="buttonActions">
+						<s:iterator value="getCurrentCaoStep(#currentCao.id)" id="step">
 							<span class="singleButton">
-								<s:property value="#buttonActions.key" />
-								<s:hidden cssClass="bCaoID" name="%{id}_%{#buttonActions.key}" value="%{id}"/>
-								<s:hidden cssClass="bStepID" name="%{id}_%{#buttonActions.key}_stepID" value="%{#buttonActions.value}" />
-								<s:hidden cssClass="bAction" value="%{#buttonActions.key}" name="%{id}_%{#buttonActions.key}_action" />
+								<s:property value="#step.buttonName" />
+								<s:hidden cssClass="bCaoID" name="%{id}_%{#step.id}" value="%{#currentCao.id}"/>
+								<s:hidden cssClass="bStepID" name="%{id}_%{#buttonActions.key}_stepID" value="%{#step.id}" />
+								<s:hidden cssClass="bAction" value="%{#step.buttonName}" name="%{id}_%{#step.buttonName}_action" />
 							</span> 
 						</s:iterator>
 					</td>

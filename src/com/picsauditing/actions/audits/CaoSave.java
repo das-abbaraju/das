@@ -92,13 +92,8 @@ public class CaoSave extends AuditActionSupport {
 
 		if (caoIDs.size() > 0) {
 			for (Integer caoID : caoIDs) {
-				ContractorAuditOperator cao = null;
-				for (ContractorAuditOperator cao2 : conAudit.getOperators()) {
-					if (cao2.getId() == caoID) {
-						cao = cao2;
-						break;
-					}
-				}
+
+				ContractorAuditOperator cao = caoDAO.find(caoID);
 				if (cao == null)
 					throw new RecordNotFoundException("ContractorAuditOperator");
 
@@ -140,7 +135,7 @@ public class CaoSave extends AuditActionSupport {
 					// addActionError("Please enter all required questions before submitting the policy.");
 					// }
 				}
-				if (this.getActionErrors().size() > 0)
+				if (hasActionErrors())
 					return SUCCESS;
 
 				// TODO stamp notes
@@ -258,6 +253,11 @@ public class CaoSave extends AuditActionSupport {
 
 		if ("caoAjaxSave".equals(button))
 			return "caoTable";
+
+		if(conAudit!=null){
+			if(caoSteps==null)
+				getValidSteps();
+		}
 		return SUCCESS;
 	}
 
