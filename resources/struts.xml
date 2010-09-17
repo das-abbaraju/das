@@ -1111,6 +1111,7 @@
 		<action name="CaoSaveAjax"
 			class="com.picsauditing.actions.audits.CaoSave">
 			<result name="caoTable">struts/contractors/caoTable.jsp</result>
+			<result name="caoNoteSave">struts/contractors/caoNoteSave.jsp</result>
 			<result>struts/blank.jsp</result>
 		</action>
 		
