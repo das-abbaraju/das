@@ -96,6 +96,8 @@ public class ContractorAuditController extends AuditActionSupport {
 				if ("recalculate".equals(button)) {
 					auditBuilder.setup(conAudit.getContractorAccount(), getUser());
 					auditBuilder.fillAuditCategories(conAudit);
+					
+					this.redirect("Audit.action?auditID=" + conAudit.getId());
 				}
 				// Preview the Category from the manage audit type page
 				if ("PreviewCategory".equals(button)) {
@@ -175,6 +177,9 @@ public class ContractorAuditController extends AuditActionSupport {
 			}
 
 		}
+		
+		
+		
 		return SUCCESS;
 	}
 
