@@ -61,7 +61,6 @@ public class CaoSave extends AuditActionSupport {
 		this.noteDAO = noteDAO;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
@@ -82,11 +81,12 @@ public class CaoSave extends AuditActionSupport {
 				WorkflowStep step = null;
 				boolean noteRequired = false;
 				List<String> opNames = new ArrayList<String>();
-
 				if (stepID > 0) {
+					ContractorAuditOperator cao = conAudit.getCaoByID(caoID);
 					step = conAudit.getAuditType().getWorkFlow().getStep(stepID);
 					status = step.getNewStatus();
 					noteRequired = step.isNoteRequired();
+					opNames.add(cao.getOperator().getName());
 				} else {
 					for (ContractorAuditOperator cao : conAudit.getOperators()) {
 						if (caoIDs.contains(cao.getId())) {
@@ -115,15 +115,8 @@ public class CaoSave extends AuditActionSupport {
 			}
 
 			for (Integer caoID : caoIDs) {
-				ContractorAuditOperator cao = null;
-				
-				for (ContractorAuditOperator c : conAudit.getOperators()) {
-					if (c.getId() == caoID) {
-						cao = c;
-						break;
-					}
-				}
-				
+
+				ContractorAuditOperator cao = conAudit.getCaoByID(caoID);
 				if (cao == null)
 					throw new RecordNotFoundException("ContractorAuditOperator");
 
@@ -254,7 +247,6 @@ public class CaoSave extends AuditActionSupport {
 
 				}
 				caoDAO.save(cao);
-				// TODO check if status are different, then save
 				if (prevStatus != cao.getStatus()) {
 					// Stamping cao workflow
 					ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();

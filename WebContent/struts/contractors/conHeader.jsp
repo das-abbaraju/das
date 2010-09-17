@@ -2,37 +2,43 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <script type="text/javascript">
 $(function(){
-	 $('.singleButton').click(function() { 
-		var buttonAction = $(this).children('.bAction').val();
+	$('.singleButton').click(function() {
 		var sID = $(this).children('.bStepID').val();
 		var cID = $(this).children('.bCaoID').val();
 		var data = {
-				auditID: $('#auditID').val(), button: 'statusLoad',
-				'buttonAction': buttonAction, caoID: cID, stepID: sID
+				auditID: $('#auditID').val(), button: 'statusLoad', 
+				caoID: cID, stepID: sID
 		};
-		$('#noteAjax').load('CaoSaveAjax.action', data, function(){
-	        $.blockUI({ message:$('#ajaxDialog'), css: { width: '275px'} }); 
-	        $('#yesButton').val(buttonAction);
-		    $('#yesButton').click(function(){
-		        $.blockUI({message: 'Saving Status, please wait...'});
-		        var data = {
-	                note: $('#addToNotes').val(),
-	                stepID: sID, caoID: cID,
-	                auditID: $('#auditID').val(), button: 'caoAjaxSave'              				
-		        };
-		        $('#caoTable').load('CaoSaveAjax.action', data, function(){
-		            $.unblockUI();
-		        });
-		    });
-		     
-		    $('#noButton').click(function(){
-		        $.unblockUI();
-		        return false;
-		    });
-		});
-
-     }); 
+		loadResults(data, $('#addToNotes').val());
+	});
+	$('.clearOnce').live('click',function(){
+		if($('#clearOnceField').val()==1){
+			$('#clearOnceField').val(0);
+			$(this).val('');		
+		}
+	});
 });
+
+function loadResults(data, noteText){
+	$('#noteAjax').load('CaoSaveAjax.action', data, function(){
+        $.blockUI({ message:$('#noteAjax'), css: { width: '350px'} }); 
+        if($('.clearOnce').val()=='')
+			$('#clearOnceField').val(0);
+	    $('#yesButton').click(function(){
+	        $.blockUI({message: 'Saving Status, please wait...'});
+	        data.button = 'caoAjaxSave';
+	        data.note = noteText;
+	        $('#caoTable').load('CaoSaveAjax.action', data, function(){
+	            $.unblockUI();
+	        });
+	    });
+	     
+	    $('#noButton').click(function(){
+	        $.unblockUI();
+	        return false;
+	    });
+	});
+}
 </script>
 
 <s:set name="auditMenu" value="auditMenu"></s:set>
@@ -226,7 +232,7 @@ $(function(){
 	</pics:permission>
 </ul>
 </div>
-<div id="noteAjax">
+<div id="noteAjax" class="blockDialog">
 	
 </div>
 
