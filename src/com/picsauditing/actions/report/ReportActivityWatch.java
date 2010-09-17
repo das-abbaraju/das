@@ -112,25 +112,12 @@ public class ReportActivityWatch extends ReportAccount {
 	protected void buildQuery() {
 		super.buildQuery();
 		
-		Set<Integer> visibleAuditTypes = null;
-		Set<Integer> visibleCaos = null;
-		if (permissions.isOperatorCorporate()) {
-			// One call to get all the visible audits
-			OperatorAccount op = opDAO.find(permissions.getAccountId());
-			visibleAuditTypes = op.getVisibleAuditTypes();
-			
-			// Get inherited operator ids that can see CAOs?
-			visibleCaos = new HashSet<Integer>();
-			if (permissions.isOperator() && op.getCanSeeInsurance().isTrue()) {
-				visibleCaos.add(op.getInheritInsurance().getId());
-			}
-			
-			if (permissions.isCorporate()) {
-				for (Facility f : op.getOperatorFacilities()) {
-					if (f.getOperator().getCanSeeInsurance().isTrue())
-						visibleCaos.add(f.getOperator().getInheritInsurance().getId());
-				}
-			}
+		Set<Integer> visibleCaos =new HashSet<Integer>();
+		if (permissions.isOperator()) {
+			visibleCaos.add(permissions.getAccountId());
+		}
+		if (permissions.isCorporate()) {
+			visibleCaos.addAll(permissions.getOperatorChildren());
 		}
 
 		String activity = "JOIN (";
@@ -152,10 +139,13 @@ public class ReportActivityWatch extends ReportAccount {
 					"CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), ' Expired')",
 					"CONCAT('Audit.action?auditID=', ca.id)");
 			sql2.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id AND aType.classType != 'Policy'");
+			sql2.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
+			sql2.addWhere("cao.visible = 1");
 			if (permissions.isOperatorCorporate()) {
-				sql2.addWhere("aType.id IN (" + Strings.implode(visibleAuditTypes) + ")");
+				sql2.addWhere("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id");
+				sql2.addWhere("caop.opID IN (" + Strings.implode(visibleCaos, ",") +")");
 			}
-			sql2.addWhere("expiresDate IS NOT NULL AND ca.auditStatus = 'Expired'");
+			sql2.addWhere("ca.expiresDate IS NOT NULL AND ca.expiresDate < NOW()");
 			watchOptions.add("(" + sql2.toString() + ")");
 
 			// Audit Submitted
@@ -163,14 +153,17 @@ public class ReportActivityWatch extends ReportAccount {
 					"AuditSubmitted",
 					"contractor_audit ca",
 					"ca.conID",
-					"ca.completedDate",
+					"cao.statusChangedDate AS completedDate",
 					"CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), ' Submitted')",
 					"CONCAT('Audit.action?auditID=', ca.id)");
 			sql2.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id AND aType.classType != 'Policy'");
+			sql2.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
+			sql2.addWhere("cao.visible = 1");
 			if (permissions.isOperatorCorporate()) {
-				sql2.addWhere("aType.id IN (" + Strings.implode(visibleAuditTypes) + ")");
+				sql2.addWhere("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id");
+				sql2.addWhere("caop.opID IN (" + Strings.implode(visibleCaos, ",") +")");
 			}
-			sql2.addWhere("completedDate IS NOT NULL AND ca.auditStatus = 'Submitted'");
+			sql2.addWhere("cao.statusChangedDate IS NOT NULL AND cao.status IN ('Submitted','Resubmitted')");
 			watchOptions.add("(" + sql2.toString() + ")");
 
 			// Audit Activated
@@ -178,14 +171,17 @@ public class ReportActivityWatch extends ReportAccount {
 					"AuditActivated",
 					"contractor_audit ca",
 					"ca.conID",
-					"ca.closedDate",
-					"CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), ' Activated')",
+					"cao.statusChangedDate AS closedDate",
+					"CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), ' Complete')",
 					"CONCAT('Audit.action?auditID=', ca.id)");
 			sql2.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id AND aType.classType != 'Policy'");
+			sql2.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
+			sql2.addWhere("cao.visible = 1");
 			if (permissions.isOperatorCorporate()) {
-				sql2.addWhere("aType.id IN (" + Strings.implode(visibleAuditTypes) + ")");
+				sql2.addWhere("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id");
+				sql2.addWhere("caop.opID IN (" + Strings.implode(visibleCaos, ",") +")");
 			}
-			sql2.addWhere("closedDate IS NOT NULL AND ca.auditStatus = 'Active'");
+			sql2.addWhere("cao.statusChangedDate IS NOT NULL AND cao.status IN ('Complete','Approved')");
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
 		if (policies) {
@@ -198,10 +194,13 @@ public class ReportActivityWatch extends ReportAccount {
 					"CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), ' Expired')",
 					"CONCAT('Audit.action?auditID=', ca.id)");
 			sql2.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id AND aType.classType = 'Policy'");
+			sql2.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
+			sql2.addWhere("cao.visible = 1");
 			if (permissions.isOperatorCorporate()) {
-				sql2.addWhere("aType.id IN (" + Strings.implode(visibleAuditTypes) + ")");
+				sql2.addWhere("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id");
+				sql2.addWhere("caop.opID IN (" + Strings.implode(visibleCaos, ",") +")");
 			}
-			sql2.addWhere("expiresDate IS NOT NULL AND ca.auditStatus = 'Expired'");
+			sql2.addWhere("ca.expiresDate IS NOT NULL AND ca.expiresDate < NOW()");
 			watchOptions.add("(" + sql2.toString() + ")");
 
 			// Policy Not Expired
@@ -209,16 +208,14 @@ public class ReportActivityWatch extends ReportAccount {
 					"CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END),"
 							+ "CONCAT(' for ', oper.name), ' Submitted')", "CONCAT('Audit.action?auditID=', ca.id)");
 			sql2.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id AND aType.classType = 'Policy'");
-			String caos = "JOIN contractor_audit_operator cao ON cao.auditID = ca.id";
+			sql2.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
+			sql2.addWhere("cao.visible = 1");
 			if (permissions.isOperatorCorporate()) {
-				sql2.addWhere("aType.id IN (" + Strings.implode(visibleAuditTypes) + ")");
-				// TODO move this check up to ReportContractorAudit
-				if (visibleCaos.size() > 0)
-					caos += " AND cao.opID IN (" + Strings.implode(visibleCaos) + ")";
+				sql2.addWhere("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id");
+				sql2.addWhere("caop.opID IN (" + Strings.implode(visibleCaos, ",") +")");
 			}
-			sql2.addJoin(caos);
 			sql2.addJoin("LEFT JOIN accounts oper on oper.id = cao.opID");
-			sql2.addWhere("cao.status != 'Pending' AND cao.visible = 1");
+			sql2.addWhere("cao.status != 'Pending'");
 			sql2.addWhere("ca.expiresDate > NOW()");
 			watchOptions.add("(" + sql2.toString() + ")");
 

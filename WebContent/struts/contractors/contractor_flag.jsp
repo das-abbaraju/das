@@ -345,24 +345,14 @@ function checkReason(id) {
 								<s:if test="#data.criteria.auditType != null">
 									<s:iterator id="audit" value="contractor.audits">
 										<s:if test="#data.criteria.auditType == #audit.auditType">
-											<s:if test="#data.criteria.auditType.classType.policy && !(#audit.expired)">
-												<s:iterator value="#audit.operators">
-													<s:if test="visible && (co.operatorAccount.inheritInsurance == operator)">
-														<s:if test="isCanSeeAudit(#audit.auditType)">
+											<s:if test="!(#audit.expired)">
+												<s:iterator value="#audit.operators" id="cao">
+													<s:if test="visible && isCanSeeAudit(#cao)">
 															<a href="Audit.action?auditID=<s:property value="#audit.id" />"><s:property value="#audit.auditType.auditName" /></a>
 															<s:property value="status"/><br/>
-														</s:if>
 													</s:if> 
 												</s:iterator>
 											</s:if>
-											<s:else>
-												<s:if test="#audit.auditStatus.pendingSubmitted || #audit.auditStatus.incomplete">
-													<s:if test="isCanSeeAudit(#audit.auditType)">
-														<a href="Audit.action?auditID=<s:property value="#audit.id" />"><s:property value="#audit.auditFor" /> <s:property value="#audit.auditType.auditName" /></a>
-													</s:if>
-													<s:property value="#audit.auditStatus" /><br />
-												</s:if>
-											</s:else>
 										</s:if>
 									</s:iterator>
 								</s:if>

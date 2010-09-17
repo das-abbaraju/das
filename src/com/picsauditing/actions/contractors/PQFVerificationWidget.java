@@ -27,26 +27,20 @@ public class PQFVerificationWidget extends PicsActionSupport {
 		sql.addJoin("JOIN users contact ON contact.id = a.contactID");
 		sql.setType(SelectAccount.Type.Contractor);
 		
-		SelectSQL subSelect = new SelectSQL("generalcontractors gc");
-		subSelect.addField("gc.subid");
-		subSelect.addJoin("JOIN operators o ON o.id = gc.genid");
-		subSelect.addJoin("JOIN audit_operator ao ON ao.opid = o.inheritAudits");
-		subSelect.addWhere("ao.auditTypeID in (1,11)");
-		subSelect.addWhere("ao.canSee = 1");
-		
-		sql.addWhere("a.id IN (" + subSelect.toString() + ")");
 		sql.addJoin("JOIN users csr ON csr.id = c.welcomeAuditor_id");
 		sql.addField("csr.name csr_name");
 		sql.addWhere("csr.id = " + permissions.getUserId());
 		
 		sql.addJoin("JOIN contractor_audit ca ON ca.conid = a.id");
-		sql.addWhere("ca.auditStatus IN ('Submitted','Resubmitted')");
+		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
+		sql.addWhere("cao.visible = 1");
+		sql.addWhere("cao.status IN ('Submitted','Resubmitted')");
 		sql.addWhere("ca.auditTypeID IN (1,11)");
-		sql.addField("MIN(ca.completedDate) as completedDate");
+		sql.addField("MIN(cao.statusChangedDate) as completedDate");
 		sql.addWhere("a.acceptsBids = 0");
 		sql.addWhere("a.status = 'Active'");
 		sql.addGroupBy("ca.conid");
-		sql.addOrderBy("completedDate");
+		sql.addOrderBy("cao.statusChangedDatee");
 		sql.setLimit(10);
 
 		try {

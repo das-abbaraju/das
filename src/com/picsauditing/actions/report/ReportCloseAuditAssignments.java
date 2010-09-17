@@ -12,7 +12,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectContractorAudit;
 
 @SuppressWarnings("serial")
-public class ReportCloseAuditAssignments extends ReportContractorAudits {
+public class ReportCloseAuditAssignments extends ReportContractorAuditOperator {
 	protected int auditID;
 	protected int closeAuditor;
 	protected String notes;
@@ -39,7 +39,7 @@ public class ReportCloseAuditAssignments extends ReportContractorAudits {
 		super.buildQuery();
 		
 		sql.addWhere("ca.auditTypeID IN (2,3)");
-		sql.addWhere("ca.auditStatus = 'Submitted'");
+		sql.addWhere("cao.status = 'Submitted'");
 		sql.addField("ca.closingAuditorID");
 		
 		getFilter().setShowCcOnFile(false);

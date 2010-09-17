@@ -17,7 +17,7 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.SelectContractorAudit;
 
 @SuppressWarnings("serial")
-public class ReportCompletePQF extends ReportContractorAudits {
+public class ReportCompletePQF extends ReportContractorAuditOperator {
 	private Date followUpDate = null;
 	private String[] sendMail = null;
 	protected ContractorAuditDAO contractorAuditDAO;
@@ -42,14 +42,14 @@ public class ReportCompletePQF extends ReportContractorAudits {
 	public void buildQuery() {
 		super.buildQuery();
 		
-		sql.addWhere("ca.auditStatus = 'Pending'");
+		sql.addWhere("cao.status = 'Pending'");
 		sql.addWhere("ca.auditTypeID IN (1,11)");
 		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addField("COUNT(eq.conid) As followUp");
 		sql.addJoin("LEFT JOIN email_queue eq ON eq.conid = a.id AND eq.templateID = 12 AND eq.status = 'Sent'");
 		sql.addGroupBy("eq.conid");
 		sql.addGroupBy("ca.id");
-		sql.addOrderBy("ca.percentComplete DESC");
+		sql.addOrderBy("cao.percentComplete DESC");
 
 		getFilter().setShowStatus(false);
 		getFilter().setShowTrade(false);

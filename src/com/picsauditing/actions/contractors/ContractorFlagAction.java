@@ -25,6 +25,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -377,10 +378,12 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		this.inputStream = inputStream;
 	}
 
-	public boolean isCanSeeAudit(AuditType auditType) {
-		if (permissions.isContractor() && auditType.isCanContractorView())
+	public boolean isCanSeeAudit(ContractorAuditOperator cao) {
+		if (permissions.isContractor() && cao.getAudit().getAuditType().isCanContractorView())
 			return true;
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
+			return true;
+		if(cao.isVisibleTo(permissions))
 			return true;
 		return false;
 	}

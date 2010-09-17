@@ -25,6 +25,7 @@ public class ChartAuditsClosed extends ChartMSAction {
 		sql = new SelectSQL("contractor_audit ca");
 		sql.addJoin("JOIN audit_type t on t.id = ca.auditTypeID");
 		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
+		sql.addWhere("cao.visible = 1");
 	
 		sql.addField("'Completed' as series");
 		sql.addField("date_format(cao.statusChangedDate, '%Y%m') as sortBy");

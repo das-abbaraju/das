@@ -344,7 +344,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (f.isPendingPqfAnnualUpdate()) {
 			String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca "
-					+ "WHERE ca.auditStatus = 'Pending' AND ca.auditTypeID IN (1,11))";
+					+ "JOIN contractor_audit_operator cao ON cao.auditID = ca.id WHERE cao.status = 'Pending' AND cao.visible = 1 AND ca.auditTypeID IN (1,11))";
 			sql.addWhere(query);
 		}
 
@@ -420,7 +420,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	private void createPqfDataClause(SelectSQL sql, String where) {
 		String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca JOIN pqfdata d on ca.id = d.auditID "
-				+ "WHERE ca.auditStatus IN ('Active','Submitted') AND ca.auditTypeID = 1 " + where + ")";
+				+ "JOIN contractor_audit_operator cao ON cao.auditID = ca.id WHERE cao.status IN ('Complete','Submitted') AND cao.visible = 1  AND ca.auditTypeID = 1 " + where + ")";
 		sql.addWhere(query);
 		setFiltered(true);
 	}

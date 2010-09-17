@@ -9,14 +9,14 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
-public class ReportContractorAuditAuditor extends ReportContractorAudits {
+public class ReportContractorAuditAuditor extends ReportContractorAuditOperator {
 
 	@Override
 	public void buildQuery() {
 		super.buildQuery();
 
 		sql.addWhere("(ca.auditorID=" + permissions.getUserId()+" OR ca.closingAuditorID=" + permissions.getUserId()+")");
-		sql.addWhere("ca.auditStatus IN ('" + AuditStatus.Pending + "','" + AuditStatus.Submitted + "')");
+		sql.addWhere("cao.status IN ('" + AuditStatus.Pending + "','" + AuditStatus.Submitted + "')");
 		sql.addWhere("a.status IN ('Active','Demo')");
 		
 		orderByDefault = "ca.assignedDate DESC";

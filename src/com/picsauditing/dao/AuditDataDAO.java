@@ -169,8 +169,9 @@ public class AuditDataDAO extends PicsDAO {
 		Map<Integer, AuditData> data = new HashMap<Integer, AuditData>();
 		Query query = em
 				.createQuery("FROM AuditData d "
-						+ "WHERE audit IN (FROM ContractorAudit WHERE contractorAccount.id = ? AND auditStatus IN ('Active','Submitted','Pending','Resubmitted')) "
-						+ "AND question.id =  " + questionId + "" + ")");
+						+ "WHERE audit.contractorAccount.id = ? AND audit IN " +
+								"(SELECT cao.audit FROM ContractorAuditOperator cao WHERE cao.status IN ('Complete','Submitted','Pending','Resubmitted') AND cao.visible = 1) "
+						+ "AND question.id =  " + questionId);
 		query.setParameter(1, conID);
 		for (Object ad : query.getResultList()) {
 			AuditData auditData = (AuditData) ad;
@@ -216,9 +217,9 @@ public class AuditDataDAO extends PicsDAO {
 	}
 
 	public List<AuditData> findAnswerByConQuestions(int conID, Collection<Integer> questionIds) {
-		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.contractorAccount.id = ? "
-				+ "AND d.audit.auditStatus IN ('Pending','Submitted','Resubmitted','Active') "
-				+ "AND d.question.id IN (" + Strings.implode(questionIds) + ") " + "ORDER BY d.audit.auditStatus DESC");
+		Query query = em.createQuery("SELECT d FROM AuditData d WHERE d.audit.contractorAccount.id = ? "
+				+ "AND d.audit IN (SELECT cao.audit FROM ContractorAuditOperator cao WHERE cao.status IN ('Pending','Submitted','Resubmitted','Complete') AND cao.visible = 1) "
+				+ "AND d.question.id IN (" + Strings.implode(questionIds) + ") " + "ORDER BY d.audit.id DESC");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
@@ -226,8 +227,8 @@ public class AuditDataDAO extends PicsDAO {
 	@Transient
 	public AuditData findAnswerByConQuestion(int conID, int questionID) {
 		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.contractorAccount.id = ? "
-				+ "AND d.audit.auditStatus IN ('Pending','Submitted','Resubmitted','Active') "
-				+ "AND d.question.id = ? ORDER BY d.audit.auditStatus DESC");
+				+ "AND d.audit IN (SELECT cao.audit FROM ContractorAuditOperator cao WHERE cao.status IN ('Pending','Submitted','Resubmitted','Complete') AND cao.visible = 1)  "
+				+ "AND d.question.id = ? ORDER BY d.audit.id DESC");
 		query.setParameter(1, conID);
 		query.setParameter(2, questionID);
 		try {

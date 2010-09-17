@@ -39,6 +39,7 @@ public class GraphEmrRates extends ChartMSAction {
 		sql.addJoin("JOIN contractor_audit pqf ON pqf.conID = a.id");
 		sql.addJoin("JOIN pqfdata d ON d.auditID = pqf.id");
 		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
+		sql.addWhere("cao.visible = 1");
 		sql.addField("pqf.auditFor as series");
 		sql.addField("floor(d.answer*10)/10 as label");
 		sql.addField("count(*) as value");

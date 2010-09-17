@@ -15,7 +15,7 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
-public class ReportContractorAuditAssignment extends ReportContractorAudits {
+public class ReportContractorAuditAssignment extends ReportContractorAuditOperator {
 
 	@Override
 	public void checkPermissions() throws Exception {
@@ -29,10 +29,10 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		sql.addField("ca.contractorConfirm");
 		sql.addField("ca.auditorConfirm");
 		sql.addField("ca2.expiresDate AS current_expiresDate");
-		sql.addWhere("ca.auditStatus='Pending'");
+		sql.addWhere("cao.auditStatus='Pending'");
 		sql.addJoin("LEFT JOIN contractor_audit ca2 ON " + "ca2.conID = a.id "
-				+ "AND ca2.auditTypeID = ca.auditTypeID " + "AND ca2.auditStatus = 'Active' "
-				+ "AND atype.hasMultiple = 0");
+				+ "AND ca2.auditTypeID = ca.auditTypeID AND atype.hasMultiple = 0");
+		sql.addJoin("LEFT JOIN contractor_audit_operator cao2 on cao2.auditID = ca2.id AND cao2.visible = 1 AND cao2.status = 'Complete'");
 		if (getFilter().isUnScheduledAudits()) {
 			sql.addWhere("(ca.contractorConfirm IS NULL OR ca.auditorConfirm IS NULL) AND atype.isScheduled = 1");
 		} else {

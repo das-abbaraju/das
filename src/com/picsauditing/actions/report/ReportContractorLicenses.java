@@ -14,7 +14,7 @@ import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
-public class ReportContractorLicenses extends ReportContractorAudits {
+public class ReportContractorLicenses extends ReportContractorAuditOperator {
 
 	@Override
 	public void checkPermissions() throws Exception {
@@ -84,7 +84,7 @@ public class ReportContractorLicenses extends ReportContractorAudits {
 		excelSheet.setData(data);
 		excelSheet.addColumn(new ExcelColumn("id", ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("name", "Contractor Name"));
-		excelSheet.addColumn(new ExcelColumn("auditStatus", "PQF"));
+		excelSheet.addColumn(new ExcelColumn("status", "PQF"));
 		// Primary contact information
 		excelSheet.addColumn(new ExcelColumn("contactname", "Primary Contact"));
 		excelSheet.addColumn(new ExcelColumn("contactphone", "Phone"));

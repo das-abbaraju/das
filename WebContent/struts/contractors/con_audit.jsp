@@ -116,15 +116,6 @@
 		<b>Safety Professional Notes:</b> <s:property value="auditorNotes"/>
 	</div>
 </s:if>
-<s:if test="conAudit.auditType.pqf">
-	<s:if test="permissions.operatorCorporate && conAudit.auditStatus.active && conAudit.percentComplete < 100">
-		<div class="info">
- 			This PQF was Completed and Active as of <s:date name="conAudit.completedDate" format="MMM d, yyyy" />. 
- 			Some sections have been added since this date and will be addressed in January.
-		</div>
-	</s:if>
-</s:if>
-
 <br clear="all"/>
 </body>
 </html>

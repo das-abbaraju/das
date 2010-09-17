@@ -16,18 +16,12 @@
 <fieldset class="form">
 	<h2 class="formLegend">System Edit</h2>
 	<ol>
-		<li><label>Audit Status:</label>
-			<s:select name="conAudit.auditStatus" list="@com.picsauditing.jpa.entities.AuditStatus@values()"/></li>
 		<li><label>Safety Professional:</label>
 			<s:select name="conAudit.auditor.id" list="auditorList" listKey="id" listValue="name"/></li>
 		<li><label>Audit Location:</label>
 			<s:textfield name="conAudit.auditLocation"/></li>
 		<li><label>Audit For:</label>
 			<s:textfield name="conAudit.auditFor"/></li>
-		<li><label>Complete:</label>
-			<s:textfield name="conAudit.percentComplete" size="4"/>%</li>
-		<li><label>Verified:</label>
-			<s:textfield name="conAudit.percentVerified" size="4"/>%</li>
 	</ol>
 </fieldset>
 <fieldset class="form">
@@ -41,10 +35,6 @@
 			<s:textfield name="conAudit.assignedDate" value="%{conAudit.assignedDate && getText('dates', {conAudit.assignedDate})}"/></li>
 		<li><label>Scheduled Date:</label>
 			<s:textfield name="conAudit.scheduledDate" value="%{conAudit.scheduledDate && getText('dates', {conAudit.scheduledDate})}"/></li>
-		<li><label>Completed Date:</label>
-			<s:textfield name="conAudit.completedDate" value="%{conAudit.completedDate && getText('dates', {conAudit.completedDate})}"/></li>
-		<li><label>Closed Date:</label>
-			<s:textfield name="conAudit.closedDate" value="%{conAudit.closedDate && getText('dates', {conAudit.closedDate})}"/></li>
 		<li><label>Contractor Confirmation:</label>
 			<s:textfield name="conAudit.contractorConfirm" value="%{conAudit.contractorConfirm && getText('dates', {conAudit.contractorConfirm})}"/></li>
 		<li><label>Safety Professional Confirmation:</label>

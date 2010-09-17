@@ -44,7 +44,7 @@ public class ReportCompetencyByAccount extends ReportCompetencyByEmployee {
 		// sql.addField("ca100.completedDate ca100completedDate");
 		// sql.addField("ca100.expiresDate ca100expiresDate");
 
-		String sqlString = "select a.id, a.name, IFNULL(jr.total,0) jobRoleCount, IFNULL(e.total,0) employeeCount, IFNULL(totalComp.competencyTotal,0) required, IFNULL(totalComp.skilledTotal,0) skilled,  ca99.id ca99ID, ca99.auditStatus ca99status, ca99.creationDate ca99creationDate, ca99.completedDate ca99completedDate, ca99.expiresDate ca99expiresDate, ca100.id ca100ID, ca100.auditStatus ca100status, ca100.creationDate ca100creationDate, ca100.completedDate ca100completedDate, ca100.expiresDate ca100expiresDate "
+		String sqlString = "select a.id, a.name, IFNULL(jr.total,0) jobRoleCount, IFNULL(e.total,0) employeeCount, IFNULL(totalComp.competencyTotal,0) required, IFNULL(totalComp.skilledTotal,0) skilled,  ca99.id ca99ID, cao99.status ca99status, ca99.creationDate ca99creationDate, ca99.completedDate ca99completedDate, ca99.expiresDate ca99expiresDate, ca100.id ca100ID, cao100.status ca100status, ca100.creationDate ca100creationDate, ca100.completedDate ca100completedDate, ca100.expiresDate ca100expiresDate "
 				+ "from accounts a "
 				+ "JOIN contractor_tag ct ON a.id = ct.conID and ct.tagID = 142 "
 				+ "left join (select accountID, count(*) total FROM job_role group by accountID) jr on jr.accountID = a.id "
@@ -58,7 +58,9 @@ public class ReportCompetencyByAccount extends ReportCompetencyByEmployee {
 				+ "group by e.id, jc.competencyID "
 				+ ") e group by e.accountID) totalComp on totalComp.accountID = a.id "
 				+ "LEFT JOIN contractor_audit ca99 ON ca99.auditTypeID = 99 AND ca99.conID = a.id "
+				+ "LEFT JOIN contractor_audit_operator cao99 ON cao99.auditID = ca99.id AND cao99.visible = 1"
 				+ "LEFT JOIN contractor_audit ca100 ON ca100.auditTypeID = 100 AND ca100.conID = a.id "
+				+ "LEFT JOIN contractor_audit_operator cao100 ON cao100.auditID = ca100.id AND cao100.visible = 1"
 				+ "ORDER BY name";
 
 		sql.setFullClause(sqlString);
