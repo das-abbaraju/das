@@ -54,4 +54,8 @@ $(function(){
 		alert('show file upload for this: ' + $(this).attr('id'));
 	});
 	
+	$('div.question :input').live('change', function() {
+		console.log($(this).parents('form.qform').serialize());
+	});
+	
 });

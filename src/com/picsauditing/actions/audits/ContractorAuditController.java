@@ -98,6 +98,7 @@ public class ContractorAuditController extends AuditActionSupport {
 					auditBuilder.fillAuditCategories(conAudit);
 					
 					this.redirect("Audit.action?auditID=" + conAudit.getId());
+					return SUCCESS;
 				}
 				// Preview the Category from the manage audit type page
 				if ("PreviewCategory".equals(button)) {

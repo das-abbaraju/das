@@ -259,6 +259,10 @@ div.caoGroup {
 	position: relative;
 }
 
+div.auditHeaderSideNav {
+	width: 250px;	
+}
+
 /** Category Header+Footer Navigation **/
 table.footerNav {
 	border-top: 2px #A84D10 solid;

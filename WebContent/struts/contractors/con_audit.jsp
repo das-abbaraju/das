@@ -19,7 +19,7 @@
 <s:include value="../audits/audit_catHeader.jsp"/>
 <table>
 	<tr>
-		<td id="auditHeaderSideNav" class="auditHeaderSideNav noprint" style="width: 250px;">
+		<td id="auditHeaderSideNav" class="auditHeaderSideNav noprint">
 			<ul id="toolbar" class="vert-toolbar"> 
 				<li class="head">TOOLBAR</li>
 				<pics:permission perm="AuditEdit">

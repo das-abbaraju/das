@@ -38,177 +38,157 @@
 </span>
 
 <div class="answer">
-	<input type="hidden" id="<s:property value="#q.id"/>_answerID" value="<s:property value="#a.id"/>" />
-	<input type="hidden" id="<s:property value="#q.id"/>_questionID" value="<s:property value="#q.id"/>" />
-	<s:if test="mode == 'Verify'">
-		<s:property value="%{#a.answer}"/>
-	</s:if>
-	<s:if test="#q.questionType == 'Text Area'">
-		<s:textarea cols="70" rows="4" name="answer%{#q.id}" value="%{#a.answer}" cssStyle="margin-left: 80px;"
-			onchange="saveAnswer('%{#q.id}', this);">
-		</s:textarea>
-	</s:if>
-	<s:if test="#q.questionType == 'Text'">
-		<s:textfield name="answer%{#q.id}" value="%{#a.answer}" size="30" 
-			onchange="saveAnswer('%{#q.id}', this);"/>
-	</s:if>
-	<s:if test="#q.questionType == 'Additional Insured'">
-		<s:textfield name="answer%{#q.id}" value="%{#a.answer}" size="30" 
-			onchange="saveAnswer('%{#q.id}', this);"/>
-	</s:if>
-	<s:if test="#q.questionType == 'Date'">
-		<s:textfield name="answer%{#q.id}" value="%{#a.answer}" size="8" 
-			onchange="saveAnswer('%{#q.id}', this);"/>
+	<s:form cssClass="qform">
+		<s:hidden name="catDataID" value="%{categories.get(#q.category)}"/>
+		<s:hidden name="auditData.id" value="%{#a.id}"/>
+		<s:hidden name="auditData.audit.id" value="%{conAudit.id}"/>
+		<s:hidden name="auditData.question.id" value="%{#q.id}"/>
+		<s:hidden name="mode"/>
+		<s:if test="mode == 'Verify'">
+			<s:property value="#a.answer"/>
+		</s:if>
+		<s:if test="#q.questionType == 'Text Area'">
+			<s:textarea rows="4" name="auditData.answer" value="%{#a.answer}"></s:textarea>
+		</s:if>
+		<s:if test="#q.questionType == 'Text'">
+			<s:textfield name="auditData.answer" value="%{#a.answer}"/>
+		</s:if>
+		<s:if test="#q.questionType == 'Additional Insured'">
+			<s:textfield name="auditData.answer" value="%{#a.answer}"/>
+		</s:if>
+		<s:if test="#q.questionType == 'Date'">
+			<s:textfield name="auditData.answer" value="%{#a.answer}"/>
 			<span style="font-style: italic; font-size: 12px;">example: 12/31/1999</span>
-	</s:if>
-	<s:if test="#q.questionType == 'License'">
-		<s:textfield name="answer%{#q.id}" value="%{#a.answer}" size="30" 
-			onchange="saveAnswer('%{#q.id}', this);"/>
-		<s:property value="@com.picsauditing.util.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />			
-	</s:if>
-	<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Industry' || #q.questionType == 'Main Work'">
-		<s:checkbox fieldValue="X" value="#a.id > 0 && #a.answer.length() == 1" name="answer%{#q.id}"
-			onclick="saveAnswer('%{#q.id}', this);" />
-	</s:if>
-	<s:if test="#q.questionType == 'Yes/No'">
-		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'Yes':'Yes','No':'No'}" name="answer%{#q.id}" value="%{#a.answer}" 
-			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#q.id}', this);"></s:radio>
-		<s:if test="#q.auditType.policy">
-			<s:set name="op" value="%{getOperatorByName(#q.category.name)}" />
-			<s:if test="#op != null && #op.id > 0">	
-				<div class="clearfix question shaded">
-					If it does NOT comply, please explain below.
-					<s:if test="#op.insuranceForms.size > 0">
-						<ul style="list-style:none">
-							<s:iterator value="#op.insuranceForms">
-								<li><a href="forms/<s:property value="file"/>" target="_BLANK" title="Opens in new Window"><s:property value="formName"/></a></li>
-							</s:iterator>
-						</ul>
-					</s:if>
-					<br clear="all"/>
-					<div class="clear"></div>
-				</div>
+		</s:if>
+		<s:if test="#q.questionType == 'License'">
+			<s:textfield name="auditData.answer" value="%{#a.answer}"/>
+			<s:property value="@com.picsauditing.util.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
+		</s:if>
+		<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Industry' || #q.questionType == 'Main Work'">
+			<s:checkbox fieldValue="X" name="auditData.answer" value="#a.answer"/>
+		</s:if>
+		<s:if test="#q.questionType == 'Yes/No'">
+			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="auditData.answer" value="%{#a.answer}"></s:radio>
+			<s:if test="#q.auditType.policy">
+				<s:set name="op" value="%{getOperatorByName(#q.category.name)}" />
+				<s:if test="#op != null && #op.id > 0">	
+					<div class="clearfix question shaded">
+						If it does NOT comply, please explain below.
+						<s:if test="#op.insuranceForms.size > 0">
+							<ul style="list-style:none">
+								<s:iterator value="#op.insuranceForms">
+									<li><a href="forms/<s:property value="file"/>" target="_BLANK" title="Opens in new Window"><s:property value="formName"/></a></li>
+								</s:iterator>
+							</ul>
+						</s:if>
+						<br clear="all"/>
+						<div class="clear"></div>
+					</div>
+				</s:if>
 			</s:if>
 		</s:if>
-	</s:if>
-	<s:if test="#q.questionType == 'Yes/No/NA'">
-		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="answer%{#q.id}" value="%{#a.answer}" 
-			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#q.id}', this);"></s:radio>
-	</s:if>
-	<s:if test="#q.questionType == 'Office Location'">
-		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" 
-			name="answer%{#q.id}" value="%{#a.answer}"
-			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#q.id}', this);"></s:radio>
-	</s:if>
-	<s:if test="#q.questionType == 'State'">
-		<!-- TODO remove -->
-		<s:set name="state_header" value="#q.question.contains('State') ? #q.question.contains('Province') ? 'State / Province' : 'State' : #q.question.contains('Province') ? 'Province' : 'State' "/>
-		<s:select list="getStateList(#q.countries)" value="%{#a.answer}" name="answer%{#q.id}" 
-			headerKey="" headerValue=" - %{#state_header} - " listKey="isoCode" listValue="name"
-			onchange="saveAnswer('%{#q.id}', this);"></s:select>
-	</s:if>
-	<s:if test="#q.questionType == 'Country'">
-		<s:select list="countryList" value="%{#a.answer}" name="answer%{#q.id}"
-			headerKey="" headerValue="- Country -"
-			listKey="isoCode" listValue="english"
-			onchange="saveAnswer('%{#q.id}', this);"></s:select>
-	</s:if>
-	<s:if test="#q.questionType == 'Money' || #q.questionType == 'Number'">
-		<s:textfield name="answer%{#q.id}" value="%{#a.answer}" size="19" 
-			onchange="saveAnswer('%{#q.id}', this);" cssClass="number" />
-	</s:if>
-	<s:if test="#q.questionType == 'Decimal Number'">
-		<s:textfield name="answer%{#q.id}" value="%{#a.answer}" size="19" 
-			onchange="saveAnswer('%{#q.id}', this)" cssClass="number" />
-	</s:if>
-	<s:if test="#q.questionType == 'Service'">
-		<nobr><s:checkbox fieldValue="C" value="%{#a.answer.indexOf('C') != -1}" name="answer%{#q.id}_C" 
-			onclick="saveAnswer('%{#q.id}', this);" /> C</nobr>
-		<nobr><s:checkbox fieldValue="S" value="%{#a.answer.indexOf('S') != -1}" name="answer%{#q.id}_S" 
-			onclick="saveAnswer('%{#q.id}', this);" /> S</nobr>
-	</s:if>
-	<s:if test="#q.questionType == 'Radio'">
-		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#q.optionsVisible" listKey="optionName" listValue="optionName" 
-			value="#a.answer" name="answer%{#q.id}" 
-			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#q.id}', this);"/>
-	</s:if>
-	<s:if test="#q.questionType == 'AMBest'">
-		<input type="hidden" id="ambest_naic_code" />
-		<s:textfield id="ambest_autocomplete" name="answer%{#q.id}" value="%{#a.answer}" size="50" />
-		
-		<script type="text/javascript"> 
-			$('#ambest_autocomplete').autocomplete('AmBestSuggestAjax.action',
-			{
-				minChars: 3,
-				formatResult: function(data,i,count) {
-					return data[1];
-				}
-			}).result(function(event, data){
-				if (data[2]!="UNKNOWN")
-					$('#ambest_naic_code').val(data[2]);
-				else
-					$('#ambest_naic_code').val("");
-				saveAnswerComment('<s:property value="%{#q.id}"/>', $('#ambest_autocomplete')[0], $('#ambest_naic_code'));
-			});
-		</script>
-		
-		<s:if test="#a.commentLength">
-			<s:set name="ambest" value="@com.picsauditing.dao.AmBestDAO@getAmBest(#a.comment)" />
-			<br>
-			NAIC#: <s:property value="#a.comment" />
-			<s:if test="#ambest.amBestId > 0">
-				AM Best Rating: <s:property value="#ambest.ratingAlpha" /> /
-				Class: <s:property value="#ambest.financialAlpha" />
-			</s:if>
-			<br>
+		<s:if test="#q.questionType == 'Yes/No/NA'">
+			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="auditData.answer" value="%{#a.answer}"></s:radio>
 		</s:if>
-		<s:else>
+		<s:if test="#q.questionType == 'Office Location'">
+			<s:radio theme="pics" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" name="auditData.answer" value="%{#a.answer}"></s:radio>
+		</s:if>
+		<s:if test="#q.questionType == 'State'">
+			<!-- TODO remove -->
+			<s:select list="stateList" value="%{#a.answer}" name="auditData.answer" headerKey="" headerValue="- State -" listKey="isoCode" listValue="name"></s:select>
+		</s:if>
+		<s:if test="#q.questionType == 'Country'">
+			<s:select list="countryList" name="auditData.answer" value="%{#a.answer}"
+				headerKey="" headerValue="- Country -" listKey="isoCode" listValue="english">
+			</s:select>
+		</s:if>
+		<s:if test="#q.questionType == 'Money' || #q.questionType == 'Number' || #q.questionType == 'Decimal Number'">
+			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="number"/>
+		</s:if>
+		<s:if test="#q.questionType == 'Service'">
+			<s:textfield name="auditData.answer" value="%{#a.answer}"/>
+			<nobr><s:checkbox fieldValue="C" name="multiAnswer" value="%{#a.answer.indexOf('C') != -1}" /> C </nobr>
+			<nobr><s:checkbox fieldValue="S" name="multiAnswer" value="%{#a.answer.indexOf('S') != -1}" /> S </nobr>
+		</s:if>
+		<s:if test="#q.questionType == 'Radio'">
+			<s:radio theme="pics" list="#q.optionsVisible" listKey="optionName" listValue="optionName" 
+				name="auditData.answer" value="#a.answer" />
+		</s:if>
+		<s:if test="#q.questionType == 'AMBest'">
+			<input type="hidden" id="ambest_naic_code" />
+			<s:hidden name="auditData.comment" value="%{#a.comment}"/>
+			<s:textfield id="ambest_autocomplete" name="auditData.answer" value="%{#a.answer}" />
 			
-		</s:else>
-	</s:if>
-	<s:if test="#q.questionType == 'File'">
-		<nobr>
-			<s:if test="#a.id > 0 && #a.answer.length() > 0">
-				<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.id=<s:property value="#a.id"/>" 
-					target="_BLANK">View File</a>
+			<script type="text/javascript">
+			$(function() {
+				$('#ambest_autocomplete').autocomplete('AmBestSuggestAjax.action',
+				{
+					minChars: 3,
+					formatResult: function(data,i,count) {
+						return data[1];
+					}
+				}).result(function(event, data){
+					if (data[2]!="UNKNOWN")
+						$('#ambest_naic_code').val(data[2]);
+					else
+						$('#ambest_naic_code').val("");
+					saveAnswerComment('<s:property value="%{#q.id}"/>', $('#ambest_autocomplete')[0], $('#ambest_naic_code'));
+				});
+			});
+			</script>
+			
+			<s:if test="#a.commentLength">
+				<s:set name="ambest" value="@com.picsauditing.dao.AmBestDAO@getAmBest(#a.comment)" />
+				<br>
+				NAIC#: <s:property value="#a.comment" />
+				<s:if test="#ambest.amBestId > 0">
+					AM Best Rating: <s:property value="#ambest.ratingAlpha" /> /
+					Class: <s:property value="#ambest.financialAlpha" />
+				</s:if>
+				<br>
 			</s:if>
-			<s:else>File Not Uploaded</s:else>
-			<input id="show_button_<s:property value="#q.id"/>" type="button" 
-				value="<s:if test="#a.id > 0 && #a.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File" 
-				onclick="showFileUpload('<s:property value="#a.id"/>', 
-					'<s:property value="#q.id"/>', 
-					'<s:property value="#q.id"/>');"
-				title="Opens in new window (please disable your popup blocker)" />
-		</nobr>
-	</s:if>
-	<s:if test="#q.questionType == 'FileCertificate'">
-		<div id="cert_<s:property value="#q.id"/>">
-			<s:include value="audit_question_cert_load.jsp" />
-		</div>
-	</s:if>
+		</s:if>
+		<s:if test="#q.questionType == 'File'">
+			<nobr>
+				<s:if test="#a.id > 0 && #a.answer.length() > 0">
+					<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.id=<s:property value="#a.id"/>" 
+						target="_BLANK">View File</a>
+				</s:if>
+				<s:else>File Not Uploaded</s:else>
+				<input id="show_button_<s:property value="#q.id"/>" type="button" 
+					value="<s:if test="#a.id > 0 && #a.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File"
+					cssClass="fileUpload" title="Opens in new window (please disable your popup blocker)" />
+			</nobr>
+		</s:if>
+		<s:if test="#q.questionType == 'FileCertificate'">
+			<div id="cert_<s:property value="#q.id"/>">
+				<s:include value="audit_question_cert_load.jsp" />
+			</div>
+		</s:if>
 	
-	<s:if test="#a.verified && !#q.hasRequirement">
-		<span class="verified">
-			Answer verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" />
-		</span>
-	</s:if>
-	<s:if test="#a.hasRequirements">
-		<br />
-		<span class="requirement">
-			<label>Requirement:</label>
-			<s:if test="#a.requirementOpen">
-				<span class="unverified">Open</span>
-			</s:if>
-			<s:elseif test="#a.wasChangedB">
-				<span class="verified">Closed on <s:date name="#a.dateVerified" format="MMM d, yyyy" /></span>
-			</s:elseif>
-		</span>
-	</s:if>
-	<s:if test="#q.showComment || mode == 'Verify'">
-		<br/>
-		<label>Comments:</label>
-		<s:textarea name="comment%{#q.id}" id="comment%{#q.id}" value="%{#a.comment}" rows="6" cols="60" onchange="saveAnswerComment('%{#q.id}', null, $(this));"/>
-	</s:if>
+		<s:if test="#a.verified && !#q.hasRequirement">
+			<span class="verified">
+				Answer verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" />
+			</span>
+		</s:if>
+		<s:if test="#a.hasRequirements">
+			<br />
+			<span class="requirement">
+				<label>Requirement:</label>
+				<s:if test="#a.requirementOpen">
+					<span class="unverified">Open</span>
+				</s:if>
+				<s:elseif test="#a.wasChangedB">
+					<span class="verified">Closed on <s:date name="#a.dateVerified" format="MMM d, yyyy" /></span>
+				</s:elseif>
+			</span>
+		</s:if>
+		<s:if test="#q.showComment || mode == 'Verify'">
+			<br/>
+			<label>Comments:</label>
+			<s:textarea name="auditData.comment" value="%{#a.comment}" rows="6" />
+		</s:if>
+	</s:form>
 </div>
 
 <s:if test="#a.hasRequirements && #a.requirementOpen">
