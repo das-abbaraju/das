@@ -115,8 +115,15 @@ public class CaoSave extends AuditActionSupport {
 			}
 
 			for (Integer caoID : caoIDs) {
-
-				ContractorAuditOperator cao = caoDAO.find(caoID);
+				ContractorAuditOperator cao = null;
+				
+				for (ContractorAuditOperator c : conAudit.getOperators()) {
+					if (c.getId() == caoID) {
+						cao = c;
+						break;
+					}
+				}
+				
 				if (cao == null)
 					throw new RecordNotFoundException("ContractorAuditOperator");
 
@@ -132,32 +139,33 @@ public class CaoSave extends AuditActionSupport {
 				} else
 					step = conAudit.getAuditType().getWorkFlow().getStep(stepID);
 
-				if (step == null) {
+				if (step == null)
 					addAlertMessage("No action specified");
-				}
-
-				if (step.getOldStatus().isSubmitted() && step.getNewStatus().isComplete()) {
-					if (cao.getPercentVerified() < 100)
-						addActionError("Please complete all requirements.");
-				}
-
-				if (!cao.getStatus().equals(step.getOldStatus())) {
-					addActionError("This action cannot be performed because it is not longer in the "
-							+ step.getOldStatus() + " state");
-				}
-
-				if (step.isNoteRequired() && Strings.isEmpty(note)) {
-					addActionError("You must enter a note");
-				}
-
-				if (step.getNewStatus().isSubmittedResubmitted()) {
-					if (cao.getPercentComplete() < 100) {
-						addActionError("Please complete all required questions.");
+				else {
+					if (step.getOldStatus().isSubmitted() && step.getNewStatus().isComplete()) {
+						if (cao.getPercentVerified() < 100)
+							addActionError("Please complete all requirements.");
 					}
-					// if (cao.isCanContractorSubmit()) {
-					// addActionError("Please enter all required questions before submitting the policy.");
-					// }
+	
+					if (!cao.getStatus().equals(step.getOldStatus())) {
+						addActionError("This action cannot be performed because it is not longer in the "
+								+ step.getOldStatus() + " state");
+					}
+	
+					if (step.isNoteRequired() && Strings.isEmpty(note)) {
+						addActionError("You must enter a note");
+					}
+	
+					if (step.getNewStatus().isSubmittedResubmitted()) {
+						if (cao.getPercentComplete() < 100) {
+							addActionError("Please complete all required questions.");
+						}
+						// if (cao.isCanContractorSubmit()) {
+						// addActionError("Please enter all required questions before submitting the policy.");
+						// }
+					}
 				}
+				
 				if (hasActionErrors())
 					return SUCCESS;
 
