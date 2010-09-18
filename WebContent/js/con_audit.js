@@ -64,7 +64,7 @@ $(function(){
 				$(this).effect('highlight', {color: '#FFFF11'}, 1000);
 				updateCategories();
 			} else {
-				alert('Failed to save answer ');
+				alert('Failed to save answer.');
 			}
 			$(this).unblock();
 		});
