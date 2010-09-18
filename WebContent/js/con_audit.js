@@ -38,7 +38,7 @@ $(function(){
 		else {
 			var data = $.deparam.querystring($.param.querystring(location.href, $.bbq.getState()));
 			data.button='';
-			$('#auditViewArea').block({'message': 'Fetching category...', centerY: false, css: {top: '20px'} }).load('AuditAjax.action', data, function() {
+			$('#auditViewArea').block({message: 'Fetching category...', centerY: false, css: {top: '20px'} }).load('AuditAjax.action', data, function() {
 				$('ul.catlist li.current').removeClass('current');
 				$('#category_'+$.bbq.getState().categoryID).addClass('current');
 				$(this).unblock();
@@ -54,8 +54,31 @@ $(function(){
 		alert('show file upload for this: ' + $(this).attr('id'));
 	});
 	
-	$('div.question :input').live('change', function() {
-		console.log($(this).parents('form.qform').serialize());
+	$('div.question form.qform').live('submit', function(e){
+		e.preventDefault();
 	});
 	
+	$('div.question :input').live('change', function() {
+		$(this).parents('div.question:first').block({message: 'Saving answer...'}).load('AuditDataSaveAjax.action', $(this).parents('form.qform:first').serialize(), function(response, status) {
+			if (status=='success') {
+				$(this).effect('highlight', {color: '#FFFF11'}, 1000);
+				updateCategories();
+			} else {
+				alert('Failed to save answer ');
+			}
+			$(this).unblock();
+		});
+	});
 });
+
+var ucTimeout;
+
+function _updateCategories() {
+	alert('Update the categories via ajax here');
+}
+
+function updateCategories() {
+	if (ucTimeout)
+		clearTimeout(ucTimeout);
+	ucTimeout = setTimeout(_updateCategories, 10000);
+}

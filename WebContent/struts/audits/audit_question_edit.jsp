@@ -39,7 +39,7 @@
 
 <div class="answer">
 	<s:form cssClass="qform">
-		<s:hidden name="catDataID" value="%{categories.get(#q.category)}"/>
+		<s:hidden name="categoryID" value="%{#q.category.id}"/>
 		<s:hidden name="auditData.id" value="%{#a.id}"/>
 		<s:hidden name="auditData.audit.id" value="%{conAudit.id}"/>
 		<s:hidden name="auditData.question.id" value="%{#q.id}"/>
