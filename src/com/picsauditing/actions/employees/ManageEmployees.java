@@ -455,17 +455,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		this.taskID = taskID;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public JSONArray getEmployeeData() {
-		return new JSONArray() {
-			{
-				for (Employee e : account.getEmployees()) {
-					add(e.toTableJSON());
-				}
-			}
-		};
-	}
-
 	public Set<JobRole> getUnusedJobRoles() {
 		if (unusedJobRoles == null) {
 			unusedJobRoles = new LinkedHashSet<JobRole>(account.getJobRoles());

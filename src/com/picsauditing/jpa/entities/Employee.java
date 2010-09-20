@@ -273,21 +273,6 @@ public class Employee extends BaseTable implements Indexable {
 		return json;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Transient
-	public JSONArray toTableJSON() {
-		return new JSONArray() {
-
-			{
-				add(id);
-				add(lastName);
-				add(firstName);
-				add(title == null ? "" : title);
-				add(classification == null ? null : classification.toString());
-			}
-		};
-	}
-
 	@Override
 	public String toString() {
 		return (firstName + " " + lastName).trim() + " (" + id + ")";
