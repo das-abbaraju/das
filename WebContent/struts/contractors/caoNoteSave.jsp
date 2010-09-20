@@ -4,7 +4,6 @@
 </script>
 <div id="messageDialog">
 	<s:property value="saveMessage" />
-	<s:property value="stepID" />
 </div>
 <div id="formDialog">
 	<br />

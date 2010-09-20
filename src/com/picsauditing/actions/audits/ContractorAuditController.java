@@ -47,8 +47,6 @@ public class ContractorAuditController extends AuditActionSupport {
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilderController auditBuilder;
 	private OshaAuditDAO oshaAuditDAO;
-	private Map<Integer, Map<String, Integer>> validButtons = new HashMap<Integer, Map<String, Integer>>();
-	private Map<String, Integer> allActionMap = new HashMap<String, Integer>();
 
 	public ContractorAuditController(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,

@@ -78,22 +78,15 @@ public class CaoSave extends AuditActionSupport {
 
 		if (caoIDs.size() > 0) {
 			if ("statusLoad".equals(button)) {
-				WorkflowStep step = null;
 				boolean noteRequired = false;
 				List<String> opNames = new ArrayList<String>();
-				if (stepID > 0) {
-					ContractorAuditOperator cao = conAudit.getCaoByID(caoID);
-					step = conAudit.getAuditType().getWorkFlow().getStep(stepID);
-					status = step.getNewStatus();
-					noteRequired = step.isNoteRequired();
-					opNames.add(cao.getOperator().getName());
-				} else {
-					for (ContractorAuditOperator cao : conAudit.getOperators()) {
-						if (caoIDs.contains(cao.getId())) {
-							opNames.add(cao.getOperator().getName());
-						
+				
+				for (ContractorAuditOperator cao : conAudit.getOperators()) {
+					if (caoIDs.contains(cao.getId())) {
+						opNames.add(cao.getOperator().getName());
+						if (!noteRequired) {
 							for (WorkflowStep s : conAudit.getAuditType().getWorkFlow().getSteps()) {
-								if (s.getOldStatus() != null && cao.getStatus().equals(s.getOldStatus()) 
+								if (s.getOldStatus() != null && cao.getStatus().equals(s.getOldStatus())
 										&& status.equals(s.getNewStatus()) && s.isNoteRequired()) {
 									noteRequired = true;
 									break;
@@ -105,7 +98,7 @@ public class CaoSave extends AuditActionSupport {
 
 				if (!opNames.isEmpty()) {
 					saveMessage += status.getButton() + " " + conAudit.getAuditType().getAuditName() + " for "
-							+ Strings.implode(opNames, ", ") + "\n";
+							+ Strings.implode(opNames, ", ") + "";
 					if (noteRequired)
 						noteMessage += "Explain why you are changing the status to " + status;
 				} else
@@ -129,8 +122,7 @@ public class CaoSave extends AuditActionSupport {
 							break;
 						}
 					}
-				} else
-					step = conAudit.getAuditType().getWorkFlow().getStep(stepID);
+				}
 
 				if (step == null)
 					addAlertMessage("No action specified");
@@ -274,13 +266,13 @@ public class CaoSave extends AuditActionSupport {
 		auditBuilder.fillAuditCategories(conAudit);
 		auditPercentCalculator.percentCalculateComplete(conAudit, true);
 
-		if ("caoAjaxSave".equals(button))
-			return "caoTable";
 
 		if (conAudit != null) {
 			if (caoSteps == null)
 				getValidSteps();
 		}
+		if ("caoAjaxSave".equals(button))
+			return "caoTable";
 		return SUCCESS;
 	}
 

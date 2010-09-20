@@ -10,7 +10,12 @@
 			<th>Progress</th>
 			<th>Status</th>
 			<th>Date</th>
-			<th>Button</th>
+			<th><s:select list="actionStatus" headerKey="-1" headerValue="-- Select Action --"
+				listKey="value" listValue="key.button" name="multiStatusChange" />
+				<s:iterator value="actionStatus">
+					<s:hidden name="h_%{key.button}" value="%{key}"/>
+				</s:iterator>
+			</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -34,7 +39,7 @@
 								<s:property value="#step.buttonName" />
 								<s:hidden cssClass="bCaoID" name="%{id}_%{#step.id}" value="%{#currentCao.id}"/>
 								<s:hidden cssClass="bStepID" name="%{id}_%{#buttonActions.key}_stepID" value="%{#step.id}" />
-								<s:hidden cssClass="bAction" value="%{#step.buttonName}" name="%{id}_%{#step.buttonName}_action" />
+								<s:hidden cssClass="bStatus" value="%{#step.newStatus}" name="%{id}_%{#step.newStatus}_action" />
 							</span> 
 						</s:iterator>
 					</td>

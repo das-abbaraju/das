@@ -1,10 +1,12 @@
 package com.picsauditing.actions.audits;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
@@ -45,6 +47,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private List<AuditCategoryRule> rules = null;
 	protected Map<AuditCategory, AuditCatData> categories = null;
 	protected Map<Integer, WorkflowStep> caoSteps = null;
+	protected Map<AuditStatus, List<Integer>> actionStatus = new HashMap<AuditStatus, List<Integer>>();
+	private Map<WorkflowStep, Integer> allActionMap = new HashMap<WorkflowStep, Integer>();
 
 	public AuditActionSupport(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
@@ -229,6 +233,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return percentVerified; 
 	}
 	public void getValidSteps(){
+		List<AuditStatus> occ = new ArrayList<AuditStatus>();
 		if(caoSteps ==null)
 			caoSteps = new HashMap<Integer, WorkflowStep>();
 		for(ContractorAuditOperator cao : conAudit.getOperators()){
@@ -248,6 +253,25 @@ public class AuditActionSupport extends ContractorActionSupport {
 				}
 			}
 		}
+		if(!caoSteps.isEmpty()){
+			// change map to multimap
+			for (Entry<Integer, WorkflowStep> en : caoSteps.entrySet()) {
+				if(occ.contains(en.getValue().getNewStatus())){
+						addToActionStatus(en.getValue().getNewStatus(), en.getKey());
+				} else {
+					occ.add(en.getValue().getNewStatus());
+				}
+			}
+		}
+	}
+	
+	public Integer addToActionStatus(AuditStatus as, Integer value){
+		List<Integer> l = actionStatus.get(as);
+		if(l==null)
+			actionStatus.put(as, l = new ArrayList<Integer>());
+		l.add(value);
+		
+		return value;
 	}
 	
 	public WorkflowStep getCurrentCaoStep(int caoID){
@@ -342,5 +366,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return false;
 	
 		return false;
+	}
+
+	public Map<AuditStatus, List<Integer>> getActionStatus() {
+		return actionStatus;
 	}
 }

@@ -1,16 +1,31 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<script type="text/javascript">
+<script type="text/javascript"><!--
 $(function(){
 	$('.singleButton').click(function() {
-		var sID = $(this).children('.bStepID').val();
-		var cID = $(this).children('.bCaoID').val();
 		var data = {
 				auditID: $('#auditID').val(), button: 'statusLoad', 
-				caoID: cID, stepID: sID
+				caoID: $(this).children('.bCaoID').val(), 
+				status: $(this).children('.bStatus').val()
 		};
+		$('#caoTable').block({message: 'Loading...'});
 		loadResults(data, $('#addToNotes').val());
 	});
+
+	$('#multiStatusChange').change(function(){
+		var caos =  $(this).val();
+		if(caos == -1)
+			return false;
+		var caoIDs = caos.substring(1, caos.length-1).replace(/\s/g,'').split(',');
+		var data = {
+				auditID: $('#auditID').val(), button: 'statusLoad',
+				caoIDs: caoIDs,
+				status: $('#h_'+$("#multiStatusChange :selected").text()).val()
+		}
+		$('#caoTable').block({message: 'Loading...'});
+		loadResults(data, $('#addToNotes').val());		
+	});
+
 	$('.clearOnce').live('click',function(){
 		if($('#clearOnceField').val()==1){
 			$('#clearOnceField').val(0);
@@ -20,26 +35,33 @@ $(function(){
 });
 
 function loadResults(data, noteText){
-	$('#noteAjax').load('CaoSaveAjax.action', data, function(){
-        $.blockUI({ message:$('#noteAjax'), css: { width: '350px'} }); 
-        if($('.clearOnce').val()=='')
-			$('#clearOnceField').val(0);
-	    $('#yesButton').click(function(){
-	        $.blockUI({message: 'Saving Status, please wait...'});
-	        data.button = 'caoAjaxSave';
-	        data.note = noteText;
-	        $('#caoTable').load('CaoSaveAjax.action', data, function(){
-	            $.unblockUI();
-	        });
-	    });
-	     
-	    $('#noButton').click(function(){
-	        $.unblockUI();
-	        return false;
-	    });
+	$('#noteAjax').load('CaoSaveAjax.action', data, function(response, status, xhr){
+		if(status == 'success'){
+			$('#caoTable').unblock();
+	        $.blockUI({ message:$('#noteAjax'), css: { width: '450px'} }); 
+	        if($('.clearOnce').val()=='')
+				$('#clearOnceField').val(0);
+		    $('#yesButton').click(function(){
+		        $.blockUI({message: 'Saving Status, please wait...'});
+		        data.button = 'caoAjaxSave';
+		        data.note = noteText;
+		        $('#caoTable').load('CaoSaveAjax.action', data, function(){
+		            $.unblockUI();
+		        });
+		    });
+		     
+		    $('#noButton').click(function(){
+		        $.unblockUI();
+		        return false;
+		    });
+		} else {
+			$('#caoTable').block({message: 'Error with request, please try again',
+				timeout: 1500	
+			});
+		}
 	});
 }
-</script>
+--></script>
 
 <s:set name="auditMenu" value="auditMenu"></s:set>
 

@@ -1073,3 +1073,12 @@ div.beta {
 	background-image: url(../images/beta.jpg);
 	clear: right;
 }
+
+/** blockUI ajaxDialog **/
+div.blockDialog{
+	display:none; 
+	cursor: default; 
+	height: 250px; 
+	text-align: left;
+	padding: 15px 10px;
+}
