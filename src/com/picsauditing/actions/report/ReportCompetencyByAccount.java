@@ -58,9 +58,9 @@ public class ReportCompetencyByAccount extends ReportCompetencyByEmployee {
 				+ "group by e.id, jc.competencyID "
 				+ ") e group by e.accountID) totalComp on totalComp.accountID = a.id "
 				+ "LEFT JOIN contractor_audit ca99 ON ca99.auditTypeID = 99 AND ca99.conID = a.id "
-				+ "LEFT JOIN contractor_audit_operator cao99 ON cao99.auditID = ca99.id AND cao99.visible = 1"
+				+ "LEFT JOIN contractor_audit_operator cao99 ON cao99.auditID = ca99.id AND cao99.visible = 1 "
 				+ "LEFT JOIN contractor_audit ca100 ON ca100.auditTypeID = 100 AND ca100.conID = a.id "
-				+ "LEFT JOIN contractor_audit_operator cao100 ON cao100.auditID = ca100.id AND cao100.visible = 1"
+				+ "LEFT JOIN contractor_audit_operator cao100 ON cao100.auditID = ca100.id AND cao100.visible = 1 "
 				+ "ORDER BY name";
 
 		sql.setFullClause(sqlString);
