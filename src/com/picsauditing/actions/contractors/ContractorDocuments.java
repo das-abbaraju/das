@@ -31,7 +31,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 	
 	protected Map<AuditType, List<ContractorAudit>> auditMap;
 	protected Map<String, List<AuditType>> auditTypes;
-	protected Map<ContractorAudit, Map<AuditStatus, List<ContractorAuditOperator>>> counts;
 	protected Map<String, String> imScores = new HashMap<String, String>();
 	
 	private int selectedAudit;
@@ -134,10 +133,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 		return auditTypes;
 	}
 
-	public Map<ContractorAudit, Map<AuditStatus, List<ContractorAuditOperator>>> getCounts() {
-		return counts;
-	}
-	
 	public Map<String, String> getImScores() {
 		return imScores;
 	}
@@ -200,7 +195,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 		Map<String, List<ContractorAudit>> allIMAudits = new HashMap<String, List<ContractorAudit>>();
 		auditMap = new TreeMap<AuditType, List<ContractorAudit>>();
 		auditTypes = new HashMap<String, List<AuditType>>();
-		counts = new HashMap<ContractorAudit, Map<AuditStatus, List<ContractorAuditOperator>>>();
 
 		for (ContractorAudit audit : getAudits()) {
 			// Policies are still on their own page
@@ -233,16 +227,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 					imAudits.add(audit);
 				}
 			}
-
-			Map<AuditStatus, List<ContractorAuditOperator>> statusCount = new HashMap<AuditStatus, List<ContractorAuditOperator>>();
-			for (ContractorAuditOperator cao : audit.getOperators()) {
-				if (statusCount.get(cao.getStatus()) == null)
-					statusCount.put(cao.getStatus(), new ArrayList<ContractorAuditOperator>());
-				
-				statusCount.get(cao.getStatus()).add(cao);
-			}
-			
-			counts.put(audit, statusCount);
 		}
 		
 		for (AuditType type : auditMap.keySet()) {

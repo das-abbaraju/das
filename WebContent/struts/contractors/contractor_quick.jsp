@@ -93,13 +93,22 @@
 		</s:if>
 	</div>
 	<div id="tabs-audits">
-		<table>
+		<table class="report">
+			<thead>
+				<tr>
+					<th>Audit</th>
+					<th>Status</th>
+				</tr>
+			</thead>
 			<s:iterator value="activeAudits">
 				<tr>
-					<td><s:property value="auditStatus" /></td>
 					<td><a href="Audit.action?auditID=<s:property value="id" />">
 						<s:if test="auditFor.length() > 0"><s:property value="auditFor" /></s:if>
 						<s:property value="auditType.auditName" /></a></td>
+						<td><s:iterator value="getCaoStats(permissions).keySet()" id="status">
+							<nobr><s:if test="getCaoStats(permissions).get(#status) > 1"><s:property value="getCaoStats(permissions).get(#status)"/></s:if>
+							 <s:property value="#status"/></nobr><br/>							
+						</s:iterator></td>
 				</tr>
 			</s:iterator>
 		</table>

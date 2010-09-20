@@ -139,8 +139,9 @@
 						<td>
 							<s:if test="#audit.operators.size > 0">
 								<a href="#" onclick="$('tr.row_'+<s:property value="#audit.id" />).toggle(); return false;">
-									<s:iterator value="counts.get(#audit).keySet()" id="status" status="stat">
-										<s:property value="counts.get(#audit).get(#status).size()" /> <s:property value="#status.toString()" /><s:if test="!#stat.last">,</s:if>
+									<s:iterator value="#audit.getCaoStats(permissions).keySet()" id="status" status="stat">
+										<s:if test="getCaoStats(permissions).get(#status) > 1"><s:property value="getCaoStats(permissions).get(#status)"/></s:if>
+										<s:property value="#status"/><s:if test="!#stat.last">,</s:if>
 									</s:iterator>
 								</a>
 							</s:if>

@@ -292,6 +292,9 @@ public class ContractorAuditOperator extends BaseTable {
 
 	@Transient
 	public boolean isVisibleTo(Permissions permissions) {
+		if(!this.visible)
+			return false;
+		
 		if (permissions.isContractor() || permissions.isAdmin())
 			return true;
 		
@@ -308,7 +311,8 @@ public class ContractorAuditOperator extends BaseTable {
 	public boolean isCanContractorSubmit() {
 		return certificate != null && valid != null && (valid.isTrue() || !Strings.isEmpty(reason));
 	}	
-
+	
+	@Transient
 	public boolean canSubmitCao() {
 		if (this.getPercentComplete() < 100)
 			return false;
@@ -317,7 +321,8 @@ public class ContractorAuditOperator extends BaseTable {
 		}
 		return false;
 	}
-
+	
+	@Transient
 	public boolean canVerifyCao() {
 		if (this.getPercentVerified() < 100)
 			return false;
