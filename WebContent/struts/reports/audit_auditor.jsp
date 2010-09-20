@@ -24,7 +24,7 @@
 		<td><a href="javascript: changeOrderBy('form1','ca.scheduledDate DESC');">Scheduled</a></td>
 		<td><a href="javascript: changeOrderBy('form1','ca.assignedDate DESC');">Assigned</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.completedDate DESC');">Submitted</a></td>
-	    <td><a href="javascript: changeOrderBy('form1','ca.auditStatus DESC');">Status</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','cao.status DESC');">Status</a></td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">

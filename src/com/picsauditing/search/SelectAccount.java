@@ -88,7 +88,7 @@ public class SelectAccount extends SelectSQL {
 		String name = "ca" + questionID;
 		this.addJoin("LEFT JOIN contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 				+ ".auditTypeID = " + auditTypeID + " AND " + name
-				+ ".auditStatus IN ('Pending','Incomplete','Submitted','Active','Resubmitted')");
+				+ ".expiresDate > NOW()");
 
 		String join = "";
 		if (!require)
@@ -113,12 +113,12 @@ public class SelectAccount extends SelectSQL {
 	}
 
 	public void addAudit(int auditTypeID) {
-		String join = "LEFT JOIN contractor_audit ca" + auditTypeID + " on ca" + auditTypeID + ".conID = a.id AND ca"
-				+ auditTypeID + ".auditStatus IN ('Active','Exempt') AND ca" + auditTypeID + ".auditTypeID = "
-				+ auditTypeID;
+		String join = "LEFT JOIN contractor_audit ca" + auditTypeID + " on ca" + auditTypeID + ".conID = a.id " +
+				"AND ca" + auditTypeID + ".auditTypeID = "+ auditTypeID;
+		join += " LEFT JOIN contractor_audit_operator cao" + auditTypeID + " ON cao" + auditTypeID + ".auditID = ca."+auditTypeID+".id " +
+				"AND cao"+auditTypeID + ".visible = 1 AND cao"+auditTypeID+".status IN ('Complete')";
 		this.addJoin(join);
 		this.addField("ca" + auditTypeID + ".id AS ca" + auditTypeID + "_auditID");
-		this.addField("ca" + auditTypeID + ".auditStatus AS ca" + auditTypeID + "_auditStatus");
 	}
 
 	public String getStartsWith() {

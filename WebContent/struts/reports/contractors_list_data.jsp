@@ -78,13 +78,10 @@
 				<td><a
 					href="ConAuditList.action?id=<s:property value="get('id')"/>">Audits</a></td>
 					<s:if test="pqfVisible">
-						<td class="icon center"><s:if test="get('ca1_auditID') > 0">
-							<s:if test="get('ca1_auditStatus').equals('Exempt')">N/A</s:if>
-							<s:else>
+						<td class="icon center">
 								<a href="Audit.action?auditID=<s:property value="get('ca1_auditID')"/>" style="icon"><img
 									src="images/icon_PQF.gif" width="20" height="20" border="0"></a>
-							</s:else>
-							</s:if></td>
+						</td>
 					</s:if>
 			</pics:permission>
 			<s:if test="permissions.operatorCorporate">
