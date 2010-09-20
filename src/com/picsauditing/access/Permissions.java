@@ -14,19 +14,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.util.SpringUtils;
 
 /**
  * This is the main class that is stored for each user containing information if
@@ -59,7 +56,6 @@ public class Permissions implements Serializable {
 	private String phone;
 	private String fax;
 	private TimeZone timezone = null;
-	private Set<String> accountCountries = new HashSet<String>();
 	private Locale locale;
 	private String country;
 
@@ -86,7 +82,6 @@ public class Permissions implements Serializable {
 		accountType = "";
 		country = "";
 		accountStatus = AccountStatus.Pending;
-		accountCountries.clear();
 		approvesRelationships = false;
 		requiresOQ = false;
 		requiresCompetencyReview = false;
@@ -150,18 +145,11 @@ public class Permissions implements Serializable {
 
 			if (isContractor()) {
 				ContractorAccount contractor = (ContractorAccount) user.getAccount();
-				for (ContractorOperator co : contractor.getNonCorporateOperators()) {
-					if (co.getOperatorAccount().getCountry() != null)
-						// TODO get rid of accountCountries
-						accountCountries.add(co.getOperatorAccount().getCountry().getIsoCode());
-				}
 			}
 
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
 				visibleAuditTypes =operator.getVisibleAuditTypes();
-				if (operator.getCountry() != null)
-					accountCountries.add(operator.getCountry().getIsoCode());
 
 				approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
 
@@ -287,12 +275,6 @@ public class Permissions implements Serializable {
 
 	public String getName() {
 		return name;
-	}
-
-	@Deprecated
-	public Set<String> getAccountCountries() {
-		// This was around so we can figure out which questions should appear
-		return accountCountries;
 	}
 
 	/**

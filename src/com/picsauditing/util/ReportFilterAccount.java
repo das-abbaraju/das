@@ -1,7 +1,9 @@
 package com.picsauditing.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.CountryDAO;
@@ -65,8 +67,11 @@ public class ReportFilterAccount extends ReportFilter {
 	public List<State> getStateList() {
 		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
 		List<State> result;
-		if (permissions.getAccountCountries().size() > 0)
-			result = stateDAO.findByCountries(permissions.getAccountCountries(), false);
+		if (!Strings.isEmpty(permissions.getCountry())) {
+			Set<String> accountCountries = new HashSet<String>();
+			accountCountries.add(permissions.getCountry());
+			result = stateDAO.findByCountries(accountCountries, false);
+		}	
 		else
 			result = stateDAO.findAll();
 
