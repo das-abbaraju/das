@@ -148,11 +148,11 @@ $(function() {
 		            null,
 		            null,
 		            null,
+		            null,
 		            null
 				],
 			aaSorting: [[1, 'asc']],
 			bJQueryUi: true,
-			aaData: <s:property value="employeeData" escape="false"/>,
 			bStateSave: true,
 			oLanguage: {
 				sSearch:"",
@@ -212,8 +212,19 @@ div.dataTables_length { width: 35%; }
 								<th>First Name</th>
 								<th>Title</th>
 								<th>Classification</th>
+								<th>Profile</th>
 							</tr>
 						</thead>
+						<s:iterator value="account.employees" id="e">
+							<tr>
+								<td><s:property value="#e.id"/></td>
+								<td><s:property value="#e.lastName"/></td>
+								<td><s:property value="#e.firstName"/></td>
+								<td><s:property value="#e.title"/></td>
+								<td><s:property value="#e.classification"/></td>
+								<td>View</td>
+							</tr>
+						</s:iterator>
 					</table>
 				</td>
 				
