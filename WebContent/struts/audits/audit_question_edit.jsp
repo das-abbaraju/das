@@ -106,7 +106,7 @@
 			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="number"/>
 		</s:if>
 		<s:if test="#q.questionType == 'Service'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}"/>
+			<s:property value="auditData.answer"/>
 			<nobr><s:checkbox fieldValue="C" name="multiAnswer" value="%{#a.answer.indexOf('C') != -1}" /> C </nobr>
 			<nobr><s:checkbox fieldValue="S" name="multiAnswer" value="%{#a.answer.indexOf('S') != -1}" /> S </nobr>
 		</s:if>
