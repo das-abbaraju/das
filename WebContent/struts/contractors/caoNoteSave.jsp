@@ -1,13 +1,11 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<script>
-</script>
 <div id="messageDialog">
 	<s:property value="saveMessage" />
 </div>
 <div id="formDialog">
 	<br />
-	<s:textarea cssClass="clearOnce" rows="3" cols="30" id="addToNotes" value="%{noteMessage}" />
+	<s:textarea cssClass="clearOnce" rows="3" cols="30" id="addToNotes" value="%{noteMessage}" name="note" />
 	<input type="hidden" id="clearOnceField" value="1" />
 </div>
 <div id="buttonsDialog">

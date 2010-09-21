@@ -20,6 +20,7 @@
 </script>
 
 <div id="thinking_sites" class="right"></div>
+<s:set name="showProject" value="employee.account.requiresOQ && permissions.requiresOQ" />
 <table>
 	<tbody>
 		<tr>
@@ -29,7 +30,9 @@
 					<thead>
 						<tr>
 							<th>Assigned Site</th>
-							<th>Project</th>
+							<s:if test="#showProject">
+								<th>Project</th>
+							</s:if>
 							<th>Since</th>
 							<th>Orientation</th>
 							<th>Edit</th>
@@ -40,10 +43,12 @@
 						<s:if test="#site.current">
 							<tr>
 								<td><s:property value="operator.name" /></td>
-								<td>
-									<s:if test="jobSite.id > 0"><s:property value="#site.jobSite.label" /></s:if>
-									<s:else>Unspecified</s:else> 					
-								</td>
+								<s:if test="#showProject">
+									<td>
+										<s:if test="jobSite.id > 0"><s:property value="#site.jobSite.label" /></s:if>
+										<s:else>Unspecified</s:else> 					
+									</td>
+								</s:if>
 								<td><s:property value="effectiveDate"/></td>
 								<td>
 									<s:property value="orientationDate"/>
@@ -57,7 +62,7 @@
 								</td>
 							</tr>
 							<tr id="<s:property value="#stat.count" />_under" class="_under" style="display: none;">
-								<td colspan="6">
+								<td colspan="<s:property value="#showProject ? 6 : 5" />">
 								<div id="siteEditBox">
 									<form id="siteForm_<s:property value="#site.id" />" >
 										<input type="hidden" value="<s:property value="#site.id" />" name="childID" />
@@ -80,7 +85,7 @@
 						</s:if>
 					</s:iterator>
 					<tr>
-						<td colspan="6"><s:if test="operators.size > 0">
+						<td colspan="<s:property value="#showProject ? 6 : 5" />"><s:if test="operators.size > 0">
 							<s:select onchange="addJobSite(this.value);" list="operators" name="operator.id" 
 								listKey="id" listValue="name" headerKey="" headerValue=" - Assign Job Site - " 
 								id="operator" />
@@ -90,7 +95,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="6">
+						<td colspan="<s:property value="#showProject ? 6 : 5" />">
 							<a class="add" href="#" onclick="$('#newJobSite').show(); $(this).hide(); return false;" id="newJobSiteLink">Add New Job Site</a>
 							<div style="display: none;" id="newJobSite">
 								<s:form id="newJobSiteForm">
@@ -121,16 +126,6 @@
 						</td>
 					</tr>
 				</table>
-			</td>
-			<td rowspan="2" style="padding-left: 10px;">
-				<div id="siteTasks"></div>
-				<nobr>
-					<a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">View Assigned Tasks</a>
-					<a href="#" class="help cluetip" rel="#cluetip1" title="View Assigned Tasks"></a>
-					<div id="cluetip1">
-						Each Employee has a profile page visible to other employees and operators that lists information including assigned tasks and qualifications.
-					</div>
-				</nobr>
 			</td>
 		</tr>
 		<tr>

@@ -5,6 +5,7 @@
 <s:include value="../jquery.jsp"/>
 <script src="js/validate_contractor.js?v=<s:property value="version"/>" type="text/javascript"></script>
 <script src="js/FusionCharts.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
 
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" /> 
@@ -137,27 +138,46 @@
         window.open(url,title,pars);
 	 }
 	 
-	function changeAuditStatus(id, auditStatus) {
-		var caoIDs = new Array(arguments.length - 2);
-		for (i = 2; i < arguments.length; i++) {
-			caoIDs[i - 2] = arguments[i];
+	function changeAuditStatus(id, auditStatus, button) {
+		var normalArgs = 3;
+		var caoIDs = new Array(arguments.length - normalArgs);
+		for (i = normalArgs; i < arguments.length; i++) {
+			caoIDs[i - normalArgs] = arguments[i];
 		}
 		
 		var data= {
 			auditID: id,
 			status: auditStatus,
-			caoIDs: caoIDs
+			caoIDs: caoIDs,
+			button: 'statusLoad'
 		};
 
-		$.post('CaoSaveAjax.action', data, function() {
-			$('#verification_audit').empty();
-			$('#auditHeader').scrollTo();
-			refreshNoteCategory(<s:property value="id"/>, '<s:property value="noteCategory"/>');
+		$('#noteAjax').load('CaoSaveAjax.action', data, function(){
+	        $.blockUI({ message:$('#noteAjax'), css: { width: '350px'} }); 
+	        if($('.clearOnce').val()=='')
+				$('#clearOnceField').val(0);
+		    $('#yesButton').click(function(){
+		        $.blockUI({message: 'Saving Status, please wait...'});
+		        data.button = '';
+		        data.note = $('#addToNotes').val();
+
+		        $.post('CaoSaveAjax.action', data, function() {
+					$.unblockUI();
+					$('#verification_audit').empty();
+					$('#auditHeader').scrollTo();
+					refreshNoteCategory(<s:property value="id"/>, '<s:property value="noteCategory"/>');
+				});
+		    });
+		     
+		    $('#noButton').click(function(){
+		        $.unblockUI();
+		        return false;
+		    });
 		});
 			
 		return false;
 	}
-	 
+
 	function previewEmail() {
 		var data= {id: <s:property value="contractor.id"/>};
 		$('#emailTemplate').html("<img src='images/ajax_process.gif' />")
@@ -249,6 +269,7 @@
 </tr></tbody></table>
 
 <div id="verification_audit"></div>
+<div id="noteAjax"></div>
 <br clear="all"/>
 <br clear="all"/>
 <div class="clear"></div>

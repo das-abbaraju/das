@@ -161,8 +161,8 @@ $(function() {
 				sInfoEmpty:"",
 				sInfoFiltered:"(filtered from _MAX_)" },
 			iDisplayLength: 25,
-			fnRowCallback: function( nRow, aData, iDisplayIndex ) {
-				if (aData[0] == employeeID)
+			fnRowCallback: function( nRow, iDisplayIndex ) {
+				if (nRow[0] == employeeID)
 					$(nRow).not('.highlight').addClass('highlight');
 
 				$(nRow).not('.clickable').addClass('clickable').click(function() {
@@ -215,16 +215,18 @@ div.dataTables_length { width: 35%; }
 								<th>Profile</th>
 							</tr>
 						</thead>
-						<s:iterator value="account.employees" id="e">
-							<tr>
-								<td><s:property value="#e.id"/></td>
-								<td><s:property value="#e.lastName"/></td>
-								<td><s:property value="#e.firstName"/></td>
-								<td><s:property value="#e.title"/></td>
-								<td><s:property value="#e.classification"/></td>
-								<td>View</td>
-							</tr>
-						</s:iterator>
+						<tbody>
+							<s:iterator value="account.employees" id="e">
+								<tr>
+									<td><s:property value="#e.id"/></td>
+									<td><s:property value="#e.lastName"/></td>
+									<td><s:property value="#e.firstName"/></td>
+									<td><s:property value="#e.title"/></td>
+									<td><s:property value="#e.classification"/></td>
+									<td class="center"><a href="EmployeeDetail.action?employee.id=<s:property value="#e.id" />">View</a></td>
+								</tr>
+							</s:iterator>
+						</tbody>
 					</table>
 				</td>
 				
@@ -367,6 +369,13 @@ div.dataTables_length { width: 35%; }
 								onclick="return confirm('Are you sure you want to delete this employee? This action cannot be undone.');"/>
 						</fieldset>
 					</s:form>
+					<br clear="all" />
+					<a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">View Profile/Assigned Tasks</a>
+					<a href="#" class="help cluetip" rel="#cluetip1" title="View Profile/Assigned Tasks"></a>
+					<div id="cluetip1">
+						Each Employee has a profile page visible to other employees and operators that lists information including assigned tasks and qualifications.
+					</div>
+					<br clear="all" />
 				
 					<s:if test="employee.id > 0">
 						<s:if test="permissions.requiresCompetencyReview">

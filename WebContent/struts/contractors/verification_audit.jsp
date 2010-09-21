@@ -45,9 +45,9 @@
 							<s:if test="percentVerified < 100"><s:set name="allVerified" value="false" /></s:if>
 						</s:iterator>
 						<s:if test="allVerified">
-							<button class="picsbutton positive" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id" />, 'Approved',<s:property value="getOpCaoIDs(key)" />);">Approve</button>
+							<button class="picsbutton positive" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id" />,'Approved','Approve',<s:property value="getOpCaoIDs(key)" />);">Approve</button>
 						</s:if>
-						<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id" />, 'Incomplete',<s:property value="getOpCaoIDs(key)" />);">Reject</button>
+						<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id" />,'Incomplete','Reject',<s:property value="getOpCaoIDs(key)" />);">Reject</button>
 					</td>
 				</tr>
 			</s:iterator>
@@ -56,8 +56,8 @@
 </s:if>
 <s:if test="caos.keySet().size > 1">
 	<div>
-		<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete',<s:property value="allCaoIDs" />);">Reject All</button>
-		<button style="display: <s:property value="#showApproveButton" />" class="picsbutton positive approveButton" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Approved',<s:property value="allCaoIDs" />);">Approve All</button>
+		<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete','Reject All',<s:property value="allCaoIDs" />);">Reject All</button>
+		<button style="display: <s:property value="#showApproveButton" />" class="picsbutton positive approveButton" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Approved','Approve All',<s:property value="allCaoIDs" />);">Approve All</button>
 	</div>
 </s:if>
 <br/>
@@ -253,7 +253,7 @@
 <s:if test="caos.keySet().size > 1">
 	<br clear="all"/>
 	<div>
-		<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete',<s:property value="allCaoIDs" />);">Reject All</button>
-		<button style="display: <s:property value="#showApproveButton" />" class="picsbutton positive approveButton" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Approved',<s:property value="allCaoIDs" />);">Approve All</button>
+		<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete','Reject All',<s:property value="allCaoIDs" />);">Reject All</button>
+		<button style="display: <s:property value="#showApproveButton" />" class="picsbutton positive approveButton" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Approved','Approve All',<s:property value="allCaoIDs" />);">Approve All</button>
 	</div>
 </s:if>
