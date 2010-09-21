@@ -350,7 +350,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	@Transient
 	public AuditType getAuditType() {
-		return category.getAuditType();
+		return category.getParentAuditType();
 	}
 
 	@Transient
