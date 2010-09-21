@@ -145,7 +145,9 @@
 															<s:if test="#sites.orientationDate!=null" >
 																<span style="padding-left: 8px;" >Orientation: <s:property value="#sites.orientationDate" /></span><br />
 															</s:if>
-															<a href="#" onclick="$('#jst_<s:property value="#sites.id" />').toggle('slow'); return false;" class="preview">View/Hide Site Tasks</a>
+															<s:if test="employee.account.requiresOQ && permissions.requiresOQ">
+																<a href="#" onclick="$('#jst_<s:property value="#sites.id" />').toggle('slow'); return false;" class="preview">View/Hide Site Tasks</a>
+															</s:if>
 														</span>
 														<table class="jobSiteTasks" id="jst_<s:property value="#sites.id" />">
 															<thead>
