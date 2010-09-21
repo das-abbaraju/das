@@ -29,7 +29,6 @@
 					<setCheckbox name="auditType.hasMultiple" checked="true" />
 					<setCheckbox name="auditType.scheduled" checked="true" />
 					<setCheckbox name="auditType.hasAuditor" checked="true" />
-					<setCheckbox name="auditType.hasRequirements" checked="true" />
 					<setCheckbox name="auditType.canContractorView" checked="true" />
 					<setCheckbox name="auditType.canContractorEdit" checked="true" />
 					<setInputField name="auditType.monthsToExpire" value="3" />

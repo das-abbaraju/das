@@ -114,12 +114,6 @@ function copyAuditType(atypeID) {
 						<p>An optional description used for reference. Currently this is not used anywhere.</p>
 					</div>
 				</li>
-				<li><label>Has Requirements:</label>
-					<s:checkbox name="auditType.hasRequirements" />
-				</li>
-				<li><label>Must Verify:</label>
-					<s:checkbox name="auditType.mustVerify" />
-				</li>
 				<li><label>Has Multiple:</label>
 					<s:checkbox name="auditType.hasMultiple" />
 					<div class="fieldhelp">

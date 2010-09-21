@@ -23,12 +23,6 @@ $(function(){
 	<li><label>Description:</label>
 		<s:textfield name="auditType.description"></s:textfield>
 	</li>
-	<li><label>Has Requirements:</label>
-		<s:checkbox name="auditType.hasRequirements" />
-	</li>
-	<li><label>Must Verify:</label>
-		<s:checkbox name="auditType.mustVerify" />
-	</li>
 	<li><label>Has Multiple:</label>
 		<s:checkbox name="auditType.hasMultiple" />
 	</li>
