@@ -71,11 +71,11 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 
 			if (categoryParent != null) {
 				category.setParent(categoryParent);
-				category.setAuditType(null);
 				ancestors = categoryParent.getAncestors();
 				id = ancestors.get(0).getAuditType().getId();
-			} else
+			} else {
 				id = category.getAuditType().getId();
+			}
 
 			if (category.getNumber() == 0) {
 				int maxID = 0;

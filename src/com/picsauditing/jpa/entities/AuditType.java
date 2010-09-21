@@ -60,6 +60,8 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
+	protected List<AuditCategory> topCategories;
+
 	public AuditType() {
 	}
 
@@ -78,11 +80,11 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		this.renewable = a.isRenewable();
 		this.template = a.getTemplate();
 	}
-	
+
 	public AuditType(String name) {
 		this.auditName = name;
 	}
-	
+
 	public AuditType(int id) {
 		this.id = id;
 	}
@@ -219,13 +221,26 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		this.categories = categories;
 	}
 
+	@Transient
+	public List<AuditCategory> getTopCategories() {
+		if (topCategories == null) {
+			topCategories = new ArrayList<AuditCategory>();
+			for (AuditCategory cat : categories) {
+				if (cat.getParent() == null)
+					topCategories.add(cat);
+			}
+		}
+
+		return topCategories;
+	}
+
 	@Enumerated(EnumType.STRING)
 	public OpPerms getEditPermission() {
 		return editPermission;
 	}
 
 	public void setEditPermission(OpPerms editPermission) {
-			this.editPermission = editPermission;
+		this.editPermission = editPermission;
 	}
 
 	/**
@@ -300,7 +315,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 			}
 			j.put("categories", categoriesArray);
 		}
-		
+
 		return j;
 	}
 
@@ -308,7 +323,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public String toString() {
 		return auditName + "(" + id + ")";
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "workflowID")
 	public Workflow getWorkFlow() {
