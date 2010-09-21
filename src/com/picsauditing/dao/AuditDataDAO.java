@@ -53,7 +53,7 @@ public class AuditDataDAO extends PicsDAO {
 
 		return query.getResultList();
 	}
-	
+
 	public int removeDataByCategory(int auditID, int categoryID) {
 		Query query = em.createQuery("DELETE FROM AuditData d "
 				+ "WHERE d.audit.id = :auditID AND d.question.category.id = :category ");
@@ -77,8 +77,8 @@ public class AuditDataDAO extends PicsDAO {
 			return indexedResult;
 
 		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.contractorAccount.id = :conID "
-				+ "AND (d.audit.expiresDate IS NULL OR d.audit.expiresDate < :today) "
-				+ "AND d.question.id IN (" + Strings.implode(questionIds) + ")");
+				+ "AND (d.audit.expiresDate IS NULL OR d.audit.expiresDate < :today) " + "AND d.question.id IN ("
+				+ Strings.implode(questionIds) + ")");
 		query.setParameter("conID", conID);
 		query.setParameter("today", new Date());
 
@@ -132,7 +132,7 @@ public class AuditDataDAO extends PicsDAO {
 
 		// Get the list of questions that these operators require
 		String sqlQuestions = "SELECT f.question FROM FlagCriteria f "
-				+ "WHERE f.validationRequired = 1 AND f.question IS NOT NULL AND f.id IN " 
+				+ "WHERE f.validationRequired = 1 AND f.question IS NOT NULL AND f.id IN "
 				+ "(SELECT fo.criteria.id FROM FlagCriteriaOperator fo WHERE fo.operator IN  (" + sqlOperators + ")) ";
 		// tryQuery(sqlQuestions, auditID);
 
@@ -169,8 +169,8 @@ public class AuditDataDAO extends PicsDAO {
 		Map<Integer, AuditData> data = new HashMap<Integer, AuditData>();
 		Query query = em
 				.createQuery("FROM AuditData d "
-						+ "WHERE audit.contractorAccount.id = ? AND audit IN " +
-								"(SELECT cao.audit FROM ContractorAuditOperator cao WHERE cao.status IN ('Complete','Submitted','Pending','Resubmitted') AND cao.visible = 1) "
+						+ "WHERE audit.contractorAccount.id = ? AND audit IN "
+						+ "(SELECT cao.audit FROM ContractorAuditOperator cao WHERE cao.status IN ('Complete','Submitted','Pending','Resubmitted') AND cao.visible = 1) "
 						+ "AND question.id =  " + questionId);
 		query.setParameter(1, conID);
 		for (Object ad : query.getResultList()) {
@@ -181,9 +181,9 @@ public class AuditDataDAO extends PicsDAO {
 	}
 
 	public List<AuditData> findServicesPerformed(int conID) {
-		Query query = em
-				.createQuery("SELECT d FROM AuditData d "
-						+ "WHERE d.audit.contractorAccount.id = ? and d.question.category.id = 40 AND d.question.isVisible = 'Yes' ");
+		Query query = em.createQuery("SELECT d FROM AuditData d "
+				+ "WHERE d.audit.contractorAccount.id = ? AND d.question.category.id = 40 "
+				+ "AND d.question.effectiveDate < NOW() AND d.question.expirationDate > NOW() ");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
@@ -196,8 +196,8 @@ public class AuditDataDAO extends PicsDAO {
 	 */
 	public List<AuditData> findPolicyData(List<Integer> auditIds) {
 
-		StringBuilder sb = new StringBuilder("SELECT d FROM AuditData d JOIN d.question q JOIN q.category cat")
-				.append(" WHERE d.audit.id in ( ").append(Strings.implode(auditIds, ",")).append(" ) ");
+		StringBuilder sb = new StringBuilder("SELECT d FROM AuditData d JOIN d.question q JOIN q.category cat").append(
+				" WHERE d.audit.id in ( ").append(Strings.implode(auditIds, ",")).append(" ) ");
 
 		Query query = em.createQuery(sb.toString());
 
@@ -217,18 +217,21 @@ public class AuditDataDAO extends PicsDAO {
 	}
 
 	public List<AuditData> findAnswerByConQuestions(int conID, Collection<Integer> questionIds) {
-		Query query = em.createQuery("SELECT d FROM AuditData d WHERE d.audit.contractorAccount.id = ? "
-				+ "AND d.audit IN (SELECT cao.audit FROM ContractorAuditOperator cao WHERE cao.status IN ('Pending','Submitted','Resubmitted','Complete') AND cao.visible = 1) "
-				+ "AND d.question.id IN (" + Strings.implode(questionIds) + ") " + "ORDER BY d.audit.id DESC");
+		Query query = em
+				.createQuery("SELECT d FROM AuditData d WHERE d.audit.contractorAccount.id = ? "
+						+ "AND d.audit IN (SELECT cao.audit FROM ContractorAuditOperator cao WHERE cao.status IN ('Pending','Submitted','Resubmitted','Complete') AND cao.visible = 1) "
+						+ "AND d.question.id IN (" + Strings.implode(questionIds) + ") " + "ORDER BY d.audit.id DESC");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
 
 	@Transient
 	public AuditData findAnswerByConQuestion(int conID, int questionID) {
-		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.contractorAccount.id = ? "
-				+ "AND d.audit IN (SELECT cao.audit FROM ContractorAuditOperator cao WHERE cao.status IN ('Pending','Submitted','Resubmitted','Complete') AND cao.visible = 1)  "
-				+ "AND d.question.id = ? ORDER BY d.audit.id DESC");
+		Query query = em
+				.createQuery("SELECT d FROM AuditData d "
+						+ "WHERE d.audit.contractorAccount.id = ? "
+						+ "AND d.audit IN (SELECT cao.audit FROM ContractorAuditOperator cao WHERE cao.status IN ('Pending','Submitted','Resubmitted','Complete') AND cao.visible = 1)  "
+						+ "AND d.question.id = ? ORDER BY d.audit.id DESC");
 		query.setParameter(1, conID);
 		query.setParameter(2, questionID);
 		try {
