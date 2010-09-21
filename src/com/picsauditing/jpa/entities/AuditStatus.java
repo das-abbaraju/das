@@ -118,7 +118,7 @@ public enum AuditStatus {
 	}
 	
 	static public AuditStatus[] valuesWithoutPendingExpired() {
-		AuditStatus[] statuses = new AuditStatus[AuditStatus.values().length - 2];
+		AuditStatus[] statuses = new AuditStatus[AuditStatus.values().length - 3];
 		int i = 0;
 		for (AuditStatus status : AuditStatus.values()) {
 			if (status.after(AuditStatus.Pending) && status.before(AuditStatus.NotApplicable))

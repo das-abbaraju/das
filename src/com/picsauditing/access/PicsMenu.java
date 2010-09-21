@@ -150,13 +150,12 @@ public class PicsMenu {
 			subMenu.addChild("Safety Pro Invoices", "AuditorInvoices.action");
 			subMenu.addChild("Create Safety Pro Invoices", "CreateAuditorInvoices.action");
 		}
+		
+		if(permissions.isAdmin())
+			subMenu.addChild("Audit List", "ReportAuditList.action");
+		if (permissions.hasPermission(OpPerms.ContractorDetails)) 
+			subMenu.addChild("Audit List with Operators", "ReportCAOList.action");
 
-		if (permissions.hasPermission(OpPerms.ContractorDetails)) {
-			String url = "ReportAuditList.action";
-			subMenu.addChild("Audit List", url);
-			url = "ReportCAOList.action";
-			subMenu.addChild("Audit List with Operators", url);
-		}
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?filter.status=Active");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
@@ -196,13 +195,13 @@ public class PicsMenu {
 		subMenu = menu.addChild("InsureGUARD&trade;");
 		if (permissions.hasPermission(OpPerms.InsuranceCerts)) {
 			// TODO: Fix this string - is this needed?
-			final String url = "ReportPolicyList.action?filter.caoStatus=Approved&filter.caoStatus=Rejected&filter.caoStatus=Verified&filter.caoStatus=Submitted";
+			final String url = "ReportPolicyList.action?filter.auditStatus=Approved&filter.auditStatus=Incomplete&filter.auditStatus=Verified&filter.auditStatus=Submitted";
 			subMenu.addChild("Contractor Policies", url);
 		}
 		if (permissions.hasPermission(OpPerms.InsuranceVerification))
 			subMenu.addChild("Policy Verification", "PolicyVerification.action");
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
-			subMenu.addChild("Policies Awaiting Decision", "ReportInsuranceApproval.action?filter.caoStatus=Verified");
+			subMenu.addChild("Policies Awaiting Decision", "ReportInsuranceApproval.action?filter.auditStatus=Verified");
 
 		subMenu = menu.addChild("Management");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))

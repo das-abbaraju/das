@@ -115,7 +115,7 @@ public class SelectAccount extends SelectSQL {
 	public void addAudit(int auditTypeID) {
 		String join = "LEFT JOIN contractor_audit ca" + auditTypeID + " on ca" + auditTypeID + ".conID = a.id " +
 				"AND ca" + auditTypeID + ".auditTypeID = "+ auditTypeID;
-		join += " LEFT JOIN contractor_audit_operator cao" + auditTypeID + " ON cao" + auditTypeID + ".auditID = ca."+auditTypeID+".id " +
+		join += " LEFT JOIN contractor_audit_operator cao" + auditTypeID + " ON cao" + auditTypeID + ".auditID = ca"+auditTypeID+".id " +
 				"AND cao"+auditTypeID + ".visible = 1 AND cao"+auditTypeID+".status IN ('Complete')";
 		this.addJoin(join);
 		this.addField("ca" + auditTypeID + ".id AS ca" + auditTypeID + "_auditID");
