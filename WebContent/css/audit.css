@@ -399,8 +399,6 @@ ul.vert-toolbar li.head.hover .hidden-button {
 #nacatlist{
 	display: none;
 }
-/** END Audit SideNav **/
-
 /*** OSHA **/
 table.osha {
 	margin-top: 10px;
@@ -465,10 +463,16 @@ table.osha tfoot th {
 	margin-bottom: 20px;
 }
 
+#audit-layout td {
+	vertical-align: top;
+}
+
 #auditViewArea{
 	background-color: #F9FAF3;
-	padding: 5px 5px 0 0;
-	margin-top: 50px; 
+	min-width: 500px;
+	width: expression(this.width > 500 ? 500 : true);
+	min-height: 300px;
+	height: expression(this.width > 300 ? 300 : true);
 }
 
 .audit_category h2{

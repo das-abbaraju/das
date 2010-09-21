@@ -17,7 +17,7 @@
 <body>
 
 <s:include value="../audits/audit_catHeader.jsp"/>
-<table>
+<table id="audit-layout">
 	<tr>
 		<td id="auditHeaderSideNav" class="auditHeaderSideNav noprint">
 			<ul id="toolbar" class="vert-toolbar"> 
