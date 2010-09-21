@@ -83,14 +83,20 @@ from useraccess ua where ua.accessType = 'FatalitiesReport';
 
 -- Audit Changes
 insert into audit_category
-select id, auditTypeID, null parent, category name, number, numRequired, numQuestions, null helpText, createdBy, updatedBy, creationDate, updateDate, false pageBreak, null legacyID
-from `pics_yesterday`.pqfcategories;
+select id, auditTypeID, null parent, 
+category name, number, numRequired, numQuestions, null helpText, 
+createdBy, updatedBy, creationDate, updateDate, false pageBreak, 
+null legacyID
+from pqfcategories;
 
-insert into audit_category
-  (parentID, name, number, numRequired, numQuestions, helpText, createdBy, updatedBy, creationDate, updateDate, pageBreak, legacyID)
-select
-  categoryID parentID, subCategory name, number, -1 numRequired, -1 numQuestions, helpText, createdBy, updatedBy, creationDate, updateDate, true pageBreak, id legacyID
-from `pics_yesterday`.pqfsubcategories;
+
+insert into audit_category 
+select null,pc.auditTypeID,ps.categoryID, ps.subCategory,
+ps.number,-1,-1,ps.helpText,ps.createdBy,ps.updatedBy,ps.creationDate, 
+ps.updateDate, false,ps.id 
+from pqfsubcategories ps
+join pqfcategories pc on ps.categoryID = pc.id;
+
 
 insert into audit_question
 select q.id, c.id categoryID, q.number, t.question name, q.createdBy, q.updatedBy, q.creationDate, q.updateDate, q.effectiveDate, q.expirationDate, q.questionType, (q.hasRequirement = 'Yes') hasRequirement, q.okAnswer, (q.isRequired = 'Yes') required, q.dependsOnQID, q.dependsOnAnswer, null visibleQuestion, null visibleAnswer, q.columnHeader, q.uniqueCode, q.title, (q.isGroupedWithPrevious = 'Yes') groupedWithPrevious, (q.isRedFlagQuestion = 'Yes') flaggable, q.showComment, q.riskLevel, q.helpPage, t.requirement
