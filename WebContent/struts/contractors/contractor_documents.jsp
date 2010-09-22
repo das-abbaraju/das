@@ -113,7 +113,7 @@
 
 	<h3>
 		<s:if test="#classType == 'IM'">Integrity Management Audits</s:if>
-		<s:elseif test="#classType == 'AU'">Annual Updates</s:elseif>
+		<s:elseif test="#classType == 'AU'"><a name="AU">Annual Updates</a></s:elseif>
 		<s:else>
 			<a name="<s:property value="#classType" />"><s:property value="#classType" /></a>
 		</s:else>
@@ -150,36 +150,24 @@
 					<s:if test="#audit.operators.size > 0">
 						<tr class="row_<s:property value="#audit.id" /> hidden">
 							<td colspan="4">
-								<table class="report info">
-									<thead>
+								<table class="inner">
+									<s:iterator value="#audit.operators" id="cao">
 										<tr>
-											<th>Operator</th>
-											<th>Status</th>
-											<th>Updated</th>
+											<td>
+												<pics:permission perm="ManageOperators">
+													<a href="FacilitiesEdit.action?id=<s:property value="#cao.operator.id"/>"><s:property value="#cao.operator.name"/></a>
+												</pics:permission>
+												<pics:permission perm="ManageOperators" negativeCheck="true">
+													<s:property value="#cao.operator.name" />
+												</pics:permission>
+											</td>
+											<td><s:property value="#cao.status" /></td>
+											<td><s:date name="#cao.statusChangedDate" format="M/d/yy" /></td>
 											<s:if test="#classType == 'IM'">
-												<th>Score</th>
+												<td class="center"><s:property value="#audit.printableScore" /></td>
 											</s:if>
 										</tr>
-									</thead>
-									<tbody>
-										<s:iterator value="#audit.operators" id="cao">
-											<tr>
-												<td>
-													<pics:permission perm="ManageOperators">
-														<a href="FacilitiesEdit.action?id=<s:property value="#cao.operator.id"/>"><s:property value="#cao.operator.name"/></a>
-													</pics:permission>
-													<pics:permission perm="ManageOperators" negativeCheck="true">
-														<s:property value="#cao.operator.name" />
-													</pics:permission>
-												</td>
-												<td><s:property value="#cao.status" /></td>
-												<td><s:date name="#cao.statusChangedDate" format="M/d/yy" /></td>
-												<s:if test="#classType == 'IM'">
-													<td class="center"><s:property value="#audit.printableScore" /></td>
-												</s:if>
-											</tr>
-										</s:iterator>
-									</tbody>
+									</s:iterator>
 								</table>
 							</td>
 						</tr>
