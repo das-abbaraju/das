@@ -148,8 +148,9 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 							oldParentAudits.add(category.getAuditType());
 
 						if ("category".equals(parentType)) {
-							category.setAuditType(null);
-							category.setParent(auditCategoryDAO.find(parentID));
+							AuditCategory parent = auditCategoryDAO.find(parentID);
+							category.setAuditType(parent.getAuditType());
+							category.setParent(parent);
 						} else if ("audit".equals(parentType)) {
 							category.setParent(null);
 							category.setAuditType(auditTypeDAO.find(parentID));
