@@ -48,8 +48,8 @@
 	<tr>
 		<th class="label"><s:property value="getText('modifiedWorkDay.'.concat(type))"/></th>
 		<td><s:property value="modifiedWorkDay"/></td>
-		<td><s:property value="%{format(modifiedWorkDay)}"/></td>
-		<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="getAverageOsha( type ).modifiedWorkDay"/></td><td>&nbsp;</td></s:if>
+		<td><s:property value="%{format(modifiedWorkDayRate)}"/></td>
+		<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="getAverageOsha( type ).modifiedWorkDay"/></td><td><s:property value="format(getAverageOsha( type ).modifiedWorkDayRate)"/></td></s:if>
 	</tr>
 </s:if>
 <tr>
@@ -97,8 +97,15 @@
 		</td>
 		<td><s:property value="%{format(restrictedOrJobTransferDays)}"/></td>
 		<s:if test="type.toString().equals('OSHA') && corporate">
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
+			<td>
+				<s:if test="type.toString().equals('OSHA')">
+					<s:property value="format(getAverageOsha( type ).lostWorkDays + getAverageOsha( type ).modifiedWorkDay)"/>
+				</s:if>
+				<s:else>
+					<s:property value="format(getAverageOsha( type ).lostWorkDays)"/>
+				</s:else>
+			</td>
+			<td><s:property value="format(getAverageOsha( type ).restrictedOrJobTransferDays)"/></td>
 		</s:if>
 	</tr>
 </s:if>
@@ -129,7 +136,7 @@
 <s:if test="type.toString().equals('OSHA')">	
 	<tr>
 		<th class="label">Uploaded Log Files</th>
-		<th colspan="2"><s:if test="fileUploaded"><a href="#" onclick="openOsha(<s:property value="id"/>); return false;">Download</a></s:if></th>
+		<th colspan="2"><s:if test="fileUploaded"><a href="DownloadOsha.action?id=<s:property value="id"/>" target="_BLANK">Download</a></s:if></th>
 		<s:if test="type.toString().equals('OSHA') && corporate"><th colspan="2" class="label">&nbsp;</th></s:if>
 	</tr>
 </s:if>	

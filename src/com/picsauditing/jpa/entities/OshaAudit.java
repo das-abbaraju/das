@@ -333,6 +333,11 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	public float getRestrictedWorkCasesRate() {
 		return calculateRate(restrictedWorkCases);
 	}
+	
+	@Transient
+	public float getModifiedWorkDayRate() {
+		return calculateRate(modifiedWorkDay);
+	}
 
 	@Transient
 	/**
