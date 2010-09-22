@@ -48,7 +48,7 @@ public class ReportCompetencyByAccount extends ReportCompetencyByEmployee {
 				+ "from accounts a "
 				+ "JOIN contractor_tag ct ON a.id = ct.conID and ct.tagID = 142 "
 				+ "left join (select accountID, count(*) total FROM job_role group by accountID) jr on jr.accountID = a.id "
-				+ "left join (select accountID, count(*) total FROM employee group by accountID) e on e.accountID = a.id "
+				+ "left join (SELECT e2.accountID, count(*) as total from (select e1.accountID, e1.id, count(*) as totalComp from employee e1 join employee_competency ec on ec.employeeID = e1.id where e1.active = 1 and ec.skilled = 1 group by e1.id) e2 group by e2.accountID) e on e.accountID = a.id "
 				+ "left join ( "
 				+ "select accountID, count(competencyID) competencyTotal, count(skilled) skilledTotal from ( "
 				+ "select e.id, e.accountID, jc.competencyID, ec.id skilled FROM employee e "

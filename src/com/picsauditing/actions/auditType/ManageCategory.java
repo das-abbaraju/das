@@ -265,7 +265,7 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 	protected AuditCategory copyTree(AuditCategory category, AuditCategory parent, int categoryNumber) {
 		AuditCategory categoryCopy = new AuditCategory(category);
 		categoryCopy.setParent(parent);
-		categoryCopy.setAuditType(null);
+		categoryCopy.setAuditType(parent.getAuditType());
 		categoryCopy.setNumber(categoryNumber);
 		categoryCopy.setAuditColumns(permissions);
 		categoryCopy = auditCategoryDAO.save(categoryCopy);

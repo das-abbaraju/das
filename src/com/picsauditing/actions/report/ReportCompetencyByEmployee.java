@@ -37,7 +37,7 @@ public class ReportCompetencyByEmployee extends ReportActionSupport {
 		sql.addJoin("JOIN contractor_tag ct ON a.id = ct.conID");
 		sql.addWhere("ct.tagID = 142");
 
-		sql.addGroupBy("e.id");
+		sql.addGroupBy("e.id HAVING required > 0");
 		if (permissions.isContractor())
 			sql.addWhere("a.id = " + permissions.getAccountId());
 

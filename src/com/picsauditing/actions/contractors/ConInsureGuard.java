@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,12 +18,12 @@ import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
@@ -36,14 +37,17 @@ public class ConInsureGuard extends ContractorActionSupport {
 	private int selectedOperator;
 	private String auditFor;
 	private List<AuditType> auditTypeList;
-	private AuditTypeClass auditClass = AuditTypeClass.Policy;
+	private List<Certificate> certificates;
+	private Map<AuditType, List<AuditData>> certData;
 
 	private AuditBuilderController auditBuilder;
 
+	private AuditTypeClass auditClass = AuditTypeClass.Policy;
 	private Map<ContractorAudit, List<ContractorAuditOperator>> requested = new HashMap<ContractorAudit, List<ContractorAuditOperator>>();
 	private Map<ContractorAudit, List<ContractorAuditOperator>> current = new HashMap<ContractorAudit, List<ContractorAuditOperator>>();
 	private Set<ContractorAudit> expiredAudits = new HashSet<ContractorAudit>();
 	private Set<ContractorAudit> others = new HashSet<ContractorAudit>();
+	private Map<Integer, List<AuditData>> certMap = new HashMap<Integer, List<AuditData>>();
 
 	public ConInsureGuard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
 			AuditBuilderController auditBuilder, CertificateDAO certificateDAO, ContractorAuditOperatorDAO caoDao) {
@@ -59,7 +63,28 @@ public class ConInsureGuard extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		findContractor();
-
+		
+		certData = certificateDAO.findConCertsAuditData(id);
+		for (AuditType key : certData.keySet()) {
+			Iterator<AuditData> iterator = certData.get(key).iterator();
+			
+			while (iterator.hasNext()) {
+				if (!iterator.next().getAudit().isVisibleTo(permissions))
+					iterator.remove();
+				else {
+					for (AuditData d : certData.get(key)) {
+						int id = Integer.parseInt(d.getAnswer());
+						
+						if (certMap.get(id) == null)
+							certMap.put(id, new ArrayList<AuditData>());
+						
+						if (!certMap.get(id).contains(d))
+							certMap.get(id).add(d);
+					}
+				}
+			}
+		}
+		
 		List<ContractorAuditOperator> caoList = getCaoList();
 
 		for (ContractorAuditOperator cao : caoList) {
@@ -198,7 +223,10 @@ public class ConInsureGuard extends ContractorActionSupport {
 	}
 
 	public List<Certificate> getCertificates() {
-		return certificateDAO.findByConId(contractor.getId(), permissions, false);
+		if (certificates == null)
+			certificates = certificateDAO.findByConId(contractor.getId(), permissions, false);
+		
+		return certificates;
 	}
 
 	public Map<ContractorAudit, List<ContractorAuditOperator>> getRequested() {
@@ -215,5 +243,13 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	public Set<ContractorAudit> getOthers() {
 		return others;
+	}
+	
+	public Map<AuditType, List<AuditData>> getCertData() {
+		return certData;
+	}
+	
+	public Map<Integer, List<AuditData>> getCertMap() {
+		return certMap;
 	}
 }
