@@ -85,7 +85,9 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				if (delete()) {
 					addActionMessage("Successfully removed"); // default message
 					new AuditTypeCache();
+					
 					this.redirect(getDeletedRedirectURL());
+					
 					return BLANK;
 				}
 			}
@@ -98,22 +100,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				auditTypeDAO.updateAllCategories(auditType.getId(), id);
 				this.redirect(getRedirectURL());
 				return BLANK;
-			}
-			if (button.equalsIgnoreCase("Copy")) {
-				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
-				if (copy()) {
-					addActionMessage("Successfully copied"); // default message
-					new AuditTypeCache();
-					return "copied";
-				}
-			}
-			if (button.equalsIgnoreCase("CopyAll")) {
-				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
-				if (copyAll()) {
-					addActionMessage("Successfully copied"); // default message
-					new AuditTypeCache();
-					return "copied";
-				}
 			}
 			if (button.equalsIgnoreCase("Move")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
@@ -227,45 +213,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 			auditTypeDAO.remove(auditType.getId());
 			id = auditType.getId();
 			return true;
-		} catch (Exception e) {
-			addActionError(e.getMessage());
-		}
-		return false;
-	}
-
-	protected boolean copy() {
-		try {
-			if (auditTypeDAO.findWhere("auditName LIKE '" + auditType.getAuditName() + "'").size() > 0) {
-				addActionMessage("The Audit Name is not Unique");
-				return false;
-			}
-
-			AuditType a = copyAuditType(auditType);
-
-			addActionMessage("Copied the Audit Type only. <a href=\"ManageAuditType.action?id=" + a.getId()
-					+ "\">Go to this Audit?</a>");
-			return true;
-
-		} catch (Exception e) {
-			addActionError(e.getMessage());
-		}
-		return false;
-	}
-
-	protected boolean copyAll() {
-		try {
-			if (auditTypeDAO.findWhere("auditName LIKE '" + auditType.getAuditName() + "'").size() > 0) {
-				addActionMessage("The Audit Name is not Unique");
-				return false;
-			}
-
-			int id = copyAllRecursive(); // Wanting a transactional method here
-			// for batching
-
-			addActionMessage("Copied Audit Type, and all related Categories, Subcategories and Questions. <a href=\"ManageAuditType.action?id="
-					+ id + "\">Go to this Audit?</a>");
-			return true;
-
 		} catch (Exception e) {
 			addActionError(e.getMessage());
 		}

@@ -22,7 +22,7 @@ $(function (){
 			/>
 		</li>
 		<li style="min-width: 350px;"><label>Parent Category:</label>
-			<input type="text" name="targetCategoryID" id="parentCategory" value="" />
+			<input type="text" name="targetCategoryID" id="parentCategory" value="0" />
 		</li>
 	</ol>
 </fieldset>

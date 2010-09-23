@@ -1158,12 +1158,6 @@
 			</result>
 		</action>
 		
-		<action name="ManageCategoryCopyAjax"
-			class="com.picsauditing.actions.auditType.ManageCategory">
-			<result>struts/audits/manage_category_copy.jsp</result>
-			<result name="copied">struts/audits/manage_category_copy.jsp</result>
-		</action>
-
 		<action name="ManageCategoryMoveAjax"
 			class="com.picsauditing.actions.auditType.ManageCategory">
 			<result>struts/audits/manage_category_move.jsp</result>
