@@ -55,7 +55,7 @@
 	<th class="label"><s:property value="getText('restrictedCases.'.concat(type))"/></th>
 	<td><s:textfield name="osha.restrictedWorkCases" value="%{restrictedWorkCases}" cssClass="osha"></s:textfield></td>
 </tr>
-<s:if test="category.id in { 151, 158 }">
+<s:if test="#category.id in { 151, 158 }">
 <tr>
 	<th class="label"><s:property value="getText('modifiedWorkDay.'.concat(type))"/></th>
 	<td><s:textfield name="osha.modifiedWorkDay" value="%{modifiedWorkDay}" cssClass="osha"/></td>
@@ -65,7 +65,7 @@
 	<th class="label"><s:property value="getText('injuryAndIllness.'.concat(type))"/></th>
 	<td><s:textfield name="osha.injuryIllnessCases" value="%{injuryIllnessCases}" cssClass="osha"></s:textfield></td>
 </tr>
-<s:if test="category.id == 158">
+<s:if test="#category.id == 158">
 <tr>
 	<th class="label"><s:property value="getText('firstAidInjuries.'.concat(type))"/></th>
 	<td><s:textfield name="osha.firstAidInjuries" value="%{firstAidInjuries}" cssClass="osha"/></td>
@@ -106,7 +106,7 @@
 </s:if>
 </tbody>
 <tfoot>
-<s:if test="catDataID > 0">
+<s:if test="categoryData.id > 0">
 	<tr>
 		<th colspan="2">
 			<s:submit name="button" value="Save This Location" cssStyle="padding: 5px;"></s:submit>
@@ -119,9 +119,9 @@
 </tfoot>
 </table>
 </s:form>
-<s:if test="permissions.contractor && category.id in {151, 157}">
+<s:if test="permissions.contractor && #category.id in {151, 157}">
 	<table>
-		<s:if test="category.id == 151">
+		<s:if test="#category.id == 151">
 		<tr>
 			<td></td>
 			<td class="redMain">Please upload scanned .pdf <s:property value="type"/> Log Files. If you are unable to do so, you may mail or fax them to us and we can scan them for you.
@@ -132,7 +132,7 @@
 			<td class="redMain">Notes: </td>
 			<td><span style="font-size: 11px;color:#003768;">(1)   Data should be for the entire company. Facilities may request additional regional statistics later.</span></td>
 		</tr>
-		<s:if test="category.id == 151">
+		<s:if test="#category.id == 151">
 		<tr>
 			<td></td>
 			<td><span style="font-size: 11px;color:#003768;">(2)   If your company is not required to maintain <s:property value="type"/> 300 forms, please provide information from your
