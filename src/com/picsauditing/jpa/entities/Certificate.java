@@ -27,8 +27,6 @@ public class Certificate extends BaseTable {
 	private String fileHash;
 	private Date expirationDate;
 
-	private List<ContractorAuditOperator> caos = new ArrayList<ContractorAuditOperator>();
-
 	@ManyToOne
 	@JoinColumn(name = "conID", nullable = false, updatable = false)
 	public ContractorAccount getContractor() {
@@ -73,34 +71,25 @@ public class Certificate extends BaseTable {
 		this.expirationDate = expirationDate;
 	}
 
-	@OneToMany(mappedBy = "certificate", fetch = FetchType.LAZY)
-	public List<ContractorAuditOperator> getCaos() {
-		return caos;
-	}
-
-	public void setCaos(List<ContractorAuditOperator> caos) {
-		this.caos = caos;
-	}
-
-	@Transient
-	public void updateExpirationDate() {
-		if (caos.size() > 0) {
-			// if there are caos - use the latest expiration date
-			expirationDate = null;
-			for (ContractorAuditOperator cao : caos) {
-				if (expirationDate == null
-						|| (cao.getAudit().getExpiresDate() != null && cao.getAudit().getExpiresDate().after(
-								expirationDate)))
-					expirationDate = cao.getAudit().getExpiresDate();
-			}
-		}
-
-		// 1 - there are no caos
-		// 2 - caos do not expire
-		if (expirationDate == null) {
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.MONTH, 6);
-			expirationDate = cal.getTime();
-		}
-	}
+//	@Transient
+//	public void updateExpirationDate() {
+//		if (caos.size() > 0) {
+//			// if there are caos - use the latest expiration date
+//			expirationDate = null;
+//			for (ContractorAuditOperator cao : caos) {
+//				if (expirationDate == null
+//						|| (cao.getAudit().getExpiresDate() != null && cao.getAudit().getExpiresDate().after(
+//								expirationDate)))
+//					expirationDate = cao.getAudit().getExpiresDate();
+//			}
+//		}
+//
+//		// 1 - there are no caos
+//		// 2 - caos do not expire
+//		if (expirationDate == null) {
+//			Calendar cal = Calendar.getInstance();
+//			cal.add(Calendar.MONTH, 6);
+//			expirationDate = cal.getTime();
+//		}
+//	}
 }
