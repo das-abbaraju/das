@@ -56,10 +56,12 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	}
 
 	public AuditCategory(AuditCategory a, AuditType at) {
+		this.name = a.name;
 		this.number = a.getNumber();
 		this.numQuestions = a.getNumQuestions();
 		this.numRequired = a.getNumRequired();
 		this.helpText = a.getHelpText();
+		this.pageBreak = a.pageBreak;
 		this.auditType = at;
 	}
 
