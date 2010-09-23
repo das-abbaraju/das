@@ -14,6 +14,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -46,19 +47,23 @@ public class CaoSave extends AuditActionSupport {
 	private NoteDAO noteDAO;
 	protected ContractorAuditOperatorDAO caoDAO;
 	protected OshaAuditDAO oshaAuditDAO;
+	protected ContractorAuditOperatorWorkflowDAO caoWDAO;
+	private List<ContractorAuditOperatorWorkflow> caoWorkflow = null;
 
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilderController auditBuilder;
 
 	public CaoSave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, OshaAuditDAO oshaAuditDAO, ContractorAuditOperatorDAO caoDAO,
-			AuditPercentCalculator auditPercentCalculator, AuditBuilderController auditBuilder, NoteDAO noteDAO) {
+			AuditPercentCalculator auditPercentCalculator, AuditBuilderController auditBuilder, NoteDAO noteDAO,
+			ContractorAuditOperatorWorkflowDAO caoWDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.caoDAO = caoDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.auditBuilder = auditBuilder;
 		this.noteDAO = noteDAO;
+		this.caoWDAO = caoWDAO;
 	}
 
 	@Override
@@ -73,8 +78,18 @@ public class CaoSave extends AuditActionSupport {
 			return SUCCESS;
 		}
 
-		if (caoID > 0)
+		if (caoID > 0){
+			if("statusHistory".equals(button)){
+				if(caoID>0)
+					caoWorkflow = caoWDAO.findByCaoID(caoID);
+				if(caoWorkflow==null){
+					addActionError("Error pulling up record, please try again");
+					return BLANK;
+				}
+				return "caoStatus";
+			}
 			caoIDs.add(caoID);
+		}
 
 		if (caoIDs.size() > 0) {
 			if ("statusLoad".equals(button)) {
@@ -377,5 +392,13 @@ public class CaoSave extends AuditActionSupport {
 
 	public String getSaveMessage() {
 		return saveMessage;
+	}
+
+	public List<ContractorAuditOperatorWorkflow> getCaoWorkflow() {
+		return caoWorkflow;
+	}
+
+	public void setCaoWorkflow(List<ContractorAuditOperatorWorkflow> caoWorkflow) {
+		this.caoWorkflow = caoWorkflow;
 	}
 }

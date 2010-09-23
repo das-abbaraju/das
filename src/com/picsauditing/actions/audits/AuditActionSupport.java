@@ -31,6 +31,7 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.SpringUtils;
 
@@ -48,7 +49,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected Map<AuditCategory, AuditCatData> categories = null;
 	protected Map<Integer, WorkflowStep> caoSteps = null;
 	protected Map<AuditStatus, List<Integer>> actionStatus = new HashMap<AuditStatus, List<Integer>>();
-	private Map<WorkflowStep, Integer> allActionMap = new HashMap<WorkflowStep, Integer>();
 
 	public AuditActionSupport(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
@@ -274,7 +274,17 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return value;
 	}
 	
+	public boolean hasStatusChanged(AuditStatus as){
+		//Workflow wf = conAudit.getAuditType().getWorkFlow();
+		
+		if(as == AuditStatus.Pending)
+			return false;
+		return true;
+	}
+	
 	public WorkflowStep getCurrentCaoStep(int caoID){
+		if(caoSteps ==null)
+			getValidSteps();
 		return caoSteps.get(caoID);
 	}
 

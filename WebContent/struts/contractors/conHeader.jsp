@@ -9,7 +9,7 @@ $(function(){
 				status: $(this).children('.bStatus').val()
 		};
 		$('#caoTable').block({message: 'Loading...'});
-		loadResults(data, $('#addToNotes').val());
+		loadResults(data);
 	});
 
 	$('#multiStatusChange').change(function(){
@@ -23,7 +23,7 @@ $(function(){
 				status: $('#h_'+$("#multiStatusChange :selected").text()).val()
 		}
 		$('#caoTable').block({message: 'Loading...'});
-		loadResults(data, $('#addToNotes').val());		
+		loadResults(data);		
 	});
 
 	$('.clearOnce').live('click',function(){
@@ -35,16 +35,16 @@ $(function(){
 });
 
 function loadResults(data, noteText){
-	$('#noteAjax').load('CaoSaveAjax.action', data, function(response, status, xhr){
+	$('#caoAjax').load('CaoSaveAjax.action', data, function(response, status, xhr){
 		if(status == 'success'){
 			$('#caoTable').unblock();
-	        $.blockUI({ message:$('#noteAjax'), css: { width: '450px'} }); 
+	        $.blockUI({ message:$('#caoAjax'), css: { width: '450px'} }); 
 	        if($('.clearOnce').val()=='')
 				$('#clearOnceField').val(0);
 		    $('#yesButton').click(function(){
 		        $.blockUI({message: 'Saving Status, please wait...'});
 		        data.button = 'caoAjaxSave';
-		        data.note = noteText;
+		        data.note =  $('#addToNotes').val();
 		        $('#caoTable').load('CaoSaveAjax.action', data, function(){
 		            $.unblockUI();
 		        });
@@ -61,7 +61,17 @@ function loadResults(data, noteText){
 		}
 	});
 }
---></script>
+
+function loadStatus(caoID){
+	$('#caoAjax').load('CaoSaveAjax.action', {auditID: $('#auditID').val(), button: 'statusHistory', caoID: caoID}, function(){
+		$.blockUI({message: $('#caoAjax'), css: { width: '450px'} });
+		$('#noButton').click(function(){
+	        $.unblockUI();
+	        return false;
+	    });			
+	});
+}
+</script>
 
 <s:set name="auditMenu" value="auditMenu"></s:set>
 
@@ -254,7 +264,7 @@ function loadResults(data, noteText){
 	</pics:permission>
 </ul>
 </div>
-<div id="noteAjax" class="blockDialog">
+<div id="caoAjax" class="blockDialog">
 	
 </div>
 

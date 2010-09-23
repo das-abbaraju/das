@@ -3,7 +3,6 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -14,13 +13,14 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
@@ -47,6 +47,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilderController auditBuilder;
 	private OshaAuditDAO oshaAuditDAO;
+	protected int caoID;
 
 	public ContractorAuditController(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
@@ -182,16 +183,6 @@ public class ContractorAuditController extends AuditActionSupport {
 		return SUCCESS;
 	}
 
-	private void findValidButtons() {
-		// button, occurance
-		Map<String, Integer> numOcc = new HashMap<String, Integer>();
-		for(ContractorAuditOperator cao : conAudit.getOperators()){
-			//Map<String, Integer> tempMap = cao.getValidButtons();
-			//validButtons.put(cao.getId(), cao.getValidButtons());
-		}
-		
-	}
-
 	public List<MenuComponent> getAuditMenu() {
 		List<MenuComponent> menu = super.getAuditMenu();
 
@@ -314,5 +305,13 @@ public class ContractorAuditController extends AuditActionSupport {
 		if(conAudit.getAuditType().isScheduled() && (permissions.isContractor() || permissions.isAdmin()))
 			return conAudit.hasCaoStatus(AuditStatus.Pending);
 		return false;
+	}
+
+	public int getCaoID() {
+		return caoID;
+	}
+
+	public void setCaoID(int caoID) {
+		this.caoID = caoID;
 	}
 }

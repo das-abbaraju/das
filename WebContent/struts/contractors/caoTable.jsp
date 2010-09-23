@@ -31,11 +31,16 @@
 							<span class="progressPercent"><s:property value="percentComplete" />%</span>
 						</div>
 					</td>
-					<td><s:property value="status"/></td>
+					<s:if test="hasStatusChanged(status)">
+						<td class="caoStatus clickable" onclick="loadStatus(<s:property value="#currentCao.id"/>)"><s:property value="status"/></td>
+					</s:if>
+					<s:else>
+						<td class="caoStatus"><s:property value="status"/></td>
+					</s:else>					
 					<td><s:property value="formatDate(statusChangedDate, 'MMMMM d, yyyy')" default="N/A" /></td>
 					<td class="buttonAction">
 						<s:iterator value="getCurrentCaoStep(#currentCao.id)" id="step">
-							<span class="singleButton">
+							<span class="singleButton clickable">
 								<s:property value="#step.buttonName" />
 								<s:hidden cssClass="bCaoID" name="%{id}_%{#step.id}" value="%{#currentCao.id}"/>
 								<s:hidden cssClass="bStepID" name="%{id}_%{#buttonActions.key}_stepID" value="%{#step.id}" />
