@@ -101,10 +101,10 @@ join pqfcategories pc on ps.categoryID = pc.id;
 insert into audit_question
 select q.id, c.id categoryID, q.number, t.question name, q.createdBy, q.updatedBy, q.creationDate, q.updateDate, q.effectiveDate, q.expirationDate, q.questionType, (q.hasRequirement = 'Yes') hasRequirement, q.okAnswer, (q.isRequired = 'Yes') required, q.dependsOnQID, q.dependsOnAnswer, null visibleQuestion, null visibleAnswer, q.columnHeader, q.uniqueCode, q.title, (q.isGroupedWithPrevious = 'Yes') groupedWithPrevious, (q.isRedFlagQuestion = 'Yes') flaggable, q.showComment, q.riskLevel, q.helpPage, t.requirement
 from `pics_yesterday`.pqfquestions q
-  left join `pics_yesterday`.pqfquestion_text t
+  join `pics_yesterday`.pqfquestion_text t
     on q.id = t.questionID
       and t.locale = 'en'
-  left join audit_category c
+  join audit_category c
     on c.legacyID = q.subCategoryID;
     
 -- Move questions up a level where there is only a single subcategory
