@@ -72,10 +72,6 @@ public class CertificateFileUpload extends ContractorActionSupport {
 			}
 
 			if (certificate != null && button.startsWith("Delete")) {
-				if (certificate.getCaos().size() > 0) {
-					addActionError("Failed to remove the file attached to a Policy.");
-					return SUCCESS;
-				}
 				try {
 					for (File oldFile : getFiles(certID))
 						FileUtils.deleteFile(oldFile);
@@ -101,9 +97,6 @@ public class CertificateFileUpload extends ContractorActionSupport {
 					if (certificate == null) {
 						certificate = new Certificate();
 						certificate.setContractor(contractor);
-						Calendar cal = Calendar.getInstance();
-						cal.add(Calendar.MONTH, 6);
-						certificate.setExpirationDate(cal.getTime());
 					} else {
 						certID = certificate.getId();
 						addActionMessage("This file has already been uploaded.");
@@ -155,7 +148,16 @@ public class CertificateFileUpload extends ContractorActionSupport {
 					d.setAnswer(certID + "");
 					d.setQuestion(q);
 					d.setAudit(auditDao.find(auditID));
-					
+
+					if(d.getAudit().getExpiresDate() == null) {
+						Calendar cal = Calendar.getInstance();
+						cal.add(Calendar.MONTH, 6);
+						certificate.setExpirationDate(cal.getTime());
+					}
+					else if(certificate.getExpirationDate() == null || d.getAudit().getExpiresDate().after(certificate.getExpirationDate())) {
+						certificate.setExpirationDate(d.getAudit().getExpiresDate());
+					}
+					certificateDAO.remove(certificate);
 					dataDAO.save(d);
 				}
 

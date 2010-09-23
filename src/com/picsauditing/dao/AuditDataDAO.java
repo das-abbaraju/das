@@ -9,7 +9,6 @@ import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.persistence.Transient;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -225,7 +224,6 @@ public class AuditDataDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@Transient
 	public AuditData findAnswerByConQuestion(int conID, int questionID) {
 		Query query = em
 				.createQuery("SELECT d FROM AuditData d "

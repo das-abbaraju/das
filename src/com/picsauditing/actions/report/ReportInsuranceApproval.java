@@ -88,14 +88,9 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		
 					ContractorAuditOperator existing = conAuditOperatorDAO.find(i);
 					ContractorAuditOperator newVersion = caos.get(i);
-					if (! (existing.getNotes() == null && newVersion.getNotes() == null ) ) {
-							existing.setNotes(newVersion.getNotes());
-							dirty = true;
-					}
 		
 					if (newStatus != null && !newStatus.equals(existing.getStatus())) {
-						if(newStatus.isIncomplete()
-								&& Strings.isEmpty(newVersion.getNotes())) {
+						if(newStatus.isIncomplete()) {
 							dirty = false;
 							statusChanged = false;
 							addActionError("Add notes before rejecting " + existing.getAudit().getAuditType().getAuditName() + " for "+ existing.getAudit().getContractorAccount().getName());

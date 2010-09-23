@@ -6,31 +6,30 @@ import java.util.Map;
 
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.log.LoggingRule;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class CertCleanUp extends ContractorActionSupport {
-	private ContractorAuditOperatorDAO caoDAO;
 	private CertificateDAO certificateDAO;
+	private AuditDataDAO auditDataDAO;
 
 	private int num = 10;
 	private int count = 0;
 
 	public CertCleanUp(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, ContractorAuditOperatorDAO caoDAO,
-			CertificateDAO certificateDAO) {
+			ContractorAuditDAO auditDao, CertificateDAO certificateDAO, AuditDataDAO auditDataDAO) {
 		super(accountDao, auditDao);
-		this.caoDAO = caoDAO;
 		this.certificateDAO = certificateDAO;
+		this.auditDataDAO = auditDataDAO;
 	}
 
 	public String execute() throws Exception {
@@ -65,12 +64,13 @@ public class CertCleanUp extends ContractorActionSupport {
 
 				for (int i = 1; i < certs.size(); i++) {
 					PicsLogger.log("  For cert id=" + certs.get(i).getId());
-					for (ContractorAuditOperator cao : certs.get(i).getCaos()) {
-						PicsLogger.log("   change cao cert for cao id="
-								+ cao.getId() + " - opName= "
-								+ cao.getOperator().getName());
-						cao.setCertificate(keeper);
-						caoDAO.save(cao);
+					String where = "question.questionType = 'FileCertificate ' AND answer = '"+certs.get(i).getId()+"' audit.contractorAccount.id " +  entry.getKey().getId(); 
+					List<AuditData> auditDatas = (List<AuditData>) auditDataDAO.findWhere(AuditData.class,where,100);
+					for (AuditData auditData : auditDatas) {
+						PicsLogger.log("change auditData cert for auditdata id="
+								+ auditData.getId() + " for category " + auditData.getQuestion().getCategory());
+						auditData.setAnswer(keeper.getId() +"");
+						auditDataDAO.save(auditData);
 					}
 
 					File[] files = getFiles(certs.get(i).getId());
@@ -83,12 +83,6 @@ public class CertCleanUp extends ContractorActionSupport {
 					certificateDAO.remove(certs.get(i));
 					count++;
 				}
-
-				PicsLogger.log("    keeper's old expiration date="
-						+ keeper.getExpirationDate());
-				keeper.updateExpirationDate();
-				PicsLogger.log("    keeper's new expiration date="
-						+ keeper.getExpirationDate());
 				certificateDAO.save(keeper);
 			}
 		}

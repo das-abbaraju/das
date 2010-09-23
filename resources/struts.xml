@@ -1671,15 +1671,6 @@
 			<result>struts/reports/policy_verification.jsp</result>
 		</action>
 		
-		<action name="PolicySave"
-			class="com.picsauditing.actions.audits.PolicySave">
-			<result>struts/blank.jsp</result>
-		</action>
-		<action name="PolicySaveAjax"
-			class="com.picsauditing.actions.audits.PolicySave">
-			<result>struts/audits/audit_cat_cao_ajax.jsp</result>
-		</action>
-
 		<action name="CertificateUpload"
 			class="com.picsauditing.actions.contractors.CertificateFileUpload">
 			<result>struts/contractors/con_cert_upload.jsp</result>

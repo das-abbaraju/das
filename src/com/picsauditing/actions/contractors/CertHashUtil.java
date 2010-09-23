@@ -62,15 +62,6 @@ public class CertHashUtil extends ContractorActionSupport {
 			cert.setFileHash(FileUtils.getFileMD5(file));
 			PicsLogger.log(" fileHash set to " + cert.getFileHash());
 
-			// Try to find an expirationDate
-			for (ContractorAuditOperator cao : cert.getCaos()) {
-				if (cert.getExpirationDate() == null
-						|| (cao.getAudit().getExpiresDate() != null && cert
-								.getExpirationDate().before(
-										cao.getAudit().getExpiresDate())))
-					cert.setExpirationDate(cao.getAudit().getExpiresDate());
-			}
-
 			if (cert.getExpirationDate() == null) {
 				PicsLogger
 						.log(" expirationDate not found - setting to 6 months in the future");

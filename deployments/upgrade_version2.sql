@@ -347,18 +347,18 @@ update contractor_audit_operator set status = 'Complete' where status IN ('Activ
 /*
  *  Dropping Tables and Columns
  */
-alter table `pics_alpha`.`audit_type` drop column `mustVerify`, drop column `hasRequirements`;
+alter table audit_type drop column `mustVerify`, drop column `hasRequirements`;
 
-alter table `pics_alpha`.`contractor_audit` drop column `auditStatus`, drop column `completedDate`, drop column `closedDate`, drop column `percentComplete`, drop column `percentVerified`;
+alter table contractor_audit drop column `auditStatus`, drop column `completedDate`, drop column `closedDate`, drop column `percentComplete`, drop column `percentVerified`;
 
-alter table `pics_alpha`.`contractor_audit_operator` drop column `submittedDate`, drop column `completedDate`, drop column `approvedDate`, drop column `incompleteDate`, drop column `notes`, drop column `reason`, drop column `valid`, drop column `certificateID`, drop column `statusChangedDate`;
+alter table contractor_audit_operator drop column `submittedDate`, drop column `completedDate`, drop column `approvedDate`, drop column `incompleteDate`, drop column `notes`, drop column `reason`, drop column `valid`, drop column `certificateID`, drop column `statusChangedBy`;
 
-drop table `pics_alpha`.`pqfcatdata`;
-alter table `pics_alpha`.`pqfcategories` drop foreign key  `FK_pqfcategories` ;
-alter table `pics_alpha`.`pqfsubcategories` drop foreign key  `FK_pqfsubcategories` ;
-drop table `pics_alpha`.`pqfcategories`;
-drop table `pics_alpha`.`pqfsubcategories`;
-drop table `pics_alpha`.`pqfopmatrix`;
-drop table `pics_alpha`.`pqfquestions`;
-drop table `pics_alpha`.`audit_operator`;
-drop table `pics_alpha`.`desktopmatrix`;
+drop table pqfcatdata;
+alter table pqfcategories drop foreign key  `FK_pqfcategories` ;
+alter table pqfsubcategories drop foreign key  `FK_pqfsubcategories` ;
+drop table pqfcategories;
+drop table pqfsubcategories;
+drop table pqfopmatrix;
+drop table pqfquestions;
+drop table audit_operator;
+drop table desktopmatrix;
