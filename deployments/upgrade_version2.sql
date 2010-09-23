@@ -174,6 +174,16 @@ from temp_cao_conversion t
 join audit_category ac on ac.legacyID = t.id
 join accounts a on t.opID = a.id;
 
+
+-- insert the Audit Category Data for subcategories
+select null,acd.auditID,acs.id,acd.requiredCompleted,acd.numRequired,acd.numAnswered, 
+acd.applies,acd.percentCompleted,acd.percentVerified,acd.percentClosed,acd.override, 
+acd.score,acd.scoreCount,acd.createdBy,acd.updatedBy,acd.creationDate,acd.updateDate
+from audit_category acp
+join audit_category acs on acp.id = acs.parentID
+join audit_cat_data acd on acd.categoryID = acp.id
+where acp.parentID is null;
+
 -- TODO insert translations
 select 
 from audit_question;
@@ -334,3 +344,21 @@ update contractor_audit_operator set status = 'Complete' where status IN ('Activ
  * END: CAO Conversion
  */
 
+/*
+ *  Dropping Tables and Columns
+ */
+alter table `pics_alpha`.`audit_type` drop column `mustVerify`, drop column `hasRequirements`;
+
+alter table `pics_alpha`.`contractor_audit` drop column `auditStatus`, drop column `completedDate`, drop column `closedDate`, drop column `percentComplete`, drop column `percentVerified`;
+
+alter table `pics_alpha`.`contractor_audit_operator` drop column `submittedDate`, drop column `completedDate`, drop column `approvedDate`, drop column `incompleteDate`, drop column `notes`, drop column `reason`, drop column `valid`, drop column `certificateID`, drop column `statusChangedDate`;
+
+drop table `pics_alpha`.`pqfcatdata`;
+alter table `pics_alpha`.`pqfcategories` drop foreign key  `FK_pqfcategories` ;
+alter table `pics_alpha`.`pqfsubcategories` drop foreign key  `FK_pqfsubcategories` ;
+drop table `pics_alpha`.`pqfcategories`;
+drop table `pics_alpha`.`pqfsubcategories`;
+drop table `pics_alpha`.`pqfopmatrix`;
+drop table `pics_alpha`.`pqfquestions`;
+drop table `pics_alpha`.`audit_operator`;
+drop table `pics_alpha`.`desktopmatrix`;

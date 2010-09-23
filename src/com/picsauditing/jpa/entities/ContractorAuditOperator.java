@@ -35,11 +35,6 @@ public class ContractorAuditOperator extends BaseTable {
 	private int percentVerified;
 	private boolean visible = true;
 	private FlagColor flag = null;
-	// To be removed
-	private YesNo valid = null;
-	private Certificate certificate;
-	private String notes;
-	private String reason;
 	private List<ContractorAuditOperatorPermission> caoPermissions = new ArrayList<ContractorAuditOperatorPermission>();
 
 	@ManyToOne
@@ -193,42 +188,6 @@ public class ContractorAuditOperator extends BaseTable {
 		this.visible = visible;
 	}
 
-	@Column(length = 1000)
-	public String getNotes() {
-		return notes;
-	}
-
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-
-	@Transient
-	public boolean isNotesLength() {
-		if (Strings.isEmpty(notes))
-			return false;
-		return true;
-	}
-
-	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
-	@Enumerated(EnumType.STRING)
-	public YesNo getValid() {
-		return valid;
-	}
-
-	public void setValid(YesNo valid) {
-		this.valid = valid;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "certificateID")
-	public Certificate getCertificate() {
-		return certificate;
-	}
-
-	public void setCertificate(Certificate certificate) {
-		this.certificate = certificate;
-	}
-
 	@Enumerated(EnumType.STRING)
 	public FlagColor getFlag() {
 		return flag;
@@ -236,15 +195,6 @@ public class ContractorAuditOperator extends BaseTable {
 
 	public void setFlag(FlagColor flag) {
 		this.flag = flag;
-	}
-
-	@Column(length = 500)
-	public String getReason() {
-		return reason;
-	}
-
-	public void setReason(String reason) {
-		this.reason = reason;
 	}
 
 	public Date getStatusChangedDate() {
@@ -306,11 +256,6 @@ public class ContractorAuditOperator extends BaseTable {
 		}
 		return false;
 	}
-
-	@Transient
-	public boolean isCanContractorSubmit() {
-		return certificate != null && valid != null && (valid.isTrue() || !Strings.isEmpty(reason));
-	}	
 	
 	@Transient
 	public boolean canSubmitCao() {
