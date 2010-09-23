@@ -29,9 +29,9 @@
 
 	<s:if test="categoryData.id != 0">
 		<s:form action="OshaSave" method="POST" enctype="multipart/form-data">
-			<s:hidden name="auditID"></s:hidden>
-			<s:hidden name="catDataID"></s:hidden>
-			<s:submit name="button" value="Add New Location" cssStyle="padding: 6px;position: relative;left: 380px;"></s:submit>
+			<s:hidden name="auditID"/>
+			<s:hidden name="catDataID" value="%{categoryData.id}"/>
+			<s:submit name="button" value="Add New Location" cssStyle="padding: 6px;position: relative;left: 380px;"/>
 		</s:form>
 	</s:if>
 </s:if>

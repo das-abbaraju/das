@@ -2,9 +2,10 @@
 <s:set name="osha" value="[0]"></s:set>
 
 <s:form action="OshaSave" method="POST" enctype="multipart/form-data">
-	<s:hidden name="auditID"></s:hidden>
-	<s:hidden name="catDataID"></s:hidden>
-	<s:hidden name="id"></s:hidden>
+	<s:hidden name="auditID"/>
+	<s:hidden name="catDataID" value="%{categoryData.id}"/>
+	<s:hidden name="categoryID" value="%{#category.id}"/>
+	<s:hidden name="id"/>
 <table class="osha">
 <thead>
 <tr class="location">
@@ -100,8 +101,9 @@
 		<s:if test="fileUploaded">
 			<a href="#" onclick="openOsha(<s:property value="id"/>); return false;">View File</a>
 		</s:if>
-		<s:if test="catDataID > 0">
-			<s:file name="uploadFile" size="10"></s:file></s:if></td>
+		<s:if test="categoryData.id > 0">
+			<s:file name="uploadFile" size="10"></s:file></s:if>
+		</td>
 	</tr>
 </s:if>
 </tbody>
@@ -110,7 +112,7 @@
 	<tr>
 		<th colspan="2">
 			<s:submit name="button" value="Save This Location" cssStyle="padding: 5px;"></s:submit>
-			<s:if test="(!corporate || permissions.admin) && catDataID > 0">
+			<s:if test="(!corporate || permissions.admin) && categoryData.id > 0">
 					<s:submit name="button" value="Delete" onclick="return confirm('Are you sure you want to delete this location? This action cannot be undone.');" cssStyle="padding: 5px;"></s:submit>
 			</s:if>
 		</th>
