@@ -11,6 +11,8 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 
@@ -121,5 +123,28 @@ public class CertificateDAO extends PicsDAO {
 				.createQuery("SELECT DISTINCT fileHash FROM Certificate WHERE fileHash IS NOT NULL GROUP BY fileHash, contractor.id HAVING COUNT(*) > 1");
 		q.setMaxResults(limit);
 		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Map<AuditType, List<AuditData>> findConCertsAuditData(int conID) {
+		Query query = em.createQuery("SELECT d FROM AuditData d " +
+				"WHERE d.audit.auditType.classType = 'Policy' " +
+				"AND d.question.questionType = 'FileCertificate' " +
+				"AND d.audit.contractorAccount.id = ?");
+		
+		query.setParameter(1, conID);
+		List<AuditData> data = query.getResultList();
+		
+		Map<AuditType, List<AuditData>> map = new HashMap<AuditType, List<AuditData>>();
+		
+		for (AuditData d : data) {
+			if (map.get(d.getAudit().getAuditType()) == null)
+				map.put(d.getAudit().getAuditType(), new ArrayList<AuditData>());
+
+			if (!map.get(d.getAudit().getAuditType()).contains(d))
+				map.get(d.getAudit().getAuditType()).add(d);
+		}
+		
+		return map;
 	}
 }
