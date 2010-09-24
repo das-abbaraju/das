@@ -10,11 +10,16 @@
 			<th>Progress</th>
 			<th>Status</th>
 			<th>Date</th>
-			<th><s:select list="actionStatus" headerKey="-1" headerValue="-- Select Action --"
-				listKey="value" listValue="key.button" name="multiStatusChange" />
+			<s:if test="conAudit.auditType.classType.policy">
+				<th>Flag</th>
+			</s:if>
+			<th><s:if test="">
+				<s:select list="actionStatus" headerKey="-1" headerValue="-- Select Action --"
+					listKey="value" listValue="key.button" name="multiStatusChange" />
 				<s:iterator value="actionStatus">
 					<s:hidden name="h_%{key.button}" value="%{key}"/>
 				</s:iterator>
+				</s:if>
 			</th>
 		</tr>
 	</thead>
@@ -38,6 +43,9 @@
 						<td class="caoStatus"><s:property value="status"/></td>
 					</s:else>					
 					<td><s:property value="formatDate(statusChangedDate, 'MMMMM d, yyyy')" default="N/A" /></td>
+					<s:if test="conAudit.auditType.classType.policy">
+						<td><s:property value="#currentCao.flag.insuranceStatus" default="N/A"/></td>
+					</s:if>
 					<td class="buttonAction">
 						<s:iterator value="getCurrentCaoStep(#currentCao.id)" id="step">
 							<span class="singleButton clickable">
