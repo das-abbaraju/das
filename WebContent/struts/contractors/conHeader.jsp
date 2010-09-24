@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<script type="text/javascript"><!--
+<script type="text/javascript">
 $(function(){
 	$('.singleButton').click(function() {
 		var data = {
