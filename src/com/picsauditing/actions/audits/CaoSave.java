@@ -73,11 +73,6 @@ public class CaoSave extends AuditActionSupport {
 
 		findConAudit();
 
-		if (conAudit.isExpired()) {
-			addActionError("You can't change an expired " + conAudit.getAuditType().getAuditName());
-			return SUCCESS;
-		}
-
 		if (caoID > 0){
 			if("statusHistory".equals(button)){
 				if(caoID>0)
@@ -89,6 +84,11 @@ public class CaoSave extends AuditActionSupport {
 				return "caoStatus";
 			}
 			caoIDs.add(caoID);
+		}
+
+		if (conAudit.isExpired()) {
+			addActionError("You can't change an expired " + conAudit.getAuditType().getAuditName());
+			return SUCCESS;
 		}
 
 		if (caoIDs.size() > 0) {
