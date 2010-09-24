@@ -69,6 +69,19 @@ $(function(){
 			$(this).unblock();
 		});
 	});
+	
+	$('.buttonOsha').live('click', function(){
+		var status;
+		if($(this).val()=='Delete'){
+			if(!confirm('Are you sure you want to delete this location? This action cannot be undone.'))
+				return false;
+			status = 'Deleting';			
+		} else
+			status = 'Saving';			
+		$(this).parents('#auditViewArea:first').block({message: status+' OHSA Record'}).load('OshaSaveAjax.action', $(this).parents('form#osSave').serialize()+"&button="+$(this).val(), function(response, status){
+			$(this).unblock();
+		});
+	});
 });
 
 var ucTimeout;
