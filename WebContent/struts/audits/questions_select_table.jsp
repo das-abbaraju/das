@@ -12,9 +12,9 @@
 
 		<s:iterator value="questions">
 			<tr>
-				<td><s:property value="subCategory.category.auditType.auditName" /></td>
-				<td class="right"><nobr><s:property value="subCategory.category.number" />.<s:property
-					value="subCategory.number" />.<s:property value="number" /></nobr></td>
+				<td><s:property value="category.auditType.auditName" /></td>
+				<td class="right"><nobr><s:property value="category.number" />.<s:property
+					value="category.number" />.<s:property value="number" /></nobr></td>
 				<td><s:property value="question" escape="false" /></td>
 				<td><a href="#" onclick="showCriteria(<s:property value="id" />)">Add</a></td>
 			</tr>

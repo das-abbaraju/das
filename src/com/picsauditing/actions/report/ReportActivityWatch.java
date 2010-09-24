@@ -13,8 +13,6 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorWatch;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
@@ -22,7 +20,6 @@ import com.picsauditing.util.Strings;
 public class ReportActivityWatch extends ReportAccount {
 	private ContractorAccountDAO conDAO;
 	private UserDAO userDAO;
-	private OperatorAccountDAO opDAO;
 
 	private int conID = 0;
 	private int limit = 50;
@@ -36,10 +33,9 @@ public class ReportActivityWatch extends ReportAccount {
 
 	private List<ContractorWatch> watched;
 
-	public ReportActivityWatch(ContractorAccountDAO conDAO, UserDAO userDAO, OperatorAccountDAO opDAO) {
+	public ReportActivityWatch(ContractorAccountDAO conDAO, UserDAO userDAO) {
 		this.conDAO = conDAO;
 		this.userDAO = userDAO;
-		this.opDAO = opDAO;
 	}
 
 	@Override
@@ -153,7 +149,7 @@ public class ReportActivityWatch extends ReportAccount {
 					"AuditSubmitted",
 					"contractor_audit ca",
 					"ca.conID",
-					"cao.statusChangedDate AS completedDate",
+					"cao.statusChangedDate",
 					"CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), ' Submitted')",
 					"CONCAT('Audit.action?auditID=', ca.id)");
 			sql2.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id AND aType.classType != 'Policy'");
@@ -171,7 +167,7 @@ public class ReportActivityWatch extends ReportAccount {
 					"AuditActivated",
 					"contractor_audit ca",
 					"ca.conID",
-					"cao.statusChangedDate AS closedDate",
+					"cao.statusChangedDate",
 					"CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), ' Complete')",
 					"CONCAT('Audit.action?auditID=', ca.id)");
 			sql2.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id AND aType.classType != 'Policy'");

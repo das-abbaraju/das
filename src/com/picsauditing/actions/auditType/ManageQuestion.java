@@ -110,27 +110,6 @@ public class ManageQuestion extends ManageCategory {
 	}
 
 	@Override
-	protected boolean copy() {
-		try {
-			if (targetID == 0) {
-				addActionMessage("Please Select SubCategory to copy to");
-				return false;
-			}
-
-			AuditCategory targetSubCategory = auditCategoryDAO.find(targetID);
-			AuditQuestion aq = copyAuditQuestion(question, targetSubCategory);
-
-			addActionMessage("Copied the Question only. <a href=\"ManageQuestion.action?id=" + aq.getId()
-					+ "\">Go to this Question?</a>");
-			return true;
-
-		} catch (Exception e) {
-			addActionError(e.getMessage());
-		}
-		return false;
-	}
-
-	@Override
 	protected boolean move() {
 		try {
 			if (targetID == 0) {

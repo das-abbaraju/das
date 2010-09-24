@@ -15,12 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
