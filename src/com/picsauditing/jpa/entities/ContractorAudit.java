@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -661,7 +662,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	@Transient
 	public Map<AuditCategory, AuditCatData> getApplicableCategories(
 			Permissions permissions, Set<AuditCategory> requiredCategories) {
-		Map<AuditCategory, AuditCatData> categories = new TreeMap<AuditCategory, AuditCatData>();
+		Map<AuditCategory, AuditCatData> categories = new LinkedHashMap<AuditCategory, AuditCatData>();
 		for (AuditCatData auditCatData : getCategories()) {
 			boolean add = false;
 			if (auditCatData.getCategory().getId() == AuditCategory.WORK_HISTORY) {
