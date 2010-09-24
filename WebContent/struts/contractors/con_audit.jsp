@@ -67,7 +67,7 @@
 				<ul id="catlist" class="catlist vert-toolbar">
 					<li class="head">CATEGORIES <span class="hidden-button">Show N/A</span></li>			
 					<s:iterator value="categories">
-						<s:if test="value.category.parent == NULL && value.applies">
+						<s:if test="key.parent == NULL && value.applies">
 							<li id="category_<s:property value="key.id"/>">
 								<a class="hist-category" href="#categoryID=<s:property value="key.id" />"><s:property value="key.name" />
 								<s:if test="conAudit.auditType.pqf">
@@ -96,7 +96,7 @@
 				<ul id="nacatlist" class="catlist vert-toolbar">
 					<li class="head">N/A CATEGORIES <span class="hidden-button">Show Others</span></li>
 					<s:iterator value="categories" status="rowStatus">
-						<s:if test="value.category.parent == NULL && !value.applies && permissions.picsEmployee">
+						<s:if test="key.parent == NULL && !value.applies && permissions.picsEmployee">
 							<li id="category_<s:property value="key.id"/>">
 								<a class="hist-category" href="#categoryID=<s:property value="key.id" />"><s:property value="key.name" /></a>
 							</li>
