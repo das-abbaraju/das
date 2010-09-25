@@ -261,6 +261,8 @@ public class AuditBuilderController {
 	}
 
 	public AuditCategoriesDetail getAuditCategoryDetail(ContractorAudit conAudit) {
+		if (contractor == null)
+			contractor = conAudit.getContractorAccount();
 		AuditTypeDetail auditTypeDetail = getRequiredAuditTypes().get(conAudit.getAuditType());
 		if (auditTypeDetail == null)
 			return null;
@@ -321,7 +323,8 @@ public class AuditBuilderController {
 	}
 
 	/**
-	 * For each audit (policy), get a list of operators and create Contractor Audit Operator
+	 * For each audit (policy), get a list of operators and create Contractor
+	 * Audit Operator
 	 * 
 	 * @param conAudit
 	 * @param governingBodies
@@ -388,6 +391,8 @@ public class AuditBuilderController {
 	}
 
 	private void fillAuditOperatorPermissions(ContractorAuditOperator cao) {
+		if (getRequiredAuditTypes().get(cao.getAudit().getAuditType()) == null)
+			return;
 		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 		operators.addAll(getRequiredAuditTypes().get(cao.getAudit().getAuditType()).operators);
 

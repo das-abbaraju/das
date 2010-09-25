@@ -90,10 +90,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	private OshaDisplay oshaDisplay;
 
-	public ContractorDashboard(AuditBuilderController auditBuilder, ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO, FlagDataDAO flagDataDAO,
-			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO, InvoiceItemDAO invoiceItemDAO,
-			UserDAO userDAO, NaicsDAO naicsDAO) {
+	public ContractorDashboard(AuditBuilderController auditBuilder, ContractorAccountDAO accountDao,
+			ContractorAuditDAO auditDao, ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO,
+			FlagDataDAO flagDataDAO, OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO,
+			InvoiceItemDAO invoiceItemDAO, UserDAO userDAO, NaicsDAO naicsDAO) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.contractorOperatorDAO = contractorOperatorDAO;
@@ -198,7 +198,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(60);
 			emailQueue.setFromAddress("billing@picsauditing.com");
-			if(permissions.isOperator())
+			if (permissions.isOperator())
 				emailQueue.setViewableById(permissions.getTopAccountID());
 			else
 				emailQueue.setViewableById(Account.EVERYONE);
@@ -218,10 +218,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 				if (operatorTags.contains(contractorTag.getTag()))
 					operatorTags.remove(contractorTag.getTag());
 			}
-		}
-
-		if (contractor.getNonCorporateOperators().size() > 0) {
-			auditBuilder.buildAudits(this.contractor, getUser());
 		}
 
 		if (opID == 0 && permissions.isOperatorCorporate())
@@ -430,11 +426,13 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 			String ind = "Industry";
 			auditForSet.add(ind);
-			
+
 			if (data.get(OshaRateType.TrirAbsolute.getDescription()) != null)
-				put(OshaRateType.TrirAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(false, contractor.getNaics())));
+				put(OshaRateType.TrirAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(false,
+						contractor.getNaics())));
 			if (data.get(OshaRateType.LwcrAbsolute.getDescription()) != null)
-				put(OshaRateType.LwcrAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(true, contractor.getNaics())));
+				put(OshaRateType.LwcrAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(true,
+						contractor.getNaics())));
 
 			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
 			for (ContractorOperator co : contractorOperators) {

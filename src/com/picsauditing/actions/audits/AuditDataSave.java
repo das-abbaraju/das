@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.google.common.base.Joiner;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -36,17 +37,17 @@ public class AuditDataSave extends AuditActionSupport {
 
 	private static final long serialVersionUID = 1103112846482868309L;
 	private AuditData auditData = null;
+	private String[] multiAnswer;
 	private AnswerMap answerMap;
 	private AuditQuestionDAO questionDao = null;
 	private NaicsDAO naicsDAO;
 	private AuditBuilderController auditBuilder;
 	private String mode;
-
 	private boolean toggleVerify = false;
 
 	public AuditDataSave(ContractorAccountDAO accountDAO, AuditDataDAO dao, AuditCategoryDataDAO catDataDao,
-			AuditQuestionDAO questionDao, ContractorAuditDAO auditDao,
-			OshaAuditDAO oshaAuditDAO, NaicsDAO naicsDAO, AuditBuilderController auditBuilder) {
+			AuditQuestionDAO questionDao, ContractorAuditDAO auditDao, OshaAuditDAO oshaAuditDAO, NaicsDAO naicsDAO,
+			AuditBuilderController auditBuilder) {
 		super(accountDAO, auditDao, catDataDao, dao);
 		this.questionDao = questionDao;
 		this.naicsDAO = naicsDAO;
@@ -54,7 +55,7 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	public String execute() throws Exception {
-		
+
 		if (getCategoryID() == 0) {
 			addActionError("Missing categoryID");
 			return BLANK;
@@ -82,6 +83,8 @@ public class AuditDataSave extends AuditActionSupport {
 				// insert mode
 				AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
 				auditData.setQuestion(question);
+				ContractorAudit audit = auditDao.find(auditData.getAudit().getId());
+				auditData.setAudit(audit);
 				if (!checkAnswerFormat(auditData, null))
 					return SUCCESS;
 			} else {
@@ -89,8 +92,7 @@ public class AuditDataSave extends AuditActionSupport {
 				if (auditData.getAnswer() != null) {
 					// if answer is being set, then
 					// we are not currently verifying
-					if (auditData.getAnswer() == null || newCopy.getAnswer() == null
-							|| !newCopy.getAnswer().equals(auditData.getAnswer())) {
+					if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer())) {
 
 						if (!checkAnswerFormat(auditData, newCopy)) {
 							auditData = newCopy;
@@ -102,8 +104,9 @@ public class AuditDataSave extends AuditActionSupport {
 						}
 
 						newCopy.setAnswer(auditData.getAnswer());
-						if (newCopy.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep() && permissions.isPicsEmployee()) {
-							if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted) ) {
+						if (newCopy.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()
+								&& permissions.isPicsEmployee()) {
+							if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted)) {
 								newCopy.setWasChanged(YesNo.Yes);
 
 								if (!toggleVerify) {
@@ -143,7 +146,7 @@ public class AuditDataSave extends AuditActionSupport {
 			auditID = auditData.getAudit().getId();
 			// Load Dependent questions
 			auditData.getQuestion().getDependsRequired();
-			auditData.getQuestion().getDependsVisible();  
+			auditData.getQuestion().getDependsVisible();
 			auditData.setAuditColumns(permissions);
 			if ("reload".equals(button)) {
 				loadAnswerMap();
@@ -228,8 +231,8 @@ public class AuditDataSave extends AuditActionSupport {
 			if (categoryID > 0) {
 				catData = catDataDao.findAuditCatData(auditID, categoryID);
 			} else if (toggleVerify) {
-				catData = catDataDao.findAuditCatData(auditData.getAudit().getId(), auditData
-						.getQuestion().getCategory().getParent().getId());
+				catData = catDataDao.findAuditCatData(auditData.getAudit().getId(), auditData.getQuestion()
+						.getCategory().getParent().getId());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -250,15 +253,7 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	public String getMode() {
-		// When we're adding a tuple, we call audit_cat_question via
-		// audit_cat_tuples
-		// That page requires mode to be set
-		// Since we're always in edit mode when we're adding tuples, I'm going
-		// to hard code this
-		// We may need to pass it in though
-		if ("Verify".equals(mode))
-			return "Verify";
-		return "Edit";
+		return mode == null ? "View" : "Edit";
 	}
 
 	public void setMode(String mode) {
@@ -271,6 +266,14 @@ public class AuditDataSave extends AuditActionSupport {
 
 	public void setAuditData(AuditData auditData) {
 		this.auditData = auditData;
+	}
+
+	public String[] getMultiAnswer() {
+		return multiAnswer;
+	}
+
+	public void setMultiAnswer(String[] multiAnswer) {
+		this.multiAnswer = multiAnswer;
 	}
 
 	public AnswerMap getAnswerMap() {
@@ -297,14 +300,21 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	private boolean checkAnswerFormat(AuditData auditData, AuditData databaseCopy) {
-		// Null or blank answers are always OK
-		String answer = auditData.getAnswer();
-		if (Strings.isEmpty(answer))
-			return true;
 
 		if (databaseCopy == null)
 			databaseCopy = auditData;
 		String questionType = databaseCopy.getQuestion().getQuestionType();
+		String answer = auditData.getAnswer();
+
+		// Clean-up for service questions
+		if ("Service".equals(questionType)) {
+			answer = Joiner.on(" ").skipNulls().join(multiAnswer);
+			auditData.setAnswer(answer);
+		}
+
+		// Null or blank answers are always OK
+		if (Strings.isEmpty(answer))
+			return true;
 
 		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)) {
 			// Strip the commas, just in case they are in the wrong place
