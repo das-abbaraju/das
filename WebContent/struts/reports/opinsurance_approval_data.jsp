@@ -73,9 +73,6 @@
 		<td class="center">
 			<s:if test="get('valid').toString() == 'Yes'">Yes</s:if>
 			<s:else>No</s:else>
-			<s:if test="get('reason') != null && get('reason').length() > 0">
-				<br><img src="images/icon_notes.gif" title="<s:property value="get('reason')"/>">
-			</s:if>
 		</td>
 		<td>
 			<s:if test="get('certificateID') != null">

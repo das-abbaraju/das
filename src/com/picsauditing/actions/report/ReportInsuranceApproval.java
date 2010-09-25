@@ -58,11 +58,10 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		sql.addWhere("a.status IN ('Active','Demo')");
 
 		sql.addField("cao.status as caoStatus");
-		sql.addField("cao.notes as caoNotes");
+		sql.addField("caow.notes as caoNotes");
 		sql.addField("cao.id as caoId");
 		sql.addField("caoaccount.name as caoOperatorName");
 		sql.addField("cao.flag as caoRecommendedFlag");
-		sql.addField("cao.reason");
 	}
 	
 	@Override

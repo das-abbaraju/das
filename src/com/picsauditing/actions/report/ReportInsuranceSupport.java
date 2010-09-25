@@ -44,7 +44,7 @@ public class ReportInsuranceSupport extends ReportContractorAuditOperator {
 		super.buildQuery();
 
 		if (!permissions.hasPermission(OpPerms.AllContractors)) {
-			sql.addField("cao.notes as caoNotes");
+			sql.addField("caow.notes as caoNotes");
 			sql.addField("cao.flag as caoRecommendedFlag");
 			sql.addField("cao.certificateID");
 			sql.addField("valid");

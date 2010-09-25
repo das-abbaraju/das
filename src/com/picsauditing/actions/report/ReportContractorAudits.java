@@ -58,7 +58,7 @@ public class ReportContractorAudits extends ReportAccount {
 		if (download) {
 			sql.addField("atype.classType");
 			if (auditTypeClass == AuditTypeClass.Policy && permissions.isOperator()) {
-				sql.addField("cao.notes");
+				sql.addField("caow.notes");
 			}
 
 			if (permissions.isAdmin()) { // Only for admins?
