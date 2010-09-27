@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <span class="question">
-	<s:property value="category.number"/>.<s:property value="subCategory.number"/>.<s:property value="number"/>&nbsp;&nbsp;
-	<s:property value="question" escape="false"/>
+	<span class="questionNumber"><s:property value="#q.expandedNumber"/></span>
+	<s:property value="#q.name" escape="false"/>
 	
 </span>
 <br clear="all">

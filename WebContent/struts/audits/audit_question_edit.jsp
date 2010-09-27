@@ -29,7 +29,6 @@
 </s:if>
 
 <span class="question <s:if test="#questionStillRequired">required</s:if>">
-	<a name="q<s:property value="#q.required"/>"></a>
 	<span class="questionNumber"><s:property value="#q.expandedNumber"/></span>
 	
 	<s:property value="#q.name" escape="false"/>

@@ -11,8 +11,6 @@
 <script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
 
-<script type="text/javscript" src="js/jquery/jquery.bgiframe.min.js"></script>
-
 <script type="text/javascript">
 	var dtable;
 
@@ -110,7 +108,7 @@ $(function() {
 				<th>Description</th>
 			</tr>
 		</thead>
-		<s:iterator value="criteriaList" var="c">
+		<s:iterator value="criteriaList">
 			<tr>
 				<td><s:property value="id"/></td>
 				<td><s:property value="displayOrder"/></td>
