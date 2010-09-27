@@ -23,7 +23,7 @@ public class ReportCloseAuditAssignments extends ReportContractorAuditOperator {
 
 	public ReportCloseAuditAssignments(ContractorAuditDAO contractorAuditDAO, NoteDAO noteDAO, UserDAO userDAO) {
 		sql = new SelectContractorAudit();
-		orderByDefault = "ca.completedDate DESC";
+		orderByDefault = "cao.statusChangedDate DESC";
 		this.contractorAuditDAO = contractorAuditDAO;
 		this.noteDAO = noteDAO;
 		this.userDAO = userDAO;

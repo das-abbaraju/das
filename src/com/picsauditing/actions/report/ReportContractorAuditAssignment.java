@@ -29,7 +29,6 @@ public class ReportContractorAuditAssignment extends ReportContractorAuditOperat
 		sql.addField("ca.contractorConfirm");
 		sql.addField("ca.auditorConfirm");
 		sql.addField("ca2.expiresDate AS current_expiresDate");
-		sql.addWhere("cao.auditStatus='Pending'");
 		sql.addJoin("LEFT JOIN contractor_audit ca2 ON " + "ca2.conID = a.id "
 				+ "AND ca2.auditTypeID = ca.auditTypeID AND atype.hasMultiple = 0");
 		sql.addJoin("LEFT JOIN contractor_audit_operator cao2 on cao2.auditID = ca2.id AND cao2.visible = 1 AND cao2.status = 'Complete'");
@@ -44,8 +43,8 @@ public class ReportContractorAuditAssignment extends ReportContractorAuditOperat
 		sql.addField("manual.comment AS mcomment");
 		sql.addField("manual.id AS mid");
 		
-		orderByDefault = "ca.creationDate";
-
+		orderByDefault = "cao.statusChangedDate";
+		
 		getFilter().setShowUnConfirmedAudits(true);
 		getFilter().setShowAuditFor(false);
 	}

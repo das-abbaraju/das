@@ -3,7 +3,7 @@ package com.picsauditing.actions.report;
 import com.picsauditing.access.OpPerms;
 
 @SuppressWarnings("serial")
-public class ReportAuditDataUpdate extends ReportContractorAudits {
+public class ReportAuditDataUpdate extends ReportContractorAuditOperator {
 
 	@Override
 	public void checkPermissions() throws Exception {
@@ -19,7 +19,7 @@ public class ReportAuditDataUpdate extends ReportContractorAudits {
 		sql.addField("pt.question");
 		sql.addJoin("JOIN pqfdata pq on pq.auditID = ca.id");
 		sql.addJoin("JOIN pqfquestion_text pt on pt.questionID = pq.questionID");
-		sql.addWhere("pq.updateDate > ca.completedDate");
+		sql.addWhere("pq.updateDate > cao.statusChangedDate");
 		sql.addWhere("a.status = 'Active'");
 		if(getFilter().getAuditTypeID() == null) {
 			sql.addWhere("atype.id = 1");
