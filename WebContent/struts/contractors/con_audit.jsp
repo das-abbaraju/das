@@ -94,7 +94,7 @@
 					</s:iterator>
 				</ul>
 				<ul id="nacatlist" class="catlist vert-toolbar">
-					<li class="head">N/A CATEGORIES <span class="hidden-button">Show Others</span></li>
+					<li class="head">N/A CATEGORIES <span class="hidden-button">Back</span></li>
 					<s:iterator value="categories" status="rowStatus">
 						<s:if test="key.parent == NULL && !value.applies && permissions.picsEmployee">
 							<li id="category_<s:property value="key.id"/>">
