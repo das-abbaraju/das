@@ -178,7 +178,7 @@ public class PicsMenu {
 			subMenu.addChild("Assign Webcams", "AssignWebcams.action");
 		}
 		if (permissions.hasPermission(OpPerms.AuditVerification))
-			subMenu.addChild("Pending PQF", "ReportCompletePQF.action");
+			subMenu.addChild("Pending PQF", "ReportCompletePQF.action?filter.auditStatus=Pending");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("PQF Verification", "PqfVerification.action?filter.status=Active");
 

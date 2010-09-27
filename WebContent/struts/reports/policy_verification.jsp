@@ -37,10 +37,10 @@
 					<a href="mailto:<s:property value="get('contactemail')"/>"><s:property value="get('contactemail')"/></a> <br />
 				</td>
 			</s:if>
-			<td><a href="AuditCat.action?auditID=<s:property value="get('auditID')"/>&catDataID=<s:property value="get('catdataID')" />"><s:property value="get('auditName')"/></a></td>
+			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/></a></td>
 			<td><s:date name="get('statusChangedDate')" format="M/d/yy"/></td>
 			<td><s:property value="get('operatorCount')"/></td>
-			<td><a href="AuditCat.action?auditID=<s:property value="get('auditID')"/>&catDataID=<s:property value="get('catdataID')"/>" target="VERIFY">Open</a></td>
+			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>" target="VERIFY">Open</a></td>
 		</tr>
 	</s:iterator>	
 </table>

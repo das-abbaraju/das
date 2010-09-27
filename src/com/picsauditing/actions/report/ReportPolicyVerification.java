@@ -6,12 +6,13 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 
 @SuppressWarnings("serial")
 public class ReportPolicyVerification extends ReportContractorAuditOperator {
 
 	public ReportPolicyVerification() {
-		super();
+		auditTypeClass = AuditTypeClass.Policy;
 		orderByDefault = "MIN(cao.statusChangedDate) ASC, a.name";
 	}
 
@@ -22,12 +23,12 @@ public class ReportPolicyVerification extends ReportContractorAuditOperator {
 
 	@Override
 	protected void buildQuery() {
+		getFilter().setShowAuditStatus(false);
+		getFilter().setShowStatus(false);
 		super.buildQuery();
 
 		sql.addWhere("cao.status = 'Submitted'");
 
-		sql.addJoin("JOIN pqfcatdata pcd ON ca.id = pcd.auditID");
-		sql.addField("pcd.id catdataID");
 		sql.addField("MIN(cao.statusChangedDate) statusChangedDate");
 
 		sql.addField("COUNT(cao.auditID) as operatorCount");
@@ -35,8 +36,6 @@ public class ReportPolicyVerification extends ReportContractorAuditOperator {
 
 		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("a.acceptsBids = 0");
-
-		getFilter().setShowStatus(false);
 	}
 
 	@Override
@@ -53,8 +52,7 @@ public class ReportPolicyVerification extends ReportContractorAuditOperator {
 				BasicDynaBean firstRow = data.get(0);
 				// TODO forward to the AuditCat page for that audit
 				ServletActionContext.getResponse().sendRedirect(
-						"AuditCat.action?auditID=" + firstRow.get("auditID") + "&catDataID="
-								+ firstRow.get("catdataID"));
+						"AuditCat.action?auditID=" + firstRow.get("auditID"));
 			}
 		}
 		return super.returnResult();

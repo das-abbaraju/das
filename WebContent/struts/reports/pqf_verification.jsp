@@ -18,7 +18,7 @@
 		<td></td>
 		<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 		<td><a href="javascript: changeOrderBy('form1','csr_name');">CSR</a></td>
-		<td><a href="javascript: changeOrderBy('form1','completedDate DESC');">Completed Date</a></td>
+		<td><a href="javascript: changeOrderBy('form1','cao.statusChangedDate DESC');">Completed Date</a></td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -26,7 +26,7 @@
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><a href="VerifyView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
 			<td><s:property value="get('csr_name')"/></td>
-			<td><s:date name="get('completedDate')" format="M/d/yy" /></td>
+			<td><s:date name="get('statusChangedDate')" format="M/d/yy" /></td>
 		</tr>
 	</s:iterator>	
 </table>

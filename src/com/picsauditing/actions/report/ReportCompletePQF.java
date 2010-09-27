@@ -42,7 +42,7 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 	public void buildQuery() {
 		super.buildQuery();
 		
-		sql.addWhere("cao.status = 'Pending'");
+		sql.addField("cao.percentComplete");
 		sql.addWhere("ca.auditTypeID IN (1,11)");
 		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addField("COUNT(eq.conid) As followUp");

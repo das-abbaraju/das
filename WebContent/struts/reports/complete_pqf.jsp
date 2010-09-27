@@ -29,7 +29,7 @@
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 				<td><a href="javascript: changeOrderBy('form1','auditName');">Audit</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','createdDate ASC');">Created</a></td>
-				<td align="center"><a href="javascript: changeOrderBy('form1','percentComplete ASC');">%Complete</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','cao.percentComplete ASC');">%Complete</a></td>
 				<td>Contacted</td>
 				<td><a href="javascript: changeOrderBy('form1','scheduledDate ASC');">FollowUp</a></td>
 			</tr>

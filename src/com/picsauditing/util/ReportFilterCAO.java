@@ -10,7 +10,7 @@ public class ReportFilterCAO extends ReportFilterAudit {
 	protected boolean showCaoStatusChangedDate = true;
 	protected boolean showCaoOperator = true;
 
-	protected AuditStatus[] auditStatus = AuditStatus.valuesWithoutPendingExpired();
+	protected AuditStatus[] auditStatus;
 	protected String percentComplete1;
 	protected String percentComplete2;
 

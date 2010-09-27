@@ -1,5 +1,6 @@
 package com.picsauditing.actions.report;
 
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.util.ReportFilterCAO;
 import com.picsauditing.util.Strings;
@@ -34,7 +35,10 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 			sql.addWhere("cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN (" + opIDs
 					+ "))");
 		}
-
+		
+		if(getFilter().isShowAuditStatus() && getFilter().getAuditStatus() == null)
+			getFilter().setAuditStatus(AuditStatus.valuesWithoutPendingExpired());
+		
 		getFilter().setShowOperator(false);
 		getFilter().setShowTrade(false);
 		getFilter().setShowLicensedIn(false);
@@ -53,8 +57,8 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 
 		ReportFilterCAO f = getFilter();
 
-		if (f.getAuditStatus().length > 0) {
-			String auditStatusList = Strings.implodeForDB(f.getAuditStatus(), ",");
+		String auditStatusList = Strings.implodeForDB(f.getAuditStatus(), ",");
+		if (filterOn(auditStatusList)) {
 			sql.addWhere("cao.status IN (" + auditStatusList + ")");
 		}
 
