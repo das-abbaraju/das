@@ -200,7 +200,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.InsuranceVerification))
 			subMenu.addChild("Policy Verification", "PolicyVerification.action");
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
-			subMenu.addChild("Policies Awaiting Decision", "ReportInsuranceApproval.action?filter.auditStatus=Verified");
+			subMenu.addChild("Policies Awaiting Decision", "ReportInsuranceApproval.action?filter.auditStatus=Complete");
 
 		subMenu = menu.addChild("Management");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
