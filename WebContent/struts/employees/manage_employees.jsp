@@ -161,8 +161,8 @@ $(function() {
 				sInfoEmpty:"",
 				sInfoFiltered:"(filtered from _MAX_)" },
 			iDisplayLength: 25,
-			fnRowCallback: function( nRow, iDisplayIndex ) {
-				if (nRow[0] == employeeID)
+			fnRowCallback: function( nRow, aData, iDisplayIndex ) {
+				if (aData[0] == employeeID)
 					$(nRow).not('.highlight').addClass('highlight');
 
 				$(nRow).not('.clickable').addClass('clickable').click(function() {
