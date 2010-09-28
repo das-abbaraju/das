@@ -36,23 +36,22 @@
 						<tr>
 							<th>Policy Type</th>
 							<th>Operator</th>
-							<th>Status</th>
 							<th>View</th>
 						</tr>
 					</thead>
 					<tbody>
 						<s:iterator value="certData.keySet()" id="key">
 							<s:iterator value="certData.get(#key)" id="data">
-								<s:iterator value="#data.audit.operators" id="cao" status="stat">
+								<s:iterator value="certMap.get(#data.answer)" id="cert" status="stat">
 									<tr>
 										<s:if test="#stat.first">
-											<td rowspan="<s:property value="#data.audit.operators.size" />">
-												<s:property value="#key.auditName" /></td>
+											<td rowspan="<s:property value="certMap.get(#data.answer).size" />">
+												<s:property value="#key.auditName" />
+											</td>
 										</s:if>
-										<td><s:property value="#cao.operator.name" /></td>
-										<td><s:property value="#cao.status" /></td>
+										<td><s:property value="#cert.question.category.name" /></td>
 										<s:if test="#stat.first">
-											<td class="center" rowspan="<s:property value="#data.audit.operators.size" />">
+											<td class="center" rowspan="<s:property value="certMap.get(#data.answer).size" />">
 												<a title="Certificate" href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="#data.answer"/>&button=download" target="_BLANK">
 													<img src="images/icon_insurance.gif"/>
 												</a>
@@ -88,17 +87,18 @@
 								target="_BLANK"><img src="images/icon_insurance.gif" /></a></td>
 							<td><s:if test="permissions.userId == createdBy.Id || permissions.admin">
 								<a class="edit" href="#"
-									onclick="showCertUpload(<s:property value="contractor.id"/>, <s:property value="id" />); return false;"
+									onclick="showCertUpload(<s:property value="contractor.id"/>, <s:property value="id" />); return fals
 									title="Opens in new window (please disable your popup blocker)"">Edit</a>
 							</s:if></td>
 							<td>
 								<table class="inner">
-									<s:iterator value="certMap.get(id)" id="data">
+									<s:set name="idString" value="%{id + ''}" />
+									<s:iterator value="certMap.get(#idString)" id="data">
 										<s:if test="!permissions.operatorCorporate || permissions.insuranceOperatorID == operator.id">
 											<tr>
-												<td style="font-size:10px"><nobr><s:property value="audit.auditType.auditName"/></nobr></td>
-												<td style="font-size:10px"><nobr><s:property value="operator.name"/></nobr></td>
-												<td style="font-size:10px"><nobr><s:date name="audit.expiresDate" format="M/d/yy"/></nobr></td>
+												<td style="font-size:10px"><nobr><s:property value="#data.audit.auditType.auditName"/></nobr></td>
+												<td style="font-size:10px"><nobr><s:property value="#data.question.category.name"/></nobr></td>
+												<td style="font-size:10px"><nobr><s:date name="#data.audit.expiresDate" format="M/d/yy"/></nobr></td>
 											</tr>
 										</s:if>
 									</s:iterator>

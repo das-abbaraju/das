@@ -47,7 +47,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 	private Map<ContractorAudit, List<ContractorAuditOperator>> current = new HashMap<ContractorAudit, List<ContractorAuditOperator>>();
 	private Set<ContractorAudit> expiredAudits = new HashSet<ContractorAudit>();
 	private Set<ContractorAudit> others = new HashSet<ContractorAudit>();
-	private Map<Integer, List<AuditData>> certMap = new HashMap<Integer, List<AuditData>>();
+	private Map<String, List<AuditData>> certMap = new HashMap<String, List<AuditData>>();
 
 	public ConInsureGuard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
 			AuditBuilderController auditBuilder, CertificateDAO certificateDAO, ContractorAuditOperatorDAO caoDao) {
@@ -73,13 +73,21 @@ public class ConInsureGuard extends ContractorActionSupport {
 					iterator.remove();
 				else {
 					for (AuditData d : certData.get(key)) {
-						int id = Integer.parseInt(d.getAnswer());
+						boolean isCertID = false;
 						
-						if (certMap.get(id) == null)
-							certMap.put(id, new ArrayList<AuditData>());
+						try {
+							isCertID = Integer.parseInt(d.getAnswer()) > 0;
+						} catch (Exception e) {
+							// TODO do we need to print out an error message?
+						}
 						
-						if (!certMap.get(id).contains(d))
-							certMap.get(id).add(d);
+						if (isCertID) {
+							if (certMap.get(d.getAnswer()) == null)
+								certMap.put(d.getAnswer(), new ArrayList<AuditData>());
+							
+							if (!certMap.get(d.getAnswer()).contains(d))
+								certMap.get(d.getAnswer()).add(d);
+						}
 					}
 				}
 			}
@@ -249,7 +257,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 		return certData;
 	}
 	
-	public Map<Integer, List<AuditData>> getCertMap() {
+	public Map<String, List<AuditData>> getCertMap() {
 		return certMap;
 	}
 }
