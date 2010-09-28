@@ -194,8 +194,7 @@ public class PicsMenu {
 
 		subMenu = menu.addChild("InsureGUARD&trade;");
 		if (permissions.hasPermission(OpPerms.InsuranceCerts)) {
-			// TODO: Fix this string - is this needed?
-			final String url = "ReportPolicyList.action?filter.auditStatus=Approved&filter.auditStatus=Incomplete&filter.auditStatus=Verified&filter.auditStatus=Submitted";
+			final String url = "ReportPolicyList.action";
 			subMenu.addChild("Contractor Policies", url);
 		}
 		if (permissions.hasPermission(OpPerms.InsuranceVerification))
