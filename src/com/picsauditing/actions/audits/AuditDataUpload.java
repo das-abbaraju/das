@@ -6,6 +6,7 @@ import javax.persistence.NoResultException;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -19,13 +20,13 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 
-public class AuditDataUpload extends AuditActionSupport {
+public class AuditDataUpload extends AuditActionSupport implements Preparable {
 	private static final long serialVersionUID = 2438788697676816034L;
 
 	protected AuditQuestionDAO questionDAO;
 
 	private String divId;
-	private AuditData answer;
+	private AuditData auditData;
 	private File file;
 	protected String fileContentType = null;
 	protected String fileFileName = null;
@@ -33,13 +34,17 @@ public class AuditDataUpload extends AuditActionSupport {
 
 	private int copyDataID = 0;
 
-	public AuditDataUpload(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, AuditQuestionDAO questionDAO,
+	public AuditDataUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditQuestionDAO questionDAO,
 			AuditPercentCalculator auditPercentCalculator) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.questionDAO = questionDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
+	}
+
+	@Override
+	public void prepare() throws Exception {
+		auditID = this.getParameter("auditData.audit.id");
 	}
 
 	public String execute() throws Exception {
@@ -47,32 +52,32 @@ public class AuditDataUpload extends AuditActionSupport {
 			return LOGIN;
 		this.findConAudit();
 
-		if (answer == null) {
+		if (auditData == null) {
 			addActionError("No question supplied for upload");
 			return SUCCESS;
 		}
 
-		int dataID = answer.getId();
+		int dataID = auditData.getId();
 		int questionID = 0;
-		if (answer.getQuestion() != null)
-			questionID = answer.getQuestion().getId();
+		if (auditData.getQuestion() != null)
+			questionID = auditData.getQuestion().getId();
 
 		try {
 			// Try to find the previous version using the passed in auditData
 			// record
 			if (dataID > 0)
-				answer = auditDataDao.find(dataID);
+				auditData = auditDataDao.find(dataID);
 			else {
 				int auditID = conAudit.getId();
-				answer = auditDataDao.findAnswerToQuestion(auditID, questionID);
+				auditData = auditDataDao.findAnswerToQuestion(auditID, questionID);
 			}
 		} catch (NoResultException notReallyAProblem) {
 		}
 
-		if (answer == null) {
+		if (auditData == null) {
 			dataID = 0;
-			answer = new AuditData();
-			answer.setAudit(conAudit);
+			auditData = new AuditData();
+			auditData.setAudit(conAudit);
 			AuditQuestion question = null;
 			if (questionID > 0)
 				question = questionDAO.find(questionID);
@@ -80,14 +85,13 @@ public class AuditDataUpload extends AuditActionSupport {
 				addActionError("Failed to find question");
 				return BLANK;
 			}
-			answer.setQuestion(question);
+			auditData.setQuestion(question);
 		} else
-			dataID = answer.getId();
+			dataID = auditData.getId();
 
 		if (button != null) {
 			if (dataID > 0 && button.equals("download")) {
-				Downloader downloader = new Downloader(ServletActionContext
-						.getResponse(), ServletActionContext
+				Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
 						.getServletContext());
 				try {
 					File[] files = getFiles(dataID);
@@ -110,10 +114,10 @@ public class AuditDataUpload extends AuditActionSupport {
 					return INPUT;
 				}
 
-				auditDataDao.remove(answer.getId());
+				auditDataDao.remove(auditData.getId());
 
-				answer = new AuditData();
-				answer.setAudit(conAudit);
+				auditData = new AuditData();
+				auditData.setAudit(conAudit);
 				AuditQuestion question = null;
 				if (questionID > 0)
 					question = questionDAO.find(questionID);
@@ -121,7 +125,7 @@ public class AuditDataUpload extends AuditActionSupport {
 					addActionError("Failed to find question");
 					return BLANK;
 				}
-				answer.setQuestion(question);
+				auditData.setQuestion(question);
 
 				addActionMessage("Successfully removed file");
 			}
@@ -131,7 +135,7 @@ public class AuditDataUpload extends AuditActionSupport {
 					AuditData toCopy = auditDataDao.find(copyDataID);
 
 					if (toCopy != null) {
-						
+
 						// TODO Check permissions
 						for (File toCopyFile : getFiles(copyDataID)) {
 							file = toCopyFile;
@@ -156,23 +160,20 @@ public class AuditDataUpload extends AuditActionSupport {
 					return SUCCESS;
 				}
 
-				answer.setAnswer(extension);
+				auditData.setAnswer(extension);
 
-				answer.setAuditColumns(permissions);
-				auditDataDao.save(answer);
-				dataID = answer.getId();
+				auditData.setAuditColumns(permissions);
+				auditDataDao.save(auditData);
+				dataID = auditData.getId();
 
 				if (copyDataID > 0) {
-					FileUtils.copyFile(file, getFtpDir(), "files/"
-							+ FileUtils.thousandize(dataID), getFileName(dataID),
-							extension, true);
+					FileUtils.copyFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID),
+							getFileName(dataID), extension, true);
 					addActionMessage("Successfully copied file");
 				} else {
-					FileUtils.moveFile(file, getFtpDir(), "files/"
-							+ FileUtils.thousandize(dataID), getFileName(dataID),
-							extension, true);
-					addActionMessage("Successfully uploaded <b>" + fileFileName
-							+ "</b> file");
+					FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID),
+							getFileName(dataID), extension, true);
+					addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
 				}
 			}
 		}
@@ -188,10 +189,10 @@ public class AuditDataUpload extends AuditActionSupport {
 		}
 
 		for (AuditCatData auditCatData : getCategories().values()) {
-			if (auditCatData.getCategory() == answer.getQuestion().getCategory())
+			if (auditCatData.getCategory() == auditData.getQuestion().getCategory())
 				auditPercentCalculator.updatePercentageCompleted(auditCatData);
 		}
-		
+
 		return SUCCESS;
 	}
 
@@ -200,17 +201,16 @@ public class AuditDataUpload extends AuditActionSupport {
 	}
 
 	private File[] getFiles(int dataID) {
-		File dir = new File(getFtpDir() + "/files/"
-				+ FileUtils.thousandize(dataID));
+		File dir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(dataID));
 		return FileUtils.getSimilarFiles(dir, getFileName(dataID));
 	}
 
-	public AuditData getAnswer() {
-		return answer;
+	public AuditData getAuditData() {
+		return auditData;
 	}
 
-	public void setAnswer(AuditData answer) {
-		this.answer = answer;
+	public void setAuditData(AuditData answer) {
+		this.auditData = answer;
 	}
 
 	public File getFile() {

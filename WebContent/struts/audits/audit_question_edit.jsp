@@ -40,7 +40,12 @@
 	<s:form cssClass="qform">
 		<s:hidden name="categoryID" value="%{#q.category.id}"/>
 		<s:hidden name="auditData.id" value="%{#a.id}"/>
-		<s:hidden name="auditData.audit.id" value="%{conAudit.id}"/>
+		<s:if test="auditData.audit != null">
+			<s:hidden name="auditData.audit.id"/>
+		</s:if>
+		<s:else>
+			<s:hidden name="auditData.audit.id" value="%{conAudit.id}"/>
+		</s:else>
 		<s:hidden name="auditData.question.id" value="%{#q.id}"/>
 		<s:hidden name="mode"/>
 		<s:if test="mode == 'Verify'">
@@ -155,7 +160,7 @@
 				<s:else>File Not Uploaded</s:else>
 				<input id="show_button_<s:property value="#q.id"/>" type="button" 
 					value="<s:if test="#a.id > 0 && #a.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File"
-					cssClass="fileUpload" title="Opens in new window (please disable your popup blocker)" />
+					class="fileUpload" title="Opens in new window (please disable your popup blocker)" />
 			</nobr>
 		</s:if>
 		<s:if test="#q.questionType == 'FileCertificate'">

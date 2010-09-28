@@ -50,24 +50,33 @@ $(function(){
 	
 	// END AJAX HISTORY
 	
-	$('input.fileUpload').live('click', function() {
-		alert('show file upload for this: ' + $(this).attr('id'));
-	});
-	
 	$('div.question form.qform').live('submit', function(e){
 		e.preventDefault();
 	});
 	
+	$('div.question .fileUpload').live('click', function(e) {
+		var q = $(this).parents('form.qform:first').serialize();
+		url = 'AuditDataUpload.action?' + q;
+		title = 'Upload';
+		pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
+		fileUpload = window.open(url,title,pars);
+		fileUpload.focus();
+	});
+	
 	$('div.question :input').live('change', function() {
-		$(this).parents('div.question:first').block({message: 'Saving answer...'}).load('AuditDataSaveAjax.action', $(this).parents('form.qform:first').serialize(), function(response, status) {
-			if (status=='success') {
-				$(this).effect('highlight', {color: '#FFFF11'}, 1000);
-				updateCategories();
-			} else {
-				alert('Failed to save answer.');
-			}
-			$(this).unblock();
-		});
+		$(this).parents('div.question:first')
+			.block({message: 'Saving answer...'})
+			.load('AuditDataSaveAjax.action', 
+					$(this).parents('form.qform:first').serialize(), 
+					function(response, status) {
+						if (status=='success') {
+							$(this).effect('highlight', {color: '#FFFF11'}, 1000);
+							updateCategories();
+						} else {
+							alert('Failed to save answer.');
+						}
+						$(this).unblock();
+					});
 	});
 	
 	$('.buttonOsha').live('click', function(){
@@ -94,4 +103,20 @@ function updateCategories() {
 	if (ucTimeout)
 		clearTimeout(ucTimeout);
 	ucTimeout = setTimeout(_updateCategories, 10000);
+}
+
+function showCertUpload(conid, certid, caoID, questionID, auditID) {
+	url = 'CertificateUpload.action?id='+conid+'&certID='+certid+'&caoID='+caoID
+		+ (questionID != undefined ? '&questionID='+questionID : '')
+		+ (auditID != undefined ? '&auditID='+auditID : '');
+	title = 'Upload';
+	pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
+	fileUpload = window.open(url,title,pars);
+	fileUpload.focus();
+}
+
+function reloadQuestion(qid) {
+	$('#node_'+qid).block({message: 'Saving answer...'}).load('AuditDataSaveAjax.action',$('#node_'+qid).find('form.qform').serialize(), function() {
+		$(this).unblock();
+	});
 }

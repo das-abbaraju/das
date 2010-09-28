@@ -13,7 +13,7 @@
 <script type="text/javascript">
 function closePage() {
 	try {
-		opener.reloadQuestion('<s:property value="divId"/>');
+		opener.reloadQuestion('<s:property value="auditData.question.id"/>');
 		opener.focus();
 	} catch(err) {}
 	self.close();
@@ -28,23 +28,25 @@ function closePage() {
 <div id="content">
 
 <h1>Upload <s:property value="conAudit.auditFor" /> <s:property
-	value="answer.question.columnHeader" /> File <span class="sub"><s:property
-	value="answer.question.subCategory.category.category" /> &gt; <s:property
-	value="answer.question.subCategory.subCategory" /></span></h1>
+	value="auditData.question.columnHeader" /> File <span class="sub">
+	<s:iterator value="auditData.question.category.ancestors" status="stat">
+		<s:property value="name"/> <s:if test="!#stat.last">&gt;</s:if>
+	</s:iterator>
+	</span>
+</h1>
 <s:include value="../actionMessages.jsp" />
 
 <div><b><s:property
-	value="answer.question.subCategory.category.number" />.<s:property
-	value="answer.question.subCategory.number" />.<s:property
-	value="answer.question.number" /></b> &nbsp;&nbsp;<s:property
-	value="answer.question.question" escape="false"/>
+	value="auditData.question.expandedNumber" />
+	</b> &nbsp;&nbsp;<s:property
+	value="auditData.question.name" escape="false"/>
 </div>
 
 <s:form enctype="multipart/form-data" method="POST">
 <div style="text-align:center;">
 	<s:hidden name="auditID" />
 	<s:hidden name="divId" />
-	<s:hidden name="answer.question.id" />
+	<s:hidden name="auditData.question.id" />
 	<table style="margin-left: auto; margin-right: auto;">
 		<tr>
 			<td style="text-align:center;vertical-align:top;width: 45%">
@@ -61,7 +63,7 @@ function closePage() {
 			<s:if test="file != null && file.exists()">	
 				<td style="text-align:center;vertical-align:top; width: 45%;border-left: 1px solid #eee;">
 					<h3 style="margin-top:0px;">View Existing File</h3>
-					<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.question.id=<s:property value="answer.question.id"/>"
+					<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&auditData.question.id=<s:property value="auditData.question.id"/>"
 						target="_BLANK">Open Existing <s:property value="fileSize" />
 					File</a>
 					<br/><br/>
