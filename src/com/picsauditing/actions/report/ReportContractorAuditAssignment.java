@@ -9,13 +9,22 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.dao.AmBestDAO;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class ReportContractorAuditAssignment extends ReportContractorAuditOperator {
+
+	public ReportContractorAuditAssignment(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
+			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
+		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
+	}
 
 	@Override
 	public void checkPermissions() throws Exception {

@@ -6,12 +6,19 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AmBestDAO;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+
 
 @SuppressWarnings("serial")
 public class ReportPolicyVerification extends ReportContractorAuditOperator {
 
-	public ReportPolicyVerification() {
+	public ReportPolicyVerification(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
+			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
+		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
 		auditTypeClass = AuditTypeClass.Policy;
 		orderByDefault = "MIN(cao.statusChangedDate) ASC, a.name";
 	}

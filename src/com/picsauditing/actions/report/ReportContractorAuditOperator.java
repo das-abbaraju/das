@@ -1,15 +1,44 @@
 package com.picsauditing.actions.report;
 
-import com.picsauditing.jpa.entities.AuditStatus;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import org.apache.commons.beanutils.DynaBean;
+
+import com.picsauditing.dao.AmBestDAO;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AmBest;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.util.ReportFilterCAO;
 import com.picsauditing.util.Strings;
+import com.picsauditing.jpa.entities.AuditStatus;
 
 @SuppressWarnings("serial")
 public class ReportContractorAuditOperator extends ReportContractorAudits {
 
-	public ReportContractorAuditOperator() {
+	protected AuditDataDAO auditDataDao = null;
+	protected AuditQuestionDAO auditQuestionDao = null;
+	protected OperatorAccountDAO operatorAccountDAO = null;
+	protected AmBestDAO amBestDAO = null;
+
+	/**
+	 * Map of Purpose, AuditID, then List of Answers
+	 */
+	protected Map<String, Map<Integer, List<AuditData>>> questionData = null;
+	
+	public ReportContractorAuditOperator(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
+			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
 		super();
+		this.auditDataDao = auditDataDao;
+		this.auditQuestionDao = auditQuestionDao;
+		this.operatorAccountDAO = operatorAccountDAO;
+		this.amBestDAO = amBestDAO;
 		orderByDefault = "cao.statusChangedDate DESC";
 		filter = new ReportFilterCAO();
 	}
@@ -89,6 +118,79 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 	@Override
 	public ReportFilterCAO getFilter() {
 		return (ReportFilterCAO) filter;
+	}
+
+	/**
+	 * returns the proper answer(s) of the questionData, which holds
+	 * supplemental question data that is not returned in the main query
+	 * 
+	 * @param auditId
+	 * @param purpose
+	 *            - kind of like a column name. Known keys for this are:
+	 *            policyFile, aiWaiverSub, aiName, aiMatches, aiOther or limits
+	 * @return List<AuditData>
+	 */
+	public List<AuditData> getDataForAudit(int auditId, String purpose) {
+		if (questionData == null) {
+			List<Integer> theseAudits = new Vector<Integer>();
+			for (DynaBean bean : data) {
+				theseAudits.add(Integer.parseInt(bean.get("auditID").toString()));
+			}
+	
+			/***** Load our Policy Data *****/
+			List<AuditData> answers = auditDataDao.findPolicyData(theseAudits);
+	
+			// Map<UniqueCode, Map<AuditID, List<AuditData>>>
+			questionData = new HashMap<String, Map<Integer, List<AuditData>>>();
+	
+			// if we got data, populate the "limits" section of our map
+			if (answers != null && answers.size() > 0) {
+	
+				// add the answers, keyed by auditid
+				for (AuditData answer : answers) {
+					String uniqueCode = answer.getQuestion().getUniqueCode();
+					if (answer.getQuestion().getCategory().getName().equals("Policy Limits"))
+						uniqueCode = "Limits";
+	
+					if (answer.getQuestion().getQuestionType().equals("AMBest")) {
+						uniqueCode = "AMBest";
+					}
+	
+					if (!Strings.isEmpty(uniqueCode)) {
+						int auditID = answer.getAudit().getId();
+						if (questionData.get(uniqueCode) == null)
+							questionData.put(uniqueCode, new HashMap<Integer, List<AuditData>>());
+						if (questionData.get(uniqueCode).get(auditID) == null)
+							questionData.get(uniqueCode).put(auditID, new ArrayList<AuditData>());
+						questionData.get(uniqueCode).get(auditID).add(answer);
+					}
+				}
+			}
+		}
+	
+		try {
+			return questionData.get(purpose).get(auditId);
+		} catch (Exception e) {
+			return new ArrayList<AuditData>();
+		}
+	}
+
+	public String getAMBestRatings(String comment) {
+		String value = "";
+		if (!Strings.isEmpty(comment)) {
+			AmBest amBest = amBestDAO.findByNaic(comment);
+			if (amBest != null) {
+				if (!Strings.isEmpty(amBest.getRatingAlpha())) {
+					value = "<nobr> Ratings: " + amBest.getRatingAlpha() + "</nobr><br/>";
+				}
+				if (!Strings.isEmpty(amBest.getFinancialAlpha())) {
+					value += "Class: " + amBest.getFinancialAlpha();
+				}
+			}
+		}
+		if (!Strings.isEmpty(value))
+			return value;
+		return "N/A";
 	}
 
 }

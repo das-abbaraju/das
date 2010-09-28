@@ -1,8 +1,12 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AmBestDAO;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -21,7 +25,10 @@ public class ReportCloseAuditAssignments extends ReportContractorAuditOperator {
 	protected NoteDAO noteDAO;
 	protected UserDAO userDAO;
 
-	public ReportCloseAuditAssignments(ContractorAuditDAO contractorAuditDAO, NoteDAO noteDAO, UserDAO userDAO) {
+	public ReportCloseAuditAssignments(ContractorAuditDAO contractorAuditDAO, NoteDAO noteDAO, UserDAO userDAO,
+			AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
+			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
+		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
 		sql = new SelectContractorAudit();
 		orderByDefault = "cao.statusChangedDate DESC";
 		this.contractorAuditDAO = contractorAuditDAO;

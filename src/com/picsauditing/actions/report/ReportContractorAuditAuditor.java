@@ -3,13 +3,22 @@ package com.picsauditing.actions.report;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.dao.AmBestDAO;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class ReportContractorAuditAuditor extends ReportContractorAuditOperator {
+
+	public ReportContractorAuditAuditor(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
+			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
+		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
+	}
 
 	@Override
 	public void buildQuery() {

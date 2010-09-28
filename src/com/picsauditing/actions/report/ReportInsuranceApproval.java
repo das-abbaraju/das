@@ -34,7 +34,7 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 	
 	public ReportInsuranceApproval(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
 			OperatorAccountDAO operatorAccountDAO, ContractorAuditOperatorDAO conAuditOperatorDAO, NoteDAO noteDao, ContractorAccountDAO contractorAccountDAO, AmBestDAO amBestDAO) {
-		super();
+		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
 		this.conAuditOperatorDAO = conAuditOperatorDAO;
 		this.noteDao = noteDao;
 		this.contractorAccountDAO = contractorAccountDAO;

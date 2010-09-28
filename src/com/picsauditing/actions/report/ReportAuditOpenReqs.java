@@ -1,10 +1,19 @@
 package com.picsauditing.actions.report;
 
+import com.picsauditing.dao.AmBestDAO;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Workflow;
 
 
 @SuppressWarnings("serial")
 public class ReportAuditOpenReqs extends ReportContractorAuditOperator {
+
+	public ReportAuditOpenReqs(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
+			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
+		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
+	}
 
 	@Override
 	public void buildQuery() {
