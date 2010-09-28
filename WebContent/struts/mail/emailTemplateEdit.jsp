@@ -12,15 +12,17 @@
 <script type="text/javascript">
 var type;
 $(function(){
-	changeType('Audit');
-	type = $('#changeType').val();
+	<s:if test="type==null">
+		changeType('Audit');
+		type = $('#changeType').val();
+	</s:if>
+	<s:if test="templateID>0">
+		changeTemplate(<s:property value="templateID"/>, '<s:property value="type"/>'); 
+	</s:if>
 });
 function changeType(type){	
-	var data = {
-			type: type
-	};
 	$('#tempTitle').text('Editing '+type+' Templates');
-	$('#emailTemplateTable').load('EditEmailTemplateAjax.action', data);
+	$('#emailTemplateTable').load('EditEmailTemplateAjax.action', {type: type});
 }
 function changeTemplate(id, type) {
 	$('#messages').html("");
@@ -98,7 +100,7 @@ function changeTemplate(id, type) {
 	<s:include value="../actionMessages.jsp" />
 </div>
 Template Type: <s:select id="changeType" list="{'Audit', 'Contractor', 'User'}" onchange="changeType($(this).val()); return false;" />
-<table id="emailTemplateTable">
+<table id="emailTemplateTable">	
 	<s:include value="editTemplateList.jsp" />
 </table>
 </body>

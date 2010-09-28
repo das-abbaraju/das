@@ -55,6 +55,7 @@ public class MassMailer extends PicsActionSupport {
 	private boolean templateAllowsVelocity;
 	private boolean fromMyAddress = true;
 	private boolean editTemplate = false;
+	private boolean fromOtherAction;
 	
 	private List<EmailTemplate> emailTemplates = null;
 	private List<Token> picsTags = null;
@@ -80,12 +81,15 @@ public class MassMailer extends PicsActionSupport {
 			return LOGIN;
 
 		permissions.tryPermission(OpPerms.EmailTemplates);
+		//ActionContext.getContext().getActionInvocation().getProxy()
 
 		// Start the main logic for actions that require passing the contractors
 		// in
 		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
-		if(!editTemplate)
+		if(!editTemplate){
+			fromOtherAction = false;
 			type = wizardSession.getListType();
+		}
 		else if(type==null){
 			addActionMessage("Please select a template or start with a blank email to get started");
 			return SUCCESS;
@@ -436,5 +440,13 @@ public class MassMailer extends PicsActionSupport {
 
 	public boolean isEditTemplate() {
 		return editTemplate;
+	}
+
+	public boolean isFromOtherAction() {
+		return fromOtherAction;
+	}
+
+	public void setFromOtherAction(boolean fromOtherAction) {
+		this.fromOtherAction = fromOtherAction;
 	}
 }

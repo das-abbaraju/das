@@ -447,6 +447,13 @@ a.refresh {
 	zoom: 1;
 }
 
+a.go {
+	padding-left: 17px;
+	margin-left: 2px;
+	background: url('../images/arrow-right.gif') no-repeat left center;
+	zoom: 1;
+}
+
 a.save {
 	padding-left: 17px;
 	margin-left: 2px;
