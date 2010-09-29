@@ -113,6 +113,11 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	@OneToMany(mappedBy = "audit", cascade = { CascadeType.REMOVE }, fetch = FetchType.EAGER)
 	public List<ContractorAuditOperator> getOperators() {
+		Collections.sort(operators, new Comparator<ContractorAuditOperator>(){			
+			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
+				return o1.getOperator().getName().compareTo(o2.getOperator().getName());
+			}
+		});
 		return operators;
 	}
 
