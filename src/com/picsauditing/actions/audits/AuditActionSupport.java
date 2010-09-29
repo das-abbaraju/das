@@ -211,7 +211,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 				for(AuditCategory childCategory : auditCategory.getChildren()) {
 					percent += getCategories().get(childCategory).getPercentCompleted();
 				}
-				percentComplete.put(auditCategory, percent);
+				int percentAvg = percent/ auditCategory.getChildren().size();
+				percentComplete.put(auditCategory, percentAvg);
 			}
 		}
 		return percentComplete; 
@@ -225,7 +226,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 				for(AuditCategory childCategory : auditCategory.getChildren()) {
 					percent += getCategories().get(childCategory).getPercentVerified();
 				}
-				percentVerified.put(auditCategory, percent);
+				int percentAvg = percent/ auditCategory.getChildren().size();
+				percentVerified.put(auditCategory, percentAvg);
 			}
 		}
 		
