@@ -366,6 +366,7 @@ public class AuditBuilderController {
 				cao.setAudit(conAudit);
 				cao.setOperator(operator);
 				cao.setAuditColumns(user);
+				cao.setStatusChangedDate(new Date());
 				conAudit.getOperators().add(cao);
 				cao.setStatus(cao.getAudit().getAuditType().getWorkFlow().getFirstStep().getNewStatus());
 				contractorAuditOperatorDAO.save(cao);
