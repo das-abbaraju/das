@@ -173,6 +173,11 @@ public class CaoSave extends AuditActionSupport {
 				AuditStatus prevStatus = cao.getStatus();
 				cao.changeStatus(step.getNewStatus(), permissions);
 
+				if(step.getNewStatus().isSubmitted()) {
+					if(conAudit.getExpiresDate() == null)
+						conAudit.setExpiresDate(setExpirationDate());
+				}
+				
 				if (step.getNewStatus().isComplete()) {
 					if (cao.getAudit().getAuditType().getClassType().isPolicy()
 							&& cao.getOperator().isAutoApproveInsurance()) {
@@ -276,16 +281,19 @@ public class CaoSave extends AuditActionSupport {
 				}
 			}
 		}
-
-		auditBuilder.setup(conAudit.getContractorAccount(), getUser());
-		auditBuilder.fillAuditCategories(conAudit);
-		auditPercentCalculator.percentCalculateComplete(conAudit, true);
-
-
+		
 		if (conAudit != null) {
 			if (caoSteps == null)
 				getValidSteps();
 		}
+		
+		if("Refresh".equals(button)) {
+			auditBuilder.setup(conAudit.getContractorAccount(), getUser());
+			auditBuilder.fillAuditCategories(conAudit);
+			auditPercentCalculator.percentCalculateComplete(conAudit, true);
+			return "caoTable";
+		}
+		
 		if ("caoAjaxSave".equals(button))
 			return "caoTable";
 		return SUCCESS;
@@ -400,5 +408,21 @@ public class CaoSave extends AuditActionSupport {
 
 	public void setCaoWorkflow(List<ContractorAuditOperatorWorkflow> caoWorkflow) {
 		this.caoWorkflow = caoWorkflow;
+	}
+	
+	private Date setExpirationDate() {
+		Date expiresDate = null;
+		Integer months = conAudit.getAuditType().getMonthsToExpire();
+		if (months != null && months > 0) {
+			if(conAudit.getAuditType().getClassType().isPqf()) {
+				 expiresDate = DateBean.getMarchOfThatYear(DateBean.addMonths(new Date(), months));
+			}
+			else
+			 expiresDate = DateBean.addMonths(new Date(), months);
+		} else {
+			// check months first, then do date if empty
+			expiresDate = DateBean.getMarchOfNextYear(new Date());
+		}
+		return expiresDate;
 	}
 }
