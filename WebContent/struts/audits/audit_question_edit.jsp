@@ -52,20 +52,20 @@
 			<s:property value="#a.answer"/>
 		</s:if>
 		<s:if test="#q.questionType == 'Text Area'">
-			<s:textarea rows="4" name="auditData.answer" value="%{#a.answer}"></s:textarea>
+			<s:textarea rows="4" cols="70" name="auditData.answer" value="%{#a.answer}"></s:textarea>
 		</s:if>
 		<s:if test="#q.questionType == 'Text'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}"/>
+			<s:textfield name="auditData.answer" value="%{#a.answer}" size="30"/>
 		</s:if>
 		<s:if test="#q.questionType == 'Additional Insured'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}"/>
+			<s:textfield name="auditData.answer" value="%{#a.answer}" size="30"/>
 		</s:if>
 		<s:if test="#q.questionType == 'Date'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}"/>
+			<s:textfield name="auditData.answer" value="%{#a.answer}" size="30"/>
 			<span style="font-style: italic; font-size: 12px;">example: 12/31/1999</span>
 		</s:if>
 		<s:if test="#q.questionType == 'License'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}"/>
+			<s:textfield name="auditData.answer" value="%{#a.answer}" size="30"/>
 			<s:property value="@com.picsauditing.util.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
 		</s:if>
 		<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Industry' || #q.questionType == 'Main Work'">
@@ -107,7 +107,7 @@
 			</s:select>
 		</s:if>
 		<s:if test="#q.questionType == 'Money' || #q.questionType == 'Number' || #q.questionType == 'Decimal Number'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="number"/>
+			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="number" size="30"/>
 		</s:if>
 		<s:if test="#q.questionType == 'Service'">
 			<nobr><s:checkbox fieldValue="C" name="multiAnswer" value="%{#a.answer.indexOf('C') != -1}" /> C </nobr>
@@ -120,7 +120,7 @@
 		<s:if test="#q.questionType == 'AMBest'">
 			<input type="hidden" id="ambest_naic_code" />
 			<s:hidden name="auditData.comment" value="%{#a.comment}"/>
-			<s:textfield id="ambest_autocomplete" name="auditData.answer" value="%{#a.answer}" />
+			<s:textfield id="ambest_autocomplete" name="auditData.answer" value="%{#a.answer}" size="30"/>
 			
 			<script type="text/javascript">
 			$(function() {
@@ -189,7 +189,7 @@
 		<s:if test="#q.showComment || mode == 'Verify'">
 			<br/>
 			<label>Comments:</label>
-			<s:textarea name="auditData.comment" value="%{#a.comment}" rows="6" />
+			<s:textarea name="auditData.comment" value="%{#a.comment}" rows="6" cols="70" />
 		</s:if>
 	</s:form>
 </div>
