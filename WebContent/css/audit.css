@@ -523,3 +523,48 @@ table.osha tfoot th {
 	padding-right: 12px;
 	color: #787878;
 }
+
+.button{
+	width: 72px;
+	height: 19px;
+	background-image: url(buttons.png);
+	color: #FFFFFF;
+	text-align: center;
+	padding-top: 3px;
+	font-size: 12px;
+}
+
+.button.yellow{background-position:0px 0px;}
+.button.yellow:hover{ background-position: 72px 0px;}
+
+.button.red{background-position:0px 132px;}
+.button.red:hover{background-position:72px 132px; }
+
+.button.aqua{background-position:0px 110px;}
+.button.aqua:hover{background-position:72px 110px;}
+
+.button.bluegreen{background-position:0px 88px;}
+.button.bluegreen:hover{background-position:72px 88px;}
+
+.button.green{background-position:0px 66px;}
+.button.green:hover{background-position:72px 66px;}
+
+.button.purple{background-position:0px 44px;}
+.button.purple:hover{background-position:72px 44px;}
+
+.button.gray{background-position:0px 22px;}
+.button.gray:hover{background-position:72px 22px;}
+
+a.yellow {color: #E7BE32}
+
+a.red {color: #AE5026}
+
+a.aqua {color: #3E979D}
+
+a.bluegreen {color: #41A789;}
+
+a.green {color: #689D41;}
+
+a.purple {color: #6C549D;}
+
+a.gray {color: #A4A3A4;}
