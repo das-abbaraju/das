@@ -3,5 +3,6 @@
 <%
 response.setContentType("text/javascript");
 %>
-
-<s:property value="callback"/>(<s:property value="json" escape="false" /> );
+<s:if test="callback != null">
+	<s:property value="callback"/>(<s:property value="json" escape="false" /> );
+</s:if>
