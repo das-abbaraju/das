@@ -4,7 +4,7 @@
 <table class="statusOpBox" style="">
 	<thead>
 		<tr>
-			<s:if test="conAudit.getViewableOperators(permissions)">
+			<s:if test="conAudit.getViewableOperators(permissions).size()>1">
 				<th>Operator</th>
 			</s:if>
 			<th>Progress</th>
@@ -24,10 +24,9 @@
 		</tr>
 	</thead>
 	<tbody>
-		<s:iterator value="conAudit.operators" status="rowStatus" id="currentCao">
-			<s:if test="visible && isVisibleTo(permissions)">
+		<s:iterator value="conAudit.getViewableOperators(permissions)" status="rowStatus" id="currentCao">
 				<tr id="cao_<s:property value="id"/>" class="caos">
-					<s:if test="conAudit.operators.size()>1">
+					<s:if test="conAudit.getViewableOperators(permissions).size()>1">
 						<td><s:property value="operator.name" /></td>
 					</s:if>								
 					<td class="progress nobr">
@@ -57,7 +56,6 @@
 						</s:iterator>
 					</td>
 				</tr>
-			</s:if>
 		</s:iterator>
 	</tbody>
 </table>

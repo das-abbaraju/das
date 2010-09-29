@@ -406,16 +406,11 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			}			
 		}
 
-		Collections.sort(currentCaos,
-				new Comparator<ContractorAuditOperator>() {
-
-					@Override
-					public int compare(ContractorAuditOperator o1,
-							ContractorAuditOperator o2) {
-						return o1.getOperator().compareTo(o2.getOperator());
-					}
-				});
-
+		Collections.sort(currentCaos, new Comparator<ContractorAuditOperator>(){			
+			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
+				return o1.getOperator().getName().compareTo(o2.getOperator().getName());
+			}
+		});
 		return currentCaos;
 	}
 
