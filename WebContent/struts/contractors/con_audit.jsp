@@ -62,11 +62,6 @@
 						<li><a class="file" href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Review Requirements</a></li>
 					</s:if>
 				</s:if>
-				<s:if test="!singlePageAudit">
-					<pics:permission perm="AllContractors">
-						<li><a class="refresh" href="?auditID=<s:property value="auditID"/>&button=recalculate">Recalculate Categories</a></li>
-					</pics:permission>
-				</s:if>
 				<s:if test="canSchedule">
 					<li><a href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>"
 							<s:if test="requestURI.contains('schedule_audit')">class="current"</s:if>>Schedule Audit</a></li>
