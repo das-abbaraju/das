@@ -110,10 +110,10 @@
 <tfoot>
 <s:if test="categoryData.id > 0">
 	<tr>
-		<th colspan="2">
-			<input class="buttonOsha" type="button" value="Save This Location" style="padding: 5px;" >
+		<th colspan="2" style="font-size: 14px;">
+			<input class="buttonOsha picsbutton positive" type="button" value="Save This Location" >
 			<s:if test="(!corporate || permissions.admin) && categoryData.id > 0">
-					<input type="button" class="buttonOsha" value="Delete" style="padding: 5px;"/>
+					<input type="button" class="buttonOsha picsbutton negative" value="Delete""/>
 			</s:if>
 		</th>
 	</tr>

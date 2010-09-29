@@ -28,10 +28,10 @@
 	</s:iterator>
 
 	<s:if test="categoryData.id != 0">
-		<s:form action="OshaSave" method="POST" enctype="multipart/form-data">
+		<s:form action="OshaSave" method="POST" enctype="multipart/form-data" style="text-align: center;">
 			<s:hidden name="auditID"/>
 			<s:hidden name="catDataID" value="%{categoryData.id}"/>
-			<s:submit name="button" value="Add New Location" cssStyle="padding: 6px;position: relative;left: 380px;"/>
+			<s:submit name="button" cssClass="picsbutton positive" value="Add New Location"/>
 		</s:form>
 	</s:if>
 </s:if>
