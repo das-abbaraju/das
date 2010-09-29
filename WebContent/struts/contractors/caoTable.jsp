@@ -4,7 +4,7 @@
 <table class="statusOpBox" style="">
 	<thead>
 		<tr>
-			<s:if test="conAudit.operators.size()>1">
+			<s:if test="conAudit.getViewableOperators(permissions)">
 				<th>Operator</th>
 			</s:if>
 			<th>Progress</th>

@@ -396,6 +396,29 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		return currentCaos;
 	}
 
+	@Transient
+	public List<ContractorAuditOperator> getViewableOperators(Permissions permissions) {
+		List<ContractorAuditOperator> currentCaos = new ArrayList<ContractorAuditOperator>();
+
+		for (ContractorAuditOperator cao : getOperators()) {
+			if(cao.isVisibleTo(permissions)) {
+						currentCaos.add(cao);
+			}			
+		}
+
+		Collections.sort(currentCaos,
+				new Comparator<ContractorAuditOperator>() {
+
+					@Override
+					public int compare(ContractorAuditOperator o1,
+							ContractorAuditOperator o2) {
+						return o1.getOperator().compareTo(o2.getOperator());
+					}
+				});
+
+		return currentCaos;
+	}
+
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getContractorConfirm() {
 		return contractorConfirm;
