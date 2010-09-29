@@ -346,12 +346,21 @@ function checkReason(id) {
 									<s:iterator id="audit" value="contractor.audits">
 										<s:if test="#data.criteria.auditType == #audit.auditType">
 											<s:if test="!(#audit.expired)">
-												<s:iterator value="#audit.operators" id="cao">
-													<s:if test="visible && isCanSeeAudit(#cao)">
-															<a href="Audit.action?auditID=<s:property value="#audit.id" />"><s:property value="#audit.auditType.auditName" /></a>
+												<a href="Audit.action?auditID=<s:property value="#audit.id" />"><s:property value="#audit.auditType.auditName" /></a>
+												<s:if test="#audit.auditType.auditName != 'Annual Update'">
+													<s:iterator value="getCaoStats(permissions).keySet()" id="astat" status="stat">
+														<s:property value="getCaoStats(permissions).get(#astat)" />
+														<s:property value="#astat" /><s:if test="!#stat.last">, </s:if>
+													</s:iterator>
+												</s:if>
+												<s:else>
+													<s:property value="auditFor" />
+													<s:iterator value="#audit.operators" id="cao">
+														<s:if test="visible && isCanSeeAudit(#cao)">
 															<s:property value="status"/><br/>
-													</s:if> 
-												</s:iterator>
+														</s:if> 
+													</s:iterator>
+												</s:else>
 											</s:if>
 										</s:if>
 									</s:iterator>
