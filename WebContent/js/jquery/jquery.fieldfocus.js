@@ -25,9 +25,9 @@
 			var handler;
 			handler = function() {
 				target.removeClass('mousedown');
-				$('body').unbind('mouseup', handler);
+				$(document).unbind('mouseup', handler);
 			}
-			$('body').bind('mouseup', handler);
+			$(document).bind('mouseup', handler);
 		});
 	}
 	$.fn.requiredfields = function() {
