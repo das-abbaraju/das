@@ -11,18 +11,12 @@ import javax.persistence.TemporalType;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.PermissionQueryBuilder;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @Transactional
@@ -79,31 +73,6 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		return q.getResultList();
 	}
 	
-	public List<ContractorAuditOperator> findByCaoStatus(int limit, Permissions perm, String where, String orderBy) {
-//		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(perm, PermissionQueryBuilder.HQL);
-//		permQuery.setAccountAlias("cao.audit.contractorAccount");
-//		permQuery.setOnlyPendingAudits(false);
-		String query = "FROM ContractorAuditOperator cao WHERE cao.visible = 1 ";
-		//+ permQuery.toString();
-		if(!Strings.isEmpty(where)) {
-			query += " AND " + where;
-		}
-		if(perm.isOperatorCorporate()) {
-			Set<Integer> opIds = new HashSet<Integer>();
-			if(perm.isOperator()) {
-				opIds.add(perm.getAccountId());
-			}
-			else
-				opIds.addAll(perm.getOperatorChildren());
-			query += " AND cao IN (SELECT caop.cao FROM ContractorAuditOperatorPermission caop WHERE caop.operator.id IN ("+ Strings.implode(opIds, ",")+"))";
-		}
-		if(!Strings.isEmpty(orderBy)) 
-			query += " ORDER BY " + orderBy; 
-		Query q = em.createQuery(query);
-		q.setMaxResults(limit);
-		return q.getResultList();
-	}
-
 	public List<ContractorAuditOperator> findByContractorOperator(int conID, int opID) {
 		String query = "FROM ContractorAuditOperator cao WHERE cao.audit.contractorAccount.id = :conID"
 				+ " AND operator.id = :opID";
@@ -181,5 +150,33 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		noteDAO.save(note);
 		 */
+	}
+	
+	public List<ContractorAuditOperator> findByCaoStatus(int limit, Permissions perm, String where, String orderBy) {
+		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(perm, PermissionQueryBuilder.HQL);
+		permQuery.setAccountAlias("ca.contractorAccount"); 
+		String query = "SELECT cao FROM ContractorAudit as ca LEFT JOIN ca.operators AS cao ";
+
+		if(perm.isOperatorCorporate()) {
+			Set<Integer> opIds = new HashSet<Integer>();
+			if(perm.isOperator()) {
+				opIds.add(perm.getAccountId());
+			}
+			else
+				opIds.addAll(perm.getOperatorChildren());
+			query += " LEFT JOIN cao.caoPermissions AS caop WHERE caop.operator.id IN ("+ Strings.implode(opIds, ",")+")";
+		}
+		else {	
+		 query += " WHERE 1 ";
+		}
+		 query += permQuery.toString();
+		if(!Strings.isEmpty(where)) {
+			query += " AND cao.visible = 1 AND " + where;
+		}
+		if(!Strings.isEmpty(orderBy)) 
+			query += " ORDER BY " + orderBy; 
+		Query q = em.createQuery(query);
+		q.setMaxResults(limit);
+		return q.getResultList();
 	}
 }

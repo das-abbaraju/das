@@ -83,12 +83,12 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 			Set<Integer> operatorsIds = new HashSet<Integer>();
 			for (int opID : operator) {
 				OperatorAccount oAccount = operatorAccountDAO.find(opID);
-				if (oAccount.getType().equals("Corporate")) {
+				if (oAccount.isCorporate()) {
 					for (Facility facility : oAccount.getOperatorFacilities()) {
-						operatorsIds.add(facility.getOperator().getId());
+						operatorsIds.addAll(facility.getOperator().getOperatorHeirarchy());
 					}
 				} else {
-					operatorsIds.add(oAccount.getId());
+					operatorsIds.addAll(oAccount.getOperatorHeirarchy());
 				}
 			}
 			where += " AND accountID IN (" + Strings.implode(operatorsIds, ",") + ")";
@@ -123,9 +123,10 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 				+ " UNION " + sqlRegistrationsLastMonth
 				+ " UNION " + sqlRegistrationsToDate
 				+ " ) t "
-				+ " LEFT JOIN (SELECT distinct ao.opID, 1 audited FROM audit_operator ao"
-				+ " JOIN audit_type at on at.id = ao.audittypeid "
-				+ " WHERE (ao.auditTypeID IN (2,3,6) OR at.classType = 'IM') AND ao.minRiskLevel > 0 AND ao.canSee = 1) audited "
+				+ " LEFT JOIN (SELECT distinct atr.opID, 1 audited FROM audit_type_rule atr"
+				+ " JOIN audit_type at on at.id = atr.audittypeid "
+				+ " WHERE (at.id IN (2,3,6) OR at.classType = 'IM') AND (atr.risk IS NULL OR atr.risk > 0) "
+				+ " AND (atr.effectiveDate <= NOW() AND atr.expirationDate > NOW()) AND include =1) audited "
 				+ " ON audited.opID = accountID "
 				+ " JOIN operators o on o.id = accountID "
 				+ " LEFT JOIN (SELECT f.opID, c.id FROM facilities f JOIN operators c ON f.corporateID = c.id AND c.primaryCorporate = 1) corp ON o.id = corp.opID "

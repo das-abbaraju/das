@@ -36,6 +36,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	static public int EVERYONE = 1;
 	static public int PRIVATE = 2;
 	static public int PicsID = 1100;
+	static public int PICS_CORPORATE_ID = 14;
 
 	protected String name;
 	protected String nameIndex;

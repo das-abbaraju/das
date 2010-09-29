@@ -46,8 +46,10 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 			if( op.getCorporateFacilities().size() > 0 ) {
 				for( Facility facility : op.getCorporateFacilities() ) {
 					OperatorAccount corporate = facility.getCorporate();
-					for( Facility child : corporate.getOperatorFacilities() ) {
-						ops.add(child.getOperator().getId());
+					if(corporate.getId() > Account.PICS_CORPORATE_ID) { 
+						for( Facility child : corporate.getOperatorFacilities() ) {
+							ops.add(child.getOperator().getId());
+						}
 					}
 				}
 			}

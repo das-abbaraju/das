@@ -11,15 +11,13 @@
 
 <div id="search">
 <s:form id="form1" method="post"
-	cssStyle="background-color: #F4F4F4;"
-	onsubmit="runSearch('form1')">
-	<s:hidden name="filter.ajax" value="false" />
+	cssStyle="background-color: #F4F4F4;">
 	<s:hidden name="showPage" value="1" />
 	<s:hidden name="startsWith" />
 	<s:hidden name="orderBy" />
 	
 	<div>
-		<button id="searchfilter" type="submit" name="button" value="Search" onclick="return clickSearch('form1');" class="picsbutton positive">Search</button>
+		<button id="searchfilter" type="submit" name="button" value="Search"  class="picsbutton positive">Search</button>
 	</div>
 	<div class="filterOption"><s:select list="roleList"  
 		headerKey="" headerValue="- Responsibility -" listValue="description" cssClass="forms" name="responsibility"/>

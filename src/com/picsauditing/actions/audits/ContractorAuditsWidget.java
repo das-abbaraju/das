@@ -28,7 +28,7 @@ public class ContractorAuditsWidget extends PicsActionSupport {
 	public List<ContractorAuditOperator> getRecentlyClosed() {
 		if (closed == null) {
 			String where = "cao.status = 'Complete' AND statusChangedDate < NOW()";
-			closed = dao.findByCaoStatus(10, permissions , where, "statusChangedDate DESC");
+			closed = dao.findByCaoStatus(10, permissions , where, "cao.statusChangedDate DESC");
 		}	
 		return closed;
 	}
@@ -36,7 +36,7 @@ public class ContractorAuditsWidget extends PicsActionSupport {
 	public List<ContractorAuditOperator> getUpcoming() {
 		if (upcoming == null) {
 			String where = "cao.status IN ('Pending', 'Submitted')";
-			upcoming = dao.findByCaoStatus(10, permissions , where, "creationDate DESC");
+			upcoming = dao.findByCaoStatus(10, permissions , where, "cao.statusChangedDate DESC");
 		}	
 		return upcoming;
 	}
