@@ -36,7 +36,9 @@
 						</div>
 					</td>
 					<s:if test="hasStatusChanged(status)">
-						<td class="caoStatus clickable" onclick="loadStatus(<s:property value="#currentCao.id"/>)"><s:property value="status"/></td>
+						<td class="caoStatus">
+							<a style="cursor: pointer;" onclick="loadStatus(<s:property value="#currentCao.id"/>)" class="<s:property value="status.color"/>"><s:property value="status"/></a>
+						</td>
 					</s:if>
 					<s:else>
 						<td class="caoStatus"><s:property value="status"/></td>
@@ -45,14 +47,14 @@
 					<s:if test="conAudit.auditType.classType.policy">
 						<td><s:property value="#currentCao.flag.insuranceStatus" default="N/A"/></td>
 					</s:if>
-					<td class="buttonAction">
+					<td class="buttonAction" style="vertical-align: middle">
 						<s:iterator value="getCurrentCaoStep(#currentCao.id)" id="step">
-							<span class="singleButton clickable">
+							<div class="singleButton button <s:property value="#step.newStatus.color"/>" style="cursor: pointer;">
 								<s:property value="#step.buttonName" />
 								<s:hidden cssClass="bCaoID" name="%{id}_%{#step.id}" value="%{#currentCao.id}"/>
 								<s:hidden cssClass="bStepID" name="%{id}_%{#buttonActions.key}_stepID" value="%{#step.id}" />
 								<s:hidden cssClass="bStatus" value="%{#step.newStatus}" name="%{id}_%{#step.newStatus}_action" />
-							</span> 
+							</div> 
 						</s:iterator>
 					</td>
 				</tr>

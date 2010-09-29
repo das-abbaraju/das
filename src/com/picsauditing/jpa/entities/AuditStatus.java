@@ -3,20 +3,23 @@ package com.picsauditing.jpa.entities;
 import java.util.ArrayList;
 
 public enum AuditStatus {
-	Pending("Pending"),
-	Incomplete("Reject"),
-	Submitted("Submit"),
-	Resubmitted("Resubmit"),
-	Complete("Complete"),
-	Approved("Approve"),
-	NotApplicable("NotApplicable"),
-	Expired("Expire");
+	Pending("Pending", "yellow"),
+	Incomplete("Reject", "red"),
+	Submitted("Submit", "aqua"),
+	Resubmitted("Resubmit", "bluegreen"),
+	Complete("Complete", "green"),
+	Approved("Approve", "purple"),
+	NotApplicable("NotApplicable", "gray"),
+	Expired("Expire", "gray");
 
 	private String button;
+	private String color;
+	
 	public static String DEFAULT = "- Audit Status -";
 	
-	private AuditStatus(String button) {
+	private AuditStatus(String button, String color) {
 		this.button = button;
+		this.color = color;
 	}
 	
 	public String getButton() {
@@ -125,6 +128,14 @@ public enum AuditStatus {
 				statuses[i++] = status;
 		}
 		return statuses;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
 	}
 
 }
