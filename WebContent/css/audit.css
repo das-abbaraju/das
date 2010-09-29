@@ -466,6 +466,10 @@ table.osha tfoot th {
 	margin-bottom: 20px;
 }
 
+#audit-layout {
+	clear:both;	
+}
+
 #audit-layout td {
 	vertical-align: top;
 }

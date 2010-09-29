@@ -3,7 +3,14 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 
-<s:if test="#category == null"><s:set name="category" value="categoryData.category"/></s:if>
+<s:if test="#category == null">
+	<s:set name="category" value="categoryData.category"/>
+	<script type="text/javascript">
+	$(function() {
+		updateModes('<s:property value="mode.toLowerCase()"/>');
+	});
+	</script>
+</s:if>
 
 <div class="audit_category">
 	<s:if test="#category.sha">
