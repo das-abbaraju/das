@@ -156,7 +156,12 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(perm, PermissionQueryBuilder.HQL);
 		permQuery.setAccountAlias("ca.contractorAccount"); 
 		String query = "SELECT cao FROM ContractorAudit as ca LEFT JOIN ca.operators AS cao ";
-
+		
+		if(perm.isOperatorCorporate()) {
+			query += " LEFT JOIN cao.caoPermissions AS caop ";
+		}
+		query += " WHERE cao.visible = 1 " + permQuery.toString() + " AND " + where;
+		
 		if(perm.isOperatorCorporate()) {
 			Set<Integer> opIds = new HashSet<Integer>();
 			if(perm.isOperator()) {
@@ -164,15 +169,9 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 			}
 			else
 				opIds.addAll(perm.getOperatorChildren());
-			query += " LEFT JOIN cao.caoPermissions AS caop WHERE caop.operator.id IN ("+ Strings.implode(opIds, ",")+")";
+			query += " AND caop.operator.id IN ("+ Strings.implode(opIds, ",")+")";
 		}
-		else {	
-		 query += " WHERE 1 ";
-		}
-		 query += permQuery.toString();
-		if(!Strings.isEmpty(where)) {
-			query += " AND cao.visible = 1 AND " + where;
-		}
+
 		if(!Strings.isEmpty(orderBy)) 
 			query += " ORDER BY " + orderBy; 
 		Query q = em.createQuery(query);

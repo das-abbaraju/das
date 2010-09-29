@@ -43,8 +43,8 @@ public class ContractorAuditsWidget extends PicsActionSupport {
 
 	public List<ContractorAuditOperator> getNewlyAssigned() {
 		if (assigned == null) {
-			String where = "cao.status IN ('Pending', 'Submitted') AND cao.audit.auditor.id = " + permissions.getUserId();
-			assigned = dao.findByCaoStatus(10, permissions , where, "cao.audit.assignedDate DESC");
+			String where = "cao.status IN ('Pending', 'Submitted') AND ca.auditor.id = " + permissions.getUserId();		
+			assigned = dao.findByCaoStatus(10, permissions , where, "ca.assignedDate DESC");
 		}
 		return assigned;
 	}
