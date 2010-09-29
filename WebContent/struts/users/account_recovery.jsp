@@ -52,20 +52,17 @@ $(function() {
 				<div><label>Username:</label> <s:textfield id="usernameBox" name="username" cssClass="login" onchange="showUsernameData()" onclick="showUsernameData()"/></div>
 				<div class="fieldhelp">
 					<h3>Username</h3>
-					<p>Please input your username you use to login here, if you do not remember it then use the Find Username option below</p>
+					<p>Enter your username and we will send you an email containing a link that you can use to reset the password on your account. 
+						If you have any problems, please check your spam filters or <a href="Contact.action" title="Contact PICS">contact us</a> directly</p>
 				</div>
 			</li>
 			<li>
 				<div><label>Email:</label><s:textfield id="emailBox" name="email" cssClass="login" size="28" onchange="showEmailData()" onclick="showEmailData()"/></div>
 				<div class="fieldhelp">
 					<h3>Email</h3>
-					<p>Please input the email used with your account</p>
+					<p>Enter your email address to receive the username(s) associated with that address. If you have any problems, please check your spam filters or
+					 <a href="Contact.action" title="Contact PICS">contact us</a> directly</p>
 				</div>
-			</li>
-				
-			<li>
-				<div class="usernameMessage">Enter your username and we will send you an email containing a link that you can use to reset the password on your account. If you have any problems, please check your spam filters or <a href="Contact.action" title="Contact PICS">contact us</a> directly.</div>
-				<div class="emailMessage">Enter your email address to receive the username(s) associated with that address. If you have any problems, please check your spam filters or <a href="Contact.action" title="Contact PICS">contact us</a> directly.</div>
 			</li>
 			<li>
 				<label>Enter Verification:</label>
