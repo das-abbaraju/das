@@ -27,6 +27,7 @@ span.question {
 	width: 100%;
 	color: #111;
 	font-weight: bold;
+	line-height: normal;
 }
 
 #content div.answer {
