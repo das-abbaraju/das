@@ -3,7 +3,6 @@ package com.picsauditing.actions.contractors;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,13 +15,9 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
 
 @SuppressWarnings("serial")
 public class ContractorDocuments extends ContractorActionSupport {
@@ -46,6 +41,8 @@ public class ContractorDocuments extends ContractorActionSupport {
 		super(accountDao, auditDao);
 		this.auditTypeDAO = auditTypeDAO;
 		this.caoDAO = caoDAO;
+		
+		subHeading = "Document Index";
 	}
 
 	@Override
@@ -65,60 +62,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 		if (button != null) {
 			if ("getAuditList".equals(button) && auditClass != null) {
 				auditTypeList = auditTypeDAO.findAll(permissions, true, auditClass, false);
-			}
-			
-			if (button.equals("Add") && auditType != null) {
-				boolean alreadyExists = false;
-				if (permissions.isOperator() || permissions.isCorporate())
-					selectedOperator = permissions.getAccountId();
-
-				if (auditClass != AuditTypeClass.IM) {
-					for (ContractorAudit conAudit : contractor.getAudits()) {
-						if (conAudit.getAuditType().getId() == selectedAudit && !conAudit.isExpired()) {
-							if ((selectedOperator == 0 && conAudit.getRequestingOpAccount() == null)
-									|| (conAudit.getRequestingOpAccount() != null && conAudit.getRequestingOpAccount()
-											.getId() == selectedOperator)) {
-								alreadyExists = true;
-								break;
-							}
-						}
-					}
-				}
-
-				if (alreadyExists) {
-					addActionError("Audit already exists");
-				} else {
-					ContractorAudit conAudit = new ContractorAudit();
-
-					conAudit.setAuditColumns(permissions);
-					conAudit.setAuditType(auditType);
-					conAudit.setAuditFor(this.auditFor);
-					conAudit.setContractorAccount(contractor);
-					if (selectedOperator != 0) {
-						conAudit.setRequestingOpAccount(new OperatorAccount());
-						conAudit.getRequestingOpAccount().setId(selectedOperator);
-					}
-					conAudit.setManuallyAdded(true);
-					conAudit = auditDao.save(conAudit);
-
-					if (selectedOperator > 0) {
-						ContractorAuditOperator cao = new ContractorAuditOperator();
-						cao.setAuditColumns(permissions);
-						cao.setAudit(conAudit);
-						cao.setOperator(new OperatorAccount());
-						cao.getOperator().setId(selectedOperator);
-						cao.setStatus(AuditStatus.Pending);
-						cao.setStatusChangedDate(new Date());
-						cao.setPercentComplete(0);
-						cao.setPercentVerified(0);
-						caoDAO.save(cao);
-					}
-
-					addNote(conAudit.getContractorAccount(), "Added " + auditType.getAuditName() + " manually",
-							NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
-				}
-				
-				return "saved";
 			}
 		}
 		

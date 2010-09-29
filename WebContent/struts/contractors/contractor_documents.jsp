@@ -9,11 +9,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
-	function showAddAudit() {
-		$('#addAudit').hide();	
-		$('#addAuditManually').show();
-	}
-
 	function getAuditList(classType) {
 		var data = {
 			button: 'getAuditList',
@@ -35,64 +30,19 @@
 	.hidden {
 		display: none;
 		font-size: smaller;
+		background-color: #f3f3f3;
 	}
 	
 	h3 {
 		margin-top: 1em;
 	}
-	
-	table.info {
-		font-size: smaller;
-		width: 96%;
-		margin: 2% auto;
-	}
-	
-	table.info tbody td, table.info thead th, table.info {
-		border: 1px solid #aaa;
-	}
-	
-	table.info thead th {
-		font-weight: normal;
-		background-color: #f3f3f3;
-		color: #A84D10;
-	}
 </style>
 </head>
 <body>
-<s:push value="#subHeading='Contractor Forms, Audits & Evaluations'"/>
+
 <s:include value="conHeader.jsp" />
 
-<s:if test="manuallyAddAudit">
-	<a href="#" onclick="showAddAudit(); return false;" id="addAudit" class="add">Add Audit Manually</a>
-	<div id="addAuditManually" style="display: none;">
-		<s:form method="post" id="form1">
-			<fieldset class="form">
-				<h2 class="formLegend">Add Audit Manually</h2>
-				<ol>
-					<li><label>Audit Class</label>
-						<s:select list="#{'PQF':'PQF','Audit':'Audit','IM':'Integrity Management'}" name="auditClass" onchange="getAuditList(this.value);" />
-					</li>
-					<li id="auditListLoad"><script type="text/javascript">getAuditList('PQF');</script></li>
-					<li><label>For</label>
-						<s:textfield name="auditFor" maxlength="50" />
-					</li>
-					<pics:permission perm="AllOperators">
-						<li><label>Operators</label>
-							<s:select list="operators" listKey="operatorAccount.id" listValue="operatorAccount.name"
-								name="selectedOperator" headerKey="" headerValue="- Shared by All Operators -"/>
-						</li>
-					</pics:permission>
-				</ol>
-			</fieldset>
-			<fieldset class="form submit">
-				<input type="submit" class="picsbutton positive" name="button" type="submit" value="Add" />
-			</fieldset>
-		</s:form>
-	</div>
-	<br />
-</s:if>
-
-<s:iterator value="auditTypes.keySet()" id="classType">
+<s:iterator value="auditTypes.keySet()" id="classType" status="stat">
 	<s:if test="#classType == 'IM' && imScores.keySet().size > 0">
 		<h3><a name="<s:property value="#classType" />">Overall Integrity Management</a></h3>
 		<table class="report">
@@ -110,13 +60,11 @@
 			</s:iterator>
 		</table>
 	</s:if>
-
+	
 	<h3>
-		<s:if test="#classType == 'IM'">Integrity Management Audits</s:if>
+		<s:if test="#classType == 'IM'"><a name="IM">Integrity Management Audits</a></s:if>
 		<s:elseif test="#classType == 'AU'"><a name="AU">Annual Updates</a></s:elseif>
-		<s:else>
-			<a name="<s:property value="#classType" />"><s:property value="#classType" /></a>
-		</s:else>
+		<s:else><a name="<s:property value="#classType" />"><s:property value="#classType" /></a></s:else>
 	</h3>
 	<table class="report" id="table_<s:property value="#classType" />">
 		<thead>
@@ -174,9 +122,14 @@
 					</s:if>
 				</s:iterator>
 			</s:iterator>
+			<tr>
+				<td colspan="4" class="center">
+					<a href="#" onclick="showAll('table_<s:property value="#classType" />'); return false;" class="preview">View All</a>
+				</td>
+			</tr>
 		</tbody>
 	</table>
-	<a href="#" onclick="showAll('table_<s:property value="#classType" />'); return false;" class="preview">View All</a>
+	<s:if test="#stat.last"><br clear="all" /></s:if>
 </s:iterator>
 
 <div id="notesList"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>

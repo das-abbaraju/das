@@ -324,10 +324,6 @@
 		<action name="ContractorDocuments"
 			class="com.picsauditing.actions.contractors.ContractorDocuments">
 			<result>struts/contractors/contractor_documents.jsp</result>
-			<result name="saved" type="redirectAction">
-				<param name="actionName">ContractorDocuments</param>
-				<param name="id">${id}</param>
-			</result>
 		</action>
 		
 		<action name="ContractorDocumentsAjax"
