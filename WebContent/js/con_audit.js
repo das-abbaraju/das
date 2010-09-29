@@ -27,8 +27,8 @@ $(function(){
 	
 	// AJAX HISTORY
 
-	$('a.hist-category').live('click', function() {
-		$.bbq.pushState( $.param.fragment(this.href) );
+	$('a.hist-category, a.modeset').live('click', function() {
+		$.bbq.pushState( $.param.fragment(location.href,this.href) );
 		return false;
 	});
 	
@@ -67,16 +67,16 @@ $(function(){
 		$(this).parents('div.question:first')
 			.block({message: 'Saving answer...'})
 			.load('AuditDataSaveAjax.action', 
-					$(this).parents('form.qform:first').serialize(), 
-					function(response, status) {
-						if (status=='success') {
-							$(this).effect('highlight', {color: '#FFFF11'}, 1000);
-							updateCategories();
-						} else {
-							alert('Failed to save answer.');
-						}
-						$(this).unblock();
-					});
+				$(this).parents('form.qform:first').serialize(), 
+				function(response, status) {
+					if (status=='success') {
+						$(this).effect('highlight', {color: '#FFFF11'}, 1000);
+						updateCategories();
+					} else {
+						alert('Failed to save answer.');
+					}
+					$(this).unblock();
+				});
 	});
 	
 	$('.buttonOsha').live('click', function(){
@@ -119,4 +119,10 @@ function reloadQuestion(qid) {
 	$('#node_'+qid).block({message: 'Saving answer...'}).load('AuditDataSaveAjax.action',$('#node_'+qid).find('form.qform').serialize(), function() {
 		$(this).unblock();
 	});
+}
+
+function updateModes(mode) {
+	$('#modes a').show();
+	if (mode.length > 0)
+		$('#modes a.'+mode).hide();
 }

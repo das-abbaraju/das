@@ -16,6 +16,16 @@
 <body>
 
 <s:include value="../audits/audit_catHeader.jsp"/>
+<div class="right" id="modes">
+	<s:if test="canEditAudit">
+		<a class="edit modeset" href="#mode=Edit">Edit</a>
+	</s:if>
+	<a class="view modeset" href="#mode=View">View</a>
+	<s:if test="canVerifyAudit">
+		<a class="verify modeset" href="#mode=Verify">Verify</a> 
+	</s:if>
+</div>
+
 <table id="audit-layout">
 	<tr>
 		<td id="auditHeaderSideNav" class="auditHeaderSideNav noprint">
