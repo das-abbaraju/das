@@ -555,16 +555,16 @@ table.osha tfoot th {
 .button.gray{background-position:0px 22px;}
 .button.gray:hover{background-position:72px 22px;}
 
-a.yellow {color: #E7BE32}
+a.yellow {color: #E7BE32} /*** Pending ***/
 
-a.red {color: #AE5026}
+a.red {color: #AE5026} /*** Incomplete or Reject ***/
 
-a.aqua {color: #3E979D}
+a.aqua {color: #3E979D} /*** Submit ***/
 
-a.bluegreen {color: #41A789;}
+a.bluegreen {color: #41A789;} /*** Resubmit ***/
 
-a.green {color: #689D41;}
+a.green {color: #689D41;} /*** Complete ***/
 
-a.purple {color: #6C549D;}
+a.purple {color: #6C549D;} /*** Approve ***/
 
-a.gray {color: #A4A3A4;}
+a.gray {color: #A4A3A4;} /*** N/A or Expired ***/
