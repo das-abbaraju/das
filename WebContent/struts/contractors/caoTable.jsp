@@ -25,29 +25,43 @@
 	</thead>
 	<tbody>
 		<s:iterator value="conAudit.getViewableOperators(permissions)" status="rowStatus" id="currentCao">
-				<tr id="cao_<s:property value="id"/>" class="caos">
+				<tr id="cao_<s:property value="#currentCao.id"/>" class="caos">
 					<s:if test="conAudit.getViewableOperators(permissions).size()>1">
 						<td><s:property value="operator.name" /></td>
 					</s:if>								
 					<td class="progress nobr">
 						<div style="position: relative">
-							<table class="progressTable"><tr><td class="progressBar" style="width: <s:property value="percentComplete" />%"></td><td></td></tr></table>
+							<table class="progressTable"><tr><td class="progressBar" style="width: <s:property value="percentComplete" />%"></td><td style="width: <s:property value="100 - percentComplete" />%"></td></tr></table>
 							<span class="progressPercent"><s:property value="percentComplete" />%</span>
 						</div>
 					</td>
 					<s:if test="hasStatusChanged(status)">
 						<td class="caoStatus">
-							<a style="cursor: pointer;" onclick="loadStatus(<s:property value="#currentCao.id"/>)" class="<s:property value="status.color"/>"><s:property value="status"/></a>
+							<a class="cluetip help" rel="#cluetip<s:property value="#currentCao.id"/>" title="status"></a>
+							<a title="<s:property value="statusDescription"/>" style="cursor: pointer;" onclick="loadStatus(<s:property value="#currentCao.id"/>)" class="<s:property value="status.color"/>"><s:property value="status"/></a>
+							<div id="cluetip<s:property value="#currentCao.id"/>">
+								<span title="<s:property value="status"/>">
+									<s:property value="statusDescription"/>
+								</span>
+							</div>
 						</td>
 					</s:if>
 					<s:else>
-						<td class="caoStatus"><s:property value="status"/></td>
+						<td class="caoStatus">
+							<a class="cluetip help" rel="#cluetip<s:property value="#currentCao.id"/>" title="status"></a>
+							<s:property value="status"/>
+							<div id="cluetip<s:property value="#currentCao.id"/>">
+								<span title="<s:property value="status"/>">
+									<s:property value="statusDescription"/>
+								</span>
+							</div>
+						</td>
 					</s:else>					
 					<td><s:property value="formatDate(statusChangedDate, 'MMMMM d, yyyy')" default="N/A" /></td>
 					<s:if test="conAudit.auditType.classType.policy">
 						<td><s:property value="#currentCao.flag.insuranceStatus" default="N/A"/></td>
 					</s:if>
-					<td class="buttonAction" style="vertical-align: middle">
+					<td class="buttonAction">
 						<s:iterator value="getCurrentCaoStep(#currentCao.id)" id="step">
 							<div class="singleButton button <s:property value="#step.newStatus.color"/>" style="cursor: pointer;">
 								<s:property value="#step.buttonName" />

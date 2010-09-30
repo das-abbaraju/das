@@ -17,6 +17,7 @@ import javax.persistence.Transient;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.audits.ConAuditMaintain;
 
 @SuppressWarnings("serial")
 @Entity
@@ -94,43 +95,44 @@ public class ContractorAuditOperator extends BaseTable {
 	// TODO rewrite this status description if needed
 	public String getStatusDescription() {
 		String statusDescription = "";
-		/*
-		 * if (status.isActive()) if (auditType.isMustVerify()) if
-		 * (auditType.isPqf() || auditType.isAnnualAddendum()) statusDescription
-		 * = "Annual requirements have been verified. " +
-		 * this.getAuditType().getClassType() + " is closed."; else
-		 * statusDescription = this.getAuditType().getClassType() +
-		 * " has been verified."; else if (auditType.isHasRequirements())
-		 * statusDescription = "All the requirements for this " +
-		 * this.getAuditType().getClassType().toString() + " have been met. " +
-		 * this.getAuditType().getClassType() + " closed."; else
-		 * statusDescription = this.getAuditType().getClassType() + " closed.";
-		 * 
-		 * if (auditStatus.isExempt()) statusDescription =
-		 * this.getAuditType().getClassType() + " is not required.";
-		 * 
-		 * if (auditStatus.isExpired()) statusDescription =
-		 * this.getAuditType().getClassType() + " is no longer active.";
-		 * 
-		 * if (auditStatus.isPending()) if (auditType.isMustVerify())
-		 * statusDescription = this.getAuditType().getClassType() +
-		 * " has not been submitted."; else statusDescription =
-		 * this.getAuditType().getClassType() + " has not been started.";
-		 * 
-		 * if (auditStatus.isSubmitted()) if (contractorAccount.isAcceptsBids())
-		 * { statusDescription = this.getAuditType().getClassType().toString() +
-		 * " has been submitted."; } else if (auditType.isMustVerify())
-		 * statusDescription = this.getAuditType().getClassType().toString() +
-		 * " has been sent.  Awaiting verification."; else statusDescription =
-		 * this.getAuditType().getClassType().toString() +
-		 * " has been submitted but there are requirements pending.";
-		 * 
-		 * if (auditStatus.isResubmitted()) statusDescription =
-		 * "Policy updated; pending approval of changes.";
-		 * 
-		 * if (auditStatus.isIncomplete()) statusDescription = "Rejected " +
-		 * this.getAuditType().getClassType() + " during verification";
-		 */
+
+		if (status.isComplete()) {
+			if (audit.getAuditType().getWorkFlow().isHasSubmittedStep()) {
+				if (audit.getAuditType().isPqf() || audit.getAuditType().isAnnualAddendum()) {
+					statusDescription = "Annual requirements have been verified. "
+							+ audit.getAuditType().getClassType() + " is closed.";
+				} else if (audit.getAuditType().getClassType().isPolicy()) {
+					statusDescription = "Policy completed, awaiting verification";
+				} else
+					statusDescription = audit.getAuditType().getClassType() + " has been verified.";
+			} else if (audit.getAuditType().getWorkFlow().getId() == Workflow.AUDIT_REQUIREMENTS_WORKFLOW) {
+				statusDescription = "All the requirements for this " + audit.getAuditType().getClassType().toString()
+						+ " have been met. " + audit.getAuditType().getClassType() + " closed.";
+			} else
+				statusDescription = audit.getAuditType().getClassType() + " closed.";
+		} else if (status.isNotApplicable())
+			statusDescription = audit.getAuditType().getClassType() + " is not required.";
+		else if (status.isExpired())
+			statusDescription = audit.getAuditType().getClassType() + " is no longer active.";
+		else if (status.isPending()) {
+			if (audit.getAuditType().getWorkFlow().isHasSubmittedStep())
+				statusDescription = audit.getAuditType().getClassType() + " has not been submitted.";
+			else
+				statusDescription = audit.getAuditType().getClassType() + " has not been started.";
+		} else if (status.isSubmitted()) {
+			if (audit.getContractorAccount().isAcceptsBids()) {
+				statusDescription = audit.getAuditType().getClassType().toString() + " has been submitted.";
+			} else if (audit.getAuditType().getWorkFlow().isHasSubmittedStep())
+				statusDescription = audit.getAuditType().getClassType().toString()
+						+ " has been sent.  Awaiting verification.";
+			else
+				statusDescription = audit.getAuditType().getClassType().toString()
+						+ " has been submitted but there are requirements pending.";
+		} else if (status.isResubmitted())
+			statusDescription = "Policy updated; pending approval of changes.";
+		else if (status.isIncomplete())
+			statusDescription = "Rejected " + audit.getAuditType().getClassType() + " during verification";
+
 		return statusDescription;
 	}
 
@@ -238,12 +240,12 @@ public class ContractorAuditOperator extends BaseTable {
 
 	@Transient
 	public boolean isVisibleTo(Permissions permissions) {
-		if(!this.visible)
+		if (!this.visible)
 			return false;
-		
+
 		if (permissions.isContractor() || permissions.isAdmin())
 			return true;
-		
+
 		if (operator.getId() == permissions.getAccountId())
 			return true;
 		for (ContractorAuditOperatorPermission caop : caoPermissions) {
@@ -252,7 +254,7 @@ public class ContractorAuditOperator extends BaseTable {
 		}
 		return false;
 	}
-	
+
 	@Transient
 	public boolean canSubmitCao() {
 		if (this.getPercentComplete() < 100)
@@ -262,7 +264,7 @@ public class ContractorAuditOperator extends BaseTable {
 		}
 		return false;
 	}
-	
+
 	@Transient
 	public boolean canVerifyCao() {
 		if (this.getPercentVerified() < 100)

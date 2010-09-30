@@ -11,6 +11,12 @@ $(function(){
 		$('#caoTable').block({message: 'Loading...'});
 		loadResults(data);
 	});
+	$('.cluetip').cluetip({
+		arrows: true,
+		cluetipClass: 'jtip',
+		local: true,
+		clickThrough: false
+	});	
 
 	$('#multiStatusChange').change(function(){
 		var caos =  $(this).val();
