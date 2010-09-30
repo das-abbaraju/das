@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -24,7 +25,6 @@ import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
@@ -504,7 +504,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			}
 		}
 
-		return answer;
+		return Utilities.escapeHTML(answer);
 	}
 
 	public boolean isDisplayTable() {

@@ -19,6 +19,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -86,10 +87,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 	@Transient
 	public String getHtmlDisplay(String value) {
-		if (!Strings.isEmpty(value))
-			return value.replaceAll("\\n", "<br />").replaceAll("  ", "&nbsp;&nbsp;");
-		else
-			return null;
+		return Utilities.escapeHTML(value);
 	}
 	
 	@Temporal(TemporalType.DATE)

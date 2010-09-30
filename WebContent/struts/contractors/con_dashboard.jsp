@@ -464,7 +464,7 @@ table.report tr.hurdle td {
 					<img class="contractor_logo" src="ContractorLogo.action?id=<s:property value="id"/>"/>
 				</s:if>
 				<p>Primary Industry: <strong><s:property value="contractor.industry"/></strong></p>
-				<span id="description"><s:property value="contractor.descriptionHTML" escape="false" /></span>
+				<span id="description"><s:property value="contractor.descriptionHTML" /></span>
 				<s:if test="@com.picsauditing.util.Strings@isEmpty(contractor.brochureFile) == false">
 					<p class="web"><strong>
 						<a href="DownloadContractorFile.action?id=<s:property value="id" />" target="_BLANK">Company Brochure</a>
