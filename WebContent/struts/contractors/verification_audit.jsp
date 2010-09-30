@@ -20,47 +20,13 @@
 </s:else>
 
 <h2><s:property value="conAudit.auditFor" /> <s:property value="conAudit.auditType.auditName" /></h2>
-<br clear="all"/>
-<s:if test="caos.keySet().size > 0">
-	<table class="report">
-		<thead>	
-			<tr>
-				<th>Operators</th>
-				<th>Status</th>
-				<th>Action</th>
-			</tr>
-		</thead>
-		<tbody>
-			<s:iterator value="caos">
-				<tr>
-					<td><s:property value="key.name" /></td>
-					<td>
-						<s:iterator value="value">
-							<s:if test="audit.auditFor.length() > 0"><s:property value="audit.auditFor" />: </s:if><s:property value="status" />
-						</s:iterator>
-					</td>
-					<td>
-						<s:set name="allVerified" value="true" />
-						<s:iterator value="value">
-							<s:if test="percentVerified < 100"><s:set name="allVerified" value="false" /></s:if>
-						</s:iterator>
-						<s:if test="allVerified">
-							<button class="picsbutton positive" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id" />,'Approved','Approve',<s:property value="getOpCaoIDs(key)" />);">Approve</button>
-						</s:if>
-						<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id" />,'Incomplete','Reject',<s:property value="getOpCaoIDs(key)" />);">Reject</button>
-					</td>
-				</tr>
-			</s:iterator>
-		</tbody>
-	</table>
-</s:if>
+<br clear="all" />
 <s:if test="caos.keySet().size > 1">
 	<div>
 		<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete','Reject All',<s:property value="allCaoIDs" />);">Reject All</button>
 		<button style="display: <s:property value="#showApproveButton" />" class="picsbutton positive approveButton" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Approved','Approve All',<s:property value="allCaoIDs" />);">Approve All</button>
 	</div>
 </s:if>
-<br/>
 <s:if test="conAudit.auditType.pqf">
 	<fieldset class="form" style="clear: none; float: left; width: 50%; margin: 0.5em;">
 	<h2 class="formLegend">PQF Questions</h2>
@@ -250,10 +216,37 @@
 	</fieldset>
 	</s:if>
 </s:else>
+<br clear="all" />
 <s:if test="caos.keySet().size > 1">
-	<br clear="all"/>
 	<div>
 		<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete','Reject All',<s:property value="allCaoIDs" />);">Reject All</button>
 		<button style="display: <s:property value="#showApproveButton" />" class="picsbutton positive approveButton" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Approved','Approve All',<s:property value="allCaoIDs" />);">Approve All</button>
 	</div>
+</s:if>
+<s:if test="caos.keySet().size > 0">
+	<table class="report">
+		<thead>	
+			<tr>
+				<th>Operators</th>
+				<th>Status</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			<s:iterator value="caos">
+				<tr>
+					<td><s:property value="key.name" /></td>
+					<td>
+						<s:if test="value.audit.auditFor.length() > 0"><s:property value="value.audit.auditFor" />: </s:if><s:property value="value.status" />
+					</td>
+					<td>
+						<s:if test="percentVerified == 100">
+							<button class="picsbutton positive" name="button" onclick="return changeAuditStatus(<s:property value="value.conAudit.id" />,'Approved','Approve',<s:property value="value.id" />);">Approve</button>
+						</s:if>
+						<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id" />,'Incomplete','Reject',<s:property value="value.id" />);">Reject</button>
+					</td>
+				</tr>
+			</s:iterator>
+		</tbody>
+	</table>
 </s:if>

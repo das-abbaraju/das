@@ -23,7 +23,7 @@ public class VerifyAudit extends AuditActionSupport {
 
 	private static final long serialVersionUID = -4976847934505647430L;
 	private List<AuditData> pqfQuestions = null;
-	private Map<OperatorAccount, List<ContractorAuditOperator>> caos;
+	private Map<OperatorAccount, ContractorAuditOperator> caos;
 	private List<Integer> allCaoIDs;
 
 	public VerifyAudit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
@@ -143,16 +143,16 @@ public class VerifyAudit extends AuditActionSupport {
 		return false;
 	}
 	
-	public Map<OperatorAccount, List<ContractorAuditOperator>> getCaos() {
+	public Map<OperatorAccount, ContractorAuditOperator> getCaos() {
 		if (caos == null) {
 			allCaoIDs = new ArrayList<Integer>();
-			caos = new HashMap<OperatorAccount, List<ContractorAuditOperator>>();
+			caos = new HashMap<OperatorAccount, ContractorAuditOperator>();
 			
 			for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
-				if (caos.get(cao.getOperator()) == null)
-					caos.put(cao.getOperator(), new ArrayList<ContractorAuditOperator>());
+				// TODO Should we ignore incomplete and pending statuses, unless percent verified == 100
+				if (caos.get(cao.getOperator()) == null && !cao.getStatus().isIncomplete() && !cao.getStatus().isPending())
+					caos.put(cao.getOperator(), cao);
 				
-				caos.get(cao.getOperator()).add(cao);
 				allCaoIDs.add(cao.getId());
 			}
 		}
@@ -165,17 +165,5 @@ public class VerifyAudit extends AuditActionSupport {
 			getCaos();
 		
 		return Strings.implode(allCaoIDs);
-	}
-	
-	public String getOpCaoIDs(OperatorAccount op) {
-		if (op == null)
-			return null;
-		
-		List<Integer> caoIDs = new ArrayList<Integer>();
-		for (ContractorAuditOperator cao : caos.get(op)) {
-			caoIDs.add(cao.getId());
-		}
-		
-		return Strings.implode(caoIDs);
 	}
 }

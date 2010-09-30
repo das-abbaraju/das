@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -72,35 +73,51 @@ public class VerifyView extends ContractorActionSupport {
 				}
 			}
 			if (conAudit.getAuditType().isAnnualAddendum()) {
-				AuditData auditData = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
-				for (OshaAudit oshaAudit : conAudit.getOshas()) {
-					if (auditData != null && "Yes".equals(auditData.getAnswer()) && oshaAudit.isCorporate()
-							&& oshaAudit.getType().equals(OshaType.OSHA)) {
-						oshas.add(oshaAudit);
-					}
+				boolean pendingIncomplete = false;
+				
+				for (ContractorAuditOperator cao : conAudit.getOperators()) {
+					pendingIncomplete = cao.getStatus().isIncomplete() || cao.getStatus().isPending();
 				}
-				years.add(conAudit.getAuditFor());
+				
+				if (!pendingIncomplete) {
+					AuditData auditData = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
+					for (OshaAudit oshaAudit : conAudit.getOshas()) {
+						if (auditData != null && "Yes".equals(auditData.getAnswer()) && oshaAudit.isCorporate()
+								&& oshaAudit.getType().equals(OshaType.OSHA)) {
+							oshas.add(oshaAudit);
+						}
+					}
+					years.add(conAudit.getAuditFor());
+				}
 			}
 		}
 		for (ContractorAudit conAudit : getVerificationAudits()) {
 			if (conAudit.getAuditType().isAnnualAddendum()) {
-				for (AuditData auditData : conAudit.getData()) {
-					int categoryID = auditData.getQuestion().getCategory().getId();
-					if (categoryID != AuditCategory.CITATIONS
-							|| (categoryID == AuditCategory.CITATIONS && (auditData.getQuestion().isRequired())
-									|| (auditData.getQuestion().getId() == 3565 && auditData.isAnswered())
-									|| (auditData.getQuestion().getId() == 3566 && auditData.isAnswered())
-									|| (auditData.getQuestion().getId() == 3567 && auditData.isAnswered()) || (auditData
-									.getQuestion().getId() == 3568 && auditData.isAnswered()))) {
-						Map<String, AuditData> inner = emrs.get(auditData.getQuestion());
-
-						if (inner == null) {
-							inner = new TreeMap<String, AuditData>();
-							for (String year : years)
-								inner.put(year, null);
-							emrs.put(auditData.getQuestion(), inner);
+				boolean pendingIncomplete = false;
+				
+				for (ContractorAuditOperator cao : conAudit.getOperators()) {
+					pendingIncomplete = cao.getStatus().isIncomplete() || cao.getStatus().isPending(); 
+				}
+				
+				if (!pendingIncomplete) {
+					for (AuditData auditData : conAudit.getData()) {
+						int categoryID = auditData.getQuestion().getCategory().getId();
+						if (categoryID != AuditCategory.CITATIONS
+								|| (categoryID == AuditCategory.CITATIONS && (auditData.getQuestion().isRequired())
+										|| (auditData.getQuestion().getId() == 3565 && auditData.isAnswered())
+										|| (auditData.getQuestion().getId() == 3566 && auditData.isAnswered())
+										|| (auditData.getQuestion().getId() == 3567 && auditData.isAnswered()) || (auditData
+										.getQuestion().getId() == 3568 && auditData.isAnswered()))) {
+							Map<String, AuditData> inner = emrs.get(auditData.getQuestion());
+	
+							if (inner == null) {
+								inner = new TreeMap<String, AuditData>();
+								for (String year : years)
+									inner.put(year, null);
+								emrs.put(auditData.getQuestion(), inner);
+							}
+							inner.put(conAudit.getAuditFor(), auditData);
 						}
-						inner.put(conAudit.getAuditFor(), auditData);
 					}
 				}
 			}

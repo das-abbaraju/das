@@ -347,8 +347,7 @@ public class PicsMenu {
 		if (permissions.isRequiresCompetencyReview()) {
 			subMenu.addChild("Competency by Account", "ReportCompetencyByAccount.action");
 			subMenu.addChild("Competency by Employee", "ReportCompetencyByEmployee.action");
-			// TODO 9/20/10 Put this back in after 9/22. Find out why we need this?
-			//subMenu.addChild("Employee Turnover", "ReportEmployeeTurnover.action");
+			subMenu.addChild("Employee Turnover", "ReportEmployeeTurnover.action");
 		}
 
 		if (permissions.isRequiresOQ()) {
