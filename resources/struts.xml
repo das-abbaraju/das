@@ -971,7 +971,7 @@
 		<!-- Audits View/Edit/Verify/Copy -->
 		<action name="Audit"
 			class="com.picsauditing.actions.audits.ContractorAuditController">
-			<result>struts/contractors/con_audit.jsp</result>
+			<result>struts/audits/con_audit.jsp</result>
 		</action>
 
 		<action name="AuditCatPreview"
