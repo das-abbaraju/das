@@ -241,7 +241,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if(cao.isVisible() && cao.isVisibleTo(permissions)){
 				for (WorkflowStep workflowStep : conAudit.getAuditType().getWorkFlow().getSteps()) {
 					if(workflowStep.getOldStatus() == cao.getStatus()){
-						if(workflowStep.getNewStatus() == AuditStatus.Submitted){
+						if(workflowStep.getNewStatus() == AuditStatus.Submitted || workflowStep.getNewStatus() == AuditStatus.Resubmitted){
 							if(!isCanSubmitAudit(cao))
 								continue;
 						}
