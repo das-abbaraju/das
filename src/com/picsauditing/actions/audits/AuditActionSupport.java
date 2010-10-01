@@ -8,6 +8,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.axis2.dataretrieval.DRConstants.SPEC.Actions;
+import org.apache.commons.collections.map.MultiValueMap;
+
+import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.access.NoRightsException;
@@ -48,7 +52,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private List<AuditCategoryRule> rules = null;
 	protected Map<AuditCategory, AuditCatData> categories = null;
 	protected Map<Integer, WorkflowStep> caoSteps = null;
-	protected Map<AuditStatus, List<Integer>> actionStatus = new HashMap<AuditStatus, List<Integer>>();
+	protected ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
 
 	public AuditActionSupport(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
@@ -258,22 +262,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if(!caoSteps.isEmpty()){
 			// change map to multimap
 			for (Entry<Integer, WorkflowStep> en : caoSteps.entrySet()) {
-				if(occ.contains(en.getValue().getNewStatus())){
-						addToActionStatus(en.getValue().getNewStatus(), en.getKey());
-				} else {
+				if(occ.contains(en.getValue().getNewStatus()))
+					actionStatus.put(en.getValue().getNewStatus(), en.getKey());
+				else
 					occ.add(en.getValue().getNewStatus());
-				}
 			}
 		}
-	}
-	
-	public Integer addToActionStatus(AuditStatus as, Integer value){
-		List<Integer> l = actionStatus.get(as);
-		if(l==null)
-			actionStatus.put(as, l = new ArrayList<Integer>());
-		l.add(value);
-		
-		return value;
 	}
 	
 	public boolean hasStatusChanged(AuditStatus as){
@@ -380,7 +374,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return false;
 	}
 
-	public Map<AuditStatus, List<Integer>> getActionStatus() {
+	public ArrayListMultimap<AuditStatus, Integer> getActionStatus() {
 		return actionStatus;
 	}
 
