@@ -69,7 +69,7 @@
 			<s:property value="@com.picsauditing.util.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
 		</s:if>
 		<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Industry' || #q.questionType == 'Main Work'">
-			<s:checkbox fieldValue="X" name="auditData.answer" value="#a.answer"/>
+			<s:checkbox fieldValue="X" name="auditData.answer" value="#a.answer == \"X\""/>
 		</s:if>
 		<s:if test="#q.questionType == 'Yes/No'">
 			<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="auditData.answer" value="%{#a.answer}"></s:radio>
