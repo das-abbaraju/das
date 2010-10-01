@@ -16,6 +16,7 @@ import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.util.Strings;
@@ -40,6 +41,7 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.report.setLimit(25);
 		orderByDefault = "cao.status DESC, cao.updateDate ASC";
+		auditTypeClass = AuditTypeClass.Policy;
 	}
 
 	@Override
