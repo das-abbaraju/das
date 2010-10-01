@@ -64,13 +64,28 @@ $(function(){
 				$(this).parents('form.qform:first').serialize(), 
 				function(response, status) {
 					if (status=='success') {
-						$(this).effect('highlight', {color: '#FFFF11'}, 1000);
+						$(this).trigger('updateDependent').effect('highlight', {color: '#FFFF11'}, 1000);
 						updateCategories();
 					} else {
 						alert('Failed to save answer.');
 					}
 					$(this).unblock();
 				});
+	});
+	
+	$('div.hasDependentRequired').live('updateDependent', function() {
+		$.each($(this).find('div.dependentRequired:first').text().split(','), function(i,v) {
+			reloadQuestion(v);
+		});
+	});
+
+	$('div.hasDependentVisible').live('updateDependent', function() {
+		$.each($(this).find('div.dependentVisible:first').text().split(','), function(i,v) {
+			$('#node_'+v).removeClass('hide');
+		});
+		$.each($(this).find('div.dependentVisibleHide:first').text().split(','), function(i,v) {
+			$('#node_'+v).addClass('hide');
+		});
 	});
 	
 	$('.buttonOsha').live('click', function(){
@@ -122,7 +137,7 @@ function showCertUpload(conid, certid, caoID, questionID, auditID) {
 }
 
 function reloadQuestion(qid) {
-	$('#node_'+qid).block({message: 'Saving answer...'}).load('AuditDataSaveAjax.action',$('#node_'+qid).find('form.qform').serialize(), function() {
+	$('#node_'+qid).block({message: 'Saving answer...'}).load('AuditDataSaveAjax.action',$('#node_'+qid).find('form.qform').serialize()+'&button=reload', function() {
 		$(this).unblock();
 	});
 }

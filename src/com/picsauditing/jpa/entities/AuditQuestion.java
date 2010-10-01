@@ -1,8 +1,10 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -60,8 +62,9 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private String criteria;
 	private String criteriaAnswer;
 
-	private List<AuditQuestion> dependsRequired;
-	private List<AuditQuestion> dependsVisible;
+	private List<AuditQuestion> dependentRequired;
+	private List<AuditQuestion> dependentVisible;
+	private Set<AuditQuestion> dependentQuestions;
 	protected List<AuditQuestionOption> options;
 	private List<AuditCategoryRule> auditCategoryRules;
 	private List<AuditTypeRule> auditTypeRules;
@@ -294,21 +297,54 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	}
 
 	@OneToMany(mappedBy = "requiredQuestion")
-	public List<AuditQuestion> getDependsRequired() {
-		return dependsRequired;
+	public List<AuditQuestion> getDependentRequired() {
+		return dependentRequired;
 	}
 
-	public void setDependsRequired(List<AuditQuestion> requiredQuestions) {
-		this.dependsRequired = requiredQuestions;
+	public void setDependentRequired(List<AuditQuestion> requiredQuestions) {
+		this.dependentRequired = requiredQuestions;
 	}
 
 	@OneToMany(mappedBy = "visibleQuestion")
-	public List<AuditQuestion> getDependsVisible() {
-		return dependsVisible;
+	public List<AuditQuestion> getDependentVisible() {
+		return dependentVisible;
 	}
 
-	public void setDependsVisible(List<AuditQuestion> visibleQuestions) {
-		this.dependsVisible = visibleQuestions;
+	public void setDependentVisible(List<AuditQuestion> visibleQuestions) {
+		this.dependentVisible = visibleQuestions;
+	}
+
+	@Transient
+	public List<AuditQuestion> getDependentVisible(String answer) {
+		List<AuditQuestion> dependentVisibleBasedOnAnswer = new ArrayList<AuditQuestion>();
+		for (AuditQuestion visQ : dependentVisible) {
+			if (visQ.visibleAnswer != null && visQ.visibleAnswer.equals(answer))
+				dependentVisibleBasedOnAnswer.add(visQ);
+		}
+
+		return dependentVisibleBasedOnAnswer;
+	}
+
+	@Transient
+	public List<AuditQuestion> getDependentVisibleHide(String answer) {
+		List<AuditQuestion> dependentVisibleBasedOnAnswer = new ArrayList<AuditQuestion>();
+		for (AuditQuestion visQ : dependentVisible) {
+			if (visQ.visibleAnswer != null && !visQ.visibleAnswer.equals(answer))
+				dependentVisibleBasedOnAnswer.add(visQ);
+		}
+
+		return dependentVisibleBasedOnAnswer;
+	}
+
+	@Transient
+	public Set<AuditQuestion> getDependentQuestions() {
+		if (dependentQuestions == null) {
+			dependentQuestions = new HashSet<AuditQuestion>();
+			dependentQuestions.addAll(dependentRequired);
+			dependentQuestions.addAll(dependentQuestions);
+		}
+
+		return dependentQuestions;
 	}
 
 	@OneToMany(mappedBy = "question")

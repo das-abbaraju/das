@@ -56,7 +56,7 @@ public class AuditPercentCalculator {
 		List<Integer> questionIDs = new ArrayList<Integer>();
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 			questionIDs.add(question.getId());
-			if (question.getDependsRequired() != null)
+			if (question.getDependentRequired() != null)
 				questionIDs.add(question.getId());
 			if (question.getVisibleQuestion() != null)
 				questionIDs.add(question.getId());

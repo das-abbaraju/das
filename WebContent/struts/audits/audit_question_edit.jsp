@@ -5,10 +5,10 @@
 
 <s:set name="questionStillRequired" value="false" />
 <s:if test="(#a == null || #a.answer == null || #a.answer.length() < 1)">
-	<s:if test="#q.isRequired == 'Yes'">
+	<s:if test="#q.required">
 		<s:set name="questionStillRequired" value="true" />
 	</s:if>
-	<s:if test="#q.required && #q.requiredQuestion.id > 0">
+	<s:if test="#q.requiredQuestion.id > 0">
 		<s:set name="dependsAnswer" value="answerMap.get(#q.requiredQuestion.id)" />
 		<s:if test="#q.requiredAnswer == 'NULL' && (#dependsAnswer == null || #dependsAnswer.answer == '')">
         	<% // Policies must have either Policy Expiration Date OR In Good Standing %>
@@ -39,7 +39,6 @@
 <div class="answer">
 	<s:form cssClass="qform">
 		<s:hidden name="categoryID" value="%{#q.category.id}"/>
-		<s:hidden name="auditData.id" value="%{#a.id}"/>
 		<s:if test="auditData.audit != null">
 			<s:hidden name="auditData.audit.id"/>
 		</s:if>
@@ -217,4 +216,6 @@
 		Verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" />
 	</span>
 </s:if>
-<div class="dependentQuestions hide" ><s:iterator value="#q.dependentQuestions"><s:if test="#q.subCategory.category == subCategory.category">,<s:property value="id"/></s:if></s:iterator></div>
+<div class="dependentRequired hide"><s:iterator value="#q.dependentRequired" status="s"><s:property value="id"/><s:if test="!#s.last">,</s:if></s:iterator></div>
+<div class="dependentVisible hide"><s:iterator value="#q.getDependentVisible(#a.answer)" status="s"><s:property value="id"/><s:if test="!#s.last">,</s:if></s:iterator></div>
+<div class="dependentVisibleHide hide"><s:iterator value="#q.getDependentVisibleHide(#a.answer)" status="s"><s:property value="id"/><s:if test="!#s.last">,</s:if></s:iterator></div>

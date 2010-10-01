@@ -20,7 +20,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OshaAuditDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -145,8 +144,8 @@ public class AuditDataSave extends AuditActionSupport {
 
 			auditID = auditData.getAudit().getId();
 			// Load Dependent questions
-			auditData.getQuestion().getDependsRequired();
-			auditData.getQuestion().getDependsVisible();
+			auditData.getQuestion().getDependentRequired();
+			auditData.getQuestion().getDependentVisible();
 			auditData.setAuditColumns(permissions);
 			if ("reload".equals(button)) {
 				loadAnswerMap();
@@ -226,14 +225,16 @@ public class AuditDataSave extends AuditActionSupport {
 
 			// hook to calculation read/update
 			// the ContractorAudit and AuditCatData
-			AuditCatData catData = null;
-
-			if (categoryID > 0) {
-				catData = catDataDao.findAuditCatData(auditID, categoryID);
-			} else if (toggleVerify) {
-				catData = catDataDao.findAuditCatData(auditData.getAudit().getId(), auditData.getQuestion()
-						.getCategory().getParent().getId());
-			}
+			// AuditCatData catData = null;
+			//
+			// if (categoryID > 0) {
+			// catData = catDataDao.findAuditCatData(auditID, categoryID);
+			// } else if (toggleVerify) {
+			// catData =
+			// catDataDao.findAuditCatData(auditData.getAudit().getId(),
+			// auditData.getQuestion()
+			// .getCategory().getParent().getId());
+			// }
 		} catch (Exception e) {
 			e.printStackTrace();
 			addActionError(e.getMessage());
