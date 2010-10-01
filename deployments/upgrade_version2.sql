@@ -344,6 +344,33 @@ update contractor_audit_operator set status = 'Complete' where status IN ('Activ
  * END: CAO Conversion
  */
 
+-- For Policies 
+update flag_criteria fc
+join audit_type at on at.id = fc.auditTypeID
+set fc.requiredStatus = 'Submitted'
+where at.classType = 'Policy'
+and validationRequired = 0;
+
+update flag_criteria fc
+join audit_type at on at.id = fc.auditTypeID
+set fc.requiredStatus = 'Approved'
+where at.classType = 'Policy'
+and validationRequired = 1;
+
+-- For Non Policies 
+update flag_criteria fc
+join audit_type at on at.id = fc.auditTypeID
+set fc.requiredStatus = 'Submitted'
+where at.classType != 'Policy'
+and validationRequired = 0;
+
+update flag_criteria fc
+join audit_type at on at.id = fc.auditTypeID
+set fc.requiredStatus = 'Complete'
+where at.classType != 'Policy'
+and validationRequired = 1;
+
+
 /*
  *  Dropping Tables and Columns
  */
@@ -362,3 +389,5 @@ drop table pqfopmatrix;
 drop table pqfquestions;
 drop table audit_operator;
 drop table desktopmatrix;
+
+
