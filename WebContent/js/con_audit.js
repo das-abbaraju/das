@@ -1,24 +1,5 @@
 $(function(){
 	
-	$('ul.vert-toolbar li.head .hidden-button').live('click',function() {
-		var hidden = $('ul.catlist:hidden')
-		$('ul.catlist:visible').fadeOut('slow', function() { hidden.fadeIn('slow'); });
-	});
-	
-	$('.vert-toolbar li:not(li.head)').live('mouseenter', function() {
-		$(this).addClass('hover');
-	}).live('mouseleave', function() {
-		$(this).removeClass('hover');
-	});
-
-	if ($('#nacatlist li:not(li.head)').size() > 0) {
-		$('ul.catlist li.head').live('mouseenter', function() {
-			$(this).addClass('hover');
-		}).live('mouseleave', function() {
-			$(this).removeClass('hover');
-		});
-	}
-	
 	// AJAX HISTORY
 
 	$('a.hist-category, a.modeset').live('click', function() {
@@ -44,6 +25,25 @@ $(function(){
 	
 	// END AJAX HISTORY
 	
+	$('ul.vert-toolbar li.head .hidden-button').live('click',function() {
+		var hidden = $('ul.catlist:hidden')
+		$('ul.catlist:visible').fadeOut('slow', function() { hidden.fadeIn('slow'); });
+	});
+	
+	$('.vert-toolbar li:not(li.head)').live('mouseenter', function() {
+		$(this).addClass('hover');
+	}).live('mouseleave', function() {
+		$(this).removeClass('hover');
+	});
+
+	if ($('#nacatlist li:not(li.head)').size() > 0) {
+		$('ul.catlist li.head').live('mouseenter', function() {
+			$(this).addClass('hover');
+		}).live('mouseleave', function() {
+			$(this).removeClass('hover');
+		});
+	}
+
 	$('div.question form.qform').live('submit', function(e){
 		e.preventDefault();
 	});
