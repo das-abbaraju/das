@@ -20,6 +20,7 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -52,6 +53,7 @@ public class Cron extends PicsActionSupport {
 	protected AuditBuilderController auditBuilder = null;
 	protected ContractorAuditDAO contractorAuditDAO = null;
 	protected ContractorAccountDAO contractorAccountDAO = null;
+	protected ContractorAuditOperatorDAO contractorAuditOperatorDAO = null;
 	protected NoteDAO noteDAO = null;
 	protected AuditPercentCalculator auditPercentCalculator;
 	private EbixLoader ebixLoader;
@@ -63,7 +65,7 @@ public class Cron extends PicsActionSupport {
 
 	public Cron(OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilderController ab,
 			ContractorAuditDAO contractorAuditDAO, ContractorAccountDAO contractorAccountDAO,
-			AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO, EbixLoader ebixLoader) {
+			AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO, EbixLoader ebixLoader, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
 		this.auditBuilder = ab;
@@ -72,6 +74,7 @@ public class Cron extends PicsActionSupport {
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.noteDAO = noteDAO;
 		this.ebixLoader = ebixLoader;
+		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
 	}
 
 	public String execute() throws Exception {
@@ -111,6 +114,20 @@ public class Cron extends PicsActionSupport {
 			try {
 				startTask("\nSending emails to contractors for expired Certificates...");
 				sendEmailExpiredCertificates();
+				endTask();
+			} catch (Throwable t) {
+				handleException(t);
+			}
+			try {
+				startTask("\nExpiring Audits and cao and stamping notes...");
+				contractorAuditOperatorDAO.expireAudits();
+				endTask();
+			} catch (Throwable t) {
+				handleException(t);
+			}
+			try {
+				startTask("\nSubmitting the caos...");
+				contractorAuditOperatorDAO.submitAudits();
 				endTask();
 			} catch (Throwable t) {
 				handleException(t);

@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -13,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
 
@@ -177,5 +178,90 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		Query q = em.createQuery(query);
 		q.setMaxResults(limit);
 		return q.getResultList();
+	}
+	
+	public void expireAudits() throws SQLException {
+		String sql = "";
+		Database db = new Database();
+		// post contractor notes for non renewable audits
+		sql = "INSERT into note (accountID,creationDate,createdBy,updateDate,updatedBy,summary,noteCategory, viewableBy,canContractorView) " +
+				"select ca.conid,Now(),1,Now(),1,CONCAT('Expiring ',at.auditname,' for ', a.name),'Audits',cao.opid,1 from contractor_audit ca " +
+						"join contractor_audit_operator cao on cao.auditid = ca.id " +
+						"join audit_type at on at.id = ca.audittypeid " +
+						"join accounts a on a.id = cao.opid " +
+						"where cao.status != 'Expired' and ca.expiresDate < NOW() and at.renewable = 0";
+		db.executeInsert(sql);
+		
+		// post contractor audit workflow for non renewable audits
+		sql = "insert into contractor_audit_operator_workflow (createdBy,updatedBy,creationDate,updateDate,caoID,status,previousStatus) " +
+				"select 1,1,Now(),Now(),cao.id,'Expired',cao.status from contractor_audit ca " +
+				"join contractor_audit_operator cao on cao.auditid = ca.id" +
+				"join audit_type at on at.id = ca.audittypeid " +
+				"where cao.status != 'Expired' and ca.expiresDate < NOW() and at.renewable = 0";
+		db.executeInsert(sql);
+		
+		// post contractor notes for renewable audits
+		sql = "INSERT into note (accountID,creationDate,createdBy,updateDate,updatedBy,summary,noteCategory, viewableBy,canContractorView) " +
+				"select ca.conid,Now(),1,Now(),1,CONCAT('Changing status to Pending for ',at.auditname,' for ', a.name),'Audits',cao.opid,1 from contractor_audit ca " +
+						"join contractor_audit_operator cao on cao.auditid = ca.id " +
+						"join audit_type at on at.id = ca.audittypeid " +
+						"join accounts a on a.id = cao.opid " +
+						"where cao.status != 'Expired' and ca.expiresDate < NOW() and at.renewable = 1";
+		db.executeInsert(sql);
+		
+		// post contractor audit workflow for renewable audits
+		sql = "insert into contractor_audit_operator_workflow (createdBy,updatedBy,creationDate,updateDate,caoID,status,previousStatus) " +
+				"select 1,1,Now(),Now(),cao.id,'Pending',cao.status from contractor_audit ca " +
+				"join contractor_audit_operator cao on cao.auditid = ca.id" +
+				"join audit_type at on at.id = ca.audittypeid " +
+				"where cao.status != 'Expired' and ca.expiresDate < NOW() and at.renewable = 1";
+		db.executeInsert(sql);
+		
+		// update the status for caos for non renewable audits
+		sql = "update contractor_audit_operator cao, contractor_Audit ca " +
+				"set cao.status = 'Expired', statusChangedDate = Now() " +
+				"where cao.auditid = ca.id and cao.status != 'Expired' and ca.expiresDate < NOW() " +
+				"and ca.audittypeid IN (select id from audit_type where renewable= 0)";
+		db.executeUpdate(sql);
+		
+		//  update the status for caos for renewable audits
+		sql = "update contractor_audit_operator cao, contractor_Audit ca " +
+				"set cao.status = 'Pending', cao.statusChangedDate = Now(), ca.expiresDate = null " +
+				"where cao.auditid = ca.id and cao.status != 'Expired' and ca.expiresDate < NOW() " +
+				"and ca.audittypeid IN (select id from audit_type where renewable= 1)";
+		db.executeUpdate(sql);
+	}
+	
+	public void submitAudits() throws SQLException {
+		String sql = "";
+		Database db = new Database();	
+		sql = "INSERT into note (accountID,creationDate,createdBy,updateDate,updatedBy,summary,noteCategory, viewableBy,canContractorView) "+			
+				"select ca.conid,Now(),1,Now(),1,CONCAT('Submitting ',at.auditname,' for ', a.name),'Audits',cao.opid,1 "+
+				"from contractor_audit_operator cao " +
+				"join contractor_audit ca on ca.id = cao.auditID " +
+				"join accounts a on a.id = cao.opid " +
+				"join audit_type at on at.id = ca.auditTypeID " +
+				"join workflow wf on wf.id = at.workflowid " +
+				"where cao.status = 'Pending' and cao.percentComplete = 100 " +
+				"and wf.id in (select distinct workflowID from workflow_step wfs where oldStatus = 'Pending' and newStatus = 'Submitted')";
+		db.executeInsert(sql);
+		
+		sql = "insert into contractor_audit_operator_workflow (createdBy,updatedBy,creationDate,updateDate,caoID,status,previousStatus) " +
+				"select 1,1,Now(),Now(),cao.id,'Submitted',cao.status " +
+				"from contractor_audit_operator cao " +
+				"join contractor_audit ca on ca.id = cao.auditID " +
+				"join audit_type at on at.id = ca.auditTypeID " +
+				"join workflow wf on wf.id = at.workflowid " +
+				"where cao.status = 'Pending' and cao.percentComplete = 100 " +
+				"and wf.id in (select distinct workflowID from workflow_step wfs where oldStatus = 'Pending' and newStatus = 'Submitted')";
+		db.executeInsert(sql);
+		
+       sql = "update contractor_audit_operator cao " +
+       		"join contractor_audit ca on ca.id = cao.auditID " +
+       		"join audit_type at on at.id = ca.auditTypeID " +
+       		"join workflow wf on wf.id = at.workflowid " +
+       		"set cao.status = 'Submitted', cao.statuschangedDate = Now() " +
+       		"where cao.status = 'Pending' and cao.percentComplete = 100 " +
+       		"and wf.id in (select distinct workflowID from workflow_step wfs where oldStatus = 'Pending' and newStatus = 'Submitted')";
 	}
 }
