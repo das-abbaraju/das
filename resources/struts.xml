@@ -1114,6 +1114,7 @@
 
 		<action name="CaoSaveAjax"
 			class="com.picsauditing.actions.audits.CaoSave">
+			<result name="refresh">struts/contractors/cao_category_refresh.jsp</result>
 			<result name="caoTable">struts/contractors/caoTable.jsp</result>
 			<result name="caoNoteSave">struts/contractors/caoNoteSave.jsp</result>
 			<result name="caoStatus">struts/contractors/caoStatusHistory.jsp</result>

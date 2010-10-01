@@ -1,28 +1,22 @@
 $(function(){
 	
-	$('ul.vert-toolbar li.head .hidden-button').click(function() {
+	$('ul.vert-toolbar li.head .hidden-button').live('click',function() {
 		var hidden = $('ul.catlist:hidden')
 		$('ul.catlist:visible').fadeOut('slow', function() { hidden.fadeIn('slow'); });
 	});
 	
-	$('.vert-toolbar li:not(li.head)').hover(
-		function() {
-			$(this).addClass('hover');
-		},
-		function(){
-			$(this).removeClass('hover');
-		}
-	);
+	$('.vert-toolbar li:not(li.head)').live('mouseenter', function() {
+		$(this).addClass('hover');
+	}).live('mouseleave', function() {
+		$(this).removeClass('hover');
+	});
 
 	if ($('#nacatlist li:not(li.head)').size() > 0) {
-		$('ul.catlist li.head').hover(
-			function() {
-				$(this).addClass('hover');
-			},
-			function(){
-				$(this).removeClass('hover');
-			}
-		);
+		$('ul.catlist li.head').live('mouseenter', function() {
+			$(this).addClass('hover');
+		}).live('mouseleave', function() {
+			$(this).removeClass('hover');
+		});
 	}
 	
 	// AJAX HISTORY
@@ -96,7 +90,19 @@ $(function(){
 var ucTimeout;
 
 function _updateCategories() {
-	alert('Update the categories via ajax here');
+	$.ajax({
+		url: 'CaoSaveAjax.action',
+		data: {
+			auditID: auditID,
+			button: 'Refresh'
+		},
+		type: 'post',
+		success: function(text, status, xhr) {
+			var me = $(text);
+			$('#auditHeaderSideNav').html(me.filter('#audit_sidebar_refresh'));
+			$('#caoTable').html(me.filter('#cao_table_refresh'));
+		}
+	});
 }
 
 function updateCategories() {

@@ -291,7 +291,7 @@ public class CaoSave extends AuditActionSupport {
 			auditBuilder.setup(conAudit.getContractorAccount(), getUser());
 			auditBuilder.fillAuditCategories(conAudit);
 			auditPercentCalculator.percentCalculateComplete(conAudit, true);
-			return "caoTable";
+			return "refresh";
 		}
 		
 		if ("caoAjaxSave".equals(button))

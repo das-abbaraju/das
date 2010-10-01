@@ -31,6 +31,7 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.SpringUtils;
 
@@ -381,5 +382,27 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public Map<AuditStatus, List<Integer>> getActionStatus() {
 		return actionStatus;
+	}
+
+	public boolean isCanVerify() {
+		if(conAudit.getAuditType().isPqf() || conAudit.getAuditType().isAnnualAddendum())
+			return conAudit.hasCaoStatusBefore(AuditStatus.Complete);
+		return false;
+	}
+
+	public boolean isCanPreview() {
+		return conAudit.hasCaoStatus(AuditStatus.Pending);
+	}
+
+	public boolean isCanViewRequirements() {
+		if(conAudit.getAuditType().getWorkFlow().getId() == Workflow.AUDIT_REQUIREMENTS_WORKFLOW)
+			return conAudit.hasCaoStatusAfter(AuditStatus.Incomplete);
+		return false;
+	}
+
+	public boolean isCanSchedule() {
+		if(conAudit.getAuditType().isScheduled() && (permissions.isContractor() || permissions.isAdmin()))
+			return conAudit.hasCaoStatus(AuditStatus.Pending);
+		return false;
 	}
 }
