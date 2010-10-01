@@ -485,7 +485,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public void incrementRecalculation(int increment) {
-		if (increment > 0 && this.needsRecalculation < 128)
+		if (increment > 0 && this.needsRecalculation < 127)
 			this.needsRecalculation += increment;
 	}
 
