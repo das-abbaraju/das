@@ -14,6 +14,75 @@ where pd.questionid = 894
 and pd.answer = 'Yes');
 **/
 
+-- PICS-813: Corporate Email Subscriptions
+update email_template set body = '<SubscriptionHeader>
+Below are all contractors who have recently selected#if( ${operators.size()} > 1 ) one of#end your facilit#if( ${operators.size()} > 1 )ies 
+#else
+y#end as a work site.
+<br/><br/>
+
+#foreach( $operator in $operators.keySet() )
+#if( $operators.get($operator).size() > 0 )
+<strong>Facility: <em>${operator.name}</em></strong><br/>
+<table style="border-collapse: collapse; border: 2px solid #003768; background: #f9f9f9;">
+ <thead>
+  <tr style="vertical-align: middle; font-size: 13px;font-weight: bold; background: #003768; color: #FFF;">
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Contractor Name</td>
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Date Added</td>
+  </tr>
+ </thead>
+ <tbody>
+  #foreach( $contractor in $operators.get($operator).keySet() )
+  <tr style="margin:0px">
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/ContractorView.action?id=$contractor.id#if( ${operators.size()} > 1 )&opID=${operator.id}#end">$contractor.name</a></td>
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;">$pics_dateTool.format("MM/dd/yy HH:mm", $operators.get($operator).get($contractor).creationDate)</td>
+  </tr>
+  #end
+ </tbody>
+</table>
+<br/><br/>
+#end
+#end
+
+<TimeStampDisclaimer>
+
+<SubscriptionFooter>' where id = 107;
+
+update email_template set body = '<SubscriptionHeader>
+
+Below are all contractors who have recently registered with PICS and selected#if( ${operators.size()} > 1 ) one of#end your facilit#if( ${operators.size()} > 1 )ies 
+#else
+y#end as a work site.
+<br/><br/>
+
+#foreach( $operator in $operators.keySet() )
+#if( $operators.get($operator).size() > 0 )
+<strong>Facility: <em>${operator.name}</em></strong><br/>
+<table style="border-collapse: collapse; border: 2px solid #003768; background: #f9f9f9;">
+ <thead>
+  <tr style="vertical-align: middle; font-size: 13px;font-weight: bold; background: #003768; color: #FFF;">
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Contractor Name</td>
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Registration</td>
+  </tr>
+ </thead>
+ <tbody>
+  #foreach( $contractor in $operators.get($operator) )
+  <tr style="margin:0px">
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/ContractorView.action?id=${contractor.id}">$contractor.name</a></td>
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;">$pics_dateTool.format("MM/dd/yy HH:mm", $contractor.creationDate)</td>
+  </tr>
+  #end
+ </tbody>
+</table>
+<br/><br/>
+#end
+#end
+
+<TimeStampDisclaimer>
+
+<SubscriptionFooter>' where id = 62;
+-- END:PICS-813
+
 delete from pqfsubcategories where categoryID in (select id from pqfcategories WHERE auditTypeID = 18);
 delete from pqfcategories where auditTypeID = 18;
 delete from audit_category where auditTypeID = 18;

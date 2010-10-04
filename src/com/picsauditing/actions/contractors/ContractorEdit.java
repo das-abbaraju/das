@@ -257,8 +257,18 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				Set<String> emailAddresses = new HashSet<String>();
 				if (operatorIds != null) {
 					for (int operatorID : operatorIds) {
+						OperatorAccount operator = operatorAccountDAO.find(operatorID);
+						
 						List<EmailSubscription> subscriptions = subscriptionDAO.find(
-								Subscription.ContractorRegistration, operatorID);
+								Subscription.ContractorDeactivation, operatorID);
+
+						OperatorAccount parent = operator.getParent();
+						while(parent != null){ // adding corporate subscriptions
+							subscriptions.addAll(subscriptionDAO.find(
+								Subscription.ContractorDeactivation, parent.getId()));
+							parent = parent.getParent();
+						}
+						
 						Set<String> emails = new HashSet<String>();
 						boolean subscribed = false;
 						for (EmailSubscription subscription : subscriptions) {
@@ -272,7 +282,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						// (very slow operation)
 						// sending email to primary contact if no subscribers
 						// exist
-						OperatorAccount operator = operatorAccountDAO.find(operatorID);
 						if (!subscribed && operator != null && operator.getPrimaryContact() != null)
 							emails.add(operator.getPrimaryContact().getEmail());
 

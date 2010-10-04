@@ -144,7 +144,7 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 			}
 			
 			if (subscription.equals(Subscription.ContractorAdded)) {
-				builder = new ContractorAddedSubscription(timePeriod, subscriptionDAO, conDAO);
+				builder = new ContractorAddedSubscription(timePeriod, subscriptionDAO);
 			}
 
 			if (subscription.equals(Subscription.RedFlags)) {

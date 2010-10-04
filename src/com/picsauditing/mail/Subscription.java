@@ -4,16 +4,21 @@ import com.picsauditing.access.OpPerms;
 
 public enum Subscription {
 	ContractorRegistration(
-			"Contractor Registration/Deactivation",
-			"This email includes a list of contractors who have recently been deactivated or who have recently registered for PICS under your account. You can choose to receive this daily, weekly or monthly. If no contractor registers or deactivates, then you will not receive an email.",
+			"Contractor Registration",
+			"This email includes a list of contractors who have recently registered for PICS under your account. You can choose to receive this daily, weekly or monthly. If no contractor registers, then you will not receive an email.",
 			true, false), 
+	ContractorDeactivation(
+			"Contractor Deactivation",
+			"This email includes a list of contractors who have recently been deactivated by PICS and are related to your account. You can choose to receive this daily, weekly or monthly. If no contractor deactivates, then you will not receive an email.",
+			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,	SubscriptionTimePeriod.Event }, 
+			true, false), 			
 	ContractorAdded(
 			"Contractor Added to Facility",
 			"This email includes a list of contractors who have recently been added to your Facility. You can choose to receive this daily, weekly or monthly. If no contractors are added to your facility, then you will not receive an email.",
 			true, false), 
 	ContractorFinished(
-			"Contractors Completes the PICS Process",
-			"This email notifies users when a contractor completes PICS process for their account.",
+			"Contractor Completed the PICS Process",
+			"This email notifies you when a contractor linked to your facility has completed the PICS process.",
 			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,	SubscriptionTimePeriod.Event }, 
 			true, false), 
 	FlagChanges(

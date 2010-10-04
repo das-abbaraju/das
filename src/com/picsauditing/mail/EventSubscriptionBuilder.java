@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
@@ -30,6 +31,13 @@ public class EventSubscriptionBuilder {
 		List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.ContractorFinished,
 				SubscriptionTimePeriod.Event, co.getOperatorAccount().getId());
 
+		OperatorAccount parent = co.getOperatorAccount().getParent();
+		while(parent != null){ // adding corporate subscriptions
+			subscriptions.addAll(subscriptionDAO.find(Subscription.ContractorFinished,
+					SubscriptionTimePeriod.Event, parent.getId()));
+			parent = parent.getParent();
+		}
+		
 		for (EmailSubscription subscription : subscriptions) {
 			EmailBuilder builder = new EmailBuilder();
 			builder.setTemplate(templateID);
