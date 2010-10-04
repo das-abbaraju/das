@@ -9,7 +9,7 @@ public enum AuditStatus {
 	Resubmitted("Resubmit", "bluegreen"),
 	Complete("Complete", "green"),
 	Approved("Approve", "purple"),
-	NotApplicable("NotApplicable", "gray"),
+	NotApplicable("N/A", "gray"),
 	Expired("Expire", "gray");
 
 	private String button;
