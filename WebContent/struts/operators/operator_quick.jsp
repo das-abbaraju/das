@@ -58,7 +58,7 @@
 				<td class="center">
 					<s:set name="flagCriteriaOperator" value="getFlagCriteriaOperatorByAudit(auditType.id)"/>
 					<s:if test="#flagCriteriaOperator != null">
-						<s:if test="#flagCriteriaOperator.criteria.validationRequired">Yes</s:if>
+						<s:if test="#flagCriteriaOperator.criteria.requiredStatus!=null">Yes</s:if>
 						<s:else>No</s:else>
 					</s:if>
 					<s:else>-</s:else>

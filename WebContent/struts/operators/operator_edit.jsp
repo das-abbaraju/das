@@ -131,7 +131,7 @@ $(function() {
 				<s:set name="flagCriteriaOperator" value="getFlagCriteriaOperatorByAudit(auditType.id)"/>
 				<s:if test="#flagCriteriaOperator != null">
 					, RequiresActiveStatus = 
-						<s:if test="#flagCriteriaOperator.criteria.validationRequired">Active</s:if>
+						<s:if test="#flagCriteriaOperator.criteria.requiredStatus!=null">Active</s:if>
 						<s:else>Submitted</s:else>
 					, Flag = <s:property value="#flagCriteriaOperator.flag"/>
 				</s:if>

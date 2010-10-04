@@ -160,7 +160,6 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 
 			questionMap.get(question.getAuditType()).add(question);
 		}
-
 		return questionMap;
 	}
 

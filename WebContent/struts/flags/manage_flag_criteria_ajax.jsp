@@ -5,7 +5,7 @@
 <s:if test="criteria != null">
 <s:include value="../actionMessages.jsp"/>
 </s:if>
-<a href="#" type="button" class="goback"><< Back</a>
+<a href="#" type="button" class="goback">&lt;&lt; Back</a>
 <form id="itemform" method="post">
 	<s:hidden name="id"/>
 	<fieldset class="form">
@@ -58,6 +58,8 @@
 			</li>
 		</ol>
 	</fieldset>
+	
+	<!-- problem area -->
 	<fieldset class="form">
 		<h2 class="formLegend">Audit | Question</h2>
 		<ol>
@@ -71,7 +73,7 @@
 			</li>
 			<li>
 				<label>Question:</label>
-				<s:select name="questionID" list="{}" headerKey="" headerValue=" - Question - " value="%{criteria.question.id}">
+				<s:select name="questionID" list="{}" headerKey="-1" headerValue=" - Question - " value="%{criteria.question.id}">
 					<s:iterator value="questionMap" var="flagQuestion">
 						<s:optgroup label="%{#flagQuestion.key.auditName}" list="#flagQuestion.value" listKey="id" listValue="shortQuestion" />
 					</s:iterator>
@@ -79,6 +81,7 @@
 			</li>
 		</ol>
 	</fieldset>
+	<!-- end problem area -->
 	<fieldset class="form">
 		<h2 class="formLegend">OSHA</h2>
 		<ol>
@@ -99,8 +102,8 @@
 	<fieldset class="form">
 		<ol>
 			<li>
-				<label>Validation Required:</label>
-				<s:checkbox name="criteria.validationRequired"/>
+				<label>Required Status:</label>
+				<s:select list="@com.picsauditing.jpa.entities.AuditStatus@values()" name="criteria.requiredStatus" headerKey="" headerValue=" - Required Status - "/>
 			</li>
 			<li>
 				<label>Insurance Criteria:</label>
@@ -112,6 +115,7 @@
 			</li>
 		</ol>
 	</fieldset>
+	
 	<fieldset class="form submit">
 		<input type="submit" name="button" value="Save" class="picsbutton positive"/>
 		<s:if test="criteria.id > 0">
