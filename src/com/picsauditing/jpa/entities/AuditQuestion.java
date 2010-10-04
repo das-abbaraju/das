@@ -441,4 +441,16 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 			return true;
 		return false;
 	}
+	
+	@Transient
+	public String getShortQuestion() {
+		String columnText = getName();
+
+		if (columnText.length() > 45) {
+			columnText = columnText.substring(0, 45);
+			columnText += " [...]";
+		}
+
+		return getExpandedNumber() + ": " + columnText;
+	}
 }
