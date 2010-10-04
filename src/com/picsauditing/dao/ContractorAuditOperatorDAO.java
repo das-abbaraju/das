@@ -56,6 +56,12 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 			return null;
 		}
 	}
+	
+	public List<ContractorAuditOperator> find(List<Integer> caoIDs) {
+		Query query = em.createQuery("SELECT t FROM ContractorAuditOperator t WHERE t.id IN (" + Strings.implode(caoIDs) +")");
+		
+		return query.getResultList();
+	}
 
 	public List<ContractorAuditOperator> findByContractorAccount(int conID, Permissions perm) {
 		String query = "FROM ContractorAuditOperator cao WHERE cao.audit.contractorAccount.id = :conID "

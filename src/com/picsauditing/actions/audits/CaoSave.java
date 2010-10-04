@@ -2,7 +2,9 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -20,6 +22,7 @@ import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
@@ -37,18 +40,20 @@ import com.picsauditing.util.log.PicsLogger;
 public class CaoSave extends AuditActionSupport {
 
 	protected int caoID = 0;
-	protected int stepID = 0;
 	private String note;
 	private String noteMessage = "";
 	private String saveMessage = "";
 	private List<Integer> caoIDs = new ArrayList<Integer>();
 	private AuditStatus status;
+	private List<ContractorAuditOperatorWorkflow> caoWorkflow = null;
+	// Insurance Policies
+	private List<ContractorAuditOperator> caoList;
+	private boolean insurance = false;
 
 	private NoteDAO noteDAO;
 	protected ContractorAuditOperatorDAO caoDAO;
 	protected OshaAuditDAO oshaAuditDAO;
 	protected ContractorAuditOperatorWorkflowDAO caoWDAO;
-	private List<ContractorAuditOperatorWorkflow> caoWorkflow = null;
 
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilderController auditBuilder;
@@ -71,36 +76,51 @@ public class CaoSave extends AuditActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
-		findConAudit();
+		if (auditID > 0) {
+			findConAudit();
+			
+			if (conAudit.isExpired()) {
+				addActionError("You can't change an expired " + conAudit.getAuditType().getAuditName());
+				return SUCCESS;
+			}
+			
+			caoList = conAudit.getOperators();
+		} else
+			caoList = caoDAO.find(caoIDs);
 
-		if (caoID > 0){
-			if("statusHistory".equals(button)){
-				if(caoID>0)
+		if (caoID > 0) {
+			if ("statusHistory".equals(button)) {
+				if (caoID > 0)
 					caoWorkflow = caoWDAO.findByCaoID(caoID);
-				if(caoWorkflow==null){
+
+				if (caoWorkflow == null) {
 					addActionError("Error pulling up record, please try again");
 					return BLANK;
 				}
+
 				return "caoStatus";
 			}
-			caoIDs.add(caoID);
-		}
 
-		if (conAudit.isExpired()) {
-			addActionError("You can't change an expired " + conAudit.getAuditType().getAuditName());
-			return SUCCESS;
+			caoIDs.add(caoID);
 		}
 
 		if (caoIDs.size() > 0) {
 			if ("statusLoad".equals(button)) {
 				boolean noteRequired = false;
-				List<String> opNames = new ArrayList<String>();
-				
-				for (ContractorAuditOperator cao : conAudit.getOperators()) {
+				Set<String> accountNames = new HashSet<String>();
+				Set<String> auditNames = new HashSet<String>();
+
+				for (ContractorAuditOperator cao : caoList) {
 					if (caoIDs.contains(cao.getId())) {
-						opNames.add(cao.getOperator().getName());
+						if (insurance)
+							accountNames.add(cao.getAudit().getContractorAccount().getName());
+						else
+							accountNames.add(cao.getOperator().getName());
+
+						auditNames.add(cao.getAudit().getAuditType().getAuditName());
+
 						if (!noteRequired) {
-							for (WorkflowStep s : conAudit.getAuditType().getWorkFlow().getSteps()) {
+							for (WorkflowStep s : cao.getAudit().getAuditType().getWorkFlow().getSteps()) {
 								if (s.getOldStatus() != null && cao.getStatus().equals(s.getOldStatus())
 										&& status.equals(s.getNewStatus()) && s.isNoteRequired()) {
 									noteRequired = true;
@@ -111,9 +131,10 @@ public class CaoSave extends AuditActionSupport {
 					}
 				}
 
-				if (!opNames.isEmpty()) {
-					saveMessage += status.getButton() + " " + conAudit.getAuditType().getAuditName() + " for "
-							+ Strings.implode(opNames, ", ") + "";
+				if (!accountNames.isEmpty()) {
+					saveMessage += status.getButton() + " " + Strings.implode(auditNames, ", ") + " for "
+							+ Strings.implode(accountNames, ", ") + "";
+
 					if (noteRequired)
 						noteMessage += "Explain why you are changing the status to " + status;
 				} else
@@ -121,179 +142,57 @@ public class CaoSave extends AuditActionSupport {
 
 				return "caoNoteSave";
 			}
-
+			
+			Set<String> updatedContractors = new HashSet<String>();
 			for (Integer caoID : caoIDs) {
-
-				ContractorAuditOperator cao = conAudit.getCaoByID(caoID);
+				ContractorAuditOperator cao = getCaoByID(caoID);
 				if (cao == null)
 					throw new RecordNotFoundException("ContractorAuditOperator");
 
-				WorkflowStep step = null;
-				if (stepID == 0) {
-					for (WorkflowStep w : conAudit.getAuditType().getWorkFlow().getSteps()) {
-						if (w.getOldStatus() != null && w.getOldStatus().equals(cao.getStatus())
-								&& w.getNewStatus().equals(status)) {
-							step = w;
-							break;
-						}
-					}
-				}
+				WorkflowStep step = getStep(cao);
 
-				if (step == null)
-					addAlertMessage("No action specified");
-				else {
-					if (step.getOldStatus().isSubmitted() && step.getNewStatus().isComplete()) {
-						if (cao.getPercentVerified() < 100)
-							addActionError("Please complete all requirements.");
-					}
-	
-					if (!cao.getStatus().equals(step.getOldStatus())) {
-						addActionError("This action cannot be performed because it is not longer in the "
-								+ step.getOldStatus() + " state");
-					}
-	
-					if (step.isNoteRequired() && Strings.isEmpty(note)) {
-						addActionError("You must enter a note");
-					}
-	
-					if (step.getNewStatus().isSubmittedResubmitted()) {
-						if (cao.getPercentComplete() < 100) {
-							addActionError("Please complete all required questions.");
-						}
-						// if (cao.isCanContractorSubmit()) {
-						// addActionError("Please enter all required questions before submitting the policy.");
-						// }
-					}
-				}
-				
 				if (hasActionErrors())
 					return SUCCESS;
 
-				// TODO stamp notes
 				AuditStatus prevStatus = cao.getStatus();
 				cao.changeStatus(step.getNewStatus(), permissions);
-
-				if(step.getNewStatus().isSubmitted()) {
-					if(conAudit.getExpiresDate() == null)
-						conAudit.setExpiresDate(setExpirationDate());
-				}
 				
-				if (step.getNewStatus().isComplete()) {
-					if (cao.getAudit().getAuditType().getClassType().isPolicy()
-							&& cao.getOperator().isAutoApproveInsurance()) {
-						if (cao.getFlag() != null) {
-							if (cao.getFlag().isGreen())
-								cao.setStatus(AuditStatus.Approved);
-							else if (cao.getFlag().isRed())
-								cao.setStatus(AuditStatus.Incomplete);
-						}
-					}
-				}
-
-				if (step.getEmailTemplate() != null) {
-					EmailBuilder emailBuilder = new EmailBuilder();
-					// TODO decide where we're going to store the email template
-					emailBuilder.setTemplate(step.getEmailTemplate());
-					emailBuilder.setTemplate(conAudit.getAuditType().getTemplate());
-
-					emailBuilder.setPermissions(permissions);
-					if (conAudit.getAuditType().getClassType().isAudit())
-						emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
-					else
-						emailBuilder
-								.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
-					// One day we may need to store the from and to into the
-					// workflow step
-
-					emailBuilder.setContractor(cao.getAudit().getContractorAccount(), cao.getAudit().getAuditType()
-							.getClassType().isPolicy() ? OpPerms.ContractorInsurance : OpPerms.ContractorSafety);
-					// or??
-					emailBuilder.setConAudit(conAudit);
-
-					emailBuilder.addToken("cao", cao);
-					EmailQueue email = emailBuilder.build();
-					email.setViewableBy(cao.getOperator());
-					EmailSender.send(email);
-				}
-
-				if (step.getNewStatus().after(AuditStatus.Submitted)) {
-					// Expire previous audits
-					int lastYear = DateBean.getCurrentYear() - 1;
-					for (ContractorAudit oldAudit : conAudit.getContractorAccount().getAudits()) {
-						if (!oldAudit.equals(conAudit) && !oldAudit.isExpired()) {
-							if (oldAudit.getAuditType().equals(conAudit.getAuditType())) {
-								if (conAudit.getAuditType().isAnnualAddendum()) {
-									if (lastYear == Integer.parseInt(conAudit.getAuditFor())
-											&& Integer.parseInt(oldAudit.getAuditFor()) < lastYear - 2) {
-										oldAudit.setExpiresDate(new Date());
-										auditDao.save(oldAudit);
-									}
-								} else if (!conAudit.getAuditType().isHasMultiple()) {
-									oldAudit.setExpiresDate(new Date());
-									auditDao.save(oldAudit);
-								}
-							}
-						}
-					}
-
-					for (AuditCatData auditCatData : conAudit.getCategories()) {
-						if (!auditCatData.isApplies()) {
-							PicsLogger.log("removing unused data for category " + auditCatData.getCategory().getName());
-							if (conAudit.getAuditType().isAnnualAddendum() && auditCatData.getCategory().isSha()) {
-								switch (auditCatData.getCategory().getId()) {
-								case AuditCategory.OSHA_AUDIT:
-									oshaAuditDAO.removeByType(conAudit.getId(), OshaType.OSHA);
-									break;
-								case AuditCategory.MSHA:
-									oshaAuditDAO.removeByType(conAudit.getId(), OshaType.MSHA);
-									break;
-								case AuditCategory.CANADIAN_STATISTICS:
-									oshaAuditDAO.removeByType(conAudit.getId(), OshaType.COHS);
-									break;
-								}
-							} else {
-								auditDataDao.removeDataByCategory(conAudit.getId(), auditCatData.getCategory().getId());
-							}
-						}
-					}
-
-				}
+				if (insurance) {
+					ContractorAccount con = cao.getAudit().getContractorAccount();
+					con.incrementRecalculation();
+					accountDao.save(con);
+					updatedContractors.add(con.getName());
+				} else
+					checkNewStatus(step, cao);
+				
+				
+				if (step.getEmailTemplate() != null)
+					sendStatusChangeEmail(step, cao);
+				
 				caoDAO.save(cao);
-				if (prevStatus != cao.getStatus()) {
-					// Stamping cao workflow
-					ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
-					if (!Strings.isEmpty(note)) {
-						Note newNote = new Note();
-						newNote.setAccount(conAudit.getContractorAccount());
-						newNote.setAuditColumns(permissions);
-						newNote.setSummary("Changed Status from " + prevStatus + " to " + cao.getStatus());
-						newNote.setNoteCategory(NoteCategory.Audits);
-						newNote.setViewableBy(cao.getOperator());
-						newNote.setBody(note);
-						noteDAO.save(newNote);
-						caoW.setNotes(note);
-					}
-					caoW.setCao(cao);
-					caoW.setAuditColumns(permissions);
-					caoW.setPreviousStatus(prevStatus);
-					caoW.setStatus(cao.getStatus());
-					caoDAO.save(caoW);
-				}
+				setCaoUpdatedNote(prevStatus, cao);
+			}
+			
+			if (insurance && updatedContractors.size() > 0) {
+				addActionMessage("Email is sent to " + Strings.implode(updatedContractors, ", ")
+						+ " notifying them about the policy status change");
+			
+				return BLANK;
 			}
 		}
 		
 		if (conAudit != null) {
 			if (caoSteps == null)
 				getValidSteps();
+			
+			if ("Refresh".equals(button)) {
+				auditBuilder.setup(conAudit.getContractorAccount(), getUser());
+				auditBuilder.fillAuditCategories(conAudit);
+				auditPercentCalculator.percentCalculateComplete(conAudit, true);
+				return "refresh";
+			}
 		}
-		
-		if("Refresh".equals(button)) {
-			auditBuilder.setup(conAudit.getContractorAccount(), getUser());
-			auditBuilder.fillAuditCategories(conAudit);
-			auditPercentCalculator.percentCalculateComplete(conAudit, true);
-			return "refresh";
-		}
-		
+
 		if ("caoAjaxSave".equals(button))
 			return "caoTable";
 		return SUCCESS;
@@ -366,10 +265,6 @@ public class CaoSave extends AuditActionSupport {
 		this.caoID = caoID;
 	}
 
-	public void setStepID(int stepID) {
-		this.stepID = stepID;
-	}
-
 	public String getNote() {
 		return note;
 	}
@@ -409,20 +304,187 @@ public class CaoSave extends AuditActionSupport {
 	public void setCaoWorkflow(List<ContractorAuditOperatorWorkflow> caoWorkflow) {
 		this.caoWorkflow = caoWorkflow;
 	}
-	
+
+	public boolean isInsurance() {
+		return insurance;
+	}
+
+	public void setInsurance(boolean insurance) {
+		this.insurance = insurance;
+	}
+
 	private Date setExpirationDate() {
 		Date expiresDate = null;
 		Integer months = conAudit.getAuditType().getMonthsToExpire();
 		if (months != null && months > 0) {
-			if(conAudit.getAuditType().getClassType().isPqf()) {
-				 expiresDate = DateBean.getMarchOfThatYear(DateBean.addMonths(new Date(), months));
-			}
+			if (conAudit.getAuditType().getClassType().isPqf())
+				expiresDate = DateBean.getMarchOfThatYear(DateBean.addMonths(new Date(), months));
 			else
-			 expiresDate = DateBean.addMonths(new Date(), months);
+				expiresDate = DateBean.addMonths(new Date(), months);
 		} else {
 			// check months first, then do date if empty
 			expiresDate = DateBean.getMarchOfNextYear(new Date());
 		}
 		return expiresDate;
+	}
+
+	private ContractorAuditOperator getCaoByID(int id) {
+		if (caoList != null) {
+			for (ContractorAuditOperator cao : caoList) {
+				if (cao.getId() == id)
+					return cao;
+			}
+		}
+
+		return null;
+	}
+	
+	private WorkflowStep getStep(ContractorAuditOperator cao) {
+		WorkflowStep step = null;
+		for (WorkflowStep w : cao.getAudit().getAuditType().getWorkFlow().getSteps()) {
+			if (w.getOldStatus() != null && w.getOldStatus().equals(cao.getStatus())
+					&& w.getNewStatus().equals(status)) {
+				step = w;
+				break;
+			}
+		}
+		
+		if (step == null)
+			addAlertMessage("No action specified");
+		else {
+			if (step.getOldStatus().isSubmitted() && step.getNewStatus().isComplete()) {
+				if (cao.getPercentVerified() < 100)
+					addActionError("Please complete all requirements.");
+			}
+
+			if (!cao.getStatus().equals(step.getOldStatus()))
+				addActionError("This action cannot be performed because it is not longer in the "
+						+ step.getOldStatus() + " state");
+
+			if (step.isNoteRequired() && Strings.isEmpty(note))
+				addActionError("You must enter a note");
+
+			if (step.getNewStatus().isSubmittedResubmitted()) {
+				if (cao.getPercentComplete() < 100)
+					addActionError("Please complete all required questions.");
+			}
+		}
+		
+		return step;
+	}
+	
+	private void setCaoUpdatedNote(AuditStatus prevStatus, ContractorAuditOperator cao) {
+		if (prevStatus != cao.getStatus()) {
+			// Stamping cao workflow
+			ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
+			if (!Strings.isEmpty(note)) {
+				Note newNote = new Note();
+				newNote.setAccount(conAudit.getContractorAccount());
+				newNote.setAuditColumns(permissions);
+				newNote.setSummary("Changed Status from " + prevStatus + " to " + cao.getStatus());
+				newNote.setNoteCategory(NoteCategory.Audits);
+				newNote.setViewableBy(cao.getOperator());
+				newNote.setBody(note);
+				noteDAO.save(newNote);
+				caoW.setNotes(note);
+			}
+			
+			caoW.setCao(cao);
+			caoW.setAuditColumns(permissions);
+			caoW.setPreviousStatus(prevStatus);
+			caoW.setStatus(cao.getStatus());
+			caoDAO.save(caoW);
+		}
+	}
+	
+	private void sendStatusChangeEmail(WorkflowStep step, ContractorAuditOperator cao)
+	throws Exception {
+		EmailBuilder emailBuilder = new EmailBuilder();
+		// TODO decide where we're going to store the email template
+		emailBuilder.setTemplate(step.getEmailTemplate());
+		emailBuilder.setTemplate(cao.getAudit().getAuditType().getTemplate());
+
+		emailBuilder.setPermissions(permissions);
+		if (cao.getAudit().getAuditType().getClassType().isAudit())
+			emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
+		else
+			emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" 
+					+ permissions.getEmail() + ">");
+		// One day we may need to store the from and to into the workflow step
+
+		emailBuilder.setContractor(cao.getAudit().getContractorAccount(), 
+				cao.getAudit().getAuditType().getClassType().isPolicy() ? 
+						OpPerms.ContractorInsurance : OpPerms.ContractorSafety);
+		// or??
+		emailBuilder.setConAudit(cao.getAudit());
+
+		emailBuilder.addToken("cao", cao);
+		EmailQueue email = emailBuilder.build();
+		email.setViewableBy(cao.getOperator());
+		EmailSender.send(email);
+	}
+	
+	private void checkNewStatus(WorkflowStep step, ContractorAuditOperator cao) {
+		ContractorAudit audit = cao.getAudit();
+		
+		if (step.getNewStatus().isSubmitted()) {
+			if (audit.getExpiresDate() == null)
+				audit.setExpiresDate(setExpirationDate());
+		}
+
+		if (step.getNewStatus().isComplete()) {
+			if (cao.getAudit().getAuditType().getClassType().isPolicy()
+					&& cao.getOperator().isAutoApproveInsurance()) {
+				if (cao.getFlag() != null) {
+					if (cao.getFlag().isGreen())
+						cao.setStatus(AuditStatus.Approved);
+					else if (cao.getFlag().isRed())
+						cao.setStatus(AuditStatus.Incomplete);
+				}
+			}
+		}
+
+		if (step.getNewStatus().after(AuditStatus.Submitted)) {
+			// Expire previous audits
+			int lastYear = DateBean.getCurrentYear() - 1;
+			for (ContractorAudit oldAudit : audit.getContractorAccount().getAudits()) {
+				if (!oldAudit.equals(audit) && !oldAudit.isExpired()) {
+					if (oldAudit.getAuditType().equals(audit.getAuditType())) {
+						if (audit.getAuditType().isAnnualAddendum()) {
+							if (lastYear == Integer.parseInt(audit.getAuditFor())
+									&& Integer.parseInt(oldAudit.getAuditFor()) < lastYear - 2) {
+								oldAudit.setExpiresDate(new Date());
+								auditDao.save(oldAudit);
+							}
+						} else if (!audit.getAuditType().isHasMultiple()) {
+							oldAudit.setExpiresDate(new Date());
+							auditDao.save(oldAudit);
+						}
+					}
+				}
+			}
+
+			for (AuditCatData auditCatData : audit.getCategories()) {
+				if (!auditCatData.isApplies()) {
+					PicsLogger.log("removing unused data for category " + auditCatData.getCategory().getName());
+					if (audit.getAuditType().isAnnualAddendum() && auditCatData.getCategory().isSha()) {
+						switch (auditCatData.getCategory().getId()) {
+						case AuditCategory.OSHA_AUDIT:
+							oshaAuditDAO.removeByType(audit.getId(), OshaType.OSHA);
+							break;
+						case AuditCategory.MSHA:
+							oshaAuditDAO.removeByType(audit.getId(), OshaType.MSHA);
+							break;
+						case AuditCategory.CANADIAN_STATISTICS:
+							oshaAuditDAO.removeByType(audit.getId(), OshaType.COHS);
+							break;
+						}
+					} else {
+						auditDataDao.removeDataByCategory(audit.getId(), auditCatData.getCategory().getId());
+					}
+				}
+			}
+
+		}
 	}
 }

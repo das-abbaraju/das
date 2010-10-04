@@ -64,65 +64,20 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		sql.addField("cao.id as caoId");
 		sql.addField("caoaccount.name as caoOperatorName");
 		sql.addField("cao.flag as caoRecommendedFlag");
+		
+		// Get certificates
+		sql.addJoin("LEFT JOIN pqfdata d ON d.auditID = ca.id");
+		sql.addJoin("LEFT JOIN audit_question q ON q.id = d.questionID");
+		sql.addField("d.answer AS certID");
+		sql.addWhere("q.columnHeader = 'Certificate'");
+		sql.addWhere("q.questionType = 'FileCertificate'");
+		sql.addWhere("q.number = 1");
 	}
 	
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
-		// TODO move this to CaoSave
-		if ("save".equalsIgnoreCase(button)) {
-			// TODO Move this over to the new CaoSave class
-			AuditStatus newStatus = null;
-			if (newStatuses != null && newStatuses.size() > 0) {
-				try {
-					newStatus = AuditStatus.valueOf( newStatuses.get(0) );	
-				}
-				catch( Exception emptyStringsDontTurnIntoEnumsVeryWell ) {}
-			}
-			if( caoids != null && caoids.size() > 0 ) {
-				for (Integer i : caoids) {
-		
-					boolean dirty = false;
-					boolean statusChanged = false;
-		
-					ContractorAuditOperator existing = conAuditOperatorDAO.find(i);
-					ContractorAuditOperator newVersion = caos.get(i);
-		
-					if (newStatus != null && !newStatus.equals(existing.getStatus())) {
-						if(newStatus.isIncomplete()) {
-							dirty = false;
-							statusChanged = false;
-							addActionError("Add notes before rejecting " + existing.getAudit().getAuditType().getAuditName() + " for "+ existing.getAudit().getContractorAccount().getName());
-							conAuditOperatorDAO.refresh(existing);
-						}
-						else {
-							existing.setStatus(newStatus);
-							existing.setAuditColumns(permissions);
-							existing.setStatusChangedDate(new Date());
-							dirty = true;
-							statusChanged = true;
-						}
-					}
-
-					if (dirty) {
-						conAuditOperatorDAO.save(existing);
-					}
-
-					if (statusChanged) {
-						ContractorAccount contractor = existing.getAudit().getContractorAccount();
-						contractor.incrementRecalculation();
-						contractorAccountDAO.save(contractor);
-						updatedContractors.add(contractor.getName());
-						ContractorAuditOperatorDAO.saveNoteAndEmail(existing, permissions);
-					}
-				}
-			}
-			if(updatedContractors.size() > 0)
-				addActionMessage("Email is sent to " + Strings.implode(updatedContractors, ",") + " notifying them about the policy status change");
-			return BLANK;
-		}
 		
 		return super.execute();
 	}

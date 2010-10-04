@@ -134,16 +134,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		}.grep(this.operators);
 	}
 
-	@Transient
-	public ContractorAuditOperator getCaoByID(int caoID) {
-		for (ContractorAuditOperator cao : getOperators()) {
-			if (cao.getId() == caoID) {
-				return cao;
-			}
-		}
-		return null;
-	}
-
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getExpiresDate() {
 		return expiresDate;

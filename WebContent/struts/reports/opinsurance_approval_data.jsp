@@ -21,13 +21,12 @@
 		<td>AMBest</td>
 		<td title="Additional Requirements">Add'l</td>
 		<td>Cert</td>
-		<td>Admin Notes</td>
 	</tr>
 </thead>
 <s:iterator value="data" status="stat">
 	<tr>
 		<td style="text-align: center;">
-			<input id="cao_cb<s:property value="get('caoId')"/>" type="checkbox" class="massCheckable" name="caoids" value="<s:property value="get('caoId')"/>"/>
+			<input id="cao_cb<s:property value="get('caoId')"/>" type="checkbox" class="massCheckable" name="caoIDs" value="<s:property value="get('caoId')"/>"/>
 		</td>
 		<td style="text-align: center;" >
 			<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('caoRecommendedFlag').toString())" escape="false"/>
@@ -74,36 +73,20 @@
 			<s:if test="get('valid').toString() == 'Yes'">Yes</s:if>
 			<s:else>No</s:else>
 		</td>
-		<td>
-			<s:if test="get('certificateID') != null">
-				<a href="CertificateUpload.action?id=<s:property value="get('id')"/>&certID=<s:property value="get('certificateID')"/>&button=download"
+		<td class="center">
+			<s:if test="get('certID') != null">
+				<a href="CertificateUpload.action?id=<s:property value="get('id')"/>&certID=<s:property value="get('certID')"/>&button=download"
 				target="_BLANK"><img src="images/icon_insurance.gif" /></a>	
 			</s:if>
-			<s:else></s:else>
-		</td>
-		<td>
-			<a id="show_<s:property value="get('caoId')"/>Text" href="#" class="edit" 
-				onclick="$('#caoNote_<s:property value="get('caoId')"/>').show(); $('#caoNote_<s:property value="get('caoId')"/>').focus(); $('#show_<s:property value="get('caoId')"/>Text').hide(); return false;"
-				title="<s:property value="get('caoNotes')"/>">
-			<s:if test="get('caoNotes') != null">
-				<s:property value="@com.picsauditing.util.Strings@trim(get('caoNotes'),30)"/>
-			</s:if>
-			<s:else>...</s:else>
-			</a>
-			<s:textarea id="caoNote_%{get('caoId')}" rows="4" cols="20" name="caos[%{get('caoId')}].notes" 
-				value="%{get('caoNotes')}" cssStyle="display: none;"
-				onkeyup="$('#cao_cb%{get('caoId')}').attr({checked: true});"/>
 		</td>
 	</tr>
 </s:iterator>
 	<tr>
-		<td <s:if test="filter.primaryInformation">colspan="11"</s:if><s:else>colspan="10"</s:else>>
+		<td colspan="<s:property value="filter.primaryInformation ? 10 : 9" />">
 			<div style="height:28px;">
-			<s:radio cssClass="statusSelects" name="newStatuses" list="#{'Approved':'Approve Selected','Rejected':'Reject Selected','NotApplicable':'Mark as N/A'}"/>
+			<s:radio cssClass="statusSelects" name="newStatuses" list="#{'Approved':'Approve Selected','Incomplete':'Reject Selected','NotApplicable':'Mark as N/A'}" />
 			</div>
-			<div class="buttons">
-				<a class="picsbutton positive" href="#" onclick="return saveRows();">Save Changes</a>
-			</div>
+			<a class="picsbutton positive" href="#" onclick="return changeAuditStatus();">Save Changes</a>
 		</td>
 	</tr>
 </table>

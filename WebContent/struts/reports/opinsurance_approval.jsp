@@ -32,7 +32,50 @@ function saveRows() {
 	return false;
 }
 
+function changeAuditStatus() {
+	var caoIDs = new Array();
+	$('#approveInsuranceForm').find('input[name=caoIDs]:checked').each(function() {
+		caoIDs.push($(this).val());
+	});
+
+	var status = $('#approveInsuranceForm').find('input[name=newStatuses]:checked').val();
+	if (status == undefined) {
+		alert("Please choose a status");
+		return false;
+	}
+	
+	var data= {
+		status: status,
+		caoIDs: caoIDs,
+		button: 'statusLoad',
+		insurance: true
+	};
+
+	$('#noteAjax').load('CaoSaveAjax.action', data, function(){
+        $.blockUI({ message:$('#noteAjax'), css: { width: '350px'} });
+         
+        if($('.clearOnce').val()=='')
+			$('#clearOnceField').val(0);
+		
+	    $('#yesButton').click(function(){
+	        $.blockUI({message: 'Saving Status, please wait...'});
+	        data.button = '';
+	        data.note = $('#addToNotes').val();
+	        data.insurance = true;
+	        $.post('CaoSaveAjax.action', data, function() { $.unblockUI(); });
+	    });
+	     
+	    $('#noButton').click(function(){
+	        $.unblockUI();
+	        return false;
+	    });
+	});
+		
+	return false;
+}
+
 </script>
+<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
 </head>
 <body>
 <h1>Policies Awaiting Decision</h1>
@@ -49,8 +92,8 @@ function saveRows() {
 
 <s:include value="filters.jsp" />
 
-<div id="messages">
-</div>
+<div id="messages"></div>
+<div id="noteAjax"></div>
 
 <s:form id="approveInsuranceForm" method="post" cssClass="forms">
 <div id="report_data">
