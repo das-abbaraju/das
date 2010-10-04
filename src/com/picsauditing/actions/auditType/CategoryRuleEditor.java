@@ -89,6 +89,25 @@ public class CategoryRuleEditor extends PicsActionSupport {
 				button = "edit";
 				return SUCCESS;
 			}
+			if ("create".equals(button)) {
+				AuditRule source = dao.findAuditCategoryRule(id);
+				rule.merge(source);
+				if (rule.getId() == 0) {
+					rule.defaultDates();
+					rule.calculatePriority();
+					rule.setAuditColumns(permissions);
+					dao.save(rule);
+				} else {
+					AuditRule acr = dao.findAuditCategoryRule(rule.getId());
+					acr.update(rule);
+					acr.calculatePriority();
+					acr.setAuditColumns(permissions);
+					dao.save(acr);
+				}
+				dao.deleteChildren(rule, permissions);
+				this.redirect("CategoryRuleEditor.action?id=" + rule.getId());
+				return BLANK;
+			}
 			if ("delete".equals(button)) {
 				String redirect = "";
 				List<AuditCategoryRule> lGranular = dao.getLessGranular(rule, date);
