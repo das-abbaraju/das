@@ -137,7 +137,7 @@ public class FlagDataCalculator {
 				for (ContractorAudit ca : conCriteria.getContractor().getAudits()) {
 					if (ca.getAuditType().equals(criteria.getAuditType())) {
 						for (ContractorAuditOperator cao : ca.getOperators()) {
-							if (cao.getStatus().after(AuditStatus.Submitted))
+							if (cao.getStatus().after(criteria.getRequiredStatus()) || cao.getStatus().isResubmit())
 								count++;
 							else if (cao.getStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
 								count++;
@@ -154,9 +154,9 @@ public class FlagDataCalculator {
 							// TODO Make sure we identify the right operator or
 							// corporate here
 							if (opCriteria.getOperator().equals(cao.getOperator())) {
-								if (cao.getStatus().after(AuditStatus.Submitted))
+								if (cao.getStatus().isResubmit())
 									return false;
-								else if (!criteria.isValidationRequired() && cao.getStatus().isSubmitted())
+								else if (!cao.getStatus().before(criteria.getRequiredStatus()))
 									return false;
 								else if (cao.getStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
 									return false;
@@ -178,7 +178,7 @@ public class FlagDataCalculator {
 
 		} else {
 
-			if (criteria.isValidationRequired() && !conCriteria.isVerified())
+			if (criteria.getRequiredStatus().after(AuditStatus.Resubmitted) && !conCriteria.isVerified())
 				return true;
 
 			final String dataType = criteria.getDataType();
@@ -305,13 +305,7 @@ public class FlagDataCalculator {
 									}
 								}
 
-								AuditStatus requiredStatus = AuditStatus.Submitted;
-								if (key.isValidationRequired())
-									requiredStatus = AuditStatus.Complete;
-								if (key.getAuditType().getClassType().isPolicy())
-									// We may want to move this to
-									// FlagOperatorCriteria
-									requiredStatus = AuditStatus.Approved;
+								AuditStatus requiredStatus =key.getRequiredStatus();
 
 								if (cao.getStatus().before(requiredStatus)) {
 									if (cao.getStatus().isComplete()) {

@@ -156,7 +156,13 @@ public class CaoSave extends AuditActionSupport {
 
 				AuditStatus prevStatus = cao.getStatus();
 				cao.changeStatus(step.getNewStatus(), permissions);
-				
+
+				if(step.getNewStatus().isSubmitted() 
+						|| !cao.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()) {
+					if(conAudit.getExpiresDate() == null)
+						conAudit.setExpiresDate(setExpirationDate());
+				}
+				// we need handle the PQF specific's
 				if (insurance) {
 					ContractorAccount con = cao.getAudit().getContractorAccount();
 					con.incrementRecalculation();

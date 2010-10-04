@@ -30,8 +30,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 	private String description;
 	private String comparison;
 	private MultiYearScope multiYearScope = null;
-	// TODO change this to AuditStatus requiredStatus
-	protected boolean validationRequired;
+	protected AuditStatus requiredStatus = AuditStatus.Complete;
 	private String defaultValue;
 	private boolean allowCustomValue = false;
 	private String dataType = "string";
@@ -145,12 +144,13 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 		this.multiYearScope = multiYearScope;
 	}
 
-	public boolean isValidationRequired() {
-		return validationRequired;
+	@Enumerated(EnumType.STRING)
+	public AuditStatus getRequiredStatus() {
+		return requiredStatus;
 	}
 
-	public void setValidationRequired(boolean validationRequired) {
-		this.validationRequired = validationRequired;
+	public void setRequiredStatus(AuditStatus requiredStatus) {
+		this.requiredStatus = requiredStatus;
 	}
 
 	public String getDefaultValue() {
@@ -221,7 +221,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 		json.put("description", description);
 		json.put("comparison", comparison);
 		json.put("multiYearScope", multiYearScope == null ? null : multiYearScope.toString());
-		json.put("validationRequired", validationRequired);
+		json.put("requiredStatus", requiredStatus);
 		json.put("defaultValue", defaultValue);
 		json.put("allowCustomValue", allowCustomValue);
 		json.put("dataType", dataType);

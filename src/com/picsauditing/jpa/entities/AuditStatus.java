@@ -6,6 +6,7 @@ public enum AuditStatus {
 	Pending("Pending", "yellow"),
 	Incomplete("Reject", "red"),
 	Submitted("Submit", "aqua"),
+	Resubmit("Resubmit","yellow"),
 	Resubmitted("Resubmit", "bluegreen"),
 	Complete("Complete", "green"),
 	Approved("Approve", "purple"),
@@ -116,6 +117,14 @@ public enum AuditStatus {
 		if (this.equals(Submitted))
 			return true;
 		if (this.equals(Pending))
+			return true;
+		return false;
+	}
+	
+	public boolean isResubmit() {
+		if(this.equals(Resubmit))
+			return true;
+		if(this.equals(Resubmitted))
 			return true;
 		return false;
 	}
