@@ -74,7 +74,9 @@
 		<s:iterator value="categories" status="rowStatus">
 			<s:if test="key.parent == NULL && !value.applies && permissions.picsEmployee">
 				<li id="category_<s:property value="key.id"/>">
+					<div class="addLink">Add</div>
 					<a class="hist-category" href="#categoryID=<s:property value="key.id" />"><s:property value="key.name" /></a>
+					<div class="clear"></div>
 				</li>
 			</s:if>
 		</s:iterator>

@@ -401,6 +401,18 @@ ul.vert-toolbar li.head .hidden-button{
 ul.vert-toolbar li.head.hover .hidden-button {
 	display: inline;
 }
+div.addLink{
+	float: right;
+	padding: 10px 5px 0px 0px;
+	color: #012142;
+}	
+div.addLink.hover{
+	float: right;
+	padding: 10px 5px 0px 0px;	
+	text-decoration: underline;
+	cursor: pointer;
+	color: #A84D10;
+}
 #nacatlist{
 	display: none;
 }

@@ -69,18 +69,20 @@ public class ContractorAuditController extends AuditActionSupport {
 			if (categoryID > 0 && permissions.isPicsEmployee()) {
 				if ("IncludeCategory".equals(button)) {
 					for (AuditCatData data : conAudit.getCategories()) {
-						if (data.getId() == categoryID) {
+						if (data.getCategory().getId() == categoryID) {
 							data.setApplies(true);
 							data.setOverride(true);
+							//auditCategoryDAO.save(data);
 						}
 					}
 				}
 				
 				if ("UnincludeCategory".equals(button)) {
 					for (AuditCatData data : conAudit.getCategories()) {
-						if (data.getId() == categoryID) {
+						if (data.getCategory().getId() == categoryID) {
 							data.setApplies(false);
 							data.setOverride(true);
+							//auditCategoryDAO.save(data);
 						}
 					}
 				}
