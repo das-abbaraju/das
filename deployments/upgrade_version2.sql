@@ -1,3 +1,10 @@
+-- move app_index AND app_index_stats
+-- move app_translation
+-- move audit_category, audit_question
+-- move audit_category_rule, audit_type_rule
+-- move workflow, workflow_step
+
+
 /** Update the requiresOQ for all contractors
  * we don't want to run this yet 
 update accounts set requiresOQ = 1
@@ -371,13 +378,9 @@ where at.classType != 'Policy'
 and validationRequired = 1;
 
 
-/*
+/*  DDL Changes
  *  Dropping Tables and Columns
  */
-alter table audit_type drop column `mustVerify`, drop column `hasRequirements`;
-
-alter table contractor_audit drop column `auditStatus`, drop column `completedDate`, drop column `closedDate`, drop column `percentComplete`, drop column `percentVerified`;
-
 alter table contractor_audit_operator drop column `submittedDate`, drop column `completedDate`, drop column `approvedDate`, drop column `incompleteDate`, drop column `notes`, drop column `reason`, drop column `valid`, drop column `certificateID`, drop column `statusChangedBy`;
 
 drop table pqfcatdata;
@@ -390,4 +393,22 @@ drop table pqfquestions;
 drop table audit_operator;
 drop table desktopmatrix;
 
+ALTER TABLE `audit_type` 
+	DROP COLUMN `mustVerify`, 
+	DROP COLUMN `hasRequirements`;
 
+ALTER TABLE `contractor_audit` 
+	DROP COLUMN `auditStatus`, 
+	DROP COLUMN `completedDate`, 
+	DROP COLUMN `closedDate`, 
+	DROP COLUMN `percentComplete`, 
+	DROP COLUMN `percentVerified`, 
+	DROP KEY `auditTypeStatus`;
+
+ALTER TABLE `contractor_audit_operator` 
+	DROP COLUMN `valid`, 
+	DROP COLUMN `certificateID`, 
+	DROP COLUMN `notes`, 
+	DROP COLUMN `reason`, COMMENT='';
+
+-- End of DDL changes (should be last)
