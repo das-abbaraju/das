@@ -1,9 +1,17 @@
+insert into audit_category_rule 
+(priority, include, catID, auditTypeID, opID, createdBy, updatedBy, creationDate, updateDate, effectiveDate, expirationDate, level)
+select 315, 1, ac.id, t.auditTypeID, opID, 941, 941, now(), now(), now(), '4000-01-01', 3
+from temp_cao_conversion t
+join audit_category ac on ac.legacyID = t.id;
+
+
+
 drop table temp_pqfopmatrix_full;
 
 create table temp_pqfopmatrix_full as
 select c.catID, o.opID, r.riskLevel, case when t.id is null then 0 else 1 end onFlag, 0 include
-from (select distinct catID FROM pics_yesterday.pqfopmatrix m join pics_yesterday.pqfcategories t on m.catID = t.id) c
-join (select distinct inheritAuditCategories opID FROM pics_yesterday.accounts a join pics_yesterday.operators using (id) WHERE a.status in ('Active','Pending') and a.type = 'Operator') o
+from (select distinct catID FROM pqfopmatrix m join pqfcategories t on m.catID = t.id) c
+join (select distinct inheritAuditCategories opID FROM accounts a join operators using (id) WHERE a.status in ('Active','Pending') and a.type = 'Operator') o
 join (select distinct riskLevel FROM pqfopmatrix) r
 LEFT join pqfopmatrix t on t.catID = c.catID and t.opID = o.opID and t.riskLevel = r.riskLevel;
 
@@ -17,9 +25,9 @@ from temp_pqfopmatrix_full;
 insert into audit_category_rule (auditTypeID, catID, questionID, include, effectiveDate, expirationDate, createdBy, creationDate, updatedBy, updateDate)
 select 2, c.categoryID, q.questionID, CASE WHEN m.id > 0 THEN 1 ELSE 0 END,
 	'2000-01-01', '4000-01-01', 1, now(), 1, now()
-from (select DISTINCT categoryID from pics_yesterday.desktopmatrix) c
-join (select DISTINCT questionID from pics_yesterday.desktopmatrix) q
-left join pics_yesterday.desktopmatrix m on m.categoryID = c.categoryID and m.questionID = q.questionID;
+from (select DISTINCT categoryID from desktopmatrix) c
+join (select DISTINCT questionID from desktopmatrix) q
+left join desktopmatrix m on m.categoryID = c.categoryID and m.questionID = q.questionID;
 
 update audit_category_rule set 
 level = (if(catID is null, 0, 1) + if(auditTypeID is null, 0, 1) +
@@ -30,7 +38,8 @@ priority = (if(catID is null, 0, 120) + if(auditTypeID is null, 0, 105) +
 	if(risk is null, 0, 102) + if(opID is null, 0, 104) +
 	if(questionID is null, 0, 125));
 
-delete from audit_category_rule where opID > 0 and opID not in (select id from accounts);
+-- for orphaned accounts
+-- delete from audit_category_rule where opID > 0 and opID not in (select id from accounts);
 
 drop table temp_audit_type_rule;
 
