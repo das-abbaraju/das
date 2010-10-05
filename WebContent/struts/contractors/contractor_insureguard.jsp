@@ -29,41 +29,54 @@
 <table>
 	<tr>
 		<td>
-			<h3>Policies</h3>
-			<s:if test="certData.keySet().size > 0">
-				<table class="report">
-					<thead>
-						<tr>
-							<th>Policy Type</th>
-							<th>Operator</th>
-							<th>View</th>
-						</tr>
-					</thead>
-					<tbody>
-						<s:iterator value="certData.keySet()" id="key">
-							<s:iterator value="certData.get(#key)" id="data">
-								<s:iterator value="certMap.get(#data.answer)" id="cert" status="stat">
-									<tr>
-										<s:if test="#stat.first">
-											<td rowspan="<s:property value="certMap.get(#data.answer).size" />">
-												<s:property value="#key.auditName" />
+			<s:iterator value="policyOrder" id="status">
+				<s:if test="policies.get(#status) != null">
+					<h3><s:property value="#status" /> Policies</h3>
+					<table class="report">
+						<thead>
+							<tr>
+								<th>Policy Type</th>
+								<th>Operator</th>
+								<th>Status</th>
+								<th>View</th>
+							</tr>
+						</thead>
+						<tbody>
+							<s:iterator value="policies.get(#status).keySet()" id="type">
+								<s:iterator value="policies.get(#status).get(#type)" id="data">
+									<s:iterator value="#data.audit.operators" id="cao" status="stat">
+										<tr>
+											<td>
+												<a href="Audit.action?auditID=<s:property value="#data.audit.id" />"><s:property value="#type.auditName" /></a>
+												<s:if test="#data.audit.requestingOpAccount != null">
+													<br />
+													<span style="font-size:10px"> for <s:property value="#data.audit.requestingOpAccount.name"/></span>
+												</s:if>
 											</td>
-										</s:if>
-										<td><s:property value="#cert.question.category.name" /></td>
-										<s:if test="#stat.first">
-											<td class="center" rowspan="<s:property value="certMap.get(#data.answer).size" />">
-												<a title="Certificate" href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="#data.answer"/>&button=download" target="_BLANK">
+											<td>
+												<pics:permission perm="ManageOperators">
+													<a href="FacilitiesEdit.action?id=<s:property value="#cao.operator.id"/>"><s:property value="#cao.operator.name"/></a>
+												</pics:permission>
+												<pics:permission perm="ManageOperators" negativeCheck="true">
+													<s:property value="#cao.operator.name"/>
+												</pics:permission>
+											</td>
+											<td><span class="<s:if test="#status == 'Pending'">Amber</s:if><s:elseif test="#status == 'Current'">Green</s:elseif><s:elseif test="#status == 'Expired'">Red</s:elseif>"><s:property value="#cao.status" /></span></td>
+											<td class="center">
+												<a title="<s:property value="getCertByID(#data.answer).description"/>"
+													href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="#data.answer"/>&button=download"
+													target="_BLANK">
 													<img src="images/icon_insurance.gif"/>
 												</a>
 											</td>
-										</s:if>
-									</tr>
+										</tr>
+									</s:iterator>
 								</s:iterator>
 							</s:iterator>
-						</s:iterator>
-					</tbody>
-				</table>
-			</s:if>
+						</tbody>
+					</table>
+				</s:if>
+			</s:iterator>
 		</td>
 		<td style="padding-left: 2em;">
 			<h3>Certificates</h3>
@@ -95,11 +108,13 @@
 									<s:set name="idString" value="%{id + ''}" />
 									<s:iterator value="certMap.get(#idString)" id="data">
 										<s:if test="!permissions.operatorCorporate || permissions.insuranceOperatorID == operator.id">
-											<tr>
-												<td style="font-size:10px"><nobr><s:property value="#data.audit.auditType.auditName"/></nobr></td>
-												<td style="font-size:10px"><nobr><s:property value="#data.question.category.name"/></nobr></td>
-												<td style="font-size:10px"><nobr><s:date name="#data.audit.expiresDate" format="M/d/yy"/></nobr></td>
-											</tr>
+											<s:iterator value="#data.audit.operators" id="cao">
+												<tr>
+													<td style="font-size:10px"><nobr><s:property value="#data.audit.auditType.auditName"/></nobr></td>
+													<td style="font-size:10px"><nobr><s:property value="#cao.operator.name"/></nobr></td>
+													<td style="font-size:10px"><nobr><s:date name="#data.audit.expiresDate" format="M/d/yy"/></nobr></td>
+												</tr>
+											</s:iterator>
 										</s:if>
 									</s:iterator>
 								</table>

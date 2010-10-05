@@ -1,6 +1,5 @@
 package com.picsauditing.actions.contractors;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -19,6 +18,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Certificate;
@@ -33,21 +33,19 @@ public class ConInsureGuard extends ContractorActionSupport {
 	private AuditTypeDAO auditTypeDAO;
 	private CertificateDAO certificateDAO;
 	private ContractorAuditOperatorDAO caoDao;
+	private AuditBuilderController auditBuilder;
+	
 	private int selectedAudit;
 	private int selectedOperator;
 	private String auditFor;
 	private List<AuditType> auditTypeList;
 	private List<Certificate> certificates;
-	private Map<AuditType, List<AuditData>> certData;
-
-	private AuditBuilderController auditBuilder;
-
 	private AuditTypeClass auditClass = AuditTypeClass.Policy;
-	private Map<ContractorAudit, List<ContractorAuditOperator>> requested = new HashMap<ContractorAudit, List<ContractorAuditOperator>>();
-	private Map<ContractorAudit, List<ContractorAuditOperator>> current = new HashMap<ContractorAudit, List<ContractorAuditOperator>>();
-	private Set<ContractorAudit> expiredAudits = new HashSet<ContractorAudit>();
-	private Set<ContractorAudit> others = new HashSet<ContractorAudit>();
-	private Map<String, List<AuditData>> certMap = new HashMap<String, List<AuditData>>();
+	
+	// Using CAOs
+	private Map<String, Map<AuditType, Set<AuditData>>> policies = new HashMap<String, Map<AuditType,Set<AuditData>>>();
+	private Map<String, Set<AuditData>> certMap = new HashMap<String, Set<AuditData>>();
+	private String[] policyOrder = new String[] { "Pending", "Current", "Expired", "Other" };
 
 	public ConInsureGuard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
 			AuditBuilderController auditBuilder, CertificateDAO certificateDAO, ContractorAuditOperatorDAO caoDao) {
@@ -64,60 +62,65 @@ public class ConInsureGuard extends ContractorActionSupport {
 			return LOGIN;
 		findContractor();
 		
-		certData = certificateDAO.findConCertsAuditData(id);
+		Map<AuditType, Set<AuditData>> certData = certificateDAO.findConCertsAuditData(id);
+		
+		Map<AuditType, Set<AuditData>> pending = new HashMap<AuditType, Set<AuditData>>();
+		Map<AuditType, Set<AuditData>> current = new HashMap<AuditType, Set<AuditData>>();
+		Map<AuditType, Set<AuditData>> expired = new HashMap<AuditType, Set<AuditData>>();
+		Map<AuditType, Set<AuditData>> other = new HashMap<AuditType, Set<AuditData>>();
+		
 		for (AuditType key : certData.keySet()) {
 			Iterator<AuditData> iterator = certData.get(key).iterator();
 			
 			while (iterator.hasNext()) {
-				if (!iterator.next().getAudit().isVisibleTo(permissions))
+				AuditData d = iterator.next();
+				if (!d.getAudit().isVisibleTo(permissions))
 					iterator.remove();
 				else {
-					for (AuditData d : certData.get(key)) {
-						boolean isCertID = false;
-						
-						try {
-							isCertID = Integer.parseInt(d.getAnswer()) > 0;
-						} catch (Exception e) {
-							// TODO do we need to print out an error message?
-						}
-						
-						if (isCertID) {
-							if (certMap.get(d.getAnswer()) == null)
-								certMap.put(d.getAnswer(), new ArrayList<AuditData>());
+					for (ContractorAuditOperator cao : d.getAudit().getOperators()) {
+						if (cao.getStatus().equals(AuditStatus.Pending)
+								|| cao.getStatus().equals(AuditStatus.Submitted)
+								|| cao.getStatus().equals(AuditStatus.Resubmitted)) {
+							if (pending.get(key) == null)
+								pending.put(key, new HashSet<AuditData>());
 							
-							if (!certMap.get(d.getAnswer()).contains(d))
-								certMap.get(d.getAnswer()).add(d);
+							pending.get(key).add(d);
+						} else if (cao.getStatus().equals(AuditStatus.Complete)
+									|| cao.getStatus().equals(AuditStatus.Approved)) {
+							if (current.get(key) == null)
+								current.put(key, new HashSet<AuditData>());
+							
+							current.get(key).add(d);
+						} else if (cao.getStatus().equals(AuditStatus.Expired)) {
+							if (expired.get(key) == null)
+								expired.put(key, new HashSet<AuditData>());
+							
+							expired.get(key).add(d);
+						} else {
+							if (other.get(key) == null)
+								other.put(key, new HashSet<AuditData>());
+							
+							other.get(key).add(d);
 						}
 					}
+					
+					if (certMap.get(d.getAnswer()) == null)
+						certMap.put(d.getAnswer(), new HashSet<AuditData>());
+					
+					certMap.get(d.getAnswer()).add(d);
 				}
 			}
 		}
 		
-		List<ContractorAuditOperator> caoList = getCaoList();
-
-		for (ContractorAuditOperator cao : caoList) {
-			if (cao.getAudit().isExpired()) {
-				expiredAudits.add(cao.getAudit());
-			} else if (cao.getStatus().isPending() || cao.getStatus().isSubmitted() || cao.getStatus().isComplete()
-					|| cao.getStatus().isIncomplete()) {
-				if (requested.get(cao.getAudit()) == null)
-					requested.put(cao.getAudit(), new ArrayList<ContractorAuditOperator>());
-
-				requested.get(cao.getAudit()).add(cao);
-			} else if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable()) {
-				if (current.get(cao.getAudit()) == null)
-					current.put(cao.getAudit(), new ArrayList<ContractorAuditOperator>());
-
-				current.get(cao.getAudit()).add(cao);
-			}
-		}
-
-		for (ContractorAudit ca : contractor.getAudits()) {
-			if (ca.getAuditType().getClassType().isPolicy())
-				if (!requested.keySet().contains(ca) && !current.keySet().contains(ca) && !expiredAudits.contains(ca))
-					others.add(ca);
-		}
-
+		if (pending.keySet().size() > 0)
+			policies.put("Pending", pending);
+		if (current.keySet().size() > 0)
+			policies.put("Current", current);
+		if (expired.keySet().size() > 0)
+			policies.put("Expired", expired);
+		if (other.keySet().size() > 0)
+			policies.put("Other", other);
+		
 		if (button != null && button.equals("Add")) {
 			if (selectedAudit > 0) {
 				boolean alreadyExists = false;
@@ -236,28 +239,31 @@ public class ConInsureGuard extends ContractorActionSupport {
 		
 		return certificates;
 	}
-
-	public Map<ContractorAudit, List<ContractorAuditOperator>> getRequested() {
-		return requested;
-	}
-
-	public Map<ContractorAudit, List<ContractorAuditOperator>> getCurrent() {
-		return current;
-	}
-
-	public Set<ContractorAudit> getExpiredAudits() {
-		return expiredAudits;
-	}
-
-	public Set<ContractorAudit> getOthers() {
-		return others;
+	
+	public Certificate getCertByID(String certID) {
+		int id = 0;
+		
+		try {
+			id = Integer.parseInt(certID);
+			
+			for (Certificate c : getCertificates()) {
+				if (c.getId() == id)
+					return c;
+			}
+		} catch (Exception e) { }
+		
+		return null;
 	}
 	
-	public Map<AuditType, List<AuditData>> getCertData() {
-		return certData;
-	}
-	
-	public Map<String, List<AuditData>> getCertMap() {
+	public Map<String, Set<AuditData>> getCertMap() {
 		return certMap;
+	}
+
+	public Map<String, Map<AuditType, Set<AuditData>>> getPolicies() {
+		return policies;
+	}
+	
+	public String[] getPolicyOrder() {
+		return policyOrder;
 	}
 }

@@ -2,8 +2,10 @@ package com.picsauditing.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -126,23 +128,23 @@ public class CertificateDAO extends PicsDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Map<AuditType, List<AuditData>> findConCertsAuditData(int conID) {
+	public Map<AuditType, Set<AuditData>> findConCertsAuditData(int conID) {
 		Query query = em.createQuery("SELECT d FROM AuditData d " +
 				"WHERE d.audit.auditType.classType = 'Policy' " +
+				"AND d.question.columnHeader= 'Certificate' " +
 				"AND d.question.questionType = 'FileCertificate' " +
 				"AND d.audit.contractorAccount.id = ?");
 		
 		query.setParameter(1, conID);
 		List<AuditData> data = query.getResultList();
 		
-		Map<AuditType, List<AuditData>> map = new HashMap<AuditType, List<AuditData>>();
+		Map<AuditType, Set<AuditData>> map = new HashMap<AuditType, Set<AuditData>>();
 		
 		for (AuditData d : data) {
 			if (map.get(d.getAudit().getAuditType()) == null)
-				map.put(d.getAudit().getAuditType(), new ArrayList<AuditData>());
+				map.put(d.getAudit().getAuditType(), new HashSet<AuditData>());
 
-			if (!map.get(d.getAudit().getAuditType()).contains(d))
-				map.get(d.getAudit().getAuditType()).add(d);
+			map.get(d.getAudit().getAuditType()).add(d);
 		}
 		
 		return map;
