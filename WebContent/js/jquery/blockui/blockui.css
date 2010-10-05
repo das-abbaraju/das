@@ -1,7 +1,13 @@
 /** BlockUI data ***/
 
 .blockUI.blockMsg.blockElement{
-	background-color: #000000;
-	font-size: 24px;
-	background: url("../../../images/loader.gif") no-repeat top left;
+	margin-top: 50px;
+	color: #555555;
+	font-size: 18px;
+	padding: 10px 10px 10px 25px;
+	background: url("../../../images/loader.gif") no-repeat center left #FFFFFF;
+	border-left: 8px solid #FFFFFF;
+	line-height: 18px;
+	text-transform: uppercase;
+	font-weight: bold;
 }
