@@ -247,7 +247,8 @@ and validationRequired = 1;
 /*  DDL Changes
  *  Dropping Tables and Columns
  */
-alter table contractor_audit_operator drop column `submittedDate`, drop column `completedDate`, drop column `approvedDate`, drop column `incompleteDate`, drop column `notes`, drop column `reason`, drop column `valid`, drop column `certificateID`, drop column `statusChangedBy`;
+alter table contractor_audit_operator drop column `submittedDate`, drop column `completedDate`, drop column `approvedDate`, drop column `incompleteDate`, 
+	drop column `notes`, drop column `reason`, drop column `valid`, drop column `certificateID`, drop column `statusChangedBy`;
 
 drop table pqfcatdata;
 alter table pqfcategories drop foreign key  `FK_pqfcategories` ;
@@ -270,11 +271,5 @@ ALTER TABLE `contractor_audit`
 	DROP COLUMN `percentComplete`, 
 	DROP COLUMN `percentVerified`, 
 	DROP KEY `auditTypeStatus`;
-
-ALTER TABLE `contractor_audit_operator` 
-	DROP COLUMN `valid`, 
-	DROP COLUMN `certificateID`, 
-	DROP COLUMN `notes`, 
-	DROP COLUMN `reason`, COMMENT='';
 
 -- End of DDL changes (should be last)
