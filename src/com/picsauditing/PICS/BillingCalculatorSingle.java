@@ -29,7 +29,8 @@ public class BillingCalculatorSingle {
 	public static final Date CONTRACT_RENEWAL_LOREAL = DateBean.parseDate("2010-07-01");
 	public static final Date CONTRACT_RENEWAL_SUNDYNE = DateBean.parseDate("2010-10-01");
 	public static final Date CONTRACT_RENEWAL_GOODYEAR = DateBean.parseDate("2010-11-02");
-
+	public static final Date CONTRACT_RENEWAL_SINCLAIR = DateBean.parseDate("2010-12-21");
+	
 	static public void setPayingFacilities(ContractorAccount contractor) {
 
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
@@ -296,6 +297,8 @@ public class BillingCalculatorSingle {
 		if (CONTRACT_RENEWAL_SUNDYNE.after(now) && requestedBy.getName().startsWith("Sundyne"))
 			return true;
 		if (CONTRACT_RENEWAL_GOODYEAR.after(now) && requestedBy.getName().startsWith("Goodyear"))
+			return true;
+		if (CONTRACT_RENEWAL_SINCLAIR.after(now) && requestedBy.getName().startsWith("Sinclair"))
 			return true;
 		if (CONTRACT_RENEWAL_LOREAL.after(now)
 				&& (requestedBy.getId() == 10970 || requestedBy.getId() == 10969 || requestedBy.getId() == 10913))
