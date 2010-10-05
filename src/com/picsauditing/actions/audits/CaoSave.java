@@ -158,15 +158,14 @@ public class CaoSave extends AuditActionSupport {
 				cao.changeStatus(step.getNewStatus(), permissions);
 				// Setting the expiration date
 				if(step.getNewStatus().isSubmittedResubmitted()) {
-					if(conAudit.getExpiresDate() == null)
-						conAudit.setExpiresDate(setExpirationDate());
-					else if(conAudit.getAuditType().isRenewable())
-						conAudit.setExpiresDate(setExpirationDate());
+					if(cao.getAudit().getExpiresDate() == null)
+						cao.getAudit().setExpiresDate(setExpirationDate());
+					else if(cao.getAudit().getAuditType().isRenewable())
+						cao.getAudit().setExpiresDate(setExpirationDate());
 				}
-				if( !conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
-					conAudit.setExpiresDate(setExpirationDate());
-
-
+				if( !cao.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep())
+					cao.getAudit().setExpiresDate(setExpirationDate());
+				
 				// we need handle the PQF specific's
 				if (insurance) {
 					ContractorAccount con = cao.getAudit().getContractorAccount();
@@ -390,7 +389,7 @@ public class CaoSave extends AuditActionSupport {
 			ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
 			if (!Strings.isEmpty(note)) {
 				Note newNote = new Note();
-				newNote.setAccount(conAudit.getContractorAccount());
+				newNote.setAccount(cao.getAudit().getContractorAccount());
 				newNote.setAuditColumns(permissions);
 				newNote.setSummary("Changed Status from " + prevStatus + " to " + cao.getStatus());
 				newNote.setNoteCategory(NoteCategory.Audits);
