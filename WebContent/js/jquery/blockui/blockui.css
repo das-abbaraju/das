@@ -1,0 +1,7 @@
+/** BlockUI data ***/
+
+.blockUI.blockMsg.blockElement{
+	background-color: #000000;
+	font-size: 24px;
+	background: url("../../../images/loader.gif") no-repeat top left;
+}
