@@ -1065,6 +1065,15 @@
 			<result name="success">struts/audits/con_audit_file_upload.jsp</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
+		
+		<action name="AddRemoveCategories"
+			class="com.picsauditing.actions.audits.ContractorAuditController">
+			<result>struts/audits/addRemoveCategory.jsp</result>
+		</action>
+		<action name="AddRemoveCategoriesAjax"
+			class="com.picsauditing.actions.audits.ContractorAuditController">
+			<result>struts/audits/addRemoveCategoryData.jsp</result>
+		</action>
 
 		<!-- Track Auditor Payments -->
 

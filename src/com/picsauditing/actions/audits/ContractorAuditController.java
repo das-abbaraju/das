@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.MenuComponent;
@@ -84,6 +85,8 @@ public class ContractorAuditController extends AuditActionSupport {
 						}
 					}
 				}
+//				if(ActionContext.getContext().getName().startsWith("addRemoveCategory"))
+//					return SUCCESS;
 				
 				if ("recalculate".equals(button)) {
 					auditBuilder.setup(conAudit.getContractorAccount(), getUser());
