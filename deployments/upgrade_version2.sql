@@ -113,17 +113,12 @@ update audit_type set workflowID = 4 where id = 1;
 update audit_type set workflowID = 5 where id = 11;
 
 
+-- be sure that 5 and 6 are in the accounts table first
+insert into facilities (corporateID, opID) select 5, id from accounts where country = 'US' and type = 'Operator';
+insert into facilities (corporateID, opID) select 6, id from accounts where country = 'CA' and type = 'Operator';
 
--- START STILL TODO
--- insert the Audit Category Data for subcategories
-select null,acd.auditID,acs.id,acd.requiredCompleted,acd.numRequired,acd.numAnswered, 
-acd.applies,acd.percentCompleted,acd.percentVerified,acd.percentClosed,acd.override, 
-acd.score,acd.scoreCount,acd.createdBy,acd.updatedBy,acd.creationDate,acd.updateDate
-from audit_category acp
-join audit_category acs on acp.id = acs.parentID
-join audit_cat_data acd on acd.categoryID = acp.id
-where acp.parentID is null;
 
+-- convert the cert and is valid on the Policy CAO to the new policy questions for each operator
 insert into pqfdata 
 (auditID, questionID, answer, dateVerified, auditorID, createdBy, creationDate, updatedBy, updateDate)
 select cao.auditID, q.id, cao.valid, cao.statusChangedDate, cao.statusChangedBy, cao.createdBy, cao.creationDate, cao.updatedBy, cao.updateDate
@@ -132,7 +127,7 @@ join contractor_audit ca on ca.id = cao.auditID
 join audit_category ac on ac.auditTypeID = ca.auditTypeID
 join temp_cao_conversion t on t.auditTypeID = ca.auditTypeID and t.opID = cao.opID and ac.legacyID = t.id
 join audit_question q on q.categoryID = ac.id and q.number = 2
-where visible = 1 and valid > '';
+where valid > '';
 
 insert into pqfdata 
 (auditID, questionID, answer, dateVerified, auditorID, createdBy, creationDate, updatedBy, updateDate)
@@ -142,7 +137,7 @@ join contractor_audit ca on ca.id = cao.auditID
 join audit_category ac on ac.auditTypeID = ca.auditTypeID
 join temp_cao_conversion t on t.auditTypeID = ca.auditTypeID and t.opID = cao.opID and ac.legacyID = t.id
 join audit_question q on q.categoryID = ac.id and q.number = 1
-where visible = 1 and cao.certificateID > 0;
+where cao.certificateID > 0;
 
 -- Conversion for Policy CAOs
 update contractor_audit_operator 
@@ -153,124 +148,75 @@ update contractor_audit_operator
 set status = 'Complete'
 where status = 'Verified';
 
--- 
-insert into facilities (corporateID, opID) select 5, id from accounts where country = 'US' and type = 'Operator';
-insert into facilities (corporateID, opID) select 6, id from accounts where country = 'CA' and type = 'Operator';
-
 /*
- * BEGIN: CAO Conversion
+ * BEGIN: CAO Conversion for Non-Policies (audits, pqf, etc)
  */
-TRUNCATE TABLE temp_cao;
+-- TRUNCATE TABLE temp_cao;
 INSERT INTO temp_cao 
-SELECT NULL as id,
-  0                  include,
-  c.id               conID,
-  o.id               opID,
-  o.inheritAudits    gbid,
-  ca.auditTypeID,
-  ca.id              auditID,
-  ca.auditStatus
+SELECT null, ca.conID, t.opID, t.gbID, ca.auditTypeID, ca.id auditID, ca.auditStatus
 FROM contractor_info c
 JOIN contractor_audit ca ON ca.conid = c.id
-JOIN generalcontractors gc ON gc.subid = c.id
+LEFT JOIN (
+SELECT gc.subid conID, o.id opID, o.inheritAudits gbID, ao.auditTypeID FROM generalcontractors gc
 JOIN operators o ON o.id = gc.genid
 JOIN accounts a ON a.id = gc.genid and a.type = 'Operator'
-WHERE auditTypeID NOT IN (SELECT id FROM audit_type WHERE classtype = 'Policy')
--- and c.id < 100
+join audit_operator ao on ao.opID = o.inheritAudits and canSee = 1
+) t ON ca.conID = t.conID and ca.auditTypeID = t.auditTypeID
+JOIN audit_type atype ON atype.id = ca.auditTypeID and classtype != 'Policy'
 ;
 
--- Generate update statements for each rule
-SELECT DISTINCT
-concat('UPDATE temp_cao SET include = ', include, ifnull(concat(' WHERE gbID = ',opID), ''), ifnull(concat( CASE when opID is null then ' WHERE' else ' AND' end, ' auditTypeID = ', auditTypeID), ''), ';' ) 
-FROM audit_type_rule ORDER BY priority;
+-- index temp_cao ??
 
-insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, visible, createdBy, updatedBy, creationDate, updateDate)
+-- Clean up the governing bodies for annual updates and non-pqf audits
+update temp_cao t, accounts a
+set t.gbid = (case when a.country = 'CA' then 6 else 5 end)
+where t.opid = a.id
+and t.audittypeid = 11;
+
+update temp_cao t, accounts a
+set t.gbid = 4 -- PICS Global
+where t.opid = a.id
+and t.audittypeid not in (1,11);
+
+insert into contractor_audit_operator (auditID, opID, status, visible, percentComplete, percentVerified, createdBy, updatedBy, creationDate, updateDate)
 select distinct
  ca.id            auditID,
  t.gbID           opID,
  ca.auditStatus   status,
- ca.completedDate submittedDate,
- ca.closedDate    completedDate,
- 1                visible
+ 1                visible,
+ percentComplete,
+ percentVerified,
  createdBy, updatedBy, creationDate, updateDate
 from temp_cao t
-join contractor_audit ca on t.auditID = ca.id
-where t.auditTypeID = 1;
+join contractor_audit ca on t.auditID = ca.id;
 
 insert into contractor_audit_operator_permission (caoID, opID)
 select cao.id, t.opID from contractor_audit_operator cao
-join temp_cao t on cao.auditID = t.auditID and cao.opID = t.gbID and t.auditTypeID = 1;
-
-insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, visible, createdBy, updatedBy, creationDate, updateDate)
-select distinct
- ca.id            auditID,
- 6                opID, -- PICS Canada
- ca.auditStatus   status,
- ca.completedDate submittedDate,
- ca.closedDate    completedDate,
- 1                visible
- ca.createdBy, ca.updatedBy, ca.creationDate, ca.updateDate
-from temp_cao t
-join contractor_audit ca on t.auditID = ca.id
-join accounts o on t.opID = o.id
-where t.auditTypeID = 11
-and o.country = 'CA';
-
-insert into contractor_audit_operator_permission (caoID, opID)
-select cao.id, t.opID from contractor_audit_operator cao
-join temp_cao t on cao.auditID = t.auditID and t.auditTypeID = 11
-join accounts o on t.opID = o.id AND o.country = 'CA'
-where cao.opID = 6;
-
-insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, visible, createdBy, updatedBy, creationDate, updateDate)
-select distinct
- ca.id            auditID,
- 5                opID, -- PICS US
- ca.auditStatus   status,
- ca.completedDate submittedDate,
- ca.closedDate    completedDate,
- 1                visible
- ca.createdBy, ca.updatedBy, ca.creationDate, ca.updateDate
-from temp_cao t
-join contractor_audit ca on t.auditID = ca.id
-join accounts o on t.opID = o.id
-where t.auditTypeID = 11
-and o.country = 'US';
-
-insert into contractor_audit_operator_permission (caoID, opID)
-select cao.id, t.opID from contractor_audit_operator cao
-join temp_cao t on cao.auditID = t.auditID and t.auditTypeID = 11
-join accounts o on t.opID = o.id AND o.country = 'US'
-where cao.opID = 5;
-
-insert into contractor_audit_operator (auditID, opID, status, submittedDate, completedDate, visible, createdBy, updatedBy, creationDate, updateDate)
-select distinct
- ca.id            auditID,
- 4                opID, -- PICS Global
- ca.auditStatus   status,
- ca.completedDate submittedDate,
- ca.closedDate    completedDate,
- 1                visible
- ca.createdBy, ca.updatedBy, ca.creationDate, ca.updateDate
-from temp_cao t
-join contractor_audit ca on t.auditID = ca.id
-join accounts o on t.opID = o.id
-where t.auditTypeID not IN (1,11)
-and include = 1;
-
-insert into contractor_audit_operator_permission (caoID, opID)
-select cao.id, t.opID from contractor_audit_operator cao
-join temp_cao t on cao.auditID = t.auditID and t.auditTypeID NOT IN (1,11) and include = 1;
-
-update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedDate = ca.closedDate where cao.auditID = ca.id and cao.statusChangedDate is null and cao.status IN ('Complete','Active','Approved');
-update contractor_audit_operator set statusChangedDate = updateDate where statusChangedDate IS NULL;
+join temp_cao t on cao.auditID = t.auditID;
 
 update contractor_audit_operator set status = 'Complete' where status IN ('Active');
 
+select count(*) from contractor_audit_operator where statusChangedDate is null;
 
-/*
- * END: CAO Conversion
- */
+update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedDate = ca.expiresDate where cao.auditID = ca.id and cao.statusChangedDate is null and cao.status IN ('Expired');
+update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedDate = ca.closedDate where cao.auditID = ca.id and cao.statusChangedDate is null and cao.status IN ('Complete','Approved');
+update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedDate = ca.completedDate where cao.auditID = ca.id and cao.statusChangedDate is null and cao.status IN ('Complete','Approved','Submitted','Resubmitted','Incomplete');
+update contractor_audit_operator set statusChangedDate = updateDate where statusChangedDate IS NULL;
+
+-- TODO Add the workflow notes
+insert into contractor_audit_operator_workflow
+select ??
+;
+
+-- insert the Audit Category Data for subcategories
+-- huh?? We may not need this. Keerthi and Trevor can't quite agree if it's needed
+select null,acd.auditID,acs.id,acd.requiredCompleted,acd.numRequired,acd.numAnswered, 
+acd.applies,acd.percentCompleted,acd.percentVerified,acd.percentClosed,acd.override, 
+acd.score,acd.scoreCount,acd.createdBy,acd.updatedBy,acd.creationDate,acd.updateDate
+from audit_category acp
+join audit_category acs on acp.id = acs.parentID
+join audit_cat_data acd on acd.categoryID = acp.id
+where acp.parentID is null;
 
 -- For Policies 
 update flag_criteria fc
@@ -297,12 +243,6 @@ join audit_type at on at.id = fc.auditTypeID
 set fc.requiredStatus = 'Complete'
 where at.classType != 'Policy'
 and validationRequired = 1;
-
-delete from audit_category
-where id in (select cid from temp_single_subcats);
-
-drop table temp_single_subcats;
-
 
 /*  DDL Changes
  *  Dropping Tables and Columns

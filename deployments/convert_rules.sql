@@ -29,6 +29,26 @@ from (select DISTINCT categoryID from desktopmatrix) c
 join (select DISTINCT questionID from desktopmatrix) q
 left join desktopmatrix m on m.categoryID = c.categoryID and m.questionID = q.questionID;
 
+insert into audit_category_rule (auditTypeID, include, effectiveDate, expirationDate, createdBy, creationDate, updatedBy, updateDate)
+select id, 0, '2000-01-01', '4000-01-01', 1, now(), 1, now() from audit_type
+where classType = 'Policy';
+
+insert into audit_category_rule (auditTypeID, catID, include, effectiveDate, expirationDate, createdBy, creationDate, updatedBy, updateDate)
+select a.id, ac.id, 1, '2000-01-01', '4000-01-01', 1, now(), 1, now() from audit_type a
+join audit_category ac on a.id = ac.auditTypeID and ac.name = 'Policy Information'
+where classType = 'Policy';
+
+insert into audit_category_rule (auditTypeID, catID, include, effectiveDate, expirationDate, createdBy, creationDate, updatedBy, updateDate)
+select a.id, ac.id, 1, '2000-01-01', '4000-01-01', 1, now(), 1, now() from audit_type a
+join audit_category ac on a.id = ac.auditTypeID and ac.name = 'Policy Limits'
+where classType = 'Policy';
+
+insert into audit_category_rule (auditTypeID, catID, opID, include, effectiveDate, expirationDate, createdBy, creationDate, updatedBy, updateDate)
+select a.id, ac.id, o.id, 1, '2000-01-01', '4000-01-01', 1, now(), 1, now() from audit_type a
+join audit_category ac on a.id = ac.auditTypeID and ac.name not in ('Policy Limits','Policy Information') and ac.parentID > 0
+join accounts o on ac.name = o.name and o.type IN ('Corporate','Operator')
+where classType = 'Policy';
+
 update audit_category_rule set 
 level = (if(catID is null, 0, 1) + if(auditTypeID is null, 0, 1) +
 	if(risk is null, 0, 1) + if(opID is null, 0, 1) +
@@ -50,8 +70,6 @@ join operators o on a.id = o.id
 join audit_operator ao on ao.canSee = 1 and ao.opID = o.inheritAudits -- o.inheritInsurance
 join audit_type aType on aType.id = ao.auditTypeID and aType.classType != 'Policy'
 where a.status in ('Active','Pending') and a.type = 'Operator';
-
-TODO!! policy type conversion too
 
 truncate table audit_type_rule;
 

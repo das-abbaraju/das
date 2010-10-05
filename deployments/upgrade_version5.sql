@@ -81,3 +81,8 @@ from temp_cao_conversion t
 join audit_category ac on ac.legacyID = t.id
 join accounts a on t.opID = a.id
 join audit_type aType on aType.id = ac.auditTypeID and aType.classType = 'Policy';
+
+delete from audit_category
+where id in (select cid from temp_single_subcats);
+
+drop table temp_single_subcats;
