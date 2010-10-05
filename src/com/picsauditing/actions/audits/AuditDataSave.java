@@ -346,7 +346,7 @@ public class AuditDataSave extends AuditActionSupport {
 			auditData.setAnswer(format.format(value));
 		}
 
-		if ("Date".equals(databaseCopy.getQuestion().getQuestionType())) {
+		if ("Date".equals(questionType)) {
 			SimpleDateFormat s = new SimpleDateFormat("MM/dd/yyyy");
 			Date newDate = DateBean.parseDate(answer);
 
@@ -358,6 +358,11 @@ public class AuditDataSave extends AuditActionSupport {
 				return false;
 			} else
 				auditData.setAnswer(s.format(newDate));
+		}
+		
+		if ("Check Box".equals(questionType)) {
+			if (answer.equals("false"))
+				auditData.setAnswer("");
 		}
 
 		return true;
