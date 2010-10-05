@@ -267,8 +267,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		MenuComponent menuItem = subMenu.addChild(linkText, "Audit.action?auditID=" + audit.getId());
 		menuItem.setAuditId(audit.getId());
-		if (isShowCheckIcon(audit))
-			menuItem.setCssClass("done");
+		if(!permissions.isAdmin()){
+			if (isShowCheckIcon(audit))
+				menuItem.setCssClass("done");
+		}
 		return menuItem;
 	}
 
