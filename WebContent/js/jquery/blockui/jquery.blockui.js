@@ -16,5 +16,5 @@ opacity:0.6,cursor:"default",color:"#fff",backgroundColor:"#000","-webkit-border
 m=[]}})(jQuery);
 
 jQuery(function(){
-	$.blockUI.defaults.css = {};
+	$.blockUI.defaults.css = {top: '20%', left: '35%'};
 });
