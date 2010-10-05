@@ -72,7 +72,6 @@ public class ContractorAuditController extends AuditActionSupport {
 						if (data.getCategory().getId() == categoryID) {
 							data.setApplies(true);
 							data.setOverride(true);
-							//auditCategoryDAO.save(data);
 						}
 					}
 				}
@@ -82,7 +81,6 @@ public class ContractorAuditController extends AuditActionSupport {
 						if (data.getCategory().getId() == categoryID) {
 							data.setApplies(false);
 							data.setOverride(true);
-							//auditCategoryDAO.save(data);
 						}
 					}
 				}
