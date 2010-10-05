@@ -211,9 +211,11 @@ public class AuditRule extends BaseDecisionTreeRule {
 			level++;
 		}
 		if (operatorAccount != null) {
-			if (operatorAccount.isCorporate())
+			if (operatorAccount.isPrimaryCorporate())
+				priority += 108;
+			else if (operatorAccount.isCorporate())
 				// Dozens to a hundred
-				priority += 104;
+				priority += 109;
 			else
 				// Hundreds-thousand
 				priority += 110;

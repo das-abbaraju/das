@@ -314,7 +314,7 @@ public class AuditBuilderController {
 		catData.setApplies(true);
 		catData.setOverride(false);
 		catData.setAuditColumns(new User(User.SYSTEM));
-		if (category.getNumRequired() == 0)
+		if (category.getNumRequired() <= 0)
 			catData.setNumRequired(1);
 		else
 			catData.setNumRequired(category.getNumRequired());
