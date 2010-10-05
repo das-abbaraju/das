@@ -116,6 +116,12 @@ function _updateCategories() {
 			var me = $(text);
 			$('#auditHeaderSideNav').html(me.filter('#audit_sidebar_refresh'));
 			$('#caoTable').html(me.filter('#cao_table_refresh'));
+			$('.cluetip').cluetip({
+				arrows: true,
+				cluetipClass: 'jtip',
+				local: true,
+				clickThrough: false
+			});		
 		}
 	});
 }
