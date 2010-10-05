@@ -191,8 +191,8 @@ from temp_cao t
 join contractor_audit ca on t.auditID = ca.id;
 
 insert into contractor_audit_operator_permission (caoID, opID)
-select cao.id, t.opID from contractor_audit_operator cao
-join temp_cao t on cao.auditID = t.auditID;
+select distinct cao.id, t.opID from contractor_audit_operator cao
+join temp_cao t on cao.auditID = t.auditID and t.gbID = cao.opID;
 
 update contractor_audit_operator set status = 'Complete' where status IN ('Active');
 
@@ -217,6 +217,8 @@ from audit_category acp
 join audit_category acs on acp.id = acs.parentID
 join audit_cat_data acd on acd.categoryID = acp.id
 where acp.parentID is null;
+
+
 
 -- For Policies 
 update flag_criteria fc
@@ -247,8 +249,7 @@ and validationRequired = 1;
 /*  DDL Changes
  *  Dropping Tables and Columns
  */
-alter table contractor_audit_operator drop column `submittedDate`, drop column `completedDate`, drop column `approvedDate`, drop column `incompleteDate`, 
-	drop column `notes`, drop column `reason`, drop column `valid`, drop column `certificateID`, drop column `statusChangedBy`;
+alter table contractor_audit_operator drop column `notes`, drop column `reason`, drop column `valid`, drop column `certificateID`, drop column `statusChangedBy`;
 
 drop table pqfcatdata;
 alter table pqfcategories drop foreign key  `FK_pqfcategories` ;
@@ -273,3 +274,5 @@ ALTER TABLE `contractor_audit`
 	DROP KEY `auditTypeStatus`;
 
 -- End of DDL changes (should be last)
+
+-- TODO Create completed welcome call audits for all contractors that don't already have one
