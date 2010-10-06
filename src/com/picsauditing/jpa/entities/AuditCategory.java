@@ -129,15 +129,14 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 
 		return parent.getFullNumber() + "." + number;
 	}
-	
+
 	@Transient
-	public String getFullyQualifiedName(){
-		if(parent == null)
-			return getAuditType().getAuditName()+" - "+name;
-		
-		return parent.getFullyQualifiedName() +" : "+name;
+	public String getFullyQualifiedName() {
+		if (parent == null)
+			return getAuditType().getAuditName() + " - " + name;
+
+		return parent.getFullyQualifiedName() + " : " + name;
 	}
-	
 
 	@Column(nullable = false)
 	public int getNumRequired() {
@@ -197,14 +196,6 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		this.subCategories = subCategories;
 	}
 
-	@Transient
-	public List<AuditCategory> getSiblings() {
-		if (auditType != null)
-			return auditType.getCategories();
-		else
-			return parent.getSubCategories();
-	}
-
 	@OneToMany(mappedBy = "category")
 	@OrderBy("number")
 	public List<AuditQuestion> getQuestions() {
@@ -237,13 +228,13 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	@Transient
 	private void addChildren(Set<AuditCategory> children, AuditCategory category) {
 		children.add(category);
-		if(category.getSubCategories().size() > 0) {
-			for(AuditCategory auditSubCategory :  category.getSubCategories()) {
-				addChildren(children, auditSubCategory) ;
+		if (category.getSubCategories().size() > 0) {
+			for (AuditCategory auditSubCategory : category.getSubCategories()) {
+				addChildren(children, auditSubCategory);
 			}
 		}
 	}
-	
+
 	@Transient
 	public List<AuditCategory> getAncestors() {
 		List<AuditCategory> ancestors = new ArrayList<AuditCategory>();
