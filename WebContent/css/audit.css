@@ -141,6 +141,11 @@ table.statusOpBox td {
 	padding-left: 10px;
 	padding-right: 10px;
 }
+
+td.caoStatus a{
+	line-height: 12px;
+}
+
 table.statusOpBox th {
 	border: 2px solid #F6F6F0;	
 	border-collapse:collapse;
@@ -152,6 +157,7 @@ table.statusOpBox th {
 table.statusOpBox td.progress{
 	vertical-align: middle;
 	padding: 0;
+	width: 230px;
 }
 /** Table for ProgressBar **/
 table.progressTable {
