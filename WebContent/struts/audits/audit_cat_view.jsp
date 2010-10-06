@@ -34,7 +34,7 @@
 			<s:set name="a" value="answerMap.get(#q.id)" />
 			<s:set name="visibleAnswer" value="answerMap.get(#q.visibleQuestion.id)" />
 			<s:set name="hidden" value="#q.visibleQuestion != null && #q.visibleAnswer != #visibleAnswer.answer" />
-			<s:set name="visible" value="true"/>
+			<s:set name="visible" value="#q.current"/>
 			<s:if test="onlyReq && !#a.hasRequirements">
 				<s:set name="visible" value="false" />
 			</s:if>
@@ -46,7 +46,7 @@
 					<s:set name="shaded" value="!#shaded" scope="action"/>
 				</s:if> 
 				
-				<div id="node_<s:property value="#q.id"/>" class="clearfix question<s:if test="#shaded"> shaded</s:if><s:if test="#hidden"> hide</s:if><s:if test="#q.dependentRequired.size() > 0"> hasDependentRequired</s:if><s:if test="#q.dependentVisible.size() > 0"> hasDependentVisible</s:if>">
+				<div id="node_<s:property value="#q.id"/>" class="clearfix question<s:if test="#shaded"> shaded</s:if><s:if test="#hidden"> hide</s:if><s:if test="#q.dependentRequired.size() > 0"> hasDependentRequired</s:if><s:if test="#q.dependentVisible.size() > 0"> hasDependentVisible</s:if><s:if test="#q.auditCategoryRules.size() > 0"> hasDependentRules</s:if>">
 					<s:include value="audit_cat_question.jsp"></s:include>
 				</div>
 			</s:if>

@@ -88,6 +88,10 @@ $(function(){
 		});
 	});
 	
+	$('div.hasDependentRules').live('updateDependent', function() {
+		updateCategoriesNow();
+	});
+	
 	$('.buttonOsha').live('click', function(){
 		var status;
 		if($(this).val()=='Delete'){
@@ -130,6 +134,12 @@ function updateCategories() {
 	if (ucTimeout)
 		clearTimeout(ucTimeout);
 	ucTimeout = setTimeout(_updateCategories, 10000);
+}
+
+function updateCategoriesNow() {
+	if (ucTimeout)
+		clearTimeout(ucTimeout);
+	_updateCategories();
 }
 
 function showCertUpload(conid, certid, caoID, questionID, auditID) {
