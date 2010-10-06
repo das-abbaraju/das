@@ -53,6 +53,12 @@ function loadResults(data, noteText){
 		        data.note =  $('#addToNotes').val();
 		        $('#caoTable').load('CaoSaveAjax.action', data, function(){
 		            $.unblockUI();
+					$('.cluetip').cluetip({
+						arrows: true,
+						cluetipClass: 'jtip',
+						local: true,
+						clickThrough: false
+					});		
 		        });
 		    });
 		     

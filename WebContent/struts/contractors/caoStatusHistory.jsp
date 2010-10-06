@@ -14,10 +14,12 @@
 	<tbody>
 		<s:if test="caoWorkflow.size() > 0">
 			<s:iterator value="caoWorkflow">
-				<td><s:property value="formatDate(updateDate, 'MMMMM d, yyyy')" default="N/A"/></td>
-				<td><s:property value="updatedBy.name"/></td>
-				<td><s:property value="previousStatus"/></td>
-				<td><s:property value="notes"/></td>
+				<tr>
+					<td><s:property value="formatDate(updateDate, 'MMMMM d, yyyy')" default="N/A"/></td>
+					<td><s:property value="updatedBy.name"/></td>
+					<td><s:property value="previousStatus"/></td>
+					<td><s:property value="notes"/></td>
+				</tr>
 			</s:iterator>	
 		</s:if>
 		<s:else>

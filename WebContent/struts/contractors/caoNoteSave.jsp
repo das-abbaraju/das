@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<div id="messageDialog">
+<div id="messageDialog" style="text-transform: uppercase;">
 	<s:property value="saveMessage" />
 </div>
 <div id="formDialog">
