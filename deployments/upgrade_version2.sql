@@ -273,8 +273,18 @@ ALTER TABLE `contractor_audit`
 	DROP COLUMN `percentVerified`, 
 	DROP KEY `auditTypeStatus`;
 
+	alter table flag_criteria drop column `validationRequired`;
 -- End of DDL changes (should be last)
-
+-- End of DDL changes (should be last)
+-- Adding permissions for the configuration pages
+insert into useraccess 
+(userID,accessType,viewFlag,editFlag,deleteFlag,grantFlag,lastUpdate,grantedByID)
+values
+(941,'ManageCategoryRules',1,1,1,1,Now(),1098),
+(941,'ManageAuditTypeRules',1,1,1,1,Now(),1098),
+(941,'ManageAuditWorkFlow',1,1,1,1,Now(),1098);
+	
+	
 -- TODO Create completed welcome call audits for all contractors that don't already have one
 
 	-- test
