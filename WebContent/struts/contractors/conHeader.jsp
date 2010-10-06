@@ -44,7 +44,7 @@ function loadResults(data, noteText){
 	$('#caoAjax').load('CaoSaveAjax.action', data, function(response, status, xhr){
 		if(status == 'success'){
 			$('#caoTable').unblock();
-	        $.blockUI({ message:$('#caoAjax'), css: { width: '450px'} }); 
+	        $.blockUI({ message:$('#caoAjax')}); 
 	        if($('.clearOnce').val()=='')
 				$('#clearOnceField').val(0);
 		    $('#yesButton').click(function(){

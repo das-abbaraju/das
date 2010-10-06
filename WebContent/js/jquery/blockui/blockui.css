@@ -1,21 +1,23 @@
 /** BlockUI data ***/
 
-.blockUI.blockMsg.blockElement{
+.blockMsg{
 	margin-top: 50px;
 	color: #06223F;
 	font-size: 18px;
-	padding: 12px 15px 12px 35px;
-	background-image: url("../../../images/loader.gif");
-	background-repeat: no-repeat;
-	background-position: 12px 13px;
-	background-color: rgba(255, 255, 255, 0.9);
+	padding: 12px;
 	line-height: 18px;
 	text-transform: uppercase;
 	font-weight: bold;
 	border: 2px solid #555555;
 }
-
-.blockUI.blockPage{
+.blockMsg.blockElement{
+	background-image: url("../../../images/loader.gif");
+	background-repeat: no-repeat;
+	background-position: 12px 13px;
+	background-color: rgba(255, 255, 255, 0.9);	
+	padding-left: 35px;
+}
+.blockPage{
 	background-color: #FFFFFF;
 	border: 2px solid #555555;
 }
