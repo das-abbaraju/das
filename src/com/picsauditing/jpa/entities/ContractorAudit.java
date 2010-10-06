@@ -113,7 +113,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	@OneToMany(mappedBy = "audit", cascade = { CascadeType.REMOVE }, fetch = FetchType.EAGER)
 	public List<ContractorAuditOperator> getOperators() {
-		Collections.sort(operators, new Comparator<ContractorAuditOperator>(){			
+		Collections.sort(operators, new Comparator<ContractorAuditOperator>() {
 			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
 				return o1.getOperator().getName().compareTo(o2.getOperator().getName());
 			}
@@ -344,8 +344,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		cal1.add(Calendar.WEEK_OF_YEAR, -2);
 		Calendar cal2 = Calendar.getInstance();
 		cal2.add(Calendar.DATE, 26);
-		if (expiresDate.after(cal1.getTime())
-				&& expiresDate.before(cal2.getTime()))
+		if (expiresDate.after(cal1.getTime()) && expiresDate.before(cal2.getTime()))
 			return true;
 		return false;
 	}
@@ -358,14 +357,12 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			// Check to see if the CAO is visible
 			if (cao.isVisible()) {
 				// BASF Corporate still needs insurance
-				for (ContractorOperator co : getContractorAccount()
-						.getNonCorporateOperators()) {
+				for (ContractorOperator co : getContractorAccount().getNonCorporateOperators()) {
 					// Iterate over gencon tables
 					// co.getOperatorAccount() == BASF Abbotsford that's
 					// attached to Ancon Marine
 					if (co.getOperatorAccount().getCanSeeInsurance().isTrue()
-							&& co.getOperatorAccount().getInheritInsurance()
-									.equals(cao.getOperator())) {
+							&& co.getOperatorAccount().getInheritInsurance().equals(cao.getOperator())) {
 						currentCaos.add(cao);
 						break;
 					}
@@ -373,15 +370,13 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			}
 		}
 
-		Collections.sort(currentCaos,
-				new Comparator<ContractorAuditOperator>() {
+		Collections.sort(currentCaos, new Comparator<ContractorAuditOperator>() {
 
-					@Override
-					public int compare(ContractorAuditOperator o1,
-							ContractorAuditOperator o2) {
-						return o1.getOperator().compareTo(o2.getOperator());
-					}
-				});
+			@Override
+			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
+				return o1.getOperator().compareTo(o2.getOperator());
+			}
+		});
 
 		return currentCaos;
 	}
@@ -391,12 +386,12 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		List<ContractorAuditOperator> currentCaos = new ArrayList<ContractorAuditOperator>();
 
 		for (ContractorAuditOperator cao : getOperators()) {
-			if(cao.isVisibleTo(permissions)) {
-						currentCaos.add(cao);
-			}			
+			if (cao.isVisibleTo(permissions)) {
+				currentCaos.add(cao);
+			}
 		}
 
-		Collections.sort(currentCaos, new Comparator<ContractorAuditOperator>(){			
+		Collections.sort(currentCaos, new Comparator<ContractorAuditOperator>() {
 			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
 				return o1.getOperator().getName().compareTo(o2.getOperator().getName());
 			}
@@ -466,8 +461,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			full.append(", ").append(city);
 		if (!Strings.isEmpty(state))
 			full.append(", ").append(state);
-		if (!Strings.isEmpty(country) && !country.equals("US")
-				&& !country.startsWith("United"))
+		if (!Strings.isEmpty(country) && !country.equals("US") && !country.startsWith("United"))
 			full.append(", ").append(country);
 		if (!Strings.isEmpty(zip))
 			full.append(" ").append(zip);
@@ -613,8 +607,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	}
 
 	@Transient
-	public ContractorAuditOperator getCao(
-			List<Integer> sortedCaoOperatorCandidates) {
+	public ContractorAuditOperator getCao(List<Integer> sortedCaoOperatorCandidates) {
 		for (Integer parent : sortedCaoOperatorCandidates) {
 			for (ContractorAuditOperator cao : this.operators) {
 				if (cao.getOperator().getId() == parent)
@@ -657,8 +650,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	@Transient
 	public boolean isVisibleTo(Permissions permissions) {
-		if (permissions.isContractor()
-				&& (getAuditType().isCanContractorView() == false))
+		if (permissions.isContractor() && (getAuditType().isCanContractorView() == false))
 			return false;
 
 		if (permissions.isAdmin())
@@ -673,10 +665,18 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	}
 
 	@Transient
-	public Map<AuditCategory, AuditCatData> getApplicableCategories(
-			Permissions permissions, Set<AuditCategory> requiredCategories) {
+	public Map<AuditCategory, AuditCatData> getApplicableCategories(Permissions permissions,
+			Set<AuditCategory> requiredCategories) {
 		Map<AuditCategory, AuditCatData> categories = new LinkedHashMap<AuditCategory, AuditCatData>();
-		for (AuditCatData auditCatData : getCategories()) {
+		List<AuditCatData> sortedCats = getCategories();
+		Collections.sort(sortedCats, new Comparator<AuditCatData>() {
+			@Override
+			public int compare(AuditCatData o1, AuditCatData o2) {
+				return ((Integer) o1.getCategory().getNumber()).compareTo(o2.getCategory().getNumber());
+			}
+		});
+
+		for (AuditCatData auditCatData : sortedCats) {
 			boolean add = false;
 			if (auditCatData.getCategory().getId() == AuditCategory.WORK_HISTORY) {
 				if (permissions.hasPermission(OpPerms.ViewFullPQF))
@@ -686,8 +686,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			} else {
 				if (auditCatData.isApplies()) {
 					if (permissions.isOperatorCorporate()) {
-						if (requiredCategories.contains(auditCatData
-								.getCategory()))
+						if (requiredCategories.contains(auditCatData.getCategory()))
 							add = true;
 					} else
 						add = true;
@@ -709,8 +708,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 					if (caoStats.get(cao.getStatus()) == null)
 						caoStats.put(cao.getStatus(), 1);
 					else
-						caoStats.put(cao.getStatus(), caoStats.get(cao
-								.getStatus()) + 1);
+						caoStats.put(cao.getStatus(), caoStats.get(cao.getStatus()) + 1);
 				}
 			}
 		}
