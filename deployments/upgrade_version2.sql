@@ -276,3 +276,5 @@ ALTER TABLE `contractor_audit`
 -- End of DDL changes (should be last)
 
 -- TODO Create completed welcome call audits for all contractors that don't already have one
+
+	-- test
