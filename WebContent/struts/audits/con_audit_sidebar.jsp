@@ -41,11 +41,11 @@
 </ul>
 
 <div <s:if test="categories.keySet().size == 1"> style="display: none;"</s:if>>
-	<ul id="catlist" class="catlist vert-toolbar">
+	<ul class="aCatlist vert-toolbar">
 		<li class="head">CATEGORIES <span class="hidden-button">Show N/A</span></li>			
 		<s:iterator value="categories">
 			<s:if test="key.parent == NULL && value.applies">
-				<li id="category_<s:property value="key.id"/>">
+				<li id="category_<s:property value="key.id"/>" class="catlist">
 					<a class="hist-category" href="#categoryID=<s:property value="key.id" />"><s:property value="key.name" />
 					<s:if test="conAudit.auditType.pqf">
 						<span class="cat-percent">
@@ -67,14 +67,21 @@
 					</s:elseif>
 					</a>
 				</li>
+				<li style="display: none;" id="catSubCat_<s:property value="key.id"/>" class="currSub">
+					<ul>
+						<s:iterator value="key.subCategories">
+							<li id="<s:property value="fullNumber.replace('.', '_')"/>_" class="subCatli clickable"><s:property value="name" /></li>
+						</s:iterator>
+					</ul>
+				</li>
 			</s:if>
 		</s:iterator>
 	</ul>
-	<ul id="nacatlist" class="catlist vert-toolbar">
+	<ul id="nacatlist" class="vert-toolbar">
 		<li class="head">N/A CATEGORIES <span class="hidden-button">Back</span></li>
 		<s:iterator value="categories" status="rowStatus">
 			<s:if test="key.parent == NULL && !value.applies && permissions.picsEmployee">
-				<li id="category_<s:property value="key.id"/>">
+				<li id="category_<s:property value="key.id"/>" class="catlist">
 					<div class="addLink">Add</div>
 					<a class="hist-category" href="#categoryID=<s:property value="key.id" />"><s:property value="key.name" /></a>
 					<div class="clear"></div>

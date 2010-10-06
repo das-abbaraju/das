@@ -17,7 +17,7 @@
 		<s:include value="audit_cat_sha.jsp"></s:include>
 	</s:if>
 	<s:else>
-		<h2><div class="categoryNumber"><s:property value="#category.fullNumber"/></div> <s:property value="#category.name"/></h2>
+		<h2 id="subcat_<s:property value="#category.fullNumber.replace('.', '_')"/>_"><div class="categoryNumber"><s:property value="#category.fullNumber"/></div> <s:property value="#category.name"/></h2>
 		<s:set name="shaded" value="true" scope="action"/>
 		<s:iterator value="#category.questions" id="q">
 			<s:if test="title != null && title.length() > 0">

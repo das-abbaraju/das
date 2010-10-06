@@ -422,6 +422,19 @@ div.addLink.hover{
 #nacatlist{
 	display: none;
 }
+ul.vert-toolbar li.subCatli{
+	border: 0 none;	
+	padding: 3px 0px;
+}
+ul.vert-toolbar .currSub{
+	padding: 10px 0px 10px 10px;	
+	background: #ddd;
+}
+
+ul.vert-toolbar li.subhover{
+	color: #A84D10;
+	text-decoration: underline;	
+}
 /*** OSHA **/
 table.osha {
 	margin-top: 10px;

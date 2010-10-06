@@ -14,8 +14,10 @@ $(function(){
 			var data = $.deparam.querystring($.param.querystring(location.href, $.bbq.getState()));
 			data.button='';
 			$('#auditViewArea').block({message: 'Fetching category...', centerY: false, css: {top: '20px'} }).load('AuditAjax.action', data, function() {
-				$('ul.catlist li.current').removeClass('current');
+				$('ul.aCatlist li.current').removeClass('current');
 				$('#category_'+$.bbq.getState().categoryID).addClass('current');
+				$('ul.aCatlist li.currSub').hide();
+				$('#catSubCat_'+$.bbq.getState().categoryID).show();
 				$(this).unblock();
 			});
 		}
@@ -26,18 +28,26 @@ $(function(){
 	// END AJAX HISTORY
 	
 	$('ul.vert-toolbar li.head .hidden-button').live('click',function() {
-		var hidden = $('ul.catlist:hidden')
-		$('ul.catlist:visible').fadeOut('slow', function() { hidden.fadeIn('slow'); });
+		var hidden = $('ul.aCatlist:hidden')
+		$('ul.aCatlist:visible').fadeOut('slow', function() { hidden.fadeIn('slow'); });
 	});
 	
-	$('.vert-toolbar li:not(li.head)').live('mouseenter', function() {
+	$('.vert-toolbar li:not(li.head, li.currSub, li.subCatli)').live('mouseenter', function() {
 		$(this).addClass('hover');
 	}).live('mouseleave', function() {
 		$(this).removeClass('hover');
 	});
+	
+	$('li.subCatli').live('mouseenter', function() {
+		$(this).addClass('subhover');
+	}).live('mouseleave', function() {
+		$(this).removeClass('subhover');
+	}).live('click', function(){
+		$.scrollTo($('#subcat_'+$(this).attr('id')), 800, {axis: 'y'});
+	});
 
 	if ($('#nacatlist li:not(li.head)').size() > 0) {
-		$('ul.catlist li.head').live('mouseenter', function() {
+		$('ul.aCatlist li.head').live('mouseenter', function() {
 			$(this).addClass('hover');
 		}).live('mouseleave', function() {
 			$(this).removeClass('hover');
