@@ -20,7 +20,6 @@
 		</s:if>
 	</table>
 </div>
-
 <div style="width: 48%; padding: 0; margin: 0; vertical-align: top; float: right;">
 	<table class="report" style="border-collapse: collapse; width: 100%;">
 		<thead>

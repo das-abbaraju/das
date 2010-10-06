@@ -39,7 +39,8 @@
 				<s:if test="requestURI.contains('schedule_audit')">class="current"</s:if>>Schedule Audit</a></li>
 	</s:if>
 </ul>
-<s:if test="categories.keySet().size > 1">
+
+<div <s:if test="categories.keySet().size == 1"> style="display: none;"</s:if>>
 	<ul id="catlist" class="catlist vert-toolbar">
 		<li class="head">CATEGORIES <span class="hidden-button">Show N/A</span></li>			
 		<s:iterator value="categories">
@@ -81,4 +82,4 @@
 			</s:if>
 		</s:iterator>
 	</ul>
-</s:if>
+</div>
