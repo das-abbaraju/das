@@ -25,6 +25,7 @@
 	</thead>
 	<tbody>
 		<s:iterator value="conAudit.getViewableOperators(permissions)" status="rowStatus" id="currentCao">
+			<s:if test="#currentCao.visible">
 				<tr id="cao_<s:property value="#currentCao.id"/>" class="caos">
 					<s:if test="conAudit.getViewableOperators(permissions).size()>1">
 						<td><s:property value="operator.name" /></td>
@@ -72,6 +73,7 @@
 						</s:iterator>
 					</td>
 				</tr>
+			</s:if>
 		</s:iterator>
 	</tbody>
 </table>
