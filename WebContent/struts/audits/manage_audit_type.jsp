@@ -29,59 +29,6 @@ $(function(){
 		var jsonObj = <s:property value="" />
 	</s:if>	
 });
-
-function copyAuditType(atypeID) {
-	$('#copy_audit').load('ManageAuditTypeAjax.action', {button: 'text', 'id': atypeID},
-		function() {
-			$(this).dialog({
-				modal: true, 
-				title: 'Copy Audit Type',
-				width: '55%',
-				close: function(event, ui) {
-					$(this).dialog('destroy');
-					location.reload();
-				},
-				buttons: {
-					Cancel: function() {
-						$(this).dialog('close');
-					},
-					'Copy All': function() {
-						var data = $('form#textForm').serialize();
-						data += "&button=CopyAll&originalID="+atypeID;
-						startThinking( {div: 'copy_audit', message: 'Copying Audit Type...' } );
-						$.ajax(
-							{
-								url: 'ManageAuditTypeAjax.action',
-								data: data,
-								complete: function() {
-									stopThinking( {div: 'copy_audit' } );
-									$(this).dialog('close');
-									location.reload();
-								}
-							}
-						);
-					},
-					'Copy Only Audit Type': function() {
-						var data = $('form#textForm').serialize();
-						data += "&button=Copy&originalID="+atypeID;
-						startThinking( {div: 'copy_audit', message: 'Copying Audit Type...' } );
-						$.ajax(
-							{
-								url: 'ManageAuditTypeAjax.action',
-								data: data,
-								complete: function() {
-									stopThinking( {div: 'copy_audit' } );
-									$(this).dialog('close');
-									location.reload();
-								}
-							}
-						);
-					}
-				}
-			});
-		}
-	);
-}
 </script>
 </head>
 <body>
@@ -182,7 +129,6 @@ function copyAuditType(atypeID) {
 		</fieldset>
 		<fieldset class="form submit">
 			<input type="submit" class="picsbutton positive" name="button" value="Save"/>
-			<input type="button" class="picsbutton" value="Copy" onclick="copyAuditType(<s:property value="id"/>)"/>
 			<s:if test="auditType.id > 0 && auditType.categories.size == 0">
 				<input id="deleteButton" type="submit" class="picsbutton negative" name="button" value="Delete"/>
 			</s:if>
@@ -239,8 +185,6 @@ function copyAuditType(atypeID) {
 		</div>
 	</pics:permission>
 </s:if>
-
-<div id="copy_audit" class="thinking"></div>
 
 </body>
 </html>

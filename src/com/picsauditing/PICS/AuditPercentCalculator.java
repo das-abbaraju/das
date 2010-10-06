@@ -12,6 +12,7 @@ import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -29,21 +30,23 @@ public class AuditPercentCalculator {
 	private AuditDataDAO auditDataDao;
 	private AuditCategoryDataDAO catDataDao;
 	private AuditDecisionTableDAO auditRulesDAO;
+	private ContractorAuditOperatorDAO caoDAO;
 
 	public AuditPercentCalculator(AuditDataDAO auditDataDAO,
-			AuditCategoryDataDAO catDataDAO, AuditDecisionTableDAO auditRulesDAO) {
+			AuditCategoryDataDAO catDataDAO, AuditDecisionTableDAO auditRulesDAO,
+			ContractorAuditOperatorDAO caoDAO) {
 		this.auditDataDao = auditDataDAO;
 		this.catDataDao = catDataDAO;
 		this.auditRulesDAO = auditRulesDAO;
+		this.caoDAO = caoDAO;
 	}
 
 	public void updatePercentageCompleted(AuditCatData catData) {
 		if (catData == null)
 			return;
 
-		if (catData.isApplies()) {
+		if (!catData.isApplies())
 			return;
-		}
 
 		int requiredAnsweredCount = 0;
 		int answeredCount = 0;
@@ -57,9 +60,10 @@ public class AuditPercentCalculator {
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 			questionIDs.add(question.getId());
 			if (question.getDependentRequired() != null)
-				questionIDs.add(question.getId());
+				for (AuditQuestion dr : question.getDependentRequired())
+					questionIDs.add(dr.getId());
 			if (question.getVisibleQuestion() != null)
-				questionIDs.add(question.getId());
+				questionIDs.add(question.getVisibleQuestion().getId());
 		}
 		// Get a map of all answers in this audit
 		AnswerMap answers = auditDataDao.findAnswers(
@@ -211,11 +215,9 @@ public class AuditPercentCalculator {
 		percentCalculateComplete(conAudit, false);
 	}
 
-	public void percentCalculateComplete(ContractorAudit conAudit,
-			boolean recalcCats) {
-		if (recalcCats) {
+	public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats) {
+		if (recalcCats)
 			recalcAllAuditCatDatas(conAudit);
-		}
 
 		AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
 
@@ -267,6 +269,7 @@ public class AuditPercentCalculator {
 			}
 			cao.setPercentComplete(percentComplete);
 			cao.setPercentVerified(percentVerified);
+			caoDAO.save(cao);
 		}
 	}
 

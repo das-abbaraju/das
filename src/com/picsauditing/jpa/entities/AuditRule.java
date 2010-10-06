@@ -236,8 +236,13 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 	@Transient
 	public boolean isMatchingAnswer(AuditData data) {
-		if (data == null)
+		if (data == null) {
+			// TODO why would questionComparator be null? Do we return false?
+			if (questionComparator == null)
+				return false;
+			
 			return questionComparator.equals(QuestionComparator.Empty);
+		}
 
 		String answer = data.getAnswer();
 		switch (questionComparator) {
