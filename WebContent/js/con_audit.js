@@ -53,6 +53,11 @@ $(function(){
 			$(this).removeClass('hover');
 		});
 	}
+	
+	$('#refresh_cao').live('click', function(e) {
+		updateCategoriesNow();
+		e.preventDefault();
+	});
 
 	$('div.question form.qform').live('submit', function(e){
 		e.preventDefault();
@@ -119,6 +124,7 @@ $(function(){
 var ucTimeout;
 
 function _updateCategories() {
+	var blocked = $('#auditHeader,#auditHeaderSideNav').block({message: 'Updating...'});
 	$.ajax({
 		url: 'CaoSaveAjax.action',
 		data: {
@@ -128,14 +134,16 @@ function _updateCategories() {
 		type: 'post',
 		success: function(text, status, xhr) {
 			var me = $(text);
-			$('#auditHeaderSideNav').html(me.filter('#audit_sidebar_refresh'));
-			$('#caoTable').html(me.filter('#cao_table_refresh'));
+			blocked.unblock();
+			$('#auditHeaderSideNav').html(me.filter('#audit_sidebar_refresh').html());
+			$('#caoTable').html(me.filter('#cao_table_refresh').html());
 			$('.cluetip').cluetip({
 				arrows: true,
 				cluetipClass: 'jtip',
 				local: true,
 				clickThrough: false
-			});		
+			});
+			$('#auditHeader').removeClass('dirty');
 		}
 	});
 }
@@ -143,12 +151,14 @@ function _updateCategories() {
 function updateCategories() {
 	if (ucTimeout)
 		clearTimeout(ucTimeout);
+	$('#auditHeader').addClass('dirty');
 	ucTimeout = setTimeout(_updateCategories, 10000);
 }
 
 function updateCategoriesNow() {
 	if (ucTimeout)
 		clearTimeout(ucTimeout);
+	$('#auditHeader').addClass('dirty');
 	_updateCategories();
 }
 

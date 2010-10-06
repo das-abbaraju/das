@@ -199,7 +199,7 @@ function loadStatus(caoID){
 	<div id="caoTable" class="center">	
 		<s:include value="caoTable.jsp"/>
 	</div>
-	<span style="float: right; padding-right: 25px;"><a href="#" class="refresh">Refresh</a></span>
+	<span class="refresh"><a href="#" class="refresh" id="refresh_cao">Refresh</a></span>
 	<div class="clear"></div>
 </div>
 </s:if>

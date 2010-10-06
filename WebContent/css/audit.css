@@ -124,6 +124,17 @@ table.report tr.na a {
 	font-style: italic;
 	color: #999;
 }
+
+/* Audit Header */
+
+span.refresh {
+	float: right; padding-right: 25px; display: none;
+}
+
+#auditHeader.dirty span.refresh {
+	display: inline;	
+}	
+
 /** Table for status **/
 table.statusOpBox {
 	background-color: #fff;
@@ -262,14 +273,6 @@ div.auditHeaderNav a {
 	color: white;
 }
 /** END Audit Header ***/
-
-div.caoGroup {
-	position: relative;
-}
-
-div.auditHeaderSideNav {
-	width: 250px;	
-}
 
 /** Category Header+Footer Navigation **/
 table.footerNav {

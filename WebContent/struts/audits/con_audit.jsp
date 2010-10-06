@@ -30,8 +30,10 @@
 
 <table id="audit-layout">
 	<tr>
-		<td id="auditHeaderSideNav" class="auditHeaderSideNav noprint">
-			<s:include value="con_audit_sidebar.jsp"/>
+		<td class="auditHeaderSideNav noprint">
+			<div id="auditHeaderSideNav">
+				<s:include value="con_audit_sidebar.jsp"/>
+			</div>
 		</td>
 		<td>
 			<div id="auditViewArea"></div>
