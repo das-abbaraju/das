@@ -37,7 +37,7 @@
 </span>
 
 <div class="answer">
-	<s:form cssClass="qform">
+	<s:form cssClass="qform" id="qform%{#q.id}">
 		<s:hidden name="categoryID" value="%{#q.category.id}"/>
 		<s:if test="auditData.audit != null">
 			<s:hidden name="auditData.audit.id"/>
