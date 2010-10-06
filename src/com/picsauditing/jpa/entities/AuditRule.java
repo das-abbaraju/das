@@ -249,6 +249,8 @@ public class AuditRule extends BaseDecisionTreeRule {
 			return !questionAnswer.equals(answer);
 		case Verified:
 			return data.isVerified();
+		case StartsWith:
+			return answer.startsWith(questionAnswer);
 		default:
 			return questionAnswer.equals(answer);
 		}

@@ -5,7 +5,8 @@ public enum QuestionComparator {
 	NotEquals("is NOT equal to"),
 	NotEmpty("is answered"),
 	Empty("is NOT answered"),
-	Verified("is verified");
+	Verified("is verified"),
+	StartsWith("startsWith");
 
 	private String description;
 
