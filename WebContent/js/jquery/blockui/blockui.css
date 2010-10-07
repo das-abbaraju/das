@@ -19,5 +19,8 @@
 .blockMsg.blockPage{
 	background-color: #FFFFFF;
 	border: 2px solid #555555;
-	margin-top: 50px;
+	top: 30%;
+	left: 50%;
+	width: 480px;
+	margin-left: -240px;
 }
