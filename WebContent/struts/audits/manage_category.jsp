@@ -167,9 +167,11 @@ function moveCategory(atypeID) {
 	<div>
 		<h3>Questions</h3>
 		<ul class="list" id="listQ" title="Drag and drop to change order">
-		<s:iterator value="category.questions">
-		    <li id="item_<s:property value="id"/>"><s:property value="number"/>.
-		    <a href="ManageQuestion.action?id=<s:property value="id"/>"><s:if test="name != null"><s:property value="name.length()>100 ? name.substring(0,97) + '...' : name"/></s:if><s:else>Question has no text</s:else></a></li>
+		<s:iterator value="category.questions" id="aq">
+			<s:if test="#aq.current">
+			    <li id="item_<s:property value="id"/>"><s:property value="number"/>.
+			    <a href="ManageQuestion.action?id=<s:property value="id"/>"><s:if test="name != null"><s:property value="name.length()>100 ? name.substring(0,97) + '...' : name"/></s:if><s:else>Question has no text</s:else></a></li>
+		    </s:if>
 		</s:iterator>
 		</ul>
 		

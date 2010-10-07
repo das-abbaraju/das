@@ -119,9 +119,6 @@ $(function() {
 .required a {
 	color: red !important;
 }
-.not-current a {
-	text-decoration: line-through;
-}
 </style>
 </head>
 <body>

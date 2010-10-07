@@ -54,19 +54,20 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 				AuditCategory category = auditCategoryDAO.find(nodeID);
 				JSONArray result = new JSONArray();
 				for (final AuditQuestion q : category.getQuestions()) {
-					result.add(new JSONObject() {
-						{
-							put("data", q.getNumber() + ". " + q.getName());
-							put("attr", new JSONObject() {
-								{
-									put("id", "question_" + q.getId());
-									put("rel", "question");
-									put("class", (q.isRequired() ? "required" : "")
-											+ (!q.isCurrent() ? "not-current" : ""));
-								}
-							});
-						}
-					});
+					if (q.isCurrent()) {
+						result.add(new JSONObject() {
+							{
+								put("data", q.getNumber() + ". " + q.getName());
+								put("attr", new JSONObject() {
+									{
+										put("id", "question_" + q.getId());
+										put("rel", "question");
+										put("class", (q.isRequired() ? "required" : ""));
+									}
+								});
+							}
+						});
+					}
 				}
 
 				for (final AuditCategory cat : category.getSubCategories()) {
