@@ -9,6 +9,7 @@ import java.util.Set;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -26,7 +27,9 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaType;
@@ -165,6 +168,10 @@ public class CaoSave extends AuditActionSupport {
 				}
 				if( !cao.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep())
 					cao.getAudit().setExpiresDate(setExpirationDate());
+				
+				if (cao.getAudit().getAuditType().getClassType().isPolicy()
+						&& cao.getStatus().after(AuditStatus.Submitted))
+					updateFlag(cao);
 				
 				// we need handle the PQF specific's
 				if (insurance) {
@@ -495,6 +502,23 @@ public class CaoSave extends AuditActionSupport {
 				}
 			}
 
+		}
+	}
+	
+	private void updateFlag(ContractorAuditOperator cao) {
+		FlagDataCalculator flagCalc = new FlagDataCalculator(cao.getAudit().getContractorAccount().getFlagCriteria());
+		
+		ContractorOperator co = null;
+		for (ContractorOperator c : cao.getAudit().getContractorAccount().getNonCorporateOperators()) {
+			if (c.getOperatorAccount().equals(cao.getOperator()))
+				co = c;
+		}
+		
+		if (co != null) {
+			FlagColor flagColor = flagCalc.calculateCaoStatus(cao.getAudit().getAuditType(),
+					co.getFlagDatas());
+
+			cao.setFlag(flagColor);
 		}
 	}
 }
