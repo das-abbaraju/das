@@ -23,10 +23,10 @@
 		</a>
 	</li>
 	<s:if test="canViewRequirements">
-		<li><a class="print" href="Audit.action?auditID=<s:property value="auditID"/>&onlyReq=true" 
+		<li><a class="print" href="Audit.action?auditID=<s:property value="auditID"/>#onlyReq=true" 
 			<s:if test="onlyReq && mode != 'Edit'">class="current"</s:if>>Print Requirements</a></li>
 		<s:if test="permissions.auditor">
-			<li><a class="edit" href="Audit.action?auditID=<s:property value="auditID"/>&onlyReq=true&mode=Edit"
+			<li><a class="edit" href="Audit.action?auditID=<s:property value="auditID"/>#onlyReq=true&mode=Edit"
 			 <s:if test="onlyReq && mode == 'Edit'">class="current"</s:if>>Edit Requirements</a></li>
 		</s:if>
 		<s:if test="permissions.admin">
@@ -46,7 +46,7 @@
 </ul>
 
 <div <s:if test="categories.keySet().size == 1"> style="display: none;"</s:if>>
-	<ul class="aCatlist vert-toolbar">
+	<ul id="aCatlist" class="vert-toolbar catUL">
 		<li class="head">CATEGORIES <span class="hidden-button">Show N/A</span></li>			
 		<s:iterator value="categories">
 			<s:if test="key.parent == NULL && value.applies">
@@ -84,12 +84,11 @@
 			</s:if>
 		</s:iterator>
 	</ul>
-	<ul id="nacatlist" class="vert-toolbar">
+	<ul id="nacatlist" class="vert-toolbar catUL">
 		<li class="head">N/A CATEGORIES <span class="hidden-button">Back</span></li>
 		<s:iterator value="categories" status="rowStatus">
 			<s:if test="key.parent == NULL && !value.applies && permissions.picsEmployee">
 				<li id="category_<s:property value="key.id"/>" class="catlist">
-					<div class="addLink">Add</div>
 					<a class="hist-category" href="#categoryID=<s:property value="key.id" />"><s:property value="key.name" /></a>
 					<div class="clear"></div>
 				</li>
