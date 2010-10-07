@@ -13,22 +13,39 @@
 auditID = '<s:property value="conAudit.id"/>';
 $(function(){
 	$('.addCat').live('click', function(){
+		startThinking( {div: 'loadingArea', message: 'Adding Category' } );
 		var cat = $(this).attr('id');
-		$('#categoryArea').load('AddRemoveCategoriesAjax.action', {button: 'IncludeCategory', 
-			auditID: auditID, categoryID: cat.slice(cat.indexOf('_')+1, cat.length)});
+		addRemoveCat(cat, 'IncludeCategory');
 	});
 	$('.removeCat').live('click', function(){
+		startThinking( {div: 'loadingArea', message: 'Removing Category' } );
 		var cat = $(this).attr('id');
-		$('#categoryArea').load('AddRemoveCategoriesAjax.action', {button: 'UnincludeCategory', 
-			auditID: auditID, categoryID: cat.slice(cat.indexOf('_')+1, cat.length)});
+		addRemoveCat(cat, 'UnincludeCategory');
 	});	
+	$('.sc_link').live('click',function(){
+		var elemID= $(this).attr('id').slice($(this).attr('id').indexOf('_')+1, $(this).attr('id').length);
+		if(!$('#sc_'+elemID+':hidden').size()>0)
+			$(this).text('Show Subcategories');
+		else
+			$(this).text('Hide Subcategories');	
+		$('#sc_'+elemID).toggle();	
+	});
 });
+
+function addRemoveCat(cat, action){
+	$('#categoryArea').load('AddRemoveCategoriesAjax.action', 
+			{button: action, auditID: auditID, categoryID: cat.slice(cat.indexOf('_')+1, cat.length)}, function(){
+				stopThinking({div: 'loadingArea'});
+	});	
+}
 </script>
 </head>
 <body>
 <h1>Add/Remove Category <span class="sub">
 on <s:property value="conAudit.auditType.auditName" /> for <s:property value="conAudit.contractorAccount.name" />
 </span></h1>
+<a href="Audit.action?auditID=<s:property value="conAudit.id"/>">&lt;&lt; Back to <s:property value="conAudit.auditType.auditName" /> for <s:property value="conAudit.contractorAccount.name" /></a>
+<div id="loadingArea"></div>
 <div style="width: 100%">
 	<div id="categoryArea">
 		<s:include value="addRemoveCategoryData.jsp" />	

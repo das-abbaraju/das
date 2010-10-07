@@ -17,6 +17,11 @@
 		<li><a class="preview" href="Audit.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
 		Questions</a></li>
 	</s:if>
+	<li>
+		<a class="edit" href="AddRemoveCategories.action?auditID=<s:property value="auditID"/>">
+			Add/Remove Categories
+		</a>
+	</li>
 	<s:if test="canViewRequirements">
 		<li><a class="print" href="Audit.action?auditID=<s:property value="auditID"/>&onlyReq=true" 
 			<s:if test="onlyReq && mode != 'Edit'">class="current"</s:if>>Print Requirements</a></li>

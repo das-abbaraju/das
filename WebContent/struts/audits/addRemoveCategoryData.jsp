@@ -12,8 +12,20 @@
 			<s:iterator value="categories" var="currentCat">
 				<s:if test="#currentCat.key.parent == NULL && #currentCat.value.applies">
 					<tr>
-						<td style="width: 80%;"><s:property value="#currentCat.key.name"/></td>
-						<td style="width: 20%;" class="center"><a style="cursor: pointer;" class="remove removeCat" id="category_<s:property value="#currentCat.key.id"/>"></a></td>
+						<td style="width: 80%;">
+							<s:property value="#currentCat.key.fullNumber"/> <s:property value="#currentCat.key.name"/>
+							<s:if test="#currentCat.key.subCategories.size() > 1"><br />
+							<a style="color: #4C4D4D; padding-left: 20px; font: .90em;" class="clickable sc_link" id="sc-link_<s:property value="#currentCat.key.fullNumber.replace('.','_')"/>">Show Subcategories</a>
+								<ul id="sc_<s:property value="#currentCat.key.fullNumber.replace('.','_')"/>" style="list-style: none; display: none;">
+									<s:iterator value="#currentCat.key.subCategories">
+										<li style="font: .85em; padding-left: 20px;"><s:property value="fullNumber"/> - <s:property value="name"/></li>									
+									</s:iterator>
+								</ul>
+							</s:if>
+						</td>
+						<td style="width: 20%; vertical-align: top;" class="center">
+							<a style="cursor: pointer;" class="remove removeCat" id="category_<s:property value="#currentCat.key.id"/>"></a>
+						</td>
 					</tr>
 				</s:if>
 			</s:iterator>
@@ -32,8 +44,20 @@
 			<s:iterator value="categories" var="currentCat">
 				<s:if test="#currentCat.key.parent == NULL && !#currentCat.value.applies && permissions.picsEmployee">
 					<tr>
-						<td style="width: 20%;" class="center"><a style="cursor: pointer;"  class="add addCat" id="category_<s:property value="#currentCat.key.id"/>"></a></td>
-						<td style="width: 80%;"><s:property value="#currentCat.key.name"/></td>
+						<td style="width: 20%; vertical-align: top;" class="center">
+							<a style="cursor: pointer;"  class="add addCat" id="category_<s:property value="#currentCat.key.id"/>"></a>
+						</td>
+						<td style="width: 80%;">
+							<s:property value="#currentCat.key.fullNumber"/> <s:property value="#currentCat.key.name"/>
+							<s:if test="#currentCat.key.subCategories.size() > 1"><br />
+							<a style="color: #4C4D4D; padding-left: 20px; font: .90em;" class="clickable sc_link" id="sc-link_<s:property value="#currentCat.key.fullNumber.replace('.','_')"/>">Show Subcategories</a>
+								<ul id="sc_<s:property value="#currentCat.key.fullNumber.replace('.','_')"/>" style="list-style: none; display: none;">
+									<s:iterator value="#currentCat.key.subCategories">
+										<li style="font: .85em; padding-left: 20px;"><s:property value="fullNumber"/> - <s:property value="name"/></li>									
+									</s:iterator>
+								</ul>
+							</s:if>
+						</td>
 					</tr>
 				</s:if>
 			</s:iterator>
