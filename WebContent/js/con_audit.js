@@ -3,8 +3,8 @@ $(function(){
 	// AJAX HISTORY
 
 	$('a.hist-category, a.modeset').live('click', function() {
-		$.bbq.removeState('onlyReq');
 		$.bbq.pushState($.param.fragment(location.href,this.href));
+		$.bbq.removeState('onlyReq');
 		return false;
 	});
 	
