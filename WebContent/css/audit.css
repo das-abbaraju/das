@@ -128,7 +128,7 @@ table.report tr.na a {
 /* Audit Header */
 
 span.refresh {
-	float: right; padding-right: 25px; display: none;
+	float: right; padding-right: 25px;
 }
 
 #auditHeader.dirty span.refresh {

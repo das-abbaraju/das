@@ -2,6 +2,13 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <script type="text/javascript">
 $(function(){
+
+	$('#refrezssh_cao').live('click', function(){
+		$('#caoTable').block({message: 'Refreshing List'});
+		$('#caoTable').load('AuditAjax.action', {button: 'refreshCaos', auditID: auditID}, function(){
+				$('#caoTable').unblock();
+			});
+	});
 	$('.singleButton').click(function() {
 		var data = {
 				auditID: $('#auditID').val(), button: 'statusLoad', 
@@ -205,7 +212,7 @@ function loadStatus(caoID){
 	<div id="caoTable" class="center">	
 		<s:include value="caoTable.jsp"/>
 	</div>
-	<span class="refresh"><a href="#" class="refresh" id="refresh_cao">Refresh</a></span>
+	<span class="refresh"><a class="clickable refresh" id="refresh_cao">Refresh</a></span>
 	<div class="clear"></div>
 </div>
 </s:if>

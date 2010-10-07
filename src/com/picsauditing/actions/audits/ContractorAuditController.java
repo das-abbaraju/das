@@ -85,8 +85,6 @@ public class ContractorAuditController extends AuditActionSupport {
 						}
 					}
 				}
-//				if(ActionContext.getContext().getName().startsWith("addRemoveCategory"))
-//					return SUCCESS;
 				
 				if ("recalculate".equals(button)) {
 					auditBuilder.setup(conAudit.getContractorAccount(), getUser());
