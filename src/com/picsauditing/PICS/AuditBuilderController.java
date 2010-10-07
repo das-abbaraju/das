@@ -203,7 +203,11 @@ public class AuditBuilderController {
 		List<AuditRule> list = new ArrayList<AuditRule>();
 		for (AuditRule rule : rules) {
 			boolean valid = true;
-
+			if(rule.getAuditType().getId() == AuditType.WELCOME) {
+				if(DateBean.getDateDifference(contractor.getCreationDate()) < -90)
+					valid = false;
+			}
+			
 			if (rule.getQuestion() != null && !rule.isMatchingAnswer(contractorAnswers.get(rule.getQuestion().getId()))) {
 				valid = false;
 			}
