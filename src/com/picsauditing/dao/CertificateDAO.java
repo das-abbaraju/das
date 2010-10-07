@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 
 @Transactional
 public class CertificateDAO extends PicsDAO {
@@ -128,7 +128,7 @@ public class CertificateDAO extends PicsDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Map<AuditType, Set<AuditData>> findConCertsAuditData(int conID) {
+	public Map<ContractorAudit, Set<AuditData>> findConCertsAuditData(int conID) {
 		Query query = em.createQuery("SELECT d FROM AuditData d " +
 				"WHERE d.audit.auditType.classType = 'Policy' " +
 				"AND d.question.columnHeader= 'Certificate' " +
@@ -138,13 +138,13 @@ public class CertificateDAO extends PicsDAO {
 		query.setParameter(1, conID);
 		List<AuditData> data = query.getResultList();
 		
-		Map<AuditType, Set<AuditData>> map = new HashMap<AuditType, Set<AuditData>>();
+		Map<ContractorAudit, Set<AuditData>> map = new HashMap<ContractorAudit, Set<AuditData>>();
 		
 		for (AuditData d : data) {
-			if (map.get(d.getAudit().getAuditType()) == null)
-				map.put(d.getAudit().getAuditType(), new HashSet<AuditData>());
+			if (map.get(d.getAudit()) == null)
+				map.put(d.getAudit(), new HashSet<AuditData>());
 
-			map.get(d.getAudit().getAuditType()).add(d);
+			map.get(d.getAudit()).add(d);
 		}
 		
 		return map;
