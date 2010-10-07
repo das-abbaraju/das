@@ -203,10 +203,41 @@ update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedD
 update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedDate = ca.completedDate where cao.auditID = ca.id and cao.statusChangedDate is null and cao.status IN ('Complete','Approved','Submitted','Resubmitted','Incomplete');
 update contractor_audit_operator set statusChangedDate = updateDate where statusChangedDate IS NULL;
 
--- TODO Add the workflow notes
-insert into contractor_audit_operator_workflow
-select ??
-;
+/*
+ * Adding the workflow notes
+ */ 
+-- insert CAOW notes for contractor reason for policies
+insert into contractor_audit_operator_workflow 
+select null,12,12,creationDate,updateDate,id,'Submitted','Pending',reason
+from contractor_audit_operator
+where reason > '' and eason is not null
+and reason not in ('N/A','None','na');
+
+-- insert CAOW notes for operator notes for policies
+insert into contractor_audit_operator_workflow 
+select null,statusChangedBy,statusChangedBy,statusChangedDate,
+statusChangedDate,id,status,'Submitted',notes
+from contractor_audit_operator
+where notes > '' and notes is not null;
+
+-- insert CAOW notes for audits
+insert into contractor_audit_operator_workflow 
+select null,ca.createdBy,ca.updatedBy,ca.completedDate, 
+ca.completedDate,cao.id,'Submitted','Pending',null
+from contractor_audit ca
+join contractor_audit_operator cao on cao.auditid = ca.id
+join audit_type yat on yat.id = ca.audittypeid
+where yat.classType != 'Policy'
+and ca.completedDate > 0;
+
+insert into contractor_audit_operator_workflow 
+select null,ca.createdBy,ca.updatedBy,ca.closedDate, 
+ca.closedDate,cao.id,'Complete','Submitted',null
+from contractor_audit ca
+join contractor_audit_operator cao on cao.auditid = ca.id
+join audit_type yat on yat.id = ca.audittypeid
+where yat.classType != 'Policy'
+and ca.closedDate > 0;
 
 -- insert the Audit Category Data for subcategories
 -- huh?? We may not need this. Keerthi and Trevor can't quite agree if it's needed
