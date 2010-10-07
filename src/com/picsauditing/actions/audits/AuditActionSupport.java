@@ -264,8 +264,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 			for (Entry<Integer, WorkflowStep> en : caoSteps.entrySet()) {
 				if(occ.contains(en.getValue().getNewStatus()))
 					actionStatus.put(en.getValue().getNewStatus(), en.getKey());
-				else
+				else{
 					occ.add(en.getValue().getNewStatus());
+					actionStatus.put(en.getValue().getNewStatus(), en.getKey());
+				}
 			}
 		}
 	}
