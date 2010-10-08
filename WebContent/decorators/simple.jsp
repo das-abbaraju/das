@@ -1,5 +1,5 @@
 <%@ taglib uri="sitemesh-decorator" prefix="decorator"%>
-<%@ page language="java" errorPage="../exception_handler.jsp"%>
+<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <%@page import="com.picsauditing.actions.PicsActionSupport"%><html>

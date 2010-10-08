@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="exception_handler.jsp" pageEncoding="UTF-8"%>
+<%@ page language="java" errorPage="/exception_handler.jsp" pageEncoding="UTF-8"%>
 <ul id="toolbar" class="vert-toolbar"> 
 	<li class="head">TOOLBAR</li>
 	<pics:permission perm="AuditEdit">

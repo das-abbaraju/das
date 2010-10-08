@@ -1,4 +1,4 @@
-<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <% String version = com.picsauditing.actions.PicsActionSupport.getVersion(); %>
 <html>
 <head>

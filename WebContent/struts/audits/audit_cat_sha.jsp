@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ page language="java" errorPage="/exception_handler.jsp"%>
 
 <h2>Category <s:property value="#category.number"/> - <s:property value="#category.name"/></h2>
 <s:if test="permissions.admin || permissions.contractor">

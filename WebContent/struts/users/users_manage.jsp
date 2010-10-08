@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@page language="java" errorPage="../../exception_handler.jsp"%>
+<%@page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
 <title>Manage Users <s:if test="user.id > 0">: <s:property value="user.name"/></s:if></title>

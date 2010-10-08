@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="exception_handler.jsp" pageEncoding="UTF-8"%>
+<%@ page language="java" errorPage="/exception_handler.jsp" pageEncoding="UTF-8"%>
 <div id="cao_table_refresh">
 	<s:include value="caoTable.jsp"/>
 </div>

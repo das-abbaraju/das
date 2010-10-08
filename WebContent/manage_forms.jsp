@@ -1,4 +1,4 @@
-<%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.OpPerms" errorPage="exception_handler.jsp"%>
+<%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.OpPerms" errorPage="/exception_handler.jsp"%>
 <%@page import="com.picsauditing.util.Strings"%>
 <%@page import="com.picsauditing.access.OpType"%>
 <jsp:useBean id="fBean" class="com.picsauditing.PICS.FormBean" scope ="page"/>

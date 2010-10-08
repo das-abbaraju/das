@@ -1,5 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ page language="java" errorPage="../../exception_handler.jsp"%>
+<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <s:iterator value="availableSet.days">
 	<div class="cal_day">
 		<h4><s:date name="key" format="EEEE, MMM d" /></h4>

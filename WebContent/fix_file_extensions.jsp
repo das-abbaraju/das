@@ -1,4 +1,4 @@
-<%@page language="java" errorPage="exception_handler.jsp"%>
+<%@page language="java" errorPage="/exception_handler.jsp"%>
 <%@page import="com.picsauditing.mail.EmailBuilder"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page import="com.picsauditing.dao.AuditDataDAO"%>
