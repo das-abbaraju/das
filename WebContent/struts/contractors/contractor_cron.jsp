@@ -17,7 +17,7 @@
 			list="stepValues" multiple="5" /></li>
 	</ol>
 	</fieldset>
-	<fieldset class="submit">
+	<fieldset class="form submit">
 	<button class="picsbutton positive" name="button" value="Run"
 		type="submit">Run</button>
 	</fieldset>
