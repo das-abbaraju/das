@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	static public int PRIVATE = 2;
 	static public int PicsID = 1100;
 	static public int PICS_CORPORATE_ID = 14;
+	static public List<Integer> PICS_CORPORATE = Arrays.asList(4,5,6); 
 
 	protected String name;
 	protected String nameIndex;

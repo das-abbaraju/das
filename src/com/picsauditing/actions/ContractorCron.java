@@ -3,6 +3,7 @@ package com.picsauditing.actions;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +31,7 @@ import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.dao.UserAssignmentMatrixDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.BaseTable;
@@ -83,6 +85,7 @@ public class ContractorCron extends PicsActionSupport {
 	final private Date startTime = new Date();
 	private List<Integer> queue;
 	private String redirectUrl;
+	
 
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
@@ -195,7 +198,8 @@ public class ContractorCron extends PicsActionSupport {
 
 						if (runStep(ContractorCronStep.CorporateRollup)) {
 							for (Facility facility : operator.getCorporateFacilities()) {
-								corporateSet.add(facility.getCorporate());
+								if(!Account.PICS_CORPORATE.contains(facility.getCorporate().getId()))
+									corporateSet.add(facility.getCorporate());
 							}
 						}
 						runFlag(co);
