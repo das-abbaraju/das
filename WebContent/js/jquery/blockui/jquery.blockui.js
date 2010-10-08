@@ -16,5 +16,6 @@ opacity:0.6,cursor:"default",color:"#fff",backgroundColor:"#000","-webkit-border
 m=[]}})(jQuery);
 
 jQuery(function(){
-	$.blockUI.defaults.css = {cursor:'default'};
+	$.blockUI.defaults.css = {};
+	$.blockUI.defaults.overlayCSS = {};
 });

@@ -1,5 +1,8 @@
 /** BlockUI data ***/
-
+.blockOverlay {
+	background-color: #000;
+	opacity: 0.6;	
+}
 .blockMsg{
 	color: #06223F;
 	font-size: 18px;
