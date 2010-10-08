@@ -253,10 +253,12 @@ where acp.parentID is null;
 
 -- For Policies 
 update flag_criteria fc
-join audit_type at on at.id = fc.auditTypeID
 set fc.requiredStatus = 'Submitted'
-where at.classType = 'Policy'
-and validationRequired = 0;
+where validationRequired = 0;
+
+update flag_criteria fc
+set fc.requiredStatus = 'Complete'
+where validationRequired = 1;
 
 update flag_criteria fc
 join audit_type at on at.id = fc.auditTypeID
@@ -265,12 +267,6 @@ where at.classType = 'Policy'
 and validationRequired = 1;
 
 -- For Non Policies 
-update flag_criteria fc
-join audit_type at on at.id = fc.auditTypeID
-set fc.requiredStatus = 'Submitted'
-where at.classType != 'Policy'
-and validationRequired = 0;
-
 update flag_criteria fc
 join audit_type at on at.id = fc.auditTypeID
 set fc.requiredStatus = 'Complete'

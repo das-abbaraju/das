@@ -178,9 +178,11 @@ public class FlagDataCalculator {
 
 		} else {
 
-			if (criteria.getRequiredStatus().after(AuditStatus.Resubmitted) && !conCriteria.isVerified())
+			if(criteria.getRequiredStatus() != null) {
+				if (criteria.getRequiredStatus().after(AuditStatus.Resubmitted) && !conCriteria.isVerified())
 				return true;
-
+			}
+			
 			final String dataType = criteria.getDataType();
 			final String comparison = criteria.getComparison();
 
