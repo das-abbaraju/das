@@ -97,7 +97,7 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 					}
 				});
 				JSONArray children = new JSONArray();
-				for (final AuditCategory cat : auditType.getCategories()) {
+				for (final AuditCategory cat : auditType.getTopCategories()) {
 					children.add(new JSONObject() {
 						{
 							put("attr", new JSONObject() {
@@ -163,7 +163,7 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 
 				for (AuditType auditType : oldParentAudits) {
 					int number = 0;
-					for (AuditCategory category : auditType.getCategories()) {
+					for (AuditCategory category : auditType.getTopCategories()) {
 						category.setNumber(++number);
 					}
 
