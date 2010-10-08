@@ -22,7 +22,7 @@
 	 error page.
 	 */
 
-	if (ActionContext.getContext().getActionInvocation() != null) {
+	if (ActionContext.getContext() != null && ActionContext.getContext().getActionInvocation() != null) {
 		pageContext
 				.setAttribute("exception", ActionContext.getContext().getValueStack().findValue("exception"));
 
@@ -114,8 +114,8 @@
 %>
 
 <head>
-<jsp:include page="struts/jquery.jsp"/>
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<jsp:include page="/struts/jquery.jsp"/>
+<link rel="stylesheet" type="text/css" media="screen" href="/css/forms.css?v=<s:property value="version"/>" />
 <script type="text/javascript">
     $(document).ready(function() { 
         $('#response_form').submit(function() {
