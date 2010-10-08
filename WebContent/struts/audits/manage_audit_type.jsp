@@ -33,7 +33,7 @@ $(function(){
 </head>
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
-
+<a class="edit" href="ManageAuditTypeHierarchy.action?id=<s:property value="auditType.id"/>">Manage Hierarchy</a>
 <s:form id="save">
 <s:hidden name="id"></s:hidden>
 	<div>
@@ -160,7 +160,6 @@ $(function(){
 	</s:if>
 	<pics:permission perm="ManageAuditTypeRules">
 		<div>
-			<a class="edit" href="ManageAuditTypeHierarchy.action?id=<s:property value="auditType.id"/>">Manage Hierarchy</a>
 			<h3>Related Rules</h3>
 			<s:if test="relatedRules.size() == 0">
 				<div class="alert">
