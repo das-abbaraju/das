@@ -1,5 +1,7 @@
 package com.picsauditing.actions;
 
+import org.apache.struts2.ServletActionContext;
+
 import com.picsauditing.interceptors.PicsInterceptor;
 
 @SuppressWarnings("serial")
@@ -9,12 +11,18 @@ public class InterceptorConfig extends PicsActionSupport {
 
 	@Override
 	public String execute() throws Exception {
+		if (!ServletActionContext.getRequest().getRemoteAddr()
+				.equals("127.0.0.1")) {
+			addActionError("Nice try buddy");
+			return BLANK;
+		}
 
 		output = "";
 		if (button == null || "list".equalsIgnoreCase(button)) {
 
 			System.out.println("===");
-			System.out.println("Interceptor status: " + System.getProperty("interceptor.enabled"));
+			System.out.println("Interceptor status: "
+					+ System.getProperty("interceptor.enabled"));
 			System.out.println("===");
 
 			System.out.println("Pages which require SSL");
