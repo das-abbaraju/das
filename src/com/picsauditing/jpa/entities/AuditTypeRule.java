@@ -32,7 +32,6 @@ public class AuditTypeRule extends AuditRule {
 		this.dependentAuditType = dependentAuditType;
 	}
 	
-	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	public AuditStatus getDependentAuditStatus() {
 		return dependentAuditStatus;
