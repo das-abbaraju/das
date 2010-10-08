@@ -40,6 +40,11 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		em.remove(caop);
 	}
 	
+	public void removeCaop(int caopID) {
+		ContractorAuditOperatorPermission caop = em.find(ContractorAuditOperatorPermission.class, caopID);
+		em.remove(caop);
+	}
+	
 	public ContractorAuditOperator find(int id) {
 		return em.find(ContractorAuditOperator.class, id);
 	}

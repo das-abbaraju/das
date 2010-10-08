@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -34,6 +35,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
@@ -402,17 +404,18 @@ public class AuditBuilderController {
 		operators.addAll(getRequiredAuditTypes().get(cao.getAudit().getAuditType()).operators);
 
 		// Remove first
-		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+		Iterator<ContractorAuditOperatorPermission> caopIter = cao.getCaoPermissions().iterator();
+		while(caopIter.hasNext()){
+			ContractorAuditOperatorPermission caop = caopIter.next();
 			if (operators.contains(caop.getOperator())) {
 				// It's already there, do nothing
 				operators.remove(caop.getOperator());
 			} else {
 				// Delete the caop and remove from cao.getCaoPermissions()
-				cao.getCaoPermissions().remove(caop);
-				contractorAuditOperatorDAO.remove(caop);
+				caopIter.remove();
+				contractorAuditOperatorDAO.removeCaop(caop.getId());
 			}
 		}
-
 		for (OperatorAccount operator : operators) {
 			// Insert the remaining operators
 			ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
