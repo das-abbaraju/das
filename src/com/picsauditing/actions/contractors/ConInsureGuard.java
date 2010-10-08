@@ -1,8 +1,8 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +15,6 @@ import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.util.DoubleMap;
 
 @SuppressWarnings("serial")
 public class ConInsureGuard extends ContractorActionSupport {
@@ -25,11 +24,9 @@ public class ConInsureGuard extends ContractorActionSupport {
 	private List<Certificate> certificates;
 	
 	// Update
-	private Set<String> policyOrder = new HashSet<String>();
-	private DoubleMap<String, ContractorAudit, Set<ContractorAuditOperator>> caos = new DoubleMap<String, ContractorAudit, Set<ContractorAuditOperator>>();
-	private Set<ContractorAudit> caoAudits = new HashSet<ContractorAudit>();
-	private Map<ContractorAudit, Set<Certificate>> policyCert = new HashMap<ContractorAudit, Set<Certificate>>();
-	private Map<Certificate, Set<ContractorAudit>> certPolicy = new HashMap<Certificate, Set<ContractorAudit>>();
+	private Map<String, Map<ContractorAudit, Set<ContractorAuditOperator>>> caos;
+	private Map<ContractorAudit, Set<Certificate>> policyCert;
+	private Map<Certificate, Set<ContractorAudit>> certPolicy;
 
 	public ConInsureGuard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			CertificateDAO certificateDAO) {
@@ -43,65 +40,37 @@ public class ConInsureGuard extends ContractorActionSupport {
 			return LOGIN;
 		findContractor();
 		
-		Map<ContractorAudit, Set<AuditData>> certData = certificateDAO.findConCertsAuditData(id);
+		Map<ContractorAudit, Set<AuditData>> certMap = certificateDAO.findConCertsAuditData(id);
+		caos = new HashMap<String, Map<ContractorAudit, Set<ContractorAuditOperator>>>();
+		policyCert = new HashMap<ContractorAudit, Set<Certificate>>();
+		certPolicy = new HashMap<Certificate, Set<ContractorAudit>>();
 		
-		for (ContractorAudit key : certData.keySet()) {
-			Iterator<AuditData> iterator = certData.get(key).iterator();
-			
-			while (iterator.hasNext()) {
-				AuditData d = iterator.next();
-				if (!d.getAudit().isVisibleTo(permissions))
-					iterator.remove();
-				else {
-					for (ContractorAuditOperator cao : d.getAudit().getOperators()) {
-						if (!cao.isVisible())
-							break;
-						
-						if (cao.getStatus().isPending() || cao.getStatus().isSubmittedResubmitted()) {
-							if (caos.get("Pending", d.getAudit()) == null) {
-								caos.put("Pending", d.getAudit(), new HashSet<ContractorAuditOperator>());
-								policyOrder.add("Pending");
-							}
-							
-							caos.get("Pending", d.getAudit()).add(cao);
-						} else if (cao.getStatus().isApproved() || cao.getStatus().isComplete()) {
-							if (caos.get("Current", d.getAudit()) == null) {
-								caos.put("Current", d.getAudit(), new HashSet<ContractorAuditOperator>());
-								policyOrder.add("Current");
-							}
-							
-							caos.get("Current", d.getAudit()).add(cao);
-						} else if (cao.getStatus().isExpired()) {
-							if (caos.get("Expired", d.getAudit()) == null) {
-								caos.put("Expired", d.getAudit(), new HashSet<ContractorAuditOperator>());
-								policyOrder.add("Expired");
-							}
-							
-							caos.get("Expired", d.getAudit()).add(cao);
-						} else {
-							if (caos.get("Other", d.getAudit()) == null) {
-								caos.put("Other", d.getAudit(), new HashSet<ContractorAuditOperator>());
-								policyOrder.add("Other");
-							}
-							
-							caos.get("Other", d.getAudit()).add(cao);
-						}
-						
-						caoAudits.add(d.getAudit());
+		for (ContractorAudit key : certMap.keySet()) {
+			for (AuditData d : certMap.get(key)) {
+				for (ContractorAuditOperator cao : d.getAudit().getOperators()) {
+					if (cao.isVisibleTo(permissions) && cao.isVisible()) {
+						if (cao.getStatus().isExpired() || d.getAudit().getExpiresDate().before(new Date()))
+							addCao("Expired", d.getAudit(), cao);
+						else if (cao.getStatus().isPending() || cao.getStatus().isSubmittedResubmitted())
+							addCao("Pending", d.getAudit(), cao);
+						else if (cao.getStatus().isApproved() || cao.getStatus().isComplete())
+							addCao("Current", d.getAudit(), cao);
+						else
+							addCao("Other", d.getAudit(), cao);
 					}
+				}
+				
+				Certificate c = getCertByID(d.getAnswer());
+				if (c != null && d.getAudit().getExpiresDate().after(new Date())) {
+					if (policyCert.get(d.getAudit()) == null)
+						policyCert.put(d.getAudit(), new HashSet<Certificate>());
 					
-					Certificate cert = getCertByID(d.getAnswer());
-					if (cert != null) {
-						if (policyCert.get(d.getAudit()) == null)
-							policyCert.put(d.getAudit(), new HashSet<Certificate>());
-						
-						policyCert.get(d.getAudit()).add(cert);
-						
-						if (certPolicy.get(cert) == null)
-							certPolicy.put(cert, new HashSet<ContractorAudit>());
-						
-						certPolicy.get(cert).add(d.getAudit());
-					}
+					policyCert.get(d.getAudit()).add(c);
+					
+					if (certPolicy.get(c) == null)
+						certPolicy.put(c, new HashSet<ContractorAudit>());
+					
+					certPolicy.get(c).add(d.getAudit());
 				}
 			}
 		}
@@ -133,16 +102,8 @@ public class ConInsureGuard extends ContractorActionSupport {
 		return null;
 	}
 	
-	public Set<String> getPolicyOrder() {
-		return policyOrder;
-	}
-	
-	public DoubleMap<String, ContractorAudit, Set<ContractorAuditOperator>> getCaos() {
+	public Map<String, Map<ContractorAudit, Set<ContractorAuditOperator>>> getCaos() {
 		return caos;
-	}
-	
-	public Set<ContractorAudit> getCaoAudits() {
-		return caoAudits;
 	}
 	
 	public Map<ContractorAudit, Set<Certificate>> getPolicyCert() {
@@ -151,5 +112,15 @@ public class ConInsureGuard extends ContractorActionSupport {
 	
 	public Map<Certificate, Set<ContractorAudit>> getCertPolicy() {
 		return certPolicy;
+	}
+	
+	private void addCao(String status, ContractorAudit audit, ContractorAuditOperator cao) {
+		if (caos.get(status) == null)
+			caos.put(status, new HashMap<ContractorAudit, Set<ContractorAuditOperator>>());
+		
+		if (caos.get(status).get(audit) == null)
+			caos.get(status).put(audit, new HashSet<ContractorAuditOperator>());
+		
+		caos.get(status).get(audit).add(cao);
 	}
 }

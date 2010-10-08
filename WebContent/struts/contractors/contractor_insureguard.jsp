@@ -29,45 +29,63 @@
 <table>
 	<tr>
 		<td>
-			<s:iterator value="policyOrder" id="status">
-				<h3><s:property value="#status" /> Policies</h3>
-				<table class="report">
-					<thead>
-						<tr>
-							<th>Policy Type</th>
-							<th>Operator</th>
-							<th>Status</th>
-							<th>View</th>
-						</tr>
-					</thead>
-					<tbody>
-						<s:iterator value="caoAudits" id="audit">
-							<s:iterator value="caos.get(#status, #audit)" id="cao" status="stat">
-								<tr>
-									<s:if test="#stat.first">
-										<td rowspan="<s:property value="caos.get(#status, #audit).size" />">
-											<s:property value="#audit.auditType.auditName" />
+			<s:iterator value="#{'Pending', 'Current', 'Expired', 'Other'}" id="status">
+				<s:if test="caos.get(#status.key).keySet().size > 0">
+					<h3><s:property value="#status.key" /> Policies</h3>
+					<table class="report">
+						<thead>
+							<tr>
+								<th>Policy Type</th>
+								<s:if test="#status.key != 'Expired'">
+									<th>Operator</th>
+									<th>Status</th>
+									<th>View</th>
+								</s:if>
+								<s:else>
+									<th>Expired</th>
+								</s:else>
+							</tr>
+						</thead>
+						<tbody>
+							<s:iterator value="caos.get(#status.key).keySet()" id="audit">
+								<s:if test="#status.key != 'Expired'">
+									<s:iterator value="caos.get(#status.key).get(#audit)" id="cao" status="stat">
+										<tr>
+											<s:if test="#stat.first">
+												<td rowspan="<s:property value="caos.get(#status.key).get(#audit).size" />">
+													<s:property value="#audit.auditType.auditName" /><br />
+													<span style="font-size:10px"><s:property value="#audit.auditFor" /> <s:date name="#audit.effectiveDate" format="MMM yyyy" /></span>
+												</td>
+											</s:if>
+											<td><s:property value="#cao.operator.name" /></td>
+											<td><s:property value="#cao.status" /></td>
+											<s:if test="#stat.first">
+												<td rowspan="<s:property value="caos.get(#status.key).get(#audit).size" />" class="center">
+													<s:iterator value="policyCert.get(#audit)" id="cert">
+														<a title="<s:property value="#cert.description"/>"
+															href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="#cert.id"/>&button=download"
+															target="_BLANK">
+															<img src="images/icon_insurance.gif"/>
+														</a>
+													</s:iterator>
+												</td>
+											</s:if>
+										</tr>
+									</s:iterator>
+								</s:if>
+								<s:else>
+									<tr>
+										<td>
+											<s:property value="#audit.auditType.auditName" /><br />
+											<span style="font-size:10px"><s:property value="#audit.auditFor" /> <s:date name="#audit.effectiveDate" format="MMM yyyy" /></span>
 										</td>
-									</s:if>
-									<td><s:property value="#cao.operator.name" /></td>
-									<td><s:property value="#cao.status" /></td>
-									<s:if test="#stat.first">
-										<td rowspan="<s:property value="caos.get(#status, #audit).size" />">
-											<s:iterator value="policyCert.get(#audit)" id="cert">
-												test
-												<a title="<s:property value="#cert.description"/>"
-													href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="#cert.id"/>&button=download"
-													target="_BLANK">
-													<img src="images/icon_insurance.gif"/>
-												</a>
-											</s:iterator>
-										</td>
-									</s:if>
-								</tr>
+										<td><s:date name="#audit.expiresDate" format="M/d/yy" /></td>
+									</tr>
+								</s:else>
 							</s:iterator>
-						</s:iterator>
-					</tbody>
-				</table>
+						</tbody>
+					</table>
+				</s:if>
 			</s:iterator>
 		</td>
 		<td style="padding-left: 2em;">
@@ -83,7 +101,7 @@
 							<th>Used By</th>
 						</tr>
 					</thead>
-					<s:iterator value="certificates">
+					<s:iterator value="certificates" id="#cert">
 						<tr>
 							<td><s:property value="description" /></td>
 							<td><s:date name="expirationDate" format="M/d/yy" /></td>
@@ -97,16 +115,12 @@
 							</s:if></td>
 							<td>
 								<table class="inner">
-									<s:set name="idString" value="%{id + ''}" />
-									<s:iterator value="certMap.get(#idString)" id="data">
+									<s:iterator value="certPolicy.get(#cert)" id="audit">
 										<s:if test="!permissions.operatorCorporate || permissions.insuranceOperatorID == operator.id">
-											<s:iterator value="#data.audit.operators" id="cao">
-												<tr>
-													<td style="font-size:10px"><nobr><s:property value="#data.audit.auditType.auditName"/></nobr></td>
-													<td style="font-size:10px"><nobr><s:property value="#cao.operator.name"/></nobr></td>
-													<td style="font-size:10px"><nobr><s:date name="#data.audit.expiresDate" format="M/d/yy"/></nobr></td>
-												</tr>
-											</s:iterator>
+											<tr>
+												<td style="font-size:10px"><nobr><s:property value="#audit.auditType.auditName"/></nobr></td>
+												<td style="font-size:10px"><nobr><s:date name="#audit.expiresDate" format="M/d/yy"/></nobr></td>
+											</tr>
 										</s:if>
 									</s:iterator>
 								</table>

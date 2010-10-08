@@ -40,43 +40,6 @@ $(function(){
 	});
 });
 
-function moveCategory(atypeID) {
-	$('#copy_audit').load('ManageCategoryMoveAjax.action', {button: 'text', 'id': atypeID},
-		function() {
-			$(this).dialog({
-				modal: true, 
-				title: 'Move Category',
-				width: '55%',
-				close: function(event, ui) {
-					$(this).dialog('destroy');
-					location.reload();
-				},
-				buttons: {
-					Cancel: function() {
-						$(this).dialog('close');
-					},
-					'Move Category': function() {
-						var data = $('form#textForm').serialize();
-						data += "&button=Move&originalID="+atypeID;
-						startThinking( {div: 'copy_audit', message: 'Moving Category...' } );
-						$.ajax(
-							{
-								url: 'ManageCategoryMoveAjax.action',
-								data: data,
-								complete: function() {
-									stopThinking( {div: 'copy_audit' } );
-									$(this).dialog('close');
-									location.reload();
-								}
-							}
-						);
-					}
-				}
-			});
-		}
-	);
-}
-
 </script>
 </head>
 <body>
@@ -135,10 +98,9 @@ function moveCategory(atypeID) {
 	<fieldset class="form submit">
 		<div>
 			<input type="submit" class="picsbutton positive" name="button" value="Save"/>
-			<input type="button" class="picsbutton" value="Move" onclick="moveCategory(<s:property value="id"/>)"/>
-				<s:if test="category.subCategories.size() == 0">
-					<input type="submit" class="picsbutton negative" name="button" value="Delete"/>
-				</s:if>
+			<s:if test="category.subCategories.size() == 0">
+				<input type="submit" class="picsbutton negative" name="button" value="Delete"/>
+			</s:if>
 			<input type="submit" class="picsbutton" name="button" value="UpdateAllAuditsCategories"/>	
 		</div>
 	</fieldset>
@@ -204,8 +166,6 @@ function moveCategory(atypeID) {
 		</div>
 	</pics:permission>
 </s:if>
-
-<div id="copy_audit" class="thinking"></div>
 
 <ul id="allCategories" class="mcdropdown_menu">
 	<s:iterator value="category.ancestors.get(0).auditType.categories">

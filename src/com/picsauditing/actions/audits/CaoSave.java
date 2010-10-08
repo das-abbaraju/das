@@ -30,6 +30,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaType;
@@ -60,6 +61,10 @@ public class CaoSave extends AuditActionSupport {
 
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilderController auditBuilder;
+	
+	// Update flags
+	private Set<FlagCriteriaContractor> fco;
+	private FlagDataCalculator flagCalc;
 
 	public CaoSave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, OshaAuditDAO oshaAuditDAO, ContractorAuditOperatorDAO caoDAO,
@@ -501,24 +506,22 @@ public class CaoSave extends AuditActionSupport {
 					}
 				}
 			}
-
 		}
 	}
 	
 	private void updateFlag(ContractorAuditOperator cao) {
-		FlagDataCalculator flagCalc = new FlagDataCalculator(cao.getAudit().getContractorAccount().getFlagCriteria());
-		
-		ContractorOperator co = null;
-		for (ContractorOperator c : cao.getAudit().getContractorAccount().getNonCorporateOperators()) {
-			if (c.getOperatorAccount().equals(cao.getOperator()))
-				co = c;
+		if (fco == null || fco != cao.getAudit().getContractorAccount().getFlagCriteria()) {
+			fco = cao.getAudit().getContractorAccount().getFlagCriteria();
+			flagCalc = new FlagDataCalculator(fco);
 		}
-		
-		if (co != null) {
-			FlagColor flagColor = flagCalc.calculateCaoStatus(cao.getAudit().getAuditType(),
-					co.getFlagDatas());
 
-			cao.setFlag(flagColor);
+		for (ContractorOperator co : cao.getAudit().getContractorAccount().getNonCorporateOperators()) {
+			if (co.getOperatorAccount().equals(cao.getOperator())) {
+				FlagColor flagColor = flagCalc.calculateCaoStatus(cao.getAudit().getAuditType(), co.getFlagDatas());
+				cao.setFlag(flagColor);
+				
+				return;
+			}
 		}
 	}
 }
