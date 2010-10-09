@@ -1,5 +1,3 @@
-<%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page isErrorPage="true" language="java"
 	import="java.util.*,java.io.*,com.opensymphony.xwork2.ActionContext"%>
 <jsp:useBean id="permissions"
@@ -98,24 +96,24 @@
 		}
 	}
 
-	// writing initial exception
-	Database db = new Database();
 	long exceptionID = -1;
-	String canonName = exception.getClass().getCanonicalName();
-	String simpleName = exception.getClass().getSimpleName();
-	String name = exception.getClass().getName();
-	int userID = permissions.getUserId();
 	try {
+		// writing initial exception
+		Database db = new Database();
+		String canonName = exception.getClass().getCanonicalName();
+		String simpleName = exception.getClass().getSimpleName();
+		String name = exception.getClass().getName();
+		int userID = permissions.getUserId();
 		if(permissions != null)
 			exceptionID = db.executeInsert("INSERT INTO app_error_log (category,priority,createdBy,creationDate,message) VALUES ('"+exception.getClass().getSimpleName()+"',"+1+","+permissions.getUserId()+",'"+new Timestamp(System.currentTimeMillis())+"','"+stacktrace+"')");
 		else
 			exceptionID = db.executeInsert("INSERT INTO app_error_log (category,priority,creationDate,message) VALUES ('"+exception.getClass().getSimpleName()+"',"+1+",'"+new Timestamp(System.currentTimeMillis())+"','"+stacktrace+"')");
-	} catch (SQLException e) {}
+	} catch (Exception e) {System.out.println(e.getMessage());}
 %>
 
 <head>
 <jsp:include page="/struts/jquery.jsp"/>
-<link rel="stylesheet" type="text/css" media="screen" href="/css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="/css/forms.css" />
 <script type="text/javascript">
     $(document).ready(function() { 
         $('#response_form').submit(function() {
