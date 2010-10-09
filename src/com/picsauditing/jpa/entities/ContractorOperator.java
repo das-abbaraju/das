@@ -1,7 +1,6 @@
 package com.picsauditing.jpa.entities;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -33,7 +32,8 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "generalcontractors")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class ContractorOperator extends BaseTable implements java.io.Serializable {
+public class ContractorOperator extends BaseTable implements
+		java.io.Serializable {
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
 	private String workStatus = "P";
@@ -109,8 +109,9 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	private boolean isChildrenWorkStatusEqual(String parentStatus) {
-		String where = "subid = " + getContractorAccount().getId() + " AND workStatus != '" + parentStatus + "'";
-		List<Integer> idList = new ArrayList<Integer>();
+		String where = "subid = " + getContractorAccount().getId()
+				+ " AND workStatus = '" + parentStatus + "'";
+		Set<Integer> idList = new HashSet<Integer>();
 		for (OperatorAccount o : getOperatorAccount().getOperatorChildren())
 			idList.add(o.getId());
 		String ids = Strings.implode(idList, ",");
@@ -122,7 +123,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		try {
 			Database db = new Database();
 			List<BasicDynaBean> pageData = db.select(sql.toString(), false);
-			return pageData.size() == 0;
+			return pageData.size() > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -257,7 +258,8 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.flagDatas = flagDatas;
 	}
 
-	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "forceflag")
+	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH }, mappedBy = "forceflag")
 	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagDataOverride> getOverrides() {
@@ -273,9 +275,13 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		if (isForcedFlag())
 			return this;
 		if (getOperatorAccount().getCorporateFacilities().size() > 0) {
-			for (Facility facility : getOperatorAccount().getCorporateFacilities()) {
-				for (ContractorOperator conOper : contractorAccount.getOperators()) {
-					if (facility.getCorporate().equals(conOper.getOperatorAccount()) && conOper.isForcedFlag())
+			for (Facility facility : getOperatorAccount()
+					.getCorporateFacilities()) {
+				for (ContractorOperator conOper : contractorAccount
+						.getOperators()) {
+					if (facility.getCorporate().equals(
+							conOper.getOperatorAccount())
+							&& conOper.isForcedFlag())
 						return conOper;
 				}
 			}

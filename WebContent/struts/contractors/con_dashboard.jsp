@@ -190,9 +190,9 @@ table.report tr.hurdle td {
 						<s:if test="co.workStatusPending">
 							<div class="alert">The operator has not approved this contractor yet.</div>
 						</s:if>
-						<s:if test="co.workStatusRejected">
+						<s:elseif test="co.workStatusRejected">
 							<div class="alert">The operator did not approve this contractor.</div>
-						</s:if>
+						</s:elseif>
 					</s:if>
 
 					<div class="co_flag">

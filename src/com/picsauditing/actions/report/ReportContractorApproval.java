@@ -152,7 +152,7 @@ public class ReportContractorApproval extends ReportAccount {
 
 	public void approveContractor(ContractorAccount cAccount, int operatorID,
 			String workStatus) {
-		for (ContractorOperator cOperator : cAccount.getNonCorporateOperators()) {
+		for (ContractorOperator cOperator : cAccount.getOperators()) {
 			if (cOperator.getOperatorAccount().getId() == operatorID) {
 				cOperator.setWorkStatus(workStatus);
 				cOperator.setAuditColumns(permissions);
