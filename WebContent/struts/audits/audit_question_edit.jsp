@@ -1,5 +1,5 @@
-<%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ page language="java" errorPage="/exception_handler.jsp" pageEncoding="UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
 <s:set name="divID" value="'q'+#q.id" />
 <div class="thinking" id="thinking_<s:property value="#q.id"/>"></div>
 

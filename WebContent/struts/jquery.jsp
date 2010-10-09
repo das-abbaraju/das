@@ -1,3 +1,4 @@
+<%@ page language="java" errorPage="/exception_handler.jsp" pageEncoding="UTF-8"%>
 <%
 	// Usage: <s:include value="../jquery.jsp" />
 	// Use to include jQuery, jQuery UI, and Gritter (for notifications)

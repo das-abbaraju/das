@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.NoResultException;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.google.common.base.Joiner;
@@ -20,6 +22,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OshaAuditDAO;
+import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -28,6 +31,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Naics;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
@@ -44,9 +48,10 @@ public class AuditDataSave extends AuditActionSupport {
 	private String mode;
 	private boolean toggleVerify = false;
 
-	public AuditDataSave(ContractorAccountDAO accountDAO, AuditDataDAO dao, AuditCategoryDataDAO catDataDao,
-			AuditQuestionDAO questionDao, ContractorAuditDAO auditDao, OshaAuditDAO oshaAuditDAO, NaicsDAO naicsDAO,
-			AuditBuilderController auditBuilder) {
+	public AuditDataSave(ContractorAccountDAO accountDAO, AuditDataDAO dao,
+			AuditCategoryDataDAO catDataDao, AuditQuestionDAO questionDao,
+			ContractorAuditDAO auditDao, OshaAuditDAO oshaAuditDAO,
+			NaicsDAO naicsDAO, AuditBuilderController auditBuilder) {
 		super(accountDAO, auditDao, catDataDao, dao);
 		this.questionDao = questionDao;
 		this.naicsDAO = naicsDAO;
@@ -73,16 +78,18 @@ public class AuditDataSave extends AuditActionSupport {
 					throw new Exception("Missing Audit");
 				if (auditData.getQuestion() == null)
 					throw new Exception("Missing Question");
-				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
-						.getId());
+				newCopy = auditDataDao.findAnswerToQuestion(auditData
+						.getAudit().getId(), auditData.getQuestion().getId());
 			}
 
 			loadAnswerMap();
 			if (newCopy == null) {
 				// insert mode
-				AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
+				AuditQuestion question = questionDao.find(auditData
+						.getQuestion().getId());
 				auditData.setQuestion(question);
-				ContractorAudit audit = auditDao.find(auditData.getAudit().getId());
+				ContractorAudit audit = auditDao.find(auditData.getAudit()
+						.getId());
 				auditData.setAudit(audit);
 				if (!checkAnswerFormat(auditData, null))
 					return SUCCESS;
@@ -91,7 +98,9 @@ public class AuditDataSave extends AuditActionSupport {
 				if (auditData.getAnswer() != null) {
 					// if answer is being set, then
 					// we are not currently verifying
-					if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer())) {
+					if (newCopy.getAnswer() == null
+							|| !newCopy.getAnswer().equals(
+									auditData.getAnswer())) {
 
 						if (!checkAnswerFormat(auditData, newCopy)) {
 							auditData = newCopy;
@@ -103,9 +112,11 @@ public class AuditDataSave extends AuditActionSupport {
 						}
 
 						newCopy.setAnswer(auditData.getAnswer());
-						if (newCopy.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()
+						if (newCopy.getAudit().getAuditType().getWorkFlow()
+								.isHasSubmittedStep()
 								&& permissions.isPicsEmployee()) {
-							if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted)) {
+							if (newCopy.getAudit().hasCaoStatus(
+									AuditStatus.Submitted)) {
 								newCopy.setWasChanged(YesNo.Yes);
 
 								if (!toggleVerify) {
@@ -172,35 +183,43 @@ public class AuditDataSave extends AuditActionSupport {
 					if (auditData.getQuestion().getId() == 57) {
 						if (isValidNAICScode(auditData.getAnswer())) {
 							contractor.setNaics(new Naics());
-							contractor.getNaics().setCode(auditData.getAnswer());
+							contractor.getNaics()
+									.setCode(auditData.getAnswer());
 							contractor.setNaicsValid(true);
 						} else {
 							String guess = guessNaicsCode(auditData.getAnswer());
 							contractor.setNaics(new Naics());
 							contractor.setNaicsValid(false);
 							contractor.getNaics().setCode(guess);
-							addActionError("Setting your current NAICS code to " + guess);
+							addActionError("Setting your current NAICS code to "
+									+ guess);
 						}
 					}
 				}
 				accountDao.save(contractor);
 
-				if (tempAudit.getAuditType() != null && tempAudit.getAuditType().getClassType().isPolicy()) {
+				if (tempAudit.getAuditType() != null
+						&& tempAudit.getAuditType().getClassType().isPolicy()) {
 
-					if ("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())
+					if ("policyExpirationDate".equals(auditData.getQuestion()
+							.getUniqueCode())
 							&& !StringUtils.isEmpty(auditData.getAnswer())) {
-						Date expiresDate = DateBean.parseDate(auditData.getAnswer());
+						Date expiresDate = DateBean.parseDate(auditData
+								.getAnswer());
 						if (!DateBean.isNullDate(expiresDate))
 							tempAudit.setExpiresDate(expiresDate);
 						// In case the answer is not a valid date we add 1 year
 						// to the policy's creation date.
 						if (tempAudit.getExpiresDate() == null) {
-							tempAudit.setExpiresDate(DateBean.addMonths(tempAudit.getCreationDate(), 12));
+							tempAudit.setExpiresDate(DateBean.addMonths(
+									tempAudit.getCreationDate(), 12));
 						}
 					}
-					if ("policyEffectiveDate".equals(auditData.getQuestion().getUniqueCode())
+					if ("policyEffectiveDate".equals(auditData.getQuestion()
+							.getUniqueCode())
 							&& !StringUtils.isEmpty(auditData.getAnswer())) {
-						Date creationDate = DateBean.parseDate(auditData.getAnswer());
+						Date creationDate = DateBean.parseDate(auditData
+								.getAnswer());
 						if (!DateBean.isNullDate(creationDate))
 							tempAudit.setCreationDate(creationDate);
 					}
@@ -225,16 +244,30 @@ public class AuditDataSave extends AuditActionSupport {
 
 			// hook to calculation read/update
 			// the ContractorAudit and AuditCatData
-			// AuditCatData catData = null;
-			//
-			// if (categoryID > 0) {
-			// catData = catDataDao.findAuditCatData(auditID, categoryID);
-			// } else if (toggleVerify) {
-			// catData =
-			// catDataDao.findAuditCatData(auditData.getAudit().getId(),
-			// auditData.getQuestion()
-			// .getCategory().getParent().getId());
-			// }
+			AuditCatData catData;
+			try {
+				catData = catDataDao
+						.findAuditCatData(auditData.getAudit().getId(),
+								auditData.getQuestion().getCategory().getId());
+			} catch (NoResultException e) {
+				// Create AuditCatData for categories that don't have one
+				// yet
+				// I.E. - Old Categories
+				catData = new AuditCatData();
+				catData.setCategory(auditData.getQuestion().getCategory());
+				catData.setAudit(auditData.getAudit());
+				catData.setApplies(true);
+				catData.setOverride(false);
+				catData.setAuditColumns(new User(User.SYSTEM));
+
+				catDataDao.save(catData);
+
+				// Need to refresh the auditData to query up the required questions off of it
+				auditData = auditDataDao.find(auditData.getId());
+
+				loadAnswerMap();
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			addActionError(e.getMessage());
@@ -247,9 +280,11 @@ public class AuditDataSave extends AuditActionSupport {
 		List<Integer> questionIds = new ArrayList<Integer>();
 		questionIds.add(auditData.getQuestion().getId());
 		if (auditData.getQuestion().getRequiredQuestion() != null)
-			questionIds.add(auditData.getQuestion().getRequiredQuestion().getId());
+			questionIds.add(auditData.getQuestion().getRequiredQuestion()
+					.getId());
 		if (auditData.getQuestion().getVisibleQuestion() != null)
-			questionIds.add(auditData.getQuestion().getVisibleQuestion().getId());
+			questionIds.add(auditData.getQuestion().getVisibleQuestion()
+					.getId());
 		answerMap = auditDataDao.findAnswers(auditID, questionIds);
 	}
 
@@ -300,7 +335,8 @@ public class AuditDataSave extends AuditActionSupport {
 		return list;
 	}
 
-	private boolean checkAnswerFormat(AuditData auditData, AuditData databaseCopy) {
+	private boolean checkAnswerFormat(AuditData auditData,
+			AuditData databaseCopy) {
 
 		if (databaseCopy == null)
 			databaseCopy = auditData;
@@ -317,7 +353,9 @@ public class AuditDataSave extends AuditActionSupport {
 		if (Strings.isEmpty(answer))
 			return true;
 
-		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)) {
+		if ("Money".equals(questionType)
+				|| "Decimal Number".equals(questionType)
+				|| "Number".equals(questionType)) {
 			// Strip the commas, just in case they are in the wrong place
 			// We add them back in later
 			answer = answer.replace(",", "");
@@ -359,7 +397,7 @@ public class AuditDataSave extends AuditActionSupport {
 			} else
 				auditData.setAnswer(s.format(newDate));
 		}
-		
+
 		if ("Check Box".equals(questionType)) {
 			if (answer.equals("false"))
 				auditData.setAnswer("");
