@@ -413,7 +413,6 @@ public class AuditBuilderController {
 			} else {
 				// Delete the caop and remove from cao.getCaoPermissions()
 				caopIter.remove();
-				//contractorAuditOperatorDAO.removeCaop(caop.getId());
 				contractorAuditOperatorDAO.remove(caop);
 			}
 		}

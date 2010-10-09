@@ -244,6 +244,8 @@ public class AuditRule extends BaseDecisionTreeRule {
 			return questionComparator.equals(QuestionComparator.Empty);
 		}
 
+		if(questionComparator==null)
+			return false;
 		String answer = data.getAnswer();
 		switch (questionComparator) {
 		case Empty:
