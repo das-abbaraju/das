@@ -981,7 +981,7 @@
 
 		<action name="AuditAjax"
 			class="com.picsauditing.actions.audits.ContractorAuditController">
-			<result>struts/audits/audit_cat_view.jsp</result>
+			<result>struts/audits/audit_cat_view_ajax.jsp</result>
 		</action>
 	
 		<action name="AuditDataSaveAjax"
