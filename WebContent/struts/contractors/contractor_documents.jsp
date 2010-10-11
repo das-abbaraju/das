@@ -80,7 +80,11 @@
 				<s:iterator value="auditMap.get(#auditType)" id="audit">
 					<tr>
 						<td>
-							<a href="Audit.action?auditID=<s:property value="#audit.id" />"><s:property value="#auditType.auditName" /><s:if test="#audit.auditFor.length() > 0">: <s:property value="#audit.auditFor" /></s:if></a>
+							<a href="Audit.action?auditID=<s:property value="#audit.id" />">
+								<s:property value="#auditType.auditName" />
+								<s:if test="#audit.auditFor.length() > 0">: <s:property value="#audit.auditFor" /></s:if>
+								<s:if test="#classType == 'Policy'"><br /><span style="font-size: 10px"><s:date name="#audit.effectiveDate" format="MMM yyyy" /></span></s:if>
+							</a>
 						</td>
 						<td><s:property value="#audit.auditor.name" /></td>
 						<td><s:date name="#audit.scheduledDate" format="M/d/yy" /></td>
@@ -88,7 +92,7 @@
 							<s:if test="#audit.operators.size > 0">
 								<a href="#" onclick="$('tr.row_'+<s:property value="#audit.id" />).toggle(); return false;">
 									<s:iterator value="#audit.getCaoStats(permissions).keySet()" id="status" status="stat">
-										<s:if test="getCaoStats(permissions).get(#status) > 1"><s:property value="getCaoStats(permissions).get(#status)"/></s:if>
+										<s:if test="getCaoStats(permissions).get(#status) > 1 || #audit.getCaoStats(permissions).keySet().size > 1"><s:property value="getCaoStats(permissions).get(#status)"/></s:if>
 										<s:property value="#status"/><s:if test="!#stat.last">,</s:if>
 									</s:iterator>
 								</a>
@@ -100,21 +104,23 @@
 							<td colspan="4">
 								<table class="inner">
 									<s:iterator value="#audit.operators" id="cao">
-										<tr>
-											<td>
-												<pics:permission perm="ManageOperators">
-													<a href="FacilitiesEdit.action?id=<s:property value="#cao.operator.id"/>"><s:property value="#cao.operator.name"/></a>
-												</pics:permission>
-												<pics:permission perm="ManageOperators" negativeCheck="true">
-													<s:property value="#cao.operator.name" />
-												</pics:permission>
-											</td>
-											<td><s:property value="#cao.status" /></td>
-											<td><s:date name="#cao.statusChangedDate" format="M/d/yy" /></td>
-											<s:if test="#classType == 'IM'">
-												<td class="center"><s:property value="#audit.printableScore" /></td>
-											</s:if>
-										</tr>
+										<s:if test="#cao.isVisibleTo(permissions)">
+											<tr>
+												<td>
+													<pics:permission perm="ManageOperators">
+														<a href="FacilitiesEdit.action?id=<s:property value="#cao.operator.id"/>"><s:property value="#cao.operator.name"/></a>
+													</pics:permission>
+													<pics:permission perm="ManageOperators" negativeCheck="true">
+														<s:property value="#cao.operator.name" />
+													</pics:permission>
+												</td>
+												<td><s:property value="#cao.status" /></td>
+												<td><s:date name="#cao.statusChangedDate" format="M/d/yy" /></td>
+												<s:if test="#classType == 'IM'">
+													<td class="center"><s:property value="#audit.printableScore" /></td>
+												</s:if>
+											</tr>
+										</s:if>
 									</s:iterator>
 								</table>
 							</td>

@@ -53,18 +53,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 		findContractor();
 		setup();
 		
-		AuditType auditType = null;
-		if (selectedAudit > 0) {
-			auditType = auditTypeDAO.find(selectedAudit);
-			auditClass = auditType.getClassType();
-		}
-
-		if (button != null) {
-			if ("getAuditList".equals(button) && auditClass != null) {
-				auditTypeList = auditTypeDAO.findAll(permissions, true, auditClass, false);
-			}
-		}
-		
 		return SUCCESS;
 	}
 
@@ -141,7 +129,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 
 		for (ContractorAudit audit : getAudits()) {
 			// Policies are still on their own page
-			if (!audit.getAuditType().getClassType().equals(AuditTypeClass.Policy) && audit.isVisibleTo(permissions)) {
+			if (audit.isVisibleTo(permissions) && !audit.isExpired()) {
 				if (auditMap.get(audit.getAuditType()) == null)
 					auditMap.put(audit.getAuditType(), new ArrayList<ContractorAudit>());
 
