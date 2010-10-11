@@ -37,7 +37,8 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
-	public AuditTypeRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO) {
+	public AuditTypeRuleEditor(AuditDecisionTableDAO dao,
+			OperatorAccountDAO opDAO) {
 		this.dao = dao;
 		this.opDAO = opDAO;
 	}
@@ -55,9 +56,11 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 			dao.save(rule);
 			if (rule.getEffectiveDate().after(new Date())) { // rule is not in
 				// effect yet
-				addAlertMessage("This rule will not go into effect until: " + rule.getEffectiveDate());
+				addAlertMessage("This rule will not go into effect until: "
+						+ rule.getEffectiveDate());
 			} else if (rule.getExpirationDate().before(new Date())) {
-				addAlertMessage("This rule is no longer in effect, it was removed by " + rule.getUpdatedBy().getName());
+				addAlertMessage("This rule is no longer in effect, it was removed by "
+						+ rule.getUpdatedBy().getName());
 				canEditDelete = false;
 			}
 		}
@@ -65,6 +68,9 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		addFields();
 
 		if (button != null) {
+			if ("edit".equals(button)) {
+				return SUCCESS;
+			}
 			if ("Save".equals(button)) {
 				if (rule.getId() == 0) {
 					setFieldsOnSave();
@@ -115,11 +121,13 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 				String redirect = "";
 				List<AuditTypeRule> lGranular = dao.getLessGranular(rule, date);
 				if (lGranular.size() > 0)
-					redirect = "AuditTypeRuleEditor.action?id=" + lGranular.get(lGranular.size() - 1).getId();
+					redirect = "AuditTypeRuleEditor.action?id="
+							+ lGranular.get(lGranular.size() - 1).getId();
 				else {
 					redirect = "AuditTypeRuleEditor.action";
 					if (rule.getAuditType() != null)
-						redirect += "filter.auditType=" + rule.getAuditType().getAuditName() + "&";
+						redirect += "filter.auditType="
+								+ rule.getAuditType().getAuditName() + "&";
 				}
 				rule.setExpirationDate(new Date());
 				rule.setAuditColumns(permissions);
@@ -129,7 +137,8 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 			}
 			if ("deleteChildren".equals(button)) {
 				int count = dao.deleteChildren(rule, permissions);
-				addActionMessage("Archived " + count + (count == 1 ? " rule" : " rules"));
+				addActionMessage("Archived " + count
+						+ (count == 1 ? " rule" : " rules"));
 			}
 		}
 

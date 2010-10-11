@@ -53,9 +53,11 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 			if (rule.getEffectiveDate().after(new Date())) { // rule is not in
 				// effect yet
-				addAlertMessage("This rule will not go into effect until: " + rule.getEffectiveDate());
+				addAlertMessage("This rule will not go into effect until: "
+						+ rule.getEffectiveDate());
 			} else if (rule.getExpirationDate().before(new Date())) {
-				addAlertMessage("This rule is no longer in effect, it was removed by " + rule.getUpdatedBy().getName());
+				addAlertMessage("This rule is no longer in effect, it was removed by "
+						+ rule.getUpdatedBy().getName());
 				canEditDelete = false;
 			}
 		}
@@ -63,6 +65,9 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		addFields();
 
 		if (button != null) {
+			if ("edit".equals(button)) {
+				return SUCCESS;
+			}
 			if ("Save".equals(button)) {
 				if (rule.getId() == 0) {
 					setAcceptsBids();
@@ -110,15 +115,20 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			}
 			if ("delete".equals(button)) {
 				String redirect = "";
-				List<AuditCategoryRule> lGranular = dao.getLessGranular(rule, date);
+				List<AuditCategoryRule> lGranular = dao.getLessGranular(rule,
+						date);
 				if (lGranular.size() > 0)
-					redirect = "CategoryRuleEditor.action?id=" + lGranular.get(lGranular.size() - 1).getId();
+					redirect = "CategoryRuleEditor.action?id="
+							+ lGranular.get(lGranular.size() - 1).getId();
 				else {
 					redirect = "CategoryRuleSearch.action";
 					if (((AuditCategoryRule) rule).getAuditCategory() != null)
-						redirect += "filter.category=" + ((AuditCategoryRule) rule).getAuditCategory().getName() + "&";
+						redirect += "filter.category="
+								+ ((AuditCategoryRule) rule).getAuditCategory()
+										.getName() + "&";
 					if (rule.getAuditType() != null)
-						redirect += "filter.auditType=" + rule.getAuditType().getAuditName() + "&";
+						redirect += "filter.auditType="
+								+ rule.getAuditType().getAuditName() + "&";
 				}
 				rule.setExpirationDate(new Date());
 				rule.setAuditColumns(permissions);
@@ -128,7 +138,8 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			}
 			if ("deleteChildren".equals(button)) {
 				int count = dao.deleteChildren(rule, permissions);
-				addActionMessage("Archived " + count + (count == 1 ? " rule" : " rules"));
+				addActionMessage("Archived " + count
+						+ (count == 1 ? " rule" : " rules"));
 			}
 		}
 

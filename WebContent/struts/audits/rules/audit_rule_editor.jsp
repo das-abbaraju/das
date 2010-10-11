@@ -89,7 +89,7 @@ $(function() {
 					</li>
 					</s:if>
 					<li><label>Account Type</label>
-						<s:select name="rule.contractorType" list="@com.picsauditing.jpa.entities.ContractorType@values()" listValue="type" headerKey="" headerValue=""/>
+						<s:select name="rule.contractorType" list="@com.picsauditing.jpa.entities.ContractorType@values()" listValue="type" headerKey="" headerValue="Any"/>
 					</li>
 					<li><label>Operator</label>
 						<input type="text" class="searchAuto" id="operator" value="<s:property value="rule.operatorAccount.name"/>"/>
@@ -131,7 +131,7 @@ $(function() {
 </s:if>
 
 <s:else>
-	<a class="add" href="?button=edit&rule.include=false">Create New Rule</a>
+	<a class="add" href="?button=edit&rule.include=true">Create New Rule</a>
 
 	<table class="report">
 
