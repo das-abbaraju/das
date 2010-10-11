@@ -97,7 +97,7 @@ $(function() {
 						<a href="#" class="clearfield">Clear Field</a>
 					</li>
 					<li><label>Operator Country</label>
-						<s:select name="rule.operatorCountry" list="#{'':'Any','US':'United States','CA':'Canada','AE':'United Arab Emirites'}"/>
+						<s:select name="rule.operatorCountry.isoCode" list="#{'':'Any','US':'United States','CA':'Canada','AE':'United Arab Emirites'}"/>
 					</li>
 					<li><label>Risk</label>
 						<s:select name="rule.risk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/>
