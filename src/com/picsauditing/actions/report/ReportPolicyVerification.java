@@ -1,10 +1,7 @@
 package com.picsauditing.actions.report;
 
 import java.io.IOException;
-
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.struts2.ServletActionContext;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -12,9 +9,9 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 
-
 @SuppressWarnings("serial")
 public class ReportPolicyVerification extends ReportContractorAuditOperator {
+	private int auditID = 0;
 
 	public ReportPolicyVerification(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
 			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
@@ -49,19 +46,33 @@ public class ReportPolicyVerification extends ReportContractorAuditOperator {
 	protected String returnResult() throws IOException {
 		if ("showNext".equals(button)) {
 			if (data != null && data.size() > 0) {
-				BasicDynaBean firstRow = data.get(0);
-				// TODO forward to the AuditCat page for that audit
-				return SUCCESS;
+				BasicDynaBean row = data.get(0);
+				
+				boolean next = false;
+				for (BasicDynaBean d : data) {
+					if (next) {
+						row = d;
+						break;
+					}
+					
+					if ((Long) d.get("auditID") == auditID)
+						next = true;
+				}
+				
+				return redirect("Audit.action?auditID=" + row.get("auditID") + "&policy=true");
 			}
 		}
 		if ("getFirst".equals(button)) {
 			if (data != null && data.size() > 0) {
 				BasicDynaBean firstRow = data.get(0);
 				// TODO forward to the AuditCat page for that audit
-				ServletActionContext.getResponse().sendRedirect(
-						"AuditCat.action?auditID=" + firstRow.get("auditID"));
+				return redirect("Audit.action?auditID=" + firstRow.get("auditID"));
 			}
 		}
 		return super.returnResult();
+	}
+	
+	public void setAuditID(int auditID) {
+		this.auditID = auditID;
 	}
 }

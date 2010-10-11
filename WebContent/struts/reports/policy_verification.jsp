@@ -40,7 +40,7 @@
 			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/></a></td>
 			<td><s:date name="get('statusChangedDate')" format="M/d/yy"/></td>
 			<td><s:property value="get('operatorCount')"/></td>
-			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>" target="VERIFY">Open</a></td>
+			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>&policy=true" target="VERIFY">Open</a></td>
 		</tr>
 	</s:iterator>	
 </table>

@@ -38,6 +38,10 @@
 		</td>
 		<td>
 			<div id="auditViewArea"></div>
+			<s:if test="policy">
+				<a href="PolicyVerification.action?button=getFirst" class="picsbutton">First</a>
+				<a href="PolicyVerification.action?button=showNext&auditID=<s:property value="auditID" />" class="picsbutton positive">Next &gt;&gt;</a>
+			</s:if>
 		</td>
 	</tr>
 </table>

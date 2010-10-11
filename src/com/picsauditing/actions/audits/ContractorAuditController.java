@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.MenuComponent;
@@ -46,6 +45,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	private AuditBuilderController auditBuilder;
 	private OshaAuditDAO oshaAuditDAO;
 	protected int caoID;
+	// Policy verification (next/first buttons)
+	private boolean policy;
 
 	public ContractorAuditController(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
@@ -289,5 +290,13 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	public void setCaoID(int caoID) {
 		this.caoID = caoID;
+	}
+	
+	public boolean isPolicy() {
+		return policy;
+	}
+	
+	public void setPolicy(boolean policy) {
+		this.policy = policy;
 	}
 }
