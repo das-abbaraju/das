@@ -16,7 +16,9 @@ $(function(){
 				$('ul.catUL li.current').removeClass('current');
 				$(this).unblock();
 			});
+			$('#printReqButton').show();
 		} else {
+			$('#printReqButton').hide();
 			if ($.bbq.getState().categoryID === undefined)
 				$.bbq.pushState($.param.fragment(location.href,$('a.hist-category:first').attr('href')));
 			else {

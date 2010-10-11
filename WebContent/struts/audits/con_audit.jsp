@@ -18,7 +18,7 @@
 <body>
 
 <s:include value="../audits/audit_catHeader.jsp"/>
-<div class="right" id="modes">
+<div class="right noprint" id="modes">
 	<s:if test="canEditAudit">
 		<a class="edit modeset" href="#mode=Edit">Edit</a>
 	</s:if>
@@ -26,6 +26,7 @@
 	<s:if test="canVerifyAudit">
 		<a class="verify modeset" href="#mode=Verify">Verify</a> 
 	</s:if>
+	<span style="display: none;" id="printReqButton"><a class="print" href="javascript:window.print();">Print</a></span>
 </div>
 
 <table id="audit-layout">
