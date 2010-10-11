@@ -18,6 +18,13 @@
 <body>
 
 <s:include value="../audits/audit_catHeader.jsp"/>
+
+<s:if test="policy">
+	<a href="PolicyVerification.action?button=getFirst" class="picsbutton">First Policy</a>
+	<a href="PolicyVerification.action?button=showNext&auditID=<s:property value="auditID" />" class="picsbutton positive">Next Policy &gt;&gt;</a>
+	<br clear="all" />
+</s:if>
+
 <div class="right noprint" id="modes">
 	<s:if test="canEditAudit">
 		<a class="edit modeset" href="#mode=Edit">Edit</a>
@@ -38,10 +45,6 @@
 		</td>
 		<td>
 			<div id="auditViewArea"></div>
-			<s:if test="policy">
-				<a href="PolicyVerification.action?button=getFirst" class="picsbutton">First</a>
-				<a href="PolicyVerification.action?button=showNext&auditID=<s:property value="auditID" />" class="picsbutton positive">Next &gt;&gt;</a>
-			</s:if>
 		</td>
 	</tr>
 </table>
