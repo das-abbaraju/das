@@ -5,7 +5,6 @@ $(function(){
 	$('a.hist-category, a.modeset').live('click', function() {
 		$.bbq.pushState($.param.fragment(location.href,this.href));
 		$.bbq.removeState('onlyReq');
-		$.scrollTo('#auditViewArea', 800);
 		return false;
 	});
 	
