@@ -23,15 +23,24 @@ $(function(){
 				$.bbq.pushState($.param.fragment(location.href,$('a.hist-category:first').attr('href')));
 			else {
 				var data = $.deparam.querystring($.param.querystring(location.href, $.bbq.getState()));
-				data.button='';
-				$('#auditViewArea').block({message: 'Fetching category...', centerY: false, css: {top: '20px'} }).load('AuditAjax.action', data, function() {
-					$('ul.catUL li.current').removeClass('current');
-					$('#category_'+$.bbq.getState().categoryID).addClass('current');
-					$('ul.catUL li.currSub').hide();
-					$('#catSubCat_'+$.bbq.getState().categoryID).show();
-					$(this).unblock();
-					if ($(window).scrollTop() > $('#auditViewArea').offset().top)
-						$.scrollTo('#auditViewArea', 800)
+				data.button='load';
+				if (catXHR)
+					catXHR.abort();
+				$('#auditViewArea').block({message: 'Fetching category...', centerY: false, css: {top: '20px'} });
+				catXHR = $.ajax({
+					url:'AuditAjax.action', 
+					data:data,
+					success: function(html, status, xhr) {
+						if (xhr.status) {
+							$('ul.catUL li.current').removeClass('current');
+							$('#category_'+$.bbq.getState().categoryID).addClass('current');
+							$('ul.catUL li.currSub').hide();
+							$('#catSubCat_'+$.bbq.getState().categoryID).show();
+							$('#auditViewArea').html(html).unblock();
+							if ($(window).scrollTop() > $('#auditViewArea').offset().top)
+								$.scrollTo('#auditViewArea', 800, {axis: 'y'});
+						}
+					}
 				});
 			}
 		}
@@ -135,16 +144,18 @@ $(function(){
 	});
 
 	$('#next_cat').live('click', function(e) {
-		e.preventDefault(); console.log($('li.current').next('li'));
+		e.preventDefault();
 		$('li.current').next('li.catlist').find('a.hist-category').click();
 	});
 });
 
-var ucTimeout;
+var ucTimeout, catXHR, ucXHR;
 
 function _updateCategories() {
 	var blocked = $('#auditHeader,#auditHeaderSideNav').block({message: 'Updating...'});
-	$.ajax({
+	if (ucXHR)
+		ucXHR.abort();
+	ucXHR = $.ajax({
 		url: 'CaoSaveAjax.action',
 		data: {
 			auditID: auditID,
@@ -152,17 +163,19 @@ function _updateCategories() {
 		},
 		type: 'post',
 		success: function(text, status, xhr) {
-			var me = $(text);
-			blocked.unblock();
-			$('#auditHeaderSideNav').html(me.filter('#audit_sidebar_refresh').html());
-			$('#caoTable').html(me.filter('#cao_table_refresh').html());
-			$('.cluetip').cluetip({
-				arrows: true,
-				cluetipClass: 'jtip',
-				local: true,
-				clickThrough: false
-			});
-			$('#auditHeader').removeClass('dirty');
+			if (xhr.status) {
+				var me = $(text);
+				blocked.unblock();
+				$('#auditHeaderSideNav').html(me.filter('#audit_sidebar_refresh').html());
+				$('#caoTable').html(me.filter('#cao_table_refresh').html());
+				$('.cluetip').cluetip({
+					arrows: true,
+					cluetipClass: 'jtip',
+					local: true,
+					clickThrough: false
+				});
+				$('#auditHeader').removeClass('dirty');
+			}
 		}
 	});
 }
