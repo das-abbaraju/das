@@ -54,19 +54,19 @@
 					<a class="hist-category" href="#categoryID=<s:property value="key.id" />"><s:property value="key.name" />
 					<s:if test="conAudit.auditType.pqf">
 						<span class="cat-percent">
-							<s:if test="value.percentCompleted == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
+							<s:if test="value.percentCompleted == 100"><img src="images/okCheck.gif" width="16" height="16" /></s:if>
 							<s:else><s:property value="value.percentCompleted" />%</s:else>
 						</span>
 					</s:if>
 					<s:elseif test="conAudit.auditType.workflow.hasSubmittedStep">
 						<span class="cat-percent">
-							<s:if test="value.percentVerified == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
+							<s:if test="value.percentVerified == 100"><img src="images/okCheck.gif" width="16" height="16" /></s:if>
 							<s:else><s:property value="value.percentVerified" />%</s:else>
 						</span>
 					</s:elseif>
 					<s:elseif test="conAudit.auditType.id == 17">
 						<span class="cat-percent">
-							<s:if test="value.printableScore == 100"><img src="images/okCheck.gif" width="19" height="15" /></s:if>
+							<s:if test="value.printableScore == 100"><img src="images/okCheck.gif" width="16" height="16" /></s:if>
 							<s:else><s:property value="value.printableScore" />%</s:else>
 						</span>
 					</s:elseif>
