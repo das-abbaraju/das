@@ -78,7 +78,7 @@ $(function(){
 				<s:checkbox name="category.pageBreak"/>
 			</li>
 			<li><label>Help Text:</label>
-				<s:textarea name="category.helpText"/>
+				<s:textarea name="category.helpText" cssStyle="width: 480px;" rows="5" />
 			</li>
 			<s:if test="category.auditType.dynamicCategories">
 				<li><label>Apply on Question:</label>
