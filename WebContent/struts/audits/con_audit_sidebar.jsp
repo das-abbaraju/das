@@ -71,16 +71,14 @@
 						</span>
 					</s:elseif>
 					</a>
-				</li>
-				<s:if test="key.subCategories.size() > 1">
-					<li style="display: none;" id="catSubCat_<s:property value="key.id"/>" class="currSub">
-						<ul>
+					<s:if test="key.subCategories.size() > 1">
+						<ul class="subcat-list">
 							<s:iterator value="key.subCategories">
 								<li id="<s:property value="fullNumber.replace('.', '_')"/>_" class="subCatli clickable"><s:property value="name" /></li>
 							</s:iterator>
 						</ul>
-					</li>
-				</s:if>
+					</s:if>
+				</li>
 			</s:if>
 		</s:iterator>
 	</ul>

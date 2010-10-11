@@ -131,6 +131,11 @@ $(function(){
 			$(this).unblock();
 		});
 	});
+
+	$('#next_cat').live('click', function(e) {
+		e.preventDefault(); console.log($('li.current').next('li'));
+		$('li.current').next('li.catlist').find('a.hist-category').click();
+	});
 });
 
 var ucTimeout;

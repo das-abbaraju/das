@@ -380,9 +380,18 @@ ul.vert-toolbar li a {
 }
 ul.vert-toolbar li.current {
 	background: #5D9BCE;
+	color: #fff;
 }
 ul.vert-toolbar li.current a {
 	color: #fff;
+	text-decoration: none;
+}
+.subcat-list {
+	display: none;
+}
+ul.vert-toolbar li.current .subcat-list {
+	display: block;
+	list-style: none;
 }
 ul.vert-toolbar li.hover {
 	background-color: #e7e7e0;

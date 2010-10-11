@@ -11,3 +11,7 @@ $(function() {
 </script>
 
 <s:include value="audit_cat_view.jsp" />
+
+<div class="buttons">
+	<a href="#" id="next_cat" class="picsbutton right">Next</a>
+</div>
