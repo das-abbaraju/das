@@ -113,6 +113,8 @@ update audit_type set workflowID = 4 where id = 1;
 update audit_type set workflowID = 5 where id = 11;
 
 
+------ ????? what about corporate 4 - PICS GLOBAL
+insert into facilities (corporateID, opID) select 4, id from accounts where type = 'Operator';
 -- be sure that 5 and 6 are in the accounts table first
 insert into facilities (corporateID, opID) select 5, id from accounts where country = 'US' and type = 'Operator';
 insert into facilities (corporateID, opID) select 6, id from accounts where country = 'CA' and type = 'Operator';

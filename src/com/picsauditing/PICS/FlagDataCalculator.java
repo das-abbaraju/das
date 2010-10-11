@@ -14,6 +14,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
@@ -135,11 +136,9 @@ public class FlagDataCalculator {
 
 				// Checking for at least 3 active annual updates
 				for (ContractorAudit ca : conCriteria.getContractor().getAudits()) {
-					if (ca.getAuditType().equals(criteria.getAuditType())) {
+					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired()) {
 						for (ContractorAuditOperator cao : ca.getOperators()) {
-							if (cao.getStatus().after(criteria.getRequiredStatus()) || cao.getStatus().isResubmit())
-								count++;
-							else if (cao.getStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
+							if (!cao.getStatus().before(criteria.getRequiredStatus()) || cao.getStatus().isResubmit())
 								count++;
 						}
 					}
@@ -153,12 +152,10 @@ public class FlagDataCalculator {
 						for (ContractorAuditOperator cao : ca.getOperators()) {
 							// TODO Make sure we identify the right operator or
 							// corporate here
-							if (opCriteria.getOperator().equals(cao.getOperator())) {
+							if (hasCaop(cao, operator)) {
 								if (cao.getStatus().isResubmit())
 									return false;
 								else if (!cao.getStatus().before(criteria.getRequiredStatus()))
-									return false;
-								else if (cao.getStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
 									return false;
 
 								if (!criteria.getAuditType().isHasMultiple())
@@ -404,5 +401,13 @@ public class FlagDataCalculator {
 				return flList.get(0);
 		}
 		return null;
+	}
+	
+	private boolean hasCaop(ContractorAuditOperator cao, OperatorAccount operator) {
+		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+			if (caop.getOperator().getId() == operator.getId())
+				return true;
+		}
+		return false;
 	}
 }

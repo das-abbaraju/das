@@ -25,7 +25,6 @@ import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -35,7 +34,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
@@ -183,7 +181,7 @@ public class AuditBuilderController {
 			if (rule.getTag() != null)
 				tagsNeeded.add(rule.getTag().getId());
 		}
-
+		
 		Map<Integer, AuditData> contractorAnswers = new HashMap<Integer, AuditData>();
 		if (contractorAnswersNeeded.size() > 0) {
 			contractorAnswers = auditDataDAO.findAnswersByContractor(contractor.getId(), contractorAnswersNeeded);
@@ -398,10 +396,14 @@ public class AuditBuilderController {
 	}
 
 	private void fillAuditOperatorPermissions(ContractorAuditOperator cao) {
-		if (getRequiredAuditTypes().get(cao.getAudit().getAuditType()) == null)
+		AuditTypeDetail auditTypeDetail = getRequiredAuditTypes().get(cao.getAudit().getAuditType());
+		if (auditTypeDetail == null)
 			return;
 		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-		operators.addAll(getRequiredAuditTypes().get(cao.getAudit().getAuditType()).operators);
+		for(OperatorAccount operatorAccount : auditTypeDetail.operators) {
+			if(operatorAccount.getOperatorHeirarchy().contains(cao.getOperator().getId()))
+				operators.add(operatorAccount);
+		}
 
 		// Remove first
 		Iterator<ContractorAuditOperatorPermission> caopIter = cao.getCaoPermissions().iterator();

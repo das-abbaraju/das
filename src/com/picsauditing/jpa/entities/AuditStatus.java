@@ -45,7 +45,7 @@ public enum AuditStatus {
 	public boolean before(AuditStatus o) {
 		return this.ordinal() < o.ordinal();
 	}
-
+	
 	/**
 	 * Pending, Incomplete, Submitted, Resubmitted, Complete, Approved,
 	 * NotApplicable
