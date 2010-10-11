@@ -198,34 +198,31 @@ public class AuditDataSave extends AuditActionSupport {
 				}
 				accountDao.save(contractor);
 
-				if (tempAudit.getAuditType() != null
-						&& tempAudit.getAuditType().getClassType().isPolicy()) {
-
-					if ("policyExpirationDate".equals(auditData.getQuestion()
-							.getUniqueCode())
-							&& !StringUtils.isEmpty(auditData.getAnswer())) {
-						Date expiresDate = DateBean.parseDate(auditData
-								.getAnswer());
-						if (!DateBean.isNullDate(expiresDate))
-							tempAudit.setExpiresDate(expiresDate);
-						// In case the answer is not a valid date we add 1 year
-						// to the policy's creation date.
-						if (tempAudit.getExpiresDate() == null) {
-							tempAudit.setExpiresDate(DateBean.addMonths(
-									tempAudit.getCreationDate(), 12));
-						}
+				if ("policyExpirationDate".equals(auditData.getQuestion()
+						.getUniqueCode())
+						&& !StringUtils.isEmpty(auditData.getAnswer())) {
+					Date expiresDate = DateBean.parseDate(auditData
+							.getAnswer());
+					if (!DateBean.isNullDate(expiresDate))
+						tempAudit.setExpiresDate(expiresDate);
+					// In case the answer is not a valid date we add 1 year
+					// to the policy's creation date.
+					if (tempAudit.getExpiresDate() == null) {
+						tempAudit.setExpiresDate(DateBean.addMonths(
+								tempAudit.getCreationDate(), 12));
 					}
-					if ("policyEffectiveDate".equals(auditData.getQuestion()
-							.getUniqueCode())
-							&& !StringUtils.isEmpty(auditData.getAnswer())) {
-						Date creationDate = DateBean.parseDate(auditData
-								.getAnswer());
-						if (!DateBean.isNullDate(creationDate))
-							tempAudit.setCreationDate(creationDate);
-					}
-
 					auditDao.save(tempAudit);
 				}
+				if ("policyEffectiveDate".equals(auditData.getQuestion()
+						.getUniqueCode())
+						&& !StringUtils.isEmpty(auditData.getAnswer())) {
+					Date creationDate = DateBean.parseDate(auditData
+							.getAnswer());
+					if (!DateBean.isNullDate(creationDate))
+						tempAudit.setCreationDate(creationDate);
+					auditDao.save(tempAudit);
+				}
+				
 				if (auditData.getQuestion().isRecalculateCategories())
 					auditBuilder.fillAuditCategories(auditData);
 				for (ContractorAuditOperator cao : tempAudit.getOperators()) {
