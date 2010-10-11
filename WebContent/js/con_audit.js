@@ -5,6 +5,7 @@ $(function(){
 	$('a.hist-category, a.modeset').live('click', function() {
 		$.bbq.pushState($.param.fragment(location.href,this.href));
 		$.bbq.removeState('onlyReq');
+		$.scrollTo('#auditViewArea', 800);
 		return false;
 	});
 	
@@ -18,7 +19,7 @@ $(function(){
 			});
 		} else {
 			if ($.bbq.getState().categoryID === undefined)
-				$('a.hist-category:first').click();
+				$.bbq.pushState($.param.fragment(location.href,$('a.hist-category:first').attr('href')));
 			else {
 				var data = $.deparam.querystring($.param.querystring(location.href, $.bbq.getState()));
 				data.button='';
@@ -28,6 +29,8 @@ $(function(){
 					$('ul.catUL li.currSub').hide();
 					$('#catSubCat_'+$.bbq.getState().categoryID).show();
 					$(this).unblock();
+					if ($(window).scrollTop() > $('#auditViewArea').offset().top)
+						$.scrollTo('#auditViewArea', 800)
 				});
 			}
 		}
@@ -89,7 +92,7 @@ $(function(){
 				$(this).parents('form.qform:first').serialize(), 
 				function(response, status) {
 					if (status=='success') {
-						$(this).trigger('updateDependent').effect('highlight', {color: '#FFFF11'}, 1000);
+						$(this).trigger('updateDependent');
 						updateCategories();
 					} else {
 						alert('Failed to save answer.');
