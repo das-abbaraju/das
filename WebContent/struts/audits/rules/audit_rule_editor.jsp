@@ -59,7 +59,6 @@ $(function() {
 });
 </script>
 </head>
-
 <body>
 <h1><s:if test="categoryRule">Category </s:if><s:else>Audit Type </s:else>Rule Editor</h1>
 <s:include value="../../actionMessages.jsp"/>
@@ -69,10 +68,13 @@ $(function() {
 		<s:form method="post" id="rule_form">
 			<s:hidden name="rule.id"/>
 			<fieldset class="form">
-				<h2 class="formLegend">New Category Rule</h2>
+				<h2 class="formLegend">Rule</h2>
 				<ol>
 					<li><label>Include</label>
 						<s:checkbox name="rule.include"/>
+					</li>
+					<li><label>Level</label>
+						<s:property value="rule.level"/> + <input type="text" size="2" name="rule.level" />
 					</li>
 					<li><label>Audit Type</label>
 						<input type="text" class="searchAuto" id="auditType"  value="<s:property value="rule.auditType.auditName"/>"/>
@@ -94,8 +96,11 @@ $(function() {
 						<s:hidden name="rule.operatorAccount.id" id="op_hidden"/>
 						<a href="#" class="clearfield">Clear Field</a>
 					</li>
+					<li><label>Operator Country</label>
+						<s:select name="rule.operatorCountry" list="#{'':'Any','US':'United States','CA':'Canada','AE':'United Arab Emirites'}"/>
+					</li>
 					<li><label>Risk</label>
-						<s:select name="rule.risk" list="#{'':'','Low':'Low','Med':'Med','High':'High'}"/>
+						<s:select name="rule.risk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/>
 					</li>
 					<li><label>Tag</label>
 						<input type="text" class="searchAuto" id="tag" value="<s:property value="rule.tag.tag"/>"/>

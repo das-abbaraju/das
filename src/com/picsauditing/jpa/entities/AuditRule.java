@@ -24,6 +24,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected QuestionComparator questionComparator;
 	protected String questionAnswer;
 	protected Boolean acceptsBids;
+	protected Country operatorCountry;
 
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
@@ -182,6 +183,23 @@ public class AuditRule extends BaseDecisionTreeRule {
 	public void setAcceptsBids(Boolean acceptsBids) {
 		this.acceptsBids = acceptsBids;
 	}
+	
+	@Transient
+	public String getOperatorCountryLabel() {
+		if (operatorCountry == null)
+			return "*";
+		return operatorCountry.getIsoCode();
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "operatorCountry")
+	public Country getOperatorCountry() {
+		return operatorCountry;
+	}
+	
+	public void setOperatorCountry(Country operatorCountry) {
+		this.operatorCountry = operatorCountry;
+	}
 
 	@Transient
 	public String getAcceptsBidsLabel() {
@@ -205,20 +223,20 @@ public class AuditRule extends BaseDecisionTreeRule {
 			priority += 102;
 			level++;
 		}
+		if (acceptsBids != null) {
+			priority += 103;
+			level++;
+		}
+
 		if (auditType != null) {
 			// Hundred
 			priority += 105;
 			level++;
 		}
-		if (operatorAccount != null) {
-			if (operatorAccount.isPrimaryCorporate())
-				priority += 108;
-			else if (operatorAccount.isCorporate())
-				// Dozens to a hundred
-				priority += 109;
-			else
-				// Hundreds-thousand
-				priority += 110;
+		
+		if (operatorCountry != null) {
+			// A hundred...hopefully
+			priority += 110;
 			level++;
 		}
 
@@ -227,11 +245,27 @@ public class AuditRule extends BaseDecisionTreeRule {
 			priority += 125;
 			level++;
 		}
+		
 		if (tag != null) {
 			// Several per operator, potentially thousands
 			priority += 130;
 			level++;
 		}
+		
+		if (operatorAccount != null) {
+			if (operatorAccount.isPrimaryCorporate())
+				priority += 135;
+			else if (operatorAccount.isCorporate())
+				// Dozens to a hundred
+				priority += 137;
+			else
+				// Hundreds-thousand
+				priority += 139;
+			level++;
+		}
+		
+		level += levelAdjustment;
+		priority += 100 * levelAdjustment;
 	}
 
 	@Transient

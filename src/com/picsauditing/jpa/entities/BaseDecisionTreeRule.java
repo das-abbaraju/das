@@ -11,6 +11,7 @@ public abstract class BaseDecisionTreeRule extends BaseHistoryTime implements Co
 
 	protected int priority;
 	protected int level;
+	protected int levelAdjustment;
 	protected boolean include = true;
 
 	public int getPriority() {
@@ -27,6 +28,14 @@ public abstract class BaseDecisionTreeRule extends BaseHistoryTime implements Co
 
 	public void setLevel(int level) {
 		this.level = level;
+	}
+
+	public int getLevelAdjustment() {
+		return levelAdjustment;
+	}
+
+	public void setLevelAdjustment(int levelAdjustment) {
+		this.levelAdjustment = levelAdjustment;
 	}
 
 	public boolean isInclude() {
