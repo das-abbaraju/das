@@ -68,12 +68,13 @@
 				</s:if> 
 			</s:iterator>	
 		</s:else>
-			<s:if test="!#showCat">		
+			<s:if test="!#showCat && onlyReq">	
 				<script>
 					$(function() {
 						$('#audit_cat_'+<s:property value="#category.fullNumber.replace('.', '_')"/>).hide();
 					});
 				</script>
+				<s:property value="moo showcat" />
 			</s:if>
 	</div>
 </s:else>
