@@ -507,7 +507,11 @@ table.osha tfoot th {
 /*** END OSHA **/
 
 .audit_category {
-	margin-bottom: 20px;
+	padding-bottom: 20px;
+}
+
+#auditViewArea .buttons {
+	margin-top: 10px;
 }
 
 #audit-layout {
