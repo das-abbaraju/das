@@ -74,7 +74,7 @@ $(function() {
 						<s:checkbox name="rule.include"/>
 					</li>
 					<li><label>Level</label>
-						<s:property value="rule.level"/> + <input type="text" size="2" name="rule.level" />
+						<s:property value="rule.level"/> + <input type="text" size="2" name="rule.levelAdjustment" />
 					</li>
 					<li><label>Audit Type</label>
 						<input type="text" class="searchAuto" id="auditType"  value="<s:property value="rule.auditType.auditName"/>"/>
@@ -95,9 +95,6 @@ $(function() {
 						<input type="text" class="searchAuto" id="operator" value="<s:property value="rule.operatorAccount.name"/>"/>
 						<s:hidden name="rule.operatorAccount.id" id="op_hidden"/>
 						<a href="#" class="clearfield">Clear Field</a>
-					</li>
-					<li><label>Operator Country</label>
-						<s:select name="rule.operatorCountry.isoCode" list="#{'':'Any','US':'United States','CA':'Canada','AE':'United Arab Emirites'}"/>
 					</li>
 					<li><label>Risk</label>
 						<s:select name="rule.risk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/>

@@ -24,7 +24,6 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected QuestionComparator questionComparator;
 	protected String questionAnswer;
 	protected Boolean acceptsBids;
-	protected Country operatorCountry;
 
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
@@ -185,23 +184,6 @@ public class AuditRule extends BaseDecisionTreeRule {
 	}
 	
 	@Transient
-	public String getOperatorCountryLabel() {
-		if (operatorCountry == null)
-			return "*";
-		return operatorCountry.getIsoCode();
-	}
-	
-	@ManyToOne
-	@JoinColumn(name = "operatorCountry")
-	public Country getOperatorCountry() {
-		return operatorCountry;
-	}
-	
-	public void setOperatorCountry(Country operatorCountry) {
-		this.operatorCountry = operatorCountry;
-	}
-
-	@Transient
 	public String getAcceptsBidsLabel() {
 		if (acceptsBids == null)
 			return "*";
@@ -234,12 +216,6 @@ public class AuditRule extends BaseDecisionTreeRule {
 			level++;
 		}
 		
-		if (operatorCountry != null) {
-			// A hundred...hopefully
-			priority += 110;
-			level++;
-		}
-
 		if (question != null && questionComparator != null) {
 			// Potentially thousands but probably only hundreds
 			priority += 125;
