@@ -67,3 +67,57 @@ where auditTypeID = 96 and include = 1;
 update audit_type_rule set dependentAuditTypeID = 99, dependentAuditStatus = 'Resubmitted',
 updatedBy = 1098, updateDate = Now()
 where auditTypeID = 100 and include = 1;
+
+
+/**
+ * Creating rules for bid only contractors 
+ **/
+insert into audit_type_rule 
+(id,priority,include,createdBy,updatedBy,creationDate,updateDate,
+effectiveDate,expirationDate,acceptsBids,level,levelAdjustment)
+values 
+(null,1,0,1098,1098,Now(),Now(),'2001-01-01', '4000-01-01',1,0,0);
+
+-- for pqf
+insert into audit_type_rule 
+(id,priority,include,auditTypeID,createdBy,updatedBy,creationDate,updateDate,
+effectiveDate,expirationDate,acceptsBids,level,levelAdjustment)
+values 
+(null,104,1,1,1098,1098,Now(),Now(),'2001-01-01', '4000-01-01',1,1,0);
+
+-- for annual addendum
+insert into audit_type_rule 
+(id,priority,include,auditTypeID,createdBy,updatedBy,creationDate,updateDate,
+effectiveDate,expirationDate,acceptsBids,level,levelAdjustment)
+values 
+(null,104,1,11,1098,1098,Now(),Now(),'2001-01-01', '4000-01-01',1,1,0);
+
+-- category rules
+insert into audit_category_rule 
+(id,priority,include,auditTypeID,createdBy,updatedBy,creationDate,updateDate,
+effectiveDate,expirationDate,acceptsBids,level,levelAdjustment)
+values 
+(null,110,0,11,1098,1098,Now(),Now(),'2001-01-01', '4000-01-01',1,1,0);
+
+insert into audit_category_rule 
+select 	null,priority,include,catID,auditTypeID, 
+risk,opID,tagID,1098,1098,now(),Now(),effectiveDate, 
+expirationDate,tempTotal,questionID,questionComparator,questionAnswer, 
+contractorType,1,level,operatorCountry,levelAdjustment
+from audit_category_rule
+where include = 1 AND AUDITtypeid = 11;
+
+insert into audit_category_rule 
+(id,priority,include,auditTypeID,createdBy,updatedBy,creationDate,updateDate,
+effectiveDate,expirationDate,acceptsBids,level,levelAdjustment)
+values 
+(null,110,0,1,1098,1098,Now(),Now(),'2001-01-01', '4000-01-01',1,1,0);
+
+insert into audit_category_rule 
+select 	null,priority,include,catID,auditTypeID, 
+risk,opID,tagID,1098,1098,now(),Now(),effectiveDate, 
+expirationDate,tempTotal,questionID,questionComparator,questionAnswer, 
+contractorType,1,level,operatorCountry,levelAdjustment
+from audit_category_rule
+where include = 1 AND AUDITtypeid = 1 and opid is null and risk is null
+and catid in (2,8,28,184);

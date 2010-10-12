@@ -140,6 +140,9 @@ public class FlagDataCalculator {
 						for (ContractorAuditOperator cao : ca.getOperators()) {
 							if (!cao.getStatus().before(criteria.getRequiredStatus()) || cao.getStatus().isResubmit())
 								count++;
+							else if (cao.getStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
+								count++;
+
 						}
 					}
 				}
@@ -156,6 +159,8 @@ public class FlagDataCalculator {
 								if (cao.getStatus().isResubmit())
 									return false;
 								else if (!cao.getStatus().before(criteria.getRequiredStatus()))
+									return false;
+								else if (cao.getStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
 									return false;
 
 								if (!criteria.getAuditType().isHasMultiple())
