@@ -4,9 +4,10 @@
 This is the web site of <b>PICS</b>.<br>
 <p>Our postal address is <br>
 <b>P.O. Box 51387<br>
-Irvine, CA 92619-1387</b></p>
+Irvine, CA 92619-1387<br>
+USA</b></p>
 We can be reached via e-mail at <a href="mailto:info@picsauditing.com">info@picsauditing.com</a><br>
-or you can reach us by telephone at 949-387-1940<br>
+or you can reach us by telephone at +1(949)936-4500<br>
 <br/>
 <b><u>DISCLAIMER AND INDEMNITY</u></b>
 <p>As the duly authorized representative of your company that has been delegated the task of filling out the requested
@@ -74,5 +75,3 @@ contractor list.</p><br/>
 <p>You agree to the terms and conditions of the contractor agreement as communicated in this document.  Any agreements outside of the terms and conditions contained herein shall be agreed to in writing and signed by both contractor and PICS representatives.  PICS copy of said agreement will be held in the PICS UPLOAD FILES category of the PQF under PICS Contractor Agreement.</p>
 
 </div>
-
-

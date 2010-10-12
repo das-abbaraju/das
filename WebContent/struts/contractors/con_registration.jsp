@@ -81,19 +81,20 @@ $(function(){
 				<fieldset class="form">
 					<h2 class="formLegend">Company Details</h2>
 					<ol>
-						<li class="required"><label>Company Name:</label>
+						<li class="required"><label>Legal Company Name:</label>
 							<s:textfield name="contractor.name" size="35" onchange="checkName(this.value);"/>
 							<div class="fieldhelp">
 								<h3>Company Name</h3>
-								<p>The name of your company. We'll check this name against our database to see if you or one of your colleagues has already registered your company.</p>
+								<p>The name of your company as listed on legal documents, trade certificates and licenses.</p>
+								<p>We'll search our database to see if your company has already been registered.</p>
 							</div>
 							<div id="name_status"></div>
 						</li>
-						<li><label>DBA Name: </label>
+						<li><label>Short Name or DBA: </label>
 							<s:textfield name="contractor.dbaName" size="35" />
 							<div class="fieldhelp">
-								<h3>DBA Name</h3>
-								<p>An alternative (also known as Doing Business As) name of your company. This is optional but may help your customers search for you if they only know you by your DBA name.</p>
+								<h3>Short Name</h3>
+								<p>An alternative (also known as Doing Business As) name of your company. This is optional but may help your customers search for you if they only know you by an acronym, shortened company name, or alternative DBA name.</p>
 							</div>
 						</li>
 						<li class="required"><label>Country:</label>
@@ -104,7 +105,7 @@ $(function(){
 								listKey="isoCode" listValue="name" />
 							<div class="fieldhelp">
 								<h3>Country</h3>
-								<p>The global corporate headquarters of your company.</p>
+								<p>The headquarters of your company. This will affect the currency in which your PICS membership will be listed.</p>
 							</div>
 						</li>
 						<li class="required"><label id="taxIdLabel">Tax ID:</label>
@@ -117,11 +118,10 @@ $(function(){
 								9-digit number with no dashes
 								<h5>Canada</h5>
 								the first 9-digits of your 15 character Business Number
-								
 							</div>
 							<div id="taxId_status"></div>
 						</li>
-						<li><label>Web URL:</label> 
+						<li><label>Web URL:</label>
 							<s:textfield name="contractor.webUrl" size="35" />
 							<div class="fieldhelp">
 								<h3>Web URL</h3>
@@ -134,7 +134,7 @@ $(function(){
 							<s:textfield id="contractorPhone" name="contractor.phone" size="20" />
 							<div class="fieldhelp">
 								<h3>Company Phone</h3>
-								Your company's primary telephone line.
+								Your company's primary telephone line. If you are outside the United States or Canada, please include your country code.
 							</div>
 						</li>
 						<li><label>Company Fax:</label>
@@ -252,6 +252,10 @@ $(function(){
 						</li>
 						<li><label>Phone:</label>
 							<s:textfield name="user.phone" size="20" />
+							<div class="fieldhelp">
+								<h3>Phone</h3>
+								This is the direct phone number and extension if applicable for the primary contact. This may be used by CSRs or auditors to contact you directly.
+							</div>
 						</li>
 						<li><label>Fax:</label>
 							<s:textfield name="user.fax" size="20" />
