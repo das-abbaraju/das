@@ -181,6 +181,13 @@ function _updateCategories() {
 					clickThrough: false
 				});
 				$('#auditHeader').removeClass('dirty');
+				var ccat = $('#category_'+$.bbq.getState().categoryID);
+				var list = ccat.parents('ul.catUL:first');
+				ccat.addClass('current');
+				if (list.is(':hidden')) {
+					$('ul.catUL:visible').hide();
+					list.show();
+				}
 			}
 		}
 	});
