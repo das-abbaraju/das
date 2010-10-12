@@ -74,7 +74,6 @@
 						$('#audit_cat_'+<s:property value="#category.fullNumber.replace('.', '_')"/>).hide();
 					});
 				</script>
-				<s:property value="moo showcat" />
 			</s:if>
 	</div>
 </s:else>
