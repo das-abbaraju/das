@@ -1,12 +1,14 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
@@ -31,11 +33,13 @@ public class QuestionSelect extends PicsActionSupport {
 
 	public String execute() throws Exception {
 		loadPermissions();
-		questions = new TreeSet<AuditQuestion>();
+		questions = new LinkedHashSet<AuditQuestion>();
 		List<AuditQuestion> questionList = auditQuestionDAO.findByQuestion(
 				questionName, permissions, getAuditCategories());
+		
+		Collections.sort(questionList, AuditQuestion.getComparator());
 		questions.addAll(questionList);
-
+		
 		return SUCCESS;
 	}
 

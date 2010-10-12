@@ -62,7 +62,7 @@ public class AuditQuestionDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findByQuestion(String question, Permissions permissions, Set<AuditCategory> auditCats) {
-		String where = "SELECT t FROM AuditQuestion t WHERE t.name LIKE :name AND t.effectiveDate < NOW() AND t.expirationDate > NOW()";
+		String where = "SELECT t FROM AuditQuestion t WHERE t.name LIKE :name AND t.effectiveDate < NOW() AND t.expirationDate > NOW() ORDER BY t.number";
 		Query query = em.createQuery(where);
 		query.setParameter("name", "%" + Utilities.escapeQuotes(question) + "%");
 

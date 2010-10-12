@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -415,6 +416,32 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 			return cmp;
 
 		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
+	}
+	
+	/**
+	 * 		Comparator for comparing AuditQuestions not based on
+	 * 		natural ordering.  Use compareTo if you want to order based 
+	 * 		on the AuditQuestion's number and direct Category (it's natural order)
+	 * @return
+	 * 		The comparator for full ordering of AuditQuestions
+	 */
+	public static Comparator<AuditQuestion> getComparator(){
+		return new Comparator<AuditQuestion>() {
+			@Override
+			public int compare(AuditQuestion o1, AuditQuestion o2) {
+				String[] o1a = o1.getExpandedNumber().split("\\.");
+				String[] o2a = o2.getExpandedNumber().split("\\.");
+				for(int i=0; i<o1a.length; i++){
+					if(i>o2a.length)
+						return -1;
+					if(o1a[i].equals(o2a[i]))
+						continue;
+					else
+						return Integer.valueOf(o1a[i]).compareTo(Integer.valueOf(o2a[i]));
+				}				
+				return 0;
+			}
+		};
 	}
 
 	@SuppressWarnings("unchecked")
