@@ -128,12 +128,20 @@ table.report tr.na a {
 /* Audit Header */
 
 span.refresh {
-	float: right; padding-right: 25px;
+	float: right; padding-right: 25px; cursor: pointer;
 }
 
-#auditHeader.dirty span.refresh {
+#auditHeader span.refresh span.dirty {
+	display: none;	
+}
+
+#auditHeader.dirty span.refresh span.clean {
+	display: none;	
+}
+
+#auditHeader.dirty span.refresh span.dirty {
 	display: inline;	
-}	
+}
 
 /** Table for status **/
 table.statusOpBox {

@@ -214,7 +214,7 @@ function loadStatus(caoID){
 	<div id="caoTable" class="center">	
 		<s:include value="caoTable.jsp"/>
 	</div>
-	<span class="refresh"><a class="clickable refresh" id="refresh_cao">Refresh</a></span>
+	<span class="refresh"><a class="clickable refresh" id="refresh_cao"><span class="clean">Refresh</span><span class="dirty">Refreshing status now...</span></a></span>
 	<div class="clear"></div>
 </div>
 </s:if>

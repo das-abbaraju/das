@@ -159,7 +159,7 @@ $(function(){
 });
 
 function _updateCategories() {
-	var blocked = $('#auditHeader,#auditHeaderSideNav').block({message: 'Updating...'});
+	$('#auditHeader').addClass('dirty');
 	if (ucXHR)
 		ucXHR.abort();
 	ucXHR = $.ajax({
@@ -172,7 +172,6 @@ function _updateCategories() {
 		success: function(text, status, xhr) {
 			if (xhr.status) {
 				var me = $(text);
-				blocked.unblock();
 				$('#auditHeaderSideNav').html(me.filter('#audit_sidebar_refresh').html());
 				$('#caoTable').html(me.filter('#cao_table_refresh').html());
 				$('.cluetip').cluetip({
@@ -190,14 +189,12 @@ function _updateCategories() {
 function updateCategories() {
 	if (ucTimeout)
 		clearTimeout(ucTimeout);
-	$('#auditHeader').addClass('dirty');
 	ucTimeout = setTimeout(_updateCategories, 10000);
 }
 
 function updateCategoriesNow() {
 	if (ucTimeout)
 		clearTimeout(ucTimeout);
-	$('#auditHeader').addClass('dirty');
 	_updateCategories();
 }
 
