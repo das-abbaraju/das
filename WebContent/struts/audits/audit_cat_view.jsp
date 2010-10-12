@@ -22,7 +22,7 @@
 			<s:include value="audit_cat_sha.jsp"></s:include>
 		</s:if>
 		<s:else>
-			<h2 id="subcat_<s:property value="#category.fullNumber.replace('.', '_')"/>_">
+			<h2 id="cathead_<s:property value="#category.id"/>">
 				<div class="categoryNumber"><s:property value="#category.fullNumber"/></div> <s:property value="#category.name"/>
 			</h2>
 			<s:set name="shaded" value="true" scope="action"/>

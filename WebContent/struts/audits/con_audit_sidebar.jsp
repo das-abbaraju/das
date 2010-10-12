@@ -51,22 +51,22 @@
 		<s:iterator value="categories">
 			<s:if test="key.parent == NULL && value.applies">
 				<li id="category_<s:property value="key.id"/>" class="catlist">
-					<a class="hist-category" href="#categoryID=<s:property value="key.id" />"><s:property value="key.name" />
+					<a class="hist-category" href="#categoryID=<s:property value="key.id"/>"><s:property value="key.name" />
 					<s:if test="conAudit.auditType.pqf">
 						<span class="cat-percent">
-							<s:if test="value.percentCompleted == 100"><img src="images/okCheck.gif" width="16" height="16" /></s:if>
+							<s:if test="value.percentCompleted == 100"><img src="images/okCheck.gif"/></s:if>
 							<s:else><s:property value="value.percentCompleted" />%</s:else>
 						</span>
 					</s:if>
 					<s:elseif test="conAudit.auditType.workflow.hasSubmittedStep">
 						<span class="cat-percent">
-							<s:if test="value.percentVerified == 100"><img src="images/okCheck.gif" width="16" height="16" /></s:if>
+							<s:if test="value.percentVerified == 100"><img src="images/okCheck.gif"/></s:if>
 							<s:else><s:property value="value.percentVerified" />%</s:else>
 						</span>
 					</s:elseif>
 					<s:elseif test="conAudit.auditType.id == 17">
 						<span class="cat-percent">
-							<s:if test="value.printableScore == 100"><img src="images/okCheck.gif" width="16" height="16" /></s:if>
+							<s:if test="value.printableScore == 100"><img src="images/okCheck.gif"/></s:if>
 							<s:else><s:property value="value.printableScore" />%</s:else>
 						</span>
 					</s:elseif>
@@ -74,7 +74,7 @@
 					<s:if test="key.subCategories.size() > 1">
 						<ul class="subcat-list">
 							<s:iterator value="key.subCategories">
-								<li id="<s:property value="fullNumber.replace('.', '_')"/>_" class="subCatli clickable"><s:property value="name" /></li>
+								<li><a href="#categoryID=<s:property value="topParent.id"/>&subCat=<s:property value="id"/>"><s:property value="name" /></a></li>
 							</s:iterator>
 						</ul>
 					</s:if>

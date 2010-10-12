@@ -95,6 +95,14 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	public void setParent(AuditCategory parent) {
 		this.parent = parent;
 	}
+	
+	@Transient
+	public AuditCategory getTopParent() {
+		if (parent != null)
+			return parent.getTopParent();
+		
+		return this;
+	}
 
 	@Transient
 	public AuditType getParentAuditType() {

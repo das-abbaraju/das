@@ -176,7 +176,7 @@ div.auditSubMenu a.audit {
 }
 
 div.auditSubMenu a.done {
-	background-image: url("../images/okCheck.png");
+	background-image: url("../images/okCheck.gif");
 	background-repeat: no-repeat;
 	background-position: left center;
 }
