@@ -75,7 +75,39 @@ $(function() {
 			"disable_selecting_children": true,
 			"select_multiple_modifier": "shift"
 		},
-		plugins: ["themes", "json_data", "ui", "dnd", "types", "crrm"]
+		"contextmenu": {
+			"items": function(node) {
+				var id = node.attr('id').split('_')[1];
+				if (this._get_type(node) == "audit")
+					return {
+						"view": {
+							"label": "View",
+							"action": function() {
+								window.open('ManageAuditType.action?id='+id);
+							}
+						}
+					};
+				if (this._get_type(node) == "category")
+					return {
+						"view": {
+							"label": "View",
+							"action": function() {
+								window.open('ManageCategory.action?id='+id);
+							}
+						}
+					};
+				if (this._get_type(node) == "question")
+					return {
+						"view": {
+							"label": "View",
+							"action": function() {
+								window.open('ManageQuestion.action?id='+id);
+							}
+						}
+					};
+			}
+		},
+		plugins: ["themes", "json_data", "ui", "dnd", "types", "contextmenu", "crrm"]
 	})
 	.bind("remove.jstree", function (e, data) {
 		alert("remove node");
