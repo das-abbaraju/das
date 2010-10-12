@@ -35,7 +35,10 @@ $(function(){
 			$.bbq.pushState($.param.fragment(location.href,$('a.hist-category:first').attr('href')));
 		} else if (!lastState || !lastState.categoryID || state.categoryID != lastState.categoryID || state.mode != lastState.mode || state["_"]) {
 			$('#printReqButton').hide();
-			currentCat = state.categoryID;
+			if (state.subCat!==undefined)
+				$.scrollTo('#cathead_'+state.subCat, 800, {axis: 'y'});
+			else if ($(window).scrollTop() > $('#auditViewArea').offset().top)
+				$.scrollTo('#auditViewArea', 800, {axis: 'y'});
 			var data = $.deparam.querystring($.param.querystring(location.href, state));
 			data.button='load';
 			if (catXHR)
@@ -51,10 +54,6 @@ $(function(){
 						$('ul.catUL li.currSub').hide();
 						$('#catSubCat_'+state.categoryID).show();
 						$('#auditViewArea').html(html).unblock();
-						if (state.subCat!==undefined)
-							$.scrollTo('#cathead_'+state.subCat, 800, {axis: 'y'});
-						else if ($(window).scrollTop() > $('#auditViewArea').offset().top)
-							$.scrollTo('#auditViewArea', 800, {axis: 'y'});
 					}
 				}
 			});
