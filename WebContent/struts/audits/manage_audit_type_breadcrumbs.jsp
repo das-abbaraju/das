@@ -19,10 +19,6 @@
 			&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain<s:if test="categoryParent.id == #current.id"> current</s:if>" href="ManageCategory.action?id=<s:property value="#current.id"/>"><s:property value="#current.name"/></a>
 		</s:iterator>
 	</s:if>
-	
-	<s:if test="question != null">
-		&nbsp;&gt;&nbsp;&nbsp;<a class="blueSmall" href="ManageQuestion.action?id=<s:property value="question.id"/>"><s:property value="question.name"/></a>				
-	</s:if>
 </div>
 
 <s:include value="../actionMessages.jsp" />
