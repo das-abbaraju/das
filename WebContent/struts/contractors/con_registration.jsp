@@ -35,7 +35,12 @@ function checkName(name) {
 }
 
 function changeCountry(country) {
-	checkTaxId($('#contractorTaxId').val());
+	if (country != 'AE') {
+		checkTaxId($('#contractorTaxId').val());
+		$('#taxIdItem').show();
+	} else
+		$('#taxIdItem').hide();
+	
 	changeState(country);
 }
 
@@ -108,7 +113,7 @@ $(function(){
 								<p>The headquarters of your company. This will affect the currency in which your PICS membership will be listed.</p>
 							</div>
 						</li>
-						<li class="required"><label id="taxIdLabel">Tax ID:</label>
+						<li class="required" id="taxIdItem"><label id="taxIdLabel">Tax ID:</label>
 							<s:textfield name="contractor.taxId" id="contractorTaxId"
 								size="9" maxLength="9" onchange="checkTaxId(this.value);" />
 							<div class="fieldhelp">

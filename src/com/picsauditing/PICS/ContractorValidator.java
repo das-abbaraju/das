@@ -50,7 +50,7 @@ public class ContractorValidator {
 			errorMessages.addElement("Please fill in the Phone field.");
 
 		// Tax Id
-		if (!java.util.regex.Pattern.matches("\\d{9}", contractor.getTaxId()))
+		if (!contractor.getCountry().getIsoCode().equals("AE") && !java.util.regex.Pattern.matches("\\d{9}", contractor.getTaxId()))
 			errorMessages.addElement("Please enter your 9 digit tax ID with only digits 0-9, no dashes.");
 
 		// Main Trade

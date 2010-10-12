@@ -118,7 +118,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			if (Strings.isEmpty(user.getPassword()))
 				errors.add("Please fill in the Password field.");
 
-			if (!contractorValidator.verifyTaxID(contractor)) {
+			if (!contractor.getCountry().getIsoCode().equals("AE") && !contractorValidator.verifyTaxID(contractor)) {
 				errors.add("The tax ID <b>" + contractor.getTaxId()
 						+ "</b> already exists.  Please contact a PICS representative.");
 			}
