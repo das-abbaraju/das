@@ -3,6 +3,9 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 
 <h2>Category <s:property value="#category.number"/> - <s:property value="#category.name"/></h2>
+<s:if test="#category.helpText != null && #category.helpText.length() > 0">
+	<div class="alert"><s:property value="#category.helpText" escape="false"/></div>
+</s:if> 
 <s:if test="permissions.admin || permissions.contractor">
 	<span class="redMain">You must input at least your corporate statistics. To add additional 
 		sites/locations, please click on 'Add New Location' button located at bottom of the page.

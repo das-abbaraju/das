@@ -25,6 +25,9 @@
 			<h2 id="cathead_<s:property value="#category.id"/>">
 				<div class="categoryNumber"><s:property value="#category.fullNumber"/></div> <s:property value="#category.name"/>
 			</h2>
+			<s:if test="#category.helpText != null && #category.helpText.length() > 0">
+				<div class="alert"><s:property value="#category.helpText" escape="false"/></div>
+			</s:if> 
 			<s:set name="shaded" value="true" scope="action"/>
 			<s:iterator value="#category.questions" id="q">
 				<s:if test="title != null && title.length() > 0">
@@ -63,9 +66,6 @@
 			</s:iterator>
 			<s:iterator value="#category.subCategories" id="category">
 				<s:include value="audit_cat_view.jsp"/>
-				<s:if test="helpText != null && helpText.length() > 0">
-					<div class="fieldhelp"><s:property value="helpText" escape="false"/></div>
-				</s:if> 
 			</s:iterator>	
 		</s:else>
 			<s:if test="!#showCat && onlyReq">	

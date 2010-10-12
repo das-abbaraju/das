@@ -554,6 +554,10 @@ table.osha tfoot th {
 	background-color: #AAAAAA;
 }
 
+div.audit_cateogry div.alert {
+	width: auto;
+}
+
 .categoryNumber, .questionNumber{
 	float: right;
 	padding: 0 18px 5px 15px;
