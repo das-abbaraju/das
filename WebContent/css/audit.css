@@ -403,7 +403,7 @@ ul.subcat-list {
 ul.subcat-list li {
 	border: none;	
 }
-ul.vert-toolbar li.current ul.subcat-list, ul.vert-toolbar li.hover ul.subcat-list {
+ul.vert-toolbar li.current ul.subcat-list {
 	display: block;
 }
 ul.vert-toolbar li.hover {
