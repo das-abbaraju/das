@@ -225,12 +225,18 @@ public class AuditDataSave extends AuditActionSupport {
 				
 				if (auditData.getQuestion().isRecalculateCategories())
 					auditBuilder.fillAuditCategories(auditData);
+				
+				// Stop concurrent modification exception
+				boolean updateAudit = false;
 				for (ContractorAuditOperator cao : tempAudit.getOperators()) {
 					if (cao.getStatus().after(AuditStatus.Resubmitted)) {
 						cao.changeStatus(AuditStatus.Resubmitted, permissions);
-						auditDao.save(tempAudit);
+						updateAudit = true;
 					}
 				}
+				if (updateAudit)
+					auditDao.save(tempAudit);
+				
 				if (tempAudit.getAuditType().getId() == AuditType.COR) {
 					if (auditData.getQuestion().getId() == 2950) {
 						tempAudit.setAuditFor(auditData.getAnswer());
