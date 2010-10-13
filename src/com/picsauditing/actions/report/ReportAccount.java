@@ -69,7 +69,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			getFilter().setPrimaryInformation(true);
 		}
 
-		sql.addJoin("JOIN users contact ON contact.id = a.contactID");
+		sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
 		sql.addField("a.phone");
 		sql.addField("a.fax");
 		sql.addField("a.creationDate");
