@@ -103,18 +103,25 @@ public class OperatorAccountDAO extends PicsDAO {
 	}
 
 	public List<OperatorAccount> findWhere(boolean includeCorporate, String where) {
-
+		return findWhere(includeCorporate, where, 0);
+	}
+	
+	public List<OperatorAccount> findWhere(boolean includeCorporate, String where, int maxResults) {
+		
 		if (where == null)
 			where = "";
-
+		
 		if (includeCorporate == false)
 			where = "a.type = 'Operator'" + ((where.length() > 0) ? " AND " + where : "");
-
+		
 		if (where.length() > 0)
 			where = "WHERE " + where;
-
+		
 		Query query = em.createQuery("select a from OperatorAccount a " + where + " order by a.type, a.name");
-
+		
+		if (maxResults > 0)
+			query.setMaxResults(maxResults);
+		
 		return query.getResultList();
 	}
 

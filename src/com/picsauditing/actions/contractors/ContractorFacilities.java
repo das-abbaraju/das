@@ -131,31 +131,49 @@ public class ContractorFacilities extends ContractorActionSupport {
 						}
 					}
 				} else if (contractor.getOperators().size() == 0) {
-					List<BasicDynaBean> data = SmartFacilitySuggest.getFirstFacility(contractor);
-
+					// Only turn on smart facility suggest for US and Canada
 					searchResults = new ArrayList<OperatorAccount>();
-					for (BasicDynaBean d : data) {
-						OperatorAccount o = new OperatorAccount();
+					if (contractor.getCountry().getIsoCode().equals("US") || contractor.getCountry().getIsoCode().equals("CA")) {
+						List<BasicDynaBean> data = SmartFacilitySuggest.getFirstFacility(contractor);
 						
-						if (d.get("onsiteServices").equals(1))
-							o.setOnsiteServices(true);
-						if (d.get("offsiteServices").equals(1))
-							o.setOffsiteServices(true);
-						if (d.get("materialSupplier").equals(1))
-							o.setMaterialSupplier(true);
 						
-						o.setId(Integer.parseInt(d.get("opID").toString()));
-						o.setName(d.get("name").toString());
-						o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
+						for (BasicDynaBean d : data) {
+							OperatorAccount o = new OperatorAccount();
+							
+							if (d.get("onsiteServices").equals(1))
+								o.setOnsiteServices(true);
+							if (d.get("offsiteServices").equals(1))
+								o.setOffsiteServices(true);
+							if (d.get("materialSupplier").equals(1))
+								o.setMaterialSupplier(true);
+							
+							o.setId(Integer.parseInt(d.get("opID").toString()));
+							o.setName(d.get("name").toString());
+							o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
+							
+							if (contractor.isOnsiteServices() && o.isOnsiteServices()
+									|| contractor.isOffsiteServices() && o.isOffsiteServices()
+									|| contractor.isMaterialSupplier() && o.isMaterialSupplier())
+								searchResults.add(o);
+						}
 						
-						if (contractor.isOnsiteServices() && o.isOnsiteServices()
-								|| contractor.isOffsiteServices() && o.isOffsiteServices()
-								|| contractor.isMaterialSupplier() && o.isMaterialSupplier())
-							searchResults.add(o);
+						addActionMessage("This list of operators was generated based on your location. "
+								+ "To find a specific operator, use the search filters above");
+					} else {
+						// Search for a list of operators in the contractor's country?
+						// TODO Do we show only 10?
+						List<OperatorAccount> ops = operatorDao.findWhere(false, "a.country = '" + contractor.getCountry().getIsoCode() + "'");
+						searchResults = ops.subList(0, ops.size() < 10 ? ops.size() : 10);
+						
+						if (ops.size() < 10) {
+							List<OperatorAccount> ops2 = operatorDao.findWhere(false, 
+									"a IN (SELECT co.operatorAccount FROM ContractorOperator co " +
+									"WHERE co.contractorAccount.status = 'Active' ORDER BY co.creationDate DESC)", 10);
+							// There are probably more than 10 operators with new approved contractors
+							int remainder = 10 - ops.size();
+							searchResults.addAll(ops2.subList(ops.size(), ops2.size() < remainder ? ops2.size() : remainder));
+						}
 					}
-
-					addActionMessage("This list of operators was generated based on your location. "
-							+ "To find a specific operator, use the search filters above");
 				} else {
 					List<BasicDynaBean> data = SmartFacilitySuggest.getSimilarOperators(contractor, 10);
 
