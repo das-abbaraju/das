@@ -46,6 +46,8 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	protected AccountStatus status = AccountStatus.Pending;
 	protected String dbaName;
 	protected String address;
+	protected String address2;
+	protected String address3;
 	protected String city;
 	protected Country country;
 	protected State state;
@@ -127,6 +129,24 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	
+	@Column(name = "address2", length = 50)
+	public String getAddress2() {
+		return this.address2;
+	}
+	
+	public void setAddress2(String address2) {
+		this.address2 = address2;
+	}
+	
+	@Column(name = "address3", length = 50)
+	public String getAddress3() {
+		return this.address3;
+	}
+	
+	public void setAddress3(String address3) {
+		this.address3 = address3;
 	}
 
 	@Column(length = 35)

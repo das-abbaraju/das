@@ -43,14 +43,17 @@ public class ContractorValidator {
 				errorMessages.addElement("Please select a State");
 			}
 		}
-
-		if (Strings.isEmpty(contractor.getZip()))
-			errorMessages.addElement("Please fill in the Zip field.");
+		
 		if (Strings.isEmpty(contractor.getPhone()))
 			errorMessages.addElement("Please fill in the Phone field.");
+		
+		boolean uae = false;
+		if (contractor.getCountry() != null && contractor.getCountry().getIsoCode().equals("AE"))
+			uae = true;
 
-		// Tax Id
-		if (!contractor.getCountry().getIsoCode().equals("AE") && !java.util.regex.Pattern.matches("\\d{9}", contractor.getTaxId()))
+		if (!uae && Strings.isEmpty(contractor.getZip()))
+			errorMessages.addElement("Please fill in the Zip field.");
+		if (!uae && !java.util.regex.Pattern.matches("\\d{9}", contractor.getTaxId()))
 			errorMessages.addElement("Please enter your 9 digit tax ID with only digits 0-9, no dashes.");
 
 		// Main Trade

@@ -33,7 +33,7 @@
 	$.fn.requiredfields = function() {
 		return $(this).live('blur', function() {
 			var me = $(this);
-			if (me.blank())
+			if (me.blank() && !me.hasClass('multifield'))
 				me.parent().removeClass('hasdata');
 			else
 				me.parent().addClass('hasdata');

@@ -14,6 +14,14 @@ function changeState(country) {
 }
 
 function countryChanged(country) {
+	// hide taxID and zip code
+	if (country == 'AE') {
+		$('#tax_li').hide();
+		$('#zip_li').hide();
+	} else {
+		$('#tax_li').show();
+		$('#zip_li').show();
+	}
 	changeState(country);
 }
 
@@ -82,6 +90,8 @@ $(function() {
 				<ol>
 					<li><label>Address:</label>
 						<s:textfield name="contractor.address" size="35" />
+						<s:textfield name="contractor.address2" size="35" />
+						<s:textfield name="contractor.address3" size="35" />
 					</li>
 					<li><label>City:</label>
 						<s:textfield name="contractor.city" size="20" />
@@ -94,9 +104,11 @@ $(function() {
 						onchange="countryChanged(this.value)"
 						/></li>
 					<li id="state_li"></li>
-					<li><label>Zip:</label>
-						<s:textfield name="contractor.zip" size="7" />
-					</li>
+					<s:if test="contractor.country.isoCode != 'AE'">
+						<li id="zip_li"><label>Zip:</label>
+							<s:textfield name="contractor.zip" size="7" />
+						</li>
+					</s:if>
 					<li><label>Company Phone:</label><s:textfield name="contractor.phone" /></li>
 					<li><label>Company Fax:</label><s:textfield name="contractor.fax" /></li>
 					
@@ -121,9 +133,11 @@ $(function() {
 				<fieldset class="form">
 				<h2 class="formLegend">Industry Details</h2>
 				<ol>
-					<li><label>Tax ID:</label>
-						<s:property value="contractor.taxId"/>
-					</li>
+					<s:if test="contractor.country.isoCode != 'AE'">
+						<li id="tax_li"><label>Tax ID:</label>
+							<s:property value="contractor.taxId"/>
+						</li>
+					</s:if>
 					<li><label>Industry:</label>
 						<s:select list="industryList" name="contractor.industry"/>
 					</li>
@@ -200,9 +214,11 @@ $(function() {
 							<s:radio list="riskLevelList" name="riskLevel" theme="pics" />
 						</li>
 					</pics:permission>
-					<li><label>Tax ID:</label>
-						<s:textfield name="contractor.taxId" size="9" maxLength="9" />*(only digits 0-9, no dashes)
-					</li>
+					<s:if test="contractor.country.isoCode != 'AE'">
+						<li id="taxIdItem"><label>Tax ID:</label>
+							<s:textfield name="contractor.taxId" size="9" maxLength="9" />*(only digits 0-9, no dashes)
+						</li>
+					</s:if>
 					<li><label>Must Pay?</label>
 						<s:radio list="#{'Yes':'Yes','No':'No'}" name="contractor.mustPay"
 							value="contractor.mustPay" theme="pics" />

@@ -35,11 +35,14 @@ function checkName(name) {
 }
 
 function changeCountry(country) {
-	if (country != 'AE') {
+	if (country == 'AE') {
+		$('#taxIdItem').hide();
+		$('#zipItem').hide();
+	} else {
 		checkTaxId($('#contractorTaxId').val());
 		$('#taxIdItem').show();
-	} else
-		$('#taxIdItem').hide();
+		$('#zipItem').show();
+	}
 	
 	changeState(country);
 }
@@ -113,19 +116,21 @@ $(function(){
 								<p>The headquarters of your company. This will affect the currency in which your PICS membership will be listed.</p>
 							</div>
 						</li>
-						<li class="required" id="taxIdItem"><label id="taxIdLabel">Tax ID:</label>
-							<s:textfield name="contractor.taxId" id="contractorTaxId"
-								size="9" maxLength="9" onchange="checkTaxId(this.value);" />
-							<div class="fieldhelp">
-								<h3>Tax ID or Business Number</h3>
-								<p>The number your government uses to uniquely identify your company. We use this to see if your company has already registered.</p>
-								<h5>United States</h5>
-								9-digit number with no dashes
-								<h5>Canada</h5>
-								the first 9-digits of your 15 character Business Number
-							</div>
-							<div id="taxId_status"></div>
-						</li>
+						<s:if test="contractor.country.isoCode != 'AE'">
+							<li class="required" id="taxIdItem"><label id="taxIdLabel">Tax ID:</label>
+								<s:textfield name="contractor.taxId" id="contractorTaxId"
+									size="9" maxLength="9" onchange="checkTaxId(this.value);" />
+								<div class="fieldhelp">
+									<h3>Tax ID or Business Number</h3>
+									<p>The number your government uses to uniquely identify your company. We use this to see if your company has already registered.</p>
+									<h5>United States</h5>
+									9-digit number with no dashes
+									<h5>Canada</h5>
+									the first 9-digits of your 15 character Business Number
+								</div>
+								<div id="taxId_status"></div>
+							</li>
+						</s:if>
 						<li><label>Web URL:</label>
 							<s:textfield name="contractor.webUrl" size="35" />
 							<div class="fieldhelp">
@@ -155,7 +160,9 @@ $(function(){
 					<h2 class="formLegend">Primary Address</h2>
 					<ol>
 						<li class="required"><label>Address:</label>
-							<s:textfield name="contractor.address" size="35" />
+							<s:textfield name="contractor.address" size="35" /><br />
+							<s:textfield name="contractor.address2" size="35" cssClass="multifield" /><br />
+							<s:textfield name="contractor.address3" size="35" cssClass="multifield" />
 							<div class="fieldhelp">
 								<h3>Primary Address</h3>
 								Your company's primary address or headquarters. This should be located in the country you selected in Company Details above.
@@ -178,9 +185,11 @@ $(function(){
 									listKey="isoCode" listValue="name" />
 							</li>
 						</s:else>
-						<li class="required"><label>Zip/Postal Code:</label>
-							<s:textfield name="contractor.zip" size="10" />
-						</li>
+						<s:if test="contractor.country.isoCode != 'AE'">
+							<li class="required" id="zipItem"><label>Zip/Postal Code:</label>
+								<s:textfield name="contractor.zip" size="10" />
+							</li>
+						</s:if>
 					</ol>
 				</fieldset>
 				<fieldset class="form">

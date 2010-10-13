@@ -15,6 +15,12 @@ function changeState(country) {
 }
 
 function countryChanged(country) {
+	// hide taxID and zip code
+	if (country == 'AE') {
+		$('#zip_li').hide();
+	} else {
+		$('#zip_li').show();
+	}
 	changeState(country);
 }
 
@@ -84,8 +90,11 @@ $(function() {
 	<fieldset class="form">
 	<h2 class="formLegend">Primary Address</h2>
 	<ol>
-		<li><label>Address:</label> <s:textfield
-			name="operator.address" size="35" /></li>
+		<li><label>Address:</label>
+			<s:textfield name="operator.address" size="35" /><br />
+			<s:textfield name="operator.address2" size="35" /><br />
+			<s:textfield name="operator.address3" size="35" />
+		</li>
 		<li><label>City:</label> <s:textfield name="operator.city"
 			size="20" /></li>
 		<li><label>Country:</label> <s:select 
@@ -106,8 +115,11 @@ $(function() {
 			</s:if>
 		</li>
 		<li id="state_li"></li>
-		<li><label>Zip:</label> <s:textfield name="operator.zip"
-			size="7" /></li>
+		<s:if test="operator.country.isoCode != 'AE'">
+			<li id="zip_li"><label>Zip:</label>
+				<s:textfield name="operator.zip" size="7" />
+			</li>
+		</s:if>
 		<li><label>Main Phone:</label><s:textfield name="operator.phone" /></li>
 		<li><label>Main Fax:</label><s:textfield name="operator.fax" /></li>
 		<li><label>Web URL:</label> <s:textfield name="operator.webUrl"
