@@ -40,8 +40,10 @@ function changeCountry(country) {
 		$('#zipItem').hide();
 	} else {
 		checkTaxId($('#contractorTaxId').val());
-		$('#taxIdItem').show();
-		$('#zipItem').show();
+		if($('#taxIdItem').is(':hidden'))
+			$('#taxIdItem').show();
+		if($('#zipItem').is(':hidden'))
+			$('#zipItem').show();
 	}
 	
 	changeState(country);
@@ -116,21 +118,19 @@ $(function(){
 								<p>The headquarters of your company. This will affect the currency in which your PICS membership will be listed.</p>
 							</div>
 						</li>
-						<s:if test="contractor.country.isoCode != 'AE'">
-							<li class="required" id="taxIdItem"><label id="taxIdLabel">Tax ID:</label>
-								<s:textfield name="contractor.taxId" id="contractorTaxId"
-									size="9" maxLength="9" onchange="checkTaxId(this.value);" />
-								<div class="fieldhelp">
-									<h3>Tax ID or Business Number</h3>
-									<p>The number your government uses to uniquely identify your company. We use this to see if your company has already registered.</p>
-									<h5>United States</h5>
-									9-digit number with no dashes
-									<h5>Canada</h5>
-									the first 9-digits of your 15 character Business Number
-								</div>
-								<div id="taxId_status"></div>
-							</li>
-						</s:if>
+						<li class="required" id="taxIdItem" <s:if test="contractor.country.isoCode =='AE'">style="display: none;"</s:if>><label id="taxIdLabel">Tax ID:</label>
+							<s:textfield name="contractor.taxId" id="contractorTaxId"
+								size="9" maxLength="9" onchange="checkTaxId(this.value);" />
+							<div class="fieldhelp">
+								<h3>Tax ID or Business Number</h3>
+								<p>The number your government uses to uniquely identify your company. We use this to see if your company has already registered.</p>
+								<h5>United States</h5>
+								9-digit number with no dashes
+								<h5>Canada</h5>
+								the first 9-digits of your 15 character Business Number
+							</div>
+							<div id="taxId_status"></div>
+						</li>
 						<li><label>Web URL:</label>
 							<s:textfield name="contractor.webUrl" size="35" />
 							<div class="fieldhelp">
@@ -185,11 +185,9 @@ $(function(){
 									listKey="isoCode" listValue="name" />
 							</li>
 						</s:else>
-						<s:if test="contractor.country.isoCode != 'AE'">
-							<li class="required" id="zipItem"><label>Zip/Postal Code:</label>
-								<s:textfield name="contractor.zip" size="10" />
-							</li>
-						</s:if>
+						<li class="required" id="zipItem" <s:if test="contractor.country.isoCode == 'AE'">style="display: none;"</s:if>><label>Zip/Postal Code:</label>
+							<s:textfield name="contractor.zip" size="10" />
+						</li>
 					</ol>
 				</fieldset>
 				<fieldset class="form">
