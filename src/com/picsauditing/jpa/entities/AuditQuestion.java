@@ -57,8 +57,9 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private boolean flaggable;
 	private boolean showComment;
 	private LowMedHigh riskLevel = null;
-	private String helpPage;
 	private String requirement;
+	private String helpPage;
+	private String helpText;
 
 	private String criteria;
 	private String criteriaAnswer;
@@ -93,6 +94,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.showComment = a.showComment;
 		this.riskLevel = a.riskLevel;
 		this.helpPage = a.helpPage;
+		this.helpText = a.helpText;
 		this.requirement = a.requirement;
 		this.category = ac;
 		this.effectiveDate = a.effectiveDate;
@@ -269,6 +271,15 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	public void setHelpPage(String helpPage) {
 		this.helpPage = helpPage;
+	}
+
+	@Column(length = 1000)
+	public String getHelpText() {
+		return helpText;
+	}
+
+	public void setHelpText(String helpText) {
+		this.helpText = helpText;
 	}
 
 	public void setRequirement(String requirement) {
@@ -468,7 +479,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 			return true;
 		return false;
 	}
-	
+
 	@Transient
 	public String getShortQuestion() {
 		String columnText = getName();

@@ -99,9 +99,18 @@ function moveQuestion(atypeID) {
 				NEW
 			</s:else>
 		</li>
-		<li><label>Name:</label>
+		<li><label>Question Type:</label>
+			<s:select list="questionTypes" name="question.questionType" headerKey="" headerValue="" />
+		</li>
+		<li><label>Question Text:</label>
 			<s:textarea name="question.name" />
-		</li>		
+		</li>
+		<li><label>Title:</label>
+			<s:textfield name="question.title" size="65"/>
+		</li>
+		<li><label>Required:</label>
+			<s:checkbox name="question.required" />
+		</li>
 		<li><label>Effective Date:</label>
 			<s:textfield name="question.effectiveDate" value="%{ question.effectiveDate && getText('short_dates', {question.effectiveDate})}"/>
 		</li>
@@ -118,10 +127,15 @@ function moveQuestion(atypeID) {
 		</s:if>
 		<li><label>Column Header:</label>
 			<s:textfield name="question.columnHeader" size="20" maxlength="30"/>
-		</li>	
+		</li>
 		<li><label>Field Identifier:</label>
 			<s:textfield name="question.uniqueCode" size="20" maxlength="50"/>
 		</li>
+	</ol>
+	</fieldset>
+	<fieldset class="form">
+	<h2 class="formLegend">Additional Options</h2>
+	<ol>
 		<li><label>Has Requirement:</label>
 			<s:checkbox name="question.hasRequirement"/>
 		</li>
@@ -133,9 +147,6 @@ function moveQuestion(atypeID) {
 		</li>
 		<li><label>Flaggable:</label>
 			<s:checkbox name="question.flaggable"/>
-		</li>
-		<li><label>Required:</label>
-			<s:checkbox name="question.required" />
 		</li>
 		<li><label>Required by Question:</label>
 			<s:textfield name="requiredQuestionID" />
@@ -166,18 +177,17 @@ function moveQuestion(atypeID) {
 				<p>If the "Visible" has this answer, this question will become a required question.</p>
 			</div>
 		</li>
-		<li><label>Question Type:</label>
-			<s:select list="questionTypes" name="question.questionType" />
-		</li>
 		<li><label>Risk Level:</label>
 			<s:select list="@com.picsauditing.jpa.entities.LowMedHigh@values()" name="question.riskLevel" />
-		</li>		
-		<li><label>Title:</label>
-			<s:textfield name="question.title" size="65"/>
 		</li>
 		<li><label>Grouped with Previous:</label>
 			<s:checkbox name="question.groupedWithPrevious"/>
 		</li>
+	</ol>
+	</fieldset>
+	<fieldset class="form">
+	<h2 class="formLegend">Help</h2>
+	<ol>
 		<li><label>Show Comments:</label>
 			<s:checkbox name="question.showComment" value="question.showComment"/>
 		</li>
@@ -187,7 +197,10 @@ function moveQuestion(atypeID) {
 				<s:if test="question.helpPage.length() > 0"><a href="http://help.picsauditing.com/wiki/<s:property value="question.helpPage"/>">Help Center</a></s:if>
 				<s:else>help.picsauditing.com/wiki/???</s:else>
 			</div>
-		</li>		
+		</li>
+		<li><label>Help Text:</label>
+			<s:textarea name="helpText"></s:textarea>
+		</li>
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">
