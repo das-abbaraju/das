@@ -38,7 +38,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class FacilitiesEdit extends OperatorActionSupport implements Preparable {
 	protected String type = "Operator";
-	protected int[] facilities = new int[300];
+	protected List<Integer> facilities;
 	protected Set<OperatorAccount> relatedFacilities = null;
 	protected int nameId;
 	protected String name;
@@ -71,14 +71,13 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		id = getParameter("id");
 
 		if (id > 0) {
+			facilities = new ArrayList<Integer>();
 			findOperator();
 			type = operator.getType();
 			subHeading = "Edit " + operator.getType();
 
-			int i = 0;
 			for (Facility fac : operator.getOperatorFacilities()) {
-				facilities[i] = fac.getOperator().getId();
-				i++;
+				facilities.add(fac.getOperator().getId());
 			}
 		}
 
@@ -296,11 +295,11 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		return userDAO.findByGroup(10801); // only showing users from marketing group
 	}
 
-	public int[] getFacilities() {
+	public List<Integer> getFacilities() {
 		return facilities;
 	}
 
-	public void setFacilities(int[] facilities) {
+	public void setFacilities(List<Integer> facilities) {
 		this.facilities = facilities;
 	}
 
