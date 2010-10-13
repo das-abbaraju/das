@@ -224,7 +224,7 @@ $(function(){
 								</s:else>
 								<div class="fieldhelp">
 									<h3><s:property value="#conType.type" /></h3>
-									<s:property value="#conType.description" />
+									<s:property value="#conType.description" escape="false" />
 								</div>
 							</li>
 						</s:iterator>
