@@ -21,6 +21,13 @@
 
 <div id="thinking_sites" class="right"></div>
 <s:set name="showProject" value="employee.account.requiresOQ && permissions.requiresOQ" />
+<s:set name="colspan" value="4" />
+<s:if test="#showProject">
+	<s:set name="colspan" value="#colspan + 1" />
+</s:if>
+<s:if test="permissions.requiresOQ || permissions.admin">
+	<s:set name="colspan" value="#colspan + 1" />
+</s:if>
 <table>
 	<tbody>
 		<tr>
@@ -36,7 +43,9 @@
 							<th>Since</th>
 							<th>Orientation</th>
 							<th>Edit</th>
-							<th>Tasks</th>
+							<s:if test="permissions.requiresOQ || permissions.admin">
+								<th>Tasks</th>
+							</s:if>
 						</tr>
 					</thead>
 					<s:iterator value="employee.employeeSites" id="site" status="stat">
@@ -57,35 +66,37 @@
 									onclick="$('._under').hide(); $('#'+<s:property value="%{#stat.count}" />+'_under').toggle(); return false;"
 									class="edit"></a>
 								</td>
-								<td class="center">
-									<a href="#" onclick="viewTasks(<s:property value="#site.id" />); return false;">View</a>
-								</td>
+								<s:if test="permissions.requiresOQ || permissions.admin">
+									<td class="center">
+										<a href="#" onclick="viewTasks(<s:property value="#site.id" />); return false;">View</a>
+									</td>
+								</s:if>
 							</tr>
 							<tr id="<s:property value="#stat.count" />_under" class="_under" style="display: none;">
-								<td colspan="<s:property value="#showProject ? 6 : 5" />">
-								<div id="siteEditBox">
-									<form id="siteForm_<s:property value="#site.id" />" >
-										<input type="hidden" value="<s:property value="#site.id" />" name="childID" />
-										<div style="float:left; width: 50%;">
-											Start Date: <s:textfield id="sDate_%{#site.id}" cssClass="datepicker" name="effectiveDate" value="%{maskDateFormat(effectiveDate)}" size="10" /><br />
-											End Date: <s:textfield id="eDate_%{#site.id}" cssClass="datepicker" name="expirationDate" value="%{maskDateFormat(expirationDate)}" size="10" /><br />
-											<input type="submit" value="Save" onclick="editAssignedSites(<s:property value="#site.id" />); return false;" class="picsbutton positive"/>
-										</div>
-										<div style="float:right; width: 50%;">
-											Site Orientation: <s:textfield id="oDate_%{#site.id}" cssClass="datepicker" name="orientationDate" value="%{maskDateFormat(orientationDate)}" size="10" /><br />
-											Expires in: <s:select label="Expires" id="expires_%{#site.id}"
-															list="#{0:36, 1:24, 2:12, 3:6, 4:' '}"
-															value="monthsToExp" /> months<br />
-											<input type="submit" value="Remove" onclick="removeJobSite(<s:property value="#site.id" />); return false;" class="picsbutton negative" />
-										</div>
-									</form>
-								</div>
+								<td colspan="<s:property value="#colspan" />">
+									<div id="siteEditBox">
+										<form id="siteForm_<s:property value="#site.id" />" >
+											<input type="hidden" value="<s:property value="#site.id" />" name="childID" />
+											<div style="float:left; width: 50%;">
+												Start Date: <s:textfield id="sDate_%{#site.id}" cssClass="datepicker" name="effectiveDate" value="%{maskDateFormat(effectiveDate)}" size="10" /><br />
+												End Date: <s:textfield id="eDate_%{#site.id}" cssClass="datepicker" name="expirationDate" value="%{maskDateFormat(expirationDate)}" size="10" /><br />
+												<input type="submit" value="Save" onclick="editAssignedSites(<s:property value="#site.id" />); return false;" class="picsbutton positive"/>
+											</div>
+											<div style="float:right; width: 50%;">
+												Site Orientation: <s:textfield id="oDate_%{#site.id}" cssClass="datepicker" name="orientationDate" value="%{maskDateFormat(orientationDate)}" size="10" /><br />
+												Expires in: <s:select label="Expires" id="expires_%{#site.id}"
+													list="#{0:36, 1:24, 2:12, 3:6, 4:' '}"
+													value="monthsToExp" /> months<br />
+												<input type="submit" value="Remove" onclick="removeJobSite(<s:property value="#site.id" />); return false;" class="picsbutton negative" />
+											</div>
+										</form>
+									</div>
 								</td>
 							</tr>
 						</s:if>
 					</s:iterator>
 					<tr>
-						<td colspan="<s:property value="#showProject ? 6 : 5" />"><s:if test="operators.size > 0">
+						<td colspan="<s:property value="#colspan" />"><s:if test="operators.size > 0">
 							<s:select onchange="addJobSite(this.value);" list="operators" name="operator.id" 
 								listKey="id" listValue="name" headerKey="" headerValue=" - Assign Job Site - " 
 								id="operator" />
@@ -95,7 +106,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="<s:property value="#showProject ? 6 : 5" />">
+						<td colspan="<s:property value="#colspan" />">
 							<a class="add" href="#" onclick="$('#newJobSite').show(); $(this).hide(); return false;" id="newJobSiteLink">Add New Job Site</a>
 							<div style="display: none;" id="newJobSite">
 								<s:form id="newJobSiteForm">
@@ -126,6 +137,9 @@
 						</td>
 					</tr>
 				</table>
+			</td>
+			<td style="padding-left: 10px;">
+				<div id="siteTasks"></div>
 			</td>
 		</tr>
 		<tr>
