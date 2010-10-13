@@ -7,6 +7,10 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="js/jquery/mcdropdown/jquery.mcdropdown.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/mcdropdown/css/jquery.mcdropdown.min.css" />
 <script type="text/javascript">
 function copyQuestion(atypeID) {
 	$('#copy_audit').load('ManageQuestionCopyAjax.action', {button: 'text', 'id': atypeID},
@@ -84,6 +88,7 @@ function moveQuestion(atypeID) {
 </head>
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
+<s:include value="../actionMessages.jsp" />
 
 <s:form id="save">
 	<s:hidden name="id" />
@@ -209,11 +214,22 @@ function moveQuestion(atypeID) {
 			<input type="button" class="picsbutton" value="Copy" onclick="copyQuestion(<s:property value="id"/>)"/>
 			<input type="button" class="picsbutton" value="Move" onclick="moveQuestion(<s:property value="id"/>)"/>
 		<s:if test="question.id > 0">
-			<button name="button" class="picsbutton negative" type="submit" value="delete">Delete</button>
+			<input type="submit" name="button" class="picsbutton negative" value="Delete" 
+				onclick="return confirm('Are you sure you want to delete this question?');" />
 		</s:if>
 		</div>
 	</fieldset>
 </s:form>
+
+<ul id="allCategories" style="display: none" class="mcdropdown_menu">
+	<s:iterator value="category.ancestors.get(0).auditType.categories">
+		<s:if test="id != category.id">
+			<li rel="<s:property value="id" />"><s:property value="number" />. <s:property value="name" />
+				<s:include value="manage_category_subcategories.jsp" />
+			</li>
+		</s:if>
+	</s:iterator>
+</ul>
 
 <div id="copy_audit"></div>
 </body>

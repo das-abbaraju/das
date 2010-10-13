@@ -112,22 +112,56 @@ public class ManageQuestion extends ManageCategory {
 	@Override
 	protected boolean move() {
 		try {
-			if (targetID == 0) {
+			if (targetID == 0)
 				addActionMessage("Please Select SubCategory to move to");
-				return false;
+			else {
+				AuditCategory targetSubCategory = auditCategoryDAO.find(targetID);
+				question.setCategory(targetSubCategory);
+				question.setAuditColumns(permissions);
+				
+				int number = 0;
+				for (AuditQuestion q : targetSubCategory.getQuestions()) {
+					if (q.getNumber() > number)
+						number = q.getNumber();
+				}
+				question.setNumber(number + 1);
+				
+				auditQuestionDAO.save(question);
+				recalculateCategory(question.getCategory());
+				return true;
 			}
-
-			AuditCategory targetSubCategory = auditCategoryDAO.find(targetID);
-			question.setCategory(targetSubCategory);
-			auditQuestionDAO.save(question);
-
-			addActionMessage("Question Moved Successfully. <a href=\"ManageQuestion.action?id=" + question.getId()
-					+ "\">Go to this Question?</a>");
-			return true;
-
 		} catch (Exception e) {
 			addActionError(e.getMessage());
 		}
+		
+		return false;
+	}
+	
+	@Override
+	protected boolean copy() {
+		try {
+			if (targetID == 0)
+				addActionMessage("Please Select SubCategory to copy to");
+			else {
+				AuditCategory targetSubCategory = auditCategoryDAO.find(targetID);
+				AuditQuestion copy = new AuditQuestion(question, targetSubCategory);
+				copy.setAuditColumns(permissions);
+				
+				int number = 0;
+				for (AuditQuestion q : targetSubCategory.getQuestions()) {
+					if (q.getNumber() > number)
+						number = q.getNumber();
+				}
+				copy.setNumber(number + 1);
+				
+				question = auditQuestionDAO.save(copy);
+				recalculateCategory(question.getCategory());
+				return true;
+			}
+		} catch (Exception e) {
+			addActionError(e.getMessage());
+		}
+		
 		return false;
 	}
 
@@ -137,10 +171,20 @@ public class ManageQuestion extends ManageCategory {
 			auditQuestionDAO.save(category);
 		}
 	}
+	
+	private void recalculateCategory(AuditCategory cat) {
+		cat.recalculateQuestions();
+		auditQuestionDAO.save(cat);
+	}
 
 	@Override
 	protected String getRedirectURL() {
 		return "ManageCategory.action?id=" + question.getCategory().getId();
+	}
+	
+	@Override
+	protected String getCopyMoveURL() {
+		return "ManageQuestion.action?id=" + question.getId();
 	}
 
 	public String[] getQuestionTypes() {

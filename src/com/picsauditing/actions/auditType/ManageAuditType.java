@@ -101,12 +101,24 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				this.redirect(getRedirectURL());
 				return BLANK;
 			}
+			
+			// Move and Copy only available for questions
 			if (button.equalsIgnoreCase("Move")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
+
 				if (move()) {
-					addActionMessage("Successfully moved"); // default message
+					addActionMessage("Successfully moved.");
 					new AuditTypeCache();
-					return "moved";
+					return redirect(getCopyMoveURL());
+				}
+			}
+			if (button.equalsIgnoreCase("Copy")) {
+				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
+				
+				if (copy()) {
+					addActionMessage("Successfully copied.");
+					new AuditTypeCache();
+					return redirect(getCopyMoveURL());
 				}
 			}
 		}
@@ -222,6 +234,10 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected boolean move() {
 		return false;
 	}
+	
+	protected boolean copy() {
+		return false;
+	}
 
 	@Transactional
 	protected int copyAllRecursive() {
@@ -300,6 +316,10 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	}
 
 	protected String getRedirectURL() {
+		return "ManageAuditType.action?id=" + id;
+	}
+	
+	protected String getCopyMoveURL() {
 		return "ManageAuditType.action?id=" + id;
 	}
 

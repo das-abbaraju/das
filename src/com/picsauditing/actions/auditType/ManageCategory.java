@@ -119,48 +119,6 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 	}
 
 	@Override
-	protected boolean move() {
-		try {
-			if (targetID == 0 && targetCategoryID == 0) {
-				addActionMessage("Please Select Category to move to");
-				return false;
-			}
-
-			AuditType targetAudit = category.getAuditType();
-			if (targetID > 0) {
-				// Moving to top level
-				targetAudit = auditTypeDAO.find(targetID);
-				category.setParent(null);
-			}
-
-			AuditCategory parent = category.getParent();
-			if (targetCategoryID > 0)
-				parent = auditCategoryDAO.find(targetCategoryID);
-
-			category.setParent(parent);
-			category.setAuditType(targetAudit);
-			category.setAuditColumns(permissions);
-			auditCategoryDAO.save(category);
-			// update all children, only if we're moving to a new audit type
-			if (targetID > 0) {
-				for (AuditCategory cat : category.getChildren()) {
-					cat.setAuditType(targetAudit);
-					cat.setAuditColumns(permissions);
-					auditCategoryDAO.save(cat);
-				}
-			}
-
-			addActionMessage("Moved Category Successfully. <a href=\"ManageCategory.action?id=" + category.getId()
-					+ "\">Go to this Category?</a>");
-			return true;
-
-		} catch (Exception e) {
-			addActionError(e.getMessage());
-		}
-		return false;
-	}
-
-	@Override
 	protected String getRedirectURL() {
 		if (category.getParent() == null)
 			return "ManageAuditType.action?id=" + category.getAuditType().getId();

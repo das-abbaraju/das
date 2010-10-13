@@ -7,7 +7,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/mcdropdown/css/jquery.mcdropdown.css" />
 <style type="text/css">
 .subCategories {
 	position: relative;
@@ -15,8 +14,6 @@
 }
 </style>
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/jquery/jquery.bgiframe.min.js"></script>
-<script type="text/javascript" src="js/jquery/mcdropdown/jquery.mcdropdown.min.js"></script>
 <script type="text/javascript">
 $(function(){
 	var sortList = $('#list').sortable({
@@ -98,8 +95,9 @@ $(function(){
 	<fieldset class="form submit">
 		<div>
 			<input type="submit" class="picsbutton positive" name="button" value="Save"/>
-			<s:if test="category.subCategories.size() == 0">
-				<input type="submit" class="picsbutton negative" name="button" value="Delete"/>
+			<s:if test="category.subCategories.size == 0 && category.questions.size == 0">
+				<input type="submit" class="picsbutton negative" name="button" value="Delete" 
+					onclick="return confirm('Are you sure you want to delete this category?');" />
 			</s:if>
 			<input type="submit" class="picsbutton" name="button" value="UpdateAllAuditsCategories"/>	
 		</div>
@@ -166,16 +164,6 @@ $(function(){
 		</div>
 	</pics:permission>
 </s:if>
-
-<ul id="allCategories" class="mcdropdown_menu">
-	<s:iterator value="category.ancestors.get(0).auditType.categories">
-		<s:if test="id != category.id">
-			<li rel="<s:property value="id" />"><s:property value="number" />. <s:property value="name" />
-				<s:include value="manage_category_subcategories.jsp" />
-			</li>
-		</s:if>
-	</s:iterator>
-</ul>
 
 </body>
 </html>

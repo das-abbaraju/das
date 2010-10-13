@@ -1189,14 +1189,12 @@
 		
 		<action name="ManageQuestionCopyAjax"
 			class="com.picsauditing.actions.auditType.ManageQuestion">
-			<result>struts/audits/manage_question_copy.jsp</result>
-			<result name="copied">struts/audits/manage_question_copy.jsp</result>
+			<result>struts/audits/manage_question_copymove.jsp</result>
 		</action>
 
 		<action name="ManageQuestionMoveAjax"
 			class="com.picsauditing.actions.auditType.ManageQuestion">
-			<result>struts/audits/manage_question_move.jsp</result>
-			<result name="moved">struts/audits/manage_question_move.jsp</result>
+			<result>struts/audits/manage_question_copymove.jsp</result>
 		</action>
 
 		<action name="OrderAuditChildrenAjax"
