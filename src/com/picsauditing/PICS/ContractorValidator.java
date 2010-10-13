@@ -53,8 +53,11 @@ public class ContractorValidator {
 
 		if (!uae && Strings.isEmpty(contractor.getZip()))
 			errorMessages.addElement("Please fill in the Zip field.");
-		if (!uae && !java.util.regex.Pattern.matches("\\d{9}", contractor.getTaxId()))
-			errorMessages.addElement("Please enter your 9 digit tax ID with only digits 0-9, no dashes.");
+		if(!Strings.isEmpty(contractor.getTaxId())){
+			if (!uae && !java.util.regex.Pattern.matches("\\d{9}", contractor.getTaxId()))
+				errorMessages.addElement("Please enter your 9 digit tax ID with only digits 0-9, no dashes.");
+		} else
+			errorMessages.addElement("Please fill in the Tax ID field");
 
 		// Main Trade
 		if (Strings.isEmpty(contractor.getMainTrade()) || contractor.getMainTrade().equals("- Trade -"))
