@@ -251,7 +251,8 @@ join audit_category acs on acp.id = acs.parentID
 join audit_cat_data acd on acd.categoryID = acp.id
 where acp.parentID is null;
 
-
+-- remove data for What percentage of your services are performed for the Candadian Government?
+delete from pqfdata where questionID = 2035;
 
 -- For Policies 
 update flag_criteria fc
