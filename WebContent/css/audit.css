@@ -394,7 +394,6 @@ ul.vert-toolbar ul.subcat-list li a {
 }
 ul.vert-toolbar a:hover {
 	cursor: pointer;
-	text-decoration: underline;
 }
 ul.subcat-list {
 	display: none;
@@ -554,7 +553,7 @@ table.osha tfoot th {
 	background-color: #AAAAAA;
 }
 
-div.audit_cateogry div.alert {
+div.audit_category div.alert {
 	width: auto;
 }
 
