@@ -12,7 +12,7 @@
 			<s:set value="false" name="req" />
 			<s:set name="category" value="key" />
 			<s:include value="audit_cat_view.jsp" />
-		</s:if>
+		</s:if> 
 	</s:iterator>
 </s:if>
 <s:else>
@@ -65,7 +65,9 @@
 				</s:if>
 			</s:iterator>
 			<s:iterator value="#category.subCategories" id="category">
-				<s:include value="audit_cat_view.jsp"/>
+				<s:if test="isAppliesSubCategory(#category)">
+					<s:include value="audit_cat_view.jsp"/>
+				</s:if>
 			</s:iterator>	
 		</s:else>
 			<s:if test="!#showCat && onlyReq">	

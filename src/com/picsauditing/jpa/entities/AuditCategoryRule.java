@@ -10,8 +10,8 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "audit_category_rule")
 public class AuditCategoryRule extends AuditRule {
-
 	private AuditCategory auditCategory;
+	protected Boolean rootCategory;
 
 	@ManyToOne
 	@JoinColumn(name = "catID")
@@ -23,6 +23,14 @@ public class AuditCategoryRule extends AuditRule {
 		this.auditCategory = category;
 	}
 
+	public Boolean getRootCategory() {
+		return rootCategory;
+	}
+
+	public void setRootCategory(Boolean rootCategory) {
+		this.rootCategory = rootCategory;
+	}
+	
 	@Transient
 	public String getAuditCategoryLabel() {
 		if (auditCategory == null)

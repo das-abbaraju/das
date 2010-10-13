@@ -8,9 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.apache.axis2.dataretrieval.DRConstants.SPEC.Actions;
-import org.apache.commons.collections.map.MultiValueMap;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
@@ -213,10 +210,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 		for(AuditCategory auditCategory : getCategories().keySet()) {
 			if(auditCategory.getParent()  == null) {
 				int percent = 0;
+				int count = 0;
 				for(AuditCategory childCategory : auditCategory.getChildren()) {
 					percent += getCategories().get(childCategory).getPercentCompleted();
+					count ++;
 				}
-				int percentAvg = percent/ auditCategory.getChildren().size();
+				int percentAvg = percent/ count;
 				percentComplete.put(auditCategory, percentAvg);
 			}
 		}
@@ -228,10 +227,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 		for(AuditCategory auditCategory : getCategories().keySet()) {
 			if(auditCategory.getParent()  == null) {
 				int percent = 0;
+				int count = 0;
 				for(AuditCategory childCategory : auditCategory.getChildren()) {
 					percent += getCategories().get(childCategory).getPercentVerified();
+					count ++;
 				}
-				int percentAvg = percent/ auditCategory.getChildren().size();
+				int percentAvg = percent/ count;
 				percentVerified.put(auditCategory, percentAvg);
 			}
 		}
@@ -399,6 +400,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public boolean isCanSchedule() {
 		if(conAudit.getAuditType().isScheduled() && (permissions.isContractor() || permissions.isAdmin()))
 			return conAudit.hasCaoStatus(AuditStatus.Pending);
+		return false;
+	}
+	
+	public boolean isAppliesSubCategory(AuditCategory auditCategory) {
+		if(categories.get(auditCategory).isApplies())
+			return true;
+		if(!categories.get(auditCategory.getParent()).isApplies())
+			return true;
 		return false;
 	}
 }
