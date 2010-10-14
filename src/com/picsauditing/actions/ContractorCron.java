@@ -108,9 +108,6 @@ public class ContractorCron extends PicsActionSupport {
 		if (steps == null)
 			return SUCCESS;
 
-		if (isDebugging())
-			PicsLogger.addRuntimeRule("ContractorCron");
-
 		PicsLogger.start("ContractorCron");
 
 		if (conID > 0) {
