@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
 
 /**
  * Populate the permissions object in session with appropriate login credentials
@@ -132,6 +133,7 @@ public class LoginController extends PicsActionSupport {
 			username = permissions.getUsername();
 		} else {
 			// Normal login, via the actual Login.action page
+			PicsLogger.start("Login", "Normal login");
 			permissions.clear();
 
 			String error = canLogin();
@@ -147,6 +149,7 @@ public class LoginController extends PicsActionSupport {
 			}
 
 			// /////////////////
+			PicsLogger.log("logging in user: " + user.getUsername());
 			permissions.login(user);
 
 			user.setLastLogin(new Date());
@@ -160,6 +163,8 @@ public class LoginController extends PicsActionSupport {
 			// ie..session.setMaxInactiveInterval(user.getAccountTimeout());
 			if (permissions.isPicsEmployee())
 				getRequest().getSession().setMaxInactiveInterval(3600);
+			
+			PicsLogger.stop();
 		}
 
 		ActionContext.getContext().getSession().put("permissions", permissions);

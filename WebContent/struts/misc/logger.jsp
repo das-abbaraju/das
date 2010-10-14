@@ -39,6 +39,7 @@
 	<li><a class="edit" href="?button=add&rule.name=EmailSender">EmailSender</a></li>
 	<li><a class="edit" href="?button=add&rule.name=Flag.calculate">Flag.calculate</a></li>
 	<li><a class="edit" href="?button=add&rule.name=LoggerConfig.execute">LoggerConfig.execute</a></li>
+	<li><a class="edit" href="?button=add&rule.name=Login">Login</a></li>
 	<li><a class="edit" href="?button=add&rule.name=QBWebConnector">QBWebConnector</a></li>
 	<li><a class="edit" href="?button=add&rule.name=ReportUserPermissionMatrix">ReportUserPermissionMatrix</a></li>
 	<li><a class="edit" href="?button=add&rule.name=User.Permissions">User.Permissions</a></li>
