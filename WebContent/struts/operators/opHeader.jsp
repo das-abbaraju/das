@@ -10,9 +10,6 @@
 		<s:if test="requestURI.contains('operator_edit')">class="current"</s:if>>Edit</a></li>
 	<li><a href="OperatorNotes.action?id=<s:property value="operator.id"/>"
 		<s:if test="requestURI.contains('account_notes')">class="current"</s:if>>Notes</a></li>
-	<s:if test="operator.equals(operator.inheritInsurance) || operator.equals(operator.inheritAudits)">
-		<li><a href="AuditOperator.action?oID=<s:property value="operator.id"/>">Audits</a></li>
-	</s:if>
 	<li><a href="UsersManage.action?accountId=<s:property value="operator.id"/>">Users</a></li>
 	<pics:permission perm="ManageEmployees">
 		<li><a href="ManageEmployees.action?id=<s:property value="operator.id"/>">Employees</a></li>

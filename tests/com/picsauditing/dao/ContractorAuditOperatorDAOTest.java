@@ -54,33 +54,13 @@ public class ContractorAuditOperatorDAOTest {
 	}
 
 	@Test
-	public void testFindCaosByContractor() {
-		try {
-			User u = new User("Couch"); // Ancon Marine (Contractor)
-
-			Permissions perm = new Permissions();
-			perm.login(u);
-			List<ContractorAuditOperator> caoList = caoDao.findByContractorAccount(3, perm);
-
-			assertNotNull(caoList);
-			assertTrue(caoList.size() > 0);
-
-			for (ContractorAuditOperator cao : caoList)
-				assertTrue(u.getAccount().getId() == cao.getAudit().getContractorAccount().getId());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	@Test
 	public void testFindCaosByContractorWithOperatorPermissions() {
 		try {
 			User u = new User("rgraves@ppcla.com"); // Paramount (Operator)
 
 			Permissions perm = new Permissions();
 			perm.login(u);
-			List<ContractorAuditOperator> caoList = caoDao.findByContractorAccount(3, perm);
+			List<ContractorAuditOperator> caoList = caoDao.findByContractorOperator(3, perm.getAccountId());
 
 			assertNotNull(caoList);
 			assertTrue(caoList.size() > 0);

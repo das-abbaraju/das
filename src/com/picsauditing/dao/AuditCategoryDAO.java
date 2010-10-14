@@ -7,7 +7,6 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.ContractorAccount;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -50,31 +49,4 @@ public class AuditCategoryDAO extends PicsDAO {
 		query.setParameter("auditTypeID", id);
 		return query.getResultList();
     }
-
-	public List<AuditCategory> findPqfCategories(ContractorAccount contractor) {
-		String sql = "SELECT DISTINCT c.category FROM AuditCatOperator c " +
-			"WHERE riskLevel = :riskLevel AND c.operatorAccount IN " +
-					"(SELECT co.operatorAccount.inheritAuditCategories FROM ContractorOperator co WHERE co.contractorAccount = :contractor)";
-		Query query = em.createQuery(sql);
-		query.setParameter("contractor", contractor);
-		if (contractor.getRiskLevel() == null)
-			// until  we know for sure, assume high risk
-			query.setParameter("riskLevel", 3);
-		else
-			query.setParameter("riskLevel", contractor.getRiskLevel().ordinal());
-		return query.getResultList();
-	}
-
-	public List<AuditCategory> findDesktopCategories(int pqfAuditID) {
-		String sql = "SELECT DISTINCT m.category FROM DesktopMatrix m "	+ 
-			"WHERE m.question IN " +
-					"(SELECT d.question FROM AuditData d WHERE d.audit.id = :pqfAuditID " + 
-					"AND (" +
-						"(question.questionType IN ('Service') AND d.answer LIKE 'C%') OR " +
-						"(question.questionType IN ('Industry','Main Work') AND d.answer='X')" +
-					"))";
-		Query query = em.createQuery(sql);
-		query.setParameter("pqfAuditID", pqfAuditID);
-		return query.getResultList();
-	}
 }

@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.util.PermissionQueryBuilder;
 
 @Transactional
 public class CertificateDAO extends PicsDAO {
@@ -54,18 +55,19 @@ public class CertificateDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<Certificate> findByConId(int conID, Permissions permissions, boolean showExpired) {
+		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
+		permQuery.setAccountAlias("c.contractor"); 
+
 		String query = "SELECT c FROM Certificate c WHERE c.contractor.id = ? ";
+		query += " Where 1 " + permQuery.toString();
 		if (permissions.isOperatorCorporate()) {
-			query += " AND (c.createdBy = " + permissions.getUserId()
-					+ " OR c IN (SELECT cao.certificate FROM c.caos cao WHERE cao.operator = "
-					+ "(SELECT o.inheritInsurance FROM OperatorAccount o WHERE o.id = " + permissions.getAccountId()
-					+ ")))";
+			query += " AND c.createdBy = " + permissions.getUserId();
 		}
 		if (!showExpired) {
-			query += " AND expirationDate > NOW()";
+			query += " AND c.expirationDate > NOW()";
 		}
 
-		query += " ORDER BY expirationDate";
+		query += " ORDER BY c.expirationDate";
 		Query q = em.createQuery(query);
 		q.setParameter(1, conID);
 		return q.getResultList();

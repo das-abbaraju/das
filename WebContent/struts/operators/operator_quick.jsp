@@ -72,11 +72,6 @@
 			</tr>
 		</s:iterator>
 		</table>
-		<pics:permission perm="ManageOperators">
-			To Edit the Criteria <br />
-			[<a href="AuditOperator.action?oID=<s:property value="operator.inheritAudits.id" />">Audits</a>]
-			[<a href="AuditOperator.action?oID=<s:property value="operator.inheritInsurance.id" />">Policies</a>]
-		</pics:permission>
 		<pics:permission perm="EditFlagCriteria">
 			[<a 
 			href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.inheritFlagCriteria.id" />">Flag Criteria</a>]		

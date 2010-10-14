@@ -75,24 +75,6 @@ public class OperatorActionSupport extends AccountActionSupport {
 		return inheritsInsuranceCriteria;
 	}
 
-	public List<OperatorAccount> getInheritsAudits() {
-		if (inheritsAudits == null) {
-			inheritsAudits = operatorDao.findWhere(true, "a.status IN ('Active','Demo') AND a.inheritAudits.id = "
-					+ operator.getId());
-			inheritsAudits.remove(operator);
-		}
-		return inheritsAudits;
-	}
-
-	public List<OperatorAccount> getInheritsInsurance() {
-		if (inheritsInsurance == null) {
-			inheritsInsurance = operatorDao.findWhere(true,
-					"a.status IN ('Active','Demo') AND a.inheritInsurance.id = " + operator.getId());
-			inheritsInsurance.remove(operator);
-		}
-		return inheritsInsurance;
-	}
-
 	public Map<Integer, String> getAMBestClassList() {
 		return AmBest.financialMap;
 	}

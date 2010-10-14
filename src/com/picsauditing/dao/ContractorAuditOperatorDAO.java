@@ -63,23 +63,6 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<ContractorAuditOperator> findByContractorAccount(int conID, Permissions perm) {
-		String query = "FROM ContractorAuditOperator cao WHERE cao.audit.contractorAccount.id = :conID "
-				+ " AND cao.visible = 1 ";
-
-		if (perm.isOperatorCorporate())
-			query += "AND cao.operator IN (SELECT inheritInsurance FROM OperatorAccount WHERE id = :opID)";
-
-		Query q = em.createQuery(query);
-
-		q.setParameter("conID", conID);
-
-		if (perm.isOperatorCorporate())
-			q.setParameter("opID", perm.getAccountId());
-
-		return q.getResultList();
-	}
-	
 	public List<ContractorAuditOperator> findByContractorOperator(int conID, int opID) {
 		String query = "FROM ContractorAuditOperator cao WHERE cao.audit.contractorAccount.id = :conID"
 				+ " AND operator.id = :opID";
