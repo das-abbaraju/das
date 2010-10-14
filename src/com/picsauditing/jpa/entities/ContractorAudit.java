@@ -361,8 +361,8 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 					// Iterate over gencon tables
 					// co.getOperatorAccount() == BASF Abbotsford that's
 					// attached to Ancon Marine
-					if (co.getOperatorAccount().getCanSeeInsurance().isTrue()
-							&& co.getOperatorAccount().getInheritInsurance().equals(cao.getOperator())) {
+					if (co.getOperatorAccount().getCanSeeInsurance().isTrue() &&
+							cao.hasCaop(co.getOperatorAccount().getId())) {
 						currentCaos.add(cao);
 						break;
 					}

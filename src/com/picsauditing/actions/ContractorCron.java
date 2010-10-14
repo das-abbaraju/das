@@ -33,6 +33,7 @@ import com.picsauditing.dao.UserAssignmentMatrixDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -444,9 +445,8 @@ public class ContractorCron extends PicsActionSupport {
 			for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
 				if (audit.getAuditType().getClassType().isPolicy() && !audit.isExpired()) {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
-						if (cao.isVisible()) {
-							if (cao.getOperator().equals(co.getOperatorAccount().getInheritInsurance())
-									&& (cao.getStatus().isSubmitted() || cao.getStatus().isComplete())) {
+						if(cao.getStatus().after(AuditStatus.Pending)) {
+							if(cao.hasCaop(co.getOperatorAccount().getId())) {
 								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co
 										.getFlagDatas());
 

@@ -239,22 +239,6 @@ $(function() {
 						list="relatedFacilities" listKey="id" listValue="name"></s:select>
 					<a
 						href="?id=<s:property value="operator.inheritInsuranceCriteria.id"/>">Go</a></li>
-					<li><label>Policy Types:</label> <s:select
-						name="foreignKeys.inheritInsurance"
-						value="operator.inheritInsurance.id" list="relatedFacilities"
-						listKey="id" listValue="name"></s:select> <a
-						href="?id=<s:property value="operator.inheritInsurance.id"/>">Go</a></li>
-					<li><label>Audit Types:</label> <s:select
-						name="foreignKeys.inheritAudits"
-						value="operator.inheritAudits.id" list="relatedFacilities"
-						listKey="id" listValue="name"></s:select> <a
-						href="?id=<s:property value="operator.inheritAudits.id"/>">Go</a></li>
-					<li><label>Audit Categories:</label> <s:select
-						name="foreignKeys.inheritAuditCategories"
-						value="operator.inheritAuditCategories.id"
-						list="relatedFacilities" listKey="id" listValue="name"></s:select>
-					<a
-						href="?id=<s:property value="operator.inheritAuditCategories.id"/>">Go</a></li>
 				</s:if>
 
 			</ol>

@@ -155,7 +155,7 @@ public class FlagDataCalculator {
 						for (ContractorAuditOperator cao : ca.getOperators()) {
 							// TODO Make sure we identify the right operator or
 							// corporate here
-							if (hasCaop(cao, operator)) {
+							if (cao.hasCaop(operator.getId())) {
 								if (cao.getStatus().isResubmit())
 									return false;
 								else if (!cao.getStatus().before(criteria.getRequiredStatus()))

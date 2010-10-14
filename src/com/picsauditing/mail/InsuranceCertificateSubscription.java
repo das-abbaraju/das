@@ -33,7 +33,7 @@ public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 		if (a instanceof OperatorAccount) {
 			OperatorAccount o = (OperatorAccount) a;
 			// We may need to use the inheritance for insurance
-			List<ContractorAuditOperator> caos = caoDAO.find(o.getInheritInsurance().getId(), caoStatus, timePeriod
+			List<ContractorAuditOperator> caos = caoDAO.find(o.getOperatorHeirarchy().get(0), caoStatus, timePeriod
 					.getComparisonDate(), now);
 
 			if (caos.size() > 0) {

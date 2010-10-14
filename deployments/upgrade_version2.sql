@@ -314,6 +314,8 @@ values
 (941,'ManageAuditTypeRules',1,1,1,1,Now(),1098),
 (941,'ManageAuditWorkFlow',1,1,1,1,Now(),1098);
 	
+select * from flag_criteria where auditTypeID not in (select id from audit_type)
+and auditTypeID is not null;
 	
 -- TODO Create completed welcome call audits for all contractors that don't already have one
 

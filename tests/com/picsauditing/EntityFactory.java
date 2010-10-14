@@ -44,8 +44,6 @@ public class EntityFactory {
 		operator.setName("Operator Unit Test");
 		operator.setApprovesRelationships(YesNo.No);
 		operator.setCanSeeInsurance(YesNo.Yes);
-		operator.setInheritAudits(operator);
-		operator.setInheritInsurance(operator);
 		operator.setInheritFlagCriteria(operator);
 		return operator;
 	}

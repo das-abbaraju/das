@@ -40,9 +40,6 @@ public class OperatorAccount extends Account {
 
 	private OperatorAccount inheritFlagCriteria;
 	private OperatorAccount inheritInsuranceCriteria;
-	private OperatorAccount inheritInsurance;
-	private OperatorAccount inheritAudits;
-	private OperatorAccount inheritAuditCategories;
 
 	private String doContractorsPay = "Yes";
 	private YesNo canSeeInsurance = YesNo.No;
@@ -201,36 +198,6 @@ public class OperatorAccount extends Account {
 		this.inheritInsuranceCriteria = inheritInsuranceCriteria;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "inheritInsurance")
-	public OperatorAccount getInheritInsurance() {
-		return inheritInsurance;
-	}
-
-	public void setInheritInsurance(OperatorAccount inheritInsurance) {
-		this.inheritInsurance = inheritInsurance;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "inheritAudits")
-	public OperatorAccount getInheritAudits() {
-		return inheritAudits;
-	}
-
-	public void setInheritAudits(OperatorAccount inheritAudits) {
-		this.inheritAudits = inheritAudits;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "inheritAuditCategories")
-	public OperatorAccount getInheritAuditCategories() {
-		return inheritAuditCategories;
-	}
-
-	public void setInheritAuditCategories(OperatorAccount inheritAuditCategories) {
-		this.inheritAuditCategories = inheritAuditCategories;
-	}
-
 	@Transient
 	public List<FlagCriteriaOperator> getFlagCriteriaInherited() {
 		List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
@@ -245,20 +212,10 @@ public class OperatorAccount extends Account {
 	public List<FlagCriteriaOperator> getFlagAuditCriteriaInherited() {
 		List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
 
-		for (FlagCriteriaOperator c : getInheritAudits().getFlagCriteria()) {
+		for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
 			if (c.getCriteria().getAuditType() != null) {
-				if (!c.getCriteria().getAuditType().getClassType().isPolicy()) {
+				if (!c.getCriteria().getAuditType().getClassType().isPolicy() || canSeeInsurance.equals(YesNo.Yes)) {
 					criteriaList.add(c);
-				}
-			}
-		}
-
-		if (canSeeInsurance.equals(YesNo.Yes)) {
-			for (FlagCriteriaOperator c : getInheritInsurance().getFlagCriteria()) {
-				if (c.getCriteria().getAuditType() != null) {
-					if (c.getCriteria().getAuditType().getClassType().isPolicy()) {
-						criteriaList.add(c);
-					}
 				}
 			}
 		}
@@ -270,21 +227,13 @@ public class OperatorAccount extends Account {
 	public List<FlagCriteriaOperator> getFlagQuestionCriteriaInherited() {
 		List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
 
-		if (canSeeInsurance.equals(YesNo.Yes)) {
-			for (FlagCriteriaOperator c : getInheritInsuranceCriteria().getFlagCriteria()) {
-				if (c.getCriteria().getQuestion() != null) {
-					if (c.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()
-							&& c.getCriteria().getQuestion().isCurrent())
-						criteriaList.add(c);
-				}
-			}
-		}
-
-		for (FlagCriteriaOperator c : getInheritFlagCriteria().getFlagCriteria()) {
+		for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
 			if (c.getCriteria().getQuestion() != null) {
-				if (!c.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()
-						&& c.getCriteria().getQuestion().isCurrent())
+				if (c.getCriteria().getQuestion().isCurrent()) {
+					if(!c.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()
+						||  canSeeInsurance.equals(YesNo.Yes))
 					criteriaList.add(c);
+				}	
 			}
 			if (c.getCriteria().getOshaType() != null) {
 				if (c.getCriteria().getOshaType().equals(oshaType)) {

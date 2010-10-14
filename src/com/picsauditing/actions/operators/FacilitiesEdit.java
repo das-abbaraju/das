@@ -173,15 +173,6 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 						if (key.equals("inheritInsuranceCriteria")) {
 							operator.setInheritInsuranceCriteria(opMap.get(keyID));
 						}
-						if (key.equals("inheritInsurance")) {
-							operator.setInheritInsurance(opMap.get(keyID));
-						}
-						if (key.equals("inheritAudits")) {
-							operator.setInheritAudits(opMap.get(keyID));
-						}
-						if (key.equals("inheritAuditCategories")) {
-							operator.setInheritAuditCategories(opMap.get(keyID));
-						}
 					}
 
 					if (operator.isCorporate()) {
@@ -238,11 +229,8 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 					operator.setNameIndex();
 
 					if (id == 0) {
-						operator.setInheritAuditCategories(operator);
-						operator.setInheritAudits(operator);
 						operator.setInheritFlagCriteria(operator);
 						operator.setInheritInsuranceCriteria(operator);
-						operator.setInheritInsurance(operator);
 
 						// Save so we can get the id and then update the NOLOAD
 						// with
@@ -341,11 +329,8 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				if (operator.getCorporateFacilities() != null)
 					for (Facility parent : operator.getCorporateFacilities())
 						relatedFacilities.add(parent.getCorporate());
-				relatedFacilities.add(operator.getInheritAuditCategories());
-				relatedFacilities.add(operator.getInheritAudits());
 				relatedFacilities.add(operator.getInheritFlagCriteria());
 				relatedFacilities.add(operator.getInheritInsuranceCriteria());
-				relatedFacilities.add(operator.getInheritInsurance());
 			}
 		}
 

@@ -17,7 +17,6 @@ import javax.persistence.Transient;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.audits.ConAuditMaintain;
 
 @SuppressWarnings("serial")
 @Entity
@@ -248,6 +247,7 @@ public class ContractorAuditOperator extends BaseTable {
 
 		if (operator.getId() == permissions.getAccountId())
 			return true;
+
 		if(permissions.isCorporate()){
 			for (ContractorAuditOperatorPermission caop : caoPermissions) {
 				for (Integer ids : permissions.getOperatorChildren()) {
@@ -255,15 +255,19 @@ public class ContractorAuditOperator extends BaseTable {
 						return true;
 				}
 			}
-		} else{
-			for (ContractorAuditOperatorPermission caop : caoPermissions) {
-				if (caop.getOperator().getId() == permissions.getAccountId())
-					return true;
-			}
+		} 
+		
+		return hasCaop(permissions.getAccountId());
+	}
+	
+	public boolean hasCaop(int opID){
+		for (ContractorAuditOperatorPermission caop : caoPermissions) {
+			if (caop.getOperator().getId() == opID)
+				return true;
 		}
 		return false;
 	}
-
+	
 	@Transient
 	public boolean canSubmitCao() {
 		if (this.getPercentComplete() < 100)
