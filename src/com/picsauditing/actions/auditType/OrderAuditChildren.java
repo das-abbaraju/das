@@ -42,7 +42,7 @@ public class OrderAuditChildren extends PicsActionSupport {
 		// Change the Order numbers of the AuditCategories
 		if (type.equals("AuditType")) {
 			AuditType auditType = auditTypeDAO.find(id);
-			for (AuditCategory category : auditType.getCategories()) {
+			for (AuditCategory category : auditType.getTopCategories()) {
 				category.setNumber(list.get(category.getId()));
 			}
 			auditTypeDAO.save(auditType);
