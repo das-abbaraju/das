@@ -12,6 +12,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditTypeRule;
@@ -32,15 +33,16 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	protected Date date = new Date();
 	protected Integer bidOnly = null;
 
+	protected AuditTypeDAO typeDAO;
 	protected AuditDecisionTableDAO dao;
 	protected OperatorAccountDAO opDAO;
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
-	public AuditTypeRuleEditor(AuditDecisionTableDAO dao,
-			OperatorAccountDAO opDAO) {
+	public AuditTypeRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO, AuditTypeDAO typeDAO) {
 		this.dao = dao;
 		this.opDAO = opDAO;
+		this.typeDAO = typeDAO;
 	}
 
 	public String execute() throws Exception {
@@ -69,6 +71,9 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 
 		if (button != null) {
 			if ("edit".equals(button)) {
+				if (rule.getAuditType() != null && rule.getAuditType().getId() > 0)
+					rule.setAuditType(typeDAO.find(rule.getAuditType().getId())); 
+				
 				return SUCCESS;
 			}
 			if ("Save".equals(button)) {

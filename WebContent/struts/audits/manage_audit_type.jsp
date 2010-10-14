@@ -181,6 +181,7 @@ $(function(){
 					</s:iterator>
 				</table>
 			</s:else>
+			<a href="AuditTypeRuleEditor.action?button=edit&rule.include=true&rule.auditType.id=<s:property value="id" />" class="add">Add New Audit Type Rule</a>
 		</div>
 	</pics:permission>
 </s:if>

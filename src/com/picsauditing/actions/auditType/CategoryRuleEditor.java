@@ -11,7 +11,9 @@ import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.search.Database;
@@ -32,11 +34,15 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	protected Integer bidOnly = null;
 
 	protected AuditDecisionTableDAO dao;
+	protected AuditTypeDAO typeDAO;
+	protected AuditCategoryDAO catDAO;
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
-	public CategoryRuleEditor(AuditDecisionTableDAO dao) {
+	public CategoryRuleEditor(AuditDecisionTableDAO dao, AuditTypeDAO typeDAO, AuditCategoryDAO catDAO) {
 		this.dao = dao;
+		this.typeDAO = typeDAO;
+		this.catDAO = catDAO;
 	}
 
 	public String execute() throws Exception {
@@ -66,6 +72,12 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 		if (button != null) {
 			if ("edit".equals(button)) {
+				if (rule.getAuditType() != null && rule.getAuditType().getId() > 0)
+					rule.setAuditType(typeDAO.find(rule.getAuditType().getId()));
+				
+				if (rule.getAuditCategory() != null && rule.getAuditCategory().getId() > 0)
+					rule.setAuditCategory(catDAO.find(rule.getAuditCategory().getId()));
+				
 				return SUCCESS;
 			}
 			if ("Save".equals(button)) {
