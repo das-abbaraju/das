@@ -248,9 +248,18 @@ public class ContractorAuditOperator extends BaseTable {
 
 		if (operator.getId() == permissions.getAccountId())
 			return true;
-		for (ContractorAuditOperatorPermission caop : caoPermissions) {
-			if (caop.getOperator().getId() == permissions.getAccountId())
-				return true;
+		if(permissions.isCorporate()){
+			for (ContractorAuditOperatorPermission caop : caoPermissions) {
+				for (Integer ids : permissions.getOperatorChildren()) {
+					if (caop.getOperator().getId() == ids)
+						return true;
+				}
+			}
+		} else{
+			for (ContractorAuditOperatorPermission caop : caoPermissions) {
+				if (caop.getOperator().getId() == permissions.getAccountId())
+					return true;
+			}
 		}
 		return false;
 	}
