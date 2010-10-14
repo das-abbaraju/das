@@ -89,9 +89,8 @@ $(function() {
 				<h2 class="formLegend">Primary Address</h2>
 				<ol>
 					<li><label>Address:</label>
-						<s:textfield name="contractor.address" size="35" />
+						<s:textfield name="contractor.address" size="35" /><br />
 						<s:textfield name="contractor.address2" size="35" />
-						<s:textfield name="contractor.address3" size="35" />
 					</li>
 					<li><label>City:</label>
 						<s:textfield name="contractor.city" size="20" />

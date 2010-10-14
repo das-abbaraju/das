@@ -92,8 +92,7 @@ $(function() {
 	<ol>
 		<li><label>Address:</label>
 			<s:textfield name="operator.address" size="35" /><br />
-			<s:textfield name="operator.address2" size="35" /><br />
-			<s:textfield name="operator.address3" size="35" />
+			<s:textfield name="operator.address2" size="35" />
 		</li>
 		<li><label>City:</label> <s:textfield name="operator.city"
 			size="20" /></li>

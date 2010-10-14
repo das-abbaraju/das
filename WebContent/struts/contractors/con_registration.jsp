@@ -161,8 +161,7 @@ $(function(){
 					<ol>
 						<li class="required"><label>Address:</label>
 							<s:textfield name="contractor.address" size="35" /><br />
-							<s:textfield name="contractor.address2" size="35" cssClass="multifield" /><br />
-							<s:textfield name="contractor.address3" size="35" cssClass="multifield" />
+							<s:textfield name="contractor.address2" size="35" cssClass="multifield" />
 							<div class="fieldhelp">
 								<h3>Primary Address</h3>
 								Your company's primary address or headquarters. This should be located in the country you selected in Company Details above.
