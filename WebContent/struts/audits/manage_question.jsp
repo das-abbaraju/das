@@ -108,7 +108,7 @@ function moveQuestion(atypeID) {
 			<s:select list="questionTypes" name="question.questionType" headerKey="" headerValue="" />
 		</li>
 		<li><label>Question Text:</label>
-			<s:textarea name="question.name" />
+			<s:textarea name="question.name" rows="4" />
 		</li>
 		<li><label>Title:</label>
 			<s:textfield name="question.title" size="65"/>
@@ -204,7 +204,7 @@ function moveQuestion(atypeID) {
 			</div>
 		</li>
 		<li><label>Help Text:</label>
-			<s:textarea name="helpText"></s:textarea>
+			<s:textarea name="helpText" rows="4"></s:textarea>
 		</li>
 	</ol>
 	</fieldset>
