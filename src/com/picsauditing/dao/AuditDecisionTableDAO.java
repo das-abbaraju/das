@@ -126,6 +126,11 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " OR risk = " + rule.getRisk().ordinal();
 		where += " )";
 
+		where += " AND (acceptsBids IS NULL";
+		if (rule.getAcceptsBids() != null)
+			where += " OR acceptsBids = " + (rule.getAcceptsBids() ? 1: 0);
+		where += " )";
+
 		where += " AND (contractorType IS NULL";
 		if (rule.getContractorType() != null)
 			where += " OR contractorType = '" + rule.getContractorType().toString() + "'";
@@ -142,28 +147,6 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		where += " )";
 		return where;
 	}
-
-	/*
-	 * public List<AuditCategoryRule> getSimilar(AuditCategoryRule rule, Date
-	 * queryDate) { String where = "WHERE id != " + rule.getId() +
-	 * " AND priority = " + rule.getPriority(); where +=
-	 * " AND effectiveDate <= :queryDate AND expirationDate > :queryDate";
-	 * 
-	 * where += " AND auditType.id " + (rule.getAuditType() == null ? "IS NULL"
-	 * : "= " + rule.getAuditType().getId()); where += " AND auditCategory.id "
-	 * + (rule.getAuditCategory() == null ? "IS NULL" : "= " +
-	 * rule.getAuditCategory().getId()); where += " AND operatorAccount.id " +
-	 * (rule.getOperatorAccount() == null ? "IS NULL" : "= " +
-	 * rule.getOperatorAccount().getId()); where += " AND contractorType " +
-	 * (rule.getContractorType() == null ? "IS NULL" : "= '" +
-	 * rule.getContractorType().toString() + "'"); where += " AND risk " +
-	 * (rule.getRisk() == null ? "IS NULL" : "= " + rule.getRisk().ordinal());
-	 * 
-	 * Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where
-	 * + " ORDER BY priority"); query.setMaxResults(100);
-	 * query.setParameter("queryDate", queryDate); return query.getResultList();
-	 * }
-	 */
 
 	public List<AuditCategoryRule> getMoreGranular(AuditCategoryRule rule, Date queryDate) {
 		String where = getMoreGranularWhere(rule);
@@ -196,6 +179,8 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " AND operatorAccount.id = " + rule.getOperatorAccount().getId();
 		if (rule.getContractorType() != null)
 			where += " AND contractorType = '" + rule.getContractorType().toString() + "'";
+		if (rule.getAcceptsBids() != null)
+			where += " AND acceptsBids = " + (rule.getAcceptsBids() ? 1: 0);
 		if (rule.getQuestion() != null)
 			where += " AND question.id = " + rule.getQuestion().getId();
 		if (rule.getTag() != null)
