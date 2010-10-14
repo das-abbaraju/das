@@ -82,11 +82,14 @@ $(function() {
 						<a href="#" class="clearfield">Clear Field</a>
 					</li>
 					<s:if test="categoryRule">
-					<li><label>Category</label>
-						<input type="text" class="searchAuto" id="category" value="<s:property value="rule.auditCategory.name"/>"/>
-						<s:hidden name="rule.auditCategory.id" id="cat_hidden"/>
-						<a href="#" class="clearfield">Clear Field</a>
-					</li>
+						<li><label>Category</label>
+							<input type="text" class="searchAuto" id="category" value="<s:property value="rule.auditCategory.name"/>"/>
+							<s:hidden name="rule.auditCategory.id" id="cat_hidden"/>
+							<a href="#" class="clearfield">Clear Field</a>
+						</li>
+						<li><label>Root Category</label>
+							<s:select name="rootCategory" list="#{-1:'Any',0:'No',1:'Yes'}" value="rootCategory"/>
+						</li>
 					</s:if>
 					<li><label>Account Type</label>
 						<s:select name="rule.contractorType" list="@com.picsauditing.jpa.entities.ContractorType@values()" listValue="type" headerKey="" headerValue="Any"/>

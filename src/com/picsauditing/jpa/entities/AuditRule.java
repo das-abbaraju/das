@@ -182,7 +182,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	public void setAcceptsBids(Boolean acceptsBids) {
 		this.acceptsBids = acceptsBids;
 	}
-	
+
 	@Transient
 	public String getAcceptsBidsLabel() {
 		if (acceptsBids == null)
@@ -192,8 +192,9 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 	@Override
 	public void calculatePriority() {
-		priority = 0;
-		level = 0;
+		level = levelAdjustment; // usually 0
+		priority += 100 * levelAdjustment; // usually 0
+
 		// Order these by least unique to most unique
 		if (contractorType != null) {
 			// Only 2 or 3
@@ -215,19 +216,19 @@ public class AuditRule extends BaseDecisionTreeRule {
 			priority += 105;
 			level++;
 		}
-		
+
 		if (question != null && questionComparator != null) {
 			// Potentially thousands but probably only hundreds
 			priority += 125;
 			level++;
 		}
-		
+
 		if (tag != null) {
 			// Several per operator, potentially thousands
 			priority += 130;
 			level++;
 		}
-		
+
 		if (operatorAccount != null) {
 			if (operatorAccount.isPrimaryCorporate())
 				priority += 135;
@@ -239,9 +240,6 @@ public class AuditRule extends BaseDecisionTreeRule {
 				priority += 139;
 			level++;
 		}
-		
-		level += levelAdjustment;
-		priority += 100 * levelAdjustment;
 	}
 
 	@Transient
@@ -250,11 +248,11 @@ public class AuditRule extends BaseDecisionTreeRule {
 			// TODO why would questionComparator be null? Do we return false?
 			if (questionComparator == null)
 				return false;
-			
+
 			return questionComparator.equals(QuestionComparator.Empty);
 		}
 
-		if(questionComparator==null)
+		if (questionComparator == null)
 			return false;
 		String answer = data.getAnswer();
 		switch (questionComparator) {
@@ -304,13 +302,13 @@ public class AuditRule extends BaseDecisionTreeRule {
 		include = source.include;
 		acceptsBids = source.acceptsBids;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append(include ? "Include" : "Exclude").append(" when");
-		
+
 		if (auditType != null)
 			sb.append(" and Audit Type = ").append(auditType);
 		if (risk != null)
@@ -322,7 +320,8 @@ public class AuditRule extends BaseDecisionTreeRule {
 		if (tag != null)
 			sb.append(" and has tag ").append(tag);
 		if (question != null)
-			sb.append(" and ").append(question.getColumnHeaderOrQuestion()).append(" ").append(questionComparator).append(questionAnswer);
+			sb.append(" and ").append(question.getColumnHeaderOrQuestion()).append(" ").append(questionComparator)
+					.append(questionAnswer);
 		if (acceptsBids != null)
 			sb.append(" and Contactor is ").append(acceptsBids ? "bid-only" : "NOT bid-only");
 

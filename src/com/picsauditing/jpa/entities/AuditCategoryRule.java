@@ -10,6 +10,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "audit_category_rule")
 public class AuditCategoryRule extends AuditRule {
+
 	private AuditCategory auditCategory;
 	protected Boolean rootCategory;
 
@@ -23,6 +24,13 @@ public class AuditCategoryRule extends AuditRule {
 		this.auditCategory = category;
 	}
 
+	@Transient
+	public String getAuditCategoryLabel() {
+		if (auditCategory == null)
+			return "*";
+		return auditCategory.getName();
+	}
+
 	public Boolean getRootCategory() {
 		return rootCategory;
 	}
@@ -30,12 +38,12 @@ public class AuditCategoryRule extends AuditRule {
 	public void setRootCategory(Boolean rootCategory) {
 		this.rootCategory = rootCategory;
 	}
-	
+
 	@Transient
-	public String getAuditCategoryLabel() {
-		if (auditCategory == null)
+	public String getRootCategoryLabel() {
+		if (rootCategory == null)
 			return "*";
-		return auditCategory.getName();
+		return rootCategory ? "Yes" : "No";
 	}
 
 	@Override
@@ -45,17 +53,24 @@ public class AuditCategoryRule extends AuditRule {
 			level++;
 			priority += 120;
 		}
+		if (rootCategory != null) {
+			level++;
+			priority += 120;
+		}
 	}
 
 	public void merge(AuditRule source) {
 		super.merge(source);
 		if (auditCategory == null)
-			auditCategory = ((AuditCategoryRule) source).auditCategory;
+			auditCategory = ((AuditCategoryRule) source).getAuditCategory();
+		if (rootCategory == null)
+			rootCategory = ((AuditCategoryRule) source).getRootCategory();
 	}
 
 	public void update(AuditRule source) {
 		super.update(source);
-		auditCategory = ((AuditCategoryRule) source).auditCategory;
+		auditCategory = ((AuditCategoryRule) source).getAuditCategory();
+		rootCategory = ((AuditCategoryRule) source).getRootCategory();
 	}
 
 	@Override
