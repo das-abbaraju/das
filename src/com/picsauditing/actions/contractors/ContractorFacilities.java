@@ -25,6 +25,8 @@ import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -162,16 +164,55 @@ public class ContractorFacilities extends ContractorActionSupport {
 					} else {
 						// Search for a list of operators in the contractor's country?
 						// TODO Do we show only 10?
-						List<OperatorAccount> ops = operatorDao.findWhere(false, "a.country = '" + contractor.getCountry().getIsoCode() + "'");
+						String status = "'Active'";
+						
+						if (contractor.getStatus().isDemo())
+							status += ",'Demo'";
+						
+						List<OperatorAccount> ops = operatorDao.findWhere(false, "a.country = '" + 
+								contractor.getCountry().getIsoCode() + "' AND a.status IN (" + status + ")");
 						searchResults = ops.subList(0, ops.size() < 10 ? ops.size() : 10);
 						
 						if (ops.size() < 10) {
-							List<OperatorAccount> ops2 = operatorDao.findWhere(false, 
-									"a IN (SELECT co.operatorAccount FROM ContractorOperator co " +
-									"WHERE co.contractorAccount.status = 'Active' ORDER BY co.creationDate DESC)", 10);
-							// There are probably more than 10 operators with new approved contractors
-							int remainder = 10 - ops.size();
-							searchResults.addAll(ops2.subList(ops.size(), ops2.size() < remainder ? ops2.size() : remainder));
+							// TODO make this a dao call somehow?
+							Database db = new Database();
+							SelectSQL sql = new SelectSQL();
+							
+							sql.setFromTable("accounts o");
+							sql.addField("DISTINCT o.id AS opID");
+							sql.addField("o.name");
+							sql.addField("o.status");
+							sql.addField("o.onsiteServices");
+							sql.addField("o.offsiteServices");
+							sql.addField("o.materialSupplier");
+							sql.addJoin("JOIN generalcontractors gc ON gc.genID = o.id");
+							sql.addJoin("JOIN accounts c ON c.id = gc.subID");
+							sql.addWhere("o.status IN (" + status + ")");
+							sql.addWhere("c.status IN (" + status + ")");
+							sql.addOrderBy("gc.creationDate");
+							sql.setLimit(10 - ops.size());
+							
+							List<BasicDynaBean> data = db.select(sql.toString(), true);
+							
+							for (BasicDynaBean d : data) {
+								OperatorAccount o = new OperatorAccount();
+								
+								if (d.get("onsiteServices").equals(1))
+									o.setOnsiteServices(true);
+								if (d.get("offsiteServices").equals(1))
+									o.setOffsiteServices(true);
+								if (d.get("materialSupplier").equals(1))
+									o.setMaterialSupplier(true);
+								
+								o.setId(Integer.parseInt(d.get("opID").toString()));
+								o.setName(d.get("name").toString());
+								o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
+								
+								if (contractor.isOnsiteServices() && o.isOnsiteServices()
+										|| contractor.isOffsiteServices() && o.isOffsiteServices()
+										|| contractor.isMaterialSupplier() && o.isMaterialSupplier())
+									searchResults.add(o);
+							}
 						}
 					}
 				} else {
