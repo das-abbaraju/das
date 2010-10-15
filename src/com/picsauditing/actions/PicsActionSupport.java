@@ -51,7 +51,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	protected JSONObject json = new JSONObject();
 
 	private User user; // Current logged in user
-	private Account account; // Current logged in user's account
+	protected Account account; // Current logged in user's account
 	private Set<User> auditorList;
 
 	public static final String getVersion() {
@@ -160,7 +160,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 			return null;
 		}
 	}
-
+// TODO remove this
 	public Account getAccount() {
 		if (account == null) {
 			loadPermissions();
