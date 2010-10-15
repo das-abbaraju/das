@@ -73,7 +73,7 @@
 			<s:if test="!#showCat && onlyReq">	
 				<script>
 					$(function() {
-						$('#audit_cat_'+<s:property value="#category.fullNumber.replace('.', '_')"/>).hide();
+						$('#audit_cat_'+<s:property value="#category.id"/>).hide();
 					});
 				</script>
 			</s:if>
