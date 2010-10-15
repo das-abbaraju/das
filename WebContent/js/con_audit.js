@@ -51,8 +51,10 @@ $(function(){
 						$('ul.catUL li.currSub').hide();
 						$('#catSubCat_'+state.categoryID).show();
 						$('#auditViewArea').html(html).unblock();
-						if (state.subCat!==undefined)
-							$.scrollTo('#cathead_'+state.subCat, 800, {axis: 'y'});
+						
+						var subCatScroll = $('#cathead_'+state.subCat);
+						if (subCatScroll.length)
+							$.scrollTo(subCatScroll, 800, {axis: 'y'});
 
 						var ccat = $('#category_'+state.categoryID).addClass('current');;
 						var list = ccat.parents('ul.catUL:first');
