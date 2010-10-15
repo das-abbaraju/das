@@ -60,7 +60,7 @@ function getManageResult(data){
 function clearFilter(){
 	$('#searchFilterOptions input:hidden').val(0);
 	$('#searchFilterOptions input').not(':hidden').val("");		
-	$('select[name=filter.include]').val(2);
+	$('select[name=filter.include]').val(-1);
 	$('select[name=filter.contractorType]').val(-1);
 	$('select[name=filter.riskLevel]').val(-1);
 }
@@ -83,9 +83,10 @@ function clearFilter(){
 		class="picsbutton" onclick="clearFilter(); return false;">Clear Filter</button>
 	<br clear="all" />
 	
-	<div id="searchFilterOptions">	
 	<s:hidden name="orderBy" />
 	<s:hidden name="filter.destinationAction" />
+	
+	<div id="searchFilterOptions">	
 	<s:hidden name="filter.auditTypeID" />
 	<s:hidden name="filter.dependentAuditTypeID" />
 	<s:hidden name="filter.catID" />
