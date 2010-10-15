@@ -243,13 +243,18 @@ and ca.closedDate > 0;
 
 -- insert the Audit Category Data for subcategories
 -- huh?? We may not need this. Keerthi and Trevor can't quite agree if it's needed
+insert into audit_cat_data
 select null,acd.auditID,acs.id,acd.requiredCompleted,acd.numRequired,acd.numAnswered, 
 acd.applies,acd.percentCompleted,acd.percentVerified,acd.percentClosed,acd.override, 
 acd.score,acd.scoreCount,acd.createdBy,acd.updatedBy,acd.creationDate,acd.updateDate
 from audit_category acp
 join audit_category acs on acp.id = acs.parentID
 join audit_cat_data acd on acd.categoryID = acp.id
-where acp.parentID is null;
+join audit_type at on at.id = acp.audittypeid
+left join audit_Cat_data acds on acds.auditid = acd.auditid and acds.categoryid = acs.id
+where acp.parentID is null
+and at.classType != 'Policy'
+and acds.id is null;
 
 -- remove data for What percentage of your services are performed for the Candadian Government?
 delete from pqfdata where questionID = 2035;

@@ -94,6 +94,11 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " OR auditCategory.id = " + rule.getAuditCategory().getId();
 		where += " )";
 
+		where += " AND (rootCategory IS NULL";
+		if (rule.getRootCategory() != null)
+			where += " OR rootCategory.id = " + (rule.getRootCategory() ? 1: 0);
+		where += " )";
+		
 		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY priority");
 		query.setParameter("queryDate", queryDate);
 		return query.getResultList();
@@ -154,6 +159,9 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		if (rule.getAuditCategory() != null)
 			where += " AND auditCategory.id = " + rule.getAuditCategory().getId();
 
+		if (rule.getRootCategory() != null)
+			where += " AND rootCategory.id = " + (rule.getRootCategory() ? 1: 0);
+
 		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY priority");
 		query.setMaxResults(100);
 		query.setParameter("queryDate", queryDate);
@@ -198,12 +206,6 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " OR risk = " + contractor.getRiskLevel().ordinal();
 		where += ")";
 		
-		if(contractor.isAcceptsBids())
-			where += " AND acceptsBids = 1";
-		else {
-			where += " AND (acceptsBids IS NULL OR acceptsBids = 0)";
-		}
-		
 		where += " AND (contractorType IS NULL";
 		if (contractor.isOnsiteServices())
 			where += " OR contractorType = 'Onsite'";
@@ -240,12 +242,6 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " OR risk = " + contractor.getRiskLevel().ordinal();
 		where += ")";
 
-		if(contractor.isAcceptsBids())
-			where += " AND acceptsBids = 1";
-		else {
-			where += " AND (acceptsBids IS NULL OR acceptsBids = 0)";
-		}
-		
 		where += " AND (contractorType IS NULL";
 		if (contractor.isOnsiteServices())
 			where += " OR contractorType = 'Onsite'";

@@ -39,6 +39,7 @@ public class CategoryRuleSearch extends AuditRuleSearch {
 	public void buildQuery(){
 		super.buildQuery();
 		sql.addField("IFNULL(ac.name,'*') category");
+		sql.addField("IFNULL(a_search.rootCategory,'*') rootCategory");
 		sql.addJoin("LEFT JOIN audit_category ac ON ac.id = a_search.catID");
 	}
 	@Override

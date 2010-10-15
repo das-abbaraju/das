@@ -15,7 +15,9 @@
 			<tr>
 				<td>Include</td>
 				<td>Audit Type</td>
-				<s:if test="filter.showCategory"><td>Category</td></s:if>
+				<s:if test="filter.showCategory"><td>Category</td>
+					<td>RootCategory</td>
+				</s:if>
 				<td>Contractor Type</td>
 				<td>Operator</td>
 				<td>Risk</td>
@@ -32,7 +34,9 @@
 				<tr class="clickable" onclick="window.location='<s:property value="actionUrl"/><s:property value="get('id')"/><s:if test="filter.checkDate!=null">&date=<s:property value="filter.checkDate"/></s:if>'">
 					<td><s:if test="get('include')==1">Yes</s:if><s:else>No</s:else></td>					
 					<td><s:property value="get('audit_type')"/></td>					
-					<s:if test="filter.showCategory"><td><s:property value="get('category')"/></td></s:if>				
+					<s:if test="filter.showCategory"><td><s:property value="get('category')"/></td>
+						<td><s:if test="get('rootCategory')==1">Yes</s:if><s:else>No</s:else></td>
+					</s:if>				
 					<td><s:property value="get('con_type')"/></td>					
 					<td><s:property value="get('operator')"/></td>		
 					<td><s:property value="getRisk(get('risk'))"/></td>					
