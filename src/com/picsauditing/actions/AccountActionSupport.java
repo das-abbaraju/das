@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.StateDAO;
@@ -23,7 +24,7 @@ import com.picsauditing.util.SpringUtils;
 public class AccountActionSupport extends PicsActionSupport {
 
 	protected int id;
-	protected Account account;
+	//protected Account account;
 	protected String subHeading;
 	protected List<Note> notes;
 	protected NoteCategory noteCategory = NoteCategory.General;
@@ -60,6 +61,11 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	public Account getAccount() {
+		if (account == null) {
+			loadPermissions();
+			AccountDAO dao = (AccountDAO) SpringUtils.getBean("AccountDAO");
+			account = dao.find(permissions.getAccountId(), permissions.getAccountType());
+		}
 		return account;
 	}
 
