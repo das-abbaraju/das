@@ -365,7 +365,6 @@ ul.vert-toolbar li {
 	color: #012142;
 	border-top: 1px solid #fff;
 	border-bottom: 1px solid #bcbcbc;
-	padding-left: 5px;
 	position: relative;
 	line-height: 16px;
 }
@@ -391,12 +390,12 @@ ul.vert-toolbar li.current a {
 }
 ul.vert-toolbar ul.subcat-list li a {
 	padding: 4px 0;
+	color: #012142;
 }
 ul.vert-toolbar a:hover {
 	cursor: pointer;
 }
 ul.subcat-list {
-	display: none;
 	list-style: none;
 }
 ul.subcat-list li {
@@ -407,8 +406,14 @@ ul.subcat-list li.parentCategory {
 	list-style-position:outside 10px;
 	list-style-image: url(../images/arrow-blue-down.png);	
 }
-ul.vert-toolbar li.current ul.subcat-list {
+ul.vert-toolbar div.subcat {
+	display: none;
+	background-color: #E7E6E2;
+	color: #012142;
+}
+ul.vert-toolbar li.current div.subcat {
 	display: block;
+	border-top: 1px solid #C3C3C3;
 }
 ul.vert-toolbar li.hover {
 	background-color: #e7e7e0;
@@ -416,6 +421,9 @@ ul.vert-toolbar li.hover {
  	border-top: 1px solid #ababab;
 }
 ul.vert-toolbar li.hover a {
+	color: #012142;
+}
+ul.vert-toolbar li.hover a:hover {
 	color: rgb(168, 77, 16);
 }
 ul.vert-toolbar li.head {

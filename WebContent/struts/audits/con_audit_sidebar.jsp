@@ -71,12 +71,11 @@
 						</span>
 					</s:elseif>
 					</a>
-					<s:if test="key.subCategories.size() > 1">
-						<ul class="subcat-list">
-							<s:iterator value="key.subCategories">
-								<li><a href="#categoryID=<s:property value="topParent.id"/>&subCat=<s:property value="id"/>"><s:property value="name" /></a></li>
-							</s:iterator>
-						</ul>
+					<s:set name="subcat" value="%{key}"/>
+					<s:if test="#subcat.subCategories.size() > 0">
+						<div class="subcat">
+						<s:include value="con_audit_sidebar_subcat.jsp"/>
+						</div>
 					</s:if>
 				</li>
 			</s:if>
@@ -88,7 +87,8 @@
 			<s:if test="key.parent == NULL && !value.applies && permissions.picsEmployee">
 				<li id="category_<s:property value="key.id"/>" class="catlist">
 					<a class="hist-category" href="#categoryID=<s:property value="key.id" />"><s:property value="key.name" /></a>
-					<div class="clear"></div>
+					<s:set name="subcat" value="%{key}"/>
+					<s:include value="con_audit_sidebar_subcat.jsp"/>
 				</li>
 			</s:if>
 		</s:iterator>
