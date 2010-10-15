@@ -677,7 +677,7 @@ ol {
 }
 
 /********************** Special Styles ******************************/
-div#info,div#alert,div#error,div.info,div.alert,div.error {
+div#info,div#alert,div#error,div.info,div.alert,div.error,div.helpbox {
 	padding: 1em 1em 1em 4em;
 	margin: 10px 0;
 	width: 86%;
@@ -704,6 +704,14 @@ div#error,div.error {
 	border-bottom: 2px solid #feabab;
 	background: #ffdfdf url('../images/icon-error.gif') no-repeat 10px 10px;
 	zoom: 1;
+}
+
+div.helpbox {
+	border-top: 2px solid #F6E385;
+	border-bottom: 2px solid #F6E385;
+	background: #FBF2C9 url('../images/help-question.png') no-repeat 15px
+		15px;
+	width: auto;
 }
 
 td.money,th.money {

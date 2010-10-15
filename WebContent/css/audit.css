@@ -361,7 +361,7 @@ ul.vert-toolbar  {
 	margin: 0 30px 20px 0;
 }
 ul.vert-toolbar li {
-	font-size:0.9em;
+	font-size:14px;
 	color: #012142;
 	border-top: 1px solid #fff;
 	border-bottom: 1px solid #bcbcbc;
@@ -400,7 +400,12 @@ ul.subcat-list {
 	list-style: none;
 }
 ul.subcat-list li {
-	border: none;	
+	border: none;
+	font-size: 12px;
+}
+ul.subcat-list li.parentCategory {
+	list-style-position:outside 10px;
+	list-style-image: url(../images/arrow-blue-down.png);	
 }
 ul.vert-toolbar li.current ul.subcat-list {
 	display: block;
@@ -551,10 +556,6 @@ table.osha tfoot th {
 .audit_category .audit_category h2{
 	font-size: 22px;
 	background-color: #AAAAAA;
-}
-
-div.audit_category div.alert {
-	width: auto;
 }
 
 .categoryNumber, .questionNumber{

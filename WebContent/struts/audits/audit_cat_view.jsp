@@ -26,7 +26,7 @@
 				<div class="categoryNumber"><s:property value="#category.fullNumber"/></div> <s:property value="#category.name"/>
 			</h2>
 			<s:if test="#category.helpText != null && #category.helpText.length() > 0">
-				<div class="alert"><s:property value="#category.helpText" escape="false"/></div>
+				<div class="helpbox"><s:property value="#category.helpText" escape="false"/></div>
 			</s:if> 
 			<s:set name="shaded" value="true" scope="action"/>
 			<s:iterator value="#category.questions" id="q">
