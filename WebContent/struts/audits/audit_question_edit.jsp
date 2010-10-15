@@ -93,6 +93,10 @@ $(function() {
 			<s:if test="#q.questionType == 'Office Location'">
 				<s:radio theme="pics" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" name="auditData.answer" value="%{#a.answer}"></s:radio>
 			</s:if>
+			<s:if test="#q.questionType == 'Radio'">
+				<s:radio theme="pics" list="#q.optionsVisible" listKey="optionName" listValue="optionName" 
+					name="auditData.answer" value="#a.answer" />
+			</s:if>
 			<s:if test="!#q.helpText.empty">
 				<a class="cluetip help" rel="#cluetip_<s:property value="#q.id"/>" title="<s:property value="#q.name"/>"></a>
 				<div id="cluetip_<s:property value="#q.id"/>">
@@ -136,18 +140,6 @@ $(function() {
 			<s:if test="#q.questionType == 'Service'">
 				<nobr><s:checkbox fieldValue="C" name="multiAnswer" value="%{#a.answer.indexOf('C') != -1}" /> C </nobr>
 				<nobr><s:checkbox fieldValue="S" name="multiAnswer" value="%{#a.answer.indexOf('S') != -1}" /> S </nobr>
-			</s:if>
-			<s:if test="#q.questionType == 'Radio'">
-				<s:radio theme="pics" list="#q.optionsVisible" listKey="optionName" listValue="optionName" 
-					name="auditData.answer" value="#a.answer" />
-				<s:if test="!#q.helpText.empty">
-					<a class="cluetip help" rel="#cluetip_<s:property value="#q.id"/>" title="<s:property value="#q.name"/>"></a>
-					<div id="cluetip_<s:property value="#q.id"/>">
-						<span title="<s:property value="#q.name"/>">
-							<s:property value="#q.helpText"/>
-						</span>
-					</div>
-				</s:if>
 			</s:if>
 			<s:if test="#q.questionType == 'AMBest'">
 				<input type="hidden" id="ambest_naic_code" />
