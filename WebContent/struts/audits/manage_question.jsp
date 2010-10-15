@@ -204,7 +204,7 @@ function moveQuestion(atypeID) {
 			</div>
 		</li>
 		<li><label>Help Text:</label>
-			<s:textarea name="helpText" rows="4"></s:textarea>
+			<s:textarea name="question.helpText" rows="4"></s:textarea>
 		</li>
 	</ol>
 	</fieldset>

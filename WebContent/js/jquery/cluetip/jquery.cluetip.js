@@ -332,7 +332,11 @@
       isActive = false;
       $cluetipWait.hide();
       if (!opts.sticky || (/click|toggle/).test(opts.activation) ) {
-        cluetipClose();
+    	if (opts.delayedHide > 0)
+    		setTimeout(function() { cluetipClose() }, opts.delayedHide)
+    	else
+    		cluetipClose();
+    	
         clearTimeout(closeOnDelay);        
       };
       if (opts.hoverClass) {
@@ -341,8 +345,7 @@
     };
 // close cluetip and reset some things
     var cluetipClose = function() {
-      $cluetipOuter 
-      .parent().hide().removeClass();
+      $cluetipOuter.parent().hide().removeClass();
       opts.onHide.call(link, $cluetip, $cluetipInner);
       $this.removeClass('cluetip-clicked');
       if (tipTitle) {
@@ -473,6 +476,7 @@
     closePosition:    'top',    // location of close text for sticky cluetips; can be 'top' or 'bottom' or 'title'
     closeText:        'Close',  // text (or HTML) to to be clicked to close sticky clueTips
     truncate:         0,        // number of characters to truncate clueTip's contents. if 0, no truncation occurs
+    delayedHide:      0,        // hide after this amount after mouseout
     
     // effect and speed for opening clueTips
     fx: {             
