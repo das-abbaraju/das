@@ -16,14 +16,17 @@ import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.EmailQueueDAO;
+import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AppProperty;
@@ -40,6 +43,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EbixLoader;
+import com.picsauditing.util.IndexerController;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -57,15 +61,20 @@ public class Cron extends PicsActionSupport {
 	protected NoteDAO noteDAO = null;
 	protected AuditPercentCalculator auditPercentCalculator;
 	private EbixLoader ebixLoader;
+	private IndexerController indexer;
 
 	protected long startTime = 0L;
 	StringBuffer report = null;
 
 	protected boolean flagsOnly = false;
 
-	public Cron(OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilderController ab,
-			ContractorAuditDAO contractorAuditDAO, ContractorAccountDAO contractorAccountDAO,
-			AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO, EbixLoader ebixLoader, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
+	public Cron(OperatorAccountDAO ops, AppPropertyDAO appProps,
+			AuditBuilderController ab, ContractorAuditDAO contractorAuditDAO,
+			ContractorAccountDAO contractorAccountDAO,
+			AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO,
+			EbixLoader ebixLoader,
+			ContractorAuditOperatorDAO contractorAuditOperatorDAO,
+			IndexerController indexer) {
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
 		this.auditBuilder = ab;
@@ -75,6 +84,7 @@ public class Cron extends PicsActionSupport {
 		this.noteDAO = noteDAO;
 		this.ebixLoader = ebixLoader;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
+		this.indexer = indexer;
 	}
 
 	public String execute() throws Exception {
@@ -137,13 +147,22 @@ public class Cron extends PicsActionSupport {
 				// TODO we shouldn't recacluate audits, but only categories.
 				// This shouldn't be needed at all anymore
 				startTask("\nRecalculating all the categories for Audits...");
-				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
+				List<ContractorAudit> conList = contractorAuditDAO
+						.findAuditsNeedingRecalculation();
 				for (ContractorAudit cAudit : conList) {
-					auditPercentCalculator.percentCalculateComplete(cAudit, true);
+					auditPercentCalculator.percentCalculateComplete(cAudit,
+							true);
 					cAudit.setLastRecalculation(new Date());
 					cAudit.setAuditColumns(system);
 					contractorAuditDAO.save(cAudit);
 				}
+				endTask();
+			} catch (Throwable t) {
+				handleException(t);
+			}
+			try {
+				startTask("\nStarting Indexer");
+				runIndexer();
 				endTask();
 			} catch (Throwable t) {
 				handleException(t);
@@ -153,7 +172,8 @@ public class Cron extends PicsActionSupport {
 		try {
 			startTask("\nInactivating Accounts via Billing Status...");
 			String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
-			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
+			List<ContractorAccount> conAcctList = contractorAccountDAO
+					.findWhere(where);
 			for (ContractorAccount contractor : conAcctList) {
 				contractor.setStatus(AccountStatus.Deactivated);
 				// Setting a deactivation reason
@@ -166,7 +186,9 @@ public class Cron extends PicsActionSupport {
 				contractor.setAuditColumns(system);
 				contractorAccountDAO.save(contractor);
 
-				stampNote(contractor, "Automatically inactivating account based on expired membership",
+				stampNote(
+						contractor,
+						"Automatically inactivating account based on expired membership",
 						NoteCategory.Billing);
 			}
 			endTask();
@@ -192,7 +214,8 @@ public class Cron extends PicsActionSupport {
 
 		try {
 			startTask("\nDeleting Expired Individual Data Overrides...");
-			contractorAuditDAO.deleteData(FlagDataOverride.class, "forceEnd < NOW()");
+			contractorAuditDAO.deleteData(FlagDataOverride.class,
+					"forceEnd < NOW()");
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
@@ -218,7 +241,8 @@ public class Cron extends PicsActionSupport {
 
 	protected void endTask() {
 		report.append("SUCCESS..(");
-		report.append(new Long(System.currentTimeMillis() - startTime).toString());
+		report.append(new Long(System.currentTimeMillis() - startTime)
+				.toString());
 		report.append(" millis )");
 	}
 
@@ -261,8 +285,10 @@ public class Cron extends PicsActionSupport {
 	}
 
 	public void sendEmailExpiredCertificates() throws Exception {
-		List<ContractorAudit> cList = contractorAuditDAO.findExpiredCertificates();
-		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+		List<ContractorAudit> cList = contractorAuditDAO
+				.findExpiredCertificates();
+		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils
+				.getBean("EmailQueueDAO");
 		EmailBuilder emailBuilder = new EmailBuilder();
 		Set<ContractorAccount> policies = new HashSet<ContractorAccount>();
 
@@ -281,8 +307,15 @@ public class Cron extends PicsActionSupport {
 			email.setViewableById(Account.EVERYONE);
 			emailQueueDAO.save(email);
 
-			stampNote(policy, "Sent Policy Expiration Email to " + emailBuilder.getSentTo(), NoteCategory.Insurance);
+			stampNote(policy, "Sent Policy Expiration Email to "
+					+ emailBuilder.getSentTo(), NoteCategory.Insurance);
 		}
+	}
+
+	public void runIndexer() throws Exception {
+		PicsLogger.start("");
+		indexer.runAll(null, true);
+		PicsLogger.stop();
 	}
 
 	public void processEbixData() throws Exception {
@@ -291,7 +324,8 @@ public class Cron extends PicsActionSupport {
 		PicsLogger.stop();
 	}
 
-	public void stampNote(ContractorAccount cAccount, String text, NoteCategory noteCategory) {
+	public void stampNote(ContractorAccount cAccount, String text,
+			NoteCategory noteCategory) {
 		Note note = new Note(cAccount, system, text);
 		note.setCanContractorView(true);
 		note.setPriority(LowMedHigh.High);
@@ -302,28 +336,36 @@ public class Cron extends PicsActionSupport {
 	}
 
 	public void sendDelinquentContractorsEmail() throws Exception {
-		List<Invoice> invoices = contractorAccountDAO.findDelinquentContractors();
-		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
-		AuditDataDAO auditDataDAO = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
+		List<Invoice> invoices = contractorAccountDAO
+				.findDelinquentContractors();
+		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils
+				.getBean("EmailQueueDAO");
+		AuditDataDAO auditDataDAO = (AuditDataDAO) SpringUtils
+				.getBean("AuditDataDAO");
 		EmailBuilder emailBuilder = new EmailBuilder();
 		Map<ContractorAccount, Set<String>> cMap = new TreeMap<ContractorAccount, Set<String>>();
 		Map<ContractorAccount, Integer> templateMap = new TreeMap<ContractorAccount, Integer>();
-		List<Integer> questions = Arrays.<Integer> asList(604, 606, 624, 627, 630, 1437);
+		List<Integer> questions = Arrays.<Integer> asList(604, 606, 624, 627,
+				630, 1437);
 
 		for (Invoice invoice : invoices) {
 			Set<String> emailAddresses = new HashSet<String>();
-			ContractorAccount cAccount = (ContractorAccount) invoice.getAccount();
+			ContractorAccount cAccount = (ContractorAccount) invoice
+					.getAccount();
 
-			User billing = cAccount.getUsersByRole(OpPerms.ContractorBilling).get(0);
+			User billing = cAccount.getUsersByRole(OpPerms.ContractorBilling)
+					.get(0);
 			if (!Strings.isEmpty(billing.getEmail()))
 				emailAddresses.add(billing.getEmail());
 			if (!Strings.isEmpty(cAccount.getCcEmail()))
 				emailAddresses.add(cAccount.getCcEmail());
 
 			if (DateBean.getDateDifference(invoice.getDueDate()) < -10) {
-				List<AuditData> aList = auditDataDAO.findAnswerByConQuestions(cAccount.getId(), questions);
+				List<AuditData> aList = auditDataDAO.findAnswerByConQuestions(
+						cAccount.getId(), questions);
 				for (AuditData auditData : aList) {
-					if (!Strings.isEmpty(auditData.getAnswer()) && Strings.isValidEmail(auditData.getAnswer()))
+					if (!Strings.isEmpty(auditData.getAnswer())
+							&& Strings.isValidEmail(auditData.getAnswer()))
 						emailAddresses.add(auditData.getAnswer());
 				}
 			}
@@ -346,13 +388,16 @@ public class Cron extends PicsActionSupport {
 			email.setViewableById(Account.PicsID);
 			emailQueueDAO.save(email);
 
-			stampNote(cAccount, "Deactivation Email Sent to " + emailAddress, NoteCategory.Billing);
+			stampNote(cAccount, "Deactivation Email Sent to " + emailAddress,
+					NoteCategory.Billing);
 		}
 	}
 
 	public void sendNoActionEmailToTrialAccounts() throws Exception {
-		List<ContractorAccount> conList = contractorAccountDAO.findBidOnlyContractors();
-		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+		List<ContractorAccount> conList = contractorAccountDAO
+				.findBidOnlyContractors();
+		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils
+				.getBean("EmailQueueDAO");
 		EmailBuilder emailBuilder = new EmailBuilder();
 
 		for (ContractorAccount cAccount : conList) {
@@ -360,13 +405,15 @@ public class Cron extends PicsActionSupport {
 			emailBuilder.setTemplate(70);
 			// No Action Email Notification - Contractor
 			emailBuilder.setContractor(cAccount, OpPerms.ContractorAdmin);
-			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
+			emailBuilder
+					.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
 			email.setViewableById(Account.EVERYONE);
 			emailQueueDAO.save(email);
 
-			stampNote(cAccount, "No Action Email Notification sent to " + cAccount.getPrimaryContact().getEmail(),
+			stampNote(cAccount, "No Action Email Notification sent to "
+					+ cAccount.getPrimaryContact().getEmail(),
 					NoteCategory.General);
 		}
 	}

@@ -55,6 +55,7 @@
 	<bean id="FlagDataDAO" class="com.picsauditing.dao.FlagDataDAO"/>
 	<bean id="FlagDataOverrideDAO" class="com.picsauditing.dao.FlagDataOverrideDAO"/>
 	<bean id="IndexableDAO" class="com.picsauditing.dao.IndexableDAO" />
+	<bean id="IndexerController" class="com.picsauditing.util.IndexerController" />
 	<bean id="InvoiceDAO" class="com.picsauditing.dao.InvoiceDAO"/>
 	<bean id="InvoiceItemDAO" class="com.picsauditing.dao.InvoiceItemDAO"/>
 	<bean id="InvoiceFeeDAO" class="com.picsauditing.dao.InvoiceFeeDAO"/>
