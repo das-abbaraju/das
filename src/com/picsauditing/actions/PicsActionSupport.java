@@ -172,7 +172,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 
 	public OperatorAccount getOperatorAccount() {
 		Account operator = getAccount();
-		if (operator.getType().equals("Operator"))
+		if (operator.getType().equals("Operator") || operator.getType().equals("Corporate"))
 			return (OperatorAccount) operator;
 		return null;
 	}
