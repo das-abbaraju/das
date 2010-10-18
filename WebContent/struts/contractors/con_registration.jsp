@@ -63,7 +63,7 @@ function changeState(country) {
 
 // Probably a better way to do this
 function updateHeader() {
-	if ($('input#materialSupplier').is(':checked')) {
+	if ($('input#materialSupplier').is(':checked') && !$('input#onsiteService').is(':checked') && !$('input#offsiteService').is(':checked')) {
 		$('#step2').hide();
 		$('span.vendor').show();
 		$('span.service').hide();
@@ -210,14 +210,14 @@ $(function(){
 						</li>
 						<s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
 							<li class="required"><label><s:property value="#conType.type" />:</label>
-								<s:if test="#conType == 'Onsite'">
-									<s:checkbox name="contractor.onsiteService" />
+								<s:if test="#conType.type == 'Onsite Services'">
+									<s:checkbox name="contractor.onsiteService" id="onsiteService" onclick="updateHeader();" />
 								</s:if>
-								<s:elseif test="#conType == 'Offsite'">
-									<s:checkbox name="contractor.offsiteService" />
+								<s:elseif test="#conType.type == 'Offsite Services'">
+									<s:checkbox name="contractor.offsiteService" id="offsiteService" onclick="updateHeader();" />
 								</s:elseif>
 								<s:else>
-									<s:checkbox name="contractor.materialSupplier" onclick="updateHeader();" id="materialSupplier" />
+									<s:checkbox name="contractor.materialSupplier" id="materialSupplier" onclick="updateHeader();" />
 								</s:else>
 								<div class="fieldhelp">
 									<h3><s:property value="#conType.type" /></h3>

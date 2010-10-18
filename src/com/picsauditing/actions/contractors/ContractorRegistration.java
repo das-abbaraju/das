@@ -230,7 +230,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 				noteDAO.save(note);
 			}
 			
-			if (contractor.isMaterialSupplier()) {
+			if (contractor.isMaterialSupplier() && !contractor.isOnsiteServices() && !contractor.isOffsiteServices()) {
 				redirect("ContractorFacilities.action?id=" + contractor.getId() + 
 						(requestID > 0 ? "&requestID=" + requestID : ""));
 			}
