@@ -191,8 +191,8 @@ $(function() {
 	</s:iterator>
 	</table>
 	
-	<s:if test="moreGranular.size() == 100">
-		<div class="alert">Only displaying first 100 "More Granular" rules.</div>
+	<s:if test="moreGranular.size() == 250">
+		<div class="alert">Only displaying first 250 "More Granular" rules.</div>
 	</s:if>
 </s:else>
 

@@ -163,7 +163,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " AND rootCategory.id = " + (rule.getRootCategory() ? 1: 0);
 
 		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY priority");
-		query.setMaxResults(100);
+		query.setMaxResults(250);
 		query.setParameter("queryDate", queryDate);
 		return query.getResultList();
 	}
@@ -172,7 +172,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		String where = getMoreGranularWhere(rule);
 
 		Query query = em.createQuery("SELECT a FROM AuditTypeRule a " + where + " ORDER BY priority");
-		query.setMaxResults(100);
+		query.setMaxResults(250);
 		query.setParameter("queryDate", queryDate);
 		return query.getResultList();
 	}
