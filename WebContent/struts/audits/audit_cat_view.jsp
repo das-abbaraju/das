@@ -17,7 +17,7 @@
 </s:if>
 <s:else>
 	<s:set name="showCat" value="false" />
-	<div class="audit_category" id="audit_cat_<s:property value="#category.fullNumber.replace('.', '_')"/>">
+	<div class="audit_category" id="audit_cat_<s:property value="#category.id"/>">
 		<s:if test="#category.sha">
 			<s:include value="audit_cat_sha.jsp"></s:include>
 		</s:if>
