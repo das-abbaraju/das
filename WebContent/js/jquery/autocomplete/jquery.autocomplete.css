@@ -34,8 +34,10 @@
 	overflow: hidden;
 }
 
-.ac_loading, #headersearch .ac_loading {
+.ac_loading {
 	background-image: url('indicator.gif');
+	background-repeat: no-repeat;
+	background-position: right center;
 }
 
 .ac_odd {
