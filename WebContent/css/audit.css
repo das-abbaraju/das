@@ -377,8 +377,13 @@ ul.vert-toolbar li a {
 	display: block;
 	width: 88%;
 	text-decoration: none;
-	padding-top: 12px;
-	padding-bottom: 12px;
+	padding: 12px;
+}
+ul#toolbar li a {
+	padding-left: 17px;
+}
+ul.vert-toolbar li a:link {
+	text-decoration: none;
 }
 ul.vert-toolbar li.current {
 	background: #5D9BCE;
@@ -389,7 +394,7 @@ ul.vert-toolbar li.current a {
 	text-decoration: none;
 }
 ul.vert-toolbar ul.subcat-list li a {
-	padding: 4px 0;
+	padding: 4px 12px;
 	color: #012142;
 }
 ul.vert-toolbar a:hover {
@@ -403,8 +408,9 @@ ul.subcat-list li {
 	font-size: 12px;
 }
 ul.subcat-list li.parentCategory {
-	list-style-position:outside 10px;
-	list-style-image: url(../images/arrow-blue-down.png);	
+	background-image: url(../images/arrow-blue-down.png);
+	background-repeat: no-repeat;
+	background-position: 0px 5px; 
 }
 ul.vert-toolbar div.subcat {
 	display: none;

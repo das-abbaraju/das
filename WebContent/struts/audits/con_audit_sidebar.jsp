@@ -50,49 +50,49 @@
 <div <s:if test="categories.keySet().size == 1"> style="display: none;"</s:if>>
 	<ul id="aCatlist" class="vert-toolbar catUL">
 		<li class="head">CATEGORIES <span class="hidden-button">Show N/A</span></li>			
-		<s:iterator value="categories">
-			<s:if test="key.parent == NULL && value.applies">
-				<li id="category_<s:property value="key.id"/>" class="catlist">
-					<a class="hist-category" href="#categoryID=<s:property value="key.id"/>"><s:property value="key.name" />
-					<s:if test="conAudit.auditType.pqf">
-						<span class="cat-percent">
-							<s:if test="value.percentCompleted == 100"><img src="images/okCheck.gif"/></s:if>
-							<s:else><s:property value="value.percentCompleted" />%</s:else>
-						</span>
-					</s:if>
-					<s:elseif test="conAudit.auditType.workflow.hasSubmittedStep">
-						<span class="cat-percent">
-							<s:if test="value.percentVerified == 100"><img src="images/okCheck.gif"/></s:if>
-							<s:else><s:property value="value.percentVerified" />%</s:else>
-						</span>
-					</s:elseif>
-					<s:elseif test="conAudit.auditType.id == 17">
-						<span class="cat-percent">
-							<s:if test="value.printableScore == 100"><img src="images/okCheck.gif"/></s:if>
-							<s:else><s:property value="value.printableScore" />%</s:else>
-						</span>
-					</s:elseif>
-					</a>
-					<s:set name="subcat" value="%{key}"/>
-					<s:if test="#subcat.subCategories.size() > 0">
-						<div class="subcat">
+		<s:iterator value="categoryNodes" id="catNode">
+			<li id="category_<s:property value="#catNode.category.id"/>" class="catlist">
+				<a class="hist-category" href="#categoryID=<s:property value="#catNode.category.id"/>"><s:property value="#catNode.category.name" />
+				<s:if test="conAudit.auditType.pqf">
+					<span class="cat-percent">
+						<s:if test="categories.get(#catNode.category).percentCompleted == 100"><img src="images/okCheck.gif"/></s:if>
+						<s:else><s:property value="categories.get(#catNode.category).percentCompleted" />%</s:else>
+					</span>
+				</s:if>
+				<s:elseif test="conAudit.auditType.workflow.hasSubmittedStep">
+					<span class="cat-percent">
+						<s:if test="categories.get(#catNode.category).percentVerified == 100"><img src="images/okCheck.gif"/></s:if>
+						<s:else><s:property value="categories.get(#catNode.category).percentVerified" />%</s:else>
+					</span>
+				</s:elseif>
+				<s:elseif test="conAudit.auditType.id == 17">
+					<span class="cat-percent">
+						<s:if test="categories.get(#catNode.category).printableScore == 100"><img src="images/okCheck.gif"/></s:if>
+						<s:else><s:property value="categories.get(#catNode.category).printableScore" />%</s:else>
+					</span>
+				</s:elseif>
+				</a>
+				<s:set name="subcatNode" value="%{#catNode}"/>
+				<s:if test="#catNode.subCategories.size() > 0">
+					<div class="subcat">
 						<s:include value="con_audit_sidebar_subcat.jsp"/>
-						</div>
-					</s:if>
-				</li>
-			</s:if>
+					</div>
+				</s:if>
+			</li>
 		</s:iterator>
 	</ul>
 	<ul id="nacatlist" class="vert-toolbar catUL">
 		<li class="head">N/A CATEGORIES <span class="hidden-button">Back</span></li>
-		<s:iterator value="categories" status="rowStatus">
-			<s:if test="key.parent == NULL && !value.applies && permissions.picsEmployee">
-				<li id="category_<s:property value="key.id"/>" class="catlist">
-					<a class="hist-category" href="#categoryID=<s:property value="key.id" />"><s:property value="key.name" /></a>
-					<s:set name="subcat" value="%{key}"/>
-					<s:include value="con_audit_sidebar_subcat.jsp"/>
-				</li>
-			</s:if>
+		<s:iterator value="notApplicableCategoryNodes" id="catNode" status="rowStatus">
+			<li id="category_<s:property value="#catNode.category.id"/>" class="catlist">
+				<a class="hist-category" href="#categoryID=<s:property value="#catNode.category.id" />"><s:property value="#catNode.category.name" /></a>
+				<s:set name="subcatNode" value="%{#catNode}"/>
+				<s:if test="#catNode.subCategories.size() > 0">
+					<div class="subcat">
+						<s:include value="con_audit_sidebar_subcat.jsp"/>
+					</div>
+				</s:if>
+			</li>
 		</s:iterator>
 	</ul>
 </div>

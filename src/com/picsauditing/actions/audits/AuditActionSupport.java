@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.AuditBuilder;
@@ -50,6 +50,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected Map<AuditCategory, AuditCatData> categories = null;
 	protected Map<Integer, WorkflowStep> caoSteps = null;
 	protected ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
+	
+	private List<CategoryNode> categoryNodes;
 
 	public AuditActionSupport(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
@@ -409,5 +411,49 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if(!categories.get(auditCategory.getParent()).isApplies())
 			return true;
 		return false;
+	}
+	
+	class CategoryNode {
+		public AuditCategory category;
+		public List<CategoryNode> subCategories;
+	}
+	
+	public List<CategoryNode> getCategoryNodes() {
+		if (categoryNodes == null)
+			categoryNodes = createCategoryNodes(conAudit.getAuditType().getTopCategories());
+
+		return categoryNodes;
+	}
+	
+	private List<CategoryNode> createCategoryNodes(List<AuditCategory> cats) {
+		return createCategoryNodes(cats, false);
+	}
+
+	private List<CategoryNode> createCategoryNodes(List<AuditCategory> cats, boolean addAll) {
+		List<CategoryNode> nodes = new ArrayList<CategoryNode>();
+		for (AuditCategory cat : cats) {
+			if (addAll || (getCategories().get(cat) != null && getCategories().get(cat).isApplies())) {
+				CategoryNode node = new CategoryNode();
+				node.category = cat;
+				node.subCategories = createCategoryNodes(cat.getSubCategories(), addAll);
+				nodes.add(node);
+			}
+		}
+
+		return nodes;
+	}
+
+	public List<CategoryNode> getNotApplicableCategoryNodes() {
+		List<CategoryNode> nodes = new ArrayList<CategoryNode>();
+		for (AuditCategory cat : conAudit.getAuditType().getTopCategories()) {
+			if (!getCategories().get(cat).isApplies()) {
+				CategoryNode node = new CategoryNode();
+				node.category = cat;
+				node.subCategories = createCategoryNodes(
+						cat.getSubCategories(), true);
+				nodes.add(node);
+			}
+		}
+		return nodes;
 	}
 }
