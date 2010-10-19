@@ -51,25 +51,22 @@ public class WatchListManager extends PicsActionSupport {
 			}
 			
 			if ("Save".equals(button)) {
-				if (userID > 0 && conID > 0) {
-					User user = userDAO.find(userID);
-					ContractorAccount contractor = conDAO.find(conID);
-					ContractorWatch watch = new ContractorWatch();
+				User user = userDAO.find(userID);
+				ContractorAccount contractor = conDAO.find(conID);
+				ContractorWatch watch = new ContractorWatch();
+				
+				if (contractor != null && user != null) {
+					watch.setContractor(contractor);
+					watch.setUser(user);
+					watch.setAuditColumns(permissions);
 					
-					if (contractor != null && user != null) {
-						watch.setContractor(contractor);
-						watch.setUser(user);
-						watch.setAuditColumns(permissions);
-						
-						userDAO.save(watch);
-					} else {
-						if (contractor == null)
-							addActionError("Contractor is missing or could not be found");
-						if (user == null)
-							addActionError("User is missing or could not be found");
-					}
-				} else
-					addActionError("Please enter both user name and contractor name");
+					userDAO.save(watch);
+				} else {
+					if (contractor == null)
+						addActionError("Contractor is missing or could not be found");
+					if (user == null)
+						addActionError("User is missing or could not be found");
+				}
 			}
 		}
 
