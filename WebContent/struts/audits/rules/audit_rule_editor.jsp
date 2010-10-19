@@ -33,6 +33,15 @@ $(function() {
 			$('#'+data[0]+'_hidden').val(data[2]);
 		});
 	});
+	$('.hide-rule-percents').click(function(){
+		if($('.rule-percents').is(':hidden')){
+			$('.rule-percents').show();
+			$('.hide-rule-percents > td').text('Click to hide Rules to Create');
+		} else{
+			$('.rule-percents').hide();
+			$('.hide-rule-percents > td').text('Click to show Rules to Create');
+		}
+	});
 });
 
 $(function() {
@@ -154,7 +163,10 @@ $(function() {
 			</s:iterator>
 			
 			<s:if test="'Current Rule' == key && canEditDelete">
-				<tr class="rule-percents">
+				<tr class="hide-rule-percents clickable">
+					<td colspan="<s:if test="categoryRule">12</s:if><s:else>13</s:else>" class="center">Click to show Rules to Create</td>
+				</tr>
+				<tr class="rule-percents" style="display: none;">
 					<s:iterator value="columns" id="col"> <!-- all columns -->
 						<td>
 							<s:if test="#col.value!=null">
