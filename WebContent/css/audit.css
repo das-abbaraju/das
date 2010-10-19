@@ -562,6 +562,10 @@ table.osha tfoot th {
 	line-height: 28px;
 }
 
+.audit_category .info {
+	width: auto;	
+}
+
 .audit_category .audit_category{
 	padding-left: 10px;
 	margin-right: 6px;
