@@ -13,7 +13,7 @@ public class TimeZoneUtil {
 		List<TimeZone> timezones = new ArrayList<TimeZone>();
 		for (int i = 0; i < zoneIds.length; i++) {
 			String zoneId = zoneIds[i];
-			if (zoneId.startsWith("US/") || zoneId.startsWith("Canada/")) {
+			if (zoneId.startsWith("US/") || zoneId.startsWith("Canada/") || zoneId.startsWith("Asia/Dubai")) {
 				timezones.add(TimeZone.getTimeZone(zoneIds[i]));
 			}
 		}
