@@ -4,32 +4,23 @@
 <ul id="toolbar" class="vert-toolbar"> 
 	<li class="head">TOOLBAR</li>
 	<pics:permission perm="AuditEdit">
-		<li><a class="edit" href="ConAuditMaintain.action?auditID=<s:property value="auditID" />"
-				<s:if test="requestURI.contains('audit_maintain.jsp')">class="current"</s:if>>System Edit</a></li>
+		<li><a class="edit" href="ConAuditMaintain.action?auditID=<s:property value="auditID" />">System Edit</a></li>
 	</pics:permission>
 	<s:if test="canVerify">
 		<pics:permission perm="AuditVerification">
-			<li><a class="verify" href="VerifyView.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('verif')">class="current"</s:if>>Verify</a></li>
+			<li><a class="verify" href="VerifyView.action?id=<s:property value="id" />">Verify</a></li>
 		</pics:permission>
 	</s:if>
 	<s:if test="canPreview">
-		<li><a class="preview" href="Audit.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
-		Questions</a></li>
+		<li><a class="preview" href="Audit.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview Questions</a></li>
 	</s:if>
 	<s:if test="permissions.isAdmin()">
-		<li>
-			<a class="add" href="AddRemoveCategories.action?auditID=<s:property value="auditID"/>">
-				Add/Remove Categories
-			</a>
-		</li>
+		<li><a class="add" href="AddRemoveCategories.action?auditID=<s:property value="auditID"/>">Add/Remove Categories</a></li>
 	</s:if>
 	<s:if test="canViewRequirements">
-		<li><a class="print" href="Audit.action?auditID=<s:property value="auditID"/>#onlyReq=true" 
-			<s:if test="onlyReq && mode != 'Edit'">class="current"</s:if>>Print Requirements</a></li>
+		<li><a class="print" href="Audit.action?auditID=<s:property value="auditID"/>#onlyReq=true">Print Requirements</a></li>
 		<s:if test="permissions.auditor">
-			<li><a class="edit" href="Audit.action?auditID=<s:property value="auditID"/>#onlyReq=true&mode=Edit"
-			 <s:if test="onlyReq && mode == 'Edit'">class="current"</s:if>>Edit Requirements</a></li>
+			<li><a class="edit" href="Audit.action?auditID=<s:property value="auditID"/>#onlyReq=true&mode=Edit">Edit Requirements</a></li>
 		</s:if>
 		<s:if test="permissions.admin">
 			<li><a class="file" href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload Requirements</a></li>
@@ -42,8 +33,7 @@
 		</s:if>
 	</s:if>
 	<s:if test="canSchedule">
-		<li><a href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>"
-				<s:if test="requestURI.contains('schedule_audit')">class="current"</s:if>>Schedule Audit</a></li>
+		<li><a href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>">Schedule Audit</a></li>
 	</s:if>
 </ul>
 
