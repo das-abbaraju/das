@@ -51,20 +51,20 @@ public class WatchListManager extends PicsActionSupport {
 			}
 			
 			if ("Save".equals(button)) {
-				User user = userDAO.find(userID);
-				ContractorAccount contractor = conDAO.find(conID);
-				ContractorWatch watch = new ContractorWatch();
-				
-				if (contractor != null && user != null) {
+				if (userID > 0 && conID > 0) {
+					User user = userDAO.find(userID);
+					ContractorAccount contractor = conDAO.find(conID);
+					
+					ContractorWatch watch = new ContractorWatch();
 					watch.setContractor(contractor);
 					watch.setUser(user);
 					watch.setAuditColumns(permissions);
 					
 					userDAO.save(watch);
 				} else {
-					if (contractor == null)
+					if (userID == 0)
 						addActionError("Contractor is missing or could not be found");
-					if (user == null)
+					if (conID == 0)
 						addActionError("User is missing or could not be found");
 				}
 			}
