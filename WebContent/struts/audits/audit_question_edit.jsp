@@ -44,6 +44,14 @@ $(function() {
 	<span class="questionNumber"><s:property value="#q.expandedNumber"/></span>
 	
 	<s:property value="#q.name" escape="false"/>
+	<s:if test="!#q.helpText.empty">
+		<a class="cluetip help" rel="#cluetip_<s:property value="#q.id"/>" title="<s:property value="#q.name"/>"></a>
+		<div id="cluetip_<s:property value="#q.id"/>">
+			<span title="<s:property value="#q.name"/>">
+				<s:property value="#q.helpText"/>
+			</span>
+		</div>
+	</s:if>
 	<br />
 	<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
 </span>
@@ -63,8 +71,8 @@ $(function() {
 			<s:property value="#a.answer"/>
 		</s:if>
 		<!-- Radios/Check boxes -->
-		<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Industry' || #q.questionType == 'Main Work' || #q.questionType == 'Yes/No' || #q.questionType == 'Yes/No/NA' || #q.questionType == 'Office Location'">
-			<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Industry' || #q.questionType == 'Main Work'">
+		<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Main Work' || #q.questionType == 'Yes/No' || #q.questionType == 'Yes/No/NA' || #q.questionType == 'Office Location'">
+			<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Main Work'">
 				<s:checkbox fieldValue="X" name="auditData.answer" value="#a.answer == \"X\""/>
 			</s:if>
 			<s:if test="#q.questionType == 'Yes/No'">
@@ -96,14 +104,6 @@ $(function() {
 			<s:if test="#q.questionType == 'Radio'">
 				<s:radio theme="pics" list="#q.optionsVisible" listKey="optionName" listValue="optionName" 
 					name="auditData.answer" value="#a.answer" />
-			</s:if>
-			<s:if test="!#q.helpText.empty">
-				<a class="cluetip help" rel="#cluetip_<s:property value="#q.id"/>" title="<s:property value="#q.name"/>"></a>
-				<div id="cluetip_<s:property value="#q.id"/>">
-					<span title="<s:property value="#q.name"/>">
-						<s:property value="#q.helpText"/>
-					</span>
-				</div>
 			</s:if>
 		</s:if>
 		<!-- Non checkboxes/radio -->
@@ -190,15 +190,6 @@ $(function() {
 			<s:if test="#q.questionType == 'FileCertificate'">
 				<div id="cert_<s:property value="#q.id"/>">
 					<s:include value="audit_question_cert_load.jsp" />
-				</div>
-			</s:if>
-			<!-- Once we can get the fieldhelp style/javascript working on non-fieldsets, we're just going to use cluetips. -->
-			<s:if test="!#q.helpText.empty">
-				<a class="cluetip help" rel="#cluetip_<s:property value="#q.id"/>" title="<s:property value="#q.name"/>"></a>
-				<div id="cluetip_<s:property value="#q.id"/>">
-					<span title="<s:property value="#q.name"/>">
-						<s:property value="#q.helpText"/>
-					</span>
 				</div>
 			</s:if>
 		</s:else>
