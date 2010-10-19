@@ -218,11 +218,17 @@ public class AuditBuilderController {
 		List<AuditRule> list = new ArrayList<AuditRule>();
 		for (AuditRule rule : rules) {
 			boolean valid = true;
+			boolean bidOnlyRule = false;
+			
+			if(rule.getAcceptsBids() != null && rule.getAcceptsBids().booleanValue())
+				bidOnlyRule = true;
 			
 			if(contractor.isAcceptsBids()) {
-				if(rule.getAcceptsBids() == null)
+				if(!bidOnlyRule)
 					valid = false;
-				if((rule.getAcceptsBids() ? 1 : 0) == 0)
+			}
+			else {
+				if(bidOnlyRule)
 					valid = false;
 			}
 			
