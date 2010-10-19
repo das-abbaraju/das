@@ -19,7 +19,7 @@
 	</s:if>
 	<s:if test="permissions.isAdmin()">
 		<li>
-			<a class="edit" href="AddRemoveCategories.action?auditID=<s:property value="auditID"/>">
+			<a class="add" href="AddRemoveCategories.action?auditID=<s:property value="auditID"/>">
 				Add/Remove Categories
 			</a>
 		</li>
