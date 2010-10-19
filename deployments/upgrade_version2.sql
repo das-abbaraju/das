@@ -118,6 +118,7 @@ insert into facilities (corporateID, opID) select 4, id from accounts where type
 -- be sure that 5 and 6 are in the accounts table first
 insert into facilities (corporateID, opID) select 5, id from accounts where country = 'US' and type = 'Operator';
 insert into facilities (corporateID, opID) select 6, id from accounts where country = 'CA' and type = 'Operator';
+insert into facilities (corporateID, opID) select 7, id from accounts where country = 'AE' and type = 'Operator';
 
 
 -- convert the cert and is valid on the Policy CAO to the new policy questions for each operator

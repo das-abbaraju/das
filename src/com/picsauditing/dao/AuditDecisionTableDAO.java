@@ -206,6 +206,8 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " OR risk = " + contractor.getRiskLevel().ordinal();
 		where += ")";
 		
+		where += " AND (acceptsBids IS NULL OR acceptsBids = " + (contractor.isAcceptsBids() ? 1 : 0) +")";
+
 		where += " AND (contractorType IS NULL";
 		if (contractor.isOnsiteServices())
 			where += " OR contractorType = 'Onsite'";
@@ -241,6 +243,8 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		if (contractor.getRiskLevel() != null)
 			where += " OR risk = " + contractor.getRiskLevel().ordinal();
 		where += ")";
+
+		where += " AND (acceptsBids IS NULL OR acceptsBids = " + (contractor.isAcceptsBids() ? 1 : 0) +")";
 
 		where += " AND (contractorType IS NULL";
 		if (contractor.isOnsiteServices())

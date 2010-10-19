@@ -218,19 +218,6 @@ public class AuditBuilderController {
 		List<AuditRule> list = new ArrayList<AuditRule>();
 		for (AuditRule rule : rules) {
 			boolean valid = true;
-			boolean bidOnlyRule = false;
-			
-			if(rule.getAcceptsBids() != null && rule.getAcceptsBids().booleanValue())
-				bidOnlyRule = true;
-			
-			if(contractor.isAcceptsBids()) {
-				if(!bidOnlyRule)
-					valid = false;
-			}
-			else {
-				if(bidOnlyRule)
-					valid = false;
-			}
 			
 			if(rule.getAuditType() != null && rule.getAuditType().getId() == AuditType.WELCOME) {
 				if(DateBean.getDateDifference(contractor.getCreationDate()) < -90)
