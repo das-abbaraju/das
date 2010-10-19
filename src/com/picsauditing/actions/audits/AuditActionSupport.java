@@ -446,7 +446,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public List<CategoryNode> getNotApplicableCategoryNodes() {
 		List<CategoryNode> nodes = new ArrayList<CategoryNode>();
 		for (AuditCategory cat : conAudit.getAuditType().getTopCategories()) {
-			if (getCategories().get(cat) == null || !getCategories().get(cat).isApplies()) {
+			if (getCategories().get(cat) != null && !getCategories().get(cat).isApplies()) {
 				CategoryNode node = new CategoryNode();
 				node.category = cat;
 				node.subCategories = createCategoryNodes(
