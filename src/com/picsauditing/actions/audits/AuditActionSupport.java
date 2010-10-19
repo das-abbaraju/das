@@ -257,6 +257,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 							if(!isCanCloseAudit(cao))
 								continue;
 						}
+						if(workflowStep.getNewStatus() == AuditStatus.Incomplete){
+							if(!isCanVerify())
+								continue;
+						}
 						caoSteps.put(cao.getId(), workflowStep);
 					}
 				}
