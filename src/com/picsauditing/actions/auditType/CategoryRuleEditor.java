@@ -187,6 +187,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			Map<String, String> m = new HashMap<String, String>();
 			m.put("catID", "rule.auditCategory.id=");
 			columns.put("category", m);
+			columns.put("rootCat", null);			
 		} else
 			columns.put("category", null);
 		// account

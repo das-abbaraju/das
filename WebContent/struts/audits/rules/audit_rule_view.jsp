@@ -10,6 +10,9 @@
 		<td><s:property value="auditCategoryLabel"/>
 			<s:if test="auditCategory"><a href="ManageCategory.action?id=<s:property value="auditCategory.id"/>" target="_BLANK">^</a></s:if>
 		</td>
+		<td>
+			<s:property value="!rootCategory"/>
+		</td>
 	</s:if>
 	<td><s:property value="contractorTypeLabel"/></td>
 	<td class="account<s:property value="operatorAccount.status"/>"><s:property value="operatorAccountLabel"/>

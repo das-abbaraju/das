@@ -5,7 +5,10 @@
 	<tr>
 		<td>Include</td>
 		<td>Audit Type</td>
-		<s:if test="categoryRule"><td>Category</td></s:if>
+		<s:if test="categoryRule">
+			<td>Category</td>
+			<td>SubCategory</td>			
+		</s:if>
 		<td>Contractor Type</td>
 		<td>Operator</td>
 		<td>Risk</td>

@@ -130,6 +130,12 @@ $(function() {
 					<li><label>Answer</label>
 						<s:textfield name="rule.questionAnswer" />
 					</li>
+					<s:if test="categoryRule">
+						<li><label>Is Subcategory rule</label>
+							<% //Do not change, if subcat is true then we set rootcat to be false and vice versa %>
+							<s:select list="#{false:'Yes',true:'No'}" name="rule.rootCategory"/> 
+						</li>
+					</s:if>
 				</ol>
 			</fieldset>
 			<fieldset class="form submit">
@@ -156,7 +162,7 @@ $(function() {
 		<s:if test="'Current Rule' == key || value.size() > 0">
 			<s:set name="ruleclass" value="%{key.toLowerCase().replaceAll(' ', '-')}"/>
 			<tr class="rule-header clickable <s:property value="#ruleclass"/>">
-				<td colspan="<s:if test="categoryRule">12</s:if><s:else>13</s:else>" class="center"> <s:property value="key"/> </td>
+				<td colspan="13" class="center"> <s:property value="key"/> </td>
 			</tr>
 			<s:iterator value="value" id="r">
 				<s:include value="audit_rule_view.jsp"/>
@@ -164,7 +170,7 @@ $(function() {
 			
 			<s:if test="'Current Rule' == key && canEditDelete">
 				<tr class="hide-rule-percents clickable">
-					<td colspan="<s:if test="categoryRule">12</s:if><s:else>13</s:else>" class="center">Click to show Rules to Create</td>
+					<td colspan="13" class="center">Click to show Rules to Create</td>
 				</tr>
 				<tr class="rule-percents" style="display: none;">
 					<s:iterator value="columns" id="col"> <!-- all columns -->
