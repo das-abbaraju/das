@@ -19,12 +19,11 @@ public class ChartFlagCount extends ChartSSAction {
 
 	@Override
 	public ChartSingleSeries buildChart() throws Exception {
-
 		chart.setShowValues(true);
 
 		SelectSQL sql = new SelectSQL("accounts a");
 		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
-		sql.addWhere("a.status IN ('Active')");
+		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("gc.flag != 'Clear'");
 		
 		if(permissions.isOperatorCorporate()) {
