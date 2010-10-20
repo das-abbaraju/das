@@ -28,10 +28,11 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	private List<AuditQuestion> infoQuestions;
 	private List<AuditQuestion> serviceQuestions;
 	private Map<Integer, AuditData> answerMap;
+	private AuditData auditData;
 
 	private AuditQuestionDAO auditQuestionDAO;
 	private AuditDataDAO auditDataDAO;
-
+	
 	public ContractorRegistrationServices(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, AuditDataDAO auditDataDAO) {
 		super(accountDao, auditDao);
@@ -46,9 +47,13 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 		findContractor();
 
+		auditData = new AuditData();
 		for (ContractorAudit ca : contractor.getAudits()) {
 			if (ca.getAuditType().isPqf()) {
 				auditID = ca.getId();
+				// Prepare auditdata
+				auditData.setAudit(new ContractorAudit());
+				auditData.getAudit().setId(auditID);
 				for (AuditCatData catData : ca.getCategories()) {
 					if (catData.getCategory().getId() == AuditCategory.SERVICES_PERFORMED) {
 						catDataID = catData.getId();
@@ -60,15 +65,16 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			addActionError("PQF hasn't been created yet");
 		if (catDataID == 0)
 			addActionError("PQF Category for Services Performed hasn't been created yet");
-
+		
 		Set<Integer> questionIds = new HashSet<Integer>();
-		infoQuestions = auditQuestionDAO.findWhere("category.id = 574"); // TODO fix
+		infoQuestions = auditQuestionDAO.findWhere("category.id = 400"); // TODO fix
 		for (AuditQuestion q : infoQuestions)
 			questionIds.add(q.getId());
-		serviceQuestions = auditQuestionDAO.findByCategory(379);
+		
+		serviceQuestions = auditQuestionDAO.findWhere("category.id = 422");
 		for (AuditQuestion q : serviceQuestions)
 			questionIds.add(q.getId());
-
+		
 		answerMap = auditDataDAO.findAnswersByContractor(id, questionIds);
 
 		if ("calculateRisk".equals(button)) {
@@ -149,6 +155,14 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 	public Map<Integer, AuditData> getAnswerMap() {
 		return answerMap;
+	}
+	
+	public AuditData getAuditData() {
+		return auditData;
+	}
+	
+	public void setAuditData(AuditData auditData) {
+		this.auditData = auditData;
 	}
 
 	public LowMedHigh getMaxRiskLevel(LowMedHigh oRiskLevel, LowMedHigh qRiskLevel) {
