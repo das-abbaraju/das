@@ -380,7 +380,7 @@ ul.vert-toolbar li a {
 	padding: 12px;
 }
 ul#toolbar li a {
-	padding-left: 17px;
+	padding-left: 20px;
 }
 ul.vert-toolbar li a:link {
 	text-decoration: none;
@@ -389,10 +389,25 @@ ul.vert-toolbar li.current {
 	background: #5D9BCE;
 	color: #fff;
 }
+
+ul.vert-toolbar li.current:hover {
+	background: #5D9BCE;
+	color: #fff;
+}
+
 ul.vert-toolbar li.current a {
 	color: #fff;
 	text-decoration: none;
 }
+
+ul.vert-toolbar li.current a.hist-category {
+	color: #fff;
+}
+
+ul.vert-toolbar li.current a.hist-category:hover {
+	color: #fff;
+}
+
 ul.vert-toolbar ul.subcat-list li a {
 	padding: 4px 12px;
 	color: #012142;
@@ -411,6 +426,7 @@ ul.vert-toolbar div.subcat {
 	display: none;
 	background-color: #E7E6E2;
 	color: #012142;
+	padding: 5px 0 5px 0;
 }
 ul.vert-toolbar li.current div.subcat {
 	display: block;
@@ -419,7 +435,6 @@ ul.vert-toolbar li.current div.subcat {
 ul.vert-toolbar li.hover {
 	background-color: #e7e7e0;
 	border-bottom: 1px solid #ababab;
- 	border-top: 1px solid #ababab;
 }
 ul.vert-toolbar li.hover a {
 	color: #012142;

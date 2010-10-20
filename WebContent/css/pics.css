@@ -394,7 +394,7 @@ a.ext {
 
 a.print {
 	padding-left: 17px;
-	margin-left: 2px;
+	margin-left: 5px;
 	background: url('../images/print_icon.gif') no-repeat left center;;
 	padding-right: 3px;
 	padding-top: 3px;
@@ -418,7 +418,7 @@ a.remove {
 
 a.preview {
 	padding-left: 17px;
-	margin-left: 2px;
+	margin-left: 5px;
 	background: url('../images/preview.gif') no-repeat left center;
 	zoom: 1;
 }
@@ -430,16 +430,52 @@ a.add {
 	zoom: 1;
 }
 
+a.addremove {
+	padding-left: 18px;
+	margin-left: 5px;
+	background: url('../images/add_remove.png') no-repeat left center;
+	zoom: 1;
+}
+
 a.edit {
 	padding-left: 17px;
 	margin-left: 2px;
 	background: url('../images/edit_pencil.png') no-repeat left center;
 	zoom: 1;
 }
+
+a.edit1 {
+	padding-left: 17px;
+	margin-left: 5px;
+	background: url('../images/edit_pencil1.png') no-repeat left center;
+	zoom: 1;
+}
+
+a.edit2 {
+	padding-left: 17px;
+	margin-left: 5px;
+	background: url('../images/edit_pencil2.png') no-repeat left center;
+	zoom: 1;
+}
+
+a.calendar {
+	padding-left: 17px;
+	margin-left: 5px;
+	background: url('../images/calendar.png') no-repeat left center;
+	zoom: 1;
+}
+
 a.file {
 	padding-left: 17px;
-	margin-left: 2px;
+	margin-left: 5px;
 	background: url('../images/file.png') no-repeat left center;
+	zoom: 1;
+}
+
+a.uploadreq {
+	padding-left: 17px;
+	margin-left: 5px;
+	background: url('../images/upload.png') no-repeat left center;
 	zoom: 1;
 }
 
@@ -466,8 +502,8 @@ a.save {
 
 a.verify {
 	padding-left: 17px;
-	margin-left: 2px;
-	background: url('../images/okCheck.gif') no-repeat left center;
+	margin-left: 5px;
+	background: url('../images/okCheck.png') no-repeat left center;
 	zoom: 1;
 }
 
