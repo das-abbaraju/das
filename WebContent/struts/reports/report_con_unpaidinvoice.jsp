@@ -46,6 +46,7 @@ $(function() {
 		<div>
 			<input type="submit" class="picsbutton positive" name="button" value="Search"/>
 		</div>
+		<br clear="all" />
 </s:form>
 </div>
 <div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>

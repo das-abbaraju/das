@@ -270,9 +270,9 @@ function loadStatus(caoID){
 		<pics:permission perm="ContractorAdmin">
 			<li><a href="UsersManage.action">Users</a></li>
 			<li><a href="ManageEmployees.action">Employees</a></li>
-			<pics:permission perm="ContractorAdmin">
+			<s:if test="permissions.requiresCompetencyReview">
 				<li><a href="ManageJobRoles.action">Job Roles</a></li>
-			</pics:permission>
+			</s:if>
 		</pics:permission>
 		<pics:permission perm="ContractorBilling">
 			<li><a id="billing_detail" href="BillingDetail.action?id=<s:property value="id" />"
