@@ -100,7 +100,6 @@ public class ReportEmployeeList extends ReportAccount {
 		// getFilter().setShowTaxID(false); // Using to find employee name
 		getFilter().setShowRiskLevel(false);
 		getFilter().setShowRegistrationDate(false);
-		getFilter().setShowIndustry(false);
 		getFilter().setShowAddress(false);
 		getFilter().setShowFlagStatus(false);
 		getFilter().setShowWaitingOn(false);

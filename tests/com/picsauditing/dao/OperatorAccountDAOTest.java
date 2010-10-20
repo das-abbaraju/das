@@ -14,7 +14,6 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
@@ -48,7 +47,6 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setPhone("999-999-9999");
 		operatoraccount.setFax("999-999-9999");
 		operatoraccount.setWebUrl("www.picsorganizer.com");
-		operatoraccount.setIndustry(Industry.Petrochemical);
 		// operatoraccount.setActive('y');
 		operatoraccount.setStatus(AccountStatus.Active);
 		operatoraccount.setCreatedBy(new User(1100));

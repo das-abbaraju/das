@@ -25,6 +25,7 @@ public class ReportExceptions extends ReportActionSupport {
 		selectSQL.addField("el.creationDate");
 		selectSQL.addField("el.updateDate");
 		selectSQL.addField("el.message");
+		selectSQL.addOrderBy("creationDate DESC");
 	}
 
 	public String execute() throws Exception {

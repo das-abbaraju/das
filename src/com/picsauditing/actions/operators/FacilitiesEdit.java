@@ -27,7 +27,6 @@ import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
@@ -269,10 +268,6 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 	public void setForeignKeys(Map<String, Integer> foreignKeys) {
 		this.foreignKeys = foreignKeys;
-	}
-
-	public Industry[] getIndustryList() {
-		return Industry.values();
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {

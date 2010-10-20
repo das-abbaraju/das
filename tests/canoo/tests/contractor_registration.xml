@@ -60,7 +60,6 @@
 						<setInputField name="contractor.zip" value="54321"/>
 					</group>
 					<group description="Industry Details">	
-						<setSelectField name="contractor.industry" text="Power"/>
 						<setSelectField name="contractor.mainTrade" text="Boiler Repair"/>
 					</group>
 					<group description="Company Identification">

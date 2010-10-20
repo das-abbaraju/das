@@ -55,7 +55,6 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	protected String phone;
 	protected String fax;
 	protected String webUrl;
-	protected Industry industry;
 	private Naics naics;
 	private boolean naicsValid;
 	protected String type;
@@ -229,17 +228,6 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 
 	public void setWebUrl(String webUrl) {
 		this.webUrl = webUrl;
-	}
-
-	@Column(name = "industry", length = 50)
-	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.Industry") })
-	@Enumerated(EnumType.STRING)
-	public Industry getIndustry() {
-		return this.industry;
-	}
-
-	public void setIndustry(Industry industry) {
-		this.industry = industry;
 	}
 
 	/**
@@ -552,7 +540,6 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 			obj.put("zip", zip);
 			obj.put("phone", phone);
 			obj.put("fax", fax);
-			obj.put("industry", industry == null ? null : industry.toString());
 
 			obj.put("primaryContact", primaryContact == null ? null : primaryContact.toJSON());
 		}
@@ -640,9 +627,6 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 			String s = this.webUrl.toUpperCase();
 			l.add(new IndexObject(s.replaceAll("^(HTTP://)(W{3})|^(W{3}.)|\\W", ""),4));
 		}
-		// industry
-		if(this.industry!=null && !this.industry.getDescription().isEmpty())
-			l.add(new IndexObject(this.industry.getDescription().toUpperCase(), 3));
 		return l;
 	}
 

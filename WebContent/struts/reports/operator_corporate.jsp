@@ -43,7 +43,6 @@ $(document).ready(function() {
 			<th>Name</th>
 			<th>Type</th>
 			<th>Status</th>
-			<th>Industry</th>
 			<th><a href="#" class="cluetip help" title="Contractors / Operators" rel="#watchtip">Contractors / Operators</a>
 				<div id="watchtip">
 					For Operators, this number shows how many contractors are under the operator.
@@ -83,7 +82,6 @@ $(document).ready(function() {
 			</td>
 			<td><s:property value="get('type')"/></td>
 			<td><s:property value="get('status')"/></td>
-			<td><s:property value="get('industry')"/></td>
 			<td class="right">
 				<s:if test="get('type') == 'Operator'"><s:property value="get('opCount')"/></s:if>
 				<s:if test="get('type') == 'Corporate'"><s:property value="get('corpCount')"/></s:if>

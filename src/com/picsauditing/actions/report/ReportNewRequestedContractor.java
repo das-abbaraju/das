@@ -62,7 +62,6 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		filter.setShowTaxID(false);
 		filter.setShowRiskLevel(false);
 		filter.setShowRegistrationDate(false);
-		filter.setShowIndustry(false);
 		filter.setShowAddress(false);
 		filter.setPermissions(permissions);
 

@@ -100,7 +100,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			excelSheet.addColumn(new ExcelColumn("web_URL", "URL"));
 		}
 		if (isShowTrade()) {
-			excelSheet.addColumn(new ExcelColumn("industry", "Industry"));
 			excelSheet.addColumn(new ExcelColumn("main_trade", "Main Trade"));
 			excelSheet.addColumn(new ExcelColumn("tradesSelf", "Self Performed"));
 			excelSheet.addColumn(new ExcelColumn("tradesSub", "Sub Contracted"));
@@ -213,12 +212,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			setFiltered(true);
 		}
 
-		String industryList = Strings.implodeForDB(f.getIndustry(), ",");
-		if (filterOn(industryList)) {
-			sql.addWhere("a.industry IN (" + industryList + ")");
-			setFiltered(true);
-		}
-
 		if (filterOn(f.getCity(), ReportFilterAccount.DEFAULT_CITY))
 			report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", f.getCity()));
 
@@ -250,7 +243,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (f.isTradeInformation()) {
 			sql.addField("c.main_trade");
-			sql.addField("a.industry");
 			sql.addField("c.tradesSelf");
 			sql.addField("c.tradesSub");
 		}

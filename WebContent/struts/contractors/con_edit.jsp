@@ -137,9 +137,6 @@ $(function() {
 							<s:property value="contractor.taxId"/>
 						</li>
 					</s:if>
-					<li><label>Industry:</label>
-						<s:select list="industryList" name="contractor.industry"/>
-					</li>
 					<li><label>NAICS (Primary):</label>
 						<s:property value="contractor.naics.code"/>
 					</li>

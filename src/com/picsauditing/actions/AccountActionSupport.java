@@ -11,7 +11,6 @@ import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -180,10 +179,6 @@ public class AccountActionSupport extends PicsActionSupport {
 			result = getStateDAO().findByCountries(Arrays.asList(countries.split("[|]")), negative);
 		}
 		return result;
-	}
-
-	public Industry[] getIndustryList() {
-		return Industry.values();
 	}
 
 	public boolean isShowMoreNotes() {

@@ -11,7 +11,6 @@ import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.State;
 
 @SuppressWarnings("serial")
@@ -22,7 +21,6 @@ public class ReportFilterAccount extends ReportFilter {
 
 	// /////// Filter Visibility /////////////
 	protected boolean showAccountName = true;
-	protected boolean showIndustry = true;
 	protected boolean showAddress = true;
 	protected boolean showStatus = false;
 	protected boolean showType = false;
@@ -32,7 +30,6 @@ public class ReportFilterAccount extends ReportFilter {
 	// /////// Parameter Values /////////////////
 	protected String startsWith;
 	protected String accountName = DEFAULT_NAME;
-	protected Industry[] industry;
 	protected String city = DEFAULT_CITY;
 	protected String[] state;
 	protected String[] country;
@@ -52,10 +49,6 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	// Getters for search lists
-	public Industry[] getIndustryList() {
-		return Industry.values();
-	}
-
 	public String[] getTypeList() {
 		return new String[] { "Assessment", "Corporate", "Operator" };
 	}
@@ -89,14 +82,6 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public void setShowAccountName(boolean showAccountName) {
 		this.showAccountName = showAccountName;
-	}
-
-	public boolean isShowIndustry() {
-		return showIndustry;
-	}
-
-	public void setShowIndustry(boolean showIndustry) {
-		this.showIndustry = showIndustry;
 	}
 
 	public boolean isShowAddress() {
@@ -153,14 +138,6 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public void setAccountName(String accountName) {
 		this.accountName = accountName;
-	}
-
-	public Industry[] getIndustry() {
-		return industry;
-	}
-
-	public void setIndustry(Industry[] industry) {
-		this.industry = industry;
 	}
 
 	public String getCity() {

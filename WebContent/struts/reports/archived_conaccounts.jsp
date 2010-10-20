@@ -51,7 +51,6 @@ with any of these contractors, please encourage them to renew their membership b
 		</s:if>
 		<s:if test="showTrade">
 			<td>Trade</td>
-			<td>Industry</td>			
 		</s:if>
 		<pics:permission perm="RemoveContractors">
 		<s:if test="permissions.operator">
@@ -91,7 +90,6 @@ with any of these contractors, please encourage them to renew their membership b
 			</s:if>
 			<s:if test="showTrade">
 				<td><s:property value="get('main_trade')"/></td>
-				<td><s:property value="get('industry')"/></td>
 			</s:if>
 			<pics:permission perm="RemoveContractors">
 				<s:if test="permissions.operator">

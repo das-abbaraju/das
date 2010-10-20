@@ -51,7 +51,6 @@
 					<setInputField name="contractor.billingContact" value="Billing Contact"/>
 					<setInputField name="contractor.billingPhone" value="949-123-4567"/>
 					<setInputField name="contractor.billingEmail" value="tester@picsauditing.com"/>
-					<setSelectField name="contractor.industry" text="Power"/>
 					<setSelectField name="contractor.mainTrade" text="Boiler Repair"/>
 					<setInputField name="contractor.description" value="This is a test account from Canoo webtest. Please delete me."/>
 					<setInputField name="user.username" value="inheritance_trialaccount"/>

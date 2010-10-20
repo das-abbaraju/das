@@ -37,8 +37,8 @@
 		<label>HSE Competency Review:</label>
 		<s:if test="contractor.requiresCompetencyReview">Enabled</s:if><s:else>Disabled</s:else>
 		<br />
-		<label>Industry/Trade:</label>
-		<s:property value="contractor.industry.description" />/<s:property value="contractor.mainTrade" />
+		<label>Trade:</label>
+		<s:property value="contractor.mainTrade" />
 		<br />
 		<label>Risk Level:</label>
 		<s:property value="contractor.riskLevel" />

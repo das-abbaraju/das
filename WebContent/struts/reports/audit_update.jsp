@@ -34,7 +34,6 @@
 				</s:if>
 				<s:if test="showTrade">
 					<td>Trade</td>
-					<td>Industry</td>			
 				</s:if>
 			</tr>
 		</thead>
@@ -60,7 +59,6 @@
 				</s:if>
 				<s:if test="showTrade">
 					<td><s:property value="get('main_trade')"/></td>
-					<td><s:property value="get('industry')"/></td>
 				</s:if>
 			</tr>
 		</s:iterator>

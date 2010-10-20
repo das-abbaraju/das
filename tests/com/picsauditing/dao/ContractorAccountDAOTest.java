@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
@@ -64,7 +63,6 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setPhone("999-999-9999");
 		contractoraccount.setFax("999-999-9999");
 		contractoraccount.setWebUrl("www.picsauditing.com");
-		contractoraccount.setIndustry(Industry.Construction);
 		// contractoraccount.setActive('y');
 		contractoraccount.setStatus(AccountStatus.Active);
 		contractoraccount.setCreatedBy(new User(1100));

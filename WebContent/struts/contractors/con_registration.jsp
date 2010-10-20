@@ -192,13 +192,6 @@ $(function(){
 				<fieldset class="form">
 					<h2 class="formLegend">Industry Details</h2>
 					<ol>
-						<li><label>Industry:</label>
-							<s:select list="industryList" name="contractor.industry" />
-							<div class="fieldhelp">
-								<h3>Industry</h3>
-								The main industry your company works in. If your industry is not listed, then choose General.
-							</div>
-						</li>
 						<li class="required"><label>Main Trade:</label>
 							<s:select list="tradeList"
 								name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" 

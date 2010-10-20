@@ -17,10 +17,6 @@
 					href="ContractorList.action" />
 				&body_verify;
 				<verifyText 
-					description="Verify if Filter Options are Available" 
-					text="Industry" />
-					&body_verify;
-				<verifyText 
 					description="Verify Company Name in List"
 					text="Aaron Oil Company" />
 					&body_verify;

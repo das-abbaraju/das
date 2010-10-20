@@ -55,7 +55,6 @@
 		</s:if>
 		<s:if test="showTrade">
 			<td>Trade</td>
-			<td>Industry</td>			
 			<td>Self Performed</td>
 			<td>Sub Contracted</td>			
 		</s:if>
@@ -119,7 +118,6 @@
 			</s:if>
 			<s:if test="showTrade">
 				<td><s:property value="get('main_trade')"/></td>
-				<td><s:property value="get('industry')"/></td>
 				<td><s:property value="get('tradesSelf')"/></td>
 				<td><s:property value="get('tradesSub')"/></td>			
 			</s:if>

@@ -34,7 +34,6 @@
 		<class>com.picsauditing.jpa.entities.ErrorLog</class>
 		<class>com.picsauditing.jpa.entities.Facility</class>
 		<class>com.picsauditing.jpa.entities.FlagColor</class>
-		<class>com.picsauditing.jpa.entities.Industry</class>
 		<class>com.picsauditing.jpa.entities.JobCompetency</class>
 		<class>com.picsauditing.jpa.entities.JobCompetencyStats</class>
 		<class>com.picsauditing.jpa.entities.JobRole</class>
