@@ -8,6 +8,7 @@
 <div id="tabs">
 	<ul>
 		<li><a href="#tabs-general">General</a></li>
+		<li><a href="#tabs-contact">Contact</a></li>
 		<li><a href="#tabs-facilities">Facilities</a></li>
 		<li><a href="#tabs-audits">PQF/Audits</a></li>
 		<s:if test="permissions.admin || permissions.contractor">
@@ -52,9 +53,6 @@
 			<s:property value="contractor.country.name" />
 		</s:if>
 		<br />
-		<label>Primary Contact:</label>
-		<s:property value="contractor.primaryContact.name" />
-		<br />
 		<a href="ContractorNotes.action?id=<s:property value="contractor.id" />">Notes</a>
 		<s:if test="permissions.admin || permissions.contractor">
 			| <a href="ContractorEdit.action?id=<s:property value="contractor.id" />">Edit</a>
@@ -64,6 +62,20 @@
 				| <a href="Login.action?button=login&switchToUser=<s:property value="id"/>">Login as <s:property value="name" /></a>
 			</s:iterator>
 		</pics:permission>
+	</div>
+	<div id="tabs-contact">
+		<label>Primary Contact:</label>
+		<s:property value="contractor.primaryContact.name"/>
+		<br />
+		<label>Phone:</label>
+		<s:property value="contractor.primaryContact.phone"/>
+		<br />	
+		<label>Fax:</label>
+		<s:property value="contractor.primaryContact.fax"/>
+		<br />	
+		<label>Email:</label>
+		<s:property value="contractor.primaryContact.email"/>
+		<br />	
 	</div>
 	<div id="tabs-facilities">
 		<table class="report">

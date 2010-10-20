@@ -53,16 +53,10 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	// grant privileges
 
-	@Transient
-	public boolean isSuperUser() {
-		return (id == GROUP_SU);
-	}
-
 	private String username;
 	private YesNo isGroup;
 	private String email;
-	// TODO - read GMail to see if emails are bouncing and auto update this
-	// field
+	// TODO - read GMail to see if emails are bouncing and auto update this field
 	private Date emailConfirmedDate;
 	private String name;
 	private YesNo isActive = YesNo.Yes;
@@ -71,7 +65,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private String phone;
 	private String phoneIndex;
 	private String fax;
-
+	
 	private String password;
 	private Date passwordChanged;
 	private String resetHash;
@@ -80,13 +74,18 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private int failedAttempts = 0;
 	private Date lockUntil = null;
 	private String timezone = "US/Central";
-
+	
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
 	private List<UserAccess> ownedPermissions = new ArrayList<UserAccess>();
 	private List<UserSwitch> switchTos = new ArrayList<UserSwitch>();
 	private List<UserSwitch> switchFroms = new ArrayList<UserSwitch>();
 	private List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
+	
+	@Transient
+	public boolean isSuperUser() {
+		return (id == GROUP_SU);
+	}
 
 	// TimeZone.getAvailableIDs();
 
