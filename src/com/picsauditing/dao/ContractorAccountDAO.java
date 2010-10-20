@@ -14,6 +14,7 @@ import javax.persistence.TemporalType;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Invoice;
@@ -83,7 +84,7 @@ public class ContractorAccountDAO extends PicsDAO {
 			where = "AND (operatorAccount.id = " + permissions.getAccountId()
 					+ " OR operatorAccount IN (SELECT operator FROM Facility "
 					+ "WHERE corporate IN (SELECT corporate FROM Facility " + "WHERE operator.id = "
-					+ permissions.getAccountId() + ")))";
+					+ permissions.getAccountId() + " AND corporate.id NOT IN ( "+ Strings.implode(Account.PICS_CORPORATE, ",") +"))))";
 
 		Query query = em.createQuery("FROM ContractorOperator WHERE contractorAccount = ? " + where
 				+ " ORDER BY operatorAccount.name");

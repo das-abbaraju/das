@@ -426,6 +426,8 @@ public class AuditBuilderController {
 	}
 
 	private void fillAuditOperatorPermissions(ContractorAuditOperator cao) {
+		if(cao.getAudit().getAuditType().getId() == AuditType.WELCOME)
+			return;
 		AuditTypeDetail auditTypeDetail = getRequiredAuditTypes().get(cao.getAudit().getAuditType());
 		if (auditTypeDetail == null)
 			return;
