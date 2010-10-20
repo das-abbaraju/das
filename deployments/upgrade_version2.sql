@@ -282,6 +282,50 @@ set fc.requiredStatus = 'Complete'
 where at.classType != 'Policy'
 and validationRequired = 1;
 
+
+/**
+ * adding operator tagsfor adHoc audits  
+ */
+create table auditoperatortags as  
+select ao.opid,at.id, at.auditname
+from pics_yesterday.audit_operator ao 
+join audit_type at on at.id = ao.auditTypeID
+join accounts a on a.id = ao.opid
+join pics_alpha2.audit_type_rule atr on atr.auditTypeID = ao.auditTypeID 
+and atr.opid = ao.opid
+where ao.cansee =1 and ao.minRiskLevel = 0
+group by atr.opid, atr.audittypeid 
+order by ao.opid , ao.auditTypeID;
+
+insert into operator_tag 
+select null,substr(aot.auditname,1,49),1,aot.opID,1098,1098, 
+Now(),Now(),0,1
+from auditoperatortags aot;
+
+select * from audit_type_rule atr
+join pics_yesterday.audit_operator ao on ao.opid = atr.opid and ao.audittypeid = atr.auditTypeID
+where ao.cansee = 1 and ao.minrisklevel = 0 and atr.include = 1;
+
+update audit_type_rule atr
+join auditoperatortags aot on atr.auditTypeID = aot.id and atr.opid = aot.opid
+join operator_tag ot on ot.opid = aot.opid
+set atr.tagID = ot.id
+where ot.tag = substr(aot.auditname,1,49);
+
+CREATE TEMPORARY TABLE audittypetags as
+select atr.opid as operatorid, atr.audittypeid as audittypeid, atr.tagID from audit_type_rule atr
+join auditoperatortags aot on atr.auditTypeID = aot.id and atr.opid = aot.opid
+join operator_tag ot on ot.opid = aot.opid
+where ot.tag = substr(aot.auditname,1,49)
+group by atr.opid, atr.audittypeid, atr.tagID;
+
+insert into contractor_tag 
+select null,ca.conid,att.tagid,1098,1098,Now(),Now() from audittypetags att
+join generalcontractors gc on gc.genid = att.operatorid
+join contractor_audit ca on ca.audittypeid = att.audittypeid and ca.conid = gc.subid
+group by ca.conid, att.tagid;
+
+
 /*  DDL Changes
  *  Dropping Tables and Columns
  */
