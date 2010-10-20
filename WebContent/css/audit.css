@@ -351,7 +351,10 @@ font-weight:bold;
 text-decoration:none;
 }
 /** END Category Header+Footer Navigation **/
-
+.clickable{
+	text-decoration: underline;
+	cursor: pointer;
+}
 /** Audit SideNav **/
 ul.vert-toolbar  {
 	list-style: none;	
