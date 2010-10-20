@@ -407,11 +407,6 @@ ul.subcat-list li {
 	border: none;
 	font-size: 12px;
 }
-ul.subcat-list li.parentCategory {
-	background-image: url(../images/arrow-blue-down.png);
-	background-repeat: no-repeat;
-	background-position: 0px 5px; 
-}
 ul.vert-toolbar div.subcat {
 	display: none;
 	background-color: #E7E6E2;
