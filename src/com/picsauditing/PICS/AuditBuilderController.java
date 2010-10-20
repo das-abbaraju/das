@@ -429,12 +429,12 @@ public class AuditBuilderController {
 		if(cao.getAudit().getAuditType().getId() == AuditType.WELCOME)
 			return;
 		AuditTypeDetail auditTypeDetail = getRequiredAuditTypes().get(cao.getAudit().getAuditType());
-		if (auditTypeDetail == null)
-			return;
 		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-		for(OperatorAccount operatorAccount : auditTypeDetail.operators) {
-			if(operatorAccount.getOperatorHeirarchy().contains(cao.getOperator().getId()))
-				operators.add(operatorAccount);
+		if(auditTypeDetail != null) {
+			for(OperatorAccount operatorAccount : auditTypeDetail.operators) {
+				if(operatorAccount.getOperatorHeirarchy().contains(cao.getOperator().getId()))
+					operators.add(operatorAccount);
+			}
 		}
 
 		// Remove first
