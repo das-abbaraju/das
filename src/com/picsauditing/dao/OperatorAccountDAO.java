@@ -71,7 +71,7 @@ public class OperatorAccountDAO extends PicsDAO {
 			where = "";
 		
 		if (where.length() > 0)
-			where += "AND ";
+			where += " AND ";
 		
 		where += "a.status IN ('Active'";
 		if (permissions.isAdmin())

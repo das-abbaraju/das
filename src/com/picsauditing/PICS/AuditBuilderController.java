@@ -426,6 +426,8 @@ public class AuditBuilderController {
 	}
 
 	private void fillAuditOperatorPermissions(ContractorAuditOperator cao) {
+		// For now we have decided to hard code Welcome Call audit to not be viewable for operators. 
+		// We might add a field later if required
 		if(cao.getAudit().getAuditType().getId() == AuditType.WELCOME)
 			return;
 		AuditTypeDetail auditTypeDetail = getRequiredAuditTypes().get(cao.getAudit().getAuditType());
