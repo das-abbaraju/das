@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Strings;
 
@@ -164,25 +165,37 @@ protected String searchTerm;
 							.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc\nJOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
 							.append(currPerm.getAccountId()).append(" GROUP BY id) AS acc on a.id = acc.id)\n"); // here				
 				}
-				sb.append("UNION\n(SELECT u.name rName, u.id, IF(u.isGroup='Yes','G','U') rType FROM users u JOIN\n((select f.opID id FROM facilities f WHERE f.corporateID =")
-						.append(currPerm.getAccountId()).append(")\nUNION\n(SELECT o.id id FROM operators o WHERE o.parentID =")
-						.append(currPerm.getAccountId()).append(")\n) AS t ON u.accountID = t.id)");
-				sb.append("\nUNION\n(\nSELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e join\n((SELECT f.opID id FROM facilities f WHERE f.corporateID =")
-						.append(currPerm.getAccountId()).append(")\nUNION\n(SELECT o.id id from operators o where o.parentID =")
-						.append(currPerm.getAccountId()).append(")\n")
-						.append("UNION\n(select gc.subID FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
-						.append(currPerm.getAccountId()).append(")\n) AS rE on e.accountID = rE.id)\n");
+				if (currPerm.hasPermission(OpPerms.EditUsers)) {
+					sb.append("UNION\n(SELECT u.name rName, u.id, IF(u.isGroup='Yes','G','U') rType FROM users u JOIN\n((select f.opID id FROM facilities f WHERE f.corporateID =")
+							.append(currPerm.getAccountId())
+							.append(
+									")\nUNION\n(SELECT o.id id FROM operators o WHERE o.parentID =")
+							.append(currPerm.getAccountId()).append(
+									")\n) AS t ON u.accountID = t.id)");
+				}
+				if(currPerm.hasPermission(OpPerms.ManageEmployees)){
+					sb.append("\nUNION\n(\nSELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e join\n((SELECT f.opID id FROM facilities f WHERE f.corporateID =")
+							.append(currPerm.getAccountId()).append(")\nUNION\n(SELECT o.id id from operators o where o.parentID =")
+							.append(currPerm.getAccountId()).append(")\n")
+							.append("UNION\n(select gc.subID FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
+							.append(currPerm.getAccountId()).append(")\n) AS rE on e.accountID = rE.id)\n");
+				}				
 				sb.append(") AS r1\nON i1.foreignKey = r1.id AND i1.indexType = r1.rType");
 				sql.addJoin(sb.toString());
 				sb.setLength(0);
 			} else if (currPerm.isOperator()) {
 				sb.append("\nJOIN ((\nSELECT a.name rName, a.id, acc.rType FROM accounts a JOIN \n").append(
 						"(SELECT gc.subID id, 'C' rType FROM generalcontractors gc WHERE gc.genID =").append(currPerm.getAccountId()).append(") AS acc ON a.id = acc.id)");
+				if (currPerm.hasPermission(OpPerms.EditUsers)) {
 				sb.append(
 								"\nUNION\n(SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.accountID =")
 						.append(currPerm.getAccountId()).append(')');
+				}
+				if(currPerm.hasPermission(OpPerms.ManageEmployees)){
 				sb.append("\nUNION\n(SELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e JOIN generalcontractors gc ON gc.subID = e.accountID WHERE gc.genID =")
-						.append(currPerm.getAccountId()).append(")\n) AS r1\nON i1.foreignKey = r1.id AND i1.indexType = r1.rType");
+						.append(currPerm.getAccountId()).append(")");
+				}
+				sb.append("\n) AS r1\nON i1.foreignKey = r1.id AND i1.indexType = r1.rType");
 				sql.addJoin(sb.toString());
 				sb.setLength(0);
 			}
