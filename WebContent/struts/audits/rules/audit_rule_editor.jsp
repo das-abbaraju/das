@@ -147,6 +147,7 @@ $(function() {
 
 <s:else>
 	<a class="add" href="?button=edit&rule.include=true">Create New Rule</a>
+	<a class="refresh" href="RecalculateRules.action">Recalculate Priority for all <s:if test="categoryRule">Category</s:if><s:else>Audit Type</s:else> Rules</a>	
 
 	<table class="report">
 
