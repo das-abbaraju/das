@@ -17,5 +17,4 @@ m=[]}})(jQuery);
 
 jQuery(function(){
 	$.blockUI.defaults.css = {};
-	$.blockUI.defaults.overlayCSS = {};
 });

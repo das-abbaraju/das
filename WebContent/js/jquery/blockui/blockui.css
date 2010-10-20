@@ -1,8 +1,4 @@
 /** BlockUI data ***/
-.blockOverlay {
-	background-color: #000;
-	opacity: 0.6;	
-}
 .blockMsg{
 	color: #06223F;
 	font-size: 18px;
@@ -10,6 +6,7 @@
 	line-height: 18px;
 	font-weight: bold;
 	border: 2px solid #555555;
+	background-color: rgb(255,255,255);
 }
 .blockMsg.blockElement{
 	background-image: url("../../../images/loader.gif");
