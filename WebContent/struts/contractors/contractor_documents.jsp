@@ -9,16 +9,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
-	function getAuditList(classType) {
-		var data = {
-			button: 'getAuditList',
-			auditClass: classType,
-			id: <s:property value="id" />
-		}
-
-		$('#auditListLoad').load('ContractorDocumentsAjax.action', data);
-	}
-
 	function showAll(type) {
 		if ($('#' + type + ' tr.hidden:hidden').length > 0)
 			$('#'+type + ' tr.hidden').show();
@@ -73,6 +63,9 @@
 				<th>Safety Professional</th>
 				<th>Scheduled</th>
 				<th>View</th>
+				<pics:permission perm="AuditCopy">
+					<th>Copy</th>
+				</pics:permission>
 			</tr>
 		</thead>
 		<tbody>
@@ -98,6 +91,9 @@
 								</a>
 							</s:if>
 						</td>
+						<pics:permission perm="AuditCopy">
+							<td><a href="ConAuditCopy.action?auditID=<s:property value="#audit.id" />">Copy</a></td>
+						</pics:permission>
 					</tr>
 					<s:if test="#audit.operators.size > 0">
 						<tr class="row_<s:property value="#audit.id" /> hidden">
@@ -129,7 +125,11 @@
 				</s:iterator>
 			</s:iterator>
 			<tr>
-				<td colspan="4" class="center">
+				<s:set name="colspan" value="4" />
+				<pics:permission perm="AuditCopy">
+					<s:set name="colspan" value="#colspan + 1" />
+				</pics:permission>
+				<td colspan="<s:property value="#colspan" />" class="center">
 					<a href="#" onclick="showAll('table_<s:property value="#classType" />'); return false;" class="preview">View All</a>
 				</td>
 			</tr>
