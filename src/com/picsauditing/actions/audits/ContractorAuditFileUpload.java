@@ -59,7 +59,7 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 			AnswerMap answerMap = auditDataDao.findAnswers(auditID);
 			for (AuditCatData auditCatData : getCategories().values()) {
 				if (auditCatData.isApplies()) {
-					for (AuditCategory auditCategory : auditCatData.getCategory().getSubCategories()) {
+					for (AuditCategory auditCategory : auditCatData.getCategory().getChildren()) {
 						for (AuditQuestion auditQuestion : auditCategory.getQuestions()) {
 							if (auditQuestion.isCurrent()) { // removed is valid
 								AuditData auditData = answerMap.get(auditQuestion.getId());
