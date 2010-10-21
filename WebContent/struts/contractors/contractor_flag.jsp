@@ -102,7 +102,7 @@ $(function() {
 	$('.datepicker').datepicker({
 		changeMonth: true,
 		changeYear:true,
-		yearRange: '1940:2010',
+		yearRange: '1940:'+ (new Date().getFullYear()+5),
 		showOn: 'button',
 		buttonImage: 'images/icon_calendar.gif',
 		buttonImageOnly: true,
