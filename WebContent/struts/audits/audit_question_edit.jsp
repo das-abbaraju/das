@@ -76,7 +76,7 @@ $(function() {
 				<s:checkbox fieldValue="X" name="auditData.answer" value="#a.answer == \"X\""/>
 			</s:if>
 			<s:if test="#q.questionType == 'Yes/No'">
-				<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="auditData.answer" value="%{#a.answer}"></s:radio>
+				<s:radio theme="audits" list="#{'Yes':'Yes','No':'No'}" name="auditData.answer" value="%{#a.answer}"></s:radio>
 				<s:if test="#q.auditType.policy">
 					<s:set name="op" value="%{getOperatorByName(#q.category.name)}" />
 					<s:if test="#op != null && #op.id > 0">	
@@ -96,13 +96,13 @@ $(function() {
 				</s:if>
 			</s:if>
 			<s:if test="#q.questionType == 'Yes/No/NA'">
-				<s:radio theme="pics" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="auditData.answer" value="%{#a.answer}"></s:radio>
+				<s:radio theme="audits" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="auditData.answer" value="%{#a.answer}"></s:radio>
 			</s:if>
 			<s:if test="#q.questionType == 'Office Location'">
-				<s:radio theme="pics" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" name="auditData.answer" value="%{#a.answer}"></s:radio>
+				<s:radio theme="audits" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" name="auditData.answer" value="%{#a.answer}"></s:radio>
 			</s:if>
 			<s:if test="#q.questionType == 'Radio'">
-				<s:radio theme="pics" list="#q.optionsVisible" listKey="optionName" listValue="optionName" 
+				<s:radio theme="audits" list="#q.optionsVisible" listKey="optionName" listValue="optionName" 
 					name="auditData.answer" value="#a.answer" />
 			</s:if>
 		</s:if>
