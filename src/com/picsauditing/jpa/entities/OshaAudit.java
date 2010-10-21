@@ -48,14 +48,14 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	private User auditor;
 
 	private boolean fileUploaded = false;
-	private int manHours;
-	private int fatalities;
-	private int lostWorkCases;
-	private int lostWorkDays;
-	private int injuryIllnessCases;
-	private int restrictedWorkCases;
-	private int recordableTotal;
-	private int factor = 200000;
+	private float manHours;
+	private float fatalities;
+	private float lostWorkCases;
+	private float lostWorkDays;
+	private float injuryIllnessCases;
+	private float restrictedWorkCases;
+	private float recordableTotal;
+	private float factor = 200000;
 	private String comment;
 
 	private FlagColor flagColor;
@@ -66,10 +66,10 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 
 	private Float cad7;
 	private Float neer;
-	private int firstAidInjuries;
-	private int modifiedWorkDay;
-	private int vehicleIncidents;
-	private int totalkmDriven;
+	private float firstAidInjuries;
+	private float modifiedWorkDay;
+	private float vehicleIncidents;
+	private float totalkmDriven;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -173,59 +173,59 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 		this.fileUploaded = fileUploaded;
 	}
 
-	public int getManHours() {
+	public float getManHours() {
 		return manHours;
 	}
 
-	public void setManHours(int manHours) {
+	public void setManHours(float manHours) {
 		this.manHours = manHours;
 	}
 
-	public int getFatalities() {
+	public float getFatalities() {
 		return fatalities;
 	}
 
-	public void setFatalities(int fatalities) {
+	public void setFatalities(float fatalities) {
 		this.fatalities = fatalities;
 	}
 
-	public int getLostWorkCases() {
+	public float getLostWorkCases() {
 		return lostWorkCases;
 	}
 
-	public void setLostWorkCases(int lostWorkCases) {
+	public void setLostWorkCases(float lostWorkCases) {
 		this.lostWorkCases = lostWorkCases;
 	}
 
-	public int getLostWorkDays() {
+	public float getLostWorkDays() {
 		return lostWorkDays;
 	}
 
-	public void setLostWorkDays(int lostWorkDays) {
+	public void setLostWorkDays(float lostWorkDays) {
 		this.lostWorkDays = lostWorkDays;
 	}
 
-	public int getInjuryIllnessCases() {
+	public float getInjuryIllnessCases() {
 		return injuryIllnessCases;
 	}
 
-	public void setInjuryIllnessCases(int injuryIllnessCases) {
+	public void setInjuryIllnessCases(float injuryIllnessCases) {
 		this.injuryIllnessCases = injuryIllnessCases;
 	}
 
-	public int getRestrictedWorkCases() {
+	public float getRestrictedWorkCases() {
 		return restrictedWorkCases;
 	}
 
-	public void setRestrictedWorkCases(int restrictedWorkCases) {
+	public void setRestrictedWorkCases(float restrictedWorkCases) {
 		this.restrictedWorkCases = restrictedWorkCases;
 	}
 
-	public int getRecordableTotal() {
+	public float getRecordableTotal() {
 		return recordableTotal;
 	}
 
-	public void setRecordableTotal(int recordableTotal) {
+	public void setRecordableTotal(float recordableTotal) {
 		this.recordableTotal = recordableTotal;
 	}
 
@@ -253,35 +253,35 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 		this.neer = neer;
 	}
 
-	public int getFirstAidInjuries() {
+	public float getFirstAidInjuries() {
 		return firstAidInjuries;
 	}
 
-	public void setFirstAidInjuries(int firstAidInjuries) {
+	public void setFirstAidInjuries(float firstAidInjuries) {
 		this.firstAidInjuries = firstAidInjuries;
 	}
 
-	public int getModifiedWorkDay() {
+	public float getModifiedWorkDay() {
 		return modifiedWorkDay;
 	}
 
-	public void setModifiedWorkDay(int modifiedWorkDay) {
+	public void setModifiedWorkDay(float modifiedWorkDay) {
 		this.modifiedWorkDay = modifiedWorkDay;
 	}
 
-	public int getVehicleIncidents() {
+	public float getVehicleIncidents() {
 		return vehicleIncidents;
 	}
 
-	public void setVehicleIncidents(int vehicleIncidents) {
+	public void setVehicleIncidents(float vehicleIncidents) {
 		this.vehicleIncidents = vehicleIncidents;
 	}
 
-	public int getTotalkmDriven() {
+	public float getTotalkmDriven() {
 		return totalkmDriven;
 	}
 
-	public void setTotalkmDriven(int totalkmDriven) {
+	public void setTotalkmDriven(float totalkmDriven) {
 		this.totalkmDriven = totalkmDriven;
 	}
 
@@ -290,11 +290,11 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	 * @return
 	 */
 	@Transient
-	public int getFactor() {
+	public float getFactor() {
 		return factor;
 	}
 
-	public void setFactor(int factor) {
+	public void setFactor(float factor) {
 		this.factor = factor;
 	}
 
@@ -395,7 +395,7 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	}
 
 	@Transient
-	private float calculateRate(int value) {
+	private float calculateRate(float value) {
 		if (manHours > 0) {
 			float rate = value * 200000;
 			return rate / manHours;

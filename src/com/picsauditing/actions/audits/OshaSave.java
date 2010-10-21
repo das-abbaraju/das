@@ -158,7 +158,7 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 		}
 		
 		//AutoPopulating Total OSHA Recordable Injuries and Illnesses
-		int recordableTotalCalc = 0;
+		float recordableTotalCalc = 0.0f;
 		recordableTotalCalc = osha.getLostWorkCases() + osha.getInjuryIllnessCases() + osha.getRestrictedWorkCases();
 		if(!osha.getType().equals(OshaType.COHS)) { 
 			recordableTotalCalc += osha.getFatalities();

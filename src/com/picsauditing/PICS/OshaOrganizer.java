@@ -187,15 +187,15 @@ public class OshaOrganizer {
 			boolean straightAllVerified = true;
 			Date straightLastVerified = null;
 
-			int straightManHours = 0;
-			int straightFatalities = 0;
-			int straightLostWorkCases = 0;
-			int straightLostWorkDays = 0;
-			int straightInjuryIllnessCases = 0;
-			int straightRestrictedWorkCases = 0;
-			int straightRecordableTotal = 0;
-			int straightFirstAidInjuries = 0;
-			int straightModifiedWorkDay = 0;
+			float straightManHours = 0;
+			float straightFatalities = 0;
+			float straightLostWorkCases = 0;
+			float straightLostWorkDays = 0;
+			float straightInjuryIllnessCases = 0;
+			float straightRestrictedWorkCases = 0;
+			float straightRecordableTotal = 0;
+			float straightFirstAidInjuries = 0;
+			float straightModifiedWorkDay = 0;
 
 			float straightTrir = 0;
 			float straightLwcr = 0;
