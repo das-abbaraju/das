@@ -9,6 +9,7 @@ import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.Indexer;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -51,12 +52,13 @@ public class ContractorRegistration extends ContractorActionSupport {
 	protected ContractorRegistrationRequestDAO requestDAO;
 	protected ContractorValidator contractorValidator;
 	protected FacilityChanger facilityChanger;
+	private Indexer indexer;
 
 	protected Country country;
 
 	public ContractorRegistration(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO,
-			UserDAO userDAO, ContractorRegistrationRequestDAO requestDAO, FacilityChanger facilityChanger) {
+			UserDAO userDAO, ContractorRegistrationRequestDAO requestDAO, FacilityChanger facilityChanger, Indexer indexer) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
@@ -65,6 +67,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		this.requestDAO = requestDAO;
 		//this.subHeading = "New Contractor Information";
 		this.facilityChanger = facilityChanger;
+		this.indexer = indexer;
 	}
 
 	public String execute() throws Exception {
@@ -167,6 +170,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			user.addOwnedPermissions(OpPerms.ContractorInsurance, User.CONTRACTOR);
 			user.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
 			userDAO.save(user);
+			indexer.runSingle(user, "users");
 
 			// agreeing to contractor agreement terms as stated at the end of
 			// con_registration.jsp
@@ -174,6 +178,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			contractor.setAgreementDate(contractor.getCreationDate());
 			contractor.setPrimaryContact(user);
 			accountDao.save(contractor);
+			indexer.runSingle(contractor, "account");
 
 			// Create a blank PQF for this contractor
 			ContractorAudit audit = new ContractorAudit();
