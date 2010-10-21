@@ -17,7 +17,7 @@
 		<li><a class="preview" href="Audit.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
 		Questions</a></li>
 	</s:if>
-	<s:if test="permissions.isAdmin()">
+	<s:if test="permissions.admin">
 		<li>
 			<a class="addremove" href="AddRemoveCategories.action?auditID=<s:property value="auditID"/>">
 				Add/Remove Categories
