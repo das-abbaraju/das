@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.base.Joiner;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -99,8 +100,8 @@ public class AuditDataSave extends AuditActionSupport {
 					// if answer is being set, then
 					// we are not currently verifying
 					if (newCopy.getAnswer() == null
-							|| !newCopy.getAnswer().equals(
-									auditData.getAnswer())) {
+							|| !newCopy.getAnswer().equals(auditData.getAnswer())
+							|| (!Utilities.isEmptyArray(multiAnswer) || newCopy.getAnswer() != null)) {
 
 						if (!checkAnswerFormat(auditData, newCopy)) {
 							auditData = newCopy;
@@ -348,7 +349,10 @@ public class AuditDataSave extends AuditActionSupport {
 
 		// Clean-up for service questions
 		if ("Service".equals(questionType)) {
-			answer = Joiner.on(" ").skipNulls().join(multiAnswer);
+			if (multiAnswer != null)
+				answer = Joiner.on(" ").skipNulls().join(multiAnswer);
+			else
+				answer = "";
 			auditData.setAnswer(answer);
 		}
 

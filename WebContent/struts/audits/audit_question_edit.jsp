@@ -57,7 +57,7 @@ $(function() {
 </span>
 
 <div class="answer">
-	<s:form cssClass="qform" id="qform%{#q.id}">
+	<s:form cssClass="qform" id="qform%{#q.id}" onsubmit="return false;">
 		<s:hidden name="categoryID" value="%{#q.category.id}"/>
 		<s:if test="auditData.audit != null">
 			<s:hidden name="auditData.audit.id"/>
@@ -138,6 +138,7 @@ $(function() {
 				<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="number" size="30"/>
 			</s:if>
 			<s:if test="#q.questionType == 'Service'">
+				<s:hidden name="auditData.answer" value="%{#a.answer}"/>
 				<nobr><s:checkbox fieldValue="C" name="multiAnswer" value="%{#a.answer.indexOf('C') != -1}" /> C </nobr>
 				<nobr><s:checkbox fieldValue="S" name="multiAnswer" value="%{#a.answer.indexOf('S') != -1}" /> S </nobr>
 			</s:if>
