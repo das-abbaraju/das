@@ -9,13 +9,10 @@ import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.IndexableDAO;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -88,6 +85,50 @@ public class Indexer extends PicsActionSupport {
 			}
 		}
 		return SUCCESS;
+	}
+	
+	public void runSingle(Indexable table,  String tblName){			
+		List<IndexObject> l = null; // our list of ids
+		StringBuilder queryIndex = new StringBuilder(
+				"INSERT IGNORE INTO app_index VALUES ");
+		StringBuilder queryStats = new StringBuilder(
+				"INSERT IGNORE INTO app_index_stats VALUES ");
+		StringBuilder queryDelete = new StringBuilder(
+				"DELETE FROM app_index WHERE foreignKey = ");
+		Database db = new Database();
+		
+		if (table == null) 
+			return;
+		l = table.getIndexValues();
+		queryDelete.append(table.getId()).append(" AND indexType = '").append(
+				table.getIndexType()).append("'");
+		try {
+			if (db.executeUpdate(queryDelete.toString()) > 0) {
+				System.out.println("deleted using: "
+						+ queryDelete.toString());
+			}
+			for (IndexObject s : l) {
+				queryIndex.append("('").append(table.getIndexType())
+						.append("',").append(table.getId()).append(",'").append(
+								s.getValue()).append("','").append(
+								s.getWeight()).append("'),");
+				queryStats.append("('").append(table.getIndexType())
+						.append("','").append(s.getValue()).append("',")
+						.append(1).append("),").append("(null,'").append(s.getValue()).append("',1),");
+			}
+			db.executeInsert(queryIndex.substring(0, queryIndex
+					.length() - 1));
+			db.executeInsert(queryStats.substring(0, queryStats
+					.length() - 1));
+			String updateIndexing = "UPDATE " + tblName
+					+ " SET needsIndexing=0 WHERE id = "+table.getId();
+			db.executeUpdate(updateIndexing);
+			System.out.println("Saved ids");
+			db.executeUpdate("ANALYZE TABLE app_index, app_index_stats;");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	public void runIndexer(List<BasicDynaBean> ids, IndexableDAO dao,
@@ -182,7 +223,7 @@ public class Indexer extends PicsActionSupport {
 				db.executeInsert(queryStats.substring(0,
 						queryStats.length() - 1));
 				String updateIndexing = "UPDATE " + tblName
-						+ " SET needsIndexing=1 WHERE id IN("
+						+ " SET needsIndexing=0 WHERE id IN("
 						+ Strings.implode(savedIds) + ")";
 				db.executeUpdate(updateIndexing);
 			}
@@ -274,6 +315,30 @@ public class Indexer extends PicsActionSupport {
 
 	public static String[] getStatsQueryBuilder1() {
 		return statsQueryBuilder1;
+	}
+
+	public AccountDAO getAccountDAO() {
+		return accountDAO;
+	}
+
+	public void setAccountDAO(AccountDAO accountDAO) {
+		this.accountDAO = accountDAO;
+	}
+
+	public UserDAO getUserDAO() {
+		return userDAO;
+	}
+
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
+	}
+
+	public EmployeeDAO getEmpDAO() {
+		return empDAO;
+	}
+
+	public void setEmpDAO(EmployeeDAO empDAO) {
+		this.empDAO = empDAO;
 	}
 
 }

@@ -16,6 +16,8 @@ import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.actions.Indexer;
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -71,11 +73,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected State state;
 	protected State billingState;
 	protected int contactID;
+	protected Indexer indexer;
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
 			InvoiceFeeDAO invoiceFeeDAO, OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO,
-			NoteDAO noteDAO, EmailSubscriptionDAO subscriptionDAO, UserSwitchDAO userSwitchDAO) {
+			NoteDAO noteDAO, EmailSubscriptionDAO subscriptionDAO, UserSwitchDAO userSwitchDAO,
+			Indexer indexer) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
@@ -86,6 +90,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		this.noteDAO = noteDAO;
 		this.subscriptionDAO = subscriptionDAO;
 		this.userSwitchDAO = userSwitchDAO;
+		this.indexer = indexer;
 	}
 
 	public void prepare() throws Exception {
@@ -188,8 +193,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					if (contactID > 0 && contactID != contractor.getPrimaryContact().getId()) {
 						contractor.setPrimaryContact(userDAO.find(contactID));
 					}
-					contractor.setNeedsIndexing(true);
+					//contractor.setNeedsIndexing(true);
 					accountDao.save(contractor);
+					indexer.runSingle(contractor, "accounts");
 
 					addActionMessage("Successfully modified " + contractor.getName());
 				}

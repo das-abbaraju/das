@@ -18,6 +18,7 @@ import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
+import com.picsauditing.actions.Indexer;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
@@ -81,10 +82,12 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	private int taskID;
 	private List<JobTask> siteTasks;
 	private DoubleMap<EmployeeSite, JobTask, Boolean> assignedTask;
+	private Indexer indexer;
 	
 	public ManageEmployees(AccountDAO accountDAO, EmployeeDAO employeeDAO, JobRoleDAO roleDAO,
 			EmployeeRoleDAO employeeRoleDAO, EmployeeSiteDAO employeeSiteDAO, JobTaskDAO taskDAO,
-			OperatorAccountDAO operatorAccountDAO, JobSiteDAO jobSiteDAO, JobSiteTaskDAO siteTaskDAO) {
+			OperatorAccountDAO operatorAccountDAO, JobSiteDAO jobSiteDAO, JobSiteTaskDAO siteTaskDAO,
+			Indexer indexer) {
 		this.accountDAO = accountDAO;
 		this.employeeDAO = employeeDAO;
 		this.roleDAO = roleDAO;
@@ -94,6 +97,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.siteTaskDAO = siteTaskDAO;
 		this.taskDAO = taskDAO;
+		this.indexer = indexer;
 	}
 
 	@Override
@@ -186,8 +190,9 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 			employee.setAuditColumns(permissions);
 
-			employee.setNeedsIndexing(true);
+			//employee.setNeedsIndexing(true);
 			employeeDAO.save(employee);
+			indexer.runSingle(employee, "employee");
 
 			redirect("ManageEmployees.action?employee.id=" + employee.getId());
 		}

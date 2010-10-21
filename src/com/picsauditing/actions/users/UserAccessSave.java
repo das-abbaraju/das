@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.actions.Indexer;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
@@ -20,8 +21,8 @@ public class UserAccessSave extends UsersManage {
 	protected int accessId;
 
 	public UserAccessSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO,
-			UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO) {
-		super(accountDao, operatorDao, userDAO, userAccessDAO, userGroupDAO);
+			UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO, Indexer indexer) {
+		super(accountDao, operatorDao, userDAO, userAccessDAO, userGroupDAO, indexer);
 	}
 
 	@SuppressWarnings("unchecked")

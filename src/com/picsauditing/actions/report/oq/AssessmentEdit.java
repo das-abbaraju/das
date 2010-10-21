@@ -9,6 +9,7 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AccountActionSupport;
+import com.picsauditing.actions.Indexer;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -27,10 +28,12 @@ public class AssessmentEdit extends AccountActionSupport implements Preparable {
 	protected Country country;
 	protected State state;
 	protected int contactID;
+	private Indexer indexer;
 
-	public AssessmentEdit(AccountDAO accountDAO, UserDAO userDAO) {
+	public AssessmentEdit(AccountDAO accountDAO, UserDAO userDAO, Indexer indexer) {
 		this.accountDAO = accountDAO;
 		this.userDAO = userDAO;
+		this.indexer = indexer;
 	}
 
 	public void prepare() throws Exception {
@@ -111,8 +114,9 @@ public class AssessmentEdit extends AccountActionSupport implements Preparable {
 					center.setRequiresCompetencyReview(false);
 				}
 
-				center.setNeedsIndexing(true);
+				//center.setNeedsIndexing(true);
 				center = accountDAO.save(center);
+				indexer.runSingle(center, "accounts");
 				id = center.getId();
 
 				addActionMessage("Successfully saved " + center.getName());
