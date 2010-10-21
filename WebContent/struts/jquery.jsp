@@ -40,14 +40,14 @@
         }
 
         if ($.browser.msie && $.browser.version == '6.0') {
-			$('table.report tr').live('mouseover', function(event) {
+			$('table.report tr').live('mouseenter', function(event) {
 				$(this).addClass('tr-hover');
-			}).live('mouseout', function(event) {
+			}).live('mouseleave', function(event) {
 				$(this).removeClass('tr-hover');
 			});
-			$('.clickable').live('mouseover', function(event) {
+			$('tr.clickable').live('mouseenter', function(event) {
 				$(this).addClass('tr-hover-clickable');
-			}).live('mouseout', function(event) {
+			}).live('mouseleave', function(event) {
 				$(this).removeClass('tr-hover-clickable');
 			});
 			$('fieldset.form ol :input:not(:checkbox):not(:button):not([type=hidden]):not(:radio):not(:submit)').addClass('input-edit-field');
