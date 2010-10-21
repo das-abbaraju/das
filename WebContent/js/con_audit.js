@@ -99,10 +99,6 @@ $(function(){
 		e.preventDefault();
 	});
 
-	$('div.question form.qform').live('submit', function(e){
-		e.preventDefault();
-	});
-	
 	$('div.question .fileUpload').live('click', function(e) {
 		var q = $(this).parents('form.qform:first').serialize();
 		url = 'AuditDataUpload.action?' + q;
@@ -111,23 +107,24 @@ $(function(){
 		fileUpload = window.open(url,title,pars);
 		fileUpload.focus();
 	});
-	
-	$('div.question :input').live('change', function() {
-		$(this).parents('div.question:first')
+
+	$('#auditViewArea').delegate('div.question', 'change', function() {
+		$(this)
 			.block({message: 'Saving answer...'})
 			.load('AuditDataSaveAjax.action', 
-				$(this).parents('form.qform:first').serialize(), 
+				$('form.qform', this).serialize(), 
 				function(response, status) {
 					if (status=='success') {
 						$(this).trigger('updateDependent');
 						updateCategories();
 					} else {
 						alert('Failed to save answer.');
-					}
+					} 
 					$(this).unblock();
 				});
+		return false;
 	});
-	
+
 	$('div.hasDependentRequired').live('updateDependent', function() {
 		$.each($(this).find('div.dependentRequired:first').text().split(','), function(i,v) {
 			reloadQuestion(v);
