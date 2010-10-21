@@ -96,8 +96,9 @@ $(function() {
 							<s:hidden name="rule.auditCategory.id" id="cat_hidden"/>
 							<a href="#" class="clearfield">Clear Field</a>
 						</li>
-						<li><label>Root Category</label>
-							<s:select name="rootCategory" list="#{-1:'Any',0:'No',1:'Yes'}" value="rootCategory"/>
+						<li><label>Top or Sub Category</label>
+							<% //Do not change, if subcat is true then we set rootcat to be false and vice versa %>
+							<s:select list="#{null:'Any',false:'Sub Categories',true:'Top Categories'}" name="rule.rootCategory"/> 
 						</li>
 					</s:if>
 					<li><label>Account Type</label>
@@ -130,12 +131,6 @@ $(function() {
 					<li><label>Answer</label>
 						<s:textfield name="rule.questionAnswer" />
 					</li>
-					<s:if test="categoryRule">
-						<li><label>Is Subcategory rule</label>
-							<% //Do not change, if subcat is true then we set rootcat to be false and vice versa %>
-							<s:select list="#{false:'Yes',true:'No'}" name="rule.rootCategory"/> 
-						</li>
-					</s:if>
 				</ol>
 			</fieldset>
 			<fieldset class="form submit">

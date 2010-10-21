@@ -4,11 +4,9 @@
 <thead>
 	<tr>
 		<td>Include</td>
+		<td>Priority</td>
 		<td>Audit Type</td>
-		<s:if test="categoryRule">
-			<td>Category</td>
-			<td>SubCategory</td>			
-		</s:if>
+		<td>Category</td>
 		<td>Contractor Type</td>
 		<td>Operator</td>
 		<td>Risk</td>
@@ -17,7 +15,7 @@
 		<s:if test="categoryRule == false"><td colspan="2">Dependent Audit</td></s:if>
 		<td colspan="3">Question</td>
 		<s:if test="#showAction">
-			<td></td>
+			<td>Actions</td>
 		</s:if>
 	</tr>
 </thead>
