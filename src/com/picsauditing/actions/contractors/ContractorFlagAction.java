@@ -474,6 +474,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			}
 		} else if (fc.getDataType().equals(FlagCriteria.NUMBER))
 			answer = Strings.formatDecimalComma(answer);
+		answer = Utilities.escapeHTML(answer);
+		
 		if (addLabel)
 			answer = fc.getLabel() + " - " + answer;
 
@@ -504,7 +506,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			}
 		}
 
-		return Utilities.escapeHTML(answer);
+		return answer;
 	}
 
 	public boolean isDisplayTable() {
