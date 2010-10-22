@@ -22,7 +22,7 @@ public class ContractorFlagDifference extends PicsActionSupport {
 		
 		String sql = "SELECT SQL_CALC_FOUND_ROWS gc.subID conID,con.name as ContractorName, gc.genID opID, op.name as OperatorName, gc.flag newColor, f.flag oldColor, gc.waitingOn newwaitingon, f.waitingon oldwaitingOn "
 			  + "FROM generalcontractors gc "
-			  + "JOIN old_flags f ON gc.genID = f.opID AND gc.subID = f.conID "
+			  + "JOIN pics_yesterday.generalcontractors f ON gc.genID = f.genID AND gc.subID = f.subID "
 			  + "JOIN accounts op ON op.id = gc.genid "
 			  + "JOIN accounts con ON con.id = gc.subid "
 			  + "LEFT JOIN flag_dirty fd ON fd.conid = gc.subid AND fd.opId = gc.genid ";
