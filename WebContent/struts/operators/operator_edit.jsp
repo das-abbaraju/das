@@ -82,6 +82,8 @@ $(function() {
 			</s:else>
 		</li>
 		</s:if>
+		<li><label>Industry:</label> <s:select list="industryList"
+			name="operator.industry" listValue="description" /></li>
 		<s:if test="permissions.admin && !permissions.hasPermission(@com.picsauditing.access.OpPerms@UserRolePicsOperator)">
 			<s:iterator value="accountManagers.keySet()" id="key">
 				<li><label><s:property value="#key.description" /><s:if test="accountManagers.get(#key).size() > 1">s</s:if>:</label>
