@@ -188,7 +188,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
 						&& audit.getOperators().size() > 0) {
 					MenuComponent childMenu = createMenuItem(subMenu, audit);
-					String year = DateBean.format(audit.getCreationDate(), "yy");
+					String year = DateBean.format(audit.getEffectiveDate(), "yy");
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
 					childMenu.setName(linkText);
 					childMenu.setUrl("Audit.action?auditID=" + audit.getId());
@@ -240,7 +240,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit)) {
 					MenuComponent childMenu = createMenuItem(subMenu, audit);
 
-					String year = DateBean.format(audit.getCreationDate(), "yy");
+					String year = DateBean.format(audit.getEffectiveDate(), "yy");
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
 					if (!Strings.isEmpty(audit.getAuditFor()))
 						linkText = audit.getAuditFor() + " " + linkText;

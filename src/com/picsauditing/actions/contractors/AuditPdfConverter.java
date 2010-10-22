@@ -144,7 +144,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 					Map<AuditCategory,AuditCatData> aList = new HashMap<AuditCategory,AuditCatData>();
 					String auditName = conAudit.getAuditType().getAuditName() + " - ";
 					if (conAudit.getAuditType().isPqf())
-						auditName += DateBean.format(conAudit.getCreationDate(), "MMM yyyy");
+						auditName += DateBean.format(conAudit.getEffectiveDate(), "MMM yyyy");
 					else if (!Strings.isEmpty(conAudit.getAuditFor()))
 						auditName += conAudit.getAuditFor();
 					Paragraph name = new Paragraph(auditName, auditFont);
