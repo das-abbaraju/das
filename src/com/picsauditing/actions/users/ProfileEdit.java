@@ -10,14 +10,13 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.Indexer;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.dao.UserSwitchDAO;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
@@ -37,15 +36,17 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	protected String password2;
 	protected List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
 	protected String url;
+	private Indexer indexer;
 	
 	private boolean goEmailSub = false;
 
 	public ProfileEdit(UserDAO dao, ContractorAccountDAO accountDao, UserSwitchDAO userSwitchDao,
-			EmailSubscriptionDAO emailSubscriptionDAO) {
+			EmailSubscriptionDAO emailSubscriptionDAO, Indexer indexer) {
 		this.dao = dao;
 		this.accountDao = accountDao;
 		this.userSwitchDao = userSwitchDao;
 		this.emailSubscriptionDAO = emailSubscriptionDAO;
+		this.indexer = indexer;
 	}
 
 	public void prepare() throws Exception {
@@ -109,6 +110,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 				permissions.setTimeZone(u);
 				ActionContext.getContext().getSession().put("permissions", permissions);
 				u = dao.save(u);
+				indexer.runSingle(u, "users");
 
 				addActionMessage("Your profile was saved successfully");
 			}
