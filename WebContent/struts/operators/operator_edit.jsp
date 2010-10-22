@@ -74,7 +74,12 @@ $(function() {
 			headerKey=""
 			headerValue="- Select a User -" 
 			value="%{operator.primaryContact.id}"/>
-			<a href="UsersManage.action?button=newUser&accountId=<s:property value="operator.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
+			<s:if test="operator.primaryContact">
+				<a href="UsersManage.action?accountId=<s:property value="operator.id"/>&user.id=<s:property value="operator.primaryContact.id"/>">View</a>
+			</s:if>
+			<s:else>
+				<a class="add" href="UsersManage.action?button=newUser&accountId=<s:property value="operator.id"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
+			</s:else>
 		</li>
 		</s:if>
 		<s:if test="permissions.admin && !permissions.hasPermission(@com.picsauditing.access.OpPerms@UserRolePicsOperator)">
@@ -132,268 +137,249 @@ $(function() {
 	</fieldset>
 	<s:if test="permissions.admin">
 		<fieldset class="form">
-		<h2 class="formLegend">Visible Audits</h2>
+		<h2 class="formLegend">Admin Fields</h2>
 		<ol>
-			<s:iterator value="operator.visibleAudits">
-				<li><label><s:property value="auditType.auditName" />:</label>
-				Risk >= <s:property value="minRiskLevel" />
-				<s:set name="flagCriteriaOperator" value="getFlagCriteriaOperatorByAudit(auditType.id)"/>
-				<s:if test="#flagCriteriaOperator != null">
-					, RequiresActiveStatus = 
-						<s:if test="#flagCriteriaOperator.criteria.requiredStatus!=null">Active</s:if>
-						<s:else>Submitted</s:else>
-					, Flag = <s:property value="#flagCriteriaOperator.flag"/>
-				</s:if>
-				<s:if test="canEdit">, Editable = Yes</s:if></li>
-			</s:iterator>
+			<li><label>Status:</label> 
+				<s:select list="statusList" name="operator.status" /></li>
+			<li><label>Reason:</label> <s:textarea name="operator.reason"
+				rows="3" cols="25" /></li>
+			<li><label>Required Tags:</label> <s:textfield
+				name="operator.requiredTags" />
+				<div class="fieldhelp">
+					<h3>Required Tags</h3>
+					<p>Example: 1,2,3|4,5 <a href="OperatorTags.action?id=<s:property value="id" />" target="_BLANK">Tags</a></p>
+				</div>
+			</li>
+			<s:if test="operator.corporate">
+				<li><label>Primary Corporate:</label> <s:checkbox
+					name="operator.primaryCorporate"></s:checkbox></li>
+			</s:if>
+			<li><label>Approves Contractors:</label> <s:radio
+				list="#{'Yes':'Yes','No':'No'}"
+				name="operator.approvesRelationships" theme="pics" /></li>
+			<li><label>Health &amp; Safety Organization:</label>
+				<s:radio list="#{'OSHA':'OSHA','MSHA':'MSHA','COHS':'Canadian OHS'}"
+					name="operator.oshaType" theme="pics" />
+				<div class="fieldhelp">
+					<h3>Health &amp; Safety Organization</h3>
+					<p>The source of statistics that should be used to evaluate contractors</p>
+				</div>
+			</li>
+			<s:if test="!operator.corporate">
+				<li><label>Accepts Bid Only Contractor:</label> <s:checkbox
+					name="operator.acceptsBids" /></li>
+			</s:if>
+			<li><label>InsureGUARD&trade;:</label> <s:radio
+				list="#{'Yes':'Yes','No':'No'}" name="operator.canSeeInsurance"
+				theme="pics" /></li>
+			<li><label>Auto Approve/Reject Policies:</label> <s:checkbox
+				name="operator.autoApproveInsurance" /></li>
+			<li><label>Contractors pay:</label> <s:radio
+				list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"
+				name="operator.doContractorsPay" theme="pics" /></li>
+			<li><label>Requires OQ:</label> <s:checkbox
+				name="operator.requiresOQ" /></li>
+			<li><label>Requires Competency Review:</label> <s:checkbox
+				name="operator.requiresCompetencyReview" /></li>
+			<s:if test="type == 'Operator' || operator.operator">
+				<li><label>Uses Onsite Service Contractors:</label>
+					<s:checkbox name="operator.onsiteServices" /></li>
+				<li><label>Uses Offsite Service Contractors:</label>
+					<s:checkbox name="operator.offsiteServices" /></li>
+				<li><label>Uses Material Suppliers:</label>
+					<s:checkbox name="operator.materialSupplier" /></li>
+			</s:if>
 		</ol>
 		</fieldset>
-		<s:if test="permissions.admin">
-			<fieldset class="form">
-			<h2 class="formLegend">Admin Fields</h2>
-			<ol>
-				<li><label>Status:</label> 
-					<s:select list="statusList" name="operator.status" /></li>
-				<li><label>Reason:</label> <s:textarea name="operator.reason"
-					rows="3" cols="25" /></li>
-				<li><label>Required Tags:</label> <s:textfield
-					name="operator.requiredTags" />
-					<div class="fieldhelp">
-						<h3>Required Tags</h3>
-						<p>Example: 1,2,3|4,5 <a href="OperatorTags.action?id=<s:property value="id" />" target="_BLANK">Tags</a></p>
-					</div>
-				</li>
-				<s:if test="operator.corporate">
-					<li><label>Primary Corporate:</label> <s:checkbox
-						name="operator.primaryCorporate"></s:checkbox></li>
-				</s:if>
-				<li><label>Approves Contractors:</label> <s:radio
-					list="#{'Yes':'Yes','No':'No'}"
-					name="operator.approvesRelationships" theme="pics" /></li>
-				<li><label>Health &amp; Safety Organization:</label>
-					<s:radio list="#{'OSHA':'OSHA','MSHA':'MSHA','COHS':'Canadian OHS'}"
-						name="operator.oshaType" theme="pics" />
-					<div class="fieldhelp">
-						<h3>Health &amp; Safety Organization</h3>
-						<p>The source of statistics that should be used to evaluate contractors</p>
-					</div>
-				</li>
-				<s:if test="!operator.corporate">
-					<li><label>Accepts Bid Only Contractor:</label> <s:checkbox
-						name="operator.acceptsBids" /></li>
-				</s:if>
-				<li><label>InsureGUARD&trade;:</label> <s:radio
-					list="#{'Yes':'Yes','No':'No'}" name="operator.canSeeInsurance"
-					theme="pics" /></li>
-				<li><label>Auto Approve/Reject Policies:</label> <s:checkbox
-					name="operator.autoApproveInsurance" /></li>
-				<li><label>Contractors pay:</label> <s:radio
-					list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"
-					name="operator.doContractorsPay" theme="pics" /></li>
-				<li><label>Requires OQ:</label> <s:checkbox
-					name="operator.requiresOQ" /></li>
-				<li><label>Requires Competency Review:</label> <s:checkbox
-					name="operator.requiresCompetencyReview" /></li>
-				<s:if test="type == 'Operator' || operator.operator">
-					<li><label>Uses Onsite Service Contractors:</label>
-						<s:checkbox name="operator.onsiteServices" /></li>
-					<li><label>Uses Offsite Service Contractors:</label>
-						<s:checkbox name="operator.offsiteServices" /></li>
-					<li><label>Uses Material Suppliers:</label>
-						<s:checkbox name="operator.materialSupplier" /></li>
-				</s:if>
-			</ol>
-			</fieldset>
-			<fieldset class="form">
-			<h2 class="formLegend">Linked Accounts</h2>
-			<ol>
-				<s:if test="operator.corporate">
-					<li><label>Facilities:</label> <s:select list="operatorList"
-						listValue="name" listKey="id" name="facilities" multiple="7"
-						size="15" /></li>
-				</s:if>
-				<s:if test="operator.operator">
-					<s:if test="operator.corporateFacilities.size() > 0">
-						<li><label>Parent Corporation / Division / Hub:</label> <s:select
-							name="foreignKeys.parent" list="operator.corporateFacilities"
-							listKey="corporate.id" listValue="corporate.name" headerKey="0"
-							headerValue=" - Select a Parent Facility - "
-							value="operator.parent.id" /> <a
-							href="?id=<s:property value="operator.parent.id"/>">Go</a></li>
-					</s:if>
-
-					<li>
-					<div style="font-weight: bold; text-align: center;">Operator
-					Configuration Inheritance</div>
-					</li>
-					<li><label>Flag Criteria:</label> <s:select
-						name="foreignKeys.inheritFlagCriteria"
-						value="operator.inheritFlagCriteria.id" list="relatedFacilities"
-						listKey="id" listValue="name"></s:select> <a
-						href="?id=<s:property value="operator.inheritFlagCriteria.id"/>">Go</a></li>
-					<li><label>Insurance Criteria:</label> <s:select
-						name="foreignKeys.inheritInsuranceCriteria"
-						value="operator.inheritInsuranceCriteria.id"
-						list="relatedFacilities" listKey="id" listValue="name"></s:select>
-					<a
-						href="?id=<s:property value="operator.inheritInsuranceCriteria.id"/>">Go</a></li>
-				</s:if>
-
-			</ol>
-			</fieldset>
-			<s:if test="operator.id > 0">
-				<pics:permission perm="UserRolePicsOperator" type="Edit">
-					<fieldset class="form">
-					<h2 class="formLegend">Manage Representatives</h2>
-					<ol>
-						<li><nobr><label>Sales Representatives :</label></nobr></li>
-						<table class="report">
-							<thead>
-								<tr>
-									<td>User</td>
-									<td>Percent</td>
-									<td>Start</td>
-									<td>End</td>
-									<td></td>
-								</tr>
-							</thead>
-							<tbody>
-								<s:iterator value="operator.accountUsers" status="role">
-									<s:hidden value="%{role}" name="accountRole" />
-									<s:if test="role.description == 'Sales Representative' && isCurrent(startDate, endDate)">
-										<tr>
-											<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
-												value="user.name" /></td>
-											<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
-												value="ownerPercent" />%</td>
-											<td onclick="$('#show_<s:property value="id"/>').show();"><s:date
-												name="startDate" format="MM/dd/yyyy" /></td>
-											<td onclick="$('#show_<s:property value="id"/>').show();"><s:date
-												name="endDate" format="MM/dd/yyyy" /></td>
-											<td><a
-												href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=Remove"
-												class="remove">Remove</a></td>
-										</tr>
-										<tr id="show_<s:property value="id"/>" style="display: none;">
-											<td colspan="4"><nobr><s:textfield
-												name="operator.accountUsers[%{#role.index}].ownerPercent"
-												value="%{ownerPercent}" size="3" />%&nbsp;&nbsp; <s:textfield
-												cssClass="blueMain datepicker" size="10"
-												name="operator.accountUsers[%{#role.index}].startDate"
-												id="startDate[%{id}]"
-												value="%{@com.picsauditing.PICS.DateBean@format(startDate, 'MM/dd/yyyy')}" />
-											&nbsp;&nbsp;<s:textfield cssClass="blueMain datepicker"
-												size="10"
-												name="operator.accountUsers[%{#role.index}].endDate"
-												id="endDate[%{id}]"
-												value="%{@com.picsauditing.PICS.DateBean@format(endDate, 'MM/dd/yyyy')}" />
-											</nobr></td>
-											<td><input type="submit" class="picsbutton positive"
-												name="button" value="Save Role" /></td>
-										</tr>
-									</s:if>
-								</s:iterator>
-								<tr>
-									<td colspan="4"><s:select name="salesRep.user.id"
-										list="userList" listKey="id" listValue="name" headerKey="0"
-										headerValue="- Select a User -" /></td>
-									<td><s:hidden value="PICSSalesRep" name="salesRep.role" /><input
-										type="submit" class="picsbutton positive" name="button"
-										value="Add Role" /></td>
-								</tr>
-							</tbody>
-						</table>
-
-						<li><nobr><label>Account Managers : </label></nobr></li>
-						<table class="report">
-							<thead>
-								<tr>
-									<td>User</td>
-									<td>Percent</td>
-									<td>Start</td>
-									<td>End</td>
-									<td></td>
-								</tr>
-							</thead>
-							<tbody>
-								<s:iterator value="operator.accountUsers" status="role">
-									<s:if test="role.description == 'Account Manager' && isCurrent(startDate, endDate)">
-										<tr>
-											<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
-												value="user.name" /></td>
-											<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
-												value="ownerPercent" />%</td>
-											<td onclick="$('#show_<s:property value="id"/>').show();"><s:date
-												name="startDate" format="MM/dd/yyyy" /></td>
-											<td onclick="$('#show_<s:property value="id"/>').show();"><s:date
-												name="endDate" format="MM/dd/yyyy" /></td>
-											<td><a
-												href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=Remove"
-												class="remove">Remove</a></td>
-										</tr>
-										<tr id="show_<s:property value="id"/>" style="display: none;">
-											<td colspan="4"><nobr><s:textfield
-												name="operator.accountUsers[%{#role.index}].ownerPercent"
-												value="%{ownerPercent}" size="3" />%&nbsp;&nbsp; <s:textfield
-												cssClass="blueMain datepicker" size="10"
-												name="operator.accountUsers[%{#role.index}].startDate"
-												id="startDate[%{id}]"
-												value="%{@com.picsauditing.PICS.DateBean@format(startDate, 'MM/dd/yyyy')}" />
-											&nbsp;&nbsp;<s:textfield cssClass="blueMain datepicker"
-												size="10"
-												name="operator.accountUsers[%{#role.index}].endDate"
-												id="endDate[%{id}]"
-												value="%{@com.picsauditing.PICS.DateBean@format(endDate, 'MM/dd/yyyy')}" />
-											</nobr></td>
-											<td><input type="submit" class="picsbutton positive"
-												name="button" value="Save Role" /></td>
-										</tr>
-									</s:if>
-								</s:iterator>
-								<tr>
-									<td colspan="4"><s:select name="accountRep.user.id"
-										list="userList" listKey="id" listValue="name" headerKey="0"
-										headerValue="- Select a User -" /></td>
-									<td><s:hidden value="PICSAccountRep"
-										name="accountRep.role" /><input type="submit"
-										class="picsbutton positive" name="button" value="Add Role" /></td>
-								</tr>
-							</tbody>
-						</table>
-						
-						<s:if test="previousManagers.keySet().size() > 0">
-							<li><nobr><label>Previous Representatives: </label></nobr></li>
-							<table class="report">
-								<thead>
-									<tr>
-										<td>User</td>
-										<td>Role</td>
-										<td>Percent</td>
-										<td>Start</td>
-										<td>End</td>
-									</tr>
-								</thead>
-								<tbody>
-									<s:iterator value="previousManagers.keySet()" id="key">
-										<s:iterator value="previousManagers.get(#key)">
-											<s:if test="!isCurrent(startDate, endDate)">
-												<tr>
-													<td><s:property value="user.name" /></td>
-													<td><s:property value="#key.description" /></td>
-													<td><s:property value="ownerPercent" />%</td>
-													<td><s:date name="startDate" format="MM/dd/yyyy" /></td>
-													<td><s:date name="endDate" format="MM/dd/yyyy" /></td>
-												</tr>
-											</s:if>
-										</s:iterator>
-									</s:iterator>
-								</tbody>
-							</table>
-						</s:if>
-					</ol>
-					</fieldset>
-				</pics:permission>
+		<fieldset class="form">
+		<h2 class="formLegend">Linked Accounts</h2>
+		<ol>
+			<s:if test="operator.corporate">
+				<li><label>Facilities:</label> <s:select list="operatorList"
+					listValue="name" listKey="id" name="facilities" multiple="7"
+					size="15" /></li>
 			</s:if>
+			<s:if test="operator.operator">
+				<s:if test="operator.corporateFacilities.size() > 0">
+					<li><label>Parent Corporation / Division / Hub:</label> <s:select
+						name="foreignKeys.parent" list="operator.corporateFacilities"
+						listKey="corporate.id" listValue="corporate.name" headerKey="0"
+						headerValue=" - Select a Parent Facility - "
+						value="operator.parent.id" /> <a
+						href="?id=<s:property value="operator.parent.id"/>">Go</a></li>
+				</s:if>
+
+				<li>
+				<div style="font-weight: bold; text-align: center;">Operator
+				Configuration Inheritance</div>
+				</li>
+				<li><label>Flag Criteria:</label> <s:select
+					name="foreignKeys.inheritFlagCriteria"
+					value="operator.inheritFlagCriteria.id" list="relatedFacilities"
+					listKey="id" listValue="name"></s:select> <a
+					href="?id=<s:property value="operator.inheritFlagCriteria.id"/>">Go</a></li>
+				<li><label>Insurance Criteria:</label> <s:select
+					name="foreignKeys.inheritInsuranceCriteria"
+					value="operator.inheritInsuranceCriteria.id"
+					list="relatedFacilities" listKey="id" listValue="name"></s:select>
+				<a
+					href="?id=<s:property value="operator.inheritInsuranceCriteria.id"/>">Go</a></li>
+			</s:if>
+
+		</ol>
+		</fieldset>
+		<s:if test="operator.id > 0">
+			<pics:permission perm="UserRolePicsOperator" type="Edit">
+				<fieldset class="form">
+				<h2 class="formLegend">Manage Representatives</h2>
+				<ol>
+					<li><nobr><label>Sales Representatives :</label></nobr></li>
+					<table class="report">
+						<thead>
+							<tr>
+								<td>User</td>
+								<td>Percent</td>
+								<td>Start</td>
+								<td>End</td>
+								<td></td>
+							</tr>
+						</thead>
+						<tbody>
+							<s:iterator value="operator.accountUsers" status="role">
+								<s:hidden value="%{role}" name="accountRole" />
+								<s:if test="role.description == 'Sales Representative' && isCurrent(startDate, endDate)">
+									<tr>
+										<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
+											value="user.name" /></td>
+										<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
+											value="ownerPercent" />%</td>
+										<td onclick="$('#show_<s:property value="id"/>').show();"><s:date
+											name="startDate" format="MM/dd/yyyy" /></td>
+										<td onclick="$('#show_<s:property value="id"/>').show();"><s:date
+											name="endDate" format="MM/dd/yyyy" /></td>
+										<td><a
+											href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=Remove"
+											class="remove">Remove</a></td>
+									</tr>
+									<tr id="show_<s:property value="id"/>" style="display: none;">
+										<td colspan="4"><nobr><s:textfield
+											name="operator.accountUsers[%{#role.index}].ownerPercent"
+											value="%{ownerPercent}" size="3" />%&nbsp;&nbsp; <s:textfield
+											cssClass="blueMain datepicker" size="10"
+											name="operator.accountUsers[%{#role.index}].startDate"
+											id="startDate[%{id}]"
+											value="%{@com.picsauditing.PICS.DateBean@format(startDate, 'MM/dd/yyyy')}" />
+										&nbsp;&nbsp;<s:textfield cssClass="blueMain datepicker"
+											size="10"
+											name="operator.accountUsers[%{#role.index}].endDate"
+											id="endDate[%{id}]"
+											value="%{@com.picsauditing.PICS.DateBean@format(endDate, 'MM/dd/yyyy')}" />
+										</nobr></td>
+										<td><input type="submit" class="picsbutton positive"
+											name="button" value="Save Role" /></td>
+									</tr>
+								</s:if>
+							</s:iterator>
+							<tr>
+								<td colspan="4"><s:select name="salesRep.user.id"
+									list="userList" listKey="id" listValue="name" headerKey="0"
+									headerValue="- Select a User -" /></td>
+								<td><s:hidden value="PICSSalesRep" name="salesRep.role" /><input
+									type="submit" class="picsbutton positive" name="button"
+									value="Add Role" /></td>
+							</tr>
+						</tbody>
+					</table>
+
+					<li><nobr><label>Account Managers : </label></nobr></li>
+					<table class="report">
+						<thead>
+							<tr>
+								<td>User</td>
+								<td>Percent</td>
+								<td>Start</td>
+								<td>End</td>
+								<td></td>
+							</tr>
+						</thead>
+						<tbody>
+							<s:iterator value="operator.accountUsers" status="role">
+								<s:if test="role.description == 'Account Manager' && isCurrent(startDate, endDate)">
+									<tr>
+										<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
+											value="user.name" /></td>
+										<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
+											value="ownerPercent" />%</td>
+										<td onclick="$('#show_<s:property value="id"/>').show();"><s:date
+											name="startDate" format="MM/dd/yyyy" /></td>
+										<td onclick="$('#show_<s:property value="id"/>').show();"><s:date
+											name="endDate" format="MM/dd/yyyy" /></td>
+										<td><a
+											href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=Remove"
+											class="remove">Remove</a></td>
+									</tr>
+									<tr id="show_<s:property value="id"/>" style="display: none;">
+										<td colspan="4"><nobr><s:textfield
+											name="operator.accountUsers[%{#role.index}].ownerPercent"
+											value="%{ownerPercent}" size="3" />%&nbsp;&nbsp; <s:textfield
+											cssClass="blueMain datepicker" size="10"
+											name="operator.accountUsers[%{#role.index}].startDate"
+											id="startDate[%{id}]"
+											value="%{@com.picsauditing.PICS.DateBean@format(startDate, 'MM/dd/yyyy')}" />
+										&nbsp;&nbsp;<s:textfield cssClass="blueMain datepicker"
+											size="10"
+											name="operator.accountUsers[%{#role.index}].endDate"
+											id="endDate[%{id}]"
+											value="%{@com.picsauditing.PICS.DateBean@format(endDate, 'MM/dd/yyyy')}" />
+										</nobr></td>
+										<td><input type="submit" class="picsbutton positive"
+											name="button" value="Save Role" /></td>
+									</tr>
+								</s:if>
+							</s:iterator>
+							<tr>
+								<td colspan="4"><s:select name="accountRep.user.id"
+									list="userList" listKey="id" listValue="name" headerKey="0"
+									headerValue="- Select a User -" /></td>
+								<td><s:hidden value="PICSAccountRep"
+									name="accountRep.role" /><input type="submit"
+									class="picsbutton positive" name="button" value="Add Role" /></td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<s:if test="previousManagers.keySet().size() > 0">
+						<li><nobr><label>Previous Representatives: </label></nobr></li>
+						<table class="report">
+							<thead>
+								<tr>
+									<td>User</td>
+									<td>Role</td>
+									<td>Percent</td>
+									<td>Start</td>
+									<td>End</td>
+								</tr>
+							</thead>
+							<tbody>
+								<s:iterator value="previousManagers.keySet()" id="key">
+									<s:iterator value="previousManagers.get(#key)">
+										<s:if test="!isCurrent(startDate, endDate)">
+											<tr>
+												<td><s:property value="user.name" /></td>
+												<td><s:property value="#key.description" /></td>
+												<td><s:property value="ownerPercent" />%</td>
+												<td><s:date name="startDate" format="MM/dd/yyyy" /></td>
+												<td><s:date name="endDate" format="MM/dd/yyyy" /></td>
+											</tr>
+										</s:if>
+									</s:iterator>
+								</s:iterator>
+							</tbody>
+						</table>
+					</s:if>
+				</ol>
+				</fieldset>
+			</pics:permission>
 		</s:if>
 	</s:if>
 	<fieldset class="form submit"><input type="submit" class="picsbutton positive"

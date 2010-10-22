@@ -345,8 +345,8 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		Vector<String> errorMessages = new Vector<String>();
 		if (Strings.isEmpty(operator.getName()))
 			errorMessages.addElement("Please fill in the Company Name field");
-		else if (operator.getName().length() < 3)
-			errorMessages.addElement("Your company name must be at least 3 characters long");
+		else if (operator.getName().length() < 2)
+			errorMessages.addElement("Your company name must be at least 2 characters long");
 
 		if (operator.getCountry() == null) {
 			errorMessages.addElement("Please select a country");
