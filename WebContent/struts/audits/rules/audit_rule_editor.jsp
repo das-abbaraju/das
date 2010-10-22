@@ -179,6 +179,7 @@ $(function() {
 					<td colspan="<s:if test="categoryRule">13</s:if><s:else>14</s:else>" class="center">Click to show Rules to Create</td>
 				</tr>
 				<tr class="rule-percents" style="display: none;">
+					<td></td> <!-- delete column -->
 					<s:iterator value="columns" id="col"> <!-- all columns -->
 						<td>
 							<s:if test="#col.value!=null">
