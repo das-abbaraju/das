@@ -2,7 +2,9 @@ package com.picsauditing.actions.auditType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.json.simple.JSONObject;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -27,6 +29,7 @@ import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.util.AuditTypeCache;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.WorkflowVisual;
 
 @SuppressWarnings("serial")
 public class ManageAuditType extends PicsActionSupport implements Preparable {
@@ -43,6 +46,10 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected String editPerm;
 
 	private List<AuditType> auditTypes = null;
+	
+	private Map<Integer, String> nodes = null;
+	private byte[][] adjMatrix = null;
+	private JSONObject workFlow = null;
 
 	protected AuditTypeDAO auditTypeDAO;
 	protected EmailTemplateDAO emailTemplateDAO;
@@ -138,6 +145,9 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		}
 
 		if (auditType != null) {
+			int wfID = auditType.getWorkFlow().getId();
+			nodes = WorkflowVisual.getNodes(wfID);			
+			adjMatrix = WorkflowVisual.getAdjMatrix(wfID, wfDAO.getWorkFlowSteps(wfID));
 			return SUCCESS;
 		}
 
@@ -341,6 +351,10 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		}
 		return workFlowList;
 	}
+	
+	public byte[][] getAdjMatrix(){
+		return adjMatrix;
+	}
 
 	// GETTERS && SETTERS
 
@@ -448,5 +462,17 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	public void setWorkFlowID(int workFlowID) {
 		this.workFlowID = workFlowID;
+	}
+
+	public Map<Integer, String> getNodes() {
+		return nodes;
+	}
+
+	public JSONObject getWorkFlow() {
+		return workFlow;
+	}
+
+	public void setWorkFlow(JSONObject workFlow) {
+		this.workFlow = workFlow;
 	}
 }

@@ -32,6 +32,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	protected List<AuditRule> similar;
 	protected Date date = new Date();
 	protected Integer bidOnly = null;
+	protected Integer rootCat = null;
 
 	protected AuditDecisionTableDAO dao;
 	protected AuditTypeDAO typeDAO;
@@ -83,6 +84,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			if ("Save".equals(button)) {
 				if (rule.getId() == 0) {
 					setAcceptsBids();
+					setRootCategory();
 					rule.defaultDates();
 					rule.calculatePriority();
 					rule.setAuditColumns(permissions);
@@ -169,6 +171,16 @@ public class CategoryRuleEditor extends PicsActionSupport {
 				rule.setAcceptsBids(false);
 		} else
 			rule.setAcceptsBids(null);
+	}
+	
+	private void setRootCategory(){
+		if (rootCat >= 0) {
+			if (rootCat == 1)
+				rule.setRootCategory(true);
+			else
+				rule.setRootCategory(false);
+		} else
+			rule.setRootCategory(null);
 	}
 
 	protected void addFields() {
@@ -340,5 +352,20 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	public void setBidOnly(Integer bidOnly) {
 		this.bidOnly = bidOnly;
+	}
+
+	public Integer getRootCat() {
+		Integer result = -1;
+		if(rule.getRootCategory()!=null){
+			if(rule.getRootCategory())
+				result = 1;
+			else
+				result = 0;
+		}
+		return result;
+	}
+
+	public void setRootCat(Integer rootCat) {
+		this.rootCat = rootCat;
 	}
 }

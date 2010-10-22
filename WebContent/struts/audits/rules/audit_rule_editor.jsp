@@ -107,7 +107,7 @@ $(function() {
 						</li>
 						<li><label>Top or Sub Category</label>
 							<% //Do not change, if subcat is true then we set rootcat to be false and vice versa %>
-							<s:select list="#{null:'Any',false:'Sub Categories',true:'Top Categories'}" name="rule.rootCategory"/> 
+							<s:select list="#{-1:'Any',0:'Sub Categories',1:'Top Categories'}" name="rootCat"/> 
 						</li>
 					</s:if>
 					<li><label>Bid-Only</label>
