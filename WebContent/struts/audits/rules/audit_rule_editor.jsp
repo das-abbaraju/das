@@ -31,6 +31,22 @@ $(function() {
 		}).result(function(event, data){
 			event.preventDefault();
 			$('#'+data[0]+'_hidden').val(data[2]);
+			if(data[0]=='dAuditType'){
+				if(data[2] > 0){
+					$.getJSON('AuditTypeRuleSearchAjax.action',{button: 'dAuditStatus', 'aType': $('#dAuditType_hidden').val()}, 
+						function(json){
+							if(json){
+								$('#dAuditSelect').html('');
+								var options = json.options;
+								for(var i=0; i<options.length; i++){
+									$('#dAuditSelect').append($('<option>').attr('value', options[i].option).text(options[i].option));
+								}
+								$('#dAuditSelectli').show();
+							}
+						}
+					);	
+				}
+			}
 		});
 	});
 	$('.hide-rule-percents').click(function(){
@@ -42,6 +58,8 @@ $(function() {
 			$('.hide-rule-percents > td').text('Click to show Rules to Create');
 		}
 	});
+	<s:if test="!categoryRule">
+	</s:if>
 });
 
 $(function() {
@@ -124,6 +142,17 @@ $(function() {
 						<s:hidden name="rule.operatorAccount.id" id="op_hidden"/>
 						<a href="#" class="clearfield">Clear Field</a>
 					</li>
+					<s:if test="!categoryRule">
+						<li><label>Dependent Audit</label>
+							<input type="text" class="searchAuto" id="dAuditType" value="<s:property value="rule.dependentAuditType.auditName"/>"/>
+							<s:hidden name="rule.dependentAuditType.id" id="dAuditType_hidden"/>
+							<a href="#" class="clearfield">Clear Field</a>
+						</li>					
+						<li id="dAuditSelectli" <s:if test="rule.dependentAuditStatus==null">style="display: none;"</s:if>><label>Dependent Status</label>
+							<s:select list="DAuditStatus" name="rule.dependentAuditStatus" id="dAuditSelect" />
+							<a href="#" class="clearfield">Clear Field</a>
+						</li>					
+					</s:if>
 					<li><label>Question</label>
 						<input type="text" class="searchAuto" id="question" value="<s:property value="rule.question.name"/>"/>
 						<s:hidden name="rule.question.id" id="question_hidden"/>

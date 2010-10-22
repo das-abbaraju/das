@@ -108,12 +108,14 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 			returnAjax = auditCatDao.findCategoryNames(search, 100);
 		} else if("dependentAuditType".equals(fieldName)){
 			returnAjax = auditTypeDao.findWhere("t.auditName LIKE '"+search+"%'");
-		}else if("operator".equals(fieldName)){
+		} else if("operator".equals(fieldName)){
 			returnAjax = operator.findWhere(true, "a.name LIKE '"+search+"%'");
 		} else if("tag".equals(fieldName)){
 			returnAjax = opTagDao.findWhere(OperatorTag.class, "t.tag LIKE '"+search+"%'", 50);
 		} else if("question".equals(fieldName)){
 			returnAjax = ((AuditQuestionDAO)SpringUtils.getBean("AuditQuestionDAO")).findWhere("t.name LIKE '"+search+"%'");
+		} else if("dAuditType".equals(fieldName)){
+			returnAjax = auditTypeDao.findWhere("t.auditName LIKE '"+search+"%'");
 		}
 		StringBuilder sb = new StringBuilder();
 		for(BaseTable bt : returnAjax){

@@ -4,8 +4,10 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
@@ -15,7 +17,9 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditRule;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 
@@ -253,6 +257,17 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		sql.addOrderBy("percentOn DESC");
 
 		return db.select(sql.toString(), false);
+	}
+	
+	public LinkedHashSet<AuditStatus> getDAuditStatus(){
+		LinkedHashSet<AuditStatus> set = new LinkedHashSet<AuditStatus>();
+		if(rule.getDependentAuditType()!=null){
+			for(WorkflowStep step : rule.getDependentAuditType().getWorkFlow().getSteps()){
+				set.add(step.getNewStatus());
+			}
+			return set;
+		}
+		return null;
 	}
 
 	public int getId() {
