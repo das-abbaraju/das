@@ -92,6 +92,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 				} else {
 					AuditRule acr = dao.findAuditCategoryRule(rule.getId());
 					setAcceptsBids();
+					setRootCategory();
 					acr.update(rule);
 					acr.calculatePriority();
 					acr.setAuditColumns(permissions);
