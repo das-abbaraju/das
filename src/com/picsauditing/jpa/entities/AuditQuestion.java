@@ -353,7 +353,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		if (dependentQuestions == null) {
 			dependentQuestions = new HashSet<AuditQuestion>();
 			dependentQuestions.addAll(dependentRequired);
-			dependentQuestions.addAll(dependentQuestions);
+			dependentQuestions.addAll(dependentVisible);
 		}
 
 		return dependentQuestions;

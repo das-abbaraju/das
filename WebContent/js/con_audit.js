@@ -124,14 +124,14 @@ $(function(){
 				});
 		return false;
 	});
-
-	$('div.hasDependentRequired').live('updateDependent', function() {
+	
+	$('#auditViewArea').delegate('div.hasDependentRequired', 'updateDependent', function() {
 		$.each($(this).find('div.dependentRequired:first').text().split(','), function(i,v) {
 			reloadQuestion(v);
 		});
 	});
 
-	$('div.hasDependentVisible').live('updateDependent', function() {
+	$('#auditViewArea').delegate('div.hasDependentVisible', 'updateDependent', function() {
 		$.each($(this).find('div.dependentVisible:first').text().split(','), function(i,v) {
 			$('#node_'+v).removeClass('hide');
 		});
@@ -140,7 +140,7 @@ $(function(){
 		});
 	});
 	
-	$('div.hasDependentRules').live('updateDependent', function() {
+	$('#auditViewArea').delegate('div.hasDependentRules', 'updateDependent', function() {
 		updateCategoriesNow();
 	});
 	
@@ -221,7 +221,9 @@ function showCertUpload(conid, certid, caoID, questionID, auditID) {
 }
 
 function reloadQuestion(qid) {
-	$('#node_'+qid).block({message: 'Saving answer...'}).load('AuditDataSaveAjax.action',$('#node_'+qid).find('form.qform').serialize()+'&button=reload', function() {
+	$('#node_'+qid)
+		.block({message: 'Reloading question...'})
+		.load('AuditDataSaveAjax.action',$('#node_'+qid).find('form.qform').serialize()+'&button=reload', function() {
 		$(this).unblock();
 	});
 }
