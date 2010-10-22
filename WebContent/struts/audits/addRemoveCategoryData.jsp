@@ -14,10 +14,10 @@
 					<tr>
 						<td style="width: 80%;">
 							<s:property value="#currentCat.key.fullNumber"/> <s:property value="#currentCat.key.name"/>
-							<s:if test="#currentCat.key.subCategories.size() > 1"><br />
-							<a style="color: #4C4D4D; padding-left: 20px; font: .90em;" class="clickable sc_link" id="sc-link_<s:property value="#currentCat.key.fullNumber.replace('.','_')"/>">Show Subcategories</a>
-								<ul id="sc_<s:property value="#currentCat.key.fullNumber.replace('.','_')"/>" style="list-style: none; display: none;">
-									<s:iterator value="#currentCat.key.subCategories">
+							<s:if test="#currentCat.key.children.size() > 0"><br />
+							<a style="color: #4C4D4D; padding-left: 20px; font: .90em;" class="clickable sc_link" id="sc-link_<s:property value="#currentCat.key.id"/>">Show Subcategories</a>
+								<ul id="sc_<s:property value="#currentCat.key.id"/>" style="list-style: none; display: none;">
+									<s:iterator value="#currentCat.key.children">
 										<li style="font: .85em; padding-left: 20px;"><s:property value="fullNumber"/> - <s:property value="name"/></li>									
 									</s:iterator>
 								</ul>
@@ -49,10 +49,10 @@
 						</td>
 						<td style="width: 80%;">
 							<s:property value="#currentCat.key.fullNumber"/> <s:property value="#currentCat.key.name"/>
-							<s:if test="#currentCat.key.subCategories.size() > 1"><br />
-							<a style="color: #4C4D4D; padding-left: 20px; font: .90em;" class="clickable sc_link" id="sc-link_<s:property value="#currentCat.key.fullNumber.replace('.','_')"/>">Show Subcategories</a>
-								<ul id="sc_<s:property value="#currentCat.key.fullNumber.replace('.','_')"/>" style="list-style: none; display: none;">
-									<s:iterator value="#currentCat.key.subCategories">
+							<s:if test="#currentCat.key.children.size() > 1"><br />
+							<a style="color: #4C4D4D; padding-left: 20px; font: .90em;" class="clickable sc_link" id="sc-link_<s:property value="#currentCat.key.id"/>">Show Subcategories</a>
+								<ul id="sc_<s:property value="#currentCat.key.id"/>" style="list-style: none; display: none;">
+									<s:iterator value="#currentCat.key.children">
 										<li style="font: .85em; padding-left: 20px;"><s:property value="fullNumber"/> - <s:property value="name"/></li>									
 									</s:iterator>
 								</ul>

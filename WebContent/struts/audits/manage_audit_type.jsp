@@ -167,7 +167,7 @@ $(function(){
 				</div>
 			</s:if>
 			<s:else>
-				<s:if test="relatedRules.size() >= 50">
+				<s:if test="relatedRules.size() >= 250">
 					<div class="alert">
 						There are too many rules to display here. <a href="AuditTypeRuleSearch.action?filter.auditType=<s:property value="auditType.auditName"/>&filter.auditTypeID=<s:property value="auditType.id"/>">Click here to view all rules for <s:property value="auditType.auditName"/>.</a>
 					</div>

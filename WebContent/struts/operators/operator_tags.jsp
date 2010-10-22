@@ -94,7 +94,7 @@ function checkRemove(id){
 			</div>
 		</s:if>
 		<s:else>
-			<s:if test="relatedRules.size() >= 50">
+			<s:if test="relatedRules.size() >= 250">
 				<div class="alert">
 					There are too many rules to display here. <a href="AuditTypeRuleSearch.action">Click here to Search for Audit Type Rules.</a>
 				</div>
@@ -120,7 +120,7 @@ function checkRemove(id){
 			</div>
 		</s:if>
 		<s:else>
-			<s:if test="relatedCategoryRules.size() >= 50">
+			<s:if test="relatedCategoryRules.size() >= 250">
 				<div class="alert">
 					There are too many rules to display here. <a href="CategoryRuleSearch.action">Click here to Search for Category Rules.</a>
 				</div>
