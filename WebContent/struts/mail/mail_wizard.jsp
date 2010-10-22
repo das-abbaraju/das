@@ -8,9 +8,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/emailwizard.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
-jQuery.noConflict();
-</script>
-<script type="text/javascript">
 function selectList(listType) {
 	jQuery('#filter_recipients').show();
 	jQuery('#filter_recipients').html("<img src='images/ajax_process2.gif' width='48' height='48' />Loading filters for "+listType+"s");
