@@ -33,6 +33,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	// /////// Filter Visibility /////////////
 	protected boolean showOperator = true;
 	protected boolean showOperatorSingle = false;
+	protected boolean showIndustry = true;
 	protected boolean showTrade = true;
 	protected boolean showLicensedIn = true;
 	protected boolean showWorksIn = true;
@@ -60,6 +61,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
+	protected int[] industry;
 	protected int[] trade;
 	protected int[] operator;
 	protected int operatorSingle;
@@ -99,6 +101,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	// SpringUtils.getBean("AuditQuestionDAO");
 
 	// // setting the filter
+	public boolean isShowIndustry() {
+		return showIndustry;
+	}
+	
+	public void setShowIndustry(boolean showIndustry) {
+		this.showIndustry = showIndustry;
+	}
+	
 	public boolean isShowOperator() {
 		return showOperator;
 	}
@@ -423,6 +433,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public List<AuditQuestion> getStateLicensesList() throws Exception {
 		return getQuestionDAO().findQuestionByType("License");
 	}
+	
+	public int[] getIndustry() {
+		return industry;
+	}
+	
+	public void setIndustry(int[] industry) {
+		this.industry = industry;
+	}
 
 	public List<AuditQuestion> getTradeList() throws Exception {
 		return getQuestionDAO().findQuestionByType("Service");
@@ -683,4 +701,10 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public void setHse(boolean hse) {
 		this.hse = hse;
 	}
+	
+	// Getters for search lists
+	public List<AuditQuestion> getIndustryList() {
+		// Do we want to hard code this?
+		return getQuestionDAO().findWhere("categoryID = 423");
+	} 
 }
