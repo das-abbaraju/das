@@ -22,6 +22,8 @@
 		<label>Location:</label> <s:property value="operator.city"/>, <s:property value="operator.state"/><br />
 		
 		<label>Primary Contact:</label> <s:property value="operator.primaryContact.name"/> <s:property value="operator.primaryContact.phone"/><br />
+		<label>Industry:</label>
+			<s:property value="operator.industry.description"/><br />
 		
 		<s:iterator value="operator.accountUsers">
 			<label><s:property value="role.description"/>:</label> <s:property value="user.name"/><br />
