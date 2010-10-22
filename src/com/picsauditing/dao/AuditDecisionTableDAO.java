@@ -41,7 +41,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		Query query = em
 				.createQuery("FROM AuditTypeRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (r.auditType IS NULL OR r.auditType = :auditType) ORDER BY r.priority");
 		query.setParameter("auditType", auditType);
-		query.setMaxResults(50);
+		query.setMaxResults(250);
 		return query.getResultList();
 	}
 
@@ -50,7 +50,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 				.createQuery("FROM AuditCategoryRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (r.auditType IS NULL OR r.auditType = :auditType) AND (r.auditCategory IS NULL OR r.auditCategory = :category) ORDER BY r.priority");
 		query.setParameter("auditType", category.getAuditType());
 		query.setParameter("category", category);
-		query.setMaxResults(50);
+		query.setMaxResults(250);
 		return query.getResultList();
 	}
 
@@ -58,7 +58,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		Query query = em
 				.createQuery("FROM AuditTypeRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW())AND (r.tag IS NULL OR r.tag IN (:tags) ) ORDER BY r.priority");
 		query.setParameter("tags", tags);
-		query.setMaxResults(50);
+		query.setMaxResults(250);
 		return query.getResultList();
 	}
 
@@ -66,7 +66,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		Query query = em
 				.createQuery("FROM AuditCategoryRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (t.tag IS NULL OR r.tag IN (:tags) ) ORDER BY r.priority");
 		query.setParameter("tags", tags);
-		query.setMaxResults(50);
+		query.setMaxResults(250);
 		return query.getResultList();
 	}
 
@@ -74,7 +74,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		Query query = em
 				.createQuery("FROM AuditTypeRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID) ORDER BY r.priority");
 		query.setParameter("operatorID", opID);
-		query.setMaxResults(50);
+		query.setMaxResults(250);
 		return query.getResultList();
 	}
 
@@ -82,7 +82,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		Query query = em
 				.createQuery("FROM AuditCategoryRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID) ORDER BY r.priority");
 		query.setParameter("operatorID", opID);
-		query.setMaxResults(50);
+		query.setMaxResults(250);
 		return query.getResultList();
 	}
 
@@ -96,9 +96,9 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 		where += " AND (rootCategory IS NULL";
 		if (rule.getRootCategory() != null)
-			where += " OR rootCategory.id = " + (rule.getRootCategory() ? 1: 0);
+			where += " OR rootCategory = " + (rule.getRootCategory() ? 1 : 0);
 		where += " )";
-		
+
 		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY priority");
 		query.setParameter("queryDate", queryDate);
 		return query.getResultList();
@@ -133,7 +133,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 		where += " AND (acceptsBids IS NULL";
 		if (rule.getAcceptsBids() != null)
-			where += " OR acceptsBids = " + (rule.getAcceptsBids() ? 1: 0);
+			where += " OR acceptsBids = " + (rule.getAcceptsBids() ? 1 : 0);
 		where += " )";
 
 		where += " AND (contractorType IS NULL";
@@ -159,8 +159,15 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		if (rule.getAuditCategory() != null)
 			where += " AND auditCategory.id = " + rule.getAuditCategory().getId();
 
+		if (rule.getRootCategory() != null) {
+			if (rule.getRootCategory()) {
+				where += " AND (rootCategory = 1 OR auditCategory.parent IS NULL)";
+			} else {
+				where += " AND (rootCategory = 0 OR auditCategory.parent.id > 0)";
+			}
+		}
 		if (rule.getRootCategory() != null)
-			where += " AND rootCategory.id = " + (rule.getRootCategory() ? 1: 0);
+			where += " OR rootCategory = " + (rule.getRootCategory() ? 1 : 0);
 
 		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY priority");
 		query.setMaxResults(250);
@@ -188,7 +195,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		if (rule.getContractorType() != null)
 			where += " AND contractorType = '" + rule.getContractorType().toString() + "'";
 		if (rule.getAcceptsBids() != null)
-			where += " AND acceptsBids = " + (rule.getAcceptsBids() ? 1: 0);
+			where += " AND acceptsBids = " + (rule.getAcceptsBids() ? 1 : 0);
 		if (rule.getQuestion() != null)
 			where += " AND question.id = " + rule.getQuestion().getId();
 		if (rule.getTag() != null)
@@ -205,8 +212,8 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		if (contractor.getRiskLevel() != null)
 			where += " OR risk = " + contractor.getRiskLevel().ordinal();
 		where += ")";
-		
-		where += " AND (acceptsBids IS NULL OR acceptsBids = " + (contractor.isAcceptsBids() ? 1 : 0) +")";
+
+		where += " AND (acceptsBids IS NULL OR acceptsBids = " + (contractor.isAcceptsBids() ? 1 : 0) + ")";
 
 		where += " AND (contractorType IS NULL";
 		if (contractor.isOnsiteServices())
@@ -244,7 +251,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " OR risk = " + contractor.getRiskLevel().ordinal();
 		where += ")";
 
-		where += " AND (acceptsBids IS NULL OR acceptsBids = " + (contractor.isAcceptsBids() ? 1 : 0) +")";
+		where += " AND (acceptsBids IS NULL OR acceptsBids = " + (contractor.isAcceptsBids() ? 1 : 0) + ")";
 
 		where += " AND (contractorType IS NULL";
 		if (contractor.isOnsiteServices())
@@ -314,42 +321,44 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 	/**
 	 * Get a list of audits that are potentially visible to an operator
+	 * 
 	 * @param operator
 	 * @return
 	 */
 	public Set<Integer> getAuditTypes(OperatorAccount operator) {
 		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW() AND include = 1 AND auditType.id > 0";
-		
+
 		Set<Integer> operatorIDs = new HashSet<Integer>();
-		if(operator.isCorporate()) {
-			for(Facility facility : operator.getOperatorFacilities()) {
+		if (operator.isCorporate()) {
+			for (Facility facility : operator.getOperatorFacilities()) {
 				operatorIDs.addAll(facility.getOperator().getOperatorHeirarchy());
 			}
 		} else
 			operatorIDs.addAll(operator.getOperatorHeirarchy());
-		
+
 		where += " AND (opID IS NULL";
 		if (operatorIDs.size() > 0)
 			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
 		where += ")";
 
-		Query query = em.createQuery("SELECT DISTINCT a.auditType.id FROM AuditTypeRule a " + where + " ORDER BY priority DESC");
-		
+		Query query = em.createQuery("SELECT DISTINCT a.auditType.id FROM AuditTypeRule a " + where
+				+ " ORDER BY priority DESC");
+
 		Set<Integer> ids = new HashSet<Integer>();
 		for (Object id : query.getResultList()) {
 			ids.add(Integer.parseInt(id.toString()));
 		}
 		return ids;
 	}
-	
+
 	/**
 	 * 
 	 * @param operator
 	 * @return Map of AuditTypeID to OperatorID (aka governing body)
 	 */
 	public Map<Integer, Integer> getGoverningBodyMap(OperatorAccount operator) {
-		String sql = "SELECT auditType.id, operatorAccount.id FROM AuditTypeRule r "
-				+ "WHERE operatorAccount.id IN (" + Strings.implode(operator.getOperatorHeirarchy())
+		String sql = "SELECT auditType.id, operatorAccount.id FROM AuditTypeRule r " + "WHERE operatorAccount.id IN ("
+				+ Strings.implode(operator.getOperatorHeirarchy())
 				+ ") AND include = 1 GROUP BY auditType.id, operatorAccount.id";
 		Query query = em.createQuery(sql);
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
@@ -362,19 +371,20 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		}
 		return map;
 	}
-	
+
 	public List<AuditCategory> getCategoriesByOperator(OperatorAccount operator, Permissions permissions) {
-		String where = ""; 
+		String where = "";
 		List<Integer> operatorIDs = new ArrayList<Integer>();
-		if(permissions.isOperator())
+		if (permissions.isOperator())
 			operatorIDs = operator.getOperatorHeirarchy();
-		if(permissions.isCorporate()) {
+		if (permissions.isCorporate()) {
 			operatorIDs.addAll(permissions.getOperatorChildren());
 		}
 		if (operatorIDs.size() > 0)
 			where += " WHERE opID IN (" + Strings.implode(operatorIDs, ",") + ")";
-		Query query = em.createQuery("SELECT DISTINCT a.auditCategory FROM AuditCategoryRule a " + where + " ORDER BY priority DESC");
-		
+		Query query = em.createQuery("SELECT DISTINCT a.auditCategory FROM AuditCategoryRule a " + where
+				+ " ORDER BY priority DESC");
+
 		return query.getResultList();
 	}
 }

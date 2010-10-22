@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <tr class="<s:property value="#ruleclass"/> clickable<s:if test="include"> on</s:if><s:else> off</s:else>" onclick="location.href='<s:property value="#ruleURL"/>?id=<s:property value="#r.id"/>'">
 	<td><s:property value="include ? 'Yes' : 'No'"/></td>
-	<td><s:property value="level"/>.<span style="font-size: -1"><s:property value="priority"/></span></td>
+	<td><s:property value="level"/><span style="font-size-adjust: 0.4">.<s:property value="priority"/></span></td>
 	<td><s:property value="auditTypeLabel"/>
 		<s:if test="auditType"><a href="ManageAuditType.action?id=<s:property value="auditType.id"/>" target="_BLANK">^</a></s:if>
 	</td>

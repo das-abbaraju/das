@@ -73,6 +73,7 @@ $(function() {
 <s:include value="../../actionMessages.jsp"/>
 
 <s:if test="rule == null || button == 'edit'">
+	<a href="<s:property value="categoryRule ? 'Category' : 'AuditType' " />RuleEditor.action?id=<s:property value="id" />">Back to List</a>
 	<div class="new">
 		<s:form method="post" id="rule_form">
 			<s:hidden name="rule.id"/>
@@ -83,8 +84,16 @@ $(function() {
 						<s:checkbox name="rule.include"/>
 					</li>
 					<li><label>Level</label>
-						<s:property value="rule.level"/> + <input type="text" size="2" name="rule.levelAdjustment" />
+						<s:property value="rule.level"/> + <s:textfield name="rule.levelAdjustment" />
 					</li>
+					<li><label>Priority</label>
+						<s:property value="rule.priority"/>
+					</li>
+				</ol>
+			</fieldset>
+			<fieldset class="form">
+				<h2 class="formLegend">Options</h2>
+				<ol>
 					<li><label>Audit Type</label>
 						<input type="text" class="searchAuto" id="auditType"  value="<s:property value="rule.auditType.auditName"/>"/>
 						<s:hidden name="rule.auditType.id" id="auditType_hidden"/>
@@ -101,24 +110,19 @@ $(function() {
 							<s:select list="#{null:'Any',false:'Sub Categories',true:'Top Categories'}" name="rule.rootCategory"/> 
 						</li>
 					</s:if>
+					<li><label>Bid-Only</label>
+						<s:select name="bidOnly" list="#{-1:'Any',0:'No',1:'Yes'}" value="bidOnly"/>
+					</li>
 					<li><label>Account Type</label>
 						<s:select name="rule.contractorType" list="@com.picsauditing.jpa.entities.ContractorType@values()" listValue="type" headerKey="" headerValue="Any"/>
+					</li>
+					<li><label>Risk</label>
+						<s:select name="rule.risk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/>
 					</li>
 					<li><label>Operator</label>
 						<input type="text" class="searchAuto" id="operator" value="<s:property value="rule.operatorAccount.name"/>"/>
 						<s:hidden name="rule.operatorAccount.id" id="op_hidden"/>
 						<a href="#" class="clearfield">Clear Field</a>
-					</li>
-					<li><label>Risk</label>
-						<s:select name="rule.risk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/>
-					</li>
-					<li><label>Tag</label>
-						<input type="text" class="searchAuto" id="tag" value="<s:property value="rule.tag.tag"/>"/>
-						<s:hidden name="rule.tag.id" id="tag_hidden"/>
-						<a href="#" class="clearfield">Clear Field</a>
-					</li>
-					<li><label>Bid-Only</label>
-						<s:select name="bidOnly" list="#{-1:'Any',0:'No',1:'Yes'}" value="bidOnly"/>
 					</li>
 					<li><label>Question</label>
 						<input type="text" class="searchAuto" id="question" value="<s:property value="rule.question.name"/>"/>
@@ -131,6 +135,11 @@ $(function() {
 					<li><label>Answer</label>
 						<s:textfield name="rule.questionAnswer" />
 					</li>
+					<li><label>Tag</label>
+						<input type="text" class="searchAuto" id="tag" value="<s:property value="rule.tag.tag"/>"/>
+						<s:hidden name="rule.tag.id" id="tag_hidden"/>
+						<a href="#" class="clearfield">Clear Field</a>
+					</li>
 				</ol>
 			</fieldset>
 			<fieldset class="form submit">
@@ -141,8 +150,9 @@ $(function() {
 </s:if>
 
 <s:else>
-	<a class="add" href="?button=edit&rule.include=true">Create New Rule</a>
-	<a class="refresh" href="RecalculateRules.action">Recalculate Priority for all <s:if test="categoryRule">Category</s:if><s:else>Audit Type</s:else> Rules</a>	
+	| <a href="CategoryRuleSearch.action">Search</a> | <a href="?id=1">Top</a> |
+	<a class="add" href="?button=edit&rule.include=true">Create New Rule</a> |
+	<a class="refresh" href="RecalculateRules.action">Recalculate Priority for all <s:if test="categoryRule">Category</s:if><s:else>Audit Type</s:else> Rules</a> |
 
 	<table class="report">
 
