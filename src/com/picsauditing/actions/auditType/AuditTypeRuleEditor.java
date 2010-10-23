@@ -267,7 +267,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 			}
 			return set;
 		}
-		return null;
+		return set;
 	}
 
 	public int getId() {

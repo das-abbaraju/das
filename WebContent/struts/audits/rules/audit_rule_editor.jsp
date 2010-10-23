@@ -58,8 +58,6 @@ $(function() {
 			$('.hide-rule-percents > td').text('Click to show Rules to Create');
 		}
 	});
-	<s:if test="!categoryRule">
-	</s:if>
 });
 
 $(function() {
