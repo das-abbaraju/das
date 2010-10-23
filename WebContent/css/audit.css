@@ -31,7 +31,6 @@ span.question {
 }
 
 #content div.answer {
-	float: left;
 	width: 60%;
 	/*color: #012142;*/
 	padding-left: 20px;
