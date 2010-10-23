@@ -71,8 +71,8 @@ $(function() {
 			<s:property value="#a.answer"/>
 		</s:if>
 		<!-- Radios/Check boxes -->
-		<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Main Work' || #q.questionType == 'Yes/No' || #q.questionType == 'Yes/No/NA' || #q.questionType == 'Office Location' || #q.questionType == 'Radio'">
-			<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Main Work'">
+		<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Main Work' || #q.questionType == 'Yes/No' || #q.questionType == 'Yes/No/NA' || #q.questionType == 'Office Location' || #q.questionType == 'Radio' || #q.questionType == 'Industry'">
+			<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Main Work' || #q.questionType == 'Industry'">
 				<s:checkbox fieldValue="X" name="auditData.answer" value="#a.answer == \"X\""/>
 			</s:if>
 			<s:if test="#q.questionType == 'Yes/No'">

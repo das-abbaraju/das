@@ -57,6 +57,7 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 		sql.setType(null);
 
 		sql.addJoin("left JOIN users contact ON contact.id = a.contactID");
+		sql.addField("a.industry");
 		sql.addField("a.state");
 		sql.addField("a.city");
 		sql.addField("a.type");
@@ -159,6 +160,12 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 			setFiltered(true);
 		}
 
+		String industryList = Strings.implodeForDB(f.getIndustry(), ",");
+		if (filterOn(industryList)) {
+			sql.addWhere("a.industry IN (" + industryList + ")");
+			setFiltered(true);
+		}
+
 		if (filterOn(f.getCity(), ReportFilterAccount.DEFAULT_CITY))
 			report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", f.getCity()));
 
@@ -190,6 +197,7 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 
 		if (f.isTradeInformation()) {
 			sql.addField("c.main_trade");
+			sql.addField("a.industry");
 			sql.addField("c.tradesSelf");
 			sql.addField("c.tradesSub");
 		}

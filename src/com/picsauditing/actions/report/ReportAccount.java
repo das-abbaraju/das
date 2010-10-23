@@ -248,10 +248,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 
 		/** **** Filters for Contractors ********** */
-		
-		if (filterOn(f.getIndustry())) {
-			createPqfDataClause(sql, "AND d.questionID IN (" + Strings.implode(f.getIndustry()) + ") AND d.answer = 'X'");
-		}
 
 		if (filterOn(f.getTrade())) {
 			String tradeList = Strings.implode(f.getTrade(), ",");
@@ -474,5 +470,4 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			showTradeInfo = getFilter().isTradeInformation();
 		return showTradeInfo;
 	}
-
 }

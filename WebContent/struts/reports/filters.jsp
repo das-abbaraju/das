@@ -195,6 +195,21 @@
 			onclick="clearSelected('form1_industry'); return false;">Clear</a> </span></div>
 	</s:if>
 	
+	<s:if test="filter.showIndustries">
+		<br clear="all" />
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_industries'); return false;">Industries</a> = <span
+			id="form1_industries_query">ALL</span><br />
+		<span id="form1_industries_select" style="display: none"
+			class="clearLink"> <s:select id="form1_industries"
+			name="filter.industries" list="filter.industriesList" listKey="id"
+			listValue="name" cssClass="forms" multiple="true" size="5" />
+		<script type="text/javascript">updateQuery('form1_industries');</script>
+		<br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_industries'); return false;">Clear</a> </span></div>
+	</s:if>
+	
 	<s:if test="filter.showTrade">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_trade'); return false;">Trade</a> = <span

@@ -34,6 +34,7 @@ public class ReportAnnualAddendum extends ReportContractorAuditOperator {
 
 		getFilter().setShowAddress(false);
 		getFilter().setShowTaxID(false);
+		getFilter().setShowIndustry(false);
 		getFilter().setShowWaitingOn(false);
 		getFilter().setShowAuditType(false);
 		getFilter().setShowAuditor(false);
