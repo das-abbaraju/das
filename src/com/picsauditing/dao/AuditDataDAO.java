@@ -76,7 +76,7 @@ public class AuditDataDAO extends PicsDAO {
 			return indexedResult;
 
 		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.contractorAccount.id = :conID "
-				+ "AND (d.audit.expiresDate IS NULL OR d.audit.expiresDate < :today) " + "AND d.question.id IN ("
+				+ "AND (d.audit.expiresDate IS NULL OR d.audit.expiresDate > :today) " + "AND d.question.id IN ("
 				+ Strings.implode(questionIds) + ")");
 		query.setParameter("conID", conID);
 		query.setParameter("today", new Date());
