@@ -28,10 +28,12 @@
 					<td title="<s:iterator value="#currentCao.caoPermissions"><s:property value="operator.name"/>, </s:iterator>">
 					<s:property value="operator.name" /></td>
 					<td class="progress nobr">
-						<div style="position: relative">
-							<table class="progressTable"><tr><td class="progressBar" style="width: <s:property value="percentComplete" />%"></td><td style="width: <s:property value="100 - percentComplete" />%"></td></tr></table>
-							<span class="progressPercent"><s:property value="percentComplete" />%</span>
-						</div>
+						<s:if test="#currentCao.status!='Complete' || #currentCao.status!='Approved'">
+							<div style="position: relative">
+								<table class="progressTable"><tr><td class="progressBar" style="width: <s:property value="percentComplete" />%"></td><td style="width: <s:property value="100 - percentComplete" />%"></td></tr></table>
+								<span class="progressPercent"><s:property value="percentComplete" />%</span>
+							</div>
+						</s:if>
 					</td>
 					<s:if test="hasStatusChanged(status)">
 						<td class="caoStatus">
