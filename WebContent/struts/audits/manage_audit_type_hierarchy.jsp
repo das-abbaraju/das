@@ -149,7 +149,7 @@ $(function() {
 </script>
 <style>
 .required a {
-	color: red !important;
+	color: #272 !important;
 }
 </style>
 </head>
