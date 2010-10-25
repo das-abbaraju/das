@@ -43,7 +43,7 @@
 				<s:include value="con_audit_sidebar.jsp"/>
 			</div>
 		</td>
-		<td>
+		<td style="width: 100%; height: 100%;">
 			<div id="auditViewArea"></div>
 		</td>
 	</tr>
