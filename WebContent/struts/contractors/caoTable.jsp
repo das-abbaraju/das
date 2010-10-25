@@ -55,7 +55,7 @@
 							</div>
 						</td>
 					</s:else>					
-					<td><s:property value="formatDate(statusChangedDate, 'MMMMM d, yyyy')" default="N/A" /></td>
+					<td><s:property value="formatDate(statusChangedDate, 'dd MMM, yyyy')" default="N/A" /></td>
 					<s:if test="conAudit.auditType.classType.policy">
 						<td><s:property value="#currentCao.flag.insuranceStatus" default="N/A"/></td>
 					</s:if>
