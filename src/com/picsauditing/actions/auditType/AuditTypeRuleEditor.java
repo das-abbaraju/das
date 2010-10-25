@@ -1,6 +1,7 @@
 package com.picsauditing.actions.auditType;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -19,6 +20,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -262,12 +264,19 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	public LinkedHashSet<AuditStatus> getDAuditStatus(){
 		LinkedHashSet<AuditStatus> set = new LinkedHashSet<AuditStatus>();
 		if(rule.getDependentAuditType()!=null){
-			for(WorkflowStep step : rule.getDependentAuditType().getWorkFlow().getSteps()){
+			for(WorkflowStep step : rule.getDependentAuditType().getWorkFlow().getSteps())
 				set.add(step.getNewStatus());
-			}
-			return set;
 		}
 		return set;
+	}
+	
+	public List<OperatorTag> getOpTagList(){
+		List<OperatorTag> opTagList = new ArrayList<OperatorTag>();
+		if(rule.getOperatorAccount()!=null){
+			for(OperatorTag ot : rule.getOperatorAccount().getTags())
+					opTagList.add(ot);
+		}
+		return opTagList;
 	}
 
 	public int getId() {

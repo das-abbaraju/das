@@ -2,7 +2,11 @@ package com.picsauditing.actions.auditType;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
@@ -16,11 +20,13 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterAuditRule;
@@ -61,10 +67,30 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 			search = Utilities.escapeQuotes(qA[0]);		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {	
 		if("searchAuto".equals(button)){
 			return runAutoAjax();
 		}
+		if("opTagFind".equals(button)){
+			int opID = 0;
+			String[] qA = (String[]) ActionContext.getContext().getParameters().get("opID");
+			if (qA != null)
+				opID = Integer.parseInt(qA[0]);
+			if(opID==0)
+				return null;
+			JSONArray jarray = new JSONArray();
+			for(final OperatorTag ot : opTagDao.findByOperator(opID, true)){
+				jarray.add(new JSONObject(){
+					{
+						put("tag",ot.getTag());
+						put("tagID",ot.getId());
+					}
+				});
+			}
+			json.put("tags", jarray);
+			return JSON;
+		}	
 		buildQuery();		
 		addFilterToSQL();		
 		run(sql);

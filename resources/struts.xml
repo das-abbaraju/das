@@ -1244,6 +1244,10 @@
 			<result name="autocomp">struts/blank.jsp</result>
 			<result>struts/audits/rules/audit_rule_search_data.jsp</result>
 		</action>
+		<action name="AuditRuleSearchAjax"
+			class="com.picsauditing.actions.auditType.AuditRuleSearch">		
+			<result>struts/blank.jsp</result>
+		</action>
 		
 		<action name="RecalculateRules" class="com.picsauditing.actions.auditType.RecalculateRules">
 			<result>struts/audits/rules/recalculate_rules.jsp</result>

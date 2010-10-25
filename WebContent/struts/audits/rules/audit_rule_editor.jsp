@@ -46,6 +46,21 @@ $(function() {
 						}
 					);	
 				}
+			}else if(data[0]=='op'){
+				if(data[2] > 0){
+					$.getJSON('AuditRuleSearchAjax.action',{button: 'opTagFind', 'opID': $('#op_hidden').val()}, 
+						function(json){
+							if(json){
+								$('#tag').html('');
+								var tags = json.tags;
+								for(var i=0; i<tags.length; i++){
+									$('#tag').append($('<option>').attr('value', tags[i].tagID).text(tags[i].tag));
+								}
+								$('#opTagli').show();
+							} 
+						}
+					);	
+				}
 			}
 		});
 	});
@@ -80,6 +95,13 @@ $(function() {
 	$('a.clearfield').click(function(e) {
 		e.preventDefault();
 		$('input', $(this).parent()).val('');
+		if($('input', $(this).parent()).attr('id')=='operator'){
+			$('#tag').html('');
+			$('#opTagli').hide();
+		} else if($('input', $(this).parent()).attr('id')=='dAuditType'){
+			$('#dAuditSelect').html('');
+			$('#dAuditSelectli').hide();
+		}
 	});
 });
 </script>
@@ -139,6 +161,9 @@ $(function() {
 						<input type="text" class="searchAuto" id="operator" value="<s:property value="rule.operatorAccount.name"/>"/>
 						<s:hidden name="rule.operatorAccount.id" id="op_hidden"/>
 						<a href="#" class="clearfield">Clear Field</a>
+					</li>					
+					<li id="opTagli" <s:if test="rule.tag==null">style="display: none;"</s:if>><label>Tag</label>
+						<s:select list="OpTagList" name="rule.tag.id" listKey="id" listValue="tag" id="tag" />
 					</li>
 					<s:if test="!categoryRule">
 						<li><label>Dependent Audit</label>
@@ -161,11 +186,6 @@ $(function() {
 					</li>
 					<li><label>Answer</label>
 						<s:textfield name="rule.questionAnswer" />
-					</li>
-					<li><label>Tag</label>
-						<input type="text" class="searchAuto" id="tag" value="<s:property value="rule.tag.tag"/>"/>
-						<s:hidden name="rule.tag.id" id="tag_hidden"/>
-						<a href="#" class="clearfield">Clear Field</a>
 					</li>
 				</ol>
 			</fieldset>

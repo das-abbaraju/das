@@ -1,6 +1,7 @@
 package com.picsauditing.actions.auditType;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -16,6 +17,7 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 
@@ -162,6 +164,15 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		moreGranular = dao.getMoreGranular(rule, date);
 		// similar = dao.getSimilar(rule, new Date());
 		return SUCCESS;
+	}
+
+	protected List<OperatorTag> getOpTagList(){
+		List<OperatorTag> opTagList = new ArrayList<OperatorTag>();
+		if(rule.getOperatorAccount()!=null){
+			for(OperatorTag ot : rule.getOperatorAccount().getTags())
+					opTagList.add(ot);
+		}
+		return opTagList;
 	}
 
 	private void setAcceptsBids() {
