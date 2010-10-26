@@ -120,6 +120,7 @@ public class AuditBuilder {
 		}
 
 		for (AuditCategoryRule rule : detail.operators.values()) {
+			// AuditBuilderController.fillAuditOperators() will replace any null with Operator (4)
 			detail.governingBodies.add(rule == null ? null : rule
 					.getOperatorAccount());
 		}
