@@ -355,7 +355,7 @@ public class PicsMenu {
 			subMenu.addChild("OQ by Employee", "ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
 		}
 		
-		if (permissions.isOperatorCorporate() || permissions.isAdmin())
+		if ((permissions.isOperatorCorporate() && permissions.isRequiresOQ()) || permissions.isAdmin())
 			subMenu.addChild("Assessment Tests", "ReportAssessmentTests.action");
 
 		if (permissions.isOperatorCorporate()) {
