@@ -238,7 +238,7 @@ $(function() {
 		<s:set name="verifyDetailDisplay" value="'none'" />
 	</s:else>
 	
-	<input id="verifyButton_<s:property value="#q.id"/>" type="submit" onclick="return verifyAnswer(<s:property value="#q.id"/>, <s:property value="#a.id"/>);" value="<s:property value="#attr.verifyText"/>" />
+	<input class="verify" id="verifyButton_<s:property value="#q.id"/>" type="submit" onclick="return verifyAnswer(<s:property value="#q.id"/>, <s:property value="#a.id"/>);" value="<s:property value="#attr.verifyText"/>" />
 
 	<span id="verify_details_<s:property value="#q.id"/>" style='display: <s:property value ="#attr.verifyDetailDisplay"/>;' class="verified">
 		Verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" />

@@ -10,14 +10,14 @@ $(function(){
 		if ($.bbq.getState().categoryID == lastState.categoryID)
 			$.bbq.pushState({"_": (new Date()).getTime()});
 		else
-			$.bbq.removeState("_")
+			$.bbq.removeState("_");
 		return false;
 	});
 	
 	$('ul.subcat-list li a').live('click', function() {
 		$.bbq.pushState(this.href);
 		$.bbq.removeState('onlyReq');
-		$.bbq.removeState("_")
+		$.bbq.removeState("_");
 		return false;
 	});
 	
@@ -111,8 +111,8 @@ $(function(){
 	$('#auditViewArea').delegate('div.question', 'change', function() {
 		$(this)
 			.block({message: 'Saving answer...'})
-			.load('AuditDataSaveAjax.action', 
-				$('form.qform', this).serialize(), 
+			.load('AuditDataSaveAjax.action',
+				$('form.qform', this).serialize(),
 				function(response, status) {
 					if (status=='success') {
 						$(this).trigger('updateDependent');
@@ -123,6 +123,24 @@ $(function(){
 					$(this).unblock();
 				});
 		return false;
+	});
+	
+
+	$('#auditViewArea').delegate('input.verify', 'click', function(e) {
+			var me = $(this).parents('div.question:first');
+			me.block({message: $(this).val()+'ing...'})
+				.load('AuditDataSaveAjax.action',
+					$('form.qform', this).serialize(),
+					function(response, status) {
+						if (status=='success') {
+							$(this).trigger('updateDependent');
+							updateCategories();
+						} else {
+							alert('Failed to save answer.');
+						} 
+						$(this).unblock();
+					});
+			return false;
 	});
 	
 	$('#auditViewArea').delegate('div.hasDependentRequired', 'updateDependent', function() {
