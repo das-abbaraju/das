@@ -39,7 +39,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 	public List<AuditTypeRule> findByAuditType(AuditType auditType) {
 		Query query = em
-				.createQuery("FROM AuditTypeRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (r.auditType IS NULL OR r.auditType = :auditType) ORDER BY r.priority DESC");
+				.createQuery("FROM AuditTypeRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (r.auditType IS NULL OR r.auditType = :auditType)");
 		query.setParameter("auditType", auditType);
 		query.setMaxResults(250);
 		return query.getResultList();
