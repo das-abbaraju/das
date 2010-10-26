@@ -10,7 +10,8 @@ $(function() {
 		cluetipClass: 'jtip',
 		local: true,
 		clickThrough: false,
-		delayedHide: 500
+		delayedHide: 500,
+		stayOpenHover: true
 	});
 });
 </script>
@@ -43,12 +44,12 @@ $(function() {
 <span class="question <s:if test="#questionStillRequired">required</s:if>">
 	<span class="questionNumber"><s:property value="#q.expandedNumber"/></span>
 	
-	<s:property value="#q.name" escape="false"/>
+	<s:property value="#q.name" />
 	<s:if test="!#q.helpText.empty">
 		<a class="cluetip help" rel="#cluetip_<s:property value="#q.id"/>" title="<s:property value="#q.name"/>"></a>
 		<div id="cluetip_<s:property value="#q.id"/>">
 			<span title="<s:property value="#q.name"/>">
-				<s:property value="#q.helpText"/>
+				<s:property value="#q.helpText" escape="false" />
 			</span>
 		</div>
 	</s:if>

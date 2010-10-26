@@ -20,6 +20,7 @@
 ;(function($) { 
   $.cluetip = {version: '1.0.4'};
   var $cluetip, $cluetipInner, $cluetipOuter, $cluetipTitle, $cluetipArrows, $cluetipWait, $dropShadow, imgCount;
+  var clueDelayedHide;
   $.fn.cluetip = function(js, options) {
     if (typeof js == 'object') {
       options = js;
@@ -257,6 +258,15 @@
 // get dimensions and options for cluetip and prepare it to be shown
     var cluetipShow = function(bpY) {
       $cluetip.addClass('cluetip-' + ctClass);
+      if (opts.stayOpenHover) {
+        $cluetip.bind('mouseenter.cluetip', function(event) {
+        	clearTimeout(clueDelayedHide);
+        });
+        $cluetip.bind('mouseleave.cluetip', function(event) {
+        	inactivate(event);
+        	$cluetip.unbind('mouseleave.cluetip');
+        });
+      }
       if (opts.truncate) { 
         var $truncloaded = $cluetipInner.text().slice(0,opts.truncate) + '...';
         $cluetipInner.html($truncloaded);
@@ -333,7 +343,7 @@
       $cluetipWait.hide();
       if (!opts.sticky || (/click|toggle/).test(opts.activation) ) {
     	if (opts.delayedHide > 0)
-    		setTimeout(function() { cluetipClose() }, opts.delayedHide)
+    		clueDelayedHide = setTimeout(function() { cluetipClose() }, opts.delayedHide)
     	else
     		cluetipClose();
     	
@@ -476,7 +486,10 @@
     closePosition:    'top',    // location of close text for sticky cluetips; can be 'top' or 'bottom' or 'title'
     closeText:        'Close',  // text (or HTML) to to be clicked to close sticky clueTips
     truncate:         0,        // number of characters to truncate clueTip's contents. if 0, no truncation occurs
+    // Edited to delay hide
     delayedHide:      0,        // hide after this amount after mouseout
+    stayOpenHover:	  false,	// Only works on hover
+    
     
     // effect and speed for opening clueTips
     fx: {             
