@@ -123,7 +123,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			if (button.equalsIgnoreCase("Recalculate Now")) {
 				contractorOperatorDao.save(co);
 				String redirectUrl = URLEncoder.encode("ContractorFlag.action?id=" + id + "&opID=" + opID, "UTF-8");
-				return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID + "&steps=All&redirectUrl="
+				return redirect("ContractorCronAjax.action?conID=" + id + "&opID=0&steps=All&redirectUrl="
 						+ redirectUrl);
 			}
 
@@ -388,7 +388,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return false;
 	}
 
-	public Map<String, List<FlagData>> getflagDataMap() {
+	public Map<String, List<FlagData>> getFlagDataMap() {
 		if (flagDataMap == null) {
 			flagDataMap = new TreeMap<String, List<FlagData>>();
 			Set<FlagData> flagData = co.getFlagDatas();
@@ -510,7 +510,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public boolean isDisplayTable() {
-		if (getflagDataMap() != null) {
+		if (getFlagDataMap() != null) {
 			for (String category : flagDataMap.keySet()) {
 				for (FlagData flagData : flagDataMap.get(category)) {
 					if (flagData.getFlag().equals(FlagColor.Red) || flagData.getFlag().equals(FlagColor.Amber)

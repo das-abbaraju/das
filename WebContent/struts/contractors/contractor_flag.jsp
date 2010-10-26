@@ -311,8 +311,8 @@ function checkReason(id) {
 				</tr>
 			</thead>
 			<tbody>
-			<s:iterator id="key" value="getflagDataMap().keySet()">
-				<s:iterator id="data" value="getflagDataMap().get(#key)">
+			<s:iterator id="key" value="flagDataMap.keySet()">
+				<s:iterator id="data" value="flagDataMap.get(#key)">
 					<s:if test="#data.flag.toString() == 'Red' || #data.flag.toString() == 'Amber' || isFlagDataOverride(#data)">
 						<s:set name="flagoverride" value="%{isFlagDataOverride(#data)}"/>
 						<tr class="<s:property value="#data.flag" />">
@@ -452,7 +452,7 @@ function checkReason(id) {
 		<!-- ALL FLAGS -->
 		<table class="flagCategories details">
 			<tr>
-			<s:iterator id="key" value="getflagDataMap().keySet()">
+			<s:iterator id="key" value="flagDataMap.keySet()">
 				<td><table class="report">
 					<thead>
 						<tr>
@@ -460,7 +460,7 @@ function checkReason(id) {
 							<td><s:property value="#key"/></td>
 						</tr>
 					</thead>
-					<s:iterator id="data" value="getflagDataMap().get(#key)">
+					<s:iterator id="data" value="flagDataMap.get(#key)">
 						<tr>
 							<td class="center">
 								<s:property value="flag.smallIcon" escape="false"/>
