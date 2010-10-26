@@ -115,7 +115,8 @@ public class SmartFacilitySuggest {
 		sql.addField("SUM(s.total)");
 		sql.addField("COUNT(*)");
 		sql.addField("a.status");
-		sql.setLimit(limit);
+		if(limit>0)
+			sql.setLimit(limit);
 
 		Database db = new Database();
 		return db.select(sql.toString(), false);

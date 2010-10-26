@@ -23,19 +23,22 @@
 		$.post('ContractorFacilityAjax.action', data, function(text, status) {
 				stopThinking( {div: 'thinkingSearchDiv' } );
 				$('#results').html(text);
-				if (button != "search") {
+				if (button != "search" && button!="searchShowAll") {
 					reloadOperators(<s:property value="contractor.id" />);
 					runSearch();
+				}
+				if(button == "searchShowAll"){
+					$('#showAllLink').hide();
 				}
 			}
 		);
 		
 		return false;
 	}
-	function addAllOperators () {
+	function showAllOperators () {
 		// Assuming that the search results are still valid...
 		// Do we need to check for this?
-		runSearch("searchAddAll");
+		runSearch("searchShowAll");
 	}
 	function addOperator( conId, opId ) {
 		// Changes status if contractor refuses bid only upgrade

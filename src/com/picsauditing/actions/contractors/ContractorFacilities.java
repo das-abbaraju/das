@@ -216,7 +216,10 @@ public class ContractorFacilities extends ContractorActionSupport {
 						}
 					}
 				} else {
-					List<BasicDynaBean> data = SmartFacilitySuggest.getSimilarOperators(contractor, 10);
+					int limit = 10;
+					if ("searchShowAll".equals(button))
+						limit = 0;
+					List<BasicDynaBean> data = SmartFacilitySuggest.getSimilarOperators(contractor, limit);
 
 					searchResults = new ArrayList<OperatorAccount>();
 					for (BasicDynaBean d : data) {
@@ -242,18 +245,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 					addActionMessage("This list of operators is generated based on the operators you currently have selected."
 							+ "To find a specific operator, use the search filters above");
 				}
-				
-				if ("searchAddAll".equals(button)) {
-					facilityChanger.setContractor(contractor);
-					facilityChanger.setPermissions(permissions);
-					for (OperatorAccount o : searchResults) {
-						facilityChanger.setType(type);
-						facilityChanger.setOperator(o);
-						facilityChanger.add();
-						recalculate = true;
-					}
-				} else
-					return "search";
+				return "search";
 			}
 
 			if (button.equals("validateBidOnly")) {

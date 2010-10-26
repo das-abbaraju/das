@@ -40,9 +40,9 @@
 		</tr>
 	</s:iterator>
 	<s:if test="searchResults.size() > 1">
-		<tr>
+		<tr id="showAllLink">
 			<td colspan="3" class="right">
-				<a href="#" onclick="addAllOperators(); return false;" class="add">Add All Operators</a>
+				<a href="#" onclick="showAllOperators(); return false;" class="add">Show All Operators</a>
 			</td>
 		</tr>
 	</s:if>
