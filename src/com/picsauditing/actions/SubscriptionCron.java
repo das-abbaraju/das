@@ -14,7 +14,6 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserDAO;
@@ -33,31 +32,31 @@ import com.picsauditing.mail.TrialContractorAccountsSubscription;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class SubscriptionCron extends PicsActionSupport implements ServletRequestAware {
-	
+public class SubscriptionCron extends PicsActionSupport implements
+		ServletRequestAware {
+
 	private int userID = 0;
 	private int accountID = 0;
 	private SubscriptionTimePeriod timePeriod = SubscriptionTimePeriod.Weekly;
-	
+
 	private AppPropertyDAO appPropDAO;
 	private EmailSubscriptionDAO subscriptionDAO;
-	private ContractorAuditOperatorDAO caoDAO;
 	private ContractorAccountDAO conDAO;
 	private UserDAO userDAO;
 	private AccountDAO accountDAO;
 	private ContractorOperatorDAO contractorOperatorDAO;
-	
+
 	protected HttpServletRequest request;
 
 	Set<Subscription> subs = new HashSet<Subscription>();
 	private String serverName;
 
-	public SubscriptionCron(AppPropertyDAO appPropDAO, EmailSubscriptionDAO subscriptionDAO,
-			ContractorAuditOperatorDAO caoDAO, ContractorAccountDAO conDAO, 
-			UserDAO userDAO, AccountDAO accountDAO, ContractorOperatorDAO contractorOperatorDAO) {
+	public SubscriptionCron(AppPropertyDAO appPropDAO,
+			EmailSubscriptionDAO subscriptionDAO, ContractorAccountDAO conDAO,
+			UserDAO userDAO, AccountDAO accountDAO,
+			ContractorOperatorDAO contractorOperatorDAO) {
 		this.appPropDAO = appPropDAO;
 		this.subscriptionDAO = subscriptionDAO;
-		this.caoDAO = caoDAO;
 		this.conDAO = conDAO;
 		this.userDAO = userDAO;
 		this.accountDAO = accountDAO;
@@ -68,8 +67,9 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 	public String execute() throws Exception {
 		Calendar calendar = Calendar.getInstance();
 		String name = request.getRequestURL().toString();
-		serverName = name.replace(ActionContext.getContext().getName() + ".action", "");
-		
+		serverName = name.replace(ActionContext.getContext().getName()
+				+ ".action", "");
+
 		if (userID > 0) {
 			runSubscriptions(timePeriod);
 			return SUCCESS;
@@ -98,13 +98,15 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 			runSubscriptions(timePeriod);
 		}
 
-		addActionMessage("Finished " + Strings.implode(subs, ", ") + " subscriptions for the time periods "
+		addActionMessage("Finished " + Strings.implode(subs, ", ")
+				+ " subscriptions for the time periods "
 				+ Strings.implode(timePeriods, ", "));
 
 		return SUCCESS;
 	}
 
-	private void runSubscriptions(SubscriptionTimePeriod timePeriod) throws Exception {
+	private void runSubscriptions(SubscriptionTimePeriod timePeriod)
+			throws Exception {
 		User user = null;
 		Account account = null;
 		if (userID > 0) {
@@ -113,7 +115,7 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 				addActionError("Failed to find userID = " + userID);
 				return;
 			}
-			
+
 			if (accountID > 0) {
 				account = accountDAO.find(accountID);
 				if (account == null) {
@@ -121,46 +123,56 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 				}
 			}
 		}
-		
-		for(Subscription subscription : subs) {
+
+		for (Subscription subscription : subs) {
 			SubscriptionBuilder builder = null;
-			
+
 			if (subscription.equals(Subscription.FlagChanges)) {
-				builder = new FlagChangesSubscription(timePeriod, subscriptionDAO);
+				builder = new FlagChangesSubscription(timePeriod,
+						subscriptionDAO);
 			}
 
 			if (subscription.equals(Subscription.PendingInsuranceCerts)) {
-				builder = new InsuranceCertificateSubscription(Subscription.PendingInsuranceCerts, timePeriod,
-						subscriptionDAO, caoDAO);
+				builder = new InsuranceCertificateSubscription(
+						Subscription.PendingInsuranceCerts, timePeriod,
+						subscriptionDAO);
 			}
 
 			if (subscription.equals(Subscription.VerifiedInsuranceCerts)) {
-				builder = new InsuranceCertificateSubscription(Subscription.VerifiedInsuranceCerts, timePeriod,
-						subscriptionDAO, caoDAO);
+				builder = new InsuranceCertificateSubscription(
+						Subscription.VerifiedInsuranceCerts, timePeriod,
+						subscriptionDAO);
 			}
 
 			if (subscription.equals(Subscription.ContractorRegistration)) {
-				builder = new ContractorRegistrationSubscription(timePeriod, subscriptionDAO, conDAO);
+				builder = new ContractorRegistrationSubscription(timePeriod,
+						subscriptionDAO, conDAO);
 			}
-			
+
 			if (subscription.equals(Subscription.ContractorAdded)) {
-				builder = new ContractorAddedSubscription(timePeriod, subscriptionDAO);
+				builder = new ContractorAddedSubscription(timePeriod,
+						subscriptionDAO);
 			}
 
 			if (subscription.equals(Subscription.RedFlags)) {
-				builder = new FlagColorSubscription(Subscription.RedFlags, timePeriod, subscriptionDAO, contractorOperatorDAO);
+				builder = new FlagColorSubscription(Subscription.RedFlags,
+						timePeriod, subscriptionDAO);
 			}
 
 			if (subscription.equals(Subscription.AmberFlags)) {
-				builder = new FlagColorSubscription(Subscription.AmberFlags, timePeriod, subscriptionDAO, contractorOperatorDAO);
+				builder = new FlagColorSubscription(Subscription.AmberFlags,
+						timePeriod, subscriptionDAO);
 			}
 
 			if (subscription.equals(Subscription.GreenFlags)) {
-				builder = new FlagColorSubscription(Subscription.GreenFlags, timePeriod, subscriptionDAO, contractorOperatorDAO);
+				builder = new FlagColorSubscription(Subscription.GreenFlags,
+						timePeriod, subscriptionDAO);
 			}
 
 			if (subscription.equals(Subscription.TrialContractorAccounts)) {
-				builder = new TrialContractorAccountsSubscription(Subscription.TrialContractorAccounts, timePeriod, subscriptionDAO, contractorOperatorDAO);
+				builder = new TrialContractorAccountsSubscription(
+						Subscription.TrialContractorAccounts, timePeriod,
+						subscriptionDAO, contractorOperatorDAO);
 			}
 
 			if (builder != null) {
@@ -175,19 +187,19 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 	public void setSubs(Set<Subscription> subs) {
 		this.subs = subs;
 	}
-	
+
 	public void setUserID(int userID) {
 		this.userID = userID;
 	}
-	
+
 	public void setAccountID(int accountID) {
 		this.accountID = accountID;
 	}
-	
+
 	public void setTimePeriod(SubscriptionTimePeriod timePeriod) {
 		this.timePeriod = timePeriod;
 	}
-	
+
 	@Override
 	public void setServletRequest(HttpServletRequest request) {
 		this.request = request;

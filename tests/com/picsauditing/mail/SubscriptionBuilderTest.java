@@ -43,7 +43,7 @@ public class SubscriptionBuilderTest extends TestCase {
 	@Test
 	public void testVerifiedInsuranceCerts() throws Exception {
 		SubscriptionBuilder builder = new InsuranceCertificateSubscription(Subscription.VerifiedInsuranceCerts,
-				SubscriptionTimePeriod.Weekly, subscriptionDAO, caoDAO);
+				SubscriptionTimePeriod.Weekly, subscriptionDAO);
 
 		builder.process();
 	}
@@ -51,7 +51,7 @@ public class SubscriptionBuilderTest extends TestCase {
 	@Test
 	public void testPendingInsuranceCerts() throws Exception {
 		SubscriptionBuilder builder = new InsuranceCertificateSubscription(Subscription.PendingInsuranceCerts,
-				SubscriptionTimePeriod.Weekly, subscriptionDAO, caoDAO);
+				SubscriptionTimePeriod.Weekly, subscriptionDAO);
 
 		builder.process();
 	}
@@ -67,7 +67,7 @@ public class SubscriptionBuilderTest extends TestCase {
 	@Test
 	public void testFlagColor() throws Exception {
 		SubscriptionBuilder builder = new FlagColorSubscription(Subscription.GreenFlags, SubscriptionTimePeriod.Weekly,
-				subscriptionDAO, contractorOperatorDAO);
+				subscriptionDAO);
 
 		builder.process();
 	}

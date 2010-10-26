@@ -240,7 +240,8 @@ public class ContractorAccountDAO extends PicsDAO {
 
 	public List<ContractorAccount> findNewContractorsByOperator(int opID, Date start, Date end) {
 		String query = "SELECT co.contractorAccount FROM ContractorOperator co WHERE co.operatorAccount.id = "
-				+ ":opID AND co.contractorAccount.creationDate BETWEEN :start and :end AND co.contractorAccount.status IN ('Active')";
+				+ ":opID AND co.contractorAccount.creationDate BETWEEN :start and :end AND co.contractorAccount.status IN ('Active') "
+				+ "ORDER BY co.operatorAccount.name ASC";
 
 		Query q = em.createQuery(query);
 		q.setParameter("opID", opID);

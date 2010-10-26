@@ -61,7 +61,7 @@ public class ContractorRegistrationSubscription extends SubscriptionBuilder {
 
 			@Override
 			public int compare(OperatorAccount o1, OperatorAccount o2) {
-				return o1.getName().compareTo(o2.getName());
+				return o1.getName().compareToIgnoreCase(o2.getName());
 			}
 		};
 	}

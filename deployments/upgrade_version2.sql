@@ -18,7 +18,221 @@ where pd.questionid = 894
 and pd.answer = 'Yes');
 **/
 
+-- PICS-1038/PICS-1055
+-- insert into invoice_fee (id, fee, defaultAmount, visible, feeClass, qbFullName, createdBy, updatedBy, creationDate, updateDate)
+--	values (12, 'PICS UAE Membership for PQF-Only', 500.00, 1, 'Membership', 'PQF-Only', 20952, 20952, now(), NOW()),
+--	(13, 'PICS UAE Membership for 1 Operator', 2000.00, 1, 'Membership', '1 Operator', 20952, 20952, now(), NOW()),
+--	(14, 'PICS UAE Membership for 2-4 Operators', 3000.00, 1, 'Membership', '2-4 Operators', 20952, 20952, now(), NOW()),
+--	(15, 'PICS UAE Membership for 5-8 Operators', 4500.00, 1, 'Membership', '5-8 Operators', 20952, 20952, now(), NOW()),
+--	(16, 'PICS UAE Membership for 9-12 Operators', 6000.00, 1, 'Membership', '9-12 Operators', 20952, 20952, now(), NOW()),
+--	(17, 'PICS UAE Membership for 13-19 Operators', 8000.00, 1, 'Membership', '13-19 Operators', 20952, 20952, now(), NOW()),
+--	(18, 'PICS UAE Membership for 20-49 Operators', 11000.00, 1, 'Membership', '20-49 Operators', 20952, 20952, now(), NOW()),
+--	(19, 'PICS UAE Membership for 50+ Operators', 15000.00, 1, 'Membership', '50 Operators', 20952, 20952, now(), NOW());
+-- END
+
 -- PICS-813: Corporate Email Subscriptions
+update email_template et
+set et.body = '<SubscriptionHeader>
+
+Below are all Bid Only contractor accounts who have registered with PICS and selected your facility as a work site.
+
+<br/><br/>
+
+<table style="border-collapse: collapse; border: 2px solid #003768; background: #f9f9f9;">
+ <thead>
+  <tr style="vertical-align: middle; font-size: 13px;font-weight: bold; background: #003768; color: #FFF;">
+#if(${user.account.corporate})
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Operator Name</td>
+#end
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Contractor Name</td>
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Add Date</td>
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Deactivation Date</td>
+  </tr>
+ </thead>
+ <tbody>
+  #foreach( $conoper in $trialContractors )
+  <tr style="margin:0px">
+#if(${user.account.corporate})
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/FacilitiesEdit.action?id=${conoper.operatorAccount.id}">${conoper.operatorAccount.name}</a></td>
+#end
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/ContractorView.action?id=${conoper.contractorAccount.id}">${conoper.contractorAccount.name}</a></td>
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;">$pics_dateTool.format(\'MM/dd/yy HH:mm\', $conoper.contractorAccount.creationDate)</td>
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;">$pics_dateTool.format(\'MM/dd/yy HH:mm\', $conoper.contractorAccount.paymentExpires)</td>
+  </tr>
+  #end
+ </tbody>
+</table>
+
+<TimeStampDisclaimer>
+
+<SubscriptionFooter>'
+where et.id = 71;
+
+update email_template et set body = '<SubscriptionHeader>
+
+There are <b>${data.size()} contractors</b> with ${caoStatus} Insurance Certificates.<br/><br/>
+
+#if($caoStatus == \'Verified\')
+You can approve or reject them on the <a href="http://www.picsorganizer.com/ReportInsuranceApproval.action?filter.caoStatus=Verified">Policies Awaiting Decision</a> report. 
+<br/>
+#else
+You can contact the contractor(s) below using the email addresses provided.
+<br/>
+#end
+
+<table style="border-collapse: collapse; border: 2px solid #003768; background: #f9f9f9;">
+ <thead>
+  <tr style="vertical-align: middle; font-size: 13px;font-weight: bold; background: #003768; color: #FFF;">
+#if(${user.account.corporate})
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Operator Name</td>
+#end
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Contractor</td>
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Policy</td>
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Expires</td>
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Certificate</td>
+#if($caoStatus == \'Pending\')
+  <td style="border: 1px solid #e0e0e0; padding: 4px;">Contractor Contact</td>
+  <td style="border: 1px solid #e0e0e0; padding: 4px;">Email</td>
+#end
+  </tr>
+ </thead>
+ <tbody>
+  #foreach( $d in $data )
+  <tr style="margin:0px">
+#if(${user.account.corporate})
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/FacilitiesEdit.action?id=${d.get(\'opID\')}">${d.get(\'opName\')}</a></td>
+#end
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/ContractorView.action?id=${d.get(\'conID\')}">${d.get(\'conName\')}</a></td>
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/Audit.action?auditID=${d.get(\'auditID\')}">${d.get(\'auditName\')}</a></td>
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;">$pics_dateTool.format(\'MM/dd/yy\', ${d.get(\'expiresDate\')})</td>
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/CertificateUpload.action?id=${d.get(\'conID\')}&certID=${d.get(\'certID\')}&button=download">Certificate</a></td>
+#if($caoStatus == \'Pending\')
+  <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;">${d.get(\'primaryContactName\')}</td>
+  <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;">${d.get(\'primaryContactEmail\')}</td>
+#end
+  </tr>
+  #end
+ </tbody>
+</table>
+
+<TimeStampDisclaimer>
+
+<SubscriptionFooter>' where id = 61;
+
+update email_template set body = '<SubscriptionHeader>
+
+There are <b>${data.size()} contractors</b> whose#if(${user.account.corporate}) Overall Corporate#end flag color is currently <b>${flagColor}<b>
+<img src="http://www.picsauditing.com/images/icon_${flagColor.toString().toLowerCase()}Flag.gif" width="10" height="12">.
+
+<br /><br />
+
+<table style="border-collapse: collapse; border: 2px solid #003768; background: #f9f9f9;">
+ <thead>
+  <tr style="vertical-align: middle; font-size: 13px;font-weight: bold; background: #003768; color: #FFF;">
+#if(${user.account.corporate} && !${flagColor.toString().equals("Green")})
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Operator Name</td>
+#end
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Contractor Name</td>
+#if(${user.account.operator} || !${flagColor.toString().equals("Green")})
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Changed On</td>
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Waiting On
+       <a href="http://help.picsauditing.com/wiki/Waiting_On" style="font-weight: bold; color: white;" title="Definition">?</a>
+   </td>
+#end
+  </tr>
+ </thead>
+ <tbody>
+  #foreach( $d in $data )
+  <tr style="margin:0px">
+#if(${user.account.corporate} && !${flagColor.toString().equals("Green")})
+   <td style="border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/ContractorFlag.action?id=${d.get(\'conID\')}&opID=${d.get(\'opID\')}">${d.get(\'opName\')}</a></td>
+#end
+   <td style="border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/ContractorView.action?id=${d.get(\'conID\')}">${d.get(\'name\')}</a></td>
+#if(${user.account.operator} || !${flagColor.toString().equals("Green")})
+   <td style="border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;">#if(${d.get(\'changedOn\')})$pics_dateTool.format(\'MM/dd/yy\', $d.get(\'changedOn\'))#else -#end </td>
+   <td style="border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;">#if(${d.get(\'waitingOn\')} == 0)None#end#if(${d.get(\'waitingOn\')} == 1)Contractor#end#if(${d.get(\'waitingOn\')} == 2)PICS#end#if(${d.get(\'waitingOn\')} == 3)Operator#end</td>
+#end
+  </tr>
+  #end
+ </tbody>
+</table>
+
+<p>
+<a style="color: #003768; padding-left: 17px; margin-left: 2px; background: url(\'http://www.picsorganizer.com/images/help.gif\') no-repeat left center;"
+	href="http://help.picsauditing.com/wiki/Reviewing_Flag_Status">Contractor Flag Colors Explained</a><br>
+<a style="color: #003768; padding-left: 17px; margin-left: 2px; background: url(\'http://www.picsorganizer.com/images/help.gif\') no-repeat left center;"
+	href="http://help.picsauditing.com/wiki/Waiting_On">Waiting On Status Explained</a>
+</p>
+
+<TimeStampDisclaimer>
+
+<SubscriptionFooter>' where id = 65;
+
+update email_template et set body = '<SubscriptionHeader>
+
+Below are all the contractors whose#if(${user.account.corporate}) Overall Corporate#end flag color has been changed recently. There have been <strong>${upgrades.size()} upgrades</strong> and <strong>${downgrades.size()} downgrades</strong> since $pics_dateTool.format(\'MM/dd/yy\', $date).<br/><br/>
+
+Contractor flags can upgrade to green as they complete the PICS process. Flags can be downgraded to red when their EMR, TRIR, fatality, or PQF questions are adjusted due to sending incorrect data, or if the contractor has a new requirement from your facility. Flags will also change if your site Flag Criteria is altered.<br/> 
+
+#if(${upgrades.size()} > 0)
+<h3 style="color: rgb(168, 77, 16)">Upgrades (${upgrades.size()})</h3>
+<table style="border-collapse: collapse; border: 2px solid #003768; background: #f9f9f9;">
+ <thead>
+  <tr style="vertical-align: middle; font-size: 13px;font-weight: bold; background: #003768; color: #FFF;">
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Contractor Name</td>
+#if(${user.account.corporate})
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Operator</td>
+#end
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Flag Color</td>
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Old Flag Color</td>
+  </tr>
+ </thead>
+ <tbody>
+  #foreach( $flag in $upgrades )
+  <tr style="margin:0px">
+   <td style="border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/ContractorView.action?id=${flag.get(\'conID\')}">${flag.get(\'name\')}</a></td>
+#if(${user.account.corporate})
+   <td style="border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/ContractorFlag.action?id=${flag.get(\'conID\')}&opID=${flag.get(\'opID\')}">${flag.get(\'opName\')}</a></td>
+#end
+   <td style="border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;"><img src="http://www.picsorganizer.com/images/icon_${flag.get(\'flag\').toLowerCase()}Flag.gif" width="10" height="12"> ${flag.get(\'flag\')}</td>
+   <td style="border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;"><img src="http://www.picsorganizer.com/images/icon_${flag.get(\'oldFlag\').toLowerCase()}Flag.gif" width="10" height="12"> ${flag.get(\'oldFlag\')}</td>
+  </tr>
+  #end
+ </tbody>
+</table>	
+#end
+
+#if(${downgrades.size()} > 0)
+<h3 style="color: rgb(168, 77, 16)">Downgrades (${downgrades.size()})</h3>
+<table style="border-collapse: collapse; border: 2px solid #003768; background: #f9f9f9;">
+ <thead>
+  <tr style="vertical-align: middle; font-size: 13px;font-weight: bold; background: #003768; color: #FFF;">
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Contractor Name</td>
+#if(${user.account.corporate})
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Operator</td>
+#end
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Flag Color</td>
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Old Flag Color</td>
+  </tr>
+ </thead>
+ <tbody>
+  #foreach( $flag in $downgrades )
+  <tr style="margin:0px">
+   <td style="border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/ContractorView.action?id=${flag.get(\'conID\')}">${flag.get(\'name\')}</a></td>
+#if(${user.account.corporate})
+   <td style="border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/ContractorFlag.action?id=${flag.get(\'conID\')}&opID=${flag.get(\'opID\')}">${flag.get(\'opName\')}</a></td>
+#end
+   <td style="border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;"><img src="http://www.picsorganizer.com/images/icon_${flag.get(\'flag\').toLowerCase()}Flag.gif" width="10" height="12"> ${flag.get(\'flag\')}</td>
+   <td style="border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;"><img src="http://www.picsorganizer.com/images/icon_${flag.get(\'oldFlag\').toLowerCase()}Flag.gif" width="10" height="12"> ${flag.get(\'oldFlag\')}</td>
+  </tr>
+  #end
+ </tbody>
+</table>
+#end
+<TimeStampDisclaimer>
+
+<SubscriptionFooter>' where id = 60;
+
 update email_template set body = '<SubscriptionHeader>
 Below are all contractors who have recently selected#if( ${operators.size()} > 1 ) one of#end your facilit#if( ${operators.size()} > 1 )ies 
 #else

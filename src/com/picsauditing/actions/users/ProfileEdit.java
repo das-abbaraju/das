@@ -146,7 +146,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 
 	public List<EmailSubscription> getEList() {
 		if (eList.size() == 0) {
-			if (!permissions.isCorporate()) {
+			if (permissions.isOperatorCorporate()) {
 				List<EmailSubscription> userEmail = emailSubscriptionDAO.findByUserId(permissions.getUserId());
 				Map<Subscription, EmailSubscription> eMap = new HashMap<Subscription, EmailSubscription>();
 				for (EmailSubscription emailSubscription : userEmail) {
