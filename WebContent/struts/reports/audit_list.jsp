@@ -2,11 +2,11 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Audit List</title>
+<title>Document List Compressed</title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>Audit List</h1>
+<h1>Document List Compressed</h1>
 
 <s:include value="filters.jsp" />
 
