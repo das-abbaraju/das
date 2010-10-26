@@ -37,24 +37,12 @@
 					</td>
 					<s:if test="hasStatusChanged(status)">
 						<td class="caoStatus">
-							<a class="cluetip help" rel="#cluetip<s:property value="#currentCao.id"/>" title="<s:property value="status"/>"></a>
 							<a title="<s:property value="statusDescription"/>" style="cursor: pointer;" onclick="loadStatus(<s:property value="#currentCao.id"/>)" class="<s:property value="status.color"/>"><s:property value="status"/></a>
-							<div id="cluetip<s:property value="#currentCao.id"/>">
-								<span title="<s:property value="status"/>">
-									<s:property value="statusDescription"/>
-								</span>
-							</div>
 						</td>
 					</s:if>
 					<s:else>
 						<td class="caoStatus">
-							<a class="cluetip help" rel="#cluetip<s:property value="#currentCao.id"/>" title="<s:property value="status"/>"></a>
 							<s:property value="status"/>
-							<div id="cluetip<s:property value="#currentCao.id"/>">
-								<span title="<s:property value="status"/>">
-									<s:property value="statusDescription"/>
-								</span>
-							</div>
 						</td>
 					</s:else>					
 					<td><s:property value="formatDate(statusChangedDate, 'dd MMM, yyyy')" default="N/A" /></td>
