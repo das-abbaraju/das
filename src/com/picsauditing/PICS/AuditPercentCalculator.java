@@ -93,7 +93,7 @@ public class AuditPercentCalculator {
 						boolean isRequired = false;
 	
 						AuditData answer = answers.get(question.getId());
-						isRequired = true == question.isRequired();
+						isRequired = question.isRequired();
 						// Getting all the dependsRequiredQuestions
 						if (question.getRequiredQuestion() != null && question.getRequiredAnswer() != null) {
 							if (question.getRequiredAnswer().equals("NULL")) {
