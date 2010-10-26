@@ -343,7 +343,7 @@ function checkReason(id) {
 							<!-- Value -->
 							<td>
 								<s:if test="#data.criteria.auditType != null">
-									<s:iterator id="audit" value="contractor.audits">
+									<s:iterator id="audit" value="contractor.audits" status="auditstat">
 										<s:if test="#data.criteria.auditType == #audit.auditType">
 											<s:if test="!(#audit.expired)">
 												<a href="Audit.action?auditID=<s:property value="#audit.id" />"><s:property value="#audit.auditType.auditName" /></a>
@@ -362,6 +362,7 @@ function checkReason(id) {
 													</s:iterator>
 												</s:else>
 											</s:if>
+											<s:if test="!#auditstat.last"><br /></s:if>
 										</s:if>
 									</s:iterator>
 								</s:if>
