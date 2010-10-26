@@ -37,7 +37,7 @@
 					</td>
 					<s:if test="hasStatusChanged(status)">
 						<td class="caoStatus">
-							<a title="<s:property value="statusDescription"/>" style="cursor: pointer;" onclick="loadStatus(<s:property value="#currentCao.id"/>)" class="<s:property value="status.color"/>"><s:property value="status"/></a>
+							<a onclick="loadStatus(<s:property value="#currentCao.id"/>)" class="<s:property value="status.color"/>"><s:property value="status"/></a>
 						</td>
 					</s:if>
 					<s:else>
