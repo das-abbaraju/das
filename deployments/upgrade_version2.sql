@@ -197,6 +197,15 @@ update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedD
 update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedDate = ca.completedDate where cao.auditID = ca.id and cao.statusChangedDate is null and cao.status IN ('Complete','Approved','Submitted','Resubmitted','Incomplete');
 update contractor_audit_operator set statusChangedDate = updateDate where statusChangedDate IS NULL;
 
+
+-- Expiring the CAOs based on audits
+update contractor_Audit_operator cao
+join contractor_audit ca on cao.auditID= ca.id
+set cao.status = 'Expired'
+where ca.expiresDate < Now()
+and cao.status != 'Expired';
+
+
 /*
  * Adding the workflow notes
  */ 
@@ -357,3 +366,106 @@ delete from flag_criteria where id = 170;
 update `email_template` set `id`='10',`accountID`='1100',`templateName`='Insurance certificates about to expire',`subject`='Insurance certificates about to expire',`body`='Attn: <ContactName>,\r\n\r\nThis is an automatic reminder that the following Policies for <CompanyName> have or are about to expire.\r\n\r\n#foreach($outer in $contractor.audits)\r\n#if($outer.auditType.classType.toString() == ''Policy'')\r\n#foreach($inner in $contractor.audits)\r\n#if($inner.id != $outer.id && $inner.auditType == $outer.auditType && $inner.getExpiringPolicies())\r\n#foreach($operator in $outer.operators)\r\n#if($operator.status.toString() == ''Pending'')\r\n$inner.auditType.auditName for $operator.operator.name Expires On $pics_dateTool.format(''yyyy-MM-dd'',$inner.expiresDate)\r\n#end\r\n#end\r\n#end\r\n#end\r\n#end\r\n#end\r\n\r\nPlease upload a new insurance certificate using the insurance requirements of the above.\r\n\r\nIf we do not receive this certificate prior to the expiration you may not be permitted to enter the facility.\r\n\r\nAs always we appreciate your cooperation and are here to answer any questions you may have. Please reply to <CSRName> at <CSREmail> with any questions.\r\n\r\nThank you,\r\n<CSRName>\r\nPICS\r\nP.O. Box 51387\r\nIrvine CA 92619-1387\r\ntel: <CSRPhone>\r\nfax: <CSRFax>\r\n<CSREmail>\r\nhttp://www.picsauditing.com',`createdBy`='941',`creationDate`='2008-09-29 00:00:00',`updatedBy`='938',`updateDate`='2009-12-23 10:36:17',`listType`='Contractor',`allowsVelocity`='1',`html`='0',`recipient`=NULL where `id`='10';
 update `email_template` set `id`='65',`accountID`='1100',`templateName`='Flag Color',`subject`='${flagColor} Flagged Contractors',`body`='<SubscriptionHeader>\r\n\r\nThere are <b>${flags.size()} contractors</b> whose#if(${user.account.corporate}) Overall Corporate#end flag color is currently <b>${flagColor}<b>\r\n<img src=\"http://www.picsauditing.com/images/icon_${flagColor.toString().toLowerCase()}Flag.gif\" width=\"10\" height=\"12\">.\r\n\r\n<br /><br />\r\n\r\n<table style=\"border-collapse: collapse; border: 2px solid #003768; background: #f9f9f9;\">\r\n <thead>\r\n  <tr style=\"vertical-align: middle; font-size: 13px;font-weight: bold; background: #003768; color: #FFF;\">\r\n#if(${user.account.corporate} && !${flagColor.toString().equals(\"Green\")})\r\n   <td style=\"border: 1px solid #e0e0e0; padding: 4px;\">Operator Name</td>\r\n#end\r\n   <td style=\"border: 1px solid #e0e0e0; padding: 4px;\">Contractor Name</td>\r\n#if(${user.account.operator} || !${flagColor.toString().equals(\"Green\")})\r\n   <td style=\"border: 1px solid #e0e0e0; padding: 4px;\">Changed On</td>\r\n   <td style=\"border: 1px solid #e0e0e0; padding: 4px;\">Waiting On\r\n       <a href=\"http://help.picsauditing.com/wiki/Waiting_On\" style=\"font-weight: bold; color: white;\" title=\"Definition\">?</a>\r\n   </td>\r\n#end\r\n  </tr>\r\n </thead>\r\n <tbody>\r\n  #foreach( $co in $flags )\r\n  <tr style=\"margin:0px\">\r\n#if(${user.account.corporate} && !${flagColor.toString().equals(\"Green\")})\r\n   <td style=\"border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;\"><a href=\"http://www.picsorganizer.com/ContractorFlag.action?id=$co.contractorAccount.id&opID=$co.operatorAccount.id\">$co.operatorAccount.name</a></td>\r\n#end\r\n   <td style=\"border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;\"><a href=\"http://www.picsorganizer.com/ContractorView.action?id=$co.contractorAccount.id\">$co.contractorAccount.name</a></td>\r\n#if(${user.account.operator} || !${flagColor.toString().equals(\"Green\")})\r\n   <td style=\"border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;\">#if($co.flagLastUpdated)$pics_dateTool.format(\'MM/dd/yy\', $co.flagLastUpdated)#else -#end </td>\r\n   <td style=\"border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px;\">#if($co.waitingOn.toString() == \'None\')None#end#if($co.waitingOn.toString() == \'Contractor\')Contractor#end#if($co.waitingOn.toString() == \'PICS\')PICS#end#if($co.waitingOn.toString() == \'Operator\')Operator#end</td>\r\n#end\r\n  </tr>\r\n  #end\r\n </tbody>\r\n</table>\r\n\r\n<p>\r\n<a style=\"color: #003768; padding-left: 17px; margin-left: 2px; background: url(\'http://www.picsorganizer.com/images/help.gif\') no-repeat left center;\"\r\n href=\"http://help.picsauditing.com/wiki/Reviewing_Flag_Status\">Contractor Flag Colors Explained</a><br>\r\n<a style=\"color: #003768; padding-left: 17px; margin-left: 2px; background: url(\'http://www.picsorganizer.com/images/help.gif\') no-repeat left center;\"\r\n href=\"http://help.picsauditing.com/wiki/Waiting_On\">Waiting On Status Explained</a>\r\n</p>\r\n\r\n<TimeStampDisclaimer>\r\n\r\n<SubscriptionFooter>',`createdBy`='2357',`creationDate`='2009-08-03 18:19:38',`updatedBy`='20952',`updateDate`='2010-04-30 11:24:49',`listType`='Contractor',`allowsVelocity`='1',`html`='1',`recipient`='Admin' where `id`='65';
 delete from token where tokenID = 6;
+
+/**
+ * Data conversion for WCB 
+ */
+create TEMPORARY table temp_wcb1
+select at.id audittypeid, ac.id categoryid, rs.isocode from audit_category ac
+join audit_type at on at.id = ac.audittypeid
+join ref_state rs on rs.countryCode = 'CA' and auditname like concat(rs.english,'%')
+where(auditname like 'Alberta%'
+or auditname like 'Ontario%'
+or auditname like 'British Columbia%'
+or auditname like 'Nova Scotia%'
+or auditname like 'Manitoba%'
+or auditname like 'New Brunswick%'
+or auditname like 'Quebec%'
+or auditname like 'Saskatchewan%'
+or auditname like 'Prince Edward Island%'
+or auditname like 'Newfoundland and Labrador%');
+
+insert into contractor_audit 
+select null,wcb.audittypeid, 
+conID,ca.creationDate,ca.createdBy,ca.updateDate,ca.updatedBy,expiresDate, 
+ca.auditorID,assignedDate,scheduledDate,requestedByOpID,auditLocation,contractorConfirm, 
+auditorConfirm,manuallyAdded,auditFor,needsCamera,lastRecalculation,score, 
+closingAuditorID,contractorContact,phone,phone2,address,address2,city,state, 
+zip,country,latitude,longitude,paidDate
+from contractor_audit ca
+join pqfdata pd on pd.auditid =  ca.id
+join audit_question aq on aq.id = pd.questionid
+join temp_wcb1 wcb on wcb.isocode = pd.answer
+where aq.name like '%select province%'
+and pd.answer in ('AB','ON','BC','NS','MB','NB','QC','SK','PE','NL')
+and ca.auditTypeID = 11;
+
+insert into audit_cat_data 
+select null,canew.id,wcb.categoryid, 
+0,0,8,1,0,0,0,0,0.000,0,1098,1098,Now(),Now()
+from contractor_audit canew
+join temp_wcb1 wcb on canew.audittypeid = wcb.audittypeid;
+
+select * from audit_type where id = 59;
+delete from contractor_audit where audittypeid=59;
+
+create table temp_question as
+select aq.id as newqid, at.id as oldqid from audit_question aq
+join temp_wcb1 wcb on wcb.categoryid = aq.categoryid
+join audit_question at on at.categoryid = 210 
+and 
+(aq.name like concat('%',at.name,'%')
+or 
+(aq.name like '%Please upload your WCB%' and at.name like 'Please upload your WCB%')
+or 
+(aq.name like '%Net Premium Rate:%' and at.name like 'Net Premium Rate%')
+);
+
+select conid, auditTypeID,count(*) from contractor_Audit
+group by conid, auditTypeID
+having count(*) > 2 order by auditTypeID  desc;
+
+select * 
+from contractor_Audit canew 
+join temp_wcb1 wcb on wcb.audittypeid = canew.auditTypeID
+join (select pd.*  from pqfdata pd  
+join contractor_audit ca on pd.auditID = ca.id
+join audit_question aq on aq.id = pd.questionid 
+where aq.categoryid = 210
+and aq.id = 2998) t on t.answer = wcb.isocode
+JOIN contractor_Audit ca on ca.id = t.auditid and ca.conid = canew.conid
+join pqfdata pd on pd.auditid = ca.ID
+join temp_question tq on tq.oldqid = pd.questionid
+join audit_question aq on aq.categoryid = wcb.categoryid and aq.id = tq.newqid
+where pd.questionid in 
+(select id from audit_question where categoryid = 210 and number between 2 and 8 order by number);
+
+
+
+update contractor_Audit canew 
+join temp_wcb1 wcb on wcb.audittypeid = canew.auditTypeID
+join (select pd.*  from pqfdata pd  
+join contractor_audit ca on pd.auditID = ca.id
+join audit_question aq on aq.id = pd.questionid 
+where aq.categoryid = 210
+and aq.id = 2998) t on t.answer = wcb.isocode
+JOIN contractor_Audit ca on ca.id = t.auditid and ca.conid = canew.conid
+join pqfdata pd on pd.auditid = ca.ID
+join temp_question tq on tq.oldqid = pd.questionid
+join audit_question aq on aq.categoryid = wcb.categoryid and aq.id = tq.newqid
+set pd.auditid = canew.id, pd.questionid = aq.id
+where pd.questionid in 
+(select id from audit_question where categoryid = 210 and number between 2 and 8 order by number)
+and ca.conid not in (10467,11784,11854,12735);
+
+/**
+ * Removing the operator requirements category
+ */
+delete from pqfdata where questionid in (
+select id from audit_question where categoryid in (559,562,565,568));
+delete from audit_question where categoryid in (559,562,565,568);
+
+delete from audit_category 
+where auditTypeID in (select id from audit_type where classType = 'Policy')
+and name = 'Operator Requirements';
+
