@@ -100,7 +100,7 @@ public class AuditTypeDAO extends PicsDAO {
 	}
 
 	public void updateAllCategories(int auditTypeId, int categoryId) {
-		String where = "UPDATE ContractorAudit ca SET ca.lastRecalculation = NULL WHERE EXISTS (SELECT acd.audit FROM ca.categories acd WHERE acd.category.id = :categoryId AND acd.applies = 'Yes') "
+		String where = "UPDATE ContractorAudit ca SET ca.lastRecalculation = NULL WHERE EXISTS (SELECT acd.audit FROM ca.categories acd WHERE acd.category.id = :categoryId AND acd.applies = 1) "
 				+ " AND ca.auditType.id = :auditTypeId";
 		Query query = em.createQuery(where);
 		query.setParameter("auditTypeId", auditTypeId);
