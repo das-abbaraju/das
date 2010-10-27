@@ -44,7 +44,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	protected AuditTypeDAO typeDAO;
 	protected AuditDecisionTableDAO dao;
 	protected OperatorAccountDAO opDAO;
-	protected OperatorTagDAO tagDAO;
+	protected OperatorTagDAO tagDAO; //testcomment for commit
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
