@@ -227,7 +227,15 @@ $(function() {
 				<a
 					href="?id=<s:property value="operator.inheritInsuranceCriteria.id"/>">Go</a></li>
 			</s:if>
-
+			<s:if test="operator.corporateFacilities.size() > 0">
+				<li><label>Corporate Facilities:</label>
+					<ol>
+					<s:iterator value="operator.corporateFacilities" id="facility">
+						<li style="padding: 0 4px;"><a href="FacilitiesEdit.action?id=<s:property value="#facility.corporate.id"/>"><s:property value="#facility.corporate.name"/></a></li>
+					</s:iterator>
+					</ol>
+				</li>
+			</s:if>
 		</ol>
 		</fieldset>
 		<s:if test="operator.id > 0">
