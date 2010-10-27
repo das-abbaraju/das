@@ -12,7 +12,9 @@
 <h1>Audit Builder</h1>
 <s:include value="../actionMessages.jsp"></s:include>
 
-Name:
+<p></p><a href="ContractorCron.action?conID=<s:property value="id" />">Contractor Cron</a></p>
+
+<label>Name:</label>
 <s:property value="contractor.name" />
 Risk:
 <s:property value="contractor.riskLevel" />
