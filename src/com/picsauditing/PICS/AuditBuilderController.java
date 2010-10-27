@@ -439,7 +439,8 @@ public class AuditBuilderController {
 
 		if (cao.getAudit().getAuditType().isDesktop() && cao.getAudit().hasCaoStatus(AuditStatus.Complete)) {
 			for (Facility facility : cao.getOperator().getOperatorFacilities()) {
-				operators.add(facility.getOperator());
+				if(facility.getOperator().isOperator())
+					operators.add(facility.getOperator());
 			}
 		} else {
 			AuditTypeDetail auditTypeDetail = getRequiredAuditTypes().get(cao.getAudit().getAuditType());

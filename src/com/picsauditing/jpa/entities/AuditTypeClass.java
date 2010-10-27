@@ -17,5 +17,8 @@ public enum AuditTypeClass {
 	public boolean isAudit() {
 		return Audit == this;
 	}
-
+	
+	public boolean isIm() {
+		return IM == this;
+	}
 }
