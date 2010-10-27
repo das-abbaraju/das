@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.AuditBuilder;
@@ -50,6 +50,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected Map<AuditCategory, AuditCatData> categories = null;
 	protected Map<Integer, WorkflowStep> caoSteps = null;
 	protected ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
+	Map<AuditCategory,Integer> percentComplete = null;
+	Map<AuditCategory,Integer> percentVerified = null;
 	
 	private List<CategoryNode> categoryNodes;
 
@@ -207,39 +209,45 @@ public class AuditActionSupport extends ContractorActionSupport {
 		this.categoryID = categoryID;
 	}
 
-	public Map<AuditCategory,Integer> calculatePercentComplete() {
-		Map<AuditCategory,Integer> percentComplete = new HashMap<AuditCategory,Integer>();
-		for(AuditCategory auditCategory : getCategories().keySet()) {
-			if(auditCategory.getParent()  == null) {
-				int percent = 0;
-				int count = 0;
-				for(AuditCategory childCategory : auditCategory.getChildren()) {
-					percent += getCategories().get(childCategory).getPercentCompleted();
-					count ++;
+	public Map<AuditCategory, Integer> calculatePercentComplete() {
+		if(percentComplete==null){
+			percentComplete = new HashMap<AuditCategory,Integer>();
+			for(Entry<AuditCategory, AuditCatData> entry : getCategories().entrySet()) {
+				if(entry.getKey().getParent()==null){
+					int answered = 0;
+					int total = 0;
+					total = entry.getValue().getNumRequired();
+					answered = entry.getValue().getRequiredCompleted();
+					for(AuditCategory ac : entry.getKey().getSubCategories()){
+							total += getCategories().get(ac).getNumRequired();
+							answered += getCategories().get(ac).getRequiredCompleted();
+					}
+					if(total==0)
+						percentComplete.put(entry.getKey(), 0);	
+					else
+						percentComplete.put(entry.getKey(), (int)((answered*1f/total)*100));					
 				}
-				int percentAvg = percent/ count;
-				percentComplete.put(auditCategory, percentAvg);
 			}
 		}
-		return percentComplete; 
+		return percentComplete;
 	}
 
-	public Map<AuditCategory,Integer> calculatePercentVerified() {
-		Map<AuditCategory,Integer> percentVerified = new HashMap<AuditCategory,Integer>();
-		for(AuditCategory auditCategory : getCategories().keySet()) {
-			if(auditCategory.getParent()  == null) {
-				int percent = 0;
-				int count = 0;
-				for(AuditCategory childCategory : auditCategory.getChildren()) {
-					percent += getCategories().get(childCategory).getPercentVerified();
-					count ++;
+	public void calculatePercentVerified() {
+		if(percentVerified==null){
+			percentVerified = new HashMap<AuditCategory,Integer>();
+			for(AuditCategory auditCategory : getCategories().keySet()) {
+				if(auditCategory.getParent()  == null) {
+					int percent = 0;
+					int count = 0;
+					for(AuditCategory childCategory : auditCategory.getChildren()) {
+						percent += getCategories().get(childCategory).getPercentVerified();
+						count ++;
+					}
+					int percentAvg = percent/ count;
+					percentVerified.put(auditCategory, percentAvg);
 				}
-				int percentAvg = percent/ count;
-				percentVerified.put(auditCategory, percentAvg);
 			}
 		}
-		
-		return percentVerified; 
 	}
 	public void getValidSteps(){
 		List<AuditStatus> occ = new ArrayList<AuditStatus>();
@@ -420,6 +428,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	class CategoryNode {
 		public AuditCategory category;
 		public List<CategoryNode> subCategories;
+		public Integer percent = 0;
 	}
 	
 	public List<CategoryNode> getCategoryNodes() {
@@ -430,16 +439,24 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 	
 	private List<CategoryNode> createCategoryNodes(List<AuditCategory> cats) {
-		return createCategoryNodes(cats, false);
+		return createCategoryNodes(cats, false, 0, 0);
 	}
 
-	private List<CategoryNode> createCategoryNodes(List<AuditCategory> cats, boolean addAll) {
+	private List<CategoryNode> createCategoryNodes(List<AuditCategory> cats, boolean addAll, int t, int a) {
 		List<CategoryNode> nodes = new ArrayList<CategoryNode>();
+		int total = t;
+		int answered = a;
 		for (AuditCategory cat : cats) {
 			if (addAll || (getCategories().get(cat) != null && getCategories().get(cat).isApplies())) {
 				CategoryNode node = new CategoryNode();
 				node.category = cat;
-				node.subCategories = createCategoryNodes(cat.getSubCategories(), addAll);
+				total += getCategories().get(cat).getNumRequired();
+				answered += getCategories().get(cat).getRequiredCompleted();
+				node.subCategories = createCategoryNodes(cat.getSubCategories(), addAll, total, answered);
+				if(total==0)
+					node.percent = 0;
+				else
+					node.percent =  (int)((answered*1f/total)*100);
 				nodes.add(node);
 			}
 		}
@@ -454,7 +471,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				CategoryNode node = new CategoryNode();
 				node.category = cat;
 				node.subCategories = createCategoryNodes(
-						cat.getSubCategories(), true);
+						cat.getSubCategories(), true, 0, 0);
 				nodes.add(node);
 			}
 		}

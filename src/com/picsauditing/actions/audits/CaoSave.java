@@ -204,8 +204,6 @@ public class CaoSave extends AuditActionSupport {
 		}
 		
 		if (conAudit != null) {
-			if (caoSteps == null)
-				getValidSteps();
 			
 			if ("Refresh".equals(button)) {
 				auditBuilder.setup(conAudit.getContractorAccount(), getUser());
@@ -213,6 +211,9 @@ public class CaoSave extends AuditActionSupport {
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
 				return "refresh";
 			}
+
+			if (caoSteps == null)
+				getValidSteps();
 		}
 
 		if ("caoAjaxSave".equals(button))
