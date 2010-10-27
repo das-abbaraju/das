@@ -37,50 +37,56 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		return em.find(AuditTypeRule.class, id);
 	}
 
+	static private String findByQuery(String table, String where) {
+		return "FROM " + table + " r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) " + where
+				+ " ORDER BY r.priority DESC";
+	}
+
 	public List<AuditTypeRule> findByAuditType(AuditType auditType) {
-		Query query = em
-				.createQuery("FROM AuditTypeRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (r.auditType IS NULL OR r.auditType = :auditType)");
+		Query query = em.createQuery(findByQuery("AuditTypeRule",
+				" AND (r.auditType IS NULL OR r.auditType = :auditType)"));
 		query.setParameter("auditType", auditType);
 		query.setMaxResults(250);
 		return query.getResultList();
 	}
 
 	public List<AuditCategoryRule> findByCategory(AuditCategory category) {
-		Query query = em
-				.createQuery("FROM AuditCategoryRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (r.auditType IS NULL OR r.auditType = :auditType) AND (r.auditCategory IS NULL OR r.auditCategory = :category) ORDER BY r.priority");
+		Query query = em.createQuery(findByQuery("AuditCategoryRule",
+				" AND (r.auditType IS NULL OR r.auditType = :auditType)" +
+				" AND (r.rootCategory IS NULL OR r.rootCategory = :rootCategory)"
+						+ " AND (r.auditCategory IS NULL OR r.auditCategory = :category)"));
 		query.setParameter("auditType", category.getAuditType());
 		query.setParameter("category", category);
+		query.setParameter("rootCategory", category.getParent() == null);
 		query.setMaxResults(250);
 		return query.getResultList();
 	}
 
 	public List<AuditTypeRule> findAuditTypeRulesByTags(List<OperatorTag> tags) {
-		Query query = em
-				.createQuery("FROM AuditTypeRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW())AND (r.tag IS NULL OR r.tag IN (:tags) ) ORDER BY r.priority");
+		Query query = em.createQuery(findByQuery("AuditTypeRule", " AND (r.tag IS NULL OR r.tag IN (:tags))"));
 		query.setParameter("tags", tags);
 		query.setMaxResults(250);
 		return query.getResultList();
 	}
 
 	public List<AuditCategoryRule> findCategoryRulesByTags(List<OperatorTag> tags) {
-		Query query = em
-				.createQuery("FROM AuditCategoryRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (t.tag IS NULL OR r.tag IN (:tags) ) ORDER BY r.priority");
+		Query query = em.createQuery(findByQuery("AuditCategoryRule", " AND (t.tag IS NULL OR r.tag IN (:tags))"));
 		query.setParameter("tags", tags);
 		query.setMaxResults(250);
 		return query.getResultList();
 	}
 
 	public List<AuditTypeRule> findAuditTypeRulesByOperator(int opID) {
-		Query query = em
-				.createQuery("FROM AuditTypeRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID) ORDER BY r.priority");
+		Query query = em.createQuery(findByQuery("AuditTypeRule",
+				" AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID)"));
 		query.setParameter("operatorID", opID);
 		query.setMaxResults(250);
 		return query.getResultList();
 	}
 
 	public List<AuditCategoryRule> findAuditCategoryRulesByOperator(int opID) {
-		Query query = em
-				.createQuery("FROM AuditCategoryRule r WHERE (effectiveDate <= NOW() AND expirationDate > NOW()) AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID) ORDER BY r.priority");
+		Query query = em.createQuery(findByQuery("AuditCategoryRule",
+				" AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID)"));
 		query.setParameter("operatorID", opID);
 		query.setMaxResults(250);
 		return query.getResultList();
@@ -108,6 +114,11 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 	public List<AuditTypeRule> getLessGranular(AuditTypeRule rule, Date queryDate) {
 		String where = getLessGranularWhere(rule);
+
+		where += " AND (dependentAuditType IS NULL";
+		if (rule.getDependentAuditType() != null)
+			where += " OR dependentAuditType.id = " + rule.getDependentAuditType().getId();
+		where += " )";
 
 		Query query = em.createQuery("SELECT a FROM AuditTypeRule a " + where + " ORDER BY priority");
 		query.setParameter("queryDate", queryDate);
@@ -179,6 +190,9 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	public List<AuditTypeRule> getMoreGranular(AuditTypeRule rule, Date queryDate) {
 		String where = getMoreGranularWhere(rule);
 
+		if (rule.getDependentAuditType() != null)
+			where += " AND dependentAuditType.id = " + rule.getDependentAuditType().getId();
+
 		Query query = em.createQuery("SELECT a FROM AuditTypeRule a " + where + " ORDER BY priority");
 		query.setMaxResults(250);
 		query.setParameter("queryDate", queryDate);
@@ -238,7 +252,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 				}
 			}
 		}
-		
+
 		where += " AND (opID IS NULL";
 		if (operatorIDs.size() > 0)
 			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
