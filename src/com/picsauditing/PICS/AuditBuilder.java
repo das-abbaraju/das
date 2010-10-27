@@ -167,7 +167,7 @@ public class AuditBuilder {
 		}
 	}
 
-	static private AuditCategoryRule getApplicable(
+	static public AuditCategoryRule getApplicable(
 			List<AuditCategoryRule> rules, AuditCategory auditCategory,
 			OperatorAccount operator) {
 		for (AuditCategoryRule rule : rules) {
