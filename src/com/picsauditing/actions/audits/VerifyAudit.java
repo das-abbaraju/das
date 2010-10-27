@@ -118,28 +118,16 @@ public class VerifyAudit extends AuditActionSupport {
 		int questionid = auditQuestion.getId();
 		if (questionid == 2447 || questionid == 2448)
 			return false;
-		for (AuditCategory ac : auditQuestion.getCategory().getSubCategories()) {
-			if (ac.getParent().getId() == auditQuestion.getCategory().getId()) {
-				if (ac.getId() != AuditCategory.CITATIONS)
+		for (AuditCategory ac : auditQuestion.getCategory().getChildren()) {
+			if (ac.getTopParent().getId() != AuditCategory.CITATIONS)
+				return true;
+			else {
+				if (auditQuestion.isRequired() || questionid == 3565 || questionid == 3566
+						|| questionid == 3567 || questionid == 3568)
 					return true;
 			}
 		}
-		for (AuditCategory ac : auditQuestion.getCategory().getSubCategories()) {
-			if (ac.getParent().getId() == auditQuestion.getCategory().getId()) {
-				if (ac.getId() == AuditCategory.CITATIONS) {
-					if (auditQuestion.isRequired())
-						return true;
-					if (questionid == 3565 && isAnswered)
-						return true;
-					if (questionid == 3566 && isAnswered)
-						return true;
-					if (questionid == 3567 && isAnswered)
-						return true;
-					if (questionid == 3568 && isAnswered)
-						return true;
-				}
-			}
-		}
+		
 		return false;
 	}
 	

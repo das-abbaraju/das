@@ -92,7 +92,7 @@
 </s:if>
 
 <s:else>
-	<fieldset class="form" style="clear: none; float: left; width: 50%; margin: 0.5em;">
+	<fieldset class="form">
 	<h2 class="formLegend">Audit Questions</h2>
 	<s:iterator value="conAudit.data">
 		<s:if test="isShowQuestionToVerify(question, answered)">
@@ -100,7 +100,7 @@
 				<ol>
 					<li><strong><s:property value="question.category.name"/></strong><br />
 						<s:property value="question.expandedNumber"/>
-						<s:property value="question.name"/>
+						<s:property value="question.name" escape="false" />
 						<br/>
 						<s:if test="question.id == 3563 || question.id == 3565 || question.id == 3566"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
 					</li>
@@ -161,7 +161,7 @@
 	
 	</fieldset>
 	<s:if test="osha != null">
-		<fieldset class="form" style="clear: none; float: left; width: 40%; margin: 0.5em;">
+		<fieldset class="form">
 			<h2 class="formLegend">OSHA</h2>
 			<s:div id="oid_%{osha.id}">
 				<ol>
