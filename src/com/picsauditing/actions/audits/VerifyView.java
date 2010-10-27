@@ -285,10 +285,10 @@ public class VerifyView extends ContractorActionSupport {
 			verificationAudits = new Grepper<ContractorAudit>() {
 				@Override
 				public boolean check(ContractorAudit t) {
-					if (t.getAuditType().getClassType().isPolicy() 
-							|| (!t.getAuditType().isPqf() && !t.getAuditType().isAnnualAddendum())
-							|| !t.getAuditType().getWorkFlow().isHasSubmittedStep()
-							|| (t.hasCaoStatus(AuditStatus.Pending) || t.hasCaoStatus(AuditStatus.Incomplete)))
+					if (t.getAuditType().getClassType().isPolicy()
+							|| t.isExpired()
+							|| (!t.hasCaoStatus(AuditStatus.Submitted) && !t.hasCaoStatus(AuditStatus.Resubmitted))
+							|| !t.getAuditType().getWorkFlow().isHasSubmittedStep())
 						return false;
 					
 					return t.hasCaoStatusBefore(AuditStatus.Complete);

@@ -45,92 +45,162 @@
 				<thead>
 					<tr>
 						<td>OSHA</td>
-						<s:iterator value="oshas">
-							<td><s:property value="conAudit.auditFor" /></td>
+						<s:iterator value="years">
+							<td><s:property /></td>
 						</s:iterator>
 					</tr>
 				</thead>
 
 				<tr>
 					<td>Upload New Files</td>
-					<s:iterator value="oshas">
-						<td class="center"><s:if test="fileUploaded">
-							<a href="#" onClick="openOsha(<s:property value="id"/>)">Show
-							File</a>
-						</s:if> <s:else>No File</s:else></td>
+					<s:iterator value="years" id="year">
+						<td class="center">
+							<s:iterator value="oshas">
+								<s:if test="conAudit.auditFor == #year">
+									<s:if test="fileUploaded"><a href="#" onClick="openOsha(<s:property value="id"/>)">Show File</a></s:if>
+									<s:else>No File</s:else>
+								</s:if>
+							</s:iterator>
+						</td>
 					</s:iterator>
 				</tr>
 				<tr>
 					<td>Man Hours Worked:</td>
-					<s:iterator value="oshas">
-						<td class="center"><s:property value="manHours" /></td>
+					<s:iterator value="years" id="year">
+						<td class="center">
+							<s:iterator value="oshas">
+								<s:if test="conAudit.auditFor == #year">
+									<s:property value="manHours" />
+								</s:if>
+							</s:iterator>
+						</td>
 					</s:iterator>
 				</tr>
 				<tr>
 					<td>Number of Fatalities:</td>
-					<s:iterator value="oshas">
-						<td class="center"><s:property value="fatalities" /></td>
+					<s:iterator value="years" id="year">
+						<td class="center">
+							<s:iterator value="oshas">
+								<s:if test="conAudit.auditFor == #year">
+									<s:property value="fatalities" />
+								</s:if>
+							</s:iterator>
+						</td>
 					</s:iterator>
 				</tr>
 				<tr>
 					<td>Number of Lost Work Cases:</td>
-					<s:iterator value="oshas">
-						<td class="center"><s:property value="lostWorkCases" /></td>
+					<s:iterator value="years" id="year">
+						<td class="center">
+							<s:iterator value="oshas">
+								<s:if test="conAudit.auditFor == #year">
+									<s:property value="lostWorkCases" />
+								</s:if>
+							</s:iterator>
+						</td>
 					</s:iterator>
 				</tr>
 				<tr>
 					<td>Number of Lost Workdays:</td>
-					<s:iterator value="oshas">
-						<td class="center"><s:property value="lostWorkDays" /></td>
+					<s:iterator value="years" id="year">
+						<td class="center">
+							<s:iterator value="oshas">
+								<s:if test="conAudit.auditFor == #year">
+									<s:property value="lostWorkDays" />
+								</s:if>
+							</s:iterator>
+						</td>
 					</s:iterator>
 				</tr>
 				<tr>
 					<td>Injury &amp; Illnesses Medical Cases:</td>
-					<s:iterator value="oshas">
-						<td class="center"><s:property value="injuryIllnessCases" /></td>
+					<s:iterator value="years" id="year">
+						<td class="center">
+							<s:iterator value="oshas">
+								<s:if test="conAudit.auditFor == #year">
+									<s:property value="injuryIllnessCases" />
+								</s:if>
+							</s:iterator>
+						</td>
 					</s:iterator>
 				</tr>
 				<tr>
 					<td>Restricted Work Cases:</td>
-					<s:iterator value="oshas">
-						<td class="center"><s:property value="restrictedWorkCases" /></td>
+					<s:iterator value="years" id="year">
+						<td class="center">
+							<s:iterator value="oshas">
+								<s:if test="conAudit.auditFor == #year">
+									<s:property value="restrictedWorkCases" />
+								</s:if>
+							</s:iterator>
+						</td>
 					</s:iterator>
 				</tr>
 				<tr>
 					<td>Number of On Job Transfer OR Restricted Days</td>
-					<s:iterator value="oshas">
-						<td class="center"><s:property value="modifiedWorkDay" /></td>
+					<s:iterator value="years" id="year">
+						<td class="center">
+							<s:iterator value="oshas">
+								<s:if test="conAudit.auditFor == #year">
+									<s:property value="modifiedWorkDay" />
+								</s:if>
+							</s:iterator>
+						</td>
 					</s:iterator>
 				</tr>
 				<tr>
 					<td>Total Injuries and Illnesses:</td>
-					<s:iterator value="oshas">
-						<td class="center"><s:property value="recordableTotal" /></td>
+					<s:iterator value="years" id="year">
+						<td class="center">
+							<s:iterator value="oshas">
+								<s:if test="conAudit.auditFor == #year">
+									<s:property value="recordableTotal" />
+								</s:if>
+							</s:iterator>
+						</td>
 					</s:iterator>
 				</tr>
 				<tr>
 					<td>Is Correct:</td>
-					<s:iterator value="oshas">
-						<s:if test="verified">
-							<td class="center" style="color: #006400; font-weight: bold;"><s:property
-								value="verified" /></td>
-						</s:if>
-						<s:else>
-							<td class="center"><s:property value="verified" /></td>
-						</s:else>
-
+					<s:iterator value="years" id="year">
+						<td class="center">
+							<s:iterator value="oshas">
+								<s:if test="conAudit.auditFor == #year">
+									<s:if test="verified">
+										<span style="color: #006400; font-weight: bold;">
+											<s:property value="verified" />
+										</span>
+									</s:if>
+									<s:else>
+										<s:property value="verified" />
+									</s:else>
+								</s:if>
+							</s:iterator>
+						</td>
 					</s:iterator>
 				</tr>
 				<tr>
 					<td>Verified Date:</td>
-					<s:iterator value="oshas">
-						<td class="center"><s:date name="verifiedDate" format="MM/dd/yyyy" /></td>
+					<s:iterator value="years" id="year">
+						<td class="center">
+							<s:iterator value="oshas">
+								<s:if test="conAudit.auditFor == #year">
+									<s:date name="verifiedDate" format="MM/dd/yyyy" />
+								</s:if>
+							</s:iterator>
+						</td>
 					</s:iterator>
 				</tr>
 				<tr>
 					<td>Issue:</td>
-					<s:iterator value="oshas">
-						<td class="center"><s:property value="comment" /></td>
+					<s:iterator value="years" id="year">
+						<td class="center">
+							<s:iterator value="oshas">
+								<s:if test="conAudit.auditFor == #year">
+									<s:property value="comment" />
+								</s:if>
+							</s:iterator>
+						</td>
 					</s:iterator>
 				</tr>
 			</s:if>
@@ -147,14 +217,21 @@
 				<s:iterator value="emrs.entrySet()">
 					<tr>
 						<td><s:property value="key.name" escape="false" /></td>
-						<s:iterator value="value">
-							<s:if test="value.verified">
-								<td class="center" style="color: #006400; font-weight: bold;"><s:property
-									value="value.answer" /></td>
-							</s:if>
-							<s:else>
-								<td class="center"><s:property value="value.answer" /></td>
-							</s:else>
+						<s:iterator value="years" id="year">
+							<td class="center">
+								<s:iterator value="value">
+									<s:if test="value.audit.auditFor == #year">
+										<s:if test="value.verified">
+											<span style="color: #006400; font-weight: bold;">
+												<s:property value="value.answer" />
+											</span>
+										</s:if>
+										<s:else>
+											<s:property value="value.answer" />
+										</s:else>
+									</s:if>
+								</s:iterator>
+							</td>
 						</s:iterator>
 					</tr>
 				</s:iterator>
