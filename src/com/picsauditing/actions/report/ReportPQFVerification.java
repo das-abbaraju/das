@@ -26,11 +26,13 @@ public class ReportPQFVerification extends ReportAccount {
 		
 		sql.addJoin("JOIN contractor_audit ca ON ca.conid = a.id");
 		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
+		sql.addJoin("JOIN accounts o ON o.id = cao.opID");
 		sql.addWhere("cao.visible = 1");
 		sql.addWhere("cao.status IN ('Submitted','Resubmitted')");
 		sql.addWhere("ca.auditTypeID IN (1,11)");
 		sql.addField("MIN(cao.statusChangedDate) statusChangedDate");
 		sql.addWhere("a.acceptsBids = 0");
+		sql.addWhere("o.status IN ('Active')");
 		sql.addGroupBy("ca.conid");
 		orderByDefault = "cao.statusChangedDate";
 
