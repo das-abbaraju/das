@@ -95,7 +95,9 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		where += " )";
 
 		where += " AND (rootCategory IS NULL";
-		if (rule.getRootCategory() != null)
+		if (rule.getAuditCategory() != null)
+			where += " OR rootCategory = " + (rule.getAuditCategory().getParent() == null ? 1 : 0);
+		else if (rule.getRootCategory() != null)
 			where += " OR rootCategory = " + (rule.getRootCategory() ? 1 : 0);
 		where += " )";
 
@@ -158,16 +160,15 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 		if (rule.getAuditCategory() != null)
 			where += " AND auditCategory.id = " + rule.getAuditCategory().getId();
-
-		if (rule.getRootCategory() != null) {
+		else if (rule.getRootCategory() != null) {
 			if (rule.getRootCategory()) {
-				where += " AND (rootCategory = 1 OR auditCategory.parent IS NULL)";
+				where += " AND ((rootCategory = 1 AND auditCategory IS NULL) "
+						+ "OR (auditCategory.id > 0 AND auditCategory.parent IS NULL))";
 			} else {
-				where += " AND (rootCategory = 0 OR auditCategory.parent.id > 0)";
+				where += " AND ((rootCategory = 0 AND auditCategory IS NULL) "
+						+ "OR (auditCategory.id > 0 AND auditCategory.parent.id > 0))";
 			}
 		}
-		if (rule.getRootCategory() != null)
-			where += " OR rootCategory = " + (rule.getRootCategory() ? 1 : 0);
 
 		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY priority");
 		query.setMaxResults(250);
@@ -226,8 +227,18 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 		Set<Integer> operatorIDs = new HashSet<Integer>();
 		for (ContractorOperator co : contractor.getOperators()) {
-			operatorIDs.addAll(co.getOperatorAccount().getOperatorHeirarchy());
+			// There's a bug where corporate accounts not associated with this
+			// operator get added to this contractor. So just skip all
+			// corporates and pick them up in the
+			// co.getOperatorAccount().getCorporateFacilities()
+			if (co.getOperatorAccount().isOperator()) {
+				operatorIDs.add(co.getOperatorAccount().getId());
+				for (Facility facility : co.getOperatorAccount().getCorporateFacilities()) {
+					operatorIDs.add(facility.getCorporate().getId());
+				}
+			}
 		}
+		
 		where += " AND (opID IS NULL";
 		if (operatorIDs.size() > 0)
 			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
@@ -264,9 +275,15 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 		Set<Integer> operatorIDs = new HashSet<Integer>();
 		for (ContractorOperator co : contractor.getOperators()) {
-			operatorIDs.add(co.getOperatorAccount().getId());
-			for (Facility facility : co.getOperatorAccount().getCorporateFacilities()) {
-				operatorIDs.add(facility.getCorporate().getId());
+			// There's a bug where corporate accounts not associated with this
+			// operator get added to this contractor. So just skip all
+			// corporates and pick them up in the
+			// co.getOperatorAccount().getCorporateFacilities()
+			if (co.getOperatorAccount().isOperator()) {
+				operatorIDs.add(co.getOperatorAccount().getId());
+				for (Facility facility : co.getOperatorAccount().getCorporateFacilities()) {
+					operatorIDs.add(facility.getCorporate().getId());
+				}
 			}
 		}
 		where += " AND (opID IS NULL";
