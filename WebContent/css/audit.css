@@ -479,6 +479,19 @@ ul.vert-toolbar .currSub{
 	background: #ddd;
 }
 
+/*** Next/Done button ***/
+#cat-nav-buttons div.last{
+	display: none;
+}
+
+#cat-nav-buttons.last div.next {
+	display: none;
+}
+
+#cat-nav-buttons.last div.last {
+	display: block;	
+}
+
 /*** OSHA **/
 table.osha {
 	margin-top: 10px;

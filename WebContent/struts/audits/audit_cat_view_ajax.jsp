@@ -19,7 +19,12 @@ $(function() {
 	<s:set name="category" value="categoryData.category"/>
 	<s:include value="audit_cat_view.jsp" />
 
-	<div class="buttons">
-		<a href="#" id="next_cat" class="picsbutton right">Next</a>
+	<div class="buttons" id="cat-nav-buttons">
+		<div class="next">
+			<a href="#" id="next_cat" class="picsbutton right">Next</a>
+		</div>
+		<div class="last">
+			<a href="#" id="done" class="picsbutton right">Done</a>
+		</div>
 	</div>
 </s:else>

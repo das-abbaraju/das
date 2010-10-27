@@ -167,7 +167,20 @@ $(function(){
 		e.preventDefault();
 		$('li.current').next('li.catlist').find('a.hist-category').click();
 	});
+
+	$('#done').live('click', function(e){
+		e.preventDefault();
+		updateCategoriesNow();
+		$.scrollTo(0, 800, {axis: 'y'});
+	});
 });
+
+function showNavButtons() {
+	if ($('ul.catUL:visible li.current').attr('id') == $('ul.catUL:visible li:last').attr('id'))
+		$('#cat-nav-buttons').addClass('last');
+	else
+		$('#cat-nav-buttons').removeClass('last');
+}
 
 function loadCategories(data, msg) {
 	if (!msg) msg = 'Loading category...';
@@ -180,9 +193,7 @@ function loadCategories(data, msg) {
 		success: function(html, status, xhr) {
 			if (xhr.status) {
 				var state = $.bbq.getState();
-				$('ul.catUL li.current').removeClass('current');
-				$('ul.catUL li.currSub').hide();
-				$('#catSubCat_'+state.categoryID).show();
+				$('li.current').removeClass('current');
 				$('#auditViewArea').html(html).unblock();
 				
 				var subCatScroll = $('#cathead_'+state.subCat);
@@ -196,9 +207,13 @@ function loadCategories(data, msg) {
 						$('ul.catUL:visible').hide();
 						list.show();
 					}
-				} else if (state.mode == 'ViewQ') {
+				}
+
+				if (state.mode == 'ViewQ') {
 					$('a.preview').parents('li:first').addClass('current');
 				}
+				
+				showNavButtons();
 			}
 		}
 	});
@@ -234,6 +249,8 @@ function _updateCategories() {
 					$('ul.catUL:visible').hide();
 					list.show();
 				}
+				
+				showNavButtons();
 			}
 		}
 	});
