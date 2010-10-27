@@ -164,7 +164,7 @@ $(function() {
 						<s:hidden name="rule.operatorAccount.id" id="op_hidden"/>
 						<a href="#" class="clearfield">Clear Field</a>
 					</li>
-					<li id="opTagli" <s:if test="rule.tag==null">style="display: none;"</s:if>><label>Tag</label>
+					<li id="opTagli" <s:if test="rule.operatorAccount==null">style="display: none;"</s:if>><label>Tag</label>
 						<s:select list="opTagList" name="tagID" listKey="id" listValue="tag" id="tag" headerKey="0" headerValue="- Any -"
 						value="rule.tag.id" />
 					</li>
