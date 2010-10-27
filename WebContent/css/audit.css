@@ -140,6 +140,10 @@ span.refresh {
 	display: inline;	
 }
 
+#auditHeader.dirty a.refresh {
+	background: url('../images/ajax_process.gif') no-repeat left center;	
+}
+
 /** Table for status **/
 table.statusOpBox {
 	background-color: #fff;
