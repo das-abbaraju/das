@@ -42,7 +42,8 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
-	public CategoryRuleEditor(AuditDecisionTableDAO dao, AuditTypeDAO typeDAO, AuditCategoryDAO catDAO) {
+	public CategoryRuleEditor(AuditDecisionTableDAO dao, AuditTypeDAO typeDAO,
+			AuditCategoryDAO catDAO) {
 		this.dao = dao;
 		this.typeDAO = typeDAO;
 		this.catDAO = catDAO;
@@ -75,12 +76,17 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 		if (button != null) {
 			if ("edit".equals(button)) {
-				if (rule.getAuditType() != null && rule.getAuditType().getId() > 0)
-					rule.setAuditType(typeDAO.find(rule.getAuditType().getId()));
-				
-				if (rule.getAuditCategory() != null && rule.getAuditCategory().getId() > 0)
-					rule.setAuditCategory(catDAO.find(rule.getAuditCategory().getId()));
-				
+				if (rule.getAuditType() != null
+						&& rule.getAuditType().getId() > 0)
+					rule
+							.setAuditType(typeDAO.find(rule.getAuditType()
+									.getId()));
+
+				if (rule.getAuditCategory() != null
+						&& rule.getAuditCategory().getId() > 0)
+					rule.setAuditCategory(catDAO.find(rule.getAuditCategory()
+							.getId()));
+
 				return SUCCESS;
 			}
 			if ("Save".equals(button)) {
@@ -166,11 +172,11 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	protected List<OperatorTag> getOpTagList(){
+	public List<OperatorTag> getOpTagList() {
 		List<OperatorTag> opTagList = new ArrayList<OperatorTag>();
-		if(rule.getOperatorAccount()!=null){
-			for(OperatorTag ot : rule.getOperatorAccount().getTags())
-					opTagList.add(ot);
+		if (rule.getOperatorAccount() != null && rule.getOperatorAccount().getTags()!=null) {
+			for (OperatorTag ot : rule.getOperatorAccount().getTags())
+				opTagList.add(ot);
 		}
 		return opTagList;
 	}
@@ -184,8 +190,8 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		} else
 			rule.setAcceptsBids(null);
 	}
-	
-	private void setRootCategory(){
+
+	private void setRootCategory() {
 		if (rootCat >= 0) {
 			if (rootCat == 1)
 				rule.setRootCategory(true);
@@ -211,7 +217,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			Map<String, String> m = new HashMap<String, String>();
 			m.put("catID", "rule.auditCategory.id=");
 			columns.put("category", m);
-			columns.put("rootCat", null);			
+			columns.put("rootCat", null);
 		} else
 			columns.put("category", null);
 		// account
@@ -272,7 +278,8 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		sql.setHavingClause("COUNT(*) > 1");
 
 		if ("risk".equals(field))
-			sql.addField("CASE risk WHEN 1 THEN 'Low' WHEN 2 THEN 'Med' WHEN 3 THEN 'High' ELSE NULL END AS risk");
+			sql
+					.addField("CASE risk WHEN 1 THEN 'Low' WHEN 2 THEN 'Med' WHEN 3 THEN 'High' ELSE NULL END AS risk");
 		else
 			sql.addField(field);
 		sql.addField("SUM(include) includeTotal");
@@ -368,8 +375,8 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	public Integer getRootCat() {
 		Integer result = -1;
-		if(rule.getRootCategory()!=null){
-			if(rule.getRootCategory())
+		if (rule.getRootCategory() != null) {
+			if (rule.getRootCategory())
 				result = 1;
 			else
 				result = 0;

@@ -272,7 +272,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	
 	public List<OperatorTag> getOpTagList(){
 		List<OperatorTag> opTagList = new ArrayList<OperatorTag>();
-		if(rule.getOperatorAccount()!=null){
+		if(rule.getOperatorAccount()!=null && rule.getOperatorAccount().getTags()!=null){
 			for(OperatorTag ot : rule.getOperatorAccount().getTags())
 					opTagList.add(ot);
 		}
