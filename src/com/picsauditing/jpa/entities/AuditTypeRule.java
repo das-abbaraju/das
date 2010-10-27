@@ -52,6 +52,15 @@ public class AuditTypeRule extends AuditRule {
 	}
 
 	@Override
+	public void calculatePriority() {
+		super.calculatePriority();
+		if (dependentAuditType != null) {
+			level++;
+			priority += 108;
+		}
+	}
+
+	@Override
 	public String toString() {
 		String out = super.toString();
 		if (dependentAuditType != null)

@@ -194,6 +194,9 @@ public class AuditRule extends BaseDecisionTreeRule {
 	public void calculatePriority() {
 		level = levelAdjustment; // usually 0
 		priority = 100 * levelAdjustment; // usually 0
+		
+		if (include)
+			priority += 1;
 
 		// Order these by least unique to most unique
 		if (contractorType != null) {
