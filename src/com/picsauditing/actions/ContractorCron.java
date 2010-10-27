@@ -171,39 +171,18 @@ public class ContractorCron extends PicsActionSupport {
 		ContractorAccount contractor = contractorDAO.find(conID);
 
 		try {
-			long start = System.currentTimeMillis();
 			runBilling(contractor);
-			System.out.println("Con "+conID+" "+"Billing time: "+(System.currentTimeMillis()-start));
-
-			start = System.currentTimeMillis();
 			runAuditCategory(contractor);
-			System.out.println("Con "+conID+" "+"Audit Category time: "+(System.currentTimeMillis()-start));
-			
-			start = System.currentTimeMillis();
 			runAuditBuilder(contractor);
-			System.out.println("Con "+conID+" "+"Audit Builder time: "+(System.currentTimeMillis()-start));
-			
-			start = System.currentTimeMillis();
 			runTradeETL(contractor);
-			System.out.println("Con "+conID+" "+"TradeETL time: "+(System.currentTimeMillis()-start));
-			
-			start = System.currentTimeMillis();
 			runContractorETL(contractor);
-			System.out.println("Con "+conID+" "+"ContractorETL time: "+(System.currentTimeMillis()-start));
-			
-			start = System.currentTimeMillis();
 			runCSRAssignment(contractor);
-			System.out.println("Con "+conID+" "+"CSR Assignment time: "+(System.currentTimeMillis()-start));
 
-			start = System.currentTimeMillis();
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
-			System.out.println("Con "+conID+" "+"Flag Data Calculator time: "+(System.currentTimeMillis()-start));
 
 			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
 					|| runStep(ContractorCronStep.Policies) || runStep(ContractorCronStep.CorporateRollup)) {
 				Set<OperatorAccount> corporateSet = new HashSet<OperatorAccount>();
-				
-				start = System.currentTimeMillis();
 				for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 					OperatorAccount operator = co.getOperatorAccount();
 					// If the opID is 0, run through all the operators.
@@ -222,19 +201,12 @@ public class ContractorCron extends PicsActionSupport {
 						}
 						runFlag(co);
 						runWaitingOn(co);
-						
 						if (opID > 0)
 							break;
 					}
 				}
-				System.out.println("Con "+conID+" "+"Flag and WaitingOn time: "+(System.currentTimeMillis()-start));
-				
-				
-				start = System.currentTimeMillis();
 				runCorporateRollup(contractor, corporateSet);
-				System.out.println("Con "+conID+" "+"Rollup time: "+(System.currentTimeMillis()-start));
 			}
-
 			if (steps != null && steps.length > 0) {
 				if (opID == 0 && steps[0] == ContractorCronStep.All) {
 					contractor.setNeedsRecalculation(0);
@@ -245,9 +217,7 @@ public class ContractorCron extends PicsActionSupport {
 						+ " successfully");
 			}
 
-			start = System.currentTimeMillis();
 			runPolicies(contractor);
-			System.out.println("Policies time: "+(System.currentTimeMillis()-start));
 
 		} catch (Throwable t) {
 			StringWriter sw = new StringWriter();
