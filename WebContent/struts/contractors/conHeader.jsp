@@ -258,6 +258,7 @@ function loadStatus(caoID){
 		</s:if>
 		<pics:permission perm="DevelopmentEnvironment">
 			<li><a href="ContractorCron.action?conID=<s:property value="id" />">Contractor Cron</a></li>
+			<li><a href="AuditBuilder.action?id=<s:property value="id" />">Audit Builder</a></li>
 		</pics:permission>
 	</s:if>
 	<s:elseif test="permissions.contractor">

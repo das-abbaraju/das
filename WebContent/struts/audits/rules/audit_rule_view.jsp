@@ -26,7 +26,7 @@
 	<td><s:property value="riskLabel"/></td>
 	<td><s:property value="tagLabel"/></td>
 	<td><s:property value="acceptsBidsLabel"/></td>
-	<s:if test="categoryRule == false">
+	<s:if test="class.toString() == 'class com.picsauditing.jpa.entities.AuditTypeRule'">
 		<td><s:property value="dependentAuditTypeLabel"/>
 			<s:if test="dependentAuditType"><a href="ManageAuditType.action?id=<s:property value="dependentAuditType.id"/>" target="_BLANK">^</a></s:if>
 		</td>

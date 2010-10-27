@@ -4,7 +4,7 @@
 <table class="statusOpBox" style="">
 	<thead>
 		<tr>
-			<th>Operator</th>
+			<th>Operator Scope</th>
 			<th>Progress</th>
 			<th>Status</th>
 			<th>Date</th>
@@ -45,7 +45,7 @@
 							<s:property value="status"/>
 						</td>
 					</s:else>					
-					<td><s:property value="formatDate(statusChangedDate, 'dd MMM, yyyy')" default="N/A" /></td>
+					<td><s:property value="formatDate(statusChangedDate, 'dd MMM yyyy')" default="N/A" /></td>
 					<s:if test="conAudit.auditType.classType.policy">
 						<td><s:property value="#currentCao.flag.insuranceStatus" default="N/A"/></td>
 					</s:if>
