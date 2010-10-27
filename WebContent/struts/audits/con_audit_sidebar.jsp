@@ -14,8 +14,7 @@
 		</pics:permission>
 	</s:if>
 	<s:if test="canPreview">
-		<li><a class="preview" href="Audit.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
-		Questions</a></li>
+		<li><a class="preview" href="#mode=ViewQ">Preview Questions</a></li>
 	</s:if>
 	<s:if test="permissions.admin">
 		<li>
