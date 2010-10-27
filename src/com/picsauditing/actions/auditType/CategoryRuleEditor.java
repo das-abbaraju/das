@@ -34,9 +34,9 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	protected List<AuditCategoryRule> moreGranular;
 	protected List<AuditRule> similar;
 	protected Date date = new Date();
-	protected Integer bidOnly = null;
-	protected Integer rootCat = null;
-	protected Integer tagID = null;
+	protected int bidOnly;
+	protected int rootCat;
+	protected int tagID ;
 
 	protected AuditDecisionTableDAO dao;
 	protected AuditTypeDAO typeDAO;

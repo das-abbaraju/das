@@ -38,8 +38,8 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	protected List<AuditTypeRule> moreGranular;
 	protected List<AuditTypeRule> similar;
 	protected Date date = new Date();
-	protected Integer bidOnly = null;
-	protected Integer tagID = null;
+	protected int bidOnly;
+	protected int tagID;
 
 	protected AuditTypeDAO typeDAO;
 	protected AuditDecisionTableDAO dao;
