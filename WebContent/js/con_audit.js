@@ -23,7 +23,7 @@ $(function(){
 	
 	$(window).bind('hashchange', function() {
 		var state = $.bbq.getState();
-		if(state.onlyReq != undefined){
+		if(state.onlyReq !== undefined){
 			var data = $.deparam.querystring($.param.querystring(location.href, state));
 			data.button='PrintReq';
 			$('#auditViewArea').block({message: 'Loading Requirements', centerY: false, css: {top: '20px'} }).load('AuditAjax.action', data, function() {
