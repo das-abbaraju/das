@@ -163,10 +163,10 @@ $(function() {
 						<input type="text" class="searchAuto" id="operator" value="<s:property value="rule.operatorAccount.name"/>"/>
 						<s:hidden name="rule.operatorAccount.id" id="op_hidden"/>
 						<a href="#" class="clearfield">Clear Field</a>
-					</li>					
+					</li>
 					<li id="opTagli" <s:if test="rule.tag==null">style="display: none;"</s:if>><label>Tag</label>
-						<s:select list="OpTagList" name="tagID" listKey="id" listValue="tag" id="tag" headerKey="0" headerValue="- Any -"
-						value="rule.tag.id" /> 
+						<s:select list="opTagList" name="tagID" listKey="id" listValue="tag" id="tag" headerKey="0" headerValue="- Any -"
+						value="rule.tag.id" />
 					</li>
 					<s:if test="!categoryRule">
 						<li><label>Dependent Audit</label>
