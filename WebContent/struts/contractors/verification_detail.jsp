@@ -27,16 +27,16 @@
 						</s:else>
 					</tr>
 				</s:iterator>
+				<s:iterator value="verificationAudits">
+					<s:if test="auditType.Pqf">
+						<tr>
+							<td class="center" colspan="2">
+								<input type="button" id="verifyaudit" value="Verify <s:property value="auditType.auditName"/> " onclick="showAudit(<s:property value="id"/>); return false;"/>
+							</td>
+						</tr>	
+					</s:if>
+				</s:iterator>
 			</s:if>
-			<s:iterator value="verificationAudits">
-				<s:if test="auditType.Pqf">
-					<tr>
-						<td class="center" colspan="2">
-							<input type="button" id="verifyaudit" value="Verify <s:property value="auditType.auditName"/> " onclick="showAudit(<s:property value="id"/>); return false;"/>
-						</td>
-					</tr>	
-				</s:if>
-			</s:iterator>
 		</table>
 			
 		<br/>
@@ -146,7 +146,7 @@
 				</thead>
 				<s:iterator value="emrs.entrySet()">
 					<tr>
-						<td><s:property value="key.question" /></td>
+						<td><s:property value="key.name" escape="false" /></td>
 						<s:iterator value="value">
 							<s:if test="value.verified">
 								<td class="center" style="color: #006400; font-weight: bold;"><s:property

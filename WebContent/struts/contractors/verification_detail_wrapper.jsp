@@ -20,7 +20,7 @@
 </style>
 
 <script type="text/javascript">
-	function toggleVerify(auditId, questionId, answerId) {
+	function toggleVerify(auditId, questionId, answerId, categoryId) {
 		var comment = $('#comment_' + questionId).val();
 		var answerelm = $('#answer_' + questionId);
 		
@@ -28,7 +28,7 @@
 		var data= {
 				'auditData.audit.id': auditId,
 				'auditData.id': answerId,
-				'catDataID': -1,
+				'categoryID': categoryId,
 				'auditData.question.id': questionId,
 				'auditData.comment': comment,
 				'toggleVerify': true
@@ -86,12 +86,12 @@
 		return false;
 	}
 	
-	function setComment(auditId, questionId, answerId ) {
+	function setComment(auditId, questionId, answerId, categoryId ) {
 		startThinking({div:'status_'+questionId});
 
 		var data= {
 			'auditData.audit.id': auditId,
-			'catDataID': -1,
+			'categoryID': categoryId,
 			'auditData.id': answerId,
 			'auditData.question.id': questionId,
 			'auditData.comment': $('#comment_' + questionId).val()

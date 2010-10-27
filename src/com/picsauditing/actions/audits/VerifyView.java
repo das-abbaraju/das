@@ -73,21 +73,30 @@ public class VerifyView extends ContractorActionSupport {
 				}
 			}
 			if (conAudit.getAuditType().isAnnualAddendum()) {
-				boolean pendingIncomplete = false;
-				
-				for (ContractorAuditOperator cao : conAudit.getOperators()) {
-					pendingIncomplete = cao.getStatus().isIncomplete() || cao.getStatus().isPending();
-				}
-				
-				if (!pendingIncomplete) {
-					AuditData auditData = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
-					for (OshaAudit oshaAudit : conAudit.getOshas()) {
-						if (auditData != null && "Yes".equals(auditData.getAnswer()) && oshaAudit.isCorporate()
-								&& oshaAudit.getType().equals(OshaType.OSHA)) {
-							oshas.add(oshaAudit);
-						}
+				AuditData auditData = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
+				for (OshaAudit oshaAudit : conAudit.getOshas()) {
+					if (auditData != null && "Yes".equals(auditData.getAnswer()) && oshaAudit.isCorporate()
+							&& oshaAudit.getType().equals(OshaType.OSHA)) {
+						oshas.add(oshaAudit);
 					}
-					years.add(conAudit.getAuditFor());
+				}
+				years.add(conAudit.getAuditFor());
+				
+				for (AuditData d : conAudit.getData()) {
+					int categoryID = d.getQuestion().getCategory().getId();
+					if (categoryID != AuditCategory.CITATIONS
+							|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired())
+									|| (d.getQuestion().getId() >= 3565 && d.getQuestion().getId() <= 3568 && d.isAnswered()))) {
+						Map<String, AuditData> inner = emrs.get(d.getQuestion());
+
+						if (inner == null) {
+							inner = new TreeMap<String, AuditData>();
+							for (String year : years)
+								inner.put(year, null);
+							emrs.put(d.getQuestion(), inner);
+						}
+						inner.put(conAudit.getAuditFor(), d);
+					}
 				}
 			}
 		}
@@ -100,23 +109,23 @@ public class VerifyView extends ContractorActionSupport {
 				}
 				
 				if (!pendingIncomplete) {
-					for (AuditData auditData : conAudit.getData()) {
-						int categoryID = auditData.getQuestion().getCategory().getId();
+					for (AuditData d : conAudit.getData()) {
+						int categoryID = d.getQuestion().getCategory().getId();
 						if (categoryID != AuditCategory.CITATIONS
-								|| (categoryID == AuditCategory.CITATIONS && (auditData.getQuestion().isRequired())
-										|| (auditData.getQuestion().getId() == 3565 && auditData.isAnswered())
-										|| (auditData.getQuestion().getId() == 3566 && auditData.isAnswered())
-										|| (auditData.getQuestion().getId() == 3567 && auditData.isAnswered()) || (auditData
-										.getQuestion().getId() == 3568 && auditData.isAnswered()))) {
-							Map<String, AuditData> inner = emrs.get(auditData.getQuestion());
+								|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired())
+										|| (d.getQuestion().getId() == 3565 && d.isAnswered())
+										|| (d.getQuestion().getId() == 3566 && d.isAnswered())
+										|| (d.getQuestion().getId() == 3567 && d.isAnswered()) || (d
+										.getQuestion().getId() == 3568 && d.isAnswered()))) {
+							Map<String, AuditData> inner = emrs.get(d.getQuestion());
 	
 							if (inner == null) {
 								inner = new TreeMap<String, AuditData>();
 								for (String year : years)
 									inner.put(year, null);
-								emrs.put(auditData.getQuestion(), inner);
+								emrs.put(d.getQuestion(), inner);
 							}
-							inner.put(conAudit.getAuditFor(), auditData);
+							inner.put(conAudit.getAuditFor(), d);
 						}
 					}
 				}
@@ -276,9 +285,10 @@ public class VerifyView extends ContractorActionSupport {
 			verificationAudits = new Grepper<ContractorAudit>() {
 				@Override
 				public boolean check(ContractorAudit t) {
-					if (t.getAuditType().getClassType().isPolicy())
-						return false;
-					if (!t.getAuditType().getWorkFlow().isHasSubmittedStep())
+					if (t.getAuditType().getClassType().isPolicy() 
+							|| (!t.getAuditType().isPqf() && !t.getAuditType().isAnnualAddendum())
+							|| !t.getAuditType().getWorkFlow().isHasSubmittedStep()
+							|| (t.hasCaoStatus(AuditStatus.Pending) || t.hasCaoStatus(AuditStatus.Incomplete)))
 						return false;
 					
 					return t.hasCaoStatusBefore(AuditStatus.Complete);

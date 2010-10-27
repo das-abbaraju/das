@@ -3,7 +3,7 @@
 
 <s:set name="showApproveButton" value="true" />
 <s:set name="fullyVerified" value="true" />
-<s:iterator value="conAudit.operators" id="cao">
+<s:iterator value="conAudit.operatorsVisible" id="cao">
 	<s:if test="!#cao.status.submittedResubmitted">
 		<s:set name="showApproveButton" value="false" />
 	</s:if>
@@ -74,7 +74,7 @@
 				format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></s:div>
 			</li>
 			<li>
-				<label>Comment:</label> <s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{id});" id="comment_%{question.id}" name="comment" />
+				<label>Comment:</label> <s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{id}, %{question.category.id} );" id="comment_%{question.id}" name="comment" />
 			</li>
 			<s:if test="question.questionType == 'License'">
 				<li>
@@ -127,7 +127,7 @@
 					<s:else>
 						<s:set name="verifyText" value="'Unverify'"/>
 					</s:else>
-					<li><input id="verify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="id"/>);"	value="<s:property value="#attr.verifyText"/>"/>
+					<li><input id="verify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="id"/>, <s:property value="question.category.id" />);"	value="<s:property value="#attr.verifyText"/>"/>
 					<s:div cssStyle="display : inline;" id="status_%{question.id}"></s:div></li>
 					<s:if test="verified">
 						<s:set name="displayVerified" value="'block'"/>
@@ -139,10 +139,10 @@
 						format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></s:div></li>
 					<li><label>Comment:</label> 
 						<s:if test="question.category.parent.id == 152">
-							<s:select onchange="return setComment(%{conAudit.id}, %{question.id}, %{id});" id="comment_%{question.id}" list="emrProblems" name="comment" />
+							<s:select onchange="return setComment(%{conAudit.id}, %{question.id}, %{id}, %{question.category.id} );" id="comment_%{question.id}" list="emrProblems" name="comment" />
 						</s:if>
 						<s:else>
-							<nobr><s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{id});" id="comment_%{question.id}" name="comment" />
+							<nobr><s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{id}, %{question.category.id} );" id="comment_%{question.id}" name="comment" />
 							<s:if test="question.id == 2033">
 								<s:select id="emrExempt" list="emrExemptReason" headerKey="" headerValue="- Exempt Reasons -" onchange="copyComment('emrExempt','comment_%{question.id}');"/>
 							</s:if>
