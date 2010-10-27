@@ -38,6 +38,7 @@ $(function() {
 							if(json){
 								$('#dAuditSelect').html('');
 								var options = json.options;
+								$('#dAuditSelect').append($('<option>').attr('value', '').text("- Any -"));
 								for(var i=0; i<options.length; i++){
 									$('#dAuditSelect').append($('<option>').attr('value', options[i].option).text(options[i].option));
 								}
@@ -53,6 +54,7 @@ $(function() {
 							if(json){
 								$('#tag').html('');
 								var tags = json.tags;
+								$('#tag').append($('<option>').attr('value', -1).text("- Any -"));
 								for(var i=0; i<tags.length; i++){
 									$('#tag').append($('<option>').attr('value', tags[i].tagID).text(tags[i].tag));
 								}
@@ -162,8 +164,9 @@ $(function() {
 						<s:hidden name="rule.operatorAccount.id" id="op_hidden"/>
 						<a href="#" class="clearfield">Clear Field</a>
 					</li>					
-					<li id="opTagli" <s:if test="rule.tag.tag==null">style="display: none;"</s:if>><label>Tag</label>
-						<s:select list="OpTagList" name="rule.tag.id" listKey="id" listValue="tag" id="tag" />
+					<li id="opTagli" <s:if test="rule.tag==null">style="display: none;"</s:if>><label>Tag</label>
+						<s:select list="OpTagList" name="tagID" listKey="id" listValue="tag" id="tag" headerKey="0" headerValue="- Any -"
+						value="rule.tag.id" /> 
 					</li>
 					<s:if test="!categoryRule">
 						<li><label>Dependent Audit</label>
@@ -172,7 +175,7 @@ $(function() {
 							<a href="#" class="clearfield">Clear Field</a>
 						</li>					
 						<li id="dAuditSelectli" <s:if test="rule.dependentAuditStatus==null">style="display: none;"</s:if>><label>Dependent Status</label>
-							<s:select list="DAuditStatus" name="rule.dependentAuditStatus" id="dAuditSelect" />
+							<s:select list="DAuditStatus" name="rule.dependentAuditStatus" id="dAuditSelect" headerKey="" headerValue="- Any -" />
 							<a href="#" class="clearfield">Clear Field</a>
 						</li>					
 					</s:if>

@@ -17,6 +17,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeRule;
@@ -38,17 +39,21 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	protected List<AuditTypeRule> similar;
 	protected Date date = new Date();
 	protected Integer bidOnly = null;
+	protected Integer tagID = null;
 
 	protected AuditTypeDAO typeDAO;
 	protected AuditDecisionTableDAO dao;
 	protected OperatorAccountDAO opDAO;
+	protected OperatorTagDAO tagDAO;
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
-	public AuditTypeRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO, AuditTypeDAO typeDAO) {
+	public AuditTypeRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO, AuditTypeDAO typeDAO,
+			OperatorTagDAO tagDAO) {
 		this.dao = dao;
 		this.opDAO = opDAO;
 		this.typeDAO = typeDAO;
+		this.tagDAO = tagDAO;
 	}
 
 	public String execute() throws Exception {
@@ -167,6 +172,10 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 				rule.setAcceptsBids(false);
 		} else
 			rule.setAcceptsBids(null);
+		OperatorTag t = null;
+		if (tagID >= 0)
+			t = tagDAO.find(tagID);
+		rule.setTag(t);	
 	}
 
 	protected void addFields() {
@@ -364,6 +373,14 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 
 	public void setBidOnly(Integer bidOnly) {
 		this.bidOnly = bidOnly;
+	}
+
+	public Integer getTagID() {
+		return tagID;
+	}
+
+	public void setTagID(Integer tagID) {
+		this.tagID = tagID;
 	}
 
 }

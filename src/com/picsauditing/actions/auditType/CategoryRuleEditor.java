@@ -15,6 +15,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.OperatorTag;
@@ -35,18 +36,21 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	protected Date date = new Date();
 	protected Integer bidOnly = null;
 	protected Integer rootCat = null;
+	protected Integer tagID = null;
 
 	protected AuditDecisionTableDAO dao;
 	protected AuditTypeDAO typeDAO;
 	protected AuditCategoryDAO catDAO;
+	protected OperatorTagDAO tagDAO;
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
 	public CategoryRuleEditor(AuditDecisionTableDAO dao, AuditTypeDAO typeDAO,
-			AuditCategoryDAO catDAO) {
+			AuditCategoryDAO catDAO, OperatorTagDAO tagDAO) {
 		this.dao = dao;
 		this.typeDAO = typeDAO;
 		this.catDAO = catDAO;
+		this.tagDAO = tagDAO;
 	}
 
 	public String execute() throws Exception {
@@ -91,16 +95,14 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			}
 			if ("Save".equals(button)) {
 				if (rule.getId() == 0) {
-					setAcceptsBids();
-					setRootCategory();
+					setFieldsOnSave();
 					rule.defaultDates();
 					rule.calculatePriority();
 					rule.setAuditColumns(permissions);
 					dao.save(rule);
 				} else {
 					AuditRule acr = dao.findAuditCategoryRule(rule.getId());
-					setAcceptsBids();
-					setRootCategory();
+					setFieldsOnSave();
 					acr.update(rule);
 					acr.calculatePriority();
 					acr.setAuditColumns(permissions);
@@ -180,8 +182,8 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		}
 		return opTagList;
 	}
-
-	private void setAcceptsBids() {
+	
+	private void setFieldsOnSave() {
 		if (bidOnly >= 0) {
 			if (bidOnly == 1)
 				rule.setAcceptsBids(true);
@@ -189,9 +191,6 @@ public class CategoryRuleEditor extends PicsActionSupport {
 				rule.setAcceptsBids(false);
 		} else
 			rule.setAcceptsBids(null);
-	}
-
-	private void setRootCategory() {
 		if (rootCat >= 0) {
 			if (rootCat == 1)
 				rule.setRootCategory(true);
@@ -199,6 +198,10 @@ public class CategoryRuleEditor extends PicsActionSupport {
 				rule.setRootCategory(false);
 		} else
 			rule.setRootCategory(null);
+		OperatorTag t = null;
+		if (tagID >= 0)
+			t = tagDAO.find(tagID);
+		rule.setTag(t);	
 	}
 
 	protected void addFields() {
@@ -386,5 +389,13 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	public void setRootCat(Integer rootCat) {
 		this.rootCat = rootCat;
+	}
+
+	public Integer getTagID() {
+		return tagID;
+	}
+
+	public void setTagID(Integer tagID) {
+		this.tagID = tagID;
 	}
 }
