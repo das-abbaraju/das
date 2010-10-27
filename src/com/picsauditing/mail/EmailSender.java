@@ -10,38 +10,43 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 public class EmailSender {
-	// Since we're sending email through SendGrid, one email address may be all that's necessary.
+	private static int currentDefaultSender = 1;
+	private static final int NUMBER_OF_GMAIL_ACOUNTS = 12;
+	private static String defaultPassword = "e3r4t5";
 	private EmailQueueDAO emailQueueDAO = null;
 
 	/**
 	 * Try sending with the first email address info@picsauditing.com If it errors try info2, info3, ...info6. If it
 	 * still fails, then try regular linux sendmail
 	 * 
+	 * We can use Sendgrid once we're ready for implementation -- For now I'm reverting this back to
+	 * using Gmail
+	 * 
 	 * @param email
 	 * @throws Exception
 	 */
 	private void sendMail(EmailQueue email, int attempts) throws Exception {
 		attempts++;
-		boolean useSendGrid = true;
+		boolean useGmail = true;
 		if (attempts > 2)
-			useSendGrid = false;
+			useGmail = false;
 		if (email.getToAddresses().endsWith("@picsauditing.com"))
-			useSendGrid = false;
+			useGmail = false;
 		
 		try {
-			if (useSendGrid) {
-				GridSender sender;
+			if (useGmail) {
+				GMailSender gmailSender;
 				if (!Strings.isEmpty(email.getFromPassword())) {
 					// Use a specific email address like tallred@picsauditing.com
 					// We need the password to correctly authenticate with GMail
-					PicsLogger.log("using SendGrid to send email from " + email.getFromAddress());
-					sender = new GridSender(email.getFromAddress(), email.getFromPassword());
+					PicsLogger.log("using Gmail to send email from " + email.getFromAddress());
+					gmailSender = new GMailSender(email.getFromAddress(), email.getFromPassword());
 				} else {
 					// Use the default info@picsauditing.com address
-					PicsLogger.log("using SendGrid to send email from info@picsauditing.com");
-					sender = new GridSender("info@picsauditing.com", "kkttl5");
+					PicsLogger.log("using Gmail to send email from " + getDefaultSender());
+					gmailSender = new GMailSender(getGmailUsername(), defaultPassword);
 				}
-				sender.sendMail(email);
+				gmailSender.sendMail(email);
 			} else {
 				PicsLogger.log("using localhost sendmail to send");
 				SendMail sendMail = new SendMail();
@@ -60,10 +65,11 @@ public class EmailSender {
 				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 			emailQueueDAO.save(email);
 		} catch (Exception e) {
-			System.out.println("Send Mail Exception with account: " + e.toString() + " "
+			System.out.println("Send Mail Exception with account " + currentDefaultSender + ": " + e.toString() + " "
 					+ e.getMessage() + "\nFROM: " + email.getFromAddress() + "\nTO: " + email.getToAddresses()
 					+ "\nSUBJECT: " + email.getSubject());
-			if (useSendGrid) {
+			changeDefaultSender();
+			if (useGmail) {
 				this.sendMail(email, attempts);
 			} else {
 				PicsLogger.log("Failed to send email using sendmail...exiting");
@@ -78,7 +84,7 @@ public class EmailSender {
 	}
 
 	/**
-	 * Send this through SendGrid or SendMail
+	 * Send this through GMail or SendMail
 	 * 
 	 * @param email
 	 * @throws Exception
@@ -88,7 +94,7 @@ public class EmailSender {
 		try {
 			// Check all the addresses
 			if (email.getFromAddress2() == null)
-				email.setFromAddress("info@picsauditing.com");
+				email.setFromAddress(getDefaultSender());
 			if (email.getToAddresses2() == null) {
 				email.setToAddresses(email.getCcAddresses());
 				email.setCcAddresses(null);
@@ -106,6 +112,24 @@ public class EmailSender {
 		} finally {
 			PicsLogger.stop();
 		}
+	}
+	
+	private static String getGmailUsername() {
+		if (EmailSender.currentDefaultSender >= 2)
+			return "info" + currentDefaultSender + "@picsauditing.com";
+		else
+			return "info@picsauditing.com";
+	}
+	
+	private static String getDefaultSender() {
+		if (EmailSender.currentDefaultSender >= 2)
+			return "PICS Mailer <info" + currentDefaultSender + "@picsauditing.com>";
+		else
+			return "PICS Mailer <info@picsauditing.com>";
+	}
+
+	private static void changeDefaultSender() {
+		currentDefaultSender = (currentDefaultSender % NUMBER_OF_GMAIL_ACOUNTS) + 1;
 	}
 
 	/**
