@@ -301,6 +301,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 		questionAnswer = source.questionAnswer;
 		include = source.include;
 		acceptsBids = source.acceptsBids;
+		levelAdjustment = source.levelAdjustment;
 	}
 
 	@Override
