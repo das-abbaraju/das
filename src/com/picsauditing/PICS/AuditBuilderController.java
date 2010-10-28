@@ -423,6 +423,15 @@ public class AuditBuilderController {
 			detail.governingBodies.remove(null);
 		}
 
+		// Make sure that the caos' visibility is set correctly
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			boolean contains = contains(detail.governingBodies, cao.getOperator());
+			if (contains != cao.isVisible()) {
+				cao.setVisible(contains);
+				contractorAuditOperatorDAO.save(cao);
+			}
+		}
+		
 		// Add CAOs that don't yet exist
 		for (OperatorAccount operator : detail.governingBodies) {
 
@@ -442,12 +451,6 @@ public class AuditBuilderController {
 						.getFirstStep().getNewStatus());
 				conAudit.getOperators().add(cao);
 				contractorAuditOperatorDAO.save(cao);
-			}
-		}
-		//cAuditDAO.save(conAudit);
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (!contains(detail.governingBodies, cao.getOperator())) {
-				cao.setVisible(false);
 			}
 		}
 
