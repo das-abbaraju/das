@@ -405,6 +405,7 @@ select distinct cao.id, t.opID from contractor_audit_operator cao
 join temp_cao t on cao.auditID = t.auditID and t.gbID = cao.opID;
 
 update contractor_audit_operator set status = 'Complete' where status IN ('Active');
+update contractor_audit_operator set status = 'NotApplicable' where status IN ('Exempt');
 
 update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedDate = ca.expiresDate where cao.auditID = ca.id and cao.statusChangedDate is null and cao.status IN ('Expired');
 update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedDate = ca.closedDate where cao.auditID = ca.id and cao.statusChangedDate is null and cao.status IN ('Complete','Approved');
