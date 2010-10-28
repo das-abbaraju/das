@@ -316,7 +316,7 @@ public class AuditBuilderController {
 			}
 		}
 		// Save all auditCatData rows at once
-		cAuditDAO.save(conAudit);
+		//cAuditDAO.save(conAudit);
 		PicsLogger.stop();
 	}
 
