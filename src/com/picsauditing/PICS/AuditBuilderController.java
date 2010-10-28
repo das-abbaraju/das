@@ -428,7 +428,7 @@ public class AuditBuilderController {
 			boolean contains = contains(detail.governingBodies, cao.getOperator());
 			if (contains != cao.isVisible()) {
 				cao.setVisible(contains);
-				contractorAuditOperatorDAO.save(cao);
+				//contractorAuditOperatorDAO.save(cao);
 			}
 		}
 		
