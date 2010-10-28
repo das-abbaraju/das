@@ -139,7 +139,7 @@ public class AuditBuilderController {
 							&& cao.getStatus()
 									.before(AuditStatus.NotApplicable))
 						needed = true;
-					else if (cao.getPercentComplete() >= 0)
+					else if (cao.getPercentComplete() > 0)
 						needed = true;
 				}
 
