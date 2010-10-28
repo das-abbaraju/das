@@ -15,6 +15,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -53,12 +54,13 @@ public class ContractorRegistration extends ContractorActionSupport {
 	protected ContractorValidator contractorValidator;
 	protected FacilityChanger facilityChanger;
 	private Indexer indexer;
+	private StateDAO stateDAO;
 
 	protected Country country;
 
 	public ContractorRegistration(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO,
-			UserDAO userDAO, ContractorRegistrationRequestDAO requestDAO, FacilityChanger facilityChanger, Indexer indexer) {
+			UserDAO userDAO, ContractorRegistrationRequestDAO requestDAO, FacilityChanger facilityChanger, Indexer indexer, StateDAO stateDAO) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
@@ -68,6 +70,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		//this.subHeading = "New Contractor Information";
 		this.facilityChanger = facilityChanger;
 		this.indexer = indexer;
+		this.stateDAO = stateDAO;
 	}
 
 	public String execute() throws Exception {
@@ -177,8 +180,12 @@ public class ContractorRegistration extends ContractorActionSupport {
 			contractor.setAgreedBy(user);
 			contractor.setAgreementDate(contractor.getCreationDate());
 			contractor.setPrimaryContact(user);
+			if(contractor.getState()!=null)
+				contractor.setState(stateDAO.find(contractor.getState().getIsoCode()));
+			if(contractor.getCountry()!=null)
+				contractor.setCountry(getCountryDAO().find(contractor.getCountry().getIsoCode()));
 			accountDao.save(contractor);
-			indexer.runSingle(contractor, "account");
+			indexer.runSingle(accountDao.find(contractor.getId()), "account");
 
 			// Create a blank PQF for this contractor
 			ContractorAudit audit = new ContractorAudit();

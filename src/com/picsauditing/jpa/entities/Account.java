@@ -600,7 +600,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 		// name
 		String[] sA = this.name.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
 		for(String s : sA){
-			if(s!=null && !s.isEmpty())
+			if(s!=null && !s.isEmpty())	
 				l.add(new IndexObject(s, 7));
 		}
 		// dba
@@ -616,9 +616,11 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 			l.add(new IndexObject(this.city.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", ""), 3));
 		}
 		// state
+		//State s = s
 		if(this.state!=null && !this.state.isoCode.isEmpty()){
 			l.add(new IndexObject(this.state.isoCode, 4));
-			l.add(new IndexObject(this.state.getEnglish().toUpperCase(), 4));
+			if(this.state.getEnglish()!=null)
+				l.add(new IndexObject(this.state.getEnglish().toUpperCase(), 4));
 		}
 		// zip
 		if(this.zip!=null && !this.zip.isEmpty())
@@ -626,7 +628,8 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 		// country
 		if(this.country!=null && !this.country.isoCode.isEmpty()){
 			l.add(new IndexObject(this.country.isoCode, 3));
-			l.add(new IndexObject(this.country.getEnglish().toUpperCase(), 3));
+			if(this.country.getEnglish()!=null)
+				l.add(new IndexObject(this.country.getEnglish().toUpperCase(), 3));
 		}
 		// phone
 		if(this.phone!=null && !this.phone.isEmpty()){
