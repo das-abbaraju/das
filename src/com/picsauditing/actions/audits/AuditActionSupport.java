@@ -50,10 +50,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private List<AuditCategoryRule> rules = null;
 	protected Map<AuditCategory, AuditCatData> categories = null;
 	protected Map<Integer, WorkflowStep> caoSteps = null;
-	protected ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
-	Map<AuditCategory,Integer> percentComplete = null;
-	Map<AuditCategory,Integer> percentVerified = null;
-	
+	protected ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap
+			.create();
+	Map<Integer, Integer> percentComplete = null;
+
 	private List<CategoryNode> categoryNodes;
 
 	public AuditActionSupport(ContractorAccountDAO accountDao,
@@ -87,7 +87,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 		if (!conAudit.isVisibleTo(permissions))
 			throw new NoRightsException(conAudit.getAuditType().getAuditName());
-		
+
 	}
 
 	public int getAuditID() {
@@ -113,18 +113,20 @@ public class AuditActionSupport extends ContractorActionSupport {
 				AuditBuilder builder = new AuditBuilder();
 				Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 				if (permissions.isCorporate()) {
-					for (Facility facility : getOperatorAccount().getOperatorFacilities()) {
+					for (Facility facility : getOperatorAccount()
+							.getOperatorFacilities()) {
 						operators.add(facility.getOperator());
 					}
 				} else
 					operators.add(getOperatorAccount());
 
-				AuditCategoriesDetail auditCategoryDetail = 
-					builder.getDetail(conAudit.getAuditType(), getRules(), operators);
+				AuditCategoriesDetail auditCategoryDetail = builder.getDetail(
+						conAudit.getAuditType(), getRules(), operators);
 				requiredCategories = auditCategoryDetail.categories;
 			}
 
-			categories = conAudit.getApplicableCategories(permissions, requiredCategories);
+			categories = conAudit.getApplicableCategories(permissions,
+					requiredCategories);
 		}
 		return categories;
 	}
@@ -210,24 +212,26 @@ public class AuditActionSupport extends ContractorActionSupport {
 		this.categoryID = categoryID;
 	}
 
-	public void getValidSteps(){
+	public void getValidSteps() {
 		List<AuditStatus> occ = new ArrayList<AuditStatus>();
-		if(caoSteps ==null)
+		if (caoSteps == null)
 			caoSteps = new HashMap<Integer, WorkflowStep>();
-		for(ContractorAuditOperator cao : conAudit.getOperators()){
-			if(cao.isVisible() && cao.isVisibleTo(permissions)){
-				for (WorkflowStep workflowStep : conAudit.getAuditType().getWorkFlow().getSteps()) {
-					if(workflowStep.getOldStatus() == cao.getStatus()){
-						if(workflowStep.getNewStatus() == AuditStatus.Submitted || workflowStep.getNewStatus() == AuditStatus.Resubmitted){
-							if(!isCanSubmitAudit(cao))
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.isVisible() && cao.isVisibleTo(permissions)) {
+				for (WorkflowStep workflowStep : conAudit.getAuditType()
+						.getWorkFlow().getSteps()) {
+					if (workflowStep.getOldStatus() == cao.getStatus()) {
+						if (workflowStep.getNewStatus() == AuditStatus.Submitted
+								|| workflowStep.getNewStatus() == AuditStatus.Resubmitted) {
+							if (!isCanSubmitAudit(cao))
 								continue;
 						}
-						if(workflowStep.getNewStatus() == AuditStatus.Complete){
-							if(!isCanCloseAudit(cao))
+						if (workflowStep.getNewStatus() == AuditStatus.Complete) {
+							if (!isCanCloseAudit(cao))
 								continue;
 						}
-						if(workflowStep.getNewStatus() == AuditStatus.Incomplete){
-							if(!isCanVerify())
+						if (workflowStep.getNewStatus() == AuditStatus.Incomplete) {
+							if (!isCanVerify())
 								continue;
 						}
 						caoSteps.put(cao.getId(), workflowStep);
@@ -235,29 +239,29 @@ public class AuditActionSupport extends ContractorActionSupport {
 				}
 			}
 		}
-		if(!caoSteps.isEmpty()){
+		if (!caoSteps.isEmpty()) {
 			// change map to multimap
 			for (Entry<Integer, WorkflowStep> en : caoSteps.entrySet()) {
-				if(occ.contains(en.getValue().getNewStatus()))
+				if (occ.contains(en.getValue().getNewStatus()))
 					actionStatus.put(en.getValue().getNewStatus(), en.getKey());
-				else{
+				else {
 					occ.add(en.getValue().getNewStatus());
 					actionStatus.put(en.getValue().getNewStatus(), en.getKey());
 				}
 			}
 		}
 	}
-	
-	public boolean hasStatusChanged(AuditStatus as){
-		//Workflow wf = conAudit.getAuditType().getWorkFlow();
-		
-		if(as == AuditStatus.Pending)
+
+	public boolean hasStatusChanged(AuditStatus as) {
+		// Workflow wf = conAudit.getAuditType().getWorkFlow();
+
+		if (as == AuditStatus.Pending)
 			return false;
 		return true;
 	}
-	
-	public WorkflowStep getCurrentCaoStep(int caoID){
-		if(caoSteps ==null)
+
+	public WorkflowStep getCurrentCaoStep(int caoID) {
+		if (caoSteps == null)
 			getValidSteps();
 		return caoSteps.get(caoID);
 	}
@@ -265,9 +269,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public boolean isCanEditAudit() {
 		if (conAudit.isExpired())
 			return false;
-	
+
 		AuditType type = conAudit.getAuditType();
-	
+
 		if (type.getClassType().isPolicy()) {
 			// we don't want the contractors to edit the effective dates on the
 			// old policy
@@ -276,16 +280,16 @@ public class AuditActionSupport extends ContractorActionSupport {
 					return false;
 			}
 		}
-	
+
 		// Auditors can edit their assigned audits
 		if (type.isHasAuditor() && !type.isCanContractorEdit()
 				&& conAudit.getAuditor() != null
 				&& permissions.getUserId() == conAudit.getAuditor().getId())
 			return true;
-	
+
 		if (permissions.seesAllContractors())
 			return true;
-	
+
 		if (permissions.isContractor()) {
 			if (conAudit.getAuditType().getWorkFlow().getId() == 5
 					|| conAudit.getAuditType().getWorkFlow().getId() == 3) {
@@ -294,19 +298,20 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 			return type.isCanContractorEdit();
 		}
-		
+
 		if (type.getEditPermission() != null) {
-			if(permissions.hasPermission(type.getEditPermission()) && !isAuditWithOtherOperators())
-					return true;
+			if (permissions.hasPermission(type.getEditPermission())
+					&& !isAuditWithOtherOperators())
+				return true;
 		}
-	
+
 		return false;
 	}
 
 	public boolean isCanSubmitAudit(ContractorAuditOperator cao) {
 		if (!isCanEditAudit())
 			return false;
-	
+
 		if (cao.canSubmitCao()) {
 			if (permissions.isContractor()) {
 				if (!conAudit.getContractorAccount()
@@ -327,7 +332,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanExempt() {
-		if(permissions.isAdmin())
+		if (permissions.isAdmin())
 			return true;
 		return false;
 	}
@@ -342,13 +347,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return false;
 		if (!isCanEditAudit())
 			return false;
-	
+
 		if (cao.canVerifyCao()) {
 			return true;
 		}
 		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
 			return false;
-	
+
 		return false;
 	}
 
@@ -357,7 +362,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanVerify() {
-		if(conAudit.getAuditType().isPqf() || conAudit.getAuditType().isAnnualAddendum())
+		if (conAudit.getAuditType().isPqf()
+				|| conAudit.getAuditType().isAnnualAddendum())
 			return conAudit.hasCaoStatusBefore(AuditStatus.Complete);
 		return false;
 	}
@@ -367,63 +373,75 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanViewRequirements() {
-		if(conAudit.getAuditType().getWorkFlow().getId() == Workflow.AUDIT_REQUIREMENTS_WORKFLOW)
+		if (conAudit.getAuditType().getWorkFlow().getId() == Workflow.AUDIT_REQUIREMENTS_WORKFLOW)
 			return conAudit.hasCaoStatusAfter(AuditStatus.Incomplete);
 		return false;
 	}
 
 	public boolean isCanSchedule() {
-		if(conAudit.getAuditType().isScheduled() && (permissions.isContractor() || permissions.isAdmin()))
+		if (conAudit.getAuditType().isScheduled()
+				&& (permissions.isContractor() || permissions.isAdmin()))
 			return conAudit.hasCaoStatus(AuditStatus.Pending);
 		return false;
 	}
-	
+
 	public boolean isAppliesSubCategory(AuditCategory auditCategory) {
-		if(categories.get(auditCategory).isApplies())
+		if (categories.get(auditCategory).isApplies())
 			return true;
-		if(!categories.get(auditCategory.getParent()).isApplies())
+		if (!categories.get(auditCategory.getParent()).isApplies())
 			return true;
 		return false;
 	}
-	
+
 	class CategoryNode {
 		public AuditCategory category;
 		public List<CategoryNode> subCategories;
-		public float percent = 0;
+		public int total;
+		public int answered;
+
+		public float getPercent() {
+			if (total == 0)
+				return 100;
+			return (int) ((answered * 1f / total) * 100);
+		}
 	}
-	
+
 	public List<CategoryNode> getCategoryNodes() {
 		if (categoryNodes == null)
-			categoryNodes = createCategoryNodes(conAudit.getAuditType().getTopCategories());
+			categoryNodes = createCategoryNodes(conAudit.getAuditType()
+					.getTopCategories());
 
 		return categoryNodes;
 	}
-	
+
 	private List<CategoryNode> createCategoryNodes(List<AuditCategory> cats) {
-		return createCategoryNodes(cats, false, 0, 0);
+		return createCategoryNodes(cats, false);
 	}
 
-	private List<CategoryNode> createCategoryNodes(List<AuditCategory> cats, boolean addAll, int t, int a) {
+	private List<CategoryNode> createCategoryNodes(List<AuditCategory> cats,
+			boolean addAll) {
 		List<CategoryNode> nodes = new ArrayList<CategoryNode>();
-		int total = t;
-		int answered = a;
 		for (AuditCategory cat : cats) {
-			if (addAll || (getCategories().get(cat) != null && getCategories().get(cat).isApplies())) {
+			if (addAll
+					|| (getCategories().get(cat) != null && getCategories()
+							.get(cat).isApplies())) {
 				CategoryNode node = new CategoryNode();
 				node.category = cat;
-				if(conAudit.getAuditType().getClassType().isIm()) {
-					total += getCategories().get(cat).getScoreCount();
-					answered += (getCategories().get(cat).getScore() * getCategories().get(cat).getScoreCount());
+				if (conAudit.getAuditType().getClassType().isIm()) {
+					node.total = getCategories().get(cat).getScoreCount();
+					node.answered = (int) (getCategories().get(cat).getScore() * getCategories()
+							.get(cat).getScoreCount());
+				} else {
+					node.total = getCategories().get(cat).getNumRequired();
+					node.answered = getCategories().get(cat)
+							.getRequiredCompleted();
 				}
-				else {
-					total += getCategories().get(cat).getNumRequired();
-					answered += getCategories().get(cat).getRequiredCompleted();
+				node.subCategories = createCategoryNodes(
+						cat.getSubCategories(), addAll);
+				for (CategoryNode n : node.subCategories) {
+					node.total += n.total;
+					node.answered += n.answered;
 				}
-				node.subCategories = createCategoryNodes(cat.getSubCategories(), addAll, total, answered);
-				if(total==0)
-					node.percent = 100;
-				else
-					node.percent =  (int)((answered*1f/total)*100);
 				nodes.add(node);
 			}
 		}
@@ -434,11 +452,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public List<CategoryNode> getNotApplicableCategoryNodes() {
 		List<CategoryNode> nodes = new ArrayList<CategoryNode>();
 		for (AuditCategory cat : conAudit.getAuditType().getTopCategories()) {
-			if (getCategories().get(cat) != null && !getCategories().get(cat).isApplies()) {
+			if (getCategories().get(cat) != null
+					&& !getCategories().get(cat).isApplies()) {
 				CategoryNode node = new CategoryNode();
 				node.category = cat;
 				node.subCategories = createCategoryNodes(
-						cat.getSubCategories(), true, 0, 0);
+						cat.getSubCategories(), true);
 				nodes.add(node);
 			}
 		}
