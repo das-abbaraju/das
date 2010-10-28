@@ -167,10 +167,8 @@ public class ContractorAuditController extends AuditActionSupport {
 			return SUCCESS;
 		}
 		
-		if(conAudit!=null){
-			if(caoSteps==null)
-				getValidSteps();
-		}
+		if(conAudit!=null)
+			getValidSteps();
 		
 		return SUCCESS;
 	}

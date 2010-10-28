@@ -211,9 +211,7 @@ public class CaoSave extends AuditActionSupport {
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
 				return "refresh";
 			}
-
-			if (caoSteps == null)
-				getValidSteps();
+			getValidSteps();
 		}
 
 		if ("caoAjaxSave".equals(button))

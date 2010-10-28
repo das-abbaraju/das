@@ -49,7 +49,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private Map<Integer, AuditData> hasManual;
 	private List<AuditCategoryRule> rules = null;
 	protected Map<AuditCategory, AuditCatData> categories = null;
-	protected Map<Integer, WorkflowStep> caoSteps = null;
+	//protected Map<Integer, WorkflowStep> caoSteps = null;
+	protected ArrayListMultimap<Integer, WorkflowStep> caoSteps = ArrayListMultimap.create();
 	protected ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap
 			.create();
 	Map<Integer, Integer> percentComplete = null;
@@ -213,9 +214,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public void getValidSteps() {
-		List<AuditStatus> occ = new ArrayList<AuditStatus>();
-		if (caoSteps == null)
-			caoSteps = new HashMap<Integer, WorkflowStep>();
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (cao.isVisible() && cao.isVisibleTo(permissions)) {
 				for (WorkflowStep workflowStep : conAudit.getAuditType()
@@ -240,14 +238,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 		}
 		if (!caoSteps.isEmpty()) {
-			// change map to multimap
-			for (Entry<Integer, WorkflowStep> en : caoSteps.entrySet()) {
-				if (occ.contains(en.getValue().getNewStatus()))
+			for (Entry<Integer, WorkflowStep> en : caoSteps.entries()) {
+				if(actionStatus.containsKey(en.getValue().getNewStatus()))
 					actionStatus.put(en.getValue().getNewStatus(), en.getKey());
-				else {
-					occ.add(en.getValue().getNewStatus());
-					actionStatus.put(en.getValue().getNewStatus(), en.getKey());
-				}
+				else actionStatus.put(en.getValue().getNewStatus(), en.getKey());
 			}
 		}
 	}
@@ -260,7 +254,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return true;
 	}
 
-	public WorkflowStep getCurrentCaoStep(int caoID) {
+	public List<WorkflowStep> getCurrentCaoStep(int caoID) {
 		if (caoSteps == null)
 			getValidSteps();
 		return caoSteps.get(caoID);
