@@ -450,7 +450,7 @@ public class AuditBuilderController {
 				cao.setStatus(cao.getAudit().getAuditType().getWorkFlow()
 						.getFirstStep().getNewStatus());
 				conAudit.getOperators().add(cao);
-				contractorAuditOperatorDAO.save(cao);
+				//contractorAuditOperatorDAO.save(cao);
 			}
 		}
 
