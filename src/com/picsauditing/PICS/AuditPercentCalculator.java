@@ -235,7 +235,7 @@ public class AuditPercentCalculator {
 				if (data.isOverride())
 					applies = data.isApplies();
 				else {
-					if(detail.categories.contains(data.getCategory())) {
+					if(data.isApplies() && detail.categories.contains(data.getCategory())) {
 						AuditCategoryRule auditCatRule = AuditBuilder.getApplicable(detail.rules, data.getCategory(), cao.getOperator());
 						if(auditCatRule != null)
 							applies = auditCatRule.isInclude();

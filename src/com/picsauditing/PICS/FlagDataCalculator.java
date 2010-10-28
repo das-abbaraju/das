@@ -407,12 +407,4 @@ public class FlagDataCalculator {
 		}
 		return null;
 	}
-	
-	private boolean hasCaop(ContractorAuditOperator cao, OperatorAccount operator) {
-		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-			if (caop.getOperator().getId() == operator.getId())
-				return true;
-		}
-		return false;
-	}
 }

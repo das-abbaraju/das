@@ -304,15 +304,19 @@ public class AuditBuilderController {
 		}
 
 		Set<AuditCategory> categoriesNeeded = detail.categories;
-
+		
 		for (AuditCategory category : conAudit.getAuditType().getCategories()) {
 
 			AuditCatData catData = getCatData(conAudit, category);
 			if (catData.isOverride()) {
 				// (show/hide) a category with more than one CAO.
 			} else {
-				catData.setApplies(categoriesNeeded.contains(catData
-						.getCategory()));
+				boolean categoryApplies =  categoriesNeeded.contains(catData.getCategory());
+				if(categoryApplies) {
+					// Making sure the top level parent applies for subcategories when adding it to the AuditCatData
+					categoryApplies = categoriesNeeded.contains(catData.getCategory().getTopParent());
+				}	
+				catData.setApplies(categoryApplies);
 			}
 		}
 		// Save all auditCatData rows at once
@@ -382,10 +386,7 @@ public class AuditBuilderController {
 		catData.setApplies(true);
 		catData.setOverride(false);
 		catData.setAuditColumns(new User(User.SYSTEM));
-		if (category.getNumRequired() <= 0)
-			catData.setNumRequired(1);
-		else
-			catData.setNumRequired(category.getNumRequired());
+		catData.setNumRequired(category.getNumRequired());
 		conAudit.getCategories().add(catData);
 		return catData;
 	}
