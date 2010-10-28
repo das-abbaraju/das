@@ -294,9 +294,9 @@ public class FlagDataCalculator {
 				for (ContractorAudit conAudit : contractor.getAudits()) {
 					if (key.getAuditType().equals(conAudit.getAuditType())) {
 						if (!conAudit.isExpired()) {
-
-							ContractorAuditOperator cao = conAudit.getCao(operator.getOperatorHeirarchy());
-							if (cao.isVisible()) {
+							// There could be multiple audits for the same
+							// operator
+							for (ContractorAuditOperator cao : getCaosForOperator(conAudit, operator)) {
 								if (cao.getStatus().before(AuditStatus.Submitted)) {
 									if (conAudit.getAuditType().isCanContractorEdit())
 										return WaitingOn.Contractor;
@@ -309,7 +309,7 @@ public class FlagDataCalculator {
 									}
 								}
 
-								AuditStatus requiredStatus =key.getRequiredStatus();
+								AuditStatus requiredStatus = key.getRequiredStatus();
 
 								if (cao.getStatus().before(requiredStatus)) {
 									if (cao.getStatus().isComplete()) {
@@ -406,5 +406,18 @@ public class FlagDataCalculator {
 				return flList.get(0);
 		}
 		return null;
+	}
+
+	private List<ContractorAuditOperator> getCaosForOperator(ContractorAudit conAudit, OperatorAccount operator) {
+		List<ContractorAuditOperator> caos = new ArrayList<ContractorAuditOperator>();
+		
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+				if (caop.getOperator().equals(operator) && cao.isVisible())
+					caos.add(cao);
+			}
+		}
+		
+		return caos;
 	}
 }
