@@ -154,8 +154,8 @@ public class AuditBuilderController {
 
 		/** Generate Categories and CAOs **/
 		for (ContractorAudit conAudit : currentAudits) {
-			fillAuditCategories(conAudit);
 			fillAuditOperators(conAudit);
+			fillAuditCategories(conAudit);
 			for (ContractorAuditOperator cao : conAudit.getOperators()) {
 				fillAuditOperatorPermissions(cao);
 			}
