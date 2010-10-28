@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
-import com.picsauditing.PICS.AuditBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
@@ -239,7 +238,7 @@ public class AuditPercentCalculator {
 					if(detail.categories.contains(data.getCategory())) {
 						AuditCategoryRule auditCatRule = AuditBuilder.getApplicable(detail.rules, data.getCategory(), cao.getOperator());
 						if(auditCatRule != null)
-							applies = true;
+							applies = auditCatRule.isInclude();
 					}
 				}
 				if (applies) {
