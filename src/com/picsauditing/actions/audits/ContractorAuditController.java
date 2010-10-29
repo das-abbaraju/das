@@ -66,7 +66,7 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		if(auditID > 0)
 			this.findConAudit();
-
+		
 		if (button != null) {
 			if (categoryID > 0 && permissions.isPicsEmployee()) {
 				if ("IncludeCategory".equals(button)) {

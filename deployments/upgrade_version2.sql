@@ -597,3 +597,29 @@ delete from audit_category
 where auditTypeID in (select id from audit_type where classType = 'Policy')
 and name = 'Operator Requirements';
 
+-- setting all the contractors, audits to recalculation
+update contractor_info set needsRecalculation = null;
+update contractor_Audit set lastRecalculation = null;
+
+-- updating the questions on the auditcategory
+create TEMPORARY table temp_cats
+select categoryid, sum(numReq) as numRequired, sum(numQs) aS numQuestions from
+(select id as categoryid,0 as numReq,0 as numQs from audit_category
+union
+select categoryid, count(*) as numReq, 0 as numQs from audit_question 
+where expirationDate > Now() and required = 1 group by categoryid
+union 
+select categoryid, 0 numReq, count(*) as numQs from audit_question 
+where expirationDate > Now() group by categoryid
+) t
+join audit_category ac on ac.id = t.categoryid group by ac.id;
+
+UPDATE audit_category ac 
+join temp_cats t on t.categoryid = ac.id
+set ac.numRequired = t.numrequired, ac.numQuestions = t.numQuestions;
+
+update audit_cat_data acd
+join audit_category ac on acd.categoryID = ac.id
+set acd.numRequired = ac.numRequired;
+
+
