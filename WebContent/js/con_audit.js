@@ -115,20 +115,20 @@ $(function(){
 	
 
 	$('#auditViewArea').delegate('input.verify', 'click', function(e) {
-			var me = $(this).parents('div.question:first');
-			me.block({message: $(this).val()+'ing...'})
-				.load('AuditDataSaveAjax.action',
-					$('form.qform', this).serialize(),
-					function(response, status) {
-						if (status=='success') {
-							$(this).trigger('updateDependent');
-							updateCategories();
-						} else {
-							alert('Failed to save answer.');
-						} 
-						$(this).unblock();
-					});
-			return false;
+		var me = $(this).parents('div.question:first');
+		me.block({message: $(this).val()+'ing...'})
+			.load('AuditDataSaveAjax.action',
+				$('form.qform', this).serialize(),
+				function(response, status) {
+					if (status=='success') {
+						$(this).trigger('updateDependent');
+						updateCategories();
+					} else {
+						alert('Failed to save answer.');
+					} 
+					$(this).unblock();
+				});
+		return false;
 	});
 	
 	$('#auditViewArea').delegate('div.hasDependentRequired', 'updateDependent', function() {
