@@ -102,6 +102,9 @@ public class FlagDataCalculator {
 
 		FlagCriteria criteria = opCriteria.getCriteria();
 		String hurdle = criteria.getDefaultValue();
+		
+		if (operator == null)
+			operator = opCriteria.getOperator();
 
 		if (criteria.isAllowCustomValue() && !Strings.isEmpty(opCriteria.getHurdle())) {
 			hurdle = opCriteria.getHurdle();
