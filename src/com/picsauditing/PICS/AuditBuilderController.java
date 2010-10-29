@@ -87,17 +87,16 @@ public class AuditBuilderController {
 		cAuditDAO.remove(175601);
 		getAuditTypeRules();
 
-		List<ContractorAudit> currentAudits = contractor.getAudits();
 		/* Add audits not already there */
 		int year = DateBean.getCurrentYear();
 		for (AuditType auditType : getRequiredAuditTypeSet()) {
 			if (auditType.isAnnualAddendum()) {
-				addAnnualAddendum(currentAudits, year - 1, auditType);
-				addAnnualAddendum(currentAudits, year - 2, auditType);
-				addAnnualAddendum(currentAudits, year - 3, auditType);
+				addAnnualAddendum(contractor.getAudits(), year - 1, auditType);
+				addAnnualAddendum(contractor.getAudits(), year - 2, auditType);
+				addAnnualAddendum(contractor.getAudits(), year - 3, auditType);
 			} else {
 				boolean found = false;
-				for (ContractorAudit conAudit : currentAudits) {
+				for (ContractorAudit conAudit : contractor.getAudits()) {
 					if (conAudit.getAuditType().equals(auditType)) {
 						// We found a matching audit for this requirement
 						// Now determine if it will be good enough
@@ -119,14 +118,13 @@ public class AuditBuilderController {
 					PicsLogger.log("Adding: " + auditType.getId()
 							+ auditType.getAuditName());
 					ContractorAudit pendingToInsert = createAudit(auditType);
-					cAuditDAO.save(pendingToInsert);
-					currentAudits.add(pendingToInsert);
+					contractor.getAudits().add(pendingToInsert);
 				}
 			}
 		}
 
 		/* Remove unneeded audits */
-		Iterator<ContractorAudit> iter = currentAudits.iterator();
+		Iterator<ContractorAudit> iter = contractor.getAudits().iterator();
 		while (iter.hasNext()) {
 			ContractorAudit conAudit = iter.next();
 			PicsLogger.log("checking to see if we still need existing "
@@ -153,7 +151,7 @@ public class AuditBuilderController {
 		}
 
 		/** Generate Categories and CAOs **/
-		for (ContractorAudit conAudit : currentAudits) {
+		for (ContractorAudit conAudit : contractor.getAudits()) {
 			fillAuditOperators(conAudit);
 			fillAuditCategories(conAudit);
 			for (ContractorAuditOperator cao : conAudit.getOperators()) {
@@ -491,7 +489,6 @@ public class AuditBuilderController {
 			}
 		}
 		// Remove first
-		List<ContractorAuditOperatorPermission> removals = new ArrayList<ContractorAuditOperatorPermission>();
 		Iterator<ContractorAuditOperatorPermission> caopIter = cao
 				.getCaoPermissions().iterator();
 		while (caopIter.hasNext()) {
