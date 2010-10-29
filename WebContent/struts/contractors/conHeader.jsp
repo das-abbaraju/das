@@ -9,7 +9,7 @@ $(function(){
 				$('#caoTable').unblock();
 			});
 	});
-	$('.singleButton').click(function() {
+	$('.singleButton').live('click', function() {
 		var data = {
 				auditID: $('#auditID').val(), button: 'statusLoad', 
 				caoID: $(this).children('.bCaoID').val(), 
@@ -18,14 +18,8 @@ $(function(){
 		$('#caoTable').block({message: 'Loading...'});
 		loadResults(data);
 	});
-	$('.cluetip').cluetip({
-		arrows: true,
-		cluetipClass: 'jtip',
-		local: true,
-		clickThrough: false
-	});	
 
-	$('#multiStatusChange').change(function(){
+	$('#multiStatusChange').live('change', function(){
 		var caos =  $(this).val();
 		if(caos == -1)
 			return false;
