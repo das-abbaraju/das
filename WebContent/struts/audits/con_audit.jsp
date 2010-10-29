@@ -13,10 +13,14 @@
 <script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
 <script type="text/javascript" src="js/con_audit.js?v=<s:property value="version"/>"></script>
-<script type="text/javascript">auditID = '<s:property value="conAudit.id"/>';</script>
+<script type="text/javascript">
+	auditID = '<s:property value="conAudit.id"/>';
+	<s:if test="conAudit.lastRecalculation == null">
+		updateCategoriesNow();
+	</s:if>
+</script>
 </head>
 <body>
-
 <s:include value="../audits/audit_catHeader.jsp"/>
 
 <s:if test="policy">

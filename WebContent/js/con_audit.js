@@ -251,6 +251,9 @@ function _updateCategories() {
 				}
 				
 				showNavButtons();
+				
+				if (!$('#aCatlist li.catlist').hasClass('current'))
+					$('a.hist-category :first').click();
 			}
 		}
 	});
