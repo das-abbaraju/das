@@ -31,15 +31,15 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	protected String searchType = "";
 	protected String accType = "";
 	protected String pageLinks;
-	
-	private final int PAGEBREAK = 100;	
+
+	private final int PAGEBREAK = 100;
 
 	protected List<Indexable> fullList;
 	protected Hashtable<Integer, Integer> ht;
 
 	protected Database db = new Database();
 	protected SearchEngine searchEngine = null;
-	
+
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
 	private EmployeeDAO empDAO;
@@ -49,106 +49,122 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		this.userDAO = userDAO;
 		this.empDAO = empDAO;
 	}
-	
-	public MainSearch(){		
+
+	public MainSearch() {
 	}
 
 	@Override
 	public void prepare() throws Exception {
-		String[] qA = (String[]) ActionContext.getContext().getParameters().get("q");
+		String[] qA = (String[]) ActionContext.getContext().getParameters()
+				.get("q");
 		if (qA != null)
 			searchTerm = qA[0];
 	}
 
 	public String execute() throws SQLException, IOException {
-		if(!forceLogin())
+		if (!forceLogin())
 			return LOGIN;
 		searchEngine = new SearchEngine(permissions);
 		if ("getResult".equals(button)) { // pull up a result
 			if (searchType.equals("account")) {
-				if ("Contractor".equals(accType)) {
+				if ("Contractor".equals(accType))
 					redirect("ContractorView.action?id=" + searchID);
-				} else if ("Operator".equals(accType)) {
+				else if ("Operator".equals(accType))
 					redirect("FacilitiesEdit.action?id=" + searchID);
-				} else if ("Assessment".equals(accType)) {
+				else if ("Assessment".equals(accType))
 					redirect("AssessmentCenterEdit.action?id=" + searchID);
-				} else if ("Corporate".equals(accType)) {
+				else if ("Corporate".equals(accType))
 					redirect("FacilitiesEdit.action?id=" + searchID);
-				}
 			} else if (searchType.equals("user")) {
 				User u = userDAO.find(searchID);
-				redirect("UsersManage.action?accountId=" + u.getAccount().getId() + "&user.id=" + searchID);
-			} else if (searchType.equals("employee")) {
+				redirect("UsersManage.action?accountId="
+						+ u.getAccount().getId() + "&user.id=" + searchID);
+			} else if (searchType.equals("employee"))
 				redirect("ManageEmployees.action?employee.id=" + searchID);
-			}
-			
+
 			return BLANK;
 		} else if ("search".equals(button)) { // full view and paging
-			
-			List<String> terms = searchEngine.buildTerm(searchTerm, true, false);
+
+			List<String> terms = searchEngine
+					.buildTerm(searchTerm, true, false);
 			// if corporate then build list of contractors in their system
 			ht = searchEngine.getConIds(permissions);
-			String query = searchEngine.buildQuery(permissions, terms, null, startIndex, 100, false, true);
+			String query = searchEngine.buildQuery(permissions, terms, null,
+					startIndex, 100, false, true);
 			List<BasicDynaBean> queryList = db.select(query, true);
 			totalRows = db.getAllRows();
-			String commonTermQuery = searchEngine.buildCommonTermQuery(terms, totalRows);
-			
-			if (totalRows>PAGEBREAK) {
-				List<BasicDynaBean> commonList = db.select(commonTermQuery, false);
+			String commonTermQuery = searchEngine.buildCommonTermQuery(terms,
+					totalRows);
+
+			if (totalRows > PAGEBREAK) {
+				List<BasicDynaBean> commonList = db.select(commonTermQuery,
+						false);
 				searchEngine.buildCommonSuggest(commonList, searchTerm);
 			}
-			
-			fullList= getFullResults(queryList);
-			if(fullList==null) // if null then we have no results because either nothing was returned or we have a return result already
+
+			if (queryList != null && queryList.size() > 0)
+				fullList = getFullResults(queryList);
+			else {
+				queryList = db.select(searchEngine.buildAccountSearch(
+						permissions, terms), true);
+				fullList = getFullResults(queryList);
+			}
+			if (fullList == null)
 				return SUCCESS;
-			
+
 			int end = 0;
-			if(totalRows-(startIndex+1)<PAGEBREAK)
+			if (totalRows - (startIndex + 1) < PAGEBREAK)
 				end = totalRows;
-			else end = startIndex + PAGEBREAK;
-			buildPages(totalRows, startIndex+1, end, startIndex/100+1);
-			
+			else
+				end = startIndex + PAGEBREAK;
+			buildPages(totalRows, startIndex + 1, end, startIndex / 100 + 1);
+
 			return SUCCESS;
 		} else { // autosuggest/complete
-			List<String> terms = searchEngine.buildTerm(searchTerm, true, false);
-			String query = searchEngine.buildQuery(permissions, terms, null, 0, 10, false, false);
+			List<String> terms = searchEngine
+					.buildTerm(searchTerm, true, false);
+			String query = searchEngine.buildQuery(permissions, terms, null, 0,
+					10, false, false);
 			List<BasicDynaBean> queryList = db.select(query, true);
 			totalRows = db.getAllRows();
-			getResults(queryList);
-			
+			if (queryList != null && queryList.size() > 0)
+				getResults(queryList);
+			else {
+				queryList = db.select(searchEngine.buildAccountSearch(
+						permissions, terms), true);
+				getResults(queryList);
+			}
+
 			return BLANK;
 		}
 	}
-	private List<Indexable> getFullResults(List<BasicDynaBean> queryList) throws IOException{
-		if(queryList.size()==1){ // only one result
-			String type = queryList.get(0).get("indexType").toString();;
-			int key = Integer.parseInt(queryList.get(0).get("foreignKey").toString());
-			String url = "Search.action?button=getResult&searchID="+key+"&searchType=";
-			if (type.equals("A") || type.equals("AS") || type.equals("C") || type.equals("CO") || type.equals("O")) { // account
-				Account a = accountDAO.find(key);
-				redirect(url+"account&accType="+a.getType());
-			} else if (type.equals("U") || type.equals("G")) { // user
-				redirect(url+"user");
-			} else if (type.equals("E")) { // employee
-				redirect(url+"employee");
-			}
-			return null;
-		}
+
+	private List<Indexable> getFullResults(List<BasicDynaBean> queryList)
+			throws IOException {
+		String type = "";
 		List<Indexable> temp = new ArrayList<Indexable>();
 		for (BasicDynaBean bdb : queryList) {
 			String check = (String) bdb.get("indexType");
 			int key = Integer.parseInt(bdb.get("foreignKey").toString());
-			if (check.equals("A") || check.equals("AS") || check.equals("C") || check.equals("CO") || check.equals("O")) { // account
+			if (check.equals("A") || check.equals("AS") || check.equals("C")
+					|| check.equals("CO") || check.equals("O")) {
 				Account a = accountDAO.find(key);
+				type = "account&accType=" + a.getType();
 				temp.add(a);
-			} else if (check.equals("U") || check.equals("G")) { // user
+			} else if (check.equals("U") || check.equals("G")) {
 				User u = userDAO.find(key);
+				type = "user";
 				temp.add(u);
-			} else if (check.equals("E")) { // employee
+			} else if (check.equals("E")) {
 				Employee e = empDAO.find(key);
+				type = "employee";
 				temp.add(e);
 			}
-		}		
+		}
+		if (temp.size() == 1) {
+			redirect("Search.action?button=getResult&searchID="
+					+ temp.get(0).getId() + "&searchType=" + type);
+		}
 		return temp;
 	}
 
@@ -157,28 +173,30 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		for (BasicDynaBean bdb : queryList) {
 			String check = (String) bdb.get("indexType");
 			int key = Integer.parseInt(bdb.get("foreignKey").toString());
-			if (check.equals("A") || check.equals("AS") || check.equals("C") || check.equals("CO") || check.equals("O")) { // account
+			if (check.equals("A") || check.equals("AS") || check.equals("C")
+					|| check.equals("CO") || check.equals("O")) {
 				Account a = accountDAO.find(key);
 				sb.append(a.getSearchText());
-			} else if (check.equals("U") || check.equals("G")) { // user
+			} else if (check.equals("U") || check.equals("G")) {
 				User u = userDAO.find(key);
 				sb.append(u.getSearchText());
-			} else if (check.equals("E")) { // employee
+			} else if (check.equals("E")) {
 				Employee e = empDAO.find(key);
 				sb.append(e.getSearchText());
 			}
 		}
-		output = sb.toString()+"FULL|Click to do a full search|"+searchTerm.replace(" ", "+");
-		
+		output = sb.toString() + "FULL|Click to do a full search|"
+				+ searchTerm.replace(" ", "+");
+
 	}
-	
-	public boolean checkCon(int id){
-		return ht.containsValue(id);	
+
+	public boolean checkCon(int id) {
+		return ht.containsValue(id);
 	}
 
 	private void buildPages(int total, int start, int end, int page) {
-		pageLinks = LinkBuilder.getPageNOfXLinks(total, PAGEBREAK, start, end, page);
-		//pageLinks = LinkBuilder.getPageNOfXLinks(totalRows, PAGEBREAK, startIndex+1, (startIndex)+100, startIndex/100+1);
+		pageLinks = LinkBuilder.getPageNOfXLinks(total, PAGEBREAK, start, end,
+				page);
 	}
 
 	public int getSearchID() {
