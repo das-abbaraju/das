@@ -622,4 +622,6 @@ update audit_cat_data acd
 join audit_category ac on acd.categoryID = ac.id
 set acd.numRequired = ac.numRequired;
 
+delete from audit_question where id = 119;
+delete from pqfdata where questionID = 119;
 
