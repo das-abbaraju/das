@@ -160,31 +160,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return hasManual;
 	}
 
-	/**
-	 * 
-	 * @return true if the current users is an operator and there is a visible
-	 *         cao belonging to another operator
-	 */
-	public boolean isAuditWithOtherOperators() {
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			// This logic is somewhat complex so here's an example:
-			// BASF Freeport Hub has access to many operators
-			// who use either BASF Corporate and BASF Catalyst insurance
-			// requirements
-			// If this contractor policy is visible (needed) for
-			// Paramount,
-			// then the policy is locked down.
-			// One potential flaw is that if the other CAO happens to be
-			// BASF Canada,
-			// which is not part of the Freeport Hub, then the policy
-			// will be locked for BASF Freeport.
-			if (!cao.isVisibleTo(permissions))
-				return true;
-		}
-
-		return false;
-	}
-
 	public String getDescriptionOsMs() {
 		String descriptionText = "OSHA Recordable";
 		for (OshaAudit osha : conAudit.getOshas())
@@ -220,20 +195,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 				for (WorkflowStep workflowStep : conAudit.getAuditType()
 						.getWorkFlow().getSteps()) {
 					if (workflowStep.getOldStatus() == cao.getStatus()) {
-						if (workflowStep.getNewStatus() == AuditStatus.Submitted
-								|| workflowStep.getNewStatus() == AuditStatus.Resubmitted) {
-							if (!isCanSubmitAudit(cao))
-								continue;
-						}
-						if (workflowStep.getNewStatus() == AuditStatus.Complete) {
-							if (!isCanCloseAudit(cao))
-								continue;
-						}
-						if (workflowStep.getNewStatus() == AuditStatus.Incomplete) {
-							if (!isCanVerify())
-								continue;
-						}
-						caoSteps.put(cao.getId(), workflowStep);
+						if(canPerformAction(cao, workflowStep))
+							caoSteps.put(cao.getId(), workflowStep);
 					}
 				}
 			}
@@ -247,15 +210,42 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 		}
 	}
-
-	public boolean hasStatusChanged(AuditStatus as) {
-		// Workflow wf = conAudit.getAuditType().getWorkFlow();
-
-		if (as == AuditStatus.Pending)
+	
+	public boolean canPerformAction(ContractorAuditOperator cao, WorkflowStep workflowStep) {
+		if(cao.getPercentComplete() < 100)
 			return false;
-		return true;
-	}
+		
+		AuditType type = cao.getAudit().getAuditType();
 
+		if(workflowStep.getNewStatus().isComplete() 
+				&& type.getWorkFlow().isHasSubmittedStep() && cao.getPercentVerified() < 100)
+			return false;
+		// admins can perform any action
+		if(permissions.seesAllContractors())
+			return true;
+		// operator and corporate can also perform any action if they have permission
+		if(permissions.isOperatorCorporate()) {
+			if(type.getEditPermission() != null) {
+			 return permissions.hasPermission(type.getEditPermission());
+			}
+		}
+		// contractor can perform only submits and complete for pqf specific's if they can edit that audit
+		if(permissions.isContractor() && type.isCanContractorEdit()) {
+			if (!conAudit.getContractorAccount()
+					.isPaymentMethodStatusValid()
+					&& conAudit.getContractorAccount().isMustPayB())
+				return false;
+			if(workflowStep.getNewStatus().isSubmitted())
+				return true;
+			if(workflowStep.getNewStatus().isResubmitted() && conAudit.isAboutToExpire())
+				return true;
+			if(workflowStep.getNewStatus().isComplete() 
+					&& workflowStep.getWorkflow().getId() == 1) // if Single Step Workflow (Pending to Complete)
+				return true;
+		}
+		return false;	
+	}
+	
 	public List<WorkflowStep> getCurrentCaoStep(int caoID) {
 		if (caoSteps == null)
 			getValidSteps();
@@ -304,64 +294,33 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return false;
 	}
 
-	public boolean isCanSubmitAudit(ContractorAuditOperator cao) {
-		if (!isCanEditAudit())
-			return false;
-
-		if (cao.canSubmitCao()) {
-			if (permissions.isContractor()) {
-				if (!conAudit.getContractorAccount()
-						.isPaymentMethodStatusValid()
-						&& conAudit.getContractorAccount().isMustPayB())
-					return false;
-			}
-			return true;
-		} else if (conAudit.getAuditType().isRenewable()) {
-			if (permissions.isContractor()) {
-				// We don't allow admins to resubmit audits (only
-				// contractors)
-				if (conAudit.isAboutToExpire())
-					return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean isCanExempt() {
-		if (permissions.isAdmin())
-			return true;
-		return false;
-	}
-
 	/**
-	 * Can the current user submit this audit in its current state?
 	 * 
-	 * @return
+	 * @return true if the current users is an operator and there is a visible
+	 *         cao belonging to another operator
 	 */
-	public boolean isCanCloseAudit(ContractorAuditOperator cao) {
-		if (permissions.isContractor())
-			return false;
-		if (!isCanEditAudit())
-			return false;
-
-		if (cao.canVerifyCao()) {
-			return true;
+	public boolean isAuditWithOtherOperators() {
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			// This logic is somewhat complex so here's an example:
+			// BASF Freeport Hub has access to many operators
+			// who use either BASF Corporate and BASF Catalyst insurance
+			// requirements
+			// If this contractor policy is visible (needed) for
+			// Paramount,
+			// then the policy is locked down.
+			// One potential flaw is that if the other CAO happens to be
+			// BASF Canada,
+			// which is not part of the Freeport Hub, then the policy
+			// will be locked for BASF Freeport.
+			if (!cao.isVisibleTo(permissions))
+				return true;
 		}
-		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
-			return false;
 
 		return false;
 	}
 
 	public ArrayListMultimap<WorkflowStep, Integer> getActionStatus() {
 		return actionStatus;
-	}
-
-	public boolean isCanVerify() {
-		if (conAudit.getAuditType().isPqf()
-				|| conAudit.getAuditType().isAnnualAddendum())
-			return conAudit.hasCaoStatusBefore(AuditStatus.Complete);
-		return false;
 	}
 
 	public boolean isCanPreview() {

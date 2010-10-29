@@ -270,21 +270,13 @@ public class ContractorAuditOperator extends BaseTable {
 	
 	@Transient
 	public boolean canSubmitCao() {
-		if (this.getPercentComplete() < 100)
-			return false;
-		if (this.status.before(AuditStatus.Submitted)) {
-			return true;
-		}
-		return false;
+		// TODO eliminate this method
+		return getPercentComplete() == 100;
 	}
 
 	@Transient
 	public boolean canVerifyCao() {
-		if (this.getPercentVerified() < 100)
-			return false;
-		if (this.status.isSubmittedResubmitted()) {
-			return true;
-		}
-		return false;
+		// TODO eliminate this method
+		return getPercentVerified() == 100;
 	}
 }

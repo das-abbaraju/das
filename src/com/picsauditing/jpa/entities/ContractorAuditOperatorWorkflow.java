@@ -33,7 +33,7 @@ public class ContractorAuditOperatorWorkflow extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@Column(nullable=false)
+	@Column(nullable = false)
 	public AuditStatus getStatus() {
 		return status;
 	}
