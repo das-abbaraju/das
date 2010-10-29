@@ -102,9 +102,6 @@ public class FlagDataCalculator {
 
 		FlagCriteria criteria = opCriteria.getCriteria();
 		String hurdle = criteria.getDefaultValue();
-		
-		if (operator == null)
-			operator = opCriteria.getOperator();
 
 		if (criteria.isAllowCustomValue() && !Strings.isEmpty(opCriteria.getHurdle())) {
 			hurdle = opCriteria.getHurdle();
@@ -158,7 +155,7 @@ public class FlagDataCalculator {
 						for (ContractorAuditOperator cao : ca.getOperators()) {
 							// TODO Make sure we identify the right operator or
 							// corporate here
-							if (cao.hasCaop(operator.getId())) {
+							if (cao.hasCaop(opCriteria.getOperator().getId())) {
 								if (cao.getStatus().isResubmit())
 									return false;
 								else if (!cao.getStatus().before(criteria.getRequiredStatus()))
