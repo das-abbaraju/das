@@ -15,7 +15,7 @@
 <script type="text/javascript" src="js/con_audit.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript">
 	auditID = '<s:property value="conAudit.id"/>';
-	<s:if test="conAudit.lastRecalculation == null">
+	<s:if test="conAudit.categories.size == 0">
 		updateCategoriesNow();
 	</s:if>
 </script>
