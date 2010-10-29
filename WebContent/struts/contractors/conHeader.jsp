@@ -20,14 +20,15 @@ $(function(){
 	});
 
 	$('#multiStatusChange').live('change', function(){
-		var caos =  $(this).val();
-		if(caos == -1)
+		var status = $(this).val();
+		if(status==-1)
 			return false;
-		var caoIDs = caos.substring(1, caos.length-1).replace(/\s/g,'').split(',');
+		var caoString = $('#h_'+status).val();
+		var caoIDs = caoString.substring(1, caoString.length-1).replace(/\s/g,'').split(',');
 		var data = {
 				auditID: $('#auditID').val(), button: 'statusLoad',
 				caoIDs: caoIDs,
-				status: $('#h_'+$("#multiStatusChange :selected").text()).val()
+				status: status
 		}
 		$('#caoTable').block({message: 'Loading...'});
 		loadResults(data);		

@@ -51,7 +51,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected Map<AuditCategory, AuditCatData> categories = null;
 	//protected Map<Integer, WorkflowStep> caoSteps = null;
 	protected ArrayListMultimap<Integer, WorkflowStep> caoSteps = ArrayListMultimap.create();
-	protected ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap
+	protected ArrayListMultimap<WorkflowStep, Integer> actionStatus = ArrayListMultimap
 			.create();
 	Map<Integer, Integer> percentComplete = null;
 
@@ -214,6 +214,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public void getValidSteps() {
+		List<AuditStatus> occ = new ArrayList<AuditStatus>();
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (cao.isVisible() && cao.isVisibleTo(permissions)) {
 				for (WorkflowStep workflowStep : conAudit.getAuditType()
@@ -239,9 +240,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 		if (!caoSteps.isEmpty()) {
 			for (Entry<Integer, WorkflowStep> en : caoSteps.entries()) {
-				if(actionStatus.containsKey(en.getValue().getNewStatus()))
-					actionStatus.put(en.getValue().getNewStatus(), en.getKey());
-				else actionStatus.put(en.getValue().getNewStatus(), en.getKey());
+				if (occ.contains(en.getValue().getNewStatus()))
+					actionStatus.put(en.getValue(), en.getKey());
+				else
+					occ.add(en.getValue().getNewStatus());
 			}
 		}
 	}
@@ -351,7 +353,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return false;
 	}
 
-	public ArrayListMultimap<AuditStatus, Integer> getActionStatus() {
+	public ArrayListMultimap<WorkflowStep, Integer> getActionStatus() {
 		return actionStatus;
 	}
 

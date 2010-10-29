@@ -11,12 +11,13 @@
 			<s:if test="conAudit.auditType.classType.policy">
 				<th>Flag</th>
 			</s:if>
-			<th><s:if test="">
-				<s:select list="actionStatus" headerKey="-1" headerValue="-- Select Action --"
-					listKey="value" listValue="key.button" name="multiStatusChange" />
-				<s:iterator value="actionStatus">
-					<s:hidden name="h_%{key.button}" value="%{key}"/>
-				</s:iterator>
+			<th>
+				<s:if test="actionStatus.size()>0">
+					<s:select list="actionStatus.asMap()" headerKey="-1" headerValue="-- Select Action --"
+						listKey="key.newStatus" listValue="key.buttonName+' All'" name="multiStatusChange" />
+					<s:iterator value="actionStatus.keySet()" var="status">
+						<s:hidden name="h_%{#status.newStatus}" value="%{actionStatus.asMap().get(#status)}"/>
+					</s:iterator>
 				</s:if>
 			</th>
 		</tr>

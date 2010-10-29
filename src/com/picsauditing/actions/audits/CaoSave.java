@@ -209,6 +209,7 @@ public class CaoSave extends AuditActionSupport {
 				auditBuilder.setup(conAudit.getContractorAccount(), getUser());
 				auditBuilder.fillAuditCategories(conAudit);
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
+				getValidSteps();
 				return "refresh";
 			}
 			getValidSteps();
