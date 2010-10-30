@@ -52,10 +52,7 @@ public class AuditCategoryRule extends AuditRule {
 		if (auditCategory != null) {
 			level++;
 			priority += 120;
-			if (rootCategory == null) {
-				// Default the rootCategory setting
-				rootCategory = (auditCategory.getParent() == null);
-			}
+			rootCategory = (auditCategory.getParent() == null);
 		} else if (rootCategory != null) {
 			level++;
 			priority += 101;
