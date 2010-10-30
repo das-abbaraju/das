@@ -87,6 +87,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private List<Payment> payments = new ArrayList<Payment>();
 	private List<Refund> refunds = new ArrayList<Refund>();
 	private Set<FlagCriteriaContractor> flagCriteria = new HashSet<FlagCriteriaContractor>();
+	private Set<FlagDataOverride> flagDataOverrides = new HashSet<FlagDataOverride>();
 
 	private int needsRecalculation;
 	private Date lastRecalculation;
@@ -791,6 +792,15 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setFlagCriteria(Set<FlagCriteriaContractor> flagCriteria) {
 		this.flagCriteria = flagCriteria;
+	}
+	
+	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.ALL })
+	public Set<FlagDataOverride> getFlagDataOverrides() {
+		return flagDataOverrides;
+	}
+
+	public void setFlagDataOverrides(Set<FlagDataOverride> flagDataOverrides) {
+		this.flagDataOverrides = flagDataOverrides;
 	}
 
 	/**
