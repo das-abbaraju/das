@@ -35,7 +35,7 @@ AND a.country = 'US';
 -- Valeree Claudio
 update contractor_info c, accounts a set welcomeAuditor_id = 8397
 where c.id = a.id
-and a.state in ('CT',,'DE','ME','NH','NJ','NY','RI','VT')
+and a.state in ('CT','DE','ME','NH','NJ','NY','RI','VT')
 AND a.country = 'US';
 
 -- Mohamed Massaquoi
@@ -94,7 +94,7 @@ and cao.status in ('Pending','Submitted');
 -- Assigning Tiffany as BP IISN case management auditor
 update contractor_audit ca,  contractor_audit_operator cao set ca.auditorid = 22222, ca.closingAuditorID = 22222
 where  ca.id = cao.auditid
-and auditTypeid in ()select id from audit_type where id = 96)
+and auditTypeid in (select id from audit_type where id = 96)
 and cao.status in ('Pending','Submitted','Incomplete');
 
 -- rebuild the stats for ContractorOperators
