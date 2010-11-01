@@ -1,7 +1,7 @@
 -- Ashley Prather
 update contractor_info c, accounts a set welcomeAuditor_id = 22223
 where c.id = a.id
-and a.state in ('AK','AZ','CO','HI','ID','MT','NM','NV','OR','UT','WA','WY') 
+and a.state in ('AZ','ID','MT','NM','NV','OR','UT','WA','WY') 
 AND a.country = 'US';
 
 -- Derrick Piper
@@ -12,30 +12,60 @@ and (a.state in ('TX'));
 -- Estevan Orozco
 update contractor_info c, accounts a set welcomeAuditor_id = 940
 where c.id = a.id
-and (a.state in ('AS','CA','GU','MP','PR','UM','VI') OR a.country not in ('US','CA'));
+and (a.state in ('CA','GU','PR','UM') OR a.country not in ('US','CA'));
 
 -- Kaitlyn O'Malley
-update contractor_info c, accounts a set welcomeAuditor_id = 11067
-where c.id = a.id
-and a.state in ('AR','IA','KS','LA','MO','ND','NE','OK','SD','WI')
-AND a.country = 'US';
+-- update contractor_info c, accounts a set welcomeAuditor_id = 11067
+-- where c.id = a.id
+-- and a.state in ('AR','IA','KS','LA','MO','ND','NE','OK','SD','WI')
+-- AND a.country = 'US';
 
 -- Chris Jimenez
 update contractor_info c, accounts a set welcomeAuditor_id =  24798
 where c.id = a.id
-and a.state in ('AL','FL','GA','KY','OH','TN')
+and a.state in ('FL','GA','SC')
 AND a.country = 'US';
 
 -- Tiffany Roberson
 update contractor_info c, accounts a set welcomeAuditor_id = 22222
 where c.id = a.id
-and a.state in ('IL','IN','MI','MN','MS')
+and a.state in ('IL','IN','WI')
 AND a.country = 'US';
 
 -- Valeree Claudio
 update contractor_info c, accounts a set welcomeAuditor_id = 8397
 where c.id = a.id
-and a.state in ('CT','DC','DE','MA','MD','ME','NC','NH','NJ','NY','PA','RI','SC','VA','VT','WV')
+and a.state in ('CT',,'DE','ME','NH','NJ','NY','RI','VT')
+AND a.country = 'US';
+
+-- Mohamed Massaquoi
+update contractor_info c, accounts a set welcomeAuditor_id = 11504
+where c.id = a.id
+and a.state in ('MA','MD','NC','PA','VA','WV')
+AND a.country = 'US';
+
+-- Joe Villenueva
+update contractor_info c, accounts a set welcomeAuditor_id = 27274
+where c.id = a.id
+and a.state in ('OH','KY','TN','MS','AL')
+AND a.country = 'US';
+
+-- Charlie Lee
+update contractor_info c, accounts a set welcomeAuditor_id = 26330
+where c.id = a.id
+and a.state in ('LA','AR','KS')
+AND a.country = 'US';
+
+-- Maryum Anwar
+update contractor_info c, accounts a set welcomeAuditor_id = 27275
+where c.id = a.id
+and a.state in ('IA','MN','OK','MO','ND','NE','SD','MI')
+AND a.country = 'US';
+
+-- Kencarol James
+update contractor_info c, accounts a set welcomeAuditor_id = 27276
+where c.id = a.id
+and a.state in ('AK','CO','HI')
 AND a.country = 'US';
 
 -- Gary Abenaim
