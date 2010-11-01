@@ -30,7 +30,7 @@ public class AuditPercentCalculator {
 	private AuditDataDAO auditDataDao;
 	private AuditCategoryDataDAO catDataDao;
 	private AuditDecisionTableDAO auditRulesDAO;
-	private ContractorAuditOperatorDAO caoDAO;
+//  private ContractorAuditOperatorDAO caoDAO;
 
 	public AuditPercentCalculator(AuditDataDAO auditDataDAO,
 			AuditCategoryDataDAO catDataDAO, AuditDecisionTableDAO auditRulesDAO,
@@ -38,7 +38,7 @@ public class AuditPercentCalculator {
 		this.auditDataDao = auditDataDAO;
 		this.catDataDao = catDataDAO;
 		this.auditRulesDAO = auditRulesDAO;
-		this.caoDAO = caoDAO;
+//		this.caoDAO = caoDAO;
 	}
 
 	public void updatePercentageCompleted(AuditCatData catData) {
@@ -66,150 +66,149 @@ public class AuditPercentCalculator {
 				if (question.getVisibleQuestion() != null)
 					questionIDs.add(question.getVisibleQuestion().getId());
 		}
+
 		// Get a map of all answers in this audit
 		AnswerMap answers = auditDataDao.findAnswers(
 				catData.getAudit().getId(), questionIDs);
 		// System.out.println(answers);
 
-		if (answers != null) {
-			@SuppressWarnings("serial")
-			Map<String, Integer> scoreMap = new HashMap<String, Integer>() {
+		@SuppressWarnings("serial")
+		Map<String, Integer> scoreMap = new HashMap<String, Integer>() {
 
-				{
-					put("Red", 0);
-					put("Yellow", 1);
-					put("Green", 2);
-				}
-			};
+			{
+				put("Red", 0);
+				put("Yellow", 1);
+				put("Green", 2);
+			}
+		};
 
-			// Get a list of questions/answers for this category
-			Date validDate = catData.getAudit().getValidDate();
-			for (AuditQuestion question : catData.getCategory().getQuestions()) {
-				if (question.isCurrent() && validDate.after(question.getEffectiveDate())
-						&& validDate.before(question.getExpirationDate())) {
-					boolean isRequired = false;
+		// Get a list of questions/answers for this category
+		Date validDate = catData.getAudit().getValidDate();
+		for (AuditQuestion question : catData.getCategory().getQuestions()) {
+			if (question.isCurrent() && validDate.after(question.getEffectiveDate())
+					&& validDate.before(question.getExpirationDate())) {
+				boolean isRequired = false;
 
-					AuditData answer = answers.get(question.getId());
-					isRequired = question.isRequired();
-					// Getting all the dependsRequiredQuestions
-					if (question.getRequiredQuestion() != null && question.getRequiredAnswer() != null) {
-						if (question.getRequiredAnswer().equals("NULL")) {
-							AuditData otherAnswer = answers.get(question
-									.getRequiredQuestion().getId());
-							if (otherAnswer == null)
-								isRequired = true;
-						} else if (question.getRequiredAnswer().equals(
-								"NOTNULL")) {
-							AuditData otherAnswer = answers.get(question
-									.getRequiredQuestion().getId());
-							if (otherAnswer != null)
-								isRequired = true;
-						} else {
-							// This question is dependent on another
-							// question's answer
-							// Use the parentAnswer, so we get answers in
-							// the same tuple as this one
-							AuditData otherAnswer = answers.get(question
-									.getRequiredQuestion().getId());
-							if (otherAnswer != null
-									&& question.getRequiredAnswer().equals(
-											otherAnswer.getAnswer()))
-								isRequired = true;
-						}
-					}
-					// Getting all the dependsVisible  Questions
-					if (question.getVisibleQuestion() != null && question.getVisibleAnswer() != null) {
-						if (question.getVisibleAnswer().equals("NULL")) {
-							AuditData otherAnswer = answers.get(question
-									.getVisibleQuestion().getId());
-							if (otherAnswer == null)
-								isRequired = true;
-						} else if (question.getVisibleAnswer().equals(
-								"NOTNULL")) {
-							AuditData otherAnswer = answers.get(question
-									.getVisibleQuestion().getId());
-							if (otherAnswer != null)
-								isRequired = true;
-						} else {
-							AuditData otherAnswer = answers.get(question
-									.getVisibleQuestion().getId());
-							if (otherAnswer != null
-									&& question.getVisibleAnswer().equals(
-											otherAnswer.getAnswer()))
-								isRequired = true;
-						}
-					}
-
-					if (isRequired)
-						requiredCount++;
-
-					if (answer != null) {
-						if (answer.isAnswered()) {
-
-							if ("Radio".equals(question.getQuestionType())) {
-								Integer tempScore = scoreMap.get(answer
-										.getAnswer());
-								score += tempScore != null ? tempScore : -1000;
-							}
-
-							answeredCount++;
-							if (isRequired)
-								requiredAnsweredCount++;
-						}
-
-						if (answer.getQuestion().isHasRequirement()) {
-							if (answer.isOK())
-								verifiedCount++;
-						} else {
-							if (answer.isVerified()) {
-								verifiedCount++;
-							} else if (isRequired
-									&& catData.getAudit().getAuditType()
-											.getWorkFlow().isHasSubmittedStep()) {
-								verifiedCount++;
-							}
-						}
-					}
-
-					if ("Radio".equals(question.getQuestionType())) {
-						scoreCount++;
+				AuditData answer = answers.get(question.getId());
+				isRequired = question.isRequired();
+				// Getting all the dependsRequiredQuestions
+				if (question.getRequiredQuestion() != null && question.getRequiredAnswer() != null) {
+					if (question.getRequiredAnswer().equals("NULL")) {
+						AuditData otherAnswer = answers.get(question
+								.getRequiredQuestion().getId());
+						if (otherAnswer == null)
+							isRequired = true;
+					} else if (question.getRequiredAnswer().equals(
+							"NOTNULL")) {
+						AuditData otherAnswer = answers.get(question
+								.getRequiredQuestion().getId());
+						if (otherAnswer != null)
+							isRequired = true;
+					} else {
+						// This question is dependent on another
+						// question's answer
+						// Use the parentAnswer, so we get answers in
+						// the same tuple as this one
+						AuditData otherAnswer = answers.get(question
+								.getRequiredQuestion().getId());
+						if (otherAnswer != null
+								&& question.getRequiredAnswer().equals(
+										otherAnswer.getAnswer()))
+							isRequired = true;
 					}
 				}
-			}
-
-			catData.setNumAnswered(answeredCount);
-			catData.setNumRequired(requiredCount);
-			catData.setRequiredCompleted(requiredAnsweredCount);
-
-			if (requiredCount > 0) {
-				int percentCompleted = (int) Math
-						.floor((100 * requiredAnsweredCount) / requiredCount);
-				if (percentCompleted >= 100)
-					percentCompleted = 100;
-				if (catData.getAudit().getAuditType().isAnnualAddendum()
-						&& catData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION
-						&& catData.getNumRequired() > 2) {
-					requiredCount = requiredCount - 2;
+				// Getting all the dependsVisible  Questions
+				if (question.getVisibleQuestion() != null && question.getVisibleAnswer() != null) {
+					if (question.getVisibleAnswer().equals("NULL")) {
+						AuditData otherAnswer = answers.get(question
+								.getVisibleQuestion().getId());
+						if (otherAnswer == null)
+							isRequired = true;
+					} else if (question.getVisibleAnswer().equals(
+							"NOTNULL")) {
+						AuditData otherAnswer = answers.get(question
+								.getVisibleQuestion().getId());
+						if (otherAnswer != null)
+							isRequired = true;
+					} else {
+						AuditData otherAnswer = answers.get(question
+								.getVisibleQuestion().getId());
+						if (otherAnswer != null
+								&& question.getVisibleAnswer().equals(
+										otherAnswer.getAnswer()))
+							isRequired = true;
+					}
 				}
-				int percentVerified = (int) Math.floor((100 * verifiedCount)
-						/ requiredCount);
-				if (percentVerified >= 100)
-					percentVerified = 100;
-				catData.setPercentCompleted(percentCompleted);
-				catData.setPercentVerified(percentVerified);
-			} else {
-				catData.setPercentCompleted(100);
-				catData.setPercentVerified(100);
-			}
 
-			if (scoreCount > 0) {
-				float scoreAverage = (float) score / (float) scoreCount;
-				catData.setScore(scoreAverage);
-				catData.setScoreCount(scoreCount);
-			}
+				if (isRequired)
+					requiredCount++;
 
-			catDataDao.save(catData);
+				if (answer != null) {
+					if (answer.isAnswered()) {
+
+						if ("Radio".equals(question.getQuestionType())) {
+							Integer tempScore = scoreMap.get(answer
+									.getAnswer());
+							score += tempScore != null ? tempScore : -1000;
+						}
+
+						answeredCount++;
+						if (isRequired)
+							requiredAnsweredCount++;
+					}
+
+					if (answer.getQuestion().isHasRequirement()) {
+						if (answer.isOK())
+							verifiedCount++;
+					} else {
+						if (answer.isVerified()) {
+							verifiedCount++;
+						} else if (isRequired
+								&& catData.getAudit().getAuditType()
+										.getWorkFlow().isHasSubmittedStep()) {
+							verifiedCount++;
+						}
+					}
+				}
+
+				if ("Radio".equals(question.getQuestionType())) {
+					scoreCount++;
+				}
+			}
 		}
+
+		catData.setNumAnswered(answeredCount);
+		catData.setNumRequired(requiredCount);
+		catData.setRequiredCompleted(requiredAnsweredCount);
+
+		if (requiredCount > 0) {
+			int percentCompleted = (int) Math
+					.floor((100 * requiredAnsweredCount) / requiredCount);
+			if (percentCompleted >= 100)
+				percentCompleted = 100;
+			if (catData.getAudit().getAuditType().isAnnualAddendum()
+					&& catData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION
+					&& catData.getNumRequired() > 2) {
+				requiredCount = requiredCount - 2;
+			}
+			int percentVerified = (int) Math.floor((100 * verifiedCount)
+					/ requiredCount);
+			if (percentVerified >= 100)
+				percentVerified = 100;
+			catData.setPercentCompleted(percentCompleted);
+			catData.setPercentVerified(percentVerified);
+		} else {
+			catData.setPercentCompleted(100);
+			catData.setPercentVerified(100);
+		}
+
+		if (scoreCount > 0) {
+			float scoreAverage = (float) score / (float) scoreCount;
+			catData.setScore(scoreAverage);
+			catData.setScoreCount(scoreCount);
+		}
+
+		catDataDao.save(catData);
 	}
 
 	public void percentCalculateComplete(ContractorAudit conAudit) {
