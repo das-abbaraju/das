@@ -72,11 +72,8 @@ function showAuditUpload(auditID, fileID, desc, question) {
 								<span class="redMain"><b>Safety Professional Comment : </b><s:property value="comment" escape="false"/></span>
 							</s:if>
 							<s:if test="permissions.auditor">
-								<s:set name="catData" value="getAuditCatData(#data.audit.id,#data.question.subCategory.category.id)"/>
-								<s:if test="#catData != null">
-									<br/>
-									<a href="AuditCat.action?auditID=<s:property value="#data.audit.id"/>&catDataID=<s:property value="#catData.id"/>&onlyReqs=true&mode=Edit#node_<s:property value="#data.question.id"/>">Close Requirement</a>									
-								</s:if>
+							<br/>
+								<a href="Audit.action?auditID=<s:property value="#data.audit.id"/>#categoryID=<s:property value="#data.question.category.id"/>&onlyReqs=true&mode=Edit">Close Requirement</a>									
 							</s:if>
 						</td>
 					</tr>

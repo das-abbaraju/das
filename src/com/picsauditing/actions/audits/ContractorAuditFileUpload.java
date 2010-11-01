@@ -89,9 +89,4 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 		return auditQuestion.getCategory().getNumber() + "."
 				+ auditQuestion.getCategory().getNumber() + "." + auditQuestion.getNumber();
 	}
-
-	public AuditCatData getAuditCatData(int auditID, int catID) {
-		AuditCatData auditCatData = catDataDao.findAuditCatData(auditID, catID);
-		return auditCatData;
-	}
 }
