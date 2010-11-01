@@ -624,4 +624,6 @@ set acd.numRequired = ac.numRequired;
 
 delete from audit_question where id = 119;
 delete from pqfdata where questionID = 119;
+delete from audit_cat_data where categoryID = 396;
+delete from audit_category where id = 396;
 
