@@ -59,7 +59,7 @@ public class CertificateDAO extends PicsDAO {
 		permQuery.setAccountAlias("c.contractor"); 
 
 		String query = "SELECT c FROM Certificate c WHERE c.contractor.id = ? ";
-		query += " Where 1 " + permQuery.toString();
+		query += permQuery.toString();
 		if (permissions.isOperatorCorporate()) {
 			query += " AND c.createdBy = " + permissions.getUserId();
 		}

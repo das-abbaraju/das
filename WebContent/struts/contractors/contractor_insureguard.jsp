@@ -110,8 +110,8 @@
 								target="_BLANK"><img src="images/icon_insurance.gif" /></a></td>
 							<td><s:if test="permissions.userId == createdBy.Id || permissions.admin">
 								<a class="edit" href="#"
-									onclick="showCertUpload(<s:property value="contractor.id"/>, <s:property value="id" />); return fals
-									title="Opens in new window (please disable your popup blocker)"">Edit</a>
+									onclick="showCertUpload(<s:property value="contractor.id"/>, <s:property value="id" />); return false;"
+									title="Opens in new window (please disable your popup blocker)">Edit</a>
 							</s:if></td>
 							<td>
 								<table class="inner">
