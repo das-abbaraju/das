@@ -101,7 +101,7 @@
 							<th>Used By</th>
 						</tr>
 					</thead>
-					<s:iterator value="certificates" id="#cert">
+					<s:iterator value="certificates" id="cert">
 						<tr>
 							<td><s:property value="description" /></td>
 							<td><s:date name="expirationDate" format="M/d/yy" /></td>
