@@ -30,7 +30,7 @@ public class AuditPercentCalculator {
 	private AuditDataDAO auditDataDao;
 	private AuditCategoryDataDAO catDataDao;
 	private AuditDecisionTableDAO auditRulesDAO;
-//  private ContractorAuditOperatorDAO caoDAO;
+  private ContractorAuditOperatorDAO caoDAO;
 
 	public AuditPercentCalculator(AuditDataDAO auditDataDAO,
 			AuditCategoryDataDAO catDataDAO, AuditDecisionTableDAO auditRulesDAO,
@@ -38,7 +38,7 @@ public class AuditPercentCalculator {
 		this.auditDataDao = auditDataDAO;
 		this.catDataDao = catDataDAO;
 		this.auditRulesDAO = auditRulesDAO;
-//		this.caoDAO = caoDAO;
+		this.caoDAO = caoDAO;
 	}
 
 	public void updatePercentageCompleted(AuditCatData catData) {
@@ -273,7 +273,7 @@ public class AuditPercentCalculator {
 			}
 			cao.setPercentComplete(percentComplete);
 			cao.setPercentVerified(percentVerified);
-			//caoDAO.save(cao);
+			caoDAO.save(cao);
 		}
 	}
 
