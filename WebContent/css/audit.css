@@ -140,7 +140,10 @@ span.refresh {
 	display: inline;	
 }
 
-#auditHeader.dirty a.refresh {
+#auditHeader.dirty a.refresh{
+	background: url('../images/ajax_process.gif') no-repeat left center;	
+}
+#auditHeader.dirty a.save {
 	background: url('../images/ajax_process.gif') no-repeat left center;	
 }
 

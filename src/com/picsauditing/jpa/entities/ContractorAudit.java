@@ -115,6 +115,18 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public List<ContractorAuditOperator> getOperators() {
 		return operators;
 	}
+	
+	//TODO replace old uses of getOperators with sorted one
+	@Transient
+	public List<ContractorAuditOperator> getSortedOperators(){
+		List<ContractorAuditOperator> caos = operators;
+		Collections.sort(caos, new Comparator<ContractorAuditOperator>() {
+			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
+				return o1.getOperator().getName().compareTo(o2.getOperator().getName());
+			}
+		});
+		return caos;
+	}
 
 	public void setOperators(List<ContractorAuditOperator> operators) {
 		this.operators = operators;

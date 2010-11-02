@@ -1036,13 +1036,18 @@
 			class="com.picsauditing.actions.audits.ConAuditMaintain">
 			<result>struts/audits/audit_maintain.jsp</result>
 			<result name="AuditList" type="redirectAction">
-				<param name="actionName">ConAuditList</param>
+				<param name="actionName">ContractorDocuments</param>
 				<param name="id">${contractor.id}</param>
 			</result>
 			<result name="PolicyList" type="redirectAction">
 				<param name="actionName">ConInsureGUARD</param>
 				<param name="id">${contractor.id}</param>
 			</result>
+		</action>
+		
+		<action name="ConAuditMaintainAjax"
+			class="com.picsauditing.actions.audits.ConAuditMaintain">
+			<result>struts/contractors/caoTable.jsp</result>
 		</action>
 
 		<action name="ConAuditCopy"

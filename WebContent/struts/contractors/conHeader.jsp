@@ -3,12 +3,24 @@
 <script type="text/javascript">
 $(function(){
 
-	$('#refrezssh_cao').live('click', function(){
-		$('#caoTable').block({message: 'Refreshing List'});
-		$('#caoTable').load('AuditAjax.action', {button: 'refreshCaos', auditID: auditID}, function(){
-				$('#caoTable').unblock();
-			});
+	$('.statusOpBox :visible').live('change', function(){
+		$(this).parents('tr').addClass('dirtyCao');
 	});
+
+	$('#saveEdit_cao').live('click', function(){
+		$('.clean').hide();
+		$('.dirty').show();
+		$('#auditHeader').addClass('dirty');
+		var caoMap = $('.dirtyCao :input').serialize();
+		$.post('ConAuditMaintainAjax.action', 'button=caoSave&'+'auditID='+$('input[name=auditID]').val()+'&'+caoMap, function(data){
+			$('#caoTable').html(data);
+			$('#auditHeader').removeClass('dirty');
+			$('.clean').show();
+			$('.dirty').hide();
+		});
+		
+	});
+	
 	$('.singleButton').live('click', function() {
 		var data = {
 				auditID: $('#auditID').val(), button: 'statusLoad', 
@@ -62,8 +74,7 @@ function loadResults(data, noteText){
 						clickThrough: false
 					});		
 		        });
-		    });
-		     
+		    });		     
 		    $('#noButton').click(function(){
 		        $.unblockUI();
 		        return false;
@@ -209,7 +220,12 @@ function loadStatus(caoID){
 	<div id="caoTable" class="center">	
 		<s:include value="caoTable.jsp"/>
 	</div>
-	<span class="refresh"><a class="clickable refresh" id="refresh_cao"><span class="clean">Refresh</span><span class="dirty">Refreshing status now...</span></a></span>
+	<s:if test="systemEdit">
+		<span class="refresh"><a class="clickable save" id="saveEdit_cao"><span class="clean">Save CAOs</span><span class="dirty">Saving now...</span></a></span>
+	</s:if>
+	<s:else>
+		<span class="refresh"><a class="clickable refresh" id="refresh_cao"><span class="clean">Refresh</span><span class="dirty">Refreshing status now...</span></a></span>
+	</s:else>
 	<div class="clear"></div>
 </div>
 </s:if>

@@ -1,7 +1,6 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +11,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -26,7 +26,6 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Facility;
@@ -42,14 +41,16 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	protected int auditID = 0;
 	protected int categoryID = 0;
+	protected String descriptionOsMs;
+	protected boolean systemEdit = false;
+	
 	protected ContractorAudit conAudit;
 	protected AuditCategoryDataDAO catDataDao;
 	protected AuditDataDAO auditDataDao;
-	protected String descriptionOsMs;
+	
 	private Map<Integer, AuditData> hasManual;
 	private List<AuditCategoryRule> rules = null;
 	protected Map<AuditCategory, AuditCatData> categories = null;
-	//protected Map<Integer, WorkflowStep> caoSteps = null;
 	protected ArrayListMultimap<Integer, WorkflowStep> caoSteps = ArrayListMultimap.create();
 	protected ArrayListMultimap<WorkflowStep, Integer> actionStatus = ArrayListMultimap
 			.create();
@@ -187,6 +188,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public void setCategoryID(int categoryID) {
 		this.categoryID = categoryID;
 	}
+	
+	public List<ContractorAuditOperator> getViewableOperators(Permissions permissions){
+		if(systemEdit)
+			return conAudit.getSortedOperators();			
+		else return conAudit.getViewableOperators(permissions);
+	}
 
 	public void getValidSteps() {
 		List<AuditStatus> occ = new ArrayList<AuditStatus>();
@@ -250,6 +257,18 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (caoSteps == null)
 			getValidSteps();
 		return caoSteps.get(caoID);
+	}
+	
+	public List<AuditStatus> getValidStatuses(int caoID){
+		List<AuditStatus> validStatuses = new ArrayList<AuditStatus>();
+		for(ContractorAuditOperator cao : conAudit.getSortedOperators()){
+			if(cao.getId() == caoID){
+				for(WorkflowStep wfs : cao.getAudit().getAuditType().getWorkFlow().getSteps()){
+					validStatuses.add(wfs.getNewStatus());
+				}
+			}
+		}
+		return validStatuses;
 	}
 
 	public boolean isCanEditAudit() {
@@ -417,5 +436,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 		}
 		return nodes;
+	}
+
+	public boolean isSystemEdit() {
+		return systemEdit;
+	}
+
+	public void setSystemEdit(boolean systemEdit) {
+		this.systemEdit = systemEdit;
 	}
 }
