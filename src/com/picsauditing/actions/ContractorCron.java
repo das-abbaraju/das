@@ -185,15 +185,36 @@ public class ContractorCron extends PicsActionSupport {
 	private void run(int conID, int opID) {
 		ContractorAccount contractor = contractorDAO.find(conID);
 
+		System.out.println("Processing Contractor "+conID);
 		try {
+			long start = System.currentTimeMillis();
 			runBilling(contractor);
+			System.out.println("Billing:"+(System.currentTimeMillis()-start));
+
+			start = System.currentTimeMillis();
 			runAuditBuilder(contractor);
+			System.out.println("AuditBuilder:"+(System.currentTimeMillis()-start));
+
+			start = System.currentTimeMillis();
 			runAuditCategory(contractor);
+			System.out.println("AuditCategory:"+(System.currentTimeMillis()-start));
+
+			start = System.currentTimeMillis();
 			runTradeETL(contractor);
+			System.out.println("TradeETL:"+(System.currentTimeMillis()-start));
+
+			start = System.currentTimeMillis();
 			runContractorETL(contractor);
+			System.out.println("ContractorETL:"+(System.currentTimeMillis()-start));
+
+			start = System.currentTimeMillis();
 			runCSRAssignment(contractor);
+			System.out.println("CSRAssignment:"+(System.currentTimeMillis()-start));
+
+			start = System.currentTimeMillis();
 			flagDataCalculator = new FlagDataCalculator(contractor
 					.getFlagCriteria());
+			System.out.println("FlagDataCalculator:"+(System.currentTimeMillis()-start));
 
 			if (runStep(ContractorCronStep.Flag)
 					|| runStep(ContractorCronStep.WaitingOn)
@@ -201,6 +222,7 @@ public class ContractorCron extends PicsActionSupport {
 					|| runStep(ContractorCronStep.CorporateRollup)) {
 				Set<OperatorAccount> corporateSet = new HashSet<OperatorAccount>();
 
+				start = System.currentTimeMillis();
 				for (ContractorOperator co : contractor
 						.getNonCorporateOperators()) {
 					OperatorAccount operator = co.getOperatorAccount();
@@ -231,7 +253,11 @@ public class ContractorCron extends PicsActionSupport {
 							break;
 					}
 				}
+				System.out.println("Flag + WaitingOn:"+(System.currentTimeMillis()-start));
+
+				start = System.currentTimeMillis();
 				runCorporateRollup(contractor, corporateSet);
+				System.out.println("Corporate Rollup:"+(System.currentTimeMillis()-start));
 			}
 
 			if (steps != null && steps.length > 0) {
@@ -244,7 +270,9 @@ public class ContractorCron extends PicsActionSupport {
 						+ contractor.toString() + " successfully");
 			}
 
+			start = System.currentTimeMillis();
 			runPolicies(contractor);
+			System.out.println("Policies:"+(System.currentTimeMillis()-start));
 
 		} catch (Throwable t) {
 			StringWriter sw = new StringWriter();
@@ -278,6 +306,7 @@ public class ContractorCron extends PicsActionSupport {
 				addActionError(sw.toString());
 			}
 		}
+		System.out.println("Completed Processing Contractor "+conID);
 	}
 
 	private void sendMail(String message, int conID) {
