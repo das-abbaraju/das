@@ -599,6 +599,7 @@ and name = 'Operator Requirements';
 
 -- setting all the contractors, audits to recalculation
 update contractor_info set needsRecalculation = null;
+-- not sure if we want to run this
 update contractor_Audit set lastRecalculation = null;
 
 -- updating the questions on the auditcategory
