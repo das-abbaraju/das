@@ -52,9 +52,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private List<AuditCategoryRule> rules = null;
 	protected Map<AuditCategory, AuditCatData> categories = null;
 	protected ArrayListMultimap<Integer, WorkflowStep> caoSteps = ArrayListMultimap.create();
-	protected ArrayListMultimap<WorkflowStep, Integer> actionStatus = ArrayListMultimap
+	protected ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap
 			.create();
-	Map<Integer, Integer> percentComplete = null;
 
 	private List<CategoryNode> categoryNodes;
 
@@ -211,7 +210,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (!caoSteps.isEmpty()) {
 			for (Entry<Integer, WorkflowStep> en : caoSteps.entries()) {
 				if (occ.contains(en.getValue().getNewStatus()))
-					actionStatus.put(en.getValue(), en.getKey());
+					actionStatus.put(en.getValue().getNewStatus(), en.getKey());
 				else
 					occ.add(en.getValue().getNewStatus());
 			}
@@ -338,7 +337,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return false;
 	}
 
-	public ArrayListMultimap<WorkflowStep, Integer> getActionStatus() {
+	public ArrayListMultimap<AuditStatus, Integer> getActionStatus() {
 		return actionStatus;
 	}
 

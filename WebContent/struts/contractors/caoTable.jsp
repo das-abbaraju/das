@@ -18,9 +18,9 @@
 					<th>
 						<s:if test="actionStatus.size()>0">
 							<s:select list="actionStatus.asMap()" headerKey="-1" headerValue="-- Select Action --"
-								listKey="key.newStatus" listValue="key.buttonName+' All'" name="multiStatusChange" />
+								listKey="key" listValue="key.button+' All'" name="multiStatusChange" id="multiStatusChange" />
 							<s:iterator value="actionStatus.keySet()" var="status">
-								<s:hidden name="h_%{#status.newStatus}" value="%{actionStatus.asMap().get(#status)}"/>
+								<s:hidden id="h_%{#status}" name="h_%{#status}" value="%{actionStatus.asMap().get(#status)}"/>
 							</s:iterator>
 						</s:if>
 					</th>
