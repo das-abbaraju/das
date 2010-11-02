@@ -1,5 +1,6 @@
 package com.picsauditing.PICS;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,49 +26,126 @@ public class AuditRuleCache {
 	}
 
 	public Set<AuditCategoryRule> getApplicable(ContractorAccount contractor) {
+		for (OperatorAccount foo : contractor.getOperatorAccounts());
+		
+		long startTime = Calendar.getInstance().getTimeInMillis();
+		Set<AuditCategoryRule> rules = new HashSet<AuditCategoryRule>();
 		if (data == null)
 			return null;
 
-		Set<LowMedHigh> risks = new HashSet<LowMedHigh>();
-		risks.add(null);
-		risks.add(contractor.getRiskLevel());
-		Set<AuditType> auditTypes = new HashSet<AuditType>();
-		auditTypes.add(null);
+		Params params = new Params();
+		params.risks.add(contractor.getRiskLevel());
+		params.operators.addAll(contractor.getOperatorAccounts());
 
-		Set<AuditCategoryRule> rules = new HashSet<AuditCategoryRule>();
-
-		for (LowMedHigh risk : risks) {
-			for (AuditType auditType : auditTypes) {
-				for (OperatorAccount operator : contractor.getOperatorAccounts()) {
-					rules.addAll(data.getData(risk).getData(auditType).getData(operator));
+		for (LowMedHigh risk : params.risks) {
+			ContractorTypes data2 = data.getData(risk);
+			if (data2 != null) {
+				System.out.println("found matching risk " + risk);
+				for (ContractorType conType : params.contractorType) {
+					AcceptsBids data3 = data2.getData(conType);
+					if (data3 != null) {
+						System.out.println(" found matching conType " + conType);
+						for (Boolean acceptsBid : params.acceptsBids) {
+							AuditTypes data4 = data3.getData(acceptsBid);
+							if (data4 != null) {
+								System.out.println("  found matching acceptsBid " + acceptsBid);
+								for (AuditType auditType : params.auditTypes) {
+									Operators data5 = data4.getData(auditType);
+									if (data5 != null) {
+										System.out.println("   found matching auditType " + auditType);
+										for (OperatorAccount operator : params.operators) {
+											Set<AuditCategoryRule> data6 = data5.getData(operator);
+											if (data6 != null) {
+												System.out.println("    found matching operator " + operator);
+												rules.addAll(data6);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}
-		// public ContractorType contractorType;
-		// public Boolean acceptsBids;
 
+		long finishTime = Calendar.getInstance().getTimeInMillis();
+		System.out.println("Found " + rules.size() + " rules in " + (finishTime - startTime) + "ms");
 		return rules;
 	}
-	
+
 	private class Params {
-		
+
+		public Set<LowMedHigh> risks = new HashSet<LowMedHigh>();
+		public Set<ContractorType> contractorType = new HashSet<ContractorType>();
+		public Set<Boolean> acceptsBids = new HashSet<Boolean>();
+		public Set<AuditType> auditTypes = new HashSet<AuditType>();
+		public Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+
+		public Params() {
+			risks.add(null);
+			contractorType.add(null);
+			acceptsBids.add(null);
+			auditTypes.add(null);
+			operators.add(null);
+		}
 	}
 
 	private class Risks {
 
-		private Map<LowMedHigh, AuditTypes> data = new HashMap<LowMedHigh, AuditTypes>();
+		private Map<LowMedHigh, ContractorTypes> data = new HashMap<LowMedHigh, ContractorTypes>();
 
-		public AuditTypes getData(LowMedHigh value) {
+		public ContractorTypes getData(LowMedHigh value) {
 			return data.get(value);
 		}
 
 		public void add(AuditCategoryRule rule) {
-			AuditTypes map = data.get(rule.getRisk());
+			System.out.println("Add rule to cache: " + rule);
+			ContractorTypes map = data.get(rule.getRisk());
 			if (map == null) {
-				map = new AuditTypes();
+				map = new ContractorTypes();
 				data.put(rule.getRisk(), map);
 			}
 			map.add(rule);
+			System.out.println(" + Risk = " + rule.getRisk());
+		}
+	}
+
+	private class ContractorTypes {
+
+		private Map<ContractorType, AcceptsBids> data = new HashMap<ContractorType, AcceptsBids>();
+
+		public AcceptsBids getData(ContractorType value) {
+			return data.get(value);
+		}
+
+		public void add(AuditCategoryRule rule) {
+			AcceptsBids map = data.get(rule.getContractorType());
+			if (map == null) {
+				map = new AcceptsBids();
+				data.put(rule.getContractorType(), map);
+			}
+			map.add(rule);
+			System.out.println(" + ContractorType = " + rule.getContractorType());
+		}
+	}
+
+	private class AcceptsBids {
+
+		private Map<Boolean, AuditTypes> data = new HashMap<Boolean, AuditTypes>();
+
+		public AuditTypes getData(Boolean value) {
+			return data.get(value);
+		}
+
+		public void add(AuditCategoryRule rule) {
+			AuditTypes map = data.get(rule.getAcceptsBids());
+			if (map == null) {
+				map = new AuditTypes();
+				data.put(rule.getAcceptsBids(), map);
+			}
+			map.add(rule);
+			System.out.println(" + AcceptsBids = " + rule.getAcceptsBids());
 		}
 	}
 
@@ -86,6 +164,7 @@ public class AuditRuleCache {
 				data.put(rule.getAuditType(), map);
 			}
 			map.add(rule);
+			System.out.println(" + AuditType = " + rule.getAuditType());
 		}
 	}
 
@@ -104,10 +183,11 @@ public class AuditRuleCache {
 				data.put(rule.getOperatorAccount(), map);
 			}
 			map.add(rule);
+			System.out.println(" + OperatorAccount = " + rule.getOperatorAccount());
 		}
 	}
 
-	private interface RuleParam {
-
+	public String print() {
+		return "";
 	}
 }

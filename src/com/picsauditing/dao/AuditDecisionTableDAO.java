@@ -29,6 +29,12 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("unchecked")
 public class AuditDecisionTableDAO extends PicsDAO {
 
+	public List<AuditCategoryRule> findRules() {
+		Query query = em.createQuery("FROM AuditCategoryRule WHERE effectiveDate <= NOW() AND expirationDate > NOW()");
+		query.setMaxResults(50);
+		return query.getResultList();
+	}
+
 	public AuditCategoryRule findAuditCategoryRule(int id) {
 		return em.find(AuditCategoryRule.class, id);
 	}
@@ -52,8 +58,8 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 	public List<AuditCategoryRule> findByCategory(AuditCategory category) {
 		Query query = em.createQuery(findByQuery("AuditCategoryRule",
-				" AND (r.auditType IS NULL OR r.auditType = :auditType)" +
-				" AND (r.rootCategory IS NULL OR r.rootCategory = :rootCategory)"
+				" AND (r.auditType IS NULL OR r.auditType = :auditType)"
+						+ " AND (r.rootCategory IS NULL OR r.rootCategory = :rootCategory)"
 						+ " AND (r.auditCategory IS NULL OR r.auditCategory = :category)"));
 		query.setParameter("auditType", category.getAuditType());
 		query.setParameter("category", category);

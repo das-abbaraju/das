@@ -9,6 +9,7 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" default-autowire="autodetect">
 
 	<bean id="SpringUtils" class="com.picsauditing.util.SpringUtils" />
+	<bean id="AuditRuleCache" class="com.picsauditing.PICS.AuditRuleCache"/>
 	
 	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO"/>
 	<bean id="AccountUserDAO" class="com.picsauditing.dao.AccountUserDAO"/>
