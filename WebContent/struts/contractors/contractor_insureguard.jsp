@@ -115,14 +115,16 @@
 							</s:if></td>
 							<td>
 								<table class="inner">
-									<s:iterator value="certPolicy.get(#cert)" id="audit">
-										<s:if test="!permissions.operatorCorporate || permissions.insuranceOperatorID == operator.id">
+									<s:if test="!permissions.operatorCorporate || permissions.insuranceOperatorID == operator.id">
+										<s:iterator value="certPolicy.get(#cert)" id="cao">
 											<tr>
-												<td style="font-size:10px"><nobr><s:property value="#audit.auditType.auditName"/></nobr></td>
-												<td style="font-size:10px"><nobr><s:date name="#audit.expiresDate" format="M/d/yy"/></nobr></td>
+												<td style="font-size:10px"><nobr><s:property value="#cao.audit.auditType.auditName"/></nobr></td>
+												<td style="font-size:10px"><nobr><s:property value="#cao.audit.auditFor" /> <s:date name="#audit.effectiveDate" format="MMM yyyy" /></nobr></td>
+												<td style="font-size:10px"><nobr><s:property value="#cao.operator.name" /></nobr></td>
+												<td style="font-size:10px"><nobr><s:date name="#cao.audit.expiresDate" format="M/d/yy"/></nobr></td>
 											</tr>
-										</s:if>
-									</s:iterator>
+										</s:iterator>
+									</s:if>
 								</table>
 							</td>
 						</tr>
