@@ -159,6 +159,7 @@ table.statusOpBox td {
 	font: 12px;
 	padding-left: 10px;
 	padding-right: 10px;
+	vertical-align: middle;
 }
 
 td.caoStatus a{
