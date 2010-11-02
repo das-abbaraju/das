@@ -1,5 +1,6 @@
 package com.picsauditing.PICS;
 
+import java.security.acl.Permission;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -430,6 +431,7 @@ public class AuditBuilderController {
 			boolean contains = contains(detail.governingBodies, cao.getOperator());
 			if (contains != cao.isVisible()) {
 				cao.setVisible(contains);
+				cao.setAuditColumns(user);
 				//contractorAuditOperatorDAO.save(cao);
 			}
 		}
