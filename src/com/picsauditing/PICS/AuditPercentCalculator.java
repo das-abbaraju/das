@@ -208,7 +208,7 @@ public class AuditPercentCalculator {
 			catData.setScoreCount(scoreCount);
 		}
 
-		catDataDao.save(catData);
+		//catDataDao.save(catData);
 	}
 
 	public void percentCalculateComplete(ContractorAudit conAudit) {
@@ -349,6 +349,6 @@ public class AuditPercentCalculator {
 		catData.setNumRequired(numRequired);
 		catData.setPercentCompleted(percentComplete);
 
-		catDataDao.save(catData);
+		//catDataDao.save(catData);
 	}
 }
