@@ -104,6 +104,9 @@ public class AuditBuilderController {
 							// This audit should not be renewed but we already
 							// have one
 							found = true;
+						} else if(auditType.getId() == AuditType.WELCOME) {
+							// we should never add another welcome call audit
+							found = true;
 						} else {
 							if (!conAudit.isExpired()
 									&& !conAudit.willExpireSoon())
@@ -236,12 +239,6 @@ public class AuditBuilderController {
 		for (AuditRule rule : rules) {
 			boolean valid = true;
 
-			if (rule.getAuditType() != null
-					&& rule.getAuditType().getId() == AuditType.WELCOME) {
-				if (DateBean.getDateDifference(contractor.getCreationDate()) < -90)
-					valid = false;
-			}
-
 			if (rule.getQuestion() != null
 					&& !rule.isMatchingAnswer(contractorAnswers.get(rule
 							.getQuestion().getId()))) {
@@ -254,6 +251,12 @@ public class AuditBuilderController {
 
 			if (rule.getClass().equals(AuditTypeRule.class)) {
 				AuditTypeRule auditTypeRule = (AuditTypeRule) rule;
+				if (auditTypeRule.getAuditType() != null
+						&& auditTypeRule.getAuditType().getId() == AuditType.WELCOME) {
+					if (DateBean.getDateDifference(contractor.getCreationDate()) < -90)
+						valid = false;
+				}
+				
 				if (auditTypeRule.getDependentAuditType() != null) {
 					valid = false;
 					for (ContractorAuditOperator cao : caoList) {
