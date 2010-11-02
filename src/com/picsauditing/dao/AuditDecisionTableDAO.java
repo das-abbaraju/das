@@ -31,7 +31,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 	public List<AuditCategoryRule> findRules() {
 		Query query = em.createQuery("FROM AuditCategoryRule WHERE effectiveDate <= NOW() AND expirationDate > NOW()");
-		query.setMaxResults(50);
+		// query.setMaxResults(500);
 		return query.getResultList();
 	}
 
