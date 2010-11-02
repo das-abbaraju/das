@@ -28,7 +28,7 @@ public class SubmittedAuditsWidget extends PicsActionSupport {
 		sql.addWhere("cao.visible = 1");
 		sql.addField("atype.auditName");
 		sql.addField("ca.id AS auditID");
-		sql.addField("ca.statusChangedDate");
+		sql.addField("cao.statusChangedDate");
 		sql.addWhere("a.status = 'Active'");
 		sql.addWhere("ca.auditTypeID IN (2,3)"); // Manual and Implementation Audits
 		sql.addWhere("cao.status = 'Submitted'");

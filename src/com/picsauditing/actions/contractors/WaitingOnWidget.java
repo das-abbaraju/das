@@ -28,9 +28,9 @@ public class WaitingOnWidget extends PicsActionSupport {
 			sql.addJoin("JOIN accounts con ON con.id = a.conID");
 			sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = a.id");
 			sql.addWhere("cao.visible = 1");
-			sql.addWhere("a.percentComplete = 100");
-			sql.addWhere("a.percentVerified < 100");
-			sql.addWhere("a.auditStatus = 'Pending'");
+			sql.addWhere("cao.percentComplete = 100");
+			sql.addWhere("cao.percentVerified < 100");
+			sql.addWhere("cao.status = 'Pending'");
 			sql.addWhere("t.workflowID IN (SELECT workflowID from workflow_step ws WHERE ws.newStatus = 'Submitted')");
 			sql.addWhere("a.auditorID = " + permissions.getUserId());
 			sql.addOrderBy("a.id DESC");

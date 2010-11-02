@@ -40,7 +40,7 @@ public class PQFVerificationWidget extends PicsActionSupport {
 		sql.addWhere("a.acceptsBids = 0");
 		sql.addWhere("a.status = 'Active'");
 		sql.addGroupBy("ca.conid");
-		sql.addOrderBy("cao.statusChangedDatee");
+		sql.addOrderBy("cao.statusChangedDate");
 		sql.setLimit(10);
 
 		try {
