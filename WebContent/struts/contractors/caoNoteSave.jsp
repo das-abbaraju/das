@@ -5,7 +5,9 @@
 </div>
 <div id="formDialog">
 	<br />
-	<s:textarea cssClass="clearOnce" rows="3" cols="30" id="addToNotes" value="%{noteMessage}" name="note" />
+	<s:if test="noteRequired">
+		<s:textarea cssClass="clearOnce" rows="3" cols="30" id="addToNotes" value="%{noteMessage}" name="note" />
+	</s:if>
 	<input type="hidden" id="clearOnceField" value="1" />
 </div>
 <div id="buttonsDialog">

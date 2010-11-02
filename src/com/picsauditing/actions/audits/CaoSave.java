@@ -47,6 +47,7 @@ public class CaoSave extends AuditActionSupport {
 	private String note;
 	private String noteMessage = "";
 	private String saveMessage = "";
+	private boolean noteRequired = false;
 	private List<Integer> caoIDs = new ArrayList<Integer>();
 	private AuditStatus status;
 	private List<ContractorAuditOperatorWorkflow> caoWorkflow = null;
@@ -114,7 +115,6 @@ public class CaoSave extends AuditActionSupport {
 
 		if (caoIDs.size() > 0) {
 			if ("statusLoad".equals(button)) {
-				boolean noteRequired = false;
 				Set<String> accountNames = new HashSet<String>();
 				Set<String> auditNames = new HashSet<String>();
 
@@ -523,5 +523,13 @@ public class CaoSave extends AuditActionSupport {
 				return;
 			}
 		}
+	}
+
+	public boolean isNoteRequired() {
+		return noteRequired;
+	}
+
+	public void setNoteRequired(boolean noteRequired) {
+		this.noteRequired = noteRequired;
 	}
 }
