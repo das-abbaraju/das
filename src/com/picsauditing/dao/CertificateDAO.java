@@ -64,7 +64,7 @@ public class CertificateDAO extends PicsDAO {
 			query += " AND c.createdBy = " + permissions.getUserId();
 		}
 		if (!showExpired) {
-			query += " AND c.expirationDate > NOW()";
+			query += " AND (c.expirationDate > NOW() OR c.expirationDate IS NULL)";
 		}
 
 		query += " ORDER BY c.expirationDate";
