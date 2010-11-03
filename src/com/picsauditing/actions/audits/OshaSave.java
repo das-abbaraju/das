@@ -12,6 +12,7 @@ import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OshaAuditDAO;
@@ -38,9 +39,10 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 	private AuditPercentCalculator auditPercentCalculator;
 
 	public OshaSave(ContractorAccountDAO accountDAO, OshaAuditDAO oshaDAO, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDAO, AuditDataDAO dao, AuditPercentCalculator auditPercentCalculator) {
+			AuditCategoryDataDAO catDataDAO, AuditDataDAO dao, CertificateDAO certificateDao,
+			AuditPercentCalculator auditPercentCalculator) {
 
-		super(accountDAO, auditDao, catDataDAO, dao);
+		super(accountDAO, auditDao, catDataDAO, dao, certificateDao);
 		this.oshaDAO = oshaDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 	}

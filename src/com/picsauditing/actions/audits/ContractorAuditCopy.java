@@ -6,17 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -35,8 +30,8 @@ public class ContractorAuditCopy extends AuditActionSupport {
 	private boolean hasDuplicate = false;
 
 	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao,AuditDataDAO auditDataDao) {
-		super(accountDao, auditDao, catDataDao, auditDataDao);
+			AuditCategoryDataDAO catDataDao,AuditDataDAO auditDataDao, CertificateDAO certificateDao) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao);
 	}
 
 	public String execute() throws Exception {

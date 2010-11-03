@@ -12,30 +12,23 @@
 		<tbody>
 			<s:iterator value="certificates">
 				<tr>
-					<td><a class="add"
-							href="#"
-							onclick="saveCert(<s:property value="id"/>,<s:property value="caoID"/>); return false;">Attach</a>
+					<td>
+						<a href="#" class="add saveCertificate" rel="<s:property value="id"/>">Attach</a>
 					</td>
 					<td>
-						<a class="insurance"
-							href="#"
-							onclick="showCertUpload(<s:property value="contractor.id"/>,<s:property value="id"/>,<s:property value="caoID"/>);return false;"
-							>
-							<span></span><s:date name="creationDate" format="M/d/yy" /> - <s:property value="description" />
-						</a>
+						<a href="#" class="insurance viewCertificate" rel="<s:property value="id"/>"><s:date name="creationDate" format="M/d/yy" /> - <s:property value="description" /></a>
 						<br/>
 						<table class="inner">
 							<s:iterator value="caos">
 								<s:if test="!permissions.operatorCorporate || permissions.insuranceOperatorID == operator.id">
 								<tr>
-									<td style="font-size:10px"><nobr><s:property value="audit.auditType.auditName"/></nobr></td>
-									<td style="font-size:10px"><nobr><s:property value="operator.name"/></nobr></td>
-									<td style="font-size:10px"><nobr><s:date name="audit.expiresDate" format="M/d/yy"/></nobr></td>
+									<td style="font-size:10px" class="nobr"><s:property value="audit.auditType.auditName"/></td>
+									<td style="font-size:10px" class="nobr"><s:property value="operator.name"/></td>
+									<td style="font-size:10px" class="nobr"><s:date name="audit.expiresDate" format="M/d/yy"/></td>
 								</tr>
 								</s:if>
 							</s:iterator>
 						</table>
-						
 					</td>
 				</tr>
 			</s:iterator>

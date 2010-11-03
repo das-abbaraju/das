@@ -522,13 +522,9 @@ a.help {
 	cursor: help;
 }
 
-a.insurance span {
-	float: left;
-	clear: both;
-	height: 20px;
-	width: 20px;
-	cursor: pointer;
+a.insurance {
 	background: url('../images/icon_insurance.gif') no-repeat left center;
+	padding: 3px 0 3px 20px;
 	zoom: 1;
 }
 

@@ -14,7 +14,8 @@
 <script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
 <script type="text/javascript" src="js/con_audit.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript">
-	auditID = '<s:property value="conAudit.id"/>';
+	var auditID = '<s:property value="conAudit.id"/>';
+	var conID = '<s:property value="id"/>';
 	<s:if test="conAudit.categories.size == 0">
 		updateCategoriesNow();
 	</s:if>

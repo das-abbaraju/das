@@ -11,6 +11,7 @@ import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OshaAuditDAO;
@@ -48,12 +49,11 @@ public class ContractorAuditController extends AuditActionSupport {
 	// Policy verification (next/first buttons)
 	private boolean policy;
 
-	public ContractorAuditController(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, AuditCategoryDAO auditCategoryDAO,
-			AuditPercentCalculator auditPercentCalculator,
+	public ContractorAuditController(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
+			AuditCategoryDAO auditCategoryDAO, AuditPercentCalculator auditPercentCalculator,
 			OshaAuditDAO oshaAuditDAO, AuditBuilderController auditBuilder) {
-		super(accountDao, auditDao, catDataDao, auditDataDao);
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.oshaAuditDAO = oshaAuditDAO;

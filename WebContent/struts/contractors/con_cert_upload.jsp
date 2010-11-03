@@ -11,18 +11,16 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <script type="text/javascript">
-var caoID  = '<s:property value="caoID"/>';
+var questionID  = '<s:property value="questionID"/>';
 var certID = '<s:property value="certID"/>';
-var message = 'You have NOT SAVED your file.\nPlease click CANCEL to STAY on This Page and then click SAVE to save your file.';
+var message = 'You have NOT SAVED your file.\nPlease click CANCEL to stay on this page and then click SAVE to save your file.';
 var buttonClick = false;
 
 <s:if test="changed">
 window.onbeforeunload = function (event) {
 		try {
-			if (caoID > 0 && certID > 0)
-				window.opener.saveCert(certID, caoID);
-			else
-				window.opener.location.reload(true);
+			if (questionID > 0)
+				window.opener.reloadQuestion(questionID);
 		} catch(err) {}
 }
 </s:if>
@@ -43,7 +41,6 @@ function closePage() {
 <div id="main">
 	<div id="bodyholder">
 		<div id="content">
-
 			<h1>Upload Certificate <span class="sub"><s:property value="contractor.name" /></span></h1>
 			<s:include value="../actionMessages.jsp" />
 			<div>

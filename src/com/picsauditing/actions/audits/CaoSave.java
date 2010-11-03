@@ -14,6 +14,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -68,10 +69,10 @@ public class CaoSave extends AuditActionSupport {
 	private FlagDataCalculator flagCalc;
 
 	public CaoSave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, OshaAuditDAO oshaAuditDAO, ContractorAuditOperatorDAO caoDAO,
+			AuditDataDAO auditDataDao, CertificateDAO certificateDao, OshaAuditDAO oshaAuditDAO, ContractorAuditOperatorDAO caoDAO,
 			AuditPercentCalculator auditPercentCalculator, AuditBuilderController auditBuilder, NoteDAO noteDAO,
 			ContractorAuditOperatorWorkflowDAO caoWDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao);
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao);
 		this.caoDAO = caoDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 		this.auditPercentCalculator = auditPercentCalculator;

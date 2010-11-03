@@ -318,7 +318,6 @@
 		<action name="ContractorCertificatesAjax"
 			class="com.picsauditing.actions.contractors.ContractorCertificates">
 			<result>struts/contractors/contractor_certificates.jsp</result>
-			<result name="question">struts/audits/audit_question_cert.jsp</result>
 		</action>
 		
 		<action name="ContractorDocuments"

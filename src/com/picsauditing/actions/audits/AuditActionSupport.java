@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.AuditBuilder;
@@ -17,6 +17,7 @@ import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -26,6 +27,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Facility;
@@ -47,6 +49,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected ContractorAudit conAudit;
 	protected AuditCategoryDataDAO catDataDao;
 	protected AuditDataDAO auditDataDao;
+	protected CertificateDAO certificateDao;
 	
 	private Map<Integer, AuditData> hasManual;
 	private List<AuditCategoryRule> rules = null;
@@ -57,12 +60,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	private List<CategoryNode> categoryNodes;
 
-	public AuditActionSupport(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao) {
+	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao) {
 		super(accountDao, auditDao);
 		this.catDataDao = catDataDao;
 		this.auditDataDao = auditDataDao;
+		this.certificateDao = certificateDao;
 	}
 
 	public String execute() throws Exception {
@@ -364,6 +367,15 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (!categories.get(auditCategory.getParent()).isApplies())
 			return true;
 		return false;
+	}
+
+	public Certificate getCertificate(AuditData data) {
+		try {
+			int certID = Integer.parseInt(data.getAnswer());
+			return certificateDao.find(certID);
+		} catch(NumberFormatException nfe) {
+			return null;
+		}
 	}
 
 	class CategoryNode {

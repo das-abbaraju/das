@@ -8,6 +8,7 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -29,9 +30,9 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 	protected List<ContractorAuditOperator> caosSave = new ArrayList<ContractorAuditOperator>();
 	
 	public ConAuditMaintain(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
+			ContractorAuditDAO auditDao, CertificateDAO certificateDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, ContractorAuditOperatorDAO caoDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao);
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao);
 		this.caoDAO = caoDAO;
 	}
 

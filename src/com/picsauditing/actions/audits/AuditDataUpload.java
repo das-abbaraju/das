@@ -12,6 +12,7 @@ import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -35,9 +36,9 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 	private int copyDataID = 0;
 
 	public AuditDataUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditQuestionDAO questionDAO,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao, AuditQuestionDAO questionDAO,
 			AuditPercentCalculator auditPercentCalculator) {
-		super(accountDao, auditDao, catDataDao, auditDataDao);
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao);
 		this.questionDAO = questionDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 	}

@@ -190,9 +190,7 @@ $(function() {
 				</nobr>
 			</s:if>
 			<s:if test="#q.questionType == 'FileCertificate'">
-				<div id="cert_<s:property value="#q.id"/>">
-					<s:include value="audit_question_cert_load.jsp" />
-				</div>
+				<s:include value="audit_question_cert_load.jsp" />
 			</s:if>
 		</s:else>
 	

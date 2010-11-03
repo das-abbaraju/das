@@ -96,7 +96,7 @@ $(function(){
 		fileUpload.focus();
 	});
 
-	$('#auditViewArea').delegate('div.question', 'change', function() {
+	$('#auditViewArea').delegate('div.question', 'change saveQuestion', function() {
 		$(this)
 			.block({message: 'Saving answer...'})
 			.load('AuditDataSaveAjax.action',
@@ -172,6 +172,38 @@ $(function(){
 		e.preventDefault();
 		updateCategoriesNow();
 		$.scrollTo(0, 800, {axis: 'y'});
+	});
+	
+	
+	// Insurance Methods
+	$('a.uploadNewCertificate').live('click',function(e) {
+		e.preventDefault();
+		var data = $.deparam($(this).parents('form.qform:first').serialize());
+		showCertUpload(data['certID'], data['auditData.question.id']);
+	});
+	
+	$('#auditViewArea').delegate('div.question a.showExistingCertificates','click',function(e) {
+		e.preventDefault();
+		var container = $(this).parents('div.question:first').find('div.certificateContainer');
+		container.think({message: 'Loading certificates...'}).load("ContractorCertificatesAjax.action", {id: conID});
+	});
+
+	$('#auditViewArea').delegate('div.question a.saveCertificate','click',function(e) {
+		e.preventDefault();
+		$(this).parents('form.qform:first').find('input[name=auditData.answer]').val($(this).attr('rel'));
+		$(this).parents('div.question:first').trigger('saveQuestion');
+	});
+	
+	$('#auditViewArea').delegate('div.question a.detachCertificate','click',function(e) {
+		e.preventDefault();
+		$(this).parents('form.qform:first').find('input[name=auditData.answer]').val('');
+		$(this).parents('div.question:first').trigger('saveQuestion');
+	});
+
+	$('#auditViewArea').delegate('div.question a.viewCertificate','click',function(e) {
+		e.preventDefault();
+		var data = $.deparam($(this).parents('form.qform:first').serialize());
+		showCertUpload($(this).attr('rel'), data['auditData.question.id']);
 	});
 });
 
@@ -271,10 +303,11 @@ function updateCategoriesNow() {
 	_updateCategories();
 }
 
-function showCertUpload(conid, certid, caoID, questionID, auditID) {
-	url = 'CertificateUpload.action?id='+conid+'&certID='+certid+'&caoID='+caoID
-		+ (questionID != undefined ? '&questionID='+questionID : '')
-		+ (auditID != undefined ? '&auditID='+auditID : '');
+function showCertUpload(certID, questionID) {
+	url = 'CertificateUpload.action?id='+conID
+		+ ((certID !== undefined && certID > 0) ? '&certID='+certID : '')
+		+ ((questionID !== undefined && questionID > 0) ? '&questionID='+questionID : '')
+		+ '&auditID='+auditID;
 	title = 'Upload';
 	pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
 	fileUpload = window.open(url,title,pars);

@@ -23,7 +23,7 @@
 			img: 'images/ajax_process.gif'
 		};
 		$.extend(settings, options);
-		$(this).empty().append($('<img/>').attr('src', settings.img)).append(' '+settings.message).addClass('thinking');
+		return $(this).empty().append($('<img/>', {src: settings.img})).append(' '+settings.message);
 	}
 	$.fn.unthink = function() {
 		if (!$(this).is('.thinking'))

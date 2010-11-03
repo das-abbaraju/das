@@ -157,7 +157,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 					else if(certificate.getExpirationDate() == null || d.getAudit().getExpiresDate().after(certificate.getExpirationDate())) {
 						certificate.setExpirationDate(d.getAudit().getExpiresDate());
 					}
-					certificateDAO.remove(certificate);
+					certificateDAO.save(certificate);
 					dataDAO.save(d);
 				}
 

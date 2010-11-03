@@ -35,13 +35,16 @@
 </span>
 
 <div class="answer">
-	<s:if test="#q.questionType.startsWith('File')">
+	<s:if test="#q.questionType == 'File'">
 		<s:if test="#a.id > 0 && #a.answer.length() > 0">
 			<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.id=<s:property value="#a.id"/>" 
 				target="_BLANK">View File</a>
 		</s:if>
 		<s:else>File Not Uploaded</s:else>
 	</s:if>
+	<s:elseif test="#q.questionType == 'FileCertificate'">
+		<s:include value="audit_question_cert_load.jsp" />
+	</s:elseif>
 	<s:elseif test="#q.questionType == 'Check Box'">
 		<s:if test='#a.answer.equals("X")'>
 			<span class="checked"></span>

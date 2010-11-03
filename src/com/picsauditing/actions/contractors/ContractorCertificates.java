@@ -29,9 +29,6 @@ public class ContractorCertificates extends ContractorActionSupport {
 		
 		this.findContractor();
 		
-		if ("question".equals(button))
-			return button;
-
 		return SUCCESS;
 	}
 

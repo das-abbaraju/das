@@ -8,6 +8,7 @@ import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditFileDAO;
@@ -33,8 +34,8 @@ public class AuditFileUpload extends AuditActionSupport {
 	private AuditQuestion auditQuestion;
 
 	public AuditFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, ContractorAuditFileDAO contractorAuditFileDAO, AuditQuestionDAO auditQuestionDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao);
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao, ContractorAuditFileDAO contractorAuditFileDAO, AuditQuestionDAO auditQuestionDAO) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao);
 		this.contractorAuditFileDAO = contractorAuditFileDAO;
 		this.auditQuestionDAO = auditQuestionDAO;
 	}

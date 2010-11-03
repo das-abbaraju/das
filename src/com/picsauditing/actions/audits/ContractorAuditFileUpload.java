@@ -6,6 +6,7 @@ import java.util.List;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditFileDAO;
@@ -16,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAuditFile;
 import com.picsauditing.util.AnswerMap;
 
+@SuppressWarnings("serial")
 public class ContractorAuditFileUpload extends AuditActionSupport {
 
 	protected ContractorAuditFileDAO contractorAuditFileDAO;
@@ -25,9 +27,9 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 	protected int fileID;
 
 	public ContractorAuditFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, ContractorAuditFileDAO contractorAuditFileDAO,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao, ContractorAuditFileDAO contractorAuditFileDAO,
 			AuditQuestionDAO auditQuestionDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao);
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao);
 		this.contractorAuditFileDAO = contractorAuditFileDAO;
 		this.auditQuestionDAO = auditQuestionDAO;
 	}

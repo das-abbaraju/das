@@ -136,10 +136,11 @@ function showFileUpload(answerid, questionid, divId) {
 	fileUpload.focus();
 }
 
-function showCertUpload(conid, certid, caoID, questionID, auditID) {
-	url = 'CertificateUpload.action?id='+conid+'&certID='+certid+'&caoID='+caoID
-		+ (questionID != undefined ? '&questionID='+questionID : '')
-		+ (auditID != undefined ? '&auditID='+auditID : '');
+function showCertUpload(certid, questionID) {
+	url = 'CertificateUpload.action?id='+conid
+		+ ((certID !== undefined && certID > 0) ? '&certID='+certid : '')
+		+ ((questionID !== undefined && questionID > 0) ? '&questionID='+questionID : '')
+		+ '&auditID='+auditID;
 	title = 'Upload';
 	pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
 	fileUpload = window.open(url,title,pars);

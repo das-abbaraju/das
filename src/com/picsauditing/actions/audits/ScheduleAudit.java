@@ -16,6 +16,7 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -52,8 +53,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private User auditor = null;
 
 	public ScheduleAudit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, AuditorAvailabilityDAO auditorAvailabilityDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao);
+			AuditDataDAO auditDataDao, CertificateDAO certificateDao, AuditorAvailabilityDAO auditorAvailabilityDAO) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao);
 		this.auditorAvailabilityDAO = auditorAvailabilityDAO;
 		this.subHeading = "Schedule Audit";
 	}

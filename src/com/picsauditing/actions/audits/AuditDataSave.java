@@ -19,6 +19,7 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NaicsDAO;
@@ -51,9 +52,9 @@ public class AuditDataSave extends AuditActionSupport {
 
 	public AuditDataSave(ContractorAccountDAO accountDAO, AuditDataDAO dao,
 			AuditCategoryDataDAO catDataDao, AuditQuestionDAO questionDao,
-			ContractorAuditDAO auditDao, OshaAuditDAO oshaAuditDAO,
+			ContractorAuditDAO auditDao, CertificateDAO certificateDao, OshaAuditDAO oshaAuditDAO,
 			NaicsDAO naicsDAO, AuditBuilderController auditBuilder) {
-		super(accountDAO, auditDao, catDataDao, dao);
+		super(accountDAO, auditDao, catDataDao, dao, certificateDao);
 		this.questionDao = questionDao;
 		this.naicsDAO = naicsDAO;
 		this.auditBuilder = auditBuilder;
