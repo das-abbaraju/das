@@ -68,7 +68,7 @@ function showAuditUpload(auditID, fileID, desc, question) {
 								<a style="cursor:pointer;" onclick="javascript: showAuditUpload(<s:property value="conAudit.id"/>,0,'<s:property value="#fileDesc"/>',<s:property value="question.id"/>); return false;" title="Click here to upload requirements"><s:property value="question.requirement" /></a>
 							</s:else>	
 							<br/>
-							<s:if test="comment.size() > 0">
+							<s:if test="comment.length() > 0">
 								<span class="redMain"><b>Safety Professional Comment : </b><s:property value="comment" escape="false"/></span>
 							</s:if>
 							<s:if test="permissions.auditor">
