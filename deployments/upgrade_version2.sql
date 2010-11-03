@@ -7,6 +7,15 @@
 -- move pqfoptions
 -- move app_translation (not if empty)
 
+-- these audits have been removed on alpha
+delete from pqfcatdata where auditid in (
+select id from contractor_Audit where auditTypeID in (59,131,135));
+
+delete from pqfdata where auditid in (
+select id from contractor_Audit where auditTypeID in (59,131,135));
+
+delete from contractor_Audit where auditTypeID in (59,131,135);
+
 ALTER TABLE `employee_site` ENGINE=InnoDB;
 
 /** Update the requiresOQ for all contractors
@@ -331,6 +340,16 @@ insert into facilities (corporateID, opID) select 7, id from accounts where coun
 
 
 -- convert the cert and is valid on the Policy CAO to the new policy questions for each operator
+create table temp_cao_conversion as
+select ao.id, ao.opID, ao.auditTypeID, ao.help
+from audit_operator ao
+join audit_type aType on aType.id = ao.auditTypeID and aType.classType = 'Policy'
+where ao.canSee = 1 and ao.opID IN (SELECT o.inheritInsurance FROM accounts a
+join operators o on a.id = o.id
+WHERE a.status in ('Active','Pending'));
+
+update temp_cao_conversion set help = '' where help is null;
+
 insert into pqfdata 
 (auditID, questionID, answer, dateVerified, auditorID, createdBy, creationDate, updatedBy, updateDate)
 select cao.auditID, q.id, cao.valid, cao.statusChangedDate, cao.statusChangedBy, cao.createdBy, cao.creationDate, cao.updatedBy, cao.updateDate
@@ -376,6 +395,9 @@ join audit_operator ao on ao.opID = o.inheritAudits and canSee = 1
 ) t ON ca.conID = t.conID and ca.auditTypeID = t.auditTypeID
 JOIN audit_type atype ON atype.id = ca.auditTypeID and classtype != 'Policy'
 ;
+
+update temp_cao set opid = 4, gbID = 4
+where opid = 0;
 
 -- Clean up the governing bodies for annual updates and non-pqf audits
 update temp_cao t, accounts a
@@ -457,18 +479,38 @@ join audit_type yat on yat.id = ca.audittypeid
 where yat.classType != 'Policy'
 and ca.closedDate > 0;
 
--- insert the Audit Category Data for subcategories
+-- insert the Audit Category Data for categories
+insert into audit_cat_data 
+select null,auditID,catid,pc.requiredCompleted,pc.numRequired, 
+pc.numAnswered,applies,percentCompleted,percentVerified,percentClosed,override, 
+score,scoreCount,pc.createdBy,pc.updatedBy,pc.creationDate,pc.updateDate
+from pqfcatdata pc
+join audit_category ac on pc.catid = ac.id
+where ac.id = ac.legacyid;
+
+
+
+-- need to run from here
+insert into audit_cat_data 
+select null,auditID,ac.id,pc.requiredCompleted,pc.numRequired, 
+pc.numAnswered,percentCompleted,percentVerified,percentClosed,override, 
+score,scoreCount,pc.createdBy,pc.updatedBy,pc.creationDate,pc.updateDate
+from pqfcatdata pc
+join audit_category ac on pc.catid = ac.legacyid
+where ac.id != ac.legacyid;
+
 -- huh?? We may not need this. Keerthi and Trevor can't quite agree if it's needed
 insert into audit_cat_data
-select null,acd.auditID,acs.id,acd.requiredCompleted,acd.numRequired,acd.numAnswered, 
+select null,acd.auditID,acs.id,acd.requiredCompleted,acs.numRequired,acd.numAnswered, 
 acd.applies,acd.percentCompleted,acd.percentVerified,acd.percentClosed,acd.override, 
-acd.score,acd.scoreCount,acd.createdBy,acd.updatedBy,acd.creationDate,acd.updateDate
+acd.score,acd.scoreCount,acd.createdBy,acd.updatedBy,Now(),acd.updateDate
 from audit_category acp
 join audit_category acs on acp.id = acs.parentID
 join audit_cat_data acd on acd.categoryID = acp.id
 join audit_type at on at.id = acp.audittypeid
 left join audit_Cat_data acds on acds.auditid = acd.auditid and acds.categoryid = acs.id
-where acp.parentID is null
+where acd.applies = 1
+and acp.parentID is null
 and at.classType != 'Policy'
 and acds.id is null;
 
@@ -501,6 +543,10 @@ and validationRequired = 1;
 /**
  * adding operator tagsfor adHoc audits  
  */
+
+update audit_type_rule set tagid= null
+where tagid not in (select id from operator_tag);
+
 drop table if exists temp_auditoperatortags;
 create table temp_auditoperatortags as  
 select ao.opid,at.id, at.auditname
@@ -510,6 +556,7 @@ join accounts a on a.id = ao.opid
 join audit_type_rule atr on atr.auditTypeID = ao.auditTypeID 
 and atr.opid = ao.opid
 where ao.cansee =1 and ao.minRiskLevel = 0 and ao.tagID is null and at.id not between 113 and 115
+and ao.audittypeid != 2
 group by atr.opid, atr.audittypeid 
 order by ao.opid , ao.auditTypeID;
 
