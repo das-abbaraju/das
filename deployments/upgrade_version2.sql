@@ -628,3 +628,5 @@ delete from pqfdata where questionID = 119;
 delete from audit_cat_data where categoryID = 396;
 delete from audit_category where id = 396;
 
+-- Increasing the constraints on the number of contractors pulled up by the ContractorCron. Cron was keeping so much information for contractors in memory that it was overflowing the heap on alpha
+update app_properties app set app.value = 2 where app.property in ('ContractorCron.limit.default','ContractorCron.limit.serverload');
