@@ -273,7 +273,7 @@ public class AuditPercentCalculator {
 			}
 			cao.setPercentComplete(percentComplete);
 			cao.setPercentVerified(percentVerified);
-			caoDAO.save(cao);
+			//caoDAO.save(cao);
 		}
 	}
 
