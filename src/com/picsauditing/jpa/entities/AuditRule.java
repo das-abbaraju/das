@@ -23,7 +23,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected AuditQuestion question;
 	protected QuestionComparator questionComparator;
 	protected String questionAnswer;
-	protected Boolean acceptsBids = false; // Default to not-bid only
+	protected Boolean acceptsBids;
 
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
