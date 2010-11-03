@@ -514,6 +514,12 @@ and acp.parentID is null
 and at.classType != 'Policy'
 and acds.id is null;
 
+-- These audits don't have a AuditCatData on Live(do we want to insert 1 category????????)
+select * from contractor_audit ca
+left join audit_cat_data acd on ca.id = acd.auditID
+where acd.id is null
+and auditTypeID = 2;
+
 -- remove data for What percentage of your services are performed for the Candadian Government?
 delete from pqfdata where questionID = 2035;
 
@@ -647,7 +653,8 @@ and name = 'Operator Requirements';
 -- setting all the contractors, audits to recalculation
 update contractor_info set needsRecalculation = null;
 -- not sure if we want to run this
-update contractor_Audit set lastRecalculation = null;
+update contractor_Audit set lastRecalculation = null 
+where expiresDate > Now();
 
 -- updating the questions on the auditcategory
 create TEMPORARY table temp_cats
