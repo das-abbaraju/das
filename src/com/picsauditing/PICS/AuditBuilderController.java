@@ -488,8 +488,11 @@ public class AuditBuilderController {
 			if (auditTypeDetail != null) {
 				for (OperatorAccount operatorAccount : auditTypeDetail.operators) {
 					if (operatorAccount.getOperatorHeirarchy().contains(
-							cao.getOperator().getId()))
+							cao.getOperator().getId())){
 						operators.add(operatorAccount);
+						operators.add(operatorAccount.getInheritFlagCriteria());
+						operators.add(operatorAccount.getInheritInsuranceCriteria());
+					}
 				}
 			}
 		}

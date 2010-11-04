@@ -264,7 +264,7 @@ public class ContractorAuditOperator extends BaseTable {
 			return true;
 
 		if(permissions.isCorporate()){
-			for (ContractorAuditOperatorPermission caop : caoPermissions) {
+			for (ContractorAuditOperatorPermission caop : getCaoPermissions()) {
 				for (Integer ids : permissions.getOperatorChildren()) {
 					if (caop.getOperator().getId() == ids)
 						return true;
@@ -276,7 +276,7 @@ public class ContractorAuditOperator extends BaseTable {
 	}
 	
 	public boolean hasCaop(int opID){
-		for (ContractorAuditOperatorPermission caop : caoPermissions) {
+		for (ContractorAuditOperatorPermission caop : getCaoPermissions()) {
 			if (caop.getOperator().getId() == opID)
 				return true;
 		}
