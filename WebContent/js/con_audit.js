@@ -284,7 +284,7 @@ function _updateCategories() {
 				
 				showNavButtons();
 				
-				if (!$('#aCatlist li.catlist').hasClass('current'))
+				if (!$('#aCatlist li.catlist').hasClass('current') || $('#auditViewArea .question').length == 0)
 					$('a.hist-category :first').click();
 			}
 		}

@@ -75,7 +75,7 @@
 			</pics:permission>
 			<pics:permission perm="ContractorDetails">
 				<td><a
-					href="ConAuditList.action?id=<s:property value="get('id')"/>">Audits</a></td>
+					href="ContractorDocuments.action?id=<s:property value="get('id')"/>">Audits</a></td>
 					<s:if test="pqfVisible">
 						<td class="icon center">
 								<a href="Audit.action?auditID=<s:property value="get('ca1_auditID')"/>" style="icon"><img
