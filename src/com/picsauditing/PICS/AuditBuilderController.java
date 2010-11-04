@@ -541,6 +541,7 @@ public class AuditBuilderController {
 		for (ContractorAccount contractor : contractors) {
 			try {
 				buildAudits(contractor, null);
+				cAuditDAO.save(contractor);
 			} catch (Exception e) {
 				System.out.println("ERROR!! AuditBuiler.addAuditRenewals() "
 						+ e.getMessage());
