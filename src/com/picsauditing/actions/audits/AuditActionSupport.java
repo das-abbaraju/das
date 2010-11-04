@@ -1,11 +1,13 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.AuditBuilder;
@@ -198,24 +200,25 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public void getValidSteps() {
-		List<AuditStatus> occ = new ArrayList<AuditStatus>();
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (cao.isVisible() && cao.isVisibleTo(permissions)) {
 				for (WorkflowStep workflowStep : conAudit.getAuditType()
 						.getWorkFlow().getSteps()) {
 					if (workflowStep.getOldStatus() == cao.getStatus()) {
-						if(canPerformAction(cao, workflowStep))
+						if (canPerformAction(cao, workflowStep)) {
 							caoSteps.put(cao.getId(), workflowStep);
+							actionStatus.put(workflowStep.getNewStatus(), cao
+									.getId());
+						}
 					}
 				}
 			}
 		}
-		if (!caoSteps.isEmpty()) {
-			for (Entry<Integer, WorkflowStep> en : caoSteps.entries()) {
-				if (occ.contains(en.getValue().getNewStatus()))
-					actionStatus.put(en.getValue().getNewStatus(), en.getKey());
-				else
-					occ.add(en.getValue().getNewStatus());
+		if (!actionStatus.isEmpty()) {
+			for (Iterator<Entry<AuditStatus, Collection<Integer>>> en = actionStatus
+					.asMap().entrySet().iterator(); en.hasNext();) {
+				if (!(en.next().getValue().size() > 1))
+					en.remove();
 			}
 		}
 	}
