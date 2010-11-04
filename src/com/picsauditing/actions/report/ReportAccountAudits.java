@@ -70,7 +70,7 @@ public class ReportAccountAudits extends ReportAccount {
 			if (download) {
 				sql.addJoin("LEFT JOIN contractor_tag cg ON cg.conID = a.id");
 				sql.addJoin("LEFT JOIN operator_tag ot ON ot.id = cg.tagID AND ot.opID = " + permissions.getAccountId());
-				sql.addField("GROUP_CONCAT(ot.tag ORDER BY ot.tag SEPARATOR ', ') AS tag");
+				sql.addField("GROUP_CONCAT(DISTINCT ot.tag ORDER BY ot.tag SEPARATOR ', ') AS tag");
 			}
 		}
 
