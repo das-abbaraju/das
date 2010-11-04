@@ -55,9 +55,8 @@ public class AuditDataDAO extends PicsDAO {
 
 	public int removeDataByCategory(int auditID, int categoryID) {
 		Query query = em.createQuery("DELETE FROM AuditData d "
-				+ "WHERE d.audit.id = :auditID AND d.question.category.id = :category ");
+				+ "WHERE d.audit.id = :auditID AND d.question.id IN (SELECT id from AuditQuestion where category.id = "+ categoryID +")");
 		query.setParameter("auditID", auditID);
-		query.setParameter("category", categoryID);
 		return query.executeUpdate();
 	}
 

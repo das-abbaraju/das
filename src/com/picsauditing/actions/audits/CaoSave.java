@@ -426,7 +426,7 @@ public class CaoSave extends AuditActionSupport {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		// TODO decide where we're going to store the email template
 		emailBuilder.setTemplate(step.getEmailTemplate());
-		emailBuilder.setTemplate(cao.getAudit().getAuditType().getTemplate());
+		//emailBuilder.setTemplate(cao.getAudit().getAuditType().getTemplate());
 
 		emailBuilder.setPermissions(permissions);
 		if (cao.getAudit().getAuditType().getClassType().isAudit())
