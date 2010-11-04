@@ -424,9 +424,7 @@ public class CaoSave extends AuditActionSupport {
 	private void sendStatusChangeEmail(WorkflowStep step, ContractorAuditOperator cao)
 	throws Exception {
 		EmailBuilder emailBuilder = new EmailBuilder();
-		// TODO decide where we're going to store the email template
 		emailBuilder.setTemplate(step.getEmailTemplate());
-		//emailBuilder.setTemplate(cao.getAudit().getAuditType().getTemplate());
 
 		emailBuilder.setPermissions(permissions);
 		if (cao.getAudit().getAuditType().getClassType().isAudit())
