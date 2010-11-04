@@ -241,7 +241,7 @@
 					</td>
 					<td>
 						<s:if test="value.percentVerified == 100">
-							<button class="picsbutton positive" name="button" onclick="return changeAuditStatus(<s:property value="value.conAudit.id" />,'Approved','Approve',<s:property value="value.id" />);">Approve</button>
+							<button class="picsbutton positive" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id" />,'Approved','Approve',<s:property value="value.id" />);">Approve</button>
 						</s:if>
 						<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id" />,'Incomplete','Reject',<s:property value="value.id" />);">Reject</button>
 					</td>
