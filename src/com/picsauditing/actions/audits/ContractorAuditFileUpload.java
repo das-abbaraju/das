@@ -11,7 +11,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditFileDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAuditFile;
@@ -59,16 +58,15 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 		if (openReqs == null) {
 			openReqs = new ArrayList<AuditData>();
 			AnswerMap answerMap = auditDataDao.findAnswers(auditID);
-			for (AuditCatData auditCatData : getCategories().values()) {
-				if (auditCatData.isApplies()) {
-					for (AuditCategory auditCategory : auditCatData.getCategory().getChildren()) {
-						for (AuditQuestion auditQuestion : auditCategory.getQuestions()) {
-							if (auditQuestion.isCurrent()) { // removed is valid
-								AuditData auditData = answerMap.get(auditQuestion.getId());
-								if (auditData != null) {
-									if (auditData.isHasRequirements() && auditData.isRequirementOpen()) {
-										openReqs.add(auditData);
-									}
+			for (AuditCatData auditCatData : conAudit.getCategories()) {
+				if(auditCatData.isApplies() 
+						&& getCategories().get(auditCatData.getCategory().getTopParent()).isApplies()) {
+					for (AuditQuestion auditQuestion : auditCatData.getCategory().getQuestions()) {
+						if (auditQuestion.isCurrent()) {
+							AuditData auditData = answerMap.get(auditQuestion.getId());
+							if (auditData != null) {
+								if (auditData.isHasRequirements() && auditData.isRequirementOpen()) {
+									openReqs.add(auditData);
 								}
 							}
 						}
@@ -88,7 +86,7 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 	}
 
 	public String getFileDesc(AuditQuestion auditQuestion) {
-		return auditQuestion.getCategory().getNumber() + "."
+		return auditQuestion.getCategory().getTopParent().getNumber() + "."
 				+ auditQuestion.getCategory().getNumber() + "." + auditQuestion.getNumber();
 	}
 }
