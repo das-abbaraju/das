@@ -544,6 +544,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			if (permissions.getAccountId() == opID || permissions.isCorporate())
 				return true;
 		}
+		if(permissions.getUserId() == flagOverride.getCreatedBy().getId())
+			return false;
 		if (flagOverride.getOperator().getId() != permissions.getAccountId())
 			return true;
 		return false;
