@@ -394,37 +394,43 @@ function checkReason(id) {
 										<form enctype="multipart/form-data" method="POST">
 											<s:hidden value="%{#data.id}" name="dataID" />
 											<s:if test="canForceDataFlag(#flagoverride)">
-											<fieldset class="form">
-												<ol>							
-													<li>
-														<label>Force Flag to:</label>
-														<s:radio id="flag_%{#data.id}" list="getUnusedFlagColors(#data.id)" name="forceFlag" theme="pics" />
-													</li> 
-													<li> 
-														<label>Until:</label> 
-														<input id="forceEnd_<s:property value="%{#data.id}" />" name="forceEnd" size="8" type="text" class="datepicker" />
-													</li>
-													<li class="required">
-														<label>Reason for Forcing:</label>
-														<s:textarea name="forceNote" value="" rows="2" cols="30" cssStyle="vertical-align: top;"></s:textarea>
-														<div class="fieldhelp">
-															<h3>Reason</h3>
-	                     								<p class="redMain">* All Fields are required</p>									
-														</div>
-													</li>
-													<li>
-														<span class="label-txt">File Attachment:</span>
-														<s:file name="file" id="%{#data.id}_file"></s:file>
-													</li>
-													<li>
-														<button class="picsbutton positive" type="submit" name="button" value="Force Individual Flag"
-															onclick="return checkReason(<s:property value="%{#data.id}" />);">Force Individual Flag</button>
-														<s:if test="permissions.corporate">
-																<s:checkbox id="overRAll_%{#data.id}" name="overrideAll"/><label for="overRAll_<s:property value="%{#data.id}"/>">Override the Flag for all <s:property value="permissions.accountName" /> sites </label><br/>														
-														</s:if>
-														</li>
-													</ol>
-												</fieldset>
+												<s:if test="#flagoverride!=null">
+													There is a site level override in effect by <s:property value="#flagoverride.createdBy.name"/>, 
+													to cancel this override you must log in as a site level user.
+												</s:if>
+												<s:else>												
+													<fieldset class="form">
+														<ol>							
+															<li>
+																<label>Force Flag to:</label>
+																<s:radio id="flag_%{#data.id}" list="getUnusedFlagColors(#data.id)" name="forceFlag" theme="pics" />
+															</li> 
+															<li> 
+																<label>Until:</label> 
+																<input id="forceEnd_<s:property value="%{#data.id}" />" name="forceEnd" size="8" type="text" class="datepicker" />
+															</li>
+															<li class="required">
+																<label>Reason for Forcing:</label>
+																<s:textarea name="forceNote" value="" rows="2" cols="30" cssStyle="vertical-align: top;"></s:textarea>
+																<div class="fieldhelp">
+																	<h3>Reason</h3>
+			                     								<p class="redMain">* All Fields are required</p>									
+																</div>
+															</li>
+															<li>
+																<span class="label-txt">File Attachment:</span>
+																<s:file name="file" id="%{#data.id}_file"></s:file>
+															</li>
+															<li>
+																<button class="picsbutton positive" type="submit" name="button" value="Force Individual Flag"
+																	onclick="return checkReason(<s:property value="%{#data.id}" />);">Force Individual Flag</button>
+																<s:if test="permissions.corporate">
+																		<s:checkbox id="overRAll_%{#data.id}" name="overrideAll"/><label for="overRAll_<s:property value="%{#data.id}"/>">Override the Flag for all <s:property value="permissions.accountName" /> sites </label><br/>														
+																</s:if>
+																</li>
+															</ol>
+														</fieldset>
+												</s:else>
 											</s:if>
 											<s:else>
 												<s:if test="#flagoverride.operator.type == 'Corporate'">
