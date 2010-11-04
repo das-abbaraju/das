@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -220,10 +221,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 				FlagDataOverride flagDataOverride = isFlagDataOverride(flagData);
 				if (flagDataOverride != null) {
-					for (FlagCriteria flagCriteria : getFlagDataOverrides().keySet()) {
-						if (flagCriteria.equals(flagDataOverride.getCriteria())) {
-							getFlagDataOverrides().remove(flagCriteria);
-						}
+					for (Iterator<FlagCriteria> it = getFlagDataOverrides()
+							.keySet().iterator(); it.hasNext();) {
+						if (it.next().equals(flagDataOverride.getCriteria()))
+							it.remove();
 					}
 					if (overrideAll) {
 						if (flagDataOverride.getOperator().getId() == permissions.getAccountId()) {
