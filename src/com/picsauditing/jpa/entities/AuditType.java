@@ -337,15 +337,15 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	/**
 	 * @return
-	 * 		boolean indicating whether or not this audittype can be scored
-	 * 		for implemention Audit Score
+	 * 		boolean indicating whether or not this Audit Type can be scored.
+	 * 		Used for implementing audit score
 	 */
 	public boolean isScoreable() {
 		return scoreable;
 	}
 
-	public void setScoreable(boolean scorable) {
-		this.scoreable = scorable;
+	public void setScoreable(boolean scoreable) {
+		this.scoreable = scoreable;
 	}
 
 }
