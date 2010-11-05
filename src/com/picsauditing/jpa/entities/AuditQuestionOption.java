@@ -19,6 +19,7 @@ public class AuditQuestionOption extends BaseTable implements
 	private String optionName;
 	private YesNo visible;
 	private int number;
+	private int score;
 
 	public AuditQuestionOption() {
 
@@ -90,6 +91,18 @@ public class AuditQuestionOption extends BaseTable implements
 		if (id != other.id)
 			return false;
 		return true;
+	}
+
+	/**
+	 * @return
+	 * 		The score of this question to be used when scoring an audit
+	 */
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
 	}
 
 }

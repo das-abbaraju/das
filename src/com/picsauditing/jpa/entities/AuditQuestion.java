@@ -39,30 +39,30 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 			"Decimal Number", "File", "FileCertificate", "Industry", "License", "Main Work", "Money", "Number",
 			"Office Location", "Radio", "Service", "State", "Text", "Text Area", "Yes/No", "Yes/No/NA" };
 
-	private AuditCategory category;
 	private int number;
-	private String name;
-	private String questionType;
+	private int scoreWeight;
 	private boolean hasRequirement;
-	private String okAnswer;
 	private boolean required;
-	private AuditQuestion requiredQuestion;
-	private String requiredAnswer;
-	private AuditQuestion visibleQuestion;
-	private String visibleAnswer;
-	private String columnHeader;
-	private String uniqueCode;
-	private String title;
 	private boolean groupedWithPrevious;
 	private boolean flaggable;
 	private boolean showComment;
-	private LowMedHigh riskLevel = null;
+	private String requiredAnswer;
+	private String visibleAnswer;
+	private String name;
+	private String questionType;
+	private String okAnswer;
+	private String columnHeader;
+	private String uniqueCode;
+	private String title;
 	private String requirement;
 	private String helpPage;
 	private String helpText;
-
 	private String criteria;
 	private String criteriaAnswer;
+	private AuditQuestion requiredQuestion;
+	private AuditQuestion visibleQuestion;
+	private AuditCategory category;
+	private LowMedHigh riskLevel = null;
 
 	private List<AuditQuestion> dependentRequired;
 	private List<AuditQuestion> dependentVisible;
@@ -490,5 +490,18 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		}
 
 		return getExpandedNumber() + ": " + columnText;
+	}
+
+	/**
+	 * @return 
+	 * 		int showing the weight to adjust the score by for this question
+	 * 		when scoring an audit
+	 */
+	public int getScoreWeight() {
+		return scoreWeight;
+	}
+
+	public void setScoreWeight(int scoreWeight) {
+		this.scoreWeight = scoreWeight;
 	}
 }

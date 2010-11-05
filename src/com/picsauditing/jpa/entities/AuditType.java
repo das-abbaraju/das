@@ -51,8 +51,9 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	protected boolean hasAuditor;
 	protected boolean canContractorView;
 	protected boolean canContractorEdit;
-	protected Integer monthsToExpire;
 	protected boolean renewable = true;
+	protected boolean scoreable = false;
+	protected Integer monthsToExpire;
 	protected Account account;
 	protected EmailTemplate template;
 	protected OpPerms editPermission;
@@ -332,6 +333,19 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	public void setWorkFlow(Workflow workFlow) {
 		this.workFlow = workFlow;
+	}
+
+	/**
+	 * @return
+	 * 		boolean indicating whether or not this audittype can be scored
+	 * 		for implemention Audit Score
+	 */
+	public boolean isScoreable() {
+		return scoreable;
+	}
+
+	public void setScoreable(boolean scorable) {
+		this.scoreable = scorable;
 	}
 
 }
