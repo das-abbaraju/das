@@ -569,10 +569,9 @@ table.osha tfoot th {
 
 #auditViewArea{
 	background-color: #F6F6F0;
-	min-width: 500px;
-	width: expression(this.width > 500 ? 500 : true);
-	min-height: 300px;
-	height: expression(this.width > 300 ? 300 : true);
+	min-height:500px;
+	height:auto !important;
+	height:500px;
 }
 
 .audit_category h2{
