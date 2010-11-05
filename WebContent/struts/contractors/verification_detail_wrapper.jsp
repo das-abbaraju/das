@@ -12,6 +12,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/summaryreport.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css?v=<s:property value="version"/>" />
 
 <style type="text/css">
 	small {
@@ -153,7 +154,7 @@
 		};
 
 		$('#noteAjax').load('CaoSaveAjax.action', data, function(){
-	        $.blockUI({ message:$('#noteAjax'), css: { width: '350px'} }); 
+	        $.blockUI({ message:$('#noteAjax')}); 
 	        if($('.clearOnce').val()=='')
 				$('#clearOnceField').val(0);
 		    $('#yesButton').click(function(){
@@ -269,7 +270,7 @@
 </tr></tbody></table>
 
 <div id="verification_audit"></div>
-<div id="noteAjax"></div>
+<div id="noteAjax" class="blockDialog"></div>
 <br clear="all"/>
 <br clear="all"/>
 <div class="clear"></div>
