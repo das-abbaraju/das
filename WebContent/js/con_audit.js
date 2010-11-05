@@ -208,7 +208,7 @@ $(function(){
 });
 
 function showNavButtons() {
-	if ($('ul.catUL:visible li.current').attr('id') == $('ul.catUL:visible li:last').attr('id'))
+	if ($('ul.catUL:visible li:last').is('.current'))
 		$('#cat-nav-buttons').addClass('last');
 	else
 		$('#cat-nav-buttons').removeClass('last');
