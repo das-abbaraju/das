@@ -64,7 +64,8 @@ function loadResults(data, noteText){
 		    $('#yesButton').click(function(){
 		        $.blockUI({message: 'Saving Status, please wait...'});
 		        data.button = 'caoAjaxSave';
-		        data.note =  $('#addToNotes').val();
+		        if($('#addToNotes').val())
+		        	data.note =  $('#addToNotes').val();
 		        $('#caoTable').load('CaoSaveAjax.action', data, function(){
 		            $.unblockUI();
 		        });
