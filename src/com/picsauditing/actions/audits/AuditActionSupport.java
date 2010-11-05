@@ -386,11 +386,19 @@ public class AuditActionSupport extends ContractorActionSupport {
 		public List<CategoryNode> subCategories;
 		public int total;
 		public int answered;
+		public int verified;
 
-		public float getPercent() {
-			if (total == 0)
+		public float getPercentComplete() {
+			int percent = (int) ((answered * 1f / total) * 100);
+			if (total == 0 || percent > 100)
 				return 100;
-			return (int) ((answered * 1f / total) * 100);
+			return percent;
+		}
+		public float getPercentVerified() {
+			int percent = (int) ((verified * 1f / total) * 100);
+			if (total == 0 || percent > 100)
+				return 100;
+			return percent; 
 		}
 	}
 
@@ -423,12 +431,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 					node.total = getCategories().get(cat).getNumRequired();
 					node.answered = getCategories().get(cat)
 							.getRequiredCompleted();
+					node.verified = getCategories().get(cat).getNumVerified();
 				}
 				node.subCategories = createCategoryNodes(
 						cat.getSubCategories(), addAll);
 				for (CategoryNode n : node.subCategories) {
 					node.total += n.total;
 					node.answered += n.answered;
+					node.verified += n.verified;
 				}
 				nodes.add(node);
 			}

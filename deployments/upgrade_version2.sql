@@ -617,6 +617,11 @@ ALTER TABLE `contractor_audit`
 alter table `operators` drop column `inheritAudits`, drop column `inheritAuditCategories`, drop column `inheritInsurance`;
 
 alter table flag_criteria drop column `validationRequired`;
+
+alter table audit_cat_data 
+drop column `percentCompleted`, 
+drop column `percentVerified`, 
+drop column `percentClosed`;
 -- End of DDL changes (should be last)
 -- End of DDL changes (should be last)
 -- Adding permissions for the configuration pages

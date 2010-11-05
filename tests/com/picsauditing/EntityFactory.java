@@ -98,7 +98,7 @@ public class EntityFactory {
 		auditCatData.setAudit(conAudit);
 		auditCatData.setCategory(new AuditCategory());
 		auditCatData.getCategory().setId(categoryID);
-		auditCatData.setPercentCompleted(100);
+		auditCatData.setNumRequired(4);
 		return auditCatData;
 	}
 

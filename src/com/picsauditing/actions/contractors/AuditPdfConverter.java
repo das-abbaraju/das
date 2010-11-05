@@ -160,7 +160,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 					}
 					aList = conAudit.getApplicableCategories(permissions, requiredCategories);
 					for (AuditCatData auditCatData : aList.values()) {
-						if (auditCatData.isApplies() && auditCatData.getPercentCompleted() > 0) {
+						if (auditCatData.isApplies() && auditCatData.getNumAnswered() > 0) {
 							Paragraph categoryParagraph = new Paragraph("Category "
 									+ auditCatData.getCategory().getNumber() + " - "
 									+ auditCatData.getCategory().getName(), categoryFont);

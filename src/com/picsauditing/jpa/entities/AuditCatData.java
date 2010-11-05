@@ -27,11 +27,9 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 	private int requiredCompleted = 0;
 	private int numRequired = 0;
 	private int numAnswered = 0;
+	private int numVerified = 0;
 	private boolean override = false;
 	private boolean applies = true;
-	private int percentCompleted = 0;
-	private int percentVerified = 0;
-	private int percentClosed = 0;
 	private float score = 0;
 	private int scoreCount = 0;
 
@@ -82,30 +80,6 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 		this.applies = applies;
 	}
 
-	public int getPercentCompleted() {
-		return percentCompleted;
-	}
-
-	public void setPercentCompleted(int percentCompleted) {
-		this.percentCompleted = percentCompleted;
-	}
-
-	public int getPercentVerified() {
-		return percentVerified;
-	}
-
-	public void setPercentVerified(int percentVerified) {
-		this.percentVerified = percentVerified;
-	}
-
-	public int getPercentClosed() {
-		return percentClosed;
-	}
-
-	public void setPercentClosed(int percentClosed) {
-		this.percentClosed = percentClosed;
-	}
-
 	public int getRequiredCompleted() {
 		return requiredCompleted;
 	}
@@ -144,6 +118,14 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 
 	public void setScoreCount(int scoreCount) {
 		this.scoreCount = scoreCount;
+	}
+
+	public int getNumVerified() {
+		return numVerified;
+	}
+
+	public void setNumVerified(int numVerified) {
+		this.numVerified = numVerified;
 	}
 
 	@Override

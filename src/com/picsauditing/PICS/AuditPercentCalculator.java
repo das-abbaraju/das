@@ -180,27 +180,7 @@ public class AuditPercentCalculator {
 		catData.setNumAnswered(answeredCount);
 		catData.setNumRequired(requiredCount);
 		catData.setRequiredCompleted(requiredAnsweredCount);
-
-		if (requiredCount > 0) {
-			int percentCompleted = (int) Math
-					.floor((100 * requiredAnsweredCount) / requiredCount);
-			if (percentCompleted >= 100)
-				percentCompleted = 100;
-			if (catData.getAudit().getAuditType().isAnnualAddendum()
-					&& catData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION
-					&& catData.getNumRequired() > 2) {
-				requiredCount = requiredCount - 2;
-			}
-			int percentVerified = (int) Math.floor((100 * verifiedCount)
-					/ requiredCount);
-			if (percentVerified >= 100)
-				percentVerified = 100;
-			catData.setPercentCompleted(percentCompleted);
-			catData.setPercentVerified(percentVerified);
-		} else {
-			catData.setPercentCompleted(100);
-			catData.setPercentVerified(100);
-		}
+		catData.setNumVerified(verifiedCount);
 
 		if (scoreCount > 0) {
 			float scoreAverage = (float) score / (float) scoreCount;
@@ -243,8 +223,7 @@ public class AuditPercentCalculator {
 				if (applies) {
 					required += data.getNumRequired();
 					answered += data.getRequiredCompleted();
-					verified += (int) Math.round(data.getNumRequired()
-							* data.getPercentVerified() / 100);
+					verified += data.getNumVerified();
 
 					if (data.getScoreCount() > 0) {
 						scoreCount += data.getScoreCount();
@@ -318,36 +297,31 @@ public class AuditPercentCalculator {
 
 	public void percentOshaComplete(OshaAudit osha, AuditCatData catData) {
 		int count = 0;
-		int percentComplete = 0;
 		int numRequired = 2;
+		int requiredCompleted = 0;
+		int numVerified = 0;
 
 		if (osha.getType().equals(OshaType.OSHA)) {
 			if (osha.getManHours() > 0)
 				count++;
 			if (osha.isFileUploaded())
 				count++;
-			percentComplete = Math.round(count * 100 / 2);
-
 			if (osha.isVerified()) {
-				catData.setPercentVerified(100);
-			} else {
-				catData.setPercentVerified(0);
+				numVerified = 2;
 			}
-
 		}
+		
 		if (osha.getType().equals(OshaType.MSHA)
 				|| osha.getType().equals(OshaType.COHS)) {
 			numRequired = 1;
 			if (osha.getManHours() > 0)
 				count++;
-			percentComplete = Math.round(count * 100);
-			if (percentComplete == 100)
-				catData.setPercentVerified(100);
+			numVerified = count;
 		}
 
 		catData.setRequiredCompleted(count);
 		catData.setNumRequired(numRequired);
-		catData.setPercentCompleted(percentComplete);
+		catData.setNumVerified(numVerified);
 
 		//catDataDao.save(catData);
 	}
