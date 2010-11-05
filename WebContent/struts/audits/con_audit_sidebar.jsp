@@ -61,18 +61,27 @@
 	<li class="head">CATEGORIES <span class="hidden-button">Show
 	N/A</span></li>
 	<s:iterator value="categoryNodes" id="catNode">
-		<li id="category_<s:property value="#catNode.category.id"/>"
-			class="catlist"><a class="hist-category"
-			href="#categoryID=<s:property value="#catNode.category.id"/>"><s:property
-			value="#catNode.category.name" /> <span class="cat-percent">
-		<s:if test="#catNode.percent==100">
-			<img src="images/okCheck.gif" />
-		</s:if> <s:else>
-			<s:property value="#catNode.percent" />%</s:else> </span> </a> <s:set name="subcatNode"
-			value="%{#catNode}" /> <s:if test="#catNode.subCategories.size() > 0">
-			<div class="subcat"><s:include
-				value="con_audit_sidebar_subcat.jsp" /></div>
-		</s:if></li>
+		<li id="category_<s:property value="#catNode.category.id"/>" class="catlist">
+			<a class="hist-category" href="#categoryID=<s:property value="#catNode.category.id"/>">
+			<s:property value="#catNode.category.name" /> 
+			<span class="cat-percent">
+				<s:if test="#catNode.percentComplete<100">
+					<s:property value="#catNode.percentComplete" />%
+				</s:if>
+				<s:else>
+					<s:if test="#catNode.percentVerified<100">
+						<img src="images/icon_text_alert.png"/>
+					</s:if>
+					<s:else>						
+						<img src="images/okCheck.gif" />
+					</s:else>					
+				</s:else> 
+			</span></a> 
+			<s:set name="subcatNode" value="%{#catNode}" /> 
+			<s:if test="#catNode.subCategories.size() > 0">
+				<div class="subcat"><s:include value="con_audit_sidebar_subcat.jsp" /></div>
+			</s:if>
+		</li>
 	</s:iterator>
 </ul>
 <ul id="nacatlist" class="vert-toolbar catUL">
