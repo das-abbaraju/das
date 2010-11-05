@@ -47,7 +47,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 	private String msg = null;
 	
-	private ContractorType type = ContractorType.Onsite;
+	private ContractorType type = null;
 
 	public ContractorFacilities(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, OperatorAccountDAO operatorDao,
@@ -189,6 +189,13 @@ public class ContractorFacilities extends ContractorActionSupport {
 							sql.addJoin("JOIN accounts c ON c.id = gc.subID");
 							sql.addWhere("o.status IN (" + status + ")");
 							sql.addWhere("c.status IN (" + status + ")");
+							// Search for operators that support this contractor's type
+							if (contractor.isOnsiteServices())
+								sql.addWhere("o.onsiteServices = 1");
+							if (contractor.isOffsiteServices())
+								sql.addWhere("o.offsiteServices = 1");
+							if (contractor.isMaterialSupplier())
+								sql.addWhere("o.materialSupplier = 1");
 							sql.addOrderBy("gc.creationDate");
 							sql.setLimit(10 - ops.size());
 							
@@ -293,6 +300,14 @@ public class ContractorFacilities extends ContractorActionSupport {
 			facilityChanger.setPermissions(permissions);
 
 			if (button.equals("addOperator")) {
+				if (type == null) {
+					if (contractor.isOnsiteServices())
+						type = ContractorType.Onsite;
+					else if (contractor.isOffsiteServices())
+						type = ContractorType.Offsite;
+					else
+						type = ContractorType.Supplier;
+				}
 				// Check to make sure the contractor's types match the one passed in
 				if (type.equals(ContractorType.Onsite) && contractor.isOnsiteServices()
 						|| type.equals(ContractorType.Offsite) && contractor.isOffsiteServices()
@@ -300,8 +315,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 					facilityChanger.setType(type);
 					facilityChanger.add();
 					recalculate = true;
-				}
-				else {
+				} else {
 					// Not sure when this happens
 					addActionError("The service you have selected for this operator doesn't match what " +
 							"you selected for your company. Please choose another option.");
