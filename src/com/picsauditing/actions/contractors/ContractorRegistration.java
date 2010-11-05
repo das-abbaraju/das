@@ -185,7 +185,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			if(contractor.getCountry()!=null)
 				contractor.setCountry(getCountryDAO().find(contractor.getCountry().getIsoCode()));
 			accountDao.save(contractor);
-			indexer.runSingle(accountDao.find(contractor.getId()), "account");
+			indexer.runSingle(accountDao.find(contractor.getId()), "accounts");
 
 			// Create a blank PQF for this contractor
 			ContractorAudit audit = new ContractorAudit();

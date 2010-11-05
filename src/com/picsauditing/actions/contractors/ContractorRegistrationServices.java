@@ -16,8 +16,10 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class ContractorRegistrationServices extends ContractorActionSupport {
@@ -61,10 +63,10 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				}
 			}
 		}
-		if (auditID == 0)
-			addActionError("PQF hasn't been created yet");
-		if (catDataID == 0)
-			addActionError("PQF Category for Services Performed hasn't been created yet");
+		
+		// Missing PQF and category data -- just create it now
+		if (auditID == 0 && catDataID == 0)
+			createPQF();
 		
 		Set<Integer> questionIds = new HashSet<Integer>();
 		infoQuestions = auditQuestionDAO.findWhere("category.id = 400"); // TODO fix
@@ -201,5 +203,40 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			}
 		}
 		return riskLevel;
+	}
+	
+	private void createPQF() {
+		// Create a blank PQF for this contractor
+		ContractorAudit audit = new ContractorAudit();
+		audit.setContractorAccount(contractor);
+		audit.setAuditType(new AuditType(1));
+		audit.setAuditColumns(new User(User.SYSTEM));
+		addAuditCategories(audit, 2); // COMPANY INFORMATION
+		addAuditCategories(audit, 8); // GENERAL INFORMATION
+		addAuditCategories(audit, AuditCategory.SERVICES_PERFORMED);
+		addAuditCategories(audit, 184); // SUPPLIER DIVERSITY
+		audit = auditDao.save(audit);
+		auditID = audit.getId();
+		
+		auditData.setAudit(audit);
+		
+		for (AuditCatData data : audit.getCategories()) {
+			if (data.getCategory().getId() == AuditCategory.SERVICES_PERFORMED) {
+				catDataID = data.getId();
+				break;
+			}
+		}
+	}
+	
+	private void addAuditCategories(ContractorAudit audit, int CategoryID) {
+		AuditCatData catData = new AuditCatData();
+		catData.setCategory(new AuditCategory());
+		catData.getCategory().setId(CategoryID);
+		catData.setAudit(audit);
+		catData.setApplies(true);
+		catData.setOverride(false);
+		catData.setNumRequired(1);
+		catData.setAuditColumns(new User(User.SYSTEM));
+		audit.getCategories().add(catData);
 	}
 }

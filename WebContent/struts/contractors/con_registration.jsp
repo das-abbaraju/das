@@ -202,19 +202,14 @@ $(function(){
 							</div>
 						</li>
 						<s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
-							<li class="required"><label><s:property value="#conType.type" />:</label>
-								<s:if test="#conType.type == 'Onsite Services'">
-									<s:checkbox name="contractor.onsiteService" id="onsiteService" onclick="updateHeader();" />
-								</s:if>
-								<s:elseif test="#conType.type == 'Offsite Services'">
-									<s:checkbox name="contractor.offsiteService" id="offsiteService" onclick="updateHeader();" />
-								</s:elseif>
-								<s:else>
-									<s:checkbox name="contractor.materialSupplier" id="materialSupplier" onclick="updateHeader();" />
-								</s:else>
+							<li class="required">
+								<label><s:property value="type" />:</label>
+								<s:if test="#conType.toString() == 'Onsite'"><s:checkbox name="contractor.onsiteServices" /></s:if>
+								<s:if test="#conType.toString() == 'Offsite'"><s:checkbox name="contractor.offsiteServices" /></s:if>
+								<s:if test="#conType.toString() == 'Supplier'"><s:checkbox name="contractor.materialSupplier" /></s:if>
 								<div class="fieldhelp">
-									<h3><s:property value="#conType.type" /></h3>
-									<s:property value="#conType.description" escape="false" />
+									<h3><s:property value="type" /></h3>
+									<s:property value="description" escape="false" />
 								</div>
 							</li>
 						</s:iterator>
