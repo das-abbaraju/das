@@ -200,9 +200,9 @@ $(function() {
 </s:if>
 
 <s:else>
-	| <a href="CategoryRuleSearch.action">Search</a> | <a href="?id=1">Top</a> |
+	<a href="<s:if test="categoryRule">Category</s:if><s:else>AuditType</s:else>RuleSearch.action">Search</a> | <a href="?id=1">Top</a> |
 	<a class="add" href="?button=edit&rule.include=true">Create New Rule</a> |
-	<a class="refresh" href="RecalculateRules.action">Recalculate Priority for all <s:if test="categoryRule">Category</s:if><s:else>Audit Type</s:else> Rules</a> |
+	<a class="refresh" href="RecalculateRules.action">Recalculate Priority for all <s:if test="categoryRule">Category</s:if><s:else>Audit Type</s:else> Rules</a>
 
 	<table class="report">
 
