@@ -521,6 +521,13 @@ a.help {
 	zoom: 1;
 	cursor: help;
 }
+a.helpBig {
+	padding: 12px;
+	margin-left: 2px;
+	background: url('../images/help-question.png') no-repeat center center;
+	zoom: 1;
+	cursor: help;
+}
 
 a.insurance {
 	background: url('../images/icon_insurance.gif') no-repeat left center;

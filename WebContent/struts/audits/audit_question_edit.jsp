@@ -42,17 +42,20 @@ $(function() {
 </s:if>
 
 <span class="question <s:if test="#questionStillRequired">required</s:if>">
-	<span class="questionNumber"><s:property value="#q.expandedNumber"/></span>
+	<span class="questionNumber"><s:property value="#q.expandedNumber"/>
+		<s:if test="!#q.helpText.empty">
+			<br />
+			<a class="cluetip helpBig" rel="#cluetip_<s:property value="#q.id"/>" title="<s:property value="#q.name"/>"></a>
+			<div id="cluetip_<s:property value="#q.id"/>">
+				<span title="<s:property value="#q.name"/>">
+					<s:property value="#q.helpText" escape="false" />
+				</span>
+			</div>
+		</s:if>
+	</span>
 	
 	<s:property value="#q.name" escape="false"/>
-	<s:if test="!#q.helpText.empty">
-		<a class="cluetip help" rel="#cluetip_<s:property value="#q.id"/>" title="<s:property value="#q.name"/>"></a>
-		<div id="cluetip_<s:property value="#q.id"/>">
-			<span title="<s:property value="#q.name"/>">
-				<s:property value="#q.helpText" escape="false" />
-			</span>
-		</div>
-	</s:if>
+	
 	<br />
 	<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
 </span>
