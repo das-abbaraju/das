@@ -78,6 +78,13 @@ $(function(){
 						<p>Check this box if the document or audit is reusable at the end of its life. For example, PQF is renewable because we don't make them fill out a whole new PQF each year. GL Policy is NOT renewable because we force them to fill out a brand new policy each time. One major drawback to renewable audit types is they don't maintain a history of past audits.</p>
 					</div>
 				</li>
+				<li><label>Is Scoreable:</label>
+					<s:checkbox name="auditType.scoreable" />
+					<div class="fieldhelp">
+						<h3>Is Scoreable</h3>
+						<p>Check this box if this audit type should be scored</p>
+					</div>					
+				</li>
 				<li><label>Is Scheduled:</label>
 					<s:checkbox name="auditType.scheduled" />
 				</li>

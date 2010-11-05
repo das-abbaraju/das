@@ -153,6 +153,13 @@ function moveQuestion(atypeID) {
 		<li><label>Flaggable:</label>
 			<s:checkbox name="question.flaggable"/>
 		</li>
+		<li><label>Score Weight:</label>
+			<s:textfield name="question.scoreWeight" />
+			<div class="fieldhelp">
+				<h3>Score Weight</h3>
+				<p>This number will affect the strength of the score</p>
+			</div>
+		</li>
 		<li><label>Required by Question:</label>
 			<s:textfield name="requiredQuestionID" />
 			<s:if test="requiredQuestionID > 0"><a href="?id=<s:property value="requiredQuestionID" />">Show</a></s:if>
