@@ -80,6 +80,9 @@ public class ManageQuestion extends ManageCategory {
 
 			if (question.getCategory() == null)
 				question.setCategory(category);
+			
+			if(question.getScoreWeight()>0)
+				question.setRequired(true);
 
 			question = auditQuestionDAO.save(question);
 			id = question.getCategory().getId();
