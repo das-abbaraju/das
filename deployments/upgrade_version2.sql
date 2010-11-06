@@ -689,3 +689,22 @@ delete from audit_category where id = 396;
 
 -- Increasing the constraints on the number of contractors pulled up by the ContractorCron. Cron was keeping so much information for contractors in memory that it was overflowing the heap on alpha
 update app_properties app set app.value = 2 where app.property in ('ContractorCron.limit.default','ContractorCron.limit.serverload');
+
+-- using score fields for IM audit
+update audit_question aq
+join audit_category ac on aq.categoryid = ac.id
+join audit_type at on at.id = ac.auditTypeID
+set aq.scoreWeight = 1
+where at.id = 17
+and aq.questionType = 'Radio';
+
+update audit_question aq
+join pqfoptions po on po.questionID = aq.id
+join audit_category ac on aq.categoryid = ac.id
+join audit_type at on at.id = ac.auditTypeID
+set po.score = (case when po.optionName = 'Yellow' then 1 
+When po.optionName = 'Green' then 2 
+else 0 end)  
+where at.id = 17
+and aq.questionType = 'Radio';
+

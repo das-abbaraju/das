@@ -2,10 +2,8 @@ package com.picsauditing.PICS;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
@@ -14,10 +12,10 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditQuestionOption;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -70,17 +68,6 @@ public class AuditPercentCalculator {
 		// Get a map of all answers in this audit
 		AnswerMap answers = auditDataDao.findAnswers(
 				catData.getAudit().getId(), questionIDs);
-		// System.out.println(answers);
-
-		@SuppressWarnings("serial")
-		Map<String, Integer> scoreMap = new HashMap<String, Integer>() {
-
-			{
-				put("Red", 0);
-				put("Yellow", 1);
-				put("Green", 2);
-			}
-		};
 
 		// Get a list of questions/answers for this category
 		Date validDate = catData.getAudit().getValidDate();
@@ -146,10 +133,25 @@ public class AuditPercentCalculator {
 				if (answer != null) {
 					if (answer.isAnswered()) {
 
-						if ("Radio".equals(question.getQuestionType())) {
-							Integer tempScore = scoreMap.get(answer
-									.getAnswer());
-							score += tempScore != null ? tempScore : -1000;
+						if(catData.getAudit().getAuditType().isScoreable()) {
+							if("Radio".equals(question.getQuestionType())) {
+								for(AuditQuestionOption option : question.getOptions()) {
+									if(option.getOptionName().equals(answer.getAnswer())) {
+										score += option.getScore();
+										break;
+									}
+								}
+								scoreCount ++;
+							}
+							else if("Yes/No".equals(question.getQuestionType()) 
+									|| "Yes/No/NA".equals(question.getQuestionType())) {
+								if(answer.getAnswer().equals("Yes"))
+									score += question.getScoreWeight();
+								else if(answer.getAnswer().equals("N/A"))
+									score += 0;
+								else score += -1;
+								scoreCount ++;
+							}
 						}
 
 						answeredCount++;
@@ -170,10 +172,6 @@ public class AuditPercentCalculator {
 						}
 					}
 				}
-
-				if ("Radio".equals(question.getQuestionType())) {
-					scoreCount++;
-				}
 			}
 		}
 
@@ -181,12 +179,8 @@ public class AuditPercentCalculator {
 		catData.setNumRequired(requiredCount);
 		catData.setRequiredCompleted(requiredAnsweredCount);
 		catData.setNumVerified(verifiedCount);
-
-		if (scoreCount > 0) {
-			float scoreAverage = (float) score / (float) scoreCount;
-			catData.setScore(scoreAverage);
-			catData.setScoreCount(scoreCount);
-		}
+		catData.setScore(score);
+		catData.setScoreCount(scoreCount);
 
 		//catDataDao.save(catData);
 	}
@@ -207,7 +201,7 @@ public class AuditPercentCalculator {
 			int verified = 0;
 
 			int scoreCount = 0;
-			float runningScore = 0;
+			float score = 0;
 
 			for (AuditCatData data : conAudit.getCategories()) {
 				boolean applies = false;
@@ -226,18 +220,15 @@ public class AuditPercentCalculator {
 					verified += data.getNumVerified();
 
 					if (data.getScoreCount() > 0) {
+						score += data.getScore();
 						scoreCount += data.getScoreCount();
-						runningScore += (data.getScore() * data.getScoreCount());
 					}
 				}
 			}
 
-			// Eventually we'll move the score over to the cao
 			if (scoreCount > 0) {
-				conAudit.setScore(runningScore / (float) scoreCount);
-			} else {
-				conAudit.setScore(-1);
-			}
+				conAudit.setScore(score / scoreCount);
+			} 
 
 			int percentComplete = 0;
 			int percentVerified = 0;

@@ -155,11 +155,11 @@ function loadStatus(caoID){
 			<li><label>ID:</label>
 				 <s:property value="conAudit.id" />
 			</li>
-			<s:if test="conAudit.auditType.classType.name().equals('IM')">
-				<li><label>IM Score:</label>
-					<s:property value="conAudit.printableScore"/>
+			<s:if test="conAudit.auditType.scoreable">
+				<li><label>Score:</label>
+					<s:property value="conAudit.score"/>
 				</li>
-			</s:if>			
+			</s:if>
 			<s:if test="conAudit.auditType.showManual">
 				<li><label><nobr><s:if test="conAudit.auditType.id == 96">Management Plan</s:if>
 						   <s:else>Safety Manual</s:else>:</nobr></label>
