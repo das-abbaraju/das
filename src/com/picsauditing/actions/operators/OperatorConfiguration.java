@@ -16,18 +16,13 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	}
 	
 	public void prepare() throws Exception {
-		id = getParameter("id");
-
-		if (id > 0) {
-			findOperator();
-			subHeading = "Edit " + operator.getType();
-		}
+		findOperator();
+		subHeading = "Edit " + operator.getType();
 	}
 	
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
 		
 		allParents = operatorDao.findWhere(true, "a.id IN (" + Strings.implode(operator.getOperatorHeirarchy()) + ")", permissions);
 		
