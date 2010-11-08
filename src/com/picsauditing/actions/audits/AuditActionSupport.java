@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.PICS.AuditRuleCache;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
@@ -47,23 +48,25 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected int categoryID = 0;
 	protected String descriptionOsMs;
 	protected boolean systemEdit = false;
-	
+
 	protected ContractorAudit conAudit;
 	protected AuditCategoryDataDAO catDataDao;
 	protected AuditDataDAO auditDataDao;
 	protected CertificateDAO certificateDao;
-	
+
 	private Map<Integer, AuditData> hasManual;
 	private List<AuditCategoryRule> rules = null;
 	protected Map<AuditCategory, AuditCatData> categories = null;
-	protected ArrayListMultimap<Integer, WorkflowStep> caoSteps = ArrayListMultimap.create();
+	protected ArrayListMultimap<Integer, WorkflowStep> caoSteps = ArrayListMultimap
+			.create();
 	protected ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap
 			.create();
 
 	private List<CategoryNode> categoryNodes;
 
-	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao) {
+	public AuditActionSupport(ContractorAccountDAO accountDao,
+			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
+			AuditDataDAO auditDataDao, CertificateDAO certificateDao) {
 		super(accountDao, auditDao);
 		this.catDataDao = catDataDao;
 		this.auditDataDao = auditDataDao;
@@ -177,10 +180,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	protected List<AuditCategoryRule> getRules() {
 		if (rules == null) {
-			AuditDecisionTableDAO auditRulesDAO = (AuditDecisionTableDAO) SpringUtils
-					.getBean("AuditDecisionTableDAO");
-			rules = auditRulesDAO.getApplicableCategoryRules(conAudit
-					.getContractorAccount(), conAudit.getAuditType());
+			AuditRuleCache auditRuleCache = (AuditRuleCache) SpringUtils
+					.getBean("AuditRuleCache");
+			Set<AuditType> audit = new HashSet<AuditType>();
+			audit.add(getConAudit().getAuditType());
+			rules = new ArrayList<AuditCategoryRule>(auditRuleCache
+					.getApplicable(getConAudit().getContractorAccount(), audit));
 		}
 		return rules;
 	}
@@ -192,11 +197,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public void setCategoryID(int categoryID) {
 		this.categoryID = categoryID;
 	}
-	
-	public List<ContractorAuditOperator> getViewableOperators(Permissions permissions){
-		if(systemEdit)
-			return conAudit.getSortedOperators();			
-		else return conAudit.getViewableOperators(permissions);
+
+	public List<ContractorAuditOperator> getViewableOperators(
+			Permissions permissions) {
+		if (systemEdit)
+			return conAudit.getSortedOperators();
+		else
+			return conAudit.getViewableOperators(permissions);
 	}
 
 	public void getValidSteps() {
@@ -222,55 +229,64 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 		}
 	}
-	
-	public boolean canPerformAction(ContractorAuditOperator cao, WorkflowStep workflowStep) {
-		if (cao.getPercentComplete() < 100){
-			if(cao.getPercentVerified()<100 || !cao.getStatus().isSubmitted())
+
+	public boolean canPerformAction(ContractorAuditOperator cao,
+			WorkflowStep workflowStep) {
+		if (cao.getPercentComplete() < 100) {
+			if (cao.getPercentVerified() < 100
+					|| !cao.getStatus().isSubmitted())
 				return false;
 		}
-		
+
 		AuditType type = cao.getAudit().getAuditType();
 
-		if(workflowStep.getNewStatus().isComplete() 
-				&& type.getWorkFlow().isHasSubmittedStep() && cao.getPercentVerified() < 100)
+		if (workflowStep.getNewStatus().isComplete()
+				&& type.getWorkFlow().isHasSubmittedStep()
+				&& cao.getPercentVerified() < 100)
 			return false;
 		// admins can perform any action
-		if(permissions.seesAllContractors())
+		if (permissions.seesAllContractors())
 			return true;
-		// operator and corporate can also perform any action if they have permission
-		if(permissions.isOperatorCorporate()) {
-			if(type.getEditPermission() != null) {
-			 return permissions.hasPermission(type.getEditPermission());
+		// operator and corporate can also perform any action if they have
+		// permission
+		if (permissions.isOperatorCorporate()) {
+			if (type.getEditPermission() != null) {
+				return permissions.hasPermission(type.getEditPermission());
 			}
 		}
-		// contractor can perform only submits and complete for pqf specific's if they can edit that audit
-		if(permissions.isContractor() && type.isCanContractorEdit()) {
-			if (!conAudit.getContractorAccount()
-					.isPaymentMethodStatusValid()
+		// contractor can perform only submits and complete for pqf specific's
+		// if they can edit that audit
+		if (permissions.isContractor() && type.isCanContractorEdit()) {
+			if (!conAudit.getContractorAccount().isPaymentMethodStatusValid()
 					&& conAudit.getContractorAccount().isMustPayB())
 				return false;
-			if(workflowStep.getNewStatus().isSubmitted())
+			if (workflowStep.getNewStatus().isSubmitted())
 				return true;
-			if(workflowStep.getNewStatus().isResubmitted() && conAudit.isAboutToExpire())
+			if (workflowStep.getNewStatus().isResubmitted()
+					&& conAudit.isAboutToExpire())
 				return true;
-			if(workflowStep.getNewStatus().isComplete() 
-					&& workflowStep.getWorkflow().getId() == 1) // if Single Step Workflow (Pending to Complete)
+			if (workflowStep.getNewStatus().isComplete()
+					&& workflowStep.getWorkflow().getId() == 1) // if Single
+																// Step Workflow
+																// (Pending to
+																// Complete)
 				return true;
 		}
-		return false;	
+		return false;
 	}
-	
+
 	public List<WorkflowStep> getCurrentCaoStep(int caoID) {
 		if (caoSteps == null)
 			getValidSteps();
 		return caoSteps.get(caoID);
 	}
-	
-	public List<AuditStatus> getValidStatuses(int caoID){
+
+	public List<AuditStatus> getValidStatuses(int caoID) {
 		List<AuditStatus> validStatuses = new ArrayList<AuditStatus>();
-		for(ContractorAuditOperator cao : conAudit.getSortedOperators()){
-			if(cao.getId() == caoID){
-				for(WorkflowStep wfs : cao.getAudit().getAuditType().getWorkFlow().getSteps()){
+		for (ContractorAuditOperator cao : conAudit.getSortedOperators()) {
+			if (cao.getId() == caoID) {
+				for (WorkflowStep wfs : cao.getAudit().getAuditType()
+						.getWorkFlow().getSteps()) {
 					validStatuses.add(wfs.getNewStatus());
 				}
 			}
@@ -378,7 +394,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		try {
 			int certID = Integer.parseInt(data.getAnswer());
 			return certificateDao.find(certID);
-		} catch(NumberFormatException nfe) {
+		} catch (NumberFormatException nfe) {
 			return null;
 		}
 	}
@@ -396,11 +412,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 				return 100;
 			return percent;
 		}
+
 		public float getPercentVerified() {
 			int percent = (int) ((verified * 1f / total) * 100);
 			if (total == 0 || percent > 100)
 				return 100;
-			return percent; 
+			return percent;
 		}
 	}
 
