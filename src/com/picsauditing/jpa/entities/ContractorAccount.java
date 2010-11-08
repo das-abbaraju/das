@@ -93,6 +93,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Date lastRecalculation;
 	private String tradesSelf;
 	private String tradesSub;
+	private int score;
 
 	protected List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 	protected List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
@@ -519,8 +520,15 @@ public class ContractorAccount extends Account implements JSONable {
 		this.tradesSub = tradesSub;
 	}
 
-	// Other relationships //
+	public int getScore() {
+		return score;
+	}
 
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	// Other relationships //
 	@ManyToOne
 	@JoinColumn(name = "welcomeAuditor_id")
 	/**
