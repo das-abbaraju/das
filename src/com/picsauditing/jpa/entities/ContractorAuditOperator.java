@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -243,7 +244,7 @@ public class ContractorAuditOperator extends BaseTable {
 		return 100;
 	}
 
-	@OneToMany(mappedBy = "cao", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "cao", cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	public List<ContractorAuditOperatorPermission> getCaoPermissions() {
 		return caoPermissions;
 	}
