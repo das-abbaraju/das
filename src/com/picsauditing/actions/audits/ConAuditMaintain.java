@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -12,8 +13,11 @@ import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 
@@ -27,13 +31,17 @@ import com.picsauditing.jpa.entities.NoteCategory;
 public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 
 	protected ContractorAuditOperatorDAO caoDAO;
+	protected ContractorAuditOperatorWorkflowDAO caowDAO;
 	protected List<ContractorAuditOperator> caosSave = new ArrayList<ContractorAuditOperator>();
 	
 	public ConAuditMaintain(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, CertificateDAO certificateDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, ContractorAuditOperatorDAO caoDAO) {
+			ContractorAuditDAO auditDao, CertificateDAO certificateDao,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
+			ContractorAuditOperatorDAO caoDAO,
+			ContractorAuditOperatorWorkflowDAO caowDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao);
 		this.caoDAO = caoDAO;
+		this.caowDAO = caowDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -69,6 +77,7 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 			}
 			return SUCCESS;
 		}
+		long mem0 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		if ("Save".equals(button)) {
 			auditDao.clear();
 			if (conAudit.getAuditor().getId() == 0)
@@ -83,10 +92,28 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 			addActionMessage("Successfully saved data");
 		}
 		if ("Delete".equals(button)) {
-			auditDao.clear();
-			for(ContractorAuditOperator cao : conAudit.getOperators()){
+			for (Iterator<ContractorAuditOperator> caoIT = conAudit
+					.getOperators().iterator(); caoIT.hasNext();) {
+				ContractorAuditOperator cao = caoIT.next();
+				List<ContractorAuditOperatorWorkflow> caowList = caowDAO
+						.findByCaoID(cao.getId());
+				for (Iterator<ContractorAuditOperatorWorkflow> it = caowList
+						.iterator(); it.hasNext();) {
+					ContractorAuditOperatorWorkflow t = it.next();
+					it.remove();
+					caowDAO.remove(t);
+				}
+
+				for (Iterator<ContractorAuditOperatorPermission> it = cao
+						.getCaoPermissions().iterator(); it.hasNext();) {
+					ContractorAuditOperatorPermission t = it.next();
+					it.remove();
+					caoDAO.remove(t);
+				}
+				caoIT.remove();
 				caoDAO.remove(cao);
 			}
+			auditDao.clear();
 			auditDao.remove(auditID, getFtpDir());
 			addNote(conAudit.getContractorAccount(), "Deleted "
 					+ conAudit.getAuditType().getAuditName(),
