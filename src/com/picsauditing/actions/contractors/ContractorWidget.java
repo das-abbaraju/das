@@ -113,7 +113,7 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 			}
 
-			if (permissions.hasPermission(OpPerms.ContractorBilling) || permissions.isAdmin()) {
+			if (permissions.hasPermission(OpPerms.ContractorBilling)) {
 				String billingStatus = contractor.getBillingStatus();
 				if ("Upgrade".equals(billingStatus)
 						|| ("Renewal".equals(billingStatus) && contractor.getMembershipLevel().getId() == InvoiceFee.BIDONLY)) {
