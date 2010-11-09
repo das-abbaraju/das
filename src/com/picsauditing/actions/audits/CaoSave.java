@@ -203,9 +203,10 @@ public class CaoSave extends AuditActionSupport {
 		}
 		
 		if (conAudit != null) {
-			
+
 			if ("Refresh".equals(button)) {
-				auditPercentCalculator.percentCalculateComplete(conAudit, false);
+				auditPercentCalculator
+						.percentCalculateComplete(conAudit, false);
 				getValidSteps();
 				auditDao.save(conAudit);
 				return "refresh";
