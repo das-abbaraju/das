@@ -74,10 +74,9 @@ public class AuditPercentCalculator {
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 			if (question.isCurrent() && validDate.after(question.getEffectiveDate())
 					&& validDate.before(question.getExpirationDate())) {
-				boolean isRequired = false;
+				boolean isRequired = question.isRequired();
 
 				AuditData answer = answers.get(question.getId());
-				isRequired = question.isRequired();
 				// Getting all the dependsRequiredQuestions
 				if (question.getRequiredQuestion() != null && question.getRequiredAnswer() != null) {
 					if (question.getRequiredAnswer().equals("NULL")) {

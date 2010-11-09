@@ -300,8 +300,11 @@ public class AuditDataSave extends AuditActionSupport {
 		// always run APC, just this cat
 		if (conAudit == null)
 			findConAudit();
-		if (catData != null)
+		if (catData != null){
 			auditPercentCalculator.updatePercentageCompleted(catData);
+			catData.setAuditColumns();
+			auditDao.save(catData);
+		}
 		else
 			addActionError("Error saving answer, please try again.");
 		return SUCCESS;

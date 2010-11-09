@@ -396,11 +396,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 				return 100;
 			return percent;
 		}
+
 		public float getPercentVerified() {
 			int percent = (int) ((verified * 1f / total) * 100);
 			if (total == 0 || percent > 100)
 				return 100;
-			return percent; 
+			return percent;
 		}
 	}
 
