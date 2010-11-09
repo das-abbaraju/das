@@ -81,6 +81,12 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		query.setMaxResults(250);
 		return query.getResultList();
 	}
+	
+	public List<AuditCategoryRule> findCategoryRulesByQuestion(int questionID){
+		Query query = em.createQuery(findByQuery("AuditCategoryRule", " AND r.question.id = :questionID"));
+		query.setParameter("questionID", questionID);
+		return query.getResultList();
+	}
 
 	public List<AuditTypeRule> findAuditTypeRulesByOperator(int opID) {
 		Query query = em.createQuery(findByQuery("AuditTypeRule",

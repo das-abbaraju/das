@@ -14,10 +14,12 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.common.base.Joiner;
 import com.picsauditing.PICS.AuditBuilderController;
+import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -25,6 +27,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -49,15 +52,21 @@ public class AuditDataSave extends AuditActionSupport {
 	private AuditBuilderController auditBuilder;
 	private String mode;
 	private boolean toggleVerify = false;
+	
+	private AuditPercentCalculator auditPercentCalculator;	
+	private AuditDecisionTableDAO auditRuleDAO;
 
 	public AuditDataSave(ContractorAccountDAO accountDAO, AuditDataDAO dao,
 			AuditCategoryDataDAO catDataDao, AuditQuestionDAO questionDao,
 			ContractorAuditDAO auditDao, CertificateDAO certificateDao, OshaAuditDAO oshaAuditDAO,
-			NaicsDAO naicsDAO, AuditBuilderController auditBuilder) {
+			NaicsDAO naicsDAO, AuditBuilderController auditBuilder, AuditDecisionTableDAO auditRuleDAO,
+			AuditPercentCalculator auditPercentCalculator) {
 		super(accountDAO, auditDao, catDataDao, dao, certificateDao);
+		this.auditRuleDAO = auditRuleDAO;
 		this.questionDao = questionDao;
 		this.naicsDAO = naicsDAO;
 		this.auditBuilder = auditBuilder;
+		this.auditPercentCalculator = auditPercentCalculator;
 	}
 
 	public String execute() throws Exception {
@@ -67,6 +76,7 @@ public class AuditDataSave extends AuditActionSupport {
 			return BLANK;
 		}
 
+		AuditCatData catData;
 		try {
 			if (!forceLogin())
 				return LOGIN;
@@ -252,7 +262,6 @@ public class AuditDataSave extends AuditActionSupport {
 
 			// hook to calculation read/update
 			// the ContractorAudit and AuditCatData
-			AuditCatData catData;
 			try {
 				catData = catDataDao
 						.findAuditCatData(auditData.getAudit().getId(),
@@ -281,7 +290,49 @@ public class AuditDataSave extends AuditActionSupport {
 			addActionError(e.getMessage());
 			return BLANK;
 		}
+		
+		// check dependent questions, see if not in same cat
+		// check rules to see if other cats get triggered now
+		// if either true then run FAC
+		if (checkDependentQuestions() || checkOtherRules()) {
+			auditBuilder.fillAuditCategories(auditData);
+		}
+		// always run APC, just this cat
+		if (conAudit == null)
+			findConAudit();
+		if (catData != null)
+			auditPercentCalculator.updatePercentageCompleted(catData);
+		else
+			addActionError("Error saving answer, please try again.");
 		return SUCCESS;
+	}
+
+	
+	/**
+	 * @return
+	 * 		True if a rule that would be triggered from this question,
+	 * 		false otherwise
+	 */
+	private boolean checkOtherRules() {
+		for (AuditCategoryRule acr : auditRuleDAO
+				.findCategoryRulesByQuestion(auditData.getQuestion().getId())) {
+			if (acr.isMatchingAnswer(auditData))
+				return true;
+		}
+		return false;
+	}
+
+	/**
+	 * @return
+	 * 		True if a dependent question is in a different category, false
+	 * 		otherwise
+	 */
+	private boolean checkDependentQuestions() {
+		for (AuditQuestion aq : auditData.getQuestion().getDependentQuestions()) {
+			if (aq.getCategory() != auditData.getQuestion().getCategory())
+				return true;
+		}
+		return false;
 	}
 
 	private void loadAnswerMap() {

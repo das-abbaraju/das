@@ -56,13 +56,12 @@ public class CaoSave extends AuditActionSupport {
 	private List<ContractorAuditOperator> caoList;
 	private boolean insurance = false;
 
+	protected AuditPercentCalculator auditPercentCalculator;
+	
 	private NoteDAO noteDAO;
 	protected ContractorAuditOperatorDAO caoDAO;
 	protected OshaAuditDAO oshaAuditDAO;
 	protected ContractorAuditOperatorWorkflowDAO caoWDAO;
-
-	private AuditPercentCalculator auditPercentCalculator;
-	private AuditBuilderController auditBuilder;
 	
 	// Update flags
 	private Set<FlagCriteriaContractor> fco;
@@ -70,13 +69,12 @@ public class CaoSave extends AuditActionSupport {
 
 	public CaoSave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, CertificateDAO certificateDao, OshaAuditDAO oshaAuditDAO, ContractorAuditOperatorDAO caoDAO,
-			AuditPercentCalculator auditPercentCalculator, AuditBuilderController auditBuilder, NoteDAO noteDAO,
+			AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO,
 			ContractorAuditOperatorWorkflowDAO caoWDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao);
 		this.caoDAO = caoDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
-		this.auditBuilder = auditBuilder;
 		this.noteDAO = noteDAO;
 		this.caoWDAO = caoWDAO;
 	}
@@ -207,9 +205,7 @@ public class CaoSave extends AuditActionSupport {
 		if (conAudit != null) {
 			
 			if ("Refresh".equals(button)) {
-				auditBuilder.setup(conAudit.getContractorAccount(), getUser());
-				auditBuilder.fillAuditCategories(conAudit);
-				auditPercentCalculator.percentCalculateComplete(conAudit, true);
+				auditPercentCalculator.percentCalculateComplete(conAudit, false);
 				getValidSteps();
 				auditDao.save(conAudit);
 				return "refresh";
