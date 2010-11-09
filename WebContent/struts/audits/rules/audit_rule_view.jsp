@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
-<tr class="<s:property value="#ruleclass"/> clickable<s:if test="include"> on</s:if><s:else> off</s:else>" onclick="location.href='<s:property value="#ruleURL"/>?id=<s:property value="#r.id"/>'">
+<tr class="<s:property value="#ruleclass"/> clickable<s:if test="include"> on</s:if><s:else> off</s:else>" onclick="<s:if test="#newWindow">window.open(</s:if><s:else>location.href=</s:else>'<s:property value="#ruleURL"/>?id=<s:property value="#r.id"/>'<s:if test="#newWindow">); return false;</s:if>">
 	<td><s:property value="include ? 'Yes' : 'No'"/></td>
 	<td><s:property value="level"/><span style="font-size-adjust: 0.4">.<s:property value="priority"/></span></td>
 	<td><s:property value="auditTypeLabel"/>

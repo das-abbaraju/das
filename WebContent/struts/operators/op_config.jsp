@@ -34,14 +34,24 @@ function toggleType(ruleID) {
 		<li><label>Parent Accounts</label>
 			<table class="report">
 				<tbody>
-					<s:iterator value="allParents">
+					<s:set name="opID" value="%{operator.id}" />
+					<s:iterator value="allParents" id="corp">
 						<tr>
-							<td><a href="FacilitiesEdit.action?id=<s:property value="id" />"><s:property value="name" /></a></td>
-							<td><a href="#" onclick="return false;" class="remove">Remove</a></td>
+							<td>
+								<a href="FacilitiesEdit.action?id=<s:property value="#corp.id" />">
+								<s:property value="#corp.name" /></a>
+							</td>
+							<td><a href="OperatorConfiguration.action?id=<s:property value="#opID" />&button=Remove&corpID=<s:property value="#corp.id" />" class="remove">Remove</a></td>
 						</tr>
 					</s:iterator>
 				</tbody>
 			</table>
+			<s:form>
+				<s:hidden value="%{operator.id}" name="id" />
+				<s:select list="otherCorporates" listValue="name" listKey="id" name="corpID" 
+					headerValue="- Add Parent Account -" headerKey="0" />
+				<input type="submit" name="button" value="Add" class="picsbutton positive" />
+			</s:form>
 		</li>
 	</ol>
 </fieldset>
@@ -59,14 +69,15 @@ function toggleType(ruleID) {
 				</thead>
 				<tbody>
 					<s:iterator value="typeMap.keySet()" id="type">
-						<tr class="clickable">
+						<tr>
 							<td><s:property value="#type.classType" /></td>
 							<td><s:property value="#type.auditName" /></td>
 							<td>
 								<a href="#" onclick="toggleType(<s:property value="#type.id" />); return false;" id="type_link_<s:property value="#type.id" />">Show Rules</a>
 								<table id="type_<s:property value="#type.id" />" class="auditTypeRule">
 									<s:include value="../audits/rules/audit_rule_header.jsp"/>
-									<s:set name="ruleURL" value="'AuditRuleEditor.action'"/>
+									<s:set name="ruleURL" value="'AuditTypeRuleEditor.action'"/>
+									<s:set name="newWindow" value="true"/>
 									<s:set name="categoryRule" value="false"/>
 									<s:iterator value="typeMap.get(#type)" id="r">
 										<s:include value="../audits/rules/audit_rule_view.jsp"/>
