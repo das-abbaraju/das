@@ -12,6 +12,18 @@
 <script type="text/javascript" src="js/jquery/mcdropdown/jquery.mcdropdown.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/mcdropdown/css/jquery.mcdropdown.min.css" />
 <script type="text/javascript">
+$(function(){
+	$('select[name=question.questionType]').change(function(){
+		if($(this).val()=='Radio')
+			$('.scoreWeight').show();
+		else{
+			$('.scoreWeight').hide();
+			$('.scoreWeight input[name=question.scoreWeight]').val(0);
+		}
+	});
+	
+});
+
 function copyQuestion(atypeID) {
 	$('#copy_audit').load('ManageQuestionCopyAjax.action', {button: 'text', 'id': atypeID},
 		function() {
@@ -153,13 +165,15 @@ function moveQuestion(atypeID) {
 		<li><label>Flaggable:</label>
 			<s:checkbox name="question.flaggable"/>
 		</li>
-		<li><label>Score Weight:</label>
-			<s:textfield name="question.scoreWeight" />
-			<div class="fieldhelp">
-				<h3>Score Weight</h3>
-				<p>This number will affect the strength of the score</p>
-			</div>
-		</li>
+		<s:if test="auditType.scoreable">
+			<li class="scoreWeight" <s:if test="!question.questionType.equals('Radio')">style="display: none;"</s:if>><label>Score Weight:</label>
+				<s:textfield name="question.scoreWeight" />
+				<div class="fieldhelp">
+					<h3>Score Weight</h3>
+					<p>This number will affect the strength of the score</p>
+				</div>
+			</li>
+		</s:if>
 		<li><label>Required by Question:</label>
 			<s:textfield name="requiredQuestionID" />
 			<s:if test="requiredQuestionID > 0"><a href="?id=<s:property value="requiredQuestionID" />">Show</a></s:if>
