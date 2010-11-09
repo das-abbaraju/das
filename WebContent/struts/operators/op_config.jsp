@@ -6,6 +6,7 @@
 <title><s:property value="operator.name" /> Configuration</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp" />
 <script type="text/javascript">
 function toggleType(ruleID) {
@@ -13,15 +14,22 @@ function toggleType(ruleID) {
 	var link = "#type_link_" + ruleID;
 	
 	$(div).toggle();
+	$(link).find('span.toggle').toggle();
+	
+	return false;
+}
 
-	if ($(div).is(':hidden'))
-		$(link).text("Show Rules");
-	else
-		$(link).text("Hide Rules");
+function toggleCategory(catID) {
+	var ol = "#subcat_" + catID;
+	var arrow = ".arrow_" + catID;
+	$(ol).slideToggle();
+	$(arrow).toggle();
+
+	return false;
 }
 </script>
 <style type="text/css">
-.auditTypeRule {
+.auditTypeRule, .subcat-list {
 	display: none;
 }
 </style>
@@ -59,35 +67,48 @@ function toggleType(ruleID) {
 	<h2 class="formLegend">Likely Included Audits</h2>
 	<ol>
 		<li>
-			<table class="report">
-				<thead>
-					<tr>
-						<th>Category</th>
-						<th>Audit</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<s:iterator value="typeMap.keySet()" id="type">
+			<s:if test="typeList.size > 0">
+				<table class="report">
+					<thead>
 						<tr>
-							<td><s:property value="#type.classType" /></td>
-							<td><s:property value="#type.auditName" /></td>
-							<td>
-								<a href="#" onclick="toggleType(<s:property value="#type.id" />); return false;" id="type_link_<s:property value="#type.id" />">Show Rules</a>
-								<table id="type_<s:property value="#type.id" />" class="auditTypeRule">
-									<s:include value="../audits/rules/audit_rule_header.jsp"/>
-									<s:set name="ruleURL" value="'AuditTypeRuleEditor.action'"/>
-									<s:set name="newWindow" value="true"/>
-									<s:set name="categoryRule" value="false"/>
-									<s:iterator value="typeMap.get(#type)" id="r">
-										<s:include value="../audits/rules/audit_rule_view.jsp"/>
-									</s:iterator>
-								</table>
-							</td>
+							<th>Category</th>
+							<th>Audit</th>
+							<th></th>
 						</tr>
-					</s:iterator>
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						<s:iterator value="typeList" id="type">
+							<tr>
+								<td><s:property value="#type.classType" /></td>
+								<td><s:property value="#type.auditName" /></td>
+								<td>
+									<a href="#" onclick="return toggleType(<s:property value="#type.id" />);" id="type_link_<s:property value="#type.id" />">
+										<span class="toggle">Show Rules</span>
+										<span class="toggle" style="display: none;">Hide Rules</span>
+									</a>
+									<table id="type_<s:property value="#type.id" />" class="auditTypeRule">
+										<s:include value="../audits/rules/audit_rule_header.jsp"/>
+										<s:set name="ruleURL" value="'AuditTypeRuleEditor.action'"/>
+										<s:set name="newWindow" value="true"/>
+										<s:set name="categoryRule" value="false"/>
+										<s:iterator value="typeMap.get(#type)" id="r">
+											<s:include value="../audits/rules/audit_rule_view.jsp"/>
+										</s:iterator>
+									</table>
+								</td>
+							</tr>
+						</s:iterator>
+					</tbody>
+				</table>
+			</s:if>
+		</li>
+		<li>
+			<s:form id="includeNewAudit">
+				<s:hidden value="%{operator.id}" name="id" />
+				<s:hidden value="Include" name="button" />
+				<s:select list="otherAudits" headerKey="0" headerValue="- Include Another Audit -" 
+					listKey="id" listValue="auditName" name="auditTypeID" onchange="$('#includeNewAudit').submit();" />
+			</s:form>
 		</li>
 	</ol>
 </fieldset>
@@ -120,13 +141,25 @@ function toggleType(ruleID) {
 </fieldset>
 <fieldset class="form">
 	<h2 class="formLegend">Likely Included PQF Categories</h2>
-	<ol>
-		<li><label>Categories</label>
-			<s:iterator value="categoryMap.keySet()">
-				<s:property value="name" /><br />
+	<s:if test="categoryList.size > 0">
+		<ol class="categoryList">
+			<s:iterator value="categoryList" id="cat">
+				<li>
+					<s:property value="#cat.name" />
+					<s:if test="#cat.subCategories.size > 0">
+						<a href="#" onclick="return toggleCategory(<s:property value="#cat.id" />);">
+							<img src="images/arrow-blue-down.png" class="arrow_<s:property value="#cat.id" />" alt="Expand" />
+							<img src="images/arrow-blue-right.png" class="arrow_<s:property value="#cat.id" />" alt="Collapse" style="display: none;" />
+						</a>
+					</s:if>
+					<s:if test="#cat.subCategories.size > 0">
+						<s:set name="subcat" value="%{#cat}" />
+						<div class="subcat"><s:include value="op_config_subcat.jsp" /></div>
+					</s:if>
+				</li>
 			</s:iterator>
-		</li>
-	</ol>
+		</ol>
+	</s:if>
 </fieldset>
 <fieldset class="form">
 	<h2 class="formLegend">Rules to Explicitly Remove PQF Categories</h2>
