@@ -152,9 +152,9 @@ public class PicsMenu {
 		}
 		
 		if(permissions.isAdmin())
-			subMenu.addChild("Document List Compress", "ReportAuditList.action");
+			subMenu.addChild("Audit List Compress", "ReportAuditList.action");
 		if (permissions.hasPermission(OpPerms.ContractorDetails)) 
-			subMenu.addChild("Document List", "ReportCAOList.action");
+			subMenu.addChild("Audit List", "ReportCAOList.action");
 
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?filter.status=Active&filter.auditStatus=Pending");

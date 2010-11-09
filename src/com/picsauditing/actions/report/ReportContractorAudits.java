@@ -80,6 +80,8 @@ public class ReportContractorAudits extends ReportAccount {
 
 		sql.addField("atype.isScheduled");
 		sql.addField("atype.hasAuditor");
+		sql.addField("atype.scoreable");
+		sql.addField("ca.score as auditScore");
 
 		sql.addJoin("LEFT JOIN users auditor ON auditor.id = ca.auditorID");
 		sql.addField("auditor.name auditor_name");

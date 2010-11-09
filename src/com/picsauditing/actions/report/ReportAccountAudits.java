@@ -73,6 +73,7 @@ public class ReportAccountAudits extends ReportAccount {
 				sql.addField("GROUP_CONCAT(DISTINCT ot.tag ORDER BY ot.tag SEPARATOR ', ') AS tag");
 			}
 		}
+		sql.addField("c.score");
 
 		filteredDefault = true;
 

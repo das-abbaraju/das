@@ -146,7 +146,6 @@ public class Permissions implements Serializable {
 			if (isContractor()) {
 				ContractorAccount contractor = (ContractorAccount) user.getAccount();
 			}
-
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
 				visibleAuditTypes =operator.getVisibleAuditTypes();

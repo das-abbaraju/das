@@ -31,6 +31,9 @@
 	    <s:if test="permissions.picsEmployee">
 		    <td><a href="javascript: changeOrderBy('form1','auditor.name');" >Safety Pro</a></td>
 	    </s:if>
+		<s:if test="permissions.accountName.startsWith('Roseburg')">
+			<td>Score</td>
+		</s:if>
 		<s:if test="showContact">
 			<td>Primary Contact</td>
 			<td>Phone</td>
@@ -58,6 +61,9 @@
 		<td class="center"><s:date name="get('statusChangedDate')" format="M/d/yy" /></td>
 	    <s:if test="permissions.picsEmployee">
 			<td><s:property value="get('auditor_name')"/></td>
+		</s:if>
+		<s:if test="permissions.accountName.startsWith('Roseburg')">
+			<td><s:if test="get('scoreable') == 1"><s:property value="get('auditScore')"/></s:if><s:else>N/A</s:else></td>
 		</s:if>
 		<s:if test="showContact">
 			<td><s:property value="get('contactname')"/></td>
