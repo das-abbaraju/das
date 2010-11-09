@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -19,13 +18,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 public class AuditRuleCache {
 
 	private Risks data = null;
-	private AuditDecisionTableDAO auditRuleDAO;
-	
-	public AuditRuleCache(AuditDecisionTableDAO auditRuleDAO){
-		if(data == null)
-			fill(auditRuleDAO.findRules());
-	}
-	
+
 	public void fill(Collection<AuditCategoryRule> rules) {
 		data = new Risks();
 		for (AuditCategoryRule rule : rules) {
