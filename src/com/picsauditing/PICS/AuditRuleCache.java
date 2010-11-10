@@ -1,12 +1,12 @@
 package com.picsauditing.PICS;
 
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -17,13 +17,25 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class AuditRuleCache {
 
-	private Risks data = null;
+	private Risks data;
+	private AuditDecisionTableDAO auditRuleDAO;
 
-	public void fill(Collection<AuditCategoryRule> rules) {
-		data = new Risks();
-		for (AuditCategoryRule rule : rules) {
-			data.add(rule);
+	public Risks getData() {
+		if (data == null) {
+			data = new Risks();
+			for (AuditCategoryRule rule : auditRuleDAO.findRules()) {
+				data.add(rule);
+			}
 		}
+		return data;
+	}
+
+	public AuditRuleCache(AuditDecisionTableDAO auditRuleDAO) {
+		this.auditRuleDAO = auditRuleDAO;
+	}
+
+	public void clear() {
+		data = null;
 	}
 
 	public Set<AuditCategoryRule> getApplicable(ContractorAccount contractor, Set<AuditType> auditTypes) {
@@ -32,7 +44,7 @@ public class AuditRuleCache {
 		long startTime = Calendar.getInstance().getTimeInMillis();
 
 		Set<AuditCategoryRule> rules = new HashSet<AuditCategoryRule>();
-		if (data == null)
+		if (getData() == null)
 			return null;
 
 		Set<LowMedHigh> risks = new HashSet<LowMedHigh>();
@@ -53,7 +65,7 @@ public class AuditRuleCache {
 		operators.addAll(contractor.getOperators());
 
 		for (LowMedHigh risk : risks) {
-			AcceptsBids data2 = data.getData(risk);
+			AcceptsBids data2 = getData().getData(risk);
 			if (data2 != null) {
 				System.out.println("found matching risk " + risk);
 				for (Boolean acceptsBid : acceptsBids) {

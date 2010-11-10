@@ -1,22 +1,69 @@
 package com.picsauditing.PICS;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
-public class AuditBuilderTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "/tests.xml")
+@TransactionConfiguration(defaultRollback = true)
+@Transactional
+public class AuditBuilderTest {
+	@Autowired
+	ContractorAccountDAO contractoraccountDAO;
+	@Autowired
+	AuditDecisionTableDAO auditDecisionTableDAO;
+	@Autowired
+	AuditRuleCache auditRuleCache;
+	@Autowired
+	AuditTypeDAO auditTypeDAO;
+
+	@Test
+	public void testRules() throws Exception {
+		ContractorAccount contractor = contractoraccountDAO.find(3);
+		final AuditType pqf = auditTypeDAO.find(1);
+		List<AuditCategoryRule> rules = auditDecisionTableDAO.getApplicableCategoryRules(contractor, pqf);
+		Set<AuditCategoryRule> cache = auditRuleCache.getApplicable(contractor, new HashSet<AuditType>() {
+			{
+				add(pqf);
+			}
+		});
+
+		System.out.println("DAO RULES\n-------------------------");
+		for (AuditCategoryRule auditCategoryRule : rules) {
+			System.out.print(auditCategoryRule.getId() + ",");
+		}
+		System.out.println("\nCACHE RULES\n-------------------------");
+		for (AuditCategoryRule auditCategoryRule : cache) {
+			System.out.print(auditCategoryRule.getId() + ",");
+		}
+
+		assertEquals(rules.size(), cache.size());
+	}
 
 	public void testRequiredAuditTypes() {
 		Map<AuditType, AuditBuilder.AuditTypeDetail> results = null;

@@ -1,9 +1,12 @@
 package com.picsauditing.actions;
 
 import java.sql.SQLException;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
 import com.picsauditing.PICS.AuditRuleCache;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -18,6 +21,7 @@ public class Trevor extends PicsActionSupport {
 	private AuditRuleCache cache;
 	private int conID;
 	private Set<AuditCategoryRule> applicable;
+	public String rules;
 
 	public Trevor(ContractorAccountDAO accountDAO, AuditDecisionTableDAO auditRuleDAO, AuditRuleCache cache) {
 		this.accountDAO = accountDAO;
@@ -27,9 +31,9 @@ public class Trevor extends PicsActionSupport {
 
 	public String execute() throws SQLException {
 
-		if ("fill".equals(button)) {
+		if ("clear".equals(button)) {
 			List<AuditCategoryRule> rules = auditRuleDAO.findRules();
-			cache.fill(rules);
+			cache.clear();
 		}
 		if ("print".equals(button)) {
 			output = cache.print();
@@ -37,6 +41,18 @@ public class Trevor extends PicsActionSupport {
 		if (conID > 0) {
 			ContractorAccount contractor = accountDAO.find(conID);
 			applicable = cache.getApplicable(contractor, null);
+		}
+		if ("showlist".equals(button)) {
+			String[] rulesList = rules.split(",");
+			applicable = new LinkedHashSet<AuditCategoryRule>();
+			for (String string : rulesList) {
+				try {
+					applicable.add(auditRuleDAO.findAuditCategoryRule(Integer.parseInt(string)));
+				} catch (NumberFormatException e) {
+					// ignore
+					System.out.println("problem: " + string);
+				}
+			}
 		}
 
 		return SUCCESS;

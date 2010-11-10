@@ -9,6 +9,7 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" default-autowire="autodetect">
 
 	<bean id="SpringUtils" class="com.picsauditing.util.SpringUtils" />
+	<bean id="AuditRuleCache" class="com.picsauditing.PICS.AuditRuleCache"/>
 	
 	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO"/>
 	<bean id="AccountUserDAO" class="com.picsauditing.dao.AccountUserDAO"/>
@@ -17,6 +18,7 @@
 	<bean id="AssessmentResultDAO" class="com.picsauditing.dao.AssessmentResultDAO"/>
 	<bean id="AssessmentTestDAO" class="com.picsauditing.dao.AssessmentTestDAO"/>
 	<bean id="AuditDataDAO" class="com.picsauditing.dao.AuditDataDAO"/>
+	<bean id="AuditDecisionTableDAO" class="com.picsauditing.dao.AuditDecisionTableDAO"/>
 	<bean id="AuditorAvailabilityDAO" class="com.picsauditing.dao.AuditorAvailabilityDAO"/>
 	<bean id="AuditorScheduleDAO" class="com.picsauditing.dao.AuditorScheduleDAO"/>
 	<bean id="AuditorVacationDAO" class="com.picsauditing.dao.AuditorVacationDAO"/>
@@ -110,7 +112,7 @@
  	
   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
     <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-    <property name="url" value="jdbc:mysql://alpha.picsauditing.com:3306/pics_stage" />
+    <property name="url" value="jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha1" />
     <property name="username" value="pics" />
     <property name="password" value="@Irvine1" />
   </bean>

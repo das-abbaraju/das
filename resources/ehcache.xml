@@ -6,37 +6,17 @@
 	<!-- For changeable application objects, wait 4 hours -->
 	<cache name="daily" maxElementsInMemory="500" eternal="false"
 		timeToLiveSeconds="14400" overflowToDisk="false">
-		<cacheEventListenerFactory
-			class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
-		<bootstrapCacheLoaderFactory
-			class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
 	</cache>
 
 	<!-- For most session elements, wait 15 minutes -->
 	<cache name="temp" maxElementsInMemory="500" eternal="false"
 		timeToLiveSeconds="900" overflowToDisk="false">
-		<cacheEventListenerFactory
-			class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
-		<bootstrapCacheLoaderFactory
-			class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
 	</cache>
 
 	<!-- For most page elements, wait 2 minutes -->
 	<defaultCache maxElementsInMemory="1000" eternal="false"
 		timeToLiveSeconds="120" overflowToDisk="false"
 		diskExpiryThreadIntervalSeconds="120" memoryStoreEvictionPolicy="LRU">
-		<cacheEventListenerFactory
-			class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
-		<bootstrapCacheLoaderFactory
-			class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
 	</defaultCache>
-
-	<cacheManagerPeerProviderFactory
-		class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
-		properties="peerDiscovery=automatic, multicastGroupAddress=230.0.0.1,multicastGroupPort=4446, timeToLive=1" />
-
-	<cacheManagerPeerListenerFactory
-		class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"
-		properties="hostName=localhost, port=40001,socketTimeoutMillis=2000" />
 
 </ehcache>

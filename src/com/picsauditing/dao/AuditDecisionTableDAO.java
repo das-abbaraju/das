@@ -30,7 +30,7 @@ import com.picsauditing.util.Strings;
 public class AuditDecisionTableDAO extends PicsDAO {
 
 	public List<AuditCategoryRule> findRules() {
-		Query query = em.createQuery("FROM AuditCategoryRule WHERE effectiveDate <= NOW() AND expirationDate > NOW()");
+		Query query = em.createQuery("FROM AuditCategoryRule WHERE effectiveDate <= NOW() AND expirationDate > NOW() ORDER BY priority DESC");
 		// query.setMaxResults(500);
 		return query.getResultList();
 	}
