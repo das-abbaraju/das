@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FacilitiesDAO;
@@ -54,6 +56,9 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		
+		// Same as AuditOperator
+		permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
 
 		if (!Strings.isEmpty(button)) {
 			if (corpID > 0) {

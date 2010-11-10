@@ -212,8 +212,11 @@ $(function() {
 				</s:if>
 
 				<li>
-				<div style="font-weight: bold; text-align: center;">Operator
-				Configuration Inheritance</div>
+				<pics:permission perm="ManageOperators" type="Edit">
+					<li>
+						<a href="OperatorConfiguration.action?id=<s:property value="operator.id" />">Operator Configuration Inheritance</a>
+					</li>
+				</pics:permission>
 				</li>
 				<li><label>Flag Criteria:</label> <s:select
 					name="foreignKeys.inheritFlagCriteria"
