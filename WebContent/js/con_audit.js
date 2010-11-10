@@ -267,6 +267,7 @@ function _updateCategories() {
 				var me = $(text);
 				$('#auditHeaderSideNav').html(me.filter('#audit_sidebar_refresh').html());
 				$('#caoTable').html(me.filter('#cao_table_refresh').html());
+				$('#auditScore').html(me.filter('#auditScore_refresh').html());
 				$('.cluetip').cluetip({
 					arrows: true,
 					cluetipClass: 'jtip',
