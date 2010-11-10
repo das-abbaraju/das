@@ -48,7 +48,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private Date assignedDate;
 	private Date paidDate;
 	private OperatorAccount requestingOpAccount;
-	private float score;
+	private int score;
 	private boolean manuallyAdded;
 	protected boolean needsIndexing = true;
 	private String auditFor;
@@ -254,11 +254,11 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	 * 
 	 * @return
 	 */
-	public float getScore() {
+	public int getScore() {
 		return score;
 	}
 
-	public void setScore(float score) {
+	public void setScore(int score) {
 		this.score = score;
 	}
 

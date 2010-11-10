@@ -14,7 +14,7 @@
 <script type="text/javascript">
 $(function(){
 	$('select[name=question.questionType]').change(function(){
-		if($(this).val()=='Radio')
+		if($(this).val()=='Radio' || $(this).val()=='Yes/No/NA' || $(this).val()=='Yes/No')
 			$('.scoreWeight').show();
 		else{
 			$('.scoreWeight').hide();
@@ -166,7 +166,9 @@ function moveQuestion(atypeID) {
 			<s:checkbox name="question.flaggable"/>
 		</li>
 		<s:if test="auditType.scoreable">
-			<li class="scoreWeight" <s:if test="!question.questionType.equals('Radio')">style="display: none;"</s:if>><label>Score Weight:</label>
+			<li class="scoreWeight" <s:if test="!(question.questionType.equals('Radio') || question.questionType.equals('Yes/No/NA') ||
+				question.questionType.equals('Yes/No'))">
+				style="display: none;"</s:if>><label>Score Weight:</label>
 				<s:textfield name="question.scoreWeight" />
 				<div class="fieldhelp">
 					<h3>Score Weight</h3>

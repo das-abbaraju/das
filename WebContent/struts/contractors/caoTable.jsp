@@ -7,7 +7,10 @@
 				<s:if test="systemEdit">
 					<th>Visible</th>
 				</s:if>
-				<th>Operator Scope</th>
+				<% // temp fix for roseburg %>
+				<s:if test="getViewableOperators(permissions).size>1">
+					<th>Operator Scope</th>
+				</s:if>
 				<th>Progress</th>
 				<th>Status</th>
 				<th>Date</th>
@@ -37,8 +40,10 @@
 								<s:checkbox cssClass="vis" value="#currentCao.visible" name="caosSave[%{#rowStatus.index}].visible" />
 							</td>
 						</s:if>
-						<td title="<s:iterator value="#currentCao.caoPermissions"><s:property value="operator.name"/>, </s:iterator>">
-						<s:property value="operator.name" /></td>
+						<s:if test="getViewableOperators(permissions).size>1">
+							<td title="<s:iterator value="#currentCao.caoPermissions"><s:property value="operator.name"/>, </s:iterator>">
+							<s:property value="operator.name" /></td>
+						</s:if>
 						<td class="progress nobr">
 							<s:if test="#currentCao.status.submittedResubmitted">
 								<div style="position: relative">

@@ -140,7 +140,7 @@ public class AuditPercentCalculator {
 										break;
 									}
 								}
-								scoreCount ++;
+								scoreCount +=question.getScoreWeight();
 							}
 							else if("Yes/No".equals(question.getQuestionType()) 
 									|| "Yes/No/NA".equals(question.getQuestionType())) {
@@ -149,7 +149,7 @@ public class AuditPercentCalculator {
 								else if(answer.getAnswer().equals("N/A"))
 									score += 0;
 								else score += -1;
-								scoreCount ++;
+								scoreCount +=question.getScoreWeight();
 							}
 						}
 
@@ -226,7 +226,7 @@ public class AuditPercentCalculator {
 			}
 
 			if (scoreCount > 0) {
-				conAudit.setScore(score / scoreCount);
+				conAudit.setScore((int)((score / scoreCount)*100));
 			} 
 
 			int percentComplete = 0;
