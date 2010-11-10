@@ -571,19 +571,18 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	@Transient
 	public String getPrintableScore() {
-		int tempScore = Math.round(score);
+		String tempScore = "";
 
-		Map<Integer, String> map = new HashMap<Integer, String>() {
+		if (score <= 0)
+			tempScore = "None";
+		if (score < 50)
+			tempScore = "Red";
+		else if (score < 100)
+			tempScore = "Yellow";
+		else
+			tempScore = "Green";
 
-			{
-				put(-1, "None");
-				put(0, "Red");
-				put(1, "Yellow");
-				put(2, "Green");
-			}
-		};
-
-		return map.get(tempScore);
+		return tempScore;
 	}
 
 	@Transient

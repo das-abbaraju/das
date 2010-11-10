@@ -51,7 +51,7 @@ public class AuditPercentCalculator {
 		int requiredCount = 0;
 		int verifiedCount = 0;
 		int scoreCount = 0;
-		int score = 0;
+		float score = 0;
 
 		// Get a list of questions/answers for this category
 		List<Integer> questionIDs = new ArrayList<Integer>();
@@ -141,15 +141,18 @@ public class AuditPercentCalculator {
 									}
 								}
 								scoreCount +=question.getScoreWeight();
-							}
-							else if("Yes/No".equals(question.getQuestionType()) 
-									|| "Yes/No/NA".equals(question.getQuestionType())) {
-								if(answer.getAnswer().equals("Yes"))
+							} else if ("Yes/No".equals(question
+									.getQuestionType())
+									|| "Yes/No/NA".equals(question
+											.getQuestionType())) {
+								if (answer.getAnswer().equals("Yes"))
 									score += question.getScoreWeight();
-								else if(answer.getAnswer().equals("N/A"))
+								else if (answer.getAnswer().equals("NA"))
+									score += question.getScoreWeight() / 2;
+								else
 									score += 0;
-								else score += -1;
-								scoreCount +=question.getScoreWeight();
+
+								scoreCount += question.getScoreWeight();
 							}
 						}
 
