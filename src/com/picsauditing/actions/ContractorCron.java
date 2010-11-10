@@ -3,7 +3,9 @@ package com.picsauditing.actions;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -16,6 +18,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ibm.icu.util.Calendar;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -48,6 +51,7 @@ import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
+import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -373,7 +377,43 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 		contractorFlagETL.calculate(contractor);
 	}
-
+	
+	private void runContractorScore(ContractorAccount contractor) {
+		int score = 120;
+		for(ContractorAudit conAudit : contractor.getAudits()) {
+			if(!conAudit.isExpired()) {
+				for(ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
+					if(cao.getStatus().isComplete() || cao.getStatus().isApproved())
+						score += 100;
+					else if (cao.getStatus().isSubmittedResubmitted())
+						score += 80;
+					else if (cao.getStatus().isIncomplete()) {
+						
+					}
+					else score += -10;
+				}
+			}
+		}
+		List<AuditData> auditDatas = auditDataDAO.findAnswerByConQuestions(contractor.getId(), Arrays.asList(88,2447,5176,5179));
+		for(AuditData auditData : auditDatas) {
+			if(auditData.isAnswered()) {
+				if(auditData.getQuestion().getId() == 88 && auditData.getAnswer().equals("Yes")) {
+					score += -10;
+				}
+				else {
+					score += auditData.getAnswer().replaceAll("[^0-9]","").length();
+				}
+			}
+		}
+		if(contractor.getMembershipLevel() != null) {
+			score += contractor.getPayingFacilities()*10;
+		}
+		for (Invoice invoice :contractor.getInvoices()) {
+			if(invoice.isOverdue())
+				score += -25;
+		}
+	}
+	
 	private void runFlag(ContractorOperator co) {
 		if (!runStep(ContractorCronStep.Flag))
 			return;
