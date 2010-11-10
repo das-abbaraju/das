@@ -96,11 +96,46 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<AuditType> findAuditTypeByOpHierarchy(List<Integer> opIDs) {
-		Query query = em.createQuery("SELECT DISTINCT r.auditType FROM AuditTypeRule r "
-				+ "WHERE (r.effectiveDate <= NOW() AND r.expirationDate > NOW()) "
+	private String findByOpHierarchy(String field, String table, List<Integer> opIDs, String where) {
+		if (!Strings.isEmpty(where))
+			where = "AND (" + where + ") ";
+		else
+			where = "";
+
+		return "SELECT DISTINCT " + field + " FROM " + table + " WHERE (r.effectiveDate <= NOW() AND r.expirationDate > NOW()) "
 				+ "AND (r.operatorAccount IS NULL OR r.operatorAccount.id IN (" + Strings.implode(opIDs) + ")) "
-				+ "ORDER BY r.priority DESC");
+				+ where + "ORDER BY r.priority DESC";
+	}
+
+	public List<AuditTypeRule> findAuditTypeRulesByOpHierarchy(List<Integer> opIDs, int auditTypeID) {
+		Query query = em.createQuery(findByOpHierarchy("r", "AuditTypeRule r", opIDs,
+				(auditTypeID > 0 ? "r.auditType.id = ?" : null)));
+
+		if (auditTypeID > 0)
+			query.setParameter(1, auditTypeID);
+
+		query.setMaxResults(250);
+		return query.getResultList();
+	}
+
+	public List<AuditType> findAuditTypeByOpHierarchy(List<Integer> opIDs) {
+		Query query = em.createQuery(findByOpHierarchy("r.auditType", "AuditTypeRule r", opIDs, ""));
+		query.setMaxResults(250);
+		return query.getResultList();
+	}
+	
+	public List<AuditCategory> findAuditCategoryByOpHierarchy(List<Integer> opIDs) {
+		// Get top categories
+		Query query = em.createQuery(findByOpHierarchy("r.auditCategory", "AuditCategoryRule r", opIDs,
+				"r.auditCategory.parent IS NULL AND r.auditType.id = 1"));
+		query.setMaxResults(250);
+		return query.getResultList();
+	}
+
+	public List<AuditCategoryRule> findAuditCategoryRulesByOpHierarchy(List<Integer> opIDs, int categoryID) {
+		Query query = em.createQuery(findByOpHierarchy("r", "AuditCategoryRule r", opIDs,
+				"r.auditCategory.id = ?"));
+		query.setParameter(1, categoryID);
 		query.setMaxResults(250);
 		return query.getResultList();
 	}
@@ -109,16 +144,6 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		Query query = em.createQuery(findByQuery("AuditCategoryRule",
 				" AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID)"));
 		query.setParameter("operatorID", opID);
-		query.setMaxResults(250);
-		return query.getResultList();
-	}
-
-	public List<AuditCategory> findAuditCategoryByOpHierarchy(List<Integer> opIDs) {
-		// Get top categories
-		Query query = em.createQuery("SELECT DISTINCT r.auditCategory FROM AuditCategoryRule r "
-				+ "WHERE (r.effectiveDate <= NOW() AND r.expirationDate > NOW()) "
-				+ "AND (r.operatorAccount IS NULL OR r.operatorAccount.id IN (" + Strings.implode(opIDs) + ")) "
-				+ "AND (r.auditCategory.parent IS NULL) AND (r.auditType.id = 1) ORDER BY r.priority DESC");
 		query.setMaxResults(250);
 		return query.getResultList();
 	}

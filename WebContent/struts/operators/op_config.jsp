@@ -9,16 +9,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp" />
 <script type="text/javascript">
-function toggleType(ruleID) {
-	var div = "#type_" + ruleID;
-	var link = "#type_link_" + ruleID;
-	
-	$(div).toggle();
-	$(link).find('span.toggle').toggle();
-	
-	return false;
-}
-
 function toggleCategory(catID) {
 	var ol = "#subcat_" + catID;
 	var arrow = ".arrow_" + catID;
@@ -27,9 +17,46 @@ function toggleCategory(catID) {
 
 	return false;
 }
+
+function showType(typeID) {
+	var data = {
+		id: <s:property value="operator.id" />,
+		auditTypeID: typeID,
+		button: "LoadTable"
+	};
+
+	$('tr#'+typeID).find('.hidden').show();
+	$('tr#'+typeID).find('.normal').hide();
+
+	startThinking({ div: "typeTable_" + typeID, message: "Loading Audit Type Rules" });
+	$('#typeTable_' + typeID).load("OperatorConfigurationAjax.action", data);
+
+	return false;
+}
+
+function hideType(typeID) {
+	$('tr#'+typeID).find('.hidden').hide();
+	$('tr#'+typeID).find('.normal').show();
+	$('#typeTable_' + typeID).empty();
+
+	return false;
+}
+
+function loadCatRules(catID) {
+	var data = {
+		id: <s:property value="operator.id" />,
+		categoryID: catID,
+		button: "LoadTable"
+	};
+
+	startThinking({ div: "catTable", message: "Loading Category Rules" });
+	$('#catTable').load("OperatorConfigurationAjax.action", data);
+
+	return false;
+}
 </script>
 <style type="text/css">
-.auditTypeRule, .subcat-list {
+.auditTypeRule, .subcat-list, .hidden {
 	display: none;
 }
 </style>
@@ -78,23 +105,16 @@ function toggleCategory(catID) {
 					</thead>
 					<tbody>
 						<s:iterator value="typeList" id="type">
-							<tr>
+							<tr id="<s:property value="#type.id" />">
 								<td><s:property value="#type.classType" /></td>
 								<td><s:property value="#type.auditName" /></td>
 								<td>
-									<a href="#" onclick="return toggleType(<s:property value="#type.id" />);" id="type_link_<s:property value="#type.id" />">
-										<span class="toggle">Show Rules</span>
-										<span class="toggle" style="display: none;">Hide Rules</span>
-									</a>
-									<table id="type_<s:property value="#type.id" />" class="auditTypeRule">
-										<s:include value="../audits/rules/audit_rule_header.jsp"/>
-										<s:set name="ruleURL" value="'AuditTypeRuleEditor.action'"/>
-										<s:set name="newWindow" value="true"/>
-										<s:set name="categoryRule" value="false"/>
-										<s:iterator value="typeMap.get(#type)" id="r">
-											<s:include value="../audits/rules/audit_rule_view.jsp"/>
-										</s:iterator>
-									</table>
+									<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="normal">Show Rules</a>
+									<a href="#" onclick="return hideType(<s:property value="#type.id" />);" class="hidden">Hide Rules</a>
+									<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="hidden refresh">Refresh</a>
+									<div id="typeTable_<s:property value="#type.id" />"></div>
+									<a href="AuditTypeRuleEditor.action?button=edit&rule.include=true&rule.auditType.id=<s:property value="#type.id" />&rule.operatorAccount.id=<s:property value="operator.id" />&rule.operatorAccount.name=<s:property value="operator.name" />"
+										target="_blank" class="hidden add">Add Rule</a>
 								</td>
 							</tr>
 						</s:iterator>
@@ -136,29 +156,40 @@ function toggleCategory(catID) {
 					</tbody>
 				</table>
 			</s:if>
+			<a href="AuditTypeRuleEditor.action?button=edit&rule.include=false&rule.operatorAccount.id=<s:property value="operator.id" />&rule.operatorAccount.name=<s:property value="operator.name" />"
+				target="_blank" class="add">Add Rule</a>
 		</li>
 	</ol>
 </fieldset>
 <fieldset class="form">
 	<h2 class="formLegend">Likely Included PQF Categories</h2>
 	<s:if test="categoryList.size > 0">
-		<ol class="categoryList">
-			<s:iterator value="categoryList" id="cat">
-				<li>
-					<s:property value="#cat.name" />
-					<s:if test="#cat.subCategories.size > 0">
-						<a href="#" onclick="return toggleCategory(<s:property value="#cat.id" />);">
-							<img src="images/arrow-blue-down.png" class="arrow_<s:property value="#cat.id" />" alt="Expand" />
-							<img src="images/arrow-blue-right.png" class="arrow_<s:property value="#cat.id" />" alt="Collapse" style="display: none;" />
-						</a>
-					</s:if>
-					<s:if test="#cat.subCategories.size > 0">
-						<s:set name="subcat" value="%{#cat}" />
-						<div class="subcat"><s:include value="op_config_subcat.jsp" /></div>
-					</s:if>
-				</li>
-			</s:iterator>
-		</ol>
+		<table style="width: 100%;">
+			<tr>
+				<td>
+					<ol class="categoryList">
+						<s:iterator value="categoryList" id="cat">
+							<li>
+								<a href="#" onclick="return loadCatRules(<s:property value="#cat.id" />);"><s:property value="#cat.name" /></a>
+								<s:if test="#cat.subCategories.size > 0">
+									<a href="#" onclick="return toggleCategory(<s:property value="#cat.id" />);">
+										<img src="images/arrow-blue-down.png" class="arrow_<s:property value="#cat.id" />" alt="Expand" />
+										<img src="images/arrow-blue-right.png" class="arrow_<s:property value="#cat.id" />" alt="Collapse" style="display: none;" />
+									</a>
+								</s:if>
+								<s:if test="#cat.subCategories.size > 0">
+									<s:set name="subcat" value="%{#cat}" />
+									<div class="subcat"><s:include value="op_config_subcat.jsp" /></div>
+								</s:if>
+							</li>
+						</s:iterator>
+					</ol>
+				</td>
+				<td style="vertical-align: top;">
+					<div id="catTable" style="float: right; padding: 10px;"></div>
+				</td>
+			</tr>
+		</table>
 	</s:if>
 </fieldset>
 <fieldset class="form">
@@ -185,6 +216,8 @@ function toggleCategory(catID) {
 					</tbody>
 				</table>
 			</s:if>
+			<a href="CategoryRuleEditor.action?button=edit&rule.include=false&rule.auditType.id=1&rule.operatorAccount.id=<s:property value="operator.id" />&rule.operatorAccount.name=<s:property value="operator.name" />"
+				target="_blank" class="add">Add Rule</a>
 		</li>
 	</ol>
 </fieldset>

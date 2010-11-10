@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -16,10 +17,12 @@ import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
+import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.DoubleMap;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -35,10 +38,15 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	private List<AuditTypeRule> excludeTypes;
 	private List<AuditCategoryRule> excludeCategories;
 	private List<AuditType> otherAudits;
-
+	// Getting custom table
+	private DoubleMap<Integer, ColumnHeader, List<String>> ruleMap;
+	private List<Integer> ruleIDs;
+	private List<ColumnHeader> columnNames;
+	private String type;
 	// Passed in variables
 	private int corpID;
 	private int auditTypeID;
+	private int categoryID;
 
 	public OperatorConfiguration(OperatorAccountDAO operatorDao, AuditDecisionTableDAO adtDAO, AuditTypeDAO typeDAO,
 			FacilitiesDAO facilitiesDAO) {
@@ -56,7 +64,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		// Same as AuditOperator
 		permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
 
@@ -72,14 +80,14 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 						facilitiesDAO.save(facility);
 					}
 				}
-	
+
 				if ("Remove".equals(button)) {
 					// Remove facility
 					Facility corp = facilitiesDAO.findByCorpOp(corpID, operator.getId());
 					facilitiesDAO.remove(corp);
 				}
 			}
-	
+
 			if ("Include".equals(button) && auditTypeID > 0) {
 				AuditTypeRule rule = new AuditTypeRule();
 				rule.setOperatorAccount(operator);
@@ -90,7 +98,12 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				rule.setAuditColumns(permissions);
 				adtDAO.save(rule);
 			}
-			
+
+			if ("LoadTable".equals(button)) {
+				setupMap();
+				return SUCCESS;
+			}
+
 			return redirect("OperatorConfiguration.action?id=" + operator.getId());
 		}
 
@@ -101,7 +114,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 		if (allParents == null) {
 			List<Integer> inheritance = operator.getOperatorHeirarchy();
 			inheritance.remove((Integer) operator.getId());
-			
+
 			allParents = operatorDao.findWhere(true, "a.id IN (" + Strings.implode(inheritance) + ")", permissions);
 
 			Collections.sort(allParents, new Comparator<OperatorAccount>() {
@@ -110,7 +123,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				}
 			});
 		}
-		
+
 		return allParents;
 	}
 
@@ -179,6 +192,22 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 		return otherAudits;
 	}
 
+	public DoubleMap<Integer, ColumnHeader, List<String>> getRuleMap() {
+		return ruleMap;
+	}
+
+	public List<Integer> getRuleIDs() {
+		return ruleIDs;
+	}
+
+	public List<ColumnHeader> getColumnNames() {
+		return columnNames;
+	}
+
+	public String getType() {
+		return type;
+	}
+
 	// Passed in variables
 	public int getCorpID() {
 		return corpID;
@@ -187,12 +216,132 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	public void setCorpID(int corpID) {
 		this.corpID = corpID;
 	}
-	
+
 	public int getAuditTypeID() {
 		return auditTypeID;
 	}
 
 	public void setAuditTypeID(int auditTypeID) {
 		this.auditTypeID = auditTypeID;
+	}
+
+	public int getCategoryID() {
+		return categoryID;
+	}
+
+	public void setCategoryID(int categoryID) {
+		this.categoryID = categoryID;
+	}
+
+	// Private methods
+	private void setupMap() {
+		ruleMap = new DoubleMap<Integer, ColumnHeader, List<String>>();
+		ruleIDs = new ArrayList<Integer>();
+
+		if (auditTypeID > 0) {
+			type = "AuditType";
+			List<AuditTypeRule> rules = adtDAO.findAuditTypeRulesByOpHierarchy(operator.getOperatorHeirarchy(),
+					auditTypeID);
+			for (AuditTypeRule rule : rules) {
+				addColumns(rule);
+			}
+		}
+
+		if (categoryID > 0) {
+			type = "Category";
+			List<AuditCategoryRule> rules = adtDAO.findAuditCategoryRulesByOpHierarchy(operator.getOperatorHeirarchy(),
+					categoryID);
+			for (AuditCategoryRule rule : rules) {
+				addColumns(rule);
+			}
+		}
+		
+		if (columnNames != null)
+			Collections.sort(columnNames);
+	}
+
+	private ColumnHeader find(String name) {
+		if (columnNames == null)
+			columnNames = new ArrayList<ColumnHeader>();
+
+		for (ColumnHeader c : columnNames) {
+			if (c.name.equals(name))
+				return c;
+		}
+
+		ColumnHeader c = new ColumnHeader(columnNames.size() + 1, name, (name.equals("Dependent Audit") ? 2
+				: name.equals("Question") ? 3 : 1));
+		columnNames.add(c);
+		return c;
+	}
+
+	private void addColumns(AuditRule rule) {
+		ruleIDs.add(rule.getId());
+		// Set this up in the base classes?
+		addMapping(rule.getId(), find("Include"), (rule.isInclude() ? "Yes" : "No"));
+		addMapping(rule.getId(), find("Priority"), rule.getPriority() + "");
+
+		if (rule.getAuditType() != null)
+			addMapping(rule.getId(), find("Audit Type"), rule.getAuditTypeLabel());
+		if (rule.getContractorType() != null)
+			addMapping(rule.getId(), find("Contractor Type"), rule.getContractorTypeLabel());
+		if (rule instanceof AuditCategoryRule) {
+			AuditCategoryRule rule2 = (AuditCategoryRule) rule;
+			if (rule2.getAuditCategory() != null)
+				addMapping(rule.getId(), find("Category"), rule2.getAuditCategoryLabel());
+		}
+		if (rule.getOperatorAccount() != null)
+			addMapping(rule.getId(), find("Operator"), rule.getOperatorAccountLabel());
+		if (rule.getRisk() != null)
+			addMapping(rule.getId(), find("Risk"), rule.getRiskLabel());
+		if (rule.getTag() != null)
+			addMapping(rule.getId(), find("Tag"), rule.getTagLabel());
+		if (rule.getAcceptsBids() != null)
+			addMapping(rule.getId(), find("Bid-Only"), rule.getAcceptsBidsLabel());
+		if (rule instanceof AuditTypeRule) {
+			AuditTypeRule rule2 = (AuditTypeRule) rule;
+			if (rule2.getDependentAuditType() != null) {
+				addMapping(rule.getId(), find("Dependent Audit"), rule2.getDependentAuditTypeLabel(),
+						rule2.getDependentAuditStatusLabel());
+			}
+		}
+		if (rule.getQuestion() != null) {
+			addMapping(rule.getId(), find("Question"), rule.getQuestionLabel(), rule.getQuestionComparatorLabel(),
+					rule.getQuestionAnswerLabel());
+		}
+	}
+
+	private void addMapping(int id, ColumnHeader c, String... v) {
+		ruleMap.put(id, c, new ArrayList<String>());
+
+		for (int i = 0; i < v.length; i++) {
+			ruleMap.get(id, c).add(v[i]);
+		}
+	}
+
+	// Inner classes
+	public class ColumnHeader implements Comparable<ColumnHeader> {
+		public int order;
+		public int colspan = 0;
+		public String name;
+
+		public ColumnHeader(int order, String name, int colspan) {
+			this.order = order;
+			this.name = name;
+			this.colspan = colspan;
+		}
+
+		public int compareTo(ColumnHeader c) {
+			return this.order - c.order;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			return this.toString().equals(obj.toString());
+		}
+
+		public String toString() {
+			return this.order + ": " + this.name;
+		}
 	}
 }

@@ -4,7 +4,7 @@
 <ol class="subcat-list" id="subcat_<s:property value="#subcat.id" />">
 	<s:iterator value="#subcat.subCategories" id="subcat">
 		<li>
-			<s:property value="#subcat.name" />
+			<a href="#" onclick="return loadCatRules(<s:property value="#subcat.id" />);"><s:property value="#subcat.name" /></a>
 			<s:if test="#subcat.subCategories.size > 0">
 				<a href="#" onclick="return toggleCategory(<s:property value="#subcat.id" />);">
 					<img src="images/arrow-blue-down.png" class="arrow_<s:property value="#subcat.id" />" alt="Expand" />
