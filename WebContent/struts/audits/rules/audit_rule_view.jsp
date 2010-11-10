@@ -37,6 +37,10 @@
 	</td>
 	<td><s:property value="questionComparatorLabel"/></td>
 	<td><s:property value="questionAnswerLabel"/></td>
+	<td><s:property value="createdBy.name"/></td>
+	<td><s:property value="creationDate"/></td>
+	<td><s:property value="updatedBy.name"/></td>
+	<td><s:property value="updateDate"/></td>
 	<s:if test="#showAction">
 		<td>
 			<s:if test="'Similar Rules' == key">

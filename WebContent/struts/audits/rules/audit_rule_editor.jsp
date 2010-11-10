@@ -146,7 +146,6 @@ $(function() {
 							<a href="#" class="clearfield">Clear Field</a>
 						</li>
 						<li><label>Top or Sub Category</label>
-							<% //Do not change, if subcat is true then we set rootcat to be false and vice versa %>
 							<s:select list="#{-1:'Any',0:'Sub Categories',1:'Top Categories'}" name="rootCat"/> 
 						</li>
 					</s:if>
@@ -218,7 +217,7 @@ $(function() {
 		<s:if test="'Current Rule' == key || value.size() > 0">
 			<s:set name="ruleclass" value="%{key.toLowerCase().replaceAll(' ', '-')}"/>
 			<tr class="rule-header clickable <s:property value="#ruleclass"/>">
-				<td colspan="<s:if test="categoryRule">13</s:if><s:else>14</s:else>" class="center"> <s:property value="key"/> </td>
+				<td colspan="<s:if test="categoryRule">17</s:if><s:else>18</s:else>" class="center"> <s:property value="key"/> </td>
 			</tr>
 			<s:iterator value="value" id="r">
 				<s:include value="audit_rule_view.jsp"/>
@@ -226,7 +225,7 @@ $(function() {
 			
 			<s:if test="'Current Rule' == key && canEditDelete">
 				<tr class="hide-rule-percents clickable">
-					<td colspan="<s:if test="categoryRule">13</s:if><s:else>14</s:else>" class="center">Click to show Rules to Create</td>
+					<td colspan="<s:if test="categoryRule">17</s:if><s:else>18</s:else>" class="center">Click to show Rules to Create</td>
 				</tr>
 				<tr class="rule-percents" style="display: none;">
 					<td></td> <!-- delete column -->
