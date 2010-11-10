@@ -158,7 +158,7 @@ $(function(){
 			status = 'Deleting';			
 		} else
 			status = 'Saving';			
-		$(this).parents('#auditViewArea:first').block({message: status+' OHSA Record'}).load('OshaSaveAjax.action', $(this).parents('form#osSave').serialize()+"&button="+$(this).val(), function(response, status){
+		$(this).parents('#auditViewArea:first').block({message: status+' OSHA Record'}).load('OshaSaveAjax.action', $(this).parents('form#osSave').serialize()+"&button="+$(this).val(), function(response, status){
 			$(this).unblock();
 		});
 	});
