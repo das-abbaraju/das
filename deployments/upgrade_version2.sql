@@ -607,14 +607,14 @@ drop table audit_operator;
 drop table desktopmatrix;
 drop table pqfquestion_text;
 
-ALTER TABLE `contractor_audit` 
+ALTER TABLE contractor_audit 
 	DROP COLUMN `auditStatus`, 
 	DROP COLUMN `completedDate`, 
 	DROP COLUMN `closedDate`, 
 	DROP COLUMN `percentComplete`, 
 	DROP COLUMN `percentVerified`;
 
-alter table `operators` drop column `inheritAudits`, drop column `inheritAuditCategories`, drop column `inheritInsurance`;
+alter table operators drop column `inheritAudits`, drop column `inheritAuditCategories`, drop column `inheritInsurance`;
 
 alter table flag_criteria drop column `validationRequired`;
 
@@ -708,3 +708,28 @@ else 0 end)
 where at.id = 17
 and aq.questionType = 'Radio';
 
+
+-- updating the IM audits score to be a percentage
+update contractor_audit 
+set score = 75
+where auditTypeID = 17 and score between 1 and 2;
+
+update contractor_audit 
+set score = 100
+where auditTypeID = 17 and score = 2;
+
+update contractor_audit 
+set score = 45
+where auditTypeID = 17 
+and score between 0.1 and 1;
+
+update contractor_audit 
+set score = 0
+where auditTypeID = 17 and score = -1;
+
+update contractor_audit ca
+join audit_type at on ca.audittypeid = at.id
+set score = 0
+where at.scoreable != 1;
+
+alter table contractor_audit change `score` `score` tinyint(3) default '0' NULL;
