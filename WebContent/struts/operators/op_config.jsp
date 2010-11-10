@@ -147,7 +147,7 @@ function loadCatRules(catID) {
 					</thead>
 					<tbody>
 						<s:iterator value="excludeTypes" id="type">
-							<tr class="clickable">
+							<tr class="clickable" onclick="window.open('AuditTypeRuleEditor.action?id=<s:property value="#type.id" />')">
 								<td><s:property value="#type.include ? 'Yes' : 'No'" /></td>
 								<td><s:property value="#type.auditType == null ? '*' : #type.auditType.auditName" /></td>
 								<td><s:property value="#type.operatorAccount == null ? '*' : #type.operatorAccount.name" /></td>
@@ -207,7 +207,7 @@ function loadCatRules(catID) {
 					</thead>
 					<tbody>
 						<s:iterator value="excludeCategories" id="cat">
-							<tr class="clickable">
+							<tr class="clickable" onclick="window.open('CategoryRuleEditor.action?id=<s:property value="#cat.id" />')">
 								<td><s:property value="#cat.include ? 'Yes' : 'No'" /></td>
 								<td><s:property value="#cat.auditCategory == null ? '*' : #cat.auditCategory.name" /></td>
 								<td><s:property value="#cat.operatorAccount == null ? '*' : #cat.operatorAccount.name" /></td>
