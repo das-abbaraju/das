@@ -80,6 +80,11 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 						</s:else>
 					</td>
 				</s:if>
+				<s:if test="operatorAccount.approvesRelationships">
+					<pics:permission perm="ViewUnApproved">
+						<td><s:property value="get('workStatus')"/></td>
+					</pics:permission>
+				</s:if>
 				<td class="center">
 					<s:if test="get('genID') > 0">
 						<a href="ContractorView.action?id=<s:property value="get('id')"/>">View</a>
