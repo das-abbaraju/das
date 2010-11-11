@@ -1,8 +1,11 @@
 package com.picsauditing.PICS;
 
-import java.util.Calendar;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,6 +17,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.log.PicsLogger;
 
 public class AuditRuleCache {
 
@@ -39,11 +43,8 @@ public class AuditRuleCache {
 	}
 
 	public Set<AuditCategoryRule> getApplicable(ContractorAccount contractor, Set<AuditType> auditTypes) {
-		// get the operators so I can get an accurate timing
-		contractor.getOperatorAccounts().size();
-		long startTime = Calendar.getInstance().getTimeInMillis();
-
-		Set<AuditCategoryRule> rules = new HashSet<AuditCategoryRule>();
+		PicsLogger.start("AuditRuleCache", "Searching AuditRuleCache for contractor " + contractor.getId());
+		List<AuditCategoryRule> rules = new ArrayList<AuditCategoryRule>();
 		if (getData() == null)
 			return null;
 
@@ -67,15 +68,15 @@ public class AuditRuleCache {
 		for (LowMedHigh risk : risks) {
 			AcceptsBids data2 = getData().getData(risk);
 			if (data2 != null) {
-				System.out.println("found matching risk " + risk);
+				PicsLogger.log("found matching risk " + risk);
 				for (Boolean acceptsBid : acceptsBids) {
 					AuditTypes data3 = data2.getData(acceptsBid);
 					if (data3 != null) {
-						System.out.println(" found matching acceptsBid " + acceptsBid);
+						PicsLogger.log(" found matching acceptsBid " + acceptsBid);
 						for (AuditType auditType : auditTypes2) {
 							ContractorTypes data4 = data3.getData(auditType);
 							if (data4 != null) {
-								System.out.println("  found matching auditType " + auditType);
+								PicsLogger.log("  found matching auditType " + auditType);
 								for (ContractorOperator co : operators) {
 									Set<ContractorType> contractorType = new HashSet<ContractorType>();
 									contractorType.add(null);
@@ -87,10 +88,10 @@ public class AuditRuleCache {
 									for (ContractorType conType : contractorType) {
 										Operators data5 = data4.getData(conType);
 										if (data5 != null) {
-											System.out.println("   found matching conType " + conType);
+											PicsLogger.log("   found matching conType " + conType);
 											Set<AuditCategoryRule> data6 = data5.getData(operator);
 											if (data6 != null) {
-												System.out.println("    found matching operator " + operator);
+												PicsLogger.log("    found matching operator " + operator);
 												rules.addAll(data6);
 											}
 										}
@@ -103,34 +104,36 @@ public class AuditRuleCache {
 			}
 		}
 
-		long finishTime = Calendar.getInstance().getTimeInMillis();
-		System.out.println("Found " + rules.size() + " rules in " + (finishTime - startTime) + "ms");
-		return rules;
+		Collections.sort(rules);
+
+		PicsLogger.log("found " + rules.size() + " rules for contractor " + contractor.getId());
+
+		return new LinkedHashSet<AuditCategoryRule>(rules);
 	}
 
 	private class Risks {
 
-		private Map<LowMedHigh, AcceptsBids> data = new HashMap<LowMedHigh, AcceptsBids>();
+		private Map<LowMedHigh, AcceptsBids> data = new LinkedHashMap<LowMedHigh, AcceptsBids>();
 
 		public AcceptsBids getData(LowMedHigh value) {
 			return data.get(value);
 		}
 
 		public void add(AuditCategoryRule rule) {
-			System.out.println("Add rule to cache: " + rule);
+			PicsLogger.log("Add rule to cache: " + rule);
 			AcceptsBids map = data.get(rule.getRisk());
 			if (map == null) {
 				map = new AcceptsBids();
 				data.put(rule.getRisk(), map);
 			}
 			map.add(rule);
-			System.out.println(" + Risk = " + rule.getRisk());
+			PicsLogger.log(" + Risk = " + rule.getRisk());
 		}
 	}
 
 	private class AcceptsBids {
 
-		private Map<Boolean, AuditTypes> data = new HashMap<Boolean, AuditTypes>();
+		private Map<Boolean, AuditTypes> data = new LinkedHashMap<Boolean, AuditTypes>();
 
 		public AuditTypes getData(Boolean value) {
 			return data.get(value);
@@ -143,13 +146,13 @@ public class AuditRuleCache {
 				data.put(rule.getAcceptsBids(), map);
 			}
 			map.add(rule);
-			System.out.println(" + AcceptsBids = " + rule.getAcceptsBids());
+			PicsLogger.log(" + AcceptsBids = " + rule.getAcceptsBids());
 		}
 	}
 
 	private class AuditTypes {
 
-		private Map<AuditType, ContractorTypes> data = new HashMap<AuditType, ContractorTypes>();
+		private Map<AuditType, ContractorTypes> data = new LinkedHashMap<AuditType, ContractorTypes>();
 
 		public ContractorTypes getData(AuditType value) {
 			return data.get(value);
@@ -162,13 +165,13 @@ public class AuditRuleCache {
 				data.put(rule.getAuditType(), map);
 			}
 			map.add(rule);
-			System.out.println(" + AuditType = " + rule.getAuditType());
+			PicsLogger.log(" + AuditType = " + rule.getAuditType());
 		}
 	}
 
 	private class ContractorTypes {
 
-		private Map<ContractorType, Operators> data = new HashMap<ContractorType, Operators>();
+		private Map<ContractorType, Operators> data = new LinkedHashMap<ContractorType, Operators>();
 
 		public Operators getData(ContractorType value) {
 			return data.get(value);
@@ -181,13 +184,13 @@ public class AuditRuleCache {
 				data.put(rule.getContractorType(), map);
 			}
 			map.add(rule);
-			System.out.println(" + ContractorType = " + rule.getContractorType());
+			PicsLogger.log(" + ContractorType = " + rule.getContractorType());
 		}
 	}
 
 	private class Operators {
 
-		private Map<OperatorAccount, Set<AuditCategoryRule>> data = new HashMap<OperatorAccount, Set<AuditCategoryRule>>();
+		private Map<OperatorAccount, Set<AuditCategoryRule>> data = new LinkedHashMap<OperatorAccount, Set<AuditCategoryRule>>();
 
 		public Set<AuditCategoryRule> getData(OperatorAccount value) {
 			return data.get(value);
@@ -196,11 +199,11 @@ public class AuditRuleCache {
 		public void add(AuditCategoryRule rule) {
 			Set<AuditCategoryRule> map = data.get(rule.getOperatorAccount());
 			if (map == null) {
-				map = new HashSet<AuditCategoryRule>();
+				map = new LinkedHashSet<AuditCategoryRule>();
 				data.put(rule.getOperatorAccount(), map);
 			}
 			map.add(rule);
-			System.out.println(" + OperatorAccount = " + rule.getOperatorAccount());
+			PicsLogger.log(" + OperatorAccount = " + rule.getOperatorAccount());
 		}
 	}
 

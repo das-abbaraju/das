@@ -55,7 +55,7 @@ public abstract class BaseDecisionTreeRule extends BaseHistoryTime implements Co
 
 	@Override
 	public int compareTo(BaseDecisionTreeRule o) {
-		return priority - o.priority;
+		return o.priority - priority;
 	}
 
 	public boolean isMoreSpecific(BaseDecisionTreeRule o) {
