@@ -7,6 +7,9 @@
 -- move pqfoptions
 -- move app_translation (not if empty)
 
+-- Can't represent 0000-00-00 as a java sql date
+update pqfdata pd set pd.dateVerified = null where pd.dateVerified like '0000-00-00';
+
 -- these audits have been removed on alpha
 delete from pqfcatdata where auditid in (
 select id from contractor_Audit where auditTypeID in (59,131,135));
