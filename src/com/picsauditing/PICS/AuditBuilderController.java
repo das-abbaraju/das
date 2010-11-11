@@ -211,8 +211,11 @@ public class AuditBuilderController {
 					.getId(), contractorAnswersNeeded);
 		}
 		if (auditAnswersNeeded.size() > 0) {
-			AnswerMap answerMap = auditDataDAO.findAnswers(conAudit.getId(),
-					auditAnswersNeeded);
+			List<AuditData> requiredAnswers = new ArrayList<AuditData>();
+			for(AuditData answer : conAudit.getData())
+				if(auditAnswersNeeded.contains(answer.getQuestion().getId()))
+					requiredAnswers.add(answer);
+			AnswerMap answerMap = new AnswerMap(requiredAnswers);
 			for (Integer questionID : auditAnswersNeeded) {
 				contractorAnswers.put(questionID, answerMap.get(questionID));
 			}

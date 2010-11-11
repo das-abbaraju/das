@@ -54,7 +54,7 @@ public class AuditPercentCalculator {
 		float score = 0;
 
 		// Get a list of questions/answers for this category
-		List<Integer> questionIDs = new ArrayList<Integer>();
+		Set<Integer> questionIDs = new HashSet<Integer>();
 		
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 				questionIDs.add(question.getId());
@@ -66,9 +66,11 @@ public class AuditPercentCalculator {
 		}
 
 		// Get a map of all answers in this audit
-		AnswerMap answers = auditDataDao.findAnswers(
-				catData.getAudit().getId(), questionIDs);
-
+		List<AuditData> requiredAnswers = new ArrayList<AuditData>();
+		for(AuditData answer : catData.getAudit().getData())
+			if(questionIDs.contains(answer.getQuestion().getId()))
+				requiredAnswers.add(answer);
+		AnswerMap answers = new AnswerMap(requiredAnswers);
 		// Get a list of questions/answers for this category
 		Date validDate = catData.getAudit().getValidDate();
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {

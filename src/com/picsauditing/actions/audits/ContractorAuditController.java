@@ -2,7 +2,9 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -110,7 +112,7 @@ public class ContractorAuditController extends AuditActionSupport {
 
 			if (categoryID > 0) {
 				AuditCategory auditCategory = auditCategoryDAO.find(categoryID);
-				List<Integer> questionIDs = new ArrayList<Integer>();
+				Set<Integer> questionIDs = new HashSet<Integer>();
 				categoryData = getCategories().get(auditCategory) ; 
 				for(AuditCategory childCategory : categoryData.getCategory().getChildren()) {
 					for (AuditQuestion question : childCategory.getQuestions()) {
@@ -118,7 +120,11 @@ public class ContractorAuditController extends AuditActionSupport {
 					}
 				}
 				// Get a map of all answers in this audit
-				answerMap = auditDataDao.findAnswers(conAudit.getId(), questionIDs);
+				List<AuditData> requiredAnswers = new ArrayList<AuditData>();
+				for(AuditData answer : conAudit.getData())
+					if(questionIDs.contains(answer.getQuestion().getId()))
+						requiredAnswers.add(answer);
+				answerMap = new AnswerMap(requiredAnswers);
 				if (mode == null && isCanEditAudit())
 						mode = EDIT;
 			} else {
