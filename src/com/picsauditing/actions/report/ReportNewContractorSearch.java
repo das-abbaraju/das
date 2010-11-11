@@ -2,8 +2,6 @@ package com.picsauditing.actions.report;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -120,6 +118,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		sql.addField("a.state");
 		sql.addField("a.country");
 		sql.addField("a.phone");
+		sql.addField("c.score");
 
 		if (permissions.getAccountStatus().isDemo())
 			sql.addWhere("a.status IN ('Active','Demo')");
