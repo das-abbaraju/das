@@ -8,8 +8,8 @@
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('totalHoursWorked')"/></th>
-	<td colspan="2"><s:property value="%{format(manHours,'#,##0')}"/></td>
-	<s:if test="type.toString().equals('OSHA') && corporate"><td colspan="2"><s:property value="%{format(getAverageOsha( type ).manHours)}"/></td></s:if>
+	<td colspan="2"><s:text name="format.decimal"><s:param value="manHours" /></s:text></td>
+	<s:if test="type.toString().equals('OSHA') && corporate"><td colspan="2"><s:text name="format.decimal"><s:param value="getAverageOsha( type ).manHours" /></s:text></td></s:if>
 </tr>
 <tr class="group">
 	<th>&nbsp;</th>
@@ -22,47 +22,47 @@
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('fatalities')"/></th>
-	<td><s:property value="%{format(fatalities)}"/></td>
-	<td><s:property value="%{format(fatalitiesRate)}"/></td>
-	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="%{format(getAverageOsha( type ).fatalities)}"/></td><td><s:property value="%{format(getAverageOsha( type ).fatalitiesRate)}"/></td></s:if>
+	<td><s:text name="format.number"><s:param value="fatalities" /></s:text></td>
+	<td><s:text name="format.decimal"><s:param value="fatalitiesRate" /></s:text></td>
+	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).fatalities" /></s:text></td><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).fatalitiesRate" /></s:text></td></s:if>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('lostWorkDayCases.'.concat(type))"/></th>
-	<td><s:property value="%{format(lostWorkCases)}"/></td>
-	<td><s:property value="%{format(lostWorkCasesRate)}"/></td>
-	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="%{format(getAverageOsha( type ).lostWorkCases)}"/></td><td><s:property value="%{format(getAverageOsha( type ).lostWorkCasesRate)}"/></td></s:if>
+	<td><s:text name="format.number"><s:param value="lostWorkCases" /></s:text></td>
+	<td><s:text name="format.decimal"><s:param value="lostWorkCasesRate" /></s:text></td>
+	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).lostWorkCases" /></s:text></td><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).lostWorkCasesRate" /></s:text></td></s:if>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('lostWorkDays.'.concat(type))"/></th>
-	<td><s:property value="%{format(lostWorkDays)}"/></td>
-	<td><s:property value="%{format(lostWorkDaysRate)}"/></td>
-	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="%{format(getAverageOsha( type ).lostWorkDays)}"/></td><td><s:property value="%{format(getAverageOsha( type ).lostWorkDaysRate)}"/></td></s:if>
+	<td><s:text name="format.number"><s:param value="lostWorkDays" /></s:text></td>
+	<td><s:text name="format.decimal"><s:param value="lostWorkDaysRate" /></s:text></td>
+	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).lostWorkDays" /></s:text></td><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).lostWorkDaysRate" /></s:text></td></s:if>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('restrictedCases.'.concat(type))"/></th>
-	<td><s:property value="%{format(restrictedWorkCases)}"/></td>
-	<td><s:property value="%{format(restrictedWorkCasesRate)}"/></td>
-	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="%{format(getAverageOsha( type ).restrictedWorkCases)}"/></td><td><s:property value="%{format(getAverageOsha( type ).restrictedWorkCasesRate)}"/></td></s:if>
+	<td><s:text name="format.number"><s:param value="restrictedWorkCases" /></s:text></td>
+	<td><s:text name="format.decimal"><s:param value="restrictedWorkCasesRate" /></s:text></td>
+	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).restrictedWorkCases" /></s:text></td><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).restrictedWorkCasesRate" /></s:text></td></s:if>
 </tr>
 <s:if test="#category.id in { 151, 158 }">
 	<tr>
 		<th class="label"><s:property value="getText('modifiedWorkDay.'.concat(type))"/></th>
-		<td><s:property value="%{format(modifiedWorkDay)}"/></td>
-		<td><s:property value="%{format(modifiedWorkDayRate)}"/></td>
-		<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="%{format(getAverageOsha( type ).modifiedWorkDay)}"/></td><td><s:property value="%{format(getAverageOsha( type ).modifiedWorkDayRate)}"/></td></s:if>
+		<td><s:text name="format.number"><s:param value="modifiedWorkDay" /></s:text></td>
+		<td><s:text name="format.decimal"><s:param value="modifiedWorkDayRate" /></s:text></td>
+		<s:if test="type.toString().equals('OSHA') && corporate"><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).modifiedWorkDay" /></s:text></td><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).modifiedWorkDayRate" /></s:text></td></s:if>
 	</tr>
 </s:if>
 <tr>
 	<th class="label"><s:property value="getText('injuryAndIllness.'.concat(type))"/></th>
-	<td><s:property value="%{format(injuryIllnessCases)}"/></td>
-	<td><s:property value="%{format(injuryIllnessCasesRate)}"/></td>
-	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="%{format(getAverageOsha( type ).injuryIllnessCases)}"/></td><td><s:property value="%{format(getAverageOsha( type ).injuryIllnessCasesRate)}"/></td></s:if>
+	<td><s:text name="format.number"><s:param value="injuryIllnessCases" /></s:text></td>
+	<td><s:text name="format.decimal"><s:param value="injuryIllnessCasesRate" /></s:text></td>
+	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).injuryIllnessCases" /></s:text></td><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).injuryIllnessCasesRate" /></s:text></td></s:if>
 </tr>
 
 <s:if test="#category.id == 158">
 <tr>
 	<th class="label"><s:property value="getText('firstAidInjuries.'.concat(type))"/></th>
-	<td><s:property value="%{format(firstAidInjuries)}"/></td>
+	<td><s:text name="format.number"><s:param value="firstAidInjuries" /></s:text></td>
 	<td>&nbsp;</td>
 	<s:if test="type.toString().equals('OSHA') && corporate"><td>&nbsp;</td></s:if>
 </tr>
@@ -71,17 +71,17 @@
 <s:if test="type.toString().equals('OSHA')">
 	<tr>
 		<th class="label">Dart Rate</th>
-		<td><s:property value="%{format(restrictedWorkCases+lostWorkCases)}"/></td>
-		<td><s:property value="%{format(restrictedDaysAwayRate)}"/></td>
-		<s:if test="corporate"><td><s:property value="%{format(getAverageOsha( type ).lostWorkCases+getAverageOsha( type ).restrictedWorkCases)}"/></td><td><s:property value="%{format(getAverageOsha( type ).restrictedDaysAwayRate)}"/></td></s:if>
+		<td><s:text name="format.number"><s:param value="(restrictedWorkCases+lostWorkCases)" /></s:text></td>
+		<td><s:text name="format.decimal"><s:param value="restrictedDaysAwayRate" /></s:text></td>
+		<s:if test="corporate"><td><s:text name="format.decimal"><s:param value="(getAverageOsha( type ).lostWorkCases+getAverageOsha( type ).restrictedWorkCases)" /></s:text></td><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).restrictedDaysAwayRate" /></s:text></td></s:if>
 	</tr>
 </s:if>
 
 <tr>
 	<th class="label"><s:property value="getText('totalInjuriesAndIllnesses.'.concat(type))"/></th>
-	<td><s:property value="%{format(recordableTotal)}"/></td>
-	<td><s:property value="%{format(recordableTotalRate)}"/></td>
-	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="%{format(getAverageOsha( type ).recordableTotal)}"/></td><td><s:property value="%{format(getAverageOsha( type ).recordableTotalRate)}"/></td></s:if>
+	<td><s:text name="format.number"><s:param value="recordableTotal" /></s:text></td>
+	<td><s:text name="format.decimal"><s:param value="recordableTotalRate" /></s:text></td>
+	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).recordableTotal" /></s:text></td><td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).recordableTotalRate" /></s:text></td></s:if>
 </tr>
 
 <s:if test="#category.id in {151,158}">
@@ -89,23 +89,23 @@
 		<th class="label">Severity Rate</th>
 		<td>
 			<s:if test="type.toString().equals('OSHA')">
-				<s:property value="%{format(lostWorkDays+modifiedWorkDay)}"/>
+				<s:text name="format.number"><s:param value="(lostWorkDays+modifiedWorkDay)" /></s:text>
 			</s:if>
 			<s:else>
-				<s:property value="%{format(lostWorkDays)}"/>
+				<s:text name="format.number"><s:param value="(lostWorkDays)" /></s:text>
 			</s:else>
 		</td>
-		<td><s:property value="%{format(restrictedOrJobTransferDays)}"/></td>
+		<td><s:text name="format.number"><s:param value="(restrictedOrJobTransferDays)" /></s:text></td>
 		<s:if test="type.toString().equals('OSHA') && corporate">
 			<td>
 				<s:if test="type.toString().equals('OSHA')">
-					<s:property value="%{format(getAverageOsha( type ).lostWorkDays + getAverageOsha( type ).modifiedWorkDay)}"/>
+					<s:text name="format.decimal"><s:param value="(getAverageOsha( type ).lostWorkDays + getAverageOsha( type ).modifiedWorkDay)" /></s:text>
 				</s:if>
 				<s:else>
-					<s:property value="%{format(getAverageOsha( type ).lostWorkDays)}"/>
+					<s:text name="format.decimal"><s:param value="getAverageOsha( type ).lostWorkDays" /></s:text>
 				</s:else>
 			</td>
-			<td><s:property value="%{format(getAverageOsha( type ).restrictedOrJobTransferDays)}"/></td>
+			<td><s:text name="format.decimal"><s:param value="getAverageOsha( type ).restrictedOrJobTransferDays" /></s:text></td>
 		</s:if>
 	</tr>
 </s:if>
@@ -113,22 +113,22 @@
 <s:if test="#category.id == 158">
 <tr>
 	<th class="label"><s:property value="getText('vehicleIncidents.'.concat(type))"/></th>
-	<td><s:property value="%{format(vehicleIncidents)}"/></td>
+	<td><s:text name="format.number"><s:param value="vehicleIncidents" /></s:text></td>
 	<td>&nbsp;</td>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('totalkmDriven.'.concat(type))"/></th>
-	<td><s:property value="%{format(totalkmDriven)}"/></td>
+	<td><s:text name="format.number"><s:param value="totalkmDriven" /></s:text></td>
 	<td>&nbsp;</td>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('cad7.'.concat(type))"/></th>
-	<td><s:property value="%{format(cad7)}"/></td>
+	<td><s:text name="format.decimal"><s:param value="cad7" /></s:text></td>
 	<td>&nbsp;</td>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('neer.'.concat(type))"/></th>
-	<td><s:property value="%{format(neer)}"/></td>
+	<td><s:text name="format.decimal"><s:param value="neer" /></s:text></td>
 	<td>&nbsp;</td>
 </tr>
 </s:if>
