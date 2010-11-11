@@ -5,7 +5,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,7 +17,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ibm.icu.util.Calendar;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -223,9 +221,7 @@ public class ContractorCron extends PicsActionSupport {
 						if (runStep(ContractorCronStep.CorporateRollup)) {
 							for (Facility facility : operator
 									.getCorporateFacilities()) {
-								if (!Account.PICS_CORPORATE.contains(facility
-										.getCorporate().getId()))
-									corporateSet.add(facility.getCorporate());
+								corporateSet.add(facility.getCorporate());
 							}
 						}
 						runFlag(co);
@@ -677,8 +673,8 @@ public class ContractorCron extends PicsActionSupport {
 
 		// delete orphans++++-
 
-		// for (ContractorOperator removal : removalSet)
-		// contractorOperatorDAO.remove(removal);
+		 for (ContractorOperator removal : removalSet)
+			 contractorOperatorDAO.remove(removal);
 
 		contractorDAO.save(contractor);
 	}
