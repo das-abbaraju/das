@@ -58,10 +58,7 @@ function loadResults(data, noteText){
 	$('#caoAjax').load('CaoSaveAjax.action', data, function(response, status, xhr){
 		if(status == 'success'){
 			$('#caoTable').unblock();
-	        $.blockUI({ message:$('#caoAjax')}); 
-	        if($('.clearOnce').val()=='')
-				$('#clearOnceField').val(0);
-		    $('#yesButton').click(function(){
+			$('#yesButton').click(function(){
 		        $.blockUI({message: 'Saving Status, please wait...'});
 		        data.button = 'caoAjaxSave';
 		        if($('#addToNotes').val())
@@ -74,6 +71,14 @@ function loadResults(data, noteText){
 		        $.unblockUI();
 		        return false;
 		    });
+		    alert($('#nR').val());
+			if($('#nR').val()=='true')
+	        	$.blockUI({ message:$('#caoAjax')});
+			else  
+				$('#yesButton').click();
+	        if($('.clearOnce').val()=='')
+				$('#clearOnceField').val(0);
+		    
 		} else {
 			$('#caoTable').block({message: 'Error with request, please try again',
 				timeout: 1500	
