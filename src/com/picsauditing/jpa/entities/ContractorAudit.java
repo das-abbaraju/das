@@ -656,8 +656,8 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	@Transient
 	public boolean isVisibleTo(Permissions permissions) {
-		if (permissions.isContractor() && (getAuditType().isCanContractorView() == false))
-			return false;
+		if (permissions.isContractor()) 
+			return getAuditType().isCanContractorView();
 
 		if (permissions.isAdmin())
 			return true;
