@@ -89,6 +89,11 @@ public class ContractorAuditController extends AuditActionSupport {
 					}
 				}
 				
+				if ("Recalculate".equals(button)) {
+					auditPercentCalculator.percentCalculateComplete(conAudit, true);
+					return SUCCESS;
+				}
+				
 				// Preview the Category from the manage audit type page
 				if ("PreviewCategory".equals(button)) {
 					if (auditID == 0 && categoryID > 0) {

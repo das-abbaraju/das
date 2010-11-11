@@ -50,7 +50,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
-import com.picsauditing.search.MainSearch;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;

@@ -9,6 +9,9 @@
 			href="ConAuditMaintain.action?auditID=<s:property value="auditID" />">System
 		Edit</a></li>
 	</pics:permission>
+	<s:if test="permissions.admin">
+		<li><a href="Audit.action?auditID=<s:property value="auditID"/>&button=Recalculate">Recalculate Categories</a></li>
+	</s:if>
 	<s:if test="canVerify">
 		<pics:permission perm="AuditVerification">
 			<li><a class="verify"
@@ -65,11 +68,11 @@
 			<a class="hist-category" href="#categoryID=<s:property value="#catNode.category.id"/>">
 			<s:property value="#catNode.category.name" /> 
 			<span class="cat-percent">
-				<s:if test="#catNode.percentComplete<100">
+				<s:if test="#catNode.percentComplete < 100">
 					<s:property value="#catNode.percentComplete" />%
 				</s:if>
 				<s:else>
-					<s:if test="#catNode.percentVerified<100">
+					<s:if test="#catNode.percentVerified < 100">
 						<img src="images/icon_text_alert.png"/>
 					</s:if>
 					<s:else>						
