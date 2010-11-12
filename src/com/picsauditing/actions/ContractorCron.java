@@ -673,10 +673,12 @@ public class ContractorCron extends PicsActionSupport {
 
 		// delete orphans++++-
 
-		 for (ContractorOperator removal : removalSet)
+		 for (ContractorOperator removal : removalSet) {
 			 contractorOperatorDAO.remove(removal);
+			 contractor.getOperators().remove(removal);
+		 }
 
-		contractorDAO.save(contractor);
+		//contractorDAO.save(contractor);
 	}
 
 	private void runCSRAssignment(ContractorAccount contractor) {
