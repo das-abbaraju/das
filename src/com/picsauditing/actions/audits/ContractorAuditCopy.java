@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import com.picsauditing.PICS.AuditRuleCache;
+import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -33,8 +33,8 @@ public class ContractorAuditCopy extends AuditActionSupport {
 	public ContractorAuditCopy(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, CertificateDAO certificateDao,
-			AuditRuleCache auditRuleCache) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditRuleCache);
+			AuditCategoryRuleCache auditCategoryRuleCache) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
 	}
 
 	public String execute() throws Exception {

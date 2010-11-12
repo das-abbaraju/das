@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.base.Joiner;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
-import com.picsauditing.PICS.AuditRuleCache;
+import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -61,8 +61,8 @@ public class AuditDataSave extends AuditActionSupport {
 			AuditCategoryDataDAO catDataDao, AuditQuestionDAO questionDao,
 			ContractorAuditDAO auditDao, CertificateDAO certificateDao, OshaAuditDAO oshaAuditDAO,
 			NaicsDAO naicsDAO, AuditBuilderController auditBuilder, AuditDecisionTableDAO auditRuleDAO,
-			AuditPercentCalculator auditPercentCalculator, AuditRuleCache auditRuleCache) {
-		super(accountDAO, auditDao, catDataDao, dao, certificateDao, auditRuleCache);
+			AuditPercentCalculator auditPercentCalculator, AuditCategoryRuleCache auditCategoryRuleCache) {
+		super(accountDAO, auditDao, catDataDao, dao, certificateDao, auditCategoryRuleCache);
 		this.auditRuleDAO = auditRuleDAO;
 		this.questionDao = questionDao;
 		this.naicsDAO = naicsDAO;

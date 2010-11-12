@@ -8,7 +8,7 @@ import java.util.Set;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
-import com.picsauditing.PICS.AuditRuleCache;
+import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDAO;
@@ -55,8 +55,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	public ContractorAuditController(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
 			AuditCategoryDAO auditCategoryDAO, AuditPercentCalculator auditPercentCalculator,
-			OshaAuditDAO oshaAuditDAO, AuditBuilderController auditBuilder, AuditRuleCache auditRuleCache) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditRuleCache);
+			OshaAuditDAO oshaAuditDAO, AuditBuilderController auditBuilder, AuditCategoryRuleCache auditCategoryRuleCache) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.oshaAuditDAO = oshaAuditDAO;

@@ -8,7 +8,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.AuditPercentCalculator;
-import com.picsauditing.PICS.AuditRuleCache;
+import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -41,8 +41,8 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 
 	public OshaSave(ContractorAccountDAO accountDAO, OshaAuditDAO oshaDAO, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDAO, AuditDataDAO dao, CertificateDAO certificateDao,
-			AuditPercentCalculator auditPercentCalculator, AuditRuleCache auditRuleCache) {
-		super(accountDAO, auditDao, catDataDAO, dao, certificateDao, auditRuleCache);
+			AuditPercentCalculator auditPercentCalculator, AuditCategoryRuleCache auditCategoryRuleCache) {
+		super(accountDAO, auditDao, catDataDAO, dao, certificateDao, auditCategoryRuleCache);
 		this.oshaDAO = oshaDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 	}

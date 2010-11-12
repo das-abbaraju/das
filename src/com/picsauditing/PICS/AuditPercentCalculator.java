@@ -21,10 +21,10 @@ import com.picsauditing.util.AnswerMap;
 
 public class AuditPercentCalculator {
 
-	private AuditRuleCache auditRuleCache;
+	private AuditCategoryRuleCache auditCategoryRuleCache;
 
-	public AuditPercentCalculator(AuditRuleCache auditRuleCache) {
-		this.auditRuleCache = auditRuleCache;
+	public AuditPercentCalculator(AuditCategoryRuleCache auditCategoryRuleCache) {
+		this.auditCategoryRuleCache = auditCategoryRuleCache;
 	}
 
 	public void updatePercentageCompleted(AuditCatData catData) {
@@ -252,7 +252,7 @@ public class AuditPercentCalculator {
 	 */
 	private AuditCategoriesDetail getAuditCategoryDetail(
 			ContractorAudit conAudit) {
-		List<AuditCategoryRule> applicableCategoryRules = auditRuleCache
+		List<AuditCategoryRule> applicableCategoryRules = auditCategoryRuleCache
 				.getApplicableCategoryRules(conAudit.getContractorAccount(),
 						conAudit.getAuditType());
 

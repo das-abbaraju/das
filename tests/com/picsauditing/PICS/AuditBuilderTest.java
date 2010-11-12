@@ -39,7 +39,7 @@ public class AuditBuilderTest {
 	@Autowired
 	AuditDecisionTableDAO auditDecisionTableDAO;
 	@Autowired
-	AuditRuleCache auditRuleCache;
+	AuditCategoryRuleCache auditCategoryRuleCache;
 	@Autowired
 	AuditTypeDAO auditTypeDAO;
 
@@ -55,7 +55,7 @@ public class AuditBuilderTest {
 				List<AuditCategoryRule> rules = auditDecisionTableDAO.getApplicableCategoryRules(contractor, auditType);
 
 				long time = System.currentTimeMillis();
-				List<AuditCategoryRule> cache = auditRuleCache.getApplicableCategoryRules(contractor, new HashSet<AuditType>() {
+				List<AuditCategoryRule> cache = auditCategoryRuleCache.getApplicableCategoryRules(contractor, new HashSet<AuditType>() {
 					{
 						add(auditType);
 					}

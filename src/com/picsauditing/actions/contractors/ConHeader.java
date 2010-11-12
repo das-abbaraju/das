@@ -1,6 +1,6 @@
 package com.picsauditing.actions.contractors;
 
-import com.picsauditing.PICS.AuditRuleCache;
+import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.actions.audits.AuditActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -13,9 +13,9 @@ public class ConHeader extends AuditActionSupport {
 	public ConHeader(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, CertificateDAO certificateDao,
-			AuditRuleCache auditRuleCache) {
+			AuditCategoryRuleCache auditCategoryRuleCache) {
 		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao,
-				auditRuleCache);
+				auditCategoryRuleCache);
 	}
 
 	public String execute() throws Exception {

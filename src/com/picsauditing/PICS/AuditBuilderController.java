@@ -60,19 +60,19 @@ public class AuditBuilderController {
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
 	private AuditDecisionTableDAO auditDecisionTableDAO;
 	private ContractorTagDAO contractorTagDAO;
-	private AuditRuleCache auditRuleCache;
+	private AuditCategoryRuleCache auditCategoryRuleCache;
 
 	public AuditBuilderController(ContractorAuditDAO cAuditDAO,
 			AuditDataDAO auditDataDAO,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO,
 			AuditDecisionTableDAO auditDecisionTableDAO,
-			ContractorTagDAO contractorTagDAO, AuditRuleCache auditRuleCache) {
+			ContractorTagDAO contractorTagDAO, AuditCategoryRuleCache auditCategoryRuleCache) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
 		this.auditDecisionTableDAO = auditDecisionTableDAO;
 		this.contractorTagDAO = contractorTagDAO;
-		this.auditRuleCache = auditRuleCache;
+		this.auditCategoryRuleCache = auditCategoryRuleCache;
 	}
 
 	public void setup(ContractorAccount con, User user) {
@@ -360,7 +360,7 @@ public class AuditBuilderController {
 			// the required AuditTypes and then divide them up into their
 			// AuditType specific rule sets
 			categoryRuleCache = new HashMap<AuditType, List<AuditCategoryRule>>();
-			List<AuditCategoryRule> list = auditRuleCache
+			List<AuditCategoryRule> list = auditCategoryRuleCache
 					.getApplicableCategoryRules(contractor,
 							getRequiredAuditTypeSet());
 			for (AuditType aType : getRequiredAuditTypeSet()) {
@@ -376,7 +376,7 @@ public class AuditBuilderController {
 		if (categoryRuleCache.get(auditType) == null) {
 			// Probably won't need this but if we're missing the specific
 			// auditType the go and query it now
-			categoryRuleCache.put(auditType, auditRuleCache
+			categoryRuleCache.put(auditType, auditCategoryRuleCache
 					.getApplicableCategoryRules(contractor, auditType));
 		}
 		return categoryRuleCache.get(auditType);

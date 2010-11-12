@@ -11,7 +11,7 @@ import java.util.TreeMap;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.AuditRuleCache;
+import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -57,8 +57,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, CertificateDAO certificateDao,
 			AuditorAvailabilityDAO auditorAvailabilityDAO,
-			AuditRuleCache auditRuleCache) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditRuleCache);
+			AuditCategoryRuleCache auditCategoryRuleCache) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
 		this.auditorAvailabilityDAO = auditorAvailabilityDAO;
 		this.subHeading = "Schedule Audit";
 	}

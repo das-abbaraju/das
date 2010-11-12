@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.AuditRuleCache;
+import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -40,8 +40,8 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
 			ContractorAuditOperatorDAO caoDAO,
 			ContractorAuditOperatorWorkflowDAO caowDAO,
-			AuditRuleCache auditRuleCache) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditRuleCache);
+			AuditCategoryRuleCache auditCategoryRuleCache) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
 		this.caoDAO = caoDAO;
 		this.caowDAO = caowDAO;
 	}

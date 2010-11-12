@@ -36,7 +36,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
 import com.picsauditing.PICS.AuditBuilder;
-import com.picsauditing.PICS.AuditRuleCache;
+import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
@@ -64,7 +64,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 	private Map<String, File> attachments = new TreeMap<String, File>();
 	private AuditDataDAO auditDataDAO;
 	protected AuditCategoryDataDAO catDataDao;
-	protected AuditRuleCache auditRuleCache;
+	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
 	private Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24,
 			Font.BOLD, new Color(0xa8, 0x4d, 0x10));
@@ -83,11 +83,11 @@ public class AuditPdfConverter extends ContractorActionSupport {
 
 	public AuditPdfConverter(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditDataDAO auditDataDAO,
-			AuditCategoryDataDAO catDataDao, AuditRuleCache auditRuleCache) {
+			AuditCategoryDataDAO catDataDao, AuditCategoryRuleCache auditCategoryRuleCache) {
 		super(accountDao, auditDao);
 		this.auditDataDAO = auditDataDAO;
 		this.catDataDao = catDataDao;
-		this.auditRuleCache = auditRuleCache;
+		this.auditCategoryRuleCache = auditCategoryRuleCache;
 	}
 
 	@Override
@@ -159,7 +159,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 							.getId());
 
 					if (permissions.isOperatorCorporate()) {
-						List<AuditCategoryRule> rules = auditRuleCache
+						List<AuditCategoryRule> rules = auditCategoryRuleCache
 								.getApplicableCategoryRules(contractor,
 										conAudit.getAuditType());
 						AuditCategoriesDetail auditCategoryDetail = builder

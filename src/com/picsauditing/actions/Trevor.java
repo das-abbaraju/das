@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
-import com.picsauditing.PICS.AuditRuleCache;
+import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -18,12 +18,12 @@ public class Trevor extends PicsActionSupport {
 
 	private AuditDecisionTableDAO auditRuleDAO;
 	private ContractorAccountDAO accountDAO;
-	private AuditRuleCache cache;
+	private AuditCategoryRuleCache cache;
 	private int conID;
 	private Set<AuditCategoryRule> applicable;
 	public String rules;
 
-	public Trevor(ContractorAccountDAO accountDAO, AuditDecisionTableDAO auditRuleDAO, AuditRuleCache cache) {
+	public Trevor(ContractorAccountDAO accountDAO, AuditDecisionTableDAO auditRuleDAO, AuditCategoryRuleCache cache) {
 		this.accountDAO = accountDAO;
 		this.auditRuleDAO = auditRuleDAO;
 		this.cache = cache;

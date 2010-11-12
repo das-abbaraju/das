@@ -19,7 +19,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.log.PicsLogger;
 
-public class AuditRuleCache {
+public class AuditCategoryRuleCache {
 
 	private Risks data;
 	private AuditDecisionTableDAO auditRuleDAO;
@@ -34,7 +34,7 @@ public class AuditRuleCache {
 		return data;
 	}
 
-	public AuditRuleCache(AuditDecisionTableDAO auditRuleDAO) {
+	public AuditCategoryRuleCache(AuditDecisionTableDAO auditRuleDAO) {
 		this.auditRuleDAO = auditRuleDAO;
 	}
 
@@ -49,7 +49,7 @@ public class AuditRuleCache {
 	}
 		
 	public List<AuditCategoryRule> getApplicableCategoryRules(ContractorAccount contractor, Set<AuditType> auditTypes) {
-		PicsLogger.start("AuditRuleCache", "Searching AuditRuleCache for contractor " + contractor.getId());
+		PicsLogger.start("AuditCategoryRuleCache", "Searching AuditCategoryRuleCache for contractor " + contractor.getId());
 		List<AuditCategoryRule> rules = new ArrayList<AuditCategoryRule>();
 		if (getData() == null)
 			return null;

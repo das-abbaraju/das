@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.apache.struts2.ServletActionContext;
 
-import com.picsauditing.PICS.AuditRuleCache;
+import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -35,8 +35,8 @@ public class AuditFileUpload extends AuditActionSupport {
 	private AuditQuestion auditQuestion;
 
 	public AuditFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao, ContractorAuditFileDAO contractorAuditFileDAO, AuditQuestionDAO auditQuestionDAO, AuditRuleCache auditRuleCache) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditRuleCache);
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao, ContractorAuditFileDAO contractorAuditFileDAO, AuditQuestionDAO auditQuestionDAO, AuditCategoryRuleCache auditCategoryRuleCache) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
 		this.contractorAuditFileDAO = contractorAuditFileDAO;
 		this.auditQuestionDAO = auditQuestionDAO;
 	}

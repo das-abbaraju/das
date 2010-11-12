@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.AuditBuilder;
-import com.picsauditing.PICS.AuditRuleCache;
+import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
@@ -51,7 +51,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected AuditCategoryDataDAO catDataDao;
 	protected AuditDataDAO auditDataDao;
 	protected CertificateDAO certificateDao;
-	protected AuditRuleCache auditRuleCache;
+	protected AuditCategoryRuleCache auditCategoryRuleCache;
 	
 	private Map<Integer, AuditData> hasManual;
 	private List<AuditCategoryRule> rules = null;
@@ -63,12 +63,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private List<CategoryNode> categoryNodes;
 
 	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao, AuditRuleCache auditRuleCache) {
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao, AuditCategoryRuleCache auditCategoryRuleCache) {
 		super(accountDao, auditDao);
 		this.catDataDao = catDataDao;
 		this.auditDataDao = auditDataDao;
 		this.certificateDao = certificateDao;
-		this.auditRuleCache = auditRuleCache;
+		this.auditCategoryRuleCache = auditCategoryRuleCache;
 	}
 
 	public String execute() throws Exception {
@@ -178,7 +178,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	protected List<AuditCategoryRule> getRules() {
 		if (rules == null) {
-			rules = auditRuleCache.getApplicableCategoryRules(conAudit
+			rules = auditCategoryRuleCache.getApplicableCategoryRules(conAudit
 					.getContractorAccount(), conAudit.getAuditType());
 		}
 		return rules;
