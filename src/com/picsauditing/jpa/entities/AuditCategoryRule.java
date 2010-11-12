@@ -1,15 +1,20 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.actions.auditType.AuditRuleColumn;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_category_rule")
-public class AuditCategoryRule extends AuditRule {
+public class AuditCategoryRule extends AuditRule implements AuditRuleTable {
 
 	private AuditCategory auditCategory;
 	protected Boolean rootCategory;
@@ -79,5 +84,18 @@ public class AuditCategoryRule extends AuditRule {
 		if (auditCategory != null)
 			out += " and Category = " + auditCategory;
 		return out;
+	}
+	
+	@Override
+	@Transient
+	public Map<AuditRuleColumn, List<String>> getMapping() {
+		Map<AuditRuleColumn, List<String>> map = super.getMapping();
+		
+		if (getAuditCategory() != null)
+			map.get(AuditRuleColumn.Category).add(getAuditCategoryLabel());
+		if (getRootCategory() != null)
+			map.get(AuditRuleColumn.RootCategory).add(getRootCategoryLabel());
+		
+		return map;
 	}
 }

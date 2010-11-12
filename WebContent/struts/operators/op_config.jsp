@@ -20,16 +20,18 @@ function toggleCategory(catID) {
 
 function showType(typeID) {
 	var data = {
-		id: <s:property value="operator.id" />,
-		auditTypeID: typeID,
-		button: "LoadTable"
+		'operator.id': <s:property value="operator.id" />,
+		showPriority: false,
+		showWho: false,
+		orderRules: true,
+		auditTypeID: typeID
 	};
 
 	$('tr#'+typeID).find('.hidden').show();
 	$('tr#'+typeID).find('.normal').hide();
 
 	startThinking({ div: "typeTable_" + typeID, message: "Loading Audit Type Rules" });
-	$('#typeTable_' + typeID).load("OperatorConfigurationAjax.action", data);
+	$('#typeTable_' + typeID).load("AuditRuleTableAjax.action", data);
 
 	return false;
 }
@@ -42,15 +44,19 @@ function hideType(typeID) {
 	return false;
 }
 
-function loadCatRules(catID) {
+function loadCatRules(catID, divCatID) {
+	$('.catTable').empty();
+
 	var data = {
-		id: <s:property value="operator.id" />,
-		categoryID: catID,
-		button: "LoadTable"
+		'operator.id': <s:property value="operator.id" />,
+		showPriority: false,
+		showWho: false,
+		orderRules: true,
+		categoryID: catID
 	};
 
-	startThinking({ div: "catTable", message: "Loading Category Rules" });
-	$('#catTable').load("OperatorConfigurationAjax.action", data);
+	startThinking({ div: "catTable_" + divCatID, message: "Loading Category Rules" });
+	$('#catTable_' + divCatID).load("AuditRuleTableAjax.action", data);
 
 	return false;
 }
@@ -58,6 +64,10 @@ function loadCatRules(catID) {
 <style type="text/css">
 .auditTypeRule, .subcat-list, .hidden {
 	display: none;
+}
+#includedCategories td {
+	vertical-align: top;
+	width: 50%;
 }
 </style>
 </head>
@@ -164,13 +174,13 @@ function loadCatRules(catID) {
 <fieldset class="form">
 	<h2 class="formLegend">Likely Included PQF Categories</h2>
 	<s:if test="categoryList.size > 0">
-		<table style="width: 100%;">
-			<tr>
-				<td>
-					<ol class="categoryList">
-						<s:iterator value="categoryList" id="cat">
+		<table style="width: 100%;" id="includedCategories">
+			<s:iterator value="categoryList" id="cat">
+				<tr>
+					<td>
+						<ol>
 							<li>
-								<a href="#" onclick="return loadCatRules(<s:property value="#cat.id" />);"><s:property value="#cat.name" /></a>
+								<a href="#" onclick="return loadCatRules(<s:property value="#cat.id" />, <s:property value="#cat.id" />);"><s:property value="#cat.name" /></a>
 								<s:if test="#cat.subCategories.size > 0">
 									<a href="#" onclick="return toggleCategory(<s:property value="#cat.id" />);">
 										<img src="images/arrow-blue-down.png" class="arrow_<s:property value="#cat.id" />" alt="Expand" />
@@ -179,16 +189,15 @@ function loadCatRules(catID) {
 								</s:if>
 								<s:if test="#cat.subCategories.size > 0">
 									<s:set name="subcat" value="%{#cat}" />
+									<s:set name="parentCatID" value="%{#cat.id}" />
 									<div class="subcat"><s:include value="op_config_subcat.jsp" /></div>
 								</s:if>
 							</li>
-						</s:iterator>
-					</ol>
-				</td>
-				<td style="vertical-align: top;">
-					<div id="catTable" style="float: right; padding: 10px;"></div>
-				</td>
-			</tr>
+						</ol>
+					</td>
+					<td style="padding: 20px;"><div class="catTable" id="catTable_<s:property value="#cat.id" />"></div></td>
+				</tr>
+			</s:iterator>
 		</table>
 	</s:if>
 </fieldset>

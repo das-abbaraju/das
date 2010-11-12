@@ -1,5 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -8,10 +11,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.actions.auditType.AuditRuleColumn;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_type_rule")
-public class AuditTypeRule extends AuditRule {
+public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 
 	private AuditType dependentAuditType;
 	private AuditStatus dependentAuditStatus;
@@ -68,4 +73,16 @@ public class AuditTypeRule extends AuditRule {
 		return out;
 	}
 
+	@Override
+	@Transient
+	public Map<AuditRuleColumn, List<String>> getMapping() {
+		Map<AuditRuleColumn, List<String>> map = super.getMapping();
+		
+		if (getDependentAuditType() != null) {
+			map.get(AuditRuleColumn.DependentAudit).add(getDependentAuditTypeLabel());
+			map.get(AuditRuleColumn.DependentAudit).add(getDependentAuditStatusLabel());
+		}
+		
+		return map;
+	}
 }

@@ -1,5 +1,10 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -10,10 +15,12 @@ import javax.persistence.Transient;
 
 import org.jboss.util.Strings;
 
+import com.picsauditing.actions.auditType.AuditRuleColumn;
+
 @SuppressWarnings("serial")
 @Entity
 @MappedSuperclass
-public class AuditRule extends BaseDecisionTreeRule {
+public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 
 	protected AuditType auditType;
 	protected LowMedHigh risk;
@@ -330,5 +337,46 @@ public class AuditRule extends BaseDecisionTreeRule {
 			sb.append(" and Contactor is ").append(acceptsBids ? "bid-only" : "NOT bid-only");
 
 		return sb.toString();
+	}
+	
+	@Override
+	@Transient
+	public Map<AuditRuleColumn, List<String>> getMapping() {
+		Map<AuditRuleColumn, List<String>> map = new HashMap<AuditRuleColumn, List<String>>();
+		
+		for (AuditRuleColumn c : AuditRuleColumn.values()) {
+			map.put(c, new ArrayList<String>());
+		}
+		
+		map.get(AuditRuleColumn.Include).add(isInclude() ? "Yes" : "No");
+		map.get(AuditRuleColumn.Priority).add(getPriority() + "");
+		
+		if (getAuditType() != null)
+			map.get(AuditRuleColumn.AuditType).add(getAuditTypeLabel());
+		if (getContractorType() != null)
+			map.get(AuditRuleColumn.ContractorType).add(getContractorTypeLabel());
+		if (getOperatorAccount() != null)
+			map.get(AuditRuleColumn.Operator).add(getOperatorAccountLabel());
+		if (getRisk() != null)
+			map.get(AuditRuleColumn.Risk).add(getRiskLabel());
+		if (getTag() != null)
+			map.get(AuditRuleColumn.Tag).add(getTagLabel());
+		if (getAcceptsBids() != null)
+			map.get(AuditRuleColumn.BidOnly).add(getAcceptsBidsLabel());
+		if (getQuestion() != null) {
+			map.get(AuditRuleColumn.Question).add(getQuestionLabel());
+			map.get(AuditRuleColumn.Question).add(getQuestionComparatorLabel());
+			map.get(AuditRuleColumn.Question).add(getQuestionAnswerLabel());
+		}
+		if (getCreatedBy() != null) {
+			map.get(AuditRuleColumn.CreatedBy).add(getCreatedBy().getName());
+			map.get(AuditRuleColumn.CreatedBy).add(getCreationDate().toString());
+		}
+		if (getUpdatedBy() != null) {
+			map.get(AuditRuleColumn.UpdatedBy).add(getUpdatedBy().getName());
+			map.get(AuditRuleColumn.UpdatedBy).add(getUpdateDate().toString());
+		}
+		
+		return map;
 	}
 }

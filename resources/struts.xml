@@ -660,10 +660,6 @@
 			class="com.picsauditing.actions.operators.OperatorConfiguration">
 			<result>struts/operators/op_config.jsp</result>
 		</action>
-		<action name="OperatorConfigurationAjax"
-			class="com.picsauditing.actions.operators.OperatorConfiguration">
-			<result>struts/operators/op_config_table.jsp</result>
-		</action>
 		<action name="OperatorTags"
 			class="com.picsauditing.actions.operators.OperatorTags">
 			<result>struts/operators/operator_tags.jsp</result>
@@ -1263,6 +1259,11 @@
 		
 		<action name="RecalculateRules" class="com.picsauditing.actions.auditType.RecalculateRules">
 			<result>struts/audits/rules/recalculate_rules.jsp</result>
+		</action>
+		
+		<action name="AuditRuleTableAjax"
+			class="com.picsauditing.PICS.AuditRuleTableBuilder">
+			<result>struts/audits/rules/audit_rule_table.jsp</result>
 		</action>
 		
 		<!-- Users -->
