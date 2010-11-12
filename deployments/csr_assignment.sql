@@ -97,6 +97,11 @@ where  ca.id = cao.auditid
 and auditTypeid in (select id from audit_type where id = 96)
 and cao.status in ('Pending','Submitted','Incomplete');
 
+-- Overrides for Corporate Contractors
+-- Joe Villenueva - Airgas
+update contractor_info c set welcomeAuditor_id = 27274
+where c.id in (5593,11417,11270,10281,7471,6086,7892);
+
 -- rebuild the stats for ContractorOperators
 TRUNCATE TABLE stats_gco_count; 
 
