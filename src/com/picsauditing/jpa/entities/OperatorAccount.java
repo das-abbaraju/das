@@ -392,7 +392,7 @@ public class OperatorAccount extends Account {
 		list.add(this.id);
 		
 		OperatorAccount topAccount = getTopAccount();
-		for (Facility facility : corporateFacilities) {
+		for (Facility facility : getCorporateFacilities()) {
 			if (!facility.getCorporate().equals(topAccount))
 				// Add parent's that aren't my primary parent
 				list.add(facility.getCorporate().getId());
