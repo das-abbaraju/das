@@ -29,32 +29,12 @@ display:none}
 
 <s:include value="registrationHeader.jsp"></s:include>
 
-
 <div class="info">Answers on this page automatically save. Once you are finished, click <b>Next</b> at the bottom to go to the next step.</div>
-<br/>
 <div id="auditViewArea">
-	<h3 class="subCategory">General Info</h3>
-	<s:iterator value="infoQuestions">
-		<s:set name="q" value="[0]" />
-		<s:set name="a" value="answerMap.get(#q.id)" />
-		<div id="node_<s:property value="#q.id"/>"
-			class="clearfix question"><s:include value="../audits/audit_question_edit.jsp"></s:include></div>
-	</s:iterator>
-	<h3 class="subCategory">Services Performed</h3>
-	<h4 class="groupTitle">
-	Please select the services your company performs<br>
-	(C) denotes services you perform (S) denotes services performed by subcontractors
-	</h4>
-	<s:iterator value="serviceQuestions">
-		<s:set name="q" value="[0]" />
-		<s:if test="#q.current">
-			<s:set name="a" value="answerMap.get(#q.id)" />
-			<div id="node_<s:property value="#q.id"/>"
-				class="clearfix question" style="padding-bottom:0px;"><s:include value="../audits/audit_question_edit.jsp"></s:include></div>
-		</s:if>
+	<s:iterator value="categories" id="category">
+	<s:include value="../audits/audit_cat_view.jsp"/>
 	</s:iterator>
 </div>
-<br clear="all" />
 
 <div class="buttons">
 	<a id="next_link" class="picsbutton positive" href="ContractorRegistrationServices.action?id=<s:property value="id"/>&button=calculateRisk<s:if test="requestID > 0">&requestID=<s:property value="requestID" /></s:if>">Next &gt;&gt;</a>

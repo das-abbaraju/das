@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.jboss.util.Strings;
 
+import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -29,15 +30,18 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	private int requestID = 0;
 	private List<AuditQuestion> infoQuestions;
 	private List<AuditQuestion> serviceQuestions;
+	private List<AuditCategory> categories;
 	private Map<Integer, AuditData> answerMap;
 	private AuditData auditData;
 
+	private AuditCategoryDAO auditCateoryDAO;
 	private AuditQuestionDAO auditQuestionDAO;
 	private AuditDataDAO auditDataDAO;
-	
+
 	public ContractorRegistrationServices(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditQuestionDAO auditQuestionDAO, AuditDataDAO auditDataDAO) {
+			AuditCategoryDAO auditCategoryDAO, AuditQuestionDAO auditQuestionDAO, AuditDataDAO auditDataDAO) {
 		super(accountDao, auditDao);
+		this.auditCateoryDAO = auditCategoryDAO;
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.auditDataDAO = auditDataDAO;
 		subHeading = "Services Performed";
@@ -63,20 +67,23 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				}
 			}
 		}
-		
+
 		// Missing PQF and category data -- just create it now
 		if (auditID == 0 && catDataID == 0)
 			createPQF();
-		
+
 		Set<Integer> questionIds = new HashSet<Integer>();
-		infoQuestions = auditQuestionDAO.findWhere("category.id = 400"); // TODO fix
+		infoQuestions = auditQuestionDAO.findWhere("category.id = 400"); // TODO
+																			// fix
 		for (AuditQuestion q : infoQuestions)
 			questionIds.add(q.getId());
-		
+
 		serviceQuestions = auditQuestionDAO.findWhere("category.id = 422");
 		for (AuditQuestion q : serviceQuestions)
 			questionIds.add(q.getId());
-		
+
+		categories = auditCateoryDAO.findWhere("id IN (400, 422)");
+
 		answerMap = auditDataDAO.findAnswersByContractor(id, questionIds);
 
 		if ("calculateRisk".equals(button)) {
@@ -122,8 +129,8 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 					contractor.setRiskLevel(riskLevel);
 					contractor.setAuditColumns(permissions);
 					accountDao.save(contractor);
-					redirect("ContractorFacilities.action?id=" + contractor.getId() + 
-							(requestID > 0 ? "&requestID=" + requestID : ""));
+					redirect("ContractorFacilities.action?id=" + contractor.getId()
+							+ (requestID > 0 ? "&requestID=" + requestID : ""));
 					return BLANK;
 				}
 			}
@@ -138,11 +145,11 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	public int getCatDataID() {
 		return catDataID;
 	}
-	
+
 	public int getRequestID() {
 		return requestID;
 	}
-	
+
 	public void setRequestID(int requestID) {
 		this.requestID = requestID;
 	}
@@ -155,16 +162,32 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		return serviceQuestions;
 	}
 
+	public List<AuditCategory> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<AuditCategory> categories) {
+		this.categories = categories;
+	}
+
 	public Map<Integer, AuditData> getAnswerMap() {
 		return answerMap;
 	}
-	
+
 	public AuditData getAuditData() {
 		return auditData;
 	}
-	
+
 	public void setAuditData(AuditData auditData) {
 		this.auditData = auditData;
+	}
+
+	public boolean isViewBlanks() {
+		return true;
+	}
+	
+	public String getMode() {
+		return "Edit";
 	}
 
 	public LowMedHigh getMaxRiskLevel(LowMedHigh oRiskLevel, LowMedHigh qRiskLevel) {
@@ -204,7 +227,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		}
 		return riskLevel;
 	}
-	
+
 	private void createPQF() {
 		// Create a blank PQF for this contractor
 		ContractorAudit audit = new ContractorAudit();
@@ -217,9 +240,9 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		addAuditCategories(audit, 184); // SUPPLIER DIVERSITY
 		audit = auditDao.save(audit);
 		auditID = audit.getId();
-		
+
 		auditData.setAudit(audit);
-		
+
 		for (AuditCatData data : audit.getCategories()) {
 			if (data.getCategory().getId() == AuditCategory.SERVICES_PERFORMED) {
 				catDataID = data.getId();
@@ -227,7 +250,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			}
 		}
 	}
-	
+
 	private void addAuditCategories(ContractorAudit audit, int CategoryID) {
 		AuditCatData catData = new AuditCatData();
 		catData.setCategory(new AuditCategory());

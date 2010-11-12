@@ -7,6 +7,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.BaseTable;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -29,6 +30,10 @@ public class AuditCategoryDAO extends PicsDAO {
 	public AuditCategory find(int id) {
         return em.find(AuditCategory.class, id);
     }
+	
+	public List<AuditCategory> findWhere(String where) {
+		return (List<AuditCategory>) super.findWhere(AuditCategory.class, where, 0);
+	}
 	
 	public List<AuditCategory> findCategoryNames(String categoryName) {
 		String sql = "SELECT c FROM AuditCategory c WHERE c.name LIKE '%" + categoryName + "%'";
