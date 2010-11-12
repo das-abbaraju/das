@@ -204,7 +204,10 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 			} else auditType.setEditPermission(null);
 			if(workFlowID>0){
 				auditType.setWorkFlow(wfDAO.find(workFlowID));
-			} else auditType.setWorkFlow(null);
+			} else {
+				addActionError("You must set a workflow in order to save the Audit Type");
+				return false;
+			}
 			auditType.setAuditColumns(permissions);
 			auditType = auditTypeDAO.save(auditType);
 			id = auditType.getId();
