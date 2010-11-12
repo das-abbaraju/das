@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import com.picsauditing.PICS.AuditRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -29,9 +30,11 @@ public class ContractorAuditCopy extends AuditActionSupport {
 	protected String contractorSelect = "";
 	private boolean hasDuplicate = false;
 
-	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao,AuditDataDAO auditDataDao, CertificateDAO certificateDao) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao);
+	public ContractorAuditCopy(ContractorAccountDAO accountDao,
+			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
+			AuditDataDAO auditDataDao, CertificateDAO certificateDao,
+			AuditRuleCache auditRuleCache) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditRuleCache);
 	}
 
 	public String execute() throws Exception {
@@ -41,21 +44,24 @@ public class ContractorAuditCopy extends AuditActionSupport {
 		this.findConAudit();
 		int oldconID = conAudit.getContractorAccount().getId();
 		if (button != null) {
-			ContractorAccount nConAccount = accountDao.findConID(contractorSelect);
+			ContractorAccount nConAccount = accountDao
+					.findConID(contractorSelect);
 			if (nConAccount == null) {
 				addActionError("No Contractor Found");
 				return SUCCESS;
 			}
-			List<ContractorAudit> auditList = new Vector<ContractorAudit>(nConAccount.getAudits());
+			List<ContractorAudit> auditList = new Vector<ContractorAudit>(
+					nConAccount.getAudits());
 			auditDao.clear();
 			for (ContractorAudit existingAudit : auditList) {
-				if (existingAudit.getAuditType().equals(conAudit.getAuditType()) && !existingAudit.isExpired()
+				if (existingAudit.getAuditType()
+						.equals(conAudit.getAuditType())
+						&& !existingAudit.isExpired()
 						&& !existingAudit.getAuditType().isAnnualAddendum()) {
 					// We already have an existing audit that we should delete
 					// first
-					this
-							.addActionMessage(contractorSelect + " already has a "
-									+ conAudit.getAuditType().getAuditName());
+					this.addActionMessage(contractorSelect + " already has a "
+							+ conAudit.getAuditType().getAuditName());
 					if ("Copy Audit".equals(button)) {
 						hasDuplicate = true;
 						return SUCCESS;
@@ -79,27 +85,35 @@ public class ContractorAuditCopy extends AuditActionSupport {
 
 				if (auditData.getQuestion().getQuestionType().equals("File")) {
 
-					AuditData newAnswer = preToPostAuditDataIdMapper.get(auditData.getId());
+					AuditData newAnswer = preToPostAuditDataIdMapper
+							.get(auditData.getId());
 
 					String newFileBase = "files/"
-							+ FileUtils.thousandize(preToPostAuditDataIdMapper.get(auditData.getId()).getId());
+							+ FileUtils.thousandize(preToPostAuditDataIdMapper
+									.get(auditData.getId()).getId());
 					String newFileName = "data_" + auditData.getId();
 
-					String oldFileBase = "files/" + FileUtils.thousandize(auditData.getId());
-					String oldFileName = "data_" + auditData.getId() + "." + newAnswer.getAnswer();
+					String oldFileBase = "files/"
+							+ FileUtils.thousandize(auditData.getId());
+					String oldFileName = "data_" + auditData.getId() + "."
+							+ newAnswer.getAnswer();
 
-					File oldFile = new File(getFtpDir() + "/" + oldFileBase, oldFileName);
+					File oldFile = new File(getFtpDir() + "/" + oldFileBase,
+							oldFileName);
 					try {
-						FileUtils.copyFile(oldFile, getFtpDir(), newFileBase, newFileName, newAnswer.getAnswer(), true);
+						FileUtils.copyFile(oldFile, getFtpDir(), newFileBase,
+								newFileName, newAnswer.getAnswer(), true);
 					} catch (Exception couldntCopyTheFile) {
 						couldntCopyTheFile.printStackTrace();
 					}
 				}
 			}
 
-			String notes = conAudit.getAuditType().getAuditName() + " Copied from Contractor " + oldconID;
-			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, getViewableByAccount(conAudit
-					.getAuditType().getAccount()));
+			String notes = conAudit.getAuditType().getAuditName()
+					+ " Copied from Contractor " + oldconID;
+			addNote(conAudit.getContractorAccount(), notes,
+					NoteCategory.Audits, getViewableByAccount(conAudit
+							.getAuditType().getAccount()));
 			return "Audit";
 		}
 

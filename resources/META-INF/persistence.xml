@@ -9,12 +9,14 @@
 		<class>com.picsauditing.jpa.entities.AppProperty</class>
 		<class>com.picsauditing.jpa.entities.AssessmentTest</class>
 		<class>com.picsauditing.jpa.entities.AuditCategory</class>
+		<class>com.picsauditing.jpa.entities.AuditCategoryRule</class>
 		<class>com.picsauditing.jpa.entities.AuditData</class>
 		<class>com.picsauditing.jpa.entities.AuditQuestion</class>
 		<class>com.picsauditing.jpa.entities.AuditQuestionOption</class>
 		<class>com.picsauditing.jpa.entities.AuditStatus</class>
 		<class>com.picsauditing.jpa.entities.AuditType</class>
 		<class>com.picsauditing.jpa.entities.AuditTypeClass</class>
+		<class>com.picsauditing.jpa.entities.AuditTypeRule</class>
 		<class>com.picsauditing.jpa.entities.BaseTable</class>
 		<class>com.picsauditing.jpa.entities.ContractorAccount</class>
 		<class>com.picsauditing.jpa.entities.ContractorAudit</class>

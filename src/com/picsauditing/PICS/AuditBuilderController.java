@@ -60,17 +60,19 @@ public class AuditBuilderController {
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
 	private AuditDecisionTableDAO auditDecisionTableDAO;
 	private ContractorTagDAO contractorTagDAO;
+	private AuditRuleCache auditRuleCache;
 
 	public AuditBuilderController(ContractorAuditDAO cAuditDAO,
 			AuditDataDAO auditDataDAO,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO,
 			AuditDecisionTableDAO auditDecisionTableDAO,
-			ContractorTagDAO contractorTagDAO) {
+			ContractorTagDAO contractorTagDAO, AuditRuleCache auditRuleCache) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
 		this.auditDecisionTableDAO = auditDecisionTableDAO;
 		this.contractorTagDAO = contractorTagDAO;
+		this.auditRuleCache = auditRuleCache;
 	}
 
 	public void setup(ContractorAccount con, User user) {
@@ -104,7 +106,7 @@ public class AuditBuilderController {
 							// This audit should not be renewed but we already
 							// have one
 							found = true;
-						} else if(auditType.getId() == AuditType.WELCOME) {
+						} else if (auditType.getId() == AuditType.WELCOME) {
 							// we should never add another welcome call audit
 							found = true;
 						} else {
@@ -212,8 +214,8 @@ public class AuditBuilderController {
 		}
 		if (auditAnswersNeeded.size() > 0) {
 			List<AuditData> requiredAnswers = new ArrayList<AuditData>();
-			for(AuditData answer : conAudit.getData())
-				if(auditAnswersNeeded.contains(answer.getQuestion().getId()))
+			for (AuditData answer : conAudit.getData())
+				if (auditAnswersNeeded.contains(answer.getQuestion().getId()))
 					requiredAnswers.add(answer);
 			AnswerMap answerMap = new AnswerMap(requiredAnswers);
 			for (Integer questionID : auditAnswersNeeded) {
@@ -256,10 +258,11 @@ public class AuditBuilderController {
 				AuditTypeRule auditTypeRule = (AuditTypeRule) rule;
 				if (auditTypeRule.getAuditType() != null
 						&& auditTypeRule.getAuditType().getId() == AuditType.WELCOME) {
-					if (DateBean.getDateDifference(contractor.getCreationDate()) < -90)
+					if (DateBean
+							.getDateDifference(contractor.getCreationDate()) < -90)
 						valid = false;
 				}
-				
+
 				if (auditTypeRule.getDependentAuditType() != null) {
 					valid = false;
 					for (ContractorAuditOperator cao : caoList) {
@@ -308,23 +311,26 @@ public class AuditBuilderController {
 		}
 
 		Set<AuditCategory> categoriesNeeded = detail.categories;
-		
+
 		for (AuditCategory category : conAudit.getAuditType().getCategories()) {
 
 			AuditCatData catData = getCatData(conAudit, category);
 			if (catData.isOverride()) {
 				// (show/hide) a category with more than one CAO.
 			} else {
-				boolean categoryApplies =  categoriesNeeded.contains(catData.getCategory());
-				if(categoryApplies) {
-					// Making sure the top level parent applies for subcategories when adding it to the AuditCatData
-					categoryApplies = categoriesNeeded.contains(catData.getCategory().getTopParent());
-				}	
+				boolean categoryApplies = categoriesNeeded.contains(catData
+						.getCategory());
+				if (categoryApplies) {
+					// Making sure the top level parent applies for
+					// subcategories when adding it to the AuditCatData
+					categoryApplies = categoriesNeeded.contains(catData
+							.getCategory().getTopParent());
+				}
 				catData.setApplies(categoryApplies);
 			}
 		}
 		// Save all auditCatData rows at once
-		//cAuditDAO.save(conAudit);
+		// cAuditDAO.save(conAudit);
 		PicsLogger.stop();
 	}
 
@@ -354,7 +360,7 @@ public class AuditBuilderController {
 			// the required AuditTypes and then divide them up into their
 			// AuditType specific rule sets
 			categoryRuleCache = new HashMap<AuditType, List<AuditCategoryRule>>();
-			List<AuditCategoryRule> list = auditDecisionTableDAO
+			List<AuditCategoryRule> list = auditRuleCache
 					.getApplicableCategoryRules(contractor,
 							getRequiredAuditTypeSet());
 			for (AuditType aType : getRequiredAuditTypeSet()) {
@@ -370,7 +376,7 @@ public class AuditBuilderController {
 		if (categoryRuleCache.get(auditType) == null) {
 			// Probably won't need this but if we're missing the specific
 			// auditType the go and query it now
-			categoryRuleCache.put(auditType, auditDecisionTableDAO
+			categoryRuleCache.put(auditType, auditRuleCache
 					.getApplicableCategoryRules(contractor, auditType));
 		}
 		return categoryRuleCache.get(auditType);
@@ -430,14 +436,15 @@ public class AuditBuilderController {
 
 		// Make sure that the caos' visibility is set correctly
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			boolean contains = contains(detail.governingBodies, cao.getOperator());
+			boolean contains = contains(detail.governingBodies, cao
+					.getOperator());
 			if (contains != cao.isVisible()) {
 				cao.setVisible(contains);
 				cao.setAuditColumns(user);
-				//contractorAuditOperatorDAO.save(cao);
+				// contractorAuditOperatorDAO.save(cao);
 			}
 		}
-		
+
 		// Add CAOs that don't yet exist
 		for (OperatorAccount operator : detail.governingBodies) {
 
@@ -456,7 +463,7 @@ public class AuditBuilderController {
 				cao.setStatus(cao.getAudit().getAuditType().getWorkFlow()
 						.getFirstStep().getNewStatus());
 				conAudit.getOperators().add(cao);
-				//contractorAuditOperatorDAO.save(cao);
+				// contractorAuditOperatorDAO.save(cao);
 			}
 		}
 
@@ -479,7 +486,7 @@ public class AuditBuilderController {
 			return;
 		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 
-		if (cao.getAudit().getAuditType().isDesktop() 
+		if (cao.getAudit().getAuditType().isDesktop()
 				&& cao.getAudit().hasCaoStatus(AuditStatus.Complete)) {
 			for (Facility facility : cao.getOperator().getOperatorFacilities()) {
 				operators.add(facility.getOperator());
@@ -490,10 +497,11 @@ public class AuditBuilderController {
 			if (auditTypeDetail != null) {
 				for (OperatorAccount operatorAccount : auditTypeDetail.operators) {
 					if (operatorAccount.getOperatorHeirarchy().contains(
-							cao.getOperator().getId())){
+							cao.getOperator().getId())) {
 						operators.add(operatorAccount);
 						operators.add(operatorAccount.getInheritFlagCriteria());
-						operators.add(operatorAccount.getInheritInsuranceCriteria());
+						operators.add(operatorAccount
+								.getInheritInsuranceCriteria());
 					}
 				}
 			}
@@ -519,7 +527,7 @@ public class AuditBuilderController {
 			caop.setOperator(operator);
 			cao.getCaoPermissions().add(caop);
 		}
-		//contractorAuditOperatorDAO.save(cao);
+		// contractorAuditOperatorDAO.save(cao);
 	}
 
 	private boolean findOperator(ContractorAudit conAudit,

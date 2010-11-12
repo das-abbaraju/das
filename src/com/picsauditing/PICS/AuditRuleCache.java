@@ -42,7 +42,13 @@ public class AuditRuleCache {
 		data = null;
 	}
 
-	public Set<AuditCategoryRule> getApplicable(ContractorAccount contractor, Set<AuditType> auditTypes) {
+	public List<AuditCategoryRule> getApplicableCategoryRules(ContractorAccount contractor, AuditType auditType) {
+		Set<AuditType> audit = new HashSet<AuditType>();
+		audit.add(auditType);
+		return getApplicableCategoryRules(contractor,audit);
+	}
+		
+	public List<AuditCategoryRule> getApplicableCategoryRules(ContractorAccount contractor, Set<AuditType> auditTypes) {
 		PicsLogger.start("AuditRuleCache", "Searching AuditRuleCache for contractor " + contractor.getId());
 		List<AuditCategoryRule> rules = new ArrayList<AuditCategoryRule>();
 		if (getData() == null)
@@ -105,10 +111,11 @@ public class AuditRuleCache {
 		}
 
 		Collections.sort(rules);
+		Collections.reverse(rules);
 
 		PicsLogger.log("found " + rules.size() + " rules for contractor " + contractor.getId());
 
-		return new LinkedHashSet<AuditCategoryRule>(rules);
+		return rules;
 	}
 
 	private class Risks {

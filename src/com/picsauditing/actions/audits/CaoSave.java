@@ -6,9 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
+import com.picsauditing.PICS.AuditRuleCache;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.OpPerms;
@@ -71,8 +70,8 @@ public class CaoSave extends AuditActionSupport {
 	public CaoSave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, CertificateDAO certificateDao, OshaAuditDAO oshaAuditDAO, ContractorAuditOperatorDAO caoDAO,
 			AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO,
-			ContractorAuditOperatorWorkflowDAO caoWDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao);
+			ContractorAuditOperatorWorkflowDAO caoWDAO, AuditRuleCache auditRuleCache) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditRuleCache);
 		this.caoDAO = caoDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 		this.auditPercentCalculator = auditPercentCalculator;

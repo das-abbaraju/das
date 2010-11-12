@@ -40,7 +40,7 @@ public class Trevor extends PicsActionSupport {
 		}
 		if (conID > 0) {
 			ContractorAccount contractor = accountDAO.find(conID);
-			applicable = cache.getApplicable(contractor, null);
+			//applicable = cache.getApplicable(contractor, null);
 		}
 		if ("showlist".equals(button)) {
 			String[] rulesList = rules.split(",");

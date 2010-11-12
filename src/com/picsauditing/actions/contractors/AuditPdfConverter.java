@@ -36,12 +36,12 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
 import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.PICS.AuditRuleCache;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -64,7 +64,8 @@ public class AuditPdfConverter extends ContractorActionSupport {
 	private Map<String, File> attachments = new TreeMap<String, File>();
 	private AuditDataDAO auditDataDAO;
 	protected AuditCategoryDataDAO catDataDao;
-	protected AuditDecisionTableDAO auditRulesDAO;
+	protected AuditRuleCache auditRuleCache;
+
 	private Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24,
 			Font.BOLD, new Color(0xa8, 0x4d, 0x10));
 	private Font auditFont = FontFactory.getFont(FontFactory.HELVETICA, 20,
@@ -82,11 +83,11 @@ public class AuditPdfConverter extends ContractorActionSupport {
 
 	public AuditPdfConverter(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, AuditDataDAO auditDataDAO,
-			AuditCategoryDataDAO catDataDao, AuditDecisionTableDAO auditRulesDAO) {
+			AuditCategoryDataDAO catDataDao, AuditRuleCache auditRuleCache) {
 		super(accountDao, auditDao);
 		this.auditDataDAO = auditDataDAO;
 		this.catDataDao = catDataDao;
-		this.auditRulesDAO = auditRulesDAO;
+		this.auditRuleCache = auditRuleCache;
 	}
 
 	@Override
@@ -120,54 +121,69 @@ public class AuditPdfConverter extends ContractorActionSupport {
 		return null;
 	}
 
-	private void createDocument(Document document, ContractorAccount contractor) throws Exception {
+	private void createDocument(Document document, ContractorAccount contractor)
+			throws Exception {
 		try {
 			Paragraph conName = new Paragraph(contractor.getName(), headerFont);
 			conName.setAlignment(Element.ALIGN_CENTER);
 			document.add(conName);
-			
+
 			AuditBuilder builder = new AuditBuilder();
 
 			Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 			Set<AuditCategory> requiredCategories = new HashSet<AuditCategory>();
-			if(permissions.isCorporate()) {
-				for (Facility facility : getOperatorAccount().getOperatorFacilities()) {
+			if (permissions.isCorporate()) {
+				for (Facility facility : getOperatorAccount()
+						.getOperatorFacilities()) {
 					operators.add(facility.getOperator());
 				}
-			}
-			else if(permissions.isOperator())
+			} else if (permissions.isOperator())
 				operators.add(getOperatorAccount());
-			
+
 			for (ContractorAudit conAudit : contractor.getAudits()) {
 				if (!conAudit.isExpired()
-						&& (conAudit.getAuditType().isPqf() || conAudit.getAuditType().isAnnualAddendum())) {
-					Map<AuditCategory,AuditCatData> aList = new HashMap<AuditCategory,AuditCatData>();
-					String auditName = conAudit.getAuditType().getAuditName() + " - ";
+						&& (conAudit.getAuditType().isPqf() || conAudit
+								.getAuditType().isAnnualAddendum())) {
+					Map<AuditCategory, AuditCatData> aList = new HashMap<AuditCategory, AuditCatData>();
+					String auditName = conAudit.getAuditType().getAuditName()
+							+ " - ";
 					if (conAudit.getAuditType().isPqf())
-						auditName += DateBean.format(conAudit.getEffectiveDate(), "MMM yyyy");
+						auditName += DateBean.format(conAudit
+								.getEffectiveDate(), "MMM yyyy");
 					else if (!Strings.isEmpty(conAudit.getAuditFor()))
 						auditName += conAudit.getAuditFor();
 					Paragraph name = new Paragraph(auditName, auditFont);
 					name.setAlignment(Element.ALIGN_CENTER);
 					document.add(name);
-					AnswerMap answerMap = auditDataDAO.findAnswers(conAudit.getId());
-					
-					if(permissions.isOperatorCorporate()) {
-						List<AuditCategoryRule> rules = auditRulesDAO.getApplicableCategoryRules(contractor, conAudit.getAuditType());
-						AuditCategoriesDetail auditCategoryDetail = builder.getDetail(
-								conAudit.getAuditType(), rules, operators);
+					AnswerMap answerMap = auditDataDAO.findAnswers(conAudit
+							.getId());
+
+					if (permissions.isOperatorCorporate()) {
+						List<AuditCategoryRule> rules = auditRuleCache
+								.getApplicableCategoryRules(contractor,
+										conAudit.getAuditType());
+						AuditCategoriesDetail auditCategoryDetail = builder
+								.getDetail(conAudit.getAuditType(), rules,
+										operators);
 						requiredCategories = auditCategoryDetail.categories;
 					}
-					aList = conAudit.getApplicableCategories(permissions, requiredCategories);
+					aList = conAudit.getApplicableCategories(permissions,
+							requiredCategories);
 					for (AuditCatData auditCatData : aList.values()) {
-						if (auditCatData.isApplies() && auditCatData.getNumAnswered() > 0) {
-							Paragraph categoryParagraph = new Paragraph("Category "
-									+ auditCatData.getCategory().getNumber() + " - "
-									+ auditCatData.getCategory().getName(), categoryFont);
+						if (auditCatData.isApplies()
+								&& auditCatData.getNumAnswered() > 0) {
+							Paragraph categoryParagraph = new Paragraph(
+									"Category "
+											+ auditCatData.getCategory()
+													.getNumber()
+											+ " - "
+											+ auditCatData.getCategory()
+													.getName(), categoryFont);
 							categoryParagraph.setIndentationLeft(10);
 							document.add(categoryParagraph);
 
-							if (auditCatData.getCategory().getId() == 151 || auditCatData.getCategory().getId() == 157
+							if (auditCatData.getCategory().getId() == 151
+									|| auditCatData.getCategory().getId() == 157
 									|| auditCatData.getCategory().getId() == 158)
 								addOshaLog(document, conAudit);
 							else {

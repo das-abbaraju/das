@@ -55,7 +55,7 @@ public class AuditBuilderTest {
 				List<AuditCategoryRule> rules = auditDecisionTableDAO.getApplicableCategoryRules(contractor, auditType);
 
 				long time = System.currentTimeMillis();
-				Set<AuditCategoryRule> cache = auditRuleCache.getApplicable(contractor, new HashSet<AuditType>() {
+				List<AuditCategoryRule> cache = auditRuleCache.getApplicableCategoryRules(contractor, new HashSet<AuditType>() {
 					{
 						add(auditType);
 					}

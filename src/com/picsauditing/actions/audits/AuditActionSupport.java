@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.PICS.AuditRuleCache;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
@@ -18,7 +19,6 @@ import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -38,7 +38,6 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.WorkflowStep;
-import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class AuditActionSupport extends ContractorActionSupport {
@@ -52,6 +51,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected AuditCategoryDataDAO catDataDao;
 	protected AuditDataDAO auditDataDao;
 	protected CertificateDAO certificateDao;
+	protected AuditRuleCache auditRuleCache;
 	
 	private Map<Integer, AuditData> hasManual;
 	private List<AuditCategoryRule> rules = null;
@@ -63,11 +63,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private List<CategoryNode> categoryNodes;
 
 	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao) {
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao, AuditRuleCache auditRuleCache) {
 		super(accountDao, auditDao);
 		this.catDataDao = catDataDao;
 		this.auditDataDao = auditDataDao;
 		this.certificateDao = certificateDao;
+		this.auditRuleCache = auditRuleCache;
 	}
 
 	public String execute() throws Exception {
@@ -177,9 +178,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	protected List<AuditCategoryRule> getRules() {
 		if (rules == null) {
-			AuditDecisionTableDAO auditRulesDAO = (AuditDecisionTableDAO) SpringUtils
-					.getBean("AuditDecisionTableDAO");
-			rules = auditRulesDAO.getApplicableCategoryRules(conAudit
+			rules = auditRuleCache.getApplicableCategoryRules(conAudit
 					.getContractorAccount(), conAudit.getAuditType());
 		}
 		return rules;

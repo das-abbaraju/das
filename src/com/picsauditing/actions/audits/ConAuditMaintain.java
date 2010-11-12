@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.AuditRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -38,8 +39,9 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 			ContractorAuditDAO auditDao, CertificateDAO certificateDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
 			ContractorAuditOperatorDAO caoDAO,
-			ContractorAuditOperatorWorkflowDAO caowDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao);
+			ContractorAuditOperatorWorkflowDAO caowDAO,
+			AuditRuleCache auditRuleCache) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditRuleCache);
 		this.caoDAO = caoDAO;
 		this.caowDAO = caowDAO;
 	}
@@ -77,7 +79,6 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 			}
 			return SUCCESS;
 		}
-		long mem0 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		if ("Save".equals(button)) {
 			auditDao.clear();
 			if (conAudit.getAuditor().getId() == 0)
