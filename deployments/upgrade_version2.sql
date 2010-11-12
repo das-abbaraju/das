@@ -736,3 +736,6 @@ set score = 0
 where at.scoreable != 1;
 
 alter table contractor_audit change `score` `score` tinyint(3) default '0' NULL;
+
+/* Need to set insuranceAuditors to null where they are 0 */
+update operators set insuranceAuditor_id = null where insuranceAuditor_id = 0;
