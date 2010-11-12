@@ -12,6 +12,8 @@ import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
+import com.picsauditing.util.Strings;
+
 @SuppressWarnings("serial")
 @Entity
 @MappedSuperclass
@@ -66,7 +68,7 @@ public abstract class BaseHistory extends BaseTable {
 		Date now = new Date();
 		return isCurrent(now);
 	}
-
+	
 	@Transient
 	public boolean isCurrent(Date now) {
 		if (effectiveDate != null && effectiveDate.after(now))

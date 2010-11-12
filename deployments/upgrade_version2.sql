@@ -439,12 +439,15 @@ update contractor_audit_operator set statusChangedDate = updateDate where status
 
 
 -- Expiring the CAOs based on audits
+update contractor_audit
+set expiresDate = Now()
+where auditstatus = 'Expired' and expiresDate > Now();
+
 update contractor_Audit_operator cao
 join contractor_audit ca on cao.auditID= ca.id
 set cao.status = 'Expired'
 where ca.expiresDate < Now()
 and cao.status != 'Expired';
-
 
 /*
  * Adding the workflow notes

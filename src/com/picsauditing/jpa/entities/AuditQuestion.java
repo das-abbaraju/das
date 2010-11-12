@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -503,5 +504,15 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	public void setScoreWeight(int scoreWeight) {
 		this.scoreWeight = scoreWeight;
+	}
+	
+	@Transient
+	public boolean isValidQuestion(Date validDate) {
+		if(isCurrent()) {
+			if (validDate.after(effectiveDate)
+					&& validDate.before(expirationDate))
+				return true;
+		}
+		return false;
 	}
 }

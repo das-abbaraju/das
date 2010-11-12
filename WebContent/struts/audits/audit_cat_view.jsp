@@ -30,38 +30,40 @@
 			</s:if> 
 			<s:set name="shaded" value="true" scope="action"/>
 			<s:iterator value="#category.questions" id="q">
-				<s:if test="title != null && title.length() > 0">
-					<h4 class="groupTitle">
-						<s:property value="title" escape="false"/>
-					</h4>
-				</s:if>
-				<s:if test="mode == 'ViewQ'">
-					<div class="question<s:if test="shaded"> shaded</s:if>">
-						<s:include value="audit_cat_questions.jsp"></s:include>
-					</div>
-				</s:if>
-				<!-- Single Leaf Question -->
-				<s:set name="a" value="answerMap.get(#q.id)" />
-				<s:set name="visibleAnswer" value="answerMap.get(#q.visibleQuestion.id)" />
-				<s:set name="hidden" value="#q.visibleQuestion != null && #q.visibleAnswer != #visibleAnswer.answer" />
-				<s:set name="visible" value="#q.current"/>
-				<s:if test="onlyReq && !#a.hasRequirements">
-					<s:set name="visible" value="false" />
-				</s:if>
-				<s:else>
-					<s:set name="showCat" value="true" />				
-				</s:else>
-				<s:if test="!viewBlanks && (#a == null || #a.answer == null || #a.answer.length() == 0)">
-					<s:set name="visible" value="false" />
-				</s:if>
-				<s:if test="#visible">
-					<s:if test="!#q.groupedWithPrevious">
-						<s:set name="shaded" value="!#shaded" scope="action"/>
-					</s:if> 
-					
-					<div id="node_<s:property value="#q.id"/>" class="clearfix question<s:if test="#shaded"> shaded</s:if><s:if test="#hidden"> hide</s:if><s:if test="#q.dependentRequired.size() > 0"> hasDependentRequired</s:if><s:if test="#q.dependentVisible.size() > 0"> hasDependentVisible</s:if><s:if test="#q.auditCategoryRules.size() > 0"> hasDependentRules</s:if>">
-						<s:include value="audit_cat_question.jsp"></s:include>
-					</div>
+				<s:if test="#q.isValidQuestion(conAudit.validDate)">
+					<s:if test="title != null && title.length() > 0">
+						<h4 class="groupTitle">
+							<s:property value="title" escape="false"/>
+						</h4>
+					</s:if>
+					<s:if test="mode == 'ViewQ'">
+						<div class="question<s:if test="shaded"> shaded</s:if>">
+							<s:include value="audit_cat_questions.jsp"></s:include>
+						</div>
+					</s:if>
+					<!-- Single Leaf Question -->
+					<s:set name="a" value="answerMap.get(#q.id)" />
+					<s:set name="visibleAnswer" value="answerMap.get(#q.visibleQuestion.id)" />
+					<s:set name="hidden" value="#q.visibleQuestion != null && #q.visibleAnswer != #visibleAnswer.answer" />
+					<s:set name="visible" value="#q.current"/>
+					<s:if test="onlyReq && !#a.hasRequirements">
+						<s:set name="visible" value="false" />
+					</s:if>
+					<s:else>
+						<s:set name="showCat" value="true" />				
+					</s:else>
+					<s:if test="!viewBlanks && (#a == null || #a.answer == null || #a.answer.length() == 0)">
+						<s:set name="visible" value="false" />
+					</s:if>
+					<s:if test="#visible">
+						<s:if test="!#q.groupedWithPrevious">
+							<s:set name="shaded" value="!#shaded" scope="action"/>
+						</s:if> 
+						
+						<div id="node_<s:property value="#q.id"/>" class="clearfix question<s:if test="#shaded"> shaded</s:if><s:if test="#hidden"> hide</s:if><s:if test="#q.dependentRequired.size() > 0"> hasDependentRequired</s:if><s:if test="#q.dependentVisible.size() > 0"> hasDependentVisible</s:if><s:if test="#q.auditCategoryRules.size() > 0"> hasDependentRules</s:if>">
+							<s:include value="audit_cat_question.jsp"></s:include>
+						</div>
+					</s:if>
 				</s:if>
 			</s:iterator>
 			<s:iterator value="#category.subCategories" id="category">

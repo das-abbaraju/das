@@ -52,9 +52,11 @@ public class ContractorAuditController extends AuditActionSupport {
 	// Policy verification (next/first buttons)
 	private boolean policy;
 
-	public ContractorAuditController(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
-			AuditCategoryDAO auditCategoryDAO, AuditPercentCalculator auditPercentCalculator,
+	public ContractorAuditController(ContractorAccountDAO accountDao,
+			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
+			AuditDataDAO auditDataDao, CertificateDAO certificateDao,
+			AuditCategoryDAO auditCategoryDAO,
+			AuditPercentCalculator auditPercentCalculator,
 			OshaAuditDAO oshaAuditDAO, AuditBuilderController auditBuilder, AuditCategoryRuleCache auditCategoryRuleCache) {
 		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
 		this.auditCategoryDAO = auditCategoryDAO;
@@ -67,72 +69,54 @@ public class ContractorAuditController extends AuditActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
-		if(auditID > 0)
+		if (auditID > 0)
 			this.findConAudit();
-		
+
 		if (button != null) {
-			if (categoryID > 0 && permissions.isPicsEmployee()) {
-				if ("IncludeCategory".equals(button)) {
-					for (AuditCatData data : conAudit.getCategories()) {
-						if (data.getCategory().getId() == categoryID) {
-							data.setApplies(true);
-							data.setOverride(true);
+			if ("Recalculate".equals(button)) {
+				auditPercentCalculator.percentCalculateComplete(conAudit, true);
+				return SUCCESS;
+			}
+
+			// Preview the Category from the manage audit type page
+			if ("PreviewCategory".equals(button)) {
+				if (auditID == 0 && categoryID > 0) {
+					AuditCategory auditCategory = auditCategoryDAO
+							.find(categoryID);
+					for (AuditCategory auditSubCategory : auditCategory
+							.getChildren()) {
+						for (AuditQuestion auditQuestion : auditSubCategory
+								.getQuestions()) {
 						}
 					}
-				}
-				
-				if ("UnincludeCategory".equals(button)) {
-					for (AuditCatData data : conAudit.getCategories()) {
-						if (data.getCategory().getId() == categoryID) {
-							data.setApplies(false);
-							data.setOverride(true);
-						}
-					}
-				}
-				
-				if ("Recalculate".equals(button)) {
-					auditPercentCalculator.percentCalculateComplete(conAudit, true);
+					categories = new HashMap<AuditCategory, AuditCatData>();
+					categoryData = new AuditCatData();
+					categoryData.setCategory(auditCategory);
+					categoryData.setApplies(true);
+					categories.put(auditCategory, categoryData);
+					mode = EDIT;
 					return SUCCESS;
-				}
-				
-				// Preview the Category from the manage audit type page
-				if ("PreviewCategory".equals(button)) {
-					if (auditID == 0 && categoryID > 0) {
-						AuditCategory auditCategory = auditCategoryDAO
-								.find(categoryID);
-						for (AuditCategory auditSubCategory : auditCategory.getChildren()) {
-							for (AuditQuestion auditQuestion : auditSubCategory
-									.getQuestions()) {
-							}
-						}
-						categories = new HashMap<AuditCategory, AuditCatData>();
-						categoryData = new AuditCatData();
-						categoryData.setCategory(auditCategory);
-						categoryData.setApplies(true);
-						categories.put(auditCategory, categoryData);
-						mode = EDIT;
-						return SUCCESS;
-					}
 				}
 			}
 
 			if (categoryID > 0) {
 				AuditCategory auditCategory = auditCategoryDAO.find(categoryID);
 				Set<Integer> questionIDs = new HashSet<Integer>();
-				categoryData = getCategories().get(auditCategory) ; 
-				for(AuditCategory childCategory : categoryData.getCategory().getChildren()) {
+				categoryData = getCategories().get(auditCategory);
+				for (AuditCategory childCategory : categoryData.getCategory()
+						.getChildren()) {
 					for (AuditQuestion question : childCategory.getQuestions()) {
 						questionIDs.add(question.getId());
 					}
 				}
 				// Get a map of all answers in this audit
 				List<AuditData> requiredAnswers = new ArrayList<AuditData>();
-				for(AuditData answer : conAudit.getData())
-					if(questionIDs.contains(answer.getQuestion().getId()))
+				for (AuditData answer : conAudit.getData())
+					if (questionIDs.contains(answer.getQuestion().getId()))
 						requiredAnswers.add(answer);
 				answerMap = new AnswerMap(requiredAnswers);
 				if (mode == null && isCanEditAudit())
-						mode = EDIT;
+					mode = EDIT;
 			} else {
 				// When we want to show all categories
 				answerMap = auditDataDao.findAnswers(auditID);
@@ -178,10 +162,10 @@ public class ContractorAuditController extends AuditActionSupport {
 
 			return SUCCESS;
 		}
-		
-		if(conAudit!=null)
+
+		if (conAudit != null)
 			getValidSteps();
-		
+
 		return SUCCESS;
 	}
 
@@ -252,11 +236,11 @@ public class ContractorAuditController extends AuditActionSupport {
 	public AuditCatData getCategoryData() {
 		return categoryData;
 	}
-	
+
 	public boolean isViewBlanks() {
 		return viewBlanks;
 	}
-	
+
 	public void setViewBlanks(boolean viewBlanks) {
 		this.viewBlanks = viewBlanks;
 	}
@@ -294,11 +278,11 @@ public class ContractorAuditController extends AuditActionSupport {
 	public void setCaoID(int caoID) {
 		this.caoID = caoID;
 	}
-	
+
 	public boolean isPolicy() {
 		return policy;
 	}
-	
+
 	public void setPolicy(boolean policy) {
 		this.policy = policy;
 	}

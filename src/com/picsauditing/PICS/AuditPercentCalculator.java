@@ -62,9 +62,7 @@ public class AuditPercentCalculator {
 		// Get a list of questions/answers for this category
 		Date validDate = catData.getAudit().getValidDate();
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
-			if (question.isCurrent()
-					&& validDate.after(question.getEffectiveDate())
-					&& validDate.before(question.getExpirationDate())) {
+			if (question.isValidQuestion(validDate)) {
 				boolean isRequired = question.isRequired();
 
 				AuditData answer = answers.get(question.getId());
