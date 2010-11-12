@@ -71,7 +71,6 @@ function loadResults(data, noteText){
 		        $.unblockUI();
 		        return false;
 		    });
-		    alert($('#nR').val());
 			if($('#nR').val()=='true')
 	        	$.blockUI({ message:$('#caoAjax')});
 			else  
