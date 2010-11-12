@@ -1257,13 +1257,19 @@
 			<result>struts/blank.jsp</result>
 		</action>
 		
-		<action name="RecalculateRules" class="com.picsauditing.actions.auditType.RecalculateRules">
+		<action name="RecalculateRules" 
+			class="com.picsauditing.actions.auditType.RecalculateRules">
 			<result>struts/audits/rules/recalculate_rules.jsp</result>
 		</action>
 		
 		<action name="AuditRuleTableAjax"
 			class="com.picsauditing.PICS.AuditRuleTableBuilder">
 			<result>struts/audits/rules/audit_rule_table.jsp</result>
+		</action>
+		
+		<action name="ReportRuleHistory"
+			class="com.picsauditing.actions.report.ReportRuleHistory">
+			<result>struts/reports/audit_rule_history.jsp</result>
 		</action>
 		
 		<!-- Users -->
