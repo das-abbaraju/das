@@ -42,18 +42,32 @@
 	<td><s:property value="updatedBy.name"/></td>
 	<td><s:property value="updateDate"/></td>
 	<s:if test="#showAction">
+		<s:if test="class.toString() == 'class com.picsauditing.jpa.entities.AuditTypeRule'">
+			<s:set var="rRuleType" value="'ManageAuditTypeRules'" scope="action" />		
+		</s:if>
+		<s:else>
+			<s:set var="rRuleType" value="'ManageCategoryRules'" scope="action"  />
+		</s:else>
 		<td>
-			<s:if test="'Similar Rules' == key">
-				<a href="?button=merge">Merge</a>
+			<s:if test="permissions.hasPermission(#rRuleType, 'Delete')">
+				<s:if test="'Similar Rules' == key">
+					<a href="?button=merge">Merge</a>
+				</s:if>
 			</s:if>
 			<s:if test="'More Granular' == key || 'Current Rule' == key">
-				<a class="remove" href="?id=<s:property value="id"/>&button=delete">Delete</a>
+				<s:if test="permissions.hasPermission(#rRuleType, 'Delete')">
+					<a class="remove" href="?id=<s:property value="id"/>&button=delete">Delete</a>
+				</s:if>
 			</s:if>
 			<s:if test="'Current Rule' == key">
-				<br /><a class="remove" href="?id=<s:property value="id"/>&button=deleteChildren">Delete All</a>
-				<br /><a class="edit" href="?id=<s:property value="id"/>&button=edit">Edit</a>
-				<br /><a class="add" href="?id=<s:property value="id"/>&button=copy">Copy</a>
-			</s:if>
+				<s:if test="permissions.hasPermission(#rRuleType, 'Delete')">
+					<br /><a class="remove" href="?id=<s:property value="id"/>&button=deleteChildren">Delete All</a>
+					<br /><a class="add" href="?id=<s:property value="id"/>&button=copy">Copy</a>
+				</s:if>
+				<s:if test="permissions.hasPermission(#rRuleType, 'Edit') || permissions.userID == createdBy.id">
+					<br /><a class="edit" href="?id=<s:property value="id"/>&button=edit">Edit</a>
+				</s:if>
+			</s:if>	
 		</td>
 	</s:if>
 </tr>

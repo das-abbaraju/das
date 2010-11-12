@@ -158,10 +158,22 @@ $(function() {
 					<li><label>Risk</label>
 						<s:select name="rule.risk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/>
 					</li>
-					<li><label>Operator</label>
+					<s:if test="categoryRule">
+						<s:set var="ruleClassType" value="'ManageCategoryRules'" />
+					</s:if>
+					<s:else>
+						<s:set var="ruleClassType" value="'ManageAuditTypeRules'" />						
+					</s:else>
+					<li <s:if test="!permissions.hasPermission(#ruleClassType,'Grant')">class="required"</s:if>><label>Operator</label>
 						<input type="text" class="searchAuto" id="operator" value="<s:property value="rule.operatorAccount.name"/>"/>
 						<s:hidden name="rule.operatorAccount.id" id="op_hidden"/>
 						<a href="#" class="clearfield">Clear Field</a>
+						<s:if test="!permissions.hasPermission(#ruleClassType,'Grant')"> 
+							<div class="fieldhelp">
+							<h3>Operator</h3>
+							<p>You must specify the Operator that this rule will apply to</p>
+							</div>
+						</s:if>
 					</li>
 					<li id="opTagli" <s:if test="rule.operatorAccount==null">style="display: none;"</s:if>><label>Tag</label>
 						<s:select list="opTagList" name="tagID" listKey="id" listValue="tag" id="tag" headerKey="0" headerValue="- Any -"

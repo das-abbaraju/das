@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
@@ -87,6 +89,16 @@ public class CategoryRuleEditor extends PicsActionSupport {
 				return SUCCESS;
 			}
 			if ("Save".equals(button)) {
+				if(isOperatorRequired()){
+					if(rule.getOperatorAccount()==null){
+						addActionError("You must specify an operator for this rule");
+						button = "edit";
+						id= rule.getId();
+						if(id>0)
+							rule = dao.findAuditCategoryRule(rule.getId());
+						return SUCCESS;
+					}
+				}
 				if (rule.getId() == 0) {
 					setFieldsOnSave();
 					rule.defaultDates();
@@ -170,6 +182,12 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		return opTagList;
 	}
 	
+	private boolean isOperatorRequired() {
+		if(permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Grant))
+			return false;
+		return true;
+	}
+	
 	private void setFieldsOnSave() {
 		if (bidOnly >= 0) {
 			if (bidOnly == 1)
@@ -233,7 +251,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			columns.put("tag", m);
 		} else
 			columns.put("tag", null);
-		// bid-onl7
+		// bid-only
 		columns.put("bid", null);
 		// question
 		columns.put("question", null);

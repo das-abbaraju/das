@@ -1,5 +1,6 @@
 package com.picsauditing.actions.auditType;
 
+import java.net.URI;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +13,9 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
@@ -44,7 +48,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	protected AuditTypeDAO typeDAO;
 	protected AuditDecisionTableDAO dao;
 	protected OperatorAccountDAO opDAO;
-	protected OperatorTagDAO tagDAO; //testcomment for commit
+	protected OperatorTagDAO tagDAO;
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
@@ -88,6 +92,16 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 				return SUCCESS;
 			}
 			if ("Save".equals(button)) {
+				if(isOperatorRequired()){
+					if(rule.getOperatorAccount()==null){
+						addActionError("You must specify an operator for this rule");
+						button = "edit";
+						id= rule.getId();
+						if(id>0)
+							rule = dao.findAuditTypeRule(rule.getId());
+						return SUCCESS;
+					}
+				}
 				if (rule.getId() == 0) {
 					setFieldsOnSave();
 					rule.defaultDates();
@@ -163,7 +177,13 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		// similar = dao.getSimilar(rule, new Date());
 		return SUCCESS;
 	}
-
+	
+	private boolean isOperatorRequired() {
+		if(permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Grant))
+			return false;
+		return true;
+	}
+	
 	private void setFieldsOnSave() {
 		if (bidOnly >= 0) {
 			if (bidOnly == 1)
@@ -219,7 +239,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 			columns.put("tag", m);
 		} else
 			columns.put("tag", null);
-		// bid-onl7
+		// bid-only
 		columns.put("bid", null);
 		// dep audit type
 		columns.put("dependentType", null);
@@ -287,7 +307,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		}
 		return opTagList;
 	}
-
+	
 	public int getId() {
 		return id;
 	}
