@@ -100,7 +100,7 @@ public class AuditBuilderTest {
 			List<AuditTypeRule> rules = auditDecisionTableDAO.getApplicableAuditRules(contractor);
 
 			long time = System.currentTimeMillis();
-			List<AuditTypeRule> cache = auditTypeRuleCache.getApplicableCategoryRules(contractor);
+			List<AuditTypeRule> cache = auditTypeRuleCache.getApplicableAuditRules(contractor);
 			System.out.printf("Execution for contractor %d took %dms\n", con, System
 					.currentTimeMillis()
 					- time);

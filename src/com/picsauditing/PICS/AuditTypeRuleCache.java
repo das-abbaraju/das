@@ -27,7 +27,7 @@ public class AuditTypeRuleCache {
 		this.auditRuleDAO = auditRuleDAO;
 	}
 
-	public List<AuditTypeRule> getApplicableCategoryRules(ContractorAccount contractor) {
+	public List<AuditTypeRule> getApplicableAuditRules(ContractorAccount contractor) {
 		PicsLogger.start("AuditTypeRuleCache", "Searching AuditTypeRuleCache for contractor " + contractor.getId());
 		List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
 		if (getData() == null)
