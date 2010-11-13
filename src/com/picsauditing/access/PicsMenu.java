@@ -346,9 +346,6 @@ public class PicsMenu {
 			subMenu.addChild("Employee Turnover", "ReportEmployeeTurnover.action");
 		}
 		
-		if ((permissions.isOperatorCorporate() && permissions.isRequiresOQ()) || permissions.isAdmin())
-			subMenu.addChild("Assessment Tests", "ReportAssessmentTests.action");
-		
 		if (permissions.isRequiresOQ()) {
 			subMenu = menu.addChild("Operator Qualification");
 			
@@ -360,6 +357,9 @@ public class PicsMenu {
 			subMenu.addChild("OQ by Contractor/Site", "ReportOQ.action");
 			subMenu.addChild("OQ by Employee", "ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
 		}
+		
+		if ((permissions.isOperatorCorporate() && permissions.isRequiresOQ()) || permissions.isAdmin())
+			subMenu.addChild("Assessment Tests", "ReportAssessmentTests.action");
 		
 		if (permissions.isOperatorCorporate()) {
 			addSupportLink(menu);
