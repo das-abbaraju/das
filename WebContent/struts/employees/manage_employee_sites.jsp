@@ -105,37 +105,39 @@
 							</s:else>
 						</td>
 					</tr>
-					<tr>
-						<td colspan="<s:property value="#colspan" />">
-							<a class="add" href="#" onclick="$('#newJobSite').show(); $(this).hide(); return false;" id="newJobSiteLink">Add New Job Site</a>
-							<div style="display: none;" id="newJobSite">
-								<s:form id="newJobSiteForm">
-									<fieldset class="form">
-										<h2 class="formLegend">Add New Job Site</h2>
-										<ol>
-											<s:if test="permissions.admin && employee.account.contractor">
-												<li><label>Operator:</label>
-													<s:select list="employee.account.operators" listKey="id" listValue="name" name="opID" id="opID" />
+					<pics:permission perm="ManageProjects" type="Edit">
+						<tr>
+							<td colspan="<s:property value="#colspan" />">
+								<a class="add" href="#" onclick="$('#newJobSite').show(); $(this).hide(); return false;" id="newJobSiteLink">Add New Job Site</a>
+								<div style="display: none;" id="newJobSite">
+									<s:form id="newJobSiteForm">
+										<fieldset class="form">
+											<h2 class="formLegend">Add New Job Site</h2>
+											<ol>
+												<s:if test="permissions.admin && employee.account.contractor">
+													<li><label>Operator:</label>
+														<s:select list="employee.account.operators" listKey="id" listValue="name" name="opID" id="opID" />
+													</li>
+												</s:if>
+												<li><label>Site Label<span class="redMain">*</span>:</label>
+													<s:textfield name="siteLabel" maxlength="15" />
 												</li>
-											</s:if>
-											<li><label>Site Label<span class="redMain">*</span>:</label>
-												<s:textfield name="siteLabel" maxlength="15" />
-											</li>
-											<li><label>Site Name<span class="redMain">*</span>:</label>
-												<s:textfield name="siteName" maxlength="255" />
-											</li>
-											<li><label>Start Date:</label> <input type="text" name="siteStart" cssClass="datepicker" value="<s:date name="siteStart" format="MM/dd/yyyy" />" /></li>
-											<li><label>Stop Date:</label> <input type="text" name="siteStop" cssClass="datepicker" value="<s:date name="siteStop" format="MM/dd/yyyy" />" /></li>
-										</ol>
-									</fieldset>
-									<fieldset class="submit">
-										<a href="#" onclick="newJobSite(); return false;" class="picsbutton positive">Save</a>
-										<a href="#" onclick="$('#newJobSite').hide(); $('#newJobSiteLink').show(); return false;" class="picsbutton negative">Cancel</a>
-									</fieldset>
-								</s:form>
-							</div>
-						</td>
-					</tr>
+												<li><label>Site Name<span class="redMain">*</span>:</label>
+													<s:textfield name="siteName" maxlength="255" />
+												</li>
+												<li><label>Start Date:</label> <input type="text" name="siteStart" cssClass="datepicker" value="<s:date name="siteStart" format="MM/dd/yyyy" />" /></li>
+												<li><label>Stop Date:</label> <input type="text" name="siteStop" cssClass="datepicker" value="<s:date name="siteStop" format="MM/dd/yyyy" />" /></li>
+											</ol>
+										</fieldset>
+										<fieldset class="submit">
+											<a href="#" onclick="newJobSite(); return false;" class="picsbutton positive">Save</a>
+											<a href="#" onclick="$('#newJobSite').hide(); $('#newJobSiteLink').show(); return false;" class="picsbutton negative">Cancel</a>
+										</fieldset>
+									</s:form>
+								</div>
+							</td>
+						</tr>
+					</pics:permission>
 				</table>
 			</td>
 			<td style="padding-left: 10px;">

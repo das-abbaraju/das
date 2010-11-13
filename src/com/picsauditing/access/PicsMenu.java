@@ -221,10 +221,6 @@ public class PicsMenu {
 				subMenu.addChild("HSE Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
 			if (permissions.hasPermission(OpPerms.ManageEmployees))
 				subMenu.addChild("Employees", "ManageEmployees.action?id=" + permissions.getAccountId());
-			if (permissions.hasPermission(OpPerms.ManageProjects))
-				subMenu.addChild("Projects", "ManageProjects.action?id=" + permissions.getAccountId());
-			if (permissions.hasPermission(OpPerms.ManageJobTasks))
-				subMenu.addChild("Job Tasks", "ManageJobTasksOperator.action?id=" + permissions.getAccountId());
 		}
 
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
@@ -349,15 +345,22 @@ public class PicsMenu {
 			subMenu.addChild("Competency by Employee", "ReportCompetencyByEmployee.action");
 			subMenu.addChild("Employee Turnover", "ReportEmployeeTurnover.action");
 		}
-
+		
+		if ((permissions.isOperatorCorporate() && permissions.isRequiresOQ()) || permissions.isAdmin())
+			subMenu.addChild("Assessment Tests", "ReportAssessmentTests.action");
+		
 		if (permissions.isRequiresOQ()) {
+			subMenu = menu.addChild("Operator Qualification");
+			
+			if (permissions.hasPermission(OpPerms.ManageProjects))
+				subMenu.addChild("Projects", "ManageProjects.action?id=" + permissions.getAccountId());
+			if (permissions.hasPermission(OpPerms.ManageJobTasks))
+				subMenu.addChild("Job Tasks", "ManageJobTasksOperator.action?id=" + permissions.getAccountId());
+			
 			subMenu.addChild("OQ by Contractor/Site", "ReportOQ.action");
 			subMenu.addChild("OQ by Employee", "ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
 		}
 		
-		if ((permissions.isOperatorCorporate() && permissions.isRequiresOQ()) || permissions.isAdmin())
-			subMenu.addChild("Assessment Tests", "ReportAssessmentTests.action");
-
 		if (permissions.isOperatorCorporate()) {
 			addSupportLink(menu);
 		}
