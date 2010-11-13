@@ -28,11 +28,9 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.dao.UserAssignmentMatrixDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -74,7 +72,6 @@ public class ContractorCron extends PicsActionSupport {
 	private ContractorOperatorDAO contractorOperatorDAO;
 	private AuditDataDAO auditDataDAO;
 	private EmailSubscriptionDAO subscriptionDAO;
-	private FlagDataOverrideDAO flagDataOverrideDAO;
 
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilderController auditBuilder;
@@ -99,7 +96,6 @@ public class ContractorCron extends PicsActionSupport {
 			ContractorFlagETL contractorFlagETL,
 			ContractorOperatorDAO contractorOperatorDAO,
 			AppPropertyDAO appPropertyDAO,
-			FlagDataOverrideDAO flagDataOverrideDAO,
 			UserAssignmentMatrixDAO userAssignmentMatrixDAO) {
 		this.dao = contractorDAO;
 		this.contractorDAO = contractorDAO;
@@ -110,7 +106,6 @@ public class ContractorCron extends PicsActionSupport {
 		this.contractorFlagETL = contractorFlagETL;
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.appPropertyDAO = appPropertyDAO;
-		this.flagDataOverrideDAO = flagDataOverrideDAO;
 		this.userAssignmentMatrixDAO = userAssignmentMatrixDAO;
 	}
 
@@ -554,7 +549,6 @@ public class ContractorCron extends PicsActionSupport {
 												.getFlagDatas());
 
 								cao.setFlag(flagColor);
-								//dao.save(cao);
 							}
 						}
 					}
@@ -672,13 +666,10 @@ public class ContractorCron extends PicsActionSupport {
 		}
 
 		// delete orphans++++-
-
-		 for (ContractorOperator removal : removalSet) {
-			 contractorOperatorDAO.remove(removal);
-			 contractor.getOperators().remove(removal);
-		 }
-
-		//contractorDAO.save(contractor);
+		for (ContractorOperator removal : removalSet) {
+			contractorOperatorDAO.remove(removal);
+			contractor.getOperators().remove(removal);
+		}
 	}
 
 	private void runCSRAssignment(ContractorAccount contractor) {
