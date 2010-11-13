@@ -41,11 +41,13 @@ public class AuditBuilderTest {
 	@Autowired
 	AuditCategoryRuleCache auditCategoryRuleCache;
 	@Autowired
+	AuditTypeRuleCache auditTypeRuleCache;
+	@Autowired
 	AuditTypeDAO auditTypeDAO;
 
 	@SuppressWarnings("serial")
 	@Test
-	public void testRules() throws Exception {
+	public void testCategoryRules() throws Exception {
 		int[] cons = { 3, 11384, 81 };
 		int[] audits = { 1, 11 };
 		for (int con : cons) {
@@ -55,13 +57,15 @@ public class AuditBuilderTest {
 				List<AuditCategoryRule> rules = auditDecisionTableDAO.getApplicableCategoryRules(contractor, auditType);
 
 				long time = System.currentTimeMillis();
-				List<AuditCategoryRule> cache = auditCategoryRuleCache.getApplicableCategoryRules(contractor, new HashSet<AuditType>() {
-					{
-						add(auditType);
-					}
-				});
-				System.out.printf("Execution for contractor %d with AuditType %d took %dms\n", con, audit,
-						System.currentTimeMillis() - time);
+				List<AuditCategoryRule> cache = auditCategoryRuleCache.getApplicableCategoryRules(contractor,
+						new HashSet<AuditType>() {
+							{
+								add(auditType);
+							}
+						});
+				System.out.printf("Execution for contractor %d with AuditType %d took %dms\n", con, audit, System
+						.currentTimeMillis()
+						- time);
 
 				/*
 				 * System.out.println("DAO RULES\n-------------------------");
@@ -84,6 +88,42 @@ public class AuditBuilderTest {
 					assertTrue("The priorities are not in order", rule.getPriority() <= priority);
 					priority = rule.getPriority();
 				}
+			}
+		}
+	}
+
+	@Test
+	public void testAuditTypeRules() throws Exception {
+		int[] cons = { 3, 11384, 81 };
+		for (int con : cons) {
+			ContractorAccount contractor = contractoraccountDAO.find(con);
+			List<AuditTypeRule> rules = auditDecisionTableDAO.getApplicableAuditRules(contractor);
+
+			long time = System.currentTimeMillis();
+			List<AuditTypeRule> cache = auditTypeRuleCache.getApplicableCategoryRules(contractor);
+			System.out.printf("Execution for contractor %d took %dms\n", con, System
+					.currentTimeMillis()
+					- time);
+
+			System.out.println("DAO RULES\n-------------------------");
+			for (AuditTypeRule auditTypeRule : rules) {
+				System.out.print(auditTypeRule.getId() + ",");
+			}
+			System.out.println("\nCACHE RULES\n-------------------------");
+			for (AuditTypeRule auditTypeRule : cache) {
+				System.out.print(auditTypeRule.getId() + ",");
+			}
+
+			assertEquals("The rules lists are different sizes", rules.size(), cache.size());
+
+			for (AuditTypeRule rule : rules) {
+				assertTrue("There are rules missing in the cache list", cache.contains(rule));
+			}
+
+			int priority = Integer.MAX_VALUE;
+			for (AuditTypeRule rule : cache) {
+				assertTrue("The priorities are not in order", rule.getPriority() <= priority);
+				priority = rule.getPriority();
 			}
 		}
 	}

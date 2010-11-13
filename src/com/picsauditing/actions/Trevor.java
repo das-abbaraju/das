@@ -32,7 +32,7 @@ public class Trevor extends PicsActionSupport {
 	public String execute() throws SQLException {
 
 		if ("clear".equals(button)) {
-			List<AuditCategoryRule> rules = auditRuleDAO.findRules();
+			List<AuditCategoryRule> rules = auditRuleDAO.findCategoryRules();
 			cache.clear();
 		}
 		if ("print".equals(button)) {

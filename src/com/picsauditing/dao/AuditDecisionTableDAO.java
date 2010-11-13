@@ -29,10 +29,15 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("unchecked")
 public class AuditDecisionTableDAO extends PicsDAO {
 
-	public List<AuditCategoryRule> findRules() {
+	public List<AuditCategoryRule> findCategoryRules() {
 		Query query = em
 				.createQuery("FROM AuditCategoryRule WHERE effectiveDate <= NOW() AND expirationDate > NOW() ORDER BY priority DESC");
-		// query.setMaxResults(500);
+		return query.getResultList();
+	}
+
+	public List<AuditTypeRule> findAuditTypeRules() {
+		Query query = em
+				.createQuery("FROM AuditTypeRule WHERE effectiveDate <= NOW() AND expirationDate > NOW() ORDER BY priority DESC");
 		return query.getResultList();
 	}
 
