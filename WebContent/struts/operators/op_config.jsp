@@ -9,6 +9,23 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp" />
 <script type="text/javascript">
+$(document).ready(function() {
+	var data = {
+		'operator.id': <s:property value="operator.id" />,
+		showPriority: false,
+		showWho: false,
+		excluded: true
+	};
+
+	startThinking({ div: "excludedTypes", message: "Loading Excluded Audit Type Rules" });
+	$('#excludedTypes').load("AuditRuleTableAjax.action", data);
+
+	data.type = 'Category';
+	data.where = 'r.auditType.id = 1';
+	startThinking({ div: "excludedCategories", message: "Loading Excluded Audit Category Rules" });
+	$('#excludedCategories').load("AuditRuleTableAjax.action", data);
+});
+
 function toggleCategory(catID) {
 	var ol = "#subcat_" + catID;
 	var arrow = ".arrow_" + catID;
@@ -23,7 +40,6 @@ function showType(typeID) {
 		'operator.id': <s:property value="operator.id" />,
 		showPriority: false,
 		showWho: false,
-		orderRules: true,
 		auditTypeID: typeID
 	};
 
@@ -51,7 +67,6 @@ function loadCatRules(catID, divCatID) {
 		'operator.id': <s:property value="operator.id" />,
 		showPriority: false,
 		showWho: false,
-		orderRules: true,
 		categoryID: catID
 	};
 
@@ -79,16 +94,23 @@ function loadCatRules(catID, divCatID) {
 		<li><label>Parent Accounts</label>
 			<table class="report">
 				<tbody>
-					<s:set name="opID" value="%{operator.id}" />
-					<s:iterator value="allParents" id="corp">
+					<s:if test="allParents.size > 0">
+						<s:set name="opID" value="%{operator.id}" />
+						<s:iterator value="allParents" id="corp">
+							<tr>
+								<td>
+									<a href="FacilitiesEdit.action?id=<s:property value="#corp.id" />">
+									<s:property value="#corp.name" /></a>
+								</td>
+								<td><a href="OperatorConfiguration.action?id=<s:property value="#opID" />&button=Remove&corpID=<s:property value="#corp.id" />" class="remove">Remove</a></td>
+							</tr>
+						</s:iterator>
+					</s:if>
+					<s:else>
 						<tr>
-							<td>
-								<a href="FacilitiesEdit.action?id=<s:property value="#corp.id" />">
-								<s:property value="#corp.name" /></a>
-							</td>
-							<td><a href="OperatorConfiguration.action?id=<s:property value="#opID" />&button=Remove&corpID=<s:property value="#corp.id" />" class="remove">Remove</a></td>
+							<td>No Parent Accounts found</td>
 						</tr>
-					</s:iterator>
+					</s:else>
 				</tbody>
 			</table>
 			<s:form>
@@ -146,26 +168,7 @@ function loadCatRules(catID, divCatID) {
 	<h2 class="formLegend">Rules to Explicitly Remove Audits</h2>
 	<ol>
 		<li>
-			<s:if test="excludeTypes.size > 0">
-				<table class="report">
-					<thead>
-						<tr>
-							<th>Include</th>
-							<th>Audit Type</th>
-							<th>Operator</th>
-						</tr>
-					</thead>
-					<tbody>
-						<s:iterator value="excludeTypes" id="type">
-							<tr class="clickable" onclick="window.open('AuditTypeRuleEditor.action?id=<s:property value="#type.id" />')">
-								<td><s:property value="#type.include ? 'Yes' : 'No'" /></td>
-								<td><s:property value="#type.auditType == null ? '*' : #type.auditType.auditName" /></td>
-								<td><s:property value="#type.operatorAccount == null ? '*' : #type.operatorAccount.name" /></td>
-							</tr>
-						</s:iterator>
-					</tbody>
-				</table>
-			</s:if>
+			<div id="excludedTypes"></div>
 			<a href="AuditTypeRuleEditor.action?button=edit&rule.include=false&rule.operatorAccount.id=<s:property value="operator.id" />&rule.operatorAccount.name=<s:property value="operator.name" />"
 				target="_blank" class="add">Add Rule</a>
 		</li>
@@ -205,26 +208,7 @@ function loadCatRules(catID, divCatID) {
 	<h2 class="formLegend">Rules to Explicitly Remove PQF Categories</h2>
 	<ol>
 		<li>
-			<s:if test="excludeCategories.size > 0">
-				<table class="report">
-					<thead>
-						<tr>
-							<th>Include</th>
-							<th>Category</th>
-							<th>Operator</th>
-						</tr>
-					</thead>
-					<tbody>
-						<s:iterator value="excludeCategories" id="cat">
-							<tr class="clickable" onclick="window.open('CategoryRuleEditor.action?id=<s:property value="#cat.id" />')">
-								<td><s:property value="#cat.include ? 'Yes' : 'No'" /></td>
-								<td><s:property value="#cat.auditCategory == null ? '*' : #cat.auditCategory.name" /></td>
-								<td><s:property value="#cat.operatorAccount == null ? '*' : #cat.operatorAccount.name" /></td>
-							</tr>
-						</s:iterator>
-					</tbody>
-				</table>
-			</s:if>
+			<div id="excludedCategories"></div>
 			<a href="CategoryRuleEditor.action?button=edit&rule.include=false&rule.auditType.id=1&rule.operatorAccount.id=<s:property value="operator.id" />&rule.operatorAccount.name=<s:property value="operator.name" />"
 				target="_blank" class="add">Add Rule</a>
 		</li>

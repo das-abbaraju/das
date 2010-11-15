@@ -15,7 +15,6 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.Facility;
@@ -32,8 +31,6 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	private List<OperatorAccount> otherCorporates;
 	private List<AuditType> typeList;
 	private List<AuditCategory> categoryList;
-	private List<AuditTypeRule> excludeTypes;
-	private List<AuditCategoryRule> excludeCategories;
 	private List<AuditType> otherAudits;
 	// Passed in variables
 	private int corpID;
@@ -101,13 +98,16 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 			List<Integer> inheritance = operator.getOperatorHeirarchy();
 			inheritance.remove((Integer) operator.getId());
 
-			allParents = operatorDao.findWhere(true, "a.id IN (" + Strings.implode(inheritance) + ")", permissions);
+			if (inheritance.size() > 1) {
+				allParents = operatorDao.findWhere(true, "a.id IN (" + Strings.implode(inheritance) + ")", permissions);
 
-			Collections.sort(allParents, new Comparator<OperatorAccount>() {
-				public int compare(OperatorAccount o1, OperatorAccount o2) {
-					return (o1.getId() - o2.getId());
-				}
-			});
+				Collections.sort(allParents, new Comparator<OperatorAccount>() {
+					public int compare(OperatorAccount o1, OperatorAccount o2) {
+						return (o1.getId() - o2.getId());
+					}
+				});
+			} else
+				allParents = new ArrayList<OperatorAccount>();
 		}
 
 		return allParents;
@@ -133,47 +133,23 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 	public List<AuditCategory> getCategoryList() {
 		if (categoryList == null) {
-			categoryList = adtDAO.getCategoriesByOperator(operator, permissions, true);
+			categoryList = adtDAO.getCategoriesByOperator(operator, permissions, true,
+					"a.auditCategory.auditType.id = 1");
 			Collections.sort(categoryList);
 		}
 
 		return categoryList;
 	}
 
-	public List<AuditTypeRule> getExcludeTypes() {
-		if (excludeTypes == null) {
-			List<AuditTypeRule> rules = adtDAO.findAuditTypeRulesByOperator(operator.getId());
-			excludeTypes = new ArrayList<AuditTypeRule>();
-
-			for (AuditTypeRule rule : rules) {
-				if (!rule.isInclude() && rule.getOperatorAccount().getId() == operator.getId())
-					excludeTypes.add(rule);
-			}
-		}
-
-		return excludeTypes;
-	}
-
-	public List<AuditCategoryRule> getExcludeCategories() {
-		if (excludeCategories == null) {
-/*			List<AuditCategoryRule> rules = adtDAO.findAuditCategoryRulesByOperator(operator.getId());
-			excludeCategories = new ArrayList<AuditCategoryRule>();
-
-			for (AuditCategoryRule rule : rules) {
-				if (!rule.isInclude() && rule.getOperatorAccount().getId() == operator.getId())
-					excludeCategories.add(rule);
-			}*/
-		}
-		
-		return excludeCategories;
-	}
-
 	public List<AuditType> getOtherAudits() {
 		if (otherAudits == null) {
 			Set<AuditType> usedAuditTypes = new HashSet<AuditType>();
+
+			List<AuditTypeRule> excludedAudits = adtDAO.findAuditTypeRulesByOperator(operator.getId(), "r.include = 0");
+
 			for (AuditType type : getTypeList())
 				usedAuditTypes.add(type);
-			for (AuditTypeRule type : getExcludeTypes())
+			for (AuditTypeRule type : excludedAudits)
 				usedAuditTypes.add(type.getAuditType());
 
 			otherAudits = typeDAO.findAll();

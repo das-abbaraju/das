@@ -8,6 +8,10 @@
 <ul id="navlist">
 	<li><a href="FacilitiesEdit.action?id=<s:property value="operator.id"/>"
 		<s:if test="requestURI.contains('operator_edit')">class="current"</s:if>>Edit</a></li>
+	<pics:permission perm="ManageOperators" type="Edit">
+		<li><a href="OperatorConfiguration.action?id=<s:property value="operator.id"/>"
+			<s:if test="requestURI.contains('op_config')">class="current"</s:if>>Config</a></li>
+	</pics:permission>
 	<li><a href="OperatorNotes.action?id=<s:property value="operator.id"/>"
 		<s:if test="requestURI.contains('account_notes')">class="current"</s:if>>Notes</a></li>
 	<li><a href="UsersManage.action?accountId=<s:property value="operator.id"/>">Users</a></li>

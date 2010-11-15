@@ -113,16 +113,34 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	}
 
 	public List<AuditTypeRule> findAuditTypeRulesByOperator(int opID) {
+		return findAuditTypeRulesByOperator(opID, null);
+	}
+
+	public List<AuditTypeRule> findAuditTypeRulesByOperator(int opID, String where) {
+		if (Strings.isEmpty(where))
+			where = "";
+		else
+			where = " AND " + where;
+
 		Query query = em.createQuery(findByQuery("AuditTypeRule",
-				" AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID)"));
+				" AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID)" + where));
 		query.setParameter("operatorID", opID);
 		query.setMaxResults(250);
 		return query.getResultList();
 	}
 
 	public List<AuditCategoryRule> findAuditCategoryRulesByOperator(int opID) {
+		return findAuditCategoryRulesByOperator(opID, null);
+	}
+
+	public List<AuditCategoryRule> findAuditCategoryRulesByOperator(int opID, String where) {
+		if (Strings.isEmpty(where))
+			where = "";
+		else
+			where = " AND " + where;
+
 		Query query = em.createQuery(findByQuery("AuditCategoryRule",
-				" AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID)"));
+				" AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID)" + where));
 		query.setParameter("operatorID", opID);
 		query.setMaxResults(250);
 		return query.getResultList();
@@ -440,22 +458,25 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	}
 
 	public List<AuditCategory> getCategoriesByOperator(OperatorAccount operator, Permissions permissions) {
-		return getCategoriesByOperator(operator, permissions, false);
+		return getCategoriesByOperator(operator, permissions, false, null);
 	}
 
 	public List<AuditCategory> getCategoriesByOperator(OperatorAccount operator, Permissions permissions,
-			boolean topLevel) {
-		String where = "";
+			boolean topLevel, String where) {
+		if (Strings.isEmpty(where))
+			where = "";
+		else
+			where = " WHERE " + where;
+
 		List<Integer> operatorIDs = new ArrayList<Integer>();
 		if (permissions.isOperator())
 			operatorIDs = operator.getOperatorHeirarchy();
-		if (permissions.isCorporate()) {
+		if (permissions.isCorporate())
 			operatorIDs.addAll(permissions.getOperatorChildren());
-		}
 		if (operatorIDs.size() > 0)
-			where += " WHERE a.opID IN (" + Strings.implode(operatorIDs, ",") + ")";
+			where += " AND a.opID IN (" + Strings.implode(operatorIDs, ",") + ")";
 		if (topLevel)
-			where += (operatorIDs.size() > 0 ? " AND" : " WHERE") + " a.auditCategory.parent IS NULL";
+			where += " AND a.auditCategory.parent IS NULL";
 
 		Query query = em.createQuery("SELECT DISTINCT a.auditCategory FROM AuditCategoryRule a" + where
 				+ " ORDER BY a.priority DESC");

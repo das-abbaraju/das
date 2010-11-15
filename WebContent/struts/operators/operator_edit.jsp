@@ -210,14 +210,6 @@ $(function() {
 						value="operator.parent.id" /> <a
 						href="?id=<s:property value="operator.parent.id"/>">Go</a></li>
 				</s:if>
-
-				<li>
-				<pics:permission perm="ManageOperators" type="Edit">
-					<li>
-						<a href="OperatorConfiguration.action?id=<s:property value="operator.id" />">Operator Configuration Inheritance</a>
-					</li>
-				</pics:permission>
-				</li>
 				<li><label>Flag Criteria:</label> <s:select
 					name="foreignKeys.inheritFlagCriteria"
 					value="operator.inheritFlagCriteria.id" list="relatedFacilities"

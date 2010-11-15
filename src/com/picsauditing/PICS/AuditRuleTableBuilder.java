@@ -11,19 +11,20 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.auditType.AuditRuleColumn;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.DoubleMap;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditRuleTableBuilder extends PicsActionSupport {
 	protected AuditDecisionTableDAO adtDAO;
 	protected AuditCategoryDAO catDAO;
+	protected AuditTypeDAO typeDAO;
 	protected OperatorAccountDAO opDAO;
 
 	protected List<Integer> ruleIDs;
@@ -32,14 +33,18 @@ public class AuditRuleTableBuilder extends PicsActionSupport {
 
 	protected boolean showPriority = true;
 	protected boolean showWho = true;
+	protected boolean excluded = false;
 	protected int auditTypeID;
 	protected int categoryID;
 	protected String type = "AuditType";
+	protected String where;
 	protected OperatorAccount operator;
 
-	public AuditRuleTableBuilder(AuditDecisionTableDAO adtDAO, AuditCategoryDAO catDAO, OperatorAccountDAO opDAO) {
+	public AuditRuleTableBuilder(AuditDecisionTableDAO adtDAO, AuditCategoryDAO catDAO, AuditTypeDAO typeDAO,
+			OperatorAccountDAO opDAO) {
 		this.adtDAO = adtDAO;
 		this.catDAO = catDAO;
+		this.typeDAO = typeDAO;
 		this.opDAO = opDAO;
 	}
 
@@ -48,25 +53,37 @@ public class AuditRuleTableBuilder extends PicsActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
+		List<? extends AuditRule> rules = null;
+
 		if (operator != null && operator.getId() > 0) {
 			operator = opDAO.find(operator.getId());
 
-			if (auditTypeID > 0) {
-				AuditType a = new AuditType();
-				a.setId(auditTypeID);
-				List<AuditTypeRule> rules = adtDAO.findByAuditType(a, operator);
+			if (excluded) {
+				if (Strings.isEmpty(where))
+					where = "";
+				else
+					where = " AND " + where;
 
-				setup(rules);
+				if (type.equals("AuditType"))
+					rules = adtDAO.findAuditTypeRulesByOperator(operator.getId(), "r.include = 0" + where);
+				else
+					rules = adtDAO.findAuditCategoryRulesByOperator(operator.getId(), "r.include = 0" + where);
+			}
+
+			if (auditTypeID > 0) {
+				AuditType a = typeDAO.find(auditTypeID);
+				rules = adtDAO.findByAuditType(a, operator);
 			}
 
 			if (categoryID > 0) {
 				type = "Category";
 				AuditCategory c = catDAO.find(categoryID);
-				List<AuditCategoryRule> rules = adtDAO.findByCategory(c, operator);
-
-				setup(rules);
+				rules = adtDAO.findByCategory(c, operator);
 			}
 		}
+
+		if (rules != null)
+			setup(rules);
 
 		return SUCCESS;
 	}
@@ -99,6 +116,14 @@ public class AuditRuleTableBuilder extends PicsActionSupport {
 		this.showWho = showWho;
 	}
 
+	public boolean isExcluded() {
+		return excluded;
+	}
+
+	public void setExcluded(boolean excluded) {
+		this.excluded = excluded;
+	}
+
 	public int getAuditTypeID() {
 		return auditTypeID;
 	}
@@ -117,6 +142,14 @@ public class AuditRuleTableBuilder extends PicsActionSupport {
 
 	public String getType() {
 		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public void setWhere(String where) {
+		this.where = where;
 	}
 
 	public OperatorAccount getOperator() {
