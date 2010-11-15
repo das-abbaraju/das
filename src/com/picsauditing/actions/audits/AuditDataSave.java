@@ -292,16 +292,16 @@ public class AuditDataSave extends AuditActionSupport {
 			return BLANK;
 		}
 		
+		if (conAudit == null)
+			findConAudit();
 		// check dependent questions, see if not in same cat
 		// check rules to see if other cats get triggered now
 		// if either true then run FAC
 		if (checkDependentQuestions() || checkOtherRules()) {
 			auditBuilder.fillAuditCategories(auditData);
-		}
-		// always run APC, just this cat
-		if (conAudit == null)
-			findConAudit();
-		if (catData != null){
+			auditPercentCalculator.percentCalculateComplete(conAudit, true);
+			auditDao.save(conAudit);
+		} else if (catData != null){
 			auditPercentCalculator.updatePercentageCompleted(catData);
 			catData.setAuditColumns();
 			auditDao.save(catData);
