@@ -136,8 +136,8 @@ public class Cron extends PicsActionSupport {
 				handleException(t);
 			}
 			try {
-				startTask("\nSubmitting the caos...");
-				contractorAuditOperatorDAO.submitAudits();
+				startTask("\nAutoSubmitting/Completing cao for Manual/Implementation audits if one of the CAO is Active...");
+				contractorAuditOperatorDAO.activateAuditsWithReqs();
 				endTask();
 			} catch (Throwable t) {
 				handleException(t);
@@ -186,8 +186,7 @@ public class Cron extends PicsActionSupport {
 				contractor.setAuditColumns(system);
 				contractorAccountDAO.save(contractor);
 
-				stampNote(
-						contractor,
+				stampNote(contractor,
 						"Automatically inactivating account based on expired membership",
 						NoteCategory.Billing);
 			}

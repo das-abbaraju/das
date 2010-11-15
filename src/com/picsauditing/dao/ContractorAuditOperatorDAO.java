@@ -221,36 +221,29 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		db.executeUpdate(sql);
 	}
 	
-	public void submitAudits() throws SQLException {
+	public void activateAuditsWithReqs() throws SQLException {
 		String sql = "";
 		Database db = new Database();	
-		sql = "INSERT into note (accountID,creationDate,createdBy,updateDate,updatedBy,summary,noteCategory, viewableBy,canContractorView) "+			
-				"select ca.conid,Now(),1,Now(),1,CONCAT('Submitting ',at.auditname,' for ', a.name),'Audits',cao.opid,1 "+
-				"from contractor_audit_operator cao " +
-				"join contractor_audit ca on ca.id = cao.auditID " +
-				"join accounts a on a.id = cao.opid " +
-				"join audit_type at on at.id = ca.auditTypeID " +
-				"join workflow wf on wf.id = at.workflowid " +
-				"where cao.status = 'Pending' and cao.percentComplete = 100 " +
-				"and wf.id in (select distinct workflowID from workflow_step wfs where oldStatus = 'Pending' and newStatus = 'Submitted')";
+		
+       sql = "insert into contractor_audit_operator_workflow "+
+    	   "(createdBy,updatedBy,creationDate,updateDate,caoID,status,previousStatus) "+
+    	   "select 1,1,Now(),Now(),ncao.id,ncao.status,ocao.status "+
+    	   "from contractor_Audit_operator ocao "+
+    	   "join contractor_audit_operator ncao on ocao.auditID = ncao.auditid "+
+    	   "join contractor_audit ca on ca.id = ocao.auditID and ncao.auditid = ca.id "+
+    	   "where ca.auditTypeID in (2,3) and ocao.status in ('Submitted','Complete') "+
+    	   "and ncao.status != ocao.status and ocao.visible = 1 and ncao.visible = 1 ";
+		
 		db.executeInsert(sql);
 		
-		sql = "insert into contractor_audit_operator_workflow (createdBy,updatedBy,creationDate,updateDate,caoID,status,previousStatus) " +
-				"select 1,1,Now(),Now(),cao.id,'Submitted',cao.status " +
-				"from contractor_audit_operator cao " +
-				"join contractor_audit ca on ca.id = cao.auditID " +
-				"join audit_type at on at.id = ca.auditTypeID " +
-				"join workflow wf on wf.id = at.workflowid " +
-				"where cao.status = 'Pending' and cao.percentComplete = 100 " +
-				"and wf.id in (select distinct workflowID from workflow_step wfs where oldStatus = 'Pending' and newStatus = 'Submitted')";
-		db.executeInsert(sql);
-		
-       sql = "update contractor_audit_operator cao " +
-       		"join contractor_audit ca on ca.id = cao.auditID " +
-       		"join audit_type at on at.id = ca.auditTypeID " +
-       		"join workflow wf on wf.id = at.workflowid " +
-       		"set cao.status = 'Submitted', cao.statuschangedDate = Now() " +
-       		"where cao.status = 'Pending' and cao.percentComplete = 100 " +
-       		"and wf.id in (select distinct workflowID from workflow_step wfs where oldStatus = 'Pending' and newStatus = 'Submitted')";
+		sql = "update contractor_Audit_operator ocao " +
+    	     "join contractor_audit_operator ncao on ocao.auditID = ncao.auditid " +
+    	     "join contractor_audit ca on ca.id = ocao.auditID and ncao.auditid = ca.id "+
+    	     "set ncao.status = ocao.status "+
+    	     "where ca.auditTypeID in (2,3) "+
+    	     "and ocao.status in ('Submitted','Complete') "+
+    	     "and ncao.status != ocao.status "+
+    	     "and ocao.visible = 1 and ncao.visible = 1 ";
+		db.executeUpdate(sql);
 	}
 }
