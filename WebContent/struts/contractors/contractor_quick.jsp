@@ -10,7 +10,7 @@
 		<li><a href="#tabs-general">General</a></li>
 		<li><a href="#tabs-contact">Contact</a></li>
 		<li><a href="#tabs-facilities">Facilities</a></li>
-		<li><a href="#tabs-audits">PQF/Audits</a></li>
+		<li><a href="#tabs-audits">Documents</a></li>
 		<s:if test="permissions.admin || permissions.contractor">
 			<li><a href="#tabs-membership">Membership</a></li>
 		</s:if>
@@ -108,7 +108,7 @@
 		<table class="report">
 			<thead>
 				<tr>
-					<th>Audit</th>
+					<th>Document</th>
 					<th>Status</th>
 				</tr>
 			</thead>
