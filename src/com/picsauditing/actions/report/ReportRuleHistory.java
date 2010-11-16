@@ -1,23 +1,28 @@
 package com.picsauditing.actions.report;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.ReportFilterRuleHistory;
 
 @SuppressWarnings("serial")
 public class ReportRuleHistory extends ReportActionSupport {
 
 	private SelectSQL sql;
 	private AuditDecisionTableDAO auditRuleDAO;
+	private ReportFilterRuleHistory filter = new ReportFilterRuleHistory();
 	private int limit = 100;
 
-	private final Map<String, String> statusTypes = new HashMap<String, String>() {
+	private final Map<String, String> statusTypes = new LinkedHashMap<String, String>() {
 		{
+			put("Deleted", "expirationDate");
 			put("New", "creationDate");
 			put("Updated", "updateDate");
-			put("Deleted", "expirationDate");
 		}
 	};
 	private final Map<String, String> tblNames = new HashMap<String, String>() {
@@ -33,6 +38,7 @@ public class ReportRuleHistory extends ReportActionSupport {
 
 	public String execute() throws Exception {
 		buildQuery();
+		addFilterToSQL();
 		run(sql);
 		
 		return SUCCESS;
@@ -64,8 +70,28 @@ public class ReportRuleHistory extends ReportActionSupport {
 		sql = new SelectSQL(sb.toString());
 		sql.addField("rules.id, rules.rType, rules.sDate, rules.status, u.name who");
 		sql.addJoin("JOIN users u ON u.id = rules.who");
+		sql.addGroupBy("rules.sDate");
 		sql.addOrderBy("rules.sDate DESC");
-		sql.setLimit(limit);
+	}
+	
+	public void addFilterToSQL() throws Exception {
+		if (filterOn(filter.getChangedBy()))
+			report.addFilter(new SelectFilter("changedBy",
+					"u.name LIKE '%?%'", filter.getChangedBy()));
+		if (filterOn(filter.getFindStatus()))
+			report.addFilter(new SelectFilter("ruleStatus", "rules.status = '?'",
+					filter.getFindStatus()));
+		if (filterOn(filter.getFindType()))
+			report.addFilter(new SelectFilter("ruleType", "rules.rType= '?'",
+					filter.getFindType()));
+		if (filterOn(filter.getFromDate()))
+			report.addFilter(new SelectFilter("fromDate",
+					"rules.sDate >= '? 00:00:00'", String.valueOf(DateBean
+							.toDBFormat(filter.getFromDate()))));
+		if (filterOn(filter.getToDate()))
+			report.addFilter(new SelectFilter("toDate",
+					"rules.sDate <= '? 00:00:00'", String.valueOf(DateBean
+							.toDBFormat(filter.getToDate()))));
 	}
 
 	public int getLimit() {
@@ -74,6 +100,14 @@ public class ReportRuleHistory extends ReportActionSupport {
 
 	public void setLimit(int limit) {
 		this.limit = limit;
+	}
+
+	public ReportFilterRuleHistory getFilter() {
+		return filter;
+	}
+
+	public void setFilter(ReportFilterRuleHistory filter) {
+		this.filter = filter;
 	}
 
 }

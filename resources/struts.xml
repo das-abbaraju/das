@@ -1271,6 +1271,10 @@
 			class="com.picsauditing.actions.report.ReportRuleHistory">
 			<result>struts/reports/audit_rule_history.jsp</result>
 		</action>
+		<action name="ReportRuleHistoryAjax"
+			class="com.picsauditing.actions.report.ReportRuleHistory">
+			<result>struts/reports/audit_rule_history_data.jsp</result>
+		</action>
 		
 		<!-- Users -->
 		<action name="UserProfileAjax"
