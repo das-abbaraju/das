@@ -57,7 +57,7 @@ function showType(typeID) {
 		auditTypeID: typeID
 	};
 
-	$('tr#'+typeID).find('.hidden').show();
+	$('tr#'+typeID).find('.hide').show();
 	$('tr#'+typeID).find('.normal').hide();
 
 	startThinking({ div: "typeTable_" + typeID, message: "Loading Audit Type Rules" });
@@ -67,7 +67,7 @@ function showType(typeID) {
 }
 
 function hideType(typeID) {
-	$('tr#'+typeID).find('.hidden').hide();
+	$('tr#'+typeID).find('.hide').hide();
 	$('tr#'+typeID).find('.normal').show();
 	$('#typeTable_' + typeID).empty();
 
@@ -95,7 +95,7 @@ function loadCatRules(catID, divCatID, name) {
 }
 </script>
 <style type="text/css">
-.auditTypeRule, .subcat-list, .hidden {
+.auditTypeRule, .subcat-list, .hide {
 	display: none;
 }
 #includedCategories td {
@@ -107,9 +107,12 @@ function loadCatRules(catID, divCatID, name) {
 <body>
 <s:include value="opHeader.jsp" />
 <fieldset class="form">
-	<h2 class="formLegend">General</h2>
+	<h2 class="formLegend">Parent Accounts</h2>
 	<ol>
-		<li><label>Parent Accounts</label>
+		<li><label>Country:</label>
+			<s:property value="operator.country"/>
+		</li>
+		<li>
 			<table class="report">
 				<tbody>
 					<s:if test="allParents.size > 0">
@@ -131,11 +134,13 @@ function loadCatRules(catID, divCatID, name) {
 					</s:else>
 				</tbody>
 			</table>
-			<s:form>
+		</li>
+		<li><s:form id="includeNewParent">
 				<s:hidden value="%{operator.id}" name="id" />
+				<s:hidden value="Add" name="button" />
 				<s:select list="otherCorporates" listValue="name" listKey="id" name="corpID" 
-					headerValue="- Add Parent Account -" headerKey="0" />
-				<input type="submit" name="button" value="Add" class="picsbutton positive" />
+					headerValue="- Add Parent Account -" headerKey="0"
+					onchange="$('#includeNewParent').submit();" />
 			</s:form>
 		</li>
 	</ol>
@@ -157,14 +162,14 @@ function loadCatRules(catID, divCatID, name) {
 						<s:iterator value="typeList" id="type">
 							<tr id="<s:property value="#type.id" />">
 								<td><s:property value="#type.classType" /></td>
-								<td><s:property value="#type.auditName" /></td>
+								<td><a href="ManageAuditType.action?id=<s:property value="#type.id" />"><s:property value="#type.auditName" /></a></td>
 								<td>
-									<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="normal">Show Rules</a>
-									<a href="#" onclick="return hideType(<s:property value="#type.id" />);" class="hidden">Hide Rules</a>
-									<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="hidden refresh">Refresh</a>
+									<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="normal preview">Show Rules</a>
+									<a href="#" onclick="return hideType(<s:property value="#type.id" />);" class="hide remove">Hide Rules</a>
+									<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="hide refresh">Refresh</a>
 									<div id="typeTable_<s:property value="#type.id" />"></div>
 									<a href="AuditTypeRuleEditor.action?button=edit&rule.include=true&rule.auditType.id=<s:property value="#type.id" />&rule.operatorAccount.id=<s:property value="operator.id" />&rule.operatorAccount.name=<s:property value="operator.name" />"
-										target="_blank" class="hidden add">Add Rule</a>
+										target="_blank" class="hide add">Add Rule</a>
 								</td>
 							</tr>
 						</s:iterator>
@@ -183,7 +188,7 @@ function loadCatRules(catID, divCatID, name) {
 	</ol>
 </fieldset>
 <fieldset class="form">
-	<h2 class="formLegend">Rules to Explicitly Remove Audits</h2>
+	<h2 class="formLegend">Rules to Explicitly Remove Audit Types</h2>
 	<ol>
 		<li>
 			<div id="excludedTypes"></div>

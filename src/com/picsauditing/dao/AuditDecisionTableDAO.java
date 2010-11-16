@@ -65,7 +65,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 					+ ") OR r.operatorAccount IS NULL)";
 
 		Query query = em.createQuery(findByQuery("AuditTypeRule",
-				" AND (r.auditType IS NULL OR r.auditType = :auditType)" + where));
+				" AND r.id > 1 AND (r.auditType IS NULL OR r.auditType = :auditType)" + where));
 		query.setParameter("auditType", auditType);
 		query.setMaxResults(250);
 		return query.getResultList();
@@ -123,7 +123,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where = " AND " + where;
 
 		Query query = em.createQuery(findByQuery("AuditTypeRule",
-				" AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID)" + where));
+				" AND (r.operatorAccount.id = :operatorID)" + where));
 		query.setParameter("operatorID", opID);
 		query.setMaxResults(250);
 		return query.getResultList();
@@ -140,7 +140,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where = " AND " + where;
 
 		Query query = em.createQuery(findByQuery("AuditCategoryRule",
-				" AND (r.operatorAccount IS NULL OR r.operatorAccount.id = :operatorID)" + where));
+				" AND (r.operatorAccount.id = :operatorID)" + where));
 		query.setParameter("operatorID", opID);
 		query.setMaxResults(250);
 		return query.getResultList();
