@@ -303,4 +303,24 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	public String toString() {
 		return getNumber() + " " + name;
 	}
+	
+	@Override
+	@Transient
+	public AuditCategory clone(){
+		AuditCategory clone = new AuditCategory();
+		
+		clone.auditType = this.getAuditType();
+		clone.createdBy = this.getCreatedBy();
+		clone.creationDate = this.getCreationDate();
+		clone.helpText = this.getHelpText();
+		clone.id = this.getId();
+		clone.name = this.getName();
+		clone.number = this.getNumber();
+		clone.numQuestions = this.getNumQuestions();
+		clone.numRequired = this.getNumRequired();
+		clone.pageBreak = this.isPageBreak();
+		clone.parent = this.getParent();
+		
+		return clone;
+	}
 }

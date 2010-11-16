@@ -64,4 +64,19 @@ public class Workflow extends BaseTable {
 		}
 		return false;
 	}
+	
+	@Override
+	@Transient
+	public Workflow clone(){
+		Workflow clone = new Workflow();
+		
+		clone.createdBy = this.getCreatedBy();
+		clone.creationDate = this.getCreationDate();
+		clone.id = this.getId();
+		clone.name = this.getName();
+		clone.updateDate = this.getUpdateDate();
+		clone.updatedBy = this.getUpdatedBy();
+		
+		return clone;
+	}
 }

@@ -97,7 +97,7 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 		clone.createdBy = getCreatedBy();
 		clone.creationDate = getCreationDate();
 		clone.dependentAuditStatus = getDependentAuditStatus();
-		clone.dependentAuditType = getDependentAuditType();
+		clone.dependentAuditType = getDependentAuditType().clone();
 		clone.effectiveDate = getEffectiveDate();
 		clone.expirationDate = getExpirationDate();
 		clone.id = getId();
@@ -105,7 +105,7 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 		clone.levelAdjustment = getLevelAdjustment();
 		clone.operatorAccount = getOperatorAccount().clone();
 		clone.priority = getPriority();
-		clone.question = getQuestion();
+		clone.question = getQuestion().clone();
 		clone.questionAnswer = getQuestionAnswer();
 		clone.questionComparator = getQuestionComparator();
 		clone.risk = getRisk();

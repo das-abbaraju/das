@@ -515,4 +515,44 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		}
 		return false;
 	}
+	
+	@Override
+	@Transient
+	public AuditQuestion clone(){
+		AuditQuestion clone = new AuditQuestion();
+		
+		clone.category = this.getCategory();
+		clone.columnHeader = this.getColumnHeader();
+		clone.createdBy = this.getCreatedBy();
+		clone.creationDate = this.getCreationDate();
+		clone.criteria = this.getCriteria();
+		clone.criteriaAnswer = this.getCriteriaAnswer();
+		clone.effectiveDate = this.getEffectiveDate();
+		clone.expirationDate = this.getExpirationDate();
+		clone.flaggable = this.isFlaggable();
+		clone.groupedWithPrevious = this.isGroupedWithPrevious();
+		clone.hasRequirement = this.isHasRequirement();
+		clone.helpPage = this.getHelpPage();
+		clone.helpText = this.getHelpText();
+		clone.id = this.getId();
+		clone.name = this.getName();
+		clone.number = this.getNumber();
+		clone.okAnswer = this.getOkAnswer();
+		clone.questionType = this.getQuestionType();
+		clone.required = this.isRequired();
+		clone.requiredAnswer = this.getRequiredAnswer();
+		clone.requiredQuestion = this.getRequiredQuestion();
+		clone.requirement = this.getRequirement();
+		clone.riskLevel = this.getRiskLevel();
+		clone.scoreWeight = this.getScoreWeight();
+		clone.showComment = this.isShowComment();
+		clone.title = this.getTitle();
+		clone.uniqueCode = this.getUniqueCode();
+		clone.updateDate = this.getUpdateDate();
+		clone.updatedBy = this.getUpdatedBy();
+		clone.visibleAnswer = this.getVisibleAnswer();
+		clone.visibleQuestion = this.getVisibleQuestion();
+		
+		return clone;
+	}
 }

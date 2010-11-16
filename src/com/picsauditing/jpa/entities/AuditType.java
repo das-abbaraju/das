@@ -353,7 +353,27 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public AuditType clone(){
 		AuditType clone = new AuditType();
 		
+		clone.account = this.getAccount();
+		clone.auditName = this.getAuditName();
+		clone.canContractorEdit = this.isCanContractorEdit();
+		clone.canContractorView = this.isCanContractorView();
+		clone.classType = this.getClassType();
+		clone.createdBy = this.getCreatedBy();
+		clone.creationDate = this.creationDate;
+		clone.description = this.getDescription();
+		clone.displayOrder = this.getDisplayOrder();
+		clone.editPermission = this.getEditPermission();
+		clone.hasAuditor = this.isHasAuditor();
+		clone.hasMultiple = this.isHasMultiple();
 		clone.id = this.getId();
+		clone.isScheduled = this.isScheduled();
+		clone.monthsToExpire = this.getMonthsToExpire();
+		clone.renewable = this.isRenewable();
+		clone.scoreable = this.isScoreable();
+		clone.template = this.getTemplate();
+		clone.updateDate = this.getUpdateDate();
+		clone.updatedBy = this.getUpdatedBy();
+		clone.workFlow = this.getWorkFlow().clone();
 		
 		return clone;
 	}

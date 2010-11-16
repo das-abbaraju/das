@@ -118,7 +118,7 @@ public class AuditCategoryRule extends AuditRule implements AuditRuleTable {
 		clone.levelAdjustment = getLevelAdjustment();
 		clone.operatorAccount = getOperatorAccount().clone();
 		clone.priority = getPriority();
-		clone.question = getQuestion();
+		clone.question = getQuestion().clone();
 		clone.questionAnswer = getQuestionAnswer();
 		clone.questionComparator = getQuestionComparator();
 		clone.risk = getRisk();

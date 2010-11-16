@@ -422,7 +422,52 @@ public class OperatorAccount extends Account {
 	public OperatorAccount clone(){
 		OperatorAccount clone = new OperatorAccount();
 		
+		clone.acceptsBids = this.isAcceptsBids();
+		clone.activationFee = this.getActivationFee();
+		clone.address = this.getAddress();
+		clone.address2 = this.getAddress2();
+		clone.address3 = this.getAddress3();
+		clone.approvesRelationships = this.getApprovesRelationships();
+		clone.autoApproveInsurance = this.isAutoApproveInsurance();
+		clone.canSeeInsurance = this.getCanSeeInsurance();
+		clone.city = this.getCity();
+		clone.country = this.getCountry();
+		clone.createdBy = this.getCreatedBy();
+		clone.creationDate = this.getCreationDate();
+		clone.dbaName = this.getDbaName();
+		clone.doContractorsPay = this.getDoContractorsPay();
+		clone.fax = this.getFax();
 		clone.id = this.getId();
+		clone.industry = this.getIndustry();
+		clone.inheritFlagCriteria = this.getInheritFlagCriteria();
+		clone.inheritInsuranceCriteria = this.getInheritInsuranceCriteria();
+		clone.insuranceAuditor = this.getInsuranceAuditor();
+		clone.isUserManualUploaded = this.getIsUserManualUploaded();
+		clone.materialSupplier = this.isMaterialSupplier();
+		clone.name = this.getName();
+		clone.nameIndex = this.getNameIndex();
+		clone.needsIndexing = this.isNeedsIndexing();
+		clone.offsiteServices = this.isOffsiteServices();
+		clone.onsiteServices = this.isOnsiteServices();
+		clone.oshaType = this.getOshaType();
+		clone.parent = this.getParent();
+		clone.phone = this.getPhone();
+		clone.primaryContact = this.getPrimaryContact();
+		clone.primaryCorporate = this.isPrimaryCorporate();
+		clone.qbListID = this.getQbListID();
+		clone.qbSync = this.isQbSync();
+		clone.reason = this.getReason();
+		clone.requiredTags = this.getRequiredTags();
+		clone.requiresCompetencyReview = this.isRequiresCompetencyReview();
+		clone.requiresOQ = this.isRequiresOQ();
+		clone.state = this.getState();
+		clone.status = this.getStatus();
+		clone.type = this.getType();
+		clone.updateDate = this.getUpdateDate();
+		clone.updatedBy = this.getUpdatedBy();
+		clone.verifiedByPics = this.isVerifiedByPics();
+		clone.webUrl = this.getWebUrl();
+		clone.zip = this.getZip();
 		
 		return clone;
 	}
