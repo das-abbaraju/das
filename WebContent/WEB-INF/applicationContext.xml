@@ -10,8 +10,8 @@
 
 	<bean id="SpringUtils" class="com.picsauditing.util.SpringUtils" />
 	
-	<bean id="AuditTypeRuleCache" class="com.picsauditing.PICS.AuditTypeRuleCache"/>
-	<bean id="AuditCategoryRuleCache" class="com.picsauditing.PICS.AuditCategoryRuleCache"/>
+	<bean id="AuditTypeRuleCache" class="com.picsauditing.PICS.AuditTypeRuleCache" scope="prototype"/>
+	<bean id="AuditCategoryRuleCache" class="com.picsauditing.PICS.AuditCategoryRuleCache" scope="prototype"/>
 	
 	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO"/>
 	<bean id="AccountUserDAO" class="com.picsauditing.dao.AccountUserDAO"/>
