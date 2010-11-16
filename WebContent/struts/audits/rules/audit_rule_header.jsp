@@ -18,10 +18,6 @@
 			<td colspan="2">Dependent Audit</td>
 		</s:if>
 		<td colspan="3">Question</td>
-		<td>Created By</td>
-		<td>Creation Date</td>
-		<td>Updated By</td>
-		<td>Updated Date</td>
 		<s:if test="#showAction">
 			<td>Actions</td>
 		</s:if>
