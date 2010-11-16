@@ -348,4 +348,13 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		this.scoreable = scoreable;
 	}
 
+	@Override
+	@Transient
+	public AuditType clone(){
+		AuditType clone = new AuditType();
+		
+		clone.id = this.getId();
+		
+		return clone;
+	}
 }

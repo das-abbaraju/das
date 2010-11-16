@@ -416,4 +416,14 @@ public class OperatorAccount extends Account {
 		}
 		return visibleAuditTypes;
 	}
+	
+	@Override
+	@Transient
+	public OperatorAccount clone(){
+		OperatorAccount clone = new OperatorAccount();
+		
+		clone.id = this.getId();
+		
+		return clone;
+	}
 }

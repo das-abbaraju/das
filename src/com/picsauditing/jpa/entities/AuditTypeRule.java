@@ -92,7 +92,7 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 		AuditTypeRule clone = new AuditTypeRule();
 		
 		clone.acceptsBids = getAcceptsBids();
-		clone.auditType = getAuditType();
+		clone.auditType = getAuditType().clone();
 		clone.contractorType = getContractorType();
 		clone.createdBy = getCreatedBy();
 		clone.creationDate = getCreationDate();
@@ -103,7 +103,7 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 		clone.id = getId();
 		clone.level = getLevel();
 		clone.levelAdjustment = getLevelAdjustment();
-		clone.operatorAccount = getOperatorAccount();
+		clone.operatorAccount = getOperatorAccount().clone();
 		clone.priority = getPriority();
 		clone.question = getQuestion();
 		clone.questionAnswer = getQuestionAnswer();
