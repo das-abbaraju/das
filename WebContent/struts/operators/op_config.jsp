@@ -74,7 +74,7 @@ function hideType(typeID) {
 	return false;
 }
 
-function loadCatRules(catID, divCatID) {
+function loadCatRules(catID, divCatID, name) {
 	$('.catTable').empty();
 
 	var data = {
@@ -85,7 +85,11 @@ function loadCatRules(catID, divCatID) {
 	};
 
 	startThinking({ div: "catTable_" + divCatID, message: "Loading Category Rules" });
-	$('#catTable_' + divCatID).load("AuditRuleTableAjax.action", data);
+	$('#catTable_' + divCatID).load("AuditRuleTableAjax.action", data, function() {
+		$(this).prepend('<b>' + name + '</b><br /><a href="ManageCategory.action?id=' + catID 
+				+ '">Edit Category</a> <a href="#" onclick="return loadCatRules(' + catID + ',' + divCatID 
+				+ ', \'' + name + '\');" class="refresh">Refresh</a>');
+	});
 
 	return false;
 }
@@ -197,7 +201,7 @@ function loadCatRules(catID, divCatID) {
 					<td>
 						<ol>
 							<li>
-								<a href="#" onclick="return loadCatRules(<s:property value="#cat.id" />, <s:property value="#cat.id" />);"><s:property value="#cat.name" /></a>
+								<a href="#" onclick="return loadCatRules(<s:property value="#cat.id" />, <s:property value="#cat.id" />, '<s:property value="#cat.name" />');"><s:property value="#cat.name" /></a>
 								<s:if test="#cat.subCategories.size > 0">
 									<a href="#" onclick="return toggleCategory(<s:property value="#cat.id" />);">
 										<img src="images/arrow-blue-down.png" class="arrow_<s:property value="#cat.id" />" alt="Expand" />
