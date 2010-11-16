@@ -88,7 +88,7 @@ function loadResults(data, noteText){
 
 function loadStatus(caoID){
 	$('#caoAjax').load('CaoSaveAjax.action', {auditID: $('#auditID').val(), button: 'statusHistory', caoID: caoID}, function(){
-		$.blockUI({message: $('#caoAjax'), css: { width: '450px'} });
+		$.blockUI({message: $('#caoAjax')});
 		$('#noButton').click(function(){
 	        $.unblockUI();
 	        return false;
