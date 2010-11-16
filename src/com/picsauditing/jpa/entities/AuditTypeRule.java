@@ -85,4 +85,34 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 		
 		return map;
 	}
+	
+	@Override
+	@Transient
+	public AuditTypeRule clone(){
+		AuditTypeRule clone = new AuditTypeRule();
+		
+		clone.acceptsBids = getAcceptsBids();
+		clone.auditType = getAuditType();
+		clone.contractorType = getContractorType();
+		clone.createdBy = getCreatedBy();
+		clone.creationDate = getCreationDate();
+		clone.dependentAuditStatus = getDependentAuditStatus();
+		clone.dependentAuditType = getDependentAuditType();
+		clone.effectiveDate = getEffectiveDate();
+		clone.expirationDate = getExpirationDate();
+		clone.id = getId();
+		clone.level = getLevel();
+		clone.levelAdjustment = getLevelAdjustment();
+		clone.operatorAccount = getOperatorAccount();
+		clone.priority = getPriority();
+		clone.question = getQuestion();
+		clone.questionAnswer = getQuestionAnswer();
+		clone.questionComparator = getQuestionComparator();
+		clone.risk = getRisk();
+		clone.tag = getTag();
+		clone.updateDate = getUpdateDate();
+		clone.updatedBy = getUpdatedBy();
+		
+		return clone;
+	}
 }

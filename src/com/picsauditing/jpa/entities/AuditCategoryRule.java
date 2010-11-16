@@ -98,4 +98,34 @@ public class AuditCategoryRule extends AuditRule implements AuditRuleTable {
 		
 		return map;
 	}
+	
+	@Override
+	@Transient
+	public AuditCategoryRule clone(){
+		AuditCategoryRule clone = new AuditCategoryRule();
+		
+		clone.acceptsBids = getAcceptsBids();
+		clone.auditType = getAuditType();
+		clone.contractorType = getContractorType();
+		clone.createdBy = getCreatedBy();
+		clone.creationDate = getCreationDate();
+		clone.auditCategory = getAuditCategory();
+		clone.rootCategory = getRootCategory();
+		clone.effectiveDate = getEffectiveDate();
+		clone.expirationDate = getExpirationDate();
+		clone.id = getId();
+		clone.level = getLevel();
+		clone.levelAdjustment = getLevelAdjustment();
+		clone.operatorAccount = getOperatorAccount();
+		clone.priority = getPriority();
+		clone.question = getQuestion();
+		clone.questionAnswer = getQuestionAnswer();
+		clone.questionComparator = getQuestionComparator();
+		clone.risk = getRisk();
+		clone.tag = getTag();
+		clone.updateDate = getUpdateDate();
+		clone.updatedBy = getUpdatedBy();
+		
+		return clone;
+	}
 }
