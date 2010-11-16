@@ -50,7 +50,9 @@
 				<s:form>
 					<s:hidden name="id" value="%{contractor.id}"/>
 					<div>
+						<s:if test="contractor.riskLevel.toString().equals('None')">
 						Based on the information provided your level of risk for the the work your company performs is <strong><s:property value="contractor.riskLevel"/></strong>.	<br/>
+						</s:if>
 						<s:if test="contractor.acceptsBids">
 							With a Bid Only Account, you will only be able to complete the following Audits: <br clear="all"/>
 							<ul>
@@ -73,7 +75,7 @@
 						</s:if>
 						<s:else>
 							Based on the Operators that you have selected:
-								<s:iterator value="contractor.operators" status="stat">
+								<s:iterator value="contractor.nonCorporateOperators" status="stat">
 									<s:if test="#stat.last">
 										and
 									</s:if>
