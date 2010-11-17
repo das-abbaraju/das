@@ -79,8 +79,11 @@ public class ContractorAuditController extends AuditActionSupport {
 						if (data.getCategory().getId() == categoryID) {
 							data.setApplies(true);
 							data.setOverride(true);
+							auditDao.save(data);
+							break;
 						}
 					}
+					button = "Recalculate";
 				}
 				
 				if ("UnincludeCategory".equals(button)) {
@@ -88,11 +91,13 @@ public class ContractorAuditController extends AuditActionSupport {
 						if (data.getCategory().getId() == categoryID) {
 							data.setApplies(false);
 							data.setOverride(true);
+							auditDao.save(data);
+							break;
 						}
 					}
+					button = "Recalculate";
 				}
-			}	
-			
+			}				
 			
 			if ("Recalculate".equals(button)) {
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
