@@ -15,7 +15,7 @@
 				<th>Status</th>
 				<th>Date</th>
 				<s:if test="conAudit.auditType.classType.policy">
-					<th>Flag</th>
+					<th>Recommended</th>
 				</s:if>
 				<s:if test="!systemEdit">
 					<th>
@@ -70,7 +70,7 @@
 							<s:property value="formatDate(statusChangedDate, 'dd MMM yyyy')" default="N/A" />
 						</td>
 						<s:if test="conAudit.auditType.classType.policy">
-							<td><s:property value="#currentCao.flag.insuranceStatus" default="N/A"/></td>
+							<td style="color : <s:property value="#currentCao.flag.hex"/>"><s:property value="#currentCao.flag.insuranceStatus" default="N/A" /></td>
 						</s:if>
 						<s:if test="!systemEdit">
 							<td class="buttonAction">
