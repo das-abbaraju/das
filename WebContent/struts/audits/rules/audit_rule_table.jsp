@@ -10,7 +10,8 @@
 		</thead>
 		<tbody>
 			<s:iterator value="ruleIDs" id="r">
-				<tr class="clickable" onclick="window.open('<s:property value="type" />RuleEditor.action?id=<s:property value="#r" />')">
+				<tr class="clickable <s:property value="map.get(#r, @com.picsauditing.actions.auditType.AuditRuleColumn@Include).get(0) == 'Yes' ? 'on' : 'off'" />"
+					onclick="window.open('<s:property value="type" />RuleEditor.action?id=<s:property value="#r" />')">
 					<s:iterator value="columns" id="c">
 						<s:if test="map.get(#r, #c).size > 0">
 							<s:iterator value="map.get(#r, #c)">
