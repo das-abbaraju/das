@@ -13,6 +13,7 @@ import java.util.Set;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.PICS.AuditBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
@@ -60,19 +61,22 @@ public class AuditBuilderController {
 	private ContractorTagDAO contractorTagDAO;
 	private AuditCategoryRuleCache auditCategoryRuleCache;
 	private AuditTypeRuleCache auditTypeRuleCache;
+	private AuditTypeDAO auditTypeDao;
 
 	public AuditBuilderController(ContractorAuditDAO cAuditDAO,
 			AuditDataDAO auditDataDAO,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO,
 			ContractorTagDAO contractorTagDAO,
 			AuditCategoryRuleCache auditCategoryRuleCache,
-			AuditTypeRuleCache auditTypeRuleCache) {
+			AuditTypeRuleCache auditTypeRuleCache,
+			AuditTypeDAO auditTypeDao) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
 		this.contractorTagDAO = contractorTagDAO;
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
 		this.auditTypeRuleCache = auditTypeRuleCache;
+		this.auditTypeDao = auditTypeDao;
 	}
 
 	public void setup(ContractorAccount con, User user) {
@@ -92,6 +96,7 @@ public class AuditBuilderController {
 		int year = DateBean.getCurrentYear();
 		for (AuditType auditType : getRequiredAuditTypeSet()) {
 			if (auditType.isAnnualAddendum()) {
+				auditType = auditTypeDao.find(auditType.getId());
 				addAnnualAddendum(contractor.getAudits(), year - 1, auditType);
 				addAnnualAddendum(contractor.getAudits(), year - 2, auditType);
 				addAnnualAddendum(contractor.getAudits(), year - 3, auditType);
@@ -121,12 +126,13 @@ public class AuditBuilderController {
 				if (!found) {
 					PicsLogger.log("Adding: " + auditType.getId()
 							+ auditType.getAuditName());
+					auditType = auditTypeDao.find(auditType.getId()); // need to reconnect object (auditType is from Cache)
 					ContractorAudit pendingToInsert = createAudit(auditType);
 					contractor.getAudits().add(pendingToInsert);
 				}
 			}
 		}
-
+		
 		/* Remove unneeded audits */
 		Iterator<ContractorAudit> iter = contractor.getAudits().iterator();
 		while (iter.hasNext()) {
