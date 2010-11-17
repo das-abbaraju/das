@@ -73,6 +73,27 @@ public class ContractorAuditController extends AuditActionSupport {
 			this.findConAudit();
 
 		if (button != null) {
+			if (categoryID > 0 && permissions.isPicsEmployee()) {
+				if ("IncludeCategory".equals(button)) {
+					for (AuditCatData data : conAudit.getCategories()) {
+						if (data.getCategory().getId() == categoryID) {
+							data.setApplies(true);
+							data.setOverride(true);
+						}
+					}
+				}
+				
+				if ("UnincludeCategory".equals(button)) {
+					for (AuditCatData data : conAudit.getCategories()) {
+						if (data.getCategory().getId() == categoryID) {
+							data.setApplies(false);
+							data.setOverride(true);
+						}
+					}
+				}
+			}	
+			
+			
 			if ("Recalculate".equals(button)) {
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
 				return SUCCESS;
