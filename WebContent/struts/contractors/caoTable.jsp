@@ -40,10 +40,17 @@
 								<s:checkbox cssClass="vis" value="#currentCao.visible" name="caosSave[%{#rowStatus.index}].visible" />
 							</td>
 						</s:if>
-						<s:if test="getViewableOperators(permissions).size>1">
-							<td title="<s:iterator value="#currentCao.caoPermissions"><s:property value="operator.name"/>, </s:iterator>">
-							<s:property value="operator.name" /></td>
+						<td title="<s:iterator value="getViewableCaops(#currentCao)">
+						<s:property value="name"/>,</s:iterator>">
+						<s:if test="getViewableCaops(#currentCao).size() == 1">
+							<s:iterator value="getViewableCaops(#currentCao)">
+								<s:property value="name" />
+							</s:iterator>
 						</s:if>
+						<s:else>
+							<s:property value="getViewableCaops(#currentCao).size()"/> operators 
+						</s:else> 
+						</td>
 						<td class="progress nobr">
 							<s:if test="#currentCao.status.submittedResubmitted">
 								<div style="position: relative">
