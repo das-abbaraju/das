@@ -237,4 +237,17 @@ public class AuditDataDAO extends PicsDAO {
 			return null;
 		}
 	}
+	
+	public AuditData findAnswerByAuditQuestion(int auditID, int questionID) {
+		Query query = em.createQuery("SELECT d FROM AuditData d "
+				+ "WHERE d.audit.id = ? "
+				+ "AND d.question.id = ? ORDER BY d.audit.id DESC");
+		query.setParameter(1, auditID);
+		query.setParameter(2, questionID);
+		try {
+			return (AuditData) query.getSingleResult();
+		} catch (NoResultException nre) {
+			return null;
+		}
+	}
 }

@@ -139,7 +139,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 				
 				if (questionID > 0 && auditID > 0) {
 					AuditQuestion q = questionDAO.find(questionID);
-					AuditData d = dataDAO.findAnswerByConQuestion(id, questionID);
+					AuditData d = dataDAO.findAnswerByAuditQuestion(auditID, questionID);
 					
 					if (d == null)
 						d = new AuditData();
