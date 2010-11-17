@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
@@ -91,9 +90,9 @@ public class AuditBuilder {
 			ContractorAccount contractor) {
 		// This isn't super efficient, but it works
 		AuditBuilder builder = new AuditBuilder();
-		AuditDecisionTableDAO dao = (AuditDecisionTableDAO) SpringUtils
-				.getBean("AuditDecisionTableDAO");
-		List<AuditTypeRule> rules = dao.getApplicableAuditRules(contractor);
+		AuditTypeRuleCache auditTypeRuleCache = (AuditTypeRuleCache) SpringUtils
+				.getBean("AuditTypeRuleCache");
+		List<AuditTypeRule> rules = auditTypeRuleCache.getApplicableAuditRules(contractor);
 		return builder.calculateRequiredAuditTypes(rules, contractor
 				.getOperatorAccounts());
 	}

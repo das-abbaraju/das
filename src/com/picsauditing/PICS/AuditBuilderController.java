@@ -13,7 +13,6 @@ import java.util.Set;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.PICS.AuditBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
@@ -58,21 +57,22 @@ public class AuditBuilderController {
 	private ContractorAuditDAO cAuditDAO;
 	private AuditDataDAO auditDataDAO;
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
-	private AuditDecisionTableDAO auditDecisionTableDAO;
 	private ContractorTagDAO contractorTagDAO;
 	private AuditCategoryRuleCache auditCategoryRuleCache;
+	private AuditTypeRuleCache auditTypeRuleCache;
 
 	public AuditBuilderController(ContractorAuditDAO cAuditDAO,
 			AuditDataDAO auditDataDAO,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO,
-			AuditDecisionTableDAO auditDecisionTableDAO,
-			ContractorTagDAO contractorTagDAO, AuditCategoryRuleCache auditCategoryRuleCache) {
+			ContractorTagDAO contractorTagDAO,
+			AuditCategoryRuleCache auditCategoryRuleCache,
+			AuditTypeRuleCache auditTypeRuleCache) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
-		this.auditDecisionTableDAO = auditDecisionTableDAO;
 		this.contractorTagDAO = contractorTagDAO;
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
+		this.auditTypeRuleCache = auditTypeRuleCache;
 	}
 
 	public void setup(ContractorAccount con, User user) {
@@ -86,7 +86,6 @@ public class AuditBuilderController {
 		setup(con, user);
 		// PicsLogger.addRuntimeRule("BuildAudits");
 		PicsLogger.start("BuildAudits", " conID=" + contractor.getId());
-		cAuditDAO.remove(175601);
 		getAuditTypeRules();
 
 		/* Add audits not already there */
@@ -167,12 +166,12 @@ public class AuditBuilderController {
 	}
 
 	public List<AuditTypeRule> getAuditTypeRules() {
-		if (rules == null) {
-			rules = new ArrayList<AuditTypeRule>();
-			for (AuditRule rule : pruneRules(auditDecisionTableDAO
-					.getApplicableAuditRules(contractor), null)) {
-				rules.add((AuditTypeRule) rule);
-			}
+		rules = new ArrayList<AuditTypeRule>();
+		List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache
+				.getApplicableAuditRules(contractor);
+		List<AuditRule> pruneRules = pruneRules(applicableAuditRules, null);
+		for (AuditRule rule : pruneRules) {
+			rules.add((AuditTypeRule) rule);
 		}
 		return rules;
 	}

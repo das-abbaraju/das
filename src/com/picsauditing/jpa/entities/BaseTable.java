@@ -25,6 +25,7 @@ import org.json.simple.JSONObject;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.PicsDAO;
 
+
 @SuppressWarnings("serial")
 @Entity
 @MappedSuperclass
@@ -159,6 +160,14 @@ public abstract class BaseTable implements JSONable, Serializable {
 			System.out.println("Error comparing BaseTable objects: " + e.getMessage());
 			return false;
 		}
+	}
+	
+	@Override
+	public int hashCode() {
+		if( id == 0 )
+			return super.hashCode();
+		else
+			return ( ( getClass().getName().hashCode() % 1000 ) * 10000000 ) + id;
 	}
 
 	public void update(BaseTable b) {
