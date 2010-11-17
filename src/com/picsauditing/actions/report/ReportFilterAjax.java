@@ -48,6 +48,7 @@ public class ReportFilterAjax extends PicsActionSupport {
 				filter.setShowEmailTemplate(true);
 				filter.setEmailListType(ListType.Audit);
 				filter.setShowAuditFor(true);
+				filter.setShowWaitingOn(true);
 				this.filter = filter;
 			}
 			if (listType.equals(ListType.User)) {
