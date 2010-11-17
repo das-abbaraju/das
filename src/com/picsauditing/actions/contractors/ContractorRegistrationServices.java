@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +19,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.User;
@@ -28,11 +30,12 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	private int auditID = 0;
 	private int catDataID = 0;
 	private int requestID = 0;
-	private List<AuditQuestion> infoQuestions;
-	private List<AuditQuestion> serviceQuestions;
+	private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
+	private List<AuditQuestion> serviceQuestions = new ArrayList<AuditQuestion>();
 	private List<AuditCategory> categories;
 	private Map<Integer, AuditData> answerMap;
 	private AuditData auditData;
+	private ContractorAudit conAudit;
 
 	private AuditCategoryDAO auditCateoryDAO;
 	private AuditQuestionDAO auditQuestionDAO;
@@ -56,6 +59,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		auditData = new AuditData();
 		for (ContractorAudit ca : contractor.getAudits()) {
 			if (ca.getAuditType().isPqf()) {
+				conAudit = ca;
 				auditID = ca.getId();
 				// Prepare auditdata
 				auditData.setAudit(new ContractorAudit());
@@ -73,16 +77,20 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			createPQF();
 
 		Set<Integer> questionIds = new HashSet<Integer>();
-		infoQuestions = auditQuestionDAO.findWhere("category.id = 400"); // TODO
-																			// fix
-		for (AuditQuestion q : infoQuestions)
-			questionIds.add(q.getId());
-
-		serviceQuestions = auditQuestionDAO.findWhere("category.id = 422");
-		for (AuditQuestion q : serviceQuestions)
-			questionIds.add(q.getId());
-
 		categories = auditCateoryDAO.findWhere("id IN (400, 422)");
+		for (AuditCategory category : categories) {
+			if (category.getId() == 400) {
+				for (AuditQuestion question : category.getQuestions()) {
+					infoQuestions.add(question);
+					questionIds.add(question.getId());
+				}
+			} else if (category.getId() == 422) {
+				for (AuditQuestion question : category.getQuestions()) {
+					serviceQuestions.add(question);
+					questionIds.add(question.getId());
+				}
+			}
+		}
 
 		answerMap = auditDataDAO.findAnswersByContractor(id, questionIds);
 
@@ -111,7 +119,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				if (!performServices)
 					addActionError("Please select the services you perform below");
 				if (requiredQuestions && performServices) {
-					Collection<AuditData> auditList = answerMap.values();
+					Collection<AuditData> auditList = answerMap.values();	
 					LowMedHigh riskLevel = LowMedHigh.Low;
 					for (AuditData auditData : auditList) {
 						AuditQuestion q = auditData.getQuestion();
@@ -182,10 +190,14 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		this.auditData = auditData;
 	}
 
+	public ContractorAudit getConAudit() {
+		return conAudit;
+	}
+
 	public boolean isViewBlanks() {
 		return true;
 	}
-	
+
 	public String getMode() {
 		return "Edit";
 	}
@@ -238,7 +250,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		addAuditCategories(audit, 8); // GENERAL INFORMATION
 		addAuditCategories(audit, AuditCategory.SERVICES_PERFORMED);
 		addAuditCategories(audit, 184); // SUPPLIER DIVERSITY
-		audit = auditDao.save(audit);
+		conAudit = auditDao.save(audit);
 		auditID = audit.getId();
 
 		auditData.setAudit(audit);
