@@ -152,10 +152,14 @@ public class FlagDataCalculator {
 				// Any other audit, PQF, or Policy
 				for (ContractorAudit ca : conCriteria.getContractor().getAudits()) {
 					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired()) {
+						if(!worksForOperator) {
+							if(ca.hasCaoStatusAfter(AuditStatus.Incomplete))
+								return false;
+						}
 						for (ContractorAuditOperator cao : ca.getOperators()) {
 							// TODO Make sure we identify the right operator or
 							// corporate here
-							if (cao.hasCaop(opCriteria.getOperator().getId())) {
+							if (cao.hasCaop(getOperator().getId())) {
 								if (cao.getStatus().isResubmit())
 									return false;
 								else if (!cao.getStatus().before(criteria.getRequiredStatus()))

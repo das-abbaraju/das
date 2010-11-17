@@ -405,7 +405,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		});
 		return currentCaos;
 	}
-
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getContractorConfirm() {
 		return contractorConfirm;
@@ -630,7 +630,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	@Transient
 	public boolean hasCaoStatus(AuditStatus auditStatus) {
 		for (ContractorAuditOperator cao : this.operators) {
-			if (cao.getStatus().equals(auditStatus))
+			if (cao.isVisible() && cao.getStatus().equals(auditStatus))
 				return true;
 		}
 		return false;
@@ -639,7 +639,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	@Transient
 	public boolean hasCaoStatusBefore(AuditStatus auditStatus) {
 		for (ContractorAuditOperator cao : this.operators) {
-			if (cao.getStatus().before(auditStatus))
+			if (cao.isVisible() && cao.getStatus().before(auditStatus))
 				return true;
 		}
 		return false;
@@ -648,7 +648,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	@Transient
 	public boolean hasCaoStatusAfter(AuditStatus auditStatus) {
 		for (ContractorAuditOperator cao : this.operators) {
-			if (cao.getStatus().after(auditStatus))
+			if (cao.isVisible() && cao.getStatus().after(auditStatus))
 				return true;
 		}
 		return false;
