@@ -15,7 +15,7 @@
 				<th>Status</th>
 				<th>Date</th>
 				<s:if test="conAudit.auditType.classType.policy">
-					<th>Recommended</th>
+					<th>Suggested</th>
 				</s:if>
 				<s:if test="!systemEdit">
 					<th>
