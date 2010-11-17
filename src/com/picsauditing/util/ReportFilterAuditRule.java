@@ -24,7 +24,7 @@ public class ReportFilterAuditRule extends ReportFilter {
 	protected String tag = null;
 	
 	protected Integer dependentAuditStatus = null;
-	protected Integer contractorType = null;
+	protected String contractorType = null;
 	protected Integer riskLevel = null;
 	
 	protected Date checkDate = null;
@@ -55,11 +55,11 @@ public class ReportFilterAuditRule extends ReportFilter {
 			this.dependentAuditStatus = dependentAuditStatus; // adjust for default value in list
 	}
 
-	public Integer getContractorType() {
+	public String getContractorType() {
 		return contractorType;
 	}
 
-	public void setContractorType(int contractorType) {
+	public void setContractorType(String contractorType) {
 		this.contractorType = contractorType;
 	}
 

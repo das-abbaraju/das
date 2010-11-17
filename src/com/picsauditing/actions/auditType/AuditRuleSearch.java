@@ -183,10 +183,9 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 	}
 
 	protected void addFilterToSQL() throws Exception {
-		if (filterOn(filter.getContractorType())
-				&& filter.getContractorType() > 0) {
+		if (filterOn(filter.getContractorType())) {
 			report.addFilter(new SelectFilter("accountType",
-					"a_search.contractorType = ?", String.valueOf(filter
+					"a_search.contractorType = '?'", String.valueOf(filter
 							.getContractorType())));
 		}
 		if (filterOn(filter.getRiskLevel()) && filter.getRiskLevel() > 0) {

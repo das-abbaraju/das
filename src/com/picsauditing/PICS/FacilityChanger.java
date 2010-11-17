@@ -70,7 +70,6 @@ public class FacilityChanger {
 		// permissions.tryPermission(OpPerms.SearchContractors, OpType.Edit);
 
 		ContractorOperator co = new ContractorOperator();
-		co.setContractorType(type);
 		co.setContractorAccount(contractor);
 		co.setOperatorAccount(operator);
 

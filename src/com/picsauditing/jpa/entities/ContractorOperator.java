@@ -46,7 +46,6 @@ public class ContractorOperator extends BaseTable implements
 	private WaitingOn waitingOn = WaitingOn.None;
 	private Date processCompletion;
 	private String relationshipType;
-	private ContractorType contractorType = ContractorType.Onsite;
 	private Set<FlagData> flagDatas = new HashSet<FlagData>();
 	private Set<FlagDataOverride> overrides = new HashSet<FlagDataOverride>();
 
@@ -233,16 +232,6 @@ public class ContractorOperator extends BaseTable implements
 
 	public void setRelationshipType(String relationshipType) {
 		this.relationshipType = relationshipType;
-	}
-	
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	public ContractorType getContractorType() {
-		return contractorType;
-	}
-	
-	public void setContractorType(ContractorType contractorType) {
-		this.contractorType = contractorType;
 	}
 
 	// added mappedBy="flag" to show which side is the owning side in the
