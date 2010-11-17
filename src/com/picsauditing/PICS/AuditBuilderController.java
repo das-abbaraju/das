@@ -172,12 +172,14 @@ public class AuditBuilderController {
 	}
 
 	public List<AuditTypeRule> getAuditTypeRules() {
-		rules = new ArrayList<AuditTypeRule>();
-		List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache
-				.getApplicableAuditRules(contractor);
-		List<AuditRule> pruneRules = pruneRules(applicableAuditRules, null);
-		for (AuditRule rule : pruneRules) {
-			rules.add((AuditTypeRule) rule);
+		if (rules == null) {
+			rules = new ArrayList<AuditTypeRule>();
+			List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache
+					.getApplicableAuditRules(contractor);
+			List<AuditRule> pruneRules = pruneRules(applicableAuditRules, null);
+			for (AuditRule rule : pruneRules) {
+				rules.add((AuditTypeRule) rule);
+			}
 		}
 		return rules;
 	}
