@@ -194,7 +194,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 					childMenu.setUrl("Audit.action?auditID=" + audit.getId());
 					iter.remove();
 				}
-			}
+			}//<a href="ConInsureGUARD.action?id=<s:property value="id"/>">Manage Certificates</a>
+			subMenu.addChild("Manage Certificates", "ConInsureGUARD.action?id="+contractor.getId());
 			addSubMenu(menu, subMenu);
 		}
 
