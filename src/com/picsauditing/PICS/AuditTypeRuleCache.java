@@ -41,6 +41,15 @@ public class AuditTypeRuleCache {
 		acceptsBids.add(null);
 		acceptsBids.add(contractor.isAcceptsBids());
 
+		Set<ContractorType> contractorType = new HashSet<ContractorType>();
+		contractorType.add(null);
+		if (contractor.isOnsiteServices())
+			contractorType.add(ContractorType.Onsite);
+		if (contractor.isOffsiteServices())
+			contractorType.add(ContractorType.Offsite);
+		if (contractor.isMaterialSupplier())
+			contractorType.add(ContractorType.Supplier);
+
 		Set<ContractorOperator> operators = new HashSet<ContractorOperator>();
 		operators.add(null);
 		operators.addAll(contractor.getOperators());
@@ -53,18 +62,12 @@ public class AuditTypeRuleCache {
 					ContractorTypes data3 = data2.getData(acceptsBid);
 					if (data3 != null) {
 						PicsLogger.log(" found matching acceptsBid " + acceptsBid);
-						for (ContractorOperator co : operators) {
-							Set<ContractorType> contractorType = new HashSet<ContractorType>();
-							contractorType.add(null);
-							OperatorAccount operator = null;
-							if (co != null) {
-								contractorType.add(co.getContractorType());
-								operator = co.getOperatorAccount();
-							}
-							for (ContractorType conType : contractorType) {
-								Operators data4 = data3.getData(conType);
-								if (data4 != null) {
-									PicsLogger.log("   found matching conType " + conType);
+						for (ContractorType conType : contractorType) {
+							Operators data4 = data3.getData(conType);
+							if (data4 != null) {
+								PicsLogger.log("   found matching conType " + conType);
+								for (ContractorOperator co : operators) {
+									OperatorAccount operator = (co == null ? null : co.getOperatorAccount());
 									Set<AuditTypeRule> data6 = data4.getData(operator);
 									if (data6 != null) {
 										PicsLogger.log("    found matching operator " + operator);
