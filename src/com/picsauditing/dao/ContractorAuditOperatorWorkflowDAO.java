@@ -10,7 +10,7 @@ public class ContractorAuditOperatorWorkflowDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<ContractorAuditOperatorWorkflow> findByCaoID(int caoID){
-		Query query = em.createQuery("FROM ContractorAuditOperatorWorkflow c WHERE c.cao.id = ?");
+		Query query = em.createQuery("FROM ContractorAuditOperatorWorkflow c WHERE c.cao.id = ? ORDER BY c.creationDate DESC");
 		query.setParameter(1, caoID);		
 		
 		return query.getResultList();

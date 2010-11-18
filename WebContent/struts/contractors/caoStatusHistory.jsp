@@ -7,7 +7,8 @@
 		<tr>
 			<th>When</th>
 			<th>Who Changed</th>
-			<th>Status</th>
+			<th>New Status</th>
+			<th>Old Status</th>
 			<th>Notes</th>
 		</tr>
 	</thead>
@@ -17,6 +18,7 @@
 				<tr>
 					<td><s:property value="formatDate(updateDate, 'MMMMM d, yyyy')" default="N/A"/></td>
 					<td><s:property value="updatedBy.name"/></td>
+					<td><s:property value="status"/></td>
 					<td><s:property value="previousStatus"/></td>
 					<td><s:property value="notes"/></td>
 				</tr>
