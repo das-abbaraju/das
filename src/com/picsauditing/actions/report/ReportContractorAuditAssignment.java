@@ -19,11 +19,10 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
-public class ReportContractorAuditAssignment extends ReportContractorAuditOperator {
+public class ReportContractorAuditAssignment extends ReportContractorAudits {
 
 	public ReportContractorAuditAssignment(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
 			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
-		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
 	}
 
 	@Override
@@ -52,7 +51,7 @@ public class ReportContractorAuditAssignment extends ReportContractorAuditOperat
 		sql.addField("manual.comment AS mcomment");
 		sql.addField("manual.id AS mid");
 		
-		orderByDefault = "cao.statusChangedDate";
+		orderByDefault = "ca.creationDate";
 		
 		getFilter().setShowUnConfirmedAudits(true);
 		getFilter().setShowAuditFor(false);

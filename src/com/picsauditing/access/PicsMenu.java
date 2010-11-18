@@ -157,7 +157,7 @@ public class PicsMenu {
 			subMenu.addChild("Audit List", "ReportCAOList.action");
 
 		if (permissions.hasPermission(OpPerms.AssignAudits))
-			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?filter.status=Active&filter.auditStatus=Pending");
+			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?filter.status=Active");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Close Assigned Audits", "ReportCloseAuditAssignments.action?filter.auditStatus=Submitted");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
