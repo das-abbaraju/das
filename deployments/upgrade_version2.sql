@@ -8,8 +8,6 @@
 -- move app_translation (not if empty)
 ANALYZE TABLE app_index, app_index_stats, audit_type, audit_category, audit_question, audit_category_rule, audit_type_rule, workflow, workflow_step, pqfoptions;
 
--- Can't represent 0000-00-00 as a java sql date
-update pqfdata pd set pd.dateVerified = null where pd.dateVerified like '0000-00-00';
 
 -- these audits have been removed on alpha
 delete from pqfcatdata where auditid in (
@@ -734,3 +732,5 @@ alter table contractor_audit change `score` `score` tinyint(3) default '0' NULL;
 
 /* Need to set insuranceAuditors to null where they are 0 */
 update operators set insuranceAuditor_id = null where insuranceAuditor_id = 0;
+-- Can't represent 0000-00-00 as a java sql date
+update pqfdata pd set pd.dateVerified = null where pd.dateVerified like '0000-00-00';
