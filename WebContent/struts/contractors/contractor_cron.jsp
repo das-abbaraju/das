@@ -12,7 +12,9 @@
 	<fieldset class="form">
 	<h2 class="formLegend">Custom Options</h2>
 	<ol>
-		<li><label>Contractor ID:</label> <s:textfield name="conID" /></li>
+		<li><label>Contractor ID:</label> <s:textfield name="conID" />
+			<s:if test="conID > 0"><a href="ContractorView.action?id=<s:property value="conID"/>">Account Summary</a></s:if>
+		</li>
 		<li><label>Steps:</label> <s:select name="steps"
 			list="stepValues" multiple="5" /></li>
 	</ol>
