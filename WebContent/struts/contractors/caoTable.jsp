@@ -7,10 +7,7 @@
 				<s:if test="systemEdit">
 					<th>Visible</th>
 				</s:if>
-				<% // temp fix for roseburg %>
-				<s:if test="getViewableOperators(permissions).size>1">
-					<th>Operator Scope</th>
-				</s:if>
+				<th>Operator Scope</th>
 				<th>Progress</th>
 				<th>Status</th>
 				<th>Date</th>
