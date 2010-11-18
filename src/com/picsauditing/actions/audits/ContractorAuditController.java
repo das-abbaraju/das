@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.picsauditing.PICS.AuditBuilderController;
-import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
+import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDAO;
@@ -49,6 +49,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	private AuditBuilderController auditBuilder;
 	private OshaAuditDAO oshaAuditDAO;
 	protected int caoID;
+	protected boolean previewCat = false;
 	// Policy verification (next/first buttons)
 	private boolean policy;
 
@@ -101,12 +102,14 @@ public class ContractorAuditController extends AuditActionSupport {
 			
 			if ("Recalculate".equals(button)) {
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
+				this.redirect("Audit.action?auditID="+conAudit.getId());
 				return SUCCESS;
 			}
 
 			// Preview the Category from the manage audit type page
 			if ("PreviewCategory".equals(button)) {
 				if (auditID == 0 && categoryID > 0) {
+					previewCat = true;
 					AuditCategory auditCategory = auditCategoryDAO
 							.find(categoryID);
 					for (AuditCategory auditSubCategory : auditCategory
@@ -120,7 +123,7 @@ public class ContractorAuditController extends AuditActionSupport {
 					categoryData.setCategory(auditCategory);
 					categoryData.setApplies(true);
 					categories.put(auditCategory, categoryData);
-					mode = EDIT;
+					mode = VIEW;
 					return SUCCESS;
 				}
 			}
@@ -311,5 +314,13 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	public void setPolicy(boolean policy) {
 		this.policy = policy;
+	}
+
+	public boolean isPreviewCat() {
+		return previewCat;
+	}
+
+	public void setPreviewCat(boolean previewCat) {
+		this.previewCat = previewCat;
 	}
 }

@@ -30,7 +30,7 @@
 			</s:if> 
 			<s:set name="shaded" value="true" scope="action"/>
 			<s:iterator value="#category.questions" id="q">
-				<s:if test="#q.isValidQuestion(conAudit.validDate)">
+				<s:if test="previewCat || #q.isValidQuestion(conAudit.validDate)">
 					<s:if test="title != null && title.length() > 0">
 						<h4 class="groupTitle">
 							<s:property value="title" escape="false"/>
@@ -67,7 +67,7 @@
 				</s:if>
 			</s:iterator>
 			<s:iterator value="#category.subCategories" id="category">
-				<s:if test="isAppliesSubCategory(#category)">
+				<s:if test="previewCat || isAppliesSubCategory(#category)">
 					<s:include value="audit_cat_view.jsp"/>
 				</s:if>
 			</s:iterator>	

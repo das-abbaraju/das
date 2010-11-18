@@ -979,7 +979,7 @@
 
 		<action name="AuditCatPreview"
 			class="com.picsauditing.actions.audits.ContractorAuditController">
-			<result>struts/audits/audit_cat_view.jsp</result>
+			<result>struts/audits/audit_cat_preview.jsp</result>
 		</action>
 
 		<action name="AuditAjax"
