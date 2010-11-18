@@ -15,7 +15,7 @@ display:none}
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
-<script type="text/javascript" src="js/con_audit.js?v=<s:property value="version"/>"></script>
+<script type="text/javascript" src="js/audit_data_save.js?v=<s:property value="version"/>"></script>
 
 <script type="text/javascript">
 	var auditID = '<s:property value="auditID"/>';
