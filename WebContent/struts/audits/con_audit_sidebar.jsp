@@ -21,6 +21,7 @@
 	<s:if test="canPreview">
 		<li><a class="preview" href="#mode=ViewQ">Preview Questions</a></li>
 	</s:if>
+	<li><a class="file" href="#viewBlanks=false&mode=View" id="viewBlanks">View Answered</a></li>
 	<s:if test="permissions.admin && categories.keySet().size > 1">
 		<li><a class="addremove"
 			href="AddRemoveCategories.action?auditID=<s:property value="auditID"/>">

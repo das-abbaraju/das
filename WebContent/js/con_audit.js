@@ -7,17 +7,19 @@ $(function(){
 		$.bbq.pushState(this.href);
 		$.bbq.removeState('onlyReq');
 		$.bbq.removeState('subCat');
+		$.bbq.removeState('viewBlanks');
 		if ($.bbq.getState().categoryID == lastState.categoryID)
 			$.bbq.pushState({"_": (new Date()).getTime()});
 		else
 			$.bbq.removeState("_");
-		if ($.bbq.getState().mode == 'ViewQ')
+		if ($.bbq.getState().mode == 'ViewQ' || $.bbq.getState().viewBlanks == "false")
 			$.bbq.removeState('mode');
 		return false;
 	});
 	
 	$('ul.subcat-list li a').live('click', function() {
 		$.bbq.pushState(this.href);
+		$.bbq.removeState('viewBlanks');
 		$.bbq.removeState('onlyReq');
 		$.bbq.removeState("_");
 		return false;
@@ -25,9 +27,11 @@ $(function(){
 	
 	$('ul.vert-toolbar a.preview').live('click', function() {
 		$.bbq.pushState(this.href);
+		$.bbq.removeState('viewBlanks');
 		$.bbq.removeState('onlyReq');
 		$.bbq.removeState('_');
 		$.bbq.removeState('subCat');
+		return false;
 	});
 	
 	$(window).bind('hashchange', function() {
@@ -44,6 +48,10 @@ $(function(){
 			var data = $.deparam.querystring($.param.querystring(location.href, state));
 			data.button='load';
 			loadCategories(data, 'Loading Preview...');
+		} else if (state.viewBlanks == "false") {
+			var data = $.deparam.querystring($.param.querystring(location.href, state));
+			data.button='load';
+			loadCategories(data, 'Loading Answered Questions...');
 		} else if (state.categoryID === undefined) {
 			$.bbq.pushState($.param.fragment(location.href,$('a.hist-category:first').attr('href')));
 		} else if (!lastState || !lastState.categoryID || state.categoryID != lastState.categoryID || state.mode != lastState.mode || state["_"]) {
@@ -135,6 +143,10 @@ function loadCategories(data, msg) {
 
 				if (state.mode == 'ViewQ') {
 					$('a.preview').parents('li:first').addClass('current');
+				}
+				
+				if (state.viewBlanks == "false") {
+					$('#viewBlanks').parents('li:first').addClass('current');
 				}
 				
 				showNavButtons();
