@@ -9,9 +9,7 @@
 			href="ConAuditMaintain.action?auditID=<s:property value="auditID" />">System
 		Edit</a></li>
 	</pics:permission>
-	<s:if test="permissions.admin">
-		<li><a href="Audit.action?auditID=<s:property value="auditID"/>&button=Recalculate">Recalculate Categories</a></li>
-	</s:if>
+	<li><a href="Audit.action?auditID=<s:property value="auditID"/>&button=Recalculate">% Recalculate</a></li>
 	<s:if test="canVerify">
 		<pics:permission perm="AuditVerification">
 			<li><a class="verify"
