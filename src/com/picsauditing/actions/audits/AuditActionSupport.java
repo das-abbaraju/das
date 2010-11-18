@@ -22,7 +22,6 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -240,9 +239,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (cao.getPercentVerified() < 100 || !cao.getStatus().isSubmitted())
 				return false;
 		}
-
+		
+		if(workflowStep.getNewStatus().isResubmitted() && !conAudit.isAboutToExpire()) {
+			return false;
+		}
+		
 		AuditType type = cao.getAudit().getAuditType();
-
+		
 		if (workflowStep.getNewStatus().isComplete() && type.getWorkFlow().isHasSubmittedStep()
 				&& cao.getPercentVerified() < 100)
 			return false;
