@@ -227,11 +227,11 @@ public class AuditBuilderController {
 				contractorAnswers.put(questionID, answerMap.get(questionID));
 			}
 		}
-		Set<Integer> opTags = new HashSet<Integer>();
+		Set<OperatorTag> opTags = new HashSet<OperatorTag>();
 		if (tagsNeeded.size() > 0) {
 			List<ContractorTag> contractorTags = contractorTagDAO.getContractorTags(contractor.getId(), tagsNeeded);
 			for (ContractorTag contractorTag : contractorTags) {
-				opTags.add(contractorTag.getTag().getId());
+				opTags.add(contractorTag.getTag());
 			}
 		}
 
@@ -251,7 +251,7 @@ public class AuditBuilderController {
 				valid = false;
 			}
 
-			if (rule.getTag() != null && !opTags.contains(rule.getTag().getId())) {
+			if (rule.getTag() != null && !opTags.contains(rule.getTag())) {
 				valid = false;
 			}
 
@@ -265,8 +265,8 @@ public class AuditBuilderController {
 				if (auditTypeRule.getDependentAuditType() != null) {
 					valid = false;
 					for (ContractorAuditOperator cao : caoList) {
-						if (cao.getOperator().getId() == auditTypeRule.getOperatorAccount().getId()
-								&& cao.getAudit().getAuditType().getId() == auditTypeRule.getDependentAuditType().getId()) {
+						if (cao.getOperator().equals(auditTypeRule.getOperatorAccount())
+								&& cao.getAudit().getAuditType().equals(auditTypeRule.getDependentAuditType())) {
 							if (!cao.getStatus().before(auditTypeRule.getDependentAuditStatus()))
 								valid = true;
 						}
@@ -356,7 +356,7 @@ public class AuditBuilderController {
 				List<AuditCategoryRule> listForThis = new ArrayList<AuditCategoryRule>();
 				categoryRuleCache.put(aType, listForThis);
 				for (AuditCategoryRule rule : list) {
-					if (rule.getAuditType() == null || rule.getAuditType().getId() == aType.getId())
+					if (rule.getAuditType() == null || rule.getAuditType().equals(aType))
 						listForThis.add(rule);
 				}
 			}
@@ -480,10 +480,10 @@ public class AuditBuilderController {
 			if (detail != null) {
 				for (OperatorAccount opAccount : detail.operators.keySet()) {
 					AuditCategoryRule auditCategoryRule = detail.operators.get(opAccount);
-					if ((auditCategoryRule == null || auditCategoryRule.getOperatorAccount() == null)
+					if ((auditCategoryRule.getOperatorAccount() == null)
 							&& (cao.getOperator().getId() == OperatorAccount.PicsConsortium)) {
 						operators.add(opAccount);
-					} else if (cao.getOperator().getId() == auditCategoryRule.getOperatorAccount().getId()) {
+					} else if (cao.getOperator().equals(auditCategoryRule.getOperatorAccount())) {
 						operators.add(opAccount);
 					}
 				}
