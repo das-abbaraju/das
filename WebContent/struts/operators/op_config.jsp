@@ -25,20 +25,6 @@ $(document).ready(function() {
 	data.where = 'r.auditType.id = 1';
 	startThinking({ div: "excludedCategories", message: "Loading Excluded Audit Category Rules" });
 	$('#excludedCategories').load("AuditRuleTableAjax.action", data);
-
-	// GL = 13, WC = 14, Auto = 15
-	data.excluded = false;
-	data.type = 'AuditType';
-	for (i = 13; i <= 15; i++) {
-		data.auditTypeID = i;
-		startThinking({ div: "insurance_" + i, message: "Loading Insurance Rules" });
-		$('#insurance_' + i).load("AuditRuleTableAjax.action", data, function() {
-			var j = $(this).attr('id').substring(10);
-			$(this).append('<a href="AuditTypeRuleEditor.action?button=edit&rule.include=true&rule.auditType.id='
-					+ j + '&rule.operatorAccount.id=' + <s:property value="operator.id" /> 
-					+ '" class="add" target="_blank">Add Rule</a>');
-		});
-	}
 });
 
 function toggleCategory(catID) {
@@ -130,7 +116,7 @@ function loadCatRules(catID, divCatID, name) {
 					</s:if>
 					<s:else>
 						<tr>
-							<td>No Parent Accounts found</td>
+							<td><div class="alert">No Parent Accounts found</div></td>
 						</tr>
 					</s:else>
 				</tbody>
@@ -186,6 +172,12 @@ function loadCatRules(catID, divCatID, name) {
 					listKey="id" listValue="auditName" name="auditTypeID" onchange="$('#includeNewAudit').submit();" />
 			</s:form>
 		</li>
+		<pics:permission perm="ManageAuditTypeRules">
+			<li><a href="OperatorAuditTypeRules.action?id=<s:property value="id"/>">Related Audit Type Rules</a></li>
+		</pics:permission>
+		<pics:permission perm="ManageCategoryRules">
+			<li><a href="OperatorCategoryRules.action?id=<s:property value="id"/>">Related Category Rules</a></li>
+		</pics:permission>
 	</ol>
 </fieldset>
 <fieldset class="form">
@@ -228,27 +220,11 @@ function loadCatRules(catID, divCatID, name) {
 		</table>
 	</s:if>
 </fieldset>
-<fieldset class="form">
+<fieldset class="form bottom">
 	<h2 class="formLegend">Rules to Explicitly Remove PQF Categories</h2>
 	<ol>
 		<li>
 			<div id="excludedCategories"></div>
-			<a href="CategoryRuleEditor.action?button=edit&rule.include=false&rule.auditType.id=1&rule.operatorAccount.id=<s:property value="operator.id" />&rule.operatorAccount.name=<s:property value="operator.name" />"
-				target="_blank" class="add">Add Rule</a>
-		</li>
-	</ol>
-</fieldset>
-<fieldset class="form">
-	<h2 class="formLegend">Insurance Configuration</h2>
-	<ol>
-		<li>
-			<div id="insurance_13"></div>
-		</li>
-		<li>
-			<div id="insurance_14"></div>
-		</li>
-		<li>
-			<div id="insurance_15"></div>
 		</li>
 	</ol>
 </fieldset>
