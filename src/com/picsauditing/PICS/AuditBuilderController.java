@@ -474,7 +474,7 @@ public class AuditBuilderController {
 			if (detail != null) {
 				for (OperatorAccount opAccount : detail.operators.keySet()) {
 					AuditCategoryRule auditCategoryRule = detail.operators.get(opAccount);
-					if ((auditCategoryRule.getOperatorAccount() == null)
+					if ((auditCategoryRule == null || auditCategoryRule.getOperatorAccount() == null)
 							&& (cao.getOperator().getId() == OperatorAccount.PicsConsortium)) {
 						operators.add(opAccount);
 					} else if (cao.getOperator().equals(auditCategoryRule.getOperatorAccount())) {
