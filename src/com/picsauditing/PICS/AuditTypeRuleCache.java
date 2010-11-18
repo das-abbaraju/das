@@ -175,6 +175,13 @@ public class AuditTypeRuleCache {
 				map = new LinkedHashSet<AuditTypeRule>();
 				data.put(rule.getOperatorAccount(), map);
 			}
+			// Trying to ensure that needed objects are loaded in memory before
+			// they are cached so that when they are referenced later, lazy
+			// initializations do not occur
+			if (rule.getOperatorAccount() != null)
+				rule.getOperatorAccount().getCorporateFacilities();
+			if (rule.getQuestion() != null)
+				rule.getQuestion().getAuditType();
 			map.add(rule);
 			PicsLogger.log(" + OperatorAccount = " + rule.getOperatorAccount());
 		}
