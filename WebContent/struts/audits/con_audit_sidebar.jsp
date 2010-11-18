@@ -45,6 +45,11 @@
 				href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload
 			Requirements</a></li>
 		</s:elseif>
+		<s:elseif test="permissions.contractor">
+			<li><a class="uploadreq"
+				href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload
+			Requirements</a></li>
+		</s:elseif>
 		<s:if test="permissions.operatorCorporate">
 			<li><a class="file"
 				href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Review
