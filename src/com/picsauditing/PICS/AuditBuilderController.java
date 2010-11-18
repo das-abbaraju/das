@@ -13,7 +13,6 @@ import java.util.Set;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.PICS.AuditBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -22,7 +21,6 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -64,12 +62,11 @@ public class AuditBuilderController {
 	private AuditCategoryRuleCache auditCategoryRuleCache;
 	private AuditTypeRuleCache auditTypeRuleCache;
 	private AuditTypeDAO auditTypeDao;
-	private AuditQuestionDAO auditQuestionDao;
 
 	public AuditBuilderController(ContractorAuditDAO cAuditDAO, AuditDataDAO auditDataDAO,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, ContractorTagDAO contractorTagDAO,
 			AuditCategoryRuleCache auditCategoryRuleCache, AuditTypeRuleCache auditTypeRuleCache,
-			AuditTypeDAO auditTypeDao, AuditQuestionDAO auditQuestionDao) {
+			AuditTypeDAO auditTypeDao) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
@@ -77,7 +74,6 @@ public class AuditBuilderController {
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
 		this.auditTypeRuleCache = auditTypeRuleCache;
 		this.auditTypeDao = auditTypeDao;
-		this.auditQuestionDao = auditQuestionDao;
 	}
 
 	public void setup(ContractorAccount con, User user) {
@@ -196,11 +192,9 @@ public class AuditBuilderController {
 		Set<Integer> auditsNeeded = new HashSet<Integer>();
 		for (AuditRule rule : rules) {
 			if (rule.getQuestion() != null) {
-				if (conAudit != null) {
-					AuditQuestion aq = auditQuestionDao.find(rule.getQuestion().getId());
-					if(conAudit.getAuditType().equals(aq.getAuditType()))
+				if (conAudit != null && conAudit.getAuditType().equals(rule.getQuestion().getAuditType()))
 					auditAnswersNeeded.add(rule.getQuestion().getId());
-				} else
+				else
 					contractorAnswersNeeded.add(rule.getQuestion().getId());
 			}
 			if (rule.getTag() != null)
@@ -480,7 +474,7 @@ public class AuditBuilderController {
 			if (detail != null) {
 				for (OperatorAccount opAccount : detail.operators.keySet()) {
 					AuditCategoryRule auditCategoryRule = detail.operators.get(opAccount);
-					if ((auditCategoryRule.getOperatorAccount() == null)
+					if ((auditCategoryRule == null || auditCategoryRule.getOperatorAccount() == null)
 							&& (cao.getOperator().getId() == OperatorAccount.PicsConsortium)) {
 						operators.add(opAccount);
 					} else if (cao.getOperator().equals(auditCategoryRule.getOperatorAccount())) {
