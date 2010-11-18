@@ -528,9 +528,9 @@ a.help {
 	cursor: help;
 }
 a.helpBig {
-	padding: 12px;
+	padding: 5px 12px 12px;
 	margin-left: 2px;
-	background: url('../images/help-question.png') no-repeat center center;
+	background: url('../images/help-question.png') no-repeat left center;
 	zoom: 1;
 	cursor: help;
 }
