@@ -149,13 +149,19 @@ $(function() {
 					<li><label>Audit Type</label>
 						<input type="text" class="searchAuto" id="auditType"  value="<s:property value="rule.auditType.auditName"/>"/>
 						<s:hidden name="rule.auditType.id" id="auditType_hidden"/>
-						<a href="#" class="clearfield">Clear Field</a>
+						<s:if test="rule.auditType.id != null">
+							<a href="#" class="clearfield">Clear Audit Type</a>
+							<div><a href="ManageAuditType.action?id=<s:property value="rule.auditType.id"/>">Go To Audit Type</a></div>
+						</s:if>
 					</li>
 					<s:if test="categoryRule">
 						<li><label>Category</label>
 							<input type="text" class="searchAuto" id="category" value="<s:property value="rule.auditCategory.name"/>"/>
 							<s:hidden name="rule.auditCategory.id" id="cat_hidden"/>
-							<a href="#" class="clearfield">Clear Field</a>
+							<s:if test="rule.auditCategory.id != null">
+								<a href="#" class="clearfield">Clear Field</a>
+								<div><a href="ManageCategory.action?id=<s:property value="rule.auditCategory.id"/>">Go To Category</a></div>
+							</s:if>
 						</li>
 						<li><label>Top or Sub Category</label>
 							<s:select list="#{-1:'Any',0:'Sub Categories',1:'Top Categories'}" name="rootCat"/> 
@@ -179,7 +185,10 @@ $(function() {
 					<li <s:if test="!permissions.hasPermission(#ruleClassType,'Grant')">class="required"</s:if>><label>Operator</label>
 						<input type="text" class="searchAuto" id="operator" value="<s:property value="rule.operatorAccount.name"/>"/>
 						<s:hidden name="rule.operatorAccount.id" id="op_hidden"/>
-						<a href="#" class="clearfield">Clear Field</a>
+						<s:if test="rule.operatorAccount.id != null">
+							<a href="#" class="clearfield">Clear Field</a>
+							<div><a href="FacilitiesEdit.action?id=<s:property value="rule.operatorAccount.id"/>">Go To Operator</a></div>
+						</s:if>
 						<s:if test="!permissions.hasPermission(#ruleClassType,'Grant')"> 
 							<div class="fieldhelp">
 							<h3>Operator</h3>
@@ -205,7 +214,10 @@ $(function() {
 					<li><label>Question</label>
 						<input type="text" class="searchAuto" id="question" value="<s:property value="rule.question.name"/>"/>
 						<s:hidden name="rule.question.id" id="question_hidden"/>
-						<a href="#" class="clearfield">Clear Field</a>
+						<s:if test="rule.question.id != null">
+							<a href="#" class="clearfield">Clear Field</a>
+							<div><a href="ManageQuestion.action?id=<s:property value="rule.question.id"/>">Go To Question</a></div>
+						</s:if>
 					</li>
 					<li><label>Question Comparator</label>
 						<s:select name="rule.questionComparator" list="@com.picsauditing.jpa.entities.QuestionComparator@values()" headerKey="" headerValue=""/>
