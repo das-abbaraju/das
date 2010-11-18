@@ -188,7 +188,7 @@ public class ContractorCron extends PicsActionSupport {
 			runAuditCategory(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
-			runCSRAssignment(contractor);
+//			runCSRAssignment(contractor);
 			flagDataCalculator = new FlagDataCalculator(contractor
 					.getFlagCriteria());
 
@@ -676,15 +676,15 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.CSRAssignment))
 			return;
 
-		List<UserAssignmentMatrix> assignments = userAssignmentMatrixDAO
-				.findByContractor(contractor);
-
-		if (assignments.size() == 1) {
-			contractor.setAuditor(assignments.get(0).getUser());
-			contractorDAO.save(contractor);
-		} else if (assignments.size() > 1) {
-			// Manage Conflicts
-		}
+//		List<UserAssignmentMatrix> assignments = userAssignmentMatrixDAO
+//				.findByContractor(contractor);
+//
+//		if (assignments.size() == 1) {
+//			contractor.setAuditor(assignments.get(0).getUser());
+//			contractorDAO.save(contractor);
+//		} else if (assignments.size() > 1) {
+//			// Manage Conflicts
+//		}
 	}
 
 	public int getConID() {
