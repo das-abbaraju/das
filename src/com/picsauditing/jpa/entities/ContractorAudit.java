@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +52,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	protected boolean needsIndexing = true;
 	private String auditFor;
 	private Date lastRecalculation;
-
+	
 	private Date contractorConfirm;
 	private Date auditorConfirm;
 	private Date scheduledDate;
@@ -120,11 +119,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	@Transient
 	public List<ContractorAuditOperator> getSortedOperators(){
 		List<ContractorAuditOperator> caos = operators;
-		Collections.sort(caos, new Comparator<ContractorAuditOperator>() {
-			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
-				return o1.getOperator().getName().compareTo(o2.getOperator().getName());
-			}
-		});
+		Collections.sort(caos, getComparator());
 		return caos;
 	}
 
@@ -377,13 +372,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			}
 		}
 
-		Collections.sort(currentCaos, new Comparator<ContractorAuditOperator>() {
-
-			@Override
-			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
-				return o1.getOperator().compareTo(o2.getOperator());
-			}
-		});
+		Collections.sort(currentCaos, getComparator());
 
 		return currentCaos;
 	}
@@ -398,11 +387,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			}
 		}
 
-		Collections.sort(currentCaos, new Comparator<ContractorAuditOperator>() {
-			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
-				return o1.getOperator().getName().compareTo(o2.getOperator().getName());
-			}
-		});
+		Collections.sort(currentCaos, getComparator());
 		return currentCaos;
 	}
 	
@@ -567,6 +552,16 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public void setLongitude(float longitude) {
 		this.longitude = longitude;
+	}
+	
+	public static Comparator<ContractorAuditOperator> getComparator(){
+		return new Comparator<ContractorAuditOperator>() {
+			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
+				if(o1.getOperator().getId()<10)
+					return new Integer(o1.getOperator().getId()).compareTo(new Integer(o2.getOperator().getId()));
+				return o1.getOperator().getName().compareTo(o2.getOperator().getName());
+			}
+		};
 	}
 
 	@Transient
