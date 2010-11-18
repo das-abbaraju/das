@@ -141,7 +141,7 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 					+ "%'");
 		} else if ("operator".equals(fieldName)) {
 			returnAjax = operator.findWhere(true, "a.name LIKE '" + search
-					+ "%'");
+					+ "%' AND a.status IN ('Active','Pending','Demo')");
 		} else if ("tag".equals(fieldName)) {
 			returnAjax = opTagDao.findWhere(OperatorTag.class, "t.tag LIKE '"
 					+ search + "%'", 50);
