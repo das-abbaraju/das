@@ -240,14 +240,17 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 		byConID.clear();
 
-		List<Integer> conIDs = new ArrayList<Integer>();
+		Map<Integer, String> conIDs = new HashMap<Integer, String>(); 
 		for (BasicDynaBean d : data) {
-			conIDs.add(Integer.parseInt(d.get("id").toString()));
+			String worksfor =  "";
+			if(d.get("genID") == null)
+				worksfor = "false";
+			conIDs.put(Integer.parseInt(d.get("id").toString()), worksfor);
 		}
 
 		// TODO Maybe we could query and then trim this result here depending on the flag color filter
 		
-		List<ContractorAccount> contractors = contractorAccountDAO.findByContractorIds(conIDs);
+		List<ContractorAccount> contractors = contractorAccountDAO.findByContractorIds(conIDs.keySet());
 
 		for (ContractorAccount contractor : contractors) {
 			if (contractor.getFlagCriteria().size() == 0) {
@@ -255,7 +258,9 @@ public class ReportNewContractorSearch extends ReportAccount {
 			} else {
 				FlagDataCalculator calculator = new FlagDataCalculator(contractor.getFlagCriteria());
 				calculator.setOperatorCriteria(opCriteria);
-
+				if(!conIDs.get(contractor.getId()).isEmpty())
+					calculator.setWorksForOperator(false);
+				calculator.setOperator(operator);
 				FlagColor flagColor = getWorstColor(calculator.calculate());
 				byConID.put(contractor.getId(), flagColor);
 			}
