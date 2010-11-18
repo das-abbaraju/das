@@ -16,6 +16,7 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
@@ -105,7 +106,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 				whereQuery += "a.id IN (SELECT subID FROM generalcontractors gc "
 						+ "JOIN facilities f ON gc.genID = f.opID "
 						+ "JOIN facilities myf ON f.corporateID = myf.corporateID AND myf.opID = "
-						+ permissions.getAccountId() + ") ";
+						+ permissions.getAccountId() + " AND myf.corporateID NOT IN("+Strings.implode(Account.PICS_CORPORATE)+")) ";
 			if (permissions.isCorporate())
 				whereQuery += "a.id IN (SELECT subID FROM generalcontractors gc "
 						+ "JOIN facilities f ON gc.genID = f.opID AND f.corporateID = " + permissions.getAccountId()
