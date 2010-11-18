@@ -6,6 +6,7 @@
 -- move workflow, workflow_step
 -- move pqfoptions
 -- move app_translation (not if empty)
+ANALYZE TABLE app_index, app_index_stats, audit_type, audit_category, audit_question, audit_category_rule, audit_type_rule, workflow, workflow_step, pqfoptions;
 
 -- Can't represent 0000-00-00 as a java sql date
 update pqfdata pd set pd.dateVerified = null where pd.dateVerified like '0000-00-00';
