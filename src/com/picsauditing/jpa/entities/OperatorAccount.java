@@ -266,7 +266,7 @@ public class OperatorAccount extends Account {
 		return forms;
 	}
 
-	@OneToMany(mappedBy = "operator")
+	@OneToMany(mappedBy = "operator", fetch = FetchType.EAGER)
 	public List<Facility> getCorporateFacilities() {
 		return corporateFacilities;
 	}
@@ -281,7 +281,7 @@ public class OperatorAccount extends Account {
 	 *         facilities intersection table for example, BASF would contain
 	 *         BASF Port Arthur but not BASF Freeport Hub
 	 */
-	@OneToMany(mappedBy = "corporate", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "corporate")
 	public List<Facility> getOperatorFacilities() {
 		return operatorFacilities;
 	}
