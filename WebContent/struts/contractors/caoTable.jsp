@@ -37,16 +37,19 @@
 								<s:checkbox cssClass="vis" value="#currentCao.visible" name="caosSave[%{#rowStatus.index}].visible" />
 							</td>
 						</s:if>
-						<td title="<s:iterator value="getViewableCaops(#currentCao)">
-						<s:property value="name"/>,</s:iterator>">
-						<s:if test="getViewableCaops(#currentCao).size() == 1">
+						<td title="<s:iterator value="getViewableCaops(#currentCao)"><s:property value="name"/>
+</s:iterator>">
+						<s:if test="systemEdit">
+							<s:property value="operator.name"/>
+						</s:if>
+						<s:elseif test="getViewableCaops(#currentCao).size() == 1">
 							<s:iterator value="getViewableCaops(#currentCao)">
 								<s:property value="name" />
 							</s:iterator>
-						</s:if>
+						</s:elseif>
 						<s:else>
-							<s:property value="getViewableCaops(#currentCao).size()"/> operators 
-						</s:else> 
+							<s:property value="getViewableCaops(#currentCao).size()"/> operators
+						</s:else>
 						</td>
 						<td class="progress nobr">
 							<s:if test="#currentCao.status.submittedResubmitted">
