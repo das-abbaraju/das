@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
@@ -32,7 +33,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 	protected String questionAnswer;
 	protected Boolean acceptsBids = false; // Default to bid-only "No" (Needed to the increase the priority)
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "auditTypeID")
 	public AuditType getAuditType() {
 		return auditType;
@@ -65,7 +66,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 		return risk.toString();
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "opID")
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
@@ -134,7 +135,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 		return tag.getTag();
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "questionID")
 	public AuditQuestion getQuestion() {
 		return question;

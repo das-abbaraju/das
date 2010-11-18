@@ -281,7 +281,7 @@ public class OperatorAccount extends Account {
 	 *         facilities intersection table for example, BASF would contain
 	 *         BASF Port Arthur but not BASF Freeport Hub
 	 */
-	@OneToMany(mappedBy = "corporate")
+	@OneToMany(mappedBy = "corporate", fetch = FetchType.EAGER)
 	public List<Facility> getOperatorFacilities() {
 		return operatorFacilities;
 	}
