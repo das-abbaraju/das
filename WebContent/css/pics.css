@@ -24,6 +24,12 @@ p {
 	padding: 0px;
 }
 
+.closeButton{
+	float: right;
+	position: relative;
+	bottom: -110px;	
+}
+
 #systemMessage {
 	background-color: #FFF6CC;
 	border-bottom: 2px solid #A74D0F;
@@ -1138,4 +1144,5 @@ div.blockDialog{
 	height: 250px; 
 	text-align: left;
 	padding: 15px 10px;
+	overflow-y: auto;	
 }

@@ -9,6 +9,6 @@
 	<input type="hidden" id="clearOnceField" value="1" />
 </div>
 <div id="buttonsDialog">
-	<input class="picsbutton positive" type="button" value="<s:property value="status.button" />" id="yesButton" />
-	<input class="picsbutton negative" type="button" value="Cancel" id="noButton" />
+	<div style="cursor: pointer;" class="button <s:property value="status.color" />" id="yesButton" ><s:property value="status.button" /></div>
 </div>
+<input class="picsbutton negative closeButton" type="button" value="Close" id="noButton" />
