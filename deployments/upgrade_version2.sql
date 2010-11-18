@@ -354,8 +354,8 @@ WHERE a.status in ('Active','Pending'));
 update temp_cao_conversion set help = '' where help is null;
 
 insert into pqfdata 
-(auditID, questionID, answer, dateVerified, auditorID, createdBy, creationDate, updatedBy, updateDate)
-select cao.auditID, q.id, cao.valid, cao.statusChangedDate, cao.statusChangedBy, cao.createdBy, cao.creationDate, cao.updatedBy, cao.updateDate
+(auditID, questionID, answer, createdBy, creationDate, updatedBy, updateDate)
+select cao.auditID, q.id, cao.valid,cao.createdBy, cao.creationDate, cao.updatedBy, cao.updateDate
 from contractor_audit_operator cao
 join contractor_audit ca on ca.id = cao.auditID
 join audit_category ac on ac.auditTypeID = ca.auditTypeID
@@ -364,8 +364,8 @@ join audit_question q on q.categoryID = ac.id and q.number = 2
 where valid > '';
 
 insert into pqfdata 
-(auditID, questionID, answer, dateVerified, auditorID, createdBy, creationDate, updatedBy, updateDate)
-select cao.auditID, q.id, certificateID, cao.statusChangedDate, cao.statusChangedBy, cao.createdBy, cao.creationDate, cao.updatedBy, cao.updateDate
+(auditID, questionID, answer,createdBy, creationDate, updatedBy, updateDate)
+select cao.auditID, q.id, certificateID,cao.createdBy, cao.creationDate, cao.updatedBy, cao.updateDate
 from contractor_audit_operator cao
 join contractor_audit ca on ca.id = cao.auditID
 join audit_category ac on ac.auditTypeID = ca.auditTypeID
@@ -435,6 +435,7 @@ update contractor_audit_operator set status = 'NotApplicable' where status IN ('
 update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedDate = ca.expiresDate where cao.auditID = ca.id and cao.statusChangedDate is null and cao.status IN ('Expired');
 update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedDate = ca.closedDate where cao.auditID = ca.id and cao.statusChangedDate is null and cao.status IN ('Complete','Approved');
 update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedDate = ca.completedDate where cao.auditID = ca.id and cao.statusChangedDate is null and cao.status IN ('Complete','Approved','Submitted','Resubmitted','Incomplete');
+update contractor_audit_operator cao, contractor_audit ca set cao.statusChangedDate = ca.creationDate where cao.auditID = ca.id and cao.statusChangedDate is null and cao.status IN ('Pending');
 update contractor_audit_operator set statusChangedDate = updateDate where statusChangedDate IS NULL;
 
 
@@ -493,17 +494,6 @@ score,scoreCount,pc.createdBy,pc.updatedBy,pc.creationDate,pc.updateDate
 from pqfcatdata pc
 join audit_category ac on pc.catid = ac.id
 where ac.id = ac.legacyid;
-
-
-
--- need to run from here
-insert into audit_cat_data 
-select null,auditID,ac.id,pc.requiredCompleted,pc.numRequired, 
-pc.numAnswered,percentCompleted,percentVerified,percentClosed,override, 
-score,scoreCount,pc.createdBy,pc.updatedBy,pc.creationDate,pc.updateDate
-from pqfcatdata pc
-join audit_category ac on pc.catid = ac.legacyid
-where ac.id != ac.legacyid;
 
 -- huh?? We may not need this. Keerthi and Trevor can't quite agree if it's needed
 insert into audit_cat_data
@@ -628,6 +618,7 @@ alter table audit_cat_data
 drop column `percentCompleted`, 
 drop column `percentVerified`, 
 drop column `percentClosed`;
+
 -- End of DDL changes (should be last)
 -- End of DDL changes (should be last)
 -- Adding permissions for the configuration pages
