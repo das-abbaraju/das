@@ -132,6 +132,12 @@ public class ContractorAuditController extends AuditActionSupport {
 				AuditCategory auditCategory = auditCategoryDAO.find(categoryID);
 				Set<Integer> questionIDs = new HashSet<Integer>();
 				categoryData = getCategories().get(auditCategory);
+				if(categoryData == null) {
+					for(AuditCatData catdata : getCategories().values()) {
+						categoryData = catdata;
+						break;
+					}
+				}
 				for (AuditCategory childCategory : categoryData.getCategory()
 						.getChildren()) {
 					for (AuditQuestion question : childCategory.getQuestions()) {
