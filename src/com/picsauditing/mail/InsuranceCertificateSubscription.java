@@ -47,9 +47,9 @@ public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 			// Adding child facilities and switch tos
 			for(OperatorAccount oa : o.getOperatorChildren())
 				operators.add(oa.getId());
-			for (UserSwitch user : getUser().getSwitchTos())
-				if (user.getUser().getAccount().isOperator())
-					operators.add(user.getUser().getAccount().getId());
+//			for (UserSwitch user : getUser().getSwitchTos())
+//				if (user.getUser().getAccount().isOperator())
+//					operators.add(user.getUser().getAccount().getId());
 			
 			SelectSQL sql = new SelectSQL();
 

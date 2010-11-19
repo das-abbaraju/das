@@ -29,9 +29,9 @@ public class ContractorAddedSubscription extends SubscriptionBuilder {
 			children.add(operator);
 		else { // adding children and switch-tos if corporate
 			children.addAll(operator.getOperatorChildren());
-			for (UserSwitch user : getUser().getSwitchTos())
-				if (user.getUser().getAccount().isOperator())
-					children.add((OperatorAccount) user.getUser().getAccount());
+//			for (UserSwitch user : getUser().getSwitchTos())
+//				if (user.getUser().getAccount().isOperator())
+//					children.add((OperatorAccount) user.getUser().getAccount());
 		}
 
 		Map<OperatorAccount, Map<ContractorAccount, ContractorOperator>> operators = new TreeMap<OperatorAccount, Map<ContractorAccount, ContractorOperator>>(getOperatorComparator());

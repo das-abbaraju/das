@@ -52,9 +52,9 @@ public class FlagColorSubscription extends SubscriptionBuilder {
 				// Adding child facilities and switch tos
 				for (OperatorAccount oa : o.getOperatorChildren())
 					operators.add(oa.getId());
-				for (UserSwitch user : getUser().getSwitchTos())
-					if (user.getUser().getAccount().isOperator())
-						operators.add(user.getUser().getAccount().getId());
+//				for (UserSwitch user : getUser().getSwitchTos())
+//					if (user.getUser().getAccount().isOperator())
+//						operators.add(user.getUser().getAccount().getId());
 			}
 
 			SelectSQL sql = new SelectSQL();
@@ -69,7 +69,7 @@ public class FlagColorSubscription extends SubscriptionBuilder {
 			sql.addJoin("JOIN operators o ON gc.genID = o.id");
 			sql.addJoin("JOIN accounts oa ON o.id = oa.id");
 			if (flagColor != FlagColor.Green
-					|| getUser().getAccount().isOperator())
+					|| o.isOperator())
 				sql
 						.addWhere("(gc.workStatus = 'Y' OR o.approvesRelationships = 'No')");
 			sql.addWhere("a.status = 'Active'");
