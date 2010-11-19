@@ -45,9 +45,6 @@
 						<s:elseif test="getViewableCaops(#currentCao).size() == 1">
 							<s:iterator value="getViewableCaops(#currentCao)">
 								<s:property value="name" />
-								<pics:permission perm="DevelopmentEnvironment">
-									<s:property value="#currentCao.operator.name"/>
-								</pics:permission>
 							</s:iterator>
 						</s:elseif>
 						<s:else>
