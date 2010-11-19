@@ -109,7 +109,7 @@ function clearFilter(){
 		
 		<div class="filterOption">
 			Contractor Type: <s:select cssClass="forms" list="filter.contractorTypeList" name="filter.contractorType"
-			 	listKey="name()" listValue="name()" headerKey="-1" headerValue="*" />
+			 	listKey="name()" listValue="name()" headerKey="" headerValue="*" />
 		</div>
 		
 		<div class="filterOption">  <!-- Auto Complete -->
