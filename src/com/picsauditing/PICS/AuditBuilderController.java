@@ -62,11 +62,12 @@ public class AuditBuilderController {
 	private AuditCategoryRuleCache auditCategoryRuleCache;
 	private AuditTypeRuleCache auditTypeRuleCache;
 	private AuditTypeDAO auditTypeDao;
+	private ContractorAuditDAO conAuditDao;
 
 	public AuditBuilderController(ContractorAuditDAO cAuditDAO, AuditDataDAO auditDataDAO,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, ContractorTagDAO contractorTagDAO,
 			AuditCategoryRuleCache auditCategoryRuleCache, AuditTypeRuleCache auditTypeRuleCache,
-			AuditTypeDAO auditTypeDao) {
+			AuditTypeDAO auditTypeDao, ContractorAuditDAO conAuditDao) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
@@ -74,6 +75,7 @@ public class AuditBuilderController {
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
 		this.auditTypeRuleCache = auditTypeRuleCache;
 		this.auditTypeDao = auditTypeDao;
+		this.conAuditDao = conAuditDao;
 	}
 
 	public void setup(ContractorAccount con, User user) {
@@ -166,6 +168,8 @@ public class AuditBuilderController {
 			}
 		}
 		PicsLogger.stop();
+		
+		conAuditDao.save(contractor);
 	}
 
 	public List<AuditTypeRule> getAuditTypeRules() {
