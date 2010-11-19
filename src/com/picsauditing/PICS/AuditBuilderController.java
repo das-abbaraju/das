@@ -293,6 +293,9 @@ public class AuditBuilderController {
 		PicsLogger.start("AuditCategories", "auditID=" + conAudit.getId() + " type="
 				+ conAudit.getAuditType().getAuditName());
 
+		if(conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+			return;
+
 		AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
 		if (detail == null) {
 			PicsLogger.log("missing detail for " + conAudit.getAuditType());
@@ -392,6 +395,9 @@ public class AuditBuilderController {
 		PicsLogger.start("AuditOperators", conAudit.getAuditType().getAuditName());
 
 		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require a auditOperator.");
+		
+		if(conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+			return;
 
 		AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
 
