@@ -31,12 +31,12 @@ public class EventSubscriptionBuilder {
 		List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.ContractorFinished,
 				SubscriptionTimePeriod.Event, co.getOperatorAccount().getId());
 
-		OperatorAccount parent = co.getOperatorAccount().getParent();
-		while(parent != null){ // adding corporate subscriptions
-			subscriptions.addAll(subscriptionDAO.find(Subscription.ContractorFinished,
-					SubscriptionTimePeriod.Event, parent.getId()));
-			parent = parent.getParent();
-		}
+//		OperatorAccount parent = co.getOperatorAccount().getParent();
+//		while(parent != null){ // adding corporate subscriptions
+//			subscriptions.addAll(subscriptionDAO.find(Subscription.ContractorFinished,
+//					SubscriptionTimePeriod.Event, parent.getId()));
+//			parent = parent.getParent();
+//		}
 		
 		for (EmailSubscription subscription : subscriptions) {
 			EmailBuilder builder = new EmailBuilder();
