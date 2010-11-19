@@ -93,9 +93,10 @@ public class CaoSave extends AuditActionSupport {
 			}
 			
 			caoList = conAudit.getOperators();
-		} else
-			caoList = caoDAO.find(caoIDs);
-
+		} else {
+			if(caoIDs.size() > 0)
+				caoList = caoDAO.find(caoIDs);
+		}
 		if (caoID > 0) {
 			if ("statusHistory".equals(button)) {
 				if (caoID > 0)
