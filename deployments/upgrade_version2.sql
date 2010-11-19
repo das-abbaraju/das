@@ -737,3 +737,5 @@ update pqfdata pd set pd.dateVerified = null where pd.dateVerified like '0000-00
 
 update contractor_info set mustPay ='Yes'
 where id = 3138;
+
+update audit_cat_data set score = 0 where score < 0;
