@@ -734,3 +734,6 @@ alter table contractor_audit change `score` `score` tinyint(3) default '0' NULL;
 update operators set insuranceAuditor_id = null where insuranceAuditor_id = 0;
 -- Can't represent 0000-00-00 as a java sql date
 update pqfdata pd set pd.dateVerified = null where pd.dateVerified like '0000-00-00';
+
+update contractor_info set mustPay ='Yes'
+where id = 3138;
