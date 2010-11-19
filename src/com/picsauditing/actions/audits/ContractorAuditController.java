@@ -10,6 +10,7 @@ import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.MenuComponent;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -26,6 +27,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.util.AnswerMap;
 
 /**
@@ -295,17 +297,31 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 
 	public boolean isCanVerifyAudit() {
+		if(!permissions.isAuditor() || !permissions.hasGroup(959))
+			return false;
+		
 		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
 			return false;
+		
+		if(conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+			return true;
+		
+		return false;
+	}
 
-		if (conAudit.getAuditType().isPqf()
-				&& conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
-			if (permissions.isAuditor())
-				return true;
+	public boolean isCanVerifyPqf() {
+		if(!permissions.hasPermission(OpPerms.AuditVerification))
+			return false;
+		if(!conAudit.getAuditType().isPqf() || !conAudit.getAuditType().isAnnualAddendum())
+			return false;
+		
+		if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+			return true;
 
 		return false;
 	}
 
+	
 	public int getCaoID() {
 		return caoID;
 	}

@@ -335,7 +335,7 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	public String getMode() {
-		return mode == null ? "View" : "Edit";
+		return mode == null ? "View" : mode;
 	}
 
 	public void setMode(String mode) {

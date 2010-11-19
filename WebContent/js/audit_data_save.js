@@ -30,7 +30,7 @@ $(function(){
 		var me = $(this).parents('div.question:first');
 		me.block({message: $(this).val()+'ing...'})
 			.load('AuditDataSaveAjax.action',
-				$('form.qform', this).serialize(),
+				$('form.qform', me).serialize(),
 				function(response, status) {
 					if (status=='success') {
 						$(this).trigger('updateDependent');

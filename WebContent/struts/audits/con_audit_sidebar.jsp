@@ -10,11 +10,9 @@
 		Edit</a></li>
 	</pics:permission>
 	<li><a href="Audit.action?auditID=<s:property value="auditID"/>&button=Recalculate">% Recalculate</a></li>
-	<s:if test="canVerify">
-		<pics:permission perm="AuditVerification">
-			<li><a class="verify"
-				href="VerifyView.action?id=<s:property value="id" />">Verify</a></li>
-		</pics:permission>
+	<s:if test="canVerifyPqf">
+		<li><a class="verify"
+			href="VerifyView.action?id=<s:property value="id" />">Verify</a></li>
 	</s:if>
 	<s:if test="canPreview">
 		<li><a class="preview" href="#mode=ViewQ">Preview Questions</a></li>
