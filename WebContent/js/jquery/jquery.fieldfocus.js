@@ -94,7 +94,7 @@
 jQuery(function(){
 	$('fieldset.form ol li :input:not(:button)').fieldfocus();
 	$('fieldset.form ol li .fieldhelp').helpstay();
-	$('.required :input').requiredfields();
+	$('.required :input:not(:checkbox)').requiredfields();
 	
 	$('fieldset.form ol li').live('click', function() {
 		$(this).not('.fieldhelp-focused').find(':input:visible:first:not(:disabled)').focus();
