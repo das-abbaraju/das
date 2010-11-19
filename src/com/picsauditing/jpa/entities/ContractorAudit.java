@@ -69,6 +69,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private float longitude;
 	private String phone;
 	private String phone2;
+	private Integer ruleID;
 
 	private List<AuditCatData> categories = new ArrayList<AuditCatData>();
 	private List<AuditData> data = new ArrayList<AuditData>();
@@ -554,6 +555,14 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		this.longitude = longitude;
 	}
 	
+	public Integer getRuleID() {
+		return ruleID;
+	}
+	
+	public void setRuleID(Integer ruleID) {
+		this.ruleID  = ruleID;
+	}
+
 	public static Comparator<ContractorAuditOperator> getComparator(){
 		return new Comparator<ContractorAuditOperator>() {
 			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {

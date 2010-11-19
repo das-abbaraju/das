@@ -32,6 +32,7 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 	private boolean applies = true;
 	private float score = 0;
 	private int scoreCount = 0;
+	private Integer ruleID;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "categoryID", nullable = false)
@@ -126,6 +127,14 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 
 	public void setNumVerified(int numVerified) {
 		this.numVerified = numVerified;
+	}
+	
+	public Integer getRuleID() {
+		return ruleID;
+	}
+	
+	public void setRuleID(Integer ruleID) {
+		this.ruleID  = ruleID;
 	}
 
 	@Override
