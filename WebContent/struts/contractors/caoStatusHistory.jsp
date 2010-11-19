@@ -16,7 +16,7 @@
 		<s:if test="caoWorkflow.size() > 0">
 			<s:iterator value="caoWorkflow">
 				<tr>
-					<td><s:property value="formatDate(updateDate, 'MMMMM d, yyyy')" default="N/A"/></td>
+					<td><s:property value="formatDate(updateDate, 'dd MMMM yyyy')" default="N/A"/></td>
 					<td><s:property value="updatedBy.name"/></td>
 					<td><s:property value="status"/></td>
 					<td><s:property value="previousStatus"/></td>
