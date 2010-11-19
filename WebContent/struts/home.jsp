@@ -33,9 +33,9 @@ $(function() {
 	<s:include value="contractors/conHeader.jsp" />
 </s:if>
 <s:elseif test="!permissions.admin">
-	<h1>Welcome to PICS Online <span class="sub"><s:property value="account.name" /></span></h1>
+	<h1>Welcome to PICS Organizer<span class="sub"><s:property value="account.name" /></span></h1>
 </s:elseif>
-
+<div class="info">We recently upgraded PICS Organizer. For more information read our <a href="http://help.picsauditing.com/wiki/PICS_Organizer_5.0" target="_BLANK">5.0 Release Notes</a>.</div>
 <s:iterator value="columns">
 	<div class="column" id="column<s:property value="key"/>" style="width: <s:property value="columnWidth"/>%">
 		<s:iterator value="value">
