@@ -402,10 +402,10 @@ public class ContractorCron extends PicsActionSupport {
 				if (!overridesMap.containsKey(override.getCriteria()))
 					overridesMap.put(override.getCriteria(), new LinkedList<FlagDataOverride>());
 				((LinkedList<FlagDataOverride>) overridesMap.get(override.getCriteria())).addFirst(override);
-			} else if (corporates.contains(co.getOperatorAccount())) {
+			} else if (corporates.contains(override.getOperator())) {
 				if (!overridesMap.containsKey(override.getCriteria()))
 					overridesMap.put(override.getCriteria(), new LinkedList<FlagDataOverride>());
-				((LinkedList<FlagDataOverride>) overridesMap.get(override.getCriteria())).add(override);
+				((LinkedList<FlagDataOverride>) overridesMap.get(override.getCriteria())).addLast(override);
 			}
 		}
 		flagDataCalculator.setOverrides(overridesMap);
