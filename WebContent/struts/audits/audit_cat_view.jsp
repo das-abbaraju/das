@@ -22,8 +22,10 @@
 			<s:include value="audit_cat_sha.jsp"></s:include>
 		</s:if>
 		<s:else>
+			<div class="categoryNumber"><s:property value="#category.fullNumber"/></div>
 			<h2 id="cathead_<s:property value="#category.id"/>">
-				<div class="categoryNumber"><s:property value="#category.fullNumber"/></div> <s:property value="#category.name"/>
+				<s:property value="#category.name"/>
+				<pics:permission perm="ManageAudits" type="Edit"><a href="ManageCategory.action?id=<s:property value="#category.id"/>"><img src="images/edit_pencil.png" title="Manage Category"></a></pics:permission>
 			</h2>
 			<s:if test="#category.helpText != null && #category.helpText.length() > 0">
 				<div class="info"><s:property value="#category.helpText" escape="false"/></div>
