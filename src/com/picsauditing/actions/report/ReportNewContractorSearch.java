@@ -233,6 +233,9 @@ public class ReportNewContractorSearch extends ReportAccount {
 	}
 
 	private void calculateOverallFlags() {
+		if(permissions.isCorporate())
+			return;
+		
 		if (byConID.size() > 0)
 			return;
 
