@@ -214,7 +214,7 @@ public class ContractorAuditDAO extends IndexableDAO {
 				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate";
 		if (auditorID > 0)
 			hql += " AND ca.auditor.id = :auditorID";
-		hql += " AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status = 'NotApplicable' AND cao.visible = 1)";
+		hql += " AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status NOT IN ('NotApplicable','Expired') AND cao.visible = 1)";
 		hql += " ORDER BY ca.scheduledDate, ca.id";
 		Query query = em.createQuery(hql);
 
