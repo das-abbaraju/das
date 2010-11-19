@@ -55,7 +55,6 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserAssignmentMatrix;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.SendMail;
@@ -88,14 +87,10 @@ public class ContractorCron extends PicsActionSupport {
 	private List<Integer> queue;
 	private String redirectUrl;
 
-	public ContractorCron(ContractorAccountDAO contractorDAO,
-			AuditDataDAO auditDataDAO, NoteDAO noteDAO,
-			EmailSubscriptionDAO subscriptionDAO,
-			AuditPercentCalculator auditPercentCalculator,
-			AuditBuilderController auditBuilder,
-			ContractorFlagETL contractorFlagETL,
-			ContractorOperatorDAO contractorOperatorDAO,
-			AppPropertyDAO appPropertyDAO,
+	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
+			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
+			AuditBuilderController auditBuilder, ContractorFlagETL contractorFlagETL,
+			ContractorOperatorDAO contractorOperatorDAO, AppPropertyDAO appPropertyDAO,
 			UserAssignmentMatrixDAO userAssignmentMatrixDAO) {
 		this.dao = contractorDAO;
 		this.contractorDAO = contractorDAO;
@@ -123,25 +118,20 @@ public class ContractorCron extends PicsActionSupport {
 
 				double serverLoad = ServerInfo.getLoad();
 				if (serverLoad > 3) {
-					addActionError("Server Load is too high (" + serverLoad
-							+ ")");
+					addActionError("Server Load is too high (" + serverLoad + ")");
 				} else {
-					long totalQueueSize = contractorDAO
-							.findNumberOfContractorsNeedingRecalculation();
+					long totalQueueSize = contractorDAO.findNumberOfContractorsNeedingRecalculation();
 
-					double limitDefault = Double.parseDouble(appPropertyDAO
-							.find("ContractorCron.limit.default").getValue());
-					double limitQueue = Double.parseDouble(appPropertyDAO.find(
-							"ContractorCron.limit.queue").getValue());
-					double limitServerLoad = Double
-							.parseDouble(appPropertyDAO.find(
-									"ContractorCron.limit.serverload")
-									.getValue());
+					double limitDefault = Double.parseDouble(appPropertyDAO.find("ContractorCron.limit.default")
+							.getValue());
+					double limitQueue = Double
+							.parseDouble(appPropertyDAO.find("ContractorCron.limit.queue").getValue());
+					double limitServerLoad = Double.parseDouble(appPropertyDAO.find("ContractorCron.limit.serverload")
+							.getValue());
 
 					// This is a formula based on a multiple regression analysis
 					// of what we want. Not sure if it will work
-					limit = (int) Math.round(limitDefault
-							+ (totalQueueSize / limitQueue)
+					limit = (int) Math.round(limitDefault + (totalQueueSize / limitQueue)
 							- (serverLoad * limitServerLoad));
 
 					if (limit > 0) {
@@ -150,15 +140,12 @@ public class ContractorCron extends PicsActionSupport {
 							if (!cron.equals(this))
 								contractorsToIgnore.addAll(cron.getQueue());
 						}
-						queue = contractorDAO
-								.findContractorsNeedingRecalculation(limit,
-										contractorsToIgnore);
+						queue = contractorDAO.findContractorsNeedingRecalculation(limit, contractorsToIgnore);
 
 						for (Integer conID : queue) {
 							run(conID, opID);
 						}
-						addActionMessage("ContractorCron processed "
-								+ queue.size() + " record(s)");
+						addActionMessage("ContractorCron processed " + queue.size() + " record(s)");
 					}
 				}
 
@@ -188,34 +175,25 @@ public class ContractorCron extends PicsActionSupport {
 			runAuditCategory(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
-//			runCSRAssignment(contractor);
-			flagDataCalculator = new FlagDataCalculator(contractor
-					.getFlagCriteria());
+			// runCSRAssignment(contractor);
+			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
 
-			if (runStep(ContractorCronStep.Flag)
-					|| runStep(ContractorCronStep.WaitingOn)
-					|| runStep(ContractorCronStep.Policies)
-					|| runStep(ContractorCronStep.CorporateRollup)) {
+			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
+					|| runStep(ContractorCronStep.Policies) || runStep(ContractorCronStep.CorporateRollup)) {
 				Set<OperatorAccount> corporateSet = new HashSet<OperatorAccount>();
 
-				for (ContractorOperator co : contractor
-						.getNonCorporateOperators()) {
+				for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 					OperatorAccount operator = co.getOperatorAccount();
 					// If the opID is 0, run through all the operators.
 					// If the opID > 0, run through just that operator.
 					if (opID == 0 || (opID > 0 && operator.getId() == opID)) {
-						for (FlagCriteriaOperator flagCriteriaOperator : operator
-								.getFlagCriteriaInherited()) {
-							PicsLogger.log(" flag criteria "
-									+ flagCriteriaOperator.getFlag()
-									+ " for "
-									+ flagCriteriaOperator.getCriteria()
-											.getCategory());
+						for (FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
+							PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
+									+ flagCriteriaOperator.getCriteria().getCategory());
 						}
 
 						if (runStep(ContractorCronStep.CorporateRollup)) {
-							for (Facility facility : operator
-									.getCorporateFacilities()) {
+							for (Facility facility : operator.getCorporateFacilities()) {
 								corporateSet.add(facility.getCorporate());
 							}
 						}
@@ -234,9 +212,9 @@ public class ContractorCron extends PicsActionSupport {
 					contractor.setNeedsRecalculation(0);
 					contractor.setLastRecalculation(new Date());
 				}
-				dao.save(contractor);
-				addActionMessage("Completed " + steps.length + " step(s) for "
-						+ contractor.toString() + " successfully");
+				contractorDAO.save(contractor);
+				addActionMessage("Completed " + steps.length + " step(s) for " + contractor.toString()
+						+ " successfully");
 			}
 
 			runPolicies(contractor);
@@ -246,21 +224,18 @@ public class ContractorCron extends PicsActionSupport {
 			t.printStackTrace(new PrintWriter(sw));
 
 			if (!isDebugging()) {
-				addActionError("Error occurred on contractor " + conID + "<br>"
-						+ t.getMessage());
+				addActionError("Error occurred on contractor " + conID + "<br>" + t.getMessage());
 				// In case this contractor errored out while running contractor
 				// cron
 				// we bump the last recalculation date to 1 day in future.
-				dao.refresh(contractor);
+				contractorDAO.find(conID);
 				contractor.setNeedsRecalculation(0);
-				contractor
-						.setLastRecalculation(DateBean.addDays(new Date(), 1));
-				dao.save(contractor);
+				contractor.setLastRecalculation(DateBean.addDays(new Date(), 1));
+				contractorDAO.save(contractor);
 
 				StringBuffer body = new StringBuffer();
 
-				body
-						.append("There was an error running ContractorCron for id=");
+				body.append("There was an error running ContractorCron for id=");
 				body.append(conID);
 				body.append("\n\n");
 
@@ -268,7 +243,14 @@ public class ContractorCron extends PicsActionSupport {
 				body.append("\n");
 
 				body.append(sw.toString());
-				sendMail(body.toString(), conID);
+				
+				try {
+					sendMail(body.toString(), conID);
+				} catch (Exception notMuchWeCanDoButLogIt) {
+					System.out.println("Error sending email");
+					System.out.println(notMuchWeCanDoButLogIt);
+					notMuchWeCanDoButLogIt.printStackTrace();
+				}
 			} else {
 				addActionError(sw.toString());
 			}
@@ -305,8 +287,7 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 		for (ContractorAudit cAudit : contractor.getAudits()) {
 			final Date lastRecalculation = cAudit.getLastRecalculation();
-			if (lastRecalculation == null
-					|| DateBean.getDateDifference(lastRecalculation) < -90) {
+			if (lastRecalculation == null || DateBean.getDateDifference(lastRecalculation) < -90) {
 				auditPercentCalculator.percentCalculateComplete(cAudit, true);
 				cAudit.setLastRecalculation(new Date());
 				cAudit.setAuditColumns();
@@ -323,8 +304,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runTradeETL(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.TradeETL))
 			return;
-		List<AuditData> servicesPerformed = auditDataDAO
-				.findServicesPerformed(contractor.getId());
+		List<AuditData> servicesPerformed = auditDataDAO.findServicesPerformed(contractor.getId());
 		List<String> selfPerform = new ArrayList<String>();
 		List<String> subContract = new ArrayList<String>();
 		for (AuditData auditData : servicesPerformed) {
@@ -347,10 +327,9 @@ public class ContractorCron extends PicsActionSupport {
 
 		contractor.setRequiresOQ(false);
 		if (requiresOQ) {
-			AuditData oqAuditData = auditDataDAO.findAnswerByConQuestion(
-					contractor.getId(), AuditQuestion.OQ_EMPLOYEES);
-			contractor.setRequiresOQ(oqAuditData == null
-					|| oqAuditData.getAnswer() == null
+			AuditData oqAuditData = auditDataDAO
+					.findAnswerByConQuestion(contractor.getId(), AuditQuestion.OQ_EMPLOYEES);
+			contractor.setRequiresOQ(oqAuditData == null || oqAuditData.getAnswer() == null
 					|| oqAuditData.getAnswer().equals("Yes"));
 		}
 
@@ -368,69 +347,65 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 		contractorFlagETL.calculate(contractor);
 	}
-	
+
 	private void runContractorScore(ContractorAccount contractor) {
 		int score = 120;
-		for(ContractorAudit conAudit : contractor.getAudits()) {
-			if(!conAudit.isExpired()) {
-				for(ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
-					if(cao.getStatus().isComplete() || cao.getStatus().isApproved())
+		for (ContractorAudit conAudit : contractor.getAudits()) {
+			if (!conAudit.isExpired()) {
+				for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
+					if (cao.getStatus().isComplete() || cao.getStatus().isApproved())
 						score += 100;
 					else if (cao.getStatus().isSubmittedResubmitted())
 						score += 80;
 					else if (cao.getStatus().isIncomplete()) {
-						
-					}
-					else score += -10;
+
+					} else
+						score += -10;
 				}
 			}
 		}
-		List<AuditData> auditDatas = auditDataDAO.findAnswerByConQuestions(contractor.getId(), Arrays.asList(88,2447,5176,5179));
-		for(AuditData auditData : auditDatas) {
-			if(auditData.isAnswered()) {
-				if(auditData.getQuestion().getId() == 88 && auditData.getAnswer().equals("Yes")) {
+		List<AuditData> auditDatas = auditDataDAO.findAnswerByConQuestions(contractor.getId(), Arrays.asList(88, 2447,
+				5176, 5179));
+		for (AuditData auditData : auditDatas) {
+			if (auditData.isAnswered()) {
+				if (auditData.getQuestion().getId() == 88 && auditData.getAnswer().equals("Yes")) {
 					score += -10;
-				}
-				else {
-					score += auditData.getAnswer().replaceAll("[^0-9]","").length();
+				} else {
+					score += auditData.getAnswer().replaceAll("[^0-9]", "").length();
 				}
 			}
 		}
-		if(contractor.getMembershipLevel() != null) {
-			score += contractor.getPayingFacilities()*10;
+		if (contractor.getMembershipLevel() != null) {
+			score += contractor.getPayingFacilities() * 10;
 		}
-		for (Invoice invoice :contractor.getInvoices()) {
-			if(invoice.isOverdue())
+		for (Invoice invoice : contractor.getInvoices()) {
+			if (invoice.isOverdue())
 				score += -25;
 		}
 	}
-	
+
 	private void runFlag(ContractorOperator co) {
 		if (!runStep(ContractorCronStep.Flag))
 			return;
 
 		flagDataCalculator.setOperator(co.getOperatorAccount());
-		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount()
-				.getFlagCriteriaInherited());
+		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
 
 		Map<FlagCriteria, List<FlagDataOverride>> overridesMap = new HashMap<FlagCriteria, List<FlagDataOverride>>();
 
 		Set<OperatorAccount> corporates = new HashSet<OperatorAccount>();
-		for(Facility f : co.getOperatorAccount().getCorporateFacilities())
+		for (Facility f : co.getOperatorAccount().getCorporateFacilities())
 			corporates.add(f.getCorporate());
-		
-		for (FlagDataOverride override : co.getContractorAccount()
-				.getFlagDataOverrides()) {
+
+		for (FlagDataOverride override : co.getContractorAccount().getFlagDataOverrides()) {
 			if (override.getOperator().equals(co.getOperatorAccount())) {
 				if (!overridesMap.containsKey(override.getCriteria()))
-					overridesMap.put(override.getCriteria(),
-							new LinkedList<FlagDataOverride>());
-				((LinkedList<FlagDataOverride>)overridesMap.get(override.getCriteria())).addFirst(override);
-			} else if(corporates.contains(co.getOperatorAccount())){
+					overridesMap.put(override.getCriteria(), new LinkedList<FlagDataOverride>());
+				((LinkedList<FlagDataOverride>) overridesMap.get(override.getCriteria())).addFirst(override);
+			} else if (corporates.contains(co.getOperatorAccount())) {
 				if (!overridesMap.containsKey(override.getCriteria()))
-					overridesMap.put(override.getCriteria(),
-							new LinkedList<FlagDataOverride>());
-				((LinkedList<FlagDataOverride>)overridesMap.get(override.getCriteria())).add(override);
+					overridesMap.put(override.getCriteria(), new LinkedList<FlagDataOverride>());
+				((LinkedList<FlagDataOverride>) overridesMap.get(override.getCriteria())).add(override);
 			}
 		}
 		flagDataCalculator.setOverrides(overridesMap);
@@ -438,15 +413,13 @@ public class ContractorCron extends PicsActionSupport {
 
 		// Find overall flag color for this operator
 		FlagColor overallColor = FlagColor.Green;
-		if (co.getContractorAccount().isAcceptsBids()
-				|| co.getContractorAccount().getStatus().isPending()
+		if (co.getContractorAccount().isAcceptsBids() || co.getContractorAccount().getStatus().isPending()
 				|| co.getContractorAccount().getStatus().isDeleted())
 			overallColor = FlagColor.Clear;
 
 		for (FlagData change : changes) {
 			if (!change.getCriteria().isInsurance())
-				overallColor = FlagColor.getWorseColor(overallColor, change
-						.getFlag());
+				overallColor = FlagColor.getWorseColor(overallColor, change.getFlag());
 		}
 
 		ContractorOperator conOperator = co.getForceOverallFlag();
@@ -454,22 +427,20 @@ public class ContractorCron extends PicsActionSupport {
 			co.setFlagColor(conOperator.getForceFlag());
 			co.setFlagLastUpdated(new Date());
 		} else if (!overallColor.equals(co.getFlagColor())) {
-			Note note = new Note();
-			note.setAccount(co.getContractorAccount());
-			note.setNoteCategory(NoteCategory.Flags);
-			note.setAuditColumns(new User(User.SYSTEM));
-			note.setSummary("Flag color changed from " + co.getFlagColor()
-					+ " to " + overallColor + " for "
-					+ co.getOperatorAccount().getName());
-			note.setCanContractorView(true);
-			note.setViewableById(co.getOperatorAccount().getId());
-			dao.save(note);
+//			Note note = new Note();
+//			note.setAccount(co.getContractorAccount());
+//			note.setNoteCategory(NoteCategory.Flags);
+//			note.setAuditColumns(new User(User.SYSTEM));
+//			note.setSummary("Flag color changed from " + co.getFlagColor() + " to " + overallColor + " for "
+//					+ co.getOperatorAccount().getName());
+//			note.setCanContractorView(true);
+//			note.setViewableById(co.getOperatorAccount().getId());
+//			dao.save(note);
 			co.setFlagColor(overallColor);
 			co.setFlagLastUpdated(new Date());
 		}
 
-		Iterator<FlagData> flagDataList = BaseTable.insertUpdateDeleteManaged(
-				co.getFlagDatas(), changes).iterator();
+		Iterator<FlagData> flagDataList = BaseTable.insertUpdateDeleteManaged(co.getFlagDatas(), changes).iterator();
 		while (flagDataList.hasNext()) {
 			FlagData flagData = flagDataList.next();
 			co.getFlagDatas().remove(flagData);
@@ -483,44 +454,36 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 
 		WaitingOn waitingOn = null; // calcSingle.calculateWaitingOn();
-		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount()
-				.getFlagAuditCriteriaInherited());
+		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagAuditCriteriaInherited());
 		waitingOn = flagDataCalculator.calculateWaitingOn(co);
 
 		if (!waitingOn.equals(co.getWaitingOn())) {
 			OperatorAccount operator = co.getOperatorAccount();
-			Note note = new Note();
-			note.setAccount(co.getContractorAccount());
-			note.setNoteCategory(NoteCategory.Flags);
-			note.setPriority(LowMedHigh.Low);
-			note.setAuditColumns(new User(User.SYSTEM));
-			if (waitingOn.isNone()) {
-				note.setSummary("We are no longer \"Waiting On\" "
-						+ co.getWaitingOn()
-						+ ". All required information has been gathered for "
-						+ operator.getName() + ".");
-			} else if (co.getWaitingOn().isNone()) {
-				note.setSummary("The \"Waiting On\" status for "
-						+ operator.getName() + " has changed to \"" + waitingOn
-						+ "\"");
-			} else {
-				note.setSummary("The \"Waiting On\" status for "
-						+ operator.getName() + " has changed from \""
-						+ co.getWaitingOn() + "\" to \"" + waitingOn + "\"");
-			}
-			if (co.getProcessCompletion() != null) {
-				note
-						.setBody("The contractor first completed the PICS process on "
-								+ co.getProcessCompletion().toString());
-			}
-			note.setCanContractorView(true);
-			note.setViewableById(operator.getId());
-			dao.save(note);
+//			Note note = new Note();
+//			note.setAccount(co.getContractorAccount());
+//			note.setNoteCategory(NoteCategory.Flags);
+//			note.setPriority(LowMedHigh.Low);
+//			note.setAuditColumns(new User(User.SYSTEM));
+//			if (waitingOn.isNone()) {
+//				note.setSummary("We are no longer \"Waiting On\" " + co.getWaitingOn()
+//						+ ". All required information has been gathered for " + operator.getName() + ".");
+//			} else if (co.getWaitingOn().isNone()) {
+//				note.setSummary("The \"Waiting On\" status for " + operator.getName() + " has changed to \""
+//						+ waitingOn + "\"");
+//			} else {
+//				note.setSummary("The \"Waiting On\" status for " + operator.getName() + " has changed from \""
+//						+ co.getWaitingOn() + "\" to \"" + waitingOn + "\"");
+//			}
+//			if (co.getProcessCompletion() != null) {
+//				note.setBody("The contractor first completed the PICS process on "
+//						+ co.getProcessCompletion().toString());
+//			}
+//			note.setCanContractorView(true);
+//			note.setViewableById(operator.getId());
+//			dao.save(note);
 
-			if (co.getProcessCompletion() == null && waitingOn.isNone()
-					&& !co.getWaitingOn().isNone()) {
-				EventSubscriptionBuilder.contractorFinishedEvent(
-						subscriptionDAO, co);
+			if (co.getProcessCompletion() == null && waitingOn.isNone() && !co.getWaitingOn().isNone()) {
+				EventSubscriptionBuilder.contractorFinishedEvent(subscriptionDAO, co);
 				co.setProcessCompletion(new Date());
 			}
 			co.setWaitingOn(waitingOn);
@@ -538,15 +501,12 @@ public class ContractorCron extends PicsActionSupport {
 
 		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 			for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
-				if (audit.getAuditType().getClassType().isPolicy()
-						&& !audit.isExpired()) {
+				if (audit.getAuditType().getClassType().isPolicy() && !audit.isExpired()) {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.getStatus().after(AuditStatus.Pending)) {
 							if (cao.hasCaop(co.getOperatorAccount().getId())) {
-								FlagColor flagColor = flagDataCalculator
-										.calculateCaoStatus(audit
-												.getAuditType(), co
-												.getFlagDatas());
+								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co
+										.getFlagDatas());
 
 								cao.setFlag(flagColor);
 							}
@@ -557,8 +517,7 @@ public class ContractorCron extends PicsActionSupport {
 		}
 	}
 
-	private void runCorporateRollup(ContractorAccount contractor,
-			Set<OperatorAccount> corporateSet) {
+	private void runCorporateRollup(ContractorAccount contractor, Set<OperatorAccount> corporateSet) {
 		if (!runStep(ContractorCronStep.CorporateRollup))
 			return;
 
@@ -608,13 +567,10 @@ public class ContractorCron extends PicsActionSupport {
 						// if CO data does not already exist, assume green flag
 						// then if CO data is found later, will be updated to
 						// proper flag color
-						FlagColor parentFacilityColor = (corporateRollupData
-								.get(parent) != null) ? corporateRollupData
+						FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData
 								.get(parent) : FlagColor.Green;
-						FlagColor operatorFacilityColor = coOperator
-								.getFlagColor();
-						FlagColor worstColor = FlagColor.getWorseColor(
-								parentFacilityColor, operatorFacilityColor);
+						FlagColor operatorFacilityColor = coOperator.getFlagColor();
+						FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, operatorFacilityColor);
 						corporateRollupData.put(parent, worstColor);
 					}
 				} // otherwise operator has no one to roll up to
@@ -628,14 +584,11 @@ public class ContractorCron extends PicsActionSupport {
 			OperatorAccount parent = corporate.getParent();
 
 			if (parent != null) {
-				FlagColor parentFacilityColor = (corporateRollupData
-						.get(parent) != null) ? corporateRollupData.get(parent)
-						: FlagColor.Green;
-				FlagColor currentFacilityColor = corporateRollupData
-						.get(corporate);
+				FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData
+						.get(parent) : FlagColor.Green;
+				FlagColor currentFacilityColor = corporateRollupData.get(corporate);
 
-				FlagColor worstColor = FlagColor.getWorseColor(
-						parentFacilityColor, currentFacilityColor);
+				FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, currentFacilityColor);
 				corporateRollupData.put(parent, worstColor);
 
 				// putting parent at the end of the queue for later calculation
@@ -647,8 +600,7 @@ public class ContractorCron extends PicsActionSupport {
 		// for all entries that exist in my existingCorpCOchanges (linked).
 		// Update entries based off of corporateRollupData.
 		for (OperatorAccount corporate : existingCorpCOchanges.keySet()) {
-			existingCorpCOchanges.get(corporate).setFlagColor(
-					corporateRollupData.get(corporate));
+			existingCorpCOchanges.get(corporate).setFlagColor(corporateRollupData.get(corporate));
 			corporateSet.remove(corporate);
 		}
 
@@ -676,15 +628,15 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.CSRAssignment))
 			return;
 
-//		List<UserAssignmentMatrix> assignments = userAssignmentMatrixDAO
-//				.findByContractor(contractor);
-//
-//		if (assignments.size() == 1) {
-//			contractor.setAuditor(assignments.get(0).getUser());
-//			contractorDAO.save(contractor);
-//		} else if (assignments.size() > 1) {
-//			// Manage Conflicts
-//		}
+		// List<UserAssignmentMatrix> assignments = userAssignmentMatrixDAO
+		// .findByContractor(contractor);
+		//
+		// if (assignments.size() == 1) {
+		// contractor.setAuditor(assignments.get(0).getUser());
+		// contractorDAO.save(contractor);
+		// } else if (assignments.size() > 1) {
+		// // Manage Conflicts
+		// }
 	}
 
 	public int getConID() {
@@ -719,8 +671,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (step == null || steps == null)
 			return false;
 		for (ContractorCronStep candidate : steps)
-			if (candidate.equals(step)
-					|| candidate.equals(ContractorCronStep.All))
+			if (candidate.equals(step) || candidate.equals(ContractorCronStep.All))
 				return true;
 		return false;
 	}
