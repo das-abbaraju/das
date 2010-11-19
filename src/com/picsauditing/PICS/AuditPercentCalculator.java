@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
+import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
@@ -22,9 +23,11 @@ import com.picsauditing.util.AnswerMap;
 public class AuditPercentCalculator {
 
 	private AuditCategoryRuleCache auditCategoryRuleCache;
+	private AuditCategoryDataDAO categoryDataDAO;
 
-	public AuditPercentCalculator(AuditCategoryRuleCache auditCategoryRuleCache) {
+	public AuditPercentCalculator(AuditCategoryRuleCache auditCategoryRuleCache, AuditCategoryDataDAO categoryDataDAO) {
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
+		this.categoryDataDAO = categoryDataDAO;
 	}
 
 	public void updatePercentageCompleted(AuditCatData catData) {
@@ -173,6 +176,7 @@ public class AuditPercentCalculator {
 		catData.setNumVerified(verifiedCount);
 		catData.setScore(score);
 		catData.setScoreCount(scoreCount);
+		categoryDataDAO.save(catData);
 	}
 
 	public void percentCalculateComplete(ContractorAudit conAudit) {
