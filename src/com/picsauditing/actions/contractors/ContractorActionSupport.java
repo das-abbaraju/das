@@ -281,7 +281,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (contractor.isAcceptsBids())
 			return false;
 
-		if (!accountDao.isContained(getOperators().iterator().next()))
+		if (getOperators().iterator().hasNext()) {
+			if (!accountDao.isContained(getOperators().iterator().next()))
+				operators = null;
+		} else
 			operators = null;
 
 		if (permissions.isOperator()) {
