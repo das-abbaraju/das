@@ -484,7 +484,7 @@ public class ContractorCron extends PicsActionSupport {
 //			dao.save(note);
 
 			if (co.getProcessCompletion() == null && waitingOn.isNone() && !co.getWaitingOn().isNone()) {
-				EventSubscriptionBuilder.contractorFinishedEvent(subscriptionDAO, co);
+				//EventSubscriptionBuilder.contractorFinishedEvent(subscriptionDAO, co);
 				co.setProcessCompletion(new Date());
 			}
 			co.setWaitingOn(waitingOn);
