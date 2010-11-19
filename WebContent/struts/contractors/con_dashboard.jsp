@@ -139,8 +139,8 @@ table.report tr.hurdle td {
 </style>
 </head>
 <body>
-
 <s:include value="conHeader.jsp"/>
+<div class="alert">Some items are still being updated after last night's release. Please double check Flag Colors for accuracy and call PICS Customer Service if you have any questions.</div>
 <s:if test="permissions.contractor">
 	<div class="info">This is your profile page that the operators see when they look up your account. 
 	Use the dropdown below to view the page from your operator's point of view.</div>

@@ -147,9 +147,9 @@ function checkReason(id) {
 </script>
 </head>
 <body>
-
 <s:push value="#subHeading='Flag Status'" />
 <s:include value="conHeader.jsp" />
+<div class="alert">Some items are still being updated after last night's release. Please double check Flag Colors for accuracy and call PICS Customer Service if you have any questions.</div>
 
 <!-- OVERALL FLAG -->
 
