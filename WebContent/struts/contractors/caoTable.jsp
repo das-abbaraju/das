@@ -37,7 +37,8 @@
 								<s:checkbox cssClass="vis" value="#currentCao.visible" name="caosSave[%{#rowStatus.index}].visible" />
 							</td>
 						</s:if>
-						<td title="<s:iterator value="getViewableCaops(#currentCao)"><s:property value="name"/></s:iterator>">
+						<td title="<s:iterator value="getViewableCaops(#currentCao)"><s:property value="name"/>
+</s:iterator>">
 						<s:if test="systemEdit">
 							<s:property value="operator.name"/>
 						</s:if>

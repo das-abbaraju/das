@@ -47,8 +47,8 @@ $(function() {
 			<br />
 			<a class="cluetip helpBig" rel="#cluetip_<s:property value="#q.id"/>" title="<s:property value="#q.name"/>"></a>
 			<div id="cluetip_<s:property value="#q.id"/>">
-				<span title="<s:property value="#q.name"/>">
-					Additional Information
+				<span title="Additional Information">
+					<s:property value="#q.helpText" escape="false" />
 				</span>
 			</div>
 		</s:if>
