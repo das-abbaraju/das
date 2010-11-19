@@ -47,8 +47,11 @@
 								<s:property value="name" />
 							</s:iterator>
 						</s:elseif>
+						<s:elseif test="operator.id > 10">
+							<s:property value="operator.name"/>
+						</s:elseif>
 						<s:else>
-							<s:property value="getViewableCaops(#currentCao).size()"/> operators
+							<s:property value="operator.name.substring(4)" />: <s:property value="getViewableCaops(#currentCao).size()"/> operators
 						</s:else>
 						</td>
 						<td class="progress nobr">
