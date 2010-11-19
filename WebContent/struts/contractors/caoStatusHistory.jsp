@@ -26,7 +26,7 @@
 		</s:if>
 		<s:else>
 			<tr>
-				<td colspan="4">No status changes recorded</td>
+				<td colspan="5">No status changes recorded</td>
 			</tr>
 		</s:else>
 	</tbody>
