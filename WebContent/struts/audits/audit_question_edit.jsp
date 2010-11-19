@@ -45,9 +45,9 @@ $(function() {
 	<span class="questionNumber"><s:property value="#q.expandedNumber"/>
 		<s:if test="!#q.helpText.empty">
 			<br />
-			<a class="cluetip helpBig" rel="#cluetip_<s:property value="#q.id"/>" title="<s:property value="#q.name"/>"></a>
+			<a class="cluetip helpBig" rel="#cluetip_<s:property value="#q.id"/>" title="Additional Information"></a>
 			<div id="cluetip_<s:property value="#q.id"/>">
-				<span title="Additional Information">
+				<span title="<s:property value="#q.name"/>">
 					<s:property value="#q.helpText" escape="false" />
 				</span>
 			</div>
