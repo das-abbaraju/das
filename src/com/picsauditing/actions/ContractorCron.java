@@ -529,7 +529,7 @@ public class ContractorCron extends PicsActionSupport {
 		// for determining inserts from the CorporateSet (OperatorAccount)
 		// and managed insert/up/del off the linked COs (ContractorOperator)
 		Map<OperatorAccount, ContractorOperator> existingCorpCOchanges = new HashMap<OperatorAccount, ContractorOperator>();
-		Queue<OperatorAccount> corporateUpdateQueue = new LinkedBlockingQueue<OperatorAccount>();
+		Queue<OperatorAccount> corporateUpdateQueue = new LinkedList<OperatorAccount>();
 		Set<ContractorOperator> removalSet = new HashSet<ContractorOperator>();
 
 		Set<ContractorOperator> dblinkedCOs = new HashSet<ContractorOperator>();
