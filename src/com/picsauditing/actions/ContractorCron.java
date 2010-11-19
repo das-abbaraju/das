@@ -26,6 +26,7 @@ import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -49,9 +50,6 @@ import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
@@ -78,6 +76,7 @@ public class ContractorCron extends PicsActionSupport {
 	private FlagDataCalculator flagDataCalculator;
 	private AppPropertyDAO appPropertyDAO;
 	private UserAssignmentMatrixDAO userAssignmentMatrixDAO;
+	private ContractorAuditDAO conAuditDAO;
 
 	private int conID = 0;
 	private int opID = 0;
@@ -91,7 +90,7 @@ public class ContractorCron extends PicsActionSupport {
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
 			AuditBuilderController auditBuilder, ContractorFlagETL contractorFlagETL,
 			ContractorOperatorDAO contractorOperatorDAO, AppPropertyDAO appPropertyDAO,
-			UserAssignmentMatrixDAO userAssignmentMatrixDAO) {
+			UserAssignmentMatrixDAO userAssignmentMatrixDAO, ContractorAuditDAO conAuditDAO) {
 		this.dao = contractorDAO;
 		this.contractorDAO = contractorDAO;
 		this.auditDataDAO = auditDataDAO;
@@ -102,6 +101,7 @@ public class ContractorCron extends PicsActionSupport {
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.appPropertyDAO = appPropertyDAO;
 		this.userAssignmentMatrixDAO = userAssignmentMatrixDAO;
+		this.conAuditDAO = conAuditDAO;
 	}
 
 	public String execute() throws Exception {
@@ -291,6 +291,7 @@ public class ContractorCron extends PicsActionSupport {
 				auditPercentCalculator.percentCalculateComplete(cAudit, true);
 				cAudit.setLastRecalculation(new Date());
 				cAudit.setAuditColumns();
+				conAuditDAO.save(cAudit);
 			}
 		}
 	}
