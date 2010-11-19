@@ -48,8 +48,7 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 	protected OperatorAccountDAO operator;
 	protected OperatorTagDAO opTagDao;
 
-	public AuditRuleSearch(AuditTypeDAO auditTypeDao,
-			AuditCategoryDAO auditCatDao, OperatorAccountDAO operator,
+	public AuditRuleSearch(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCatDao, OperatorAccountDAO operator,
 			OperatorTagDAO opTagDao) {
 		this.auditTypeDao = auditTypeDao;
 		this.auditCatDao = auditCatDao;
@@ -59,8 +58,7 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 
 	@Override
 	public void prepare() throws Exception {
-		String[] qA = (String[]) ActionContext.getContext().getParameters()
-				.get("q");
+		String[] qA = (String[]) ActionContext.getContext().getParameters().get("q");
 		if (qA != null)
 			search = Utilities.escapeQuotes(qA[0]);
 	}
@@ -72,8 +70,7 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		}
 		if ("opTagFind".equals(button)) {
 			int opID = 0;
-			String[] qA = (String[]) ActionContext.getContext().getParameters()
-					.get("opID");
+			String[] qA = (String[]) ActionContext.getContext().getParameters().get("opID");
 			if (qA != null)
 				opID = Integer.parseInt(qA[0]);
 			if (opID == 0)
@@ -81,6 +78,7 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 			JSONArray jarray = new JSONArray();
 			for (final OperatorTag ot : opTagDao.findByOperator(opID, true)) {
 				jarray.add(new JSONObject() {
+
 					{
 						put("tag", ot.getTag());
 						put("tagID", ot.getId());
@@ -103,8 +101,7 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		if (filter.getOpID() > 0)
 			filter.setOperator(operator.find(filter.getOpID()).getName());
 		if (filter.getAuditTypeID() > 0)
-			filter.setAuditType(auditTypeDao.find(filter.getAuditTypeID())
-					.getAuditName());
+			filter.setAuditType(auditTypeDao.find(filter.getAuditTypeID()).getAuditName());
 		if (filter.getTagID() > 0)
 			filter.setAuditType(opTagDao.find(filter.getTagID()).getTag());
 	}
@@ -118,62 +115,49 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		sql.addField("IFNULL(a_search.risk,'*') risk");
 		sql.addField("IFNULL(ot.tag,'*') tag");
 		sql.addField("IFNULL(aq.name,'*') question");
-		sql
-				.addField("CASE a_search.acceptsBids WHEN 1 THEN 'True' WHEN 0 THEN 'False' ELSE '*' END bid");
-		sql
-				.addJoin("LEFT JOIN audit_type aty ON aty.id = a_search.auditTypeID");
+		sql.addField("CASE a_search.acceptsBids WHEN 1 THEN 'True' WHEN 0 THEN 'False' ELSE '*' END bid");
+		sql.addJoin("LEFT JOIN audit_type aty ON aty.id = a_search.auditTypeID");
 		sql.addJoin("LEFT JOIN operator_tag ot ON ot.id = a_search.tagID");
 		sql.addJoin("LEFT JOIN accounts a ON a.id = a_search.opID");
-		sql
-				.addJoin("LEFT JOIN audit_question aq ON aq.id = a_search.questionID");
+		sql.addJoin("LEFT JOIN audit_question aq ON aq.id = a_search.questionID");
 		sql.addOrderBy("a_search.priority");
 	}
 
 	protected String runAutoAjax() throws SQLException {
 		List<? extends BaseTable> returnAjax = null;
 		if ("auditType".equals(fieldName)) {
-			returnAjax = auditTypeDao.findWhere("t.auditName LIKE '" + search
-					+ "%'");
+			returnAjax = auditTypeDao.findWhere("t.auditName LIKE '" + search + "%'");
 		} else if ("category".equals(fieldName)) {
 			returnAjax = auditCatDao.findCategoryNames(search, 100);
 		} else if ("dependentAuditType".equals(fieldName)) {
-			returnAjax = auditTypeDao.findWhere("t.auditName LIKE '" + search
-					+ "%'");
+			returnAjax = auditTypeDao.findWhere("t.auditName LIKE '" + search + "%'");
 		} else if ("operator".equals(fieldName)) {
 			returnAjax = operator.findWhere(true, "a.name LIKE '" + search
 					+ "%' AND a.status IN ('Active','Pending','Demo')");
 		} else if ("tag".equals(fieldName)) {
-			returnAjax = opTagDao.findWhere(OperatorTag.class, "t.tag LIKE '"
-					+ search + "%'", 50);
+			returnAjax = opTagDao.findWhere(OperatorTag.class, "t.tag LIKE '" + search + "%'", 50);
 		} else if ("question".equals(fieldName)) {
-			returnAjax = ((AuditQuestionDAO) SpringUtils
-					.getBean("AuditQuestionDAO")).findWhere("t.name LIKE '"
+			returnAjax = ((AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO")).findWhere("t.name LIKE '"
 					+ search + "%'");
 		} else if ("dAuditType".equals(fieldName)) {
-			returnAjax = auditTypeDao.findWhere("t.auditName LIKE '" + search
-					+ "%'");
+			returnAjax = auditTypeDao.findWhere("t.auditName LIKE '" + search + "%'");
 		}
 		StringBuilder sb = new StringBuilder();
 		for (BaseTable bt : returnAjax) {
 			if (bt instanceof AuditType) {
-				sb.append(fieldName).append("|").append(
-						((AuditType) bt).getAuditName()).append("|").append(
+				sb.append(fieldName).append("|").append(((AuditType) bt).getAuditName()).append("|").append(
 						((AuditType) bt).getId()).append("\n");
 			} else if (bt instanceof AuditCategory) {
-				sb.append("cat").append("|").append(
-						((AuditCategory) bt).getFullyQualifiedName()).append(
-						"|").append(((AuditCategory) bt).getId()).append("\n");
+				sb.append("cat").append("|").append(((AuditCategory) bt).getFullyQualifiedName()).append("|").append(
+						((AuditCategory) bt).getId()).append("\n");
 			} else if (bt instanceof OperatorAccount) {
-				sb.append("op").append("|").append(
-						((OperatorAccount) bt).getName()).append("|").append(
+				sb.append("op").append("|").append(((OperatorAccount) bt).getName()).append("|").append(
 						((OperatorAccount) bt).getId()).append("\n");
 			} else if (bt instanceof OperatorTag) {
-				sb.append("tag").append("|")
-						.append(((OperatorTag) bt).getTag()).append("|")
-						.append(((OperatorTag) bt).getId()).append("\n");
+				sb.append("tag").append("|").append(((OperatorTag) bt).getTag()).append("|").append(
+						((OperatorTag) bt).getId()).append("\n");
 			} else if (bt instanceof AuditQuestion) {
-				sb.append("question").append("|").append(
-						((AuditQuestion) bt).getName()).append("|").append(
+				sb.append("question").append("|").append(((AuditQuestion) bt).getName()).append("|").append(
 						((AuditQuestion) bt).getId()).append("\n");
 			}
 		}
@@ -184,50 +168,36 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 
 	protected void addFilterToSQL() throws Exception {
 		if (filterOn(filter.getContractorType())) {
-			report.addFilter(new SelectFilter("accountType",
-					"a_search.contractorType = '?'", String.valueOf(filter
-							.getContractorType())));
+			report.addFilter(new SelectFilter("accountType", "a_search.contractorType = '?'", String.valueOf(filter
+					.getContractorType())));
 		}
 		if (filterOn(filter.getRiskLevel()) && filter.getRiskLevel() > 0) {
-			report.addFilter(new SelectFilter("riskLevel", "a_search.risk = ?",
-					String.valueOf(filter.getRiskLevel())));
+			report.addFilter(new SelectFilter("riskLevel", "a_search.risk = ?", String.valueOf(filter.getRiskLevel())));
 		}
 		if (filterOn(filter.getAuditTypeID()) && filter.getAuditTypeID() > 0) {
-			report.addFilter(new SelectFilter("audit_type", "aty.id= ?", String
-					.valueOf(filter.getAuditTypeID())));
+			report.addFilter(new SelectFilter("audit_type", "aty.id= ?", String.valueOf(filter.getAuditTypeID())));
 		}
 		if (filterOn(filter.getOpID()) && filter.getOpID() > 0) {
-			report.addFilter(new SelectFilter("operator", "a.id = ?", String
-					.valueOf(filter.getOpID())));
+			report.addFilter(new SelectFilter("operator", "a.id = ?", String.valueOf(filter.getOpID())));
 		}
 		if (filterOn(filter.getTagID()) && filter.getTagID() > 0) {
-			report.addFilter(new SelectFilter("tag", "ot.id = ?", String
-					.valueOf(filter.getTagID())));
+			report.addFilter(new SelectFilter("tag", "ot.id = ?", String.valueOf(filter.getTagID())));
 		}
 		if (filterOn(filter.getInclude())) {
-			report.addFilter(new SelectFilter("include", "include = ?", String
-					.valueOf(filter.getInclude())));
+			report.addFilter(new SelectFilter("include", "include = ?", String.valueOf(filter.getInclude())));
 		}
 		if (filterOn(filter.isBid())) {
-			report
-					.addFilter(new SelectFilter("bidOnly",
-							"a_search.acceptsBids = ?", String.valueOf(filter
-									.isBid())));
+			report.addFilter(new SelectFilter("bidOnly", "a_search.acceptsBids = ?", String.valueOf(filter.isBid())));
 		}
 		if (filterOn(filter.getCheckDate())) {
-			report
-					.addFilter(new SelectFilter(
-							"effectiveDate",
-							"a_search.effectiveDate <= '? 24:00:00' AND a_search.expirationDate >= '? 00:00:00'",
-							String.valueOf(DateBean.toDBFormat(filter
-									.getCheckDate()))));
+			report.addFilter(new SelectFilter("effectiveDate",
+					"a_search.effectiveDate <= '? 24:00:00' AND a_search.expirationDate >= '? 00:00:00'", String
+							.valueOf(DateBean.toDBFormat(filter.getCheckDate()))));
 		} else {
-			report
-					.addFilter(new SelectFilter(
-							"effectiveDate",
-							"a_search.effectiveDate <= '? 24:00:00' AND a_search.expirationDate >= '? 00:00:00'",
-							String.valueOf(DateBean.toDBFormat(DefaultDate))
-									+ " 24:00:00"));
+			report.addFilter(new SelectFilter("effectiveDate",
+					"a_search.effectiveDate <= '? 24:00:00' AND a_search.expirationDate >= '? 00:00:00'", String
+							.valueOf(DateBean.toDBFormat(DefaultDate))
+							+ " 24:00:00"));
 		}
 	}
 
