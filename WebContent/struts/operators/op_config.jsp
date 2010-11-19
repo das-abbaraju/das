@@ -102,6 +102,7 @@ function loadCatRules(catID, divCatID, name) {
 <body>
 <s:include value="opHeader.jsp" />
 <fieldset class="form">
+<s:if test="operator.operator">
 	<h2 class="formLegend">Parent Accounts</h2>
 	<ol>
 		<li><label>Country:</label>
@@ -115,10 +116,10 @@ function loadCatRules(catID, divCatID, name) {
 						<s:iterator value="allParents" id="corp">
 							<tr>
 								<td>
-									<a href="FacilitiesEdit.action?id=<s:property value="#corp.id" />">
+									<a href="?id=<s:property value="#corp.id" />">
 									<s:property value="#corp.name" /></a>
 								</td>
-								<td><a href="OperatorConfiguration.action?id=<s:property value="#opID" />&button=Remove&corpID=<s:property value="#corp.id" />" class="remove">Remove</a></td>
+								<td><a href="?id=<s:property value="#opID" />&button=Remove&corpID=<s:property value="#corp.id" />" class="remove">Remove</a></td>
 							</tr>
 						</s:iterator>
 					</s:if>
@@ -139,6 +140,15 @@ function loadCatRules(catID, divCatID, name) {
 			</s:form>
 		</li>
 	</ol>
+</s:if>
+<s:elseif test="operator.id > 10">
+	<h2 class="formLegend">Operators</h2>
+	<ol>
+		<li>
+			<s:iterator value="operator.operatorFacilities"><a href="?id=<s:property value="operator.id"/>"><s:property value="operator.name"/></a> </s:iterator>
+		</li>
+	</ol>
+</s:elseif>
 </fieldset>
 <fieldset class="form">
 	<h2 class="formLegend">Likely Included Audits</h2>
