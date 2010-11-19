@@ -17,6 +17,7 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -489,7 +490,12 @@ public class AuditBuilderController {
 						operators.add(opAccount);
 					} else if (cao.getOperator().equals(auditCategoryRule.getOperatorAccount())) {
 						operators.add(opAccount);
+					} else if (cao.getAudit().getAuditType().isDesktop() && cao.getOperator().getId() == OperatorAccount.PicsConsortium 
+							&& Account.PICS_CORPORATE.contains(auditCategoryRule.getOperatorAccount().getId())) {
+						// TODO clean this audit builder CAOP stuff
+						operators.add(opAccount);
 					}
+					
 				}
 			}
 		}
