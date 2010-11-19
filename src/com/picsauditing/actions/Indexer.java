@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.IndexableDAO;
@@ -18,6 +20,7 @@ import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.IndexObject;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
 
 public class Indexer extends PicsActionSupport {
 
@@ -50,44 +53,54 @@ public class Indexer extends PicsActionSupport {
 	}
 
 	@Override
-	public String execute() throws SQLException {
-		if (isRunning) {
-			addActionMessage("Indexer Already Running");
-			return SUCCESS;
-		} else
-			isRunning = true;
-		System.out.println("Starting Indexer");
-		setIndexTables(new HashMap<String, IndexableDAO>());
-		// if not specified then we will run all tables to check the index
-		if (toRun == null) {
-			getIndexTables().put("accounts", accountDAO);
-			getIndexTables().put("users", userDAO);
-			getIndexTables().put("employee", empDAO);
-		} else {
-			if (toRun.equals("accounts"))
+	public String execute() throws NoRightsException {
+		if (!forceLogin())
+			return LOGIN;
+		permissions.tryPermission(OpPerms.DevelopmentEnvironment);
+		try {
+			if (isRunning) {
+				addActionMessage("Indexer Already Running");
+				return SUCCESS;
+			} else
+				isRunning = true;
+			PicsLogger.start("Indexer", "Starting Indexer");
+			setIndexTables(new HashMap<String, IndexableDAO>());
+			// if not specified then we will run all tables to check the index
+			if (toRun == null) {
 				getIndexTables().put("accounts", accountDAO);
-			else if (toRun.equals("users"))
 				getIndexTables().put("users", userDAO);
-			else if (toRun.equals("employee"))
 				getIndexTables().put("employee", empDAO);
-		}
-		for (Entry<String, IndexableDAO> entry : getIndexTables().entrySet()) {
-			// for each table get those rows that need indexing
-			// and pass the list of ids in and run the indexer
-			runIndexer(getIndexable(entry.getKey()), entry.getValue(), entry
-					.getKey());
-		}
-		if (runStats) {
-			runStats = false;
-			Database db = new Database();
-			for (String s : getStatsQueryBuilder1()) {
-				db.executeInsert(s);
+			} else {
+				if (toRun.equals("accounts"))
+					getIndexTables().put("accounts", accountDAO);
+				else if (toRun.equals("users"))
+					getIndexTables().put("users", userDAO);
+				else if (toRun.equals("employee"))
+					getIndexTables().put("employee", empDAO);
 			}
+			for (Entry<String, IndexableDAO> entry : getIndexTables()
+					.entrySet()) {
+				// for each table get those rows that need indexing
+				// and pass the list of ids in and run the indexer
+				runIndexer(getIndexable(entry.getKey()), entry.getValue(),
+						entry.getKey());
+			}
+			if (runStats) {
+				runStats = false;
+				Database db = new Database();
+				for (String s : getStatsQueryBuilder1()) {
+					db.executeInsert(s);
+				}
+			}
+		} catch (Exception e) {
+			PicsLogger.log("Objection!(Exception)" + e.getMessage());
+		} finally {
+			PicsLogger.stop();
 		}
 		return SUCCESS;
 	}
-	
-	public void runSingle(Indexable table,  String tblName){			
+
+	public void runSingle(Indexable table, String tblName) {
 		List<IndexObject> l = null; // our list of ids
 		StringBuilder queryIndex = new StringBuilder(
 				"INSERT IGNORE INTO app_index VALUES ");
@@ -96,39 +109,37 @@ public class Indexer extends PicsActionSupport {
 		StringBuilder queryDelete = new StringBuilder(
 				"DELETE FROM app_index WHERE foreignKey = ");
 		Database db = new Database();
-		
-		if (table == null) 
+
+		if (table == null)
 			return;
 		l = table.getIndexValues();
 		queryDelete.append(table.getId()).append(" AND indexType = '").append(
 				table.getIndexType()).append("'");
 		try {
 			if (db.executeUpdate(queryDelete.toString()) > 0) {
-				System.out.println("deleted using: "
-						+ queryDelete.toString());
+				System.out.println("deleted using: " + queryDelete.toString());
 			}
 			for (IndexObject s : l) {
-				queryIndex.append("('").append(table.getIndexType())
-						.append("',").append(table.getId()).append(",'").append(
-								s.getValue()).append("','").append(
-								s.getWeight()).append("'),");
-				queryStats.append("('").append(table.getIndexType())
-						.append("','").append(s.getValue()).append("',")
-						.append(1).append("),").append("(null,'").append(s.getValue()).append("',1),");
+				queryIndex.append("('").append(table.getIndexType()).append(
+						"',").append(table.getId()).append(",'").append(
+						s.getValue()).append("','").append(s.getWeight())
+						.append("'),");
+				queryStats.append("('").append(table.getIndexType()).append(
+						"','").append(s.getValue()).append("',").append(1)
+						.append("),").append("(null,'").append(s.getValue())
+						.append("',1),");
 			}
-			db.executeInsert(queryIndex.substring(0, queryIndex
-					.length() - 1));
-			db.executeInsert(queryStats.substring(0, queryStats
-					.length() - 1));
+			db.executeInsert(queryIndex.substring(0, queryIndex.length() - 1));
+			db.executeInsert(queryStats.substring(0, queryStats.length() - 1));
 			String updateIndexing = "UPDATE " + tblName
-					+ " SET needsIndexing=0 WHERE id = "+table.getId();
+					+ " SET needsIndexing=0 WHERE id = " + table.getId();
 			db.executeUpdate(updateIndexing);
 			System.out.println("Saved ids");
 			db.executeUpdate("ANALYZE TABLE app_index, app_index_stats;");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void runIndexer(List<BasicDynaBean> ids, IndexableDAO dao,
@@ -137,7 +148,7 @@ public class Indexer extends PicsActionSupport {
 		int batch = 0;
 		Long t1 = System.currentTimeMillis();
 		if (ids == null || ids.isEmpty()) {
-			System.out.println("Nothing to update");
+			PicsLogger.log("Nothing to update for " + tblName);
 			return;
 		}
 		// Base string for query, use stringbuilder as we will be building large
@@ -152,8 +163,8 @@ public class Indexer extends PicsActionSupport {
 		Database db = new Database();
 		List<IndexObject> l = null; // our list of ids
 		List<Integer> savedIds = new ArrayList<Integer>(); // will store the
-															// last ids to be
-															// ran per batch
+		// last ids to be
+		// ran per batch
 		for (int i = 0; i < ids.size(); i++) {
 			if (stop) {
 				clearMessages();
@@ -168,14 +179,13 @@ public class Indexer extends PicsActionSupport {
 				id = Integer.parseInt(ids.get(i).get("id").toString());
 				Indexable table = (Indexable) dao.find(id);
 				if (table == null) // not a supported entity or could not pull
-									// up record
+					// up record
 					continue;
 				l = table.getIndexValues();
 				queryDelete.append(id).append(" AND indexType = '").append(
 						table.getIndexType()).append("'");
 				if (db.executeUpdate(queryDelete.toString()) > 0) {
-					System.out.println("deleted using: "
-							+ queryDelete.toString());
+					PicsLogger.log("Deleted using " + queryDelete.toString());
 				}
 				queryDelete.setLength(0);
 				queryDelete.append("DELETE FROM app_index WHERE foreignKey = ");
@@ -193,7 +203,7 @@ public class Indexer extends PicsActionSupport {
 				// add the id to the list of ids for saving
 				savedIds.add(id);
 				if (batch >= RUN_NUM) { // if we have this number of rows added,
-										// run the queries
+					// run the queries
 					db.executeInsert(queryIndex.substring(0, queryIndex
 							.length() - 1));
 					db.executeInsert(queryStats.substring(0, queryStats
@@ -202,7 +212,7 @@ public class Indexer extends PicsActionSupport {
 							+ " SET needsIndexing=0 WHERE id IN("
 							+ Strings.implode(savedIds) + ")";
 					db.executeUpdate(updateIndexing);
-					System.out.println("Saved ids");
+					PicsLogger.log("Saved ids");
 					queryIndex.setLength(0);
 					queryStats.setLength(0);
 					queryIndex.append("INSERT IGNORE INTO app_index VALUES");
@@ -212,7 +222,7 @@ public class Indexer extends PicsActionSupport {
 					batch = 0;
 				}
 			} catch (SQLException e) {
-				System.out.println("Last insert failed");
+				PicsLogger.log("Last insert failed");
 				e.printStackTrace();
 			}
 		}
@@ -228,13 +238,13 @@ public class Indexer extends PicsActionSupport {
 				db.executeUpdate(updateIndexing);
 			}
 		} catch (SQLException e) {
-			System.out.println("Last insert failed");
-			e.printStackTrace();
+			PicsLogger.log("Last insert failed");
+			PicsLogger.log(e.toString());
 			return;
 		} finally {
-			System.out.println("Fin");
+			PicsLogger.log("Fin");
 			Long t2 = System.currentTimeMillis();
-			System.out.println("Time to complete: " + (t2 - t1) / 1000f);
+			PicsLogger.log("Time to complete: " + (t2 - t1) / 1000f);
 			stop = false;
 			isRunning = false;
 		}
@@ -339,6 +349,14 @@ public class Indexer extends PicsActionSupport {
 
 	public void setEmpDAO(EmployeeDAO empDAO) {
 		this.empDAO = empDAO;
+	}
+
+	public static boolean isRunStats() {
+		return runStats;
+	}
+
+	public static void setRunStats(boolean runStats) {
+		Indexer.runStats = runStats;
 	}
 
 }
