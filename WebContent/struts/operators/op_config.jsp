@@ -43,12 +43,20 @@ function showType(typeID) {
 		showWho: false,
 		auditTypeID: typeID
 	};
+	var cType =$('tr#'+typeID+' .classType').text();	
+	if(cType=='Policy')
+		data.checkCat = true;
 
 	$('tr#'+typeID).find('.hide').show();
 	$('tr#'+typeID).find('.normal').hide();
 
 	startThinking({ div: "typeTable_" + typeID, message: "Loading Audit Type Rules" });
-	$('#typeTable_' + typeID).load("AuditRuleTableAjax.action", data);
+	$('#typeTable_' + typeID).load("AuditRuleTableAjax.action", data, function(){
+		if(cType=='Policy' && $('tr#'+typeID+' input[name=checkCat]').val()=='true'){
+			$('tr#'+typeID+' .buttonArea').html($('<a href="OperatorConfiguration.action?id=<s:property value="operator.id"/>&button=buildCat&auditTypeID='+typeID+'">')
+					.append('Build Category').addClass('go'));
+		}			
+	});
 
 	return false;
 }
@@ -148,15 +156,17 @@ function loadCatRules(catID, divCatID, name) {
 					<tbody>
 						<s:iterator value="typeList" id="type">
 							<tr id="<s:property value="#type.id" />">
-								<td><s:property value="#type.classType" /></td>
+								<td class="classType"><s:property value="#type.classType" /></td>
 								<td><a href="ManageAuditType.action?id=<s:property value="#type.id" />"><s:property value="#type.auditName" /></a></td>
 								<td>
 									<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="normal preview">Show Rules</a>
 									<a href="#" onclick="return hideType(<s:property value="#type.id" />);" class="hide remove">Hide Rules</a>
 									<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="hide refresh">Refresh</a>
 									<div id="typeTable_<s:property value="#type.id" />"></div>
-									<a href="AuditTypeRuleEditor.action?button=edit&rule.include=true&rule.auditType.id=<s:property value="#type.id" />&rule.operatorAccount.id=<s:property value="operator.id" />&rule.operatorAccount.name=<s:property value="operator.name" />"
-										target="_blank" class="hide add">Add Rule</a>
+										<a href="AuditTypeRuleEditor.action?button=edit&rule.include=true&rule.auditType.id=<s:property value="#type.id" />&rule.operatorAccount.id=<s:property value="operator.id" />&rule.operatorAccount.name=<s:property value="operator.name" />"
+											target="_blank" class="hide add">Add Rule</a>
+									<div class="buttonArea hidden">
+									</div>
 								</td>
 							</tr>
 						</s:iterator>

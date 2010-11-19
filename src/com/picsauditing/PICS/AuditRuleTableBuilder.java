@@ -34,6 +34,7 @@ public class AuditRuleTableBuilder extends PicsActionSupport {
 	protected boolean showPriority = true;
 	protected boolean showWho = true;
 	protected boolean excluded = false;
+	protected boolean checkCat = false;
 	protected int auditTypeID;
 	protected int categoryID;
 	protected String type = "AuditType";
@@ -73,6 +74,14 @@ public class AuditRuleTableBuilder extends PicsActionSupport {
 			if (auditTypeID > 0) {
 				AuditType a = typeDAO.find(auditTypeID);
 				rules = adtDAO.findByAuditType(a, operator);
+				if(checkCat){
+					for(AuditCategory cat : catDAO.findByAuditTypeID(auditTypeID)){
+						if(cat.getName().equals(operator.getName())){
+							checkCat = false;
+							break;
+						}
+					}
+				}
 			}
 
 			if (categoryID > 0) {
@@ -184,5 +193,13 @@ public class AuditRuleTableBuilder extends PicsActionSupport {
 
 		columns.addAll(usedColumns);
 		Collections.sort(columns);
+	}
+
+	public boolean isCheckCat() {
+		return checkCat;
+	}
+
+	public void setCheckCat(boolean checkCat) {
+		this.checkCat = checkCat;
 	}
 }
