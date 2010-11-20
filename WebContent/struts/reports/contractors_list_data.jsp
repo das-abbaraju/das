@@ -37,7 +37,7 @@
 			<s:if test="permissions.operator">
 				<td>Waiting On</td>
 			</s:if>
-			<s:if test="operatorAccount.approvesRelationships">
+			<s:if test="operatorAccount.approvesRelationships.isTrue()">
 				<pics:permission perm="ViewUnApproved">
 					<td><nobr>Approved</nobr></td>
 				</pics:permission>
@@ -101,7 +101,7 @@
 						<pics:permission perm="ContractorDetails"></a></pics:permission>
 					</td>
 				</s:if>
-				<s:if test="operatorAccount.approvesRelationships">
+				<s:if test="operatorAccount.approvesRelationships.isTrue()">
 					<pics:permission perm="ViewUnApproved">
 						<td align="center">&nbsp;&nbsp;&nbsp;&nbsp;<s:property
 							value="get('workStatus')" />
