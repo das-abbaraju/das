@@ -10,7 +10,6 @@
 <div>You have <strong><s:property value="contractorCount" /></strong> contractors in your database.</div>
 
 <s:include value="filters.jsp" />
-<div class="alert">Some items are still being updated after last night's release. If you have any concerns, then contact <a href="Contact.action">PICS Customer Service</a>.</div>
 
 <div id="report_data">
 <s:include value="contractors_list_data.jsp"></s:include>

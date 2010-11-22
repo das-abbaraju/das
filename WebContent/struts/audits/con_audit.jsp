@@ -24,9 +24,6 @@
 </head>
 <body>
 <s:include value="../audits/audit_catHeader.jsp"/>
-<div class="alert">Some items are still being updated after last night's release. 
-If the categories to the left appear incorrect, then click 
-<a href="Audit.action?auditID=<s:property value="auditID"/>&button=Recalculate">Recalculate Categories</a> on the left.</div>
 <s:if test="policy">
 	<a href="PolicyVerification.action?button=getFirst" class="picsbutton">First Policy</a>
 	<a href="PolicyVerification.action?button=showNext&auditID=<s:property value="auditID" />" class="picsbutton positive">Next Policy &gt;&gt;</a>

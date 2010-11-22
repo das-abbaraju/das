@@ -149,8 +149,6 @@ function checkReason(id) {
 <body>
 <s:push value="#subHeading='Flag Status'" />
 <s:include value="conHeader.jsp" />
-<div class="alert">Some items are still being updated after last night's release. If you have any concerns, then contact <a href="Contact.action">PICS Customer Service</a>.</div>
-
 
 <!-- OVERALL FLAG -->
 
