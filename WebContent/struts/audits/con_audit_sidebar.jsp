@@ -9,7 +9,7 @@
 			href="ConAuditMaintain.action?auditID=<s:property value="auditID" />">System
 		Edit</a></li>
 	</pics:permission>
-	<li><a href="Audit.action?auditID=<s:property value="auditID"/>&button=Recalculate">% Recalculate</a></li>
+	<li><a class="percent" href="Audit.action?auditID=<s:property value="auditID"/>&button=Recalculate"> Recalculate</a></li>
 	<s:if test="canVerifyPqf">
 		<li><a class="verify"
 			href="VerifyView.action?id=<s:property value="id" />">Verify</a></li>

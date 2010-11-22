@@ -477,6 +477,12 @@ a.file {
 	background: url('../images/file.png') no-repeat left center;
 	zoom: 1;
 }
+a.percent {
+	padding-left: 17px;
+	margin-left: 5px;
+	background: url('../images/percent.png') no-repeat left center;
+	zoom: 1;
+}
 
 a.uploadreq {
 	padding-left: 17px;
