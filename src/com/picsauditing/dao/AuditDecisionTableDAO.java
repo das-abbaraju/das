@@ -474,7 +474,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		if (permissions.isCorporate())
 			operatorIDs.addAll(permissions.getOperatorChildren());
 		if (operatorIDs.size() > 0)
-			where += " AND a.opID IN (" + Strings.implode(operatorIDs, ",") + ")";
+			where += " AND a.operatorAccount.id IN (" + Strings.implode(operatorIDs, ",") + ")";
 		if (topLevel)
 			where += " AND a.auditCategory.parent IS NULL";
 
