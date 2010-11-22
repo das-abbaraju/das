@@ -286,6 +286,7 @@ public class PicsMenu {
 			subMenu.addChild("Con/Op Flag Differences", "ContractorFlagDifference.action");
 			subMenu.addChild("Mail Cron", "MailCron.action");
 			subMenu.addChild("Subscription Cron", "SubscriptionCron.action");
+			subMenu.addChild("Server Information", "ServerInfo.action");
 			subMenu.addChild("Audit Schedule Builder", "AuditScheduleBuilderCron.action");
 			subMenu.addChild("Huntsman Sync", "ContractorCron.action");
 			subMenu.addChild("CSS Style Guide", "css.jsp");
