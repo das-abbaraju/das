@@ -76,6 +76,15 @@ function changeAuditStatus() {
 
 </script>
 <script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
+<link rel="stylesheet" href="js/jquery/blockui/blockui.css" type="text/css" />
+<link rel="stylesheet" href="css/audit.css" type="text/css" />
+
+<style type="text/css">
+.closeButton{
+	bottom: 0px !important;	
+}
+</style>
+
 </head>
 <body>
 <h1>Policies Awaiting Decision</h1>
@@ -93,7 +102,7 @@ function changeAuditStatus() {
 <s:include value="filters.jsp" />
 
 <div id="messages"></div>
-<div id="noteAjax"></div>
+<div id="noteAjax" style="display: none;"></div>
 
 <s:form id="approveInsuranceForm" method="post" cssClass="forms">
 <div id="report_data">
