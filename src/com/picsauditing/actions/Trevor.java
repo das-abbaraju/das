@@ -8,6 +8,7 @@ import java.util.Set;
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
+import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -18,25 +19,28 @@ public class Trevor extends PicsActionSupport {
 
 	private AuditDecisionTableDAO auditRuleDAO;
 	private ContractorAccountDAO accountDAO;
-	private AuditCategoryRuleCache cache;
+	private AuditCategoryRuleCache categoryCache;
+	private AuditTypeRuleCache typeCache;
 	private int conID;
 	private Set<AuditCategoryRule> applicable;
 	public String rules;
 
-	public Trevor(ContractorAccountDAO accountDAO, AuditDecisionTableDAO auditRuleDAO, AuditCategoryRuleCache cache) {
+	public Trevor(ContractorAccountDAO accountDAO, AuditDecisionTableDAO auditRuleDAO, AuditCategoryRuleCache categoryCache, AuditTypeRuleCache typeCache) {
 		this.accountDAO = accountDAO;
 		this.auditRuleDAO = auditRuleDAO;
-		this.cache = cache;
+		this.categoryCache = categoryCache;
+		this.typeCache = typeCache;
 	}
 
 	public String execute() throws SQLException {
 
 		if ("clear".equals(button)) {
 			List<AuditCategoryRule> rules = auditRuleDAO.findCategoryRules();
-			cache.clear();
+			categoryCache.clear();
+			typeCache.clear();
 		}
 		if ("print".equals(button)) {
-			output = cache.print();
+			output = categoryCache.print();
 		}
 		if (conID > 0) {
 			ContractorAccount contractor = accountDAO.find(conID);
