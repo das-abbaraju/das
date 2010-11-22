@@ -39,76 +39,76 @@
 	</s:else>
 	</th>
 	<td>
-		<s:textfield name='osha.manHours' key="{manHours}" value="%{getText('format.plain',{manHours})}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.manHours' value="%{getText('format.plain',{manHours})}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('fatalities')"/></th>
 	<td>
-		<s:textfield name='osha.fatalities' key="{fatalities}" value="%{getText('format.plain',{fatalities})}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.fatalities' value="%{getText('format.plain',{fatalities})}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('lostWorkDayCases.'.concat(type))"/></th>
 	<td>
-		<s:textfield name='osha.lostWorkCases' key="{lostWorkCases}" value="%{getText('format.plain',{lostWorkCases})}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.lostWorkCases' value="%{getText('format.plain',{lostWorkCases})}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('lostWorkDays.'.concat(type))"/></th>
 	<td>
-		<s:textfield name='osha.lostWorkDays' key="{lostWorkDays}" value="%{getText('format.plain',{lostWorkDays})}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.lostWorkDays' value="%{getText('format.plain',{lostWorkDays})}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('restrictedCases.'.concat(type))"/></th>
 	<td>
-		<s:textfield name='osha.restrictedWorkCases' key="{restrictedWorkCases}" value="%{getText('format.plain',{restrictedWorkCases})}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.restrictedWorkCases' value="%{getText('format.plain',{restrictedWorkCases})}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <s:if test="#category.id in { 151, 158 }">
 <tr>
 	<th class="label"><s:property value="getText('modifiedWorkDay.'.concat(type))"/></th>
 	<td>
-		<s:textfield name='osha.modifiedWorkDay' key="{modifiedWorkDay}" value="%{getText('format.plain',{modifiedWorkDay})}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.modifiedWorkDay' value="%{getText('format.plain',{modifiedWorkDay})}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 </s:if>
 <tr>
 	<th class="label"><s:property value="getText('injuryAndIllness.'.concat(type))"/></th>
 	<td>
-		<s:textfield name='osha.injuryIllnessCases' key="{injuryIllnessCases}" value="%{getText('format.plain',{injuryIllnessCases})}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.injuryIllnessCases' value="%{getText('format.plain',{injuryIllnessCases})}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <s:if test="#category.id == 158">
 <tr>
 	<th class="label"><s:property value="getText('firstAidInjuries.'.concat(type))"/></th>
 	<td>
-		<s:textfield name='osha.firstAidInjuries' key="{firstAidInjuries}" value="%{getText('format.plain',{firstAidInjuries})}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.firstAidInjuries' value="%{getText('format.plain',{firstAidInjuries})}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('vehicleIncidents.'.concat(type))"/></th>
 	<td>
-		<s:textfield name='osha.vehicleIncidents' key="{vehicleIncidents}" value="%{getText('format.plain',{vehicleIncidents})}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.vehicleIncidents' value="%{getText('format.plain',{vehicleIncidents})}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('totalkmDriven.'.concat(type))"/></th>
 	<td>
-		<s:textfield name='osha.totalkmDriven' key="{totalkmDriven}" value="%{getText('format.plain',{totalkmDriven})}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.totalkmDriven' value="%{getText('format.plain',{totalkmDriven})}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('cad7.'.concat(type))"/></th>
 	<td>
-		<s:textfield name='osha.cad7' key="{cad7}" value="%{getText('format.plain',{cad7})}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.cad7' value="%{getText('format.plain',{cad7})}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('neer.'.concat(type))"/></th>
 	<td>
-		<s:textfield name='osha.neer' key="{neer}" value="%{getText('format.plain',{neer})}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.neer' value="%{getText('format.plain',{neer})}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 </s:if>
@@ -126,7 +126,7 @@
 			<a href="#" onclick="openOsha(<s:property value="id"/>); return false;">View File</a>
 		</s:if>
 		<s:if test="categoryData.id > 0">
-			<s:file name="uploadFile" size="10"></s:file></s:if>
+			<s:file name="uploadFile" size="10"/></s:if>
 		</td>
 	</tr>
 </s:if>
@@ -135,9 +135,9 @@
 <s:if test="categoryData.id > 0">
 	<tr>
 		<th colspan="2" style="font-size: 14px;">
-			<input class="buttonOsha picsbutton positive" type="button" value="Save This Location" >
+			<input class="buttonOsha picsbutton positive" type="submit" name="button" value="Save This Location" >
 			<s:if test="(!corporate || permissions.admin) && categoryData.id > 0">
-					<input type="button" class="buttonOsha picsbutton negative" value="Delete""/>
+					<input name="button" type="submit" onclick="return confirm('Are you sure you want to delete this location? This action cannot be undone.')" class="buttonOsha picsbutton negative" value="Delete"/>
 			</s:if>
 		</th>
 	</tr>

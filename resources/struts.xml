@@ -1016,7 +1016,6 @@
 			<result type="redirectAction">
 				<param name="actionName">Audit</param>
 				<param name="auditID">${auditID}</param>
-				<param name="categoryID">${categoryID}</param>
 			</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>

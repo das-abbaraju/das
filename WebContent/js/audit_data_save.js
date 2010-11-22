@@ -62,19 +62,6 @@ $(function(){
 		updateCategoriesNow();
 	});
 	
-	$('.buttonOsha').live('click', function(){
-		var status;
-		if($(this).val()=='Delete'){
-			if(!confirm('Are you sure you want to delete this location? This action cannot be undone.'))
-				return false;
-			status = 'Deleting';			
-		} else
-			status = 'Saving';			
-		$(this).parents('#auditViewArea:first').block({message: status+' OSHA Record'}).load('OshaSaveAjax.action', $(this).parents('form#osSave').serialize()+"&button="+$(this).val(), function(response, status){
-			$(this).unblock();
-		});
-	});
-	
 	// Insurance Methods
 	$('a.uploadNewCertificate').live('click',function(e) {
 		e.preventDefault();
@@ -106,6 +93,10 @@ $(function(){
 		showCertUpload($(this).attr('rel'), data['auditData.question.id']);
 	});
 });
+
+function oshaSuccess(responseText, statusText, xhr, $form){
+		alert('moo');
+}
 
 function showCertUpload(certID, questionID) {
 	url = 'CertificateUpload.action?id='+conID

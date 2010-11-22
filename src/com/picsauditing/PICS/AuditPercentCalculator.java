@@ -314,5 +314,6 @@ public class AuditPercentCalculator {
 		catData.setRequiredCompleted(count);
 		catData.setNumRequired(numRequired);
 		catData.setNumVerified(numVerified);
+		categoryDataDAO.save(catData);
 	}
 }
