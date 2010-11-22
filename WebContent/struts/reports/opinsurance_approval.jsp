@@ -62,7 +62,7 @@ function changeAuditStatus() {
 	        data.button = '';
 	        data.note = $('#addToNotes').val();
 	        data.insurance = true;
-	        $.post('CaoSaveAjax.action', data, function() { $.unblockUI(); });
+	        $.post('CaoSaveAjax.action', data, function() { $.unblockUI(); clickSearch('form1') });
 	    });
 	     
 	    $('#noButton').click(function(){
