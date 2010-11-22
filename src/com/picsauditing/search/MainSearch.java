@@ -4,21 +4,27 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.IndexableDAO;
+import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.LinkBuilder;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class MainSearch extends PicsActionSupport implements Preparable {
@@ -32,7 +38,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	protected String accType = "";
 	protected String pageLinks;
 
-	private final int PAGEBREAK = 100;
+	private final int PAGEBREAK = 50;
 
 	protected List<Indexable> fullList;
 	protected Hashtable<Integer, Integer> ht;
@@ -48,9 +54,6 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		this.accountDAO = accountDAO;
 		this.userDAO = userDAO;
 		this.empDAO = empDAO;
-	}
-
-	public MainSearch() {
 	}
 
 	@Override
@@ -90,7 +93,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			// if corporate then build list of contractors in their system
 			ht = searchEngine.getConIds(permissions);
 			String query = searchEngine.buildQuery(permissions, terms, null,
-					startIndex, 100, false, true);
+					startIndex, 50, false, true);
 			List<BasicDynaBean> queryList = db.select(query, true);
 			totalRows = db.getAllRows();
 			String commonTermQuery = searchEngine.buildCommonTermQuery(terms,
@@ -141,53 +144,56 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	private List<Indexable> getFullResults(List<BasicDynaBean> queryList)
 			throws IOException {
-		String type = "";
-		List<Indexable> temp = new ArrayList<Indexable>();
-		for (BasicDynaBean bdb : queryList) {
-			String check = (String) bdb.get("indexType");
-			int key = Integer.parseInt(bdb.get("foreignKey").toString());
-			if (check.equals("A") || check.equals("AS") || check.equals("C")
-					|| check.equals("CO") || check.equals("O")) {
-				Account a = accountDAO.find(key);
-				type = "account&accType=" + a.getType();
-				temp.add(a);
-			} else if (check.equals("U") || check.equals("G")) {
-				User u = userDAO.find(key);
-				type = "user";
-				temp.add(u);
-			} else if (check.equals("E")) {
-				Employee e = empDAO.find(key);
-				type = "employee";
-				temp.add(e);
-			}
-		}
-		if (temp.size() == 1) {
+		Map<Integer, Indexable> records = getRecords(queryList);
+		if (records.values().size() == 1) {
 			redirect("Search.action?button=getResult&searchID="
-					+ temp.get(0).getId() + "&searchType=" + type);
+					+ records.values().iterator().next().getId()
+					+ "&searchType=");
 		}
-		return temp;
+		return new ArrayList<Indexable>(records.values());
 	}
 
 	private void getResults(List<BasicDynaBean> queryList) {
 		StringBuilder sb = new StringBuilder();
-		for (BasicDynaBean bdb : queryList) {
-			String check = (String) bdb.get("indexType");
-			int key = Integer.parseInt(bdb.get("foreignKey").toString());
-			if (check.equals("A") || check.equals("AS") || check.equals("C")
-					|| check.equals("CO") || check.equals("O")) {
-				Account a = accountDAO.find(key);
-				sb.append(a.getSearchText());
-			} else if (check.equals("U") || check.equals("G")) {
-				User u = userDAO.find(key);
-				sb.append(u.getSearchText());
-			} else if (check.equals("E")) {
-				Employee e = empDAO.find(key);
-				sb.append(e.getSearchText());
-			}
+		Map<Integer, Indexable> records = getRecords(queryList);
+		if(records.size()>0){
+			for (Indexable value : records.values())
+				sb.append(value.getSearchText());
 		}
 		output = sb.toString() + "FULL|Click to do a full search|"
 				+ searchTerm.replace(" ", "+");
+	}
 
+	@SuppressWarnings("unchecked")
+	public Map<Integer, Indexable> getRecords(List<BasicDynaBean> queryList) {
+		Map<Integer, Indexable> records = new LinkedHashMap<Integer, Indexable>();
+		ArrayListMultimap<Class, Integer> indexableMap = ArrayListMultimap
+				.create();
+		for (BasicDynaBean bdb : queryList) {
+			String check = (String) bdb.get("indexType");
+			int fkID = Integer.parseInt(bdb.get("foreignKey").toString());
+			if (check.equals("A") || check.equals("AS") || check.equals("C")
+					|| check.equals("CO") || check.equals("O")) {
+				indexableMap.put(Account.class, fkID);
+				records.put(fkID, null);
+			} else if (check.equals("U") || check.equals("G")) {
+				indexableMap.put(User.class, fkID);
+				records.put(fkID, null);
+			} else if (check.equals("E")) {
+				indexableMap.put(Employee.class, fkID);
+				records.put(fkID, null);
+			}
+		}
+		for (Class key : indexableMap.keySet()) {
+			List<Indexable> list = (List<Indexable>) accountDAO.findWhere(key,
+					"t.id IN (" + Strings.implode(indexableMap.get(key)) + ")",
+					0);
+			if (list != null) {
+				for (Indexable indexEntry : list)
+					records.put(indexEntry.getId(), indexEntry);
+			}
+		}
+		return records;
 	}
 
 	public boolean checkCon(int id) {
