@@ -124,13 +124,8 @@ public class AuditBuilderController {
 
 				if (!found) {
 					PicsLogger.log("Adding: " + auditType.getId() + auditType.getAuditName());
-					auditType = auditTypeDao.find(auditType.getId()); // need to
-																		// reconnect
-																		// object
-																		// (auditType
-																		// is
-																		// from
-																		// Cache)
+					// need to reconnect object (auditType is from Cache)
+					auditType = auditTypeDao.find(auditType.getId());
 					ContractorAudit pendingToInsert = createAudit(auditType);
 					contractor.getAudits().add(pendingToInsert);
 				}
@@ -152,6 +147,11 @@ public class AuditBuilderController {
 						needed = true;
 				}
 
+				if (!needed && conAudit.getScheduledDate() != null) {
+					System.out.println("WARNING: Leaving unneeded scheduled audit " + conAudit.getId());
+					needed = true;
+				}
+
 				if (!needed && conAudit.getData().size() == 0) {
 					PicsLogger.log("removing unneeded audit " + conAudit.getAuditType().getAuditName());
 					iter.remove();
@@ -169,15 +169,14 @@ public class AuditBuilderController {
 			}
 		}
 		PicsLogger.stop();
-		
+
 		conAuditDao.save(contractor);
 	}
 
 	public List<AuditTypeRule> getAuditTypeRules() {
 		if (rules == null) {
 			rules = new ArrayList<AuditTypeRule>();
-			List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache
-					.getApplicableAuditRules(contractor);
+			List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache.getApplicableAuditRules(contractor);
 			List<AuditRule> pruneRules = pruneRules(applicableAuditRules, null);
 			for (AuditRule rule : pruneRules) {
 				rules.add((AuditTypeRule) rule);
@@ -298,7 +297,7 @@ public class AuditBuilderController {
 		PicsLogger.start("AuditCategories", "auditID=" + conAudit.getId() + " type="
 				+ conAudit.getAuditType().getAuditName());
 
-		if(conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+		if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
 			return;
 
 		AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
@@ -400,8 +399,8 @@ public class AuditBuilderController {
 		PicsLogger.start("AuditOperators", conAudit.getAuditType().getAuditName());
 
 		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require a auditOperator.");
-		
-		if(conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+
+		if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
 			return;
 
 		AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
@@ -415,11 +414,11 @@ public class AuditBuilderController {
 		}
 
 		if (detail.governingBodies.contains(null)) {
-			PicsLogger.log("Replacing null governing body with PICS Consortium account");
+			PicsLogger.log("Replacing null governing body with PICS Global account");
 			OperatorAccount operator = new OperatorAccount();
 			// PICS Consortium
 			operator.setId(4);
-			operator.setName("PICS Consortium");
+			operator.setName("PICS Global");
 			detail.governingBodies.add(operator);
 			detail.governingBodies.remove(null);
 		}
@@ -429,7 +428,6 @@ public class AuditBuilderController {
 			boolean contains = contains(detail.governingBodies, cao.getOperator());
 			if (contains != cao.isVisible()) {
 				cao.setVisible(contains);
-				cao.setAuditColumns(user);
 				// contractorAuditOperatorDAO.save(cao);
 			}
 		}
@@ -490,12 +488,12 @@ public class AuditBuilderController {
 						operators.add(opAccount);
 					} else if (cao.getOperator().equals(auditCategoryRule.getOperatorAccount())) {
 						operators.add(opAccount);
-					} else if (cao.getAudit().getAuditType().isDesktop() && cao.getOperator().getId() == OperatorAccount.PicsConsortium 
+					} else if (cao.getAudit().getAuditType().isDesktop()
+							&& cao.getOperator().getId() == OperatorAccount.PicsConsortium
 							&& Account.PICS_CORPORATE.contains(auditCategoryRule.getOperatorAccount().getId())) {
 						// TODO clean this audit builder CAOP stuff
 						operators.add(opAccount);
 					}
-					
 				}
 			}
 		}
