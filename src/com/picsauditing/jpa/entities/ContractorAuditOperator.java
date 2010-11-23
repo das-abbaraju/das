@@ -283,16 +283,4 @@ public class ContractorAuditOperator extends BaseTable {
 		}
 		return false;
 	}
-	
-	@Transient
-	public boolean canSubmitCao() {
-		// TODO eliminate this method
-		return getPercentComplete() == 100;
-	}
-
-	@Transient
-	public boolean canVerifyCao() {
-		// TODO eliminate this method
-		return getPercentVerified() == 100;
-	}
 }

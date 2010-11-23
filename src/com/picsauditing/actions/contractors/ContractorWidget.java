@@ -150,24 +150,28 @@ public class ContractorWidget extends ContractorActionSupport {
 
 					boolean canSee = true;
 					for (ContractorAuditOperator cao : conAudit.getOperators()) {
-						if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
-							if (conAudit.getAuditType().isCanContractorEdit()) {
-								// Maybe use conAudit.isAboutToRenew() instead
-								// of conAudit.getAuditType().isRenewable() &&
-								// conAudit.isAboutToExpire()
-								if (cao.getStatus().before(AuditStatus.Submitted)
-										|| (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire())) {
-									needed++;
-								}
-							} else if (conAudit.getAuditType().getWorkFlow().getId() == Workflow.AUDIT_REQUIREMENTS_WORKFLOW) {
-								if (cao.getStatus().before(AuditStatus.Complete)) {
-									needed++;
+						if (cao.isVisible()) {
+							if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
+								if (conAudit.getAuditType().isCanContractorEdit()) {
+									// Maybe use conAudit.isAboutToRenew()
+									// instead
+									// of conAudit.getAuditType().isRenewable()
+									// &&
+									// conAudit.isAboutToExpire()
+									if (cao.getStatus().before(AuditStatus.Submitted)
+											|| (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire())) {
+										needed++;
+									}
+								} else if (conAudit.getAuditType().getWorkFlow().getId() == Workflow.AUDIT_REQUIREMENTS_WORKFLOW) {
+									if (cao.getStatus().before(AuditStatus.Complete)) {
+										needed++;
+									}
 								}
 							}
-						}
-						if (permissions.hasPermission(OpPerms.ContractorInsurance) || permissions.isAdmin()) {
-							if (cao.getStatus().before(AuditStatus.Submitted)) {
-								needed++;
+							if (permissions.hasPermission(OpPerms.ContractorInsurance) || permissions.isAdmin()) {
+								if (cao.getStatus().before(AuditStatus.Submitted)) {
+									needed++;
+								}
 							}
 						}
 					}
