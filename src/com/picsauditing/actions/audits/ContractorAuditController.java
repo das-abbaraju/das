@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +28,6 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.util.AnswerMap;
 
 /**
@@ -104,6 +104,8 @@ public class ContractorAuditController extends AuditActionSupport {
 			
 			if ("Recalculate".equals(button)) {
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
+				conAudit.setLastRecalculation(new Date());
+				auditDao.save(conAudit);
 				this.redirect("Audit.action?auditID="+conAudit.getId());
 				return SUCCESS;
 			}
