@@ -2,10 +2,8 @@ package com.picsauditing.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -16,7 +14,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.PermissionQueryBuilder;
 
 @Transactional
@@ -130,7 +127,7 @@ public class CertificateDAO extends PicsDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Map<ContractorAudit, Set<AuditData>> findConCertsAuditData(int conID) {
+	public List<AuditData> findConCertsAuditData(int conID) {
 		Query query = em.createQuery("SELECT d FROM AuditData d " +
 				"WHERE d.audit.auditType.classType = 'Policy' " +
 				"AND d.question.columnHeader= 'Certificate' " +
@@ -138,17 +135,6 @@ public class CertificateDAO extends PicsDAO {
 				"AND d.audit.contractorAccount.id = ?");
 		
 		query.setParameter(1, conID);
-		List<AuditData> data = query.getResultList();
-		
-		Map<ContractorAudit, Set<AuditData>> map = new HashMap<ContractorAudit, Set<AuditData>>();
-		
-		for (AuditData d : data) {
-			if (map.get(d.getAudit()) == null)
-				map.put(d.getAudit(), new HashSet<AuditData>());
-
-			map.get(d.getAudit()).add(d);
-		}
-		
-		return map;
+		return query.getResultList();
 	}
 }
