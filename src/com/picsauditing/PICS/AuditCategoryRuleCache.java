@@ -104,6 +104,7 @@ public class AuditCategoryRuleCache {
 		Collections.reverse(rules);
 
 		PicsLogger.log("found " + rules.size() + " rules for contractor " + contractor.getId());
+		PicsLogger.stop();
 
 		return rules;
 	}
