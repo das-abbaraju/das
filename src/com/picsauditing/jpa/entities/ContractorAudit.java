@@ -688,7 +688,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 		for (AuditCatData auditCatData : sortedCats) {
 			boolean add = false;
-			if (auditCatData.getCategory().getId() == AuditCategory.WORK_HISTORY) {
+			if (!permissions.isContractor() && (auditCatData.getCategory().getId() == AuditCategory.WORK_HISTORY)) {
 				if (permissions.hasPermission(OpPerms.ViewFullPQF))
 					add = true;
 			} else if (permissions.isAdmin()) {
