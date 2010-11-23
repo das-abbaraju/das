@@ -1,5 +1,6 @@
 package com.picsauditing.PICS;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.BaseDecisionTreeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -49,8 +51,8 @@ public class AuditBuilder {
 	 *            this contractor
 	 * @return
 	 */
-	public Map<AuditType, AuditTypeDetail> calculateRequiredAuditTypes(
-			List<AuditTypeRule> rules, Collection<OperatorAccount> operators) {
+	public Map<AuditType, AuditTypeDetail> calculateRequiredAuditTypes(List<AuditTypeRule> rules,
+			Collection<OperatorAccount> operators) {
 		Map<AuditType, AuditTypeDetail> auditTypes = new HashMap<AuditType, AuditTypeDetail>();
 
 		PicsLogger.start("getRequiredAuditTypes");
@@ -86,15 +88,18 @@ public class AuditBuilder {
 		return auditTypes;
 	}
 
-	static public Map<AuditType, AuditTypeDetail> calculateRequiredAuditTypes(
-			ContractorAccount contractor) {
+	static public Map<AuditType, AuditTypeDetail> calculateRequiredAuditTypes(ContractorAccount contractor) {
 		// This isn't super efficient, but it works
 		AuditBuilder builder = new AuditBuilder();
-		AuditTypeRuleCache auditTypeRuleCache = (AuditTypeRuleCache) SpringUtils
-				.getBean("AuditTypeRuleCache");
+		AuditTypeRuleCache auditTypeRuleCache = (AuditTypeRuleCache) SpringUtils.getBean("AuditTypeRuleCache");
+		AuditBuilderController controller = (AuditBuilderController) SpringUtils.getBean("AuditBuilderController");
+		controller.setup(contractor, new User(User.SYSTEM));
 		List<AuditTypeRule> rules = auditTypeRuleCache.getApplicableAuditRules(contractor);
-		return builder.calculateRequiredAuditTypes(rules, contractor
-				.getOperatorAccounts());
+		List<AuditRule> prunedRules = controller.pruneRules(rules,null);
+		List<AuditTypeRule> prunedAuditRules = new ArrayList<AuditTypeRule>();
+		for(AuditRule ar : prunedRules)
+			prunedAuditRules.add((AuditTypeRule)ar);
+		return builder.calculateRequiredAuditTypes(prunedAuditRules, contractor.getOperatorAccounts());
 	}
 
 	/**
@@ -104,8 +109,8 @@ public class AuditBuilder {
 	 *            Make sure that these rules are filtered for the requested
 	 *            contractorAudit
 	 */
-	public AuditCategoriesDetail getDetail(AuditType auditType,
-			List<AuditCategoryRule> rules, Collection<OperatorAccount> operators) {
+	public AuditCategoriesDetail getDetail(AuditType auditType, List<AuditCategoryRule> rules,
+			Collection<OperatorAccount> operators) {
 		AuditCategoriesDetail detail = new AuditCategoriesDetail();
 		sortRules(rules);
 		detail.rules = rules;
@@ -119,9 +124,9 @@ public class AuditBuilder {
 		}
 
 		for (AuditCategoryRule rule : detail.operators.values()) {
-			// AuditBuilderController.fillAuditOperators() will replace any null with Operator (4)
-			detail.governingBodies.add(rule == null ? null : rule
-					.getOperatorAccount());
+			// AuditBuilderController.fillAuditOperators() will replace any null
+			// with Operator (4)
+			detail.governingBodies.add(rule == null ? null : rule.getOperatorAccount());
 		}
 		return detail;
 	}
@@ -136,11 +141,9 @@ public class AuditBuilder {
 	 * @param operator
 	 * @return
 	 */
-	static private AuditTypeRule getApplicable(List<AuditTypeRule> rules,
-			AuditType auditType, OperatorAccount operator) {
+	static private AuditTypeRule getApplicable(List<AuditTypeRule> rules, AuditType auditType, OperatorAccount operator) {
 		for (AuditTypeRule rule : rules) {
-			if (rule.getAuditType() == null
-					|| rule.getAuditType().equals(auditType)) {
+			if (rule.getAuditType() == null || rule.getAuditType().equals(auditType)) {
 				if (rule.isApplies(operator))
 					// Only consider rules for this operator
 					return rule;
@@ -149,11 +152,10 @@ public class AuditBuilder {
 		return null;
 	}
 
-	private void includeCategory(AuditCategoriesDetail detail,
-			AuditCategory category, List<AuditCategoryRule> categoryRules) {
+	private void includeCategory(AuditCategoriesDetail detail, AuditCategory category,
+			List<AuditCategoryRule> categoryRules) {
 		for (OperatorAccount operator : detail.operators.keySet()) {
-			AuditCategoryRule rule = getApplicable(categoryRules, category,
-					operator);
+			AuditCategoryRule rule = getApplicable(categoryRules, category, operator);
 			if (rule != null && rule.isInclude()) {
 				detail.categories.add(category);
 				if (rule.isMoreSpecific(detail.operators.get(operator)))
@@ -166,12 +168,11 @@ public class AuditBuilder {
 		}
 	}
 
-	static public AuditCategoryRule getApplicable(
-			List<AuditCategoryRule> rules, AuditCategory auditCategory,
+	static public AuditCategoryRule getApplicable(List<AuditCategoryRule> rules, AuditCategory auditCategory,
 			OperatorAccount operator) {
 		for (AuditCategoryRule rule : rules) {
 			boolean ruleApplies = false;
-			if(rule.getAuditCategory() == null) {
+			if (rule.getAuditCategory() == null) {
 				// We have a wildcard category, so let's figure out if it
 				// matches on categories or subcategories or both
 				if (rule.getRootCategory() == null) {
@@ -188,8 +189,7 @@ public class AuditBuilder {
 							ruleApplies = true;
 					}
 				}
-			}
-			else if (auditCategory.equals(rule.getAuditCategory())) {
+			} else if (auditCategory.equals(rule.getAuditCategory())) {
 				// We have a direct category match
 				ruleApplies = true;
 			}

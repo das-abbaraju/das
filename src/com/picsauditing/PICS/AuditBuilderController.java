@@ -189,7 +189,7 @@ public class AuditBuilderController {
 		return getRequiredAuditTypes().keySet();
 	}
 
-	private List<AuditRule> pruneRules(List<? extends AuditRule> rules, ContractorAudit conAudit) {
+	public List<AuditRule> pruneRules(List<? extends AuditRule> rules, ContractorAudit conAudit) {
 		Set<Integer> contractorAnswersNeeded = new HashSet<Integer>();
 		Set<Integer> auditAnswersNeeded = new HashSet<Integer>();
 		Set<Integer> tagsNeeded = new HashSet<Integer>();
