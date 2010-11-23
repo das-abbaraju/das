@@ -9,6 +9,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.BaseTable;
+import com.picsauditing.jpa.entities.Indexable;
 
 @Transactional
 abstract public class PicsDAO {
@@ -80,6 +81,14 @@ abstract public class PicsDAO {
 	@SuppressWarnings("unchecked")
 	public List<? extends BaseTable> findWhere(Class<? extends BaseTable> clazz, String where, int limit) {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t WHERE " + where + " ORDER BY t.id");
+		if (limit > 0)
+			q.setMaxResults(limit);
+		return q.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List findWhere(String className, String where, int limit) {
+		Query q = em.createQuery("FROM " + className + " t WHERE " + where + " ORDER BY t.id");
 		if (limit > 0)
 			q.setMaxResults(limit);
 		return q.getResultList();

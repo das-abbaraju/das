@@ -53,8 +53,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	@Override
 	public void prepare() throws Exception {
-		String[] qA = (String[]) ActionContext.getContext().getParameters()
-				.get("q");
+		String[] qA = (String[]) ActionContext.getContext().getParameters().get("q");
 		if (qA != null)
 			searchTerm = qA[0];
 	}
@@ -75,36 +74,30 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 					redirect("FacilitiesEdit.action?id=" + searchID);
 			} else if (searchType.equals("user")) {
 				User u = userDAO.find(searchID);
-				redirect("UsersManage.action?accountId="
-						+ u.getAccount().getId() + "&user.id=" + searchID);
+				redirect("UsersManage.action?accountId=" + u.getAccount().getId() + "&user.id=" + searchID);
 			} else if (searchType.equals("employee"))
 				redirect("ManageEmployees.action?employee.id=" + searchID);
 
 			return BLANK;
 		} else if ("search".equals(button)) { // full view and paging
 
-			List<String> terms = searchEngine
-					.buildTerm(searchTerm, true, false);
+			List<String> terms = searchEngine.buildTerm(searchTerm, true, false);
 			// if corporate then build list of contractors in their system
 			ht = searchEngine.getConIds(permissions);
-			String query = searchEngine.buildQuery(permissions, terms, null,
-					startIndex, 50, false, true);
+			String query = searchEngine.buildQuery(permissions, terms, null, startIndex, 50, false, true);
 			List<BasicDynaBean> queryList = db.select(query, true);
 			totalRows = db.getAllRows();
-			String commonTermQuery = searchEngine.buildCommonTermQuery(terms,
-					totalRows);
+			String commonTermQuery = searchEngine.buildCommonTermQuery(terms, totalRows);
 
 			if (totalRows > PAGEBREAK) {
-				List<BasicDynaBean> commonList = db.select(commonTermQuery,
-						false);
+				List<BasicDynaBean> commonList = db.select(commonTermQuery, false);
 				searchEngine.buildCommonSuggest(commonList, searchTerm);
 			}
 
 			if (queryList != null && queryList.size() > 0)
 				fullList = getFullResults(queryList);
 			else {
-				queryList = db.select(searchEngine.buildAccountSearch(
-						permissions, terms), true);
+				queryList = db.select(searchEngine.buildAccountSearch(permissions, terms), true);
 				fullList = getFullResults(queryList);
 			}
 			if (fullList == null)
@@ -119,17 +112,14 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 			return SUCCESS;
 		} else { // autosuggest/complete
-			List<String> terms = searchEngine
-					.buildTerm(searchTerm, true, false);
-			String query = searchEngine.buildQuery(permissions, terms, null, 0,
-					10, false, false);
+			List<String> terms = searchEngine.buildTerm(searchTerm, true, false);
+			String query = searchEngine.buildQuery(permissions, terms, null, 0, 10, false, false);
 			List<BasicDynaBean> queryList = db.select(query, true);
 			totalRows = db.getAllRows();
 			if (queryList != null && queryList.size() > 0)
 				getResults(queryList);
 			else {
-				queryList = db.select(searchEngine.buildAccountSearch(
-						permissions, terms), true);
+				queryList = db.select(searchEngine.buildAccountSearch(permissions, terms), true);
 				getResults(queryList);
 			}
 
@@ -137,12 +127,10 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		}
 	}
 
-	private List<Indexable> getFullResults(List<BasicDynaBean> queryList)
-			throws IOException {
+	private List<Indexable> getFullResults(List<BasicDynaBean> queryList) throws IOException {
 		Map<Integer, Indexable> records = getRecords(queryList);
 		if (records.values().size() == 1) {
-			redirect("Search.action?button=getResult&searchID="
-					+ records.values().iterator().next().getId()
+			redirect("Search.action?button=getResult&searchID=" + records.values().iterator().next().getId()
 					+ "&searchType=");
 		}
 		return new ArrayList<Indexable>(records.values());
@@ -151,24 +139,21 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	private void getResults(List<BasicDynaBean> queryList) {
 		StringBuilder sb = new StringBuilder();
 		Map<Integer, Indexable> records = getRecords(queryList);
-		if(records.size()>0){
+		if (records.size() > 0) {
 			for (Indexable value : records.values())
 				sb.append(value.getSearchText());
 		}
-		output = sb.toString() + "FULL|Click to do a full search|"
-				+ searchTerm.replace(" ", "+");
+		output = sb.toString() + "FULL|Click to do a full search|" + searchTerm.replace(" ", "+");
 	}
 
 	@SuppressWarnings("unchecked")
 	public Map<Integer, Indexable> getRecords(List<BasicDynaBean> queryList) {
 		Map<Integer, Indexable> records = new LinkedHashMap<Integer, Indexable>();
-		ArrayListMultimap<Class, Integer> indexableMap = ArrayListMultimap
-				.create();
+		ArrayListMultimap<Class, Integer> indexableMap = ArrayListMultimap.create();
 		for (BasicDynaBean bdb : queryList) {
 			String check = (String) bdb.get("indexType");
 			int fkID = Integer.parseInt(bdb.get("foreignKey").toString());
-			if (check.equals("A") || check.equals("AS") || check.equals("C")
-					|| check.equals("CO") || check.equals("O")) {
+			if (check.equals("A") || check.equals("AS") || check.equals("C") || check.equals("CO") || check.equals("O")) {
 				indexableMap.put(Account.class, fkID);
 				records.put(fkID, null);
 			} else if (check.equals("U") || check.equals("G")) {
@@ -180,9 +165,8 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			}
 		}
 		for (Class key : indexableMap.keySet()) {
-			List<Indexable> list = (List<Indexable>) accountDAO.findWhere(key,
-					"t.id IN (" + Strings.implode(indexableMap.get(key)) + ")",
-					0);
+			List<Indexable> list = accountDAO.findWhere(key.getName(), "t.id IN ("
+					+ Strings.implode(indexableMap.get(key)) + ")", 0);
 			if (list != null) {
 				for (Indexable indexEntry : list)
 					records.put(indexEntry.getId(), indexEntry);
@@ -196,8 +180,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	}
 
 	private void buildPages(int total, int start, int end, int page) {
-		pageLinks = LinkBuilder.getPageNOfXLinks(total, PAGEBREAK, start, end,
-				page);
+		pageLinks = LinkBuilder.getPageNOfXLinks(total, PAGEBREAK, start, end, page);
 	}
 
 	public int getSearchID() {
