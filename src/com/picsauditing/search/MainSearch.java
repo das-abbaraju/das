@@ -15,9 +15,6 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.EmployeeDAO;
-import com.picsauditing.dao.IndexableDAO;
-import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
@@ -48,12 +45,10 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
-	private EmployeeDAO empDAO;
 
-	public MainSearch(AccountDAO accountDAO, UserDAO userDAO, EmployeeDAO empDAO) {
+	public MainSearch(AccountDAO accountDAO, UserDAO userDAO) {
 		this.accountDAO = accountDAO;
 		this.userDAO = userDAO;
-		this.empDAO = empDAO;
 	}
 
 	@Override
