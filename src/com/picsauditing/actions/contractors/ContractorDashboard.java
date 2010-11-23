@@ -19,6 +19,7 @@ import org.apache.struts2.ServletActionContext;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.ContractorFlagCriteriaList;
 import com.picsauditing.PICS.OshaOrganizer;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditDataDAO;
@@ -113,6 +114,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 			return LOGIN_AJAX;
 
 		findContractor();
+		
+		if (permissions.isOperatorCorporate() && (contractor.getStatus().isDeactivated() || contractor.getStatus().isDeleted()))
+			throw new NoRightsException("PICS Administrator");
 
 		if (button != null && button.contains("Watch")) {
 			tryPermissions(OpPerms.ContractorWatch, OpType.Edit);
