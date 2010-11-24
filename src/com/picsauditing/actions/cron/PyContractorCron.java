@@ -17,9 +17,9 @@ public class PyContractorCron extends PicsActionSupport {
 	}
 	
 	public String execute(){
-		List<Integer> ids = dao.findContractorsNeedingRecalculation(9, new HashSet<Integer>());
+		List<Integer> ids = dao.findContractorsNeedingRecalculation(15, new HashSet<Integer>());
 		if(ids!=null && !ids.isEmpty())
-			output = "Start"+Strings.implode(ids)+"End";
+			output = Strings.implode(ids);
 		return BLANK;
 	}
 
