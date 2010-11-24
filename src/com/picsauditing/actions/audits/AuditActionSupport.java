@@ -277,7 +277,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public List<WorkflowStep> getCurrentCaoStep(int caoID) {
-		if (caoSteps == null)
+		if (caoSteps == null || caoSteps.isEmpty())
 			getValidSteps();
 		return caoSteps.get(caoID);
 	}

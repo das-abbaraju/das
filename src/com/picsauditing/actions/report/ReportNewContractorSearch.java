@@ -68,6 +68,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 		getFilter().setShowOpertorTagName(false);
 		getFilter().setShowRegistrationDate(false);
 		getFilter().setShowAddress(false);
+		getFilter().setShowIndustry(false);
+		getFilter().setShowIndustries(true);
 
 		operator = operatorAccountDAO.find(permissions.getAccountId());
 
@@ -158,7 +160,6 @@ public class ReportNewContractorSearch extends ReportAccount {
 				System.out.println("Error in SQL");
 			}
 		}
-
 	}
 
 	@Override

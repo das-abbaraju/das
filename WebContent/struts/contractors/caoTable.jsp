@@ -73,7 +73,7 @@
 								<s:select list="getValidStatuses(#currentCao.id)" name="caosSave[%{#rowStatus.index}].status" value="#currentCao.status"/>
 							</s:if>
 							<s:else>
-								<a onclick="loadStatus(<s:property value="#currentCao.id"/>)" class="preview <s:property value="status.color"/>" style="cursor: pointer;"><s:property value="status"/></a>
+								<a onclick="loadStatus(<s:property value="#currentCao.id"/>)" class="preview <s:property value="status.color"/>"><s:property value="status"/></a>
 							</s:else>
 						</td>					
 						<td class="caoDate">
@@ -85,7 +85,7 @@
 						<s:if test="!systemEdit">
 							<td class="buttonAction">
 								<s:iterator value="getCurrentCaoStep(#currentCao.id)" id="step">
-									<div class="singleButton button <s:property value="#step.newStatus.color"/>" style="cursor: pointer;">
+									<div class="singleButton button <s:property value="#step.newStatus.color"/>">
 										<s:property value="#step.buttonName" />
 										<s:hidden cssClass="bCaoID" name="%{id}_%{#step.id}" value="%{#currentCao.id}"/>
 										<s:hidden cssClass="bStepID" name="%{id}_%{#buttonActions.key}_stepID" value="%{#step.id}" />
