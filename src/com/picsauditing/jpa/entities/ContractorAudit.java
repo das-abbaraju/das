@@ -663,7 +663,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		if (permissions.isContractor()) 
 			return getAuditType().isCanContractorView();
 
-		if (permissions.isAdmin())
+		if (permissions.isPicsEmployee())
 			return true;
 
 		for (ContractorAuditOperator cao : getOperators()) {
