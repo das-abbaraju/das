@@ -95,6 +95,8 @@ public class Indexer extends PicsActionSupport {
 		} catch (Exception e) {
 			PicsLogger.log("Objection!(Exception)" + e.getMessage());
 		} finally {
+			stop = false;
+			isRunning = false;
 			PicsLogger.stop();
 		}
 		return SUCCESS;
@@ -245,8 +247,6 @@ public class Indexer extends PicsActionSupport {
 			PicsLogger.log("Fin");
 			Long t2 = System.currentTimeMillis();
 			PicsLogger.log("Time to complete: " + (t2 - t1) / 1000f);
-			stop = false;
-			isRunning = false;
 		}
 	}
 
@@ -255,7 +255,7 @@ public class Indexer extends PicsActionSupport {
 		sql.addField("id");
 		sql.addWhere("needsIndexing = 1");
 		if (end > 0 && start >= 0 && (end > start)) {
-			sql.addWhere("id > " + start);
+			sql.addWhere("id >= " + start);
 			sql.addWhere("id < " + end);
 		}
 		sql.addOrderBy("id");
