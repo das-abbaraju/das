@@ -184,7 +184,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		// post contractor audit workflow for non renewable audits
 		sql = "insert into contractor_audit_operator_workflow (createdBy,updatedBy,creationDate,updateDate,caoID,status,previousStatus) " +
 				"select 1,1,Now(),Now(),cao.id,'Expired',cao.status from contractor_audit ca " +
-				"join contractor_audit_operator cao on cao.auditid = ca.id" +
+				"join contractor_audit_operator cao on cao.auditid = ca.id " +
 				"join audit_type at on at.id = ca.audittypeid " +
 				"where cao.status != 'Expired' and ca.expiresDate < NOW() and at.renewable = 0";
 		db.executeInsert(sql);
@@ -201,7 +201,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		// post contractor audit workflow for renewable audits
 		sql = "insert into contractor_audit_operator_workflow (createdBy,updatedBy,creationDate,updateDate,caoID,status,previousStatus) " +
 				"select 1,1,Now(),Now(),cao.id,'Pending',cao.status from contractor_audit ca " +
-				"join contractor_audit_operator cao on cao.auditid = ca.id" +
+				"join contractor_audit_operator cao on cao.auditid = ca.id " +
 				"join audit_type at on at.id = ca.audittypeid " +
 				"where cao.status != 'Expired' and ca.expiresDate < NOW() and at.renewable = 1";
 		db.executeInsert(sql);

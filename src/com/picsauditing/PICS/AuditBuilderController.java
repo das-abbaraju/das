@@ -235,7 +235,7 @@ public class AuditBuilderController {
 
 		List<ContractorAuditOperator> caoList = new ArrayList<ContractorAuditOperator>();
 		if (auditsNeeded.size() > 0) {
-			String where = " t.audit.contractorAccount.id = " + contractor.getId() + " AND t.audit.auditType.id IN ("
+			String where = " t.audit.contractorAccount.id = " + contractor.getId() + " AND t.visible = 1 AND t.audit.auditType.id IN ("
 					+ Strings.implode(auditsNeeded, ",") + ") ";
 			caoList = (List<ContractorAuditOperator>) contractorAuditOperatorDAO.findWhere(
 					ContractorAuditOperator.class, where, 100);
@@ -263,8 +263,7 @@ public class AuditBuilderController {
 				if (auditTypeRule.getDependentAuditType() != null) {
 					valid = false;
 					for (ContractorAuditOperator cao : caoList) {
-						if (cao.getOperator().equals(auditTypeRule.getOperatorAccount())
-								&& cao.getAudit().getAuditType().equals(auditTypeRule.getDependentAuditType())) {
+						if (cao.getAudit().getAuditType().equals(auditTypeRule.getDependentAuditType())) {
 							if (!cao.getStatus().before(auditTypeRule.getDependentAuditStatus()))
 								valid = true;
 						}
