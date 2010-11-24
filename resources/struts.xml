@@ -1941,6 +1941,13 @@
 			class="com.picsauditing.actions.report.ReportEmployeeTurnover">
 			<result>struts/reports/report_employee_turnover.jsp</result>
 		</action>
+		
+		<!-- Python Contractor Cron -->
+		
+		<action name="PyCron"
+			class="com.picsauditing.actions.cron.PyContractorCron">
+			<result>/struts/blank.jsp</result>
+		</action>
 
 		<!--  Development struts mappings -->
 		<action name="CertCleanUp"
