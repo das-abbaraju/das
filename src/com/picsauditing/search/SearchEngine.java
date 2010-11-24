@@ -136,13 +136,8 @@ public class SearchEngine {
 			sb.append("rName,");
 		sb.append("i1.foreignKey");
 		if (!buildCommon) {
-			sb.append(",i1.indexType, min(t.total*(v1.total/i1.weight"); // TODO
-			// change
-			// weight
-			// from
-			// /
-			// to
-			// *
+			sb.append(",i1.indexType, min(t.total*(v1.total/i1.weight"); 
+			// TODO change from / to *
 			for (int i = 1; i < terms.size(); i++) {
 				sb.append("+");
 				sb.append("v").append(i + 1).append(".total/i").append(i + 1)
@@ -200,7 +195,7 @@ public class SearchEngine {
 							.append(
 									"(SELECT gc.subID id, 'C' rType FROM generalcontractors gc\nJOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
 							.append(currPerm.getAccountId()).append(
-									" GROUP BY id) AS acc on a.id = acc.id)\n"); // here
+									" GROUP BY id) AS acc on a.id = acc.id WHERE a.status != 'Deactivated')\n"); // here
 				}
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
 					sb
@@ -239,7 +234,7 @@ public class SearchEngine {
 						.append(
 								"(SELECT gc.subID id, 'C' rType FROM generalcontractors gc WHERE gc.genID =")
 						.append(currPerm.getAccountId()).append(
-								") AS acc ON a.id = acc.id)");
+								") AS acc ON a.id = acc.id WHERE a.status != 'Deactivated'  )");
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
 					sb
 							.append(
