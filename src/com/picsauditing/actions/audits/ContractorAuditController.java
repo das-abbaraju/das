@@ -86,7 +86,9 @@ public class ContractorAuditController extends AuditActionSupport {
 							break;
 						}
 					}
-					button = "Recalculate";
+					conAudit.setLastRecalculation(null);
+					contractor.incrementRecalculation();
+					return SUCCESS;
 				}
 				
 				if ("UnincludeCategory".equals(button)) {
@@ -98,7 +100,9 @@ public class ContractorAuditController extends AuditActionSupport {
 							break;
 						}
 					}
-					button = "Recalculate";
+					conAudit.setLastRecalculation(null);
+					contractor.incrementRecalculation();
+					return SUCCESS;
 				}
 			}				
 			

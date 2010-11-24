@@ -36,6 +36,10 @@ function addRemoveCat(cat, action){
 	$('#categoryArea').load('AddRemoveCategoriesAjax.action', 
 			{button: action, auditID: auditID, categoryID: cat.slice(cat.indexOf('_')+1, cat.length)}, function(){
 				stopThinking({div: 'loadingArea'});
+				$.gritter.add({
+					title:'Adding/Removing categories will take some time to complete',
+					text: 'To see the results immediately you must click on recalculate on the audit page'
+				});
 	});	
 }
 </script>
