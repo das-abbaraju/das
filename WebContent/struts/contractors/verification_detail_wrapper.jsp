@@ -4,6 +4,7 @@
 <head>
 <s:include value="../jquery.jsp"/>
 <script src="js/validate_contractor.js?v=<s:property value="version"/>" type="text/javascript"></script>
+<script src="js/notes.js?v=<s:property value="version"/>" type="text/javascript"></script>
 <script src="js/FusionCharts.js" type="text/javascript"></script>
 <script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
 
@@ -12,6 +13,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/summaryreport.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css?v=<s:property value="version"/>" />
 
 <style type="text/css">
@@ -165,9 +167,10 @@
 		        $.post('CaoSaveAjax.action', data, function() {
 					$.unblockUI();
 					$('#verification_audit').empty();
-					$('#auditHeader').scrollTo();
 					refreshNoteCategory(<s:property value="id"/>, '<s:property value="noteCategory"/>');
+					refreshAuditList();
 				});
+
 		    });
 		     
 		    $('#noButton').click(function(){
@@ -205,6 +208,10 @@
 		$('#chartEmrTrir').load('ChartEmrTrirAjax.action', {conID: <s:property value="contractor.id" />});
 		$('#chartManHours').load('ChartManHoursAjax.action', {conID: <s:property value="contractor.id" />});
 	});
+
+	function refreshAuditList() {
+		$('#verification_detail').load('VerifyViewAjax.action', { id: <s:property value="contractor.id" /> });
+	}
 </script>
 
 </head>

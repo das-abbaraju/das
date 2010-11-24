@@ -240,10 +240,9 @@
 						<s:if test="value.audit.auditFor.length() > 0"><s:property value="value.audit.auditFor" />: </s:if><s:property value="value.status" />
 					</td>
 					<td>
-						<s:if test="value.percentVerified == 100">
-							<button class="picsbutton positive" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id" />,'Approved','Approve',<s:property value="value.id" />);">Approve</button>
-						</s:if>
-						<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id" />,'Incomplete','Reject',<s:property value="value.id" />);">Reject</button>
+						<s:iterator value="getCurrentCaoStep(value.id)">
+							<a href="#" onclick="return changeAuditStatus(<s:property value="conAudit.id" />,'<s:property value="newStatus" />',$(this).text(),<s:property value="value.id" />);"><div class="button <s:property value="newStatus.color" />"><s:property value="newStatus.button" /></div></a>
+						</s:iterator>
 					</td>
 				</tr>
 			</s:iterator>
