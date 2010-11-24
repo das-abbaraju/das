@@ -147,6 +147,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 					fco.setOperator(operator);
 					fco.setAffected(calculateAffectedList(fco).size());
 					flagCriteriaOperatorDAO.save(fco);
+					operator.getFlagCriteria().add(fco);
 
 					String newNote = "Flag Criteria has been added: " + fc.getCategory() + ", "
 							+ fco.getReplaceHurdle() + ", " + newFlag.toString() + " flagged";
@@ -313,6 +314,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	}
 
 	public List<FlagCriteriaOperator> getCriteriaList() {
+		operator.getFlagCriteriaInherited();
 		// Filter out here?
 		List<FlagCriteriaOperator> inheritedCriteria = operator.getFlagCriteriaInherited();
 		List<FlagCriteriaOperator> valid = new ArrayList<FlagCriteriaOperator>();
@@ -400,8 +402,9 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				if (c.getCriteria().isAllowCustomValue() && fco.getCriteria().isAllowCustomValue()) {
 					if (c.getHurdle().equals(fco.getHurdle()) || c.getFlag().equals(fco.getFlag()))
 						return true;
-				} else
+				} else if (c.getFlag().equals(fco.getFlag())) {
 					return true;
+				}
 			}
 		}
 
