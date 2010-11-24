@@ -258,6 +258,8 @@ public class Indexer extends PicsActionSupport {
 			sql.addWhere("id >= " + start);
 			sql.addWhere("id < " + end);
 		}
+		if(tblName.equals("users"))
+			sql.addWhere("isGroup = 'No'");
 		sql.addOrderBy("id");
 		Database db = new Database();
 		return db.select(sql.toString(), false);

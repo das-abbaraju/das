@@ -211,7 +211,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				user.setAccount(account);
 				//user.setNeedsIndexing(true);
 				userDAO.save(user);
-				indexer.runSingle(user, "users");
+				if(!user.isGroup())
+					indexer.runSingle(user, "users");
 			}
 			redirect("UsersManage.action?accountID="+user.getAccount().getId()+"&user.id="+user.getId()+"&msg=You have sucessfully moved " +
 					user.getName()+" to "+user.getAccount().getName());
@@ -379,7 +380,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			try {
 				user.setNeedsIndexing(true);
 				user = userDAO.save(user);
-				indexer.runSingle(user, "users");
+				if(!user.isGroup())
+					indexer.runSingle(user, "users");
 				addActionMessage("User saved successfully.");
 				if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
 					user.getAccount().setPrimaryContact(user);

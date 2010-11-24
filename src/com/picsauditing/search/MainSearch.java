@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -171,6 +172,10 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				for (Indexable indexEntry : list)
 					records.put(indexEntry.getId(), indexEntry);
 			}
+		}
+		for(Iterator<Map.Entry<Integer, Indexable>> it = records.entrySet().iterator(); it.hasNext();){
+			if(it.next().getValue()==null)
+				it.remove();
 		}
 		return records;
 	}
