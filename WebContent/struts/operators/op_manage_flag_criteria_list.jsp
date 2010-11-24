@@ -1,6 +1,8 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
+<s:include value="../actionMessages.jsp" />
+
 <script type="text/javascript">
 $(document).ready(function() {
 	$('.datepicker').datepicker();

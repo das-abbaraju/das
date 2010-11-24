@@ -138,51 +138,58 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco.setFlag(newFlag);
 
 				if (fc.isAllowCustomValue() && !Strings.isEmpty(newHurdle) && !newHurdle.equals("undefined")) {
-					if (fc.getDataType().equals("number")) // Custom values can
-															// only be set on
-															// number datatypes
+					if (fc.getDataType().equals("number"))
+						// Custom values can only be set on number datatypes
 						fco.setHurdle(Strings.formatNumber(newHurdle));
 				}
 
-				if (!checkExists(fc)) {
+				if (!checkExists(fco)) {
 					fco.setOperator(operator);
 					fco.setAffected(calculateAffectedList(fco).size());
 					flagCriteriaOperatorDAO.save(fco);
 
 					String newNote = "Flag Criteria has been added: " + fc.getCategory() + ", "
-							+ fc.getDescriptionBeforeHurdle() + newHurdle + fc.getDescriptionAfterHurdle() + ", "
-							+ newFlag.toString() + " flagged";
+							+ fco.getReplaceHurdle() + ", " + newFlag.toString() + " flagged";
 					addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 				} else {
-					addActionError("Flag Criteria \"" + fc.getDescription() + "\" with " + newFlag + " flag"
+					addActionError("Flag Criteria \"" + fco.getReplaceHurdle() + "\""
 							+ (tagID > 0 ? " and tag ID " + tagID : "") + " already exists.");
 				}
 			}
 			if (button.equals("save") && criteriaID > 0) {
 				FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(criteriaID);
-				fco.setUpdateDate(new Date());
-				fco.setUpdatedBy(getUser());
-				fco.setFlag(newFlag);
+				// The fco here and the fco in operator.getInheritedFlagCriteria
+				// end up being the same in memory so the check always returns
+				// true.
+				FlagCriteriaOperator fco1 = new FlagCriteriaOperator();
+				fco1.setUpdateDate(new Date());
+				fco1.setUpdatedBy(getUser());
+				fco1.setFlag(newFlag);
+				fco1.setCriteria(fco.getCriteria());
 
 				if (fco.getCriteria().isAllowCustomValue() && !Strings.isEmpty(newHurdle)
 						&& !newHurdle.equals("undefined")) {
 					if (fco.getCriteria().getDataType().equals("number"))
-						fco.setHurdle(Strings.formatNumber(newHurdle));
+						fco1.setHurdle(Strings.formatNumber(newHurdle));
 				}
 
-				if (!checkExists(fco.getCriteria())) {
+				if (!checkExists(fco1)) {
 					fco.setLastCalculated(null);
+					fco.setUpdateDate(fco1.getUpdateDate());
+					fco.setUpdatedBy(fco1.getUpdatedBy());
+					fco.setFlag(fco1.getFlag());
+					fco.setHurdle(fco1.getHurdle());
+
 					flagCriteriaOperatorDAO.save(fco);
 
 					FlagCriteria fc = fco.getCriteria();
 					String newNote = "Flag Criteria has been updated: " + fc.getCategory() + ", "
-							+ fc.getDescriptionBeforeHurdle() + newHurdle + fc.getDescriptionAfterHurdle() + ", "
-							+ fco.getFlag().toString() + " flagged";
+							+ fco.getReplaceHurdle() + ", " + fco.getFlag().toString() + " flagged";
 					addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 				} else {
 					addActionError("Could not update " + (insurance ? "Insurance" : "Flag") + " Criteria \""
 							+ fco.getCriteria().getDescription() + "\" with flag " + newFlag
-							+ (tagID > 0 ? " and tag ID " + tagID : "") + " already exists.");
+							+ (tagID > 0 ? " and tag ID " + tagID : "") + ", criteria already exists.");
 				}
 			}
 		}
@@ -385,12 +392,16 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		return AmBest.financialMap.get(Integer.parseInt(value));
 	}
 
-	private boolean checkExists(FlagCriteria fc) {
+	private boolean checkExists(FlagCriteriaOperator fco) {
 		// Check here if this FCO all ready exists -- check color and tagID
 		List<FlagCriteriaOperator> existing = operator.getFlagCriteriaInherited();
 		for (FlagCriteriaOperator c : existing) {
-			if (c.getCriteria().equals(fc)) {
-				return true;
+			if (c.getCriteria().equals(fco.getCriteria())) {
+				if (c.getCriteria().isAllowCustomValue() && fco.getCriteria().isAllowCustomValue()) {
+					if (c.getHurdle().equals(fco.getHurdle()) || c.getFlag().equals(fco.getFlag()))
+						return true;
+				} else
+					return true;
 			}
 		}
 

@@ -25,11 +25,11 @@ function addCriteria(criteriaID) {
 		};
 	
 	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data, 
-			function() {
-				$('#addCriteria').hide('slow');
-				stopThinking({div:'thinking'});
-			}
-		);
+		function() {
+			$('#addCriteria').hide('slow');
+			stopThinking({div:'thinking'});
+		}
+	);
 }
 
 function submitHurdle(tdCell) {
