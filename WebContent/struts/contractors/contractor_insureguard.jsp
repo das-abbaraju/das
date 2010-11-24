@@ -33,7 +33,7 @@
 	<tr>
 		<td>
 			<s:iterator value="#{'Pending','Current','Expired','Other'}" var="stat">
-				<s:if test="#stat.key != 'Expired' && status.get(#stat.key).size > 0">
+				<s:if test="status.get(#stat.key).size > 0">
 					<h3><s:property value="#stat.key" /> Policies</h3>
 					<table class="report">
 						<thead>
@@ -51,31 +51,43 @@
 						</thead>
 						<tbody>
 							<s:iterator value="status.get(#stat.key).keySet()" var="audit">
-								<s:set name="rowspan" value="%{status.get(#stat.key).get(#audit).size}" />
-								<s:iterator value="status.get(#stat.key).get(#audit)" var="cao" status="s">
-									<tr>
-										<s:if test="#s.first">
-											<td rowspan="<s:property value="#rowspan" />">
-												<s:property value="#audit.auditType.auditName" />
-												<br />
-												<span style="font-size: 10px">
-													for
-													<s:if test="#audit.auditFor != null"><s:property value="#audit.auditFor"/></s:if>
-													<s:else><s:date name="#audit.effectiveDate" format="MMM yyyy" /></s:else>
-												</span>
+								<s:if test="#stat.key != 'Expired'">
+									<s:set name="rowspan" value="%{status.get(#stat.key).get(#audit).size}" />
+									<s:iterator value="status.get(#stat.key).get(#audit)" var="cao" status="s">
+										<tr>
+											<s:if test="#s.first">
+												<td rowspan="<s:property value="#rowspan" />">
+													<s:property value="#audit.auditType.auditName" />
+													<br />
+													<span style="font-size: 10px">
+														<s:date name="#audit.effectiveDate" format="MMM yyyy" />
+													</span>
+												</td>
+											</s:if>
+											<td><s:property value="#cao.operator.name" /></td>
+											<td><span class="<s:property value="#stat.key" />"><s:property value="#cao.status" /></span></td>
+											<td class="center">
+												<a title="<s:property value="caoCert.get(#cao).description"/>"
+													href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="caoCert.get(#cao).id" />&button=download"
+													target="_BLANK">
+													<img src="images/icon_insurance.gif"/>
+												</a>
 											</td>
-										</s:if>
-										<td><s:property value="#cao.operator.name" /></td>
-										<td><span class="<s:property value="#stat.key" />"><s:property value="#cao.status" /></span></td>
-										<td class="center">
-											<a title="<s:property value="caoCert.get(#cao).description"/>"
-												href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="caoCert.get(#cao).id" />&button=download"
-												target="_BLANK">
-												<img src="images/icon_insurance.gif"/>
-											</a>
+										</tr>
+									</s:iterator>
+								</s:if>
+								<s:else>
+									<tr>
+										<td>
+											<s:property value="#audit.auditType.auditName" />
+											<br />
+											<span style="font-size: 10px">
+												<s:date name="#audit.effectiveDate" format="MMM yyyy" />
+											</span>
 										</td>
+										<td><s:date name="#audit.expiresDate" format="M/d/yy" /></td>
 									</tr>
-								</s:iterator>
+								</s:else>
 							</s:iterator>
 						</tbody>
 					</table>
