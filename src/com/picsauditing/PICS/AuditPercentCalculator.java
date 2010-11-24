@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.dao.AuditCategoryDataDAO;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -19,6 +20,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.util.AnswerMap;
 
 public class AuditPercentCalculator {
@@ -26,11 +28,15 @@ public class AuditPercentCalculator {
 	private AuditCategoryRuleCache auditCategoryRuleCache;
 	private AuditCategoryDataDAO categoryDataDAO;
 	private ContractorAuditOperatorDAO caoDao;
+	private AuditDataDAO auditDataDAO;
+	private List<AuditData> verifiedPqfData = null;
 
-	public AuditPercentCalculator(AuditCategoryRuleCache auditCategoryRuleCache, AuditCategoryDataDAO categoryDataDAO, ContractorAuditOperatorDAO caoDao) {
+	public AuditPercentCalculator(AuditCategoryRuleCache auditCategoryRuleCache, AuditCategoryDataDAO categoryDataDAO,
+			ContractorAuditOperatorDAO caoDao, AuditDataDAO auditDataDAO) {
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
 		this.categoryDataDAO = categoryDataDAO;
 		this.caoDao = caoDao;
+		this.auditDataDAO = auditDataDAO;
 	}
 
 	public void updatePercentageCompleted(AuditCatData catData) {
@@ -57,7 +63,7 @@ public class AuditPercentCalculator {
 			if (question.getVisibleQuestion() != null)
 				questionIDs.add(question.getVisibleQuestion().getId());
 		}
-
+		
 		// Get a map of all answers in this audit
 		List<AuditData> requiredAnswers = new ArrayList<AuditData>();
 		for (AuditData answer : catData.getAudit().getData())
@@ -72,16 +78,13 @@ public class AuditPercentCalculator {
 
 				AuditData answer = answers.get(question.getId());
 				// Getting all the dependsRequiredQuestions
-				if (question.getRequiredQuestion() != null
-						&& question.getRequiredAnswer() != null) {
+				if (question.getRequiredQuestion() != null && question.getRequiredAnswer() != null) {
 					if (question.getRequiredAnswer().equals("NULL")) {
-						AuditData otherAnswer = answers.get(question
-								.getRequiredQuestion().getId());
+						AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
 						if (otherAnswer == null)
 							isRequired = true;
 					} else if (question.getRequiredAnswer().equals("NOTNULL")) {
-						AuditData otherAnswer = answers.get(question
-								.getRequiredQuestion().getId());
+						AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
 						if (otherAnswer != null)
 							isRequired = true;
 					} else {
@@ -89,33 +92,24 @@ public class AuditPercentCalculator {
 						// question's answer
 						// Use the parentAnswer, so we get answers in
 						// the same tuple as this one
-						AuditData otherAnswer = answers.get(question
-								.getRequiredQuestion().getId());
-						if (otherAnswer != null
-								&& question.getRequiredAnswer().equals(
-										otherAnswer.getAnswer()))
+						AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
+						if (otherAnswer != null && question.getRequiredAnswer().equals(otherAnswer.getAnswer()))
 							isRequired = true;
 					}
 				}
 				// Getting all the dependsVisible Questions
-				if (question.getVisibleQuestion() != null
-						&& question.getVisibleAnswer() != null) {
+				if (question.getVisibleQuestion() != null && question.getVisibleAnswer() != null) {
 					if (question.getVisibleAnswer().equals("NULL")) {
-						AuditData otherAnswer = answers.get(question
-								.getVisibleQuestion().getId());
+						AuditData otherAnswer = answers.get(question.getVisibleQuestion().getId());
 						if (otherAnswer == null)
 							isRequired = true;
 					} else if (question.getVisibleAnswer().equals("NOTNULL")) {
-						AuditData otherAnswer = answers.get(question
-								.getVisibleQuestion().getId());
+						AuditData otherAnswer = answers.get(question.getVisibleQuestion().getId());
 						if (otherAnswer != null)
 							isRequired = true;
 					} else {
-						AuditData otherAnswer = answers.get(question
-								.getVisibleQuestion().getId());
-						if (otherAnswer != null
-								&& question.getVisibleAnswer().equals(
-										otherAnswer.getAnswer()))
+						AuditData otherAnswer = answers.get(question.getVisibleQuestion().getId());
+						if (otherAnswer != null && question.getVisibleAnswer().equals(otherAnswer.getAnswer()))
 							isRequired = true;
 					}
 				}
@@ -128,19 +122,15 @@ public class AuditPercentCalculator {
 
 						if (catData.getAudit().getAuditType().isScoreable()) {
 							if ("Radio".equals(question.getQuestionType())) {
-								for (AuditQuestionOption option : question
-										.getOptions()) {
-									if (option.getOptionName().equals(
-											answer.getAnswer())) {
+								for (AuditQuestionOption option : question.getOptions()) {
+									if (option.getOptionName().equals(answer.getAnswer())) {
 										score += option.getScore();
 										break;
 									}
 								}
 								scoreCount += question.getScoreWeight();
-							} else if ("Yes/No".equals(question
-									.getQuestionType())
-									|| "Yes/No/NA".equals(question
-											.getQuestionType())) {
+							} else if ("Yes/No".equals(question.getQuestionType())
+									|| "Yes/No/NA".equals(question.getQuestionType())) {
 								if (answer.getAnswer().equals("Yes"))
 									score += question.getScoreWeight();
 								else if (answer.getAnswer().equals("NA"))
@@ -161,12 +151,30 @@ public class AuditPercentCalculator {
 						if (answer.isOK())
 							verifiedCount++;
 					} else {
-						if (answer.isVerified()) {
-							verifiedCount++;
-						} else if (isRequired
-								&& catData.getAudit().getAuditType()
-										.getWorkFlow().isHasSubmittedStep()) {
-							verifiedCount++;
+						if (isRequired) {
+							// Anything that requires verification, should be
+							// listed as Required.
+							// If we don't then it's possible that the verified
+							// count will be higher than the required total,
+							// resulting in a > 100% verified
+							if (answer.isVerified())
+								verifiedCount++;
+							// This is used for manual/implementation audits
+							// with questions with no requirements, so we need
+							// to increment the count so we can close it.
+							else if (catData.getAudit().getAuditType().getWorkFlow().getId() == Workflow.AUDIT_REQUIREMENTS_WORKFLOW) {
+								verifiedCount++;
+							} else if (catData.getAudit().getAuditType().isPqf()) {
+								boolean needsVerification = false;
+								for (AuditData auditData : getVerifiedPqfData(catData.getAudit().getId())) {
+									if (auditData.getQuestion().getCategory().equals(catData.getCategory())) {
+										needsVerification = true;
+										break;
+									}
+								}
+								if (!needsVerification)
+									verifiedCount++;
+							}
 						}
 					}
 				}
@@ -179,15 +187,14 @@ public class AuditPercentCalculator {
 		catData.setNumVerified(verifiedCount);
 		catData.setScore(score);
 		catData.setScoreCount(scoreCount);
-		//categoryDataDAO.save(catData);
+		// categoryDataDAO.save(catData);
 	}
 
 	public void percentCalculateComplete(ContractorAudit conAudit) {
 		percentCalculateComplete(conAudit, false);
 	}
 
-	public void percentCalculateComplete(ContractorAudit conAudit,
-			boolean recalcCats) {
+	public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats) {
 		if (recalcCats)
 			recalcAllAuditCatDatas(conAudit);
 
@@ -206,11 +213,9 @@ public class AuditPercentCalculator {
 				if (data.isOverride())
 					applies = data.isApplies();
 				else {
-					if (data.isApplies()
-							&& detail.categories.contains(data.getCategory())) {
-						AuditCategoryRule auditCatRule = AuditBuilder
-								.getApplicable(detail.rules,
-										data.getCategory(), cao.getOperator());
+					if (data.isApplies() && detail.categories.contains(data.getCategory())) {
+						AuditCategoryRule auditCatRule = AuditBuilder.getApplicable(detail.rules, data.getCategory(),
+								cao.getOperator());
 						if (auditCatRule != null)
 							applies = auditCatRule.isInclude();
 					}
@@ -244,22 +249,20 @@ public class AuditPercentCalculator {
 			}
 			cao.setPercentComplete(percentComplete);
 			cao.setPercentVerified(percentVerified);
-			//caoDao.save(cao);
+			// caoDao.save(cao);
 		}
 	}
 
 	/**
-	 * Use the audit rule cache to query a list of applicable rules and the figure
-	 * out which rules apply to which operators and categories
+	 * Use the audit rule cache to query a list of applicable rules and the
+	 * figure out which rules apply to which operators and categories
 	 * 
 	 * @param conAudit
 	 * @return
 	 */
-	private AuditCategoriesDetail getAuditCategoryDetail(
-			ContractorAudit conAudit) {
-		List<AuditCategoryRule> applicableCategoryRules = auditCategoryRuleCache
-				.getApplicableCategoryRules(conAudit.getContractorAccount(),
-						conAudit.getAuditType());
+	private AuditCategoriesDetail getAuditCategoryDetail(ContractorAudit conAudit) {
+		List<AuditCategoryRule> applicableCategoryRules = auditCategoryRuleCache.getApplicableCategoryRules(conAudit
+				.getContractorAccount(), conAudit.getAuditType());
 
 		AuditBuilder builder = new AuditBuilder();
 
@@ -267,8 +270,7 @@ public class AuditPercentCalculator {
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			operators.add(cao.getOperator());
 		}
-		return builder.getDetail(conAudit.getAuditType(),
-				applicableCategoryRules, operators);
+		return builder.getDetail(conAudit.getAuditType(), applicableCategoryRules, operators);
 	}
 
 	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
@@ -303,8 +305,7 @@ public class AuditPercentCalculator {
 			}
 		}
 
-		if (osha.getType().equals(OshaType.MSHA)
-				|| osha.getType().equals(OshaType.COHS)) {
+		if (osha.getType().equals(OshaType.MSHA) || osha.getType().equals(OshaType.COHS)) {
 			numRequired = 1;
 			if (osha.getManHours() > 0)
 				count++;
@@ -316,4 +317,11 @@ public class AuditPercentCalculator {
 		catData.setNumVerified(numVerified);
 		categoryDataDAO.save(catData);
 	}
+
+	public List<AuditData> getVerifiedPqfData(int auditID) {
+		if(verifiedPqfData == null)
+			verifiedPqfData = auditDataDAO.findCustomPQFVerifications(auditID);
+		return verifiedPqfData;
+	}
+	
 }

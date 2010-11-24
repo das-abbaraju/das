@@ -193,7 +193,6 @@ public class AuditBuilderController {
 		Set<Integer> contractorAnswersNeeded = new HashSet<Integer>();
 		Set<Integer> auditAnswersNeeded = new HashSet<Integer>();
 		Set<Integer> tagsNeeded = new HashSet<Integer>();
-		Set<Integer> auditsNeeded = new HashSet<Integer>();
 		for (AuditRule rule : rules) {
 			if (rule.getQuestion() != null) {
 				if (conAudit != null && conAudit.getAuditType().equals(rule.getQuestion().getAuditType()))
@@ -203,12 +202,6 @@ public class AuditBuilderController {
 			}
 			if (rule.getTag() != null)
 				tagsNeeded.add(rule.getTag().getId());
-			if (rule.getClass().equals(AuditTypeRule.class)) {
-				AuditTypeRule auditTypeRule = (AuditTypeRule) rule;
-				if (auditTypeRule.getDependentAuditType() != null) {
-					auditsNeeded.add(auditTypeRule.getDependentAuditType().getId());
-				}
-			}
 		}
 
 		Map<Integer, AuditData> contractorAnswers = new HashMap<Integer, AuditData>();
@@ -233,14 +226,6 @@ public class AuditBuilderController {
 			}
 		}
 
-		List<ContractorAuditOperator> caoList = new ArrayList<ContractorAuditOperator>();
-		if (auditsNeeded.size() > 0) {
-			String where = " t.audit.contractorAccount.id = " + contractor.getId() + " AND t.visible = 1 AND t.audit.auditType.id IN ("
-					+ Strings.implode(auditsNeeded, ",") + ") ";
-			caoList = (List<ContractorAuditOperator>) contractorAuditOperatorDAO.findWhere(
-					ContractorAuditOperator.class, where, 100);
-		}
-
 		List<AuditRule> list = new ArrayList<AuditRule>();
 		for (AuditRule rule : rules) {
 			boolean valid = true;
@@ -259,12 +244,11 @@ public class AuditBuilderController {
 					if (DateBean.getDateDifference(contractor.getCreationDate()) < -90)
 						valid = false;
 				}
-
 				if (auditTypeRule.getDependentAuditType() != null) {
 					valid = false;
-					for (ContractorAuditOperator cao : caoList) {
-						if (cao.getAudit().getAuditType().equals(auditTypeRule.getDependentAuditType())) {
-							if (!cao.getStatus().before(auditTypeRule.getDependentAuditStatus()))
+					for(ContractorAudit audit : contractor.getAudits()) {
+						if(!audit.isExpired() && audit.getAuditType().equals(auditTypeRule.getDependentAuditType())) {
+							if(!audit.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus()))
 								valid = true;
 						}
 					}

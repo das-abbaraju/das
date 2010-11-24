@@ -155,6 +155,11 @@ function moveQuestion(atypeID) {
 	<ol>
 		<li><label>Has Requirement:</label>
 			<s:checkbox name="question.hasRequirement"/>
+			<div class="fieldhelp">
+				<h3>Has Requirement</h3>
+				<p>If this is question has a requirement, you MUST make the question required as well.</p>
+			</div>
+			
 		</li>
 		<li><label>OK Answer:</label>
 			<s:textfield name="question.okAnswer" />
