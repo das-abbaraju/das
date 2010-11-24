@@ -114,7 +114,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 					if (operator != null && !Strings.isEmpty(operator.getName())) {
 						if (where.length() > 0)
 							where += " AND ";
-						where += "nameIndex LIKE '%" + Utilities.escapeQuotes(operator.getName()).replaceAll("\\s+|[^a-zA-Z0-9]", " ") + "%'";
+						where += "nameIndex LIKE '%" + Utilities.escapeQuotes(operator.getName()).replaceAll("\\s+|[^a-zA-Z0-9]", "") + "%'";
 					}
 
 					searchResults = new ArrayList<OperatorAccount>();
