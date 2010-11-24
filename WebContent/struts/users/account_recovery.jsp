@@ -1,11 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<%
-// TODO Upgrade to Google reCaptcha
-boolean secure = "1".equals(System.getProperty("pics.secure"));
-%>
-<script type="text/javascript" src="<%= secure ? "https" : "http" %>://api.recaptcha.net/js/recaptcha_ajax.js"></script>
+<script type="text/javascript" src="http://api.recaptcha.net/js/recaptcha_ajax.js"></script>
 <title>Account Recovery</title>
 <meta name="accountrecovery" content="Account_Recovery">
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />

@@ -37,11 +37,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=<%=version%>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/contractorstatistics.css?v=<%=version%>" />
 
-<%
-boolean secure = "1".equals(System.getProperty("pics.secure"));
-%>
-
-<script type="text/javascript" src="<%= secure ? "https" : "http" %>://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="<%= request.isSecure() ? "https" : "http" %>://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="js/chrome.js"></script>
 <script type="text/javascript" src="js/pics_main.js?v=<%=version%>"></script>
 <script type="text/javascript" src="js/notes.js?v=<%=version%>"></script>
@@ -276,10 +272,9 @@ function buildAction(type, id){
 </script>
 <!-- END LivePerson -->
 
-<%= secure ? "https" : "http" %>
-
 <script type="text/javascript">
-var gaJsHost = "<%= secure ? "https://ssl." : "http://www." %>";
+var gaJsHost = (("https:" == document.location.protocol) ? 
+	"https://ssl." : "http://www.");
 	document.write(unescape("%3Cscript src='" + gaJsHost + 
 	"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 try {
