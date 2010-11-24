@@ -12,6 +12,8 @@
 	</decorator>
 	<decorator name="ignoreMe">
 		<pattern>/*Ajax.action</pattern>
+		<pattern>/PyCron.action</pattern>
+		<pattern>/keepalive.jsp</pattern>
 		<pattern>/*ajax*</pattern>
 		<pattern>/*JSON.action</pattern>
 		<pattern>/*json*</pattern>
