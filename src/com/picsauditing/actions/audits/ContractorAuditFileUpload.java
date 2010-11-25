@@ -13,6 +13,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditFileDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAuditFile;
@@ -64,12 +65,14 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 			for (AuditCatData auditCatData : conAudit.getCategories()) {
 				if(auditCatData.isApplies() 
 						&& getCategories().get(auditCatData.getCategory().getTopParent()).isApplies()) {
-					for (AuditQuestion auditQuestion : auditCatData.getCategory().getQuestions()) {
-						if (auditQuestion.isCurrent(validDate)) {
-							AuditData auditData = answerMap.get(auditQuestion.getId());
-							if (auditData != null) {
-								if (auditData.isHasRequirements() && auditData.isRequirementOpen()) {
-									openReqs.add(auditData);
+					for (AuditCategory child : auditCatData.getCategory().getChildren()) {
+						for (AuditQuestion auditQuestion : child.getQuestions()) {
+							if (auditQuestion.isCurrent(validDate)) {
+								AuditData auditData = answerMap.get(auditQuestion.getId());
+								if (auditData != null) {
+									if (auditData.isHasRequirements() && auditData.isRequirementOpen()) {
+										openReqs.add(auditData);
+									}
 								}
 							}
 						}
