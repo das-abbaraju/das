@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.AuditCategoryRuleCache;
@@ -59,11 +60,12 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 		if (openReqs == null) {
 			openReqs = new ArrayList<AuditData>();
 			AnswerMap answerMap = auditDataDao.findAnswers(auditID);
+			Date validDate = conAudit.getValidDate();
 			for (AuditCatData auditCatData : conAudit.getCategories()) {
 				if(auditCatData.isApplies() 
 						&& getCategories().get(auditCatData.getCategory().getTopParent()).isApplies()) {
 					for (AuditQuestion auditQuestion : auditCatData.getCategory().getQuestions()) {
-						if (auditQuestion.isCurrent()) {
+						if (auditQuestion.isCurrent(validDate)) {
 							AuditData auditData = answerMap.get(auditQuestion.getId());
 							if (auditData != null) {
 								if (auditData.isHasRequirements() && auditData.isRequirementOpen()) {
