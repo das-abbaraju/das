@@ -361,7 +361,6 @@ function checkReason(id) {
 													</s:iterator>
 												</s:else>
 											</s:if>
-											<s:if test="!#auditstat.last"><br /></s:if>
 										</s:if>
 									</s:iterator>
 								</s:if>
