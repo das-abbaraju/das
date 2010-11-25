@@ -24,6 +24,13 @@
 </head>
 <body>
 <s:include value="../audits/audit_catHeader.jsp"/>
+
+<pics:permission perm="InsuranceApproval">
+	<s:if test="conAudit.auditType.classType.policy">
+		<div class="info">By December 6th, we will implement a feature to let you <pics:permission perm="InsuranceCerts">upload and </pics:permission>verify insurance policies. If you need assistance in the meanwhile, please call your PICS representative.</div>
+	</s:if>
+</pics:permission>
+
 <s:if test="policy">
 	<a href="PolicyVerification.action?button=getFirst" class="picsbutton">First Policy</a>
 	<a href="PolicyVerification.action?button=showNext&auditID=<s:property value="auditID" />" class="picsbutton positive">Next Policy &gt;&gt;</a>
