@@ -1597,7 +1597,7 @@
 		
 		<action name="ManageAppProperty"
 			class="com.picsauditing.actions.ManageAppProperty">
-			<result>/struts/blank.jsp</result>
+			<result>/struts/misc/manage_app_property.jsp</result>
 		</action>
 		
 		<action name="RunIndexer"

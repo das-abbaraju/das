@@ -46,8 +46,7 @@ $(function() {
 			href="AuditOperator.action?oID=<s:property value="id"/>">double
 		check the configuration</a>.</div>
 	</s:if>
-	<s:if test="id > 0 && operator.flagQuestionCriteriaInherited.size == 0">
-
+	<s:if test="id > 0 && operator.flagCriteriaInherited.size == 0">
 		<div class="alert">This operator doesn't have any flag criteria
 		defined. Please <a
 			href="ManageFlagCriteriaOperator.action?id=<s:property value="id"/>">double
