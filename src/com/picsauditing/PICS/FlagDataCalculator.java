@@ -136,14 +136,19 @@ public class FlagDataCalculator {
 
 				// Checking for at least 3 active annual updates
 				for (ContractorAudit ca : conCriteria.getContractor().getAudits()) {
+					boolean hasFlaggedAudit = false;
 					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired()) {
 						for (ContractorAuditOperator cao : ca.getOperators()) {
-							if (!cao.getStatus().before(criteria.getRequiredStatus()) || cao.getStatus().isResubmit())
-								count++;
-							else if (cao.getStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
-								count++;
-
+							if (!hasFlaggedAudit && cao.hasCaop(getOperator().getId())) {
+								if (!cao.getStatus().before(criteria.getRequiredStatus())
+										|| cao.getStatus().isResubmit())
+									hasFlaggedAudit = true;
+								else if (cao.getStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
+									hasFlaggedAudit = true;
+							}
 						}
+						if (hasFlaggedAudit)
+							count++;
 					}
 				}
 
@@ -152,8 +157,8 @@ public class FlagDataCalculator {
 				// Any other audit, PQF, or Policy
 				for (ContractorAudit ca : conCriteria.getContractor().getAudits()) {
 					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired()) {
-						if(!worksForOperator) {
-							if(ca.hasCaoStatusAfter(AuditStatus.Incomplete))
+						if (!worksForOperator) {
+							if (ca.hasCaoStatusAfter(AuditStatus.Incomplete))
 								return false;
 						}
 						for (ContractorAuditOperator cao : ca.getOperators()) {
@@ -184,11 +189,11 @@ public class FlagDataCalculator {
 
 		} else {
 
-			if(criteria.getRequiredStatus() != null) {
+			if (criteria.getRequiredStatus() != null) {
 				if (criteria.getRequiredStatus().after(AuditStatus.Resubmitted) && !conCriteria.isVerified())
-				return true;
+					return true;
 			}
-			
+
 			final String dataType = criteria.getDataType();
 			final String comparison = criteria.getComparison();
 
@@ -201,10 +206,10 @@ public class FlagDataCalculator {
 					float answer2 = Float.parseFloat(answer.replace(",", ""));
 					float hurdle2 = Float.parseFloat(hurdle.replace(",", ""));
 					if (criteria.getOshaRateType() != null && criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
-						return answer2 > (Utilities.getIndustryAverage(true, conCriteria.getContractor().getNaics())* hurdle2)/100;
+						return answer2 > (Utilities.getIndustryAverage(true, conCriteria.getContractor().getNaics()) * hurdle2) / 100;
 					}
 					if (criteria.getOshaRateType() != null && criteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
-						return answer2 > (Utilities.getIndustryAverage(false, conCriteria.getContractor().getNaics())* hurdle2)/100;
+						return answer2 > (Utilities.getIndustryAverage(false, conCriteria.getContractor().getNaics()) * hurdle2) / 100;
 					}
 					if (comparison.equals("="))
 						return answer2 == hurdle2;
@@ -414,14 +419,14 @@ public class FlagDataCalculator {
 
 	private List<ContractorAuditOperator> getCaosForOperator(ContractorAudit conAudit, OperatorAccount operator) {
 		List<ContractorAuditOperator> caos = new ArrayList<ContractorAuditOperator>();
-		
+
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 				if (caop.getOperator().equals(operator) && cao.isVisible())
 					caos.add(cao);
 			}
 		}
-		
+
 		return caos;
 	}
 }
