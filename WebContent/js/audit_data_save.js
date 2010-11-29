@@ -116,3 +116,7 @@ function reloadQuestion(qid) {
 		$(this).unblock();
 	});
 }
+
+function setAnswer(questionID, answer) {
+	$('input[name=auditData.answer]', '#node_'+questionID).val(answer);
+}

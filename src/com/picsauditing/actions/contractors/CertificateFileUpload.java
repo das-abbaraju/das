@@ -30,13 +30,14 @@ public class CertificateFileUpload extends ContractorActionSupport {
 	private Certificate certificate = null;
 	protected int caoID;
 	private boolean changed = false;
-	
+	private boolean duplicate = false;
+
 	// Save to audit data
 	private AuditQuestionDAO questionDAO;
 	private AuditDataDAO dataDAO;
 	private int questionID;
 	private int auditID;
-	
+
 	public CertificateFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			CertificateDAO certificateDAO, AuditQuestionDAO questionDAO, AuditDataDAO dataDAO) {
 		super(accountDao, auditDao);
@@ -100,7 +101,11 @@ public class CertificateFileUpload extends ContractorActionSupport {
 					} else {
 						certID = certificate.getId();
 						addActionMessage("This file has already been uploaded.");
+						if (questionID > 0) {
+							addActionMessage("Next time use the \"Add Existing File\" link to attach files you have already uploaded.");
+						}
 						changed = true;
+						duplicate = true;
 						return SUCCESS;
 					}
 				}
@@ -136,25 +141,25 @@ public class CertificateFileUpload extends ContractorActionSupport {
 							getFileName(certID), extension, true);
 					addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
 				}
-				
+
 				if (questionID > 0 && auditID > 0) {
 					AuditQuestion q = questionDAO.find(questionID);
 					AuditData d = dataDAO.findAnswerByAuditQuestion(auditID, questionID);
-					
+
 					if (d == null)
 						d = new AuditData();
-					
+
 					d.setAuditColumns(permissions);
 					d.setAnswer(certID + "");
 					d.setQuestion(q);
 					d.setAudit(auditDao.find(auditID));
 
-					if(d.getAudit().getExpiresDate() == null) {
+					if (d.getAudit().getExpiresDate() == null) {
 						Calendar cal = Calendar.getInstance();
 						cal.add(Calendar.MONTH, 6);
 						certificate.setExpirationDate(cal.getTime());
-					}
-					else if(certificate.getExpirationDate() == null || d.getAudit().getExpiresDate().after(certificate.getExpirationDate())) {
+					} else if (certificate.getExpirationDate() == null
+							|| d.getAudit().getExpiresDate().after(certificate.getExpirationDate())) {
 						certificate.setExpirationDate(d.getAudit().getExpiresDate());
 					}
 					certificateDAO.save(certificate);
@@ -246,19 +251,23 @@ public class CertificateFileUpload extends ContractorActionSupport {
 	public boolean isChanged() {
 		return changed;
 	}
-	
+
+	public boolean isDuplicate() {
+		return duplicate;
+	}
+
 	public int getQuestionID() {
 		return questionID;
 	}
-	
+
 	public void setQuestionID(int questionID) {
 		this.questionID = questionID;
 	}
-	
+
 	public int getAuditID() {
 		return auditID;
 	}
-	
+
 	public void setAuditID(int auditID) {
 		this.auditID = auditID;
 	}
