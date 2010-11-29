@@ -421,6 +421,12 @@ public class FlagDataCalculator {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param conAudit
+	 * @param operator
+	 * @return Usually just a single matching cao record for the given operator
+	 */
 	private List<ContractorAuditOperator> getCaosForOperator(ContractorAudit conAudit, OperatorAccount operator) {
 		List<ContractorAuditOperator> caos = new ArrayList<ContractorAuditOperator>();
 
@@ -430,6 +436,10 @@ public class FlagDataCalculator {
 					caos.add(cao);
 			}
 		}
+
+		if (caos.size() > 1)
+			System.out.println("WARNING: Found " + caos.size() + " matching caos for " + operator.toString() + " on auditID = "
+					+ conAudit.getId());
 
 		return caos;
 	}
