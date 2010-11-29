@@ -316,26 +316,27 @@ public class FlagDataCalculator {
 									if (conAudit.getAuditType().getEditPermission() != null) {
 										if (editPerm.isForOperator())
 											waitingOnOperator = true;
-										else if (editPerm.isForAdmin())
+										else
 											waitingOnPics = true;
 									}
-								}
+								} else {
+									AuditStatus requiredStatus = key.getRequiredStatus();
 
-								AuditStatus requiredStatus = key.getRequiredStatus();
-
-								if (cao.getStatus().before(requiredStatus)) {
-									if (cao.getStatus().isComplete()) {
-										waitingOnOperator = true;
-									} else if (conAudit.getAuditType().getId() == AuditType.OFFICE) {
-										// either needs to schedule the audit or
-										// close out RQs
-										return WaitingOn.Contractor;
-									} else if (conAudit.getAuditType().getId() == AuditType.DESKTOP
-											&& cao.getStatus().isSubmitted()) {
-										// contractor needs to close out RQs
-										return WaitingOn.Contractor;
-									} else {
-										waitingOnPics = true;
+									if (cao.getStatus().before(requiredStatus)) {
+										if (cao.getStatus().isComplete()) {
+											waitingOnOperator = true;
+										} else if (conAudit.getAuditType().getId() == AuditType.OFFICE) {
+											// either needs to schedule the
+											// audit or
+											// close out RQs
+											return WaitingOn.Contractor;
+										} else if (conAudit.getAuditType().getId() == AuditType.DESKTOP
+												&& cao.getStatus().isSubmitted()) {
+											// contractor needs to close out RQs
+											return WaitingOn.Contractor;
+										} else {
+											waitingOnPics = true;
+										}
 									}
 								}
 							}
