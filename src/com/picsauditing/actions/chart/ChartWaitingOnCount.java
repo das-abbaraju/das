@@ -24,23 +24,29 @@ public class ChartWaitingOnCount extends ChartSSAction {
 		SelectSQL sql = new SelectSQL("generalcontractors gc");
 		sql.addJoin("JOIN accounts a ON a.id = gc.subID");
 
-		sql.addWhere("a.status IN ('Active','Demo')");
+		if (permissions.isAdmin()) {
+			sql.addJoin("JOIN accounts o ON o.id = gc.genID AND o.type = 'Operator' AND o.status IN ('Active')");
+			sql.addWhere("a.status IN ('Active')");
+		} else {
+			sql.addWhere("gc.genID = " + permissions.getAccountId());
+			if (permissions.getAccountStatus().isDemo())
+				sql.addWhere("a.status IN ('Active','Demo')");
+			else
+				sql.addWhere("a.status IN ('Active')");
+		}
 
 		sql.addGroupBy("gc.waitingOn");
 
-		if (permissions.isOperator()) {
-			sql.addWhere("gc.genID = " + permissions.getAccountId());
-		}
-
 		sql.addField("gc.waitingOn AS label");
 		sql.addField("count(*) AS value");
+		sql.addOrderBy("value DESC");
 
 		ChartDAO db = new ChartDAO();
 		List<DataRow> data = db.select(sql.toString());
 		for (DataRow row : data) {
 			Set set = new Set(row);
 			WaitingOn waitingOn = WaitingOn.valueOf(Integer.parseInt(row.getLabel()));
-			String wait = waitingOn.isNone() ? "None" : waitingOn.toString();
+			String wait = waitingOn.isNone() ? "No One" : waitingOn.toString();
 			set.setLabel(wait);
 			if (permissions.isOperator())
 				set.setLink("ContractorList.action?filter.waitingOn=" + waitingOn.ordinal());
