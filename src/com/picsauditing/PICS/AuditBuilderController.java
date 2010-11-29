@@ -141,7 +141,7 @@ public class AuditBuilderController {
 			if (!getRequiredAuditTypeSet().contains(conAudit.getAuditType())) {
 				boolean needed = false;
 				for (ContractorAuditOperator cao : conAudit.getOperators()) {
-					if (cao.getStatus().after(AuditStatus.Pending) && cao.getStatus().before(AuditStatus.NotApplicable))
+					if (cao.getStatus().after(AuditStatus.Pending))
 						needed = true;
 					else if (cao.getPercentComplete() > 0)
 						needed = true;
