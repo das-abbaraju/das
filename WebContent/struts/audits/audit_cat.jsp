@@ -91,7 +91,7 @@ label.policy {
 		<s:if test="conAudit.auditType.classType.policy">
 			<div class="buttons" style="text-align:right">
 				<s:if test="nextPolicyID > 0">
-					<a class="picsbutton button" href="AuditCat.action?auditID=<s:property value="nextPolicyID"/>"> Next Policy &gt;</a>
+					<a class="picsbutton button" href="Audit.action?auditID=<s:property value="nextPolicyID"/>"> Next Policy &gt;</a>
 				</s:if>
 				<a class="picsbutton button" href="PolicyVerification.action?filter.visible=Y&filter.caoStatus=Submitted&button=getFirst"> Oldest Policy &gt;&gt;</a>
 			</div>
@@ -104,7 +104,7 @@ label.policy {
 				<a href="Audit.action?auditID=<s:property value="auditID"/>" class="picsbutton positive">Next &gt;&gt;</a>
 			</s:if>
 			<s:else>
-				<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="nextCategory.id"/>&mode=<s:property value="mode"/>" class="picsbutton positive">Next &gt;&gt;</a>
+				<a href="Audit.action?auditID=<s:property value="auditID"/>#categoryID=<s:property value="nextCategory.id"/>&mode=<s:property value="mode"/>" class="picsbutton positive">Next &gt;&gt;</a>
 			</s:else>
 		</div>
 		<br clear="all"/>

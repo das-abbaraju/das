@@ -1,4 +1,4 @@
-<clickLink href="AuditCat.action" label="PQF (Prequalification Form)"/>
+<clickLink href="Audit.action" label="PQF (Prequalification Form)"/>
 <setRadioButton xpath="//div[1]/div[2]/nobr[1]/input"/>
 <setRadioButton xpath="//div[2]/div[2]/nobr[1]/input"/>
 <clickLink label="Next >>"/>

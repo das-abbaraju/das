@@ -254,9 +254,9 @@ public class ContractorWidget extends ContractorActionSupport {
 				if (!contractor.isNaicsValid() && contractor.getCountries().contains("US")) {
 					AuditCatData auditCatData = getAuditCatData(contractor);
 					if (auditCatData != null)
-						openTasks.add("Please <a href=\"AuditCat.action?auditID=" + auditCatData.getAudit().getId()
-								+ "&catDataID=" + auditCatData.getId()
-								+ "&mode=Edit#node_57\"> update your 2008 NAICS code</a>");
+						openTasks.add("Please <a href=\"Audit.action?auditID=" + auditCatData.getAudit().getId()
+								+ "#categoryID=" + auditCatData.getId()
+								+ "&mode=Edit\"> update your 2008 NAICS code</a>");
 				}
 
 				if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
