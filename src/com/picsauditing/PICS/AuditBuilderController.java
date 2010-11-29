@@ -246,9 +246,9 @@ public class AuditBuilderController {
 				}
 				if (auditTypeRule.getDependentAuditType() != null) {
 					valid = false;
-					for(ContractorAudit audit : contractor.getAudits()) {
-						if(!audit.isExpired() && audit.getAuditType().equals(auditTypeRule.getDependentAuditType())) {
-							if(!audit.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus()))
+					for (ContractorAudit audit : contractor.getAudits()) {
+						if (!audit.isExpired() && audit.getAuditType().equals(auditTypeRule.getDependentAuditType())) {
+							if (!audit.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus()))
 								valid = true;
 						}
 					}
@@ -469,9 +469,11 @@ public class AuditBuilderController {
 					if ((auditCategoryRule == null || auditCategoryRule.getOperatorAccount() == null)
 							&& (cao.getOperator().getId() == OperatorAccount.PicsConsortium)) {
 						operators.add(opAccount);
-					} else if (cao.getOperator().equals(auditCategoryRule.getOperatorAccount())) {
+					} else if (auditCategoryRule.getOperatorAccount() != null
+							&& cao.getOperator().equals(auditCategoryRule.getOperatorAccount())) {
 						operators.add(opAccount);
-					} else if (cao.getAudit().getAuditType().isDesktop()
+					} else if (auditCategoryRule.getOperatorAccount() != null
+							&& cao.getAudit().getAuditType().isDesktop()
 							&& cao.getOperator().getId() == OperatorAccount.PicsConsortium
 							&& Account.PICS_CORPORATE.contains(auditCategoryRule.getOperatorAccount().getId())) {
 						// TODO clean this audit builder CAOP stuff
