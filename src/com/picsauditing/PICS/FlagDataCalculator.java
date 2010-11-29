@@ -190,8 +190,11 @@ public class FlagDataCalculator {
 		} else {
 
 			if (criteria.getRequiredStatus() != null) {
-				if (criteria.getRequiredStatus().after(AuditStatus.Resubmitted) && !conCriteria.isVerified())
-					return true;
+				if (criteria.getRequiredStatus().after(AuditStatus.Submitted) && !conCriteria.isVerified())
+					if (criteria.isFlaggableWhenMissing())
+						return true;
+					else
+						return null;
 			}
 
 			final String dataType = criteria.getDataType();
