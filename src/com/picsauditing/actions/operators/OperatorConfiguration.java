@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +13,6 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
-import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FacilitiesDAO;
@@ -259,5 +257,9 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 	public void setAuditTypeID(int auditTypeID) {
 		this.auditTypeID = auditTypeID;
+	}
+	
+	public String escapeQuotes(String value) {
+		return value.replaceAll("\'", "\\\\'");
 	}
 }

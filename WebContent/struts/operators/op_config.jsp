@@ -219,7 +219,7 @@ function loadCatRules(catID, divCatID, name) {
 					<td>
 						<ol>
 							<li>
-								<a href="#" onclick="return loadCatRules(<s:property value="#cat.id" />, <s:property value="#cat.id" />, '<s:property value="#cat.name" />');"><s:property value="#cat.name" /></a>
+								<a href="#" onclick="return loadCatRules(<s:property value="#cat.id" />, <s:property value="#cat.id" />, '<s:property value="escapeQuotes(#cat.name)" />');"><s:property value="#cat.name" /></a>
 								<s:if test="#cat.subCategories.size > 0">
 									<a href="#" onclick="return toggleCategory(<s:property value="#cat.id" />);">
 										<img src="images/arrow-blue-down.png" class="arrow_<s:property value="#cat.id" />" alt="Expand" />
