@@ -303,7 +303,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 
 	public boolean isCanVerifyAudit() {
-		if(!permissions.isAuditor() || !permissions.hasGroup(959))
+		if(!permissions.isAuditor() && !permissions.hasGroup(959))
 			return false;
 		
 		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
