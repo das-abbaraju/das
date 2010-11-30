@@ -173,8 +173,8 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		String sql = "";
 		Database db = new Database();
 		// post contractor notes for non renewable audits
-		sql = "INSERT into note (accountID,creationDate,createdBy,updateDate,updatedBy,summary,noteCategory, viewableBy,canContractorView) " +
-				"select ca.conid,Now(),1,Now(),1,CONCAT('Expiring ',at.auditname,' for ', a.name),'Audits',cao.opid,1 from contractor_audit ca " +
+		sql = "INSERT into note (accountID,creationDate,createdBy,updateDate,updatedBy,summary,noteCategory,priority,viewableBy,canContractorView) " +
+				"select ca.conid,Now(),1,Now(),1,CONCAT('Expiring ',at.auditname,' for ', a.name),'Audits',1,cao.opid,1 from contractor_audit ca " +
 						"join contractor_audit_operator cao on cao.auditid = ca.id " +
 						"join audit_type at on at.id = ca.audittypeid " +
 						"join accounts a on a.id = cao.opid " +
@@ -190,8 +190,8 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		db.executeInsert(sql);
 		
 		// post contractor notes for renewable audits
-		sql = "INSERT into note (accountID,creationDate,createdBy,updateDate,updatedBy,summary,noteCategory, viewableBy,canContractorView) " +
-				"select ca.conid,Now(),1,Now(),1,CONCAT('Changing status to Pending for ',at.auditname,' for ', a.name),'Audits',cao.opid,1 from contractor_audit ca " +
+		sql = "INSERT into note (accountID,creationDate,createdBy,updateDate,updatedBy,summary,noteCategory,priority, viewableBy,canContractorView) " +
+				"select ca.conid,Now(),1,Now(),1,CONCAT('Changing status to Pending for ',at.auditname,' for ', a.name),'Audits',1,cao.opid,1 from contractor_audit ca " +
 						"join contractor_audit_operator cao on cao.auditid = ca.id " +
 						"join audit_type at on at.id = ca.audittypeid " +
 						"join accounts a on a.id = cao.opid " +
