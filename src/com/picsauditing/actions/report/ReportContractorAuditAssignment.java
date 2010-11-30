@@ -38,7 +38,7 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		sql.addField("ca.auditorConfirm");
 		sql.addField("ca2.expiresDate AS current_expiresDate");
 		sql.addJoin("LEFT JOIN contractor_audit ca2 ON " + "ca2.conID = a.id "
-				+ "AND ca2.auditTypeID = ca.auditTypeID AND atype.hasMultiple = 0");
+				+ "AND ca2.auditTypeID = ca.auditTypeID AND atype.hasMultiple = 0 AND ca2.id != ca.id");
 		
 		sql.addWhere("ca.id IN (SELECT auditID FROM contractor_audit_operator WHERE visible = 1 AND status = 'Pending')");
 		
