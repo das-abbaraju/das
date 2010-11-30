@@ -28,10 +28,10 @@
 					</tr>
 				</s:iterator>
 				<s:iterator value="verificationAudits">
-					<s:if test="auditType.Pqf">
+					<s:if test="auditType.Pqf && (hasCaoStatus('Submitted') || hasCaoStatus('Resubmitted'))">
 						<tr>
 							<td class="center" colspan="2">
-								<input type="button" id="verifyaudit" value="Verify <s:property value="auditType.auditName"/> " onclick="showAudit(<s:property value="id"/>); return false;"/>
+								<input type="button" id="verifyaudit" value="Verify <s:property value="auditType.auditName"/>" onclick="showAudit(<s:property value="id"/>); return false;"/>
 							</td>
 						</tr>	
 					</s:if>
@@ -240,7 +240,9 @@
 					<s:iterator value="verificationAudits">
 						<s:if test="auditType.annualAddendum">
 							<td class="center">
-								<input type="button" value="Verify" onclick="showAudit(<s:property value="id"/>); return false;"/>
+								<s:if test="hasCaoStatus('Submitted') || hasCaoStatus('Resubmitted')">
+									<input type="button" value="Verify" onclick="showAudit(<s:property value="id"/>); return false;"/>
+								</s:if>
 							</td>	
 						</s:if>
 					</s:iterator>
