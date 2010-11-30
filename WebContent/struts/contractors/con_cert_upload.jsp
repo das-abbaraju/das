@@ -8,8 +8,8 @@
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<link rel="stylesheet" type="text/css" href="css/pics.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" href="css/audit.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <script type="text/javascript">
 var questionID  = '<s:property value="questionID"/>';
 var certID = '<s:property value="certID"/>';
@@ -74,14 +74,7 @@ function closePage() {
 					</div>
 					<div>
 						<div>
-							<button class="picsbutton" onclick="closePage()">
-								<s:if test="!changed">
-									Cancel
-								</s:if>
-								<s:else>
-									Close
-								</s:else>
-							</button>
+							<button class="picsbutton" onclick="closePage()">Cancel</button>
 							<s:if test="file != null && file.exists()">
 								<s:if test="certificate.caos == null || certificate.caos.size() == 0">
 									<button class="picsbutton negative" name="button" value="Delete" type="submit" 
