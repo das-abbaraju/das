@@ -36,7 +36,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
