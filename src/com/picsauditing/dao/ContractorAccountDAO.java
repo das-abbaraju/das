@@ -172,7 +172,7 @@ public class ContractorAccountDAO extends PicsDAO {
 	 */
 	public List<Integer> findContractorsNeedingRecalculation(int limit, Set<Integer> contractorsToIgnore) {
 		String hql = "SELECT c.id FROM ContractorAccount c WHERE c.status IN ('Active','Pending','Demo') AND ("
-				+ "c.lastRecalculation < :lastRunDate " + "OR c.lastRecalculation IS NULL)";
+				+ "c.lastRecalculation < :lastRunDate OR c.lastRecalculation IS NULL)";
 		if (contractorsToIgnore.size() > 0)
 			hql += " AND c.id NOT IN (" + Strings.implode(contractorsToIgnore) + ")";
 		hql += " ORDER BY c.needsRecalculation DESC, c.lastRecalculation";
@@ -187,8 +187,13 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public long findNumberOfContractorsNeedingRecalculation() {
-		String hql = "SELECT COUNT(*) FROM ContractorAccount c WHERE c.status IN ('Active','Pending','Demo') AND c.needsRecalculation > 0";
+		String hql = "SELECT COUNT(*) FROM ContractorAccount c " +
+				"WHERE c.status IN ('Active','Pending','Demo') AND c.needsRecalculation > 0 " +
+				"AND (c.lastRecalculation < :lastRunDate OR c.lastRecalculation IS NULL)";
 		Query query = em.createQuery(hql);
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.MINUTE, -15);
+		query.setParameter("lastRunDate", calendar.getTime());
 
 		return (Long) query.getSingleResult();
 	}
