@@ -20,7 +20,7 @@ public class IndexerController {
 
 	public IndexerController(AccountDAO accountDAO, UserDAO userDAO,
 			EmployeeDAO empDao) {
-		this.empDAO = empDao;
+		this.accountDAO = accountDAO;
 		this.userDAO = userDAO;
 		this.empDAO = empDao;
 		this.indexer = new Indexer(accountDAO, userDAO, empDao);
