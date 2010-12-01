@@ -188,8 +188,7 @@ public class ContractorAccountDAO extends PicsDAO {
 
 	public long findNumberOfContractorsNeedingRecalculation() {
 		String hql = "SELECT COUNT(*) FROM ContractorAccount c " +
-				"WHERE c.status IN ('Active','Pending','Demo') AND c.needsRecalculation > 0 " +
-				"AND (c.lastRecalculation < NOW() OR c.lastRecalculation IS NULL)";
+				"WHERE c.status IN ('Active','Pending','Demo') AND c.needsRecalculation > 0";
 		Query query = em.createQuery(hql);
 
 		return (Long) query.getSingleResult();
