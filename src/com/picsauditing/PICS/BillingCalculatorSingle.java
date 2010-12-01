@@ -104,8 +104,6 @@ public class BillingCalculatorSingle {
 				return true;
 			if (auditType.getId() == AuditType.OFFICE)
 				return true;
-			if (auditType.getClassType() == AuditTypeClass.IM)
-				return true;
 		}
 		return false;
 	}
