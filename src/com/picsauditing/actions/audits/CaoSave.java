@@ -458,8 +458,6 @@ public class CaoSave extends AuditActionSupport {
 				if (cao.getFlag() != null) {
 					if (cao.getFlag().isGreen())
 						cao.setStatus(AuditStatus.Approved);
-					else if (cao.getFlag().isRed())
-						cao.setStatus(AuditStatus.Incomplete);
 				}
 			}
 		}
@@ -514,7 +512,7 @@ public class CaoSave extends AuditActionSupport {
 		}
 
 		for (ContractorOperator co : cao.getAudit().getContractorAccount().getNonCorporateOperators()) {
-			if (co.getOperatorAccount().equals(cao.getOperator())) {
+			if (cao.hasCaop(co.getOperatorAccount().getId())) {
 				FlagColor flagColor = flagCalc.calculateCaoStatus(cao.getAudit().getAuditType(), co.getFlagDatas());
 				cao.setFlag(flagColor);
 				
