@@ -154,6 +154,8 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		for (BasicDynaBean bdb : queryList) {
 			String check = (String) bdb.get("indexType");
 			int fkID = Integer.parseInt(bdb.get("foreignKey").toString());
+			if(Strings.isEmpty(check))
+				check = "A";
 			if (check.equals("A") || check.equals("AS") || check.equals("C") || check.equals("CO") || check.equals("O")) {
 				indexableMap.put(Account.class, fkID);
 				records.put(fkID, null);
