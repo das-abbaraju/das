@@ -52,7 +52,7 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		sql.addField("manual.answer AS manswer");
 		sql.addField("manual.comment AS mcomment");
 		sql.addField("manual.id AS mid");
-		
+		sql.addWhere("ca.auditTypeID != 2 OR manual.dateVerified IS NOT NULL");
 		orderByDefault = "ca.creationDate";
 		
 		getFilter().setShowUnConfirmedAudits(true);
