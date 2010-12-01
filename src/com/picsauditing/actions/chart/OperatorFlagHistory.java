@@ -23,7 +23,7 @@ public class OperatorFlagHistory extends ChartMSAction {
 		int operatorID = permissions.getAccountId();
 		Date yesterday =  DateBean.addField(new Date(), Calendar.DAY_OF_WEEK, -1);
 
-		String sql = getOperatorFlagHistorySQL(yesterday, "0 days", operatorID)
+		String sql = getOperatorFlagHistorySQL(yesterday, "1 day", operatorID)
 			+ " UNION " +	
 			getOperatorFlagHistorySQL(DateBean.getFirstofMonthOrClosestSunday(DateBean.addDays(yesterday, -30)), "30 days", operatorID)
 			+ " UNION " +
