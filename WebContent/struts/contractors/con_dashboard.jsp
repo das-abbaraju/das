@@ -489,27 +489,25 @@ table.report tr.hurdle td {
 				<s:iterator value="activeOperatorsMap">
 					<ul style="float: left">
 					<s:iterator value="value">
-						<s:if test="permissions.accountId != operatorAccount.id">
-							<li>
-							<span class="other_operator">
-							<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
-									<s:property value="flagColor.smallIcon" escape="false" />
-							</a>
-							<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
-								<s:if test="permissions.admin"> 
-									title="<s:property value="operatorAccount.name" />: Waiting On '<s:property value="waitingOn"/>'"
-									rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"
-									class="operatorQuick"
-								</s:if>
-								<s:else>
-									title="Waiting On '<s:property value="waitingOn"/>'"
-								</s:else>
-								>
-								<s:property value="operatorAccount.name" />
-							</a>
-							</span>
-							</li>
-						</s:if>
+						<li>
+						<span class="other_operator">
+						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
+								<s:property value="flagColor.smallIcon" escape="false" />
+						</a>
+						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
+							<s:if test="permissions.admin">
+								title="<s:property value="operatorAccount.name" />: Waiting On '<s:property value="waitingOn"/>'"
+								rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"
+								class="operatorQuick"
+							</s:if>
+							<s:else>
+								title="Waiting On '<s:property value="waitingOn"/>'"
+							</s:else>
+							>
+							<s:property value="operatorAccount.name" />
+						</a>
+						</span>
+						</li>
 					</s:iterator>
 					</ul>
 				</s:iterator>
@@ -528,9 +526,8 @@ table.report tr.hurdle td {
 				<div class="inprogress"></div>
 				<script type="text/javascript">
 					$(function() {
-							$('#con_tasks').load('ContractorTasksAjax.action?id=<s:property value="id"/>');
-						}
-					);
+						$('#con_tasks').load('ContractorTasksAjax.action?id=<s:property value="id"/>');
+					});
 				</script>
 			</div>
 		</div>
