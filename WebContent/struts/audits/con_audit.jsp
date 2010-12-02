@@ -18,7 +18,9 @@
 	var auditID = '<s:property value="conAudit.id"/>';
 	var conID = '<s:property value="id"/>';
 	<s:if test="conAudit.categories.size == 0">
+	$(function() {
 		updateCategoriesNow();
+	});
 	</s:if>
 </script>
 </head>
