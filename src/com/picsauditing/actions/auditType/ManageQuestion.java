@@ -72,7 +72,7 @@ public class ManageQuestion extends ManageCategory {
 			}
 
 			if (visibleQuestionID == null || visibleQuestionID == 0)
-				question.setRequiredQuestion(null);
+				question.setVisibleQuestion(null);
 			else if (question.getVisibleQuestion() == null
 					|| visibleQuestionID != question.getVisibleQuestion().getId()) {
 				question.setVisibleQuestion(auditQuestionDAO.find(visibleQuestionID));
