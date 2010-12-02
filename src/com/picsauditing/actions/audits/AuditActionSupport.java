@@ -432,8 +432,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private List<CategoryNode> createCategoryNodes(List<AuditCategory> cats, boolean addAll) {
 		List<CategoryNode> nodes = new ArrayList<CategoryNode>();
 		for (AuditCategory cat : cats) {
-			if (addAll || (getCategories().get(cat) != null && 
-					(getCategories().get(cat).isApplies()) || getCategories().get(cat).isOverride())) {
+			if (addAll || (getCategories().get(cat) != null && (getCategories().get(cat).isApplies() || getCategories().get(cat).isOverride()))) {
 				CategoryNode node = new CategoryNode();
 				node.category = cat;
 				if (conAudit.getAuditType().getClassType().isIm()) {
