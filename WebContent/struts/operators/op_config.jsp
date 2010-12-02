@@ -101,6 +101,7 @@ function loadCatRules(catID, divCatID, name) {
 </head>
 <body>
 <s:include value="opHeader.jsp" />
+<s:include value="../actionMessages.jsp"/>
 <fieldset class="form">
 <s:if test="operator.operator">
 	<h2 class="formLegend">Parent Accounts</h2>
@@ -198,6 +199,7 @@ function loadCatRules(catID, divCatID, name) {
 		<pics:permission perm="ManageCategoryRules">
 			<li><a href="OperatorCategoryRules.action?id=<s:property value="id"/>">Related Category Rules</a></li>
 		</pics:permission>
+		<li><a class="remove" href="?id=<s:property value="#opID" />&button=Clear">Clear Cache</a></li>
 	</ol>
 </fieldset>
 <fieldset class="form">

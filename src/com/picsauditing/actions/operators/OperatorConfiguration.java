@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.AuditCategoryRuleCache;
+import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
@@ -30,6 +32,8 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	protected AuditDecisionTableDAO adtDAO;
 	protected AuditTypeDAO typeDAO;
 	protected FacilitiesDAO facilitiesDAO;
+	protected AuditTypeRuleCache auditTypeRuleCache;
+	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
 	private List<OperatorAccount> allParents;
 	private List<OperatorAccount> otherCorporates;
@@ -39,16 +43,19 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	// Passed in variables
 	private int corpID;
 	private int auditTypeID;
-	
+
 	private static final String QUESTION1 = "Upload a Certificate of Insurance or other supporting documentation for this policy.";
 	private static final String QUESTION2 = "This insurance policy complies with all additional ";
 
 	public OperatorConfiguration(OperatorAccountDAO operatorDao, AuditDecisionTableDAO adtDAO, AuditTypeDAO typeDAO,
-			FacilitiesDAO facilitiesDAO) {
+			FacilitiesDAO facilitiesDAO, AuditTypeRuleCache auditTypeRuleCache,
+			AuditCategoryRuleCache auditCategoryRuleCache) {
 		super(operatorDao);
 		this.adtDAO = adtDAO;
 		this.typeDAO = typeDAO;
 		this.facilitiesDAO = facilitiesDAO;
+		this.auditTypeRuleCache = auditTypeRuleCache;
+		this.auditCategoryRuleCache = auditCategoryRuleCache;
 	}
 
 	public void prepare() throws Exception {
@@ -64,6 +71,13 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 		permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
 
 		if (!Strings.isEmpty(button)) {
+			if ("Clear".equals(button)) {
+				auditTypeRuleCache.clear();
+				auditCategoryRuleCache.clear();
+				addActionMessage("Cleared Category and Audit Type Cache.");
+				return SUCCESS;
+			}
+
 			if (corpID > 0) {
 				if ("Add".equals(button)) {
 					OperatorAccount corp = operatorDao.find(corpID);
@@ -82,15 +96,15 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 					facilitiesDAO.remove(corp);
 				}
 			}
-			
+
 			if ("buildCat".equals(button)) {
 				AuditType auditType = typeDAO.find(auditTypeID);
 				List<AuditCategory> policyAC = new ArrayList<AuditCategory>();
-				if(auditType==null)
-					throw new RecordNotFoundException("Audit Type not found :"+auditTypeID);
+				if (auditType == null)
+					throw new RecordNotFoundException("Audit Type not found :" + auditTypeID);
 				AuditCategory parent = null;
-				for(AuditCategory c : auditType.getCategories()){
-					if(auditType.getAuditName().equals(c.getName())){
+				for (AuditCategory c : auditType.getCategories()) {
+					if (auditType.getAuditName().equals(c.getName())) {
 						parent = c;
 						break;
 					}
@@ -101,9 +115,9 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				cat.setParent(parent);
 				cat.setAuditType(auditType);
 				auditType.getCategories().add(cat);
-				for(Iterator<AuditCategory> it = auditType.getCategories().iterator(); it.hasNext();){
+				for (Iterator<AuditCategory> it = auditType.getCategories().iterator(); it.hasNext();) {
 					AuditCategory c = it.next();
-					if(c.getName().equals("Policy Information") || c.getName().equals("Policy Limits")){
+					if (c.getName().equals("Policy Information") || c.getName().equals("Policy Limits")) {
 						policyAC.add(c);
 						it.remove();
 					}
@@ -115,12 +129,12 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 					}
 				});
 				int num = 2;
-				for(Iterator<AuditCategory> it = auditType.getCategories().iterator(); it.hasNext();){
+				for (Iterator<AuditCategory> it = auditType.getCategories().iterator(); it.hasNext();) {
 					it.next().setNumber(num);
 					num++;
 				}
 				num = 1;
-				for(AuditCategory c : policyAC){
+				for (AuditCategory c : policyAC) {
 					c.setNumber(num);
 					num++;
 					auditType.getCategories().add(c);
@@ -153,8 +167,8 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				typeDAO.save(cat);
 				typeDAO.save(aq1);
 				typeDAO.save(aq2);
-				
-				this.redirect("ManageCategory.action?id="+cat.getId());
+
+				this.redirect("ManageCategory.action?id=" + cat.getId());
 				return SUCCESS;
 
 			}
@@ -198,8 +212,8 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 	public List<OperatorAccount> getOtherCorporates() {
 		if (otherCorporates == null) {
-			otherCorporates = operatorDao.findWhere(true,
-					"a.id NOT IN (" + Strings.implode(operator.getOperatorHeirarchy()) + ") AND a.type = 'Corporate'");
+			otherCorporates = operatorDao.findWhere(true, "a.id NOT IN ("
+					+ Strings.implode(operator.getOperatorHeirarchy()) + ") AND a.type = 'Corporate'");
 		}
 
 		return otherCorporates;
@@ -258,7 +272,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	public void setAuditTypeID(int auditTypeID) {
 		this.auditTypeID = auditTypeID;
 	}
-	
+
 	public String escapeQuotes(String value) {
 		return value.replaceAll("\'", "\\\\'");
 	}

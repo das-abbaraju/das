@@ -1,6 +1,5 @@
 package com.picsauditing.actions.auditType;
 
-import java.net.URI;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,11 +8,11 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
-import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.PICS.AuditCategoryRuleCache;
+import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
@@ -49,15 +48,19 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	protected AuditDecisionTableDAO dao;
 	protected OperatorAccountDAO opDAO;
 	protected OperatorTagDAO tagDAO;
+	protected AuditTypeRuleCache auditTypeRuleCache;
+	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
 	public AuditTypeRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO, AuditTypeDAO typeDAO,
-			OperatorTagDAO tagDAO) {
+			OperatorTagDAO tagDAO, AuditTypeRuleCache auditTypeRuleCache, AuditCategoryRuleCache auditCategoryRuleCache) {
 		this.dao = dao;
 		this.opDAO = opDAO;
 		this.typeDAO = typeDAO;
 		this.tagDAO = tagDAO;
+		this.auditTypeRuleCache = auditTypeRuleCache;
+		this.auditCategoryRuleCache = auditCategoryRuleCache;
 	}
 
 	public String execute() throws Exception {
@@ -73,11 +76,9 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 			dao.save(rule);
 			if (rule.getEffectiveDate().after(new Date())) { // rule is not in
 				// effect yet
-				addAlertMessage("This rule will not go into effect until: "
-						+ rule.getEffectiveDate());
+				addAlertMessage("This rule will not go into effect until: " + rule.getEffectiveDate());
 			} else if (rule.getExpirationDate().before(new Date())) {
-				addAlertMessage("This rule is no longer in effect, it was removed by "
-						+ rule.getUpdatedBy().getName());
+				addAlertMessage("This rule is no longer in effect, it was removed by " + rule.getUpdatedBy().getName());
 				canEditDelete = false;
 			}
 		}
@@ -85,19 +86,24 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		addFields();
 
 		if (button != null) {
+			if ("Clear".equals(button)) {
+				auditTypeRuleCache.clear();
+				auditCategoryRuleCache.clear();
+				addActionMessage("Cleared Category and Audit Type Cache.");
+			}
 			if ("edit".equals(button)) {
 				if (rule.getAuditType() != null && rule.getAuditType().getId() > 0)
-					rule.setAuditType(typeDAO.find(rule.getAuditType().getId())); 
-				
+					rule.setAuditType(typeDAO.find(rule.getAuditType().getId()));
+
 				return SUCCESS;
 			}
 			if ("Save".equals(button)) {
-				if(isOperatorRequired()){
-					if(rule.getOperatorAccount()==null){
+				if (isOperatorRequired()) {
+					if (rule.getOperatorAccount() == null) {
 						addActionError("You must specify an operator for this rule");
 						button = "edit";
-						id= rule.getId();
-						if(id>0)
+						id = rule.getId();
+						if (id > 0)
 							rule = dao.findAuditTypeRule(rule.getId());
 						return SUCCESS;
 					}
@@ -116,6 +122,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 					acr.setAuditColumns(permissions);
 					dao.save(acr);
 				}
+				auditTypeRuleCache.clear();
 				this.redirect("AuditTypeRuleEditor.action?id=" + rule.getId()); // move
 				// out
 				return BLANK;
@@ -144,6 +151,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 					dao.save(acr);
 				}
 				dao.deleteChildren(rule, permissions);
+				auditTypeRuleCache.clear();
 				this.redirect("AuditTypeRuleEditor.action?id=" + rule.getId());
 				return BLANK;
 			}
@@ -151,24 +159,22 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 				String redirect = "";
 				List<AuditTypeRule> lGranular = dao.getLessGranular(rule, date);
 				if (lGranular.size() > 0)
-					redirect = "AuditTypeRuleEditor.action?id="
-							+ lGranular.get(lGranular.size() - 1).getId();
+					redirect = "AuditTypeRuleEditor.action?id=" + lGranular.get(lGranular.size() - 1).getId();
 				else {
 					redirect = "AuditTypeRuleEditor.action";
 					if (rule.getAuditType() != null)
-						redirect += "filter.auditType="
-								+ rule.getAuditType().getAuditName() + "&";
+						redirect += "filter.auditType=" + rule.getAuditType().getAuditName() + "&";
 				}
 				rule.setExpirationDate(new Date());
 				rule.setAuditColumns(permissions);
 				dao.save(rule);
+				auditTypeRuleCache.clear();
 				this.redirect(redirect);
 				return BLANK;
 			}
 			if ("deleteChildren".equals(button)) {
 				int count = dao.deleteChildren(rule, permissions);
-				addActionMessage("Archived " + count
-						+ (count == 1 ? " rule" : " rules"));
+				addActionMessage("Archived " + count + (count == 1 ? " rule" : " rules"));
 			}
 		}
 
@@ -177,13 +183,13 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		// similar = dao.getSimilar(rule, new Date());
 		return SUCCESS;
 	}
-	
+
 	private boolean isOperatorRequired() {
-		if(permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Grant))
+		if (permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Grant))
 			return false;
 		return true;
 	}
-	
+
 	private void setFieldsOnSave() {
 		if (bidOnly >= 0) {
 			if (bidOnly == 1)
@@ -195,7 +201,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		OperatorTag t = null;
 		if (tagID >= 0)
 			t = tagDAO.find(tagID);
-		rule.setTag(t);	
+		rule.setTag(t);
 	}
 
 	protected void addFields() {
@@ -289,25 +295,25 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 
 		return db.select(sql.toString(), false);
 	}
-	
-	public LinkedHashSet<AuditStatus> getDAuditStatus(){
+
+	public LinkedHashSet<AuditStatus> getDAuditStatus() {
 		LinkedHashSet<AuditStatus> set = new LinkedHashSet<AuditStatus>();
-		if(rule.getDependentAuditType()!=null){
-			for(WorkflowStep step : rule.getDependentAuditType().getWorkFlow().getSteps())
+		if (rule.getDependentAuditType() != null) {
+			for (WorkflowStep step : rule.getDependentAuditType().getWorkFlow().getSteps())
 				set.add(step.getNewStatus());
 		}
 		return set;
 	}
-	
-	public List<OperatorTag> getOpTagList(){
+
+	public List<OperatorTag> getOpTagList() {
 		List<OperatorTag> opTagList = new ArrayList<OperatorTag>();
-		if(rule.getOperatorAccount()!=null && rule.getOperatorAccount().getTags()!=null){
-			for(OperatorTag ot : rule.getOperatorAccount().getTags())
-					opTagList.add(ot);
+		if (rule.getOperatorAccount() != null && rule.getOperatorAccount().getTags() != null) {
+			for (OperatorTag ot : rule.getOperatorAccount().getTags())
+				opTagList.add(ot);
 		}
 		return opTagList;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
