@@ -1013,10 +1013,7 @@
 
 		<action name="OshaSave"
 			class="com.picsauditing.actions.audits.OshaSave">
-			<result type="redirectAction">
-				<param name="actionName">Audit</param>
-				<param name="auditID">${auditID}</param>
-			</result>
+			<result>/struts/blank.jsp</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 		<action name="OshaSaveAjax"
@@ -1674,6 +1671,12 @@
 		<action name="ServerInfo"
 			class="com.picsauditing.actions.ServerInfo">
 			<result>struts/server_info.jsp</result>
+		</action>
+
+		<action name="ServerInfoJSONP"
+			class="com.picsauditing.actions.ServerInfo">
+			<param name="jsonp">true</param>
+			<result>struts/jsonp.jsp</result>
 		</action>
 		
 		<!-- Insurance Reports -->

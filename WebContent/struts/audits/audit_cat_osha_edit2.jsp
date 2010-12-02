@@ -123,7 +123,7 @@
 		</s:else></th>
 		<td colspan="3">
 		<s:if test="fileUploaded">
-			<a href="#" onclick="openOsha(<s:property value="id"/>); return false;">View File</a>
+			<a href="DownloadOsha.action?id=<s:property value="id"/>" target="_BLANK">View File</a>
 		</s:if>
 		<s:if test="categoryData.id > 0">
 			<s:file name="uploadFile" size="10"/></s:if>

@@ -9,7 +9,7 @@
 	<context-param>
 		<!-- To override, add -Dpics.ftpDir=folder_location to your startup command -->
 		<param-name>FTP_DIR</param-name>
-		<param-value>P:/Development/ftp_dir</param-value>
+		<param-value>P:\Development\ftp_dir</param-value>
 	</context-param>
 
 	<listener>
