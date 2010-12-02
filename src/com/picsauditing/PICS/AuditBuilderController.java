@@ -228,7 +228,7 @@ public class AuditBuilderController {
 		List<AuditRule> list = new ArrayList<AuditRule>();
 		for (AuditRule rule : rules) {
 			boolean valid = true;
-
+			
 			if (rule.getQuestion() != null && !rule.isMatchingAnswer(contractorAnswers.get(rule.getQuestion().getId()))) {
 				valid = false;
 			}
@@ -247,7 +247,7 @@ public class AuditBuilderController {
 					valid = false;
 					for (ContractorAudit audit : contractor.getAudits()) {
 						if (!audit.isExpired() && audit.getAuditType().equals(auditTypeRule.getDependentAuditType())) {
-							if (!audit.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus()))
+							if (audit.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus()))
 								valid = true;
 						}
 					}

@@ -43,12 +43,7 @@ public class AuditTypeRuleCache {
 
 		Set<ContractorType> contractorType = new HashSet<ContractorType>();
 		contractorType.add(null);
-		if (contractor.isOnsiteServices())
-			contractorType.add(ContractorType.Onsite);
-		if (contractor.isOffsiteServices())
-			contractorType.add(ContractorType.Offsite);
-		if (contractor.isMaterialSupplier())
-			contractorType.add(ContractorType.Supplier);
+		contractorType.addAll(contractor.getAccountTypes());
 
 		Set<ContractorOperator> operators = new HashSet<ContractorOperator>();
 		operators.add(null);

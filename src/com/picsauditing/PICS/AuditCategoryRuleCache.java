@@ -12,6 +12,7 @@ import java.util.Set;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorType;
@@ -56,12 +57,7 @@ public class AuditCategoryRuleCache {
 
 		Set<ContractorType> contractorType = new HashSet<ContractorType>();
 		contractorType.add(null);
-		if (contractor.isOnsiteServices())
-			contractorType.add(ContractorType.Onsite);
-		if (contractor.isOffsiteServices())
-			contractorType.add(ContractorType.Offsite);
-		if (contractor.isMaterialSupplier())
-			contractorType.add(ContractorType.Supplier);
+		contractorType.addAll(contractor.getAccountTypes());
 
 		Set<ContractorOperator> operators = new HashSet<ContractorOperator>();
 		operators.add(null);
@@ -88,7 +84,21 @@ public class AuditCategoryRuleCache {
 											Set<AuditCategoryRule> data6 = data5.getData(operator);
 											if (data6 != null) {
 												PicsLogger.log("    found matching operator " + operator);
-												rules.addAll(data6);
+												for (AuditCategoryRule auditCategoryRule : data6) {
+													//boolean specificContractorRule = (conType != null && );
+													if (auditCategoryRule.isInclude())
+														rules.add(auditCategoryRule);
+													else {
+														// Exclude rules can be tricky if they are specific
+														// We could also add in functionality to support dependent question sets here are well
+														// 12/2010 Please discuss with both Trevor and Keerthi before changing this logic
+														if (conType == null)
+															rules.add(auditCategoryRule);
+														else if (contractorType.size() == 2)
+															// This contractor has only one type so include the "exclusion rule"
+															rules.add(auditCategoryRule);
+													}
+												}
 											}
 										}
 									}
