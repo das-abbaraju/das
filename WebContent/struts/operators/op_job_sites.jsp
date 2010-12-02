@@ -129,8 +129,8 @@ $(function() {
 			<table class="report">
 				<thead>
 					<tr><th></th>
-						<th>Label</th>
-						<th>Name</th>
+						<th>Short Label</th>
+						<th>Description</th>
 						<s:if test="canEdit">
 							<th>Edit</th>
 							<th>Tasks</th>

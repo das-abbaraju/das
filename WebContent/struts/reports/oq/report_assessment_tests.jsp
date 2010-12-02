@@ -10,11 +10,7 @@
 
 <h1><s:property value="subHeading" /></h1>
 
-<s:form id="form1">
-	<s:hidden name="filter.ajax" value="false" />
-	<s:hidden name="filter.destinationAction" value="ReportAssessmentTests" />
-	<s:hidden name="showPage" value="1" />
-	<s:hidden name="orderBy" />
+<s:include value="../filters_employee.jsp" />
 
 <s:if test="report.allRows == 0">
 	<div class="alert">No rows found matching the given criteria. Please try again.</div>
@@ -32,6 +28,7 @@
 		<th><a href="?orderBy=task,test,employee">Job Task</a></th>
 		<th>Task Active</th>
 		<th><a href="?orderBy=employee,q.qualified DESC,test,task">Employee</a></th>
+		<th><a href="?orderBy=a.name,employee">Company</a></th>
 		<th>Qualified</th>
 		<th><a href="?orderBy=q.effectiveDate,test,task,employee">Qualification Date</a></th>
 	</tr>
@@ -56,6 +53,9 @@
 			<td class="center"><s:property value="get('taskActive')" /></td>
 			<td><a href="EmployeeDetail.action?employee.id=<s:property value="get('employeeID')" />">
 				<s:property value="get('employee')" /></a></td>
+			<td>
+				<a href="ContractorView.action?id=<s:property value="get('accountID')" />"><s:property value="get('name')" /></a>
+			</td>
 			<td class="center"><s:property value="get('qualified')" /></td>
 			<td class="center"><s:property value="get('qualEff')" /></td>
 		</tr>
@@ -66,7 +66,6 @@
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
 </s:else>
-</s:form>
 
 </body>
 </html>

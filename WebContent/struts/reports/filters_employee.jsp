@@ -13,9 +13,7 @@
 <s:form id="form1" action="%{filter.destinationAction}">
 	<s:hidden name="filter.ajax" />
 	<s:hidden name="filter.destinationAction" />
-	<s:hidden name="filter.allowMailMerge" />
 	<s:hidden name="showPage" value="1" />
-	<s:hidden name="filter.startsWith" />
 	<s:hidden name="orderBy" />
 	
 	<div>

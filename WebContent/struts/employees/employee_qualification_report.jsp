@@ -57,7 +57,7 @@ Span of Control = <s:property value="#jst.controlSpan" />">
 					<s:iterator value="jobSites.get(#key)" id="jst">
 						<td class="center<s:if test="assigned.get(#e, #jst)"> assigned</s:if>">
 							<s:if test="qualifications.get(#e, #jst.task).qualified && worksAtSite.get(#e, #jst.job)">
-								<img alt="X" src="images/checkBoxTrue.gif">
+								<img alt="X" src="images/okCheck.gif">
 							</s:if>
 						</td>
 					</s:iterator>
@@ -67,7 +67,7 @@ Span of Control = <s:property value="#jst.controlSpan" />">
 	</tbody>
 	<tfoot>
 		<tr>
-			<th colspan="2" class="right">Total</th>
+			<th <s:if test="!permissions.contractor">colspan="2" </s:if>class="right">Total</th>
 			<s:iterator value="jobSites.keySet()" id="key">
 				<s:iterator value="jobSites.get(#key)" id="jst">
 					<s:set name="jstTotal" value="0" />
@@ -83,7 +83,7 @@ Span of Control = <s:property value="#jst.controlSpan" />">
 			</s:iterator>
 		</tr>
 		<tr>
-			<th colspan="2" class="right">Assigned</th>
+			<th <s:if test="!permissions.contractor">colspan="2" </s:if>class="right">Assigned</th>
 			<s:iterator value="jobSites.keySet()" id="key">
 				<s:iterator value="jobSites.get(#key)" id="jst">
 					<s:set name="jstTotal" value="0" />

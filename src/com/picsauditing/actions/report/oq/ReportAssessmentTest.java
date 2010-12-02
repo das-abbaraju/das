@@ -1,16 +1,20 @@
 package com.picsauditing.actions.report.oq;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.report.ReportActionSupport;
+import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.ReportFilter;
+import com.picsauditing.util.ReportFilterAccount;
+import com.picsauditing.util.ReportFilterEmployee;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportAssessmentTest extends ReportActionSupport {
 	private SelectSQL sql = new SelectSQL();
 	private String subHeading = "Assessment Test Report";
 	
-	private ReportFilter filter;
+	private ReportFilterEmployee filter = new ReportFilterEmployee();
 	
 	public ReportAssessmentTest() {
 		orderByDefault = "test, task, employee";
@@ -30,10 +34,13 @@ public class ReportAssessmentTest extends ReportActionSupport {
 		sql.addField("DATE_FORMAT(q.effectiveDate, '%m/%d/%Y') AS qualEff");
 		sql.addField("DATE_FORMAT(q.expirationDate, '%m/%d/%Y') AS qualExp");
 		sql.addField("CASE q.qualified WHEN 1 THEN 'Yes' ELSE 'No' END AS qualified");
+		sql.addField("a.name");
+		sql.addField("a.id AS accountID");
 		sql.addJoin("JOIN job_task_criteria c ON c.assessmentTestID = t.id");
 		sql.addJoin("JOIN job_task j ON c.taskID = j.id");
 		sql.addJoin("JOIN employee_qualification q ON c.taskID = q.taskID");
 		sql.addJoin("JOIN employee e ON q.employeeID = e.id");
+		sql.addJoin("LEFT JOIN accounts a ON a.id = e.accountID");
 		
 		if (permissions.isOperator()) {
 			sql.addWhere("e.accountID IN (SELECT subID FROM generalcontractors WHERE genID = " + 
@@ -47,12 +54,45 @@ public class ReportAssessmentTest extends ReportActionSupport {
 		}
 		
 		sql.addOrderBy(getOrderBy());
+		
+		addFilterToSQL();
+	}
+	
+	private void addFilterToSQL() {
+		ReportFilterEmployee f = getFilter();
+		
+		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
+			String accountName = f.getAccountName().trim();
+			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
+					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Utilities.escapeQuotes(accountName)
+					+ "%' OR a.id = '" + Utilities.escapeQuotes(accountName) + "'", accountName));
+			sql.addField("a.dbaName");
+		}
+		
+		if (filterOn(f.getFirstName())) {
+			String firstName = Utilities.escapeQuotes(f.getFirstName().trim());
+			sql.addWhere("e.firstName LIKE '%" + firstName + "%'");
+		}
+		
+		if (filterOn(f.getLastName())) {
+			String lastName = Utilities.escapeQuotes(f.getLastName().trim());
+			sql.addWhere("e.lastName LIKE '%" + lastName + "%'");
+		}
+		
+		if (filterOn(f.getEmail())) {
+			String email = Utilities.escapeQuotes(f.getEmail().trim());
+			sql.addWhere("e.email LIKE '%" + email + "%'");
+		}
 	}
 	
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		
+		getFilter().setDestinationAction("ReportAssessmentTests");
+		// Do we need to look up employees by SSN?
+		getFilter().setShowSsn(false);
 		
 		// Operators, Corporate, Administrators
 		if (!permissions.isAdmin() && !permissions.isOperatorCorporate())
@@ -68,11 +108,7 @@ public class ReportAssessmentTest extends ReportActionSupport {
 		return subHeading;
 	}
 	
-	public ReportFilter getFilter() {
+	public ReportFilterEmployee getFilter() {
 		return filter;
-	}
-	
-	public void setFilter(ReportFilter filter) {
-		this.filter = filter;
 	}
 }

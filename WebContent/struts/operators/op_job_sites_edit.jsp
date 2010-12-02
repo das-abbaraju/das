@@ -9,10 +9,10 @@ $('.datepicker').datepicker();
 	<fieldset class="form">
 		<h2 class="formLegend">Edit Project</h2>
 		<ol>
-			<li><label>Label<span class="redMain">*</span>:</label>
+			<li><label>Short Label<span class="redMain">*</span>:</label>
 				<input type="text" name="siteLabel" value="<s:property value="newSite.label" />" size="20" maxlength="15" />
 			</li>
-			<li><label>Name<span class="redMain">*</span>:</label>
+			<li><label>Description<span class="redMain">*</span>:</label>
 				<input type="text" name="siteName" value="<s:property value="newSite.name" />" size="20" />
 			</li>
 			<li><label>City:</label>
