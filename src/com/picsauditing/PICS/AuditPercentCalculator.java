@@ -43,7 +43,7 @@ public class AuditPercentCalculator {
 		if (catData == null)
 			return;
 
-		if (!catData.isApplies())
+		if (!catData.isApplies() && !catData.isOverride())
 			return;
 
 		int requiredAnsweredCount = 0;
