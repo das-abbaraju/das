@@ -1013,7 +1013,10 @@
 
 		<action name="OshaSave"
 			class="com.picsauditing.actions.audits.OshaSave">
-			<result>/struts/blank.jsp</result>
+			<result type="redirectAction">
+				<param name="actionName">Audit</param>
+				<param name="auditID">${auditID}</param>
+			</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 		<action name="OshaSaveAjax"
