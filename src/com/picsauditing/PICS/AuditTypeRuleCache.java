@@ -71,7 +71,21 @@ public class AuditTypeRuleCache {
 									Set<AuditTypeRule> data6 = data4.getData(operator);
 									if (data6 != null) {
 										PicsLogger.log("    found matching operator " + operator);
-										rules.addAll(data6);
+										for (AuditTypeRule auditTypeRule : data6) {
+											//boolean specificContractorRule = (conType != null && );
+											if (auditTypeRule.isInclude())
+												rules.add(auditTypeRule);
+											else {
+												// Exclude rules can be tricky if they are specific
+												// We could also add in functionality to support dependent question sets here are well
+												// 12/2010 Please discuss with both Trevor and Keerthi before changing this logic
+												if (conType == null)
+													rules.add(auditTypeRule);
+												else if (contractorType.size() == 2)
+													// This contractor has only one type so include the "exclusion rule"
+													rules.add(auditTypeRule);
+											}
+										}
 									}
 								}
 							}
