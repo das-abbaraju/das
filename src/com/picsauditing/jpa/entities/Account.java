@@ -3,7 +3,9 @@ package com.picsauditing.jpa.entities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -682,4 +684,17 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 		} 
 		return "";
 	}
+	
+	@Transient
+	public Set<ContractorType> getAccountTypes() {
+		Set<ContractorType> types = new HashSet<ContractorType>();
+		if(isMaterialSupplier())
+			types.add(ContractorType.Supplier);
+		if(isOnsiteServices())
+			types.add(ContractorType.Onsite);
+		if(isOffsiteServices())
+			types.add(ContractorType.Offsite);
+		return types;
+	}
+
 }
