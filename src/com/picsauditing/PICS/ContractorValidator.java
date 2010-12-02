@@ -43,25 +43,30 @@ public class ContractorValidator {
 				errorMessages.addElement("Please select a State");
 			}
 		}
-		
+
 		if (Strings.isEmpty(contractor.getPhone()))
 			errorMessages.addElement("Please fill in the Phone field.");
-		
+
 		boolean uae = false;
 		if (contractor.getCountry() != null && contractor.getCountry().getIsoCode().equals("AE"))
 			uae = true;
 
 		if (!uae && Strings.isEmpty(contractor.getZip()))
 			errorMessages.addElement("Please fill in the Zip field.");
-		if(!Strings.isEmpty(contractor.getTaxId())){
+		if (!Strings.isEmpty(contractor.getTaxId())) {
 			if (!uae && !java.util.regex.Pattern.matches("\\d{9}", contractor.getTaxId()))
 				errorMessages.addElement("Please enter your 9 digit tax ID with only digits 0-9, no dashes.");
-		} else if(!uae)
+		} else if (!uae)
 			errorMessages.addElement("Please fill in the Tax ID field");
 
 		// Main Trade
 		if (Strings.isEmpty(contractor.getMainTrade()) || contractor.getMainTrade().equals("- Trade -"))
 			errorMessages.addElement("Please select a main trade");
+
+		// Onsite / Offsite / Material Supplier
+		if (contractor.getAccountTypes().isEmpty())
+			errorMessages.addElement("Please select at least one of Onsite Services, Offsite Services "
+					+ "or Material Supplier to indicate the services you perform.");
 
 		return errorMessages;
 	}
