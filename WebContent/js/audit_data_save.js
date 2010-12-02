@@ -28,9 +28,10 @@ $(function(){
 
 	$('#auditViewArea').delegate('input.verify', 'click', function(e) {
 		var me = $(this).parents('div.question:first');
+		var pars = $('form.qform', me).serialize() + "&toggleVerify=true";
 		me.block({message: $(this).val()+'ing...'})
 			.load('AuditDataSaveAjax.action',
-				$('form.qform', me).serialize(),
+				pars,
 				function(response, status) {
 					if (status=='success') {
 						$(this).trigger('updateDependent');
