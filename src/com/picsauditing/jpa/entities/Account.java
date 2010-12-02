@@ -40,7 +40,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	static public int PRIVATE = 2;
 	static public int PicsID = 1100;
 	static public int PICS_CORPORATE_ID = 14;
-	static public List<Integer> PICS_CORPORATE = Arrays.asList(4,5,6,7);
+	static public List<Integer> PICS_CORPORATE = Arrays.asList(4, 5, 6, 7);
 
 	protected String name;
 	protected String nameIndex;
@@ -132,21 +132,21 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	
+
 	@Column(name = "address2", length = 50)
 	public String getAddress2() {
 		return this.address2;
 	}
-	
+
 	public void setAddress2(String address2) {
 		this.address2 = address2;
 	}
-	
+
 	@Column(name = "address3", length = 50)
 	public String getAddress3() {
 		return this.address3;
 	}
-	
+
 	public void setAddress3(String address3) {
 		this.address3 = address3;
 	}
@@ -353,8 +353,8 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	}
 
 	/**
-	 * Are they subject to Operator Qualification regulation, and 
-	 * if Contractor, do they work for an operator who does too?
+	 * Are they subject to Operator Qualification regulation, and if Contractor,
+	 * do they work for an operator who does too?
 	 * 
 	 * @return
 	 */
@@ -365,42 +365,42 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	public void setRequiresOQ(boolean requiresOQ) {
 		this.requiresOQ = requiresOQ;
 	}
-	
-	public boolean isNeedsIndexing(){
+
+	public boolean isNeedsIndexing() {
 		return needsIndexing;
 	}
-	
-	public void setNeedsIndexing(boolean needsIndex){
+
+	public void setNeedsIndexing(boolean needsIndex) {
 		this.needsIndexing = needsIndex;
 	}
-	
+
 	public boolean isOnsiteServices() {
 		return onsiteServices;
 	}
-	
+
 	public void setOnsiteServices(boolean onsiteServices) {
 		this.onsiteServices = onsiteServices;
 	}
-	
+
 	public boolean isOffsiteServices() {
 		return offsiteServices;
 	}
-	
+
 	public void setOffsiteServices(boolean offsiteServices) {
 		this.offsiteServices = offsiteServices;
 	}
-	
+
 	public boolean isMaterialSupplier() {
 		return materialSupplier;
 	}
-	
+
 	public void setMaterialSupplier(boolean materialSupplier) {
 		this.materialSupplier = materialSupplier;
 	}
-	
+
 	/**
-	 * Are they subject to Competency Reviews, and 
-	 * if Contractor, do they work for an operator who does too?
+	 * Are they subject to Competency Reviews, and if Contractor, do they work
+	 * for an operator who does too?
 	 * 
 	 * @return
 	 */
@@ -408,7 +408,6 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 		return requiresCompetencyReview;
 	}
 
-	
 	public void setRequiresCompetencyReview(boolean requiresCompetencyReview) {
 		this.requiresCompetencyReview = requiresCompetencyReview;
 	}
@@ -601,58 +600,58 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 		l.add(new IndexObject(String.valueOf(this.id), 10));
 		// name
 		String[] sA = this.name.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
-		for(String s : sA){
-			if(s!=null && !s.isEmpty())	
+		for (String s : sA) {
+			if (s != null && !s.isEmpty())
 				l.add(new IndexObject(s, 7));
 		}
 		// dba
-		if(this.dbaName!=null && !this.dbaName.equals(this.name)){
+		if (this.dbaName != null && !this.dbaName.equals(this.name)) {
 			sA = this.dbaName.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
-			for(String s : sA){
-				if(s!=null && !s.isEmpty())
+			for (String s : sA) {
+				if (s != null && !s.isEmpty())
 					l.add(new IndexObject(s, 7));
 			}
 		}
 		// city
-		if(this.city!=null && !this.city.isEmpty()){
+		if (this.city != null && !this.city.isEmpty()) {
 			l.add(new IndexObject(this.city.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", ""), 3));
 		}
 		// state
-		//State s = s
-		if(this.state!=null && !this.state.isoCode.isEmpty()){
+		// State s = s
+		if (this.state != null && !this.state.isoCode.isEmpty()) {
 			l.add(new IndexObject(this.state.isoCode, 4));
-			if(this.state.getEnglish()!=null)
+			if (this.state.getEnglish() != null)
 				l.add(new IndexObject(this.state.getEnglish().toUpperCase(), 4));
 		}
 		// zip
-		if(this.zip!=null && !this.zip.isEmpty())
+		if (this.zip != null && !this.zip.isEmpty())
 			l.add(new IndexObject(this.zip, 3));
 		// country
-		if(this.country!=null && !this.country.isoCode.isEmpty()){
+		if (this.country != null && !this.country.isoCode.isEmpty()) {
 			l.add(new IndexObject(this.country.isoCode, 3));
-			if(this.country.getEnglish()!=null)
+			if (this.country.getEnglish() != null)
 				l.add(new IndexObject(this.country.getEnglish().toUpperCase(), 3));
 		}
 		// phone
-		if(this.phone!=null && !this.phone.isEmpty()){
+		if (this.phone != null && !this.phone.isEmpty()) {
 			String p = Strings.stripPhoneNumber(this.phone);
-			if(p.length()>=10 && !p.matches("\\W"))
+			if (p.length() >= 10 && !p.matches("\\W"))
 				l.add(new IndexObject(p, 2));
 		}
 		// email l.add(this.);
 		// web_URL
-		if(this.webUrl!=null && !this.webUrl.isEmpty()){
+		if (this.webUrl != null && !this.webUrl.isEmpty()) {
 			String s = this.webUrl.toUpperCase();
-			l.add(new IndexObject(s.replaceAll("^(HTTP://)(W{3})|^(W{3}.)|\\W", ""),4));
+			l.add(new IndexObject(s.replaceAll("^(HTTP://)(W{3})|^(W{3}.)|\\W", ""), 4));
 		}
 		return l;
 	}
 
 	@Transient
 	public String getIndexType() {
-		if(type.equals("Corporate"))
+		if (type.equals("Corporate"))
 			return "CO";
-		if(type.equals("Assessment"))
+		if (type.equals("Assessment"))
 			return "AS";
 		return type.substring(0, 1);
 	}
@@ -661,40 +660,45 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	public String getReturnType() {
 		return "account";
 	}
-	
+
 	@Transient
-	public String getSearchText(){
+	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(this.name).append('|');
-		if(this.city!=null)
+		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(
+				this.name).append('|');
+		if (this.city != null)
 			sb.append(this.city);
-		if(this.state!=null)
+		if (this.state != null)
 			sb.append(", ").append(this.state).append("\n");
 		return sb.toString();
 	}
 
 	@Transient
 	public String getViewLink() {
-		if(this.type.equals("Contractor")){
-			return("ContractorView.action?id="+this.id);
-		} else if(this.type.equals("Operator") || this.type.equals("Corporate")){
-			return("FacilitiesEdit.action?id="+this.id);
-		} else if(this.type.equals("Assessment")){
-			return("AssessmentCenterEdit.action?id="+this.id);
-		} 
+		if (this.type.equals("Contractor")) {
+			return ("ContractorView.action?id=" + this.id);
+		} else if (this.type.equals("Operator") || this.type.equals("Corporate")) {
+			return ("FacilitiesEdit.action?id=" + this.id);
+		} else if (this.type.equals("Assessment")) {
+			return ("AssessmentCenterEdit.action?id=" + this.id);
+		}
 		return "";
 	}
-	
+
 	@Transient
 	public Set<ContractorType> getAccountTypes() {
 		Set<ContractorType> types = new HashSet<ContractorType>();
-		if(isMaterialSupplier())
+		if (isMaterialSupplier())
 			types.add(ContractorType.Supplier);
-		if(isOnsiteServices())
+		if (isOnsiteServices())
 			types.add(ContractorType.Onsite);
-		if(isOffsiteServices())
+		if (isOffsiteServices())
 			types.add(ContractorType.Offsite);
 		return types;
 	}
 
+	@Transient
+	public boolean isMaterialSupplierOnly(){
+		return (getAccountTypes().size() == 1 && getAccountTypes().iterator().next().equals(ContractorType.Supplier));
+	}
 }
