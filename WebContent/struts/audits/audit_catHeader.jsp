@@ -3,9 +3,6 @@
 	<s:include value="../contractors/conHeader.jsp" />
 	
 	<s:if test="conAudit.auditType.classType.policy">
-		<s:if test="permissions.operatorCorporate && auditWithOtherOperators">
-			<div class="alert">More than one facility has access to this data. Please contact PICS if any changes to existing data are needed.</div>
-		</s:if>
 		<s:if test="conAudit.willExpireSoon() && !conAudit.expired">
 			<div class="alert">This policy is about to Expire and is currently locked for editing. Please use the up coming policy to record any changes 
 				<s:iterator value="conAudit.contractorAccount.audits" id="newPending">

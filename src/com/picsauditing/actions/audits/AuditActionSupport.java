@@ -202,10 +202,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 			if (permissions.isOperatorCorporate()) {
-				if(permissions.getVisibleAccounts().contains(caop.getOperator().getId()))
+				if (permissions.getVisibleAccounts().contains(caop.getOperator().getId()))
 					operators.add(caop.getOperator());
-			}
-			else {
+			} else {
 				operators.add(caop.getOperator());
 			}
 		}
@@ -239,13 +238,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (cao.getPercentVerified() < 100 || !cao.getStatus().isSubmitted())
 				return false;
 		}
-		
-		if(workflowStep.getNewStatus().isResubmitted() && !conAudit.isAboutToExpire()) {
+
+		if (workflowStep.getNewStatus().isResubmitted() && !conAudit.isAboutToExpire()) {
 			return false;
 		}
-		
+
 		AuditType type = cao.getAudit().getAuditType();
-		
+
 		if (workflowStep.getNewStatus().isComplete() && type.getWorkFlow().isHasSubmittedStep()
 				&& cao.getPercentVerified() < 100)
 			return false;
@@ -270,7 +269,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (workflowStep.getNewStatus().isResubmitted() && conAudit.isAboutToExpire())
 				return true;
 			// if Single Step Workflow (Pending to Complete)
-			if (workflowStep.getNewStatus().isComplete() && workflowStep.getWorkflow().getId() == 1) 
+			if (workflowStep.getNewStatus().isComplete() && workflowStep.getWorkflow().getId() == 1)
 				return true;
 		}
 		return false;
@@ -327,38 +326,28 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		if (type.getEditPermission() != null) {
-			if (permissions.hasPermission(type.getEditPermission()) && !isAuditWithOtherOperators())
+			if (permissions.hasPermission(type.getEditPermission()))
 				return true;
 		}
 
 		return false;
 	}
 
-	/**
-	 * 
-	 * @return true if the current users is an operator and there is a visible
-	 *         cao belonging to another operator
-	 */
-	public boolean isAuditWithOtherOperators() {
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			// This logic is somewhat complex so here's an example:
-			// BASF Freeport Hub has access to many operators
-			// who use either BASF Corporate and BASF Catalyst insurance
-			// requirements
-			// If this contractor policy is visible (needed) for
-			// Paramount,
-			// then the policy is locked down.
-			// One potential flaw is that if the other CAO happens to be
-			// BASF Canada,
-			// which is not part of the Freeport Hub, then the policy
-			// will be locked for BASF Freeport.
-			if (!cao.isVisibleTo(permissions))
+	public boolean isCanEditCategory(AuditCategory category) {
+		if(!conAudit.getAuditType().getClassType().isPolicy())
+			return false;
+		if(!isCanEditAudit())
+			return false;
+		if(category.getName() == "Policy Information" || category.getName() == "Policy Limits") {
+			if(conAudit.getViewableOperators(permissions).size() == 1)
 				return true;
+			else if (!conAudit.hasCaoStatusAfter(AuditStatus.Pending))
+					return true;
 		}
-
-		return false;
+		
+		return true;
 	}
-
+	
 	public ArrayListMultimap<AuditStatus, Integer> getActionStatus() {
 		return actionStatus;
 	}
@@ -432,7 +421,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private List<CategoryNode> createCategoryNodes(List<AuditCategory> cats, boolean addAll) {
 		List<CategoryNode> nodes = new ArrayList<CategoryNode>();
 		for (AuditCategory cat : cats) {
-			if (addAll || (getCategories().get(cat) != null && (getCategories().get(cat).isApplies() || getCategories().get(cat).isOverride()))) {
+			if (addAll
+					|| (getCategories().get(cat) != null && (getCategories().get(cat).isApplies() || getCategories()
+							.get(cat).isOverride()))) {
 				CategoryNode node = new CategoryNode();
 				node.category = cat;
 				if (conAudit.getAuditType().getClassType().isIm()) {
