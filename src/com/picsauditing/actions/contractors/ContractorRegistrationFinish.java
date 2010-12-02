@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.struts2.ServletActionContext;
+
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
@@ -15,6 +17,7 @@ import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.PicsMenu;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -26,6 +29,7 @@ import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
@@ -84,6 +88,22 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		this.resetActiveAudits();
 
 		if ("Complete My Registration".equals(button)) {
+			// enforcing workflow steps before completing registration
+			String url = "";
+			if (contractor.getRiskLevel() == null && !contractor.isMaterialSupplierOnly()) {
+				url = "ContractorRegistrationServices.action?id=" + contractor.getId()
+						+ "&msg=Please select the services you perform.";
+			} else if (contractor.getNonCorporateOperators().size() == 0) {
+				url = "ContractorFacilities.action?id=" + contractor.getId() + "&msg=Please add at least one facility.";
+			} else if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
+				url = "ContractorPaymentOptions.action?id=" + contractor.getId()
+						+ "&msg=Please add a valid payment method.";
+			}
+
+			if (!url.isEmpty()) {
+				ServletActionContext.getResponse().sendRedirect(url);
+				return SUCCESS;
+			}
 
 			if (contractor.getNewMembershipLevel().isFree() || !contractor.isMustPayB()) {
 				// Free accounts should just be activated
