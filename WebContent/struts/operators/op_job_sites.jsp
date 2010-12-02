@@ -229,10 +229,10 @@ $(function() {
 			<fieldset class="form">
 				<h2 class="formLegend">Add New Project</h2>
 				<ol>
-					<li><label>Label<span class="redMain">*</span>:</label>
+					<li><label>Short Label<span class="redMain">*</span>:</label>
 						<s:textfield name="siteLabel" size="20" maxlength="15" />
 					</li>
-					<li><label>Name<span class="redMain">*</span>:</label>
+					<li><label>Description<span class="redMain">*</span>:</label>
 						<s:textfield name="siteName" size="20" maxlength="255" />
 					</li>
 					<li><label>City:</label>
@@ -269,8 +269,8 @@ $(function() {
 		<table class="report">
 			<thead>
 				<tr><th></th>
-					<th>Label</th>
-					<th>Site Name</th>
+					<th>Short Label</th>
+					<th>Description</th>
 					<th>City</th>
 					<th>State</th>
 					<th>Country</th>
