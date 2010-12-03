@@ -7,7 +7,7 @@
 <s:include value="reportHeader.jsp" />
 <script type="text/javascript">
 function approve(id) {
-	$.post('flag_changes.jsp', {approveID: id});
+	$.post('ReportFlagChanges.action', {approveID: id});
 	$("#row" + id).hide();
 }
 </script>
@@ -29,12 +29,12 @@ function approve(id) {
 		<tr>
 			<th></th>
 			<th>Approve</th>
+			<th>New</th>
+			<th>Old</th>
 			<th><a href="?orderBy=a.name,operator.name">Contractor</a></th>
 			<pics:permission perm="AllContractors">
 				<th><a href="?orderBy=operator.name,a.name">Operator</a></th>
 			</pics:permission>
-			<th>Baseline</th>
-			<th>Change</th>
 			<th>Last Calc</th>
 			<th>Useful Links</th>
 		</tr>
@@ -44,18 +44,18 @@ function approve(id) {
 		<s:set name="gcID" value="get('gcID')"></s:set>
 		<tr id="row<s:property value="#gcID"/>">
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><a href="#<s:property value="#gcID"/>" onclick="approve(<s:property value="#gcID"/>); return false;" class=".button.green">Approve</a></td>
+			<td><a href="#<s:property value="#gcID"/>" onclick="approve(<s:property value="#gcID"/>); return false;" class=".button.green">Approve <s:property value="get('baselineFlag')"/></a></td>
+			<td><s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('baselineFlag').toString())" escape="false"/></td>
+			<td><s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('flag').toString())" escape="false"/></td>
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>" 
 					rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>" 
 					class="contractorQuick account<s:property value="get('status')"/>" title="<s:property value="get('name')"/>"
 				><s:property value="get('name')"/></a></td>
 			<td><a href="OperatorConfiguration.action?id=<s:property value="get('opId')"/>"><s:property value="get('opName')"/></a></td>
-			<td><s:property value="get('baselineFlag')"/></td>
-			<td><s:property value="@com FlagColor.getSmallIcon(get('flag').toString()) "/>
-				<a href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>"
-				><s:property value="get('flag')"/></a></td>
 			<td><s:property value="get('lastRecalculation')"/> mins ago</td>
-			<td></td>
+			<td>
+				<a href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>">Flag</a>
+			</td>
 		</tr>
 	</s:iterator>
 	</tbody>

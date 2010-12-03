@@ -37,6 +37,20 @@ public class ReportFlagChanges extends ReportAccount {
 		super.buildQuery();
 
 		getFilter().setShowFlagStatus(true);
+		
+		getFilter().setShowTaxID(false);
+		getFilter().setShowTrade(false);
+		getFilter().setShowCcOnFile(false);
+		getFilter().setShowPrimaryInformation(false);
+		getFilter().setShowTradeInformation(false);
+		getFilter().setShowConWithPendingAudits(false);
+		getFilter().setShowAddress(false);
+		getFilter().setShowOfficeIn(false);
+		getFilter().setShowWorksIn(false);
+		getFilter().setShowLicensedIn(false);
+		getFilter().setShowIndustry(false);
+		getFilter().setShowOperator(false);
+		
 		String opIds = "";
 		List<Integer> ops = new Vector<Integer>();
 

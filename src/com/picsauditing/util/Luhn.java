@@ -57,6 +57,6 @@ public class Luhn {
 	}
 	public static String addCheckDigit(String number) {
 		Character checkDigit = Luhn.getCheckDigit(number);
-		return number.concat("."+checkDigit.toString());
+		return number+checkDigit.toString();
 	}
 }

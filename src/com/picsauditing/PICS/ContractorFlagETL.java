@@ -217,7 +217,8 @@ public class ContractorFlagETL {
 					flagCriteriaContractor.setVerified(verified);
 
 					changes.add(flagCriteriaContractor);
-				} else { // check if flaggable when missing
+				} else {
+					// check if flaggable when missing
 					if (flagCriteria.isFlaggableWhenMissing()) {
 						FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
 								flagCriteria, null);
