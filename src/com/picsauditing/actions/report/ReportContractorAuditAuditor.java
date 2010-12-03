@@ -25,7 +25,6 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 		super.buildQuery();
 
 		sql.addWhere("(ca.auditorID=" + permissions.getUserId()+" OR ca.closingAuditorID=" + permissions.getUserId()+")");
-		sql.addWhere("cao.status IN ('" + AuditStatus.Pending + "','" + AuditStatus.Submitted + "')");
 		sql.addWhere("a.status IN ('Active','Demo')");
 		
 		orderByDefault = "ca.assignedDate DESC";

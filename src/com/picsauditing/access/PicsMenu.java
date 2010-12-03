@@ -142,7 +142,7 @@ public class PicsMenu {
 
 		subMenu = menu.addChild("Auditing");
 		if (permissions.isAuditor()) {
-			subMenu.addChild("My Audits", "AuditListAuditor.action");
+			subMenu.addChild("My Audits", "AuditListAuditor.action?filter.auditStatus=Pending&filter.auditStatus=Submitted");
 			subMenu.addChild("My Audit History", "MyAuditHistory.action");
 		}
 
