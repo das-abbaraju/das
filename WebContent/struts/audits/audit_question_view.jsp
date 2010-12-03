@@ -37,7 +37,7 @@
 <div class="answer">
 	<s:if test="#q.questionType == 'File'">
 		<s:if test="#a.id > 0 && #a.answer.length() > 0">
-			<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.id=<s:property value="#a.id"/>" 
+			<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&auditData.question.id=<s:property value="#q.id"/>" 
 				target="_BLANK">View File</a>
 		</s:if>
 		<s:else>File Not Uploaded</s:else>

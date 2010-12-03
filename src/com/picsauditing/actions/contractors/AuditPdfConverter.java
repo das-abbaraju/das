@@ -397,8 +397,8 @@ public class AuditPdfConverter extends ContractorActionSupport {
 								anchor
 										.setReference("http://www.picsorganizer.com/DownloadAuditData.action?auditID="
 												+ auditData.getAudit().getId()
-												+ "&answer.id="
-												+ auditData.getId());
+												+ "&auditData.question.id="
+												+ auditData.getQuestion().getId());
 								anchor.setName("View File");
 								questionAnswer.add(anchor);
 							} else {

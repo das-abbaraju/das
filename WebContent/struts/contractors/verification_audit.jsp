@@ -112,7 +112,7 @@
 					<s:else>
 						<li><label>File:</label> 
 						<s:if test="answer.length() > 0">
-								<a href="DownloadAuditData.action?auditID=<s:property value="conAudit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK">View File</a>
+								<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&auditData.question.id=<s:property value="question.id"/>" target="_BLANK">View File</a>
 								<a href="Audit.action?auditID=<s:property value="conAudit.id" />&catID=152&mode=Edit" target="_BLANK">Change File</a>
 							</s:if>
 							<s:else>
