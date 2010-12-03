@@ -9,7 +9,8 @@
 <%@page import="com.picsauditing.search.Database"%>
 <%@page import="java.sql.SQLException"%>
 <%@page import="java.sql.Timestamp"%>
-<html>
+
+<%@page import="com.picsauditing.access.OpPerms"%><html>
 <%
 	/*
 	 If the exception is coming from the non-struts world, ActionContext.getContext().getActionInvocation() will 
@@ -28,6 +29,8 @@
 	}
 
 	boolean debugging = "1".equals(System.getProperty("pics.debug"));
+	if (permissions.hasPermission(OpPerms.DevelopmentEnvironment))
+		debugging = true;
 
 	String message = "";
 	String cause = "Undetermined";
