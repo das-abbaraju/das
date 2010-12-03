@@ -55,12 +55,11 @@ public class ContractorAuditController extends AuditActionSupport {
 	// Policy verification (next/first buttons)
 	private boolean policy;
 
-	public ContractorAuditController(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, CertificateDAO certificateDao,
-			AuditCategoryDAO auditCategoryDAO,
-			AuditPercentCalculator auditPercentCalculator,
-			OshaAuditDAO oshaAuditDAO, AuditBuilderController auditBuilder, AuditCategoryRuleCache auditCategoryRuleCache) {
+	public ContractorAuditController(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
+			AuditCategoryDAO auditCategoryDAO, AuditPercentCalculator auditPercentCalculator,
+			OshaAuditDAO oshaAuditDAO, AuditBuilderController auditBuilder,
+			AuditCategoryRuleCache auditCategoryRuleCache) {
 		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
@@ -77,40 +76,27 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		if (button != null) {
 			if (categoryID > 0 && permissions.isPicsEmployee()) {
+				AuditCategory auditCategory = auditCategoryDAO.find(categoryID);
 				if ("IncludeCategory".equals(button)) {
-					for (AuditCatData data : conAudit.getCategories()) {
-						if (data.getCategory().getId() == categoryID) {
-							data.setApplies(true);
-							data.setOverride(true);
-							auditDao.save(data);
-							break;
-						}
-					}
+					updateCategories(auditCategory, true);
 					conAudit.setLastRecalculation(null);
 					contractor.incrementRecalculation();
 					return SUCCESS;
 				}
-				
+
 				if ("UnincludeCategory".equals(button)) {
-					for (AuditCatData data : conAudit.getCategories()) {
-						if (data.getCategory().getId() == categoryID) {
-							data.setApplies(false);
-							data.setOverride(true);
-							auditDao.save(data);
-							break;
-						}
-					}
+					updateCategories(auditCategory, false);
 					conAudit.setLastRecalculation(null);
 					contractor.incrementRecalculation();
 					return SUCCESS;
 				}
-			}				
-			
+			}
+
 			if ("Recalculate".equals(button)) {
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
 				conAudit.setLastRecalculation(new Date());
 				auditDao.save(conAudit);
-				this.redirect("Audit.action?auditID="+conAudit.getId());
+				this.redirect("Audit.action?auditID=" + conAudit.getId());
 				return SUCCESS;
 			}
 
@@ -118,12 +104,9 @@ public class ContractorAuditController extends AuditActionSupport {
 			if ("PreviewCategory".equals(button)) {
 				if (auditID == 0 && categoryID > 0) {
 					previewCat = true;
-					AuditCategory auditCategory = auditCategoryDAO
-							.find(categoryID);
-					for (AuditCategory auditSubCategory : auditCategory
-							.getChildren()) {
-						for (AuditQuestion auditQuestion : auditSubCategory
-								.getQuestions()) {
+					AuditCategory auditCategory = auditCategoryDAO.find(categoryID);
+					for (AuditCategory auditSubCategory : auditCategory.getChildren()) {
+						for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
 						}
 					}
 					categories = new HashMap<AuditCategory, AuditCatData>();
@@ -140,14 +123,13 @@ public class ContractorAuditController extends AuditActionSupport {
 				AuditCategory auditCategory = auditCategoryDAO.find(categoryID);
 				Set<Integer> questionIDs = new HashSet<Integer>();
 				categoryData = getCategories().get(auditCategory);
-				if(categoryData == null) {
-					for(AuditCatData catdata : getCategories().values()) {
+				if (categoryData == null) {
+					for (AuditCatData catdata : getCategories().values()) {
 						categoryData = catdata;
 						break;
 					}
 				}
-				for (AuditCategory childCategory : categoryData.getCategory()
-						.getChildren()) {
+				for (AuditCategory childCategory : categoryData.getCategory().getChildren()) {
 					for (AuditQuestion question : childCategory.getQuestions()) {
 						questionIDs.add(question.getId());
 					}
@@ -173,17 +155,13 @@ public class ContractorAuditController extends AuditActionSupport {
 				mode = VIEW;
 
 			if (categoryData != null) {
-				if (OshaTypeConverter.getTypeFromCategory(categoryData
-						.getCategory().getId()) != null) {
+				if (OshaTypeConverter.getTypeFromCategory(categoryData.getCategory().getId()) != null) {
 					boolean hasOshaCorporate = false;
 					for (OshaAudit osha : conAudit.getOshas()) {
-						if (osha.isCorporate()
-								&& matchesType(categoryData.getCategory()
-										.getId(), osha.getType())) {
+						if (osha.isCorporate() && matchesType(categoryData.getCategory().getId(), osha.getType())) {
 							hasOshaCorporate = true;
 							// Calculate percent complete too
-							auditPercentCalculator.percentOshaComplete(osha,
-									categoryData);
+							auditPercentCalculator.percentOshaComplete(osha, categoryData);
 						}
 					}
 
@@ -191,9 +169,7 @@ public class ContractorAuditController extends AuditActionSupport {
 						OshaAudit oshaAudit = new OshaAudit();
 						oshaAudit.setConAudit(conAudit);
 						oshaAudit.setCorporate(true);
-						oshaAudit.setType(OshaTypeConverter
-								.getTypeFromCategory(categoryData.getCategory()
-										.getId()));
+						oshaAudit.setType(OshaTypeConverter.getTypeFromCategory(categoryData.getCategory().getId()));
 						oshaAuditDAO.save(oshaAudit);
 						conAudit.getOshas().add(oshaAudit);
 
@@ -239,12 +215,10 @@ public class ContractorAuditController extends AuditActionSupport {
 	public String getAuditorNotes() {
 		AuditData auditData = null;
 		if (conAudit.getAuditType().isDesktop()) {
-			auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(),
-					1461);
+			auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(), 1461);
 		}
 		if (conAudit.getAuditType().getId() == 3) {
-			auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(),
-					2432);
+			auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(), 2432);
 		}
 		if (auditData != null)
 			return auditData.getAnswer();
@@ -289,13 +263,11 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 
 	public OshaAudit getAverageOsha(OshaType oshaType) {
-		return contractor.getOshaOrganizer().getOshaAudit(oshaType,
-				MultiYearScope.ThreeYearAverage);
+		return contractor.getOshaOrganizer().getOshaAudit(oshaType, MultiYearScope.ThreeYearAverage);
 	}
 
 	public boolean matchesType(int categoryId, OshaType oa) {
-		if (OshaTypeConverter.getTypeFromCategory(categoryId) == null
-				|| oa == null)
+		if (OshaTypeConverter.getTypeFromCategory(categoryId) == null || oa == null)
 			return false;
 		if (oa == OshaTypeConverter.getTypeFromCategory(categoryId))
 			return true;
@@ -303,44 +275,45 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 
 	public boolean isCanVerifyAudit() {
-		if(!permissions.isAuditor() && !permissions.hasGroup(959))
+		if (!permissions.isAuditor() && !permissions.hasGroup(959))
 			return false;
-		
+
 		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
 			return false;
-		
-		if(conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
-			return true;
-		
-		return false;
-	}
 
-	public boolean isCanVerifyPqf() {
-		if(!permissions.hasPermission(OpPerms.AuditVerification))
-			return false;
-		if(!conAudit.getAuditType().isPqf() || !conAudit.getAuditType().isAnnualAddendum())
-			return false;
-		
 		if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
 			return true;
 
 		return false;
 	}
-	
+
+	public boolean isCanVerifyPqf() {
+		if (!permissions.hasPermission(OpPerms.AuditVerification))
+			return false;
+		if (!conAudit.getAuditType().isPqf() || !conAudit.getAuditType().isAnnualAddendum())
+			return false;
+
+		if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+			return true;
+
+		return false;
+	}
+
 	public boolean isCanEditCategory(AuditCategory category) {
-		if(!conAudit.getAuditType().getClassType().isPolicy())
+		if (!conAudit.getAuditType().getClassType().isPolicy())
 			return true;
 
-		if(conAudit.getOperatorsVisible().size() == 1 && conAudit.getOperatorsVisible().get(0).hasCaop(permissions.getAccountId()))
+		if (conAudit.getOperatorsVisible().size() == 1
+				&& conAudit.getOperatorsVisible().get(0).hasCaop(permissions.getAccountId()))
 			return true;
 
-		if(category.getName().equals("Policy Information") || category.getName().equals("Policy Limits")) {
+		if (category.getName().equals("Policy Information") || category.getName().equals("Policy Limits")) {
 			if (conAudit.hasCaoStatusAfter(AuditStatus.Pending))
-					return false;
+				return false;
 		}
 		return true;
 	}
-	
+
 	public int getCaoID() {
 		return caoID;
 	}
@@ -363,5 +336,17 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	public void setPreviewCat(boolean previewCat) {
 		this.previewCat = previewCat;
+	}
+
+	private void updateCategories(AuditCategory auditCategory, boolean applies) {
+		AuditCatData auditCatData = getCategories().get(auditCategory);
+		if (auditCatData != null) {
+			auditCatData.setApplies(applies);
+			auditCatData.setOverride(true);
+			auditDao.save(auditCatData);
+			for (AuditCategory auditCategory2 : auditCategory.getSubCategories()) {
+				updateCategories(auditCategory2, applies);
+			}
+		}
 	}
 }
