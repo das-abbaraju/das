@@ -22,6 +22,7 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorType;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -223,34 +224,44 @@ public class ContractorFacilities extends ContractorActionSupport {
 						}
 					}
 				} else {
-					int limit = 10;
-					if ("searchShowAll".equals(button))
-						limit = 0;
-					List<BasicDynaBean> data = SmartFacilitySuggest.getSimilarOperators(contractor, limit);
-
 					searchResults = new ArrayList<OperatorAccount>();
-					for (BasicDynaBean d : data) {
-						OperatorAccount o = new OperatorAccount();
-						
-						if (d.get("onsiteServices").equals("1"))
-							o.setOnsiteServices(true);
-						if (d.get("offsiteServices").equals("1"))
-							o.setOffsiteServices(true);
-						if (d.get("materialSupplier").equals("1"))
-							o.setMaterialSupplier(true);
-						
-						o.setId(Integer.parseInt(d.get("opID").toString()));
-						o.setName(d.get("name").toString());
-						o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
-						
-						if (contractor.isOnsiteServices() && o.isOnsiteServices()
-								|| contractor.isOffsiteServices() && o.isOffsiteServices()
-								|| contractor.isMaterialSupplier() && o.isMaterialSupplier())
-							searchResults.add(o);
+					
+					if (!permissions.isCorporate()) {
+						int limit = 10;
+						if ("searchShowAll".equals(button))
+							limit = 0;
+						List<BasicDynaBean> data = SmartFacilitySuggest.getSimilarOperators(contractor, limit);
+	
+						for (BasicDynaBean d : data) {
+							OperatorAccount o = new OperatorAccount();
+							
+							if (d.get("onsiteServices").equals("1"))
+								o.setOnsiteServices(true);
+							if (d.get("offsiteServices").equals("1"))
+								o.setOffsiteServices(true);
+							if (d.get("materialSupplier").equals("1"))
+								o.setMaterialSupplier(true);
+							
+							o.setId(Integer.parseInt(d.get("opID").toString()));
+							o.setName(d.get("name").toString());
+							o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
+							
+							if (contractor.isOnsiteServices() && o.isOnsiteServices()
+									|| contractor.isOffsiteServices() && o.isOffsiteServices()
+									|| contractor.isMaterialSupplier() && o.isMaterialSupplier())
+								searchResults.add(o);
+						}
+	
+						addActionMessage("This list of operators is generated based on the operators you currently have selected."
+								+ "To find a specific operator, use the search filters above");
+					} else {
+						// Corporate users should only see the operators under their umbrella
+						OperatorAccount op = operatorDao.find(permissions.getAccountId());
+						for (Facility f : op.getOperatorFacilities()) {
+							if (!contractor.getOperatorAccounts().contains(f.getOperator()))
+								searchResults.add(f.getOperator());
+						}
 					}
-
-					addActionMessage("This list of operators is generated based on the operators you currently have selected."
-							+ "To find a specific operator, use the search filters above");
 				}
 				return "search";
 			}

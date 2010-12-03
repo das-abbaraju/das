@@ -82,11 +82,11 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 								src="images/icon_<s:property value="getOverallFlag(get('id')).toString().toLowerCase()"/>Flag.gif" />
 						</s:else>
 					</td>
-				</s:if>
-				<s:if test="operatorAccount.approvesRelationships">
-					<pics:permission perm="ViewUnApproved">
-						<td><s:property value="get('workStatus')"/></td>
-					</pics:permission>
+					<s:if test="operatorAccount.approvesRelationships">
+						<pics:permission perm="ViewUnApproved">
+							<td><s:property value="get('workStatus')"/></td>
+						</pics:permission>
+					</s:if>
 				</s:if>
 				<s:if test="permissions.accountName.startsWith('Roseburg')">
 					<td><s:property value="get('score')"/></td>

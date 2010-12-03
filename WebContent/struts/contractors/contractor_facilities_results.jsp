@@ -39,7 +39,7 @@
 				class="add">Add</a></td>
 		</tr>
 	</s:iterator>
-	<s:if test="searchResults.size() > 1">
+	<s:if test="searchResults.size() > 1 && !permissions.corporate">
 		<tr id="showAllLink">
 			<td colspan="3" class="right">
 				<a href="#" onclick="showAllOperators(); return false;" class="add">Show All Operators</a>
