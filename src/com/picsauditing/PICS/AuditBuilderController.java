@@ -228,7 +228,7 @@ public class AuditBuilderController {
 		List<AuditRule> list = new ArrayList<AuditRule>();
 		for (AuditRule rule : rules) {
 			boolean valid = true;
-			
+
 			if (rule.getQuestion() != null && !rule.isMatchingAnswer(contractorAnswers.get(rule.getQuestion().getId()))) {
 				valid = false;
 			}
@@ -279,9 +279,6 @@ public class AuditBuilderController {
 		PicsLogger.start("AuditCategories", "auditID=" + conAudit.getId() + " type="
 				+ conAudit.getAuditType().getAuditName());
 
-		if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
-			return;
-
 		AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
 		if (detail == null) {
 			PicsLogger.log("missing detail for " + conAudit.getAuditType());
@@ -290,6 +287,19 @@ public class AuditBuilderController {
 		}
 
 		Set<AuditCategory> categoriesNeeded = detail.categories;
+		if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
+			// this is to ensure that we don't add new categories or remove the
+			// existing ones except the override categories for a manual audit
+			// after is it being submitted
+			for (AuditCatData auditCatData : conAudit.getCategories()) {
+				if (auditCatData.getCategory().getParent() == null) {
+					if (auditCatData.isApplies())
+						categoriesNeeded.add(auditCatData.getCategory());
+					else
+						categoriesNeeded.remove(auditCatData.getCategory());
+				}
+			}
+		}
 
 		for (AuditCategory category : conAudit.getAuditType().getCategories()) {
 

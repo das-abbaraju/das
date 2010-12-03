@@ -78,14 +78,24 @@ public class ContractorAuditController extends AuditActionSupport {
 			if (categoryID > 0 && permissions.isPicsEmployee()) {
 				AuditCategory auditCategory = auditCategoryDAO.find(categoryID);
 				if ("IncludeCategory".equals(button)) {
-					updateCategories(auditCategory, true);
+					AuditCatData auditCatData = getCategories().get(auditCategory);
+					if (auditCatData != null) {
+						auditCatData.setApplies(true);
+						auditCatData.setOverride(true);
+						auditDao.save(auditCatData);
+					}
 					conAudit.setLastRecalculation(null);
 					contractor.incrementRecalculation();
 					return SUCCESS;
 				}
 
 				if ("UnincludeCategory".equals(button)) {
-					updateCategories(auditCategory, false);
+					AuditCatData auditCatData = getCategories().get(auditCategory);
+					if (auditCatData != null) {
+						auditCatData.setApplies(false);
+						auditCatData.setOverride(true);
+						auditDao.save(auditCatData);
+					}
 					conAudit.setLastRecalculation(null);
 					contractor.incrementRecalculation();
 					return SUCCESS;
@@ -336,17 +346,5 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	public void setPreviewCat(boolean previewCat) {
 		this.previewCat = previewCat;
-	}
-
-	private void updateCategories(AuditCategory auditCategory, boolean applies) {
-		AuditCatData auditCatData = getCategories().get(auditCategory);
-		if (auditCatData != null) {
-			auditCatData.setApplies(applies);
-			auditCatData.setOverride(true);
-			auditDao.save(auditCatData);
-			for (AuditCategory auditCategory2 : auditCategory.getSubCategories()) {
-				updateCategories(auditCategory2, applies);
-			}
-		}
 	}
 }
