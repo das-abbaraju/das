@@ -174,6 +174,8 @@ public class AuditPercentCalculator {
 								}
 								if (!needsVerification)
 									verifiedCount++;
+							} else if (catData.getAudit().getAuditType().getClassType().isPolicy()) {
+								verifiedCount = requiredCount;
 							}
 						}
 					}
@@ -247,6 +249,7 @@ public class AuditPercentCalculator {
 				if (percentVerified >= 100)
 					percentVerified = 100;
 			}
+			
 			cao.setPercentComplete(percentComplete);
 			cao.setPercentVerified(percentVerified);
 			// caoDao.save(cao);

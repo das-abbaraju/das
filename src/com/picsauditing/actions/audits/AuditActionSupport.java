@@ -191,7 +191,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public List<ContractorAuditOperator> getViewableOperators(Permissions permissions) {
-		if (systemEdit)
+		if (systemEdit && !permissions.isOperatorCorporate())
 			return conAudit.getSortedOperators();
 		else
 			return conAudit.getViewableOperators(permissions);

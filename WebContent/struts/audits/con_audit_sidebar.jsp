@@ -4,11 +4,11 @@
 	pageEncoding="UTF-8"%>
 <ul id="toolbar" class="vert-toolbar">
 	<li class="head">TOOLBAR</li>
-	<pics:permission perm="AuditEdit">
+	<s:if test="permissions.hasPermission('AuditEdit') || permissions.operatorCorporate">
 		<li><a class="edit1"
 			href="ConAuditMaintain.action?auditID=<s:property value="auditID" />">System
 		Edit</a></li>
-	</pics:permission>
+	</s:if>
 	<li><a class="percent" href="Audit.action?auditID=<s:property value="auditID"/>&button=Recalculate"> Recalculate</a></li>
 	<s:if test="canVerifyPqf">
 		<li><a class="verify"

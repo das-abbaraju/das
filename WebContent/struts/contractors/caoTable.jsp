@@ -4,7 +4,7 @@
 	<table class="statusOpBox">
 		<thead>
 			<tr>
-				<s:if test="systemEdit">
+				<s:if test="systemEdit && !permissions.operatorCorporate">
 					<th>Visible</th>
 				</s:if>
 				<th>Operator Scope</th>
@@ -31,15 +31,15 @@
 			<s:iterator value="getViewableOperators(permissions)" status="rowStatus" var="currentCao">
 				<s:if test="#currentCao.visible || systemEdit">
 					<tr id="cao_<s:property value="#currentCao.id"/>" class="caos">
-						<s:if test="systemEdit">
+						<s:if test="systemEdit && !permissions.operatorCorporate">
 							<td class="center">
-								<s:hidden name="caosSave[%{#rowStatus.index}].id" value="%{#currentCao.id}" />
 								<s:checkbox cssClass="vis" value="#currentCao.visible" name="caosSave[%{#rowStatus.index}].visible" />
 							</td>
 						</s:if>
 						<td title="<s:iterator value="getViewableCaops(#currentCao)"><s:property value="name"/>
 </s:iterator>">
 						<s:if test="systemEdit">
+							<s:hidden name="caosSave[%{#rowStatus.index}].id" value="%{#currentCao.id}" />
 							<s:property value="operator.name"/>
 						</s:if>
 						<s:elseif test="getViewableCaops(#currentCao).size() == 1">
@@ -70,7 +70,7 @@
 						</td>
 						<td class="caoStatus">
 							<s:if test="systemEdit">
-								<s:select list="getValidStatuses(#currentCao.id)" name="caosSave[%{#rowStatus.index}].status" value="#currentCao.status"/>
+								<s:select list="getValidStatuses(#currentCao.id)" name="caosSave[%{#rowStatus.index}].status" value="#currentCao.status" />
 							</s:if>
 							<s:else>
 								<a onclick="loadStatus(<s:property value="#currentCao.id"/>)" class="preview <s:property value="status.color"/>"><s:property value="status"/></a>

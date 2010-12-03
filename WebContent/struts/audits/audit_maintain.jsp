@@ -11,6 +11,7 @@
 <body>
 <s:include value="../contractors/conHeader.jsp" />
 
+<pics:permission perm="AuditEdit">
 <s:form action="ConAuditMaintain" cssStyle="width: 400px">
 	<s:hidden name="auditID" />
 <fieldset class="form">
@@ -51,6 +52,7 @@
 	</div>
 </fieldset>
 </s:form>
+</pics:permission>
 
 </body>
 </html>
