@@ -148,7 +148,6 @@ public class ContractorWidget extends ContractorActionSupport {
 				if (conAudit.getAuditType().isCanContractorView() && !conAudit.isExpired()) {
 					int needed = 0;
 
-					boolean canSee = true;
 					for (ContractorAuditOperator cao : conAudit.getOperators()) {
 						if (cao.isVisible()) {
 							if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
@@ -187,55 +186,65 @@ public class ContractorWidget extends ContractorActionSupport {
 							auditFor = " for " + conAudit.getAuditFor();
 						}
 						if (conAudit.getAuditType().getClassType().isPolicy()) {
-							if (conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
-								openTasks.add("<a href=\"Audit.action?auditID=" + conAudit.getId()
-										+ "\">Please fix issues with your " + conAudit.getAuditType().getAuditName()
-										+ " Policy");
-							} else {
-								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-										+ "\">upload and submit your " + conAudit.getAuditType().getAuditName()
-										+ " Policy</a>");
+							if (permissions.hasPermission(OpPerms.ContractorInsurance) || permissions.isAdmin()) {
+								if (conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
+									openTasks.add("<a href=\"Audit.action?auditID=" + conAudit.getId()
+											+ "\">Please fix issues with your "
+											+ conAudit.getAuditType().getAuditName() + " Policy");
+								} else {
+									openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
+											+ "\">upload and submit your " + conAudit.getAuditType().getAuditName()
+											+ " Policy</a>");
+								}
 							}
 						} else if (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire()) {
-							openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-									+ "\">review and re-submit your " + auditName + auditFor + "</a>");
+							if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
+								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
+										+ "\">review and re-submit your " + auditName + auditFor + "</a>");
+							}
 						} else if (conAudit.getAuditType().getWorkFlow().getId() == Workflow.AUDIT_REQUIREMENTS_WORKFLOW) {
 							if (conAudit.hasCaoStatus(AuditStatus.Submitted)) {
 								// Submitted
-								String text = "You have <a href=\"ContractorAuditFileUpload.action?auditID="
-										+ conAudit.getId() + "\">open requirements from your recent "
-										+ conAudit.getAuditType().getAuditName() + auditFor + "</a>";
-								if (!openReq) {
-									text += "<br/>NOTE: Open requirements can be uploaded online.";
-									openReq = true;
+								if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
+									String text = "You have <a href=\"ContractorAuditFileUpload.action?auditID="
+											+ conAudit.getId() + "\">open requirements from your recent "
+											+ conAudit.getAuditType().getAuditName() + auditFor + "</a>";
+									if (!openReq) {
+										text += "<br/>NOTE: Open requirements can be uploaded online.";
+										openReq = true;
+									}
+									openTasks.add(text);
 								}
-								openTasks.add(text);
 							} else {
 								// Pending
-								String text;
-								if (conAudit.getAuditType().getId() == AuditType.OFFICE
-										&& conAudit.getScheduledDate() == null) {
-									text = "Please <a href='ScheduleAudit.action?auditID=" + conAudit.getId()
-											+ "'>click here to schedule your Implementation Audit" + auditFor + "</a>";
-								} else {
-									text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId()
-											+ "\">upcoming " + conAudit.getAuditType().getAuditName() + auditFor
-											+ "</a>";
-									if (conAudit.getScheduledDate() != null) {
-										try {
-											text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
-										} catch (Exception e) {
+								if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
+									String text;
+									if (conAudit.getAuditType().getId() == AuditType.OFFICE
+											&& conAudit.getScheduledDate() == null) {
+										text = "Please <a href='ScheduleAudit.action?auditID=" + conAudit.getId()
+												+ "'>click here to schedule your Implementation Audit" + auditFor
+												+ "</a>";
+									} else {
+										text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId()
+												+ "\">upcoming " + conAudit.getAuditType().getAuditName() + auditFor
+												+ "</a>";
+										if (conAudit.getScheduledDate() != null) {
+											try {
+												text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
+											} catch (Exception e) {
+											}
 										}
+										if (conAudit.getAuditor() != null)
+											text += " with " + conAudit.getAuditor().getName();
 									}
-									if (conAudit.getAuditor() != null)
-										text += " with " + conAudit.getAuditor().getName();
+									openTasks.add(text);
 								}
-								openTasks.add(text);
 							}
 						} else {
-							openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-									+ "\">complete and submit your " + auditName + auditFor + "</a>");
-
+							if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
+								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
+										+ "\">complete and submit your " + auditName + auditFor + "</a>");
+							}
 						}
 
 						// IS THIS REALLY NECESSARY?
@@ -280,8 +289,10 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 
 				if (unmapped)
-					openTasks.add("You have <a href=\"ManageUnmappedEmployees.action\">"
-							+ "assessment results that need to be matched with employees</a>");
+					if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
+						openTasks.add("You have <a href=\"ManageUnmappedEmployees.action\">"
+								+ "assessment results that need to be matched with employees</a>");
+					}
 			}
 		}
 
