@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -273,5 +274,9 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		catData.setNumRequired(1);
 		catData.setAuditColumns(new User(User.SYSTEM));
 		audit.getCategories().add(catData);
+	}
+	
+	public boolean isCanEditCategory(AuditCategory category) {
+		return true;
 	}
 }

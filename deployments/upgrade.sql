@@ -9,3 +9,10 @@
 --	(18, 'PICS UAE Membership for 20-49 Operators', 11000.00, 1, 'Membership', '20-49 Operators', 20952, 20952, now(), NOW()),
 --	(19, 'PICS UAE Membership for 50+ Operators', 15000.00, 1, 'Membership', '50 Operators', 20952, 20952, now(), NOW());
 -- END
+
+
+update audit_type set editPermission = 'InsuranceCerts'
+where classType = 'Policy';
+
+update contractor_audit set lastRecalculation = null
+where expiresDate > Now();
