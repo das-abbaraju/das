@@ -26,7 +26,9 @@
 			<s:property value="operator.industry.description"/><br />
 		
 		<s:iterator value="operator.accountUsers">
-			<label><s:property value="role.description"/>:</label> <s:property value="user.name"/><br />
+			<s:if test="current">
+				<label><s:property value="role.description"/>:</label> <s:property value="user.name"/><br />
+			</s:if>
 		</s:iterator>
 		
 		<label>Other:</label>

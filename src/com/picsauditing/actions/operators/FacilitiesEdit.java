@@ -455,10 +455,12 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		List<String> srs = new ArrayList<String>();
 		
 		for (AccountUser au : aus) {
-			if (au.getRole().equals(UserAccountRole.PICSAccountRep))
-				ams.add(au.getUser().getName());
-			else
-				srs.add(au.getUser().getName());
+			if (au.isCurrent()) {
+				if (au.getRole().equals(UserAccountRole.PICSAccountRep))
+					ams.add(au.getUser().getName());
+				else
+					srs.add(au.getUser().getName());
+			}
 		}
 		
 		Map<UserAccountRole, List<String>> managers = new HashMap<UserAccountRole, List<String>>();
@@ -493,13 +495,5 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		}
 		
 		return managers;
-	}
-	
-	public boolean isCurrent(Date startDate, Date endDate) {
-		Date now = new Date();
-		if (now.after(startDate) && now.before(endDate))
-			return true;
-		
-		return false;
 	}
 }

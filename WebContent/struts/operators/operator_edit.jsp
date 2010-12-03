@@ -83,7 +83,7 @@ $(function() {
 		</s:if>
 		<li><label>Industry:</label> <s:select list="industryList"
 			name="operator.industry" listValue="description" /></li>
-		<s:if test="permissions.admin && !permissions.hasPermission(@com.picsauditing.access.OpPerms@UserRolePicsOperator)">
+		<s:if test="permissions.admin && !permissions.hasPermission('UserRolePicsOperator')">
 			<s:iterator value="accountManagers.keySet()" id="key">
 				<li><label><s:property value="#key.description" /><s:if test="accountManagers.get(#key).size() > 1">s</s:if>:</label>
 					<s:property value="@com.picsauditing.util.Strings@implode(accountManagers.get(#key), ', ')" /></li>
@@ -251,7 +251,7 @@ $(function() {
 						<tbody>
 							<s:iterator value="operator.accountUsers" status="role">
 								<s:hidden value="%{role}" name="accountRole" />
-								<s:if test="role.description == 'Sales Representative' && isCurrent(startDate, endDate)">
+								<s:if test="role.description == 'Sales Representative' && current">
 									<tr>
 										<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
 											value="user.name" /></td>
@@ -308,7 +308,7 @@ $(function() {
 						</thead>
 						<tbody>
 							<s:iterator value="operator.accountUsers" status="role">
-								<s:if test="role.description == 'Account Manager' && isCurrent(startDate, endDate)">
+								<s:if test="role.description == 'Account Manager' && current">
 									<tr>
 										<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
 											value="user.name" /></td>
@@ -367,15 +367,13 @@ $(function() {
 							<tbody>
 								<s:iterator value="previousManagers.keySet()" id="key">
 									<s:iterator value="previousManagers.get(#key)">
-										<s:if test="!isCurrent(startDate, endDate)">
-											<tr>
-												<td><s:property value="user.name" /></td>
-												<td><s:property value="#key.description" /></td>
-												<td><s:property value="ownerPercent" />%</td>
-												<td><s:date name="startDate" format="MM/dd/yyyy" /></td>
-												<td><s:date name="endDate" format="MM/dd/yyyy" /></td>
-											</tr>
-										</s:if>
+										<tr>
+											<td><s:property value="user.name" /></td>
+											<td><s:property value="#key.description" /></td>
+											<td><s:property value="ownerPercent" />%</td>
+											<td><s:date name="startDate" format="MM/dd/yyyy" /></td>
+											<td><s:date name="endDate" format="MM/dd/yyyy" /></td>
+										</tr>
 									</s:iterator>
 								</s:iterator>
 							</tbody>
