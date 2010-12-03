@@ -403,7 +403,7 @@ public class CaoSave extends AuditActionSupport {
 				Note newNote = new Note();
 				newNote.setAccount(cao.getAudit().getContractorAccount());
 				newNote.setAuditColumns(permissions);
-				newNote.setSummary("Changed Status from " + prevStatus + " to " + cao.getStatus());
+				newNote.setSummary("Changed Status from " + prevStatus + " to " + cao.getStatus() + " for " + cao.getAudit().getAuditType().getAuditName() + " ID " + cao.getAudit().getId());
 				newNote.setNoteCategory(NoteCategory.Audits);
 				newNote.setViewableBy(cao.getOperator());
 				newNote.setBody(note);
