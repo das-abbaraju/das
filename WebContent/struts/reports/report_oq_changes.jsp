@@ -5,7 +5,7 @@
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>OQ by Contractor/Site</h1>
+<h1>OQ Change List</h1>
 <table class="report">
 	<thead>
 		<tr>

@@ -57,7 +57,7 @@ Span of Control = <s:property value="#jst.controlSpan" />">
 					<s:iterator value="jobSites.get(#key)" id="jst">
 						<td class="center<s:if test="assigned.get(#e, #jst)"> assigned</s:if>">
 							<s:if test="qualifications.get(#e, #jst.task).qualified && worksAtSite.get(#e, #jst.job)">
-								<img alt="X" src="images/okCheck.gif">
+								<img alt="X" src="images/okCheck.gif" title="OQSG: <s:property value="%{#e.id % 3 == 0 ? 'Skills' : #e.id % 3 == 1 ? 'Knowledge' : 'Training'}" /> - <s:property value="#jst.task.label" /> Expiration: <s:property value="%{ #jst.id % 12 }" />/<s:property value="%{ #e.id % 30 }" />/2013">
 							</s:if>
 						</td>
 					</s:iterator>
