@@ -825,6 +825,15 @@
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
+
+		<action name="ReportFlagChanges"
+			class="com.picsauditing.actions.report.ReportFlagChanges">
+			<result>/struts/reports/report_flagChanges.jsp</result>
+		</action>
+
+		<action name="ReportFlagChangesAjax"
+			class="com.picsauditing.actions.report.ReportFlagChanges">
+		</action>
 		
 		<action name="GraphTrirRates"
 			class="com.picsauditing.actions.chart.GraphTrirRates">

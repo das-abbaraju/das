@@ -361,7 +361,10 @@ public class PicsMenu {
 		
 		if ((permissions.isOperatorCorporate() && permissions.isRequiresOQ()) || permissions.isAdmin())
 			subMenu.addChild("Assessment Tests", "ReportAssessmentTests.action");
-		
+
+		if (permissions.hasPermission(OpPerms.ContractorDetails))
+			subMenu.addChild("Flag Changes", "ReportFlagChanges.action");
+
 		if (permissions.isOperatorCorporate()) {
 			addSupportLink(menu);
 		}
