@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.struts2.ServletActionContext;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.opensymphony.xwork2.ActionContext;
@@ -60,8 +61,13 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	}
 
 	public String execute() throws SQLException, IOException {
-		if (!forceLogin())
+		if (ServletActionContext.getRequest().getRequestURI().endsWith("Ajax.action")) {
+			loadPermissions();
+			if (!permissions.isLoggedIn())
+				return BLANK;
+		} else if (!forceLogin()) {
 			return LOGIN;
+		}
 		searchEngine = new SearchEngine(permissions);
 		if ("getResult".equals(button)) { // pull up a result
 			if (searchType.equals("account")) {
@@ -154,7 +160,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		for (BasicDynaBean bdb : queryList) {
 			String check = (String) bdb.get("indexType");
 			int fkID = Integer.parseInt(bdb.get("foreignKey").toString());
-			if(Strings.isEmpty(check))
+			if (Strings.isEmpty(check))
 				check = "A";
 			if (check.equals("A") || check.equals("AS") || check.equals("C") || check.equals("CO") || check.equals("O")) {
 				indexableMap.put(Account.class, fkID);
@@ -175,8 +181,8 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 					records.put(indexEntry.getId(), indexEntry);
 			}
 		}
-		for(Iterator<Map.Entry<Integer, Indexable>> it = records.entrySet().iterator(); it.hasNext();){
-			if(it.next().getValue()==null)
+		for (Iterator<Map.Entry<Integer, Indexable>> it = records.entrySet().iterator(); it.hasNext();) {
+			if (it.next().getValue() == null)
 				it.remove();
 		}
 		return records;
