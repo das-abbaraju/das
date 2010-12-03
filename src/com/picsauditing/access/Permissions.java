@@ -17,7 +17,6 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
@@ -143,12 +142,9 @@ public class Permissions implements Serializable {
 			requiresOQ = user.getAccount().isRequiresOQ();
 			requiresCompetencyReview = user.getAccount().isRequiresCompetencyReview();
 
-			if (isContractor()) {
-				ContractorAccount contractor = (ContractorAccount) user.getAccount();
-			}
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
-				visibleAuditTypes =operator.getVisibleAuditTypes();
+				visibleAuditTypes = operator.getVisibleAuditTypes();
 
 				approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
 
@@ -287,6 +283,8 @@ public class Permissions implements Serializable {
 	 */
 	public boolean hasPermission(OpPerms opPerm, OpType oType) {
 		for (UserAccess perm : permissions) {
+			if (opPerm.isForContractor() && this.isContractor() && perm.getOpPerm() == OpPerms.ContractorAdmin)
+				return true;
 			if (opPerm == perm.getOpPerm()) {
 				if (oType == OpType.Edit)
 					return isTrue(perm.getEditFlag());
@@ -483,10 +481,11 @@ public class Permissions implements Serializable {
 			return auditType.isCanContractorView();
 		if (isPicsEmployee())
 			return true;
-		if(isOperatorCorporate()) 
+		if (isOperatorCorporate())
 			return getVisibleAuditTypes().contains(auditType.getId());
 		return false;
 	}
+
 	/**
 	 * 
 	 * @return Map of AuditTypeID to OperatorID (aka governing body)
