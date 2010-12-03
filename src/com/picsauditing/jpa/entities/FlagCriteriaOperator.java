@@ -26,7 +26,7 @@ public class FlagCriteriaOperator extends BaseTable {
 	private String hurdle;
 	private int affected = 0;
 	private Date lastCalculated;
-	private LowMedHigh minRiskLevel = LowMedHigh.None;
+	private LowMedHigh minRiskLevel = LowMedHigh.Low;
 
 	@ManyToOne
 	@JoinColumn(name = "opID", nullable = false)
