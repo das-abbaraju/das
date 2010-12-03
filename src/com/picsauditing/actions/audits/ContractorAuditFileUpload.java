@@ -67,7 +67,7 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 						&& getCategories().get(auditCatData.getCategory().getTopParent()).isApplies()) {
 					for (AuditCategory child : auditCatData.getCategory().getChildren()) {
 						for (AuditQuestion auditQuestion : child.getQuestions()) {
-							if (auditQuestion.isCurrent(validDate)) {
+							if (auditQuestion.isValidQuestion(validDate)) {
 								AuditData auditData = answerMap.get(auditQuestion.getId());
 								if (auditData != null) {
 									if (auditData.isHasRequirements() && auditData.isRequirementOpen()) {
