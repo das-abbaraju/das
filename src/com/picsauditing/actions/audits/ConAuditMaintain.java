@@ -84,7 +84,7 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 								Note newNote = new Note();
 								newNote.setAccount(toSave.getAudit().getContractorAccount());
 								newNote.setAuditColumns(permissions);
-								newNote.setSummary("Changed Status from " + toSave.getStatus() + " to "
+								newNote.setSummary("Changed Status for "+ toSave.getAudit().getAuditType().getAuditName() +"("+toSave.getAudit().getId()+") from " + toSave.getStatus() + " to "
 										+ cao.getStatus() + " for " + toSave.getOperator().getName());
 								newNote.setNoteCategory(NoteCategory.Audits);
 								newNote.setViewableBy(toSave.getOperator());
