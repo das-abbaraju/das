@@ -14,15 +14,7 @@ import com.picsauditing.util.Strings;
 @Transactional
 @SuppressWarnings("unchecked")
 public class ContractorOperatorDAO extends PicsDAO {
-	public ContractorOperator save(ContractorOperator o) {
-		if (o.getId() == 0) {
-			em.persist(o);
-		} else {
-			o = em.merge(o);
-		}
-		return o;
-	}
-
+	
 	public void remove(int id) {
 		ContractorOperator row = find(id);
 		remove(row);

@@ -420,7 +420,6 @@ public class ContractorAccount extends Account implements JSONable {
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
-	@Column(name = "membershipDate", length = 10)
 	public Date getMembershipDate() {
 		return this.membershipDate;
 	}

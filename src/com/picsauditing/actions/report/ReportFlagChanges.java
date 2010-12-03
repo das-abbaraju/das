@@ -3,9 +3,12 @@ package com.picsauditing.actions.report;
 import java.util.List;
 import java.util.Vector;
 
+import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -24,8 +27,11 @@ public class ReportFlagChanges extends ReportAccount {
 			if (!forceLogin())
 				return LOGIN;
 			
-			String updateSQL = "UPDATE generalcontractors SET baselineFlag = flag WHERE id = " + approveID;
-			// TODO execute SQL
+			ContractorOperatorDAO dao = (ContractorOperatorDAO)SpringUtils.getBean("ContractorOperatorDAO");
+			ContractorOperator co = dao.find(approveID);
+			co.setBaselineFlag(co.getFlagColor());
+			co.setAuditColumns(permissions);
+			dao.save(co);
 			return BLANK;
 		}
 		return super.execute();
@@ -50,6 +56,7 @@ public class ReportFlagChanges extends ReportAccount {
 		getFilter().setShowLicensedIn(false);
 		getFilter().setShowIndustry(false);
 		getFilter().setShowOperator(false);
+		getFilter().setShowStatus(false);
 		
 		String opIds = "";
 		List<Integer> ops = new Vector<Integer>();
@@ -81,6 +88,7 @@ public class ReportFlagChanges extends ReportAccount {
 		sql.addField("operator.id AS opId");
 		sql.addWhere("operator.status IN ('Active') AND operator.type = 'Operator'");
 		
+		sql.addField("c.membershipDate");
 		sql.addField("TIMESTAMPDIFF(MINUTE, c.lastRecalculation, NOW()) AS lastRecalculation");
 
 		if (!Strings.isEmpty(opIds))

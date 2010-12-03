@@ -32,12 +32,13 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "generalcontractors")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class ContractorOperator extends BaseTable implements
-		java.io.Serializable {
+public class ContractorOperator extends BaseTable implements java.io.Serializable {
+
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
 	private String workStatus = "P";
 	private FlagColor flagColor;
+	private FlagColor baselineFlag;
 	private FlagColor forceFlag;
 	private Date flagLastUpdated;
 	private Date forceEnd;
@@ -108,8 +109,7 @@ public class ContractorOperator extends BaseTable implements
 	}
 
 	private boolean isChildrenWorkStatusEqual(String parentStatus) {
-		String where = "subid = " + getContractorAccount().getId()
-				+ " AND workStatus = '" + parentStatus + "'";
+		String where = "subid = " + getContractorAccount().getId() + " AND workStatus = '" + parentStatus + "'";
 		Set<Integer> idList = new HashSet<Integer>();
 		for (OperatorAccount o : getOperatorAccount().getOperatorChildren())
 			idList.add(o.getId());
@@ -127,6 +127,15 @@ public class ContractorOperator extends BaseTable implements
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public FlagColor getBaselineFlag() {
+		return baselineFlag;
+	}
+
+	public void setBaselineFlag(FlagColor baselineFlag) {
+		this.baselineFlag = baselineFlag;
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -247,8 +256,7 @@ public class ContractorOperator extends BaseTable implements
 		this.flagDatas = flagDatas;
 	}
 
-	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST,
-			CascadeType.REFRESH }, mappedBy = "forceflag")
+	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "forceflag")
 	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagDataOverride> getOverrides() {
@@ -264,13 +272,9 @@ public class ContractorOperator extends BaseTable implements
 		if (isForcedFlag())
 			return this;
 		if (getOperatorAccount().getCorporateFacilities().size() > 0) {
-			for (Facility facility : getOperatorAccount()
-					.getCorporateFacilities()) {
-				for (ContractorOperator conOper : contractorAccount
-						.getOperators()) {
-					if (facility.getCorporate().equals(
-							conOper.getOperatorAccount())
-							&& conOper.isForcedFlag())
+			for (Facility facility : getOperatorAccount().getCorporateFacilities()) {
+				for (ContractorOperator conOper : contractorAccount.getOperators()) {
+					if (facility.getCorporate().equals(conOper.getOperatorAccount()) && conOper.isForcedFlag())
 						return conOper;
 				}
 			}
