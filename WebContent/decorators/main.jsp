@@ -20,7 +20,12 @@
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
 	String version = com.picsauditing.actions.PicsActionSupport.getVersion();
-	String protocol = URLUtils.getProtocol(request);
+	boolean pageIsSecure = false;
+	if (request.getLocalPort() == 443)
+		pageIsSecure = true;
+	if (request.getLocalPort() == 81)
+		pageIsSecure = true;
+	String protocol = pageIsSecure ? "https" : "http";
 	MenuComponent menu = PicsMenu.getMenu(permissions);
 	AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
 	AppProperty appProperty = appPropertyDAO.find("SYSTEM.MESSAGE");
@@ -37,7 +42,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=<%=version%>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/contractorstatistics.css?v=<%=version%>" />
 
-<script type="text/javascript" src="<%= request.isSecure() ? "https" : "http" %>://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.min.js?v=1.4.2"></script>
 <script type="text/javascript" src="js/chrome.js"></script>
 <script type="text/javascript" src="js/pics_main.js?v=<%=version%>"></script>
 <script type="text/javascript" src="js/notes.js?v=<%=version%>"></script>
@@ -196,9 +201,9 @@ function buildAction(type, id){
 <div id="bodyholder">
 <div id="helpbox">
 <%
-	String chatIcon = URLUtils.getProtocol( request ) + 
+	String chatIcon = protocol + 
 		"://server.iad.liveperson.net/hc/90511184/?cmd=repstate&amp;site=90511184&amp;channel=web&amp;ver=1&amp;imageUrl=" + 
-		URLUtils.getProtocol(request) + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a";
+		protocol + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a";
 	if ("1".equals(System.getProperty("pics.debug")))
 		chatIcon = "";
 %>
@@ -207,9 +212,9 @@ function buildAction(type, id){
 	<a id="_lpChatBtn"
 	onmouseover="showChat();"
 	onmouseout="hideChat();"
-	href='<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
+	href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
 	target='chat90511184'
-	onClick="lpButtonCTTUrl = '<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >Chat</a>
+	onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >Chat</a>
 </div>
 <div id="content">
 <% if (!Strings.isEmpty(chatIcon)) { %>
@@ -235,9 +240,9 @@ function buildAction(type, id){
 		<li>
 			<% if(item.getName().equals("Online Chat"))  { %>
 					<a id="_lpChatBtn"
-						href='<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
+						href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
 						target='chat90511184'
-						onClick="lpButtonCTTUrl = '<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><span><%=item.getName()%></span></a>
+						onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><span><%=item.getName()%></span></a>
 			<% } else { %>
 				<a <%=item.hasUrl() ? ("href=\""+item.getUrl()+"\"") : "" %>><span><%=item.getName()%></span></a>
 				<% } %>
@@ -268,7 +273,7 @@ function buildAction(type, id){
 
 <script 
 	type="text/javascript" 
-	src='<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'> 
+	src='<%= protocol %>://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'> 
 </script>
 <!-- END LivePerson -->
 
@@ -291,7 +296,7 @@ try {
 
 <!-- !begin footer -->
 <div class="footer">
-<% 
+<%
 	Long page_logger_id = (Long) request.getAttribute("pics_page_logger_id");
 	if( page_logger_id != null ) {
 		Database db = new Database();
@@ -299,7 +304,7 @@ try {
 			db.executeUpdate("UPDATE app_page_logger SET endTime = '"+new Timestamp(System.currentTimeMillis())+"' WHERE id = "+page_logger_id);
 		} catch (SQLException e) {
 		}
-	}		
+	}
 	Date startDate = (Date) request.getAttribute("pics_request_start_time"); 
 	if( startDate != null ) {
 		long totalTime = System.currentTimeMillis() - startDate.getTime();
@@ -311,7 +316,7 @@ try {
 %>
 <div id="footermain">
 <div id="footercontent">
-Copyright &copy; 2009
+Copyright &copy; 2010
 <a href="http://www.picsauditing.com/" class="footer">PICS</a> |
 <a href="Contact.action" class="footer">Contact Us</a> |
 <a href="#" onclick="return openWindow('privacy_policy.jsp','PRIVACY');"
