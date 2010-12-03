@@ -326,7 +326,20 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		return false;
 	}
+	
+	public boolean isCanEditCategory(AuditCategory category) {
+		if(!conAudit.getAuditType().getClassType().isPolicy())
+			return true;
 
+		if(conAudit.getOperatorsVisible().size() == 1 && conAudit.getOperatorsVisible().get(0).hasCaop(permissions.getAccountId()))
+			return true;
+
+		if(category.getName().equals("Policy Information") || category.getName().equals("Policy Limits")) {
+			if (conAudit.hasCaoStatusAfter(AuditStatus.Pending))
+					return false;
+		}
+		return true;
+	}
 	
 	public int getCaoID() {
 		return caoID;

@@ -31,11 +31,7 @@
 				<div class="info"><s:property value="#category.helpText" escape="false"/></div>
 			</s:if> 
 			<s:set name="shaded" value="true" scope="action"/>
-			
 			<s:set name="mode" value="mode"/>
-			<s:if test="qmode == 'View' && isCanEditCategory(#category)">
-				<s:set name="mode" value="'Edit'"/>
-			</s:if>
 			
 			<s:iterator value="#category.questions" id="q">
 				<s:if test="previewCat || #q.isValidQuestion(conAudit.validDate)">

@@ -326,28 +326,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		if (type.getEditPermission() != null) {
-			if (permissions.hasPermission(type.getEditPermission()))
+			if (permissions.hasPermission(type.getEditPermission())) {
 				return true;
+			}
 		}
 
 		return false;
 	}
 
-	public boolean isCanEditCategory(AuditCategory category) {
-		if(!conAudit.getAuditType().getClassType().isPolicy())
-			return false;
-		if(!isCanEditAudit())
-			return false;
-		if(category.getName() == "Policy Information" || category.getName() == "Policy Limits") {
-			if(conAudit.getViewableOperators(permissions).size() == 1)
-				return true;
-			else if (!conAudit.hasCaoStatusAfter(AuditStatus.Pending))
-					return true;
-		}
-		
-		return true;
-	}
-	
 	public ArrayListMultimap<AuditStatus, Integer> getActionStatus() {
 		return actionStatus;
 	}
