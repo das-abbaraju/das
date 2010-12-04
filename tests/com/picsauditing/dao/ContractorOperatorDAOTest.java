@@ -39,7 +39,7 @@ public class ContractorOperatorDAOTest {
 			assertEquals("contractorOperator's flag should be amber", FlagColor.Amber, contractorOperator.getForceFlag());
 			contractorOperator.setForceFlag(FlagColor.valueOf(color));
 			
-			contractorOperator = contractorOperatorDao.save(contractorOperator);
+			contractorOperatorDao.save(contractorOperator);
 			assertNotNull("after a save the contractorOperator should exist", contractorOperatorDao.find(contractorOperator.getId()));
 			
 			contractorOperatorDao.remove(contractorOperator);
