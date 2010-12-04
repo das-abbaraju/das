@@ -16,3 +16,5 @@ where classType = 'Policy';
 
 update contractor_audit set lastRecalculation = null
 where expiresDate > Now();
+
+alter table flag_criteria_operator drop column `minRiskLevel`;
