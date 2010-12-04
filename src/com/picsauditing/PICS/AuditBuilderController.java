@@ -464,7 +464,10 @@ public class AuditBuilderController {
 			return;
 		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 
-		if (cao.getAudit().getAuditType().isDesktop() && cao.getAudit().hasCaoStatus(AuditStatus.Complete)) {
+		if (cao.getAudit().getRequestingOpAccount() != null) {
+			// Warning, this only works for operator sites, not corporate accounts
+			operators.add(cao.getAudit().getRequestingOpAccount());
+		} else if (cao.getAudit().getAuditType().isDesktop() && cao.getAudit().hasCaoStatus(AuditStatus.Complete)) {
 			for (ContractorOperator co : cao.getAudit().getContractorAccount().getOperators()) {
 				if (co.getOperatorAccount().getOperatorHeirarchy().contains(cao.getOperator().getId())) {
 					operators.add(co.getOperatorAccount());
