@@ -26,7 +26,6 @@ public class FlagCriteriaOperator extends BaseTable {
 	private String hurdle;
 	private int affected = 0;
 	private Date lastCalculated;
-	private LowMedHigh minRiskLevel = LowMedHigh.Low;
 
 	@ManyToOne
 	@JoinColumn(name = "opID", nullable = false)
@@ -80,15 +79,6 @@ public class FlagCriteriaOperator extends BaseTable {
 
 	public void setLastCalculated(Date lastCalculated) {
 		this.lastCalculated = lastCalculated;
-	}
-
-	@Enumerated(EnumType.ORDINAL)
-	public LowMedHigh getMinRiskLevel() {
-		return minRiskLevel;
-	}
-
-	public void setMinRiskLevel(LowMedHigh minRiskLevel) {
-		this.minRiskLevel = minRiskLevel;
 	}
 
 	@Transient

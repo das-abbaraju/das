@@ -113,12 +113,6 @@ public class FlagDataCalculator {
 			// for vendors
 			if (conCriteria.getContractor().getRiskLevel() == null)
 				return null;
-			if (opCriteria.getMinRiskLevel().equals(LowMedHigh.None)) {
-				return null;
-			}
-			if (opCriteria.getMinRiskLevel().ordinal() > conCriteria.getContractor().getRiskLevel().ordinal()) {
-				return null;
-			}
 			if (!worksForOperator || conCriteria.getContractor().isAcceptsBids()) {
 				// This is a check for if the contractor doesn't
 				// work for the operator (Search for new), or is a bid only
@@ -301,8 +295,7 @@ public class FlagDataCalculator {
 
 		for (FlagCriteria key : operatorCriteria.keySet()) {
 			FlagCriteriaOperator fOperator = operatorCriteria.get(key).get(0);
-			if (contractor.getRiskLevel().ordinal() >= fOperator.getMinRiskLevel().ordinal()
-					&& !fOperator.getFlag().equals(FlagColor.Green)) {
+			if (!fOperator.getFlag().equals(FlagColor.Green)) {
 				for (ContractorAudit conAudit : contractor.getAudits()) {
 					if (key.getAuditType().equals(conAudit.getAuditType())) {
 						if (!conAudit.isExpired()) {
