@@ -144,12 +144,15 @@ public class ContractorDashboard extends ContractorActionSupport {
 				cTag.getTag().setId(tagId);
 				cTag.setAuditColumns(permissions);
 				contractor.getOperatorTags().add(cTag);
+				contractor.incrementRecalculation(10);
 				accountDao.save(contractor);
 			}
 		}
 
 		if ("RemoveTag".equals(button)) {
 			contractorTagDAO.remove(tagId);
+			contractor.incrementRecalculation(10);
+			accountDao.save(contractor);
 		}
 
 		if ("Upgrade to Full Membership".equals(button)) {
