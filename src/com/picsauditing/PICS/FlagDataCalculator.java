@@ -140,6 +140,10 @@ public class FlagDataCalculator {
 								else if (cao.getStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
 									hasFlaggedAudit = true;
 							}
+							if (!worksForOperator) {
+								if (ca.hasCaoStatusAfter(AuditStatus.Incomplete))
+									hasFlaggedAudit = true;
+							}
 						}
 						if (hasFlaggedAudit)
 							count++;
