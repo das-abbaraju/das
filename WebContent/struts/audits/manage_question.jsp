@@ -128,13 +128,13 @@ function moveQuestion(atypeID) {
 		<li><label>Required:</label>
 			<s:checkbox name="question.required" />
 		</li>
-		<li><label>Effective Date:</label>
-			<s:textfield name="question.effectiveDate" value="%{ question.effectiveDate && getText('short_dates', {question.effectiveDate})}"/>
-		</li>
-		<li><label>Expiration Date:</label>
-			<s:textfield name="question.expirationDate" value="%{ question.expirationDate && getText('short_dates', {question.expirationDate})}"/>
-		</li>
 		<s:if test="question.id > 0">
+			<li><label>Effective Date:</label>
+				<s:textfield name="question.effectiveDate" value="%{ question.effectiveDate && getText('short_dates', {question.effectiveDate})}"/>
+			</li>
+			<li><label>Expiration Date:</label>
+				<s:textfield name="question.expirationDate" value="%{ question.expirationDate && getText('short_dates', {question.expirationDate})}"/>
+			</li>
 			<li><label>Added:</label>
 				<s:date name="question.creationDate" />
 			</li>

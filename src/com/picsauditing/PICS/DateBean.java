@@ -225,7 +225,7 @@ public class DateBean {
 	 */
 	public static Date getEndOfTime() {
 		Calendar cal = Calendar.getInstance();
-		cal.set(4000, 1, 1);
+		cal.set(4000, Calendar.JANUARY, 1);
 		return cal.getTime();
 	}
 

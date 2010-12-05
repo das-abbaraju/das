@@ -1,5 +1,6 @@
 package com.picsauditing.actions.auditType;
 
+import java.util.Calendar;
 import java.util.List;
 
 import com.picsauditing.PICS.DateBean;
@@ -59,8 +60,11 @@ public class ManageQuestion extends ManageCategory {
 			}
 			question.setAuditColumns(permissions);
 
-			if (question.getEffectiveDate() == null)
-				question.setEffectiveDate(question.getCreationDate());
+			if (question.getEffectiveDate() == null) {
+				Calendar cal = Calendar.getInstance();
+				cal.set(2000, Calendar.JANUARY, 1);
+				question.setEffectiveDate(cal.getTime());
+			}
 			if (question.getExpirationDate() == null)
 				question.setExpirationDate(DateBean.getEndOfTime());
 
