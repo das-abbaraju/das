@@ -258,7 +258,7 @@ public class ContractorAuditOperator extends BaseTable {
 		if (!this.visible)
 			return false;
 
-		if (permissions.isContractor() || permissions.isAdmin())
+		if (permissions.isContractor() || permissions.isPicsEmployee())
 			return true;
 
 		if (operator.getId() == permissions.getAccountId())
