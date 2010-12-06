@@ -290,7 +290,7 @@ public class Employee extends BaseTable implements Indexable {
 		// type
 		l.add(new IndexObject("EMPLOYEE", 2));
 		// id
-		l.add(new IndexObject(String.valueOf(this.id), 10));
+		l.add(new IndexObject(String.valueOf(this.id), 4));
 		// name
 		temp = this.firstName;
 		if (temp != null && !temp.isEmpty())
