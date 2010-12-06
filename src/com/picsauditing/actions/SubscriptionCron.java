@@ -127,10 +127,10 @@ public class SubscriptionCron extends PicsActionSupport implements
 		for (Subscription subscription : subs) {
 			SubscriptionBuilder builder = null;
 
-//			if (subscription.equals(Subscription.FlagChanges)) {
-//				builder = new FlagChangesSubscription(timePeriod,
-//						subscriptionDAO);
-//			}
+			if (subscription.equals(Subscription.FlagChanges)) {
+				builder = new FlagChangesSubscription(timePeriod,
+						subscriptionDAO);
+			}
 
 			if (subscription.equals(Subscription.PendingInsuranceCerts)) {
 				builder = new InsuranceCertificateSubscription(
@@ -154,20 +154,20 @@ public class SubscriptionCron extends PicsActionSupport implements
 						subscriptionDAO);
 			}
 
-//			if (subscription.equals(Subscription.RedFlags)) {
-//				builder = new FlagColorSubscription(Subscription.RedFlags,
-//						timePeriod, subscriptionDAO);
-//			}
-//
-//			if (subscription.equals(Subscription.AmberFlags)) {
-//				builder = new FlagColorSubscription(Subscription.AmberFlags,
-//						timePeriod, subscriptionDAO);
-//			}
-//
-//			if (subscription.equals(Subscription.GreenFlags)) {
-//				builder = new FlagColorSubscription(Subscription.GreenFlags,
-//						timePeriod, subscriptionDAO);
-//			}
+			if (subscription.equals(Subscription.RedFlags)) {
+				builder = new FlagColorSubscription(Subscription.RedFlags,
+						timePeriod, subscriptionDAO);
+			}
+
+			if (subscription.equals(Subscription.AmberFlags)) {
+				builder = new FlagColorSubscription(Subscription.AmberFlags,
+						timePeriod, subscriptionDAO);
+			}
+
+			if (subscription.equals(Subscription.GreenFlags)) {
+				builder = new FlagColorSubscription(Subscription.GreenFlags,
+						timePeriod, subscriptionDAO);
+			}
 
 			if (subscription.equals(Subscription.TrialContractorAccounts)) {
 				builder = new TrialContractorAccountsSubscription(
