@@ -310,12 +310,29 @@
 				class="clearLink"> <s:select id="form1_operator"
 				list="filter.operatorList" cssClass="forms" name="filter.operator"
 				listKey="id" listValue="name" multiple="true"
-				size="%{filter.operatorList.size() < 25? filter.operatorList.size() : 25}" />
+				size="%{filter.operatorList.size() < 25 ? filter.operatorList.size() : 25}" />
 			<script type="text/javascript">updateQuery('form1_operator');</script>
 			<br />
 			<a class="clearLink" href="#"
 				onclick="clearSelected('form1_operator'); return false;">Clear</a> </span>
 		</s:else></div>
+	</s:if>
+	
+	<s:if test="filter.showCaoOperator">
+		<br clear="all" />
+		<div class="filterOption"><a href="#" onclick="toggleBox('form1_caoOperator'); return false;">Operators</a> =
+		<span id="form1_caoOperator_query">ALL</span>
+			<br />
+			<span id="form1_caoOperator_select" style="display: none"
+				class="clearLink"> <s:select id="form1_caoOperator"
+				list="filter.operatorList" cssClass="forms" name="filter.caoOperator"
+				listKey="id" listValue="name" multiple="true"
+				size="%{filter.operatorList.size() < 25 ? filter.operatorList.size() : 25}" />
+			<script type="text/javascript">updateQuery('form1_caoOperator');</script>
+			<br />
+			<a class="clearLink" href="#"
+				onclick="clearSelected('form1_caoOperator'); return false;">Clear</a> </span>
+		</div>
 	</s:if>
 
 	<s:if test="filter.showAuditType">

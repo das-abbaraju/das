@@ -13,6 +13,7 @@ public class ReportFilterCAO extends ReportFilterAudit {
 	protected AuditStatus[] auditStatus;
 	protected String percentComplete1;
 	protected String percentComplete2;
+	protected int[] caoOperator;
 
 	public boolean isShowAuditStatus() {
 		return showAuditStatus;
@@ -69,5 +70,12 @@ public class ReportFilterCAO extends ReportFilterAudit {
 	public void setShowCaoOperator(boolean showCaoOperator) {
 		this.showCaoOperator = showCaoOperator;
 	}
-
+	
+	public int[] getCaoOperator() {
+		return caoOperator;
+	}
+	
+	public void setCaoOperator(int[] caoOperator) {
+		this.caoOperator = caoOperator;
+	}
 }

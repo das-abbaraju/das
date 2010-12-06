@@ -31,7 +31,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 	 * Map of Purpose, AuditID, then List of Answers
 	 */
 	protected Map<String, Map<Integer, List<AuditData>>> questionData = null;
-	
+
 	public ReportContractorAuditOperator(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
 			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
 		super();
@@ -55,6 +55,8 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		sql.addField("cao.status auditStatus");
 		sql.addField("cao.statusChangedDate");
 		sql.addField("caoAccount.name caoAccountName");
+		sql.addWhere("a.status IN ('Active'" + (permissions.getAccountStatus().isDemo() ? ",'Demo'" : "")
+				+ ")");
 
 		if (permissions.isOperatorCorporate()) {
 			String opIDs = permissions.getAccountIdString();
@@ -64,10 +66,10 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 			sql.addWhere("cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN (" + opIDs
 					+ "))");
 		}
-		
-		if(getFilter().isShowAuditStatus() && getFilter().getAuditStatus() == null)
+
+		if (getFilter().isShowAuditStatus() && getFilter().getAuditStatus() == null)
 			getFilter().setAuditStatus(AuditStatus.valuesWithoutPendingExpired());
-		
+
 		getFilter().setShowOperator(false);
 		getFilter().setShowTrade(false);
 		getFilter().setShowLicensedIn(false);
@@ -75,7 +77,6 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		getFilter().setShowOfficeIn(false);
 		getFilter().setShowTaxID(false);
 		getFilter().setShowWaitingOn(true);
-		getFilter().setShowRegistrationDate(false);
 		getFilter().setShowIndustry(false);
 		getFilter().setShowAddress(false);
 	}
@@ -92,15 +93,11 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		}
 
 		if (filterOn(f.getPercentComplete1())) {
-			report
-					.addFilter(new SelectFilter("percentComplete1", "cao.percentComplete >= '?'", f
-							.getPercentComplete1()));
+			report.addFilter(new SelectFilter("percentComplete1", "cao.percentComplete >= '?'", f.getPercentComplete1()));
 		}
 
 		if (filterOn(f.getPercentComplete2())) {
-			report
-					.addFilter(new SelectFilter("percentComplete2", "cao.percentComplete < '?'", f
-							.getPercentComplete2()));
+			report.addFilter(new SelectFilter("percentComplete2", "cao.percentComplete < '?'", f.getPercentComplete2()));
 		}
 
 		if (getFilter().getAmBestRating() > 0 || getFilter().getAmBestClass() > 0) {
@@ -112,6 +109,11 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 				sql.addWhere("ambest.ratingcode = " + getFilter().getAmBestRating());
 			if (getFilter().getAmBestClass() > 0)
 				sql.addWhere("ambest.financialCode =" + getFilter().getAmBestClass());
+		}
+
+		if (filterOn(f.getCaoOperator())) {
+			sql.addWhere("cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN ("
+					+ Strings.implode(f.getCaoOperator()) + "))");
 		}
 	}
 
@@ -136,26 +138,26 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 			for (DynaBean bean : data) {
 				theseAudits.add(Integer.parseInt(bean.get("auditID").toString()));
 			}
-	
+
 			/***** Load our Policy Data *****/
 			List<AuditData> answers = auditDataDao.findPolicyData(theseAudits);
-	
+
 			// Map<UniqueCode, Map<AuditID, List<AuditData>>>
 			questionData = new HashMap<String, Map<Integer, List<AuditData>>>();
-	
+
 			// if we got data, populate the "limits" section of our map
 			if (answers != null && answers.size() > 0) {
-	
+
 				// add the answers, keyed by auditid
 				for (AuditData answer : answers) {
 					String uniqueCode = answer.getQuestion().getUniqueCode();
 					if (answer.getQuestion().getCategory().getName().equals("Policy Limits"))
 						uniqueCode = "Limits";
-	
+
 					if (answer.getQuestion().getQuestionType().equals("AMBest")) {
 						uniqueCode = "AMBest";
 					}
-	
+
 					if (!Strings.isEmpty(uniqueCode)) {
 						int auditID = answer.getAudit().getId();
 						if (questionData.get(uniqueCode) == null)
@@ -167,7 +169,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 				}
 			}
 		}
-	
+
 		try {
 			return questionData.get(purpose).get(auditId);
 		} catch (Exception e) {
