@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
@@ -135,57 +133,58 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	}
 
 	private List<Indexable> getFullResults(List<BasicDynaBean> queryList) throws IOException {
-		Map<Integer, Indexable> records = getRecords(queryList);
-		if (records.values().size() == 1) {
-			redirect("Search.action?button=getResult&searchID=" + records.values().iterator().next().getId()
-					+ "&searchType=");
+		List<Indexable> records = getRecords(queryList);
+		if (records.size() == 1) {
+			redirect("Search.action?button=getResult&searchID=" + records.get(0) + "&searchType=");
 		}
-		return new ArrayList<Indexable>(records.values());
+		return records;
 	}
 
 	private void getResults(List<BasicDynaBean> queryList) {
 		StringBuilder sb = new StringBuilder();
-		Map<Integer, Indexable> records = getRecords(queryList);
+		List<Indexable> records = getRecords(queryList);
 		if (records.size() > 0) {
-			for (Indexable value : records.values())
+			for (Indexable value : records)
 				sb.append(value.getSearchText());
 		}
 		output = sb.toString() + "FULL|Click to do a full search|" + searchTerm.replace(" ", "+");
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<Integer, Indexable> getRecords(List<BasicDynaBean> queryList) {
-		Map<Integer, Indexable> records = new LinkedHashMap<Integer, Indexable>();
+	public List<Indexable> getRecords(List<BasicDynaBean> queryList) {
+		LinkedHashMap<SearchItem, Indexable> records = new LinkedHashMap<SearchItem, Indexable>();
 		ArrayListMultimap<Class, Integer> indexableMap = ArrayListMultimap.create();
+		SearchList recordsList = new SearchList();
 		for (BasicDynaBean bdb : queryList) {
 			String check = (String) bdb.get("indexType");
 			int fkID = Integer.parseInt(bdb.get("foreignKey").toString());
 			if (Strings.isEmpty(check))
 				check = "A";
 			if (check.equals("A") || check.equals("AS") || check.equals("C") || check.equals("CO") || check.equals("O")) {
+				SearchItem searchRecord = new SearchItem(Account.class, fkID);
 				indexableMap.put(Account.class, fkID);
-				records.put(fkID, null);
+				recordsList.add(searchRecord);
 			} else if (check.equals("U") || check.equals("G")) {
+				SearchItem searchRecord = new SearchItem(User.class, fkID);
 				indexableMap.put(User.class, fkID);
-				records.put(fkID, null);
+				recordsList.add(searchRecord);
 			} else if (check.equals("E")) {
+				SearchItem searchRecord = new SearchItem(Employee.class, fkID);
 				indexableMap.put(Employee.class, fkID);
-				records.put(fkID, null);
+				recordsList.add(searchRecord);
 			}
 		}
 		for (Class key : indexableMap.keySet()) {
 			List<Indexable> list = accountDAO.findWhere(key.getName(), "t.id IN ("
 					+ Strings.implode(indexableMap.get(key)) + ")", 0);
 			if (list != null) {
-				for (Indexable indexEntry : list)
-					records.put(indexEntry.getId(), indexEntry);
+				for (Indexable indexEntry : list) {
+					SearchItem searchRecord = new SearchItem(key, indexEntry.getId(), indexEntry);
+					recordsList.add(searchRecord);
+				}
 			}
 		}
-		for (Iterator<Map.Entry<Integer, Indexable>> it = records.entrySet().iterator(); it.hasNext();) {
-			if (it.next().getValue() == null)
-				it.remove();
-		}
-		return records;
+		return recordsList.getRecordsOnly(false);
 	}
 
 	public boolean checkCon(int id) {
@@ -268,4 +267,78 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		this.searchEngine = searchEngine;
 	}
 
+}
+
+class SearchItem {
+	public int id;
+	public Class<? extends Indexable> type = null;
+	public Indexable record = null;
+
+	public SearchItem(Class<? extends Indexable> type, int id) {
+		this.type = type;
+		this.id = id;
+	}
+
+	public SearchItem(Class<? extends Indexable> type, int id, Indexable record) {
+		this.type = type;
+		this.id = id;
+		this.record = record;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		try {
+			SearchItem si = (SearchItem) o;
+			if (this.id == si.id && this.type == si.type)
+				return true;
+			else
+				return false;
+		} catch (Exception e) {
+			System.out.println("Error in equals for SearchItem");
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		return ((type.getName().hashCode() % 1000) * 10000000) + id;
+	}
+
+}
+
+class SearchList {
+	public List<SearchItem> data = null;
+
+	public SearchList() {
+		data = new ArrayList<SearchItem>();
+	}
+
+	public SearchItem add(SearchItem item) {
+		boolean found = false;
+		for (SearchItem other : data) {
+			if (other.equals(item)) {
+				other.record = item.record;
+				found = true;
+				break;
+			}
+		}
+		if (!found)
+			data.add(item);
+		return item;
+	}
+
+	public List<Indexable> getRecordsOnly(boolean nullsAllowed) {
+		List<Indexable> recordsOnly = new ArrayList<Indexable>();
+		for (SearchItem item : data) {
+			if (nullsAllowed)
+				recordsOnly.add(item.record);
+			else {
+				if (item.record != null)
+					recordsOnly.add(item.record);
+			}
+		}
+		return recordsOnly;
+	}
 }
