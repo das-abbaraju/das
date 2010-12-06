@@ -61,7 +61,7 @@
 									<span class="progressPercent"><s:property value="percentVerified" />%</span>
 								</div>
 							</s:if>
-							<s:elseif test="!#currentCao.status.name().equals('Complete') && !#currentCao.status.name().equals('Approved')">
+							<s:elseif test="!#currentCao.status.name().equals('Complete') && !#currentCao.status.name().equals('Approved') && !#currentCao.status.name().equals('NotApplicable')">
 								<div style="position: relative">
 									<table class="progressTable" title="Percent Complete"><tr><td class="progressBar" style="width: <s:property value="percentComplete" />%"></td><td style="width: <s:property value="100 - percentComplete" />%"></td></tr></table>
 									<span class="progressPercent"><s:property value="percentComplete" />%</span>
