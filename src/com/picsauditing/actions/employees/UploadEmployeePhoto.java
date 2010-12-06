@@ -1,18 +1,10 @@
 package com.picsauditing.actions.employees;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.FileImageOutputStream;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PICSFileType;
@@ -25,8 +17,7 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ImageUtil;
 
 @SuppressWarnings("serial")
-public class UploadEmployeePhoto extends AccountActionSupport implements
-		Preparable {
+public class UploadEmployeePhoto extends AccountActionSupport implements Preparable {
 
 	private EmployeeDAO employeeDAO;
 
@@ -59,24 +50,26 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 		if (!forceLogin())
 			return LOGIN;
 		
-		if(!permissions.hasPermission(OpPerms.ManageEmployees, OpType.Edit)){
+		if (!permissions.hasPermission(OpPerms.ManageEmployees, OpType.Edit) && !(permissions.isContractor() && permissions.hasPermission(OpPerms.ContractorAdmin))) {
 			// can't edit photos
 			addActionError("You do not have permissions to Edit Employee Photos");
 			return BLANK;
 		}
-		if(employeeID > 0){
+		
+		if (employeeID > 0) {
 			employee = employeeDAO.find(employeeID);
-			if(!permissions.isPicsEmployee() && (permissions.getAccountId()!=employee.getAccount().getId())){
+			if (!permissions.isPicsEmployee() && (permissions.getAccountId() != employee.getAccount().getId())) {
 				// not same contractor
-				addActionError("You can not edit Photos for "+employee.getAccount().getName());
+				addActionError("You can not edit Photos for " + employee.getAccount().getName());
 				return BLANK;
 			}
 		}
-		
-		if(step==0){
-			if(showSavePhoto()){ // set to step 2, crop
+
+		if (step == 0) {
+			if (showSavePhoto()) { // set to step 2, crop
 				step = 2;
-			} else step = 1;			
+			} else
+				step = 1;
 		}
 
 		if ("Upload".equals(button)) {
@@ -98,16 +91,15 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 			if (file != null && file.length() > 0) {
 				BufferedImage bImg = null;
 				bImg = ImageUtil.createBufferedImage(file);
-				
-				if(bImg.getHeight() > XRESIZE || bImg.getWidth() > YRESIZE)
+
+				if (bImg.getHeight() > XRESIZE || bImg.getWidth() > YRESIZE)
 					bImg = ImageUtil.resize(bImg, XRESIZE, YRESIZE, true);
-				
+
 				File imgFile = ImageUtil.writeImageWithQuality(bImg, "jpg", .75f);
 
 				try {
-					FileUtils.moveFile(imgFile, getFtpDir(), "files/"
-						+ FileUtils.thousandize(employee.getId()),
-						getFileName(employee.getId()), "jpg", true);		
+					FileUtils.moveFile(imgFile, getFtpDir(), "files/" + FileUtils.thousandize(employee.getId()),
+							getFileName(employee.getId()), "jpg", true);
 				} catch (Exception e) {
 					e.printStackTrace();
 					System.out.println("Error moving " + imgFile);
@@ -119,33 +111,32 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 					employee.setPhoto(extension);
 					// Finished!
 					step = 2;
-					addActionMessage("Photo for"+employee.getDisplayName()+" has been saved and is now in use!");
+					addActionMessage("Photo for" + employee.getDisplayName() + " has been saved and is now in use!");
 				} else {
 					employee.setPhoto(null);
-					//Move to crop step
+					// Move to crop step
 					step = 2;
-					//addActionMessage();
-					addAlertMessage("Your Photo has been Uploaded!  Please click on the photo below and drag to crop your image." +
-					"When you are happy with your selection click the 'Crop Photo' Button below to crop and save this photo for the profile page");
+					// addActionMessage();
+					addAlertMessage("Your Photo has been Uploaded!  Please click on the photo below and drag to crop your image."
+							+ "When you are happy with your selection click the 'Crop Photo' Button below to crop and save this photo for the profile page");
 				}
 				employeeDAO.save(employee);
 			}
 		}
-		
+
 		if ("Save".equals(button)) {
 			if (employee == null) {
 				addActionError("Invalid Employee");
 				return BLANK;
 			}
-			if(width < XSIZE || height < YSIZE){
+			if (width < XSIZE || height < YSIZE) {
 				addActionError("Invalid Selection");
 				return SUCCESS;
-				
+
 			}
 			// do img manipulation
-			File f = new File(getFtpDir() + "/files/"
-					+ FileUtils.thousandize(employeeID)
-					+ getFileName(employeeID) + ".jpg");
+			File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(employeeID) + getFileName(employeeID)
+					+ ".jpg");
 			if (f != null) {
 				BufferedImage bImg = null;
 				try {
@@ -167,29 +158,28 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 			step = 2;
 			addActionMessage("The profile photo for this employee has been successfully cropped and uploaded! ");
 		}
-		
-		if("Delete".equals(button)){
-			if(employee == null){
+
+		if ("Delete".equals(button)) {
+			if (employee == null) {
 				addActionError("Invalid Employee");
 				return BLANK;
 			}
-			
-			File f = new File(getFtpDir() + "/files/"
-					+ FileUtils.thousandize(employeeID)
-					+ getFileName(employeeID) + ".jpg");
-			if(f!=null){
-				if(f.delete()){
+
+			File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(employeeID) + getFileName(employeeID)
+					+ ".jpg");
+			if (f != null) {
+				if (f.delete()) {
 					addActionMessage("Photo deleted successfully");
 					employee.setPhoto(null);
 					employeeDAO.save(employee);
 					step = 1;
 					return SUCCESS;
-				} else{
+				} else {
 					addActionError("Error deleting photo");
 					return SUCCESS;
 				}
 			}
-			
+
 		}
 
 		return SUCCESS;
@@ -290,8 +280,7 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 
 	public boolean showSavePhoto() {
 		int eID = employee.getId();
-		File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(eID)
-				+ getFileName(eID) + ".jpg");
+		File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(eID) + getFileName(eID) + ".jpg");
 		return f.exists();
 	}
 
