@@ -12,13 +12,11 @@ import java.util.Set;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.util.log.PicsLogger;
 
 public class AuditCategoryRuleCache {
 
@@ -36,8 +34,8 @@ public class AuditCategoryRuleCache {
 	}
 
 	public List<AuditCategoryRule> getApplicableCategoryRules(ContractorAccount contractor, Set<AuditType> auditTypes) {
-		PicsLogger.start("AuditCategoryRuleCache", "Searching AuditCategoryRuleCache for contractor "
-				+ contractor.getId());
+//		PicsLogger.start("AuditCategoryRuleCache", "Searching AuditCategoryRuleCache for contractor "
+//				+ contractor.getId());
 		List<AuditCategoryRule> rules = new ArrayList<AuditCategoryRule>();
 		if (getData() == null)
 			return null;
@@ -66,24 +64,24 @@ public class AuditCategoryRuleCache {
 		for (LowMedHigh risk : risks) {
 			AcceptsBids data2 = getData().getData(risk);
 			if (data2 != null) {
-				PicsLogger.log("found matching risk " + risk);
+//				PicsLogger.log("found matching risk " + risk);
 				for (Boolean acceptsBid : acceptsBids) {
 					AuditTypes data3 = data2.getData(acceptsBid);
 					if (data3 != null) {
-						PicsLogger.log(" found matching acceptsBid " + acceptsBid);
+//						PicsLogger.log(" found matching acceptsBid " + acceptsBid);
 						for (AuditType auditType : auditTypes2) {
 							ContractorTypes data4 = data3.getData(auditType);
 							if (data4 != null) {
-								PicsLogger.log("  found matching auditType " + auditType);
+//								PicsLogger.log("  found matching auditType " + auditType);
 								for (ContractorType conType : contractorType) {
 									Operators data5 = data4.getData(conType);
 									if (data5 != null) {
-										PicsLogger.log("   found matching conType " + conType);
+//										PicsLogger.log("   found matching conType " + conType);
 										for (ContractorOperator co : operators) {
 											OperatorAccount operator = (co == null ? null : co.getOperatorAccount());
 											Set<AuditCategoryRule> data6 = data5.getData(operator);
 											if (data6 != null) {
-												PicsLogger.log("    found matching operator " + operator);
+//												PicsLogger.log("    found matching operator " + operator);
 												for (AuditCategoryRule auditCategoryRule : data6) {
 													//boolean specificContractorRule = (conType != null && );
 													if (auditCategoryRule.isInclude())
@@ -113,8 +111,8 @@ public class AuditCategoryRuleCache {
 		Collections.sort(rules);
 		Collections.reverse(rules);
 
-		PicsLogger.log("found " + rules.size() + " rules for contractor " + contractor.getId());
-		PicsLogger.stop();
+//		PicsLogger.log("found " + rules.size() + " rules for contractor " + contractor.getId());
+//		PicsLogger.stop();
 
 		return rules;
 	}
@@ -142,14 +140,14 @@ public class AuditCategoryRuleCache {
 		}
 
 		public void add(AuditCategoryRule rule) {
-			PicsLogger.log("Add rule to cache: " + rule);
+//			PicsLogger.log("Add rule to cache: " + rule);
 			AcceptsBids map = data.get(rule.getRisk());
 			if (map == null) {
 				map = new AcceptsBids();
 				data.put(rule.getRisk(), map);
 			}
 			map.add(rule);
-			PicsLogger.log(" + Risk = " + rule.getRisk());
+//			PicsLogger.log(" + Risk = " + rule.getRisk());
 		}
 	}
 
@@ -168,7 +166,7 @@ public class AuditCategoryRuleCache {
 				data.put(rule.getAcceptsBids(), map);
 			}
 			map.add(rule);
-			PicsLogger.log(" + AcceptsBids = " + rule.getAcceptsBids());
+//			PicsLogger.log(" + AcceptsBids = " + rule.getAcceptsBids());
 		}
 	}
 
@@ -187,7 +185,7 @@ public class AuditCategoryRuleCache {
 				data.put(rule.getAuditType(), map);
 			}
 			map.add(rule);
-			PicsLogger.log(" + AuditType = " + rule.getAuditType());
+//			PicsLogger.log(" + AuditType = " + rule.getAuditType());
 		}
 	}
 
@@ -206,7 +204,7 @@ public class AuditCategoryRuleCache {
 				data.put(rule.getContractorType(), map);
 			}
 			map.add(rule);
-			PicsLogger.log(" + ContractorType = " + rule.getContractorType());
+//			PicsLogger.log(" + ContractorType = " + rule.getContractorType());
 		}
 	}
 
@@ -232,7 +230,7 @@ public class AuditCategoryRuleCache {
 			if (rule.getQuestion() != null)
 				rule.getQuestion().getAuditType();
 			map.add(rule);
-			PicsLogger.log(" + OperatorAccount = " + rule.getOperatorAccount());
+//			PicsLogger.log(" + OperatorAccount = " + rule.getOperatorAccount());
 		}
 	}
 

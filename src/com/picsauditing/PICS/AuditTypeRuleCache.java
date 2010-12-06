@@ -16,7 +16,6 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.util.log.PicsLogger;
 
 public class AuditTypeRuleCache {
 
@@ -28,7 +27,7 @@ public class AuditTypeRuleCache {
 	}
 
 	public List<AuditTypeRule> getApplicableAuditRules(ContractorAccount contractor) {
-		PicsLogger.start("AuditTypeRuleCache", "Searching AuditTypeRuleCache for contractor " + contractor.getId());
+//		PicsLogger.start("AuditTypeRuleCache", "Searching AuditTypeRuleCache for contractor " + contractor.getId());
 		List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
 		if (getData() == null)
 			return null;
@@ -52,20 +51,20 @@ public class AuditTypeRuleCache {
 		for (LowMedHigh risk : risks) {
 			AcceptsBids data2 = getData().getData(risk);
 			if (data2 != null) {
-				PicsLogger.log("found matching risk " + risk);
+//				PicsLogger.log("found matching risk " + risk);
 				for (Boolean acceptsBid : acceptsBids) {
 					ContractorTypes data3 = data2.getData(acceptsBid);
 					if (data3 != null) {
-						PicsLogger.log(" found matching acceptsBid " + acceptsBid);
+//						PicsLogger.log(" found matching acceptsBid " + acceptsBid);
 						for (ContractorType conType : contractorType) {
 							Operators data4 = data3.getData(conType);
 							if (data4 != null) {
-								PicsLogger.log("   found matching conType " + conType);
+//								PicsLogger.log("   found matching conType " + conType);
 								for (ContractorOperator co : operators) {
 									OperatorAccount operator = (co == null ? null : co.getOperatorAccount());
 									Set<AuditTypeRule> data6 = data4.getData(operator);
 									if (data6 != null) {
-										PicsLogger.log("    found matching operator " + operator);
+//										PicsLogger.log("    found matching operator " + operator);
 										for (AuditTypeRule auditTypeRule : data6) {
 											//boolean specificContractorRule = (conType != null && );
 											if (auditTypeRule.isInclude())
@@ -93,8 +92,8 @@ public class AuditTypeRuleCache {
 		Collections.sort(rules);
 		Collections.reverse(rules);
 
-		PicsLogger.log("found " + rules.size() + " rules for contractor " + contractor.getId());
-		PicsLogger.stop();
+//		PicsLogger.log("found " + rules.size() + " rules for contractor " + contractor.getId());
+//		PicsLogger.stop();
 
 		return rules;
 	}
@@ -122,14 +121,14 @@ public class AuditTypeRuleCache {
 		}
 
 		public void add(AuditTypeRule rule) {
-			PicsLogger.log("Add rule to cache: " + rule);
+//			PicsLogger.log("Add rule to cache: " + rule);
 			AcceptsBids map = data.get(rule.getRisk());
 			if (map == null) {
 				map = new AcceptsBids();
 				data.put(rule.getRisk(), map);
 			}
 			map.add(rule);
-			PicsLogger.log(" + Risk = " + rule.getRisk());
+//			PicsLogger.log(" + Risk = " + rule.getRisk());
 		}
 	}
 
@@ -148,7 +147,7 @@ public class AuditTypeRuleCache {
 				data.put(rule.getAcceptsBids(), map);
 			}
 			map.add(rule);
-			PicsLogger.log(" + AcceptsBids = " + rule.getAcceptsBids());
+//			PicsLogger.log(" + AcceptsBids = " + rule.getAcceptsBids());
 		}
 	}
 
@@ -167,7 +166,7 @@ public class AuditTypeRuleCache {
 				data.put(rule.getContractorType(), map);
 			}
 			map.add(rule);
-			PicsLogger.log(" + ContractorType = " + rule.getContractorType());
+//			PicsLogger.log(" + ContractorType = " + rule.getContractorType());
 		}
 	}
 
@@ -193,7 +192,7 @@ public class AuditTypeRuleCache {
 			if (rule.getQuestion() != null)
 				rule.getQuestion().getAuditType();
 			map.add(rule);
-			PicsLogger.log(" + OperatorAccount = " + rule.getOperatorAccount());
+//			PicsLogger.log(" + OperatorAccount = " + rule.getOperatorAccount());
 		}
 	}
 
