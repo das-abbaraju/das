@@ -129,7 +129,12 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 				ContractorAccount contractor = new ContractorAccount(Database.toInt(row, "conID"));
 				contractor.setName(row.get("contractor_name").toString());
 				contractor.setAcceptsBids(Database.toBoolean(row, "acceptsBids"));
-				contractor.setRiskLevel(LowMedHigh.valueOf(LowMedHigh.getName(Database.toInt(row, "riskLevel"))));
+				
+				if (row.get("riskLevel") != null)
+					contractor.setRiskLevel(LowMedHigh.valueOf(LowMedHigh.getName(Database.toInt(row, "riskLevel"))));
+				else
+					contractor.setRiskLevel(LowMedHigh.None);
+				
 				contractor.setAudits(auditMap.get(contractor.getId()));
 				contractor.setNaics(new Naics());
 				contractor.getNaics().setLwcr(Database.toFloat(row, "lwcr"));
@@ -139,6 +144,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 				fcc.setVerified(Database.toBoolean(row, "verified"));
 
 				FlagDataCalculator calculator = new FlagDataCalculator(fcc, flagCriteriaOperator);
+				calculator.setOperator(flagCriteriaOperator.getOperator());
 				List<FlagData> conResults = calculator.calculate();
 				for (FlagData flagData : conResults) {
 					if (flagCriteriaOperator.getFlag().equals(flagData.getFlag())) {

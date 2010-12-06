@@ -22,7 +22,6 @@ import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
-import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.User;
@@ -111,7 +110,8 @@ public class FlagDataCalculator {
 		if (criteria.getAuditType() != null) {
 			// TODO I don't think that requiring a risk level is going to work
 			// for vendors
-			if (conCriteria.getContractor().getRiskLevel() == null)
+			if (conCriteria.getContractor().getRiskLevel() == null
+					&& !conCriteria.getContractor().isMaterialSupplierOnly())
 				return null;
 			if (!worksForOperator || conCriteria.getContractor().isAcceptsBids()) {
 				// This is a check for if the contractor doesn't
@@ -436,8 +436,8 @@ public class FlagDataCalculator {
 		}
 
 		if (caos.size() > 1)
-			System.out.println("WARNING: Found " + caos.size() + " matching caos for " + operator.toString() + " on auditID = "
-					+ conAudit.getId());
+			System.out.println("WARNING: Found " + caos.size() + " matching caos for " + operator.toString()
+					+ " on auditID = " + conAudit.getId());
 
 		return caos;
 	}
