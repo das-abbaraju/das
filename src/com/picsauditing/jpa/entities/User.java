@@ -646,7 +646,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		else
 			l.add(new IndexObject("USER",2));
 		// id
-		l.add(new IndexObject(String.valueOf(this.id),10));
+		l.add(new IndexObject(String.valueOf(this.id),4));
 		// username
 		temp = this.username;
 		if (temp!=null && !temp.isEmpty()) {
