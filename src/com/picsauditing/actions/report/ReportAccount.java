@@ -342,7 +342,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filterOn(f.getAccountManager())) {
 			String list = Strings.implode(f.getAccountManager(), ",");
-			sql.addWhere("a.id IN (SELECT accountID FROM account_user WHERE userID IN (" + list + ") AND role = 'PICSAccountRep' AND startDate < NOW() AND endDate > NOW())");
+			sql.addWhere("gc.genID IN (SELECT accountID FROM account_user WHERE userID IN (" + list + ") AND role = 'PICSAccountRep' AND startDate < NOW() AND endDate > NOW())");
 			setFiltered(true);
 		}
 
