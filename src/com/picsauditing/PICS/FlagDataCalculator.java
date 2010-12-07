@@ -108,11 +108,6 @@ public class FlagDataCalculator {
 
 		String answer = conCriteria.getAnswer();
 		if (criteria.getAuditType() != null) {
-			// TODO I don't think that requiring a risk level is going to work
-			// for vendors
-			if (conCriteria.getContractor().getRiskLevel() == null
-					&& !conCriteria.getContractor().isMaterialSupplierOnly())
-				return null;
 			if (!worksForOperator || conCriteria.getContractor().isAcceptsBids()) {
 				// This is a check for if the contractor doesn't
 				// work for the operator (Search for new), or is a bid only
