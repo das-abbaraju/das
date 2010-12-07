@@ -295,6 +295,8 @@ public class SearchEngine {
 			stringCollection.add(terms[i].replaceAll("^(HTTP://)(W{3})|^(HTTP://)|^(W{3}.)|\\W", "").replaceAll(
 					"[^a-zA-Z0-9\\s]", ""));
 		}
+		// remove empty strings
+		stringCollection.remove("");
 		List<String> s = new ArrayList<String>();
 		s.addAll(stringCollection);
 		if (sort)
