@@ -44,9 +44,18 @@ public class AuditTypeRuleCache {
 		contractorType.add(null);
 		contractorType.addAll(contractor.getAccountTypes());
 
-		Set<ContractorOperator> operators = new HashSet<ContractorOperator>();
+		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 		operators.add(null);
-		operators.addAll(contractor.getOperators());
+		for(ContractorOperator co : contractor.getOperators()){
+			operators.add(co.getOperatorAccount());
+			// adding parent facilities
+			OperatorAccount parent = co.getOperatorAccount().getParent();
+			while(parent != null){
+				operators.add(parent);
+				parent = parent.getParent();
+			}
+		}
+		
 
 		for (LowMedHigh risk : risks) {
 			AcceptsBids data2 = getData().getData(risk);
@@ -60,8 +69,8 @@ public class AuditTypeRuleCache {
 							Operators data4 = data3.getData(conType);
 							if (data4 != null) {
 //								PicsLogger.log("   found matching conType " + conType);
-								for (ContractorOperator co : operators) {
-									OperatorAccount operator = (co == null ? null : co.getOperatorAccount());
+								for (OperatorAccount o : operators) {
+									OperatorAccount operator = (o == null ? null : o);
 									Set<AuditTypeRule> data6 = data4.getData(operator);
 									if (data6 != null) {
 //										PicsLogger.log("    found matching operator " + operator);
