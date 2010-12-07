@@ -14,6 +14,7 @@ import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorType;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
@@ -46,13 +47,11 @@ public class AuditTypeRuleCache {
 
 		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 		operators.add(null);
-		for(ContractorOperator co : contractor.getOperators()){
+		for(ContractorOperator co : contractor.getNonCorporateOperators()){
 			operators.add(co.getOperatorAccount());
 			// adding parent facilities
-			OperatorAccount parent = co.getOperatorAccount().getParent();
-			while(parent != null){
-				operators.add(parent);
-				parent = parent.getParent();
+			for(Facility f : co.getOperatorAccount().getCorporateFacilities()){
+				operators.add(f.getCorporate());
 			}
 		}
 		
