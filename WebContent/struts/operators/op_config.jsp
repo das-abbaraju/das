@@ -54,7 +54,7 @@ function showType(typeID) {
 	$('#typeTable_' + typeID).load("AuditRuleTableAjax.action", data, function(){
 		if(cType=='Policy' && $('tr#'+typeID+' input[name=checkCat]').val()=='true'){
 			$('tr#'+typeID+' .buttonArea').html($('<a href="OperatorConfiguration.action?id=<s:property value="operator.id"/>&button=buildCat&auditTypeID='+typeID+'">')
-					.append('Build Category').addClass('go'));
+					.append('Setup Insurance Category').addClass('go'));
 		}			
 	});
 
@@ -176,7 +176,7 @@ function loadCatRules(catID, divCatID, name) {
 									<div id="typeTable_<s:property value="#type.id" />"></div>
 										<a href="AuditTypeRuleEditor.action?button=edit&rule.include=true&rule.auditType.id=<s:property value="#type.id" />&rule.operatorAccount.id=<s:property value="operator.id" />&rule.operatorAccount.name=<s:property value="operator.name" />"
 											target="_blank" class="hide add">Add Rule</a>
-									<div class="buttonArea hidden">
+									<div class="buttonArea hide">
 									</div>
 								</td>
 							</tr>

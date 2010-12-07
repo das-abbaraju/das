@@ -20,9 +20,11 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.BaseHistory;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
@@ -128,7 +130,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 						return o1.getName().compareTo(o2.getName());
 					}
 				});
-				int num = 2;
+				int num = 3;
 				for (Iterator<AuditCategory> it = auditType.getCategories().iterator(); it.hasNext();) {
 					it.next().setNumber(num);
 					num++;
@@ -139,6 +141,12 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 					num++;
 					auditType.getCategories().add(c);
 				}
+				Collections.sort(auditType.getCategories(), new Comparator<AuditCategory>() {
+					@Override
+					public int compare(AuditCategory o1, AuditCategory o2) {
+						return new Integer(o1.getNumber()).compareTo(new Integer(o2.getNumber()));
+					}
+				});
 				Calendar effDate = Calendar.getInstance();
 				effDate.set(2001, Calendar.JANUARY, 1);
 				Calendar exDate = Calendar.getInstance();
@@ -156,17 +164,28 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				AuditQuestion aq2 = new AuditQuestion();
 				aq2.setNumber(2);
 				aq2.setAuditColumns(permissions);
-				aq2.setName(QUESTION2 + operator.getName());
+				aq2.setName(QUESTION2 + operator.getName()+".");
 				aq2.setCategory(cat);
 				aq2.setQuestionType("Yes/No");
 				aq2.setRequired(true);
 				aq2.setEffectiveDate(effDate.getTime());
 				aq2.setExpirationDate(exDate.getTime());
 				aq2.setColumnHeader("Certificate");
-				typeDAO.save(auditType);
 				typeDAO.save(cat);
+				typeDAO.save(auditType);
 				typeDAO.save(aq1);
 				typeDAO.save(aq2);
+				
+				AuditCategoryRule acr = new AuditCategoryRule();
+				acr.setAuditType(auditType);
+				acr.setAuditCategory(cat);
+				acr.setRootCategory(false);
+				acr.setOperatorAccount(operator);
+				acr.setAuditColumns(permissions);
+				acr.setEffectiveDate(Calendar.getInstance().getTime());
+				acr.setExpirationDate(BaseHistory.END_OF_TIME);
+				acr.calculatePriority();
+				typeDAO.save(acr);
 
 				this.redirect("ManageCategory.action?id=" + cat.getId());
 				return SUCCESS;
