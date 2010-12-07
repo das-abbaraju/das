@@ -422,6 +422,20 @@
 			onclick="clearSelected('form1_closingAuditorId'); return false;">Clear</a></span></div>
 	</s:if>
 
+	<s:if test="filter.showAccountManager">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_accountManager'); return false;">Account Mgr</a> = <span
+			id="form1_accountManager_query">ALL</span><br />
+		<span id="form1_accountManager_select" style="display: none"
+			class="clearLink"> <s:select name="filter.accountManager"
+			cssClass="forms" list="auditorList" listKey="id" listValue="name"
+			multiple="true" size="5" id="form1_accountManager" /> <script
+			type="text/javascript">updateQuery('form1_accountManager');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_accountManager'); return false;">Clear</a>
+		</span></div>
+	</s:if>
+	
 	<s:if test="filter.showConAuditor">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_conAuditorId'); return false;">CSR</a> = <span

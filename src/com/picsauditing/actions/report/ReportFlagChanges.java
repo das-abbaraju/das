@@ -56,6 +56,7 @@ public class ReportFlagChanges extends ReportAccount {
 		getFilter().setShowLicensedIn(false);
 		getFilter().setShowIndustry(false);
 		getFilter().setShowStatus(false);
+		getFilter().setShowAccountManager(true);
 		
 		String opIds = "";
 		List<Integer> ops = new Vector<Integer>();

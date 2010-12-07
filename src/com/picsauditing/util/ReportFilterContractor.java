@@ -21,6 +21,7 @@ import com.picsauditing.jpa.entities.WaitingOn;
 
 @SuppressWarnings("serial")
 public class ReportFilterContractor extends ReportFilterAccount {
+
 	public static final String DEFAULT_AMOUNT = "- Enter Amount -";
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
@@ -58,6 +59,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showInsuranceLimits = false;
 	protected boolean showOQ = false;
 	protected boolean showHSE = false;
+	protected boolean showAccountManager = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -72,6 +74,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int[] officeIn;
 	protected int[] conAuditorId;
 	protected int[] riskLevel;
+	protected int[] accountManager;
 	protected boolean assignedCon = false;
 	protected boolean inParentCorporation = false;
 	protected String waitingOn;
@@ -116,11 +119,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public void setShowOperatorSingle(boolean showOperatorSingle) {
 		this.showOperatorSingle = showOperatorSingle;
 	}
-	
+
 	public boolean isShowIndustries() {
 		return showIndustries;
 	}
-	
+
 	public void setShowIndustries(boolean showIndustries) {
 		this.showIndustries = showIndustries;
 	}
@@ -292,21 +295,37 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public void setShowWorkStatus(boolean showWorkStatus) {
 		this.showWorkStatus = showWorkStatus;
 	}
-	
+
 	public boolean isShowOQ() {
 		return showOQ;
 	}
-	
+
 	public void setShowOQ(boolean showOQ) {
 		this.showOQ = showOQ;
 	}
-	
+
 	public boolean isShowHSE() {
 		return showHSE;
 	}
-	
+
 	public void setShowHSE(boolean showHSE) {
 		this.showHSE = showHSE;
+	}
+
+	public boolean isShowAccountManager() {
+		return showAccountManager;
+	}
+
+	public void setShowAccountManager(boolean showAccountManager) {
+		this.showAccountManager = showAccountManager;
+	}
+
+	public int[] getAccountManager() {
+		return accountManager;
+	}
+
+	public void setAccountManagers(int[] accountManager) {
+		this.accountManager = accountManager;
 	}
 
 	public String getPerformedBy() {
@@ -316,11 +335,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public void setPerformedBy(String performedBy) {
 		this.performedBy = performedBy;
 	}
-	
+
 	public int[] getIndustries() {
 		return industries;
 	}
-	
+
 	public void setIndustries(int[] industries) {
 		this.industries = industries;
 	}
@@ -685,23 +704,23 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public static String getDefaultSelectPerformedBy() {
 		return DEFAULT_SELECT_PERFORMED_BY;
 	}
-	
+
 	public boolean isOq() {
 		return oq;
 	}
-	
+
 	public void setOq(boolean oq) {
 		this.oq = oq;
 	}
-	
+
 	public boolean isHse() {
 		return hse;
 	}
-	
+
 	public void setHse(boolean hse) {
 		this.hse = hse;
 	}
-	
+
 	// Getters for search lists
 	public List<AuditQuestion> getIndustriesList() {
 		// Do we want to hard code this?

@@ -340,6 +340,12 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addWhere(query);
 		}
 
+		if (filterOn(f.getAccountManager())) {
+			String list = Strings.implode(f.getAccountManager(), ",");
+			sql.addWhere("a.id IN (SELECT accountID FROM account_user WHERE userID IN (" + list + ") AND role = 'PICSAccountRep' AND startDate < NOW() AND endDate > NOW())");
+			setFiltered(true);
+		}
+
 		if (filterOn(f.getOperatorTagName(), 0)) {
 			String query = "a.id IN (SELECT ct.conID from contractor_tag ct " + "WHERE ct.tagID = "
 					+ f.getOperatorTagName() + ")";
