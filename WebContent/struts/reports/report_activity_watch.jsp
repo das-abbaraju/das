@@ -58,6 +58,17 @@ $(function() {
 	<div class="filterOption">
 		<s:textfield name="filter.accountName" cssClass="forms" size="17" onfocus="clearText(this)" />
 	</div>
+	<div class="filterOption">
+		<a href="#" onclick="toggleBox('form1_auditStatus'); return false;">Audit Status</a> =
+		<span id="form1_auditStatus_query">ALL</span><br />
+		<span id="form1_auditStatus_select" style="display: none" class="clearLink">
+			<s:select id="form1_auditStatus" list="filter.auditStatusList" cssClass="forms"
+				name="filter.auditStatus" multiple="true" size="5" />
+			<script type="text/javascript">updateQuery('form1_auditStatus');</script>
+			<br />
+			<a class="clearLink" href="#" onclick="clearSelected('form1_auditStatus'); return false;">Clear</a>
+		</span>
+	</div>
 	<br clear="all" />
 	<div class="filterOption">
 		<s:checkbox value="audits" name="audits" id="audits"></s:checkbox>

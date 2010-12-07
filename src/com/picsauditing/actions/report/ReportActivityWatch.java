@@ -237,7 +237,7 @@ public class ReportActivityWatch extends ReportAccount {
 				sql.addJoin("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id AND caop.opID IN ("
 						+ Strings.implode(visibleCaos, ",") + ")");
 			if (filterOn(getFilter().getAuditStatus()))
-				sql.addWhere("caow.status IN (" + Strings.implodeForDB(getFilter().getAuditStatus(), ","));
+				sql.addWhere("caow.status IN (" + Strings.implodeForDB(getFilter().getAuditStatus(), ",") + ")");
 		}
 
 		for (String join : joins) {
