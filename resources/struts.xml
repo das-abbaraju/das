@@ -1141,6 +1141,10 @@
 			class="com.picsauditing.actions.audits.VerifyAudit">
 			<result>struts/contractors/verification_audit.jsp</result>
 		</action>
+		<action name="UpdateVerifyAuditAjax"
+			class="com.picsauditing.actions.audits.VerifyAudit">
+			<result>struts/contractors/verification_audit_caos.jsp</result>
+		</action>
 
 		<action name="CaoSaveAjax"
 			class="com.picsauditing.actions.audits.CaoSave">

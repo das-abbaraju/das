@@ -51,6 +51,8 @@
 				}
 				setApproveButton( json.percentVerified );
 				stopThinking({div:'status_'+questionId});		
+				startThinking({div: 'caoActionArea'});
+				$('#caoActionArea').load('UpdateVerifyAuditAjax.action', {'auditID': auditId});
 			}
 		);
 		return false;
@@ -298,7 +300,6 @@
 		<td><div id="emailStatus" style="font-style: italic; color: red;"></div></td>
 	</tr>
 </table>
-
 <div id="notesList"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
 
 </body>

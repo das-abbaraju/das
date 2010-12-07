@@ -176,7 +176,11 @@ public class AuditPercentCalculator {
 									verifiedCount++;
 							} else if (catData.getAudit().getAuditType().getClassType().isPolicy()) {
 								verifiedCount = requiredCount;
-							}
+							// If the questions are explicited ignored from
+							// verification but still required then we should
+							// increase the verifiedCount so we can close it
+							} else if(question.getId() == 2447 || question.getId() == 2448)
+								verifiedCount ++;
 						}
 					}
 				}

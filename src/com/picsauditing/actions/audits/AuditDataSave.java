@@ -282,6 +282,12 @@ public class AuditDataSave extends AuditActionSupport {
 
 		if (conAudit == null)
 			findConAudit();
+		
+		if(toggleVerify){
+			auditPercentCalculator.percentCalculateComplete(conAudit, true);
+			auditDao.save(catData);
+		}
+		
 		// check dependent questions, see if not in same cat
 		// check rules to see if other cats get triggered now
 		// if either true then run FAC
