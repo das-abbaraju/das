@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Vector;
 
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -16,6 +17,8 @@ public class ReportFlagChanges extends ReportAccount {
 
 	private int approveID = 0;
 
+	private List<User> accountManagers;
+
 	public ReportFlagChanges() {
 		setReportName("Flag Changes");
 		orderByDefault = "a.name, operator.name";
@@ -26,8 +29,8 @@ public class ReportFlagChanges extends ReportAccount {
 		if (approveID > 0) {
 			if (!forceLogin())
 				return LOGIN;
-			
-			ContractorOperatorDAO dao = (ContractorOperatorDAO)SpringUtils.getBean("ContractorOperatorDAO");
+
+			ContractorOperatorDAO dao = (ContractorOperatorDAO) SpringUtils.getBean("ContractorOperatorDAO");
 			ContractorOperator co = dao.find(approveID);
 			co.setBaselineFlag(co.getFlagColor());
 			co.setAuditColumns(permissions);
@@ -43,7 +46,7 @@ public class ReportFlagChanges extends ReportAccount {
 		super.buildQuery();
 
 		getFilter().setShowFlagStatus(true);
-		
+
 		getFilter().setShowTaxID(false);
 		getFilter().setShowTrade(false);
 		getFilter().setShowCcOnFile(false);
@@ -57,7 +60,7 @@ public class ReportFlagChanges extends ReportAccount {
 		getFilter().setShowIndustry(false);
 		getFilter().setShowStatus(false);
 		getFilter().setShowAccountManager(true);
-		
+
 		String opIds = "";
 		List<Integer> ops = new Vector<Integer>();
 
@@ -77,17 +80,17 @@ public class ReportFlagChanges extends ReportAccount {
 		}
 
 		sql.addWhere("a.status IN ('Active')");
-		
+
 		sql.addJoin("JOIN generalcontractors gc ON gc.subid = a.id AND gc.flag != gc.baselineFlag");
 		sql.addField("gc.id gcID");
 		sql.addField("gc.flag");
 		sql.addField("gc.baselineFlag");
-		
+
 		sql.addJoin("JOIN accounts operator on operator.id = gc.genid");
 		sql.addField("operator.name AS opName");
 		sql.addField("operator.id AS opId");
 		sql.addWhere("operator.status IN ('Active') AND operator.type = 'Operator'");
-		
+
 		sql.addField("c.membershipDate");
 		sql.addField("TIMESTAMPDIFF(MINUTE, c.lastRecalculation, NOW()) AS lastRecalculation");
 
@@ -98,5 +101,14 @@ public class ReportFlagChanges extends ReportAccount {
 
 	public void setApproveID(int approveID) {
 		this.approveID = approveID;
+	}
+
+	public List<User> getAccountManagers() {
+		if (accountManagers == null) {
+			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+			accountManagers = dao.findByGroup(10801);
+		}
+
+		return accountManagers;
 	}
 }
