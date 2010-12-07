@@ -1,4 +1,10 @@
 /** BlockUI data ***/
+.blockOverlay {
+	z-index: 95;
+}
+body > .blockOverlay {
+	z-index: 1000;
+}
 .blockMsg{
 	color: #06223F;
 	font-size: 18px;
@@ -8,19 +14,21 @@
 	border: 2px solid #555555;
 	background-color: rgb(255,255,255);
 }
-.blockMsg.blockElement{
+.blockElement{
 	background-image: url("../../../images/loader.gif");
 	background-repeat: no-repeat;
 	background-position: 12px 13px;
 	background-color: rgba(255, 255, 255, 0.9);	
 	padding-left: 35px;
 	top: 20%;
+	z-index: 96;
 }
-.blockMsg.blockPage{
+.blockPage{
 	background-color: #FFFFFF;
 	border: 2px solid #555555;
 	top: 30%;
 	left: 50%;
 	width: 480px;
 	margin-left: -240px;
+	z-index: 1000;
 }
