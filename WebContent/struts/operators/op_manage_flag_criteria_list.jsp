@@ -20,6 +20,8 @@ $(document).ready(function() {
 			<th>Flag</th>
 			<th><nobr># Affected</nobr></th>
 			<s:if test="canEdit">
+				<th>Updated</th>
+				<th>View</th>
 				<th>Edit</th>
 				<th>Remove</th>
 			</s:if>
@@ -85,6 +87,13 @@ $(document).ready(function() {
 					</s:if>
 				</td>
 				<s:if test="canEdit">
+					<td class="nobr">
+						<s:property value="updatedBy.name" /> on <br />
+						<s:date name="updateDate" format="MMM dd, yyyy"/>
+					</td>
+					<td class="center">
+						<a href="ManageFlagCriteria.action?id=<s:property value="criteria.id"/>" class="preview"></a>
+					</td>
 					<td class="center">
 						<a href="#" onclick="editCriteria(<s:property value="id" />); return false;" class="edit"></a>
 					</td>

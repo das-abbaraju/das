@@ -52,6 +52,7 @@
 			            {bVisible: false},
 			            null,
 			            null,
+			            null,
 			            null
 						],
 			iDisplayLength: 25,
@@ -106,6 +107,7 @@ $(function() {
 				<th>Category</th>
 				<th>Label</th>
 				<th>Description</th>
+				<th>Updated</th>
 			</tr>
 		</thead>
 		<s:iterator value="criteriaList">
@@ -115,6 +117,16 @@ $(function() {
 				<td><s:property value="category"/></td>
 				<td><s:property value="label"/></td>
 				<td><s:property value="description"/></td>
+				<td class="nobr">
+					<s:if test="updatedBy != null">
+						<s:property value="updatedBy.name" /> on <br />
+						<s:date name="updateDate" format="MMM dd, yyyy"/>
+					</s:if>
+					<s:elseif test="createdBy != null">
+						<s:property value="createdBy.name" /> on <br />
+						<s:date name="creationDate" format="MMM dd, yyyy"/>
+					</s:elseif>
+				</td>
 			</tr>
 		</s:iterator>
 	</table>
