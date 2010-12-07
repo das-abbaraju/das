@@ -248,6 +248,10 @@ function loadStatus(caoID){
 			<s:if test="requestURI.contains('flag')">class="current"</s:if>>Flag
 		Status</a></li>
 	</s:if>
+	<s:if test="permissions.admin || permissions.hasPermission('ContractorWatch')">
+		<li><a href="ReportActivityWatch.action?conID=<s:property value="id" />"
+			<s:if test="requestURI.contains('report_activity_watch')">class="current"</s:if>><span>Activity</span></a></li>
+	</s:if>
 	<li><a href="ContractorNotes.action?id=<s:property value="id" />"
 		<s:if test="requestURI.contains('con_notes')">class="current"</s:if>><span>Contractor Notes</span></a></li>
 	<pics:permission perm="DefineCompetencies">
