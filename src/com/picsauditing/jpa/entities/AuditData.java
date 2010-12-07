@@ -1,8 +1,8 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -35,9 +35,6 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	private YesNo wasChanged;
 	private User auditor;
 	private Date dateVerified;
-
-	// Transient properties
-	private List<AuditData> siblings;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
@@ -289,4 +286,26 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		return id + " '" + answer + "'";
 	}
 
+	/**
+	 * 		Comparator for comparing AuditData based on
+	 * 		Audit Questions.
+	 * @return
+	 * 		Comparator for comparing AuditData based on AuditQuestion
+	 */
+	public static Comparator<AuditData> getQuestionComparator(){
+		return new Comparator<AuditData>() {
+			@Override
+			public int compare(AuditData o1, AuditData o2) {
+				String[] o1a = o1.getQuestion().getExpandedNumber().split("\\.");
+				String[] o2a = o2.getQuestion().getExpandedNumber().split("\\.");
+				for(int i=0; i<o1a.length && i<o2a.length; i++){
+					if(o1a[i].equals(o2a[i]))
+						continue;
+					else
+						return Integer.valueOf(o1a[i]).compareTo(Integer.valueOf(o2a[i]));
+				}				
+				return 0;
+			}
+		};
+	}
 }

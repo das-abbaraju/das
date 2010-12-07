@@ -2,9 +2,9 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -61,7 +61,7 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 
 	public List<AuditData> getOpenReqs() {
 		if (openReqs == null) {
-			Set<AuditData> openReqsSet = new HashSet<AuditData>();
+			Set<AuditData> openReqsSet = new TreeSet<AuditData>(AuditData.getQuestionComparator());
 			AnswerMap answerMap = auditDataDao.findAnswers(auditID);
 			Date validDate = conAudit.getValidDate();
 			for (AuditCatData auditCatData : conAudit.getCategories()) {
@@ -95,7 +95,6 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 	}
 
 	public String getFileDesc(AuditQuestion auditQuestion) {
-		return auditQuestion.getCategory().getTopParent().getNumber() + "."
-				+ auditQuestion.getCategory().getNumber() + "." + auditQuestion.getNumber();
+		return auditQuestion.getExpandedNumber();
 	}
 }
