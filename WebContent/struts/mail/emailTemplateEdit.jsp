@@ -5,6 +5,7 @@
 <title>Email Template Editor</title>
 
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript" src="js/mass_mailer.js?v=<s:property value="version"/>"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
@@ -16,35 +17,28 @@ $(function(){
 		changeType('Audit');
 		type = $('#changeType').val();
 	</s:if>
-	<s:if test="templateID>0">
-		changeTemplate(<s:property value="templateID"/>, '<s:property value="type"/>'); 
-	</s:if>
+	$(window).bind('hashchange', function() {
+		var state = $.bbq.getState();
+		if(state.template !== undefined) {
+			editEmail();
+			$('#menu_selector').fadeIn();
+			$('#buttonSave').attr({'disabled':'disabled'});	
+			$('draftEdit').fadeIn(1000);
+			var data = {
+				button: 'MailEditorAjax',
+				templateID: state.template == 'blank' ? -1 : state.template,
+				type: type,
+				editTemplate: true
+			};
+
+			$('#draftEmail').html('<img src="images/ajax_process2.gif" />');
+			$('#draftEmail').load('MailEditorAjax.action', data);
+		}
+	});
 });
 function changeType(type){	
 	$('#tempTitle').text('Editing '+type+' Templates');
 	$('#emailTemplateTable').load('EditEmailTemplateAjax.action', {type: type});
-}
-function changeTemplate(id, type) {
-	$('#messages').html("");
-	
-	templateID = id;
-	editEmail();
-
-	$('#menu_selector').fadeIn();
-	$('#buttonSave').attr({'disabled':'disabled'});	
-	$('draftEdit').fadeIn(1000);
-
-	this.type = $('#changeType').val();
-	
-	var data = {
-			button: 'MailEditorAjax',
-			templateID: id,
-			type: type,
-			editTemplate: true
-	};
-
-	$('#draftEmail').html('<img src="images/ajax_process2.gif" />');
-	$('#draftEmail').load('MailEditorAjax.action', data);
 }
 </script>
 <style type="text/css">

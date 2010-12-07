@@ -15,14 +15,14 @@
 			<tbody>
 				<tr>
 					<td>1</td>
-					<td><a href="javascript: changeTemplate(-1, $('#changeType').val());">~ Start with a Blank Email ~</a></td>
+					<td><a href="#template=blank">~ Start with a Blank Email ~</a></td>
 					<td>None</td>
 					<td></td>
 				</tr>
 				<s:iterator value="emailTemplates" status="num" id="template">
 					<tr>	
 						<td><s:property value="#num.count+1" /></td>
-						<td><a href="javascript: changeTemplate(<s:property value="id"/>, '<s:property value="#template.listType"/>');"><s:property	value="#template.templateName" /></a></td>
+						<td><a href="#template=<s:property value="id"/>"><s:property value="#template.templateName" /></a></td>
 						<td><s:property value="#template.listType" /></td>
 						<td><img src="images/cross.png" /></td>
 					</tr>
