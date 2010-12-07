@@ -324,7 +324,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		return accountManager;
 	}
 
-	public void setAccountManagers(int[] accountManager) {
+	public void setAccountManager(int[] accountManager) {
 		this.accountManager = accountManager;
 	}
 
