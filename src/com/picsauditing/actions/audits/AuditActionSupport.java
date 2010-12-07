@@ -272,6 +272,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (workflowStep.getNewStatus().isComplete() && workflowStep.getWorkflow().getId() == 1)
 				return true;
 		}
+		// Auditor for this audit can perform all actions
+		if(conAudit.getAuditor().getId()==permissions.getUserId())
+			return true;
 		return false;
 	}
 
