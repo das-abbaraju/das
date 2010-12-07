@@ -149,13 +149,14 @@ $(function() {
 		            null,
 		            null,
 		            null,
+		            null,
 		            null
 				],
 			aaSorting: [[1, 'asc']],
 			bJQueryUi: true,
 			bStateSave: true,
 			oLanguage: {
-				sSearch:"",
+				sSearch:"Search",
 				sLengthMenu: '_MENU_', 
 				sInfo:"_START_ to _END_ of _TOTAL_",
 				sInfoEmpty:"",
@@ -165,9 +166,6 @@ $(function() {
 				if (aData[0] == employeeID)
 					$(nRow).not('.highlight').addClass('highlight');
 
-				$(nRow).not('.clickable').addClass('clickable').click(function() {
-						location.href='?employee.id='+aData[0];
-					});
 				return nRow;
 			}
 		});
@@ -212,6 +210,7 @@ div.dataTables_length { width: 35%; }
 								<th>First Name</th>
 								<th>Title</th>
 								<th>Classification</th>
+								<th>Details</th>
 								<th>Profile</th>
 							</tr>
 						</thead>
@@ -223,6 +222,7 @@ div.dataTables_length { width: 35%; }
 									<td><s:property value="#e.firstName"/></td>
 									<td><s:property value="#e.title"/></td>
 									<td><s:property value="#e.classification"/></td>
+									<td class="center"><a href="?employee.id=<s:property value="#e.id" />">View</a></td>
 									<td class="center"><a href="EmployeeDetail.action?employee.id=<s:property value="#e.id" />">View</a></td>
 								</tr>
 							</s:iterator>
