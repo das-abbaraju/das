@@ -237,7 +237,7 @@ $(function() {
 				<fieldset class="form">
 				<h2 class="formLegend">Manage Representatives</h2>
 				<ol>
-					<li><nobr><label>Sales Representatives :</label></nobr></li>
+					<li><label>Sales Representatives:</label>
 					<table class="report">
 						<thead>
 							<tr>
@@ -294,8 +294,9 @@ $(function() {
 							</tr>
 						</tbody>
 					</table>
+					</li>
 
-					<li><nobr><label>Account Managers : </label></nobr></li>
+					<li><label>Account Managers: </label>
 					<table class="report">
 						<thead>
 							<tr>
@@ -351,9 +352,10 @@ $(function() {
 							</tr>
 						</tbody>
 					</table>
+					</li>
 					
 					<s:if test="previousManagers.keySet().size() > 0">
-						<li><nobr><label>Previous Representatives: </label></nobr></li>
+						<li><label>Previous Representatives: </label>
 						<table class="report">
 							<thead>
 								<tr>
@@ -378,6 +380,7 @@ $(function() {
 								</s:iterator>
 							</tbody>
 						</table>
+						</li>
 					</s:if>
 				</ol>
 				</fieldset>
