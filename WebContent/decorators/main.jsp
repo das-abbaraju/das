@@ -71,13 +71,15 @@
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js"></script>
 <script>
+var autoSearch;
+var SEARCH_DELAY = 200;
 $(function(){
-	$('#search_box').autocomplete('HeaderSearchAjax.action', {
+	autoSearch = $('#search_box').autocomplete('HeaderSearchAjax.action', {
 		width: 325, 
 		scroll: false, 
 		max: 11,
-		delay: 200,
-		//extraParams: {mSearchTime: new Date(milliseconds)},
+		delay: SEARCH_DELAY*2,
+		selectFirst: false,
 		formatItem: function(data,i,count){
 			return format(data, i);						
 		},
@@ -88,6 +90,17 @@ $(function(){
 		}
 	}).result(function(event, data){
 		getResult(data);
+	}).keydown(function(){
+		var tSize = $(this).val().length;
+		if(tSize<=1)
+			sDelay = SEARCH_DELAY * 2;
+		else if(tSize<=2)
+			sDelay = SEARCH_DELAY * 1.5;
+		else if(tSize<=3)
+			sDelay = SEARCH_DELAY * 1.25;
+		else
+			sDelay = SEARCH_DELAY;
+		$(this).setOptions({delay: sDelay});		
 	});
 });
 function getResult(data){
