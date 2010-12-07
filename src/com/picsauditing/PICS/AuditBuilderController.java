@@ -287,16 +287,25 @@ public class AuditBuilderController {
 		}
 
 		Set<AuditCategory> categoriesNeeded = detail.categories;
-		if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
-			// this is to ensure that we don't add new categories or remove the
-			// existing ones except the override categories for a manual audit
-			// after is it being submitted
-			for (AuditCatData auditCatData : conAudit.getCategories()) {
-				if (auditCatData.getCategory().getParent() == null) {
+		for (AuditCatData auditCatData : conAudit.getCategories()) {
+			if (auditCatData.getCategory().getParent() == null) {
+				if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
+					// this is to ensure that we don't add new categories or
+					// remove the
+					// existing ones except the override categories for a manual
+					// audit
+					// after is it being submitted
 					if (auditCatData.isApplies())
 						categoriesNeeded.add(auditCatData.getCategory());
 					else
 						categoriesNeeded.remove(auditCatData.getCategory());
+				} else {
+					if (auditCatData.isOverride()) {
+						if (auditCatData.isApplies())
+							categoriesNeeded.add(auditCatData.getCategory());
+						else
+							categoriesNeeded.remove(auditCatData.getCategory());
+					}
 				}
 			}
 		}
@@ -465,7 +474,8 @@ public class AuditBuilderController {
 		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 
 		if (cao.getAudit().getRequestingOpAccount() != null) {
-			// Warning, this only works for operator sites, not corporate accounts
+			// Warning, this only works for operator sites, not corporate
+			// accounts
 			operators.add(cao.getAudit().getRequestingOpAccount());
 		} else if (cao.getAudit().getAuditType().isDesktop() && cao.getAudit().hasCaoStatus(AuditStatus.Complete)) {
 			for (ContractorOperator co : cao.getAudit().getContractorAccount().getOperators()) {

@@ -300,7 +300,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	public boolean isCanVerifyPqf() {
 		if (!permissions.hasPermission(OpPerms.AuditVerification))
 			return false;
-		if (!conAudit.getAuditType().isPqf() || !conAudit.getAuditType().isAnnualAddendum())
+		if (!conAudit.getAuditType().isPqf() && !conAudit.getAuditType().isAnnualAddendum())
 			return false;
 
 		if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
