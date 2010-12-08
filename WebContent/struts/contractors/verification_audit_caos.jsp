@@ -3,7 +3,7 @@
 <s:if test="caos.keySet().size > 1">
 	<div>
 		<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete','Reject All',<s:property value="allCaoIDs" />);">Reject All</button>
-		<button style="display: <s:property value="#showApproveButton" />" class="picsbutton positive approveButton" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Approved','Approve All',<s:property value="allCaoIDs" />);">Approve All</button>
+		<button style="display: <s:property value="#showApproveButton" />" class="picsbutton positive approveButton" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Complete','Complete All',<s:property value="allCaoIDs" />);">Complete All</button>
 	</div>
 </s:if>
 <s:if test="caos.keySet().size > 0">
