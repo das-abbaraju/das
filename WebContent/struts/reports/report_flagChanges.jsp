@@ -56,7 +56,9 @@ function approve(id) {
 					rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>" 
 					class="contractorQuick account<s:property value="get('status')"/>" title="<s:property value="get('name')"/>"
 				><s:property value="get('name')"/></a></td>
-			<td><a href="OperatorConfiguration.action?id=<s:property value="get('opId')"/>"><s:property value="get('opName')"/></a></td>
+			<pics:permission perm="AllContractors">
+				<td><a href="OperatorConfiguration.action?id=<s:property value="get('opId')"/>"><s:property value="get('opName')"/></a></td>
+			</pics:permission>
 			<td><s:property value="get('lastRecalculation')"/> mins ago</td>
 			<td><s:property value="get('membershipDate')"/></td>
 			<td> 

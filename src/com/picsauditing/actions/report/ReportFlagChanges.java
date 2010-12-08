@@ -81,12 +81,12 @@ public class ReportFlagChanges extends ReportAccount {
 
 		sql.addWhere("a.status IN ('Active')");
 
-		sql.addJoin("JOIN generalcontractors gc ON gc.subid = a.id AND gc.flag != gc.baselineFlag");
-		sql.addField("gc.id gcID");
-		sql.addField("gc.flag");
-		sql.addField("gc.baselineFlag");
+		sql.addJoin("JOIN generalcontractors gc1 ON gc1.subid = a.id AND gc1.flag != gc1.baselineFlag");
+		sql.addField("gc1.id gcID");
+		sql.addField("gc1.flag");
+		sql.addField("gc1.baselineFlag");
 
-		sql.addJoin("JOIN accounts operator on operator.id = gc.genid");
+		sql.addJoin("JOIN accounts operator on operator.id = gc1.genid");
 		sql.addField("operator.name AS opName");
 		sql.addField("operator.id AS opId");
 		sql.addWhere("operator.status IN ('Active') AND operator.type = 'Operator'");
