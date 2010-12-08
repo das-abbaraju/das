@@ -273,7 +273,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				return true;
 		}
 		// Auditor for this audit can perform all actions
-		if(conAudit.getAuditor().getId()==permissions.getUserId())
+		if(conAudit.getAuditor()!=null && conAudit.getAuditor().getId()==permissions.getUserId())
 			return true;
 		return false;
 	}
