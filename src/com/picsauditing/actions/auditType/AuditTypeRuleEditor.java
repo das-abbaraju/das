@@ -21,6 +21,7 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeRule;
@@ -188,6 +189,23 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		if (permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Grant))
 			return false;
 		return true;
+	}
+	
+	public boolean canEditRule(int ruleId){
+		if(permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit))
+			return true;
+		AuditTypeRule atr = dao.findAuditTypeRule(ruleId);
+		if(atr!=null){
+			if(permissions.getUserId()==atr.getCreatedBy().getId())
+				return true;
+			if(atr.getOperatorAccount()!=null){
+				for(AccountUser accUser : atr.getOperatorAccount().getAccountUsers()){
+					if(accUser.getUser().getId()==permissions.getUserId())
+						return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private void setFieldsOnSave() {

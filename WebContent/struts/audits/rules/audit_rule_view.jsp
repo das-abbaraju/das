@@ -60,7 +60,7 @@
 					<br /><a class="remove" href="?id=<s:property value="id"/>&button=deleteChildren">Delete All</a>
 					<br /><a class="add" href="?id=<s:property value="id"/>&button=copy">Copy</a>
 				</s:if>
-				<s:if test="permissions.hasPermission(#rRuleType, 'Edit') || permissions.userID == createdBy.id">
+				<s:if test="canEditRule(id)">
 					<br /><a class="edit" href="?id=<s:property value="id"/>&button=edit">Edit</a>
 				</s:if>
 			</s:if>	
