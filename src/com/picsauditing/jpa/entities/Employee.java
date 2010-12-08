@@ -18,7 +18,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.util.IndexObject;

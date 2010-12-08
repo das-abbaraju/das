@@ -19,16 +19,17 @@
 <s:include value="../reports/filters_employee.jsp" />
 <br />
 
+<a href="ReportOQEmployeesCSV.action" target="_blank" class="excel">Download</a>
 <table class="report">
 	<thead>
 		<tr>
 			<th rowspan="2"><a href="?orderBy=e.lastName,e.firstName">Employee</a></th>
 			<s:if test="!permissions.contractor">
-				<th rowspan="2"><a href="?orderBy=e.account.name,e.lastName">Contractor</a></th>
+				<th rowspan="2"><a href="?orderBy=e.account.name,e.lastName">Company</a></th>
 			</s:if>
 			<s:iterator value="jobSites.keySet()" id="key">
 				<th colspan="<s:property value="jobSites.get(#key).size()" />">
-					<span title="<s:property value="#key.name" />"><s:property value="#key.label" /></span>
+					<span title="<s:property value="%{#key.operator.name + ': ' + #key.name}" />"><s:property value="#key.label" /></span>
 				</th>
 			</s:iterator>
 		</tr>
@@ -57,7 +58,13 @@ Span of Control = <s:property value="#jst.controlSpan" />">
 					<s:iterator value="jobSites.get(#key)" id="jst">
 						<td class="center<s:if test="assigned.get(#e, #jst)"> assigned</s:if>">
 							<s:if test="qualifications.get(#e, #jst.task).qualified && worksAtSite.get(#e, #jst.job)">
-								<img alt="X" src="images/okCheck.gif" title="OQSG: <s:property value="%{#e.id % 3 == 0 ? 'Skills' : #e.id % 3 == 1 ? 'Knowledge' : 'Training'}" /> - <s:property value="#jst.task.label" /> Expiration: <s:property value="%{ #jst.id % 12 }" />/<s:property value="%{ #e.id % 30 }" />/2013">
+								<s:set name="checkMark" value="qualifications.get(#e, #jst.task)" />
+								<s:if test="#checkMark.current && !#checkMark.manuallyAdded">
+									<img alt="Qualified" src="images/okCheck.gif">
+								</s:if>
+								<s:else>
+									<img alt="Expired" src="images/okCheck.gif">
+								</s:else>
 							</s:if>
 						</td>
 					</s:iterator>

@@ -1,12 +1,15 @@
 package com.picsauditing.jpa.entities;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -23,6 +26,8 @@ public class JobSite extends BaseTable implements Comparable<JobSite> {
 	private Country country;
 	private Date projectStart;
 	private Date projectStop;
+	
+	private List<JobSiteTask> tasks = new ArrayList<JobSiteTask>();
 
 	@ManyToOne
 	@JoinColumn(name = "opID", nullable = false, updatable = false)
@@ -93,6 +98,15 @@ public class JobSite extends BaseTable implements Comparable<JobSite> {
 
 	public void setProjectStop(Date projectStop) {
 		this.projectStop = projectStop;
+	}
+	
+	@OneToMany(mappedBy = "job")
+	public List<JobSiteTask> getTasks() {
+		return tasks;
+	}
+	
+	public void setTasks(List<JobSiteTask> tasks) {
+		this.tasks = tasks;
 	}
 	
 	@Transient

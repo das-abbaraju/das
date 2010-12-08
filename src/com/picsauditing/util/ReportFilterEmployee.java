@@ -1,5 +1,12 @@
 package com.picsauditing.util;
 
+import java.util.List;
+
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.JobSiteDAO;
+import com.picsauditing.jpa.entities.JobSite;
+
+@SuppressWarnings("serial")
 public class ReportFilterEmployee extends ReportFilter {
 
 	protected boolean showAccountName = true;
@@ -7,12 +14,16 @@ public class ReportFilterEmployee extends ReportFilter {
 	protected boolean showLastName = true;
 	protected boolean showEmail = true;
 	protected boolean showSsn = true;
+	protected boolean showLimitEmployees = false;
+	protected boolean showProjects = false;
 
 	protected String accountName;
 	protected String firstName;
 	protected String lastName;
 	protected String email;
 	protected String ssn;
+	protected boolean limitEmployees = true;
+	protected int[] projects;
 
 	public boolean isShowAccountName() {
 		return showAccountName;
@@ -52,6 +63,22 @@ public class ReportFilterEmployee extends ReportFilter {
 
 	public void setShowSsn(boolean showSsn) {
 		this.showSsn = showSsn;
+	}
+	
+	public boolean isShowLimitEmployees() {
+		return showLimitEmployees;
+	}
+	
+	public void setShowLimitEmployees(boolean showLimitEmployees) {
+		this.showLimitEmployees = showLimitEmployees;
+	}
+	
+	public boolean isShowProjects() {
+		return showProjects;
+	}
+	
+	public void setShowProjects(boolean showProjects) {
+		this.showProjects = showProjects;
 	}
 
 	public String getAccountName() {
@@ -94,5 +121,32 @@ public class ReportFilterEmployee extends ReportFilter {
 		ssn = ssn.replaceAll("[^X0-9]", "");
 		if (ssn.length() <= 9)
 			this.ssn = ssn;
+	}
+	
+	public boolean isLimitEmployees() {
+		return limitEmployees;
+	}
+	
+	public void setLimitEmployees(boolean limitEmployees) {
+		this.limitEmployees = limitEmployees;
+	}
+	
+	public int[] getProjects() {
+		return projects;
+	}
+	
+	public void setProjects(int[] projects) {
+		this.projects = projects;
+	}
+	
+	public List<JobSite> getProjectList(Permissions permissions) {
+		JobSiteDAO siteDAO = (JobSiteDAO) SpringUtils.getBean("JobSiteDAO");
+		
+		if (permissions.isOperatorCorporate())
+			return siteDAO.findByOperator(permissions.getAccountId());
+		else if (permissions.isContractor())
+			return siteDAO.findByContractor(permissions.getAccountId());
+		
+		return null;
 	}
 }

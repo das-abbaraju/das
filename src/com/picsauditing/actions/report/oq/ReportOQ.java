@@ -5,13 +5,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletOutputStream;
+
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.search.Database;
+import com.picsauditing.util.excel.ExcelColumn;
+import com.picsauditing.util.excel.ExcelSheet;
 
 public class ReportOQ extends PicsActionSupport {
 
+	private List<BasicDynaBean> data;
 	Database db = new Database();
 	private List<ContractorSite> contractorSites = new ArrayList<ContractorSite>();
 
@@ -28,6 +35,7 @@ public class ReportOQ extends PicsActionSupport {
 				+ " JOIN job_site js ON js.id = es.jobSiteID AND js.opID = gc.genID"
 				+ " WHERE a.status IN ('Active','Demo')" + " GROUP BY a.id, js.id" + " ORDER BY a.name, js.name";
 		List<BasicDynaBean> contractorData = db.select(contractorSQL, false);
+		data = contractorData;
 		String conList = "0";
 		for (BasicDynaBean row : contractorData) {
 			conList += "," + row.get("id").toString();
@@ -53,6 +61,7 @@ public class ReportOQ extends PicsActionSupport {
 				+ " AND e.accountID IN ("
 				+ conList
 				+ ") AND eq.taskID IN (" + taskList + ")";
+		System.out.println(qualificationSQL);
 		List<BasicDynaBean> qualificationData = db.select(qualificationSQL, false);
 		for (BasicDynaBean row : qualificationData) {
 			Employee e = new Employee(row);
@@ -65,6 +74,30 @@ public class ReportOQ extends PicsActionSupport {
 
 	public List<ContractorSite> getContractorSites() {
 		return contractorSites;
+	}
+	
+	public void getExcelDownload() throws Exception {
+		execute();
+		
+		ExcelSheet excelSheet = new ExcelSheet();
+		excelSheet.setData(data);
+		// Add the following columns to the far right
+		excelSheet.addColumn(new ExcelColumn("name", "Contractor"), 0);
+		excelSheet.addColumn(new ExcelColumn("jobSite", "Job Site"));
+		excelSheet.addColumn(new ExcelColumn("totalEmployees", "Employees"));
+		
+		String filename = "ReportOQByContractorSite";
+		excelSheet.setName(filename);
+		HSSFWorkbook wb = excelSheet.buildWorkbook(false);
+
+		filename += ".xls";
+
+		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+		wb.write(outstream);
+		outstream.flush();
+		ServletActionContext.getResponse().flushBuffer();
 	}
 
 	public class Base {

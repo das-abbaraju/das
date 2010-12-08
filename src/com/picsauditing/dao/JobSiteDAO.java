@@ -41,6 +41,13 @@ public class JobSiteDAO extends PicsDAO {
 		return query.getResultList();
 	}
 	
+	public List<JobSite> findByContractor(int conID) {
+		Query query = em.createQuery("SELECT jobSite FROM EmployeeSite es WHERE es.employee.account.id = ? ORDER BY name");
+		query.setParameter(1, conID);
+		
+		return query.getResultList();
+	}
+	
 	public List<JobSite> findByOperatorWhere(int opID, String where) {
 		Query query = em.createQuery("SELECT j FROM JobSite j WHERE opID = ? AND " + where + " ORDER BY name");
 		query.setParameter(1, opID);

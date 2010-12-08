@@ -289,9 +289,11 @@
 										<td class="center" style="font-weight: bold;"><s:property value="#quals.task.label" /></td>
 										<td><s:property value="#quals.task.name" /></td>
 										<td class="center">
-											<s:if test="#quals.qualified"><a href="#" onclick="$('#jt_<s:property value="#quals.id" />').toggle(); return false;">
-												<img src="images/okCheck.gif" alt="Qualified" />
-											</a></s:if>
+											<s:if test="#quals.qualified && qualification.get(#quals).size > 0">
+												<a href="#" onclick="$('#jt_<s:property value="#quals.id" />').toggle(); return false;">
+													<img src="images/okCheck.gif" alt="Qualified" />
+												</a>
+											</s:if>
 											<s:else><img src="images/notOkCheck.gif" alt="Not Qualified" /></s:else>
 										</td>
 									</tr>

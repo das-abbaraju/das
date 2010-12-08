@@ -6,6 +6,8 @@
 </head>
 <body>
 <h1>OQ by Contractor/Site</h1>
+<a class="excel" href="ReportOQCSV.action" target="_blank"
+		title="Download <s:property value="contractorSites.size" /> results to a CSV file">Download</a>
 <table class="report">
 	<thead>
 		<tr>

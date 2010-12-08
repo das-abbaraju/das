@@ -83,6 +83,9 @@ public class ReportAssessmentTest extends ReportActionSupport {
 			String email = Utilities.escapeQuotes(f.getEmail().trim());
 			sql.addWhere("e.email LIKE '%" + email + "%'");
 		}
+		
+		if (f.isLimitEmployees())
+			sql.addWhere("e.accountID = " + permissions.getAccountId());
 	}
 	
 	@Override
@@ -93,6 +96,7 @@ public class ReportAssessmentTest extends ReportActionSupport {
 		getFilter().setDestinationAction("ReportAssessmentTests");
 		// Do we need to look up employees by SSN?
 		getFilter().setShowSsn(false);
+		getFilter().setShowLimitEmployees(true);
 		
 		// Operators, Corporate, Administrators
 		if (!permissions.isAdmin() && !permissions.isOperatorCorporate())
