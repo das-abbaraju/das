@@ -9,7 +9,7 @@ $(function() {
 });
 </script>
 
-<s:if test="mode == 'ViewQ' || viewBlanks == false">
+<s:if test="mode == 'ViewQ' || mode == 'ViewAll' || viewBlanks == false">
 	<s:iterator value="categoryNodes">
 		<s:set name="category" value="category"/>
 		<s:include value="audit_cat_view.jsp" />
