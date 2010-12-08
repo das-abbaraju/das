@@ -137,7 +137,7 @@ public class AuditBuilderController {
 			ContractorAudit conAudit = iter.next();
 			PicsLogger.log("checking to see if we still need existing " + conAudit.getAuditType().getAuditName()
 					+ " - #" + conAudit.getId());
-			if (!getRequiredAuditTypeSet().contains(conAudit.getAuditType())) {
+			if (!conAudit.isManuallyAdded() && !getRequiredAuditTypeSet().contains(conAudit.getAuditType())) {
 				boolean needed = false;
 				for (ContractorAuditOperator cao : conAudit.getOperators()) {
 					if (cao.getStatus().after(AuditStatus.Pending))

@@ -1020,6 +1020,11 @@
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 
+		<action name="AuditOverride"
+			class="com.picsauditing.actions.audits.AuditOverride">
+			<result>/struts/audits/audit_override.jsp</result>	
+		</action>
+
 		<action name="OshaSave"
 			class="com.picsauditing.actions.audits.OshaSave">
 			<result type="redirectAction">
