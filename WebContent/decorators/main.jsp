@@ -86,6 +86,8 @@ $(function(){
 		formatResult: function(data,i,count){
 			if(data[0]=='FULL')
 				return " ";
+			if(data[0]=='NULL')
+				return " ";
 			return data[3];
 		}
 	}).result(function(event, data){
@@ -108,9 +110,15 @@ function getResult(data){
 		location.href='Search.action?button=search&searchTerm='+data[2];
 		return;	
 	}	
+	if(data[0]=='NULL'){
+		return;	
+	}
+	var lhref;
 	if(data[0]=='account')
-		var accType = data[1];
-	location.href='HeaderSearchAjax.action?button=getResult&searchID='+data[2]+'&searchType='+data[0]+'&accType='+accType;	
+		lhref = 'HeaderSearchAjax.action?button=getResult&searchID='+data[2]+'&searchType='+data[0]+'&accType='+data[1];
+	else
+		lhref = 'HeaderSearchAjax.action?button=getResult&searchID='+data[2]+'&searchType='+data[0];                                                                                          		
+	location.href=lhref;	
 }
 function format(row, i){
 	if(row[0]=='account'){
@@ -130,9 +138,10 @@ function format(row, i){
 			")</span></div><div style=\"\">"+row[3]+"<br/> at ("+row[4]+")</div>";
 		return rStr;
 	}
-	if(row[0]=='FULL'){
+	if(row[0]=='FULL')
 		return row[1];
-	}
+	if(row[0]=='NULL')
+		return row[1];
 	return row[0];
 }
 function buildAction(type, id){

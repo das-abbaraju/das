@@ -87,6 +87,10 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		} else if ("search".equals(button)) { // full view and paging
 
 			List<String> terms = searchEngine.buildTerm(searchTerm, true, false);
+			if(terms==null || terms.isEmpty()){
+				addActionMessage("No searchable terms, please try again");
+				return SUCCESS;
+			}
 			// if corporate then build list of contractors in their system
 			ht = searchEngine.getConIds(permissions);
 			String query = searchEngine.buildQuery(permissions, terms, null, startIndex, 50, false, true);
@@ -118,6 +122,10 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			return SUCCESS;
 		} else { // autosuggest/complete
 			List<String> terms = searchEngine.buildTerm(searchTerm, true, false);
+			if(terms==null || terms.isEmpty()){
+				output = "NULL|-"+searchTerm+"- did not return any results. Please try different a different search|";
+				return BLANK;
+			}
 			String query = searchEngine.buildQuery(permissions, terms, null, 0, 10, false, false);
 			List<BasicDynaBean> queryList = db.select(query, true);
 			totalRows = db.getAllRows();
@@ -152,7 +160,6 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	@SuppressWarnings("unchecked")
 	public List<Indexable> getRecords(List<BasicDynaBean> queryList) {
-		LinkedHashMap<SearchItem, Indexable> records = new LinkedHashMap<SearchItem, Indexable>();
 		ArrayListMultimap<Class, Integer> indexableMap = ArrayListMultimap.create();
 		SearchList recordsList = new SearchList();
 		for (BasicDynaBean bdb : queryList) {
