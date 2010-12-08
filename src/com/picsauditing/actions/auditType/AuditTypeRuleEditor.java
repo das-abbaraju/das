@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.search.Database;
@@ -36,6 +37,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	protected int id = 0;
 	protected boolean categoryRule = false;
 	protected boolean canEditDelete = true;
+	protected boolean permissionToEdit = false;
 
 	protected AuditTypeRule rule = null;
 	protected List<AuditTypeRule> lessGranular;
@@ -84,6 +86,7 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 			}
 		}
 
+		permissionToEdit = canEditRule();
 		addFields();
 
 		if (button != null) {
@@ -191,17 +194,28 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 		return true;
 	}
 	
-	public boolean canEditRule(int ruleId){
+	/**
+	 * If user has a permission to edit the rule, created the rule, or is
+	 * associated with the operator then they can edit the rule
+	 * @return
+	 */
+	public boolean canEditRule(){
 		if(permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit))
 			return true;
-		AuditTypeRule atr = dao.findAuditTypeRule(ruleId);
-		if(atr!=null){
-			if(permissions.getUserId()==atr.getCreatedBy().getId())
+		if(rule!=null){
+			if(permissions.getUserId()==rule.getCreatedBy().getId())
 				return true;
-			if(atr.getOperatorAccount()!=null){
-				for(AccountUser accUser : atr.getOperatorAccount().getAccountUsers()){
+			OperatorAccount opAccount = rule.getOperatorAccount();
+			if(opAccount!=null){
+				for(AccountUser accUser : opAccount.getAccountUsers()){
 					if(accUser.getUser().getId()==permissions.getUserId())
 						return true;
+				}
+				for(OperatorAccount child : opAccount.getOperatorChildren()){
+					for(AccountUser childAccUser : child.getAccountUsers()){
+						if(childAccUser.getUser().getId()==permissions.getUserId())
+							return true;
+					}
 				}
 			}
 		}
@@ -425,6 +439,14 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 
 	public void setTagID(Integer tagID) {
 		this.tagID = tagID;
+	}
+
+	public boolean isPermissionToEdit() {
+		return permissionToEdit;
+	}
+
+	public void setPermissionToEdit(boolean permissionToEdit) {
+		this.permissionToEdit = permissionToEdit;
 	}
 
 }

@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -34,6 +35,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	protected int id = 0;
 	protected boolean categoryRule = true;
 	protected boolean canEditDelete = true;
+	protected boolean permissionToEdit = false;
 
 	protected AuditCategoryRule rule = null;
 	protected List<AuditCategoryRule> lessGranular;
@@ -84,6 +86,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			}
 		}
 
+		permissionToEdit = canEditRule();
 		addFields();
 
 		if (button != null) {
@@ -204,17 +207,28 @@ public class CategoryRuleEditor extends PicsActionSupport {
 		return true;
 	}
 	
-	public boolean canEditRule(int ruleId){
+	/**
+	 * If user has a permission to edit the rule, created the rule, or is
+	 * associated with the operator then they can edit the rule
+	 * @return
+	 */
+	public boolean canEditRule(){
 		if(permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit))
 			return true;
-		AuditCategoryRule acr = dao.findAuditCategoryRule(ruleId);
-		if(acr!=null){
-			if(permissions.getUserId()==acr.getCreatedBy().getId())
+		if(rule!=null){
+			if(permissions.getUserId()==rule.getCreatedBy().getId())
 				return true;
-			if(acr.getOperatorAccount()!=null){
-				for(AccountUser accUser : acr.getOperatorAccount().getAccountUsers()){
+			OperatorAccount opAccount = rule.getOperatorAccount();
+			if(opAccount!=null){
+				for(AccountUser accUser : opAccount.getAccountUsers()){
 					if(accUser.getUser().getId()==permissions.getUserId())
 						return true;
+				}
+				for(OperatorAccount child : opAccount.getOperatorChildren()){
+					for(AccountUser childAccUser : child.getAccountUsers()){
+						if(childAccUser.getUser().getId()==permissions.getUserId())
+							return true;
+					}
 				}
 			}
 		}
@@ -434,5 +448,13 @@ public class CategoryRuleEditor extends PicsActionSupport {
 
 	public void setTagID(Integer tagID) {
 		this.tagID = tagID;
+	}
+
+	public boolean isPermissionToEdit() {
+		return permissionToEdit;
+	}
+
+	public void setPermissionToEdit(boolean permissionToEdit) {
+		this.permissionToEdit = permissionToEdit;
 	}
 }
