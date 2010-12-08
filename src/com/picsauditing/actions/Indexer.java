@@ -118,9 +118,7 @@ public class Indexer extends PicsActionSupport {
 		queryDelete.append(table.getId()).append(" AND indexType = '").append(
 				table.getIndexType()).append("'");
 		try {
-			if (db.executeUpdate(queryDelete.toString()) > 0) {
-				System.out.println("deleted using: " + queryDelete.toString());
-			}
+			db.executeUpdate(queryDelete.toString());
 			for (IndexObject s : l) {
 				queryIndex.append("('").append(table.getIndexType()).append(
 						"',").append(table.getId()).append(",'").append(
@@ -136,8 +134,6 @@ public class Indexer extends PicsActionSupport {
 			String updateIndexing = "UPDATE " + tblName
 					+ " SET needsIndexing=0 WHERE id = " + table.getId();
 			db.executeUpdate(updateIndexing);
-			System.out.println("Saved ids");
-			db.executeUpdate("ANALYZE TABLE app_index, app_index_stats;");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -259,7 +255,7 @@ public class Indexer extends PicsActionSupport {
 			sql.addWhere("id < " + end);
 		}
 		if(tblName.equals("users"))
-			sql.addWhere("isGroup = 'No'");
+			sql.addWhere("isGroup = 'No'");			
 		sql.addOrderBy("id");
 		Database db = new Database();
 		return db.select(sql.toString(), false);
