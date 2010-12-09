@@ -7,10 +7,6 @@
 .red {
 	background-color: #fbb;
 }
-
-.assigned {
-	background-color: #ffa;
-}
 </style>
 </head>
 <body>
@@ -56,7 +52,7 @@ Span of Control = <s:property value="#jst.controlSpan" />">
 				</s:if>
 				<s:iterator value="jobSites.keySet()" id="key">
 					<s:iterator value="jobSites.get(#key)" id="jst">
-						<td class="center<s:if test="assigned.get(#e, #jst)"> assigned</s:if>">
+						<td class="center">
 							<s:if test="qualifications.get(#e, #jst.task).qualified && worksAtSite.get(#e, #jst.job)">
 								<s:set name="checkMark" value="qualifications.get(#e, #jst.task)" />
 								<s:if test="#checkMark.current && !#checkMark.manuallyAdded">
@@ -85,26 +81,6 @@ Span of Control = <s:property value="#jst.controlSpan" />">
 					</s:iterator>
 					<th <s:if test="#jstTotal < getMinimumQualified(employees.size())">class="red"</s:if>>
 						<s:property value="#jstTotal" /> of <s:property value="getMinimumQualified(employees.size())" />
-					</th>
-				</s:iterator>
-			</s:iterator>
-		</tr>
-		<tr>
-			<th <s:if test="!permissions.contractor">colspan="2" </s:if>class="right">Assigned</th>
-			<s:iterator value="jobSites.keySet()" id="key">
-				<s:iterator value="jobSites.get(#key)" id="jst">
-					<s:set name="jstTotal" value="0" />
-					<s:set name="assignedTotal" value="0" />
-					<s:iterator value="employees" id="e">
-						<s:if test="qualifications.get(#e, #jst.task).qualified && worksAtSite.get(#e, #jst.job) && assigned.get(#e, #jst)">
-							<s:set name="jstTotal" value="1 + #jstTotal" />
-						</s:if>
-						<s:if test="assigned.get(#e, #jst)">
-							<s:set name="assignedTotal" value="1 + #jstTotal" />
-						</s:if>
-					</s:iterator>
-					<th <s:if test="#jstTotal < #assignedTotal">class="red"</s:if>>
-						<s:property value="#jstTotal" /> of <s:property value="#assignedTotal" />
 					</th>
 				</s:iterator>
 			</s:iterator>
