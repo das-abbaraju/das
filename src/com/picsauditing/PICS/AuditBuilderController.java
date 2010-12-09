@@ -139,6 +139,9 @@ public class AuditBuilderController {
 					+ " - #" + conAudit.getId());
 			if (!conAudit.isManuallyAdded() && !getRequiredAuditTypeSet().contains(conAudit.getAuditType())) {
 				boolean needed = false;
+				// Never delete the PQF
+				if (conAudit.getAuditType().isPqf())
+					needed = true;
 				for (ContractorAuditOperator cao : conAudit.getOperators()) {
 					if (cao.getStatus().after(AuditStatus.Pending))
 						needed = true;
