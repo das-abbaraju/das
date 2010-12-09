@@ -111,8 +111,9 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private boolean isChildrenWorkStatusEqual(String parentStatus) {
 		String where = "subid = " + getContractorAccount().getId() + " AND workStatus = '" + parentStatus + "'";
 		Set<Integer> idList = new HashSet<Integer>();
-		for (OperatorAccount o : getOperatorAccount().getOperatorChildren())
-			idList.add(o.getId());
+		for (Facility f : getOperatorAccount().getOperatorFacilities())
+			if(f.getOperator().getStatus().isActiveDemo() && f.getOperator().getApprovesRelationships().isTrue())
+				idList.add(f.getOperator().getId());
 		String ids = Strings.implode(idList, ",");
 		where += " AND genid IN (" + ids + ")";
 
