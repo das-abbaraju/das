@@ -621,11 +621,13 @@
 			<param name="filter.ajax">true</param>
 			<param name="filter.destinationAction">ReportCAOList</param>
 			<result>struts/reports/cao_list.jsp</result>
+
 		</action>
 		
 		<action name="ReportCAOListCSV"
 			class="com.picsauditing.actions.report.ReportContractorAuditOperator">
 			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
 		</action>
 		
 		<action name="ReportCAOListAjax"

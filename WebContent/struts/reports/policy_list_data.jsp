@@ -54,7 +54,7 @@
 		</s:if>
 		<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/> <s:property value="get('auditFor')"/></a></td>
 	    <s:if test="permissions.operator || permissions.corporate">
-		    <td><s:property value="get('caoStatus')"/></td>
+		    <td><s:property value="get('auditStatus')"/></td>
 	    </s:if>
 		<td class="center"><s:date name="get('createdDate')" format="M/d/yy" /></td>
 		<td class="center"><s:date name="get('expiresDate')" format="M/d/yy" /></td>

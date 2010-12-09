@@ -127,9 +127,9 @@ public class ReportContractorAudits extends ReportAccount {
 		excelSheet.addColumn(new ExcelColumn("createdDate", "Creation Date", ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("scheduledDate", "Schedule Date", ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("expiresDate", "Date Expires", ExcelCellType.Date));
-		if (auditTypeClass.isPolicy() && permissions.isOperator()) {
-			excelSheet.addColumn(new ExcelColumn("caoStatus", "Op Status"));
-			excelSheet.addColumn(new ExcelColumn("notes", "Notes"));
+		if (permissions.isOperator()) {
+			excelSheet.addColumn(new ExcelColumn("auditStatus", "Status"));
+			excelSheet.addColumn(new ExcelColumn("statusChangedDate", "Status Changed Date", ExcelCellType.Date));
 		}
 
 	}

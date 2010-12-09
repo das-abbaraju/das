@@ -40,4 +40,6 @@ public class ReportPolicyList extends ReportContractorAuditOperator {
 		getFilter().setShowAMBest(true);
 
 	}
+	
+
 }
