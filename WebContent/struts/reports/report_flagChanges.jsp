@@ -63,7 +63,7 @@ function approve(id) {
 			<td><s:property value="get('membershipDate')"/></td>
 			<td> 
 				<a class="file" href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>">Flag</a>
-				<a class="file" href="ContractorNotes.action?id=<s:property value="get('id')"/>">Notes</a>
+				<a class="file" href="ReportActivityWatch.action?conID=<s:property value="get('id')"/>">Activity</a>
 				<a class="file" href="ContractorCron.action?conID=<s:property value="get('id')"/>&steps=All&button=Run">Recalc</a>
 			</td>
 		</tr>
