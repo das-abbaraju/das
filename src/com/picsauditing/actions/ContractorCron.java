@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +49,9 @@ import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
@@ -243,7 +245,7 @@ public class ContractorCron extends PicsActionSupport {
 				body.append("\n");
 
 				body.append(sw.toString());
-				
+
 				try {
 					sendMail(body.toString(), conID);
 				} catch (Exception notMuchWeCanDoButLogIt) {
@@ -428,15 +430,15 @@ public class ContractorCron extends PicsActionSupport {
 			co.setFlagColor(conOperator.getForceFlag());
 			co.setFlagLastUpdated(new Date());
 		} else if (!overallColor.equals(co.getFlagColor())) {
-//			Note note = new Note();
-//			note.setAccount(co.getContractorAccount());
-//			note.setNoteCategory(NoteCategory.Flags);
-//			note.setAuditColumns(new User(User.SYSTEM));
-//			note.setSummary("Flag color changed from " + co.getFlagColor() + " to " + overallColor + " for "
-//					+ co.getOperatorAccount().getName());
-//			note.setCanContractorView(true);
-//			note.setViewableById(co.getOperatorAccount().getId());
-//			dao.save(note);
+			Note note = new Note();
+			note.setAccount(co.getContractorAccount());
+			note.setNoteCategory(NoteCategory.Flags);
+			note.setAuditColumns(new User(User.SYSTEM));
+			note.setSummary("Flag color changed from " + co.getFlagColor() + " to " + overallColor + " for "
+					+ co.getOperatorAccount().getName());
+			note.setCanContractorView(true);
+			note.setViewableById(co.getOperatorAccount().getId());
+			dao.save(note);
 			co.setFlagColor(overallColor);
 			co.setFlagLastUpdated(new Date());
 		}
@@ -460,31 +462,31 @@ public class ContractorCron extends PicsActionSupport {
 
 		if (!waitingOn.equals(co.getWaitingOn())) {
 			OperatorAccount operator = co.getOperatorAccount();
-//			Note note = new Note();
-//			note.setAccount(co.getContractorAccount());
-//			note.setNoteCategory(NoteCategory.Flags);
-//			note.setPriority(LowMedHigh.Low);
-//			note.setAuditColumns(new User(User.SYSTEM));
-//			if (waitingOn.isNone()) {
-//				note.setSummary("We are no longer \"Waiting On\" " + co.getWaitingOn()
-//						+ ". All required information has been gathered for " + operator.getName() + ".");
-//			} else if (co.getWaitingOn().isNone()) {
-//				note.setSummary("The \"Waiting On\" status for " + operator.getName() + " has changed to \""
-//						+ waitingOn + "\"");
-//			} else {
-//				note.setSummary("The \"Waiting On\" status for " + operator.getName() + " has changed from \""
-//						+ co.getWaitingOn() + "\" to \"" + waitingOn + "\"");
-//			}
-//			if (co.getProcessCompletion() != null) {
-//				note.setBody("The contractor first completed the PICS process on "
-//						+ co.getProcessCompletion().toString());
-//			}
-//			note.setCanContractorView(true);
-//			note.setViewableById(operator.getId());
-//			dao.save(note);
+			Note note = new Note();
+			note.setAccount(co.getContractorAccount());
+			note.setNoteCategory(NoteCategory.Flags);
+			note.setPriority(LowMedHigh.Low);
+			note.setAuditColumns(new User(User.SYSTEM));
+			if (waitingOn.isNone()) {
+				note.setSummary("We are no longer \"Waiting On\" " + co.getWaitingOn()
+						+ ". All required information has been gathered for " + operator.getName() + ".");
+			} else if (co.getWaitingOn().isNone()) {
+				note.setSummary("The \"Waiting On\" status for " + operator.getName() + " has changed to \""
+						+ waitingOn + "\"");
+			} else {
+				note.setSummary("The \"Waiting On\" status for " + operator.getName() + " has changed from \""
+						+ co.getWaitingOn() + "\" to \"" + waitingOn + "\"");
+			}
+			if (co.getProcessCompletion() != null) {
+				note.setBody("The contractor first completed the PICS process on "
+						+ co.getProcessCompletion().toString());
+			}
+			note.setCanContractorView(true);
+			note.setViewableById(operator.getId());
+			dao.save(note);
 
 			if (co.getProcessCompletion() == null && waitingOn.isNone() && !co.getWaitingOn().isNone()) {
-				//EventSubscriptionBuilder.contractorFinishedEvent(subscriptionDAO, co);
+				EventSubscriptionBuilder.contractorFinishedEvent(subscriptionDAO, co);
 				co.setProcessCompletion(new Date());
 			}
 			co.setWaitingOn(waitingOn);
