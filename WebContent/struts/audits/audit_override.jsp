@@ -7,7 +7,16 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css" />
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
+<script type="text/javascript">
+$(function() {
+	$('.block').click(function() {
+		$.blockUI({message:'Creating Audit...'});
+	});
+})
+</script>
 </head>
 <body>
 	<s:include value="../contractors/conHeader.jsp"/>
@@ -30,12 +39,12 @@
 					</li>
 				</s:if>
 				<li><label>For:</label>
-					<s:textfield name="conAudit.auditFor"/>
+					<s:textfield name="auditFor"/>
 				</li>
 			</ol>
 		</fieldset>
 		<fieldset class="form submit">
-			<s:submit name="button" value="Create" cssClass="picsbutton positive"/>
+			<s:submit name="button" value="Create" cssClass="picsbutton positive block"/>
 			<s:submit name="button" value="Create and Stay" cssClass="picsbutton positive"/>
 		</fieldset>
 	</form>

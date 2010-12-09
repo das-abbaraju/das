@@ -1,5 +1,7 @@
 package com.picsauditing.actions.audits;
 
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 
 import com.picsauditing.PICS.AuditCategoryRuleCache;
@@ -25,6 +27,7 @@ public class AuditOverride extends AuditActionSupport {
 
 	private Integer auditTypeID;
 	private Integer requestingOpID;
+	private String auditFor;
 
 	public AuditOverride(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, CertificateDAO certificateDao, AuditCategoryRuleCache auditCategoryRuleCache,
@@ -42,11 +45,13 @@ public class AuditOverride extends AuditActionSupport {
 
 		this.findContractor();
 
-		if (conAudit != null) {
-			AuditType auditType = null;
+		if (button != null) {
+			ContractorAudit conAudit = new ContractorAudit();
+
 			if (auditTypeID != null)
-				auditTypeDAO.find(auditTypeID);
-			if (auditType == null) {
+				conAudit.setAuditType(auditTypeDAO.find(auditTypeID));
+
+			if (conAudit.getAuditType() == null) {
 				addActionError("You must select an audit type.");
 				return SUCCESS;
 			}
@@ -59,19 +64,25 @@ public class AuditOverride extends AuditActionSupport {
 				conAudit.getRequestingOpAccount().setId(requestingOpID);
 			}
 
-			conAudit.setAuditType(auditType);
+			if (!Strings.isEmpty(auditFor))
+				conAudit.setAuditFor(auditFor);
+
 			conAudit.setManuallyAdded(true);
 			conAudit.setAuditColumns(permissions);
 			conAudit.setContractorAccount(contractor);
+
 			auditDao.save(conAudit);
-			addNote(conAudit.getContractorAccount(), "Added " + auditType.getAuditName() + " manually",
+
+			addNote(conAudit.getContractorAccount(), "Added " + conAudit.getAuditType().getAuditName() + " manually",
 					NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
+
 			if ("Create".equals(button)) {
 				this.redirect("ContractorCron.action?conID=" + id
 						+ "&button=Run&steps=AuditBuilder&redirectUrl=Audit.action?auditID=" + conAudit.getId());
 			} else {
-				addActionMessage("Audit Successfully created. <a href=\"Audit.action?auditID=" + conAudit.getId()
-						+ "\">Click here to view it</a>");
+				this.redirect(String.format("AuditOverride.action?id=%d&msg=%s successfully created.", id, conAudit
+						.getAuditType().getAuditName()));
+
 			}
 		}
 		return SUCCESS;
@@ -107,5 +118,13 @@ public class AuditOverride extends AuditActionSupport {
 
 	public void setRequestingOpID(Integer requestingOpID) {
 		this.requestingOpID = requestingOpID;
+	}
+
+	public String getAuditFor() {
+		return auditFor;
+	}
+
+	public void setAuditFor(String auditFor) {
+		this.auditFor = auditFor;
 	}
 }
