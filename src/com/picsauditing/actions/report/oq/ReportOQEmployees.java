@@ -3,6 +3,7 @@ package com.picsauditing.actions.report.oq;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.struts2.ServletActionContext;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.EmployeeQualificationDAO;
@@ -29,7 +31,6 @@ import com.picsauditing.dao.JobSiteTaskDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeQualification;
 import com.picsauditing.jpa.entities.EmployeeSite;
-import com.picsauditing.jpa.entities.EmployeeSiteTask;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
@@ -47,13 +48,12 @@ public class ReportOQEmployees extends ReportActionSupport {
 	private DoubleMap<Employee, JobTask, EmployeeQualification> qualifications;
 	private Map<JobSite, List<JobSiteTask>> jobSites;
 	private DoubleMap<Employee, JobSite, Boolean> worksAtSite;
-	private DoubleMap<Employee, JobSiteTask, Boolean> assigned;
 
 	private JobSiteTaskDAO siteTaskDAO;
 	private EmployeeDAO employeeDAO;
 	private EmployeeQualificationDAO qualificationDAO;
 	private EmployeeSiteDAO employeeSiteDAO;
-	
+
 	// Filter
 	private ReportFilterEmployee filter = new ReportFilterEmployee();
 
@@ -63,9 +63,6 @@ public class ReportOQEmployees extends ReportActionSupport {
 		this.employeeDAO = employeeDAO;
 		this.qualificationDAO = qualificationDAO;
 		this.employeeSiteDAO = employeeSiteDAO;
-		
-		filter.setShowSsn(false);
-		orderByDefault = "e.lastName, e.firstName";
 	}
 
 	@Override
@@ -73,6 +70,13 @@ public class ReportOQEmployees extends ReportActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		
+		filter.setShowSsn(false);
+		filter.setShowLimitEmployees(true);
+		filter.setShowProjects(true);
+		filter.setPermissions(permissions);
+		
+		setOrderBy(getOrderBy() == null ? "e.account.name, e.lastName, e.firstName" : getOrderBy());
+
 		if (permissions.isContractor())
 			conID = permissions.getAccountId();
 
@@ -85,9 +89,9 @@ public class ReportOQEmployees extends ReportActionSupport {
 		else {
 			if (permissions.isOperatorCorporate())
 				where += " AND e IN (SELECT employee FROM EmployeeSite WHERE operator.id = "
-					+ permissions.getAccountId() + ")";
+						+ permissions.getAccountId() + ")";
 		}
-		
+
 		if (filterOn(filter.getFirstName()))
 			where += " AND e.firstName LIKE '%" + filter.getFirstName() + "%'";
 		if (filterOn(filter.getLastName()))
@@ -95,10 +99,13 @@ public class ReportOQEmployees extends ReportActionSupport {
 		if (filterOn(filter.getEmail()))
 			where += " AND e.email LIKE '%" + filter.getEmail() + "%'";
 		if (filterOn(filter.getAccountName()))
-			where += " AND e.account.name LIKE '%" + filter.getAccountName() + "%'";
+			where += " AND e.account.name LIKE '%" + filter.getAccountName() + "%' OR e.account.id = '"
+					+ Utilities.escapeQuotes(filter.getAccountName()) + "'";
+		if (filter.isLimitEmployees() && conID == 0 && filterOn(filter.getAccountName()) == false)
+			where += " AND e.account.id = " + permissions.getAccountId();
 
 		employees = employeeDAO.findWhere(where + " ORDER BY " + getOrderBy());
-		
+
 		if (permissions.isContractor() || permissions.isAdmin())
 			jobSiteTasks = siteTaskDAO.findByEmployeeAccount(conID);
 		else if (permissions.isOperatorCorporate() && jobSiteID == 0)
@@ -141,78 +148,51 @@ public class ReportOQEmployees extends ReportActionSupport {
 	public Map<JobSite, List<JobSiteTask>> getJobSites() {
 		if (jobSites == null) {
 			jobSites = new HashMap<JobSite, List<JobSiteTask>>();
-			
+
 			for (JobSiteTask task : jobSiteTasks) {
-				if (jobSites.get(task.getJob()) == null)
-					jobSites.put(task.getJob(), new ArrayList<JobSiteTask>());
-				
-				jobSites.get(task.getJob()).add(task);
+				if (task.isCurrent() && task.getJob().isActive(new Date())) {
+					if (jobSites.get(task.getJob()) == null)
+						jobSites.put(task.getJob(), new ArrayList<JobSiteTask>());
+
+					jobSites.get(task.getJob()).add(task);
+				}
 			}
 		}
-		
+
 		return jobSites;
 	}
-	
+
 	public DoubleMap<Employee, JobSite, Boolean> getWorksAtSite() {
 		if (worksAtSite == null) {
 			worksAtSite = new DoubleMap<Employee, JobSite, Boolean>();
-			
+
 			List<Integer> employeeIDs = new ArrayList<Integer>();
 			for (Employee e : employees) {
 				employeeIDs.add(e.getId());
 			}
-			
+
 			List<Integer> jobSiteIDs = new ArrayList<Integer>();
 			for (JobSite j : jobSites.keySet()) {
 				jobSiteIDs.add(j.getId());
 			}
-			
-			List<EmployeeSite> sites = employeeSiteDAO.findWhere("e.employee.id IN (" 
-					+ Strings.implode(employeeIDs) + ") AND e.jobSite.id IN (" 
-					+ Strings.implode(jobSiteIDs) + ")");
-			
+
+			List<EmployeeSite> sites = employeeSiteDAO.findWhere("e.employee.id IN (" + Strings.implode(employeeIDs)
+					+ ") AND e.jobSite.id IN (" + Strings.implode(jobSiteIDs) + ")");
+
 			for (EmployeeSite site : sites) {
 				if (site.isCurrent())
 					worksAtSite.put(site.getEmployee(), site.getJobSite(), true);
 			}
 		}
-		
+
 		return worksAtSite;
 	}
-	
-	public DoubleMap<Employee, JobSiteTask, Boolean> getAssigned() {
-		if (assigned == null) {
-			assigned = new DoubleMap<Employee, JobSiteTask, Boolean>();
-			
-			int opID = 0;
-			for (JobSite j : jobSites.keySet()) {
-				opID = j.getOperator().getId();
-				break;
-			}
-			
-			List<EmployeeSiteTask> all = employeeSiteDAO.findTasksByOperator(opID);
-			// There should be an easier way to do this
-			for (EmployeeSiteTask a : all) {
-				Employee e = a.getEmployeeSite().getEmployee();
-				JobSite j = a.getEmployeeSite().getJobSite();
-				
-				if (employees.contains(e) && jobSites.keySet().contains(j)) {
-					for (JobSiteTask jst : jobSites.get(j)) {
-						if (jst.getTask().equals(a.getTask()))
-							assigned.put(e, jst, true);
-					}
-				}
-			}
-		}
-		
-		return assigned;
-	}
-	
+
 	// Filter methods
 	public ReportFilterEmployee getFilter() {
 		return filter;
 	}
-	
+
 	public void getExcelDownload() throws Exception {
 		execute();
 
@@ -326,8 +306,6 @@ public class ReportOQEmployees extends ReportActionSupport {
 								&& getQualifications().get(e, jst.getTask()).isQualified())
 							marked += "X";
 					}
-					if (getAssigned().get(e, jst) != null && getAssigned().get(e, jst))
-						marked += " (Assigned)";
 
 					cell.setCellValue(h.createRichTextString(marked.trim()));
 				}
@@ -342,31 +320,15 @@ public class ReportOQEmployees extends ReportActionSupport {
 		cell.setCellStyle(headerRightStyle);
 		sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 0, 1));
 
-		// Last row -- assigned totals
-		row2 = sheet.createRow(rowNum);
-		HSSFCell cell2 = row2.createCell(0);
-		cell2.setCellValue(h.createRichTextString("Total Assigned"));
-		cell2.setCellStyle(headerRightStyle);
-		sheet.addMergedRegion(new CellRangeAddress(row2.getRowNum(), row2.getRowNum(), 0, 1));
-
 		totalColumns = 2;
 		for (JobSiteTask jst : orderedJST) {
 			int spanOfControl = 0;
-			int assignedCount = 0;
-			int totalAssignedCount = 0;
 
 			for (Employee e : sortedEmployees) {
 				if (getWorksAtSite().get(e, jst.getJob()) != null && getWorksAtSite().get(e, jst.getJob())) {
 					if (getQualifications().get(e, jst.getTask()) != null
-							&& getQualifications().get(e, jst.getTask()).isQualified()) {
+							&& getQualifications().get(e, jst.getTask()).isQualified())
 						spanOfControl++;
-
-						if (getAssigned().get(e, jst) != null && getAssigned().get(e, jst))
-							assignedCount++;
-					}
-
-					if (getAssigned().get(e, jst) != null && getAssigned().get(e, jst))
-						totalAssignedCount++;
 				}
 			}
 
@@ -374,10 +336,6 @@ public class ReportOQEmployees extends ReportActionSupport {
 			cell = row.createCell(totalColumns);
 			cell.setCellValue(h.createRichTextString(spanOfControl + " of " + total));
 			cell.setCellStyle((spanOfControl < total) ? redStyle : centerStyle);
-
-			cell2 = row2.createCell(totalColumns);
-			cell2.setCellValue(h.createRichTextString(assignedCount + " of " + totalAssignedCount));
-			cell2.setCellStyle((assignedCount < totalAssignedCount) ? redStyle : centerStyle);
 
 			totalColumns++;
 		}
