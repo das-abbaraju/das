@@ -464,7 +464,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	public List<AuditCategory> getCategoriesByOperator(OperatorAccount operator, Permissions permissions,
 			boolean topLevel, String where) {
 		if (Strings.isEmpty(where))
-			where = " WHERE (1) ";
+			where = " WHERE (1=1) ";
 		else
 			where = " WHERE " + where;
 
