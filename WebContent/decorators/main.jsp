@@ -80,6 +80,7 @@ $(function(){
 		max: 11,
 		delay: SEARCH_DELAY*2,
 		selectFirst: false,
+		highlight : false,
 		formatItem: function(data,i,count){
 			return format(data, i);						
 		},

@@ -35,7 +35,6 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	protected int totalRows;
 	protected int startIndex;
 	protected String searchType = "";
-	protected String accType = "";
 	protected String pageLinks;
 
 	private final int PAGEBREAK = 50;
@@ -220,14 +219,6 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	public void setSearchType(String searchType) {
 		this.searchType = searchType;
-	}
-
-	public String getAccType() {
-		return accType;
-	}
-
-	public void setAccType(String accType) {
-		this.accType = accType;
 	}
 
 	public String getSearchTerm() {
