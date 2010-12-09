@@ -112,13 +112,8 @@ function getResult(data){
 	}	
 	if(data[0]=='NULL'){
 		return;	
-	}
-	var lhref;
-	if(data[0]=='account')
-		lhref = 'HeaderSearchAjax.action?button=getResult&searchID='+data[2]+'&searchType='+data[0]+'&accType='+data[1];
-	else
-		lhref = 'HeaderSearchAjax.action?button=getResult&searchID='+data[2]+'&searchType='+data[0];                                                                                          		
-	location.href=lhref;	
+	}    		
+	location.href='HeaderSearchAjax.action?button=getResult&searchID='+data[2]+'&searchType='+data[0];	
 }
 function format(row, i){
 	if(row[0]=='account'){

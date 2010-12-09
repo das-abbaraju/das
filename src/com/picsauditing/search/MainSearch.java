@@ -3,11 +3,9 @@ package com.picsauditing.search;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -18,6 +16,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
@@ -49,10 +48,12 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
+	private EmployeeDAO empDAO;
 
-	public MainSearch(AccountDAO accountDAO, UserDAO userDAO) {
+	public MainSearch(AccountDAO accountDAO, UserDAO userDAO, EmployeeDAO empDAO) {
 		this.accountDAO = accountDAO;
 		this.userDAO = userDAO;
+		this.empDAO = empDAO;
 	}
 
 	@Override
@@ -72,20 +73,17 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		}
 		searchEngine = new SearchEngine(permissions);
 		if ("getResult".equals(button)) { // pull up a result
-			if (searchType.equals("account")) {
-				if ("Contractor".equals(accType))
-					redirect("ContractorView.action?id=" + searchID);
-				else if ("Operator".equals(accType))
-					redirect("FacilitiesEdit.action?id=" + searchID);
-				else if ("Assessment".equals(accType))
-					redirect("AssessmentCenterEdit.action?id=" + searchID);
-				else if ("Corporate".equals(accType))
-					redirect("FacilitiesEdit.action?id=" + searchID);
-			} else if (searchType.equals("user")) {
-				User u = userDAO.find(searchID);
-				redirect("UsersManage.action?accountId=" + u.getAccount().getId() + "&user.id=" + searchID);
-			} else if (searchType.equals("employee"))
-				redirect("ManageEmployees.action?employee.id=" + searchID);
+			Indexable record = null;
+			if("account".equals(searchType))
+				record = accountDAO.find(searchID);
+			else if("user".equals(searchType))
+				record = userDAO.find(searchID);
+			else if("employee".equals(searchType))
+				record = empDAO.find(searchID);
+			if(record!=null)
+				redirect(record.getViewLink());
+			else
+				addActionError("An Error occured with your search result, please try again.");
 
 			return BLANK;
 		} else if ("search".equals(button)) { // full view and paging
@@ -147,7 +145,9 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	private List<Indexable> getFullResults(List<BasicDynaBean> queryList) throws IOException {
 		List<Indexable> records = getRecords(queryList, orderByName);
 		if (records.size() == 1) {
-			redirect("Search.action?button=getResult&searchID=" + records.get(0) + "&searchType=");
+			Indexable viewThis = records.get(0);
+			String viewAction = viewThis.getViewLink();
+			redirect(viewAction);
 		}
 		return records;
 	}
