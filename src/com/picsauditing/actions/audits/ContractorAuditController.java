@@ -142,6 +142,10 @@ public class ContractorAuditController extends AuditActionSupport {
 				for (AuditCategory childCategory : categoryData.getCategory().getChildren()) {
 					for (AuditQuestion question : childCategory.getQuestions()) {
 						questionIDs.add(question.getId());
+						if(question.getRequiredQuestion()!=null)
+							questionIDs.add(question.getRequiredQuestion().getId());
+						if(question.getVisibleQuestion()!=null)
+							questionIDs.add(question.getVisibleQuestion().getId());
 					}
 				}
 				// Get a map of all answers in this audit
