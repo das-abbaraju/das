@@ -234,6 +234,14 @@ div.dataTables_length { width: 35%; }
 			</s:if>
 			<s:if test="employee != null">
 				<td style="vertical-align:top;">
+					<s:if test="employee.id > 0">
+						<a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">View Profile/Assigned Tasks</a>
+						<a href="#" class="help cluetip" rel="#cluetip1" title="View Profile/Assigned Tasks"></a>
+						<div id="cluetip1">
+							Each Employee has a profile page visible to other employees and operators that lists information including assigned tasks and qualifications.
+						</div>
+						<br clear="all" />
+					</s:if>
 					<s:form id="employeeForm">
 						<s:hidden name="id"/>
 						<s:hidden name="employee.id"/>
@@ -369,12 +377,6 @@ div.dataTables_length { width: 35%; }
 								onclick="return confirm('Are you sure you want to delete this employee? This action cannot be undone.');"/>
 						</fieldset>
 					</s:form>
-					<br clear="all" />
-					<a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">View Profile/Assigned Tasks</a>
-					<a href="#" class="help cluetip" rel="#cluetip1" title="View Profile/Assigned Tasks"></a>
-					<div id="cluetip1">
-						Each Employee has a profile page visible to other employees and operators that lists information including assigned tasks and qualifications.
-					</div>
 					<br clear="all" />
 				
 					<s:if test="employee.id > 0">

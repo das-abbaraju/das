@@ -118,7 +118,7 @@
 			</tr>
 			<tr>
 				<td>
-					<s:if test="employee.employeeSites.size() > 0">
+					<s:if test="worksAt.size() > 0">
 						<div class="panel_placeholder">
 							<div class="panel">
 								<div class="panel_header">
@@ -132,60 +132,53 @@
 												<td><s:property value="employee.location" /></td>
 											</tr>
 										</s:if>
-										<s:iterator value="employee.employeeSites" id="sites" status="stat">
-											<s:if test="#sites.current">
-												<tr>
-													<th>
-														<s:property value="#sites.operator.name" /><s:if test="#sites.jobSite.name != null" >:
-													</th>
-													<td>
-														<s:property value="#sites.jobSite.name" /></s:if><br />
-														<span style="font-size: 12px;" >
-															Since: <s:property value="#sites.effectiveDate" />
-															<s:if test="#sites.orientationDate!=null" >
-																<span style="padding-left: 8px;" >Orientation: <s:property value="#sites.orientationDate" /></span><br />
-															</s:if>
-															<s:if test="employee.account.requiresOQ && permissions.requiresOQ">
-																<a href="#" onclick="$('#jst_<s:property value="#sites.id" />').toggle('slow'); return false;" class="preview">View/Hide Site Tasks</a>
-															</s:if>
-														</span>
-														<table class="jobSiteTasks" id="jst_<s:property value="#sites.id" />">
-															<thead>
+										<s:iterator value="worksAt" id="sites" status="stat">
+											<tr>
+												<th>
+													<s:property value="#sites.operator.name" /><s:if test="#sites.jobSite.name != null" >:
+												</th>
+												<td>
+													<s:property value="#sites.jobSite.name" /></s:if><br />
+													<span style="font-size: 12px;" >
+														Since: <s:property value="#sites.effectiveDate" />
+														<s:if test="!#sites.jobSite.current">
+															Finished: <s:property value="#sites.jobSite.projectStop" />
+														</s:if>
+														<s:if test="#sites.orientationDate!=null" >
+															<span style="padding-left: 8px;" >Orientation: <s:property value="#sites.orientationDate" /></span><br />
+														</s:if>
+														<s:if test="employee.account.requiresOQ && permissions.requiresOQ">
+															<a href="#" onclick="$('#jst_<s:property value="#sites.id" />').toggle('slow'); return false;" class="preview">View/Hide Site Tasks</a>
+														</s:if>
+													</span>
+													<table class="jobSiteTasks" id="jst_<s:property value="#sites.id" />">
+														<thead>
+															<tr>
+																<th colspan="2">Task</th>
+																<th>Qualified</th>
+															</tr>
+														</thead>
+														<tbody>
+															<s:iterator value="tasks.get(#sites.jobSite)" id="task">
 																<tr>
-																	<th colspan="2">Task</th>
-																	<s:if test="hasAssignments"><th>Assigned</th></s:if>
-																	<th>Qualified</th>
+																	<td style="text-align: center; font-weight: bold;"><s:property value="#task.label" /></td>
+																	<td><s:property value="#task.name" /></td>
+																	<td style="text-align: center;">
+																		<s:iterator value="jobTasks" id="qual">
+																			<s:if test="#qual.task == #task && #qual.qualified">
+																				<img src="images/okCheck.gif" alt="Qualified" />
+																			</s:if>
+																			<s:elseif test="#qual.task == #task && !#qual.qualified">
+																				<img src="images/notOkCheck.gif" alt="Not Qualified" />
+																			</s:elseif>
+																		</s:iterator>
+																	</td>
 																</tr>
-															</thead>
-															<tbody>
-																<s:iterator value="tasks.get(#sites.jobSite)" id="task">
-																	<tr>
-																		<td style="text-align: center; font-weight: bold;"><s:property value="#task.label" /></td>
-																		<td><s:property value="#task.name" /></td>
-																		<s:if test="hasAssignments">
-																			<td style="text-align: center">
-																				<s:if test="assigned.get(#sites.jobSite, #task)">
-																					<img src="images/okCheck.gif" alt="Assigned" />
-																				</s:if>
-																			</td>
-																		</s:if>
-																		<td style="text-align: center;">
-																			<s:iterator value="jobTasks" id="qual">
-																				<s:if test="#qual.task == #task && #qual.qualified">
-																					<img src="images/okCheck.gif" alt="Qualified" />
-																				</s:if>
-																				<s:elseif test="#qual.task == #task && !#qual.qualified">
-																					<img src="images/notOkCheck.gif" alt="Not Qualified" />
-																				</s:elseif>
-																			</s:iterator>
-																		</td>
-																	</tr>
-																</s:iterator>
-															</tbody>
-														</table>
-													</td>
-												</tr>
-											</s:if>
+															</s:iterator>
+														</tbody>
+													</table>
+												</td>
+											</tr>
 										</s:iterator>
 									</table>
 								</div>

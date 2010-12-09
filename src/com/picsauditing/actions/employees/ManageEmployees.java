@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -20,6 +21,7 @@ import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.actions.Indexer;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.EmployeeSiteDAO;
@@ -57,10 +59,12 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	private OperatorAccountDAO operatorAccountDAO;
 	private JobSiteTaskDAO siteTaskDAO;
 	private JobTaskDAO taskDAO;
+	private ContractorAccountDAO conDAO;
+	private Indexer indexer;
 
 	protected Employee employee;
 	protected String ssn;
-	
+
 	private String effective;
 	private String expiration;
 	private String orientation;
@@ -68,7 +72,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	protected int childID;
 	protected Set<JobRole> unusedJobRoles;
-	
+
 	// Add site
 	private String siteLabel;
 	private String siteName;
@@ -76,18 +80,17 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	private Date siteStop;
 	private int opID;
 	private int jobID;
-	
+
 	// Add/Remove tasks per site
 	private EmployeeSite employeeSite;
 	private int taskID;
 	private List<JobTask> siteTasks;
 	private DoubleMap<EmployeeSite, JobTask, Boolean> assignedTask;
-	private Indexer indexer;
-	
+
 	public ManageEmployees(AccountDAO accountDAO, EmployeeDAO employeeDAO, JobRoleDAO roleDAO,
 			EmployeeRoleDAO employeeRoleDAO, EmployeeSiteDAO employeeSiteDAO, JobTaskDAO taskDAO,
 			OperatorAccountDAO operatorAccountDAO, JobSiteDAO jobSiteDAO, JobSiteTaskDAO siteTaskDAO,
-			Indexer indexer) {
+			ContractorAccountDAO conDAO, Indexer indexer) {
 		this.accountDAO = accountDAO;
 		this.employeeDAO = employeeDAO;
 		this.roleDAO = roleDAO;
@@ -97,6 +100,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.siteTaskDAO = siteTaskDAO;
 		this.taskDAO = taskDAO;
+		this.conDAO = conDAO;
 		this.indexer = indexer;
 	}
 
@@ -142,7 +146,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			permissions.tryPermission(OpPerms.AllOperators);
 
 		this.subHeading = account.getName();
-		
+
 		if ("View Tasks".equals(button) || "Add Task".equals(button) || "Remove Task".equals(button)) {
 			if ("Add Task".equals(button)) {
 				EmployeeSiteTask est = new EmployeeSiteTask();
@@ -152,16 +156,15 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				est.setAuditColumns(permissions);
 				employeeSiteDAO.save(est);
 			}
-			
+
 			if ("Remove Task".equals(button)) {
-				List<EmployeeSiteTask> ests = 
-					employeeSiteDAO.findTasksByEmployeeSite(employee.getId());
+				List<EmployeeSiteTask> ests = employeeSiteDAO.findTasksByEmployeeSite(employee.getId());
 				JobTask task = taskDAO.find(taskID);
-				
+
 				Iterator<EmployeeSiteTask> iterator = ests.iterator();
 				while (iterator.hasNext()) {
 					EmployeeSiteTask est = iterator.next();
-					
+
 					if (est.getEmployeeSite().equals(employeeSite) && est.getTask().equals(task)) {
 						iterator.remove();
 						employeeSiteDAO.remove(est);
@@ -190,7 +193,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 			employee.setAuditColumns(permissions);
 
-			//employee.setNeedsIndexing(true);
+			// employee.setNeedsIndexing(true);
 			employeeDAO.save(employee);
 			indexer.runSingle(employee, "employee");
 
@@ -308,11 +311,11 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 			return "sites";
 		}
-		
+
 		if ("newSite".equals(button)) {
 			if (!Strings.isEmpty(siteLabel) && !Strings.isEmpty(siteName) && employee != null && opID > 0) {
 				OperatorAccount op = operatorAccountDAO.find(opID);
-				
+
 				JobSite site = new JobSite();
 				site.setLabel(siteLabel);
 				site.setName(siteName);
@@ -320,7 +323,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				site.setProjectStart(siteStart);
 				site.setProjectStop(siteStop);
 				site = jobSiteDAO.save(site);
-				
+
 				EmployeeSite es = new EmployeeSite();
 				es.setAuditColumns(permissions);
 				es.setJobSite(site);
@@ -330,7 +333,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				es.setExpirationDate(BaseHistory.END_OF_TIME);
 				employeeSiteDAO.save(es);
 			}
-			
+
 			return "sites";
 		}
 
@@ -386,80 +389,80 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public void setChildID(int childID) {
 		this.childID = childID;
 	}
-	
+
 	public int getOpID() {
 		return opID;
 	}
-	
+
 	public void setOpID(int opID) {
 		this.opID = opID;
 	}
-	
+
 	public String getSiteName() {
 		return siteName;
 	}
-	
+
 	public void setSiteName(String siteName) {
 		this.siteName = siteName;
 	}
-	
+
 	public String getSiteLabel() {
 		return siteLabel;
 	}
-	
+
 	public void setSiteLabel(String siteLabel) {
 		this.siteLabel = siteLabel;
 	}
-	
+
 	public Date getSiteStart() {
 		if (siteStart == null)
 			siteStart = new Date();
-		
+
 		return siteStart;
 	}
-	
+
 	public void setSiteStart(Date siteStart) {
 		this.siteStart = siteStart;
 	}
-	
+
 	public Date getSiteStop() {
 		if (siteStop == null) {
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.YEAR, 3);
 			siteStop = cal.getTime();
 		}
-		
+
 		return siteStop;
 	}
-	
+
 	public void setSiteStop(Date siteStop) {
 		this.siteStop = siteStop;
 	}
-	
+
 	public int getJobID() {
 		return jobID;
 	}
-	
+
 	public void setJobID(int jobID) {
 		this.jobID = jobID;
 	}
-	
+
 	public EmployeeSite getEmployeeSite() {
 		return employeeSite;
 	}
-	
+
 	public void setEmployeeSite(EmployeeSite employeeSite) {
 		this.employeeSite = employeeSite;
 	}
-	
+
 	public int getTaskID() {
 		return taskID;
 	}
-	
+
 	public void setTaskID(int taskID) {
 		this.taskID = taskID;
 	}
-	
+
 	public Set<JobRole> getUnusedJobRoles() {
 		if (unusedJobRoles == null) {
 			unusedJobRoles = new LinkedHashSet<JobRole>(account.getJobRoles());
@@ -524,7 +527,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			returnList.add(new OperatorSite(operator));
 		else {
 			for (JobSite site : operator.getJobSites()) {
-				if(!site.getProjectStop().before(new Date()))
+				if (!site.getProjectStop().before(new Date()))
 					returnList.add(new OperatorSite(site));
 			}
 		}
@@ -533,45 +536,82 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public String getEmpPhoto() {
 		return getFileName(employee.getId()) + employee.getPhoto();
 	}
-	
+
 	public List<JobTask> getSiteTasks() {
 		if (siteTasks == null) {
 			List<JobSiteTask> jobSiteTasks = siteTaskDAO.findByJob(employeeSite.getJobSite().getId());
 			siteTasks = new ArrayList<JobTask>();
-			
+
 			for (JobSiteTask jobSiteTask : jobSiteTasks) {
 				siteTasks.add(jobSiteTask.getTask());
 			}
 		}
-		
+
 		return siteTasks;
 	}
-	
+
 	public DoubleMap<EmployeeSite, JobTask, Boolean> getAssignedTask() {
 		if (assignedTask == null) {
 			assignedTask = new DoubleMap<EmployeeSite, JobTask, Boolean>();
-		
+
 			List<EmployeeSite> sites = employeeSiteDAO.findSitesByEmployee(employee);
 			List<EmployeeSiteTask> assigned = employeeSiteDAO.findTasksByEmployeeSite(employee.getId());
-			
+
 			boolean match = false;
 			for (EmployeeSite site : sites) {
 				for (JobTask task : getSiteTasks()) {
 					match = false;
-					
+
 					for (EmployeeSiteTask est : assigned) {
 						if (est.getEmployeeSite().equals(site) && est.getTask().equals(task)) {
 							match = true;
 							break;
 						}
 					}
-					
+
 					assignedTask.put(site, task, match);
 				}
 			}
 		}
-		
+
 		return assignedTask;
+	}
+
+	/**
+	 * Gets all job tasks across all associated operators (if you're a
+	 * contractor). Returns the list of job tasks per project you have under your umbrella
+	 * if you're an operator.
+	 * 
+	 * @return
+	 */
+	public List<JobTask> getAllJobTasks() {
+		if (employee != null) {
+			Set<JobTask> tasks = new HashSet<JobTask>();
+			
+			if (employee.getAccount().isContractor()) {
+				ContractorAccount con = conDAO.find(employee.getAccount().getId());
+				for (ContractorOperator co : con.getOperators()) {
+					for (JobSite site : co.getOperatorAccount().getJobSites()) {
+						for (JobSiteTask task : site.getTasks()) {
+							tasks.add(task.getTask());
+						}
+					}
+				}
+			} else {
+				OperatorAccount op = operatorAccountDAO.find(employee.getAccount().getId());
+				for (JobSite site : op.getJobSites()) {
+					for (JobSiteTask task : site.getTasks()) {
+						tasks.add(task.getTask());
+					}
+				}
+			}
+			
+			List<JobTask> allTasks = new ArrayList<JobTask>(tasks);
+			Collections.sort(allTasks);
+			return allTasks;
+		}
+		
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -582,7 +622,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	@SuppressWarnings("unchecked")
-	public JSONArray getPreviousTitlesJSON(){
+	public JSONArray getPreviousTitlesJSON() {
 		JSONArray a = new JSONArray();
 		a.addAll(employeeDAO.findCommonTitles());
 		return a;
