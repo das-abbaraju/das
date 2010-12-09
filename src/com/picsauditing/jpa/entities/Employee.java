@@ -71,6 +71,16 @@ public class Employee extends BaseTable implements Indexable {
 	public String getDisplayName() {
 		return firstName + " " + lastName;
 	}
+	
+	/**
+	 * Used for Indexable/Interface
+	 * @return
+	 * 		Returns display name
+	 */
+	@Transient
+	public String getName(){
+		return getDisplayName();
+	}
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "accountID", nullable = false)

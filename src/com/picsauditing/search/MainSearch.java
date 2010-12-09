@@ -3,6 +3,9 @@ package com.picsauditing.search;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,6 +30,7 @@ import com.picsauditing.util.Strings;
 public class MainSearch extends PicsActionSupport implements Preparable {
 
 	protected String searchTerm;
+	protected boolean orderByName = false;
 
 	protected int searchID = 0;
 	protected int totalRows;
@@ -141,7 +145,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	}
 
 	private List<Indexable> getFullResults(List<BasicDynaBean> queryList) throws IOException {
-		List<Indexable> records = getRecords(queryList);
+		List<Indexable> records = getRecords(queryList, orderByName);
 		if (records.size() == 1) {
 			redirect("Search.action?button=getResult&searchID=" + records.get(0) + "&searchType=");
 		}
@@ -150,7 +154,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	private void getResults(List<BasicDynaBean> queryList) {
 		StringBuilder sb = new StringBuilder();
-		List<Indexable> records = getRecords(queryList);
+		List<Indexable> records = getRecords(queryList, false);
 		if (records.size() > 0) {
 			for (Indexable value : records)
 				sb.append(value.getSearchText());
@@ -159,7 +163,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Indexable> getRecords(List<BasicDynaBean> queryList) {
+	public List<Indexable> getRecords(List<BasicDynaBean> queryList, boolean rOrderByName) {
 		ArrayListMultimap<Class, Integer> indexableMap = ArrayListMultimap.create();
 		SearchList recordsList = new SearchList();
 		for (BasicDynaBean bdb : queryList) {
@@ -191,7 +195,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				}
 			}
 		}
-		return recordsList.getRecordsOnly(false);
+		return recordsList.getRecordsOnly(false, rOrderByName);
 	}
 
 	public boolean checkCon(int id) {
@@ -274,6 +278,14 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		this.searchEngine = searchEngine;
 	}
 
+	public boolean isOrderByName() {
+		return orderByName;
+	}
+
+	public void setOrderByName(boolean orderByName) {
+		this.orderByName = orderByName;
+	}
+
 }
 
 class SearchItem {
@@ -336,7 +348,7 @@ class SearchList {
 		return item;
 	}
 
-	public List<Indexable> getRecordsOnly(boolean nullsAllowed) {
+	public List<Indexable> getRecordsOnly(boolean nullsAllowed, boolean sortByName) {
 		List<Indexable> recordsOnly = new ArrayList<Indexable>();
 		for (SearchItem item : data) {
 			if (nullsAllowed)
@@ -345,6 +357,14 @@ class SearchList {
 				if (item.record != null)
 					recordsOnly.add(item.record);
 			}
+		}
+		if(sortByName){
+			Collections.sort(recordsOnly, new Comparator<Indexable>() {
+				@Override
+				public int compare(Indexable o1, Indexable o2) {
+					return o1.getName().compareTo(o2.getName());
+				}
+			});
 		}
 		return recordsOnly;
 	}

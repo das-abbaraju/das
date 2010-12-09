@@ -231,10 +231,7 @@ public class SearchEngine {
 			sql.addOrderBy("foreignKey");
 			return sql.toString();
 		}
-		if (orderBy != null)
-			sql.addOrderBy("rName, m DESC, score, foreignKey");
-		else
-			sql.addOrderBy("m DESC, score, foreignKey");
+		sql.addOrderBy("m DESC, score, foreignKey");
 		if (limit != null)
 			sql.setLimit(limit);
 		if (start != null)

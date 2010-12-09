@@ -20,13 +20,13 @@ function changePage(form, start){
 		<s:if test="searchEngine.commonFilterSuggest.size() > 0">
 			Try adding
 			<s:iterator value="searchEngine.commonFilterSuggest" id="sug">
-				<a href="Search.action?button=search&searchTerm=<s:property value="searchTerm.replace(' ','+')"/>+<s:property value="#sug.replace(' ','-').toLowerCase()"/>"><s:property value="#sug.toLowerCase()"/></a> 
+				<a href="Search.action?button=search&searchTerm=<s:property value="searchTerm.replace(' ','+')"/>+<s:property value="#sug.replace(' ','-')"/>"><s:property value="#sug.toLowerCase()"/></a> 
 			</s:iterator>
 			to your search?
 		</s:if>
 	</div>
 </div>
-<div id="sortBy"><a href="Search.action?button=search&searchTerm=<s:property value="searchTerm.replace(' ','+')"/>&orderBy=rName">Sort by Name</a></div>
+<div id="sortBy"><a href="Search.action?button=search&searchTerm=<s:property value="searchTerm.replace(' ','+')"/>&orderByName=true">Sort by Name</a></div>
 <div id="pageResults">
 	<div id="pageLinks"><s:property value="pageLinks" escape="false"/></div>
 		<table class="report">
