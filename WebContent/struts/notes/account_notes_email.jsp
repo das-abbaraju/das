@@ -17,7 +17,10 @@
 				<s:if test="fromAddress == null || fromAddress == ''">info@picsauditing.com</s:if>
 				<s:else><s:property value="fromAddress" /></s:else>
 			</td>
-			<td align="right"><s:date name="sentDate" format="M/d/yy h:mm a" /></td>
+			<td align="right">
+				<s:if test="sentDate == null">Pending</s:if>
+				<s:else><s:date name="sentDate" format="M/d/yy h:mm a" /></s:else>
+			</td>
 			<td><s:property value="subject" /></td>
 			<td><s:property value="toAddresses" /></td>
 		</tr>
