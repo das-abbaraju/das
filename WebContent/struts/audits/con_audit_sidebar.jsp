@@ -58,6 +58,7 @@
 			href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>">Schedule
 		Audit</a></li>
 	</s:if>
+	<li><a class="print" href="#" onclick="window.print(); return false;">Print This Page</a></li>
 </ul>
 
 <div
