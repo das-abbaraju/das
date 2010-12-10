@@ -819,6 +819,10 @@ a.picsbutton {
 	height: 16px;
 }
 
+.showPointer{
+	cursor: pointer;	
+}
+
 /* UTILITIES */
 .picsbutton:hover,.picsbutton:active,a.picsbutton:hover,a.picsbutton:active
 	{

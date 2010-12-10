@@ -73,7 +73,7 @@
 								<s:select list="getValidStatuses(#currentCao.id)" name="caosSave[%{#rowStatus.index}].status" value="#currentCao.status" />
 							</s:if>
 							<s:else>
-								<a onclick="loadStatus(<s:property value="#currentCao.id"/>)" class="preview <s:property value="status.color"/>"><s:property value="status"/></a>
+								<a onclick="loadStatus(<s:property value="#currentCao.id"/>)" class="showPointer preview <s:property value="status.color"/>"><s:property value="status"/></a>
 							</s:else>
 						</td>					
 						<td class="caoDate">
