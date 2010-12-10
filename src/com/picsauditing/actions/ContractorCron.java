@@ -439,6 +439,8 @@ public class ContractorCron extends PicsActionSupport {
 			note.setCanContractorView(true);
 			note.setViewableById(co.getOperatorAccount().getId());
 			dao.save(note);
+			if(co.getFlagColor() == FlagColor.Clear)
+				co.setBaselineFlag(overallColor);
 			co.setFlagColor(overallColor);
 			co.setFlagLastUpdated(new Date());
 		}
