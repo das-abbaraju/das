@@ -86,7 +86,6 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 			}
 		}
 
-		permissionToEdit = canEditRule();
 		addFields();
 
 		if (button != null) {
@@ -180,7 +179,8 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 				int count = dao.deleteChildren(rule, permissions);
 				addActionMessage("Archived " + count + (count == 1 ? " rule" : " rules"));
 			}
-		}
+		} else
+			permissionToEdit = canEditRule();
 
 		lessGranular = dao.getLessGranular(rule, date);
 		moreGranular = dao.getMoreGranular(rule, date);
