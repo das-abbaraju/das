@@ -16,6 +16,7 @@
 
 .newValue {
 	display: none;
+	line-height: 25px;
 }
 </style>
 <s:include value="../jquery.jsp"/>
@@ -82,6 +83,12 @@ function sort(a, b, sortBy) {
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
+<s:if test="tasks.size > 0">
+	<a class="excel" <s:if test="tasks.size > 500">onclick="return confirm('Are you sure you want to download all
+		<s:property value="task.size"/> rows? This may take a while.');"</s:if> 
+		href="ManageJobTasksOperatorCSV.action?id=<s:property value="operator.id" />"
+		title="Download all <s:property value="tasks.size"/> results to a CSV file">Download</a>
+</s:if>
 <table id="tasksTable" >
 	<tr>
 		<td>
@@ -104,7 +111,10 @@ function sort(a, b, sortBy) {
 							<tr id="<s:property value="#task.id" />">
 								<td class="label">
 									<span class="oldValue"><s:property value="#task.label" /></span>
-									<span class="newValue"><input type="text" value="<s:property value="#task.label" />" name="jobTaskLabel" size="10" /></span>
+									<span class="newValue">
+										<input type="text" value="<s:property value="#task.label" />" name="jobTaskLabel" size="10" /><br />
+										<nobr><span style="font-size: 10px">Display Order</span><input type="text" value="<s:property value="#task.displayOrder" />" name="displayOrder" size="2" /></nobr>
+									</span>
 								</td>
 								<td class="name">
 									<span class="oldValue"><s:property value="#task.name" /></span>
@@ -129,11 +139,13 @@ function sort(a, b, sortBy) {
 										name="Manage Task Criteria">Manage</a></td>
 								<pics:permission perm="ManageJobTasks" type="Edit">
 									<td class="center">
-										<nobr><a href="#" onclick="editTask(<s:property value="#task.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit Task" /></a>
+										<nobr><a href="#" onclick="editTask(<s:property value="#task.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit Task" /><span class="newValue">Close</span></a>
 										<span class="newValue">
-											<a href="#" onclick="saveEdit(<s:property value="#task.id" />); return false;" title="Save Edit" class="save"></a>
+											<br />
+											<a href="#" onclick="saveEdit(<s:property value="#task.id" />); return false;" title="Save Edit" class="save">Save</a>
+											<br />
 											<a href="ManageJobTasksOperator.action?id=<s:property value="operator.id" />&jobTaskID=<s:property value="#task.id" />&button=Remove" 
-												onclick="return confirm('Are you sure you want to remove this task?');" title="Remove Task" class="remove"></a>
+												onclick="return confirm('Are you sure you want to remove this task?');" title="Remove Task" class="remove">Remove</a>
 										</span></nobr>
 									</td>
 								</pics:permission>
@@ -160,6 +172,9 @@ function sort(a, b, sortBy) {
 								<li><label>Active:</label>
 									<s:checkbox name="newTask.active"></s:checkbox>
 								</li>
+								<li><label>Display Order:</label>
+									<s:textfield name="newTask.displayOrder" size="3" />
+								</li>
 								<li><label>Task Type:</label>
 									<s:select list="#{'L/G':'L/G','L':'L','G':'G'}" name="newTask.taskType"></s:select>
 								</li>
@@ -176,6 +191,5 @@ function sort(a, b, sortBy) {
 		</td>
 	</tr>
 </table>
-<script type="text/javascript">sortTable('label');</script>
 </body>
 </html>

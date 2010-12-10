@@ -9,16 +9,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <style type="text/css">
-#sitesTable table.report {
-	margin-right: 10px;
-	margin-bottom: 10px;
-}
-
-fieldset.form label {
-	width: 5em;
-	margin-right: 5px;
-}
-
 .newValue {
 	display: none;
 }
@@ -124,8 +114,9 @@ $(function() {
 </s:if>
 <table id="sitesTable">
 	<tr>
-		<td>
-			<h3>Active Projects</h3>
+		<td style="padding-right: 10px;">
+			<h3>Projects</h3>
+			<h4>Active</h4>
 			<table class="report">
 				<thead>
 					<tr><th></th>
@@ -133,7 +124,7 @@ $(function() {
 						<th>Description</th>
 						<s:if test="canEdit">
 							<th>Edit</th>
-							<th>Tasks</th>
+							<th>Tasks and Companies</th>
 							<th>Start Date</th>
 							<th>End Date</th>
 						</s:if>
@@ -147,35 +138,35 @@ $(function() {
 					</tr>
 				</thead>
 				<tbody>
-				<s:if test="activeSites.size() > 0">
-					<s:iterator value="activeSites" status="stat" id="site">
-						<tr id="<s:property value="#site.id" />">
-							<td><s:property value="#stat.count" /></td>
-							<td>
-								<s:property value="#site.label" />
-							</td>
-							<td>
-								<s:property value="#site.name" />
-							</td>
-							<s:if test="canEdit">
-								<td class="center">
-									<a href="#" onclick="editSite(<s:property value="#site.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit project" /></a>
+					<s:if test="activeSites.size() > 0">
+						<s:iterator value="activeSites" status="stat" id="site">
+							<tr id="<s:property value="#site.id" />">
+								<td><s:property value="#stat.count" /></td>
+								<td>
+									<s:property value="#site.label" />
 								</td>
-								<td class="center">
-									<a href="#" onclick="getTasks(<s:property value="#site.id" />); return false;">View</a>
+								<td>
+									<s:property value="#site.name" />
 								</td>
-								<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
-								<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
-							</s:if>
-							<s:else>
-								<td><s:property value="#site.city" /></td>
-								<td><s:property value="#site.state.english" /></td>
-								<td><s:property value="#site.country.isoCode" /></td>
-								<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
-								<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
-							</s:else>
-						</tr>
-					</s:iterator>
+								<s:if test="canEdit">
+									<td class="center">
+										<a href="#" onclick="editSite(<s:property value="#site.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit project" /></a>
+									</td>
+									<td class="center">
+										<a href="#" onclick="getTasks(<s:property value="#site.id" />); return false;">View</a>
+									</td>
+									<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
+									<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
+								</s:if>
+								<s:else>
+									<td><s:property value="#site.city" /></td>
+									<td><s:property value="#site.state.english" /></td>
+									<td><s:property value="#site.country.isoCode" /></td>
+									<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
+									<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
+								</s:else>
+							</tr>
+						</s:iterator>
 					</s:if>
 					<!--  -->
 					<s:if test="futureSites.size() > 0">
@@ -208,8 +199,57 @@ $(function() {
 							</tr>
 						</s:iterator>
 					</s:if>
+					<s:if test="(activeSites.size + futureSites.size) == 0">
+						<tr>
+							<td colspan="<s:property value="canEdit ? 7 : 8" />">No Sites</td>
+						</tr>
+					</s:if>
 				</tbody>
 			</table>
+			<s:if test="canEdit">
+				<div id="editProject"></div>
+				<a onclick="$('#editProject:visible').hide(); $('#addJobSite').show(); $('#addLink').hide(); return false;"
+					href="#" id="addLink" class="add">Add New Project</a>
+				<div id="addJobSite" style="display: none; clear: both;">
+					<s:form id="newJobSite" method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
+						<s:hidden name="id" />
+						<fieldset class="form">
+							<h2 class="formLegend">Add New Project</h2>
+							<ol>
+								<li><label>Short Label<span class="redMain">*</span>:</label>
+									<s:textfield name="siteLabel" size="20" maxlength="15" />
+								</li>
+								<li><label>Description<span class="redMain">*</span>:</label>
+									<s:textfield name="siteName" size="20" maxlength="255" />
+								</li>
+								<li><label>City:</label>
+									<s:textfield name="siteCity" size="20" maxlength="30" />
+								</li>
+								<li><label>Country:</label>
+									<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode"
+										headerValue="- Country -" headerKey="" listValue="name"
+										onchange="getStates(this.value);"></s:select>
+								</li>
+								<li class="loadStates"><label>State:</label>
+									<s:select list="getStateList('US')" id="state_sel" name="state.isoCode" 
+										headerKey="" headerValue="- State -" listKey="isoCode" listValue="name" value="stateString"/>
+								</li>
+								<li><label>Start Date:</label>
+									<s:textfield name="siteStart" size="20" cssClass="datepicker" />
+								</li>
+								<li><label>End Date:</label>
+									<s:textfield name="siteEnd" size="20" cssClass="datepicker" />
+								</li>
+							</ol>
+						</fieldset>
+						<fieldset class="form submit">
+							<input type="submit" value="Save" class="picsbutton positive" name="button" />
+							<button onclick="$('#addLink').show(); $('#addJobSite').hide(); return false;"
+								class="picsbutton negative">Cancel</button>
+						</fieldset>
+					</s:form>
+				</div>
+			</s:if>
 		</td>
 		<td rowspan="2">
 			<div id="jobSiteTasks"></div>
@@ -219,53 +259,9 @@ $(function() {
 		</td>
 	</tr>
 </table>
-<s:if test="canEdit"><div style="width: 50%;">
-	<div id="editProject"></div>
-	<a onclick="$('#editProject:visible').hide(); $('#addJobSite').show(); $('#addLink').hide(); return false;"
-		href="#" id="addLink" class="add">Add New Project</a>
-	<div id="addJobSite" style="display: none; clear: both;">
-		<s:form id="newJobSite" method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
-			<s:hidden name="id" />
-			<fieldset class="form">
-				<h2 class="formLegend">Add New Project</h2>
-				<ol>
-					<li><label>Short Label<span class="redMain">*</span>:</label>
-						<s:textfield name="siteLabel" size="20" maxlength="15" />
-					</li>
-					<li><label>Description<span class="redMain">*</span>:</label>
-						<s:textfield name="siteName" size="20" maxlength="255" />
-					</li>
-					<li><label>City:</label>
-						<s:textfield name="siteCity" size="20" maxlength="30" />
-					</li>
-					<li><label>Country:</label>
-						<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode"
-							headerValue="- Country -" headerKey="" listValue="name"
-							onchange="getStates(this.value);"></s:select>
-					</li>
-					<li class="loadStates"><label>State:</label>
-						<s:select list="getStateList('US')" id="state_sel" name="state.isoCode" 
-							headerKey="" headerValue="- State -" listKey="isoCode" listValue="name" value="stateString"/>
-					</li>
-					<li><label>Start Date:</label>
-						<s:textfield name="siteStart" size="20" cssClass="datepicker" />
-					</li>
-					<li><label>End Date:</label>
-						<s:textfield name="siteEnd" size="20" cssClass="datepicker" />
-					</li>
-				</ol>
-			</fieldset>
-			<fieldset class="form submit">
-				<input type="submit" value="Save" class="picsbutton positive" name="button" />
-				<button onclick="$('#addLink').show(); $('#addJobSite').hide(); return false;"
-					class="picsbutton negative">Cancel</button>
-			</fieldset>
-		</s:form>
-	</div>
-</div></s:if>
 <s:if test="inactiveSites.size() > 0">
 	<div>
-		<h3>Past Projects</h3>
+		<h4>Past Projects</h4>
 		<table class="report">
 			<thead>
 				<tr><th></th>
