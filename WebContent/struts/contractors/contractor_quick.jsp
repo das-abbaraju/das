@@ -38,7 +38,7 @@
 		<br />
 		<s:if test="contractor.requiresCompetencyReview">
 			<label>HSE Competency Review:</label>
-			<s:if test="contractor.requiresCompetencyReview">Enabled
+			<s:if test="contractor.requiresCompetencyReview">Enabled</s:if>
 		</s:if>
 		<br />
 		<label>Trade:</label>
