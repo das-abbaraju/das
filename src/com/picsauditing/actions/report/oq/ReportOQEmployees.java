@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report.oq;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -148,13 +149,21 @@ public class ReportOQEmployees extends ReportActionSupport {
 	public Map<JobSite, List<JobSiteTask>> getJobSites() {
 		if (jobSites == null) {
 			jobSites = new HashMap<JobSite, List<JobSiteTask>>();
+			List<Integer> jobSiteIDs = new ArrayList<Integer>();
+			
+			if (filterOn(filter.getProjects())) {
+				for (Integer id : filter.getProjects())
+					jobSiteIDs.add(id);
+			}
 
 			for (JobSiteTask task : jobSiteTasks) {
 				if (task.isCurrent() && task.getJob().isActive(new Date())) {
-					if (jobSites.get(task.getJob()) == null)
-						jobSites.put(task.getJob(), new ArrayList<JobSiteTask>());
-
-					jobSites.get(task.getJob()).add(task);
+					if (jobSiteIDs.contains(task.getJob().getId()) || jobSiteIDs.isEmpty()) {
+						if (jobSites.get(task.getJob()) == null)
+							jobSites.put(task.getJob(), new ArrayList<JobSiteTask>());
+	
+						jobSites.get(task.getJob()).add(task);
+					}
 				}
 			}
 		}

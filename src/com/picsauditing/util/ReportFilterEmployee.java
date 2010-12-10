@@ -3,11 +3,14 @@ package com.picsauditing.util;
 import java.util.List;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.JobSiteDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.JobSite;
 
 @SuppressWarnings("serial")
 public class ReportFilterEmployee extends ReportFilter {
+	private Permissions permissions;
 
 	protected boolean showAccountName = true;
 	protected boolean showFirstName = true;
@@ -16,6 +19,7 @@ public class ReportFilterEmployee extends ReportFilter {
 	protected boolean showSsn = true;
 	protected boolean showLimitEmployees = false;
 	protected boolean showProjects = false;
+	protected boolean showAssessmentCenter = false;
 
 	protected String accountName;
 	protected String firstName;
@@ -24,6 +28,11 @@ public class ReportFilterEmployee extends ReportFilter {
 	protected String ssn;
 	protected boolean limitEmployees = true;
 	protected int[] projects;
+	protected int[] assessmentCenters;
+	
+	public void setPermissions(Permissions permissions) {
+		this.permissions = permissions;
+	}
 
 	public boolean isShowAccountName() {
 		return showAccountName;
@@ -79,6 +88,14 @@ public class ReportFilterEmployee extends ReportFilter {
 	
 	public void setShowProjects(boolean showProjects) {
 		this.showProjects = showProjects;
+	}
+	
+	public boolean isShowAssessmentCenter() {
+		return showAssessmentCenter;
+	}
+	
+	public void setShowAssessmentCenter(boolean showAssessmentCenter) {
+		this.showAssessmentCenter = showAssessmentCenter;
 	}
 
 	public String getAccountName() {
@@ -139,7 +156,16 @@ public class ReportFilterEmployee extends ReportFilter {
 		this.projects = projects;
 	}
 	
-	public List<JobSite> getProjectList(Permissions permissions) {
+	public int[] getAssessmentCenters() {
+		return assessmentCenters;
+	}
+	
+	public void setAssessmentCenters(int[] assessmentCenters) {
+		this.assessmentCenters = assessmentCenters;
+	}
+	
+	// Lists
+	public List<JobSite> getProjectList() {
 		JobSiteDAO siteDAO = (JobSiteDAO) SpringUtils.getBean("JobSiteDAO");
 		
 		if (permissions.isOperatorCorporate())
@@ -148,5 +174,10 @@ public class ReportFilterEmployee extends ReportFilter {
 			return siteDAO.findByContractor(permissions.getAccountId());
 		
 		return null;
+	}
+	
+	public List<Account> getAssessmentCenterList() {
+		AccountDAO accountDAO = (AccountDAO) SpringUtils.getBean("AccountDAO");
+		return accountDAO.findWhere("a.type = 'Assessment'");
 	}
 }

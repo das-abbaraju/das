@@ -52,18 +52,31 @@
 			<s:checkbox name="filter.limitEmployees" /> Show Only My Employees
 		</div>
 	</s:if>
-	
 	<s:if test="filter.showProjects">
 		<div class="filterOption">
 			<a href="#" onclick="toggleBox('form1_projects'); return false;">Projects</a> =
 			<span id="form1_projects_query">ALL</span>
 			<br />
 			<span id="form1_projects_select" style="display: none" class="clearLink">
-				<s:select list="filter.getProjectList(permissions)" multiple="true" cssClass="forms"
+				<s:select list="filter.projectList" multiple="true" cssClass="forms"
 					name="filter.projects" id="form1_projects" listKey="id" listValue="label" />
 				<br />
 				<script type="text/javascript">updateQuery('form1_projects');</script>
 				<a class="clearLink" href="#" onclick="clearSelected('form1_projects'); return false;">Clear</a>
+			</span>
+		</div>
+	</s:if>
+	<s:if test="filter.showAssessmentCenter">
+		<div class="filterOption">
+			<a href="#" onclick="toggleBox('form1_assessmentCenters'); return false;">Assessment Center</a> =
+			<span id="form1_assessmentCenters_query">ALL</span>
+			<br />
+			<span id="form1_assessmentCenters_select" style="display: none" class="clearLink">
+				<s:select list="filter.assessmentCenterList" multiple="true" cssClass="forms"
+					name="filter.assessmentCenters" id="form1_assessmentCenters" listKey="id" listValue="name" />
+				<br />
+				<script type="text/javascript">updateQuery('form1_assessmentCenters');</script>
+				<a class="clearLink" href="#" onclick="clearSelected('form1_assessmentCenters'); return false;">Clear</a>
 			</span>
 		</div>
 	</s:if>
