@@ -171,16 +171,10 @@ public class ContractorAccountDAO extends PicsDAO {
 	 * @return
 	 */
 	public List<Integer> findContractorsNeedingRecalculation(int limit, Set<Integer> contractorsToIgnore) {
-		return findContractorsNeedingRecalculation(limit, contractorsToIgnore, null);
-	}
-	
-	public List<Integer> findContractorsNeedingRecalculation(int limit, Set<Integer> contractorsToIgnore, Integer radix) {
 		String hql = "SELECT c.id FROM ContractorAccount c WHERE c.status IN ('Active','Pending','Demo') AND ("
 				+ "c.lastRecalculation < :lastRunDate OR c.lastRecalculation IS NULL)";
 		if (contractorsToIgnore.size() > 0)
 			hql += " AND c.id NOT IN (" + Strings.implode(contractorsToIgnore) + ")";
-		if (radix != null)
-			hql += " AND MOD(c.id, 3) = " + radix;
 		hql += " ORDER BY c.needsRecalculation DESC, c.lastRecalculation";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(limit);

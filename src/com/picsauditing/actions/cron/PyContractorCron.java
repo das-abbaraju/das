@@ -9,27 +9,18 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class PyContractorCron extends PicsActionSupport {
-
+	
 	private ContractorAccountDAO dao;
-	private Integer radix = null;
-
-	public PyContractorCron(ContractorAccountDAO dao) {
-		this.dao = dao;
+	
+	public PyContractorCron(ContractorAccountDAO dao){
+		this.dao = dao;		
 	}
-
-	public String execute() {
-		List<Integer> ids = dao.findContractorsNeedingRecalculation(15, new HashSet<Integer>(), radix);
-		if (ids != null && !ids.isEmpty())
+	
+	public String execute(){
+		List<Integer> ids = dao.findContractorsNeedingRecalculation(15, new HashSet<Integer>());
+		if(ids!=null && !ids.isEmpty())
 			output = Strings.implode(ids);
 		return BLANK;
-	}
-
-	public Integer getRadix() {
-		return radix;
-	}
-
-	public void setRadix(Integer radix) {
-		this.radix = radix;
 	}
 
 }
