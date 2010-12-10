@@ -1,6 +1,18 @@
 package com.picsauditing.actions.operators;
 
+import java.util.Collections;
 import java.util.List;
+
+import javax.servlet.ServletOutputStream;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -18,6 +30,7 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 	protected String jobTaskLabel;
 	protected String jobTaskName;
 	protected String taskType;
+	protected int displayOrder;
 
 	protected JobTask newTask = new JobTask();
 
@@ -40,7 +53,7 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 				newTask = jobTaskDAO.find(jobTaskID);
 				return SUCCESS;
 			}
-			
+
 			// Check if they can edit here
 			tryPermissions(OpPerms.ManageJobTasks, OpType.Edit);
 
@@ -53,17 +66,18 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 				if (newTask.getOperator() == null && operator != null)
 					newTask.setOperator(operator);
 			}
-			
+
 			if ("Edit".equalsIgnoreCase(button)) {
 				if (jobTaskID > 0 && !Strings.isEmpty(jobTaskLabel)) {
 					newTask = jobTaskDAO.find(jobTaskID);
 					newTask.setLabel(jobTaskLabel);
-					
+
 					if (!Strings.isEmpty(jobTaskName))
 						newTask.setName(jobTaskName);
-					
+
 					newTask.setActive(taskActive);
 					newTask.setTaskType(taskType);
+					newTask.setDisplayOrder(displayOrder);
 				} else
 					addActionError("Missing job task ID or label");
 			}
@@ -71,13 +85,16 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 			if ("Remove".equalsIgnoreCase(button)) {
 				newTask = jobTaskDAO.find(jobTaskID);
 				jobTaskDAO.remove(newTask);
+				newTask = null;
 			}
-			
+
 			if (getActionErrors().size() > 0)
 				return SUCCESS;
-			
-			newTask.setAuditColumns(permissions);
-			jobTaskDAO.save(newTask);
+
+			if (newTask != null) {
+				newTask.setAuditColumns(permissions);
+				jobTaskDAO.save(newTask);
+			}
 
 			if (permissions.isOperator())
 				return redirect("ManageJobTasksOperator.action");
@@ -95,37 +112,45 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 	public void setJobTaskID(int jobTaskID) {
 		this.jobTaskID = jobTaskID;
 	}
-	
+
 	public boolean isTaskActive() {
 		return taskActive;
 	}
-	
+
 	public void setTaskActive(boolean taskActive) {
 		this.taskActive = taskActive;
 	}
-	
+
 	public String getJobTaskLabel() {
 		return jobTaskLabel;
 	}
-	
+
 	public void setJobTaskLabel(String jobTaskLabel) {
 		this.jobTaskLabel = jobTaskLabel;
 	}
-	
+
 	public String getJobTaskName() {
 		return jobTaskName;
 	}
-	
+
 	public void setJobTaskName(String jobTaskName) {
 		this.jobTaskName = jobTaskName;
 	}
-	
+
 	public String getTaskType() {
 		return taskType;
 	}
-	
+
 	public void setTaskType(String taskType) {
 		this.taskType = taskType;
+	}
+
+	public int getDisplayOrder() {
+		return displayOrder;
+	}
+
+	public void setDisplayOrder(int displayOrder) {
+		this.displayOrder = displayOrder;
 	}
 
 	public JobTask getNewTask() {
@@ -138,5 +163,74 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 
 	public List<JobTask> getTasks() {
 		return jobTaskDAO.findOperatorTasks(operator.getId());
+	}
+
+	public void getExcelDownload() throws Exception {
+		loadPermissions();
+		findOperator();
+
+		HSSFWorkbook wb = new HSSFWorkbook();
+		HSSFSheet sheet = wb.createSheet();
+		wb.setSheetName(0, "Job Tasks for " + operator.getName());
+
+		// Header
+		HSSFFont headerFont = wb.createFont();
+		headerFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+
+		HSSFCellStyle header = wb.createCellStyle();
+		header.setFont(headerFont);
+		header.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+
+		HSSFRow row = sheet.createRow(0);
+		HSSFCell cell = row.createCell(0);
+		cell.setCellStyle(header);
+		cell.setCellValue(new HSSFRichTextString("Label"));
+
+		cell = row.createCell(1);
+		cell.setCellStyle(header);
+		cell.setCellValue(new HSSFRichTextString("Task Name"));
+
+		cell = row.createCell(2);
+		cell.setCellStyle(header);
+		cell.setCellValue(new HSSFRichTextString("Active"));
+
+		cell = row.createCell(3);
+		cell.setCellStyle(header);
+		cell.setCellValue(new HSSFRichTextString("Task Type"));
+
+		List<JobTask> tasks = getTasks();
+		Collections.sort(tasks);
+
+		int rownum = 1;
+		for (JobTask task : tasks) {
+			row = sheet.createRow(rownum);
+			rownum++;
+
+			cell = row.createCell(0);
+			cell.setCellValue(new HSSFRichTextString(task.getLabel()));
+
+			cell = row.createCell(1);
+			cell.setCellValue(new HSSFRichTextString(task.getName()));
+
+			cell = row.createCell(2);
+			cell.setCellValue(new HSSFRichTextString(task.isActive() ? "Active" : "Inactive"));
+
+			cell = row.createCell(3);
+			cell.setCellValue(new HSSFRichTextString(task.getTaskType()));
+		}
+
+		sheet.autoSizeColumn(0);
+		sheet.autoSizeColumn(1);
+		sheet.autoSizeColumn(2);
+		sheet.autoSizeColumn(3);
+
+		String filename = "JobTasks.xls";
+
+		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+		wb.write(outstream);
+		outstream.flush();
+		ServletActionContext.getResponse().flushBuffer();
 	}
 }

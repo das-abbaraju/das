@@ -1813,6 +1813,12 @@
 			<result>struts/operators/op_manage_job_tasks.jsp</result>
 		</action>
 		
+		<action name="ManageJobTasksOperatorCSV"
+			class="com.picsauditing.actions.operators.ManageJobTasksOperator"
+			method="getExcelDownload">
+			<result>struts/blank.jsp</result>
+		</action>
+		
 		<action name="ManageJobTaskCriteria"
 			class="com.picsauditing.actions.operators.ManageJobTaskCriteria">
 			<result>struts/operators/op_manage_job_task_criteria.jsp</result>
