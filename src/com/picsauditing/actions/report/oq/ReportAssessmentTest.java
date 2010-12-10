@@ -86,6 +86,9 @@ public class ReportAssessmentTest extends ReportActionSupport {
 		
 		if (f.isLimitEmployees())
 			sql.addWhere("e.accountID = " + permissions.getAccountId());
+		
+		if (filterOn(f.getAssessmentCenters()))
+			sql.addWhere("t.assessmentCenterID IN (" + Strings.implode(f.getAssessmentCenters()) + ")");
 	}
 	
 	@Override
@@ -97,6 +100,8 @@ public class ReportAssessmentTest extends ReportActionSupport {
 		// Do we need to look up employees by SSN?
 		getFilter().setShowSsn(false);
 		getFilter().setShowLimitEmployees(true);
+		getFilter().setShowAssessmentCenter(true);
+		getFilter().setPermissions(permissions);
 		
 		// Operators, Corporate, Administrators
 		if (!permissions.isAdmin() && !permissions.isOperatorCorporate())
