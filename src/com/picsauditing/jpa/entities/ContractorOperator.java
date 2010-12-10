@@ -24,6 +24,8 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.opensymphony.xwork2.validator.annotations.DateRangeFieldValidator;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -39,6 +41,8 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private String workStatus = "P";
 	private FlagColor flagColor;
 	private FlagColor baselineFlag;
+	private Integer baselineApprover;
+	private Date baselineApproved;
 	private FlagColor forceFlag;
 	private Date flagLastUpdated;
 	private Date forceEnd;
@@ -112,7 +116,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		String where = "subid = " + getContractorAccount().getId() + " AND workStatus = '" + parentStatus + "'";
 		Set<Integer> idList = new HashSet<Integer>();
 		for (Facility f : getOperatorAccount().getOperatorFacilities())
-			if(f.getOperator().getStatus().isActiveDemo() && f.getOperator().getApprovesRelationships().isTrue())
+			if (f.getOperator().getStatus().isActiveDemo() && f.getOperator().getApprovesRelationships().isTrue())
 				idList.add(f.getOperator().getId());
 		String ids = Strings.implode(idList, ",");
 		where += " AND genid IN (" + ids + ")";
@@ -137,6 +141,32 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	public void setBaselineFlag(FlagColor baselineFlag) {
 		this.baselineFlag = baselineFlag;
+	}
+
+	public Integer getBaselineApprover() {
+		return baselineApprover;
+	}
+
+	public void setBaselineApprover(Integer baselineApprover) {
+		this.baselineApprover = baselineApprover;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getBaselineApproved() {
+		return baselineApproved;
+	}
+
+	public void setBaselineApproved(Date baselineApproved) {
+		this.baselineApproved = baselineApproved;
+	}
+	
+	public void resetBaseline(Permissions permissions) {
+		baselineFlag = flagColor;
+		baselineApproved = new Date();
+		if (permissions != null && permissions.getUserId() > 0)
+			baselineApprover = permissions.getUserId();
+		else
+			baselineApprover = User.SYSTEM;
 	}
 
 	@Enumerated(EnumType.STRING)
