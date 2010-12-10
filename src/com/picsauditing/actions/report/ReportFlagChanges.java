@@ -9,6 +9,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -59,6 +60,7 @@ public class ReportFlagChanges extends ReportAccount {
 		getFilter().setShowIndustry(false);
 		getFilter().setShowStatus(false);
 		getFilter().setShowAccountManager(true);
+		getFilter().setShowOperator(false);
 
 		String opIds = "";
 		List<Integer> ops = new Vector<Integer>();
@@ -77,14 +79,14 @@ public class ReportFlagChanges extends ReportAccount {
 
 		sql.addWhere("a.status IN ('Active')");
 
-		sql.addJoin("JOIN generalcontractors gc1 ON gc1.subid = a.id AND gc1.flag != gc1.baselineFlag");
-		sql.addField("gc1.id gcID");
-		sql.addField("gc1.flag");
-		sql.addField("gc1.baselineFlag");
-		sql.addField("gc1.baselineApproved");
-		sql.addField("gc1.baselineApprover");
+		sql.addJoin("JOIN generalcontractors gc_flag ON gc_flag.subid = a.id AND gc_flag.flag != gc_flag.baselineFlag");
+		sql.addField("gc_flag.id gcID");
+		sql.addField("gc_flag.flag");
+		sql.addField("gc_flag.baselineFlag");
+		sql.addField("gc_flag.baselineApproved");
+		sql.addField("gc_flag.baselineApprover");
 
-		sql.addJoin("JOIN accounts operator on operator.id = gc1.genid");
+		sql.addJoin("JOIN accounts operator on operator.id = gc_flag.genid");
 		sql.addField("operator.name AS opName");
 		sql.addField("operator.id AS opId");
 		sql.addWhere("operator.status IN ('Active') AND operator.type = 'Operator'");
@@ -97,6 +99,18 @@ public class ReportFlagChanges extends ReportAccount {
 
 	}
 
+	@Override
+	protected void addFilterToSQL() {
+		super.addFilterToSQL();
+		
+		ReportFilterContractor f = getFilter();
+		if (filterOn(f.getAccountManager())) {
+			String list = Strings.implode(f.getAccountManager(), ",");
+			sql.addWhere("gc_flag.genID IN (SELECT accountID FROM account_user WHERE userID IN (" + list + ") AND role = 'PICSAccountRep' AND startDate < NOW() AND endDate > NOW())");
+			setFiltered(true);
+		}
+	}
+	
 	public void setApproveID(int approveID) {
 		this.approveID = approveID;
 	}
