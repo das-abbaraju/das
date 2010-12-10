@@ -8,6 +8,12 @@
 	background-color: #fbb;
 }
 </style>
+<script type="text/javascript">
+function download() {
+	var url = 'ReportOQEmployeesCSV.action?' + $('#form1 input').serialize();
+	window.open(url);
+}
+</script>
 </head>
 <body>
 <h1>OQ Employee</h1>
@@ -15,7 +21,7 @@
 <s:include value="../reports/filters_employee.jsp" />
 <br />
 
-<a href="ReportOQEmployeesCSV.action" target="_blank" class="excel">Download</a>
+<a href="javascript: download();" target="_blank" class="excel">Download</a>
 <table class="report">
 	<thead>
 		<tr>

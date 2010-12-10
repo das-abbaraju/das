@@ -1,7 +1,6 @@
 package com.picsauditing.actions.report.oq;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -70,12 +69,12 @@ public class ReportOQEmployees extends ReportActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		filter.setShowSsn(false);
 		filter.setShowLimitEmployees(true);
 		filter.setShowProjects(true);
 		filter.setPermissions(permissions);
-		
+
 		setOrderBy(getOrderBy() == null ? "e.account.name, e.lastName, e.firstName" : getOrderBy());
 
 		if (permissions.isContractor())
@@ -150,7 +149,7 @@ public class ReportOQEmployees extends ReportActionSupport {
 		if (jobSites == null) {
 			jobSites = new HashMap<JobSite, List<JobSiteTask>>();
 			List<Integer> jobSiteIDs = new ArrayList<Integer>();
-			
+
 			if (filterOn(filter.getProjects())) {
 				for (Integer id : filter.getProjects())
 					jobSiteIDs.add(id);
@@ -161,7 +160,7 @@ public class ReportOQEmployees extends ReportActionSupport {
 					if (jobSiteIDs.contains(task.getJob().getId()) || jobSiteIDs.isEmpty()) {
 						if (jobSites.get(task.getJob()) == null)
 							jobSites.put(task.getJob(), new ArrayList<JobSiteTask>());
-	
+
 						jobSites.get(task.getJob()).add(task);
 					}
 				}
@@ -311,7 +310,8 @@ public class ReportOQEmployees extends ReportActionSupport {
 
 					String marked = "";
 					if (getWorksAtSite().get(e, js) != null && getWorksAtSite().get(e, js)) {
-						if (getQualifications().get(e, jst.getTask()).isCurrent()
+						if (getQualifications().get(e, jst.getTask()) != null
+								&& getQualifications().get(e, jst.getTask()).isCurrent()
 								&& getQualifications().get(e, jst.getTask()).isQualified())
 							marked += "X";
 					}
