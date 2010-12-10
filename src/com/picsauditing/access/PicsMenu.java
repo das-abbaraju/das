@@ -341,8 +341,14 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EmployeeList))
 			subMenu.addChild("Employee List", "EmployeeList.action");
 		
-		if (permissions.hasPermission(OpPerms.ContractorDetails))
-			subMenu.addChild("Flag Changes", "ReportFlagChanges.action");
+		if (permissions.isAdmin()) {
+			String custom = "";
+			if (permissions.hasGroup(User.GROUP_CSR))
+				custom = "?filter.conAuditorId=" + permissions.getUserId();
+			if (permissions.hasGroup(User.GROUP_MARKETING))
+				custom = "?filter.accountManager=" + permissions.getUserId();
+			subMenu.addChild("Flag Changes", "ReportFlagChanges.action" + custom);
+		}
 
 		if (permissions.isRequiresCompetencyReview()) {
 			subMenu.addChild("Competency by Account", "ReportCompetencyByAccount.action");

@@ -45,6 +45,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public static int GROUP_ADMIN = 10;
 	public static int GROUP_AUDITOR = 11;
 	public static int GROUP_CSR = 959;
+	public static int GROUP_MARKETING = 10801;
 	public static int CONTRACTOR = 12;
 	protected boolean needsIndexing = true;
 	private static final int GROUP_SU = 9; // Group that automatically has ALL

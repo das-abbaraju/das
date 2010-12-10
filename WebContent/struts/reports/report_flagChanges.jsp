@@ -61,10 +61,13 @@ function approve(id) {
 			</pics:permission>
 			<td><s:property value="get('lastRecalculation')"/> mins ago</td>
 			<td><s:property value="get('membershipDate')"/></td>
-			<td> 
-				<a class="file" href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>">Flag</a>
-				<a class="file" href="ReportActivityWatch.action?conID=<s:property value="get('id')"/>">Activity</a>
-				<a class="file" href="ContractorCron.action?conID=<s:property value="get('id')"/>&steps=All&button=Run">Recalc</a>
+			<td>
+				<a class="file" target="_BLANK" title="Opens in new window"
+					href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>">Flag</a>
+				<a class="file" target="_BLANK" title="Opens in new window"
+					href="ReportActivityWatch.action?conID=<s:property value="get('id')"/>">Activity</a>
+				<a class="file" target="_BLANK" title="Opens in new window"
+					href="ContractorCron.action?conID=<s:property value="get('id')"/>&steps=All&button=Run">Recalc</a>
 			</td>
 		</tr>
 	</s:iterator>

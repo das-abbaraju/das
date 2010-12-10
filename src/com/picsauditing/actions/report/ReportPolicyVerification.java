@@ -38,8 +38,12 @@ public class ReportPolicyVerification extends ReportContractorAuditOperator {
 		sql.addField("COUNT(cao.auditID) as operatorCount");
 		sql.addGroupBy("ca.id");
 
-		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("a.acceptsBids = 0");
+		
+		getFilter().setShowAuditFor(false);
+		getFilter().setShowAuditType(false);
+		getFilter().setShowPolicyType(true);
+		getFilter().setShowAMBest(true);
 	}
 
 	@Override

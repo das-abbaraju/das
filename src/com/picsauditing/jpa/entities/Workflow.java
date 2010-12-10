@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 public class Workflow extends BaseTable {
 	
 	public static int AUDIT_REQUIREMENTS_WORKFLOW = 2;
+	public static int MANUAL_AUDIT_WORKFLOW = 7;
 
 	private String name;
 	private List<WorkflowStep> steps = new ArrayList<WorkflowStep>();

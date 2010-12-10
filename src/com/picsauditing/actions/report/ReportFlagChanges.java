@@ -32,8 +32,7 @@ public class ReportFlagChanges extends ReportAccount {
 
 			ContractorOperatorDAO dao = (ContractorOperatorDAO) SpringUtils.getBean("ContractorOperatorDAO");
 			ContractorOperator co = dao.find(approveID);
-			co.setBaselineFlag(co.getFlagColor());
-			co.setAuditColumns(permissions);
+			co.resetBaseline(permissions);
 			dao.save(co);
 			return BLANK;
 		}
@@ -75,9 +74,6 @@ public class ReportFlagChanges extends ReportAccount {
 			}
 			opIds = Strings.implode(ops, ",");
 		}
-		if (permissions.hasGroup(User.GROUP_CSR)) {
-			sql.addWhere("c.welcomeAuditor_id = " + permissions.getUserId());
-		}
 
 		sql.addWhere("a.status IN ('Active')");
 
@@ -85,6 +81,8 @@ public class ReportFlagChanges extends ReportAccount {
 		sql.addField("gc1.id gcID");
 		sql.addField("gc1.flag");
 		sql.addField("gc1.baselineFlag");
+		sql.addField("gc1.baselineApproved");
+		sql.addField("gc1.baselineApprover");
 
 		sql.addJoin("JOIN accounts operator on operator.id = gc1.genid");
 		sql.addField("operator.name AS opName");
@@ -106,7 +104,7 @@ public class ReportFlagChanges extends ReportAccount {
 	public List<User> getAccountManagers() {
 		if (accountManagers == null) {
 			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
-			accountManagers = dao.findByGroup(10801);
+			accountManagers = dao.findByGroup(User.GROUP_MARKETING);
 		}
 
 		return accountManagers;

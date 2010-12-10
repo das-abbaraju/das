@@ -34,9 +34,13 @@ public class ReportPolicyList extends ReportContractorAuditOperator {
 			} else {
 				sql.addGroupBy("ca.id");
 			}
+			getFilter().setShowOperator(false);
+			getFilter().setShowOperatorSingle(false);
 		}
 
-		getFilter().setShowOperatorSingle(true);
+		getFilter().setShowAuditFor(false);
+		getFilter().setShowAuditType(false);
+		getFilter().setShowPolicyType(true);
 		getFilter().setShowAMBest(true);
 
 	}
