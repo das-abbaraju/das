@@ -78,25 +78,23 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 						if (toSave != null) {
 							toSave.setVisible(cao.isVisible());
 
-							if (requiresNote(toSave.getStatus(), cao.getStatus(), toSave.getAudit())) {
-								// Stamping cao workflow automatically...
-								ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
-								Note newNote = new Note();
-								newNote.setAccount(toSave.getAudit().getContractorAccount());
-								newNote.setAuditColumns(permissions);
-								newNote.setSummary("Changed Status for "+ toSave.getAudit().getAuditType().getAuditName() +"("+toSave.getAudit().getId()+") from " + toSave.getStatus() + " to "
-										+ cao.getStatus() + " for " + toSave.getOperator().getName());
-								newNote.setNoteCategory(NoteCategory.Audits);
-								newNote.setViewableBy(toSave.getOperator());
-								noteDAO.save(newNote);
-								caoW.setNotes("Changed Status from " + toSave.getStatus() + " to " + cao.getStatus()
-										+ " by " + permissions.getUserId() + " on " + new Date());
-								caoW.setCao(toSave);
-								caoW.setAuditColumns(permissions);
-								caoW.setPreviousStatus(toSave.getStatus());
-								caoW.setStatus(cao.getStatus());
-								caoDAO.save(caoW);
-							}
+							// Stamping cao workflow automatically...
+							ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
+							Note newNote = new Note();
+							newNote.setAccount(toSave.getAudit().getContractorAccount());
+							newNote.setAuditColumns(permissions);
+							newNote.setSummary("Changed Status for "+ toSave.getAudit().getAuditType().getAuditName() +"("+toSave.getAudit().getId()+") from " + toSave.getStatus() + " to "
+									+ cao.getStatus() + " for " + toSave.getOperator().getName());
+							newNote.setNoteCategory(NoteCategory.Audits);
+							newNote.setViewableBy(toSave.getOperator());
+							noteDAO.save(newNote);
+							caoW.setNotes("Changed Status from " + toSave.getStatus() + " to " + cao.getStatus()
+									+ " by " + permissions.getUserId() + " on " + new Date());
+							caoW.setCao(toSave);
+							caoW.setAuditColumns(permissions);
+							caoW.setPreviousStatus(toSave.getStatus());
+							caoW.setStatus(cao.getStatus());
+							caoDAO.save(caoW);
 
 							toSave.changeStatus(cao.getStatus(), permissions);
 							caoDAO.save(toSave);
