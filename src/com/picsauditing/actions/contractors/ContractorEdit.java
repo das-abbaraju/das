@@ -17,7 +17,6 @@ import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.Indexer;
-import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -461,26 +460,28 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public void setRiskLevel(LowMedHigh riskLevel) {
-		String userName = userDAO.find(permissions.getUserId()).getName();
-		String newRiskLevel = riskLevel.toString();
-		String oldRiskLevel = "null";
-		if (contractor.getRiskLevel() != null) {
-			oldRiskLevel = contractor.getRiskLevel().toString();
-			if (oldRiskLevel.equals("Med"))
-				oldRiskLevel = "Medium";
-			if (newRiskLevel.equals("Med"))
-				newRiskLevel = "Medium";
+		if(riskLevel != contractor.getRiskLevel()) {
+			String userName = userDAO.find(permissions.getUserId()).getName();
+			String newRiskLevel = riskLevel.toString();
+			String oldRiskLevel = "null";
+			if (contractor.getRiskLevel() != null) {
+				oldRiskLevel = contractor.getRiskLevel().toString();
+				if (oldRiskLevel.equals("Med"))
+					oldRiskLevel = "Medium";
+				if (newRiskLevel.equals("Med"))
+					newRiskLevel = "Medium";
+			}
+	
+			Note note = new Note();
+			note.setAccount(contractor);
+			note.setAuditColumns(permissions);
+			note.setSummary(userName + " changed the risk level from " + oldRiskLevel + " to " + newRiskLevel);
+			note.setNoteCategory(NoteCategory.General);
+			note.setCanContractorView(false);
+			note.setViewableById(Account.EVERYONE);
+	
+			contractor.setRiskLevel(riskLevel);
+			noteDAO.save(note);
 		}
-
-		Note note = new Note();
-		note.setAccount(contractor);
-		note.setAuditColumns(permissions);
-		note.setSummary(userName + " changed the risk level to " + newRiskLevel + " from " + oldRiskLevel);
-		note.setNoteCategory(NoteCategory.General);
-		note.setCanContractorView(false);
-		note.setViewableById(Account.EVERYONE);
-
-		contractor.setRiskLevel(riskLevel);
-		noteDAO.save(note);
 	}
 }
