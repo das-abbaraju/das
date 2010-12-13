@@ -691,7 +691,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			if (!permissions.isContractor() && (auditCatData.getCategory().getId() == AuditCategory.WORK_HISTORY)) {
 				if (permissions.hasPermission(OpPerms.ViewFullPQF))
 					add = true;
-			} else if (permissions.isAdmin()) {
+			} else if (permissions.isAdmin() || permissions.isAuditor()) {
 				add = true;
 			} else {
 				if (auditCatData.isApplies()) {

@@ -42,7 +42,7 @@
 		</thead>
 		<s:if test="categories.keySet().size > 1">
 			<s:iterator value="categories" var="currentCat">
-				<s:if test="#currentCat.key.parent == NULL && !#currentCat.value.applies && permissions.picsEmployee">
+				<s:if test="#currentCat.key.parent == NULL && !#currentCat.value.applies && (permissions.picsEmployee || permissions.auditor)">
 					<tr>
 						<td style="width: 20%; vertical-align: top;" class="center">
 							<a style="cursor: pointer;"  class="add addCat" id="category_<s:property value="#currentCat.key.id"/>"></a>
