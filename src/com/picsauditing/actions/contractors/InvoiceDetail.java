@@ -128,7 +128,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				}
 
 				contractor.setMembershipLevel(contractor.getNewMembershipLevel());
-				addNote("Changed invoice " + invoice.getId() + " to " + contractor.getNewMembershipLevel().getFee());
+				addNote("Changed invoice " + invoice.getId() + " to " + contractor.getNewMembershipLevel().getFee(),getUser());
 				message = "Changed Membership Level";
 			}
 
@@ -145,7 +145,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					note += " emailed to " + email.getToAddresses();
 					if (!Strings.isEmpty(email.getCcAddresses()))
 						note += " and cc'd " + email.getCcAddresses();
-					addNote(note);
+					addNote(note,getUser());
 					message = "Sent Email";
 
 				} catch (Exception e) {
@@ -167,7 +167,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 				String noteText = "Cancelled Invoice " + invoice.getId() + " for $"
 						+ invoice.getTotalAmount().toString();
-				addNote(noteText);
+				addNote(noteText,getUser());
 			}
 			if (button.equals("pay")) {
 				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
@@ -198,9 +198,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							accountDao.save(contractor);
 
 							addNote("Credit Card transaction completed and emailed the receipt for $"
-									+ invoice.getTotalAmount());
+									+ invoice.getTotalAmount(),getUser());
 						} catch (NoBrainTreeServiceResponseException re) {
-							addNote("Credit Card service connection error: " + re.getMessage());
+							addNote("Credit Card service connection error: " + re.getMessage(),getUser());
 
 							EmailBuilder emailBuilder = new EmailBuilder();
 							emailBuilder.setTemplate(106);
@@ -237,7 +237,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 							return SUCCESS;
 						} catch (Exception e) {
-							addNote("Credit Card transaction failed: " + e.getMessage());
+							addNote("Credit Card transaction failed: " + e.getMessage(),getUser());
 							this.addActionError("Failed to charge credit card. " + e.getMessage());
 							return SUCCESS;
 						}
@@ -264,7 +264,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		contractor.syncBalance();
 		if (contractor.getStatus().isActive() && contractor.getPaymentExpires().before(new Date())) {
 			contractor.setStatus(AccountStatus.Deactivated);
-			addNote("Automatically inactivating account based on expired membership");
+			addNote("Automatically inactivating account based on expired membership",new User(User.SYSTEM));
 		}
 		contractor.setAuditColumns(permissions);
 		accountDao.save(contractor);
@@ -280,8 +280,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		}
 	}
 
-	private void addNote(String subject) {
-		Note note = new Note(invoice.getAccount(), getUser(), subject);
+	private void addNote(String subject, User u) {
+		Note note = new Note(invoice.getAccount(), u, subject);
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
 		note.setViewableById(Account.PicsID);
