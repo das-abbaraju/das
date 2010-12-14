@@ -320,11 +320,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return true;
 
 		if (permissions.isContractor()) {
-			if (conAudit.getAuditType().getWorkFlow().getId() == 5
-					|| conAudit.getAuditType().getWorkFlow().getId() == 3) {
-				if (conAudit.hasCaoStatusAfter(AuditStatus.Resubmitted))
-					return false;
-			}
 			return type.isCanContractorEdit();
 		}
 
