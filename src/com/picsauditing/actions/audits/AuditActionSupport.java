@@ -273,7 +273,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				return true;
 		}
 		// Auditor for this audit can perform all actions
-		if(conAudit.getAuditor()!=null && conAudit.getAuditor().getId()==permissions.getUserId())
+		if (conAudit.getAuditor() != null && conAudit.getAuditor().getId() == permissions.getUserId())
 			return true;
 		return false;
 	}
@@ -320,7 +320,20 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return true;
 
 		if (permissions.isContractor()) {
-			return type.isCanContractorEdit();
+			boolean canEdit = type.isCanContractorEdit();
+			if (conAudit.getAuditType().getWorkFlow().getId() == 5
+					|| conAudit.getAuditType().getWorkFlow().getId() == 3) {
+				if (canEdit) {
+					canEdit = false;
+					for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
+						if (cao.getStatus().before(AuditStatus.Submitted)) {
+							canEdit = true;
+							break;
+						}
+					}
+				}
+			}
+			return canEdit;
 		}
 
 		if (type.getEditPermission() != null) {
@@ -405,8 +418,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private List<CategoryNode> createCategoryNodes(List<AuditCategory> cats, boolean addAll) {
 		List<CategoryNode> nodes = new ArrayList<CategoryNode>();
 		for (AuditCategory cat : cats) {
-			if (addAll
-					|| (getCategories().get(cat) != null && getCategories().get(cat).isApplies())) {
+			if (addAll || (getCategories().get(cat) != null && getCategories().get(cat).isApplies())) {
 				CategoryNode node = new CategoryNode();
 				node.category = cat;
 				if (conAudit.getAuditType().getClassType().isIm()) {
