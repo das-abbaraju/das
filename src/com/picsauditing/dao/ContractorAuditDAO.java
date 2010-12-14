@@ -99,7 +99,7 @@ public class ContractorAuditDAO extends IndexableDAO {
 		Query query = em
 				.createQuery("SELECT t FROM ContractorAudit t "
 						+ "WHERE t.contractorAccount.id = ? "
-						+ "AND expiresDate < Now() ORDER BY t.auditType.displayOrder, t.auditType.auditName, t.auditFor, t.creationDate DESC");
+						+ "AND expiresDate > Now() ORDER BY t.auditType.displayOrder, t.auditType.auditName, t.auditFor, t.creationDate DESC");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
