@@ -60,7 +60,14 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	protected void buildQuery() {
 		sql = new SelectAccount();
-		sql.setType(SelectAccount.Type.Contractor);
+		
+		if (permissions.isAssessment())
+			sql.addWhere("a.requiresOQ = 1");
+		else {
+			sql.setType(SelectAccount.Type.Contractor);
+			sql.addField("c.riskLevel");
+			sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
+		}
 
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
@@ -69,11 +76,9 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			getFilter().setPrimaryInformation(true);
 		}
 
-		sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
 		sql.addField("a.phone");
 		sql.addField("a.fax");
 		sql.addField("a.creationDate");
-		sql.addField("c.riskLevel");
 
 		addFilterToSQL();
 	}

@@ -71,8 +71,14 @@ function removeJobRole(id) {
 }
 
 function removeJobSite(id) {
-	startThinking({div: 'thinking_sites', message: 'Removing Employee from Job Site'});
-	$('#employee_site').load('ManageEmployeesAjax.action', {button: 'removeSite', 'employee.id': employeeID, childID: id});
+	var remove = confirm("Are you sure you want to remove this site from this employee?");
+
+	if (remove) {
+		startThinking({div: 'thinking_sites', message: 'Removing Employee from Job Site'});
+		$('#employee_site').load('ManageEmployeesAjax.action', {button: 'removeSite', 'employee.id': employeeID, childID: id});
+	}
+
+	return false;
 }
 
 function newJobSite() {
@@ -104,37 +110,6 @@ function showUpload(){
 	pars = 'scrollbars=yes,resizable=yes,width=900,height=700,toolbar=0,directories=0,menubar=0';
 	photoUpload = window.open(url,title,pars);
 	photoUpload.focus();
-}
-
-function viewTasks(employeeSiteID) {
-	var data = {
-		button: 'View Tasks',
-		'employeeSite.id': employeeSiteID,
-		'employee.id': employeeID
-	};
-
-	startThinking({div: 'siteTasks', message: 'Loading Job Tasks for Site'});
-	$('#siteTasks').load('ManageEmployeesAjax.action', data);
-}
-
-function assignTask(employeeSiteID, taskID, checkboxOn) {
-	if (checkboxOn) {
-		var data = {
-			button: 'Add Task',
-			'employee.id': employeeID,
-			'employeeSite.id': employeeSiteID,
-			taskID: taskID
-		}
-		$('#siteTasks').load('ManageEmployeesAjax.action', data);
-	} else {
-		var data = {
-			button: 'Remove Task',
-			'employee.id': employeeID,
-			'employeeSite.id': employeeSiteID,
-			taskID: taskID
-		}
-		$('#siteTasks').load('ManageEmployeesAjax.action', data);
-	}
 }
 
 $(function() {

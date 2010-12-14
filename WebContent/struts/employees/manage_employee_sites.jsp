@@ -66,11 +66,53 @@
 									onclick="$('._under').hide(); $('#'+<s:property value="%{#stat.count}" />+'_under').toggle(); return false;"
 									class="edit"></a>
 								</td>
-								<s:if test="permissions.requiresOQ || permissions.admin">
-									<td class="center">
-										<a href="#" onclick="viewTasks(<s:property value="#site.id" />); return false;">View</a>
-									</td>
-								</s:if>
+								<td class="center">
+									<a href="#" onclick="$('.qualifiedTasks').hide(); $('#'+<s:property value="#stat.count" />+'_tasks').show(); return false;">View</a>
+								</td>
+							</tr>
+							<tr id="<s:property value="#stat.count" />_tasks" class="qualifiedTasks" style="display: none;">
+								<td colspan="<s:property value="#colspan" />" style="padding: 10px">
+									<s:set name="missingTasks" value="getMissingTasks(#site.jobSite.id)" />
+									<h4>Qualified Tasks</h4>
+									<s:if test="#missingTasks.qualifiedTasks.size > 0">
+										<h5>Qualified (<s:property value="#missingTasks.qualifiedTasks.size" /> of <s:property value="#missingTasks.totalCount" />):</h5>
+										<table class="report">
+											<thead>
+												<tr>
+													<th>Label</th>
+													<th>Name</th>
+												</tr>
+											</thead>
+											<tbody>
+												<s:iterator value="#missingTasks.qualifiedTasks" var="mt" status="mtStat">
+													<tr>
+														<td><s:property value="#mt.label" /></td>
+														<td><s:property value="#mt.name" /></td>
+													</tr>
+												</s:iterator>
+											</tbody>
+										</table>
+									</s:if>
+									<s:if test="#missingTasks.missingTasks.size > 0">
+										<h5>Missing (<s:property value="#missingTasks.missingTasks.size" /> of <s:property value="#missingTasks.totalCount" />):</h5>
+										<table class="report">
+											<thead>
+												<tr>
+													<th>Label</th>
+													<th>Name</th>
+												</tr>
+											</thead>
+											<tbody>
+												<s:iterator value="#missingTasks.missingTasks" var="mt" status="mtStat">
+													<tr>
+														<td><s:property value="#mt.label" /></td>
+														<td><s:property value="#mt.name" /></td>
+													</tr>
+												</s:iterator>
+											</tbody>
+										</table>
+									</s:if>
+								</td>
 							</tr>
 							<tr id="<s:property value="#stat.count" />_under" class="_under" style="display: none;">
 								<td colspan="<s:property value="#colspan" />">
@@ -87,7 +129,7 @@
 												Expires in: <s:select label="Expires" id="expires_%{#site.id}"
 													list="#{0:36, 1:24, 2:12, 3:6, 4:' '}"
 													value="monthsToExp" /> months<br />
-												<input type="submit" value="Remove" onclick="removeJobSite(<s:property value="#site.id" />); return false;" class="picsbutton negative" />
+												<input type="submit" value="Remove" onclick="return removeJobSite(<s:property value="#site.id" />);" class="picsbutton negative" />
 											</div>
 										</form>
 									</div>
@@ -139,9 +181,6 @@
 						</tr>
 					</pics:permission>
 				</table>
-			</td>
-			<td style="padding-left: 10px;">
-				<div id="siteTasks"></div>
 			</td>
 		</tr>
 		<tr>
