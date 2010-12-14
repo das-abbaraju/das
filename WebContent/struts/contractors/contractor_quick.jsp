@@ -16,14 +16,6 @@
 		</s:if>
 	</ul>
 	<div id="tabs-general">
-		<s:iterator value="contractor.operatorTags">
-			<s:if test="permissions.admin">
-				<s:property value="tag.tag"/> - <s:property value="tag.operator.name"/> <br/>
-			</s:if>
-			<s:if test="permissions.operator && permissions.accountId == tag.operator.id">
-				<s:property value="tag.tag"/><br/> 
-			</s:if>
-		</s:iterator>
 		<s:if test="contractor.dbaName.length() > 0">
 			<label>DBA:</label>
 			<s:property value="contractor.dbaName" />
@@ -34,12 +26,12 @@
 		<br />
 		<s:if test="contractor.requiresOQ">
 			<label>Operator Qualification:</label> Enabled
-		</s:if>
 		<br />
+		</s:if>
 		<s:if test="contractor.requiresCompetencyReview">
 			<label>HSE Competency Review:</label> Enabled
-		</s:if>
 		<br />
+		</s:if>
 		<label>Trade:</label>
 		<s:property value="contractor.mainTrade" />
 		<br />
@@ -55,6 +47,18 @@
 			<s:property value="contractor.country.name" />
 		</s:if>
 		<br />
+		<s:if test="contractor.operatorTags.size() > 0">
+		<label>Operator Tags:</label> 
+		<s:iterator value="contractor.operatorTags">
+			<s:if test="permissions.admin">
+				<s:property value="tag.tag"/> - <s:property value="tag.operator.name"/> <br/>
+			</s:if>
+			<s:if test="permissions.operator && permissions.accountId == tag.operator.id">
+				<s:property value="tag.tag"/><br/> 
+			</s:if>
+		</s:iterator>
+		<br />
+		</s:if>
 		<a href="ContractorNotes.action?id=<s:property value="contractor.id" />">Notes</a>
 		<s:if test="permissions.admin || permissions.contractor">
 			| <a href="ContractorEdit.action?id=<s:property value="contractor.id" />">Edit</a>
