@@ -180,7 +180,7 @@ public class AuditDataDAO extends PicsDAO {
 
 	public List<AuditData> findServicesPerformed(int conID) {
 		Query query = em.createQuery("SELECT d FROM AuditData d "
-				+ "WHERE d.audit.contractorAccount.id = ? AND d.question.category.id = 40 "
+				+ "WHERE d.audit.contractorAccount.id = ? AND d.question.category.id = 422 "
 				+ "AND d.question.effectiveDate < NOW() AND d.question.expirationDate > NOW() ");
 		query.setParameter(1, conID);
 		return query.getResultList();
