@@ -225,7 +225,7 @@ function loadStatus(caoID){
 		<s:include value="caoTable.jsp"/>
 	</div>
 	<s:if test="systemEdit">
-		<span class="refresh"><a class="clickable save" id="saveEdit_cao"><span class="clean">Save CAOs</span><span class="dirty">Saving now...</span></a></span>
+		<span class="refresh"><a class="clickable save" id="saveEdit_cao"><span class="clean">Save</span><span class="dirty">Saving now...</span></a></span>
 	</s:if>
 	<s:else>
 		<span class="refresh"><a class="clickable refresh" id="refresh_cao"><span class="clean">Refresh</span><span class="dirty">Refreshing status now...</span></a></span>
