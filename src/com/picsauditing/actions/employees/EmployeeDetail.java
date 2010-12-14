@@ -36,6 +36,7 @@ import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
+import com.picsauditing.jpa.entities.JobTaskCriteria;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
 
@@ -152,12 +153,19 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 	public List<EmployeeQualification> getJobTasks() {
 		if (tasks == null) {
 			tasks = new ArrayList<EmployeeQualification>(employee.getEmployeeQualifications());
+			
+			Set<JobTask> validTasks = new HashSet<JobTask>();
+			for (EmployeeSite es : getWorksAt()) {
+				for (JobSiteTask jst : es.getJobSite().getTasks()) {
+					validTasks.add(jst.getTask());
+				}
+			}
 
 			Iterator<EmployeeQualification> iterator = tasks.iterator();
 			while (iterator.hasNext()) {
 				EmployeeQualification e = iterator.next();
 
-				if (e.getEffectiveDate() != null && e.getExpirationDate() != null && !e.isCurrent())
+				if (!e.isCurrent() || !validTasks.contains(e.getTask()))
 					iterator.remove();
 			}
 
@@ -201,11 +209,33 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 				}
 			});
 
+			List<AssessmentResult> results = new ArrayList<AssessmentResult>();
+			for (JobTask task : sortedList) {
+				for (EmployeeQualification eq : employee.getEmployeeQualifications()) {
+					if (eq.getTask().equals(task)) {
+						Map<Integer, Set<JobTaskCriteria>> map = task.getJobTaskCriteriaMap();
+						
+						for (Integer group : map.keySet()) {
+							results.clear();
+							
+							for (JobTaskCriteria jtc : map.get(group)) {
+								for (AssessmentResult r : employee.getAssessmentResults()) {
+									if (jtc.getAssessmentTest().equals(r.getAssessmentTest()))
+										results.add(r);
+								}
+							}
+							
+							if (results.size() == map.get(group).size() && qualification.get(eq) == null)
+								qualification.put(eq, results);
+						}
+					}
+				}
+			}
 		}
 
 		return qualification;
 	}
-
+	
 	public Map<JobSite, List<JobTask>> getTasks() {
 		if (tasksByJob == null) {
 			tasksByJob = siteTaskDAO.findByEmployee(employee.getId());

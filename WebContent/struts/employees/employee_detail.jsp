@@ -293,13 +293,27 @@
 									<s:if test="#quals.qualified">
 										<s:set name="qualCount" value="#qualCount + 1" />
 										<tr id="jt_<s:property value="#quals.id" />" class="assessmentResults">
-											<td colspan="3">
-												<s:iterator value="qualification.get(#quals)" id="results">
-													<b><s:property value="#results.assessmentTest.qualificationMethod" /> - <s:property value="#results.assessmentTest.qualificationType" /></b><s:if test="#results.assessmentTest.effectiveDate != null && #results.assessmentTest.expirationDate != null">,
-													Effective: <b><s:date name="#results.assessmentTest.effectiveDate" format="MM/dd/yyyy" /> -
-														<s:date name="#results.assessmentTest.expirationDate" format="MM/dd/yyyy" /></b></s:if>
-													<br />
-												</s:iterator>
+											<td colspan="3" style="padding: 10px;">
+												<table class="report">
+													<thead>
+														<tr>
+															<th>Method</th>
+															<th>Type</th>
+															<th>Effective</th>
+															<th>Expiration</th>
+														</tr>
+													</thead>
+													<tbody>
+														<s:iterator value="qualification.get(#quals)" id="results">
+															<tr>
+																<td><s:property value="#results.assessmentTest.qualificationMethod" /></td>
+																<td><s:property value="#results.assessmentTest.qualificationType" /></td>
+																<td><s:date name="#results.assessmentTest.effectiveDate" format="M/d/yyyy" /></td>
+																<td><s:date name="#results.assessmentTest.expirationDate" format="M/d/yyyy" /></td>
+															</tr>
+														</s:iterator>
+													</tbody>
+												</table>
 											</td>
 										</tr>
 									</s:if>

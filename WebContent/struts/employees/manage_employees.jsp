@@ -71,7 +71,7 @@ function removeJobRole(id) {
 }
 
 function removeJobSite(id) {
-	var remove = confirm("Are you sure you want to remove this site from this employee?");
+	var remove = confirm("Are you sure you want to remove this project from this employee?");
 
 	if (remove) {
 		startThinking({div: 'thinking_sites', message: 'Removing Employee from Job Site'});

@@ -49,17 +49,7 @@
 			<s:iterator value="siteCompanies.keySet()" var="a" status="stat">
 				<tr>
 					<td><s:property value="#stat.count" /></td>
-					<td>
-						<s:if test="#a.contractor && permissions.hasPermission('ContractorDetails')">
-							<a href="ContractorView.action?id=<s:property value="#a.id" />"><s:property value="#a.name" /></a>
-						</s:if>
-						<s:elseif test="#a.operator && (permissions.hasPermission('ManageOperator') || permissions.accountId == #a.id)">
-							<a href="FacilitiesEdit.action?id=<s:property value="#a.id" />"><s:property value="#a.name" /></a>
-						</s:elseif>
-						<s:else>
-							<s:property value="#a.name" />
-						</s:else>
-					</td>
+					<td><s:property value="getCompanyLink(#a)" escape="false" /></td>
 					<td class="right"><s:property value="siteCompanies.get(#a).size" /></td>
 				</tr>
 			</s:iterator>
