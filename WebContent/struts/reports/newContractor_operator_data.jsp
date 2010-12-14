@@ -48,7 +48,7 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 				</pics:permission>
 			</s:if>
 		</s:if>
-		<s:if test="permissions.accountName.startsWith('Roseburg')">
+		<s:if test="permissions.accountName.startsWith('Roseburg') || permissions.accountName.startsWith('Ashland')">
 			<td>PICS Score</td>
 		</s:if>
 		<td>Action</td>
@@ -88,7 +88,7 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 						</pics:permission>
 					</s:if>
 				</s:if>
-				<s:if test="permissions.accountName.startsWith('Roseburg')">
+				<s:if test="permissions.accountName.startsWith('Roseburg') || permissions.accountName.startsWith('Ashland')">
 					<td><s:property value="get('score')"/></td>
 				</s:if>	
 				<td class="center">
