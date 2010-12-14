@@ -1,153 +1,65 @@
 package com.picsauditing.actions.report.oq;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletOutputStream;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.struts2.ServletActionContext;
-
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.search.Database;
+import com.picsauditing.actions.report.ReportEmployee;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
-import com.picsauditing.util.excel.ExcelSheet;
 
-public class ReportOQ extends PicsActionSupport {
-
-	private List<BasicDynaBean> data;
-	Database db = new Database();
-	private List<ContractorSite> contractorSites = new ArrayList<ContractorSite>();
-
+@SuppressWarnings("serial")
+public class ReportOQ extends ReportEmployee {
 	@Override
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		String contractorSQL = "SELECT a.id, a.name, js.id jobSiteID, js.label jobSite, count(*) totalEmployees FROM accounts a "
-				+ " JOIN generalcontractors gc ON a.id = gc.subID AND gc.genID = "
-				+ permissions.getAccountId()
-				+ " JOIN employee e ON a.id = e.accountID"
-				+ " JOIN employee_site es ON e.id = es.employeeID"
-				+ " JOIN job_site js ON js.id = es.jobSiteID AND js.opID = gc.genID"
-				+ " WHERE a.status IN ('Active','Demo')" + " GROUP BY a.id, js.id" + " ORDER BY a.name, js.name";
-		List<BasicDynaBean> contractorData = db.select(contractorSQL, false);
-		data = contractorData;
-		String conList = "0";
-		for (BasicDynaBean row : contractorData) {
-			conList += "," + row.get("id").toString();
-			contractorSites.add(new ContractorSite(row));
-		}
-
-		String taskSQL = "SELECT jt.id, jt.label, jt.name, jst.controlSpan, jst.jobID FROM job_task jt"
-				+ " JOIN job_site_task jst ON jst.taskID = jt.id" + " WHERE jt.opID = " + permissions.getAccountId();
-		List<BasicDynaBean> taskData = db.select(taskSQL, false);
-		String taskList = "0";
-		for (BasicDynaBean row : taskData) {
-			JobTaskSite jst = new JobTaskSite(row);
-			taskList += "," + jst.id;
-			for (ContractorSite cs : contractorSites) {
-				if (cs.jobSite.id.equals(jst.jobID))
-					cs.jobTasks.add(jst);
-			}
-		}
-
-		String qualificationSQL = "SELECT e.id, e.firstName, e.lastName, e.accountID, eq.taskID, eq.qualified FROM employee_qualification eq"
-				+ " JOIN employee e ON eq.employeeID = e.id"
-				+ " WHERE eq.effectiveDate < NOW() AND eq.expirationDate > NOW()"
-				+ " AND e.accountID IN ("
-				+ conList
-				+ ") AND eq.taskID IN (" + taskList + ")";
-		System.out.println(qualificationSQL);
-		List<BasicDynaBean> qualificationData = db.select(qualificationSQL, false);
-		for (BasicDynaBean row : qualificationData) {
-			Employee e = new Employee(row);
-			for (ContractorSite cs : contractorSites) {
-			}
-		}
-
-		return SUCCESS;
-	}
-
-	public List<ContractorSite> getContractorSites() {
-		return contractorSites;
+		loadPermissions();
+		
+		getFilter().setShowFirstName(false);
+		getFilter().setShowLastName(false);
+		getFilter().setShowEmail(false);
+		getFilter().setShowSsn(false);
+		getFilter().setShowProjects(true);
+		getFilter().setPermissions(permissions);
+		
+		return super.execute();
 	}
 	
-	public void getExcelDownload() throws Exception {
-		execute();
+	protected void buildQuery() {
+		super.buildQuery();
 		
-		ExcelSheet excelSheet = new ExcelSheet();
+		sql.addJoin("JOIN employee_site es ON es.employeeID = e.id");
+		sql.addJoin("JOIN job_site js ON js.id = es.jobSiteID " +
+				"AND (js.projectStart IS NULL OR js.projectStart < NOW()) " +
+				"AND (js.projectStop IS NULL OR js.projectStop > NOW())");
+		
+		sql.addField("js.id jobSiteID");
+		sql.addField("js.label");
+		
+		sql.addWhere("e.id IN (" +
+				"SELECT eq.employeeID FROM employee_qualification eq " +
+				"JOIN job_site_task jst ON jst.taskID = eq.taskID WHERE jst.jobID = js.id)");
+		
+		sql.addGroupBy("a.name, js.label, e.id");
+		
+		String subselect = sql.toString();
+		
+		sql = new SelectSQL("(" + subselect + ") t");
+		sql.addField("t.accountID");
+		sql.addField("t.name");
+		sql.addField("t.jobSiteID");
+		sql.addField("t.label");
+		sql.addField("count(*) employeeCount");
+		sql.addGroupBy("t.name, t.label");
+		
+		String fullClause = sql.toString();
+		
+		sql.setFullClause(fullClause);
+	}
+	
+	@Override
+	protected void addExcelColumns() {
+		filename = "ReportOQByCompanySite";
 		excelSheet.setData(data);
-		// Add the following columns to the far right
-		excelSheet.addColumn(new ExcelColumn("name", "Contractor"), 0);
-		excelSheet.addColumn(new ExcelColumn("jobSite", "Job Site"));
-		excelSheet.addColumn(new ExcelColumn("totalEmployees", "Employees"));
 		
-		String filename = "ReportOQByContractorSite";
-		excelSheet.setName(filename);
-		HSSFWorkbook wb = excelSheet.buildWorkbook(false);
-
-		filename += ".xls";
-
-		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-		wb.write(outstream);
-		outstream.flush();
-		ServletActionContext.getResponse().flushBuffer();
-	}
-
-	public class Base {
-
-		public String id;
-		public String name;
-	}
-
-	public class ContractorSite {
-
-		public ContractorSite(BasicDynaBean row) {
-			contractor.id = row.get("id").toString();
-			contractor.name = row.get("name").toString();
-			jobSite.id = row.get("jobSiteID").toString();
-			jobSite.name = row.get("jobSite").toString();
-			totalEmployees = row.get("totalEmployees").toString();
-		}
-
-		public Base contractor = new Base();
-		public Base jobSite = new Base();
-		public List<JobTaskSite> jobTasks = new ArrayList<JobTaskSite>();
-		public List<Employee> employees = new ArrayList<Employee>();
-		public Employee total;
-		public String totalEmployees;
-	}
-
-	public class JobTaskSite extends Base {
-
-		public JobTaskSite(BasicDynaBean row) {
-			id = row.get("id").toString();
-			name = row.get("label").toString();
-			description = row.get("name").toString();
-			controlSpan = row.get("controlSpan").toString();
-			jobID = row.get("jobID").toString();
-		}
-
-		public String jobID;
-		public String description;
-		public String controlSpan;
-	}
-
-	public class Employee extends Base {
-
-		public Employee(BasicDynaBean row) {
-			// accountID, eq.taskID, eq.qualified
-			id = row.get("id").toString();
-			name = (row.get("firstName").toString() + " " + row.get("lastName").toString()).trim();
-		}
-
-		public List<Base> jobTasks = new ArrayList<Base>();
-		public Map<String, Boolean> qualifications = new HashMap<String, Boolean>();
+		excelSheet.addColumn(new ExcelColumn("name", "Company Name"));
+		excelSheet.addColumn(new ExcelColumn("label", "Site Label"));
+		excelSheet.addColumn(new ExcelColumn("employeeCount", "Employees", ExcelCellType.Integer));
 	}
 }

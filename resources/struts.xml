@@ -1830,7 +1830,7 @@
 		</action>
 		
 		<action name="ReportOQCSV"
-			class="com.picsauditing.actions.report.oq.ReportOQ" method="getExcelDownload">
+			class="com.picsauditing.actions.report.oq.ReportOQ">
 			<result>/struts/blank.jsp</result>
 		</action>
 

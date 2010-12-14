@@ -18,13 +18,13 @@
 	
 	<div>
 		<button id="searchfilter" type="submit" name="button" value="Search"
-				onclick="checkStateAndCountry('form1_state','form1_country'); return clickSearch('form1');"
+				onclick="return clickSearch('form1');"
 				class="picsbutton positive">Search</button>
 	</div>
 	
 	<s:if test="filter.showAccountName">
 		<div class="filterOption">
-			Company Name: <s:textfield name="filter.accountName" size="35" />
+			Company Name: <s:textfield name="filter.accountName" size="35" onclick="clearText(this)" />
 		</div>
 	</s:if>
 	<s:if test="filter.showFirstName">

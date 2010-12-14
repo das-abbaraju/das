@@ -35,7 +35,7 @@
 <a id="addTaskLink" href="#" onclick="getNewSiteTasks(<s:property value="siteID" />); $('#addSiteTasks:hidden').slideDown(); return false;" class="add">Add New Task</a>
 <a id="closeTasks" href="#" onclick="$('#jobSiteTasks:visible').slideUp(); $('#addSiteTasks:visible').slideUp(); return false;" class="remove">Close Tasks</a>
 
-<h4>Contractors</h4>
+<h4>Companies</h4>
 <s:if test="siteCompanies.keySet().size > 0">
 	<table class="report">
 		<thead>
@@ -53,7 +53,7 @@
 						<s:if test="#a.contractor && permissions.hasPermission('ContractorDetails')">
 							<a href="ContractorView.action?id=<s:property value="#a.id" />"><s:property value="#a.name" /></a>
 						</s:if>
-						<s:elseif test="#a.operator && (permissions.hasPermission('ManageOperator') || permissions.accountId == #a.id">
+						<s:elseif test="#a.operator && (permissions.hasPermission('ManageOperator') || permissions.accountId == #a.id)">
 							<a href="FacilitiesEdit.action?id=<s:property value="#a.id" />"><s:property value="#a.name" /></a>
 						</s:elseif>
 						<s:else>

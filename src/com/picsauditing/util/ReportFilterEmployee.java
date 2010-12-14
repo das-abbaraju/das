@@ -11,6 +11,8 @@ import com.picsauditing.jpa.entities.JobSite;
 @SuppressWarnings("serial")
 public class ReportFilterEmployee extends ReportFilter {
 	private Permissions permissions;
+	
+	public static final String DEFAULT_NAME = "- Company Name -";
 
 	protected boolean showAccountName = true;
 	protected boolean showFirstName = true;
@@ -21,7 +23,7 @@ public class ReportFilterEmployee extends ReportFilter {
 	protected boolean showProjects = false;
 	protected boolean showAssessmentCenter = false;
 
-	protected String accountName;
+	protected String accountName = DEFAULT_NAME;
 	protected String firstName;
 	protected String lastName;
 	protected String email;
