@@ -6,7 +6,11 @@ public enum QuestionComparator {
 	NotEmpty("is answered"),
 	Empty("is NOT answered"),
 	Verified("is verified"),
-	StartsWith("startsWith");
+	StartsWith("startsWith"),
+	LessThan("less than"),
+	LessThanEqual("less than or equal to"),
+	GreaterThan("greater than"),
+	GreaterThanEqual("greater than or equal to");
 
 	private String description;
 

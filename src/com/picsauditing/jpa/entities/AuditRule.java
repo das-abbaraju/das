@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +32,8 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 	protected AuditQuestion question;
 	protected QuestionComparator questionComparator;
 	protected String questionAnswer;
-	protected Boolean acceptsBids = false; // Default to bid-only "No" (Needed to the increase the priority)
+	// Default to bid-only "No" (Needed to the increase the priority)
+	protected Boolean acceptsBids = false;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "auditTypeID")
@@ -202,7 +204,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 	public void calculatePriority() {
 		level = levelAdjustment; // usually 0
 		priority = 100 * levelAdjustment; // usually 0
-		
+
 		if (include)
 			priority += 1;
 
@@ -277,9 +279,32 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 			return data.isVerified();
 		case StartsWith:
 			return answer.startsWith(questionAnswer);
-		default:
-			return questionAnswer.equals(answer);
 		}
+
+		if (questionComparator == QuestionComparator.LessThan || questionComparator == QuestionComparator.LessThanEqual
+				|| questionComparator == QuestionComparator.GreaterThan
+				|| questionComparator == QuestionComparator.GreaterThanEqual) {
+			if ("Decimal Number".equals(question.getQuestionType()) || "Money".equals(question.getQuestionType())
+					|| "Number".equals(question.getQuestionType())) {
+				try {
+					BigDecimal parsedAnswer = new BigDecimal(answer.replace(",", ""));
+					BigDecimal parsedQuestionAnswer = new BigDecimal(questionAnswer.replace(",", ""));
+					if (questionComparator == QuestionComparator.LessThan)
+						return parsedAnswer.compareTo(parsedQuestionAnswer) < 0;
+					else if (questionComparator == QuestionComparator.LessThanEqual)
+						return parsedAnswer.compareTo(parsedQuestionAnswer) <= 0;
+					else if (questionComparator == QuestionComparator.GreaterThan)
+						return parsedAnswer.compareTo(parsedQuestionAnswer) > 0;
+					else if (questionComparator == QuestionComparator.GreaterThanEqual)
+						return parsedAnswer.compareTo(parsedQuestionAnswer) >= 0;
+				} catch (NumberFormatException nfe) {
+					return false;
+				}
+			} else
+				return false;
+		}
+
+		return questionAnswer.equals(answer);
 	}
 
 	public void merge(AuditRule source) {
@@ -339,19 +364,19 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	@Transient
 	public Map<AuditRuleColumn, List<String>> getMapping() {
 		Map<AuditRuleColumn, List<String>> map = new HashMap<AuditRuleColumn, List<String>>();
-		
+
 		for (AuditRuleColumn c : AuditRuleColumn.values()) {
 			map.put(c, new ArrayList<String>());
 		}
-		
+
 		map.get(AuditRuleColumn.Include).add(isInclude() ? "Yes" : "No");
 		map.get(AuditRuleColumn.Priority).add(getPriority() + "");
-		
+
 		if (getAuditType() != null)
 			map.get(AuditRuleColumn.AuditType).add(getAuditTypeLabel());
 		if (getContractorType() != null)
@@ -377,7 +402,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 			map.get(AuditRuleColumn.UpdatedBy).add(getUpdatedBy().getName());
 			map.get(AuditRuleColumn.UpdatedBy).add(getUpdateDate().toString());
 		}
-		
+
 		return map;
 	}
 }
