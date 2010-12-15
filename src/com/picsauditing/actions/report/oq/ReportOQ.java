@@ -2,6 +2,7 @@ package com.picsauditing.actions.report.oq;
 
 import com.picsauditing.actions.report.ReportEmployee;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
@@ -61,5 +62,13 @@ public class ReportOQ extends ReportEmployee {
 		excelSheet.addColumn(new ExcelColumn("name", "Company Name"));
 		excelSheet.addColumn(new ExcelColumn("label", "Site Label"));
 		excelSheet.addColumn(new ExcelColumn("employeeCount", "Employees", ExcelCellType.Integer));
+	}
+	
+	@Override
+	protected void addFilterToSQL() {
+		super.addFilterToSQL();
+		
+		if (filterOn(getFilter().getProjects()))
+			sql.addWhere("js.id IN (" + Strings.implode(getFilter().getProjects()) + ")");
 	}
 }

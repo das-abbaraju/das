@@ -17,7 +17,7 @@ import com.picsauditing.util.excel.ExcelColumn;
 public class ReportEmployee extends ReportActionSupport {
 	protected SelectSQL sql = new SelectSQL("employee e");
 	protected ReportFilterEmployee filter = new ReportFilterEmployee();
-	protected String filename = "ReportEmployee";
+	protected String filename;
 
 	public ReportEmployee() {
 		orderByDefault = "a.name, e.lastName, e.firstName";
@@ -33,9 +33,14 @@ public class ReportEmployee extends ReportActionSupport {
 		
 		if (download || "download".equals(button)) {
 			addExcelColumns();
-			excelSheet.setName(filename);
 			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
 
+			if (Strings.isEmpty(filename)) {
+				String className = this.getClass().getName();
+				filename = className.substring(className.lastIndexOf("."));
+			}
+			
+			excelSheet.setName(filename);
 			filename += ".xls";
 
 			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
@@ -58,6 +63,8 @@ public class ReportEmployee extends ReportActionSupport {
 		sql.addField("e.id employeeID");
 		sql.addField("e.firstName");
 		sql.addField("e.lastName");
+		
+		addFilterToSQL();
 	}
 
 	protected void addFilterToSQL() {
@@ -86,16 +93,7 @@ public class ReportEmployee extends ReportActionSupport {
 			sql.addWhere("e.email LIKE '%" + email + "%'");
 		}
 
-		if (filterOn(f.getAssessmentCenters()))
-			sql.addWhere("e.id IN (SELECT DISTINCT a_r.employeeID FROM assessment_result a_r "
-					+ "JOIN assessment_test a_t ON a_t.id = a_r.assessmentTestID AND a_t.assessmentCenterID IN ("
-					+ Strings.implode(f.getAssessmentCenters()) + "))");
-
-		if (filterOn(f.getProjects()))
-			sql.addWhere("e.id IN (SELECT DISTINCT e_s.employeeID FROM employee_site e_s WHERE e_s.jobSiteID IN ("
-					+ Strings.implode(f.getProjects()) + "))");
-
-		if (f.isLimitEmployees())
+		if (f.isLimitEmployees() && f.isShowLimitEmployees())
 			sql.addWhere("a.id = " + permissions.getAccountId());
 	}
 	

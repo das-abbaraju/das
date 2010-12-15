@@ -1885,6 +1885,17 @@
 			<result>/struts/reports/oq/report_assessment_tests.jsp</result>
 		</action>
 		
+		<action name="ReportAssessmentTestsAjax"
+			class="com.picsauditing.actions.report.oq.ReportAssessmentTest">
+			<result>/struts/reports/oq/report_assessment_tests_data.jsp</result>
+		</action>
+		
+		<action name="ReportAssessmentTestsCSV"
+			class="com.picsauditing.actions.report.oq.ReportAssessmentTest">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+		
 		<!-- Assessment Center/Assessment Management -->
 		<action name="AssessmentCenterEdit"
 			class="com.picsauditing.actions.report.oq.AssessmentEdit">

@@ -5,6 +5,13 @@
 <head>
 <title><s:property value="subHeading" /></title>
 <s:include value="../reportHeader.jsp" />
+<script type="text/javascript">
+function changeOrderBy(orderBy) {
+	$('#form1 input[name=orderBy]').val(orderBy);
+	startThinking({ div: "report_data", type: "large" });
+	$('#report_data').load('ReportAssessmentTestsAjax.action?' + $('#form1').serialize());
+}
+</script>
 </head>
 <body>
 
@@ -12,60 +19,9 @@
 
 <s:include value="../filters_employee.jsp" />
 
-<s:if test="report.allRows == 0">
-	<div class="alert">No rows found matching the given criteria. Please try again.</div>
-</s:if>
-<s:else>
-<div>
-<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+<div id="report_data">
+	<s:include value="report_assessment_tests_data.jsp"></s:include>
 </div>
-<table class="report">
-	<thead>
-	<tr>
-		<th></th>
-		<th><a href="?orderBy=test,task,employee">Assessment Test</a></th>
-		<th>Test Active</th>
-		<th><a href="?orderBy=task,test,employee">Job Task</a></th>
-		<th>Task Active</th>
-		<th><a href="?orderBy=employee,q.qualified DESC,test,task">Employee</a></th>
-		<th><a href="?orderBy=a.name,employee">Company</a></th>
-		<th>Qualified</th>
-		<th><a href="?orderBy=q.effectiveDate,test,task,employee">Qualification Date</a></th>
-	</tr>
-	</thead>
-	<tbody>
-	<s:iterator value="data" status="stat">
-		<tr>
-			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td>
-				<nobr>
-					<s:property value="get('test')" />
-					<a href="#" onclick="return false;" class="help cluetip"
-						title="<s:property value="get('test')" />" 
-						rel="#description_<s:property value="#stat.index + report.firstRowNumber" />"></a>
-					<div id="description_<s:property value="#stat.index + report.firstRowNumber" />">
-						<s:property value="get('description')" />
-					</div>
-				</nobr>
-			</td>
-			<td class="center"><s:property value="get('testActive')" /></td>
-			<td><s:property value="get('task')" /></td>
-			<td class="center"><s:property value="get('taskActive')" /></td>
-			<td><a href="EmployeeDetail.action?employee.id=<s:property value="get('employeeID')" />">
-				<s:property value="get('employee')" /></a></td>
-			<td>
-				<a href="ContractorView.action?id=<s:property value="get('accountID')" />"><s:property value="get('name')" /></a>
-			</td>
-			<td class="center"><s:property value="get('qualified')" /></td>
-			<td class="center"><s:property value="get('qualEff')" /></td>
-		</tr>
-	</s:iterator>
-	</tbody>
-</table>
-<div>
-<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-</div>
-</s:else>
 
 </body>
 </html>
