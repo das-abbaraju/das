@@ -1,6 +1,9 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.persistence.Query;
 
@@ -63,6 +66,17 @@ public class AuditTypeDAO extends PicsDAO {
 		query.setParameter("auditTypeId", auditTypeId);
 		query.setParameter("categoryId", categoryId);
 		query.executeUpdate();
+	}
+
+	public Map<AuditTypeClass, List<AuditType>> getAuditTypeMap() {
+		Map<AuditTypeClass, List<AuditType>> auditTypeMap = new TreeMap<AuditTypeClass, List<AuditType>>();
+	
+		for (AuditType auditType : findAll()) {
+			if (auditTypeMap.get(auditType.getClassType()) == null)
+				auditTypeMap.put(auditType.getClassType(), new ArrayList<AuditType>());
+			auditTypeMap.get(auditType.getClassType()).add(auditType);
+		}
+		return auditTypeMap;
 	}
 
 }

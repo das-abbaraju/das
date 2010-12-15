@@ -1245,7 +1245,7 @@
 		</action>
 		
 		<!-- Rules Entries -->
-		<action name="CategoryRuleEditor"
+		<action name="CategoryRuleEditorOld"
 			class="com.picsauditing.actions.auditType.CategoryRuleEditor">
 			<result>struts/audits/rules/audit_rule_editor.jsp</result>
 		</action>
@@ -1261,7 +1261,7 @@
 			<result>struts/audits/rules/audit_rule_search_data.jsp</result>
 		</action>
 		
-		<action name="AuditTypeRuleEditor"
+		<action name="AuditTypeRuleEditorOld"
 			class="com.picsauditing.actions.auditType.AuditTypeRuleEditor">
 			<result>struts/audits/rules/audit_rule_editor.jsp</result>
 		</action>
@@ -1279,6 +1279,23 @@
 		<action name="AuditRuleSearchAjax"
 			class="com.picsauditing.actions.auditType.AuditRuleSearch">		
 			<result>struts/blank.jsp</result>
+		</action>
+		
+		<action name="AuditCategoryRuleEditor" 
+			class="com.picsauditing.actions.rules.AuditCategoryRuleEditor">
+			<result>struts/rules/audit_rule_editor.jsp</result>
+		</action>
+		<action name="AuditCategoryRuleTableAjax" 
+			class="com.picsauditing.actions.rules.AuditCategoryRuleTableBuilder">
+			<result>struts/rules/audit_rule_table.jsp</result>
+		</action>
+		<action name="AuditTypeRuleEditor" 
+			class="com.picsauditing.actions.rules.AuditTypeRuleEditor">
+			<result>struts/rules/audit_rule_editor.jsp</result>
+		</action>
+		<action name="AuditTypeRuleTableAjax" 
+			class="com.picsauditing.actions.rules.AuditTypeRuleTableBuilder">
+			<result>struts/rules/audit_rule_table.jsp</result>
 		</action>
 		
 		<action name="RecalculateRules" 

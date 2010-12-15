@@ -141,14 +141,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 	}
 
 	public Map<AuditTypeClass, List<AuditType>> getAuditTypeMap() {
-		Map<AuditTypeClass, List<AuditType>> auditTypeMap = new TreeMap<AuditTypeClass, List<AuditType>>();
-
-		for (AuditType auditType : auditTypeDAO.findAll()) {
-			if (auditTypeMap.get(auditType.getClassType()) == null)
-				auditTypeMap.put(auditType.getClassType(), new ArrayList<AuditType>());
-			auditTypeMap.get(auditType.getClassType()).add(auditType);
-		}
-		return auditTypeMap;
+		return auditTypeDAO.getAuditTypeMap();
 	}
 
 	public Map<AuditType, List<AuditQuestion>> getQuestionMap() {
