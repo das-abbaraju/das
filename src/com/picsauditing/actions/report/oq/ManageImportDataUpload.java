@@ -173,8 +173,8 @@ public class ManageImportDataUpload extends PicsActionSupport {
 						stage.setFirstName(row.getCell(4).getStringCellValue());
 						stage.setLastName(row.getCell(5).getStringCellValue());
 						stage.setEmployeeID(row.getCell(6).getNumericCellValue() + "");
-						stage.setBirthdate(row.getCell(7).getDateCellValue());
-						stage.setEmail(row.getCell(8).getStringCellValue());
+//						stage.setBirthdate(row.getCell(7).getDateCellValue());
+//						stage.setEmail(row.getCell(8).getStringCellValue());
 						stage.setCompanyName(row.getCell(9).getStringCellValue());
 						stage.setCompanyID((int) row.getCell(10).getNumericCellValue());
 						stage.setQualificationDate(row.getCell(11).getDateCellValue());
