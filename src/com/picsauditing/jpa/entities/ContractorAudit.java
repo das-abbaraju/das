@@ -52,7 +52,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	protected boolean needsIndexing = true;
 	private String auditFor;
 	private Date lastRecalculation;
-	
+
 	private Date contractorConfirm;
 	private Date auditorConfirm;
 	private Date scheduledDate;
@@ -101,7 +101,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		this.contractorAccount = contractor;
 	}
 
-	@OneToMany(mappedBy = "conAudit", cascade = { CascadeType.REMOVE })
+	@OneToMany(mappedBy = "conAudit", cascade = { CascadeType.ALL })
 	@OrderBy("location")
 	public List<OshaAudit> getOshas() {
 		return oshas;
@@ -115,10 +115,10 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public List<ContractorAuditOperator> getOperators() {
 		return operators;
 	}
-	
-	//TODO replace old uses of getOperators with sorted one
+
+	// TODO replace old uses of getOperators with sorted one
 	@Transient
-	public List<ContractorAuditOperator> getSortedOperators(){
+	public List<ContractorAuditOperator> getSortedOperators() {
 		List<ContractorAuditOperator> caos = operators;
 		Collections.sort(caos, getComparator());
 		return caos;
@@ -364,8 +364,8 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 					// Iterate over gencon tables
 					// co.getOperatorAccount() == BASF Abbotsford that's
 					// attached to Ancon Marine
-					if (co.getOperatorAccount().getCanSeeInsurance().isTrue() &&
-							cao.hasCaop(co.getOperatorAccount().getId())) {
+					if (co.getOperatorAccount().getCanSeeInsurance().isTrue()
+							&& cao.hasCaop(co.getOperatorAccount().getId())) {
 						currentCaos.add(cao);
 						break;
 					}
@@ -391,7 +391,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		Collections.sort(currentCaos, getComparator());
 		return currentCaos;
 	}
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getContractorConfirm() {
 		return contractorConfirm;
@@ -554,19 +554,19 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public void setLongitude(float longitude) {
 		this.longitude = longitude;
 	}
-	
+
 	public Integer getRuleID() {
 		return ruleID;
 	}
-	
+
 	public void setRuleID(Integer ruleID) {
-		this.ruleID  = ruleID;
+		this.ruleID = ruleID;
 	}
 
-	public static Comparator<ContractorAuditOperator> getComparator(){
+	public static Comparator<ContractorAuditOperator> getComparator() {
 		return new Comparator<ContractorAuditOperator>() {
 			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
-				if(o1.getOperator().getId()<10)
+				if (o1.getOperator().getId() < 10)
 					return new Integer(o1.getOperator().getId()).compareTo(new Integer(o2.getOperator().getId()));
 				return o1.getOperator().getName().compareTo(o2.getOperator().getName());
 			}
@@ -660,7 +660,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	@Transient
 	public boolean isVisibleTo(Permissions permissions) {
-		if (permissions.isContractor()) 
+		if (permissions.isContractor())
 			return getAuditType().isCanContractorView();
 
 		if (permissions.isPicsEmployee())

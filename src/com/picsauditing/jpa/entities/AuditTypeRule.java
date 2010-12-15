@@ -35,7 +35,7 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 	public void setDependentAuditType(AuditType dependentAuditType) {
 		this.dependentAuditType = dependentAuditType;
 	}
-	
+
 	@Enumerated(EnumType.STRING)
 	public AuditStatus getDependentAuditStatus() {
 		return dependentAuditStatus;
@@ -52,8 +52,8 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 
 	public void update(AuditRule source) {
 		super.update(source);
-		dependentAuditType = ((AuditTypeRule)source).dependentAuditType;
-		dependentAuditStatus = ((AuditTypeRule)source).dependentAuditStatus;
+		dependentAuditType = ((AuditTypeRule) source).dependentAuditType;
+		dependentAuditStatus = ((AuditTypeRule) source).dependentAuditStatus;
 	}
 
 	@Override
@@ -77,42 +77,12 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 	@Transient
 	public Map<AuditRuleColumn, List<String>> getMapping() {
 		Map<AuditRuleColumn, List<String>> map = super.getMapping();
-		
+
 		if (getDependentAuditType() != null) {
 			map.get(AuditRuleColumn.DependentAudit).add(getDependentAuditTypeLabel());
 			map.get(AuditRuleColumn.DependentAudit).add(getDependentAuditStatusLabel());
 		}
-		
+
 		return map;
-	}
-	
-	@Override
-	@Transient
-	public AuditTypeRule clone(){
-		AuditTypeRule clone = new AuditTypeRule();
-		
-		clone.acceptsBids = getAcceptsBids();
-		clone.auditType = getAuditType().clone();
-		clone.contractorType = getContractorType();
-		clone.createdBy = getCreatedBy();
-		clone.creationDate = getCreationDate();
-		clone.dependentAuditStatus = getDependentAuditStatus();
-		clone.dependentAuditType = getDependentAuditType().clone();
-		clone.effectiveDate = getEffectiveDate();
-		clone.expirationDate = getExpirationDate();
-		clone.id = getId();
-		clone.level = getLevel();
-		clone.levelAdjustment = getLevelAdjustment();
-		clone.operatorAccount = getOperatorAccount().clone();
-		clone.priority = getPriority();
-		clone.question = getQuestion().clone();
-		clone.questionAnswer = getQuestionAnswer();
-		clone.questionComparator = getQuestionComparator();
-		clone.risk = getRisk();
-		clone.tag = getTag();
-		clone.updateDate = getUpdateDate();
-		clone.updatedBy = getUpdatedBy();
-		
-		return clone;
 	}
 }
