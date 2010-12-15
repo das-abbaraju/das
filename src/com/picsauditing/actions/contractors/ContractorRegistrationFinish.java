@@ -17,7 +17,6 @@ import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.PicsMenu;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -28,8 +27,6 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
@@ -37,6 +34,7 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.TransactionStatus;
@@ -204,6 +202,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			contractor.setNewMembershipLevel(newFee);
 
 			if (!contractor.getNewMembershipLevel().isFree()) {
+				String notes = "";
 				// There are no unpaid invoices - we should create a new one
 				// (could be a re-activation)
 				if (invoice == null) {
@@ -216,6 +215,14 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 						invoice.setCurrency(contractor.getCurrency());
 						invoice.setAuditColumns(new User(User.SYSTEM));
 						invoice.setDueDate(new Date());
+
+						InvoiceFee activation = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
+						if (contractor.hasReducedActivation(activation)) {
+							OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
+							notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from $" + activation.getAmount() + " to $"
+									+ reducedOperator.getActivationFee() + ". ";
+							invoice.setNotes(notes);
+						}
 
 						for (InvoiceItem item : items) {
 							item.setInvoice(invoice);
@@ -243,11 +250,11 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 					if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0)
 						invoice.setQbSync(true);
 
-					String notes = "Thank you for your business.";
-					AppProperty prop = appPropDAO.find("invoice_comment");
-					if (prop != null) {
-						notes = prop.getValue();
-					}
+					notes += "Thank you for doing business with PICS!";
+//					AppProperty prop = appPropDAO.find("invoice_comment");
+//					if (prop != null) {
+//						notes = prop.getValue();
+//					}
 					invoice.setNotes(notes);
 
 					invoice = invoiceDAO.save(invoice);

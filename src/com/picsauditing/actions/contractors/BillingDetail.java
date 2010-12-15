@@ -19,7 +19,6 @@ import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.TransactionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
@@ -72,7 +71,7 @@ public class BillingDetail extends ContractorActionSupport {
 			invoiceTotal = invoiceTotal.add(item.getAmount());
 
 		if ("Create".equalsIgnoreCase(button)) {
-			if(invoiceTotal.compareTo(BigDecimal.ZERO) == 0){
+			if (invoiceTotal.compareTo(BigDecimal.ZERO) == 0) {
 				addActionError("Cannot create an Invoice for zero dollars");
 				return SUCCESS;
 			}
@@ -88,9 +87,18 @@ public class BillingDetail extends ContractorActionSupport {
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0)
 				invoice.setQbSync(true);
 
+			String notes = "";
+
 			// Calculate the due date for the invoice
-			if (contractor.getBillingStatus().equals("Activation")
-					|| contractor.getBillingStatus().equals("Reactivation")) {
+			if (contractor.getBillingStatus().equals("Activation")) {
+				invoice.setDueDate(new Date());
+				InvoiceFee activation = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
+				if (contractor.hasReducedActivation(activation)) {
+					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
+					notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from $"
+							+ activation.getAmount() + " to $" + reducedOperator.getActivationFee() + ". ";
+				}
+			} else if (contractor.getBillingStatus().equals("Reactivation")) {
 				invoice.setDueDate(new Date());
 			} else if (contractor.getBillingStatus().equals("Upgrade")) {
 				invoice.setDueDate(DateBean.addDays(contractor.getLastUpgradeDate(), 30));
@@ -106,11 +114,11 @@ public class BillingDetail extends ContractorActionSupport {
 				invoice.setDueDate(DateBean.addDays(new Date(), 7));
 			// End of Due date
 
-			String notes = "Thank you for your business.";
-			AppProperty prop = appPropDao.find("invoice_comment");
-			if (prop != null) {
-				notes = prop.getValue();
-			}
+			notes += "Thank you for doing business with PICS!";
+//			AppProperty prop = appPropDao.find("invoice_comment");
+//			if (prop != null) {
+//				notes = prop.getValue();
+//			}
 			// Add the list of operators if this invoice has a membership level
 			// on it
 			boolean hasMembership = false;

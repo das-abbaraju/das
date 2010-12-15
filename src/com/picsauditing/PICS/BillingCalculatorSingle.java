@@ -13,7 +13,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Invoice;
@@ -31,7 +30,7 @@ public class BillingCalculatorSingle {
 	public static final Date CONTRACT_RENEWAL_GOODYEAR = DateBean.parseDate("2010-11-02");
 	public static final Date CONTRACT_RENEWAL_SINCLAIR = DateBean.parseDate("2010-12-21");
 	public static final Date CONTRACT_RENEWAL_NAVISTAR = DateBean.parseDate("2011-01-31");
-	
+
 	static public void setPayingFacilities(ContractorAccount contractor) {
 
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
@@ -166,11 +165,12 @@ public class BillingCalculatorSingle {
 		if (contractor.getMembershipDate() == null) {
 			// This contractor has never paid their activation fee, make
 			// them now this applies regardless if this is a new reg or renewal
-			int feeID = InvoiceFee.ACTIVATION;
-			if (hasReducedActivation(contractor)) {
-				feeID = InvoiceFee.ACTIVATION99;
+			InvoiceFee fee = getFee(InvoiceFee.ACTIVATION, feeDAO);
+			if (contractor.hasReducedActivation(fee)) {
+				OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(fee);
+				fee = getFee(InvoiceFee.ACTIVATION99, feeDAO);
+				fee.setAmount(new BigDecimal(reducedOperator.getActivationFee()));
 			}
-			InvoiceFee fee = getFee(feeID, feeDAO);
 
 			// Activate effective today
 			items.add(new InvoiceItem(fee, new Date()));
@@ -281,30 +281,6 @@ public class BillingCalculatorSingle {
 				fee = feeDao.find(feeID);
 		}
 		return fee;
-	}
-
-	static public boolean hasReducedActivation(ContractorAccount contractor) {
-		final Date now = new Date();
-		final OperatorAccount requestedBy = contractor.getRequestedBy();
-
-		if (requestedBy == null)
-			return false;
-		if (CONTRACT_RENEWAL_TIMKEN.after(now) && requestedBy.getName().startsWith("Timken"))
-			return true;
-		if (CONTRACT_RENEWAL_BASF.after(now) && requestedBy.getName().startsWith("BASF"))
-			return true;
-		if (CONTRACT_RENEWAL_SUNDYNE.after(now) && requestedBy.getName().startsWith("Sundyne"))
-			return true;
-		if (CONTRACT_RENEWAL_GOODYEAR.after(now) && requestedBy.getName().startsWith("Goodyear"))
-			return true;
-		if (CONTRACT_RENEWAL_SINCLAIR.after(now) && requestedBy.getName().startsWith("Sinclair"))
-			return true;
-		if (CONTRACT_RENEWAL_NAVISTAR.after(now) && requestedBy.getName().startsWith("Navistar"))
-			return true;
-		if (CONTRACT_RENEWAL_LOREAL.after(now)
-				&& (requestedBy.getId() == 10970 || requestedBy.getId() == 10969 || requestedBy.getId() == 10913))
-			return true;
-		return false;
 	}
 
 	static public boolean activateContractor(ContractorAccount contractor, Invoice invoice,

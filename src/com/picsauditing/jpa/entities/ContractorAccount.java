@@ -135,6 +135,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * Only includes the operator accounts, not corporate accounts
+	 * 
 	 * @return
 	 */
 	@Transient
@@ -800,7 +801,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setFlagCriteria(Set<FlagCriteriaContractor> flagCriteria) {
 		this.flagCriteria = flagCriteria;
 	}
-	
+
 	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.ALL })
 	public Set<FlagDataOverride> getFlagDataOverrides() {
 		return flagDataOverrides;
@@ -1014,5 +1015,27 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		return false;
+	}
+
+	@Transient
+	public OperatorAccount getReducedActivationFeeOperator(InvoiceFee activation) {
+		// if Operator activation fee is reduced, return Operator account
+		if (getRequestedBy().getActivationFee() != null
+				&& getRequestedBy().getActivationFee() != activation.getAmount().intValue())
+			return getRequestedBy();
+
+		// if Corporate activation fee is reduced, return Corporate account
+		for (Facility f : getRequestedBy().getCorporateFacilities())
+			if (f.getCorporate().getActivationFee() != null
+					&& f.getCorporate().getActivationFee() != activation.getAmount().intValue())
+				return f.getCorporate();
+
+		return null;
+	}
+
+	@Transient
+	public boolean hasReducedActivation(InvoiceFee activation) {
+		return getReducedActivationFeeOperator(activation) != null
+				&& activation.getAmount().intValue() != getReducedActivationFeeOperator(activation).getActivationFee();
 	}
 }

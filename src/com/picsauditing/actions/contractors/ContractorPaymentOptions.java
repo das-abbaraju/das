@@ -1,10 +1,10 @@
 package com.picsauditing.actions.contractors;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
@@ -14,6 +14,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.util.BrainTree;
 import com.picsauditing.util.Strings;
@@ -109,11 +110,12 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		activationFee = null;
 		if (contractor.getStatus().isPendingDeactivated()) {
 			if (contractor.getMembershipDate() == null) {
-				int feeID = InvoiceFee.ACTIVATION;
-				if (BillingCalculatorSingle.hasReducedActivation(contractor)) {
-					feeID = InvoiceFee.ACTIVATION99;
+				activationFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
+				if(contractor.hasReducedActivation(activationFee)) {
+					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activationFee);
+					activationFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION99);
+					activationFee.setAmount(new BigDecimal(reducedOperator.getActivationFee()));
 				}
-				activationFee = invoiceFeeDAO.find(feeID);
 			} else
 				activationFee = invoiceFeeDAO.find(InvoiceFee.REACTIVATION);
 		}

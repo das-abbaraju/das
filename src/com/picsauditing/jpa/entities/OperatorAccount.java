@@ -50,7 +50,7 @@ public class OperatorAccount extends Account {
 	private OshaType oshaType = OshaType.OSHA;
 	private boolean primaryCorporate = false;
 	private boolean autoApproveInsurance = false;
-	private int activationFee = 199;
+	private Integer activationFee = 199;
 	private String requiredTags;
 
 	private List<Facility> corporateFacilities = new ArrayList<Facility>();
@@ -160,11 +160,11 @@ public class OperatorAccount extends Account {
 		this.autoApproveInsurance = autoApproveInsurance;
 	}
 
-	public int getActivationFee() {
+	public Integer getActivationFee() {
 		return activationFee;
 	}
 
-	public void setActivationFee(int activationFee) {
+	public void setActivationFee(Integer activationFee) {
 		this.activationFee = activationFee;
 	}
 
@@ -230,10 +230,10 @@ public class OperatorAccount extends Account {
 		for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
 			if (c.getCriteria().getQuestion() != null) {
 				if (c.getCriteria().getQuestion().isCurrent()) {
-					if(!c.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()
-						||  canSeeInsurance.equals(YesNo.Yes))
-					criteriaList.add(c);
-				}	
+					if (!c.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()
+							|| canSeeInsurance.equals(YesNo.Yes))
+						criteriaList.add(c);
+				}
 			}
 			if (c.getCriteria().getOshaType() != null) {
 				if (c.getCriteria().getOshaType().equals(oshaType)) {
@@ -364,13 +364,13 @@ public class OperatorAccount extends Account {
 	public void setJobSites(List<JobSite> jobSites) {
 		this.jobSites = jobSites;
 	}
-	
+
 	@Transient
 	public OperatorAccount getTopAccount() {
 		OperatorAccount topAccount = this;
-		if(this.getParent() != null)
+		if (this.getParent() != null)
 			topAccount = this.getParent();
-		
+
 		for (Facility facility : getCorporateFacilities()) {
 			if (facility.getCorporate().isPrimaryCorporate()) {
 				topAccount = facility.getCorporate();
@@ -379,9 +379,9 @@ public class OperatorAccount extends Account {
 		}
 		return topAccount;
 	}
-	
+
 	@Transient
-	public boolean isInsureguardSubscriber(){
+	public boolean isInsureguardSubscriber() {
 		return canSeeInsurance.equals(YesNo.Yes);
 	}
 
@@ -390,7 +390,7 @@ public class OperatorAccount extends Account {
 		List<Integer> list = new ArrayList<Integer>();
 		// Add myself
 		list.add(this.id);
-		
+
 		OperatorAccount topAccount = getTopAccount();
 		for (Facility facility : getCorporateFacilities()) {
 			if (!facility.getCorporate().equals(topAccount))
@@ -402,26 +402,27 @@ public class OperatorAccount extends Account {
 			list.add(topAccount.getId());
 		return list;
 	}
-	
+
 	/**
 	 * Please use sparingly!! This does a call to a Spring loaded DAO
+	 * 
 	 * @return Set of AuditTypeIDs
 	 */
 	@Transient
 	public Set<Integer> getVisibleAuditTypes() {
 		if (visibleAuditTypes == null) {
 			// This isn't pretty but it works
-			AuditDecisionTableDAO dao = (AuditDecisionTableDAO)SpringUtils.getBean("AuditDecisionTableDAO");
+			AuditDecisionTableDAO dao = (AuditDecisionTableDAO) SpringUtils.getBean("AuditDecisionTableDAO");
 			visibleAuditTypes = dao.getAuditTypes(this);
 		}
 		return visibleAuditTypes;
 	}
-	
+
 	@Override
 	@Transient
-	public OperatorAccount clone(){
+	public OperatorAccount clone() {
 		OperatorAccount clone = new OperatorAccount();
-		
+
 		clone.acceptsBids = this.isAcceptsBids();
 		clone.activationFee = this.getActivationFee();
 		clone.address = this.getAddress();
@@ -468,7 +469,7 @@ public class OperatorAccount extends Account {
 		clone.verifiedByPics = this.isVerifiedByPics();
 		clone.webUrl = this.getWebUrl();
 		clone.zip = this.getZip();
-		
+
 		return clone;
 	}
 }

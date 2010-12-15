@@ -190,6 +190,11 @@ $(function() {
 				<li><label>Uses Material Suppliers:</label>
 					<s:checkbox name="operator.materialSupplier" /></li>
 			</s:if>
+			<pics:permission perm="UserRolePicsOperator">
+				<li id="act_li"><label>Activation Fee:</label>
+					<s:textfield name="operator.activationFee" size="7" />
+				</li>
+			</pics:permission>
 		</ol>
 		</fieldset>
 		<fieldset class="form">
