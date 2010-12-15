@@ -12,11 +12,13 @@ import java.util.Set;
 
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.PICS.AuditBuilder.AuditTypeDetail;
+import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
+import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -34,6 +36,8 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.log.PicsLogger;
@@ -326,6 +330,9 @@ public class AuditBuilderController {
 					categoryApplies = categoriesNeeded.contains(catData.getCategory().getTopParent());
 				}
 				catData.setApplies(categoryApplies);
+				if ((OshaTypeConverter.getTypeFromCategory(catData.getCategory().getId()) != null) && categoryApplies) {
+					addOshaLog(catData);
+				}
 			}
 		}
 		// Save all auditCatData rows at once
@@ -578,14 +585,6 @@ public class AuditBuilderController {
 		currentAudits.add(annualAudit);
 	}
 
-	public boolean removeCategory(String answer, AuditData auditData, AuditCatData auditCatData, int categoryID) {
-		if (auditData != null) {
-			if (answer.equals(auditData.getAnswer()) && auditCatData.getCategory().getId() == categoryID)
-				return true;
-		}
-		return false;
-	}
-
 	private ContractorAudit createAudit(AuditType auditType) {
 		ContractorAudit audit = new ContractorAudit();
 		audit.setContractorAccount(contractor);
@@ -597,4 +596,21 @@ public class AuditBuilderController {
 		return audit;
 	}
 
+	private void addOshaLog(AuditCatData catData) {
+		boolean hasOshaCorporate = false;
+		for (OshaAudit osha : catData.getAudit().getOshas()) {
+			if (osha.isCorporate() && osha.getType().equals(OshaTypeConverter.getTypeFromCategory(catData.getCategory().getId()))) {
+				hasOshaCorporate = true;
+			}
+		}
+
+		if (!hasOshaCorporate) {
+			OshaAudit oshaAudit = new OshaAudit();
+			oshaAudit.setConAudit(catData.getAudit());
+			oshaAudit.setCorporate(true);
+			oshaAudit.setType(OshaTypeConverter.getTypeFromCategory(catData.getCategory().getId()));
+			catData.getAudit().getOshas().add(oshaAudit);
+			catData.setNumRequired(2);
+		}
+	}
 }

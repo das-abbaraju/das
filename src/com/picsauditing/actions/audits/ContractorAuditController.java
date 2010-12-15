@@ -19,7 +19,6 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -49,7 +48,6 @@ public class ContractorAuditController extends AuditActionSupport {
 	private AuditCategoryDAO auditCategoryDAO;
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilderController auditBuilder;
-	private OshaAuditDAO oshaAuditDAO;
 	protected int caoID;
 	protected boolean previewCat = false;
 	// Policy verification (next/first buttons)
@@ -58,12 +56,11 @@ public class ContractorAuditController extends AuditActionSupport {
 	public ContractorAuditController(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
 			AuditCategoryDAO auditCategoryDAO, AuditPercentCalculator auditPercentCalculator,
-			OshaAuditDAO oshaAuditDAO, AuditBuilderController auditBuilder,
+			AuditBuilderController auditBuilder,
 			AuditCategoryRuleCache auditCategoryRuleCache) {
 		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
-		this.oshaAuditDAO = oshaAuditDAO;
 		this.auditBuilder = auditBuilder;
 	}
 
@@ -168,31 +165,6 @@ public class ContractorAuditController extends AuditActionSupport {
 			if (mode.equals(VERIFY) && !isCanVerifyAudit())
 				mode = VIEW;
 
-			if (categoryData != null) {
-				if (OshaTypeConverter.getTypeFromCategory(categoryData.getCategory().getId()) != null) {
-					boolean hasOshaCorporate = false;
-					for (OshaAudit osha : conAudit.getOshas()) {
-						if (osha.isCorporate() && matchesType(categoryData.getCategory().getId(), osha.getType())) {
-							hasOshaCorporate = true;
-							// Calculate percent complete too
-							auditPercentCalculator.percentOshaComplete(osha, categoryData);
-						}
-					}
-
-					if (mode.equals(EDIT) && !hasOshaCorporate) {
-						OshaAudit oshaAudit = new OshaAudit();
-						oshaAudit.setConAudit(conAudit);
-						oshaAudit.setCorporate(true);
-						oshaAudit.setType(OshaTypeConverter.getTypeFromCategory(categoryData.getCategory().getId()));
-						oshaAuditDAO.save(oshaAudit);
-						conAudit.getOshas().add(oshaAudit);
-
-						categoryData.setNumRequired(2);
-						catDataDao.save(categoryData);
-					}
-				}
-			}
-
 			return SUCCESS;
 		}
 
@@ -280,14 +252,6 @@ public class ContractorAuditController extends AuditActionSupport {
 		return contractor.getOshaOrganizer().getOshaAudit(oshaType, MultiYearScope.ThreeYearAverage);
 	}
 
-	public boolean matchesType(int categoryId, OshaType oa) {
-		if (OshaTypeConverter.getTypeFromCategory(categoryId) == null || oa == null)
-			return false;
-		if (oa == OshaTypeConverter.getTypeFromCategory(categoryId))
-			return true;
-		return false;
-	}
-
 	public boolean isCanVerifyAudit() {
 		if (!permissions.isAuditor() && !permissions.hasGroup(959))
 			return false;
@@ -350,5 +314,13 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	public void setPreviewCat(boolean previewCat) {
 		this.previewCat = previewCat;
+	}
+	
+	public boolean matchesType(int categoryId, OshaType oa) {
+		if (OshaTypeConverter.getTypeFromCategory(categoryId) == null || oa == null)
+			return false;
+		if (oa == OshaTypeConverter.getTypeFromCategory(categoryId))
+			return true;
+		return false;
 	}
 }

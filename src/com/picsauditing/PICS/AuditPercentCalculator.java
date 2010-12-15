@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
+import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -63,7 +64,7 @@ public class AuditPercentCalculator {
 			if (question.getVisibleQuestion() != null)
 				questionIDs.add(question.getVisibleQuestion().getId());
 		}
-		
+
 		// Get a map of all answers in this audit
 		List<AuditData> requiredAnswers = new ArrayList<AuditData>();
 		for (AuditData answer : catData.getAudit().getData())
@@ -176,11 +177,12 @@ public class AuditPercentCalculator {
 									verifiedCount++;
 							} else if (catData.getAudit().getAuditType().getClassType().isPolicy()) {
 								verifiedCount = requiredCount;
-							// If the questions are explicited ignored from
-							// verification but still required then we should
-							// increase the verifiedCount so we can close it
-							} else if(question.getId() == 2447 || question.getId() == 2448)
-								verifiedCount ++;
+								// If the questions are explicited ignored from
+								// verification but still required then we
+								// should
+								// increase the verifiedCount so we can close it
+							} else if (question.getId() == 2447 || question.getId() == 2448)
+								verifiedCount++;
 						}
 					}
 				}
@@ -253,7 +255,7 @@ public class AuditPercentCalculator {
 				if (percentVerified >= 100)
 					percentVerified = 100;
 			}
-			
+
 			cao.setPercentComplete(percentComplete);
 			cao.setPercentVerified(percentVerified);
 			// caoDao.save(cao);
@@ -282,15 +284,13 @@ public class AuditPercentCalculator {
 
 	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
 		for (AuditCatData data : conAudit.getCategories()) {
-
-			if (!conAudit.getAuditType().isAnnualAddendum()) {
-				updatePercentageCompleted(data);
-			} else {
+			if (OshaTypeConverter.getTypeFromCategory(data.getCategory().getId()) != null) {
 				for (OshaAudit osha : conAudit.getOshas()) {
 					if (osha.isCorporate()) {
 						percentOshaComplete(osha, data);
 					}
 				}
+			} else {
 				updatePercentageCompleted(data);
 			}
 		}
@@ -326,9 +326,9 @@ public class AuditPercentCalculator {
 	}
 
 	public List<AuditData> getVerifiedPqfData(int auditID) {
-		if(verifiedPqfData == null)
+		if (verifiedPqfData == null)
 			verifiedPqfData = auditDataDAO.findCustomPQFVerifications(auditID);
 		return verifiedPqfData;
 	}
-	
+
 }
