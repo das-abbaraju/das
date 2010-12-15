@@ -1857,7 +1857,8 @@
 		</action>
 		
 		<action name="ReportOQEmployeesCSV"
-			class="com.picsauditing.actions.report.oq.ReportOQEmployees" method="getExcelDownload">
+			class="com.picsauditing.actions.report.oq.ReportOQEmployees">
+			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
 

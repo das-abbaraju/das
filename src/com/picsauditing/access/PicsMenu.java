@@ -365,7 +365,7 @@ public class PicsMenu {
 				subMenu.addChild("Job Tasks", "ManageJobTasksOperator.action?id=" + permissions.getAccountId());
 			
 			subMenu.addChild("OQ by Contractor/Site", "ReportOQ.action");
-			subMenu.addChild("OQ by Employee", "ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
+			subMenu.addChild("OQ by Employee", "ReportOQEmployees.action");
 		}
 		
 		if ((permissions.isOperatorCorporate() && permissions.isRequiresOQ()) || permissions.isAdmin())

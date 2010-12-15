@@ -8,12 +8,6 @@
 	background-color: #fbb;
 }
 </style>
-<script type="text/javascript">
-function download() {
-	var url = 'ReportOQEmployeesCSV.action?' + $('#form1 input').serialize();
-	window.open(url);
-}
-</script>
 </head>
 <body>
 <h1>OQ Employee</h1>
@@ -21,23 +15,23 @@ function download() {
 <s:include value="../reports/filters_employee.jsp" />
 <br />
 
-<a href="javascript: download();" target="_blank" class="excel">Download</a>
+<a href="javascript: download('ReportOQEmployees');" target="_blank" class="excel">Download</a>
 <table class="report">
 	<thead>
 		<tr>
 			<th rowspan="2"><a href="?orderBy=e.lastName,e.firstName">Employee</a></th>
 			<s:if test="!permissions.contractor">
-				<th rowspan="2"><a href="?orderBy=e.account.name,e.lastName">Company</a></th>
+				<th rowspan="2"><a href="?orderBy=a.name,e.lastName">Company</a></th>
 			</s:if>
-			<s:iterator value="jobSites.keySet()" id="key">
-				<th colspan="<s:property value="jobSites.get(#key).size()" />">
-					<span title="<s:property value="%{#key.operator.name + ': ' + #key.name}" />"><s:property value="#key.label" /></span>
+			<s:iterator value="jobSiteTasks.keySet()" var="js">
+				<th colspan="<s:property value="jobSiteTasks.get(#js).size" />">
+					<span title="<s:property value="%{#js.operator.name + ': ' + #js.name}" />"><s:property value="#js.label" /></span>
 				</th>
 			</s:iterator>
 		</tr>
 		<tr>
-			<s:iterator value="jobSites.keySet()" id="key">
-				<s:iterator value="jobSites.get(#key)" id="jst">
+			<s:iterator value="jobSiteTasks.keySet()" var="js">
+				<s:iterator value="jobSiteTasks.get(#js)" var="jst">
 					<th title="<s:property value="#jst.task.name" />
 Span of Control = <s:property value="#jst.controlSpan" />">
 						<s:property value="#jst.task.label" /></th>
@@ -56,16 +50,17 @@ Span of Control = <s:property value="#jst.controlSpan" />">
 							<s:property value="#e.account.name" /></a>
 					</td>
 				</s:if>
-				<s:iterator value="jobSites.keySet()" id="key">
-					<s:iterator value="jobSites.get(#key)" id="jst">
+				<s:iterator value="jobSiteTasks.keySet()" id="js">
+					<s:iterator value="jobSiteTasks.get(#js)" id="jst">
 						<td class="center">
-							<s:if test="qualifications.get(#e, #jst.task).qualified && worksAtSite.get(#e, #jst.job)">
-								<s:set name="checkMark" value="qualifications.get(#e, #jst.task)" />
-								<s:if test="#checkMark.current && !#checkMark.manuallyAdded">
-									<img alt="Qualified" src="images/okCheck.gif">
+							<s:if test="map.get(#e, #jst) != null">
+								<s:if test="map.get(#e, #jst) == true">
+									<img alt="Qualified" src="images/okCheck.gif" title="<s:iterator value="results.get(#jst.task, #e)" var="ar"><s:property value="#ar.assessmentTest.assessmentCenter.name" />: <s:property value="#ar.assessmentTest.qualificationMethod" /> <s:property value="#ar.assessmentTest.qualificationType" /> - <s:property value="#ar.assessmentTest.description" />, <s:date name="#ar.effectiveDate" format="M/d/yyyy" /> - <s:date name="#ar.expirationDate" format="M/d/yyyy" />
+
+</s:iterator>">
 								</s:if>
 								<s:else>
-									<img alt="Expired" src="images/okCheck.gif">
+									<img alt="Expired" src="images/notOkCheck.gif">
 								</s:else>
 							</s:if>
 						</td>
@@ -77,11 +72,11 @@ Span of Control = <s:property value="#jst.controlSpan" />">
 	<tfoot>
 		<tr>
 			<th <s:if test="!permissions.contractor">colspan="2" </s:if>class="right">Total</th>
-			<s:iterator value="jobSites.keySet()" id="key">
-				<s:iterator value="jobSites.get(#key)" id="jst">
+			<s:iterator value="jobSiteTasks.keySet()" id="key">
+				<s:iterator value="jobSiteTasks.get(#key)" id="jst">
 					<s:set name="jstTotal" value="0" />
 					<s:iterator value="employees" id="e">
-						<s:if test="qualifications.get(#e, #jst.task).qualified && worksAtSite.get(#e, #jst.job)">
+						<s:if test="map.get(#e, #jst) != null && map.get(#e, #jst) == true">
 							<s:set name="jstTotal" value="1 + #jstTotal" />
 						</s:if>
 					</s:iterator>
