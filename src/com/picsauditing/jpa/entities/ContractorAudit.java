@@ -77,9 +77,9 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
 	private Map<AuditStatus, Integer> caoStats = null;
 
-	public static int MC_CLOSING_ID = 1029;
-	public static int DD_CLOSING_ID = 9615;
-	public static int JM_CLOSING_ID = 11503;
+	public static int MINA = 1029;
+	public static int RICK = 9615;
+	public static int GARY = 11503;
 
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
@@ -174,11 +174,11 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		this.closingAuditor = closingAuditor;
 		if (closingAuditor != null) {
 			if (closingAuditor.getId() == 10600) // Mike Casey
-				this.closingAuditor = new User(MC_CLOSING_ID);
+				this.closingAuditor = new User(GARY);
 			else if (closingAuditor.getId() == 910) // Dennis Dooley
-				this.closingAuditor = new User(DD_CLOSING_ID);
+				this.closingAuditor = new User(RICK);
 			else if (closingAuditor.getId() == 902) // John McCaughey
-				this.closingAuditor = new User(JM_CLOSING_ID);
+				this.closingAuditor = new User(MINA);
 		}
 	}
 
