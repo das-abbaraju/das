@@ -13,8 +13,10 @@
 <script type="text/javascript">
 $(function() {
 	$('#question').change(function() {
-		if ($(this).blank())
+		if ($(this).blank()) {
 			$('#question_display').html('');
+			$('.requiresQuestion').hide();
+		}
 	}).autocomplete('AuditQuestionAutocomplete.action', {
 		formatItem  : function(data,i,count) {
 			return data[1];
@@ -24,6 +26,7 @@ $(function() {
 		}
 	}).result(function(event, data) {
 		$('#question_display').html(data[1]);
+		$('.requiresQuestion').show();
 	});
 	$('#category').change(function() {
 		if ($(this).blank())
@@ -40,8 +43,8 @@ $(function() {
 		$('#category_display').html(data[1]);
 	});
 	$('#operator').change(function() {
-		if ($.trim($(this).val()).length == 0) {
-			$('#tag').html('');
+		if ($(this).blank()) {
+			$('#tag').find('option').remove();
 			$('#opTagli').hide();
 		} else {
 			$.getJSON('AuditRuleSearchAjax.action',{button: 'opTagFind', 'opID': $('#operator').val()}, 
@@ -60,9 +63,9 @@ $(function() {
 		}
 	});
 	$('#dependentAudit').change(function() {
-		if ($.trim($(this).val()).length == 0) {
+		if ($(this).blank()) {
 			$('#dAuditSelect').html('');
-			$('#dAuditSelectli').hide();
+			$('.requiresDependentAudit').hide();
 		} else {
 			$.getJSON('AuditTypeRuleSearchAjax.action', {button: 'dAuditStatus', 'aType': $(this).val()}, 
 				function(json) {
@@ -73,14 +76,43 @@ $(function() {
 						for(var i=0; i<options.length; i++) {
 							$('#dAuditSelect').append($('<option>').attr('value', options[i].option).text(options[i].option));
 						}
-						$('#dAuditSelectli').show();
+						$('.requiresDependentAudit').show();
 					}
 				}
 			);
 		}
 	});
+	$('#comparator').change(function() {
+		if ($(this).blank()) {
+			$('.requiresComparator').hide().find('input').val('');
+		} else {
+			$('.requiresComparator').show();
+		}
+	});
 });
 </script>
+<style>
+<s:if test="rule.question == null">
+.requiresQuestion {
+	display: none;
+}
+</s:if>
+<s:if test="rule.dependentAuditStatus == null">
+.requiresDependentAudit {
+	display: none;
+}
+</s:if>
+<s:if test="rule.operatorAccount == null">
+.requiredOperator {
+	display: none;
+}
+</s:if>
+<s:if test="rule.questionComparator == null">
+.requiresComparator {
+	display: none;
+}
+</s:if>
+</style>
 </head>
 <body>
 <h1><s:property value="ruleType"/> Rule Editor</h1>
@@ -175,7 +207,7 @@ $(function() {
 							</div>
 						</s:if>
 					</li>
-					<li id="opTagli" <s:if test="rule.operatorAccount==null">style="display: none;"</s:if>><label>Tag</label>
+					<li id="opTagli" class="requiresOperator"<s:if test="rule.operatorAccount==null">style="display: none;"</s:if>><label>Tag</label>
 						<s:select list="operatorTagList" name="ruleOperatorTagId" listKey="id" listValue="tag" id="tag" headerKey="0" headerValue="Any"
 						value="rule.tag.id" />
 					</li>
@@ -186,8 +218,8 @@ $(function() {
 									<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
 								</s:iterator>
 							</s:select>
-						</li>					
-						<li id="dAuditSelectli" <s:if test="rule.dependentAuditStatus==null">style="display: none;"</s:if>><label>Dependent Status</label>
+						</li>
+						<li class="requiresDependentAudit"><label>Dependent Status</label>
 							<s:select list="dependentAuditStatus" name="rule.dependentAuditStatus" id="dAuditSelect" headerKey="" headerValue="Any" />
 						</li>					
 					</s:if>
@@ -203,10 +235,10 @@ $(function() {
 							</s:if>
 						</div>
 					</li>
-					<li><label>Question Comparator</label>
-						<s:select name="rule.questionComparator" list="@com.picsauditing.jpa.entities.QuestionComparator@values()" headerKey="" headerValue=""/>
+					<li class="requiresQuestion"><label>Question Comparator</label>
+						<s:select id="comparator" name="rule.questionComparator" list="@com.picsauditing.jpa.entities.QuestionComparator@values()" headerKey="" headerValue="- Comparator -"/>
 					</li>
-					<li><label>Answer</label>
+					<li class="requiresComparator"><label>Answer</label>
 						<s:textfield name="rule.questionAnswer" />
 					</li>
 				</ol>
