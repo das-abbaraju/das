@@ -86,28 +86,30 @@ $(function() {
 <h1><s:property value="ruleType"/> Rule Editor</h1>
 <s:include value="../actionMessages.jsp"/>
 
-<div id="summary">
-	<s:property value="rule.toString()"/>
-	<ol>
-		<li><label>Created By</label>
-			<s:property value="rule.createdBy"/>
-		</li>
-		<li><label>Creation Date</label>
-			<s:property value="rule.creationDate"/>
-		</li>
-		<li><label>Updated By</label>
-			<s:property value="rule.updatedBy"/>
-		</li>
-		<li><label>Updated Date</label>
-			<s:property value="rule.updateDate"/>
-		</li>
-	</ol>
-</div>
-
 <div id="detail">
 	<s:if test="canEditRule">
 		<s:form method="post" id="rule_form">
 			<s:hidden name="rule.id"/>
+			<fieldset class="form">
+				<h2 class="formLegend">Summary</h2>
+				<ol>
+					<li>
+						<label><s:property value="rule.toString()"/></label>
+					</li>
+					<li><label>Created By</label>
+						<s:property value="rule.createdBy"/>
+					</li>
+					<li><label>Created</label>
+						<s:date name="rule.creationDate" nice="true"/>
+					</li>
+					<li><label>Updated By</label>
+						<s:property value="rule.updatedBy"/>
+					</li>
+					<li><label>Updated</label>
+						<s:date name="rule.updateDate" nice="true"/>
+					</li>
+				</ol>
+			</fieldset>
 			<fieldset class="form">
 				<h2 class="formLegend">Rule</h2>
 				<ol>
@@ -210,6 +212,8 @@ $(function() {
 			</fieldset>
 			<fieldset class="form submit">
 				<input type="submit" class="picsbutton positive" name="button" value="Save"/>
+				<input type="submit" class="picsbutton" name="button" value="Copy"/>
+				<input type="submit" class="picsbutton negative" name="button" value="Delete"/>
 			</fieldset>
 		</s:form>
 	</s:if>
