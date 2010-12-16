@@ -304,6 +304,29 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		}
 		return 0;
 	}
+	
+	// This should be moved into an intercepter at a later date
+	/**
+	 * Checks to see if this value is in the parameter map. If it is and the value
+	 * is an empty string ("") then we will replace that value with a null
+	 * 
+	 * @param name
+	 *            Name of the parameter you want to check in the map
+	 */
+	protected void parameterCleanUp(String name) {
+		String[] para = (String[]) ActionContext.getContext().getParameters().get(name);
+		if (para != null && para.length > 0) {
+			if (para[0] == null || para[0].isEmpty()) {
+				try {
+					ActionContext.getContext().getParameters().remove(name);
+					ActionContext.getContext().getParameters().put(name, null);
+				} catch (Exception e) {
+					System.out.println("Error cleaning up parameter");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
 	public int getDaysLeft(Date invoiceDate) {
 		if (invoiceDate == null)
