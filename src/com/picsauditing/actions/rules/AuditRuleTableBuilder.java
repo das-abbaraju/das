@@ -46,8 +46,6 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 					columns.add(entry.getKey());
 			}
 		}
-
-		System.out.println();
 	}
 
 	public Set<AuditRuleColumn> getColumns() {
