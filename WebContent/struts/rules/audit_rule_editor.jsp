@@ -27,27 +27,11 @@ $(function() {
 		}).result(function(event, data){
 			event.preventDefault();
 			$('#'+data[0]+'_display').text(data[1]);
-			if(data[0]=='dAuditType'){
-				if(data[2] > 0){
-					$.getJSON('AuditTypeRuleSearchAjax.action',{button: 'dAuditStatus', 'aType': $('#dAuditType_hidden').val()}, 
-						function(json) {
-							if (json) {
-								$('#dAuditSelect').html('');
-								var options = json.options;
-								$('#dAuditSelect').append($('<option>').attr('value', '').text("- Any -"));
-								for(var i=0; i<options.length; i++) {
-									$('#dAuditSelect').append($('<option>').attr('value', options[i].option).text(options[i].option));
-								}
-								$('#dAuditSelectli').show();
-							}
-						}
-					);	
-				}
-			}
 		});
 	});
 	$('#operator').change(function() {
 		if ($.trim($(this).val()).length == 0) {
+			$('#tag').html('');
 			$('#opTagli').hide();
 		} else {
 			$.getJSON('AuditRuleSearchAjax.action',{button: 'opTagFind', 'opID': $('#operator').val()}, 
@@ -65,9 +49,30 @@ $(function() {
 			);
 		}
 	});
+	$('#dependentAudit').change(function() {
+		if ($.trim($(this).val()).length == 0) {
+			$('#dAuditSelect').html('');
+			$('#dAuditSelectli').hide();
+		} else {
+			$.getJSON('AuditTypeRuleSearchAjax.action', {button: 'dAuditStatus', 'aType': $(this).val()}, 
+				function(json) {
+					if (json) {
+						$('#dAuditSelect').html('');
+						var options = json.options;
+						$('#dAuditSelect').append($('<option>').attr('value', '').text("- Any -"));
+						for(var i=0; i<options.length; i++) {
+							$('#dAuditSelect').append($('<option>').attr('value', options[i].option).text(options[i].option));
+						}
+						$('#dAuditSelectli').show();
+					}
+				}
+			);
+		}
+	});
 	$('#question').change(function() {
-		if ($.trim($(this).val()).length == 0)
+		if ($.trim($(this).val()).length == 0) {
 			$('#question_display').text('');
+		}
 	});
 });
 
@@ -138,8 +143,9 @@ $(function() {
 					</li>
 					<s:if test="!auditTypeRule">
 						<li><label>Category</label>
-							<input type="text" class="searchAuto" id="category" value="<s:property value="rule.auditCategory.name"/>"/>
-							<s:hidden name="rule.auditCategory.id" id="cat_hidden"/>
+							<s:textfield cssClass="searchAuto" id="category" name="rule.auditCategory.id"/>
+							<div id="cat_display">
+							</div>
 							<s:if test="rule.auditCategory.id != null">
 								<a href="#" class="clearfield">Clear Field</a>
 								<div><a href="ManageCategory.action?id=<s:property value="rule.auditCategory.id"/>">Go To Category</a></div>
@@ -177,7 +183,7 @@ $(function() {
 					</li>
 					<s:if test="auditTypeRule">
 						<li><label>Dependent Audit</label>
-							<s:select name="rule.dependentAuditType.id" list="{}" headerKey="" headerValue=" - Audit Type - ">
+							<s:select id="dependentAudit" name="rule.dependentAuditType.id" list="{}" headerKey="" headerValue=" - Audit Type - ">
 								<s:iterator value="auditTypeMap" var="aType">
 									<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
 								</s:iterator>
@@ -185,7 +191,6 @@ $(function() {
 						</li>					
 						<li id="dAuditSelectli" <s:if test="rule.dependentAuditStatus==null">style="display: none;"</s:if>><label>Dependent Status</label>
 							<s:select list="dependentAuditStatus" name="rule.dependentAuditStatus" id="dAuditSelect" headerKey="" headerValue="- Any -" />
-							<a href="#" class="clearfield">Clear Field</a>
 						</li>					
 					</s:if>
 					<li><label>Question</label>
