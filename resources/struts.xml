@@ -2049,5 +2049,9 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 		
+		<!-- Autocomplete Ajax -->
+		<action name="*Autocomplete" class="com.picsauditing.actions.autocomplete.{1}Autocomplete">
+			<result>struts/blank.jsp</result>
+		</action>
 	</package>
 </struts>
