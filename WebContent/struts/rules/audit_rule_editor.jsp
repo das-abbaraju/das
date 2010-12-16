@@ -12,22 +12,32 @@
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
 $(function() {
-	$('.searchAuto').each(function(){
-		var field =  $(this).attr('id');
-		var num = 10;
-		$(this).autocomplete('<s:property value="ruleType.replaceAll(' ', '')"/>RuleSearchAjax.action', {
-			extraParams: {fieldName: field, button: 'searchAuto'},
-			max: num,
-			formatItem : function(data,i,count) {
-				return data[1];
-			},
-			formatResult: function(data,i,count) {
-				return data[2];
-			}
-		}).result(function(event, data){
-			event.preventDefault();
-			$('#'+data[0]+'_display').text(data[1]);
-		});
+	$('#question').change(function() {
+		if ($(this).blank())
+			$('#question_display').html('');
+	}).autocomplete('AuditQuestionAutocomplete.action', {
+		formatItem  : function(data,i,count) {
+			return data[1];
+		},
+		formatResult: function(data,i,count) {
+			return data[0];
+		}
+	}).result(function(event, data) {
+		$('#question_display').html(data[1]);
+	});
+	$('#category').change(function() {
+		if ($(this).blank())
+			$('#category_display').html('');
+	}).autocomplete('AuditCategoryAutocomplete.action', {
+		extraParams: {auditTypeID: $('#auditType').val()},
+		formatItem  : function(data,i,count) {
+			return data[1];
+		},
+		formatResult: function(data,i,count) {
+			return data[0];
+		}
+	}).result(function(event, data) {
+		$('#category_display').html(data[1]);
 	});
 	$('#operator').change(function() {
 		if ($.trim($(this).val()).length == 0) {
@@ -135,7 +145,7 @@ $(function() {
 				<h2 class="formLegend">Options</h2>
 				<ol>
 					<li><label>Audit Type</label>
-						<s:select name="rule.auditType.id" list="{}" headerKey="" headerValue=" - Audit Type - ">
+						<s:select id="auditType" name="rule.auditType.id" list="{}" headerKey="" headerValue=" - Audit Type - ">
 							<s:iterator value="auditTypeMap" var="aType">
 								<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
 							</s:iterator>
@@ -143,11 +153,9 @@ $(function() {
 					</li>
 					<s:if test="!auditTypeRule">
 						<li><label>Category</label>
-							<s:textfield cssClass="searchAuto" id="category" name="rule.auditCategory.id"/>
-							<div id="cat_display">
-							</div>
+							<s:textfield cssClass="autocomplete" id="category" name="rule.auditCategory.id"/>
+							<div id="category_display"></div>
 							<s:if test="rule.auditCategory.id != null">
-								<a href="#" class="clearfield">Clear Field</a>
 								<div><a href="ManageCategory.action?id=<s:property value="rule.auditCategory.id"/>">Go To Category</a></div>
 							</s:if>
 						</li>
@@ -194,7 +202,7 @@ $(function() {
 						</li>					
 					</s:if>
 					<li><label>Question</label>
-						<s:textfield cssClass="searchAuto" id="question" name="rule.question.id"/>
+						<s:textfield cssClass="autocomplete" id="question" name="rule.question.id"/>
 						<div id="question_display">
 							<s:if test="rule.question != null">
 								<a href="ManageAuditType.action?id=<s:property value="rule.question.auditType.id"/>"><s:property value="rule.question.auditType.auditName"/></a> &gt;
