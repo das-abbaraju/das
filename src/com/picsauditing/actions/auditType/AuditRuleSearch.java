@@ -137,7 +137,7 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		} else if ("tag".equals(fieldName)) {
 			returnAjax = opTagDao.findWhere(OperatorTag.class, "t.tag LIKE '" + search + "%'", 50);
 		} else if ("question".equals(fieldName)) {
-			returnAjax = ((AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO")).findWhere("t.name LIKE '"
+			returnAjax = ((AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO")).findWhere("t.name LIKE '%"
 					+ search + "%'");
 		} else if ("dAuditType".equals(fieldName)) {
 			returnAjax = auditTypeDao.findWhere("t.auditName LIKE '" + search + "%'");
@@ -157,8 +157,13 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 				sb.append("tag").append("|").append(((OperatorTag) bt).getTag()).append("|").append(
 						((OperatorTag) bt).getId()).append("\n");
 			} else if (bt instanceof AuditQuestion) {
-				sb.append("question").append("|").append(((AuditQuestion) bt).getName()).append("|").append(
-						((AuditQuestion) bt).getId()).append("\n");
+				AuditQuestion question = (AuditQuestion) bt;
+				sb.append("question").append("|").append(question.getAuditType().getAuditName()).append(" > ");
+				for (AuditCategory category : question.getCategory().getAncestors()) {
+					sb.append(category.getName()).append(" > ");
+				}
+				sb.append(question.getName()).append("|").append(
+						question.getId()).append("\n");
 			}
 		}
 		output = sb.toString();

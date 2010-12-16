@@ -29,7 +29,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 		this.requiredPermission = OpPerms.ManageAuditTypeRules;
 
-		this.title = "Audit Type Rule Editor";
+		this.ruleType = "Audit Type";
 	}
 
 	public LinkedHashSet<AuditStatus> getDependentAuditStatus() {

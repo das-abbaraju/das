@@ -27,7 +27,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
 
 		this.requiredPermission = OpPerms.ManageCategoryRules;
-		this.title = "Audit Category Rule Editor";
+		this.ruleType = "Audit Category";
 	}
 
 	@Override

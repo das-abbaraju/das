@@ -21,6 +21,7 @@
 							<td colspan="<s:property value="#column.colspan" />">*</td>
 						</s:else>
 					</s:iterator>
+					<td><a href="#" id="search"></a></td>
 				</tr>
 			</s:iterator>
 		</tbody>

@@ -21,7 +21,6 @@ $(function() {
 		$(this).autocomplete('<s:if test="categoryRule">Category</s:if><s:else>AuditType</s:else>RuleSearchAjax.action', {
 			extraParams: {fieldName: field, button: 'searchAuto'},
 			max: num,
-			width: 200,
 			formatItem : function(data,i,count){
 				return data[1]
 			},

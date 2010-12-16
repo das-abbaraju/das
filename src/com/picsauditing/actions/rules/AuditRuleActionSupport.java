@@ -35,7 +35,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
 	protected int id;
-	protected String title;
+	protected String ruleType;
 
 	protected OpPerms requiredPermission;
 
@@ -109,6 +109,10 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 		return auditTypeDAO.getAuditTypeMap();
 	}
 
+	public List<OperatorAccount> getOperatorList() {
+		return opDAO.findWhere(true, "", permissions);
+	}
+
 	public List<OperatorTag> getOperatorTagList() {
 		List<OperatorTag> opTagList = new ArrayList<OperatorTag>();
 		if (rule.getOperatorAccount() != null && rule.getOperatorAccount().getTags() != null) {
@@ -158,8 +162,8 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 		this.id = id;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getRuleType() {
+		return ruleType;
 	}
 
 	public Date getDate() {

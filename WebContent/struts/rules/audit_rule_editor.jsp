@@ -3,14 +3,91 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title><s:property value="title"/></title>
+<title><s:property value="title"/> Rule Editor</title>
 <link rel="stylesheet" href="css/reports.css"/>
 <link rel="stylesheet" href="css/forms.css"/>
 <s:include value="../jquery.jsp"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+<script type="text/javascript">
+$(function() {
+	$('.searchAuto').each(function(){
+		var field =  $(this).attr('id');
+		var num = 10;
+		$(this).autocomplete('<s:property value="ruleType.replaceAll(' ', '')"/>RuleSearchAjax.action', {
+			extraParams: {fieldName: field, button: 'searchAuto'},
+			max: num,
+			formatItem : function(data,i,count) {
+				return data[1];
+			},
+			formatResult: function(data,i,count) {
+				return data[2];
+			}
+		}).result(function(event, data){
+			event.preventDefault();
+			$('#'+data[0]+'_display').text(data[1]);
+			if(data[0]=='dAuditType'){
+				if(data[2] > 0){
+					$.getJSON('AuditTypeRuleSearchAjax.action',{button: 'dAuditStatus', 'aType': $('#dAuditType_hidden').val()}, 
+						function(json) {
+							if (json) {
+								$('#dAuditSelect').html('');
+								var options = json.options;
+								$('#dAuditSelect').append($('<option>').attr('value', '').text("- Any -"));
+								for(var i=0; i<options.length; i++) {
+									$('#dAuditSelect').append($('<option>').attr('value', options[i].option).text(options[i].option));
+								}
+								$('#dAuditSelectli').show();
+							}
+						}
+					);	
+				}
+			}
+		});
+	});
+	$('#operator').change(function() {
+		if ($.trim($(this).val()).length == 0) {
+			$('#opTagli').hide();
+		} else {
+			$.getJSON('AuditRuleSearchAjax.action',{button: 'opTagFind', 'opID': $('#operator').val()}, 
+				function(json) {
+					if (json) {
+						$('#tag').html('');
+						var tags = json.tags;
+						$('#tag').append($('<option>').attr('value', -1).text("- Any -"));
+						for(var i=0; i<tags.length; i++) {
+							$('#tag').append($('<option>').attr('value', tags[i].tagID).text(tags[i].tag));
+						}
+						$('#opTagli').show();
+					} 
+				}
+			);
+		}
+	});
+	$('#question').change(function() {
+		if ($.trim($(this).val()).length == 0)
+			$('#question_display').text('');
+	});
+});
+
+$(function() {
+	$('a.clearfield').click(function(e) {
+		e.preventDefault();
+		$('input', $(this).parent()).val('');
+		if($('input', $(this).parent()).attr('id')=='operator'){
+			$('#tag').html('');
+			$('#opTagli').hide();
+		} else if($('input', $(this).parent()).attr('id')=='dAuditType'){
+			$('#dAuditSelect').html('');
+			$('#dAuditSelectli').hide();
+		}
+	});
+});
+</script>
 </head>
 <body>
-<h1><s:property value="title"/></h1>
+<h1><s:property value="ruleType"/> Rule Editor</h1>
 <s:include value="../actionMessages.jsp"/>
 
 <div id="summary">
@@ -83,10 +160,8 @@
 					</li>
 					<li <s:if test="operatorRequired">class="required"</s:if>>
 						<label>Operator</label>
-						<input type="text" class="searchAuto" id="operator" value="<s:property value="rule.operatorAccount.name"/>"/>
-						<s:hidden name="rule.operatorAccount.id" id="op_hidden"/>
+						<s:select id="operator" name="rule.operatorAccount.id" list="operatorList" headerKey="" headerValue="- Operator -" listKey="id" listValue="name"></s:select>
 						<s:if test="rule.operatorAccount.id != null">
-							<a href="#" class="clearfield">Clear Field</a>
 							<div><a href="FacilitiesEdit.action?id=<s:property value="rule.operatorAccount.id"/>">Go To Operator</a></div>
 						</s:if>
 						<s:if test="operatorRequired"> 
@@ -114,12 +189,16 @@
 						</li>					
 					</s:if>
 					<li><label>Question</label>
-						<input type="text" class="searchAuto" id="question" value="<s:property value="rule.question.name"/>"/>
-						<s:hidden name="rule.question.id" id="question_hidden"/>
-						<s:if test="rule.question.id != null">
-							<a href="#" class="clearfield">Clear Field</a>
-							<div><a href="ManageQuestion.action?id=<s:property value="rule.question.id"/>">Go To Question</a></div>
-						</s:if>
+						<s:textfield cssClass="searchAuto" id="question" name="rule.question.id"/>
+						<div id="question_display">
+							<s:if test="rule.question != null">
+								<a href="ManageAuditType.action?id=<s:property value="rule.question.auditType.id"/>"><s:property value="rule.question.auditType.auditName"/></a> &gt;
+								<s:iterator value="rule.question.category.ancestors">
+									<a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="name"/></a> &gt;
+								</s:iterator>
+								<a href="ManageQuestion.action?id=<s:property value="rule.question.id"/>"><s:property value="rule.question.name"/></a>
+							</s:if>
+						</div>
 					</li>
 					<li><label>Question Comparator</label>
 						<s:select name="rule.questionComparator" list="@com.picsauditing.jpa.entities.QuestionComparator@values()" headerKey="" headerValue=""/>
@@ -135,7 +214,7 @@
 		</s:form>
 	</s:if>
 	<s:else>
-	
+		
 	</s:else>
 </div>
 

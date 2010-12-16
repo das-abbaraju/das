@@ -1249,14 +1249,12 @@
 			class="com.picsauditing.actions.auditType.CategoryRuleEditor">
 			<result>struts/audits/rules/audit_rule_editor.jsp</result>
 		</action>
-		<action name="CategoryRuleSearch"
+		<action name="AuditCategoryRuleSearch"
 			class="com.picsauditing.actions.auditType.CategoryRuleSearch">
-			<param name="ruleType">Category Rules</param>
 			<result>struts/audits/rules/audit_rule_search.jsp</result>
 		</action>
-		<action name="CategoryRuleSearchAjax"
+		<action name="AuditCategoryRuleSearchAjax"
 			class="com.picsauditing.actions.auditType.CategoryRuleSearch">		
-			<param name="ruleType">Audit Type Rules</param>
 			<result name="autocomp">struts/blank.jsp</result>
 			<result>struts/audits/rules/audit_rule_search_data.jsp</result>
 		</action>

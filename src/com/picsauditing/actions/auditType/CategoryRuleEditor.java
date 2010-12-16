@@ -23,7 +23,6 @@ import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
-import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.search.Database;
@@ -206,27 +205,28 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			return false;
 		return true;
 	}
-	
+
 	/**
 	 * If user has a permission to edit the rule, created the rule, or is
 	 * associated with the operator then they can edit the rule
+	 * 
 	 * @return
 	 */
-	public boolean canEditRule(){
-		if(permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit))
+	public boolean canEditRule() {
+		if (permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit))
 			return true;
-		if(rule!=null){
-			if(permissions.getUserId()==rule.getCreatedBy().getId())
+		if (rule != null) {
+			if (permissions.getUserId() == rule.getCreatedBy().getId())
 				return true;
 			OperatorAccount opAccount = rule.getOperatorAccount();
-			if(opAccount!=null){
-				for(AccountUser accUser : opAccount.getAccountUsers()){
-					if(accUser.getUser().getId()==permissions.getUserId())
+			if (opAccount != null) {
+				for (AccountUser accUser : opAccount.getAccountUsers()) {
+					if (accUser.getUser().getId() == permissions.getUserId())
 						return true;
 				}
-				for(OperatorAccount child : opAccount.getOperatorChildren()){
-					for(AccountUser childAccUser : child.getAccountUsers()){
-						if(childAccUser.getUser().getId()==permissions.getUserId())
+				for (OperatorAccount child : opAccount.getOperatorChildren()) {
+					for (AccountUser childAccUser : child.getAccountUsers()) {
+						if (childAccUser.getUser().getId() == permissions.getUserId())
 							return true;
 					}
 				}
