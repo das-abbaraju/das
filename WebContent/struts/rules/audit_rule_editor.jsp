@@ -79,25 +79,6 @@ $(function() {
 			);
 		}
 	});
-	$('#question').change(function() {
-		if ($.trim($(this).val()).length == 0) {
-			$('#question_display').text('');
-		}
-	});
-});
-
-$(function() {
-	$('a.clearfield').click(function(e) {
-		e.preventDefault();
-		$('input', $(this).parent()).val('');
-		if($('input', $(this).parent()).attr('id')=='operator'){
-			$('#tag').html('');
-			$('#opTagli').hide();
-		} else if($('input', $(this).parent()).attr('id')=='dAuditType'){
-			$('#dAuditSelect').html('');
-			$('#dAuditSelectli').hide();
-		}
-	});
 });
 </script>
 </head>
@@ -154,10 +135,16 @@ $(function() {
 					<s:if test="!auditTypeRule">
 						<li><label>Category</label>
 							<s:textfield cssClass="autocomplete" id="category" name="rule.auditCategory.id"/>
-							<div id="category_display"></div>
-							<s:if test="rule.auditCategory.id != null">
-								<div><a href="ManageCategory.action?id=<s:property value="rule.auditCategory.id"/>">Go To Category</a></div>
-							</s:if>
+							<div id="category_display">
+								<s:if test="rule.auditCategory != null">
+									<s:iterator value="rule.auditCategory.ancestors" status="stat">
+										<a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="name"/></a>
+										<s:if test="!stat.last">
+											&gt;
+										</s:if>
+									</s:iterator>
+								</s:if>
+							</div>
 						</li>
 						<li><label>Top or Sub Category</label>
 							<s:select list="#{-1:'Any',0:'Sub Categories',1:'Top Categories'}" name="rootCat"/> 
