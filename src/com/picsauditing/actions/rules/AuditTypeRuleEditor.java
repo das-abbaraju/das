@@ -8,6 +8,7 @@ import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
@@ -18,18 +19,29 @@ import com.picsauditing.jpa.entities.WorkflowStep;
 @SuppressWarnings("serial")
 public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
+	protected Integer ruleDependentAuditTypeId;
+
 	public AuditTypeRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO, AuditTypeDAO auditTypeDAO,
-			OperatorTagDAO tagDAO, AuditTypeRuleCache auditTypeRuleCache, AuditCategoryRuleCache auditCategoryRuleCache) {
+			OperatorTagDAO tagDAO, AuditQuestionDAO questionDAO, AuditTypeRuleCache auditTypeRuleCache,
+			AuditCategoryRuleCache auditCategoryRuleCache) {
 		this.dao = dao;
-		this.opDAO = opDAO;
+		this.operatorDAO = opDAO;
 		this.auditTypeDAO = auditTypeDAO;
 		this.tagDAO = tagDAO;
+		this.questionDAO = questionDAO;
 		this.auditTypeRuleCache = auditTypeRuleCache;
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
 
 		this.requiredPermission = OpPerms.ManageAuditTypeRules;
-
 		this.ruleType = "Audit Type";
+	}
+
+	@Override
+	public void prepare() throws Exception {
+		super.prepare();
+		int ruleID = getParameter("id");
+		if (ruleID > 0)
+			rule = dao.findAuditTypeRule(ruleID);
 	}
 
 	public LinkedHashSet<AuditStatus> getDependentAuditStatus() {
@@ -39,13 +51,6 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 				set.add(step.getNewStatus());
 		}
 		return set;
-	}
-
-	@Override
-	public void prepare() throws Exception {
-		int ruleID = getParameter("id");
-		if (ruleID > 0)
-			rule = dao.findAuditTypeRule(ruleID);
 	}
 
 	@Override
@@ -59,11 +64,21 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 	}
 
 	@Override
-	protected void copy() {
+	protected void onDeleteRedirectTo() throws IOException {
+		String redirect = "";
+		List<AuditTypeRule> lessGranular = getLessGranular();
+		if (lessGranular.size() > 1)
+			redirect = "AuditTypeRuleEditor.action?id=" + lessGranular.get(lessGranular.size() - 1).getId();
+		else {
+			redirect = "AuditTypeRuleSearch.action";
+			if(rule.getAuditType()!=null)
+				redirect += "filter.auditType=" + rule.getAuditType().getAuditName();
+		}
+		this.redirect(redirect);
 	}
 
 	@Override
-	protected void delete() {
+	protected void copy() {
 	}
 
 	@Override
@@ -72,6 +87,32 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 	@Override
 	protected void save() {
+		if (isOperatorRequired()) {
+			if (rule.getOperatorAccount() == null) {
+				addActionError("You must specify an operator for this rule");
+				return;
+			}
+		}
+		saveFields();
+		if (rule.getId() == 0) {
+			rule.defaultDates();
+			rule.calculatePriority();
+			rule.setAuditColumns(permissions);
+			dao.save(rule);
+		} else {
+			rule.calculatePriority();
+			rule.setAuditColumns(permissions);
+			dao.save(rule);
+		}
+	}
+
+	@Override
+	protected void saveFields() {
+		super.saveFields();
+		if (ruleDependentAuditTypeId != null) {
+			rule.setDependentAuditType(auditTypeDAO.find(ruleDependentAuditTypeId));
+		} else
+			rule.setDependentAuditType(null);
 	}
 
 	@Override
@@ -81,7 +122,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 	@Override
 	public void setRule(AuditTypeRule rule) {
-		this.setRule(rule);
+		this.rule = rule;
 	}
 
 	@Override
@@ -92,5 +133,13 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 	@Override
 	public List<AuditTypeRule> getMoreGranular() {
 		return dao.getLessGranular(rule, date);
+	}
+
+	public Integer getRuleDependentAuditTypeId() {
+		return ruleDependentAuditTypeId;
+	}
+
+	public void setRuleDependentAuditTypeId(Integer ruleDependentAuditTypeId) {
+		this.ruleDependentAuditTypeId = ruleDependentAuditTypeId;
 	}
 }

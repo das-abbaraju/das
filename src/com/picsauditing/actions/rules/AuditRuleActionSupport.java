@@ -11,9 +11,9 @@ import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
@@ -28,14 +28,21 @@ import com.picsauditing.jpa.entities.OperatorTag;
 public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsActionSupport implements Preparable {
 
 	protected AuditDecisionTableDAO dao;
-	protected OperatorAccountDAO opDAO;
+	protected OperatorAccountDAO operatorDAO;
 	protected AuditTypeDAO auditTypeDAO;
 	protected OperatorTagDAO tagDAO;
+	protected AuditQuestionDAO questionDAO;
 	protected AuditTypeRuleCache auditTypeRuleCache;
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
 	protected int id;
 	protected String ruleType;
+
+	protected Integer ruleAuditTypeId;
+	protected Integer ruleOperatorAccountId;
+	protected Integer ruleOperatorTagId;
+	protected Integer ruleQuestionId;
+	protected Boolean ruleAcceptsBids;
 
 	protected OpPerms requiredPermission;
 
@@ -43,12 +50,16 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	protected Date date = new Date();
 
 	@Override
+	public void prepare() throws Exception {
+		// cleans up empty string to be null
+		// probably not the best way but works for now.
+		parameterCleanUp("ruleAcceptsBids");
+	}
+	
+	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-
-		if (rule == null)
-			throw new RecordNotFoundException("Rule " + id);
 
 		if (button != null) {
 			if ("Clear".equals(button)) {
@@ -64,7 +75,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 			}
 			if ("Delete".equals(button)) {
 				delete();
-				redirectTo();
+				onDeleteRedirectTo();
 				return BLANK;
 			}
 			if ("Copy".equals(button)) {
@@ -110,7 +121,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	}
 
 	public List<OperatorAccount> getOperatorList() {
-		return opDAO.findWhere(true, "", permissions);
+		return operatorDAO.findWhere(true, "", permissions);
 	}
 
 	public List<OperatorTag> getOperatorTagList() {
@@ -134,7 +145,29 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 		addActionMessage("Cleared Category and Audit Type Cache.");
 	}
 
+	protected void saveFields() {
+		rule.setAcceptsBids(ruleAcceptsBids);
+		if (ruleAuditTypeId != null) {
+			rule.setAuditType(auditTypeDAO.find(ruleAuditTypeId));
+		} else
+			rule.setAuditType(null);
+		if (ruleOperatorAccountId != null) {
+			rule.setOperatorAccount(operatorDAO.find(ruleOperatorAccountId));
+		} else
+			rule.setOperatorAccount(null);
+		if (ruleOperatorTagId != null) {
+			rule.setTag(tagDAO.find(ruleOperatorTagId));
+		} else
+			rule.setTag(null);
+		if (ruleQuestionId != null) {
+			rule.setQuestion(questionDAO.find(ruleQuestionId));
+		} else
+			rule.setQuestion(null);
+	}
+
 	protected abstract void redirectTo() throws IOException;
+	
+	protected abstract void onDeleteRedirectTo() throws IOException;
 
 	public abstract boolean isAuditTypeRule();
 
@@ -142,7 +175,12 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 
 	protected abstract void save();
 
-	protected abstract void delete();
+	protected void delete(){
+		rule.setExpirationDate(new Date());
+		rule.setAuditColumns(permissions);
+		dao.save(rule);
+		clear();
+	}
 
 	protected abstract void copy();
 
@@ -172,6 +210,46 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public Integer getRuleAuditTypeId() {
+		return ruleAuditTypeId;
+	}
+
+	public void setRuleAuditTypeId(Integer ruleAuditTypeId) {
+		this.ruleAuditTypeId = ruleAuditTypeId;
+	}
+
+	public Integer getRuleOperatorAccountId() {
+		return ruleOperatorAccountId;
+	}
+
+	public void setRuleOperatorAccountId(Integer ruleOperatorAccountId) {
+		this.ruleOperatorAccountId = ruleOperatorAccountId;
+	}
+
+	public Integer getRuleOperatorTagId() {
+		return ruleOperatorTagId;
+	}
+
+	public void setRuleOperatorTagId(Integer ruleOperatorTagId) {
+		this.ruleOperatorTagId = ruleOperatorTagId;
+	}
+
+	public Integer getRuleQuestionId() {
+		return ruleQuestionId;
+	}
+
+	public void setRuleQuestionId(Integer ruleQuestionId) {
+		this.ruleQuestionId = ruleQuestionId;
+	}
+
+	public Boolean getRuleAcceptsBids() {
+		return ruleAcceptsBids;
+	}
+
+	public void setRuleAcceptsBids(Boolean ruleAcceptsBids) {
+		this.ruleAcceptsBids = ruleAcceptsBids;
 	}
 
 }
