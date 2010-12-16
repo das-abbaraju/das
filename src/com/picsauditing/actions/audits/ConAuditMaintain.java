@@ -89,7 +89,7 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 							newNote.setViewableBy(toSave.getOperator());
 							noteDAO.save(newNote);
 							caoW.setNotes("Changed Status from " + toSave.getStatus() + " to " + cao.getStatus()
-									+ " by " + permissions.getUserId() + " on " + new Date());
+									+ " by " + permissions.getName() + " on " + new Date());
 							caoW.setCao(toSave);
 							caoW.setAuditColumns(permissions);
 							caoW.setPreviousStatus(toSave.getStatus());

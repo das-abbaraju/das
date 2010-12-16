@@ -295,7 +295,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 		return validStatuses;
 	}
-
+	
 	public boolean isCanEditAudit() {
 		if (conAudit.isExpired())
 			return false;

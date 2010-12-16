@@ -4,7 +4,7 @@
 	pageEncoding="UTF-8"%>
 <ul id="toolbar" class="vert-toolbar">
 	<li class="head">TOOLBAR</li>
-	<s:if test="permissions.hasPermission('AuditEdit') || permissions.operatorCorporate">
+	<s:if test="canSystemEdit">
 		<li><a class="edit1"
 			href="ConAuditMaintain.action?auditID=<s:property value="auditID" />">System
 		Edit</a></li>

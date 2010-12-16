@@ -276,6 +276,23 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		return false;
 	}
+	
+	public boolean isCanSystemEdit() {
+		if(permissions.hasPermission(OpPerms.AuditEdit))
+			return true;
+		
+		if(conAudit.getAuditType().getClassType().isPolicy()) {
+			if(conAudit.getAuditor() != null && 
+					(conAudit.getAuditor().getId() == permissions.getUserId()))
+				return true;
+
+			if(permissions.isOperatorCorporate())
+				return true;
+			
+		}
+		
+		return false;
+	}
 
 	public boolean isCanEditCategory(AuditCategory category) {
 		if (!conAudit.getAuditType().getClassType().isPolicy())
