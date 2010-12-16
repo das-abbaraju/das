@@ -20,6 +20,7 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 
 	private AuditType dependentAuditType;
 	private AuditStatus dependentAuditStatus;
+	private boolean manuallyAdded = false;
 
 	@ManyToOne
 	@JoinColumn(name = "dependentAuditTypeID")
@@ -48,6 +49,14 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 
 	public void setDependentAuditStatus(AuditStatus dependentAuditStatus) {
 		this.dependentAuditStatus = dependentAuditStatus;
+	}
+
+	public boolean isManuallyAdded() {
+		return manuallyAdded;
+	}
+
+	public void setManuallyAdded(boolean manuallyAdded) {
+		this.manuallyAdded = manuallyAdded;
 	}
 
 	public void update(AuditRule source) {

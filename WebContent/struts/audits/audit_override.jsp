@@ -34,7 +34,7 @@ $(function() {
 				</li>
 				<s:if test="permissions.admin">
 					<li><label>Operator</label>
-						<s:select name="requestingOpID" list="contractor.operators"
+						<s:select name="requestingOpID" list="contractor.nonCorporateOperators"
 								headerKey="" headerValue="- Operator -" listKey="operatorAccount.id" listValue="operatorAccount.name" />
 					</li>
 				</s:if>

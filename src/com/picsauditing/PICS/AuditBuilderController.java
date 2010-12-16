@@ -18,7 +18,6 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
-import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -37,7 +36,6 @@ import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.log.PicsLogger;
@@ -250,10 +248,16 @@ public class AuditBuilderController {
 					if (DateBean.getDateDifference(contractor.getCreationDate()) < -90)
 						valid = false;
 				}
-				if (auditTypeRule.getDependentAuditType() != null) {
+				if (auditTypeRule.isManuallyAdded() || (auditTypeRule.getDependentAuditType() != null)) {
 					valid = false;
 					for (ContractorAudit audit : contractor.getAudits()) {
-						if (!audit.isExpired() && audit.getAuditType().equals(auditTypeRule.getDependentAuditType())) {
+						if(auditTypeRule.isManuallyAdded()) {
+							if(auditTypeRule.getAuditType().equals(audit.getAuditType())) {
+								valid = true;
+								break;
+							}
+						}
+						else if (!audit.isExpired() && audit.getAuditType().equals(auditTypeRule.getDependentAuditType())) {
 							if (audit.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus()))
 								valid = true;
 						}

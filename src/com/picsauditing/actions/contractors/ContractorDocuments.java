@@ -18,6 +18,7 @@ import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorDocuments extends ContractorActionSupport {
@@ -110,16 +111,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 	
 	public void setAuditClass(AuditTypeClass auditClass) {
 		this.auditClass = auditClass;
-	}
-	
-	public boolean isManuallyAddAudit() {
-		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit))
-			return true;
-		if (permissions.isOperator() || permissions.isCorporate()) {
-			if (auditTypeList.size() > 0)
-				return true;
-		}
-		return false;
 	}
 
 	private void setup() {
