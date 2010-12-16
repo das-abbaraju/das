@@ -1831,8 +1831,8 @@
 		</action>
 		
 		<action name="ManageJobTasksOperatorCSV"
-			class="com.picsauditing.actions.operators.ManageJobTasksOperator"
-			method="getExcelDownload">
+			class="com.picsauditing.actions.operators.ManageJobTasksOperator">
+			<param name="download">true</param>
 			<result>struts/blank.jsp</result>
 		</action>
 		

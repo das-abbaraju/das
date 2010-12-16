@@ -1,30 +1,30 @@
 package com.picsauditing.actions.operators;
 
-import java.util.Collections;
-import java.util.List;
-
 import javax.servlet.ServletOutputStream;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 
+import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.dao.JobTaskDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.JobTask;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.ReportFilter;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
-public class ManageJobTasksOperator extends OperatorActionSupport {
+public class ManageJobTasksOperator extends ReportActionSupport implements Preparable {
 	protected JobTaskDAO jobTaskDAO;
+	protected OperatorAccountDAO opDAO;
 
+	protected int id;
 	protected int jobTaskID;
 	protected boolean taskActive;
 	protected String jobTaskLabel;
@@ -32,28 +32,44 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 	protected String taskType;
 	protected int displayOrder;
 
+	protected OperatorAccount operator;
 	protected JobTask newTask = new JobTask();
-
-	public ManageJobTasksOperator(OperatorAccountDAO operatorDao, JobTaskDAO jobTaskDAO) {
-		super(operatorDao);
+	protected ReportFilterJobTask filter = new ReportFilterJobTask();
+	protected SelectSQL sql = new SelectSQL("job_task");
+	
+	public ManageJobTasksOperator(JobTaskDAO jobTaskDAO, OperatorAccountDAO opDAO) {
 		this.jobTaskDAO = jobTaskDAO;
-
-		subHeading = "Manage Job Tasks";
+		this.opDAO = opDAO;
+		
+		orderByDefault = "displayOrder";
+	}
+	
+	@Override
+	public void prepare() throws Exception {
+		loadPermissions();
+		id = getParameter("id");
+		
+		if (id == 0 && permissions.isOperatorCorporate())
+			id = permissions.getAccountId();
+		if (id > 0)
+			operator = opDAO.find(id);
+		else
+			throw new NoRightsException("Operator or PICS Administrator");
 	}
 
+	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 
-		findOperator();
 		tryPermissions(OpPerms.ManageJobTasks);
 
-		if (button != null) {
+		if (button != null && !"download".equals(button) && !"Search".equals(button)) {
 			if ("Tasks".equalsIgnoreCase(button)) {
 				newTask = jobTaskDAO.find(jobTaskID);
 				return SUCCESS;
 			}
-
+			
 			// Check if they can edit here
 			tryPermissions(OpPerms.ManageJobTasks, OpType.Edit);
 
@@ -95,14 +111,87 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 				newTask.setAuditColumns(permissions);
 				jobTaskDAO.save(newTask);
 			}
+			
+			return redirect("ManageJobTasksOperator.action?id=" + id);
+		}
+		
+		buildQuery();
+		run(sql);
+		
+		if (download) {
+			addExcelColumns();
+			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
 
-			if (permissions.isOperator())
-				return redirect("ManageJobTasksOperator.action");
-			else
-				return redirect("ManageJobTasksOperator.action?id=" + operator.getId());
+			String filename = this.getClass().getName().substring(this.getClass().getName().lastIndexOf("."));
+			
+			excelSheet.setName(filename);
+			filename += ".xls";
+
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			wb.write(outstream);
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+			return null;
 		}
 
 		return SUCCESS;
+	}
+	
+	protected void buildQuery() {
+		sql.addField("id");
+		sql.addField("label");
+		sql.addField("name");
+		sql.addField("CASE WHEN active = 1 THEN 'Active' ELSE 'Inactive' END activeLabel");
+		sql.addField("taskType");
+		sql.addField("displayOrder");
+		
+		sql.addWhere("opID = " + id);
+		
+		if (filterOn(filter.getLabel()))
+			sql.addWhere("label LIKE '%" + filter.getLabel() + "%'");
+		if (filterOn(filter.getName()))
+			sql.addWhere("name LIKE '%" + filter.getName() + "%'");
+		if (filterOn(filter.getTaskType()))
+			sql.addWhere("taskType IN (" + Strings.implodeForDB(filter.getTaskType(), ",") + ")");
+		if (filter.isActive())
+			sql.addWhere("active = 1");
+		else
+			sql.addWhere("active = 0");
+	}
+	
+	protected void addExcelColumns() {
+		excelSheet.setData(data);
+		
+		excelSheet.addColumn(new ExcelColumn("label", "Label"));
+		excelSheet.addColumn(new ExcelColumn("name", "Task Name"));
+		excelSheet.addColumn(new ExcelColumn("activeLabel", "Active"));
+		excelSheet.addColumn(new ExcelColumn("taskType", "Task Type"));
+	}
+	
+	public String getSubHeading() {
+		return "Manage Job Tasks";
+	}
+	
+	public ReportFilterJobTask getFilter() {
+		return filter;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public OperatorAccount getOperator() {
+		return operator;
+	}
+	
+	public void setOperator(OperatorAccount operator) {
+		this.operator = operator;
 	}
 
 	public int getJobTaskID() {
@@ -160,77 +249,48 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 	public void setNewTask(JobTask newTask) {
 		this.newTask = newTask;
 	}
+	
+	public class ReportFilterJobTask extends ReportFilter {
+		private String label;
+		private String name;
+		private boolean active = true;
+		private String[] taskType;
+		private String[] taskTypeList = new String[] { "L", "G", "L/G" };
 
-	public List<JobTask> getTasks() {
-		return jobTaskDAO.findOperatorTasks(operator.getId());
-	}
-
-	public void getExcelDownload() throws Exception {
-		loadPermissions();
-		findOperator();
-
-		HSSFWorkbook wb = new HSSFWorkbook();
-		HSSFSheet sheet = wb.createSheet();
-		wb.setSheetName(0, "Job Tasks for " + operator.getName());
-
-		// Header
-		HSSFFont headerFont = wb.createFont();
-		headerFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-
-		HSSFCellStyle header = wb.createCellStyle();
-		header.setFont(headerFont);
-		header.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-
-		HSSFRow row = sheet.createRow(0);
-		HSSFCell cell = row.createCell(0);
-		cell.setCellStyle(header);
-		cell.setCellValue(new HSSFRichTextString("Label"));
-
-		cell = row.createCell(1);
-		cell.setCellStyle(header);
-		cell.setCellValue(new HSSFRichTextString("Task Name"));
-
-		cell = row.createCell(2);
-		cell.setCellStyle(header);
-		cell.setCellValue(new HSSFRichTextString("Active"));
-
-		cell = row.createCell(3);
-		cell.setCellStyle(header);
-		cell.setCellValue(new HSSFRichTextString("Task Type"));
-
-		List<JobTask> tasks = getTasks();
-		Collections.sort(tasks);
-
-		int rownum = 1;
-		for (JobTask task : tasks) {
-			row = sheet.createRow(rownum);
-			rownum++;
-
-			cell = row.createCell(0);
-			cell.setCellValue(new HSSFRichTextString(task.getLabel()));
-
-			cell = row.createCell(1);
-			cell.setCellValue(new HSSFRichTextString(task.getName()));
-
-			cell = row.createCell(2);
-			cell.setCellValue(new HSSFRichTextString(task.isActive() ? "Active" : "Inactive"));
-
-			cell = row.createCell(3);
-			cell.setCellValue(new HSSFRichTextString(task.getTaskType()));
+		public String getLabel() {
+			return label;
 		}
-
-		sheet.autoSizeColumn(0);
-		sheet.autoSizeColumn(1);
-		sheet.autoSizeColumn(2);
-		sheet.autoSizeColumn(3);
-
-		String filename = "JobTasks.xls";
-
-		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-		wb.write(outstream);
-		outstream.flush();
-		ServletActionContext.getResponse().flushBuffer();
+		
+		public void setLabel(String label) {
+			this.label = label;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public boolean isActive() {
+			return active;
+		}
+		
+		public void setActive(boolean active) {
+			this.active = active;
+		}
+		
+		public String[] getTaskType() {
+			return taskType;
+		}
+		
+		public void setTaskType(String[] taskType) {
+			this.taskType = taskType;
+		}
+		
+		public String[] getTaskTypeList() {
+			return taskTypeList;
+		}
 	}
 }
