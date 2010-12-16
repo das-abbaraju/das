@@ -82,6 +82,8 @@ public class LoginController extends PicsActionSupport {
 				return SUCCESS;
 			}
 
+			ServletActionContext.getRequest().getSession().invalidate();
+
 			return SUCCESS;
 		}
 
@@ -163,7 +165,7 @@ public class LoginController extends PicsActionSupport {
 			// ie..session.setMaxInactiveInterval(user.getAccountTimeout());
 			if (permissions.isPicsEmployee())
 				getRequest().getSession().setMaxInactiveInterval(3600);
-			
+
 			PicsLogger.stop();
 		}
 
