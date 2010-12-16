@@ -49,7 +49,7 @@ $(function() {
 					if (json) {
 						$('#tag').html('');
 						var tags = json.tags;
-						$('#tag').append($('<option>').attr('value', -1).text("- Any -"));
+						$('#tag').append($('<option>').attr('value', 0).text("Any"));
 						for(var i=0; i<tags.length; i++) {
 							$('#tag').append($('<option>').attr('value', tags[i].tagID).text(tags[i].tag));
 						}
@@ -69,7 +69,7 @@ $(function() {
 					if (json) {
 						$('#dAuditSelect').html('');
 						var options = json.options;
-						$('#dAuditSelect').append($('<option>').attr('value', '').text("- Any -"));
+						$('#dAuditSelect').append($('<option>').attr('value', '').text("Any"));
 						for(var i=0; i<options.length; i++) {
 							$('#dAuditSelect').append($('<option>').attr('value', options[i].option).text(options[i].option));
 						}
@@ -89,7 +89,7 @@ $(function() {
 <div id="detail">
 	<s:if test="canEditRule">
 		<s:form method="post" id="rule_form">
-			<s:hidden name="rule.id"/>
+			<s:hidden name="id"/>
 			<fieldset class="form">
 				<h2 class="formLegend">Summary</h2>
 				<ol>
@@ -128,7 +128,7 @@ $(function() {
 				<h2 class="formLegend">Options</h2>
 				<ol>
 					<li><label>Audit Type</label>
-						<s:select id="auditType" name="rule.auditType.id" list="{}" headerKey="" headerValue=" - Audit Type - ">
+						<s:select  name="ruleAuditTypeId" value="rule.auditType.id" list="{}" headerKey="0" headerValue="Any Audit Type">
 							<s:iterator value="auditTypeMap" var="aType">
 								<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
 							</s:iterator>
@@ -136,7 +136,7 @@ $(function() {
 					</li>
 					<s:if test="!auditTypeRule">
 						<li><label>Category</label>
-							<s:textfield cssClass="autocomplete" id="category" name="rule.auditCategory.id"/>
+							<s:textfield cssClass="autocomplete" id="category" value="%{rule.auditCategory.id}" name="ruleAuditCategoryId"/>
 							<div id="category_display">
 								<s:if test="rule.auditCategory != null">
 									<s:iterator value="rule.auditCategory.ancestors" status="stat">
@@ -149,11 +149,11 @@ $(function() {
 							</div>
 						</li>
 						<li><label>Top or Sub Category</label>
-							<s:select list="#{-1:'Any',0:'Sub Categories',1:'Top Categories'}" name="rootCat"/> 
+							<s:select list="#{'':'Any',false:'Sub Categories',true:'Top Categories'}" name="rule.rootCategory"/> 
 						</li>
 					</s:if>
 					<li><label>Bid-Only</label>
-						<s:select name="bidOnly" list="#{-1:'Any',0:'No',1:'Yes'}" value="bidOnly"/>
+						<s:select name="ruleAcceptsBids" list="#{'':'Any',false:'No',true:'Yes'}" value="rule.acceptsBids"/>
 					</li>
 					<li><label>Account Type</label>
 						<s:select name="rule.contractorType" list="@com.picsauditing.jpa.entities.ContractorType@values()" listValue="type" headerKey="" headerValue="Any"/>
@@ -163,7 +163,8 @@ $(function() {
 					</li>
 					<li <s:if test="operatorRequired">class="required"</s:if>>
 						<label>Operator</label>
-						<s:select id="operator" name="rule.operatorAccount.id" list="operatorList" headerKey="" headerValue="- Operator -" listKey="id" listValue="name"></s:select>
+						<s:select id="operator" name="ruleOperatorAccountId" value="rule.operatorAccount.id" list="operatorList" headerKey="" 
+							headerValue="Any Operator" listKey="id" listValue="name"></s:select>
 						<s:if test="rule.operatorAccount.id != null">
 							<div><a href="FacilitiesEdit.action?id=<s:property value="rule.operatorAccount.id"/>">Go To Operator</a></div>
 						</s:if>
@@ -175,23 +176,23 @@ $(function() {
 						</s:if>
 					</li>
 					<li id="opTagli" <s:if test="rule.operatorAccount==null">style="display: none;"</s:if>><label>Tag</label>
-						<s:select list="operatorTagList" name="tagID" listKey="id" listValue="tag" id="tag" headerKey="0" headerValue="- Any -"
+						<s:select list="operatorTagList" name="ruleOperatorTagId" listKey="id" listValue="tag" id="tag" headerKey="0" headerValue="Any"
 						value="rule.tag.id" />
 					</li>
 					<s:if test="auditTypeRule">
 						<li><label>Dependent Audit</label>
-							<s:select id="dependentAudit" name="rule.dependentAuditType.id" list="{}" headerKey="" headerValue=" - Audit Type - ">
+							<s:select id="dependentAudit" name="ruleDependentAuditTypeId" value="rule.dependentAuditType.id" list="{}" headerKey="" headerValue="Any Audit Type">
 								<s:iterator value="auditTypeMap" var="aType">
 									<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
 								</s:iterator>
 							</s:select>
 						</li>					
 						<li id="dAuditSelectli" <s:if test="rule.dependentAuditStatus==null">style="display: none;"</s:if>><label>Dependent Status</label>
-							<s:select list="dependentAuditStatus" name="rule.dependentAuditStatus" id="dAuditSelect" headerKey="" headerValue="- Any -" />
+							<s:select list="dependentAuditStatus" name="rule.dependentAuditStatus" id="dAuditSelect" headerKey="" headerValue="Any" />
 						</li>					
 					</s:if>
 					<li><label>Question</label>
-						<s:textfield cssClass="autocomplete" id="question" name="rule.question.id"/>
+						<s:textfield cssClass="autocomplete" id="question" name="ruleQuestionId" value="%{rule.question.id}"/>
 						<div id="question_display">
 							<s:if test="rule.question != null">
 								<a href="ManageAuditType.action?id=<s:property value="rule.question.auditType.id"/>"><s:property value="rule.question.auditType.auditName"/></a> &gt;
