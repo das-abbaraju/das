@@ -126,7 +126,7 @@ $(function() {
 				<h2 class="formLegend">Summary</h2>
 				<ol>
 					<li>
-						<label><s:property value="rule.toString()"/></label>
+						<s:property value="rule.toString()"/>
 					</li>
 					<li><label>Created By</label>
 						<s:property value="rule.createdBy"/>
