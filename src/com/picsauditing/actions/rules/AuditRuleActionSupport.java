@@ -65,6 +65,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 		if (button != null) {
 			if("New".equals(button)){
 				rule = newRule();	
+				saveFields();
 				return SUCCESS;
 			}
 			if ("Clear".equals(button)) {
@@ -176,8 +177,6 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	public abstract boolean isAuditTypeRule();
 	
 	protected abstract T newRule();
-
-	protected abstract void edit();
 
 	protected abstract void save();
 

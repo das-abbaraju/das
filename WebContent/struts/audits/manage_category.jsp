@@ -161,7 +161,7 @@ $(function(){
 					</s:iterator>
 				</table>
 			</s:else>
-			<a href="CategoryRuleEditor.action?button=edit&rule.include=true&rule.auditType.id=<s:property value="category.auditType.id" />&rule.auditCategory.id=<s:property value="category.id" />" class="add">Add New Category Rule</a>
+			<a href="CategoryRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="category.auditType.id" />&ruleAuditCategoryId=<s:property value="category.id" />" class="add">Add New Category Rule</a>
 		</div>
 	</pics:permission>
 </s:if>

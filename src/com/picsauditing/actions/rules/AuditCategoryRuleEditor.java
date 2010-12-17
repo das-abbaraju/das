@@ -92,10 +92,6 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 	}
 
 	@Override
-	protected void edit() {
-	}
-
-	@Override
 	protected void save() {
 		if (isOperatorRequired()) {
 			if (rule.getOperatorAccount() == null) {
