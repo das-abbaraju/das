@@ -135,8 +135,8 @@ $(function() {
 <body>
 <h1><s:property value="ruleType"/> Rule Editor</h1>
 <s:include value="../actionMessages.jsp"/>
-<a href="AuditTypeRuleEditor.action?button=New">Create new rule</a>
 <div>
+	<a class="add" href="<s:property value="url"/>?button=New">Create new rule</a>  
 	<a href="#" class="lessGranular down-arrow">Less Granular</a>
 	<a href="#" class="moreGranular up-arrow">More Granular</a>
 	<div id="related"></div>

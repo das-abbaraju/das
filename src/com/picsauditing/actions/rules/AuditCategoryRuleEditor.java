@@ -13,6 +13,7 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
+import com.picsauditing.jpa.entities.AuditTypeRule;
 
 @SuppressWarnings("serial")
 public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategoryRule> {
@@ -35,6 +36,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 
 		this.requiredPermission = OpPerms.ManageCategoryRules;
 		this.ruleType = "Audit Category";
+		this.url = "AuditCategoryRuleEditor.action";
 	}
 
 	@Override
@@ -58,7 +60,10 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 
 	@Override
 	protected void redirectTo() throws IOException {
-		this.redirect("AuditCategoryRuleEditor.action?id=" + id);
+		if(rule!=null)
+			this.redirect(url+"?id=" + rule.getId());
+		else
+			this.redirect("AuditCategoryRuleSearch.action");
 	}
 
 	@Override
@@ -79,6 +84,12 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 
 	@Override
 	protected void copy() {
+		AuditCategoryRule ruleToSave = new AuditCategoryRule();
+		ruleToSave.update(rule);
+		ruleToSave.calculatePriority();
+		ruleToSave.setAuditColumns(permissions);
+		dao.save(ruleToSave);
+		rule = ruleToSave;
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
@@ -34,6 +35,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 		this.requiredPermission = OpPerms.ManageAuditTypeRules;
 		this.ruleType = "Audit Type";
+		this.url = "AuditTypeRuleEditor.action";
 	}
 
 	@Override
@@ -66,7 +68,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 	@Override
 	protected void redirectTo() throws IOException {
 		if(rule!=null)
-			this.redirect("AuditTypeRuleEditor.action?id=" + rule.getId());
+			this.redirect(url+"?id=" + rule.getId());
 		else
 			this.redirect("AuditTypeRuleSearch.action");
 	}
@@ -87,6 +89,12 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 	@Override
 	protected void copy() {
+		AuditTypeRule ruleToSave = new AuditTypeRule();
+		ruleToSave.update(rule);
+		ruleToSave.calculatePriority();
+		ruleToSave.setAuditColumns(permissions);
+		dao.save(ruleToSave);
+		rule = ruleToSave;
 	}
 
 	@Override
@@ -102,16 +110,11 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 			}
 		}
 		saveFields();
-		if (rule.getId() == 0) {
+		if (rule.getId() == 0) 
 			rule.defaultDates();
-			rule.calculatePriority();
-			rule.setAuditColumns(permissions);
-			dao.save(rule);
-		} else {
-			rule.calculatePriority();
-			rule.setAuditColumns(permissions);
-			dao.save(rule);
-		}
+		rule.calculatePriority();
+		rule.setAuditColumns(permissions);
+		dao.save(rule);
 	}
 
 	@Override
