@@ -60,10 +60,24 @@
 						<td><s:property value="priority"/></td>
 					</s:if>
 					<s:if test="columnMap.get('auditType')">
-						<td><s:property value="auditTypeLabel"/></td>
+						<td>
+							<s:if test="auditType != null">
+								<a href="ManageAuditType.action?id=<s:property value="auditType.id"/>"><s:property value="auditTypeLabel"/></a>
+							</s:if>
+							<s:else>
+								<s:property value="auditTypeLabel"/>
+							</s:else>
+						</td>
 					</s:if>
 					<s:if test="columnMap.get('auditCategory')">
-						<td><s:property value="auditCategoryLabel"/></td>
+						<td>
+							<s:if test="auditCategory != null">
+								<a href="ManageCategory.action?id=<s:property value="auditCategory.id"/>"><s:property value="auditCategoryLabel"/></a>
+							</s:if>
+							<s:else>
+								<s:property value="auditCategoryLabel"/>
+							</s:else>
+						</td>
 					</s:if>
 					<s:if test="columnMap.get('rootCategory')">
 						<td><s:property value="rootCategoryLabel"/></td>
@@ -72,7 +86,14 @@
 						<td><s:property value="contractorTypeLabel"/></td>
 					</s:if>
 					<s:if test="columnMap.get('operatorAccount')">
-						<td><s:property value="operatorAccountLabel"/></td>
+						<td>
+							<s:if test="operatorAccount != null">
+								<a href="FacilitiesEdit.action?id=<s:property value="operatorAccount.id"/>"><s:property value="operatorAccountLabel"/></a>
+							</s:if>
+							<s:else>
+								<s:property value="operatorAccountLabel"/>
+							</s:else>
+						</td>
 					</s:if>
 					<s:if test="columnMap.get('risk')">
 						<td><s:property value="riskLabel"/></td>
@@ -84,12 +105,26 @@
 						<td><s:property value="acceptsBidsLabel"/></td>
 					</s:if>
 					<s:if test="columnMap.get('question')">
-						<td><s:property value="questionLabel"/></td>
+						<td>
+							<s:if test="question != null">
+								<a href="ManageQuestion.action?id=<s:property value="question.id"/>"><s:property value="questionLabel"/></a>
+							</s:if>
+							<s:else>
+								<s:property value="questionLabel"/>
+							</s:else>
+						</td>
 						<td><s:property value="questionComparatorLabel"/></td>
 						<td><s:property value="questionAnswerLabel"/></td>
 					</s:if>
 					<s:if test="columnMap.get('dependentAuditType')">
-						<td><s:property value="dependentAuditTypeLabel"/></td>
+						<td>
+							<s:if test="dependentAuditType != null">
+								<a href="ManageAuditType.action?id=<s:property value="dependentAuditType.id"/>"><s:property value="dependentAuditTypeLabel"/></a>
+							</s:if>
+							<s:else>
+								<s:property value="dependentAuditTypeLabel"/>
+							</s:else>
+						</td>
 						<td><s:property value="dependentAuditStatusLabel"/></td>
 					</s:if>
 					<s:if test="columnMap.get('createdBy')">
