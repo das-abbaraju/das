@@ -557,6 +557,16 @@ a.clearfield {
 	padding-left:17px;
 }
 
+a.up-arrow {
+	background: url(../images/arrow-up.png) no-repeat left center;
+	padding-left:17px;
+}
+
+a.down-arrow {
+	background: url(../images/arrow-down.png) no-repeat left center;
+	padding-left:17px;
+}
+
 label.tooltipped {
 	background: url('../images/icon_text_alert.png') no-repeat left center;
 	zoom: 1;
