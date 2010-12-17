@@ -92,22 +92,22 @@ $(function() {
 });
 </script>
 <style>
-<s:if test="rule.question == null">
+<s:if test="rule == null || rule.question == null">
 .requiresQuestion {
 	display: none;
 }
 </s:if>
-<s:if test="rule.dependentAuditStatus == null">
+<s:if test="rule == null || rule.dependentAuditStatus == null">
 .requiresDependentAudit {
 	display: none;
 }
 </s:if>
-<s:if test="rule.operatorAccount == null">
+<s:if test="rule == null || rule.operatorAccount == null">
 .requiredOperator {
 	display: none;
 }
 </s:if>
-<s:if test="rule.questionComparator == null">
+<s:if test="rule == null || rule.questionComparator == null">
 .requiresComparator {
 	display: none;
 }
@@ -117,31 +117,33 @@ $(function() {
 <body>
 <h1><s:property value="ruleType"/> Rule Editor</h1>
 <s:include value="../actionMessages.jsp"/>
-
+<a href="AuditTypeRuleEditor.action?button=New">Create new rule</a>
 <div id="detail">
 	<s:if test="canEditRule">
 		<s:form method="post" id="rule_form">
 			<s:hidden name="id"/>
-			<fieldset class="form">
-				<h2 class="formLegend">Summary</h2>
-				<ol>
-					<li>
-						<s:property value="rule.toString()"/>
-					</li>
-					<li><label>Created By</label>
-						<s:property value="rule.createdBy"/>
-					</li>
-					<li><label>Created</label>
-						<s:date name="rule.creationDate" nice="true"/>
-					</li>
-					<li><label>Updated By</label>
-						<s:property value="rule.updatedBy"/>
-					</li>
-					<li><label>Updated</label>
-						<s:date name="rule.updateDate" nice="true"/>
-					</li>
-				</ol>
-			</fieldset>
+			<s:if test="'New' != button">
+				<fieldset class="form">
+					<h2 class="formLegend">Summary</h2>
+					<ol>
+						<li>
+							<h4><s:property value="rule.toString()"/></h4>
+						</li>
+						<li><label>Created By</label>
+							<s:property value="rule.createdBy"/>
+						</li>
+						<li><label>Created</label>
+							<s:date name="rule.creationDate" nice="true"/>
+						</li>
+						<li><label>Updated By</label>
+							<s:property value="rule.updatedBy"/>
+						</li>
+						<li><label>Updated</label>
+							<s:date name="rule.updateDate" nice="true"/>
+						</li>
+					</ol>
+				</fieldset>
+			</s:if>
 			<fieldset class="form">
 				<h2 class="formLegend">Rule</h2>
 				<ol>
@@ -149,7 +151,7 @@ $(function() {
 						<s:checkbox name="rule.include"/>
 					</li>
 					<li><label>Level</label>
-						<s:property value="rule.level"/> + <s:textfield name="rule.levelAdjustment" />
+						<s:property value="rule.level" default="0"/> + <s:textfield name="rule.levelAdjustment" />
 					</li>
 					<li><label>Priority</label>
 						<s:property value="rule.priority"/>
