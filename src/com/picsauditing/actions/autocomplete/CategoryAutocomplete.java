@@ -6,12 +6,12 @@ import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 
 @SuppressWarnings("serial")
-public class AuditCategoryAutocomplete extends AutocompleteActionSupport<AuditCategory> {
+public class CategoryAutocomplete extends AutocompleteActionSupport<AuditCategory> {
 
 	protected AuditCategoryDAO auditCategoryDAO;
 	protected Integer auditTypeID;
 
-	public AuditCategoryAutocomplete(AuditCategoryDAO auditCategoryDAO) {
+	public CategoryAutocomplete(AuditCategoryDAO auditCategoryDAO) {
 		this.auditCategoryDAO = auditCategoryDAO;
 	}
 
