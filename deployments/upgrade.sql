@@ -10,11 +10,7 @@
 --	(19, 'PICS UAE Membership for 50+ Operators', 15000.00, 1, 'Membership', '50 Operators', 20952, 20952, now(), NOW());
 -- END
 
-
-update audit_type set editPermission = 'InsuranceCerts'
-where classType = 'Policy';
-
 update contractor_audit set lastRecalculation = null
 where expiresDate > Now();
 
-alter table flag_criteria_operator drop column `minRiskLevel`;
+alter table audit_type_rule add column manuallyAdded` tinyint(4) DEFAULT '0' NOT NULL after `dependentAuditStatus`;

@@ -179,10 +179,13 @@ public class AuditPercentCalculator {
 								verifiedCount = requiredCount;
 								// If the questions are explicited ignored from
 								// verification but still required then we
-								// should
-								// increase the verifiedCount so we can close it
-							} else if (question.getId() == 2447 || question.getId() == 2448)
+								// should increase the verifiedCount so we can close it
+							} else if (question.getId() == 2447 || question.getId() == 2448) {
 								verifiedCount++;
+							} else if (!catData.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()) {
+								// For audits without the submitted step we don't have to verify the questions
+								verifiedCount++;
+							}
 						}
 					}
 				}
