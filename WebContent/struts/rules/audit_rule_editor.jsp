@@ -187,6 +187,11 @@ $(function() {
 					<li><label>Include</label>
 						<s:checkbox name="rule.include"/>
 					</li>
+					<s:if test="auditTypeRule">
+						<li><label>Manually Added</label>
+							<s:checkbox name="rule.manuallyAdded"/>
+						</li>
+					</s:if>
 					<li><label>Level</label>
 						<s:property value="rule.level" default="0"/> + <s:textfield name="rule.levelAdjustment" />
 					</li>
