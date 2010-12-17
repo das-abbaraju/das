@@ -33,6 +33,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -292,7 +293,8 @@ public class Cron extends PicsActionSupport {
 		Set<ContractorAccount> policies = new HashSet<ContractorAccount>();
 
 		for (ContractorAudit cAudit : cList) {
-			if (cAudit.getCurrentOperators().size() > 0)
+			if (cAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
+					&& cAudit.getCurrentOperators().size() > 0)
 				policies.add(cAudit.getContractorAccount());
 		}
 		for (ContractorAccount policy : policies) {
