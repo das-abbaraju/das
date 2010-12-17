@@ -204,7 +204,7 @@ $(function() {
 				<h2 class="formLegend">Options</h2>
 				<ol>
 					<li><label>Audit Type</label>
-						<s:select  name="ruleAuditTypeId" value="rule.auditType.id" list="{}" headerKey="0" headerValue="Any Audit Type">
+						<s:select id="auditType" name="ruleAuditTypeId" value="rule.auditType.id" list="{}" headerKey="0" headerValue="Any Audit Type">
 							<s:iterator value="auditTypeMap" var="aType">
 								<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
 							</s:iterator>
