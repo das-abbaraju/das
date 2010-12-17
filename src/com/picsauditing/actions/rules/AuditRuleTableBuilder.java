@@ -20,8 +20,9 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 
 	protected Set<AuditRuleColumn> columns;
 	protected List<Map<AuditRuleColumn, List<String>>> mappedRules;
-	protected List<T> rules;
-	protected Integer ruleID;
+	protected List<T> rules = new ArrayList<T>();
+	protected Integer id;
+	protected String ruleType;
 
 	protected Date date = new Date();
 
@@ -46,6 +47,11 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 					columns.add(entry.getKey());
 			}
 		}
+		columns.remove(AuditRuleColumn.id);
+	}
+
+	public AuditRuleColumn getIdColumn() {
+		return AuditRuleColumn.id;
 	}
 
 	public Set<AuditRuleColumn> getColumns() {
@@ -56,12 +62,20 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 		return mappedRules;
 	}
 
-	public Integer getRuleID() {
-		return ruleID;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setRuleID(Integer ruleID) {
-		this.ruleID = ruleID;
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getRuleType() {
+		return ruleType;
+	}
+
+	public void setRuleType(String ruleType) {
+		this.ruleType = ruleType;
 	}
 
 	public Date getDate() {

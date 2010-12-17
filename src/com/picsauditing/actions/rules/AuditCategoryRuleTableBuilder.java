@@ -8,14 +8,17 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 
 	public AuditCategoryRuleTableBuilder(AuditDecisionTableDAO ruleDAO) {
 		this.ruleDAO = ruleDAO;
+		this.ruleType = "Category";
 	}
 
 	@Override
 	public void findRules() {
 		if ("lessGranular".equals(button)) {
-			rules = ruleDAO.getLessGranular(ruleDAO.findAuditCategoryRule(ruleID), date);
+			rules = ruleDAO.getLessGranular(ruleDAO.findAuditCategoryRule(id), date);
 		} else if ("moreGranular".equals(button)) {
-			rules = ruleDAO.getMoreGranular(ruleDAO.findAuditCategoryRule(ruleID), date);
+			rules = ruleDAO.getMoreGranular(ruleDAO.findAuditCategoryRule(id), date);
+		} else if (id != null) {
+			rules.add(ruleDAO.findAuditCategoryRule(id));
 		}
 	}
 }

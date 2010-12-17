@@ -85,17 +85,17 @@ public class AuditCategoryRule extends AuditRule implements AuditRuleTable {
 			out += " and Category = " + auditCategory;
 		return out;
 	}
-	
+
 	@Override
 	@Transient
 	public Map<AuditRuleColumn, List<String>> getMapping() {
 		Map<AuditRuleColumn, List<String>> map = super.getMapping();
-		
+
 		if (getAuditCategory() != null)
 			map.get(AuditRuleColumn.Category).add(getAuditCategoryLabel());
 		if (getRootCategory() != null)
 			map.get(AuditRuleColumn.RootCategory).add(getRootCategoryLabel());
-		
+
 		return map;
 	}
 }

@@ -1,6 +1,7 @@
 package com.picsauditing.actions.auditType;
 
 public enum AuditRuleColumn {
+	id("id", 1),
 	Include("Include", 1),
 	Priority("Priority", 1),
 	AuditType("Audit Type", 1),
@@ -15,19 +16,19 @@ public enum AuditRuleColumn {
 	Question("Question", 3),
 	CreatedBy("Created By", 2),
 	UpdatedBy("Updated By", 2);
-	
+
 	private String name;
 	private int colspan;
-	
+
 	AuditRuleColumn(String name, int colspan) {
 		this.name = name;
 		this.colspan = colspan;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public int getColspan() {
 		return colspan;
 	}

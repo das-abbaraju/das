@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
-import org.jboss.util.Strings;
+import com.picsauditing.util.Strings;
 
 import com.picsauditing.actions.auditType.AuditRuleColumn;
 
@@ -373,7 +373,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 		for (AuditRuleColumn c : AuditRuleColumn.values()) {
 			map.put(c, new ArrayList<String>());
 		}
-
+		map.get(AuditRuleColumn.id).add(id + "");
 		map.get(AuditRuleColumn.Include).add(isInclude() ? "Yes" : "No");
 		map.get(AuditRuleColumn.Priority).add(getPriority() + "");
 
