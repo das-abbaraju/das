@@ -43,10 +43,15 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 		if (ruleID > 0)
 			rule = dao.findAuditTypeRule(ruleID);
 	}
+	
+	@Override
+	protected AuditTypeRule newRule() {
+		return new AuditTypeRule();
+	}
 
 	public LinkedHashSet<AuditStatus> getDependentAuditStatus() {
 		LinkedHashSet<AuditStatus> set = new LinkedHashSet<AuditStatus>();
-		if (rule.getDependentAuditType() != null) {
+		if (rule!=null && rule.getDependentAuditType() != null) {
 			for (WorkflowStep step : rule.getDependentAuditType().getWorkFlow().getSteps())
 				set.add(step.getNewStatus());
 		}
@@ -60,7 +65,10 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 	@Override
 	protected void redirectTo() throws IOException {
-		this.redirect("AuditTypeRuleEditor.action?id=" + id);
+		if(rule!=null)
+			this.redirect("AuditTypeRuleEditor.action?id=" + rule.getId());
+		else
+			this.redirect("AuditTypeRuleSearch.action");
 	}
 
 	@Override
@@ -115,12 +123,6 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 			rule.setDependentAuditType(null);
 	}
 
-	@Override
-	public AuditTypeRule getRule() {
-		return rule;
-	}
-
-	@Override
 	public void setRule(AuditTypeRule rule) {
 		this.rule = rule;
 	}

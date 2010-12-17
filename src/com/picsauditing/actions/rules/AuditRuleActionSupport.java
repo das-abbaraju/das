@@ -62,11 +62,12 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 			return LOGIN;
 
 		if (button != null) {
+			if("New".equals(button)){
+				rule = newRule();	
+				return SUCCESS;
+			}
 			if ("Clear".equals(button)) {
 				clear();
-			}
-			if ("Edit".equals(button)) {
-				edit();
 			}
 			if ("Save".equals(button)) {
 				save();
@@ -126,9 +127,11 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 
 	public List<OperatorTag> getOperatorTagList() {
 		List<OperatorTag> opTagList = new ArrayList<OperatorTag>();
-		if (rule.getOperatorAccount() != null && rule.getOperatorAccount().getTags() != null) {
-			for (OperatorTag ot : rule.getOperatorAccount().getTags())
-				opTagList.add(ot);
+		if (rule!=null) {
+			if (rule.getOperatorAccount() != null && rule.getOperatorAccount().getTags() != null) {
+				for (OperatorTag ot : rule.getOperatorAccount().getTags())
+					opTagList.add(ot);
+			}
 		}
 		return opTagList;
 	}
@@ -170,6 +173,8 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	protected abstract void onDeleteRedirectTo() throws IOException;
 
 	public abstract boolean isAuditTypeRule();
+	
+	protected abstract T newRule();
 
 	protected abstract void edit();
 
@@ -184,9 +189,9 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 
 	protected abstract void copy();
 
-	public abstract T getRule();
-
-	public abstract void setRule(T rule);
+	public T getRule(){
+		return rule;
+	}
 
 	public abstract List<T> getLessGranular();
 

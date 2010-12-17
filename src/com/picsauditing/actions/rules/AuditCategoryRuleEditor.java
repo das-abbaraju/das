@@ -45,6 +45,11 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 		if (ruleID > 0)
 			rule = dao.findAuditCategoryRule(ruleID);
 	}
+	
+	@Override
+	protected AuditCategoryRule newRule() {
+		return new AuditCategoryRule();
+	}
 
 	@Override
 	public boolean isAuditTypeRule() {
@@ -110,12 +115,6 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 			rule.setAuditCategory(null);
 	}
 
-	@Override
-	public AuditCategoryRule getRule() {
-		return rule;
-	}
-
-	@Override
 	public void setRule(AuditCategoryRule rule) {
 		this.rule = rule;
 	}
