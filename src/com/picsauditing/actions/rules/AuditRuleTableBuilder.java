@@ -2,6 +2,7 @@ package com.picsauditing.actions.rules;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,11 +19,11 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 
 	protected AuditDecisionTableDAO ruleDAO;
 
-	protected Set<AuditRuleColumn> columns;
-	protected List<Map<AuditRuleColumn, List<String>>> mappedRules;
-	protected List<T> rules = new ArrayList<T>();
 	protected Integer id;
 	protected String ruleType;
+
+	protected Map<String, Boolean> columnMap = new HashMap<String, Boolean>();
+	protected List<T> rules = new ArrayList<T>();
 
 	protected Date date = new Date();
 
@@ -34,32 +35,36 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 
 	public abstract void findRules();
 
+	public void checkColumns(T rule) {
+		if (rule.getAuditType() != null)
+			columnMap.put("auditType", true);
+		if (rule.getContractorType() != null)
+			columnMap.put("contractorType", true);
+		if (rule.getOperatorAccount() != null)
+			columnMap.put("operatorAccount", true);
+		if (rule.getRisk() != null)
+			columnMap.put("risk", true);
+		if (rule.getTag() != null)
+			columnMap.put("tag", true);
+		if (rule.getAcceptsBids() != null)
+			columnMap.put("bidOnly", true);
+		if (rule.getQuestion() != null)
+			columnMap.put("question", true);
+		if (rule.getCreatedBy() != null)
+			columnMap.put("createdBy", true);
+		if (rule.getUpdatedBy() != null)
+			columnMap.put("updatedBy", true);
+	}
+
 	public void setup() {
-		columns = new TreeSet<AuditRuleColumn>();
-		mappedRules = new ArrayList<Map<AuditRuleColumn, List<String>>>();
 		findRules();
 
-		for (AuditRule rule : rules) {
-			Map<AuditRuleColumn, List<String>> mappedRule = rule.getMapping();
-			mappedRules.add(mappedRule);
-			for (Entry<AuditRuleColumn, List<String>> entry : mappedRule.entrySet()) {
-				if (entry.getValue().size() > 0)
-					columns.add(entry.getKey());
-			}
+		columnMap.put("include", true);
+		columnMap.put("priority", true);
+
+		for (T rule : rules) {
+			checkColumns(rule);
 		}
-		columns.remove(AuditRuleColumn.id);
-	}
-
-	public AuditRuleColumn getIdColumn() {
-		return AuditRuleColumn.id;
-	}
-
-	public Set<AuditRuleColumn> getColumns() {
-		return columns;
-	}
-
-	public List<Map<AuditRuleColumn, List<String>>> getMappedRules() {
-		return mappedRules;
 	}
 
 	public Integer getId() {
@@ -76,6 +81,14 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 
 	public void setRuleType(String ruleType) {
 		this.ruleType = ruleType;
+	}
+
+	public Map<String, Boolean> getColumnMap() {
+		return columnMap;
+	}
+
+	public List<T> getRules() {
+		return rules;
 	}
 
 	public Date getDate() {

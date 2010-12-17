@@ -12,6 +12,13 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 	}
 
 	@Override
+	public void checkColumns(AuditTypeRule rule) {
+		super.checkColumns(rule);
+		if (rule.getDependentAuditType() != null)
+			columnMap.put("dependentAuditType", true);
+	}
+
+	@Override
 	public void findRules() {
 		if ("lessGranular".equals(button)) {
 			rules = ruleDAO.getLessGranular(ruleDAO.findAuditTypeRule(id), date);
