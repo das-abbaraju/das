@@ -144,7 +144,7 @@ $(function() {
 	</s:if>
 </div>
 <div id="detail">
-	<s:if test="canEditRule">
+	<s:if test="canEditRule && rule.current">
 		<s:form method="post" id="rule_form">
 			<s:hidden name="id"/>
 			<s:if test="'New' != button">
