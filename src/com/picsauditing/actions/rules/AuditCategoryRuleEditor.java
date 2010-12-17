@@ -125,6 +125,10 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 		} else
 			rule.setAuditCategory(null);
 	}
+	
+	public AuditCategoryRule getRule() {
+		return rule;
+	}
 
 	public void setRule(AuditCategoryRule rule) {
 		this.rule = rule;

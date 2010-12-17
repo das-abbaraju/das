@@ -190,10 +190,6 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 
 	protected abstract void copy();
 
-	public T getRule(){
-		return rule;
-	}
-
 	public abstract List<T> getLessGranular();
 
 	public abstract List<T> getMoreGranular();
