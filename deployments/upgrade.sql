@@ -13,4 +13,4 @@
 update contractor_audit set lastRecalculation = null
 where expiresDate > Now();
 
-alter table audit_type_rule add column manuallyAdded` tinyint(4) DEFAULT '0' NOT NULL after `dependentAuditStatus`;
+alter table audit_type_rule add column `manuallyAdded` tinyint(4) DEFAULT '0' NOT NULL after `dependentAuditStatus`;
