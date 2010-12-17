@@ -6,48 +6,48 @@
 		<thead>
 			<tr>
 				<s:if test="columnMap.get('include')">
-					<td>Include</td>
+					<th>Include</th>
 				</s:if>
 				<s:if test="columnMap.get('priority')">
-					<td>Priority</td>
+					<th>Priority</th>
 				</s:if>
 				<s:if test="columnMap.get('auditType')">
-					<td>Audit Type</td>
+					<th>Audit Type</th>
 				</s:if>
 				<s:if test="columnMap.get('auditCategory')">
-					<td>Category</td>
+					<th>Category</th>
 				</s:if>
 				<s:if test="columnMap.get('rootCategory')">
-					<td>Root Category</td>
+					<th>Root Category</th>
 				</s:if>
 				<s:if test="columnMap.get('contractorType')">
-					<td>Contractor Type</td>
+					<th>Contractor Type</th>
 				</s:if>
 				<s:if test="columnMap.get('operatorAccount')">
-					<td>Operator</td>
+					<th>Operator</th>
 				</s:if>
 				<s:if test="columnMap.get('risk')">
-					<td>Risk</td>
+					<th>Risk</th>
 				</s:if>
 				<s:if test="columnMap.get('tag')">
-					<td>Tag</td>
+					<th>Tag</th>
 				</s:if>
 				<s:if test="columnMap.get('bidOnly')">
-					<td>Bid-Only</td>
+					<th>Bid-Only</th>
 				</s:if>
 				<s:if test="columnMap.get('question')">
-					<td colspan="3">Question</td>
+					<th colspan="3">Question</th>
 				</s:if>
 				<s:if test="columnMap.get('dependentAuditType')">
-					<td colspan="2">Dependent Audit</td>
+					<th colspan="2">Dependent Audit</th>
 				</s:if>
 				<s:if test="columnMap.get('createdBy')">
-					<td colspan="2">Created By</td>
+					<th colspan="2">Created By</th>
 				</s:if>
 				<s:if test="columnMap.get('updatedBy')">
-					<td colspan="2">Updated By</td>
+					<th colspan="2">Updated By</th>
 				</s:if>
-				<td>View</td>
+				<th>View</th>
 			</tr>
 		</thead>
 		<tbody>
