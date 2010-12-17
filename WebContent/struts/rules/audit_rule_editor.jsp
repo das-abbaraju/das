@@ -136,10 +136,12 @@ $(function() {
 <h1><s:property value="ruleType"/> Rule Editor</h1>
 <s:include value="../actionMessages.jsp"/>
 <div>
-	<a class="add" href="<s:property value="url"/>?button=New">Create new rule</a>  
-	<a href="#" class="lessGranular down-arrow">Less Granular</a>
-	<a href="#" class="moreGranular up-arrow">More Granular</a>
-	<div id="related"></div>
+	<a class="add" href="<s:property value="url"/>?button=New">Create new rule</a>
+	<s:if test="rule.id > 0">
+		<a href="#" class="lessGranular down-arrow">Less Granular</a>
+		<a href="#" class="moreGranular up-arrow">More Granular</a>
+		<div id="related"></div>
+	</s:if>
 </div>
 <div id="detail">
 	<s:if test="canEditRule">
