@@ -174,7 +174,7 @@ function loadCatRules(catID, divCatID, name) {
 									<a href="#" onclick="return hideType(<s:property value="#type.id" />);" class="hide remove">Hide Rules</a>
 									<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="hide refresh">Refresh</a>
 									<div id="typeTable_<s:property value="#type.id" />"></div>
-										<a href="AuditTypeRuleEditor.action?button=edit&rule.include=true&rule.auditType.id=<s:property value="#type.id" />&rule.operatorAccount.id=<s:property value="operator.id" />&rule.operatorAccount.name=<s:property value="operator.name" />"
+										<a href="AuditTypeRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="#type.id" />&ruleOperatorAccountId=<s:property value="operator.id" />"
 											target="_blank" class="hide add">Add Rule</a>
 									<div class="buttonArea hide">
 									</div>
@@ -207,7 +207,7 @@ function loadCatRules(catID, divCatID, name) {
 	<ol>
 		<li>
 			<div id="excludedTypes"></div>
-			<a href="AuditTypeRuleEditor.action?button=edit&rule.include=false&rule.operatorAccount.id=<s:property value="operator.id" />&rule.operatorAccount.name=<s:property value="operator.name" />"
+			<a href="AuditTypeRuleEditor.action?button=New&ruleInclude=false&ruleOperatorAccountId=<s:property value="operator.id" />"
 				target="_blank" class="add">Add Rule</a>
 		</li>
 	</ol>

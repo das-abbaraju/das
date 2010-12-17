@@ -44,6 +44,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	protected Integer ruleOperatorTagId;
 	protected Integer ruleQuestionId;
 	protected Boolean ruleAcceptsBids;
+	protected boolean ruleInclude = true;
 
 	protected OpPerms requiredPermission;
 
@@ -151,6 +152,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	}
 
 	protected void saveFields() {
+		rule.setInclude(ruleInclude);
 		rule.setAcceptsBids(ruleAcceptsBids);
 		if (ruleAuditTypeId != null) {
 			rule.setAuditType(auditTypeDAO.find(ruleAuditTypeId));
@@ -259,6 +261,14 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public boolean isRuleInclude() {
+		return ruleInclude;
+	}
+
+	public void setRuleInclude(boolean ruleInclude) {
+		this.ruleInclude = ruleInclude;
 	}
 
 }
