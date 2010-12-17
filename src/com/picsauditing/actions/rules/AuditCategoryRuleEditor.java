@@ -13,7 +13,6 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
-import com.picsauditing.jpa.entities.AuditTypeRule;
 
 @SuppressWarnings("serial")
 public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategoryRule> {

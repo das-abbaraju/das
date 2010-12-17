@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
