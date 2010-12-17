@@ -35,7 +35,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 
 		this.requiredPermission = OpPerms.ManageCategoryRules;
 		this.ruleType = "Audit Category";
-		this.url = "AuditCategoryRuleEditor.action";
+		this.url = "CategoryRuleEditor.action";
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 		if(rule!=null)
 			this.redirect(url+"?id=" + rule.getId());
 		else
-			this.redirect("AuditCategoryRuleSearch.action");
+			this.redirect("CategoryRuleSearch.action");
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 		String redirect = "";
 		List<AuditCategoryRule> lessGranular = getLessGranular();
 		if (lessGranular.size() > 1)
-			redirect = "AuditCategoryRuleEditor.action?id=" + lessGranular.get(lessGranular.size() - 1).getId();
+			redirect = "CategoryRuleEditor.action?id=" + lessGranular.get(lessGranular.size() - 1).getId();
 		else {
 			redirect = "CategoryRuleSearch.action?";
 			if (rule.getAuditType() != null)

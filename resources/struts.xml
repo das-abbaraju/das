@@ -1249,11 +1249,11 @@
 			class="com.picsauditing.actions.auditType.CategoryRuleEditor">
 			<result>struts/audits/rules/audit_rule_editor.jsp</result>
 		</action>
-		<action name="AuditCategoryRuleSearch"
+		<action name="CategoryRuleSearch"
 			class="com.picsauditing.actions.auditType.CategoryRuleSearch">
 			<result>struts/audits/rules/audit_rule_search.jsp</result>
 		</action>
-		<action name="AuditCategoryRuleSearchAjax"
+		<action name="CategoryRuleSearchAjax"
 			class="com.picsauditing.actions.auditType.CategoryRuleSearch">		
 			<result name="autocomp">struts/blank.jsp</result>
 			<result>struts/audits/rules/audit_rule_search_data.jsp</result>
@@ -1279,7 +1279,7 @@
 			<result>struts/blank.jsp</result>
 		</action>
 		
-		<action name="AuditCategoryRuleEditor" 
+		<action name="CategoryRuleEditor"
 			class="com.picsauditing.actions.rules.AuditCategoryRuleEditor">
 			<result>struts/rules/audit_rule_editor.jsp</result>
 		</action>
@@ -1572,7 +1572,7 @@
 			<result>/struts/misc/ambest_suggest.jsp</result>
 		</action>
 
-		<action name="AuditCategorySuggestAjax"
+		<action name="CategorySuggestAjax"
 			class="com.picsauditing.actions.AuditCategorySuggest">
 			<result>/struts/misc/audit_category_suggest.jsp</result>
 		</action>

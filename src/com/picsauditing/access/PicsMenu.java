@@ -233,7 +233,7 @@ public class PicsMenu {
 			subMenu.addChild("Audit Type Rules", "AuditTypeRuleSearch.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageCategoryRules)) {
-			subMenu.addChild("Category Rules", "AuditCategoryRuleSearch.action");
+			subMenu.addChild("Category Rules", "CategoryRuleSearch.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageAuditWorkFlow))
 			subMenu.addChild("Manage Workflow", "ManageAuditWorkFlow.action");

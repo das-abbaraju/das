@@ -31,7 +31,7 @@ $(function() {
 	$('#category').change(function() {
 		if ($(this).blank())
 			$('#category_display').html('');
-	}).autocomplete('AuditCategoryAutocomplete.action', {
+	}).autocomplete('CategoryAutocomplete.action', {
 		extraParams: {auditTypeID: $('#auditType').val()},
 		formatItem  : function(data,i,count) {
 			return data[1];
