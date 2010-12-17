@@ -169,14 +169,14 @@ $(function() {
 						<li><label>Created By</label>
 							<s:property value="rule.createdBy"/>
 						</li>
-						<li><label>Created</label>
-							<s:date name="rule.creationDate" nice="true"/>
+						<li title="<s:date name="rule.updateDate" nice="true"/>"><label>Created</label>
+							<s:date name="rule.creationDate"/>
 						</li>
 						<li><label>Updated By</label>
 							<s:property value="rule.updatedBy"/>
 						</li>
-						<li><label>Updated</label>
-							<s:date name="rule.updateDate" nice="true"/>
+						<li title="<s:date name="rule.updateDate" nice="true"/>"><label>Updated</label>
+							<s:date name="rule.updateDate"/>
 						</li>
 					</ol>
 				</fieldset>
