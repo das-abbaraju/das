@@ -27,11 +27,12 @@
 					<td colspan="2">Dependent Audit</td>
 				</s:if>
 				<td>Question</td>
+				<td>View</td>
 			</tr>
 		</thead>
 		<tbody>
 			<s:iterator value="data" status="stat">
-				<tr class="clickable" onclick="window.location='<s:property value="actionUrl"/><s:property value="get('id')"/><s:if test="filter.checkDate!=null">&date=<s:property value="filter.checkDate"/></s:if>'">
+				<tr>
 					<td><s:if test="get('include')==1">Yes</s:if><s:else>No</s:else></td>					
 					<td><s:property value="get('audit_type')"/></td>					
 					<s:if test="filter.showCategory"><td><s:property value="get('category')"/></td>
@@ -46,7 +47,8 @@
 						<td><s:property value="get('dependentAuditType')"/></td>
 						<td><s:property value="get('dependentAuditStatus')"/></td>
 					</s:if>		
-					<td><s:property value="get('question')"/></td>						
+					<td><s:property value="get('question')"/></td>	
+					<td><a href="<s:property value="actionUrl"/><s:property value="get('id')"/><s:if test="filter.checkDate!=null">&date=<s:property value="filter.checkDate"/></s:if>" class="preview"></a></td>					
 				</tr>
 			</s:iterator>
 		</tbody>

@@ -18,6 +18,7 @@
 			<td colspan="2">Dependent Audit</td>
 		</s:if>
 		<td colspan="3">Question</td>
+		<td>View</td>
 		<s:if test="#showAction">
 			<td>Actions</td>
 		</s:if>
