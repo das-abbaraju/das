@@ -79,7 +79,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 		if (lessGranular.size() > 1)
 			redirect = "AuditTypeRuleEditor.action?id=" + lessGranular.get(lessGranular.size() - 1).getId();
 		else {
-			redirect = "AuditTypeRuleSearch.action";
+			redirect = "AuditTypeRuleSearch.action?";
 			if(rule.getAuditType()!=null)
 				redirect += "filter.auditType=" + rule.getAuditType().getAuditName();
 		}
