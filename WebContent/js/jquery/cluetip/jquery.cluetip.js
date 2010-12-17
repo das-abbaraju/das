@@ -1,7 +1,7 @@
 /*
  * jQuery clueTip plugin
- * Version 1.0.4  (June 28, 2009)
- * @requires jQuery v1.2.6+
+ * Version 1.0.7  (January 28, 2010)
+ * @requires jQuery v1.3+
  *
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
@@ -18,16 +18,16 @@
 */
 
 ;(function($) { 
-  $.cluetip = {version: '1.0.4'};
+  $.cluetip = {version: '1.0.7'};
   var $cluetip, $cluetipInner, $cluetipOuter, $cluetipTitle, $cluetipArrows, $cluetipWait, $dropShadow, imgCount;
-  var clueDelayedHide;
+  
   $.fn.cluetip = function(js, options) {
     if (typeof js == 'object') {
       options = js;
       js = null;
     }
     if (js == 'destroy') {
-      return this.unbind('.cluetip');
+      return this.removeData('thisInfo').unbind('.cluetip');
     }
     return this.each(function(index) {
       var link = this, $this = $(this);
@@ -39,7 +39,8 @@
       var cluetipContents = false;
       var cluezIndex = +opts.cluezIndex;
       $this.data('thisInfo', {title: link.title, zIndex: cluezIndex});
-      var isActive = false, closeOnDelay = 0;
+      var isActive = false
+      var closeOnDelay;
 
       // create the cluetip divs
       if (!$('#cluetip').length) {
@@ -66,12 +67,14 @@
         $dropShadow = $([]);
         for (var i=0; i < dropShadowSteps; i++) {
           $dropShadow = $dropShadow.add($('<div></div>').css({zIndex: cluezIndex-1, opacity:.1, top: 1+i, left: 1+i}));
-        };
+        }
         $dropShadow.css({position: 'absolute', backgroundColor: '#000'})
         .prependTo($cluetip);
       }
       var tipAttribute = $this.attr(opts.attribute), ctClass = opts.cluetipClass;
-      if (!tipAttribute && !opts.splitTitle && !js) return true;
+      if (!tipAttribute && !opts.splitTitle && !js) {
+        return true;
+      }
       // if hideLocal is set to true, on DOM ready hide the local content that will be displayed in the clueTip
       if (opts.local && opts.localPrefix) {tipAttribute = opts.localPrefix + tipAttribute;}
       if (opts.local && opts.hideLocal) { $(tipAttribute + ':first').hide(); }
@@ -90,7 +93,7 @@
       var tipParts;
       var tipTitle = (opts.attribute != 'title') ? $this.attr(opts.titleAttribute) : '';
       if (opts.splitTitle) {
-        if(tipTitle == undefined) {tipTitle = '';}
+        if (tipTitle == undefined) {tipTitle = '';}
         tipParts = tipTitle.split(opts.splitTitle);
         tipTitle = tipParts.shift();
       }
@@ -157,7 +160,7 @@
 ***************************************/
       if (js) {
         if (typeof js == 'function') {
-          js = js(link);
+          js = js.call(link);
         }
         $cluetipInner.html(js);
         cluetipShow(pY);
@@ -170,7 +173,7 @@
 
       else if (tipParts) {
         var tpl = tipParts.length;
-        $cluetipInner.html(tipParts[0]);
+        $cluetipInner.html(tpl ? tipParts[0] : '');
         if (tpl > 1) {
           for (var i=1; i < tpl; i++){
             $cluetipInner.append('<div class="split-body">' + tipParts[i] + '</div>');
@@ -182,7 +185,7 @@
 * load external file via ajax          
 ***************************************/
 
-      else if (!opts.local && tipAttribute.indexOf('#') != 0) {
+      else if (!opts.local && tipAttribute.indexOf('#') !== 0) {
         if (/\.(jpe?g|tiff?|gif|png)$/i.test(tipAttribute)) {
           $cluetipInner.html('<img src="' + tipAttribute + '" alt="' + tipTitle + '" />');
           cluetipShow(pY);
@@ -224,13 +227,19 @@
             },
             complete: function(xhr, textStatus) {
               if (optionComplete) {optionComplete.call(link, xhr, textStatus, $cluetip, $cluetipInner);}
-              imgCount = $('#cluetip-inner img').length;
+              var imgs = $cluetipInner[0].getElementsByTagName('img');
+              imgCount = imgs.length;
+              for (var i=0, l = imgs.length; i < l; i++) {
+                if (imgs[i].complete) {
+                  imgCount--;
+                }
+              }
               if (imgCount && !$.browser.opera) {
-                $('#cluetip-inner img').bind('load error', function() {
+                $(imgs).bind('load error', function() {
                   imgCount--;
                   if (imgCount<1) {
                     $cluetipWait.hide();
-                    if (isActive) cluetipShow(pY);
+                    if (isActive) { cluetipShow(pY); }
                   }
                 }); 
               } else {
@@ -258,15 +267,6 @@
 // get dimensions and options for cluetip and prepare it to be shown
     var cluetipShow = function(bpY) {
       $cluetip.addClass('cluetip-' + ctClass);
-      if (opts.stayOpenHover) {
-        $cluetip.bind('mouseenter.cluetip', function(event) {
-        	clearTimeout(clueDelayedHide);
-        });
-        $cluetip.bind('mouseleave.cluetip', function(event) {
-        	inactivate(event);
-        	$cluetip.unbind('mouseleave.cluetip');
-        });
-      }
       if (opts.truncate) { 
         var $truncloaded = $cluetipInner.text().slice(0,opts.truncate) + '...';
         $cluetipInner.html($truncloaded);
@@ -324,13 +324,9 @@
 
 // (first hide, then) ***SHOW THE CLUETIP***
       $dropShadow.hide();
-      $cluetip.hide()[opts.fx.open](opts.fx.open != 'show' && opts.fx.openSpeed);
+      $cluetip.hide()[opts.fx.open](opts.fx.openSpeed || 0);
       if (opts.dropShadow) { $dropShadow.css({height: tipHeight, width: tipInnerWidth, zIndex: $this.data('thisInfo').zIndex-1}).show(); }
       if ($.fn.bgiframe) { $cluetip.bgiframe(); }
-      // delayed close (not fully tested)
-      if (opts.delayedClose > 0) {
-        closeOnDelay = setTimeout(cluetipClose, opts.delayedClose);
-      }
       // trigger the optional onShow function
       opts.onShow.call(link, $cluetip, $cluetipInner);
     };
@@ -342,27 +338,28 @@
       isActive = false;
       $cluetipWait.hide();
       if (!opts.sticky || (/click|toggle/).test(opts.activation) ) {
-    	if (opts.delayedHide > 0)
-    		clueDelayedHide = setTimeout(function() { cluetipClose() }, opts.delayedHide)
+    	if (opts.delayedClose > 0)
+    	  closeOnDelay = setTimeout(cluetipClose, opts.delayedClose);
     	else
-    		cluetipClose();
-    	
-        clearTimeout(closeOnDelay);        
-      };
+    	  cluetipClose();
+      }
       if (opts.hoverClass) {
         $this.removeClass(opts.hoverClass);
       }
     };
 // close cluetip and reset some things
     var cluetipClose = function() {
-      $cluetipOuter.parent().hide().removeClass();
+      $cluetipOuter 
+      .parent().hide().removeClass();
       opts.onHide.call(link, $cluetip, $cluetipInner);
       $this.removeClass('cluetip-clicked');
       if (tipTitle) {
         $this.attr(opts.titleAttribute, tipTitle);
       }
       $this.css('cursor','');
-      if (opts.arrows) $cluetipArrows.css({top: ''});
+      if (opts.arrows) {
+        $cluetipArrows.css({top: ''});
+      }
     };
 
     $(document).bind('hideCluetip', function(e) {
@@ -427,13 +424,19 @@
             $this.unbind('mousemove.cluetip');
           });
         }
-        // remove default title tooltip on hover
-        $this.bind('mouseenter.cluetip', function(event) {
+        $this.bind('mouseover.cluetip', function(event) {
           $this.attr('title','');
-        })
-        .bind('mouseleave.cluetip', function(event) {
+        }).bind('mouseleave.cluetip', function(event) {
           $this.attr('title', $this.data('thisInfo').title);
         });
+        if (opts.stayOpenHover) {
+          $('#cluetip').bind('mouseenter.cluetipBox', function() {
+        	clearTimeout(closeOnDelay); 
+          });
+          $('#cluetip').bind('mouseleave.cluetipBox', function() {
+        	closeOnDelay = setTimeout(cluetipClose, opts.delayedClose); 
+          });
+        }
       }
     });
   };
@@ -487,9 +490,7 @@
     closeText:        'Close',  // text (or HTML) to to be clicked to close sticky clueTips
     truncate:         0,        // number of characters to truncate clueTip's contents. if 0, no truncation occurs
     // Edited to delay hide
-    delayedHide:      0,        // hide after this amount after mouseout
     stayOpenHover:	  false,	// Only works on hover
-    
     
     // effect and speed for opening clueTips
     fx: {             
@@ -506,7 +507,6 @@
 
     // short-circuit function to run just before clueTip is shown. 
     onActivate:       function(e) {return true;},
-
     // function to run just after clueTip is shown. 
     onShow:           function(ct, ci){},
     // function to run just after clueTip is hidden.

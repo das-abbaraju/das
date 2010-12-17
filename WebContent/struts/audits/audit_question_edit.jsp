@@ -10,7 +10,7 @@ $(function() {
 		cluetipClass: 'jtip',
 		local: true,
 		clickThrough: false,
-		delayedHide: 500,
+		delayedClose: 500,
 		stayOpenHover: true
 	});
 });
@@ -46,7 +46,7 @@ $(function() {
 		<s:if test="!#q.helpText.empty">
 			<br />
 			<a class="cluetip helpBig" rel="#cluetip_<s:property value="#q.id"/>" title="Additional Information"></a>
-			<div id="cluetip_<s:property value="#q.id"/>">
+			<div id="cluetip_<s:property value="#q.id"/>" class="cluetipBox">
 				<span title="<s:property value="#q.name"/>">
 					<s:property value="#q.helpText" escape="false" />
 				</span>
