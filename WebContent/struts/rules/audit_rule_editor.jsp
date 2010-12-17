@@ -143,19 +143,19 @@ $(function() {
 		<div id="related"></div>
 	</s:if>
 </div>
-<div id="detail">
-	<s:if test="rule != null">
-		<s:if test="rule.effectiveDate.after(new java.util.Date())">
-			<div class="alert">
-				This rule will not go into effect until <s:date name="rule.effectiveDate" format="MM/dd/yyyy"/>.
-			</div>
-		</s:if>
-		<s:elseif test="!rule.current">
-			<div class="alert">
-				This rule is no longer in effect, it was removed by <s:property value="rule.updatedBy.name"/>.
-			</div>
-		</s:elseif>
+<s:if test="rule != null">
+	<s:if test="rule.effectiveDate.after(new java.util.Date())">
+		<div class="alert">
+			This rule will not go into effect until <s:date name="rule.effectiveDate" format="MM/dd/yyyy"/>.
+		</div>
 	</s:if>
+	<s:elseif test="!rule.current">
+		<div class="alert">
+			This rule is no longer in effect, it was removed by <s:property value="rule.updatedBy.name"/>.
+		</div>
+	</s:elseif>
+</s:if>
+<div id="detail">
 	<s:if test="canEditRule && rule.current">
 		<s:form method="post" id="rule_form">
 			<s:hidden name="id"/>
