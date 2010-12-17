@@ -59,9 +59,9 @@
 		<td class="center"><s:date name="get('createdDate')" format="M/d/yy" /></td>
 		<td class="center"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
 	    <s:if test="permissions.operator || permissions.corporate">
-			<td>
-				<s:if test="get('certificateID') != null">
-					<a href="CertificateUpload.action?id=<s:property value="get('id')"/>&certID=<s:property value="get('certificateID')"/>&button=download"
+			<td class="center">
+				<s:if test="get('certID') != null">
+					<a href="CertificateUpload.action?id=<s:property value="get('id')"/>&certID=<s:property value="get('certID')"/>&button=download"
 						target="_BLANK"><img src="images/icon_insurance.gif" /></a>	
 			</s:if>
 			<s:else></s:else>
