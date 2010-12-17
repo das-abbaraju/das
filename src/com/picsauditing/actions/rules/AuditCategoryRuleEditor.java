@@ -34,7 +34,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
 
 		this.requiredPermission = OpPerms.ManageCategoryRules;
-		this.ruleType = "Audit Category";
+		this.ruleType = "Category";
 		this.url = "CategoryRuleEditor.action";
 	}
 
