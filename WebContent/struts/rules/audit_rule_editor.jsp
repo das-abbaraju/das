@@ -89,6 +89,21 @@ $(function() {
 			$('.requiresComparator').show();
 		}
 	});
+	$(['less','more']).each(function(i,val){
+		$('a.'+val+'Granular').click(function(e) {
+			if ($('#related').is('.'+val)) {
+				$('#related').hide().removeAttr('class');
+			}else {
+				$('#related').load('<s:property value="ruleType.replaceAll(' ','')"/>RuleTableAjax.action',
+						{id: <s:property value="id"/>, button: val+'Granular'},
+						function(html, status, xhr) {
+							$('#related').show().attr('class',val);
+						}
+				);
+			}
+			e.preventDefault();
+		});
+	});
 });
 </script>
 <style>
@@ -112,12 +127,20 @@ $(function() {
 	display: none;
 }
 </s:if>
+#related {
+	display: none;
+}
 </style>
 </head>
 <body>
 <h1><s:property value="ruleType"/> Rule Editor</h1>
 <s:include value="../actionMessages.jsp"/>
 <a href="AuditTypeRuleEditor.action?button=New">Create new rule</a>
+<div>
+	<a href="#" class="lessGranular down-arrow">Less Granular</a>
+	<a href="#" class="moreGranular up-arrow">More Granular</a>
+	<div id="related"></div>
+</div>
 <div id="detail">
 	<s:if test="canEditRule">
 		<s:form method="post" id="rule_form">
@@ -252,9 +275,13 @@ $(function() {
 			</fieldset>
 		</s:form>
 	</s:if>
-	<s:else>
-		
-	</s:else>
+	<s:elseif test="id > 0">
+		<script>
+			$(function() {
+				$('#detail').load('<s:property value="ruleType.replaceAll(' ','')"/>RuleTableAjax.action', {id: <s:property value="id"/>});
+			});
+		</script>
+	</s:elseif>
 </div>
 
 </body>

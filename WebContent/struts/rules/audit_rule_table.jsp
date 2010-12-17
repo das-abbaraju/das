@@ -4,9 +4,12 @@
 <s:if test="columns.size() > 0">
 	<table class="report">
 		<thead>
+			<tr>
 			<s:iterator value="columns">
 				<th colspan="<s:property value="colspan" />"><s:property value="name" /></th>
 			</s:iterator>
+			<th>View</th>
+			</tr>
 		</thead>
 		<tbody>
 			<s:iterator value="mappedRules" id="rule">
@@ -21,12 +24,14 @@
 							<td colspan="<s:property value="#column.colspan" />">*</td>
 						</s:else>
 					</s:iterator>
-					<td><a href="#" id="search"></a></td>
+					<td><a href="<s:property value="ruleType.replaceAll(' ','')"/>RuleEditor.action?id=<s:property value="#rule.get(idColumn).get(0)"/>" class="preview"></a></td>
 				</tr>
 			</s:iterator>
 		</tbody>
 	</table>
 </s:if>
 <s:else>
-	No rules found for this <s:property value="type" />
+	<div class="info">
+		No rules found for this <s:property value="ruleType" />
+	</div>
 </s:else>
