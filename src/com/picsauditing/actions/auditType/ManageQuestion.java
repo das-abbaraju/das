@@ -45,6 +45,8 @@ public class ManageQuestion extends ManageCategory {
 		this.question = o;
 		if (question.getRequiredQuestion() != null)
 			requiredQuestionID = question.getRequiredQuestion().getId();
+		if (question.getVisibleQuestion() != null)
+			visibleQuestionID = question.getVisibleQuestion().getId();
 		load(question.getCategory());
 	}
 
