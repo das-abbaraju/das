@@ -355,7 +355,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 		if (contractorType != null)
 			sb.append(" and Contractor is ").append(contractorType);
 		if (tag != null)
-			sb.append(" and has tag ").append(tag);
+			sb.append(" and has tag \"").append(tag.getTag()).append("\"");
 		if (question != null)
 			sb.append(" and ").append(question.getColumnHeaderOrQuestion()).append(" ").append(questionComparator)
 					.append(questionAnswer);
