@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.util.Strings;
+
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -82,11 +84,11 @@ public class AuditPercentCalculator {
 				if (question.getRequiredQuestion() != null && question.getRequiredAnswer() != null) {
 					if (question.getRequiredAnswer().equals("NULL")) {
 						AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
-						if (otherAnswer == null)
+						if (otherAnswer == null || Strings.isEmpty(otherAnswer.getAnswer()))
 							isRequired = true;
 					} else if (question.getRequiredAnswer().equals("NOTNULL")) {
 						AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
-						if (otherAnswer != null)
+						if (otherAnswer != null && !Strings.isEmpty(otherAnswer.getAnswer()))
 							isRequired = true;
 					} else {
 						// This question is dependent on another
