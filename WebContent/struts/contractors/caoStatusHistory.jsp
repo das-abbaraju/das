@@ -15,12 +15,14 @@
 	<tbody>
 		<s:if test="caoWorkflow.size() > 0">
 			<s:iterator value="caoWorkflow">
-				<tr>
+				<tr id=<s:property value="id"/>>
 					<td><s:property value="formatDate(updateDate, 'dd MMM yyyy')" default="N/A"/></td>
 					<td><s:property value="updatedBy.name"/></td>
 					<td><s:property value="status"/></td>
 					<td><s:property value="previousStatus"/></td>
-					<td><s:property value="notes"/></td>
+					<td><div class="ac_cao_notes"><s:property value="notes"/></div>
+						<s:if test="permissions.userId == updatedBy.id"><a class="editNote showPointer edit">Edit</a></s:if>
+					</td>
 				</tr>
 			</s:iterator>	
 		</s:if>

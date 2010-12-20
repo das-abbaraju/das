@@ -45,6 +45,7 @@ import com.picsauditing.util.log.PicsLogger;
 public class CaoSave extends AuditActionSupport {
 
 	protected int caoID = 0;
+	private int noteID = 0;
 	private String note;
 	private String noteMessage = "";
 	private String saveMessage = "";
@@ -114,6 +115,15 @@ public class CaoSave extends AuditActionSupport {
 		}
 
 		if (caoIDs.size() > 0) {
+			if ("updateEditNote".equals(button)) {
+				ContractorAuditOperatorWorkflow caoW = caoWDAO.findByCaoNoteID(caoID, noteID);
+				if (caoW != null) {
+					caoW.setNotes(note);
+					caoWDAO.save(caoW);
+				}
+				return "caoStatus";
+			}
+			
 			if ("statusLoad".equals(button)) {
 				Set<String> accountNames = new HashSet<String>();
 				Set<String> auditNames = new HashSet<String>();
@@ -528,5 +538,13 @@ public class CaoSave extends AuditActionSupport {
 
 	public void setNoteRequired(boolean noteRequired) {
 		this.noteRequired = noteRequired;
+	}
+
+	public int getNoteID() {
+		return noteID;
+	}
+
+	public void setNoteID(int noteID) {
+		this.noteID = noteID;
 	}
 }

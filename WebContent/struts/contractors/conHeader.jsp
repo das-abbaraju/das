@@ -88,7 +88,33 @@ function loadResults(data, noteText){
 
 function loadStatus(caoID){
 	$('#caoAjax').load('CaoSaveAjax.action', {auditID: $('#auditID').val(), button: 'statusHistory', caoID: caoID}, function(){
-		$.blockUI({message: $('#caoAjax')});
+		$.blockUI({message: $('#caoAjax'), css: {width:'575px'}});
+		$('.editNote').click(function(){
+			var that = $(this);
+			that.hide();
+			var parent = that.closest('tr').attr('id');
+			var note_div = $('#'+parent+' .ac_cao_notes');
+			var oldNote = note_div.text();
+			note_div.html($('<textarea>').append(oldNote).attr({
+				'rows':'4',
+				'cols':'24'}))
+					.append($('<a>').append('Change').addClass('showPointer edit saveEdited'))
+					.append($('<a>').append('Cancel').addClass('showPointer remove noCancel'));
+			$('#'+parent+' .ac_cao_notes > .saveEdited').click(function(){
+				$.post('CaoSaveAjax.action', {
+					auditID: $('#auditID').val(), button: 'updateEditNote', 
+					caoID: caoID, noteID: parent,
+					note: $('#'+parent+' .ac_cao_notes textarea').val()}, function(){
+						$.unblockUI();
+						return false;
+				});
+			});
+			$('#'+parent+' .ac_cao_notes > .noCancel').click(function(){
+				that.show();
+				note_div.html('');
+				note_div.text(oldNote);
+			});
+		});
 		$('#noButton').click(function(){
 	        $.unblockUI();
 	        return false;
