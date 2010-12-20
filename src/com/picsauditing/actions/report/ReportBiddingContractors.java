@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -50,15 +51,24 @@ public class ReportBiddingContractors extends ReportAccount {
 
 	@Override
 	protected void buildQuery() {
+		skipPermissions = true;
 		super.buildQuery();
-
-		if (permissions.isOperator()) {
-			sql.addField("gc.waitingOn");
-		}
-		sql.addWhere("a.acceptsBids = 1");
 
 		filteredDefault = true;
 		getFilter().setShowConWithPendingAudits(false);
+		
+		// Anytime we query contractor accounts as an operator,
+		// get the flag color/status at the same time
+		sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "
+					+ permissions.getAccountId());
+		sql.addField("gc.workStatus");
+		sql.addField("gc.waitingOn");
+		sql.addWhere("gc.genID = " + permissions.getAccountId());
+		sql.addWhere("a.acceptsBids = 1");
+
+		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.SQL);
+		qb.setWorkingFacilities(false);
+		sql.addWhere("1 " + qb.toString());
 	}
 
 	@Override

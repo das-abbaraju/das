@@ -25,8 +25,6 @@
 	<tr>
 		<td colspan="2">Contractor Name</td>
 		<s:if test="permissions.operator">
-			<td><a
-				href="?orderBy=flag DESC">Flag</a></td>
 			<td>Waiting On</td>
 		</s:if>
 		<pics:permission perm="ViewTrialAccounts" type="Edit">
@@ -60,11 +58,6 @@
 				><s:property value="get('name')" /></a>
 			</td>
 			<s:if test="permissions.operator">
-				<td class="center">
-					<a href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
-						title="<s:property value="get('flag')"/> - Click to view details"><img 
-						src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0"></a>
-				</td>
 				<td><a href="ContractorFlag.action?id=<s:property value="get('id')"/>" ><s:property value="@com.picsauditing.jpa.entities.WaitingOn@fromOrdinal(get('waitingOn'))"/></a></td>
 			</s:if>
 			<pics:permission perm="ViewTrialAccounts" type="Edit">
