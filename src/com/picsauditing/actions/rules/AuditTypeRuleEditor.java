@@ -34,7 +34,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 		this.requiredPermission = OpPerms.ManageAuditTypeRules;
 		this.ruleType = "Audit Type";
-		this.url = "AuditTypeRuleEditor.action";
+		this.urlPrefix = "AuditType";
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 	@Override
 	protected void redirectTo() throws IOException {
 		if(rule!=null)
-			this.redirect(url+"?id=" + rule.getId());
+			this.redirect(urlPrefix+"?id=" + rule.getId());
 		else
 			this.redirect("AuditTypeRuleSearch.action");
 	}

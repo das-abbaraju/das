@@ -28,6 +28,7 @@ $(function() {
 		$('#question_display').html(data[1]);
 		$('.requiresQuestion').show();
 	});
+	<s:if test="!auditTypeRule">
 	$('#category').change(function() {
 		if ($(this).blank())
 			$('#category_display').html('');
@@ -42,6 +43,7 @@ $(function() {
 	}).result(function(event, data) {
 		$('#category_display').html(data[1]);
 	});
+	</s:if>
 	$('#operator').change(function() {
 		if ($(this).blank()) {
 			$('#tag').find('option').remove();
@@ -67,7 +69,7 @@ $(function() {
 			$('#dAuditSelect').html('');
 			$('.requiresDependentAudit').hide();
 		} else {
-			$.getJSON('AuditTypeRuleSearchAjax.action', {button: 'dAuditStatus', 'aType': $(this).val()}, 
+			$.getJSON('AuditRuleSearchAjax.action', {button: 'dAuditStatus', 'aType': $(this).val()}, 
 				function(json) {
 					if (json) {
 						$('#dAuditSelect').html('');
@@ -91,13 +93,15 @@ $(function() {
 	});
 	$(['less','more']).each(function(i,val){
 		$('a.'+val+'Granular').click(function(e) {
+			var me = $(this).addClass('processing');
 			if ($('#related').is('.'+val)) {
 				$('#related').hide().removeAttr('class');
 			}else {
-				$('#related').load('<s:property value="ruleType.replaceAll(' ','')"/>RuleTableAjax.action',
+				$('#related').load('<s:property value="urlPrefix"/>RuleTableAjax.action',
 						{id: <s:property value="id"/>, button: val+'Granular'},
 						function(html, status, xhr) {
 							$('#related').show().attr('class',val);
+							me.removeClass('processing');
 						}
 				);
 			}
@@ -136,7 +140,7 @@ $(function() {
 <h1><s:property value="ruleType"/> Rule Editor</h1>
 <s:include value="../actionMessages.jsp"/>
 <div>
-	<a class="add" href="<s:property value="url"/>?button=New">Create new rule</a>
+	<a class="add" href="<s:property value="urlPrefix"/>RuleEditor.action?button=New">Create new rule</a>
 	<s:if test="rule.id > 0">
 		<a href="#" class="lessGranular down-arrow">Less Granular</a>
 		<a href="#" class="moreGranular up-arrow">More Granular</a>
@@ -297,7 +301,7 @@ $(function() {
 	<s:elseif test="id > 0">
 		<script>
 			$(function() {
-				$('#detail').load('<s:property value="ruleType.replaceAll(' ','')"/>RuleTableAjax.action', {id: <s:property value="id"/>});
+				$('#detail').load('<s:property value="urlPrefix"/>RuleTableAjax.action', {id: <s:property value="id"/>});
 			});
 		</script>
 	</s:elseif>

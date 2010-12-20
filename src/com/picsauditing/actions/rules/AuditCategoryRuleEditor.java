@@ -18,7 +18,7 @@ import com.picsauditing.jpa.entities.AuditCategoryRule;
 public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategoryRule> {
 
 	protected Integer ruleAuditCategoryId;
-
+	
 	protected AuditCategoryDAO auditCategoryDAO;
 
 	public AuditCategoryRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO, AuditTypeDAO auditTypeDAO,
@@ -35,7 +35,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 
 		this.requiredPermission = OpPerms.ManageCategoryRules;
 		this.ruleType = "Category";
-		this.url = "CategoryRuleEditor.action";
+		this.urlPrefix = "Category";
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 	@Override
 	protected void redirectTo() throws IOException {
 		if(rule!=null)
-			this.redirect(url+"?id=" + rule.getId());
+			this.redirect(urlPrefix+"?id=" + rule.getId());
 		else
 			this.redirect("CategoryRuleSearch.action");
 	}

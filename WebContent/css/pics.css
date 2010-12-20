@@ -559,12 +559,16 @@ a.clearfield {
 
 a.up-arrow {
 	background: url(../images/arrow-up.png) no-repeat left center;
-	padding-left:17px;
+	padding-left: 20px;
 }
 
 a.down-arrow {
 	background: url(../images/arrow-down.png) no-repeat left center;
-	padding-left:17px;
+	padding-left: 20px;
+}
+
+a.processing {
+	background: url('../images/ajax_process.gif') no-repeat left center;
 }
 
 label.tooltipped {

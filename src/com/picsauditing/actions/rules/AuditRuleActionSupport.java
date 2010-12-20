@@ -37,7 +37,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 
 	protected int id;
 	protected String ruleType;
-	protected String url;
+	protected String urlPrefix;
 
 	protected Integer ruleAuditTypeId;
 	protected Integer ruleOperatorAccountId;
@@ -255,12 +255,8 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 		this.ruleAcceptsBids = ruleAcceptsBids;
 	}
 
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
+	public String getUrlPrefix() {
+		return urlPrefix;
 	}
 
 	public boolean isRuleInclude() {
