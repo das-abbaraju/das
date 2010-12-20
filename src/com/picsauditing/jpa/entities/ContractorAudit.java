@@ -77,10 +77,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
 	private Map<AuditStatus, Integer> caoStats = null;
 
-	public static int MINA = 1029;
-	public static int RICK = 9615;
-	public static int GARY = 11503;
-
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
 	public AuditType getAuditType() {
@@ -161,7 +157,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public void setAuditor(User auditor) {
 		this.auditor = auditor;
-		setClosingAuditor(auditor);
 	}
 
 	@ManyToOne
@@ -172,14 +167,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public void setClosingAuditor(User closingAuditor) {
 		this.closingAuditor = closingAuditor;
-		if (closingAuditor != null) {
-			if (closingAuditor.getId() == 10600) // Mike Casey
-				this.closingAuditor = new User(GARY);
-			else if (closingAuditor.getId() == 910) // Dennis Dooley
-				this.closingAuditor = new User(RICK);
-			else if (closingAuditor.getId() == 902) // John McCaughey
-				this.closingAuditor = new User(MINA);
-		}
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -722,5 +709,20 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			}
 		}
 		return caoStats;
+	}
+	
+	@Transient
+	public Integer getIndependentClosingAuditor(User u){
+		if (u != null) {
+			if (u.getId() == 10600) // Mike Casey
+				return 11503; // Gary Rogers
+			else if (u.getId() == 910) // Dennis Dooley
+				return 9615; // Rick McGee
+			else if (u.getId() == 902) // John McCaughey
+				return 1029; // Mina Mina
+			else
+				return u.getId();
+		}
+		return null;
 	}
 }

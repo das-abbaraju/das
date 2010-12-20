@@ -137,8 +137,10 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			Date scheduledDateInServerTime = DateBean.convertTime(
 					scheduledDateInUserTime, permissions.getTimezone());
 			conAudit.setScheduledDate(scheduledDateInServerTime);
-			if (auditor != null)
+			if (auditor != null){
 				conAudit.setAuditor(auditor);
+				conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(auditor)));
+			}
 			addActionMessage("Audit Saved Successfully");
 			// check for a time overlap here
 			List<ContractorAudit> conflicts = auditDao.findScheduledAudits(
@@ -218,6 +220,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 			conAudit.setScheduledDate(availabilitySelected.getStartDate());
 			conAudit.setAuditor(availabilitySelected.getUser());
+			conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(availabilitySelected.getUser())));
 			if (permissions.isContractor())
 				conAudit.setContractorConfirm(new Date());
 			conAudit.setConductedOnsite(availabilitySelected

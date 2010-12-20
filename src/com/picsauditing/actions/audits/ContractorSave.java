@@ -40,6 +40,7 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 			for (ContractorAudit conAudit : ca.getAudits()) {
 				if (!conAudit.getAuditType().getClassType().isAudit()) {
 					conAudit.setAuditor(ca.getAuditor());
+					conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(ca.getAuditor())));
 					conAudit.setAssignedDate(new Date());
 					PicsLogger.log(" assigning auditorID " + auditorId + " to " + conAudit.getAuditType().getAuditName());
 				}

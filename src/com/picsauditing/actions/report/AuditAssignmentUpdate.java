@@ -102,6 +102,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		}
 		contractorAudit.setAssignedDate(new Date());
 		contractorAudit.setAuditor(auditor);
+		contractorAudit.setClosingAuditor(new User(contractorAudit.getIndependentClosingAuditor(auditor)));
 
 		if (permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit))
 			dao.save(contractorAudit);
