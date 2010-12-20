@@ -444,7 +444,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 				String[] o1a = o1.getExpandedNumber().split("\\.");
 				String[] o2a = o2.getExpandedNumber().split("\\.");
 				for(int i=0; i<o1a.length; i++){
-					if(i>o2a.length)
+					if(i>=o2a.length)
 						return -1;
 					if(o1a[i].equals(o2a[i]))
 						continue;
