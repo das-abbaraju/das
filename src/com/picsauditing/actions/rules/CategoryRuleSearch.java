@@ -1,4 +1,4 @@
-package com.picsauditing.actions.auditType;
+package com.picsauditing.actions.rules;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;

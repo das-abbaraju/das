@@ -5,7 +5,7 @@
 <html>
 <head>
 <title>Manage <s:property value="ruleType" /></title>
-<s:include value="../../reports/reportHeader.jsp" />
+<s:include value="../reports/reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">

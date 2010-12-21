@@ -1250,11 +1250,11 @@
 			<result>struts/audits/rules/audit_rule_editor.jsp</result>
 		</action>
 		<action name="CategoryRuleSearch"
-			class="com.picsauditing.actions.auditType.CategoryRuleSearch">
-			<result>struts/audits/rules/audit_rule_search.jsp</result>
+			class="com.picsauditing.actions.rules.CategoryRuleSearch">
+			<result>struts/rules/audit_rule_search.jsp</result>
 		</action>
 		<action name="CategoryRuleSearchAjax"
-			class="com.picsauditing.actions.auditType.CategoryRuleSearch">		
+			class="com.picsauditing.actions.rules.CategoryRuleSearch">		
 			<result name="autocomp">struts/blank.jsp</result>
 			<result>struts/audits/rules/audit_rule_search_data.jsp</result>
 		</action>
@@ -1264,18 +1264,18 @@
 			<result>struts/audits/rules/audit_rule_editor.jsp</result>
 		</action>
 		<action name="AuditTypeRuleSearch"
-			class="com.picsauditing.actions.auditType.AuditTypeRuleSearch">			
+			class="com.picsauditing.actions.rules.AuditTypeRuleSearch">			
 			<param name="ruleType">Audit Type Rules</param>
-			<result>struts/audits/rules/audit_rule_search.jsp</result>
+			<result>struts/rules/audit_rule_search.jsp</result>
 		</action>
 		<action name="AuditTypeRuleSearchAjax"
-			class="com.picsauditing.actions.auditType.AuditTypeRuleSearch">		
+			class="com.picsauditing.actions.rules.AuditTypeRuleSearch">		
 			<param name="ruleType">Audit Type Rules</param>
 			<result name="autocomp">struts/blank.jsp</result>
-			<result>struts/audits/rules/audit_rule_search_data.jsp</result>
+			<result>struts/audits/audit_rule_search_data.jsp</result>
 		</action>
 		<action name="AuditRuleSearchAjax"
-			class="com.picsauditing.actions.auditType.AuditRuleSearch">		
+			class="com.picsauditing.actions.rules.AuditRuleSearch">		
 			<result>struts/blank.jsp</result>
 		</action>
 		

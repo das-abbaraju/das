@@ -1,4 +1,4 @@
-package com.picsauditing.actions.auditType;
+package com.picsauditing.actions.rules;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -154,8 +154,9 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 				sb.append("op").append("|").append(((OperatorAccount) bt).getName()).append("|").append(
 						((OperatorAccount) bt).getId()).append("\n");
 			} else if (bt instanceof OperatorTag) {
-				sb.append("tag").append("|").append(((OperatorTag) bt).getTag()).append("|").append(
-						((OperatorTag) bt).getId()).append("\n");
+				OperatorTag tag = (OperatorTag) bt;
+				sb.append("tag").append("|").append(tag.getTag()).append("|").append(
+						tag.getId()).append("\n");
 			} else if (bt instanceof AuditQuestion) {
 				AuditQuestion question = (AuditQuestion) bt;
 				sb.append("question").append("|").append(question.getAuditType().getAuditName()).append(" > ");
