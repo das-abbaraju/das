@@ -224,11 +224,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 		green.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 		green.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 		
-		HSSFFont redFont = wb.createFont();
-		redFont.setColor(HSSFColor.WHITE.index);
-		
 		HSSFCellStyle red = wb.createCellStyle();
-		red.setFont(redFont);
 		red.setFillForegroundColor(HSSFColor.RED.index);
 		red.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 		red.setAlignment(HSSFCellStyle.ALIGN_CENTER);
@@ -259,10 +255,9 @@ public class EmployeeCompetencies extends ReportEmployee {
 				if (map.get(e, oc) != null) {
 					if (map.get(e, oc).isSkilled()) {
 						cell.setCellStyle(green);
-						cell.setCellValue(new HSSFRichTextString("OK"));
+						cell.setCellValue(new HSSFRichTextString("X"));
 					} else {
 						cell.setCellStyle(red);
-						cell.setCellValue(new HSSFRichTextString("Missing"));
 					}
 				}
 				
