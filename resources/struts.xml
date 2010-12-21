@@ -1283,7 +1283,7 @@
 			class="com.picsauditing.actions.rules.AuditCategoryRuleEditor">
 			<result>struts/rules/audit_rule_editor.jsp</result>
 		</action>
-		<action name="AuditCategoryRuleTableAjax" 
+		<action name="CategoryRuleTableAjax" 
 			class="com.picsauditing.actions.rules.AuditCategoryRuleTableBuilder">
 			<result>struts/rules/audit_rule_table.jsp</result>
 		</action>

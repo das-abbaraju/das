@@ -21,6 +21,7 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 
 	protected Integer id;
 	protected String ruleType;
+	protected String urlPrefix;
 
 	protected Map<String, Boolean> columnMap = new HashMap<String, Boolean>();
 	protected List<T> rules = new ArrayList<T>();
@@ -81,6 +82,14 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 
 	public void setRuleType(String ruleType) {
 		this.ruleType = ruleType;
+	}
+
+	public String getUrlPrefix() {
+		return urlPrefix;
+	}
+
+	public void setUrlPrefix(String urlPrefix) {
+		this.urlPrefix = urlPrefix;
 	}
 
 	public Map<String, Boolean> getColumnMap() {

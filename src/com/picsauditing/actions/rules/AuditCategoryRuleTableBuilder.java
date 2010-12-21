@@ -9,6 +9,7 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 	public AuditCategoryRuleTableBuilder(AuditDecisionTableDAO ruleDAO) {
 		this.ruleDAO = ruleDAO;
 		this.ruleType = "Category";
+		this.urlPrefix = "Category";
 	}
 
 	@Override

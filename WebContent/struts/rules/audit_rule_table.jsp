@@ -135,7 +135,7 @@
 						<td><s:property value="updatedBy.name"/></td>
 						<td><s:date name="updateDate" format="mm/dd/yyy"/></td>
 					</s:if>
-					<td><a href="<s:property value="ruleType.replaceAll(' ','')"/>RuleEditor.action?id=<s:property value="id"/>" class="preview"></a></td>
+					<td><a href="<s:property value="urlPrefix"/>RuleEditor.action?id=<s:property value="id"/>" class="preview"></a></td>
 				</tr>
 			</s:iterator>
 		</tbody>

@@ -9,6 +9,7 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 	public AuditTypeRuleTableBuilder(AuditDecisionTableDAO ruleDAO) {
 		this.ruleDAO = ruleDAO;
 		this.ruleType = "Audit Type";
+		this.urlPrefix = "AuditType";
 	}
 
 	@Override
