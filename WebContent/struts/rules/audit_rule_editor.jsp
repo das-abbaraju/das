@@ -12,6 +12,8 @@
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
 $(function() {
+	$('#moreRelated').load('<s:property value="urlPrefix"/>RuleTableAjax.action',{id: <s:property value="id"/>, button: 'moreGranular'});
+	$('#lessRelated').load('<s:property value="urlPrefix"/>RuleTableAjax.action',{id: <s:property value="id"/>, button: 'lessGranular'});
 	$('.hideRule').hide();
 	$('#editRuleButton').click(function(){
 		$('.hideRule, .showRule').toggle();
@@ -153,9 +155,6 @@ $(function() {
 			<s:hidden name="id"/>
 			<s:if test="rule.id > 0">
 				<fieldset class="form hideRule lessGran">
-					<script type="text/javascript">$(function(){$('#lessRelated').load('<s:property value="urlPrefix"/>RuleTableAjax.action',
-							{id: <s:property value="id"/>, button: 'lessGranular'});});
-					</script>
 					<h2 class="formLegend">Less Granular</h2>
 					<div id="lessRelated" style="padding-top:10px;"></div>
 				</fieldset>
@@ -164,8 +163,6 @@ $(function() {
 					<ol>
 						<li>
 							<h4><s:property value="rule.toString()"/></h4>
-						</li>
-						<li>
 							<a class="edit showPointer" id="editRuleButton"><span class="hideRule">Cancel Edit</span><span class="showRule">Edit Rule</span></a>
 						</li>
 					</ol>
@@ -301,8 +298,6 @@ $(function() {
 			<s:if test="rule.id > 0">
 				<fieldset class="form hideRule moreGran">
 					<h2 class="formLegend">More Granular</h2>
-					<script type="text/javascript">$(function(){$('#moreRelated').load('<s:property value="urlPrefix"/>RuleTableAjax.action',
-							{id: <s:property value="id"/>, button: 'moreGranular'});});</script>
 					<div id="moreRelated" style="padding-top:10px;"></div>
 				</fieldset>
 			</s:if>
