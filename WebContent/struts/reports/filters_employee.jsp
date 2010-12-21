@@ -27,6 +27,9 @@
 			Company Name: <s:textfield name="filter.accountName" size="35" onclick="clearText(this)" />
 		</div>
 	</s:if>
+	
+	<div class="clear"></div>
+	
 	<s:if test="filter.showFirstName">
 		<div class="filterOption">
 			First Name: <s:textfield name="filter.firstName" />
@@ -47,11 +50,9 @@
 			SSN: <s:textfield name="filter.ssn" cssClass="ssn"/>
 		</div>
 	</s:if>
-	<s:if test="filter.showLimitEmployees && permissions.operatorCorporate">
-		<div class="filterOption">
-			<s:checkbox name="filter.limitEmployees" /> Show Only My Employees
-		</div>
-	</s:if>
+	
+	<div class="clear"></div>
+	
 	<s:if test="filter.showProjects">
 		<div class="filterOption">
 			<a href="#" onclick="toggleBox('form1_projects'); return false;">Projects</a> =
@@ -78,6 +79,42 @@
 				<script type="text/javascript">updateQuery('form1_assessmentCenters');</script>
 				<a class="clearLink" href="#" onclick="clearSelected('form1_assessmentCenters'); return false;">Clear</a>
 			</span>
+		</div>
+	</s:if>
+	<s:if test="filter.showJobRoles">
+		<div class="filterOption">
+			<a href="#" onclick="toggleBox('form1_jobRoles'); return false;">Job Roles</a> =
+			<span id="form1_jobRoles_query">ALL</span>
+			<br />
+			<span id="form1_jobRoles_select" style="display: none" class="clearLink">
+				<s:select list="filter.jobRoleList" multiple="true" cssClass="forms"
+					name="filter.jobRoles" id="form1_jobRoles" listKey="id" listValue="name" />
+				<br />
+				<script type="text/javascript">updateQuery('form1_jobRoles');</script>
+				<a class="clearLink" href="#" onclick="clearSelected('form1_jobRoles'); return false;">Clear</a>
+			</span>
+		</div>
+	</s:if>
+	<s:if test="filter.showCompetencies">
+		<div class="filterOption">
+			<a href="#" onclick="toggleBox('form1_competencies'); return false;">Competencies</a> =
+			<span id="form1_competencies_query">ALL</span>
+			<br />
+			<span id="form1_competencies_select" style="display: none" class="clearLink">
+				<s:select list="filter.competencyList" multiple="true" cssClass="forms"
+					name="filter.competencies" id="form1_competencies" listKey="id" listValue="label" />
+				<br />
+				<script type="text/javascript">updateQuery('form1_competencies');</script>
+				<a class="clearLink" href="#" onclick="clearSelected('form1_competencies'); return false;">Clear</a>
+			</span>
+		</div>
+	</s:if>
+	
+	<div class="clear"></div>
+	
+	<s:if test="filter.showLimitEmployees && permissions.operatorCorporate">
+		<div class="filterOption">
+			<s:checkbox name="filter.limitEmployees" /> Show Only My Employees
 		</div>
 	</s:if>
 </s:form>

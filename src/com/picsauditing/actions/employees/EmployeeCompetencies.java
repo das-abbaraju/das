@@ -1,132 +1,290 @@
 package com.picsauditing.actions.employees;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import javax.servlet.ServletOutputStream;
+
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.access.RecordNotFoundException;
-import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.actions.report.ReportEmployee;
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeCompetencyDAO;
 import com.picsauditing.dao.EmployeeDAO;
-import com.picsauditing.dao.EmployeeRoleDAO;
-import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
-import com.picsauditing.jpa.entities.EmployeeRole;
-import com.picsauditing.jpa.entities.JobCompetency;
-import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.DoubleMap;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class EmployeeCompetencies extends AccountActionSupport {
-	protected ContractorAccountDAO conDAO;
+public class EmployeeCompetencies extends ReportEmployee {
+	protected AccountDAO accountDAO;
 	protected EmployeeDAO employeeDAO;
 	protected EmployeeCompetencyDAO ecDAO;
-	protected EmployeeRoleDAO erDAO;
-	protected JobRoleDAO jobRoleDAO;
-	protected OperatorCompetencyDAO opCompDAO;
+	protected OperatorCompetencyDAO ocDAO;
 
-	protected int conID;
-	protected int employeeID = 0;
-	protected int ecID;
-	protected int jobRoleID = 0;
-	protected boolean canEdit = false;
-	protected boolean checked;
+	protected int id;
+	protected int employeeID;
+	protected int competencyID;
+	protected boolean skilled;
 
-	protected int[] selectedCompetencies = null;
-	protected ContractorAccount contractor;
-	protected Employee employee = null;
-	protected JobRole jobRole;
-	protected List<Employee> employees;
-	protected Map<Integer, List<EmployeeRole>> employeeRoles;
-	protected DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
+	private List<Employee> employees;
+	private List<OperatorCompetency> competencies;
+	private DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
 
-	public EmployeeCompetencies(ContractorAccountDAO conDAO, EmployeeDAO employeeDAO, EmployeeCompetencyDAO ecDAO,
-			EmployeeRoleDAO erDAO, JobRoleDAO jobRoleDAO, OperatorCompetencyDAO opCompDAO) {
-		this.conDAO = conDAO;
+	public EmployeeCompetencies(AccountDAO accountDAO, EmployeeDAO employeeDAO, EmployeeCompetencyDAO ecDAO,
+			OperatorCompetencyDAO ocDAO) {
+		this.accountDAO = accountDAO;
 		this.employeeDAO = employeeDAO;
 		this.ecDAO = ecDAO;
-		this.erDAO = erDAO;
-		this.jobRoleDAO = jobRoleDAO;
-		this.opCompDAO = opCompDAO;
+		this.ocDAO = ocDAO;
 	}
 
-	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 
-		if (permissions.isContractor()) {
-			// Contractors should view and edit the competencies
-			canEdit = true;
-			conID = permissions.getAccountId();
-		}
+		if (permissions.isContractor())
+			id = permissions.getAccountId();
 
-		if (permissions.isAdmin())
-			canEdit = true;
-
-		if (conID == 0)
-			throw new RecordNotFoundException("Missing conID");
-
-		contractor = conDAO.find(conID);
-		
-		if (employeeID > 0)
-			employee = employeeDAO.find(employeeID);
-		
-		if (jobRoleID > 0)
-			jobRole = jobRoleDAO.find(jobRoleID);
+		if (id > 0)
+			account = accountDAO.find(id);
+		else
+			throw new RecordNotFoundException("Missing account ID");
 
 		if (button != null) {
-			if (button.equalsIgnoreCase("AddSkill")) {
-				// A checkbox has been checked
-				if (ecID > 0) {
-					EmployeeCompetency ec = ecDAO.find(ecID);
-					ec.setSkilled(true);
-					ec.setAuditColumns(permissions);
+			if ("ChangeCompetency".equals(button)) {
+				if (employeeID > 0 && competencyID > 0) {
+					EmployeeCompetency ec = null;
+					try {
+						ec = ecDAO.find(employeeID, competencyID);
+					} catch (Exception e) {
+						ec = new EmployeeCompetency();
+						ec.setSkilled(false);
+						ec.setEmployee(employeeDAO.find(employeeID));
+						ec.setCompetency(ocDAO.find(competencyID));
+						ec.setAuditColumns(permissions);
+					}
+
+					ec.setSkilled(!ec.isSkilled());
 					ecDAO.save(ec);
-					json.put("title", "Added Skill");
-					json.put("msg", "Successfully added " + ec.getCompetency().getLabel() + " skill to "
-							+ ec.getEmployee().getDisplayName());
-					return JSON;
+
+					addActionMessage("Successfully" + (ec.isSkilled() ? " added " : " removed ")
+							+ ec.getCompetency().getLabel() + (ec.isSkilled() ? " to " : " from ")
+							+ ec.getEmployee().getLastName() + ", " + ec.getEmployee().getFirstName());
 				} else
-					addActionError("Missing employee competency ID");
+					addActionError("Missing employee and/or competency");
 			}
 
-			if (button.equalsIgnoreCase("RemoveSkill")) {
-				// A checkbox has been unchecked
-				if (ecID > 0) {
-					EmployeeCompetency ec = ecDAO.find(ecID);
-					ec.setSkilled(false);
-					ec.setAuditColumns(permissions);
-					ecDAO.save(ec);
-					json.put("title", "Removed Skill");
-					json.put("msg", "Successfully removed " + ec.getCompetency().getLabel() + " skill from "
-							+ ec.getEmployee().getDisplayName());
-					return JSON;
-				} else
-					addActionError("Missing employee competency ID");
-			}
+			if (getActionErrors().size() > 0)
+				return SUCCESS;
+		}
 
-			if (button.equalsIgnoreCase("Update List")) {
-				if (selectedCompetencies == null || selectedCompetencies.length == 0)
-					addActionError("Please select competencies");
+		getFilter().setPermissions(permissions);
+		getFilter().setAccountID(account.getId());
+
+		getFilter().setShowJobRoles(true);
+		getFilter().setShowCompetencies(true);
+
+		if (permissions.isContractor())
+			getFilter().setShowAccountName(false);
+
+		buildQuery();
+		run(sql);
+		buildMap();
+
+		if (download || "download".equals(button)) {
+			if (Strings.isEmpty(filename)) {
+				String className = this.getClass().getName();
+				filename = className.substring(className.lastIndexOf("."));
 			}
+			
+			HSSFWorkbook wb = buildWorkbook(filename);
+			
+			excelSheet.setName(filename);
+			filename += ".xls";
+
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			wb.write(outstream);
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+			return null;
 		}
 
 		return SUCCESS;
 	}
 
-	public int getConID() {
-		return conID;
+	@Override
+	protected void buildQuery() {
+		super.buildQuery();
+
+		sql.addJoin("JOIN employee_role er ON er.employeeID = e.id");
+		sql.addJoin("JOIN job_role jr ON jr.id = er.jobRoleID AND jr.active = 1");
+
+		sql.addWhere("a.id = " + account.getId());
 	}
 
-	public void setConID(int conID) {
-		this.conID = conID;
+	@Override
+	protected void addFilterToSQL() {
+		super.addFilterToSQL();
+
+		if (filterOn(getFilter().getJobRoles()))
+			sql.addWhere("jr.id IN (" + Strings.implode(getFilter().getJobRoles()) + ")");
+	}
+
+	private void buildMap() throws SQLException {
+		sql.addJoin("JOIN job_competency jc ON jc.jobRoleID = jr.id");
+		sql.addJoin("JOIN operator_competency oc ON oc.id = jc.competencyID");
+		sql.addJoin("LEFT JOIN employee_competency ec ON ec.employeeID = e.id AND ec.competencyID = oc.id");
+
+		sql.addField("jr.id jobRoleID");
+		sql.addField("jr.name jobRoleName");
+		sql.addField("oc.id competencyID");
+		sql.addField("oc.category");
+		sql.addField("oc.label");
+		sql.addField("oc.description");
+		sql.addField("ec.id ecID");
+		sql.addField("ec.skilled");
+		sql.addOrderBy("oc.category, oc.label");
+
+		if (filterOn(getFilter().getCompetencies()))
+			sql.addWhere("oc.id IN (" + Strings.implode(getFilter().getCompetencies()) + ")");
+
+		Database db = new Database();
+		List<BasicDynaBean> data2 = db.select(sql.toString(), true);
+
+		employees = new ArrayList<Employee>();
+		competencies = new ArrayList<OperatorCompetency>();
+		map = new DoubleMap<Employee, OperatorCompetency, EmployeeCompetency>();
+
+		for (BasicDynaBean d : data2) {
+			Employee e = new Employee();
+			e.setAccount(account);
+			e.setId(Integer.parseInt(d.get("employeeID").toString()));
+			e.setLastName(d.get("lastName").toString());
+			e.setFirstName(d.get("firstName").toString());
+
+			if (!employees.contains(e))
+				employees.add(e);
+
+			OperatorCompetency o = new OperatorCompetency();
+			o.setId(Integer.parseInt(d.get("competencyID").toString()));
+			o.setCategory(d.get("category").toString());
+			o.setLabel(d.get("label").toString());
+			o.setDescription(d.get("description").toString());
+
+			if (!competencies.contains(o))
+				competencies.add(o);
+
+			EmployeeCompetency c = new EmployeeCompetency();
+			c.setSkilled(false);
+
+			if (d.get("ecID") != null) {
+				c.setId(Integer.parseInt(d.get("ecID").toString()));
+				c.setEmployee(e);
+				c.setCompetency(o);
+				c.setSkilled(d.get("skilled").toString().equals("1"));
+			}
+
+			map.put(e, o, c);
+		}
+	}
+	
+	protected HSSFWorkbook buildWorkbook(String name) {
+		HSSFWorkbook wb = new HSSFWorkbook();
+		HSSFSheet sheet = wb.createSheet();
+		wb.setSheetName(0, name);
+		// Styles
+		HSSFFont headerFont = wb.createFont();
+		headerFont.setFontHeightInPoints((short) 12);
+		headerFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+
+		HSSFCellStyle headerStyle = wb.createCellStyle();
+		headerStyle.setFont(headerFont);
+		headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		
+		HSSFCellStyle green = wb.createCellStyle();
+		green.setFillForegroundColor(HSSFColor.LIGHT_GREEN.index);
+		green.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+		green.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		
+		HSSFFont redFont = wb.createFont();
+		redFont.setColor(HSSFColor.WHITE.index);
+		
+		HSSFCellStyle red = wb.createCellStyle();
+		red.setFont(redFont);
+		red.setFillForegroundColor(HSSFColor.RED.index);
+		red.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+		red.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		// Data
+		HSSFRow row = sheet.createRow(0);
+		HSSFCell cell = row.createCell(0);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue(new HSSFRichTextString("Employees"));
+		
+		int cellCount = 1;
+		for (OperatorCompetency oc : getCompetencies()) {
+			cell = row.createCell(cellCount);
+			cell.setCellStyle(headerStyle);
+			cell.setCellValue(new HSSFRichTextString(oc.getLabel()));
+			cellCount++;
+		}
+		
+		int rowCount = 1;
+		for (Employee e : getEmployees()) {
+			row = sheet.createRow(rowCount);
+			
+			cell = row.createCell(0);
+			cell.setCellValue(new HSSFRichTextString(e.getLastName() + ", " + e.getFirstName()));
+			
+			cellCount = 1;
+			for (OperatorCompetency oc : getCompetencies()) {
+				cell = row.createCell(cellCount);
+				if (map.get(e, oc) != null) {
+					if (map.get(e, oc).isSkilled()) {
+						cell.setCellStyle(green);
+						cell.setCellValue(new HSSFRichTextString("OK"));
+					} else {
+						cell.setCellStyle(red);
+						cell.setCellValue(new HSSFRichTextString("Missing"));
+					}
+				}
+				
+				cellCount++;
+			}
+			
+			rowCount++;
+		}
+		
+		for (int i = 0; i < cellCount; i++) {
+			sheet.autoSizeColumn(i);
+		}
+		
+		return wb;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getEmployeeID() {
@@ -137,130 +295,31 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		this.employeeID = employeeID;
 	}
 
-	public int getEcID() {
-		return ecID;
+	public int getCompetencyID() {
+		return competencyID;
 	}
 
-	public void setEcID(int ecID) {
-		this.ecID = ecID;
-	}
-	
-	public int getJobRoleID() {
-		return jobRoleID;
-	}
-	
-	public void setJobRoleID(int jobRoleID) {
-		this.jobRoleID = jobRoleID;
+	public void setCompetencyID(int competencyID) {
+		this.competencyID = competencyID;
 	}
 
-	public boolean isCanEdit() {
-		return canEdit;
+	public boolean isSkilled() {
+		return skilled;
 	}
 
-	public boolean isChecked() {
-		return checked;
-	}
-
-	public void setChecked(boolean checked) {
-		this.checked = checked;
-	}
-
-	public ContractorAccount getContractor() {
-		return contractor;
-	}
-
-	public Employee getEmployee() {
-		return employee;
-	}
-	
-	public JobRole getJobRole() {
-		return jobRole;
-	}
-
-	public int[] getSelectedCompetencies() {
-		return selectedCompetencies;
-	}
-
-	public void setSelectedCompetencies(int[] selectedCompetencies) {
-		this.selectedCompetencies = selectedCompetencies;
-	}
-
-	public List<OperatorCompetency> getSelectedOC() {
-		if (selectedCompetencies != null)
-			return opCompDAO.findWhere("id IN (0," + Strings.implode(selectedCompetencies) + ")");
-
-		return null;
+	public void setSkilled(boolean skilled) {
+		this.skilled = skilled;
 	}
 
 	public List<Employee> getEmployees() {
-		// Find ALL employees or just the ones with roles?
-		// return conDAO.find(conID).getEmployees();
-		if (employees == null) {
-			employees = new ArrayList<Employee>();
-
-			if (jobRoleID > 0) {
-				employees = employeeDAO.findByJobRole(jobRoleID, conID);
-			} else if (selectedCompetencies == null || selectedCompetencies.length == 0) {
-				employees = getAllEmployees();
-			} else {
-				employees = employeeDAO.findByCompetencies(selectedCompetencies, conID);
-			}
-		}
-
-		return employees;
-	}
-	
-	public List<Employee> getAllEmployees() {
-		List<Employee> employees = new ArrayList<Employee>();
-		List<EmployeeRole> roles = erDAO.findByContractor(conID);
-		for (EmployeeRole role : roles) {
-			if (!employees.contains(role.getEmployee()))
-				employees.add(role.getEmployee());
-		}
-
 		return employees;
 	}
 
 	public List<OperatorCompetency> getCompetencies() {
-		return opCompDAO.findByContractor(conID);
-	}
-
-	public List<OperatorCompetency> getCompetencies(Employee employee) {
-		List<Integer> jobRoleIDs = new ArrayList<Integer>();
-		
-		for (EmployeeRole er : employee.getEmployeeRoles()) {
-			jobRoleIDs.add(er.getJobRole().getId());
-		}
-		List<JobCompetency> jobCompetencies = opCompDAO.findByJobRoles(jobRoleIDs);
-		
-		List<OperatorCompetency> list = new ArrayList<OperatorCompetency>();
-		for (JobCompetency jc : jobCompetencies) {
-			if (!list.contains(jc.getCompetency()))
-				list.add(jc.getCompetency());
-		}
-		
-		return list;
-	}
-	
-	public List<OperatorCompetency> getCompetenciesByJobRole() {
-		return opCompDAO.findByJobRole(jobRoleID);
-	}
-	
-	public List<JobRole> getJobRoles() {
-		return jobRoleDAO.findJobRolesByAccount(conID, true);
-	}
-	
-	public Map<Integer, List<EmployeeRole>> getEmployeeRolesByContractor() {
-		if (employeeRoles == null)
-			employeeRoles = erDAO.findEmployeeRolesByContractor(conID);
-		
-		return employeeRoles;
+		return competencies;
 	}
 
 	public DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> getMap() {
-		if (map == null && conID > 0)
-			map = opCompDAO.findEmployeeCompetencies(getEmployees(), getCompetencies());
-
 		return map;
 	}
 }

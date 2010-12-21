@@ -100,9 +100,11 @@ public class ReportEmployee extends ReportActionSupport {
 	protected void addExcelColumns() {
 		excelSheet.setData(data);
 		
-		excelSheet.addColumn(new ExcelColumn("name", "Company Name"));
+		if (permissions.isOperatorCorporate())
+			excelSheet.addColumn(new ExcelColumn("name", "Company Name"));
+		
 		excelSheet.addColumn(new ExcelColumn("firstName", "Employee First Name"));
-		excelSheet.addColumn(new ExcelColumn("name", "Employee Last Name"));
+		excelSheet.addColumn(new ExcelColumn("lastName", "Employee Last Name"));
 	}
 
 	public ReportFilterEmployee getFilter() {

@@ -18,16 +18,6 @@ public class JobRoleDAO extends PicsDAO {
 		return em.find(JobRole.class, id);
 	}
 
-	public List<JobRole> findAll() {
-		Query q = em.createQuery("FROM JobRole jr ORDER BY jr.name");
-		return q.getResultList();
-	}
-
-	public List<JobRole> findWhere(String where) {
-		Query query = em.createQuery("From JobRole WHERE " + where);
-		return query.getResultList();
-	}
-
 	public List<JobRole> findJobRolesByAccount(int accountID, boolean onlyActive) {
 		String queryString = "FROM JobRole WHERE account.id = :accountID";
 

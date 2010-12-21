@@ -7,6 +7,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.JobCompetency;
+import com.picsauditing.util.Strings;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -21,7 +22,12 @@ public class JobCompetencyDAO extends PicsDAO {
 	}
 
 	public List<JobCompetency> findWhere(String where) {
-		Query query = em.createQuery("From JobCompetency WHERE " + where);
+		if (Strings.isEmpty(where))
+			where = "";
+		else
+			where = " WHERE " + where;
+		
+		Query query = em.createQuery("FROM JobCompetency jc" + where);
 		return query.getResultList();
 	}
 }

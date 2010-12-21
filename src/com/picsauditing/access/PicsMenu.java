@@ -65,6 +65,7 @@ public class PicsMenu {
 					if (permissions.isRequiresOQ() || permissions.isRequiresCompetencyReview())
 						subMenu.addChild("Employees", "ManageEmployees.action");
 					if (permissions.isRequiresCompetencyReview()) {
+						subMenu = menu.addChild("HSE Competencies");
 						subMenu.addChild("Job Roles", "ManageJobRoles.action");
 						subMenu.addChild("Employee Competencies", "EmployeeCompetencies.action");
 					}
@@ -72,6 +73,7 @@ public class PicsMenu {
 						subMenu = menu.addChild("Operator Qualification");
 						subMenu.addChild("OQ by Employee", "ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
 						subMenu.addChild("Recent OQ Changes", "ReportOQChanges.action");
+						subMenu.addChild("Find New Projects", "FindNewProjects.action");
 					}
 				}
 

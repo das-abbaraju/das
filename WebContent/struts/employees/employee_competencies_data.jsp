@@ -1,46 +1,46 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<s:include value="../actionMessages.jsp"/>
+<s:if test="report.allRows == 0">
+	<div class="alert">No rows found matching the given criteria. Please try again.</div>
+</s:if>
+<s:else>
+<div class="right"><a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
+	href="javascript: download('EmployeeCompetencies');" title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a></div>
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
 
-<table class="report" id="competenceMatrix">
+<s:include value="../actionMessages.jsp" />
+
+<table class="report">
 	<thead>
 		<tr>
-			<th></th>
-			<th><a href="#" onclick="sortTable('lastName,firstName'); return false;">Last Name</a></th>
-			<th><a href="#" onclick="sortTable('firstName,lastName'); return false;">First Name</a></th>
-			<th><a href="#" onclick="sortTable('jobRole,employee'); return false;">Job Roles</a></th>
-			<s:if test="selectedOC != null && selectedOC.size() > 0">
-				<s:iterator value="selectedOC">
-					<th><s:property value="label" /></th>
-				</s:iterator>
-			</s:if>
+			<th><a href="?orderBy=e.lastName,e.firstName">Employees</a></th>
+			<s:iterator value="competencies">
+				<th><span title="<s:property value="category" />: <s:property value="description" />"><s:property value="label" /></span></th>
+			</s:iterator>
 		</tr>
 	</thead>
 	<tbody>
-		<s:iterator value="employees" id="employee" status="stat">
+		<s:iterator value="employees" var="e">
 			<tr>
-				<td class="id"><s:property value="#stat.count" /></td>
-				<td class="lastName"><a href="?conID=<s:property value="conID" />&employeeID=<s:property value="#employee.id" />"><s:property value="#employee.lastName" /></a></td>
-				<td class="firstName"><a href="?conID=<s:property value="conID" />&employeeID=<s:property value="#employee.id" />"><s:property value="#employee.firstName" /></a></td>
-				<td class="jobRole">
-					<s:iterator value="employeeRolesByContractor.get(#employee.id)" id="role" status="stat">
-						<a href="?conID=<s:property value="conID" />&jobRoleID=<s:property value="#role.jobRole.id" />"><s:property value="#role.jobRole.name" /></a><s:if test="#stat.count < employeeRolesByContractor.get(#employee.id).size()">, </s:if>
-					</s:iterator>
-				</td>
-				<s:if test="selectedOC != null && selectedOC.size() > 0">
-					<s:iterator value="selectedOC" id="competency">
-						<s:set name="ec" id="ec" value="map.get(#employee, #competency)" />
-						<td class="center"
-								<s:if test="!#ec.skilled"> style="background-color: #FAA"</s:if>
-								<s:if test="#ec.skilled"> style="background-color: #AFA"</s:if>>
-							<s:if test="#ec != null">
-								<input type="checkbox" <s:if test="#ec.skilled">checked="checked"</s:if> <s:if test="canEdit">onclick="saveChange(<s:property value="#ec.id" />, this); return false;"</s:if><s:else>disabled="disabled"</s:else> />
-							</s:if>
+				<td><a href="EmployeeDetail.action?employee.id=<s:property value="#e.id" />"><s:property value="#e.lastName" />, <s:property value="#e.firstName" /></a></td>
+				<s:iterator value="competencies" var="c">
+					<s:if test="map.get(#e, #c) != null">
+						<td class="center<s:if test="map.get(#e, #c).skilled"> green</s:if><s:else> red</s:else>">
+							<s:checkbox name="map.get(#e, #c).skilled" onclick="changeCompetency(%{#e.id}, %{#c.id}, $(this).is(':checked'))" />
 						</td>
-					</s:iterator>
-				</s:if>
+					</s:if>
+					<s:else><td></td></s:else>
+				</s:iterator>
 			</tr>
 		</s:iterator>
 	</tbody>
 </table>
+
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
+</s:else>
