@@ -6,6 +6,7 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css?v=<s:property value="version"/>" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 	<style type="text/css">
 		table tr td {
 			vertical-align: top;
@@ -216,7 +217,7 @@
 							</tbody>
 						</table>
 					</s:if>
-					<s:elseif test="permissions.requiresCompetencyReview">
+					<s:elseif test="employee.account.requiresCompetencyReview">
 						<div class="panel_placeholder">
 							<div class="panel">
 								<div class="panel_header">
