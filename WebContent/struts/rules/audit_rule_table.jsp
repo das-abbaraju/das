@@ -88,7 +88,7 @@
 					<s:if test="columnMap.get('operatorAccount')">
 						<td>
 							<s:if test="operatorAccount != null">
-								<a href="FacilitiesEdit.action?id=<s:property value="operatorAccount.id"/>"><s:property value="operatorAccountLabel"/></a>
+								<a href="OperatorConfiguration.action?id=<s:property value="operatorAccount.id"/>"><s:property value="operatorAccountLabel"/></a>
 							</s:if>
 							<s:else>
 								<s:property value="operatorAccountLabel"/>
@@ -143,6 +143,6 @@
 </s:if>
 <s:else>
 	<div class="info">
-		No rules found for this <s:property value="ruleType" />
+		No <s:property value="ruleType" /> Rules found.
 	</div>
 </s:else>
