@@ -129,11 +129,11 @@
 					</s:if>
 					<s:if test="columnMap.get('createdBy')">
 						<td><s:property value="createdBy.name"/></td>
-						<td><s:date name="creationDate" format="mm/dd/yyy"/></td>
+						<td><s:date name="creationDate" format="MM/dd/yyyy"/></td>
 					</s:if>
 					<s:if test="columnMap.get('updatedBy')">
 						<td><s:property value="updatedBy.name"/></td>
-						<td><s:date name="updateDate" format="mm/dd/yyy"/></td>
+						<td><s:date name="updateDate" format="MM/dd/yyyy"/></td>
 					</s:if>
 					<td><a href="<s:property value="urlPrefix"/>RuleEditor.action?id=<s:property value="id"/>" class="preview"></a></td>
 				</tr>
