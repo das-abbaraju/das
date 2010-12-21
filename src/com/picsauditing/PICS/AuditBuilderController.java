@@ -251,13 +251,13 @@ public class AuditBuilderController {
 				if (auditTypeRule.isManuallyAdded() || (auditTypeRule.getDependentAuditType() != null)) {
 					valid = false;
 					for (ContractorAudit audit : contractor.getAudits()) {
-						if(auditTypeRule.isManuallyAdded()) {
-							if(auditTypeRule.getAuditType().equals(audit.getAuditType())) {
+						if (auditTypeRule.isManuallyAdded()) {
+							if (auditTypeRule.getAuditType().equals(audit.getAuditType())) {
 								valid = true;
 								break;
 							}
-						}
-						else if (!audit.isExpired() && audit.getAuditType().equals(auditTypeRule.getDependentAuditType())) {
+						} else if (!audit.isExpired() && auditTypeRule.getDependentAuditType() != null
+								&& audit.getAuditType().equals(auditTypeRule.getDependentAuditType())) {
 							if (audit.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus()))
 								valid = true;
 						}
@@ -603,7 +603,8 @@ public class AuditBuilderController {
 	private void addOshaLog(AuditCatData catData) {
 		boolean hasOshaCorporate = false;
 		for (OshaAudit osha : catData.getAudit().getOshas()) {
-			if (osha.isCorporate() && osha.getType().equals(OshaTypeConverter.getTypeFromCategory(catData.getCategory().getId()))) {
+			if (osha.isCorporate()
+					&& osha.getType().equals(OshaTypeConverter.getTypeFromCategory(catData.getCategory().getId()))) {
 				hasOshaCorporate = true;
 			}
 		}
