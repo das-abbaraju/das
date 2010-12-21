@@ -171,7 +171,7 @@ public class AuditDataSave extends AuditActionSupport {
 				return SUCCESS;
 			}
 			if (auditData.getQuestion().getId() == 57) {
-				if (!isValidNAICScode(auditData.getAnswer())) {
+				if ("0".equals(guessNaicsCode(auditData.getAnswer()))) {
 					addActionError("This is not a valid 2007 NAICS code");
 				}
 			}
@@ -196,9 +196,9 @@ public class AuditDataSave extends AuditActionSupport {
 						} else {
 							String guess = guessNaicsCode(auditData.getAnswer());
 							contractor.setNaics(new Naics());
-							contractor.setNaicsValid(false);
+							contractor.setNaicsValid(true);
 							contractor.getNaics().setCode(guess);
-							addActionError("Setting your current NAICS code to " + guess);
+							//addActionError("Setting your current NAICS code to " + guess);
 						}
 					}
 				}
