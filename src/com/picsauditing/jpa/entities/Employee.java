@@ -47,6 +47,7 @@ public class Employee extends BaseTable implements Indexable {
 	private Date lastRecalculation;
 
 	List<EmployeeRole> employeeRoles = new ArrayList<EmployeeRole>();
+	List<EmployeeCompetency> employeeCompetencies = new ArrayList<EmployeeCompetency>();
 	List<EmployeeSite> employeeSites = new ArrayList<EmployeeSite>();
 	Set<EmployeeQualification> employeeQualifications = new HashSet<EmployeeQualification>();
 	List<AssessmentResult> assessmentResults = new ArrayList<AssessmentResult>();
@@ -189,6 +190,19 @@ public class Employee extends BaseTable implements Indexable {
 	public List<EmployeeRole> getEmployeeRoles() {
 		return employeeRoles;
 	}
+	
+	public void setEmployeeRoles(List<EmployeeRole> jobRoles) {
+		this.employeeRoles = jobRoles;
+	}
+	
+	@OneToMany(mappedBy = "employee")
+	public List<EmployeeCompetency> getEmployeeCompetencies() {
+		return employeeCompetencies;
+	}
+	
+	public void setEmployeeCompetencies(List<EmployeeCompetency> employeeCompetencies) {
+		this.employeeCompetencies = employeeCompetencies;
+	}
 
 	@Transient
 	public boolean isPrevAssigned() {
@@ -197,10 +211,6 @@ public class Employee extends BaseTable implements Indexable {
 				return true;
 		}
 		return false;
-	}
-
-	public void setEmployeeRoles(List<EmployeeRole> jobRoles) {
-		this.employeeRoles = jobRoles;
 	}
 
 	@OneToMany(mappedBy = "employee")
