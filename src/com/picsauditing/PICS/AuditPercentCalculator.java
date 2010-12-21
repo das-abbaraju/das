@@ -104,11 +104,11 @@ public class AuditPercentCalculator {
 				if (question.getVisibleQuestion() != null && question.getVisibleAnswer() != null) {
 					if (question.getVisibleAnswer().equals("NULL")) {
 						AuditData otherAnswer = answers.get(question.getVisibleQuestion().getId());
-						if (otherAnswer == null)
+						if (otherAnswer == null || Strings.isEmpty(otherAnswer.getAnswer()))
 							isRequired = true;
 					} else if (question.getVisibleAnswer().equals("NOTNULL")) {
 						AuditData otherAnswer = answers.get(question.getVisibleQuestion().getId());
-						if (otherAnswer != null)
+						if (otherAnswer != null && !Strings.isEmpty(otherAnswer.getAnswer()))
 							isRequired = true;
 					} else {
 						AuditData otherAnswer = answers.get(question.getVisibleQuestion().getId());
