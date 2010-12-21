@@ -52,7 +52,7 @@
 		</thead>
 		<tbody>
 			<s:iterator value="rules">
-				<tr>
+				<tr class="<s:if test="include">on</s:if><s:else>off</s:else>">
 					<s:if test="columnMap.get('include')">
 						<td><s:if test="include">Yes</s:if><s:else>No</s:else></td>
 					</s:if>
