@@ -265,7 +265,7 @@ public class ContractorWidget extends ContractorActionSupport {
 					if (auditCatData != null)
 						openTasks.add("Please <a href=\"Audit.action?auditID=" + auditCatData.getAudit().getId()
 								+ "#categoryID=" + auditCatData.getId()
-								+ "&mode=Edit\"> update your 2008 NAICS code</a>");
+								+ "&mode=Edit\"> update your 2007 NAICS code</a>");
 				}
 
 				if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
