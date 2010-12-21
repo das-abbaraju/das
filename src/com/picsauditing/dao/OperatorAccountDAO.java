@@ -89,7 +89,7 @@ public class OperatorAccountDAO extends PicsDAO {
 			// Show operator users operators that share the same corporate facility
 			where += "AND (a.id = " + permissions.getAccountId() + " OR a IN (SELECT operator FROM Facility "
 					+ "WHERE corporate IN (SELECT corporate FROM Facility " + "WHERE operator.id = "
-					+ permissions.getAccountId() + ")))";
+					+ permissions.getAccountId() + " AND corporate.id NOT IN ("+ Strings.implode(Account.PICS_CORPORATE, ",") +") )))";
 			includeCorporate = false; // don't use the default findWhere to get corporates
 		}
 		List<OperatorAccount> operatorList = findWhere(includeCorporate, where);
