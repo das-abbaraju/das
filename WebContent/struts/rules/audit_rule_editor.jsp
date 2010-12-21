@@ -98,7 +98,27 @@ $(function() {
 			$('.requiresComparator').show();
 		}
 	});
+	$(['dependentAudit','auditType', 'operator']).each(function(i,val) {
+		if($('#'+val).val()>0){
+			var link = getLink(val, $('#'+val).val());
+			$('#'+val+'_display').html(link);
+		}
+		$('#'+val).change(function() {
+			var val_id = $(this).val();
+			if(val_id == 0)
+				return false;
+			var link = getLink(val, val_id);
+			$('#'+val+'_display').html(link);
+		});
+	});
 });
+
+function getLink(val, val_id){
+	if($.inArray(val, ['dependentAudit','auditType'])!=-1)
+		return $('<a>',{'href':'ManageAuditType.action?id='+val_id, 'class':'go'}).append('Go to Audit');
+	else
+		return $('<a>',{'href':'OperatorConfiguration.action?id='+val_id, 'class':'go'}).append('Go to Operator');
+}
 </script>
 <style>
 <s:if test="rule == null || rule.question == null">
@@ -154,7 +174,7 @@ $(function() {
 		<s:form method="post" id="rule_form">
 			<s:hidden name="id"/>
 			<s:if test="rule.id > 0">
-				<fieldset class="form hideRule lessGran">
+				<fieldset class="form lessGran">
 					<h2 class="formLegend">Less Granular</h2>
 					<div id="lessRelated" style="padding-top:10px;"></div>
 				</fieldset>
@@ -210,6 +230,7 @@ $(function() {
 								<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
 							</s:iterator>
 						</s:select>
+						<div id="auditType_display"></div>
 					</li>
 					<s:if test="!auditTypeRule">
 						<li><label>Category</label>
@@ -243,7 +264,7 @@ $(function() {
 						<s:select id="operator" name="ruleOperatorAccountId" value="rule.operatorAccount.id" list="operatorList" headerKey="" 
 							headerValue="Any Operator" listKey="id" listValue="name"></s:select>
 						<s:if test="rule.operatorAccount.id != null">
-							<div><a href="FacilitiesEdit.action?id=<s:property value="rule.operatorAccount.id"/>">Go To Operator</a></div>
+							<div id="operator_display"></div>
 						</s:if>
 						<s:if test="operatorRequired"> 
 							<div class="fieldhelp">
@@ -263,6 +284,7 @@ $(function() {
 									<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
 								</s:iterator>
 							</s:select>
+							<div id="dependentAudit_display"></div>
 						</li>
 						<li class="requiresDependentAudit"><label>Dependent Status</label>
 							<s:select list="dependentAuditStatus" name="rule.dependentAuditStatus" id="dAuditSelect" headerKey="" headerValue="Any" />
@@ -281,7 +303,7 @@ $(function() {
 						</div>
 					</li>
 					<li class="requiresQuestion"><label>Question Comparator</label>
-						<s:select id="comparator" name="rule.questionComparator" list="@com.picsauditing.jpa.entities.QuestionComparator@values()" headerKey="" headerValue="- Comparator -"/>
+						<s:select id="comparator" name="rule.questionComparator" list="@com.picsauditing.jpa.entities.QuestionComparator@values()" headerKey="" headerValue="Comparator"/>
 					</li>
 					<li class="requiresComparator"><label>Answer</label>
 						<s:textfield name="rule.questionAnswer" />
@@ -296,7 +318,7 @@ $(function() {
 				</s:if>
 			</fieldset>
 			<s:if test="rule.id > 0">
-				<fieldset class="form hideRule moreGran">
+				<fieldset class="form moreGran">
 					<h2 class="formLegend">More Granular</h2>
 					<div id="moreRelated" style="padding-top:10px;"></div>
 				</fieldset>
