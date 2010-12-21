@@ -57,7 +57,7 @@
 						<td><s:if test="include">Yes</s:if><s:else>No</s:else></td>
 					</s:if>
 					<s:if test="columnMap.get('priority')">
-						<td><s:property value="priority"/></td>
+						<td><s:property value="level"/>.<s:property value="priority"/></td>
 					</s:if>
 					<s:if test="columnMap.get('auditType')">
 						<td>
