@@ -185,7 +185,7 @@ div.dataTables_length { width: 35%; }
 								<th>First Name</th>
 								<th>Title</th>
 								<th>Classification</th>
-								<th>Details</th>
+								<th>Edit</th>
 								<th>Profile</th>
 							</tr>
 						</thead>
@@ -197,7 +197,7 @@ div.dataTables_length { width: 35%; }
 									<td><s:property value="#e.firstName"/></td>
 									<td><s:property value="#e.title"/></td>
 									<td><s:property value="#e.classification"/></td>
-									<td class="center"><a href="?employee.id=<s:property value="#e.id" />">View</a></td>
+									<td class="center"><a href="?employee.id=<s:property value="#e.id" />" class="edit"></a></td>
 									<td class="center"><a href="EmployeeDetail.action?employee.id=<s:property value="#e.id" />">View</a></td>
 								</tr>
 							</s:iterator>

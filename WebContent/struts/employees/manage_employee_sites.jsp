@@ -66,9 +66,11 @@
 									onclick="$('._under').hide(); $('#'+<s:property value="%{#stat.count}" />+'_under').toggle(); return false;"
 									class="edit"></a>
 								</td>
-								<td class="center">
-									<a href="#" onclick="$('.qualifiedTasks').hide(); $('#'+<s:property value="#stat.count" />+'_tasks').show(); return false;">View</a>
-								</td>
+								<s:if test="permissions.requiresOQ || permissions.admin">
+									<td class="center">
+										<a href="#" onclick="$('.qualifiedTasks').hide(); $('#'+<s:property value="#stat.count" />+'_tasks').show(); return false;">View</a>
+									</td>
+								</s:if>
 							</tr>
 							<tr id="<s:property value="#stat.count" />_tasks" class="qualifiedTasks" style="display: none;">
 								<td colspan="<s:property value="#colspan" />" style="padding: 10px">
