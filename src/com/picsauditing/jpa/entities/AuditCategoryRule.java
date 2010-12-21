@@ -81,10 +81,13 @@ public class AuditCategoryRule extends AuditRule implements AuditRuleTable {
 	@Override
 	public String toString() {
 		String out = super.toString();
-		if (auditCategory != null)
+		if (auditCategory != null){
 			if(out.contains("when"))
-				out += " and";				
+				out += " and";	
+			else
+				out += " when";
 			out += " Category = " + auditCategory;
+		}
 		return out;
 	}
 
