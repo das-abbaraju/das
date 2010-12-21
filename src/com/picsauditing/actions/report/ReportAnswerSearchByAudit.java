@@ -4,18 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AmBestDAO;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
-public class ReportAnswerSearchByAudit extends ReportContractorAudits {
+public class ReportAnswerSearchByAudit extends ReportContractorAuditOperator {
 	public List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>();
-	public AuditQuestionDAO auditQuestionDAO;
 	
-	public ReportAnswerSearchByAudit(AuditQuestionDAO auditQuestionDAO) {
-		this.auditQuestionDAO = auditQuestionDAO;
+	public ReportAnswerSearchByAudit(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
+			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
+		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
 	}
 	
 	@Override
@@ -35,7 +38,7 @@ public class ReportAnswerSearchByAudit extends ReportContractorAudits {
 		}
 		else {
 			for(int questionId : getFilter().getQuestionIds()) {
-				AuditQuestion question = auditQuestionDAO.find(questionId);
+				AuditQuestion question = auditQuestionDao.find(questionId);
 				auditQuestions.add(question);
 			}	
 		}
@@ -66,6 +69,8 @@ public class ReportAnswerSearchByAudit extends ReportContractorAudits {
 		getFilter().setShowAuditType(false);
 		getFilter().setShowAuditor(false); 
 		getFilter().setShowQuestionAnswer(true);
+		getFilter().setShowOperator(true);
+		getFilter().setShowCaoOperator(false);
 	}
 
 	@Override

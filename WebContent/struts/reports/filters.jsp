@@ -788,7 +788,7 @@
 		<span id="form1_questionId_select" style="display: none"
 			class="clearLink"> <s:select name="filter.questionIds"
 			cssClass="forms" list="filter.questionsByAuditList" listKey="id"
-			listValue="questionTexts.get(0).question" multiple="true" size="23"
+			listValue="name" multiple="true" size="23"
 			id="form1_questionId" /> <script type="text/javascript">updateQuery('form1_questionId');</script>
 		<br />
 		<a class="clearLink" href="#"

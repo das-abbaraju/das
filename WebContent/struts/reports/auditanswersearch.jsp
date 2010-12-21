@@ -37,7 +37,8 @@ function setId(Id) {
 	<tr>
 		<td></td>
 		<td colspan="2"><a href="javascript: changeOrderBy('form1','a.nameIndex DESC');" >Contractor Name</a></td>
-		<td><a href="javascript: changeOrderBy('form1','ca.completedDate DESC');" >Submitted</a></td>
+		<td>Status</td>
+		<td><a href="javascript: changeOrderBy('form1','cao.statusChangedDate DESC');" >Status Changed Date</a></td>
 		<s:iterator value="auditQuestions">
 			<td><s:property value="columnHeaderOrQuestion"/></td>
 		</s:iterator>
@@ -63,7 +64,8 @@ function setId(Id) {
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td colspan="2"><a href="ContractorView.action?id=<s:property value="get('id')"/>"
 				><s:property value="get('name')" /></a></td>
-			<td><s:date name="get('completedDate')" format="M/d/yy"/></td>
+			<td><s:property value="get('auditStatus')"/></td>
+			<td><s:date name="get('statusChangedDate')" format="M/d/yy"/></td>
 			<s:iterator value="auditQuestions">
 				<td><s:property value="%{get('answer' + id)}"/></td>
 			</s:iterator>
