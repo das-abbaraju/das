@@ -17,18 +17,18 @@
 		</tr>
 	</thead>
 	<tbody>
-		<s:iterator value="steps" id="step">
+		<s:iterator value="steps" >
 			<tr id="<s:property value="id" />">
 				<td><s:select list="@com.picsauditing.jpa.entities.AuditStatus@getValuesWithDefault()" name="oldStatus" /></td>
 				<td><s:select list="@com.picsauditing.jpa.entities.AuditStatus@values()" listValue="name()" listKey="name()" name="newStatus" /></td>
 				<td>
-					<s:select list="emailTemplates" listValue="templateName" name="emailTemplateID" value="#step.emailTemplate.id" listKey="id" headerKey="0" headerValue="- Select A Template -" />
-					<s:if test="#step.emailTemplate.id > 0">
-						<a href="EditEmailTemplate.action?templateID=<s:property value="#step.emailTemplate.id" />&type=<s:property value="#step.emailTemplate.listType"/>" class="go" >Go</a>
+					<s:select list="emailTemplates" listValue="templateName" name="emailTemplateID" value="emailTemplate.id" listKey="id" headerKey="0" headerValue="- Select A Template -" />
+					<s:if test="emailTemplate.id > 0">
+						<a href="EditEmailTemplate.action?templateID=<s:property value="emailTemplate.id" />&type=<s:property value="emailTemplate.listType"/>" class="go" >Go</a>
 					</s:if>
 				</td>
-				<td class="center"><s:checkbox name="#step.noteRequired" /></td>
-				<td><a href="#" onclick="editStep(<s:property value="#step.id" />, <s:property value="#workflowID" />); return false;" class="save"></a></td>
+				<td class="center"><s:checkbox name="noteRequired" /></td>
+				<td><a href="#" onclick="editStep(<s:property value="id" />, <s:property value="#workflowID" />); return false;" class="save"></a></td>
 			</tr>
 		</s:iterator>
 	</tbody>

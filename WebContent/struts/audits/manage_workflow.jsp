@@ -14,15 +14,8 @@ function getSteps(id) {
 }
 
 function editStep(stepID, workflowID) {
-	var data = {
-		id: workflowID,
-		stepID: stepID,
-		button: 'editStep',
-		oldStatus: $('#workflowStepsTable tr#' + stepID).find('[name=oldStatus]').val(),
-		newStatus: $('#workflowStepsTable tr#' + stepID).find('[name=newStatus]').val(),
-		noteRequired: $('#workflowStepsTable tr#' + stepID).find('[name=noteRequired]').val(),
-		emailTemplateID: $('#workflowStepsTable tr#' + stepID).find('[name=emailTemplateID]').val()
-	}
+	var data = $('#'+stepID+' :input').serialize();
+	data += '&id='+workflowID+'&stepID='+stepID+'&button=editStep';
 	$('#workflowSteps').load('ManageAuditWorkFlowAjax.action', data);
 }
 function addStep(){
