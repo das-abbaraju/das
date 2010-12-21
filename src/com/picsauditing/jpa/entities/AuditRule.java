@@ -343,24 +343,32 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		List<String> identifiers = new ArrayList<String>();
 
-		sb.append(include ? "Include" : "Exclude").append(" when");
+		sb.append(include ? "Include" : "Exclude");
 
 		if (auditType != null)
-			sb.append(" and Audit Type = ").append(auditType);
+			identifiers.add("Audit Type = "+auditType);
 		if (risk != null)
-			sb.append(" and Contractor Risk = ").append(risk);
+			identifiers.add("Contractor Risk = "+risk);
 		if (operatorAccount != null)
-			sb.append(" and for Operator ").append(operatorAccount);
+			identifiers.add("Operator is "+operatorAccount);
 		if (contractorType != null)
-			sb.append(" and Contractor is ").append(contractorType);
+			identifiers.add("Contractor is "+contractorType);
 		if (tag != null)
-			sb.append(" and has tag \"").append(tag.getTag()).append("\"");
+			identifiers.add("has tag \""+tag.getTag()+"\"");
 		if (question != null)
-			sb.append(" and ").append(question.getColumnHeaderOrQuestion()).append(" ").append(questionComparator)
-					.append(questionAnswer);
+			identifiers.add(question.getColumnHeaderOrQuestion()+" "+questionComparator+
+					questionAnswer);
 		if (acceptsBids != null)
-			sb.append(" and Contactor is ").append(acceptsBids ? "bid-only" : "NOT bid-only");
+			identifiers.add("Contactor is "+(acceptsBids ? "bid-only" : "NOT bid-only"));
+		
+		if(!identifiers.isEmpty()){
+			sb.append(" when ").append(identifiers.get(0));
+			for(int i=1; i<identifiers.size(); i++){
+				sb.append(" and ").append(identifiers.get(i));
+			}
+		}
 
 		return sb.toString();
 	}

@@ -77,8 +77,13 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 	@Override
 	public String toString() {
 		String out = super.toString();
-		if (dependentAuditType != null)
-			out += " when AuditType " + dependentAuditType + " is " + dependentAuditStatus;
+		if (dependentAuditType != null){
+			if(!out.contains("when"))
+				out += " when";
+			else
+				out += " and";
+			out += " Dependent Audit Type = " + dependentAuditType + (dependentAuditStatus==null? "":" is "+dependentAuditStatus);
+		}
 		return out;
 	}
 

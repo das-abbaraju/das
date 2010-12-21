@@ -76,7 +76,7 @@ $(function() {
 			$('#dAuditSelect').html('');
 			$('.requiresDependentAudit').hide();
 		} else {
-			$.getJSON('AuditRuleSearchAjax.action', {button: 'dAuditStatus', 'aType': $(this).val()}, 
+			$.getJSON('AuditTypeRuleSearchAjax.action', {button: 'dAuditStatus', 'aType': $(this).val()}, 
 				function(json) {
 					if (json) {
 						$('#dAuditSelect').html('');
@@ -97,19 +97,6 @@ $(function() {
 		} else {
 			$('.requiresComparator').show();
 		}
-	});
-	$(['dependentAudit','auditType', 'operator']).each(function(i,val) {
-		if($('#'+val).val()>0){
-			var link = getLink(val, $('#'+val).val());
-			$('#'+val+'_display').html(link);
-		}
-		$('#'+val).change(function() {
-			var val_id = $(this).val();
-			if(val_id == 0)
-				return false;
-			var link = getLink(val, val_id);
-			$('#'+val+'_display').html(link);
-		});
 	});
 });
 
@@ -183,6 +170,13 @@ function getLink(val, val_id){
 					<ol>
 						<li>
 							<h4><s:property value="rule.toString()"/></h4>
+						</li>
+						<s:if test="rule.id > 0">
+							<li>
+								<s:property value="rule.getWhoString()"/>
+							</li>
+						</s:if>
+						<li>
 							<a class="edit showPointer" id="editRuleButton"><span class="hideRule">Cancel Edit</span><span class="showRule">Edit Rule</span></a>
 						</li>
 					</ol>
@@ -191,20 +185,6 @@ function getLink(val, val_id){
 			<fieldset class="form hideRule">
 				<h2 class="formLegend">Rule</h2>
 				<ol>
-					<s:if test="rule.id > 0">
-						<li><label>Created By</label>
-							<s:property value="rule.createdBy"/>
-						</li>
-						<li title="<s:date name="rule.updateDate" nice="true"/>"><label>Created</label>
-							<s:date name="rule.creationDate"/>
-						</li>
-						<li><label>Updated By</label>
-							<s:property value="rule.updatedBy"/>
-						</li>
-						<li title="<s:date name="rule.updateDate" nice="true"/>"><label>Updated</label>
-							<s:date name="rule.updateDate"/>
-						</li>
-					</s:if>
 					<li><label>Include</label>
 						<s:radio theme="pics" list="#{true:'Yes',false:'No'}" name="rule.include"/>
 					</li>
@@ -310,7 +290,7 @@ function getLink(val, val_id){
 					</li>
 				</ol>
 			</fieldset>
-			<fieldset class="form submit" style="margin-bottom: 0px;">
+			<fieldset class="form hideRule submit" style="margin-bottom: 0px;">
 				<input type="submit" class="picsbutton positive" name="button" value="Save"/>
 				<s:if test="'New' != button">
 					<input type="submit" class="picsbutton" name="button" value="Copy"/>

@@ -3,6 +3,8 @@ package com.picsauditing.jpa.entities;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -113,6 +115,32 @@ public abstract class BaseTable implements JSONable, Serializable {
 		if (permissions.getAdminID() > 0)
 			userID = permissions.getAdminID();
 		setAuditColumns(new User(userID));
+	}
+	
+	@Transient
+	public String getWhoString() {
+		if (createdBy == null)
+			return "";
+		SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a");
+		StringBuilder sb = new StringBuilder();
+		sb.append("Created By ").append(createdBy.getName()).append("(").append(createdBy.getId()).append(")");
+		if (creationDate != null)
+			sb.append(" on ").append(sdf.format(creationDate));
+		if (updatedBy != null) {
+			if (updatedBy.getId() == createdBy.getId()) {
+				if (updateDate != null && !updateDate.equals(creationDate)) {
+					sb.setLength(0);
+					sb.append("Last Updated by ").append(updatedBy.getName()).append("(").append(updatedBy.getId())
+							.append(") on ").append(sdf.format(updateDate));
+				}
+			} else {
+				sb.append("; Updated By ").append(updatedBy.getName()).append("(").append(updatedBy.getId())
+						.append(")");
+				if (updateDate != null)
+					sb.append(" on ").append(sdf.format(updateDate));
+			}
+		}
+		return sb.toString();
 	}
 
 	@Transient
