@@ -63,6 +63,7 @@ public class ReportEmployee extends ReportActionSupport {
 		sql.addField("e.id employeeID");
 		sql.addField("e.firstName");
 		sql.addField("e.lastName");
+		sql.addField("e.title");
 		
 		addFilterToSQL();
 	}

@@ -38,11 +38,11 @@ $('input.ssn').mask('SSS-SS-SSSS');
 				<td>
 					<s:if test="#data.get('ca99ID') != null">
 						<a href="Audit.action?auditID=<s:property value="#data.get('ca99ID')"/>">
-							<s:if test="#data.get('ca99status') == 'Active'">
+							<s:if test="#data.get('cao99status') == 'Complete'">
 								Expires on <s:date name="#data.get('ca99expiresDate')" format="M/d/yyyy"/>
 							</s:if>
-							<s:elseif test="#data.get('ca99status') == 'Submitted'">
-								Completed on <s:date name="#data.get('ca99completedDate')" format="M/d/yyyy"/>
+							<s:elseif test="#data.get('cao99status') == 'Submitted'">
+								Completed on <s:date name="#data.get('cao99statusChangedDate')" format="M/d/yyyy"/>
 							</s:elseif>
 							<s:else>
 								Created on <s:date name="#data.get('ca99creationDate')" format="M/d/yyyy"/>
@@ -53,11 +53,11 @@ $('input.ssn').mask('SSS-SS-SSSS');
 				<td>
 					<s:if test="#data.get('ca100ID') != null">
 						<a href="Audit.action?auditID=<s:property value="#data.get('ca100ID')"/>">
-							<s:if test="#data.get('ca100status') == 'Active'">
+							<s:if test="#data.get('cao100status') == 'Complete'">
 								Expires on <s:date name="#data.get('ca100expiresDate')" format="M/d/yyyy"/>
 							</s:if>
-							<s:elseif test="#data.get('ca100status') == 'Submitted'">
-								Completed on <s:date name="#data.get('ca100completedDate')" format="M/d/yyyy"/>
+							<s:elseif test="#data.get('cao100status') == 'Submitted'">
+								Completed on <s:date name="#data.get('cao100statusChangedDate')" format="M/d/yyyy"/>
 							</s:elseif>
 							<s:else>
 								Created on <s:date name="#data.get('ca100creationDate')" format="M/d/yyyy"/>

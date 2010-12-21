@@ -353,6 +353,7 @@ public class PicsMenu {
 		}
 
 		if (permissions.isRequiresCompetencyReview()) {
+			subMenu = menu.addChild("HSE Competencies");
 			subMenu.addChild("Competency by Account", "ReportCompetencyByAccount.action");
 			subMenu.addChild("Competency by Employee", "ReportCompetencyByEmployee.action");
 			subMenu.addChild("Employee Turnover", "ReportEmployeeTurnover.action");
