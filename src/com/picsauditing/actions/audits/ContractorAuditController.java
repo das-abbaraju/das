@@ -303,7 +303,7 @@ public class ContractorAuditController extends AuditActionSupport {
 			return true;
 
 		if (category.getName().equals("Policy Information") || category.getName().equals("Policy Limits")) {
-			if (conAudit.hasCaoStatusAfter(AuditStatus.Pending))
+			if (conAudit.hasCaoStatusAfter(AuditStatus.Pending) && !permissions.isAdmin())
 				return false;
 		}
 		return true;
