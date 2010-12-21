@@ -154,9 +154,8 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 				sb.append("op").append("|").append(((OperatorAccount) bt).getName()).append("|").append(
 						((OperatorAccount) bt).getId()).append("\n");
 			} else if (bt instanceof OperatorTag) {
-				OperatorTag tag = (OperatorTag) bt;
-				sb.append("tag").append("|").append(tag.getTag()).append("|").append(
-						tag.getId()).append("\n");
+				sb.append("tag").append("|").append(((OperatorTag) bt).getTag()).append("|").append(
+						((OperatorTag) bt).getId()).append("\n");
 			} else if (bt instanceof AuditQuestion) {
 				AuditQuestion question = (AuditQuestion) bt;
 				sb.append("question").append("|").append(question.getAuditType().getAuditName()).append(" > ");
@@ -207,9 +206,8 @@ public class AuditRuleSearch extends ReportActionSupport implements Preparable {
 		}
 	}
 
-	@SuppressWarnings("static-access")
 	public String getRisk(int id) {
-		String r = risk.getName(id);
+		String r = LowMedHigh.getName(id);
 		if (r.equalsIgnoreCase("none"))
 			return "*";
 		else

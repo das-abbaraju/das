@@ -12,10 +12,15 @@
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
 $(function() {
+	$('.hideRule').hide();
+	$('#editRuleButton').click(function(){
+		$('.hideRule, .showRule').toggle();
+	});
 	$('#question').change(function() {
 		if ($(this).blank()) {
 			$('#question_display').html('');
 			$('.requiresQuestion').hide();
+			$('.requiresComparator').hide();
 		}
 	}).autocomplete('AuditQuestionAutocomplete.action', {
 		formatItem  : function(data,i,count) {
@@ -91,23 +96,6 @@ $(function() {
 			$('.requiresComparator').show();
 		}
 	});
-	$(['less','more']).each(function(i,val){
-		$('a.'+val+'Granular').click(function(e) {
-			var me = $(this).addClass('processing');
-			if ($('#related').is('.'+val)) {
-				$('#related').hide().removeAttr('class');
-			}else {
-				$('#related').load('<s:property value="urlPrefix"/>RuleTableAjax.action',
-						{id: <s:property value="id"/>, button: val+'Granular'},
-						function(html, status, xhr) {
-							$('#related').show().attr('class',val);
-							me.removeClass('processing');
-						}
-				);
-			}
-			e.preventDefault();
-		});
-	});
 });
 </script>
 <style>
@@ -140,12 +128,12 @@ $(function() {
 <h1><s:property value="ruleType"/> Rule Editor</h1>
 <s:include value="../actionMessages.jsp"/>
 <div>
-	<a class="add" href="<s:property value="urlPrefix"/>RuleEditor.action?button=New">Create new rule</a>
 	<s:if test="rule.id > 0">
-		<a href="#" class="lessGranular down-arrow">Less Granular</a>
-		<a href="#" class="moreGranular up-arrow">More Granular</a>
-		<div id="related"></div>
+		<a class="add" href="<s:property value="urlPrefix"/>RuleEditor.action?button=New">Create new rule</a>
 	</s:if>
+	<s:else>
+		<script type="text/javascript">$(function(){$('.hideRule').show();});</script>
+	</s:else>
 </div>
 <s:if test="rule != null">
 	<s:if test="rule.effectiveDate.after(new java.util.Date())">
@@ -163,13 +151,30 @@ $(function() {
 	<s:if test="canEditRule && rule.current">
 		<s:form method="post" id="rule_form">
 			<s:hidden name="id"/>
-			<s:if test="'New' != button">
+			<s:if test="rule.id > 0">
+				<fieldset class="form hideRule lessGran">
+					<script type="text/javascript">$(function(){$('#lessRelated').load('<s:property value="urlPrefix"/>RuleTableAjax.action',
+							{id: <s:property value="id"/>, button: 'lessGranular'});});
+					</script>
+					<h2 class="formLegend">Less Granular</h2>
+					<div id="lessRelated" style="padding-top:10px;"></div>
+				</fieldset>
 				<fieldset class="form">
 					<h2 class="formLegend">Summary</h2>
 					<ol>
 						<li>
 							<h4><s:property value="rule.toString()"/></h4>
 						</li>
+						<li>
+							<a class="edit showPointer" id="editRuleButton"><span class="hideRule">Cancel Edit</span><span class="showRule">Edit Rule</span></a>
+						</li>
+					</ol>
+				</fieldset>
+			</s:if>
+			<fieldset class="form hideRule">
+				<h2 class="formLegend">Rule</h2>
+				<ol>
+					<s:if test="rule.id > 0">
 						<li><label>Created By</label>
 							<s:property value="rule.createdBy"/>
 						</li>
@@ -182,18 +187,13 @@ $(function() {
 						<li title="<s:date name="rule.updateDate" nice="true"/>"><label>Updated</label>
 							<s:date name="rule.updateDate"/>
 						</li>
-					</ol>
-				</fieldset>
-			</s:if>
-			<fieldset class="form">
-				<h2 class="formLegend">Rule</h2>
-				<ol>
+					</s:if>
 					<li><label>Include</label>
-						<s:checkbox name="rule.include"/>
+						<s:radio theme="pics" list="#{true:'Yes',false:'No'}" name="rule.include"/>
 					</li>
 					<s:if test="auditTypeRule">
 						<li><label>Manually Added</label>
-							<s:checkbox name="rule.manuallyAdded"/>
+							<s:radio theme="pics" list="#{true:'Yes',false:'No'}" name="rule.manuallyAdded"/>
 						</li>
 					</s:if>
 					<li><label>Level</label>
@@ -204,7 +204,7 @@ $(function() {
 					</li>
 				</ol>
 			</fieldset>
-			<fieldset class="form">
+			<fieldset class="form hideRule">
 				<h2 class="formLegend">Options</h2>
 				<ol>
 					<li><label>Audit Type</label>
@@ -291,11 +291,21 @@ $(function() {
 					</li>
 				</ol>
 			</fieldset>
-			<fieldset class="form submit">
+			<fieldset class="form submit" style="margin-bottom: 0px;">
 				<input type="submit" class="picsbutton positive" name="button" value="Save"/>
-				<input type="submit" class="picsbutton" name="button" value="Copy"/>
-				<input type="submit" class="picsbutton negative" name="button" value="Delete"/>
+				<s:if test="'New' != button">
+					<input type="submit" class="picsbutton" name="button" value="Copy"/>
+					<input type="submit" class="picsbutton negative" name="button" value="Delete"/>
+				</s:if>
 			</fieldset>
+			<s:if test="rule.id > 0">
+				<fieldset class="form hideRule moreGran">
+					<h2 class="formLegend">More Granular</h2>
+					<script type="text/javascript">$(function(){$('#moreRelated').load('<s:property value="urlPrefix"/>RuleTableAjax.action',
+							{id: <s:property value="id"/>, button: 'moreGranular'});});</script>
+					<div id="moreRelated" style="padding-top:10px;"></div>
+				</fieldset>
+			</s:if>
 		</s:form>
 	</s:if>
 	<s:elseif test="id > 0">

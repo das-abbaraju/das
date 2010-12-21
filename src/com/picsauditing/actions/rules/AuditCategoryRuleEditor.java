@@ -60,7 +60,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 	@Override
 	protected void redirectTo() throws IOException {
 		if(rule!=null)
-			this.redirect(urlPrefix+"?id=" + rule.getId());
+			this.redirect(urlPrefix+"RuleEditor.action?id=" + rule.getId());
 		else
 			this.redirect("CategoryRuleSearch.action");
 	}
@@ -100,16 +100,18 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 			}
 		}
 		saveFields();
-		if (rule.getId() == 0) {
+		if (rule.getId() == 0) 
 			rule.defaultDates();
-			rule.calculatePriority();
-			rule.setAuditColumns(permissions);
-			dao.save(rule);
-		} else {
-			rule.calculatePriority();
-			rule.setAuditColumns(permissions);
-			dao.save(rule);
-		}
+		rule.calculatePriority();
+		rule.setAuditColumns(permissions);
+		dao.save(rule);
+		clear();
+	}
+	
+	@Override
+	protected void clear() {
+		auditCategoryRuleCache.clear();
+		addActionMessage("Cleared Category Cache.");
 	}
 
 	@Override

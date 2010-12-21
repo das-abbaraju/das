@@ -67,7 +67,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 	@Override
 	protected void redirectTo() throws IOException {
 		if(rule!=null)
-			this.redirect(urlPrefix+"?id=" + rule.getId());
+			this.redirect(urlPrefix+"RuleEditor.action?id=" + rule.getId());
 		else
 			this.redirect("AuditTypeRuleSearch.action");
 	}
@@ -110,6 +110,13 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 		rule.calculatePriority();
 		rule.setAuditColumns(permissions);
 		dao.save(rule);
+		clear();
+	}
+	
+	@Override
+	protected void clear() {
+		auditTypeRuleCache.clear();
+		addActionMessage("Cleared Audit Type Cache.");
 	}
 
 	@Override

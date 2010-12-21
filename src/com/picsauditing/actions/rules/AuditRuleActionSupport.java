@@ -145,11 +145,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 		return true;
 	}
 
-	protected void clear() {
-		auditTypeRuleCache.clear();
-		auditCategoryRuleCache.clear();
-		addActionMessage("Cleared Category and Audit Type Cache.");
-	}
+	protected abstract void clear();
 
 	protected void saveFields() {
 		rule.setInclude(ruleInclude);
