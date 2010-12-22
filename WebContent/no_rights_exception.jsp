@@ -106,7 +106,7 @@
 				<div style="padding:2ex;">
 					We apologize for this inconvenience.<br />If you continue to receive this message and 
 					believe it is an error, please report it to us using the form below or call Customer 
-					Service at 949.387.1940 extension 1
+					Service at 949.936.4598
 					<label style="padding-top: 2ex;">Priority:</label>
 					<span>
 						Low&nbsp;&nbsp;&nbsp;

@@ -30,7 +30,7 @@
 		if (!Strings.isEmpty(taxId)) {
 			ContractorAccount cAccount = cAccountDAO.findTaxID(taxId, "US");
 			if (cAccount != null) {
-				%><%=taxId%> already exists. Please contact a PICS representative at 949-387-1940 ext 1.<br/><%
+				%><%=taxId%> already exists. Please contact a PICS representative at (949)936-4598.<br/><%
 				} else {
 				%><%
 				}
@@ -38,7 +38,7 @@
 		if (!Strings.isEmpty(companyName)) {
 			ContractorAccount cAccount = cAccountDAO.findConID(companyName);
 			if (cAccount != null) {
-				%><%=companyName%> already exists. Please contact a PICS representative at 949-387-1940 ext 1.<br/><%
+				%><%=companyName%> already exists. Please contact a PICS representative at (949)936-4598.<br/><%
 				} else {
 				%><%
 				}

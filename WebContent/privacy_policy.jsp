@@ -12,7 +12,7 @@ This is the web site of <b>PICS</b>.<br>
 <b>P.O. Box 51387<br>
 Irvine, CA 92619-1387</b></p>
 We can be reached via e-mail at <a href="mailto:info@picsauditing.com">info@picsauditing.com</a><br>
-or you can reach us by telephone at 949-387-1940<br>
+or you can reach us by telephone at 800-506-7427<br>
 <p>For each visitor to our Web page, our Web server automatically recognizes only the consumer's domain name, but not the e-mail address (where possible).</p>
 <p>We collect only the domain name, but not the e-mail address of visitors to our Web page, the e-mail addresses of those who communicate with us via e-mail, aggregate information on what pages consumers access or visit, information volunteered by the consumer, such as survey information and/or site registrations, name and address, telephone number, fax number.</p>
 <p>The information we collect is used for internal review and is then discarded, used to improve the content of our Web page, used to customize the content and/or layout of our page for each individual visitor, shared with agents or contractors who assist in providing support for our internal operations, used by us to contact consumers for marketing purposes, disclosed when legally required to do so, at the request of governmental authorities conducting an investigation, to verify or enforce compliance with the policies governing our Website and applicable laws or to protect against misuse or unauthorized use of our Website, to a successor entity in connection with a corporate merger, consolidation, sale of assets or other corporate change respecting the Website.</p>

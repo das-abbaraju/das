@@ -108,7 +108,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			"The contractor wants to register but keeps delaying", "The company is no longer in business",
 			"We were unable to locate this company" };
 	
-	private String picsSignature = "PICS\nP.O. Box 51387\nIrvine CA 92619-1387\nTel: (949)387-1940\n"
+	private String picsSignature = "PICS\nP.O. Box 51387\nIrvine CA 92619-1387\nTel: (800)506-7427\n"
 		+ "Fax: (949)269-9153\nhttp://www.picsauditing.com\nemail: info@picsauditing.com "
 		+ "(Please add this email address to your address book to prevent it from being labeled " 
 		+ "as spam)";

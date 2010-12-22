@@ -47,7 +47,7 @@ public class ContractorValidate extends ContractorActionSupport {
 				ContractorAccount con = accountDao.findTaxID(taxId, country);
 				if (con != null) {
 					addActionError(taxId + " already exists in " + con.getCountry().getName()
-							+ ". Please contact a PICS representative at 949-387-1940 ext 1.");
+							+ ". Please contact a PICS representative at 949-936-4598.");
 				}
 			}
 
