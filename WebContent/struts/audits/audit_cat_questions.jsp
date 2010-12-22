@@ -5,6 +5,6 @@
 	
 </span>
 <br clear="all">
-<s:if test="hasRequirementB">
+<s:if test="hasRequirement">
 	<div class="info"><s:property value="requirement"/></div>
 </s:if>
