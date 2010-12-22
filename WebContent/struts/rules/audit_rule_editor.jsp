@@ -188,13 +188,14 @@ function getLink(val, val_id){
 					<li><label>Include</label>
 						<s:radio theme="pics" list="#{true:'Yes',false:'No'}" name="rule.include"/>
 					</li>
-					<s:if test="auditTypeRule">
-						<li><label>Manually Added</label>
-							<s:radio theme="pics" list="#{true:'Yes',false:'No'}" name="rule.manuallyAdded"/>
-						</li>
-					</s:if>
 					<li><label>Level</label>
 						<s:property value="rule.level" default="0"/> + <s:textfield name="rule.levelAdjustment" />
+						<div class="fieldhelp">
+						<h3>Level Adjustment</h3>
+						<p>Level and priority values are auto calculated by the system. These cannot be modified by the user.</p>
+						<p>Enter a positive number to have this rule run earlier or more important.</p>
+						<p>Enter a negative number to have this rule run later or less important.</p>
+						</div>
 					</li>
 					<li><label>Priority</label>
 						<s:property value="rule.priority"/>
@@ -212,6 +213,16 @@ function getLink(val, val_id){
 						</s:select>
 						<div id="auditType_display"></div>
 					</li>
+					<s:if test="auditTypeRule">
+						<li><label>Auto Add Audit</label>
+							<s:radio theme="pics" list="#{false:'Auto Add',true:'Manually Added'}" name="rule.manuallyAdded"/>
+							<div class="fieldhelp">
+							<h3>Auto Add Audit</h3>
+							<p>Auto Add (default) - a single audit is added to each contractor account that matches this rule.</p>
+							<p>Manually Added - audits are available to be manually added to a contractor's account. Examples include: Field Audit and Integrity Management</p>
+							</div>
+						</li>
+					</s:if>
 					<s:if test="!auditTypeRule">
 						<li><label>Category</label>
 							<s:textfield cssClass="autocomplete" id="category" value="%{rule.auditCategory.id}" name="ruleAuditCategoryId"/>
@@ -228,16 +239,25 @@ function getLink(val, val_id){
 						</li>
 						<li><label>Top or Sub Category</label>
 							<s:select list="#{'':'Any',false:'Sub Categories',true:'Top Categories'}" name="rule.rootCategory"/> 
+							<div class="fieldhelp">
+							<h3>Top or Sub Category</h3>
+							<p>Only set this field if category is blank. This is auto selected by the system if a category has been selected.</p>
+							</div>
 						</li>
 					</s:if>
-					<li><label>Bid-Only</label>
-						<s:select name="ruleAcceptsBids" list="#{'':'Any',false:'No',true:'Yes'}" value="rule.acceptsBids"/>
+					<li><label>Bid Only</label>
+						<s:radio name="ruleAcceptsBids" list="#{'':'Any',false:'Full Account',true:'Bid Only'}" value="rule.acceptsBids"/>
+						<div class="fieldhelp">
+						<h3>Bid Only</h3>
+						<p>Full Account (default) - Regular paying contractor account.</p>
+						<p>Bid Only - A trial contractor account that is used for bidding.</p>
+						</div>
 					</li>
 					<li><label>Account Type</label>
 						<s:select name="rule.contractorType" list="@com.picsauditing.jpa.entities.ContractorType@values()" listValue="type" headerKey="" headerValue="Any"/>
 					</li>
 					<li><label>Risk</label>
-						<s:select name="rule.risk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/>
+						<s:radio name="rule.risk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/>
 					</li>
 					<li <s:if test="operatorRequired">class="required"</s:if>>
 						<label>Operator</label>
