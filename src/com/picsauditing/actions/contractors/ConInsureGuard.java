@@ -52,6 +52,8 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 		for (AuditData d : data) {
 			ContractorAuditOperator cao = findCao(d);
+			if(cao==null)
+				continue;
 			Certificate cert = getCertByID(d.getAnswer());
 
 			if (cert != null) {
