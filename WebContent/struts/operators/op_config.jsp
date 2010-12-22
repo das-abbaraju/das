@@ -38,10 +38,10 @@ function toggleCategory(catID) {
 
 function showType(typeID) {
 	var data = {
-		'operator.id': <s:property value="operator.id" />,
+		'comparisonRule.operatorAccount.id': <s:property value="operator.id" />,
 		showPriority: false,
 		showWho: false,
-		auditTypeID: typeID
+		'comparisonRule.auditType.id': typeID
 	};
 	var cType =$('tr#'+typeID+' .classType').text();	
 	if(cType=='Policy')
@@ -50,13 +50,7 @@ function showType(typeID) {
 	$('tr#'+typeID).find('.hide').show();
 	$('tr#'+typeID).find('.normal').hide();
 
-	startThinking({ div: "typeTable_" + typeID, message: "Loading Audit Type Rules" });
-	$('#typeTable_' + typeID).load("AuditRuleTableAjax.action", data, function(){
-		if(cType=='Policy' && $('tr#'+typeID+' input[name=checkCat]').val()=='true'){
-			$('tr#'+typeID+' .buttonArea').html($('<a href="OperatorConfiguration.action?id=<s:property value="operator.id"/>&button=buildCat&auditTypeID='+typeID+'">')
-					.append('Setup Insurance Category').addClass('go'));
-		}			
-	});
+	$('#typeTable_'+typeID).load('AuditTypeRuleTableAjax.action', data);
 
 	return false;
 }

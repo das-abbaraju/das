@@ -1,13 +1,26 @@
 package com.picsauditing.actions.rules;
 
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.Strings;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRule> {
 
-	public AuditTypeRuleTableBuilder(AuditDecisionTableDAO ruleDAO) {
+	protected AuditTypeRule comparisonRule;
+	protected OperatorAccountDAO operatorDAO;
+
+	public AuditTypeRuleTableBuilder(AuditDecisionTableDAO ruleDAO, OperatorAccountDAO operatorDAO) {
 		this.ruleDAO = ruleDAO;
+		this.operatorDAO = operatorDAO;
 		this.ruleType = "Audit Type";
 		this.urlPrefix = "AuditType";
 	}
@@ -25,8 +38,32 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 			rules = ruleDAO.getLessGranular(ruleDAO.findAuditTypeRule(id), date);
 		} else if ("moreGranular".equals(button)) {
 			rules = ruleDAO.getMoreGranular(ruleDAO.findAuditTypeRule(id), date);
+		} else if (comparisonRule != null) {
+			Set<String> whereClauses = new LinkedHashSet<String>();
+			whereClauses.add("(t.effectiveDate < NOW() AND t.expirationDate > NOW())");
+			if (comparisonRule.getAuditType() != null) {
+				whereClauses.add("t.auditType.id = " + comparisonRule.getAuditType().getId());
+			}
+			if (comparisonRule.getOperatorAccount() != null) {
+				OperatorAccount operator = operatorDAO.find(comparisonRule.getOperatorAccount().getId());
+				whereClauses.add("(t.operatorAccount IS NULL OR t.operatorAccount.id IN ("
+						+ Strings.implode(operator.getOperatorHeirarchy()) + "))");
+			}
+
+			rules = (List<AuditTypeRule>) ruleDAO.findWhere(AuditTypeRule.class,
+					Strings.implode(whereClauses, " AND "), 0);
+			Collections.sort(rules);
+			Collections.reverse(rules);
 		} else if (id != null) {
 			rules.add(ruleDAO.findAuditTypeRule(id));
 		}
+	}
+
+	public AuditTypeRule getComparisonRule() {
+		return comparisonRule;
+	}
+
+	public void setComparisonRule(AuditTypeRule comparisonRule) {
+		this.comparisonRule = comparisonRule;
 	}
 }

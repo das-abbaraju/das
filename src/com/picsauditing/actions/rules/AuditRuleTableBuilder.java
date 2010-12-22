@@ -23,6 +23,8 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 	protected String ruleType;
 	protected String urlPrefix;
 
+	protected boolean showPriority = true;
+	protected boolean showWho = true;
 	protected Map<String, Boolean> columnMap = new HashMap<String, Boolean>();
 	protected List<T> rules = new ArrayList<T>();
 
@@ -51,17 +53,22 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 			columnMap.put("bidOnly", true);
 		if (rule.getQuestion() != null)
 			columnMap.put("question", true);
-		if (rule.getCreatedBy() != null)
-			columnMap.put("createdBy", true);
-		if (rule.getUpdatedBy() != null)
-			columnMap.put("updatedBy", true);
+
+		if (showWho) {
+			if (rule.getCreatedBy() != null)
+				columnMap.put("createdBy", true);
+			if (rule.getUpdatedBy() != null)
+				columnMap.put("updatedBy", true);
+		}
 	}
 
 	public void setup() {
 		findRules();
 
 		columnMap.put("include", true);
-		columnMap.put("priority", true);
+
+		if (showPriority)
+			columnMap.put("priority", true);
 
 		for (T rule : rules) {
 			checkColumns(rule);
@@ -90,6 +97,14 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 
 	public void setUrlPrefix(String urlPrefix) {
 		this.urlPrefix = urlPrefix;
+	}
+
+	public void setShowPriority(boolean showPriority) {
+		this.showPriority = showPriority;
+	}
+
+	public void setShowWho(boolean showWho) {
+		this.showWho = showWho;
 	}
 
 	public Map<String, Boolean> getColumnMap() {
