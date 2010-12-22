@@ -146,9 +146,13 @@
 							<s:if test="question.id == 2033">
 								<s:select id="emrExempt" list="emrExemptReason" headerKey="" headerValue="- Exempt Reasons -" onchange="copyComment('emrExempt','comment_%{question.id}');"/>
 							</s:if>
-							<s:if test="question.id == 2064">
+							<s:elseif test="question.id == 2064">
 								<s:select id="oshaExempt" list="oshaExemptReason" headerKey="" headerValue="- Exempt Reasons -" onchange="copyComment('oshaExempt','comment_%{question.id}');"/>
-							</s:if></nobr>
+							</s:elseif>
+							<s:elseif test="question.id == 2037">
+								<s:select id="emrFileExempt" list="emrProblems" headerKey="" headerValue="- Exempt Reasons -" onchange="copyComment('emrFileExempt','comment_%{question.id}');"/>
+							</s:elseif>
+							</nobr>
 						</s:else>
 					</li>
 					<li>

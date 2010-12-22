@@ -301,7 +301,7 @@ public class VerifyView extends ContractorActionSupport {
 			boolean needsVerification = false;
 			for (ContractorAudit audit : verificationAudits) {
 				if (audit.getAuditType().isAnnualAddendum()
-						&& (audit.hasCaoStatus(AuditStatus.Submitted) || audit.hasCaoStatus(AuditStatus.Resubmitted))) {
+						&& (audit.hasCaoStatusAfter(AuditStatus.Pending) || audit.hasCaoStatusBefore(AuditStatus.Complete))) {
 					needsVerification = true;
 				}
 			}
