@@ -106,7 +106,6 @@ function saveEdit(jobTaskID) {
 						<span class="oldValue"><s:property value="get('label')" /></span>
 						<span class="newValue">
 							<input type="text" value="<s:property value="get('label')" />" name="jobTaskLabel" size="10" /><br />
-							<nobr><span style="font-size: 10px">Display Order</span><input type="text" value="<s:property value="get('displayOrder')" />" name="displayOrder" size="2" /></nobr>
 						</span>
 					</td>
 					<td class="name">
@@ -166,9 +165,6 @@ function saveEdit(jobTaskID) {
 					</li>
 					<li><label>Active:</label>
 						<s:checkbox name="newTask.active"></s:checkbox>
-					</li>
-					<li><label>Display Order:</label>
-						<s:textfield name="newTask.displayOrder" size="3" />
 					</li>
 					<li><label>Task Type:</label>
 						<s:select list="#{'L/G':'L/G','L':'L','G':'G'}" name="newTask.taskType"></s:select>
