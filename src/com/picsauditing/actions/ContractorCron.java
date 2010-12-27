@@ -220,6 +220,7 @@ public class ContractorCron extends PicsActionSupport {
 			}
 
 			runPolicies(contractor);
+			runContractorScore(contractor);
 
 		} catch (Throwable t) {
 			StringWriter sw = new StringWriter();
@@ -352,6 +353,8 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void runContractorScore(ContractorAccount contractor) {
+		if (!runStep(ContractorCronStep.PICSScore))
+			return;
 		int score = 120;
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 			if (!conAudit.isExpired()) {
@@ -439,7 +442,7 @@ public class ContractorCron extends PicsActionSupport {
 			note.setCanContractorView(true);
 			note.setViewableById(co.getOperatorAccount().getId());
 			dao.save(note);
-			if(co.getFlagColor() == FlagColor.Clear)
+			if (co.getFlagColor() == FlagColor.Clear)
 				co.setBaselineFlag(overallColor);
 			co.setFlagColor(overallColor);
 			co.setFlagLastUpdated(new Date());
