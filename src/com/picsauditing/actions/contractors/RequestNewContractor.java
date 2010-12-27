@@ -136,9 +136,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		else {
 			newContractor.setCountry(new Country(permissions.getCountry()));
 			if (permissions.isOperatorCorporate()) {
-				newContractor.setRequestedBy(new OperatorAccount());
+				newContractor.setRequestedBy(operatorAccountDAO.find(permissions.getAccountId()));
 				newContractor.getRequestedBy().setId(permissions.getAccountId());
-				newContractor.setRequestedByUser(new User(permissions.getUserId()));
+				newContractor.setRequestedByUser(userDAO.find(permissions.getUserId()));
 			}
 		}
 
