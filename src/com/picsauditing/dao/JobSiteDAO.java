@@ -37,32 +37,42 @@ public class JobSiteDAO extends PicsDAO {
 	public List<JobSite> findByOperator(int opID) {
 		Query query = em.createQuery("SELECT j FROM JobSite j WHERE opID = ? ORDER BY name");
 		query.setParameter(1, opID);
-		
+
 		return query.getResultList();
 	}
-	
+
 	public List<JobSite> findByContractor(int conID) {
-		Query query = em.createQuery("SELECT jobSite FROM EmployeeSite es WHERE es.employee.account.id = ? ORDER BY name");
+		Query query = em
+				.createQuery("SELECT jobSite FROM EmployeeSite es WHERE es.employee.account.id = ? ORDER BY name");
 		query.setParameter(1, conID);
-		
+
 		return query.getResultList();
 	}
-	
+
 	public List<JobSite> findByOperatorWhere(int opID, String where) {
 		Query query = em.createQuery("SELECT j FROM JobSite j WHERE opID = ? AND " + where + " ORDER BY name");
 		query.setParameter(1, opID);
-		
+
 		return query.getResultList();
 	}
-	
+
 	public List<Date> findHistory(String where) {
 		if (!Strings.isEmpty(where))
 			where = " WHERE " + where;
 		else
 			where = "";
-	
-		Query query = em.createQuery("SELECT DISTINCT j.projectStart FROM JobSite j" + where 
+
+		Query query = em.createQuery("SELECT DISTINCT j.projectStart FROM JobSite j" + where
 				+ " ORDER BY j.projectStart DESC");
+		return query.getResultList();
+	}
+
+	public List<JobSite> findOutsideProjects(int conID) {
+		Query query = em.createQuery("SELECT DISTINCT j FROM JobSite j "
+				+ "WHERE j NOT IN (SELECT jc.job FROM JobContractor jc WHERE jc.contractor.id = ?) "
+				+ "ORDER BY j.projectStart DESC");
+		query.setParameter(1, conID);
+		
 		return query.getResultList();
 	}
 }

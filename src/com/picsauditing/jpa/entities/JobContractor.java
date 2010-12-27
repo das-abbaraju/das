@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "job_task")
+@Table(name = "job_contractor")
 public class JobContractor extends BaseTable {
 
 	private JobSite job;
@@ -24,7 +24,7 @@ public class JobContractor extends BaseTable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "taskID", nullable = false, updatable = false)
+	@JoinColumn(name = "conID", nullable = false, updatable = false)
 	public ContractorAccount getContractor() {
 		return contractor;
 	}
@@ -32,5 +32,4 @@ public class JobContractor extends BaseTable {
 	public void setContractor(ContractorAccount contractor) {
 		this.contractor = contractor;
 	}
-
 }

@@ -33,10 +33,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.util.SpringUtils;
@@ -99,6 +99,7 @@ public class ContractorAccount extends Account implements JSONable {
 	protected List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
 	protected List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
 	protected List<Certificate> certificates = new ArrayList<Certificate>();
+	protected List<JobContractor> jobSites = new ArrayList<JobContractor>();
 
 	// Transient helper methods
 	protected OshaOrganizer oshaOrganizer = null;
@@ -175,6 +176,15 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setCertificates(List<Certificate> certificates) {
 		this.certificates = certificates;
+	}
+	
+	@OneToMany(mappedBy = "contractor")
+	public List<JobContractor> getJobSites() {
+		return jobSites;
+	}
+	
+	public void setJobSites(List<JobContractor> jobSites) {
+		this.jobSites = jobSites;
 	}
 
 	@Column(name = "taxID", length = 100)

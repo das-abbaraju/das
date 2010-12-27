@@ -73,7 +73,7 @@ public class PicsMenu {
 						subMenu = menu.addChild("Operator Qualification");
 						subMenu.addChild("OQ by Employee", "ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
 						subMenu.addChild("Recent OQ Changes", "ReportOQChanges.action");
-						subMenu.addChild("Find New Projects", "FindNewProjects.action");
+						// subMenu.addChild("Find New Projects", "ReportNewProjects.action");
 					}
 				}
 

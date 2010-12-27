@@ -34,7 +34,8 @@ public class JobTaskDAO extends PicsDAO {
 
 	public List<JobTask> findByEmployee(int employeeID) {
 		Query query = em.createQuery("SELECT DISTINCT jst.task FROM JobSiteTask jst "
-				+ "WHERE jst.job IN (SELECT jobSite FROM EmployeeSite WHERE employee.id = :employeeID)");
+				+ "WHERE jst.job IN (SELECT jobSite FROM EmployeeSite WHERE employee.id = :employeeID) "
+				+ "ORDER BY jst.task.displayOrder");
 		query.setParameter("employeeID", employeeID);
 		return query.getResultList();
 	}
