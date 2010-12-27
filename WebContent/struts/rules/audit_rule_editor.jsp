@@ -185,7 +185,7 @@ function getLink(val, val_id){
 			<fieldset class="form hideRule">
 				<h2 class="formLegend">Rule</h2>
 				<ol>
-					<li><label>Include</label>
+					<li class="nobr"><label>Include</label>
 						<s:radio theme="pics" list="#{true:'Yes',false:'No'}" name="rule.include"/>
 					</li>
 					<li><label>Level</label>
@@ -214,7 +214,7 @@ function getLink(val, val_id){
 						<div id="auditType_display"></div>
 					</li>
 					<s:if test="auditTypeRule">
-						<li><label>Auto Add Audit</label>
+						<li class="nobr"><label>Auto Add Audit</label>
 							<s:radio theme="pics" list="#{false:'Auto Add',true:'Manually Added'}" name="rule.manuallyAdded"/>
 							<div class="fieldhelp">
 							<h3>Auto Add Audit</h3>
@@ -245,8 +245,8 @@ function getLink(val, val_id){
 							</div>
 						</li>
 					</s:if>
-					<li><label>Bid Only</label>
-						<s:radio name="ruleAcceptsBids" list="#{'':'Any',false:'Full Account',true:'Bid Only'}" value="rule.acceptsBids"/>
+					<li class="nobr"><label>Bid Only</label>
+						<s:radio theme="pics" name="ruleAcceptsBids" list="#{'':'Any',false:'Full Account',true:'Bid Only'}" value="rule.acceptsBids"/>
 						<div class="fieldhelp">
 						<h3>Bid Only</h3>
 						<p>Full Account (default) - Regular paying contractor account.</p>
@@ -256,8 +256,8 @@ function getLink(val, val_id){
 					<li><label>Account Type</label>
 						<s:select name="rule.contractorType" list="@com.picsauditing.jpa.entities.ContractorType@values()" listValue="type" headerKey="" headerValue="Any"/>
 					</li>
-					<li><label>Risk</label>
-						<s:radio name="rule.risk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/>
+					<li class="nobr"><label>Risk</label>
+						<s:radio theme="pics" name="rule.risk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/>
 					</li>
 					<li <s:if test="operatorRequired">class="required"</s:if>>
 						<label>Operator</label>
