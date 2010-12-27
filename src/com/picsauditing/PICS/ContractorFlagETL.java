@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.util.SpringUtils;
@@ -47,7 +48,7 @@ public class ContractorFlagETL {
 				if (type != null && !type.isAnnualAddendum()) {
 					PicsLogger.log("Found question for evaluation: " + fc.getQuestion());
 					criteriaQuestionSet.add(fc.getQuestion().getId());
-				}
+				} 
 			}
 		}
 	}
@@ -162,7 +163,25 @@ public class ContractorFlagETL {
 							}
 						}
 					}
-
+				} else if (flagCriteria.getQuestion().getId() == 3546) {
+					// Citations question
+					boolean found = false;
+					FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
+							flagCriteria, "");
+					for(ContractorAudit  annualupdates  : contractor.getSortedAudits()) {
+						for(AuditData data : annualupdates.getData()) {
+							if((data.getQuestion().getId() == 3546)) {
+								flagCriteriaContractor.setAnswer(parseAnswer(flagCriteria,data));
+								found = true;
+								break;
+							}
+						}
+						if(found) {
+							flagCriteriaContractor.setAnswer2("Year: " + annualupdates.getAuditFor());
+							changes.add(flagCriteriaContractor);
+							break;
+						}
+					}
 				} else {
 					// Non-EMR questions
 					// find answer in answermap if it exists to related question

@@ -10,7 +10,7 @@
 --	(19, 'PICS UAE Membership for 50+ Operators', 15000.00, 1, 'Membership', '50 Operators', 20952, 20952, now(), NOW());
 -- END
 
-update contractor_audit set lastRecalculation = null
-where expiresDate > Now();
+alter table flag_criteria_operator drop column `minRiskLevel`;
 
-alter table audit_type_rule add column `manuallyAdded` tinyint(4) DEFAULT '0' NOT NULL after `dependentAuditStatus`;
+update flag_criteria_operator set criteriaID = 634 
+where criteriaID = 469 and opid not in (13656);
