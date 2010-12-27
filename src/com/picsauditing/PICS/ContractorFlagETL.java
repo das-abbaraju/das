@@ -170,14 +170,13 @@ public class ContractorFlagETL {
 							flagCriteria, "");
 					for(ContractorAudit  annualupdates  : contractor.getSortedAudits()) {
 						for(AuditData data : annualupdates.getData()) {
-							if((data.getQuestion().getId() == 3546)) {
+							if(data.getQuestion().getId() == 3546) {
 								flagCriteriaContractor.setAnswer(parseAnswer(flagCriteria,data));
 								found = true;
 								break;
 							}
 						}
 						if(found) {
-							flagCriteriaContractor.setAnswer2("Year: " + annualupdates.getAuditFor());
 							changes.add(flagCriteriaContractor);
 							break;
 						}
