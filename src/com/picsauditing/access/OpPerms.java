@@ -116,10 +116,10 @@ public enum OpPerms {
 	WatchListManager("Watch List Manager", "Allows managers to add and remove users from watch lists.", true, true, true, false, true),
 	
 	// Request New Contractor
-	RequestNewContractor("Registration Request", "Allows an operator to create registration requests to add new contractors.", true, false, true, false, true);
+	RequestNewContractor("Registration Request", "Allows an operator to create registration requests to add new contractors.", true, false, true, false, true),
 	
 	// PICS Score
-	PicsScore("PICS Score", "Shows the Contractor's calculated PicsScore", false, false, false, true, false, true);
+	PicsScore("PICS Score", "Shows the Contractor's calculated PicsScore", false, false, true, false, true);
 	
 	private String description;
 	private String helpText;
