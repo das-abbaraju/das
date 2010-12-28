@@ -43,9 +43,9 @@
 				</pics:permission>
 			</s:if>
 		</s:if>
-		<s:if test="permissions.accountName.startsWith('Roseburg') || permissions.accountName.startsWith('Ashland')">
+		<pics:permission perm="PicsScore">
 			<td>PICS Score</td>
-		</s:if>
+		</pics:permission>
 		<s:if test="showContact">
 			<td>Primary Contact</td>
 			<td>Phone</td>
@@ -109,9 +109,9 @@
 					</pics:permission>
 				</s:if>
 			</s:if>
-			<s:if test="permissions.accountName.startsWith('Roseburg') || permissions.accountName.startsWith('Ashland')">
+			<pics:permission perm="PicsScore">
 				<td><s:property value="get('score')"/></td>
-			</s:if>
+			</pics:permission>
 			<s:if test="showContact">
 				<td><s:property value="get('contactname')"/></td>
 				<td><s:property value="get('contactphone')"/></td>

@@ -397,6 +397,13 @@ table.report tr.hurdle td {
 						<s:property value="contractor.id" />
 					</strong>
 				</p>
+				<pics:permission perm="PicsScore">
+				<p>PICS Score: 
+					<strong>
+						<s:property value="contractor.score" />
+					</strong>
+				</p>
+				</pics:permission>
 				<p>Member Since: 
 					<strong>
 						<strong><s:date name="contractor.membershipDate" format="M/d/yyyy" /></strong>

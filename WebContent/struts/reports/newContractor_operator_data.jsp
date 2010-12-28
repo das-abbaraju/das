@@ -48,9 +48,9 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 				</pics:permission>
 			</s:if>
 		</s:if>
-		<s:if test="permissions.accountName.startsWith('Roseburg')">
+		<pics:permission perm="PicsScore">
 			<td>PICS Score</td>
-		</s:if>
+		</pics:permission>
 		<td>Action</td>
 		<s:if test="showContact">
 			<td>Primary Contact</td>
@@ -88,9 +88,9 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 						</pics:permission>
 					</s:if>
 				</s:if>
-				<s:if test="permissions.accountName.startsWith('Roseburg')">
+				<pics:permission perm="PicsScore">
 					<td><s:property value="get('score')"/></td>
-				</s:if>	
+				</pics:permission>
 				<td class="center">
 					<s:if test="get('genID') > 0">
 						<a href="ContractorView.action?id=<s:property value="get('id')"/>">View</a>
