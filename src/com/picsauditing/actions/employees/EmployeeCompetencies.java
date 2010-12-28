@@ -27,6 +27,7 @@ import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.DoubleMap;
 import com.picsauditing.util.Strings;
 
@@ -104,6 +105,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 			getFilter().setShowAccountName(false);
 
 		buildQuery();
+		sql.addGroupBy("e.id");
 		run(sql);
 		buildMap();
 
@@ -136,6 +138,8 @@ public class EmployeeCompetencies extends ReportEmployee {
 
 		sql.addJoin("JOIN employee_role er ON er.employeeID = e.id");
 		sql.addJoin("JOIN job_role jr ON jr.id = er.jobRoleID AND jr.active = 1");
+		sql.addJoin("JOIN job_competency jc ON jc.jobRoleID = jr.id");
+		sql.addJoin("JOIN operator_competency oc ON oc.id = jc.competencyID");
 
 		sql.addWhere("a.id = " + account.getId());
 	}
@@ -149,8 +153,9 @@ public class EmployeeCompetencies extends ReportEmployee {
 	}
 
 	private void buildMap() throws SQLException {
-		sql.addJoin("JOIN job_competency jc ON jc.jobRoleID = jr.id");
-		sql.addJoin("JOIN operator_competency oc ON oc.id = jc.competencyID");
+		sql = new SelectSQL("employee e");
+		buildQuery();
+		
 		sql.addJoin("LEFT JOIN employee_competency ec ON ec.employeeID = e.id AND ec.competencyID = oc.id");
 
 		sql.addField("jr.id jobRoleID");
@@ -161,6 +166,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 		sql.addField("oc.description");
 		sql.addField("ec.id ecID");
 		sql.addField("ec.skilled");
+		
 		sql.addOrderBy("oc.category, oc.label");
 
 		if (filterOn(getFilter().getCompetencies()))
