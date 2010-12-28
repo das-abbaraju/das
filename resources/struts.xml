@@ -1912,6 +1912,11 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 		
+		<action name="ReportNewProjects"
+			class="com.picsauditing.actions.report.oq.ReportNewJobSite">
+			<result>/struts/reports/oq/report_new_job_site.jsp</result>
+		</action>
+		
 		<!-- Assessment Center/Assessment Management -->
 		<action name="AssessmentCenterEdit"
 			class="com.picsauditing.actions.report.oq.AssessmentEdit">
