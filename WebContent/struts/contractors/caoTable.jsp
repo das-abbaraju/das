@@ -85,12 +85,14 @@
 						<s:if test="!systemEdit">
 							<td class="buttonAction">
 								<s:iterator value="getCurrentCaoStep(#currentCao.id)" id="step">
-									<div class="singleButton button <s:property value="#step.newStatus.color"/>">
-										<s:property value="#step.buttonName" />
-										<s:hidden cssClass="bCaoID" name="%{id}_%{#step.id}" value="%{#currentCao.id}"/>
-										<s:hidden cssClass="bStepID" name="%{id}_%{#buttonActions.key}_stepID" value="%{#step.id}" />
-										<s:hidden cssClass="bStatus" value="%{#step.newStatus}" name="%{id}_%{#step.newStatus}_action" />
-									</div> 
+									<s:if test="!(conAudit.auditType.classType.policy && #currentCao.operator.autoApproveInsurance && permissions.admin && #step.newStatus.approved)">
+										<div class="singleButton button <s:property value="#step.newStatus.color"/>">
+											<s:property value="#step.buttonName" />
+											<s:hidden cssClass="bCaoID" name="%{id}_%{#step.id}" value="%{#currentCao.id}"/>
+											<s:hidden cssClass="bStepID" name="%{id}_%{#buttonActions.key}_stepID" value="%{#step.id}" />
+											<s:hidden cssClass="bStatus" value="%{#step.newStatus}" name="%{id}_%{#step.newStatus}_action" />
+										</div>
+									</s:if>
 								</s:iterator>
 							</td>
 						</s:if>
