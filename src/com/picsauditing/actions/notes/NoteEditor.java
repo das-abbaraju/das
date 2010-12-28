@@ -14,8 +14,10 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.util.Downloader;
@@ -37,10 +39,14 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 
 	private AccountDAO accountDAO;
 	private NoteDAO noteDAO;
+	private EmployeeDAO employeeDAO;
+	
+	private int employeeID;
 
-	public NoteEditor(AccountDAO accountDAO, NoteDAO noteDAO) {
+	public NoteEditor(AccountDAO accountDAO, NoteDAO noteDAO, EmployeeDAO employeeDAO) {
 		this.accountDAO = accountDAO;
 		this.noteDAO = noteDAO;
+		this.employeeDAO = employeeDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -54,6 +60,8 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 				viewableByOther = viewableBy;
 				viewableBy = 3;
 			}
+			if (note.getEmployee() != null)
+				employeeID = note.getEmployee().getId();
 		} else {
 			note = new Note();
 		}
@@ -93,6 +101,12 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 				note.setViewableById(viewableByOther);
 			else
 				note.setViewableById(viewableBy);
+			if (employeeID > 0) {
+				note.setEmployee(new Employee());
+				note.getEmployee().setId(employeeID);
+			} else
+				note.setEmployee(null);
+			
 			note.setAuditColumns(permissions);
 
 			noteDAO.save(note);
@@ -245,5 +259,17 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 
 	public void setInputStream(InputStream inputStream) {
 		this.inputStream = inputStream;
+	}
+	
+	public int getEmployeeID() {
+		return employeeID;
+	}
+	
+	public void setEmployeeID(int employeeID) {
+		this.employeeID = employeeID;
+	}
+	
+	public List<Employee> getEmployeeList() {
+		return employeeDAO.findByAccount(account);
 	}
 }

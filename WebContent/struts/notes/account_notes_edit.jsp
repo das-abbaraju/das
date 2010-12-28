@@ -35,6 +35,9 @@ function closePage() {
 		<li><label>Category:</label>
 			<span style=""><s:radio theme="pics" list="filter.categoryList" name="note.noteCategory" /></span>
 		</li>
+		<li><label>Employee:</label>
+			<s:select list="employeeList" listKey="id" name="employeeID" listValue="displayName" headerKey="0" headerValue="- Employee -" />
+		</li>
 		<li><label>Priority:</label>
 			<s:radio theme="pics" list="filter.priorityList" name="note.priority" />
 		</li>

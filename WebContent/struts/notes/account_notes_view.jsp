@@ -28,6 +28,11 @@ div.auditHeader fieldset {
 	<li><label>Category:</label>
 		<s:property value="note.noteCategory"/>
 	</li>
+	<s:if test="note.employee != null">
+		<li><label>Employee:</label>
+			<s:property value="note.employee.displayName"/>
+		</li>
+	</s:if>
 	<li><label>Priority:</label>
 		<s:property value="note.priority"/>
 	</li>

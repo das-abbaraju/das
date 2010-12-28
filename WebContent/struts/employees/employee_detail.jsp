@@ -229,6 +229,7 @@
 							</div>
 						</div>
 					</s:elseif>
+					<s:include value="../notes/account_notes_embed.jsp" />
 				</td>
 				<td width="20px;">&nbsp;</td>
 				<td>
@@ -268,7 +269,7 @@
 							</div>
 						</div>
 					</s:if>
-					<s:if test="employee.employeeQualifications.size() > 0">
+					<s:if test="qualification.keySet().size > 0">
 						<s:set name="qualCount" value="0" />
 						<table class="report">
 							<thead>

@@ -29,6 +29,7 @@ import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.BaseHistory;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -42,6 +43,9 @@ import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
@@ -94,6 +98,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		this.siteTaskDAO = siteTaskDAO;
 		this.conDAO = conDAO;
 		this.indexer = indexer;
+
+		noteCategory = NoteCategory.Employee;
 	}
 
 	@Override
@@ -152,6 +158,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			employee.setAuditColumns(permissions);
 
 			// employee.setNeedsIndexing(true);
+			createNewNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
 			employeeDAO.save(employee);
 			indexer.runSingle(employee, "employee");
 
@@ -181,6 +188,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				if (!employee.getEmployeeRoles().contains(e)) {
 					employee.getEmployeeRoles().add(e);
 					employeeRoleDAO.save(e);
+					createNewNote("Added " + jobRole.getName() + " job role");
 				} else
 					addActionError("Employee already has " + jobRole.getName() + " as a Job Role");
 			}
@@ -193,6 +201,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				if (e != null) {
 					employee.getEmployeeRoles().remove(e);
 					employeeRoleDAO.remove(e);
+					createNewNote("Removed " + e.getJobRole().getName() + " job role");
 				}
 			}
 		}
@@ -211,6 +220,9 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				es.setAuditColumns(permissions);
 				es.defaultDates();
 				employeeSiteDAO.save(es);
+				createNewNote("Added "
+						+ (es.getJobSite() != null ? "OQ project " + es.getOperator().getName() + ": "
+								+ es.getJobSite().getLabel() : "HSE site " + es.getOperator().getName()));
 			}
 
 			return "sites";
@@ -221,13 +233,18 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				EmployeeSite es = employeeSiteDAO.find(childID);
 
 				if (es != null) {
-					if (es.getEffectiveDate() != null && es.getEffectiveDate().before(EmployeeSite.getMidnightToday())) {
+					boolean expired = es.getEffectiveDate() != null
+							&& es.getEffectiveDate().before(EmployeeSite.getMidnightToday());
+
+					if (expired)
 						es.expire();
-						employeeSiteDAO.save(es);
-					} else {
+					else
 						employee.getEmployeeSites().remove(es);
-						employeeSiteDAO.remove(es);
-					}
+
+					employeeSiteDAO.save(es);
+					createNewNote((expired ? "Expired " : "Removed ")
+							+ (es.getJobSite() != null ? "OQ project " + es.getOperator().getName() + ": "
+									+ es.getJobSite().getLabel() : "HSE site " + es.getOperator().getName()));
 				}
 			}
 
@@ -235,6 +252,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 		if ("editSite".equals(button)) {
 			if (employee != null && childID != 0) {
+				List<String> notes = new ArrayList<String>();
+
 				EmployeeSite es = employeeSiteDAO.find(childID);
 				Date effDate = DateBean.parseDate(effective);
 				if (effDate == null) {
@@ -252,6 +271,16 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 					addActionError(orientation + " is not a valid orientation date. Use the format 'MM/DD/YYYY'");
 					return "sites";
 				}
+
+				if (effDate.compareTo(es.getEffectiveDate()) != 0)
+					notes.add("Updated effective date to " + Strings.formatDateShort(effDate));
+				if (expDate.compareTo(es.getExpirationDate()) != 0)
+					notes.add("Updated expiration date to " + Strings.formatDateShort(expDate));
+				if (!Strings.isEmpty(orientation)) {
+					if (orDate.compareTo(es.getOrientationDate()) != 0)
+						notes.add("Updated orientation date to " + Strings.formatDateShort(orDate));
+				}
+
 				es.setEffectiveDate(effDate);
 				es.setExpirationDate(expDate);
 				if (es.getOrientationDate() == null)
@@ -265,6 +294,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 					es.setOrientationExpiration(null);
 				}
 				employeeSiteDAO.save(es);
+				createNewNote(Strings.implode(notes));
 			}
 
 			return "sites";
@@ -290,6 +320,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				es.setEffectiveDate(siteStart);
 				es.setExpirationDate(BaseHistory.END_OF_TIME);
 				employeeSiteDAO.save(es);
+
+				createNewNote("Added OQ project " + siteLabel);
 			}
 
 			return "sites";
@@ -462,10 +494,10 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		for (EmployeeSite used : employee.getEmployeeSites()) {
 			if (used.isCurrent()) {
 				Iterator<OperatorSite> iterator = returnList.iterator();
-				
+
 				while (iterator.hasNext()) {
 					OperatorSite os = iterator.next();
-					
+
 					if ((os.getSite() != null && used.getJobSite() != null && used.getJobSite().equals(os.getSite()))
 							|| (os.getSite() == null && used.getJobSite() == null && os.getOperator().equals(
 									used.getOperator())))
@@ -588,6 +620,22 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		return null;
+	}
+
+	private void createNewNote(String summary) {
+		createNewNote(summary, LowMedHigh.Low);
+	}
+
+	private void createNewNote(String summary, LowMedHigh priority) {
+		Note note = new Note();
+		note.setAuditColumns(permissions);
+		note.setSummary(summary);
+		note.setAccount(account);
+		note.setEmployee(employee);
+		note.setNoteCategory(noteCategory);
+		note.setCanContractorView(true);
+		note.setViewableById(Account.EVERYONE);
+		getNoteDao().save(note);
 	}
 
 	@SuppressWarnings("unchecked")

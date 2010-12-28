@@ -15,7 +15,6 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
 import com.picsauditing.dao.JobTaskDAO;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResult;
@@ -30,6 +29,7 @@ import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.jpa.entities.JobTaskCriteria;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
 
@@ -40,7 +40,6 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 	protected JobSiteTaskDAO siteTaskDAO;
 	protected JobTaskDAO taskDAO;
 	protected ContractorOperatorDAO coDAO;
-	protected NoteDAO noteDAO;
 
 	protected Employee employee;
 	protected Account account;
@@ -53,13 +52,14 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 	protected Map<JobSite, List<JobTask>> tasksByJob;
 
 	public EmployeeDetail(EmployeeDAO employeeDAO, OperatorCompetencyDAO competencyDAO, JobSiteTaskDAO siteTaskDAO,
-			ContractorOperatorDAO coDAO, JobTaskDAO taskDAO, NoteDAO noteDAO) {
+			ContractorOperatorDAO coDAO, JobTaskDAO taskDAO) {
 		this.employeeDAO = employeeDAO;
 		this.competencyDAO = competencyDAO;
 		this.siteTaskDAO = siteTaskDAO;
 		this.coDAO = coDAO;
 		this.taskDAO = taskDAO;
-		this.noteDAO = noteDAO;
+		
+		noteCategory = NoteCategory.Employee;
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 		if (employee == null || employee.getId() == 0)
 			throw new RecordNotFoundException("Missing employee id");
 		
-		notes = noteDAO.findWhere(account.getId(), "noteCategory = 'Employee'", 10);
+		notes = getNoteDao().findWhere(account.getId(), "noteCategory = 'Employee' AND employeeID = " + employee.getId(), 10);
 
 		return SUCCESS;
 	}
@@ -140,7 +140,7 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 
 			for (JobTask task : jobTasks) {
 				for (EmployeeQualification eq : employee.getEmployeeQualifications()) {
-					if (eq.getTask().equals(task) && !tasks.contains(eq))
+					if (eq.getTask().equals(task) && !tasks.contains(eq) && eq.isCurrent())
 						tasks.add(eq);
 				}
 			}
@@ -170,7 +170,7 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 
 			for (JobTask task : jobTasks) {
 				for (EmployeeQualification eq : employee.getEmployeeQualifications()) {
-					if (eq.getTask().equals(task)) {
+					if (eq.isCurrent() && eq.getTask().equals(task)) {
 						Map<Integer, Set<JobTaskCriteria>> map = task.getJobTaskCriteriaMap();
 
 						for (Integer group : map.keySet()) {
@@ -178,7 +178,7 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 
 							for (JobTaskCriteria jtc : map.get(group)) {
 								for (AssessmentResult r : employee.getAssessmentResults()) {
-									if (jtc.getAssessmentTest().equals(r.getAssessmentTest()))
+									if (jtc.getAssessmentTest().equals(r.getAssessmentTest()) && r.isCurrent())
 										results.add(r);
 								}
 							}

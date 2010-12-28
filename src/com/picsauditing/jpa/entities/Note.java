@@ -37,6 +37,7 @@ public class Note extends BaseTable implements java.io.Serializable {
 	private boolean canContractorView = false;
 	private NoteStatus status = NoteStatus.Closed;
 	private Date followupDate;
+	private Employee employee;
 	private String body = null;
 	private String attachment;
 	private String originalText = null;
@@ -138,6 +139,16 @@ public class Note extends BaseTable implements java.io.Serializable {
 
 	public void setFollowupDate(Date followupDate) {
 		this.followupDate = followupDate;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "employeeID")
+	public Employee getEmployee() {
+		return employee;
+	}
+	
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
 	}
 
 	public String getBody() {
