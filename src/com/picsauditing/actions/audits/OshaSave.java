@@ -176,7 +176,8 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 			if (catData != null) {
 				auditPercentCalculator.percentOshaComplete(osha, catData);
 			}
-			auditPercentCalculator.percentCalculateComplete(osha.getConAudit());
+			auditPercentCalculator.percentCalculateComplete(osha.getConAudit(), true);
+			auditDao.save(osha.getConAudit());
 			if (!button.equals("toggleVerify")) {
 				findConAudit();
 				for (ContractorAuditOperator cao : conAudit.getOperators()) {

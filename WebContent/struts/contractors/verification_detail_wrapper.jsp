@@ -58,7 +58,7 @@
 		return false;
 	}
 	
-	function toggleOSHAVerify( oshaId ) {
+	function toggleOSHAVerify( oshaId, auditID ) {
 	
 		startThinking({div:'status_'+oshaId});
 		
@@ -86,6 +86,8 @@
 				
 				setApproveButton( json.percentVerified );
 				stopThinking({div:'status_'+oshaId});
+				startThinking({div: 'caoActionArea'});
+				$('#caoActionArea').load('UpdateVerifyAuditAjax.action', {'auditID': auditID});
 			}
 		);
 		return false;

@@ -175,7 +175,7 @@
 				<s:else>
 					<s:set name="verifyText" value="'Unverify'"/>
 				</s:else>
-				<input id="verify_<s:property value="osha.id"/>" name="verify" type="submit" onclick="return toggleOSHAVerify(<s:property value="osha.id"/>);" value="<s:property value="#attr.verifyText"/>"/>
+				<input id="verify_<s:property value="osha.id"/>" name="verify" type="submit" onclick="return toggleOSHAVerify(<s:property value="osha.id"/>,<s:property value="osha.conAudit.id"/>);" value="<s:property value="#attr.verifyText"/>"/>
 				<s:div id="status_%{osha.id}"></s:div>
 				<s:if test="osha.verified">
 					<s:set name="displayVerified" value="'block'"/>
