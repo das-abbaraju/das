@@ -157,7 +157,11 @@ public class ContractorWidget extends ContractorActionSupport {
 									// of conAudit.getAuditType().isRenewable()
 									// &&
 									// conAudit.isAboutToExpire()
-									if (cao.getStatus().before(AuditStatus.Submitted)
+									if (conAudit.getAuditType().getId() == 176) {
+										if (cao.getStatus().before(AuditStatus.Complete)) {
+											needed++;
+										}
+									} else if (cao.getStatus().before(AuditStatus.Submitted)
 											|| (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire())) {
 										needed++;
 									}

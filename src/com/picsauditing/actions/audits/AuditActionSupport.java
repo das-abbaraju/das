@@ -333,6 +333,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 					}
 				}
 			}
+			if(conAudit.getAuditType().getId() == 176) {
+				if(conAudit.hasCaoStatusAfter(AuditStatus.Pending))
+					canEdit = false;
+			}
 			return canEdit;
 		}
 
