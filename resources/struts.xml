@@ -1251,6 +1251,7 @@
 		</action>
 		<action name="CategoryRuleSearch"
 			class="com.picsauditing.actions.rules.CategoryRuleSearch">
+			<param name="ruleType">Category Rules</param>
 			<result>struts/rules/audit_rule_search.jsp</result>
 		</action>
 		<action name="CategoryRuleSearchAjax"
