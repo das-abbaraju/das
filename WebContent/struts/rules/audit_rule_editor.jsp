@@ -12,9 +12,10 @@
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
 $(function() {
+	startThinking({div:'moreRelated', message: "Loading"});
+	startThinking({div:'lessRelated', message: "Loading"});
 	$('#moreRelated').load('<s:property value="urlPrefix"/>RuleTableAjax.action',{id: <s:property value="id"/>, button: 'moreGranular'});
 	$('#lessRelated').load('<s:property value="urlPrefix"/>RuleTableAjax.action',{id: <s:property value="id"/>, button: 'lessGranular'});
-	$('.hideRule').hide();
 	$('#editRuleButton').click(function(){
 		$('.hideRule, .showRule').toggle();
 	});
@@ -108,6 +109,9 @@ function getLink(val, val_id){
 }
 </script>
 <style>
+.hideRule {
+	display: none;
+}
 <s:if test="rule == null || rule.question == null">
 .requiresQuestion {
 	display: none;
@@ -137,8 +141,8 @@ function getLink(val, val_id){
 <h1><s:property value="ruleType"/> Rule Editor</h1>
 <s:include value="../actionMessages.jsp"/>
 <div>
-	<s:if test="rule.id > 0">
-		<a class="add" href="<s:property value="urlPrefix"/>RuleEditor.action?button=New">Create new rule</a>
+	<s:if test="rule.id > 0 && canEditRule">
+			<a class="add" href="<s:property value="urlPrefix"/>RuleEditor.action?button=New">Create new rule</a>
 	</s:if>
 	<s:else>
 		<script type="text/javascript">$(function(){$('.hideRule').show();});</script>
@@ -186,10 +190,10 @@ function getLink(val, val_id){
 				<h2 class="formLegend">Rule</h2>
 				<ol>
 					<li class="nobr"><label>Include</label>
-						<s:radio theme="pics" list="#{true:'Yes',false:'No'}" name="rule.include"/>
+						<s:radio theme="pics" list="#{true:'Include',false:'Exclude'}" name="rule.include"/>
 					</li>
 					<li><label>Level</label>
-						<s:property value="rule.level" default="0"/> + <s:textfield name="rule.levelAdjustment" />
+						<s:property value="%{rule.level-rule.levelAdjustment}" default="0"/> + <s:textfield name="rule.levelAdjustment" />
 						<div class="fieldhelp">
 						<h3>Level Adjustment</h3>
 						<p>Level and priority values are auto calculated by the system. These cannot be modified by the user.</p>
@@ -326,12 +330,28 @@ function getLink(val, val_id){
 		</s:form>
 	</s:if>
 	<s:elseif test="id > 0">
-		<script>
-			$(function() {
-				$('#detail').load('<s:property value="urlPrefix"/>RuleTableAjax.action', {id: <s:property value="id"/>});
-			});
-		</script>
-	</s:elseif>
+		<fieldset class="form lessGran">
+			<h2 class="formLegend">Less Granular</h2>
+			<div id="lessRelated" style="padding-top:10px;"></div>
+		</fieldset>
+		<fieldset class="form">
+			<h2 class="formLegend">Summary</h2>
+			<ol>
+				<li>
+					<h4><s:property value="rule.toString()"/></h4>
+				</li>
+				<s:if test="rule.id > 0">
+					<li>
+						<s:property value="rule.getWhoString()"/>
+					</li>
+				</s:if>
+			</ol>
+		</fieldset>
+		<fieldset class="form moreGran">
+			<h2 class="formLegend">More Granular</h2>
+			<div id="moreRelated" style="padding-top:10px;"></div>
+		</fieldset>
+	</s:elseif>	
 </div>
 
 </body>

@@ -347,8 +347,6 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 
 		sb.append(include ? "Include" : "Exclude");
 
-		if (auditType != null)
-			identifiers.add("Audit Type = "+auditType);
 		if (risk != null)
 			identifiers.add("Contractor Risk = "+risk);
 		if (operatorAccount != null)
@@ -362,6 +360,8 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 					questionAnswer);
 		if (acceptsBids != null)
 			identifiers.add("Contactor is "+(acceptsBids ? "bid-only" : "NOT bid-only"));
+		if (auditType != null)
+			identifiers.add("Audit Type is "+auditType);
 		
 		if(!identifiers.isEmpty()){
 			sb.append(" when ").append(identifiers.get(0));

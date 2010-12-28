@@ -82,7 +82,7 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 				out += " when";
 			else
 				out += " and";
-			out += " Dependent Audit Type = " + dependentAuditType + (dependentAuditStatus==null? "":" is "+dependentAuditStatus);
+			out += " Dependent Audit Type is " + dependentAuditType + (dependentAuditStatus==null? "":" is "+dependentAuditStatus);
 		}
 		return out;
 	}

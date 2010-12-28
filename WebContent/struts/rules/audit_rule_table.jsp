@@ -5,6 +5,7 @@
 	<table class="report">
 		<thead>
 			<tr>
+				<th>View</th>
 				<s:if test="columnMap.get('include')">
 					<th>Include</th>
 				</s:if>
@@ -47,14 +48,14 @@
 				<s:if test="columnMap.get('updatedBy')">
 					<th colspan="2">Updated By</th>
 				</s:if>
-				<th>View</th>
 			</tr>
 		</thead>
 		<tbody>
 			<s:iterator value="rules">
 				<tr class="<s:if test="include">on</s:if><s:else>off</s:else>">
+					<td class="center"><a href="<s:property value="urlPrefix"/>RuleEditor.action?id=<s:property value="id"/>" class="preview"></a></td>
 					<s:if test="columnMap.get('include')">
-						<td><s:if test="include">Yes</s:if><s:else>No</s:else></td>
+						<td class="center"><s:if test="include">Yes</s:if><s:else>No</s:else></td>
 					</s:if>
 					<s:if test="columnMap.get('priority')">
 						<td><s:property value="level"/>.<s:property value="priority"/></td>
@@ -135,7 +136,6 @@
 						<td><s:property value="updatedBy.name"/></td>
 						<td><s:date name="updateDate" format="MM/dd/yyyy"/></td>
 					</s:if>
-					<td><a href="<s:property value="urlPrefix"/>RuleEditor.action?id=<s:property value="id"/>" class="preview"></a></td>
 				</tr>
 			</s:iterator>
 		</tbody>

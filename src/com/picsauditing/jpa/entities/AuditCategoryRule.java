@@ -86,7 +86,7 @@ public class AuditCategoryRule extends AuditRule implements AuditRuleTable {
 				out += " and";	
 			else
 				out += " when";
-			out += " Category = " + auditCategory;
+			out += " Category is " + auditCategory;
 		}
 		return out;
 	}
