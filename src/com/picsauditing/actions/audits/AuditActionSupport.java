@@ -47,6 +47,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected int categoryID = 0;
 	protected String descriptionOsMs;
 	protected boolean systemEdit = false;
+	protected boolean showVerified = false;
 
 	protected ContractorAudit conAudit;
 	protected AuditCategoryDataDAO catDataDao;
@@ -191,10 +192,18 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public List<ContractorAuditOperator> getViewableOperators(Permissions permissions) {
+		List<ContractorAuditOperator> viewableCaos = new ArrayList<ContractorAuditOperator>();
 		if (systemEdit && !permissions.isOperatorCorporate())
-			return conAudit.getSortedOperators();
+			viewableCaos = conAudit.getSortedOperators();
 		else
-			return conAudit.getViewableOperators(permissions);
+			viewableCaos = conAudit.getViewableOperators(permissions);
+		for(ContractorAuditOperator cao : viewableCaos){
+			if(cao.getStatus().after(AuditStatus.Incomplete)){
+				showVerified = true;
+				break;
+			}
+		}
+		return viewableCaos;
 	}
 
 	public Set<OperatorAccount> getViewableCaops(ContractorAuditOperator cao) {
@@ -466,5 +475,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public void setSystemEdit(boolean systemEdit) {
 		this.systemEdit = systemEdit;
+	}
+
+	public boolean isShowVerified() {
+		return showVerified;
+	}
+
+	public void setShowVerified(boolean showVerified) {
+		this.showVerified = showVerified;
 	}
 }
