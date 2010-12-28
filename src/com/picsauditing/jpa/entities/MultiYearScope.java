@@ -1,7 +1,9 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+
 
 public enum MultiYearScope {
 	LastYearOnly("Last Year Only"),
@@ -22,14 +24,15 @@ public enum MultiYearScope {
 	public String getAuditFor() {
 		if (this == ThreeYearAverage)
 			return "Average";
+		
+		Calendar cal = Calendar.getInstance();
 		if (this == ThreeYearsAgo)
-			return "2007";
+			cal.add(Calendar.YEAR, -3);
 		if (this == TwoYearsAgo)
-			return "2008";
+			cal.add(Calendar.YEAR, -2);
 		if (this == LastYearOnly)
-			return "2009";
-
-		return null;
+			cal.add(Calendar.YEAR, -1);
+		return "" + cal.get(Calendar.YEAR);
 	}
 
 	static public Map<Integer, MultiYearScope> getMap() {
