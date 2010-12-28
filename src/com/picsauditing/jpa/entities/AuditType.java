@@ -285,6 +285,11 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	}
 
 	@Transient
+	public boolean isImplementation() {
+		return id == OFFICE;
+	}
+
+	@Transient
 	public boolean isAnnualAddendum() {
 		return (id == ANNUALADDENDUM);
 	}
@@ -336,9 +341,8 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	}
 
 	/**
-	 * @return
-	 * 		boolean indicating whether or not this Audit Type can be scored.
-	 * 		Used for implementing audit score
+	 * @return boolean indicating whether or not this Audit Type can be scored.
+	 *         Used for implementing audit score
 	 */
 	public boolean isScoreable() {
 		return scoreable;
@@ -350,9 +354,9 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	@Override
 	@Transient
-	public AuditType clone(){
+	public AuditType clone() {
 		AuditType clone = new AuditType();
-		
+
 		clone.account = this.getAccount();
 		clone.auditName = this.getAuditName();
 		clone.canContractorEdit = this.isCanContractorEdit();
@@ -374,7 +378,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		clone.updateDate = this.getUpdateDate();
 		clone.updatedBy = this.getUpdatedBy();
 		clone.workFlow = this.getWorkFlow().clone();
-		
+
 		return clone;
 	}
 }

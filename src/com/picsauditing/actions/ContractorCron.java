@@ -3,7 +3,7 @@ package com.picsauditing.actions;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,7 +47,6 @@ import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
-import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -60,6 +59,8 @@ import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.SendMail;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
+
+import java.util.Collections;
 
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
@@ -355,39 +356,71 @@ public class ContractorCron extends PicsActionSupport {
 	private void runContractorScore(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.PICSScore))
 			return;
-		int score = 120;
+
+		float score = 500;
+		List<ContractorAudit> roseburgAudits = new ArrayList<ContractorAudit>();
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 			if (!conAudit.isExpired()) {
-				for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
-					if (cao.getStatus().isComplete() || cao.getStatus().isApproved())
-						score += 100;
-					else if (cao.getStatus().isSubmittedResubmitted())
-						score += 80;
-					else if (cao.getStatus().isIncomplete()) {
+				int numOperators = conAudit.getOperatorsVisible().size();
+				if (conAudit.getAuditType().isPqf()) {
+					for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
+						float pqfScore = 0;
+						if (cao.getStatus().isComplete() || cao.getStatus().isResubmit()
+								|| cao.getStatus().isResubmitted())
+							pqfScore = 100;
+						else if (cao.getStatus().isSubmitted())
+							pqfScore = 75;
+						else if (cao.getStatus().isPending())
+							pqfScore = cao.getPercentComplete() / 2.0f;
 
-					} else
-						score += -10;
+						score += pqfScore / numOperators;
+					}
+				} else if (conAudit.getAuditType().isAnnualAddendum() || conAudit.getAuditType().isDesktop()
+						|| conAudit.getAuditType().isImplementation()) {
+					int scorePossible = 0;
+					if (conAudit.getAuditType().isAnnualAddendum()) {
+						int year = DateBean.getCurrentYear();
+						if (Integer.parseInt(conAudit.getAuditFor()) == year - 1)
+							scorePossible = 25;
+						else if (Integer.parseInt(conAudit.getAuditFor()) == year - 2)
+							scorePossible = 20;
+						else if (Integer.parseInt(conAudit.getAuditFor()) == year - 3)
+							scorePossible = 15;
+					} else if (conAudit.getAuditType().isDesktop() || conAudit.getAuditType().isImplementation()) {
+						scorePossible = 100;
+					}
+
+					for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
+						if (cao.getStatus().isComplete())
+							score += (float) scorePossible / numOperators;
+					}
+				} else if (conAudit.getAuditType().getId() == 126 || conAudit.getAuditType().getId() == 172
+						|| conAudit.getAuditType().getId() == 173) {
+					// Save these to find the 3 most recent
+					roseburgAudits.add(conAudit);
 				}
 			}
 		}
-		List<AuditData> auditDatas = auditDataDAO.findAnswerByConQuestions(contractor.getId(), Arrays.asList(88, 2447,
-				5176, 5179));
-		for (AuditData auditData : auditDatas) {
-			if (auditData.isAnswered()) {
-				if (auditData.getQuestion().getId() == 88 && auditData.getAnswer().equals("Yes")) {
-					score += -10;
-				} else {
-					score += auditData.getAnswer().replaceAll("[^0-9]", "").length();
-				}
+
+		// Calculate Roseburg Audits (MAX of 50)
+		Collections.sort(roseburgAudits, new Comparator<ContractorAudit>() {
+			@Override
+			public int compare(ContractorAudit o1, ContractorAudit o2) {
+				return o1.getCreationDate().compareTo(o2.getCreationDate());
 			}
+		});
+
+		if (roseburgAudits.size() > 0) {
+			List<ContractorAudit> mostRecentRoseburgAudits = roseburgAudits.subList(0, Math.min(3, roseburgAudits.size()));
+			int roseburgTotal = 0;
+			for (ContractorAudit roseburgAudit : mostRecentRoseburgAudits) {
+				roseburgTotal += roseburgAudit.getScore();
+			}
+			score += ((float) roseburgTotal / mostRecentRoseburgAudits.size()) / 2;
 		}
-		if (contractor.getMembershipLevel() != null) {
-			score += contractor.getPayingFacilities() * 10;
-		}
-		for (Invoice invoice : contractor.getInvoices()) {
-			if (invoice.isOverdue())
-				score += -25;
-		}
+
+		int scoreRounded = Math.round(score);
+		contractor.setScore(scoreRounded);
 	}
 
 	private void runFlag(ContractorOperator co) {
