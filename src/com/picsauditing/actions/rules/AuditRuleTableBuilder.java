@@ -56,7 +56,7 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 
 		if (showWho) {
 			if (rule.getCreatedBy() != null)
-				columnMap.put("createdBy", true);
+				columnMap.put("createdBy", false);
 			if (rule.getUpdatedBy() != null)
 				columnMap.put("updatedBy", true);
 		}
