@@ -1316,6 +1316,11 @@
 			<result>struts/reports/audit_rule_history_data.jsp</result>
 		</action>
 		
+		<action name="AuditCategoryMatrix"
+			class="com.picsauditing.actions.auditType.ManageAuditCategoryMatrix">
+			<result>struts/audits/audit_cat_matrix.jsp</result>
+		</action>
+		
 		<!-- Users -->
 		<action name="UserProfileAjax"
 			class="com.picsauditing.actions.users.ProfileEdit">

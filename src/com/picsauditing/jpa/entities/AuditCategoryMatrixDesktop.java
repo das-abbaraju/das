@@ -7,5 +7,8 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("D")
 public class AuditCategoryMatrixDesktop extends AuditCategoryMatrix {
-
+	//TODO we need 3 columns here
+	//private AuditQuestion auditQuestion;
+	//private QuestionComparator questionComparator;
+	//private String answer;
 }

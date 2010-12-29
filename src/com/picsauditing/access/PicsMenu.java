@@ -237,6 +237,9 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ManageCategoryRules)) {
 			subMenu.addChild("Category Rules", "CategoryRuleSearch.action");
 		}
+		if(permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
+			subMenu.addChild("Audit Category Matrix", "AuditCategoryMatrix.action");
+		}
 		if (permissions.hasPermission(OpPerms.ManageAuditWorkFlow))
 			subMenu.addChild("Manage Workflow", "ManageAuditWorkFlow.action");
 
