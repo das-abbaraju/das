@@ -310,6 +310,9 @@ public class AuditBuilderController {
 						categoriesNeeded.add(auditCatData.getCategory());
 					else
 						categoriesNeeded.remove(auditCatData.getCategory());
+				} else if (conAudit.getAuditType().getId() == 100) {
+					// use the competencies matrix for this audit
+					
 				} else {
 					if (auditCatData.isOverride()) {
 						if (auditCatData.isApplies())
