@@ -190,7 +190,7 @@ function getLink(val, val_id){
 				<h2 class="formLegend">Rule</h2>
 				<ol>
 					<li class="nobr"><label>Include</label>
-						<s:radio theme="pics" list="#{true:'Include',false:'Exclude'}" name="rule.include"/>
+						<s:radio theme="pics" list="#{true:'Include',false:'Exclude'}" name="ruleInclude" value="rule.include"/>
 					</li>
 					<li><label>Level</label>
 						<s:property value="%{rule.level-rule.levelAdjustment}" default="0"/> + <s:textfield name="rule.levelAdjustment" />
