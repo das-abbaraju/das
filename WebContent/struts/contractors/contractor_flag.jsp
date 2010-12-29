@@ -158,6 +158,20 @@ function checkReason(id) {
 		It is set to Amber if any requirement is flagged Amber. If no requirement is Red or Amber, then the overall flag color will be Green.
 </div>
 <div id="info-box">
+	<div class="baseFlag">
+		<s:if test="permissions.picsEmployee && (co.flagColor != co.baselineFlag)">
+			<div class="alert">
+				<s:form>
+					<s:hidden name="id" />
+					<s:hidden name="opID" />
+					Baseline Flag and Flag differ<br/>
+					Baseline Flag is <span class="<s:property value="co.baselineFlag"/>"><s:property value="co.baselineFlag"/></span> and 
+					Flag is <span class="<s:property value="co.flagColor"/>"><s:property value="co.flagColor"/></span><br/>
+					<s:submit type="button" name="button" value="Approve Flag" cssClass="picsbutton positive" />
+				</s:form>
+			</div>
+		</s:if>
+	</div>
 	<div class="info">
 		<s:form>
 			<s:hidden name="id" />
@@ -280,7 +294,7 @@ function checkReason(id) {
 				</div>	
 			</div>
 		</div>
-	</div>	
+	</div>
 </div>
 <s:if test="co.flagColor.toString() == 'Green' && co.forceOverallFlag == null && flagDataOverrides.keySet().size() == 0">
 	<div class="info" style="width: 50%; text-align: left">
@@ -290,6 +304,7 @@ function checkReason(id) {
 
 <span id="thinking"></span>
 
+<div class="clear"></div>
 <!-- Putting Tabs Here -->
 <div id="tabs">
 	<ul>

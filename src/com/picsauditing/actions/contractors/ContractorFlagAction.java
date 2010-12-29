@@ -121,6 +121,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 
 		if (button != null) {
+			if("Approve Flag".equals(button)){
+				co.resetBaseline(permissions);
+				contractorOperatorDao.save(co);
+				this.redirect("ContractorFlag.action?id=" + id + "&opID=" + opID);				
+			}
 			if (button.equalsIgnoreCase("Recalculate Now")) {
 				contractorOperatorDao.save(co);
 				String redirectUrl = URLEncoder.encode("ContractorFlag.action?id=" + id + "&opID=" + opID, "UTF-8");
