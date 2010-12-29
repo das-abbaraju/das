@@ -154,18 +154,20 @@ public class AuditBuilder {
 
 	private void includeCategory(AuditCategoriesDetail detail, AuditCategory category,
 			List<AuditCategoryRule> categoryRules) {
-		for (OperatorAccount operator : detail.operators.keySet()) {
-			AuditCategoryRule rule = getApplicable(categoryRules, category, operator);
-			if (rule != null && rule.isInclude()) {
-				detail.categories.add(category);
-				if (rule.isMoreSpecific(detail.operators.get(operator)))
-					detail.operators.put(operator, rule);
+		for (AuditCategory cat : category.getChildren()) {
+			for (OperatorAccount operator : detail.operators.keySet()) {
+				AuditCategoryRule rule = getApplicable(categoryRules, cat, operator);
+				if (rule != null && rule.isInclude()) {
+					detail.categories.add(cat);
+					if (rule.isMoreSpecific(detail.operators.get(operator)))
+						detail.operators.put(operator, rule);
+				}
 			}
 		}
 
-		for (AuditCategory subCategory : category.getSubCategories()) {
+		/*for (AuditCategory subCategory : category.getSubCategories()) {
 			includeCategory(detail, subCategory, categoryRules);
-		}
+		}*/
 	}
 
 	static public AuditCategoryRule getApplicable(List<AuditCategoryRule> rules, AuditCategory auditCategory,
