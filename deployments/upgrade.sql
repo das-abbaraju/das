@@ -10,9 +10,9 @@
 --	(19, 'PICS UAE Membership for 50+ Operators', 15000.00, 1, 'Membership', '50 Operators', 20952, 20952, now(), NOW());
 -- END
 
-alter table flag_criteria_operator drop column `minRiskLevel`;
-
-update flag_criteria_operator set criteriaID = 634 
-where criteriaID = 469 and opid not in (13656);
--- PICS-1575, PICS-1461
-alter table note add column `employeeID` int(11) NULL after `followupDate`;
+--alter table flag_criteria_operator drop column `minRiskLevel`;
+--
+--update flag_criteria_operator set criteriaID = 634 
+--where criteriaID = 469 and opid not in (13656);
+---- PICS-1575, PICS-1461
+--alter table note add column `employeeID` int(11) NULL after `followupDate`;
