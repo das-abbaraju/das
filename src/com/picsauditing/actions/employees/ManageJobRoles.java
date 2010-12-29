@@ -13,6 +13,9 @@ import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobCompetencyStats;
 import com.picsauditing.jpa.entities.JobRole;
@@ -73,11 +76,11 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 			permissions.tryPermission(OpPerms.AllOperators);
 
 		this.subHeading = account.getName();
-		
+
 		if ("Description".equals(button)) {
 			if (competencyID > 0)
 				competency = competencyDAO.find(competencyID);
-			
+
 			return "description";
 		}
 
@@ -153,6 +156,19 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 		}
 		return SUCCESS;
 	}
+	
+	public boolean isCanEdit() {
+		if (account.isContractor()) {
+			ContractorAccount con = (ContractorAccount) account;
+			
+			for (ContractorAudit ca : con.getAudits()) {
+				if (ca.getAuditType().getId() == 100 && ca.hasCaoStatus(AuditStatus.Pending))
+					return true;
+			}
+		}
+		
+		return false;
+	}
 
 	private boolean roleContainsCompetency(OperatorCompetency operatorCompetency) {
 		for (JobCompetency jc : jobCompetencies) {
@@ -169,11 +185,11 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 	public void setRole(JobRole role) {
 		this.role = role;
 	}
-	
+
 	public OperatorCompetency getCompetency() {
 		return competency;
 	}
-	
+
 	public void setCompetency(OperatorCompetency competency) {
 		this.competency = competency;
 	}
@@ -204,17 +220,17 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 	public void setCompetencyID(int competencyID) {
 		this.competencyID = competencyID;
 	}
-	
+
 	private class ByPercent implements Comparator<OperatorCompetency> {
-			@Override
-			public int compare(OperatorCompetency o1, OperatorCompetency o2) {
-				if(o1.getJobCompentencyStats() == null && o2.getJobCompentencyStats() == null)
-					return 0;
-				if(o1.getJobCompentencyStats() == null)
-					return 1;
-				if(o2.getJobCompentencyStats() == null)
-					return -1;
-				return -o1.getJobCompentencyStats().getPercent().compareTo(o2.getJobCompentencyStats().getPercent());
-			}
+		@Override
+		public int compare(OperatorCompetency o1, OperatorCompetency o2) {
+			if (o1.getJobCompentencyStats() == null && o2.getJobCompentencyStats() == null)
+				return 0;
+			if (o1.getJobCompentencyStats() == null)
+				return 1;
+			if (o2.getJobCompentencyStats() == null)
+				return -1;
+			return -o1.getJobCompentencyStats().getPercent().compareTo(o2.getJobCompentencyStats().getPercent());
+		}
 	}
 }
