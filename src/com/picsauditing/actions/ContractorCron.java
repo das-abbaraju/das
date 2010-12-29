@@ -3,6 +3,8 @@ package com.picsauditing.actions;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,8 +61,6 @@ import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.SendMail;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
-
-import java.util.Collections;
 
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
@@ -465,6 +465,18 @@ public class ContractorCron extends PicsActionSupport {
 		if (conOperator != null) { // operator has a forced flag
 			co.setFlagColor(conOperator.getForceFlag());
 			co.setFlagLastUpdated(new Date());
+			if (co.getForceBegin() != null) {
+				Calendar forceFlagCreatedOn = Calendar.getInstance();
+				forceFlagCreatedOn.setTime(co.getForceBegin());
+				Calendar yesterday = Calendar.getInstance();
+				yesterday.add(Calendar.DATE, -1);
+				Calendar tomorrow = Calendar.getInstance();
+				tomorrow.add(Calendar.DATE, 1);
+				if (!(forceFlagCreatedOn.after(tomorrow) || forceFlagCreatedOn.before(yesterday))) {
+					if (overallColor.equals(conOperator.getForceFlag()))
+						co.setBaselineFlag(overallColor);
+				}
+			}
 		} else if (!overallColor.equals(co.getFlagColor())) {
 			Note note = new Note();
 			note.setAccount(co.getContractorAccount());
