@@ -131,7 +131,7 @@ function loadStatus(caoID){
 </s:if>
 <s:elseif test="auditID > 0">
 	<s:property value="conAudit.auditType.auditName" />
-	<s:if test="conAudit.auditFor != null && conAudit.auditFor.length > 0">for <s:property value="conAudit.auditFor"/></s:if>
+	<s:if test="conAudit.auditFor != null && conAudit.auditFor.length() > 0">for <s:property value="conAudit.auditFor"/></s:if>
 	<s:elseif test="!conAudit.auditType.pqf">- <s:date name="conAudit.effectiveDate" format="MMM yyyy" /></s:elseif>
 </s:elseif>
 </span></h1>
