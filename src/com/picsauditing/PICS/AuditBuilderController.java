@@ -13,6 +13,7 @@ import java.util.Set;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.PICS.AuditBuilder.AuditTypeDetail;
 import com.picsauditing.actions.converters.OshaTypeConverter;
+import com.picsauditing.dao.AuditCategoryMatrixDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -65,11 +66,12 @@ public class AuditBuilderController {
 	private AuditTypeRuleCache auditTypeRuleCache;
 	private AuditTypeDAO auditTypeDao;
 	private ContractorAuditDAO conAuditDao;
+	private AuditCategoryMatrixDAO auditCatMatrixDAO;
 
 	public AuditBuilderController(ContractorAuditDAO cAuditDAO, AuditDataDAO auditDataDAO,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, ContractorTagDAO contractorTagDAO,
 			AuditCategoryRuleCache auditCategoryRuleCache, AuditTypeRuleCache auditTypeRuleCache,
-			AuditTypeDAO auditTypeDao, ContractorAuditDAO conAuditDao) {
+			AuditTypeDAO auditTypeDao, ContractorAuditDAO conAuditDao, AuditCategoryMatrixDAO auditCatMatrixDAO) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
@@ -78,6 +80,7 @@ public class AuditBuilderController {
 		this.auditTypeRuleCache = auditTypeRuleCache;
 		this.auditTypeDao = auditTypeDao;
 		this.conAuditDao = conAuditDao;
+		this.auditCatMatrixDAO = auditCatMatrixDAO;
 	}
 
 	public void setup(ContractorAccount con, User user) {
@@ -274,8 +277,8 @@ public class AuditBuilderController {
 
 	public Map<AuditType, AuditTypeDetail> getRequiredAuditTypes() {
 		if (requiredAuditTypes == null) {
-			requiredAuditTypes = builder.calculateRequiredAuditTypes(getAuditTypeRules(), contractor
-					.getOperatorAccounts());
+			requiredAuditTypes = builder.calculateRequiredAuditTypes(getAuditTypeRules(),
+					contractor.getOperatorAccounts());
 		}
 		return requiredAuditTypes;
 	}
@@ -298,8 +301,22 @@ public class AuditBuilderController {
 		}
 
 		Set<AuditCategory> categoriesNeeded = detail.categories;
+
+		List<AuditCategory> requiredCompetencies = null;
+		if (conAudit.getAuditType().getId() == 100)
+			requiredCompetencies = auditCatMatrixDAO.findCategoriesForCompetencies(conAudit.getContractorAccount()
+					.getId());
+
 		for (AuditCatData auditCatData : conAudit.getCategories()) {
 			if (auditCatData.getCategory().getParent() == null) {
+				if (conAudit.getAuditType().getId() == 100) {
+					// use the competencies matrix for this audit
+					if (requiredCompetencies.contains(auditCatData.getCategory()))
+						categoriesNeeded.add(auditCatData.getCategory());
+					else
+						categoriesNeeded.remove(auditCatData.getCategory());
+				}
+				
 				if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
 					// this is to ensure that we don't add new categories or
 					// remove the
@@ -310,9 +327,6 @@ public class AuditBuilderController {
 						categoriesNeeded.add(auditCatData.getCategory());
 					else
 						categoriesNeeded.remove(auditCatData.getCategory());
-				} else if (conAudit.getAuditType().getId() == 100) {
-					// use the competencies matrix for this audit
-					
 				} else {
 					if (auditCatData.isOverride()) {
 						if (auditCatData.isApplies())
