@@ -21,6 +21,7 @@
 		<td>AMBest</td>
 		<td title="Additional Requirements">Add'l</td>
 		<td>Cert</td>
+		<td>Notes</td>
 	</tr>
 </thead>
 <s:iterator value="data" status="stat">
@@ -79,10 +80,14 @@
 				target="_BLANK"><img src="images/icon_insurance.gif" /></a>	
 			</s:if>
 		</td>
+		<td>
+			<s:property value="get('caoNotes')"/>
+			<br />
+		</td>
 	</tr>
 </s:iterator>
 	<tr>
-		<td colspan="<s:property value="filter.primaryInformation ? 10 : 9" />">
+		<td colspan="<s:property value="filter.primaryInformation ? 11 : 10" />">
 			<div style="height:28px;">
 			<s:radio cssClass="statusSelects" name="newStatuses" list="#{'Approved':'Approve Selected','Incomplete':'Reject Selected','NotApplicable':'Mark as N/A'}" />
 			</div>

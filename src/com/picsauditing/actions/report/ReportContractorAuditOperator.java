@@ -49,7 +49,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 
 		sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id");
 		sql.addWhere("cao.visible = 1");
-		sql.addJoin("LEFT JOIN contractor_audit_operator_workflow caow ON cao.id = caow.id");
+		sql.addJoin("LEFT JOIN contractor_audit_operator_workflow caow ON cao.id = caow.caoID");
 		sql.addJoin("JOIN accounts caoAccount ON cao.opID = caoAccount.id");
 		sql.addField("cao.id caoID");
 		sql.addField("cao.status auditStatus");

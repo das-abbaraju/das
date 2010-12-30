@@ -62,7 +62,7 @@ public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 			sql.addJoin("LEFT JOIN users auditor ON auditor.id = ca.auditorID");
 			sql.addJoin("JOIN users contact ON contact.id = a.contactID");
 			sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id");
-			sql.addJoin("LEFT JOIN contractor_audit_operator_workflow caow ON cao.id = caow.id");
+			sql.addJoin("LEFT JOIN contractor_audit_operator_workflow caow ON cao.id = caow.caoID");
 			sql.addJoin("JOIN accounts caoAccount ON cao.opID = caoAccount.id");
 			sql.addJoin("LEFT JOIN pqfdata d ON d.auditID = ca.id");
 			sql.addJoin("LEFT JOIN audit_question q ON q.id = d.questionID");
