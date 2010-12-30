@@ -148,7 +148,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				employee.setAccount(account);
 			}
 
-			if (ssn != null) {
+			if (!Strings.isEmpty(ssn)) {
 				if (ssn.length() == 9)
 					employee.setSsn(ssn);
 				else if (!ssn.matches("X{5}\\d{4}"))
@@ -158,8 +158,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			employee.setAuditColumns(permissions);
 
 			// employee.setNeedsIndexing(true);
+			employee = (Employee) employeeDAO.save(employee);
 			createNewNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
-			employeeDAO.save(employee);
 			indexer.runSingle(employee, "employee");
 
 			redirect("ManageEmployees.action?employee.id=" + employee.getId());

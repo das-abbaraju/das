@@ -23,7 +23,7 @@
 	<tbody>
 		<tr>
 			<td style="vertical-align: top;">
-				<s:if test="hseOperators.size > 0 || employee.account.requiresCompetencyReview">
+				<s:if test="employee.account.requiresCompetencyReview">
 					<h3>HSE Sites</h3>
 					<table class="report" style="width: 500px;">
 						<thead>
@@ -83,7 +83,7 @@
 						</tr>
 					</table>
 				</s:if>
-				<s:if test="oqOperators.size > 0 || employee.account.requiresOQ">
+				<s:if test="employee.account.requiresOQ">
 					<h3>OQ Projects</h3>
 					<table class="report" style="width: 500px;">
 						<thead>

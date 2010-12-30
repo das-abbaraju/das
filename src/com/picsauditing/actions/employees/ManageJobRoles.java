@@ -156,17 +156,18 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 		}
 		return SUCCESS;
 	}
-	
+
 	public boolean isCanEdit() {
 		if (account.isContractor()) {
 			ContractorAccount con = (ContractorAccount) account;
-			
+
 			for (ContractorAudit ca : con.getAudits()) {
-				if (ca.getAuditType().getId() == 100 && ca.hasCaoStatus(AuditStatus.Pending))
+				if ((ca.getAuditType().getId() == 100 && ca.hasCaoStatus(AuditStatus.Pending))
+						|| (ca.getAuditType().getId() == 99 && ca.hasCaoStatus(AuditStatus.Pending)))
 					return true;
 			}
 		}
-		
+
 		return false;
 	}
 
