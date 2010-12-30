@@ -56,8 +56,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	public ContractorAuditController(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
 			AuditCategoryDAO auditCategoryDAO, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilderController auditBuilder,
-			AuditCategoryRuleCache auditCategoryRuleCache) {
+			AuditBuilderController auditBuilder, AuditCategoryRuleCache auditCategoryRuleCache) {
 		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
@@ -139,9 +138,9 @@ public class ContractorAuditController extends AuditActionSupport {
 				for (AuditCategory childCategory : categoryData.getCategory().getChildren()) {
 					for (AuditQuestion question : childCategory.getQuestions()) {
 						questionIDs.add(question.getId());
-						if(question.getRequiredQuestion()!=null)
+						if (question.getRequiredQuestion() != null)
 							questionIDs.add(question.getRequiredQuestion().getId());
-						if(question.getVisibleQuestion()!=null)
+						if (question.getVisibleQuestion() != null)
 							questionIDs.add(question.getVisibleQuestion().getId());
 					}
 				}
@@ -276,25 +275,27 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		return false;
 	}
-	
+
 	public boolean isCanSystemEdit() {
-		if(permissions.hasPermission(OpPerms.AuditEdit))
+		if (permissions.hasPermission(OpPerms.AuditEdit))
 			return true;
-		
-		if(conAudit.getAuditType().getClassType().isPolicy()) {
-			if(conAudit.getAuditor() != null && 
-					(conAudit.getAuditor().getId() == permissions.getUserId()))
+
+		if (conAudit.getAuditType().getClassType().isPolicy()) {
+			if (conAudit.getAuditor() != null && (conAudit.getAuditor().getId() == permissions.getUserId()))
 				return true;
 
-			if(permissions.isOperatorCorporate())
+			if (permissions.isOperatorCorporate())
 				return true;
-			
+
 		}
-		
+
 		return false;
 	}
 
 	public boolean isCanEditCategory(AuditCategory category) {
+		if (permissions.isContractor() && category.getAuditType().getId() == 100 && category.getParent() != null)
+			return false;
+
 		if (!conAudit.getAuditType().getClassType().isPolicy())
 			return true;
 
@@ -306,6 +307,7 @@ public class ContractorAuditController extends AuditActionSupport {
 			if (conAudit.hasCaoStatusAfter(AuditStatus.Pending) && !permissions.isAdmin())
 				return false;
 		}
+
 		return true;
 	}
 
@@ -332,7 +334,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	public void setPreviewCat(boolean previewCat) {
 		this.previewCat = previewCat;
 	}
-	
+
 	public boolean matchesType(int categoryId, OshaType oa) {
 		if (OshaTypeConverter.getTypeFromCategory(categoryId) == null || oa == null)
 			return false;
