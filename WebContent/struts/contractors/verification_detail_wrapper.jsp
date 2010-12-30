@@ -17,9 +17,12 @@
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css?v=<s:property value="version"/>" />
 
 <style type="text/css">
-	small {
-		font-size: smaller;
-	}
+small {
+	font-size: smaller;
+}
+.buttonRow {
+	float: right;
+}
 </style>
 
 <script type="text/javascript">
@@ -216,6 +219,33 @@
 	function refreshAuditList() {
 		$('#verification_detail').load('VerifyViewAjax.action', { id: <s:property value="contractor.id" /> });
 	}
+
+$(function(){
+	$('.approveFlagChanges').click(function(){
+		startThinking({div:'approve_flags', message:'Loading Flag Differences...'});
+		$.scrollTo($('#approve_flags'),400);
+		$.post('ContractorCron.action', {conID: <s:property value="contractor.id" />, steps: 'Flag', button: 'Run'}, function(){
+			$('#approve_flags').load('ContractorFlagChangesAjax.action', {conID: <s:property value="contractor.id" />}, function(response, status, xhr){
+				if(status == "error")
+					$('#approve_flags').html($('<div>').addClass('error').append('Flags changes did not load, please try again.'));		
+			});
+		});
+	});
+	$('.saveFlag').live('click', function(){
+		if($('.coFlag:checked').length){
+			$('#approve_flags').load('ContractorFlagChangesAjax.action?'+$('.coFlag:checked').serialize(), 
+					{conID: <s:property value="contractor.id" />, button: 'save'}, 
+					function(response, status, xhr){
+					if(status == "error")
+						$('#approve_flags').html($('<div>').addClass('error').append('Flags changes did not load, please try again.'));		
+			});
+		} else
+			alert('No flags selected');
+	});
+	$('.cancelFlags').live('click', function(){
+		$('#approve_flags').html('');
+	});
+});
 </script>
 
 </head>
@@ -270,16 +300,20 @@
 	</fieldset>
 	<div class="clear"></div>
 </div>
+<div class="buttonRow">
+	<button class="approveFlagChanges picsbutton">Check Flag Changes</button>	
+</div>
 
 <div id="verification_detail" style="line-height: 15px;">
 <s:include value="verification_detail.jsp" />
-</div>
+</div><br />
 
 <table style="width: 100%;"><tbody><tr>
 <td><div id="chartEmrTrir" align="center"></div></td>
 <td><div id="chartManHours" align="center"></div></td>
 </tr></tbody></table>
 
+<div id="approve_flags"></div>
 <div id="verification_audit"></div>
 <div id="noteAjax" class="blockDialog"></div>
 <br clear="all"/>
