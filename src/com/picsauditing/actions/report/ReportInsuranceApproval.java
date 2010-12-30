@@ -28,9 +28,10 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 
 	protected List<String> newStatuses = null;
 	protected Set<String> updatedContractors = new HashSet<String>();
-	
+
 	public ReportInsuranceApproval(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO, ContractorAuditOperatorDAO conAuditOperatorDAO, NoteDAO noteDao, ContractorAccountDAO contractorAccountDAO, AmBestDAO amBestDAO) {
+			OperatorAccountDAO operatorAccountDAO, ContractorAuditOperatorDAO conAuditOperatorDAO, NoteDAO noteDao,
+			ContractorAccountDAO contractorAccountDAO, AmBestDAO amBestDAO) {
 		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
 		this.conAuditOperatorDAO = conAuditOperatorDAO;
 		this.noteDao = noteDao;
@@ -53,6 +54,8 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		getFilter().setShowRecommendedFlag(true);
 		getFilter().setShowAMBest(true);
 
+		sql.addJoin("LEFT JOIN contractor_audit_operator_workflow caow ON cao.id = caow.caoID");
+
 		sql.addWhere("a.status IN ('Active','Demo')");
 
 		sql.addField("cao.status as caoStatus");
@@ -60,7 +63,7 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		sql.addField("cao.id as caoId");
 		sql.addField("caoaccount.name as caoOperatorName");
 		sql.addField("cao.flag as caoRecommendedFlag");
-		
+
 		// Get certificates
 		sql.addJoin("LEFT JOIN pqfdata d ON d.auditID = ca.id");
 		sql.addJoin("LEFT JOIN audit_question q ON q.id = d.questionID");
@@ -68,15 +71,15 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		sql.addWhere("q.columnHeader = 'Certificate'");
 		sql.addWhere("q.questionType = 'FileCertificate'");
 		sql.addWhere("q.number = 1");
-		
+
 		sql.addGroupBy("cao.id");
 	}
-	
+
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		return super.execute();
 	}
 
