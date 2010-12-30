@@ -68,6 +68,8 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		sql.addWhere("q.columnHeader = 'Certificate'");
 		sql.addWhere("q.questionType = 'FileCertificate'");
 		sql.addWhere("q.number = 1");
+		
+		sql.addGroupBy("cao.id");
 	}
 	
 	@Override
