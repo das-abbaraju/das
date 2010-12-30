@@ -19,7 +19,7 @@ var message = 'You have NOT SAVED your file.\nPlease click CANCEL to stay on thi
 window.onload = function (event) {
 	if (questionID > 0) { <% // Audit.action %>
 		window.opener.setAnswer(questionID, certID);
-		window.opener.reloadQuestion(questionID);
+		window.opener.$('#node_'+questionID).trigger('saveQuestion');
 	} else { <% // ConInsureGUARD.action %>
 		<s:if test="!duplicate">
 			window.opener.location.reload();
