@@ -191,8 +191,10 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		}
 
 		for (AuditCatData auditCatData : getCategories().values()) {
-			if (auditCatData.getCategory() == auditData.getQuestion().getCategory())
+			if (auditCatData.getCategory() == auditData.getQuestion().getCategory()){
 				auditPercentCalculator.updatePercentageCompleted(auditCatData);
+				auditDao.save(auditCatData);
+			}
 		}
 
 		return SUCCESS;
