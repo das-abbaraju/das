@@ -17,10 +17,12 @@ public class AuditCategoryMatrixDAO extends PicsDAO {
 	}
 
 	public List<AuditCategory> findCategoriesForCompetencies(int accountID) {
-		Query query = em.createQuery("SELECT a.category FROM AuditCategoryMatrixCompetencies a WHERE a.operatorCompetency IN "
-				+ "(SELECT DISTINCT jc.competency FROM JobCompetency jc WHERE jc.jobRole.account.id = ?)");
-		query.setParameter(1, accountID);
-		
+		Query query = em.createQuery("SELECT a.category FROM AuditCategoryMatrixCompetencies a "
+				+ "WHERE a.operatorCompetency IN (SELECT DISTINCT jc.competency FROM JobCompetency jc "
+				+ "WHERE jc.jobRole.account.id = :accountID AND jc.jobRole IN "
+				+ "(SELECT DISTINCT er.jobRole FROM EmployeeRole er WHERE er.employee.account.id = :accountID))");
+		query.setParameter("accountID", accountID);
+
 		return query.getResultList();
 	}
 }

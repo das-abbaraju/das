@@ -74,6 +74,10 @@ public class EmployeeCompetencies extends ReportEmployee {
 					try {
 						ec = ecDAO.find(employeeID, competencyID);
 					} catch (Exception e) {
+						// Do nothing
+					}
+
+					if (ec == null) {
 						ec = new EmployeeCompetency();
 						ec.setSkilled(false);
 						ec.setEmployee(employeeDAO.find(employeeID));
@@ -114,9 +118,9 @@ public class EmployeeCompetencies extends ReportEmployee {
 				String className = this.getClass().getName();
 				filename = className.substring(className.lastIndexOf("."));
 			}
-			
+
 			HSSFWorkbook wb = buildWorkbook(filename);
-			
+
 			excelSheet.setName(filename);
 			filename += ".xls";
 
@@ -155,7 +159,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 	private void buildMap() throws SQLException {
 		sql = new SelectSQL("employee e");
 		buildQuery();
-		
+
 		sql.addJoin("LEFT JOIN employee_competency ec ON ec.employeeID = e.id AND ec.competencyID = oc.id");
 
 		sql.addField("jr.id jobRoleID");
@@ -166,7 +170,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 		sql.addField("oc.description");
 		sql.addField("ec.id ecID");
 		sql.addField("ec.skilled");
-		
+
 		sql.addOrderBy("oc.category, oc.label");
 
 		if (filterOn(getFilter().getCompetencies()))
@@ -211,7 +215,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 			map.put(e, o, c);
 		}
 	}
-	
+
 	protected HSSFWorkbook buildWorkbook(String name) {
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet();
@@ -224,12 +228,12 @@ public class EmployeeCompetencies extends ReportEmployee {
 		HSSFCellStyle headerStyle = wb.createCellStyle();
 		headerStyle.setFont(headerFont);
 		headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		
+
 		HSSFCellStyle green = wb.createCellStyle();
 		green.setFillForegroundColor(HSSFColor.LIGHT_GREEN.index);
 		green.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 		green.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		
+
 		HSSFCellStyle red = wb.createCellStyle();
 		red.setFillForegroundColor(HSSFColor.RED.index);
 		red.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
@@ -239,7 +243,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 		HSSFCell cell = row.createCell(0);
 		cell.setCellStyle(headerStyle);
 		cell.setCellValue(new HSSFRichTextString("Employees"));
-		
+
 		int cellCount = 1;
 		for (OperatorCompetency oc : getCompetencies()) {
 			cell = row.createCell(cellCount);
@@ -247,14 +251,14 @@ public class EmployeeCompetencies extends ReportEmployee {
 			cell.setCellValue(new HSSFRichTextString(oc.getLabel()));
 			cellCount++;
 		}
-		
+
 		int rowCount = 1;
 		for (Employee e : getEmployees()) {
 			row = sheet.createRow(rowCount);
-			
+
 			cell = row.createCell(0);
 			cell.setCellValue(new HSSFRichTextString(e.getLastName() + ", " + e.getFirstName()));
-			
+
 			cellCount = 1;
 			for (OperatorCompetency oc : getCompetencies()) {
 				cell = row.createCell(cellCount);
@@ -266,17 +270,17 @@ public class EmployeeCompetencies extends ReportEmployee {
 						cell.setCellStyle(red);
 					}
 				}
-				
+
 				cellCount++;
 			}
-			
+
 			rowCount++;
 		}
-		
+
 		for (int i = 0; i < cellCount; i++) {
 			sheet.autoSizeColumn(i);
 		}
-		
+
 		return wb;
 	}
 
