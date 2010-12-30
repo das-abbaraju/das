@@ -289,6 +289,7 @@ function getMatches(requestID) {
 		requestID: requestID
 	};
 
+	$('#potentialMatches').show();
 	$('#potentialMatches').append('<img src="images/ajax_process.gif" style="border: none;" />');
 	$('#potentialMatches').load('RequestNewContractorAjax.action', data);
 }
@@ -302,6 +303,8 @@ function getMatches(requestID) {
 </pics:permission>
 
 <s:include value="../actionMessages.jsp"></s:include>
+
+<div id="potentialMatches" class="info" style="display: none;"></div>
 
 <s:if test="newContractor.contractor != null || !newContractor.open">
 	<div class="info">

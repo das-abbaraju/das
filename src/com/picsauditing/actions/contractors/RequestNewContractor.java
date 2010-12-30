@@ -79,40 +79,34 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected State state;
 	protected EmailTemplate template;
 	protected List<ContractorAccount> potentialMatches;
-	
+
 	protected String term;
 	protected String type;
-	
+
 	protected List<String> unusedTerms;
 	protected List<String> usedTerms;
-	
-	protected boolean continueCheck = true;
-	
-	private String[] names = new String[] { "ContractorName",
-			"ContractorPhone", "ContractorEmail", "RequestedByOperator",
-			"RequestedByUser", "ContractorContactName", "ContractorTaxID",
-			"ContractorAddress", "ContractorCity", "ContractorState",
-			"ContractorZip", "ContractorCountry", "Deadline",
-			"RegistrationLink", "PICSSignature" };
 
-	private String[] velocityCodes = new String[] { "${newContractor.name}",
-			"${newContractor.phone}", "${newContractor.email}",
-			"${newContractor.requestedBy.name}", "${requestedBy}",
-			"${newContractor.contact}", "${newContractor.taxID}",
-			"${newContractor.address}", "${newContractor.city}",
-			"${newContractor.state.english}", "${newContractor.zip}",
-			"${newContractor.country.english}", "${newContractor.deadline}",
-			"${requestLink}", "<PICSSignature>" };
-	
+	protected boolean continueCheck = true;
+
+	private String[] names = new String[] { "ContractorName", "ContractorPhone", "ContractorEmail",
+			"RequestedByOperator", "RequestedByUser", "ContractorContactName", "ContractorTaxID", "ContractorAddress",
+			"ContractorCity", "ContractorState", "ContractorZip", "ContractorCountry", "Deadline", "RegistrationLink",
+			"PICSSignature" };
+
+	private String[] velocityCodes = new String[] { "${newContractor.name}", "${newContractor.phone}",
+			"${newContractor.email}", "${newContractor.requestedBy.name}", "${requestedBy}",
+			"${newContractor.contact}", "${newContractor.taxID}", "${newContractor.address}", "${newContractor.city}",
+			"${newContractor.state.english}", "${newContractor.zip}", "${newContractor.country.english}",
+			"${newContractor.deadline}", "${requestLink}", "<PICSSignature>" };
+
 	private String[] noteReason = new String[] { "The Contractor doesn't want to register",
 			"The contractor wants to register but keeps delaying", "The company is no longer in business",
 			"We were unable to locate this company" };
-	
+
 	private String picsSignature = "PICS\nP.O. Box 51387\nIrvine CA 92619-1387\nTel: (800)506-7427\n"
-		+ "Fax: (949)269-9153\nhttp://www.picsauditing.com\nemail: info@picsauditing.com "
-		+ "(Please add this email address to your address book to prevent it from being labeled " 
-		+ "as spam)";
-	
+			+ "Fax: (949)269-9153\nhttp://www.picsauditing.com\nemail: info@picsauditing.com "
+			+ "(Please add this email address to your address book to prevent it from being labeled " + "as spam)";
+
 	public RequestNewContractor(ContractorRegistrationRequestDAO crrDAO, OperatorAccountDAO operatorAccountDAO,
 			UserDAO userDAO, CountryDAO countryDAO, StateDAO stateDAO, ContractorAccountDAO contractorAccountDAO,
 			AccountDAO accountDAO) {
@@ -127,7 +121,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public void prepare() throws Exception {
 		getPermissions();
-		
+
 		newContractor.setDeadline(DateBean.addMonths(new Date(), 2));
 
 		requestID = getParameter("requestID");
@@ -155,33 +149,34 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		EmailTemplateDAO templateDAO = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
 		template = templateDAO.find(83);
 
 		if (button != null) {
-			if("ajaxcheck".equals(button)){
+			if ("ajaxcheck".equals(button)) {
 				SearchEngine searchEngine = new SearchEngine(permissions);
 				List<BasicDynaBean> matches = newGap(searchEngine, term, type);
-				if(matches!=null && !matches.isEmpty()) // results
+				if (matches != null && !matches.isEmpty()) // results
 					continueCheck = false;
-				else return null;
+				else
+					return null;
 				Database db = new Database();
 				JSONArray result = new JSONArray();
 				List<Integer> ids = new ArrayList<Integer>();
 				StringBuilder query = new StringBuilder();
 				result.add(continueCheck);
-				if("C".equalsIgnoreCase(type))
-					query.append("SELECT a.id, a.name FROM accounts a WHERE a.id IN ("); 
-				else if("U".equalsIgnoreCase(type))
+				if ("C".equalsIgnoreCase(type))
+					query.append("SELECT a.id, a.name FROM accounts a WHERE a.id IN (");
+				else if ("U".equalsIgnoreCase(type))
 					query.append("SELECT a.id, a.name FROM accounts a JOIN users u ON a.id = u.accountID WHERE a.id IN(");
-				for(BasicDynaBean bdb : matches){
+				for (BasicDynaBean bdb : matches) {
 					int id = Integer.parseInt(bdb.get("foreignKey").toString());
 					ids.add(id);
-				}		
+				}
 				JSONArray jObj = new JSONArray();
-				for(final String str : unusedTerms){
-					jObj.add(new JSONObject(){
+				for (final String str : unusedTerms) {
+					jObj.add(new JSONObject() {
 						{
 							put("unused", str);
 						}
@@ -189,8 +184,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				}
 				result.add(jObj);
 				jObj = new JSONArray();
-				for(final String str : usedTerms){
-					jObj.add(new JSONObject(){
+				for (final String str : usedTerms) {
+					jObj.add(new JSONObject() {
 						{
 							put("used", str);
 						}
@@ -199,18 +194,18 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				result.add(jObj);
 				query.append(Strings.implode(ids, ",")).append(')');
 				List<BasicDynaBean> cons = db.select(query.toString(), false);
-				final Hashtable<Integer, Integer> ht = searchEngine.getConIds(permissions);			
-				for(BasicDynaBean bdb : cons){
+				final Hashtable<Integer, Integer> ht = searchEngine.getConIds(permissions);
+				for (BasicDynaBean bdb : cons) {
 					final String name = bdb.get("name").toString();
 					final String id = bdb.get("id").toString();
-					result.add(new JSONObject(){
+					result.add(new JSONObject() {
 						{
 							put("name", name);
 							put("id", id);
-							if(ht.containsKey(id))
-								put("add",false);
+							if (ht.containsKey(id))
+								put("add", false);
 							else
-								put("add",true);
+								put("add", true);
 						}
 					});
 				}
@@ -247,39 +242,39 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					newContractor.setCountry(country);
 				if (state != null && !state.equals(newContractor.getState()))
 					newContractor.setState(state);
-				if (requestedOperator > 0 
-						&& (newContractor.getRequestedBy() == null
-								|| requestedOperator != newContractor.getRequestedBy().getId())) {
+				if (requestedOperator > 0
+						&& (newContractor.getRequestedBy() == null || requestedOperator != newContractor
+								.getRequestedBy().getId())) {
 					newContractor.setRequestedBy(operatorAccountDAO.find(requestedOperator));
 				}
 				if (requestedUser > 0
-						&& (newContractor.getRequestedByUser() == null
-								|| requestedUser != newContractor.getRequestedByUser().getId())) {
+						&& (newContractor.getRequestedByUser() == null || requestedUser != newContractor
+								.getRequestedByUser().getId())) {
 					newContractor.setRequestedByUser(userDAO.find(requestedUser));
 					newContractor.setRequestedByUserOther(null);
 				} else if (requestedUser == 0) {
 					if (!Strings.isEmpty(newContractor.getRequestedByUserOther()))
 						newContractor.setRequestedByUser(null);
 				}
-				if (conID > 0 && (newContractor.getContractor() == null || 
-						conID != newContractor.getContractor().getId())) {
+				if (conID > 0
+						&& (newContractor.getContractor() == null || conID != newContractor.getContractor().getId())) {
 					ContractorAccount con = contractorAccountDAO.find(conID);
-					
+
 					if (con != null) {
 						newContractor.setContractor(con);
 						newContractor.setHandledBy(WaitingOn.Operator);
-						
+
 						if (newContractor.isWatch() && newContractor.getRequestedByUser() != null) {
 							// Need to check if the watch exists all ready?
-							List<ContractorWatch> existing = 
-								userDAO.findContractorWatch(newContractor.getRequestedByUser().getId());
+							List<ContractorWatch> existing = userDAO.findContractorWatch(newContractor
+									.getRequestedByUser().getId());
 							boolean exists = false;
-							
+
 							for (ContractorWatch cw : existing) {
 								if (cw.getContractor().equals(con))
 									exists = true;
 							}
-							
+
 							if (!exists) {
 								ContractorWatch watch = new ContractorWatch();
 								watch.setAuditColumns(permissions);
@@ -292,65 +287,65 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 						addActionError("PICS Contractor not found");
 				} else if (conID == 0)
 					newContractor.setContractor(null);
-				
+
 				// Add notes, if it's been filled out
 				if (!Strings.isEmpty(addToNotes)) {
 					newContractor.setNotes(prepend(addToNotes, newContractor.getNotes()));
 					addToNotes = null;
 				}
-				
+
 				potentialMatches = runGapAnalysis(newContractor);
 				if (potentialMatches.size() > 0)
 					newContractor.setMatchCount(potentialMatches.size());
-				
+
 				if (newContractor.getId() == 0) {
 					if (!Strings.isEmpty(newContractor.getEmail())) {
 						newContractor.setAuditColumns(permissions);
 						newContractor = crrDAO.save(newContractor);
-						
+
 						EmailQueue emailQueue = createEmail();
 						List<OperatorForm> forms = getForms();
-						
+
 						if (forms.size() == 1 && emailQueue != null) {
 							String filename = forms.get(0).getFile();
 							addAttachments(emailQueue, filename);
 						}
 					}
-					
+
 					redirect = true;
 				}
 			}
-			
+
 			if (button.equals("MatchingList")) {
 				if (requestID > 0) {
 					newContractor = crrDAO.find(requestID);
 					potentialMatches = runGapAnalysis(newContractor);
-					
+
 					if (potentialMatches.size() != newContractor.getMatchCount()) {
 						newContractor.setMatchCount(potentialMatches.size());
 						crrDAO.save(newContractor);
 						crrDAO.clear();
 					}
-					
+
 					return "matches";
 				} else {
 					addActionError("Requested contractor not found.");
 					return BLANK;
 				}
 			}
-			
+
 			if (button.equals("Return To Operator")) {
 				newContractor.setHandledBy(WaitingOn.Operator);
 				redirect = true;
 			}
-			
+
 			if (button.equals("Close Request")) {
 				// Last minute notes?
 				if (!Strings.isEmpty(addToNotes)) {
 					newContractor.setNotes(prepend(addToNotes, newContractor.getNotes()));
 					addToNotes = null;
 				}
-				
+
 				newContractor.setNotes(prepend("Closed the request.", newContractor.getNotes()));
 				newContractor.setOpen(false);
 				redirect = true;
@@ -359,26 +354,26 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			if (button.equals("Send Email") || button.equals("Contacted By Phone")) {
 				if (button.equals("Send Email")) {
 					EmailQueue emailQueue = createEmail();
-					
+
 					if (filenames != null && emailQueue != null) {
 						for (String filename : filenames) {
 							addAttachments(emailQueue, filename);
 						}
 					}
-					
+
 					newContractor.setNotes(prepend("Contacted by email.", newContractor.getNotes()));
 				} else
 					newContractor.setNotes(prepend("Contacted by phone.", newContractor.getNotes()));
-				
+
 				newContractor.setContactCount(newContractor.getContactCount() + 1);
 				newContractor.setLastContactedBy(new User(permissions.getUserId()));
 				newContractor.setLastContactDate(new Date());
 			}
-			
+
 			newContractor.setAuditColumns(permissions);
 			crrDAO.save(newContractor);
 
-			if(redirect)
+			if (redirect)
 				return "backToReport";
 		}
 		return SUCCESS;
@@ -409,8 +404,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public List<User> getUsersList(int accountID) {
 		return userDAO.findByAccountID(accountID, "Yes", "No");
 	}
-	
-	public int getPrimaryContact(int opID){
+
+	public int getPrimaryContact(int opID) {
 		return operatorAccountDAO.find(opID).getPrimaryContact().getId();
 	}
 
@@ -449,7 +444,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public int getRequestedUser() {
 		if (requestedUser == 0 && Strings.isEmpty(newContractor.getRequestedByUserOther()))
 			return getPrimaryContact(opID);
-		else return requestedUser;
+		else
+			return requestedUser;
 	}
 
 	public void setRequestedUser(int requestedUser) {
@@ -463,7 +459,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public void setConID(int conID) {
 		this.conID = conID;
 	}
-	
+
 	public int getOpID() {
 		return opID;
 	}
@@ -479,11 +475,11 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public void setFilenames(String[] filenames) {
 		this.filenames = filenames;
 	}
-	
+
 	public String getAddToNotes() {
 		return addToNotes;
 	}
-	
+
 	public void setAddToNotes(String addToNotes) {
 		this.addToNotes = addToNotes;
 	}
@@ -522,7 +518,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public void setEmailBody(String emailBody) {
 		this.emailBody = emailBody;
 	}
-	
+
 	public List<ContractorAccount> getPotentialMatches() {
 		return potentialMatches;
 	}
@@ -545,23 +541,23 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		List<OperatorForm> forms = null;
 		Set<OperatorForm> allForms = new HashSet<OperatorForm>();
 		OperatorAccount operator = newContractor.getRequestedBy();
-		
+
 		FacilitiesDAO facilitiesDAO = (FacilitiesDAO) SpringUtils.getBean("FacilitiesDAO");
 		List<Facility> facilities = facilitiesDAO.findSiblings(operator.getId());
-		
+
 		for (Facility facility : facilities) {
 			allForms.addAll(facility.getOperator().getOperatorForms());
 		}
-		
+
 		allForms.addAll(operator.getOperatorForms());
 		forms = new ArrayList<OperatorForm>(allForms);
-		
+
 		Iterator<OperatorForm> iterator = forms.iterator();
 		while (iterator.hasNext()) {
 			if (!iterator.next().getFormName().toLowerCase().contains("*"))
 				iterator.remove();
 		}
-		
+
 		Collections.sort(forms, new ByFacilityName());
 		return forms;
 	}
@@ -569,48 +565,42 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public String[] getTokens() {
 		return names;
 	}
-	
-	public static List<ContractorAccount> runGapAnalysis(ContractorRegistrationRequest newContractor) {
-		List<String> whereClauses = new ArrayList<String>();
-		
+
+	public List<ContractorAccount> runGapAnalysis(ContractorRegistrationRequest newContractor) {
+		List<String> searchTerms = new ArrayList<String>();
+
 		if (!Strings.isEmpty(newContractor.getName()))
-			whereClauses.add("a.name LIKE '%" + Utilities.escapeQuotes(newContractor.getName()) 
-					+ "%' OR a.nameIndex LIKE '%" + Strings.indexName(newContractor.getName()) 
-					+ "%' OR a.dbaName LIKE '%" + Utilities.escapeQuotes(newContractor.getName()) + "%'");
-		if (!Strings.isEmpty(newContractor.getTaxID()))
-			whereClauses.add("a.taxId LIKE '%" + Utilities.escapeQuotes(newContractor.getTaxID()) + "%'");
+			searchTerms.add(newContractor.getName());
 		if (!Strings.isEmpty(newContractor.getAddress()))
-			whereClauses.add("a.address LIKE '%" + Utilities.escapeQuotes(newContractor.getAddress()) + "%'");
+			searchTerms.add(newContractor.getAddress());
 		if (!Strings.isEmpty(newContractor.getPhone()))
-			whereClauses.add("a.phone LIKE '%" + Utilities.escapeQuotes(newContractor.getPhone()) + "%'");
+			searchTerms.add(newContractor.getPhone());
 		if (!Strings.isEmpty(newContractor.getEmail()))
-			whereClauses.add("a.id IN (SELECT u.account.id from User u WHERE u.email LIKE '%" + 
-					Utilities.escapeQuotes(newContractor.getEmail()) + "%')");
-		if (!Strings.isEmpty(newContractor.getContact())) {
-			whereClauses.add("a.id IN (SELECT u.account.id from User u WHERE u.name LIKE '%" + 
-					Utilities.escapeQuotes(newContractor.getContact()) + "%')");
+			searchTerms.add(newContractor.getEmail());
+		if (!Strings.isEmpty(newContractor.getContact()))
+			searchTerms.add(newContractor.getContact());
+
+		String searchTerm = Strings.implode(searchTerms, " ");
+		List<BasicDynaBean> results = newGap(new SearchEngine(permissions), searchTerm, "C");
+		Set<Integer> conIDs = new HashSet<Integer>();
+
+		for (BasicDynaBean r : results) {
+			conIDs.add(Integer.parseInt(r.get("foreignKey").toString()));
 		}
-		
-		if (whereClauses.size() > 0) {
-			String where = Strings.implode(whereClauses, ") OR (");
-			where = "(" + where + ")";
-			
-			ContractorAccountDAO conDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
-			return conDAO.findWhere(where);
-		}
-		
-		return null;
+
+		return contractorAccountDAO.findByContractorIds(conIDs);
 	}
-	
-	public List<BasicDynaBean> newGap(SearchEngine searchEngine, String term, String type){
+
+	public List<BasicDynaBean> newGap(SearchEngine searchEngine, String term, String type) {
 		unusedTerms = new ArrayList<String>();
 		usedTerms = new ArrayList<String>();
-		type = "'"+Utilities.escapeQuotes(type)+"'";
+
 		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
 		Database db = new Database();
 		List<String> termsArray = searchEngine.sortSearchTerms(searchEngine.buildTerm(term, false, false), true);
-		while(results.isEmpty() && termsArray.size()>0){
-			String query = searchEngine.buildQuery(null, termsArray, "i1.indexType = "+type, null, 20, false, true);
+		while (results.isEmpty() && termsArray.size() > 0) {
+			String query = searchEngine.buildQuery(null, termsArray, (Strings.isEmpty(type) ? null : "i1.indexType = '"
+					+ Utilities.escapeQuotes(type) + "'"), null, 20, false, true);
 			try {
 				results = db.select(query, false);
 			} catch (SQLException e) {
@@ -618,59 +608,59 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				e.printStackTrace();
 				return null;
 			}
-			if(!searchEngine.getNullTerms().isEmpty() && unusedTerms.isEmpty()){
+			if (!searchEngine.getNullTerms().isEmpty() && unusedTerms.isEmpty()) {
 				unusedTerms.addAll(searchEngine.getNullTerms());
 				termsArray.removeAll(searchEngine.getNullTerms());
 			}
 			usedTerms = termsArray;
-			termsArray=termsArray.subList(0, termsArray.size()-1);						
-			//termsArray.subList(1, termsArray.size());
+			termsArray = termsArray.subList(0, termsArray.size() - 1);
+			// termsArray.subList(1, termsArray.size());
 		}
 		return results;
-		
+
 	}
-	
+
 	public boolean worksForOperator(int conID) {
 		if (permissions.isOperatorCorporate()) {
 			OperatorAccount operator = operatorAccountDAO.find(permissions.getAccountId());
 			List<ContractorOperator> cos = operator.getContractorOperators();
-			
+
 			for (ContractorOperator co : cos) {
 				if (co.getContractorAccount().getId() == conID)
 					return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public boolean isSearchForNew() {
 		return permissions.hasPermission(OpPerms.SearchContractors);
 	}
-	
+
 	public boolean isContractorWatch() {
 		if (newContractor.getRequestedByUser() != null) {
 			try {
 				Permissions perm = new Permissions();
 				perm.setAccountPerms(newContractor.getRequestedByUser());
-				
+
 				return perm.hasPermission(OpPerms.ContractorWatch);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	private String prepend(String note, String body) {
 		if (note != null)
 			return maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + note + "\n\n"
-				+ (body != null ? body : "");
-		
+					+ (body != null ? body : "");
+
 		return body;
 	}
-	
+
 	private class ByFacilityName implements Comparator<OperatorForm> {
 		public int compare(OperatorForm o1, OperatorForm o2) {
 			if (o1.getAccount().getName().compareTo(o2.getAccount().getName()) == 0)
@@ -683,22 +673,26 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public String[] getNoteReason() {
 		return noteReason;
 	}
-	
+
 	public void setNoteReason(String[] noteReason) {
 		this.noteReason = noteReason;
 	}
-	
+
 	private EmailQueue createEmail() {
 		String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button="
-			+ "request&requestID=" + newContractor.getId();
-		// Point to the contractor registration page with some information pre-filled
+				+ "request&requestID=" + newContractor.getId();
+		// Point to the contractor registration page with some information
+		// pre-filled
 		String[] fields = new String[] {
-				newContractor.getName(), newContractor.getPhone(), newContractor.getEmail(),
+				newContractor.getName(),
+				newContractor.getPhone(),
+				newContractor.getEmail(),
 				newContractor.getRequestedBy().getName(),
 				newContractor.getRequestedByUser() != null ? newContractor.getRequestedByUser().getName()
 						: newContractor.getRequestedByUserOther(), newContractor.getContact(),
 				newContractor.getTaxID(), newContractor.getAddress(), newContractor.getCity(),
-				newContractor.getState().getEnglish(), newContractor.getZip(), newContractor.getCountry().getEnglish(),
+				newContractor.getState() == null ? null : newContractor.getState().getEnglish(),
+				newContractor.getZip(), newContractor.getCountry().getEnglish(),
 				maskDateFormat(newContractor.getDeadline()), requestLink, picsSignature };
 
 		if (Strings.isEmpty(emailBody) || Strings.isEmpty(emailSubject)) {
@@ -716,13 +710,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 		EmailQueue emailQueue = new EmailQueue();
 		emailQueue.setPriority(80);
-		
+
 		emailQueue.setFromAddress(getAssignedCSR() == null ? "info@picsauditing.com" : getAssignedCSR().getEmail());
 		emailQueue.setToAddresses(newContractor.getEmail());
-		
-		if (newContractor.getRequestedByUser() != null && !Strings.isEmpty(newContractor.getRequestedByUser().getEmail()))
+
+		if (newContractor.getRequestedByUser() != null
+				&& !Strings.isEmpty(newContractor.getRequestedByUser().getEmail()))
 			emailQueue.setCcAddresses(newContractor.getRequestedByUser().getEmail());
-		
+
 		emailQueue.setBody(emailBody);
 		emailQueue.setSubject(emailSubject);
 		try {
@@ -731,10 +726,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		} catch (Exception e1) {
 			addActionError("Could not send email with subject '" + emailSubject + "' to " + newContractor.getEmail());
 		}
-		
+
 		return null;
 	}
-	
+
 	private void addAttachments(EmailQueue emailQueue, String filename) {
 		try {
 			EmailAttachment attachment = new EmailAttachment();
@@ -748,12 +743,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			attachment.setContent(bytes);
 			attachment.setFileSize((int) file.length());
 			attachment.setEmailQueue(emailQueue);
-			EmailAttachmentDAO attachmentDAO = 
-				(EmailAttachmentDAO) SpringUtils.getBean("EmailAttachmentDAO");
+			EmailAttachmentDAO attachmentDAO = (EmailAttachmentDAO) SpringUtils.getBean("EmailAttachmentDAO");
 			attachmentDAO.save(attachment);
-			
-			newContractor.setNotes(prepend("Sent email on request creation", 
-					newContractor.getNotes()));
+
+			newContractor.setNotes(prepend("Sent email on request creation", newContractor.getNotes()));
 		} catch (Exception e) {
 			System.out.println("Unable to open file: /forms/" + filename);
 		}
