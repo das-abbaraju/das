@@ -86,7 +86,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	public String getHtmlDisplay(String value) {
 		return Utilities.escapeHTML(value);
 	}
-	
+
 	@Temporal(TemporalType.DATE)
 	public Date getDateVerified() {
 		return dateVerified;
@@ -151,7 +151,9 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 	@Transient
 	public boolean isHasRequirements() {
-		if(audit.getAuditType().getWorkFlow().getId() != Workflow.AUDIT_REQUIREMENTS_WORKFLOW) // audits that have requirements
+		// Audits that have requirements
+		if (audit.getAuditType().getWorkFlow().getId() != Workflow.AUDIT_REQUIREMENTS_WORKFLOW
+				&& audit.getAuditType().getWorkFlow().getId() != Workflow.HSE_WORKFLOW)
 			return false;
 		if (!getQuestion().isHasRequirement())
 			return false;
@@ -172,36 +174,26 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		return false;
 	}
 
-/*	@Transient
-	public boolean isRequired() {
-		String isRequired = question.getIsRequired();
-		if (isRequired.equals("Yes"))
-			return true;
-
-		if (isRequired.equals("Depends")) {
-			if (question.getr == null)
-				return false;
-			String dependsOnAnswer = question.getDependsOnAnswer();
-			if (dependsOnAnswer == null)
-				return false;
-
-			// TODO BEFORE RELEASE! figure out some way to get the answer of a
-			// dependent question
-			// dependsOnQuestion.getAnswer();
-			AuditData contractorAnswer = null;
-
-			if (contractorAnswer == null)
-				// The contractor hasn't answered this question yet
-				return false;
-			// Such as "Yes" and "Yes with Office" answers.
-			if (dependsOnAnswer.equals("Yes*"))
-				return contractorAnswer.getAnswer().startsWith("Yes");
-
-			if (dependsOnAnswer.equals(contractorAnswer.getAnswer()))
-				return true;
-		}
-		return false;
-	}*/
+	/*
+	 * @Transient public boolean isRequired() { String isRequired =
+	 * question.getIsRequired(); if (isRequired.equals("Yes")) return true;
+	 * 
+	 * if (isRequired.equals("Depends")) { if (question.getr == null) return
+	 * false; String dependsOnAnswer = question.getDependsOnAnswer(); if
+	 * (dependsOnAnswer == null) return false;
+	 * 
+	 * // TODO BEFORE RELEASE! figure out some way to get the answer of a //
+	 * dependent question // dependsOnQuestion.getAnswer(); AuditData
+	 * contractorAnswer = null;
+	 * 
+	 * if (contractorAnswer == null) // The contractor hasn't answered this
+	 * question yet return false; // Such as "Yes" and "Yes with Office"
+	 * answers. if (dependsOnAnswer.equals("Yes*")) return
+	 * contractorAnswer.getAnswer().startsWith("Yes");
+	 * 
+	 * if (dependsOnAnswer.equals(contractorAnswer.getAnswer())) return true; }
+	 * return false; }
+	 */
 
 	/**
 	 * Get a unique ID for this answer regardless if it has been saved or not
@@ -272,12 +264,12 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 			return 1;
 		}
 
-		//int cmp = getQuestion().compareTo(other.getQuestion());
+		// int cmp = getQuestion().compareTo(other.getQuestion());
 
-//		if (cmp != 0)
-//			return cmp;
-//
-//		return new Integer(getId()).compareTo(new Integer(other.getId()));
+		// if (cmp != 0)
+		// return cmp;
+		//
+		// return new Integer(getId()).compareTo(new Integer(other.getId()));
 		return 0;
 	}
 
@@ -287,23 +279,22 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 
 	/**
-	 * 		Comparator for comparing AuditData based on
-	 * 		Audit Questions.
-	 * @return
-	 * 		Comparator for comparing AuditData based on AuditQuestion
+	 * Comparator for comparing AuditData based on Audit Questions.
+	 * 
+	 * @return Comparator for comparing AuditData based on AuditQuestion
 	 */
-	public static Comparator<AuditData> getQuestionComparator(){
+	public static Comparator<AuditData> getQuestionComparator() {
 		return new Comparator<AuditData>() {
 			@Override
 			public int compare(AuditData o1, AuditData o2) {
 				String[] o1a = o1.getQuestion().getExpandedNumber().split("\\.");
 				String[] o2a = o2.getQuestion().getExpandedNumber().split("\\.");
-				for(int i=0; i<o1a.length && i<o2a.length; i++){
-					if(o1a[i].equals(o2a[i]))
+				for (int i = 0; i < o1a.length && i < o2a.length; i++) {
+					if (o1a[i].equals(o2a[i]))
 						continue;
 					else
 						return Integer.valueOf(o1a[i]).compareTo(Integer.valueOf(o2a[i]));
-				}				
+				}
 				return 0;
 			}
 		};

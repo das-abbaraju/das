@@ -14,9 +14,10 @@ import javax.persistence.Transient;
 @Table(name = "workflow")
 @SuppressWarnings("serial")
 public class Workflow extends BaseTable {
-	
-	public static int AUDIT_REQUIREMENTS_WORKFLOW = 2;
-	public static int MANUAL_AUDIT_WORKFLOW = 7;
+
+	public static final int AUDIT_REQUIREMENTS_WORKFLOW = 2;
+	public static final int HSE_WORKFLOW = 8;
+	public static final int MANUAL_AUDIT_WORKFLOW = 7;
 
 	private String name;
 	private List<WorkflowStep> steps = new ArrayList<WorkflowStep>();
@@ -65,19 +66,19 @@ public class Workflow extends BaseTable {
 		}
 		return false;
 	}
-	
+
 	@Override
 	@Transient
-	public Workflow clone(){
+	public Workflow clone() {
 		Workflow clone = new Workflow();
-		
+
 		clone.createdBy = this.getCreatedBy();
 		clone.creationDate = this.getCreationDate();
 		clone.id = this.getId();
 		clone.name = this.getName();
 		clone.updateDate = this.getUpdateDate();
 		clone.updatedBy = this.getUpdatedBy();
-		
+
 		return clone;
 	}
 }
