@@ -36,6 +36,7 @@ import com.picsauditing.dao.UserAssignmentMatrixDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -56,6 +57,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.SendMail;
@@ -176,6 +178,7 @@ public class ContractorCron extends PicsActionSupport {
 			runBilling(contractor);
 			runAuditBuilder(contractor);
 			runAuditCategory(contractor);
+			runAssignAudit(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
 			// runCSRAssignment(contractor);
@@ -411,7 +414,8 @@ public class ContractorCron extends PicsActionSupport {
 		});
 
 		if (roseburgAudits.size() > 0) {
-			List<ContractorAudit> mostRecentRoseburgAudits = roseburgAudits.subList(0, Math.min(3, roseburgAudits.size()));
+			List<ContractorAudit> mostRecentRoseburgAudits = roseburgAudits.subList(0,
+					Math.min(3, roseburgAudits.size()));
 			int roseburgTotal = 0;
 			for (ContractorAudit roseburgAudit : mostRecentRoseburgAudits) {
 				roseburgTotal += roseburgAudit.getScore();
@@ -558,8 +562,8 @@ public class ContractorCron extends PicsActionSupport {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.getStatus().after(AuditStatus.Pending)) {
 							if (cao.hasCaop(co.getOperatorAccount().getId())) {
-								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co
-										.getFlagDatas());
+								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(),
+										co.getFlagDatas());
 
 								cao.setFlag(flagColor);
 							}
@@ -690,6 +694,44 @@ public class ContractorCron extends PicsActionSupport {
 		// } else if (assignments.size() > 1) {
 		// // Manage Conflicts
 		// }
+	}
+
+	private void runAssignAudit(ContractorAccount contractor) {
+		// This is so audits like the HSE Competency Submittal can have an
+		// auditor automatically assigned
+		if (!runStep(ContractorCronStep.AssignAudit))
+			return;
+
+		// Checking if the contractor is tagged
+		for (ContractorTag tag : contractor.getOperatorTags()) {
+			if (tag.getTag().getId() == OperatorTag.SHELL_COMPETENCY_REVIEW) {
+				// Find if there are any manual audits
+				User auditor = null;
+				for (ContractorAudit audit : contractor.getAudits()) {
+					if (audit.getAuditType().isDesktop()) {
+						auditor = audit.getAuditor();
+						for (UserGroup ug : audit.getAuditor().getGroups()) {
+							if (ug.getGroup().getId() == User.INDEPENDENT_CONTRACTOR) {
+								auditor = null;
+								// Dennis Dooly to Rick McGee
+								if (audit.getAuditor().getId() == 910)
+									auditor = new User(9615);
+								// Mike Casey to Harvey Staal
+								if (audit.getAuditor().getId() == 10600)
+									auditor = new User(935);
+							}
+						}
+					}
+				}
+
+				for (ContractorAudit audit : contractor.getAudits()) {
+					if (audit.getAuditType().getId() == AuditType.SHELL_COMPETENCY_REVIEW && audit.getAuditor() == null) {
+						// Assign automatically to Mina if auditor wasn't set
+						audit.setAuditor(auditor != null ? auditor : new User(1029));
+					}
+				}
+			}
+		}
 	}
 
 	public int getConID() {
