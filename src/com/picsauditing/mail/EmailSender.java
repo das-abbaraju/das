@@ -65,7 +65,7 @@ public class EmailSender {
 				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 			emailQueueDAO.save(email);
 		} catch (Exception e) {
-			System.out.println("Send Mail Exception with account " + currentDefaultSender + ": " + e.toString() + " "
+			PicsLogger.log("Send Mail Exception with account " + currentDefaultSender + ": " + e.toString() + " "
 					+ e.getMessage() + "\nFROM: " + email.getFromAddress() + "\nTO: " + email.getToAddresses()
 					+ "\nSUBJECT: " + email.getSubject());
 			changeDefaultSender();
