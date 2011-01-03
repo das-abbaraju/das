@@ -17,7 +17,7 @@
 		<br/><b>If you are awarded the BID or decide to convert to a full membership your new membership fee will be $<s:property value="currentMembership.amount"/></b>.	
 	</s:if>
 	<s:else>
-		<label>New Membership Level:</label> $<s:property value="contractor.newMembershipLevel.amount" /> per year<br />
+		<label>New Membership Level:</label> $<s:property value="contractor.newMembershipLevel.amount" /> <br />
 		<s:property value="contractor.newMembershipLevel.fee" />
 	</s:else>
 </s:if>
