@@ -248,10 +248,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 				return false;
 		}
 
-		if (workflowStep.getNewStatus().isResubmitted() && !conAudit.isAboutToExpire()) {
-			return false;
-		}
-
 		AuditType type = cao.getAudit().getAuditType();
 
 		if (workflowStep.getNewStatus().isComplete() && type.getWorkFlow().isHasSubmittedStep()
