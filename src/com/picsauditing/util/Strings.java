@@ -335,7 +335,7 @@ public class Strings {
 
 	public static boolean isValidEmail(String email) {
 		boolean result = false;
-		if (Strings.isEmpty(email))
+		if (Strings.isEmpty(email) || email.trim().contains(" "))
 			return false;
 		int index = email.indexOf("@");
 		if (index > 0) {
