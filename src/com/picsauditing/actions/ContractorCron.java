@@ -47,7 +47,6 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.InvoiceFee;
@@ -62,7 +61,6 @@ import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.SendMail;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
@@ -113,7 +111,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (steps == null)
 			return SUCCESS;
 
-		PicsLogger.start("ContractorCron");
+		//PicsLogger.start("ContractorCron");
 
 		if (conID > 0) {
 			run(conID, opID);
@@ -161,7 +159,7 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		}
 
-		PicsLogger.stop();
+		//PicsLogger.stop();
 
 		if (!Strings.isEmpty(redirectUrl)) {
 			return redirect(redirectUrl);
@@ -193,10 +191,10 @@ public class ContractorCron extends PicsActionSupport {
 					// If the opID is 0, run through all the operators.
 					// If the opID > 0, run through just that operator.
 					if (opID == 0 || (opID > 0 && operator.getId() == opID)) {
-						for (FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
-							PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
-									+ flagCriteriaOperator.getCriteria().getCategory());
-						}
+//						for (FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
+//							PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
+//									+ flagCriteriaOperator.getCriteria().getCategory());
+//						}
 
 						if (runStep(ContractorCronStep.CorporateRollup)) {
 							for (Facility facility : operator.getCorporateFacilities()) {
