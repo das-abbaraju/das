@@ -4,11 +4,11 @@
 <head>
 <title><s:property value="conAudit.auditType.auditName" /> for
 <s:property value="conAudit.contractorAccount.name" /></title>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/audit.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
 <script type="text/javascript">
 function showAuditUpload(auditID, fileID, desc, question) {
