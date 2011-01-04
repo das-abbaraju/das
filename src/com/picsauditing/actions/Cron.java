@@ -2,6 +2,8 @@ package com.picsauditing.actions;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -27,6 +29,9 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.EmailQueueDAO;
+import com.picsauditing.dao.InvoiceDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -39,6 +44,8 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -63,9 +70,12 @@ public class Cron extends PicsActionSupport {
 	protected ContractorAccountDAO contractorAccountDAO = null;
 	protected ContractorAuditOperatorDAO contractorAuditOperatorDAO = null;
 	protected NoteDAO noteDAO = null;
+	protected InvoiceDAO invoiceDAO = null;
 	protected AuditPercentCalculator auditPercentCalculator;
 	private EbixLoader ebixLoader;
 	private IndexerController indexer;
+	private InvoiceFeeDAO invoiceFeeDAO;
+	private InvoiceItemDAO invoiceItemDAO;
 
 	protected long startTime = 0L;
 	StringBuffer report = null;
@@ -74,8 +84,9 @@ public class Cron extends PicsActionSupport {
 
 	public Cron(OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilderController ab,
 			ContractorAuditDAO contractorAuditDAO, ContractorAccountDAO contractorAccountDAO,
-			AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO, EbixLoader ebixLoader,
-			ContractorAuditOperatorDAO contractorAuditOperatorDAO, IndexerController indexer) {
+			AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO, InvoiceDAO invoiceDAO,
+			EbixLoader ebixLoader, ContractorAuditOperatorDAO contractorAuditOperatorDAO, IndexerController indexer,
+			InvoiceFeeDAO invoiceFeeDAO, InvoiceItemDAO invoiceItemDAO) {
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
 		this.auditBuilder = ab;
@@ -83,9 +94,12 @@ public class Cron extends PicsActionSupport {
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.noteDAO = noteDAO;
+		this.invoiceDAO = invoiceDAO;
 		this.ebixLoader = ebixLoader;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
 		this.indexer = indexer;
+		this.invoiceFeeDAO = invoiceFeeDAO;
+		this.invoiceItemDAO = invoiceItemDAO;
 	}
 
 	public String execute() throws Exception {
@@ -166,6 +180,14 @@ public class Cron extends PicsActionSupport {
 			} catch (Throwable t) {
 				handleException(t);
 			}
+		}
+
+		try {
+			startTask("\nAdding Late Fee to Delinquent Contractor Invoices ...");
+			addLateFeeToDelinquentInvoices();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
 		}
 
 		try {
@@ -383,6 +405,36 @@ public class Cron extends PicsActionSupport {
 		}
 	}
 
+	public void addLateFeeToDelinquentInvoices() throws Exception {
+		// Get delinquent Invoices missing Late Fees
+		List<Invoice> invoicesMissingLateFees = invoiceDAO.findDelinquentInvoicesMissingLateFees();
+
+		for (Invoice i : invoicesMissingLateFees) {
+			// Calculate Late Fee
+			BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05)).setScale(2,
+					BigDecimal.ROUND_HALF_UP);
+			if (lateFee.compareTo(BigDecimal.valueOf(25)) < 1)
+				lateFee = BigDecimal.valueOf(25);
+
+			InvoiceItem lateFeeItem = new InvoiceItem(invoiceFeeDAO.find(InvoiceFee.LATEFEE));
+			lateFeeItem.setAmount(lateFee);
+			lateFeeItem.setAuditColumns(new User(User.SYSTEM));
+			lateFeeItem.setInvoice(i);
+			lateFeeItem.setDescription("Assessed " + new SimpleDateFormat("MM/dd/yyyy").format(new Date())
+					+ " due to deliquent payment.");
+			invoiceItemDAO.save(lateFeeItem);
+
+			// Add Late Fee to Invoice
+			i.getItems().add(lateFeeItem);
+			i.updateAmount();
+			i.setQbSync(true);
+			i.setAuditColumns(new User(User.SYSTEM));
+			if (i.getAccount() instanceof ContractorAccount)
+				((ContractorAccount) i.getAccount()).syncBalance();
+			invoiceItemDAO.save(i);
+		}
+	}
+
 	public void sendNoActionEmailToTrialAccounts() throws Exception {
 		List<ContractorAccount> conList = contractorAccountDAO.findBidOnlyContractors();
 		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
@@ -407,13 +459,15 @@ public class Cron extends PicsActionSupport {
 	public void sendFlagChangesEmailToAccountManagers() throws Exception {
 		// Running Query
 		StringBuilder query = new StringBuilder();
-		query.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
+		query
+				.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
 		query.append("select o.id, o.name operator, concat(u.name, ' <', u.email, '>') accountManager, ");
 		query.append("count(*) total, sum(case when gc.flag = gc.baselineFlag THEN 0 ELSE 1 END) changes ");
 		query.append("from generalcontractors gc ");
 		query.append("join accounts c on gc.subID = c.id and c.status = 'Active' ");
 		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' ");
-		query.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
+		query
+				.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
 		query.append("and endDate > now() ");
 		query.append("LEFT join users u on au.userID = u.id ");
 		query.append("group by o.id) t ");
