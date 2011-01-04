@@ -5,6 +5,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.DoubleMap;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportCompetencyByAccount extends ReportCompetencyByEmployee {
@@ -44,7 +45,12 @@ public class ReportCompetencyByAccount extends ReportCompetencyByEmployee {
 		// sql.addField("ca100.completedDate ca100completedDate");
 		// sql.addField("ca100.expiresDate ca100expiresDate");
 
-		String sqlString = "select a.id, a.name, IFNULL(jr.total,0) jobRoleCount, IFNULL(e.total,0) employeeCount, IFNULL(totalComp.competencyTotal,0) required, IFNULL(totalComp.skilledTotal,0) skilled,  ca99.id ca99ID, cao99.status ca99status, cao99.statusChangedDate cao99statusChangedDate, ca99.creationDate ca99creationDate, ca99.expiresDate ca99expiresDate, ca100.id ca100ID, cao100.status ca100status, ca100.creationDate ca100creationDate, ca100.expiresDate ca100expiresDate, cao100.statusChangedDate cao100statusChangedDate "
+		String sqlString = "select a.id, a.name, IFNULL(jr.total,0) jobRoleCount, IFNULL(e.total,0) employeeCount, "
+				+ "IFNULL(totalComp.competencyTotal,0) required, IFNULL(totalComp.skilledTotal,0) skilled,  "
+				+ "ca99.id ca99ID, cao99.status ca99status, cao99.statusChangedDate ca99statusChangedDate, "
+				// "ca99.creationDate ca99creationDate, ca99.expiresDate ca99expiresDate, "
+				+ "ca100.id ca100ID, cao100.status ca100status, cao100.statusChangedDate ca100statusChangedDate "
+				// "ca100.creationDate ca100creationDate, ca100.expiresDate ca100expiresDate, "
 				+ "from accounts a "
 				+ "JOIN contractor_tag ct ON a.id = ct.conID and ct.tagID = 142 "
 				+ "left join (select accountID, count(*) total FROM job_role group by accountID) jr on jr.accountID = a.id "
@@ -61,7 +67,7 @@ public class ReportCompetencyByAccount extends ReportCompetencyByEmployee {
 				+ "LEFT JOIN contractor_audit_operator cao99 ON cao99.auditID = ca99.id AND cao99.visible = 1 AND cao99.status IN ('Submitted','Complete') "
 				+ "LEFT JOIN contractor_audit ca100 ON ca100.auditTypeID = 100 AND ca100.conID = a.id "
 				+ "LEFT JOIN contractor_audit_operator cao100 ON cao100.auditID = ca100.id AND cao100.visible = 1 AND cao100.status IN ('Submitted','Complete') "
-				+ "GROUP BY a.id ORDER BY name";
+				+ "GROUP BY a.id ORDER BY " + (Strings.isEmpty(getOrderBy()) ? orderByDefault : getOrderBy());
 
 		sql.setFullClause(sqlString);
 
