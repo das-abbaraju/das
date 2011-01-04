@@ -11,6 +11,7 @@
 		<thead>
 			<tr>
 				<th>Type</th>
+				<th>Id</th>
 				<th>Status</th>
 				<th>Date</th>
 				<th>Changed By</th>
@@ -21,6 +22,7 @@
 			<s:iterator value="data">
 				<tr>
 					<td><s:property value="get('rType')"/></td>
+					<td><s:property value="get('id')"/></td>
 					<td><s:property value="get('status')"/></td>
 					<td><s:date name="get('sDate')" format="MM/dd/yyyy -  HH:MM" /></td>
 					<td><s:property value="get('who')"/></td>

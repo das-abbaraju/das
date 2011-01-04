@@ -312,6 +312,8 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
+		if(permissions.hasPermission(OpPerms.ManageAuditTypeRules) || permissions.hasPermission(OpPerms.ManageCategoryRules))
+			subMenu.addChild("Audit Rule History","ReportRuleHistory.action");
 		if (permissions.hasPermission(OpPerms.ContractorLicenseReport))
 			subMenu.addChild("Contractor Licenses", "ReportContractorLicenses.action");
 		if (permissions.hasPermission(OpPerms.RiskRank))

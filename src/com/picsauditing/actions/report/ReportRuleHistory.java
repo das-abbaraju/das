@@ -71,7 +71,7 @@ public class ReportRuleHistory extends ReportActionSupport {
 		sql.addField("rules.id, rules.rType, rules.sDate, rules.status, u.name who");
 		sql.addJoin("JOIN users u ON u.id = rules.who");
 		sql.addGroupBy("rules.sDate");
-		sql.addOrderBy("rules.sDate DESC");
+		sql.addOrderBy("rules.sDate DESC, rules.id");
 	}
 	
 	public void addFilterToSQL() throws Exception {
