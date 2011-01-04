@@ -10,43 +10,36 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 public class EmailSender {
-	private static int currentDefaultSender = 1;
-	private static final int NUMBER_OF_GMAIL_ACOUNTS = 12;
 	private static String defaultPassword = "e3r4t5";
 	private EmailQueueDAO emailQueueDAO = null;
 
 	/**
-	 * Try sending with the first email address info@picsauditing.com If it errors try info2, info3, ...info6. If it
+	 * Try sending with the first email address info@picsauditing.com
 	 * still fails, then try regular linux sendmail
-	 * 
-	 * We can use Sendgrid once we're ready for implementation -- For now I'm reverting this back to
-	 * using Gmail
 	 * 
 	 * @param email
 	 * @throws Exception
 	 */
 	private void sendMail(EmailQueue email, int attempts) throws Exception {
 		attempts++;
-		boolean useGmail = true;
-		if (attempts > 2)
-			useGmail = false;
-		if (email.getToAddresses().endsWith("@picsauditing.com"))
-			useGmail = false;
+		boolean useSendGrid = true;
+		if (attempts > 2 || email.getToAddresses().endsWith("@picsauditing.com"))
+			useSendGrid = false;
 		
 		try {
-			if (useGmail) {
-				GMailSender gmailSender;
+			if (useSendGrid) {
+				GridSender gridSender;
 				if (!Strings.isEmpty(email.getFromPassword())) {
 					// Use a specific email address like tallred@picsauditing.com
 					// We need the password to correctly authenticate with GMail
-					PicsLogger.log("using Gmail to send email from " + email.getFromAddress());
-					gmailSender = new GMailSender(email.getFromAddress(), email.getFromPassword());
+					PicsLogger.log("using SendGrid to send email from " + email.getFromAddress());
+					gridSender = new GridSender(email.getFromAddress(), email.getFromPassword());
 				} else {
 					// Use the default info@picsauditing.com address
-					PicsLogger.log("using Gmail to send email from " + getDefaultSender());
-					gmailSender = new GMailSender(getGmailUsername(), defaultPassword);
+					PicsLogger.log("using SendGrid to send email from info@picsauditing.com");
+					gridSender = new GridSender("info@picsauditing.com", defaultPassword);
 				}
-				gmailSender.sendMail(email);
+				gridSender.sendMail(email);
 			} else {
 				PicsLogger.log("using localhost sendmail to send");
 				SendMail sendMail = new SendMail();
@@ -65,11 +58,10 @@ public class EmailSender {
 				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 			emailQueueDAO.save(email);
 		} catch (Exception e) {
-			PicsLogger.log("Send Mail Exception with account " + currentDefaultSender + ": " + e.toString() + " "
+			PicsLogger.log("Send Mail Exception with account info@picsauditing.com: " + e.toString() + " "
 					+ e.getMessage() + "\nFROM: " + email.getFromAddress() + "\nTO: " + email.getToAddresses()
 					+ "\nSUBJECT: " + email.getSubject());
-			changeDefaultSender();
-			if (useGmail) {
+			if (useSendGrid) {
 				this.sendMail(email, attempts);
 			} else {
 				PicsLogger.log("Failed to send email using sendmail...exiting");
@@ -94,7 +86,7 @@ public class EmailSender {
 		try {
 			// Check all the addresses
 			if (email.getFromAddress2() == null)
-				email.setFromAddress(getDefaultSender());
+				email.setFromAddress("info@picsauditing.com");
 			if (email.getToAddresses2() == null) {
 				email.setToAddresses(email.getCcAddresses());
 				email.setCcAddresses(null);
@@ -112,24 +104,6 @@ public class EmailSender {
 		} finally {
 			PicsLogger.stop();
 		}
-	}
-	
-	private static String getGmailUsername() {
-		if (EmailSender.currentDefaultSender >= 2)
-			return "info" + currentDefaultSender + "@picsauditing.com";
-		else
-			return "info@picsauditing.com";
-	}
-	
-	private static String getDefaultSender() {
-		if (EmailSender.currentDefaultSender >= 2)
-			return "PICS Mailer <info" + currentDefaultSender + "@picsauditing.com>";
-		else
-			return "PICS Mailer <info@picsauditing.com>";
-	}
-
-	private static void changeDefaultSender() {
-		currentDefaultSender = (currentDefaultSender % NUMBER_OF_GMAIL_ACOUNTS) + 1;
 	}
 
 	/**
