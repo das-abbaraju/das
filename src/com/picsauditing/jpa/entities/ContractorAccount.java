@@ -103,7 +103,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	// Transient helper methods
 	protected OshaOrganizer oshaOrganizer = null;
-	protected Map<String, AuditData> emrs = null;
+	protected TreeMap<String, AuditData> emrs = null;
 
 	// Agreement Changed on Release date 6/3/2010
 	public static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
@@ -589,19 +589,15 @@ public class ContractorAccount extends Account implements JSONable {
 							|| (answer.getQuestion().getId() == 2033 && "No".equals(answer.getAnswer()))) {
 						if (!Strings.isEmpty(answer.getAnswer())) {
 							number++;
-							if (answer.getQuestion().getId() == 2033)
-								emrs.put(audit.getAuditFor(), null);
-							else
+							if(answer.getQuestion().getId() != 2033 && answer.isVerified())
 								emrs.put(audit.getAuditFor(), answer);
 						}
 					}
 				}
 			}
-		}
+		}		
 
-		AuditData result = trim(new ArrayList<AuditData>(emrs.values()));
-		if (result != null)
-			emrs.remove(result.getAudit().getAuditFor());
+		emrs = trimEMR(emrs);
 
 		AuditData avg = AuditData.addAverageData(emrs.values());
 		if (avg != null && !Strings.isEmpty(avg.getAnswer()))
@@ -610,23 +606,14 @@ public class ContractorAccount extends Account implements JSONable {
 		return emrs;
 	}
 
-	private AuditData trim(List<AuditData> list) {
-		if (list.size() < 4)
-			return null;
-		if (list.size() > 4)
-			throw new RuntimeException("Found [" + list.size() + "] EMRs");
-
-		// We have 4 years worth of data, get rid of either the first or the
-		// last
-		// We trim the fourth year ONLY if it's not verified but all three
-		// previous years are.
-		if (!list.get(3).isVerified() && list.get(2).isVerified() && list.get(1).isVerified()
-				&& list.get(0).isVerified()) {
-			PicsLogger.log("removed fourthYear" + list.get(3).getAudit().getAuditFor());
-			return list.get(3);
-		} else {
-			return list.get(0);
-		}
+	private TreeMap<String, AuditData> trimEMR(TreeMap<String, AuditData> map) {
+		if(map.size()<4)
+			return map;
+		if(map.size()>4)
+			throw new RuntimeException("Found [" + map.size() + "] EMRs");
+		
+		map.remove(map.firstKey());
+		return map;
 	}
 
 	@Transient
@@ -638,7 +625,19 @@ public class ContractorAccount extends Account implements JSONable {
 				annualAList.add(contractorAudit);
 			}
 		}
-		Collections.sort(annualAList, new ContractorAuditComparator("auditFor -1"));
+		Collections.sort(annualAList, new Comparator<ContractorAudit>() {
+			@Override
+			public int compare(ContractorAudit audit1, ContractorAudit audit2) {
+				if(audit1.getAuditFor()==null){
+					if(audit2.getAuditFor()==null)
+						return 0;
+					else
+						return -1;
+				} else if(audit1.getAuditFor()==null)
+					return 1;
+				return audit1.getAuditFor().compareTo(audit2.getAuditFor());
+			}
+		});
 		return annualAList;
 	}
 
