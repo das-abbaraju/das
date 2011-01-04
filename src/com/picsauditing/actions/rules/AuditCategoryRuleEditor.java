@@ -18,14 +18,16 @@ import com.picsauditing.jpa.entities.AuditCategoryRule;
 public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategoryRule> {
 
 	protected Integer ruleAuditCategoryId;
-	
+
 	protected AuditCategoryDAO auditCategoryDAO;
 
-	public AuditCategoryRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO, AuditTypeDAO auditTypeDAO,
-			OperatorTagDAO tagDAO, AuditQuestionDAO questionDAO, AuditTypeRuleCache auditTypeRuleCache,
-			AuditCategoryRuleCache auditCategoryRuleCache, AuditCategoryDAO auditCategoryDAO) {
+	public AuditCategoryRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO, OperatorTagDAO opTagDAO,
+			AuditTypeDAO auditTypeDAO, OperatorTagDAO tagDAO, AuditQuestionDAO questionDAO,
+			AuditTypeRuleCache auditTypeRuleCache, AuditCategoryRuleCache auditCategoryRuleCache,
+			AuditCategoryDAO auditCategoryDAO) {
 		this.dao = dao;
 		this.operatorDAO = opDAO;
+		this.opTagDAO = opTagDAO;
 		this.auditTypeDAO = auditTypeDAO;
 		this.tagDAO = tagDAO;
 		this.questionDAO = questionDAO;
@@ -46,7 +48,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 		if (ruleID > 0)
 			rule = dao.findAuditCategoryRule(ruleID);
 	}
-	
+
 	@Override
 	protected AuditCategoryRule newRule() {
 		return new AuditCategoryRule();
@@ -59,8 +61,8 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 
 	@Override
 	protected void redirectTo() throws IOException {
-		if(rule!=null)
-			this.redirect(urlPrefix+"RuleEditor.action?id=" + rule.getId());
+		if (rule != null)
+			this.redirect(urlPrefix + "RuleEditor.action?id=" + rule.getId());
 		else
 			this.redirect("CategoryRuleSearch.action");
 	}
@@ -75,7 +77,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 			redirect = "CategoryRuleSearch.action?";
 			if (rule.getAuditType() != null)
 				redirect += "filter.auditType=" + rule.getAuditType().getAuditName();
-			if(rule.getAuditCategory()!=null)
+			if (rule.getAuditCategory() != null)
 				redirect += "filter.category=" + ((AuditCategoryRule) rule).getAuditCategory().getName();
 		}
 		this.redirect(redirect);
@@ -100,14 +102,14 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 			}
 		}
 		saveFields();
-		if (rule.getId() == 0) 
+		if (rule.getId() == 0)
 			rule.defaultDates();
 		rule.calculatePriority();
 		rule.setAuditColumns(permissions);
 		dao.save(rule);
 		clear();
 	}
-	
+
 	@Override
 	protected void clear() {
 		auditCategoryRuleCache.clear();
@@ -122,7 +124,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 		} else
 			rule.setAuditCategory(null);
 	}
-	
+
 	public AuditCategoryRule getRule() {
 		return rule;
 	}

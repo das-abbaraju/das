@@ -123,7 +123,7 @@ function getLink(val, val_id){
 }
 </s:if>
 <s:if test="rule == null || rule.operatorAccount == null">
-.requiredOperator {
+.requiresOperator {
 	display: none;
 }
 </s:if>

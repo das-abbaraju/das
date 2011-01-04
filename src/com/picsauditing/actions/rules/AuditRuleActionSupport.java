@@ -21,6 +21,7 @@ import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 
@@ -29,6 +30,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 
 	protected AuditDecisionTableDAO dao;
 	protected OperatorAccountDAO operatorDAO;
+	protected OperatorTagDAO opTagDAO;
 	protected AuditTypeDAO auditTypeDAO;
 	protected OperatorTagDAO tagDAO;
 	protected AuditQuestionDAO questionDAO;
@@ -57,15 +59,15 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 		// probably not the best way but works for now.
 		parameterCleanUp("ruleAcceptsBids");
 	}
-	
+
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 
 		if (button != null) {
-			if("New".equals(button)){
-				rule = newRule();	
+			if ("New".equals(button)) {
+				rule = newRule();
 				saveFields();
 				return SUCCESS;
 			}
@@ -130,10 +132,9 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 
 	public List<OperatorTag> getOperatorTagList() {
 		List<OperatorTag> opTagList = new ArrayList<OperatorTag>();
-		if (rule!=null) {
-			if (rule.getOperatorAccount() != null && rule.getOperatorAccount().getTags() != null) {
-				for (OperatorTag ot : rule.getOperatorAccount().getTags())
-					opTagList.add(ot);
+		if (rule != null) {
+			if (rule.getOperatorAccount() != null) {
+				opTagList.addAll(opTagDAO.findByOperator(rule.getOperatorAccount().getId(), true));
 			}
 		}
 		return opTagList;
@@ -169,16 +170,16 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	}
 
 	protected abstract void redirectTo() throws IOException;
-	
+
 	protected abstract void onDeleteRedirectTo() throws IOException;
 
 	public abstract boolean isAuditTypeRule();
-	
+
 	protected abstract T newRule();
 
 	protected abstract void save();
 
-	protected void delete(){
+	protected void delete() {
 		rule.setExpirationDate(new Date());
 		rule.setAuditColumns(permissions);
 		dao.save(rule);

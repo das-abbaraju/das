@@ -21,11 +21,12 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 	protected Integer ruleDependentAuditTypeId;
 
-	public AuditTypeRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO, AuditTypeDAO auditTypeDAO,
-			OperatorTagDAO tagDAO, AuditQuestionDAO questionDAO, AuditTypeRuleCache auditTypeRuleCache,
-			AuditCategoryRuleCache auditCategoryRuleCache) {
+	public AuditTypeRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO, OperatorTagDAO opTagDAO,
+			AuditTypeDAO auditTypeDAO, OperatorTagDAO tagDAO, AuditQuestionDAO questionDAO,
+			AuditTypeRuleCache auditTypeRuleCache, AuditCategoryRuleCache auditCategoryRuleCache) {
 		this.dao = dao;
 		this.operatorDAO = opDAO;
+		this.opTagDAO = opTagDAO;
 		this.auditTypeDAO = auditTypeDAO;
 		this.tagDAO = tagDAO;
 		this.questionDAO = questionDAO;
@@ -44,7 +45,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 		if (ruleID > 0)
 			rule = dao.findAuditTypeRule(ruleID);
 	}
-	
+
 	@Override
 	protected AuditTypeRule newRule() {
 		return new AuditTypeRule();
@@ -52,7 +53,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 	public LinkedHashSet<AuditStatus> getDependentAuditStatus() {
 		LinkedHashSet<AuditStatus> set = new LinkedHashSet<AuditStatus>();
-		if (rule!=null && rule.getDependentAuditType() != null) {
+		if (rule != null && rule.getDependentAuditType() != null) {
 			for (WorkflowStep step : rule.getDependentAuditType().getWorkFlow().getSteps())
 				set.add(step.getNewStatus());
 		}
@@ -66,8 +67,8 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 	@Override
 	protected void redirectTo() throws IOException {
-		if(rule!=null)
-			this.redirect(urlPrefix+"RuleEditor.action?id=" + rule.getId());
+		if (rule != null)
+			this.redirect(urlPrefix + "RuleEditor.action?id=" + rule.getId());
 		else
 			this.redirect("AuditTypeRuleSearch.action");
 	}
@@ -80,7 +81,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 			redirect = "AuditTypeRuleEditor.action?id=" + lessGranular.get(lessGranular.size() - 1).getId();
 		else {
 			redirect = "AuditTypeRuleSearch.action?";
-			if(rule.getAuditType()!=null)
+			if (rule.getAuditType() != null)
 				redirect += "filter.auditType=" + rule.getAuditType().getAuditName();
 		}
 		this.redirect(redirect);
@@ -105,14 +106,14 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 			}
 		}
 		saveFields();
-		if (rule.getId() == 0) 
+		if (rule.getId() == 0)
 			rule.defaultDates();
 		rule.calculatePriority();
 		rule.setAuditColumns(permissions);
 		dao.save(rule);
 		clear();
 	}
-	
+
 	@Override
 	protected void clear() {
 		auditTypeRuleCache.clear();
@@ -127,7 +128,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 		} else
 			rule.setDependentAuditType(null);
 	}
-	
+
 	public AuditTypeRule getRule() {
 		return rule;
 	}
