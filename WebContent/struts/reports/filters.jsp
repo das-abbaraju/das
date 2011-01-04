@@ -659,6 +659,22 @@
 			onclick="clearTextField('form1_registrationDate'); return false;">Clear</a></span>
 		</div>
 	</s:if>
+	
+	<s:if test="filter.showExpiredDate">
+		<div class="filterOption"><a href="#"
+			onclick="showTextBox('form1_expiredDate'); return false;">Expires 
+		Date</a> <span id="form1_expiredDate_query">= ALL</span><br />
+		<span id="form1_expiredDate" style="display: none"
+			class="clearLink"><s:textfield cssClass="forms datepicker"
+			size="10" id="form1_expiredDate1"
+			name="filter.expiredDate1" /> To:<s:textfield
+			cssClass="forms datepicker" size="10" id="form1_expiredDate2"
+			name="filter.expiredDate2" /> <script type="text/javascript">textQuery('form1_expiredDate');</script>
+		<br />
+		<a class="clearLink" href="#"
+			onclick="clearTextField('form1_expiredDate'); return false;">Clear</a></span>
+		</div>
+	</s:if>
 
 	<s:if test="filter.showFollowUpDate">
 		<div class="filterOption"><a href="#"

@@ -28,6 +28,7 @@
 	    </pics:permission>
 	    <td><a href="javascript: changeOrderBy('form1','cao.status');" >Status</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','cao.statusChangedDate DESC');" >Date</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','ca.expiresDate DESC');" >Expired Date</a></td>
 	    <s:if test="permissions.picsEmployee">
 		    <td><a href="javascript: changeOrderBy('form1','auditor.name');" >Safety Pro</a></td>
 	    </s:if>
@@ -59,6 +60,7 @@
 		</pics:permission>
 		<td><s:property value="get('auditStatus')"/></td>
 		<td class="center"><s:date name="get('statusChangedDate')" format="M/d/yy" /></td>
+		<td class="center"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
 	    <s:if test="permissions.picsEmployee">
 			<td><s:property value="get('auditor_name')"/></td>
 		</s:if>

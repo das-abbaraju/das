@@ -106,6 +106,7 @@ public class ReportContractorAudits extends ReportAccount {
 			getFilter().setShowClosingAuditor(true);
 
 		getFilter().setShowAuditFor(true);
+		getFilter().setShowExpiredDate(true);
 	}
 
 	@Override
@@ -196,6 +197,14 @@ public class ReportContractorAudits extends ReportAccount {
 		if (filterOn(f.getStatusChangedDate2())) {
 			report.addFilter(new SelectFilterDate("statusChangedDate2", "cao.statusChangedDate < '?'", DateBean.format(
 					f.getStatusChangedDate2(), "M/d/yy")));
+		}
+		if(filterOn(f.getExpiredDate1())){
+			report.addFilter(new SelectFilterDate("expiredDate1", "ca.expiresDate >= '?'", DateBean.format(
+					f.getExpiredDate1(), "M/d/yy")));			
+		}
+		if(filterOn(f.getExpiredDate2())){
+			report.addFilter(new SelectFilterDate("expiredDate2", "ca.expiresDate < '?'", DateBean.format(
+					f.getExpiredDate2(), "M/d/yy")));			
 		}
 	}
 

@@ -36,6 +36,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showShaLocation = false;
 	protected boolean showCohsStats = false;
 	protected boolean showQuestionAnswer = false;
+	protected boolean showExpiredDate = false;
 
 	// Filter values
 	protected int[] auditID;
@@ -68,6 +69,8 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected String answer = "No";
 	protected Date statusChangedDate1;
 	protected Date statusChangedDate2;
+	protected Date expiredDate1;
+	protected Date expiredDate2;
 
 	public boolean isShowAuditType() {
 		return showAuditType;
@@ -505,5 +508,29 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setStatusChangedDate2(Date statusChangedDate2) {
 		this.statusChangedDate2 = statusChangedDate2;
+	}
+
+	public boolean isShowExpiredDate() {
+		return showExpiredDate;
+	}
+
+	public void setShowExpiredDate(boolean showExpiredDate) {
+		this.showExpiredDate = showExpiredDate;
+	}
+
+	public Date getExpiredDate2() {
+		return expiredDate2;
+	}
+
+	public void setExpiredDate2(Date expiredDate2) {
+		this.expiredDate2 = expiredDate2;
+	}
+
+	public Date getExpiredDate1() {
+		return expiredDate1;
+	}
+
+	public void setExpiredDate1(Date expiredDate1) {
+		this.expiredDate1 = expiredDate1;
 	}
 }
