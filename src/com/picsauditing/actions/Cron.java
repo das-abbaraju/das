@@ -411,10 +411,10 @@ public class Cron extends PicsActionSupport {
 
 		for (Invoice i : invoicesMissingLateFees) {
 			// Calculate Late Fee
-			BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05)).setScale(2,
+			BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05)).setScale(0,
 					BigDecimal.ROUND_HALF_UP);
-			if (lateFee.compareTo(BigDecimal.valueOf(25)) < 1)
-				lateFee = BigDecimal.valueOf(25);
+			if (lateFee.compareTo(BigDecimal.valueOf(20)) < 1)
+				lateFee = BigDecimal.valueOf(20);
 
 			InvoiceItem lateFeeItem = new InvoiceItem(invoiceFeeDAO.find(InvoiceFee.LATEFEE));
 			lateFeeItem.setAmount(lateFee);
