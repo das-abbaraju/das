@@ -92,15 +92,20 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			dataID = auditData.getId();
 
 		if (button != null) {
-			if (dataID > 0 && button.equals("download")) {
-				Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
-						.getServletContext());
-				try {
-					File[] files = getFiles(dataID);
-					downloader.download(files[0], null);
-					return null;
-				} catch (Exception e) {
-					addActionError("Failed to download file: " + e.getMessage());
+			if (button.equals("download")) {
+				if(dataID>0){
+					Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
+							.getServletContext());
+					try {
+						File[] files = getFiles(dataID);
+						downloader.download(files[0], null);
+						return null;
+					} catch (Exception e) {
+						addActionError("Failed to download file: " + e.getMessage());
+						return BLANK;
+					}
+				} else {
+					addActionError("File does not exist");
 					return BLANK;
 				}
 			}
