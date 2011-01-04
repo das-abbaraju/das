@@ -18,7 +18,7 @@ $('input.ssn').mask('SSS-SS-SSSS');
 <table class="report" id="matrix">
 	<thead>
 		<tr>
-			<th>Company</th>
+			<th><a href="?orderBy=name">Company</a></th>
 			<th># of Employees</th>
 			<th># of Job Roles</th>
 			<th><a href="?orderBy=ca99statusChangedDate">Job Role Self Assessment</a></th>
