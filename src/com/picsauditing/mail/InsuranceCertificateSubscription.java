@@ -10,7 +10,6 @@ import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -39,17 +38,13 @@ public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 			}
 			
 			OperatorAccount o = (OperatorAccount) a;
-			//SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			
 			Set<Integer> operators = new HashSet<Integer>();
 			if(!o.isCorporate())
 				operators.add(o.getId());
-			// Adding child facilities and switch tos
+			// Adding child facilities
 			for(OperatorAccount oa : o.getOperatorChildren())
 				operators.add(oa.getId());
-//			for (UserSwitch user : getUser().getSwitchTos())
-//				if (user.getUser().getAccount().isOperator())
-//					operators.add(user.getUser().getAccount().getId());
 			
 			SelectSQL sql = new SelectSQL();
 
@@ -69,7 +64,9 @@ public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 			
 			sql.addWhere("a.type = 'Contractor'");
 			sql.addWhere("gc.genID = "+o.getInheritInsuranceCriteria().getId());
-			sql.addWhere("1 AND a.status IN ('Active') AND a.id IN (SELECT gc.subID FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID = "+o.getInheritInsuranceCriteria().getId()+")");
+			sql.addWhere("1 AND a.status IN ('Active') AND a.id IN (" +
+					(o.isOperator() ? "SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = " + o.getInheritInsuranceCriteria().getId() : "SELECT gc.subID FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID = " + o.getInheritInsuranceCriteria().getId())
+			+ ")");
 			sql.addWhere("cao.status IN ('"+caoStatus+"')");
 			sql.addWhere("atype.classType = 'Policy'");
 			sql.addWhere("cao.visible = 1");
@@ -80,7 +77,6 @@ public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 			sql.addWhere("q.columnHeader = 'Certificate'");
 			sql.addWhere("q.questionType = 'FileCertificate'");
 			sql.addWhere("q.number = 1");
-			//sql.addWhere("cao."+((caoStatus.isPending()) ? "creationDate " : "statusChangedDate ") + "> '"+df.format(timePeriod.getComparisonDate())+"'");
 			
 			sql.addField("a.name AS conName");
 			sql.addField("c.id AS conID");
@@ -93,6 +89,7 @@ public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 			sql.addField("u.name AS primaryContactName");
 			sql.addField("u.email AS primaryContactEmail");
 			
+			sql.addGroupBy("cao.id");
 			sql.addOrderBy("caoAccount.name,a.name,auditID");
 
 			report.setLimit(100000);
