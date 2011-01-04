@@ -50,7 +50,7 @@ public class OperatorAccount extends Account {
 	private OshaType oshaType = OshaType.OSHA;
 	private boolean primaryCorporate = false;
 	private boolean autoApproveInsurance = false;
-	private Integer activationFee = 199;
+	private Integer activationFee = null;
 	private String requiredTags;
 
 	private List<Facility> corporateFacilities = new ArrayList<Facility>();
