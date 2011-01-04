@@ -78,29 +78,31 @@ $(function() {
 <body>
 <h1>Manage Job Roles <span class="sub"> <s:property
 	value="subHeading" escape="false" /> </span></h1>
-<a href="JobCompetencyMatrix.action?id=<s:property value="account.id" />">HSE Competency Matrix</a>
+<s:if test="jobRoles.size > 0">
+	<a href="JobCompetencyMatrix.action?id=<s:property value="account.id" />">HSE Competency Matrix</a>
+</s:if>
 <table id="rolesTable">
 	<tr>
-		<td style="vertical-align: top">
-		<table class="report">
-			<thead>
-				<tr>
-					<th>Job Role</th>
-					<th>Active</th>
-				</tr>
-			</thead>
-			<tbody>
-				<s:if test="jobRoles.size > 0">
-					<s:iterator value="jobRoles">
+		<td style="vertical-align: top; padding-right: 10px;">
+			<s:if test="jobRoles.size > 0">
+				<table class="report">
+					<thead>
 						<tr>
-							<td><a href="?id=<s:property value="account.id" />&role.id=<s:property value="id" />" <s:if test="!active">class="inactive"</s:if>><s:property value="name" /></a></td>
-							<td class="center"><s:if test="active">Y</s:if><s:else>N</s:else></td>
+							<th>Job Role</th>
+							<th>Active</th>
 						</tr>
-					</s:iterator>
-				</s:if>
-			</tbody>
-		</table>
-		<a href="?id=<s:property value="account.id" />&button=Add" class="add">Add New Job Role</a>
+					</thead>
+					<tbody>
+						<s:iterator value="jobRoles">
+							<tr>
+								<td><a href="?id=<s:property value="account.id" />&role.id=<s:property value="id" />" <s:if test="!active">class="inactive"</s:if>><s:property value="name" /></a></td>
+								<td class="center"><s:if test="active">Y</s:if><s:else>N</s:else></td>
+							</tr>
+						</s:iterator>
+					</tbody>
+				</table>
+			</s:if>
+			<a href="?id=<s:property value="account.id" />&button=Add" class="add">Add New Job Role</a>
 		</td>
 		<s:if test="role != null">
 			<td style="vertical-align: top" id="roleCell"><s:form>
