@@ -13,7 +13,7 @@
 					<s:iterator value="jobCompetencies">
 						<tr>
 							<td>
-								<span><s:property value="competency.category"/>: <s:property value="competency.label"/></span>
+								<span><s:property value="competency.label"/></span>
 							</td>
 							<td>
 								<s:if test="competency.description.length() > 0">
@@ -46,7 +46,7 @@
 					<s:iterator value="otherCompetencies">
 					<tr>
 						<td>
-							<span><s:property value="category"/>: <s:property value="label"/></span>
+							<span><s:property value="label"/></span>
 						</td>
 						<td>
 							<s:if test="description.length() > 0">

@@ -38,7 +38,7 @@ public class OperatorCompetencyDAO extends PicsDAO {
 		if (where.length() > 0)
 			where = " WHERE " + where;
 		
-		Query q = em.createQuery("FROM OperatorCompetency o" + where + " ORDER BY o.category, o.label");
+		Query q = em.createQuery("FROM OperatorCompetency o" + where + " ORDER BY o.label");
 		return q.getResultList();
 	}
 
