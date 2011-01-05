@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.ibm.icu.util.Calendar;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -103,6 +104,10 @@ public class SmartFacilitySuggest {
 		sql.addJoin("JOIN stats_gco_count s2 ON s2.opID = s.opID2 AND s2.opID2 IS NULL");
 		sql.addWhere("s.opID IN (" + ops.toString() + ")");
 		sql.addWhere("s.opID2 NOT IN (" + ops.toString() + ")");
+		if (contractor.getStatus() == AccountStatus.Active || contractor.getStatus() == AccountStatus.Pending)
+			sql.addWhere("a.status = 'Active'");
+		else if (contractor.getStatus() == AccountStatus.Demo)
+			sql.addWhere("a.status IN ('Active','Pending','Demo')");
 		sql.addGroupBy("a.id");
 		sql.addOrderBy("score DESC");
 		sql.addField("(s.total*AVG(s.total)/s2.total) score");
@@ -115,7 +120,7 @@ public class SmartFacilitySuggest {
 		sql.addField("SUM(s.total)");
 		sql.addField("COUNT(*)");
 		sql.addField("a.status");
-		if(limit>0)
+		if (limit > 0)
 			sql.setLimit(limit);
 
 		Database db = new Database();
