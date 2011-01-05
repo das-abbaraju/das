@@ -293,30 +293,29 @@ public class AuditBuilderController {
 		PicsLogger.start("AuditCategories", "auditID=" + conAudit.getId() + " type="
 				+ conAudit.getAuditType().getAuditName());
 
-		AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
-		if (detail == null) {
-			PicsLogger.log("missing detail for " + conAudit.getAuditType());
-			PicsLogger.stop();
-			return;
+		// We're doing this step first so categories that get added or removed
+		// manually can be caught in the next block
+		Set<AuditCategory> categoriesNeeded = null;
+		if (conAudit.getAuditType().getId() == AuditType.SHELL_COMPETENCY_REVIEW
+				&& conAudit.hasCaoStatus(AuditStatus.Pending)) {
+			List<AuditCategory> requiredCompetencies = auditCatMatrixDAO.findCategoriesForCompetencies(conAudit
+					.getContractorAccount().getId());
+
+			categoriesNeeded = new HashSet<AuditCategory>();
+			categoriesNeeded.addAll(requiredCompetencies);
+		} else {
+			AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
+			if (detail == null) {
+				PicsLogger.log("missing detail for " + conAudit.getAuditType());
+				PicsLogger.stop();
+				return;
+			}
+
+			categoriesNeeded = detail.categories;
 		}
-
-		Set<AuditCategory> categoriesNeeded = detail.categories;
-
-		List<AuditCategory> requiredCompetencies = null;
-		if (conAudit.getAuditType().getId() == 100)
-			requiredCompetencies = auditCatMatrixDAO.findCategoriesForCompetencies(conAudit.getContractorAccount()
-					.getId());
 
 		for (AuditCatData auditCatData : conAudit.getCategories()) {
 			if (auditCatData.getCategory().getParent() == null) {
-				if (conAudit.getAuditType().getId() == 100) {
-					// use the competencies matrix for this audit
-					if (requiredCompetencies.contains(auditCatData.getCategory()))
-						categoriesNeeded.add(auditCatData.getCategory());
-					else
-						categoriesNeeded.remove(auditCatData.getCategory());
-				}
-				
 				if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
 					// this is to ensure that we don't add new categories or
 					// remove the
