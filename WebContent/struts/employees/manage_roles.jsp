@@ -76,8 +76,15 @@ $(function() {
 </script>
 </head>
 <body>
-<h1>Manage Job Roles <span class="sub"> <s:property
-	value="subHeading" escape="false" /> </span></h1>
+
+<s:if test="auditID > 0">
+	<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />">Click here</a> to go back to the Job Roles Self Assessment audit.</div>
+</s:if>
+
+<h1>Manage Job Roles <span class="sub"> <s:property value="subHeading" escape="false" /> </span></h1>
+
+<s:include value="../actionMessages.jsp" />
+
 <s:if test="jobRoles.size > 0">
 	<a href="JobCompetencyMatrix.action?id=<s:property value="account.id" />">HSE Competency Matrix</a>
 </s:if>

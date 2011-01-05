@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -66,6 +67,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		
+		ActionContext.getContext().getSession().remove("auditID");
 
 		if (auditID > 0)
 			this.findConAudit();

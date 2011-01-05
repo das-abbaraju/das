@@ -26,6 +26,9 @@ table.report td.notselected {
 <s:include value="../jquery.jsp" />
 </head>
 <body>
+<s:if test="auditID > 0">
+	<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />">Click here</a> to go back to the Job Roles Self Assessment audit.</div>
+</s:if>
 <h1>HSE Competency Matrix <span class="sub"><s:property value="subHeading" escape="false" /></span></h1>
 <s:if test="permissions.contractor || permissions.admin">
 	<a href="ManageJobRoles.action?id=<s:property value="id" />">Manage Job Roles</a><br />

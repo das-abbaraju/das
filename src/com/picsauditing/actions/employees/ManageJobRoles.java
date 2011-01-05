@@ -7,15 +7,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.EmployeeRole;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobCompetencyStats;
 import com.picsauditing.jpa.entities.JobRole;
@@ -31,15 +31,19 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 	protected List<JobCompetency> jobCompetencies = new ArrayList<JobCompetency>();
 	protected List<OperatorCompetency> otherCompetencies = new ArrayList<OperatorCompetency>();
 	private int competencyID = 0;
+	private int auditID;
 
 	protected JobRoleDAO jobRoleDAO;
 	protected AccountDAO accountDAO;
-	private OperatorCompetencyDAO competencyDAO;
+	protected OperatorCompetencyDAO competencyDAO;
+	protected EmployeeRoleDAO erDAO;
 
-	public ManageJobRoles(AccountDAO accountDAO, JobRoleDAO jobRoleDAO, OperatorCompetencyDAO competencyDAO) {
+	public ManageJobRoles(AccountDAO accountDAO, JobRoleDAO jobRoleDAO, OperatorCompetencyDAO competencyDAO,
+			EmployeeRoleDAO erDAO) {
 		this.accountDAO = accountDAO;
 		this.jobRoleDAO = jobRoleDAO;
 		this.competencyDAO = competencyDAO;
+		this.erDAO = erDAO;
 	}
 
 	@Override
@@ -56,6 +60,11 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 			if (accountID > 0)
 				account = accountDAO.find(accountID);
 		}
+
+		if (role == null && account == null) {
+			loadPermissions();
+			account = accountDAO.find(permissions.getAccountId());
+		}
 	}
 
 	@Override
@@ -63,19 +72,23 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 		if (!forceLogin())
 			return LOGIN;
 
+		this.subHeading = account.getName();
+
 		if (permissions.isContractor())
 			permissions.tryPermission(OpPerms.ContractorAdmin);
-		else
+		else {
 			permissions.tryPermission(OpPerms.DefineRoles);
 
-		if (role == null && account == null) {
-			account = accountDAO.find(permissions.getAccountId());
+			if (permissions.getAccountId() != account.getId())
+				permissions.tryPermission(OpPerms.AllOperators);
 		}
 
-		if (permissions.getAccountId() != account.getId())
-			permissions.tryPermission(OpPerms.AllOperators);
-
-		this.subHeading = account.getName();
+		// Get auditID
+		if (auditID > 0)
+			ActionContext.getContext().getSession().put("auditID", auditID);
+		else
+			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
+					.getContext().getSession().get("auditID"));
 
 		if ("Description".equals(button)) {
 			if (competencyID > 0)
@@ -104,16 +117,22 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 		}
 
 		if ("Delete".equals(button)) {
-			addActionMessage("Role " + role.getName() + " Successfully Deleted.");
-			jobRoleDAO.remove(role);
-			role = null;
+			List<EmployeeRole> employeeRoles = erDAO.findWhere("e.jobRole.id = " + role.getId());
+
+			if (employeeRoles.size() > 0) {
+				role.setActive(false);
+				jobRoleDAO.save(role);
+			} else {
+				jobRoleDAO.remove(role);
+				role = null;
+			}
 
 			return redirect("ManageJobRoles.action?id=" + account.getId());
 		}
 
 		if (role != null) {
 			jobCompetencies = jobRoleDAO.getCompetenciesByRole(role);
-			List<OperatorCompetency> competencies = competencyDAO.findAll();
+			List<OperatorCompetency> competencies = competencyDAO.findWhere("o.category != 'Other'");
 			if (competencyID > 0) {
 				if ("removeCompetency".equals(button)) {
 					Iterator<JobCompetency> iterator = jobCompetencies.iterator();
@@ -154,21 +173,8 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 				}
 			}
 		}
+
 		return SUCCESS;
-	}
-
-	public boolean isCanEdit() {
-		if (account.isContractor()) {
-			ContractorAccount con = (ContractorAccount) account;
-
-			for (ContractorAudit ca : con.getAudits()) {
-				if ((ca.getAuditType().getId() == 100 && ca.hasCaoStatus(AuditStatus.Pending))
-						|| (ca.getAuditType().getId() == 99 && ca.hasCaoStatus(AuditStatus.Pending)))
-					return true;
-			}
-		}
-
-		return false;
 	}
 
 	private boolean roleContainsCompetency(OperatorCompetency operatorCompetency) {
@@ -220,6 +226,14 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 
 	public void setCompetencyID(int competencyID) {
 		this.competencyID = competencyID;
+	}
+
+	public int getAuditID() {
+		return auditID;
+	}
+
+	public void setAuditID(int auditID) {
+		this.auditID = auditID;
 	}
 
 	private class ByPercent implements Comparator<OperatorCompetency> {

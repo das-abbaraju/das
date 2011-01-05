@@ -21,6 +21,12 @@
 		updateCategoriesNow();
 	});
 	</s:if>
+	$(function() {
+		$('a.passAudit').live('click', function() {
+			window.location.href = $(this).attr('href') + "?auditID=" + auditID;
+			return false;
+		});
+	});
 </script>
 </head>
 <body>

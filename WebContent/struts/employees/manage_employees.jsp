@@ -162,6 +162,9 @@ div.dataTables_length { width: 35%; }
 </style>
 </head>
 <body>
+	<s:if test="auditID > 0">
+		<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />">Click here</a> to go back to the Job Roles Self Assessment audit.</div>
+	</s:if>
 	<h1>Manage Employees<span class="sub"><s:property value="subHeading" escape="false"/></span></h1>
 	<s:include value="../actionMessages.jsp"/>
 

@@ -17,6 +17,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.struts2.ServletActionContext;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.report.ReportEmployee;
 import com.picsauditing.dao.AccountDAO;
@@ -39,6 +40,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 	protected OperatorCompetencyDAO ocDAO;
 
 	protected int id;
+	protected int auditID;
 	protected int employeeID;
 	protected int competencyID;
 	protected boolean skilled;
@@ -66,6 +68,13 @@ public class EmployeeCompetencies extends ReportEmployee {
 			account = accountDAO.find(id);
 		else
 			throw new RecordNotFoundException("Missing account ID");
+		
+		// Get auditID
+		if (auditID > 0)
+			ActionContext.getContext().getSession().put("auditID", auditID);
+		else
+			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
+					.getContext().getSession().get("auditID"));
 
 		if (button != null) {
 			if ("ChangeCompetency".equals(button)) {
@@ -93,10 +102,9 @@ public class EmployeeCompetencies extends ReportEmployee {
 							+ ec.getEmployee().getLastName() + ", " + ec.getEmployee().getFirstName());
 				} else
 					addActionError("Missing employee and/or competency");
+				
+				return BLANK;
 			}
-
-			if (getActionErrors().size() > 0)
-				return SUCCESS;
 		}
 
 		getFilter().setPermissions(permissions);
@@ -290,6 +298,14 @@ public class EmployeeCompetencies extends ReportEmployee {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getAuditID() {
+		return auditID;
+	}
+
+	public void setAuditID(int auditID) {
+		this.auditID = auditID;
 	}
 
 	public int getEmployeeID() {

@@ -8,11 +8,7 @@
 <s:else>
 <div class="right"><a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
 	href="javascript: download('EmployeeCompetencies');" title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a></div>
-<div>
-<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-</div>
-
-<s:include value="../actionMessages.jsp" />
+<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 
 <table class="report">
 	<thead>
@@ -30,7 +26,7 @@
 				<s:iterator value="competencies" var="c">
 					<s:if test="map.get(#e, #c) != null">
 						<td class="center<s:if test="map.get(#e, #c).skilled"> green</s:if><s:else> red</s:else>">
-							<s:checkbox name="map.get(#e, #c).skilled" onclick="changeCompetency(%{#e.id}, %{#c.id}, $(this).is(':checked'))" />
+							<s:checkbox name="map.get(#e, #c).skilled" onclick="changeCompetency(%{#e.id}, %{#c.id}, this)" />
 						</td>
 					</s:if>
 					<s:else><td></td></s:else>
@@ -44,3 +40,5 @@
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
 </s:else>
+
+<div id="messages" style="clear: both;"><s:include value="../actionMessages.jsp" /></div>

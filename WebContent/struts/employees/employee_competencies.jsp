@@ -16,7 +16,8 @@
 }
 </style>
 <script type="text/javascript">
-function changeCompetency(employeeID, competencyID, checked) {
+function changeCompetency(employeeID, competencyID, checkbox) {
+	var checked = $(checkbox).is(":checked");
 	var data = {
 		employeeID: employeeID,
 		competencyID: competencyID,
@@ -24,13 +25,15 @@ function changeCompetency(employeeID, competencyID, checked) {
 		button: "ChangeCompetency"
 	};
 
-	startThinking({ div: "report_data", type: "large" });
-	$("#report_data").load('EmployeeCompetenciesAjax.action?' + $('#form1').serialize(), data);
+	$(checkbox).parent().removeClass('red').removeClass('green').addClass(checked ? 'green' : 'red');
+	$("#messages").load('EmployeeCompetenciesAjax.action?' + $('#form1').serialize(), data);
 }
 </script>
 </head>
 <body>
-
+<s:if test="auditID > 0">
+	<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />">Click here</a> to go back to the Job Roles Self Assessment audit.</div>
+</s:if>
 <h1><s:property value="account.name" /><span class="sub">Employee HSE Competencies</span></h1>
 
 <s:include value="../reports/filters_employee.jsp" />

@@ -14,6 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.struts2.ServletActionContext;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.JobRoleDAO;
@@ -29,6 +30,8 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 	protected AccountDAO accountDAO;
 	private OperatorCompetencyDAO competencyDAO;
 
+	private int auditID;
+
 	private List<JobRole> roles;
 	private List<OperatorCompetency> competencies;
 	private DoubleMap<JobRole, OperatorCompetency, JobCompetency> map;
@@ -43,7 +46,7 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		getPermissions();
 		if (permissions.isContractor())
 			id = permissions.getAccountId();
@@ -55,6 +58,13 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 		roles = jobRoleDAO.findMostUsed(id, true);
 		competencies = competencyDAO.findMostUsed(id, true);
 		map = jobRoleDAO.findJobCompetencies(id, true);
+		
+		// Get auditID
+		if (auditID > 0)
+			ActionContext.getContext().getSession().put("auditID", auditID);
+		else
+			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
+					.getContext().getSession().get("auditID"));
 
 		this.subHeading = account.getName();
 
@@ -75,15 +85,23 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 		return SUCCESS;
 	}
 
+	public int getAuditID() {
+		return auditID;
+	}
+
+	public void setAuditID(int auditID) {
+		this.auditID = auditID;
+	}
+
 	public List<JobRole> getRoles() {
 		return roles;
 	}
-	
+
 	public List<JobRole> getRoles(OperatorCompetency operatorCompetency) {
 		// need to check if forward entries are all null to not include in list
 		boolean usedRole = false;
-		for(JobRole role : roles)
-			if(map.get(role, operatorCompetency) != null) {
+		for (JobRole role : roles)
+			if (map.get(role, operatorCompetency) != null) {
 				usedRole = true;
 				break;
 			}
@@ -98,11 +116,11 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 	public JobCompetency getJobCompetency(JobRole role, OperatorCompetency comp) {
 		return map.get(role, comp);
 	}
-	
+
 	private HSSFWorkbook buildWorkbook(String name) {
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet(name);
-		
+
 		HSSFFont headerFont = wb.createFont();
 		headerFont.setFontHeightInPoints((short) 12);
 		headerFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
@@ -110,32 +128,32 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 		HSSFCellStyle headerStyle = wb.createCellStyle();
 		headerStyle.setFont(headerFont);
 		headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		
+
 		HSSFFont normalFont = wb.createFont();
 		normalFont.setColor(HSSFColor.DARK_BLUE.index);
 		normalFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-		
+
 		HSSFCellStyle normalStyle = wb.createCellStyle();
 		normalStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 		normalStyle.setFillForegroundColor(HSSFColor.LIGHT_CORNFLOWER_BLUE.index);
 		normalStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 		normalStyle.setFont(normalFont);
-		
+
 		// Add the Column Headers to the top of the report
 		int rowNumber = 0;
 		int columnCount = 0;
 		HSSFRow r = sheet.createRow(rowNumber);
-		
+
 		// HSE Competency Category & Label
 		HSSFCell c = r.createCell(columnCount);
 		c.setCellValue(new HSSFRichTextString("HSE Competency Category"));
 		c.setCellStyle(headerStyle);
 		columnCount++;
-		
+
 		c = r.createCell(columnCount);
 		c.setCellValue(new HSSFRichTextString("HSE Competency Label"));
 		c.setCellStyle(headerStyle);
-		
+
 		// Header role names
 		for (JobRole role : roles) {
 			columnCount++;
@@ -143,7 +161,7 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 			c.setCellValue(new HSSFRichTextString(role.getName()));
 			c.setCellStyle(headerStyle);
 		}
-		
+
 		for (OperatorCompetency competency : competencies) {
 			rowNumber++;
 			columnCount = 0;
@@ -153,10 +171,10 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 			columnCount++;
 			c = r.createCell(columnCount);
 			c.setCellValue(new HSSFRichTextString(competency.getLabel()));
-			
+
 			for (JobRole role : roles) {
 				columnCount++;
-				
+
 				if (getJobCompetency(role, competency) != null) {
 					c = r.createCell(columnCount);
 					c.setCellValue(new HSSFRichTextString("X"));
@@ -164,11 +182,11 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 				}
 			}
 		}
-		
+
 		for (int i = 0; i < (roles.size() + 2); i++) {
 			sheet.autoSizeColumn((short) i);
 		}
-		
+
 		return wb;
 	}
 }

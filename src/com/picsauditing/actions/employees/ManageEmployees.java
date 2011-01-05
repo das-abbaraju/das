@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.json.simple.JSONArray;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PICSFileType;
@@ -63,6 +64,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	private JobSiteTaskDAO siteTaskDAO;
 	private ContractorAccountDAO conDAO;
 	private Indexer indexer;
+
+	protected int auditID;
 
 	protected Employee employee;
 	protected String ssn;
@@ -116,6 +119,14 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			if (accountID > 0)
 				account = accountDAO.find(accountID);
 		}
+
+		if (employee == null && account == null) {
+			loadPermissions();
+			account = accountDAO.find(permissions.getAccountId());
+		}
+
+		if (account == null)
+			throw new RecordNotFoundException("Account not found");
 	}
 
 	@Override
@@ -123,22 +134,23 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if (!forceLogin())
 			return LOGIN;
 
+		this.subHeading = account.getName();
+
 		if (permissions.isContractor())
 			permissions.tryPermission(OpPerms.ContractorAdmin);
-		else
+		else {
 			permissions.tryPermission(OpPerms.ManageEmployees);
 
-		if (employee == null && account == null) {
-			account = accountDAO.find(permissions.getAccountId());
+			if (permissions.getAccountId() != account.getId())
+				permissions.tryPermission(OpPerms.AllOperators);
 		}
 
-		if (account == null)
-			throw new RecordNotFoundException("Account " + id + " not found");
-
-		if (permissions.getAccountId() != account.getId())
-			permissions.tryPermission(OpPerms.AllOperators);
-
-		this.subHeading = account.getName();
+		// Get auditID
+		if (auditID > 0)
+			ActionContext.getContext().getSession().put("auditID", auditID);
+		else
+			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
+					.getContext().getSession().get("auditID"));
 
 		if ("Add".equals(button))
 			employee = new Employee();
@@ -352,6 +364,14 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	public void setExpiration(String expiration) {
 		this.expiration = expiration;
+	}
+
+	public int getAuditID() {
+		return auditID;
+	}
+
+	public void setAuditID(int auditID) {
+		this.auditID = auditID;
 	}
 
 	public Employee getEmployee() {
