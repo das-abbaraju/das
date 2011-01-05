@@ -168,7 +168,7 @@ public class AuditDataDAO extends PicsDAO {
 		Query query = em
 				.createQuery("FROM AuditData d "
 						+ "WHERE audit.contractorAccount.id = ? AND audit IN "
-						+ "(SELECT cao.audit FROM ContractorAuditOperator cao WHERE cao.status IN ('Complete','Submitted','Pending','Resubmitted') AND cao.visible = 1) "
+						+ "(SELECT cao.audit FROM ContractorAuditOperator cao WHERE cao.status IN ('Complete','Submitted','Pending','Resubmit','Resubmitted') AND cao.visible = 1) "
 						+ "AND question.id =  " + questionId);
 		query.setParameter(1, conID);
 		for (Object ad : query.getResultList()) {
