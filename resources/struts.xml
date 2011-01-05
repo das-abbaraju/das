@@ -667,6 +667,11 @@
 			class="com.picsauditing.actions.operators.OperatorConfiguration">
 			<result>struts/operators/op_config.jsp</result>
 		</action>
+		<action name="OperatorConfigurationAjax"
+			class="com.picsauditing.actions.operators.OperatorConfiguration">
+			<param name="button">checkCat</param>
+			<result>/struts/blank.jsp</result>
+		</action>
 		<action name="OperatorTags"
 			class="com.picsauditing.actions.operators.OperatorTags">
 			<result>struts/operators/operator_tags.jsp</result>

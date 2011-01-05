@@ -43,14 +43,28 @@ function showType(typeID) {
 		showWho: false,
 		'comparisonRule.auditType.id': typeID
 	};
+	var checkCat;
 	var cType =$('tr#'+typeID+' .classType').text();	
 	if(cType=='Policy')
-		data.checkCat = true;
+		checkCat = true;
 
 	$('tr#'+typeID).find('.hide').show();
 	$('tr#'+typeID).find('.normal').hide();
 
-	$('#typeTable_'+typeID).load('AuditTypeRuleTableAjax.action', data);
+	$('#typeTable_'+typeID).load('AuditTypeRuleTableAjax.action', data, function(){
+		if(checkCat){
+			$.getJSON('OperatorConfigurationAjax.action', {auditTypeID: typeID, id:<s:property value="operator.id" /> }, function(json){
+				if(json){
+					var add = new Boolean(json.addLink);
+					if(add==true){
+						$('#build_'+typeID).html($('<a>', 
+								{'href':'OperatorConfiguration.action?id=<s:property value="operator.id"/>&button=buildCat&auditTypeID='+typeID,
+								 'class':'go'}).append('Setup Insurance Category'));
+					}
+				}
+			});
+		}
+	});
 
 	return false;
 }
@@ -170,8 +184,7 @@ function loadCatRules(catID, divCatID, name) {
 									<div id="typeTable_<s:property value="#type.id" />"></div>
 										<a href="AuditTypeRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="#type.id" />&ruleOperatorAccountId=<s:property value="operator.id" />"
 											target="_blank" class="hide add">Add Rule</a>
-									<div class="buttonArea hide">
-									</div>
+									<div id="build_<s:property value="#type.id" />" class="hide"></div>
 								</td>
 							</tr>
 						</s:iterator>

@@ -15,6 +15,7 @@ import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
+import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FacilitiesDAO;
@@ -32,6 +33,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class OperatorConfiguration extends OperatorActionSupport implements Preparable {
 	protected AuditDecisionTableDAO adtDAO;
+	protected AuditCategoryDAO auditCategoryDAO;
 	protected AuditTypeDAO typeDAO;
 	protected FacilitiesDAO facilitiesDAO;
 	protected AuditTypeRuleCache auditTypeRuleCache;
@@ -51,13 +53,14 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 	public OperatorConfiguration(OperatorAccountDAO operatorDao, AuditDecisionTableDAO adtDAO, AuditTypeDAO typeDAO,
 			FacilitiesDAO facilitiesDAO, AuditTypeRuleCache auditTypeRuleCache,
-			AuditCategoryRuleCache auditCategoryRuleCache) {
+			AuditCategoryRuleCache auditCategoryRuleCache, AuditCategoryDAO auditCategoryDAO) {
 		super(operatorDao);
 		this.adtDAO = adtDAO;
 		this.typeDAO = typeDAO;
 		this.facilitiesDAO = facilitiesDAO;
 		this.auditTypeRuleCache = auditTypeRuleCache;
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
+		this.auditCategoryDAO = auditCategoryDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -97,6 +100,20 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 					Facility corp = facilitiesDAO.findByCorpOp(corpID, operator.getId());
 					facilitiesDAO.remove(corp);
 				}
+			}
+			// check to see if category under this audit type with operator name already exists
+			if("checkCat".equals(button)){
+				if (auditTypeID>0) {
+					boolean addLink = true;
+					for (AuditCategory cat : auditCategoryDAO.findByAuditTypeID(auditTypeID)) {
+						if (cat.getName().equals(operator.getName())) {
+							addLink = false;
+							break;
+						}
+					}
+					json.put("addLink", addLink);
+				}
+				return JSON;
 			}
 
 			if ("buildCat".equals(button)) {
