@@ -522,9 +522,9 @@
 			onclick="toggleBox('form1_auditFor'); return false;">For Year </a> =
 		<span id="form1_auditFor_query">ALL</span><br />
 		<span id="form1_auditFor_select" style="display: none"
-			class="clearLink"> <s:select id="form1_auditFor"
-			list="#{'2009':'2009','2008':'2008','2007':'2007','2006':'2006','2005':'2005','2004':'2004','2003':'2003','2002':'2002','2001':'2001'}"
-			cssClass="forms" name="filter.auditFor" multiple="true" size="5" />
+			class="clearLink"> 
+			<s:select id="form1_auditFor"
+			list="filter.yearList" cssClass="forms" name="filter.auditFor" multiple="true" size="5" />
 		<script type="text/javascript">updateQuery('form1_auditFor');</script>
 		<br />
 		<a class="clearLink" href="#"
@@ -662,7 +662,7 @@
 	
 	<s:if test="filter.showExpiredDate">
 		<div class="filterOption"><a href="#"
-			onclick="showTextBox('form1_expiredDate'); return false;">Expires 
+			onclick="showTextBox('form1_expiredDate'); return false;">Expired 
 		Date</a> <span id="form1_expiredDate_query">= ALL</span><br />
 		<span id="form1_expiredDate" style="display: none"
 			class="clearLink"><s:textfield cssClass="forms datepicker"
