@@ -15,6 +15,9 @@
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 
+<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css" />
+
 <script type="text/javascript">
 var employeeID = 0;
 <s:if test="employee != null">
@@ -60,14 +63,24 @@ function addJobRole(id) {
 	$('#employee_role').load('ManageEmployeesAjax.action', {button: 'addRole', 'employee.id': employeeID, childID: id});
 }
 
-function addJobSite(id) {
-	startThinking({div: 'thinking_sites', message: 'Assigning Employee to Job Site'});
-	$('#employee_site').load('ManageEmployeesAjax.action', {button: 'addSite', 'employee.id': employeeID, childID: id});
+function addJobSite(selection) {
+	var id = $(selection).val();
+	var name = $(selection).find('option[value=' + id + ']').text().trim().split(":");
+	
+	startThinking({div: 'employee_site', message: 'Assigning Employee to Job Site'});
+	$('#employee_site').load('ManageEmployeesAjax.action', {button: 'addSite', 'employee.id': employeeID, 
+		'op.id': id, 'op.name' : name[0]});
 }
 
 function removeJobRole(id) {
-	startThinking({div: 'thinking_roles', message: 'Removing Job Role'})
-	$('#employee_role').load('ManageEmployeesAjax.action', {button: 'removeRole', 'employee.id': employeeID, childID: id});
+	var remove = confirm('Are you sure you want to remove this job role?');
+
+	if (remove) {
+		startThinking({div: 'thinking_roles', message: 'Removing Job Role'})
+		$('#employee_role').load('ManageEmployeesAjax.action', {button: 'removeRole', 'employee.id': employeeID, childID: id});
+	}
+
+	return false;
 }
 
 function removeJobSite(id) {
@@ -76,33 +89,24 @@ function removeJobSite(id) {
 	if (remove) {
 		startThinking({div: 'thinking_sites', message: 'Removing Employee from Job Site'});
 		$('#employee_site').load('ManageEmployeesAjax.action', {button: 'removeSite', 'employee.id': employeeID, childID: id});
+		$.unblockUI();
 	}
 
 	return false;
 }
 
 function newJobSite() {
-	var opID = $('#opID').val();
-
-	if (opID == '' || opID == undefined) {
-		<s:if test="employee.id > 0">
-			opID = <s:property value="employee.account.id" />;
-		</s:if>
-		<s:else>
-			opID = <s:property value="id" />;
-		</s:else>
-	}
-	
 	startThinking({div: 'thinking_sites', message: 'Adding New Job Site'})
-	$('#employee_site').load('ManageEmployeesAjax.action?' + $('#newJobSiteForm').serialize(), {button: 'newSite', 'employee.id': employeeID, opID: opID});
+	$('#employee_site').load('ManageEmployeesAjax.action?' + $('#newJobSiteForm input').serialize(), {button: 'newSite', 'employee.id': employeeID});
 }
 
 function editAssignedSites(id) {
 	startThinking({div: 'thinking_sites', message: 'Editing Assigned Sites for Employee'})
-	$('#employee_site').load('ManageEmployeesAjax.action', 
-			{button: 'editSite', effective: $('#sDate_'+id).val(), expiration: $('#eDate_'+id).val(),
-			 orientation: $('#oDate_'+id).val(), monthsToExp: $('#expires_'+id).val(),
-			 'employee.id': employeeID, childID: id});
+	$('#employee_site').load('ManageEmployeesAjax.action?' + $('#siteForm_' + id).serialize(), 
+			{button: 'editSite', 'employee.id': employeeID, childID: id});
+
+	$.unblockUI();
+	return false;
 }
 function showUpload(){
 	url = 'EmployeePhotoUploadAjax.action?employeeID='+employeeID;
@@ -110,6 +114,16 @@ function showUpload(){
 	pars = 'scrollbars=yes,resizable=yes,width=900,height=700,toolbar=0,directories=0,menubar=0';
 	photoUpload = window.open(url,title,pars);
 	photoUpload.focus();
+}
+
+function getSite(id) {
+	var data = {
+		button: 'getSite',
+		childID: id
+	};
+
+	$('#siteEditBox').load('ManageEmployeesAjax.action', data);
+	$.blockUI({ message: $('#siteEditBox') });
 }
 
 $(function() {
@@ -159,6 +173,7 @@ $(function() {
 <style>
 div.dataTables_filter { width: 65%; }
 div.dataTables_length { width: 35%; }
+.newJobSite { display: none; }
 </style>
 </head>
 <body>
@@ -226,7 +241,7 @@ div.dataTables_length { width: 35%; }
 						<fieldset class="form">
 							<h2 class="formLegend">Employee Details</h2>
 							<ol>
-								<li><label>First Name:</label>
+								<li class="required"><label>First Name:</label>
 									<s:textfield name="employee.firstName"/>
 									<div class="fieldhelp">
 									<h3>First Name</h3>
@@ -239,19 +254,11 @@ div.dataTables_length { width: 35%; }
 									</ul>
 									</div>
 								</li>
-								<li><label>Last Name:</label>
+								<li class="required"><label>Last Name:</label>
 									<s:textfield name="employee.lastName"/>
 									<div class="fieldhelp">
 									<h3>Last Name</h3>
 									<p>The last name (aka family name) of the employee.</p>
-									</div>
-								</li>
-								<li><label>SSN:</label>
-									<s:textfield name="ssn" cssClass="ssn"/>
-									<div class="fieldhelp">
-									<h3>Social Security Number</h3>
-									<p>The employee's Social Security Number issued by the United States. Leave blank if employee does not work in the USA.
-									This field is NOT used directly by PICS. However some third party data providers require this number. You can always add it later if needed.</p>
 									</div>
 								</li>
 								<li><label>Title:</label>
@@ -311,20 +318,6 @@ div.dataTables_length { width: 35%; }
 										</li>
 									</s:else>
 								</s:if>
-								<li><label>Location:</label>
-									<s:textfield name="employee.location" id="locationSuggest"/>
-									<div class="fieldhelp">
-									<h3>Location</h3>
-									<p>The employee's primary work location. This could one of your own work locations or the location of one of your clients.</p>
-									<h5>Examples:</h5>
-									<ul>
-										<li>Dallas</li>
-										<li>Building C</li>
-										<li>BP Whiting</li>
-									</ul>
-									<p>Suggestions based on common locations of other employees will appear after you start to type.</p>
-									</div>
-								</li>
 								<li><label>Email:</label>
 									<s:textfield name="employee.email"/>
 									<div class="fieldhelp">
@@ -347,36 +340,53 @@ div.dataTables_length { width: 35%; }
 									<p>The expiration date of the employee's TWIC Card if available. Some operators may require this information.</p>
 									</div>
 								</li>
+								<li><label>SSN:</label>
+									<s:textfield name="ssn" cssClass="ssn"/>
+									<div class="fieldhelp">
+									<h3>Social Security Number</h3>
+									<p>The employee's Social Security Number issued by the United States. Leave blank if employee does not work in the USA.
+									This field is NOT used directly by PICS. However some third party data providers require this number. You can always add it later if needed.</p>
+									</div>
+								</li>
+								<li><label>Location:</label>
+									<s:textfield name="employee.location" id="locationSuggest"/>
+									<div class="fieldhelp">
+									<h3>Location</h3>
+									<p>The employee's primary work location. This could one of your own work locations or the location of one of your clients.</p>
+									<h5>Examples:</h5>
+									<ul>
+										<li>Dallas</li>
+										<li>Building C</li>
+										<li>BP Whiting</li>
+									</ul>
+									<p>Suggestions based on common locations of other employees will appear after you start to type.</p>
+									</div>
+								</li>
 							</ol>
 						</fieldset>
+						<s:if test="employee.id > 0">
+							<s:if test="employee.account.requiresCompetencyReview && (unusedJobRoles.size() + employee.employeeRoles.size()) > 0">
+								<fieldset class="form">
+									<h2 class="formLegend">Job Roles</h2>
+									<div id="employee_role">
+										<s:include value="manage_employee_roles.jsp" />
+									</div>
+								</fieldset>
+							</s:if>
+							<div id="employee_site">
+								<s:include value="manage_employee_sites.jsp" />
+							</div>
+						</s:if>
 						<fieldset class="form submit">
 							<input type="submit" value="Save" name="button" class="picsbutton positive"/>
 							<input type="submit" value="Delete" name="button" class="picsbutton negative" 
 								onclick="return confirm('Are you sure you want to delete this employee? This action cannot be undone.');"/>
 						</fieldset>
 					</s:form>
-					<br clear="all" />
-				
-					<s:if test="employee.id > 0">
-						<s:if test="permissions.requiresCompetencyReview">
-							<s:if test="(unusedJobRoles.size() + employee.employeeRoles.size()) > 0">
-								<div style="float:left; padding-right:20px;">
-									<h3>Job Roles</h3>
-									<div id="employee_role">
-										<s:include value="manage_employee_roles.jsp"/>
-									</div>
-								</div>
-							</s:if>
-						</s:if>
-						<div style="float:left">
-							<div id="employee_site">
-								<s:include value="manage_employee_sites.jsp"/>
-							</div>
-						</div>
-					</s:if>
 				</td>
 			</s:if>
 		</tr>
 	</table>
+	<div id="siteEditBox" style="display: none;"></div>
 </body>
 </html>

@@ -15,23 +15,19 @@ import org.json.simple.JSONArray;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.actions.Indexer;
 import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.EmployeeSiteDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.BaseHistory;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Employee;
@@ -60,46 +56,32 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	private EmployeeRoleDAO employeeRoleDAO;
 	private JobSiteDAO jobSiteDAO;
 	private EmployeeSiteDAO employeeSiteDAO;
-	private OperatorAccountDAO operatorAccountDAO;
 	private JobSiteTaskDAO siteTaskDAO;
-	private ContractorAccountDAO conDAO;
 	private Indexer indexer;
-
-	protected int auditID;
 
 	protected Employee employee;
 	protected String ssn;
 
-	private String effective;
-	private String expiration;
-	private String orientation;
-	private int monthsToExp;
-
+	protected int auditID;
 	protected int childID;
 	protected Set<JobRole> unusedJobRoles;
 	protected List<OperatorSite> oqOperators;
 	protected List<OperatorSite> hseOperators;
 
-	// Add site
-	private String siteLabel;
-	private String siteName;
-	private Date siteStart;
-	private Date siteStop;
-	private int opID;
-	private int jobID;
+	private OperatorAccount op;
+	private EmployeeSite esSite = new EmployeeSite();
+	private JobSite jobSite = new JobSite();
 
 	public ManageEmployees(AccountDAO accountDAO, EmployeeDAO employeeDAO, JobRoleDAO roleDAO,
-			EmployeeRoleDAO employeeRoleDAO, EmployeeSiteDAO employeeSiteDAO, OperatorAccountDAO operatorAccountDAO,
-			JobSiteDAO jobSiteDAO, JobSiteTaskDAO siteTaskDAO, ContractorAccountDAO conDAO, Indexer indexer) {
+			EmployeeRoleDAO employeeRoleDAO, EmployeeSiteDAO employeeSiteDAO, JobSiteDAO jobSiteDAO,
+			JobSiteTaskDAO siteTaskDAO, Indexer indexer) {
 		this.accountDAO = accountDAO;
 		this.employeeDAO = employeeDAO;
 		this.roleDAO = roleDAO;
 		this.employeeRoleDAO = employeeRoleDAO;
 		this.jobSiteDAO = jobSiteDAO;
 		this.employeeSiteDAO = employeeSiteDAO;
-		this.operatorAccountDAO = operatorAccountDAO;
 		this.siteTaskDAO = siteTaskDAO;
-		this.conDAO = conDAO;
 		this.indexer = indexer;
 
 		noteCategory = NoteCategory.Employee;
@@ -219,16 +201,17 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		if ("addSite".equals(button)) {
-			if (employee != null && childID != 0) {
+			if (employee != null && op.getId() != 0) {
 				EmployeeSite es = new EmployeeSite();
 				es.setEmployee(employee);
 
-				if (childID > 0) {
-					es.setOperator(operatorAccountDAO.find(childID));
-				} else {
-					es.setJobSite(jobSiteDAO.find(-1 * childID));
+				if (op.getId() > 0)
+					es.setOperator(op);
+				else {
+					es.setJobSite(jobSiteDAO.find(-1 * op.getId()));
 					es.setOperator(es.getJobSite().getOperator());
 				}
+				
 				es.setAuditColumns(permissions);
 				es.defaultDates();
 				employeeSiteDAO.save(es);
@@ -248,12 +231,14 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 					boolean expired = es.getEffectiveDate() != null
 							&& es.getEffectiveDate().before(EmployeeSite.getMidnightToday());
 
-					if (expired)
+					if (expired) {
 						es.expire();
-					else
+						employeeSiteDAO.save(es);
+					} else {
 						employee.getEmployeeSites().remove(es);
+						employeeSiteDAO.remove(es);
+					}
 
-					employeeSiteDAO.save(es);
 					createNewNote((expired ? "Expired " : "Removed ")
 							+ (es.getJobSite() != null ? "OQ project " + es.getOperator().getName() + ": "
 									+ es.getJobSite().getLabel() : "HSE site " + es.getOperator().getName()));
@@ -262,49 +247,46 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 			return "sites";
 		}
+
+		if ("getSite".equals(button)) {
+			if (childID != 0) {
+				esSite = employeeSiteDAO.find(childID);
+				return button;
+			}
+		}
+
 		if ("editSite".equals(button)) {
 			if (employee != null && childID != 0) {
 				List<String> notes = new ArrayList<String>();
 
 				EmployeeSite es = employeeSiteDAO.find(childID);
-				Date effDate = DateBean.parseDate(effective);
-				if (effDate == null) {
-					addActionMessage(effective + " is not a valid start date. Use the format 'MM/DD/YYYY'");
-					return "sites";
-				}
-				Date expDate = DateBean.parseDate(expiration);
-				if (expDate == null) {
-					addActionError(expiration + " is not a valid end date. Use the format 'MM/DD/YYYY'");
-					return "sites";
-				}
-				Date orDate = DateBean.parseDate(orientation);
-				// if field is blank, there is no orientation date to update
-				if (!orientation.equals("") && orDate == null) {
-					addActionError(orientation + " is not a valid orientation date. Use the format 'MM/DD/YYYY'");
-					return "sites";
-				}
 
-				if (effDate.compareTo(es.getEffectiveDate()) != 0)
-					notes.add("Updated effective date to " + Strings.formatDateShort(effDate));
-				if (expDate.compareTo(es.getExpirationDate()) != 0)
-					notes.add("Updated expiration date to " + Strings.formatDateShort(expDate));
-				if (!Strings.isEmpty(orientation)) {
-					if (orDate.compareTo(es.getOrientationDate()) != 0)
-						notes.add("Updated orientation date to " + Strings.formatDateShort(orDate));
-				}
+				if (esSite.getEffectiveDate() != null && !esSite.getEffectiveDate().equals(es.getEffectiveDate()))
+					notes.add("Updated start date to " + esSite.getEffectiveDate());
+				else if (esSite.getEffectiveDate() == null && es.getEffectiveDate() != null)
+					notes.add("Removed start date");
 
-				es.setEffectiveDate(effDate);
-				es.setExpirationDate(expDate);
-				if (es.getOrientationDate() == null)
-					monthsToExp = 0;
-				es.setOrientationDate(orDate);
-				if (orDate != null) {
-					es.setMonthsToExp(monthsToExp);
-					es.setOrientationExpiration();
-				} else {
-					es.setOrientationDate(null);
-					es.setOrientationExpiration(null);
+				if (esSite.getExpirationDate() != null && !esSite.getExpirationDate().equals(es.getExpirationDate()))
+					notes.add("Updated stop date to " + esSite.getExpirationDate());
+				else if (esSite.getExpirationDate() == null && es.getExpirationDate() != null)
+					notes.add("Removed stop date");
+				
+				if (esSite.getOrientationDate() != null && !esSite.getOrientationDate().equals(es.getOrientationDate())) {
+					notes.add("Updated orientation date to " + esSite.getOrientationDate());
+					
+					if (esSite.getOrientationExpiration() != null && !esSite.getOrientationExpiration().equals(es.getOrientationExpiration()))
+						notes.add("Updated orientation expiration date to " + esSite.getOrientationExpiration());
+				} else if (esSite.getOrientationDate() == null && es.getOrientationDate() != null) {
+					notes.add("Removed orientation date");
+					esSite.setOrientationExpiration(null);
 				}
+				
+				es.setEffectiveDate(esSite.getEffectiveDate());
+				es.setExpirationDate(esSite.getExpirationDate());
+				es.setOrientationDate(esSite.getOrientationDate());
+				es.setOrientationExpiration(esSite.getOrientationExpiration());
+				es.setAuditColumns(permissions);
+				
 				employeeSiteDAO.save(es);
 				createNewNote(Strings.implode(notes));
 			}
@@ -313,27 +295,17 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		if ("newSite".equals(button)) {
-			if (!Strings.isEmpty(siteLabel) && !Strings.isEmpty(siteName) && employee != null && opID > 0) {
-				OperatorAccount op = operatorAccountDAO.find(opID);
+			if (!Strings.isEmpty(jobSite.getLabel()) && !Strings.isEmpty(jobSite.getName())) {
+				jobSite.setAuditColumns(permissions);
+				jobSite.setOperator(op);
+				jobSite = jobSiteDAO.save(jobSite);
 
-				JobSite site = new JobSite();
-				site.setLabel(siteLabel);
-				site.setName(siteName);
-				site.setOperator(op);
-				site.setProjectStart(siteStart);
-				site.setProjectStop(siteStop);
-				site = jobSiteDAO.save(site);
-
-				EmployeeSite es = new EmployeeSite();
-				es.setAuditColumns(permissions);
-				es.setJobSite(site);
-				es.setEmployee(employee);
-				es.setOperator(op);
-				es.setEffectiveDate(siteStart);
-				es.setExpirationDate(BaseHistory.END_OF_TIME);
-				employeeSiteDAO.save(es);
-
-				createNewNote("Added OQ project " + siteLabel);
+				esSite.setAuditColumns(permissions);
+				esSite.setEmployee(employee);
+				esSite.setJobSite(jobSite);
+				esSite.setOperator(op);
+				esSite.defaultDates();
+				employeeSiteDAO.save(esSite);
 			}
 
 			return "sites";
@@ -344,34 +316,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	public String getFileName(int eID) {
 		return PICSFileType.emp + "_" + eID;
-	}
-
-	public void setMonthsToExp(int monthsToExp) {
-		this.monthsToExp = monthsToExp;
-	}
-
-	public void setOrientation(String orientation) {
-		this.orientation = orientation;
-	}
-
-	public String getOrientation() {
-		return orientation;
-	}
-
-	public void setEffective(String effective) {
-		this.effective = effective;
-	}
-
-	public void setExpiration(String expiration) {
-		this.expiration = expiration;
-	}
-
-	public int getAuditID() {
-		return auditID;
-	}
-
-	public void setAuditID(int auditID) {
-		this.auditID = auditID;
 	}
 
 	public Employee getEmployee() {
@@ -392,6 +336,14 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			this.ssn = ssn;
 	}
 
+	public int getAuditID() {
+		return auditID;
+	}
+
+	public void setAuditID(int auditID) {
+		this.auditID = auditID;
+	}
+
 	public int getChildID() {
 		return childID;
 	}
@@ -400,61 +352,38 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		this.childID = childID;
 	}
 
-	public int getOpID() {
-		return opID;
+	public OperatorAccount getOp() {
+		return op;
+	}
+	
+	public void setOp(OperatorAccount op) {
+		this.op = op;
+	}
+	
+	public EmployeeSite getEsSite() {
+		return esSite;
 	}
 
-	public void setOpID(int opID) {
-		this.opID = opID;
+	public void setEsSite(EmployeeSite esSite) {
+		this.esSite = esSite;
 	}
 
-	public String getSiteName() {
-		return siteName;
+	public JobSite getJobSite() {
+		return jobSite;
 	}
 
-	public void setSiteName(String siteName) {
-		this.siteName = siteName;
+	public void setJobSite(JobSite jobSite) {
+		this.jobSite = jobSite;
 	}
 
-	public String getSiteLabel() {
-		return siteLabel;
+	public Date getToday() {
+		return new Date();
 	}
 
-	public void setSiteLabel(String siteLabel) {
-		this.siteLabel = siteLabel;
-	}
-
-	public Date getSiteStart() {
-		if (siteStart == null)
-			siteStart = new Date();
-
-		return siteStart;
-	}
-
-	public void setSiteStart(Date siteStart) {
-		this.siteStart = siteStart;
-	}
-
-	public Date getSiteStop() {
-		if (siteStop == null) {
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.YEAR, 3);
-			siteStop = cal.getTime();
-		}
-
-		return siteStop;
-	}
-
-	public void setSiteStop(Date siteStop) {
-		this.siteStop = siteStop;
-	}
-
-	public int getJobID() {
-		return jobID;
-	}
-
-	public void setJobID(int jobID) {
-		this.jobID = jobID;
+	public Date getExpirationDate() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, 3);
+		return cal.getTime();
 	}
 
 	public Set<JobRole> getUnusedJobRoles() {
@@ -544,6 +473,17 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		return oqOperators;
 	}
 
+	public List<OperatorAccount> getAllOqOperators() {
+		List<OperatorAccount> allOqOperators = new ArrayList<OperatorAccount>();
+
+		for (ContractorOperator co : ((ContractorAccount) account).getOperators()) {
+			if (co.getOperatorAccount().isRequiresOQ())
+				allOqOperators.add(co.getOperatorAccount());
+		}
+
+		return allOqOperators;
+	}
+
 	public List<OperatorSite> getHseOperators() {
 		if (hseOperators == null)
 			getOperators();
@@ -615,27 +555,15 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public List<JobTask> getAllJobTasks() {
 		if (employee != null) {
 			Set<JobTask> tasks = new HashSet<JobTask>();
+			List<JobSiteTask> jsts = siteTaskDAO.findByEmployeeAccount(employee.getAccount().getId());
 
-			if (employee.getAccount().isContractor()) {
-				ContractorAccount con = conDAO.find(employee.getAccount().getId());
-				for (ContractorOperator co : con.getOperators()) {
-					for (JobSite site : co.getOperatorAccount().getJobSites()) {
-						for (JobSiteTask task : site.getTasks()) {
-							tasks.add(task.getTask());
-						}
-					}
-				}
-			} else {
-				OperatorAccount op = operatorAccountDAO.find(employee.getAccount().getId());
-				for (JobSite site : op.getJobSites()) {
-					for (JobSiteTask task : site.getTasks()) {
-						tasks.add(task.getTask());
-					}
-				}
+			for (JobSiteTask jst : jsts) {
+				tasks.add(jst.getTask());
 			}
 
 			List<JobTask> allTasks = new ArrayList<JobTask>(tasks);
 			Collections.sort(allTasks);
+
 			return allTasks;
 		}
 
