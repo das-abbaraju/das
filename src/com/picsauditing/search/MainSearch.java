@@ -87,7 +87,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			return BLANK;
 		} else if ("search".equals(button)) { // full view and paging
 
-			List<String> terms = searchEngine.buildTerm(searchTerm, true, false);
+			List<String> terms = searchEngine.buildTerm(searchTerm, true, true);
 			if(terms==null || terms.isEmpty()){
 				addActionMessage("No searchable terms, please try again");
 				return SUCCESS;
@@ -122,7 +122,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 			return SUCCESS;
 		} else { // autosuggest/complete
-			List<String> terms = searchEngine.buildTerm(searchTerm, true, false);
+			List<String> terms = searchEngine.buildTerm(searchTerm, true, true);
 			if(terms==null || terms.isEmpty()){
 				output = "NULL|-"+searchTerm+"- did not return any results. Please try different a different search|";
 				return BLANK;
