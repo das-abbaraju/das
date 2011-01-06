@@ -58,7 +58,7 @@ function changeCompetency(employeeID, competencyID, checkbox) {
 	</tr>
 	<tr>
 		<td><div class="box red"></div></td>
-		<td>If unchecked, this employee is not yet SKILLED in the given competency.</td>
+		<td>If unchecked, this employee is not yet confirmed as SKILLED in the given competency.</td>
 	</tr>
 	<tr>
 		<td><div class="box" style="background-color: #F9F9F9"></div></td>
