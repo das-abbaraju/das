@@ -55,8 +55,7 @@ function showType(typeID) {
 		if(checkCat){
 			$.getJSON('OperatorConfigurationAjax.action', {auditTypeID: typeID, id:<s:property value="operator.id" /> }, function(json){
 				if(json){
-					var add = new Boolean(json.addLink);
-					if(add==true){
+					if(json.addLink){
 						$('#build_'+typeID).html($('<a>', 
 								{'href':'OperatorConfiguration.action?id=<s:property value="operator.id"/>&button=buildCat&auditTypeID='+typeID,
 								 'class':'go'}).append('Setup Insurance Category'));
@@ -65,7 +64,7 @@ function showType(typeID) {
 			});
 		}
 	});
-
+	
 	return false;
 }
 
