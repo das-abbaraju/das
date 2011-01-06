@@ -241,7 +241,7 @@ div.dataTables_length { width: 35%; }
 						<fieldset class="form">
 							<h2 class="formLegend">Employee Details</h2>
 							<ol>
-								<li class="required"><label>First Name:</label>
+								<li<s:if test="employee.firstName == null || employee.firstName == ''"> class="required"</s:if>><label>First Name:</label>
 									<s:textfield name="employee.firstName"/>
 									<div class="fieldhelp">
 									<h3>First Name</h3>
@@ -254,7 +254,7 @@ div.dataTables_length { width: 35%; }
 									</ul>
 									</div>
 								</li>
-								<li class="required"><label>Last Name:</label>
+								<li<s:if test="employee.lastName == null || employee.lastName == ''"> class="required"</s:if>><label>Last Name:</label>
 									<s:textfield name="employee.lastName"/>
 									<div class="fieldhelp">
 									<h3>Last Name</h3>
