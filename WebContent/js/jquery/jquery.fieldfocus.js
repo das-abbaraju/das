@@ -100,6 +100,6 @@ jQuery(function(){
 		$(this).not('.fieldhelp-focused').find(':input:visible:first:not(:disabled)').focus();
 	});
 	
-	$('fieldset.form h2.formLegend').jumpTo();
+	$('fieldset.form h2.formLegend:not(.noJump)').jumpTo();
 	 
 });
