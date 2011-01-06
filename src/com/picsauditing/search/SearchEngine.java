@@ -28,6 +28,8 @@ public class SearchEngine {
 
 	protected Database db = new Database();
 	protected Permissions perm;
+	
+	private static final int MAX_TERMS = 7;
 
 	public SearchEngine(Permissions perm) {
 		this.perm = perm;
@@ -132,7 +134,7 @@ public class SearchEngine {
 		if (!buildCommon) {
 			sb.append(",i1.indexType, min(t.total*(v1.total/i1.weight");
 			// TODO change from / to *
-			for (int i = 1; i < Math.min(terms.size(), 7); i++) {
+			for (int i = 1; i < Math.min(terms.size(), MAX_TERMS); i++) {
 				sb.append("+");
 				sb.append("v").append(i + 1).append(".total/i").append(i + 1).append(".weight");
 			}
@@ -144,7 +146,7 @@ public class SearchEngine {
 		sb.append("JOIN ").append(indexStats).append(" v1 ON v1.indexType IS NULL and i1.value = v1.value");
 		sql.addJoin(sb.toString());
 		sb.setLength(0);
-		for (int i = 1; i < Math.min(terms.size(), 7); i++) {
+		for (int i = 1; i < Math.min(terms.size(), MAX_TERMS); i++) {
 			sb.setLength(0);
 			String vTerm = "v" + (i + 1);
 			String iTerm = "i" + (i + 1);
