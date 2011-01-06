@@ -24,25 +24,25 @@ import com.picsauditing.util.Strings;
 public class ContractorDocuments extends ContractorActionSupport {
 	protected AuditTypeDAO auditTypeDAO;
 	protected ContractorAuditOperatorDAO caoDAO;
-	
+
 	protected Map<AuditType, List<ContractorAudit>> auditMap;
 	protected Map<String, List<AuditType>> auditTypes;
 	protected Map<String, String> imScores = new HashMap<String, String>();
-	
+
 	private int selectedAudit;
 	private int selectedOperator;
 	private String auditFor;
 	private List<AuditType> auditTypeList;
 	private AuditTypeClass auditClass;
-	
+
 	private final String ANNUAL_UPDATE = "AU";
 
-	public ContractorDocuments(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditTypeDAO auditTypeDAO, ContractorAuditOperatorDAO caoDAO) {
+	public ContractorDocuments(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
+			ContractorAuditOperatorDAO caoDAO) {
 		super(accountDao, auditDao);
 		this.auditTypeDAO = auditTypeDAO;
 		this.caoDAO = caoDAO;
-		
+
 		subHeading = "Document Index";
 	}
 
@@ -53,7 +53,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 
 		findContractor();
 		setup();
-		
+
 		return SUCCESS;
 	}
 
@@ -96,19 +96,19 @@ public class ContractorDocuments extends ContractorActionSupport {
 	public void setAuditFor(String auditFor) {
 		this.auditFor = auditFor;
 	}
-	
+
 	public List<AuditType> getAuditTypeList() {
 		return auditTypeList;
 	}
-	
+
 	public void setAuditTypeList(List<AuditType> auditTypeList) {
 		this.auditTypeList = auditTypeList;
 	}
-	
+
 	public AuditTypeClass getAuditClass() {
 		return auditClass;
 	}
-	
+
 	public void setAuditClass(AuditTypeClass auditClass) {
 		this.auditClass = auditClass;
 	}
@@ -125,18 +125,18 @@ public class ContractorDocuments extends ContractorActionSupport {
 					auditMap.put(audit.getAuditType(), new ArrayList<ContractorAudit>());
 
 				auditMap.get(audit.getAuditType()).add(audit);
-				
+
 				String auditTypeClass = audit.getAuditType().getClassType().toString();
 				// Put annual updates in their own category?
 				if (audit.getAuditType().getId() == AuditType.ANNUALADDENDUM)
 					auditTypeClass = ANNUAL_UPDATE;
-				
+
 				if (auditTypes.get(auditTypeClass) == null)
 					auditTypes.put(auditTypeClass, new ArrayList<AuditType>());
-				
+
 				if (!auditTypes.get(auditTypeClass).contains(audit.getAuditType()))
 					auditTypes.get(auditTypeClass).add(audit.getAuditType());
-				
+
 				// IM Audits
 				if (audit.getAuditType().getClassType() == AuditTypeClass.IM) {
 					List<ContractorAudit> imAudits = allIMAudits.get(audit.getAuditType().getAuditName());
@@ -145,27 +145,27 @@ public class ContractorDocuments extends ContractorActionSupport {
 						imAudits = new Vector<ContractorAudit>();
 						allIMAudits.put(audit.getAuditType().getAuditName(), imAudits);
 					}
-					
+
 					imAudits.add(audit);
 				}
 			}
 		}
-		
+
 		for (AuditType type : auditMap.keySet()) {
 			if (type.getId() == AuditType.ANNUALADDENDUM) {
 				Collections.sort(auditMap.get(type), new Comparator<ContractorAudit>() {
 					public int compare(ContractorAudit o1, ContractorAudit o2) {
 						String s1 = o1.getAuditType().getAuditName() + o1.getAuditFor();
 						String s2 = o2.getAuditType().getAuditName() + o2.getAuditFor();
-						
+
 						return (s2.compareTo(s1));
 					}
 				});
-				
+
 				break;
 			}
 		}
-		
+
 		for (String auditName : allIMAudits.keySet()) {
 			int count = 0;
 			float score = 0;
@@ -194,5 +194,16 @@ public class ContractorDocuments extends ContractorActionSupport {
 
 			imScores.put(auditName, map.get(tempScore));
 		}
+	}
+
+	public boolean isManuallyAddAudit() {
+		// TODO: fit this in the new system
+		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit))
+			return true;
+		if (permissions.isOperator() || permissions.isCorporate()) {
+			if (auditTypeList.size() > 0)
+				return true;
+		}
+		return false;
 	}
 }
