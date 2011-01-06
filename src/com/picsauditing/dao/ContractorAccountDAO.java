@@ -318,6 +318,9 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 	
 	public List<ContractorAccount> findByContractorIds(Set<Integer> conIDs) {
+		if(conIDs == null || conIDs.size() == 0)
+			return new ArrayList<ContractorAccount>();
+		
 		String ids = Strings.implodeForDB(conIDs, ",");
 		Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE a.id in (" + ids + ")");
 		return query.getResultList();
