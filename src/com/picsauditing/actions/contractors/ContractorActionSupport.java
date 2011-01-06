@@ -250,7 +250,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
 			// All Other Audits
-			MenuComponent subMenu = new MenuComponent("Audits", "ContractorDocuments.action?id=" + id + "#Audit");
+			MenuComponent subMenu = new MenuComponent("Audits", "ContractorDocuments.action?id=" + id);
 			for (ContractorAudit audit : auditList) {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit)) {
 					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
