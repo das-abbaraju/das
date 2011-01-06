@@ -588,7 +588,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			conIDs.add(Integer.parseInt(r.get("foreignKey").toString()));
 		}
 
-		return contractorAccountDAO.findByContractorIds(conIDs);
+		if (conIDs.size() > 0)
+			return contractorAccountDAO.findByContractorIds(conIDs);
+		
+		return new ArrayList<ContractorAccount>();
 	}
 
 	public List<BasicDynaBean> newGap(SearchEngine searchEngine, String term, String type) {
@@ -616,8 +619,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			termsArray = termsArray.subList(0, termsArray.size() - 1);
 			// termsArray.subList(1, termsArray.size());
 		}
+		
 		return results;
-
 	}
 
 	public boolean worksForOperator(int conID) {
