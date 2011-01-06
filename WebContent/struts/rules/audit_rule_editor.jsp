@@ -189,8 +189,8 @@ function getLink(val, val_id){
 			<fieldset class="form hideRule">
 				<h2 class="formLegend">Rule</h2>
 				<ol>
-					<li class="nobr"><label>Include</label>
-						<s:radio theme="pics" list="#{true:'Include',false:'Exclude'}" name="ruleInclude" value="rule.include"/>
+					<li><label>Include</label>
+						<div class="nobr"><s:radio theme="pics" list="#{true:'Include',false:'Exclude'}" name="ruleInclude" value="rule.include"/></div>
 					</li>
 					<li><label>Level</label>
 						<s:property value="%{rule.level-rule.levelAdjustment}" default="0"/> + <s:textfield name="rule.levelAdjustment" />
@@ -218,8 +218,8 @@ function getLink(val, val_id){
 						<div id="auditType_display"></div>
 					</li>
 					<s:if test="auditTypeRule">
-						<li class="nobr"><label>Auto Add Audit</label>
-							<s:radio theme="pics" list="#{false:'Auto Add',true:'Manually Added'}" name="rule.manuallyAdded"/>
+						<li><label>Auto Add Audit</label>
+							<div class="nobr"><s:radio theme="pics" list="#{false:'Auto Add',true:'Manually Added'}" name="rule.manuallyAdded"/></div>
 							<div class="fieldhelp">
 							<h3>Auto Add Audit</h3>
 							<p>Auto Add (default) - a single audit is added to each contractor account that matches this rule.</p>
@@ -249,8 +249,8 @@ function getLink(val, val_id){
 							</div>
 						</li>
 					</s:if>
-					<li class="nobr"><label>Bid Only</label>
-						<s:radio theme="pics" name="ruleAcceptsBids" list="#{'':'Any',false:'Full Account',true:'Bid Only'}" value="rule.acceptsBids"/>
+					<li><label>Bid Only</label>
+						<div class="nobr"><s:radio theme="pics" name="ruleAcceptsBids" list="#{'':'Any',false:'Full Account',true:'Bid Only'}" value="rule.acceptsBids"/></div>
 						<div class="fieldhelp">
 						<h3>Bid Only</h3>
 						<p>Full Account (default) - Regular paying contractor account.</p>
@@ -260,8 +260,8 @@ function getLink(val, val_id){
 					<li><label>Account Type</label>
 						<s:select name="rule.contractorType" list="@com.picsauditing.jpa.entities.ContractorType@values()" listValue="type" headerKey="" headerValue="Any"/>
 					</li>
-					<li class="nobr"><label>Risk</label>
-						<s:radio theme="pics" name="rule.risk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/>
+					<li><label>Risk</label>
+						<div class="nobr"><s:radio theme="pics" name="rule.risk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/></div>
 					</li>
 					<li <s:if test="operatorRequired">class="required"</s:if>>
 						<label>Operator</label>
