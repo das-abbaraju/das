@@ -254,47 +254,6 @@ public class ContractorAuditController extends AuditActionSupport {
 		return contractor.getOshaOrganizer().getOshaAudit(oshaType, MultiYearScope.ThreeYearAverage);
 	}
 
-	public boolean isCanVerifyAudit() {
-		if (!permissions.isAuditor() && !permissions.hasGroup(959))
-			return false;
-
-		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
-			return false;
-
-		if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
-			return true;
-
-		return false;
-	}
-
-	public boolean isCanVerifyPqf() {
-		if (!permissions.hasPermission(OpPerms.AuditVerification))
-			return false;
-		if (!conAudit.getAuditType().isPqf() && !conAudit.getAuditType().isAnnualAddendum())
-			return false;
-
-		if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
-			return true;
-
-		return false;
-	}
-
-	public boolean isCanSystemEdit() {
-		if (permissions.hasPermission(OpPerms.AuditEdit))
-			return true;
-
-		if (conAudit.getAuditType().getClassType().isPolicy()) {
-			if (conAudit.getAuditor() != null && (conAudit.getAuditor().getId() == permissions.getUserId()))
-				return true;
-
-			if (permissions.isOperatorCorporate())
-				return true;
-
-		}
-
-		return false;
-	}
-
 	public boolean isCanEditCategory(AuditCategory category) {
 		if (permissions.isContractor() && category.getAuditType().getId() == 100 && category.getParent() != null)
 			return false;

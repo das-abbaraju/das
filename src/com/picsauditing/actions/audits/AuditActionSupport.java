@@ -14,6 +14,7 @@ import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
@@ -197,8 +198,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 			viewableCaos = conAudit.getSortedOperators();
 		else
 			viewableCaos = conAudit.getViewableOperators(permissions);
-		for(ContractorAuditOperator cao : viewableCaos){
-			if(cao.getStatus().after(AuditStatus.Incomplete)){
+		for (ContractorAuditOperator cao : viewableCaos) {
+			if (cao.getStatus().after(AuditStatus.Incomplete)) {
 				showVerified = true;
 				break;
 			}
@@ -300,7 +301,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 		return validStatuses;
 	}
-	
+
 	public boolean isCanEditAudit() {
 		if (conAudit.isExpired())
 			return false;
@@ -338,8 +339,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 					}
 				}
 			}
-			if(conAudit.getAuditType().getId() == 176) {
-				if(conAudit.hasCaoStatusAfter(AuditStatus.Pending))
+			if (conAudit.getAuditType().getId() == 176) {
+				if (conAudit.hasCaoStatusAfter(AuditStatus.Pending))
 					canEdit = false;
 			}
 			return canEdit;
@@ -356,6 +357,47 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public ArrayListMultimap<AuditStatus, Integer> getActionStatus() {
 		return actionStatus;
+	}
+
+	public boolean isCanSystemEdit() {
+		if (permissions.hasPermission(OpPerms.AuditEdit))
+			return true;
+
+		if (conAudit.getAuditType().getClassType().isPolicy()) {
+			if (conAudit.getAuditor() != null && (conAudit.getAuditor().getId() == permissions.getUserId()))
+				return true;
+
+			if (permissions.isOperatorCorporate())
+				return true;
+
+		}
+
+		return false;
+	}
+
+	public boolean isCanVerifyAudit() {
+		if (!permissions.isAuditor() && !permissions.hasGroup(959))
+			return false;
+
+		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
+			return false;
+
+		if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+			return true;
+
+		return false;
+	}
+
+	public boolean isCanVerifyPqf() {
+		if (!permissions.hasPermission(OpPerms.AuditVerification))
+			return false;
+		if (!conAudit.getAuditType().isPqf() && !conAudit.getAuditType().isAnnualAddendum())
+			return false;
+
+		if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+			return true;
+
+		return false;
 	}
 
 	public boolean isCanPreview() {
