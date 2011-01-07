@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.RecordNotFoundException;
@@ -43,13 +42,14 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 
 	protected Employee employee;
 	protected Account account;
-	protected TreeSet<OperatorCompetency> opComps;
 	protected List<EmployeeCompetency> competencies;
 	protected List<EmployeeQualification> tasks;
 	protected List<EmployeeSite> worksAt;
 	protected Map<EmployeeQualification, List<AssessmentResult>> qualification;
 	protected DoubleMap<OperatorCompetency, JobRole, Boolean> map = new DoubleMap<OperatorCompetency, JobRole, Boolean>();
 	protected Map<JobSite, List<JobTask>> tasksByJob;
+	protected Map<JobRole, List<OperatorCompetency>> missingCompetencies;
+	protected List<OperatorCompetency> skilledCompetencies;
 
 	public EmployeeDetail(EmployeeDAO employeeDAO, OperatorCompetencyDAO competencyDAO, JobSiteTaskDAO siteTaskDAO,
 			ContractorOperatorDAO coDAO, JobTaskDAO taskDAO) {
@@ -58,7 +58,7 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 		this.siteTaskDAO = siteTaskDAO;
 		this.coDAO = coDAO;
 		this.taskDAO = taskDAO;
-		
+
 		noteCategory = NoteCategory.Employee;
 	}
 
@@ -78,8 +78,9 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 
 		if (employee == null || employee.getId() == 0)
 			throw new RecordNotFoundException("Missing employee id");
-		
-		notes = getNoteDao().findWhere(account.getId(), "noteCategory = 'Employee' AND employeeID = " + employee.getId(), 10);
+
+		notes = getNoteDao().findWhere(account.getId(),
+				"noteCategory = 'Employee' AND employeeID = " + employee.getId(), 10);
 
 		return SUCCESS;
 	}
@@ -91,33 +92,49 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
 	}
-	
-	public TreeSet<OperatorCompetency> getOpComps() {
-		if (opComps == null) {
-			List<Integer> jobRoleIDs = new ArrayList<Integer>();
-			opComps = new TreeSet<OperatorCompetency>();
 
-			for (EmployeeRole er : employee.getEmployeeRoles()) {
-				jobRoleIDs.add(er.getJobRole().getId());
-			}
+	private void buildCompetencies() {
+		missingCompetencies = new HashMap<JobRole, List<OperatorCompetency>>();
+		skilledCompetencies = new ArrayList<OperatorCompetency>();
 
-			List<JobCompetency> jcs = competencyDAO.findByJobRoles(jobRoleIDs);
-
-			for (JobCompetency jc : jcs) {
-				opComps.add(jc.getCompetency());
-				map.put(jc.getCompetency(), jc.getJobRole(), false);
-			}
-
-			for (EmployeeCompetency ec : employee.getEmployeeCompetencies()) {
-				for (JobCompetency jc : jcs) {
-					if (jc.getCompetency().equals(ec.getCompetency())) {
-						map.put(jc.getCompetency(), jc.getJobRole(), ec.isSkilled());
-					}
+		for (EmployeeRole er : employee.getEmployeeRoles()) {
+			for (JobCompetency jc : er.getJobRole().getJobCompetencies()) {
+				EmployeeCompetency ec = findEmployeeCompetency(jc.getCompetency());
+				
+				if (ec != null && ec.isSkilled()) {
+					if (!skilledCompetencies.contains(jc.getCompetency()))
+						skilledCompetencies.add(jc.getCompetency());
+				} else {
+					if (missingCompetencies.get(er.getJobRole()) == null)
+						missingCompetencies.put(er.getJobRole(), new ArrayList<OperatorCompetency>());
+					
+					missingCompetencies.get(er.getJobRole()).add(jc.getCompetency());
 				}
 			}
 		}
+	}
+	
+	private EmployeeCompetency findEmployeeCompetency(OperatorCompetency oc) {
+		for (EmployeeCompetency ec : employee.getEmployeeCompetencies()) {
+			if (ec.getCompetency().equals(oc))
+				return ec;
+		}
+		
+		return null;
+	}
 
-		return opComps;
+	public Map<JobRole, List<OperatorCompetency>> getMissingCompetencies() {
+		if (missingCompetencies == null)
+			buildCompetencies();
+
+		return missingCompetencies;
+	}
+
+	public List<OperatorCompetency> getSkilledCompetencies() {
+		if (skilledCompetencies == null)
+			buildCompetencies();
+
+		return skilledCompetencies;
 	}
 
 	public boolean isCanViewContractor() {

@@ -296,13 +296,17 @@ public class AuditBuilderController {
 		// We're doing this step first so categories that get added or removed
 		// manually can be caught in the next block
 		Set<AuditCategory> categoriesNeeded = null;
-		if (conAudit.getAuditType().getId() == AuditType.SHELL_COMPETENCY_REVIEW
-				&& conAudit.hasCaoStatus(AuditStatus.Pending)) {
+		if (conAudit.getAuditType().getId() == AuditType.SHELL_COMPETENCY_REVIEW) {
 			List<AuditCategory> requiredCompetencies = auditCatMatrixDAO.findCategoriesForCompetencies(conAudit
 					.getContractorAccount().getId());
-
-			categoriesNeeded = new HashSet<AuditCategory>();
-			categoriesNeeded.addAll(requiredCompetencies);
+			if (conAudit.hasCaoStatus(AuditStatus.Pending)) {
+				categoriesNeeded = new HashSet<AuditCategory>();
+				categoriesNeeded.addAll(requiredCompetencies);
+			} else {
+				// We don't want this audit to be updated
+				PicsLogger.stop();
+				return;
+			}
 		} else {
 			AuditCategoriesDetail detail = getAuditCategoryDetail(conAudit);
 			if (detail == null) {

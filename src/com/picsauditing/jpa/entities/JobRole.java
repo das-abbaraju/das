@@ -1,8 +1,11 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
@@ -13,6 +16,7 @@ public class JobRole extends BaseTable {
 	private Account account;
 	private String name;
 	private boolean active = true;
+	private List<JobCompetency> jobCompetencies;
 
 	@ManyToOne
 	@JoinColumn(name = "accountID", nullable = false, updatable = false)
@@ -40,4 +44,12 @@ public class JobRole extends BaseTable {
 		this.active = active;
 	}
 
+	@OneToMany(mappedBy = "jobRole")
+	public List<JobCompetency> getJobCompetencies() {
+		return jobCompetencies;
+	}
+	
+	public void setJobCompetencies(List<JobCompetency> jobCompetencies) {
+		this.jobCompetencies = jobCompetencies;
+	}
 }
