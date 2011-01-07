@@ -93,6 +93,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 		ruleToSave.update(rule);
 		ruleToSave.calculatePriority();
 		ruleToSave.setAuditColumns(permissions);
+		ruleToSave.defaultDates();
 		dao.save(ruleToSave);
 		rule = ruleToSave;
 	}

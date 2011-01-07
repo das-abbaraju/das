@@ -63,6 +63,7 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 		super.update(source);
 		dependentAuditType = ((AuditTypeRule) source).dependentAuditType;
 		dependentAuditStatus = ((AuditTypeRule) source).dependentAuditStatus;
+		manuallyAdded = ((AuditTypeRule) source).manuallyAdded;
 	}
 
 	@Override
@@ -77,12 +78,13 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 	@Override
 	public String toString() {
 		String out = super.toString();
-		if (dependentAuditType != null){
-			if(!out.contains("when"))
+		if (dependentAuditType != null) {
+			if (!out.contains("when"))
 				out += " when";
 			else
 				out += " and";
-			out += " Dependent Audit Type is " + dependentAuditType + (dependentAuditStatus==null? "":" is "+dependentAuditStatus);
+			out += " Dependent Audit Type is " + dependentAuditType
+					+ (dependentAuditStatus == null ? "" : " is " + dependentAuditStatus);
 		}
 		return out;
 	}
