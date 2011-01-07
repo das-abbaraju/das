@@ -10,6 +10,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -71,7 +72,7 @@ public class BillingDetail extends ContractorActionSupport {
 			invoiceTotal = invoiceTotal.add(item.getAmount());
 
 		if ("Create".equalsIgnoreCase(button)) {
-			if (invoiceTotal.compareTo(BigDecimal.ZERO) == 0) {
+			if (invoiceTotal.compareTo(BigDecimal.ZERO) == 0 && !permissions.hasPermission(OpPerms.Billing)) {
 				addActionError("Cannot create an Invoice for zero dollars");
 				return SUCCESS;
 			}
