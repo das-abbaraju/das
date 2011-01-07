@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Audit Override</title>
+<title>Create New Audit</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
@@ -22,19 +22,19 @@ $(function() {
 	<s:include value="../contractors/conHeader.jsp"/>
 	
 	<s:include value="../actionMessages.jsp"/>
-	<s:if test="overrideAudits.size() > 0">
+
+	<s:if test="manuallyAddAudits.size() > 0">
 	<form method="post">
 		<s:hidden name="id"/>
 		<fieldset class="form">
-			<h2 class="formLegend">Audit Override</h2>
+			<h2 class="formLegend">Create New Audit</h2>
 			<ol>
 				<li><label>Audit Type:</label>
-					<s:select name="auditTypeID" list="overrideAudits" 
-							headerKey="" headerValue="- Audit Type -" listKey="id" listValue="auditName" />
+					<s:radio theme="pics" name="selectedAudit" list="manuallyAddAudits" listKey="id" listValue="auditName"/>
 				</li>
 				<s:if test="permissions.admin">
 					<li><label>Operator</label>
-						<s:select name="requestingOpID" list="contractor.nonCorporateOperators"
+						<s:select name="selectedOperator" list="contractor.nonCorporateOperators"
 								headerKey="" headerValue="- Operator -" listKey="operatorAccount.id" listValue="operatorAccount.name" />
 					</li>
 				</s:if>
@@ -45,7 +45,6 @@ $(function() {
 		</fieldset>
 		<fieldset class="form submit">
 			<s:submit name="button" value="Create" cssClass="picsbutton positive block"/>
-			<s:submit name="button" value="Create and Stay" cssClass="picsbutton positive"/>
 		</fieldset>
 	</form>
 	</s:if>

@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -17,31 +20,35 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorDocuments extends ContractorActionSupport {
 	protected AuditTypeDAO auditTypeDAO;
 	protected ContractorAuditOperatorDAO caoDAO;
+	protected AuditTypeRuleCache auditTypeRuleCache;
 
 	protected Map<AuditType, List<ContractorAudit>> auditMap;
 	protected Map<String, List<AuditType>> auditTypes;
 	protected Map<String, String> imScores = new HashMap<String, String>();
 
-	private int selectedAudit;
-	private int selectedOperator;
-	private String auditFor;
-	private List<AuditType> auditTypeList;
-	private AuditTypeClass auditClass;
+	protected Integer selectedAudit;
+	protected Integer selectedOperator;
+	protected String auditFor;
+	protected List<AuditType> auditTypeList;
+	protected AuditTypeClass auditClass;
+
+	protected Set<AuditType> manuallyAddAudits = null;
 
 	private final String ANNUAL_UPDATE = "AU";
 
 	public ContractorDocuments(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
-			ContractorAuditOperatorDAO caoDAO) {
+			ContractorAuditOperatorDAO caoDAO, AuditTypeRuleCache auditTypeRuleCache) {
 		super(accountDao, auditDao);
 		this.auditTypeDAO = auditTypeDAO;
 		this.caoDAO = caoDAO;
+		this.auditTypeRuleCache = auditTypeRuleCache;
 
 		subHeading = "Document Index";
 	}
@@ -55,6 +62,17 @@ public class ContractorDocuments extends ContractorActionSupport {
 		setup();
 
 		return SUCCESS;
+	}
+
+	public boolean isManuallyAddAudit() {
+		if (getManuallyAddAudits().size() > 0) {
+			if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit))
+				return true;
+			if (permissions.isOperatorCorporate()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public Map<AuditType, List<ContractorAudit>> getAuditMap() {
@@ -73,19 +91,19 @@ public class ContractorDocuments extends ContractorActionSupport {
 		this.imScores = imScores;
 	}
 
-	public int getSelectedAudit() {
+	public Integer getSelectedAudit() {
 		return selectedAudit;
 	}
 
-	public void setSelectedAudit(int selectedAudit) {
+	public void setSelectedAudit(Integer selectedAudit) {
 		this.selectedAudit = selectedAudit;
 	}
 
-	public int getSelectedOperator() {
+	public Integer getSelectedOperator() {
 		return selectedOperator;
 	}
 
-	public void setSelectedOperator(int selectedOperator) {
+	public void setSelectedOperator(Integer selectedOperator) {
 		this.selectedOperator = selectedOperator;
 	}
 
@@ -111,6 +129,36 @@ public class ContractorDocuments extends ContractorActionSupport {
 
 	public void setAuditClass(AuditTypeClass auditClass) {
 		this.auditClass = auditClass;
+	}
+
+	public Set<AuditType> getManuallyAddAudits() {
+		if (manuallyAddAudits == null) {
+			manuallyAddAudits = new HashSet<AuditType>();
+			List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache.getApplicableAuditRules(contractor);
+			for (AuditTypeRule auditTypeRule : applicableAuditRules) {
+				if (auditTypeRule.isInclude() && auditTypeRule.getAuditType() != null) {
+					if (!auditTypeRule.getAuditType().isAnnualAddendum()
+							&& (auditTypeRule.getAuditType().isHasMultiple() || auditTypeRule.isManuallyAdded())) {
+						if (permissions.isAdmin())
+							manuallyAddAudits.add(auditTypeRule.getAuditType());
+						else if (permissions.isOperator()) {
+							if (auditTypeRule.getOperatorAccount() != null
+									&& permissions.getCorporateParent().contains(
+											auditTypeRule.getOperatorAccount().getId())) {
+								manuallyAddAudits.add(auditTypeRule.getAuditType());
+							}
+						} else if (permissions.isCorporate()) {
+							if (auditTypeRule.getOperatorAccount() != null
+									&& auditTypeRule.getOperatorAccount().getId() == permissions.getAccountId()) {
+								manuallyAddAudits.add(auditTypeRule.getAuditType());
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return manuallyAddAudits;
 	}
 
 	private void setup() {
@@ -194,16 +242,5 @@ public class ContractorDocuments extends ContractorActionSupport {
 
 			imScores.put(auditName, map.get(tempScore));
 		}
-	}
-
-	public boolean isManuallyAddAudit() {
-		// TODO: fit this in the new system
-		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit))
-			return true;
-		if (permissions.isOperator() || permissions.isCorporate()) {
-			if (auditTypeList.size() > 0)
-				return true;
-		}
-		return false;
 	}
 }

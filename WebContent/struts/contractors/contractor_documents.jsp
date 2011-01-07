@@ -32,9 +32,9 @@
 
 <s:include value="conHeader.jsp" />
 
-<pics:permission perm="ManageAudits" type="Edit">
-	<a class="add" href="AuditOverride.action?id=<s:property value="id"/>">Manually Add Audit</a>
-</pics:permission>
+<s:if test="manuallyAddAudit">
+	<a class="add" href="AuditOverride.action?id=<s:property value="id"/>">Create New Audit</a>
+</s:if>
 
 <s:iterator value="auditTypes.keySet()" id="classType" status="stat">
 	<s:if test="#classType == 'IM' && imScores.keySet().size > 0">
