@@ -1,5 +1,7 @@
 package com.picsauditing.actions.report;
 
+import java.io.IOException;
+
 import javax.servlet.ServletOutputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -31,26 +33,8 @@ public class ReportEmployee extends ReportActionSupport {
 		buildQuery();
 		run(sql);
 		
-		if (download || "download".equals(button)) {
-			addExcelColumns();
-			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
-
-			if (Strings.isEmpty(filename)) {
-				String className = this.getClass().getName();
-				filename = className.substring(className.lastIndexOf("."));
-			}
-			
-			excelSheet.setName(filename);
-			filename += ".xls";
-
-			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-			wb.write(outstream);
-			outstream.flush();
-			ServletActionContext.getResponse().flushBuffer();
-			return null;
-		}
+		if (download || "download".equals(button))
+			return getDownload();
 
 		return SUCCESS;
 	}
@@ -110,5 +94,26 @@ public class ReportEmployee extends ReportActionSupport {
 
 	public ReportFilterEmployee getFilter() {
 		return filter;
+	}
+	
+	protected String getDownload() throws IOException {
+		addExcelColumns();
+		HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
+
+		if (Strings.isEmpty(filename)) {
+			String className = this.getClass().getName();
+			filename = className.substring(className.lastIndexOf("."));
+		}
+		
+		excelSheet.setName(filename);
+		filename += ".xls";
+
+		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+		wb.write(outstream);
+		outstream.flush();
+		ServletActionContext.getResponse().flushBuffer();
+		return null;
 	}
 }

@@ -1,15 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.io.IOException;
-
-import javax.servlet.ServletOutputStream;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.struts2.ServletActionContext;
-
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.mail.WizardSession;
 import com.picsauditing.util.PermissionQueryBuilderEmployee;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -18,81 +8,50 @@ import com.picsauditing.util.excel.ExcelColumn;
 public class ReportCompetencyByEmployee extends ReportEmployee {
 
 	public ReportCompetencyByEmployee() {
-		orderByDefault = "e.lastName, e.firstName, a.name";
+		orderByDefault = "a.name, e.lastName, e.firstName";
 	}
 
 	@Override
 	protected void buildQuery() {
 		super.buildQuery();
-
-		sql.addJoin("LEFT JOIN (SELECT DISTINCT er.employeeID, jc.competencyID FROM employee_role er"
-				+ " JOIN job_competency jc ON jc.jobRoleID = er.jobRoleID) jc ON jc.employeeID = e.id");
-		sql.addJoin("LEFT JOIN employee_competency ec ON ec.competencyID = jc.competencyID AND e.id = ec.employeeID");
-		sql.addJoin("JOIN contractor_tag ct ON a.id = ct.conID");
-		sql.addWhere("ct.tagID = 142");
-
-		sql.addGroupBy("e.id HAVING required > 0");
-		if (permissions.isContractor())
-			sql.addWhere("a.id = " + permissions.getAccountId());
-
-		PermissionQueryBuilderEmployee builder = new PermissionQueryBuilderEmployee(permissions,
-				PermissionQueryBuilderEmployee.SQL);
-
-		sql.addWhere("1 " + builder.toString());
-
-		sql.addField("COUNT(jc.competencyID) AS required");
-		sql.addField("SUM(IFNULL(ec.skilled,0)) AS skilled");
+		
+		sql.addJoin("LEFT JOIN (SELECT c.employeeID, COUNT(*) skilled FROM "
+				+ "(SELECT DISTINCT ec.employeeID, ec.competencyID FROM employee_competency ec "
+				+ "JOIN employee_role er ON er.employeeID = ec.employeeID AND ec.skilled = 1 "
+				+ "JOIN job_role jr ON jr.id = er.jobRoleID AND jr.active = 1) c "
+				+ "GROUP BY c.employeeID) ec ON ec.employeeID = e.id");
+		sql.addJoin("LEFT JOIN employee_role er ON er.employeeID = e.id");
+		sql.addJoin("LEFT JOIN job_role jr ON jr.accountID = a.id AND jr.id = er.jobRoleID AND jr.active = 1");
+		sql.addJoin("LEFT JOIN job_competency jc ON jc.jobRoleID = jr.id");
+		
+		sql.addField("e.title");
+		sql.addField("GROUP_CONCAT(DISTINCT jr.name ORDER BY jr.name SEPARATOR ', ') roles");
+		sql.addField("IFNULL(ec.skilled, 0) skilled");
+		sql.addField("COUNT(DISTINCT jc.competencyID) required");
+		sql.addField("IFNULL(FLOOR((IFNULL(ec.skilled, 0)/COUNT(DISTINCT jc.competencyID)) * 100), 0) percent");
+		
+		sql.addGroupBy("e.id");
+		
+		PermissionQueryBuilderEmployee permQuery = new PermissionQueryBuilderEmployee(permissions);
+		sql.addWhere("1 " + permQuery.toString());
 	}
 
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		
+		getFilter().setShowSsn(false);
 
-		if (runReport()) {
-			buildQuery();
-			run(sql);
-
-			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
-			wizardSession.clear();
-
-			return returnResult();
-		}
-		return SUCCESS;
-	}
-
-	protected String returnResult() throws IOException {
-		if (download) {
-			addExcelColumns();
-			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
-			excelSheet.setName(filename);
-			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
-
-			filename += ".xls";
-
-			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-			wb.write(outstream);
-			outstream.flush();
-			ServletActionContext.getResponse().flushBuffer();
-			return null;
-		}
-
-		return SUCCESS;
-	}
-
-	protected boolean runReport() {
-		return true;
+		return super.execute();
 	}
 
 	@Override
 	protected void addExcelColumns() {
 		super.addExcelColumns();
+		excelSheet.addColumn(new ExcelColumn("title", "Title"));
+		excelSheet.addColumn(new ExcelColumn("roles", "Job Roles"));
 		excelSheet.addColumn(new ExcelColumn("skilled", "Competency", ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("required", "Required", ExcelCellType.Integer));
-	}
-
-	public int getRatio(int a, int b) {
-		return (int) Math.floor((((float) a) / b) * 100);
+		excelSheet.addColumn(new ExcelColumn("percent", "Competency %", ExcelCellType.Integer));
 	}
 }

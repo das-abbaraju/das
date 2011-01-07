@@ -38,8 +38,12 @@ function changeCompetency(employeeID, competencyID, checkbox) {
 		button: "ChangeCompetency"
 	};
 
-	$(checkbox).parent().removeClass('red').removeClass('green').addClass(checked ? 'green' : 'red');
-	$("#messages").load('EmployeeCompetenciesAjax.action?' + $('#form1').serialize(), data);
+	$("#messages").load('EmployeeCompetenciesAjax.action?' + $('#form1').serialize(), data, function(r, status, xhr) {
+		if (status == "success" && r.indexOf("Success") > 0)
+			$(checkbox).parent().removeClass('green').removeClass('red').addClass(checked ? 'green' : 'red');
+		else
+			$(checkbox).attr('checked', !checked);
+	});
 }
 </script>
 </head>
@@ -60,7 +64,7 @@ function changeCompetency(employeeID, competencyID, checkbox) {
 	</tr>
 	<tr>
 		<td><div class="box red"></div></td>
-		<td>If unchecked, this employee is not yet confirmed as SKILLED in the given competency.</td>
+		<td>If unchecked, this employee is not yet verified as SKILLED in the given competency.</td>
 	</tr>
 	<tr>
 		<td><div class="box" style="background-color: #F9F9F9"></div></td>

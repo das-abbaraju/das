@@ -2,18 +2,11 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Competency By Employee Report</title>
+<title>HSE Competency By Employee Report</title>
 <s:include value="reportHeader.jsp" />
-<script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min.js"></script>
-<script type="text/javascript">
-$(function() {
-$.mask.definitions['S']='[X0-9]';
-$('input.ssn').mask('SSS-SS-SSSS');
-});
-</script>
 </head>
 <body>
-<h1>Competency By Employee Report</h1>
+<h1>HSE Competency By Employee Report</h1>
 <s:include value="filters_employee.jsp"/>
 <div class="right">
 	<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all
@@ -30,23 +23,23 @@ $('input.ssn').mask('SSS-SS-SSSS');
 <table class="report" id="matrix">
 	<thead>
 		<tr>
-			<th>Last Name</th>
-			<th>First Name</th>
-			<th>Title</th>
-			<th>Company</th>
+			<th><a href="?orderBy=name,lastName">Company</a></th>
+			<th><a href="?orderBy=lastName,firstName">Employee</a></th>
+			<th><a href="?orderBy=title">Title</a></th>
+			<th>Job Roles</th>
 			<th>Competency</th>
-			<th>Competency %</th>
+			<th><a href="?orderBy=percent DESC">Competency %</a></th>
 		</tr>
 	</thead>
 	<tbody>
 		<s:iterator value="data" status="stat" id="data">
 			<tr>
-				<td><a href="EmployeeDetail.action?employee.id=<s:property value="#data.get('employeeID')"/>"><s:property value="#data.get('lastName')" /></a></td>
-				<td><a href="EmployeeDetail.action?employee.id=<s:property value="#data.get('employeeID')"/>"><s:property value="#data.get('firstName')" /></a></td>
-				<td><s:property value="get('title')"/></td>
 				<td><a href="ContractorView.action?id=<s:property value="#data.get('accountID')"/>"><s:property value="#data.get('name')" /></a></td>
+				<td><a href="EmployeeDetail.action?employee.id=<s:property value="#data.get('employeeID')"/>"><s:property value="#data.get('lastName')" />, <s:property value="#data.get('firstName')" /></a></td>
+				<td><s:property value="get('title')"/></td>
+				<td><s:property value="get('roles')"/></td>
 				<td class="right"><s:property value="#data.get('skilled')" /> / <s:property value="#data.get('required')" /></td>
-				<td class="right"><s:property value="getRatio(#data.get('skilled'), #data.get('required'))" />%</td>
+				<td class="right"><s:property value="#data.get('percent')" />%</td>
 			</tr>
 		</s:iterator>
 	</tbody>

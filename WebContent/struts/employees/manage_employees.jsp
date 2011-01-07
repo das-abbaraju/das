@@ -180,7 +180,7 @@ div.dataTables_length { width: 35%; }
 	<s:if test="auditID > 0">
 		<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />">Return to Job Roles Self Assessment</a></div>
 	</s:if>
-	<h1>Manage Employees<span class="sub"><s:property value="subHeading" escape="false"/></span></h1>
+	<h1><s:property value="account.name" /><span class="sub"><s:property value="subHeading" escape="false"/></span></h1>
 	<s:include value="../actionMessages.jsp"/>
 
 	<s:if test="account.employees.size() == 0 && employee == null">

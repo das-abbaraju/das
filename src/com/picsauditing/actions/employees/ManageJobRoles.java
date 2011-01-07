@@ -48,6 +48,8 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 		this.jobRoleDAO = jobRoleDAO;
 		this.competencyDAO = competencyDAO;
 		this.erDAO = erDAO;
+		
+		subHeading = "Manage Job Roles";
 	}
 
 	@Override
@@ -78,8 +80,6 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-
-		this.subHeading = account.getName();
 
 		if (permissions.isContractor())
 			permissions.tryPermission(OpPerms.ContractorAdmin);

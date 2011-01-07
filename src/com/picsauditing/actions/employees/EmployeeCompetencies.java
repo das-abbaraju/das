@@ -75,6 +75,13 @@ public class EmployeeCompetencies extends ReportEmployee {
 		else
 			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
 					.getContext().getSession().get("auditID"));
+		
+		getFilter().setPermissions(permissions);
+		getFilter().setAccountID(account.getId());
+
+		getFilter().setShowJobRoles(true);
+		getFilter().setShowCompetencies(true);
+		getFilter().setShowSsn(false);
 
 		if (button != null) {
 			if ("ChangeCompetency".equals(button)) {
@@ -106,12 +113,6 @@ public class EmployeeCompetencies extends ReportEmployee {
 				return BLANK;
 			}
 		}
-
-		getFilter().setPermissions(permissions);
-		getFilter().setAccountID(account.getId());
-
-		getFilter().setShowJobRoles(true);
-		getFilter().setShowCompetencies(true);
 
 		if (permissions.isContractor())
 			getFilter().setShowAccountName(false);

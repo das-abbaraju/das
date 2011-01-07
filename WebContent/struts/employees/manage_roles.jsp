@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Define Job Roles</title>
+<title><s:property value="subHeading" escape="false" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
@@ -88,7 +88,7 @@ $(function() {
 	</div>
 </s:if>
 
-<h1>Manage Job Roles <span class="sub"> <s:property value="subHeading" escape="false" /> </span></h1>
+<h1><s:property value="account.name" /><span class="sub"><s:property value="subHeading" escape="false" /></span></h1>
 
 <s:include value="../actionMessages.jsp" />
 

@@ -42,6 +42,8 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 		this.accountDAO = accountDAO;
 		this.jobRoleDAO = jobRoleDAO;
 		this.competencyDAO = competencyDAO;
+		
+		subHeading = "HSE Competency Matrix";
 	}
 
 	@Override
@@ -80,8 +82,6 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 		else
 			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
 					.getContext().getSession().get("auditID"));
-
-		this.subHeading = account.getName();
 
 		if (button != null && "Download".equals(button)) {
 			String filename = "HSECompetencyMatrix";

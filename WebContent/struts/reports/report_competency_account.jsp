@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Competency By Account Report</title>
+<title>HSE Competency By Account Report</title>
 <s:include value="reportHeader.jsp" />
 <script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min.js"></script>
 <script type="text/javascript">
@@ -28,9 +28,9 @@ $('input.ssn').mask('SSS-SS-SSSS');
 	<tbody>
 		<s:iterator value="data" status="stat" id="d">
 			<tr>
-				<td><a href="ContractorView.action?id=<s:property value="#d.get('id')"/>"><s:property value="#d.get('name')" /></a></td>
+				<td><a href="ContractorView.action?id=<s:property value="#d.get('accountID')"/>"><s:property value="#d.get('name')" /></a></td>
 				<td class="right"><a href="ReportCompetencyByEmployee.action?filter.accountName=<s:property value="@java.net.URLEncoder@encode(#d.get('name'))" />"><s:property value="#d.get('eCount')" /></a></td>
-				<td class="right"><a href="JobCompetencyMatrix.action?id=<s:property value="#d.get('id')"/>"><s:property value="#d.get('jCount')"/></a></td>
+				<td class="right"><a href="JobCompetencyMatrix.action?id=<s:property value="#d.get('accountID')"/>"><s:property value="#d.get('jCount')"/></a></td>
 				<td>
 					<s:if test="#d.get('ca99ID') != null">
 						<s:if test="#d.get('ca99status') == 'Complete'">

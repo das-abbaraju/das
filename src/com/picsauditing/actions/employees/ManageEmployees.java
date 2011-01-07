@@ -85,6 +85,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		this.indexer = indexer;
 
 		noteCategory = NoteCategory.Employee;
+		subHeading = "Manage Employees";
 	}
 
 	@Override
@@ -115,8 +116,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-
-		this.subHeading = account.getName();
 
 		if (permissions.isContractor())
 			permissions.tryPermission(OpPerms.ContractorAdmin);
