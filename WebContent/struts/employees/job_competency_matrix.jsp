@@ -27,18 +27,20 @@ table.report td.notselected {
 </head>
 <body>
 <s:if test="auditID > 0">
-	<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />">Click here</a> to go back to the Job Roles Self Assessment audit.</div>
+	<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />">Return to Job Roles Self Assessment</a></div>
 </s:if>
 <h1>HSE Competency Matrix <span class="sub"><s:property value="subHeading" escape="false" /></span></h1>
+<div class="right">
+	<a class="excel" href="JobCompetencyMatrix.action?button=Download&id=<s:property value="id" />" target="_BLANK" 
+		title="Download all <s:property value="competencies.size()"/> results to a CSV file">Download</a>
+</div>
 <s:if test="permissions.contractor || permissions.admin">
 	<a href="ManageJobRoles.action?id=<s:property value="id" />">Manage Job Roles</a><br />
 </s:if>
-<a class="excel" href="JobCompetencyMatrix.action?button=Download&id=<s:property value="id" />" target="_BLANK" 
-	title="Download all <s:property value="competencies.size()"/> results to a CSV file">Download</a>
 <table class="report">
 	<thead>
 		<tr>
-			<th colspan="2">HSE Competency</th>
+			<th>HSE Competency</th>
 			<s:iterator value="roles">
 				<th><s:property value="name" /></th>
 			</s:iterator>
@@ -48,8 +50,7 @@ table.report td.notselected {
 		<s:iterator value="competencies" id="competency">
 			<s:if test="getRoles(#competency) != null">
 				<tr>
-					<td><s:property value="#competency.category" /></td>
-					<td><s:property value="#competency.label" /></td>
+					<td><s:property value="#competency.label" /> <img src="images/help.gif" alt="<s:property value="#competency.label" />" title="<s:property value="#competency.category" />: <s:property value="#competency.description" />" /></td>
 					<s:iterator value="getRoles(#competency)" id="role">
 						<s:if test="getJobCompetency(#role, #competency).id > 0">
 							<td class="selected"><img alt="X" src="images/checkBoxTrue.gif"></td>

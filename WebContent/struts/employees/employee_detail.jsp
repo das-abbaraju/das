@@ -203,8 +203,8 @@
 											</td>
 										</tr>
 										<s:if test="missingCompetencies.keySet().size > 0">
-											<tr>
-												<s:iterator value="missingCompetencies.keySet()" var="key">
+											<s:iterator value="missingCompetencies.keySet()" var="key">
+												<tr>
 													<td colspan="2">
 														<div class="alert" style="width: auto;">Missing Competenc<s:property value="missingCompetencies.get(#key).size > 1 ? 'ies' : 'y'" />
 															<s:iterator value="missingCompetencies.get(#key)" status="stat">
@@ -214,8 +214,8 @@
 															for <s:property value="#key.name" />
 														</div>
 													</td>
-												</s:iterator>
-											</tr>
+												</tr>
+											</s:iterator>
 										</s:if>
 										<s:if test="skilledCompetencies.size > 0">
 											<tr>

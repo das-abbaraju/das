@@ -6,8 +6,6 @@
 	<div class="alert">No rows found matching the given criteria. Please try again.</div>
 </s:if>
 <s:else>
-<div class="right"><a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
-	href="javascript: download('EmployeeCompetencies');" title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a></div>
 <div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 
 <table class="report">
@@ -15,7 +13,10 @@
 		<tr>
 			<th><a href="?orderBy=e.lastName,e.firstName">Employees</a></th>
 			<s:iterator value="competencies">
-				<th><span title="<s:property value="category" />: <s:property value="description" />"><s:property value="label" /></span></th>
+				<th>
+					<s:property value="label" />
+					<img src="images/help.gif" alt="<s:property value="label" />" title="<s:property value="category" />: <s:property value="description" />" />
+				</th>
 			</s:iterator>
 		</tr>
 	</thead>

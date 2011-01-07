@@ -1,5 +1,7 @@
 package com.picsauditing.actions.employees;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -56,6 +58,19 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 
 		account = accountDAO.find(id);
 		roles = jobRoleDAO.findMostUsed(id, true);
+		
+		List<JobRole> jobRoles = account.getJobRoles();
+		Collections.sort(jobRoles, new Comparator<JobRole>() {
+			public int compare(JobRole o1, JobRole o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		
+		for (JobRole jr : jobRoles) {
+			if (!roles.contains(jr) && jr.isActive())
+				roles.add(jr);
+		}
+		
 		competencies = competencyDAO.findMostUsed(id, true);
 		map = jobRoleDAO.findJobCompetencies(id, true);
 		
@@ -100,11 +115,10 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 	public List<JobRole> getRoles(OperatorCompetency operatorCompetency) {
 		// need to check if forward entries are all null to not include in list
 		boolean usedRole = false;
-		for (JobRole role : roles)
-			if (map.get(role, operatorCompetency) != null) {
+		for (JobRole role : roles) {
+			if (map.get(role, operatorCompetency) != null)
 				usedRole = true;
-				break;
-			}
+		}
 
 		return (usedRole) ? roles : null;
 	}

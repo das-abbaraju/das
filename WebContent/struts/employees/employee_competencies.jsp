@@ -45,11 +45,13 @@ function changeCompetency(employeeID, competencyID, checkbox) {
 </head>
 <body>
 <s:if test="auditID > 0">
-	<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />">Click here</a> to go back to the Job Roles Self Assessment audit.</div>
+	<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />">Return to Job Roles Self Assessment</a></div>
 </s:if>
 <h1><s:property value="account.name" /><span class="sub">Employee HSE Competencies</span></h1>
 
 <s:include value="../reports/filters_employee.jsp" />
+<div class="right"><a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
+	href="javascript: download('EmployeeCompetencies');" title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a></div>
 
 <table class="legend">
 	<tr>
@@ -62,7 +64,7 @@ function changeCompetency(employeeID, competencyID, checkbox) {
 	</tr>
 	<tr>
 		<td><div class="box" style="background-color: #F9F9F9"></div></td>
-		<td>If blank, this employee does not require the given competency. You can change this by either updating the <a href="ManageEmployees.action">employee's job roles</a> or by editing the <a href="ManageJobRoles.action">required competencies for this company's job roles</a>.</td>
+		<td>If blank, this employee does not require the given competency. Change this by either updating the <a href="ManageEmployees.action">employee's job roles</a> or by editing the <a href="ManageJobRoles.action">required competencies for this company's job roles</a>.</td>
 	</tr>
 </table>
 

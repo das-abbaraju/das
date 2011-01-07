@@ -78,7 +78,14 @@ $(function() {
 <body>
 
 <s:if test="auditID > 0">
-	<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />">Click here</a> to go back to the Job Roles Self Assessment audit.</div>
+	<div class="info">
+		Use this page to enter all Job Roles and competencies your company performs at
+		<s:iterator value="shellOps" status="stat">
+			<s:property value="name" /><s:if test="#stat.count < (shellOps.size - 1)">,</s:if><s:if test="#stat.count == (shellOps.size - 1)"> and</s:if>
+		</s:iterator>
+		<br />
+		<a href="Audit.action?auditID=<s:property value="auditID" />">Return to Job Roles Self Assessment</a>
+	</div>
 </s:if>
 
 <h1>Manage Job Roles <span class="sub"> <s:property value="subHeading" escape="false" /> </span></h1>

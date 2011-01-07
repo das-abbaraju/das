@@ -2,7 +2,7 @@
 <table>
 	<tr>
 		<td>
-		<s:if test="jobCompetencies.size() > 0">
+		<s:if test="jobCompetencies.size > 0">
 			<table class="report">
 				<thead>
 					<tr>
@@ -28,13 +28,12 @@
 				</tbody>
 			</table>
 		</s:if>
-		<s:else>
-			<div class="alert">To add required HSE competencies to the <s:property value="role.name" /> role,
-				click on the plus sign next to the HSE competency you would like required from the options in the table on the right.</div>
-		</s:else>
 		</td>
 		<td>&nbsp;</td>
 		<td>
+			<s:if test="jobCompetencies.size == 0">
+				<div class="alert">Use the table below to select competencies required for the <s:property value="role.name" /> role.</div>
+			</s:if>
 			<table class="report">
 				<thead>
 					<tr>

@@ -179,7 +179,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 		sql.addField("ec.id ecID");
 		sql.addField("ec.skilled");
 
-		sql.addOrderBy("oc.category, oc.label");
+		sql.addOrderBy("oc.label");
 
 		if (filterOn(getFilter().getCompetencies()))
 			sql.addWhere("oc.id IN (" + Strings.implode(getFilter().getCompetencies()) + ")");
@@ -242,10 +242,12 @@ public class EmployeeCompetencies extends ReportEmployee {
 		green.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 		green.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 
+		HSSFFont redFont = wb.createFont();
+		redFont.setColor(HSSFColor.RED.index);
+		
 		HSSFCellStyle red = wb.createCellStyle();
-		red.setFillForegroundColor(HSSFColor.RED.index);
-		red.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 		red.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		red.setFont(redFont);
 		// Data
 		HSSFRow row = sheet.createRow(0);
 		HSSFCell cell = row.createCell(0);
@@ -276,6 +278,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 						cell.setCellValue(new HSSFRichTextString("X"));
 					} else {
 						cell.setCellStyle(red);
+						cell.setCellValue(new HSSFRichTextString("Missing"));
 					}
 				}
 

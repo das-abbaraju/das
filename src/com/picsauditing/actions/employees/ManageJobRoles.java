@@ -10,15 +10,19 @@ import java.util.Map;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmployeeRole;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobCompetencyStats;
 import com.picsauditing.jpa.entities.JobRole;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.Strings;
 
@@ -65,6 +69,9 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 			loadPermissions();
 			account = accountDAO.find(permissions.getAccountId());
 		}
+		
+		if (account == null)
+			throw new RecordNotFoundException("account");
 	}
 
 	@Override
@@ -234,6 +241,21 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 
 	public void setAuditID(int auditID) {
 		this.auditID = auditID;
+	}
+	
+	public List<OperatorAccount> getShellOps() {
+		List<OperatorAccount> shellOps = new ArrayList<OperatorAccount>();
+		
+		if (account.isContractor()) {
+			ContractorAccount con = (ContractorAccount) account;
+			
+			for (ContractorOperator co : con.getOperators()) {
+				if (co.getOperatorAccount().isRequiresCompetencyReview())
+					shellOps.add(co.getOperatorAccount());
+			}
+		}
+		
+		return shellOps;
 	}
 
 	private class ByPercent implements Comparator<OperatorCompetency> {

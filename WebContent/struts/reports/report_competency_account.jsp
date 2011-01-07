@@ -21,36 +21,31 @@ $('input.ssn').mask('SSS-SS-SSSS');
 			<th><a href="?orderBy=name">Company</a></th>
 			<th># of Employees</th>
 			<th># of Job Roles</th>
-			<th><a href="?orderBy=ca99statusChangedDate">Job Role Self Assessment</a></th>
-			<th><a href="?orderBy=ca100statusChangedDate">Shell Competency Review</a></th>
+			<th><a href="?orderBy=ca99date">Job Role Self Assessment</a></th>
+			<th><a href="?orderBy=ca100date">Shell Competency Review</a></th>
 		</tr>
 	</thead>
 	<tbody>
 		<s:iterator value="data" status="stat" id="d">
 			<tr>
 				<td><a href="ContractorView.action?id=<s:property value="#d.get('id')"/>"><s:property value="#d.get('name')" /></a></td>
-				<td class="right"><a href="ReportCompetencyByEmployee.action?filter.accountName=<s:property value="@java.net.URLEncoder@encode(#d.get('name'))" />"><s:property value="#d.get('employeeCount')" /></a></td>
-				<td class="right"><a href="JobCompetencyMatrix.action?id=<s:property value="#d.get('id')"/>"><s:property value="#d.get('jobRoleCount')"/></a></td>
+				<td class="right"><a href="ReportCompetencyByEmployee.action?filter.accountName=<s:property value="@java.net.URLEncoder@encode(#d.get('name'))" />"><s:property value="#d.get('eCount')" /></a></td>
+				<td class="right"><a href="JobCompetencyMatrix.action?id=<s:property value="#d.get('id')"/>"><s:property value="#d.get('jCount')"/></a></td>
 				<td>
 					<s:if test="#d.get('ca99ID') != null">
-						<a href="Audit.action?auditID=<s:property value="#d.get('ca99ID')"/>">
-							<s:if test="#d.get('ca99status') == 'Complete'">
-								Completed on <s:date name="#d.get('ca99statusChangedDate')" format="M/d/yyyy"/>
-							</s:if>
-							<s:elseif test="#d.get('ca99status') == 'Submitted'">
-								Submitted on <s:date name="#d.get('ca99statusChangedDate')" format="M/d/yyyy"/>
-							</s:elseif>
-						</a>
+						<s:if test="#d.get('ca99status') == 'Complete'">
+							Completed on <s:date name="#d.get('ca99date')" format="M/d/yyyy"/>
+						</s:if>
 					</s:if>
 				</td>
 				<td>
 					<s:if test="#d.get('ca100ID') != null">
 						<a href="Audit.action?auditID=<s:property value="#d.get('ca100ID')"/>">
 							<s:if test="#d.get('ca100status') == 'Complete'">
-								Completed on <s:date name="#d.get('ca100statusChangedDate')" format="M/d/yyyy"/>
+								Completed on <s:date name="#d.get('ca100date')" format="M/d/yyyy"/>
 							</s:if>
 							<s:elseif test="#d.get('ca100status') == 'Submitted'">
-								Submitted on <s:date name="#d.get('ca100statusChangedDate')" format="M/d/yyyy"/>
+								Submitted on <s:date name="#d.get('ca100date')" format="M/d/yyyy"/>
 							</s:elseif>
 						</a>
 					</s:if>
