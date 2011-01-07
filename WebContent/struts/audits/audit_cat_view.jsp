@@ -54,7 +54,7 @@
 						<s:set name="visible" value="false" />
 					</s:if>
 					<s:else>
-						<s:set name="showCat" value="true" />				
+						<s:set name="showCat" value="true" />
 					</s:else>
 					<s:if test="!viewBlanks && (#a == null || #a.answer == null || #a.answer.length() == 0)">
 						<s:set name="visible" value="false" />

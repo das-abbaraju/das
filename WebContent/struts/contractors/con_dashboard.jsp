@@ -398,7 +398,7 @@ table.report tr.hurdle td {
 					</strong>
 				</p>
 				<pics:permission perm="PicsScore">
-				<p>PICS Score: 
+				<p>Score: 
 					<strong>
 						<s:property value="contractor.score" />
 					</strong>

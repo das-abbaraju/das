@@ -44,7 +44,7 @@
 			</s:if>
 		</s:if>
 		<pics:permission perm="PicsScore">
-			<td>PICS Score</td>
+			<td>Score</td>
 		</pics:permission>
 		<s:if test="showContact">
 			<td>Primary Contact</td>
