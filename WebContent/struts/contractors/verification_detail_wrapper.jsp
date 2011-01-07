@@ -178,12 +178,15 @@ small {
 					refreshAuditList();
 				});
 
-		    });
-		     
+		    });		     
 		    $('#noButton').click(function(){
 		        $.unblockUI();
 		        return false;
 		    });
+			if($('#nR').val()=='true')
+	        	$.blockUI({ message:$('#noteAjax')});
+			else  
+				$('#yesButton').click();
 		});
 			
 		return false;
