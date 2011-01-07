@@ -207,7 +207,9 @@ public class ContractorWidget extends ContractorActionSupport {
 								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
 										+ "\">review and re-submit your " + auditName + auditFor + "</a>");
 							}
-						} else if (conAudit.getAuditType().getWorkFlow().getId() == Workflow.AUDIT_REQUIREMENTS_WORKFLOW) {
+						} else if (conAudit.getAuditType().getWorkFlow().getId() == Workflow.AUDIT_REQUIREMENTS_WORKFLOW
+								&& (conAudit.getAuditType().getId() == AuditType.WA_STATE_VERIFICATION && conAudit
+										.hasCaoStatusAfter(AuditStatus.Pending))) {
 							if (conAudit.hasCaoStatus(AuditStatus.Submitted)) {
 								// Submitted
 								if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
