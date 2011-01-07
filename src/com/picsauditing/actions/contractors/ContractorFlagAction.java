@@ -446,6 +446,20 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return null;
 	}
 
+	public String getContractorAnswer(FlagData f, boolean addLabel) {
+		FlagCriteriaContractor fcc = null;
+		for (FlagCriteriaContractor contractorCriteria : contractor.getFlagCriteria()) {
+			if (contractorCriteria.getCriteria().getId() == f.getCriteria().getId()) {
+				fcc = contractorCriteria;
+				break;
+			}
+		}
+		if (fcc == null)
+			return "";
+
+		return getContractorAnswer(fcc, f, addLabel);
+	}
+
 	public String getContractorAnswer(FlagCriteriaContractor fcc, FlagData f, boolean addLabel) {
 		FlagCriteria fc = f.getCriteria();
 		String answer = fcc.getAnswer();

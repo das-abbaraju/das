@@ -472,15 +472,15 @@ function checkReason(id) {
 		<!-- ALL FLAGS -->
 		<table class="flagCategories details">
 			<tr>
-			<s:iterator id="key" value="flagDataMap.keySet()">
+			<s:iterator id="flagData" value="flagDataMap">
 				<td><table class="report">
 					<thead>
 						<tr>
 							<td>Flag</td>
-							<td><s:property value="#key"/></td>
+							<td><s:property value="#flagData.key"/></td>
 						</tr>
 					</thead>
-					<s:iterator id="data" value="flagDataMap.get(#key)">
+					<s:iterator id="data" value="#flagData.value">
 						<tr>
 							<td class="center">
 								<s:property value="flag.smallIcon" escape="false"/>
@@ -490,11 +490,7 @@ function checkReason(id) {
 									<s:property value="criteria.auditType.auditName" />
 								</s:if>
 								<s:else>
-									<s:iterator id="conCriteria" value="contractor.flagCriteria">					
-										<s:if test="#data.criteria.id == #conCriteria.criteria.id">
-											<s:property value="getContractorAnswer(#conCriteria, #data, true)" escape="false" />
-										</s:if>	
-									</s:iterator>
+									<s:property value="getContractorAnswer(#data, true)" escape="false"/>
 								</s:else>
 							</td>			
 						</tr>
