@@ -4,6 +4,12 @@
 <head>
 <title>HSE Competency By Employee Report</title>
 <s:include value="reportHeader.jsp" />
+<script type="text/javascript">
+function orderBy(orderBy) {
+	$('#form1').find('input[name=orderBy]').val(orderBy);
+	$('#form1').submit();
+}
+</script>
 </head>
 <body>
 <h1>HSE Competency By Employee Report</h1>
@@ -23,12 +29,12 @@
 <table class="report" id="matrix">
 	<thead>
 		<tr>
-			<th><a href="?orderBy=name,lastName">Company</a></th>
-			<th><a href="?orderBy=lastName,firstName">Employee</a></th>
-			<th><a href="?orderBy=title">Title</a></th>
+			<th><a href="javascript: orderBy('name,lastName');">Company</a></th>
+			<th><a href="javascript: orderBy('lastName,firstName');">Employee</a></th>
+			<th><a href="javascript: orderBy('title');">Title</a></th>
 			<th>Job Roles</th>
 			<th>Competency</th>
-			<th><a href="?orderBy=percent DESC">Competency %</a></th>
+			<th><a href="javascript: orderBy('percent DESC');">Competency %</a></th>
 		</tr>
 	</thead>
 	<tbody>

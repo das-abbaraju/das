@@ -97,6 +97,9 @@
 							<td style="vertical-align: middle; padding: 0px 5px;">
 								<h2><s:property value="employee.displayName" /></h2>
 								Title: <s:property value="employee.title" /><br />
+								<s:if test="(permissions.admin && permissions.hasPermission('ManageEmployees')) || permissions.accountId == employee.account.id">
+									<a href="ManageEmployees.action?employee.id=<s:property value="employee.id" />" class="edit">Edit Employee</a><br />
+								</s:if>
 								<s:if test="employee.account.contractor && (permissions.admin || (permissions.operatorCorporate && canViewContractor) || permissions.accountId == employee.account.id)">
 									<a href="ContractorView.action?id=<s:property value="employee.account.id" />"><s:property value="employee.account.name" /></a><br />
 								</s:if>
@@ -277,11 +280,6 @@
 											</tr>
 										</s:if>
 									</table>
-									<s:if test="permissions.admin || permissions.accountID == employee.account.id">
-										<pics:permission perm="ManageEmployees">
-											<a href="ManageEmployees.action?employee.id=<s:property value="employee.id" />" class="edit">Edit Profile</a>
-										</pics:permission>
-									</s:if> 
 								</div>
 							</div>
 						</div>

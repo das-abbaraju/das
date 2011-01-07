@@ -42,7 +42,7 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 		this.accountDAO = accountDAO;
 		this.jobRoleDAO = jobRoleDAO;
 		this.competencyDAO = competencyDAO;
-		
+
 		subHeading = "HSE Competency Matrix";
 	}
 
@@ -60,22 +60,22 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 
 		account = accountDAO.find(id);
 		roles = jobRoleDAO.findMostUsed(id, true);
-		
+
 		List<JobRole> jobRoles = account.getJobRoles();
 		Collections.sort(jobRoles, new Comparator<JobRole>() {
 			public int compare(JobRole o1, JobRole o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
 		});
-		
+
 		for (JobRole jr : jobRoles) {
 			if (!roles.contains(jr) && jr.isActive())
 				roles.add(jr);
 		}
-		
+
 		competencies = competencyDAO.findMostUsed(id, true);
 		map = jobRoleDAO.findJobCompetencies(id, true);
-		
+
 		// Get auditID
 		if (auditID > 0)
 			ActionContext.getContext().getSession().put("auditID", auditID);
@@ -153,19 +153,27 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 		normalStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 		normalStyle.setFont(normalFont);
 
-		// Add the Column Headers to the top of the report
+		// Add the Column Headers/Company Name to the top of the report
 		int rowNumber = 0;
 		int columnCount = 0;
 		HSSFRow r = sheet.createRow(rowNumber);
-
-		// HSE Competency Category & Label
 		HSSFCell c = r.createCell(columnCount);
+		
+		if (permissions.isOperatorCorporate()) {
+			c.setCellStyle(headerStyle);
+			c.setCellValue(new HSSFRichTextString(account.getName()));
+			rowNumber++;
+			r = sheet.createRow(rowNumber);
+		}
+		
+		// HSE Competency Category & Label
+		c = r.createCell(columnCount);
 		c.setCellValue(new HSSFRichTextString("HSE Competency Category"));
 		c.setCellStyle(headerStyle);
 		columnCount++;
 
 		c = r.createCell(columnCount);
-		c.setCellValue(new HSSFRichTextString("HSE Competency Label"));
+		c.setCellValue(new HSSFRichTextString("Label"));
 		c.setCellStyle(headerStyle);
 
 		// Header role names
@@ -179,6 +187,7 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 		for (OperatorCompetency competency : competencies) {
 			rowNumber++;
 			columnCount = 0;
+
 			r = sheet.createRow(rowNumber);
 			c = r.createCell(columnCount);
 			c.setCellValue(new HSSFRichTextString(competency.getCategory()));

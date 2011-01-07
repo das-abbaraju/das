@@ -97,13 +97,6 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
 					.getContext().getSession().get("auditID"));
 
-		if ("Description".equals(button)) {
-			if (competencyID > 0)
-				competency = competencyDAO.find(competencyID);
-
-			return "description";
-		}
-
 		if ("Add".equals(button)) {
 			role = new JobRole();
 
@@ -139,7 +132,7 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 
 		if (role != null) {
 			jobCompetencies = jobRoleDAO.getCompetenciesByRole(role);
-			List<OperatorCompetency> competencies = competencyDAO.findWhere("o.category != 'Other'");
+			List<OperatorCompetency> competencies = competencyDAO.findAll();
 			if (competencyID > 0) {
 				if ("removeCompetency".equals(button)) {
 					Iterator<JobCompetency> iterator = jobCompetencies.iterator();
