@@ -162,6 +162,7 @@ public class ContractorWidget extends ContractorActionSupport {
 											needed++;
 										}
 									} else if (cao.getStatus().before(AuditStatus.Submitted)
+											|| cao.getStatus() == AuditStatus.Resubmit
 											|| (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire())) {
 										needed++;
 									}
