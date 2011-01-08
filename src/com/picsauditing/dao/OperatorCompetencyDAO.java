@@ -28,7 +28,7 @@ public class OperatorCompetencyDAO extends PicsDAO {
 	}
 
 	public List<OperatorCompetency> findAll() {
-		Query q = em.createQuery("FROM OperatorCompetency o ORDER BY o.category, o.label");
+		Query q = em.createQuery("FROM OperatorCompetency o ORDER BY o.label");
 		return q.getResultList();
 	}
 	
