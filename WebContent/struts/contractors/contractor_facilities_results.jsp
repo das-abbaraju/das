@@ -7,6 +7,11 @@
 	<div class="alert">No Facilities Found</div>
 </s:if>
 <s:else>
+	<s:if test="state == '' && operator.name == ''">
+	<div id="help" class="fieldhelp" style="width:100%;max-width:100%;margin:0 0 10px 0;">
+		Here are ten other Operators that you might work at:
+	</div>
+	</s:if>
 <table class="report">
 	<thead>
 		<tr>
@@ -26,8 +31,8 @@
 	</s:iterator>
 	<s:if test="searchResults.size() > 1 && !permissions.corporate">
 		<tr id="showAllLink">
-			<td colspan="3" class="right">
-				<a href="#" onclick="showAllOperators(); return false;" class="add">Show All Operators</a>
+			<td colspan="3" class="right" style="padding:10px 0 10px 0;">
+				<a href="#" onclick="showAllOperators(); return false;" class="picsbutton positive">Show ALL Operators</a>
 			</td>
 		</tr>
 	</s:if>

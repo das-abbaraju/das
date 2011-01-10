@@ -109,7 +109,10 @@ public class SmartFacilitySuggest {
 		else if (contractor.getStatus() == AccountStatus.Demo)
 			sql.addWhere("a.status IN ('Active','Pending','Demo')");
 		sql.addGroupBy("a.id");
-		sql.addOrderBy("score DESC");
+		if (limit > 0)
+			sql.addOrderBy("score DESC");
+		else
+			sql.addOrderBy("a.name");
 		sql.addField("(s.total*AVG(s.total)/s2.total) score");
 		sql.addField("a.name");
 		sql.addField("a.onsiteServices");

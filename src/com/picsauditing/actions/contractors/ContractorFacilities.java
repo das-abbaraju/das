@@ -47,13 +47,11 @@ public class ContractorFacilities extends ContractorActionSupport {
 	private List<OperatorAccount> searchResults = null;
 
 	private String msg = null;
-	
+
 	private ContractorType type = null;
 
-	public ContractorFacilities(ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, OperatorAccountDAO operatorDao,
-			FacilityChanger facilityChanger,
-			ContractorOperatorDAO contractorOperatorDAO) {
+	public ContractorFacilities(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			OperatorAccountDAO operatorDao, FacilityChanger facilityChanger, ContractorOperatorDAO contractorOperatorDAO) {
 		super(accountDao, auditDao);
 		this.operatorDao = operatorDao;
 		this.contractorOperatorDAO = contractorOperatorDAO;
@@ -70,21 +68,21 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 		limitedView = true;
 		findContractor();
-		
+
 		if (requestID > 0) {
-			ContractorRegistrationRequestDAO crrDAO = 
-				(ContractorRegistrationRequestDAO) SpringUtils.getBean("ContractorRegistrationRequestDAO");
+			ContractorRegistrationRequestDAO crrDAO = (ContractorRegistrationRequestDAO) SpringUtils
+					.getBean("ContractorRegistrationRequestDAO");
 			ContractorRegistrationRequest crr = crrDAO.find(requestID);
 			contractor.setRequestedBy(crr.getRequestedBy());
-			
+
 			facilityChanger.setContractor(contractor);
 			facilityChanger.setOperator(crr.getRequestedBy().getId());
 			facilityChanger.setPermissions(permissions);
 			facilityChanger.add();
-			
+
 			InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 			contractor.setNewMembershipLevel(fee);
-			
+
 			accountDao.save(contractor);
 		}
 
@@ -97,15 +95,15 @@ public class ContractorFacilities extends ContractorActionSupport {
 		}
 
 		if (contractor.getNonCorporateOperators().size() == 1) {
-			contractor.setRequestedBy(contractor.getNonCorporateOperators()
-					.get(0).getOperatorAccount());
+			contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 			accountDao.save(contractor);
 		}
 		if (button != null) {
 			boolean recalculate = false;
-			
+
 			if (button.startsWith("search")) {
-				if (!Strings.isEmpty(operator.getName()) || !Strings.isEmpty(state)) {
+				if ((!Strings.isEmpty(operator.getName()) || !Strings.isEmpty(state))
+						&& !"searchShowAll".equals(button)) {
 					String where = "";
 
 					if (state != null && state.length() > 0) {
@@ -115,8 +113,14 @@ public class ContractorFacilities extends ContractorActionSupport {
 					if (operator != null && !Strings.isEmpty(operator.getName())) {
 						if (where.length() > 0)
 							where += " AND ";
-						where += "nameIndex LIKE '%" + Utilities.escapeQuotes(operator.getName()).replaceAll("\\s+|[^a-zA-Z0-9]", "") + "%'";
+						where += "nameIndex LIKE '%"
+								+ Utilities.escapeQuotes(operator.getName()).replaceAll("\\s+|[^a-zA-Z0-9]", "") + "%'";
 					}
+
+					String status = "'Active'";
+					if (contractor.getStatus().isDemo())
+						status += ",'Demo', 'Pending'";
+					where += " AND a.status IN (" + status + ")";
 
 					searchResults = new ArrayList<OperatorAccount>();
 					currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
@@ -136,49 +140,50 @@ public class ContractorFacilities extends ContractorActionSupport {
 				} else if (contractor.getOperators().size() == 0) {
 					// Only turn on smart facility suggest for US and Canada
 					searchResults = new ArrayList<OperatorAccount>();
-					if (contractor.getCountry().getIsoCode().equals("US") || contractor.getCountry().getIsoCode().equals("CA")) {
+					if (contractor.getCountry().getIsoCode().equals("US")
+							|| contractor.getCountry().getIsoCode().equals("CA")) {
 						List<BasicDynaBean> data = SmartFacilitySuggest.getFirstFacility(contractor);
-						
-						
+
 						for (BasicDynaBean d : data) {
 							OperatorAccount o = new OperatorAccount();
-							
+
 							if (d.get("onsiteServices").equals(1))
 								o.setOnsiteServices(true);
 							if (d.get("offsiteServices").equals(1))
 								o.setOffsiteServices(true);
 							if (d.get("materialSupplier").equals(1))
 								o.setMaterialSupplier(true);
-							
+
 							o.setId(Integer.parseInt(d.get("opID").toString()));
 							o.setName(d.get("name").toString());
 							o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
-							
-							if (contractor.isOnsiteServices() && o.isOnsiteServices()
-									|| contractor.isOffsiteServices() && o.isOffsiteServices()
-									|| contractor.isMaterialSupplier() && o.isMaterialSupplier())
+
+							if (contractor.isOnsiteServices() && o.isOnsiteServices() || contractor.isOffsiteServices()
+									&& o.isOffsiteServices() || contractor.isMaterialSupplier()
+									&& o.isMaterialSupplier())
 								searchResults.add(o);
 						}
-						
+
 						addActionMessage("This list of operators was generated based on your location. "
-								+ "To find a specific operator, use the search filters above");
+								+ "To find a specific operator, use the search filters above or click Show ALL Operators.");
 					} else {
-						// Search for a list of operators in the contractor's country?
+						// Search for a list of operators in the contractor's
+						// country?
 						// TODO Do we show only 10?
 						String status = "'Active'";
-						
+
 						if (contractor.getStatus().isDemo())
-							status += ",'Demo'";
-						
-						List<OperatorAccount> ops = operatorDao.findWhere(false, "a.country = '" + 
-								contractor.getCountry().getIsoCode() + "' AND a.status IN (" + status + ")");
+							status += ",'Demo', 'Pending'";
+
+						List<OperatorAccount> ops = operatorDao.findWhere(false, "a.country = '"
+								+ contractor.getCountry().getIsoCode() + "' AND a.status IN (" + status + ")");
 						searchResults = ops.subList(0, ops.size() < 10 ? ops.size() : 10);
-						
+
 						if (ops.size() < 10) {
 							// TODO make this a dao call somehow?
 							Database db = new Database();
 							SelectSQL sql = new SelectSQL();
-							
+
 							sql.setFromTable("accounts o");
 							sql.addField("DISTINCT o.id AS opID");
 							sql.addField("o.name");
@@ -190,7 +195,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 							sql.addJoin("JOIN accounts c ON c.id = gc.subID");
 							sql.addWhere("o.status IN (" + status + ")");
 							sql.addWhere("c.status IN (" + status + ")");
-							// Search for operators that support this contractor's type
+							// Search for operators that support this
+							// contractor's type
 							if (contractor.isOnsiteServices())
 								sql.addWhere("o.onsiteServices = 1");
 							if (contractor.isOffsiteServices())
@@ -199,23 +205,23 @@ public class ContractorFacilities extends ContractorActionSupport {
 								sql.addWhere("o.materialSupplier = 1");
 							sql.addOrderBy("gc.creationDate");
 							sql.setLimit(10 - ops.size());
-							
+
 							List<BasicDynaBean> data = db.select(sql.toString(), true);
-							
+
 							for (BasicDynaBean d : data) {
 								OperatorAccount o = new OperatorAccount();
-								
+
 								if (d.get("onsiteServices").equals(1))
 									o.setOnsiteServices(true);
 								if (d.get("offsiteServices").equals(1))
 									o.setOffsiteServices(true);
 								if (d.get("materialSupplier").equals(1))
 									o.setMaterialSupplier(true);
-								
+
 								o.setId(Integer.parseInt(d.get("opID").toString()));
 								o.setName(d.get("name").toString());
 								o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
-								
+
 								if (contractor.isOnsiteServices() && o.isOnsiteServices()
 										|| contractor.isOffsiteServices() && o.isOffsiteServices()
 										|| contractor.isMaterialSupplier() && o.isMaterialSupplier())
@@ -225,37 +231,39 @@ public class ContractorFacilities extends ContractorActionSupport {
 					}
 				} else {
 					searchResults = new ArrayList<OperatorAccount>();
-					
+
 					if (!permissions.isCorporate()) {
 						int limit = 10;
 						if ("searchShowAll".equals(button))
 							limit = 0;
 						List<BasicDynaBean> data = SmartFacilitySuggest.getSimilarOperators(contractor, limit);
-	
+
 						for (BasicDynaBean d : data) {
 							OperatorAccount o = new OperatorAccount();
-							
+
 							if (d.get("onsiteServices").equals("1"))
 								o.setOnsiteServices(true);
 							if (d.get("offsiteServices").equals("1"))
 								o.setOffsiteServices(true);
 							if (d.get("materialSupplier").equals("1"))
 								o.setMaterialSupplier(true);
-							
+
 							o.setId(Integer.parseInt(d.get("opID").toString()));
 							o.setName(d.get("name").toString());
 							o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
-							
-							if (contractor.isOnsiteServices() && o.isOnsiteServices()
-									|| contractor.isOffsiteServices() && o.isOffsiteServices()
-									|| contractor.isMaterialSupplier() && o.isMaterialSupplier())
+
+							if (contractor.isOnsiteServices() && o.isOnsiteServices() || contractor.isOffsiteServices()
+									&& o.isOffsiteServices() || contractor.isMaterialSupplier()
+									&& o.isMaterialSupplier())
 								searchResults.add(o);
 						}
-	
-						addActionMessage("This list of operators is generated based on the operators you currently have selected."
-								+ "To find a specific operator, use the search filters above");
+
+						if (!"searchShowAll".equals(button))
+							addActionMessage("This list of operators is generated based on the operators you currently have selected."
+									+ "To find a specific operator, use the search filters above or click Show ALL Operators.");
 					} else {
-						// Corporate users should only see the operators under their umbrella
+						// Corporate users should only see the operators under
+						// their umbrella
 						OperatorAccount op = operatorDao.find(permissions.getAccountId());
 						for (Facility f : op.getOperatorFacilities()) {
 							if (!contractor.getOperatorAccounts().contains(f.getOperator()))
@@ -267,28 +275,23 @@ public class ContractorFacilities extends ContractorActionSupport {
 			}
 
 			if (button.equals("validateBidOnly")) {
-				json.put("isBidOnlyOperator", operatorDao
-						.find(operator.getId()).isAcceptsBids());
-				json.put("isBidOnlyContractor", accountDao.find(
-						contractor.getId()).isAcceptsBids());
+				json.put("isBidOnlyOperator", operatorDao.find(operator.getId()).isAcceptsBids());
+				json.put("isBidOnlyContractor", accountDao.find(contractor.getId()).isAcceptsBids());
 				return "json";
 			}
 
 			if (button.equals("load")) {
-				currentOperators = contractorOperatorDAO.findByContractor(id,
-						permissions);
+				currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
 				return button;
 			}
 
 			if ("request".equals(button)) {
 				if (operator.getId() > 0) {
 					contractor.setRequestedBy(operator);
-					if (contractor.isAcceptsBids()
-							&& !contractor.getRequestedBy().isAcceptsBids()) {
+					if (contractor.isAcceptsBids() && !contractor.getRequestedBy().isAcceptsBids()) {
 						contractor.setAcceptsBids(false);
 						contractor.setRenew(true);
-						InvoiceFee fee = BillingCalculatorSingle
-								.calculateAnnualFee(contractor);
+						InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 						contractor.setNewMembershipLevel(fee);
 					}
 					accountDao.save(contractor);
@@ -299,8 +302,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 			if (button.equals("SwitchToTrialAccount")) {
 				contractor.setAcceptsBids(true);
 				contractor.setRenew(false);
-				InvoiceFee fee = BillingCalculatorSingle
-						.calculateAnnualFee(contractor);
+				InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 				contractor.setNewMembershipLevel(fee);
 				accountDao.save(contractor);
 				return SUCCESS;
@@ -319,7 +321,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 					else
 						type = ContractorType.Supplier;
 				}
-				// Check to make sure the contractor's types match the one passed in
+				// Check to make sure the contractor's types match the one
+				// passed in
 				if (type.equals(ContractorType.Onsite) && contractor.isOnsiteServices()
 						|| type.equals(ContractorType.Offsite) && contractor.isOffsiteServices()
 						|| type.equals(ContractorType.Supplier) && contractor.isMaterialSupplier()) {
@@ -328,8 +331,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 					recalculate = true;
 				} else {
 					// Not sure when this happens
-					addActionError("The service you have selected for this operator doesn't match what " +
-							"you selected for your company. Please choose another option.");
+					addActionError("The service you have selected for this operator doesn't match what "
+							+ "you selected for your company. Please choose another option.");
 				}
 			}
 
@@ -340,24 +343,22 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 			if (recalculate) {
 				findContractor();
-				InvoiceFee fee = BillingCalculatorSingle
-						.calculateAnnualFee(contractor);
+				InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 
 				contractor.setNewMembershipLevel(fee);
 				accountDao.save(contractor);
 			}
 		}
 
-		currentOperators = contractorOperatorDAO.findByContractor(id,
-				permissions);
+		currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
 
 		return SUCCESS;
 	}
-	
+
 	public int getRequestID() {
 		return requestID;
 	}
-	
+
 	public void setRequestID(int requestID) {
 		this.requestID = requestID;
 	}
@@ -393,20 +394,18 @@ public class ContractorFacilities extends ContractorActionSupport {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	
+
 	public ContractorType getType() {
 		return type;
 	}
-	
+
 	public void setType(ContractorType type) {
 		this.type = type;
 	}
 
 	public InvoiceFee getCurrentMembership() {
-		InvoiceFee invoiceFee = BillingCalculatorSingle
-				.calculateAnnualFeeForContractor(contractor, new InvoiceFee());
-		InvoiceFeeDAO invoiceFeeDAO = (InvoiceFeeDAO) SpringUtils
-				.getBean("InvoiceFeeDAO");
+		InvoiceFee invoiceFee = BillingCalculatorSingle.calculateAnnualFeeForContractor(contractor, new InvoiceFee());
+		InvoiceFeeDAO invoiceFeeDAO = (InvoiceFeeDAO) SpringUtils.getBean("InvoiceFeeDAO");
 		return invoiceFeeDAO.find(invoiceFee.getId());
 	}
 
@@ -425,17 +424,17 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 		return false;
 	}
-	
+
 	public int getTypeCount(OperatorAccount op) {
 		int count = 0;
-		
+
 		if (contractor.isOnsiteServices() && op.isOnsiteServices())
 			count++;
 		if (contractor.isOffsiteServices() && op.isOffsiteServices())
 			count++;
 		if (contractor.isMaterialSupplier() && op.isMaterialSupplier())
 			count++;
-		
+
 		return count;
 	}
 }

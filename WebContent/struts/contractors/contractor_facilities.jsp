@@ -29,6 +29,7 @@
 				}
 				if(button == "searchShowAll"){
 					$('#showAllLink').hide();
+					$('#help').hide();
 				}
 			}
 		);
