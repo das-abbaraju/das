@@ -708,15 +708,17 @@ public class ContractorCron extends PicsActionSupport {
 				for (ContractorAudit audit : contractor.getAudits()) {
 					if (audit.getAuditType().isDesktop()) {
 						auditor = audit.getAuditor();
-						for (UserGroup ug : audit.getAuditor().getGroups()) {
-							if (ug.getGroup().getId() == User.INDEPENDENT_CONTRACTOR) {
-								auditor = null;
-								// Dennis Dooly to Rick McGee
-								if (audit.getAuditor().getId() == 910)
-									auditor = new User(9615);
-								// Mike Casey to Harvey Staal
-								if (audit.getAuditor().getId() == 10600)
-									auditor = new User(935);
+						if (auditor!=null) {
+							for (UserGroup ug : auditor.getGroups()) {
+								if (ug.getGroup().getId() == User.INDEPENDENT_CONTRACTOR) {
+									auditor = null;
+									// Dennis Dooly to Rick McGee
+									if (audit.getAuditor().getId() == 910)
+										auditor = new User(9615);
+									// Mike Casey to Harvey Staal
+									if (audit.getAuditor().getId() == 10600)
+										auditor = new User(935);
+								}
 							}
 						}
 					}
