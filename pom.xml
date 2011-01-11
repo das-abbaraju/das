@@ -446,5 +446,12 @@
 			<version>r04</version>
 		</dependency>
 
+		<dependency>
+			<!-- Braintree -->
+			<groupId>com.braintree</groupId>
+			<artifactId>braintree</artifactId>
+			<version>2.6.1</version>
+		</dependency>
+
 	</dependencies>
 </project>
