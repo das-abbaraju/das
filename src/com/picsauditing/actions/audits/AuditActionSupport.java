@@ -272,8 +272,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 				return false;
 			if (workflowStep.getNewStatus().isSubmitted())
 				return true;
-			if (workflowStep.getNewStatus().isResubmitted() && conAudit.isAboutToExpire())
-				return true;
 			// if Single Step Workflow (Pending to Complete)
 			if (workflowStep.getNewStatus().isComplete() && workflowStep.getWorkflow().getId() == 1)
 				return true;
