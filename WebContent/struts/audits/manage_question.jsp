@@ -14,13 +14,13 @@
 <script type="text/javascript">
 $(function(){
 	$('select[name=question.questionType]').change(function(){
-		if($(this).val()=='Radio' || $(this).val()=='Yes/No/NA' || $(this).val()=='Yes/No')
+		if($(this).val()=='Radio' || $(this).val()=='Yes/No/NA' || $(this).val()=='Yes/No' || $(this).val()=='Rating 1-5')
 			$('.scoreWeight').show();
 		else{
 			$('.scoreWeight').hide();
 			$('.scoreWeight input[name=question.scoreWeight]').val(0);
 		}
-	});
+	}).trigger('change');
 	
 });
 
