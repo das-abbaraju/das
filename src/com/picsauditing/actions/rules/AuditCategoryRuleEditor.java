@@ -100,13 +100,14 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 
 	@Override
 	protected void save() {
+		saveFields();
+		
 		if (isOperatorRequired()) {
 			if (rule.getOperatorAccount() == null) {
 				addActionError("You must specify an operator for this rule");
 				return;
 			}
 		}
-		saveFields();
 		if (rule.getId() == 0)
 			rule.defaultDates();
 		rule.calculatePriority();
