@@ -299,9 +299,12 @@ public class AuditBuilderController {
 		if (conAudit.getAuditType().getId() == AuditType.SHELL_COMPETENCY_REVIEW) {
 			List<AuditCategory> requiredCompetencies = auditCatMatrixDAO.findCategoriesForCompetencies(conAudit
 					.getContractorAccount().getId());
+			categoriesNeeded = new HashSet<AuditCategory>();
 			if (conAudit.hasCaoStatus(AuditStatus.Pending)) {
-				categoriesNeeded = new HashSet<AuditCategory>();
-				categoriesNeeded.addAll(requiredCompetencies);
+				for (AuditCategory ac : conAudit.getAuditType().getCategories()) {
+					if (requiredCompetencies.contains(ac.getTopParent()))
+						categoriesNeeded.add(ac);
+				}
 			} else {
 				// We don't want this audit to be updated
 				PicsLogger.stop();
