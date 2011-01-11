@@ -32,6 +32,11 @@
 			<label>HSE Competency Review:</label> Enabled
 		<br />
 		</s:if>
+		<pics:permission perm="PicsScore">
+		<label>Score:</label>
+		<s:property value="contractor.score" />
+		<br />
+		</pics:permission>
 		<label>Trade:</label>
 		<s:property value="contractor.mainTrade" />
 		<br />
