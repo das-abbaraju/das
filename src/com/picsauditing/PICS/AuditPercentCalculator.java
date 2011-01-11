@@ -146,7 +146,7 @@ public class AuditPercentCalculator {
 								try {
 									Integer rating = Integer.parseInt(answer.getAnswer());
 									score += rating;
-									scoreCount += rating;
+									scoreCount += 5; // Use the rating max
 								} catch (NumberFormatException justIgnoreIt) {
 								}
 							}
