@@ -124,32 +124,38 @@ public class AuditPercentCalculator {
 					if (answer.isAnswered()) {
 
 						if (catData.getAudit().getAuditType().isScoreable()) {
+
+							int answerValue = 0;
+							float scale = 1.0f;
+
 							if ("Radio".equals(question.getQuestionType())) {
 								for (AuditQuestionOption option : question.getOptions()) {
-									if (option.getOptionName().equals(answer.getAnswer())) {
-										score += option.getScore();
-										break;
+									scale = Math.max(scale, option.getScore() - 1);
+									if (answer.getAnswer().equals(option.getOptionName())) {
+										answerValue = option.getScore();
 									}
 								}
-								scoreCount += question.getScoreWeight();
-							} else if ("Yes/No".equals(question.getQuestionType())
-									|| "Yes/No/NA".equals(question.getQuestionType())) {
+							} else if ("Yes/No".equals(question.getQuestionType())) {
+								scale = 1.0f;
 								if (answer.getAnswer().equals("Yes"))
-									score += question.getScoreWeight();
+									answerValue = 1;
+							} else if ("Yes/No/NA".equals(question.getQuestionType())) {
+								scale = 1.0f;
+								if (answer.getAnswer().equals("Yes"))
+									answerValue = 2;
 								else if (answer.getAnswer().equals("NA"))
-									score += question.getScoreWeight() / 2;
-								else
-									score += 0;
-
-								scoreCount += question.getScoreWeight();
+									answerValue = 1;
 							} else if ("Rating 1-5".equals(question.getQuestionType())) {
+								scale = 4.0f;
 								try {
-									Integer rating = Integer.parseInt(answer.getAnswer());
-									score += rating;
-									scoreCount += 5; // Use the rating max
+									answerValue = Integer.parseInt(answer.getAnswer()) - 1;
 								} catch (NumberFormatException justIgnoreIt) {
 								}
 							}
+
+							score += Math.round((question.getScoreWeight() / scale) * answerValue);
+
+							scoreCount += question.getScoreWeight();
 						}
 
 						answeredCount++;
