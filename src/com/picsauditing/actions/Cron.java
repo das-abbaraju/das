@@ -421,7 +421,7 @@ public class Cron extends PicsActionSupport {
 			lateFeeItem.setAuditColumns(new User(User.SYSTEM));
 			lateFeeItem.setInvoice(i);
 			lateFeeItem.setDescription("Assessed " + new SimpleDateFormat("MM/dd/yyyy").format(new Date())
-					+ " due to deliquent payment.");
+					+ " due to delinquent payment.");
 			invoiceItemDAO.save(lateFeeItem);
 
 			// Add Late Fee to Invoice
