@@ -3,6 +3,7 @@ package com.picsauditing.actions.rules;
 import java.io.IOException;
 import java.util.List;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
@@ -61,6 +62,9 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 
 	@Override
 	protected void redirectTo() throws IOException {
+		if (getActionErrors().size() > 0)
+			ActionContext.getContext().getSession().put("actionErrors", getActionErrors());
+		
 		if (rule != null)
 			this.redirect(urlPrefix + "RuleEditor.action?id=" + rule.getId());
 		else

@@ -161,7 +161,7 @@ function getLink(val, val_id){
 	</s:elseif>
 </s:if>
 <div id="detail">
-	<s:if test="canEditRule && rule.current">
+	<s:if test="rule.current">
 		<s:form method="post" id="rule_form">
 			<s:hidden name="id"/>
 			<s:if test="rule.id > 0">

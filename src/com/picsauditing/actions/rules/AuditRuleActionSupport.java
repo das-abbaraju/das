@@ -2,10 +2,12 @@ package com.picsauditing.actions.rules;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditTypeRuleCache;
@@ -21,9 +23,9 @@ import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsActionSupport implements Preparable {
@@ -65,6 +67,18 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 		if (!forceLogin())
 			return LOGIN;
 
+		if (ActionContext.getContext().getSession().containsKey("actionErrors")) {
+			Collection<String> actionErrors = (Collection<String>) ActionContext.getContext().getSession()
+					.get("actionErrors");
+			ActionContext.getContext().getSession().remove("actionErrors");
+
+			for (String error : actionErrors) {
+				addActionError(error);
+			}
+
+			return SUCCESS;
+		}
+
 		if (button != null) {
 			if ("New".equals(button)) {
 				rule = newRule();
@@ -103,7 +117,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 		if (permissions.hasPermission(requiredPermission, OpType.Edit))
 			return true;
 		if (rule != null) {
-			if (permissions.getUserId() == rule.getCreatedBy().getId())
+			if (rule.getCreatedBy() != null && permissions.getUserId() == rule.getCreatedBy().getId())
 				return true;
 			OperatorAccount opAccount = rule.getOperatorAccount();
 			if (opAccount != null) {
@@ -119,6 +133,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -127,7 +142,12 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	}
 
 	public List<OperatorAccount> getOperatorList() {
-		return operatorDAO.findWhere(true, "", permissions);
+		String where = "";
+		if (permissions.hasGroup(User.GROUP_MARKETING))
+			where = "a IN (SELECT account FROM AccountUser WHERE user.id = " + permissions.getUserId() + ")";
+
+		// TODO Add corporate support
+		return operatorDAO.findWhere(true, where, permissions);
 	}
 
 	public List<OperatorTag> getOperatorTagList() {
