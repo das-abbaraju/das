@@ -109,7 +109,7 @@ $(function() {
 				name="auditData.answer" value="#a.answer" />
 		</s:if>
 		<s:if test="#q.questionType == 'Rating 1-5'">
-			<s:select list="{1,2,3,4,5}" name="auditData.answer" headerKey="" headerValue=""/>
+			<s:select list="{1,2,3,4,5}" name="auditData.answer" value="#a.answer" headerKey="" headerValue=""/>
 		</s:if>
 		<!-- Non checkboxes/radio -->
 		<s:if test="#q.questionType == 'Text Area'">
