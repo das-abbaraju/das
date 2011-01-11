@@ -120,6 +120,11 @@ public class AuditPercentCalculator {
 				if (isRequired)
 					requiredCount++;
 
+				// Always include the score count. Blank audits will receive a
+				// score of 0
+				if (catData.getAudit().getAuditType().isScoreable())
+					scoreCount += question.getScoreWeight();
+
 				if (answer != null) {
 					if (answer.isAnswered()) {
 
@@ -155,7 +160,6 @@ public class AuditPercentCalculator {
 
 							score += Math.round((question.getScoreWeight() / scale) * answerValue);
 
-							scoreCount += question.getScoreWeight();
 						}
 
 						answeredCount++;
