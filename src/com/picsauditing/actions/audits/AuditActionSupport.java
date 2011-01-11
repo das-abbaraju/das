@@ -268,7 +268,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		// if they can edit that audit
 		if (permissions.isContractor() && type.isCanContractorEdit()) {
 			if (!conAudit.getContractorAccount().isPaymentMethodStatusValid()
-					&& conAudit.getContractorAccount().isMustPayB())
+					&& conAudit.getContractorAccount().isMustPayB() && !conAudit.getContractorAccount().isDemo())
 				return false;
 			if (workflowStep.getNewStatus().isSubmitted())
 				return true;
