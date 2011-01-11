@@ -89,9 +89,10 @@ function editCriteria(id) {
 	$("#"+id).find("span.newImpact").html("");
 }
 
-function getImpact(fcoID) {
+function getImpact(fcoID, opID) {
 	var data = {
-		fcoID: fcoID
+		fcoID: fcoID,
+		opID: opID
 	};
 	
 	$('#impactDiv').empty();
@@ -104,21 +105,17 @@ function getImpact(fcoID) {
 	);
 }
 
-function downloadImpact(fcoID) {
-	var data = {
-		fcoID: fcoID,
-		button: 'download'
-	};
-	
-	newurl = "OperatorFlagsCalculatorCSV.action?fcoID=" + fcoID + "&button=download";
+function downloadImpact(fcoID, opID) {
+	newurl = "OperatorFlagsCalculatorCSV.action?button=download&fcoID=" + fcoID + "&opID=" + opID;
 	popupWin = window.open(newurl, 'OperatorFlagsCalculator', '');
 }
 
-function calculateImpact(fcoID, newHurdle) {
+function calculateImpact(fcoID, opID, newHurdle) {
 	var data = {
 		button: 'count',
 		newHurdle: newHurdle,
-		fcoID: fcoID
+		fcoID: fcoID,
+		opID: opID
 	};
 	
 	startThinking({div:'thinking', message:'Calculating impact...'});
@@ -129,11 +126,12 @@ function calculateImpact(fcoID, newHurdle) {
 	);
 }
 
-function updateAffected(fcoID) {
+function updateAffected(fcoID, opID) {
 	var result = "";
 	var data = {
 		button: 'count',
-		fcoID: fcoID
+		fcoID: fcoID,
+		opID: opID
 	};
 	
 	$('#'+fcoID).find('a.oldImpact').html('<img src="images/ajax_process.gif" alt="Loading image" />');
@@ -175,8 +173,8 @@ function getChildCriteria(opID, opName) {
 
 var wait = function(){
     var timer = 0;
-    return function(criteriaID, newHurdle, ms){
+    return function(fcoID, opID, newHurdle, ms){
         clearTimeout(timer);
-        timer = setTimeout('calculateImpact('+criteriaID+','+newHurdle+')', ms);
+        timer = setTimeout('calculateImpact('+fcoID+','+opID+','+newHurdle+')', ms);
     }  
 }();

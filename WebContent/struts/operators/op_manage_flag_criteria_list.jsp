@@ -57,7 +57,7 @@ $(document).ready(function() {
 								<span class="hurdle"><b><s:property value="getFormatted(criteriaValue())" /></b></span>
 								<s:if test="criteria.dataType == 'number' || criteria.dataType == 'date'">	
 									<input type="text" value="<s:property value="getFormatted(criteriaValue())" />" name="newHurdle" size="10"
-										class="hide" onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);"
+										class="hide" onkeyup="wait(<s:property value="id" />, <s:property value="account.id" />, this.value, 500);"
 										<s:if test="criteria.dataType == 'date'">class="datepicker"</s:if> />
 								</s:if>
 								<s:elseif test="criteria.dataType == 'string'">
@@ -79,11 +79,11 @@ $(document).ready(function() {
 				</td>
 				<td class="center"><span class="hideOld"><s:property value="flag.smallIcon" escape="false" /></span></td>
 				<td class="center">
-					<a href="#" onclick="getImpact(<s:property value="id" />); return false;" title="Click to see a list of contractors impacted."
+					<a href="#" onclick="getImpact(<s:property value="id" />, <s:property value="account.id" />); return false;" title="Click to see a list of contractors impacted."
 						class="hideOld oldImpact"><s:property value="affected" /></a>
 					<span class="newImpact"></span>
-					<s:if test="needsRecalc">
-						<script type="text/javascript">updateAffected('<s:property value="id" />');</script>
+					<s:if test="needsRecalc || (operator.id != account.id)">
+						<script type="text/javascript">updateAffected(<s:property value="id" />, <s:property value="account.id" />);</script>
 					</s:if>
 				</td>
 				<s:if test="canEdit">

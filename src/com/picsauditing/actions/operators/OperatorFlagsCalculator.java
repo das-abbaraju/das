@@ -23,6 +23,7 @@ import org.apache.struts2.ServletActionContext;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -32,6 +33,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.Naics;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -41,25 +43,30 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 
 	private Database db = new Database();
 	private int fcoID;
+	private int opID;
 	private String newHurdle;
 	private boolean override = false;
 
 	private List<FlagAndOverride> affected = new ArrayList<FlagAndOverride>();
 
 	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
+	private OperatorAccountDAO opDAO;
 
 	private FlagCriteriaOperator flagCriteriaOperator;
+	private OperatorAccount operator;
 
-	public OperatorFlagsCalculator(FlagCriteriaOperatorDAO flagCriteriaOperatorDAO) {
+	public OperatorFlagsCalculator(FlagCriteriaOperatorDAO flagCriteriaOperatorDAO, OperatorAccountDAO opDAO) {
 		this.flagCriteriaOperatorDAO = flagCriteriaOperatorDAO;
+		this.opDAO = opDAO;
 	}
 
 	@Override
 	public String execute() throws Exception {
-		if (fcoID == 0)
-			throw new Exception("Missing fcoID");
+		if (fcoID == 0 || opID == 0)
+			throw new Exception("Missing fcoID or opID");
 
 		flagCriteriaOperator = flagCriteriaOperatorDAO.find(fcoID);
+		operator = opDAO.find(opID);
 		if (flagCriteriaOperator.getCriteria().isAllowCustomValue() && !Strings.isEmpty(newHurdle)) {
 			flagCriteriaOperator.setHurdle(newHurdle);
 		}
@@ -67,13 +74,14 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		SelectSQL sql = new SelectSQL("flag_criteria_contractor fcc");
 		sql.addJoin("JOIN accounts a ON a.id = fcc.conID");
 		sql.addJoin("JOIN contractor_info c ON c.id = fcc.conID");
-		sql.addJoin("JOIN generalcontractors gc ON gc.subID = fcc.conID AND gc.genID = " + flagCriteriaOperator.getOperator().getId());
+		sql.addJoin("JOIN generalcontractors gc ON gc.subID = fcc.conID AND gc.genID = " + opID);
 		sql.addJoin("LEFT JOIN flag_data_override fdo ON fdo.conID = fcc.conID AND fdo.opID = gc.genID AND fdo.criteriaID = fcc.criteriaID");
 		sql.addJoin("LEFT JOIN naics n on n.code = a.naics");
 		sql.addField("n.lwcr");
 		sql.addField("n.trir");
+		sql.addField("n.code");
 		sql.addWhere("fcc.criteriaID = " + flagCriteriaOperator.getCriteria().getId());
-		if(flagCriteriaOperator.getOperator().getStatus().isDemo())
+		if(operator.getStatus().isDemo())
 			sql.addWhere("a.status IN ('Active','Demo')");
 		else
 			sql.addWhere("a.status = 'Active'");
@@ -113,7 +121,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 					{
 						ContractorAuditOperator cao = new ContractorAuditOperator();
 						cao.setAudit(ca);
-						cao.setOperator(flagCriteriaOperator.getOperator());
+						cao.setOperator(operator);
 						cao.setStatus(AuditStatus.valueOf(row.get("status").toString()));
 						ca.setOperators(new ArrayList<ContractorAuditOperator>());
 						ca.getOperators().add(cao);
@@ -132,12 +140,13 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 				contractor.setNaics(new Naics());
 				contractor.getNaics().setLwcr(Database.toFloat(row, "lwcr"));
 				contractor.getNaics().setTrir(Database.toFloat(row, "trir"));
+				contractor.getNaics().setCode(row.get("code").toString());
 				FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteriaOperator.getCriteria(), row
 						.get("answer") == null ? null : row.get("answer").toString());
 				fcc.setVerified(Database.toBoolean(row, "verified"));
 
 				FlagDataCalculator calculator = new FlagDataCalculator(fcc, flagCriteriaOperator);
-				calculator.setOperator(flagCriteriaOperator.getOperator());
+				calculator.setOperator(operator);
 				List<FlagData> conResults = calculator.calculate();
 				for (FlagData flagData : conResults) {
 					if (flagCriteriaOperator.getFlag().equals(flagData.getFlag())) {
@@ -155,7 +164,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		}
 
 		if ("count".equals(button)) {
-			if (Strings.isEmpty(newHurdle)) {
+			if (Strings.isEmpty(newHurdle) && flagCriteriaOperator.getOperator().getId() == opID) {
 				flagCriteriaOperator.setAffected(affected.size());
 				flagCriteriaOperator.setLastCalculated(new Date());
 				flagCriteriaOperatorDAO.save(flagCriteriaOperator);
@@ -188,6 +197,14 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 	public void setFcoID(int fcoID) {
 		this.fcoID = fcoID;
 	}
+	
+	public int getOpID() {
+		return opID;
+	}
+	
+	public void setOpID(int opID) {
+		this.opID = opID;
+	}
 
 	public String getNewHurdle() {
 		return newHurdle;
@@ -199,6 +216,10 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 
 	public FlagCriteriaOperator getFlagCriteriaOperator() {
 		return flagCriteriaOperator;
+	}
+	
+	public OperatorAccount getOperator() {
+		return operator;
 	}
 
 	public List<FlagAndOverride> getAffected() {

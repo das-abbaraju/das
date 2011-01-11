@@ -62,31 +62,23 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			return LOGIN;
 
 		tryPermissions(OpPerms.EditFlagCriteria);
-		findOperator();
-
 		// findOperator() uses the operator associated with the permissions
-		// object.
-		// We just want the operator that was passed in.
+		// object. We just want the operator that was passed in.
 		int newID = getParameter("id");
-		if (newID > 0 && operator.getId() != newID) {
-			operator = operatorDao.find(getParameter("id"));
-			account = operator;
-		}
+		if (newID == 0 && permissions.isOperatorCorporate())
+			newID = permissions.getAccountId();
+		
+		operator = operatorDao.find(getParameter("id"));
+		account = operator;
 
-		if (insurance) {
-			canEdit = operator.equals(operator.getInheritInsuranceCriteria())
-					&& permissions.hasPermission(OpPerms.EditFlagCriteria, OpType.Edit);
-			subHeading = "Manage Insurance Criteria";
-		} else {
-			canEdit = operator.equals(operator.getInheritFlagCriteria())
-					&& permissions.hasPermission(OpPerms.EditFlagCriteria, OpType.Edit);
-			subHeading = "Manage Flag Criteria";
-		}
+		canEdit = operator.equals(insurance ? operator.getInheritInsuranceCriteria() : operator
+				.getInheritFlagCriteria()) && permissions.hasPermission(OpPerms.EditFlagCriteria, OpType.Edit);
+		subHeading = "Manage " + (insurance ? "Insurance" : "Flag") + " Criteria";
 
 		if (button != null) {
-			if (button.equals("questions")) {
+			if (button.equals("questions"))
 				return button;
-			}
+
 			if (button.equals("childOperator")) {
 				operator = operatorDao.find(childID);
 				canEdit = permissions.hasPermission(OpPerms.EditFlagCriteria, OpType.Edit)
@@ -94,6 +86,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				// Skip the tryPermissions so we don't get exceptions
 				return SUCCESS;
 			}
+
 			if (button.equals("calculateSingle")) {
 				FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(criteriaID);
 				if (!Strings.isEmpty(newHurdle)) {
@@ -124,6 +117,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 					addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 				}
 			}
+
 			if (button.equals("add") && criteriaID > 0) {
 				FlagCriteria fc = flagCriteriaDAO.find(criteriaID);
 				FlagCriteriaOperator fco = new FlagCriteriaOperator();
@@ -157,6 +151,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 							+ (tagID > 0 ? " and tag ID " + tagID : "") + " already exists.");
 				}
 			}
+
 			if (button.equals("save") && criteriaID > 0) {
 				FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(criteriaID);
 				// The fco here and the fco in operator.getInheritedFlagCriteria
@@ -285,10 +280,8 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		Set<Integer> auditTypes = operator.getVisibleAuditTypes();
 
 		List<FlagCriteria> flagCriteria = null;
-		if (insurance)
-			flagCriteria = flagCriteriaDAO.findWhere("insurance = 1 ORDER BY displayOrder, category, label");
-		else
-			flagCriteria = flagCriteriaDAO.findWhere("insurance = 0 ORDER BY displayOrder, category, label");
+		flagCriteria = flagCriteriaDAO.findWhere("insurance = " + (insurance ? 1 : 0)
+				+ " ORDER BY displayOrder, category, label");
 
 		for (FlagCriteria fc : flagCriteria) {
 			// Always show all, operators can choose a different tag ID
@@ -297,13 +290,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				addableCriteria.add(fc);
 			} else if (fc.getQuestion() != null) {
 				// Skip questions 401 & 755?
-				if (fc.getQuestion().getId() == 401 || fc.getQuestion().getId() == 755)
-					continue;
-
-				// Check questions
-				AuditQuestion aq = fc.getQuestion();
-				if (auditTypes.contains(aq.getAuditType().getId())) {
-					if (aq.isCurrent())
+				if (fc.getQuestion().getId() != 401 && fc.getQuestion().getId() != 755) {
+					// Check questions
+					AuditQuestion aq = fc.getQuestion();
+					if (auditTypes.contains(aq.getAuditType().getId()) && aq.isCurrent())
 						addableCriteria.add(fc);
 				}
 			} else if (fc.getOshaType() != null && fc.getOshaType().equals(operator.getOshaType()))
@@ -324,24 +314,16 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 
 		for (FlagCriteriaOperator inherited : inheritedCriteria) {
 			FlagCriteria criteria = inherited.getCriteria();
-
 			// If we're looking for insurance, get only InsureGUARD Questions,
 			// not InsureGUARD audits
-			if (insurance) {
-				if (criteria.isInsurance())
-					valid.add(inherited);
-			} else {
-				// These are insurance questions, which should only show up on
-				// the insurance page
-				if (criteria.isInsurance())
-					continue;
+			if (insurance && criteria.isInsurance())
+				valid.add(inherited);
+			else {
 				// The criteria OSHA type should match up with the operator's
 				// OSHA type
-				if (criteria.getOshaType() != null && !criteria.getOshaType().equals(operator.getOshaType())) {
-					continue;
-				}
-				// Everything else is fine
-				valid.add(inherited);
+				if (!criteria.isInsurance()
+						&& (criteria.getOshaType() == null || criteria.getOshaType().equals(operator.getOshaType())))
+					valid.add(inherited);
 			}
 		}
 

@@ -37,7 +37,7 @@
 				</tr>
 			</s:iterator>
 			<tr><td colspan="<s:property value="(affected.get(0).flagData.criteria.allowCustomValue ? 3 : 2) + (override ? 1 : 0)" />" class="center">
-				<a href="#" onclick="downloadImpact(<s:property value="flagCriteriaOperator.id"/>); return false;"
+				<a href="#" onclick="downloadImpact(<s:property value="fcoID"/>, <s:property value="opID" />); return false;"
 					class="excel">Download this list</a></td></tr>
 		</s:else>
 	</tbody>
