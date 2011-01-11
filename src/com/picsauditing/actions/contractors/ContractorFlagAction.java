@@ -263,6 +263,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		} finally {
 			PicsLogger.stop();
 		}
+
+		// TODO: This is here to solve the LazyInitializationException. Find a better way to do this.
+		contractor.getFlagCriteria().size();
+
 		return SUCCESS;
 	}
 
