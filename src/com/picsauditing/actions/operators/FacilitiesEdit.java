@@ -121,8 +121,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				Calendar calendar = Calendar.getInstance();
 				calendar.set(Calendar.DATE, 1);
 				accountUser.setStartDate(calendar.getTime());
-				calendar.add(Calendar.YEAR, 1);
-				calendar.add(Calendar.DATE, -1);
+				calendar.add(Calendar.YEAR, 20);
 				accountUser.setEndDate(calendar.getTime());
 				accountUser.setAuditColumns(permissions);
 				operator.getAccountUsers().add(accountUser);
