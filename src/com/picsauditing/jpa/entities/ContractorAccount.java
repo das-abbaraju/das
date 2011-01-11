@@ -581,6 +581,8 @@ public class ContractorAccount extends Account implements JSONable {
 
 		emrs = new TreeMap<String, AuditData>();
 		int number = 0;
+		List<ContractorAudit> sortedAudits = getSortedAudits();
+		Collections.reverse(sortedAudits);
 		for (ContractorAudit audit : getSortedAudits()) {
 			if (number < 4) {
 				// Store the EMR rates into a map for later use
@@ -625,19 +627,7 @@ public class ContractorAccount extends Account implements JSONable {
 				annualAList.add(contractorAudit);
 			}
 		}
-		Collections.sort(annualAList, new Comparator<ContractorAudit>() {
-			@Override
-			public int compare(ContractorAudit audit1, ContractorAudit audit2) {
-				if(audit1.getAuditFor()==null){
-					if(audit2.getAuditFor()==null)
-						return 0;
-					else
-						return -1;
-				} else if(audit1.getAuditFor()==null)
-					return 1;
-				return audit1.getAuditFor().compareTo(audit2.getAuditFor());
-			}
-		});
+		Collections.sort(annualAList, new ContractorAuditComparator("auditFor -1"));
 		return annualAList;
 	}
 
