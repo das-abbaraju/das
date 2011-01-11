@@ -112,7 +112,7 @@ $(function(){
 });
 
 function showNavButtons() {
-	if ($('ul.catUL:visible li.catlist:last').is('.current'))
+	if ($('ul.catUL:visible li.catlist:last').is('.current') || $('ul.catUL:visible li.catlist').length == 0)
 		$('#cat-nav-buttons').addClass('last');
 	else
 		$('#cat-nav-buttons').removeClass('last');
