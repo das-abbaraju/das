@@ -513,7 +513,7 @@ public class AuditBuilderController {
 			operators.add(cao.getAudit().getRequestingOpAccount());
 		} else if (cao.getAudit().getAuditType().isDesktop() && cao.getAudit().hasCaoStatus(AuditStatus.Complete)) {
 			for (ContractorOperator co : cao.getAudit().getContractorAccount().getOperators()) {
-				if (co.getOperatorAccount().getOperatorHeirarchy().contains(cao.getOperator().getId())) {
+				if (cao.isVisible() && co.getOperatorAccount().getOperatorHeirarchy().contains(cao.getOperator().getId())) {
 					operators.add(co.getOperatorAccount());
 				}
 			}
