@@ -304,9 +304,10 @@ public class AuditPercentCalculator {
 
 	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
 		for (AuditCatData data : conAudit.getCategories()) {
-			if (OshaTypeConverter.getTypeFromCategory(data.getCategory().getId()) != null) {
+			OshaType typeFromCategory = OshaTypeConverter.getTypeFromCategory(data.getCategory().getId());
+			if (typeFromCategory != null) {
 				for (OshaAudit osha : conAudit.getOshas()) {
-					if (osha.isCorporate()) {
+					if (osha.isCorporate() && osha.getType().equals(typeFromCategory)) {
 						percentOshaComplete(osha, data);
 					}
 				}
