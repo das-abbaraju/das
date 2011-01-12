@@ -118,9 +118,15 @@ function moveQuestion(atypeID) {
 		</li>
 		<li><label>Question Type:</label>
 			<s:select list="questionTypes" name="question.questionType" headerKey="" headerValue="" />
+			<pics:fieldhelp title="Question Type">
+				<p>The type of widget to use on the user interface.</p>
+				<ul>
+					<li>Yes/No</li>
+				</ul>
+			</pics:fieldhelp>
 		</li>
 		<li><label>Question Text:</label>
-			<s:textarea name="question.name" rows="4" />
+			<s:textarea name="question.name" rows="8" />
 		</li>
 		<li><label>Title:</label>
 			<s:textfield name="question.title" size="65"/>
