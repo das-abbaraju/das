@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.AuditBuilderController;
+import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.PICS.ContractorFlagCriteriaList;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.NoRightsException;
@@ -36,6 +37,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -72,11 +74,13 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private NaicsDAO naicsDAO;
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
+	protected boolean runTagConCronAjax = false;
 
 	private ContractorOperator co;
 	private int opID;
 
 	private ContractorWatch watch;
+	private AuditTypeRuleCache auditTypeRuleCache;
 
 	private List<ContractorAudit> docuGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> auditGUARD = new ArrayList<ContractorAudit>();
@@ -94,7 +98,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public ContractorDashboard(AuditBuilderController auditBuilder, ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO,
 			FlagDataDAO flagDataDAO, OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO,
-			InvoiceItemDAO invoiceItemDAO, UserDAO userDAO, NaicsDAO naicsDAO) {
+			InvoiceItemDAO invoiceItemDAO, UserDAO userDAO, NaicsDAO naicsDAO, AuditTypeRuleCache auditTypeRuleCache) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.contractorOperatorDAO = contractorOperatorDAO;
@@ -106,6 +110,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		this.userDAO = userDAO;
 		this.naicsDAO = naicsDAO;
 		this.subHeading = "Account Summary";
+		this.auditTypeRuleCache = auditTypeRuleCache;
 	}
 
 	@Override
@@ -146,6 +151,12 @@ public class ContractorDashboard extends ContractorActionSupport {
 				contractor.getOperatorTags().add(cTag);
 				contractor.incrementRecalculation(10);
 				accountDao.save(contractor);
+				for (AuditTypeRule atr : auditTypeRuleCache.getApplicableAuditRules(contractor)) {
+					if (atr.getTag() != null && atr.getTag().equals(cTag.getTag())) {
+						runTagConCronAjax = true;
+						break;
+					}
+				}
 			}
 		}
 
@@ -575,5 +586,13 @@ public class ContractorDashboard extends ContractorActionSupport {
 		public boolean isHasData() {
 			return rateTypeSet.size() > 0 && auditForSet.size() > 0;
 		}
+	}
+
+	public boolean isRunTagConCronAjax() {
+		return runTagConCronAjax;
+	}
+
+	public void setRunTagConCronAjax(boolean runAjax) {
+		this.runTagConCronAjax = runAjax;
 	}
 }

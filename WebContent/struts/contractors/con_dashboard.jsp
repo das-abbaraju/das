@@ -79,6 +79,9 @@
 		truncate('selfperformed');
 		truncate('subcontracted');
 		limit('description', '\n');
+		$('.reloadPage').live('click', function(){
+			location.reload();
+		});
 	});
 
 	function startWatch() {
@@ -98,6 +101,15 @@
 	}
 </script>
 <style>
+div#opTagAjax{
+	/*background: #F9F9F9;
+	border: 2px solid #012142;
+	padding: 3px;
+	display: none;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;*/
+}
 img.contractor_logo {
 	float: left;
 	padding: 20px;

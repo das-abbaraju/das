@@ -576,6 +576,13 @@ label.tooltipped {
 	zoom: 1;
 }
 
+.okayCheck {
+	padding-left: 17px;
+	margin-left: 2px;
+	background: url('../images/okCheck.png') no-repeat left center;
+	zoom: 1;
+}
+
 /******************** Styles for vCard  ************************/ /*
 .vcard p{
  line-height: 15px;

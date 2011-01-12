@@ -18,4 +18,19 @@
 			type="button" onclick="javascript: return addTag();" value="Add"></td>
 		</tr>
 	</s:if>
+	<s:if test="runTagConCronAjax">
+		<script type="text/javascript">
+			$('#opTagAjax').show();
+			startThinking( {div: 'opTagAjax', message: 'Recalculating Requirements' } );	
+			$.post('ContractorCron.action', {'button':'Run', 'conID':'<s:property value="id"/>', 'steps':['AuditCategory', 'AuditBuilder']}, function(data, status, xhr){				
+				if(status='success'){
+					$('#opTagAjax').html($('<span>', {'class':'okayCheck'}).append('Finished Recalculating Requirements')).append($('<br>'))
+					.append($('<a>', {'class':'showPointer reloadPage refresh'}).append('Click to Refresh'));
+				} else{
+					$('#opTagAjax').html('Error with request');
+				}
+			});
+		</script>
+	</s:if>
 </table>
+<div id="opTagAjax"></div>
