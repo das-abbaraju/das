@@ -39,6 +39,7 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.WorkflowStep;
 
@@ -366,8 +367,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanSystemEdit() {
-		if (permissions.hasPermission(OpPerms.AuditEdit))
+		if (permissions.hasPermission(OpPerms.AuditEdit)) {
+			if (permissions.hasGroup(User.GROUP_CSR)
+					&& (!conAudit.getAuditType().getClassType().isPqf() && !conAudit.getAuditType().isAnnualAddendum()))
+				return false;
 			return true;
+		}
 
 		if (conAudit.getAuditType().getClassType().isPolicy()) {
 			if (conAudit.getAuditor() != null && (conAudit.getAuditor().getId() == permissions.getUserId()))
