@@ -495,6 +495,10 @@ public class ContractorCron extends PicsActionSupport {
 			co.setFlagLastUpdated(new Date());
 		}
 
+		// set baseline to clear for null baselines
+		if (co.getBaselineFlag() == null)
+			co.setBaselineFlag(FlagColor.Clear);
+
 		Iterator<FlagData> flagDataList = BaseTable.insertUpdateDeleteManaged(co.getFlagDatas(), changes).iterator();
 		while (flagDataList.hasNext()) {
 			FlagData flagData = flagDataList.next();
