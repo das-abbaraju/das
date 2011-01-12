@@ -208,8 +208,9 @@ public class ContractorWidget extends ContractorActionSupport {
 										+ "\">review and re-submit your " + auditName + auditFor + "</a>");
 							}
 						} else if (conAudit.getAuditType().getWorkFlow().getId() == Workflow.AUDIT_REQUIREMENTS_WORKFLOW
-								&& (conAudit.getAuditType().getId() == AuditType.WA_STATE_VERIFICATION && conAudit
-										.hasCaoStatusAfter(AuditStatus.Pending))) {
+								&& (conAudit.getAuditType().getId() != AuditType.WA_STATE_VERIFICATION || (conAudit
+										.getAuditType().getId() == AuditType.WA_STATE_VERIFICATION && conAudit
+										.hasCaoStatusAfter(AuditStatus.Pending)))) {
 							if (conAudit.hasCaoStatus(AuditStatus.Submitted)) {
 								// Submitted
 								if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
