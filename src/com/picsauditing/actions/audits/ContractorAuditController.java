@@ -12,8 +12,6 @@ import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.MenuComponent;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -67,7 +65,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		ActionContext.getContext().getSession().remove("auditID");
 
 		if (auditID > 0)
@@ -295,13 +293,5 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	public void setPreviewCat(boolean previewCat) {
 		this.previewCat = previewCat;
-	}
-
-	public boolean matchesType(int categoryId, OshaType oa) {
-		if (OshaTypeConverter.getTypeFromCategory(categoryId) == null || oa == null)
-			return false;
-		if (oa == OshaTypeConverter.getTypeFromCategory(categoryId))
-			return true;
-		return false;
 	}
 }

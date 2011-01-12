@@ -18,6 +18,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
+import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
@@ -117,7 +118,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public Map<AuditCategory, AuditCatData> getCategories() {
-		if (categories == null) {
+		return getCategories(conAudit, false);
+	}
+
+	public Map<AuditCategory, AuditCatData> getCategories(ContractorAudit conAudit, boolean reload) {
+		if (categories == null || reload) {
 			Set<AuditCategory> requiredCategories = null;
 			if (permissions.isOperatorCorporate()) {
 				AuditBuilder builder = new AuditBuilder();
@@ -522,5 +527,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public void setShowVerified(boolean showVerified) {
 		this.showVerified = showVerified;
+	}
+
+	public boolean matchesType(int categoryId, OshaType oa) {
+		if (OshaTypeConverter.getTypeFromCategory(categoryId) == null || oa == null)
+			return false;
+		if (oa == OshaTypeConverter.getTypeFromCategory(categoryId))
+			return true;
+		return false;
 	}
 }
