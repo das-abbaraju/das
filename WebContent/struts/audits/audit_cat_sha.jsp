@@ -2,7 +2,6 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 
-<h2>Category <s:property value="#category.number"/> - <s:property value="#category.name"/></h2>
 <s:if test="#category.helpText != null && #category.helpText.length() > 0">
 	<div class="alert"><s:property value="#category.helpText" escape="false"/></div>
 </s:if> 
