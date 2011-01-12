@@ -168,7 +168,9 @@
 					</li>
 				</div>
 			</pics:permission>
-			<li><a href="ReportNewProjects.action" class="add">Find New Projects</a></li>
+			<s:if test="employee.account.contractor">
+				<li><a href="ReportNewProjects.action" class="add">Find New Projects</a></li>
+			</s:if>
 		</ol>
 	</fieldset>
 </s:if>

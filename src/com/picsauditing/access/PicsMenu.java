@@ -218,13 +218,9 @@ public class PicsMenu {
 			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
 		}
 		
-		if (permissions.isOperatorCorporate()) {
-			if (permissions.hasPermission(OpPerms.DefineCompetencies))
-				subMenu.addChild("HSE Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
-			if (permissions.hasPermission(OpPerms.ManageEmployees))
-				subMenu.addChild("Employees", "ManageEmployees.action?id=" + permissions.getAccountId());
-		}
-
+		if (permissions.hasPermission(OpPerms.ManageEmployees))
+			subMenu.addChild("Employees", "ManageEmployees.action?id=" + permissions.getAccountId());
+		
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
 			subMenu.addChild("Forms &amp; Docs", "manage_forms.jsp");
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
@@ -359,6 +355,10 @@ public class PicsMenu {
 
 		if (permissions.isRequiresCompetencyReview()) {
 			subMenu = menu.addChild("HSE Competencies");
+			
+			if (permissions.hasPermission(OpPerms.DefineCompetencies))
+				subMenu.addChild("HSE Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
+			
 			subMenu.addChild("Competency by Account", "ReportCompetencyByAccount.action");
 			subMenu.addChild("Competency by Employee", "ReportCompetencyByEmployee.action");
 			subMenu.addChild("Employee Turnover", "ReportEmployeeTurnover.action");
