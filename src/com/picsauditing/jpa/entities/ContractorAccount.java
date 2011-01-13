@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -103,7 +104,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	// Transient helper methods
 	protected OshaOrganizer oshaOrganizer = null;
-	protected TreeMap<String, AuditData> emrs = null;
+	protected Map<String, AuditData> emrs = null;
 
 	// Agreement Changed on Release date 6/3/2010
 	public static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
@@ -582,8 +583,7 @@ public class ContractorAccount extends Account implements JSONable {
 		emrs = new TreeMap<String, AuditData>();
 		int number = 0;
 		List<ContractorAudit> sortedAudits = getSortedAudits();
-		Collections.reverse(sortedAudits);
-		for (ContractorAudit audit : getSortedAudits()) {
+		for (ContractorAudit audit : sortedAudits) {
 			if (number < 4) {
 				// Store the EMR rates into a map for later use
 				for (AuditData answer : audit.getData()) {
@@ -599,23 +599,17 @@ public class ContractorAccount extends Account implements JSONable {
 			}
 		}		
 
-		emrs = trimEMR(emrs);
+
+		if(emrs.size()==4)
+			emrs.remove(((TreeMap<String, AuditData>)emrs).lastKey());
+		else if(emrs.size()>4)
+			throw new RuntimeException("Found [" + emrs.size() + "] EMRs");
 
 		AuditData avg = AuditData.addAverageData(emrs.values());
 		if (avg != null && !Strings.isEmpty(avg.getAnswer()))
 			emrs.put(OshaAudit.AVG, avg);
 
 		return emrs;
-	}
-
-	private TreeMap<String, AuditData> trimEMR(TreeMap<String, AuditData> map) {
-		if(map.size()<4)
-			return map;
-		if(map.size()>4)
-			throw new RuntimeException("Found [" + map.size() + "] EMRs");
-		
-		map.remove(map.firstKey());
-		return map;
 	}
 
 	@Transient

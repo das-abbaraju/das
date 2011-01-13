@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -27,18 +28,18 @@ public class OshaOrganizer {
 		data.put(OshaType.COHS, new ArrayList<OshaAudit>());
 
 		for (ContractorAudit contractorAudit : audits) {
-			for (AuditData auditData : contractorAudit.getData()) {
-				if ((auditData.getQuestion().getId() == 2064 || auditData.getQuestion().getId() == 2065 || auditData
-						.getQuestion().getId() == 2066)) {
-					OshaType oshaType = getOshaType(auditData.getQuestion());
-					if ("Yes".equals(auditData.getAnswer())) {
-						for (OshaAudit osha : contractorAudit.getOshas()) {
-							if (osha.isCorporate() && osha.getType().equals(oshaType)) {
-								data.get(osha.getType()).add(osha);
+			if (contractorAudit.hasCaoStatus(AuditStatus.Complete)) {
+				for (AuditData auditData : contractorAudit.getData()) {
+					if (auditData.getQuestion().getId() == 2064 || auditData.getQuestion().getId() == 2065
+							|| auditData.getQuestion().getId() == 2066) {
+						OshaType oshaType = getOshaType(auditData.getQuestion());
+						if ("Yes".equals(auditData.getAnswer())) {
+							for (OshaAudit osha : contractorAudit.getOshas()) {
+								if (osha.isCorporate() && osha.getType().equals(oshaType)) {
+									data.get(osha.getType()).add(osha);
+								}
 							}
 						}
-					} else {
-						data.get(oshaType).add(null);
 					}
 				}
 			}
@@ -50,10 +51,8 @@ public class OshaOrganizer {
 	}
 
 	/**
-	 * If for a given OshaType, there are more than 3 valid year, then trim one
-	 * of the years. We always trim either the first year (2006) or the fourth
-	 * year (2009). We trim the fourth year ONLY if it's not verified but all
-	 * three previous years are.
+	 * If for a given OshaType, there are more than 3 valid year, then we
+	 * remove the last year in the list, as that will be the oldest year
 	 * 
 	 * @param type
 	 */
