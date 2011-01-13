@@ -35,6 +35,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	static public final int MANUAL_PQF = 1331;
 	static public final int OQ_EMPLOYEES = 894;
 	static public final int COR = 2954;
+	static public final int CITATIONS = 3546;
 
 	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest", "Check Box", "Country", "Date",
 			"Decimal Number", "File", "FileCertificate", "Industry", "License", "Main Work", "Money", "Number",
@@ -429,28 +430,28 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
 	}
-	
+
 	/**
-	 * 		Comparator for comparing AuditQuestions not based on
-	 * 		natural ordering.  Use compareTo if you want to order based 
-	 * 		on the AuditQuestion's number and direct Category (it's natural order)
-	 * @return
-	 * 		The comparator for full ordering of AuditQuestions
+	 * Comparator for comparing AuditQuestions not based on natural ordering.
+	 * Use compareTo if you want to order based on the AuditQuestion's number
+	 * and direct Category (it's natural order)
+	 * 
+	 * @return The comparator for full ordering of AuditQuestions
 	 */
-	public static Comparator<AuditQuestion> getComparator(){
+	public static Comparator<AuditQuestion> getComparator() {
 		return new Comparator<AuditQuestion>() {
 			@Override
 			public int compare(AuditQuestion o1, AuditQuestion o2) {
 				String[] o1a = o1.getExpandedNumber().split("\\.");
 				String[] o2a = o2.getExpandedNumber().split("\\.");
-				for(int i=0; i<o1a.length; i++){
-					if(i>=o2a.length)
+				for (int i = 0; i < o1a.length; i++) {
+					if (i >= o2a.length)
 						return -1;
-					if(o1a[i].equals(o2a[i]))
+					if (o1a[i].equals(o2a[i]))
 						continue;
 					else
 						return Integer.valueOf(o1a[i]).compareTo(Integer.valueOf(o2a[i]));
-				}				
+				}
 				return 0;
 			}
 		};
@@ -494,9 +495,8 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	}
 
 	/**
-	 * @return 
-	 * 		int showing the weight to adjust the score by for this question
-	 * 		when scoring an audit
+	 * @return int showing the weight to adjust the score by for this question
+	 *         when scoring an audit
 	 */
 	public int getScoreWeight() {
 		return scoreWeight;
@@ -505,22 +505,21 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	public void setScoreWeight(int scoreWeight) {
 		this.scoreWeight = scoreWeight;
 	}
-	
+
 	@Transient
 	public boolean isValidQuestion(Date validDate) {
-		if(isCurrent()) {
-			if (validDate.after(effectiveDate)
-					&& validDate.before(expirationDate))
+		if (isCurrent()) {
+			if (validDate.after(effectiveDate) && validDate.before(expirationDate))
 				return true;
 		}
 		return false;
 	}
-	
+
 	@Override
 	@Transient
-	public AuditQuestion clone(){
+	public AuditQuestion clone() {
 		AuditQuestion clone = new AuditQuestion();
-		
+
 		clone.category = this.getCategory();
 		clone.columnHeader = this.getColumnHeader();
 		clone.createdBy = this.getCreatedBy();
@@ -552,7 +551,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		clone.updatedBy = this.getUpdatedBy();
 		clone.visibleAnswer = this.getVisibleAnswer();
 		clone.visibleQuestion = this.getVisibleQuestion();
-		
+
 		return clone;
 	}
 }

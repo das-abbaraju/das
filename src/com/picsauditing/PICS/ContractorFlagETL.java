@@ -163,14 +163,14 @@ public class ContractorFlagETL {
 							}
 						}
 					}
-				} else if (flagCriteria.getQuestion().getId() == 3546) {
+				} else if (flagCriteria.getQuestion().getId() == AuditQuestion.CITATIONS) {
 					// Citations question
 					boolean found = false;
 					FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
 							flagCriteria, "");
 					for(ContractorAudit  annualupdates  : contractor.getSortedAudits()) {
 						for(AuditData data : annualupdates.getData()) {
-							if(data.getQuestion().getId() == 3546) {
+							if(data.getQuestion().getId() == AuditQuestion.CITATIONS) {
 								flagCriteriaContractor.setAnswer(parseAnswer(flagCriteria,data));
 								found = true;
 								break;
