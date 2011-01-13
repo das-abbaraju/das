@@ -168,7 +168,7 @@ public class ContractorFlagETL {
 					boolean found = false;
 					FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
 							flagCriteria, "");
-					for(ContractorAudit  annualupdates  : contractor.getSortedAudits()) {
+					for(ContractorAudit  annualupdates  : contractor.getSortedAnnualUpdates()) {
 						for(AuditData data : annualupdates.getData()) {
 							if(data.getQuestion().getId() == AuditQuestion.CITATIONS) {
 								flagCriteriaContractor.setAnswer(parseAnswer(flagCriteria,data));

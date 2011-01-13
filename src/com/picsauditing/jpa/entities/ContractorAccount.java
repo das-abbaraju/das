@@ -567,7 +567,7 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public OshaOrganizer getOshaOrganizer() {
 		if (oshaOrganizer == null) {
-			oshaOrganizer = new OshaOrganizer(getSortedAudits());
+			oshaOrganizer = new OshaOrganizer(getSortedAnnualUpdates());
 		}
 		return oshaOrganizer;
 	}
@@ -582,7 +582,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 		emrs = new TreeMap<String, AuditData>();
 		int number = 0;
-		List<ContractorAudit> sortedAudits = getSortedAudits();
+		List<ContractorAudit> sortedAudits = getSortedAnnualUpdates();
 		for (ContractorAudit audit : sortedAudits) {
 			if (number < 4) {
 				// Store the EMR rates into a map for later use
@@ -613,7 +613,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
-	public List<ContractorAudit> getSortedAudits() {
+	public List<ContractorAudit> getSortedAnnualUpdates() {
 		List<ContractorAudit> annualAList = new ArrayList<ContractorAudit>();
 		for (ContractorAudit contractorAudit : getAudits()) {
 			if (contractorAudit.getAuditType().isAnnualAddendum() && contractorAudit.getExpiresDate() != null
