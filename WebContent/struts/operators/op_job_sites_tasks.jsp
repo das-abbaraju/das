@@ -50,7 +50,11 @@
 				<tr>
 					<td><s:property value="#stat.count" /></td>
 					<td><s:property value="getCompanyLink(#a)" escape="false" /></td>
-					<td class="right"><s:property value="siteCompanies.get(#a).size" /></td>
+					<td class="right">
+						<a href="ReportOQEmployees.action?filter.accountName=<s:property value="#a.id" />&filter.projects=<s:property value="siteID" />">
+							<s:property value="siteCompanies.get(#a).size" />
+						</a>
+					</td>
 				</tr>
 			</s:iterator>
 		</tbody>
