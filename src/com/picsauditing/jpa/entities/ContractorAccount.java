@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,6 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
-import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 @Entity
@@ -178,12 +178,12 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setCertificates(List<Certificate> certificates) {
 		this.certificates = certificates;
 	}
-	
+
 	@OneToMany(mappedBy = "contractor")
 	public List<JobContractor> getJobSites() {
 		return jobSites;
 	}
-	
+
 	public void setJobSites(List<JobContractor> jobSites) {
 		this.jobSites = jobSites;
 	}
@@ -591,18 +591,17 @@ public class ContractorAccount extends Account implements JSONable {
 							|| (answer.getQuestion().getId() == 2033 && "No".equals(answer.getAnswer()))) {
 						if (!Strings.isEmpty(answer.getAnswer())) {
 							number++;
-							if(answer.getQuestion().getId() != 2033 && answer.isVerified())
+							if (answer.getQuestion().getId() != 2033 && answer.isVerified())
 								emrs.put(audit.getAuditFor(), answer);
 						}
 					}
 				}
 			}
-		}		
+		}
 
-
-		if(emrs.size()==4)
-			emrs.remove(((TreeMap<String, AuditData>)emrs).lastKey());
-		else if(emrs.size()>4)
+		if (emrs.size() == 4)
+			emrs.remove(((TreeMap<String, AuditData>) emrs).lastKey());
+		else if (emrs.size() > 4)
 			throw new RuntimeException("Found [" + emrs.size() + "] EMRs");
 
 		AuditData avg = AuditData.addAverageData(emrs.values());
@@ -610,6 +609,23 @@ public class ContractorAccount extends Account implements JSONable {
 			emrs.put(OshaAudit.AVG, avg);
 
 		return emrs;
+	}
+
+	@Transient
+	public Map<MultiYearScope, ContractorAudit> getCompleteAnnualUpdates() {
+		Map<MultiYearScope, ContractorAudit> completeAnnualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();
+		completeAnnualUpdates.put(MultiYearScope.LastYearOnly, null);
+		completeAnnualUpdates.put(MultiYearScope.TwoYearsAgo, null);
+		completeAnnualUpdates.put(MultiYearScope.ThreeYearsAgo, null);
+
+		Iterator<MultiYearScope> scopeIter = completeAnnualUpdates.keySet().iterator();
+
+		for (ContractorAudit annualUpdate : getSortedAnnualUpdates()) {
+			if (scopeIter.hasNext() && annualUpdate.hasCaoStatus(AuditStatus.Complete))
+				completeAnnualUpdates.put(scopeIter.next(), annualUpdate);
+		}
+
+		return completeAnnualUpdates;
 	}
 
 	@Transient

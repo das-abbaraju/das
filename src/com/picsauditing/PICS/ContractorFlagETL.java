@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
+import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -48,7 +49,7 @@ public class ContractorFlagETL {
 				if (type != null && !type.isAnnualAddendum()) {
 					PicsLogger.log("Found question for evaluation: " + fc.getQuestion());
 					criteriaQuestionSet.add(fc.getQuestion().getId());
-				} 
+				}
 			}
 		}
 	}
@@ -165,20 +166,20 @@ public class ContractorFlagETL {
 					}
 				} else if (flagCriteria.getQuestion().getId() == AuditQuestion.CITATIONS) {
 					// Citations question
-					boolean found = false;
 					FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
 							flagCriteria, "");
-					for(ContractorAudit  annualupdates  : contractor.getSortedAnnualUpdates()) {
-						for(AuditData data : annualupdates.getData()) {
-							if(data.getQuestion().getId() == AuditQuestion.CITATIONS) {
-								flagCriteriaContractor.setAnswer(parseAnswer(flagCriteria,data));
-								found = true;
+
+					ContractorAudit annualUpdate = contractor.getCompleteAnnualUpdates().get(
+							flagCriteria.getMultiYearScope());
+
+					if (annualUpdate != null) {
+						for (AuditData data : annualUpdate.getData()) {
+							if (data.getQuestion().getId() == AuditQuestion.CITATIONS) {
+								flagCriteriaContractor.setAnswer(parseAnswer(flagCriteria, data));
+								flagCriteriaContractor.setAnswer2("for Year: " + annualUpdate.getAuditFor());
+								changes.add(flagCriteriaContractor);
 								break;
 							}
-						}
-						if(found) {
-							changes.add(flagCriteriaContractor);
-							break;
 						}
 					}
 				} else {
@@ -219,8 +220,8 @@ public class ContractorFlagETL {
 			// Checking OSHA
 			if (flagCriteria.getOshaType() != null) {
 				OshaOrganizer osha = contractor.getOshaOrganizer();
-				Float answer = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(), flagCriteria
-						.getOshaRateType());
+				Float answer = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
+						flagCriteria.getOshaRateType());
 				PicsLogger.log("Answer = " + answer);
 
 				if (answer != null) {
