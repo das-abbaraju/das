@@ -1,13 +1,9 @@
 package com.picsauditing.PICS;
 
-import junit.framework.TestCase;
+public class PrimeNumberTest {
 
-import org.junit.Test;
+	public static void main(String args[]) {
 
-public class PrimeNumberTest extends TestCase {
-
-	@Test
-	public void testPrimeNumber() {
-		
 	}
+
 }
