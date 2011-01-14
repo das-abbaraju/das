@@ -591,7 +591,7 @@ public class ContractorAccount extends Account implements JSONable {
 							|| (answer.getQuestion().getId() == 2033 && "No".equals(answer.getAnswer()))) {
 						if (!Strings.isEmpty(answer.getAnswer())) {
 							number++;
-							if (answer.getQuestion().getId() != 2033 && answer.isVerified())
+							if (answer.getQuestion().getId() != 2033)
 								emrs.put(audit.getAuditFor(), answer);
 						}
 					}
