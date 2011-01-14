@@ -20,11 +20,8 @@ public class FieldHelp extends TagSupport {
 	@Override
 	public int doStartTag() throws JspException {
 		try {
-			String html = "<div class=\"fieldhelp\">";
-			if (title != null)
-				html += "<h3>" + title + "</h3>";
-
-			pageContext.getOut().print(html);
+			pageContext.getOut().print(
+					"<div class=\"fieldhelp\"><h3>" + ((title == null) ? "Field Help" : title) + "</h3>");
 		} catch (Exception e) {
 			throw new JspTagException("FieldHelp: " + e.getMessage());
 		}

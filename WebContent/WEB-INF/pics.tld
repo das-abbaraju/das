@@ -72,7 +72,7 @@
 		<tag-class>com.picsauditing.tags.FieldHelp</tag-class>
 		<attribute>
 			<name>title</name>
-			<description>The destination help page such as Logging_In</description>
+			<description>The field that this help text relates to. Defaults to "Field Help"</description>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
