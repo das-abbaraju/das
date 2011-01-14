@@ -106,7 +106,7 @@ $(function(){
 
 <s:if test="id != 0">
 	<div>
-		<h3>Subcategories</h3>
+		<h3>Child Categories</h3>
 		<ul class="list" id="list" title="Drag and drop to change order">
 			<s:iterator value="category.subCategories">
 				<li id="item_<s:property value="id"/>" title="Drag and drop to change order">
@@ -127,11 +127,9 @@ $(function(){
 	<div>
 		<h3>Questions</h3>
 		<ul class="list" id="listQ" title="Drag and drop to change order">
-		<s:iterator value="category.questions" id="aq">
-			<s:if test="#aq.current">
-			    <li id="item_<s:property value="id"/>"><s:property value="number"/>.
-			    <a href="ManageQuestion.action?id=<s:property value="id"/>"><s:if test="name != null"><s:property value="name.length()>100 ? name.substring(0,97) + '...' : name"/></s:if><s:else>Question has no text</s:else></a></li>
-		    </s:if>
+		<s:iterator value="category.questions">
+		    <li id="item_<s:property value="id"/>" <s:if test="!current">style="font-style: italic"</s:if>><s:property value="number"/>.
+		    <a href="ManageQuestion.action?id=<s:property value="id"/>"><s:if test="name != null"><s:property value="name.length()>100 ? name.substring(0,97) + '...' : name"/></s:if><s:else>EMPTY</s:else></a></li>
 		</s:iterator>
 		</ul>
 		
