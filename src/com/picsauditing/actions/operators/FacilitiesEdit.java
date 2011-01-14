@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import org.apache.commons.beanutils.BasicDynaBean;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.NoRightsException;
@@ -257,9 +259,11 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 			}
 		}
 
-		if (id == 0)
+		if (id == 0) {
 			subHeading = "Add " + type;
-		else {
+			operator = new OperatorAccount();
+			operator.setCountry(new Country("US"));
+		} else {
 			if (operator.getPrimaryContact() == null)
 				addActionError("Please add a primary contact to this account");
 		}
@@ -279,8 +283,8 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		return Industry.values();
 	}
 
-	public List<OperatorAccount> getOperatorList() throws Exception {
-		return operatorDao.findWhere(false, "status IN ('Active','Demo','Pending')");
+	public List<BasicDynaBean> getOperatorList() throws Exception {
+		return operatorDao.findWhereNatively(false, "status IN ('Active','Demo','Pending')");
 	}
 
 	public List<User> getUserList() throws Exception {
@@ -448,27 +452,28 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		this.contactID = contactID;
 	}
 	
-	public Map<UserAccountRole, List<String>> getAccountManagers() {
-		List<AccountUser> aus = operator.getAccountUsers();
-		List<String> ams = new ArrayList<String>();
-		List<String> srs = new ArrayList<String>();
+	public List<AccountUser> getAccountManagers() {
+		List<AccountUser> list = new ArrayList<AccountUser>();
 		
-		for (AccountUser au : aus) {
-			if (au.isCurrent()) {
-				if (au.getRole().equals(UserAccountRole.PICSAccountRep))
-					ams.add(au.getUser().getName());
-				else
-					srs.add(au.getUser().getName());
+		for (AccountUser au : operator.getAccountUsers()) {
+			if (au.isCurrent() && au.getRole().isAccountManager()) {
+				list.add(au);
 			}
 		}
 		
-		Map<UserAccountRole, List<String>> managers = new HashMap<UserAccountRole, List<String>>();
-		if (ams.size() > 0)
-			managers.put(UserAccountRole.PICSAccountRep, ams);
-		if (srs.size() > 0)
-			managers.put(UserAccountRole.PICSSalesRep, srs);
+		return list;
+	}
+	
+	public List<AccountUser> getSalesReps() {
+		List<AccountUser> list = new ArrayList<AccountUser>();
 		
-		return managers;
+		for (AccountUser au : operator.getAccountUsers()) {
+			if (au.isCurrent() && au.getRole().isSalesRep()) {
+				list.add(au);
+			}
+		}
+		
+		return list;
 	}
 	
 	public Map<UserAccountRole, List<AccountUser>> getPreviousManagers() {

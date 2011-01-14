@@ -33,7 +33,7 @@ $(function() {
 </head>
 <body>
 
-<s:if test="operator == null">
+<s:if test="operator.getId() == 0">
 	<h1>Create New <s:property value="type" /> Account</h1>
 </s:if>
 <s:else>
@@ -61,10 +61,91 @@ $(function() {
 	<s:hidden name="id" />
 	<s:hidden name="type" />
 	<fieldset class="form">
-	<h2 class="formLegend">Details</h2>
+	<h2 class="formLegend">Account Summary</h2>
 	<ol>
-		<li><label>Name:</label> <s:textfield name="operator.name"
-			size="35" /></li>
+		<li>
+			<label>Short Name:</label> <s:textfield name="operator.name" maxlength="50" />
+			<pics:fieldhelp>
+				This is the name of the operator as will be displayed on reports, graphs, and titles. The max size is 50 characters.
+			</pics:fieldhelp>
+		</li>
+		<li>
+			<label>Full Name:</label> <s:textfield name="operator.dbaName" />
+			<pics:fieldhelp title="Full Name">
+				<p>This is the full name of the operator that may include other details such as short comments or cities. There is no limit to this field.</p>
+				<p>If the application displays the full name and no full name is available, the short name above will be used.</p>
+			</pics:fieldhelp>
+		</li>
+		<li><label>Status:</label>
+			<s:select list="statusList" name="operator.status" /></li>
+		<s:if test="operator.status.deactivated || operator.status.deleted">
+			<li><label>Reason:</label> <s:textarea name="operator.reason"
+				rows="3" /></li>
+		</s:if>
+		<s:if test="operator.operator">
+			<li><label>Account Manager:</label>
+				<s:iterator value="accountManagers" id="au">
+					<s:property value="#au.user.name"/>
+				</s:iterator>
+			</li>
+			<li><label>Sales Rep:</label>
+				<s:iterator value="salesReps" id="au">
+					<s:property value="#au.user.name"/>
+				</s:iterator>
+			</li>
+		</s:if>
+	</ol>
+	</fieldset>
+	<s:if test="id > 0">
+		<fieldset class="form">
+		<h2 class="formLegend">Linked Accounts</h2>
+		<ol>
+			<s:if test="operator.corporate">
+				<li><label>Primary Corporate:</label>
+					<s:checkbox name="operator.primaryCorporate" />
+					<pics:fieldhelp>
+						Check this box if this corporate account is the top global account for all operators associated with this company.
+						Do NOT check this if this account represents a division, hub, or business unit.
+					</pics:fieldhelp>
+				</li>
+				<li><label>Child Operators:</label> <s:select list="operatorList"
+					listValue="get('name')" listKey="get('id')" name="facilities" multiple="7"
+					size="15" /></li>
+			</s:if>
+			<s:if test="operator.operator">
+				<s:if test="operator.corporateFacilities.size() > 0">
+					<li><label>Parent Corporation / Division / Hub:</label> <s:select
+						name="foreignKeys.parent" list="operator.corporateFacilities"
+						listKey="corporate.id" listValue="corporate.name" headerKey="0"
+						headerValue=" - Select a Parent Facility - "
+						value="operator.parent.id" /> <a
+						href="?id=<s:property value="operator.parent.id"/>">Go</a></li>
+				</s:if>
+				<li><label>Flag Criteria:</label> <s:select
+					name="foreignKeys.inheritFlagCriteria"
+					value="operator.inheritFlagCriteria.id" list="relatedFacilities"
+					listKey="id" listValue="name"></s:select> <a
+					href="?id=<s:property value="operator.inheritFlagCriteria.id"/>">Go</a></li>
+				<li><label>Insurance Criteria:</label> <s:select
+					name="foreignKeys.inheritInsuranceCriteria"
+					value="operator.inheritInsuranceCriteria.id"
+					list="relatedFacilities" listKey="id" listValue="name"></s:select>
+				<a
+					href="?id=<s:property value="operator.inheritInsuranceCriteria.id"/>">Go</a></li>
+			</s:if>
+			<s:if test="operator.corporateFacilities.size() > 0">
+				<li><label>Corporate Facilities:</label>
+					<s:iterator value="operator.corporateFacilities" id="facility">
+						| <a href="FacilitiesEdit.action?id=<s:property value="#facility.corporate.id"/>"><s:property value="#facility.corporate.name"/></a>
+					</s:iterator> |
+				</li>
+			</s:if>
+		</ol>
+		</fieldset>
+	</s:if>
+	<fieldset class="form">
+	<h2 class="formLegend">Primary Address</h2>
+	<ol>
 		<s:if test="id > 0"><li><label>Primary Contact:</label> <s:select
 			list="primaryOperatorContactUsers"
 			name="contactID"
@@ -81,19 +162,6 @@ $(function() {
 			</s:else>
 		</li>
 		</s:if>
-		<li><label>Industry:</label> <s:select list="industryList"
-			name="operator.industry" listValue="description" /></li>
-		<s:if test="permissions.admin && !permissions.hasPermission('UserRolePicsOperator')">
-			<s:iterator value="accountManagers.keySet()" id="key">
-				<li><label><s:property value="#key.description" /><s:if test="accountManagers.get(#key).size() > 1">s</s:if>:</label>
-					<s:property value="@com.picsauditing.util.Strings@implode(accountManagers.get(#key), ', ')" /></li>
-			</s:iterator>
-		</s:if>
-	</ol>
-	</fieldset>
-	<fieldset class="form">
-	<h2 class="formLegend">Primary Address</h2>
-	<ol>
 		<li><label>Address:</label>
 			<s:textfield name="operator.address" size="35" /><br />
 			<s:textfield name="operator.address2" size="35" />
@@ -132,29 +200,21 @@ $(function() {
 	<fieldset class="form">
 	<h2 class="formLegend">Company Identification</h2>
 	<ol>
+		<li><label>Industry:</label> <s:select list="industryList"
+			name="operator.industry" listValue="description" /></li>
 		<li><label>Description:</label> <s:textarea
 			name="operator.description" cols="40" rows="15" /></li>
 	</ol>
 	</fieldset>
 	<s:if test="permissions.admin">
 		<fieldset class="form">
-		<h2 class="formLegend">Admin Fields</h2>
+		<h2 class="formLegend">Configuration</h2>
 		<ol>
-			<li><label>Status:</label> 
-				<s:select list="statusList" name="operator.status" /></li>
-			<li><label>Reason:</label> <s:textarea name="operator.reason"
-				rows="3" cols="25" /></li>
-			<li><label>Required Tags:</label> <s:textfield
-				name="operator.requiredTags" />
-				<div class="fieldhelp">
-					<h3>Required Tags</h3>
-					<p>Example: 1,2,3|4,5 <a href="OperatorTags.action?id=<s:property value="id" />" target="_BLANK">Tags</a></p>
-				</div>
+			<li><label>Required Tags:</label> <s:textfield name="operator.requiredTags" />
+				<pics:fieldhelp title="Required Tags">
+				<p>Example: 1,2,3|4,5 <a href="OperatorTags.action?id=<s:property value="id" />" target="_BLANK">Tags</a></p>
+				</pics:fieldhelp>
 			</li>
-			<s:if test="operator.corporate">
-				<li><label>Primary Corporate:</label> <s:checkbox
-					name="operator.primaryCorporate"></s:checkbox></li>
-			</s:if>
 			<li><label>Approves Contractors:</label> <s:radio
 				list="#{'Yes':'Yes','No':'No'}"
 				name="operator.approvesRelationships" theme="pics" /></li>
@@ -173,71 +233,30 @@ $(function() {
 			<li><label>InsureGUARD&trade;:</label> <s:radio
 				list="#{'Yes':'Yes','No':'No'}" name="operator.canSeeInsurance"
 				theme="pics" /></li>
-			<li><label>Auto Approve/Reject Policies:</label> <s:checkbox
+			<li><label>Auto Approve / Auto Reject Policies:</label> <s:checkbox
 				name="operator.autoApproveInsurance" /></li>
 			<li><label>Contractors pay:</label> <s:radio
 				list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"
 				name="operator.doContractorsPay" theme="pics" /></li>
-			<li><label>Requires OQ:</label> <s:checkbox
+			<li><label>Uses Operator Qualification (OQ):</label> <s:checkbox
 				name="operator.requiresOQ" /></li>
-			<li><label>Requires Competency Review:</label> <s:checkbox
+			<li><label>Uses HSE Competency Review:</label> <s:checkbox
 				name="operator.requiresCompetencyReview" /></li>
-			<s:if test="type == 'Operator' || operator.operator">
-				<li><label>Uses Onsite Service Contractors:</label>
-					<s:checkbox name="operator.onsiteServices" /></li>
-				<li><label>Uses Offsite Service Contractors:</label>
-					<s:checkbox name="operator.offsiteServices" /></li>
-				<li><label>Uses Material Suppliers:</label>
-					<s:checkbox name="operator.materialSupplier" /></li>
-			</s:if>
-			<pics:permission perm="UserRolePicsOperator">
-				<li id="act_li"><label>Activation Fee:</label>
-					<s:textfield name="operator.activationFee" size="7" />
-				</li>
-			</pics:permission>
-		</ol>
-		</fieldset>
-		<fieldset class="form">
-		<h2 class="formLegend">Linked Accounts</h2>
-		<ol>
-			<s:if test="operator.corporate">
-				<li><label>Facilities:</label> <s:select list="operatorList"
-					listValue="name" listKey="id" name="facilities" multiple="7"
-					size="15" /></li>
-			</s:if>
-			<s:if test="operator.operator">
-				<s:if test="operator.corporateFacilities.size() > 0">
-					<li><label>Parent Corporation / Division / Hub:</label> <s:select
-						name="foreignKeys.parent" list="operator.corporateFacilities"
-						listKey="corporate.id" listValue="corporate.name" headerKey="0"
-						headerValue=" - Select a Parent Facility - "
-						value="operator.parent.id" /> <a
-						href="?id=<s:property value="operator.parent.id"/>">Go</a></li>
-				</s:if>
-				<li><label>Flag Criteria:</label> <s:select
-					name="foreignKeys.inheritFlagCriteria"
-					value="operator.inheritFlagCriteria.id" list="relatedFacilities"
-					listKey="id" listValue="name"></s:select> <a
-					href="?id=<s:property value="operator.inheritFlagCriteria.id"/>">Go</a></li>
-				<li><label>Insurance Criteria:</label> <s:select
-					name="foreignKeys.inheritInsuranceCriteria"
-					value="operator.inheritInsuranceCriteria.id"
-					list="relatedFacilities" listKey="id" listValue="name"></s:select>
-				<a
-					href="?id=<s:property value="operator.inheritInsuranceCriteria.id"/>">Go</a></li>
-			</s:if>
-			<s:if test="operator.corporateFacilities.size() > 0">
-				<li><label>Corporate Facilities:</label>
-					<ol>
-					<s:iterator value="operator.corporateFacilities" id="facility">
-						<li style="padding: 0 4px;"><a href="FacilitiesEdit.action?id=<s:property value="#facility.corporate.id"/>"><s:property value="#facility.corporate.name"/></a></li>
-					</s:iterator>
-					</ol>
-				</li>
-			</s:if>
+			<li id="act_li"><label>Contractor Activation Fee:</label>
+				<pics:permission perm="UserRolePicsOperator">
+					<s:textfield name="operator.activationFee" />
+				</pics:permission>
+				<pics:permission perm="UserRolePicsOperator" negativeCheck="true">
+					<s:property value="operator.activationFee" />
+				</pics:permission>
+				<pics:fieldhelp title="Contractor Activation Fee">
+					<p>The default Activation Fee that contractors are charged when selecting this operator as their primary requesting account. Leave blank to use the default (currently $199).</p>
+				</pics:fieldhelp>
+			</li>
 		</ol>
 		</fieldset>
 		<s:if test="operator.id > 0">
+		
 			<pics:permission perm="UserRolePicsOperator" type="Edit">
 				<fieldset class="form">
 				<h2 class="formLegend">Manage Representatives</h2>

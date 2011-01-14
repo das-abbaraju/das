@@ -22,4 +22,12 @@ public enum UserAccountRole {
 		}
 		return "";
 	}
+	
+	public boolean isAccountManager() {
+		return this == PICSAccountRep;
+	}
+	
+	public boolean isSalesRep() {
+		return this == PICSSalesRep;
+	}
 }
