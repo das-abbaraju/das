@@ -68,7 +68,12 @@ public class PermissionQueryBuilder {
 
 			if (workingFacilities) {
 				if (permissions.isApprovesRelationships() && !permissions.hasPermission(OpPerms.ViewUnApproved)) {
-						subquery += " AND workStatus = 'Y'";
+					if (queryLanguage == HQL)
+						subquery += " AND co.operatorAccount IN "
+								+ "(SELECT f.operator FROM Facility f WHERE f.corporate.id = "
+								+ permissions.getAccountId() + ")" + " AND workStatus = 'Y'";
+					else
+						subquery += " JOIN operators o ON f.opID = o.id WHERE o.approvesRelationships = 'No' OR workStatus = 'Y'";
 				}
 			}
 		}
