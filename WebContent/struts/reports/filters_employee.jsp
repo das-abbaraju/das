@@ -60,7 +60,7 @@
 			<br />
 			<span id="form1_projects_select" style="display: none" class="clearLink">
 				<s:select list="filter.projectList" multiple="true" cssClass="forms"
-					name="filter.projects" id="form1_projects" listKey="id" listValue="label" />
+					name="filter.projects" id="form1_projects" listKey="id" listValue="%{operator.name + ': ' + name}" />
 				<br />
 				<script type="text/javascript">updateQuery('form1_projects');</script>
 				<a class="clearLink" href="#" onclick="clearSelected('form1_projects'); return false;">Clear</a>

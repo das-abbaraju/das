@@ -35,16 +35,35 @@ public class JobSiteDAO extends PicsDAO {
 	}
 
 	public List<JobSite> findByOperator(int opID) {
-		Query query = em.createQuery("SELECT j FROM JobSite j WHERE opID = ? ORDER BY name");
-		query.setParameter(1, opID);
+		return findByOperator(opID, false);
+	}
+
+	public List<JobSite> findByOperator(int opID, boolean notExpired) {
+		Query query = em.createQuery("SELECT j FROM JobSite j WHERE opID = :opID "
+				+ (notExpired ? "AND (j.projectStart IS NULL or j.projectStart < :date) "
+						+ "AND (j.projectStop IS NULL OR j.projectStop > :date) " : "") + "ORDER BY name");
+		query.setParameter("opID", opID);
+
+		if (notExpired)
+			query.setParameter("date", new Date());
 
 		return query.getResultList();
 	}
 
 	public List<JobSite> findByContractor(int conID) {
-		Query query = em
-				.createQuery("SELECT jobSite FROM EmployeeSite es WHERE es.employee.account.id = ? ORDER BY name");
-		query.setParameter(1, conID);
+		return findByContractor(conID, false);
+	}
+
+	public List<JobSite> findByContractor(int conID, boolean notExpired) {
+		Query query = em.createQuery("SELECT DISTINCT es.jobSite FROM EmployeeSite es "
+				+ "WHERE es.employee.account.id = :conID "
+				+ (notExpired ? "AND (es.jobSite.projectStart IS NULL OR es.jobSite.projectStart < :date) "
+						+ "AND (es.jobSite.projectStop IS NULL OR es.jobSite.projectStop > :date) " : "")
+				+ "ORDER BY name");
+		query.setParameter("conID", conID);
+
+		if (notExpired)
+			query.setParameter("date", new Date());
 
 		return query.getResultList();
 	}
@@ -72,7 +91,7 @@ public class JobSiteDAO extends PicsDAO {
 				+ "WHERE j NOT IN (SELECT jc.job FROM JobContractor jc WHERE jc.contractor.id = ?) "
 				+ "ORDER BY j.projectStart DESC");
 		query.setParameter(1, conID);
-		
+
 		return query.getResultList();
 	}
 }

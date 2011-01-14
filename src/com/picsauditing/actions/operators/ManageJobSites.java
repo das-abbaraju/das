@@ -3,9 +3,9 @@ package com.picsauditing.actions.operators;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
@@ -94,7 +94,7 @@ public class ManageJobSites extends OperatorActionSupport {
 				if (siteID > 0) {
 					List<EmployeeSite> esites = employeeSiteDAO.findWhere("e.jobSite.operator.id = " + operator.getId()
 							+ " AND e.jobSite.id = " + siteID);
-					siteCompanies = new HashMap<Account, List<Employee>>();
+					siteCompanies = new TreeMap<Account, List<Employee>>();
 
 					for (EmployeeSite es : esites) {
 						if (es.isCurrent() && es.getJobSite().isActive(new Date())) {
@@ -105,7 +105,7 @@ public class ManageJobSites extends OperatorActionSupport {
 							siteCompanies.get(a).add(es.getEmployee());
 						}
 					}
-
+					
 					return SUCCESS;
 				} else
 					addActionError("Missing project");
@@ -417,7 +417,8 @@ public class ManageJobSites extends OperatorActionSupport {
 				if (!site.isActive(date)) {
 					if (site.getProjectStart() != null && site.getProjectStart().before(date))
 						inactiveSites.add(site);
-					else if (site.getProjectStart() == null && site.getProjectStop().equals(date))
+					else if (site.getProjectStart() == null && site.getProjectStop() != null
+							&& site.getProjectStop().equals(date))
 						inactiveSites.add(site);
 				}
 			}
@@ -485,13 +486,14 @@ public class ManageJobSites extends OperatorActionSupport {
 
 		return null;
 	}
-	
+
 	public String getCompanyLink(Account a) {
 		if (a.isContractor() && permissions.hasPermission(OpPerms.ContractorDetails))
 			return "<a href=\"ContractorDashboard.action?id=" + a.getId() + "\">" + a.getName() + "</a>";
-		if (a.isOperator() && (permissions.hasPermission(OpPerms.ManageOperators) || permissions.getAccountId() == a.getId()))
+		if (a.isOperator()
+				&& (permissions.hasPermission(OpPerms.ManageOperators) || permissions.getAccountId() == a.getId()))
 			return "<a href=\"FacilitiesEdit.action?id=" + a.getId() + "\">" + a.getName() + "</a>";
-		
+
 		return a.getName();
 	}
 }

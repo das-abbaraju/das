@@ -15,7 +15,7 @@
 		<tr>
 			<th></th>
 			<th><a href="javascript: changeOrderBy('a.name,e.lastName,e.firstName');">Company</a></th>
-			<th colspan="2"><a href="javascript: changeOrderBy('e.lastName,e.firstName,a.name');">Employee</a></th>
+			<th><a href="javascript: changeOrderBy('e.lastName,e.firstName,a.name');">Employee</a></th>
 			<th><a href="javascript: changeOrderBy('centerName,test');">Assessment Center</a></th>
 			<th><a href="javascript: changeOrderBy('test,a.name,e.lastName,e.firstName');">Assessment Test</a></th>
 			<th>In Effect</th>
@@ -25,9 +25,15 @@
 		<s:iterator value="data" status="stat">
 			<tr>
 				<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-				<td><s:property value="get('name')" /></td>
-				<td><s:property value="get('lastName')" /></td>
-				<td><s:property value="get('firstName')" /></td>
+				<td>
+					<s:if test="get('accountType') == 'Contractor'">
+						<a href="ContractorView.action?id=<s:property value="get('accountID')" />"><s:property value="get('name')" /></a>
+					</s:if>
+					<s:else>
+						<s:property value="get('name')" />
+					</s:else>
+				</td>
+				<td><a href="EmployeeDetail.action?employee.id=<s:property value="get('employeeID')" />"><s:property value="get('lastName')" />, <s:property value="get('firstName')" /></a></td>
 				<td><s:property value="get('centerName')" /></td>
 				<td><s:property value="get('test')" /></td>
 				<td class="center"><s:property value="get('inEffect')" /></td>

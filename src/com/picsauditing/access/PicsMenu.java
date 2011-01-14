@@ -73,7 +73,7 @@ public class PicsMenu {
 						subMenu = menu.addChild("Operator Qualification");
 						subMenu.addChild("OQ by Employee", "ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
 						subMenu.addChild("Recent OQ Changes", "ReportOQChanges.action");
-						subMenu.addChild("Find New Projects", "ReportNewProjects.action");
+						subMenu.addChild("Manage/Find New Projects", "ReportNewProjects.action");
 					}
 				}
 
@@ -367,12 +367,12 @@ public class PicsMenu {
 		if (permissions.isRequiresOQ()) {
 			subMenu = menu.addChild("Operator Qualification");
 			
-			if (permissions.hasPermission(OpPerms.ManageProjects))
-				subMenu.addChild("Projects", "ManageProjects.action?id=" + permissions.getAccountId());
 			if (permissions.hasPermission(OpPerms.ManageJobTasks))
 				subMenu.addChild("Job Tasks", "ManageJobTasksOperator.action?id=" + permissions.getAccountId());
+			if (permissions.hasPermission(OpPerms.ManageProjects))
+				subMenu.addChild("Projects", "ManageProjects.action?id=" + permissions.getAccountId());
 			
-			subMenu.addChild("OQ by Contractor/Site", "ReportOQ.action");
+			subMenu.addChild("OQ by Company/Site", "ReportOQ.action");
 			subMenu.addChild("OQ by Employee", "ReportOQEmployees.action");
 		}
 		

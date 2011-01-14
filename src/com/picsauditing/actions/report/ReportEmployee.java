@@ -1,7 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.io.IOException;
-
 import javax.servlet.ServletOutputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -96,18 +94,17 @@ public class ReportEmployee extends ReportActionSupport {
 		return filter;
 	}
 	
-	protected String getDownload() throws IOException {
+	protected String getDownload() throws Exception {
 		addExcelColumns();
-		HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
-
+		
 		if (Strings.isEmpty(filename)) {
 			String className = this.getClass().getName();
 			filename = className.substring(className.lastIndexOf("."));
 		}
 		
-		excelSheet.setName(filename);
-		filename += ".xls";
+		HSSFWorkbook wb = buildWorkbook(filename);
 
+		filename += ".xls";
 		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
 		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
 		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
@@ -115,5 +112,10 @@ public class ReportEmployee extends ReportActionSupport {
 		outstream.flush();
 		ServletActionContext.getResponse().flushBuffer();
 		return null;
+	}
+	
+	protected HSSFWorkbook buildWorkbook(String filename) throws Exception {
+		excelSheet.setName(filename);
+		return excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
 	}
 }

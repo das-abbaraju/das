@@ -28,7 +28,7 @@ $(function() {
 	$('.datepicker').datepicker({
 			changeMonth: true,
 			changeYear:true,
-			yearRange: '1940:2010',
+			yearRange: '1940:2039',
 			showOn: 'button',
 			buttonImage: 'images/icon_calendar.gif',
 			buttonImageOnly: true,
@@ -138,19 +138,18 @@ $(function() {
 		            null,
 		            null,
 		            null,
-		            null,
 		            null
 				],
 			aaSorting: [[1, 'asc']],
 			bJQueryUi: true,
 			bStateSave: true,
+			bLengthChange: false,
 			oLanguage: {
 				sSearch:"Search",
 				sLengthMenu: '_MENU_', 
 				sInfo:"_START_ to _END_ of _TOTAL_",
 				sInfoEmpty:"",
 				sInfoFiltered:"(filtered from _MAX_)" },
-			iDisplayLength: 25,
 			fnRowCallback: function( nRow, aData, iDisplayIndex ) {
 				if (aData[0] == employeeID)
 					$(nRow).not('.highlight').addClass('highlight');
@@ -191,7 +190,7 @@ div.dataTables_length { width: 35%; }
 
 	<a href="?id=<s:property value="account.id"/>&button=Add" class="add">Add New Employee</a>
 
-	<table style="margin-top: 20px;">
+	<table>
 		<tr>
 			<s:if test="account.employees.size() > 0">
 				<td style="vertical-align:top; width: 25%;">
@@ -203,7 +202,6 @@ div.dataTables_length { width: 35%; }
 								<th>First Name</th>
 								<th>Title</th>
 								<th>Classification</th>
-								<th>Edit</th>
 								<th>Profile</th>
 							</tr>
 						</thead>
@@ -211,11 +209,10 @@ div.dataTables_length { width: 35%; }
 							<s:iterator value="account.employees" id="e">
 								<tr>
 									<td><s:property value="#e.id"/></td>
-									<td><s:property value="#e.lastName"/></td>
-									<td><s:property value="#e.firstName"/></td>
+									<td><a href="?employee.id=<s:property value="#e.id" />"><s:property value="#e.lastName"/></a></td>
+									<td><a href="?employee.id=<s:property value="#e.id" />"><s:property value="#e.firstName"/></a></td>
 									<td><s:property value="#e.title"/></td>
 									<td><s:property value="#e.classification"/></td>
-									<td class="center"><a href="?employee.id=<s:property value="#e.id" />" class="edit"></a></td>
 									<td class="center"><a href="EmployeeDetail.action?employee.id=<s:property value="#e.id" />">View</a></td>
 								</tr>
 							</s:iterator>

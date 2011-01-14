@@ -216,10 +216,10 @@ public class ReportFilterEmployee extends ReportFilter {
 		JobSiteDAO siteDAO = (JobSiteDAO) SpringUtils.getBean("JobSiteDAO");
 
 		if (permissions.isOperatorCorporate())
-			return siteDAO.findByOperator(permissions.getAccountId());
+			return siteDAO.findByOperator(permissions.getAccountId(), true);
 		else if (permissions.isContractor())
 			return siteDAO.findByContractor(permissions.getAccountId());
-
+		
 		return null;
 	}
 

@@ -35,6 +35,7 @@ public class ReportAssessmentTest extends ReportEmployee {
 		sql.addJoin("JOIN assessment_test test ON test.id = ar.assessmentTestID");
 		sql.addJoin("JOIN accounts center ON center.id = test.assessmentCenterID");
 		
+		sql.addField("a.type accountType");
 		sql.addField("center.name centerName");
 		sql.addField("CONCAT(test.qualificationMethod, ': ', test.qualificationType, ' - ', test.description) test");
 		sql.addField("CASE WHEN ar.effectiveDate < NOW() AND ar.expirationDate > NOW() THEN 'Yes' ELSE 'No' END inEffect");
