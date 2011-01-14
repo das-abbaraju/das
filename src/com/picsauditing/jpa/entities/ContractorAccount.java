@@ -584,7 +584,7 @@ public class ContractorAccount extends Account implements JSONable {
 		int number = 0;
 		List<ContractorAudit> sortedAudits = getSortedAnnualUpdates();
 		for (ContractorAudit audit : sortedAudits) {
-			if (number < 4) {
+			if (number < 4 && audit.hasCaoStatus(AuditStatus.Complete)) {
 				// Store the EMR rates into a map for later use
 				for (AuditData answer : audit.getData()) {
 					if (answer.getQuestion().getId() == AuditQuestion.EMR
