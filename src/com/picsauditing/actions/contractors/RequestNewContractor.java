@@ -85,6 +85,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	protected List<String> unusedTerms;
 	protected List<String> usedTerms;
+	protected List<OperatorForm> forms;
 
 	protected boolean continueCheck = true;
 
@@ -538,27 +539,31 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 
 	public List<OperatorForm> getForms() {
-		List<OperatorForm> forms = null;
-		Set<OperatorForm> allForms = new HashSet<OperatorForm>();
-		OperatorAccount operator = newContractor.getRequestedBy();
+		if (forms == null) {
+			Set<OperatorForm> allForms = new HashSet<OperatorForm>();
+			OperatorAccount operator = newContractor.getRequestedBy();
 
-		FacilitiesDAO facilitiesDAO = (FacilitiesDAO) SpringUtils.getBean("FacilitiesDAO");
-		List<Facility> facilities = facilitiesDAO.findSiblings(operator.getId());
+			FacilitiesDAO facilitiesDAO = (FacilitiesDAO) SpringUtils.getBean("FacilitiesDAO");
+			List<Facility> facilities = facilitiesDAO.findSiblings(operator.getId());
 
-		for (Facility facility : facilities) {
-			allForms.addAll(facility.getOperator().getOperatorForms());
+			for (Facility facility : facilities) {
+				allForms.addAll(facility.getOperator().getOperatorForms());
+			}
+
+			allForms.addAll(operator.getOperatorForms());
+			allForms.addAll(operator.getParent().getOperatorForms());
+
+			forms = new ArrayList<OperatorForm>(allForms);
+
+			Iterator<OperatorForm> iterator = forms.iterator();
+			while (iterator.hasNext()) {
+				if (!iterator.next().getFormName().toLowerCase().contains("*"))
+					iterator.remove();
+			}
+
+			Collections.sort(forms, new ByFacilityName());
 		}
-
-		allForms.addAll(operator.getOperatorForms());
-		forms = new ArrayList<OperatorForm>(allForms);
-
-		Iterator<OperatorForm> iterator = forms.iterator();
-		while (iterator.hasNext()) {
-			if (!iterator.next().getFormName().toLowerCase().contains("*"))
-				iterator.remove();
-		}
-
-		Collections.sort(forms, new ByFacilityName());
+		
 		return forms;
 	}
 
@@ -567,21 +572,17 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 
 	public List<ContractorAccount> runGapAnalysis(ContractorRegistrationRequest newContractor) {
-		List<String> searchTerms = new ArrayList<String>();
-
+		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
+		SearchEngine search = new SearchEngine(permissions);
 		if (!Strings.isEmpty(newContractor.getName()))
-			searchTerms.add(newContractor.getName());
+			results.addAll(newGap(search, newContractor.getName(), "C"));
 		if (!Strings.isEmpty(newContractor.getAddress()))
-			searchTerms.add(newContractor.getAddress());
+			results.addAll(newGap(search, newContractor.getAddress(), "C"));
 		if (!Strings.isEmpty(newContractor.getPhone()))
-			searchTerms.add(newContractor.getPhone());
+			results.addAll(newGap(search, newContractor.getPhone(), "C"));
 		if (!Strings.isEmpty(newContractor.getEmail()))
-			searchTerms.add(newContractor.getEmail());
-		if (!Strings.isEmpty(newContractor.getContact()))
-			searchTerms.add(newContractor.getContact());
+			results.addAll(newGap(search, newContractor.getEmail(), "C"));
 
-		String searchTerm = Strings.implode(searchTerms, " ");
-		List<BasicDynaBean> results = newGap(new SearchEngine(permissions), searchTerm, "C");
 		Set<Integer> conIDs = new HashSet<Integer>();
 
 		for (BasicDynaBean r : results) {
@@ -590,7 +591,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 		if (conIDs.size() > 0)
 			return contractorAccountDAO.findByContractorIds(conIDs);
-		
+
 		return new ArrayList<ContractorAccount>();
 	}
 
@@ -619,7 +620,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			termsArray = termsArray.subList(0, termsArray.size() - 1);
 			// termsArray.subList(1, termsArray.size());
 		}
-		
+
 		return results;
 	}
 
