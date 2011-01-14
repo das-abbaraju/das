@@ -1,13 +1,16 @@
 package com.picsauditing.actions.report.oq;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FacilityChanger;
@@ -17,6 +20,8 @@ import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.EmployeeSiteDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.StateDAO;
@@ -26,6 +31,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Employee;
+import com.picsauditing.jpa.entities.EmployeeSite;
 import com.picsauditing.jpa.entities.JobContractor;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -40,6 +46,8 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ReportNewJobSite extends ReportActionSupport implements Preparable {
 	protected AccountDAO accountDAO;
+	protected EmployeeDAO employeeDAO;
+	protected EmployeeSiteDAO esDAO;
 	protected JobSiteDAO jsDAO;
 	protected FacilityChanger facilityChanger;
 
@@ -48,12 +56,21 @@ public class ReportNewJobSite extends ReportActionSupport implements Preparable 
 
 	protected int id;
 	protected int jobSiteID;
-	protected Account account;
-	protected List<Employee> employees;
-	protected List<JobSite> others;
+	protected int employeeID;
 
-	public ReportNewJobSite(AccountDAO accountDAO, JobSiteDAO jsDAO, FacilityChanger facilityChanger) {
+	protected Account account;
+	protected JobSite jobSite;
+
+	protected List<JobSite> current;
+	protected List<Employee> employees = new ArrayList<Employee>();
+	protected List<Employee> newEmployees;
+	protected List<EmployeeSite> prevEmployees;
+
+	public ReportNewJobSite(AccountDAO accountDAO, EmployeeDAO employeeDAO, EmployeeSiteDAO esDAO, JobSiteDAO jsDAO,
+			FacilityChanger facilityChanger) {
 		this.accountDAO = accountDAO;
+		this.employeeDAO = employeeDAO;
+		this.esDAO = esDAO;
 		this.jsDAO = jsDAO;
 		this.facilityChanger = facilityChanger;
 	}
@@ -78,20 +95,31 @@ public class ReportNewJobSite extends ReportActionSupport implements Preparable 
 		if (!forceLogin())
 			return LOGIN;
 
+		filter.setPermissions(permissions);
+
 		if (!permissions.isContractor() && !permissions.isAdmin())
 			throw new NoRightsException("Contractor or PICS Administrator");
 
+		if (ActionContext.getContext().getSession().get("actionErrors") != null) {
+			setActionErrors((Collection<String>) ActionContext.getContext().getSession().get("actionErrors"));
+			ActionContext.getContext().getSession().remove("actionErrors");
+
+			if (getActionErrors().size() > 0)
+				return SUCCESS;
+		}
+
 		if (button != null) {
+			// TODO add notes in the future
 			if ("Add".equals(button)) {
 				JobSite js = jsDAO.find(jobSiteID);
 				ContractorAccount con = (ContractorAccount) account;
-				
+
 				boolean worksForOperator = false;
 				for (ContractorOperator co : con.getOperators()) {
 					if (co.getOperatorAccount().equals(js.getOperator()))
 						worksForOperator = true;
 				}
-				
+
 				if (!worksForOperator) {
 					// TODO Allow contractor to choose which contractor type
 					facilityChanger.setContractor(con);
@@ -115,12 +143,79 @@ public class ReportNewJobSite extends ReportActionSupport implements Preparable 
 					jsDAO.save(jc);
 				} else {
 					addActionError("You have already been assigned this job site.");
-					return SUCCESS;
+					ActionContext.getContext().getSession().put("actionErrors", getActionErrors());
 				}
+
+				return redirect("ReportNewProjects.action");
+			}
+
+			if ("Remove".equals(button)) {
+				JobContractor jc = jsDAO.findJobContractorBySiteContractor(jobSiteID, permissions.getAccountId());
+				// Prevent orphan data -- Check current and expired sites
+				boolean found = false;
+				for (Employee e : account.getEmployees()) {
+					for (EmployeeSite es : e.getEmployeeSites()) {
+						if (es.getJobSite().equals(jc.getJob()))
+							found = true;
+					}
+				}
+
+				if (found) {
+					addActionError("This project was not removed because employees are or were assigned to this project.");
+					ActionContext.getContext().getSession().put("actionErrors", getActionErrors());
+				} else {
+					ContractorAccount con = (ContractorAccount) account;
+
+					con.getJobSites().remove(jc);
+					jsDAO.remove(jc);
+				}
+
+				return redirect("ReportNewProjects.action");
+			}
+
+			if ((button.contains("employee") || button.contains("Employee")) && jobSiteID > 0) {
+				jobSite = jsDAO.find(jobSiteID);
+
+				if ("removeEmployee".equalsIgnoreCase(button)) {
+					List<EmployeeSite> eSites = esDAO.findWhere("e.employee.id = " + employeeID
+							+ " AND e.jobSite.id = " + jobSiteID + " ORDER BY e.creationDate DESC");
+
+					EmployeeSite es = eSites.get(0);
+
+					if (es.isCurrent()) {
+						es.expire();
+						esDAO.save(es);
+					}
+				}
+
+				if ("addEmployee".equalsIgnoreCase(button)) {
+					List<EmployeeSite> eSites = esDAO.findWhere("e.employee.id = " + employeeID
+							+ " AND e.jobSite.id = " + jobSiteID + " ORDER BY e.expirationDate DESC");
+
+					if (eSites.size() > 0 && eSites.get(0).isCurrent()) {
+						addActionError("Employee is all ready assigned to this site");
+						return SUCCESS;
+					} else {
+						JobSite js = jsDAO.find(jobSiteID);
+
+						EmployeeSite es = new EmployeeSite();
+						es.setAuditColumns(permissions);
+						es.setEmployee(new Employee());
+						es.getEmployee().setId(employeeID);
+						es.setJobSite(js);
+						es.setOperator(js.getOperator());
+						es.defaultDates();
+
+						esDAO.save(es);
+					}
+				}
+
+				employees = esDAO.findEmployeesBySite(jobSiteID, permissions.getAccountId());
+				getNewEmployees();
+
+				return SUCCESS;
 			}
 		}
-		
-		filter.setPermissions(permissions);
 
 		buildQuery();
 		run(sql);
@@ -191,6 +286,62 @@ public class ReportNewJobSite extends ReportActionSupport implements Preparable 
 
 	public void setJobSiteID(int jobSiteID) {
 		this.jobSiteID = jobSiteID;
+	}
+
+	public int getEmployeeID() {
+		return employeeID;
+	}
+
+	public void setEmployeeID(int employeeID) {
+		this.employeeID = employeeID;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public JobSite getJobSite() {
+		return jobSite;
+	}
+
+	public List<JobSite> getCurrent() {
+		if (current == null)
+			current = jsDAO.findByContractor(permissions.getAccountId(), true);
+
+		return current;
+	}
+
+	public List<Employee> getEmployees() {
+		return employees;
+	}
+
+	public List<Employee> getNewEmployees() {
+		if (newEmployees == null) {
+			newEmployees = new ArrayList<Employee>(account.getEmployees());
+			Iterator<Employee> iterator = newEmployees.iterator();
+
+			while (iterator.hasNext()) {
+				if (employees.contains(iterator.next()))
+					iterator.remove();
+			}
+		}
+
+		return newEmployees;
+	}
+
+	public List<EmployeeSite> getPrevEmployees() {
+		if (prevEmployees == null) {
+			prevEmployees = new ArrayList<EmployeeSite>();
+			List<EmployeeSite> formerSites = esDAO.findWhere("e.employee.account.id = " + permissions.getAccountId()
+					+ " AND e.jobSite.id = " + jobSite.getId() + " ORDER BY e.expirationDate DESC");
+
+			for (EmployeeSite es : formerSites) {
+				if (!es.isCurrent())
+					prevEmployees.add(es);
+			}
+		}
+
+		return prevEmployees;
 	}
 
 	public ReportFilterJobSite getFilter() {

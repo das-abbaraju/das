@@ -96,7 +96,9 @@
 							</s:if>
 							<td style="vertical-align: middle; padding: 0px 5px;">
 								<h2><s:property value="employee.displayName" /></h2>
-								Title: <s:property value="employee.title" /><br />
+								<s:if test="employee.title.length > 0">
+									Title: <s:property value="employee.title" /><br />
+								</s:if>
 								<s:if test="(permissions.admin && permissions.hasPermission('ManageEmployees')) || permissions.accountId == employee.account.id">
 									<a href="ManageEmployees.action?employee.id=<s:property value="employee.id" />" class="edit">Edit Employee</a><br />
 								</s:if>

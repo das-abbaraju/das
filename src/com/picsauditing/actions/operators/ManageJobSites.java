@@ -489,7 +489,7 @@ public class ManageJobSites extends OperatorActionSupport {
 
 	public String getCompanyLink(Account a) {
 		if (a.isContractor() && permissions.hasPermission(OpPerms.ContractorDetails))
-			return "<a href=\"ContractorDashboard.action?id=" + a.getId() + "\">" + a.getName() + "</a>";
+			return "<a href=\"ContractorView.action?id=" + a.getId() + "\">" + a.getName() + "</a>";
 		if (a.isOperator()
 				&& (permissions.hasPermission(OpPerms.ManageOperators) || permissions.getAccountId() == a.getId()))
 			return "<a href=\"FacilitiesEdit.action?id=" + a.getId() + "\">" + a.getName() + "</a>";

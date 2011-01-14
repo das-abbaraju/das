@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -57,18 +58,30 @@ public class EmployeeSiteDAO extends PicsDAO {
 
 		return (EmployeeSite) q.getSingleResult();
 	}
-	
+
 	public List<EmployeeSiteTask> findTasksByEmployeeSite(int employeeID) {
 		Query q = em.createQuery("FROM EmployeeSiteTask WHERE employeeSite.employee.id = ?");
 		q.setParameter(1, employeeID);
-		
+
 		return q.getResultList();
 	}
-	
+
 	public List<EmployeeSiteTask> findTasksByOperator(int opID) {
 		Query q = em.createQuery("FROM EmployeeSiteTask WHERE employeeSite.operator.id = ?");
 		q.setParameter(1, opID);
-		
+
+		return q.getResultList();
+	}
+
+	public List<Employee> findEmployeesBySite(int jobSiteID, int conID) {
+		Query q = em.createQuery("SELECT DISTINCT es.employee FROM EmployeeSite es "
+				+ "WHERE es.jobSite.id = :jobSiteID AND es.employee.account.id = :conID "
+				+ "AND es.expirationDate > :date AND es.jobSite.projectStop > :date "
+				+ "ORDER BY es.employee.lastName, es.employee.firstName");
+		q.setParameter("jobSiteID", jobSiteID);
+		q.setParameter("conID", conID);
+		q.setParameter("date", new Date());
+
 		return q.getResultList();
 	}
 }

@@ -7,6 +7,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.JobContractor;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.util.Strings;
 
@@ -55,17 +56,25 @@ public class JobSiteDAO extends PicsDAO {
 	}
 
 	public List<JobSite> findByContractor(int conID, boolean notExpired) {
-		Query query = em.createQuery("SELECT DISTINCT es.jobSite FROM EmployeeSite es "
-				+ "WHERE es.employee.account.id = :conID "
-				+ (notExpired ? "AND (es.jobSite.projectStart IS NULL OR es.jobSite.projectStart < :date) "
-						+ "AND (es.jobSite.projectStop IS NULL OR es.jobSite.projectStop > :date) " : "")
-				+ "ORDER BY name");
+		Query query = em.createQuery("SELECT jc.job FROM JobContractor jc WHERE jc.contractor.id = :conID "
+				+ (notExpired ? "AND (jc.job.projectStart IS NULL OR jc.job.projectStart < :date) "
+						+ "AND (jc.job.projectStop IS NULL OR jc.job.projectStop > :date) " : "")
+				+ "ORDER BY jc.job.name");
 		query.setParameter("conID", conID);
 
 		if (notExpired)
 			query.setParameter("date", new Date());
 
 		return query.getResultList();
+	}
+
+	public JobContractor findJobContractorBySiteContractor(int jobSiteID, int conID) {
+		Query query = em.createQuery("SELECT jc FROM JobContractor jc WHERE jc.job.id = ? AND jc.contractor.id = ? " +
+				"ORDER BY jc.job.name");
+		query.setParameter(1, jobSiteID);
+		query.setParameter(2, conID);
+
+		return (JobContractor) query.getSingleResult();
 	}
 
 	public List<JobSite> findByOperatorWhere(int opID, String where) {

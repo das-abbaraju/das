@@ -2,15 +2,56 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Find New Project</title>
+<title>Manage/Find New Projects</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../reportHeader.jsp"/>
+<script type="text/javascript">
+function getEmployees(jobSiteID) {
+	var data = {
+		button: "employees",
+		jobSiteID: jobSiteID
+	};
+
+	startThinking({div: "currentEmployees", message: "Loading employees" });
+	$('#currentEmployees').load("ReportNewProjectsAjax.action", data);
+
+	return false;
+}
+
+function removeEmployee(jobSiteID, employeeID) {
+	var del = confirm("Are you sure you want to remove this employee from the project?");
+
+	if (del) {
+		var data = {
+			button: "removeEmployee",
+			jobSiteID: jobSiteID,
+			employeeID: employeeID
+		};
+	
+		startThinking({div: "currentEmployees", message: "Removing employee" });
+		$('#currentEmployees').load("ReportNewProjectsAjax.action", data);
+	}
+
+	return false;
+}
+
+function addEmployee(jobSiteID, employeeID) {
+	var data = {
+		button: "addEmployee",
+		jobSiteID: jobSiteID,
+		employeeID: employeeID
+	};
+
+	startThinking({div: "currentEmployees", message: "Adding employee" });
+	$('#currentEmployees').load("ReportNewProjectsAjax.action", data);
+
+	return false;
+}
+</script>
 </head>
 <body>
-	<h1><s:property value="account.name" /><span class="sub">Find New Project</span></h1>
-	<s:include value="../../actionMessages.jsp"/>
-	
+	<h1><s:property value="account.name" /><span class="sub">Manage/Find New Projects</span></h1>
 	<div id="search">
 		<s:form id="form1" action="%{filter.destinationAction}">
 			<s:hidden name="filter.ajax" />
@@ -83,12 +124,12 @@
 		
 		<div class="clear"></div>
 	</div>
-	<br />
+	<div class="info">If you are not associated with an added project's operator, the operator will automatically be added to your facilities.</div>
 	<table class="report">
 		<thead>
 			<tr>
 				<th>Operator</th>
-				<th>Name</th>
+				<th>Project Name</th>
 				<th>Start</th>
 				<th>Location</th>
 				<th>Add</th>
@@ -103,12 +144,7 @@
 						<td><s:date name="#d.get('projectStart')" format="M/d/yyyy" /></td>
 						<td><s:property value="getAddress(#d)" /></td>
 						<td class="center">
-							<form action="ReportNewProjects.action" method="post" id="add_<s:property value="#d.get('id')" />">
-								<s:hidden name="id" />
-								<input type="hidden" name="button" value="Add" />
-								<input type="hidden" name="jobSiteID" value="<s:property value="#d.get('id')" />" />
-								<a href="#" class="add" onclick="$(add_<s:property value="#d.get('id')" />).submit(); return false;"></a>
-							</form>
+							<a href="?id=<s:property value="id" />&button=Add&jobSiteID=<s:property value="#d.get('id')" />" class="add"></a>
 						</td>
 					</tr>
 				</s:iterator>
@@ -118,7 +154,40 @@
 			</s:else>
 		</tbody>
 	</table>
-	
-	<div class="info">If you are not associated with an added project's operator, the operator will automatically be added to your facilities.</div>
+	<s:include value="../../actionMessages.jsp"/>
+	<s:if test="current.size > 0">
+		<table>
+			<tr>
+				<td>
+					<h3>Manage Projects</h3>
+					<table class="report">
+						<thead>
+							<tr>
+								<th>Operator</th>
+								<th>Project Name</th>
+								<th>Start</th>
+								<th>Location</th>
+								<th>Employees</th>
+								<th>Remove</th>
+							</tr>
+						</thead>
+						<tbody>
+							<s:iterator value="current">
+								<tr>
+									<td><s:property value="operator.name" /></td>
+									<td><s:property value="name" /></td>
+									<td><s:date name="projectStart" format="M/d/yyyy" /></td>
+									<td><s:property value="location" /></td>
+									<td class="center"><a href="#" onclick="return getEmployees(<s:property value="id" />);">View</a></td>
+									<td class="center"><a href="?button=Remove&jobSiteID=<s:property value="id" />" class="remove"></a></td>
+								</tr>
+							</s:iterator>
+						</tbody>
+					</table>
+				</td>
+				<td style="padding-left: 20px;"><div id="currentEmployees"></div></td>
+			</tr>
+		</table>
+	</s:if>
 </body>
 </html>
