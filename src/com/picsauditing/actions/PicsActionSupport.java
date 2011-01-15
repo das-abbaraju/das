@@ -55,7 +55,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	private Set<User> auditorList;
 
 	public static final String getVersion() {
-		return "5.1.1";
+		return "5.1.2";
 	}
 
 	protected void loadPermissions() {
@@ -160,7 +160,8 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 			return null;
 		}
 	}
-// TODO remove this
+
+	// TODO remove this
 	public Account getAccount() {
 		if (account == null) {
 			loadPermissions();
@@ -304,11 +305,11 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		}
 		return 0;
 	}
-	
+
 	// This should be moved into an intercepter at a later date
 	/**
-	 * Checks to see if this value is in the parameter map. If it is and the value
-	 * is an empty string ("") then we will replace that value with a null
+	 * Checks to see if this value is in the parameter map. If it is and the
+	 * value is an empty string ("") then we will replace that value with a null
 	 * 
 	 * @param name
 	 *            Name of the parameter you want to check in the map
