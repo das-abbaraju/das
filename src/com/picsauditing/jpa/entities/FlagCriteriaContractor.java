@@ -104,7 +104,7 @@ public class FlagCriteriaContractor extends BaseTable implements Comparable<Flag
 			setAuditColumns(new User(User.SYSTEM));
 		}
 
-		if (!Strings.isEmpty(fcc.getAnswer2()) && !answer2.equals(fcc.getAnswer2())) {
+		if (!Strings.isEmpty(fcc.getAnswer2()) && !fcc.getAnswer2().equals(answer2)) {
 			answer2 = fcc.getAnswer2();
 			setAuditColumns(new User(User.SYSTEM));
 		}
