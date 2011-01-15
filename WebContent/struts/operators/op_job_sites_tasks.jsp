@@ -36,16 +36,16 @@
 <a id="closeTasks" href="#" onclick="$('#jobSiteTasks:visible').slideUp(); $('#addSiteTasks:visible').slideUp(); return false;" class="remove">Close Tasks</a>
 
 <h4>Companies</h4>
-<s:if test="siteCompanies.keySet().size > 0">
-	<table class="report">
-		<thead>
-			<tr>
-				<th></th>
-				<th>Company Name</th>
-				<th># of Employees</th>
-			</tr>
-		</thead>
-		<tbody>
+<table class="report">
+	<thead>
+		<tr>
+			<th></th>
+			<th>Company Name</th>
+			<th># of Employees</th>
+		</tr>
+	</thead>
+	<tbody>
+		<s:if test="siteCompanies.keySet().size > 0">
 			<s:iterator value="siteCompanies.keySet()" var="a" status="stat">
 				<tr>
 					<td><s:property value="#stat.count" /></td>
@@ -57,9 +57,16 @@
 					</td>
 				</tr>
 			</s:iterator>
-		</tbody>
-	</table>
-</s:if>
-<s:else>
-	No companies associated with this site.<br />
-</s:else>
+		</s:if>
+		<s:else>
+			<tr><td colspan="3">No companies associated with this project.</td></tr>
+		</s:else>
+		<s:if test="newContractors.size > 0">
+			<tr>
+				<td colspan="3">
+					<s:select list="newContractors" headerKey="0" headerValue="- Add New Company -" listKey="id" listValue="name" onchange="addCompany(this.value, %{siteID});" />
+				</td>
+			</tr>
+		</s:if>
+	</tbody>
+</table>

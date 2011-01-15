@@ -133,26 +133,27 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
 					.getContext().getSession().get("auditID"));
 		
-		// TODO Put this into the employee cron
-		for (EmployeeSite es : employee.getEmployeeSites()) {
-			Date exp1 = es.getExpirationDate();
-			Date exp2 = null;
-			
-			if (es.getJobSite() != null)
-				exp2 = es.getJobSite().getProjectStop();
-			
-			Date exp = null;
-			if (exp1 != null && exp2 != null)
-				exp = exp1.before(exp2) ? exp1 : exp2;
-			else if (exp1 != null || exp2 != null)
-				exp = exp1 == null ? exp2 : exp1;
-			
-			if (exp != null && exp.before(new Date()) && es.isCurrent()) {
-				es.expire();
-				es.setAuditColumns(permissions);
-				employeeSiteDAO.save(es);
+		if (employee != null)
+			// TODO Put this into the employee cron
+			for (EmployeeSite es : employee.getEmployeeSites()) {
+				Date exp1 = es.getExpirationDate();
+				Date exp2 = null;
+				
+				if (es.getJobSite() != null)
+					exp2 = es.getJobSite().getProjectStop();
+				
+				Date exp = null;
+				if (exp1 != null && exp2 != null)
+					exp = exp1.before(exp2) ? exp1 : exp2;
+				else if (exp1 != null || exp2 != null)
+					exp = exp1 == null ? exp2 : exp1;
+				
+				if (exp != null && exp.before(new Date()) && es.isCurrent()) {
+					es.expire();
+					es.setAuditColumns(permissions);
+					employeeSiteDAO.save(es);
+				}
 			}
-		}
 
 		if ("Add".equals(button))
 			employee = new Employee();
@@ -235,6 +236,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				es.setAuditColumns(permissions);
 				es.defaultDates();
 				employeeSiteDAO.save(es);
+				employee.getEmployeeSites().add(es);
 				createNewNote("Added "
 						+ (es.getJobSite() != null ? "OQ project " + es.getOperator().getName() + ": "
 								+ es.getJobSite().getLabel() : "HSE site " + es.getOperator().getName()));

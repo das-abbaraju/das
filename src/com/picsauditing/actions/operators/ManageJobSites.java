@@ -17,9 +17,12 @@ import com.picsauditing.dao.JobTaskDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeSite;
+import com.picsauditing.jpa.entities.JobContractor;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
@@ -41,27 +44,29 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected int siteTaskID;
 	protected int taskID;
 	protected int controlSpan;
-
+	protected int conID;
 	protected String siteName;
 	protected String siteLabel;
 	protected String siteCity;
+
 	protected State state = new State();
 	protected Country siteCountry = new Country("US", "United States");
 	protected Date siteStart;
 	protected Date siteEnd;
 	protected Date date = new Date();
-
 	protected JobSite newSite = new JobSite();
 	protected JobSiteTask siteTask = new JobSiteTask();
 	protected JobTask newTask = new JobTask();
+
 	protected List<String> history;
 	protected List<JobTask> addable = new ArrayList<JobTask>();
-	private List<JobSite> allSites;
 	protected List<JobSite> activeSites;
 	protected List<JobSite> inactiveSites;
 	protected List<JobSite> futureSites;
 	protected List<JobSiteTask> tasks;
+	protected List<ContractorAccount> newContractors;
 	protected Map<Account, List<Employee>> siteCompanies;
+	private List<JobSite> allSites;
 
 	public ManageJobSites(OperatorAccountDAO operatorDao, JobSiteDAO siteDAO, JobSiteTaskDAO siteTaskDAO,
 			JobTaskDAO taskDAO, NoteDAO noteDAO, EmployeeSiteDAO employeeSiteDAO) {
@@ -90,12 +95,29 @@ public class ManageJobSites extends OperatorActionSupport {
 			newSite = siteDAO.find(siteID);
 
 		if (button != null) {
+			if ("addCompany".equals(button) && conID > 0 && siteID > 0) {
+				JobContractor jc = new JobContractor();
+				jc.setContractor(new ContractorAccount());
+				jc.getContractor().setId(conID);
+				jc.setJob(new JobSite());
+				jc.getJob().setId(siteID);
+				siteDAO.save(jc);
+				
+				button = "Tasks";
+			}
+			
 			if ("Tasks".equalsIgnoreCase(button)) {
 				if (siteID > 0) {
+					List<ContractorAccount> cons = siteDAO.findContractorsBySite(siteID);
 					List<EmployeeSite> esites = employeeSiteDAO.findWhere("e.jobSite.operator.id = " + operator.getId()
 							+ " AND e.jobSite.id = " + siteID);
+					
 					siteCompanies = new TreeMap<Account, List<Employee>>();
-
+					for (ContractorAccount c : cons) {
+						if (!siteCompanies.containsKey(c))
+							siteCompanies.put(c, new ArrayList<Employee>());
+					}
+					
 					for (EmployeeSite es : esites) {
 						if (es.isCurrent() && es.getJobSite().isActive(new Date())) {
 							Account a = es.getEmployee().getAccount();
@@ -105,23 +127,31 @@ public class ManageJobSites extends OperatorActionSupport {
 							siteCompanies.get(a).add(es.getEmployee());
 						}
 					}
-					
+
+					List<ContractorAccount> working = siteDAO.findContractorsBySite(siteID);
+					newContractors = new ArrayList<ContractorAccount>();
+
+					for (ContractorOperator co : operator.getContractorOperators()) {
+						if (co.getContractorAccount().isRequiresOQ() && !working.contains(co.getContractorAccount()))
+							newContractors.add(co.getContractorAccount());
+					}
+
 					return SUCCESS;
 				} else
 					addActionError("Missing project");
 			}
 
 			if ("NewTasks".equalsIgnoreCase(button)) {
-				if (siteID > 0) {
+				if (siteID > 0)
 					return "newTasks";
-				} else
+				else
 					addActionError("Missing project");
 			}
 
 			if ("EditSite".equalsIgnoreCase(button)) {
-				if (siteID > 0) {
+				if (siteID > 0)
 					return "editSite";
-				} else
+				else
 					addActionError("Missing project");
 			}
 
@@ -317,6 +347,14 @@ public class ManageJobSites extends OperatorActionSupport {
 	public void setControlSpan(int controlSpan) {
 		this.controlSpan = controlSpan;
 	}
+	
+	public int getConID() {
+		return conID;
+	}
+
+	public void setConID(int conID) {
+		this.conID = conID;
+	}
 
 	public String getSiteLabel() {
 		return siteLabel;
@@ -447,6 +485,10 @@ public class ManageJobSites extends OperatorActionSupport {
 
 	public Map<Account, List<Employee>> getSiteCompanies() {
 		return siteCompanies;
+	}
+
+	public List<ContractorAccount> getNewContractors() {
+		return newContractors;
 	}
 
 	public List<JobTask> getAddableTasks() {

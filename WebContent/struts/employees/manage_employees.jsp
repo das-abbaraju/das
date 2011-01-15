@@ -198,10 +198,10 @@ div.dataTables_length { width: 35%; }
 						<thead>
 							<tr>
 								<th>id</th>
-								<th>Last Name</th>
-								<th>First Name</th>
-								<th>Title</th>
-								<th>Classification</th>
+								<th><a href="#" onclick="return false;">Last Name</a></th>
+								<th><a href="#" onclick="return false;">First Name</a></th>
+								<th><a href="#" onclick="return false;">Title</a></th>
+								<th><a href="#" onclick="return false;">Classification</a></th>
 								<th>Profile</th>
 							</tr>
 						</thead>

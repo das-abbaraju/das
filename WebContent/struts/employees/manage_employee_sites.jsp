@@ -76,7 +76,7 @@
 									<s:set name="missingTasks" value="getMissingTasks(#site.jobSite.id)" />
 									<h4>Qualified Tasks</h4>
 									<s:if test="#missingTasks.qualifiedTasks.size > 0">
-										<h5>Qualified (<s:property value="#missingTasks.qualifiedTasks.size" /> of <s:property value="#missingTasks.totalCount" />):</h5>
+										<h5>Qualified (<s:property value="#missingTasks.qualifiedTasks.size" /> of <s:property value="#missingTasks.totalCount" />)</h5>
 										<table class="report">
 											<thead>
 												<tr>
@@ -95,12 +95,13 @@
 										</table>
 									</s:if>
 									<s:if test="#missingTasks.missingTasks.size > 0">
-										<h5>Missing (<s:property value="#missingTasks.missingTasks.size" /> of <s:property value="#missingTasks.totalCount" />):</h5>
+										<h5>Missing (<s:property value="#missingTasks.missingTasks.size" /> of <s:property value="#missingTasks.totalCount" />)</h5>
 										<table class="report">
 											<thead>
 												<tr>
 													<th>Label</th>
 													<th>Name</th>
+													<th>Recommended Assessment Tests</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -108,6 +109,16 @@
 													<tr>
 														<td><s:property value="#mt.label" /></td>
 														<td><s:property value="#mt.name" /></td>
+														<td>
+															<s:iterator value="#mt.jobTaskCriteriaMap.keySet()" var="mtGroupNum" status="mtGroup">
+																<s:iterator value="#mt.jobTaskCriteriaMap.get(#mtGroupNum)" var="mtCrit">
+																	<s:property value="#mtCrit.assessmentTest.assessmentCenter.name" />:
+																	<s:property value="#mtCrit.assessmentTest.qualificationType" /> -
+																	<s:property value="#mtCrit.assessmentTest.qualificationMethod" /><br />
+																</s:iterator>
+																<s:if test="!#mtGroup.last">OR<br /></s:if>
+															</s:iterator>
+														</td>
 													</tr>
 												</s:iterator>
 											</tbody>

@@ -50,7 +50,7 @@ public class ReportOQEmployees extends ReportEmployee {
 		getFilter().setShowLimitEmployees(true);
 		getFilter().setShowProjects(true);
 		getFilter().setPermissions(permissions);
-		
+
 		if (permissions.isContractor())
 			getFilter().setShowAccountName(false);
 
@@ -126,10 +126,12 @@ public class ReportOQEmployees extends ReportEmployee {
 
 	private void buildJobSites() throws Exception {
 		SelectSQL sql2 = new SelectSQL("job_site js");
-
-		sql2.addJoin("JOIN accounts o ON o.id = js.opID");
+		sql2.addJoin("JOIN accounts o ON o.id = js.opID"
+				+ (permissions.isOperatorCorporate() ? " AND o.id = " + permissions.getAccountId() : ""));
 		sql2.addJoin("LEFT JOIN job_site_task jst ON jst.jobID = js.id");
 		sql2.addJoin("LEFT JOIN job_task jt ON jst.taskID = jt.id");
+		if (permissions.isContractor())
+			sql2.addJoin("JOIN job_contractor jc ON jc.jobID = js.id AND jc.conID = " + permissions.getAccountId());
 
 		sql2.addField("js.id jobSiteID");
 		sql2.addField("js.label jobSiteLabel");
@@ -141,19 +143,12 @@ public class ReportOQEmployees extends ReportEmployee {
 		sql2.addField("jt.name taskName");
 		sql2.addField("o.name opName");
 
-		if (permissions.isOperatorCorporate())
-			sql2.addWhere("o.id = " + permissions.getAccountId());
-		if (permissions.isContractor()) {
-			sql2.addJoin("JOIN employee_site es ON es.jobSiteID = js.id");
-			sql2.addJoin("JOIN employee e ON e.id = es.employeeID AND e.accountID = " + permissions.getAccountId());
-		}
-
 		sql2.addWhere(dateRange("js.projectStart", "js.projectStop", false));
 
 		if (filterOn(getFilter().getProjects()))
 			sql2.addWhere("js.id IN (" + Strings.implode(getFilter().getProjects()) + ")");
 
-		sql2.addOrderBy("js.projectStart, jt.displayOrder");
+		sql2.addOrderBy("js.name, jt.displayOrder");
 		List<BasicDynaBean> data2 = db.select(sql2.toString(), false);
 
 		for (BasicDynaBean d : data2) {
@@ -354,13 +349,24 @@ public class ReportOQEmployees extends ReportEmployee {
 		for (JobSite site : getJobSiteTasks().keySet()) {
 			int count = 0;
 
-			for (JobSiteTask jst : getJobSiteTasks().get(site)) {
-				orderedJST.add(jst);
+			if (getJobSiteTasks().get(site).size() > 0) {
+				for (JobSiteTask jst : getJobSiteTasks().get(site)) {
+					orderedJST.add(jst);
+					cell = row2.createCell(2 + prevSize + count);
+					sheet.setColumnWidth(cell.getColumnIndex(), 256 * (jst.getTask().getLabel().length() + 10));
+					cell.setCellStyle(headerStyle);
+					cell.setCellValue(new HSSFRichTextString(jst.getTask().getLabel() + " (1 of "
+							+ jst.getControlSpan() + ")"));
+
+					count++;
+					totalColumns++;
+				}
+			} else {
+				orderedJST.add(null);
 				cell = row2.createCell(2 + prevSize + count);
-				sheet.setColumnWidth(cell.getColumnIndex(), 256 * (jst.getTask().getLabel().length() + 10));
+				sheet.setColumnWidth(cell.getColumnIndex(), 256 * ("N/A".length() + 10));
 				cell.setCellStyle(headerStyle);
-				cell.setCellValue(new HSSFRichTextString(jst.getTask().getLabel() + " (1 of " + jst.getControlSpan()
-						+ ")"));
+				cell.setCellValue(new HSSFRichTextString("N/A"));
 
 				count++;
 				totalColumns++;
@@ -369,10 +375,13 @@ public class ReportOQEmployees extends ReportEmployee {
 			cell = row.createCell(2 + prevSize);
 			cell.setCellStyle(headerStyle);
 			cell.setCellValue(new HSSFRichTextString(site.getOperator().getName() + ": " + site.getLabel()));
-			sheet.addMergedRegion(new CellRangeAddress(0, 0, 2 + prevSize, 1 + prevSize
-					+ getJobSiteTasks().get(site).size()));
-
-			prevSize += getJobSiteTasks().get(site).size();
+			
+			if (getJobSiteTasks().get(site).size() > 0) {
+				sheet.addMergedRegion(new CellRangeAddress(0, 0, 2 + prevSize, 1 + prevSize
+						+ getJobSiteTasks().get(site).size()));
+			}
+			
+			prevSize += (getJobSiteTasks().get(site).size() == 0 ? 1 : getJobSiteTasks().get(site).size());
 		}
 
 		// Employees
@@ -388,13 +397,19 @@ public class ReportOQEmployees extends ReportEmployee {
 
 			int cellCount = 2;
 			for (JobSite js : getJobSiteTasks().keySet()) {
-				for (JobSiteTask jst : getJobSiteTasks().get(js)) {
+				if (getJobSiteTasks().get(js).size() > 0) {
+					for (JobSiteTask jst : getJobSiteTasks().get(js)) {
+						cell = row.createCell(cellCount);
+						cell.setCellStyle(centerStyle);
+						cellCount++;
+	
+						if (map.get(e, jst) != null && map.get(e, jst) == true)
+							cell.setCellValue(h.createRichTextString("X"));
+					}
+				} else {
 					cell = row.createCell(cellCount);
 					cell.setCellStyle(centerStyle);
 					cellCount++;
-
-					if (map.get(e, jst) != null && map.get(e, jst) == true)
-						cell.setCellValue(h.createRichTextString("X"));
 				}
 			}
 		}
@@ -409,17 +424,19 @@ public class ReportOQEmployees extends ReportEmployee {
 
 		totalColumns = 2;
 		for (JobSiteTask jst : orderedJST) {
-			int spanOfControl = 0;
-
-			for (Employee e : getEmployees()) {
-				if (map.get(e, jst) != null && map.get(e, jst) == true)
-					spanOfControl++;
-			}
-
-			int total = jst.getMinimumQualified(getEmployees().size());
 			cell = row.createCell(totalColumns);
-			cell.setCellValue(h.createRichTextString(spanOfControl + " of " + total));
-			cell.setCellStyle((spanOfControl < total) ? redStyle : centerStyle);
+			if (jst != null) {
+				int spanOfControl = 0;
+	
+				for (Employee e : getEmployees()) {
+					if (map.get(e, jst) != null && map.get(e, jst) == true)
+						spanOfControl++;
+				}
+	
+				int total = jst.getMinimumQualified(getEmployees().size());
+				cell.setCellValue(h.createRichTextString(spanOfControl + " of " + total));
+				cell.setCellStyle((spanOfControl < total) ? redStyle : centerStyle);
+			}
 
 			totalColumns++;
 		}

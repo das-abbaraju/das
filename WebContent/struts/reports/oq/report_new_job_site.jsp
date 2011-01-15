@@ -66,11 +66,11 @@ function addEmployee(jobSiteID, employeeID) {
 			</div>
 		
 			<div class="filterOption">
-				Name = <s:textfield name="filter.name" cssClass="forms" size="18" onfocus="clearText(this)" />
+				Name: <s:textfield name="filter.name" cssClass="forms" size="18" onfocus="clearText(this)" />
 			</div>
 			
 			<div class="filterOption">
-				City = <s:textfield name="filter.city" cssClass="forms" size="18" onfocus="clearText(this)" />
+				City: <s:textfield name="filter.city" cssClass="forms" size="18" onfocus="clearText(this)" />
 			</div>
 		
 			<div class="filterOption">
@@ -179,7 +179,7 @@ function addEmployee(jobSiteID, employeeID) {
 									<td><s:date name="projectStart" format="M/d/yyyy" /></td>
 									<td><s:property value="location" /></td>
 									<td class="center"><a href="#" onclick="return getEmployees(<s:property value="id" />);">View</a></td>
-									<td class="center"><a href="?button=Remove&jobSiteID=<s:property value="id" />" class="remove"></a></td>
+									<td class="center"><a href="?button=Remove&jobSiteID=<s:property value="id" />" onclick="return confirm('Are you sure you want to remove this project?');" class="remove"></a></td>
 								</tr>
 							</s:iterator>
 						</tbody>

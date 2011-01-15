@@ -96,6 +96,16 @@ function getStates(country) {
 	$('.loadStates').load('StateListAjax.action',{countryString: country, stateString: '<s:property value="newSite.state.english"/>'});
 }
 
+function addCompany(conID, siteID) {
+	var data = {
+		button: 'addCompany',
+		conID: conID,
+		siteID: siteID
+	};
+
+	$('#jobSiteTasks').load('ManageProjectsAjax.action', data);
+}
+
 $(function() {
 	$('.datepicker').datepicker();
 });

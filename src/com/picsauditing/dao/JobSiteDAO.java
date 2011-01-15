@@ -7,6 +7,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.JobContractor;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.util.Strings;
@@ -68,15 +69,6 @@ public class JobSiteDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public JobContractor findJobContractorBySiteContractor(int jobSiteID, int conID) {
-		Query query = em.createQuery("SELECT jc FROM JobContractor jc WHERE jc.job.id = ? AND jc.contractor.id = ? " +
-				"ORDER BY jc.job.name");
-		query.setParameter(1, jobSiteID);
-		query.setParameter(2, conID);
-
-		return (JobContractor) query.getSingleResult();
-	}
-
 	public List<JobSite> findByOperatorWhere(int opID, String where) {
 		Query query = em.createQuery("SELECT j FROM JobSite j WHERE opID = ? AND " + where + " ORDER BY name");
 		query.setParameter(1, opID);
@@ -101,6 +93,31 @@ public class JobSiteDAO extends PicsDAO {
 				+ "ORDER BY j.projectStart DESC");
 		query.setParameter(1, conID);
 
+		return query.getResultList();
+	}
+
+	public JobContractor findJobContractorBySiteContractor(int jobSiteID, int conID) {
+		Query query = em.createQuery("SELECT jc FROM JobContractor jc WHERE jc.job.id = ? AND jc.contractor.id = ? "
+				+ "ORDER BY jc.job.name");
+		query.setParameter(1, jobSiteID);
+		query.setParameter(2, conID);
+
+		return (JobContractor) query.getSingleResult();
+	}
+
+	public List<ContractorAccount> findContractorsByOperator(int opID) {
+		Query query = em.createQuery("SELECT DISTINCT jc.contractor FROM JobContractor jc " +
+				"WHERE jc.job.operator.id = ? ORDER BY jc.contractor.name");
+		query.setParameter(1, opID);
+
+		return query.getResultList();
+	}
+	
+	public List<ContractorAccount> findContractorsBySite(int jobSiteID) {
+		Query query = em.createQuery("SELECT DISTINCT jc.contractor FROM JobContractor jc " +
+		"WHERE jc.job.id = ? ORDER BY jc.contractor.name");
+		query.setParameter(1, jobSiteID);
+		
 		return query.getResultList();
 	}
 }
