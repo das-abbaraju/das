@@ -91,13 +91,13 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 			}
 
 			if ("Delete".equals(button)) {
-				if (criteria != null) {
+				/*if (criteria != null) {
 					criteriaDAO.remove(criteria);
 					criteria = null;
 					addActionMessage("Criteria successfully deleted.");
 
 					this.redirect("ManageFlagCriteria.action");
-				}
+				}*/
 			}
 		}
 

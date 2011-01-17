@@ -118,9 +118,6 @@
 	
 	<fieldset class="form submit">
 		<input type="submit" name="button" value="Save" class="picsbutton positive"/>
-		<s:if test="criteria.id > 0">
-		<input type="submit" name="button" value="Delete" class="picsbutton negative"/>
-		</s:if>
 		<input type="button" value="Cancel" class="picsbutton goback"/>
 	</fieldset>
 </form>
