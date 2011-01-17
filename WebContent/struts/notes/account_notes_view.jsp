@@ -28,7 +28,7 @@ div.auditHeader fieldset {
 	<li><label>Category:</label>
 		<s:property value="note.noteCategory"/>
 	</li>
-	<s:if test="note.employee != null">
+	<s:if test="note.employee != null && (permissions.requiresOQ || permissions.requiresCompetencyReview)">
 		<li><label>Employee:</label>
 			<s:property value="note.employee.displayName"/>
 		</li>
