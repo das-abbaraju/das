@@ -36,6 +36,7 @@ public class ReportOQChanges extends PicsActionSupport {
 		sql.addJoin("JOIN accounts ac ON test.assessmentCenterID = ac.id");
 		sql.addField("CONCAT(test.qualificationType, ': ', test.qualificationMethod, "
 				+ "' from ', ac.name) AS criteria");
+		sql.addGroupBy("criteria HAVING effectiveDate <> expirationDate");
 		sql.addOrderBy("test.qualificationType, test.qualificationMethod");
 
 		if (permissions.isContractor()) {
@@ -49,7 +50,7 @@ public class ReportOQChanges extends PicsActionSupport {
 
 			sql.addWhere("jt.id IN (" + subSelect.toString() + ")");
 		}
-
+		
 		return db.select(sql.toString(), false);
 	}
 
@@ -77,8 +78,8 @@ public class ReportOQChanges extends PicsActionSupport {
 
 	private SelectSQL buildSQL(String tableName) {
 		SelectSQL sql = new SelectSQL(tableName + " j");
-		sql.addField("j.effectiveDate");
-		sql.addField("j.expirationDate");
+		sql.addField(tableName.equals("job_task_criteria") ? "MAX(j.effectiveDate) effectiveDate" : "j.effectiveDate");
+		sql.addField(tableName.equals("job_task_criteria") ? "MIN(j.expirationDate) expirationDate" : "j.expirationDate");
 		sql.addField("DATEDIFF(j.expirationDate,now()) daysFromExpiration");
 
 		sql.addJoin("JOIN job_task jt ON j.taskID = jt.id");

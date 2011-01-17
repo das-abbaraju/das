@@ -42,7 +42,7 @@
 			<tr>
 				<td><s:property value="get('taskType')" /></td>
 				<td><s:property value="get('task')" /></td>
-				<td><s:if test="!permissions.operator"><s:property value="get('opName')" />: </s:if><s:property value="get('label')" /></td>
+				<td><s:if test="!permissions.operator"><s:property value="get('opName')" />: </s:if><s:property value="get('name')" /></td>
 				<td><s:if test="get('daysFromExpiration') > 0">Added <s:date name="get('effectiveDate')" format="MMM d" /></s:if>
 					<s:else>Removed <s:date name="get('expirationDate')" format="MMM d" /></s:else></td>
 			</tr>

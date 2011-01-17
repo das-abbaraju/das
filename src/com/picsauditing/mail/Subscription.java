@@ -69,7 +69,11 @@ public enum Subscription {
 			"PICS System Notifications",
 			"This email notifies the users when there has been updates or changes to the PICS system.",
 			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,	SubscriptionTimePeriod.Event},
-			true, false);
+			true, false),
+	OQChanges(
+			"Recent Operator Qualification Changes",
+			"This email notifies the contractors with recent OQ changes.",
+			false, true);
 
 	private String description;
 	private String longDescription;
