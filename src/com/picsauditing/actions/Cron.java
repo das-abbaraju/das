@@ -430,15 +430,18 @@ public class Cron extends PicsActionSupport {
 				lateFeeItem.setInvoice(i);
 				lateFeeItem.setDescription("Assessed " + new SimpleDateFormat("MM/dd/yyyy").format(new Date())
 						+ " due to delinquent payment.");
-				invoiceItemDAO.save(lateFeeItem);
 	
 				// Add Late Fee to Invoice
 				i.getItems().add(lateFeeItem);
 				i.updateAmount();
+				i.updateAmountApplied();
 				i.setQbSync(true);
 				i.setAuditColumns(new User(User.SYSTEM));
-				if (i.getAccount() instanceof ContractorAccount)
+				if (i.getAccount() instanceof ContractorAccount) {
 					((ContractorAccount) i.getAccount()).syncBalance();
+					invoiceItemDAO.save(i.getAccount());
+				}
+				invoiceItemDAO.save(lateFeeItem);
 				invoiceItemDAO.save(i);
 			}
 		}
