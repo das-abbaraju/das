@@ -410,28 +410,37 @@ public class Cron extends PicsActionSupport {
 		List<Invoice> invoicesMissingLateFees = invoiceDAO.findDelinquentInvoicesMissingLateFees();
 
 		for (Invoice i : invoicesMissingLateFees) {
-			// Calculate Late Fee
-			BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05)).setScale(0,
-					BigDecimal.ROUND_HALF_UP);
-			if (lateFee.compareTo(BigDecimal.valueOf(20)) < 1)
-				lateFee = BigDecimal.valueOf(20);
-
-			InvoiceItem lateFeeItem = new InvoiceItem(invoiceFeeDAO.find(InvoiceFee.LATEFEE));
-			lateFeeItem.setAmount(lateFee);
-			lateFeeItem.setAuditColumns(new User(User.SYSTEM));
-			lateFeeItem.setInvoice(i);
-			lateFeeItem.setDescription("Assessed " + new SimpleDateFormat("MM/dd/yyyy").format(new Date())
-					+ " due to delinquent payment.");
-			invoiceItemDAO.save(lateFeeItem);
-
-			// Add Late Fee to Invoice
-			i.getItems().add(lateFeeItem);
-			i.updateAmount();
-			i.setQbSync(true);
-			i.setAuditColumns(new User(User.SYSTEM));
-			if (i.getAccount() instanceof ContractorAccount)
-				((ContractorAccount) i.getAccount()).syncBalance();
-			invoiceItemDAO.save(i);
+			boolean hasReactivation = false;
+			
+			// Skip Reactivations
+			for(InvoiceItem ii : i.getItems())
+				if(ii.getInvoiceFee().getId() == InvoiceFee.REACTIVATION)
+					hasReactivation = true;
+			
+			if(!hasReactivation) {
+				// Calculate Late Fee
+				BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05)).setScale(0,
+						BigDecimal.ROUND_HALF_UP);
+				if (lateFee.compareTo(BigDecimal.valueOf(20)) < 1)
+					lateFee = BigDecimal.valueOf(20);
+	
+				InvoiceItem lateFeeItem = new InvoiceItem(invoiceFeeDAO.find(InvoiceFee.LATEFEE));
+				lateFeeItem.setAmount(lateFee);
+				lateFeeItem.setAuditColumns(new User(User.SYSTEM));
+				lateFeeItem.setInvoice(i);
+				lateFeeItem.setDescription("Assessed " + new SimpleDateFormat("MM/dd/yyyy").format(new Date())
+						+ " due to delinquent payment.");
+				invoiceItemDAO.save(lateFeeItem);
+	
+				// Add Late Fee to Invoice
+				i.getItems().add(lateFeeItem);
+				i.updateAmount();
+				i.setQbSync(true);
+				i.setAuditColumns(new User(User.SYSTEM));
+				if (i.getAccount() instanceof ContractorAccount)
+					((ContractorAccount) i.getAccount()).syncBalance();
+				invoiceItemDAO.save(i);
+			}
 		}
 	}
 
