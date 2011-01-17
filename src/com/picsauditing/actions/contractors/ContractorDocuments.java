@@ -32,6 +32,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 	protected Map<AuditType, List<ContractorAudit>> auditMap;
 	protected Map<String, List<AuditType>> auditTypes;
 	protected Map<String, String> imScores = new HashMap<String, String>();
+	protected Map<String, List<ContractorAudit>> expiredAudits;
 
 	protected Integer selectedAudit;
 	protected Integer selectedOperator;
@@ -87,8 +88,8 @@ public class ContractorDocuments extends ContractorActionSupport {
 		return imScores;
 	}
 
-	public void setImScores(Map<String, String> imScores) {
-		this.imScores = imScores;
+	public Map<String, List<ContractorAudit>> getExpiredAudits() {
+		return expiredAudits;
 	}
 
 	public Integer getSelectedAudit() {
@@ -165,36 +166,46 @@ public class ContractorDocuments extends ContractorActionSupport {
 		Map<String, List<ContractorAudit>> allIMAudits = new HashMap<String, List<ContractorAudit>>();
 		auditMap = new TreeMap<AuditType, List<ContractorAudit>>();
 		auditTypes = new HashMap<String, List<AuditType>>();
+		expiredAudits = new TreeMap<String, List<ContractorAudit>>();
 
 		for (ContractorAudit audit : getAudits()) {
 			// Policies are still on their own page
-			if (audit.isVisibleTo(permissions) && !audit.isExpired()) {
-				if (auditMap.get(audit.getAuditType()) == null)
-					auditMap.put(audit.getAuditType(), new ArrayList<ContractorAudit>());
+			if (audit.isVisibleTo(permissions)) {
+				AuditTypeClass classType = audit.getAuditType().getClassType();
 
-				auditMap.get(audit.getAuditType()).add(audit);
+				if (!audit.isExpired()) {
+					if (auditMap.get(audit.getAuditType()) == null)
+						auditMap.put(audit.getAuditType(), new ArrayList<ContractorAudit>());
 
-				String auditTypeClass = audit.getAuditType().getClassType().toString();
-				// Put annual updates in their own category?
-				if (audit.getAuditType().getId() == AuditType.ANNUALADDENDUM)
-					auditTypeClass = ANNUAL_UPDATE;
+					auditMap.get(audit.getAuditType()).add(audit);
 
-				if (auditTypes.get(auditTypeClass) == null)
-					auditTypes.put(auditTypeClass, new ArrayList<AuditType>());
+					String auditTypeClass = classType.toString();
+					// Put annual updates in their own category?
+					if (audit.getAuditType().getId() == AuditType.ANNUALADDENDUM)
+						auditTypeClass = ANNUAL_UPDATE;
 
-				if (!auditTypes.get(auditTypeClass).contains(audit.getAuditType()))
-					auditTypes.get(auditTypeClass).add(audit.getAuditType());
+					if (auditTypes.get(auditTypeClass) == null)
+						auditTypes.put(auditTypeClass, new ArrayList<AuditType>());
 
-				// IM Audits
-				if (audit.getAuditType().getClassType() == AuditTypeClass.IM) {
-					List<ContractorAudit> imAudits = allIMAudits.get(audit.getAuditType().getAuditName());
+					if (!auditTypes.get(auditTypeClass).contains(audit.getAuditType()))
+						auditTypes.get(auditTypeClass).add(audit.getAuditType());
 
-					if (imAudits == null) {
-						imAudits = new Vector<ContractorAudit>();
-						allIMAudits.put(audit.getAuditType().getAuditName(), imAudits);
+					// IM Audits
+					if (classType == AuditTypeClass.IM) {
+						List<ContractorAudit> imAudits = allIMAudits.get(audit.getAuditType().getAuditName());
+
+						if (imAudits == null) {
+							imAudits = new Vector<ContractorAudit>();
+							allIMAudits.put(audit.getAuditType().getAuditName(), imAudits);
+						}
+
+						imAudits.add(audit);
 					}
-
-					imAudits.add(audit);
+				} else if ((classType.isAudit() || classType.isPolicy()) && !audit.getAuditType().isAnnualAddendum()) {
+					if (expiredAudits.get(classType.toString()) == null)
+						expiredAudits.put(classType.toString(), new ArrayList<ContractorAudit>());
+					
+					expiredAudits.get(classType.toString()).add(audit);
 				}
 			}
 		}

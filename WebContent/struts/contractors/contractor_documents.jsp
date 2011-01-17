@@ -56,9 +56,11 @@
 	</s:if>
 	
 	<h3>
-		<s:if test="#classType == 'IM'"><a name="IM">Integrity Management Audits</a></s:if>
-		<s:elseif test="#classType == 'AU'"><a name="AU">Annual Updates</a></s:elseif>
-		<s:else><a name="<s:property value="#classType" />"><s:property value="#classType" /></a></s:else>
+		<a name="<s:property value="#classType" />">
+			<s:if test="#classType == 'IM'">Integrity Management Audits</s:if>
+			<s:elseif test="#classType == 'AU'">Annual Updates</s:elseif>
+			<s:else><s:property value="#classType" /></s:else>
+		</a>
 	</h3>
 	<table class="report" id="table_<s:property value="#classType" />">
 		<thead>
@@ -139,6 +141,72 @@
 			</tr>
 		</tbody>
 	</table>
+	
+	<s:if test="expiredAudits.get(#classType).size > 0">
+		<h3>Expired <s:property value="#classType == 'Policy' ? 'Policies' : #classType + 's'" /></h3>
+		<table class="report" id="expired_<s:property value="#classType" />">
+			<thead>
+			<tr>
+				<th>Name</th>
+				<th>Safety Professional</th>
+				<th>Expired</th>
+				<th>View</th>
+			</tr>
+			</thead>
+			<s:iterator value="expiredAudits.get(#classType)">
+				<tr>
+					<td>
+						<a href="Audit.action?auditID=<s:property value="id" />">
+							<s:property value="auditType.auditName" />
+							<s:if test="auditFor.length() > 0">: <s:property value="#audit.auditFor" /></s:if>
+							<s:if test="auditType.classType == 'Policy'"><br /><span style="font-size: 10px"><s:date name="effectiveDate" format="MMM yyyy" /></span></s:if>
+						</a>
+					</td>
+					<td><s:property value="auditor.name" /></td>
+					<td><s:date name="expiresDate" format="M/d/yyyy" /></td>
+					<td>
+						<s:if test="operators.size > 0">
+							<a href="#" onclick="$('tr.row_'+<s:property value="id" />).toggle(); return false;">
+								<s:iterator value="getCaoStats(permissions).keySet()" id="status" status="stat">
+									<s:property value="getCaoStats(permissions).get(#status)" /> Operator<s:if test="getCaoStats(permissions).get(#status) > 1">s</s:if><s:if test="!#stat.last">,</s:if>
+								</s:iterator>
+							</a>
+						</s:if>
+					</td>
+				</tr>
+				<s:if test="operators.size > 0">
+					<tr class="row_<s:property value="id" /> hidden">
+						<td colspan="4">
+							<table class="inner">
+								<s:iterator value="operators" id="cao">
+									<s:if test="#cao.isVisibleTo(permissions)">
+										<tr>
+											<td>
+												<pics:permission perm="ManageOperators">
+													<a href="FacilitiesEdit.action?id=<s:property value="#cao.operator.id"/>"><s:property value="#cao.operator.name"/></a>
+												</pics:permission>
+												<pics:permission perm="ManageOperators" negativeCheck="true">
+													<s:property value="#cao.operator.name" />
+												</pics:permission>
+											</td>
+											<td><s:property value="#cao.status" /></td>
+											<td><s:date name="#cao.statusChangedDate" format="M/d/yy" /></td>
+										</tr>
+									</s:if>
+								</s:iterator>
+							</table>
+						</td>
+					</tr>
+				</s:if>
+			</s:iterator>
+			<tr>
+				<td colspan="<s:property value="#colspan" />" class="center">
+					<a href="#" onclick="showAll('expired_<s:property value="#classType" />'); return false;" class="preview">View All</a>
+				</td>
+			</tr>
+		</table>
+	</s:if>
+	
 	<s:if test="#stat.last"><br clear="all" /></s:if>
 </s:iterator>
 
