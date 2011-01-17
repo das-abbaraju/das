@@ -35,7 +35,7 @@ public class AuditCalendar extends PicsActionSupport {
 			if (button.equals("audits")) {
 				json = new JSONObject();
 				JSONArray events = new JSONArray();
-				List<ContractorAudit> audits = contractorAuditDAO.findScheduledAudits(0, start, end);
+				List<ContractorAudit> audits = contractorAuditDAO.findScheduledAudits(0, start, end, permissions);
 				auditorCount.put("Total", 0);
 				for (ContractorAudit audit : audits) {
 					if (auditorCount.get(audit.getAuditor().getName()) == null)
