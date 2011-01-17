@@ -11,7 +11,6 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.UserSwitch;
 
 public class ContractorAddedSubscription extends SubscriptionBuilder {
 	public ContractorAddedSubscription(SubscriptionTimePeriod timePeriod,
@@ -27,19 +26,15 @@ public class ContractorAddedSubscription extends SubscriptionBuilder {
 		
 		if (!a.isCorporate()) // adding self if not corporate
 			children.add(operator);
-		else { // adding children and switch-tos if corporate
+		else 
 			children.addAll(operator.getOperatorChildren());
-//			for (UserSwitch user : getUser().getSwitchTos())
-//				if (user.getUser().getAccount().isOperator())
-//					children.add((OperatorAccount) user.getUser().getAccount());
-		}
+		
 
 		Map<OperatorAccount, Map<ContractorAccount, ContractorOperator>> operators = new TreeMap<OperatorAccount, Map<ContractorAccount, ContractorOperator>>(getOperatorComparator());
 
 		// Looking through children to find contractors that were added in
 		// time period.
 		for (OperatorAccount child : children) {
-			operators.put(child, null);
 			for(ContractorOperator co : child.getContractorOperators()){
 				// If added after necessary time period
 				if(co.getContractorAccount().getStatus().isActive()
