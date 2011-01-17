@@ -214,10 +214,7 @@ public class ContractorAuditDAO extends IndexableDAO {
 				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate";
 		if (auditorID > 0)
 			hql += " AND ca.auditor.id = :auditorID";
-		// For now, we'll show all scheduled audits. We don't want to just pull
-		// a audit that was previously scheduled without warning
-		// hql +=
-		// " AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status IN ('Pending','Submitted','Complete') AND cao.visible = 1)";
+		hql += " AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status != 'NotApplicable' AND cao.visible = 1)";
 		hql += " ORDER BY ca.scheduledDate, ca.id";
 		Query query = em.createQuery(hql);
 
