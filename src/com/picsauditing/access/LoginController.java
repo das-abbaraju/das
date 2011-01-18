@@ -48,10 +48,12 @@ public class LoginController extends PicsActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		loadPermissions(false);
-
-		if (button == null)
+		if (button == null) {
+			ServletActionContext.getRequest().getSession().invalidate();
 			return SUCCESS;
+		}
+
+		loadPermissions(false);
 
 		if ("logout".equals(button)) {
 			// The msg parameter is passed on Permissions.java when a session
@@ -63,7 +65,7 @@ public class LoginController extends PicsActionSupport {
 			// Mozilla 5 and others.
 			if (ServletActionContext.getRequest().getCookies() == null
 			// TODO: Going to need to refactor to preference file check on
-					// localization update
+			// localization update
 					&& ServletActionContext.getRequest().getParameter("msg") != null) {
 				ServletActionContext.getResponse().sendRedirect(
 						"Login.action?msg=Cookies are disabled on your browser. Please open your "
@@ -82,7 +84,9 @@ public class LoginController extends PicsActionSupport {
 				return SUCCESS;
 			}
 
+			ActionContext.getContext().getSession().clear();
 			ServletActionContext.getRequest().getSession().invalidate();
+			ServletActionContext.getRequest().getSession().removeAttribute("permissions");
 
 			return SUCCESS;
 		}
@@ -142,6 +146,7 @@ public class LoginController extends PicsActionSupport {
 			if (error.length() > 0) {
 				logAttempt();
 				addActionError(error);
+				ServletActionContext.getRequest().getSession().invalidate();
 				return SUCCESS;
 			}
 
@@ -169,7 +174,10 @@ public class LoginController extends PicsActionSupport {
 			PicsLogger.stop();
 		}
 
-		ActionContext.getContext().getSession().put("permissions", permissions);
+		if (permissions.isLoggedIn())
+			ActionContext.getContext().getSession().put("permissions", permissions);
+		else
+			ServletActionContext.getRequest().getSession().invalidate();
 		logAttempt();
 		postLogin();
 
