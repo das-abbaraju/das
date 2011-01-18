@@ -481,7 +481,7 @@ public class AuditBuilderController {
 				// If we don't have one, then add it
 				PicsLogger.log("Adding missing cao");
 				ContractorAuditOperator cao = new ContractorAuditOperator();
-				AuditStatus changeStatus = cao.getAudit().getAuditType().getWorkFlow().getFirstStep().getNewStatus(); 
+				AuditStatus changeStatus = conAudit.getAuditType().getWorkFlow().getFirstStep().getNewStatus(); 
 				cao.setAudit(conAudit);
 				cao.setOperator(operator);
 				cao.setAuditColumns(user);
