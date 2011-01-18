@@ -266,8 +266,12 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 	public List<AuditCategory> getCategoryList() {
 		if (categoryList == null) {
-			categoryList = adtDAO.getCategoriesByOperator(operator, permissions, true,
-					"a.auditCategory.auditType.id = 1");
+			String where = "t.auditType.id = 1 AND t.parent IS NULL AND t IN ("
+					+ "SELECT r.auditCategory FROM AuditCategoryRule r "
+					+ "WHERE r.include = 1 AND r.effectiveDate < NOW() AND r.expirationDate > NOW()"
+					+ " AND (r.operatorAccount.id IN (" + Strings.implode(operator.getOperatorHeirarchy())
+					+ ") OR r.operatorAccount IS NULL) )";
+			categoryList = auditCategoryDAO.findWhere(where);
 			Collections.sort(categoryList);
 		}
 

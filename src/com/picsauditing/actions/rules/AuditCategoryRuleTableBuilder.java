@@ -46,6 +46,9 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 			if (comparisonRule.getAuditType() != null) {
 				whereClauses.add("t.auditType.id = " + comparisonRule.getAuditType().getId());
 			}
+			if (comparisonRule.getAuditCategory() != null) {
+				whereClauses.add("t.auditCategory.id = " + comparisonRule.getAuditCategory().getId());
+			}
 			if (comparisonRule.getOperatorAccount() != null) {
 				OperatorAccount operator = operatorDAO.find(comparisonRule.getOperatorAccount().getId());
 				whereClauses.add("(t.operatorAccount IS NULL OR t.operatorAccount.id IN ("

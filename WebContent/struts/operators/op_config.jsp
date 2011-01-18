@@ -27,15 +27,6 @@ $(document).ready(function() {
 	$('#excludedCategories').load("AuditRuleTableAjax.action", data);
 });
 
-function toggleCategory(catID) {
-	var ol = "#subcat_" + catID;
-	var arrow = ".arrow_" + catID;
-	$(ol).slideToggle();
-	$(arrow).toggle();
-
-	return false;
-}
-
 function showType(typeID) {
 	var data = {
 		'comparisonRule.operatorAccount.id': <s:property value="operator.id" />,
@@ -44,12 +35,12 @@ function showType(typeID) {
 		'comparisonRule.auditType.id': typeID
 	};
 	var checkCat;
-	var cType =$('tr#'+typeID+' .classType').text();	
+	var cType =$('tr#type'+typeID+' .classType').text();	
 	if(cType=='Policy')
 		checkCat = true;
 
-	$('tr#'+typeID).find('.hide').show();
-	$('tr#'+typeID).find('.normal').hide();
+	$('tr#type'+typeID).find('.hide').show();
+	$('tr#type'+typeID).find('.normal').hide();
 
 	$('#typeTable_'+typeID).load('AuditTypeRuleTableAjax.action', data, function(){
 		if(checkCat){
@@ -68,33 +59,37 @@ function showType(typeID) {
 	return false;
 }
 
-function hideType(typeID) {
-	$('tr#'+typeID).find('.hide').hide();
-	$('tr#'+typeID).find('.normal').show();
-	$('#typeTable_' + typeID).empty();
-
-	return false;
-}
-
-function loadCatRules(catID, divCatID, name) {
-	$('.catTable').empty();
-
+function showCat(catID) {
 	var data = {
-		'operator.id': <s:property value="operator.id" />,
+		'comparisonRule.operatorAccount.id': <s:property value="operator.id" />,
 		showPriority: false,
 		showWho: false,
-		categoryID: catID
+		'comparisonRule.auditCategory.id': catID
 	};
 
-	startThinking({ div: "catTable_" + divCatID, message: "Loading Category Rules" });
-	$('#catTable_' + divCatID).load("AuditRuleTableAjax.action", data, function() {
-		$(this).prepend('<b>' + name + '</b><br /><a href="ManageCategory.action?id=' + catID 
-				+ '">Edit Category</a> <a href="#" onclick="return loadCatRules(' + catID + ',' + divCatID 
-				+ ', \'' + name + '\');" class="refresh">Refresh</a>');
-	});
+	$('tr#cat'+catID).find('.hide').show();
+	$('tr#cat'+catID).find('.normal').hide();
+	$('#catTable_'+catID).load('CategoryRuleTableAjax.action', data);
+	
+	return false;
+}
+
+function hideType(id) {
+	$('tr#type'+id).find('.hide').hide();
+	$('tr#type'+id).find('.normal').show();
+	$('#typeTable_' + id).empty();
 
 	return false;
 }
+
+function hideCat(id) {
+	$('tr#cat'+id).find('.hide').hide();
+	$('tr#cat'+id).find('.normal').show();
+	$('#catTable_' + id).empty();
+
+	return false;
+}
+
 </script>
 <style type="text/css">
 .auditTypeRule, .subcat-list, .hide {
@@ -162,34 +157,32 @@ function loadCatRules(catID, divCatID, name) {
 	<h2 class="formLegend">Likely Included Audits</h2>
 	<ol>
 		<li>
-			<s:if test="typeList.size > 0">
-				<table class="report">
-					<thead>
-						<tr>
-							<th>Category</th>
-							<th>Audit</th>
-							<th></th>
+			<table class="report">
+				<thead>
+					<tr>
+						<th>Category</th>
+						<th>Audit</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<s:iterator value="typeList" id="type">
+						<tr id="type<s:property value="#type.id" />">
+							<td class="classType"><s:property value="#type.classType" /></td>
+							<td><a href="ManageAuditType.action?id=<s:property value="#type.id" />"><s:property value="#type.auditName" /></a></td>
+							<td>
+								<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="normal preview">Show Rules</a>
+								<a href="#" onclick="return hideType(<s:property value="#type.id" />);" class="hide remove">Hide Rules</a>
+								<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="hide refresh">Refresh</a>
+								<div id="typeTable_<s:property value="#type.id" />"></div>
+									<a href="AuditTypeRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="#type.id" />&ruleOperatorAccountId=<s:property value="operator.id" />"
+										target="_blank" class="hide add">Add Rule</a>
+								<div id="build_<s:property value="#type.id" />" class="hide"></div>
+							</td>
 						</tr>
-					</thead>
-					<tbody>
-						<s:iterator value="typeList" id="type">
-							<tr id="<s:property value="#type.id" />">
-								<td class="classType"><s:property value="#type.classType" /></td>
-								<td><a href="ManageAuditType.action?id=<s:property value="#type.id" />"><s:property value="#type.auditName" /></a></td>
-								<td>
-									<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="normal preview">Show Rules</a>
-									<a href="#" onclick="return hideType(<s:property value="#type.id" />);" class="hide remove">Hide Rules</a>
-									<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="hide refresh">Refresh</a>
-									<div id="typeTable_<s:property value="#type.id" />"></div>
-										<a href="AuditTypeRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="#type.id" />&ruleOperatorAccountId=<s:property value="operator.id" />"
-											target="_blank" class="hide add">Add Rule</a>
-									<div id="build_<s:property value="#type.id" />" class="hide"></div>
-								</td>
-							</tr>
-						</s:iterator>
-					</tbody>
-				</table>
-			</s:if>
+					</s:iterator>
+				</tbody>
+			</table>
 		</li>
 		<li>
 			<s:form id="includeNewAudit">
@@ -210,43 +203,39 @@ function loadCatRules(catID, divCatID, name) {
 </fieldset>
 <fieldset class="form">
 	<h2 class="formLegend">Rules to Explicitly Remove Audit Types</h2>
-	<ol>
-		<li>
-			<div id="excludedTypes"></div>
-			<a href="AuditTypeRuleEditor.action?button=New&ruleInclude=false&ruleOperatorAccountId=<s:property value="operator.id" />"
-				target="_blank" class="add">Add Rule</a>
-		</li>
-	</ol>
+		<div id="excludedTypes"></div>
+		<a href="AuditTypeRuleEditor.action?button=New&ruleInclude=false&ruleOperatorAccountId=<s:property value="operator.id" />"
+			target="_blank" class="add">Add Rule</a>
 </fieldset>
 <fieldset class="form">
 	<h2 class="formLegend">Likely Included PQF Categories</h2>
-	<s:if test="categoryList.size > 0">
-		<table style="width: 100%;" id="includedCategories">
-			<s:iterator value="categoryList" id="cat">
-				<tr>
-					<td>
-						<ol>
-							<li>
-								<a href="#" onclick="return loadCatRules(<s:property value="#cat.id" />, <s:property value="#cat.id" />, '<s:property value="escapeQuotes(#cat.name)" />');"><s:property value="#cat.name" /></a>
-								<s:if test="#cat.subCategories.size > 0">
-									<a href="#" onclick="return toggleCategory(<s:property value="#cat.id" />);">
-										<img src="images/arrow-blue-down.png" class="arrow_<s:property value="#cat.id" />" alt="Expand" />
-										<img src="images/arrow-blue-right.png" class="arrow_<s:property value="#cat.id" />" alt="Collapse" style="display: none;" />
-									</a>
-								</s:if>
-								<s:if test="#cat.subCategories.size > 0">
-									<s:set name="subcat" value="%{#cat}" />
-									<s:set name="parentCatID" value="%{#cat.id}" />
-									<div class="subcat"><s:include value="op_config_subcat.jsp" /></div>
-								</s:if>
-							</li>
-						</ol>
-					</td>
-					<td style="padding: 20px;"><div class="catTable" id="catTable_<s:property value="#cat.id" />"></div></td>
-				</tr>
-			</s:iterator>
-		</table>
-	</s:if>
+	<ol>
+		<li>
+			<table class="report">
+				<thead>
+					<tr>
+						<th>Category</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<s:iterator value="categoryList" id="cat">
+						<tr id="cat<s:property value="#cat.id" />">
+							<td><a href="ManageCategory.action?id=<s:property value="#cat.id" />"><s:property value="#cat.name" /></a></td>
+							<td>
+								<a href="#" onclick="return showCat(<s:property value="#cat.id" />);" class="normal preview">Show Rules</a>
+								<a href="#" onclick="return hideCat(<s:property value="#cat.id" />);" class="hide remove">Hide Rules</a>
+								<a href="#" onclick="return showCat(<s:property value="#cat.id" />);" class="hide refresh">Refresh</a>
+								<div id="catTable_<s:property value="#cat.id" />"></div>
+									<a href="AuditCategoryRuleEditor.action?button=New&ruleAuditTypeId=1&ruleCategoryId=<s:property value="#cat.id" />&ruleOperatorAccountId=<s:property value="operator.id" />"
+										target="_blank" class="hide add">Add Rule</a>
+							</td>
+						</tr>
+					</s:iterator>
+				</tbody>
+			</table>
+		</li>
+	</ol>
 </fieldset>
 <fieldset class="form bottom">
 	<h2 class="formLegend">Rules to Explicitly Remove PQF Categories</h2>

@@ -172,12 +172,11 @@ function getLink(val, val_id){
 				<fieldset class="form">
 					<h2 class="formLegend">Summary</h2>
 					<ol>
-						<li>
-							<h4><s:property value="rule.toString()"/></h4>
-						</li>
 						<s:if test="rule.id > 0">
 							<li>
-								<s:property value="rule.getWhoString()"/>
+								<s:set var="o" value="rule" />
+								<s:include value="../who.jsp" />
+								<h4><s:property value="rule.toString()"/></h4>
 							</li>
 						</s:if>
 						<li>
@@ -266,11 +265,11 @@ function getLink(val, val_id){
 					<li <s:if test="operatorRequired">class="required"</s:if>>
 						<label>Operator</label>
 						<s:select id="operator" name="ruleOperatorAccountId" value="rule.operatorAccount.id" list="operatorList" headerKey="" 
-							headerValue="Any Operator" listKey="id" listValue="name"></s:select>
-						<s:if test="rule.operatorAccount.id != null">
-							<div id="operator_display"></div>
+							headerValue="Any Operator" listKey="get('id')" listValue="get('name')"></s:select>
+						<s:if test="rule.operatorAccount.id > 0">
+							<div id="operator_display"><a href="OperatorConfiguration.action?id=<s:property value="rule.operatorAccount.id"/>">Configuration</a></div>
 						</s:if>
-						<s:if test="operatorRequired"> 
+						<s:if test="operatorRequired">
 							<div class="fieldhelp">
 							<h3>Operator</h3>
 							<p>You must specify the Operator that this rule will apply to</p>

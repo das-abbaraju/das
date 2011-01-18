@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.beanutils.BasicDynaBean;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
@@ -141,13 +143,12 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 		return auditTypeDAO.getAuditTypeMap();
 	}
 
-	public List<OperatorAccount> getOperatorList() {
+	public List<BasicDynaBean> getOperatorList() {
 		String where = "";
 		if (permissions.hasGroup(User.GROUP_MARKETING))
-			where = "a IN (SELECT account FROM AccountUser WHERE user.id = " + permissions.getUserId() + ")";
-
-		// TODO Add corporate support
-		return operatorDAO.findWhere(true, where, permissions);
+			where = "a.id IN (SELECT accountID FROM account_user WHERE userID = " + permissions.getUserId() + ")";
+		
+		return operatorDAO.findWhereNatively(true, where);
 	}
 
 	public List<OperatorTag> getOperatorTagList() {

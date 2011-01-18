@@ -1564,10 +1564,6 @@
 			class="com.picsauditing.actions.audits.QuestionSelect">
 			<result>struts/audits/questions_select.jsp</result>
 		</action>
-		<action name="QuestionSelectTableAjax"
-			class="com.picsauditing.actions.audits.QuestionSelect">
-			<result>struts/audits/questions_select_table.jsp</result>
-		</action>
 
 		<action name="AuditorsGet"
 			class="com.picsauditing.actions.audits.AuditorsGet">
