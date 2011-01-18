@@ -450,14 +450,14 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	 */
 	@Enumerated(EnumType.STRING)
 	public Currency getCurrencyCode() {
-		if("CA".equals(this.getCountry().getIsoCode()))
+		if(getCountry() != null && "CA".equals(this.getCountry().getIsoCode()))
 			return Currency.CAD;
 
 		return Currency.USD;
 	}
 	
 	public void setCurrencyCode(Currency currencyCode) {
-		if("CA".equals(this.getCountry().getIsoCode()))
+		if(getCountry() != null && "CA".equals(this.getCountry().getIsoCode()))
 			this.currencyCode = Currency.CAD;
 		
 		this.currencyCode = Currency.USD;
@@ -742,5 +742,15 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	@Transient
 	public boolean isMaterialSupplierOnly(){
 		return (getAccountTypes().size() == 1 && getAccountTypes().iterator().next().equals(ContractorType.Supplier));
+	}
+	
+	@Transient
+	public boolean isUsesAccountType(ContractorType type) {
+		for (ContractorType ct : getAccountTypes()) {
+			if (ct.equals(type))
+				return true;
+		}
+		
+		return false;
 	}
 }
