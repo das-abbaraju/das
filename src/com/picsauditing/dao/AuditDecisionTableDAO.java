@@ -457,30 +457,4 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		return map;
 	}
 
-	public List<AuditCategory> getCategoriesByOperator(OperatorAccount operator, Permissions permissions) {
-		return getCategoriesByOperator(operator, permissions, false, null);
-	}
-
-	public List<AuditCategory> getCategoriesByOperator(OperatorAccount operator, Permissions permissions,
-			boolean topLevel, String where) {
-		if (Strings.isEmpty(where))
-			where = " WHERE (1=1) ";
-		else
-			where = " WHERE " + where;
-
-		List<Integer> operatorIDs = new ArrayList<Integer>();
-		if (permissions.isOperator())
-			operatorIDs = operator.getOperatorHeirarchy();
-		if (permissions.isCorporate())
-			operatorIDs.addAll(permissions.getOperatorChildren());
-		if (operatorIDs.size() > 0)
-			where += " AND a.operatorAccount.id IN (" + Strings.implode(operatorIDs, ",") + ")";
-		if (topLevel)
-			where += " AND a.auditCategory.parent IS NULL";
-
-		Query query = em.createQuery("SELECT DISTINCT a.auditCategory FROM AuditCategoryRule a" + where
-				+ " ORDER BY a.priority DESC");
-
-		return query.getResultList();
-	}
 }

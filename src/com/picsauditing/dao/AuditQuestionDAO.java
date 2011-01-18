@@ -1,16 +1,11 @@
 package com.picsauditing.dao;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.Utilities;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
 @Transactional
@@ -58,26 +53,6 @@ public class AuditQuestionDAO extends PicsDAO {
 		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE flaggable = TRUE ORDER BY "
 				+ "t.category,t.number");
 		return query.getResultList();
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<AuditQuestion> findByQuestion(String question, Permissions permissions, Set<AuditCategory> auditCats) {
-		String where = "SELECT t FROM AuditQuestion t WHERE t.name LIKE :name AND t.effectiveDate < NOW() AND t.expirationDate > NOW() ORDER BY t.number";
-		Query query = em.createQuery(where);
-		query.setParameter("name", "%" + Utilities.escapeQuotes(question) + "%");
-
-		List<AuditQuestion> result = query.getResultList();
-
-		if (permissions.isOperatorCorporate()) {
-			Iterator<AuditQuestion> iter = result.iterator();
-			while (iter.hasNext()) {
-				AuditQuestion q = iter.next();
-				if (!auditCats.contains(q.getCategory()))
-					iter.remove();
-			}
-		}
-
-		return result;
 	}
 
 	@SuppressWarnings("unchecked")
