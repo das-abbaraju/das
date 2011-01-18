@@ -18,6 +18,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.OrderBy;
@@ -75,6 +77,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	protected boolean onsiteServices = true;
 	protected boolean offsiteServices = false;
 	protected boolean materialSupplier = false;
+	protected Date accreditation;
 	protected Currency currencyCode = Currency.USD;
 
 	// Other tables
@@ -117,7 +120,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 		this.nameIndex = Strings.indexName(this.name);
 	}
 
-	@Column(length = 100)
+	@Column(length = 400)
 	public String getDbaName() {
 		return dbaName;
 	}
@@ -205,6 +208,29 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 			full.append(", ").append(country.getName());
 		if (!Strings.isEmpty(zip))
 			full.append(" ").append(zip);
+
+		return full.toString();
+	}
+
+	@Transient
+	public String getShortAddress(String currentCountryCode) {
+		StringBuffer full = new StringBuffer();
+		if (city != null) {
+			full.append(city.trim());
+		}
+		if (state != null) {
+			if (full.length() > 0)
+				full.append(", ");
+			full.append(state.getIsoCode());
+		}
+		if (country != null && !country.getIsoCode().equals(currentCountryCode)) {
+			if (full.length() > 0)
+				full.append(", ");
+			if (country.getName() == null)
+				full.append(country.getIsoCode());
+			else
+				full.append(country.getName());
+		}
 
 		return full.toString();
 	}
@@ -336,9 +362,9 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 
 	@Transient
 	public String getQbListID(String countryCode) {
-		if("CA".equals(countryCode))
+		if ("CA".equals(countryCode))
 			return getQbListCAID();
-		
+
 		// return default for other
 		return getQbListID();
 	}
@@ -440,32 +466,47 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
+
 	/**
-	 * Account currency code is the country we are assuming for billing a customer.
-	 * These two may differ in cases where the customer resides in a Country which
-	 * we bill as a US customer.
+	 * Account currency code is the country we are assuming for billing a
+	 * customer. These two may differ in cases where the customer resides in a
+	 * Country which we bill as a US customer.
 	 * 
 	 */
 	@Enumerated(EnumType.STRING)
 	public Currency getCurrencyCode() {
-		if(getCountry() != null && "CA".equals(this.getCountry().getIsoCode()))
+		if (getCountry() != null && "CA".equals(this.getCountry().getIsoCode()))
 			return Currency.CAD;
 
 		return Currency.USD;
 	}
-	
+
 	public void setCurrencyCode(Currency currencyCode) {
-		if(getCountry() != null && "CA".equals(this.getCountry().getIsoCode()))
+		if (getCountry() != null && "CA".equals(this.getCountry().getIsoCode()))
 			this.currencyCode = Currency.CAD;
-		
+
 		this.currencyCode = Currency.USD;
 	}
 
 	@Transient
 	public String getDescriptionHTML() {
 		return Utilities.escapeHTML(this.description);
+	}
+
+	/**
+	 * The date HSAN accredited the Training Provider to provide training
+	 * services. If HSAN training providers use a lot more custom fields then
+	 * we'll create a new table for this and other fields.
+	 * 
+	 * @return
+	 */
+	@Temporal(TemporalType.DATE)
+	public Date getAccreditation() {
+		return accreditation;
+	}
+
+	public void setAccreditation(Date accreditation) {
+		this.accreditation = accreditation;
 	}
 
 	@OneToMany(mappedBy = "account")
@@ -740,17 +781,17 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	}
 
 	@Transient
-	public boolean isMaterialSupplierOnly(){
+	public boolean isMaterialSupplierOnly() {
 		return (getAccountTypes().size() == 1 && getAccountTypes().iterator().next().equals(ContractorType.Supplier));
 	}
-	
+
 	@Transient
 	public boolean isUsesAccountType(ContractorType type) {
 		for (ContractorType ct : getAccountTypes()) {
 			if (ct.equals(type))
 				return true;
 		}
-		
+
 		return false;
 	}
 }
