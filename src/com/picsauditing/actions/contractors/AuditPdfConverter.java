@@ -57,10 +57,9 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditPdfConverter extends AuditActionSupport {
-	protected AuditDataDAO auditDataDAO;
 	protected OperatorAccountDAO operatorAccountDAO;
+	protected AuditDataDAO auditDataDAO;
 	protected AuditCategoryDataDAO catDataDao;
-	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
 	private Map<String, File> attachments = new TreeMap<String, File>();
 
@@ -76,10 +75,9 @@ public class AuditPdfConverter extends AuditActionSupport {
 			CertificateDAO certificateDao, AuditCategoryRuleCache auditCategoryRuleCache,
 			OperatorAccountDAO operatorAccountDAO, AuditDataDAO auditDataDAO, AuditCategoryDataDAO catDataDao) {
 		super(accountDao, auditDao, catDataDao, auditDataDAO, certificateDao, auditCategoryRuleCache);
+		this.operatorAccountDAO = operatorAccountDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.catDataDao = catDataDao;
-		this.auditCategoryRuleCache = auditCategoryRuleCache;
-		this.operatorAccountDAO = operatorAccountDAO;
 	}
 
 	@Override
