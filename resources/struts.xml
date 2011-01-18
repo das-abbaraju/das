@@ -1548,13 +1548,12 @@
 			<result>struts/json.jsp</result>
 		</action>
 
-		<!-- Ajax Snippets -->
-
-		<action name="FacilitiesGetAjax"
-			class="com.picsauditing.actions.operators.FacilitiesGet">
-			<result>struts/operators/facilitySelect.jsp</result>
+		<!-- Autocomplete Ajax -->
+		<action name="*Autocomplete" class="com.picsauditing.actions.autocomplete.{1}Autocomplete">
+			<result>struts/blank.jsp</result>
 		</action>
 
+		<!-- Ajax Snippets -->
 		<action name="ContractorSelectAjax"
 			class="com.picsauditing.actions.report.ReportAccount">
 			<result>struts/reports/contractors_select.jsp</result>
@@ -2084,9 +2083,5 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 		
-		<!-- Autocomplete Ajax -->
-		<action name="*Autocomplete" class="com.picsauditing.actions.autocomplete.{1}Autocomplete">
-			<result>struts/blank.jsp</result>
-		</action>
 	</package>
 </struts>

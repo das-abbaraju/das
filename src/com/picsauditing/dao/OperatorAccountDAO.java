@@ -117,6 +117,12 @@ public class OperatorAccountDAO extends PicsDAO {
 		return operatorList;
 	}
 
+	/**
+	 * Alias a
+	 * @param includeCorporate
+	 * @param where
+	 * @return
+	 */
 	public List<BasicDynaBean> findWhereNatively(boolean includeCorporate, String where) {
 		SelectAccount select = new SelectAccount();
 		if (includeCorporate)

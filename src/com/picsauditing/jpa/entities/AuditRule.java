@@ -348,18 +348,18 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 		sb.append(include ? "Include" : "Exclude");
 
 		if (risk != null)
-			identifiers.add("Contractor Risk = "+risk);
+			identifiers.add("Contractor is ["+risk + " risk]");
 		if (operatorAccount != null)
 			identifiers.add("Operator is ["+operatorAccount.getName() + "]");
 		if (contractorType != null)
 			identifiers.add("Contractor is "+contractorType);
 		if (tag != null)
-			identifiers.add("has tag \""+tag.getTag()+"\"");
+			identifiers.add("has tag ["+tag.getTag()+"]");
 		if (question != null)
 			identifiers.add(question.getColumnHeaderOrQuestion()+" "+questionComparator+
 					questionAnswer);
 		if (acceptsBids != null)
-			identifiers.add("Contactor "+(acceptsBids ? "can bid-only" : "has full account"));
+			identifiers.add("Contactor "+(acceptsBids ? "can [bid-only]" : "has [full account]"));
 		if (auditType != null)
 			identifiers.add("Audit Type is ["+auditType.getAuditName() + "]");
 		

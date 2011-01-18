@@ -16,8 +16,34 @@ $(function() {
 	startThinking({div:'lessRelated', message: "Loading"});
 	$('#moreRelated').load('<s:property value="urlPrefix"/>RuleTableAjax.action',{id: <s:property value="id"/>, button: 'moreGranular'});
 	$('#lessRelated').load('<s:property value="urlPrefix"/>RuleTableAjax.action',{id: <s:property value="id"/>, button: 'lessGranular'});
-	$('#editRuleButton').click(function(){
-		$('.hideRule, .showRule').toggle();
+	$('#operator').change(function() {
+		if ($(this).blank()) {
+			$('#operator_display').html('');
+			$('#tag').find('option').remove();
+			$('#opTagli').hide();
+		}
+	}).autocomplete('OperatorAutocomplete.action', {
+		formatItem  : function(data,i,count) {
+			return data[1];
+		},
+		formatResult: function(data,i,count) {
+			return data[0];
+		}
+	}).result(function(event, data) {
+		$('#operator_display').html("<a target='_BLANK' href=\"OperatorConfiguration.action?id=" + data[0] + "\">" + data[1] + " Configuration</a>");
+		$.getJSON('AuditRuleSearchAjax.action',{button: 'opTagFind', 'opID': data[0]},
+				function(json) {
+					if (json) {
+						$('#tag').html('');
+						var tags = json.tags;
+						$('#tag').append($('<option>').attr('value', 0).text("Any"));
+						for(var i=0; i<tags.length; i++) {
+							$('#tag').append($('<option>').attr('value', tags[i].tagID).text(tags[i].tag));
+						}
+						$('#opTagli').show();
+					} 
+				}
+			);
 	});
 	$('#question').change(function() {
 		if ($(this).blank()) {
@@ -52,26 +78,6 @@ $(function() {
 		$('#category_display').html(data[1]);
 	});
 	</s:if>
-	$('#operator').change(function() {
-		if ($(this).blank()) {
-			$('#tag').find('option').remove();
-			$('#opTagli').hide();
-		} else {
-			$.getJSON('AuditRuleSearchAjax.action',{button: 'opTagFind', 'opID': $('#operator').val()}, 
-				function(json) {
-					if (json) {
-						$('#tag').html('');
-						var tags = json.tags;
-						$('#tag').append($('<option>').attr('value', 0).text("Any"));
-						for(var i=0; i<tags.length; i++) {
-							$('#tag').append($('<option>').attr('value', tags[i].tagID).text(tags[i].tag));
-						}
-						$('#opTagli').show();
-					} 
-				}
-			);
-		}
-	});
 	$('#dependentAudit').change(function() {
 		if ($(this).blank()) {
 			$('#dAuditSelect').html('');
@@ -101,12 +107,6 @@ $(function() {
 	});
 });
 
-function getLink(val, val_id){
-	if($.inArray(val, ['dependentAudit','auditType'])!=-1)
-		return $('<a>',{'href':'ManageAuditType.action?id='+val_id, 'class':'go'}).append('Go to Audit');
-	else
-		return $('<a>',{'href':'OperatorConfiguration.action?id='+val_id, 'class':'go'}).append('Go to Operator');
-}
 </script>
 <style>
 .hideRule {
@@ -175,17 +175,18 @@ function getLink(val, val_id){
 						<s:if test="rule.id > 0">
 							<li>
 								<s:set var="o" value="rule" />
-								<s:include value="../who.jsp" />
-								<h4><s:property value="rule.toString()"/></h4>
+								<h4><s:include value="../who.jsp" />
+								<s:property value="rule.toString()"/></h4>
 							</li>
 						</s:if>
 						<li>
-							<a class="edit showPointer" id="editRuleButton"><span class="hideRule">Cancel Edit</span><span class="showRule">Edit Rule</span></a>
+							<a href="#edit" class="edit showPointer" id="editRuleButton" onclick="$(this).hide(); $('.hideRule').show();">Edit Rule</a>
 						</li>
 					</ol>
 				</fieldset>
 			</s:if>
 			<fieldset class="form hideRule">
+				<a name="edit"></a>
 				<h2 class="formLegend">Rule</h2>
 				<ol>
 					<li><label>Include</label>
@@ -264,11 +265,12 @@ function getLink(val, val_id){
 					</li>
 					<li <s:if test="operatorRequired">class="required"</s:if>>
 						<label>Operator</label>
-						<s:select id="operator" name="ruleOperatorAccountId" value="rule.operatorAccount.id" list="operatorList" headerKey="" 
-							headerValue="Any Operator" listKey="get('id')" listValue="get('name')"></s:select>
-						<s:if test="rule.operatorAccount.id > 0">
-							<div id="operator_display"><a href="OperatorConfiguration.action?id=<s:property value="rule.operatorAccount.id"/>">Configuration</a></div>
-						</s:if>
+						<s:textfield cssClass="autocomplete" id="operator" name="ruleOperatorAccountId" value="%{rule.operatorAccount.id}"/>
+						<div id="operator_display">
+							<s:if test="rule.operatorAccount != null">
+								<a href="OperatorConfiguration.action?id=<s:property value="rule.operatorAccount.id"/>"><s:property value="rule.operatorAccount.name"/> Configuration</a>
+							</s:if>
+						</div>
 						<s:if test="operatorRequired">
 							<div class="fieldhelp">
 							<h3>Operator</h3>
