@@ -52,5 +52,11 @@
 			});
 			$('fieldset.form ol :input:not(:checkbox):not(:button):not([type=hidden]):not(:radio):not(:submit)').addClass('input-edit-field');
         }
+        
+        $('.hoverable').live('mouseenter', function(){
+   			$(this).addClass('hover');
+   		}).live('mouseleave', function(){
+   			$(this).removeClass('hover');
+ 		});
 	});
 </script>
