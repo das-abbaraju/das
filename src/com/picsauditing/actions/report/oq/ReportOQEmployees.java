@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.report.ReportEmployee;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResult;
@@ -46,6 +47,10 @@ public class ReportOQEmployees extends ReportEmployee {
 	@Override
 	public String execute() throws Exception {
 		loadPermissions();
+		
+		if (!permissions.isRequiresOQ())
+			throw new NoRightsException("Operator Qualification");
+		
 		getFilter().setShowSsn(false);
 		getFilter().setShowLimitEmployees(true);
 		getFilter().setShowProjects(true);
@@ -92,13 +97,15 @@ public class ReportOQEmployees extends ReportEmployee {
 	protected void buildQuery() {
 		super.buildQuery();
 
-		sql.addJoin("JOIN employee_site es ON es.employeeID = e.id"
+		sql.addJoin("LEFT JOIN employee_site es ON es.employeeID = e.id"
 				+ dateRange("es.effectiveDate", "es.expirationDate", true));
-		sql.addJoin("JOIN job_site js ON js.id = es.jobSiteID" + dateRange("js.projectStart", "js.projectStop", true));
+		sql.addJoin("LEFT JOIN job_site js ON js.id = es.jobSiteID" + dateRange("js.projectStart", "js.projectStop", true));
 
 		sql.addField("es.jobSiteID");
 		sql.addField("a.type");
 
+		sql.addWhere("e.active = 1");
+		
 		sql.addGroupBy("e.id");
 
 		if (filterOn(getFilter().getProjects()))

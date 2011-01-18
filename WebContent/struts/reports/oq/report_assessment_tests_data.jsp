@@ -8,16 +8,16 @@
 <s:else>
 	<div class="right">
 		<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
-			href="javascript: download('ReportAssessmentTests');" title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a></div>
+			href="#" title="Download all <s:property value="report.allRows"/> results to a CSV file" onclick="download('ReportAssessmentTests'); return false;">Download</a></div>
 	<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 	<table class="report">
 		<thead>
 		<tr>
 			<th></th>
-			<th><a href="javascript: changeOrderBy('a.name,e.lastName,e.firstName');">Company</a></th>
-			<th><a href="javascript: changeOrderBy('e.lastName,e.firstName,a.name');">Employee</a></th>
-			<th><a href="javascript: changeOrderBy('centerName,test');">Assessment Center</a></th>
-			<th><a href="javascript: changeOrderBy('test,a.name,e.lastName,e.firstName');">Assessment Test</a></th>
+			<th><a href="javascript:changeOrderBy('a.name,e.lastName,e.firstName');">Company</a></th>
+			<th><a href="javascript:changeOrderBy('e.lastName,e.firstName,a.name');">Employee</a></th>
+			<th><a href="javascript:changeOrderBy('centerName,test');">Assessment Center</a></th>
+			<th><a href="javascript:changeOrderBy('test,a.name,e.lastName,e.firstName');">Assessment Test</a></th>
 			<th>In Effect</th>
 		</tr>
 		</thead>

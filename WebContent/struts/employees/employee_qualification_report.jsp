@@ -27,7 +27,7 @@ function orderBy(orderBy) {
 </s:if>
 <s:else>
 	<div class="right">
-		<a href="javascript: download('ReportOQEmployees');" target="_blank" class="excel">Download</a>
+		<a href="#" onclick="download('ReportOQEmployees'); return false;" target="_blank" class="excel">Download</a>
 	</div>
 	<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 	<table class="report">

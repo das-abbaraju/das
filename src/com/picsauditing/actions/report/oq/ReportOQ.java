@@ -1,5 +1,6 @@
 package com.picsauditing.actions.report.oq;
 
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.report.ReportEmployee;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
@@ -10,6 +11,9 @@ public class ReportOQ extends ReportEmployee {
 	@Override
 	public String execute() throws Exception {
 		loadPermissions();
+		
+		if (!permissions.isRequiresOQ())
+			throw new NoRightsException("Operator Qualification");
 
 		getFilter().setShowFirstName(false);
 		getFilter().setShowLastName(false);

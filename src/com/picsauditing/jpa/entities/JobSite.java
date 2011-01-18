@@ -132,9 +132,9 @@ public class JobSite extends BaseTable implements Comparable<JobSite> {
 	@Transient
 	@Override
 	public int compareTo(JobSite o) {
-		if (this.label.equals(o.getLabel()))
-			return this.name.compareTo(o.getName());
+		if (getName().equals(o.getName()))
+			return getLabel().compareTo(o.getLabel());
 		
-		return this.label.compareTo(o.getLabel());
+		return getName().compareTo(o.getName());
 	}
 }

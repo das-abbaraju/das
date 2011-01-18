@@ -12,7 +12,7 @@
 </s:if>
 <s:else>
 <div class="right">
-	<a class="excel" href="javascript: download('ReportOQ');" target="_blank" title="Download <s:property value="data.size" /> results to a CSV file">Download</a>
+	<a class="excel" href="#" onclick="download('ReportOQ'); return false;" target="_blank" title="Download <s:property value="data.size" /> results to a CSV file">Download</a>
 </div>
 <div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 <table class="report">

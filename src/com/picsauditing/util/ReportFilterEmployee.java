@@ -218,7 +218,7 @@ public class ReportFilterEmployee extends ReportFilter {
 		if (permissions.isOperatorCorporate())
 			return siteDAO.findByOperator(permissions.getAccountId(), true);
 		else if (permissions.isContractor())
-			return siteDAO.findByContractor(permissions.getAccountId());
+			return siteDAO.findByContractor(permissions.getAccountId(), true);
 		
 		return null;
 	}

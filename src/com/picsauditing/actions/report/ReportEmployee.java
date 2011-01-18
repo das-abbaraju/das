@@ -99,7 +99,7 @@ public class ReportEmployee extends ReportActionSupport {
 		
 		if (Strings.isEmpty(filename)) {
 			String className = this.getClass().getName();
-			filename = className.substring(className.lastIndexOf("."));
+			filename = className.substring(className.lastIndexOf(".") + 1);
 		}
 		
 		HSSFWorkbook wb = buildWorkbook(filename);
