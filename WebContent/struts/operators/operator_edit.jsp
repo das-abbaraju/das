@@ -88,11 +88,13 @@ $(function() {
 					<s:property value="#au.user.name"/>
 				</s:iterator>
 			</li>
-			<li><label>Sales Rep:</label>
-				<s:iterator value="salesReps" id="au">
-					<s:property value="#au.user.name"/>
-				</s:iterator>
-			</li>
+			<s:if test="salesReps.size() > 0">
+				<li><label>Sales Rep:</label>
+					<s:iterator value="salesReps" id="au">
+						<s:property value="#au.user.name"/>
+					</s:iterator>
+				</li>
+			</s:if>
 		</s:if>
 	</ol>
 	</fieldset>
@@ -203,7 +205,10 @@ $(function() {
 		<li><label>Industry:</label> <s:select list="industryList"
 			name="operator.industry" listValue="description" /></li>
 		<li><label>Description:</label> <s:textarea
-			name="operator.description" cols="40" rows="15" /></li>
+			name="operator.description" cols="40" rows="15" />
+			<pics:fieldhelp>General notes about this owner operator.</pics:fieldhelp>
+		</li>
+		<li><label>Account Since:</label> <s:date name="operator.creationDate" format="MMMMM yyyy" /> </li>
 	</ol>
 	</fieldset>
 	<s:if test="permissions.admin">
@@ -217,7 +222,13 @@ $(function() {
 			</li>
 			<li><label>Approves Contractors:</label> <s:radio
 				list="#{'Yes':'Yes','No':'No'}"
-				name="operator.approvesRelationships" theme="pics" /></li>
+				name="operator.approvesRelationships" theme="pics" />
+				<pics:fieldhelp title="Approves Contractors">
+					If Yes, contractors must be approved before operator users will see them. 
+					Default and recommended setting is No. 
+					If set to Yes, at least one user should have the permissions: [Approve Contractors] and [View Unapproved Contractors].
+				</pics:fieldhelp>
+			</li>
 			<li><label>Health &amp; Safety Organization:</label>
 				<s:radio list="#{'OSHA':'OSHA','MSHA':'MSHA','COHS':'Canadian OHS'}"
 					name="operator.oshaType" theme="pics" />
@@ -226,18 +237,24 @@ $(function() {
 					<p>The source of statistics that should be used to evaluate contractors</p>
 				</div>
 			</li>
+			<li><label>Contractors pay:</label> <s:radio
+				list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"
+				name="operator.doContractorsPay" theme="pics" />
+				<pics:fieldhelp>Are contractors required to pay. This field is only applicable for Active accounts. Default = Yes
+					Multiple means that contractors working only for this operator will not be charged an annual membership fee.
+				</pics:fieldhelp>
+			</li>
 			<s:if test="!operator.corporate">
 				<li><label>Accepts Bid Only Contractor:</label> <s:checkbox
 					name="operator.acceptsBids" /></li>
 			</s:if>
 			<li><label>InsureGUARD&trade;:</label> <s:radio
 				list="#{'Yes':'Yes','No':'No'}" name="operator.canSeeInsurance"
-				theme="pics" /></li>
+				theme="pics" />
+				<pics:fieldhelp>This field is no longer needed. Edit Operator Configuration to add InsureGUARD features.</pics:fieldhelp>
+			</li>
 			<li><label>Auto Approve / Auto Reject Policies:</label> <s:checkbox
 				name="operator.autoApproveInsurance" /></li>
-			<li><label>Contractors pay:</label> <s:radio
-				list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"
-				name="operator.doContractorsPay" theme="pics" /></li>
 			<li><label>Uses Operator Qualification (OQ):</label> <s:checkbox
 				name="operator.requiresOQ" /></li>
 			<li><label>Uses HSE Competency Review:</label> <s:checkbox
