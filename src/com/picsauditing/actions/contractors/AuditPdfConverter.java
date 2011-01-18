@@ -41,12 +41,14 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.AnswerMap;
@@ -55,26 +57,29 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditPdfConverter extends AuditActionSupport {
-	private Map<String, File> attachments = new TreeMap<String, File>();
-	private AuditDataDAO auditDataDAO;
+	protected AuditDataDAO auditDataDAO;
+	protected OperatorAccountDAO operatorAccountDAO;
 	protected AuditCategoryDataDAO catDataDao;
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
+	private Map<String, File> attachments = new TreeMap<String, File>();
+
 	private Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new Color(0xa8, 0x4d, 0x10));
-	private Font auditFont = FontFactory.getFont(FontFactory.HELVETICA, 20, Color.BLUE);
+	private Font auditFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new Color(0x01, 0x21, 0x42));
 	private Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new Color(0xa8, 0x4d, 0x10));
 	private Font subCategoryFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new Color(0xa8, 0x4d, 0x10));
 	private Font questionTitleFont = FontFactory.getFont(FontFactory.HELVETICA, 13, new Color(0xa8, 0x4d, 0x10));
 	private Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
 	private Font answerFont = FontFactory.getFont(FontFactory.COURIER, 10, Color.BLUE);
 
-	public AuditPdfConverter(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditDataDAO auditDataDAO,
-			CertificateDAO certificateDao, AuditCategoryDataDAO catDataDao,
-			AuditCategoryRuleCache auditCategoryRuleCache) {
+	public AuditPdfConverter(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			CertificateDAO certificateDao, AuditCategoryRuleCache auditCategoryRuleCache,
+			OperatorAccountDAO operatorAccountDAO, AuditDataDAO auditDataDAO, AuditCategoryDataDAO catDataDao) {
 		super(accountDao, auditDao, catDataDao, auditDataDAO, certificateDao, auditCategoryRuleCache);
 		this.auditDataDAO = auditDataDAO;
 		this.catDataDao = catDataDao;
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
+		this.operatorAccountDAO = operatorAccountDAO;
 	}
 
 	@Override
@@ -360,4 +365,11 @@ public class AuditPdfConverter extends AuditActionSupport {
 		}
 	}
 
+	@Override
+	public OperatorAccount getOperatorAccount() {
+		if (permissions.isOperatorCorporate()) {
+			return operatorAccountDAO.find(permissions.getAccountId());
+		}
+		return null;
+	}
 }

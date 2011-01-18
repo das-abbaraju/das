@@ -135,8 +135,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 				} else
 					operators.add(getOperatorAccount());
 
-				AuditCategoriesDetail auditCategoryDetail = builder.getDetail(conAudit.getAuditType(), getRules(),
-						operators);
+				AuditCategoriesDetail auditCategoryDetail = builder.getDetail(conAudit.getAuditType(),
+						getRules(conAudit, reload), operators);
 				requiredCategories = auditCategoryDetail.categories;
 			}
 
@@ -182,10 +182,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return descriptionText;
 	}
 
-	protected List<AuditCategoryRule> getRules() {
-		if (rules == null) {
-			rules = auditCategoryRuleCache.getApplicableCategoryRules(conAudit.getContractorAccount(), conAudit
-					.getAuditType());
+	protected List<AuditCategoryRule> getRules(ContractorAudit conAudit) {
+		return getRules(conAudit, false);
+	}
+
+	protected List<AuditCategoryRule> getRules(ContractorAudit conAudit, boolean reload) {
+		if (rules == null || reload) {
+			rules = auditCategoryRuleCache.getApplicableCategoryRules(conAudit.getContractorAccount(),
+					conAudit.getAuditType());
 		}
 		return rules;
 	}
