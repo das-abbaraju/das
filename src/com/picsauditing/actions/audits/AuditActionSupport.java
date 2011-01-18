@@ -391,6 +391,22 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return false;
 	}
 
+	public boolean isCanEditCao() {
+		if (permissions.hasPermission(OpPerms.CaoEdit))
+			return true;
+		return false;
+	}
+
+	public boolean isCanEditCao(ContractorAuditOperator cao) {
+		if (isCanEditCao()) {
+			if (permissions.isAdmin())
+				return true;
+			if (permissions.isOperatorCorporate())
+				return !cao.getOperator().isPicsCorporate();
+		}
+		return false;
+	}
+
 	public boolean isCanVerifyAudit() {
 		if (!permissions.isAuditor() && !permissions.hasGroup(959))
 			return false;

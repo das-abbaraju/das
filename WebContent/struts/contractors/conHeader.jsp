@@ -12,7 +12,7 @@ $(function(){
 		$('.dirty').show();
 		$('#auditHeader').addClass('dirty');
 		var caoMap = $('.dirtyCao :input').serialize();
-		$.post('ConAuditMaintainAjax.action', 'button=caoSave&'+'auditID='+$('input[name=auditID]').val()+'&'+caoMap, function(data){
+		$.post('ConAuditMaintainAjax.action', 'button=caoSave&systemEdit=true&'+'auditID='+$('input[name=auditID]').val()+'&'+caoMap, function(data){
 			$('#caoTable').html(data);
 			$('#auditHeader').removeClass('dirty');
 			$('.clean').show();
@@ -52,6 +52,25 @@ $(function(){
 			$(this).val('');		
 		}
 	});
+	<s:if test="canEditCao && !systemEdit">
+	$('td.caoStatus a.edit').live('click', function(e) {
+		e.preventDefault();
+		$(this).parents('td.caoStatus:first').toggleClass('edit');
+	});
+
+	$('#caoTable').delegate('span.caoEdit', 'change', function() {
+		var data = {
+				button: 'caoSave',
+				auditID: $('#auditID').val(), 
+				'caosSave[0].id': $('.caoID', this).val(), 
+				'caosSave[0].status': $('.status', this).val(),
+				systemEdit: false
+		};
+		$.post('ConAuditMaintainAjax.action', data, function(data){
+			$('#caoTable').html(data);
+		});
+	});
+	</s:if>
 });
 
 function loadResults(data, noteText){
@@ -122,6 +141,35 @@ function loadStatus(caoID){
 	});
 }
 </script>
+<style>
+#caoTable a.edit {
+	display: none
+}
+
+#caoTable span.right {
+	width: 20px;
+}
+
+#caoTable td.hover a.edit {
+	display: inline;
+}
+
+#caoTable .caoEdit {
+	display: none;
+}
+
+#caoTable .systemEdit .caoEdit {
+	display: inline;
+}
+
+#caoTable td.edit .caoDisplay {
+	display: none;
+}
+
+#caoTable td.edit .caoEdit {
+	display: inline;
+}
+</style>
 
 <s:set name="auditMenu" value="auditMenu"></s:set>
 

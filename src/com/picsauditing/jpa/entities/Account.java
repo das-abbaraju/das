@@ -747,8 +747,8 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	@Transient
 	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(
-				this.name).append('|');
+		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|')
+				.append(this.name).append('|');
 		if (this.city != null)
 			sb.append(this.city);
 		if (this.state != null)
@@ -793,5 +793,10 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 		}
 
 		return false;
+	}
+
+	@Transient
+	public boolean isPicsCorporate() {
+		return PICS_CORPORATE.contains(this.id);
 	}
 }

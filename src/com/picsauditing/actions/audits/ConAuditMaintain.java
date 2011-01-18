@@ -62,11 +62,21 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 			auditID = Integer.parseInt(ids[0]);
 			findConAudit();
 		}
+
+		/*
+		 * This page defaults to systemEdit = true. If something is trying to
+		 * set this value, use that instead. This is for the cao editing ability
+		 * on the main audit page.
+		 */
+		String[] systemEdits = (String[]) ActionContext.getContext().getParameters().get("systemEdit");
+		if (systemEdits != null && systemEdits.length > 0) {
+			systemEdit = Boolean.parseBoolean(systemEdits[0]);
+		} else {
+			systemEdit = true;
+		}
 	}
 
 	public String execute() throws Exception {
-		systemEdit = true;
-
 		if (!forceLogin())
 			return LOGIN;
 
@@ -83,7 +93,8 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 							Note newNote = new Note();
 							newNote.setAccount(toSave.getAudit().getContractorAccount());
 							newNote.setAuditColumns(permissions);
-							newNote.setSummary("Changed Status for "+ toSave.getAudit().getAuditType().getAuditName() +"("+toSave.getAudit().getId()+") from " + toSave.getStatus() + " to "
+							newNote.setSummary("Changed Status for " + toSave.getAudit().getAuditType().getAuditName()
+									+ "(" + toSave.getAudit().getId() + ") from " + toSave.getStatus() + " to "
 									+ cao.getStatus() + " for " + toSave.getOperator().getName());
 							newNote.setNoteCategory(NoteCategory.Audits);
 							newNote.setViewableBy(toSave.getOperator());

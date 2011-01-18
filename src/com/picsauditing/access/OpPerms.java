@@ -61,6 +61,7 @@ public enum OpPerms {
 	OfficeAuditCalendar("Implementation Audit Calendar", "Allows users to view the Implementation Audit Calendar", false, false, true, false, true),
 	ViewFullPQF("View PQF Work History", "Can view the PQF category Work History, which contains financial and other sensitive information", false, false, true, false, false),
 	AuditEdit("Contractor Audit (System)", "Can view and edit all fields related to an audit", true, true, true, false, false),
+	CaoEdit("CAO Edit", "Can change the cao statuses directly from the audit page.", false, false, true, false, true),
 	AuditCopy("Audit Copy", "Can Copy Audit from one Contractor to another Contractor", false, false, true, false, false),
 	MyCalendar("My Calendar", "View and Edit your Calendar", true, true, true, false, false),
 	Holidays("Holidays", "Manage the Holiday schedule for PICS", false, false, true, false, false),
