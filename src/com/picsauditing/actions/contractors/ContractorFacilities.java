@@ -22,10 +22,12 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorType;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.State;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
@@ -241,16 +243,21 @@ public class ContractorFacilities extends ContractorActionSupport {
 						for (BasicDynaBean d : data) {
 							OperatorAccount o = new OperatorAccount();
 
-							if (d.get("onsiteServices").equals("1"))
-								o.setOnsiteServices(true);
-							if (d.get("offsiteServices").equals("1"))
-								o.setOffsiteServices(true);
-							if (d.get("materialSupplier").equals("1"))
-								o.setMaterialSupplier(true);
-
 							o.setId(Integer.parseInt(d.get("opID").toString()));
 							o.setName(d.get("name").toString());
+							if (d.get("dbaName") != null)
+								o.setDbaName(d.get("dbaName").toString());
+							if (d.get("city") != null)
+								o.setCity(d.get("city").toString());
+							if (d.get("state") != null)
+								o.setState(new State(d.get("state").toString()));
+							if (d.get("country") != null)
+								o.setCountry(new Country(d.get("country").toString()));
 							o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
+
+							o.setOnsiteServices(1 == (Integer)d.get("onsiteServices"));
+							o.setOffsiteServices(1 == (Integer)d.get("offsiteServices"));
+							o.setMaterialSupplier(1 == (Integer)d.get("materialSupplier"));
 
 							if (contractor.isOnsiteServices() && o.isOnsiteServices() || contractor.isOffsiteServices()
 									&& o.isOffsiteServices() || contractor.isMaterialSupplier()

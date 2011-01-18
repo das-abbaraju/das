@@ -22,6 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
+import com.google.common.base.Strings;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.util.SpringUtils;
 
@@ -31,8 +32,6 @@ import com.picsauditing.util.SpringUtils;
 @PrimaryKeyJoinColumn(name = "id")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class OperatorAccount extends Account {
-
-	public static final String DEFAULT_NAME = "- Operator -";
 
 	public static final int PicsConsortium = 4;
 
@@ -70,6 +69,13 @@ public class OperatorAccount extends Account {
 	public OperatorAccount(String name) {
 		this.name = name;
 		this.type = "Operator";
+	}
+	
+	@Transient
+	public String getFullName() {
+		if (Strings.isNullOrEmpty(dbaName))
+			return name;
+		return dbaName;
 	}
 
 	/**
@@ -297,6 +303,7 @@ public class OperatorAccount extends Account {
 	 *         Freeport Hub, but not BASF Port Arthur
 	 */
 	@OneToMany(mappedBy = "parent")
+	@Deprecated
 	public List<OperatorAccount> getOperatorChildren() {
 		return operatorChildren;
 	}
@@ -305,6 +312,7 @@ public class OperatorAccount extends Account {
 		this.operatorChildren = operatorChildren;
 	}
 
+	@Deprecated
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parentID", nullable = true)
 	public OperatorAccount getParent() {

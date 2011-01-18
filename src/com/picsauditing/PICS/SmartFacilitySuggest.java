@@ -52,11 +52,7 @@ public class SmartFacilitySuggest {
 			inner1.addWhere("o.status = 'Active'");
 		inner1.addGroupBy("o.id");
 		inner1.addField("o.id opID");
-		inner1.addField("o.name");
-		inner1.addField("o.status");
-		inner1.addField("o.onsiteServices");
-		inner1.addField("o.offsiteServices");
-		inner1.addField("o.materialSupplier");
+		addFields(inner1, "o.");
 		inner1.addField("COUNT(*) total");
 
 		SelectSQL inner2 = new SelectSQL("accounts o");
@@ -71,21 +67,13 @@ public class SmartFacilitySuggest {
 			inner2.addWhere("o.status = 'Active'");
 		inner2.addGroupBy("o.id");
 		inner2.addField("o.id opID");
-		inner2.addField("o.name");
-		inner2.addField("o.status");
-		inner2.addField("o.onsiteServices");
-		inner2.addField("o.offsiteServices");
-		inner2.addField("o.materialSupplier");
+		addFields(inner2, "o.");
 		inner2.addField("COUNT(*)*10 total");
 		inner2.addWhere("c.zip LIKE '" + contractor.getZip().substring(0, zipLength) + "%'");
 
 		SelectSQL sql = new SelectSQL("(" + inner1.toString() + " UNION " + inner2.toString() + ") t");
 		sql.addField("opID");
-		sql.addField("name");
-		sql.addField("status");
-		sql.addField("onsiteServices");
-		sql.addField("offsiteServices");
-		sql.addField("materialSupplier");
+		addFields(sql, "");
 		sql.addField("SUM(total) total");
 		sql.addGroupBy("opID");
 		sql.addOrderBy("total DESC");
@@ -113,21 +101,30 @@ public class SmartFacilitySuggest {
 			sql.addOrderBy("score DESC");
 		else
 			sql.addOrderBy("a.name");
+		
+		addFields(sql, "a.");
 		sql.addField("(s.total*AVG(s.total)/s2.total) score");
-		sql.addField("a.name");
-		sql.addField("a.onsiteServices");
-		sql.addField("a.offsiteServices");
-		sql.addField("a.materialSupplier");
 		sql.addField("a.id opID");
 		sql.addField("ROUND(100*AVG(s.total)/s2.total)");
 		sql.addField("SUM(s.total)");
 		sql.addField("COUNT(*)");
-		sql.addField("a.status");
 		if (limit > 0)
 			sql.setLimit(limit);
 
 		Database db = new Database();
 		return db.select(sql.toString(), false);
 	}
-
+	
+	private static void addFields(SelectSQL sql, String alias) {
+		sql.addField(alias + "name");
+		sql.addField(alias + "dbaName");
+		sql.addField(alias + "status");
+		sql.addField(alias + "city");
+		sql.addField(alias + "state");
+		sql.addField(alias + "country");
+		sql.addField(alias + "industry");
+		sql.addField(alias + "onsiteServices");
+		sql.addField(alias + "offsiteServices");
+		sql.addField(alias + "materialSupplier");
+	}
 }

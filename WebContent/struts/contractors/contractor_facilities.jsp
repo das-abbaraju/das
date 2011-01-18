@@ -138,10 +138,14 @@
 		});
 		return false;
 	}
-		
 </script>
 
 <style>
+.operatorlocation {
+	padding-left: 10px;
+	font-size: x-small;
+	color: gray;
+}
 #results {
 	padding-top: 10px;
 }

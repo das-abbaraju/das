@@ -8,8 +8,8 @@
 </s:if>
 <s:else>
 	<s:if test="state == '' && operator.name == ''">
-	<div id="help" class="fieldhelp" style="width:100%;max-width:100%;margin:0 0 10px 0;">
-		Here are ten other Operators that you might work at:
+	<div id="help">
+		Here are ten suggestions for other locations you might work at:
 	</div>
 	</s:if>
 <table class="report">
@@ -20,10 +20,14 @@
 		</tr>
 	</thead>
 	<tbody>
-	<s:iterator value="searchResults" id="op">
+	<s:iterator value="searchResults" var="op">
 		<tr id="results_<s:property value="id"/>">
 			<td	class="account<s:property value="status" />">
-				<s:property value="name"/>
+				<s:if test="permissions.admin">
+					<a href="FacilitiesEdit.action?id=<s:property value="id"/>"><s:property value="fullName" /></a>
+				</s:if>
+				<s:else><s:property value="fullName" /></s:else>
+				<div class="operatorlocation"><s:property value="getShortAddress(permissions.getCountry())" /></div>
 			</td>
 			<td class="center"><a id="facility_<s:property value="id"/>" href="#" onclick="javascript: return addOperator( <s:property value="#conID"/>, <s:property value="id"/>);"
 				class="add">Add</a></td>
