@@ -33,6 +33,7 @@ public class Employee extends BaseTable implements Indexable {
 	private EmployeeClassification classification = EmployeeClassification.FullTime;
 	private boolean active = true;
 	private boolean needsIndexing = false;
+	private String picsNumber;
 	private Date hireDate;
 	private Date fireDate;
 	private String title;
@@ -45,6 +46,7 @@ public class Employee extends BaseTable implements Indexable {
 	private Date twicExpiration;
 	private int needsRecalculation;
 	private Date lastRecalculation;
+	private User user;
 
 	List<EmployeeRole> employeeRoles = new ArrayList<EmployeeRole>();
 	List<EmployeeCompetency> employeeCompetencies = new ArrayList<EmployeeCompetency>();
@@ -108,6 +110,18 @@ public class Employee extends BaseTable implements Indexable {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	/**
+	 * PICS Worker Number aka Worker Access Code
+	 * @return
+	 */
+	public String getPicsNumber() {
+		return picsNumber;
+	}
+
+	public void setPicsNumber(String picsNumber) {
+		this.picsNumber = picsNumber;
 	}
 
 	@Temporal(TemporalType.DATE)
@@ -227,8 +241,7 @@ public class Employee extends BaseTable implements Indexable {
 		return employeeQualifications;
 	}
 
-	public void setEmployeeQualifications(
-			Set<EmployeeQualification> employeeQualifications) {
+	public void setEmployeeQualifications(Set<EmployeeQualification> employeeQualifications) {
 		this.employeeQualifications = employeeQualifications;
 	}
 
@@ -266,6 +279,16 @@ public class Employee extends BaseTable implements Indexable {
 		this.lastRecalculation = lastRecalculation;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "userID")
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject toJSON(boolean full) {
@@ -274,8 +297,7 @@ public class Employee extends BaseTable implements Indexable {
 		json.put("firstName", firstName);
 		json.put("lastName", lastName);
 		json.put("account", account.toJSON());
-		json.put("classification", classification == null ? null
-				: classification.toString());
+		json.put("classification", classification == null ? null : classification.toString());
 		json.put("status", active);
 		json.put("hireDate", hireDate == null ? null : hireDate.getTime());
 		json.put("fireDate", fireDate == null ? null : fireDate.getTime());
@@ -286,8 +308,7 @@ public class Employee extends BaseTable implements Indexable {
 		json.put("ssn", Strings.maskSSN(ssn));
 		json.put("birthDate", birthDate == null ? null : birthDate.getTime());
 		json.put("photo", photo);
-		json.put("twicExpiration", twicExpiration == null ? null
-				: twicExpiration.getTime());
+		json.put("twicExpiration", twicExpiration == null ? null : twicExpiration.getTime());
 
 		return json;
 	}
@@ -333,8 +354,7 @@ public class Employee extends BaseTable implements Indexable {
 		// phone
 		temp = this.phone;
 		if (temp != null && !temp.isEmpty()) {
-			l.add(new IndexObject(Strings.stripPhoneNumber(temp).replaceAll(
-					"\\D", ""), 2));
+			l.add(new IndexObject(Strings.stripPhoneNumber(temp).replaceAll("\\D", ""), 2));
 		}
 		return l;
 	}
@@ -357,15 +377,13 @@ public class Employee extends BaseTable implements Indexable {
 	@Transient
 	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.getReturnType()).append('|').append("Employee")
-				.append('|').append(this.id).append('|').append(
-						this.getDisplayName()).append('|').append(
-						this.account.name).append("\n");
+		sb.append(this.getReturnType()).append('|').append("Employee").append('|').append(this.id).append('|').append(
+				this.getDisplayName()).append('|').append(this.account.name).append("\n");
 		return sb.toString();
 	}
 
 	@Transient
 	public String getViewLink() {
-		return "ManageEmployees.action?employee.id="+this.id;
+		return "ManageEmployees.action?employee.id=" + this.id;
 	}
 }

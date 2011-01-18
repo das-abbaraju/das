@@ -1,6 +1,8 @@
 package com.picsauditing.dao;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import javax.persistence.Query;
 
@@ -8,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
+import com.picsauditing.util.Luhn;
 import com.picsauditing.util.Strings;
 
 @Transactional
@@ -98,5 +101,16 @@ public class EmployeeDAO extends IndexableDAO{
 				"WHERE e.account.id IN (SELECT a.id FROM Account a WHERE a.status IN ('Active', 'Pending'))" +
 				"GROUP BY e.title HAVING COUNT(*) > 1 ORDER BY e.title");
 		return query.getResultList();
+	}
+	
+	static public String generatePicsNumber(Employee employee) {
+		Random random = new Random(employee.getId() + Calendar.getInstance().getTimeInMillis());
+		long value = random.nextInt(899999999) + 100000000;
+		String value2 = Luhn.addCheckDigit(Long.toString(value));
+		return value2.substring(0,5) + "-" + value2.substring(5,10);
+	}
+	
+	public void setPicsNumber(Employee employee) {
+		employee.setPicsNumber(generatePicsNumber(employee));
 	}
 }

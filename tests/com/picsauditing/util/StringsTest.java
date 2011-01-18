@@ -22,6 +22,8 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.search.SelectUserUnion;
 
@@ -372,4 +374,12 @@ public class StringsTest extends TestCase {
 		assertFalse(Strings.isEqualNullSafe("foo", "bar"));
 		assertTrue(Strings.isEqualNullSafe("foobar", "foobar"));
 	}
+
+	public void testEmployeePicsNumber() {
+		Employee employee = new Employee();
+		employee.setId(943148);
+		String value = EmployeeDAO.generatePicsNumber(employee);
+		System.out.println(value);
+	}
+
 }
