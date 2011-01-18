@@ -12,8 +12,6 @@ import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
-import com.picsauditing.util.Strings;
-
 @SuppressWarnings("serial")
 @Entity
 @MappedSuperclass
@@ -23,7 +21,7 @@ public abstract class BaseHistory extends BaseTable {
 
 	protected Date effectiveDate;
 	protected Date expirationDate;
-	
+
 	@Temporal(TemporalType.DATE)
 	public Date getEffectiveDate() {
 		return effectiveDate;
@@ -41,19 +39,19 @@ public abstract class BaseHistory extends BaseTable {
 	public void setExpirationDate(Date expirationDate) {
 		this.expirationDate = expirationDate;
 	}
-	
+
 	public void defaultDates() {
 		effectiveDate = new Date();
-		expirationDate = (Date)END_OF_TIME.clone();
+		expirationDate = (Date) END_OF_TIME.clone();
 	}
-	
+
 	/**
 	 * Expire this record to the start of today (midnight)
 	 */
 	public void expire() {
 		expirationDate = getMidnightToday();
 	}
-	
+
 	static public Date getMidnightToday() {
 		Calendar cal = new GregorianCalendar();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -62,13 +60,13 @@ public abstract class BaseHistory extends BaseTable {
 		cal.set(Calendar.MILLISECOND, 0);
 		return cal.getTime();
 	}
-	
+
 	@Transient
 	public boolean isCurrent() {
 		Date now = new Date();
 		return isCurrent(now);
 	}
-	
+
 	@Transient
 	public boolean isCurrent(Date now) {
 		if (effectiveDate != null && effectiveDate.after(now))
@@ -77,7 +75,6 @@ public abstract class BaseHistory extends BaseTable {
 			return false;
 		return true;
 	}
-
 
 	@Override
 	@SuppressWarnings("unchecked")
