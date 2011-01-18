@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.SocketException;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -116,6 +117,8 @@ public class EbixLoader {
 										for (ContractorAuditOperator cao : audit.getOperators()) {
 											if (status != cao.getStatus()) {
 												cao.setStatus(status);
+												if(status==AuditStatus.Submitted)
+													audit.setEffectiveDate(new Date());
 												contractorAuditDAO.save(audit);
 
 												conAccount.incrementRecalculation();

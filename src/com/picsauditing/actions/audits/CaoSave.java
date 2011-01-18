@@ -468,7 +468,7 @@ public class CaoSave extends AuditActionSupport {
 					&& cao.getOperator().isAutoApproveInsurance()) {
 				if (cao.getFlag() != null) {
 					if (cao.getFlag().isGreen())
-						cao.setStatus(AuditStatus.Approved);
+						cao.changeStatus(AuditStatus.Approved, permissions);
 				}
 			}
 		}

@@ -123,7 +123,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 
 					String auditName = conAudit.getAuditType().getAuditName() + " - ";
 					if (conAudit.getAuditType().isPqf())
-						auditName += DateBean.format(conAudit.getEffectiveDate(), "MMM yyyy");
+						auditName += DateBean.format(conAudit.getEffectiveDateLabel(), "MMM yyyy");
 					else if (!Strings.isEmpty(conAudit.getAuditFor()))
 						auditName += conAudit.getAuditFor();
 

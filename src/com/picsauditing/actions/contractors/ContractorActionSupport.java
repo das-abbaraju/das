@@ -195,7 +195,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 						&& audit.getOperators().size() > 0) {
 					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
-						String year = DateBean.format(audit.getEffectiveDate(), "yy");
+						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
 						String linkText = audit.getAuditType().getAuditName() + " '" + year;
 						childMenu.setName(linkText);
 						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
@@ -256,7 +256,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
 
-						String year = DateBean.format(audit.getEffectiveDate(), "yy");
+						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
 						String linkText = audit.getAuditType().getAuditName() + " '" + year;
 						if (!Strings.isEmpty(audit.getAuditFor()))
 							linkText = audit.getAuditFor() + " " + linkText;

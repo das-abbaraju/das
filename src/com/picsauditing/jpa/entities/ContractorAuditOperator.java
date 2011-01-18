@@ -78,6 +78,8 @@ public class ContractorAuditOperator extends BaseTable {
 	public void changeStatus(AuditStatus auditStatus, Permissions permissions) {
 		// If we're changing the status to Submitted or Active, then we need
 		// to set the dates
+		if(auditStatus==AuditStatus.Submitted)
+			audit.setEffectiveDate(new Date());
 		statusChangedDate = new Date();
 		setAuditColumns(permissions);
 		setStatus(auditStatus);

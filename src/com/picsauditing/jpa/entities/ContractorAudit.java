@@ -42,6 +42,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private AuditType auditType;
 	private ContractorAccount contractorAccount;
 	private Date expiresDate;
+	private Date effectiveDate;
 	private User auditor;
 	private User closingAuditor;
 	private Date assignedDate;
@@ -140,6 +141,15 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public void setExpiresDate(Date expiresDate) {
 		this.expiresDate = expiresDate;
+	}
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getEffectiveDate() {
+		return effectiveDate;
+	}
+	
+	public void setEffectiveDate(Date effectiveDate) {
+		this.effectiveDate = effectiveDate;
 	}
 
 	@Transient
@@ -307,14 +317,14 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	@Transient
 	public Date getValidDate() {
-		if (auditType.getClassType().isPqf())
-			return new Date();
+		if(effectiveDate!=null)
+			return effectiveDate;
 		else
-			return creationDate;
+			return new Date();
 	}
 
 	@Transient
-	public Date getEffectiveDate() {
+	public Date getEffectiveDateLabel() {
 		for (ContractorAuditOperator cao : operators) {
 			if (cao.getStatus().equals(AuditStatus.Complete))
 				return cao.getStatusChangedDate();
