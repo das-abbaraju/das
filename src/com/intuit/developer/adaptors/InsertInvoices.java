@@ -14,6 +14,7 @@ import com.intuit.developer.QBSession;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.quickbooks.qbxml.InvoiceAdd;
@@ -32,8 +33,8 @@ public class InsertInvoices extends CustomerAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 		
 		List<Invoice> invoices = getInvoiceDao().findWhere(
-				"i.account.qbListID is not null AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
-						+ "AND i.account.qbListID not like 'NOLOAD%'", 10);
+				"i.account."+currentSession.getQbID()+" is not null AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
+						+ "AND i.account."+currentSession.getQbID()+" not like 'NOLOAD%' AND i.currency like '"+currentSession.getCurrencyCode()+"'", 10);
 
 		// no work to do
 		if (invoices.size() == 0) {
@@ -62,7 +63,7 @@ public class InsertInvoices extends CustomerAdaptor {
 				invoiceAddRequest.setInvoiceAdd(invoice);
 
 				invoice.setCustomerRef(factory.createCustomerRef());
-				invoice.getCustomerRef().setListID(invoiceJPA.getAccount().getQbListID());
+				invoice.getCustomerRef().setListID(invoiceJPA.getAccount().getQbListID(currentSession.getCountryCode()));
 
 				invoice.setClassRef(factory.createClassRef());
 				invoice.getClassRef().setFullName("Contractors");
@@ -109,7 +110,10 @@ public class InsertInvoices extends CustomerAdaptor {
 						lineItem.getItemRef().setFullName(item.getInvoiceFee().getQbFullName());
 	
 						lineItem.setDesc(item.getDescription());
-						lineItem.setQuantity("1");
+						
+						// cannot set a quantity for Tax items
+						if(item.getInvoiceFee().getId() != InvoiceFee.GST)
+							lineItem.setQuantity("1");
 	
 						lineItem.setClassRef(factory.createClassRef());
 						lineItem.getClassRef().setFullName("Contractors");

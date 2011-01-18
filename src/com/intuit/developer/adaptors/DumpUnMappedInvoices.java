@@ -61,7 +61,8 @@ public class DumpUnMappedInvoices extends InvoiceAdaptor {
 			File fileBase = new File(System.getProperty("pics.ftpDir"));
 
 			File outputFile = new File(fileBase, "invoices.out");
-			// File outputFile2 = new File(fileBase, "paid_in_pics_but_not_qb.out");
+			// File outputFile2 = new File(fileBase,
+			// "paid_in_pics_but_not_qb.out");
 
 			if (outputFile.isFile()) {
 				outputFile.delete();
@@ -96,11 +97,14 @@ public class DumpUnMappedInvoices extends InvoiceAdaptor {
 
 							try {
 								contractor = getContractorDao().findWhere(
-										"qbListID = '" + invoiceRet.getCustomerRef().getListID() + "'").get(0);
+										currentSession.getQbID() + " = '"
+												+ invoiceRet.getCustomerRef().getListID() + "'").get(0);
 							} catch (Exception e2) {
 							}
 
-							if (contractor != null) { // there is an invoice in QB but not PICS for a mapped contractor
+							if (contractor != null) { // there is an invoice in
+														// QB but not PICS for a
+														// mapped contractor
 
 								throw new Exception("Contractor Invoice found in QB which is not in Pics, Invoice: "
 										+ targetObject.getId() + "\tCustomer name: "
@@ -109,7 +113,7 @@ public class DumpUnMappedInvoices extends InvoiceAdaptor {
 							}
 						}
 
-						if (!(connectedInvoice.getAccount().getQbListID().equals(invoiceRet.getCustomerRef()
+						if (!(connectedInvoice.getAccount().getQbListID(currentSession.getCountryCode()).equals(invoiceRet.getCustomerRef()
 								.getListID()))) {
 							throw new Exception("Invoice loaded, but customers did not match up.  Invoice: "
 									+ targetObject.getId() + " QbCustomerListId: "
@@ -120,7 +124,8 @@ public class DumpUnMappedInvoices extends InvoiceAdaptor {
 						fw.write("update invoice set qbListID = '" + dataForThisListId.get("TxnID") + "' where id = "
 								+ targetObject.getId() + ";\n");
 
-						// if( invoiceRet.getIsPaid().equals("false") && connectedInvoice.isPaid() ) {
+						// if( invoiceRet.getIsPaid().equals("false") &&
+						// connectedInvoice.isPaid() ) {
 						// fw2.write(connectedInvoice.getAccount().getId());
 						// fw2.write("\t");
 						// fw2.write(connectedInvoice.getId());

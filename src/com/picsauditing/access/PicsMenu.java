@@ -192,6 +192,7 @@ public class PicsMenu {
 			subMenu.addChild("Expired CC Report", "ReportExpiredCreditCards.action?filter.status=Active");
 			subMenu.addChild("Lifetime Members Report", "ReportLifetimeMembership.action");
 			subMenu.addChild("QuickBooks Sync", "QBSyncList.action");
+			subMenu.addChild("QuickBooks Sync Canada", "QBSyncListCanada.action");
 		}
 
 		subMenu = menu.addChild("InsureGUARD&trade;");

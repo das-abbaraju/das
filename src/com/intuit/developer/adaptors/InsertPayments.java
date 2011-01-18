@@ -34,8 +34,8 @@ public class InsertPayments extends PaymentAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<Payment> payments = getPaymentDao().findWhere(
-				"p.account.qbListID is not null AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
-						+ "AND p.account.qbListID not like 'NOLOAD%'", 10);
+				"p.account."+currentSession.getQbID()+" is not null AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
+						+ "AND p.account."+currentSession.getQbID()+" not like 'NOLOAD%' AND p.currency like '"+currentSession.getCurrencyCode()+"'", 10);
 
 		// no work to do
 		if (payments.size() == 0) {
@@ -71,7 +71,7 @@ public class InsertPayments extends PaymentAdaptor {
 			// Start Payment Insert/Update
 			PicsLogger.log("   setCustomerRef");
 			payment.setCustomerRef(factory.createCustomerRef());
-			payment.getCustomerRef().setListID(paymentJPA.getAccount().getQbListID());
+			payment.getCustomerRef().setListID(paymentJPA.getAccount().getQbListID(currentSession.getCountryCode()));
 
 			PicsLogger.log("   setARAccountRef");
 			payment.setARAccountRef(factory.createARAccountRef());

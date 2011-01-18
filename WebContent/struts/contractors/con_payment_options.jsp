@@ -90,7 +90,7 @@ function updateExpDate() {
 		<li><label>Next Billing Date:</label> <s:date
 			name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
 		<li><label>Next Billing Amount:</label> $<s:property
-			value="contractor.newMembershipLevel.amount" /> USD
+			value="contractor.newMembershipLevel.amount" /> <s:property value="contractor.currencyCode" />
 			<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
 				href="#" title="opens in new window">Click here to view pricing</a>
 		</li>
@@ -107,16 +107,22 @@ function updateExpDate() {
 			</li>
 		</s:if>
 		<s:elseif test="contractor.acceptsBids">
-			<li><label>Total:</label> $<s:property value="contractor.newMembershipLevel.amount"/> USD </li>
+			<li><label>Total:</label> $<s:property value="contractor.newMembershipLevel.amount"/> <s:property value="contractor.currencyCode" /> </li>
 		</s:elseif>
 		<s:else>
 			<li><label>Annual Membership:</label> $<s:property
-				value="contractor.newMembershipLevel.amount" /> USD
+				value="contractor.newMembershipLevel.amount" /> <s:property value="contractor.currencyCode" />
 				<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
 					href="#" title="opens in new window">Click here to view pricing</a>
 				</li>
-			<li><label><s:property value="activationFee.fee"/>:</label> $<s:property value="activationFee.amount"/> USD</li>
-			<li><label>Total:</label> $<s:property value="activationFee.amount+contractor.newMembershipLevel.amount"/> USD </li>
+			<li><label><s:property value="activationFee.fee"/>:</label> $<s:property value="activationFee.amount"/> <s:property value="contractor.currencyCode" /></li>
+			<s:if test="contractor.currencyCode.canada">
+				<li><label>Goods & Services Tax:</label> $<s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
+				<li><label>Total:</label> $<s:property value="activationFee.amount+contractor.newMembershipLevel.amount+gstFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
+			</s:if>
+			<s:else>
+				<li><label>Total:</label> $<s:property value="activationFee.amount+contractor.newMembershipLevel.amount"/> <s:property value="contractor.currencyCode" /> </li>
+			</s:else>
 		</s:else>
 	</s:else>
 </s:if>

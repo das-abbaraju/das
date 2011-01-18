@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import com.intuit.developer.QBSession;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.quickbooks.qbxml.CustomerQueryRqType;
 import com.picsauditing.quickbooks.qbxml.CustomerQueryRsType;
@@ -21,7 +22,7 @@ import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
 
 public class CustomerAdaptor extends QBXmlAdaptor {
 
-	protected String getTheseContractors(List<ContractorAccount> contractors) throws Exception {
+	protected String getTheseContractors(QBSession currentSession, List<ContractorAccount> contractors) throws Exception {
 		Writer writer = makeWriter();
 
 		ObjectFactory factory = new ObjectFactory();
@@ -33,7 +34,7 @@ public class CustomerAdaptor extends QBXmlAdaptor {
 		CustomerQueryRqType customerQuery = factory.createCustomerQueryRqType();
 
 		for (ContractorAccount contractor : contractors) {
-			customerQuery.getListID().add(contractor.getQbListID());
+			customerQuery.getListID().add(contractor.getQbListID(currentSession.getCountryCode()));
 		}
 
 		customerQuery.setRequestID(new Long(System.currentTimeMillis()).toString());

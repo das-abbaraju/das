@@ -15,7 +15,7 @@ import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
 
 @SuppressWarnings("serial")
-public class ReportQBSyncList extends PicsActionSupport {
+public class ReportQBSyncListCanada extends PicsActionSupport {
 	
 	private int id = 0;
 	private String type = null;
@@ -36,7 +36,7 @@ public class ReportQBSyncList extends PicsActionSupport {
 	private PaymentDAO paymentDAO;
 	private EmailQueueDAO emailQueueDAO;
 	
-	public ReportQBSyncList(ContractorAccountDAO contractorAccountDAO, InvoiceDAO invoiceDAO, PaymentDAO paymentDAO, EmailQueueDAO emailQueueDAO) {
+	public ReportQBSyncListCanada(ContractorAccountDAO contractorAccountDAO, InvoiceDAO invoiceDAO, PaymentDAO paymentDAO, EmailQueueDAO emailQueueDAO) {
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.invoiceDAO = invoiceDAO;
 		this.paymentDAO = paymentDAO;
@@ -53,8 +53,8 @@ public class ReportQBSyncList extends PicsActionSupport {
 			if (type.equals("C")) {
 				ContractorAccount obj = contractorAccountDAO.find(id);
 				obj.setQbSync(false);
-				if (obj.getQbListID() == null)
-					obj.setQbListID("NOLOAD" + id);
+				if (obj.getQbListCAID() == null)
+					obj.setQbListCAID("NOLOAD" + id);
 				contractorAccountDAO.save(obj);
 			}
 			
@@ -74,35 +74,35 @@ public class ReportQBSyncList extends PicsActionSupport {
 				paymentDAO.save(obj);
 			}
 			try {
-				redirect("QBSyncList.action");
+				redirect("QBSyncListCanada.action");
 				return BLANK;
 			} catch (Exception e) {
 			}
 		}
 		
 		// see InsertContractors
-		contractorInsert = contractorAccountDAO.findWhere("a.qbSync = true and a.qbListID is null and a.currencyCode = 'USD'");
+		contractorInsert = contractorAccountDAO.findWhere("a.qbSync = true and a.qbListCAID is null and a.currencyCode = 'CAD'");
 		
 		// see InsertInvoices
 		invoiceInsert = invoiceDAO.findWhere(
-				"i.account.qbListID is not null AND i.account.currencyCode = 'USD' AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
-				+ "AND i.account.qbListID not like 'NOLOAD%'", 10);
+				"i.account.qbListCAID is not null AND i.account.currencyCode = 'CAD' AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
+				+ "AND i.account.qbListCAID not like 'NOLOAD%'", 10);
 
 		// see InsertPayments
 		paymentInsert = paymentDAO.findWhere(
-				"p.account.qbListID is not null AND p.account.currencyCode = 'USD' AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
-						+ "AND p.account.qbListID not like 'NOLOAD%'", 10);
+				"p.account.qbListCAID is not null AND p.account.currencyCode = 'CAD' AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
+						+ "AND p.account.qbListCAID not like 'NOLOAD%'", 10);
 
 		// see GetContractorsForUpdate
-		contractorUpdate = contractorAccountDAO.findWhere("a.qbListID is not null and a.currencyCode = 'USD' and a.qbListID not like 'NOLOAD%' and a.qbSync = true");
+		contractorUpdate = contractorAccountDAO.findWhere("a.qbListCAID is not null and a.currencyCode = 'CAD' and a.qbListCAID not like 'NOLOAD%' and a.qbSync = true");
 		
 		// see GetInvoicesForUpdate
 		invoiceUpdate = invoiceDAO.findWhere(
-				"i.account.qbListID is not null AND i.account.currencyCode = 'USD' AND i.qbListID is not null AND i.qbListID not like 'NOLOAD%' AND i.qbSync = true", 10);
+				"i.account.qbListCAID is not null AND i.account.currencyCode = 'CAD' AND i.qbListID is not null AND i.qbListID not like 'NOLOAD%' AND i.qbSync = true", 10);
 
 		// see GetPaymentsForUpdate
 		paymentUpdate = paymentDAO.findWhere(
-				"p.account.qbListID is not null AND p.account.currencyCode = 'USD' AND p.qbListID is not null AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true", 10);
+				"p.account.qbListCAID is not null AND p.account.currencyCode = 'CAD' AND p.qbListID is not null AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true", 10);
 
 		lastError = emailQueueDAO.getQuickbooksError();
 		

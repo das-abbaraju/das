@@ -379,6 +379,8 @@ public class ContractorWidget extends ContractorActionSupport {
 		if (creditCard == null) {
 			try {
 				BrainTreeService bt = new BrainTreeService();
+				bt.setCanadaProcessorID(appPropDAO.find("brainTree.processor_id.canada").getValue());
+				bt.setUsProcessorID(appPropDAO.find("brainTree.processor_id.us").getValue());
 				bt.setUserName(appPropDAO.find("brainTree.username").getValue());
 				bt.setPassword(appPropDAO.find("brainTree.password").getValue());
 

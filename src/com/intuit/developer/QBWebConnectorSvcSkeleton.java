@@ -71,13 +71,22 @@ public class QBWebConnectorSvcSkeleton {
 				}
 			}
 
-			if ("PICSQBLOADER".equals(authenticate.getStrUserName())
+			if (("PICSQBLOADER".equals(authenticate.getStrUserName()) || "PICSQBLOADERCAN".equals(authenticate.getStrUserName()))
 					&& authenticate.getStrPassword().equals(qbPassword)) {
 
 				QBSession session = new QBSession();
 				session.setSessionId(GUID.asString());
 				session.setLastRequest(new Date());
-
+				// set country specific fields
+				if("PICSQBLOADER".equals(authenticate.getStrUserName())){
+					session.setCountryCode("US");
+					session.setCurrencyCode("USD");
+					session.setQbID("qbListID");
+				} else if("PICSQBLOADERCAN".equals(authenticate.getStrUserName())){
+					session.setCountryCode("CA");
+					session.setCurrencyCode("CAD");
+					session.setQbID("qbListCAID");
+				}
 				sessions.put(session.getSessionId(), session);
 				sessionId = session.getSessionId();
 				PicsLogger.log("login valid for user: " + authenticate.getStrUserName() + ", sessionId: " + sessionId);

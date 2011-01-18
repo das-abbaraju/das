@@ -238,6 +238,20 @@ public class BillingCalculatorSingle {
 				items.add(invoiceItem);
 			}
 		}
+		
+		// Need to change Canadian contractors a GST for all invoices
+		if(contractor.getCurrencyCode().isCanada()) {
+			BigDecimal total = BigDecimal.ZERO;
+			for(InvoiceItem ii : items)
+				total = total.add(ii.getAmount());
+
+			InvoiceFee gst = getFee(InvoiceFee.GST, feeDAO);
+			InvoiceItem invoiceItem = new InvoiceItem();
+			invoiceItem.setInvoiceFee(gst);
+			invoiceItem.setAmount(gst.getGSTSurchage(total));
+			invoiceItem.setDescription("5% Goods & Services Tax");
+			items.add(invoiceItem);
+		}
 
 		return items;
 	}

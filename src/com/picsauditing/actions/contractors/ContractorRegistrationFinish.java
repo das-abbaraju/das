@@ -114,6 +114,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			} else {
 				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 					if (contractor.isCcValid()) {
+						paymentService.setCanadaProcessorID(appPropDAO.find("brainTree.processor_id.canada").getValue());
+						paymentService.setUsProcessorID(appPropDAO.find("brainTree.processor_id.us").getValue());
 						paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
 						paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
 

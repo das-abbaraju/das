@@ -35,10 +35,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.util.SpringUtils;
@@ -971,6 +971,8 @@ public class ContractorAccount extends Account implements JSONable {
 		BrainTreeService ccService = new BrainTreeService();
 		AppPropertyDAO appPropDao = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
 
+		ccService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
+		ccService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
 		ccService.setUserName(appPropDao.find("brainTree.username").getValue());
 		ccService.setPassword(appPropDao.find("brainTree.password").getValue());
 

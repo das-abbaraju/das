@@ -20,12 +20,12 @@
 				</span>
 			</td>
 			<td class="right">
-				$<s:property value="amount" /> USD
+				$<s:property value="amount" /> <s:property value="invoice.account.currencyCode" />
 			</td>
 		</tr>
 	</s:iterator>
 	<tr>
 		<th class="big right">Invoice Total</th>
-		<td class="big right">$<s:property value="#i.totalAmount" /> USD</td>
+		<td class="big right">$<s:property value="#i.totalAmount" /> <s:property value="i.account.currencyCode" /></td>
 	</tr>
 </table>

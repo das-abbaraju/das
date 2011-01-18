@@ -63,6 +63,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	protected String type;
 	protected boolean qbSync;
 	protected String qbListID;
+	protected String qbListCAID;
 	protected String reason;
 	protected boolean acceptsBids;
 	private String description;
@@ -74,6 +75,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	protected boolean onsiteServices = true;
 	protected boolean offsiteServices = false;
 	protected boolean materialSupplier = false;
+	protected Currency currencyCode = Currency.USD;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -168,6 +170,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 
 	public void setCountry(Country country) {
 		this.country = country;
+		this.setCurrencyCode(null);
 	}
 
 	@ManyToOne
@@ -323,6 +326,23 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 		this.qbListID = qbListID;
 	}
 
+	public String getQbListCAID() {
+		return qbListCAID;
+	}
+
+	public void setQbListCAID(String qbListCAID) {
+		this.qbListCAID = qbListCAID;
+	}
+
+	@Transient
+	public String getQbListID(String countryCode) {
+		if("CA".equals(countryCode))
+			return getQbListCAID();
+		
+		// return default for other
+		return getQbListID();
+	}
+
 	/**
 	 * Contractor, Operator, Admin, Corporate
 	 * 
@@ -419,6 +439,28 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	
+	/**
+	 * Account currency code is the country we are assuming for billing a customer.
+	 * These two may differ in cases where the customer resides in a Country which
+	 * we bill as a US customer.
+	 * 
+	 */
+	@Enumerated(EnumType.STRING)
+	public Currency getCurrencyCode() {
+		if("CA".equals(this.getCountry().getIsoCode()))
+			return Currency.CAD;
+
+		return Currency.USD;
+	}
+	
+	public void setCurrencyCode(Currency currencyCode) {
+		if("CA".equals(this.getCountry().getIsoCode()))
+			this.currencyCode = Currency.CAD;
+		
+		this.currencyCode = Currency.USD;
 	}
 
 	@Transient

@@ -581,6 +581,10 @@
 			class="com.picsauditing.actions.report.ReportQBSyncList">
 			<result>struts/reports/report_qb_sync_list.jsp</result>
 		</action>
+		<action name="QBSyncListCanada"
+			class="com.picsauditing.actions.report.ReportQBSyncListCanada">
+			<result>struts/reports/report_qb_sync_list_canada.jsp</result>
+		</action>
 
 		<!-- User List -->
 		<action name="UserList"

@@ -26,6 +26,8 @@ public class BrainTreeService {
 
 	protected String userName = null;
 	protected String password = null;
+	protected String canadaProcessorID = null;
+	protected String usProcessorID = null;
 
 	public CreditCard getCreditCard(int contractorId) throws Exception {
 		StringBuilder request = new StringBuilder(urlBase).append("query.php?report_type=customer_vault");
@@ -71,6 +73,15 @@ public class BrainTreeService {
 		appendUsernamePassword(request);
 		request.append("&customer_vault_id=").append(payment.getAccount().getId());
 		request.append("&amount=").append(payment.getTotalAmount());
+		// although this is the currency off the invoice, the invoice currency gets set
+		// based off of the currencies available to the contractor, which are currently
+		// CAD and USD.
+		request.append("&currency=").append(invoice.getCurrency());
+		if(invoice.getCurrency().isCanada())
+			request.append("&processor_id=").append(canadaProcessorID);
+		else
+			request.append("&processor_id=").append(usProcessorID);
+
 		if (invoice != null)
 			request.append("&order_id=").append(invoice.getId());
 
@@ -273,6 +284,22 @@ public class BrainTreeService {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getCanadaProcessorID() {
+		return canadaProcessorID;
+	}
+
+	public void setCanadaProcessorID(String canadaProcessorID) {
+		this.canadaProcessorID = canadaProcessorID;
+	}
+
+	public String getUsProcessorID() {
+		return usProcessorID;
+	}
+
+	public void setUsProcessorID(String usProcessorID) {
+		this.usProcessorID = usProcessorID;
 	}
 
 	private void appendUsernamePassword(StringBuilder request) throws BrainTreeLoginException {

@@ -20,8 +20,8 @@ public class GetPaymentsForUpdate extends PaymentAdaptor {
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
-		String where = "p.account.qbListID is not null AND p.qbListID is not null " +
-				" AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true";
+		String where = "p.account."+currentSession.getQbID()+" is not null AND p.qbListID is not null " +
+				" AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true AND p.currency like '"+currentSession.getCurrencyCode()+"'";
 		List<Payment> payments = getPaymentDao().findWhere(where, 10);
 
 		if (payments.size() > 0) {

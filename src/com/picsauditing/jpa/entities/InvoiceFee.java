@@ -26,6 +26,7 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 	public final static int FACILITIES50 = 11;
 	public final static int BIDONLY = 100;
 	public final static int LATEFEE = 55;
+	public final static int GST = 56;
 	private String fee;
 	private BigDecimal amount = BigDecimal.ZERO;
 	private boolean visible = true;
@@ -89,5 +90,10 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 	@Transient
 	public boolean isFree() {
 		return this.id == FREE;
+	}
+	
+	@Transient
+	public BigDecimal getGSTSurchage(BigDecimal total) {
+		return total.multiply(BigDecimal.valueOf(0.05)).setScale(2,BigDecimal.ROUND_UP);
 	}
 }

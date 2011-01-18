@@ -19,4 +19,12 @@ public enum Currency {
 
 		return USD;
 	}
+
+	public boolean isCanada() {
+		return this.equals(CAD);
+	}
+
+	public boolean isUs() {
+		return this.equals(USD);
+	}
 }

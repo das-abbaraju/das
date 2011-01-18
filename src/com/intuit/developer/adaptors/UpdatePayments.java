@@ -65,7 +65,7 @@ public class UpdatePayments extends PaymentAdaptor {
 
 			// Start Payment Insert/Update
 			payment.setCustomerRef(factory.createCustomerRef());
-			payment.getCustomerRef().setListID(paymentJPA.getAccount().getQbListID());
+			payment.getCustomerRef().setListID(paymentJPA.getAccount().getQbListID(currentSession.getCountryCode()));
 
 			payment.setARAccountRef(receivePaymentRet.getARAccountRef());
 

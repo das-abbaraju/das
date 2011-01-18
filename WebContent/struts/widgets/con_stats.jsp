@@ -29,7 +29,7 @@
 <s:if test="!permissions.insuranceOnlyContractorUser">
 	<p>
 		<label>Current Level:</label>
-		<s:if test="contractor.mustPayB">$<s:property value="contractor.membershipLevel.amount" /> USD <br />
+		<s:if test="contractor.mustPayB">$<s:property value="contractor.membershipLevel.amount" /> <s:property value="contractor.currencyCode" /> <br />
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</s:if><s:property value="contractor.membershipLevel.fee" />
 	</p>
 	<s:if test="contractor.mustPayB || (contractor.ccOnFile && creditCard != null)">

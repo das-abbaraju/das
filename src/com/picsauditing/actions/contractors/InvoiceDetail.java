@@ -172,6 +172,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			if (button.equals("pay")) {
 				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 					if (contractor.isCcValid()) {
+						paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
+						paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
 						paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 						paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 
@@ -344,6 +346,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	public String getCcNumber() {
 		String ccNumber = "";
+		paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
+		paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
 		paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 		paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 		try {

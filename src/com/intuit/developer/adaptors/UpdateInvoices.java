@@ -101,7 +101,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 					invoice.setEditSequence(existingQBInvoice.getEditSequence());
 	
 					invoice.setCustomerRef(factory.createCustomerRef());
-					invoice.getCustomerRef().setListID(invoiceJPA.getAccount().getQbListID());
+					invoice.getCustomerRef().setListID(invoiceJPA.getAccount().getQbListID(currentSession.getCountryCode()));
 	
 					invoice.setClassRef(factory.createClassRef());
 					invoice.getClassRef().setFullName("Contractors");
@@ -261,21 +261,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 						currentSession.getCurrentBatch().put(invoiceModRequest.getRequestID(), thePk);
 					}
 					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
 				}
-				
-				
 				
 			}
 		}

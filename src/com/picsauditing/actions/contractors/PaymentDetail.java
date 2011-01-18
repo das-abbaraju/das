@@ -76,6 +76,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			return LOGIN;
 
 		if ("findcc".equals(button)) {
+			paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
+			paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
 			paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 			paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 			creditCard = paymentService.getCreditCard(id);
@@ -124,6 +126,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				}
 				if (method.isCreditCard()) {
 					try {
+						paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
+						paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
 						paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 						paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 
@@ -190,6 +194,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 			if (button.equalsIgnoreCase("voidcc")) {
 				try {
+					paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
+					paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
 					paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 					paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 
@@ -230,6 +236,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					refund.setStatus(TransactionStatus.Paid);
 					if (button.equals("Refund on BrainTree/PICS")) {
 						if (payment.getPaymentMethod().isCreditCard()) {
+							paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
+							paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
 							paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 							paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 							paymentService.processRefund(payment.getTransactionID(), refundAmount);
@@ -399,6 +407,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			return transactionCondition;
 
 		try {
+			paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
+			paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
 			paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 			paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 			return paymentService.getTransactionCondition(payment.getTransactionID());
