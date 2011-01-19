@@ -62,14 +62,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			return LOGIN;
 
 		tryPermissions(OpPerms.EditFlagCriteria);
-		// findOperator() uses the operator associated with the permissions
-		// object. We just want the operator that was passed in.
-		int newID = getParameter("id");
-		if (newID == 0 && permissions.isOperatorCorporate())
-			newID = permissions.getAccountId();
-		
-		operator = operatorDao.find(getParameter("id"));
-		account = operator;
+		findOperator(); 
 
 		canEdit = operator.equals(insurance ? operator.getInheritInsuranceCriteria() : operator
 				.getInheritFlagCriteria()) && permissions.hasPermission(OpPerms.EditFlagCriteria, OpType.Edit);
