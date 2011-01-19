@@ -372,10 +372,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public boolean isCanSystemEdit() {
 		if (permissions.hasPermission(OpPerms.AuditEdit)) {
-			if (permissions.hasGroup(User.GROUP_CSR)
-					&& (!conAudit.getAuditType().getClassType().isPqf() && !conAudit.getAuditType().isAnnualAddendum() && !conAudit
-							.getAuditType().getClassType().isPolicy()))
-				return false;
 			return true;
 		}
 
@@ -385,7 +381,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 			if (permissions.isOperatorCorporate())
 				return true;
-
 		}
 
 		return false;
