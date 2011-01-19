@@ -77,7 +77,7 @@ public class BrainTreeService {
 		// based off of the currencies available to the contractor, which are currently
 		// CAD and USD.
 		request.append("&currency=").append(payment.getCurrency());
-		if(invoice.getCurrency().isCanada())
+		if(payment.getCurrency().isCanada())
 			request.append("&processor_id=").append(canadaProcessorID);
 		else
 			request.append("&processor_id=").append(usProcessorID);
