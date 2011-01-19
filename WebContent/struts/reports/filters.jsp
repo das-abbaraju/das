@@ -727,10 +727,10 @@
 			onclick="clearTextField('form1_statusChangedDate'); return false;">Clear</a></span>
 		</div>
 	</s:if>
-
+	
 	<s:if test="filter.showDeactivationReason">
 		<div class="filterOption"><s:select
-			list="filter.deactivationReasons" name="contractor.reason"
+			list="filter.deactivationReasons"
 			headerKey=" " headerValue="- Deactivation Reason -" cssClass="forms"
 			name="filter.deactivationReason" /></div>
 	</s:if>
