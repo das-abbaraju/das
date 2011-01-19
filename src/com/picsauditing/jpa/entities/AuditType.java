@@ -100,6 +100,11 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public void setAuditName(String auditName) {
 		this.auditName = auditName;
 	}
+	
+	@Transient
+	public String getName() {
+		return this.auditName;
+	}
 
 	@Enumerated(EnumType.STRING)
 	public AuditTypeClass getClassType() {

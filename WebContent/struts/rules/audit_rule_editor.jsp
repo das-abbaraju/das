@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title><s:property value="title"/> Rule Editor</title>
+<title><s:property value="ruleType"/> Rule Editor</title>
 <link rel="stylesheet" href="css/reports.css"/>
 <link rel="stylesheet" href="css/forms.css"/>
 <s:include value="../jquery.jsp"/>
@@ -174,14 +174,30 @@ $(function() {
 					<ol>
 						<s:if test="rule.id > 0">
 							<li>
-								<s:set var="o" value="rule" />
-								<h4><s:include value="../who.jsp" />
-								<s:property value="rule.toString()"/></h4>
+								<h4><s:property value="rule.toString()"/></h4>
+							</li>
+							<li>
+								Created by: <s:set var="o" value="rule" />
+								<s:include value="../who.jsp" />
+							</li>
+							<li>
+								<s:if test="rule.operatorAccount != null">
+									<a href="FacilitiesEdit.action?id=<s:property value="rule.operatorAccount.id" />"
+										><s:property value="rule.operatorAccount.name" /></a><br />
+								</s:if>
+								<s:if test="rule.auditType != null">
+									<a href="ManageAuditType.action?id=<s:property value="rule.auditType.id" />"
+										><s:property value="rule.auditType.name" /></a><br />
+								</s:if>
+								<s:if test="rule.auditCategory != null">
+									<a href="ManageCategory.action?id=<s:property value="rule.auditCategory.id" />"
+										><s:property value="rule.auditCategory.name" /></a><br />
+								</s:if>
+							</li>
+							<li>
+								<a href="#edit" class="edit showPointer" id="editRuleButton" onclick="$(this).hide(); $('.hideRule').show();">Edit Rule</a>
 							</li>
 						</s:if>
-						<li>
-							<a href="#edit" class="edit showPointer" id="editRuleButton" onclick="$(this).hide(); $('.hideRule').show();">Edit Rule</a>
-						</li>
 					</ol>
 				</fieldset>
 			</s:if>
@@ -333,7 +349,7 @@ $(function() {
 	<s:elseif test="id > 0">
 		<fieldset class="form lessGran">
 			<h2 class="formLegend">Less Granular</h2>
-			<div id="lessRelated" style="padding-top:10px;"></div>
+			<div id="lessRelated"></div>
 		</fieldset>
 		<fieldset class="form">
 			<h2 class="formLegend">Summary</h2>
@@ -350,7 +366,7 @@ $(function() {
 		</fieldset>
 		<fieldset class="form moreGran">
 			<h2 class="formLegend">More Granular</h2>
-			<div id="moreRelated" style="padding-top:10px;"></div>
+			<div id="moreRelated"></div>
 		</fieldset>
 	</s:elseif>	
 </div>
