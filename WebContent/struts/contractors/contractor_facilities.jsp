@@ -203,8 +203,14 @@
 				<div class="buttons" style="min-height: 30px;">
 					<button class="picsbutton positive" name="button" type="button" 
 						onclick="runSearch()">Search</button>
-					<nobr>Name: <s:textfield cssClass="forms clearable" name="operator.name" onchange="runSearch()"/></nobr>
-					<nobr>Location: <s:select cssClass="forms clearable" list="stateList" onchange="runSearch()" name="state" listKey="isoCode" listValue="english" headerKey="" headerValue="- State -"></s:select></nobr>
+					<nobr>Name: 
+						<s:textfield cssClass="forms clearable" name="operator.name" onchange="runSearch()"/>
+					</nobr>
+					<nobr>Location: 
+						<s:select cssClass="forms clearable" list="stateList" 
+							onchange="runSearch()" name="state" listKey="isoCode" listValue="english" 
+							headerKey="" headerValue="- State or Province -"></s:select>
+					</nobr>
 				</div>
 			</div>
 		</form>
