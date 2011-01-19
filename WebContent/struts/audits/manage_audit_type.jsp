@@ -18,6 +18,13 @@ $(function(){
 			);
 		}
 	});
+	
+	var data = {
+		'comparisonRule.auditType.id': <s:property value="id"/>
+	};
+	startThinking({ div: "rules", message: "Loading Related Rules" });
+	$('#rules').load('AuditTypeRuleTableAjax.action', data);
+	
 	$('.cluetip').cluetip({
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
 		arrows: true,
@@ -165,32 +172,9 @@ $(function(){
 		<div class="info">Drag and drop categories to change their order</div>
 		<br clear="all" />
 	</s:if>
-	<pics:permission perm="ManageAuditTypeRules">
-		<div>
-			<h3>Related Rules</h3>
-			<s:if test="relatedRules.size() == 0">
-				<div class="alert">
-					There are no rules for this audit type. <a href="AuditTypeRuleEditor.action?button=edit&rule.auditType.id=<s:property value="auditType.id"/>&rule.auditType.auditName=<s:property value="auditType.auditName"/>">Click here to create a rule for <s:property value="auditType.auditName"/></a>
-				</div>
-			</s:if>
-			<s:else>
-				<s:if test="relatedRules.size() >= 250">
-					<div class="alert">
-						There are too many rules to display here. <a href="AuditTypeRuleSearch.action?filter.auditType=<s:property value="auditType.auditName"/>&filter.auditTypeID=<s:property value="auditType.id"/>">Click here to view all rules for <s:property value="auditType.auditName"/>.</a>
-					</div>
-				</s:if>
-				<table class="report">
-					<s:set name="ruleURL" value="'AuditTypeRuleEditor.action'"/>
-					<s:set name="categoryRule" value="false"/>
-					<s:include value="rules/audit_rule_header.jsp"/>
-					<s:iterator value="relatedRules" id="r">
-						<s:include value="rules/audit_rule_view.jsp"/>
-					</s:iterator>
-				</table>
-			</s:else>
-			<a href="AuditTypeRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="id" />" class="add">Add New Audit Type Rule</a>
-		</div>
-	</pics:permission>
+	<h3>Related Rules</h3>
+	<div id="rules"></div>
+	<a href="AuditTypeRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="id" />" class="add">Add New Audit Type Rule</a>
 </s:if>
 
 </body>

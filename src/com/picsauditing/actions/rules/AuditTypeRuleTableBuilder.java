@@ -32,6 +32,7 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 			columnMap.put("dependentAuditType", true);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void findRules() {
 		if ("lessGranular".equals(button)) {
@@ -41,13 +42,22 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 		} else if (comparisonRule != null) {
 			Set<String> whereClauses = new LinkedHashSet<String>();
 			whereClauses.add("(t.effectiveDate < NOW() AND t.expirationDate > NOW())");
+			if (!comparisonRule.isInclude()) {
+				whereClauses.add("t.include = 0");
+			}
 			if (comparisonRule.getAuditType() != null) {
 				whereClauses.add("t.auditType.id = " + comparisonRule.getAuditType().getId());
 			}
 			if (comparisonRule.getOperatorAccount() != null) {
-				OperatorAccount operator = operatorDAO.find(comparisonRule.getOperatorAccount().getId());
-				whereClauses.add("(t.operatorAccount IS NULL OR t.operatorAccount.id IN ("
-						+ Strings.implode(operator.getOperatorHeirarchy()) + "))");
+				if (!comparisonRule.isInclude()) {
+					// If we're only looking for exclude rules, then we probably
+					// only want rules specific to this operator
+					whereClauses.add("t.operatorAccount.id = " + comparisonRule.getOperatorAccount().getId());
+				} else {
+					OperatorAccount operator = operatorDAO.find(comparisonRule.getOperatorAccount().getId());
+					whereClauses.add("(t.operatorAccount IS NULL OR t.operatorAccount.id IN ("
+							+ Strings.implode(operator.getOperatorHeirarchy()) + "))");
+				}
 			}
 
 			rules = (List<AuditTypeRule>) ruleDAO.findWhere(AuditTypeRule.class,

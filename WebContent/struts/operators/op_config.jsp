@@ -12,26 +12,22 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	var data = {
-		'operator.id': <s:property value="operator.id" />,
-		showPriority: false,
-		showWho: false,
-		excluded: true
+		'comparisonRule.operatorAccount.id': <s:property value="operator.id" />,
+		'comparisonRule.include': false,
+		showPriority: false
 	};
 
 	startThinking({ div: "excludedTypes", message: "Loading Excluded Audit Type Rules" });
-	$('#excludedTypes').load("AuditRuleTableAjax.action", data);
+	$('#excludedTypes').load("AuditTypeRuleTableAjax.action", data);
 
-	data.type = 'Category';
-	data.where = 'r.auditType.id = 1';
+	data['comparisonRule.auditType.id'] = 1;
 	startThinking({ div: "excludedCategories", message: "Loading Excluded Audit Category Rules" });
-	$('#excludedCategories').load("AuditRuleTableAjax.action", data);
+	$('#excludedCategories').load("CategoryRuleTableAjax.action", data);
 });
 
 function showType(typeID) {
 	var data = {
 		'comparisonRule.operatorAccount.id': <s:property value="operator.id" />,
-		showPriority: false,
-		showWho: false,
 		'comparisonRule.auditType.id': typeID
 	};
 	var checkCat;
@@ -62,8 +58,6 @@ function showType(typeID) {
 function showCat(catID) {
 	var data = {
 		'comparisonRule.operatorAccount.id': <s:property value="operator.id" />,
-		showPriority: false,
-		showWho: false,
 		'comparisonRule.auditCategory.id': catID
 	};
 
@@ -187,25 +181,21 @@ function hideCat(id) {
 		<li>
 			<s:form id="includeNewAudit">
 				<s:hidden value="%{operator.id}" name="id" />
-				<s:hidden value="Include" name="button" />
-				<s:select list="otherAudits" headerKey="0" headerValue="- Include Another Audit -" 
-					listKey="id" listValue="auditName" name="auditTypeID" onchange="$('#includeNewAudit').submit();" />
+				<s:select list="otherAudits" 
+					listKey="id" listValue="auditName" name="auditTypeID" />
+				<s:submit name="button" value="Add" />
 			</s:form>
 		</li>
-		<pics:permission perm="ManageAuditTypeRules">
-			<li><a href="OperatorAuditTypeRules.action?id=<s:property value="id"/>">Related Audit Type Rules</a></li>
-		</pics:permission>
-		<pics:permission perm="ManageCategoryRules">
-			<li><a href="OperatorCategoryRules.action?id=<s:property value="id"/>">Related Category Rules</a></li>
-		</pics:permission>
-		<li><a class="remove" href="?id=<s:property value="id"/>&button=Clear">Clear Cache</a></li>
+		<li><a href="OperatorAuditTypeRules.action?id=<s:property value="id"/>">Show all Audit Type Rules specific to this operator</a></li>
 	</ol>
 </fieldset>
 <fieldset class="form">
 	<h2 class="formLegend">Rules to Explicitly Remove Audit Types</h2>
-		<div id="excludedTypes"></div>
-		<a href="AuditTypeRuleEditor.action?button=New&ruleInclude=false&ruleOperatorAccountId=<s:property value="operator.id" />"
-			target="_blank" class="add">Add Rule</a>
+	<ol>
+		<li>
+			<div id="excludedTypes"></div>
+		</li>
+	</ol>
 </fieldset>
 <fieldset class="form">
 	<h2 class="formLegend">Likely Included PQF Categories</h2>
@@ -235,6 +225,16 @@ function hideCat(id) {
 				</tbody>
 			</table>
 		</li>
+		<li>
+			<s:form id="includeNewCategory">
+				<s:hidden value="%{operator.id}" name="id" />
+				<s:hidden value="Include" name="button" />
+				<s:select list="otherCategories" headerKey="0" headerValue="- Include Another Category -" 
+					listKey="id" listValue="name" name="catID" />
+				<s:submit name="button" value="Add" />
+			</s:form>
+		</li>
+		<li><a href="OperatorCategoryRules.action?id=<s:property value="id"/>">Show all Category Rules specific to this operator</a></li>
 	</ol>
 </fieldset>
 <fieldset class="form bottom">
@@ -245,5 +245,7 @@ function hideCat(id) {
 		</li>
 	</ol>
 </fieldset>
+<a class="remove" href="?id=<s:property value="id"/>&button=Clear">Clear Cache</a>
+
 </body>
 </html>

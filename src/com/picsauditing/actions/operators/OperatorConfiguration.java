@@ -32,6 +32,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class OperatorConfiguration extends OperatorActionSupport implements Preparable {
+
 	protected AuditDecisionTableDAO adtDAO;
 	protected AuditCategoryDAO auditCategoryDAO;
 	protected AuditTypeDAO typeDAO;
@@ -44,9 +45,11 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	private List<AuditType> typeList;
 	private List<AuditCategory> categoryList;
 	private List<AuditType> otherAudits;
+	private List<AuditCategory> otherCategories;
 	// Passed in variables
 	private int corpID;
 	private int auditTypeID;
+	private int catID;
 
 	private static final String QUESTION1 = "Upload a Certificate of Insurance or other supporting documentation for this policy.";
 	private static final String QUESTION2 = "This insurance policy complies with all additional ";
@@ -75,7 +78,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 		// Same as AuditOperator
 		permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
 
-		if (!Strings.isEmpty(button)) {
+		if (button != null) {
 			if ("Clear".equals(button)) {
 				auditTypeRuleCache.clear();
 				auditCategoryRuleCache.clear();
@@ -101,9 +104,10 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 					facilitiesDAO.remove(corp);
 				}
 			}
-			// check to see if category under this audit type with operator name already exists
-			if("checkCat".equals(button)){
-				if (auditTypeID>0) {
+			// check to see if category under this audit type with operator name
+			// already exists
+			if ("checkCat".equals(button)) {
+				if (auditTypeID > 0) {
 					boolean addLink = true;
 					for (AuditCategory cat : auditCategoryDAO.findByAuditTypeID(auditTypeID)) {
 						if (cat.getName().equals(operator.getName())) {
@@ -142,6 +146,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 					}
 				}
 				Collections.sort(auditType.getCategories(), new Comparator<AuditCategory>() {
+
 					@Override
 					public int compare(AuditCategory o1, AuditCategory o2) {
 						return o1.getName().compareTo(o2.getName());
@@ -159,6 +164,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 					auditType.getCategories().add(c);
 				}
 				Collections.sort(auditType.getCategories(), new Comparator<AuditCategory>() {
+
 					@Override
 					public int compare(AuditCategory o1, AuditCategory o2) {
 						return new Integer(o1.getNumber()).compareTo(new Integer(o2.getNumber()));
@@ -181,7 +187,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				AuditQuestion aq2 = new AuditQuestion();
 				aq2.setNumber(2);
 				aq2.setAuditColumns(permissions);
-				aq2.setName(QUESTION2 + operator.getName()+".");
+				aq2.setName(QUESTION2 + operator.getName() + ".");
 				aq2.setCategory(cat);
 				aq2.setQuestionType("Yes/No");
 				aq2.setRequired(true);
@@ -192,7 +198,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				typeDAO.save(auditType);
 				typeDAO.save(aq1);
 				typeDAO.save(aq2);
-				
+
 				AuditCategoryRule acr = new AuditCategoryRule();
 				acr.setAuditType(auditType);
 				acr.setAuditCategory(cat);
@@ -209,11 +215,22 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 			}
 
-			if ("Include".equals(button) && auditTypeID > 0) {
+			if (auditTypeID > 0) {
 				AuditTypeRule rule = new AuditTypeRule();
 				rule.setOperatorAccount(operator);
-				rule.setAuditType(new AuditType());
-				rule.getAuditType().setId(auditTypeID);
+				rule.setAuditType(new AuditType(auditTypeID));
+				rule.defaultDates();
+				rule.calculatePriority();
+				rule.setAuditColumns(permissions);
+				adtDAO.save(rule);
+			}
+
+			if (catID > 0) {
+				AuditCategoryRule rule = new AuditCategoryRule();
+				rule.setOperatorAccount(operator);
+				rule.setAuditType(new AuditType(1));
+				rule.setAuditCategory(new AuditCategory());
+				rule.getAuditCategory().setId(catID);
 				rule.defaultDates();
 				rule.calculatePriority();
 				rule.setAuditColumns(permissions);
@@ -235,6 +252,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				allParents = operatorDao.findWhere(true, "a.id IN (" + Strings.implode(inheritance) + ")", permissions);
 
 				Collections.sort(allParents, new Comparator<OperatorAccount>() {
+
 					public int compare(OperatorAccount o1, OperatorAccount o2) {
 						return (o1.getId() - o2.getId());
 					}
@@ -291,9 +309,32 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 			otherAudits = typeDAO.findAll();
 			otherAudits.removeAll(usedAuditTypes);
+
+			Collections.sort(otherAudits);
 		}
 
 		return otherAudits;
+	}
+
+	public List<AuditCategory> getOtherCategories() {
+		if (otherCategories == null) {
+			Set<AuditCategory> usedCategories = new HashSet<AuditCategory>();
+
+			List<AuditCategoryRule> excludedCategories = adtDAO.findAuditCategoryRulesByOperator(operator.getId(),
+					"r.include = 0");
+
+			for (AuditCategory type : getCategoryList())
+				usedCategories.add(type);
+			for (AuditCategoryRule type : excludedCategories)
+				usedCategories.add(type.getAuditCategory());
+
+			otherCategories = auditCategoryDAO.findWhere("auditType.id = 1 AND parent IS NULL");
+			otherCategories.removeAll(usedCategories);
+
+			Collections.sort(otherCategories);
+		}
+
+		return otherCategories;
 	}
 
 	// Passed in variables
@@ -311,6 +352,14 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 	public void setAuditTypeID(int auditTypeID) {
 		this.auditTypeID = auditTypeID;
+	}
+
+	public int getCatID() {
+		return catID;
+	}
+
+	public void setCatID(int catID) {
+		this.catID = catID;
 	}
 
 	public String escapeQuotes(String value) {

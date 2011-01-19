@@ -35,6 +35,13 @@ $(function(){
 		},
 		axis: 'y'
 	});
+
+	var data = {
+		'comparisonRule.auditCategory.id': <s:property value="id"/>
+	};
+	startThinking({ div: "rules", message: "Loading Related Rules" });
+	$('#rules').load('CategoryRuleTableAjax.action', data);
+		
 });
 
 </script>
@@ -136,32 +143,9 @@ $(function(){
 		<a class="add" href="ManageQuestion.action?button=AddNew&parentID=<s:property value="category.id"/>&categoryParent.id=<s:property value="category.id"/>&question.category.id=<s:property value="category.id"/>">Add New Question</a>
 		<div id="listQ-info"></div>
 	</div>
-	<pics:permission perm="ManageCategoryRules">
-		<div>
-			<h3>Related Rules</h3>
-			<s:if test="relatedRules.size() == 0">
-				<div class="alert">
-					There are no rules for this category. <a href="CategoryRuleEditor.action?button=edit&rule.auditCategory.id=<s:property value="category.id"/>&rule.auditCategory.name=<s:property value="category.name"/>">Click here to create a rule for <s:property value="category.name"/></a>
-				</div>
-			</s:if>
-			<s:else>
-				<s:if test="relatedRules.size() >= 250">
-					<div class="alert">
-						There are too many rules to display here. <a href="CategoryRuleSearch.action?filter.category=<s:property value="category.name"/>&filter.catID=<s:property value="category.id"/>">Click here to view all rules for <s:property value="category.name"/>.</a>
-					</div>
-				</s:if>
-				<table class="report">
-					<s:set name="ruleURL" value="'CategoryRuleEditor.action'"/>
-					<s:set name="categoryRule" value="true"/>
-					<s:include value="rules/audit_rule_header.jsp"/>
-					<s:iterator value="relatedRules" id="r">
-						<s:include value="rules/audit_rule_view.jsp"/>
-					</s:iterator>
-				</table>
-			</s:else>
-			<a href="CategoryRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="category.auditType.id" />&ruleAuditCategoryId=<s:property value="category.id" />" class="add">Add New Category Rule</a>
-		</div>
-	</pics:permission>
+	<h3>Related Rules</h3>
+	<div id="rules"></div>
+	<a href="CategoryRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="category.auditType.id" />&ruleAuditCategoryId=<s:property value="category.id" />" class="add">Add New Category Rule</a>
 </s:if>
 
 </body>
