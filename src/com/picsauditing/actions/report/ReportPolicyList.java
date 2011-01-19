@@ -40,11 +40,13 @@ public class ReportPolicyList extends ReportContractorAuditOperator {
 
 		if (permissions.isOperatorCorporate()) {
 			sql.addField("d.answer certID");
-			sql.addJoin("LEFT JOIN pqfdata d ON d.auditID = ca.id");
-			sql.addWhere("d.questionID in " + "(SELECT aq.id FROM audit_question aq "
-					+ "JOIN audit_category_rule acr ON acr.catID = aq.categoryID AND acr.opID = 1813 "
-					+ "WHERE aq.questionType = 'FileCertificate' AND aq.columnHeader = 'Certificate') "
-					+ "OR d.questionID IS NULL");
+
+			sql.addJoin("LEFT JOIN (SELECT d.auditID, d.answer FROM pqfdata d "
+					+ "JOIN audit_question aq ON aq.id = d.questionID AND aq.questionType = 'FileCertificate' "
+					+ "JOIN audit_category_rule acr ON acr.catID = aq.categoryID AND acr.opID = "
+					+ permissions.getAccountId()
+					+ " JOIN audit_type atype ON atype.id = acr.auditTypeID AND atype.classType = 'Policy'"
+					+ ") d ON d.auditID = ca.id");
 		}
 
 		getFilter().setShowAuditFor(false);
@@ -53,5 +55,4 @@ public class ReportPolicyList extends ReportContractorAuditOperator {
 		getFilter().setShowAMBest(true);
 
 	}
-
 }
