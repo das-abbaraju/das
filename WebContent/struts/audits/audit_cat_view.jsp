@@ -49,7 +49,7 @@
 					<s:set name="a" value="answerMap.get(#q.id)" />
 					<s:set name="visibleAnswer" value="answerMap.get(#q.visibleQuestion.id)" />
 					<s:set name="hidden" value="#q.visibleQuestion != null && (#visibleAnswer == null || #q.visibleAnswer != #visibleAnswer.answer)" />
-					<s:set name="visible" value="#q.current"/>
+					<s:set name="visible" value="#q.isCurrent(conAudit.validDate)"/>
 					<s:if test="onlyReq && !#a.hasRequirements">
 						<s:set name="visible" value="false" />
 					</s:if>
