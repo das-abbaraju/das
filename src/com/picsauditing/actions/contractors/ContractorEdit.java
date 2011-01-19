@@ -67,7 +67,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected NoteDAO noteDAO;
 	protected EmailSubscriptionDAO subscriptionDAO;
 	protected UserSwitchDAO userSwitchDAO;
-	protected int[] operatorIds = new int[300];
+	protected List<Integer> operatorIds = new ArrayList<Integer>();
 	protected Country country;
 	protected State state;
 	protected State billingState;
@@ -108,10 +108,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 				newFee = invoiceFeeDAO.find(newFee.getId());
 				contractor.setNewMembershipLevel(newFee);
-				int i = 0;
 				for (ContractorOperator conOperator : contractor.getNonCorporateOperators()) {
-					operatorIds[i] = conOperator.getOperatorAccount().getId();
-					i++;
+					operatorIds.add(conOperator.getOperatorAccount().getId());
 				}
 			}
 			accountDao.clear();
@@ -376,11 +374,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return auditQuestionDAO.findQuestionByType("Service");
 	}
 
-	public int[] getOperatorIds() {
+	public List<Integer> getOperatorIds() {
 		return operatorIds;
 	}
 
-	public void setOperatorIds(int[] operatorIds) {
+	public void setOperatorIds(List<Integer> operatorIds) {
 		this.operatorIds = operatorIds;
 	}
 
