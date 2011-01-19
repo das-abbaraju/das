@@ -86,23 +86,23 @@ public class ReportQBSyncList extends PicsActionSupport {
 		// see InsertInvoices
 		invoiceInsert = invoiceDAO.findWhere(
 				"i.account.qbListID is not null AND i.account.currencyCode = 'USD' AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
-				+ "AND i.account.qbListID not like 'NOLOAD%'", 10);
+				+ "AND i.account.qbListID not like 'NOLOAD%' AND i.currency = 'USD'", 10);
 
 		// see InsertPayments
 		paymentInsert = paymentDAO.findWhere(
 				"p.account.qbListID is not null AND p.account.currencyCode = 'USD' AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
-						+ "AND p.account.qbListID not like 'NOLOAD%'", 10);
+						+ "AND p.account.qbListID not like 'NOLOAD%' AND p.currency = 'USD'", 10);
 
 		// see GetContractorsForUpdate
 		contractorUpdate = contractorAccountDAO.findWhere("a.qbListID is not null and a.currencyCode = 'USD' and a.qbListID not like 'NOLOAD%' and a.qbSync = true");
 		
 		// see GetInvoicesForUpdate
 		invoiceUpdate = invoiceDAO.findWhere(
-				"i.account.qbListID is not null AND i.account.currencyCode = 'USD' AND i.qbListID is not null AND i.qbListID not like 'NOLOAD%' AND i.qbSync = true", 10);
+				"i.account.qbListID is not null AND i.account.currencyCode = 'USD' AND i.qbListID is not null AND i.qbListID not like 'NOLOAD%' AND i.qbSync = true AND i.currency = 'USD'", 10);
 
 		// see GetPaymentsForUpdate
 		paymentUpdate = paymentDAO.findWhere(
-				"p.account.qbListID is not null AND p.account.currencyCode = 'USD' AND p.qbListID is not null AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true", 10);
+				"p.account.qbListID is not null AND p.account.currencyCode = 'USD' AND p.qbListID is not null AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true AND p.currency = 'USD'", 10);
 
 		lastError = emailQueueDAO.getQuickbooksError();
 		

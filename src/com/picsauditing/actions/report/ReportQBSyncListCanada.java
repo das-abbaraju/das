@@ -86,23 +86,23 @@ public class ReportQBSyncListCanada extends PicsActionSupport {
 		// see InsertInvoices
 		invoiceInsert = invoiceDAO.findWhere(
 				"i.account.qbListCAID is not null AND i.account.currencyCode = 'CAD' AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
-				+ "AND i.account.qbListCAID not like 'NOLOAD%'", 10);
+				+ "AND i.account.qbListCAID not like 'NOLOAD%' AND i.currency = 'CAD'", 10);
 
 		// see InsertPayments
 		paymentInsert = paymentDAO.findWhere(
 				"p.account.qbListCAID is not null AND p.account.currencyCode = 'CAD' AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
-						+ "AND p.account.qbListCAID not like 'NOLOAD%'", 10);
+						+ "AND p.account.qbListCAID not like 'NOLOAD%' AND p.currency = 'CAD'", 10);
 
 		// see GetContractorsForUpdate
 		contractorUpdate = contractorAccountDAO.findWhere("a.qbListCAID is not null and a.currencyCode = 'CAD' and a.qbListCAID not like 'NOLOAD%' and a.qbSync = true");
 		
 		// see GetInvoicesForUpdate
 		invoiceUpdate = invoiceDAO.findWhere(
-				"i.account.qbListCAID is not null AND i.account.currencyCode = 'CAD' AND i.qbListID is not null AND i.qbListID not like 'NOLOAD%' AND i.qbSync = true", 10);
+				"i.account.qbListCAID is not null AND i.account.currencyCode = 'CAD' AND i.qbListID is not null AND i.qbListID not like 'NOLOAD%' AND i.qbSync = true AND i.currency = 'CAD'", 10);
 
 		// see GetPaymentsForUpdate
 		paymentUpdate = paymentDAO.findWhere(
-				"p.account.qbListCAID is not null AND p.account.currencyCode = 'CAD' AND p.qbListID is not null AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true", 10);
+				"p.account.qbListCAID is not null AND p.account.currencyCode = 'CAD' AND p.qbListID is not null AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true AND p.currency = 'CAD'", 10);
 
 		lastError = emailQueueDAO.getQuickbooksError();
 		

@@ -244,6 +244,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 					}
 				}
 				operator.setQbListID("NOLOAD" + operator.getId());
+				operator.setQbListCAID("NOLOAD" + operator.getId());
 
 				if (contactID > 0
 						&& (operator.getPrimaryContact() == null || contactID != operator.getPrimaryContact().getId())) {

@@ -71,7 +71,7 @@ public class InsertPayments extends PaymentAdaptor {
 			// Start Payment Insert/Update
 			PicsLogger.log("   setCustomerRef");
 			payment.setCustomerRef(factory.createCustomerRef());
-			payment.getCustomerRef().setListID(paymentJPA.getAccount().getQbListID(currentSession.getCountryCode()));
+			payment.getCustomerRef().setListID(paymentJPA.getAccount().getQbListID(currentSession.getCurrencyCode()));
 
 			PicsLogger.log("   setARAccountRef");
 			payment.setARAccountRef(factory.createARAccountRef());

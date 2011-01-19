@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "invoice_item")
 public class InvoiceItem extends BaseTable {
@@ -103,5 +104,4 @@ public class InvoiceItem extends BaseTable {
 	public void setQbRefundID(String qbRefundID) {
 		this.qbRefundID = qbRefundID;
 	}
-
 }

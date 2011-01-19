@@ -113,12 +113,12 @@ public class DumpUnMappedInvoices extends InvoiceAdaptor {
 							}
 						}
 
-						if (!(connectedInvoice.getAccount().getQbListID(currentSession.getCountryCode()).equals(invoiceRet.getCustomerRef()
+						if (!(connectedInvoice.getAccount().getQbListID(currentSession.getCurrencyCode()).equals(invoiceRet.getCustomerRef()
 								.getListID()))) {
 							throw new Exception("Invoice loaded, but customers did not match up.  Invoice: "
 									+ targetObject.getId() + " QbCustomerListId: "
 									+ invoiceRet.getCustomerRef().getListID() + " PicsCustomerListId: "
-									+ connectedInvoice.getAccount().getQbListID());
+									+ connectedInvoice.getAccount().getQbListID(currentSession.getCurrencyCode()));
 						}
 
 						fw.write("update invoice set qbListID = '" + dataForThisListId.get("TxnID") + "' where id = "

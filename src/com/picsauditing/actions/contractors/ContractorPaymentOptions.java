@@ -123,7 +123,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		
 		if(contractor.getCurrencyCode().isCanada()) {
 			gstFee = invoiceFeeDAO.find(InvoiceFee.GST);
-			gstFee.setAmount(gstFee.getGSTSurchage(contractor.getNewMembershipLevel().getAmount().add(activationFee.getAmount())));
+			BigDecimal total = contractor.getNewMembershipLevel().getAmount();
+			if(activationFee != null)
+				total.add(activationFee.getAmount());
+			gstFee.setAmount(gstFee.getGSTSurchage(total));
 		}
 
 		if (!contractor.getPaymentMethod().isCreditCard())

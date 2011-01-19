@@ -18,7 +18,6 @@ public class QBSession {
 	private boolean processingSomething = false;
 	private QBIntegrationWorkFlow currentStep = null;
 	private String lastError = null;
-	private String countryCode = null;
 	private String currencyCode = null;
 	private String qbID = null;
 
@@ -147,14 +146,6 @@ public class QBSession {
 	public void setToUpdatePayment(Map<String, ReceivePaymentRet> toUpdatePayment) {
 		this.toUpdatePayment = toUpdatePayment;
 	}
-
-	public String getCountryCode() {
-		return countryCode;
-	}
-
-	public void setCountryCode(String countryCode) {
-		this.countryCode = countryCode;
-	}
 	
 	public String getCurrencyCode() {
 		return currencyCode;
@@ -173,10 +164,10 @@ public class QBSession {
 	}
 
 	public boolean isUS() {
-		return "US".equals(getCountryCode());
+		return "USD".equals(this.getCurrencyCode());
 	}
 	
 	public boolean isCanada() {
-		return "CA".equals(getCountryCode());
+		return "CAD".equals(this.getCurrencyCode());
 	}
 }

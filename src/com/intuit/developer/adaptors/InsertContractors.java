@@ -26,7 +26,7 @@ public class InsertContractors extends CustomerAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<ContractorAccount> contractors = getContractorDao().findWhere(
-				"a.qbSync = true and a."+currentSession.getQbID()+" is null and a.currencyCode like '"+currentSession.getCurrencyCode()+"'");
+				"a.qbSync = true and a."+currentSession.getQbID()+" is null and a.currencyCode = '"+currentSession.getCurrencyCode()+"'");
 
 		// no work to do
 		if (contractors.size() == 0) {
@@ -157,7 +157,10 @@ public class InsertContractors extends CustomerAdaptor {
 
 				currentSession.getErrors().add(errorMessage.toString());
 
-				connected.setQbListID(null);
+				if(currentSession.isUS())
+					connected.setQbListID(null);
+				else
+					connected.setQbListCAID(null);
 				connected.setQbSync(true);
 			}
 

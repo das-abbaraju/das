@@ -13,6 +13,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.OrderBy;
+
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -78,6 +80,7 @@ public class Invoice extends Transaction {
 	}
 
 	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.ALL })
+	@OrderBy(clause = "feeID")
 	public List<InvoiceItem> getItems() {
 		return items;
 	}

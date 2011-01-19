@@ -63,7 +63,7 @@ public class InsertInvoices extends CustomerAdaptor {
 				invoiceAddRequest.setInvoiceAdd(invoice);
 
 				invoice.setCustomerRef(factory.createCustomerRef());
-				invoice.getCustomerRef().setListID(invoiceJPA.getAccount().getQbListID(currentSession.getCountryCode()));
+				invoice.getCustomerRef().setListID(invoiceJPA.getAccount().getQbListID(currentSession.getCurrencyCode()));
 
 				invoice.setClassRef(factory.createClassRef());
 				invoice.getClassRef().setFullName("Contractors");

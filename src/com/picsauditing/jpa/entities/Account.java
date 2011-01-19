@@ -361,8 +361,8 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	}
 
 	@Transient
-	public String getQbListID(String countryCode) {
-		if ("CA".equals(countryCode))
+	public String getQbListID(String currencyCode) {
+		if ("CAD".equals(currencyCode))
 			return getQbListCAID();
 
 		// return default for other

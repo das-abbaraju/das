@@ -52,7 +52,7 @@ Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
 				<th>Con ID</th>
 				<th>Contractor Name</th>
 				<th>Updated</th>
-				<th>qbID</th>
+				<th>qbCAID</th>
 			</tr>
 		</thead>
 		<s:iterator value="contractorUpdate">
@@ -62,7 +62,7 @@ Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
 				<td><a href="ContractorEdit.action?id=<s:property value="id" />"><s:property
 					value="name" /></a></td>
 				<td><s:date name="updateDate" nice="true" /></td>
-				<td><s:property value="qbListID" /></td>
+				<td><s:property value="qbListCAID" /></td>
 			</tr>
 		</s:iterator>
 	</table>

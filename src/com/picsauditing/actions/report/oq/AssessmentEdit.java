@@ -102,10 +102,13 @@ public class AssessmentEdit extends AccountActionSupport implements Preparable {
 
 					if (center.getName().length() > 19) {
 						// Get acronym if there are any spaces?
-						if (center.getName().contains(" "))
+						if (center.getName().contains(" ")) {
 							center.setQbListID("NOLOAD"	+ center.getName().replaceAll("(\\w)(\\w+\\s?)", "$1"));
-						else
+							center.setQbListCAID("NOLOAD" + center.getName().replaceAll("(\\w)(\\w+\\s?)", "$1"));
+						} else {
 							center.setQbListID("NOLOAD" + center.getName().substring(0, 20));
+							center.setQbListCAID("NOLOAD" + center.getName().substring(0, 20));
+						}
 					}
 
 					center.setQbSync(false);

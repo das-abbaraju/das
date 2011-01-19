@@ -34,7 +34,7 @@ public class CustomerAdaptor extends QBXmlAdaptor {
 		CustomerQueryRqType customerQuery = factory.createCustomerQueryRqType();
 
 		for (ContractorAccount contractor : contractors) {
-			customerQuery.getListID().add(contractor.getQbListID(currentSession.getCountryCode()));
+			customerQuery.getListID().add(contractor.getQbListID(currentSession.getCurrencyCode()));
 		}
 
 		customerQuery.setRequestID(new Long(System.currentTimeMillis()).toString());

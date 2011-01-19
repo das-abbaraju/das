@@ -26,14 +26,13 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 	public final static int FACILITIES50 = 11;
 	public final static int BIDONLY = 100;
 	public final static int LATEFEE = 55;
-	public final static int GST = 56;
+	public final static int GST = 200;
 	private String fee;
 	private BigDecimal amount = BigDecimal.ZERO;
 	private boolean visible = true;
 	private String feeClass;
 	private String qbFullName;
-
-	
+	private Integer displayOrder = 999;
 	
 	public InvoiceFee() {
 	}
@@ -85,6 +84,14 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 
 	public void setQbFullName(String qbFullName) {
 		this.qbFullName = qbFullName;
+	}
+
+	public void setDisplayOrder(Integer displayOrder) {
+		this.displayOrder = displayOrder;
+	}
+
+	public Integer getDisplayOrder() {
+		return displayOrder;
 	}
 
 	@Transient
