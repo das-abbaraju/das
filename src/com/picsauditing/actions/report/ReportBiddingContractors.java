@@ -59,11 +59,13 @@ public class ReportBiddingContractors extends ReportAccount {
 		
 		// Anytime we query contractor accounts as an operator,
 		// get the flag color/status at the same time
-		sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "
-					+ permissions.getAccountId());
-		sql.addField("gc.workStatus");
-		sql.addField("gc.waitingOn");
-		sql.addWhere("gc.genID = " + permissions.getAccountId());
+		if(permissions.isOperatorCorporate()) {
+			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "
+						+ permissions.getAccountId());
+			sql.addField("gc.workStatus");
+			sql.addField("gc.waitingOn");
+			sql.addWhere("gc.genID = " + permissions.getAccountId());
+		}
 		sql.addWhere("a.acceptsBids = 1");
 
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.SQL);
