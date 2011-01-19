@@ -383,7 +383,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		for (FlagCriteriaOperator c : existing) {
 			if (c.getCriteria().equals(fco.getCriteria())) {
 				if (c.getCriteria().isAllowCustomValue() && fco.getCriteria().isAllowCustomValue()) {
-					if (c.getHurdle().equals(fco.getHurdle()) || c.getFlag().equals(fco.getFlag()))
+					if (c.getHurdle().equals(fco.getHurdle()) && c.getFlag().equals(fco.getFlag()))
 						return true;
 				} else if (c.getFlag().equals(fco.getFlag())) {
 					return true;
