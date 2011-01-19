@@ -43,7 +43,7 @@ public class ContractorAuditOperatorDAOTest {
 		cao.setOperator(op);
 		cao.setAudit(ca);
 		cao.setFlag(FlagColor.Green);
-		cao.setStatus(AuditStatus.Approved);
+		cao.changeStatus(AuditStatus.Approved, null);
 		cao.setAuditColumns(new User(2357)); // kpartridge
 
 		cao = caoDao.save(cao);

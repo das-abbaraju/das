@@ -122,7 +122,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 						ContractorAuditOperator cao = new ContractorAuditOperator();
 						cao.setAudit(ca);
 						cao.setOperator(operator);
-						cao.setStatus(AuditStatus.valueOf(row.get("status").toString()));
+						cao.changeStatus(AuditStatus.valueOf(row.get("status").toString()), permissions);
 						ca.setOperators(new ArrayList<ContractorAuditOperator>());
 						ca.getOperators().add(cao);
 					}

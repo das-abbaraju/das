@@ -111,6 +111,10 @@ public abstract class BaseTable implements JSONable, Serializable {
 	}
 
 	public void setAuditColumns(Permissions permissions) {
+		if (permissions == null) {
+			setAuditColumns();
+			return;
+		}
 		int userID = permissions.getUserId();
 		if (permissions.getAdminID() > 0)
 			userID = permissions.getAdminID();

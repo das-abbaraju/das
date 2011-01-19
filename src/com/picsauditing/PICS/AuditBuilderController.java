@@ -481,14 +481,12 @@ public class AuditBuilderController {
 				// If we don't have one, then add it
 				PicsLogger.log("Adding missing cao");
 				ContractorAuditOperator cao = new ContractorAuditOperator();
+				// This is almost always Pending
 				AuditStatus changeStatus = conAudit.getAuditType().getWorkFlow().getFirstStep().getNewStatus(); 
 				cao.setAudit(conAudit);
 				cao.setOperator(operator);
 				cao.setAuditColumns(user);
-				cao.setStatusChangedDate(new Date());
-				cao.setStatus(changeStatus);
-				if(changeStatus==AuditStatus.Submitted)
-					conAudit.setEffectiveDate(new Date());
+				cao.changeStatus(changeStatus, null);
 				conAudit.getOperators().add(cao);
 				// contractorAuditOperatorDAO.save(cao);
 			}

@@ -290,7 +290,7 @@ public class FlagDataCalculatorTest extends TestCase {
 		fc.setAuditType(at);
 		caoMap = new HashMap<AuditType, List<ContractorAuditOperator>>();
 		ContractorAuditOperator cao = new ContractorAuditOperator();
-		cao.setStatus(AuditStatus.Pending);
+		cao.changeStatus(AuditStatus.Pending, null);
 		cao.setAudit(ca);
 		List<ContractorAuditOperator> caoList = new ArrayList<ContractorAuditOperator>();
 		caoList.add(cao);
@@ -300,7 +300,7 @@ public class FlagDataCalculatorTest extends TestCase {
 
 		caoMap = new HashMap<AuditType, List<ContractorAuditOperator>>();
 		cao = new ContractorAuditOperator();
-		cao.setStatus(AuditStatus.Approved);
+		cao.changeStatus(AuditStatus.Approved, null);
 		cao.setAudit(ca);
 		caoList = new ArrayList<ContractorAuditOperator>();
 		caoList.add(cao);

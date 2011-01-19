@@ -128,6 +128,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	@Transient
 	public List<ContractorAuditOperator> getOperatorsVisible() {
 		return new Grepper<ContractorAuditOperator>() {
+
 			public boolean check(ContractorAuditOperator t) {
 				return t.isVisible();
 			}
@@ -142,12 +143,12 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public void setExpiresDate(Date expiresDate) {
 		this.expiresDate = expiresDate;
 	}
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getEffectiveDate() {
 		return effectiveDate;
 	}
-	
+
 	public void setEffectiveDate(Date effectiveDate) {
 		this.effectiveDate = effectiveDate;
 	}
@@ -317,10 +318,10 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	@Transient
 	public Date getValidDate() {
-		if(effectiveDate!=null)
-			return effectiveDate;
-		else
+		if (effectiveDate == null)
 			return new Date();
+		else
+			return effectiveDate;
 	}
 
 	@Transient
@@ -561,6 +562,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public static Comparator<ContractorAuditOperator> getComparator() {
 		return new Comparator<ContractorAuditOperator>() {
+
 			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
 				if (o1.getOperator().getId() < 10)
 					return new Integer(o1.getOperator().getId()).compareTo(new Integer(o2.getOperator().getId()));
@@ -676,6 +678,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		Map<AuditCategory, AuditCatData> categories = new LinkedHashMap<AuditCategory, AuditCatData>();
 		List<AuditCatData> sortedCats = getCategories();
 		Collections.sort(sortedCats, new Comparator<AuditCatData>() {
+
 			@Override
 			public int compare(AuditCatData o1, AuditCatData o2) {
 				return ((Integer) o1.getCategory().getNumber()).compareTo(o2.getCategory().getNumber());
@@ -720,9 +723,9 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		}
 		return caoStats;
 	}
-	
+
 	@Transient
-	public Integer getIndependentClosingAuditor(User u){
+	public Integer getIndependentClosingAuditor(User u) {
 		if (u != null) {
 			if (u.getId() == 10600) // Mike Casey
 				return 11503; // Gary Rogers

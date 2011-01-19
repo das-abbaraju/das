@@ -116,9 +116,7 @@ public class EbixLoader {
 												+ conAccount.getId() + " to " + status.name());
 										for (ContractorAuditOperator cao : audit.getOperators()) {
 											if (status != cao.getStatus()) {
-												cao.setStatus(status);
-												if(status==AuditStatus.Submitted)
-													audit.setEffectiveDate(new Date());
+												cao.changeStatus(status, null);
 												contractorAuditDAO.save(audit);
 
 												conAccount.incrementRecalculation();

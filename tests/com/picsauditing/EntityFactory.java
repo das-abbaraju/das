@@ -141,7 +141,7 @@ public class EntityFactory {
 		ContractorAuditOperator cao = new ContractorAuditOperator();
 		cao.setAudit(conAudit);
 		cao.setOperator(operator);
-		cao.setStatus(AuditStatus.Approved);
+		cao.changeStatus(AuditStatus.Approved, null);
 		cao.setFlag(FlagColor.Green);
 		conAudit.getOperators().add(cao);
 	}
