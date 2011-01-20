@@ -34,9 +34,10 @@
 			<s:set name="mode" value="mode"/>
 			
 			<s:iterator value="#category.questions" id="q">
+				<s:set name="hidden" value="!#q.isVisible(answerMap)" />
 				<s:if test="previewCat || #q.isValidQuestion(conAudit.validDate)">
 					<s:if test="title != null && title.length() > 0">
-						<h4 class="groupTitle">
+						<h4 class="groupTitle<s:if test="#hidden"> hide</s:if>" id="title_<s:property value="#q.id"/>">
 							<s:property value="title" escape="false"/>
 						</h4>
 					</s:if>
@@ -47,8 +48,6 @@
 					</s:if>
 					<!-- Single Leaf Question -->
 					<s:set name="a" value="answerMap.get(#q.id)" />
-					<s:set name="visibleAnswer" value="answerMap.get(#q.visibleQuestion.id)" />
-					<s:set name="hidden" value="#q.visibleQuestion != null && (#visibleAnswer == null || #q.visibleAnswer != #visibleAnswer.answer)" />
 					<s:set name="visible" value="#q.isCurrent(conAudit.validDate)"/>
 					<s:if test="onlyReq && !#a.hasRequirements">
 						<s:set name="visible" value="false" />

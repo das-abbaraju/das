@@ -24,6 +24,9 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.Strings;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_question")
@@ -332,7 +335,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	public List<AuditQuestion> getDependentVisible(String answer) {
 		List<AuditQuestion> dependentVisibleBasedOnAnswer = new ArrayList<AuditQuestion>();
 		for (AuditQuestion visQ : dependentVisible) {
-			if (visQ.visibleAnswer != null && visQ.visibleAnswer.equals(answer))
+			if (testVisibility(answer))
 				dependentVisibleBasedOnAnswer.add(visQ);
 		}
 
@@ -343,7 +346,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	public List<AuditQuestion> getDependentVisibleHide(String answer) {
 		List<AuditQuestion> dependentVisibleBasedOnAnswer = new ArrayList<AuditQuestion>();
 		for (AuditQuestion visQ : dependentVisible) {
-			if (visQ.visibleAnswer != null && !visQ.visibleAnswer.equals(answer))
+			if (!testVisibility(answer))
 				dependentVisibleBasedOnAnswer.add(visQ);
 		}
 
@@ -515,43 +518,31 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		return false;
 	}
 
-	@Override
 	@Transient
-	public AuditQuestion clone() {
-		AuditQuestion clone = new AuditQuestion();
+	public boolean isVisible(AnswerMap answerMap) {
+		if (visibleQuestion != null)
+			return isVisible(answerMap.get(visibleQuestion.getId()));
+		return true;
+	}
 
-		clone.category = this.getCategory();
-		clone.columnHeader = this.getColumnHeader();
-		clone.createdBy = this.getCreatedBy();
-		clone.creationDate = this.getCreationDate();
-		clone.criteria = this.getCriteria();
-		clone.criteriaAnswer = this.getCriteriaAnswer();
-		clone.effectiveDate = this.getEffectiveDate();
-		clone.expirationDate = this.getExpirationDate();
-		clone.flaggable = this.isFlaggable();
-		clone.groupedWithPrevious = this.isGroupedWithPrevious();
-		clone.hasRequirement = this.isHasRequirement();
-		clone.helpPage = this.getHelpPage();
-		clone.helpText = this.getHelpText();
-		clone.id = this.getId();
-		clone.name = this.getName();
-		clone.number = this.getNumber();
-		clone.okAnswer = this.getOkAnswer();
-		clone.questionType = this.getQuestionType();
-		clone.required = this.isRequired();
-		clone.requiredAnswer = this.getRequiredAnswer();
-		clone.requiredQuestion = this.getRequiredQuestion();
-		clone.requirement = this.getRequirement();
-		clone.riskLevel = this.getRiskLevel();
-		clone.scoreWeight = this.getScoreWeight();
-		clone.showComment = this.isShowComment();
-		clone.title = this.getTitle();
-		clone.uniqueCode = this.getUniqueCode();
-		clone.updateDate = this.getUpdateDate();
-		clone.updatedBy = this.getUpdatedBy();
-		clone.visibleAnswer = this.getVisibleAnswer();
-		clone.visibleQuestion = this.getVisibleQuestion();
+	@Transient
+	public boolean isVisible(AuditData data) {
+		if (visibleQuestion != null && visibleAnswer != null) {
+			String answer = null;
+			if (data != null)
+				answer = data.getAnswer();
+			return testVisibility(answer);
+		}
+		return true;
+	}
 
-		return clone;
+	private boolean testVisibility(String answer) {
+		if (visibleAnswer.equals("NULL") && Strings.isEmpty(answer))
+			return true;
+		if (visibleAnswer.equals("NOTNULL") && !Strings.isEmpty(answer))
+			return true;
+		if (visibleAnswer.equals(answer))
+			return true;
+		return false;
 	}
 }
