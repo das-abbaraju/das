@@ -43,7 +43,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected String editPerm;
 
 	private List<AuditType> auditTypes = null;
-	
+
 	protected AuditTypeDAO auditTypeDAO;
 	protected EmailTemplateDAO emailTemplateDAO;
 	protected AuditCategoryDAO auditCategoryDAO;
@@ -55,7 +55,8 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	List<Workflow> workFlowList = null;
 
 	public ManageAuditType(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDAO,
-			AuditCategoryDAO auditCategoryDAO, AuditQuestionDAO auditQuestionDAO, AuditDecisionTableDAO ruleDAO, WorkFlowDAO wfDAO) {
+			AuditCategoryDAO auditCategoryDAO, AuditQuestionDAO auditQuestionDAO, AuditDecisionTableDAO ruleDAO,
+			WorkFlowDAO wfDAO) {
 		this.emailTemplateDAO = emailTemplateDAO;
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
@@ -85,9 +86,9 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				if (delete()) {
 					addActionMessage("Successfully removed"); // default message
 					new AuditTypeCache();
-					
+
 					this.redirect(getDeletedRedirectURL());
-					
+
 					return BLANK;
 				}
 			}
@@ -101,7 +102,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				this.redirect(getRedirectURL());
 				return BLANK;
 			}
-			
+
 			// Move and Copy only available for questions
 			if (button.equalsIgnoreCase("Move")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
@@ -114,7 +115,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 			}
 			if (button.equalsIgnoreCase("Copy")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
-				
+
 				if (copy()) {
 					addActionMessage("Successfully copied.");
 					new AuditTypeCache();
@@ -138,6 +139,19 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		}
 
 		if (auditType != null) {
+			boolean renumbered = false;
+			int i = 1;
+			for (AuditCategory category : auditType.getCategories()) {
+				if (category.getParent() == null) {
+					if (i != category.getNumber()) {
+						renumbered = true;
+						category.setNumber(i);
+					}
+					i++;
+				}
+			}
+			if (renumbered)
+				addAlertMessage("The categories were not correctly numbered from 1-n, so they were auto renumbered.");
 			return SUCCESS;
 		}
 
@@ -199,10 +213,11 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				auditType.setTemplate(emailTemplateDAO.find(emailTemplateID));
 			}
 
-			if(editPerm!=null && !editPerm.isEmpty()){
+			if (editPerm != null && !editPerm.isEmpty()) {
 				auditType.setEditPermission(OpPerms.valueOf(editPerm));
-			} else auditType.setEditPermission(null);
-			if(workFlowID>0){
+			} else
+				auditType.setEditPermission(null);
+			if (workFlowID > 0) {
 				auditType.setWorkFlow(wfDAO.find(workFlowID));
 			} else {
 				addActionError("You must set a workflow in order to save the Audit Type");
@@ -237,7 +252,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected boolean move() {
 		return false;
 	}
-	
+
 	protected boolean copy() {
 		return false;
 	}
@@ -321,7 +336,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected String getRedirectURL() {
 		return "ManageAuditType.action?id=" + id;
 	}
-	
+
 	protected String getCopyMoveURL() {
 		return "ManageAuditType.action?id=" + id;
 	}
@@ -337,14 +352,14 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 		return relatedRules;
 	}
-	
-	public List<Workflow> getWorkFlowList(){
-		if(workFlowList==null){
+
+	public List<Workflow> getWorkFlowList() {
+		if (workFlowList == null) {
 			workFlowList = wfDAO.findAll();
 		}
 		return workFlowList;
 	}
-	
+
 	// GETTERS && SETTERS
 
 	public int getId() {
@@ -436,7 +451,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	public String getEditPerm() {
 		String result = "";
-		if(auditType.getEditPermission()!=null)
+		if (auditType.getEditPermission() != null)
 			result = auditType.getEditPermission().name();
 		return result;
 	}
