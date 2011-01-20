@@ -82,7 +82,7 @@ public class ContractorAuditOperator extends BaseTable {
 		setAuditColumns(permissions);
 		this.status = auditStatus;
 		
-		if (audit.getAuditType().isPqf())
+		if (audit.getAuditType().isPqf() || audit.getAuditType().isAnnualAddendum())
 			return;
 
 		if (auditStatus.isPending())
