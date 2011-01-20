@@ -76,6 +76,20 @@ public abstract class BaseTable implements JSONable, Serializable {
 		this.updatedBy = updatedBy;
 	}
 
+	@Transient
+	public User getUpdatedBy2() {
+		if (getUpdatedBy() == null)
+			return getCreatedBy();
+		return getUpdatedBy();
+	}
+
+	@Transient
+	public Date getUpdateDate2() {
+		if (updateDate == null)
+			return creationDate;
+		return updateDate;
+	}
+
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreationDate() {
 		return creationDate;

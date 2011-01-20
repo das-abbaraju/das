@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Manage Audit Types</title>
+<title><s:if test="auditType.id > 0"><s:property value="auditType.name" /></s:if><s:else>Create New Audit Type</s:else></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
@@ -40,7 +40,9 @@ $(function(){
 </head>
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
-<a class="edit" href="ManageAuditTypeHierarchy.action?id=<s:property value="auditType.id"/>">Manage Hierarchy</a>
+<s:if test="auditType.id > 0">
+	<a class="edit" href="ManageAuditTypeHierarchy.action?id=<s:property value="auditType.id"/>">Manage Hierarchy</a>
+</s:if>
 <s:form id="save">
 <s:hidden name="id"></s:hidden>
 	<div>

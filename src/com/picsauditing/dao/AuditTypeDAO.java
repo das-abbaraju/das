@@ -47,7 +47,6 @@ public class AuditTypeDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AuditType> findAll() {
 		return findWhere("");
 	}
