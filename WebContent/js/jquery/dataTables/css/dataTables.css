@@ -26,7 +26,7 @@
 }
 
 .paging_full_numbers {
-	width: 350px !important;
+	width: 400px !important;
 }
 
 .fg-toolbar {
@@ -48,6 +48,7 @@ table.display thead th {
  */
 
 .dataTables_wrapper {
+	background-color: #EEEEEE;
 	position: relative;
 	min-height: 302px;
 	_height: 302px;
@@ -68,7 +69,6 @@ table.display thead th {
 }
 
 .dataTables_length {
-	width: 40%;
 	float: right;
 	text-align: right;
 }
@@ -118,17 +118,28 @@ table.display thead th {
  */
 
 .sorting_asc {
-	background: url('../images/sort_asc.jpg') no-repeat center right;
+	background-image: url('../images/sort_asc.png');
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+	padding-right: 15px !important;
 }
 
 .sorting_desc {
-	background: url('../images/sort_desc.jpg') no-repeat center right;
+	background-image: url('../images/sort_desc.png');
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+	padding-right: 15px !important;
 }
 
 .sorting {
-	background: url('../images/sort_both.jpg') no-repeat center right;
+	background-image: url('../images/sort_both.png');
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+	padding-right: 15px !important;
 }
-
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Misc
@@ -215,6 +226,11 @@ td.details {
 }
 
 .dataTables_length, .dataTables_filter, .dataTables_info, .paging_full_numbers {
-	padding: 5px 0;
+	padding: 5px 10px;
 	font-weight: bold;
+}
+
+.report {
+	width: 100%;
+	margin-bottom: 0;
 }

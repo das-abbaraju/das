@@ -27,7 +27,7 @@ table.report thead th,table.report thead td {
 	border: 1px solid #e0e0e0;
 	text-align: center;
 	font-weight: bold;
-	background: #012142;
+	background-color: #012142;
 	color: #FFF;
 }
 
@@ -243,7 +243,7 @@ a.clearLink {
 table.jobReport {
 	border-collapse: collapse;
 	color: #4C4D4D;
-	background: #FFF;
+	background-color: #FFF;
 	clear: both;
 	margin-bottom: 10px;
 	position: relative;
@@ -265,7 +265,7 @@ table.jobReport td.icon {
 table.jobReport thead th,table.jobReport thead td {
 	text-align: center;
 	font-weight: bold;
-	background: #012142;
+	background-color: #012142;
 	color: #FFF;
 }
 
@@ -304,7 +304,7 @@ td.and, tr.and {
 }
 
 td.or, tr.or {
-	background:lightgrey;
+	background-color:lightgrey;
 	color:#FF0000;
 	font-family:monospace;
 	font-weight:bold;
