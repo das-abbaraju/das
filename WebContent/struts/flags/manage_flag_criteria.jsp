@@ -46,24 +46,10 @@
 		});
 		
 		dtable = $('#criterialist').dataTable({
-			aaSorting: [[1, 'asc']],
-			aoColumns: [
-			            {bVisible: false},
-			            {bVisible: false},
-			            null,
-			            null,
-			            null,
-			            null
-						],
 			iDisplayLength: 25,
-			bStateSave: true,
 			bAutoWidth: false,
-			fnRowCallback: function( nRow, aData, iDisplayIndex ) {
-				$(nRow).not('.clickable').attr('id','criteria_'+aData[0]).addClass('clickable').click(function() {
-						show(aData[0]);
-					});
-				return nRow;
-			},
+			bStateSave: true,
+			aaSorting: [[0, 'asc'],[1, 'asc'],[2, 'asc']],
 			sPaginationType: "full_numbers"
 		});
 
@@ -99,34 +85,25 @@ $(function() {
 	<div id="thinking"></div>
 	</div>
 
-	<table id="criterialist" class="report" style="width:100%; margin-bottom: 0;">
+	<table id="criterialist" class="report">
 		<thead>
 			<tr>
-				<th>ID</th>
-				<th>Display Order</th>
 				<th>Category</th>
+				<th>Display Order</th>
 				<th>Label</th>
 				<th>Description</th>
 				<th>Updated</th>
+				<th>On</th>
 			</tr>
 		</thead>
 		<s:iterator value="criteriaList">
 			<tr>
-				<td><s:property value="id"/></td>
-				<td><s:property value="displayOrder"/></td>
 				<td><s:property value="category"/></td>
+				<td><s:property value="displayOrder"/></td>
 				<td><s:property value="label"/></td>
-				<td><s:property value="description"/></td>
-				<td class="nobr">
-					<s:if test="updatedBy != null">
-						<s:property value="updatedBy.name" /> on <br />
-						<s:date name="updateDate" format="MMM dd, yyyy"/>
-					</s:if>
-					<s:elseif test="createdBy != null">
-						<s:property value="createdBy.name" /> on <br />
-						<s:date name="creationDate" format="MMM dd, yyyy"/>
-					</s:elseif>
-				</td>
+				<td><a href="#" onclick="show(<s:property value="id"/>); return false;"><s:property value="description" default="Missing Description" /></a></td>
+				<td><s:property value="updatedBy2.name" /></td>
+				<td><s:date name="updateDate2" format="MM/dd/yyyy"/></td>
 			</tr>
 		</s:iterator>
 	</table>

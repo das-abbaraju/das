@@ -29,11 +29,19 @@
 			</li>
 			<li>
 				<label>Label:</label>
-				<s:textfield name="criteria.label"/>
+				<s:textfield name="criteria.label" maxlength="30"/>
+				<pics:fieldhelp title="Label"><p>A short description of this criteria that can be used as column headers in reports.</p></pics:fieldhelp>
 			</li>
 			<li>
 				<label>Description:</label>
 				<s:textarea name="criteria.description" cols="30" rows="4"/>
+				<pics:fieldhelp title="Description">
+					<p>A helpful description of this criteria.</p>
+					<p>If allowing a Custom Hurdle below, be sure to include {HURDLE} in the description. The operator's custom hurdle rate will be replaced with this text.</p>
+					<p>If this criteria is for an insurance limit and you want the add the Excess policy, 
+						then the include either <b>plus Excess Aggregate</b> or <b>plus Excess Each Occurrence</b>
+						somewhere in the description.</p>
+				</pics:fieldhelp>
 			</li>
 		</ol>
 	</fieldset>

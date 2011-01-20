@@ -200,6 +200,23 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 	public void setDisplayOrder(int displayOrder) {
 		this.displayOrder = displayOrder;
 	}
+	
+	/**
+	 * @return the question ID if this criteria should include 
+	 */
+	public Integer includeExcess() {
+		if (!insurance)
+			return null;
+		
+		// We should consider putting this into the DB eventually
+		if (description.contains("plus Excess Aggregate"))
+			return AuditQuestion.EXCESS_AGGREGATE;
+
+		if (description.contains("plus Excess Each Occurrence"))
+			return AuditQuestion.EXCESS_EACH;
+		
+		return null;
+	}
 
 	@Override
 	public String toString() {

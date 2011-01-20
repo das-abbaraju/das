@@ -49,6 +49,9 @@ public class ContractorFlagETL {
 				if (type != null && !type.isAnnualAddendum()) {
 					PicsLogger.log("Found question for evaluation: " + fc.getQuestion());
 					criteriaQuestionSet.add(fc.getQuestion().getId());
+					if (fc.includeExcess() != null) {
+						criteriaQuestionSet.add(fc.includeExcess());
+					}
 				}
 			}
 		}
@@ -203,6 +206,18 @@ public class ContractorFlagETL {
 						} else {
 							fcc.setAnswer(parseAnswer(flagCriteria, auditData));
 							fcc.setVerified(auditData.isVerified());
+							
+							if (flagCriteria.includeExcess() != null) {
+								final AuditData excess = answerMap.get(flagCriteria.includeExcess());
+								try {
+									Float baseLimit = Float.parseFloat(fcc.getAnswer());
+									Float excessLimit = Float.parseFloat(excess.getAnswer().replace(",", ""));
+									baseLimit += excessLimit;
+									fcc.setAnswer2("Includes " + excessLimit.intValue() + " from Excess");
+									fcc.setAnswer("" + baseLimit.intValue());
+								} catch (Exception doNothingRightHere) {
+								}
+							}
 						}
 
 						changes.add(fcc);

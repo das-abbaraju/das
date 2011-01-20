@@ -39,6 +39,8 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	static public final int OQ_EMPLOYEES = 894;
 	static public final int COR = 2954;
 	static public final int CITATIONS = 3546;
+	static public final int EXCESS_EACH = 2161;
+	static public final int EXCESS_AGGREGATE = 2165;
 
 	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest", "Check Box", "Country", "Date",
 			"Decimal Number", "File", "FileCertificate", "Industry", "License", "Main Work", "Money", "Number",
