@@ -1391,7 +1391,11 @@
 			class="com.picsauditing.actions.users.UserAccessSave">
 			<result>struts/json.jsp</result>
 		</action>
-
+		
+		<action name="UserAssignment"
+			class="com.picsauditing.actions.users.UserAssignment">
+			<result>struts/users/user_assignment.jsp</result>	
+		</action>
 
 		<!-- Email Wizard/Templates/Mailer -->
 		<action name="MassMailer"
