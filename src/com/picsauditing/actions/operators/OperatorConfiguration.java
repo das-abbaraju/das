@@ -15,11 +15,13 @@ import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -39,6 +41,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	protected FacilitiesDAO facilitiesDAO;
 	protected AuditTypeRuleCache auditTypeRuleCache;
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
+	private AppPropertyDAO appPropDAO;
 
 	private List<OperatorAccount> allParents;
 	private List<OperatorAccount> otherCorporates;
@@ -56,8 +59,9 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 	public OperatorConfiguration(OperatorAccountDAO operatorDao, AuditDecisionTableDAO adtDAO, AuditTypeDAO typeDAO,
 			FacilitiesDAO facilitiesDAO, AuditTypeRuleCache auditTypeRuleCache,
-			AuditCategoryRuleCache auditCategoryRuleCache, AuditCategoryDAO auditCategoryDAO) {
+			AuditCategoryRuleCache auditCategoryRuleCache, AuditCategoryDAO auditCategoryDAO, AppPropertyDAO appPropDAO) {
 		super(operatorDao);
+		this.appPropDAO = appPropDAO;
 		this.adtDAO = adtDAO;
 		this.typeDAO = typeDAO;
 		this.facilitiesDAO = facilitiesDAO;
@@ -209,6 +213,11 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				acr.setExpirationDate(BaseHistory.END_OF_TIME);
 				acr.calculatePriority();
 				typeDAO.save(acr);
+				AppProperty appProp = appPropDAO.find("clear_cache");
+				if(appProp!=null){
+					appProp.setValue("true");
+					appPropDAO.save(appProp);
+				}
 
 				this.redirect("ManageCategory.action?id=" + cat.getId());
 				return SUCCESS;
