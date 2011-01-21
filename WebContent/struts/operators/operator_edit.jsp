@@ -4,7 +4,7 @@
 <%@page import="com.picsauditing.PICS.DateBean"%>
 <html>
 <head>
-<title><s:property value="operator.name" /></title>
+<title><s:property value="operator.name" default="Create New Account" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
@@ -77,23 +77,35 @@ $(function() {
 			</pics:fieldhelp>
 		</li>
 		<li><label>Status:</label>
-			<s:select list="statusList" name="operator.status" /></li>
-		<s:if test="operator.status.deactivated || operator.status.deleted">
-			<li><label>Reason:</label> <s:textarea name="operator.reason"
-				rows="3" /></li>
-		</s:if>
-		<s:if test="operator.operator">
-			<li><label>Account Manager:</label>
-				<s:iterator value="accountManagers" id="au">
-					<s:property value="#au.user.name"/>
-				</s:iterator>
-			</li>
-			<s:if test="salesReps.size() > 0">
-				<li><label>Sales Rep:</label>
-					<s:iterator value="salesReps" id="au">
+			<s:select list="statusList" name="operator.status" />
+			<pics:fieldhelp>
+				<ul>
+					<li><b>Active</b> - if you have completed the process of configuring the Operator account and you are ready to send out letters to Contractors.</li>
+					<li><b>Pending (default)</b> - if you are in the process of configuring a real Operator account for which we have already received a contract.</li>
+					<li><b>Demo</b> - if you are creating a temporary account for client demo purposes.</li>
+					<li><b>Deleted</b> - if this operator was created by mistake or merged with another account.</li>
+					<li><b>Deactivated</b> - if the operator has canceled their PICS membership.</li>
+				</ul>
+			</pics:fieldhelp>
+		</li>
+		<s:if test="operator.id > 0">
+			<s:if test="operator.status.deactivated || operator.status.deleted">
+				<li><label>Reason:</label> <s:textarea name="operator.reason"
+					rows="3" /></li>
+			</s:if>
+			<s:if test="operator.operator">
+				<li><label>Account Manager:</label>
+					<s:iterator value="accountManagers" id="au">
 						<s:property value="#au.user.name"/>
 					</s:iterator>
 				</li>
+				<s:if test="salesReps.size() > 0">
+					<li><label>Sales Rep:</label>
+						<s:iterator value="salesReps" id="au">
+							<s:property value="#au.user.name"/>
+						</s:iterator>
+					</li>
+				</s:if>
 			</s:if>
 		</s:if>
 	</ol>
