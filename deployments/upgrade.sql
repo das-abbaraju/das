@@ -13,3 +13,9 @@
 --update flag_criteria_operator set criteriaID = 634 
 --where criteriaID = 469 and opid not in (13656);
 ---- PICS-1575, PICS-1461
+
+-- PICS-1694 - Moving manual audit rules back to a matrix table
+insert into audit_cat_matrix  (categoryID, tableType, foreignKeyID, createdBy, creationDate) 
+select distinct catID, 'D', questionID, 23157, NOW()
+from audit_category_rule 
+where auditTypeID = 2  and catID is not null  and questionID is not null;
