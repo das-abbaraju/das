@@ -62,8 +62,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	private Indexer indexer;
 
 	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO, OperatorFormDAO formDAO,
-			AccountUserDAO accountUserDAO, UserDAO userDAO, UserSwitchDAO userSwitchDAO,
-			Indexer indexer) {
+			AccountUserDAO accountUserDAO, UserDAO userDAO, UserSwitchDAO userSwitchDAO, Indexer indexer) {
 		super(operatorAccountDAO);
 		this.facilitiesDAO = facilitiesDAO;
 		this.formDAO = formDAO;
@@ -104,7 +103,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		else if (permissions.isContractor()) {
 			throw new NoRightsException("Operator");
 		}
-		
+
 		if (button != null) {
 			if (button.equalsIgnoreCase("Remove")) {
 				if (accountUserId > 0) {
@@ -123,7 +122,12 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				Calendar calendar = Calendar.getInstance();
 				calendar.set(Calendar.DATE, 1);
 				accountUser.setStartDate(calendar.getTime());
-				calendar.add(Calendar.YEAR, 20);
+				if (accountUser.getRole() != null && accountUser.getRole().isAccountManager())
+					calendar.add(Calendar.YEAR, 20);
+				else {
+					calendar.add(Calendar.YEAR, 1);
+					calendar.add(Calendar.DATE, -1);
+				}
 				accountUser.setEndDate(calendar.getTime());
 				accountUser.setAuditColumns(permissions);
 				operator.getAccountUsers().add(accountUser);
@@ -251,7 +255,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 					operator.setPrimaryContact(userDAO.find(contactID));
 				}
 
-				//operator.setNeedsIndexing(true);
+				// operator.setNeedsIndexing(true);
 				operator = operatorDao.save(operator);
 				indexer.runSingle(operator, "accounts");
 				id = operator.getId();
@@ -289,7 +293,8 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	}
 
 	public List<User> getUserList() throws Exception {
-		return userDAO.findByGroup(10801); // only showing users from marketing group
+		return userDAO.findByGroup(10801); // only showing users from marketing
+		// group
 	}
 
 	public List<Integer> getFacilities() {
@@ -444,7 +449,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 		return userList;
 	}
-	
+
 	public int getContactID() {
 		return contactID;
 	}
@@ -452,37 +457,37 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	public void setContactID(int contactID) {
 		this.contactID = contactID;
 	}
-	
+
 	public List<AccountUser> getAccountManagers() {
 		List<AccountUser> list = new ArrayList<AccountUser>();
-		
+
 		for (AccountUser au : operator.getAccountUsers()) {
 			if (au.isCurrent() && au.getRole().isAccountManager()) {
 				list.add(au);
 			}
 		}
-		
+
 		return list;
 	}
-	
+
 	public List<AccountUser> getSalesReps() {
 		List<AccountUser> list = new ArrayList<AccountUser>();
-		
+
 		for (AccountUser au : operator.getAccountUsers()) {
 			if (au.isCurrent() && au.getRole().isSalesRep()) {
 				list.add(au);
 			}
 		}
-		
+
 		return list;
 	}
-	
+
 	public Map<UserAccountRole, List<AccountUser>> getPreviousManagers() {
 		if (managers == null) {
 			List<AccountUser> aus = operator.getAccountUsers();
 			List<AccountUser> ams = new ArrayList<AccountUser>();
 			List<AccountUser> srs = new ArrayList<AccountUser>();
-			
+
 			for (AccountUser au : aus) {
 				if (au.getEndDate().before(new Date())) {
 					if (au.getRole().equals(UserAccountRole.PICSAccountRep))
@@ -491,14 +496,14 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 						srs.add(au);
 				}
 			}
-			
+
 			managers = new HashMap<UserAccountRole, List<AccountUser>>();
 			if (ams.size() > 0)
 				managers.put(UserAccountRole.PICSAccountRep, ams);
 			if (srs.size() > 0)
 				managers.put(UserAccountRole.PICSSalesRep, srs);
 		}
-		
+
 		return managers;
 	}
 }
