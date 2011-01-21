@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.FlagDataDAO;
@@ -26,6 +28,7 @@ import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
@@ -46,12 +49,14 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorFlagAction extends ContractorActionSupport {
+
+	protected ContractorAuditOperatorDAO caoDAO;
 	protected ContractorOperatorDAO contractorOperatorDao;
+	protected FacilitiesDAO facDAO;
 	protected FlagDataDAO flagDataDAO;
 	protected FlagDataOverrideDAO flagDataOverrideDAO;
-	protected OperatorAccountDAO opDAO;
-	protected FacilitiesDAO facDAO;
 	protected NaicsDAO naicsDAO;
+	protected OperatorAccountDAO opDAO;
 
 	protected int opID;
 	protected ContractorOperator co;
@@ -64,6 +69,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected int dataID;
 	protected Map<String, List<FlagData>> flagDataMap;
 	protected Map<FlagCriteria, List<FlagDataOverride>> flagDataOverride;
+	protected Map<AuditType, ContractorAuditOperator> missingAudits = null;
 
 	private File file;
 	private String fileContentType;
@@ -72,13 +78,15 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDao, FlagDataDAO flagDataDAO,
-			FlagDataOverrideDAO flagDataOverrideDAO, FacilitiesDAO facDAO, NaicsDAO naicsDAO) {
+			FlagDataOverrideDAO flagDataOverrideDAO, FacilitiesDAO facDAO, NaicsDAO naicsDAO,
+			ContractorAuditOperatorDAO caoDAO) {
 		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
 		this.flagDataDAO = flagDataDAO;
 		this.flagDataOverrideDAO = flagDataOverrideDAO;
 		this.facDAO = facDAO;
 		this.naicsDAO = naicsDAO;
+		this.caoDAO = caoDAO;
 	}
 
 	public String execute() throws Exception {
@@ -264,7 +272,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			PicsLogger.stop();
 		}
 
-		// TODO: This is here to solve the LazyInitializationException. Find a better way to do this.
+		// TODO: This is here to solve the LazyInitializationException. Find a
+		// better way to do this.
 		contractor.getFlagCriteria().size();
 
 		return SUCCESS;
@@ -467,7 +476,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public String getContractorAnswer(FlagCriteriaContractor fcc, FlagData f, boolean addLabel) {
 		FlagCriteria fc = f.getCriteria();
 		String answer = fcc.getAnswer();
-
+		System.out.println(fcc.getId() + fcc.getAnswer2());
+		
 		if (fc.getDescription().contains("AMB Class"))
 			answer = getAmBestClass(answer);
 		else if (fc.getDescription().contains("AMB Rating"))
@@ -550,6 +560,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	private class ByOrderCategoryLabel implements Comparator<FlagData> {
+
 		public int compare(FlagData o1, FlagData o2) {
 			FlagCriteria f1 = o1.getCriteria();
 			FlagCriteria f2 = o2.getCriteria();
@@ -630,5 +641,31 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	private File[] getFiles(int noteID) {
 		File dir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(noteID));
 		return FileUtils.getSimilarFiles(dir, PICSFileType.note_attachment.filename(noteID));
+	}
+
+	@SuppressWarnings("unchecked")
+	public Map<AuditType, ContractorAuditOperator> getMissingAudits() {
+		if (missingAudits == null) {
+			for (FlagData flagData : co.getFlagDatas()) {
+				if (flagData.getFlag().isRedAmber()) {
+					// TODO restrict the audits we query below to only those that have problems
+				}
+			}
+			
+			String where = "t.audit.contractorAccount.id = " + id + " AND t.status != 'Expired' AND t.visible = 1 "
+					+ "AND t IN (SELECT cao FROM ContractorAuditOperatorPermission WHERE operator.id = " + opID + ")";
+			List<ContractorAuditOperator> list = (List<ContractorAuditOperator>) caoDAO.findWhere(
+					ContractorAuditOperator.class, where, 0);
+			missingAudits = new HashMap<AuditType, ContractorAuditOperator>();
+			for (ContractorAuditOperator cao : list) {
+				AuditType auditType = cao.getAudit().getAuditType();
+				if (missingAudits.containsKey(auditType)) {
+					System.out.println("duplicate audit found");
+				} else {
+					missingAudits.put(auditType, cao);
+				}
+			}
+		}
+		return missingAudits;
 	}
 }

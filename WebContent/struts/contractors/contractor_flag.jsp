@@ -327,7 +327,7 @@ function checkReason(id) {
 			<tbody>
 			<s:iterator id="key" value="flagDataMap.keySet()">
 				<s:iterator id="data" value="flagDataMap.get(#key)">
-					<s:if test="#data.flag.toString() == 'Red' || #data.flag.toString() == 'Amber' || isFlagDataOverride(#data)">
+					<s:if test="#data.flag.redAmber || isFlagDataOverride(#data)">
 						<s:set name="flagoverride" value="%{isFlagDataOverride(#data)}"/>
 						<tr class="<s:property value="#data.flag" />">
 							<td class="center" <pics:permission perm="EditForcedFlags">rowspan="2"</pics:permission>>
@@ -357,27 +357,26 @@ function checkReason(id) {
 							<!-- Value -->
 							<td>
 								<s:if test="#data.criteria.auditType != null">
-									<s:iterator id="audit" value="contractor.audits" status="auditstat">
-										<s:if test="#data.criteria.auditType == #audit.auditType">
-											<s:if test="!(#audit.expired)">
-												<a href="Audit.action?auditID=<s:property value="#audit.id" />"><s:property value="#audit.auditType.auditName" /></a>
-												<s:if test="#audit.auditType.auditName != 'Annual Update'">
-													<s:iterator value="getCaoStats(permissions).keySet()" id="astat" status="stat">
-														<s:property value="getCaoStats(permissions).get(#astat)" />
-														<s:property value="#astat" /><s:if test="!#stat.last">, </s:if>
-													</s:iterator>
-												</s:if>
-												<s:else>
-													<s:property value="auditFor" />
-													<s:iterator value="#audit.operators" id="cao">
-														<s:if test="visible && isCanSeeAudit(#cao)">
-															<s:property value="status"/><br/>
-														</s:if> 
-													</s:iterator>
-												</s:else>
-											</s:if>
+									<s:set var="cao" value="missingAudits.get(#data.criteria.auditType)" />
+									<s:property value="#cao.status"/>
+									<a href="Audit.action?auditID=<s:property value="#cao.audit.id" />"
+										><s:property value="#data.criteria.auditType.auditName" /> <s:property value="#cao.audit.auditFor" /></a>
+									<s:if test="#data.criteria.auditType.classType.policy">
+										<p style="padding-left: 20px; font-size: x-small">
+										<s:if test="#cao.flag != null">
+											Recommend: <s:property value="#cao.flag"/><br />
 										</s:if>
-									</s:iterator>
+										<s:iterator var="insuranceFlagData" value="co.flagDatas">
+											<s:if test="#insuranceFlagData.criteria.insurance && #insuranceFlagData.criteria.question.auditType == #data.criteria.auditType">
+												<s:iterator id="conCriteria" value="contractor.flagCriteria">
+													<s:if test="#insuranceFlagData.criteria.id == #conCriteria.criteria.id">
+														<s:property value="getContractorAnswer(#conCriteria, #insuranceFlagData, true)" escape="false" /><br />
+													</s:if>
+												</s:iterator>
+											</s:if>
+										</s:iterator>
+											</p>
+									</s:if>
 								</s:if>
 								<s:else>
 									<s:iterator id="conCriteria" value="contractor.flagCriteria">

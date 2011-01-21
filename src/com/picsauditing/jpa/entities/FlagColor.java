@@ -34,7 +34,7 @@ public enum FlagColor {
 
 	public String getBigIcon() {
 		String title = this.toString();
-		if(this == FlagColor.Clear)
+		if (this == FlagColor.Clear)
 			title = "Not Applicable";
 		return "<img src=\"images/icon_" + this.toString().toLowerCase()
 				+ "FlagBig.gif\" width=\"32\" height=\"32\" border=\"0\" title=\"" + title + "\" />";
@@ -42,7 +42,7 @@ public enum FlagColor {
 
 	public String getSmallIcon() {
 		String title = this.toString();
-		if(this == FlagColor.Clear)
+		if (this == FlagColor.Clear)
 			title = "N/A";
 		return "<img src=\"images/icon_" + this.toString().toLowerCase()
 				+ "Flag.gif\" width=\"10\" height=\"12\" border=\"0\" title=\"" + title + "\" />";
@@ -66,6 +66,10 @@ public enum FlagColor {
 		return color1;
 	}
 
+	public boolean isRedAmber() {
+		return this.equals(Red) || this.equals(Amber);
+	}
+
 	public boolean isRed() {
 		return this.equals(Red);
 	}
@@ -77,17 +81,18 @@ public enum FlagColor {
 	public boolean isGreen() {
 		return this.equals(Green);
 	}
-	public boolean isClear(){
+
+	public boolean isClear() {
 		return this.equals(Clear);
 	}
-	
+
 	public boolean isWorseThan(FlagColor flagColor2) {
 		if (flagColor2 == null)
 			return true;
-		
-		if(this.compareTo(flagColor2) < 0)
+
+		if (this.compareTo(flagColor2) < 0)
 			return true;
-		
+
 		return false;
 	}
 }

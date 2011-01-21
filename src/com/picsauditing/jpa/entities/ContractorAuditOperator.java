@@ -18,7 +18,6 @@ import javax.persistence.Transient;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.audits.ConAuditMaintain;
 
 @SuppressWarnings("serial")
 @Entity

@@ -249,7 +249,6 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 
 	@Override
 	public int compareTo(FlagCriteria o) {
-
 		return ((Integer) displayOrder).compareTo(o.displayOrder);
 	}
 }
