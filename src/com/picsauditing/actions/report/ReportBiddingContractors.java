@@ -1,8 +1,9 @@
 package com.picsauditing.actions.report;
 
-import java.util.Date;
 import java.util.Iterator;
 
+import com.picsauditing.PICS.AuditBuilderController;
+import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -16,9 +17,6 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -38,15 +36,20 @@ public class ReportBiddingContractors extends ReportAccount {
 	protected ContractorOperatorDAO contractorOperatorDAO;
 	protected InvoiceItemDAO invoiceItemDAO;
 	protected OperatorAccountDAO operatorAccountDAO;
+	protected AuditPercentCalculator auditPercentCalculator;
+	protected AuditBuilderController auditBuilderController;
 
-	public ReportBiddingContractors(ContractorAccountDAO contractorAccountDAO,
-			NoteDAO noteDAO, ContractorOperatorDAO contractorOperatorDAO,
-			InvoiceItemDAO invoiceItemDAO, OperatorAccountDAO operatorAccountDAO) {
+	public ReportBiddingContractors(ContractorAccountDAO contractorAccountDAO, NoteDAO noteDAO,
+			ContractorOperatorDAO contractorOperatorDAO, InvoiceItemDAO invoiceItemDAO,
+			OperatorAccountDAO operatorAccountDAO, AuditPercentCalculator auditPercentCalculator,
+			AuditBuilderController auditBuilderController) {
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.noteDAO = noteDAO;
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.invoiceItemDAO = invoiceItemDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
+		this.auditPercentCalculator = auditPercentCalculator;
+		this.auditBuilderController = auditBuilderController;
 	}
 
 	@Override
@@ -56,12 +59,11 @@ public class ReportBiddingContractors extends ReportAccount {
 
 		filteredDefault = true;
 		getFilter().setShowConWithPendingAudits(false);
-		
+
 		// Anytime we query contractor accounts as an operator,
 		// get the flag color/status at the same time
-		if(permissions.isOperatorCorporate()) {
-			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "
-						+ permissions.getAccountId());
+		if (permissions.isOperatorCorporate()) {
+			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = " + permissions.getAccountId());
 			sql.addField("gc.workStatus");
 			sql.addField("gc.waitingOn");
 			sql.addWhere("gc.genID = " + permissions.getAccountId());
@@ -84,7 +86,7 @@ public class ReportBiddingContractors extends ReportAccount {
 				// See also ContractorDashboard Upgrade to Full Membership
 				cAccount.setAcceptsBids(false);
 				cAccount.setRenew(true);
-				
+
 				for (ContractorAudit cAudit : cAccount.getAudits()) {
 					if (cAudit.getAuditType().isPqf()) {
 						for (ContractorAuditOperator cao : cAudit.getOperators()) {
@@ -93,57 +95,45 @@ public class ReportBiddingContractors extends ReportAccount {
 								contractorAccountDAO.save(cao);
 							}
 						}
+
+						auditBuilderController.setup(cAccount, null);
+						auditBuilderController.fillAuditCategories(cAudit);
+						auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
+						auditPercentCalculator.percentCalculateComplete(cAudit);
+						contractorAccountDAO.save(cAudit);
 					}
 				}
 
-				// Setting the payment Expires date to today
-				for (Invoice invoice : cAccount.getInvoices()) {
-					for (InvoiceItem invoiceItem : invoice.getItems()) {
-						if (invoiceItem.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
-							invoiceItem.setPaymentExpires(new Date());
-							invoiceItemDAO.save(invoiceItem);
-						}
-					}
-				}
-
-				if (permissions.isOperator()
-						&& permissions.isApprovesRelationships()) {
+				if (permissions.isOperator() && permissions.isApprovesRelationships()) {
 					approveContractor(cAccount, permissions.getAccountId());
 				}
 
 				if (permissions.isCorporate()) {
-					OperatorAccount corporate = operatorAccountDAO
-							.find(permissions.getAccountId());
+					OperatorAccount corporate = operatorAccountDAO.find(permissions.getAccountId());
 					for (Facility facility : corporate.getOperatorFacilities()) {
-						if (YesNo.Yes.equals(facility.getOperator()
-								.getApprovesRelationships())) {
-							approveContractor(cAccount, facility.getOperator()
-									.getId());
+						if (YesNo.Yes.equals(facility.getOperator().getApprovesRelationships())) {
+							approveContractor(cAccount, facility.getOperator().getId());
 						}
 					}
 				}
 
 				templateId = 73; // Trial Contractor Account Approval
-				summary = "Upgraded and Approved the Bid Only Account for "
-						+ permissions.getAccountName()
+				summary = "Upgraded and Approved the Bid Only Account for " + permissions.getAccountName()
 						+ " and notified contractor via email.";
 			}
 			if ("Reject".equals(button)) {
 				cAccount.setRenew(false);
-				Iterator<ContractorOperator> cIterator = cAccount
-						.getNonCorporateOperators().iterator();
+				Iterator<ContractorOperator> cIterator = cAccount.getNonCorporateOperators().iterator();
 				while (cIterator.hasNext()) {
 					ContractorOperator co = cIterator.next();
-					if (co.getOperatorAccount().getId() == permissions
-							.getAccountId()) {
+					if (co.getOperatorAccount().getId() == permissions.getAccountId()) {
 						contractorOperatorDAO.remove(co);
 						cAccount.getOperators().remove(co);
 						break;
 					}
 				}
 				templateId = 75;// Trial Contractor Account Rejection
-				summary = "Rejected Contractor for the Bid Only Account for "
-						+ permissions.getAccountName();
+				summary = "Rejected Contractor for the Bid Only Account for " + permissions.getAccountName();
 			}
 
 			cAccount.incrementRecalculation();
@@ -165,14 +155,12 @@ public class ReportBiddingContractors extends ReportAccount {
 					EmailBuilder emailBuilder = new EmailBuilder();
 					emailBuilder.setTemplate(templateId);
 					emailBuilder.setPermissions(permissions);
-					emailBuilder.setContractor(cAccount,
-							OpPerms.ContractorAdmin);
+					emailBuilder.setContractor(cAccount, OpPerms.ContractorAdmin);
 					emailBuilder.addToken("permissions", permissions);
 					EmailQueue emailQueue = emailBuilder.build();
 					emailQueue.setPriority(100);
-					emailQueue
-							.setFromAddress((templateId == 73) ? "PICS Billing <billing@picsauditing.com>"
-									: "PICS Info <info@picsauditing.com>");
+					emailQueue.setFromAddress((templateId == 73) ? "PICS Billing <billing@picsauditing.com>"
+							: "PICS Info <info@picsauditing.com>");
 					emailQueue.setViewableById(permissions.getTopAccountID());
 					EmailSender.send(emailQueue);
 					addActionMessage(summary);

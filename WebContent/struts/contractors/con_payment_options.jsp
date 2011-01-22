@@ -107,7 +107,14 @@ function updateExpDate() {
 			</li>
 		</s:if>
 		<s:elseif test="contractor.acceptsBids">
-			<li><label>Total:</label> $<s:property value="contractor.newMembershipLevel.amount"/> <s:property value="contractor.currencyCode" /> </li>
+			<s:if test="contractor.currencyCode.canada">
+				<li><label>Bid Only Account Fee:</label> $<s:property value="contractor.newMembershipLevel.amount"/> <s:property value="contractor.currencyCode" /></li>
+				<li><label>Goods & Services Tax:</label> $<s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
+				<li><label>Total:</label> $<s:property value="contractor.newMembershipLevel.amount+gstFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
+			</s:if>
+			<s:else>
+				<li><label>Total:</label> $<s:property value="contractor.newMembershipLevel.amount"/> <s:property value="contractor.currencyCode" /> </li>
+			</s:else>
 		</s:elseif>
 		<s:else>
 			<li><label>Annual Membership:</label> $<s:property

@@ -173,7 +173,10 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 
 	public void setCountry(Country country) {
 		this.country = country;
-		this.setCurrencyCode(null);
+		if (country != null && "CA".equals(country.getIsoCode()))
+			this.setCurrencyCode(Currency.CAD);
+		else
+			this.setCurrencyCode(Currency.USD);
 	}
 
 	@ManyToOne
@@ -482,10 +485,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	}
 
 	public void setCurrencyCode(Currency currencyCode) {
-		if (getCountry() != null && "CA".equals(this.getCountry().getIsoCode()))
-			this.currencyCode = Currency.CAD;
-
-		this.currencyCode = Currency.USD;
+		this.currencyCode = currencyCode;
 	}
 
 	@Transient

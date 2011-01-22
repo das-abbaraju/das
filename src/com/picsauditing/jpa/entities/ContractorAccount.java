@@ -746,7 +746,7 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		if (!foundCurrentMembership)
 			membershipLevel = new InvoiceFee(InvoiceFee.FREE);
-		if (!foundPaymentExpires)
+		if (!foundPaymentExpires && !this.isAcceptsBids())
 			paymentExpires = creationDate;
 		if (!foundMembershipDate)
 			membershipDate = null;
@@ -873,11 +873,18 @@ public class ContractorAccount extends Account implements JSONable {
 			return "Current";
 
 		if (acceptsBids) {
-			// Do we want to do this?
-			if (status.isActive()) {
-				return "Current";
+			// if the contractor is bid only, and their payment has expired,
+			// keep calculating
+			Calendar bidOnlyExpiration = Calendar.getInstance();
+			bidOnlyExpiration.setTime(this.getPaymentExpires());
+			bidOnlyExpiration.add(Calendar.DATE, 90);
+			if(bidOnlyExpiration.getTime().after(new Date())) {
+				// Do we want to do this?
+				if (status.isActive()) {
+					return "Current";
+				}
+				return "Bid Only Account";
 			}
-			return "Bid Only Account";
 		}
 
 		if (newMembershipLevel == null)

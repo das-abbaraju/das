@@ -122,7 +122,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.RequestNewContractor))
 			subMenu.addChild("Registration Requests", "ReportNewRequestedContractor.action");
 		if (permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
-			subMenu.addChild("Bid Only Account", "BiddingContractorSearch.action");
+			subMenu.addChild("Bid Only Account", "BiddingContractorSearch.action?filter.status=Active");
 		}
 		if (permissions.isCorporate())
 			subMenu.addChild("By Flag", "ReportContractorOperatorFlag.action");

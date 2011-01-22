@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -53,11 +54,13 @@ public class BillingCalculatorSingle {
 
 	static public InvoiceFee calculateAnnualFee(ContractorAccount contractor) {
 		InvoiceFee fee = new InvoiceFee();
-		if (!contractor.isAcceptsBids()) {
-
+		Calendar bidOnlyExpiration = Calendar.getInstance();
+		bidOnlyExpiration.setTime(contractor.getPaymentExpires());
+		bidOnlyExpiration.add(Calendar.DATE, 90);
+		if (!contractor.isAcceptsBids()
+				|| bidOnlyExpiration.getTime().after(new Date())) {
 			fee = calculateAnnualFeeForContractor(contractor, fee);
 		} else {
-
 			fee.setId(InvoiceFee.BIDONLY);
 		}
 
@@ -159,6 +162,19 @@ public class BillingCalculatorSingle {
 			Date paymentExpires = DateBean.addMonths(new Date(), 3);
 			InvoiceFee fee = getFee(InvoiceFee.BIDONLY, feeDAO);
 			items.add(new InvoiceItem(fee, paymentExpires));
+			
+			if (contractor.getCurrencyCode().isCanada()) {
+				BigDecimal total = BigDecimal.ZERO;
+				for (InvoiceItem ii : items)
+					total = total.add(ii.getAmount());
+
+				InvoiceFee gst = getFee(InvoiceFee.GST, feeDAO);
+				InvoiceItem invoiceItem = new InvoiceItem();
+				invoiceItem.setInvoiceFee(gst);
+				invoiceItem.setAmount(gst.getGSTSurchage(total));
+				invoiceItem.setDescription("5% Goods & Services Tax");
+				items.add(invoiceItem);
+			}
 			return items;
 		}
 
@@ -238,11 +254,11 @@ public class BillingCalculatorSingle {
 				items.add(invoiceItem);
 			}
 		}
-		
+
 		// Need to change Canadian contractors a GST for all invoices
-		if(contractor.getCurrencyCode().isCanada()) {
+		if (contractor.getCurrencyCode().isCanada()) {
 			BigDecimal total = BigDecimal.ZERO;
-			for(InvoiceItem ii : items)
+			for (InvoiceItem ii : items)
 				total = total.add(ii.getAmount());
 
 			InvoiceFee gst = getFee(InvoiceFee.GST, feeDAO);

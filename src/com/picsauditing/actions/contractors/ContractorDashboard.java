@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -17,6 +16,7 @@ import java.util.TreeMap;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.AuditBuilderController;
+import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.PICS.ContractorFlagCriteriaList;
 import com.picsauditing.PICS.OshaOrganizer;
@@ -46,9 +46,6 @@ import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -72,6 +69,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private InvoiceItemDAO invoiceItemDAO;
 	private UserDAO userDAO;
 	private NaicsDAO naicsDAO;
+	private AuditPercentCalculator auditPercentCalculator;
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
 	protected boolean runTagConCronAjax = false;
@@ -98,7 +96,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public ContractorDashboard(AuditBuilderController auditBuilder, ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO,
 			FlagDataDAO flagDataDAO, OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO,
-			InvoiceItemDAO invoiceItemDAO, UserDAO userDAO, NaicsDAO naicsDAO, AuditTypeRuleCache auditTypeRuleCache) {
+			InvoiceItemDAO invoiceItemDAO, UserDAO userDAO, NaicsDAO naicsDAO, AuditTypeRuleCache auditTypeRuleCache,
+			AuditPercentCalculator auditPercentCalculator) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.contractorOperatorDAO = contractorOperatorDAO;
@@ -111,6 +110,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		this.naicsDAO = naicsDAO;
 		this.subHeading = "Account Summary";
 		this.auditTypeRuleCache = auditTypeRuleCache;
+		this.auditPercentCalculator = auditPercentCalculator;
 	}
 
 	@Override
@@ -119,8 +119,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 			return LOGIN_AJAX;
 
 		findContractor();
-		
-		if (permissions.isOperatorCorporate() && (contractor.getStatus().isDeactivated() || contractor.getStatus().isDeleted()))
+
+		if (permissions.isOperatorCorporate()
+				&& (contractor.getStatus().isDeactivated() || contractor.getStatus().isDeleted()))
 			throw new NoRightsException("PICS Administrator");
 
 		if (button != null && button.contains("Watch")) {
@@ -178,15 +179,12 @@ public class ContractorDashboard extends ContractorActionSupport {
 							auditDao.save(cao);
 						}
 					}
-				}
-			}
-			// Setting the payment Expires date to today
-			for (Invoice invoice : contractor.getInvoices()) {
-				for (InvoiceItem invoiceItem : invoice.getItems()) {
-					if (invoiceItem.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
-						invoiceItem.setPaymentExpires(new Date());
-						invoiceItemDAO.save(invoiceItem);
-					}
+					
+					auditBuilder.setup(contractor, null);
+					auditBuilder.fillAuditCategories(cAudit);
+					auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
+					auditPercentCalculator.percentCalculateComplete(cAudit);
+					auditDao.save(cAudit);
 				}
 			}
 

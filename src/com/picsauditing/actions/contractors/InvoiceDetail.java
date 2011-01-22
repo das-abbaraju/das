@@ -162,7 +162,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				invoice.setAuditColumns(permissions);
 				invoice.setQbSync(true);
 				invoice.setNotes("Cancelled Invoice");
-
+				
+				contractor.syncBalance();
+				contractor.incrementRecalculation(10);
+				accountDao.save(contractor);
+				
 				message = "Cancelled Invoice";
 
 				String noteText = "Cancelled Invoice " + invoice.getId() + " for $"
@@ -232,7 +236,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 							addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at 1-(800)506-PICS x708.");
 
-							// Assuming paid status per Aaron so that he can
+							// Assuming Unpaid status per Aaron so that he can
 							// refund or void manually.
 							payment.setStatus(TransactionStatus.Unpaid);
 							paymentDAO.save(payment);

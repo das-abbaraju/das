@@ -66,12 +66,6 @@
 									</s:if>
 								</s:iterator>
 							</ul>
-							Once you have upgraded to a full membership or approved by a 
-							facility, the following audits will apply:							<ul>
-								<s:iterator value="requiredAudits" id="value">
-									<li><s:property value="#value"/></li>									
-								</s:iterator>
-							</ul> 
 						</s:if>
 						<s:else>
 							Based on the Operators that you have selected:
