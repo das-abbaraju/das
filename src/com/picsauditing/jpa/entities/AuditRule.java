@@ -15,9 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
-import com.picsauditing.util.Strings;
-
 import com.picsauditing.actions.auditType.AuditRuleColumn;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
@@ -348,24 +347,23 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 		sb.append(include ? "Include" : "Exclude");
 
 		if (risk != null)
-			identifiers.add("Contractor is ["+risk + " risk]");
+			identifiers.add("Contractor is [" + risk + " risk]");
 		if (operatorAccount != null)
-			identifiers.add("Operator is ["+operatorAccount.getName() + "]");
+			identifiers.add("Operator is [" + operatorAccount.getName() + "]");
 		if (contractorType != null)
-			identifiers.add("Contractor is "+contractorType);
+			identifiers.add("Contractor is " + contractorType);
 		if (tag != null)
-			identifiers.add("has tag ["+tag.getTag()+"]");
+			identifiers.add("has tag [" + tag.getTag() + "]");
 		if (question != null)
-			identifiers.add(question.getColumnHeaderOrQuestion()+" "+questionComparator+
-					questionAnswer);
+			identifiers.add(question.getColumnHeaderOrQuestion() + " " + questionComparator + " " + questionAnswer);
 		if (acceptsBids != null)
-			identifiers.add("Contactor "+(acceptsBids ? "can [bid-only]" : "has [full account]"));
+			identifiers.add("Contactor " + (acceptsBids ? "can [bid-only]" : "has [full account]"));
 		if (auditType != null)
-			identifiers.add("Audit Type is ["+auditType.getAuditName() + "]");
-		
-		if(!identifiers.isEmpty()){
+			identifiers.add("Audit Type is [" + auditType.getAuditName() + "]");
+
+		if (!identifiers.isEmpty()) {
 			sb.append(" when ").append(identifiers.get(0));
-			for(int i=1; i<identifiers.size(); i++){
+			for (int i = 1; i < identifiers.size(); i++) {
 				sb.append(" and ").append(identifiers.get(i));
 			}
 		}
