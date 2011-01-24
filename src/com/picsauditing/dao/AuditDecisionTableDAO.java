@@ -1,6 +1,5 @@
 package com.picsauditing.dao;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -112,6 +111,14 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<AuditCategoryRule> findCategoryRulesByQuestionCategory(AuditCategory category) {
+		Query query = em.createQuery(findByQuery("AuditCategoryRule",
+				" AND r.question.category = ?"));
+		query.setParameter(1, category);
+		
+		return query.getResultList();
+	}
+
 	public List<AuditTypeRule> findAuditTypeRulesByOperator(int opID) {
 		return findAuditTypeRulesByOperator(opID, null);
 	}
@@ -122,8 +129,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		else
 			where = " AND " + where;
 
-		Query query = em.createQuery(findByQuery("AuditTypeRule",
-				" AND (r.operatorAccount.id = :operatorID)" + where));
+		Query query = em.createQuery(findByQuery("AuditTypeRule", " AND (r.operatorAccount.id = :operatorID)" + where));
 		query.setParameter("operatorID", opID);
 		query.setMaxResults(250);
 		return query.getResultList();
@@ -139,8 +145,8 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		else
 			where = " AND " + where;
 
-		Query query = em.createQuery(findByQuery("AuditCategoryRule",
-				" AND (r.operatorAccount.id = :operatorID)" + where));
+		Query query = em.createQuery(findByQuery("AuditCategoryRule", " AND (r.operatorAccount.id = :operatorID)"
+				+ where));
 		query.setParameter("operatorID", opID);
 		query.setMaxResults(250);
 		return query.getResultList();

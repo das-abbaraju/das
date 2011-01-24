@@ -6,19 +6,23 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryMatrixDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryMatrixCompetencies;
-import com.picsauditing.jpa.entities.AuditCategoryMatrixDesktop;
+import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.OperatorCompetency;
+import com.picsauditing.jpa.entities.QuestionComparator;
 import com.picsauditing.util.DoubleMap;
 
 @SuppressWarnings("serial")
@@ -27,12 +31,15 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 	protected AuditCategoryDAO acDAO;
 	protected AuditCategoryMatrixDAO acmDAO;
 	protected AuditQuestionDAO aqDAO;
-	private OperatorCompetencyDAO ocDAO;
+	protected OperatorCompetencyDAO ocDAO;
+	protected AuditDecisionTableDAO adtDAO;
+	protected AuditCategoryRuleCache acrCache;
 
 	protected int auditTypeID;
 	protected int categoryID;
 	protected int itemID;
 	protected boolean checked;
+	protected boolean pivot;
 	protected AuditType auditType;
 
 	protected int[] categoryIDs;
@@ -45,12 +52,15 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 	private DoubleMap<Integer, Integer, Boolean> matrix = new DoubleMap<Integer, Integer, Boolean>();
 
 	public ManageAuditCategoryMatrix(AuditTypeDAO auditTypeDAO, AuditCategoryDAO acDAO, AuditCategoryMatrixDAO acmDAO,
-			AuditQuestionDAO aqDAO, OperatorCompetencyDAO ocDAO) {
+			AuditQuestionDAO aqDAO, OperatorCompetencyDAO ocDAO, AuditDecisionTableDAO adtDAO,
+			AuditCategoryRuleCache acrCache) {
 		this.auditTypeDAO = auditTypeDAO;
 		this.acDAO = acDAO;
 		this.acmDAO = acmDAO;
 		this.aqDAO = aqDAO;
 		this.ocDAO = ocDAO;
+		this.adtDAO = adtDAO;
+		this.acrCache = acrCache;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -58,7 +68,7 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
-		permissions.tryPermission(OpPerms.ManageAudits);
+		permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
 
 		if (button != null) {
 			if (auditTypeID == 0) {
@@ -71,27 +81,59 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 			if ("Toggle".equals(button)) {
 				if (itemID > 0 && categoryID > 0) {
 					if (auditType.isDesktop()) {
-						AuditCategoryMatrixDesktop acmd = null;
-						try {
-							acmd = acmDAO.findByCategoryQuestion(categoryID, itemID);
-						} catch (Exception e) {
-							acmd = new AuditCategoryMatrixDesktop();
-							acmd.setCategory(acDAO.find(categoryID));
-							acmd.setAuditQuestion(aqDAO.find(itemID));
+						AuditCategory ac = acDAO.find(categoryID);
+						AuditQuestion aq = aqDAO.find(itemID);
+						acrCache.clear();
+						List<AuditCategoryRule> rules = adtDAO.findCategoryRulesByQuestion(itemID);
+						AuditCategoryRule r = null;
+
+						for (AuditCategoryRule rule : rules) {
+							if (rule.getAuditCategory().equals(ac))
+								r = rule;
 						}
 
-						if (checked) {
-							acmd.setAuditColumns(permissions);
-							acmDAO.save(acmd);
-							json.put("msg", "Successfully added " + acmd.getAuditQuestion().getName() + " to "
-									+ acmd.getCategory().getName());
-						} else {
-							acmDAO.remove(acmd);
-							json.put("msg", "Successfully removed " + acmd.getAuditQuestion().getName() + " from "
-									+ acmd.getCategory().getName());
+						if (r != null && !checked) {
+							// TODO Delete or expire this category rule?
+							json.put("msg", "Successfully removed " + ac.getName() + " from " + aq.getName());
+							rules.remove(r);
+							adtDAO.remove(r);
+						} else if (checked) {
+							if (r == null) {
+								r = new AuditCategoryRule();
+								r.setAuditType(ac.getAuditType());
+								r.setAuditCategory(ac);
+								r.setAcceptsBids(false);
+								r.setQuestion(aq);
+
+								if (aq.getQuestionType().equals("Service")) {
+									r.setQuestionComparator(QuestionComparator.StartsWith);
+									r.setQuestionAnswer("C");
+								} else if (aq.getQuestionType().equals("Main Work")
+										|| aq.getQuestionType().equals("Check Box")) {
+									r.setQuestionComparator(QuestionComparator.Equals);
+									r.setQuestionAnswer("X");
+								} else if (aq.getQuestionType().equals("Text"))
+									r.setQuestionComparator(QuestionComparator.NotEmpty);
+
+								r.defaultDates();
+								r.calculatePriority();
+							} else
+								r.setInclude(true);
+
+							r.setAuditColumns(permissions);
+
+							adtDAO.save(r);
+
+							json.put("msg", "Successfully added " + ac.getName() + " to " + aq.getName());
 						}
 
-						json.put("title", "Success");
+						if (json.get("msg") == null) {
+							json.put("reset", true);
+							json.put("title", "Error");
+							json.put("msg", "Could not " + (checked ? "add" : "remove") + ac.getName()
+									+ (checked ? " to " : " from ") + aq.getName());
+						} else
+							json.put("title", "Success");
 					} else {
 						AuditCategoryMatrixCompetencies acmc = null;
 						try {
@@ -185,8 +227,6 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 			}
 		}
 
-		// TODO possibly create a filter for selecting specific categories or
-		// questions/competencies
 		return SUCCESS;
 	}
 
@@ -220,6 +260,14 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 
 	public void setChecked(boolean checked) {
 		this.checked = checked;
+	}
+	
+	public boolean isPivot() {
+		return pivot;
+	}
+
+	public void setPivot(boolean pivot) {
+		this.pivot = pivot;
 	}
 
 	public AuditType getAuditType() {
@@ -338,11 +386,12 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 	// Internal methods
 	private void buildMatrix() {
 		if (auditType.isDesktop()) {
-			Map<AuditQuestion, List<AuditCategory>> acmds = acmDAO.findQuestionCategories(categoryID);
-			for (AuditQuestion aq : acmds.keySet()) {
-				for (AuditCategory ac : acmds.get(aq)) {
-					matrix.put(ac.getId(), aq.getId(), true);
-				}
+			AuditCategory ac = acDAO.find(categoryID);
+			List<AuditCategoryRule> rules = adtDAO.findCategoryRulesByQuestionCategory(ac);
+
+			for (AuditCategoryRule rule : rules) {
+				if (rule.isInclude())
+					matrix.put(rule.getAuditCategory().getId(), rule.getQuestion().getId(), true);
 			}
 		} else {
 			Map<OperatorCompetency, List<AuditCategory>> acmcs = acmDAO.findCompetencyCategories();

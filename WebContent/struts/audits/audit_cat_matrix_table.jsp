@@ -33,6 +33,10 @@
 		</span>
 	</div>
 	<div class="clear"></div>
+	<div class="filterOption">
+		<s:checkbox name="pivot" /> Swap Rows and Columns
+	</div>
+	<div class="clear"></div>
 	<div><input type="button" value="Update" class="picsbutton positive" onclick="addFilter(); return false;" /></div>
 </div>
 <script type="text/javascript">$('#filterLoad').html($('#filterLoadData').html()); updateQuery('form1_categories'); updateQuery('form1_items');</script>
@@ -42,23 +46,38 @@
 		<thead>
 			<tr>
 				<th><button onclick="toggleEdit(); return false;" class="picsbutton">Edit</button></th>
-				<s:iterator value="selectedCategories">
+				<s:iterator value="pivot ? selectedItems : selectedCategories">
 					<th><s:property value="name" /></th>
 				</s:iterator>
 			</tr>
 		</thead>
 		<tbody>
-			<s:iterator value="selectedItems" var="item">
-				<tr>
-					<td><s:property value="name" /></td>
-					<s:iterator value="selectedCategories" var="cat">
-						<td class="center">
-							<s:if test="matrix.get(#cat.id, #item.id)"><img alt="Checked" src="images/okCheck.gif" class="view" /></s:if>
-							<input type="checkbox" class="edit"<s:if test="matrix.get(#cat.id, #item.id)"> checked="checked"</s:if> onclick="toggle(<s:property value="auditType.id" />, <s:property value="#item.id" />, <s:property value="#cat.id" />, this);" />
-						</td>
-					</s:iterator>
-				</tr>
-			</s:iterator>
+			<s:if test="pivot">
+				<s:iterator value="selectedCategories" var="cat">
+					<tr>
+						<td><s:property value="name" /></td>
+						<s:iterator value="selectedItems" var="item">
+							<td class="center">
+								<s:if test="matrix.get(#cat.id, #item.id)"><img alt="Checked" src="images/okCheck.gif" class="view" /></s:if>
+								<input type="checkbox" class="edit"<s:if test="matrix.get(#cat.id, #item.id)"> checked="checked"</s:if> onclick="toggle(<s:property value="auditType.id" />, <s:property value="#item.id" />, <s:property value="#cat.id" />, this);" />
+							</td>
+						</s:iterator>
+					</tr>
+				</s:iterator>
+			</s:if>
+			<s:else>
+				<s:iterator value="selectedItems" var="item">
+					<tr>
+						<td><s:property value="name" /></td>
+						<s:iterator value="selectedCategories" var="cat">
+							<td class="center">
+								<s:if test="matrix.get(#cat.id, #item.id)"><img alt="Checked" src="images/okCheck.gif" class="view" /></s:if>
+								<input type="checkbox" class="edit"<s:if test="matrix.get(#cat.id, #item.id)"> checked="checked"</s:if> onclick="toggle(<s:property value="auditType.id" />, <s:property value="#item.id" />, <s:property value="#cat.id" />, this);" />
+							</td>
+						</s:iterator>
+					</tr>
+				</s:iterator>
+			</s:else>
 		</tbody>
 	</table>
 </s:if>

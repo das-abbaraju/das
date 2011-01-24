@@ -74,6 +74,7 @@ function toggle(auditTypeID, itemID, categoryID, checkbox) {
 }
 
 function addFilter(auditTypeID, categoryID, itemID, type) {
+	startThinking({div: "tableLoad", message: "Building Matrix..."});
 	$('#tableLoad').load("AuditCategoryMatrixAjax.action?" + $('#form1').serialize(), { button: 'Table' });
 }
 

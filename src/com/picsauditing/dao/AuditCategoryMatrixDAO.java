@@ -22,46 +22,56 @@ public class AuditCategoryMatrixDAO extends PicsDAO {
 	public AuditCategoryMatrix find(int id) {
 		return em.find(AuditCategoryMatrix.class, id);
 	}
-	
+
 	public AuditCategoryMatrixDesktop findByCategoryQuestion(int catID, int qID) {
-		Query query = em.createQuery("SELECT a FROM AuditCategoryMatrixDesktop a " +
-		"WHERE a.category.id = ? AND a.auditQuestion.id = ?");
+		Query query = em.createQuery("SELECT a FROM AuditCategoryMatrixDesktop a "
+				+ "WHERE a.category.id = ? AND a.auditQuestion.id = ?");
 		query.setParameter(1, catID);
 		query.setParameter(2, qID);
-		
+
 		return (AuditCategoryMatrixDesktop) query.getSingleResult();
 	}
-	
+
 	public Map<AuditQuestion, List<AuditCategory>> findQuestionCategories(int questionCatID) {
-		Query query = em.createQuery("SELECT a FROM AuditCategoryMatrixDesktop a WHERE a.auditQuestion.category.id = ?");
+		Query query = em
+				.createQuery("SELECT a FROM AuditCategoryMatrixDesktop a WHERE a.auditQuestion.category.id = ?");
 		query.setParameter(1, questionCatID);
-		
+
 		Map<AuditQuestion, List<AuditCategory>> map = new TreeMap<AuditQuestion, List<AuditCategory>>();
 		List<AuditCategoryMatrixDesktop> acmds = query.getResultList();
-		
+
 		for (AuditCategoryMatrixDesktop acmd : acmds) {
 			if (map.get(acmd.getAuditQuestion()) == null)
 				map.put(acmd.getAuditQuestion(), new ArrayList<AuditCategory>());
-			
+
 			map.get(acmd.getAuditQuestion()).add(acmd.getCategory());
 		}
-		
+
 		return map;
 	}
-	
+
+	public List<AuditCategory> findCategoriesForQuestionAnswers(int accountID) {
+		Query query = em.createQuery("SELECT DISTINCT a.category FROM AuditCategoryMatrixDesktop a "
+				+ "WHERE a.auditQuestion IN (SELECT d.question FROM AuditData d "
+				+ "WHERE d.audit.contractorAccount.id = ? AND d.audit.auditType.id = 1)");
+		query.setParameter(1, accountID);
+
+		return query.getResultList();
+	}
+
 	public AuditCategoryMatrixCompetencies findByCategoryCompetency(int catID, int compID) {
-		Query query = em.createQuery("SELECT a FROM AuditCategoryMatrixCompetencies a " +
-				"WHERE a.category.id = ? AND a.operatorCompetency.id = ?");
+		Query query = em.createQuery("SELECT a FROM AuditCategoryMatrixCompetencies a "
+				+ "WHERE a.category.id = ? AND a.operatorCompetency.id = ?");
 		query.setParameter(1, catID);
 		query.setParameter(2, compID);
-		
+
 		return (AuditCategoryMatrixCompetencies) query.getSingleResult();
 	}
-	
+
 	public Map<OperatorCompetency, List<AuditCategory>> findCompetencyCategories() {
 		Query query = em.createQuery("SELECT a FROM AuditCategoryMatrixCompetencies a");
 		List<AuditCategoryMatrixCompetencies> acmcs = query.getResultList();
-		
+
 		Map<OperatorCompetency, List<AuditCategory>> map = new TreeMap<OperatorCompetency, List<AuditCategory>>();
 		for (AuditCategoryMatrixCompetencies acmc : acmcs) {
 			if (map.get(acmc.getOperatorCompetency()) == null)
@@ -69,10 +79,10 @@ public class AuditCategoryMatrixDAO extends PicsDAO {
 			if (acmc.getCategory().getParent() == null)
 				map.get(acmc.getOperatorCompetency()).add(acmc.getCategory());
 		}
-		
+
 		return map;
 	}
-	
+
 	public List<AuditCategory> findCategoriesForCompetencies(int accountID) {
 		Query query = em.createQuery("SELECT a.category FROM AuditCategoryMatrixCompetencies a "
 				+ "WHERE a.operatorCompetency IN (SELECT DISTINCT jc.competency FROM JobCompetency jc "
