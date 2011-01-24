@@ -130,8 +130,8 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				if (auditType == null)
 					throw new RecordNotFoundException("Audit Type not found :" + auditTypeID);
 				AuditCategory parent = null;
-				for (AuditCategory c : auditType.getCategories()) {
-					if (auditType.getAuditName().equals(c.getName())) {
+				for (AuditCategory c : auditType.getTopCategories()) {
+					if (c.getName().startsWith(auditType.getAuditName())) {
 						parent = c;
 						break;
 					}
@@ -142,38 +142,26 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				cat.setParent(parent);
 				cat.setAuditType(auditType);
 				auditType.getCategories().add(cat);
-				for (Iterator<AuditCategory> it = auditType.getCategories().iterator(); it.hasNext();) {
-					AuditCategory c = it.next();
-					if (c.getName().equals("Policy Information") || c.getName().equals("Policy Limits")) {
-						policyAC.add(c);
-						it.remove();
-					}
-				}
 				Collections.sort(auditType.getCategories(), new Comparator<AuditCategory>() {
-
 					@Override
 					public int compare(AuditCategory o1, AuditCategory o2) {
+						if (o1.getName().equals("Policy Information") || o1.getName().equals("Policy Limits")){
+							if(o2.getName().equals("Policy Information") || o2.getName().equals("Policy Limits"))
+								return o1.getName().compareTo(o2.getName());
+							return -1;							
+						} else if(o2.getName().equals("Policy Information") || o2.getName().equals("Policy Limits"))
+							return 1;
 						return o1.getName().compareTo(o2.getName());
 					}
 				});
-				int num = 3;
+				int num = 1;
 				for (Iterator<AuditCategory> it = auditType.getCategories().iterator(); it.hasNext();) {
-					it.next().setNumber(num);
-					num++;
-				}
-				num = 1;
-				for (AuditCategory c : policyAC) {
-					c.setNumber(num);
-					num++;
-					auditType.getCategories().add(c);
-				}
-				Collections.sort(auditType.getCategories(), new Comparator<AuditCategory>() {
-
-					@Override
-					public int compare(AuditCategory o1, AuditCategory o2) {
-						return new Integer(o1.getNumber()).compareTo(new Integer(o2.getNumber()));
+					AuditCategory currentCategory = it.next();
+					if(currentCategory.getParent()!=null){
+						currentCategory.setNumber(num);
+						num++;
 					}
-				});
+				}
 				Calendar effDate = Calendar.getInstance();
 				effDate.set(2001, Calendar.JANUARY, 1);
 				Calendar exDate = Calendar.getInstance();
