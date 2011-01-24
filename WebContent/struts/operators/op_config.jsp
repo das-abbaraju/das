@@ -217,7 +217,7 @@ function hideCat(id) {
 								<a href="#" onclick="return hideCat(<s:property value="#cat.id" />);" class="hide remove">Hide Rules</a>
 								<a href="#" onclick="return showCat(<s:property value="#cat.id" />);" class="hide refresh">Refresh</a>
 								<div id="catTable_<s:property value="#cat.id" />"></div>
-									<a href="AuditCategoryRuleEditor.action?button=New&ruleAuditTypeId=1&ruleCategoryId=<s:property value="#cat.id" />&ruleOperatorAccountId=<s:property value="operator.id" />"
+									<a href="CategoryRuleEditor.action?button=New&ruleAuditTypeId=1&ruleCategoryId=<s:property value="#cat.id" />&ruleOperatorAccountId=<s:property value="operator.id" />"
 										target="_blank" class="hide add">Add Rule</a>
 							</td>
 						</tr>
