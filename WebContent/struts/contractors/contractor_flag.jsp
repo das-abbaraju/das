@@ -335,17 +335,16 @@ function checkReason(id) {
 							</td>
 							<!-- Description -->
 							<td>
-								<s:iterator id="opCriteria" value="co.operatorAccount.flagCriteriaInherited">
-									<s:if test="#opCriteria.criteria.id == #data.criteria.id && (#opCriteria.flag == #data.flag || (#flagoverride != null && #opCriteria.flag.toString() == 'Red'))">
-										<s:if test="#data.criteria.oshaType != null || (#data.criteria.question != null && #data.criteria.question.id == 2034)">
-											<s:property value="#opCriteria.replaceHurdle" /><a href="#" onclick="return false;" class="help cluetip" rel="#cluetip1" title="Statistics"></a>
-											<div id="cluetip1">The statistics provided must have a status other than pending to be calculated.</div>
-										</s:if>
-										<s:else>
-											<s:property value="#opCriteria.replaceHurdle" />
-										</s:else>
+								<s:set name="opCriteria" value="getApplicableOperatorCriteria(#data)" />
+								<s:if test="#opCriteria != null">
+									<s:if test="#data.criteria.oshaType != null || (#data.criteria.question != null && #data.criteria.question.id == 2034)">
+										<s:property value="#opCriteria.replaceHurdle" /><a href="#" onclick="return false;" class="help cluetip" rel="#cluetip<s:property value="#opCriteria.id" />" title="Statistics"></a>
+										<div id="cluetip<s:property value="#opCriteria.id" />">The statistics provided must have a status other than pending to be calculated.</div>
 									</s:if>
-								</s:iterator>
+									<s:else>
+										<s:property value="#opCriteria.replaceHurdle" />
+									</s:else>
+								</s:if>
 							</td>
 							<!-- flagoverride info -->
 								<s:if test="#flagoverride != null">

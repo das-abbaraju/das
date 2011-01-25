@@ -142,8 +142,9 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 							+ fco.getReplaceHurdle() + ", " + newFlag.toString() + " flagged";
 					addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 				} else {
-					addActionError("Flag Criteria \"" + fco.getReplaceHurdle() + "\""
-							+ (tagID > 0 ? " and tag ID " + tagID : "") + " already exists.");
+					addActionError("Flag Criteria '" + fco.getCriteria().getLabel() + "' with flag color "
+							+ fco.getFlag() + (fco.getTag() != null ? " and tag id " + fco.getTag().getId() : "")
+							+ " already exists.");
 				}
 			}
 
@@ -173,7 +174,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 						fco1.setHurdle(Strings.formatNumber(newHurdle));
 				}
 
-				if (!checkExists(fco1)) {
+				if (!checkExists(fco1, true)) {
 					fco.setLastCalculated(null);
 					fco.setUpdateDate(fco1.getUpdateDate());
 					fco.setUpdatedBy(fco1.getUpdatedBy());
@@ -393,7 +394,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				return arg0.getContractor().getName().compareTo(arg1.getContractor().getName());
 			}
 		});
-		
+
 		return affected;
 	}
 
@@ -410,19 +411,26 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	}
 
 	private boolean checkExists(FlagCriteriaOperator fco) {
+		return checkExists(fco, false);
+	}
+	
+	private boolean checkExists(FlagCriteriaOperator fco, boolean edit) {
 		// Check here if this FCO all ready exists -- check color and tagID
 		List<FlagCriteriaOperator> existing = operator.getFlagCriteriaInherited();
 		for (FlagCriteriaOperator c : existing) {
 			if (c.getCriteria().equals(fco.getCriteria())) {
-				if (c.getCriteria().isAllowCustomValue() && fco.getCriteria().isAllowCustomValue()) {
-					if (c.getHurdle().equals(fco.getHurdle()) && c.getFlag().equals(fco.getFlag()))
-						return true;
-				} else if (c.getFlag().equals(fco.getFlag())) {
-					if (c.getTag() != null || fco.getTag() != null) {
-						if (c.getTag() != null && fco.getTag() != null && c.getTag().equals(fco.getTag()))
+				// Check flags
+				if (c.getFlag().equals(fco.getFlag())) {
+					// Check tags
+					if ((c.getTag() != null && fco.getTag() != null && c.getTag().equals(fco.getTag()))
+							|| (c.getTag() == null && fco.getTag() == null)) {
+						// Check hurdles for editing
+						if (edit) {
+							if (c.getCriteria().isAllowCustomValue() && c.getHurdle().equals(fco.getHurdle()))
+								return true;
+						} else
 							return true;
-					} else if (c.getTag() == null && fco.getTag() == null)
-						return true;
+					}
 				}
 			}
 		}

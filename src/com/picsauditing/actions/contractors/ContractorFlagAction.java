@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
@@ -476,8 +477,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public String getContractorAnswer(FlagCriteriaContractor fcc, FlagData f, boolean addLabel) {
 		FlagCriteria fc = f.getCriteria();
 		String answer = fcc.getAnswer();
-		System.out.println(fcc.getId() + fcc.getAnswer2());
-		
+
 		if (fc.getDescription().contains("AMB Class"))
 			answer = getAmBestClass(answer);
 		else if (fc.getDescription().contains("AMB Rating"))
@@ -648,10 +648,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		if (missingAudits == null) {
 			for (FlagData flagData : co.getFlagDatas()) {
 				if (flagData.getFlag().isRedAmber()) {
-					// TODO restrict the audits we query below to only those that have problems
+					// TODO restrict the audits we query below to only those
+					// that have problems
 				}
 			}
-			
+
 			String where = "t.audit.contractorAccount.id = " + id + " AND t.status != 'Expired' AND t.visible = 1 "
 					+ "AND t IN (SELECT cao FROM ContractorAuditOperatorPermission WHERE operator.id = " + opID + ")";
 			List<ContractorAuditOperator> list = (List<ContractorAuditOperator>) caoDAO.findWhere(
@@ -667,5 +668,34 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			}
 		}
 		return missingAudits;
+	}
+
+	public FlagCriteriaOperator getApplicableOperatorCriteria(FlagData fd) {
+		List<FlagCriteriaOperator> fcos = new ArrayList<FlagCriteriaOperator>();
+
+		for (FlagCriteriaOperator fco : co.getOperatorAccount().getFlagCriteriaInherited()) {
+			if (fco.getCriteria().equals(fd.getCriteria())
+					&& (fco.getFlag().equals(fd.getFlag()) || (isFlagDataOverride(fd) != null && fco.getFlag().equals(
+							FlagColor.Red)))) {
+				fcos.add(fco);
+			}
+		}
+
+		if (fcos.size() == 1)
+			return fcos.get(0);
+		else if (fcos.size() > 1) {
+			// Checking to see which fco triggers the flagging
+			for (FlagCriteriaContractor fcc : contractor.getFlagCriteria()) {
+				for (FlagCriteriaOperator fco : fcos) {
+					FlagDataCalculator calc = new FlagDataCalculator(fcc, fco);
+					for (FlagData d : calc.calculate()) {
+						if (!d.getFlag().isGreen())
+							return fco;
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 }
