@@ -1,7 +1,19 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
+<s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 $(function(){
+	$('.sysEditDate').datepicker({
+			changeMonth: true,
+			changeYear:true,
+			yearRange: '2008:'+new Date(),
+			showOn: 'button',
+			buttonImage: './images/icon_calendar.gif',
+			buttonImageOnly: true,
+			buttonText: 'Choose a date...',
+			constrainInput: true,
+			showAnim: 'fadeIn'
+	});
 
 	$('.statusOpBox :visible').live('change', function(){
 		$(this).parents('tr').addClass('dirtyCao');

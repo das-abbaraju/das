@@ -29,17 +29,17 @@
 		<h2 class="formLegend">Audit Dates</h2>
 		<ol>
 			<li><label>Created Date:</label>
-				<s:textfield name="conAudit.creationDate" value="%{conAudit.creationDate && getText('dates', {conAudit.creationDate})}"/></li>
+				<s:textfield cssClass="sysEditDate" name="conAudit.creationDate" value="%{conAudit.creationDate && getText('dates', {conAudit.creationDate})}"/></li>
 			<li><label>Expires Date:</label>
-				<s:textfield name="conAudit.expiresDate" value="%{conAudit.expiresDate && getText('dates', {conAudit.expiresDate})}"/></li>
+				<s:textfield cssClass="sysEditDate" name="conAudit.expiresDate" value="%{conAudit.expiresDate && getText('dates', {conAudit.expiresDate})}"/></li>
 			<li><label>Assigned Date:</label>
-				<s:textfield name="conAudit.assignedDate" value="%{conAudit.assignedDate && getText('dates', {conAudit.assignedDate})}"/></li>
+				<s:textfield cssClass="sysEditDate" name="conAudit.assignedDate" value="%{conAudit.assignedDate && getText('dates', {conAudit.assignedDate})}"/></li>
 			<li><label>Scheduled Date:</label>
-				<s:textfield name="conAudit.scheduledDate" value="%{conAudit.scheduledDate && getText('dates', {conAudit.scheduledDate})}"/></li>
+				<s:textfield cssClass="sysEditDate" name="conAudit.scheduledDate" value="%{conAudit.scheduledDate && getText('dates', {conAudit.scheduledDate})}"/></li>
 			<li><label>Contractor Confirmation:</label>
-				<s:textfield name="conAudit.contractorConfirm" value="%{conAudit.contractorConfirm && getText('dates', {conAudit.contractorConfirm})}"/></li>
+				<s:textfield cssClass="sysEditDate" name="conAudit.contractorConfirm" value="%{conAudit.contractorConfirm && getText('dates', {conAudit.contractorConfirm})}"/></li>
 			<li><label>Safety Professional Confirmation:</label>
-				<s:textfield name="conAudit.auditorConfirm" value="%{conAudit.auditorConfirm && getText('dates', {conAudit.auditorConfirm})}"/></li>
+				<s:textfield cssClass="sysEditDate" name="conAudit.auditorConfirm" value="%{conAudit.auditorConfirm && getText('dates', {conAudit.auditorConfirm})}"/></li>
 			<li style="font-style: italic;">* Dates are in this format: 01/31/08 12:03 AM</li>
 		</ol>
 	</fieldset>

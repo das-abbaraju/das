@@ -3,7 +3,7 @@
 	<s:include value="../contractors/conHeader.jsp" />
 	
 	<s:if test="conAudit.auditType.classType.policy">
-		<s:if test="conAudit.willExpireSoon() && !conAudit.expired">
+		<s:if test="conAudit.hasCaoStatusAfter('Pending') && conAudit.willExpireSoon() && !conAudit.expired">
 			<div class="alert">This policy is about to Expire and is currently locked for editing. Please use the up coming policy to record any changes 
 				<s:iterator value="conAudit.contractorAccount.audits" id="newPending">
 					<s:if test="#newPending.auditType.classType.policy && conAudit.id != #newPending.id">
