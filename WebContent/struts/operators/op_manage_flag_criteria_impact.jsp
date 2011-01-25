@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<table class="report" style="width: 250px;">
+<table class="report" style="margin-left: 20px;">
 	<thead>
 		<tr>
 			<th colspan="<s:property value="affected.get(0).flagData.criteria.allowCustomValue ? 3 : 2" />"><s:property value="flagCriteriaOperator.replaceHurdle"/></th>

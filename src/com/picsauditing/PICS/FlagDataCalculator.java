@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
@@ -104,6 +105,18 @@ public class FlagDataCalculator {
 
 		if (criteria.isAllowCustomValue() && !Strings.isEmpty(opCriteria.getHurdle())) {
 			hurdle = opCriteria.getHurdle();
+		}
+
+		// Check if we need to match tags
+		if (opCriteria.getTag() != null) {
+			boolean found = false;
+			for (ContractorTag tag : conCriteria.getContractor().getOperatorTags()) {
+				if (tag.getTag().equals(opCriteria.getTag()))
+					found = true;
+			}
+
+			if (!found)
+				return null;
 		}
 
 		String answer = conCriteria.getAnswer();

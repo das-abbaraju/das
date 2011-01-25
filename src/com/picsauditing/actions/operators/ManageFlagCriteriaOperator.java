@@ -30,22 +30,23 @@ import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.util.Strings;
 
 public class ManageFlagCriteriaOperator extends OperatorActionSupport {
-
 	private static final long serialVersionUID = 124465979749052347L;
 
-	private boolean insurance = false;
-	private boolean canEdit = false;
 	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
 	private FlagCriteriaDAO flagCriteriaDAO;
 	private OperatorTagDAO tagDAO;
+
+	private boolean canEdit = false;
+	private boolean insurance = false;
+	private int childID;
 	private int criteriaID;
+	private int tagID;
 	private FlagColor newFlag;
 	private String newHurdle;
 	private String newComparison;
-	private int childID;
-	private int tagID;
-	private List<OperatorTag> tags;
+
 	private List<FlagColor> addableFlags = new ArrayList<FlagColor>();
+	private List<OperatorTag> tags;
 
 	public ManageFlagCriteriaOperator(OperatorAccountDAO operatorDao, FlagCriteriaOperatorDAO opCriteriaDAO,
 			FlagCriteriaDAO flagCriteriaDAO, OperatorTagDAO tagDAO) {
@@ -62,7 +63,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			return LOGIN;
 
 		tryPermissions(OpPerms.EditFlagCriteria);
-		findOperator(); 
+		findOperator();
 
 		canEdit = operator.equals(insurance ? operator.getInheritInsuranceCriteria() : operator
 				.getInheritFlagCriteria()) && permissions.hasPermission(OpPerms.EditFlagCriteria, OpType.Edit);
@@ -114,15 +115,16 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			if (button.equals("add") && criteriaID > 0) {
 				FlagCriteria fc = flagCriteriaDAO.find(criteriaID);
 				FlagCriteriaOperator fco = new FlagCriteriaOperator();
-
-				// TODO Find the audit rule for this operator and see if there
-				// is a minRiskLevel
-				// Not sure if we still need this anymore
-				// fco.setMinRiskLevel(rule.getRisk());
-
 				fco.setAuditColumns(permissions);
 				fco.setCriteria(fc);
 				fco.setFlag(newFlag);
+
+				if (tagID > 0) {
+					for (OperatorTag tag : getTags()) {
+						if (tag.getId() == tagID)
+							fco.setTag(tag);
+					}
+				}
 
 				if (fc.isAllowCustomValue() && !Strings.isEmpty(newHurdle) && !newHurdle.equals("undefined")) {
 					if (fc.getDataType().equals("number"))
@@ -155,6 +157,15 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco1.setUpdatedBy(getUser());
 				fco1.setFlag(newFlag);
 				fco1.setCriteria(fco.getCriteria());
+				fco1.setTag(fco.getTag());
+
+				if (tagID > 0) {
+					for (OperatorTag tag : getTags()) {
+						if (tag.getId() == tagID)
+							fco1.setTag(tag);
+					}
+				} else
+					fco1.setTag(null);
 
 				if (fco.getCriteria().isAllowCustomValue() && !Strings.isEmpty(newHurdle)
 						&& !newHurdle.equals("undefined")) {
@@ -168,6 +179,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 					fco.setUpdatedBy(fco1.getUpdatedBy());
 					fco.setFlag(fco1.getFlag());
 					fco.setHurdle(fco1.getHurdle());
+					fco.setTag(fco1.getTag());
 
 					flagCriteriaOperatorDAO.save(fco);
 
@@ -186,6 +198,14 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		return SUCCESS;
 	}
 
+	public boolean isCanEdit() {
+		return canEdit;
+	}
+
+	public void setCanEdit(boolean canEdit) {
+		this.canEdit = canEdit;
+	}
+
 	public boolean isInsurance() {
 		return insurance;
 	}
@@ -194,12 +214,28 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		this.insurance = insurance;
 	}
 
+	public int getChildID() {
+		return childID;
+	}
+
+	public void setChildID(int childID) {
+		this.childID = childID;
+	}
+
 	public int getCriteriaID() {
 		return criteriaID;
 	}
 
 	public void setCriteriaID(int criteriaID) {
 		this.criteriaID = criteriaID;
+	}
+
+	public int getTagID() {
+		return tagID;
+	}
+
+	public void setTagID(int tagID) {
+		this.tagID = tagID;
 	}
 
 	public FlagColor getNewFlag() {
@@ -226,28 +262,17 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		this.newComparison = newComparison;
 	}
 
-	public int getChildID() {
-		return childID;
-	}
-
-	public void setChildID(int childID) {
-		this.childID = childID;
-	}
-
-	public int getTagID() {
-		return tagID;
-	}
-
-	public void setTagID(int tagID) {
-		this.tagID = tagID;
-	}
-
-	public boolean isCanEdit() {
-		return canEdit;
-	}
-
 	public int getIntValue(String value) {
 		return (int) Float.parseFloat(value);
+	}
+
+	public List<FlagColor> getAddableFlags(int criteriaId) {
+		if (addableFlags.size() == 0) {
+			addableFlags.add(FlagColor.Red);
+			addableFlags.add(FlagColor.Amber);
+		}
+
+		return addableFlags;
 	}
 
 	public List<OperatorTag> getTags() {
@@ -303,7 +328,23 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		List<FlagCriteriaOperator> valid = new ArrayList<FlagCriteriaOperator>();
 
 		// Sort by category, description
-		Collections.sort(inheritedCriteria, new ByOrderCategoryLabel());
+		Collections.sort(inheritedCriteria, new Comparator<FlagCriteriaOperator>() {
+			@Override
+			public int compare(FlagCriteriaOperator o1, FlagCriteriaOperator o2) {
+				FlagCriteria f1 = o1.getCriteria();
+				FlagCriteria f2 = o2.getCriteria();
+
+				// Display order matches, sort by category
+				if (f1.getDisplayOrder() == f2.getDisplayOrder()) {
+					// If category matches, sort by label
+					if (f1.getCategory().equals(f2.getCategory())) {
+						return f1.getLabel().compareTo(f2.getLabel());
+					} else
+						return f1.getCategory().compareTo(f2.getCategory());
+				} else
+					return f1.getDisplayOrder() - f2.getDisplayOrder();
+			}
+		});
 
 		for (FlagCriteriaOperator inherited : inheritedCriteria) {
 			FlagCriteria criteria = inherited.getCriteria();
@@ -321,15 +362,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		}
 
 		return valid;
-	}
-
-	public List<FlagColor> getAddableFlags(int criteriaId) {
-		if (addableFlags.size() == 0) {
-			addableFlags.add(FlagColor.Red);
-			addableFlags.add(FlagColor.Amber);
-		}
-
-		return addableFlags;
 	}
 
 	public List<FlagCriteriaContractor> calculateAffectedList() {
@@ -354,7 +386,12 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			}
 		}
 
-		Collections.sort(affected, new ByContractorName());
+		Collections.sort(affected, new Comparator<FlagCriteriaContractor>() {
+			@Override
+			public int compare(FlagCriteriaContractor arg0, FlagCriteriaContractor arg1) {
+				return arg0.getContractor().getName().compareTo(arg1.getContractor().getName());
+			}
+		});
 		return affected;
 	}
 
@@ -379,36 +416,15 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 					if (c.getHurdle().equals(fco.getHurdle()) && c.getFlag().equals(fco.getFlag()))
 						return true;
 				} else if (c.getFlag().equals(fco.getFlag())) {
-					return true;
+					if (c.getTag() != null || fco.getTag() != null) {
+						if (c.getTag() != null && fco.getTag() != null && c.getTag().equals(fco.getTag()))
+							return true;
+					} else if (c.getTag() == null && fco.getTag() == null)
+						return true;
 				}
 			}
 		}
 
 		return false;
-	}
-
-	private class ByOrderCategoryLabel implements Comparator<FlagCriteriaOperator> {
-
-		public int compare(FlagCriteriaOperator o1, FlagCriteriaOperator o2) {
-			FlagCriteria f1 = o1.getCriteria();
-			FlagCriteria f2 = o2.getCriteria();
-
-			// Display order matches, sort by category
-			if (f1.getDisplayOrder() == f2.getDisplayOrder()) {
-				// If category matches, sort by label
-				if (f1.getCategory().equals(f2.getCategory())) {
-					return f1.getLabel().compareTo(f2.getLabel());
-				} else
-					return f1.getCategory().compareTo(f2.getCategory());
-			} else
-				return f1.getDisplayOrder() - f2.getDisplayOrder();
-		}
-	}
-
-	private class ByContractorName implements Comparator<FlagCriteriaContractor> {
-
-		public int compare(FlagCriteriaContractor arg0, FlagCriteriaContractor arg1) {
-			return arg0.getContractor().getName().compareTo(arg1.getContractor().getName());
-		}
 	}
 }

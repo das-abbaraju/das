@@ -11,6 +11,7 @@
 			</s:if>
 			<th>Type</th>
 			<th>Description</th>
+			<th>Tag</th>
 		</tr>
 	</thead>
 	
@@ -75,6 +76,7 @@
 					<s:property value="description" />
 				</s:else>
 			</td>
+			<td><s:select list="tags" name="tagID" listKey="id" listValue="tag" headerKey="0" headerValue="- Operator Tag -" /></td>
 		</tr>
 	</s:iterator>
 </table>

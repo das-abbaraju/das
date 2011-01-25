@@ -12,19 +12,19 @@ function checkSubmit(criteriaID) {
 	}
 }
 function addCriteria(criteriaID) {
-	var hurdle = $('#'+criteriaID).find("[name='newHurdle']").val();
+	var fcOptions = $('#addCriteria tr#' + criteriaID).find('input,select').serialize();
+	
 	var insurance = $("#form1_insurance").val();
 	startThinking({div:'thinking', message:'Adding criteria...'});
 	
 	var data = {
-			button: 'add',
-			id: $('#form1_id').val(),
-			criteriaID: criteriaID,
-			newFlag: $('#'+criteriaID).find("[name='newFlag']").val(),
-			newHurdle: hurdle == undefined ? '' : hurdle
-		};
+		button: 'add',
+		id: $('#form1_id').val(),
+		criteriaID: criteriaID
+	};
 	
-	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data, 
+	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance + 
+			(fcOptions.length > 0 ? "&" + fcOptions : ""), data, 
 		function() {
 			$('#addCriteria').hide('slow');
 			stopThinking({div:'thinking'});
@@ -32,23 +32,21 @@ function addCriteria(criteriaID) {
 	);
 }
 
-function submitHurdle(tdCell) {
-	var criteriaID = tdCell.parentNode.id;
-	var hurdle = $('#'+criteriaID).find("[name='newHurdle']").val();
-	var flag = $('#'+criteriaID).find("[name='newFlag']").val();
+function submitHurdle(id) {
+	var criteriaID = id;
 	var insurance = $("#form1_insurance").val();
+	var fcoOptions = $("#criteriaDiv tr#" + id).find("input, select").serialize();
 	
 	startThinking({div:'thinking', message:'Saving changes...'});
 	
 	var data = {
-			button: 'save',
-			id: $('#form1_id').val(),
-			criteriaID: criteriaID,
-			newHurdle: hurdle == undefined ? '' : hurdle,
-			newFlag: flag
+		button: 'save',
+		id: $('#form1_id').val(),
+		criteriaID: criteriaID
 	};
 	
-	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data,
+	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance + 
+			(fcoOptions.length > 0 ? "&" + fcoOptions : ""), data,
 		function() { stopThinking({div:'thinking'}); }
 	);
 }
@@ -64,29 +62,29 @@ function getAddQuestions() {
 		$('#addCriteria').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data, 
 			function() {
 				stopThinking({div:'thinking'});
-				$(this).show('slow');
+				$(this).slideDown();
 			}
 		);
 	} else {
-		$('#addCriteria').hide('slow');
+		$('#addCriteria').slideUp();
 	}
 }
 
 function editCriteria(id) {
-	$(".hide").hide();
+	$(".editable").hide();
 	$(".hurdle").show();
 	
-	if ($("#"+id).find(".hideOld").is(":visible")) {
-		$(".hideOld").show();
-		$("#"+id).find(".hideOld").hide();
-		$("#"+id).find(".hide").show();
+	if ($("#"+id).find(".viewable").is(":visible")) {
+		$(".viewable").show();
+		$("#"+id).find(".viewable").hide();
+		$("#"+id).find(".editable").show();
 		$("#"+id).find(".hurdle").hide();
 	} else {
-		$("#"+id).find("input").val($("#"+id).find(".hurdle").text());
-		$("#"+id).find(".hideOld").show();
+		$("#"+id).find("input[type!=button]").val($("#"+id).find(".hurdle").text());
+		$("#"+id).find(".viewable").show();
 	}
 	
-	$("#"+id).find("span.newImpact").html("");
+	$("#"+id).find("span.newImpact").empty();
 }
 
 function getImpact(fcoID, opID) {
