@@ -5,17 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.servlet.http.Cookie;
-
-import org.apache.struts2.ServletActionContext;
-
-import com.ibm.icu.util.Calendar;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.WidgetUserDAO;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.Widget;
 import com.picsauditing.jpa.entities.WidgetUser;
 
@@ -42,8 +36,8 @@ public class Home extends ContractorActionSupport {
 				return BLANK;
 			}
 		} else if (permissions.isOperatorCorporate() && !permissions.hasPermission(OpPerms.Dashboard)) {
-			// Redirect operators/corporate accounts without the dashboard permission
-			// to the contractor list
+			// Redirect operators/corporate accounts without the dashboard
+			// permission to the contractor list
 			return redirect("ContractorList.action?filter.performedBy=Self%20Performed");
 		} else {
 			permissions.tryPermission(OpPerms.Dashboard);
