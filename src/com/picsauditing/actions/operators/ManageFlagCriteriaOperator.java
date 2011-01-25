@@ -352,7 +352,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			// not InsureGUARD audits
 			if (insurance && criteria.isInsurance())
 				valid.add(inherited);
-			else {
+			else if(!insurance) {
 				// The criteria OSHA type should match up with the operator's
 				// OSHA type
 				if (!criteria.isInsurance()
