@@ -174,7 +174,8 @@ public class MassMailer extends PicsActionSupport {
 					getRecipient();
 					addTokens(id);
 					EmailQueue email = emailBuilder.build();
-					email.setEmailTemplate(null);
+					// I really think we should be saving this. Not sure why we weren't
+					// email.setEmailTemplate(null);
 					email.setViewableById(permissions.getTopAccountID());
 					emailQueueDAO.save(email);
 				}
