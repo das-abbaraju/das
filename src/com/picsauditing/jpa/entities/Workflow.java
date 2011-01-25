@@ -20,6 +20,7 @@ public class Workflow extends BaseTable {
 	public static final int MANUAL_AUDIT_WORKFLOW = 7;
 
 	private String name;
+	private boolean hasRequirements;
 	private List<WorkflowStep> steps = new ArrayList<WorkflowStep>();
 
 	@Column(nullable = false)
@@ -65,6 +66,14 @@ public class Workflow extends BaseTable {
 				return true;
 		}
 		return false;
+	}
+
+	public boolean isHasRequirements() {
+		return hasRequirements;
+	}
+
+	public void setHasRequirements(boolean hasRequirements) {
+		this.hasRequirements = hasRequirements;
 	}
 
 	@Override
