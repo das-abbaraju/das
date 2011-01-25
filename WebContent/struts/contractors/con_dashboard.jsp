@@ -235,7 +235,7 @@ table.report tr.hurdle td {
 							<ul style="margin-left: 10px;">
 								<s:iterator value="problems.categories" id="probcat">
 									<s:iterator value="problems.getCriteria(#probcat)" id="probcrit">
-										<li><s:property value="problems.getWorstColor(#probcrit).smallIcon" escape="false"/> <s:property value="label"/> <s:property value="audit.auditFor"/></li>
+										<li><s:property value="problems.getWorstColor(#probcrit).smallIcon" escape="false"/> <s:property value="label"/> <s:property value="getCriteriaLabel(#probcrit)"/></li>
 									</s:iterator>
 								</s:iterator>
 							</ul>

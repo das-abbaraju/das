@@ -29,4 +29,13 @@ public class FlagCriteriaContractorDAO extends PicsDAO {
 		query.setParameter(1, conID);
 		query.executeUpdate();
 	}
+	
+	public FlagCriteriaContractor findByContractorCriteria(int conID, int criteriaID) {
+		Query query = em.createQuery("FROM FlagCriteriaContractor fcc WHERE contractor.id = :conID AND "
+				+ "criteria.id = :criteriaID");
+		query.setParameter("conID", conID);
+		query.setParameter("criteriaID", criteriaID);
+
+		return (FlagCriteriaContractor) query.getSingleResult();
+	}
 }

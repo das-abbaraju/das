@@ -28,6 +28,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
+import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NaicsDAO;
@@ -45,6 +46,8 @@ import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -56,6 +59,7 @@ import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
@@ -69,6 +73,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private InvoiceItemDAO invoiceItemDAO;
 	private UserDAO userDAO;
 	private NaicsDAO naicsDAO;
+	private FlagCriteriaContractorDAO flagCriteriaContractorDAO;
 	private AuditPercentCalculator auditPercentCalculator;
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -97,7 +102,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			ContractorAuditDAO auditDao, ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO,
 			FlagDataDAO flagDataDAO, OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO,
 			InvoiceItemDAO invoiceItemDAO, UserDAO userDAO, NaicsDAO naicsDAO, AuditTypeRuleCache auditTypeRuleCache,
-			AuditPercentCalculator auditPercentCalculator) {
+			AuditPercentCalculator auditPercentCalculator, FlagCriteriaContractorDAO flagCriteriaContractorDAO) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.contractorOperatorDAO = contractorOperatorDAO;
@@ -106,6 +111,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		this.operatorTagDAO = operatorTagDAO;
 		this.contractorTagDAO = contractorTagDAO;
 		this.invoiceItemDAO = invoiceItemDAO;
+		this.flagCriteriaContractorDAO = flagCriteriaContractorDAO;
 		this.userDAO = userDAO;
 		this.naicsDAO = naicsDAO;
 		this.subHeading = "Account Summary";
@@ -316,6 +322,20 @@ public class ContractorDashboard extends ContractorActionSupport {
 			problems = new ContractorFlagCriteriaList(flagDataDAO.findProblems(id, opID));
 
 		return problems;
+	}
+	
+	public String getCriteriaLabel(FlagCriteria fc){
+		FlagCriteriaContractor fcc = flagCriteriaContractorDAO.findByContractorCriteria(id, fc.getId());
+		String result = "";
+		if (!Strings.isEmpty(fcc.getAnswer2())) {
+			for (String answer : fcc.getAnswer2().split("<br/>")) {
+				if (answer.contains("Year")) {
+					result = answer;
+					break;
+				}
+			}
+		}
+		return result;
 	}
 
 	public ContractorFlagCriteriaList getCriteriaList() {
