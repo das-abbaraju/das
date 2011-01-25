@@ -153,12 +153,6 @@ $(function(){
 	</div>
 </s:form>
 
-<div id="wfStepVisual" style="border: 1px solid black; margin-top: 10px;">
-<s:iterator value="adjMatrix" id="adjID" status="adjStatus">
-	<s:property value="nodes.get(#adjStatus.index)" />
-</s:iterator>
-</div>
-
 <s:if test="id > 0">
 	<div>
 		<ul id="list" class="list">
