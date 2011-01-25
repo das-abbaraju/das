@@ -111,7 +111,7 @@ public class FlagDataCalculator {
 		if (opCriteria.getTag() != null) {
 			boolean found = false;
 			for (ContractorTag tag : conCriteria.getContractor().getOperatorTags()) {
-				if (tag.getTag().equals(opCriteria.getTag()))
+				if (tag.getTag().getId() == opCriteria.getTag().getId())
 					found = true;
 			}
 

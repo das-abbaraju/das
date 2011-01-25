@@ -364,14 +364,15 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		return valid;
 	}
 
-	public List<FlagCriteriaContractor> calculateAffectedList() {
+	public List<FlagCriteriaContractor> calculateAffectedList() throws Exception {
 		FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(criteriaID);
 
 		return calculateAffectedList(fco);
 	}
 
-	private List<FlagCriteriaContractor> calculateAffectedList(FlagCriteriaOperator fco) {
-		List<FlagCriteriaContractor> fccList = flagCriteriaOperatorDAO.getContractorCriteria(fco);
+	private List<FlagCriteriaContractor> calculateAffectedList(FlagCriteriaOperator fco) throws Exception {
+		List<FlagCriteriaContractor> fccList = OperatorFlagsCalculator.getFlagCriteriaContractorList(fco, operator,
+				permissions);
 		List<FlagCriteriaContractor> affected = new ArrayList<FlagCriteriaContractor>();
 
 		for (FlagCriteriaContractor fcc : fccList) {
@@ -392,6 +393,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				return arg0.getContractor().getName().compareTo(arg1.getContractor().getName());
 			}
 		});
+		
 		return affected;
 	}
 
