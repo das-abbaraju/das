@@ -75,19 +75,4 @@ public class Workflow extends BaseTable {
 	public void setHasRequirements(boolean hasRequirements) {
 		this.hasRequirements = hasRequirements;
 	}
-
-	@Override
-	@Transient
-	public Workflow clone() {
-		Workflow clone = new Workflow();
-
-		clone.createdBy = this.getCreatedBy();
-		clone.creationDate = this.getCreationDate();
-		clone.id = this.getId();
-		clone.name = this.getName();
-		clone.updateDate = this.getUpdateDate();
-		clone.updatedBy = this.getUpdatedBy();
-
-		return clone;
-	}
 }
