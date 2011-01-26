@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import urllib2, time, sys, logging, logging.config
-from threading import Thread, enumerate
+from threading import Thread, enumerate, Lock
 from daemon import Daemon
 from Queue import Queue
 from locked_iterator import LockedIterator
@@ -10,9 +10,11 @@ logging.config.fileConfig("logging.conf")
 SERVER = "http://%s.picsorganizer.com/"
 SERVERS = ['web1','web2','web3']
 con_running = set()
+running_lock = Lock()
 con_q = Queue()
 active_servers = dict((s,False) for s in SERVERS)
 logging.info('default server setup : %s', active_servers)
+
 class qcron(Daemon):
 	def run(self):
 		try:
@@ -117,10 +119,14 @@ class CronPublisher(CronThread):
 				try:
 					result = urllib2.urlopen(self.url % self.server_g.next()).read().strip()
 					if result:
+						running_lock.acquire()
 						self.logger.info('contractors running: %s' % con_running)
-						for contractor in result.split(","):
-							if contractor not in con_running:
-								self.con_q.put(contractor)
+						try:
+							for contractor in result.split(","):
+								if contractor not in con_running:
+									self.con_q.put(contractor)
+						finally:
+							running_lock.release() # release lock, no matter what
 							
 						self.logger.debug("Contractors waiting in the queue: %s" % self.con_q.qsize())
 				except Exception, e:
@@ -143,8 +149,11 @@ class CronWorker(CronThread):
 		while self.running:
 			id = self.con_q.get()
 			try:
-				# logging.info(self.url % (self.server_g.next(), id))
-				con_running.add(id)
+				running_lock.acquire()
+				try:
+					con_running.add(id)
+				finally:
+					running_lock.release() # release lock, no matter what
 				
 				self.logger.debug('thread #%d starting crontractor %s' % (self.thread_id,id))
 				cronurl = self.url % (self.server_g.next(), id)
@@ -154,9 +163,12 @@ class CronWorker(CronThread):
 					self.logger.info('Contractor %s finished successfully.' % id)
 				else:
 					self.logger.warning('Error with contractor %s' % id)
-				
-				con_running.discard(id)
-				
+
+				running_lock.acquire()
+				try:
+					con_running.discard(id)
+				finally:
+					running_lock.release() # release lock, no matter what
 			except Exception, e:
 				self.logger.error(e)
 			else:
