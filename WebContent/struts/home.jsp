@@ -21,10 +21,6 @@ function showPanel(panel) {
 
 	$('#'+panel+"_content").show();
 }
-
-$(function() {
-	$('#rebranding').show('slow');
-});
 </script>
 </head>
 <body>
@@ -41,7 +37,11 @@ $(function() {
 			<s:if test="widgetID != 11 || !permissions.insuranceOnlyContractorUser">
 				<div class="panel_placeholder" id="panel<s:property value="widgetID"/>_holder">
 				<div class="panel" id="panel<s:property value="widgetID"/>">
-				<div class="panel_header"><s:property value="caption" escape="false" />
+				<div class="panel_header">
+					<s:if test="!synchronous">
+						<a href="#" onclick="<s:property value="reload" escape="false" />; return false;" style="float: right"><img src="images/arrow-360.png" /></a>
+					</s:if>
+					<s:property value="caption" escape="false" />
 					<pics:permission perm="DevelopmentEnvironment">
 						<a href="<s:property value="url"/>" target="_BLANK">URL</a>
 					</pics:permission>

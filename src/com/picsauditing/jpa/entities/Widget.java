@@ -18,11 +18,11 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.util.chart.ChartType;
 import com.picsauditing.util.chart.FusionChart;
 
-
 @Entity
 @Table(name = "widget")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class Widget {
+
 	protected int widgetID;
 	protected String caption;
 	protected String widgetType;
@@ -35,7 +35,7 @@ public class Widget {
 	protected boolean debug = false;
 
 	protected OpPerms requiredPermission;
-	
+
 	protected ChartType chartType = ChartType.Column2D;
 
 	@Id
@@ -99,8 +99,8 @@ public class Widget {
 	public void setChartType(ChartType chartType) {
 		this.chartType = chartType;
 	}
-	
-	///////////// Transient Properties/Methods ///////////////
+
+	// /////////// Transient Properties/Methods ///////////////
 
 	@Transient
 	public boolean isDebug() {
@@ -133,25 +133,40 @@ public class Widget {
 	public String getContent() {
 		if (widgetType == null)
 			return "widgetType is null";
-		
+
 		if (widgetType.equals("Chart")) {
 			if (chartType == null)
 				return "chartType is null";
 			// FusionChart.createChartHTML("charts/"+chartType.toString()+".swf",
 			// dataURL, dataXML,
 			// chartId, chartWidth, chartHeight, debug);
-			return FusionChart.createChart("charts/" + chartType.toString() + ".swf", url, "", chartType.toString() + "_"
-					+ widgetID, 300, 300, debug, false);
+			return FusionChart.createChart("charts/" + chartType.toString() + ".swf", url, "", chartType.toString()
+					+ "_" + widgetID, 300, 300, debug, false);
 		}
-		
-		if (widgetType.equals("Html"))
+
+		if (widgetType.equals("Html") || widgetType.equals("Rss"))
 			return "<div class=\"inprogress\"></div><script>$('#panel" + widgetID + "_content').load('" + url
-			+ "');</script>";
+					+ "');</script>";
 
-		if (widgetType.equals("Rss"))
-			return "<div class=\"inprogress\"></div><script$('#panel" + widgetID + "_content').load('" + url
-			+ "');</script>";
+		return "Unknown Widget Type " + widgetType;
+	}
 
-		return "Unknown Widget Type "+widgetType;
+	@Transient
+	public String getReload() {
+		if (widgetType == null)
+			return "";
+
+		if (widgetType.equals("Chart")) {
+			if (chartType == null)
+				return "";
+			String chartID = chartType.toString() + "_" + widgetID;
+			return "chart_" + chartID + ".render('" + chartID + "Div')";
+		}
+
+		if (widgetType.equals("Html") || widgetType.equals("Rss"))
+			return "$('#panel" + widgetID + "_content').html('<div class=inprogress></div>'); $('#panel" + widgetID
+					+ "_content').load('" + url + "')";
+
+		return "";
 	}
 }
