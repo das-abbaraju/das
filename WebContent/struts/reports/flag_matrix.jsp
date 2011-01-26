@@ -8,6 +8,7 @@
 <s:include value="reportHeader.jsp"/>
 </head>
 <body>
+<h1><s:property value="reportName"/></h1>
 
 <a class="excel" href="OperatorFlagMatrixCSV.action" target="_BLANK">Download Report</a>
 
