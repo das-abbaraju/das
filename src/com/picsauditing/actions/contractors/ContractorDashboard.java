@@ -89,6 +89,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private List<ContractorAudit> auditGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> insureGUARD = new ArrayList<ContractorAudit>();
 	private List<AuditData> servicesPerformed = null;
+	private Map<Integer, FlagCriteriaContractor> fccMap = null;
 
 	private ContractorFlagCriteriaList problems;
 
@@ -324,15 +325,20 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return problems;
 	}
 	
-	public String getCriteriaLabel(FlagCriteria fc){
-		FlagCriteriaContractor fcc = flagCriteriaContractorDAO.findByContractorCriteria(id, fc.getId());
+	public String getCriteriaLabel(int fcID) {
+		if (fccMap == null) {
+			fccMap = new HashMap<Integer, FlagCriteriaContractor>();
+			List<FlagCriteriaContractor> flagCriteriaConList = flagCriteriaContractorDAO.findByContractor(id);
+			for (FlagCriteriaContractor fcc : flagCriteriaConList)
+				fccMap.put(fcc.getCriteria().getId(), fcc);
+		}
+		FlagCriteriaContractor fcc = fccMap.get(fcID);
 		String result = "";
-		if (!Strings.isEmpty(fcc.getAnswer2())) {
-			for (String answer : fcc.getAnswer2().split("<br/>")) {
-				if (answer.contains("Year")) {
-					result = answer;
-					break;
-				}
+		if (fcc != null) {
+			if (!Strings.isEmpty(fcc.getAnswer2())) {
+				String answer = fcc.getAnswer2().split("<br/>")[0];
+				if (answer != null && answer.contains("Year"))
+					result = " for " + answer;
 			}
 		}
 		return result;
