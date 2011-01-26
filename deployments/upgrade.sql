@@ -19,3 +19,6 @@ insert into audit_cat_matrix  (categoryID, tableType, foreignKeyID, createdBy, c
 select distinct catID, 'D', questionID, 23157, NOW()
 from audit_category_rule 
 where auditTypeID = 2  and catID is not null  and questionID is not null;
+
+-- PICS-1797 - Use a better label for annual stats
+update flag_criteria set label = REPLACE(label, right(label, 3), '') where label like '% \'%';
