@@ -97,7 +97,8 @@ public class PicsLogger {
 			logger.pop();
 			return millis;
 		}
-		throw new RuntimeException("pop called with nothing to pop");
+		System.out.println("WARNING: pop called with nothing to pop");
+		return 0;
 	}
 
 	static public long stop() {
