@@ -22,5 +22,10 @@ where auditTypeID = 2  and catID is not null  and questionID is not null;
 
 update widget set chartType = 'Bar2D' where widgetID = 5;
 
+-- Fix Annual Update EffectiveDate
+update contractor_audit 
+set effectiveDate = Date(CONCAT(auditFor,'-01-01 00:00:00'))
+where auditTypeID = 11;
+
 -- PICS-1797 - Use a better label for annual stats
 update flag_criteria set label = REPLACE(label, right(label, 3), '') where label like '% \'%';
