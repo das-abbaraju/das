@@ -1,8 +1,6 @@
 <html>
 <head>
 <title>Orientation Video Report</title>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 
 <script type="text/javascript" src="js/jquery/util/jquery-utils.js"></script>
 <script type="text/javascript" src="js/jquery/gritter/jquery.gritter.js"></script>
@@ -66,7 +64,6 @@ function runSearch(search) {
 </div>
 
 <div id="report_data">
-	<jsp:include page="report_orientationAJAX.jsp" />
 </div>
 
 </body>

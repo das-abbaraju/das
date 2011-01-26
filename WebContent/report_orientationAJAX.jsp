@@ -10,6 +10,7 @@ Report report = new Report();
 SelectSQL sql = new SelectSQL("accounts a");
 sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 sql.addJoin("JOIN contractor_audit ca ON ca.conID = c.id");
+sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id");
 
 sql.addWhere("ca.auditTypeID = 86");
 
@@ -17,7 +18,7 @@ sql.addField("a.name");
 sql.addField("c.id conID");
 sql.addField("ca.auditFor");
 sql.addField("ca.id auditID");
-sql.addField("DATE_FORMAT(ca.completedDate, '%m/%d/%Y') finished");
+sql.addField("DATE_FORMAT(cao.statusChangedDate, '%m/%d/%Y') finished");
 
 int searchName = 0;
 String name = request.getParameter("name");
@@ -37,7 +38,7 @@ if (searchName == 1)
 else if (searchName == 2)
 	sql.addOrderBy("ca.auditFor");
 else
-	sql.addOrderBy("ca.completedDate DESC");
+	sql.addOrderBy("cao.statusChangedDate DESC");
 report.setSql(sql);
 report.setLimit(100);
 int page_num = 1;
@@ -50,10 +51,10 @@ try {
 }
 report.setCurrentPage(page_num);
 
+
 List<BasicDynaBean> data = report.getPage();
 
 %>
-
 
 <%= report.getPageLinksWithDynamicForm() %>
 
