@@ -40,6 +40,7 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 	protected int itemID;
 	protected boolean checked;
 	protected boolean pivot;
+	protected boolean editTable;
 	protected AuditType auditType;
 
 	protected int[] categoryIDs;
@@ -261,13 +262,21 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 	public void setChecked(boolean checked) {
 		this.checked = checked;
 	}
-	
+
 	public boolean isPivot() {
 		return pivot;
 	}
 
 	public void setPivot(boolean pivot) {
 		this.pivot = pivot;
+	}
+
+	public boolean isEditTable() {
+		return editTable;
+	}
+
+	public void setEditTable(boolean editTable) {
+		this.editTable = editTable;
 	}
 
 	public AuditType getAuditType() {

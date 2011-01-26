@@ -11,9 +11,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <script type="text/javascript" src="js/jquery/autocompletefb/jquery.autocompletefb.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocompletefb/jquery.autocompletefb.css" />
-<style type="text/css">
-#tableLoad input.edit { display: none; }
-</style>
 <script type="text/javascript">
 function getCategories(id) {
 	$('#tableLoad').empty();
@@ -115,9 +112,14 @@ function selectAll(name) {
 	updateQuery(name);
 }
 
-function toggleEdit() {
-	$('#tableLoad input.edit').toggle();
-	$('#tableLoad img.view').toggle();
+function editTable() {
+	startThinking({div: "table_thinking", message: "Updating table..."});
+	$('#tableLoad').load("AuditCategoryMatrixAjax.action?" + $('#form1').serialize(), { button: 'Table', editTable: true });
+}
+
+function viewTable() {
+	startThinking({div: "table_thinking", message: "Updating table..."});
+	$('#tableLoad').load("AuditCategoryMatrixAjax.action?" + $('#form1').serialize(), { button: 'Table', editTable: false });
 }
 </script>
 </head>
