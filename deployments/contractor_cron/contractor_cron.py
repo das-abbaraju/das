@@ -148,12 +148,13 @@ class CronWorker(CronThread):
 	def run(self):
 		while self.running:
 			id = self.con_q.get()
+			running_lock.acquire()
 			try:
-				running_lock.acquire()
-				try:
-					con_running.add(id)
-				finally:
-					running_lock.release() # release lock, no matter what
+				con_running.add(id)
+			finally:
+				running_lock.release() # release lock, no matter what
+			
+			try:
 				
 				self.logger.debug('thread #%d starting crontractor %s' % (self.thread_id,id))
 				cronurl = self.url % (self.server_g.next(), id)
@@ -163,16 +164,16 @@ class CronWorker(CronThread):
 					self.logger.info('Contractor %s finished successfully.' % id)
 				else:
 					self.logger.warning('Error with contractor %s' % id)
-
-				running_lock.acquire()
-				try:
-					con_running.discard(id)
-				finally:
-					running_lock.release() # release lock, no matter what
 			except Exception, e:
 				self.logger.error(e)
 			else:
 				time.sleep(self.sleeptime)
+			
+			running_lock.acquire()
+			try:
+				con_running.discard(id)
+			finally:
+				running_lock.release() # release lock, no matter what
 
 class CacheMonitor(CronThread):
 	def __init__(self, server_g):
