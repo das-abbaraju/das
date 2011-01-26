@@ -22,11 +22,14 @@ public class ChartTradeCount extends ChartSSAction {
 
 		SelectSQL sql = new SelectSQL("accounts a");
 		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
-		sql.addField("substring(c.main_trade,1,20) as label");
+		sql.addJoin("JOIN contractor_audit ca ON a.id = ca.conID and ca.auditTypeID = 1");
+		sql.addJoin("JOIN pqfdata d ON d.auditID = ca.id AND d.answer LIKE '%C%'");
+		sql.addJoin("JOIN audit_question q ON q.questionType = 'Service' AND d.questionID = q.id");
+		
+		sql.addField("substring(q.name,1,20) as label");
 		sql.addField("count(*) as value");
-		sql.addGroupBy("label");
+		sql.addGroupBy("q.name");
 		sql.addOrderBy("value DESC");
-		sql.addWhere("c.main_trade > ''");
 
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 		sql.addWhere("1 " + permQuery.toString());
@@ -34,23 +37,14 @@ public class ChartTradeCount extends ChartSSAction {
 		ChartDAO db = new ChartDAO();
 		List<DataRow> data = db.select(sql.toString());
 		int count = 0;
-		float sum = 0;
 		for (DataRow row : data) {
-			count++;
-			if (count > 10) {
-				sum = sum + row.getValue();
-			} else {
+			if (count < 20) {
 				Set set = new Set(row);
 				chart.getSets().add(set);
 			}
+			count++;
 		}
 
-		if (sum > 0) {
-			Set set = new Set();
-			set.setLabel("All others");
-			set.setValue(sum);
-			chart.getSets().add(set);
-		}
 		return chart;
 	}
 }
