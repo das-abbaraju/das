@@ -24,13 +24,13 @@ public class OperatorFlagHistory extends ChartMSAction {
 		Date yesterday =  DateBean.addField(new Date(), Calendar.DAY_OF_WEEK, -1);
 
 		String sql = 
-			getOperatorFlagHistorySQL(DateBean.getFirstofMonthOrClosestSunday(DateBean.addDays(yesterday, -90)), "3 months", operatorID)
+			getOperatorFlagHistorySQL(DateBean.getFirstofMonthOrClosestSunday(DateBean.addDays(yesterday, -90)), "90 days ago", operatorID)
 			+ " UNION " +	
-			getOperatorFlagHistorySQL(DateBean.getFirstofMonthOrClosestSunday(DateBean.addDays(yesterday, -60)), "2 months", operatorID)
+			getOperatorFlagHistorySQL(DateBean.getFirstofMonthOrClosestSunday(DateBean.addDays(yesterday, -60)), "60 days ago", operatorID)
 			+ " UNION " +
-			getOperatorFlagHistorySQL(DateBean.getFirstofMonthOrClosestSunday(DateBean.addDays(yesterday, -30)), "1 month", operatorID)
+			getOperatorFlagHistorySQL(DateBean.getFirstofMonthOrClosestSunday(DateBean.addDays(yesterday, -30)), "30 days ago", operatorID)
 			+ " UNION " +
-			getOperatorFlagHistorySQL(yesterday, "yesterday", operatorID);
+			getOperatorFlagHistorySQL(yesterday, "1 day ago", operatorID);
 
 		ChartDAO db = new ChartDAO();
 		List<DataRow> data = db.select(sql.toString());
