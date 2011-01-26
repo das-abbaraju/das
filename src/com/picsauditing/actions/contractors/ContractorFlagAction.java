@@ -660,11 +660,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			missingAudits = new HashMap<AuditType, ContractorAuditOperator>();
 			for (ContractorAuditOperator cao : list) {
 				AuditType auditType = cao.getAudit().getAuditType();
-				if (missingAudits.containsKey(auditType)) {
-					System.out.println("duplicate audit found");
-				} else {
-					missingAudits.put(auditType, cao);
-				}
+				missingAudits.put(auditType, cao);
 			}
 		}
 		return missingAudits;
