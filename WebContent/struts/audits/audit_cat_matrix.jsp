@@ -110,6 +110,11 @@ function clearSelected(name) {
 	updateQuery(name);
 }
 
+function selectAll(name) {
+	$("#"+name).find('option').attr({'selected': true});
+	updateQuery(name);
+}
+
 function toggleEdit() {
 	$('#tableLoad input.edit').toggle();
 	$('#tableLoad img.view').toggle();

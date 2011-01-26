@@ -11,6 +11,7 @@
 				name="categoryIDs" id="form1_categories" listKey="id" listValue="name" />
 			<br />
 			
+			<a class="clearLink" href="#" onclick="selectAll('form1_categories'); return false;">Select All</a><br />
 			<a class="clearLink" href="#" onclick="clearSelected('form1_categories'); return false;">Clear</a>
 		</span>
 	</div>
@@ -29,6 +30,7 @@
 					name="itemIDs" id="form1_items" listKey="id" listValue="label" />
 			</s:else>
 			<br />
+			<a class="clearLink" href="#" onclick="selectAll('form1_items'); return false;">Select All</a><br />
 			<a class="clearLink" href="#" onclick="clearSelected('form1_items'); return false;">Clear</a>
 		</span>
 	</div>
