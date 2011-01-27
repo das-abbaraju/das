@@ -7,6 +7,7 @@ import javax.persistence.PersistenceContext;
 
 import org.apache.struts2.util.StrutsTypeConverter;
 
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.Strings;
 
@@ -45,11 +46,11 @@ public class JpaEntityConverter extends StrutsTypeConverter {
 	public String convertToString(Map context, Object o) {
 		String response = null;
 
-		if (o instanceof State) {
-			response = ((State) o).getIsoCode();
+		if (o instanceof BaseTable) {
+			response = "" + ((BaseTable) o).getId();
 		}
 
-		return response;
+		return response.toString();
 	}
 
 }
