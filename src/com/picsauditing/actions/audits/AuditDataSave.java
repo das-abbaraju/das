@@ -410,7 +410,7 @@ public class AuditDataSave extends AuditActionSupport {
 		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)) {
 			// Strip the commas, just in case they are in the wrong place
 			// We add them back in later
-			answer = answer.replace(",", "");
+			answer = answer.trim().replace(",", "");
 
 			boolean hasBadChar = false;
 			for (int i = 0; i < answer.length(); i++) {
