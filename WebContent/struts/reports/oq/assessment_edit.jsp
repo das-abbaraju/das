@@ -57,7 +57,7 @@ $(function() {
 			<li><label>Country:</label>
 				<s:select list="countryList" id="centerCountry" name="country.isoCode" 
 				listKey="isoCode" listValue="name" headerKey="" headerValue="- Country -"
-				value="locale.country" onchange="countryChanged(this.value)" /></li>
+				value="center.country.isoCode" onchange="countryChanged(this.value)" /></li>
 			<li id="state_li"></li>
 			<li><label>Zip:</label> <s:textfield name="center.zip" size="7" /></li>
 			<li><label>Main Phone:</label><s:textfield name="center.phone" /></li>
