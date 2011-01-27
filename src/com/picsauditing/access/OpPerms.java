@@ -87,6 +87,8 @@ public enum OpPerms {
 	EmailQueue("Email Queue", "Allow PICS Employees to view the report for Email Queue", true, true, true, false, true),
 	SwitchUser("Switch to User", "Can auto login as another user", false, false, true, false, false),
 
+	UserZipcodeAssignment("User Zipcode Assignment", "Allow PICS employees to assign CSRs and Auditors to specific geographic locations.", false,false,true,false,false),
+	
 	ManageWebcam("Webcam Management", "Can view and edit PICS' inventory of web cameras", true, true, true, false, false),
 	AuditorPayments("Safety Professional Payments", "Create and manage independent contractor payments for audits.", true, true, true, false, false),
 

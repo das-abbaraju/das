@@ -2,10 +2,17 @@ package com.picsauditing.jpa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.json.simple.JSONObject;
+
+import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
+
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "user_assignment_matrix")
 public class UserAssignmentMatrix extends BaseTable {
@@ -28,6 +35,7 @@ public class UserAssignmentMatrix extends BaseTable {
 	}
 
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
 	public UserAssignmentMatrixType getAssignmentType() {
 		return assignmentType;
 	}
@@ -73,7 +81,7 @@ public class UserAssignmentMatrix extends BaseTable {
 	public void setPostalEnd(String postalEnd) {
 		this.postalEnd = postalEnd;
 	}
-	
+
 	@Override
 	public String toString() {
 		return String.format("%s state:%s, country:%s, zip:%s-%s", user.getName(), state, country, postalStart,

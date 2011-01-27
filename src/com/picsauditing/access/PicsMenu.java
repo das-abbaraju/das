@@ -169,6 +169,9 @@ public class PicsMenu {
 		if (permissions.isAuditor()) {
 			subMenu.addChild("Close Open Reqs", "ReportOpenRequirements.action");
 		}
+		if (permissions.hasPermission(OpPerms.UserZipcodeAssignment))
+			subMenu.addChild("Auditor Assignment", "AuditorAssignmentMatrix.action");
+		
 
 		subMenu = menu.addChild("Customer Service");
 		if (permissions.isAdmin()) {
@@ -183,6 +186,8 @@ public class PicsMenu {
 			subMenu.addChild("Pending PQF", "ReportCompletePQF.action?filter.auditStatus=Pending");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("PQF Verification", "PqfVerification.action?filter.status=Active");
+		if (permissions.hasPermission(OpPerms.UserZipcodeAssignment))
+			subMenu.addChild("CSR Assignment", "CSRAssignmentMatrix.action");
 
 		subMenu = menu.addChild("Accounting");
 		if (permissions.hasPermission(OpPerms.Billing)) {

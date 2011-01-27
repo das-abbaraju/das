@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.UserAssignmentMatrix;
+import com.picsauditing.jpa.entities.UserAssignmentMatrixType;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -29,6 +30,12 @@ public class UserAssignmentMatrixDAO extends PicsDAO {
 		return (List<UserAssignmentMatrix>) super.findAll(UserAssignmentMatrix.class);
 	}
 
+	public List<UserAssignmentMatrix> findByType(UserAssignmentMatrixType type) {
+		Query q = em.createQuery("FROM UserAssignmentMatrix WHERE assignmentType = :type");
+		q.setParameter("type", type);
+		return (List<UserAssignmentMatrix>) q.getResultList();
+	}
+
 	public List<UserAssignmentMatrix> findByContractor(ContractorAccount contractor) {
 		String where = "(country is null OR country = :country)";
 		where += " AND (state is null OR state = :state)";
@@ -41,7 +48,8 @@ public class UserAssignmentMatrixDAO extends PicsDAO {
 		where += " AND (postalEnd is null OR postalEnd > :postal OR :postal LIKE CONCAT(postalEnd, '%') )";
 		Query q = em.createQuery("FROM UserAssignmentMatrix WHERE " + where);
 
-		// TODO implement comparable on UserAssignmentMatrix and return the first entry
+		// TODO implement comparable on UserAssignmentMatrix and return the
+		// first entry
 		q.setParameter("state", contractor.getState());
 		q.setParameter("country", contractor.getCountry());
 		q.setParameter("postal", contractor.getZip());

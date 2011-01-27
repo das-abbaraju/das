@@ -1398,8 +1398,10 @@
 			<result>struts/json.jsp</result>
 		</action>
 		
-		<action name="UserAssignment"
+		<action name="*AssignmentMatrix*"
 			class="com.picsauditing.actions.users.UserAssignment">
+			<param name="type">{1}</param>
+			<result name="input">struts/blank.jsp</result>
 			<result>struts/users/user_assignment.jsp</result>	
 		</action>
 
