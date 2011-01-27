@@ -212,7 +212,7 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.InsuranceVerification))
 			subMenu.addChild("Policy Verification", "PolicyVerification.action"
-					+ (permissions.hasGroup(User.GROUP_CSR) ? "&filter.auditorId=" + permissions.getShadowedUserID()
+					+ (permissions.hasGroup(User.GROUP_CSR) ? "?filter.conAuditorId=" + permissions.getShadowedUserID()
 							: ""));
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
 			subMenu.addChild("Policies Awaiting Decision", "ReportInsuranceApproval.action?filter.auditStatus=Complete");
