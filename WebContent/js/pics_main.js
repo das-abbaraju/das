@@ -38,7 +38,7 @@ function clearText(thefield)
 	// then remove text, else select it
 	var patt1 = /^-[^-]*-$/;
 	var str = thefield.value;
-	str = str.trim();
+	str = $.trim(str);
 	if(str.match(patt1)!=null)	
 		thefield.value = "";
 	else 
