@@ -8,7 +8,6 @@ import javax.persistence.PersistenceContext;
 import org.apache.struts2.util.StrutsTypeConverter;
 
 import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("rawtypes")
