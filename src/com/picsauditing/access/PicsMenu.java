@@ -144,7 +144,8 @@ public class PicsMenu {
 
 		subMenu = menu.addChild("Auditing");
 		if (permissions.isAuditor()) {
-			subMenu.addChild("My Audits", "AuditListAuditor.action?filter.auditStatus=Pending&filter.auditStatus=Submitted");
+			subMenu.addChild("My Audits",
+					"AuditListAuditor.action?filter.auditStatus=Pending&filter.auditStatus=Submitted");
 			subMenu.addChild("My Audit History", "MyAuditHistory.action");
 		}
 
@@ -152,14 +153,15 @@ public class PicsMenu {
 			subMenu.addChild("Safety Pro Invoices", "AuditorInvoices.action");
 			subMenu.addChild("Create Safety Pro Invoices", "CreateAuditorInvoices.action");
 		}
-		
-		if(permissions.isAdmin())
+
+		if (permissions.isAdmin())
 			subMenu.addChild("Audit List Compress", "ReportAuditList.action");
-		if (permissions.hasPermission(OpPerms.ContractorDetails)) 
+		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			subMenu.addChild("Audit List", "ReportCAOList.action");
 
 		if (permissions.hasPermission(OpPerms.AssignAudits))
-			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17");
+			subMenu.addChild("Sched. &amp; Assign",
+					"AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Close Assigned Audits", "ReportCloseAuditAssignments.action?filter.auditStatus=Submitted");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
@@ -171,7 +173,6 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.UserZipcodeAssignment))
 			subMenu.addChild("Auditor Assignment", "AuditorAssignmentMatrix.action");
-		
 
 		subMenu = menu.addChild("Customer Service");
 		if (permissions.isAdmin()) {
@@ -185,7 +186,11 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("Pending PQF", "ReportCompletePQF.action?filter.auditStatus=Pending");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
-			subMenu.addChild("PQF Verification", "PqfVerification.action?filter.status=Active");
+			subMenu.addChild(
+					"PQF Verification",
+					"PqfVerification.action?filter.status=Active"
+							+ (permissions.hasGroup(User.GROUP_CSR) ? "&filter.conAuditorId="
+									+ permissions.getShadowedUserID() : ""));
 		if (permissions.hasPermission(OpPerms.UserZipcodeAssignment))
 			subMenu.addChild("CSR Assignment", "CSRAssignmentMatrix.action");
 
@@ -206,7 +211,9 @@ public class PicsMenu {
 			subMenu.addChild("Contractor Policies", url);
 		}
 		if (permissions.hasPermission(OpPerms.InsuranceVerification))
-			subMenu.addChild("Policy Verification", "PolicyVerification.action");
+			subMenu.addChild("Policy Verification", "PolicyVerification.action"
+					+ (permissions.hasGroup(User.GROUP_CSR) ? "&filter.auditorId=" + permissions.getShadowedUserID()
+							: ""));
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
 			subMenu.addChild("Policies Awaiting Decision", "ReportInsuranceApproval.action?filter.auditStatus=Complete");
 
@@ -223,10 +230,10 @@ public class PicsMenu {
 			subMenu.addChild("Users", "UsersManage.action");
 			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
 		}
-		
+
 		if (permissions.hasPermission(OpPerms.ManageEmployees))
 			subMenu.addChild("Employees", "ManageEmployees.action?id=" + permissions.getAccountId());
-		
+
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
 			subMenu.addChild("Forms &amp; Docs", "manage_forms.jsp");
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
@@ -239,7 +246,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ManageCategoryRules)) {
 			subMenu.addChild("Category Rules", "CategoryRuleSearch.action");
 		}
-		if(permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit)) {
+		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit)) {
 			subMenu.addChild("Audit Category Matrix", "AuditCategoryMatrix.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageAuditWorkFlow))
@@ -252,7 +259,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EmailTemplates)) {
 			subMenu.addChild("Email Wizard", "EmailWizard.action");
 		}
-		
+
 		if (permissions.hasPermission(OpPerms.EmailTemplates, OpType.Edit)) {
 			subMenu.addChild("Email Template Editor", "EditEmailTemplate.action");
 		}
@@ -314,8 +321,9 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
-		if(permissions.hasPermission(OpPerms.ManageAuditTypeRules) || permissions.hasPermission(OpPerms.ManageCategoryRules))
-			subMenu.addChild("Audit Rule History","ReportRuleHistory.action");
+		if (permissions.hasPermission(OpPerms.ManageAuditTypeRules)
+				|| permissions.hasPermission(OpPerms.ManageCategoryRules))
+			subMenu.addChild("Audit Rule History", "ReportRuleHistory.action");
 		if (permissions.hasPermission(OpPerms.ContractorLicenseReport))
 			subMenu.addChild("Contractor Licenses", "ReportContractorLicenses.action");
 		if (permissions.hasPermission(OpPerms.RiskRank))
@@ -349,11 +357,11 @@ public class PicsMenu {
 			subMenu.addChild("User Search", "UserList.action");
 		if (permissions.hasPermission(OpPerms.EmployeeList))
 			subMenu.addChild("Employee List", "EmployeeList.action");
-		
+
 		if (permissions.isAdmin()) {
 			String custom = "";
 			if (permissions.hasGroup(User.GROUP_CSR))
-				custom = "?filter.conAuditorId=" + permissions.getUserId();
+				custom = "?filter.conAuditorId=" + permissions.getShadowedUserID();
 			if (permissions.hasGroup(User.GROUP_MARKETING))
 				custom = "?filter.accountManager=" + permissions.getUserId();
 			subMenu.addChild("Flag Changes", "ReportFlagChanges.action" + custom);
@@ -361,27 +369,27 @@ public class PicsMenu {
 
 		if (permissions.isRequiresCompetencyReview()) {
 			subMenu = menu.addChild("HSE Competencies");
-			
+
 			if (permissions.hasPermission(OpPerms.DefineCompetencies))
 				subMenu.addChild("HSE Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
-			
+
 			subMenu.addChild("Competency by Account", "ReportCompetencyByAccount.action");
 			subMenu.addChild("Competency by Employee", "ReportCompetencyByEmployee.action");
 			subMenu.addChild("Employee Turnover", "ReportEmployeeTurnover.action");
 		}
-		
+
 		if (permissions.isRequiresOQ()) {
 			subMenu = menu.addChild("Operator Qualification");
-			
+
 			if (permissions.hasPermission(OpPerms.ManageJobTasks))
 				subMenu.addChild("Job Tasks", "ManageJobTasksOperator.action?id=" + permissions.getAccountId());
 			if (permissions.hasPermission(OpPerms.ManageProjects))
 				subMenu.addChild("Projects", "ManageProjects.action?id=" + permissions.getAccountId());
-			
+
 			subMenu.addChild("OQ by Company/Site", "ReportOQ.action");
 			subMenu.addChild("OQ by Employee", "ReportOQEmployees.action");
 		}
-		
+
 		if ((permissions.isOperatorCorporate() && permissions.isRequiresOQ()) || permissions.isAdmin())
 			subMenu.addChild("Assessment Tests", "ReportAssessmentTests.action");
 

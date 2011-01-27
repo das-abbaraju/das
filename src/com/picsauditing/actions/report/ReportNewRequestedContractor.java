@@ -72,8 +72,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			sql.addWhere("op.id IN (SELECT opID FROM facilities WHERE corporateID = " + permissions.getAccountId()
 					+ ")");
 		} else if (!filter.isViewAll()) {
-			List<State> states = stateDAO.findByCSR(permissions.getUserId());
-			List<Country> countries = countryDAO.findByCSR(permissions.getUserId());
+			List<State> states = stateDAO.findByCSR(permissions.getShadowedUserID());
+			List<Country> countries = countryDAO.findByCSR(permissions.getShadowedUserID());
 			String where = "";
 			if (states.size() > 0 || countries.size() > 0) {
 				filter.setShowOperator(true);
