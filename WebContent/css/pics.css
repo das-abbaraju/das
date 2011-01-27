@@ -408,13 +408,6 @@ a.print {
 	zoom: 1;
 }
 
-a.refresh {
-	padding-left: 25px;
-	margin-left: 0px;
-	background: url('../images/refresh_icon.jpg') no-repeat left center;
-	zoom: 1;
-}
-
 a.remove {
 	padding-left: 17px;
 	margin-left: 2px;
