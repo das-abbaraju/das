@@ -8,7 +8,7 @@
 AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
 AppProperty appProp = appPropertyDAO.find("clear_cache");
 String clear = "";
-if(Boolean.valueOf(appProp.getValue()))
+if("true".equals(appProp.getValue()))
 	clear = "CLEAR";
 %>
 <%=clear%>
