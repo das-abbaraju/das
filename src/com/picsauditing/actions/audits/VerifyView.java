@@ -8,9 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.OpPerms;
@@ -33,6 +31,7 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class VerifyView extends ContractorActionSupport {
@@ -41,8 +40,8 @@ public class VerifyView extends ContractorActionSupport {
 	private Map<Integer, AuditData> infoSection = new LinkedHashMap<Integer, AuditData>();
 	private List<OshaAudit> oshas = new ArrayList<OshaAudit>();
 	protected AuditDataDAO auditDataDAO;
-	protected SortedSet<String> years = new TreeSet<String>();
-	protected Map<AuditQuestion, Map<String, AuditData>> emrs = new TreeMap<AuditQuestion, Map<String, AuditData>>();
+	protected List<ContractorAudit> annualUpdates = new ArrayList<ContractorAudit>();
+	protected Map<AuditQuestion, Map<Integer, AuditData>> emrs = new TreeMap<AuditQuestion, Map<Integer, AuditData>>();
 	protected List<ContractorAudit> verificationAudits = null;
 	protected String emailBody;
 	protected String emailSubject;
@@ -81,28 +80,9 @@ public class VerifyView extends ContractorActionSupport {
 						oshas.add(oshaAudit);
 					}
 				}
-				years.add(conAudit.getAuditFor());
 
-				for (AuditData d : conAudit.getData()) {
-					int categoryID = d.getQuestion().getCategory().getId();
-					if (categoryID != AuditCategory.CITATIONS
-							|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired()) || (d
-									.getQuestion().getId() >= 3565 && d.getQuestion().getId() <= 3568 && d.isAnswered()))) {
-						Map<String, AuditData> inner = emrs.get(d.getQuestion());
+				annualUpdates.add(conAudit);
 
-						if (inner == null) {
-							inner = new TreeMap<String, AuditData>();
-							for (String year : years)
-								inner.put(year, null);
-							emrs.put(d.getQuestion(), inner);
-						}
-						inner.put(conAudit.getAuditFor(), d);
-					}
-				}
-			}
-		}
-		for (ContractorAudit conAudit : getVerificationAudits()) {
-			if (conAudit.getAuditType().isAnnualAddendum()) {
 				boolean pendingIncomplete = false;
 
 				for (ContractorAuditOperator cao : conAudit.getOperators()) {
@@ -113,25 +93,33 @@ public class VerifyView extends ContractorActionSupport {
 					for (AuditData d : conAudit.getData()) {
 						int categoryID = d.getQuestion().getCategory().getId();
 						if (categoryID != AuditCategory.CITATIONS
-								|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired())
-										|| (d.getQuestion().getId() == 3565 && d.isAnswered())
-										|| (d.getQuestion().getId() == 3566 && d.isAnswered())
-										|| (d.getQuestion().getId() == 3567 && d.isAnswered()) || (d.getQuestion()
-										.getId() == 3568 && d.isAnswered()))) {
-							Map<String, AuditData> inner = emrs.get(d.getQuestion());
+								|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired()) || (d
+										.getQuestion().getId() >= 3565 && d.getQuestion().getId() <= 3568 && d
+										.isAnswered()))) {
+							Map<Integer, AuditData> inner = emrs.get(d.getQuestion());
 
 							if (inner == null) {
-								inner = new TreeMap<String, AuditData>();
-								for (String year : years)
-									inner.put(year, null);
+								inner = new TreeMap<Integer, AuditData>();
+								for (ContractorAudit ca : annualUpdates)
+									inner.put(ca.getId(), null);
 								emrs.put(d.getQuestion(), inner);
 							}
-							inner.put(conAudit.getAuditFor(), d);
+							inner.put(conAudit.getId(), d);
 						}
 					}
 				}
 			}
 		}
+
+		Collections.sort(annualUpdates, new Comparator<ContractorAudit>() {
+			@Override
+			public int compare(ContractorAudit o1, ContractorAudit o2) {
+				if (o1.getAuditFor().equals(o2.getAuditFor()))
+					return o1.getCreationDate().compareTo(o2.getCreationDate());
+				
+				return o1.getAuditFor().compareTo(o2.getAuditFor());
+			}
+		});
 
 		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(),
 				Arrays.<Integer> asList(69, 71, 1616, 57, 103, 104, 123, 124, 125));
@@ -143,16 +131,13 @@ public class VerifyView extends ContractorActionSupport {
 
 		for (ContractorAudit conAudit : getVerificationAudits()) {
 			if (conAudit.getAuditType().isAnnualAddendum()) {
-				sb.append("\n\n");
-				sb.append(conAudit.getAuditFor() + " Annual Update");
-				sb.append("\n");
-				sb.append("-------------------------------");
-				sb.append("\n");
+				StringBuffer sb2 = new StringBuffer("");
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
-					if (oshaAudit.getType().equals(OshaType.OSHA) && oshaAudit.isCorporate() && !oshaAudit.isVerified()) {
-						sb.append("OSHA : ");
-						sb.append(oshaAudit.getComment());
-						sb.append("\n");
+					if (oshaAudit.getType().equals(OshaType.OSHA) && oshaAudit.isCorporate() && !oshaAudit.isVerified()
+							&& !Strings.isEmpty(oshaAudit.getComment())) {
+						sb2.append("OSHA : ");
+						sb2.append(oshaAudit.getComment());
+						sb2.append("\n");
 					}
 				}
 				for (AuditData auditData : conAudit.getData()) {
@@ -160,19 +145,28 @@ public class VerifyView extends ContractorActionSupport {
 						int categoryID = auditData.getQuestion().getCategory().getId();
 						if (categoryID != AuditCategory.CITATIONS
 								|| (categoryID == AuditCategory.CITATIONS && auditData.getQuestion().isRequired())) {
-							if (!auditData.isVerified()) {
-								sb.append(auditData.getQuestion().getColumnHeaderOrQuestion());
-								sb.append(" : " + auditData.getComment());
-								sb.append("\n");
+							if (!auditData.isVerified() && !Strings.isEmpty(auditData.getComment())) {
+								sb2.append(auditData.getQuestion().getColumnHeaderOrQuestion());
+								sb2.append(" : " + auditData.getComment());
+								sb2.append("\n");
 							}
 						}
 					}
+				}
+				
+				if (sb2.length() > 0) {
+					sb.append("\n\n");
+					sb.append(conAudit.getAuditFor() + " Annual Update");
+					sb.append("\n");
+					sb.append("-------------------------------");
+					sb.append("\n");
+					sb.append(sb2.toString());
 				}
 			}
 			if (conAudit.getAuditType().isPqf()) {
 				List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 				for (AuditData ad : temp) {
-					if (!ad.isVerified()) {
+					if (!ad.isVerified() && !Strings.isEmpty(ad.getComment())) {
 						sb.append(ad.getQuestion().getCategory().getNumber() + "."
 								+ ad.getQuestion().getCategory().getNumber() + "." + ad.getQuestion().getNumber());
 						for (AuditCategory ac : ad.getQuestion().getCategory().getSubCategories()) {
@@ -252,11 +246,19 @@ public class VerifyView extends ContractorActionSupport {
 		this.oshas = oshas;
 	}
 
-	public Map<AuditQuestion, Map<String, AuditData>> getEmrs() {
+	public List<ContractorAudit> getAnnualUpdates() {
+		return annualUpdates;
+	}
+
+	public void setAnnualUpdates(List<ContractorAudit> annualUpdates) {
+		this.annualUpdates = annualUpdates;
+	}
+
+	public Map<AuditQuestion, Map<Integer, AuditData>> getEmrs() {
 		return emrs;
 	}
 
-	public void setEmrs(Map<AuditQuestion, Map<String, AuditData>> emrs) {
+	public void setEmrs(Map<AuditQuestion, Map<Integer, AuditData>> emrs) {
 		this.emrs = emrs;
 	}
 
@@ -266,14 +268,6 @@ public class VerifyView extends ContractorActionSupport {
 
 	public void setInfoSection(Map<Integer, AuditData> infoSection) {
 		this.infoSection = infoSection;
-	}
-
-	public SortedSet<String> getYears() {
-		return years;
-	}
-
-	public void setYears(SortedSet<String> years) {
-		this.years = years;
 	}
 
 	/**
@@ -301,11 +295,12 @@ public class VerifyView extends ContractorActionSupport {
 			boolean needsVerification = false;
 			for (ContractorAudit audit : verificationAudits) {
 				if (audit.getAuditType().isAnnualAddendum()
-						&& (audit.hasCaoStatusAfter(AuditStatus.Pending) || audit.hasCaoStatusBefore(AuditStatus.Complete))) {
+						&& (audit.hasCaoStatusAfter(AuditStatus.Pending) || audit
+								.hasCaoStatusBefore(AuditStatus.Complete))) {
 					needsVerification = true;
 				}
 			}
-			
+
 			if (!needsVerification) {
 				Iterator<ContractorAudit> iterator = verificationAudits.iterator();
 				while (iterator.hasNext()) {
@@ -313,9 +308,9 @@ public class VerifyView extends ContractorActionSupport {
 						iterator.remove();
 				}
 			}
-	
+
 			Collections.sort(verificationAudits, new Comparator<ContractorAudit>() {
-	
+
 				@Override
 				public int compare(ContractorAudit o1, ContractorAudit o2) {
 					if (o1.getAuditFor() == null)
@@ -326,7 +321,7 @@ public class VerifyView extends ContractorActionSupport {
 				}
 			});
 		}
-		
+
 		return verificationAudits;
 	}
 
