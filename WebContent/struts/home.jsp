@@ -31,6 +31,9 @@ function showPanel(panel) {
 <s:elseif test="!permissions.admin">
 	<h1>Welcome to PICS Organizer<span class="sub"><s:property value="account.name" /></span></h1>
 </s:elseif>
+<s:if test="permissions.admin && permissions.shadowedUserID != permissions.userId">
+	<div class="info">You are viewing <s:property value="permissions.shadowedUserName" />'s Dashboard</div>
+</s:if>
 <s:iterator value="columns">
 	<div class="column" id="column<s:property value="key"/>" style="width: <s:property value="columnWidth"/>%">
 		<s:iterator value="value">

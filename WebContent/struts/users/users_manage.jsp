@@ -279,13 +279,20 @@ div.autocomplete ul li {
 					<li><label>Last Login:</label><s:if test="user.lastLogin != null"> <s:date name="user.lastLogin" /></s:if><s:else> never</s:else>
 					</li>
 				</s:if>
+				<!-- CSR Shadowing -->
+				<s:if test="csr">
+					<li><label>Shadow CSR:</label>
+						<s:select list="csrs" listKey="user.id" listValue="user.name" headerKey="0" 
+							headerValue="- Select CSR -" name="shadowID" value="%{user.shadowedUser != null ? user.shadowedUser.id : 0}" />
+					</li>
+				</s:if>
 			</s:if>
 			<s:if test="user.id > 0">
 				<li><label>Active:</label>
 					<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio>
 				</li>
-				<!-- Move User to Account -->
 				<s:if test="permissions.isAdmin()">
+					<!-- Move User to Account -->
 					<s:hidden name="moveToAccount" id="moveToAccount" />
 					<li><label>Move User to Account:</label>
 						<s:textfield id="accountMoveSuggest" /><br/>

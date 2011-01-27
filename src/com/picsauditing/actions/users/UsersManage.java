@@ -2,6 +2,7 @@ package com.picsauditing.actions.users;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
@@ -39,7 +40,6 @@ import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectAccount;
-import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -59,7 +59,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	protected List<OperatorAccount> facilities = null;
 	protected Report search = null;
 	protected List<User> userList = null;
-	
+
+	protected int shadowID;
 	protected int moveToAccount = 0;
 
 	protected String isGroup = "";
@@ -120,8 +121,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		// checking to see if primary account user is set
 		if (account != null && account.getPrimaryContact() == null)
 			setPrimaryAccount = true;
-		//Default isActive to show all for contractors
-		if(account != null && account.isContractor())
+		// Default isActive to show all for contractors
+		if (account != null && account.isContractor())
 			isActive = "All";
 	}
 
@@ -174,50 +175,50 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				userDAO.clear();
 				return SUCCESS;
 			}
-			
+
 			user.setLockUntil(null);
 			userDAO.save(user);
 		}
-		
-		if("Move".equals(button)){
-			if(user==null){
+
+		if ("Move".equals(button)) {
+			if (user == null) {
 				addActionError("You have selected an invalid user, please try again.");
 				return SUCCESS;
 			}
-			if(account.getId()!=moveToAccount){
+			if (account.getId() != moveToAccount) {
 				// accounts are different so we are moving to a new account
-				//user.setOwnedPermissions(null);
+				// user.setOwnedPermissions(null);
 				List<UserAccess> userAccessList = userAccessDAO.findByUser(user.getId());
 				Iterator<UserAccess> uaIter = userAccessList.iterator();
-				while(uaIter.hasNext()){
+				while (uaIter.hasNext()) {
 					UserAccess next = uaIter.next();
 					user.getOwnedPermissions().remove(next);
 					uaIter.remove();
 					userAccessList.remove(next);
 					userAccessDAO.remove(next);
 				}
-				//user.setGroups(null);
+				// user.setGroups(null);
 				List<UserGroup> userGroupList = userGroupDAO.findByUser(user.getId());
 				Iterator<UserGroup> ugIter = userGroupList.iterator();
-				while(ugIter.hasNext()){
+				while (ugIter.hasNext()) {
 					UserGroup next = ugIter.next();
 					user.getGroups().remove(next);
 					ugIter.remove();
 					userAccessList.remove(next);
 					userAccessDAO.remove(next);
 				}
-				//get new account
+				// get new account
 				account = accountDAO.find(moveToAccount);
 				user.setAccount(account);
-				//user.setNeedsIndexing(true);
+				// user.setNeedsIndexing(true);
 				userDAO.save(user);
-				if(!user.isGroup())
+				if (!user.isGroup())
 					indexer.runSingle(user, "users");
 			}
-			redirect("UsersManage.action?accountID="+user.getAccount().getId()+"&user.id="+user.getId()+"&msg=You have sucessfully moved " +
-					user.getName()+" to "+user.getAccount().getName());
+			redirect("UsersManage.action?accountID=" + user.getAccount().getId() + "&user.id=" + user.getId()
+					+ "&msg=You have sucessfully moved " + user.getName() + " to " + user.getAccount().getName());
 		}
-		
+
 		if ("Save".equalsIgnoreCase(button)) {
 			if (!isOK()) {
 				userDAO.clear();
@@ -249,7 +250,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 					user.setEncryptedPassword(password2);
 					user.setForcePasswordReset(false);
 				}
-				
+
 			} else {
 				// We want to save a new user
 				final String randomPassword = Long.toString(new Random().nextLong());
@@ -373,6 +374,29 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				}
 			}
 
+			// TODO CSR shadowing
+			if (shadowID == 0 || (user.getShadowedUser() != null && user.getShadowedUser().getId() != shadowID)) {
+				// Remove all non-groups from this user's groups
+				Iterator<UserGroup> iterator = user.getGroups().iterator();
+				while (iterator.hasNext()) {
+					UserGroup ug = iterator.next();
+					if (!ug.getGroup().isGroup()) {
+						iterator.remove();
+						userGroupDAO.remove(ug);
+					}
+				}
+			}
+
+			if (shadowID > 0 && shadowID != user.getId()) {
+				User shadow = userDAO.find(shadowID);
+
+				UserGroup ug = new UserGroup();
+				ug.setUser(user);
+				ug.setGroup(shadow);
+				ug.setAuditColumns(permissions);
+				userGroupDAO.save(ug);
+			}
+
 			// Send activation email if set
 			if (sendActivationEmail && user.getId() == 0)
 				addActionMessage(AccountRecovery.sendActivationEmail(user, permissions));
@@ -380,7 +404,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			try {
 				user.setNeedsIndexing(true);
 				user = userDAO.save(user);
-				if(!user.isGroup())
+				if (!user.isGroup())
 					indexer.runSingle(user, "users");
 				addActionMessage("User saved successfully.");
 				if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
@@ -434,8 +458,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 					+ (user.isGroup() ? "group: " + user.getName() : "user: " + user.getUsername()));
 			user = null;
 		}
-		
-		if("Suggest".equalsIgnoreCase(button)){
+
+		if ("Suggest".equalsIgnoreCase(button)) {
 			return "suggest";
 		}
 
@@ -587,6 +611,14 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		this.setPrimaryAccount = setPrimaryAccount;
 	}
 
+	public int getShadowID() {
+		return shadowID;
+	}
+
+	public void setShadowID(int shadowID) {
+		this.shadowID = shadowID;
+	}
+
 	public List<User> getUserList() {
 		if (userList == null)
 			userList = userDAO.findByAccountID(accountId, isActive, isGroup);
@@ -701,16 +733,16 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			}
 		};
 	}
-	
+
 	public boolean isHasProfileEdit() {
-		if(user.getAccount().isContractor())
+		if (user.getAccount().isContractor())
 			return true;
-		
-		for(UserAccess userAccess : user.getPermissions()) {
-			if(userAccess.getOpPerm().equals(OpPerms.EditProfile)) {
+
+		for (UserAccess userAccess : user.getPermissions()) {
+			if (userAccess.getOpPerm().equals(OpPerms.EditProfile)) {
 				return true;
 			}
-				
+
 		}
 		return false;
 	}
@@ -720,15 +752,15 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		if (id > 0) {
 			user = userDAO.find(id);
 		}
-		if(user!=null){
-			if(permissions.isAdmin()){
-				String like = (String) ((String[])ActionContext.getContext().getParameters().get("q"))[0];
-				if(like==null)
+		if (user != null) {
+			if (permissions.isAdmin()) {
+				String like = (String) ((String[]) ActionContext.getContext().getParameters().get("q"))[0];
+				if (like == null)
 					like = "";
-				
+
 				// don't use hibernate to pull up accounts
-				SelectAccount sql = new SelectAccount();				
-				sql.addWhere("status IN ('Active', 'Deactivated', 'Pending') AND name LIKE '"+like+"%'");
+				SelectAccount sql = new SelectAccount();
+				sql.addWhere("status IN ('Active', 'Deactivated', 'Pending') AND name LIKE '" + like + "%'");
 				sql.addOrderBy("a.name");
 				Database db = new Database();
 				return db.select(sql.toString(), true);
@@ -743,5 +775,44 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	public void setMoveToAccount(int moveToAccount) {
 		this.moveToAccount = moveToAccount;
+	}
+	
+	public boolean isCsr() {
+		if (user != null && !user.isGroup()) {
+			for (UserGroup ug : user.getGroups()) {
+				if (ug.getGroup().isGroup() && ug.getGroup().getId() == User.GROUP_CSR)
+					return true;
+			}
+		}
+			
+		return false;
+	}
+
+	public List<UserGroup> getCsrs() {
+		if (!user.isGroup()) {
+			for (UserGroup ug : user.getGroups()) {
+				if (ug.getGroup().getId() == User.GROUP_CSR) {
+					List<UserGroup> ugs = new ArrayList<UserGroup>(ug.getGroup().getMembers());
+					Iterator<UserGroup> iterator = ugs.iterator();
+					while (iterator.hasNext()) {
+						UserGroup current = iterator.next();
+						if (current.equals(ug) || current.getUser().isGroup())
+							iterator.remove();
+					}
+					
+					Collections.sort(ugs, new Comparator<UserGroup>() {
+						@Override
+						public int compare(UserGroup o1, UserGroup o2) {
+							return o1.getUser().getName().compareTo(o2.getUser().getName());
+						}
+					});
+					
+					return ugs;
+				}
+			}
+		} else if (user.getId() == User.GROUP_CSR)
+			return user.getMembers();
+
+		return null;
 	}
 }

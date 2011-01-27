@@ -65,6 +65,9 @@ public class Permissions implements Serializable {
 	private boolean active = false;
 	private AccountStatus accountStatus = AccountStatus.Pending;
 
+	private int shadowedUserID;
+	private String shadowedUserName;
+
 	public void clear() {
 		userID = 0;
 		loggedIn = false;
@@ -89,6 +92,9 @@ public class Permissions implements Serializable {
 		adminID = 0;
 		topAccountID = 0;
 
+		shadowedUserID = 0;
+		shadowedUserName = "";
+
 		permissions.clear();
 		groups.clear();
 		visibleAuditTypes.clear();
@@ -112,6 +118,8 @@ public class Permissions implements Serializable {
 			phone = user.getPhone();
 			fax = user.getFax();
 			locale = ActionContext.getContext().getLocale();
+			shadowedUserID = (user.getShadowedUser() != null ? user.getShadowedUser().getId() : userID);
+			shadowedUserName = (user.getShadowedUser() != null ? user.getShadowedUser().getName() : username);
 			if (user.getAccount().getCountry() != null)
 				country = user.getAccount().getCountry().getIsoCode();
 			else
@@ -186,8 +194,10 @@ public class Permissions implements Serializable {
 				permissions.add(conProfileEdit);
 			}
 
-			for (UserGroup u : user.getGroups())
-				groups.add(u.getGroup().getId());
+			for (UserGroup u : user.getGroups()) {
+				if (u.getGroup().isGroup())
+					groups.add(u.getGroup().getId());
+			}
 
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all
@@ -270,6 +280,20 @@ public class Permissions implements Serializable {
 
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * This gets the shadowed user from the User object, if it's set. Otherwise
+	 * this returns the user's own id
+	 * 
+	 * @return user ID or shadowed user ID
+	 */
+	public int getShadowedUserID() {
+		return shadowedUserID;
+	}
+
+	public String getShadowedUserName() {
+		return shadowedUserName;
 	}
 
 	/**

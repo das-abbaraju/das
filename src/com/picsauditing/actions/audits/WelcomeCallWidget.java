@@ -12,14 +12,15 @@ import com.picsauditing.search.SelectAccount;
 @SuppressWarnings("serial")
 public class WelcomeCallWidget extends PicsActionSupport {
 	private int csrID;
+
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		return SUCCESS;
 	}
-	
+
 	public List<BasicDynaBean> getPendingWelcomeCalls() {
 		SelectAccount sql = new SelectAccount();
 		sql.setType(SelectAccount.Type.Contractor);
@@ -37,22 +38,22 @@ public class WelcomeCallWidget extends PicsActionSupport {
 		sql.addWhere("cao.visible = 1");
 		sql.addWhere("ca.auditTypeID = 9");
 		sql.addWhere("cao.status = 'Pending'");
-		sql.addWhere("c.welcomeAuditor_id = " + permissions.getUserId());
+		sql.addWhere("c.welcomeAuditor_id = " + permissions.getShadowedUserID());
 
 		try {
 			Database db = new Database();
 			List<BasicDynaBean> pageData = db.select(sql.toString(), false);
-			
+
 			if (pageData.size() > 0)
 				csrID = Integer.parseInt(pageData.get(0).get("csrID").toString());
-			
+
 			return pageData;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 	public int getCsrID() {
 		return csrID;
 	}

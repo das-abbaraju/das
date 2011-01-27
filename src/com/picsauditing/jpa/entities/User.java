@@ -57,7 +57,8 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private String username;
 	private YesNo isGroup;
 	private String email;
-	// TODO - read GMail to see if emails are bouncing and auto update this field
+	// TODO - read GMail to see if emails are bouncing and auto update this
+	// field
 	private Date emailConfirmedDate;
 	private String name;
 	private YesNo isActive = YesNo.Yes;
@@ -66,7 +67,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private String phone;
 	private String phoneIndex;
 	private String fax;
-	
+
 	private String password;
 	private Date passwordChanged;
 	private String resetHash;
@@ -75,14 +76,14 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private int failedAttempts = 0;
 	private Date lockUntil = null;
 	private String timezone = "US/Central";
-	
+
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
 	private List<UserAccess> ownedPermissions = new ArrayList<UserAccess>();
 	private List<UserSwitch> switchTos = new ArrayList<UserSwitch>();
 	private List<UserSwitch> switchFroms = new ArrayList<UserSwitch>();
 	private List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
-	
+
 	@Transient
 	public boolean isSuperUser() {
 		return (id == GROUP_SU);
@@ -277,9 +278,9 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public void setLockUntil(Date lockUntil) {
 		this.lockUntil = lockUntil;
 	}
-	
+
 	@Transient
-	public boolean isLocked(){
+	public boolean isLocked() {
 		return (getLockUntil() != null) ? new Date().before(getLockUntil()) : false;
 	}
 
@@ -462,9 +463,11 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 		// get all the groups this user (or group) is a part of
 		for (UserGroup userGroup : getGroups()) {
-			Set<UserAccess> tempPerms = userGroup.getGroup().getPermissions();
-			for (UserAccess perm : tempPerms) {
-				add(permissions, perm, false);
+			if (userGroup.getGroup().isGroup()) {
+				Set<UserAccess> tempPerms = userGroup.getGroup().getPermissions();
+				for (UserAccess perm : tempPerms) {
+					add(permissions, perm, false);
+				}
 			}
 		}
 
@@ -631,7 +634,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	@Transient
 	public String getIndexType() {
-		if(this.isGroup())
+		if (this.isGroup())
 			return "G";
 		else
 			return "U";
@@ -639,43 +642,44 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	@Transient
 	public List<IndexObject> getIndexValues() {
-		List<IndexObject> l = new ArrayList<IndexObject>();	
+		List<IndexObject> l = new ArrayList<IndexObject>();
 		String temp = "";
 		// type
-		if(this.isGroup())
+		if (this.isGroup())
 			l.add(new IndexObject("GROUP", 2));
 		else
-			l.add(new IndexObject("USER",2));
+			l.add(new IndexObject("USER", 2));
 		// id
-		l.add(new IndexObject(String.valueOf(this.id),4));
+		l.add(new IndexObject(String.valueOf(this.id), 4));
 		// username
 		temp = this.username;
-		if (temp!=null && !temp.isEmpty()) {
+		if (temp != null && !temp.isEmpty()) {
 			int atIndex = temp.indexOf('@');
 			if (atIndex > 0)
-				l.add(new IndexObject(temp.toUpperCase().substring(0, atIndex).replaceAll("\\W", ""),6));
+				l.add(new IndexObject(temp.toUpperCase().substring(0, atIndex).replaceAll("\\W", ""), 6));
 			else
-				l.add(new IndexObject(temp.toUpperCase().replaceAll("\\W", ""),6));
+				l.add(new IndexObject(temp.toUpperCase().replaceAll("\\W", ""), 6));
 		}
 		// email
 		temp = this.email;
-		if (temp!=null && !temp.isEmpty()) {
+		if (temp != null && !temp.isEmpty()) {
 			String[] sA = temp.toUpperCase().split("@");
 			for (String s : sA) {
+				// strip non word characters out
 				if (s != null && !s.isEmpty())
-					l.add(new IndexObject(s.replaceAll("\\W", ""),5)); // strip non word characters out
+					l.add(new IndexObject(s.replaceAll("\\W", ""), 5));
 			}
 		}
 		// name
-		String[]sA1 = this.name.replaceAll("[^a-zA-Z0-9\\s]", "").replaceAll("\\s+", " ").split(" ");
-		for(String s :sA1){
-			if(s!=null && !s.isEmpty())
-				l.add(new IndexObject(s.toUpperCase(),7));
+		String[] sA1 = this.name.replaceAll("[^a-zA-Z0-9\\s]", "").replaceAll("\\s+", " ").split(" ");
+		for (String s : sA1) {
+			if (s != null && !s.isEmpty())
+				l.add(new IndexObject(s.toUpperCase(), 7));
 		}
 		// phoneIndex
 		temp = this.phoneIndex;
-		if (temp!=null && !temp.isEmpty()) {
-			l.add(new IndexObject(temp.replaceAll("\\D", ""),2));
+		if (temp != null && !temp.isEmpty()) {
+			l.add(new IndexObject(temp.replaceAll("\\D", ""), 2));
 		}
 		return l;
 	}
@@ -693,8 +697,9 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public String getReturnType() {
 		return "user";
 	}
+
 	@Transient
-	public String getSearchText(){
+	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.getReturnType()).append('|').append("User");
 		sb.append('|').append(this.id).append('|').append(this.name).append('|').append(this.account.name).append("\n");
@@ -703,6 +708,23 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	@Transient
 	public String getViewLink() {
-		return "UsersManage.action?accountId="+this.getAccount().getId()+"&user.id="+this.id;
+		return "UsersManage.action?accountId=" + this.getAccount().getId() + "&user.id=" + this.id;
+	}
+
+	/**
+	 * In UsersManage, another user (non-group) is inserted into this user's
+	 * groups for shadowing
+	 * 
+	 * @return shadowed user or null
+	 */
+	@Transient
+	public User getShadowedUser() {
+		// Pull up any non-group this user is shadowing
+		for (UserGroup ug : getGroups()) {
+			if (!ug.getGroup().isGroup())
+				return ug.getGroup();
+		}
+
+		return null;
 	}
 }

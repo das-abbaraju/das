@@ -25,7 +25,7 @@ public class OpenNotesWidget extends PicsActionSupport {
 
 	public List<Note> getOpenNotes() {
 		if (openNotes == null)
-			openNotes = noteDAO.getTasksForUser(permissions.getUserId());
+			openNotes = noteDAO.getTasksForUser(permissions.getShadowedUserID());
 		return openNotes;
 	}
 }

@@ -8,7 +8,6 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectAccount;
-import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
 public class PQFVerificationWidget extends PicsActionSupport {
@@ -16,21 +15,21 @@ public class PQFVerificationWidget extends PicsActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		return SUCCESS;
 	}
-	
+
 	public List<BasicDynaBean> getPqfVerifications() {
 		SelectAccount sql = new SelectAccount();
 
 		sql.setType(SelectAccount.Type.Contractor);
 		sql.addJoin("JOIN users contact ON contact.id = a.contactID");
 		sql.setType(SelectAccount.Type.Contractor);
-		
+
 		sql.addJoin("JOIN users csr ON csr.id = c.welcomeAuditor_id");
 		sql.addField("csr.name csr_name");
-		sql.addWhere("csr.id = " + permissions.getUserId());
-		
+		sql.addWhere("csr.id = " + permissions.getShadowedUserID());
+
 		sql.addJoin("JOIN contractor_audit ca ON ca.conid = a.id");
 		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
 		sql.addWhere("cao.visible = 1");

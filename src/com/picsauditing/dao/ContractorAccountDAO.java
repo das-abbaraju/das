@@ -84,7 +84,8 @@ public class ContractorAccountDAO extends PicsDAO {
 			where = "AND (operatorAccount.id = " + permissions.getAccountId()
 					+ " OR operatorAccount IN (SELECT operator FROM Facility "
 					+ "WHERE corporate IN (SELECT corporate FROM Facility " + "WHERE operator.id = "
-					+ permissions.getAccountId() + " AND corporate.id NOT IN ( "+ Strings.implode(Account.PICS_CORPORATE, ",") +"))))";
+					+ permissions.getAccountId() + " AND corporate.id NOT IN ( "
+					+ Strings.implode(Account.PICS_CORPORATE, ",") + "))))";
 
 		Query query = em.createQuery("FROM ContractorOperator WHERE contractorAccount = ? " + where
 				+ " ORDER BY operatorAccount.name");
@@ -113,10 +114,10 @@ public class ContractorAccountDAO extends PicsDAO {
 
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
 		String where = "1=1 ";
-		if(permissions.hasGroup(User.GROUP_CSR)) {
-			where = " auditor.id = " + permissions.getUserId();
+		if (permissions.hasGroup(User.GROUP_CSR)) {
+			where = " auditor.id = " + permissions.getShadowedUserID();
 		}
-		String hql = "FROM ContractorAccount contractorAccount WHERE " + where +" "+ qb.toString() 
+		String hql = "FROM ContractorAccount contractorAccount WHERE " + where + " " + qb.toString()
 				+ " ORDER BY creationDate DESC";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(limit);
@@ -187,8 +188,8 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public long findNumberOfContractorsNeedingRecalculation() {
-		String hql = "SELECT COUNT(*) FROM ContractorAccount c " +
-				"WHERE c.status IN ('Active','Pending','Demo') AND c.needsRecalculation > 0";
+		String hql = "SELECT COUNT(*) FROM ContractorAccount c "
+				+ "WHERE c.status IN ('Active','Pending','Demo') AND c.needsRecalculation > 0";
 		Query query = em.createQuery(hql);
 
 		return (Long) query.getSingleResult();
@@ -251,7 +252,7 @@ public class ContractorAccountDAO extends PicsDAO {
 
 		return q.getResultList();
 	}
-	
+
 	public List<ContractorAccount> findRecentlyAddedContractorsByOperator(int opID, Date start, Date end) {
 		String query = "SELECT co.contractorAccount FROM ContractorOperator co WHERE co.operatorAccount.id = "
 				+ ":opID AND co.creationDate BETWEEN :start and :end AND co.contractorAccount.status IN ('Active')";
@@ -316,11 +317,11 @@ public class ContractorAccountDAO extends PicsDAO {
 		Query query = em.createQuery(hql);
 		return query.getResultList();
 	}
-	
+
 	public List<ContractorAccount> findByContractorIds(Set<Integer> conIDs) {
-		if(conIDs == null || conIDs.size() == 0)
+		if (conIDs == null || conIDs.size() == 0)
 			return new ArrayList<ContractorAccount>();
-		
+
 		String ids = Strings.implodeForDB(conIDs, ",");
 		Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE a.id in (" + ids + ")");
 		return query.getResultList();

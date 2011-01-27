@@ -32,7 +32,7 @@ public class WaitingOnWidget extends PicsActionSupport {
 			sql.addWhere("cao.percentVerified < 100");
 			sql.addWhere("cao.status = 'Pending'");
 			sql.addWhere("t.workflowID IN (SELECT workflowID from workflow_step ws WHERE ws.newStatus = 'Submitted')");
-			sql.addWhere("a.auditorID = " + permissions.getUserId());
+			sql.addWhere("a.auditorID = " + permissions.getShadowedUserID());
 			sql.addOrderBy("a.id DESC");
 			sql.setLimit(10);
 			

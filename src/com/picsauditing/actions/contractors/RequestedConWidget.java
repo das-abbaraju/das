@@ -9,7 +9,7 @@ import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 @SuppressWarnings("serial")
 public class RequestedConWidget extends PicsActionSupport {
 	private ContractorRegistrationRequestDAO requestDAO;
-	
+
 	public RequestedConWidget(ContractorRegistrationRequestDAO requestDAO) {
 		this.requestDAO = requestDAO;
 	}
@@ -21,14 +21,14 @@ public class RequestedConWidget extends PicsActionSupport {
 
 		return SUCCESS;
 	}
-	
+
 	public List<ContractorRegistrationRequest> getRequestedContractors() {
 		// Assuming that this widget is only shown to CSRs
-		if(permissions.isOperator())
+		if (permissions.isOperator())
 			return requestDAO.findByOp(permissions.getAccountId(), true);
-		else if(permissions.isCorporate())
+		else if (permissions.isCorporate())
 			return requestDAO.findByCorp(permissions.getAccountId(), true);
-		else 
-			return requestDAO.findByCSR(permissions.getUserId(), true);
+		else
+			return requestDAO.findByCSR(permissions.getShadowedUserID(), true);
 	}
 }

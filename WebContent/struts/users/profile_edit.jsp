@@ -185,6 +185,10 @@
 				You are a PICS Employee and have access to all Audit Types.
 			</s:else>
 			</div>
+			<s:if test="permissions.admin && permissions.shadowedUserID != permissions.userId">
+				<h3>Shadowing</h3>
+				<div>You are currently shadowing <s:property value="permissions.shadowedUserName" />.</div>
+			</s:if>
 		</td>
 	</tr>
 </table>

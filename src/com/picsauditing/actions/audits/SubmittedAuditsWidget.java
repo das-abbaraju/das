@@ -33,7 +33,7 @@ public class SubmittedAuditsWidget extends PicsActionSupport {
 		sql.addWhere("ca.auditTypeID IN (2,3)"); // Manual and Implementation Audits
 		sql.addWhere("cao.status = 'Submitted'");
 		sql.addWhere("cao.statusChangedDate < DATE_SUB(NOW(), INTERVAL 45 DAY)"); // 45 days after
-		sql.addWhere("c.welcomeAuditor_id = "+ permissions.getUserId());
+		sql.addWhere("c.welcomeAuditor_id = "+ permissions.getShadowedUserID());
 		sql.addOrderBy("cao.statusChangedDate DESC");
 		sql.setLimit(10);
 
