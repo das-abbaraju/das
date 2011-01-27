@@ -30,6 +30,7 @@ public class ReportPQFVerification extends ReportAccount {
 		sql.addWhere("cao.visible = 1");
 		sql.addWhere("cao.status IN ('Submitted','Resubmitted')");
 		sql.addWhere("ca.auditTypeID IN (1,11)");
+		sql.addWhere("ca.expiresDate > NOW()");
 		sql.addField("MIN(cao.statusChangedDate) statusChangedDate");
 		sql.addWhere("a.acceptsBids = 0");
 		sql.addWhere("o.status IN ('Active')");
