@@ -140,6 +140,8 @@ public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
 	protected String returnResult() throws IOException {
 		if (!filterOn(getFilter().getWaCategories()))
 			waCategories = getFilter().getWaCategoryList();
+		else
+			waCategories = auditCategoryDAO.findWhere("id IN (" + Strings.implode(getFilter().getWaCategories()) + ")");
 
 		for (BasicDynaBean d : data) {
 			ContractorAccount c = new ContractorAccount();
@@ -158,8 +160,6 @@ public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
 
 				if (!map.get(c).contains(ac))
 					map.get(c).add(ac);
-				if (!waCategories.contains(ac))
-					waCategories.add(ac);
 			}
 		}
 
