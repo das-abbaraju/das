@@ -66,6 +66,8 @@ $(function(){
 			<li><label>ID:</label>
 				<s:if test="category.id > 0">
 					<s:property value="category.id" />
+					<s:set var="o" value="category" />
+					<s:include value="../who.jsp" />
 				</s:if>
 					<s:else>NEW</s:else>
 			</li>

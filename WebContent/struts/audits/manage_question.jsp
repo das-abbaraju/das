@@ -111,6 +111,8 @@ function moveQuestion(atypeID) {
 		<li><label>ID:</label>
 			<s:if test="question.id > 0">
 				<s:property value="question.id" />
+				<s:set var="o" value="question" />
+				<s:include value="../who.jsp" />
 			</s:if>
 			<s:else>
 				NEW

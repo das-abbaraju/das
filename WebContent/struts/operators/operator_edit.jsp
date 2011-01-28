@@ -63,6 +63,12 @@ $(function() {
 	<fieldset class="form">
 	<h2 class="formLegend">Account Summary</h2>
 	<ol>
+		<s:if test="operator.id > 0">
+			<li>
+				Created by: <s:set var="o" value="operator" />
+				<s:include value="../who.jsp" />
+			</li>
+		</s:if>
 		<li>
 			<label>Short Name:</label> <s:textfield name="operator.name" maxlength="50" />
 			<pics:fieldhelp>

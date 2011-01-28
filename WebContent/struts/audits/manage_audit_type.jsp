@@ -50,7 +50,10 @@ $(function(){
 		<h2 class="formLegend">Audit Type</h2>
 			<ol>
 				<li><label>ID:</label>
-					<s:if test="auditType.id > 0"><s:property value="auditType.id" /></s:if>
+					<s:if test="auditType.id > 0"><s:property value="auditType.id" />
+						<s:set var="o" value="auditType" />
+						<s:include value="../who.jsp" />
+					</s:if>
 					<s:else>NEW</s:else>
 				</li>
 				<li><label>Name:</label>
