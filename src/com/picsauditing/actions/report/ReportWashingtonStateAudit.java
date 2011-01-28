@@ -10,6 +10,8 @@ import java.util.Map;
 import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.PICS.AuditBuilderController;
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -61,15 +63,18 @@ public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
 
 	@Override
 	public String execute() throws Exception {
+		loadPermissions();
 		// Turn on/off filters
 		getFilter().setShowConAuditor(false);
 		getFilter().setShowCaoStatusChangedDate(false);
 		getFilter().setShowOperator(false);
 		getFilter().setShowCaoOperator(false);
 		getFilter().setShowAuditType(false);
-
+		
+		if (!permissions.hasPermission(OpPerms.DevelopmentEnvironment))
+			throw new NoRightsException("Administrators");
+		
 		if ("Request".equals(button) && conID > 0) {
-			loadPermissions();
 			ContractorAccount con = conDAO.find(conID);
 			OperatorAccount op = operatorAccountDAO.find(permissions.getAccountId());
 
