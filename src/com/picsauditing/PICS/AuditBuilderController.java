@@ -356,6 +356,8 @@ public class AuditBuilderController {
 					// subcategories when adding it to the AuditCatData
 					categoryApplies = categoriesNeeded.contains(catData.getCategory().getTopParent());
 				}
+				if (categoryApplies != catData.isApplies())
+					catData.setAuditColumns(user);
 				catData.setApplies(categoryApplies);
 				if ((OshaTypeConverter.getTypeFromCategory(catData.getCategory().getId()) != null) && categoryApplies) {
 					addOshaLog(catData);
