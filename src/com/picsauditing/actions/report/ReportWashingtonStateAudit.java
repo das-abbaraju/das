@@ -76,7 +76,7 @@ public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
 		
 		if ("Request".equals(button) && conID > 0) {
 			ContractorAccount con = conDAO.find(conID);
-			OperatorAccount op = operatorAccountDAO.find(permissions.getAccountId());
+			OperatorAccount op = operatorAccountDAO.find(1813);
 
 			ContractorAudit ca = new ContractorAudit();
 			ca.setContractorAccount(con);
