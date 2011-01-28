@@ -552,6 +552,22 @@ table.report tr.hurdle td {
 		</div>
 	</div>
 	</s:if>
+	<div class="panel_placeholder">
+		<div class="panel">
+			<div class="panel_header">
+				Synchronize Contractor <span style="float: right;"><a href="#" onclick="return false;" class="cluetip help" rel="#cluetip_sync" title="Synchronize Contractor"></a></span>
+				<div id="cluetip_sync">Click this button to update/refresh the PQF, audits, and flags.</div>
+			</div>
+			<div class="panel_content" style="text-align: center;">
+				<s:form id="form_sync">
+					<s:hidden name="id" />
+					<s:hidden name="button" value="Synchronize Contractor" />
+					<input type="submit" class="picsbutton" onclick="$(this).attr('disabled', true); $('#form_sync').submit();" 
+						style="margin: 5px auto;" value="Synchronize" />
+				</s:form>
+			</div>
+		</div>
+	</div>	
 </td>
 </tr>
 </table>

@@ -186,7 +186,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 							auditDao.save(cao);
 						}
 					}
-					
+
 					auditBuilder.setup(contractor, null);
 					auditBuilder.fillAuditCategories(cAudit);
 					auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
@@ -232,6 +232,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 						"BillingDetail.action?id=" + contractor.getId() + "&button=Create");
 				return BLANK;
 			}
+		}
+
+		if ("Synchronize Contractor".equals(button)) {
+			String redirectUrl = "ContractorView.action?id=" + id;
+			return redirect("ContractorCronAjax.action?conID=" + id + "&steps=All&redirectUrl=" + redirectUrl);
 		}
 
 		if (permissions.isOperatorCorporate()) {
@@ -324,7 +329,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		return problems;
 	}
-	
+
 	public String getCriteriaLabel(int fcID) {
 		if (fccMap == null) {
 			fccMap = new HashMap<Integer, FlagCriteriaContractor>();
@@ -470,11 +475,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 			auditForSet.add(ind);
 
 			if (data.get(OshaRateType.TrirAbsolute.getDescription()) != null)
-				put(OshaRateType.TrirAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(false,
-						contractor.getNaics())));
+				put(OshaRateType.TrirAbsolute.getDescription(), ind,
+						format(naicsDAO.getIndustryAverage(false, contractor.getNaics())));
 			if (data.get(OshaRateType.LwcrAbsolute.getDescription()) != null)
-				put(OshaRateType.LwcrAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(true,
-						contractor.getNaics())));
+				put(OshaRateType.LwcrAbsolute.getDescription(), ind,
+						format(naicsDAO.getIndustryAverage(true, contractor.getNaics())));
 
 			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
 			for (ContractorOperator co : contractorOperators) {
