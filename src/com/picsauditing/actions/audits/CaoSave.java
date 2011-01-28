@@ -473,7 +473,7 @@ public class CaoSave extends AuditActionSupport {
 			}
 		}
 
-		if (step.getNewStatus().after(AuditStatus.Submitted)) {
+		if (step.getNewStatus().after(AuditStatus.Resubmitted)) {
 			// Expire previous audits
 			int lastYear = DateBean.getCurrentYear() - 1;
 			for (ContractorAudit oldAudit : audit.getContractorAccount().getAudits()) {
