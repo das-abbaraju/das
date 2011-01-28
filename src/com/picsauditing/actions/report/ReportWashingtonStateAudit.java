@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.ReportFilterCAO;
 import com.picsauditing.util.Strings;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
@@ -116,7 +115,7 @@ public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
 	protected void buildQuery() {
 		super.buildQuery();
 
-		sql.addJoin("LEFT JOIN audit_cat_data acdWa ON acdWa.auditID = ca.id AND acdWa.applies = 1");
+		sql.addJoin("LEFT JOIN audit_cat_data acdWa ON acdWa.auditID = ca.id AND acdWa.applies = 1 AND acdWa.numAnswered = acdWa.numVerified");
 		sql.addJoin("LEFT JOIN audit_category acWa ON acWa.id = acdWa.categoryID AND acWa.number != 1");
 
 		sql.addField("acWa.id waCatID");
