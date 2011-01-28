@@ -318,6 +318,38 @@
 		</s:else></div>
 	</s:if>
 	
+	<s:if test="filter.showWaCategories">
+		<br clear="all" />
+		<div class="filterOption">
+			<a href="#" onclick="toggleBox('form1_waCategory'); return false;">Categories</a> =
+			<span id="form1_waCategory_query">ALL</span>
+			<br />
+			<span id="form1_waCategory_select" style="display: none" class="clearLink">
+				<s:select id="form1_waCategory" list="filter.waCategoryList" cssClass="forms" 
+					name="filter.waCategories" listKey="id" listValue="name" multiple="true"
+					size="25" />
+				<script type="text/javascript">updateQuery('form1_waCategory');</script>
+				<br />
+				<a class="clearLink" href="#" onclick="clearSelected('form1_waCategory'); return false;">Clear</a>
+			</span>
+		</div>
+	</s:if>
+	
+	<s:if test="filter.showWaAuditTypes">
+		<div class="filterOption"><a id="audittypefilter" href="#"
+			onclick="toggleBox('form1_auditTypeID'); return false;">Audit
+		Type</a> = <span id="form1_auditTypeID_query">ALL</span><br />
+		<span id="form1_auditTypeID_select" style="display: none"
+			class="clearLink"> <s:select id="form1_auditTypeID"
+			list="filter.waAuditTypesList" cssClass="forms"
+			name="filter.waAuditTypes" listKey="id" listValue="auditName"
+			multiple="true" size="5" /> <script type="text/javascript">updateQuery('form1_auditTypeID');</script>
+		<br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_auditTypeID'); return false;">Clear</a>
+		</span></div>
+	</s:if>
+	
 	<s:if test="filter.showCaoOperator">
 		<br clear="all" />
 		<div class="filterOption"><a href="#" onclick="toggleBox('form1_caoOperator'); return false;">Operators</a> =
@@ -365,7 +397,7 @@
 			onclick="clearSelected('form1_auditTypeID'); return false;">Clear</a>
 		</span></div>
 	</s:if>
-
+	
 	<s:if test="filter.showPolicyType">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_auditTypeID'); return false;">Policy
