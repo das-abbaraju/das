@@ -81,6 +81,13 @@ public class AuditCategoryRule extends AuditRule implements AuditRuleTable {
 	@Override
 	public String toString() {
 		String out = super.toString();
+		if (rootCategory != null){
+			if(out.contains("when"))
+				out += " and";	
+			else
+				out += " when";
+			out += " Root Category is [" + rootCategory.toString() + "]";
+		}
 		if (auditCategory != null){
 			if(out.contains("when"))
 				out += " and";	
