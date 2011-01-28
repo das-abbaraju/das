@@ -70,10 +70,10 @@ public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
 		getFilter().setShowOperator(false);
 		getFilter().setShowCaoOperator(false);
 		getFilter().setShowAuditType(false);
-		
+
 		if (!permissions.hasPermission(OpPerms.DevelopmentEnvironment))
 			throw new NoRightsException("Administrators");
-		
+
 		if ("Request".equals(button) && conID > 0) {
 			ContractorAccount con = conDAO.find(conID);
 			OperatorAccount op = operatorAccountDAO.find(1813);
@@ -100,8 +100,8 @@ public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
 			// TODO clean up email language?
 			EmailQueue email = new EmailQueue();
 			email.setPriority(50);
-			email.setBody(permissions.getName() + " from " + op.getName() + " has requested a field audit for "
-					+ con.getName());
+			email.setBody(permissions.getName() + " from " + permissions.getAccountName()
+					+ " has requested a field audit for " + con.getName());
 			email.setSubject(op.getName() + " requests a field audit");
 			// email.setToAddresses("Auditors <auditors@picsauditing.com>");
 			email.setToAddresses("Mina Mina <mmina@picsauditing.com>");
