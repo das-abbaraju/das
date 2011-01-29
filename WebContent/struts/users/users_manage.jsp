@@ -280,7 +280,7 @@ div.autocomplete ul li {
 					</li>
 				</s:if>
 				<!-- CSR Shadowing -->
-				<s:if test="csr">
+				<s:if test="csr && permissions.admin">
 					<li><label>Shadow CSR:</label>
 						<s:select list="csrs" listKey="user.id" listValue="user.name" headerKey="0" 
 							headerValue="- Select CSR -" name="shadowID" value="%{user.shadowedUser != null ? user.shadowedUser.id : 0}" />
