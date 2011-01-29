@@ -55,7 +55,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	private Set<User> auditorList;
 
 	public static final String getVersion() {
-		return "5.3";
+		return "5.3.1";
 	}
 
 	protected void loadPermissions() {
