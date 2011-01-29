@@ -556,7 +556,7 @@ table.report tr.hurdle td {
 		<div class="panel">
 			<div class="panel_header">
 				Synchronize Contractor <span style="float: right;"><a href="#" onclick="return false;" class="cluetip help" rel="#cluetip_sync" title="Synchronize Contractor"></a></span>
-				<div id="cluetip_sync">Click this button to update/refresh the PQF, audits, and flags.</div>
+				<div id="cluetip_sync">Click this button to update the PQF, audits, flags, and other requirements for this contractor. You need to click this button only when requirements have changed and you want to see the results immediately.</div>
 			</div>
 			<div class="panel_content" style="text-align: center;">
 				<s:form id="form_sync">
