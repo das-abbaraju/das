@@ -337,7 +337,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	public List<AuditQuestion> getDependentVisible(String answer) {
 		List<AuditQuestion> dependentVisibleBasedOnAnswer = new ArrayList<AuditQuestion>();
 		for (AuditQuestion visQ : dependentVisible) {
-			if (testVisibility(answer))
+			if (testVisibility(answer, visQ.getVisibleAnswer()))
 				dependentVisibleBasedOnAnswer.add(visQ);
 		}
 
@@ -348,7 +348,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	public List<AuditQuestion> getDependentVisibleHide(String answer) {
 		List<AuditQuestion> dependentVisibleBasedOnAnswer = new ArrayList<AuditQuestion>();
 		for (AuditQuestion visQ : dependentVisible) {
-			if (!testVisibility(answer))
+			if (!testVisibility(answer, visQ.getVisibleAnswer()))
 				dependentVisibleBasedOnAnswer.add(visQ);
 		}
 
@@ -533,17 +533,17 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 			String answer = null;
 			if (data != null)
 				answer = data.getAnswer();
-			return testVisibility(answer);
+			return testVisibility(answer, visibleAnswer);
 		}
 		return true;
 	}
 
-	private boolean testVisibility(String answer) {
-		if (visibleAnswer.equals("NULL") && Strings.isEmpty(answer))
+	private boolean testVisibility(String answer, String comparisonAnswer) {
+		if (comparisonAnswer.equals("NULL") && Strings.isEmpty(answer))
 			return true;
-		if (visibleAnswer.equals("NOTNULL") && !Strings.isEmpty(answer))
+		if (comparisonAnswer.equals("NOTNULL") && !Strings.isEmpty(answer))
 			return true;
-		if (visibleAnswer.equals(answer))
+		if (comparisonAnswer.equals(answer))
 			return true;
 		return false;
 	}
