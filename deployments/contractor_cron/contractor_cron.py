@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-import urllib2, time, sys, logging, logging.config
+import urllib2, time, sys, logging, logging.config, MySQLdb
+from datetime import datetime
 from threading import Thread, enumerate, Lock
 from daemon import Daemon
 from Queue import Queue
@@ -12,6 +13,7 @@ SERVERS = ['web1','web2','web3']
 con_running = set()
 running_lock = Lock()
 con_q = Queue()
+stats_q = Queue()
 active_servers = dict((s,False) for s in SERVERS)
 logging.info('default server setup : %s', active_servers)
 
@@ -35,10 +37,13 @@ class qcron(Daemon):
 				worker = CronWorker(i, con_q, server_g)
 				worker.start()
 				workers.append(worker)
-
+			
 			logging.info('starting cache monitor')
 			cachemon = CacheMonitor(server_g)
 			cachemon.start()
+			
+			stats = CronStats()
+			stats.start()
 			
 			theadlog = logging.getLogger('thread')
 			while True:
@@ -46,10 +51,6 @@ class qcron(Daemon):
 				time.sleep(10)
 		except Exception, e:
 			logging.error(e)
-		# this is for clearing the cache on all 3 servers
-		#logging.info('starting cache monitor')
-		#cachemon = CacheMonitor(server_g)
-		#cachemon.start()
 
 class CronThread(Thread):
 	def __init__(self):
@@ -153,9 +154,9 @@ class CronWorker(CronThread):
 				con_running.add(id)
 			finally:
 				running_lock.release() # release lock, no matter what
-			
+			start = time.time()
+			starttime = datetime.now()
 			try:
-				
 				self.logger.debug('thread #%d starting crontractor %s' % (self.thread_id,id))
 				cronurl = self.url % (self.server_g.next(), id)
 				self.logger.debug('using url: %s' % cronurl)
@@ -168,6 +169,8 @@ class CronWorker(CronThread):
 				self.logger.error(e)
 			else:
 				time.sleep(self.sleeptime)
+			totaltime = time.time() - start
+			stats_q.put((id, starttime, totaltime))
 			
 			running_lock.acquire()
 			try:
@@ -204,6 +207,39 @@ class CacheMonitor(CronThread):
 							self.logger.error(e)
 			except Exception, e:
 				self.logger.error(e)
+			time.sleep(self.sleeptime)
+
+class CronStats(CronThread):
+	def __init__(self):
+		super(CronStats, self).__init__()
+		self.sleeptime = 10
+		self.logger = logging.getLogger("stats")
+	def run(self):
+		self.logger.debug("starting CronStats thread")
+		while self.running:
+			if stats_q.qsize() > 15:
+				try:
+					self.logger.info("getting database connection")
+					records = []
+					self.logger.info(stats_q)
+					for i in range(stats_q.qsize()):
+						records.append(stats_q.get())
+					self.logger.info("inserting records: %s", records)
+					conn = MySQLdb.connect (host = "cobalt", user = "pics", passwd = "@Irvine1", db = "pics_temp")
+					cursor = conn.cursor()
+					cursor.executemany("""
+						INSERT INTO contractor_cron_log (conID, startDate, runTime)
+						VALUES (%s, %s, %s)
+					""", records)
+				except Exception, e:
+					self.logger.error(e)
+				else:
+					if cursor:
+						cursor.close()
+					if conn:
+						conn.close()
+			else:
+				self.logger.info('not enough contractors to run the stats, sleeping for now')
 			time.sleep(self.sleeptime)
 
 def main():
