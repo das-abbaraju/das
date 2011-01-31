@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public enum Industry {
 	General, Aerospace, Construction, Manufacturing, Mining, Petrochemical, Pharmaceutical, Power, PulpPaper(
-			"Pulp and Paper"), Telecommunications;
+			"Pulp and Paper"), Telecommunications, WoodProducts("Wood Products");
 
 	private String description;
 
