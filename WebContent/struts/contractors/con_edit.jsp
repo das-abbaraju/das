@@ -205,11 +205,11 @@ $(function() {
 					<li><label>Reason:</label>
 						<s:select list="deactivationReasons" name="contractor.reason" headerKey="" headerValue="- Deactivation Reason -"/>
 					</li>
-					<pics:permission perm="RiskRank">
+					<s:if test="canEditRiskLevel">
 						<li><label>Risk Level:</label>
 							<s:radio list="riskLevelList" name="riskLevel" theme="pics" />
 						</li>
-					</pics:permission>
+					</s:if>
 					<s:if test="contractor.country.isoCode != 'AE'">
 						<li id="taxIdItem"><label>Tax ID:</label>
 							<s:textfield name="contractor.taxId" size="9" maxLength="9" />*(only digits 0-9, no dashes)

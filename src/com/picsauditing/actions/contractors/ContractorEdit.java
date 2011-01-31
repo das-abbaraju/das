@@ -482,4 +482,12 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			noteDAO.save(note);
 		}
 	}
+	
+	public boolean isCanEditRiskLevel() {
+		if(contractor.getStatus().isDemo())
+			return true;
+		if(permissions.hasPermission(OpPerms.RiskRank))
+			return true;
+		return false;
+	}
 }
