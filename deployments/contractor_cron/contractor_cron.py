@@ -225,7 +225,7 @@ class CronStats(CronThread):
 					for i in range(stats_q.qsize()):
 						records.append(stats_q.get())
 					self.logger.info("inserting records: %s", records)
-					conn = MySQLdb.connect (host = "cobalt", user = "pics", passwd = "@Irvine1", db = "pics_temp")
+					conn = MySQLdb.connect (host = "", user = "", passwd = "", db = "")
 					cursor = conn.cursor()
 					cursor.executemany("""
 						INSERT INTO contractor_cron_log (conID, startDate, runTime)
