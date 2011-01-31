@@ -57,7 +57,7 @@
 										<tr>
 											<s:if test="#s.first">
 												<td rowspan="<s:property value="#rowspan" />">
-													<s:property value="#audit.auditType.auditName" />
+													<a href="Audit.action?auditID=<s:property value="#audit.id"/>"><s:property value="#audit.auditType.auditName" /></a>
 													<br />
 													<span style="font-size: 10px">
 														<s:date name="#audit.effectiveDate" format="MMM yyyy" />
