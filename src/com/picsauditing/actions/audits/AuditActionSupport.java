@@ -314,6 +314,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanEditAudit() {
+		if (permissions.isAdmin())
+			return true;
 		if (conAudit.isExpired())
 			return false;
 
