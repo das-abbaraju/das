@@ -2,12 +2,16 @@
 <table class="report" style="position: static">
 	<s:iterator value="contractor.operatorTags">
 		<s:if test="tag.active">
-			<s:if test="tag.operator.id == permissions.accountId || (permissions.corporateParent.contains(tag.operator.id) && tag.inheritable) ">
+			<s:if test="tag.operator.id == permissions.accountId || (permissions.corporateParent.contains(tag.operator.id) && tag.inheritable) || permissions.admin">
 				<tr>
-					<td><s:property value="tag.tag" /></td>
-					<td><img src="images/cross.png" width="18" height="18" /><a
-							href="#" onclick="javascript:return removeTag(<s:property value="id"/>);">Remove</a>
+					<td><s:if test="tag.operator.id != permissions.accountId"><s:property value="tag.operator.name" />: </s:if><s:property value="tag.tag" /></td>
+					<td>Created by: <s:set var="o" value="tag" /><s:include value="../who.jsp" />
 					</td>
+					<s:if test="tag.operator.id == permissions.accountId || (permissions.corporateParent.contains(tag.operator.id) && tag.inheritable)">
+						<td><img src="images/cross.png" width="18" height="18" /><a
+								href="#" onclick="javascript:return removeTag(<s:property value="id"/>);">Remove</a>
+						</td>
+					</s:if>
 				</tr>
 			</s:if>
 		</s:if>
