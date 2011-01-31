@@ -18,9 +18,7 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.User;
@@ -124,7 +122,8 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 					LowMedHigh riskLevel = LowMedHigh.Low;
 					for (AuditData auditData : auditList) {
 						AuditQuestion q = auditData.getQuestion();
-						if (q.getCategory().getId() == 269) {
+						//if (q.getCategory().getId() == 269) {
+						if (q.getCategory().getId() == 400) {
 							// Subcategory is RISK ASSESSMENT
 							AuditData aData = answerMap.get(q.getId());
 							riskLevel = getRiskLevel(aData, riskLevel);
