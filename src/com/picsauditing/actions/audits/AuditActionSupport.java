@@ -314,12 +314,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanEditAudit() {
-		if (permissions.isAdmin())
+		AuditType type = conAudit.getAuditType();
+		
+		if (type.getClassType().isPolicy() && permissions.isAdmin())
 			return true;
 		if (conAudit.isExpired())
 			return false;
-
-		AuditType type = conAudit.getAuditType();
 
 		if (type.getClassType().isPolicy()) {
 			// we don't want the contractors to edit the effective dates on the

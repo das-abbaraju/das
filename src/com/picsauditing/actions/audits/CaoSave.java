@@ -88,7 +88,7 @@ public class CaoSave extends AuditActionSupport {
 		if (auditID > 0) {
 			findConAudit();
 			
-			if (conAudit.isExpired() && !permissions.isAdmin()) {
+			if (conAudit.isExpired() && !(conAudit.getAuditType().getClassType().isPolicy() && permissions.isAdmin())) {
 				addActionError("You can't change an expired " + conAudit.getAuditType().getAuditName());
 				return SUCCESS;
 			}
