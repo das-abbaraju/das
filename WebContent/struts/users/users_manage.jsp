@@ -317,7 +317,7 @@ div.autocomplete ul li {
 				</s:if>
 			</s:if>
 			<s:else>
-				<s:hidden name="user.isActive" value="true" />
+				<s:hidden name="user.isActive" value="Yes" />
 			</s:else>
 		</ol>
 		</fieldset>
