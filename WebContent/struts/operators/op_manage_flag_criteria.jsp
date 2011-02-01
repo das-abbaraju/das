@@ -83,12 +83,15 @@ function getFlag(selectObject) {
 				<div id="criteriaDiv">
 					<s:include value="op_manage_flag_criteria_list.jsp" />
 				</div>
-				<s:if test="canEdit">
-					<div style="clear: left; margin: 10px 0px;">
-						<a href="#" onclick="getAddQuestions(); return false;" class="add">Add New Criteria</a>
-					</div>
-					<div id="addCriteria" style="display:none;"></div>
-				</s:if>
+					<s:if test="canEdit">
+						<nobr>
+							<pics:permission perm="ManageAudits">
+								<a href="ManageFlagCriteria.action">Manage Flag Criteria List</a> &nbsp;|&nbsp;
+							</pics:permission>
+							<a href="#" onclick="getAddQuestions(); return false;" class="add">Add New Criteria</a>
+						</nobr>
+						<div id="addCriteria" style="display:none;"></div>
+					</s:if>
 				<span id="thinking"></span>
 				<s:if test="(permissions.corporate || permissions.admin) && operator.operatorFacilities.size() > 0">
 					<div id="corporateList">
