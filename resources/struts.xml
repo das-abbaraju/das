@@ -1170,7 +1170,12 @@
 			class="com.picsauditing.actions.audits.VerifyAudit">
 			<result>struts/contractors/verification_audit_caos.jsp</result>
 		</action>
-
+		
+		<action name="InsureGuardVerification"
+			class="com.picsauditing.actions.audits.IGVerification">
+			<result>struts/contractors/insureguard_verification.jsp</result>
+		</action>
+		
 		<action name="CaoSaveAjax"
 			class="com.picsauditing.actions.audits.CaoSave">
 			<result name="refresh">struts/contractors/cao_category_refresh.jsp</result>

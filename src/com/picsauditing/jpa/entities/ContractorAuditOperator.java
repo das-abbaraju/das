@@ -33,6 +33,7 @@ public class ContractorAuditOperator extends BaseTable {
 	private boolean visible = true;
 	private FlagColor flag = null;
 	private List<ContractorAuditOperatorPermission> caoPermissions = new ArrayList<ContractorAuditOperatorPermission>();
+	private List<ContractorAuditOperatorWorkflow> caoWorkflow = new ArrayList<ContractorAuditOperatorWorkflow>();
 
 	@ManyToOne
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
@@ -247,6 +248,15 @@ public class ContractorAuditOperator extends BaseTable {
 
 	public void setCaoPermissions(List<ContractorAuditOperatorPermission> caoPermissions) {
 		this.caoPermissions = caoPermissions;
+	}
+	
+	@OneToMany(mappedBy = "cao", cascade = { CascadeType.ALL })
+	public List<ContractorAuditOperatorWorkflow> getCaoWorkflow() {
+		return caoWorkflow;
+	}
+	
+	public void setCaoWorkflow(List<ContractorAuditOperatorWorkflow> caoWorkflow) {
+		this.caoWorkflow = caoWorkflow;
 	}
 
 	@Transient
