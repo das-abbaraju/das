@@ -1,13 +1,15 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <table class="report" style="position: static">
+	<s:set name="tagRemovable" value="false" />
 	<s:iterator value="contractor.operatorTags">
 		<s:if test="tag.active">
-			<s:if test="tag.operator.id == permissions.accountId || (permissions.corporateParent.contains(tag.operator.id) && tag.inheritable) || permissions.admin">
+			<s:set name="tagRemovable" value="tag.operator.id == permissions.accountId || (permissions.corporateParent.contains(tag.operator.id) && tag.inheritable)" />
+			<s:if test="#tagRemovable || permissions.admin">
 				<tr>
 					<td><s:if test="tag.operator.id != permissions.accountId"><s:property value="tag.operator.name" />: </s:if><s:property value="tag.tag" /></td>
 					<td>Created by: <s:set var="o" value="tag" /><s:include value="../who.jsp" />
 					</td>
-					<s:if test="tag.operator.id == permissions.accountId || (permissions.corporateParent.contains(tag.operator.id) && tag.inheritable)">
+					<s:if test="#tagRemovable">
 						<td><img src="images/cross.png" width="18" height="18" /><a
 								href="#" onclick="javascript:return removeTag(<s:property value="id"/>);">Remove</a>
 						</td>
@@ -18,7 +20,7 @@
 	</s:iterator>
 	<s:if test = "operatorTags.size() > 0 ">
 		<tr>
-			<td colspan="2"><s:select id="tagName" list="operatorTags" listKey="id" listValue="tag" headerKey="0" headerValue="- Operator Tag -"/><input
+			<td colspan="<s:property value="#tagRemovable ? 3 : 2" />"><s:select id="tagName" list="operatorTags" listKey="id" listValue="tag" headerKey="0" headerValue="- Operator Tag -"/><input
 			type="button" onclick="javascript: return addTag();" value="Add"></td>
 		</tr>
 	</s:if>
