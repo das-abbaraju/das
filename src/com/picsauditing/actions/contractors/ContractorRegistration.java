@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.struts2.ServletActionContext;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.PICS.FacilityChanger;
@@ -17,6 +19,7 @@ import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -33,6 +36,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
@@ -55,12 +59,14 @@ public class ContractorRegistration extends ContractorActionSupport {
 	protected FacilityChanger facilityChanger;
 	private Indexer indexer;
 	private StateDAO stateDAO;
+	private UserLoginLogDAO userLoginLogDAO;
 
 	protected Country country;
 
 	public ContractorRegistration(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO,
-			UserDAO userDAO, ContractorRegistrationRequestDAO requestDAO, FacilityChanger facilityChanger, Indexer indexer, StateDAO stateDAO) {
+			UserDAO userDAO, ContractorRegistrationRequestDAO requestDAO, FacilityChanger facilityChanger, Indexer indexer, StateDAO stateDAO,
+			UserLoginLogDAO userLoginLogDAO) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
@@ -71,6 +77,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		this.facilityChanger = facilityChanger;
 		this.indexer = indexer;
 		this.stateDAO = stateDAO;
+		this.userLoginLogDAO = userLoginLogDAO;
 	}
 
 	public String execute() throws Exception {
@@ -172,9 +179,21 @@ public class ContractorRegistration extends ContractorActionSupport {
 			user.addOwnedPermissions(OpPerms.ContractorSafety, User.CONTRACTOR);
 			user.addOwnedPermissions(OpPerms.ContractorInsurance, User.CONTRACTOR);
 			user.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
+			user.setLastLogin(new Date());
 			userDAO.save(user);
 			indexer.runSingle(user, "users");
+			
+			
+			// adding this user to the login log
+			String remoteAddress = ServletActionContext.getRequest().getRemoteAddr();
 
+			UserLoginLog loginLog = new UserLoginLog();
+			loginLog.setLoginDate(new Date());
+			loginLog.setRemoteAddress(remoteAddress);
+			loginLog.setSuccessful(permissions.isLoggedIn());
+			loginLog.setUser(user);
+			userLoginLogDAO.save(loginLog);
+			
 			// agreeing to contractor agreement terms as stated at the end of
 			// con_registration.jsp
 			contractor.setAgreedBy(user);
