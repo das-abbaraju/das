@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import org.json.simple.JSONObject;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.AuditBuilderController;
@@ -112,7 +111,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (steps == null)
 			return SUCCESS;
 
-		// PicsLogger.start("ContractorCron");
+		//PicsLogger.start("ContractorCron");
 
 		if (conID > 0) {
 			run(conID, opID);
@@ -160,7 +159,7 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		}
 
-		// PicsLogger.stop();
+		//PicsLogger.stop();
 
 		if (!Strings.isEmpty(redirectUrl)) {
 			return redirect(redirectUrl);
@@ -192,12 +191,10 @@ public class ContractorCron extends PicsActionSupport {
 					// If the opID is 0, run through all the operators.
 					// If the opID > 0, run through just that operator.
 					if (opID == 0 || (opID > 0 && operator.getId() == opID)) {
-						// for (FlagCriteriaOperator flagCriteriaOperator :
-						// operator.getFlagCriteriaInherited()) {
-						// PicsLogger.log(" flag criteria " +
-						// flagCriteriaOperator.getFlag() + " for "
-						// + flagCriteriaOperator.getCriteria().getCategory());
-						// }
+//						for (FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
+//							PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
+//									+ flagCriteriaOperator.getCriteria().getCategory());
+//						}
 
 						if (runStep(ContractorCronStep.CorporateRollup)) {
 							for (Facility facility : operator.getCorporateFacilities()) {
@@ -428,7 +425,6 @@ public class ContractorCron extends PicsActionSupport {
 		contractor.setScore(scoreRounded);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void runFlag(ContractorOperator co) {
 		if (!runStep(ContractorCronStep.Flag))
 			return;
@@ -455,15 +451,6 @@ public class ContractorCron extends PicsActionSupport {
 		}
 		flagDataCalculator.setOverrides(overridesMap);
 		List<FlagData> changes = flagDataCalculator.calculate();
-		JSONObject flagJson = new JSONObject();
-		for (FlagData data : changes) {
-			JSONObject flag = new JSONObject();
-			flag.put("label", data.getCriteria().getLabel());
-			flag.put("flag", data.getFlag().toString());
-
-			flagJson.put(data.getCriteria().getId(), flag);
-		}
-		co.setFlagDetail(flagJson.toString());
 
 		// Find overall flag color for this operator
 		FlagColor overallColor = FlagColor.Green;
@@ -725,7 +712,7 @@ public class ContractorCron extends PicsActionSupport {
 				for (ContractorAudit audit : contractor.getAudits()) {
 					if (audit.getAuditType().isDesktop()) {
 						auditor = audit.getAuditor();
-						if (auditor != null) {
+						if (auditor!=null) {
 							for (UserGroup ug : auditor.getGroups()) {
 								if (ug.getGroup().getId() == User.INDEPENDENT_CONTRACTOR) {
 									auditor = null;
