@@ -32,7 +32,7 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PicsDAO;
-import com.picsauditing.dao.UserAssignmentMatrixDAO;
+import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -78,7 +78,7 @@ public class ContractorCron extends PicsActionSupport {
 	private ContractorFlagETL contractorFlagETL;
 	private FlagDataCalculator flagDataCalculator;
 	private AppPropertyDAO appPropertyDAO;
-	private UserAssignmentMatrixDAO userAssignmentMatrixDAO;
+	private UserAssignmentDAO userAssignmentDAO;
 	private ContractorAuditDAO conAuditDAO;
 
 	private int conID = 0;
@@ -93,7 +93,7 @@ public class ContractorCron extends PicsActionSupport {
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
 			AuditBuilderController auditBuilder, ContractorFlagETL contractorFlagETL,
 			ContractorOperatorDAO contractorOperatorDAO, AppPropertyDAO appPropertyDAO,
-			UserAssignmentMatrixDAO userAssignmentMatrixDAO, ContractorAuditDAO conAuditDAO) {
+			UserAssignmentDAO userAssignmentDAO, ContractorAuditDAO conAuditDAO) {
 		this.dao = contractorDAO;
 		this.contractorDAO = contractorDAO;
 		this.auditDataDAO = auditDataDAO;
@@ -103,7 +103,7 @@ public class ContractorCron extends PicsActionSupport {
 		this.contractorFlagETL = contractorFlagETL;
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.appPropertyDAO = appPropertyDAO;
-		this.userAssignmentMatrixDAO = userAssignmentMatrixDAO;
+		this.userAssignmentDAO = userAssignmentDAO;
 		this.conAuditDAO = conAuditDAO;
 	}
 
@@ -687,7 +687,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.CSRAssignment))
 			return;
 
-		// List<UserAssignmentMatrix> assignments = userAssignmentMatrixDAO
+		// List<UserAssignmentMatrix> assignments = UserAssignmentDAO
 		// .findByContractor(contractor);
 		//
 		// if (assignments.size() == 1) {

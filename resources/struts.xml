@@ -1408,7 +1408,7 @@
 		</action>
 		
 		<action name="*AssignmentMatrix*"
-			class="com.picsauditing.actions.users.UserAssignment">
+			class="com.picsauditing.actions.users.UserAssignmentMatrix">
 			<param name="type">{1}</param>
 			<result name="input">struts/blank.jsp</result>
 			<result>struts/users/user_assignment.jsp</result>	

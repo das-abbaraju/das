@@ -8,17 +8,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.json.simple.JSONObject;
-
-import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
-
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "user_assignment_matrix")
-public class UserAssignmentMatrix extends BaseTable {
+@Table(name = "user_assignment")
+public class UserAssignment extends BaseTable {
 
 	private User user;
-	private UserAssignmentMatrixType assignmentType;
+	private UserAssignmentType assignmentType;
 	private State state;
 	private Country country;
 	private String postalStart;
@@ -36,11 +32,11 @@ public class UserAssignmentMatrix extends BaseTable {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	public UserAssignmentMatrixType getAssignmentType() {
+	public UserAssignmentType getAssignmentType() {
 		return assignmentType;
 	}
 
-	public void setAssignmentType(UserAssignmentMatrixType assignmentType) {
+	public void setAssignmentType(UserAssignmentType assignmentType) {
 		this.assignmentType = assignmentType;
 	}
 

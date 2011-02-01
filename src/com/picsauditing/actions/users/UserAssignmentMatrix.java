@@ -10,27 +10,27 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.StateDAO;
-import com.picsauditing.dao.UserAssignmentMatrixDAO;
+import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserAssignmentMatrix;
-import com.picsauditing.jpa.entities.UserAssignmentMatrixType;
+import com.picsauditing.jpa.entities.UserAssignment;
+import com.picsauditing.jpa.entities.UserAssignmentType;
 
 @SuppressWarnings("serial")
-public class UserAssignment extends PicsActionSupport implements Preparable {
+public class UserAssignmentMatrix extends PicsActionSupport implements Preparable {
 
-	private UserAssignmentMatrixDAO assignmentDAO;
+	private UserAssignmentDAO assignmentDAO;
 	private UserDAO userDAO;
 	private CountryDAO countryDAO;
 	private StateDAO stateDAO;
 
-	private UserAssignmentMatrix assignment;
-	private UserAssignmentMatrixType type = UserAssignmentMatrixType.CSR;
+	private UserAssignment assignment;
+	private UserAssignmentType type = UserAssignmentType.CSR;
 	private List<User> users = new ArrayList<User>();
 
-	public UserAssignment(UserAssignmentMatrixDAO assignmentDAO, UserDAO userDAO, CountryDAO countryDAO,
+	public UserAssignmentMatrix(UserAssignmentDAO assignmentDAO, UserDAO userDAO, CountryDAO countryDAO,
 			StateDAO stateDAO) {
 		this.assignmentDAO = assignmentDAO;
 		this.userDAO = userDAO;
@@ -102,15 +102,15 @@ public class UserAssignment extends PicsActionSupport implements Preparable {
 		return SUCCESS;
 	}
 
-	public List<UserAssignmentMatrix> getAssignments() {
+	public List<UserAssignment> getAssignments() {
 		return assignmentDAO.findByType(type);
 	}
 
 	public List<User> getUsers() {
 		if (users.size() == 0) {
-			if (UserAssignmentMatrixType.CSR == type)
+			if (UserAssignmentType.CSR == type)
 				users = userDAO.findByGroup(User.GROUP_CSR);
-			else if (UserAssignmentMatrixType.Auditor == type)
+			else if (UserAssignmentType.Auditor == type)
 				users = userDAO.findAuditors();
 		}
 		return users;
@@ -124,19 +124,19 @@ public class UserAssignment extends PicsActionSupport implements Preparable {
 		return stateDAO.findAll();
 	}
 
-	public UserAssignmentMatrix getAssignment() {
+	public UserAssignment getAssignment() {
 		return assignment;
 	}
 
-	public void setAssignment(UserAssignmentMatrix assignment) {
+	public void setAssignment(UserAssignment assignment) {
 		this.assignment = assignment;
 	}
 
-	public UserAssignmentMatrixType getType() {
+	public UserAssignmentType getType() {
 		return type;
 	}
 
-	public void setType(UserAssignmentMatrixType type) {
+	public void setType(UserAssignmentType type) {
 		this.type = type;
 	}
 }
