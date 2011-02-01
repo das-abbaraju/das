@@ -10,52 +10,9 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 
 <style type="text/css">
-table.report a {
-	text-decoration: underline;
-}
-
-.hide {
-	display: none;
-}
-
-.hover {
-	margin-left: 10px;
-	display: none;
-}
-small {
-	font-size: x-small;
-}
 .flagCategories td {
 	padding-right: 10px;
 	vertical-align: top;
-}
-
-.ffTo {
-	padding: 2px 0 4px 4px;
-	display:block;
-	float:left;
-}
-
-.ffDate {
-	padding: 2px 0 4px 4px;
-	display:block;
-	float:left;
-	margin-left:20px;
-}
-
-.ffReason {
-	padding: 2px 15px 4px 4px;
-	margin-left:20px;
-}
-
-ffCorporate {
-clear:left;
-}
-.ffLeft {
-	float: left;
-}
-.ffRight {
-	float: right;
 }
 
 fieldset.form {
@@ -70,7 +27,6 @@ fieldset.form {
 	position: relative;
 	color: #404245;
 }
-
 
 .label-txt {
 	float: none;
