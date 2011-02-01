@@ -103,9 +103,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 		if (button != null) {
 			boolean recalculate = false;
 
-			if (button.startsWith("search")) {
-				if ((!Strings.isEmpty(operator.getName()) || !Strings.isEmpty(state))
-						&& !"searchShowAll".equals(button)) {
+			if (button.equals("search")) {
+				if ((!Strings.isEmpty(operator.getName()) || !Strings.isEmpty(state))) {
 					String where = "";
 
 					if (state != null && state.length() > 0) {
@@ -236,37 +235,10 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 					if (!permissions.isCorporate()) {
 						int limit = 10;
-						if ("searchShowAll".equals(button))
-							limit = 0;
 						List<BasicDynaBean> data = SmartFacilitySuggest.getSimilarOperators(contractor, limit);
-
-						for (BasicDynaBean d : data) {
-							OperatorAccount o = new OperatorAccount();
-
-							o.setId(Integer.parseInt(d.get("opID").toString()));
-							o.setName(d.get("name").toString());
-							if (d.get("dbaName") != null)
-								o.setDbaName(d.get("dbaName").toString());
-							if (d.get("city") != null)
-								o.setCity(d.get("city").toString());
-							if (d.get("state") != null)
-								o.setState(new State(d.get("state").toString()));
-							if (d.get("country") != null)
-								o.setCountry(new Country(d.get("country").toString()));
-							o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
-
-							o.setOnsiteServices(1 == (Integer)d.get("onsiteServices"));
-							o.setOffsiteServices(1 == (Integer)d.get("offsiteServices"));
-							o.setMaterialSupplier(1 == (Integer)d.get("materialSupplier"));
-
-							if (contractor.isOnsiteServices() && o.isOnsiteServices() || contractor.isOffsiteServices()
-									&& o.isOffsiteServices() || contractor.isMaterialSupplier()
-									&& o.isMaterialSupplier())
-								searchResults.add(o);
-						}
-
-						if (!"searchShowAll".equals(button))
-							addActionMessage("This list of operators is generated based on the operators you currently have selected."
+						proccessSearchResults(data);
+						
+						addActionMessage("This list of operators is generated based on the operators you currently have selected."
 									+ "To find a specific operator, use the search filters above or click Show ALL Operators.");
 					} else {
 						// Corporate users should only see the operators under
@@ -278,6 +250,31 @@ public class ContractorFacilities extends ContractorActionSupport {
 						}
 					}
 				}
+				return "search";
+			}
+			
+			if ("searchShowAll".equals(button)) {
+				searchResults = new ArrayList<OperatorAccount>();
+				Database db = new Database();
+				SelectSQL showAll = new SelectSQL("accounts a");
+				showAll.addField("a.id opID");
+				showAll.addField("a.name");
+				showAll.addField("a.dbaName");
+				showAll.addField("a.city");
+				showAll.addField("a.state");
+				showAll.addField("a.country");
+				showAll.addField("a.status");
+				showAll.addField("a.onsiteServices");
+				showAll.addField("a.offsiteServices");
+				showAll.addField("a.materialSupplier");
+				showAll.addWhere("a.type = 'Operator'");
+				showAll.addWhere("a.status = 'Active'");
+				showAll.addWhere("a.id NOT IN (SELECT genID from generalContractors WHERE subID = "
+						+ contractor.getId() + " )");
+				showAll.addOrderBy("a.name");
+				List<BasicDynaBean> data = db.select(showAll.toString(), true);
+				proccessSearchResults(data);
+
 				return "search";
 			}
 
@@ -360,6 +357,32 @@ public class ContractorFacilities extends ContractorActionSupport {
 		currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
 
 		return SUCCESS;
+	}
+
+	public void proccessSearchResults(List<BasicDynaBean> data) {
+		for (BasicDynaBean d : data) {
+			OperatorAccount o = new OperatorAccount();
+
+			o.setId(Integer.parseInt(d.get("opID").toString()));
+			o.setName(d.get("name").toString());
+			if (d.get("dbaName") != null)
+				o.setDbaName(d.get("dbaName").toString());
+			if (d.get("city") != null)
+				o.setCity(d.get("city").toString());
+			if (d.get("state") != null)
+				o.setState(new State(d.get("state").toString()));
+			if (d.get("country") != null)
+				o.setCountry(new Country(d.get("country").toString()));
+			o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
+
+			o.setOnsiteServices(1 == (Integer) d.get("onsiteServices"));
+			o.setOffsiteServices(1 == (Integer) d.get("offsiteServices"));
+			o.setMaterialSupplier(1 == (Integer) d.get("materialSupplier"));
+
+			if (contractor.isOnsiteServices() && o.isOnsiteServices() || contractor.isOffsiteServices()
+					&& o.isOffsiteServices() || contractor.isMaterialSupplier() && o.isMaterialSupplier())
+				searchResults.add(o);
+		}
 	}
 
 	public int getRequestID() {
