@@ -48,6 +48,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private BrainTreeService paymentService = new BrainTreeService();
 	private String transactionCondition = null;
 	private BigDecimal refundAmount;
+	private boolean changePaymentMethodOnAccount = false;
 
 	public PaymentDetail(AppPropertyDAO appPropDao, NoteDAO noteDAO, ContractorAccountDAO conAccountDAO,
 			ContractorAuditDAO auditDao, PaymentDAO paymentDAO) {
@@ -126,7 +127,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				}
 				if (method.isCreditCard()) {
 					try {
-						paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
+						paymentService
+								.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
 						paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
 						paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 						paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
@@ -236,7 +238,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					refund.setStatus(TransactionStatus.Paid);
 					if (button.equals("Refund on BrainTree/PICS")) {
 						if (payment.getPaymentMethod().isCreditCard()) {
-							paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
+							paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada")
+									.getValue());
 							paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
 							paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 							paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
@@ -287,6 +290,11 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					}
 				}
 				if (button.equals("apply")) {
+					if (changePaymentMethodOnAccount) {
+						contractor.setPaymentMethod(method);
+						contractor.setAuditColumns(permissions);
+						accountDao.save(contractor);
+					}
 					for (int txnID : amountApplyMap.keySet()) {
 						if (amountApplyMap.get(txnID).compareTo(BigDecimal.ZERO) > 0) {
 							for (Invoice txn : contractor.getInvoices()) {
@@ -415,5 +423,13 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public boolean isChangePaymentMethodOnAccount() {
+		return changePaymentMethodOnAccount;
+	}
+
+	public void setChangePaymentMethodOnAccount(boolean changePaymentMethodOnAccount) {
+		this.changePaymentMethodOnAccount = changePaymentMethodOnAccount;
 	}
 }

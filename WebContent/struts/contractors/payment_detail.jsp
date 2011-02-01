@@ -96,6 +96,7 @@ fieldset.form ol {
 		<ol id="paymentMethodList">
 			<li><label>Method:</label><s:radio name="method" theme="pics" onclick="changePaymentMethod(this.value)"
 				list="#{'CreditCard':'Credit Card','Check':'Check'}"></s:radio></li>
+			<li><label>Update Payment Method on Account:</label><s:checkbox name="changePaymentMethodOnAccount"/></li>
 			<li class="method_check" <s:if test="!method.check">style="display: none"</s:if>><label>Check Number:</label><s:textfield
 				name="payment.checkNumber" /></li>
 			<li><div id="braintree"></div></li>
