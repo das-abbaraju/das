@@ -551,7 +551,11 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			}
 
 			allForms.addAll(operator.getOperatorForms());
-			allForms.addAll(operator.getParent().getOperatorForms());
+
+			for (Facility facility : operator.getCorporateFacilities()) {
+				if (!OperatorAccount.PICS_CORPORATE.contains(facility.getCorporate().getId()))
+					allForms.addAll(facility.getCorporate().getOperatorForms());
+			}
 
 			forms = new ArrayList<OperatorForm>(allForms);
 
@@ -563,7 +567,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 			Collections.sort(forms, new ByFacilityName());
 		}
-		
+
 		return forms;
 	}
 
@@ -713,6 +717,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		}
 
 		EmailQueue emailQueue = new EmailQueue();
+		emailQueue.setEmailTemplate(template);
 		emailQueue.setPriority(80);
 
 		emailQueue.setFromAddress(getAssignedCSR() == null ? "info@picsauditing.com" : getAssignedCSR().getEmail());
