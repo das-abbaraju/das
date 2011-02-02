@@ -11,7 +11,6 @@ import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -71,8 +70,8 @@ public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
 		getFilter().setShowCaoOperator(false);
 		getFilter().setShowAuditType(false);
 
-		if (!permissions.hasPermission(OpPerms.DevelopmentEnvironment))
-			throw new NoRightsException("Administrators");
+		if (permissions.getAccountId() != 1813)
+			throw new NoRightsException("BP Cherry Point user");
 
 		if ("Request".equals(button) && conID > 0) {
 			ContractorAccount con = conDAO.find(conID);
@@ -120,7 +119,8 @@ public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
 	protected void buildQuery() {
 		super.buildQuery();
 
-		sql.addJoin("LEFT JOIN audit_cat_data acdWa ON acdWa.auditID = ca.id AND acdWa.applies = 1 AND acdWa.numAnswered = acdWa.numVerified");
+		sql.addJoin("LEFT JOIN audit_cat_data acdWa ON acdWa.auditID = ca.id AND acdWa.applies = 1 "
+				+ "AND acdWa.numAnswered = acdWa.numVerified AND acdWa.numAnswered > 0");
 		sql.addJoin("LEFT JOIN audit_category acWa ON acWa.id = acdWa.categoryID AND acWa.number != 1");
 
 		sql.addField("acWa.id waCatID");

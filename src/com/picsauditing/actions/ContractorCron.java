@@ -111,7 +111,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (steps == null)
 			return SUCCESS;
 
-		//PicsLogger.start("ContractorCron");
+		// PicsLogger.start("ContractorCron");
 
 		if (conID > 0) {
 			run(conID, opID);
@@ -159,7 +159,7 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		}
 
-		//PicsLogger.stop();
+		// PicsLogger.stop();
 
 		if (!Strings.isEmpty(redirectUrl)) {
 			return redirect(redirectUrl);
@@ -191,10 +191,12 @@ public class ContractorCron extends PicsActionSupport {
 					// If the opID is 0, run through all the operators.
 					// If the opID > 0, run through just that operator.
 					if (opID == 0 || (opID > 0 && operator.getId() == opID)) {
-//						for (FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
-//							PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
-//									+ flagCriteriaOperator.getCriteria().getCategory());
-//						}
+						// for (FlagCriteriaOperator flagCriteriaOperator :
+						// operator.getFlagCriteriaInherited()) {
+						// PicsLogger.log(" flag criteria " +
+						// flagCriteriaOperator.getFlag() + " for "
+						// + flagCriteriaOperator.getCriteria().getCategory());
+						// }
 
 						if (runStep(ContractorCronStep.CorporateRollup)) {
 							for (Facility facility : operator.getCorporateFacilities()) {
@@ -704,6 +706,15 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.AssignAudit))
 			return;
 
+		// Automatically set Harvey as the (closing) safety professional for the
+		// WA State Requirement
+		for (ContractorAudit ca : contractor.getAudits()) {
+			if (ca.getAuditType().getId() == AuditType.WA_STATE_VERIFICATION) {
+				ca.setAuditor(new User(935));
+				ca.setClosingAuditor(new User(935));
+			}
+		}
+
 		// Checking if the contractor is tagged
 		for (ContractorTag tag : contractor.getOperatorTags()) {
 			if (tag.getTag().getId() == OperatorTag.SHELL_COMPETENCY_REVIEW) {
@@ -712,7 +723,7 @@ public class ContractorCron extends PicsActionSupport {
 				for (ContractorAudit audit : contractor.getAudits()) {
 					if (audit.getAuditType().isDesktop()) {
 						auditor = audit.getAuditor();
-						if (auditor!=null) {
+						if (auditor != null) {
 							for (UserGroup ug : auditor.getGroups()) {
 								if (ug.getGroup().getId() == User.INDEPENDENT_CONTRACTOR) {
 									auditor = null;
