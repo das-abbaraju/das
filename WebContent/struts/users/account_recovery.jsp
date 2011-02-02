@@ -12,27 +12,24 @@ var RecaptchaOptions = {
    theme : 'white'
 };
 
-function showUsernameData() {
-	$('#emailBox').val('');
-	$('.usernameButton').show();
-	$('.emailButton').hide();
-	$('.usernameMessage').show();
-	$('.emailMessage').hide();
-}
-
-function showEmailData() {
-	$('#usernameBox').val('');
-	$('.usernameButton').hide();
-	$('.emailButton').show();
-	$('.usernameMessage').hide();
-	$('.emailMessage').show();
-}
-
 $(function() {
-	showUsernameData();
+	$('a.showUser').click(function(){
+		$('.showEmail').toggle();
+		$('.showUser').toggle();
+	});
+	$('a.showEmail').click(function(){
+		$('.showEmail').toggle();
+		$('.showUser').toggle();
+	});
+	
 });
 
 </script>
+<style type="text/css">
+.showEmail{
+	display: none;
+}
+</style>
 </head>
 <body>
 
@@ -48,21 +45,25 @@ $(function() {
 			<span class="form-title">Account Recovery</span>
 		</h2>
 		<ol style="margin-top:7px;">
-			<li>
-				<div><label>Username:</label> <s:textfield id="usernameBox" name="username" cssClass="login" onchange="showUsernameData()" onclick="showUsernameData()"/></div>
+			<li class="showUser">
+				<div><label>Username:</label> <s:textfield id="usernameBox" name="username" cssClass="login"/></div>
 				<div class="fieldhelp">
 					<h3>Username</h3>
 					<p>Enter your username and we will send you an email containing a link that you can use to reset the password on your account. 
 						If you have any problems, please check your spam filters or <a href="Contact.action" title="Contact PICS">contact us</a> directly</p>
 				</div>
 			</li>
-			<li>
-				<div><label>Email:</label><s:textfield id="emailBox" name="email" cssClass="login" size="28" onchange="showEmailData()" onclick="showEmailData()"/></div>
+			<li class="showEmail">
+				<div><label>Email:</label><s:textfield id="emailBox" name="email" cssClass="login" size="28"/></div>
 				<div class="fieldhelp">
 					<h3>Email</h3>
 					<p>Enter your email address to receive the username(s) associated with that address. If you have any problems, please check your spam filters or
 					 <a href="Contact.action" title="Contact PICS">contact us</a> directly</p>
 				</div>
+			</li>
+			<li>
+				<a class="showUser showPointer">Forgot your username?</a>
+				<a class="showEmail showPointer">Forgot your password?</a>
 			</li>
 			<li>
 				<label>Enter Verification:</label>
@@ -75,8 +76,8 @@ $(function() {
 		</ol>
 		</fieldset>
 		<fieldset class="form submit">
-			<input type="submit" class="picsbutton positive" value="Find Username" name="button" />
-			<input type="submit" class="picsbutton positive" value="Reset Password" name="button" />
+			<input type="submit" class="picsbutton positive showEmail" value="Find Username" name="button" />
+			<input type="submit" class="picsbutton positive showUser" value="Reset Password" name="button" />
 		</fieldset>
 	</div>
 </s:form>
