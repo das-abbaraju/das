@@ -878,7 +878,7 @@ public class ContractorAccount extends Account implements JSONable {
 			Calendar bidOnlyExpiration = Calendar.getInstance();
 			bidOnlyExpiration.setTime(this.getPaymentExpires());
 			bidOnlyExpiration.add(Calendar.DATE, 90);
-			if(bidOnlyExpiration.getTime().after(new Date())) {
+			if (bidOnlyExpiration.getTime().after(new Date())) {
 				// Do we want to do this?
 				if (status.isActive()) {
 					return "Current";
@@ -1038,16 +1038,17 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public OperatorAccount getReducedActivationFeeOperator(InvoiceFee activation) {
 		// if Operator activation fee is reduced, return Operator account
-		if (getRequestedBy().getActivationFee() != null
-				&& getRequestedBy().getActivationFee() != activation.getAmount().intValue())
-			return getRequestedBy();
+		if (getRequestedBy() != null) {
+			if (getRequestedBy().getActivationFee() != null
+					&& getRequestedBy().getActivationFee().equals(activation.getAmount().intValue()))
+				return getRequestedBy();
 
-		// if Corporate activation fee is reduced, return Corporate account
-		for (Facility f : getRequestedBy().getCorporateFacilities())
-			if (f.getCorporate().getActivationFee() != null
-					&& f.getCorporate().getActivationFee() != activation.getAmount().intValue())
-				return f.getCorporate();
-
+			// if Corporate activation fee is reduced, return Corporate account
+			for (Facility f : getRequestedBy().getCorporateFacilities())
+				if (f.getCorporate().getActivationFee() != null
+						&& f.getCorporate().getActivationFee() != activation.getAmount().intValue())
+					return f.getCorporate();
+		}
 		return null;
 	}
 
