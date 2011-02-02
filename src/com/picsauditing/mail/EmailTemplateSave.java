@@ -39,9 +39,6 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 		getPermissions();
 
 		if (button == null) {
-			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
-			wizardSession.setTemplateID(0);
-
 			emailTemplateDAO.clear(); // don't save
 			return SUCCESS;
 		}
