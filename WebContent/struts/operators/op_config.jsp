@@ -103,7 +103,7 @@ function hideCat(id) {
 	<h2 class="formLegend">Parent Accounts</h2>
 	<ol>
 		<li><label>Country:</label>
-			<s:property value="operator.country"/>
+			<s:property value="operator.country.isoCode"/>
 		</li>
 		<li>
 			<table class="report">

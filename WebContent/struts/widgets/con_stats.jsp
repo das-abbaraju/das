@@ -17,7 +17,7 @@
 </pics:permission>
 <p><label>Account Name:</label> <s:property value="contractor.name" /></p>
 <p><label>Address:</label> <s:property value="contractor.address" /><br />
-<s:property value="contractor.city" />, <s:property value="contractor.state" /> <s:property value="contractor.zip" /></p>
+<s:property value="contractor.city" />, <s:property value="contractor.state.isoCode" /> <s:property value="contractor.zip" /></p>
 <p><label>Account Since:</label> <s:date name="contractor.creationDate" format="MMM d, yyyy" /></p>
 <p><label>Primary Contact:</label> <s:property value="contractor.primaryContact.name" /></p>
 <p><label>Primary Phone:</label> <s:property value="contractor.primaryContact.phone" /></p>
