@@ -22,7 +22,7 @@
 	    </td>
 	    <td><a href="javascript: changeOrderBy('form1','atype.auditName');">Type</a></td>
 		<td>File</td>
-	    <td><a href="javascript: changeOrderBy('form1','ca.completedDate DESC');">Submitted</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','caf.creationDate DESC');">UploadDate</a></td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
