@@ -102,13 +102,13 @@
 <tr>
 	<th class="label"><s:property value="getText('cad7.'.concat(type))"/></th>
 	<td>
-		<s:textfield name='osha.cad7' value="%{getText('format.plain',{cad7})}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.cad7' value="%{cad7}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('neer.'.concat(type))"/></th>
 	<td>
-		<s:textfield name='osha.neer' value="%{getText('format.plain',{neer})}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.neer' value="%{neer}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 </s:if>
