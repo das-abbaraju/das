@@ -249,9 +249,10 @@
 	</s:if>
 
 	<s:if test="filter.showWorkStatus">
-		<div class="filterOption"><s:select
+		<div class="filterOption">Work Status: 
+		<s:select
 			list="#{'Y':'Yes','N':'No','P':'Pending'}" headerKey=""
-			headerValue="- Work Status -" cssClass="forms"
+			headerValue="Any" cssClass="forms"
 			name="filter.workStatus" /></div>
 	</s:if>
 

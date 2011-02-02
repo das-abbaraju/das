@@ -49,6 +49,12 @@ function clickSearchSubmit( formid ) {
 
 function runSearch(search) {
 	var ajax = $(search).find('[name=filter.ajax]').val();
+	
+	var accountName = $.trim($(search).find('[name=filter.accountName]').val());
+	if (accountName != "" && accountName != "- Company Name -") {
+		$(search).find('[name=filter.workStatus]').val("");
+	}
+	
 	if (ajax == "false") {
 		$(search).submit();
 	} else {
