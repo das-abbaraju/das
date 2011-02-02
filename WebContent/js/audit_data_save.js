@@ -24,7 +24,6 @@ $(function(){
 				});
 		return false;
 	});
-	
 
 	$('#auditViewArea').delegate('input.verify', 'click', function(e) {
 		var me = $(this).parents('div.question:first');

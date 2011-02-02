@@ -147,24 +147,27 @@ $(function() {
 			<nobr><s:checkbox fieldValue="S" name="multiAnswer" value="%{#a.answer.indexOf('S') != -1}" /> S </nobr>
 		</s:if>
 		<s:if test="#q.questionType == 'AMBest'">
-			<input type="hidden" id="ambest_naic_code" />
 			<s:hidden name="auditData.comment" value="%{#a.comment}"/>
-			<s:textfield id="ambest_autocomplete" name="auditData.answer" value="%{#a.answer}" size="30"/>
+			<s:textfield id="ambest" name="auditData.answer" value="%{#a.answer}" size="30"/>
 			
 			<script type="text/javascript">
 			$(function() {
-				$('#ambest_autocomplete').autocomplete('AmBestSuggestAjax.action',
+				$('#ambest').autocomplete('AmBestSuggestAjax.action',
 				{
 					minChars: 3,
 					formatResult: function(data,i,count) {
 						return data[1];
 					}
+				}).change(function(e) {
+					if ($(this).blank())
+						$(this).closest('div.question').find('[name=auditData.comment]').val('');
 				}).result(function(event, data){
+					var div = $(this).closest('div.question');
 					if (data[2]!="UNKNOWN")
-						$('#ambest_naic_code').val(data[2]);
+						div.find('[name=auditData.comment]').val(data[2])
 					else
-						$('#ambest_naic_code').val("");
-					saveAnswerComment('<s:property value="%{#q.id}"/>', $('#ambest_autocomplete')[0], $('#ambest_naic_code'));
+						div.find('[name=auditData.comment]').val('');
+					$(this).trigger('change');
 				});
 			});
 			</script>
