@@ -209,7 +209,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		else
 			viewableCaos = conAudit.getViewableOperators(permissions);
 		for (ContractorAuditOperator cao : viewableCaos) {
-			if (cao.getStatus().after(AuditStatus.Incomplete)) {
+			if (cao.getStatus().after(AuditStatus.Resubmit)) {
 				showVerified = true;
 				break;
 			}

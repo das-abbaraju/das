@@ -185,7 +185,7 @@ public class CaoSave extends AuditActionSupport {
 					cao.getAudit().setExpiresDate(setExpirationDate());
 				
 				if (cao.getAudit().getAuditType().getClassType().isPolicy()
-						&& cao.getStatus().after(AuditStatus.Submitted))
+						&& cao.getStatus().after(AuditStatus.Incomplete))
 					updateFlag(cao);
 				
 				// we need handle the PQF specific's
