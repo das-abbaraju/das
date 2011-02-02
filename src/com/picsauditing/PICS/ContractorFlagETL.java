@@ -20,7 +20,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -121,11 +120,11 @@ public class ContractorFlagETL {
 								break;
 							case LastYearOnly:
 								if (years.size() >= 1) {
-									if (years.get(years.size() - 1) != null) {
-										answer = Float.valueOf(Strings.formatNumber(years.get(years.size() - 1)
-												.getAnswer()));
-										verified = years.get(years.size() - 1).isVerified();
-										answer2 = "Year: " + years.get(years.size() - 1).getAudit().getAuditFor();
+									AuditData lastYear = years.get(years.size() - 1);
+									if (lastYear != null && isLast2Years(lastYear.getAudit().getAuditFor())) {
+										answer = Float.valueOf(Strings.formatNumber(lastYear.getAnswer()));
+										verified = lastYear.isVerified();
+										answer2 = "Year: " + lastYear.getAudit().getAuditFor();
 									}
 								}
 								break;
@@ -272,6 +271,13 @@ public class ContractorFlagETL {
 			flagCriteriaContractorDao.remove(criteriaData);
 		}
 
+	}
+
+	private boolean isLast2Years(String auditFor) {
+		int lastYear = DateBean.getCurrentYear() - 1;
+		if(Integer.toString(lastYear).equals(auditFor) || Integer.toString(lastYear-1).equals(auditFor))
+			return true;
+		return false;
 	}
 
 	public String parseAnswer(FlagCriteria flagCriteria, AuditData auditData) {

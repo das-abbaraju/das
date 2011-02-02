@@ -106,20 +106,30 @@ public class OshaOrganizer {
 
 	public Float getRate(OshaType type, MultiYearScope year, OshaRateType rateType) {
 		List<OshaAudit> yearIndex = data.get(type);
-
+		int validYear = DateBean.getCurrentYear() - 1;
 		if (yearIndex.isEmpty())
 			return null;
 
 		PicsLogger.log("OshaOrganizer.getRate(" + type + "," + year + "," + rateType + ")");
 		switch (year) {
 		case LastYearOnly:
-			return (yearIndex.get(0) != null) ? yearIndex.get(0).getRate(rateType) : null;
+			OshaAudit oshaAudit = yearIndex.get(0);
+			if(oshaAudit != null && isLast2Years(oshaAudit.getConAudit().getAuditFor(), validYear)) {
+				return yearIndex.get(0).getRate(rateType);
+			}
+			return null;
 		case TwoYearsAgo:
-			return (yearIndex.size() > 1 && yearIndex.get(1) != null) ? yearIndex
-					.get(1).getRate(rateType) : null;
+			validYear = validYear - 1;
+			if(yearIndex.size() > 1 && yearIndex.get(1) != null && isLast2Years(yearIndex.get(1).getConAudit().getAuditFor(), validYear)) {
+				return yearIndex.get(1).getRate(rateType);
+			}
+			return null;
 		case ThreeYearsAgo:
-			return (yearIndex.size() > 2 && yearIndex.get(2) != null) ? yearIndex
-					.get(2).getRate(rateType) : null;
+			validYear = validYear - 2;
+			if(yearIndex.size() > 2 && yearIndex.get(2) != null && isLast2Years(yearIndex.get(2).getConAudit().getAuditFor(), validYear)) {
+				return yearIndex.get(2).getRate(rateType);
+			}
+			return null;
 		case ThreeYearAverage:
 			int avgCount = 0;
 			Float rate = 0f;
@@ -303,4 +313,11 @@ public class OshaOrganizer {
 			return OshaType.COHS;
 		return OshaType.OSHA;
 	}
+
+	private boolean isLast2Years(String auditFor, int year) {
+		if(Integer.toString(year).equals(auditFor) || Integer.toString(year-1).equals(auditFor))
+			return true;
+		return false;
+	}
+
 }
