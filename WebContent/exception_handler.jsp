@@ -173,7 +173,7 @@
 		</fieldset>
 		<fieldset class="form submit">
 			<input class="picsbutton" type="button" value="&lt;&lt; Back" onclick="window.history.back().back()" />
-			<input class="picsbutton" type="submit" value="Report to PICS Engineers" onclick="$('#backButton').fadeIn(1500)"/>
+			<input class="picsbutton" type="submit" value="Report to PICS Engineers" onclick="$('#backButton').fadeIn(1500); $(this).attr('disabled', true);"/>
 		</fieldset>
 	</form>
 	<input id="backButton" class="picsbutton" style="float:left; display:none;" type="button" value="&lt;&lt; Back" onclick="window.history.back().back()" />
