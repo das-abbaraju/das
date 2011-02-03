@@ -120,6 +120,11 @@ public class EmailQueueList extends ReportActionSupport {
 			sql.addWhere("q.toAddresses LIKE '%" + f.getToAddress() + "%'");
 			setFiltered(true);
 		}
+		
+		if (filterOn(f.getCustomAPI())) {
+			sql.addWhere(f.getCustomAPI());
+			setFiltered(true);
+		}
 	}
 
 	public List<EmailQueue> getEmails() {
