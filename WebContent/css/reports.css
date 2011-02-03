@@ -151,6 +151,7 @@ table.tablestyle td.right {
 table.inner,table.inner tr,table.inner td {
 	border: none;
 	padding: 0px 5px 2px 5px;
+	white-space: nowrap;
 }
 
 /******************** Paging and Alpha Search  ************************/

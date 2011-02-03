@@ -85,6 +85,8 @@ public class ReportFlagChanges extends ReportAccount {
 		sql.addField("gc_flag.baselineFlag");
 		sql.addField("gc_flag.baselineApproved");
 		sql.addField("gc_flag.baselineApprover");
+		sql.addField("IFNULL(gc_flag.flagDetail,'{}') flagDetail");
+		sql.addField("IFNULL(gc_flag.baselineFlagDetail,'{}') baselineFlagDetail");
 
 		sql.addJoin("JOIN accounts operator on operator.id = gc_flag.genid");
 		sql.addField("operator.name AS opName");

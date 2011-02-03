@@ -5,11 +5,27 @@
 <head>
 <title><s:property value="reportName" /></title>
 <s:include value="reportHeader.jsp" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/audits.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <script type="text/javascript">
 function approve(id) {
 	$.post('ReportFlagChanges.action', {approveID: id});
 	$("#row" + id).hide();
+}
+
+function size(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+}
+
+var tr = $();
+
+var flags = {
+		"Red": '<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon('Red')" escape="false"/>',
+		"Green": '<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon('Green')" escape="false"/>',
+		"Amber": '<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon('Amber')" escape="false"/>'
 }
 </script>
 </head>
@@ -38,6 +54,7 @@ function approve(id) {
 			</pics:permission>
 			<th>Last Calc</th>
 			<th>Member Since</th>
+			<th>Flag Differences</th>
 			<th>Useful Links</th>
 		</tr>
 	</thead>
@@ -61,6 +78,45 @@ function approve(id) {
 			</pics:permission>
 			<td><s:property value="get('lastRecalculation')"/> mins ago</td>
 			<td><s:property value="get('membershipDate')"/></td>
+			<td id="detail_<s:property value="get('id')"/>">
+				<script type="text/javascript">
+					$(function() {
+						var detail = <s:property value="get('flagDetail')" escape="false"/>;
+						var baseline = <s:property value="get('baselineFlagDetail')" escape="false"/>;
+						var changes = {};
+						$.each(detail, function(criteriaID, data) {
+							if(!baseline[criteriaID] || baseline[criteriaID].flag != data.flag) {
+								changes[criteriaID] = {
+										label: data.label,
+										detail: data,
+										baseline: baseline[criteriaID]
+								}; 
+							}
+						});
+						$.each(baseline, function(criteriaID, data){
+							if(!detail[criteriaID] || detail[criteriaID].flag != data.flag) {
+								if (!changes[criteriaID]) {
+									changes[criteriaID] = {
+											label: data.label,
+											detail: detail[criteriaID],
+											baseline: data
+									}; 
+								}
+							}
+						});
+						if (size(changes) > 0) {
+							var output = $('<table class="inner"/>');
+							$.each(changes, function(criteriaID, data) {
+								var tr = $('<tr><td/><td/></tr>');
+								tr.find('td:eq(0)').html(data.label);
+								tr.find('td:eq(1)').html((data.detail ? flags[data.detail.flag] : '?') + ' \u2192 ' + (data.baseline ? flags[data.baseline.flag] : '?'));
+								output.append(tr);
+							});
+							$('#detail_<s:property value="get('id')"/>').html(output);
+						}
+					})
+				</script>
+			</td>
 			<td>
 				<a class="file" target="_BLANK" title="Opens in new window"
 					href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>">Flag</a>

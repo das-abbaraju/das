@@ -24,7 +24,6 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.opensymphony.xwork2.validator.annotations.DateRangeFieldValidator;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -53,6 +52,8 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private String relationshipType;
 	private Set<FlagData> flagDatas = new HashSet<FlagData>();
 	private Set<FlagDataOverride> overrides = new HashSet<FlagDataOverride>();
+	private String flagDetail;
+	private String baselineFlagDetail;
 
 	@ManyToOne
 	@JoinColumn(name = "genID", nullable = false, updatable = false)
@@ -159,9 +160,10 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	public void setBaselineApproved(Date baselineApproved) {
 		this.baselineApproved = baselineApproved;
 	}
-	
+
 	public void resetBaseline(Permissions permissions) {
 		baselineFlag = flagColor;
+		baselineFlagDetail = flagDetail;
 		baselineApproved = new Date();
 		if (permissions != null && permissions.getUserId() > 0)
 			baselineApprover = permissions.getUserId();
@@ -274,10 +276,26 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.relationshipType = relationshipType;
 	}
 
+	public String getFlagDetail() {
+		return flagDetail;
+	}
+
+	public void setFlagDetail(String flagDetail) {
+		this.flagDetail = flagDetail;
+	}
+
+	public String getBaselineFlagDetail() {
+		return baselineFlagDetail;
+	}
+
+	public void setBaselineFlagDetail(String baselineFlagDetail) {
+		this.baselineFlagDetail = baselineFlagDetail;
+	}
+
 	// added mappedBy="flag" to show which side is the owning side in the
 	// relationship
 	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "flag")
-	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
+	@JoinColumns({ @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagData> getFlagDatas() {
 		return flagDatas;
@@ -288,7 +306,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "forceflag")
-	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
+	@JoinColumns({ @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagDataOverride> getOverrides() {
 		return overrides;

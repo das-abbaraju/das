@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.json.simple.JSONObject;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.AuditBuilderController;
@@ -427,6 +428,7 @@ public class ContractorCron extends PicsActionSupport {
 		contractor.setScore(scoreRounded);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void runFlag(ContractorOperator co) {
 		if (!runStep(ContractorCronStep.Flag))
 			return;
@@ -453,6 +455,18 @@ public class ContractorCron extends PicsActionSupport {
 		}
 		flagDataCalculator.setOverrides(overridesMap);
 		List<FlagData> changes = flagDataCalculator.calculate();
+		
+		// Save the FlagDetail to the ContractorOperator as a JSON string
+		JSONObject flagJson = new JSONObject();
+		for (FlagData data : changes) {
+			JSONObject flag = new JSONObject();
+			flag.put("category",data.getCriteria().getCategory());
+			flag.put("label", data.getCriteria().getLabel());
+			flag.put("flag", data.getFlag().toString());
+
+			flagJson.put(data.getCriteria().getId(), flag);
+		}
+		co.setFlagDetail(flagJson.toString());
 
 		// Find overall flag color for this operator
 		FlagColor overallColor = FlagColor.Green;
