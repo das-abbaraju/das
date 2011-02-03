@@ -114,7 +114,7 @@
  	
   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
     <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-    <property name="url" value="jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha1" />
+    <property name="url" value="jdbc:mysql://192.168.20.56:3306/pics_alpha1" />
     <property name="username" value="pics" />
     <property name="password" value="@Irvine1" />
   </bean>
