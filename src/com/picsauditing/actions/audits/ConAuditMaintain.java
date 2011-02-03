@@ -27,6 +27,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.WorkflowStep;
+import com.picsauditing.util.Strings;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
@@ -93,9 +94,13 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 							Note newNote = new Note();
 							newNote.setAccount(toSave.getAudit().getContractorAccount());
 							newNote.setAuditColumns(permissions);
-							newNote.setSummary("Changed Status for " + toSave.getAudit().getAuditType().getAuditName()
-									+ "(" + toSave.getAudit().getId() + ") from " + toSave.getStatus() + " to "
-									+ cao.getStatus() + " for " + toSave.getOperator().getName());
+							String summary = "Changed Status for " + toSave.getAudit().getAuditType().getAuditName()
+									+ "(" + toSave.getAudit().getId() + ")" ;
+							if(!Strings.isEmpty(toSave.getAudit().getAuditFor()))
+								summary += " for " + toSave.getAudit().getAuditFor();
+							summary += " from " + toSave.getStatus() + " to "
+									+ cao.getStatus() + " for " + toSave.getOperator().getName();
+							newNote.setSummary(summary);
 							newNote.setNoteCategory(NoteCategory.Audits);
 							newNote.setViewableBy(toSave.getOperator());
 							noteDAO.save(newNote);
