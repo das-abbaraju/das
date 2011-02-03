@@ -231,6 +231,11 @@
 			class="com.picsauditing.actions.contractors.WaitingOnWidget">
 			<result>struts/widgets/waiting_on.jsp</result>
 		</action>
+		
+		<action name="FlagChangesWidgetAjax"
+			class="com.picsauditing.actions.flags.FlagChangesWidget">
+			<result>struts/widgets/flag_changes.jsp</result>
+		</action>
 
 		<!-- Contractor Information -->
 		<action name="ConHeader"
