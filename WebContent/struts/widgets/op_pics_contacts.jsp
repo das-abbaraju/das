@@ -6,8 +6,11 @@
 	<p><label><s:property value="#key.description" /><s:if test="contacts.get(#key).size() > 1">s</s:if>:</label></p>
 	<ul style="list-style-type: none">
 		<s:iterator value="contacts.get(#key)" id="managers">
-			<li><a href="mailto:<s:property value="#managers.email" />" title="Email <s:property value="#managers.name" />"><s:property value="#managers.name" /></a>
-				(<s:property value="#managers.phone" />)</li>
+			<li>
+				<s:property value="#managers.name" />
+				<br />Email: <a href="mailto:<s:property value="#managers.email" />" title="Email <s:property value="#managers.name" />"> <s:property value="#managers.email" /></a>
+				<br />Phone: <s:property value="#managers.phone" />
+			</li>
 		</s:iterator>
 	</ul>
 </s:iterator>
