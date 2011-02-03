@@ -20,10 +20,9 @@
 <table class="report">
 	<thead>
 	<tr>
-		<td colspan="2"><a
-				href="?orderBy=name ASC">Contractor Name</a></td>
+		<td colspan="2"><a href="?orderBy=name ASC">Contractor Name</a></td>
 		<pics:permission perm="AllContractors">
-			<td></td>
+		<td></td>
 		</pics:permission>
 		<pics:permission perm="ContractorDetails">
 			<td></td>
@@ -70,11 +69,14 @@
 			<td><pics:permission perm="ContractorDetails"><a href="ContractorView.action?id=<s:property value="get('id')"/>" 
 					rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>" 
 					class="contractorQuick account<s:property value="get('status')"/>" title="<s:property value="get('name')"/>">
-					</pics:permission><s:property value="get('name')"/><pics:permission perm="ContractorDetails"></a></pics:permission></td>
+					</pics:permission><s:property value="get('name')"/>
+					<pics:permission perm="ContractorDetails"></a></pics:permission>
+						<s:if test="get('dbaName') != null && get('dbaName').toString().length() > 0">
+						<br /> DBA: <s:property value="get('dbaName')"/>
+						</s:if>
+					</td>
 			<pics:permission perm="AllContractors">
-				<td><a
-					href="ContractorEdit.action?id=<s:property value="get('id')"/>"
-					>Edit</a></td>
+				<td><a href="ContractorEdit.action?id=<s:property value="get('id')"/>">Edit</a></td>
 			</pics:permission>
 			<pics:permission perm="ContractorDetails">
 				<td><a

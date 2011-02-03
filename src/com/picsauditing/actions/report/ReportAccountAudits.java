@@ -74,6 +74,7 @@ public class ReportAccountAudits extends ReportAccount {
 			}
 		}
 		sql.addField("c.score");
+		sql.addField("a.dbaName");
 
 		filteredDefault = true;
 
