@@ -182,7 +182,7 @@ public class AuditPercentCalculator {
 							// This is used for manual/implementation audits
 							// with questions with no requirements, so we need
 							// to increment the count so we can close it.
-							else if (catData.getAudit().getAuditType().getWorkFlow().getId() == Workflow.AUDIT_REQUIREMENTS_WORKFLOW) {
+							else if (catData.getAudit().getAuditType().getWorkFlow().isHasRequirements()) {
 								verifiedCount++;
 							} else if (catData.getAudit().getAuditType().isPqf()) {
 								boolean needsVerification = false;

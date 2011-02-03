@@ -117,7 +117,7 @@ public class ContractorAuditOperator extends BaseTable {
 					statusDescription = "Policy completed, awaiting verification";
 				} else
 					statusDescription = audit.getAuditType().getClassType() + " has been verified.";
-			} else if (audit.getAuditType().getWorkFlow().getId() == Workflow.AUDIT_REQUIREMENTS_WORKFLOW) {
+			} else if (audit.getAuditType().getWorkFlow().isHasRequirements()) {
 				statusDescription = "All the requirements for this " + audit.getAuditType().getClassType().toString()
 						+ " have been met. " + audit.getAuditType().getClassType() + " closed.";
 			} else
