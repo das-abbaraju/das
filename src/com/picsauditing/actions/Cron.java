@@ -229,15 +229,14 @@ public class Cron extends PicsActionSupport {
 		} catch (Throwable t) {
 			handleException(t);
 		}
-
 		try {
-			startTask("\nDeleting Expired Individual Data Overrides...");
-			contractorAuditDAO.deleteData(FlagDataOverride.class, "forceEnd < NOW()");
+			startTask("\nStamping Notes and Expiring overall Forced Flags and Individual Data Overrides...");
+			contractorAccountDAO.clearForceFlags();
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
 		}
-
+		
 		try {
 			startTask("\nEmailing Flag Changes Report to Account Managers...");
 			sendFlagChangesEmailToAccountManagers();
@@ -346,7 +345,7 @@ public class Cron extends PicsActionSupport {
 		PicsLogger.stop();
 	}
 
-	public void stampNote(ContractorAccount cAccount, String text, NoteCategory noteCategory) {
+	private void stampNote(ContractorAccount cAccount, String text, NoteCategory noteCategory) {
 		Note note = new Note(cAccount, system, text);
 		note.setCanContractorView(true);
 		note.setPriority(LowMedHigh.High);

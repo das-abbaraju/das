@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,6 +21,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
@@ -325,5 +327,28 @@ public class ContractorAccountDAO extends PicsDAO {
 		String ids = Strings.implodeForDB(conIDs, ",");
 		Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE a.id in (" + ids + ")");
 		return query.getResultList();
+	}
+
+	public void clearForceFlags() throws SQLException {
+		String sql = "";
+		Database db = new Database();
+		sql = "INSERT into note (accountID,creationDate,createdBy,updateDate,updatedBy,summary,noteCategory,priority,viewableBy,canContractorView) "
+				+ " select fdo.conID,Now(),1,Now(),1,CONCAT('Forced ', fc.label,' Flag to ',fdo.forceflag,' Expired for ', a.name),'Flags',1, fdo.opid,1 from flag_data_override fdo"
+				+ " join flag_criteria fc on fdo.criteriaid = fc.id"
+				+ " join accounts a on a.id = fdo.opID"
+				+ " where fdo.forceFlag is not null and fdo.forceEnd < Now()s";
+		db.executeInsert(sql);
+
+		sql = "delete from flag_data_override where forceEnd < Now()";
+		db.executeUpdate(sql);
+
+		sql = "INSERT into note (accountID,creationDate,createdBy,updateDate,updatedBy,summary,noteCategory,priority,viewableBy,canContractorView)"
+				+ " select gc.subID,Now(),1,Now(),1,CONCAT('Overall Forced Flag to ', gc.flag,' Expired for ', a.name),'Flags',1, gc.genid,1 from generalcontractors gc"
+				+ " join accounts a on a.id = gc.genid where gc.forceFlag is not null and gc.forceEnd < Now()";
+		db.executeInsert(sql);
+
+		sql = "update generalcontractors set forceEnd = null, forceFlag = null,forceBegin = null,forcedBy = null"
+				+ " where forceEnd < Now()";
+		db.executeUpdate(sql);
 	}
 }
