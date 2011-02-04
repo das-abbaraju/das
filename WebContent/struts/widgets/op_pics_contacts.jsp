@@ -8,7 +8,7 @@
 		<s:iterator value="contacts.get(#key)" id="managers">
 			<li>
 				<s:property value="#managers.name" />
-				<br />Email: <a href="mailto:<s:property value="#managers.email" />" title="Email <s:property value="#managers.name" />"> <s:property value="#managers.email" /></a>
+				<br />Email: <a href="mailto:<s:property value="#managers.email" />" title="Email <s:property value="#managers.name" />"><s:property value="#managers.email" /></a>
 				<br />Phone: <s:property value="#managers.phone" />
 			</li>
 		</s:iterator>
