@@ -9,20 +9,62 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <script type="text/javascript">
-function getSteps(id) {
-	$('#workflowSteps').load('ManageAuditWorkFlowAjax.action?button=getSteps&id=' + id);
-}
+$(function() {
+	$('.showWorkflow').live('click',function(){
+		$('#workflowEdit').load('ManageAuditWorkFlowAjax.action', function(){
+			$('#workflowEdit').show();
+			$('#workflowSteps').hide();
+		});
+	});
+	
+	$('.showAddStep').live('click', function(){
+		$('#form_steps').show();
+	});
+	
+	$('.closeEdit').live('click',function(){
+		$('#workflowEdit').hide();
+	});
+	
+	$('.editWorkflow').live('click',function(){
+		var id = $(this).closest('tr').attr('id');
+		$('#workflowEdit').load('ManageAuditWorkFlowAjax.action?id=' + id, function(){
+			$('#workflowEdit').show();
+			$('#workflowSteps').hide();
+		});
+	});
+	
+	$('.deleteStep').live('click', function(){
+		loadData(this, 'deleteStep');
+	});
+	
+	$('.editStep').live('click', function(){
+		loadData(this, 'editStep');
+	});
+	
+	$('.loadSteps').live('click', function(){
+		var workflowID = $(this).closest('tr').attr('id');
+		$('#workflowSteps').load('ManageAuditWorkFlowAjax.action?button=getSteps&id=' + workflowID);	
+		$('#workflowEdit').hide();
+		$('#workflowSteps').show();	
+	});
 
-function editStep(stepID, workflowID) {
-	var data = $('#'+stepID+' :input').serialize();
-	data += '&id='+workflowID+'&stepID='+stepID+'&button=editStep';
-	$('#workflowSteps').load('ManageAuditWorkFlowAjax.action', data);
+	$('.addStep').live('click', function(){
+		$('#workflowSteps').load('ManageAuditWorkFlowAjax.action?' + $('#form_steps').serialize());
+	});
+});
+function loadData(that, action){
+		var stepID = $(that).closest('tr').attr('id').replace('step_', '');
+		var data = $('#step_'+stepID+' :input').serialize();
+		var workflowID = $('[name=workflowID]').val();
+		data += '&id='+workflowID+'&stepID='+stepID+'&button='+action;
+		$('#workflowSteps').load('ManageAuditWorkFlowAjax.action', data);	
 }
-function addStep(){
-	$('#workflowSteps').load('ManageAuditWorkFlowAjax.action?' + $('#form_steps').serialize());
-}
-
 </script>
+<style type="text/css">
+#workflowEdit{
+	display: none;
+}
+</style>
 </head>
 <body>
 <h1>Manage Workflow</h1>
@@ -34,37 +76,32 @@ function addStep(){
 					<thead>
 						<tr>
 							<th>Name</th>
+							<th>Edit</th>
 						</tr>
 					</thead>
 					<tbody>
 						<s:iterator value="workflowList">
-							<tr>
-								<td><a href="#" onclick="getSteps(<s:property value="id" />); return false;"><s:property value="name" /></a></td>
+							<tr class="workflowList" id="<s:property value="id" />">
+								<td>
+									<a href="#" class="loadSteps"><s:property value="name" /></a>						
+								</td>
+								<td>
+									<a class="edit showPointer editWorkflow"></a>
+								</td>
 							</tr>					
 						</s:iterator>
 					</tbody>
 				</table>
 			</s:if>
 			<pics:permission perm="ManageAuditWorkFlow" type="Edit">
-				<a href="#" onclick="$('#form1').show(); return false;" class="add">Add New Workflow</a>
-				<s:form id="form1" cssStyle="display: none;">
-					<fieldset class="form">
-						<h2 class="formLegend">Add New Workflow</h2>
-						<ol>
-							<li><label>Name:</label>
-								<s:textfield name="name" /></li>
-						</ol>
-					</fieldset>
-					<br clear="all">
-					<fieldset class="forms submit">
-						<input type="submit" value="Create" name="button" class="picsbutton positive" />
-						<input type="button" value="Cancel" onclick="$('#form1').hide(); return false;" class="picsbutton negative" />
-					</fieldset>
-				</s:form>			
+				<a href="#" class="add showWorkflow">Add New Workflow</a>
 			</pics:permission>
 		</td>
 		<td style="padding-left: 10px;">
 			<div id="workflowSteps"></div>
+			<div id="workflowEdit">
+				<s:include value="manage_workflow_edit.jsp" />
+			</div>
 		</td>
 	</tr>
 </table>

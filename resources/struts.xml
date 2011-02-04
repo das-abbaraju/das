@@ -1269,7 +1269,8 @@
 		
 		<action name="ManageAuditWorkFlowAjax"
 			class="com.picsauditing.actions.auditType.ManageWorkFlow">
-			<result>struts/audits/manage_workflow_steps.jsp</result>
+			<result name="steps">struts/audits/manage_workflow_steps.jsp</result>
+			<result>struts/audits/manage_workflow_edit.jsp</result>
 		</action>
 		
 		<!-- Rules Entries -->
