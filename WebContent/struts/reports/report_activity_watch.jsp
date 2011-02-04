@@ -96,46 +96,48 @@ $(function() {
 <table>
 	<tr>
 		<s:if test="!permissions.admin">
-			<td class="leftSide">
-				<s:if test="watched.size() > 0">
-					<table class="report">
-						<thead>
-							<tr>
-								<th>Contractor</th>
-								<th>Remove</th>
-							</tr>
-						</thead>
-						<tbody>
-							<s:iterator value="watched" id="watch">
+			<s:if test="conID <= 0">
+				<td class="leftSide">
+					<s:if test="watched.size() > 0">
+						<table class="report">
+							<thead>
 								<tr>
-									<td><a href="ContractorView.action?id=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
-									<td class="center"><a href="?button=Remove&watchID=<s:property value="#watch.id" />" onclick="return confirm('Are you sure you want to remove this contractor from the watch list?');" class="remove"></a></td>
+									<th>Contractor</th>
+									<th>Remove</th>
 								</tr>
-							</s:iterator>
-						</tbody>
-					</table>
-				</s:if>
-				<s:else>
-					<div class="info">This report will show a list of contractor activity for the contractors you have selected to watch. To add a contractor activity watch, click on Add New Contractor below and type in the name of a contractor.</div>
-				</s:else>
-				<a href="#" id="addLink" onclick="$(this).hide(); $('#addWatch').show(); return false;" class="add">Add New Contractor</a>
-				<s:form id="addWatch">
-					<input type="hidden" id="findConID" name="conID" value="0" />
-					<fieldset class="form">
-						<h2 class="formLegend">Add New Contractor</h2>
-						<ol>
-							<li>
-								<label>Contractor Name:</label>
-								<s:textfield id="newContractor" />
-							</li>
-						</ol>
-					</fieldset>
-					<fieldset class="form submit">
-						<input type="submit" value="Add" name="button" class="picsbutton positive" />
-						<input type="button" onclick="$('#addWatch').hide(); $('#addLink').show(); return false;" value="Cancel" class="picsbutton negative" />
-					</fieldset>
-				</s:form>
-			</td>
+							</thead>
+							<tbody>
+								<s:iterator value="watched" id="watch">
+									<tr>
+										<td><a href="ContractorView.action?id=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
+										<td class="center"><a href="?button=Remove&watchID=<s:property value="#watch.id" />" onclick="return confirm('Are you sure you want to remove this contractor from the watch list?');" class="remove"></a></td>
+									</tr>
+								</s:iterator>
+							</tbody>
+						</table>
+					</s:if>
+					<s:else>
+						<div class="info">This report will show a list of contractor activity for the contractors you have selected to watch. To add a contractor activity watch, click on Add New Contractor below and type in the name of a contractor.</div>
+					</s:else>
+					<a href="#" id="addLink" onclick="$(this).hide(); $('#addWatch').show(); return false;" class="add">Add New Contractor</a>
+					<s:form id="addWatch">
+						<input type="hidden" id="findConID" name="conID" value="0" />
+						<fieldset class="form">
+							<h2 class="formLegend">Add New Contractor</h2>
+							<ol>
+								<li>
+									<label>Contractor Name:</label>
+									<s:textfield id="newContractor" />
+								</li>
+							</ol>
+						</fieldset>
+						<fieldset class="form submit">
+							<input type="submit" value="Add" name="button" class="picsbutton positive" />
+							<input type="button" onclick="$('#addWatch').hide(); $('#addLink').show(); return false;" value="Cancel" class="picsbutton negative" />
+						</fieldset>
+					</s:form>
+				</td>
+			</s:if>
 		</s:if>
 		<td>
 			<s:if test="data.size() > 0">
