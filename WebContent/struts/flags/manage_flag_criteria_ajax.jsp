@@ -6,7 +6,7 @@
 <s:include value="../actionMessages.jsp"/>
 </s:if>
 <a href="#" type="button" class="goback">&lt;&lt; Back</a>
-<form id="itemform" method="post">
+<s:form id="itemform" method="post" action="ManageFlagCriteria">
 	<s:hidden name="id"/>
 	<fieldset class="form">
 		<h2 class="formLegend">General</h2>
@@ -128,4 +128,4 @@
 		<input type="submit" name="button" value="Save" class="picsbutton positive"/>
 		<input type="button" value="Cancel" class="picsbutton goback"/>
 	</fieldset>
-</form>
+</s:form>
