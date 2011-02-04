@@ -356,4 +356,8 @@ table.report tbody .Green td {color:#272;}
 	height:20px;
 }
 
-
+.dba {
+	padding-left: 10px;
+	font-size: .85em; 
+	color: #999
+}
