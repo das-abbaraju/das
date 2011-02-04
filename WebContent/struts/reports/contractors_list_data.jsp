@@ -22,7 +22,7 @@
 	<tr>
 		<td colspan="2"><a href="?orderBy=name ASC">Contractor Name</a></td>
 		<pics:permission perm="AllContractors">
-		<td></td>
+			<td></td>
 		</pics:permission>
 		<pics:permission perm="ContractorDetails">
 			<td></td>
@@ -31,8 +31,7 @@
 			</s:if>
 		</pics:permission>
 		<s:if test="permissions.operatorCorporate">
-			<td><a
-				href="?orderBy=flag DESC">Flag</a></td>
+			<td><a href="?orderBy=flag DESC">Flag</a></td>
 			<s:if test="permissions.operator">
 				<td>Waiting On</td>
 			</s:if>
@@ -71,10 +70,10 @@
 					class="contractorQuick account<s:property value="get('status')"/>" title="<s:property value="get('name')"/>">
 					</pics:permission><s:property value="get('name')"/>
 					<pics:permission perm="ContractorDetails"></a></pics:permission>
-						<s:if test="get('dbaName') != null && get('dbaName').toString().length() > 0">
-						<br /> DBA: <s:property value="get('dbaName')"/>
+						<s:if test="get('dbaName') != null && get('dbaName').toString().length() > 0 && get('name') != get('dbaName')">
+							<div class="dba"><s:property value="get('dbaName')"/></div>
 						</s:if>
-					</td>
+			</td>
 			<pics:permission perm="AllContractors">
 				<td><a href="ContractorEdit.action?id=<s:property value="get('id')"/>">Edit</a></td>
 			</pics:permission>
