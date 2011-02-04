@@ -47,9 +47,11 @@ public class JpaEntityConverter extends StrutsTypeConverter {
 
 		if (o instanceof BaseTable) {
 			response = "" + ((BaseTable) o).getId();
+		} else if (o != null) {
+			response = o.toString();
 		}
 
-		return response.toString();
+		return response;
 	}
 
 }
