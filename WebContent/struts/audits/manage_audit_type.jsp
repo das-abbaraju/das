@@ -19,12 +19,7 @@ $(function(){
 		}
 	});
 	
-	var data = {
-		'comparisonRule.auditType.id': <s:property value="id"/>
-	};
-	startThinking({ div: "rules", message: "Loading Related Rules" });
-	$('#rules').load('AuditTypeRuleTableAjax.action', data);
-	
+	showRules();
 	$('.cluetip').cluetip({
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
 		arrows: true,
@@ -36,6 +31,14 @@ $(function(){
 		var jsonObj = <s:property value="" />
 	</s:if>	
 });
+
+function showRules() {
+	var data = {
+			'comparisonRule.auditType.id': <s:property value="id"/>
+	};
+	startThinking({ div: "rules", message: "Loading Related Rules" });
+	$('#rules').load('AuditTypeRuleTableAjax.action', data);
+}
 </script>
 </head>
 <body>
@@ -172,6 +175,7 @@ $(function(){
 		<br clear="all" />
 	</s:if>
 	<h3>Related Rules</h3>
+	<a href="#" onclick="showRules(); return false;" class="refresh">Refresh</a>	
 	<div id="rules"></div>
 	<a href="AuditTypeRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="id" />" class="add">Add New Audit Type Rule</a>
 </s:if>

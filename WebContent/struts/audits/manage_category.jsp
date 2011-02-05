@@ -36,14 +36,16 @@ $(function(){
 		axis: 'y'
 	});
 
-	var data = {
-		'comparisonRule.auditCategory.id': <s:property value="id"/>
-	};
-	startThinking({ div: "rules", message: "Loading Related Rules" });
-	$('#rules').load('CategoryRuleTableAjax.action', data);
-		
+	showRules();		
 });
 
+function showRules() {
+	var data = {
+			'comparisonRule.auditType.id': <s:property value="id"/>
+	};
+	startThinking({ div: "rules", message: "Loading Related Rules" });
+	$('#rules').load('AuditTypeRuleTableAjax.action', data);
+}
 </script>
 </head>
 <body>
@@ -146,6 +148,7 @@ $(function(){
 		<div id="listQ-info"></div>
 	</div>
 	<h3>Related Rules</h3>
+	<a href="#" onclick="showRules(); return false;" class="refresh">Refresh</a>	
 	<div id="rules"></div>
 	<a href="CategoryRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="category.auditType.id" />&ruleAuditCategoryId=<s:property value="category.id" />" class="add">Add New Category Rule</a>
 </s:if>
