@@ -57,10 +57,6 @@ public class ReportContractorAudits extends ReportAccount {
 
 		if (download) {
 			sql.addField("atype.classType");
-			if (auditTypeClass == AuditTypeClass.Policy && permissions.isOperator()) {
-				sql.addField("caow.notes");
-			}
-
 			if (permissions.isAdmin()) { // Only for admins?
 				sql.addGroupBy("ca.conID");
 				sql.addField("GROUP_CONCAT(atype.auditName ORDER BY atype.auditName ASC SEPARATOR ', ') "
