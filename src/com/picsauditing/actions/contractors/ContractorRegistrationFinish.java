@@ -272,6 +272,11 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 		if (!contractor.isAcceptsBids() && !contractor.isRenew()) {
 			contractor.setRenew(true);
+			if(contractor.getStatus().isDeactivated()) {
+				contractor.setStatus(AccountStatus.Pending);
+				this.addNote(contractor, "Account Reactivated to Pending",
+						NoteCategory.General, LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
+			}
 			accountDao.save(contractor);
 		}
 
