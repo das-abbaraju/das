@@ -433,6 +433,10 @@
 			class="com.picsauditing.actions.notes.OperatorNotes">
 			<result name="notes">struts/notes/account_notes_notes.jsp</result>
 		</action>
+		<action name="CorporateNotesAjax"
+			class="com.picsauditing.actions.notes.OperatorNotes">
+			<result name="notes">struts/notes/account_notes_notes.jsp</result>
+		</action>
 		<action name="ContractorNotesAjax"
 			class="com.picsauditing.actions.notes.ContractorNotes">
 			<result name="notes">struts/notes/account_notes_notes.jsp</result>
