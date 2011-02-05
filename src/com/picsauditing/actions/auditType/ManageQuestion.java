@@ -12,8 +12,10 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditTypeRule;
 
 @SuppressWarnings("serial")
 public class ManageQuestion extends ManageCategory {
@@ -108,8 +110,10 @@ public class ManageQuestion extends ManageCategory {
 				return false;
 			}
 			id = question.getCategory().getId();
+			auditQuestionDAO.deleteData(AuditCategoryRule.class, "question.id = " + question.getId());
+			auditQuestionDAO.deleteData(AuditTypeRule.class, "question.id = " + question.getId());
 			auditQuestionDAO.remove(question.getId());
-
+			
 			recalculateCategory();
 			return true;
 		} catch (Exception e) {
