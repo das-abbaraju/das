@@ -217,7 +217,7 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 						singleOperators += calcPercentage(1, bean.get("ownerPercent"));
 					} else {
 						double value = calcPercentage(1, bean.get("ownerPercent"));
-						int corporateID = (Integer) bean.get("corporateID");
+						int corporateID = Database.toInt((BasicDynaBean) bean, "corporateID");
 						if (!corporateMap.containsKey(corporateID))
 							corporateMap.put(corporateID, new ArrayList<Double>());
 						corporateMap.get(corporateID).add(value);
