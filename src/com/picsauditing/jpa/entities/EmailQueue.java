@@ -36,7 +36,7 @@ public class EmailQueue implements java.io.Serializable {
 	private String bccAddresses;
 	private String subject = "";
 	private String body = "";
-	private int priority = 50;
+	private int priority = 20;
 	private Date creationDate = new Date();
 	private User createdBy;
 	private Date sentDate;
