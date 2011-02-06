@@ -1712,7 +1712,18 @@
 
 		<action name="AuditBuilder"
 			class="com.picsauditing.actions.audits.AuditBuilderDebugger">
-			<result>struts/audits/audit_builder.jsp</result>
+			<result>struts/audits/tester/audit_builder.jsp</result>
+		</action>
+
+		<action name="ContractorSimulator"
+			class="com.picsauditing.actions.audits.ContractorSimulator">
+			<result>struts/audits/tester/contractor_simulator.jsp</result>
+		</action>
+
+		<action name="ContractorSimulatorAjax"
+			class="com.picsauditing.actions.audits.ContractorSimulator">
+			<result name="audits">struts/audits/tester/contractor_simulator_audits.jsp</result>
+			<result name="categories">struts/audits/tester/contractor_simulator_categories.jsp</result>
 		</action>
 
 		<!-- Flags -->
