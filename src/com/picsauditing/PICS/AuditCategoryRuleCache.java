@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -34,7 +35,7 @@ public class AuditCategoryRuleCache {
 		return getApplicableCategoryRules(contractor, audit);
 	}
 
-	public List<AuditCategoryRule> getApplicableCategoryRules(ContractorAccount contractor, Set<AuditType> auditTypes) {
+	public List<AuditCategoryRule> getApplicableCategoryRules(ContractorAccount contractor, Collection<AuditType> auditTypes) {
 //		PicsLogger.start("AuditCategoryRuleCache", "Searching AuditCategoryRuleCache for contractor "
 //				+ contractor.getId());
 		List<AuditCategoryRule> rules = new ArrayList<AuditCategoryRule>();
