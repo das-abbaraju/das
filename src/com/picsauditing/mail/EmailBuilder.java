@@ -99,12 +99,12 @@ public class EmailBuilder {
 
 	// Custom token setters here
 	// We may consider moving this to another class or back to the controllers
-	public void setConAudit(ContractorAudit conAudit) {
+	public void setConAudit(ContractorAudit conAudit) throws EmailException {
 		setContractor(conAudit.getContractorAccount(), OpPerms.ContractorSafety);
 		addToken("audit", conAudit);
 	}
 
-	public void setContractor(ContractorAccount contractor, OpPerms role) {
+	public void setContractor(ContractorAccount contractor, OpPerms role) throws EmailException {
 		conID = contractor.getId();
 		addToken("contractor", contractor);
 
@@ -115,8 +115,14 @@ public class EmailBuilder {
 		}
 		if (emails.size() > 0)
 			toAddresses = Strings.implode(emails, ", ");
-		else
+		else {
+			if (role.equals(OpPerms.ContractorAdmin)) {
+				// The contractor doesn't have any admin users
+				// so this results in an endless loop
+				throw new EmailException("Could not find a valid email address for " + contractor.getName());
+			}
 			setContractor(contractor, OpPerms.ContractorAdmin);
+		}
 	}
 
 	public void setUser(User user) {

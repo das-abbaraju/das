@@ -253,7 +253,7 @@ public class MassMailer extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	private void addTokens(int id) {
+	private void addTokens(int id) throws EmailException {
 		emailBuilder.clear();
 		emailBuilder.setPermissions(permissions);
 		if (ListType.Contractor.equals(type)) {
