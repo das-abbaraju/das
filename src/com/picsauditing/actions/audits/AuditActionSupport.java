@@ -255,7 +255,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public boolean canPerformAction(ContractorAuditOperator cao, WorkflowStep workflowStep) {
 		if (cao.getPercentComplete() < 100) {
-			if (cao.getPercentVerified() < 100 || !cao.getStatus().isSubmitted())
+			if (cao.getPercentVerified() < 100)
+				// This is confusing...We need to document this better
+				return false;
+			if (!cao.getStatus().isSubmitted())
+				// Explain this in English...
 				return false;
 		}
 
