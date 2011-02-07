@@ -102,6 +102,7 @@ class CronMonitor(CronThread):
 						self.active_servers[server] = False
 				except Exception, e:
 					self.logger.error(e)
+					self.active_servers[server] = False
 			self.logger.debug("Active servers %s" % self.active_servers)
 			time.sleep(self.sleeptime)
 
@@ -144,7 +145,7 @@ class CronWorker(CronThread):
 		self.con_q = con_q
 		self.server_g = server_g
 		self.url = SERVER+"ContractorCron.action?conID=%s&steps=All&button=Run"
-		self.sleeptime = 5
+		self.sleeptime = 3
 		self.logger = logging.getLogger('worker')
 	def run(self):
 		while self.running:
@@ -225,7 +226,7 @@ class CronStats(CronThread):
 					for i in range(stats_q.qsize()):
 						records.append(stats_q.get())
 					self.logger.info("inserting records: %s", records)
-					conn = MySQLdb.connect (host = "", user = "", passwd = "", db = "")
+					conn = MySQLdb.connect (host = "192.168.100.67", user = "pics", passwd = "pics", db = "pics")
 					cursor = conn.cursor()
 					cursor.executemany("""
 						INSERT INTO contractor_cron_log (conID, startDate, runTime)
