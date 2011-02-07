@@ -56,16 +56,16 @@ public class MassMailer extends PicsActionSupport {
 	private boolean fromMyAddress = true;
 	private boolean editTemplate = false;
 	private boolean fromOtherAction;
-	
+
 	private List<EmailTemplate> emailTemplates = null;
 	private List<Token> picsTags = null;
 	private List<BasicDynaBean> data = new ArrayList<BasicDynaBean>();
 	private ArrayList<SelectOption> list = new ArrayList<SelectOption>();
-	
+
 	private EmailQueueDAO emailQueueDAO;
 	private EmailTemplateDAO emailTemplateDAO;
 	private TokenDAO tokenDAO;
-	
+
 	private EmailBuilder emailBuilder;
 	private EmailQueue emailPreview;
 
@@ -81,16 +81,15 @@ public class MassMailer extends PicsActionSupport {
 			return LOGIN;
 
 		permissions.tryPermission(OpPerms.EmailTemplates);
-		//ActionContext.getContext().getActionInvocation().getProxy()
+		// ActionContext.getContext().getActionInvocation().getProxy()
 
 		// Start the main logic for actions that require passing the contractors
 		// in
 		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
-		if(!editTemplate){
+		if (!editTemplate) {
 			fromOtherAction = false;
 			type = wizardSession.getListType();
-		}
-		else if(type==null){
+		} else if (type == null) {
 			addActionMessage("Please select a template or start with a blank email to get started");
 			return SUCCESS;
 		}
@@ -104,11 +103,9 @@ public class MassMailer extends PicsActionSupport {
 			// Reset the templateID to this new passed in one
 			wizardSession.setTemplateID(templateID);
 		}
-
-		if (templateID == 0) {
-			// It hasn't been set yet
+		
+		if (wizardSession.getTemplateID() > 0)
 			templateID = wizardSession.getTemplateID();
-		}
 
 		if ("MailEditorAjax".equals(button)) {
 			if (templateID > 0) {
@@ -155,17 +152,17 @@ public class MassMailer extends PicsActionSupport {
 		}
 
 		if (button != null) {
-			if(button.equals("removeCon")){
-				if(ids.contains(removeID))
+			if (button.equals("removeCon")) {
+				if (ids.contains(removeID))
 					ids.remove(removeID);
 			}
-			
+
 			if (button.equals("send")) {
 				EmailTemplate template = buildEmailTemplate();
 				// TODO we may want to offer sending from another email
 				// other than their own
-				if(fromMyAddress)
-					emailBuilder.setFromAddress("\""+permissions.getName()+"\"<"+permissions.getEmail()+">");
+				if (fromMyAddress)
+					emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
 				else
 					emailBuilder.setFromAddress(null);
 				emailBuilder.setTemplate(template);
@@ -174,40 +171,42 @@ public class MassMailer extends PicsActionSupport {
 					getRecipient();
 					addTokens(id);
 					EmailQueue email = emailBuilder.build();
-					// I really think we should be saving this. Not sure why we weren't
+					// I really think we should be saving this. Not sure why we
+					// weren't
 					// email.setEmailTemplate(null);
 					email.setViewableById(permissions.getTopAccountID());
 					emailQueueDAO.save(email);
 				}
 				wizardSession.clear();
-				
+
 				if (getActionErrors().size() > 0) {
-					addActionMessage("You have sent " + (ids.size() - getActionErrors().size()) + " emails to the queue.");
+					addActionMessage("You have sent " + (ids.size() - getActionErrors().size())
+							+ " emails to the queue.");
 					addActionError("<a href=\"EmailWizard.action\">Click here</a> to go back to Email Wizard.");
 					return BLANK;
 				}
-				
+
 				return "emailConfirm";
 			}
 		}
 
-		// At this point if ids is empty then we've removed all possible contractors
+		// At this point if ids is empty then we've removed all possible
+		// contractors
 		// So return a message and url and finish
-		if(!editTemplate && ids.isEmpty()){
+		if (!editTemplate && ids.isEmpty()) {
 			String url = "EmailWizard.action";
 			if (type != null)
 				url += "?type=" + type;
-			addActionMessage("You have removed all matches from your list, to start again " +
-					"<a href=\"" + url + "\">Click here</a> " +
-					"to go back to the Email Wizzard");
+			addActionMessage("You have removed all matches from your list, to start again " + "<a href=\"" + url
+					+ "\">Click here</a> " + "to go back to the Email Wizzard");
 			return SUCCESS;
 		}
-		
-		if(editTemplate){
+
+		if (editTemplate) {
 			// if editing a template then we can exit here
-			return SUCCESS;			
+			return SUCCESS;
 		}
-		
+
 		// We aren't previewing, sending, or editing, so just get the list from
 		// the db using the filters
 		String idList = Strings.implode(ids, ",");
@@ -233,7 +232,7 @@ public class MassMailer extends PicsActionSupport {
 		}
 
 		Database db = new Database();
-		
+
 		if (ListType.Contractor.equals(type) || ListType.Audit.equals(type))
 			data = db.select(sql.toString(), true);
 		else
@@ -260,7 +259,7 @@ public class MassMailer extends PicsActionSupport {
 			ContractorAccountDAO dao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
 			ContractorAccount contractor = dao.find(id);
 			ContractorOperator co = null;
-			
+
 			if (permissions.isOperator()) {
 				ContractorOperatorDAO coDAO = (ContractorOperatorDAO) SpringUtils.getBean("ContractorOperatorDAO");
 				co = coDAO.find(id, permissions.getAccountId());
@@ -276,8 +275,7 @@ public class MassMailer extends PicsActionSupport {
 				} else if (recipient.equals(OpPerms.ContractorInsurance)) {
 					emailBuilder.setContractor(contractor, OpPerms.ContractorInsurance);
 				}
-			}
-			else
+			} else
 				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 		}
 		if (ListType.Audit.equals(type)) {
@@ -380,7 +378,7 @@ public class MassMailer extends PicsActionSupport {
 		if (templateID > 0) {
 			EmailTemplate temp = emailTemplateDAO.find(templateID);
 			String recipientType = temp.getRecipient();
-			
+
 			if (recipientType == null || recipientType.startsWith("Admin"))
 				recipient = OpPerms.ContractorAdmin;
 			else if (recipientType.equals("Billing"))
@@ -389,12 +387,12 @@ public class MassMailer extends PicsActionSupport {
 				recipient = OpPerms.ContractorSafety;
 			else if (recipientType.equals("Insurance"))
 				recipient = OpPerms.ContractorInsurance;
-			
+
 			return recipient;
 		}
 		return OpPerms.ContractorAdmin;
 	}
-	
+
 	public int getPreviewID() {
 		return previewID;
 	}
