@@ -15,6 +15,10 @@
 			</div>
 		</s:if>
 	</s:if>
+	
+	<s:if test="invoiceOverdue">
+		<div class="alert">This account has an overdue invoice. Auditors should not begin work on this audit until the balance is paid.</div>
+	</s:if>
 </s:if>
 
 

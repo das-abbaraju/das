@@ -294,4 +294,15 @@ public class ContractorAuditController extends AuditActionSupport {
 	public void setPreviewCat(boolean previewCat) {
 		this.previewCat = previewCat;
 	}
+
+	public boolean isInvoiceOverdue() {
+		// Show everyone?
+		// if (permissions.isAuditor() || permissions.isContractor() || permissions.isOperatorCorporate()) {
+		if (conAudit.getAuditType().isDesktop() || conAudit.getAuditType().isImplementation()
+				|| conAudit.getAuditType().isAnnualAddendum() || conAudit.getAuditType().isPqf()) {
+			return contractor.hasPastDueInvoice();
+		}
+
+		return false;
+	}
 }
