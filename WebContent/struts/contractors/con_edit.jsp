@@ -239,7 +239,7 @@ $(function() {
 							<h3>Contractor Type</h3>
 							<s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
 								<h5><s:property value="#conType.type" /></h5>
-								<s:property value="#conType.description" /><br />
+								<s:property value="#conType.description" escape="false" /><br />
 							</s:iterator>
 						</div>
 					</li>
