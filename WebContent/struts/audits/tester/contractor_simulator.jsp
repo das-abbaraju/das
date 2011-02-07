@@ -45,7 +45,10 @@ $(function() {
 	padding-left: 20px;
 }
 
-#categories ul.categories li {
+.ruleDetail {
+	font-size: 0.8em;
+	line-height: 1em;
+	padding-left: 1em;
 }
 
 </style>

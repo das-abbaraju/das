@@ -87,7 +87,7 @@ public class ContractorSimulator extends PicsActionSupport {
 					} else {
 						if ((rule.getAcceptsBids() != null && rule.getAcceptsBids())
 								|| rule.getDependentAuditType() != null || rule.getQuestion() != null
-								|| rule.getTag() != null) {
+								|| rule.getTag() != null || rule.isManuallyAdded()) {
 							list.add(rule);
 						} else {
 							// We found a rule that will always include this
