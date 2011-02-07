@@ -105,8 +105,13 @@ $(function() {
 			$('.requiresComparator').show();
 		}
 	});
+	$('#ruleEditCheckbox').change(function() {
+		if ($(this).is(':checked'))
+			$("div.buttons .picsbutton").removeAttr("disabled");
+		else
+			$("div.buttons .picsbutton").attr("disabled", "disabled");
+	});
 });
-
 </script>
 <style>
 .hideRule {
@@ -332,11 +337,23 @@ $(function() {
 				</ol>
 			</fieldset>
 			<fieldset class="form hideRule submit" style="margin-bottom: 0px;">
-				<input type="submit" class="picsbutton positive" name="button" value="Save"/>
-				<s:if test="'New' != button">
-					<input type="submit" class="picsbutton" name="button" value="Copy"/>
-					<input type="submit" class="picsbutton negative" name="button" value="Delete"/>
+				<s:if test="(ruleType == 'Category' && rule.priority < 300) || (ruleType == 'Audit Type' && rule.priority < 230)">
+					<s:checkbox label="label" id="ruleEditCheckbox" name="ruleEditCheckbox" value="false" fieldValue="false" />I understand that I am changing a rule with potentially broad reaching affects.<br />
+					<div class="buttons">
+						<input type="submit" class="picsbutton positive" name="button" value="Save" disabled="disabled"/>
+						<s:if test="'New' != button">
+							<input type="submit" class="picsbutton" name="button" value="Copy" disabled="disabled"/>
+							<input type="submit" class="picsbutton negative" name="button" value="Delete" disabled="disabled"/>
+						</s:if>
+					</div>
 				</s:if>
+				<s:else>
+					<input type="submit" class="picsbutton positive" name="button" value="Save"/>
+					<s:if test="'New' != button">
+						<input type="submit" class="picsbutton" name="button" value="Copy"/>
+						<input type="submit" class="picsbutton negative" name="button" value="Delete"/>
+					</s:if>
+				</s:else>
 			</fieldset>
 			<s:if test="rule.id > 0">
 				<fieldset class="form moreGran">
