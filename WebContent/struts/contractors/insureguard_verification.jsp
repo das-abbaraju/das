@@ -29,7 +29,7 @@ small {
 	</s:form>
 </s:if>
 <s:else>
-	<div class="alert">No rejected InsureGuard policies found.</div>
+	<div class="alert">No rejected insurance policies found.</div>
 </s:else>
 
 </body>

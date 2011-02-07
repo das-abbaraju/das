@@ -208,7 +208,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			subMenu.addChild("Manage Certificates", "ConInsureGUARD.action?id=" + contractor.getId());
 			
 			if (permissions.hasPermission(OpPerms.AuditVerification))
-				subMenu.addChild("InsureGuard Verification", "InsureGuardVerification.action?id=" + contractor.getId());
+				subMenu.addChild("Insurance Verification", "InsureGuardVerification.action?id=" + contractor.getId());
 			
 			addSubMenu(menu, subMenu);
 		}
