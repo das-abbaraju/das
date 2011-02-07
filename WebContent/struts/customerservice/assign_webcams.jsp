@@ -88,6 +88,7 @@ function changeState(state) {
 			<ol>
 				<li><label></label><input type="button" value="Same as Primary" onclick="useContractor()"/>
 					<input type="button" value="Show Primary Info" onclick="showContractor()"/></li>
+				<li><label>Contractor Name:</label><s:property value="audit.contractorAccount.name" /></li>
 				<li><label>Contact Name:</label><s:textfield name="audit.contractorContact"/></li>
 				<li><label>Address:</label><s:textfield name="audit.address"/></li>
 				<li><label>Address2:</label><s:textfield name="audit.address2"/></li>
