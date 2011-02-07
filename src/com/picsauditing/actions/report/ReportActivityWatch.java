@@ -1,7 +1,10 @@
 package com.picsauditing.actions.report;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -58,15 +61,18 @@ public class ReportActivityWatch extends ReportAccount {
 			if (!"Search".equals(button))
 				tryPermissions(OpPerms.ContractorWatch, OpType.Edit);
 
-			List<ContractorWatch> watched = userDAO.findContractorWatch(permissions.getUserId());
 			if ("Remove".equals(button)) {
 				int redirect = 0;
 				if (watchID > 0) {
-					for (ContractorWatch watch : watched) {
+					Iterator<ContractorWatch> iterator = getWatched().iterator();
+
+					while (iterator.hasNext()) {
+						ContractorWatch watch = iterator.next();
+
 						if (watch.getId() == watchID) {
-							userDAO.remove(watch);
 							redirect = watch.getContractor().getId();
-							break;
+							watched.remove(watch);
+							userDAO.remove(watch);
 						}
 					}
 				} else {
@@ -95,7 +101,18 @@ public class ReportActivityWatch extends ReportAccount {
 							watch.setContractor(con);
 							watch.setUser(getUser());
 
-							userDAO.save(watch);
+							addActionMessage("Added " + con.getName() + " to watch list.");
+
+							watch = (ContractorWatch) userDAO.save(watch);
+							watched.add(watch);
+							conID = 0;
+
+							Collections.sort(watched, new Comparator<ContractorWatch>() {
+								@Override
+								public int compare(ContractorWatch o1, ContractorWatch o2) {
+									return o1.getContractor().getName().compareTo(o2.getContractor().getName());
+								}
+							});
 						} else
 							addActionError("Contractor is already on watch list.");
 					} else

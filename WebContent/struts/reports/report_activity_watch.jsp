@@ -7,10 +7,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <style type="text/css">
-table.report {
-	margin-right: 10px;
-}
-
 #search {
 	margin-bottom: 10px;
 }
@@ -25,7 +21,9 @@ fieldset.form ol li label {
 }
 
 .leftSide {
-	min-width: 400px; 
+	min-width: 400px;
+	padding-right: 10px;
+	vertical-align: top;
 }
 
 * html .leftSide {
