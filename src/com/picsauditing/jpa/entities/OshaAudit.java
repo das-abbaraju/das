@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -397,8 +398,8 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	@Transient
 	private float calculateRate(float value) {
 		if (manHours > 0) {
-			float rate = value * 200000;
-			return rate / manHours;
+			BigDecimal rate =  new BigDecimal(value * 200000);
+			return rate.divide(new BigDecimal(manHours), 2, BigDecimal.ROUND_HALF_UP).floatValue();
 		}
 
 		return 0;
