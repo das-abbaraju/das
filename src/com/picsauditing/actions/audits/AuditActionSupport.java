@@ -384,9 +384,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (conAudit.getAuditType().getClassType().isPolicy()) {
 			if (conAudit.getAuditor() != null && (conAudit.getAuditor().getId() == permissions.getUserId()))
 				return true;
-
-			if (permissions.isOperatorCorporate())
-				return true;
 		}
 
 		return false;
@@ -402,8 +399,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (isCanEditCao()) {
 			if (permissions.isAdmin())
 				return true;
-			if (permissions.isOperatorCorporate() && conAudit.getAuditType().getClassType().isPolicy())
-				return !cao.getOperator().isPicsCorporate();
 		}
 		return false;
 	}
