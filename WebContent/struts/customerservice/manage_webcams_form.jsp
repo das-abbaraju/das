@@ -33,8 +33,9 @@
 				<li><label>Sent By:</label> <s:property value="webcam.sendBy.name" /></li>
 				<li><label>Sent On:</label> <s:date name="webcam.sentDate" /></li>
 				<li><label>Carrier:</label> <s:property value="webcam.carrier" /></li>
-				<li><label>Shipping Method:</label> <s:property value="webcam.shippingMethod" /></li>
-				<li><label>Tracking Number:</label> <s:property value="webcam.trackingNumber" /></li>
+				<li><label>Outgoing Shipping Method:</label> <s:property value="webcam.shippingMethod" /></li>
+				<li><label>Outgoing Tracking Number:</label> <s:property value="webcam.trackingNumber" /></li>
+				<li><label>Incoming Tracking Number:</label> <s:property value="webcam.trackingNumberIncoming" /></li>
 			</s:else>
 		</ol>
 		</fieldset>

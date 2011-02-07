@@ -32,6 +32,7 @@ public class Webcam extends BaseTable implements java.io.Serializable, JSONable 
 	private String carrier;
 	private String shippingMethod;
 	private String trackingNumber;
+	private String trackingNumberIncoming;
 	private int replacementCost = 0;
 
 	@Column(length = 100)
@@ -143,6 +144,15 @@ public class Webcam extends BaseTable implements java.io.Serializable, JSONable 
 	public void setTrackingNumber(String trackingNumber) {
 		this.trackingNumber = trackingNumber;
 	}
+	
+	@Column(length = 100)
+	public String getTrackingNumberIncoming() {
+		return trackingNumberIncoming;
+	}
+
+	public void setTrackingNumberIncoming(String trackingNumberIncoming) {
+		this.trackingNumberIncoming = trackingNumberIncoming;
+	}
 
 	public int getReplacementCost() {
 		return replacementCost;
@@ -171,6 +181,7 @@ public class Webcam extends BaseTable implements java.io.Serializable, JSONable 
 		obj.put("carrier", carrier);
 		obj.put("shippingMethod", shippingMethod);
 		obj.put("trackingNumber", trackingNumber);
+		obj.put("trackingNumberIncoming", trackingNumberIncoming);
 		obj.put("replacementCost", replacementCost);
 
 		return obj;
