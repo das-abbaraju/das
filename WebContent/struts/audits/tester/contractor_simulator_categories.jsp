@@ -1,14 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib prefix="pics" uri="pics-taglib"%>
-<ul>
+<h3><s:property value="auditType.name" /></h3>
+<ul class="categories">
 	<s:iterator value="categories">
-		<li><s:property value="name" /></li>
-		<s:if test="subCategories.size > 0">
-		<ul>
-			<s:iterator value="subCategories">
-				<li><s:property value="name" /></li>
-			</s:iterator>
-		</ul>
-		</s:if>
+		<s:include value="contractor_simulator_category_include.jsp" />
 	</s:iterator>
 </ul>

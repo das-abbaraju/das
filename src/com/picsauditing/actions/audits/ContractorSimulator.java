@@ -2,12 +2,15 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
+import com.picsauditing.PICS.AuditBuilder.AuditTypeDetail;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -15,6 +18,7 @@ import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 @SuppressWarnings("serial")
@@ -23,7 +27,7 @@ public class ContractorSimulator extends PicsActionSupport {
 	private ContractorAccount contractor;
 	private Set<Integer> operatorIds;
 	private List<OperatorAccount> operators;
-	private List<AuditType> audits;
+	private Map<AuditType, List<AuditTypeRule>> audits;
 	private AuditType auditType;
 	private List<AuditCategory> categories = new ArrayList<AuditCategory>();
 	private AuditBuilder builder = new AuditBuilder();
@@ -48,9 +52,13 @@ public class ContractorSimulator extends PicsActionSupport {
 
 		operators = new ArrayList<OperatorAccount>();
 		for (Integer opID : operatorIds) {
-			OperatorAccount operator = new OperatorAccount();
-			operator.setId(opID);
+			ContractorOperator co = new ContractorOperator();
+			OperatorAccount operator = (OperatorAccount) auditTypeDAO.findWhere(OperatorAccount.class, "id = " + opID,
+					1).get(0);
 			operators.add(operator);
+			co.setContractorAccount(contractor);
+			co.setOperatorAccount(operator);
+			contractor.getOperators().add(co);
 		}
 
 		if (auditType != null && auditType.getId() > 0) {
@@ -63,11 +71,40 @@ public class ContractorSimulator extends PicsActionSupport {
 	}
 
 	private void fillAuditTypes() {
-		audits = new ArrayList<AuditType>();
+		audits = new TreeMap<AuditType, List<AuditTypeRule>>();
 		List<AuditTypeRule> rules = auditTypeRuleCache.getApplicableAuditRules(contractor);
-		audits.addAll(builder.calculateRequiredAuditTypes(rules, operators).keySet());
-		// audits = auditTypeDAO.findWhere("id IN (1,2,3,4,5)");
-		// Collections.sort(audits);
+
+		Map<AuditType, AuditTypeDetail> requiredAuditTypes = builder.calculateRequiredAuditTypes(rules, operators);
+		for (AuditType auditType : requiredAuditTypes.keySet()) {
+			boolean includeAlways = false;
+			List<AuditTypeRule> list = new ArrayList<AuditTypeRule>();
+			for (AuditTypeRule rule : rules) {
+				if (rule.getAuditType() == null || rule.getAuditType().equals(auditType)) {
+					// We have a matching rule
+					if (includeAlways) {
+						// We are already including this auditType always, so we
+						// can ignore any rules after this
+					} else {
+						if ((rule.getAcceptsBids() != null && rule.getAcceptsBids())
+								|| rule.getDependentAuditType() != null || rule.getQuestion() != null
+								|| rule.getTag() != null) {
+							list.add(rule);
+						} else {
+							// We found a rule that will always include this
+							// audit
+							includeAlways = true;
+							if (!rule.isInclude()) {
+								// Since we always exclude this audit, then it's
+								// probably worth mentioning
+								// list.add(rule);
+								// Actually, maybe not
+							}
+						}
+					}
+				}
+			}
+			audits.put(auditType, list);
+		}
 	}
 
 	/**
@@ -117,7 +154,7 @@ public class ContractorSimulator extends PicsActionSupport {
 		this.contractor = contractor;
 	}
 
-	public List<AuditType> getAudits() {
+	public Map<AuditType, List<AuditTypeRule>> getAudits() {
 		return audits;
 	}
 

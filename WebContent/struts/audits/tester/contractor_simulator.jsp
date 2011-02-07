@@ -29,7 +29,7 @@ $(function() {
 			return data[1];
 		}
 	}).result(function(event, data){
-		$("#operatorSelect").append('<option value="'+ data[0] +'">'+ data[1] +'</option>');
+		$("#operatorSelect").append('<option value="'+ data[0] +'" selected="selected">'+ data[1] +'</option>');
 		$("#operatorSelector").val("");
 	});
 });
@@ -40,6 +40,14 @@ $(function() {
 	border: 1px solid #999;
 	padding: 5px;
 }
+
+#categories ul.categories {
+	padding-left: 20px;
+}
+
+#categories ul.categories li {
+}
+
 </style>
 </head>
 <body>
