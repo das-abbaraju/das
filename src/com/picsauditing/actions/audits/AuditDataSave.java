@@ -14,8 +14,8 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.common.base.Joiner;
 import com.picsauditing.PICS.AuditBuilderController;
-import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
+import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -36,6 +36,8 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
@@ -293,7 +295,8 @@ public class AuditDataSave extends AuditActionSupport {
 		// check rules to see if other cats get triggered now
 		// if either true then run FAC
 		if (!contractor.getStatus().isPending()) {
-			if (conAudit.getAuditType().getClassType().isPolicy()) {
+
+			if (conAudit.getAuditType().getClassType().isPolicy() && checkFlagCriteria()) {
 				contractor.setLastRecalculation(null);
 				contractor.setNeedsRecalculation(ContractorAccount.MAX_RECALC);
 			}
@@ -333,6 +336,19 @@ public class AuditDataSave extends AuditActionSupport {
 			if (aq.getCategory() != auditData.getQuestion().getCategory())
 				return true;
 		}
+		return false;
+	}
+
+	private boolean checkFlagCriteria() {
+		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
+			for (FlagCriteriaOperator fco : co.getOperatorAccount().getFlagCriteriaInherited()) {
+				if (fco.getCriteria().getQuestion() != null
+						&& fco.getCriteria().getQuestion().getId() == auditData.getQuestion().getId()) {
+					return true;
+				}
+			}
+		}
+
 		return false;
 	}
 
