@@ -9,11 +9,13 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.PICS.Utilities;
@@ -70,7 +72,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected int dataID;
 	protected Map<String, List<FlagData>> flagDataMap;
 	protected Map<FlagCriteria, List<FlagDataOverride>> flagDataOverride;
-	protected Map<AuditType, ContractorAuditOperator> missingAudits = null;
+	protected ArrayListMultimap<AuditType, ContractorAuditOperator> missingAudits = null;
 
 	private File file;
 	private String fileContentType;
@@ -644,7 +646,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<AuditType, ContractorAuditOperator> getMissingAudits() {
+	public ArrayListMultimap<AuditType, ContractorAuditOperator> getMissingAudits() {
 		if (missingAudits == null) {
 			for (FlagData flagData : co.getFlagDatas()) {
 				if (flagData.getFlag().isRedAmber()) {
@@ -657,13 +659,26 @@ public class ContractorFlagAction extends ContractorActionSupport {
 					+ "AND t IN (SELECT cao FROM ContractorAuditOperatorPermission WHERE operator.id = " + opID + ")";
 			List<ContractorAuditOperator> list = (List<ContractorAuditOperator>) caoDAO.findWhere(
 					ContractorAuditOperator.class, where, 0);
-			missingAudits = new HashMap<AuditType, ContractorAuditOperator>();
+			missingAudits = ArrayListMultimap.create();
+			
+			Map<AuditType, FlagCriteria> auditTypeToFlagCriteria = getAuditTypeToFlagCriteria();
 			for (ContractorAuditOperator cao : list) {
 				AuditType auditType = cao.getAudit().getAuditType();
-				missingAudits.put(auditType, cao);
+				if (auditTypeToFlagCriteria.get(auditType) != null && auditTypeToFlagCriteria.get(auditType).getRequiredStatus() != cao.getStatus())
+					missingAudits.put(auditType, cao);
 			}
 		}
 		return missingAudits;
+	}
+	
+	public Map<AuditType, FlagCriteria> getAuditTypeToFlagCriteria() {
+		Map<AuditType, FlagCriteria> result = new LinkedHashMap<AuditType, FlagCriteria>();
+		for (FlagData fd : co.getFlagDatas()) {
+			if (fd.getCriteria().getAuditType() != null)
+				result.put(fd.getCriteria().getAuditType(), fd.getCriteria());
+		}
+		
+		return result;
 	}
 
 	public FlagCriteriaOperator getApplicableOperatorCriteria(FlagData fd) {

@@ -312,11 +312,14 @@ function checkReason(id) {
 							<!-- Value -->
 							<td>
 								<s:if test="#data.criteria.auditType != null">
-									<s:set var="cao" value="missingAudits.get(#data.criteria.auditType)" />
-									<s:property value="#cao.status"/>
-									<a href="Audit.action?auditID=<s:property value="#cao.audit.id" />"
-										><s:property value="#data.criteria.auditType.auditName" /> <s:property value="#cao.audit.auditFor" /></a>
+									<s:iterator value="missingAudits.get(#data.criteria.auditType)">
+										<s:property value="status"/>
+										<a href="Audit.action?auditID=<s:property value="#cao.audit.id" />"
+											><s:property value="#data.criteria.auditType.auditName" /> <s:property value="audit.auditFor" /></a>
+										<br/>
+									</s:iterator>
 									<s:if test="#data.criteria.auditType.classType.policy">
+										<s:set var="cao" value="missingAudits.get(#data.criteria.auditType)" />
 										<p style="padding-left: 20px; font-size: x-small">
 										<s:if test="#cao.flag != null">
 											Recommend: <s:property value="#cao.flag"/><br />
@@ -330,7 +333,7 @@ function checkReason(id) {
 												</s:iterator>
 											</s:if>
 										</s:iterator>
-											</p>
+										</p>
 									</s:if>
 								</s:if>
 								<s:else>
