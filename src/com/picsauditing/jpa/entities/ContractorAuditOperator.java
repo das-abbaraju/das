@@ -81,19 +81,15 @@ public class ContractorAuditOperator extends BaseTable {
 		statusChangedDate = new Date();
 		setAuditColumns(permissions);
 		this.status = auditStatus;
-		
+
 		if (audit.getAuditType().isPqf() || audit.getAuditType().isAnnualAddendum())
 			return;
 
 		if (auditStatus.isPending())
 			return;
-		
+
 		if (audit.getEffectiveDate() == null)
 			audit.setEffectiveDate(new Date());
-		else {
-			if (auditStatus.isSubmittedResubmitted())
-				audit.setEffectiveDate(new Date());
-		}
 	}
 
 	@Transient

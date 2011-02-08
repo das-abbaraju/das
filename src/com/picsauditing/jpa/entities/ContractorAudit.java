@@ -318,10 +318,13 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	@Transient
 	public Date getValidDate() {
-		if (effectiveDate == null)
+		if(hasCaoStatusAfter(AuditStatus.Incomplete)){
+			if (effectiveDate == null)
+				return new Date();
+			else
+				return effectiveDate;
+		} else
 			return new Date();
-		else
-			return effectiveDate;
 	}
 
 	@Transient
