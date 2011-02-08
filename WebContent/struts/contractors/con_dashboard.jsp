@@ -426,7 +426,7 @@ table.report tr.hurdle td {
 					<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email"><s:property value="contractor.auditor.email"/></a>
 				</p>
 				<p>Risk Level: <strong><s:property value="contractor.riskLevel"/></strong></p>
-				<pics:permission perm="ContractorTags">
+				<s:if test="hasOperatorTags">
 					<s:if test= "contractor.operatorTags.size() > 0 || operatorTags.size() > 0">
 						<div><span>Operator Tag Names: </span>
 							<div id="conoperator_tags">
@@ -434,7 +434,7 @@ table.report tr.hurdle td {
 							</div>
 						</div>
 					</s:if>
-				</pics:permission>	
+				</s:if>	
 				<div class="clear"></div>
 			</div>
 		</div>

@@ -46,7 +46,6 @@ import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.MultiYearScope;
@@ -623,5 +622,13 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public void setRunTagConCronAjax(boolean runAjax) {
 		this.runTagConCronAjax = runAjax;
+	}
+	
+	public boolean isHasOperatorTags() {
+		if(permissions.hasPermission(OpPerms.ContractorTags))
+			return true;
+		if(permissions.hasGroup(959))
+			return true;
+		return false;
 	}
 }
