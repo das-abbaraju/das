@@ -289,7 +289,7 @@ function loadStatus(caoID){
 			<s:if test="permissions.picsEmployee">
 				<s:if test="conAudit.auditType.hasAuditor">
 					<li><label>
-						<s:if test="conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy')">CSR:</s:if>
+						<s:if test="conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy') || conAudit.auditType.annualAddendum">CSR:</s:if>
 						<s:else>Safety Professional:</s:else></label>
 						<s:if test="conAudit.auditor.id > 0"><s:property value="conAudit.auditor.name" /></s:if>
 						<s:else><a href="AuditAssignments.action?auditID=<s:property value="auditID"/>">Not Assigned</a></s:else>
