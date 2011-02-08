@@ -1041,13 +1041,13 @@ public class ContractorAccount extends Account implements JSONable {
 		// if Operator activation fee is reduced, return Operator account
 		if (getRequestedBy() != null) {
 			if (getRequestedBy().getActivationFee() != null
-					&& getRequestedBy().getActivationFee().equals(activation.getAmount().intValue()))
+					&& !getRequestedBy().getActivationFee().equals(activation.getAmount().intValue()))
 				return getRequestedBy();
 
 			// if Corporate activation fee is reduced, return Corporate account
 			for (Facility f : getRequestedBy().getCorporateFacilities())
 				if (f.getCorporate().getActivationFee() != null
-						&& f.getCorporate().getActivationFee() != activation.getAmount().intValue())
+						&& !f.getCorporate().getActivationFee().equals(activation.getAmount().intValue()))
 					return f.getCorporate();
 		}
 		return null;
