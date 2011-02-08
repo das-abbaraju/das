@@ -7,6 +7,7 @@ import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.mail.WizardSession;
 import com.picsauditing.util.ReportFilter;
 import com.picsauditing.util.ReportFilterAudit;
+import com.picsauditing.util.ReportFilterCAO;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.ReportFilterUser;
 
@@ -42,7 +43,7 @@ public class ReportFilterAjax extends PicsActionSupport {
 				this.filter = filter;
 			}
 			if (listType.equals(ListType.Audit)) {
-				ReportFilterAudit filter = wizardSession.getAuditFilter();
+				ReportFilterAudit filter = new ReportFilterCAO();
 				filter.setDestinationAction("ReportCAOList");
 				filter.setStatus(new AccountStatus[] {AccountStatus.Active}); // default to only active contractors
 				filter.setShowEmailTemplate(true);
