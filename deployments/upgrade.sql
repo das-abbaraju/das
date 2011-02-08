@@ -15,3 +15,8 @@ insert into widget_user
 (widgetID, userID, expanded, `column`, sortOrder)
 values
 (34, 959, 1, 1, 20);
+
+delete from contractor_tag where tagid in (select id from operator_tag where tag = '');
+delete from audit_category_rule where tagid in (select id from operator_tag where tag = '');
+delete from audit_type_rule where tagid in (select id from operator_tag where tag = '');
+delete from operator_tag where tag = '';
