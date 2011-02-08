@@ -108,6 +108,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	// Agreement Changed on Release date 6/3/2010
 	public static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
+	public static final int MAX_RECALC = 127;
 
 	public ContractorAccount() {
 		this.type = "Contractor";
@@ -498,7 +499,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public void incrementRecalculation(int increment) {
-		if (increment > 0 && this.needsRecalculation < 127)
+		if (increment > 0 && this.needsRecalculation < MAX_RECALC)
 			this.needsRecalculation += increment;
 	}
 

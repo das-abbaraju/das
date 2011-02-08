@@ -198,7 +198,8 @@ public class AuditDataSave extends AuditActionSupport {
 							contractor.setNaics(new Naics());
 							contractor.setNaicsValid(true);
 							contractor.getNaics().setCode(guess);
-							//addActionError("Setting your current NAICS code to " + guess);
+							// addActionError("Setting your current NAICS code to "
+							// + guess);
 						}
 					}
 				}
@@ -282,16 +283,21 @@ public class AuditDataSave extends AuditActionSupport {
 
 		if (conAudit == null)
 			findConAudit();
-		
-		if(toggleVerify){
+
+		if (toggleVerify) {
 			auditPercentCalculator.percentCalculateComplete(conAudit, true);
 			auditDao.save(catData);
 		}
-		
+
 		// check dependent questions, see if not in same cat
 		// check rules to see if other cats get triggered now
 		// if either true then run FAC
 		if (!contractor.getStatus().isPending()) {
+			if (conAudit.getAuditType().getClassType().isPolicy()) {
+				contractor.setLastRecalculation(null);
+				contractor.setNeedsRecalculation(ContractorAccount.MAX_RECALC);
+			}
+
 			if (checkDependentQuestions() || checkOtherRules()) {
 				auditBuilder.fillAuditCategories(auditData);
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
