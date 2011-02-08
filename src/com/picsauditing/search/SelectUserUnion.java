@@ -2,6 +2,7 @@ package com.picsauditing.search;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 public class SelectUserUnion extends SelectSQL {
@@ -92,7 +93,11 @@ public class SelectUserUnion extends SelectSQL {
 	 * @param permissions
 	 */
 	public void setPermissions(Permissions permissions) {
-		if (!permissions.hasPermission(OpPerms.AllOperators))
+		if(permissions.isOperator()) {
 			userWhere = "AND accountID = " + permissions.getAccountIdString();
+		}
+		if(permissions.isCorporate()) {
+			userWhere = "AND accountID IN (" + Strings.implode(permissions.getVisibleAccounts())+")";
+		}
 	}
 }

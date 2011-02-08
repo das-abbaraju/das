@@ -34,11 +34,21 @@
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><a href="UsersManage.action?accountId=<s:property value="get('accountID')"/>" class="account<s:property value="get('companyStatus')" />">
-					<s:property value="get('companyName')" /></a>
+			<td><s:if test="permissions.corporate && permissions.accountId != get('accountID')">
+				<s:property value="get('companyName')" />
+			</s:if>
+				<s:else>
+				<a href="UsersManage.action?accountId=<s:property value="get('accountID')"/>" class="account<s:property value="get('companyStatus')" />">
+						<s:property value="get('companyName')" /></a>
+				</s:else>
 			</td>
-			<td><a href="UsersManage.action?accountId=<s:property value="get('accountID')"/>&user.id=<s:property value="get('id')"/>">
-					<s:property value="get('name')" /></a>
+			<td><s:if test="permissions.corporate && permissions.accountId != get('accountID')">
+					<s:property value="get('name')" />
+				</s:if>
+				<s:else>
+					<a href="UsersManage.action?accountId=<s:property value="get('accountID')"/>&user.id=<s:property value="get('id')"/>">
+						<s:property value="get('name')" /></a>
+				</s:else>
 			</td>
 			<td><s:property value="get('phone')" /></td>
 			<td><s:property value="get('email')" /></td>
