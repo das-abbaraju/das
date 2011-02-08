@@ -32,6 +32,8 @@
 				<s:textfield cssClass="sysEditDate" name="conAudit.creationDate" value="%{conAudit.creationDate && getText('dates', {conAudit.creationDate})}"/></li>
 			<li><label>Expires Date:</label>
 				<s:textfield cssClass="sysEditDate" name="conAudit.expiresDate" value="%{conAudit.expiresDate && getText('dates', {conAudit.expiresDate})}"/></li>
+			<li><label>Effective Date:</label>
+				<s:textfield cssClass="sysEditDate" name="conAudit.effectiveDate" value="%{conAudit.effectiveDate && getText('dates', {conAudit.effectiveDate})}"/></li>
 			<li><label>Assigned Date:</label>
 				<s:textfield cssClass="sysEditDate" name="conAudit.assignedDate" value="%{conAudit.assignedDate && getText('dates', {conAudit.assignedDate})}"/></li>
 			<li><label>Scheduled Date:</label>
