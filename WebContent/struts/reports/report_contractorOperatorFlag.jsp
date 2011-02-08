@@ -29,6 +29,11 @@
 			<td>Contractor</td>
 			<td>Operator</td>
 			<td>Flag</td>
+			<s:if test="operatorAccount.approvesRelationships.isTrue()">
+				<pics:permission perm="ViewUnApproved">
+					<td><nobr>Approved</nobr></td>
+				</pics:permission>
+			</s:if>
 			<s:if test="showContact">
 				<td>Primary Contact</td>
 				<td>Phone</td>
@@ -58,6 +63,13 @@
 						title="<s:property value="get('flag')"/> - Click to view details"><img 
 						src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0"></a>
 				</td>
+				<s:if test="operatorAccount.approvesRelationships.isTrue()">
+					<pics:permission perm="ViewUnApproved">
+						<td align="center">&nbsp;&nbsp;&nbsp;&nbsp;<s:property
+							value="get('workStatus')" />
+						</td>
+					</pics:permission>
+				</s:if>
 				<s:if test="showContact">
 					<td><s:property value="get('contactname')"/></td>
 					<td><s:property value="get('contactphone')"/></td>

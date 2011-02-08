@@ -57,6 +57,7 @@ public class ReportContractorOperatorFlag extends ReportAccount {
 		sql.addField("lower(gc.flag) AS lflag");
 		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("operator.type = 'Operator'");
+		sql.addField("gc.workStatus");
 		if(!Strings.isEmpty(opIds))
 			sql.addWhere("operator.id in (" + opIds + ")");
 	}
