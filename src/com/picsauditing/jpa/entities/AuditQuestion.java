@@ -513,11 +513,10 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	@Transient
 	public boolean isValidQuestion(Date validDate) {
-		if (isCurrent(validDate)) {
-			if (validDate.after(effectiveDate) && validDate.before(expirationDate))
-				return true;
-		}
-		return false;
+		if (validDate.after(effectiveDate) && validDate.before(expirationDate))
+			return true;
+		else
+			return false;
 	}
 
 	@Transient
