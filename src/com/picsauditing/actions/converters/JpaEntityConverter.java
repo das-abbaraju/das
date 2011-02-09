@@ -31,7 +31,7 @@ public class JpaEntityConverter extends StrutsTypeConverter {
 			} catch (Exception tryStringId) {
 				try {
 					response = em.find(toClass, values[0]);
-				} catch (NumberFormatException notFound) {
+				} catch (Exception notFound) {
 					response = null;
 				}
 			}
