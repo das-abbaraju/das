@@ -24,12 +24,15 @@ delete from operator_tag where tag = '';
 -- Effective Dates for Contractor Audits
 update contractor_audit set effectiveDate = null;
 
-update contractor_audit ca
-join contractor_audit_operator cao on cao.auditID = ca.id
-set ca.effectiveDate = min(cao.statusChangedDate) 
-where cao.status IN ('Submitted')
-and ca.auditTypeID not in (1, 11)
-group by ca.id;
+update contractor_audit as ca
+join (select ca.id, min(cao.statusChangedDate) uDate
+	from contractor_audit ca 
+	join contractor_audit_operator cao on cao.auditID = ca.id
+	where cao.status IN ('Submitted', 'Complete', 'Approved')
+	and ca.auditTypeID not in (1, 11)
+	group by ca.id) as r
+on ca.id = r.id
+set ca.effectiveDate = r.uDate;
 
 update contractor_audit set effectiveDate = concat(auditFor,'-01-01')
 where auditTypeID = 11;
