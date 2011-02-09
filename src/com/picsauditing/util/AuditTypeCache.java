@@ -58,7 +58,7 @@ public class AuditTypeCache extends BaseCache
 	public List<AuditType> getAuditTypes(Permissions permissions) {
 		List<AuditType> list = new ArrayList<AuditType>();
 		for (AuditType aType : auditTypes) {
-			if ((aType.getClassType().equals(AuditTypeClass.Audit)  || aType.getClassType().equals(AuditTypeClass.IM)) && permissions.canSeeAudit(aType))
+			if (!aType.isAnnualAddendum() && (aType.getClassType().equals(AuditTypeClass.Audit)  || aType.getClassType().equals(AuditTypeClass.IM)) && permissions.canSeeAudit(aType))
 				list.add(aType);
 		}
 		return list;
@@ -67,7 +67,7 @@ public class AuditTypeCache extends BaseCache
 	public List<AuditType> getPqfTypes(Permissions permissions) {
 		List<AuditType> list = new ArrayList<AuditType>();
 		for (AuditType aType : auditTypes) {
-			if (aType.getClassType().equals(AuditTypeClass.PQF) && permissions.canSeeAudit(aType))
+			if ((aType.getClassType().equals(AuditTypeClass.PQF) || aType.isAnnualAddendum()) && permissions.canSeeAudit(aType))
 				list.add(aType);
 		}
 		return list;
