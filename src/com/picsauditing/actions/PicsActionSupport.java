@@ -404,4 +404,8 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	public synchronized Collection<String> getAlertMessages() {
 		return alertMessages;
 	}
+
+	public boolean isStringEmpty(String s) {
+		return Strings.isEmpty(s);
+	}
 }

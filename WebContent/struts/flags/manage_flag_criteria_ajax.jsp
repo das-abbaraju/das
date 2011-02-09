@@ -73,7 +73,7 @@
 		<ol>
 			<li>
 				<label>Audit Type:</label>
-				<s:select name="auditTypeID" list="{}" headerKey="" headerValue=" - Audit Type - " value="%{criteria.auditType.id}">
+				<s:select name="auditTypeID" list="{}" headerKey="0" headerValue=" - Audit Type - " value="%{criteria.auditType.id}">
 					<s:iterator value="auditTypeMap" var="aType">
 						<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
 					</s:iterator>
