@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.List;
 
 import org.apache.struts2.ServletActionContext;
 import org.jboss.util.Strings;
@@ -270,5 +271,17 @@ public class CertificateFileUpload extends ContractorActionSupport {
 
 	public void setAuditID(int auditID) {
 		this.auditID = auditID;
+	}
+	
+	public boolean isCanDelete() {
+		if(file == null)
+			return false;
+		if(!file.exists())
+			return false;
+		String where = "t.audit.contractorAccount.id = "+ contractor.getId() + " AND t.question.questionType = 'FileCertificate' AND t.answer = '"+ certID +"'";
+		List<AuditData> auditDatas = (List<AuditData>) auditDao.findWhere(AuditData.class, where, 1);
+		if(auditDatas.size() == 0)
+			return true;
+		return false;
 	}
 }

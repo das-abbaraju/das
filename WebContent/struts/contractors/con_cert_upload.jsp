@@ -75,11 +75,9 @@ function closePage() {
 					<div>
 						<div>
 							<button class="picsbutton" onclick="closePage()">Cancel</button>
-							<s:if test="file != null && file.exists()">
-								<s:if test="certificate.caos == null || certificate.caos.size() == 0">
-									<button class="picsbutton negative" name="button" value="Delete" type="submit" 
-									onclick="return confirm('Are you sure you want to delete this file?');">DeleteFile</button>
-								</s:if>
+							<s:if test="canDelete">
+								<button class="picsbutton negative" name="button" value="Delete" type="submit" 
+								onclick="return confirm('Are you sure you want to delete this file?');">DeleteFile</button>
 							</s:if>
 							<button class="picsbutton positive" name="button" value="Save" type="submit">Save</button>
 						</div>
