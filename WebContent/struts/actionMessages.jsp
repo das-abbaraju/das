@@ -22,7 +22,7 @@
 <s:if test="hasAlertMessages()">
 	<div class="alert">
 		<s:iterator value="alertMessages">
-			<s:property escape="false"/>
+			<s:property escape="false"/><br />
 		</s:iterator>
 	</div>
 	<s:property value="alertMessages = null" />
