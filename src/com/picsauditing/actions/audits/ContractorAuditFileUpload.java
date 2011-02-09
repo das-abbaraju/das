@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAuditFile;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
 
 @SuppressWarnings("serial")
@@ -72,7 +73,8 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 							if (auditQuestion.isValidQuestion(validDate)) {
 								AuditData auditData = answerMap.get(auditQuestion.getId());
 								if (auditData != null) {
-									if (auditData.isHasRequirements() && auditData.isRequirementOpen()) {
+									if (auditData.isHasRequirements() && 
+											(auditData.isRequirementOpen() || auditData.isWasChangedB())) {
 										openReqsSet.add(auditData);
 									}
 								}

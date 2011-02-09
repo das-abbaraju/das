@@ -49,7 +49,7 @@ function showAuditUpload(auditID, fileID, desc, question) {
 <table style="background-color:none; border:none; margin:10px;">
 	<tr>
 		<td style="vertical-align:top; width:65%;">
-		<h3 style="padding:10px 0 10px 0;">Open Requirements</h3>
+		<h3 style="padding:10px 0 10px 0;">Requirements</h3>
 			<table class="report" style="width:95%;">
 				<thead>
 					<tr>
@@ -61,8 +61,11 @@ function showAuditUpload(auditID, fileID, desc, question) {
 						<td>
 							<s:set name="fileDesc" value="getFileDesc(#data.question)"/>
 							<s:property value="#fileDesc"/>&nbsp;&nbsp; 
-							<s:if test="permissions.operatorCorporate">
+							<s:if test="permissions.operatorCorporate || !#data.requirementOpen">
 								<s:property value="question.requirement" />
+								<s:if test="#data.dateVerified != null">
+									<br/><span class="verified">Closed on <s:date name="#data.dateVerified" format="MMM d, yyyy" /></span>
+								</s:if>
 							</s:if>
 							<s:else>
 								<a style="cursor:pointer;" onclick="javascript: showAuditUpload(<s:property value="conAudit.id"/>,0,'<s:property value="#fileDesc"/>',<s:property value="question.id"/>); return false;" title="Click here to upload requirements"><s:property value="question.requirement" /></a>
