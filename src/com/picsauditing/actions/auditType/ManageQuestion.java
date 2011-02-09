@@ -9,7 +9,6 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -24,10 +23,10 @@ public class ManageQuestion extends ManageCategory {
 	private Integer requiredQuestionID;
 	private Integer visibleQuestionID;
 
-	public ManageQuestion(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDao,
-			AuditCategoryDAO auditCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO,
-			AuditDecisionTableDAO ruleDAO, WorkFlowDAO wfDAO) {
-		super(emailTemplateDAO, auditTypeDao, auditCategoryDao, auditQuestionDao, ruleDAO, wfDAO);
+	public ManageQuestion(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
+			AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO, AuditDecisionTableDAO ruleDAO,
+			WorkFlowDAO wfDAO) {
+		super(auditTypeDao, auditCategoryDao, auditQuestionDao, ruleDAO, wfDAO);
 		this.auditDataDAO = auditDataDAO;
 	}
 
@@ -88,8 +87,8 @@ public class ManageQuestion extends ManageCategory {
 
 			if (question.getCategory() == null)
 				question.setCategory(category);
-			
-			if(question.getScoreWeight()>0)
+
+			if (question.getScoreWeight() > 0)
 				question.setRequired(true);
 
 			question = auditQuestionDAO.save(question);
@@ -106,14 +105,14 @@ public class ManageQuestion extends ManageCategory {
 			// TODO check to see if AuditData exists for this question first
 			List<AuditData> list = auditDataDAO.findByQuestionID(question.getId());
 			if (list.size() > 0) {
-				addActionError("Deleting Questions is not supported just yet.");
+				addActionError("This Question has existing Data. It cannot be deleted.");
 				return false;
 			}
 			id = question.getCategory().getId();
 			auditQuestionDAO.deleteData(AuditCategoryRule.class, "question.id = " + question.getId());
 			auditQuestionDAO.deleteData(AuditTypeRule.class, "question.id = " + question.getId());
 			auditQuestionDAO.remove(question.getId());
-			
+
 			recalculateCategory();
 			return true;
 		} catch (Exception e) {
@@ -131,14 +130,14 @@ public class ManageQuestion extends ManageCategory {
 				AuditCategory targetSubCategory = auditCategoryDAO.find(targetID);
 				question.setCategory(targetSubCategory);
 				question.setAuditColumns(permissions);
-				
+
 				int number = 0;
 				for (AuditQuestion q : targetSubCategory.getQuestions()) {
 					if (q.getNumber() > number)
 						number = q.getNumber();
 				}
 				question.setNumber(number + 1);
-				
+
 				auditQuestionDAO.save(question);
 				recalculateCategory(question.getCategory());
 				return true;
@@ -146,10 +145,10 @@ public class ManageQuestion extends ManageCategory {
 		} catch (Exception e) {
 			addActionError(e.getMessage());
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	protected boolean copy() {
 		try {
@@ -159,14 +158,14 @@ public class ManageQuestion extends ManageCategory {
 				AuditCategory targetSubCategory = auditCategoryDAO.find(targetID);
 				AuditQuestion copy = new AuditQuestion(question, targetSubCategory);
 				copy.setAuditColumns(permissions);
-				
+
 				int number = 0;
 				for (AuditQuestion q : targetSubCategory.getQuestions()) {
 					if (q.getNumber() > number)
 						number = q.getNumber();
 				}
 				copy.setNumber(number + 1);
-				
+
 				question = auditQuestionDAO.save(copy);
 				recalculateCategory(question.getCategory());
 				return true;
@@ -174,7 +173,7 @@ public class ManageQuestion extends ManageCategory {
 		} catch (Exception e) {
 			addActionError(e.getMessage());
 		}
-		
+
 		return false;
 	}
 
@@ -184,7 +183,7 @@ public class ManageQuestion extends ManageCategory {
 			auditQuestionDAO.save(category);
 		}
 	}
-	
+
 	private void recalculateCategory(AuditCategory cat) {
 		cat.recalculateQuestions();
 		auditQuestionDAO.save(cat);
@@ -194,7 +193,7 @@ public class ManageQuestion extends ManageCategory {
 	protected String getRedirectURL() {
 		return "ManageCategory.action?id=" + question.getCategory().getId();
 	}
-	
+
 	@Override
 	protected String getCopyMoveURL() {
 		return "ManageQuestion.action?id=" + question.getId();

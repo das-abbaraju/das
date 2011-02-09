@@ -123,7 +123,7 @@ function showRules() {
 						a permission.</p>
 					</div>
 				</li>				
-				<li><label>Set Workflow:</label>
+				<li><label>Workflow:</label>
 					<s:select list="workFlowList" name="workFlowID" listKey="id" listValue="name" value="auditType.workFlow.id" 
 					headerKey="0" headerValue="- Select Workflow -" />
 				</li>
@@ -137,15 +137,6 @@ function showRules() {
 				</li>
 				<li><label>Months to Expire:</label>
 					<s:textfield name="auditType.monthsToExpire" /> 
-				</li>
-				<li><label>Email Template:</label>
-					<s:select list="templateList" name="emailTemplateID" 
-						headerKey="" headerValue="- Email Template -"
-						listKey="id" listValue="templateName" />
-					<div class="fieldhelp">
-						<h3>Email Template</h3>
-						<p>This is the template that will be sent to the contractor when the audit is completed.</p>
-					</div>
 				</li>
 			</ol>
 		</fieldset>

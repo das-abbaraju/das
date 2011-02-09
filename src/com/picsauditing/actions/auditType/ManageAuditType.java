@@ -14,7 +14,6 @@ import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -23,7 +22,6 @@ import com.picsauditing.jpa.entities.AuditQuestionOption;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.util.AuditTypeCache;
 import com.picsauditing.util.Strings;
@@ -45,7 +43,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	private List<AuditType> auditTypes = null;
 
 	protected AuditTypeDAO auditTypeDAO;
-	protected EmailTemplateDAO emailTemplateDAO;
 	protected AuditCategoryDAO auditCategoryDAO;
 	protected AuditQuestionDAO auditQuestionDAO;
 	protected AuditDecisionTableDAO ruleDAO;
@@ -54,10 +51,9 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	List<? extends AuditRule> relatedRules;
 	List<Workflow> workFlowList = null;
 
-	public ManageAuditType(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDAO,
+	public ManageAuditType(AuditTypeDAO auditTypeDAO,
 			AuditCategoryDAO auditCategoryDAO, AuditQuestionDAO auditQuestionDAO, AuditDecisionTableDAO ruleDAO,
 			WorkFlowDAO wfDAO) {
-		this.emailTemplateDAO = emailTemplateDAO;
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditQuestionDAO = auditQuestionDAO;
@@ -206,12 +202,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				auditType.getAccount().setId(Integer.parseInt(operatorID));
 			} else
 				auditType.setAccount(null);
-
-			if (emailTemplateID == null) {
-				auditType.setTemplate(null);
-			} else if (auditType.getTemplate() == null || auditType.getTemplate().getId() != emailTemplateID) {
-				auditType.setTemplate(emailTemplateDAO.find(emailTemplateID));
-			}
 
 			if (editPerm != null && !editPerm.isEmpty()) {
 				auditType.setEditPermission(OpPerms.valueOf(editPerm));
@@ -435,18 +425,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	public void setTargetID(int targetID) {
 		this.targetID = targetID;
-	}
-
-	public Integer getEmailTemplateID() {
-		return emailTemplateID;
-	}
-
-	public void setEmailTemplateID(Integer emailTemplateID) {
-		this.emailTemplateID = emailTemplateID;
-	}
-
-	public List<EmailTemplate> getTemplateList() {
-		return emailTemplateDAO.findAll();
 	}
 
 	public String getEditPerm() {

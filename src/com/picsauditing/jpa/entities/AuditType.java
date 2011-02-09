@@ -58,7 +58,6 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	protected boolean scoreable = false;
 	protected Integer monthsToExpire;
 	protected Account account;
-	protected EmailTemplate template;
 	protected OpPerms editPermission;
 	protected Workflow workFlow;
 
@@ -82,7 +81,6 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		this.isScheduled = a.isScheduled();
 		this.monthsToExpire = a.getMonthsToExpire();
 		this.renewable = a.isRenewable();
-		this.template = a.getTemplate();
 	}
 
 	public AuditType(String name) {
@@ -100,7 +98,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public void setAuditName(String auditName) {
 		this.auditName = auditName;
 	}
-	
+
 	@Transient
 	public String getName() {
 		return this.auditName;
@@ -208,16 +206,6 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	public void setAccount(Account account) {
 		this.account = account;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "emailTemplateID")
-	public EmailTemplate getTemplate() {
-		return template;
-	}
-
-	public void setTemplate(EmailTemplate template) {
-		this.template = template;
 	}
 
 	@OneToMany(mappedBy = "auditType")
