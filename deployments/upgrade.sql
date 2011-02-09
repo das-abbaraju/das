@@ -27,9 +27,11 @@ update contractor_audit set effectiveDate = null;
 update contractor_audit ca
 join contractor_audit_operator cao on cao.auditID = ca.id
 set ca.effectiveDate = min(cao.statusChangedDate) 
-where cao.status = 'Submitted'
+where cao.status IN ('Submitted')
 and ca.auditTypeID not in (1, 11)
 group by ca.id;
 
-update contractor_audit set effectiveDate = concat(auditFor,'-01-01 00:00:00')
+update contractor_audit set effectiveDate = concat(auditFor,'-01-01')
 where auditTypeID = 11;
+
+alter table audit_type drop column emailTemplateID;
