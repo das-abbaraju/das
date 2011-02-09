@@ -117,6 +117,9 @@ class CronPublisher(CronThread):
 		self.logger = logging.getLogger('publisher')
 	def run(self):
 		while self.running:
+			running_lock.acquire()
+			self.logger.info('contractors running: %s' % con_running)
+			running_lock.release()
 			if self.con_q.qsize() < 5:
 				try:
 					result = urllib2.urlopen(self.url % self.server_g.next()).read().strip()
