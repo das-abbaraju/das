@@ -106,6 +106,12 @@ public class BillingDetail extends ContractorActionSupport {
 			} else if (contractor.getBillingStatus().startsWith("Renew")) {
 				invoice.setDueDate(contractor.getPaymentExpires());
 			}
+			
+			if(contractor.getNewMembershipLevel().isBidonly()) {
+				invoice.setDueDate(new Date());
+				contractor.setRenew(true);
+			}
+			
 			if (invoice.getDueDate() == null)
 				// For all other statuses like (Current)
 				invoice.setDueDate(DateBean.addDays(new Date(), 30));

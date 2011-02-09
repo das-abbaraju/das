@@ -230,6 +230,9 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							item.setInvoice(invoice);
 							item.setAuditColumns(new User(User.SYSTEM));
 						}
+						
+						if(contractor.getNewMembershipLevel().isBidonly())
+							contractor.setRenew(true);
 
 						updateTotals();
 						this.addNote(contractor, "Created invoice for $" + invoice.getTotalAmount(),

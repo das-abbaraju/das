@@ -100,6 +100,11 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 	}
 	
 	@Transient
+	public boolean isBidonly() {
+		return this.id == BIDONLY;
+	}
+
+	@Transient
 	public BigDecimal getGSTSurchage(BigDecimal total) {
 		return total.multiply(BigDecimal.valueOf(0.05)).setScale(2,BigDecimal.ROUND_UP);
 	}

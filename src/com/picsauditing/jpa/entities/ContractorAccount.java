@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -873,19 +874,20 @@ public class ContractorAccount extends Account implements JSONable {
 		if (status.isDeleted())
 			return "Current";
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
+
 		if (acceptsBids) {
-			// if the contractor is bid only, and their payment has expired,
-			// keep calculating
-			Calendar bidOnlyExpiration = Calendar.getInstance();
-			bidOnlyExpiration.setTime(this.getPaymentExpires());
-			bidOnlyExpiration.add(Calendar.DATE, 90);
-			if (bidOnlyExpiration.getTime().after(new Date())) {
-				// Do we want to do this?
-				if (status.isActive()) {
-					return "Current";
-				}
-				return "Bid Only Account";
-			}
+			daysUntilRenewal = (paymentExpires == null || sdf.format(paymentExpires).equals(sdf.format(creationDate))) ? 0 : DateBean.getDateDifference(paymentExpires);
+			
+			if (status.isDeactivated() || daysUntilRenewal < 0)
+				return renew ? "Renewal" : "Membership Canceled";
+
+			// Do we want to do this?
+			if (status.isActive())
+				return "Current";
+			
+			return "Bid Only Account";
 		}
 
 		if (newMembershipLevel == null)
@@ -896,8 +898,6 @@ public class ContractorAccount extends Account implements JSONable {
 
 		if (status.isPending() && membershipDate == null)
 			return "Activation";
-
-		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
 
 		if (status.isDeactivated() || daysUntilRenewal < -90) {
 			// this contractor is not active or their membership expired more
