@@ -54,7 +54,7 @@ will be made.</div>
 	<ol>
 		<li><s:checkbox name="confirmed" />By checking this box, I understand that if I need to reschedule this audit, <br />
 		I must do so before <s:property value="formatDate(lastCancellationTime)" /> or I will
-		be subject to a $150 rescheduling fee.</li>
+		be subject to a $199 rescheduling fee.</li>
 	</ol>
 	<button id="confirmButton" class="picsbutton positive" type="submit">Confirm Audit</button>
 	</div>

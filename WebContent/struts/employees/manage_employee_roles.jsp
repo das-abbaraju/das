@@ -22,6 +22,11 @@
 		</li>
 	</s:if>
 	<li>
-		<s:select list="unusedJobRoles" onchange="addJobRole(this.value)" headerKey="" headerValue=" - Add New Role - " listKey="id" listValue="name"/>
+		<s:if test="unusedJobRoles.size > 0">
+			<s:select list="unusedJobRoles" onchange="addJobRole(this.value)" headerKey="" headerValue=" - Add New Role - " listKey="id" listValue="name"/>
+		</s:if>
+		<s:else>
+			<h5>This employee has been assigned all job roles.</h5>
+		</s:else>
 	</li>
 </ol>
