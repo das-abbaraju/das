@@ -34,7 +34,7 @@
 			<s:else>I have my own webcam that I can use for this audit</s:else>
 		</li>
 	</s:else>
-	<li><div class="alert">Any changes to the above schedule must be done 2 business days before this audit begins (<s:property value="formatDate(lastCancellationTime)" />) to avoid a $150 rescheduling fee.</div></li>
+	<li><div class="alert">Any changes to the above schedule must be done 2 business days before this audit begins (<s:property value="formatDate(lastCancellationTime)" />) to avoid a $199 rescheduling fee.</div></li>
 </ol>
 </fieldset>
 <fieldset class="form">
