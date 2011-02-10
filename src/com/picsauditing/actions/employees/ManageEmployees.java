@@ -132,22 +132,22 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		else
 			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
 					.getContext().getSession().get("auditID"));
-		
+
 		if (employee != null)
 			// TODO Put this into the employee cron
 			for (EmployeeSite es : employee.getEmployeeSites()) {
 				Date exp1 = es.getExpirationDate();
 				Date exp2 = null;
-				
+
 				if (es.getJobSite() != null)
 					exp2 = es.getJobSite().getProjectStop();
-				
+
 				Date exp = null;
 				if (exp1 != null && exp2 != null)
 					exp = exp1.before(exp2) ? exp1 : exp2;
 				else if (exp1 != null || exp2 != null)
 					exp = exp1 == null ? exp2 : exp1;
-				
+
 				if (exp != null && exp.before(new Date()) && es.isCurrent()) {
 					es.expire();
 					es.setAuditColumns(permissions);
@@ -232,7 +232,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 					es.setJobSite(jobSiteDAO.find(-1 * op.getId()));
 					es.setOperator(es.getJobSite().getOperator());
 				}
-				
+
 				es.setAuditColumns(permissions);
 				es.defaultDates();
 				employeeSiteDAO.save(es);
@@ -292,23 +292,24 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 					notes.add("Updated stop date to " + esSite.getExpirationDate());
 				else if (esSite.getExpirationDate() == null && es.getExpirationDate() != null)
 					notes.add("Removed stop date");
-				
+
 				if (esSite.getOrientationDate() != null && !esSite.getOrientationDate().equals(es.getOrientationDate())) {
 					notes.add("Updated orientation date to " + esSite.getOrientationDate());
-					
-					if (esSite.getOrientationExpiration() != null && !esSite.getOrientationExpiration().equals(es.getOrientationExpiration()))
+
+					if (esSite.getOrientationExpiration() != null
+							&& !esSite.getOrientationExpiration().equals(es.getOrientationExpiration()))
 						notes.add("Updated orientation expiration date to " + esSite.getOrientationExpiration());
 				} else if (esSite.getOrientationDate() == null && es.getOrientationDate() != null) {
 					notes.add("Removed orientation date");
 					esSite.setOrientationExpiration(null);
 				}
-				
+
 				es.setEffectiveDate(esSite.getEffectiveDate());
 				es.setExpirationDate(esSite.getExpirationDate());
 				es.setOrientationDate(esSite.getOrientationDate());
 				es.setOrientationExpiration(esSite.getOrientationExpiration());
 				es.setAuditColumns(permissions);
-				
+
 				employeeSiteDAO.save(es);
 				createNewNote(Strings.implode(notes));
 			}
@@ -377,11 +378,11 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public OperatorAccount getOp() {
 		return op;
 	}
-	
+
 	public void setOp(OperatorAccount op) {
 		this.op = op;
 	}
-	
+
 	public EmployeeSite getEsSite() {
 		return esSite;
 	}

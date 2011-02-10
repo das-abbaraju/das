@@ -23,7 +23,7 @@
 	</s:if>
 	$(function() {
 		$('a.passAudit').live('click', function() {
-			window.location.href = $(this).attr('href') + "?auditID=" + auditID;
+			window.location.href = $(this).attr('href') + ($(this).attr('href').indexOf("?") > 0 ? "&" : "?") + "auditID=" + auditID;
 			return false;
 		});
 	});

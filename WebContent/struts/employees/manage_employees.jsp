@@ -178,6 +178,9 @@ div.dataTables_length { width: 35%; }
 <body>
 	<s:if test="auditID > 0">
 		<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />">Return to Job Roles Self Assessment</a></div>
+		<s:if test="employee.id > 0">
+			<div class="alert">Thank you for adding this employee, please scroll to the bottom of this page to now add Job Roles and appropriate HSE Sites.</div>
+		</s:if>
 	</s:if>
 	<h1><s:property value="account.name" /><span class="sub"><s:property value="subHeading" escape="false"/></span></h1>
 	<s:include value="../actionMessages.jsp"/>
