@@ -13,6 +13,10 @@ $(document).ready(function() {
 		$(".calculatedAddress").show("slow");
 		$("#submitButton").show();
 	}
+	
+	$('a.expedite').click(function() {
+		return confirm('You are choosing a date within 7 business days and this will be considered a RUSH job. You will be assessed an expedite fee of $150.');
+	});
 });
 
 function isVerified() {

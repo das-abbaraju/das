@@ -7,7 +7,7 @@
 		<s:iterator value="value">
 			<a
 				href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>&button=select&timeSelected=<s:date 
-								name="startDate" format="%{@com.picsauditing.actions.audits.ScheduleAudit@DATE_FORMAT}" />"><s:property
+				name="startDate" format="%{@com.picsauditing.actions.audits.ScheduleAudit@DATE_FORMAT}" />"<s:if test="isNeedsExpediteFee(startDate)"> class="expedite"</s:if>><s:property
 				value="formatDate(startDate, 'h:mm a')" /> to <s:property
 				value="formatDate(endDate, 'h:mm a z')" /></a>
 			 <br/>

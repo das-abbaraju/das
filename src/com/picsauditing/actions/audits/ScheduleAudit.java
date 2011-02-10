@@ -150,31 +150,13 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			if (isNeedsReschedulingFee() && !feeOverride) {
 				if (!scheduledDateInServerTime.equals(conAudit.getScheduledDate())) {
 					// Create invoice
-					InvoiceFee fee = feeDAO.find(54); // Rescheduling fee
-
-					Invoice invoice = new Invoice();
-					invoice.setAccount(contractor);
-					invoice.setCurrency(contractor.getCurrency());
-					invoice.setDueDate(new Date());
-					invoice.setTotalAmount(fee.getAmount());
-					invoice.setNotes("Fee for rescheduling " + conAudit.getAuditType().getAuditName()
+					InvoiceFee fee = feeDAO.find(InvoiceFee.RESCHEDULING);
+					String notes = "Fee for rescheduling " + conAudit.getAuditType().getAuditName()
 							+ " within 48 hours of original scheduled date "
 							+ DateBean.format(conAudit.getScheduledDate(), "MMM dd, yyyy") + " to "
-							+ DateBean.format(scheduledDateInServerTime, "MMM dd, yyyy"));
-					invoice.setAuditColumns(permissions);
-					invoice = invoiceDAO.save(invoice);
+							+ DateBean.format(scheduledDateInServerTime, "MMM dd, yyyy");
 
-					InvoiceItem item = new InvoiceItem();
-					item.setAmount(fee.getAmount());
-					item.setInvoice(invoice);
-					item.setInvoiceFee(fee);
-					item.setAuditColumns(permissions);
-					item = itemDAO.save(item);
-					
-					invoice.getItems().add(item);
-					contractor.getInvoices().add(invoice);
-					contractor.syncBalance();
-					accountDao.save(contractor);
+					createInvoice(fee, notes);
 				}
 			}
 
@@ -252,6 +234,14 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			if (!confirmed) {
 				addActionError("You must agree to the terms by checking the box below.");
 				return "confirm";
+			}
+
+			if (isNeedsExpediteFee(availabilitySelected.getStartDate())) {
+				InvoiceFee fee = feeDAO.find(InvoiceFee.EXPEDITE);
+				String notes = conAudit.getAuditType().getAuditName()
+						+ " was scheduled within 7 business days, requiring an expedite fee.";
+				
+				createInvoice(fee, notes);
 			}
 
 			conAudit.setScheduledDate(availabilitySelected.getStartDate());
@@ -360,7 +350,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	public void setConfirmed(boolean confirmed) {
 		this.confirmed = confirmed;
 	}
-	
+
 	public boolean isFeeOverride() {
 		return feeOverride;
 	}
@@ -472,9 +462,40 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public boolean isNeedsReschedulingFee() {
-		Date now = new Date();
-		long diff = conAudit.getScheduledDate().getTime() - now.getTime();
+		if (conAudit.getScheduledDate() != null) {
+			Date now = new Date();
+			long diff = conAudit.getScheduledDate().getTime() - now.getTime();
 
-		return (diff < (3600 * 48 * 1000));
+			return diff > 0 && diff < (3600 * 48 * 1000);
+		}
+
+		return false;
+	}
+
+	public boolean isNeedsExpediteFee(Date date) {
+		return date != null && date.after(new Date()) && DateBean.getDateDifference(date) < 10;
+	}
+
+	private void createInvoice(InvoiceFee fee, String notes) {
+		Invoice invoice = new Invoice();
+		invoice.setAccount(contractor);
+		invoice.setCurrency(contractor.getCurrency());
+		invoice.setDueDate(new Date());
+		invoice.setTotalAmount(fee.getAmount());
+		invoice.setNotes(notes + " Thank you for doing business with PICS!");
+		invoice.setAuditColumns(permissions);
+		invoice = invoiceDAO.save(invoice);
+
+		InvoiceItem item = new InvoiceItem();
+		item.setAmount(fee.getAmount());
+		item.setInvoice(invoice);
+		item.setInvoiceFee(fee);
+		item.setAuditColumns(permissions);
+		item = itemDAO.save(item);
+
+		invoice.getItems().add(item);
+		contractor.getInvoices().add(invoice);
+		contractor.syncBalance();
+		accountDao.save(contractor);
 	}
 }
