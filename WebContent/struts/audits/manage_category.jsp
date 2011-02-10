@@ -82,9 +82,6 @@ function showRules() {
 			<li><label># Required:</label>
 				<s:property value="category.numRequired"/>
 			</li>
-			<li><label>Page Break:</label>
-				<s:checkbox name="category.pageBreak"/>
-			</li>
 			<li><label>Help Text:</label>
 				<s:textarea name="category.helpText" cssStyle="width: 480px;" rows="5" />
 			</li>

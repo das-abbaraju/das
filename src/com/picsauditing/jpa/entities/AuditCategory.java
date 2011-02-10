@@ -46,7 +46,6 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	private int numRequired;
 	private int numQuestions;
 	private String helpText;
-	private boolean pageBreak = false;
 
 	private List<AuditCategory> subCategories = new ArrayList<AuditCategory>();
 	private List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
@@ -61,7 +60,6 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		this.numQuestions = a.getNumQuestions();
 		this.numRequired = a.getNumRequired();
 		this.helpText = a.getHelpText();
-		this.pageBreak = a.pageBreak;
 		this.auditType = at;
 	}
 
@@ -73,7 +71,6 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		this.numRequired = a.numRequired;
 		this.numQuestions = a.numQuestions;
 		this.helpText = a.getHelpText();
-		this.pageBreak = a.pageBreak;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -95,12 +92,12 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	public void setParent(AuditCategory parent) {
 		this.parent = parent;
 	}
-	
+
 	@Transient
 	public AuditCategory getTopParent() {
 		if (parent != null)
 			return parent.getTopParent();
-		
+
 		return this;
 	}
 
@@ -183,15 +180,6 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 
 	public void setHelpText(String helpText) {
 		this.helpText = helpText;
-	}
-
-	@Column(nullable = false)
-	public boolean isPageBreak() {
-		return pageBreak;
-	}
-
-	public void setPageBreak(boolean pageBreak) {
-		this.pageBreak = pageBreak;
 	}
 
 	@OneToMany(mappedBy = "parent")
@@ -303,12 +291,12 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	public String toString() {
 		return getNumber() + " " + name;
 	}
-	
+
 	@Override
 	@Transient
-	public AuditCategory clone(){
+	public AuditCategory clone() {
 		AuditCategory clone = new AuditCategory();
-		
+
 		clone.auditType = this.getAuditType();
 		clone.createdBy = this.getCreatedBy();
 		clone.creationDate = this.getCreationDate();
@@ -318,9 +306,8 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		clone.number = this.getNumber();
 		clone.numQuestions = this.getNumQuestions();
 		clone.numRequired = this.getNumRequired();
-		clone.pageBreak = this.isPageBreak();
 		clone.parent = this.getParent();
-		
+
 		return clone;
 	}
 }
