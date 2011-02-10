@@ -29,11 +29,24 @@
 	margin: 0;
 	padding: 0;
 }
+div#needsReschedulingFee {
+	display: none;
+}
 </style>
 <script type="text/javascript">
 var map;
 $(function() {
-	$("#ScheduleAudit_scheduledDateDay").datepicker({ minDate: new Date(), numberOfMonths: [1, 2] });
+	<s:if test="needsReschedulingFee">
+		$("#scheduledDateDay").click(function() {
+			$('#needsReschedulingFee').slideDown();
+			$('#scheduledDateTime').attr('disabled', true);
+			$('#scheduledDateDay').attr('disabled', true);
+			$('#scheduledDateDay').unbind('click');
+		});
+	</s:if>
+	<s:else>
+		$("#scheduledDateDay").datepicker({ minDate: new Date(), numberOfMonths: [1, 2] });
+	</s:else>
 	$('.selector').datepicker();
 
 	if (GBrowserIsCompatible()) {
@@ -65,6 +78,7 @@ function useContractor() {
 			recenterMap();
 		});
 }
+<s:if test="!needsReschedulingFee">
 $(function(){
 	$('.time').timeEntry({
 			ampmPrefix: ' ',
@@ -72,6 +86,23 @@ $(function(){
 		}
 	);
 });
+</s:if>
+
+function showChooseDate(override) {
+	if (override) {
+		$('input[name=feeOverride]').val(true);
+		$('#needsReschedulingFee').text("This contractor will NOT be charged the rescheduling fee.");
+	} else
+		$('#needsReschedulingFee').text("This contractor will be charged the rescheduling fee.");
+
+	$('#scheduledDateDay').attr('disabled', false);
+	$('#scheduledDateTime').attr('disabled', false);
+	$("#scheduledDateDay").datepicker({ minDate: new Date(), numberOfMonths: [1, 2] }).datepicker("show");
+	$('.time').timeEntry({
+		ampmPrefix: ' ',
+		spinnerImage: 'images/spinnerDefault.png' 
+	});
+}
 </script>
 </head>
 <body>
@@ -88,9 +119,18 @@ $(function(){
 	<fieldset class="form">
 	<h2 class="formLegend">Date &amp; Time</h2>
 	<ol>
-		<li><label>Audit Date:</label> <s:textfield name="scheduledDateDay"
+		<li><label>Audit Date:</label> <s:textfield name="scheduledDateDay" id="scheduledDateDay"
 			value="%{formatDate(conAudit.scheduledDate, 'MM/dd/yyyy')}" /> <s:date name="conAudit.scheduledDate" nice="true" /> </li>
-		<li><label>Audit Time:</label> <s:textfield name="scheduledDateTime"
+		<s:if test="needsReschedulingFee">
+			<input type="hidden" name="feeOverride" value="false" />
+			<div id="needsReschedulingFee" class="alert">
+				This audit is scheduled to be conducted within 48 hours.
+				If the scheduled date is changed, the contractor will be charged a $199 rescheduling fee.<br />
+				<input type="button" onclick="showChooseDate(); return false;" value="Continue" class="picsbutton positive" />
+				<input type="button" onclick="showChooseDate(true); return false;" value="Override Fee" class="picsbutton" />
+			</div>
+		</s:if>
+		<li><label>Audit Time:</label> <s:textfield name="scheduledDateTime" id="scheduledDateTime"
 			value="%{formatDate(conAudit.scheduledDate, 'h:mm a')}" cssClass="time"/> <s:property value="permissions.timezone.displayName"/></li>
 		<li><label>Safety Professional:</label> <s:select list="auditorList" listKey="id" listValue="name" name="auditor.id" value="conAudit.auditor.id"/></li>
 		<li><label>Location:</label> <s:radio name="conAudit.conductedOnsite" theme="pics"
