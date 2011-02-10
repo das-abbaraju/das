@@ -46,8 +46,8 @@ var flags = {
 		<tr>
 			<th></th>
 			<th>Approve</th>
-			<th>New</th>
 			<th>Old</th>
+			<th>New</th>
 			<th><a href="?orderBy=a.name,operator.name">Contractor</a></th>
 			<pics:permission perm="AllContractors">
 				<th><a href="?orderBy=operator.name,a.name">Operator</a></th>
@@ -67,8 +67,8 @@ var flags = {
 				<a href="#<s:property value="#gcID"/>" onclick="approve(<s:property value="#gcID"/>); return false;"
 					>Approve <s:property value="get('flag')"/></a>
 			</td>
-			<td><s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('flag').toString())" escape="false"/></td>
 			<td><s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('baselineFlag').toString())" escape="false"/></td>
+			<td><s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('flag').toString())" escape="false"/></td>
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>" 
 					rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>" 
 					class="contractorQuick account<s:property value="get('status')"/>" title="<s:property value="get('name')"/>"
