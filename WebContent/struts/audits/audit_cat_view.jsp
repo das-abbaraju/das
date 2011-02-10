@@ -27,8 +27,8 @@
 			<s:include value="audit_cat_sha.jsp"></s:include>
 		</s:if>
 		<s:else>
-			<s:if test="#category.helpText != null && #category.helpText.length() > 0">
-				<div class="info"><s:property value="#category.helpText" escape="false"/></div>
+			<s:if test="#category.helpText.length() > 0">
+				<div class="helpbox" style="margin-top: -8px"><s:property value="#category.helpText" escape="false"/></div>
 			</s:if> 
 			<s:set name="shaded" value="true" scope="action"/>
 			<s:set name="mode" value="mode"/>
