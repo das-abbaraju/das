@@ -14,15 +14,22 @@ $('input.ssn').mask('SSS-SS-SSSS');
 </head>
 <body>
 <h1>HSE Competency By Account Report</h1>
-<s:if test="data.size() > 0">
-<table class="report" id="matrix">
+<s:if test="data.size > 0">
+<div class="right">
+	<a class="excel" <s:if test="data.size > 500">onclick="return confirm('Are you sure you want to download all
+		<s:property value="data.size" /> rows? This may take a while.');"</s:if> 
+		href="javascript: download('ReportCompetencyByAccount');"
+		title="Download all <s:property value="data.size"/> results to a CSV file">Download</a>
+</div>
+
+<table class="report" style="clear: none !important;">
 	<thead>
 		<tr>
 			<th><a href="?orderBy=name">Company</a></th>
 			<th># of Employees</th>
 			<th># of Job Roles</th>
 			<th><a href="?orderBy=ca99date">Job Role Self Assessment</a></th>
-			<th><a href="?orderBy=ca100date">Shell Competency Review</a></th>
+			<th><a href="?orderBy=ca100date">HSE Competency Review</a></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -31,25 +38,8 @@ $('input.ssn').mask('SSS-SS-SSSS');
 				<td><a href="ContractorView.action?id=<s:property value="#d.get('accountID')"/>"><s:property value="#d.get('name')" /></a></td>
 				<td class="right"><a href="ReportCompetencyByEmployee.action?filter.accountName=<s:property value="@java.net.URLEncoder@encode(#d.get('name'))" />"><s:property value="#d.get('eCount')" /></a></td>
 				<td class="right"><a href="JobCompetencyMatrix.action?id=<s:property value="#d.get('accountID')"/>"><s:property value="#d.get('jCount')"/></a></td>
-				<td>
-					<s:if test="#d.get('ca99ID') != null">
-						<s:if test="#d.get('ca99status') == 'Complete'">
-							Completed on <s:date name="#d.get('ca99date')" format="M/d/yyyy"/>
-						</s:if>
-					</s:if>
-				</td>
-				<td>
-					<s:if test="#d.get('ca100ID') != null">
-						<a href="Audit.action?auditID=<s:property value="#d.get('ca100ID')"/>">
-							<s:if test="#d.get('ca100status') == 'Complete'">
-								Completed on <s:date name="#d.get('ca100date')" format="M/d/yyyy"/>
-							</s:if>
-							<s:elseif test="#d.get('ca100status') == 'Submitted'">
-								Submitted on <s:date name="#d.get('ca100date')" format="M/d/yyyy"/>
-							</s:elseif>
-						</a>
-					</s:if>
-				</td>
+				<td><s:property value="#d.get('ca99status')" /></td>
+				<td><s:property value="#d.get('ca100status')" /></td>
 			</tr>
 		</s:iterator>
 	</tbody>

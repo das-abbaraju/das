@@ -38,6 +38,11 @@
 						</td>
 					</tr>
 				</table>
+				<s:if test="hseOperators.size > 0">
+					<pics:fieldhelp title="Add HSE Site">
+						<p>Enter the site for which the employee has completed orientation and has worked. Make certain to click the <img src="images/edit_pencil.gif" /> to add the Orientation Date for each site.</p>
+					</pics:fieldhelp>
+				</s:if>
 			</li>
 		</ol>
 	</fieldset>

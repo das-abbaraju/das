@@ -240,16 +240,15 @@ div.dataTables_length { width: 35%; }
 							<ol>
 								<li<s:if test="employee.firstName == null || employee.firstName == ''"> class="required"</s:if>><label>First Name:</label>
 									<s:textfield name="employee.firstName"/>
-									<div class="fieldhelp">
-									<h3>First Name</h3>
-									<p>The first given name of the employee. This can include a middle initial or middle name if needed to differentiate between employees.</p>
-									<h5>Examples:</h5>
-									<ul>
-										<li>John</li>
-										<li>John Q.</li>
-										<li>John Quincy</li>
-									</ul>
-									</div>
+									<pics:fieldhelp title="First Name">
+										<p>The first given name of the employee. This can include a middle initial or middle name if needed to differentiate between employees.</p>
+										<h5>Examples:</h5>
+										<ul>
+											<li>John</li>
+											<li>John Q.</li>
+											<li>John Quincy</li>
+										</ul>
+									</pics:fieldhelp>
 								</li>
 								<li<s:if test="employee.lastName == null || employee.lastName == ''"> class="required"</s:if>><label>Last Name:</label>
 									<s:textfield name="employee.lastName"/>
@@ -332,10 +331,9 @@ div.dataTables_length { width: 35%; }
 								</li>
 								<li><label>TWIC Card Expiration:</label>
 									<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" cssClass="datepicker"/>
-									<div class="fieldhelp">
-									<h3>TWIC</h3>
-									<p>The expiration date of the employee's TWIC Card if available. Some operators may require this information.</p>
-									</div>
+									<pics:fieldhelp title="TWIC">
+										<p>The expiration date of the employee's TWIC Card if available. If the card is in transit, please provide an estimate of the expiration date.</p>
+									</pics:fieldhelp>
 								</li>
 								<li><label>SSN:</label>
 									<s:textfield name="ssn" cssClass="ssn"/>
@@ -354,7 +352,6 @@ div.dataTables_length { width: 35%; }
 									<ul>
 										<li>Dallas</li>
 										<li>Building C</li>
-										<li>BP Whiting</li>
 									</ul>
 									<p>Suggestions based on common locations of other employees will appear after you start to type.</p>
 									</div>

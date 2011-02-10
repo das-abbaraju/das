@@ -62,9 +62,6 @@ $(function() {
 
 <s:include value="../actionMessages.jsp" />
 
-<s:if test="jobRoles.size > 0">
-	<a href="JobCompetencyMatrix.action?id=<s:property value="account.id" />">HSE Competency Matrix</a>
-</s:if>
 <table id="rolesTable">
 	<tr>
 		<td style="vertical-align: top; padding-right: 10px;">

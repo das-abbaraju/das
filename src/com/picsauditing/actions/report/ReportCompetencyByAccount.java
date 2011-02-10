@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.util.PermissionQueryBuilderEmployee;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportCompetencyByAccount extends ReportEmployee {
@@ -36,21 +37,21 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 				+ "LEFT JOIN contractor_audit_operator cao100 ON cao100.auditID = ca100.id AND cao100.visible = 1 AND cao100.status IN ('Submitted','Complete') "
 				+ "GROUP BY a.id ORDER BY " + (Strings.isEmpty(getOrderBy()) ? orderByDefault : getOrderBy());
 		 */
-		
+
 		super.buildQuery();
-		
+
 		sql.addJoin("LEFT JOIN job_role jr ON jr.accountID = a.id AND jr.active = 1");
 		sql.addJoin(buildAuditJoin(AuditType.HSE_COMPETENCY));
 		sql.addJoin(buildAuditJoin(AuditType.SHELL_COMPETENCY_REVIEW));
-		
+
 		sql.addField("COUNT(distinct e.id) eCount");
 		sql.addField("COUNT(distinct jr.id) jCount");
 		sql.addField(buildAuditField(AuditType.HSE_COMPETENCY));
 		sql.addField(buildAuditField(AuditType.SHELL_COMPETENCY_REVIEW));
-		
+
 		PermissionQueryBuilderEmployee permQuery = new PermissionQueryBuilderEmployee(permissions);
 		sql.addWhere("1 " + permQuery.toString());
-		
+
 		sql.addGroupBy("a.id");
 
 		filter.setShowFirstName(false);
@@ -59,10 +60,21 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 		filter.setShowSsn(false);
 	}
 
+	@Override
+	protected void addExcelColumns() {
+		excelSheet.setData(data);
+		excelSheet.addColumn(new ExcelColumn("name", "Company Name"));
+		excelSheet.addColumn(new ExcelColumn("eCount", "# of Employees"));
+		excelSheet.addColumn(new ExcelColumn("jCount", "# of Job Roles"));
+		excelSheet.addColumn(new ExcelColumn("ca99status", "Job Role Self Assessment"));
+		excelSheet.addColumn(new ExcelColumn("ca100status", "HSE Competency Review"));
+	}
+
 	private String buildAuditJoin(int auditTypeID) {
-		return "LEFT JOIN (SELECT ca.id, ca.conID, cao.status, "
-				+ "CASE WHEN cao.status = 'Pending' THEN NULL ELSE cao.statusChangedDate END statusChangedDate, "
-				+ "caop.opID FROM contractor_audit ca "
+		return "LEFT JOIN (SELECT ca.id, ca.conID, CASE WHEN cao.status = 'Pending' THEN NULL "
+				+ "ELSE CONCAT(CASE WHEN cao.status = 'Complete' THEN 'Completed' ELSE cao.status END, "
+				+ "' on ', DATE_FORMAT(cao.statusChangedDate, '%c/%e/%Y')) "
+				+ "END status, caop.opID FROM contractor_audit ca "
 				+ "JOIN contractor_audit_operator cao ON cao.auditID = ca.id "
 				+ "JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id WHERE ca.auditTypeID = "
 				+ auditTypeID + " GROUP BY ca.conID ORDER BY ca.creationDate DESC) ca" + auditTypeID + " ON ca"
@@ -71,6 +83,6 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 
 	private String buildAuditField(int auditTypeID) {
 		return "ca" + auditTypeID + ".id ca" + auditTypeID + "ID, ca" + auditTypeID + ".status ca" + auditTypeID
-				+ "status, ca" + auditTypeID + ".statusChangedDate ca" + auditTypeID + "date";
+				+ "status";
 	}
 }
