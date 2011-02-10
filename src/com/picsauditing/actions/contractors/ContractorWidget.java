@@ -226,16 +226,25 @@ public class ContractorWidget extends ContractorActionSupport {
 							} else {
 								// Pending
 								if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
-									String text;
+									String text = "";
 									if (conAudit.getAuditType().getId() == AuditType.OFFICE
 											&& conAudit.getScheduledDate() == null) {
 										text = "Please <a href='ScheduleAudit.action?auditID=" + conAudit.getId()
 												+ "'>click here to schedule your Implementation Audit" + auditFor
 												+ "</a>";
 									} else {
-										text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId()
-												+ "\">upcoming " + conAudit.getAuditType().getAuditName() + auditFor
-												+ "</a>";
+										if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
+											String auditorName = conAudit.getAuditor() == null ? "a Safety Professional"
+													: conAudit.getAuditor().getName();
+											text = "Your upcoming <a href=\"Audit.action?auditID=" + conAudit.getId()
+													+ "\">" + conAudit.getAuditType().getAuditName()
+													+ "</a> will be conducted by " + auditorName;
+
+										} else {
+											text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId()
+													+ "\">upcoming " + conAudit.getAuditType().getAuditName()
+													+ auditFor + "</a>";
+										}
 										if (conAudit.getScheduledDate() != null) {
 											try {
 												text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
