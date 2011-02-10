@@ -19,6 +19,7 @@ public class UserAssignment extends BaseTable {
 	private Country country;
 	private String postalStart;
 	private String postalEnd;
+	private ContractorAccount contractor;
 
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false)
@@ -78,9 +79,19 @@ public class UserAssignment extends BaseTable {
 		this.postalEnd = postalEnd;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "conID")
+	public ContractorAccount getContractor() {
+		return contractor;
+	}
+
+	public void setContractor(ContractorAccount contractor) {
+		this.contractor = contractor;
+	}
+
 	@Override
 	public String toString() {
-		return String.format("%s state:%s, country:%s, zip:%s-%s", user.getName(), state, country, postalStart,
-				postalEnd);
+		return String.format("%s state:%s, country:%s, zip:%s-%s, contractor:%s", user.getName(), state, country, postalStart,
+				postalEnd, contractor == null ? null : contractor.getName());
 	}
 }

@@ -799,4 +799,10 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	public boolean isPicsCorporate() {
 		return PICS_CORPORATE.contains(this.id);
 	}
+
+	@Transient
+	@Override
+	public String getAutocompleteValue() {
+		return name;
+	}
 }

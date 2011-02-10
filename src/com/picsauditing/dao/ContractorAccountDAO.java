@@ -12,6 +12,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
@@ -22,6 +23,7 @@ import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectAccount;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
@@ -71,6 +73,27 @@ public class ContractorAccountDAO extends PicsDAO {
 			query.setParameter(i + 1, params[i]);
 		}
 		return query.getResultList();
+	}
+
+	/**
+	 * Alias a
+	 * 
+	 * @param includeCorporate
+	 * @param where
+	 * @return
+	 */
+	public List<BasicDynaBean> findWhereNatively(boolean includeCorporate, String where) {
+		SelectAccount select = new SelectAccount();
+		select.addWhere("a.type = 'Contractor'");
+		select.addWhere(where);
+		select.addOrderBy("a.name");
+
+		try {
+			Database db = new Database();
+			return db.select(select.toString(), false);
+		} catch (SQLException e) {
+			return null;
+		}
 	}
 
 	public List<ContractorOperator> findOperators(ContractorAccount contractor, Permissions permissions, String where) {

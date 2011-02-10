@@ -78,4 +78,53 @@
 		</attribute>
 		<body-content>JSP</body-content>
 	</tag>
+	
+	<tag>
+		<name>autocomplete</name>
+		<description>Create an autocomplete control</description>
+		<tag-class>com.picsauditing.tags.AutocompleteTag</tag-class>
+		<attribute>
+			<name>action</name>
+			<description>The action of the autocomplete</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>name</name>
+			<description>The value to use as the html name parameter. This will also be used to pull the value if it is missing.</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>htmlId</name>
+			<description>An override for the id attribute. This will automatically be assigned.</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>htmlName</name>
+			<description>An override for the html name attribute.</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<description>The name of the struts parameter to pull off the value stack</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>hiddenValue</name>
+			<description>The value to place in the hidden field as a default (use this in place of "value")</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>textValue</name>
+			<description>The value to place in the text field as a default (use this in place of "value")</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<body-content>JSP</body-content>
+	</tag>
 </taglib>

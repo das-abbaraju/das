@@ -3,7 +3,6 @@ package com.picsauditing.jpa.entities;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,11 +26,10 @@ import org.json.simple.JSONObject;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.PicsDAO;
 
-
 @SuppressWarnings("serial")
 @Entity
 @MappedSuperclass
-public abstract class BaseTable implements JSONable, Serializable {
+public abstract class BaseTable implements JSONable, Serializable, Autocompleteable {
 	protected int id;
 	protected User createdBy;
 	protected User updatedBy;
@@ -134,7 +132,7 @@ public abstract class BaseTable implements JSONable, Serializable {
 			userID = permissions.getAdminID();
 		setAuditColumns(new User(userID));
 	}
-	
+
 	@Transient
 	public String getWhoString() {
 		if (createdBy == null)
@@ -207,13 +205,13 @@ public abstract class BaseTable implements JSONable, Serializable {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public int hashCode() {
-		if( id == 0 )
+		if (id == 0)
 			return super.hashCode();
 		else
-			return ( ( getClass().getName().hashCode() % 1000 ) * 10000000 ) + id;
+			return ((getClass().getName().hashCode() % 1000) * 10000000) + id;
 	}
 
 	public void update(BaseTable b) {
@@ -223,11 +221,12 @@ public abstract class BaseTable implements JSONable, Serializable {
 	}
 
 	// UPDATE must be Overridden in the inheriting class
-	public static <T extends BaseTable> Collection<T> insertUpdateDeleteManaged(Collection<T> dbLinkedList, Collection<T> changes) {
+	public static <T extends BaseTable> Collection<T> insertUpdateDeleteManaged(Collection<T> dbLinkedList,
+			Collection<T> changes) {
 		// update/delete
 		Iterator<T> dbIterator = dbLinkedList.iterator();
 		Collection<T> removalList = new ArrayList<T>();
-		
+
 		while (dbIterator.hasNext()) {
 			T fromDB = dbIterator.next();
 			T found = null;
@@ -245,10 +244,10 @@ public abstract class BaseTable implements JSONable, Serializable {
 				removalList.add(fromDB);
 			}
 		}
-		
+
 		// merging remaining changes (updates/inserts)
 		dbLinkedList.addAll(changes);
-		
+
 		return removalList;
 	}
 
@@ -288,5 +287,17 @@ public abstract class BaseTable implements JSONable, Serializable {
 		// performing deletes
 		for (T delete : deletes)
 			dao.remove(delete);
+	}
+
+	@Transient
+	@Override
+	public String getAutocompleteId() {
+		return "" + id;
+	}
+
+	@Transient
+	@Override
+	public String getAutocompleteValue() {
+		return getAutocompleteId();
 	}
 }

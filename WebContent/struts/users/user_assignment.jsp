@@ -33,7 +33,7 @@ $(function() {
 	});
 	$('a.add').live('click', function(e) {
 		e.preventDefault();
-		var clone = $('#clone').clone().removeAttr('id').removeClass('hide').addClass('new');
+		var clone = $('#clone').clone().removeAttr('id').addClass('new');
 		$('#assignments').append(clone);
 		if ($(window).scrollTop() + $(window).height() < clone.offset().top)
 			$.scrollTo(clone, 800, {axis: 'y'});
@@ -43,6 +43,11 @@ $(function() {
 		e.preventDefault();
 		var me = $(this);
 		var pars = me.closest('tr').find(':input').serialize() + "&button=Save";
+		if (me.closest('tr').is('.new')) {
+			me.closest('tr').find('.ac_text,.ac_hidden').each(function(){
+				$(this).removeAttr('id');
+			});
+		}
 		$.post('<s:property value="type"/>AssignmentMatrixJSON.action', pars, function(json, status, xhr) {
 			if(json.gritter) {
 				$.gritter.add({title: json.gritter.title, text: json.gritter.text});
@@ -97,6 +102,8 @@ tr.dirty a.save { display: inline; }
 <body>
 <h1><s:property value="type"/> Assignment Matrix</h1>
 
+<div id="kyle"></div>
+
 <a href="#" class="add">Add New Assignment</a>
 <table class="report" id="assignments">
 	<thead>
@@ -106,18 +113,11 @@ tr.dirty a.save { display: inline; }
 			<th>State</th>
 			<th>Zip Start</th>
 			<th>Zip End</th>
+			<th>Contractor</th>
 			<th></th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr class="hide" id="clone">
-			<td><s:select list="users" listKey = "id" listValue="name" headerKey="0" headerValue="- User -" name="assignment.user"></s:select></td>
-			<td><s:select list="countries" listKey="isoCode" listValue="name" headerKey="" headerValue="- Country -" name="assignment.country"></s:select></td>
-			<td><s:select list="states" listKey="isoCode" listValue="name" headerKey="" headerValue="- State -" name="assignment.state"></s:select></td>
-			<td><s:textfield name="assignment.postalStart" /></td>
-			<td><s:textfield name="assignment.postalEnd" /></td>
-			<td><s:hidden name="assignment" value=""/><a href="#" class="remove"></a><a href="#" class="save"></a></td>
-		</tr>
 		<s:iterator value="assignments">
 			<tr>
 				<td><s:select list="users" listKey="id" listValue="name" headerKey="0" headerValue="- User -" name="assignment.user" value="%{user.id}"></s:select></td>
@@ -125,10 +125,24 @@ tr.dirty a.save { display: inline; }
 				<td><s:select list="states" listKey="isoCode" listValue="name" headerKey="" headerValue="- State -" name="assignment.state" value="%{state.isoCode}"></s:select></td>
 				<td><s:textfield name="assignment.postalStart" value="%{postalStart}" /></td>
 				<td><s:textfield name="assignment.postalEnd" value="%{postalEnd}" /></td>
+				<td><pics:autocomplete action="ContractorAutocomplete" htmlName="assignment.contractor" value="contractor" /></td>
 				<td><s:hidden name="assignment" value="%{id}"/><a href="#" class="remove"></a><a href="#" class="save"></a></td>
 			</tr>
 		</s:iterator>
 	</tbody>
+</table>
+
+
+<table class="hide">
+	<tr id="clone">
+		<td><s:select list="users" listKey = "id" listValue="name" headerKey="0" headerValue="- User -" name="assignment.user"></s:select></td>
+		<td><s:select list="countries" listKey="isoCode" listValue="name" headerKey="" headerValue="- Country -" name="assignment.country"></s:select></td>
+		<td><s:select list="states" listKey="isoCode" listValue="name" headerKey="" headerValue="- State -" name="assignment.state"></s:select></td>
+		<td><s:textfield name="assignment.postalStart" /></td>
+		<td><s:textfield name="assignment.postalEnd" /></td>
+		<td><pics:autocomplete action="ContractorAutocomplete" htmlName="assignment.contractor" /></td>
+		<td><s:hidden name="assignment" value=""/><a href="#" class="remove"></a><a href="#" class="save"></a></td>
+	</tr>
 </table>
 </body>
 </html>
