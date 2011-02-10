@@ -7,9 +7,9 @@ and type in ('Operator','Corporate');
 
 -- PICS-1496
 insert into widget 
-(caption, widgetType, synchronous, url)
+(id, caption, widgetType, synchronous, url)
 values
-('Flag Changes', 'Html', 0, 'FlagChangesWidgetAjax.action');
+(34, 'Flag Changes', 'Html', 0, 'FlagChangesWidgetAjax.action');
 
 insert into widget_user 
 (widgetID, userID, expanded, `column`, sortOrder)
@@ -38,3 +38,5 @@ update contractor_audit set effectiveDate = concat(auditFor,'-01-01')
 where auditTypeID = 11;
 
 alter table audit_type drop column emailTemplateID;
+alter table audit_category drop column pageBreak;
+
