@@ -105,7 +105,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 				
 				if (isAMSales()) {
 					sql.addWhere("cr.requestedByID IN (SELECT DISTINCT accountID FROM account_user " +
-							"WHERE userID = " + permissions.getUserId() + ")");
+							"WHERE userID = " + permissions.getUserId() + " AND startDate < NOW() AND endDate > NOW())");
 				}
 			}
 		}
