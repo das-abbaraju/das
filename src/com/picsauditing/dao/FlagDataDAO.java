@@ -36,10 +36,12 @@ public class FlagDataDAO extends PicsDAO {
 	}
 
 	public List<FlagData> findProblems(int conID, int opID) {
-		String q = "FROM FlagData d WHERE d.criteria.insurance = 0 AND contractor.id = ? ";
+		// Once/If we fix the issue with flagData not being deleted, then we can
+		// revert this back to a simpler DAO call
+		String q = "SELECT flagData FROM ContractorOperator co JOIN co.flagDatas as flagData WHERE flagData.criteria.insurance = 0 AND co.contractorAccount.id = ? ";
 		if (opID > 0)
-			q += "AND operator.id = ? ";
-		q += "AND flag IN ('Red', 'Amber') ORDER BY d.criteria.displayOrder";
+			q += "AND co.operatorAccount.id = ? ";
+		q += "AND flagData.flag IN ('Red', 'Amber') ORDER BY flagData.criteria.displayOrder";
 		Query query = em.createQuery(q);
 		query.setParameter(1, conID);
 		if (opID > 0)
