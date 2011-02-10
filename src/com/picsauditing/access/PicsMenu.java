@@ -196,7 +196,7 @@ public class PicsMenu {
 
 		subMenu = menu.addChild("Accounting");
 		if (permissions.hasPermission(OpPerms.Billing)) {
-			subMenu.addChild("Billing Report", "ReportBilling.action");
+			subMenu.addChild("Billing Report", "ReportBilling.action?filter.status=Active&filter.status=Pending");
 			subMenu.addChild("Unpaid Invoices Report", "ReportUnpaidInvoices.action");
 			subMenu.addChild("Invoice Search Report", "ReportContractorUnpaidInvoices.action");
 			subMenu.addChild("Expired CC Report", "ReportExpiredCreditCards.action?filter.status=Active");
