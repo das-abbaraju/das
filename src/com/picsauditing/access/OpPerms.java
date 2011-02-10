@@ -10,7 +10,7 @@ public enum OpPerms {
 	// Default User Permissions
 	EditProfile("Edit Profile", "Allow users to Edit their own Profile.", true, false, true, true, true),
 	EditAccountDetails("Edit Account Details", "Allow users to Edit their own Account Information.", true, false, false, true, true),
-	RiskRank("Edit Contractor Risk Level", "Allows PICS users to manually edit the contractor's Risk Level.", true, true, true, false, false),
+	RiskRank("Edit Contractor Risk Level", "Allows PICS users to manually edit the contractor's Risk Level.", true, false, false, false, false),
 	Dashboard("Dashboard", "Allows users to view and customize (future) their home page/dashboard.", true, false, true, true, true),
 	ContractorDetails("Contractor Details", "Allows users to view the details page along with sub nav bar, also enables search criteria other than name on reports. Allows access to the contractor contact info report and the audit list report.", false, false, true, true, true),
 
