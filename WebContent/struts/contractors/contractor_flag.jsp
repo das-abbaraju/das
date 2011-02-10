@@ -120,9 +120,9 @@ function checkReason(id) {
 				<s:form>
 					<s:hidden name="id" />
 					<s:hidden name="opID" />
-					Baseline Flag and Flag differ<br/>
-					Baseline Flag is <span class="<s:property value="co.baselineFlag"/>"><s:property value="co.baselineFlag"/></span> and 
-					Flag is <span class="<s:property value="co.flagColor"/>"><s:property value="co.flagColor"/></span><br/>
+					This flag has recently changed from 
+					<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(co.baselineFlag)" escape="false"/> <s:property value="co.baselineFlag" escape="false"/> to 
+						<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(co.flagColor)" escape="false"/> <s:property value="co.flagColor" escape="false"/><br /><br />
 					<s:submit type="button" name="button" value="Approve Flag" cssClass="picsbutton positive" />
 				</s:form>
 			</div>
