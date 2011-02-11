@@ -22,7 +22,11 @@ public class ContractorAutocomplete extends AutocompleteDynaBean {
 			// TODO Non admin queries not supported yet
 			return;
 		}
-		items = dao.findWhereNatively(true, "a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'");
+		String where = "a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'";
+		if (isSearchDigit()) {
+			where += " OR a.id = " + q;
+		}
+		items = dao.findWhereNatively(true, where);
 	}
 
 	@Override
