@@ -12,18 +12,18 @@
 <link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
 
 <script type="text/javascript">
-	var dtable;
+var dtable;
 
-	$(function() {
-		dtable = $('#criteriaOperators').dataTable({
-			iDisplayLength: 25,
-			bAutoWidth: false,
-			bStateSave: true,
-			aaSorting: [[0, 'asc'],[1, 'asc'],[2, 'asc']],
-			sPaginationType: "full_numbers"
-		});
-
+$(function() {
+	dtable = $('#criteriaoperators').dataTable({
+		iDisplayLength: 25,
+		bAutoWidth: false,
+		bStateSave: true,
+		bSort: false,
+		sPaginationType: "full_numbers"
 	});
+
+});
 </script>
 
 </head>
@@ -31,7 +31,7 @@
 <h1>Operators By Criteria</h1>
 
 <div id="table">
-	<table id="criteriaOperators" class="report">
+	<table id="criteriaoperators" class="report">
 		<thead>
 			<tr>
 				<th>Operator Name</th>
@@ -40,7 +40,7 @@
 		</thead>
 		<s:iterator value="CriteriaOperators">
 			<tr>
-				<td><s:property value="Operator.FullName"/></td>
+				<td><a href="FacilitiesEdit.action?id=<s:property value="Operator.id"/>"><s:property value="Operator.FullName"/><a/></td>
 				<td><s:property value="Operator.Status"/></td>
 			</tr>
 		</s:iterator>
