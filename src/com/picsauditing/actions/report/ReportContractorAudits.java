@@ -238,8 +238,7 @@ public class ReportContractorAudits extends ReportAccount {
 		if (mailMerge) {
 			Set<Integer> ids = new HashSet<Integer>();
 			for (DynaBean dynaBean : data) {
-				Long longID = (Long) dynaBean.get("auditID");
-				ids.add(longID.intValue());
+				ids.add((Integer) dynaBean.get("auditID"));
 			}
 			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 			wizardSession.setIds(ids);
