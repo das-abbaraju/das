@@ -29,10 +29,8 @@
 				<td colspan="5">No flag changes to report</td>
 			</tr>
 		</s:if>
-		<s:if test="allrows > 0">
-			<tr>
-				<td colspan="5" class="right"><a href="">View <s:property value="allrows" /> More</a></td>
-			</tr>
-		</s:if>
+		<tr>
+			<td colspan="5" class="center"><a href="ReportFlagChanges.action?filter.conAuditorId=<s:property value="permissions.userId" />">View Report</td>
+		</tr>
 	</tbody>
 </table>
