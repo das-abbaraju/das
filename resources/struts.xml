@@ -1741,6 +1741,10 @@
 			class="com.picsauditing.actions.flags.ManageFlagCriteria">
 			<result>struts/flags/manage_flag_criteria_ajax.jsp</result>	
 		</action>
+		<action name="EditFlagCriteria"
+			class="com.picsauditing.actions.flags.ManageFlagCriteria">
+			<result>struts/flags/edit_flag_criteria.jsp</result>	
+		</action>
 
 		<!-- Customer Service -->
 		
