@@ -33,7 +33,7 @@ public class AuditTypeRuleSearch extends AuditRuleSearch {
 	public String execute() throws Exception{
 		if (!forceLogin())
 			return LOGIN;	
-		if(!permissions.hasPermission(OpPerms.ManageAuditTypeRules))
+		if(!permissions.isCanViewAuditRules())
 			throw new NoRightsException(OpPerms.ManageAuditTypeRules, OpType.View);
 		if("dAuditStatus".equals(button)){
 			int auditTypeID = 0;

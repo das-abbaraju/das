@@ -166,7 +166,7 @@ $(function() {
 	</s:elseif>
 </s:if>
 <div id="detail">
-	<s:if test="(canEditRule || permissions.hasGroup(@com.picsauditing.jpa.entities.User@GROUP_MARKETING)) && rule.current">
+	<s:if test="canEditRule && rule.current">
 		<s:form method="post" id="rule_form">
 			<s:hidden name="id"/>
 			<s:if test="rule.id > 0">
@@ -380,6 +380,11 @@ $(function() {
 					</li>
 				</s:if>
 			</ol>
+			<s:if test="permissions.hasGroup(@com.picsauditing.jpa.entities.User@GROUP_MARKETING)">
+				<div class="info">
+					This rule is not specific to one of your Accounts. Please contact one of the Audit Rule Administrators if this rule needs to be changed.
+				</div>
+			</s:if>
 		</fieldset>
 		<fieldset class="form moreGran">
 			<h2 class="formLegend">More Granular</h2>

@@ -135,14 +135,16 @@ function hideCat(id) {
 				</tbody>
 			</table>
 		</li>
-		<li><s:form id="includeNewParent">
-				<s:hidden value="%{operator.id}" name="id" />
-				<s:hidden value="Add" name="button" />
-				<s:select list="otherCorporates" listValue="name" listKey="id" name="corpID" 
-					headerValue="- Add Parent Account -" headerKey="0"
-					onchange="$('#includeNewParent').submit();" />
-			</s:form>
-		</li>
+		<s:if test="permissions.canEditAuditRules">
+			<li><s:form id="includeNewParent">
+					<s:hidden value="%{operator.id}" name="id" />
+					<s:hidden value="Add" name="button" />
+					<s:select list="otherCorporates" listValue="name" listKey="id" name="corpID" 
+						headerValue="- Add Parent Account -" headerKey="0"
+						onchange="$('#includeNewParent').submit();" />
+				</s:form>
+			</li>
+		</s:if>
 	</ol>
 </s:if>
 <s:elseif test="operator.id > 10">

@@ -517,4 +517,25 @@ public class Permissions implements Serializable {
 	public Set<Integer> getVisibleAuditTypes() {
 		return visibleAuditTypes;
 	}
+	
+	public boolean isCanEditAuditRules() {
+		return this.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit) 
+		|| this.hasPermission(OpPerms.AuditRuleAdmin);
+	}
+
+	public boolean isCanViewAuditRules() {
+		return this.hasPermission(OpPerms.ManageAuditTypeRules, OpType.View) 
+		|| this.hasPermission(OpPerms.AuditRuleAdmin);
+	}
+	
+	public boolean isCanEditCategoryRules() {
+		return this.hasPermission(OpPerms.ManageCategoryRules, OpType.Edit) 
+		|| this.hasPermission(OpPerms.AuditRuleAdmin);
+	}
+
+	public boolean isCanViewCategoryRules() {
+		return this.hasPermission(OpPerms.ManageCategoryRules, OpType.View) 
+		|| this.hasPermission(OpPerms.AuditRuleAdmin);
+	}
+
 }

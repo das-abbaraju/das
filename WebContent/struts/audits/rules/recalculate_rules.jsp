@@ -10,12 +10,12 @@
 <body>
 <h1>Recalculate Rules</h1>
 <s:include value="../../actionMessages.jsp"/>
-<pics:permission perm="ManageCategoryRules">
+<s:if test="permissions.canEditCategoryRules">
 	<a class="refresh" href="?button=category" onclick="return confirm('Are you sure? This will take awhile');">Recalculate Category Rules Priority</a>
-</pics:permission>
+</s:if>
 <br />
-<pics:permission perm="ManageAuditTypeRules">
+<s:if test="permissions.canEditAuditRules">
 	<a class="refresh" href="?button=auditType" onclick="return confirm('Are you sure? This will take awhile');">Recalculate Audit Type Rules Priority</a>
-</pics:permission>
+</s:if>
 </body>
 </html>

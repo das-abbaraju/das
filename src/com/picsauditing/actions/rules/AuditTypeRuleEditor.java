@@ -7,11 +7,13 @@ import java.util.List;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.WorkflowStep;
@@ -19,11 +21,13 @@ import com.picsauditing.jpa.entities.WorkflowStep;
 @SuppressWarnings("serial")
 public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
+	protected AppPropertyDAO appPropertyDAO;
 	protected Integer ruleDependentAuditTypeId;
 
 	public AuditTypeRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO, OperatorTagDAO opTagDAO,
 			AuditTypeDAO auditTypeDAO, OperatorTagDAO tagDAO, AuditQuestionDAO questionDAO,
-			AuditTypeRuleCache auditTypeRuleCache, AuditCategoryRuleCache auditCategoryRuleCache) {
+			AuditTypeRuleCache auditTypeRuleCache, AuditCategoryRuleCache auditCategoryRuleCache,
+			AppPropertyDAO appPropertyDAO) {
 		this.dao = dao;
 		this.operatorDAO = opDAO;
 		this.opTagDAO = opTagDAO;
@@ -32,6 +36,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 		this.questionDAO = questionDAO;
 		this.auditTypeRuleCache = auditTypeRuleCache;
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
+		this.appPropertyDAO = appPropertyDAO;
 
 		this.requiredPermission = OpPerms.ManageAuditTypeRules;
 		this.ruleType = "Audit Type";
@@ -118,7 +123,13 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 	@Override
 	protected void clear() {
 		auditTypeRuleCache.clear();
-		addActionMessage("Cleared Audit Type Cache.");
+		AppProperty appProp = appPropertyDAO.find("clear_cache");
+		if (appProp != null) {
+			appProp.setValue("true");
+			appPropertyDAO.save(appProp);
+		}
+
+		addActionMessage("Clearing Audit Type Cache...");
 	}
 
 	@Override

@@ -7,12 +7,14 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 
 @SuppressWarnings("serial")
@@ -21,11 +23,12 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 	protected Integer ruleAuditCategoryId;
 
 	protected AuditCategoryDAO auditCategoryDAO;
+	protected AppPropertyDAO appPropertyDAO;
 
 	public AuditCategoryRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO, OperatorTagDAO opTagDAO,
 			AuditTypeDAO auditTypeDAO, OperatorTagDAO tagDAO, AuditQuestionDAO questionDAO,
 			AuditTypeRuleCache auditTypeRuleCache, AuditCategoryRuleCache auditCategoryRuleCache,
-			AuditCategoryDAO auditCategoryDAO) {
+			AuditCategoryDAO auditCategoryDAO, AppPropertyDAO appPropertyDAO) {
 		this.dao = dao;
 		this.operatorDAO = opDAO;
 		this.opTagDAO = opTagDAO;
@@ -35,6 +38,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditTypeRuleCache = auditTypeRuleCache;
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
+		this.appPropertyDAO = appPropertyDAO;
 
 		this.requiredPermission = OpPerms.ManageCategoryRules;
 		this.ruleType = "Category";
@@ -119,7 +123,12 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 	@Override
 	protected void clear() {
 		auditCategoryRuleCache.clear();
-		addActionMessage("Cleared Category Cache.");
+		AppProperty appProp = appPropertyDAO.find("clear_cache");
+		if (appProp != null) {
+			appProp.setValue("true");
+			appPropertyDAO.save(appProp);
+		}
+		addActionMessage("Clearing Category Cache...");
 	}
 
 	@Override

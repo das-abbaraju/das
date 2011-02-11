@@ -85,7 +85,7 @@ function checkRemove(id){
 <br/>
 <br/>
 
-<pics:permission perm="ManageAuditTypeRules">
+<s:if test="permissions.canEditAuditRules">
 	<div>
 		<h3>Related Audit Type Rules</h3>
 		<s:if test="relatedAuditTypeRules.size() == 0">
@@ -109,9 +109,9 @@ function checkRemove(id){
 			</table>
 		</s:else>
 	</div>
-</pics:permission>
+</s:if>
 
-<pics:permission perm="ManageCategoryRules">
+<s:if test="permissions.canEditCategoryRules">
 	<div>
 		<h3>Related Category Rules</h3>
 		<s:if test="relatedCategoryRules.size() == 0">
@@ -135,7 +135,7 @@ function checkRemove(id){
 			</table>
 		</s:else>
 	</div>
-</pics:permission>
+</s:if>
 
 </body>
 </html>

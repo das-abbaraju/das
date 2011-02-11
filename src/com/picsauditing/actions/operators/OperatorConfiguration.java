@@ -53,6 +53,8 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	private int corpID;
 	private int auditTypeID;
 	private int catID;
+	private int ruleID;
+	private String ruleType;
 
 	private static final String QUESTION1 = "Upload a Certificate of Insurance or other supporting documentation for this policy.";
 	private static final String QUESTION2 = "This insurance policy complies with all additional ";
@@ -83,10 +85,25 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 		permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
 
 		if (button != null) {
+			if ("DeleteRule".equals(button)) {
+				if("category".equals(ruleType)) {
+					AuditCategoryRule acr = adtDAO.findAuditCategoryRule(ruleID);
+					adtDAO.remove(acr);
+				} else if("audittype".equals(ruleType)) {
+					AuditTypeRule atr = adtDAO.findAuditTypeRule(ruleID);
+					adtDAO.remove(atr);
+				}
+				
+				return SUCCESS;
+			}
+			
 			if ("Clear".equals(button)) {
-				auditTypeRuleCache.clear();
-				auditCategoryRuleCache.clear();
-				addActionMessage("Cleared Category and Audit Type Cache.");
+				AppProperty appProp = appPropDAO.find("clear_cache");
+				if (appProp != null) {
+					appProp.setValue("true");
+					appPropDAO.save(appProp);
+				}
+				addActionMessage("Clearing Category and Audit Type Cache...");
 				return SUCCESS;
 			}
 
@@ -201,6 +218,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				acr.setExpirationDate(BaseHistory.END_OF_TIME);
 				acr.calculatePriority();
 				typeDAO.save(acr);
+				auditCategoryRuleCache.clear();
 				AppProperty appProp = appPropDAO.find("clear_cache");
 				if(appProp!=null){
 					appProp.setValue("true");
@@ -222,6 +240,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 					rule.setAuditColumns(permissions);
 					adtDAO.save(rule);
 				}
+				auditTypeRuleCache.clear();
 				return "audit";
 			}
 
@@ -237,7 +256,17 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 					rule.setAuditColumns(permissions);
 					adtDAO.save(rule);
 				}
+				auditCategoryRuleCache.clear();
 				return "category";
+			}
+			
+			// Clearing the Cache on all 3 servers
+			if(auditTypeID > 0 || catID > 0) {
+				AppProperty appProp = appPropDAO.find("clear_cache");
+				if(appProp!=null){
+					appProp.setValue("true");
+					appPropDAO.save(appProp);
+				}
 			}
 
 			return redirect("OperatorConfiguration.action?id=" + operator.getId());
@@ -277,11 +306,9 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	}
 
 	public List<AuditType> getTypeList() {
-		if (typeList == null) {
-			Set<Integer> visibleAuditTypes = adtDAO.getAuditTypes(operator);
-			typeList = typeDAO.findWhere("t.id IN (" + Strings.implode(visibleAuditTypes) + ")");
-		}
-
+		Set<Integer> visibleAuditTypes = adtDAO.getAuditTypes(operator);
+		typeList = typeDAO.findWhere("t.id IN (" + Strings.implode(visibleAuditTypes) + ")");
+		
 		return typeList;
 	}
 
@@ -368,6 +395,22 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 	public void setCatID(int catID) {
 		this.catID = catID;
+	}
+
+	public int getRuleID() {
+		return ruleID;
+	}
+
+	public void setRuleID(int ruleID) {
+		this.ruleID = ruleID;
+	}
+
+	public String getRuleType() {
+		return ruleType;
+	}
+
+	public void setRuleType(String ruleType) {
+		this.ruleType = ruleType;
 	}
 
 	public String escapeQuotes(String value) {

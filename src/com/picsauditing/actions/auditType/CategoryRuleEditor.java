@@ -16,11 +16,13 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AccountUser;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -49,17 +51,20 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	protected AuditTypeDAO typeDAO;
 	protected AuditCategoryDAO catDAO;
 	protected OperatorTagDAO tagDAO;
+	protected AppPropertyDAO appPropertyDAO;
 	protected AuditTypeRuleCache auditTypeRuleCache;
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
 	public CategoryRuleEditor(AuditDecisionTableDAO dao, AuditTypeDAO typeDAO, AuditCategoryDAO catDAO,
-			OperatorTagDAO tagDAO, AuditTypeRuleCache auditTypeRuleCache, AuditCategoryRuleCache auditCategoryRuleCache) {
+			OperatorTagDAO tagDAO, AuditTypeRuleCache auditTypeRuleCache,
+			AuditCategoryRuleCache auditCategoryRuleCache, AppPropertyDAO appPropertyDAO) {
 		this.dao = dao;
 		this.typeDAO = typeDAO;
 		this.catDAO = catDAO;
 		this.tagDAO = tagDAO;
+		this.appPropertyDAO = appPropertyDAO;
 		this.auditTypeRuleCache = auditTypeRuleCache;
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
 	}
@@ -91,6 +96,11 @@ public class CategoryRuleEditor extends PicsActionSupport {
 			if ("Clear".equals(button)) {
 				auditTypeRuleCache.clear();
 				auditCategoryRuleCache.clear();
+				AppProperty appProp = appPropertyDAO.find("clear_cache");
+				if (appProp != null) {
+					appProp.setValue("true");
+					appPropertyDAO.save(appProp);
+				}
 				addActionMessage("Cleared Category and Audit Type Cache.");
 			}
 			if ("edit".equals(button)) {
@@ -128,6 +138,11 @@ public class CategoryRuleEditor extends PicsActionSupport {
 					dao.save(acr);
 				}
 				auditCategoryRuleCache.clear();
+				AppProperty appProp = appPropertyDAO.find("clear_cache");
+				if (appProp != null) {
+					appProp.setValue("true");
+					appPropertyDAO.save(appProp);
+				}
 				this.redirect("CategoryRuleEditor.action?id=" + rule.getId());
 				return BLANK;
 			}
@@ -156,6 +171,11 @@ public class CategoryRuleEditor extends PicsActionSupport {
 				}
 				dao.deleteChildren(rule, permissions);
 				auditCategoryRuleCache.clear();
+				AppProperty appProp = appPropertyDAO.find("clear_cache");
+				if (appProp != null) {
+					appProp.setValue("true");
+					appPropertyDAO.save(appProp);
+				}
 				this.redirect("CategoryRuleEditor.action?id=" + rule.getId());
 				return BLANK;
 			}
@@ -175,6 +195,11 @@ public class CategoryRuleEditor extends PicsActionSupport {
 				rule.setAuditColumns(permissions);
 				dao.save(rule);
 				auditCategoryRuleCache.clear();
+				AppProperty appProp = appPropertyDAO.find("clear_cache");
+				if (appProp != null) {
+					appProp.setValue("true");
+					appPropertyDAO.save(appProp);
+				}
 				this.redirect(redirect);
 				return BLANK;
 			}
@@ -213,7 +238,7 @@ public class CategoryRuleEditor extends PicsActionSupport {
 	 * @return
 	 */
 	public boolean canEditRule() {
-		if (permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit))
+		if (permissions.isCanEditCategoryRules())
 			return true;
 		if (rule != null) {
 			if (permissions.getUserId() == rule.getCreatedBy().getId())

@@ -236,6 +236,10 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		return ServletActionContext.getRequest().getRequestURL().toString();
 	}
 
+	public String getReferer() {
+		return ServletActionContext.getRequest().getHeader("Referer");
+	}
+
 	public Set<User> getAuditorList() {
 		if (auditorList == null) {
 			auditorList = new TreeSet<User>();

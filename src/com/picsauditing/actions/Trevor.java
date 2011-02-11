@@ -9,8 +9,10 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditTypeRuleCache;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 
@@ -19,17 +21,19 @@ public class Trevor extends PicsActionSupport {
 
 	private AuditDecisionTableDAO auditRuleDAO;
 	private ContractorAccountDAO accountDAO;
+	private AppPropertyDAO appPropertyDAO;
 	private AuditCategoryRuleCache categoryCache;
 	private AuditTypeRuleCache typeCache;
 	private int conID;
 	private Set<AuditCategoryRule> applicable;
 	public String rules;
 
-	public Trevor(ContractorAccountDAO accountDAO, AuditDecisionTableDAO auditRuleDAO, AuditCategoryRuleCache categoryCache, AuditTypeRuleCache typeCache) {
+	public Trevor(ContractorAccountDAO accountDAO, AuditDecisionTableDAO auditRuleDAO, AuditCategoryRuleCache categoryCache, AuditTypeRuleCache typeCache, AppPropertyDAO appPropertyDAO) {
 		this.accountDAO = accountDAO;
 		this.auditRuleDAO = auditRuleDAO;
 		this.categoryCache = categoryCache;
 		this.typeCache = typeCache;
+		this.appPropertyDAO = appPropertyDAO;
 	}
 
 	public String execute() throws SQLException {
@@ -38,6 +42,11 @@ public class Trevor extends PicsActionSupport {
 			List<AuditCategoryRule> rules = auditRuleDAO.findCategoryRules();
 			categoryCache.clear();
 			typeCache.clear();
+			AppProperty appProp = appPropertyDAO.find("clear_cache");
+			if (appProp != null) {
+				appProp.setValue("true");
+				appPropertyDAO.save(appProp);
+			}
 		}
 		if ("print".equals(button)) {
 			output = categoryCache.print();

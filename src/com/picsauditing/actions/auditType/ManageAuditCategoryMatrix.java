@@ -10,12 +10,14 @@ import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryMatrixDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryMatrixCompetencies;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -33,6 +35,7 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 	protected AuditQuestionDAO aqDAO;
 	protected OperatorCompetencyDAO ocDAO;
 	protected AuditDecisionTableDAO adtDAO;
+	protected AppPropertyDAO appPropertyDAO;
 	protected AuditCategoryRuleCache acrCache;
 
 	protected int auditTypeID;
@@ -54,7 +57,7 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 
 	public ManageAuditCategoryMatrix(AuditTypeDAO auditTypeDAO, AuditCategoryDAO acDAO, AuditCategoryMatrixDAO acmDAO,
 			AuditQuestionDAO aqDAO, OperatorCompetencyDAO ocDAO, AuditDecisionTableDAO adtDAO,
-			AuditCategoryRuleCache acrCache) {
+			AuditCategoryRuleCache acrCache, AppPropertyDAO appPropertyDAO) {
 		this.auditTypeDAO = auditTypeDAO;
 		this.acDAO = acDAO;
 		this.acmDAO = acmDAO;
@@ -62,6 +65,7 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 		this.ocDAO = ocDAO;
 		this.adtDAO = adtDAO;
 		this.acrCache = acrCache;
+		this.appPropertyDAO = appPropertyDAO;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -85,6 +89,11 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 						AuditCategory ac = acDAO.find(categoryID);
 						AuditQuestion aq = aqDAO.find(itemID);
 						acrCache.clear();
+						AppProperty appProp = appPropertyDAO.find("clear_cache");
+						if (appProp != null) {
+							appProp.setValue("true");
+							appPropertyDAO.save(appProp);
+						}
 						List<AuditCategoryRule> rules = adtDAO.findCategoryRulesByQuestion(itemID);
 						AuditCategoryRule r = null;
 

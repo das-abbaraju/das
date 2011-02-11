@@ -30,14 +30,16 @@
 			</tbody>
 		</table>
 	</li>
-	<li>
-		<div id="includeNewAudit">
-			<s:hidden value="%{operator.id}" name="id" />
-			<s:hidden value="Add Audit" name="button" /> 
-			<s:select list="otherAudits" 
-				listKey="id" listValue="auditName" name="auditTypeID" />
-			<s:submit cssClass="add_rule" value="Add Audit" />
-		</div>
-	</li>
+	<s:if test="permissions.canEditAuditRules">
+		<li>
+			<div id="includeNewAudit">
+				<s:hidden value="%{operator.id}" name="id" />
+				<s:hidden value="Add Audit" name="button" /> 
+				<s:select list="otherAudits" 
+					listKey="id" listValue="auditName" name="auditTypeID" />
+				<s:submit cssClass="add_rule" value="Add Audit" />
+			</div>
+		</li>
+	</s:if>
 	<li><a href="OperatorAuditTypeRules.action?id=<s:property value="id"/>">Show all Audit Type Rules specific to this operator</a></li>
 </ol>

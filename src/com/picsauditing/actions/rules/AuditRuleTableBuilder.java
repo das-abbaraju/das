@@ -5,14 +5,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.Map.Entry;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.actions.auditType.AuditRuleColumn;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.AuditRule;
+import com.picsauditing.jpa.entities.OperatorAccount;
 
 @SuppressWarnings("serial")
 public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsActionSupport {
@@ -32,6 +31,9 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 
 	@Override
 	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
+		
 		setup();
 		return SUCCESS;
 	}
@@ -53,6 +55,8 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 			columnMap.put("bidOnly", true);
 		if (rule.getQuestion() != null)
 			columnMap.put("question", true);
+		if(isCanEditRule(rule))
+			columnMap.put("delete", true);
 
 		if (showWho) {
 			if (rule.getCreatedBy() != null)
@@ -123,4 +127,35 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 		this.date = date;
 	}
 
+	/**
+	 * If user has a permission to edit the rule, created the rule, or is
+	 * associated with the operator then they can edit the rule
+	 * 
+	 * @return
+	 */
+	public boolean isCanEditRule(AuditRule rule) {
+		if (rule != null) {
+			// Audit Rule Admins should not be able to easily delete since all rules
+			// should be within their scope
+			if(permissions.hasPermission(OpPerms.AuditRuleAdmin))
+				return false;
+			if (rule.getCreatedBy() != null && permissions.getUserId() == rule.getCreatedBy().getId())
+				return true;
+			OperatorAccount opAccount = rule.getOperatorAccount();
+			if (opAccount != null) {
+				for (AccountUser accUser : opAccount.getAccountUsers()) {
+					if (accUser.getUser().getId() == permissions.getUserId())
+						return true;
+				}
+				for (OperatorAccount child : opAccount.getOperatorChildren()) {
+					for (AccountUser childAccUser : child.getAccountUsers()) {
+						if (childAccUser.getUser().getId() == permissions.getUserId())
+							return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
 }

@@ -48,10 +48,13 @@
 				<s:if test="columnMap.get('updatedBy')">
 					<th colspan="2">Updated By</th>
 				</s:if>
+				<s:if test="columnMap.get('delete')">
+					<th colspan="2">Delete</th>
+				</s:if>
 			</tr>
 		</thead>
 		<tbody>
-			<s:iterator value="rules">
+			<s:iterator value="rules" var="r">
 				<tr class="<s:if test="include">on</s:if><s:else>off</s:else>">
 					<td class="center"><a href="<s:property value="urlPrefix"/>RuleEditor.action?id=<s:property value="id"/>" class="preview"></a></td>
 					<s:if test="columnMap.get('include')">
@@ -62,7 +65,7 @@
 					</s:if>
 					<s:if test="columnMap.get('auditType')">
 						<td>
-							<s:if test="auditType != null">
+							<s:if test="auditType != null && permissions.hasPermission('ManageAudits')">
 								<a href="ManageAuditType.action?id=<s:property value="auditType.id"/>"><s:property value="auditTypeLabel"/></a>
 							</s:if>
 							<s:else>
@@ -72,7 +75,7 @@
 					</s:if>
 					<s:if test="columnMap.get('auditCategory')">
 						<td>
-							<s:if test="auditCategory != null">
+							<s:if test="auditCategory != null && permissions.hasPermission('ManageAudits')">
 								<a href="ManageCategory.action?id=<s:property value="auditCategory.id"/>"><s:property value="auditCategoryLabel"/></a>
 							</s:if>
 							<s:else>
@@ -107,7 +110,7 @@
 					</s:if>
 					<s:if test="columnMap.get('question')">
 						<td>
-							<s:if test="question != null">
+							<s:if test="question != null && permissions.hasPermission('ManageAudits')">
 								<a href="ManageQuestion.action?id=<s:property value="question.id"/>"><s:property value="questionLabel"/></a>
 							</s:if>
 							<s:else>
@@ -119,7 +122,7 @@
 					</s:if>
 					<s:if test="columnMap.get('dependentAuditType')">
 						<td>
-							<s:if test="dependentAuditType != null">
+							<s:if test="dependentAuditType != null && permissions.hasPermission('ManageAudits')">
 								<a href="ManageAuditType.action?id=<s:property value="dependentAuditType.id"/>"><s:property value="dependentAuditTypeLabel"/></a>
 							</s:if>
 							<s:else>
@@ -135,6 +138,14 @@
 					<s:if test="columnMap.get('updatedBy')">
 						<td><s:property value="updatedBy.name"/></td>
 						<td><s:date name="updateDate" format="MM/dd/yyyy"/></td>
+					</s:if>
+					<s:if test="columnMap.get('delete')">
+						<s:if test="isCanEditRule(#r)">
+							<td class="center"><a class="remove" href="OperatorConfiguration.action?id=<s:property value="operatorAccount.id"/>&button=DeleteRule&ruleID=<s:property value="id"/>&ruleType=<s:if test="auditCategory != null">category</s:if><s:else>audittype</s:else>"></a></td>
+						</s:if>
+						<s:else>
+							<td>&nbsp;</td>
+						</s:else>
 					</s:if>
 				</tr>
 			</s:iterator>

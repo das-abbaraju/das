@@ -8,6 +8,7 @@ import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 
+@SuppressWarnings("serial")
 public class ClearCacheAction extends PicsActionSupport {
 
 	AuditTypeRuleCache auditTypeRuleCache;
@@ -39,6 +40,8 @@ public class ClearCacheAction extends PicsActionSupport {
 			}
 		}
 
+		// The Python Cron monitors the status of the App Property "clear_cache"
+		// and if it has been set, resets the cache via this Action Class on all 3 servers
 		auditTypeRuleCache.clear();
 		auditCategoryRuleCache.clear();
 

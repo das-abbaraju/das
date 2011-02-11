@@ -17,11 +17,13 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AccountUser;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeRule;
@@ -51,17 +53,20 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 	protected AuditDecisionTableDAO dao;
 	protected OperatorAccountDAO opDAO;
 	protected OperatorTagDAO tagDAO;
+	protected AppPropertyDAO appPropertyDAO;
 	protected AuditTypeRuleCache auditTypeRuleCache;
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
 	protected Map<String, Map<String, String>> columns = new LinkedHashMap<String, Map<String, String>>();
 
 	public AuditTypeRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO, AuditTypeDAO typeDAO,
-			OperatorTagDAO tagDAO, AuditTypeRuleCache auditTypeRuleCache, AuditCategoryRuleCache auditCategoryRuleCache) {
+			OperatorTagDAO tagDAO, AuditTypeRuleCache auditTypeRuleCache,
+			AuditCategoryRuleCache auditCategoryRuleCache, AppPropertyDAO appPropertyDAO) {
 		this.dao = dao;
 		this.opDAO = opDAO;
 		this.typeDAO = typeDAO;
 		this.tagDAO = tagDAO;
+		this.appPropertyDAO = appPropertyDAO;
 		this.auditTypeRuleCache = auditTypeRuleCache;
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
 	}
@@ -92,7 +97,12 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 			if ("Clear".equals(button)) {
 				auditTypeRuleCache.clear();
 				auditCategoryRuleCache.clear();
-				addActionMessage("Cleared Category and Audit Type Cache.");
+				AppProperty appProp = appPropertyDAO.find("clear_cache");
+				if (appProp != null) {
+					appProp.setValue("true");
+					appPropertyDAO.save(appProp);
+				}
+				addActionMessage("Clearing Category and Audit Type Cache...");
 			}
 			if ("edit".equals(button)) {
 				if (rule.getAuditType() != null && rule.getAuditType().getId() > 0)
@@ -126,6 +136,11 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 					dao.save(acr);
 				}
 				auditTypeRuleCache.clear();
+				AppProperty appProp = appPropertyDAO.find("clear_cache");
+				if (appProp != null) {
+					appProp.setValue("true");
+					appPropertyDAO.save(appProp);
+				}
 				this.redirect("AuditTypeRuleEditor.action?id=" + rule.getId()); // move
 				// out
 				return BLANK;
@@ -155,6 +170,11 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 				}
 				dao.deleteChildren(rule, permissions);
 				auditTypeRuleCache.clear();
+				AppProperty appProp = appPropertyDAO.find("clear_cache");
+				if (appProp != null) {
+					appProp.setValue("true");
+					appPropertyDAO.save(appProp);
+				}
 				this.redirect("AuditTypeRuleEditor.action?id=" + rule.getId());
 				return BLANK;
 			}
@@ -172,6 +192,11 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 				rule.setAuditColumns(permissions);
 				dao.save(rule);
 				auditTypeRuleCache.clear();
+				AppProperty appProp = appPropertyDAO.find("clear_cache");
+				if (appProp != null) {
+					appProp.setValue("true");
+					appPropertyDAO.save(appProp);
+				}
 				this.redirect(redirect);
 				return BLANK;
 			}
@@ -193,27 +218,28 @@ public class AuditTypeRuleEditor extends PicsActionSupport {
 			return false;
 		return true;
 	}
-	
+
 	/**
 	 * If user has a permission to edit the rule, created the rule, or is
 	 * associated with the operator then they can edit the rule
+	 * 
 	 * @return
 	 */
-	public boolean canEditRule(){
-		if(permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit))
+	public boolean canEditRule() {
+		if (permissions.isCanEditAuditRules())
 			return true;
-		if(rule!=null){
-			if(permissions.getUserId()==rule.getCreatedBy().getId())
+		if (rule != null) {
+			if (permissions.getUserId() == rule.getCreatedBy().getId())
 				return true;
 			OperatorAccount opAccount = rule.getOperatorAccount();
-			if(opAccount!=null){
-				for(AccountUser accUser : opAccount.getAccountUsers()){
-					if(accUser.getUser().getId()==permissions.getUserId())
+			if (opAccount != null) {
+				for (AccountUser accUser : opAccount.getAccountUsers()) {
+					if (accUser.getUser().getId() == permissions.getUserId())
 						return true;
 				}
-				for(OperatorAccount child : opAccount.getOperatorChildren()){
-					for(AccountUser childAccUser : child.getAccountUsers()){
-						if(childAccUser.getUser().getId()==permissions.getUserId())
+				for (OperatorAccount child : opAccount.getOperatorChildren()) {
+					for (AccountUser childAccUser : child.getAccountUsers()) {
+						if (childAccUser.getUser().getId() == permissions.getUserId())
 							return true;
 					}
 				}

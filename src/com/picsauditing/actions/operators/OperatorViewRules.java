@@ -35,12 +35,12 @@ public class OperatorViewRules extends OperatorActionSupport {
 		}			
 		
 		if("category".equals(type)){
-			if(!permissions.hasPermission(OpPerms.ManageCategoryRules))
+			if(!permissions.isCanViewCategoryRules())
 				throw new NoRightsException(OpPerms.ManageCategoryRules, OpType.View);
 			categoryRule = true;
 			relatedRules = dao.findAuditCategoryRulesByOperator(id);
 		} else if("auditType".equals(type)){
-			if(!permissions.hasPermission(OpPerms.ManageAuditTypeRules))
+			if(!permissions.isCanViewAuditRules())
 				throw new NoRightsException(OpPerms.ManageAuditTypeRules, OpType.View);
 			categoryRule = false;
 			relatedRules = dao.findAuditTypeRulesByOperator(id);
