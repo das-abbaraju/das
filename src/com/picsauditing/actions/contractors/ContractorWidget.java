@@ -251,7 +251,8 @@ public class ContractorWidget extends ContractorActionSupport {
 											} catch (Exception e) {
 											}
 										}
-										if (conAudit.getAuditor() != null)
+										if (conAudit.getAuditType().getId() != AuditType.DESKTOP
+												&& conAudit.getAuditor() != null)
 											text += " with " + conAudit.getAuditor().getName();
 									}
 									openTasks.add(text);
