@@ -36,7 +36,7 @@
 			<s:hidden value="Add Audit" name="button" /> 
 			<s:select list="otherAudits" 
 				listKey="id" listValue="auditName" name="auditTypeID" />
-			<s:submit cssClass="add_audits" value="Add Audit" />
+			<s:submit cssClass="add_rule" value="Add Audit" />
 		</div>
 	</li>
 	<li><a href="OperatorAuditTypeRules.action?id=<s:property value="id"/>">Show all Audit Type Rules specific to this operator</a></li>

@@ -24,11 +24,11 @@ $(document).ready(function() {
 	startThinking({ div: "excludedCategories", message: "Loading Excluded Audit Category Rules" });
 	$('#excludedCategories').load("CategoryRuleTableAjax.action", data);
 	
-	$('.add_cats, .add_audits').live('click', function(){
-		var target = $(this).attr('class').split('_')[1];
+	$('.add_rule').live('click', function(){
+		var target = $(this).closest('div.included');
 		var data = $(this).closest('div').find(':input').serialize();
-		startThinking({div: 'included_'+target, message: 'Adding Item'});
-		$('#included_'+target).load('OperatorConfigurationAjax.action', data);
+		target.think();
+		target.load('OperatorConfigurationAjax.action', data);
 	});
 });
 
@@ -156,7 +156,7 @@ function hideCat(id) {
 </fieldset>
 <fieldset class="form">
 	<h2 class="formLegend">Likely Included Audits</h2>
-	<div id="included_audits">
+	<div class="included">
 			<s:include value="op_config_included_audits.jsp" />
 	</div>
 </fieldset>
@@ -170,7 +170,7 @@ function hideCat(id) {
 </fieldset>
 <fieldset class="form">
 	<h2 class="formLegend">Likely Included PQF Categories</h2>
-	<div id="included_cats">
+	<div class="included">
 		<s:include value="op_config_included_cats.jsp"/>
 	</div>
 </fieldset>

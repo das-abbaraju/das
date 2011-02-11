@@ -33,7 +33,7 @@
 			<s:hidden value="Add Cat" name="button" />
 			<s:select list="otherCategories" headerKey="0" headerValue="- Include Another Category -" 
 				listKey="id" listValue="name" name="catID" />
-			<s:submit cssClass="add_cats" value="Add Category" />
+			<s:submit cssClass="add_rule" value="Add Category" />
 		</div>
 	</li>
 	<li><a href="OperatorCategoryRules.action?id=<s:property value="id"/>">Show all Category Rules specific to this operator</a></li>
