@@ -10,7 +10,29 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript">
+$(function(){
+	showCriteriaOperators();
+	$('.cluetip').cluetip({
+		closeText: "<img src='images/cross.png' width='16' height='16'>",
+		arrows: true,
+		cluetipClass: 'jtip',
+		local: true,
+		clickThrough: false
+	});
+	<s:if test="">
+		var jsonObj = <s:property value="" />
+	</s:if>	
+});
 
+function showCriteriaOperators() {
+	var data = {
+			'criteriaID': <s:property value="id"/>
+	};
+	startThinking({ div: "criteriaoperators", message: "Loading Affected Operators" });
+	$('#criteriaoperators').load('ReportCriteriaOperatorsAjax.action', data);
+}
+</script>
 </head>
 <body>
 <h1>Edit Flag Criteria</h1>
@@ -141,6 +163,10 @@
 		<input type="button" value="Cancel" class="picsbutton goback"/>
 	</fieldset>
 </s:form>
+
+<h3>Used By The Following Operators</h3>
+<a href="#" onclick="showCriteriaOperators(); return false;" class="refresh">Refresh</a>	
+<div id="criteriaoperators"></div>
 
 </body>
 </html>
