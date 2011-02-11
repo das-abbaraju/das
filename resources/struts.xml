@@ -1009,11 +1009,10 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 		
-		<action name="ReportCriteriaOperators"
+		<action name="ReportCriteriaOperatorsAjax"
 			class="com.picsauditing.actions.report.ReportCriteriaOperators">
 			<result>struts/reports/criteria_operators.jsp</result>	
 		</action>
-				
 
 		<!-- Audits View/Edit/Verify/Copy -->
 		<action name="Audit"
@@ -1697,6 +1696,11 @@
 		<action name="ManageFlagCriteriaOperator"
 			class="com.picsauditing.actions.operators.ManageFlagCriteriaOperator">
 			<result>struts/operators/op_manage_flag_criteria.jsp</result>
+		</action>
+		
+		<action name="EditFlagCriteria"
+			class="com.picsauditing.actions.flags.ManageFlagCriteria">
+			<result>struts/flags/edit_flag_criteria.jsp</result>	
 		</action>
 		
 		<action name="ManageInsuranceCriteriaOperator"
