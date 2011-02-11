@@ -116,7 +116,7 @@ function calculateImpact(fcoID, opID, newHurdle) {
 		opID: opID
 	};
 	
-	startThinking({div:'thinking', message:'Calculating impact...'});
+	startThinking({div:'thinking', message:'Loading affected contractors...'});
 	$('#'+fcoID).find('span.newImpact').load('OperatorFlagsCalculatorAjax.action', data,
 		function() {
 			stopThinking({div:'thinking'});
@@ -158,7 +158,7 @@ function getChildCriteria(opID, opName) {
 			insurance: insurance
 		};
 		
-		startThinking({div:'thinking', message:'Fetching linked facility criteria...'});
+		startThinking({div:'thinking', message:'Loading linked facility criteria...'});
 		$('#childCriteria').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data, 
 			function() {
 				stopThinking({div:'thinking'});

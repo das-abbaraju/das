@@ -30,6 +30,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
@@ -309,7 +310,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 			FlagCriteriaOperator fco, OperatorAccount op, Permissions permissions, Database db) throws Exception {
 		Map<Integer, List<ContractorAudit>> auditMap = new HashMap<Integer, List<ContractorAudit>>();
 		if (results.size() > 0) {
-			if (fco.getCriteria().getAuditType() != null && fco.getCriteria().getAuditType().getClassType().isPolicy()) {
+			if (fco.getCriteria().getAuditType() != null) {
 				Set<String> conIDs = new HashSet<String>();
 				for (BasicDynaBean row : results) {
 					conIDs.add(row.get("conID").toString());
@@ -322,6 +323,8 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 				sql2.addWhere("ca.conID IN (" + Strings.implode(conIDs) + ")");
 				sql2.addWhere("cao.opID = " + fco.getOperator().getId());
 				sql2.addWhere("ca.expiresDate > NOW()");
+				// caop
+				sql2.addJoin("JOIN contractor_audit_operator_permission caop ON cao.id = caop.caoID AND cao.opID = caop.opID");
 
 				List<BasicDynaBean> auditResults = db.select(sql2.toString(), false);
 				for (BasicDynaBean row : auditResults) {
@@ -335,6 +338,12 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 						cao.changeStatus(AuditStatus.valueOf(row.get("status").toString()), permissions);
 						ca.setOperators(new ArrayList<ContractorAuditOperator>());
 						ca.getOperators().add(cao);
+						
+						ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+						caop.setCao(cao);
+						caop.setOperator(op);
+						cao.setCaoPermissions(new ArrayList<ContractorAuditOperatorPermission>());
+						cao.getCaoPermissions().add(caop);
 					}
 					if (auditMap.get(conID) == null)
 						auditMap.put(conID, new ArrayList<ContractorAudit>());

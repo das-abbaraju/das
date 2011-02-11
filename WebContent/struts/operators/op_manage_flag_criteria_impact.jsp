@@ -12,7 +12,7 @@
 	</thead>
 	<tbody>
 		<s:if test="affected.size() == 0">
-			<tr><td <s:property value="(affected.get(0).flagData.criteria.allowCustomValue ? 3 : 2) + (override ? 1 : 0)" />" class="center">No Impact</td></tr>
+			<tr><td <s:property value="(affected.get(0).flagData.criteria.allowCustomValue ? 3 : 2) + (override ? 1 : 0)" />" class="center">No Contractors Affected</td></tr>
 		</s:if>
 		<s:else>
 			<s:iterator value="affected" status="stat" id="fdo">

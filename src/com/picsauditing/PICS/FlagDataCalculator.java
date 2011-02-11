@@ -102,7 +102,8 @@ public class FlagDataCalculator {
 
 		FlagCriteria criteria = opCriteria.getCriteria();
 		String hurdle = criteria.getDefaultValue();
-
+		ContractorAccount con = conCriteria.getContractor();
+		
 		if (criteria.isAllowCustomValue() && !Strings.isEmpty(opCriteria.getHurdle())) {
 			hurdle = opCriteria.getHurdle();
 		}
@@ -110,7 +111,7 @@ public class FlagDataCalculator {
 		// Check if we need to match tags
 		if (opCriteria.getTag() != null) {
 			boolean found = false;
-			for (ContractorTag tag : conCriteria.getContractor().getOperatorTags()) {
+			for (ContractorTag tag : con.getOperatorTags()) {
 				if (tag.getTag().getId() == opCriteria.getTag().getId())
 					found = true;
 			}
@@ -121,7 +122,7 @@ public class FlagDataCalculator {
 
 		String answer = conCriteria.getAnswer();
 		if (criteria.getAuditType() != null) {
-			if (!worksForOperator || conCriteria.getContractor().isAcceptsBids()) {
+			if (!worksForOperator || con.isAcceptsBids()) {
 				// This is a check for if the contractor doesn't
 				// work for the operator (Search for new), or is a bid only
 				if (!criteria.getAuditType().isPqf() && !criteria.getAuditType().isAnnualAddendum())
@@ -129,7 +130,7 @@ public class FlagDataCalculator {
 					return null;
 			}
 
-			if (conCriteria.getContractor().getAudits() == null)
+			if (con.getAudits() == null)
 				return null;
 
 			if (criteria.getAuditType().isAnnualAddendum()) {
@@ -137,7 +138,7 @@ public class FlagDataCalculator {
 				int count = 0;
 
 				// Checking for at least 3 active annual updates
-				for (ContractorAudit ca : conCriteria.getContractor().getAudits()) {
+				for (ContractorAudit ca : con.getAudits()) {
 					boolean hasFlaggedAudit = false;
 					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired()) {
 						for (ContractorAuditOperator cao : ca.getOperators()) {
@@ -145,7 +146,7 @@ public class FlagDataCalculator {
 								if (!cao.getStatus().before(criteria.getRequiredStatus())
 										|| cao.getStatus().isResubmit())
 									hasFlaggedAudit = true;
-								else if (cao.getStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
+								else if (cao.getStatus().isSubmitted() && con.isAcceptsBids())
 									hasFlaggedAudit = true;
 							}
 						}
@@ -162,7 +163,7 @@ public class FlagDataCalculator {
 				return count < 3;
 			} else {
 				// Any other audit, PQF, or Policy
-				for (ContractorAudit ca : conCriteria.getContractor().getAudits()) {
+				for (ContractorAudit ca : con.getAudits()) {
 					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired()) {
 						if (!worksForOperator) {
 							if (ca.hasCaoStatusAfter(AuditStatus.Incomplete))
@@ -176,7 +177,7 @@ public class FlagDataCalculator {
 									return false;
 								else if (!cao.getStatus().before(criteria.getRequiredStatus()))
 									return false;
-								else if (cao.getStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
+								else if (cao.getStatus().isSubmitted() && con.isAcceptsBids())
 									return false;
 
 								if (!criteria.getAuditType().isHasMultiple())
