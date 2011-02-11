@@ -88,9 +88,11 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 			if ("DeleteRule".equals(button)) {
 				if("category".equals(ruleType)) {
 					AuditCategoryRule acr = adtDAO.findAuditCategoryRule(ruleID);
+					addActionMessage("Category Rule: "+acr.toString()+" Deleted.");
 					adtDAO.remove(acr);
 				} else if("audittype".equals(ruleType)) {
 					AuditTypeRule atr = adtDAO.findAuditTypeRule(ruleID);
+					addActionMessage("Audit Type Rule: "+atr.toString()+" Deleted.");
 					adtDAO.remove(atr);
 				}
 				

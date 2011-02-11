@@ -1,6 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
+<script>
+function deleteRule(opID,ruleID,ruleType) {
+	var deleteMe = confirm('You are deleting a rule with potentially broad reaching affects. Are you sure you want to do this?');
+	if (!deleteMe)
+		return;
+	
+	window.location.href = 'OperatorConfiguration.action?button=DeleteRule&id='+opID+'&ruleID='+ruleID+'&ruleType='+ruleType;
+}
+</script>
 <s:if test="rules.size() > 0">
 	<table class="report">
 		<thead>
@@ -141,7 +150,7 @@
 					</s:if>
 					<s:if test="columnMap.get('delete')">
 						<s:if test="isCanEditRule(#r)">
-							<td class="center"><a class="remove" href="OperatorConfiguration.action?id=<s:property value="operatorAccount.id"/>&button=DeleteRule&ruleID=<s:property value="id"/>&ruleType=<s:property value="urlPrefix.toLowerCase()"/>"></a></td>
+							<td class="center"><a class="remove" href="javascript:deleteRule(<s:property value="operatorAccount.id"/>,<s:property value="id"/>,'<s:property value="urlPrefix.toLowerCase()"/>');"></a></td>
 						</s:if>
 						<s:else>
 							<td>&nbsp;</td>
