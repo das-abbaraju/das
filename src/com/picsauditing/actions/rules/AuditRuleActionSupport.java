@@ -117,7 +117,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	 * @return
 	 */
 	public boolean isCanEditRule() {
-		if (permissions.hasPermission(requiredPermission, OpType.Edit))
+		if(permissions.hasPermission(OpPerms.AuditRuleAdmin))
 			return true;
 		if (rule != null) {
 			if (rule.getCreatedBy() != null && permissions.getUserId() == rule.getCreatedBy().getId())

@@ -199,9 +199,11 @@ $(function() {
 										><s:property value="rule.auditCategory.name" /></a><br />
 								</s:if>
 							</li>
-							<li>
-								<a href="#edit" class="edit showPointer" id="editRuleButton" onclick="$(this).hide(); $('.hideRule').show();">Edit Rule</a>
-							</li>
+							<s:if test="permissions.canEditAuditRules">
+								<li>
+									<a href="#edit" class="edit showPointer" id="editRuleButton" onclick="$(this).hide(); $('.hideRule').show();">Edit Rule</a>
+								</li>
+							</s:if>
 						</s:if>
 					</ol>
 				</fieldset>
