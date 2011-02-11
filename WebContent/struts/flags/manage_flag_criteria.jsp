@@ -101,7 +101,14 @@ $(function() {
 				<td><s:property value="category"/></td>
 				<td><s:property value="displayOrder"/></td>
 				<td><s:property value="label"/></td>
-				<td><a href="#" onclick="show(<s:property value="id"/>); return false;"><s:if test="!isStringEmpty(description)"><s:property value="description" /></s:if><s:else>Description is missing...</s:else></a></td>
+				<td>
+					<a href="EditFlagCriteria.action?id=<s:property value="id"/>">
+						<s:if test="!isStringEmpty(description)">
+							<s:property value="description" />
+						</s:if>
+						<s:else>Description is missing...</s:else>
+					</a>
+				</td>
 				<td><s:property value="updatedBy2.name" /></td>
 				<td><s:date name="updateDate2" format="MM/dd/yyyy"/></td>
 			</tr>
