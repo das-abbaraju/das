@@ -28,7 +28,8 @@ $(function() {
 		},
 		formatResult: function(data,i,count) {
 			return data[0];
-		}
+		},
+		max			: 50
 	}).result(function(event, data) {
 		$('#operator_display').html("<a target='_BLANK' href=\"OperatorConfiguration.action?id=" + data[0] + "\">" + data[1] + " Configuration</a>");
 		$.getJSON('AuditRuleSearchAjax.action',{button: 'opTagFind', 'opID': data[0]},
@@ -339,7 +340,7 @@ $(function() {
 				</ol>
 			</fieldset>
 			<fieldset class="form hideRule submit" style="margin-bottom: 0px;">
-				<s:if test="(!auditTypeRule && rule.priority < 300) || (auditTypeRule && rule.priority < 230)">
+				<s:if test="((!auditTypeRule && rule.priority < 300) || (auditTypeRule && rule.priority < 230)) && button != 'New'">
 					<s:checkbox label="label" id="ruleEditCheckbox" name="ruleEditCheckbox" value="false" fieldValue="false" />I understand that I am changing a rule with potentially broad reaching affects.<br />
 					<div class="buttons">
 						<input type="submit" class="picsbutton positive" name="button" value="Save" disabled="disabled"/>
