@@ -38,7 +38,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
 		this.appPropertyDAO = appPropertyDAO;
 
-		this.requiredPermission = OpPerms.ManageAuditTypeRules;
+		this.requiredPermission = OpPerms.AuditRuleAdmin;
 		this.ruleType = "Audit Type";
 		this.urlPrefix = "AuditType";
 	}
