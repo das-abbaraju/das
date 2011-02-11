@@ -23,6 +23,13 @@ $(document).ready(function() {
 	data['comparisonRule.auditType.id'] = 1;
 	startThinking({ div: "excludedCategories", message: "Loading Excluded Audit Category Rules" });
 	$('#excludedCategories').load("CategoryRuleTableAjax.action", data);
+	
+	$('.add_cats, .add_audits').live('click', function(){
+		var target = $(this).attr('class').split('_')[1];
+		var data = $(this).closest('div').find(':input').serialize();
+		startThinking({div: 'included_'+target, message: 'Adding Item'});
+		$('#included_'+target).load('OperatorConfigurationAjax.action', data);
+	});
 });
 
 function showType(typeID) {
@@ -40,7 +47,7 @@ function showType(typeID) {
 
 	$('#typeTable_'+typeID).load('AuditTypeRuleTableAjax.action', data, function(){
 		if(checkCat){
-			$.getJSON('OperatorConfigurationAjax.action', {auditTypeID: typeID, id:<s:property value="operator.id" /> }, function(json){
+			$.getJSON('OperatorConfigurationAjax.action', {button: 'checkCat', auditTypeID: typeID, id:<s:property value="operator.id" /> }, function(json){
 				if(json){
 					if(json.addLink){
 						$('#build_'+typeID).html($('<a>', 
@@ -149,45 +156,9 @@ function hideCat(id) {
 </fieldset>
 <fieldset class="form">
 	<h2 class="formLegend">Likely Included Audits</h2>
-	<ol>
-		<li>
-			<table class="report">
-				<thead>
-					<tr>
-						<th>Category</th>
-						<th>Audit</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<s:iterator value="typeList" id="type">
-						<tr id="type<s:property value="#type.id" />">
-							<td class="classType"><s:property value="#type.classType" /></td>
-							<td><a href="ManageAuditType.action?id=<s:property value="#type.id" />"><s:property value="#type.auditName" /></a></td>
-							<td>
-								<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="normal preview">Show Rules</a>
-								<a href="#" onclick="return hideType(<s:property value="#type.id" />);" class="hide remove">Hide Rules</a>
-								<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="hide refresh">Refresh</a>
-								<div id="typeTable_<s:property value="#type.id" />"></div>
-									<a href="AuditTypeRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="#type.id" />&ruleOperatorAccountId=<s:property value="operator.id" />"
-										target="_blank" class="hide add">Add Rule</a>
-								<div id="build_<s:property value="#type.id" />" class="hide"></div>
-							</td>
-						</tr>
-					</s:iterator>
-				</tbody>
-			</table>
-		</li>
-		<li>
-			<s:form id="includeNewAudit">
-				<s:hidden value="%{operator.id}" name="id" />
-				<s:select list="otherAudits" 
-					listKey="id" listValue="auditName" name="auditTypeID" />
-				<s:submit name="button" value="Add" />
-			</s:form>
-		</li>
-		<li><a href="OperatorAuditTypeRules.action?id=<s:property value="id"/>">Show all Audit Type Rules specific to this operator</a></li>
-	</ol>
+	<div id="included_audits">
+			<s:include value="op_config_included_audits.jsp" />
+	</div>
 </fieldset>
 <fieldset class="form">
 	<h2 class="formLegend">Rules to Explicitly Remove Audit Types</h2>
@@ -199,43 +170,9 @@ function hideCat(id) {
 </fieldset>
 <fieldset class="form">
 	<h2 class="formLegend">Likely Included PQF Categories</h2>
-	<ol>
-		<li>
-			<table class="report">
-				<thead>
-					<tr>
-						<th>Category</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<s:iterator value="categoryList" id="cat">
-						<tr id="cat<s:property value="#cat.id" />">
-							<td><a href="ManageCategory.action?id=<s:property value="#cat.id" />"><s:property value="#cat.name" /></a></td>
-							<td>
-								<a href="#" onclick="return showCat(<s:property value="#cat.id" />);" class="normal preview">Show Rules</a>
-								<a href="#" onclick="return hideCat(<s:property value="#cat.id" />);" class="hide remove">Hide Rules</a>
-								<a href="#" onclick="return showCat(<s:property value="#cat.id" />);" class="hide refresh">Refresh</a>
-								<div id="catTable_<s:property value="#cat.id" />"></div>
-									<a href="CategoryRuleEditor.action?button=New&ruleAuditTypeId=1&ruleCategoryId=<s:property value="#cat.id" />&ruleOperatorAccountId=<s:property value="operator.id" />"
-										target="_blank" class="hide add">Add Rule</a>
-							</td>
-						</tr>
-					</s:iterator>
-				</tbody>
-			</table>
-		</li>
-		<li>
-			<s:form id="includeNewCategory">
-				<s:hidden value="%{operator.id}" name="id" />
-				<s:hidden value="Include" name="button" />
-				<s:select list="otherCategories" headerKey="0" headerValue="- Include Another Category -" 
-					listKey="id" listValue="name" name="catID" />
-				<s:submit name="button" value="Add" />
-			</s:form>
-		</li>
-		<li><a href="OperatorCategoryRules.action?id=<s:property value="id"/>">Show all Category Rules specific to this operator</a></li>
-	</ol>
+	<div id="included_cats">
+		<s:include value="op_config_included_cats.jsp"/>
+	</div>
 </fieldset>
 <fieldset class="form bottom">
 	<h2 class="formLegend">Rules to Explicitly Remove PQF Categories</h2>

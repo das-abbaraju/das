@@ -212,26 +212,32 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 			}
 
-			if (auditTypeID > 0) {
-				AuditTypeRule rule = new AuditTypeRule();
-				rule.setOperatorAccount(operator);
-				rule.setAuditType(new AuditType(auditTypeID));
-				rule.defaultDates();
-				rule.calculatePriority();
-				rule.setAuditColumns(permissions);
-				adtDAO.save(rule);
+			if ("Add Audit".equals(button)) {
+				if (auditTypeID > 0) {
+					AuditTypeRule rule = new AuditTypeRule();
+					rule.setOperatorAccount(operator);
+					rule.setAuditType(new AuditType(auditTypeID));
+					rule.defaultDates();
+					rule.calculatePriority();
+					rule.setAuditColumns(permissions);
+					adtDAO.save(rule);
+				}
+				return "audit";
 			}
 
-			if (catID > 0) {
-				AuditCategoryRule rule = new AuditCategoryRule();
-				rule.setOperatorAccount(operator);
-				rule.setAuditType(new AuditType(1));
-				rule.setAuditCategory(new AuditCategory());
-				rule.getAuditCategory().setId(catID);
-				rule.defaultDates();
-				rule.calculatePriority();
-				rule.setAuditColumns(permissions);
-				adtDAO.save(rule);
+			if ("Add Cat".equals(button)) {
+				if (catID > 0) {
+					AuditCategoryRule rule = new AuditCategoryRule();
+					rule.setOperatorAccount(operator);
+					rule.setAuditType(new AuditType(1));
+					rule.setAuditCategory(new AuditCategory());
+					rule.getAuditCategory().setId(catID);
+					rule.defaultDates();
+					rule.calculatePriority();
+					rule.setAuditColumns(permissions);
+					adtDAO.save(rule);
+				}
+				return "category";
 			}
 
 			return redirect("OperatorConfiguration.action?id=" + operator.getId());
@@ -307,7 +313,12 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 			otherAudits = typeDAO.findAll();
 			otherAudits.removeAll(usedAuditTypes);
 
-			Collections.sort(otherAudits);
+			Collections.sort(otherAudits, new Comparator<AuditType>() {
+				@Override
+				public int compare(AuditType type1, AuditType type2) {
+					return type1.getName().compareTo(type2.getName());
+				}
+			});
 		}
 
 		return otherAudits;
