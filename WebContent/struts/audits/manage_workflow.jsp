@@ -11,8 +11,8 @@
 <script type="text/javascript">
 $(function() {
 	$('.showWorkflow').live('click',function(){
-		$('#workflowEdit').load('ManageAuditWorkFlowAjax.action', function(){
-			$('#workflowEdit').show();
+		$('#workflow_edit').load('ManageAuditWorkFlowAjax.action', function(){
+			$('#workflow_edit').show();
 			$('#workflowSteps').hide();
 		});
 	});
@@ -22,13 +22,13 @@ $(function() {
 	});
 	
 	$('.closeEdit').live('click',function(){
-		$('#workflowEdit').hide();
+		$('#workflow_edit').hide();
 	});
 	
 	$('.editWorkflow').live('click',function(){
 		var id = $(this).closest('tr').attr('id');
-		$('#workflowEdit').load('ManageAuditWorkFlowAjax.action?id=' + id, function(){
-			$('#workflowEdit').show();
+		$('#workflow_edit').load('ManageAuditWorkFlowAjax.action?id=' + id, function(){
+			$('#workflow_edit').show();
 			$('#workflowSteps').hide();
 		});
 	});
@@ -44,7 +44,7 @@ $(function() {
 	$('.loadSteps').live('click', function(){
 		var workflowID = $(this).closest('tr').attr('id');
 		$('#workflowSteps').load('ManageAuditWorkFlowAjax.action?button=getSteps&id=' + workflowID);	
-		$('#workflowEdit').hide();
+		$('#workflow_edit').hide();
 		$('#workflowSteps').show();	
 	});
 
@@ -61,8 +61,13 @@ function loadData(that, action){
 }
 </script>
 <style type="text/css">
-#workflowEdit{
+#workflow_edit{
 	display: none;
+}
+.workflow_has_reqs{
+	padding-left: 10px;
+	font-size: small;
+	color: gray;
 }
 </style>
 </head>
@@ -83,7 +88,8 @@ function loadData(that, action){
 						<s:iterator value="workflowList">
 							<tr class="workflowList" id="<s:property value="id" />">
 								<td>
-									<a href="#" class="loadSteps"><s:property value="name" /></a>						
+									<a href="#" class="loadSteps"><s:property value="name" /></a>	
+									<div class="workflow_has_reqs"><s:if test="hasRequirements">Has Requirements</s:if></div>					
 								</td>
 								<td>
 									<a class="edit showPointer editWorkflow"></a>
@@ -99,7 +105,7 @@ function loadData(that, action){
 		</td>
 		<td style="padding-left: 10px;">
 			<div id="workflowSteps"></div>
-			<div id="workflowEdit">
+			<div id="workflow_edit">
 				<s:include value="manage_workflow_edit.jsp" />
 			</div>
 		</td>
