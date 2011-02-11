@@ -41,10 +41,9 @@ $(function(){
 
 function showRules() {
 	var data = {
-			'comparisonRule.auditType.id': <s:property value="id"/>
+			'comparisonRule.auditCategory': '<s:property value="id"/>'
 	};
-	startThinking({ div: "rules", message: "Loading Related Rules" });
-	$('#rules').load('AuditTypeRuleTableAjax.action', data);
+	$('#rules').think({message: "Loading Related Rules..." }).load('CategoryRuleTableAjax.action', data);
 }
 </script>
 </head>
