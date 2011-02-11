@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.util.Strings;
-
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -23,8 +21,8 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.Strings;
 
 public class AuditPercentCalculator {
 
