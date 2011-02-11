@@ -41,7 +41,11 @@ public abstract class BaseHistoryTime extends BaseTable {
 	}
 
 	public void defaultDates() {
-		effectiveDate = new Date();
+		// move the effective date back by one second so things show up right
+		// away in case the server times are off
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.MINUTE, -1);
+		effectiveDate = cal.getTime();
 		expirationDate = (Date) END_OF_TIME.clone();
 	}
 
