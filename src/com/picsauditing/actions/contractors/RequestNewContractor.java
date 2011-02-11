@@ -576,19 +576,21 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 
 	public List<ContractorAccount> runGapAnalysis(ContractorRegistrationRequest newContractor) {
-		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
-		SearchEngine search = new SearchEngine(permissions);
-		if (!Strings.isEmpty(newContractor.getName()))
-			results.addAll(newGap(search, newContractor.getName(), "C"));
+		List<String> terms = new ArrayList<String>();
+		terms.add(newContractor.getName());
+		terms.add(newContractor.getContact());
+
 		if (!Strings.isEmpty(newContractor.getAddress()))
-			results.addAll(newGap(search, newContractor.getAddress(), "C"));
+			terms.add(newContractor.getAddress());
 		if (!Strings.isEmpty(newContractor.getPhone()))
-			results.addAll(newGap(search, newContractor.getPhone(), "C"));
+			terms.add(newContractor.getPhone());
 		if (!Strings.isEmpty(newContractor.getEmail()))
-			results.addAll(newGap(search, newContractor.getEmail(), "C"));
+			terms.add(newContractor.getEmail());
+
+		SearchEngine search = new SearchEngine(permissions);
+		List<BasicDynaBean> results = newGap(search, Strings.implode(terms, " "), "C");
 
 		Set<Integer> conIDs = new HashSet<Integer>();
-
 		for (BasicDynaBean r : results) {
 			conIDs.add(Integer.parseInt(r.get("foreignKey").toString()));
 		}
