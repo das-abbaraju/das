@@ -141,7 +141,7 @@
 					</s:if>
 					<s:if test="columnMap.get('delete')">
 						<s:if test="isCanEditRule(#r)">
-							<td class="center"><a class="remove" href="OperatorConfiguration.action?id=<s:property value="operatorAccount.id"/>&button=DeleteRule&ruleID=<s:property value="id"/>&ruleType=<s:if test="auditCategory != null">category</s:if><s:else>audittype</s:else>"></a></td>
+							<td class="center"><a class="remove" href="OperatorConfiguration.action?id=<s:property value="operatorAccount.id"/>&button=DeleteRule&ruleID=<s:property value="id"/>&ruleType=<s:property value="urlPrefix.toLowerCase()"/>"></a></td>
 						</s:if>
 						<s:else>
 							<td>&nbsp;</td>
