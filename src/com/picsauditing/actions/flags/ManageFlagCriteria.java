@@ -85,7 +85,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 					criteriaDAO.save(criteria);
 					addActionMessage("Criteria saved successfully.");
 
-					this.redirect("ManageFlagCriteria.action?id=" + criteria.getId());
+					this.redirect("EditFlagCriteria.action?id=" + criteria.getId());
 				}
 
 			}
