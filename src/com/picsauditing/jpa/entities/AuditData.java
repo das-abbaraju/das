@@ -152,8 +152,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	@Transient
 	public boolean isHasRequirements() {
 		// Audits that have requirements
-		if (audit.getAuditType().getWorkFlow().isHasRequirements()
-				&& audit.getAuditType().getWorkFlow().getId() != Workflow.HSE_WORKFLOW)
+		if (!audit.getAuditType().getWorkFlow().isHasRequirements())
 			return false;
 		if (!getQuestion().isHasRequirement())
 			return false;
