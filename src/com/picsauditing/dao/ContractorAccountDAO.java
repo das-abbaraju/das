@@ -359,7 +359,7 @@ public class ContractorAccountDAO extends PicsDAO {
 				+ " select fdo.conID,Now(),1,Now(),1,CONCAT('Forced ', fc.label,' Flag to ',fdo.forceflag,' Expired for ', a.name),'Flags',1, fdo.opid,1 from flag_data_override fdo"
 				+ " join flag_criteria fc on fdo.criteriaid = fc.id"
 				+ " join accounts a on a.id = fdo.opID"
-				+ " where fdo.forceFlag is not null and fdo.forceEnd < Now()s";
+				+ " where fdo.forceFlag is not null and fdo.forceEnd < Now()";
 		db.executeInsert(sql);
 
 		sql = "delete from flag_data_override where forceEnd < Now()";
