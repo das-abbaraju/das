@@ -7,6 +7,7 @@
 		<table class="report">
 			<thead>
 				<tr>
+					<th>View</th>
 					<th>Category</th>
 					<th>Label</th>
 					<th>Description</th>
@@ -14,12 +15,13 @@
 				</tr>
 			</thead>
 			<tbody>
-				<s:iterator value="criteriaList" var="r">
+				<s:iterator value="criteriaList">
 					<tr>
+						<td class="center"><a href="EditFlagCriteria.action?id=<s:property value="id"/>" class="preview"></a></td>
 						<td><s:property value="category" /></td>
 						<td><s:property value="label" /></td>
 						<td><s:property value="description" /></td>
-						<td><s:property value="requiredStatus" /></td>
+						<td class="center"><s:property value="requiredStatus" /></td>
 					</tr>
 				</s:iterator>
 			</tbody>
@@ -41,7 +43,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<s:iterator value="criteriaList" var="r">
+				<s:iterator value="criteriaList">
 					<tr>
 						<td><s:property value="category" /></td>
 						<td><s:property value="label" /></td>

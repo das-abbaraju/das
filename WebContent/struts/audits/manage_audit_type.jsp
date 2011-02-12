@@ -190,7 +190,7 @@ function showRules() {
 	<h3>Related Flag Criteria</h3>
 	<a href="#" onclick="showFlags(); return false;" class="refresh">Refresh</a>	
 	<div id="flags"></div>
-	<a href="EditFlagCriteria.action" class="add">Add New Audit Type Flag Criteria</a>
+	<a href="EditFlagCriteria.action?criteria.displayOrder=999&criteria.dataType=boolean&criteria.comparison=%3d&criteria.defaultValue=false&criteria.allowCustomValue=false&criteria.requiredStatus=Complete&criteria.category=Paperwork&criteria.auditType.id=<s:property value="auditType.id" />&criteria.label=<s:property value="auditType.name" />" class="add">Add New Audit Type Flag Criteria</a>
 	<h3>Related Rules</h3>
 	<a href="#" onclick="showRules(); return false;" class="refresh">Refresh</a>	
 	<div id="rules"></div>
