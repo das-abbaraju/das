@@ -147,8 +147,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			}
 			Date scheduledDateInServerTime = DateBean.convertTime(scheduledDateInUserTime, permissions.getTimezone());
 
-			if (isNeedsReschedulingFee() && !feeOverride) {
-				if (!scheduledDateInServerTime.equals(conAudit.getScheduledDate())) {
+			if (!scheduledDateInServerTime.equals(conAudit.getScheduledDate())) {
+				if (isNeedsReschedulingFee() && !feeOverride) {
 					// Create invoice
 					InvoiceFee fee = feeDAO.find(InvoiceFee.RESCHEDULING);
 					String notes = "Fee for rescheduling " + conAudit.getAuditType().getAuditName()
@@ -158,9 +158,15 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 					createInvoice(fee, notes);
 				}
-			}
 
-			conAudit.setScheduledDate(scheduledDateInServerTime);
+				conAudit.setScheduledDate(scheduledDateInServerTime);
+				conAudit.setContractorConfirm(null);
+				if(permissions.getUserId() != conAudit.getAuditor().getId())
+					conAudit.setAuditorConfirm(null);
+				String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
+				sendConfirmationEmail(conAudit.getAuditType().getAuditName() + " Re-scheduled for " + shortScheduleDate);
+			}
+			
 			if (auditor != null) {
 				conAudit.setAuditor(auditor);
 				conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(auditor)));
@@ -253,48 +259,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			auditDao.save(conAudit);
 			auditorAvailabilityDAO.remove(availabilitySelected);
 
-			String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "");
-
-			if (conAudit.getContractorConfirm() == null) {
-				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setPermissions(permissions);
-				emailBuilder.setConAudit(conAudit);
-				emailBuilder.setTemplate(15);
-				ContractorAccount contractor = conAudit.getContractorAccount();
-				emailBuilder.setUser((contractor.getPrimaryContact() != null) ? contractor.getPrimaryContact()
-						: conAudit.getContractorAccount().getUsers().get(0));
-
-				String seed = "c" + conAudit.getContractorAccount().getId() + "id" + conAudit.getId();
-				String confirmLink = serverName + "ScheduleAuditUpdate.action?type=c&auditID=" + conAudit.getId()
-						+ "&key=" + Strings.hashUrlSafe(seed);
-				emailBuilder.addToken("confirmLink", confirmLink);
-				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
-				EmailQueue email = emailBuilder.build();
-				email.setViewableById(getViewableByAccount(conAudit.getAuditType().getAccount()));
-				EmailSender.send(email);
-			}
-			if (conAudit.getAuditorConfirm() == null) {
-				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setPermissions(permissions);
-				emailBuilder.setConAudit(conAudit);
-				emailBuilder.setTemplate(14);
-
-				String seed = "a" + conAudit.getAuditor().getId() + "id" + conAudit.getId();
-				String confirmLink = serverName + "ScheduleAuditUpdate.action?type=a&auditID=" + conAudit.getId()
-						+ "&key=" + Strings.hashUrlSafe(seed);
-				emailBuilder.addToken("confirmLink", confirmLink);
-				emailBuilder.setUser(conAudit.getAuditor());
-				emailBuilder.setFromAddress("\"Jesse Cota\"<jcota@picsauditing.com>");
-				EmailQueue email = emailBuilder.build();
-				email.setCcAddresses(null);
-				email.setViewableById(Account.PicsID);
-				EmailSender.send(email);
-			}
-
 			String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
-			addNote(contractor, conAudit.getAuditType().getAuditName() + " Scheduled for " + shortScheduleDate,
-					NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
-
+			sendConfirmationEmail(conAudit.getAuditType().getAuditName() + " Scheduled for " + shortScheduleDate);
+			
 			addActionMessage("Congratulations, your audit is now scheduled. You should receive a confirmation email for your records.");
 			return "summary";
 		}
@@ -497,5 +464,48 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		contractor.getInvoices().add(invoice);
 		contractor.syncBalance();
 		accountDao.save(contractor);
+	}
+	
+	private void sendConfirmationEmail(String summary) throws Exception {
+		String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "");
+
+		if (conAudit.getContractorConfirm() == null) {
+			EmailBuilder emailBuilder = new EmailBuilder();
+			emailBuilder.setPermissions(permissions);
+			emailBuilder.setConAudit(conAudit);
+			emailBuilder.setTemplate(15);
+			ContractorAccount contractor = conAudit.getContractorAccount();
+			emailBuilder.setUser((contractor.getPrimaryContact() != null) ? contractor.getPrimaryContact()
+					: conAudit.getContractorAccount().getUsers().get(0));
+
+			String seed = "c" + conAudit.getContractorAccount().getId() + "id" + conAudit.getId();
+			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=c&auditID=" + conAudit.getId()
+					+ "&key=" + Strings.hashUrlSafe(seed);
+			emailBuilder.addToken("confirmLink", confirmLink);
+			emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
+			EmailQueue email = emailBuilder.build();
+			email.setViewableById(getViewableByAccount(conAudit.getAuditType().getAccount()));
+			EmailSender.send(email);
+		}
+		if (conAudit.getAuditorConfirm() == null) {
+			EmailBuilder emailBuilder = new EmailBuilder();
+			emailBuilder.setPermissions(permissions);
+			emailBuilder.setConAudit(conAudit);
+			emailBuilder.setTemplate(14);
+
+			String seed = "a" + conAudit.getAuditor().getId() + "id" + conAudit.getId();
+			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=a&auditID=" + conAudit.getId()
+					+ "&key=" + Strings.hashUrlSafe(seed);
+			emailBuilder.addToken("confirmLink", confirmLink);
+			emailBuilder.setUser(conAudit.getAuditor());
+			emailBuilder.setFromAddress("\"Jesse Cota\"<jcota@picsauditing.com>");
+			EmailQueue email = emailBuilder.build();
+			email.setCcAddresses(null);
+			email.setViewableById(Account.PicsID);
+			EmailSender.send(email);
+		}
+
+		addNote(contractor, summary,
+				NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
 	}
 }
