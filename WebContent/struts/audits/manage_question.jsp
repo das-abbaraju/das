@@ -119,7 +119,8 @@ function moveQuestion(atypeID) {
 			</s:else>
 		</li>
 		<li><label>Question Type:</label>
-			<s:select list="questionTypes" name="question.questionType" headerKey="" headerValue="" />
+			<s:select list="questionTypes" name="question.questionType" headerKey="" headerValue="" /> 
+			<s:if test ="question.questionType == 'Radio'"><a href="ManageQuestionOption.action?id=<s:property value="question.id"/>">Manage Options</a></s:if>
 			<pics:fieldhelp title="Question Type">
 				<p>The type of widget to use on the user interface.</p>
 				<ul>

@@ -1,6 +1,8 @@
 package com.picsauditing.jpa.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -8,6 +10,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 
 @SuppressWarnings("serial")
 @Entity
@@ -17,7 +21,7 @@ public class AuditQuestionOption extends BaseTable implements
 		java.io.Serializable {
 	private AuditQuestion auditQuestion;
 	private String optionName;
-	private YesNo visible;
+	private YesNo visible = YesNo.Yes;
 	private int number;
 	private int score;
 
@@ -49,7 +53,9 @@ public class AuditQuestionOption extends BaseTable implements
 	public void setOptionName(String optionName) {
 		this.optionName = optionName;
 	}
-
+	
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
+	@Enumerated(EnumType.STRING)
 	public YesNo getVisible() {
 		return visible;
 	}

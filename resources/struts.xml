@@ -1255,7 +1255,12 @@
 				struts/audits/audit_selectType.jsp
 			</result>
 		</action>
-		
+
+		<action name="ManageQuestionOption"
+			class="com.picsauditing.actions.auditType.ManageQuestionOptions">
+			<result>struts/audits/manage_question_options.jsp</result>
+		</action>
+				
 		<action name="ManageQuestionCopyAjax"
 			class="com.picsauditing.actions.auditType.ManageQuestion">
 			<result>struts/audits/manage_question_copymove.jsp</result>
