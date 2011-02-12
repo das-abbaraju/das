@@ -18,7 +18,7 @@ $(function(){
 			);
 		}
 	});
-	
+	showFlags();
 	showRules();
 	$('.cluetip').cluetip({
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
@@ -31,6 +31,14 @@ $(function(){
 		var jsonObj = <s:property value="" />
 	</s:if>	
 });
+
+function showFlags() {
+	var data = {
+			auditTypeID: <s:property value="id"/>
+	};
+	startThinking({ div: "flags", message: "Loading Related Flag Criteria" });
+	$('#flags').load('FlagCriteriaListAjax.action', data);
+}
 
 function showRules() {
 	var data = {
@@ -165,6 +173,10 @@ function showRules() {
 		<div class="info">Drag and drop categories to change their order</div>
 		<br clear="all" />
 	</s:if>
+	<h3>Related Flag Criteria</h3>
+	<a href="#" onclick="showFlags(); return false;" class="refresh">Refresh</a>	
+	<div id="flags"></div>
+	<a href="EditFlagCriteria.action" class="add">Add New Audit Type Flag Criteria</a>
 	<h3>Related Rules</h3>
 	<a href="#" onclick="showRules(); return false;" class="refresh">Refresh</a>	
 	<div id="rules"></div>
