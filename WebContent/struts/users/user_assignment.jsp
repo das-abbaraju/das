@@ -123,8 +123,8 @@ tr.dirty a.save { display: inline; }
 				<td><s:select list="users" listKey="id" listValue="name" headerKey="0" headerValue="- User -" name="assignment.user" value="%{user.id}"></s:select></td>
 				<td><s:select list="countries" listKey="isoCode" listValue="name" headerKey="" headerValue="- Country -" name="assignment.country" value="%{country.isoCode}"></s:select></td>
 				<td><s:select list="states" listKey="isoCode" listValue="name" headerKey="" headerValue="- State -" name="assignment.state" value="%{state.isoCode}"></s:select></td>
-				<td><s:textfield name="assignment.postalStart" value="%{postalStart}" /></td>
-				<td><s:textfield name="assignment.postalEnd" value="%{postalEnd}" /></td>
+				<td><s:textfield name="assignment.postalStart" value="%{postalStart}" size="10"/></td>
+				<td><s:textfield name="assignment.postalEnd" value="%{postalEnd}" size="10"/></td>
 				<td><pics:autocomplete action="ContractorAutocomplete" htmlName="assignment.contractor" value="contractor" /></td>
 				<td><s:hidden name="assignment" value="%{id}"/><a href="#" class="remove"></a><a href="#" class="save"></a></td>
 			</tr>
@@ -138,8 +138,8 @@ tr.dirty a.save { display: inline; }
 		<td><s:select list="users" listKey = "id" listValue="name" headerKey="0" headerValue="- User -" name="assignment.user"></s:select></td>
 		<td><s:select list="countries" listKey="isoCode" listValue="name" headerKey="" headerValue="- Country -" name="assignment.country"></s:select></td>
 		<td><s:select list="states" listKey="isoCode" listValue="name" headerKey="" headerValue="- State -" name="assignment.state"></s:select></td>
-		<td><s:textfield name="assignment.postalStart" /></td>
-		<td><s:textfield name="assignment.postalEnd" /></td>
+		<td><s:textfield name="assignment.postalStart" size="10"/></td>
+		<td><s:textfield name="assignment.postalEnd" size="10"/></td>
 		<td><pics:autocomplete action="ContractorAutocomplete" htmlName="assignment.contractor" /></td>
 		<td><s:hidden name="assignment" value=""/><a href="#" class="remove"></a><a href="#" class="save"></a></td>
 	</tr>
