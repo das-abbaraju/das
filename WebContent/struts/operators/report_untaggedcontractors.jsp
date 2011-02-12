@@ -44,9 +44,11 @@
 	<s:if test="data.size() > 0">
 		<tr>
 			<td colspan="3" class="right">
-				<s:select list="operator.tags" listKey="id" listValue="%{isRequired(id) ? tag + ' (required tag)' : tag}"
+				<s:select list="operatorTags" listKey="id" listValue="%{isRequired(id) ? tag +' (' + operator.name + ')*' : tag + ' ('+ operator.name + ')'}"
 					headerValue="- Contractor Tags -" headerKey="0" name="tagID" />
 				<input type="submit" class="picsbutton positive" value="Save" name="button" />
+				<br/>
+				* - Required Tag
 			</td>
 		</tr>
 	</s:if>

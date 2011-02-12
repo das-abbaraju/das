@@ -7,6 +7,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.report.ReportAccount;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -23,10 +24,13 @@ public class ReportUntaggedContractors extends ReportAccount {
 	private OperatorAccount operator;
 	private ContractorTagDAO conTagDAO;
 	private OperatorAccountDAO operatorAccountDAO;
+	private OperatorTagDAO operatorTagDAO;
+	private List<OperatorTag> operatorTags = null;
 
-	public ReportUntaggedContractors(OperatorAccountDAO operatorAccountDAO, ContractorTagDAO conTagDAO) {
+	public ReportUntaggedContractors(OperatorAccountDAO operatorAccountDAO, ContractorTagDAO conTagDAO, OperatorTagDAO operatorTagDAO) {
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.conTagDAO = conTagDAO;
+		this.operatorTagDAO = operatorTagDAO;
 	}
 
 	@Override
@@ -154,5 +158,12 @@ public class ReportUntaggedContractors extends ReportAccount {
 			return true;
 		
 		return false;
+	}
+	
+	public List<OperatorTag> getOperatorTags() throws Exception {
+		if (operatorTags != null && operatorTags.size() > 0)
+			return operatorTags;
+
+		return operatorTagDAO.findByOperator(permissions.getAccountId(), true);
 	}
 }
