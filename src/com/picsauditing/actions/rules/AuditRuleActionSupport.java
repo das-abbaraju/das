@@ -92,9 +92,9 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 				clear();
 			}
 			if ("Save".equals(button)) {
-				save();
-				redirectTo();
-				return BLANK;
+				if (save())
+					redirectTo();
+				return SUCCESS;
 			}
 			if ("Delete".equals(button)) {
 				delete();
@@ -117,9 +117,9 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	 * @return
 	 */
 	public boolean isCanEditRule() {
-		if(permissions.hasPermission(OpPerms.AuditRuleAdmin))
+		if (permissions.hasPermission(OpPerms.AuditRuleAdmin))
 			return true;
-		if (rule != null) {
+		if (rule != null && rule.getId() > 0) {
 			if (rule.getCreatedBy() != null && permissions.getUserId() == rule.getCreatedBy().getId())
 				return true;
 			OperatorAccount opAccount = rule.getOperatorAccount();
@@ -135,6 +135,8 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 					}
 				}
 			}
+		} else if (permissions.hasPermission(requiredPermission, OpType.Edit)) {
+			return true;
 		}
 
 		return false;
@@ -148,7 +150,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 		String where = "";
 		if (permissions.hasGroup(User.GROUP_MARKETING))
 			where = "a.id IN (SELECT accountID FROM account_user WHERE userID = " + permissions.getUserId() + ")";
-		
+
 		return operatorDAO.findWhereNatively(true, where);
 	}
 
@@ -163,7 +165,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	}
 
 	protected boolean isOperatorRequired() {
-		if (permissions.hasPermission(requiredPermission, OpType.Grant))
+		if (permissions.hasPermission(OpPerms.AuditRuleAdmin))
 			return false;
 		return true;
 	}
@@ -199,12 +201,12 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 
 	protected abstract T newRule();
 
-	protected abstract void save();
+	protected abstract boolean save();
 
 	protected void delete() {
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.MINUTE, -5);
-		
+
 		rule.setExpirationDate(c.getTime());
 		rule.setAuditColumns(permissions);
 		dao.save(rule);

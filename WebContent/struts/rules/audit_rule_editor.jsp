@@ -340,7 +340,7 @@ $(function() {
 				</ol>
 			</fieldset>
 			<fieldset class="form hideRule submit" style="margin-bottom: 0px;">
-				<s:if test="((!auditTypeRule && rule.priority < 300) || (auditTypeRule && rule.priority < 230)) && button != 'New'">
+				<s:if test="rule.id > 0 && ((!auditTypeRule && rule.priority < 300) || (auditTypeRule && rule.priority < 230))">
 					<s:checkbox label="label" id="ruleEditCheckbox" name="ruleEditCheckbox" value="false" fieldValue="false" />I understand that I am changing a rule with potentially broad reaching affects.<br />
 					<div class="buttons">
 						<input type="submit" class="picsbutton positive" name="button" value="Save" disabled="disabled"/>
@@ -352,7 +352,7 @@ $(function() {
 				</s:if>
 				<s:else>
 					<input type="submit" class="picsbutton positive" name="button" value="Save"/>
-					<s:if test="'New' != button">
+					<s:if test="rule.id > 0">
 						<input type="submit" class="picsbutton" name="button" value="Copy"/>
 						<input type="submit" class="picsbutton negative" name="button" value="Delete"/>
 					</s:if>

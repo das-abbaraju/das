@@ -38,7 +38,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
 		this.appPropertyDAO = appPropertyDAO;
 
-		this.requiredPermission = OpPerms.AuditRuleAdmin;
+		this.requiredPermission = OpPerms.ManageAuditTypeRules;
 		this.ruleType = "Audit Type";
 		this.urlPrefix = "AuditType";
 	}
@@ -104,20 +104,21 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 	}
 
 	@Override
-	protected void save() {
+	protected boolean save() {
+		saveFields();
 		if (isOperatorRequired()) {
 			if (rule.getOperatorAccount() == null) {
 				addActionError("You must specify an operator for this rule");
-				return;
+				return false;
 			}
 		}
-		saveFields();
 		if (rule.getId() == 0)
 			rule.defaultDates();
 		rule.calculatePriority();
 		rule.setAuditColumns(permissions);
 		dao.save(rule);
 		clear();
+		return true;
 	}
 
 	@Override
