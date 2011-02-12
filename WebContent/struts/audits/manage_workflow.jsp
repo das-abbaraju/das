@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <script type="text/javascript">
-$(function() {
+$(function() {	
 	$('.showWorkflow').live('click',function(){
 		$('#workflow_edit').load('ManageAuditWorkFlowAjax.action', function(){
 			$('#workflow_edit').show();
@@ -51,6 +51,10 @@ $(function() {
 	$('.addStep').live('click', function(){
 		$('#workflowSteps').load('ManageAuditWorkFlowAjax.action?' + $('#form_steps').serialize());
 	});
+
+	<s:if test="id > 0">
+		$('tr.workflowList#<s:property value="id" /> a.loadSteps').click();
+	</s:if>
 });
 function loadData(that, action){
 		var stepID = $(that).closest('tr').attr('id').replace('step_', '');
@@ -88,7 +92,7 @@ function loadData(that, action){
 						<s:iterator value="workflowList">
 							<tr class="workflowList" id="<s:property value="id" />">
 								<td>
-									<a href="#" class="loadSteps"><s:property value="name" /></a>	
+									<a class="loadSteps showPointer"><s:property value="name" /></a>	
 									<div class="workflow_has_reqs"><s:if test="hasRequirements">Has Requirements</s:if></div>					
 								</td>
 								<td>

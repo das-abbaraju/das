@@ -30,6 +30,15 @@ $(function(){
 	<s:if test="">
 		var jsonObj = <s:property value="" />
 	</s:if>	
+
+	$('#save_workFlowID').live('change', function(){
+		var id = $(this).find(':selected').val(); 
+		if(id > 0){
+			 var link = $('<a>').attr({'href': 'ManageAuditWorkFlow.action?id='+id, 'class': 'go'}).append('Go');
+			$('.workflow_go').html(link);
+		} else
+			$('.workflow_go').html('');
+	});
 });
 
 function showFlags() {
@@ -134,6 +143,11 @@ function showRules() {
 				<li><label>Workflow:</label>
 					<s:select list="workFlowList" name="workFlowID" listKey="id" listValue="name" value="auditType.workFlow.id" 
 					headerKey="0" headerValue="- Select Workflow -" />
+					<div class="workflow_go">
+						<s:if test="auditType.workFlow.id > 0">
+							<a href="ManageAuditWorkFlow.action?id=<s:property value="auditType.workFlow.id" />" class="go">Go</a>
+						</s:if>
+					</div>
 				</li>
 				<li>
 					<label>Required By Operator:</label>
