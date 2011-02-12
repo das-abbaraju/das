@@ -200,7 +200,7 @@ $(function() {
 										><s:property value="rule.auditCategory.name" /></a><br />
 								</s:if>
 							</li>
-							<s:if test="permissions.canEditAuditRules">
+							<s:if test="canEditRule">
 								<li>
 									<a href="#edit" class="edit showPointer" id="editRuleButton" onclick="$(this).hide(); $('.hideRule').show();">Edit Rule</a>
 								</li>
@@ -384,7 +384,7 @@ $(function() {
 				</s:if>
 			</ol>
 			<s:if test="permissions.hasGroup(@com.picsauditing.jpa.entities.User@GROUP_MARKETING)">
-				<div class="info">
+				<div class="alert">
 					This rule is not specific to one of your Accounts. Please contact one of the Audit Rule Administrators if this rule needs to be changed.
 				</div>
 			</s:if>
