@@ -11,6 +11,7 @@ import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.PICS.AuditBuilder.AuditTypeDetail;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -45,6 +46,10 @@ public class ContractorSimulator extends PicsActionSupport {
 
 	@Override
 	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
+		
+		tryPermissions(OpPerms.ManageAudits);
 
 		if (contractor == null) {
 			return SUCCESS;
