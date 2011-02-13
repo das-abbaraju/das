@@ -74,6 +74,20 @@ function updateHeader() {
 	}
 }
 
+function updateRequiredField() {
+	if($('#Onsite').is(':checked') || $('#Offsite').is(':checked') || $('#Supplier').is(':checked')) {
+		$('#Onsite').parent().addClass('hasdata');
+		$('#Offsite').parent().addClass('hasdata');
+		$('#Supplier').parent().addClass('hasdata');
+	}
+	if(!$('#Onsite').is(':checked') && !$('#Offsite').is(':checked') && !$('#Supplier').is(':checked')) {
+		$('#Onsite').parent().removeClass('hasdata');
+		$('#Offsite').parent().removeClass('hasdata');
+		$('#Supplier').parent().removeClass('hasdata');
+	}
+		
+}
+
 $(function(){
 	changeState($('#contractorCountry').val());
 })
@@ -204,9 +218,9 @@ $(function(){
 						<s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
 							<li class="required">
 								<label><s:property value="type" />:</label>
-								<s:if test="#conType.toString() == 'Onsite'"><s:checkbox name="contractor.onsiteServices" /></s:if>
-								<s:if test="#conType.toString() == 'Offsite'"><s:checkbox name="contractor.offsiteServices" /></s:if>
-								<s:if test="#conType.toString() == 'Supplier'"><s:checkbox name="contractor.materialSupplier" /></s:if>
+								<s:if test="#conType.toString() == 'Onsite'"><s:checkbox id="Onsite" name="contractor.onsiteServices" onclick="updateRequiredField();"/></s:if>
+								<s:if test="#conType.toString() == 'Offsite'"><s:checkbox id="Offsite" name="contractor.offsiteServices" onclick="updateRequiredField();"/></s:if>
+								<s:if test="#conType.toString() == 'Supplier'"><s:checkbox id="Supplier" name="contractor.materialSupplier" onclick="updateRequiredField();"/></s:if>
 								<div class="fieldhelp">
 									<h3><s:property value="type" /></h3>
 									<s:property value="description" escape="false" />
