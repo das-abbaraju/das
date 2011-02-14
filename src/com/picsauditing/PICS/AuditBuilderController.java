@@ -608,6 +608,9 @@ public class AuditBuilderController {
 		PicsLogger.log("Adding: " + auditType.getId() + auditType.getAuditName());
 		ContractorAudit annualAudit = createAudit(auditType);
 		annualAudit.setAuditFor(Integer.toString(year));
+		Calendar effDate = Calendar.getInstance();
+		effDate.set(year, Calendar.JANUARY, 1);
+		annualAudit.setEffectiveDate(effDate.getTime());
 		annualAudit.setCreationDate(startDate.getTime());
 		Date dateToExpire = DateBean.addMonths(startDate.getTime(), auditType.getMonthsToExpire());
 		annualAudit.setExpiresDate(dateToExpire);
