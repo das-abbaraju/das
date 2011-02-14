@@ -14,6 +14,7 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
@@ -23,6 +24,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
+import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditorAvailability;
@@ -35,6 +37,7 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
@@ -60,13 +63,14 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private InvoiceDAO invoiceDAO;
 	private InvoiceFeeDAO feeDAO;
 	private InvoiceItemDAO itemDAO;
+	private UserAccessDAO uaDAO;
 
 	private User auditor = null;
 
 	public ScheduleAudit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, CertificateDAO certificateDao, AuditorAvailabilityDAO auditorAvailabilityDAO,
 			AuditCategoryRuleCache auditCategoryRuleCache, InvoiceDAO invoiceDAO, InvoiceFeeDAO feeDAO,
-			InvoiceItemDAO itemDAO) {
+			InvoiceItemDAO itemDAO, UserAccessDAO uaDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
 		this.auditorAvailabilityDAO = auditorAvailabilityDAO;
 		this.subHeading = "Schedule Audit";
@@ -74,6 +78,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		this.invoiceDAO = invoiceDAO;
 		this.feeDAO = feeDAO;
 		this.itemDAO = itemDAO;
+		this.uaDAO = uaDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -242,13 +247,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				return "confirm";
 			}
 
-			if (isNeedsExpediteFee(availabilitySelected.getStartDate())) {
-				InvoiceFee fee = feeDAO.find(InvoiceFee.EXPEDITE);
-				String notes = conAudit.getAuditType().getAuditName()
-						+ " was scheduled within 7 business days, requiring an expedite fee.";
-
-				createInvoice(fee, notes);
-			}
+			boolean needsExpediteFee = isNeedsExpediteFee(availabilitySelected.getStartDate());
 
 			conAudit.setScheduledDate(availabilitySelected.getStartDate());
 			conAudit.setAuditor(availabilitySelected.getUser());
@@ -263,6 +262,37 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			sendConfirmationEmail(conAudit.getAuditType().getAuditName() + " Scheduled for " + shortScheduleDate);
 
 			addActionMessage("Congratulations, your audit is now scheduled. You should receive a confirmation email for your records.");
+
+			if (needsExpediteFee) {
+				InvoiceFee fee = feeDAO.find(InvoiceFee.EXPEDITE);
+				String notes = conAudit.getAuditType().getAuditName()
+						+ " was scheduled within 7 business days, requiring an expedite fee.";
+
+				createInvoice(fee, notes);
+
+				if (conAudit.isNeedsCamera()) {
+					List<UserAccess> webcamUsers = uaDAO.findByOpPerm(OpPerms.ManageWebcam);
+					List<String> emails = new ArrayList<String>();
+					for (UserAccess ua : webcamUsers) {
+						if (!ua.getUser().isGroup() && !Strings.isEmpty(ua.getUser().getEmail()))
+							emails.add("\"" + ua.getUser().getName() + "\" <" + ua.getUser().getEmail() + ">");
+					}
+
+					EmailQueue email = new EmailQueue();
+					email.setSubject("Webcam needed for Rush " + conAudit.getAuditType().getAuditName() + " for "
+							+ conAudit.getContractorAccount().getName());
+					email.setBody(conAudit.getContractorContact() + " from "
+							+ conAudit.getContractorAccount().getName() + " has requested a Rush "
+							+ conAudit.getAuditType().getAuditName() + " on "
+							+ DateBean.format(availabilitySelected.getStartDate(), "MMM dd h:mm a, z")
+							+ " and requires a webcam to be sent overnight.\n\nThank you,\nPICS");
+					email.setToAddresses(Strings.implode(emails));
+					email.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
+					email.setViewableById(Account.PicsID);
+					EmailSender.send(email);
+				}
+			}
+
 			return "summary";
 		}
 		return "address";
