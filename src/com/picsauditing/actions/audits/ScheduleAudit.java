@@ -161,12 +161,12 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 				conAudit.setScheduledDate(scheduledDateInServerTime);
 				conAudit.setContractorConfirm(null);
-				if(permissions.getUserId() != conAudit.getAuditor().getId())
+				if (permissions.getUserId() != conAudit.getAuditor().getId())
 					conAudit.setAuditorConfirm(null);
 				String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
 				sendConfirmationEmail(conAudit.getAuditType().getAuditName() + " Re-scheduled for " + shortScheduleDate);
 			}
-			
+
 			if (auditor != null) {
 				conAudit.setAuditor(auditor);
 				conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(auditor)));
@@ -246,7 +246,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				InvoiceFee fee = feeDAO.find(InvoiceFee.EXPEDITE);
 				String notes = conAudit.getAuditType().getAuditName()
 						+ " was scheduled within 7 business days, requiring an expedite fee.";
-				
+
 				createInvoice(fee, notes);
 			}
 
@@ -261,7 +261,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 			String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
 			sendConfirmationEmail(conAudit.getAuditType().getAuditName() + " Scheduled for " + shortScheduleDate);
-			
+
 			addActionMessage("Congratulations, your audit is now scheduled. You should receive a confirmation email for your records.");
 			return "summary";
 		}
@@ -440,7 +440,22 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public boolean isNeedsExpediteFee(Date date) {
-		return date != null && date.after(new Date()) && DateBean.getDateDifference(date) < 10;
+		if (date != null) {
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+
+			Calendar compare = Calendar.getInstance();
+			compare.setTime(date);
+			compare.set(Calendar.HOUR_OF_DAY, 0);
+			compare.set(Calendar.MINUTE, 0);
+			compare.set(Calendar.SECOND, 0);
+
+			return compare.getTime().after(cal.getTime()) && DateBean.getDateDifference(compare.getTime()) < 9;
+		}
+
+		return false;
 	}
 
 	private void createInvoice(InvoiceFee fee, String notes) {
@@ -465,7 +480,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		contractor.syncBalance();
 		accountDao.save(contractor);
 	}
-	
+
 	private void sendConfirmationEmail(String summary) throws Exception {
 		String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "");
 
@@ -475,12 +490,12 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			emailBuilder.setConAudit(conAudit);
 			emailBuilder.setTemplate(15);
 			ContractorAccount contractor = conAudit.getContractorAccount();
-			emailBuilder.setUser((contractor.getPrimaryContact() != null) ? contractor.getPrimaryContact()
-					: conAudit.getContractorAccount().getUsers().get(0));
+			emailBuilder.setUser((contractor.getPrimaryContact() != null) ? contractor.getPrimaryContact() : conAudit
+					.getContractorAccount().getUsers().get(0));
 
 			String seed = "c" + conAudit.getContractorAccount().getId() + "id" + conAudit.getId();
-			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=c&auditID=" + conAudit.getId()
-					+ "&key=" + Strings.hashUrlSafe(seed);
+			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=c&auditID=" + conAudit.getId() + "&key="
+					+ Strings.hashUrlSafe(seed);
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 			EmailQueue email = emailBuilder.build();
@@ -494,8 +509,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			emailBuilder.setTemplate(14);
 
 			String seed = "a" + conAudit.getAuditor().getId() + "id" + conAudit.getId();
-			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=a&auditID=" + conAudit.getId()
-					+ "&key=" + Strings.hashUrlSafe(seed);
+			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=a&auditID=" + conAudit.getId() + "&key="
+					+ Strings.hashUrlSafe(seed);
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setUser(conAudit.getAuditor());
 			emailBuilder.setFromAddress("\"Jesse Cota\"<jcota@picsauditing.com>");
@@ -505,7 +520,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			EmailSender.send(email);
 		}
 
-		addNote(contractor, summary,
-				NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
+		addNote(contractor, summary, NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
 	}
 }
