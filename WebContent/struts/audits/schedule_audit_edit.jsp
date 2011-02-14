@@ -127,8 +127,8 @@ function showChooseDate(override) {
 				This audit is scheduled to be conducted within 48 hours.
 				If the scheduled date is changed, the contractor will be charged a $199 rescheduling fee.<br />
 				<input type="button" onclick="showChooseDate(); return false;" value="Continue" class="picsbutton positive" />
-				<s:if test="permissions.userId == 1029">
-					<!-- This option is available for Mina only -->
+				<s:if test="permissions.userId == 1029 || permissions.userId == 935 || permissions.userId == 11503 || permissions.userId == 9615">
+					<!-- This option is available for Mina, Harvey, Gary, and Rick only -->
 					<input type="button" onclick="showChooseDate(true); return false;" value="Override Fee" class="picsbutton" />
 				</s:if>
 			</div>
