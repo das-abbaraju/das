@@ -127,7 +127,10 @@ function showChooseDate(override) {
 				This audit is scheduled to be conducted within 48 hours.
 				If the scheduled date is changed, the contractor will be charged a $199 rescheduling fee.<br />
 				<input type="button" onclick="showChooseDate(); return false;" value="Continue" class="picsbutton positive" />
-				<input type="button" onclick="showChooseDate(true); return false;" value="Override Fee" class="picsbutton" />
+				<s:if test="permissions.userId == 1029">
+					<!-- This option is available for Mina only -->
+					<input type="button" onclick="showChooseDate(true); return false;" value="Override Fee" class="picsbutton" />
+				</s:if>
 			</div>
 		</s:if>
 		<li><label>Audit Time:</label> <s:textfield name="scheduledDateTime" id="scheduledDateTime"
