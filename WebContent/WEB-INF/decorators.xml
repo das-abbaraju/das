@@ -25,6 +25,7 @@
 		<pattern>/AuditDataUpload.action</pattern>
 		<pattern>/CertificateUpload.action</pattern>
 		<pattern>/ReportNewReqConImport.action</pattern>
+		<pattern>/ManageEmployeesUpload.action</pattern>
 		<pattern>/user_edit.jsp</pattern>
 		<pattern>/exception_handler.jsp</pattern>
 		<pattern>/reasons.html</pattern>
