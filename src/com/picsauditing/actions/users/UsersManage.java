@@ -8,9 +8,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
+
+import javax.persistence.Query;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.hibernate.exception.ConstraintViolationException;
@@ -40,6 +43,7 @@ import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectAccount;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -58,7 +62,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	protected String filter = null;
 	protected List<OperatorAccount> facilities = null;
 	protected Report search = null;
-	protected List<User> userList = null;
+	private List<BasicDynaBean> userList = null;
 
 	protected int shadowID;
 	protected int moveToAccount = 0;
@@ -152,8 +156,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		if ("newUser".equalsIgnoreCase(button)) {
 			if (user.getIsGroup().isTrue())
 				sendActivationEmail = false;
-			else
+			else {
 				sendActivationEmail = true;
+				user.setLocale(account.getLocale());
+			}
 			return SUCCESS;
 		}
 
@@ -619,9 +625,21 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		this.shadowID = shadowID;
 	}
 
-	public List<User> getUserList() {
-		if (userList == null)
-			userList = userDAO.findByAccountID(accountId, isActive, isGroup);
+	public List<BasicDynaBean> getUserList() throws SQLException {
+		if (userList == null) {
+			Database db = new Database();
+			SelectSQL sql = new SelectSQL("users u");
+			sql.addOrderBy("isGroup");
+			sql.addOrderBy("name");
+			sql.addWhere("accountID = " + accountId);
+			if ("Yes".equals(isGroup) || "No".equals(isGroup))
+				sql.addWhere("isGroup = '" + isGroup + "'");
+
+			if ("Yes".equals(isActive) || "No".equals(isActive))
+				sql.addWhere("isActive = '" + isActive + "'");
+
+			userList = db.select(sql.toString(), false);
+		}
 		return userList;
 	}
 
@@ -702,14 +720,9 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		return loginLogDao.findRecentLogins(user.getId(), 10);
 	}
 
-	public List<OperatorAccount> getFacilities() {
-		facilities = operatorDao.findWhere(true, "");
-
-		return facilities;
-	}
-
 	public Comparator<UserGroup> getGroupNameComparator() {
 		return new Comparator<UserGroup>() {
+
 			@Override
 			public int compare(UserGroup o1, UserGroup o2) {
 				if (o1 == null)
@@ -723,6 +736,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	public Comparator<UserGroup> getUserNameComparator() {
 		return new Comparator<UserGroup>() {
+
 			@Override
 			public int compare(UserGroup o1, UserGroup o2) {
 				if (o1 == null)
@@ -776,7 +790,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	public void setMoveToAccount(int moveToAccount) {
 		this.moveToAccount = moveToAccount;
 	}
-	
+
 	public boolean isCsr() {
 		if (user != null && !user.isGroup()) {
 			for (UserGroup ug : user.getGroups()) {
@@ -784,7 +798,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 					return true;
 			}
 		}
-			
+
 		return false;
 	}
 
@@ -799,14 +813,15 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 						if (current.equals(ug) || current.getUser().isGroup())
 							iterator.remove();
 					}
-					
+
 					Collections.sort(ugs, new Comparator<UserGroup>() {
+
 						@Override
 						public int compare(UserGroup o1, UserGroup o2) {
 							return o1.getUser().getName().compareTo(o2.getUser().getName());
 						}
 					});
-					
+
 					return ugs;
 				}
 			}

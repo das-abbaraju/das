@@ -15,8 +15,10 @@
 		<li><label for="u.locale">Language:</label> <s:select
 			list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
 			name="u.locale" listValue="displayName"></s:select>
+		</li>
 		<li><label for="u.timezone">Timezone:</label> <s:select name="u.timezone"
-			list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" listKey="key" listValue="value"></s:select></li>
+			list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" listKey="key" listValue="value"></s:select>
+		</li>
 		<li><label>Profile Created:</label> <s:property value="formatDate(u.creationDate)" /></li>
 	</ol>
 	</fieldset>

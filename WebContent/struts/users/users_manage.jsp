@@ -96,13 +96,6 @@ div.autocomplete ul li {
 		<s:radio name="isActive"
 			list="#{'Yes':'Active', 'No':'Inactive', '':'All'}" value="isActive" />
 		</div>
-		<pics:permission perm="AllOperators">
-			<div class="filterOption">
-			<h4>Account:</h4>
-			<s:select name="accountId" headerKey="1100"
-				headerValue="PICS Employees" list="facilities" listKey="id"
-				listValue="name" /></div>
-		</pics:permission>
 	</s:form>
 	<div class="clear"></div>
 	</div>
@@ -144,21 +137,21 @@ div.autocomplete ul li {
 				<s:iterator value="userList" status="stat">
 					<tr>
 						<td class="right"><s:property value="#stat.count" />.</td>
-						<s:if test="group">
+						<s:if test="get('isGroup') == 'Yes'">
 							<td>G</td>
 							<td style="font-weight: bold"><a
-								href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
-								value="name" /></a></td>
+								href="?accountId=<s:property value="get('accountID')"/>&user.id=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
+								value="get('name')" /></a></td>
 							<td>N/A</td>
 						</s:if>
 						<s:else>
 							<td>U</td>
 							<td><a
-								href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
-								class="userActive<s:property value="isActive" />"><s:property value="name" /></a></td>
+								href="?accountId=<s:property value="get('accountID')"/>&user.id=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
+								class="userActive<s:property value="get('isActive')" />"><s:property value="get('name')" /></a></td>
 							<td>
-								<s:if test="lastLogin != null">
-									<s:date name="lastLogin" format="MM/dd/yy" />
+								<s:if test="get('lastLogin') != null">
+									<s:date name="get('lastLogin')" format="MM/dd/yy" />
 								</s:if>
 								<s:else>never</s:else>
 							</td>
@@ -249,6 +242,13 @@ div.autocomplete ul li {
 				</li>
 				<li><label for="user.fax">Fax:</label>
 					<s:textfield name="user.fax" size="15" />
+				</li>
+				<li><label for="user.locale">Language:</label> <s:select
+					list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
+					name="user.locale" listValue="displayName"></s:select>
+				</li>
+				<li><label for="user.timezone">Timezone:</label> <s:select name="user.timezone"
+					list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" listKey="key" listValue="value"></s:select>
 				</li>
 				<s:if test="user.account.id != 1100">
 				<li><label>&nbsp;Primary Contact:</label>
