@@ -58,10 +58,10 @@ public class I18nCache {
 			try {
 				cache = TreeBasedTable.create();
 				Database db = new Database();
-				List<BasicDynaBean> messages = db.select("SELECT messagekey, locale, value FROM app_messages", false);
+				List<BasicDynaBean> messages = db.select("SELECT msgKey, locale, msgValue FROM app_translation", false);
 				for (BasicDynaBean message : messages) {
-					cache.put(String.valueOf(message.get("messagekey")), String.valueOf(message.get("locale")),
-							String.valueOf(message.get("value")));
+					cache.put(String.valueOf(message.get("msgKey")), String.valueOf(message.get("locale")),
+							String.valueOf(message.get("msgValue")));
 				}
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
