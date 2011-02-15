@@ -167,6 +167,14 @@ $(function() {
 	$('#locationSuggest').autocomplete(<s:property value="previousLocationsJSON" escape="false"/>);
 	$('#titleSuggest').autocomplete(<s:property value="previousTitlesJSON" escape="false"/>);
 });
+
+function showExcelUpload() {
+	url = 'ManageEmployeesUpload.action?accountID=<s:property value="account.id" />';
+	title = 'Upload';
+	pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
+	fileUpload = window.open(url,title,pars);
+	fileUpload.focus();
+}
 </script>
 
 <style>
@@ -191,7 +199,8 @@ div.dataTables_length { width: 35%; }
 		</div>
 	</s:if>
 
-	<a href="?id=<s:property value="account.id"/>&button=Add" class="add">Add New Employee</a>
+	<a href="?id=<s:property value="account.id"/>&button=Add" class="add">Add New Employee</a><br />
+	<a href="#" onclick="showExcelUpload(); return false;" class="add">Import Excel File</a>
 
 	<table>
 		<tr>

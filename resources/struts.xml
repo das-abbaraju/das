@@ -1868,6 +1868,12 @@
 			<result name="tasks">struts/employees/manage_employee_sites_tasks.jsp</result>
 		</action>
 		
+		<action name="ManageEmployeesUpload"
+			class="com.picsauditing.actions.employees.ImportEmployees">
+			<result>struts/employees/import_employees.jsp</result>
+			<result name="input">/struts/blank.jsp</result>
+		</action>
+		
 		<action name="ManageUnmappedEmployees"
 			class="com.picsauditing.actions.employees.ManageUnmappedEmployees">
 			<result>struts/employees/manage_unmapped_employees.jsp</result>

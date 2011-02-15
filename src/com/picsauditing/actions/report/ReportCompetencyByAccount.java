@@ -51,7 +51,8 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 
 		PermissionQueryBuilderEmployee permQuery = new PermissionQueryBuilderEmployee(permissions);
 		sql.addWhere("1 " + permQuery.toString());
-
+		sql.addWhere("a.status in ('Active'" + (permissions.isAdmin() ? ", 'Demo'" : "") + ")");
+		
 		sql.addGroupBy("a.id");
 
 		filter.setShowFirstName(false);
