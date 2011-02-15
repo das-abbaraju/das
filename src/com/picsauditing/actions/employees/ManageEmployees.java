@@ -64,6 +64,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	protected int auditID;
 	protected int childID;
+	protected boolean hseAudit = false;
 	protected Set<JobRole> unusedJobRoles;
 	protected List<OperatorSite> oqOperators;
 	protected List<OperatorSite> hseOperators;
@@ -158,7 +159,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if ("Add".equals(button))
 			employee = new Employee();
 
-		if ("Save".equals(button)) {
+		if ("Save".equals(button) || "Continue".equals(button)) {
 			if (employee.getAccount() == null) {
 				employee.setAccount(account);
 			}
@@ -177,7 +178,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			createNewNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
 			indexer.runSingle(employee, "employee");
 
-			redirect("ManageEmployees.action?employee.id=" + employee.getId());
+			redirect("ManageEmployees.action?employee.id=" + employee.getId() + ("Continue".equals(button) ? "&hseAudit=true" : ""));
 		}
 
 		if ("Delete".equals(button)) {
@@ -373,6 +374,14 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	public void setChildID(int childID) {
 		this.childID = childID;
+	}
+	
+	public boolean isHseAudit() {
+		return hseAudit;
+	}
+	
+	public void setHseAudit(boolean hseAudit) {
+		this.hseAudit = hseAudit;
 	}
 
 	public OperatorAccount getOp() {

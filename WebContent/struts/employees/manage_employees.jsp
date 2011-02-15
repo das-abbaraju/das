@@ -186,9 +186,6 @@ div.dataTables_length { width: 35%; }
 <body>
 	<s:if test="auditID > 0">
 		<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />">Return to Job Roles Self Assessment</a></div>
-		<s:if test="employee.id > 0">
-			<div class="alert">Thank you for adding this employee, please scroll to the bottom of this page to now add Job Roles and appropriate HSE Sites.</div>
-		</s:if>
 	</s:if>
 	<h1><s:property value="account.name" /><span class="sub"><s:property value="subHeading" escape="false"/></span></h1>
 	<s:include value="../actionMessages.jsp"/>
@@ -247,129 +244,131 @@ div.dataTables_length { width: 35%; }
 					<s:form id="employeeForm">
 						<s:hidden name="id"/>
 						<s:hidden name="employee.id"/>
-						<fieldset class="form">
-							<h2 class="formLegend">Employee Details</h2>
-							<ol>
-								<li<s:if test="employee.firstName == null || employee.firstName == ''"> class="required"</s:if>><label>First Name:</label>
-									<s:textfield name="employee.firstName"/>
-									<pics:fieldhelp title="First Name">
-										<p>The first given name of the employee. This can include a middle initial or middle name if needed to differentiate between employees.</p>
+						<s:if test="!hseAudit">
+							<fieldset class="form">
+								<h2 class="formLegend">Employee Details</h2>
+								<ol>
+									<li<s:if test="employee.firstName == null || employee.firstName == ''"> class="required"</s:if>><label>First Name:</label>
+										<s:textfield name="employee.firstName"/>
+										<pics:fieldhelp title="First Name">
+											<p>The first given name of the employee. This can include a middle initial or middle name if needed to differentiate between employees.</p>
+											<h5>Examples:</h5>
+											<ul>
+												<li>John</li>
+												<li>John Q.</li>
+												<li>John Quincy</li>
+											</ul>
+										</pics:fieldhelp>
+									</li>
+									<li<s:if test="employee.lastName == null || employee.lastName == ''"> class="required"</s:if>><label>Last Name:</label>
+										<s:textfield name="employee.lastName"/>
+										<div class="fieldhelp">
+										<h3>Last Name</h3>
+										<p>The last name (aka family name) of the employee.</p>
+										</div>
+									</li>
+									<li><label>Title:</label>
+										<s:textfield id="titleSuggest" name="employee.title"/>
+										<div class="fieldhelp">
+										<h3>Title</h3>
+										<p>The optional title of the employee.</p>
 										<h5>Examples:</h5>
 										<ul>
-											<li>John</li>
-											<li>John Q.</li>
-											<li>John Quincy</li>
+											<li>President</li>
+											<li>Senior Engineer</li>
+											<li>Apprentice</li>
 										</ul>
-									</pics:fieldhelp>
-								</li>
-								<li<s:if test="employee.lastName == null || employee.lastName == ''"> class="required"</s:if>><label>Last Name:</label>
-									<s:textfield name="employee.lastName"/>
-									<div class="fieldhelp">
-									<h3>Last Name</h3>
-									<p>The last name (aka family name) of the employee.</p>
-									</div>
-								</li>
-								<li><label>Title:</label>
-									<s:textfield id="titleSuggest" name="employee.title"/>
-									<div class="fieldhelp">
-									<h3>Title</h3>
-									<p>The optional title of the employee.</p>
-									<h5>Examples:</h5>
-									<ul>
-										<li>President</li>
-										<li>Senior Engineer</li>
-										<li>Apprentice</li>
-									</ul>
-									<p>Suggestions are based on common titles from all companies located in PICS Organizer.</p>
-									</div>
-								</li>
-								<li><label>Birth Date:</label>
-									<s:textfield name="employee.birthDate" value="%{maskDateFormat(employee.birthDate)}" cssClass="datepicker"/>
-									<div class="fieldhelp">
-									<h3>Birth Date</h3>
-									<p>Optional date of birth field. Included for future use.</p>
-									</div>
-								</li>
-								<li><label>Classification:</label>
-									<s:select name="employee.classification" 
-										list="@com.picsauditing.jpa.entities.EmployeeClassification@values()" 
-										listValue="description" />
-								</li>
-								<li><label>Active</label>
-									<s:checkbox name="employee.active" onclick="$('#termDate').toggle();"/>
-									<div class="fieldhelp">
-									<h3>Active</h3>
-									<p>Unchecking this box will remove this employee from most reports. Uncheck this once the person no longer works for your company.</p>
-									</div>
-								</li>
-								<li><label>Hire Date:</label>
-									<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}" cssClass="datepicker"/>
-									<div class="fieldhelp">
-									<h3>Hire Date</h3>
-									<p>The date (or best approximation) the employee first started working for this company.</p>
-									</div>
-								</li>
-								<li id="termDate"><label>Termination Date:</label>
-									<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="datepicker"/>
-								</li>
-								<s:if test="employee.id > 0">
-									<s:if test="employee.photo.length() > 0">
-										<li><label>Photo:</label>
-											<a href="EmployeePhotoUpload.action?employeeID=<s:property value="employee.id"/>" class="edit"><img 
-												id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>" 
-												style="width: 25px; height: 25px; vertical-align: bottom;" /></a>
-										</li>
+										<p>Suggestions are based on common titles from all companies located in PICS Organizer.</p>
+										</div>
+									</li>
+									<li><label>Birth Date:</label>
+										<s:textfield name="employee.birthDate" value="%{maskDateFormat(employee.birthDate)}" cssClass="datepicker"/>
+										<div class="fieldhelp">
+										<h3>Birth Date</h3>
+										<p>Optional date of birth field. Included for future use.</p>
+										</div>
+									</li>
+									<li><label>Classification:</label>
+										<s:select name="employee.classification" 
+											list="@com.picsauditing.jpa.entities.EmployeeClassification@values()" 
+											listValue="description" />
+									</li>
+									<li><label>Active</label>
+										<s:checkbox name="employee.active" onclick="$('#termDate').toggle();"/>
+										<div class="fieldhelp">
+										<h3>Active</h3>
+										<p>Unchecking this box will remove this employee from most reports. Uncheck this once the person no longer works for your company.</p>
+										</div>
+									</li>
+									<li><label>Hire Date:</label>
+										<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}" cssClass="datepicker"/>
+										<div class="fieldhelp">
+										<h3>Hire Date</h3>
+										<p>The date (or best approximation) the employee first started working for this company.</p>
+										</div>
+									</li>
+									<li id="termDate"><label>Termination Date:</label>
+										<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="datepicker"/>
+									</li>
+									<s:if test="employee.id > 0">
+										<s:if test="employee.photo.length() > 0">
+											<li><label>Photo:</label>
+												<a href="EmployeePhotoUpload.action?employeeID=<s:property value="employee.id"/>" class="edit"><img 
+													id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>" 
+													style="width: 25px; height: 25px; vertical-align: bottom;" /></a>
+											</li>
+										</s:if>
+										<s:else>
+											<li><label>Upload Photo:</label>
+												<a href="EmployeePhotoUpload.action?employeeID=<s:property value="employee.id"/>" class="add">Add </a>
+											</li>
+										</s:else>
 									</s:if>
-									<s:else>
-										<li><label>Upload Photo:</label>
-											<a href="EmployeePhotoUpload.action?employeeID=<s:property value="employee.id"/>" class="add">Add </a>
-										</li>
-									</s:else>
-								</s:if>
-								<li><label>Email:</label>
-									<s:textfield name="employee.email"/>
-									<div class="fieldhelp">
-									<h3>Email</h3>
-									<p>The employee's primary work email address. This optional field is included for future use.
-									PICS will not SPAM email addresses or share this address without your permission.</p>
-									</div>
-								</li>
-								<li><label>Phone #:</label>
-									<s:textfield name="employee.phone"/>
-									<div class="fieldhelp">
-									<h3>Phone</h3>
-									<p>The employee's primary work phone. This field is optional.</p>
-									</div>
-								</li>
-								<li><label>TWIC Card Expiration:</label>
-									<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" cssClass="datepicker"/>
-									<pics:fieldhelp title="TWIC">
-										<p>The expiration date of the employee's TWIC Card if available. If the card is in transit, please provide an estimate of the expiration date.</p>
-									</pics:fieldhelp>
-								</li>
-								<li><label>SSN:</label>
-									<s:textfield name="ssn" cssClass="ssn"/>
-									<div class="fieldhelp">
-									<h3>Social Security Number</h3>
-									<p>The employee's Social Security Number issued by the United States. Leave blank if employee does not work in the USA.
-									This field is NOT used directly by PICS. However some third party data providers require this number. You can always add it later if needed.</p>
-									</div>
-								</li>
-								<li><label>Location:</label>
-									<s:textfield name="employee.location" id="locationSuggest"/>
-									<div class="fieldhelp">
-									<h3>Location</h3>
-									<p>The employee's primary work location. This could one of your own work locations or the location of one of your clients.</p>
-									<h5>Examples:</h5>
-									<ul>
-										<li>Dallas</li>
-										<li>Building C</li>
-									</ul>
-									<p>Suggestions based on common locations of other employees will appear after you start to type.</p>
-									</div>
-								</li>
-							</ol>
-						</fieldset>
+									<li><label>Email:</label>
+										<s:textfield name="employee.email"/>
+										<div class="fieldhelp">
+										<h3>Email</h3>
+										<p>The employee's primary work email address. This optional field is included for future use.
+										PICS will not SPAM email addresses or share this address without your permission.</p>
+										</div>
+									</li>
+									<li><label>Phone #:</label>
+										<s:textfield name="employee.phone"/>
+										<div class="fieldhelp">
+										<h3>Phone</h3>
+										<p>The employee's primary work phone. This field is optional.</p>
+										</div>
+									</li>
+									<li><label>TWIC Card Expiration:</label>
+										<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" cssClass="datepicker"/>
+										<pics:fieldhelp title="TWIC">
+											<p>The expiration date of the employee's TWIC Card if available. If the card is in transit, please provide an estimate of the expiration date.</p>
+										</pics:fieldhelp>
+									</li>
+									<li><label>SSN:</label>
+										<s:textfield name="ssn" cssClass="ssn"/>
+										<div class="fieldhelp">
+										<h3>Social Security Number</h3>
+										<p>The employee's Social Security Number issued by the United States. Leave blank if employee does not work in the USA.
+										This field is NOT used directly by PICS. However some third party data providers require this number. You can always add it later if needed.</p>
+										</div>
+									</li>
+									<li><label>Location:</label>
+										<s:textfield name="employee.location" id="locationSuggest"/>
+										<div class="fieldhelp">
+										<h3>Location</h3>
+										<p>The employee's primary work location. This could one of your own work locations or the location of one of your clients.</p>
+										<h5>Examples:</h5>
+										<ul>
+											<li>Dallas</li>
+											<li>Building C</li>
+										</ul>
+										<p>Suggestions based on common locations of other employees will appear after you start to type.</p>
+										</div>
+									</li>
+								</ol>
+							</fieldset>
+						</s:if>
 						<s:if test="employee.id > 0">
 							<s:if test="employee.account.requiresCompetencyReview && (unusedJobRoles.size() + employee.employeeRoles.size()) > 0">
 								<fieldset class="form">
@@ -383,11 +382,18 @@ div.dataTables_length { width: 35%; }
 								<s:include value="manage_employee_sites.jsp" />
 							</div>
 						</s:if>
-						<fieldset class="form submit">
-							<input type="submit" value="Save" name="button" class="picsbutton positive"/>
-							<input type="submit" value="Delete" name="button" class="picsbutton negative" 
-								onclick="return confirm('Are you sure you want to delete this employee? This action cannot be undone.');"/>
-						</fieldset>
+						<s:if test="!hseAudit">
+							<fieldset class="form submit">
+								<input type="submit" value="<s:property value="auditID > 0 && employee.id == 0 ? 'Continue' : 'Save'" />" name="button" class="picsbutton positive" />
+								<input type="submit" value="Delete" name="button" class="picsbutton negative" 
+									onclick="return confirm('Are you sure you want to delete this employee? This action cannot be undone.');"/>
+							</fieldset>
+						</s:if>
+						<s:else>
+							<fieldset class="form submit" style="text-align: center;">
+								<a href="ManageEmployees.action?employee.id=<s:property value="employee.id" />" class="picsbutton">View Complete Profile</a>
+							</fieldset>
+						</s:else>
 					</s:form>
 				</td>
 			</s:if>
