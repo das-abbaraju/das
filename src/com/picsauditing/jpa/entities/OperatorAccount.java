@@ -173,6 +173,23 @@ public class OperatorAccount extends Account {
 	public void setActivationFee(Integer activationFee) {
 		this.activationFee = activationFee;
 	}
+	
+	@Transient
+	public OperatorAccount getActivationFeeOperator(InvoiceFee activation) {
+		// if Operator activation fee is reduced, then use Operator account activation fee
+		if(this.getActivationFee() != null
+				&&!this.getActivationFee().equals(activation.getAmount().intValue()))
+			return this;
+
+		// if Corporate activation fee is reduced, return Corporate account
+		for (Facility f : this.getCorporateFacilities())
+			if (f.getCorporate().getActivationFee() != null
+					&& !f.getCorporate().getActivationFee().equals(activation.getAmount().intValue()))
+				return f.getCorporate();
+		
+		// If neither activation fee is set, return self and use default
+		return this;
+	}
 
 	public String getRequiredTags() {
 		return requiredTags;

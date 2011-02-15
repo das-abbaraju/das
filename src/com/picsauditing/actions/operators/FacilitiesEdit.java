@@ -23,6 +23,7 @@ import com.picsauditing.actions.Indexer;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.FacilitiesDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.dao.UserDAO;
@@ -31,6 +32,7 @@ import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Industry;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
@@ -60,9 +62,11 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	protected int contactID;
 	protected UserSwitchDAO userSwitchDAO;
 	private Indexer indexer;
+	private InvoiceFeeDAO invoiceFeeDAO;
 
 	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO, OperatorFormDAO formDAO,
-			AccountUserDAO accountUserDAO, UserDAO userDAO, UserSwitchDAO userSwitchDAO, Indexer indexer) {
+			AccountUserDAO accountUserDAO, UserDAO userDAO, UserSwitchDAO userSwitchDAO, Indexer indexer,
+			InvoiceFeeDAO invoiceFeeDAO) {
 		super(operatorAccountDAO);
 		this.facilitiesDAO = facilitiesDAO;
 		this.formDAO = formDAO;
@@ -70,6 +74,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		this.userDAO = userDAO;
 		this.userSwitchDAO = userSwitchDAO;
 		this.indexer = indexer;
+		this.invoiceFeeDAO = invoiceFeeDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -563,5 +568,10 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				operator.getCorporateFacilities().add(f);
 			}
 		}
+	}
+
+	public OperatorAccount getActivationFeeOperator() {
+		InvoiceFee invoiceFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
+		return operator.getActivationFeeOperator(invoiceFee);
 	}
 }

@@ -278,11 +278,18 @@ $(function() {
 			<li><label>Uses HSE Competency Review:</label> <s:checkbox
 				name="operator.requiresCompetencyReview" /></li>
 			<li id="act_li"><label>Contractor Activation Fee:</label>
+				<s:if test="activationFeeOperator.id != operator.id">
+					<p>Activation Fee inherited from <a href="FacilitiesEdit.action?id=<s:property value="activationFeeOperator.id" />"><s:property value="activationFeeOperator.name" /> ($<s:property value="activationFeeOperator.activationFee" />)</a>.
+					<pics:permission perm="UserRolePicsOperator">
+						To override this value enter in a different value below or change the inherited rate.
+					</pics:permission>
+					</p>
+				</s:if>
 				<pics:permission perm="UserRolePicsOperator">
-					<s:textfield name="operator.activationFee" />
+					$ <s:textfield name="operator.activationFee" />
 				</pics:permission>
 				<pics:permission perm="UserRolePicsOperator" negativeCheck="true">
-					<s:property value="operator.activationFee" />
+					$ <s:property value="operator.activationFee" />
 				</pics:permission>
 				<pics:fieldhelp title="Contractor Activation Fee">
 					<p>The default Activation Fee that contractors are charged when selecting this operator as their primary requesting account. Leave blank to use the default (currently $199).</p>
