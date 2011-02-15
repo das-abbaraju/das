@@ -24,14 +24,16 @@
 		<label>PICS #:</label>
 		<s:property value="contractor.id" />
 		<br />
-		<s:if test="contractor.requiresOQ">
-			<label>Operator Qualification:</label> Enabled
-		<br />
-		</s:if>
-		<s:if test="contractor.requiresCompetencyReview">
-			<label>HSE Competency Review:</label> Enabled
-		<br />
-		</s:if>
+		<!-- 
+			<s:if test="contractor.requiresOQ">
+				<label>Operator Qualification:</label> Enabled
+			<br />
+			</s:if>
+			<s:if test="contractor.requiresCompetencyReview">
+				<label>HSE Competency Review:</label> Enabled
+			<br />
+			</s:if>
+		-->
 		<pics:permission perm="PicsScore">
 		<label>Score:</label>
 		<s:property value="contractor.score" />
