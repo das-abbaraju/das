@@ -83,10 +83,12 @@ public class ReportBiddingContractors extends ReportAccount {
 			String summary = "";
 			int templateId = 0;
 			if ("Upgrade".equals(button)) {
-				// See also ContractorDashboard Upgrade to Full Membership
+				// See also ContractorDashboard/ReportNewContractorSearch Upgrade to Full Membership
 				cAccount.setAcceptsBids(false);
 				cAccount.setRenew(true);
 
+				auditBuilderController.buildAudits(cAccount, null);
+				
 				for (ContractorAudit cAudit : cAccount.getAudits()) {
 					if (cAudit.getAuditType().isPqf()) {
 						for (ContractorAuditOperator cao : cAudit.getOperators()) {
@@ -103,7 +105,7 @@ public class ReportBiddingContractors extends ReportAccount {
 						contractorAccountDAO.save(cAudit);
 					}
 				}
-
+				
 				if (permissions.isOperator() && permissions.isApprovesRelationships()) {
 					approveContractor(cAccount, permissions.getAccountId());
 				}

@@ -10,18 +10,27 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.picsauditing.PICS.AuditBuilderController;
+import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.Strings;
 
@@ -37,6 +46,9 @@ public class ReportNewContractorSearch extends ReportAccount {
 	protected int id;
 	private ContractorAccountDAO contractorAccountDAO;
 	private OperatorAccountDAO operatorAccountDAO;
+	private AuditDataDAO auditDataDAO;
+	private AuditBuilderController auditBuilder;
+	private AuditPercentCalculator auditPercentCalculator;
 
 	private FacilityChanger facilityChanger;
 	private List<FlagCriteriaOperator> opCriteria;
@@ -44,12 +56,16 @@ public class ReportNewContractorSearch extends ReportAccount {
 	private Map<Integer, FlagColor> byConID = new HashMap<Integer, FlagColor>();
 
 	public ReportNewContractorSearch(ContractorAccountDAO contractorAccountDAO, FacilityChanger facilityChanger,
-			OperatorAccountDAO operatorAccountDAO) {
+			OperatorAccountDAO operatorAccountDAO, AuditDataDAO auditDataDAO, AuditBuilderController auditBuilder,
+			AuditPercentCalculator auditPercentCalculator) {
 		this.skipPermissions = true;
 		this.filteredDefault = true;
 		this.facilityChanger = facilityChanger;
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
+		this.auditDataDAO = auditDataDAO;
+		this.auditBuilder = auditBuilder;
+		this.auditPercentCalculator = auditPercentCalculator;
 	}
 
 	@Override
@@ -108,7 +124,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 				whereQuery += "a.id IN (SELECT subID FROM generalcontractors gc "
 						+ "JOIN facilities f ON gc.genID = f.opID "
 						+ "JOIN facilities myf ON f.corporateID = myf.corporateID AND myf.opID = "
-						+ permissions.getAccountId() + " AND myf.corporateID NOT IN("+Strings.implode(Account.PICS_CORPORATE)+")) ";
+						+ permissions.getAccountId() + " AND myf.corporateID NOT IN("
+						+ Strings.implode(Account.PICS_CORPORATE) + ")) ";
 			if (permissions.isCorporate())
 				whereQuery += "a.id IN (SELECT subID FROM generalcontractors gc "
 						+ "JOIN facilities f ON gc.genID = f.opID AND f.corporateID = " + permissions.getAccountId()
@@ -148,14 +165,14 @@ public class ReportNewContractorSearch extends ReportAccount {
 				// report.setLimit(500);
 				run(sql);
 				calculateOverallFlags();
-				
+
 				String conIDs = "0";
 				for (Integer conID : byConID.keySet()) {
 					if (flagColors.contains(getOverallFlag(conID)))
 						conIDs += "," + conID;
 				}
 				sql.addWhere("a.id IN (" + conIDs + ")");
-				
+
 			} catch (Exception e) {
 				System.out.println("Error in SQL");
 			}
@@ -186,6 +203,51 @@ public class ReportNewContractorSearch extends ReportAccount {
 					facilityChanger.add();
 					addActionMessage("Successfully added <a href='ContractorView.action?id=" + id + "'>"
 							+ contractor.getName() + "</a>");
+
+					// Automatically upgrading Contractor per discussion
+					// 2/15/2011
+					if (contractor.isAcceptsBids() && !operator.isAcceptsBids()) {
+						// See also ReportBiddingContractors/ContractorDashboard
+						// Upgrade
+						contractor.setAcceptsBids(false);
+						contractor.setRenew(true);
+
+						auditBuilder.buildAudits(contractor, null);
+
+						for (ContractorAudit cAudit : contractor.getAudits()) {
+							if (cAudit.getAuditType().isPqf()) {
+								for (ContractorAuditOperator cao : cAudit.getOperators()) {
+									if (cao.getStatus().after(AuditStatus.Pending)) {
+										cao.changeStatus(AuditStatus.Pending, permissions);
+										auditDataDAO.save(cao);
+									}
+								}
+
+								auditBuilder.setup(contractor, null);
+								auditBuilder.fillAuditCategories(cAudit);
+								auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
+								auditPercentCalculator.percentCalculateComplete(cAudit);
+								auditDataDAO.save(cAudit);
+							}
+						}
+
+						contractor.incrementRecalculation();
+						contractor.setAuditColumns(permissions);
+						contractorAccountDAO.save(contractor);
+
+						// Sending a Email to the contractor for upgrade
+						EmailBuilder emailBuilder = new EmailBuilder();
+						emailBuilder.setTemplate(73); // Trial Contractor
+						// Account Approval
+						emailBuilder.setPermissions(permissions);
+						emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
+						emailBuilder.addToken("permissions", permissions);
+						EmailQueue emailQueue = emailBuilder.build();
+						emailQueue.setPriority(60);
+						emailQueue.setFromAddress("billing@picsauditing.com");
+						emailQueue.setViewableById(Account.PicsID);
+						EmailSender.send(emailQueue);
+					}
 				}
 			} catch (Exception e) {
 				addActionError(e.getMessage());
@@ -204,7 +266,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		run(sql);
 		return returnResult();
 	}
-	
+
 	@Override
 	protected String returnResult() throws IOException {
 		calculateOverallFlags();
@@ -234,9 +296,9 @@ public class ReportNewContractorSearch extends ReportAccount {
 	}
 
 	private void calculateOverallFlags() {
-		if(permissions.isCorporate())
+		if (permissions.isCorporate())
 			return;
-		
+
 		if (byConID.size() > 0)
 			return;
 
@@ -245,16 +307,17 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 		byConID.clear();
 
-		Map<Integer, String> conIDs = new HashMap<Integer, String>(); 
+		Map<Integer, String> conIDs = new HashMap<Integer, String>();
 		for (BasicDynaBean d : data) {
-			String worksfor =  "";
-			if(d.get("genID") == null)
+			String worksfor = "";
+			if (d.get("genID") == null)
 				worksfor = "false";
 			conIDs.put(Integer.parseInt(d.get("id").toString()), worksfor);
 		}
 
-		// TODO Maybe we could query and then trim this result here depending on the flag color filter
-		
+		// TODO Maybe we could query and then trim this result here depending on
+		// the flag color filter
+
 		List<ContractorAccount> contractors = contractorAccountDAO.findByContractorIds(conIDs.keySet());
 
 		for (ContractorAccount contractor : contractors) {
@@ -263,7 +326,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 			} else {
 				FlagDataCalculator calculator = new FlagDataCalculator(contractor.getFlagCriteria());
 				calculator.setOperatorCriteria(opCriteria);
-				if(!conIDs.get(contractor.getId()).isEmpty())
+				if (!conIDs.get(contractor.getId()).isEmpty())
 					calculator.setWorksForOperator(false);
 				calculator.setOperator(operator);
 				FlagColor flagColor = getWorstColor(calculator.calculate());

@@ -174,9 +174,12 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		if ("Upgrade to Full Membership".equals(button)) {
-			// See also ReportBiddingContractors Upgrade
+			// See also ReportBiddingContractors/RequestNewContractor Upgrade
 			contractor.setAcceptsBids(false);
 			contractor.setRenew(true);
+
+			auditBuilder.buildAudits(contractor, null);
+
 			for (ContractorAudit cAudit : contractor.getAudits()) {
 				if (cAudit.getAuditType().isPqf()) {
 					for (ContractorAuditOperator cao : cAudit.getOperators()) {
@@ -474,11 +477,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 			auditForSet.add(ind);
 
 			if (data.get(OshaRateType.TrirAbsolute.getDescription()) != null)
-				put(OshaRateType.TrirAbsolute.getDescription(), ind,
-						format(naicsDAO.getIndustryAverage(false, contractor.getNaics())));
+				put(OshaRateType.TrirAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(false,
+						contractor.getNaics())));
 			if (data.get(OshaRateType.LwcrAbsolute.getDescription()) != null)
-				put(OshaRateType.LwcrAbsolute.getDescription(), ind,
-						format(naicsDAO.getIndustryAverage(true, contractor.getNaics())));
+				put(OshaRateType.LwcrAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(true,
+						contractor.getNaics())));
 
 			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
 			for (ContractorOperator co : contractorOperators) {
@@ -623,11 +626,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public void setRunTagConCronAjax(boolean runAjax) {
 		this.runTagConCronAjax = runAjax;
 	}
-	
+
 	public boolean isHasOperatorTags() {
-		if(permissions.hasPermission(OpPerms.ContractorTags))
+		if (permissions.hasPermission(OpPerms.ContractorTags))
 			return true;
-		if(permissions.hasGroup(959))
+		if (permissions.hasGroup(959))
 			return true;
 		return false;
 	}
