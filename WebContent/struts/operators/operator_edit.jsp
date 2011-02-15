@@ -71,14 +71,14 @@ $(function() {
 		</s:if>
 		<li>
 			<label>Short Name:</label> <s:textfield name="operator.name" maxlength="50" />
-			<pics:fieldhelp>
+			<pics:fieldhelp title="Name">
 				This is the name of the operator as will be displayed on reports, graphs, and titles. The max size is 50 characters.
 			</pics:fieldhelp>
 		</li>
 		<li>
 			<label>Full Name:</label> <s:textfield name="operator.dbaName" />
 			<pics:fieldhelp title="Full Name">
-				<p>This is the full name of the operator that may include other details such as short comments or cities. There is no limit to this field.</p>
+				<p>Optional: This is the full name of the operator that may include other details such as short comments or cities. There is no limit to this field.</p>
 				<p>If the application displays the full name and no full name is available, the short name above will be used.</p>
 			</pics:fieldhelp>
 		</li>
@@ -187,7 +187,9 @@ $(function() {
 			<s:textfield name="operator.address2" size="35" />
 		</li>
 		<li><label>City:</label> <s:textfield name="operator.city"
-			size="20" /></li>
+			size="20" />
+			<pics:fieldhelp>The city will display for PICS employees on the operator popup and also to contractors on the facility search.</pics:fieldhelp>
+		</li>
 		<li><label>Country:</label> <s:select 
 			list="countryList"
 			id="opCountry"
@@ -197,11 +199,10 @@ $(function() {
 			headerKey="" headerValue="- Country -"
 			value="operator.country.isoCode"
 			onchange="countryChanged(this.value)" />
-			<s:if test="permissions.admin && operator.operator">
+			<s:if test="permissions.admin || operator.operator">
 				<div class="fieldhelp">
 					<h3>Address</h3>
-					<p>Please select the country that this operator works in. The contractor's audit 
-						configuration is based it.</p> 
+					<p>Please select the country in which operator is located. This is may affect what configuration is inherited from PICS Country configuration.</p>
 				</div>
 			</s:if>
 		</li>
@@ -226,18 +227,22 @@ $(function() {
 			name="operator.description" cols="40" rows="15" />
 			<pics:fieldhelp>General notes about this owner operator.</pics:fieldhelp>
 		</li>
-		<li><label>Account Since:</label> <s:date name="operator.creationDate" format="MMMMM yyyy" /> </li>
+		<s:if test="id > 0">
+			<li><label>Account Since:</label> <s:date name="operator.creationDate" format="MMMMM yyyy" /></li>
+		</s:if>
 	</ol>
 	</fieldset>
 	<s:if test="permissions.admin">
 		<fieldset class="form">
 		<h2 class="formLegend">Configuration</h2>
 		<ol>
-			<li><label>Required Tags:</label> <s:textfield name="operator.requiredTags" />
-				<pics:fieldhelp title="Required Tags">
-				<p>Example: 1,2,3|4,5 <a href="OperatorTags.action?id=<s:property value="id" />" target="_BLANK">Tags</a></p>
-				</pics:fieldhelp>
-			</li>
+			<s:if test="id > 0">
+				<li><label>Required Tags:</label> <s:textfield name="operator.requiredTags" />
+					<pics:fieldhelp title="Required Tags">
+					<p>Example: 1,2,3|4,5 <a href="OperatorTags.action?id=<s:property value="id" />" target="_BLANK">Tags</a></p>
+					</pics:fieldhelp>
+				</li>
+			</s:if>
 			<li><label>Approves Contractors:</label> <s:radio
 				list="#{'Yes':'Yes','No':'No'}"
 				name="operator.approvesRelationships" theme="pics" />
@@ -252,7 +257,7 @@ $(function() {
 					name="operator.oshaType" theme="pics" />
 				<div class="fieldhelp">
 					<h3>Health &amp; Safety Organization</h3>
-					<p>The source of statistics that should be used to evaluate contractors</p>
+					<p>The source of statistics that should be used to evaluate contractors. Operators can collect more than one, but only one can be used to evaluate stats.</p>
 				</div>
 			</li>
 			<li><label>Contractors pay:</label> <s:radio
@@ -264,19 +269,27 @@ $(function() {
 			</li>
 			<s:if test="!operator.corporate">
 				<li><label>Accepts Bid Only Contractor:</label> <s:checkbox
-					name="operator.acceptsBids" /></li>
+					name="operator.acceptsBids" />
+					<pics:fieldhelp>Does this operator allow Bid-only contractors to register at a reduced rate? If Yes, then contractors who select this only this operator, will have the option to choose a bid only account.</pics:fieldhelp>
+				</li>
 			</s:if>
 			<li><label>InsureGUARD&trade;:</label> <s:radio
 				list="#{'Yes':'Yes','No':'No'}" name="operator.canSeeInsurance"
 				theme="pics" />
-				<pics:fieldhelp>This field is no longer needed. Edit Operator Configuration to add InsureGUARD features.</pics:fieldhelp>
+				<pics:fieldhelp>This field is no longer needed. Edit the configuration to add InsureGUARD features.</pics:fieldhelp>
 			</li>
-			<li><label>Auto Approve / Auto Reject Policies:</label> <s:checkbox
-				name="operator.autoApproveInsurance" /></li>
-			<li><label>Uses Operator Qualification (OQ):</label> <s:checkbox
-				name="operator.requiresOQ" /></li>
-			<li><label>Uses HSE Competency Review:</label> <s:checkbox
-				name="operator.requiresCompetencyReview" /></li>
+			<li><label>InsureGUARD&trade; Auto Approve/Reject Policies:</label> <s:checkbox
+				name="operator.autoApproveInsurance" />
+				<pics:fieldhelp title="InsureGUARD">Check this box to approve Completed policies with a recommended status of Approve and reject Completed policies with a recommended status of Reject.</pics:fieldhelp>
+			</li>
+			<li><label>EmployeeGUARD&trade; Uses Operator Qualification (OQ):</label> <s:checkbox
+				name="operator.requiresOQ" />
+				<pics:fieldhelp>Check this box to enable all of the OQ features for this operator and qualifying contractors.</pics:fieldhelp>
+			</li>
+			<li><label>EmployeeGUARD&trade; Uses HSE Competency Review:</label> <s:checkbox
+				name="operator.requiresCompetencyReview" />
+				<pics:fieldhelp>Check this box to enable all of the HSE Competency features for this operator and qualifying contractors.</pics:fieldhelp>
+			</li>
 			<li id="act_li"><label>Contractor Activation Fee:</label>
 				<s:if test="activationFeeOperator.id != operator.id">
 					<p>Activation Fee inherited from <a href="FacilitiesEdit.action?id=<s:property value="activationFeeOperator.id" />"><s:property value="activationFeeOperator.name" /> ($<s:property value="activationFeeOperator.activationFee" />)</a>.
