@@ -6,7 +6,7 @@
 function changePage(form, start){
 	var data = {
 		button: 'search',
-		startIndex: (start-1)*100,
+		startIndex: (start-1)*<s:property value="PAGEBREAK"/>,
 		searchTerm: $('#hiddenSearchTerm').val()
 	};
 	startThinking( {div: 'pageResults', message: 'Getting Results', type: 'large' } );
@@ -26,7 +26,6 @@ function changePage(form, start){
 		</s:if>
 	</div>
 </div>
-<div id="sortBy"><a href="Search.action?button=search&searchTerm=<s:property value="searchTerm.replace(' ','+')"/>&orderByName=true">Sort by Name</a></div>
 <div id="pageResults">
 	<div id="pageLinks"><s:property value="pageLinks" escape="false"/></div>
 		<table class="report">

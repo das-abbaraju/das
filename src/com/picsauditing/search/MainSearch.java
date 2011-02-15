@@ -29,7 +29,6 @@ import com.picsauditing.util.Strings;
 public class MainSearch extends PicsActionSupport implements Preparable {
 
 	protected String searchTerm;
-	protected boolean orderByName = false;
 
 	protected int searchID = 0;
 	protected int totalRows;
@@ -118,7 +117,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				end = totalRows;
 			else
 				end = startIndex + PAGEBREAK;
-			buildPages(totalRows, startIndex + 1, end, startIndex / 100 + 1);
+			buildPages(totalRows, startIndex + 1, end, startIndex / PAGEBREAK + 1);
 
 			return SUCCESS;
 		} else { // autosuggest/complete
@@ -142,7 +141,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	}
 
 	private List<Indexable> getFullResults(List<BasicDynaBean> queryList) throws IOException {
-		List<Indexable> records = getRecords(queryList, orderByName);
+		List<Indexable> records = getRecords(queryList);
 		if (records.size() == 1) {
 			Indexable viewThis = records.get(0);
 			String viewAction = viewThis.getViewLink();
@@ -153,7 +152,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	private void getResults(List<BasicDynaBean> queryList) {
 		StringBuilder sb = new StringBuilder();
-		List<Indexable> records = getRecords(queryList, false);
+		List<Indexable> records = getRecords(queryList);
 		if (records.size() > 0) {
 			for (Indexable value : records)
 				sb.append(value.getSearchText());
@@ -162,7 +161,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Indexable> getRecords(List<BasicDynaBean> queryList, boolean rOrderByName) {
+	public List<Indexable> getRecords(List<BasicDynaBean> queryList) {
 		ArrayListMultimap<Class, Integer> indexableMap = ArrayListMultimap.create();
 		SearchList recordsList = new SearchList();
 		for (BasicDynaBean bdb : queryList) {
@@ -194,7 +193,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				}
 			}
 		}
-		return recordsList.getRecordsOnly(false, rOrderByName);
+		return recordsList.getRecordsOnly(false);
 	}
 
 	public boolean checkCon(int id) {
@@ -269,12 +268,8 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		this.searchEngine = searchEngine;
 	}
 
-	public boolean isOrderByName() {
-		return orderByName;
-	}
-
-	public void setOrderByName(boolean orderByName) {
-		this.orderByName = orderByName;
+	public int getPAGEBREAK() {
+		return PAGEBREAK;
 	}
 
 }
@@ -339,7 +334,7 @@ class SearchList {
 		return item;
 	}
 
-	public List<Indexable> getRecordsOnly(boolean nullsAllowed, boolean sortByName) {
+	public List<Indexable> getRecordsOnly(boolean nullsAllowed) {
 		List<Indexable> recordsOnly = new ArrayList<Indexable>();
 		for (SearchItem item : data) {
 			if (nullsAllowed)
@@ -348,14 +343,6 @@ class SearchList {
 				if (item.record != null)
 					recordsOnly.add(item.record);
 			}
-		}
-		if(sortByName){
-			Collections.sort(recordsOnly, new Comparator<Indexable>() {
-				@Override
-				public int compare(Indexable o1, Indexable o2) {
-					return o1.getName().compareTo(o2.getName());
-				}
-			});
 		}
 		return recordsOnly;
 	}
