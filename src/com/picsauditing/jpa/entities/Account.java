@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -78,6 +79,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	protected boolean offsiteServices = false;
 	protected boolean materialSupplier = false;
 	protected Date accreditation;
+	private Locale locale = Locale.ENGLISH;
 	protected Currency currencyCode = Currency.USD;
 
 	// Other tables
@@ -263,6 +265,14 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 
 	public void setWebUrl(String webUrl) {
 		this.webUrl = webUrl;
+	}
+
+	public Locale getLocale() {
+		return locale;
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 
 	@Column(name = "industry", length = 50)
@@ -747,8 +757,8 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	@Transient
 	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|')
-				.append(this.name).append('|');
+		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(
+				this.name).append('|');
 		if (this.city != null)
 			sb.append(this.city);
 		if (this.state != null)

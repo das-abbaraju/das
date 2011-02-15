@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <s:form id="saveProfileForm">
 	<s:hidden name="url"/>
@@ -11,7 +12,10 @@
 		<li><label for="u.email">Email address:</label> <s:textfield name="u.email" size="30" /></li>
 		<li><label for="u.phone">Phone:</label> <s:textfield name="u.phone" size="20" /></li>
 		<li><label for="u.fax">Fax:</label> <s:textfield name="u.fax" size="20" /></li>
-		<li><label for="u.timezone">Timezone:</label> <s:select name="u.timezone" cssClass="forms"
+		<li><label for="u.locale">Language:</label> <s:select
+			list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
+			name="u.locale" listValue="displayName"></s:select>
+		<li><label for="u.timezone">Timezone:</label> <s:select name="u.timezone"
 			list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" listKey="key" listValue="value"></s:select></li>
 		<li><label>Profile Created:</label> <s:property value="formatDate(u.creationDate)" /></li>
 	</ol>

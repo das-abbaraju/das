@@ -40,6 +40,7 @@ import com.picsauditing.util.log.PicsLogger;
 @Table(name = "users")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class User extends BaseTable implements java.io.Serializable, Comparable<User>, JSONable, Indexable {
+
 	public static String DEFAULT_AUDITOR = "- Auditor -";
 	public static int SYSTEM = 1;
 	public static int GROUP_ADMIN = 10;
@@ -76,6 +77,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private int failedAttempts = 0;
 	private Date lockUntil = null;
 	private String timezone = "US/Central";
+	private Locale locale = Locale.ENGLISH;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
@@ -392,9 +394,12 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		return TimeZone.getTimeZone(timezone);
 	}
 
-	@Transient
 	public Locale getLocale() {
-		return Locale.ENGLISH;
+		return locale;
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 
 	public String getTimezone() {
