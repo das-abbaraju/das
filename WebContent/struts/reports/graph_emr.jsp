@@ -10,10 +10,15 @@
 
 <div id="search">
 <s:form>
-<s:select list="#{'2001':'2001','2002':'2002','2003':'2003','2004':'2004','2005':'2005','2006':'2006','2007':'2007','2008':'2008','2009':'2009'}"
-	cssClass="forms" name="years" multiple="true" size="5"/>
-<s:select list="chartTypeList" name="chartType" />
 <s:submit value="Refresh" />
+<br/>
+Year: <s:select list="yearsList"
+	cssClass="forms" name="years" multiple="true" size="5"/>
+Chart Type: <s:select list="chartTypeList" name="chartType" />
+Show Average EMR:  <s:checkbox name="showAvg"/>
+<s:if test="permissions.admin || permissions.corporate">
+	<s:select list="OperatorsList" cssClass="forms" name="operatorIDs" multiple="true" listKey="id" listValue="name" headerKey="0" headerValue="- Operator -" size="10"/>
+</s:if>
 </s:form>
 </div>
 <br clear="all"/>
