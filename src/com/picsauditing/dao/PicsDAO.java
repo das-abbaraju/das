@@ -72,6 +72,10 @@ abstract public class PicsDAO {
 		}
 	}
 
+	public BaseTable find(Class<? extends BaseTable> clazz, int id) {
+		return em.find(clazz, id);
+	}
+
 	@SuppressWarnings("unchecked")
 	protected List<? extends BaseTable> findAll(Class<? extends BaseTable> clazz) {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t ORDER BY t.id");

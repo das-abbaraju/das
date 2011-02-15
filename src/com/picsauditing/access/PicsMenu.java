@@ -113,8 +113,10 @@ public class PicsMenu {
 		}
 
 		subMenu = menu.addChild("Contractors");
-		subMenu.addChild("Contractor List", "ContractorList.action?filter.performedBy=Self Performed");
-
+		if (permissions.hasPermission(OpPerms.AllContractors) || permissions.isOperatorCorporate()) {
+			subMenu.addChild("Contractor List", "ContractorList.action?filter.performedBy=Self Performed");
+		}
+		
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {
 			final String url = "NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true&filter.tradeInformation=true";
 			subMenu.addChild("Search For New", url);
@@ -230,6 +232,11 @@ public class PicsMenu {
 			subMenu.addChild("Users", "UsersManage.action");
 			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
 		}
+		
+		if (permissions.hasPermission(OpPerms.Translator)) {
+			subMenu.addChild("Manage Translations", "ManageTranslations.action");
+		}
+		
 
 		if (permissions.hasPermission(OpPerms.ManageEmployees))
 			subMenu.addChild("Employees", "ManageEmployees.action?id=" + permissions.getAccountId());

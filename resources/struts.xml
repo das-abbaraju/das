@@ -1765,6 +1765,16 @@
 
 		<!-- Customer Service -->
 		
+		<action name="ManageTranslations"
+			class="com.picsauditing.actions.ManageTranslations">
+			<result>struts/i18n/manage_translations.jsp</result>
+		</action>
+		
+		<action name="ManageTranslationsAjax"
+			class="com.picsauditing.actions.ManageTranslations">
+			<result>struts/blank.jsp</result>
+		</action>
+		
 		<action name="ManageWebcams"
 			class="com.picsauditing.actions.customerservice.ManageWebcams">
 			<result>struts/customerservice/manage_webcams.jsp</result>

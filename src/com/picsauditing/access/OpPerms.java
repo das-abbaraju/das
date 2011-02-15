@@ -15,6 +15,7 @@ public enum OpPerms {
 	ContractorDetails("Contractor Details", "Allows users to view the details page along with sub nav bar, also enables search criteria other than name on reports. Allows access to the contractor contact info report and the audit list report.", false, false, true, true, true),
 
 	FormsAndDocs("Manage Forms and Docs", "Allow users to Edit and Delete Forms and Documents. Edit is required to Add or Update forms. Delete is required to delete forms.", true, true, true, false, true),
+	Translator("Translater", "Allow users translate PICS Organizer", true, true, true, false, false),
 
 	// Adding/removing Contractors
 	SearchContractors("Search For New Contractors", "Allows operator and corporate account users to search for contractors for their facility's database. Also allows you to view the contractor detail page.", true, true, true, false, true),
