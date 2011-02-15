@@ -31,8 +31,7 @@ $(function(){
 		
 		$.post('ManageTranslationsAjax.action', params, function(result) {
 			if (result.success) {
-				console.log(that.find("textarea").val());
-				console.log(that.find("span").html());
+				that.find("input[name|='translation']").val(result.id);
 				that.find("span").html(that.find("textarea").val());
 				that.removeClass("editMode");
 			} else {
