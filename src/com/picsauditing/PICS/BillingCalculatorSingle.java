@@ -261,7 +261,7 @@ public class BillingCalculatorSingle {
 				invoiceItem.setInvoiceFee(contractor.getNewMembershipLevel());
 				invoiceItem.setAmount(upgradeAmount);
 				invoiceItem.setDescription(description);
-				// invoiceItem.setPaymentExpires(contractor.getPaymentExpires());
+				invoiceItem.setPaymentExpires(contractor.getPaymentExpires());
 				items.add(invoiceItem);
 			}
 		}
