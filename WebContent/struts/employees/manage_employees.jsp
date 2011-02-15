@@ -244,7 +244,7 @@ div.dataTables_length { width: 35%; }
 					<s:form id="employeeForm">
 						<s:hidden name="id"/>
 						<s:hidden name="employee.id"/>
-						<s:if test="!hseAudit">
+						<s:if test="!selectRolesSites">
 							<fieldset class="form">
 								<h2 class="formLegend">Employee Details</h2>
 								<ol>
@@ -382,7 +382,7 @@ div.dataTables_length { width: 35%; }
 								<s:include value="manage_employee_sites.jsp" />
 							</div>
 						</s:if>
-						<s:if test="!hseAudit">
+						<s:if test="!selectRolesSites">
 							<fieldset class="form submit">
 								<input type="submit" value="<s:property value="auditID > 0 && employee.id == 0 ? 'Continue' : 'Save'" />" name="button" class="picsbutton positive" />
 								<input type="submit" value="Delete" name="button" class="picsbutton negative" 
