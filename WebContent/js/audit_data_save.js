@@ -96,10 +96,6 @@ $(function(){
 	});
 });
 
-function oshaSuccess(responseText, statusText, xhr, $form){
-		alert('moo');
-}
-
 function showCertUpload(certID, questionID) {
 	url = 'CertificateUpload.action?id='+conID
 		+ ((certID !== undefined && certID > 0) ? '&certID='+certID : '')
