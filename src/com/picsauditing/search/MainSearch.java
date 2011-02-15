@@ -3,8 +3,6 @@ package com.picsauditing.search;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -36,8 +34,6 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	protected String searchType = "";
 	protected String pageLinks;
 
-	private final int PAGEBREAK = 50;
-
 	protected List<Indexable> fullList;
 	protected Hashtable<Integer, Integer> ht;
 
@@ -47,6 +43,8 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
 	private EmployeeDAO empDAO;
+	private final int PAGEBREAK = 50;
+	private static final String ignoreTerms = "'united states','us','contractor','inc','user','operator', 'and'";
 
 	public MainSearch(AccountDAO accountDAO, UserDAO userDAO, EmployeeDAO empDAO) {
 		this.accountDAO = accountDAO;
@@ -72,13 +70,13 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		searchEngine = new SearchEngine(permissions);
 		if ("getResult".equals(button)) { // pull up a result
 			Indexable record = null;
-			if("account".equals(searchType))
+			if ("account".equals(searchType))
 				record = accountDAO.find(searchID);
-			else if("user".equals(searchType))
+			else if ("user".equals(searchType))
 				record = userDAO.find(searchID);
-			else if("employee".equals(searchType))
+			else if ("employee".equals(searchType))
 				record = empDAO.find(searchID);
-			if(record!=null)
+			if (record != null)
 				redirect(record.getViewLink());
 			else
 				addActionError("An Error occured with your search result, please try again.");
@@ -87,7 +85,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		} else if ("search".equals(button)) { // full view and paging
 
 			List<String> terms = searchEngine.buildTerm(searchTerm, true, true);
-			if(terms==null || terms.isEmpty()){
+			if (terms == null || terms.isEmpty()) {
 				addActionMessage("No searchable terms, please try again");
 				return SUCCESS;
 			}
@@ -96,9 +94,9 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			String query = searchEngine.buildQuery(permissions, terms, null, startIndex, 50, false, true);
 			List<BasicDynaBean> queryList = db.select(query, true);
 			totalRows = db.getAllRows();
-			String commonTermQuery = searchEngine.buildCommonTermQuery(terms, totalRows);
 
 			if (totalRows > PAGEBREAK) {
+				String commonTermQuery = searchEngine.buildCommonTermQuery(terms, ignoreTerms, totalRows);
 				List<BasicDynaBean> commonList = db.select(commonTermQuery, false);
 				searchEngine.buildCommonSuggest(commonList, searchTerm);
 			}
@@ -122,8 +120,9 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			return SUCCESS;
 		} else { // autosuggest/complete
 			List<String> terms = searchEngine.buildTerm(searchTerm, true, true);
-			if(terms==null || terms.isEmpty()){
-				output = "NULL|-"+searchTerm+"- did not return any results. Please try different a different search|";
+			if (terms == null || terms.isEmpty()) {
+				output = "NULL|-" + searchTerm
+						+ "- did not return any results. Please try different a different search|";
 				return BLANK;
 			}
 			String query = searchEngine.buildQuery(permissions, terms, null, 0, 10, false, false);

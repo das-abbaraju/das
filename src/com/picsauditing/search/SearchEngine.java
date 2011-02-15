@@ -28,7 +28,7 @@ public class SearchEngine {
 
 	protected Database db = new Database();
 	protected Permissions perm;
-	
+
 	private static final int MAX_TERMS = 7;
 
 	public SearchEngine(Permissions perm) {
@@ -72,19 +72,22 @@ public class SearchEngine {
 	 * 
 	 * @param terms
 	 *            The terms used in the search
+	 * @param ignore
+	 *            (Optional) List of terms to explicitly ignore
 	 * @param total
 	 *            count of the term is divided by this to see if it's included
 	 *            in this query
 	 * @return A String containing the search query
 	 */
-	public String buildCommonTermQuery(List<String> terms, int total) {
+	public String buildCommonTermQuery(List<String> terms, String ignore, int total) {
 		String sub = buildQuery(perm, terms, null, null, total, true, true);
 		StringBuilder cSb = new StringBuilder();
 		cSb.append("SELECT a.value term, COUNT(a.value) cc FROM ").append(indexTable).append(" a JOIN (");
 		cSb.append(sub).append(
-				") AS r1 ON a.foreignKey = r1.foreignKey\nWHERE a.value NOT IN "
-						+ "(SELECT isoCode FROM ref_state)GROUP BY a.value HAVING cc/").append(total).append(" <.8\n")
-				.append("ORDER BY cc DESC LIMIT 10");
+				") AS r1 ON a.foreignKey = r1.foreignKey\nWHERE a.value NOT IN (SELECT isoCode FROM ref_state)");
+		if (ignore != null && ignore.length() > 0)
+			cSb.append(" AND a.value NOT IN (").append(ignore).append(")");
+		cSb.append(" GROUP BY a.value HAVING cc/").append(total).append(" <.8\n").append("ORDER BY cc DESC LIMIT 10");
 		return cSb.toString();
 	}
 
