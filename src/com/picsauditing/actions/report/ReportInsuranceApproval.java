@@ -69,6 +69,8 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		// Get certificates
 		if (permissions.isOperatorCorporate()) {
 			SelectSQL sql2 = new SelectSQL("pqfdata d");
+			sql2.addJoin("JOIN contractor_audit ca ON ca.id = d.auditID AND ca.expiresDate > NOW()");
+			sql2.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID AND atype.classType = 'Policy'");
 			sql2.addJoin("JOIN audit_question q ON q.id = d.questionID");
 			sql2.addJoin("JOIN audit_category_rule c ON c.catID = q.categoryID");
 			sql2.addField("d.auditID");
@@ -82,8 +84,7 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 			if (permissions.isCorporate())
 				sql2.addWhere("c.opID IN (" + Strings.implode(permissions.getOperatorChildren()) + ")");
 
-			sql.addJoin("LEFT JOIN (" + sql2.toString() + ") cert ON cert.auditID = ca.id"
-					+ (permissions.isCorporate() ? " AND cert.opID = caoaccount.id" : ""));
+			sql.addJoin("LEFT JOIN (" + sql2.toString() + ") cert ON cert.auditID = ca.id AND cert.opID = caoaccount.id");
 			sql.addField("cert.certID");
 		}
 
