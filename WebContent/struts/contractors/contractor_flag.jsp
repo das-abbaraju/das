@@ -312,7 +312,7 @@ function checkReason(id) {
 							<!-- Value -->
 							<td>
 								<s:if test="#data.criteria.auditType != null">
-									<s:iterator value="missingAudits.get(#data.criteria.auditType)">
+									<s:iterator value="missingAudits.get(#data.criteria.auditType)" var="cao">
 										<s:property value="status"/>
 										<a href="Audit.action?auditID=<s:property value="#cao.audit.id" />"
 											><s:property value="#data.criteria.auditType.auditName" /> <s:property value="audit.auditFor" /></a>
