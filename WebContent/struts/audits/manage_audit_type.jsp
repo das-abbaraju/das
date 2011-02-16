@@ -112,13 +112,11 @@ function showRules() {
 				</li>
 				<li><label>Is Scoreable:</label>
 					<s:checkbox name="auditType.scoreable" />
-					<div class="fieldhelp">
-						<h3>Is Scoreable</h3>
-						<p>Check this box if this audit type should be scored</p>
-					</div>					
+					<pics:fieldhelp title="Is Scoreable">Check this box if this audit type should be scored</pics:fieldhelp>
 				</li>
 				<li><label>Is Scheduled:</label>
 					<s:checkbox name="auditType.scheduled" />
+					<pics:fieldhelp>Check this box if this can be scheduled to be performed at a specific date and time</pics:fieldhelp>
 				</li>
 				<li><label>Has Safety Professional:</label>
 					<s:checkbox name="auditType.hasAuditor" />
@@ -132,13 +130,9 @@ function showRules() {
 				<li>
 					<label>Permission to Edit:</label>
 					<s:select name="editPerm" list="@com.picsauditing.access.OpPerms@values()" listValue="description" 
-						headerKey="" headerValue="None" listKey="name()" value="editPerm"/>
-					<div class="fieldhelp">
-						<h3>Permission to Edit</h3>
-						<p>For Operators and PICS Admins this will restrict the ability to edit this audit
-						type to that permission.  Selecting 'none' will cancel this if you have already selected
-						a permission.</p>
-					</div>
+						headerKey="" headerValue="Only PICS" listKey="name()" value="editPerm"/>
+					<pics:fieldhelp title="Permission to Edit">For Operators and PICS Admins this will restrict the ability to edit this audit
+						type to that permission.</pics:fieldhelp>
 				</li>				
 				<li><label>Workflow:</label>
 					<s:select list="workFlowList" name="workFlowID" listKey="id" listValue="name" value="auditType.workFlow.id" 
@@ -148,6 +142,7 @@ function showRules() {
 							<a href="ManageAuditWorkFlow.action?id=<s:property value="auditType.workFlow.id" />" class="go">Go</a>
 						</s:if>
 					</div>
+					<pics:fieldhelp title="Workflow">This describes the workflow steps or lifecycle that this audit goes through. If you're not sure, then start with Single Step Workflow, which is the simplest.</pics:fieldhelp>
 				</li>
 				<li>
 					<label>Required By Operator:</label>
