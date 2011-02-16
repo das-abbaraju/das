@@ -58,7 +58,7 @@ public class I18nCache {
 	}
 
 	public Table<String, String, String> getCache() {
-		if (cache == null || true) {
+		if (cache == null) {
 			try {
 				cache = TreeBasedTable.create();
 				Database db = new Database();
