@@ -51,7 +51,7 @@ public class GraphEmrRates extends ChartMSAction {
 			sql.addWhere("c.emrAverage > 0");
 			sql.addGroupBy("label");
 			sql.addOrderBy("c.id DESC, label");
-			sql.addField("'avg' as series");
+			sql.addField("'AVERAGE' as series");
 			sql.addField("floor(c.emrAverage*10)/10 as label");
 			sql.addField("count(*) as value");
 		} else {

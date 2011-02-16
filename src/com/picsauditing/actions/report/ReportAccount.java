@@ -408,10 +408,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addGroupBy("a.id");
 		}
 		
-		if (getFilter().isOq() && permissions.isOperatorCorporate())
+		if (getFilter().isOq())
 			sql.addWhere("a.requiresOQ = 1");
 		
-		if (getFilter().isHse() && permissions.isOperatorCorporate())
+		if (getFilter().isHse())
 			sql.addWhere("a.requiresCompetencyReview = 1");
 	}
 
