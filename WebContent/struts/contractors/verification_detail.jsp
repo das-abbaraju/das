@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
-<s:if test="verificationAudits.size() == 0">
+<s:if test="pqfQuestions.size == 0 && oshas.size == 0 && emrs.size == 0">
 	<div class="alert">No Audits found to verify</div>
 </s:if>
 <s:else>

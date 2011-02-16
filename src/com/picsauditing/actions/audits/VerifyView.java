@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,6 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -83,29 +81,20 @@ public class VerifyView extends ContractorActionSupport {
 
 				annualUpdates.add(conAudit);
 
-				boolean pendingIncomplete = false;
+				for (AuditData d : conAudit.getData()) {
+					int categoryID = d.getQuestion().getCategory().getId();
+					if (categoryID != AuditCategory.CITATIONS
+							|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired()) || (d
+									.getQuestion().getId() >= 3565 && d.getQuestion().getId() <= 3568 && d.isAnswered()))) {
+						Map<Integer, AuditData> inner = emrs.get(d.getQuestion());
 
-				for (ContractorAuditOperator cao : conAudit.getOperators()) {
-					pendingIncomplete = cao.getStatus().isIncomplete() || cao.getStatus().isPending();
-				}
-
-				if (!pendingIncomplete) {
-					for (AuditData d : conAudit.getData()) {
-						int categoryID = d.getQuestion().getCategory().getId();
-						if (categoryID != AuditCategory.CITATIONS
-								|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired()) || (d
-										.getQuestion().getId() >= 3565 && d.getQuestion().getId() <= 3568 && d
-										.isAnswered()))) {
-							Map<Integer, AuditData> inner = emrs.get(d.getQuestion());
-
-							if (inner == null) {
-								inner = new TreeMap<Integer, AuditData>();
-								for (ContractorAudit ca : annualUpdates)
-									inner.put(ca.getId(), null);
-								emrs.put(d.getQuestion(), inner);
-							}
-							inner.put(conAudit.getId(), d);
+						if (inner == null) {
+							inner = new TreeMap<Integer, AuditData>();
+							for (ContractorAudit ca : annualUpdates)
+								inner.put(ca.getId(), null);
+							emrs.put(d.getQuestion(), inner);
 						}
+						inner.put(conAudit.getId(), d);
 					}
 				}
 			}
@@ -116,7 +105,7 @@ public class VerifyView extends ContractorActionSupport {
 			public int compare(ContractorAudit o1, ContractorAudit o2) {
 				if (o1.getAuditFor().equals(o2.getAuditFor()))
 					return o1.getCreationDate().compareTo(o2.getCreationDate());
-				
+
 				return o1.getAuditFor().compareTo(o2.getAuditFor());
 			}
 		});
@@ -153,7 +142,7 @@ public class VerifyView extends ContractorActionSupport {
 						}
 					}
 				}
-				
+
 				if (sb2.length() > 0) {
 					sb.append("\n\n");
 					sb.append(conAudit.getAuditFor() + " Annual Update");
@@ -280,37 +269,15 @@ public class VerifyView extends ContractorActionSupport {
 			verificationAudits = new Grepper<ContractorAudit>() {
 				@Override
 				public boolean check(ContractorAudit t) {
-					if (t.getAuditType().getClassType().isPolicy() || t.isExpired()
-							|| !t.getAuditType().getWorkFlow().isHasSubmittedStep()
-							|| !(t.getAuditType().isPqf() || t.getAuditType().isAnnualAddendum()))
-						return false;
-
-					return t.hasCaoStatusBefore(AuditStatus.Complete) || t.getAuditType().isAnnualAddendum();
+					return (t.getAuditType().isPqf() || t.getAuditType().isAnnualAddendum())
+							&& (t.hasCaoStatusAfter(AuditStatus.Pending) && t.hasCaoStatusBefore(AuditStatus.Complete) && !t
+									.hasCaoStatus(AuditStatus.Incomplete));
 				}
 			}.grep(getActiveAudits());
 		}
 
 		if (verificationAudits.size() > 0) {
-			// Check if all the annual updates are valid
-			boolean needsVerification = false;
-			for (ContractorAudit audit : verificationAudits) {
-				if (audit.getAuditType().isAnnualAddendum()
-						&& (audit.hasCaoStatusAfter(AuditStatus.Pending) || audit
-								.hasCaoStatusBefore(AuditStatus.Complete))) {
-					needsVerification = true;
-				}
-			}
-
-			if (!needsVerification) {
-				Iterator<ContractorAudit> iterator = verificationAudits.iterator();
-				while (iterator.hasNext()) {
-					if (iterator.next().getAuditType().isAnnualAddendum())
-						iterator.remove();
-				}
-			}
-
 			Collections.sort(verificationAudits, new Comparator<ContractorAudit>() {
-
 				@Override
 				public int compare(ContractorAudit o1, ContractorAudit o2) {
 					if (o1.getAuditFor() == null)
