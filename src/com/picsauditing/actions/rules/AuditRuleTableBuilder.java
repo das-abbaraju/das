@@ -10,7 +10,9 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AccountUser;
+import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
+import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 @SuppressWarnings("serial")
@@ -33,7 +35,7 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		setup();
 		return SUCCESS;
 	}
@@ -55,7 +57,7 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 			columnMap.put("bidOnly", true);
 		if (rule.getQuestion() != null)
 			columnMap.put("question", true);
-		if(isCanEditRule(rule))
+		if (isCanEditRule(rule))
 			columnMap.put("delete", true);
 
 		if (showWho) {
@@ -135,22 +137,29 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 	 */
 	public boolean isCanEditRule(AuditRule rule) {
 		if (rule != null) {
-			// Audit Rule Admins should not be able to easily delete since all rules
-			// should be within their scope
-			if(permissions.hasPermission(OpPerms.AuditRuleAdmin))
-				return false;
-			if (rule.getCreatedBy() != null && permissions.getUserId() == rule.getCreatedBy().getId())
+			// If user has AuditRuleAdmin and rule is above threshold let user
+			// modify rule
+			if (permissions.hasPermission(OpPerms.AuditRuleAdmin)
+					&& ((rule instanceof AuditCategoryRule && rule.getPriority() >= 300) || (rule instanceof AuditTypeRule && rule
+							.getPriority() >= 230))) {
 				return true;
-			OperatorAccount opAccount = rule.getOperatorAccount();
-			if (opAccount != null) {
-				for (AccountUser accUser : opAccount.getAccountUsers()) {
-					if (accUser.getUser().getId() == permissions.getUserId())
-						return true;
-				}
-				for (OperatorAccount child : opAccount.getOperatorChildren()) {
-					for (AccountUser childAccUser : child.getAccountUsers()) {
-						if (childAccUser.getUser().getId() == permissions.getUserId())
+			} else if (permissions.isCanEditAuditRules() || permissions.isCanEditCategoryRules()) {
+				// Otherwise if the user has editing privileges and created
+				// the rule or the rule falls within their scope of accounts
+				// let them modify it
+				if (rule.getCreatedBy() != null && permissions.getUserId() == rule.getCreatedBy().getId())
+					return true;
+				OperatorAccount opAccount = rule.getOperatorAccount();
+				if (opAccount != null) {
+					for (AccountUser accUser : opAccount.getAccountUsers()) {
+						if (accUser.getUser().getId() == permissions.getUserId())
 							return true;
+					}
+					for (OperatorAccount child : opAccount.getOperatorChildren()) {
+						for (AccountUser childAccUser : child.getAccountUsers()) {
+							if (childAccUser.getUser().getId() == permissions.getUserId())
+								return true;
+						}
 					}
 				}
 			}
