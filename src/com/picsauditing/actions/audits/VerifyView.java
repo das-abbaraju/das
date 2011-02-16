@@ -36,7 +36,8 @@ public class VerifyView extends ContractorActionSupport {
 
 	private Map<Integer, AuditData> pqfQuestions = new LinkedHashMap<Integer, AuditData>();
 	private Map<Integer, AuditData> infoSection = new LinkedHashMap<Integer, AuditData>();
-	private List<OshaAudit> oshas = new ArrayList<OshaAudit>();
+	private List<OshaAudit> oshasUS = new ArrayList<OshaAudit>();
+	private List<OshaAudit> oshasCA = new ArrayList<OshaAudit>();
 	protected AuditDataDAO auditDataDAO;
 	protected List<ContractorAudit> annualUpdates = new ArrayList<ContractorAudit>();
 	protected Map<AuditQuestion, Map<Integer, AuditData>> emrs = new TreeMap<AuditQuestion, Map<Integer, AuditData>>();
@@ -71,12 +72,16 @@ public class VerifyView extends ContractorActionSupport {
 				}
 			}
 			if (conAudit.getAuditType().isAnnualAddendum()) {
-				AuditData auditData = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
+				AuditData us = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
-					if (auditData != null && "Yes".equals(auditData.getAnswer()) && oshaAudit.isCorporate()
+					if (us != null && "Yes".equals(us.getAnswer()) && oshaAudit.isCorporate()
 							&& oshaAudit.getType().equals(OshaType.OSHA)) {
-						oshas.add(oshaAudit);
+						oshasUS.add(oshaAudit);
 					}
+
+					// TODO Work on verifying COHS
+//					if (oshaAudit.getType().equals(OshaType.COHS) && oshaAudit.isCorporate())
+//						oshasCA.add(oshaAudit);
 				}
 
 				annualUpdates.add(conAudit);
@@ -227,12 +232,20 @@ public class VerifyView extends ContractorActionSupport {
 		this.pqfQuestions = pqfQuestions;
 	}
 
-	public List<OshaAudit> getOshas() {
-		return oshas;
+	public List<OshaAudit> getOshasUS() {
+		return oshasUS;
 	}
 
-	public void setOshas(List<OshaAudit> oshas) {
-		this.oshas = oshas;
+	public void setOshasUS(List<OshaAudit> oshasUS) {
+		this.oshasUS = oshasUS;
+	}
+
+	public List<OshaAudit> getOshasCA() {
+		return oshasCA;
+	}
+
+	public void setOshasCA(List<OshaAudit> oshasCA) {
+		this.oshasCA = oshasCA;
 	}
 
 	public List<ContractorAudit> getAnnualUpdates() {

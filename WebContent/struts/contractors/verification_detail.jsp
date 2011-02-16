@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
-<s:if test="pqfQuestions.size == 0 && oshas.size == 0 && emrs.size == 0">
+<s:if test="pqfQuestions.size == 0 && oshasUS.size == 0 && emrs.size == 0">
 	<div class="alert">No Audits found to verify</div>
 </s:if>
 <s:else>
@@ -41,7 +41,7 @@
 			
 		<br/>
 		<table class="summary">
-			<s:if test="oshas.size() > 0">
+			<s:if test="oshasUS.size > 0">
 				<thead>
 					<tr>
 						<td>OSHA</td>
@@ -55,8 +55,8 @@
 					<td>Upload New Files</td>
 					<s:iterator value="annualUpdates" id="year">
 						<td class="center">
-							<s:iterator value="oshas">
-								<s:if test="conAudit.equals(#year)">
+							<s:iterator value="oshasUS" var="osha">
+								<s:if test="#osha.conAudit.equals(#year)">
 									<s:if test="fileUploaded"><a href="#" onClick="openOsha(<s:property value="id"/>)">Show File</a></s:if>
 									<s:else>No File</s:else>
 								</s:if>
@@ -68,7 +68,7 @@
 					<td>Man Hours Worked:</td>
 					<s:iterator value="annualUpdates" id="year">
 						<td class="center">
-							<s:iterator value="oshas">
+							<s:iterator value="oshasUS">
 								<s:if test="conAudit.equals(#year)">
 									<s:property value="manHours" />
 								</s:if>
@@ -80,7 +80,7 @@
 					<td>Number of Fatalities:</td>
 					<s:iterator value="annualUpdates" id="year">
 						<td class="center">
-							<s:iterator value="oshas">
+							<s:iterator value="oshasUS">
 								<s:if test="conAudit.equals(#year)">
 									<s:property value="fatalities" />
 								</s:if>
@@ -92,7 +92,7 @@
 					<td>Number of Lost Work Cases:</td>
 					<s:iterator value="annualUpdates" id="year">
 						<td class="center">
-							<s:iterator value="oshas">
+							<s:iterator value="oshasUS">
 								<s:if test="conAudit.equals(#year)">
 									<s:property value="lostWorkCases" />
 								</s:if>
@@ -104,7 +104,7 @@
 					<td>Number of Lost Workdays:</td>
 					<s:iterator value="annualUpdates" id="year">
 						<td class="center">
-							<s:iterator value="oshas">
+							<s:iterator value="oshasUS">
 								<s:if test="conAudit.equals(#year)">
 									<s:property value="lostWorkDays" />
 								</s:if>
@@ -116,7 +116,7 @@
 					<td>Injury &amp; Illnesses Medical Cases:</td>
 					<s:iterator value="annualUpdates" id="year">
 						<td class="center">
-							<s:iterator value="oshas">
+							<s:iterator value="oshasUS">
 								<s:if test="conAudit.equals(#year)">
 									<s:property value="injuryIllnessCases" />
 								</s:if>
@@ -128,7 +128,7 @@
 					<td>Restricted Work Cases:</td>
 					<s:iterator value="annualUpdates" id="year">
 						<td class="center">
-							<s:iterator value="oshas">
+							<s:iterator value="oshasUS">
 								<s:if test="conAudit.equals(#year)">
 									<s:property value="restrictedWorkCases" />
 								</s:if>
@@ -140,7 +140,7 @@
 					<td>Number of On Job Transfer OR Restricted Days</td>
 					<s:iterator value="annualUpdates" id="year">
 						<td class="center">
-							<s:iterator value="oshas">
+							<s:iterator value="oshasUS">
 								<s:if test="conAudit.equals(#year)">
 									<s:property value="modifiedWorkDay" />
 								</s:if>
@@ -152,7 +152,7 @@
 					<td>Total Injuries and Illnesses:</td>
 					<s:iterator value="annualUpdates" id="year">
 						<td class="center">
-							<s:iterator value="oshas">
+							<s:iterator value="oshasUS">
 								<s:if test="conAudit.equals(#year)">
 									<s:property value="recordableTotal" />
 								</s:if>
@@ -164,7 +164,7 @@
 					<td>Is Correct:</td>
 					<s:iterator value="annualUpdates" id="year">
 						<td class="center">
-							<s:iterator value="oshas">
+							<s:iterator value="oshasUS">
 								<s:if test="conAudit.equals(#year)">
 									<s:if test="verified">
 										<span style="color: #006400; font-weight: bold;">
@@ -183,7 +183,7 @@
 					<td>Verified Date:</td>
 					<s:iterator value="annualUpdates" id="year">
 						<td class="center">
-							<s:iterator value="oshas">
+							<s:iterator value="oshasUS">
 								<s:if test="conAudit.equals(#year)">
 									<s:date name="verifiedDate" format="MM/dd/yyyy" />
 								</s:if>
@@ -195,7 +195,7 @@
 					<td>Issue:</td>
 					<s:iterator value="annualUpdates" id="year">
 						<td class="center">
-							<s:iterator value="oshas">
+							<s:iterator value="oshasUS">
 								<s:if test="conAudit.equals(#year)">
 									<s:property value="comment" />
 								</s:if>
@@ -235,6 +235,9 @@
 						</s:iterator>
 					</tr>
 				</s:iterator>
+			</s:if>
+			
+			<s:if test="oshasUS.size > 0 || emrs.size > 0">
 				<tr>
 					<td></td>
 					<s:iterator value="annualUpdates">
