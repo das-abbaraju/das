@@ -5,7 +5,7 @@ update employee set email = 'tester@picsauditing.com' where email > '';
 update employee set ssn = '123456789' where ssn > '';
 update email_queue set toAddresses = 'tester@picsauditing.com', ccAddresses = null, bccAddresses = null, fromPassword = null, fromAddress = null;
 
-update generalcontractors set baselineFlag = flag;
+update generalcontractors set baselineFlag = flag, baselineFlagDetail = flagDetail;
 
 update app_properties set value = '2J862r8678vrx3d3evk6m44B9RHXcWUv' where property = 'brainTree.key';
 update app_properties set value = '1884502' where property = 'brainTree.key_id';
