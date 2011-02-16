@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -36,25 +37,53 @@ public class UserAssignmentDAO extends PicsDAO {
 		return (List<UserAssignment>) q.getResultList();
 	}
 
-	public List<UserAssignment> findByContractor(ContractorAccount contractor) {
-		String where = "(country is null OR country = :country)";
-		where += " AND (state is null OR state = :state)";
-		// If you want the assignment to be based on any zip code starting with
-		// 9, then use 9% in the postalStart
-		where += " AND (postalStart is null OR postalStart < :postal OR :postal LIKE postalStart)";
-		// postalEnd works the same way as postalStart but with the added
-		// wildcard. This allows us to include 92604-1234 even though the end is
-		// 92604
-		where += " AND (postalEnd is null OR postalEnd > :postal OR :postal LIKE CONCAT(postalEnd, '%') )";
-		Query q = em.createQuery("FROM UserAssignment WHERE " + where);
+	public UserAssignment findByContractor(ContractorAccount contractor) {
+		UserAssignment assignment = null;
+		try {
+			String where = "(country IS NULL OR country = :country)";
+			where += " AND (state IS NULL OR state = :state)";
+			// If you want the assignment to be based on any zip code starting
+			// with
+			// 9, then use 9% in the postalStart
+			where += " AND (postalStart IS NULL OR postalStart < :postal OR :postal LIKE postalStart)";
+			// postalEnd works the same way as postalStart but with the added
+			// wildcard. This allows us to include 92604-1234 even though the
+			// end is
+			// 92604
+			where += " AND (postalEnd IS NULL OR postalEnd > :postal OR :postal LIKE CONCAT(postalEnd, '%') )";
+			// For these 3 cases, the contractor has to be null
+			where += " AND contractor IS NULL";
 
-		// TODO implement comparable on UserAssignment and return the
-		// first entry
-		q.setParameter("state", contractor.getState());
-		q.setParameter("country", contractor.getCountry());
-		q.setParameter("postal", contractor.getZip());
+			// contractor is used as an override. this has the highest priority.
+			where = "(" + where + ")" + " OR contractor.id = :conID";
+			Query q = em.createQuery("FROM UserAssignment WHERE " + where);
 
-		return q.getResultList();
+			// TODO implement comparable on UserAssignment and return the
+			// first entry
+			q.setParameter("state", contractor.getState());
+			q.setParameter("country", contractor.getCountry());
+			q.setParameter("postal", contractor.getZip());
+			q.setParameter("conID", contractor.getId());
+
+			List<UserAssignment> assignments = q.getResultList();
+
+			if (assignments.size() > 0) {
+				if (assignments.size() > 1) {
+					// Sort in DESC order to make the highest priority rule in
+					// the
+					// front
+					Collections.sort(assignments);
+					Collections.reverse(assignments);
+				}
+				assignment = assignments.get(0);
+				if (!assignment.getUser().equals(contractor.getAuditor())) {
+					contractor.setAuditor(assignment.getUser());
+				}
+			}
+		} catch (Exception justReturnNull) {
+		}
+
+		return assignment;
 	}
 
 }

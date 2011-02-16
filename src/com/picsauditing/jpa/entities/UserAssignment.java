@@ -7,11 +7,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "user_assignment")
-public class UserAssignment extends BaseTable {
+public class UserAssignment extends BaseTable implements Comparable<UserAssignment> {
 
 	private User user;
 	private UserAssignmentType assignmentType;
@@ -89,9 +90,30 @@ public class UserAssignment extends BaseTable {
 		this.contractor = contractor;
 	}
 
+	@Transient
+	public Integer getPriority() {
+		int priority = 0;
+
+		if (country != null)
+			priority += 1;
+		if (state != null)
+			priority += 10;
+		if (postalStart != null || postalEnd != null)
+			priority += 100;
+		if (contractor != null)
+			priority += 1000;
+
+		return priority;
+	}
+
+	@Override
+	public int compareTo(UserAssignment o) {
+		return getPriority().compareTo(o.getPriority());
+	}
+
 	@Override
 	public String toString() {
-		return String.format("%s state:%s, country:%s, zip:%s-%s, contractor:%s", user.getName(), state, country, postalStart,
-				postalEnd, contractor == null ? null : contractor.getName());
+		return String.format("%s state:%s, country:%s, zip:%s-%s, contractor:%s", user.getName(), state, country,
+				postalStart, postalEnd, contractor == null ? null : contractor.getName());
 	}
 }

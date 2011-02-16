@@ -57,6 +57,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EventSubscriptionBuilder;
@@ -180,7 +181,7 @@ public class ContractorCron extends PicsActionSupport {
 			runAssignAudit(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
-			// runCSRAssignment(contractor);
+			runCSRAssignment(contractor);
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
 
 			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
@@ -455,12 +456,12 @@ public class ContractorCron extends PicsActionSupport {
 		}
 		flagDataCalculator.setOverrides(overridesMap);
 		List<FlagData> changes = flagDataCalculator.calculate();
-		
+
 		// Save the FlagDetail to the ContractorOperator as a JSON string
 		JSONObject flagJson = new JSONObject();
 		for (FlagData data : changes) {
 			JSONObject flag = new JSONObject();
-			flag.put("category",data.getCriteria().getCategory());
+			flag.put("category", data.getCriteria().getCategory());
 			flag.put("label", data.getCriteria().getLabel());
 			flag.put("flag", data.getFlag().toString());
 
@@ -703,15 +704,13 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.CSRAssignment))
 			return;
 
-		// List<UserAssignmentMatrix> assignments = UserAssignmentDAO
-		// .findByContractor(contractor);
-		//
-		// if (assignments.size() == 1) {
-		// contractor.setAuditor(assignments.get(0).getUser());
-		// contractorDAO.save(contractor);
-		// } else if (assignments.size() > 1) {
-		// // Manage Conflicts
-		// }
+		UserAssignment assignment = userAssignmentDAO.findByContractor(contractor);
+		if (assignment != null) {
+			if (!assignment.getUser().equals(contractor.getAuditor())) {
+				contractorDAO.save(contractor);
+				contractor.setAuditor(assignment.getUser());
+			}
+		}
 	}
 
 	private void runAssignAudit(ContractorAccount contractor) {
