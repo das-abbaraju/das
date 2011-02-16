@@ -25,9 +25,9 @@ public class ReportAuditDataUpdate extends ReportContractorAuditOperator {
 		
 		sql.addField("pq.updateDate");
 		sql.addField("pq.answer");
-		sql.addField("pt.question");
+		sql.addField("aq.name question");
 		sql.addJoin("JOIN pqfdata pq on pq.auditID = ca.id");
-		sql.addJoin("JOIN pqfquestion_text pt on pt.questionID = pq.questionID");
+		sql.addJoin("JOIN audit_question aq on aq.id = pq.questionID");
 		sql.addWhere("pq.updateDate > cao.statusChangedDate");
 		sql.addWhere("a.status = 'Active'");
 		if(getFilter().getAuditTypeID() == null) {
