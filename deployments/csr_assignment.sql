@@ -103,7 +103,7 @@ update contractor_info c set welcomeAuditor_id = 27274
 where c.id in (5593,11417,11270,10281,7471,6086,7892,13577,6177,13520,6918,4530);
 
 -- rebuild the stats for ContractorOperators
-TRUNCATE TABLE stats_gco_count; 
+TRUNCATE TABLE stats_gco_count;
 
 INSERT INTO stats_gco_count 
 SELECT gc.genID opID, null, count(*) total FROM generalcontractors gc 
