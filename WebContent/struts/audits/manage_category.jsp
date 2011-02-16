@@ -51,6 +51,7 @@ function showRules() {
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
 
 
+<a class="preview" href="AuditCatPreview.action?categoryID=<s:property value="category.id" />&button=PreviewCategory">Preview Category</a>
 <s:form id="save">
 	<s:hidden name="id" />
 	<s:if test="category.auditType != null">
@@ -118,15 +119,10 @@ function showRules() {
 			<s:iterator value="category.subCategories">
 				<li id="item_<s:property value="id"/>" title="Drag and drop to change order">
 					<s:property value="number" />.
-					<a href="ManageCategory.action?id=<s:property value="id"/>">
-						<s:property value="name" />
-					</a>
+			    	<a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="name.trim().length() == 0 ? 'empty' : name"/></a>
 				</li>
 			</s:iterator>
 		</ul>
-		<s:if test="category.subCategories.size() > 0">
-			<a class="preview" href="AuditCatPreview.action?categoryID=<s:property value="category.id" />&button=PreviewCategory">Preview Category</a>&nbsp;&nbsp;
-		</s:if>
 		<a class="add" href="ManageCategory.action?button=AddNew&parentID=<s:property value="category.parentAuditType.id"/>&categoryParent.id=<s:property value="category.id" />">Add New Sub Category</a>
 		<div id="list-info"></div>
 	</div>

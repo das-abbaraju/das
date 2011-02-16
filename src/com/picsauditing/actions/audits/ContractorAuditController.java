@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.MenuComponent;
@@ -23,6 +22,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
@@ -42,11 +42,9 @@ public class ContractorAuditController extends AuditActionSupport {
 	protected boolean viewBlanks = true;
 	protected boolean onlyReq = false;
 	protected AnswerMap answerMap = null;
-	protected boolean previewAudit;
 	protected AuditCatData categoryData;
 	private AuditCategoryDAO auditCategoryDAO;
 	private AuditPercentCalculator auditPercentCalculator;
-	private AuditBuilderController auditBuilder;
 	protected int caoID;
 	protected boolean previewCat = false;
 	// Policy verification (next/first buttons)
@@ -55,11 +53,10 @@ public class ContractorAuditController extends AuditActionSupport {
 	public ContractorAuditController(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
 			AuditCategoryDAO auditCategoryDAO, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilderController auditBuilder, AuditCategoryRuleCache auditCategoryRuleCache) {
+			AuditCategoryRuleCache auditCategoryRuleCache) {
 		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
-		this.auditBuilder = auditBuilder;
 	}
 
 	public String execute() throws Exception {
@@ -110,18 +107,22 @@ public class ContractorAuditController extends AuditActionSupport {
 			// Preview the Category from the manage audit type page
 			if ("PreviewCategory".equals(button)) {
 				if (auditID == 0 && categoryID > 0) {
+					
 					previewCat = true;
 					AuditCategory auditCategory = auditCategoryDAO.find(categoryID);
-					for (AuditCategory auditSubCategory : auditCategory.getChildren()) {
-						for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
-						}
+					conAudit = new ContractorAudit();
+					conAudit.setAuditType(auditCategory.getAuditType());
+					if (auditCategory.getAuditType().isAnnualAddendum()) {
+						conAudit.setAuditFor(new Date().getYear() + "");
 					}
+					
 					categories = new HashMap<AuditCategory, AuditCatData>();
 					categoryData = new AuditCatData();
 					categoryData.setCategory(auditCategory);
 					categoryData.setApplies(true);
 					categories.put(auditCategory, categoryData);
-					mode = VIEW;
+					if (mode == null)
+						mode = EDIT;
 					return SUCCESS;
 				}
 			}

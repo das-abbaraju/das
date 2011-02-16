@@ -58,7 +58,7 @@
 					<s:if test="!viewBlanks && (#a == null || #a.answer == null || #a.answer.length() == 0)">
 						<s:set name="visible" value="false" />
 					</s:if>
-					<s:if test="#visible">
+					<s:if test="previewCat || #visible">
 						<s:if test="!#q.groupedWithPrevious">
 							<s:set name="shaded" value="!#shaded" scope="action"/>
 						</s:if> 
