@@ -16,6 +16,8 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportInsuranceApproval extends ReportContractorAuditOperator {
@@ -65,12 +67,25 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		sql.addField("cao.flag as caoRecommendedFlag");
 
 		// Get certificates
-		sql.addJoin("LEFT JOIN pqfdata d ON d.auditID = ca.id");
-		sql.addJoin("LEFT JOIN audit_question q ON q.id = d.questionID");
-		sql.addField("d.answer AS certID");
-		sql.addWhere("q.columnHeader = 'Certificate'");
-		sql.addWhere("q.questionType = 'FileCertificate'");
-		sql.addWhere("q.number = 1");
+		if (permissions.isOperatorCorporate()) {
+			SelectSQL sql2 = new SelectSQL("pqfdata d");
+			sql2.addJoin("JOIN audit_question q ON q.id = d.questionID");
+			sql2.addJoin("JOIN audit_category_rule c ON c.catID = q.categoryID");
+			sql2.addField("d.auditID");
+			sql2.addField("d.answer certID");
+			sql2.addField("c.opID");
+			sql2.addWhere("q.questionType = 'FileCertificate'");
+			sql2.addWhere("q.columnHeader = 'Certificate'");
+			sql2.addWhere("q.number = 1");
+			if (permissions.isOperator())
+				sql2.addWhere("c.opID = " + permissions.getAccountId());
+			if (permissions.isCorporate())
+				sql2.addWhere("c.opID IN (" + Strings.implode(permissions.getOperatorChildren()) + ")");
+
+			sql.addJoin("LEFT JOIN (" + sql2.toString() + ") cert ON cert.auditID = ca.id"
+					+ (permissions.isCorporate() ? " AND cert.opID = caoaccount.id" : ""));
+			sql.addField("cert.certID");
+		}
 
 		sql.addGroupBy("cao.id");
 	}
