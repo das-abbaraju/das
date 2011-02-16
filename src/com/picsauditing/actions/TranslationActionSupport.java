@@ -41,8 +41,10 @@ public class TranslationActionSupport extends ActionSupport {
 	@Override
 	public String getText(String aTextName, String defaultValue, List<Object> args, ValueStack stack) {
 		if (i18nCache.hasKey(aTextName, getLocale())) {
-			String key = stack.findValue(aTextName) == null ? aTextName : stack.findValue(aTextName).toString();
-			return i18nCache.getText(key, getLocale(), args.toArray());
+			Object[] argArray = null;
+			if (args != null)
+				argArray = args.toArray();
+			return i18nCache.getText(aTextName, getLocale(), argArray);
 		}
 		return defaultValue;
 	}
