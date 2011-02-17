@@ -65,7 +65,7 @@ public class UserAssignmentMatrix extends PicsActionSupport implements Preparabl
 
 				return JSON;
 			}
-			final boolean newAssignment = assignment.getId() > 0;
+			final boolean newAssignment = assignment.getId() == 0;
 			assignment.setAssignmentType(type);
 			assignment.setAuditColumns(permissions);
 			assignmentDAO.save(assignment);
