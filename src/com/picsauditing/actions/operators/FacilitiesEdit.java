@@ -274,7 +274,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 			operator.setCountry(new Country("US"));
 		} else {
 			if (operator.getPrimaryContact() == null)
-				addActionError("Please add a primary contact to this account");
+				addAlertMessage("Please add a primary contact to this account");
 		}
 
 		return SUCCESS;
