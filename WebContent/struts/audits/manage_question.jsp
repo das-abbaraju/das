@@ -21,9 +21,7 @@ $(function(){
 			$('.scoreWeight input[name=question.scoreWeight]').val(0);
 		}
 	}).trigger('change');
-
-	showFlags();
-	showRules();
+	
 });
 
 function copyQuestion(atypeID) {
@@ -97,22 +95,6 @@ function moveQuestion(atypeID) {
 			});
 		}
 	);
-}
-
-function showFlags() {
-	var data = {
-			questionID: <s:property value="id"/>
-	};
-	startThinking({ div: "flags", message: "Loading Related Flag Criteria" });
-	$('#flags').load('FlagCriteriaListAjax.action', data);
-}
-
-function showRules() {
-	var data = {
-			'comparisonRule.question.id': <s:property value="id"/>
-	};
-	startThinking({ div: "rules", message: "Loading Related Rules" });
-	$('#rules').load('AuditTypeRuleTableAjax.action', data);
 }
 </script>
 </head>
@@ -287,17 +269,5 @@ function showRules() {
 </ul>
 
 <div id="copy_audit"></div>
-<br/>
-<h3>Related Flag Criteria</h3>
-<a href="#" onclick="showFlags(); return false;" class="refresh">Refresh</a>	
-<div id="flags"></div>
-<a href="EditFlagCriteria.action?criteria.displayOrder=999&criteria.question.id=<s:property value="question.id" />&criteria.requiredStatus=Submitted&criteria.category=Paperwork<s:if test="question.columnHeader" >&criteria.label=<s:property value="auditType.name" />%3A%20<s:property value="question.columnHeader" />&criteria.description=<s:property value="auditType.name" />%3A%20<s:property value="question.columnHeader" /></s:if>" class="add">Add New Question Flag Criteria</a>
-<br />
-<br />
-<h3>Related Rules</h3>
-<a href="#" onclick="showRules(); return false;" class="refresh">Refresh</a>	
-<div id="rules"></div>
-<a href="AuditTypeRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="id" />" class="add">Add New Audit Type Rule</a>
-
 </body>
 </html>
