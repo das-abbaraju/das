@@ -40,5 +40,5 @@
 			</div>
 		</li>
 	</s:if>
-	<li><a href="OperatorCategoryRules.action?id=<s:property value="id"/>">Show all Category Rules specific to this operator</a></li>
+	<li><a href="CategoryRuleSearch.action?filter.operator=<s:property value="operator.name"/>">Search for all Category Rules specific to this operator</a></li>
 </ol>

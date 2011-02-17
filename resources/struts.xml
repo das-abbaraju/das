@@ -704,17 +704,6 @@
 			<result>struts/operators/report_untaggedcontractors.jsp</result>
 		</action>
 		
-		<action name="OperatorAuditTypeRules"
-			class="com.picsauditing.actions.operators.OperatorViewRules">
-			<param name="type">auditType</param>
-			<result>struts/operators/operator_view_rules.jsp</result>
-		</action>
-		<action name="OperatorCategoryRules"
-			class="com.picsauditing.actions.operators.OperatorViewRules">
-			<param name="type">category</param>
-			<result>struts/operators/operator_view_rules.jsp</result>
-		</action>
-				
 		<action name="AccountNameEditAjax"
 			class="com.picsauditing.actions.operators.FacilitiesEdit">
 			<result>/struts/operators/operator_names.jsp</result>
@@ -1289,36 +1278,31 @@
 		</action>
 		
 		<!-- Rules Entries -->
-		<action name="CategoryRuleEditorOld"
-			class="com.picsauditing.actions.auditType.CategoryRuleEditor">
-			<result>struts/audits/rules/audit_rule_editor.jsp</result>
-		</action>
 		<action name="CategoryRuleSearch"
 			class="com.picsauditing.actions.rules.CategoryRuleSearch">
 			<param name="ruleType">Category Rules</param>
 			<result>struts/rules/audit_rule_search.jsp</result>
 		</action>
-		<action name="CategoryRuleSearchAjax"
-			class="com.picsauditing.actions.rules.CategoryRuleSearch">		
-			<result name="autocomp">struts/blank.jsp</result>
-			<result>struts/audits/rules/audit_rule_search_data.jsp</result>
-		</action>
 		
-		<action name="AuditTypeRuleEditorOld"
-			class="com.picsauditing.actions.auditType.AuditTypeRuleEditor">
-			<result>struts/audits/rules/audit_rule_editor.jsp</result>
-		</action>
 		<action name="AuditTypeRuleSearch"
 			class="com.picsauditing.actions.rules.AuditTypeRuleSearch">			
 			<param name="ruleType">Audit Type Rules</param>
 			<result>struts/rules/audit_rule_search.jsp</result>
 		</action>
+		
+		<action name="CategoryRuleSearchAjax"
+			class="com.picsauditing.actions.rules.CategoryRuleSearch">		
+			<result name="autocomp">struts/blank.jsp</result>
+			<result>struts/rules/audit_rule_search_data.jsp</result>
+		</action>
+		
 		<action name="AuditTypeRuleSearchAjax"
 			class="com.picsauditing.actions.rules.AuditTypeRuleSearch">		
 			<param name="ruleType">Audit Type Rules</param>
 			<result name="autocomp">struts/blank.jsp</result>
-			<result>struts/audits/audit_rule_search_data.jsp</result>
+			<result>struts/rules/audit_rule_search_data.jsp</result>
 		</action>
+		
 		<action name="AuditRuleSearchAjax"
 			class="com.picsauditing.actions.rules.AuditRuleSearch">		
 			<result>struts/blank.jsp</result>
@@ -1332,23 +1316,20 @@
 			class="com.picsauditing.actions.rules.AuditCategoryRuleTableBuilder">
 			<result>struts/rules/audit_rule_table.jsp</result>
 		</action>
+		
 		<action name="AuditTypeRuleEditor" 
 			class="com.picsauditing.actions.rules.AuditTypeRuleEditor">
 			<result>struts/rules/audit_rule_editor.jsp</result>
 		</action>
+		
 		<action name="AuditTypeRuleTableAjax" 
 			class="com.picsauditing.actions.rules.AuditTypeRuleTableBuilder">
 			<result>struts/rules/audit_rule_table.jsp</result>
 		</action>
 		
 		<action name="RecalculateRules" 
-			class="com.picsauditing.actions.auditType.RecalculateRules">
-			<result>struts/audits/rules/recalculate_rules.jsp</result>
-		</action>
-		
-		<action name="AuditRuleTableAjax"
-			class="com.picsauditing.PICS.AuditRuleTableBuilder">
-			<result>struts/audits/rules/audit_rule_table.jsp</result>
+			class="com.picsauditing.actions.rules.RecalculateRules">
+			<result>struts/rules/recalculate_rules.jsp</result>
 		</action>
 		
 		<action name="ReportRuleHistory"

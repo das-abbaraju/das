@@ -43,5 +43,5 @@
 			</div>
 		</li>
 	</s:if>
-	<li><a href="OperatorAuditTypeRules.action?id=<s:property value="id"/>">Show all Audit Type Rules specific to this operator</a></li>
+	<li><a href="AuditTypeRuleSearch.action?filter.operator=<s:property value="operator.name"/>">Search for all Audit Type Rules specific to this operator</a></li>
 </ol>

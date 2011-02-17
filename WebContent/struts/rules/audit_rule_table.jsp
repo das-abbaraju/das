@@ -101,7 +101,7 @@ function deleteRule(opID,ruleID,ruleType) {
 					<s:if test="columnMap.get('operatorAccount')">
 						<td>
 							<s:if test="operatorAccount != null">
-								<a href="OperatorConfiguration.action?id=<s:property value="operatorAccount.id"/>"><s:property value="operatorAccountLabel"/></a>
+								<a href="OperatorConfiguration.action?id=<s:property value="operatorAccount.id"/>" class="account<s:property value="operatorAccount.status"/>"><s:property value="operatorAccountLabel"/></a>
 							</s:if>
 							<s:else>
 								<s:property value="operatorAccountLabel"/>
@@ -118,7 +118,7 @@ function deleteRule(opID,ruleID,ruleType) {
 						<td><s:property value="acceptsBidsLabel"/></td>
 					</s:if>
 					<s:if test="columnMap.get('question')">
-						<td>
+						<td style="max-width: 200px">
 							<s:if test="question != null && permissions.hasPermission('ManageAudits')">
 								<a href="ManageQuestion.action?id=<s:property value="question.id"/>"><s:property value="questionLabel"/></a>
 							</s:if>

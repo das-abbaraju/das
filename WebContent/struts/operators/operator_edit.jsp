@@ -139,7 +139,11 @@ $(function() {
 						listKey="corporate.id" listValue="corporate.name" headerKey="0"
 						headerValue=" - Select a Parent Facility - "
 						value="operator.parent.id" /> <a
-						href="?id=<s:property value="operator.parent.id"/>">Go</a></li>
+						href="?id=<s:property value="operator.parent.id"/>">Go</a>
+						<pics:fieldhelp>Choose the account that is directly above this operator in the corporate hierarchy.
+						<br/>If the account doesn't display here, then make sure you add this operator to this account's list of child operators first.
+						</pics:fieldhelp>
+					</li>
 				</s:if>
 				<li><label>Flag Criteria:</label> <s:select
 					name="foreignKeys.inheritFlagCriteria"

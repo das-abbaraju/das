@@ -142,7 +142,7 @@ function showRules() {
 							<a href="ManageAuditWorkFlow.action?id=<s:property value="auditType.workFlow.id" />" class="go">Go</a>
 						</s:if>
 					</div>
-					<pics:fieldhelp title="Workflow">This describes the workflow steps or lifecycle that this audit goes through. If you're not sure, then start with Single Step Workflow, which is the simplest.</pics:fieldhelp>
+					<pics:fieldhelp title="Workflow">Required: This describes the workflow steps or lifecycle that this audit goes through. If you're not sure, then start with Single Step Workflow, which is the simplest.</pics:fieldhelp>
 				</li>
 				<li>
 					<label>Required By Operator:</label>

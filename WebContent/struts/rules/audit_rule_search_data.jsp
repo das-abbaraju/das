@@ -16,39 +16,47 @@
 				<td>View</td>
 				<td>Include</td>
 				<td>Audit Type</td>
-				<s:if test="filter.showCategory"><td>Category</td>
-					<td>RootCategory</td>
+				<s:if test="categoryRule">
+					<td>Category</td>
 				</s:if>
-				<td>Contractor Type</td>
 				<td>Operator</td>
-				<td>Risk</td>
 				<td>Tag</td>
+				<td>Risk</td>
+				<td>Account Type</td>
 				<td>Bid-Only</td>
-				<s:if test="filter.showDependentAuditType">
-					<td colspan="2">Dependent Audit</td>
+				<s:if test="!categoryRule">
+					<td colspan="2">Dependency</td>
 				</s:if>
-				<td>Question</td>
+				<td style="max-width: 200px">Question</td>
 			</tr>
 		</thead>
 		<tbody>
 			<s:iterator value="data" status="stat">
-				<tr>
+				<tr class="<s:property value="get('include') ? 'on' : 'off'"/>">
 					<td class="center"><a href="<s:property value="actionUrl"/><s:property value="get('id')"/><s:if test="filter.checkDate!=null">&date=<s:property value="filter.checkDate"/></s:if>" class="preview"></a></td>
-					<td class="center"><s:if test="get('include')==1">Yes</s:if><s:else>No</s:else></td>					
-					<td><s:property value="get('audit_type')"/></td>					
-					<s:if test="filter.showCategory"><td><s:property value="get('category')"/></td>
-						<td><s:if test="get('rootCategory')==1">Yes</s:if><s:else>No</s:else></td>
-					</s:if>				
-					<td><s:property value="get('con_type')"/></td>					
-					<td><s:property value="get('operator')"/></td>		
-					<td><s:property value="getRisk(get('risk'))"/></td>					
-					<td><s:property value="get('tag')"/></td>					
-					<td><s:property value="get('bid')"/></td>
-					<s:if test="filter.showDependentAuditType">
+					<td class="center"><s:property value="get('include') ? 'Include' : 'Exclude'"/></td>
+					<td><s:if test="get('auditTypeID') > 0"><a href="ManageAuditType.action?id=<s:property value="get('auditTypeID')"/>"><s:property value="get('audit_type')"/></a></s:if><s:else>*</s:else></td>
+					<s:if test="categoryRule">
+						<td>
+							<s:if test="get('catID') > 0">
+							<a href="ManageCategory.action?id=<s:property value="get('catID')"/>"><s:property value="get('category')"/></a>
+						</s:if>
+						<s:else>
+							<b>- <s:property value="get('rootCategory') ? 'Top' : 'Sub'"/> Category -</b>
+						</s:else>
+						</td>
+					</s:if>
+					<td><s:if test="get('opID') > 0"><a href="OperatorConfiguration.action?id=<s:property value="get('opID')"/>"
+						class="account<s:property value="get('operatorStatus')"/>"><s:property value="get('operator')"/></a></s:if><s:else>*</s:else></td>
+					<td><s:property value="get('tag')"/></td>
+					<td><s:property value="get('risk') > 0 ? getRisk(get('risk')) : '*'"/></td>
+					<td><s:property value="get('con_type')"/></td>
+					<td><s:property value="get('acceptsBids') == null ? '*' : (get('acceptsBids') ? 'Bid-only' : 'Full-only')"/></td>
+					<s:if test="!categoryRule">
 						<td><s:property value="get('dependentAuditType')"/></td>
 						<td><s:property value="get('dependentAuditStatus')"/></td>
-					</s:if>		
-					<td><s:property value="get('question')"/></td>	
+					</s:if>
+					<td><s:property value="get('question')"/></td>
 				</tr>
 			</s:iterator>
 		</tbody>

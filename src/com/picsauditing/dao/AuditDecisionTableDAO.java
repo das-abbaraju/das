@@ -119,10 +119,6 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<AuditTypeRule> findAuditTypeRulesByOperator(int opID) {
-		return findAuditTypeRulesByOperator(opID, null);
-	}
-
 	public List<AuditTypeRule> findAuditTypeRulesByOperator(int opID, String where) {
 		if (Strings.isEmpty(where))
 			where = "";
@@ -133,10 +129,6 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		query.setParameter("operatorID", opID);
 		query.setMaxResults(250);
 		return query.getResultList();
-	}
-
-	public List<AuditCategoryRule> findAuditCategoryRulesByOperator(int opID) {
-		return findAuditCategoryRulesByOperator(opID, null);
 	}
 
 	public List<AuditCategoryRule> findAuditCategoryRulesByOperator(int opID, String where) {

@@ -13,6 +13,8 @@ import java.util.TreeMap;
 
 import javax.servlet.ServletContext;
 
+import com.picsauditing.util.Strings;
+
 public class DateBean {
 	public static String NULL_DATE = "0/0/00";
 	public static String NULL_DATE_DB = "0000-00-00";
@@ -356,7 +358,9 @@ public class DateBean {
 	}
 
 	public static Date parseDate(String dateString) {
-		// System.out.println("Attempting to parse " + dateString);
+		if (Strings.isEmpty(dateString))
+			return null;
+		
 		SimpleDateFormat df = new SimpleDateFormat();
 		df.setLenient(false);
 

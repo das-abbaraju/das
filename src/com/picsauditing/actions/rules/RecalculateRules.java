@@ -1,4 +1,4 @@
-package com.picsauditing.actions.auditType;
+package com.picsauditing.actions.rules;
 
 import java.util.List;
 
