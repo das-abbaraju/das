@@ -621,6 +621,11 @@ table.osha tfoot th {
 	color: #787878;
 }
 
+.noteMessage{
+	font-size: small;
+	color: 	#3E3E3E;
+}
+
 .button{
 	width: 72px;
 	height: 22px;
@@ -630,6 +635,14 @@ table.osha tfoot th {
 	font-size: 12px;
 	line-height: 22px;
 	cursor: pointer;
+}
+.button.disabled{
+	cursor: none;
+	text-decoration: line-through;
+}
+.button.disabled:hover{
+	cursor: none;
+	text-decoration: line-through;
 }
 
 .button.yellow{background-position:0px 0px;}

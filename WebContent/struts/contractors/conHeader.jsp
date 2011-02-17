@@ -86,7 +86,18 @@ function loadResults(data, noteText){
 	$('#caoAjax').load('CaoSaveAjax.action', data, function(response, status, xhr){
 		if(status == 'success'){
 			$('#caoTable').unblock();
+			if($('#noteRequired').val()=='true'){
+				$('#yesButton').addClass('disabled');
+				$('#addToNotes').live('keyup', function(){
+					if($(this).val()!='')
+						$('#yesButton').removeClass('disabled');
+					else
+						$('#yesButton').addClass('disabled');
+				});
+			}
 			$('#yesButton').click(function(){
+				if($(this).hasClass('disabled'))
+					return false;
 		        $.blockUI({message: 'Saving Status, please wait...'});
 		        data.button = 'caoAjaxSave';
 		        if($('#addToNotes').val())
@@ -99,12 +110,10 @@ function loadResults(data, noteText){
 		        $.unblockUI();
 		        return false;
 		    });
-			if($('#nR').val()=='true')
+			if($('#noteRequired').val()=='true')
 	        	$.blockUI({ message:$('#caoAjax')});
 			else  
 				$('#yesButton').click();
-	        if($('.clearOnce').val()=='')
-				$('#clearOnceField').val(0);
 		    
 		} else {
 			$('#caoTable').block({message: 'Error with request, please try again',
