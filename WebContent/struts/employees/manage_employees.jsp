@@ -391,7 +391,7 @@ div.dataTables_length { width: 35%; }
 						</s:if>
 						<s:else>
 							<fieldset class="form submit" style="text-align: center;">
-								<a href="ManageEmployees.action?employee.id=<s:property value="employee.id" />" class="picsbutton">View Complete Profile</a>
+								<a href="ManageEmployees.action?employee.id=<s:property value="employee.id" />" class="picsbutton">View Complete Employee Detail</a>
 							</fieldset>
 						</s:else>
 					</s:form>
