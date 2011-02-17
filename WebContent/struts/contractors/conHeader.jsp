@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../jquery.jsp"/>
@@ -182,15 +183,7 @@ function loadStatus(caoID){
 <s:set name="auditMenu" value="auditMenu"></s:set>
 
 <h1><s:property value="contractor.name" /><span class="sub">
-<s:if test="subHeading.length() > 0">
-	<s:property value="subHeading" escape="false" />
-</s:if>
-<s:elseif test="auditID > 0">
-	<s:property value="conAudit.auditType.auditName" />
-	<s:if test="conAudit.auditFor != null && conAudit.auditFor.length() > 0">for <s:property value="conAudit.auditFor"/></s:if>
-	<s:elseif test="!conAudit.auditType.pqf">- <s:date name="conAudit.effectiveDateLabel" format="MMM yyyy" /></s:elseif>
-</s:elseif>
-</span></h1>
+</h1>
 <s:if test="showHeader">
 <s:hidden name="auditID" id="auditID" />
 <div id="internalnavcontainer">

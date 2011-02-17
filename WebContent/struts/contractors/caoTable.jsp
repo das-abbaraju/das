@@ -85,7 +85,12 @@
 							</s:if>
 						</td>					
 						<td class="caoDate">
-							<s:property value="formatDate(statusChangedDate, 'dd MMM yyyy')" default="N/A" />
+							<s:if test="statusChangedDate == null">
+								N/A
+							</s:if>
+							<s:else>
+								<s:date name="statusChangedDate" format="dd MMM yyyy" />
+							</s:else>
 						</td>
 						<s:if test="conAudit.auditType.classType.policy">
 							<td style="color : <s:property value="#currentCao.flag.hex"/>"><s:property value="#currentCao.flag.insuranceStatus" default="N/A" /></td>
