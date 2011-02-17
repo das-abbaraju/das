@@ -117,7 +117,7 @@ public class Permissions implements Serializable {
 			email = user.getEmail();
 			phone = user.getPhone();
 			fax = user.getFax();
-			locale = ActionContext.getContext().getLocale();
+			locale = user.getLocale();
 			shadowedUserID = (user.getShadowedUser() != null ? user.getShadowedUser().getId() : userID);
 			shadowedUserName = (user.getShadowedUser() != null ? user.getShadowedUser().getName() : username);
 			if (user.getAccount().getCountry() != null)

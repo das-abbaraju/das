@@ -9,6 +9,7 @@
 	<package name="com.picsauditing" extends="struts-default">
 		<interceptors>
 			<interceptor name="http2https" class="com.picsauditing.interceptors.PicsInterceptor"/>
+			<interceptor name="i18n" class="com.picsauditing.interceptors.I18nInterceptor"/>
 		
 			<interceptor-stack name="picsStack">
 				<interceptor-ref name="exception"/>
