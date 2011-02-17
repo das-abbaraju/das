@@ -1776,11 +1776,6 @@
 			class="com.picsauditing.actions.Trevor">
 			<result>struts/trevor.jsp</result>
 		</action>
-		
-		<action name="David"
-			class="com.picsauditing.actions.DavidTest">
-			<result>struts/davidtest.jsp</result>
-		</action>
 
 		<action name="ServerInfo"
 			class="com.picsauditing.actions.ServerInfo">
