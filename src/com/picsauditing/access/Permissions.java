@@ -16,6 +16,7 @@ import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -538,4 +539,17 @@ public class Permissions implements Serializable {
 		|| this.hasPermission(OpPerms.AuditRuleAdmin);
 	}
 
+	public boolean isCanAddRuleForOperator(OperatorAccount operator) {
+		if (this.hasPermission(OpPerms.AuditRuleAdmin))
+			return true;
+		
+		if (operator != null) {
+			for (AccountUser accUser : operator.getAccountUsers()) {
+				if (accUser.getUser().getId() == this.getUserId())
+					return true;
+			}
+		}
+		
+		return false;
+	}
 }

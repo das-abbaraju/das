@@ -59,6 +59,9 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 							+ Strings.implode(operator.getOperatorHeirarchy()) + "))");
 				}
 			}
+			if (comparisonRule.getTag() != null) {
+				whereClauses.add("t.tag.id = " + comparisonRule.getTag().getId());
+			}
 
 			rules = (List<AuditTypeRule>) ruleDAO.findWhere(AuditTypeRule.class,
 					Strings.implode(whereClauses, " AND "), 0);

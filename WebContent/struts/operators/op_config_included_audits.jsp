@@ -21,8 +21,10 @@
 							<a href="#" onclick="return hideType(<s:property value="#type.id" />);" class="hide remove">Hide Rules</a>
 							<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="hide refresh">Refresh</a>
 							<div id="typeTable_<s:property value="#type.id" />"></div>
+							<s:if test="permissions.isCanAddRuleForOperator(operator)">
 								<a href="AuditTypeRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="#type.id" />&ruleOperatorAccountId=<s:property value="operator.id" />"
 									target="_blank" class="hide add">Add Rule</a>
+							</s:if>
 							<div id="build_<s:property value="#type.id" />" class="hide"></div>
 						</td>
 					</tr>
@@ -30,7 +32,7 @@
 			</tbody>
 		</table>
 	</li>
-	<s:if test="permissions.canEditAuditRules">
+	<s:if test="permissions.isCanAddRuleForOperator(operator)">
 		<li>
 			<div id="includeNewAudit">
 				<s:hidden value="%{operator.id}" name="id" />

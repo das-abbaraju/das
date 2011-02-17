@@ -1,8 +1,18 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
+<script>
+function deleteRule(opID,ruleID,ruleType) {
+	var deleteMe = confirm('You are deleting a rule with potentially broad reaching affects. Are you sure you want to do this?');
+	if (!deleteMe)
+		return;
+	
+	window.location.href = 'OperatorTags.action?button=DeleteRule&id='+opID+'&ruleID='+ruleID+'&ruleType='+ruleType;
+}
+</script>
 <tr class="<s:property value="#ruleclass"/> <s:if test="include">on</s:if><s:else>off</s:else>">
-	<td><s:property value="include ? 'Yes' : 'No'"/></td>
+	<td class="center"><a href="<s:property value="#ruleURL"/>?id=<s:property value="#r.id"/>" class="preview"></a></td>
+	<td class="center"><s:property value="include ? 'Yes' : 'No'"/></td>
 	<td><s:property value="level"/><span style="font-size-adjust: 0.4">.<s:property value="priority"/></span></td>
 	<td><s:property value="auditTypeLabel"/>
 		<s:if test="auditType"><a href="ManageAuditType.action?id=<s:property value="auditType.id"/>" target="_BLANK">^</a></s:if>
@@ -19,25 +29,14 @@
 			</s:else>
 		</td>
 	</s:if>
-	<td><s:property value="contractorTypeLabel"/></td>
-	<td class="account<s:property value="operatorAccount.status"/>"><s:property value="operatorAccountLabel"/>
-		<s:if test="operatorAccount"><a href="FacilitiesEdit.action?id=<s:property value="operatorAccount.id"/>" target="_BLANK">^</a></s:if>
-	</td>
+	<s:if test="operatorAccount.corporate" >
+		<td class="account<s:property value="operatorAccount.status"/>"><s:property value="operatorAccountLabel"/>
+			<s:if test="operatorAccount"><a href="FacilitiesEdit.action?id=<s:property value="operatorAccount.id"/>" target="_BLANK">^</a></s:if>
+		</td>
+	</s:if>
 	<td><s:property value="riskLabel"/></td>
 	<td><s:property value="tagLabel"/></td>
 	<td><s:property value="acceptsBidsLabel"/></td>
-	<s:if test="class.toString() == 'class com.picsauditing.jpa.entities.AuditTypeRule'">
-		<td><s:property value="dependentAuditTypeLabel"/>
-			<s:if test="dependentAuditType"><a href="ManageAuditType.action?id=<s:property value="dependentAuditType.id"/>" target="_BLANK">^</a></s:if>
-		</td>
-		<td><s:property value="dependentAuditStatusLabel"/></td>
-	</s:if>
-	<td><s:property value="questionLabel"/>
-		<s:if test="question"><a href="ManageQuestion.action?id=<s:property value="question.id"/>" target="_BLANK">^</a></s:if>
-	</td>
-	<td><s:property value="questionComparatorLabel"/></td>
-	<td><s:property value="questionAnswerLabel"/></td>
-	<td><a href="<s:property value="#ruleURL"/>?id=<s:property value="#r.id"/>" class="preview"></a></td>
 	<s:if test="#showAction">
 		<s:if test="class.toString() == 'class com.picsauditing.jpa.entities.AuditTypeRule'">
 			<s:set var="rRuleType" value="'ManageAuditTypeRules'" scope="action" />		
@@ -66,5 +65,13 @@
 				</s:if>
 			</s:if>	
 		</td>
+	</s:if>
+	<s:if test="(!categoryRule && permissions.canEditAuditRules) || (categoryRule && permissions.canEditCategoryRules)">
+		<s:if test="isCanEditRule(#r)">
+			<td class="center"><a class="remove" href="javascript:deleteRule(<s:property value="#globalOperator.id"/>,<s:property value="id"/>,'<s:if test="categoryRule">category</s:if><s:else>audittype</s:else>');"></a></td>
+		</s:if>
+		<s:else>
+			<td>&nbsp;</td>
+		</s:else>
 	</s:if>
 </tr>

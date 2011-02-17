@@ -31,13 +31,13 @@
 			<table class="report">
 			<thead>
 				<tr>
+					<th>View</th>
 					<th>Category</th>
 					<th>Label</th>
 					<th>DataType</th>
 					<th>Comparison</th>
 					<th>Default Hurdle</th>
 					<th>Allow Custom Hurdle</th>
-					<th>Audit Type</th>
 					<th>Required Status</th>
 					<th>Flaggable When Missing</th>
 				</tr>
@@ -45,13 +45,13 @@
 			<tbody>
 				<s:iterator value="criteriaList">
 					<tr>
+						<td class="center"><a href="EditFlagCriteria.action?id=<s:property value="id"/>" class="preview"></a></td>
 						<td><s:property value="category" /></td>
 						<td><s:property value="label" /></td>
 						<td><s:property value="dataType" /></td>
 						<td><s:property value="comparison" /></td>
 						<td><s:property value="defaultValue" /></td>
 						<td><s:property value="allowCustomValue" /></td>
-						<td><s:property value="auditType" /></td>
 						<td><s:property value="requiredStatus" /></td>
 						<td><s:property value="flaggableWhenMissing" /></td>
 					</tr>

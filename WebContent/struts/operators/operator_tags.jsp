@@ -47,6 +47,7 @@ function checkRemove(id){
 				<pics:permission perm="ContractorTags" type="Delete"><th>Remove</th></pics:permission>
 			</tr>
 		</thead>
+		<s:set var="globalOperator" value="operator" />
 		<s:iterator value="tags" status="rowstatus">
 			<tr><s:hidden name="tags[%{#rowstatus.index}].id" value="%{id}" />
 				<td class="right"><s:property value="id" /></td>
@@ -65,6 +66,14 @@ function checkRemove(id){
 					<td class="center"><s:if test="visibleToContractor">Yes</s:if><s:else>No</s:else></td>
 				</s:else>
 				<pics:permission perm="ContractorTags" type="Delete">
+					<s:if test="#globalOperator.corporate">
+						<s:if test="operator.id != permissions.accountId">
+							<td><s:checkbox name="tags[%{#rowstatus.index}].inheritable" value="%{inheritable}" disabled="true"/></td>
+						</s:if>
+						<s:else>
+							<td><s:checkbox name="tags[%{#rowstatus.index}].inheritable" value="%{inheritable}" /></td>
+						</s:else>
+					</s:if>
 					<s:if test="operator.id != permissions.accountId"><td>Can Not Remove</td></s:if>
 					<s:else><td><a href="#" onclick="checkRemove(<s:property value="id" />);">Remove</a></td></s:else>
 				</pics:permission>
@@ -82,15 +91,13 @@ function checkRemove(id){
 	</div>
 </s:form>
 
-<br/>
-<br/>
-
-<s:if test="permissions.canEditAuditRules">
+<s:if test="permissions.canViewAuditRules">
+	<br/>
 	<div>
 		<h3>Related Audit Type Rules</h3>
 		<s:if test="relatedAuditTypeRules.size() == 0">
 			<div class="alert">
-				There are no Audit Type rules for any of the above tags. <a href="AuditTypeRuleEditor.action?button=edit&rule.include=true">Click here to create an Audit Type Rule.</a>
+				There are no Audit Type rules for any of the above tags.<s:if test="permissions.isCanAddRuleForOperator(operator)"> <a href="AuditTypeRuleEditor.action?button=edit&rule.include=true&ruleOperatorAccountId=<s:property value="operator.id" />">Click here to create an Audit Type Rule.</a></s:if>
 			</div>
 		</s:if>
 		<s:else>
@@ -102,21 +109,27 @@ function checkRemove(id){
 			<table class="report">
 				<s:set name="ruleURL" value="'AuditTypeRuleEditor.action'"/>
 				<s:set name="auditTypeRule" value="true"/>
+				<s:set name="categoryRule" value="false"/>
 				<s:include value="/struts/audits/rules/audit_rule_header.jsp"/>
 				<s:iterator value="relatedAuditTypeRules" id="r">
 					<s:include value="/struts/audits/rules/audit_rule_view.jsp"/>
 				</s:iterator>
 			</table>
+			<s:if test="permissions.isCanAddRuleForOperator(operator)">
+				<a href="AuditTypeRuleEditor.action?button=New&ruleOperatorAccountId=<s:property value="operator.id" />" class="add">Add New Audit Type Rule</a>
+			</s:if>
 		</s:else>
 	</div>
 </s:if>
 
-<s:if test="permissions.canEditCategoryRules">
+<s:if test="permissions.canViewCategoryRules">
+	<br />
+
 	<div>
 		<h3>Related Category Rules</h3>
 		<s:if test="relatedCategoryRules.size() == 0">
 			<div class="alert">
-				There are no Category rules for any of the above tags. <a href="CategoryRuleEditor.action?button=edit&rule.include=true">Click here to create a Category Rule.</a>
+				There are no Category rules for any of the above tags.<s:if test="permissions.isCanAddRuleForOperator(operator)"> <a href="CategoryRuleEditor.action?button=edit&rule.include=true&ruleOperatorAccountId=<s:property value="operator.id" />">Click here to create a Category Rule.</a></s:if>
 			</div>
 		</s:if>
 		<s:else>
@@ -128,11 +141,15 @@ function checkRemove(id){
 			<table class="report">
 				<s:set name="ruleURL" value="'CategoryRuleEditor.action'"/>
 				<s:set name="categoryRule" value="true"/>
+				<s:set name="auditTypeRule" value="false"/>
 				<s:include value="/struts/audits/rules/audit_rule_header.jsp"/>
 				<s:iterator value="relatedCategoryRules" id="r">
 					<s:include value="/struts/audits/rules/audit_rule_view.jsp"/>
 				</s:iterator>
 			</table>
+			<s:if test="permissions.isCanAddRuleForOperator(operator)">
+				<a href="CategoryRuleEditor.action?button=New&ruleOperatorAccountId=<s:property value="operator.id" />" class="add">Add New Category Rule</a>
+			</s:if>
 		</s:else>
 	</div>
 </s:if>

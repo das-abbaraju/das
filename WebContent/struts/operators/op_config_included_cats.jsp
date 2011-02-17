@@ -19,15 +19,17 @@
 							<a href="#" onclick="return hideCat(<s:property value="#cat.id" />);" class="hide remove">Hide Rules</a>
 							<a href="#" onclick="return showCat(<s:property value="#cat.id" />);" class="hide refresh">Refresh</a>
 							<div id="catTable_<s:property value="#cat.id" />"></div>
+							<s:if test="permissions.isCanAddRuleForOperator(operator)">
 								<a href="CategoryRuleEditor.action?button=New&ruleAuditTypeId=1&ruleAuditCategoryId=<s:property value="#cat.id" />&ruleOperatorAccountId=<s:property value="operator.id" />"
 									target="_blank" class="hide add">Add Rule</a>
+							</s:if>
 						</td>
 					</tr>
 				</s:iterator>
 			</tbody>
 		</table>				
 	</li>
-	<s:if test="permissions.canEditAuditRules">
+	<s:if test="permissions.isCanAddRuleForOperator(operator)">
 		<li>
 			<div id="includeNewCategory">
 				<s:hidden value="%{operator.id}" name="id" />
