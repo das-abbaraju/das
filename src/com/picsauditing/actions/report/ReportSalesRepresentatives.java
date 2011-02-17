@@ -114,6 +114,22 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 		OperatorContractorSalesSQL sqlRegistrationsToDate = new OperatorContractorSalesSQL(calCurrent.getTime(), "0", "0", "count(*)");
 		sqlRegistrationsToDate.addWhere("c.membershipDate BETWEEN au.startDate AND au.endDate");
 		
+		String audited = "SELECT DISTINCT o.id opID, 1 audited " +
+				"FROM audit_type_rule atr " +
+				"JOIN audit_type atype ON atype.id = atr.auditTypeID AND (atype.id in (2,3,6) OR atype.classType = 'IM') " +
+				"JOIN accounts o on o.id = atr.opID AND o.type = 'Operator' " +
+				"WHERE (atr.effectiveDate <= NOW() AND atr.expirationDate > NOW()) AND atr.include = 1 " +
+				"UNION SELECT DISTINCT f.opID, 1 audited " +
+				"FROM audit_type_rule atr " +
+				"JOIN audit_type atype ON atype.id = atr.auditTypeID AND (atype.id in (2,3,6) OR atype.classType = 'IM') " +
+				"JOIN accounts o ON o.id = atr.opID AND o.type = 'Corporate' " +
+				"JOIN facilities f ON f.corporateID = o.id AND f.opID NOT IN " +
+				"(SELECT distinct o.id FROM audit_type_rule atr " +
+				"JOIN audit_type atype ON atype.id = atr.auditTypeID AND (atype.id in (2,3,6) OR atype.classType = 'IM') " +
+				"JOIN accounts o ON o.id = atr.opID AND o.type = 'Operator' " +
+				"WHERE (atr.effectiveDate <= NOW() AND atr.expirationDate > NOW()) AND atr.include = 1) AND f.corporateID NOT IN (4,5,6,7) " +
+				"JOIN ACCOUNTS fo ON fo.id = f.opID " +
+				"WHERE (atr.effectiveDate <= NOW() AND atr.expirationDate > NOW()) AND atr.include = 1";
 		// TODO consider putting the dynamic "where" into the OperatorSalesSQL object
 		String sql = " SELECT accountID, type, userID, userName, accountName, audited.audited, o.doContractorsPay, " +
 					"creationDate, role, ownerPercent, startDate, endDate, SUM(regisThisMonth) regisThisMonth, " +
@@ -123,10 +139,7 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 				+ " UNION " + sqlRegistrationsLastMonth
 				+ " UNION " + sqlRegistrationsToDate
 				+ " ) t "
-				+ " LEFT JOIN (SELECT distinct atr.opID, 1 audited FROM audit_type_rule atr"
-				+ " JOIN audit_type at on at.id = atr.audittypeid "
-				+ " WHERE (at.id IN (2,3,6) OR at.classType = 'IM') AND (atr.risk IS NULL OR atr.risk > 0) "
-				+ " AND (atr.effectiveDate <= NOW() AND atr.expirationDate > NOW()) AND include =1) audited "
+				+ " LEFT JOIN (" + audited + ") audited "
 				+ " ON audited.opID = accountID "
 				+ " JOIN operators o on o.id = accountID "
 				+ " LEFT JOIN (SELECT f.opID, c.id FROM facilities f JOIN operators c ON f.corporateID = c.id AND c.primaryCorporate = 1) corp ON o.id = corp.opID "
