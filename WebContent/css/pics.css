@@ -25,9 +25,9 @@ p {
 }
 
 .closeButton{
-	float: right;
-	position: relative;
-	bottom: -110px;	
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
 }
 
 #systemMessage {

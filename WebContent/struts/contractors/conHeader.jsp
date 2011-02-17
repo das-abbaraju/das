@@ -2,7 +2,9 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
+
 $(function(){
+	
 	$('.sysEditDate').datepicker({
 			changeMonth: true,
 			changeYear:true,
@@ -58,12 +60,6 @@ $(function(){
 		loadResults(data);		
 	});
 
-	$('.clearOnce').live('click',function(){
-		if($('#clearOnceField').val()==1){
-			$('#clearOnceField').val(0);
-			$(this).val('');		
-		}
-	});
 	<s:if test="canEditCao && !systemEdit">
 	$('td.caoStatus a.edit').live('click', function(e) {
 		e.preventDefault();

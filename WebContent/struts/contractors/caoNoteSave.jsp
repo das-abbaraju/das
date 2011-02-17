@@ -4,9 +4,9 @@
 <div id="messageDialog" style="text-transform: uppercase;">
 	<s:property value="saveMessage" />
 </div>
+<s:property value="noteMessage"/>
 <div id="formDialog">
-	<s:textarea cssClass="clearOnce" rows="3" cols="30" id="addToNotes" value="%{noteMessage}" name="note" />
-	<input type="hidden" id="clearOnceField" value="1" />
+	<s:textarea cssClass="clearOnce" rows="3" cols="30" id="addToNotes" name="note" />
 </div>
 <div id="buttonsDialog">
 	<div style="cursor: pointer;" class="button <s:property value="status.color" />" id="yesButton" ><s:property value="status.button" /></div>
