@@ -29,11 +29,9 @@ function deleteRule(opID,ruleID,ruleType) {
 			</s:else>
 		</td>
 	</s:if>
-	<s:if test="operatorAccount.corporate" >
-		<td class="account<s:property value="operatorAccount.status"/>"><s:property value="operatorAccountLabel"/>
-			<s:if test="operatorAccount"><a href="FacilitiesEdit.action?id=<s:property value="operatorAccount.id"/>" target="_BLANK">^</a></s:if>
-		</td>
-	</s:if>
+	<td class="account<s:property value="operatorAccount.status"/>"><s:property value="operatorAccountLabel"/>
+		<s:if test="operatorAccount"><a href="FacilitiesEdit.action?id=<s:property value="operatorAccount.id"/>" target="_BLANK">^</a></s:if>
+	</td>
 	<td><s:property value="riskLabel"/></td>
 	<td><s:property value="tagLabel"/></td>
 	<td><s:property value="acceptsBidsLabel"/></td>
