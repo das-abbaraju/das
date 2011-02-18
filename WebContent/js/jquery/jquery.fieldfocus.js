@@ -6,12 +6,12 @@
 (function($){
 	$.fn.fieldfocus = function() {
 		return $(this).live('focus', function() {
-			var parent = $(this).parents('li');
+			var parent = $(this).closest('div');
 			parent.addClass('fieldhelp-focused');
 			var pos = parent.position();
 			parent.find('.fieldhelp').css({top: pos.top + 'px', left: (parent.width()+pos.left+40) +'px'});
 		}).live('blur', function() {
-			$(this).parents('li').removeClass('fieldhelp-focused');
+			$(this).closest('div').removeClass('fieldhelp-focused');
 		});
 	}
 	$.fn.helpstay = function() {
@@ -92,14 +92,17 @@
 })(jQuery)
 
 jQuery(function(){
-	$('fieldset.form ol li :input:not(:button)').fieldfocus();
-	$('fieldset.form ol li .fieldhelp').helpstay();
+	$('form fieldset :input:not(:button)').fieldfocus();
+	$('form fieldset .fieldhelp').helpstay();
 	$('.required :input:not(:checkbox)').requiredfields();
 	
-	$('fieldset.form ol li').live('click', function() {
+	$('form fieldset ol li').live('click', function() {
+		$(this).not('.fieldhelp-focused').find(':input:visible:first:not(:disabled)').focus();
+	});
+	$('form fieldset > div').live('click', function() {
 		$(this).not('.fieldhelp-focused').find(':input:visible:first:not(:disabled)').focus();
 	});
 	
-	$('fieldset.form h2.formLegend:not(.noJump)').jumpTo();
+	$('form fieldset h2:not(.noJump)').jumpTo();
 	 
 });
