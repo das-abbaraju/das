@@ -258,7 +258,7 @@ public class ContractorWidget extends ContractorActionSupport {
 									openTasks.add(text);
 								}
 							}
-						} else {
+						} else if(conAudit.getAuditType().isCanContractorEdit()) {
 							if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
 								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
 										+ "\">complete and submit your " + auditName + auditFor + "</a>");
