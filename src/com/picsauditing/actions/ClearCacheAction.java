@@ -5,6 +5,7 @@ import net.sf.ehcache.CacheManager;
 
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditTypeRuleCache;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 
@@ -44,6 +45,8 @@ public class ClearCacheAction extends PicsActionSupport {
 		// and if it has been set, resets the cache via this Action Class on all 3 servers
 		auditTypeRuleCache.clear();
 		auditCategoryRuleCache.clear();
+		
+		I18nCache.getInstance().clear();
 
 		return SUCCESS;
 	}
