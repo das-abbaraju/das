@@ -155,7 +155,7 @@ function deleteRule(element,ruleID,ruleType) {
 					</s:if>
 					<s:if test="columnMap.get('delete')">
 						<s:if test="isCanEditRule(#r)">
-							<td class="center"><a class="remove" href="javascript:deleteRule(<s:property value="urlPrefix"/>Rule<s:property value="id"/>,<s:property value="id"/>,'<s:property value="urlPrefix.toLowerCase()"/>');"></a></td>
+							<td class="center"><a class="remove" href="javascript:deleteRule('#<s:property value="urlPrefix"/>Rule<s:property value="id"/>',<s:property value="id"/>,'<s:property value="urlPrefix.toLowerCase()"/>');"></a></td>
 						</s:if>
 						<s:else>
 							<td>&nbsp;</td>
