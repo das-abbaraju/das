@@ -152,7 +152,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			}
 			Date scheduledDateInServerTime = DateBean.convertTime(scheduledDateInUserTime, permissions.getTimezone());
 
-			if (!scheduledDateInServerTime.equals(conAudit.getScheduledDate())) {
+			if (!DateBean.toDBFormat(scheduledDateInServerTime)
+					.equals(DateBean.toDBFormat(conAudit.getScheduledDate()))) {
 				if (isNeedsReschedulingFee() && !feeOverride) {
 					// Create invoice
 					InvoiceFee fee = feeDAO.find(InvoiceFee.RESCHEDULING);
