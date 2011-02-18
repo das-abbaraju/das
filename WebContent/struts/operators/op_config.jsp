@@ -112,32 +112,32 @@ function hideCat(id) {
 		<li><label>Country:</label>
 			<s:property value="operator.country.name"/>
 		</li>
-		<li>
-			<table class="report">
-				<tbody>
-					<s:if test="allParents.size > 0">
-						<s:set name="globalOperator" value="operator" />
-						<s:set name="opID" value="%{operator.id}" />
-						<s:iterator value="allParents" id="corp">
-							<tr>
-								<td>
-									<a href="?id=<s:property value="#corp.id" />">
-									<s:property value="#corp.name" /></a>
-								</td>
-								<s:if test="permissions.isCanAddRuleForOperator(#globalOperator)">
-									<td><a href="?id=<s:property value="#opID" />&button=Remove&corpID=<s:property value="#corp.id" />" class="remove">Remove</a></td>
-								</s:if>
-							</tr>
-						</s:iterator>
-					</s:if>
-					<s:else>
-						<tr>
-							<td><div class="alert">No Parent Accounts found</div></td>
-						</tr>
-					</s:else>
-				</tbody>
-			</table>
-		</li>
+		<s:if test="allParents.size > 0">
+			<li>
+				<table class="report">
+					<tbody>
+							<s:set name="globalOperator" value="operator" />
+							<s:set name="opID" value="%{operator.id}" />
+							<s:iterator value="allParents" id="corp">
+								<tr>
+									<td>
+										<a href="?id=<s:property value="#corp.id" />">
+										<s:property value="#corp.name" /></a>
+									</td>
+									<s:if test="permissions.isCanAddRuleForOperator(#globalOperator)">
+										<td><a href="?id=<s:property value="#opID" />&button=Remove&corpID=<s:property value="#corp.id" />" class="remove">Remove</a></td>
+									</s:if>
+								</tr>
+							</s:iterator>
+					</tbody>
+				</table>
+			</li>
+		</s:if>
+		<s:else>
+			<tr>
+				<td><div class="alert">No Parent Accounts found</div></td>
+			</tr>
+		</s:else>
 		<s:if test="permissions.isCanAddRuleForOperator(operator)">
 			<li><s:form id="includeNewParent">
 					<s:hidden value="%{operator.id}" name="id" />

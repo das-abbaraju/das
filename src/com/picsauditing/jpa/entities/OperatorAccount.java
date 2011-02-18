@@ -442,4 +442,9 @@ public class OperatorAccount extends Account {
 		}
 		return visibleAuditTypes;
 	}
+	
+	@Transient
+	public boolean isInPicsConsortium() {
+		return this.getId() > 3 && this.getId() < 14;
+	}
 }

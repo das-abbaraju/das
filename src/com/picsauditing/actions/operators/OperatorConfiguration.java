@@ -150,11 +150,11 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				Collections.sort(auditType.getCategories(), new Comparator<AuditCategory>() {
 					@Override
 					public int compare(AuditCategory o1, AuditCategory o2) {
-						if (o1.getName().equals("Policy Information") || o1.getName().equals("Policy Limits")){
-							if(o2.getName().equals("Policy Information") || o2.getName().equals("Policy Limits"))
+						if (o1.getName().equals("Policy Information") || o1.getName().equals("Policy Limits")) {
+							if (o2.getName().equals("Policy Information") || o2.getName().equals("Policy Limits"))
 								return o1.getName().compareTo(o2.getName());
-							return -1;							
-						} else if(o2.getName().equals("Policy Information") || o2.getName().equals("Policy Limits"))
+							return -1;
+						} else if (o2.getName().equals("Policy Information") || o2.getName().equals("Policy Limits"))
 							return 1;
 						return o1.getName().compareTo(o2.getName());
 					}
@@ -162,7 +162,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				int num = 1;
 				for (Iterator<AuditCategory> it = auditType.getCategories().iterator(); it.hasNext();) {
 					AuditCategory currentCategory = it.next();
-					if(currentCategory.getParent()!=null){
+					if (currentCategory.getParent() != null) {
 						currentCategory.setNumber(num);
 						num++;
 					}
@@ -208,7 +208,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				typeDAO.save(acr);
 				auditCategoryRuleCache.clear();
 				AppProperty appProp = appPropDAO.find("clear_cache");
-				if(appProp!=null){
+				if (appProp != null) {
 					appProp.setValue("true");
 					appPropDAO.save(appProp);
 				}
@@ -247,11 +247,11 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				auditCategoryRuleCache.clear();
 				return "category";
 			}
-			
+
 			// Clearing the Cache on all 3 servers
-			if(auditTypeID > 0 || catID > 0) {
+			if (auditTypeID > 0 || catID > 0) {
 				AppProperty appProp = appPropDAO.find("clear_cache");
-				if(appProp!=null){
+				if (appProp != null) {
 					appProp.setValue("true");
 					appPropDAO.save(appProp);
 				}
@@ -265,20 +265,19 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 	public List<OperatorAccount> getAllParents() {
 		if (allParents == null) {
-			List<Integer> inheritance = operator.getOperatorHeirarchy();
-			inheritance.remove((Integer) operator.getId());
+			allParents = new ArrayList<OperatorAccount>();
+			for (Facility f : operator.getCorporateFacilities())
+				if (!f.getOperator().isInPicsConsortium() && !f.getCorporate().isInPicsConsortium())
+					allParents.add(f.getCorporate());
 
-			if (inheritance.size() > 1) {
-				allParents = operatorDao.findWhere(true, "a.id IN (" + Strings.implode(inheritance) + ")", permissions);
-
+			if (allParents.size() > 2) {
 				Collections.sort(allParents, new Comparator<OperatorAccount>() {
 
 					public int compare(OperatorAccount o1, OperatorAccount o2) {
 						return (o1.getId() - o2.getId());
 					}
 				});
-			} else
-				allParents = new ArrayList<OperatorAccount>();
+			}
 		}
 
 		return allParents;
@@ -287,7 +286,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	public List<OperatorAccount> getOtherCorporates() {
 		if (otherCorporates == null) {
 			otherCorporates = operatorDao.findWhere(true, "a.id NOT IN ("
-					+ Strings.implode(operator.getOperatorHeirarchy()) + ") AND a.type = 'Corporate'");
+					+ Strings.implode(operator.getOperatorHeirarchy()) + ") AND a.type = 'Corporate' AND a.id >= 14");
 		}
 
 		return otherCorporates;
@@ -296,7 +295,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	public List<AuditType> getTypeList() {
 		Set<Integer> visibleAuditTypes = adtDAO.getAuditTypes(operator);
 		typeList = typeDAO.findWhere("t.id IN (" + Strings.implode(visibleAuditTypes) + ")");
-		
+
 		return typeList;
 	}
 
