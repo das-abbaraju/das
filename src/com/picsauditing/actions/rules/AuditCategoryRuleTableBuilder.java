@@ -7,9 +7,11 @@ import java.util.Set;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.util.Strings;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -20,12 +22,14 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 	protected AuditCategoryRule comparisonRule;
 	protected OperatorAccountDAO operatorDAO;
 	protected AuditCategoryDAO auditCategoryDAO;
+	protected OperatorTagDAO operatorTagDAO;
 
 	public AuditCategoryRuleTableBuilder(AuditDecisionTableDAO ruleDAO, OperatorAccountDAO operatorDAO,
-			AuditCategoryDAO auditCategoryDAO) {
+			AuditCategoryDAO auditCategoryDAO, OperatorTagDAO operatorTagDAO) {
 		this.ruleDAO = ruleDAO;
 		this.operatorDAO = operatorDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
+		this.operatorTagDAO = operatorTagDAO;
 		this.ruleType = "Category";
 		this.urlPrefix = "Category";
 	}
@@ -46,6 +50,9 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 			rules = ruleDAO.getLessGranular(ruleDAO.findAuditCategoryRule(id), date);
 		} else if ("moreGranular".equals(button)) {
 			rules = ruleDAO.getMoreGranular(ruleDAO.findAuditCategoryRule(id), date);
+		} else if ("tags".equals(button) && comparisonRule.getOperatorAccount() != null) {
+			List<OperatorTag> tags = operatorTagDAO.findByOperator(comparisonRule.getOperatorAccount().getId(), false);
+			rules = ruleDAO.findCategoryRulesByTags(tags);
 		} else if (comparisonRule != null) {
 			Set<String> whereClauses = new LinkedHashSet<String>();
 			whereClauses.add("(t.effectiveDate < NOW() AND t.expirationDate > NOW())");
@@ -78,7 +85,7 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 			if (comparisonRule.getTag() != null) {
 				whereClauses.add("t.tag.id = " + comparisonRule.getTag().getId());
 			}
-			
+
 			if (comparisonRule.getQuestion() != null) {
 				whereClauses.add("t.question.id = " + comparisonRule.getQuestion().getId());
 			}

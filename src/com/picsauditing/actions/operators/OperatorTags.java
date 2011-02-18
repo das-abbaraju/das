@@ -9,12 +9,8 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.jpa.entities.AccountUser;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
-import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.util.Strings;
 
@@ -151,39 +147,5 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 
 	public void setRuleType(String ruleType) {
 		this.ruleType = ruleType;
-	}
-
-	public boolean isCanEditRule(AuditRule rule) {
-		if (rule != null) {
-			// If user has AuditRuleAdmin and rule is above threshold let user
-			// modify rule
-			if (permissions.hasPermission(OpPerms.AuditRuleAdmin)
-					&& ((rule instanceof AuditCategoryRule && rule.getPriority() >= 300) || (rule instanceof AuditTypeRule && rule
-							.getPriority() >= 230))) {
-				return true;
-			} else if (permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit)
-					|| permissions.hasPermission(OpPerms.ManageCategoryRules, OpType.Edit)) {
-				// Otherwise if the user has editing privileges and created
-				// the rule or the rule falls within their scope of accounts
-				// let them modify it
-				if (rule.getCreatedBy() != null && permissions.getUserId() == rule.getCreatedBy().getId())
-					return true;
-				OperatorAccount opAccount = rule.getOperatorAccount();
-				if (opAccount != null) {
-					for (AccountUser accUser : opAccount.getAccountUsers()) {
-						if (accUser.getUser().getId() == permissions.getUserId())
-							return true;
-					}
-					for (OperatorAccount child : opAccount.getOperatorChildren()) {
-						for (AccountUser childAccUser : child.getAccountUsers()) {
-							if (childAccUser.getUser().getId() == permissions.getUserId())
-								return true;
-						}
-					}
-				}
-			}
-		}
-
-		return false;
 	}
 }

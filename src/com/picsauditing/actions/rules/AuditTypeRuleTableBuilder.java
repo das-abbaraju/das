@@ -6,8 +6,10 @@ import java.util.Set;
 
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.util.Strings;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -17,10 +19,13 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 
 	protected AuditTypeRule comparisonRule;
 	protected OperatorAccountDAO operatorDAO;
+	protected OperatorTagDAO operatorTagDAO;
 
-	public AuditTypeRuleTableBuilder(AuditDecisionTableDAO ruleDAO, OperatorAccountDAO operatorDAO) {
+	public AuditTypeRuleTableBuilder(AuditDecisionTableDAO ruleDAO, OperatorAccountDAO operatorDAO,
+			OperatorTagDAO operatorTagDAO) {
 		this.ruleDAO = ruleDAO;
 		this.operatorDAO = operatorDAO;
+		this.operatorTagDAO = operatorTagDAO;
 		this.ruleType = "Audit Type";
 		this.urlPrefix = "AuditType";
 	}
@@ -39,6 +44,9 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 			rules = ruleDAO.getLessGranular(ruleDAO.findAuditTypeRule(id), date);
 		} else if ("moreGranular".equals(button)) {
 			rules = ruleDAO.getMoreGranular(ruleDAO.findAuditTypeRule(id), date);
+		} else if ("tags".equals(button) && comparisonRule.getOperatorAccount() != null) {
+			List<OperatorTag> tags = operatorTagDAO.findByOperator(comparisonRule.getOperatorAccount().getId(), false);
+			rules = ruleDAO.findAuditTypeRulesByTags(tags);
 		} else if (comparisonRule != null) {
 			Set<String> whereClauses = new LinkedHashSet<String>();
 			whereClauses.add("(t.effectiveDate < NOW() AND t.expirationDate > NOW())");
@@ -62,7 +70,7 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 			if (comparisonRule.getTag() != null) {
 				whereClauses.add("t.tag.id = " + comparisonRule.getTag().getId());
 			}
-			
+
 			if (comparisonRule.getQuestion() != null) {
 				whereClauses.add("t.question.id = " + comparisonRule.getQuestion().getId());
 			}

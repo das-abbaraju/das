@@ -13,13 +13,31 @@ $(function() {
  		loading_image : 'loading.gif',
  		close_image : 'closelabel.gif'
  	});
+	showAuditTypeRules();
+	showCategoryRules();
  });
+
 function checkRemove(id){
 	jQuery.get('ContractorTagsAjax.action',{tagID: id, button: 'removeNum'}, function(data){
 		jQuery.facebox(data);
-});
+	});
 }
 
+function showAuditTypeRules() {
+	var data = {
+			'comparisonRule.operatorAccount.id': <s:property value="id"/>,
+			button: 'tags'
+	};
+	$('#auditrules').think({message: "Loading Related Audit Rules..." }).load('AuditTypeRuleTableAjax.action', data);
+}
+
+function showCategoryRules() {
+	var data = {
+			'comparisonRule.operatorAccount.id': <s:property value="id"/>,
+			button: 'tags'
+	};
+	$('#categoryrules').think({message: "Loading Related Category Rules..." }).load('CategoryRuleTableAjax.action', data);
+}
 </script>
 </head>
 <body>
@@ -93,65 +111,21 @@ function checkRemove(id){
 
 <pics:permission perm="ManageAuditTypeRules">
 	<br/>
-	<div>
-		<h3>Related Audit Type Rules</h3>
-		<s:if test="relatedAuditTypeRules.size() == 0">
-			<div class="alert">
-				There are no Audit Type rules for any of the above tags.<s:if test="permissions.isCanAddRuleForOperator(operator)"> <a href="AuditTypeRuleEditor.action?button=edit&rule.include=true&ruleOperatorAccountId=<s:property value="operator.id" />">Click here to create an Audit Type Rule.</a></s:if>
-			</div>
-		</s:if>
-		<s:else>
-			<s:if test="relatedRules.size() >= 250">
-				<div class="alert">
-					There are too many rules to display here. <a href="AuditTypeRuleSearch.action">Click here to Search for Audit Type Rules.</a>
-				</div>
-			</s:if>
-			<table class="report">
-				<s:set name="ruleURL" value="'AuditTypeRuleEditor.action'"/>
-				<s:set name="auditTypeRule" value="true"/>
-				<s:set name="categoryRule" value="false"/>
-				<s:include value="/struts/audits/rules/audit_rule_header.jsp"/>
-				<s:iterator value="relatedAuditTypeRules" id="r">
-					<s:include value="/struts/audits/rules/audit_rule_view.jsp"/>
-				</s:iterator>
-			</table>
-			<s:if test="permissions.isCanAddRuleForOperator(operator)">
-				<a href="AuditTypeRuleEditor.action?button=New&ruleOperatorAccountId=<s:property value="operator.id" />" class="add">Add New Audit Type Rule</a>
-			</s:if>
-		</s:else>
-	</div>
+	<h3>Related Audit Type Rules</h3>
+	<div id="auditrules"></div>
+	<s:if test="permissions.isCanAddRuleForOperator(operator)">
+		<a href="AuditTypeRuleEditor.action?button=New&ruleOperatorAccountId=<s:property value="operator.id" />" class="add">Add New Audit Type Rule</a>
+	</s:if>
 </pics:permission>
 
 <pics:permission perm="ManageCategoryRules">
-	<br />
-
-	<div>
-		<h3>Related Category Rules</h3>
-		<s:if test="relatedCategoryRules.size() == 0">
-			<div class="alert">
-				There are no Category rules for any of the above tags.<s:if test="permissions.isCanAddRuleForOperator(operator)"> <a href="CategoryRuleEditor.action?button=edit&rule.include=true&ruleOperatorAccountId=<s:property value="operator.id" />">Click here to create a Category Rule.</a></s:if>
-			</div>
-		</s:if>
-		<s:else>
-			<s:if test="relatedCategoryRules.size() >= 250">
-				<div class="alert">
-					There are too many rules to display here. <a href="CategoryRuleSearch.action">Click here to Search for Category Rules.</a>
-				</div>
-			</s:if>
-			<table class="report">
-				<s:set name="ruleURL" value="'CategoryRuleEditor.action'"/>
-				<s:set name="categoryRule" value="true"/>
-				<s:set name="auditTypeRule" value="false"/>
-				<s:include value="/struts/audits/rules/audit_rule_header.jsp"/>
-				<s:iterator value="relatedCategoryRules" id="r">
-					<s:include value="/struts/audits/rules/audit_rule_view.jsp"/>
-				</s:iterator>
-			</table>
-			<s:if test="permissions.isCanAddRuleForOperator(operator)">
-				<a href="CategoryRuleEditor.action?button=New&ruleOperatorAccountId=<s:property value="operator.id" />" class="add">Add New Category Rule</a>
-			</s:if>
-		</s:else>
-	</div>
+	<br/>
+	<br/>
+	<h3>Related Category Rules</h3>
+	<div id="categoryrules"></div>
+	<s:if test="permissions.isCanAddRuleForOperator(operator)">
+		<a href="CategoryRuleEditor.action?button=New&ruleOperatorAccountId=<s:property value="operator.id" />" class="add">Add New Category Rule</a>
+	</s:if>
 </pics:permission>
 
 </body>
