@@ -17,7 +17,6 @@ import org.apache.struts2.interceptor.RequestAware;
 import org.json.simple.JSONObject;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -32,7 +31,7 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
-public class PicsActionSupport extends ActionSupport implements RequestAware {
+public class PicsActionSupport extends TranslationActionSupport implements RequestAware {
 
 	protected static String LOGIN_AJAX = "LoginAjax";
 	protected static String BLANK = "blank";

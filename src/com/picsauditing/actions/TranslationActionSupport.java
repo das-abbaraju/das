@@ -3,6 +3,8 @@ package com.picsauditing.actions;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.struts2.ServletActionContext;
+
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.PICS.I18nCache;
@@ -11,6 +13,10 @@ import com.picsauditing.PICS.I18nCache;
 public class TranslationActionSupport extends ActionSupport {
 
 	private I18nCache i18nCache = I18nCache.getInstance();
+
+	public String getScope() {
+		return ServletActionContext.getContext().getName();
+	}
 
 	@Override
 	public boolean hasKey(String key) {
