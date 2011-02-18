@@ -101,27 +101,6 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 
 			redirect("OperatorTags.action");
 		}
-		if ("DeleteRule".equals(button)) {
-			if("category".equals(ruleType)) {
-				AuditCategoryRule acr = ruleDAO.findAuditCategoryRule(ruleID);
-				if(this.isCanEditRule(acr)){
-					addActionMessage("Category Rule: "+acr.toString()+" Deleted.");
-					ruleDAO.remove(acr);
-				} else {
-					addActionError("Failed to Delete rule.");
-				}
-			} else if("audittype".equals(ruleType)) {
-				AuditTypeRule atr = ruleDAO.findAuditTypeRule(ruleID);
-				if(this.isCanEditRule(atr)){
-					addActionMessage("Audit Type Rule: "+atr.toString()+" Deleted.");
-					ruleDAO.remove(atr);
-				} else {
-					addActionError("Failed to Delete rule.");
-				}
-			}
-			
-			return SUCCESS;
-		}
 
 		return SUCCESS;
 	}
@@ -157,7 +136,7 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 	public void setResult(int result) {
 		this.result = result;
 	}
-	
+
 	public int getRuleID() {
 		return ruleID;
 	}
@@ -182,7 +161,8 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 					&& ((rule instanceof AuditCategoryRule && rule.getPriority() >= 300) || (rule instanceof AuditTypeRule && rule
 							.getPriority() >= 230))) {
 				return true;
-			} else if (permissions.isCanEditAuditRules() || permissions.isCanEditCategoryRules()) {
+			} else if (permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit)
+					|| permissions.hasPermission(OpPerms.ManageCategoryRules, OpType.Edit)) {
 				// Otherwise if the user has editing privileges and created
 				// the rule or the rule falls within their scope of accounts
 				// let them modify it

@@ -139,10 +139,12 @@ function showRules() {
 		<a class="add" href="ManageQuestion.action?button=AddNew&parentID=<s:property value="category.id"/>&categoryParent.id=<s:property value="category.id"/>&question.category.id=<s:property value="category.id"/>">Add New Question</a>
 		<div id="listQ-info"></div>
 	</div>
+	<br/>
 	<h3>Related Rules</h3>
-	<a href="#" onclick="showRules(); return false;" class="refresh">Refresh</a>	
 	<div id="rules"></div>
-	<a href="CategoryRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="category.auditType.id" />&ruleAuditCategoryId=<s:property value="category.id" />" class="add">Add New Category Rule</a>
+	<pics:permission perm="ManageCategoryRules" type="Edit">
+		<a href="CategoryRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="category.auditType.id" />&ruleAuditCategoryId=<s:property value="category.id" />" class="add">Add New Category Rule</a>
+	</pics:permission>
 </s:if>
 
 </body>

@@ -2,13 +2,18 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <script>
-function deleteRule(opID,ruleID,ruleType) {
+function deleteRule(element,ruleID,ruleType) {
 	var deleteMe = confirm('You are deleting a rule with potentially broad reaching affects. Are you sure you want to do this?');
 	if (!deleteMe)
 		return;
 	
-	window.location.href = 'OperatorConfiguration.action?button=DeleteRule&id='+opID+'&ruleID='+ruleID+'&ruleType='+ruleType;
-}
+	$.ajax({
+		url: 'AuditTypeRuleTableAjax.action', 
+		data: {button: 'DeleteRule', id: ruleID, ruleType: ruleType}, 
+		success: function() {
+			$(element).remove();
+		}
+	});}
 </script>
 <s:if test="rules.size() > 0">
 	<table class="report">
@@ -64,7 +69,7 @@ function deleteRule(opID,ruleID,ruleType) {
 		</thead>
 		<tbody>
 			<s:iterator value="rules" var="r">
-				<tr class="<s:if test="include">on</s:if><s:else>off</s:else>">
+				<tr id="<s:property value="urlPrefix"/>Rule<s:property value="id"/>" class="<s:if test="include">on</s:if><s:else>off</s:else>">
 					<td class="center"><a href="<s:property value="urlPrefix"/>RuleEditor.action?id=<s:property value="id"/>" class="preview"></a></td>
 					<s:if test="columnMap.get('include')">
 						<td class="center"><s:if test="include">Yes</s:if><s:else>No</s:else></td>
@@ -150,7 +155,7 @@ function deleteRule(opID,ruleID,ruleType) {
 					</s:if>
 					<s:if test="columnMap.get('delete')">
 						<s:if test="isCanEditRule(#r)">
-							<td class="center"><a class="remove" href="javascript:deleteRule(<s:property value="operatorAccount.id"/>,<s:property value="id"/>,'<s:property value="urlPrefix.toLowerCase()"/>');"></a></td>
+							<td class="center"><a class="remove" href="javascript:deleteRule(<s:property value="urlPrefix"/>Rule<s:property value="id"/>,<s:property value="id"/>,'<s:property value="urlPrefix.toLowerCase()"/>');"></a></td>
 						</s:if>
 						<s:else>
 							<td>&nbsp;</td>

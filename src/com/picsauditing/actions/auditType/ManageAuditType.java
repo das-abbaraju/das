@@ -17,11 +17,13 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditQuestionOption;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.util.AuditTypeCache;
 import com.picsauditing.util.Strings;
@@ -39,6 +41,8 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected int workFlowID = 0;
 	protected Integer emailTemplateID;
 	protected String editPerm;
+	protected String ruleType;
+	protected int ruleID;
 
 	private List<AuditType> auditTypes = null;
 
@@ -444,5 +448,21 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	public void setWorkFlowID(int workFlowID) {
 		this.workFlowID = workFlowID;
+	}
+
+	public String getRuleType() {
+		return ruleType;
+	}
+
+	public void setRuleType(String ruleType) {
+		this.ruleType = ruleType;
+	}
+
+	public int getRuleID() {
+		return ruleID;
+	}
+
+	public void setRuleID(int ruleID) {
+		this.ruleID = ruleID;
 	}
 }

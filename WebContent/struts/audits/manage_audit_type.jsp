@@ -56,6 +56,7 @@ function showRules() {
 	startThinking({ div: "rules", message: "Loading Related Rules" });
 	$('#rules').load('AuditTypeRuleTableAjax.action', data);
 }
+
 </script>
 </head>
 <body>
@@ -186,14 +187,19 @@ function showRules() {
 		<div class="info">Drag and drop categories to change their order</div>
 		<br clear="all" />
 	</s:if>
+	<br/>
 	<h3>Related Flag Criteria</h3>
-	<a href="#" onclick="showFlags(); return false;" class="refresh">Refresh</a>	
 	<div id="flags"></div>
-	<a href="EditFlagCriteria.action?criteria.displayOrder=999&criteria.dataType=boolean&criteria.comparison=%3d&criteria.defaultValue=false&criteria.allowCustomValue=false&criteria.requiredStatus=Complete&criteria.category=Paperwork&criteria.auditType.id=<s:property value="auditType.id" />&criteria.label=<s:property value="auditType.name" />&criteria.description=<s:property value="auditType.name" />%20is%20missing" class="add">Add New Audit Type Flag Criteria</a>
+	<pics:permission perm="EditFlagCriteria">
+		<a href="EditFlagCriteria.action?criteria.displayOrder=999&criteria.dataType=boolean&criteria.comparison=%3d&criteria.defaultValue=false&criteria.allowCustomValue=false&criteria.requiredStatus=Complete&criteria.category=Paperwork&criteria.auditType.id=<s:property value="auditType.id" />&criteria.label=<s:property value="auditType.name" />&criteria.description=<s:property value="auditType.name" />%20is%20missing" class="add">Add New Audit Type Flag Criteria</a>
+	</pics:permission>
+	<br/>
+	<br/>
 	<h3>Related Rules</h3>
-	<a href="#" onclick="showRules(); return false;" class="refresh">Refresh</a>	
 	<div id="rules"></div>
-	<a href="AuditTypeRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="id" />" class="add">Add New Audit Type Rule</a>
+	<pics:permission perm="ManageAuditTypeRules" type="Edit" >
+		<a href="AuditTypeRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="id" />" class="add">Add New Audit Type Rule</a>
+	</pics:permission>
 </s:if>
 
 </body>

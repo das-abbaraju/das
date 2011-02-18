@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AccountUser;
@@ -519,26 +518,6 @@ public class Permissions implements Serializable {
 		return visibleAuditTypes;
 	}
 	
-	public boolean isCanEditAuditRules() {
-		return this.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit) 
-		|| this.hasPermission(OpPerms.AuditRuleAdmin);
-	}
-
-	public boolean isCanViewAuditRules() {
-		return this.hasPermission(OpPerms.ManageAuditTypeRules, OpType.View) 
-		|| this.hasPermission(OpPerms.AuditRuleAdmin);
-	}
-	
-	public boolean isCanEditCategoryRules() {
-		return this.hasPermission(OpPerms.ManageCategoryRules, OpType.Edit) 
-		|| this.hasPermission(OpPerms.AuditRuleAdmin);
-	}
-
-	public boolean isCanViewCategoryRules() {
-		return this.hasPermission(OpPerms.ManageCategoryRules, OpType.View) 
-		|| this.hasPermission(OpPerms.AuditRuleAdmin);
-	}
-
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {
 		if (this.hasPermission(OpPerms.AuditRuleAdmin))
 			return true;

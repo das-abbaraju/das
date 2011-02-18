@@ -6,6 +6,7 @@
 <title>Manage Question</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.bgiframe.min.js"></script>
@@ -21,7 +22,10 @@ $(function(){
 			$('.scoreWeight input[name=question.scoreWeight]').val(0);
 		}
 	}).trigger('change');
-	
+
+	showFlags();
+	showAuditTypeRules();
+	showCategoryRules();
 });
 
 function copyQuestion(atypeID) {
@@ -96,6 +100,29 @@ function moveQuestion(atypeID) {
 		}
 	);
 }
+
+function showFlags() {
+	var data = {
+			questionID: <s:property value="id"/>
+	};
+	startThinking({ div: "flags", message: "Loading Related Flag Criteria" });
+	$('#flags').load('FlagCriteriaListAjax.action', data);
+}
+
+function showAuditTypeRules() {
+	var data = {
+			'comparisonRule.question.id': <s:property value="id"/>
+	};
+	$('#auditrules').think({message: "Loading Related Audit Rules..." }).load('AuditTypeRuleTableAjax.action', data);
+}
+
+function showCategoryRules() {
+	var data = {
+			'comparisonRule.question.id': <s:property value="id"/>
+	};
+	$('#categoryrules').think({message: "Loading Related Category Rules..." }).load('CategoryRuleTableAjax.action', data);
+}
+
 </script>
 </head>
 <body>
@@ -269,5 +296,23 @@ function moveQuestion(atypeID) {
 </ul>
 
 <div id="copy_audit"></div>
+<br/>
+<h3>Related Flag Criteria</h3>
+<div id="flags"></div>
+<a href="EditFlagCriteria.action?criteria.displayOrder=999&criteria.question.id=<s:property value="question.id" />&criteria.requiredStatus=Submitted&criteria.category=Paperwork<s:if test="question.columnHeader" >&criteria.label=<s:property value="auditType.name" />%3A%20<s:property value="question.columnHeader" />&criteria.description=<s:property value="auditType.name" />%3A%20<s:property value="question.columnHeader" /></s:if>" class="add">Add New Question Flag Criteria</a>
+<br />
+<br />
+<h3>Related Audit Type Rules</h3>
+<div id="auditrules"></div>
+<pics:permission perm="ManageAuditTypeRules" type="Edit" >
+	<a href="AuditTypeRuleEditor.action?button=New&ruleAcceptsBids=false&ruleQuestionId=<s:property value="id" />" class="add">Add New Audit Type Rule</a>
+</pics:permission>
+<br/>
+<br/>
+<h3>Related Category Rules</h3>
+<div id="categoryrules"></div>
+<pics:permission perm="ManageCategoryRules" type="Edit" >
+	<a href="CategoryRuleEditor.action?button=New&ruleAcceptsBids=false&ruleQuestionId=<s:property value="id" />" class="add">Add New Category Rule</a>
+</pics:permission>
 </body>
 </html>

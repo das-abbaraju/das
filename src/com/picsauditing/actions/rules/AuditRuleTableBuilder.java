@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AccountUser;
@@ -35,6 +36,20 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+
+		if ("DeleteRule".equals(button)) {
+			if ("category".equals(ruleType)) {
+				AuditCategoryRule acr = ruleDAO.findAuditCategoryRule(id);
+				if (acr != null && this.isCanEditRule(acr))
+					ruleDAO.remove(acr);
+			} else if ("audittype".equals(ruleType)) {
+				AuditTypeRule atr = ruleDAO.findAuditTypeRule(id);
+				if (atr != null && this.isCanEditRule(atr))
+					ruleDAO.remove(atr);
+			}
+
+			return SUCCESS;
+		}
 
 		setup();
 		return SUCCESS;
@@ -143,7 +158,9 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 					&& ((rule instanceof AuditCategoryRule && rule.getPriority() >= 300) || (rule instanceof AuditTypeRule && rule
 							.getPriority() >= 230))) {
 				return true;
-			} else if (permissions.isCanEditAuditRules() || permissions.isCanEditCategoryRules()) {
+			} else if (!permissions.hasPermission(OpPerms.AuditRuleAdmin)
+					&& (permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit) || permissions
+							.hasPermission(OpPerms.ManageCategoryRules, OpType.Edit))) {
 				// Otherwise if the user has editing privileges and created
 				// the rule or the rule falls within their scope of accounts
 				// let them modify it

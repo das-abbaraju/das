@@ -116,7 +116,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.AllContractors) || permissions.isOperatorCorporate()) {
 			subMenu.addChild("Contractor List", "ContractorList.action?filter.performedBy=Self Performed");
 		}
-		
+
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {
 			final String url = "NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true&filter.tradeInformation=true";
 			subMenu.addChild("Search For New", url);
@@ -165,7 +165,9 @@ public class PicsMenu {
 			subMenu.addChild("Sched. &amp; Assign",
 					"AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
-			subMenu.addChild("Close Assigned Audits", "ReportCloseAuditAssignments.action?filter.auditStatus=Submitted");
+			subMenu
+					.addChild("Close Assigned Audits",
+							"ReportCloseAuditAssignments.action?filter.auditStatus=Submitted");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
 			subMenu.addChild("Audit Calendar", "AuditCalendar.action");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
@@ -188,11 +190,9 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("Pending PQF", "ReportCompletePQF.action?filter.auditStatus=Pending");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
-			subMenu.addChild(
-					"PQF Verification",
-					"PqfVerification.action?filter.status=Active"
-							+ (permissions.hasGroup(User.GROUP_CSR) ? "&filter.conAuditorId="
-									+ permissions.getShadowedUserID() : ""));
+			subMenu.addChild("PQF Verification", "PqfVerification.action?filter.status=Active"
+					+ (permissions.hasGroup(User.GROUP_CSR) ? "&filter.conAuditorId=" + permissions.getShadowedUserID()
+							: ""));
 		if (permissions.hasPermission(OpPerms.UserZipcodeAssignment))
 			subMenu.addChild("CSR Assignment", "CSRAssignmentMatrix.action");
 
@@ -217,7 +217,9 @@ public class PicsMenu {
 					+ (permissions.hasGroup(User.GROUP_CSR) ? "?filter.conAuditorId=" + permissions.getShadowedUserID()
 							: ""));
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
-			subMenu.addChild("Policies Awaiting Decision", "ReportInsuranceApproval.action?filter.auditStatus=Complete");
+			subMenu
+					.addChild("Policies Awaiting Decision",
+							"ReportInsuranceApproval.action?filter.auditStatus=Complete");
 
 		subMenu = menu.addChild("Management");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
@@ -232,11 +234,10 @@ public class PicsMenu {
 			subMenu.addChild("Users", "UsersManage.action");
 			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
 		}
-		
+
 		if (permissions.hasPermission(OpPerms.Translator)) {
 			subMenu.addChild("Manage Translations", "ManageTranslations.action");
 		}
-		
 
 		if (permissions.hasPermission(OpPerms.ManageEmployees))
 			subMenu.addChild("Employees", "ManageEmployees.action?id=" + permissions.getAccountId());
@@ -248,10 +249,10 @@ public class PicsMenu {
 			subMenu.addChild("Flag Criteria", "ManageFlagCriteria.action");
 			subMenu.addChild("Contractor Simulator", "ContractorSimulator.action");
 		}
-		if (permissions.isCanEditAuditRules()) {
+		if (permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit)) {
 			subMenu.addChild("Audit Type Rules", "AuditTypeRuleSearch.action");
 		}
-		if (permissions.isCanEditCategoryRules()) {
+		if (permissions.hasPermission(OpPerms.ManageCategoryRules, OpType.Edit)) {
 			subMenu.addChild("Category Rules", "CategoryRuleSearch.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit)) {
@@ -329,7 +330,8 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
-		if (permissions.isCanViewAuditRules() || permissions.isCanViewCategoryRules())
+		if (permissions.hasPermission(OpPerms.ManageCategoryRules)
+				|| permissions.hasPermission(OpPerms.ManageAuditTypeRules))
 			subMenu.addChild("Audit Rule History", "ReportRuleHistory.action");
 		if (permissions.hasPermission(OpPerms.ContractorLicenseReport))
 			subMenu.addChild("Contractor Licenses", "ReportContractorLicenses.action");
@@ -363,7 +365,8 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EditUsers))
 			subMenu.addChild("User Search", "UserList.action");
 		if (permissions.getAccountId() == 1813) // Hardcode to BP Cherry point
-			subMenu.addChild("Washington Audit", "ReportWashingtonStateAudit.action?filter.riskLevel=3&filter.waAuditTypes=176");
+			subMenu.addChild("Washington Audit",
+					"ReportWashingtonStateAudit.action?filter.riskLevel=3&filter.waAuditTypes=176");
 		if (permissions.hasPermission(OpPerms.EmployeeList))
 			subMenu.addChild("Employee List", "EmployeeList.action");
 
