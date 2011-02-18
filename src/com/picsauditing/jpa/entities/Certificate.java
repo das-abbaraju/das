@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -63,5 +64,15 @@ public class Certificate extends BaseTable {
 
 	public void setExpirationDate(Date expirationDate) {
 		this.expirationDate = expirationDate;
+	}
+	
+	@Transient
+	public boolean isExpired() {
+		return isExpired(new Date());
+	}
+	
+	@Transient
+	public boolean isExpired(Date date) {
+		return expirationDate.before(date);
 	}
 }

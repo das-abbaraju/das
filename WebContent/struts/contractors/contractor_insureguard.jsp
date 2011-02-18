@@ -62,7 +62,7 @@
 												<br />
 												<span style="font-size: 10px">
 													<s:if test="#stat == 'Expired'">
-														Expired on <s:date name="#audit.expiresDate" format="M/d/yyyy" />
+														Expired on <s:date name="#audit.expiresDate" format="M/d/yy" />
 													</s:if>
 													<s:else>
 														<s:date name="#audit.effectiveDate" format="MMM yyyy" />

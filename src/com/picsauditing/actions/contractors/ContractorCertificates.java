@@ -49,10 +49,19 @@ public class ContractorCertificates extends ContractorActionSupport {
 	}
 	
 	public List<Certificate> getCertificates() {
-		if (certificates == null) {
-			certificates = certificateDAO.findByConId(contractor.getId(), permissions, false);
-		}
+		if (certificates == null)
+			certificates = certificateDAO.findByConId(contractor.getId(), permissions, true);
 
 		return certificates;
+	}
+	
+	public boolean isAllExpired() {
+		boolean expired = true;
+		for (Certificate c : getCertificates()) {
+			if (!c.isExpired())
+				expired = false;
+		}
+		
+		return expired;
 	}
 }
