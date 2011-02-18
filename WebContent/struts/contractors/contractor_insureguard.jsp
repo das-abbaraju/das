@@ -42,11 +42,11 @@
 								<s:if test="#stat.key != 'Expired'">
 									<th>Operator</th>
 									<th>Status</th>
-									<th>View</th>
 								</s:if>
 								<s:else>
 									<th>Expired</th>
 								</s:else>
+								<th>View</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -86,6 +86,13 @@
 											</span>
 										</td>
 										<td><s:date name="#audit.expiresDate" format="M/d/yy" /></td>
+										<td class="center">
+											<a title="<s:property value="caoCert.get(#cao).description"/>"
+												href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="caoCert.get(#cao).id" />&button=download"
+												target="_BLANK">
+												<img src="images/icon_insurance.gif"/>
+											</a>
+										</td>
 									</tr>
 								</s:else>
 							</s:iterator>

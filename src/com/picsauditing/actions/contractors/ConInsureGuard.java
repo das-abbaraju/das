@@ -92,7 +92,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	public List<Certificate> getCertificates() {
 		if (certificates == null)
-			certificates = certificateDAO.findByConId(contractor.getId(), permissions, false);
+			certificates = certificateDAO.findByConId(contractor.getId(), permissions, true);
 
 		return certificates;
 	}
