@@ -109,6 +109,18 @@ $(function(){
 		updateCategoriesNow();
 		$.scrollTo(0, 800, {axis: 'y'});
 	});
+	
+	$('#submitRemind').ajaxComplete(function(e, xhr, settings){
+		if(settings.headers && settings.headers.refresh && 
+				settings.headers.refresh == 'true'){
+			$.getJSON('AuditAjax.action', {auditID: auditID, button: 'SubmitRemind'}, function(json){
+				if(json && json.remind)
+					$('#submitRemind').html($('<div>').attr('class', 'alert').append(json.remind));
+				else
+					$('#submitRemind').html('');
+			});
+		}
+	});
 });
 
 function showNavButtons() {
@@ -169,6 +181,7 @@ function _updateCategories() {
 			auditID: auditID,
 			button: 'Refresh'
 		},
+		headers: {'refresh':'true'},
 		type: 'post',
 		success: function(text, status, xhr) {
 			if (xhr.status) {

@@ -83,42 +83,49 @@ $(function(){
 });
 
 function loadResults(data, noteText){
-	$('#caoAjax').load('CaoSaveAjax.action', data, function(response, status, xhr){
-		if(status == 'success'){
-			$('#caoTable').unblock();
-			if($('#noteRequired').val()=='true'){
-				$('#yesButton').addClass('disabled');
-				$('#addToNotes').live('keyup', function(){
-					if($(this).val()!='')
-						$('#yesButton').removeClass('disabled');
-					else
-						$('#yesButton').addClass('disabled');
+	$.ajax({
+		url: 'CaoSaveAjax.action',
+		data: data,
+		headers: {'refresh':'true'},
+		type: 'get',
+		success: function(response, status, xhr){
+			if(status == 'success'){
+				$('#caoAjax').html(response);
+				$('#caoTable').unblock();
+				if($('#noteRequired').val()=='true'){
+					$('#yesButton').addClass('disabled');
+					$('#addToNotes').live('keyup', function(){
+						if($(this).val()!='')
+							$('#yesButton').removeClass('disabled');
+						else
+							$('#yesButton').addClass('disabled');
+					});
+				}
+				$('#yesButton').click(function(){
+					if($(this).hasClass('disabled'))
+						return false;
+			        $.blockUI({message: 'Saving Status, please wait...'});
+			        data.button = 'caoAjaxSave';
+			        if($('#addToNotes').val())
+			        	data.note =  $('#addToNotes').val();
+			        $('#caoTable').load('CaoSaveAjax.action', data, function(){
+			            $.unblockUI();
+			        });
+			    });		     
+			    $('#noButton').click(function(){
+			        $.unblockUI();
+			        return false;
+			    });
+				if($('#noteRequired').val()=='true')
+		        	$.blockUI({ message:$('#caoAjax')});
+				else  
+					$('#yesButton').click();
+			    
+			} else {
+				$('#caoTable').block({message: 'Error with request, please try again',
+					timeout: 1500	
 				});
 			}
-			$('#yesButton').click(function(){
-				if($(this).hasClass('disabled'))
-					return false;
-		        $.blockUI({message: 'Saving Status, please wait...'});
-		        data.button = 'caoAjaxSave';
-		        if($('#addToNotes').val())
-		        	data.note =  $('#addToNotes').val();
-		        $('#caoTable').load('CaoSaveAjax.action', data, function(){
-		            $.unblockUI();
-		        });
-		    });		     
-		    $('#noButton').click(function(){
-		        $.unblockUI();
-		        return false;
-		    });
-			if($('#noteRequired').val()=='true')
-	        	$.blockUI({ message:$('#caoAjax')});
-			else  
-				$('#yesButton').click();
-		    
-		} else {
-			$('#caoTable').block({message: 'Error with request, please try again',
-				timeout: 1500	
-			});
 		}
 	});
 }

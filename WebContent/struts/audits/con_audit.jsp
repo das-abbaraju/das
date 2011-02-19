@@ -39,6 +39,8 @@
 	<br clear="all" />
 </s:if>
 
+<div id="submitRemind"></div>
+
 <div class="right noprint" id="modes">
 	<s:if test="canEditAudit">
 		<a class="edit modeset" href="#mode=Edit">Edit</a>

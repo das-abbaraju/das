@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
@@ -102,6 +103,22 @@ public class ContractorAuditController extends AuditActionSupport {
 				auditDao.save(conAudit);
 				this.redirect("Audit.action?auditID=" + conAudit.getId());
 				return SUCCESS;
+			}
+			
+			if ("SubmitRemind".equals(button)) {
+				for (ContractorAuditOperator cao : conAudit.getOperators()) {
+					// We looking for pending
+					if(cao.isVisible()){
+						if (cao.getStatus() == AuditStatus.Pending || cao.getStatus() == AuditStatus.Incomplete
+								|| cao.getStatus() == AuditStatus.Resubmit) {
+							if(cao.getPercentComplete()==100){
+								json.put("remind", "Please submit your audits when finished.");
+								break;
+							}
+						}
+					}
+				}
+				return JSON;
 			}
 
 			// Preview the Category from the manage audit type page
