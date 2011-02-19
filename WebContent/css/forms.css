@@ -211,7 +211,7 @@ form fieldset .fieldhelp-focused .fieldhelp, fieldset.form ol li.fieldhelp-focus
 	display: block;
 }
 
-form fieldset .fieldhelp.hover .fieldhelp.mousedown, fieldset.form ol li .fieldhelp.hover, fieldset.form ol li .fieldhelp.mousedown {
+form fieldset .fieldhelp.hover, form fieldset .fieldhelp.mousedown, fieldset.form ol li .fieldhelp.hover, fieldset.form ol li .fieldhelp.mousedown {
 	position: absolute;
 	display: block;
 	z-index: 1001;
