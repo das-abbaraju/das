@@ -26,7 +26,6 @@
 <tr>
 	<th class="label">Site Description</th>
 	<td><s:textfield name="osha.description" value="%{description}" cssStyle="width: 95%" value="%{description}" maxlength="250"></s:textfield></td>
-	<td>&nbsp;</td>
 </tr>
 </s:if>
 <tr>
@@ -121,7 +120,7 @@
 		<s:else>
 			<span style="color: #272;font-weight: bold;">Upload <s:property value="conAudit.auditFor"/> <s:property value="type"/> Log File(.pdf, .doc, .txt, .xls or .jpg)</span>
 		</s:else></th>
-		<td colspan="3">
+		<td colspan="2">
 		<s:if test="fileUploaded">
 			<a href="DownloadOsha.action?id=<s:property value="id"/>" target="_BLANK">View File</a>
 		</s:if>

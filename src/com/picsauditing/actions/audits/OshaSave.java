@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -93,7 +94,7 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 				addNote(osha.getConAudit().getContractorAccount(), note, 
 					NoteCategory.Audits, LowMedHigh.Low, false, Account.PicsID, getUser());
 			oshaDAO.remove(id);
-			return SUCCESS;
+			return redirectToOsha();
 		}
 
 		if (button.equals("Delete File")) {
@@ -120,7 +121,7 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 			osha.setLocation("Division");
 			osha.setCreationDate(new Date());
 			oshaDAO.save(osha);
-			return SUCCESS;
+			return redirectToOsha();
 		}
 
 		// TODO verify data is saved correctly
@@ -255,5 +256,15 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 		list.add("Incorrect Year");
 		return list;
 	}
-
+	public int getCatID() {
+		if(osha != null) {
+			return OshaTypeConverter.getCategoryFromType(osha.getType());
+		}
+		return 155;
+	}
+	
+	private String redirectToOsha() throws IOException {
+		String url = "Audit.action?auditID="+auditID+"#categoryID="+getCatID();
+		return redirect(url);
+	}
 }
