@@ -261,7 +261,8 @@ public class AuditBuilderController {
 							}
 						} else if (!audit.isExpired() && auditTypeRule.getDependentAuditType() != null
 								&& audit.getAuditType().equals(auditTypeRule.getDependentAuditType())) {
-							if (audit.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus()))
+							if (audit.hasCaoStatus(auditTypeRule.getDependentAuditStatus())
+									|| audit.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus()))
 								valid = true;
 						}
 					}

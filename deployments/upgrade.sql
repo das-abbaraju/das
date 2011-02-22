@@ -5,3 +5,7 @@ update ref_country rc set rc.english = 'South Georgia & Sandwich Islands', rc.sp
 
 alter table `users` add column `locale` varchar(5) DEFAULT 'en' NULL;
 alter table `accounts` add column `locale` varchar(5) DEFAULT 'en' NULL;
+
+
+-- PICS-1961
+update audit_type_rule set dependentAuditStatus = 'Submitted' where id in(2391,31120);
