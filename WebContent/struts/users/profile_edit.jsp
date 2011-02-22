@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Edit Profile</title>
+<title><s:text name="EditProfile.title"></s:text></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
@@ -59,7 +59,7 @@
 
 </head>
 <body>
-<h1>Edit Profile</h1>
+<h1><s:text name="EditProfile.title" /></h1>
 <s:if test="!permissions.contractor">
 <div id="internalnavcontainer">
 <ul id="navlist">
@@ -85,7 +85,46 @@
 <div id="tab_profile">
 <table style="width: 100%">
 	<tr>
-		<td><s:include value="profile_edit_save.jsp" /></td>
+		<td>
+		
+<s:form id="saveProfileForm">
+	<s:hidden name="url"/>
+	<s:hidden name="u.id" />
+	<fieldset class="form">
+	<h2 class="formLegend">Profile</h2>
+	<ol>
+		<li><label>Assigned to account:</label> <s:property value="u.account.name" /></li>
+		<li><label for="u.name">Display name:</label> <s:textfield name="u.name" /></li>
+		<li><label for="u.email">Email address:</label> <s:textfield name="u.email" size="30" /></li>
+		<li><label for="u.phone">Phone:</label> <s:textfield name="u.phone" size="20" /></li>
+		<li><label for="u.fax">Fax:</label> <s:textfield name="u.fax" size="20" /></li>
+		<li><label for="u.locale">Language:</label> <s:select
+			list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
+			name="u.locale" listValue="displayName"></s:select>
+		</li>
+		<li><label for="u.timezone">Timezone:</label> <s:select name="u.timezone"
+			list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" listKey="key" listValue="value"></s:select>
+		</li>
+		<li><label>Profile Created:</label> <s:property value="formatDate(u.creationDate)" /></li>
+	</ol>
+	</fieldset>
+	<fieldset class="form">
+	<h2 class="formLegend">Username &amp; Password</h2>
+	<ol>
+		<li><label for="u.username">Username:</label> <s:textfield name="u.username"
+			onchange="checkUsername(this.value);" />
+		<div id="username_status">&nbsp;</div>
+		</li>
+		<li><label for="password1">Password:</label> <s:password name="password1" value="" /></li>
+		<li><label for="password2">Confirm Password:</label> <s:password name="password2" value="" /></li>
+	</ol>
+	</fieldset>
+	<fieldset class="form submit">
+	<div><input type="submit" class="picsbutton positive" name="button" value="Save Profile" /></div>
+	</fieldset>
+</s:form>
+		
+		</td>
 		<td style="width: 20px;">&nbsp;</td>
 		<td style="vertical-align:top;">
 		
