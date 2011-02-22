@@ -70,7 +70,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		// u = dao.find(permissions.getUserId());
 
 		if (button != null) {
-			if (button.equals("Save Profile")) {
+			if (button.equals("save")) {
 				permissions.tryPermission(OpPerms.EditProfile, OpType.Edit);
 
 				dao.clear();

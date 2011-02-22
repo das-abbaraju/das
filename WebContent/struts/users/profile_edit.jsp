@@ -113,7 +113,8 @@
 		<s:textfield name="password2" label="ProfileEdit.ConfirmPassword" theme="form" />
 	</fieldset>
 	<fieldset class="form submit">
-		<input type="submit" class="picsbutton positive" name="button"  value="<s:text name="button.Save" />">
+		<input type="hidden" name="button" value="save">
+		<input type="submit" class="picsbutton positive" value="<s:text name="button.Save" />">
 	</fieldset>
 </s:form>
 		
@@ -136,7 +137,12 @@
 				<td><s:date name="loginDate"/></td>
 				<td><s:property value="remoteAddress"/></td>
 				<td>
-					<s:if test="admin.id > 0">Login by <s:property value="admin.name"/> from <s:property value="admin.account.name"/></s:if>
+					<s:if test="admin.id > 0">
+						<s:text name="Login.LoginBy">
+							<s:param value="admin.name" />
+							<s:param value="admin.account.name" />
+						</s:text>
+					</s:if>
 					<s:if test="successful == 'N'">Incorrect password attempt</s:if>
 				</td>
 			</tr>
