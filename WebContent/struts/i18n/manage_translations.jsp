@@ -120,7 +120,12 @@ span.view {
 	</s:iterator>
 </table>
 
-<button onclick="translateAll()">Suggest Translations</button>
+<s:form>
+<input type="hidden" name="translation.locale" value="<s:property value="localeFrom"/>">
+Add New Key <input type="text" name="translation.key"> for <s:property value="localeFrom.displayName"/><br />
+<s:textarea name="translation.value" cols="50"></s:textarea><br />
+<button name="button" class="save" value="save">Save</button>
+</s:form>
 
 </body>
 </html>

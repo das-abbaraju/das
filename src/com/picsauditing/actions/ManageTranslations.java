@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -37,26 +38,33 @@ public class ManageTranslations extends PicsActionSupport {
 		permissions.tryPermission(OpPerms.Translator);
 
 		if (button != null) {
-			if (button.equalsIgnoreCase("save") && translation != null) {
+			if (button.toLowerCase().contains("save") && translation != null) {
 				JSONObject out = new JSONObject();
 
 				try {
 					if (translation.getId() > 0 && Strings.isEmpty(translation.getValue())) {
 						dao.deleteData(AppTranslation.class, "id = " + translation.getId());
 					} else {
+						if (Strings.isEmpty(translation.getKey())) {
+							addActionError("Missing Translation Key");
+							throw new Exception("Missing Translation Key");
+						}
 						translation.setAuditColumns(permissions);
 						dao.save(translation);
 						out.put("id", translation.getId());
 					}
+					I18nCache.getInstance().clear();
 
 					out.put("success", true);
 				} catch (Exception e) {
 					out.put("success", false);
 					out.put("reason", e.getMessage());
 				}
-
-				output = out.toJSONString();
-				return BLANK;
+				
+				if (getRequestURL().toLowerCase().contains("ajax")) {
+					output = out.toJSONString();
+					return BLANK;
+				}
 			}
 		}
 
