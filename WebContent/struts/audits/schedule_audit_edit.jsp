@@ -37,11 +37,11 @@ div#needsReschedulingFee {
 var map;
 $(function() {
 	<s:if test="needsReschedulingFee">
-		$("#scheduledDateDay").click(function() {
+		$("#scheduledDateTime,#scheduledDateDay").click(function() {
 			$('#needsReschedulingFee').slideDown();
 			$('#scheduledDateTime').attr('disabled', true);
 			$('#scheduledDateDay').attr('disabled', true);
-			$('#scheduledDateDay').unbind('click');
+			$('#scheduledDateTime,#scheduledDateDay').unbind('click');
 		});
 	</s:if>
 	<s:else>
@@ -91,9 +91,9 @@ $(function(){
 function showChooseDate(override) {
 	if (override) {
 		$('input[name=feeOverride]').val(true);
-		$('#needsReschedulingFee').text("This contractor will NOT be charged the rescheduling fee.");
+		$('#needsReschedulingFee').text("This contractor will NOT be charged the rescheduling fee if the audit date and time is changed.");
 	} else
-		$('#needsReschedulingFee').text("This contractor will be charged the rescheduling fee.");
+		$('#needsReschedulingFee').text("This contractor will be charged the rescheduling fee if the audit date and time is changed.");
 
 	$('#scheduledDateDay').attr('disabled', false);
 	$('#scheduledDateTime').attr('disabled', false);
@@ -125,7 +125,7 @@ function showChooseDate(override) {
 			<input type="hidden" name="feeOverride" value="false" />
 			<div id="needsReschedulingFee" class="alert">
 				This audit is scheduled to be conducted within 48 hours.
-				If the scheduled date is changed, the contractor will be charged a $199 rescheduling fee.<br />
+				If the scheduled date is changed, the contractor will be charged a $<s:property value="rescheduling.amount" /> rescheduling fee.<br />
 				<input type="button" onclick="showChooseDate(); return false;" value="Continue" class="picsbutton positive" />
 				<s:if test="permissions.userId == 1029 || permissions.userId == 935 || permissions.userId == 11503 || permissions.userId == 9615">
 					<!-- This option is available for Mina, Harvey, Gary, and Rick only -->

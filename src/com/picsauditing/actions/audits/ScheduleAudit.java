@@ -66,6 +66,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private UserAccessDAO uaDAO;
 
 	private User auditor = null;
+	private InvoiceFee rescheduling;
+	private InvoiceFee expedite;
 
 	public ScheduleAudit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, CertificateDAO certificateDao, AuditorAvailabilityDAO auditorAvailabilityDAO,
@@ -102,6 +104,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 
 		subHeading = "Schedule " + conAudit.getAuditType().getAuditName();
+
+		rescheduling = feeDAO.find(InvoiceFee.RESCHEDULING);
+		expedite = feeDAO.find(InvoiceFee.EXPEDITE);
 
 		if (permissions.isAdmin() && "edit".equals(button)) {
 			if (conAudit.getScheduledDate() != null && conAudit.getScheduledDate().before(new Date()))
@@ -152,17 +157,16 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			}
 			Date scheduledDateInServerTime = DateBean.convertTime(scheduledDateInUserTime, permissions.getTimezone());
 
-			if (!DateBean.toDBFormat(scheduledDateInServerTime)
-					.equals(DateBean.toDBFormat(conAudit.getScheduledDate()))) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss z");
+			if (!sdf.format(scheduledDateInServerTime).equals(sdf.format(conAudit.getScheduledDate()))) {
 				if (isNeedsReschedulingFee() && !feeOverride) {
 					// Create invoice
-					InvoiceFee fee = feeDAO.find(InvoiceFee.RESCHEDULING);
 					String notes = "Fee for rescheduling " + conAudit.getAuditType().getAuditName()
 							+ " within 48 hours of original scheduled date "
 							+ DateBean.format(conAudit.getScheduledDate(), "MMM dd, yyyy") + " to "
 							+ DateBean.format(scheduledDateInServerTime, "MMM dd, yyyy");
 
-					createInvoice(fee, notes);
+					createInvoice(rescheduling, notes);
 				}
 
 				conAudit.setScheduledDate(scheduledDateInServerTime);
@@ -265,11 +269,10 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			addActionMessage("Congratulations, your audit is now scheduled. You should receive a confirmation email for your records.");
 
 			if (needsExpediteFee) {
-				InvoiceFee fee = feeDAO.find(InvoiceFee.EXPEDITE);
 				String notes = conAudit.getAuditType().getAuditName()
 						+ " was scheduled within 7 business days, requiring an expedite fee.";
 
-				createInvoice(fee, notes);
+				createInvoice(expedite, notes);
 
 				if (conAudit.isNeedsCamera()) {
 					List<UserAccess> webcamUsers = uaDAO.findByOpPerm(OpPerms.ManageWebcam);
@@ -363,6 +366,22 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	public void setScheduledDateTime(String scheduledDateTime) {
 		this.scheduledDateTime = scheduledDateTime;
+	}
+
+	public InvoiceFee getRescheduling() {
+		return rescheduling;
+	}
+
+	public void setRescheduling(InvoiceFee rescheduling) {
+		this.rescheduling = rescheduling;
+	}
+
+	public InvoiceFee getExpedite() {
+		return expedite;
+	}
+
+	public void setExpedite(InvoiceFee expedite) {
+		this.expedite = expedite;
 	}
 
 	public Date getLastCancellationTime() {
@@ -482,14 +501,15 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			compare.set(Calendar.HOUR_OF_DAY, 0);
 			compare.set(Calendar.MINUTE, 0);
 			compare.set(Calendar.SECOND, 0);
-
+			
+			cal.set(Calendar.ZONE_OFFSET, compare.get(Calendar.ZONE_OFFSET));
 			return compare.getTime().after(cal.getTime()) && DateBean.getDateDifference(compare.getTime()) < 9;
 		}
 
 		return false;
 	}
 
-	private void createInvoice(InvoiceFee fee, String notes) {
+	private void createInvoice(InvoiceFee fee, String notes) throws Exception {
 		Invoice invoice = new Invoice();
 		invoice.setAccount(contractor);
 		invoice.setCurrency(contractor.getCurrency());
@@ -510,6 +530,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		contractor.getInvoices().add(invoice);
 		contractor.syncBalance();
 		accountDao.save(contractor);
+
+		addNote(contractor, notes, NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType()
+				.getAccount()));
 	}
 
 	private void sendConfirmationEmail(String summary) throws Exception {
