@@ -29,6 +29,23 @@ $(function() {
 	$('.datepicker').datepicker();
 });
 
+function checkFee(activationFee, oldValue) {
+	 var ValidChars = "0123456789";
+	   var IsNumber=true;
+	   var Char;
+	   for (i = 0; i < activationFee.length && IsNumber == true; i++) 
+	      { 
+	      Char = activationFee.charAt(i); 
+	      if (ValidChars.indexOf(Char) == -1) 
+	         {
+	         IsNumber = false;
+	         }
+	      }
+	    if(!IsNumber) {
+		    alert("Please enter a number");
+		    $('#opActivationFee').val(oldValue);
+	    }   
+}
 </script>
 </head>
 <body>
@@ -303,13 +320,13 @@ $(function() {
 					</p>
 				</s:if>
 				<pics:permission perm="UserRolePicsOperator">
-					$ <s:textfield name="operator.activationFee" />
+					$ <s:textfield id="opActivationFee" name="operator.activationFee" onchange="checkFee(this.value,%{operator.activationFee})"/>
 				</pics:permission>
 				<pics:permission perm="UserRolePicsOperator" negativeCheck="true">
 					$ <s:property value="operator.activationFee" />
 				</pics:permission>
 				<pics:fieldhelp title="Contractor Activation Fee">
-					<p>The default Activation Fee that contractors are charged when selecting this operator as their primary requesting account. Leave blank to use the default (currently $199).</p>
+					<p>The default Activation Fee that contractors are charged when selecting this operator as their primary requesting account. Leave blank to use the default (currently $199). The valid range is 0 to 199 </p>
 				</pics:fieldhelp>
 			</li>
 		</ol>

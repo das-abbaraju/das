@@ -163,6 +163,10 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				Vector<String> errors = validateAccount(operator);
 				if (errors.size() > 0) {
 					operatorDao.clear();
+					operator = operatorDao.find(id);
+					for (Facility fac : operator.getOperatorFacilities()) {
+						facilities.add(fac.getOperator().getId());
+					}
 					for (String error : errors)
 						addActionError(error);
 					return SUCCESS;
@@ -369,6 +373,11 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		if (operator.getCountry() == null) {
 			errorMessages.addElement("Please select a country");
 		}
+		
+		if(operator.getActivationFee() != null && operator.getActivationFee() > 200) {
+			errorMessages.addElement("Please enter a valid range of 0 to 199 for Activation fee");
+		}
+		
 		return errorMessages;
 	}
 
