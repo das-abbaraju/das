@@ -30,7 +30,7 @@ $(function() {
 		formatResult: function(data,i,count) {
 			return data[0];
 		},
-		max			: 50
+		max	: 50
 	}).result(function(event, data) {
 		$('#operator_display').html("<a target='_BLANK' href=\"OperatorConfiguration.action?id=" + data[0] + "\">" + data[1] + " Configuration</a>");
 		$.getJSON('OperatorTagAutocomplete.action',{'q': data[0]},
