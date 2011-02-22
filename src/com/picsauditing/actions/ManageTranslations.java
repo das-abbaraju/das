@@ -65,6 +65,7 @@ public class ManageTranslations extends PicsActionSupport {
 					output = out.toJSONString();
 					return BLANK;
 				}
+				key = translation.getKey().substring(0, translation.getKey().indexOf("."));
 			}
 		}
 

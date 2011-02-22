@@ -13,11 +13,20 @@
 <script type="text/javascript">
 $(function(){
 	$('table.report .showEdit').click(function() {
-		//$("body").translate('ru');
 		$(this).closest("td").addClass("editMode");
 		return false;
 	});
-	
+
+	$('table.report .suggestTranslation').click(function() {
+		// http://code.google.com/p/jquery-translate/
+		var textarea = $(this).closest("td").find("textarea");
+		$(textarea).val( $(this).closest("td").prev().find("textarea").val() );
+		$(textarea).translate('<s:property value="localeFrom"/>', '<s:property value="localeTo"/>');
+		$(this).closest("td").addClass("editMode");
+		$(this).hide();
+		return false;
+	});
+
 	$('table.report button.cancel').click(function() {
 		$(this).closest("td").removeClass("editMode");
 	});
@@ -27,7 +36,6 @@ $(function(){
 		that.addClass("saving");
 		
 		var params = $(this).closest("form").serialize();
-		
 		
 		$.post('ManageTranslationsAjax.action', params, function(result) {
 			if (result.success) {
@@ -41,10 +49,6 @@ $(function(){
 		}, "json");
 	});
 });
-
-function translateAll() {
-	$("body").translate('hi');
-}
 
 </script>
 <style type="text/css">
@@ -101,6 +105,7 @@ span.view {
 						<s:if test="!(id > 0)">
 							<input type="hidden" name="translation.locale" value="<s:property value="localeTo"/>">
 							<input type="hidden" name="translation.key" value="<s:property value="from.key"/>">
+							<a href="#" class="view suggestTranslation">Suggest</a>
 						</s:if>
 						<input type="hidden" name="button" value="save">
 						<a href="#" class="showEdit view">Edit</a>
@@ -122,7 +127,7 @@ span.view {
 
 <s:form>
 <input type="hidden" name="translation.locale" value="<s:property value="localeFrom"/>">
-Add New Key <input type="text" name="translation.key"> for <s:property value="localeFrom.displayName"/><br />
+Add New Key <s:textfield name="translation.key" /> for <s:property value="localeFrom.displayName"/><br />
 <s:textarea name="translation.value" cols="50"></s:textarea><br />
 <button name="button" class="save" value="save">Save</button>
 </s:form>
