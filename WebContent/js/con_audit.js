@@ -1,8 +1,7 @@
 var lastState, ucTimeout, catXHR, ucXHR;
-$(function(){
-	
+$(function(){	
 	// AJAX HISTORY
-
+	$('.inner-answer :input').fieldfocus();
 	$('a.hist-category, a.modeset').live('click', function() {
 		$.bbq.pushState(this.href);
 		$.bbq.removeState('onlyReq');
