@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:text name="EditProfile.title"></s:text></title>
+<title><s:text name="ProfileEdit.title"></s:text></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
@@ -59,7 +59,7 @@
 
 </head>
 <body>
-<h1><s:text name="EditProfile.title" /></h1>
+<h1><s:text name="ProfileEdit.title" /></h1>
 <s:if test="!permissions.contractor">
 <div id="internalnavcontainer">
 <ul id="navlist">
@@ -91,36 +91,29 @@
 	<s:hidden name="url"/>
 	<s:hidden name="u.id" />
 	<fieldset class="form">
-	<h2 class="formLegend">Profile</h2>
+	<h2 class="formLegend"><s:text name="ProfileEdit.Profile.heading" /></h2>
 	<ol>
 		<li><label>Assigned to account:</label> <s:property value="u.account.name" /></li>
-		<li><label for="u.name">Display name:</label> <s:textfield name="u.name" /></li>
-		<li><label for="u.email">Email address:</label> <s:textfield name="u.email" size="30" /></li>
-		<li><label for="u.phone">Phone:</label> <s:textfield name="u.phone" size="20" /></li>
-		<li><label for="u.fax">Fax:</label> <s:textfield name="u.fax" size="20" /></li>
-		<li><label for="u.locale">Language:</label> <s:select
-			list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
-			name="u.locale" listValue="displayName"></s:select>
-		</li>
-		<li><label for="u.timezone">Timezone:</label> <s:select name="u.timezone"
-			list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" listKey="key" listValue="value"></s:select>
-		</li>
-		<li><label>Profile Created:</label> <s:property value="formatDate(u.creationDate)" /></li>
+		<s:textfield name="u.name" theme="form" />
+		<s:textfield name="u.email" theme="form" />
+		<s:textfield name="u.phone" theme="form" />
+		<s:textfield name="u.fax" theme="form" />
+		<s:select name="u.locale" listValue="displayName" theme="form"
+			list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
+		<s:select name="u.timezone" listKey="key" listValue="value" theme="form"
+			list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" />
+		<li><label><s:text name="global.CreationDate" />:</label> <s:date name="u.creationDate"/></li>
 	</ol>
 	</fieldset>
 	<fieldset class="form">
-	<h2 class="formLegend">Username &amp; Password</h2>
-	<ol>
-		<li><label for="u.username">Username:</label> <s:textfield name="u.username"
-			onchange="checkUsername(this.value);" />
-		<div id="username_status">&nbsp;</div>
-		</li>
-		<li><label for="password1">Password:</label> <s:password name="password1" value="" /></li>
-		<li><label for="password2">Confirm Password:</label> <s:password name="password2" value="" /></li>
-	</ol>
+		<h2 class="formLegend"><s:text name="ProfileEdit.UsernameAndPassword.heading" /></h2>
+		<s:textfield name="u.username" label="global.Username" theme="form" onchange="checkUsername(this.value);" />
+		<div id="username_status"></div>
+		<s:textfield name="password1" label="global.Password" theme="form" />
+		<s:textfield name="password2" label="ProfileEdit.ConfirmPassword" theme="form" />
 	</fieldset>
 	<fieldset class="form submit">
-	<div><input type="submit" class="picsbutton positive" name="button" value="Save Profile" /></div>
+		<input type="submit" class="picsbutton positive" name="button"  value="<s:text name="button.Save" />">
 	</fieldset>
 </s:form>
 		
@@ -128,13 +121,13 @@
 		<td style="width: 20px;">&nbsp;</td>
 		<td style="vertical-align:top;">
 		
-		<h3>Recent Logins</h3>
+		<h3><s:text name="ProfileEdit.RecentLogins" /></h3>
 		<table class="report" style="position: static;">
 		<thead>
 			<tr>
-				<th>Login Date/Time</th>
-				<th>IP Address</th>
-				<th>Notes</th>
+				<th><s:text name="Login.LoginDate" /></th>
+				<th><s:text name="Login.IPAddress" /></th>
+				<th><s:text name="global.Notes" /></th>
 			</tr>
 		</thead>
 		<tbody>
