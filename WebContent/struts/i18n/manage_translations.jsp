@@ -113,7 +113,7 @@ span.view {
 							<s:property value="value"/>
 						</span>
 						<div class="edit">
-							<s:textarea name="translation.value" value="%{value}" cols="50"></s:textarea>
+							<s:textarea name="translation.value" value="%{value}" cssStyle="width: 90%"></s:textarea>
 							<br/>
 							<button name="button" class="save">Save</button>
 							<button class="cancel">Cancel</button>

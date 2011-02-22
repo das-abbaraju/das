@@ -198,8 +198,19 @@ function loadStatus(caoID){
 
 <s:set name="auditMenu" value="auditMenu"></s:set>
 
-<h1><s:property value="contractor.name" /><span class="sub">
+<h1><s:property value="contractor.name" />
+<span class="sub">
+<s:if test="subHeading.length() > 0">
+	<s:property value="subHeading" escape="false" />
+</s:if>
+<s:elseif test="auditID > 0">
+	<s:property value="conAudit.auditType.auditName" />
+	<s:if test="conAudit.auditFor != null && conAudit.auditFor.length() > 0">for <s:property value="conAudit.auditFor"/></s:if>
+	<s:elseif test="!conAudit.auditType.pqf">- <s:date name="conAudit.effectiveDateLabel" format="MMM yyyy" /></s:elseif>
+</s:elseif>
+</span>
 </h1>
+
 <s:if test="showHeader">
 <s:hidden name="auditID" id="auditID" />
 <div id="internalnavcontainer">
@@ -207,13 +218,13 @@ function loadStatus(caoID){
 	<s:if test="!permissions.insuranceOnlyContractorUser">
 		<li>
 			<a class="dropdown" href="ContractorView.action?id=<s:property value="id" />" 
-				onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">Account Details</a>
+				onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')"><s:text name="ContractorView.title" /></a>
 		</li>
 	</s:if>
 	<s:else>
 		<li>
 			<a class="dropdown" href="Home.action"
-				onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">Account Details</a>
+				onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')"><s:text name="ContractorView.title" /></a>
 		</li>
 	</s:else>
 
@@ -247,7 +258,7 @@ function loadStatus(caoID){
 	<div id="fieldsHead" style="width: 95%; margin-left: auto; margin-right:auto;">
 		<fieldset>
 		<ul>
-			<li><label>ID:</label>
+			<li><label><s:text name="form.id" />:</label>
 				 <s:property value="conAudit.id" />
 			</li>
 			<s:if test="conAudit.auditType.scoreable">

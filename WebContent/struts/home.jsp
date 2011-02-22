@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Home</title>
+<title><s:text name="global.Home" /></title>
 <s:include value="jquery.jsp"/>
 <script src="js/FusionCharts.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
@@ -29,7 +29,7 @@ function showPanel(panel) {
 	<s:include value="contractors/conHeader.jsp" />
 </s:if>
 <s:elseif test="!permissions.admin">
-	<h1>Welcome to PICS Organizer<span class="sub"><s:property value="account.name" /></span></h1>
+	<h1><s:text name="Home.Welcome" /><span class="sub"><s:property value="account.name" /></span></h1>
 </s:elseif>
 <s:if test="permissions.admin && permissions.shadowedUserID != permissions.userId">
 	<div class="info">You are viewing <s:property value="permissions.shadowedUserName" />'s Dashboard</div>
@@ -44,7 +44,7 @@ function showPanel(panel) {
 					<s:if test="!synchronous">
 						<a href="#" onclick="<s:property value="reload" escape="false" />; return false;" style="float: right"><img src="images/arrow-360.png" /></a>
 					</s:if>
-					<s:property value="caption" escape="false" />
+					<s:text name="%{'Widget.' + widgetID + '.caption'}" />
 					<pics:permission perm="DevelopmentEnvironment">
 						<a href="<s:property value="url"/>" target="_BLANK">URL</a>
 					</pics:permission>

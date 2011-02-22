@@ -111,6 +111,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 				ActionContext.getContext().getSession().put("permissions", permissions);
 				u = dao.save(u);
 				indexer.runSingle(u, "users");
+				permissions.setLocale(u.getLocale());
 
 				addActionMessage("Your profile was saved successfully");
 			}
