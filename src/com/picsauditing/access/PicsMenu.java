@@ -184,7 +184,7 @@ public class PicsMenu {
 		}
 
 		if (permissions.hasPermission(OpPerms.ManageWebcam)) {
-			subMenu.addChild("Manage Webcams", "ManageWebcams.action");
+			subMenu.addChild("Manage Webcams", "ManageWebcams.action?button=out");
 			subMenu.addChild("Assign Webcams", "AssignWebcams.action");
 		}
 		if (permissions.hasPermission(OpPerms.AuditVerification))
