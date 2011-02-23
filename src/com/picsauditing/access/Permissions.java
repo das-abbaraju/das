@@ -531,4 +531,19 @@ public class Permissions implements Serializable {
 		
 		return false;
 	}
+
+	/**
+	 * Translators need the ability to switch accounts and retain the ability to do translations
+	 */
+	public void setTranslatorOn() {
+		UserAccess ua = new UserAccess();
+		ua.setOpPerm(OpPerms.Translator);
+		ua.setUser(new User(getUserId()));
+		ua.setViewFlag(true);
+		ua.setEditFlag(true);
+		ua.setDeleteFlag(true);
+		ua.setGrantFlag(false);
+		
+		this.permissions.add(ua);
+	}
 }

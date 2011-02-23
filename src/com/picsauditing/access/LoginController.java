@@ -128,8 +128,12 @@ public class LoginController extends PicsActionSupport {
 				if (permissions.getUserId() != switchToUser)
 					adminID = permissions.getUserId();
 
+				boolean translator = (adminID > 0 && permissions.hasPermission(OpPerms.Translator));
+				
 				permissions.login(user);
 				permissions.setAdminID(adminID);
+				if (translator)
+					permissions.setTranslatorOn();
 				password = "switchUser";
 			} else {
 				// TODO Verify the user has access to login
