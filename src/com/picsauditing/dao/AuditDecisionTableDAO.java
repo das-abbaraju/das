@@ -413,6 +413,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 		Set<Integer> operatorIDs = new HashSet<Integer>();
 		if (operator.isCorporate()) {
+			operatorIDs.add(operator.getId());
 			for (Facility facility : operator.getOperatorFacilities()) {
 				operatorIDs.addAll(facility.getOperator().getOperatorHeirarchy());
 			}
