@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:text name="ProfileEdit.title"></s:text></title>
+<title><s:text name="%{scope}.title"></s:text></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
@@ -59,7 +59,7 @@
 
 </head>
 <body>
-<h1><s:text name="ProfileEdit.title" /></h1>
+<h1><s:text name="%{scope}.title" /></h1>
 <s:if test="!permissions.contractor">
 <div id="internalnavcontainer">
 <ul id="navlist">
@@ -91,9 +91,9 @@
 	<s:hidden name="url"/>
 	<s:hidden name="u.id" />
 	<fieldset class="form">
-	<h2 class="formLegend"><s:text name="ProfileEdit.Profile.heading" /></h2>
+	<h2 class="formLegend"><s:text name="%{scope}.Profile.heading" /></h2>
 	<ol>
-		<li><label>Assigned to account:</label> <s:property value="u.account.name" /></li>
+		<li><label><s:text name="%{scope}.AssignedToAccount"></s:text>:</label> <s:property value="u.account.name" /></li>
 		<s:textfield name="u.name" theme="form" />
 		<s:textfield name="u.email" theme="form" />
 		<s:textfield name="u.phone" theme="form" />
@@ -106,11 +106,11 @@
 	</ol>
 	</fieldset>
 	<fieldset class="form">
-		<h2 class="formLegend"><s:text name="ProfileEdit.UsernameAndPassword.heading" /></h2>
+		<h2 class="formLegend"><s:text name="%{scope}.UsernameAndPassword.heading" /></h2>
 		<s:textfield name="u.username" label="global.Username" theme="form" onchange="checkUsername(this.value);" />
 		<div id="username_status"></div>
 		<s:textfield name="password1" label="global.Password" theme="form" />
-		<s:textfield name="password2" label="ProfileEdit.ConfirmPassword" theme="form" />
+		<s:textfield name="password2" label="%{scope}.ConfirmPassword" theme="form" />
 	</fieldset>
 	<fieldset class="form submit">
 		<input type="hidden" name="button" value="save">
@@ -122,7 +122,7 @@
 		<td style="width: 20px;">&nbsp;</td>
 		<td style="vertical-align:top;">
 		
-		<h3><s:text name="ProfileEdit.RecentLogins" /></h3>
+		<h3><s:text name="%{scope}.RecentLogins" /></h3>
 		<table class="report" style="position: static;">
 		<thead>
 			<tr>
@@ -249,5 +249,6 @@ $(function() {
 	</s:iterator>
 </div>
 </s:if>
+
 </body>
 </html>
