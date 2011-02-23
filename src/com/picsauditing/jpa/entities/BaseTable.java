@@ -54,6 +54,21 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
 		this.id = id;
 	}
 
+	@Transient
+	public String getI18nKey() {
+		return getClass().getSimpleName() + "." + id;
+	}
+	
+	/**
+	 * Example AuditType.1.name or AuditQuestion.123.requirement
+	 * @param property
+	 * @return
+	 */
+	@Transient
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
+	}
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "createdBy", nullable = true)
 	public User getCreatedBy() {

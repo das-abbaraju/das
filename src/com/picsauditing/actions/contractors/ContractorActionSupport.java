@@ -15,7 +15,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -140,13 +139,13 @@ public class ContractorActionSupport extends AccountActionSupport {
 				ContractorAudit audit = pqfs.get(0);
 				if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 					String url = "Audit.action?auditID=";
-					MenuComponent menuComponent = new MenuComponent(audit.getAuditType().getAuditName(), url
+					MenuComponent menuComponent = new MenuComponent(getText("AuditType." + audit.getAuditType().getId() + ".name"), url
 							+ audit.getId());
 					menuComponent.setAuditId(audit.getId());
 					menu.add(menuComponent);
 				}
 			} else if (pqfs.size() > 1) {
-				MenuComponent subMenu = new MenuComponent("PQF", "ContractorDocuments.action?id=" + id + "#PQF");
+				MenuComponent subMenu = new MenuComponent(getText("AuditType.1.name"), "ContractorDocuments.action?id=" + id + "#PQF");
 				menu.add(subMenu);
 				for (ContractorAudit audit : pqfs) {
 					// at least one cao needs to be created for the contractor
@@ -160,7 +159,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add the Annual Updates
-			MenuComponent subMenu = new MenuComponent("Annual Update", "ContractorDocuments.action?id=" + id + "#AU");
+			MenuComponent subMenu = new MenuComponent(getText("AuditType.11.name"), "ContractorDocuments.action?id=" + id + "#AU");
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
@@ -186,7 +185,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (isRequiresInsurance()
 				&& (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorInsurance))) {
 			// Add InsureGUARD
-			MenuComponent subMenu = new MenuComponent("InsureGUARD&trade;", "ContractorDocuments.action?id=" + id
+			MenuComponent subMenu = new MenuComponent(getText("global.InsureGUARD"), "ContractorDocuments.action?id=" + id
 					+ "#Policy");
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
@@ -196,7 +195,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
 						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
-						String linkText = audit.getAuditType().getAuditName() + " '" + year;
+						String linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
 						childMenu.setName(linkText);
 						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
 					}
@@ -222,27 +221,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM) && audit.getOperators().size() > 0) {
 					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
-						String linkText = audit.getAuditType().getAuditName()
-								+ (audit.getAuditFor() == null ? "" : " " + audit.getAuditFor());
-						childMenu.setName(linkText);
-					}
-					iter.remove();
-				}
-			}
-			addSubMenu(menu, subMenu);
-		}
-
-		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
-			// Add COR/SECOR
-			MenuComponent subMenu = new MenuComponent("COR/SECOR", "ContractorDocuments.action?id=" + id + "#COR");
-			Iterator<ContractorAudit> iter = auditList.iterator();
-			while (iter.hasNext()) {
-				ContractorAudit audit = iter.next();
-				if ((audit.getAuditType().getId() == AuditType.COR || audit.getAuditType().getId() == AuditType.SUPPLEMENTCOR)
-						&& audit.getOperators().size() > 0) {
-					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
-						MenuComponent childMenu = createMenuItem(subMenu, audit);
-						String linkText = audit.getAuditType().getAuditName()
+						String linkText = getText(audit.getAuditType().getI18nKey("name"))
 								+ (audit.getAuditFor() == null ? "" : " " + audit.getAuditFor());
 						childMenu.setName(linkText);
 					}
@@ -254,14 +233,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
 			// All Other Audits
-			MenuComponent subMenu = new MenuComponent("Audits", "ContractorDocuments.action?id=" + id + "#Audit");
+			MenuComponent subMenu = new MenuComponent(getText("global.AuditGUARD"), "ContractorDocuments.action?id=" + id);
 			for (ContractorAudit audit : auditList) {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit)) {
 					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
 
 						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
-						String linkText = audit.getAuditType().getAuditName() + " '" + year;
+						String linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
 						if (!Strings.isEmpty(audit.getAuditFor()))
 							linkText = audit.getAuditFor() + " " + linkText;
 						childMenu.setName(linkText);
@@ -284,7 +263,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	private MenuComponent createMenuItem(MenuComponent subMenu, ContractorAudit audit) {
-		String linkText = audit.getAuditType().getAuditName();
+		String linkText = getText(audit.getAuditType().getI18nKey("name"));
 
 		MenuComponent menuItem = subMenu.addChild(linkText, "Audit.action?auditID=" + audit.getId());
 		menuItem.setAuditId(audit.getId());

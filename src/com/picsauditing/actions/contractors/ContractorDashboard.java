@@ -30,7 +30,6 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagDataDAO;
-import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
@@ -69,7 +68,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private FlagDataDAO flagDataDAO;
 	private OperatorTagDAO operatorTagDAO;
 	private ContractorTagDAO contractorTagDAO;
-	private InvoiceItemDAO invoiceItemDAO;
 	private UserDAO userDAO;
 	private NaicsDAO naicsDAO;
 	private FlagCriteriaContractorDAO flagCriteriaContractorDAO;
@@ -101,7 +99,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public ContractorDashboard(AuditBuilderController auditBuilder, ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO,
 			FlagDataDAO flagDataDAO, OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO,
-			InvoiceItemDAO invoiceItemDAO, UserDAO userDAO, NaicsDAO naicsDAO, AuditTypeRuleCache auditTypeRuleCache,
+			UserDAO userDAO, NaicsDAO naicsDAO, AuditTypeRuleCache auditTypeRuleCache,
 			AuditPercentCalculator auditPercentCalculator, FlagCriteriaContractorDAO flagCriteriaContractorDAO) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
@@ -110,11 +108,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 		this.flagDataDAO = flagDataDAO;
 		this.operatorTagDAO = operatorTagDAO;
 		this.contractorTagDAO = contractorTagDAO;
-		this.invoiceItemDAO = invoiceItemDAO;
 		this.flagCriteriaContractorDAO = flagCriteriaContractorDAO;
 		this.userDAO = userDAO;
 		this.naicsDAO = naicsDAO;
-		this.subHeading = "Account Summary";
 		this.auditTypeRuleCache = auditTypeRuleCache;
 		this.auditPercentCalculator = auditPercentCalculator;
 	}
@@ -124,6 +120,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN_AJAX;
 
+		this.subHeading = getText("ContractorView.title");
 		findContractor();
 
 		if (permissions.isOperatorCorporate()

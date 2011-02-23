@@ -1,9 +1,9 @@
+<%@ page language="java" errorPage="/exception_handler.jsp" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="/exception_handler.jsp" pageEncoding="UTF-8"%>
 <html>
 <head>
-<title><s:property value="conAudit.auditType.auditName" /> for
+<title><s:text name="conAudit.auditType.getI18nKey('name')" /> for
 <s:property value="conAudit.contractorAccount.name" /></title>
 <meta name="help" content="<s:property value="conAudit.auditType.classType"/>">
 

@@ -204,7 +204,7 @@ function loadStatus(caoID){
 	<s:property value="subHeading" escape="false" />
 </s:if>
 <s:elseif test="auditID > 0">
-	<s:property value="conAudit.auditType.auditName" />
+	<s:text name="%{'AuditType.' + conAudit.auditType.id + '.name'}" />
 	<s:if test="conAudit.auditFor != null && conAudit.auditFor.length() > 0">for <s:property value="conAudit.auditFor"/></s:if>
 	<s:elseif test="!conAudit.auditType.pqf">- <s:date name="conAudit.effectiveDateLabel" format="MMM yyyy" /></s:elseif>
 </s:elseif>
@@ -213,6 +213,7 @@ function loadStatus(caoID){
 
 <s:if test="showHeader">
 <s:hidden name="auditID" id="auditID" />
+
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<s:if test="!permissions.insuranceOnlyContractorUser">
