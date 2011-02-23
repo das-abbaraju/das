@@ -9,8 +9,6 @@ import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
-import com.opensymphony.xwork2.util.LocalizedTextUtil;
-import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.search.Database;
 
 public class I18nCache {
