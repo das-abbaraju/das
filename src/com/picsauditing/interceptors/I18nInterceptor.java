@@ -19,7 +19,7 @@ public class I18nInterceptor extends com.opensymphony.xwork2.interceptor.I18nInt
 
 		if (permissions != null) {
 			Locale locale = permissions.getLocale();
-			invocation.getInvocationContext().setLocale(locale);
+			saveLocale(invocation, locale);
 			result = invocation.invoke();
 		} else {
 			result = super.intercept(invocation);
