@@ -1,12 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+<%@ page language="java" %>
 <%@page import="java.net.InetAddress"%>
 <%@page import="com.picsauditing.dao.AppPropertyDAO"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page import="com.picsauditing.jpa.entities.AppProperty"%>
 <%@page import="com.picsauditing.util.Strings"%>
-<%@ page language="java" %>
+<%@page import="java.util.Set"%>
 <%@ page import="com.picsauditing.access.MenuComponent"%>
 <%@ page import="com.picsauditing.access.PicsMenu"%>
 <%@ page import="com.picsauditing.access.OpPerms"%>
@@ -342,6 +344,19 @@ Copyright &copy; 2011
 <a href="Contact.action" class="footer">Contact Us</a> |
 <a href="#" onclick="return openWindow('privacy_policy.jsp','PRIVACY');"
 	title="Opens in new window" class="footer">Privacy Policy</a>
+<%
+if (permissions.hasPermission(OpPerms.Translator)) {
+	Set<String> usedKeys = (Set<String>)session.getAttribute("usedI18nKeys");
+	if (usedKeys != null) {
+		String keyParams = "";
+		for(String key : usedKeys) {
+			keyParams += "&key=" + URLEncoder.encode(key);
+		}
+		%>| <a class="footer" href="ManageTranslations.action?button=search<%=keyParams%>">Translate</a><%
+	}
+}
+%>
+
 </div>
 </div>
 </div>
