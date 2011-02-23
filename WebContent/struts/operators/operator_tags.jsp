@@ -84,7 +84,7 @@ function showCategoryRules() {
 					<td class="center"><s:if test="visibleToContractor">Yes</s:if><s:else>No</s:else></td>
 				</s:else>
 				<pics:permission perm="ContractorTags" type="Delete">
-					<s:if test="#globalOperator.corporate">
+					<s:if test="#globalOperator.corporate && operator.id != permissions.accountId">
 						<s:if test="operator.id != permissions.accountId">
 							<td><s:checkbox name="tags[%{#rowstatus.index}].inheritable" value="%{inheritable}" disabled="true"/></td>
 						</s:if>
