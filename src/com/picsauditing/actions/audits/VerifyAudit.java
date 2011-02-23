@@ -137,13 +137,15 @@ public class VerifyAudit extends AuditActionSupport {
 		if (caos == null) {
 			allCaoIDs = new ArrayList<Integer>();
 			caos = new HashMap<OperatorAccount, ContractorAuditOperator>();
-			
+
 			for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
-				// TODO Should we ignore incomplete and pending statuses, unless percent verified == 100
-				if (caos.get(cao.getOperator()) == null && !cao.getStatus().isIncomplete() && !cao.getStatus().isPending())
+				// TODO Should we ignore incomplete and pending statuses, unless
+				// percent verified == 100
+				if (caos.get(cao.getOperator()) == null
+						&& (cao.getStatus().isSubmitted() || cao.getStatus().isResubmitted())) {
 					caos.put(cao.getOperator(), cao);
-				
-				allCaoIDs.add(cao.getId());
+					allCaoIDs.add(cao.getId());
+				}
 			}
 		}
 		

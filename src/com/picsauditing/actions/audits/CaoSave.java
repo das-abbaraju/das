@@ -379,7 +379,7 @@ public class CaoSave extends AuditActionSupport {
 		}
 
 		if (step == null)
-			addAlertMessage("No action specified");
+			addActionError("No action specified");
 		else {
 			if (step.getOldStatus().isSubmitted() && step.getNewStatus().isComplete()) {
 				if (cao.getPercentVerified() < 100)
