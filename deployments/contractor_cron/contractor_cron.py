@@ -103,7 +103,7 @@ class CronMonitor(CronThread):
 				except Exception, e:
 					self.logger.error(e)
 					self.active_servers[server] = False
-			self.logger.debug("Active servers %s" % self.active_servers)
+			self.logger.info("Active servers %s" % self.active_servers)
 			time.sleep(self.sleeptime)
 
 class CronPublisher(CronThread):
@@ -160,12 +160,14 @@ class CronWorker(CronThread):
 				running_lock.release() # release lock, no matter what
 			start = time.time()
 			starttime = datetime.now()
+			success = False
 			try:
 				self.logger.debug('thread #%d starting crontractor %s' % (self.thread_id,id))
 				cronurl = self.url % (self.server_g.next(), id)
 				self.logger.debug('using url: %s' % cronurl)
 				result = urllib2.urlopen(cronurl).read()
-				if "Complete" in result:
+				success = True
+				if success:
 					self.logger.info('Contractor %s finished successfully.' % id)
 				else:
 					self.logger.warning('Error with contractor %s' % id)
@@ -174,7 +176,7 @@ class CronWorker(CronThread):
 			else:
 				time.sleep(self.sleeptime)
 			totaltime = time.time() - start
-			stats_q.put((id, starttime, totaltime))
+			stats_q.put((id, starttime, totaltime, success))
 			
 			running_lock.acquire()
 			try:
@@ -232,8 +234,8 @@ class CronStats(CronThread):
 					conn = MySQLdb.connect (host = "192.168.100.67", user = "pics", passwd = "pics", db = "pics")
 					cursor = conn.cursor()
 					cursor.executemany("""
-						INSERT INTO contractor_cron_log (conID, startDate, runTime)
-						VALUES (%s, %s, %s)
+						INSERT INTO contractor_cron_log (conID, startDate, runTime, success)
+						VALUES (%s, %s, %s, %s)
 					""", records)
 				except Exception, e:
 					self.logger.error(e)
