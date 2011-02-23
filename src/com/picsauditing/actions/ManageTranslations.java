@@ -1,28 +1,32 @@
 package com.picsauditing.actions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AppTranslation;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.ReportFilter;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageTranslations extends PicsActionSupport {
+public class ManageTranslations extends ReportActionSupport {
 
-	private String key;
+	private String[] key;
+	private String search;
 	private Locale localeFrom = Locale.ENGLISH;
 	private Locale localeTo = Locale.FRENCH;
 	private List<Translation> list;
 	private AppTranslation translation;
+	private ReportFilter filter;
 
 	private AuditTypeDAO dao;
 
@@ -60,40 +64,45 @@ public class ManageTranslations extends PicsActionSupport {
 					out.put("success", false);
 					out.put("reason", e.getMessage());
 				}
-				
+
 				if (getRequestURL().toLowerCase().contains("ajax")) {
 					output = out.toJSONString();
 					return BLANK;
 				}
-				key = translation.getKey().substring(0, translation.getKey().indexOf("."));
+				search = translation.getKey().substring(0, translation.getKey().indexOf("."));
 			}
 		}
 
-		String where = "t.locale = '" + localeFrom + "'";
-		key = Utilities.escapeQuotes(key);
-		if (!Strings.isEmpty(key))
-			where += " AND (t.key LIKE '%" + key + "%' OR t.value LIKE '%" + key + "%')";
-		List<AppTranslation> listFrom = (List<AppTranslation>) dao.findWhere(AppTranslation.class, where, 100, "t.key");
+		SelectSQL sql = new SelectSQL("app_translation t1");
+		sql.addOrderBy("t1.updateDate DESC");
+		sql.setSQL_CALC_FOUND_ROWS(true);
+		sql.addWhere("t1.locale = '" + localeFrom + "'");
+		sql.addJoin("LEFT JOIN app_translation t2 ON t1.msgKey = t2.msgKey AND t2.locale = '" + localeTo + "'");
+		sql.addField("t1.msgKey");
+		sql.addField("t1.id fromID");
+		sql.addField("t1.msgValue fromValue");
+		sql.addField("t2.id toID");
+		sql.addField("t2.msgValue toValue");
+		sql.addJoin("JOIN (SELECT msgValue, count(*) total FROM app_translation WHERE locale = 'en' GROUP BY msgValue) tcount ON tcount.msgValue = t1.msgValue");
+		sql.addField("tcount.total");
+		//sql.addWhere("tcount.total > 10");
 
-		List<String> keys = new ArrayList<String>();
-		for (AppTranslation from : listFrom) {
-			keys.add(from.getKey());
-		}
+		search = Utilities.escapeQuotes(search);
+		if (!Strings.isEmpty(search))
+			sql.addWhere("t1.msgValue LIKE '%" + search + "%'");
 
-		Map<String, AppTranslation> mapTo = new HashMap<String, AppTranslation>();
-
-		if (localeTo != null && keys.size() > 0) {
-			where = "t.locale = '" + localeTo + "' AND t.key IN (" + Strings.implodeForDB(keys, ",") + ")";
-
-			List<AppTranslation> listTo = (List<AppTranslation>) dao.findWhere(AppTranslation.class, where, 0);
-			for (AppTranslation to : listTo) {
-				mapTo.put(to.getKey(), to);
+		if (key != null && key.length > 0) {
+			if (key.length == 1) {
+				sql.addWhere("LOWER(t1.msgKey) LIKE '%" + Utilities.escapeQuotes(key[0]).toLowerCase() + "%'");
+			} else {
+				sql.addWhere("t1.msgKey IN (" + Strings.implodeForDB(key, ",") + ")");
 			}
 		}
+		run(sql);
 
 		list = new ArrayList<Translation>();
-		for (AppTranslation from : listFrom) {
-			list.add(new Translation(from, mapTo.get(from.getKey())));
+		for (BasicDynaBean row : data) {
+			list.add(new Translation(row));
 		}
 
 		return SUCCESS;
@@ -104,13 +113,23 @@ public class ManageTranslations extends PicsActionSupport {
 		public AppTranslation from;
 		public AppTranslation to;
 
-		public Translation(AppTranslation from, AppTranslation to) {
-			this.from = from;
-			if (to == null) {
+		public Translation(BasicDynaBean row) {
+			from = new AppTranslation();
+			from.setId(Integer.parseInt(row.get("fromID").toString()));
+			from.setKey(row.get("msgKey").toString());
+			from.setValue(row.get("fromValue").toString());
+
+			Object toID = row.get("toID");
+			if (toID != null) {
 				to = new AppTranslation();
-				to.setLocale(from.getLocale());
+				to.setId(Integer.parseInt(toID.toString()));
+				if (to.getId() > 0) {
+					to.setKey(from.getKey());
+					to.setValue(row.get("toValue").toString());
+				} else {
+					to = null;
+				}
 			}
-			this.to = to;
 		}
 
 		public List<AppTranslation> getItems() {
@@ -149,12 +168,28 @@ public class ManageTranslations extends PicsActionSupport {
 		this.localeTo = localeTo;
 	}
 
-	public String getKey() {
+	public String[] getKey() {
 		return key;
 	}
 
-	public void setKey(String key) {
+	public void setKey(String[] key) {
 		this.key = key;
+	}
+
+	public String getSearch() {
+		return search;
+	}
+
+	public void setSearch(String search) {
+		this.search = search;
+	}
+
+	public ReportFilter getFilter() {
+		return filter;
+	}
+
+	public void setFilter(ReportFilter filter) {
+		this.filter = filter;
 	}
 
 }

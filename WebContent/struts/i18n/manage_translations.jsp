@@ -10,6 +10,7 @@
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/reports.css?v=<s:property value="version"/>" />
 <script type="text/javascript" src="js/jquery/translate/jquery.translate-1.4.7-debug-all.js"></script>
+<script type="text/javascript" src="js/Search.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript">
 $(function(){
 	$('table.report .showEdit').click(function() {
@@ -74,7 +75,10 @@ span.view {
 <h1>Manage Translations</h1>
 
 <div class="search">
-<s:form method="GET">
+<s:form id="form1">
+	<s:hidden name="filter.ajax" value="false" />
+	<s:hidden name="showPage" value="1" />
+	
 	From: <s:select
 		list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
 		name="localeFrom" listValue="displayName"></s:select>
@@ -83,10 +87,14 @@ span.view {
 		name="localeTo" listValue="displayName"></s:select>
 		
 	Key: <s:textfield name="key" />
+	Search: <s:textfield name="search" />
 	<s:submit name="button" value="Search"></s:submit>
 </s:form>
 </div>
 
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
 <table class="report" style="width: 100%">
 	<thead>
 		<tr>
@@ -113,7 +121,7 @@ span.view {
 							<s:property value="value"/>
 						</span>
 						<div class="edit">
-							<s:textarea name="translation.value" value="%{value}" cssStyle="width: 90%"></s:textarea>
+							<s:textarea name="translation.value" value="%{value}" cssStyle="width: 90%" rows="5"></s:textarea>
 							<br/>
 							<button name="button" class="save">Save</button>
 							<button class="cancel">Cancel</button>
@@ -124,6 +132,9 @@ span.view {
 		</tr>
 	</s:iterator>
 </table>
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
 
 <s:form>
 <input type="hidden" name="translation.locale" value="<s:property value="localeFrom"/>">
