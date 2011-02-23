@@ -29,7 +29,7 @@ import com.picsauditing.dao.PicsDAO;
 @SuppressWarnings("serial")
 @Entity
 @MappedSuperclass
-public abstract class BaseTable implements JSONable, Serializable, Autocompleteable {
+public abstract class BaseTable implements JSONable, Serializable, Autocompleteable, Translatable {
 	protected int id;
 	protected User createdBy;
 	protected User updatedBy;
