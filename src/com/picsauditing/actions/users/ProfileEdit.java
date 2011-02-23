@@ -108,6 +108,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 				}
 				u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
 				permissions.setTimeZone(u);
+				permissions.setLocale(u.getLocale());
 				ActionContext.getContext().getSession().put("permissions", permissions);
 				u = dao.save(u);
 				indexer.runSingle(u, "users");
