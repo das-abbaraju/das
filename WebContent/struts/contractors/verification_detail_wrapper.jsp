@@ -164,9 +164,18 @@ small {
 
 		$('#noteAjax').load('CaoSaveAjax.action', data, function(){
 	        $.blockUI({ message:$('#noteAjax')}); 
-	        if($('.clearOnce').val()=='')
-				$('#clearOnceField').val(0);
+			if($('#noteRequired').val()=='true'){
+				$('#yesButton').addClass('disabled');
+				$('#addToNotes').live('keyup', function(){
+					if($(this).val()!='')
+						$('#yesButton').removeClass('disabled');
+					else
+						$('#yesButton').addClass('disabled');
+				});
+			}
 		    $('#yesButton').click(function(){
+				if($(this).hasClass('disabled'))
+					return false;
 		        $.blockUI({message: 'Saving Status, please wait...'});
 		        data.button = '';
 		        data.note = $('#addToNotes').val();
