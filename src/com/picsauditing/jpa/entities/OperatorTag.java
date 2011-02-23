@@ -5,6 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.json.simple.JSONObject;
 
 
 @SuppressWarnings("serial")
@@ -67,4 +70,21 @@ public class OperatorTag extends BaseTable {
 		this.inheritable = inheritable;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transient
+	public JSONObject toJSON(boolean full){
+		JSONObject o = new JSONObject();
+		o.put("id", this.getId());
+		o.put("operator", this.getOperator().getName());
+		o.put("tag",this.getTag());
+		
+		return o;
+	}
+	
+	@Override
+	@Transient
+	public String getAutocompleteValue() {
+		return "(" + getAutocompleteId() + ") " + this.getTag();
+	}
 }

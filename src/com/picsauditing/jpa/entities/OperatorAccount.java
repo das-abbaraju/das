@@ -447,4 +447,10 @@ public class OperatorAccount extends Account {
 	public boolean isInPicsConsortium() {
 		return this.getId() > 3 && this.getId() < 14;
 	}
+	
+	@Override
+	@Transient
+	public String getAutocompleteValue() {
+		return "(" + this.getId() + ") " + this.getName();
+	}
 }

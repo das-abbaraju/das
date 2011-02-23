@@ -33,14 +33,14 @@ $(function() {
 		max	: 50
 	}).result(function(event, data) {
 		$('#operator_display').html("<a target='_BLANK' href=\"OperatorConfiguration.action?id=" + data[0] + "\">" + data[1] + " Configuration</a>");
-		$.getJSON('OperatorTagAutocomplete.action',{'q': data[0]},
+		$.getJSON('OperatorTagAutocompleteJSON.action',{'q': data[0]},
 			function(json) {
 				if (json) {
 					$('#tag').html('');
-					var tags = json.tags;
+					var tags = json.items;
 					$('#tag').append($('<option>').attr('value', 0).text("Any"));
 					for(var i=0; i<tags.length; i++) {
-						$('#tag').append($('<option>').attr('value', tags[i].tagID).text(tags[i].tag));
+						$('#tag').append($('<option>').attr('value', tags[i].id).text(tags[i].tag));
 					}
 					$('#opTagli').show();
 				}

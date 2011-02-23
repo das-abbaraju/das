@@ -1,12 +1,11 @@
 package com.picsauditing.actions.autocomplete;
 
-import org.apache.commons.beanutils.BasicDynaBean;
-
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.OperatorAccount;
 
 @SuppressWarnings("serial")
-public class OperatorAutocomplete extends AutocompleteDynaBean {
+public class OperatorAutocomplete extends AutocompleteActionSupport<OperatorAccount> {
 
 	private OperatorAccountDAO dao;
 
@@ -21,11 +20,10 @@ public class OperatorAutocomplete extends AutocompleteDynaBean {
 			// TODO Non admin queries not supported yet
 			return;
 		}
-		items = dao.findWhereNatively(true, "a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'");
-	}
-
-	@Override
-	protected String createOutput(BasicDynaBean item) {
-		return item.get("id") + "|" + item.get("name");
+		
+		if (isSearchDigit())
+			items = dao.findWhere(true, "a.id LIKE '%" + Utilities.escapeQuotes(q) + "%'");
+		else
+			items = dao.findWhere(true, "a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'");
 	}
 }

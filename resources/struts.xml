@@ -1575,6 +1575,12 @@
 		<action name="*Autocomplete" class="com.picsauditing.actions.autocomplete.{1}Autocomplete">
 			<result>struts/blank.jsp</result>
 		</action>
+		
+		<action name="*AutocompleteJSON"
+			class="com.picsauditing.actions.autocomplete.{1}Autocomplete">
+			<param name="button">json</param>
+			<result>struts/json.jsp</result>
+		</action>
 
 		<!-- Ajax Snippets -->
 		<action name="ContractorSelectAjax"

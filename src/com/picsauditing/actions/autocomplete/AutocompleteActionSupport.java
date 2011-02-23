@@ -2,6 +2,9 @@ package com.picsauditing.actions.autocomplete;
 
 import java.util.List;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.BaseTable;
 
@@ -11,6 +14,7 @@ public abstract class AutocompleteActionSupport<T extends BaseTable> extends Pic
 	protected List<T> items;
 	protected String q;
 	protected StringBuffer outputBuffer = new StringBuffer();
+	protected JSONArray jsonObjs = new JSONArray();
 
 	@Override
 	public String execute() throws Exception {
@@ -27,12 +31,33 @@ public abstract class AutocompleteActionSupport<T extends BaseTable> extends Pic
 
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void createOutput() {
 		for (T item : items) {
-			outputBuffer.append(item.toString()).append("\n");
+			createOutput(item);
+		}
+		
+		if("json".equals(button))
+			json.put("items", jsonObjs);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected void createOutput(T item) {
+		if ("json".equals(button)){
+			jsonObjs.add(createOutputJSON(item));
+		} else {
+			outputBuffer.append(createOutputAutocomplete(item));
 		}
 	}
 
+	protected JSONObject createOutputJSON(T item){
+		return item.toJSON();
+	}
+	
+	protected String createOutputAutocomplete(T item){
+		return item.getAutocompleteId() + "|" + item.getAutocompleteValue() + "\n";
+	}
+	
 	protected boolean isSearchDigit() {
 		try {
 			Integer.parseInt(q);
