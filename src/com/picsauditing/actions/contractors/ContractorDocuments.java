@@ -3,7 +3,6 @@ package com.picsauditing.actions.contractors;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,19 +29,16 @@ public class ContractorDocuments extends ContractorActionSupport {
 	protected AuditTypeRuleCache auditTypeRuleCache;
 
 	protected Map<AuditType, List<ContractorAudit>> auditMap;
-	protected Map<String, List<AuditType>> auditTypes;
-	protected Map<String, String> imScores = new HashMap<String, String>();
-	protected Map<String, List<ContractorAudit>> expiredAudits;
+	protected Map<DocumentTab, List<AuditType>> auditTypes;
+	protected Map<String, String> imScores = new TreeMap<String, String>();
+	protected Map<DocumentTab, List<ContractorAudit>> expiredAudits;
 
 	protected Integer selectedAudit;
 	protected Integer selectedOperator;
 	protected String auditFor;
-	protected List<AuditType> auditTypeList;
 	protected AuditTypeClass auditClass;
 
 	protected Set<AuditType> manuallyAddAudits = null;
-
-	private final String ANNUAL_UPDATE = "AU";
 
 	public ContractorDocuments(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
 			ContractorAuditOperatorDAO caoDAO, AuditTypeRuleCache auditTypeRuleCache) {
@@ -60,7 +56,82 @@ public class ContractorDocuments extends ContractorActionSupport {
 			return LOGIN;
 
 		findContractor();
-		setup();
+
+		Map<String, List<ContractorAudit>> allIMAudits = new TreeMap<String, List<ContractorAudit>>();
+		auditMap = new TreeMap<AuditType, List<ContractorAudit>>();
+		auditTypes = new TreeMap<DocumentTab, List<AuditType>>();
+		expiredAudits = new TreeMap<DocumentTab, List<ContractorAudit>>();
+
+		for (ContractorAudit audit : getAudits()) {
+			DocumentTab tab = new DocumentTab(audit.getAuditType());
+			if (!audit.isExpired()) {
+				if (auditMap.get(audit.getAuditType()) == null)
+					auditMap.put(audit.getAuditType(), new ArrayList<ContractorAudit>());
+
+				auditMap.get(audit.getAuditType()).add(audit);
+
+				if (auditTypes.get(tab) == null)
+					auditTypes.put(tab, new ArrayList<AuditType>());
+
+				if (!auditTypes.get(tab).contains(audit.getAuditType()))
+					auditTypes.get(tab).add(audit.getAuditType());
+
+				// IM Audits
+				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM)) {
+					List<ContractorAudit> imAudits = allIMAudits.get(audit.getAuditType().getAuditName());
+
+					if (imAudits == null) {
+						imAudits = new Vector<ContractorAudit>();
+						allIMAudits.put(audit.getAuditType().getAuditName(), imAudits);
+					}
+
+					imAudits.add(audit);
+				}
+			} else if ((audit.getAuditType().getClassType().isAudit() || audit.getAuditType().getClassType().isPolicy())
+					&& !audit.getAuditType().isAnnualAddendum()) {
+				if (expiredAudits.get(tab) == null)
+					expiredAudits.put(tab, new ArrayList<ContractorAudit>());
+
+				expiredAudits.get(tab).add(audit);
+			}
+		}
+
+		for (AuditType type : auditMap.keySet()) {
+			if (type.getId() == AuditType.ANNUALADDENDUM) {
+				Collections.sort(auditMap.get(type), new Comparator<ContractorAudit>() {
+					public int compare(ContractorAudit o1, ContractorAudit o2) {
+						String s1 = o1.getAuditType().getAuditName() + o1.getAuditFor();
+						String s2 = o2.getAuditType().getAuditName() + o2.getAuditFor();
+
+						return (s2.compareTo(s1));
+					}
+				});
+
+				break;
+			}
+		}
+
+		for (String auditName : allIMAudits.keySet()) {
+			int count = 0;
+			float score = 0;
+			for (ContractorAudit audit : allIMAudits.get(auditName)) {
+				score += audit.getScore();
+				count++;
+			}
+
+			int tempScore = -1;
+			if (count != 0)
+				tempScore = Math.round(score / (float) count);
+
+			if (tempScore <= 0)
+				imScores.put(auditName, "None");
+			else if (tempScore < 50)
+				imScores.put(auditName, "Red");
+			else if (tempScore < 100)
+				imScores.put(auditName, "Yellow");
+			else
+				imScores.put(auditName, "Green");
+		}
 
 		return SUCCESS;
 	}
@@ -80,7 +151,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 		return auditMap;
 	}
 
-	public Map<String, List<AuditType>> getAuditTypes() {
+	public Map<DocumentTab, List<AuditType>> getAuditTypes() {
 		return auditTypes;
 	}
 
@@ -88,7 +159,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 		return imScores;
 	}
 
-	public Map<String, List<ContractorAudit>> getExpiredAudits() {
+	public Map<DocumentTab, List<ContractorAudit>> getExpiredAudits() {
 		return expiredAudits;
 	}
 
@@ -114,14 +185,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 
 	public void setAuditFor(String auditFor) {
 		this.auditFor = auditFor;
-	}
-
-	public List<AuditType> getAuditTypeList() {
-		return auditTypeList;
-	}
-
-	public void setAuditTypeList(List<AuditType> auditTypeList) {
-		this.auditTypeList = auditTypeList;
 	}
 
 	public AuditTypeClass getAuditClass() {
@@ -162,96 +225,67 @@ public class ContractorDocuments extends ContractorActionSupport {
 		return manuallyAddAudits;
 	}
 
-	private void setup() {
-		Map<String, List<ContractorAudit>> allIMAudits = new HashMap<String, List<ContractorAudit>>();
-		auditMap = new TreeMap<AuditType, List<ContractorAudit>>();
-		auditTypes = new HashMap<String, List<AuditType>>();
-		expiredAudits = new TreeMap<String, List<ContractorAudit>>();
+	public class DocumentTab implements Comparable<DocumentTab> {
+		private int order;
+		private String name;
+		private String safeName;
+		private String jsName;
 
-		for (ContractorAudit audit : getAudits()) {
-			// Policies are still on their own page
-			if (audit.isVisibleTo(permissions)) {
-				AuditTypeClass classType = audit.getAuditType().getClassType();
+		public DocumentTab(AuditType type) {
+			name = type.getClassType().name();
+			safeName = type.getClassType().name();
+			jsName = name.toLowerCase().replaceAll(" ", "_");
 
-				if (!audit.isExpired()) {
-					if (auditMap.get(audit.getAuditType()) == null)
-						auditMap.put(audit.getAuditType(), new ArrayList<ContractorAudit>());
-
-					auditMap.get(audit.getAuditType()).add(audit);
-
-					String auditTypeClass = classType.toString();
-					// Put annual updates in their own category?
-					if (audit.getAuditType().getId() == AuditType.ANNUALADDENDUM)
-						auditTypeClass = ANNUAL_UPDATE;
-
-					if (auditTypes.get(auditTypeClass) == null)
-						auditTypes.put(auditTypeClass, new ArrayList<AuditType>());
-
-					if (!auditTypes.get(auditTypeClass).contains(audit.getAuditType()))
-						auditTypes.get(auditTypeClass).add(audit.getAuditType());
-
-					// IM Audits
-					if (classType == AuditTypeClass.IM) {
-						List<ContractorAudit> imAudits = allIMAudits.get(audit.getAuditType().getAuditName());
-
-						if (imAudits == null) {
-							imAudits = new Vector<ContractorAudit>();
-							allIMAudits.put(audit.getAuditType().getAuditName(), imAudits);
-						}
-
-						imAudits.add(audit);
-					}
-				} else if ((classType.isAudit() || classType.isPolicy()) && !audit.getAuditType().isAnnualAddendum()) {
-					if (expiredAudits.get(classType.toString()) == null)
-						expiredAudits.put(classType.toString(), new ArrayList<ContractorAudit>());
-					
-					expiredAudits.get(classType.toString()).add(audit);
-				}
+			if (type.getClassType().isPqf())
+				order = 1;
+			else if (type.isAnnualAddendum()) {
+				order = 2;
+				name = type.getAuditName() + "s";
+				safeName = "AU";
+				jsName = type.getAuditName().toLowerCase().replaceAll(" ", "_");
+			} else if (type.getClassType().isPolicy()) {
+				order = 3;
+				name = "InsureGUARD&trade;";
+				jsName = "insureguard\\\\&trade\\\\;";
+			} else if (type.getClassType().isIm()) {
+				order = 4;
+				name = "Integrity Management";
+			} else if (type.getId() == AuditType.COR || type.getId() == AuditType.SUPPLEMENTCOR) {
+				order = 5;
+				name = "COR/SECOR";
+				safeName = "COR";
+				jsName = "COR\\\\/SECOR";
+			} else {
+				order = 6;
+				name += "s";
+				jsName += "s";
 			}
 		}
 
-		for (AuditType type : auditMap.keySet()) {
-			if (type.getId() == AuditType.ANNUALADDENDUM) {
-				Collections.sort(auditMap.get(type), new Comparator<ContractorAudit>() {
-					public int compare(ContractorAudit o1, ContractorAudit o2) {
-						String s1 = o1.getAuditType().getAuditName() + o1.getAuditFor();
-						String s2 = o2.getAuditType().getAuditName() + o2.getAuditFor();
-
-						return (s2.compareTo(s1));
-					}
-				});
-
-				break;
-			}
+		public int getOrder() {
+			return order;
 		}
 
-		for (String auditName : allIMAudits.keySet()) {
-			int count = 0;
-			float score = 0;
-			for (ContractorAudit audit : allIMAudits.get(auditName)) {
-				score += audit.getScore();
-				count += 1;
-			}
+		public String getName() {
+			return name;
+		}
 
-			int tempScore = -1;
+		public String getSafeName() {
+			return safeName;
+		}
 
-			if (count != 0) {
+		public String getJsName() {
+			return jsName;
+		}
 
-				float average = score / (float) count;
+		@Override
+		public int compareTo(DocumentTab o) {
+			return this.order - o.getOrder();
+		}
 
-				tempScore = Math.round(average);
-			}
-
-			Map<Integer, String> map = new HashMap<Integer, String>() {
-				{
-					put(-1, "None");
-					put(0, "Red");
-					put(1, "Yellow");
-					put(2, "Green");
-				}
-			};
-
-			imScores.put(auditName, map.get(tempScore));
+		@Override
+		public String toString() {
+			return this.name;
 		}
 	}
 }
