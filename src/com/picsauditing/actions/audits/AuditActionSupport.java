@@ -266,14 +266,23 @@ public class AuditActionSupport extends ContractorActionSupport {
 				return false;
 		}
 
-		AuditType type = cao.getAudit().getAuditType();
-
-		if (workflowStep.getNewStatus().isComplete() && type.getWorkFlow().isHasSubmittedStep()
+		AuditType type = conAudit.getAuditType();
+		AuditStatus newStatus = workflowStep.getNewStatus();
+		
+		if (newStatus.isComplete() && type.getWorkFlow().isHasSubmittedStep()
 				&& cao.getPercentVerified() < 100)
 			return false;
+		
 		// admins can perform any action
-		if (permissions.seesAllContractors())
+		if (permissions.seesAllContractors()) {
+			// Pics employees can't approve/reject policies from operators that
+			// don't autoapprove
+			if (newStatus.isApproved() || newStatus.isIncomplete()) {
+				if (type.getClassType().isPolicy() && !cao.getOperator().isAutoApproveInsurance())
+					return false;
+			}
 			return true;
+		}
 		// operator and corporate can also perform any action if they have
 		// permission
 		if (permissions.isOperatorCorporate()) {
@@ -287,13 +296,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (!conAudit.getContractorAccount().isPaymentMethodStatusValid()
 					&& conAudit.getContractorAccount().isMustPayB() && !conAudit.getContractorAccount().isDemo())
 				return false;
-			if (workflowStep.getNewStatus().isSubmitted())
+			if (newStatus.isSubmitted())
 				return true;
 			// contractor can always move to resubmitted
-			if (workflowStep.getNewStatus().isResubmitted())
+			if (newStatus.isResubmitted())
 				return true;
 			// if Single Step Workflow (Pending to Complete)
-			if (workflowStep.getNewStatus().isComplete() && workflowStep.getWorkflow().getId() == 1)
+			if (newStatus.isComplete() && workflowStep.getWorkflow().getId() == 1)
 				return true;
 		}
 		// Auditor for this audit can perform all actions
