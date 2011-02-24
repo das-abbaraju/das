@@ -16,8 +16,9 @@ import com.picsauditing.PICS.I18nCache;
 @SuppressWarnings("serial")
 public class TranslationActionSupport extends ActionSupport {
 
-	private Set<String> usedKeys = new HashSet<String>();
+	private Set<String> usedKeys = null;
 	private I18nCache i18nCache = I18nCache.getInstance();
+	static final protected String i18nTracing = "i18nTracing";
 
 	public String getScope() {
 		return ServletActionContext.getContext().getName();
@@ -47,16 +48,6 @@ public class TranslationActionSupport extends ActionSupport {
 	public String getText(String aTextName, String defaultValue, String obj) {
 		// TODO Auto-generated method stub
 		return super.getText(aTextName, defaultValue, obj);
-	}
-
-	private void useKey(String key) {
-		usedKeys.add(key);
-
-		Map<String, Object> session = ActionContext.getContext().getSession();
-		if (session == null) {
-			System.out.println("Failed to get Session");
-		} else
-			session.put("usedI18nKeys", usedKeys);
 	}
 
 	@Override
@@ -107,7 +98,38 @@ public class TranslationActionSupport extends ActionSupport {
 		return super.getTexts(aBundleName);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Set<String> getI18nUsedKeys() {
+		if (usedKeys == null) {
+			try {
+				Map<String, Object> session = ActionContext.getContext().getSession();
+				final String usedI18nKeys = "usedI18nKeys";
+				if (session.containsKey(usedI18nKeys))
+					usedKeys = (Set<String>) session.get(usedI18nKeys);
+				else
+					usedKeys = null;
+
+				if (usedKeys == null) {
+					usedKeys = new HashSet<String>();
+					session.put(usedI18nKeys, usedKeys);
+				}
+			} catch (Exception doNothing) {
+			}
+		}
 		return usedKeys;
+	}
+
+	private void useKey(String key) {
+		try {
+			Map<String, Object> session = ActionContext.getContext().getSession();
+			String tracing = session.get(i18nTracing).toString();
+			if (Boolean.parseBoolean(tracing)) {
+				getI18nUsedKeys().add(key);
+				if (getI18nUsedKeys().size() > 1000 && getActionErrors().size() == 0)
+					addActionError("You have i18n Text Tracing turned on and have " + getI18nUsedKeys().size()
+							+ " in your cache. You may want to turn this feature off or clear your cache.");
+			}
+		} catch (Exception doNothing) {
+		}
 	}
 }

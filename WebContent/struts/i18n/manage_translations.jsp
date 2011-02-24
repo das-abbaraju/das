@@ -74,7 +74,28 @@ span.view {
 <body>
 <h1>Manage Translations</h1>
 
-<div class="search">
+<s:include value="../actionMessages.jsp" />
+<s:if test="tracingOn">
+	<div class="alert">
+	Text Tracing for Internationalization is turned ON.
+	<s:form id="formTracingOff">
+		<s:hidden name="button" value="tracingOff" />
+		<s:submit value="Turn Tracing Off" />
+	</s:form>
+	<s:form id="formTracingClear">
+		<s:hidden name="button" value="tracingClear" />
+		<s:submit value="Clear Tracing Cache" />
+	</s:form>
+	</div>
+</s:if>
+<s:else>
+	<s:form id="formTracingOn">
+		<s:hidden name="button" value="tracingOn" />
+		<s:submit value="Turn Tracing On" />
+	</s:form>
+</s:else>
+
+<div id="search">
 <s:form id="form1">
 	<s:hidden name="filter.ajax" value="false" />
 	<s:hidden name="showPage" value="1" />
@@ -88,7 +109,16 @@ span.view {
 		
 	Key: <s:textfield name="key" />
 	Search: <s:textfield name="search" />
-	<s:submit name="button" value="Search"></s:submit>
+	<br />
+	Custom: <s:select headerKey="" headerValue=""
+		list="#{
+			'Common':'Commonly Used '+localeFrom.displayName+' Phrases', 
+			'Missing':'Missing '+localeTo.displayName+' Translations', 
+			'Updated':'Recently Updated '+localeFrom.displayName+' Phrases', 
+			'Unused':'Unused Keys'}"
+		name="searchType" />
+	<br /> 
+	<s:submit name="button" id="searchfilter" value="Search"></s:submit>
 </s:form>
 </div>
 

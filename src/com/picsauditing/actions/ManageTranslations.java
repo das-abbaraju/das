@@ -3,10 +3,12 @@ package com.picsauditing.actions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONObject;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
@@ -20,8 +22,9 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ManageTranslations extends ReportActionSupport {
 
-	private String[] key;
+	private String key;
 	private String search;
+	private String searchType;
 	private Locale localeFrom = Locale.ENGLISH;
 	private Locale localeTo = Locale.FRENCH;
 	private List<Translation> list;
@@ -42,6 +45,18 @@ public class ManageTranslations extends ReportActionSupport {
 		permissions.tryPermission(OpPerms.Translator);
 
 		if (button != null) {
+			if (button.startsWith("tracing")) {
+				Map<String, Object> session = ActionContext.getContext().getSession();
+				if (button.equals("tracingOn")) {
+					session.put(i18nTracing, true);
+				}
+				if (button.equals("tracingOff")) {
+					session.put(i18nTracing, false);
+				}
+				if (button.equals("tracingClear")) {
+					getI18nUsedKeys().clear();
+				}
+			}
 			if (button.toLowerCase().contains("save") && translation != null) {
 				JSONObject out = new JSONObject();
 
@@ -69,8 +84,7 @@ public class ManageTranslations extends ReportActionSupport {
 					output = out.toJSONString();
 					return BLANK;
 				}
-				key = new String[1];
-				key[0] = translation.getKey().substring(0, translation.getKey().indexOf("."));
+				key = translation.getKey().substring(0, translation.getKey().indexOf("."));
 			}
 		}
 
@@ -84,21 +98,43 @@ public class ManageTranslations extends ReportActionSupport {
 		sql.addField("t1.msgValue fromValue");
 		sql.addField("t2.id toID");
 		sql.addField("t2.msgValue toValue");
-		sql.addJoin("JOIN (SELECT msgValue, count(*) total FROM app_translation WHERE locale = 'en' GROUP BY msgValue) tcount ON tcount.msgValue = t1.msgValue");
-		sql.addField("tcount.total");
-		//sql.addWhere("tcount.total > 10");
 
-		search = Utilities.escapeQuotes(search);
-		if (!Strings.isEmpty(search))
-			sql.addWhere("t1.msgValue LIKE '%" + search + "%'");
-
-		if (key != null && key.length > 0) {
-			if (key.length == 1) {
-				sql.addWhere("LOWER(t1.msgKey) LIKE '%" + Utilities.escapeQuotes(key[0]).toLowerCase() + "%'");
-			} else {
-				sql.addWhere("t1.msgKey IN (" + Strings.implodeForDB(key, ",") + ")");
+		if (searchType != null) {
+			if (searchType.equals("Common")) {
+				String select = "SELECT msgValue, count(*) total "
+						+ "FROM app_translation WHERE locale = 'en' GROUP BY msgValue";
+				sql.addJoin("JOIN (" + select + ") tcount ON tcount.msgValue = t1.msgValue");
+				// sql.addField("tcount.total");
+				sql.addWhere("tcount.total > 10");
+			}
+			if (searchType.equals("Missing")) {
+				sql.addWhere("t2.id IS NULL");
+			}
+			if (searchType.equals("Updated")) {
+				sql.addWhere("t1.updateDate > t2.updateDate");
+			}
+			if (searchType.equals("Unused")) {
+				sql.addWhere("t1.lastUsed IS NULL OR t1.lastUsed < DATE_SUB(NOW(), INTERVAL 1 WEEK)");
 			}
 		}
+
+		if (!Strings.isEmpty(search))
+			sql.addWhere("t1.msgValue LIKE '%" + Utilities.escapeQuotes(search) + "%' OR LOWER(t1.msgKey) LIKE '%"
+					+ Utilities.escapeQuotes(key).toLowerCase() + "%'");
+
+		if (!Strings.isEmpty(key)) {
+			sql.addWhere("LOWER(t1.msgKey) LIKE '%" + Utilities.escapeQuotes(key).toLowerCase() + "%'");
+		}
+
+		if (isTracingOn()) {
+			if (getI18nUsedKeys().size() > 0)
+				sql.addWhere("t1.msgKey IN (" + Strings.implodeForDB(getI18nUsedKeys(), ",") + ")");
+			else {
+				addActionMessage("Open pages containing internationalized text and then return to this report.");
+				return SUCCESS;
+			}
+		}
+
 		run(sql);
 
 		list = new ArrayList<Translation>();
@@ -169,11 +205,11 @@ public class ManageTranslations extends ReportActionSupport {
 		this.localeTo = localeTo;
 	}
 
-	public String[] getKey() {
+	public String getKey() {
 		return key;
 	}
 
-	public void setKey(String[] key) {
+	public void setKey(String key) {
 		this.key = key;
 	}
 
@@ -193,4 +229,20 @@ public class ManageTranslations extends ReportActionSupport {
 		this.filter = filter;
 	}
 
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
+
+	public boolean isTracingOn() {
+		try {
+			String tracing = ActionContext.getContext().getSession().get(i18nTracing).toString();
+			return Boolean.parseBoolean(tracing) == true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 }

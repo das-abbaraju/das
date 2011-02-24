@@ -28,4 +28,3 @@ $(function() {
 		</div>
 	</div>
 </s:else>
-<s:include value="../i18n/translate_footer.jsp"></s:include>
