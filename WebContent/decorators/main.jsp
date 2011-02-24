@@ -354,19 +354,6 @@ Copyright &copy; 2011
 <a href="Contact.action" class="footer"><%=i18nCache.getText("Footer.Contact", locale) %></a> |
 <a href="#" onclick="return openWindow('privacy_policy.jsp','PRIVACY');"
 	title="<%=i18nCache.getText("global.NewWindow", locale)%>" class="footer"><%=i18nCache.getText("Footer.Privacy", locale) %></a>
-<%
-if (permissions.hasPermission(OpPerms.Translator)) {
-	Set<String> usedKeys = (Set<String>)session.getAttribute("usedI18nKeys");
-	if (usedKeys != null) {
-		String keyParams = "";
-		for(String key : usedKeys) {
-			keyParams += "&key=" + URLEncoder.encode(key);
-		}
-		%>| <a class="footer" href="ManageTranslations.action?button=search<%=keyParams%>">Translate</a><%
-	}
-}
-%>
-
 </div>
 </div>
 </div>
