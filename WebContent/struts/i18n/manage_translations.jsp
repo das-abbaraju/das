@@ -113,7 +113,8 @@ span.view {
 	Custom: <s:select headerKey="" headerValue=""
 		list="#{
 			'Common':'Commonly Used '+localeFrom.displayName+' Phrases', 
-			'Missing':'Missing '+localeTo.displayName+' Translations', 
+			'MissingTo':'Missing '+localeTo.displayName+' Translations', 
+			'MissingFrom':'Missing '+localeFrom.displayName+' Translations', 
 			'Updated':'Recently Updated '+localeFrom.displayName+' Phrases', 
 			'Unused':'Unused Keys'}"
 		name="searchType" />

@@ -107,8 +107,11 @@ public class ManageTranslations extends ReportActionSupport {
 				// sql.addField("tcount.total");
 				sql.addWhere("tcount.total > 10");
 			}
-			if (searchType.equals("Missing")) {
+			if (searchType.equals("MissingTo")) {
 				sql.addWhere("t2.id IS NULL");
+			}
+			if (searchType.equals("MissingFrom")) {
+				sql.addWhere("t1.msgValue = 'Translation missing'");
 			}
 			if (searchType.equals("Updated")) {
 				sql.addWhere("t1.updateDate > t2.updateDate");
