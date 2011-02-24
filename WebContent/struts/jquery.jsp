@@ -1,10 +1,16 @@
-<%@ page language="java" errorPage="/exception_handler.jsp" pageEncoding="UTF-8"%>
+<%@page import="java.util.Locale"%>
+<%@page import="com.picsauditing.actions.TranslationActionSupport"%>
+<%@page import="com.picsauditing.PICS.I18nCache"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%
 	// Usage: <s:include value="../jquery.jsp" />
 	// Use to include jQuery, jQuery UI, and Gritter (for notifications)
 	// If you just need jQuery, the just include it with the single line
 %>
 <script type="text/javascript" src="<%= request.isSecure() ? "https" : "http" %>://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+<% if (!TranslationActionSupport.getLocaleStatic().getLanguage().equals("en")) { %>
+<script type="text/javascript" src="js/jquery/jquery-ui/i18n/jquery.ui.datepicker-<%= TranslationActionSupport.getLocaleStatic().getLanguage() %>.js"></script>
+<% } %>
 
 <script type="text/javascript" src="js/jquery/util/jquery-utils.js"></script>
 <script type="text/javascript" src="js/jquery/gritter/jquery.gritter.js"></script>
@@ -58,5 +64,6 @@
    		}).live('mouseleave', function(){
    			$(this).removeClass('hover');
  		});
+        
 	});
 </script>

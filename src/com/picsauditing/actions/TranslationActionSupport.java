@@ -2,6 +2,7 @@ package com.picsauditing.actions;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -19,6 +20,16 @@ public class TranslationActionSupport extends ActionSupport {
 	private Set<String> usedKeys = null;
 	private I18nCache i18nCache = I18nCache.getInstance();
 	static final protected String i18nTracing = "i18nTracing";
+
+	public static Locale getLocaleStatic() {
+		Locale locale = Locale.ENGLISH;
+		try {
+			locale = (Locale) ActionContext.getContext().get(ActionContext.LOCALE);
+		} catch (Exception defaultToEnglish) {
+		}
+
+		return locale;
+	}
 
 	public String getScope() {
 		return ServletActionContext.getContext().getName();
@@ -128,7 +139,7 @@ public class TranslationActionSupport extends ActionSupport {
 			throw new RuntimeException("i18n key cannot contain quotes");
 		if (key.contains(" "))
 			throw new RuntimeException("i18n key cannot contain spaces");
-		
+
 		try {
 			Map<String, Object> session = ActionContext.getContext().getSession();
 			String tracing = session.get(i18nTracing).toString();

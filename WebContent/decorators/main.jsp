@@ -1,6 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="sitemesh-decorator" prefix="decorator"%>
 <%@ page import="java.net.InetAddress"%>
 <%@ page import="java.net.URLEncoder"%>
 <%@ page import="java.sql.Timestamp"%>
@@ -8,7 +7,6 @@
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.Locale"%>
 <%@ page import="java.util.Set"%>
-<%@ page import="com.opensymphony.xwork2.ActionContext"%>
 <%@ page import="com.picsauditing.access.MenuComponent"%>
 <%@ page import="com.picsauditing.access.OpPerms"%>
 <%@ page import="com.picsauditing.access.PicsMenu"%>
@@ -20,6 +18,7 @@
 <%@ page import="com.picsauditing.util.Strings"%>
 <%@ page import="com.picsauditing.util.URLUtils"%>
 <%@ page import="com.picsauditing.search.Database"%>
+<%@ page import="com.picsauditing.actions.TranslationActionSupport"%>
 <%
 	I18nCache i18nCache = I18nCache.getInstance();
 
@@ -29,11 +28,7 @@
 		permissions = new Permissions();
 	}
 	
-	Locale locale = Locale.ENGLISH;
-	try {
-		locale = (Locale) ActionContext.getContext().get(ActionContext.LOCALE);
-	} catch (Exception e) {
-	}
+	Locale locale = TranslationActionSupport.getLocaleStatic();
 
 	boolean pageIsSecure = false;
 	if (request.getLocalPort() == 443)
@@ -46,7 +41,8 @@
 	AppProperty appProperty = appPropertyDAO.find("SYSTEM.MESSAGE");
 	boolean showMessage = !Strings.isEmpty(appProperty.getValue());
 %>
-<%@ taglib uri="sitemesh-decorator" prefix="decorator"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
 <head>
 <title>PICS - <decorator:title default="PICS" /></title>
