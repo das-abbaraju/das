@@ -353,7 +353,7 @@ try {
 %>
 <div id="footermain">
 <div id="footercontent">
-<%=i18nCache.getText("Footer.Copyright", locale) %>
+Copyright &copy; 2011
 <a href="http://www.picsauditing.com/" class="footer">PICS</a> |
 <a href="Contact.action" class="footer"><%=i18nCache.getText("Footer.Contact", locale) %></a> |
 <a href="#" onclick="return openWindow('privacy_policy.jsp','PRIVACY');"
