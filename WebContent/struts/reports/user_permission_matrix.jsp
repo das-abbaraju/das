@@ -1,9 +1,9 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>User Permissions Matrix</title>
+<title><s:text name="%{scope}.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp" />
@@ -57,35 +57,55 @@ $(function(){
 
 <style type="text/css">
 .table-key {
-	float:left;
-	border:2px solid #4686bf;
-	margin:10px 0;
-	padding:0;
+	float: left;
+	border: 2px solid #4686bf;
+	margin: 10px 0;
+	padding: 0;
 }
+
 .table-key h4 {
-display:block;
-background-color:#eeeeee;
-position:relative;
-top:-10px;
-left:10px;
-width:36px;
-padding:0 0 0 4px;
+	display: block;
+	background-color: #eeeeee;
+	position: relative;
+	top: -10px;
+	left: 10px;
+	width: 80px;
+	padding: 0 0 0 4px;
 }
-.table-key ul {list-style:none;margin-top:-10px;width:160px;}
+
+.table-key ul {
+	list-style: none;
+	margin-top: -10px;
+	width: 240px;
+}
+
 .table-key ul li {
-list-style:none;
-display:block;
-float:left;
-width:80px;
-text-align:left;
+	list-style: none;
+	display: block;
+	float: left;
+	width: 120px;
+	text-align: left;
 }
-#form1 {clear:both;}
 
-.search-btn {margin-top:26px;}
+#form1 {
+	clear: both;
+}
 
-fieldset.form {border:none;background-color:transparent;clear:both;}
+.search-btn {
+	margin-top: 26px;
+}
 
-fieldset.form div.filterOption {width: 350px; padding-bottom: 10px;}
+fieldset.form {
+	border: none;
+	background-color: transparent;
+	clear: both;
+}
+
+fieldset.form div.filterOption {
+	width: 350px;
+	padding-bottom: 10px;
+}
+
 div.filterOption input {
 	float: left;
 	clear: both;
@@ -94,7 +114,7 @@ div.filterOption input {
 </head>
 <body>
 
-<h1>User Permissions Matrix</h1>
+<h1><s:text name="%{scope}.title" /></h1>
 
 <div id="search">
 	<div class="clear"></div>
@@ -113,12 +133,12 @@ div.filterOption input {
 			</fieldset>
 	</s:form>
 	<div class="table-key">
-		<h4>Key</h4>
+		<h4><s:text name="global.Legend" /></h4>
 		<ul>
-			<li>V = View</li>
-			<li>E = Edit</li>
-			<li>D = Delete</li>
-			<li>G = Grant</li>
+			<li><img src="images/preview.gif" width="14" height="14"> <s:text name="OpType.View" /></li>
+			<li><img src="images/edit_pencil.gif" width="14" height="14"> <s:text name="OpType.Edit" /></li>
+			<li><img src="images/cross.png" width="16" height="16"> <s:text name="OpType.Delete" /></li>
+			<li><img src="images/wrench.png" width="16" height="16"> <s:text name="OpType.Grant" /></li>
 		</ul>
 	</div>
 	<div class="clear"></div>
