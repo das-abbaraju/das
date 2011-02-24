@@ -120,6 +120,15 @@ public class TranslationActionSupport extends ActionSupport {
 	}
 
 	private void useKey(String key) {
+		if (key == null)
+			throw new RuntimeException("i18n key cannot be NULL");
+		if (key.length() == 0)
+			throw new RuntimeException("i18n key cannot be empty");
+		if (key.contains("'") || key.contains("\""))
+			throw new RuntimeException("i18n key cannot contain quotes");
+		if (key.contains(" "))
+			throw new RuntimeException("i18n key cannot contain spaces");
+		
 		try {
 			Map<String, Object> session = ActionContext.getContext().getSession();
 			String tracing = session.get(i18nTracing).toString();
