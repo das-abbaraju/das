@@ -1,30 +1,40 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
-<%@ page language="java" %>
-<%@page import="java.net.InetAddress"%>
-<%@page import="com.picsauditing.dao.AppPropertyDAO"%>
-<%@page import="com.picsauditing.util.SpringUtils"%>
-<%@page import="com.picsauditing.jpa.entities.AppProperty"%>
-<%@page import="com.picsauditing.util.Strings"%>
-<%@page import="java.util.Set"%>
-<%@ page import="com.picsauditing.access.MenuComponent"%>
-<%@ page import="com.picsauditing.access.PicsMenu"%>
-<%@ page import="com.picsauditing.access.OpPerms"%>
-<%@ page import="com.picsauditing.util.URLUtils"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.net.InetAddress"%>
 <%@ page import="java.net.URLEncoder"%>
-<%@ page import="java.util.Date"%>
-<%@ page import="com.picsauditing.search.Database"%>
 <%@ page import="java.sql.Timestamp"%>
 <%@ page import="java.sql.SQLException"%>
-<%@page import="com.picsauditing.access.Permissions"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.util.Locale"%>
+<%@ page import="java.util.Set"%>
+<%@ page import="com.opensymphony.xwork2.ActionContext"%>
+<%@ page import="com.picsauditing.access.MenuComponent"%>
+<%@ page import="com.picsauditing.access.OpPerms"%>
+<%@ page import="com.picsauditing.access.PicsMenu"%>
+<%@ page import="com.picsauditing.access.Permissions"%>
+<%@ page import="com.picsauditing.dao.AppPropertyDAO"%>
+<%@ page import="com.picsauditing.jpa.entities.AppProperty"%>
+<%@ page import="com.picsauditing.PICS.I18nCache"%>
+<%@ page import="com.picsauditing.util.SpringUtils"%>
+<%@ page import="com.picsauditing.util.Strings"%>
+<%@ page import="com.picsauditing.util.URLUtils"%>
+<%@ page import="com.picsauditing.search.Database"%>
 <%
+	I18nCache i18nCache = I18nCache.getInstance();
+
 	String version = com.picsauditing.actions.PicsActionSupport.getVersion();
 	Permissions permissions = (Permissions)session.getAttribute("permissions");
 	if (permissions == null) {
 		permissions = new Permissions();
 	}
+	
+	Locale locale = Locale.ENGLISH;
+	try {
+		locale = (Locale) ActionContext.getContext().get(ActionContext.LOCALE);
+	} catch (Exception e) {
+	}
+
 	boolean pageIsSecure = false;
 	if (request.getLocalPort() == 443)
 		pageIsSecure = true;
@@ -37,6 +47,7 @@
 	boolean showMessage = !Strings.isEmpty(appProperty.getValue());
 %>
 <%@ taglib uri="sitemesh-decorator" prefix="decorator"%>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
 <head>
 <title>PICS - <decorator:title default="PICS" /></title>
 <meta http-equiv="Cache-Control" content="no-cache" />
@@ -171,7 +182,7 @@ function buildAction(type, id){
 		<form action=Search.action method="get">
 			<input type="hidden" value="search" name="button" />
 			<input name="searchTerm" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
-			<input type="submit" value="Search" id="search_button" onclick="getResult(null)" />
+			<input type="submit" value="<%=i18nCache.getText("Header.Search", locale)%>" id="search_button" onclick="getResult(null)" />
 		</form>
 	</td>
 <% } %>
@@ -187,12 +198,16 @@ function buildAction(type, id){
 	%>
 		<b class="head-phone"><%=phone%></b>&emsp;&emsp;
 	<% if (permissions.isLoggedIn()) { %>
-		<span id="name">Welcome, <%= permissions.hasPermission(OpPerms.EditProfile) ? 
-			"<a href='ProfileEdit.action' title='" + permissions.getAccountName().replaceAll("'", "\'") + "'>"+permissions.getName()+"</a>"
-			: permissions.getName() %></span>
-	| <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>">PICS Home</a> | <a href="http://www.picsauditing.com">PICS</a> | <a href="Login.action?button=logout">Logout</a>
+		<span id="name">
+			<% if (permissions.hasPermission(OpPerms.EditProfile)) { %>
+				<%=i18nCache.getText("Header.WelcomeLink", locale, permissions.getAccountName(), permissions.getName())%>
+			<% } else { %>
+				<%=i18nCache.getText("Header.WelcomeNoLink", locale) %>
+			<% } %>
+		</span>
+	| <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>"><%=i18nCache.getText("Header.Home", locale) %></a> | <a href="http://www.picsauditing.com">PICS</a> | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale) %></a>
 	<% } else { %>
-	<span id="name">Welcome</span> | <a href="Login.action">Login</a> | <a href="ContractorRegistration.action">Register</a>
+		<span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span> | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a> | <a href="ContractorRegistration.action"><%=i18nCache.getText("Header.Register", locale)%></a>
 	<% } %>
 	</p>
 </td>
@@ -230,14 +245,13 @@ function buildAction(type, id){
 	if ("1".equals(System.getProperty("pics.debug")))
 		chatIcon = "";
 %>
-	<a href="http://help.picsauditing.com/wiki/<decorator:getProperty property="meta.help"
-		default="Help_Center" />" target="_BLANK">Help Center</a>
+	<a href="http://help.picsauditing.com/wiki/<decorator:getProperty property="meta.help" default="Help_Center" />" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
 	<a id="_lpChatBtn"
 	onmouseover="showChat();"
 	onmouseout="hideChat();"
 	href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
 	target='chat90511184'
-	onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >Chat</a>
+	onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><%=i18nCache.getText("Header.Chat", locale) %></a>
 </div>
 <div id="content">
 <% if (!Strings.isEmpty(chatIcon)) { %>
@@ -332,18 +346,18 @@ try {
 	if( startDate != null ) {
 		long totalTime = System.currentTimeMillis() - startDate.getTime();
 		%><div class="pageStats" title="Server: <%= java.net.InetAddress.getLocalHost().getHostName() %>">
-			App Version: <%=version%><br />
-			Process Time: <%= Math.round(totalTime/10)/100f%>s
+			<%=i18nCache.getText("Footer.Version", locale) %>: <%=version%><br />
+			<%=i18nCache.getText("Footer.ProcessTime", locale)%>: <%= Math.round(totalTime/10)/100f%>s
 		</div><%
 	}
 %>
 <div id="footermain">
 <div id="footercontent">
-Copyright &copy; 2011
+<%=i18nCache.getText("Footer.Copyright", locale) %>
 <a href="http://www.picsauditing.com/" class="footer">PICS</a> |
-<a href="Contact.action" class="footer">Contact Us</a> |
+<a href="Contact.action" class="footer"><%=i18nCache.getText("Footer.Contact", locale) %></a> |
 <a href="#" onclick="return openWindow('privacy_policy.jsp','PRIVACY');"
-	title="Opens in new window" class="footer">Privacy Policy</a>
+	title="<%=i18nCache.getText("global.NewWindow", locale)%>" class="footer"><%=i18nCache.getText("Footer.Privacy", locale) %></a>
 <%
 if (permissions.hasPermission(OpPerms.Translator)) {
 	Set<String> usedKeys = (Set<String>)session.getAttribute("usedI18nKeys");
