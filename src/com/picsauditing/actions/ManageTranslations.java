@@ -69,7 +69,8 @@ public class ManageTranslations extends ReportActionSupport {
 					output = out.toJSONString();
 					return BLANK;
 				}
-				search = translation.getKey().substring(0, translation.getKey().indexOf("."));
+				key = new String[1];
+				key[0] = translation.getKey().substring(0, translation.getKey().indexOf("."));
 			}
 		}
 
