@@ -4,7 +4,7 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title><s:text name="%{scope}.title" /> <s:property value="contractor.name" /></title>
+<title><s:text name="%{scope}.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
@@ -37,24 +37,6 @@
 	<a class="add" href="AuditOverride.action?id=<s:property value="id"/>">Create New Audit</a>
 </s:if>
 <s:iterator value="auditTypes.keySet()" var="classType" status="stat">
-	<s:if test="#classType.name == getText('AuditType.17.name') && imScores.keySet().size > 0">
-		<h3>Overall <s:text name="AuditType.17.name" /></h3>
-		<table class="report">
-			<thead>
-			<tr>
-				<th>Audit Name</th>
-				<th>Overall Score</th>
-			</tr>
-			</thead>
-			<s:iterator value="imScores.keySet()" status="auditStatus" id="key">
-				<tr>
-					<td><s:property value="#key"/></td>
-					<td class="center"><s:property value="imScores.get(#key)"/></td>
-				</tr>
-			</s:iterator>
-		</table>
-	</s:if>
-
 	<h3><a name="<s:property value="getSafeName(#classType.name)" />"><s:property value="#classType" escape="false" /></a></h3>
 	<table class="report" id="table_<s:property value="getSafeName(#classType.name)" />">
 		<thead>
@@ -135,6 +117,24 @@
 			</tr>
 		</tbody>
 	</table>
+	
+	<s:if test="#classType.name == getText('AuditType.17.name') && imScores.keySet().size > 0">
+		<h3>Overall <s:text name="AuditType.17.name" /></h3>
+		<table class="report">
+			<thead>
+			<tr>
+				<th>Audit Name</th>
+				<th>Overall Score</th>
+			</tr>
+			</thead>
+			<s:iterator value="imScores.keySet()" status="auditStatus" id="key">
+				<tr>
+					<td><s:property value="#key"/></td>
+					<td class="center"><s:property value="imScores.get(#key)"/></td>
+				</tr>
+			</s:iterator>
+		</table>
+	</s:if>
 	
 	<s:if test="expiredAudits.get(#classType).size > 0">
 		<h3>Expired <s:property value="#classType" escape="false" /> Audits</h3>
