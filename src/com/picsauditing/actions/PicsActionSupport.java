@@ -408,6 +408,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return alertMessages;
 	}
 
+	/**
+	 * @return the i18n text to use for this page's title
+	 */
+	public String getPageTitle() {
+		return getActionName() + ".title";
+	}
+	
 	public boolean isStringEmpty(String s) {
 		return Strings.isEmpty(s);
 	}

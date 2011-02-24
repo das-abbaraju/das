@@ -25,7 +25,7 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	protected int id;
 	// protected Account account;
-	protected String subHeading;
+	protected String subHeading = null;
 	protected List<Note> notes;
 	protected NoteCategory noteCategory = NoteCategory.General;
 
@@ -49,6 +49,9 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	public String getSubHeading() {
+		if (subHeading == null) {
+			subHeading = getText(getPageTitle());
+		}
 		return subHeading;
 	}
 

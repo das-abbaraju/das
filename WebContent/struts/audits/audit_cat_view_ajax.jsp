@@ -21,10 +21,10 @@ $(function() {
 
 	<div class="buttons" id="cat-nav-buttons">
 		<div class="next">
-			<a href="#" id="next_cat" class="picsbutton right">Next</a>
+			<a href="#" id="next_cat" class="picsbutton right"><s:text name="button.Next" /> </a>
 		</div>
 		<div class="last">
-			<a href="#" id="done" class="picsbutton right">Done</a>
+			<a href="#" id="done" class="picsbutton right"><s:text name="button.Done" /></a>
 		</div>
 	</div>
 </s:else>

@@ -61,6 +61,7 @@ public class ChartFlagCount extends ChartSSAction {
 				set.setLink("ContractorList.action?filter.flagStatus=" + row.getLabel());
 			if (permissions.hasGroup(User.GROUP_CSR))
 				set.setLink("ReportContractorOperatorFlag.action?filter.flagStatus=" + row.getLabel());
+			set.setLabel(getText("Flag." + row.getLabel()));
 			chart.addSet(set);
 		}
 		return chart;

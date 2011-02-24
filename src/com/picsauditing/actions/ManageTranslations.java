@@ -26,7 +26,7 @@ public class ManageTranslations extends ReportActionSupport {
 	private String search;
 	private String searchType;
 	private Locale localeFrom = Locale.ENGLISH;
-	private Locale localeTo = Locale.FRENCH;
+	private Locale localeTo = null;
 	private List<Translation> list;
 	private AppTranslation translation;
 	private ReportFilter filter;
@@ -44,6 +44,10 @@ public class ManageTranslations extends ReportActionSupport {
 
 		permissions.tryPermission(OpPerms.Translator);
 
+		if (localeTo == null) {
+			localeTo = permissions.getLocale();
+		}
+		
 		if (button != null) {
 			if (button.startsWith("tracing")) {
 				Map<String, Object> session = ActionContext.getContext().getSession();
@@ -108,7 +112,7 @@ public class ManageTranslations extends ReportActionSupport {
 				sql.addWhere("tcount.total > 10");
 			}
 			if (searchType.equals("MissingTo")) {
-				sql.addWhere("t2.id IS NULL");
+				sql.addWhere("t2.id IS NULL AND t1.msgValue != 'Translation missing'");
 			}
 			if (searchType.equals("MissingFrom")) {
 				sql.addWhere("t1.msgValue = 'Translation missing'");
@@ -123,7 +127,7 @@ public class ManageTranslations extends ReportActionSupport {
 
 		if (!Strings.isEmpty(search))
 			sql.addWhere("t1.msgValue LIKE '%" + Utilities.escapeQuotes(search) + "%' OR LOWER(t1.msgKey) LIKE '%"
-					+ Utilities.escapeQuotes(key).toLowerCase() + "%'");
+					+ Utilities.escapeQuotes(search).toLowerCase() + "%'");
 
 		if (!Strings.isEmpty(key)) {
 			sql.addWhere("LOWER(t1.msgKey) LIKE '%" + Utilities.escapeQuotes(key).toLowerCase() + "%'");
@@ -136,6 +140,9 @@ public class ManageTranslations extends ReportActionSupport {
 				addActionMessage("Open pages containing internationalized text and then return to this report.");
 				return SUCCESS;
 			}
+		} else if(permissions.getAdminID() == 0 && (permissions.isContractor() || permissions.isOperatorCorporate())) {
+			//addAlertMessage("Turn On Tracing to Use this report");
+			//return SUCCESS;
 		}
 
 		run(sql);
