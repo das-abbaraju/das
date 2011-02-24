@@ -43,5 +43,7 @@
 			</div>
 		</li>
 	</s:if>
-	<li><a href="AuditTypeRuleSearch.action?filter.operator=<s:property value="operator.name"/>">Search for all Audit Type Rules specific to this operator</a></li>
+	<pics:permission perm="ManageAuditTypeRules">
+		<li><a href="AuditTypeRuleSearch.action?filter.operator=<s:property value="operator.name"/>">Search for all Audit Type Rules specific to this operator</a></li>
+	</pics:permission>
 </ol>

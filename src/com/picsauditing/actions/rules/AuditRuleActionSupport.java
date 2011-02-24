@@ -124,6 +124,9 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 				return true;
 			OperatorAccount opAccount = rule.getOperatorAccount();
 			if (opAccount != null) {
+				if (permissions.isAdmin() && (opAccount.isDemo() || opAccount.getStatus().isPending()))
+					return true;
+				
 				for (AccountUser accUser : opAccount.getAccountUsers()) {
 					if (accUser.getUser().getId() == permissions.getUserId())
 						return true;

@@ -523,6 +523,9 @@ public class Permissions implements Serializable {
 			return true;
 		
 		if (operator != null) {
+			if (this.isAdmin() && (operator.isDemo() || operator.getStatus().isPending()))
+				return true;
+			
 			for (AccountUser accUser : operator.getAccountUsers()) {
 				if (accUser.getUser().getId() == this.getUserId())
 					return true;

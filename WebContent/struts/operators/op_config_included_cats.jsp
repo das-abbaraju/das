@@ -40,5 +40,7 @@
 			</div>
 		</li>
 	</s:if>
-	<li><a href="CategoryRuleSearch.action?filter.operator=<s:property value="operator.name"/>">Search for all Category Rules specific to this operator</a></li>
+	<pics:permission perm="ManageCategoryRules">
+		<li><a href="CategoryRuleSearch.action?filter.operator=<s:property value="operator.name"/>">Search for all Category Rules specific to this operator</a></li>
+	</pics:permission>
 </ol>
