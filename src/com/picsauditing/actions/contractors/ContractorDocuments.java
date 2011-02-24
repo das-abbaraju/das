@@ -46,8 +46,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 		this.auditTypeDAO = auditTypeDAO;
 		this.caoDAO = caoDAO;
 		this.auditTypeRuleCache = auditTypeRuleCache;
-
-		subHeading = "Document Index";
 	}
 
 	@Override
@@ -55,6 +53,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
+		subHeading = getText(this.getClass().getSimpleName() + ".title");
 		findContractor();
 
 		Map<String, List<ContractorAudit>> allIMAudits = new TreeMap<String, List<ContractorAudit>>();
