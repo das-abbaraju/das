@@ -2,9 +2,18 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <script>
-function deleteRule() {
-	return confirm('You are deleting a rule with potentially broad reaching affects. Are you sure you want to do this?');
-}
+function deleteRule(element,ruleID) {
+	var deleteMe = confirm('You are deleting a rule with potentially broad reaching affects. Are you sure you want to do this?');
+	if (!deleteMe)
+		return;
+	
+	$.ajax({
+		url: '<s:property value="urlPrefix"/>RuleEditor.action', 
+		data: {button: 'Delete', id: ruleID}, 
+		success: function() {
+			$(element).remove();
+		}
+	});}
 </script>
 <s:if test="rules.size() > 0">
 	<table class="report">
@@ -146,7 +155,7 @@ function deleteRule() {
 					</s:if>
 					<s:if test="columnMap.get('delete')">
 						<s:if test="isCanEditRule(#r)">
-							<td class="center"><a class="remove" onclick="return deleteRule()" href="<s:property value="urlPrefix"/>RuleEditor.action?id=<s:property value="id"/>&button=Delete" target="_BLANK"></a></td>
+							<td class="center"><a class="remove" href="javascript:deleteRule('#<s:property value="urlPrefix"/>Rule<s:property value="id"/>',<s:property value="id"/>);"></a></td>
 						</s:if>
 						<s:else>
 							<td>&nbsp;</td>
