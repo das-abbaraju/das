@@ -27,7 +27,7 @@
 	if (permissions == null) {
 		permissions = new Permissions();
 	}
-	
+
 	Locale locale = TranslationActionSupport.getLocaleStatic();
 
 	boolean pageIsSecure = false;

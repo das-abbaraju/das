@@ -17,7 +17,7 @@ public class I18nInterceptor extends com.opensymphony.xwork2.interceptor.I18nInt
 
 		String result;
 
-		if (permissions != null) {
+		if (permissions != null && permissions.isLoggedIn()) {
 			Locale locale = permissions.getLocale();
 			saveLocale(invocation, locale);
 			result = invocation.invoke();
