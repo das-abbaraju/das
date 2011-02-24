@@ -78,7 +78,7 @@ public class Permissions implements Serializable {
 		phone = "";
 		fax = "";
 		timezone = null;
-		locale = null;
+		locale = Locale.ENGLISH;
 		accountID = 0;
 		accountName = "";
 		accountType = "";
