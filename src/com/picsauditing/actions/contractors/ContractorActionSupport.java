@@ -145,7 +145,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 					menu.add(menuComponent);
 				}
 			} else if (pqfs.size() > 1) {
-				MenuComponent subMenu = new MenuComponent(getText("AuditType.1.name"), "ContractorDocuments.action?id=" + id + "#PQF");
+				MenuComponent subMenu = new MenuComponent(getText("AuditType.1.name"), "ContractorDocuments.action?id=" + id);
 				menu.add(subMenu);
 				for (ContractorAudit audit : pqfs) {
 					// at least one cao needs to be created for the contractor
@@ -159,7 +159,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add the Annual Updates
-			MenuComponent subMenu = new MenuComponent(getText("AuditType.11.name"), "ContractorDocuments.action?id=" + id + "#AU");
+			MenuComponent subMenu = new MenuComponent(getText("AuditType.11.name"), "ContractorDocuments.action?id="
+					+ id + "#" + ContractorDocuments.getSafeName(getText("AuditType.11.name")));
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
@@ -186,7 +187,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 				&& (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorInsurance))) {
 			// Add InsureGUARD
 			MenuComponent subMenu = new MenuComponent(getText("global.InsureGUARD"), "ContractorDocuments.action?id=" + id
-					+ "#Policy");
+					+ "#" + ContractorDocuments.getSafeName(getText("global.InsureGUARD")));
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
@@ -214,7 +215,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add Integrity Management
-			MenuComponent subMenu = new MenuComponent("IM", "ContractorDocuments.action?id=" + id + "#IM");
+			MenuComponent subMenu = new MenuComponent("IM", "ContractorDocuments.action?id=" + id + "#"
+					+ ContractorDocuments.getSafeName(getText("AuditType.17.name")));
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
@@ -233,7 +235,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
 			// All Other Audits
-			MenuComponent subMenu = new MenuComponent(getText("global.AuditGUARD"), "ContractorDocuments.action?id=" + id);
+			MenuComponent subMenu = new MenuComponent(getText("global.AuditGUARD"), "ContractorDocuments.action?id="
+					+ id + "#" + ContractorDocuments.getSafeName(getText("global.AuditGUARD")));
 			for (ContractorAudit audit : auditList) {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit)) {
 					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {

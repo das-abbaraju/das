@@ -64,7 +64,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 
 		for (ContractorAudit audit : getAudits()) {
 			DocumentTab tab = new DocumentTab(audit.getAuditType());
-			if (!audit.isExpired()) {
+			if (!audit.isExpired() && audit.getCurrentOperators().size() > 0) {
 				if (auditMap.get(audit.getAuditType()) == null)
 					auditMap.put(audit.getAuditType(), new ArrayList<ContractorAudit>());
 
@@ -226,66 +226,46 @@ public class ContractorDocuments extends ContractorActionSupport {
 	}
 
 	public class DocumentTab implements Comparable<DocumentTab> {
-		private int order;
-		private String name;
-		private String safeName;
-		private String jsName;
+		private AuditType type;
 
 		public DocumentTab(AuditType type) {
-			name = type.getClassType().name();
-			safeName = type.getClassType().name();
-			jsName = name.toLowerCase().replaceAll(" ", "_");
-
-			if (type.getClassType().isPqf())
-				order = 1;
-			else if (type.isAnnualAddendum()) {
-				order = 2;
-				name = type.getAuditName() + "s";
-				safeName = "AU";
-				jsName = type.getAuditName().toLowerCase().replaceAll(" ", "_");
-			} else if (type.getClassType().isPolicy()) {
-				order = 3;
-				name = "InsureGUARD&trade;";
-				jsName = "insureguard\\\\&trade\\\\;";
-			} else if (type.getClassType().isIm()) {
-				order = 4;
-				name = "Integrity Management";
-			} else if (type.getId() == AuditType.COR || type.getId() == AuditType.SUPPLEMENTCOR) {
-				order = 5;
-				name = "COR/SECOR";
-				safeName = "COR";
-				jsName = "COR\\\\/SECOR";
-			} else {
-				order = 6;
-				name += "s";
-				jsName += "s";
-			}
+			this.type = type;
 		}
 
 		public int getOrder() {
-			return order;
+			if (type.isAnnualAddendum())
+				return 1;
+			else if (type.getClassType().isAudit())
+				return 4;
+			
+			return type.getClassType().ordinal();
 		}
 
 		public String getName() {
-			return name;
+			if (type.isAnnualAddendum() || type.getClassType().isIm())
+				return getText(type.getI18nKey("name"));
+			
+			if (type.getClassType().isPqf())
+				return getText("AuditType.1.name");
+			
+			if (type.getClassType().isPolicy()) 
+				return getText("global.InsureGUARD");
+			
+			return getText("global.AuditGUARD");
 		}
-
-		public String getSafeName() {
-			return safeName;
-		}
-
-		public String getJsName() {
-			return jsName;
-		}
-
+		
 		@Override
 		public int compareTo(DocumentTab o) {
-			return this.order - o.getOrder();
+			return this.getOrder() - o.getOrder();
 		}
 
 		@Override
 		public String toString() {
-			return this.name;
+			return this.getName();
 		}
+	}
+	
+	public static String getSafeName(String name) {
+		return name.toLowerCase().replaceAll(" ", "_").replaceAll("&(.*?);", "");
 	}
 }
