@@ -107,4 +107,7 @@ public class TranslationActionSupport extends ActionSupport {
 		return super.getTexts(aBundleName);
 	}
 
+	public Set<String> getI18nUsedKeys() {
+		return usedKeys;
+	}
 }
