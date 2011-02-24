@@ -2,18 +2,9 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <script>
-function deleteRule(element,ruleID,ruleType) {
-	var deleteMe = confirm('You are deleting a rule with potentially broad reaching affects. Are you sure you want to do this?');
-	if (!deleteMe)
-		return;
-	
-	$.ajax({
-		url: 'AuditTypeRuleTableAjax.action', 
-		data: {button: 'DeleteRule', id: ruleID, ruleType: ruleType}, 
-		success: function() {
-			$(element).remove();
-		}
-	});}
+function deleteRule() {
+	return confirm('You are deleting a rule with potentially broad reaching affects. Are you sure you want to do this?');
+}
 </script>
 <s:if test="rules.size() > 0">
 	<table class="report">
@@ -155,7 +146,7 @@ function deleteRule(element,ruleID,ruleType) {
 					</s:if>
 					<s:if test="columnMap.get('delete')">
 						<s:if test="isCanEditRule(#r)">
-							<td class="center"><a class="remove" href="javascript:deleteRule('#<s:property value="urlPrefix"/>Rule<s:property value="id"/>',<s:property value="id"/>,'<s:property value="urlPrefix.toLowerCase()"/>');"></a></td>
+							<td class="center"><a class="remove" onclick="return deleteRule()" href="<s:property value="urlPrefix"/>RuleEditor.action?id=<s:property value="id"/>&button=Delete" target="_BLANK"></a></td>
 						</s:if>
 						<s:else>
 							<td>&nbsp;</td>
