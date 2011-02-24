@@ -65,7 +65,7 @@ public class ReportAccountAudits extends ReportAccount {
 			// Stop duplicates from appearing
 			sql.addGroupBy("a.name");
 		}
-		if (permissions.isOperator()) {
+		if (permissions.isOperatorCorporate()) {
 			sql.addField("gc.waitingOn");
 			if (download) {
 				sql.addJoin("LEFT JOIN contractor_tag cg ON cg.conID = a.id");
@@ -101,10 +101,11 @@ public class ReportAccountAudits extends ReportAccount {
 	public void addExcelColumns() {
 		super.addExcelColumns();
 
-		if (permissions.isOperator()) {
-			excelSheet.addColumn(new ExcelColumn("waitingOn", "Waiting On", ExcelCellType.Enum), 405);
+		if (permissions.isOperatorCorporate())
 			excelSheet.addColumn(new ExcelColumn("tag", "Contractor Tag"));
-		}
+		if(permissions.isOperator())
+			excelSheet.addColumn(new ExcelColumn("waitingOn", "Waiting On", ExcelCellType.Enum), 405);
+		
 		excelSheet.addColumn(new ExcelColumn("2340answer", "Small Business"));
 		excelSheet.addColumn(new ExcelColumn("2354answer", "Minority-Owned"));
 		excelSheet.addColumn(new ExcelColumn("2373answer", "Women-Owned"));

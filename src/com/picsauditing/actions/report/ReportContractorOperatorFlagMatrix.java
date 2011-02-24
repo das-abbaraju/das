@@ -63,6 +63,14 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 			
 		sql.addJoin("JOIN generalcontractors gc on gc.subid = a.id");
 		sql.addJoin("JOIN accounts operator on operator.id = gc.genid");
+		
+		if (permissions.isOperatorCorporate()) {
+			if (download) {
+				sql.addJoin("LEFT JOIN contractor_tag cg ON cg.conID = a.id");
+				sql.addJoin("LEFT JOIN operator_tag ot ON ot.id = cg.tagID AND ot.opID = " + permissions.getAccountId());
+				sql.addField("GROUP_CONCAT(DISTINCT ot.tag ORDER BY ot.tag SEPARATOR ', ') AS tag");
+			}
+		}
 
 		sql.addField("operator.name AS opName");
 		sql.addField("operator.id AS opId");
@@ -73,6 +81,7 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 		orderByDefault = "a.name, operator.name";
 
 		report.setLimit(-1);
+		sql.addGroupBy("operator.id, c.id");
 		
 	}
 
@@ -139,5 +148,8 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 		excelSheet.addColumn(new ExcelColumn("opName", "Operator Name", ExcelCellType.String), 30);
 		if(permissions.isCorporate())
 			excelSheet.addColumn(new ExcelColumn("flag", "Flag", ExcelCellType.String), 40);
+		
+		if (permissions.isOperatorCorporate())
+			excelSheet.addColumn(new ExcelColumn("tag", "Contractor Tag"));
 	}
 }

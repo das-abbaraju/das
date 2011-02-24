@@ -86,7 +86,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	protected void addExcelColumns() {
 		excelSheet.setData(data);
 		// Add the following columns to the far right
-		if (permissions.isOperator()) {
+		if (permissions.isOperatorCorporate()) {
 			excelSheet.addColumn(new ExcelColumn("flag", "Flag", ExcelCellType.Date), 400);
 			if (permissions.hasPermission(OpPerms.ViewUnApproved)) {
 				excelSheet.addColumn(new ExcelColumn("workStatus", "Work Status"));
