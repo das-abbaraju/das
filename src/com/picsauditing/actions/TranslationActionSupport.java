@@ -22,13 +22,11 @@ public class TranslationActionSupport extends ActionSupport {
 	static final protected String i18nTracing = "i18nTracing";
 
 	public static Locale getLocaleStatic() {
-		Locale locale = Locale.ENGLISH;
 		try {
-			locale = (Locale) ActionContext.getContext().get(ActionContext.LOCALE);
+			return (Locale) ActionContext.getContext().get(ActionContext.LOCALE);
 		} catch (Exception defaultToEnglish) {
+			return Locale.ENGLISH;
 		}
-
-		return locale;
 	}
 
 	public String getScope() {
@@ -44,11 +42,11 @@ public class TranslationActionSupport extends ActionSupport {
 	public String getText(String aTextName) {
 		return getText(aTextName, (String) null);
 	}
-	
+
 	/**
 	 * This is for a paramater-based getText
 	 */
-	public String getText(String aTextName, Object... args ) {
+	public String getText(String aTextName, Object... args) {
 		return getText(aTextName, null, args);
 	}
 
@@ -64,7 +62,6 @@ public class TranslationActionSupport extends ActionSupport {
 
 	@Override
 	public String getText(String aTextName, String defaultValue, String obj) {
-		// TODO Auto-generated method stub
 		return super.getText(aTextName, defaultValue, obj);
 	}
 
@@ -106,13 +103,11 @@ public class TranslationActionSupport extends ActionSupport {
 
 	@Override
 	public ResourceBundle getTexts() {
-		// TODO Auto-generated method stub
 		return super.getTexts();
 	}
 
 	@Override
 	public ResourceBundle getTexts(String aBundleName) {
-		// TODO Auto-generated method stub
 		return super.getTexts(aBundleName);
 	}
 
