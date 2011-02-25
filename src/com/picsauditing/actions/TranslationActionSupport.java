@@ -44,6 +44,13 @@ public class TranslationActionSupport extends ActionSupport {
 	public String getText(String aTextName) {
 		return getText(aTextName, (String) null);
 	}
+	
+	/**
+	 * This is for a paramater-based getText
+	 */
+	public String getText(String aTextName, Object... args ) {
+		return getText(aTextName, null, args);
+	}
 
 	@Override
 	public String getText(String aTextName, String defaultValue) {
