@@ -9,7 +9,7 @@
 				<table class="report" style="width: 500px;">
 					<thead>
 						<tr>
-							<th>Operator</th>
+							<th><s:text name="global.Operator" /></th>
 							<th>Since</th>
 							<th>Orientation</th>
 							<th>Edit</th>
@@ -18,10 +18,10 @@
 					<s:iterator value="employee.employeeSites" id="site" status="stat">
 						<s:if test="#site.current && #site.jobSite == null">
 							<tr>
-								<td><s:property value="operator.name" /></td>
-								<td><s:property value="effectiveDate"/></td>
+								<td><s:text name="%{operator.getI18nKey('name')}" /></td>
+								<td><s:date name="effectiveDate" /></td>
 								<td>
-									<s:property value="orientationDate"/>
+									<s:date name="orientationDate"/>
 								</td>
 								<td class="center"><a href="#" onclick="getSite(<s:property value="id" />); return false;" class="edit"></a>
 								</td>
@@ -33,7 +33,7 @@
 							<s:select onchange="addJobSite(this);" list="hseOperators" listKey="id" 
 								listValue="name" headerKey="" headerValue=" - Assign Site - " id="hseOperator" />
 							</s:if><s:else>
-								<h5>This employee has been assigned to all available HSE sites.</h5>
+								<h5><s:text name="ManageEmployees.message.AssignedAllSites"><s:param><s:text name="ManageEmployees.message.HSESites" /></s:param></s:text>This employee has been assigned to all available HSE sites.</h5>
 							</s:else>
 						</td>
 					</tr>
@@ -67,7 +67,7 @@
 						<s:if test="#site.current && #site.jobSite != null">
 							<s:set name="oqSiteCount" value="#oqSiteCount + 1" />
 							<tr>
-								<td><s:property value="operator.name" /></td>
+								<td><s:text name="%{operator.getI18nKey('name')}" /></td>
 								<td><s:property value="#site.jobSite.label" /></td>
 								<td><s:property value="effectiveDate"/></td>
 								<td class="center"><a href="#" onclick="getSite(<s:property value="id" />); return false;" class="edit"></a>
@@ -192,7 +192,7 @@
 </s:if>
 <s:if test="employee.prevAssigned">
 	<fieldset class="form">
-		<h2 class="formLegend">Previously Assigned Sites/Projects</h2>
+		<h2 class="formLegend"><s:text name="ManageEmployees.message.PreviouslyAssigned" />Previously Assigned Sites/Projects</h2>
 		<ol>
 			<li>
 				<table class="report">
@@ -208,10 +208,10 @@
 						<s:if test="!#site.current"> 
 							<tr>
 								<td>
-									<s:if test="jobSite.id > 0">OQ</s:if>
-									<s:else>HSE</s:else>
+									<s:if test="jobSite.id > 0"><s:text name="ManageEmployees.message.OQProjects" /></s:if>
+									<s:else><s:text name="ManageEmployees.message.HSESites" /></s:else>
 								</td>
-								<td><s:property value="operator.name" /></td>
+								<td><s:text name="%{operator.getI18nKey('name')}" /></td>
 								<td>
 									<s:if test="jobSite.id > 0"><s:property value="#site.jobSite.label" /></s:if>
 								</td>

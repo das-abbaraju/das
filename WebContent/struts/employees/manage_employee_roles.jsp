@@ -9,13 +9,13 @@
 			<table class="report">
 				<thead>
 					<tr>
-						<th colspan="2">Role</th>
+						<th colspan="2"><s:text name="ManageEmployees.header.JobRoles" /></th>
 					</tr>
 				</thead>
-				<s:iterator value="employee.employeeRoles">
+				<s:iterator value="employee.employeeRoles" var="er">
 					<tr>
-						<td><s:property value="jobRole.name"/></td>
-						<td class="right"><a href="#" onclick="return removeJobRole('<s:property value="id"/>');" class="remove"></a></td>
+						<td><s:text name="%{#er.jobRole.getI18nKey('name')}" /></td>
+						<td class="right"><a href="#" onclick="return removeJobRole('<s:property value="#er.id"/>');" class="remove"></a></td>
 					</tr>
 				</s:iterator>
 			</table>
@@ -23,10 +23,10 @@
 	</s:if>
 	<li>
 		<s:if test="unusedJobRoles.size > 0">
-			<s:select list="unusedJobRoles" onchange="addJobRole(this.value)" headerKey="" headerValue=" - Add New Role - " listKey="id" listValue="name"/>
+			<s:select list="unusedJobRoles" onchange="addJobRole(this.value)" headerKey="" headerValue=" - %{getText('ManageEmployees.message.AddNewRole')} - " listKey="id" listValue="name"/>
 		</s:if>
 		<s:else>
-			<h5>This employee has been assigned all job roles.</h5>
+			<h5><s:text name="ManageEmployees.message.AssignedAllRoles" /></h5>
 		</s:else>
 	</li>
 </ol>

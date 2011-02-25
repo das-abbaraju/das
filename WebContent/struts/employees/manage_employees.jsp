@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
@@ -192,12 +193,12 @@ div.dataTables_length { width: 35%; }
 
 	<s:if test="account.employees.size() == 0 && employee == null">
 		<div class="info">
-			<s:text name="%{scope}.message.NoEmployees"><s:param><s:text name="%{scope}.message.Add" /></s:param></s:text>
+			<s:text name="%{scope}.message.NoEmployees"><s:param><s:text name="%{scope}.link.Add" /></s:param></s:text>
 		</div>
 	</s:if>
 
-	<a href="?id=<s:property value="account.id"/>&button=Add" class="add"><s:text name="%{scope}.message.Add" /></a><br />
-	<a href="#" onclick="showExcelUpload(); return false;" class="add"><s:text name="%{scope}.message.Import" /></a>
+	<a href="?id=<s:property value="account.id"/>&button=Add" class="add"><s:text name="%{scope}.link.Add" /></a><br />
+	<a href="#" onclick="showExcelUpload(); return false;" class="add"><s:text name="%{scope}.link.Import" /></a>
 
 	<table>
 		<tr>
@@ -222,7 +223,7 @@ div.dataTables_length { width: 35%; }
 									<td><a href="?employee.id=<s:property value="#e.id" />"><s:property value="#e.firstName"/></a></td>
 									<td><s:property value="#e.title"/></td>
 									<td><s:property value="#e.classification"/></td>
-									<td class="center"><a href="EmployeeDetail.action?employee.id=<s:property value="#e.id" />"><s:text name="%{scope}.message.View" /></a></td>
+									<td class="center"><a href="EmployeeDetail.action?employee.id=<s:property value="#e.id" />"><s:text name="%{scope}.link.View" /></a></td>
 								</tr>
 							</s:iterator>
 						</tbody>
@@ -234,11 +235,9 @@ div.dataTables_length { width: 35%; }
 			<s:if test="employee != null">
 				<td style="vertical-align:top;">
 					<s:if test="employee.id > 0">
-						<a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />"><s:text name="%{scope}.message.ViewProfile" /></a>
+						<a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />"><s:text name="%{scope}.link.ViewProfile" /></a>
 						<a href="#" class="help cluetip" rel="#cluetip1" title="View Profile/Assigned Tasks"></a>
-						<div id="cluetip1">
-							<s:text name="%{scope}.help.ProfileInfo" />Each Employee has a profile page visible to other employees and operators that lists information including assigned tasks and qualifications.
-						</div>
+						<div id="cluetip1"><s:text name="%{scope}.help.ProfileInfo" /></div>
 						<br clear="all" />
 					</s:if>
 					<s:form id="employeeForm">
@@ -384,10 +383,10 @@ div.dataTables_length { width: 35%; }
 						<s:if test="!selectRolesSites">
 							<fieldset class="form submit">
 								<button type="submit" value="<s:property value="auditID > 0 && employee.id == 0 ? 'Continue' : 'Save'" />" name="button" class="picsbutton positive">
-									<s:text name="%{auditID > 0 && employee.id == 0 ? scope + '.button.Continue' : scope + '.button.Save'}" />
+									<s:text name="%{auditID > 0 && employee.id == 0 ? 'button.Continue' : 'button.Save'}" />
 								</button>
 								<button type="submit" value="" name="button" class="picsbutton negative" onclick="return confirm('<s:text name="%{scope}.confirm.DeleteEmployee" />');">
-									<s:text name="%{scope}.button.Delete" />
+									<s:text name="button.Delete" />
 								</button>
 							</fieldset>
 						</s:if>
