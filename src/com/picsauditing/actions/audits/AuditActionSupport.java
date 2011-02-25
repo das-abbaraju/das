@@ -39,8 +39,6 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.WorkflowStep;
 
 @SuppressWarnings("serial")
@@ -409,7 +407,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public boolean isCanEditCao(ContractorAuditOperator cao) {
 		if (isCanEditCao()) {
-			if (permissions.isAdmin())
+			if (permissions.isAdmin() || cao.getOperator().getId() == permissions.getAccountId())
 				return true;
 		}
 		return false;
