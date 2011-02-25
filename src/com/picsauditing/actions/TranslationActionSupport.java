@@ -1,5 +1,6 @@
 package com.picsauditing.actions;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -13,6 +14,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.PICS.I18nCache;
+
 
 @SuppressWarnings("serial")
 public class TranslationActionSupport extends ActionSupport {
@@ -44,10 +46,10 @@ public class TranslationActionSupport extends ActionSupport {
 	}
 
 	/**
-	 * This is for a paramater-based getText
+	 * This is for a parameter-based getText
 	 */
-	public String getText(String aTextName, Object... args) {
-		return getText(aTextName, null, args);
+	public String getText(String aTextName, Object[] args) {
+		return getText(aTextName, null, Arrays.asList(args));
 	}
 
 	@Override
