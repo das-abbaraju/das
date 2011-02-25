@@ -170,6 +170,10 @@ public class ContractorSimulator extends PicsActionSupport {
 	public void setAuditType(AuditType audit) {
 		this.auditType = audit;
 	}
+	
+	public Set<Integer> getOperatorIds() {
+		return operatorIds;
+	}
 
 	public void setOperatorIds(Set<Integer> operatorIds) {
 		this.operatorIds = operatorIds;

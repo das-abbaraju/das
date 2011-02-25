@@ -40,41 +40,7 @@
 		|
 	</div>
 	<div id="tabs-audits">
-		<table class="report">
-		<thead>
-			<tr>
-			<th>PQF/Audit/Policy Type</th>
-			<td>Risk</td>
-			<td>Verified</td>
-			<td>Flag</td>
-			</tr>
-		</thead>
-		<s:iterator value="operator.visibleAudits">
-			<tr>
-				<td><s:property value="auditType.auditName" /></td>
-				<td class="center">
-					<s:if test="minRiskLevel == 0">Ad Hoc</s:if>
-					<s:if test="minRiskLevel == 1">All</s:if>
-					<s:if test="minRiskLevel == 2">Med/High</s:if>
-					<s:if test="minRiskLevel == 3">High</s:if>
-				</td>
-				<td class="center">
-					<s:set name="flagCriteriaOperator" value="getFlagCriteriaOperatorByAudit(auditType.id)"/>
-					<s:if test="#flagCriteriaOperator != null">
-						<s:if test="#flagCriteriaOperator.criteria.requiredStatus!=null">Yes</s:if>
-						<s:else>No</s:else>
-					</s:if>
-					<s:else>-</s:else>
-				</td>
-				<td class="center">
-					<s:if test="#flagCriteriaOperator != null">
-						<s:property value="#flagCriteriaOperator.flag.smallIcon" escape="false" />
-					</s:if>
-					<s:else>-</s:else>
-				</td>
-			</tr>
-		</s:iterator>
-		</table>
+		<a href="ContractorSimulator.action?operatorIds=<s:property value="operator.id" />">Run Contractor Simulator</a><br />
 		<pics:permission perm="EditFlagCriteria">
 			[<a 
 			href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.inheritFlagCriteria.id" />">Flag Criteria</a>]		

@@ -32,6 +32,14 @@ $(function() {
 		$("#operatorSelect").append('<option value="'+ data[0] +'" selected="selected">'+ data[1] +'</option>');
 		$("#operatorSelector").val("");
 	});
+	
+	<s:if test="operatorIds.size > 0">
+		<s:iterator value="operatorIds" var="opID">
+			$("#operatorSelect").append('<option value="<s:property value="#opID" />" selected="selected"><s:property value="#opID" /></option>');
+		</s:iterator>
+		$("#operatorSelector").val("");
+		run();
+	</s:if>
 });
 
 </script>
