@@ -407,7 +407,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public boolean isCanEditCao(ContractorAuditOperator cao) {
 		if (isCanEditCao()) {
-			if (permissions.isAdmin() || cao.getOperator().getId() == permissions.getAccountId())
+			if (permissions.isAdmin() || cao.hasOnlyCaop(permissions.getAccountId()))
 				return true;
 		}
 		return false;

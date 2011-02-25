@@ -277,10 +277,19 @@ public class ContractorAuditOperator extends BaseTable {
 		return hasCaop(permissions.getAccountId());
 	}
 
+	@Transient
 	public boolean hasCaop(int opID) {
 		for (ContractorAuditOperatorPermission caop : getCaoPermissions()) {
 			if (caop.getOperator().getId() == opID)
 				return true;
+		}
+		return false;
+	}
+
+	@Transient
+	public boolean hasOnlyCaop(int opID) {
+		if (getCaoPermissions().size() == 1) {
+			return hasCaop(opID);
 		}
 		return false;
 	}
