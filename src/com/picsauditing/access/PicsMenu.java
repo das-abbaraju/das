@@ -2,17 +2,29 @@ package com.picsauditing.access;
 
 import java.util.Iterator;
 
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 public class PicsMenu {
 
+	static private I18nCache i18nCache = I18nCache.getInstance();
+
+	static private String getText(String key) {
+		return i18nCache.getText(key, TranslationActionSupport.getLocaleStatic());
+	}
+
+	static private String getTitle(String key) {
+		return i18nCache.getText(key + ".title", TranslationActionSupport.getLocaleStatic());
+	}
+
 	/**
-	 * 
 	 * @param menu
 	 * @return the url in the first menu item on a menu
 	 */
 	static public String getHomePage(MenuComponent menu, Permissions permissions) {
+
 		if (permissions.hasPermission(OpPerms.Dashboard))
 			return "Home.action";
 
@@ -40,7 +52,7 @@ public class PicsMenu {
 		MenuComponent subMenu;
 
 		if (!permissions.isLoggedIn()) {
-			subMenu = menu.addChild("Home", "index.jsp");
+			subMenu = menu.addChild(getText("global.Home"), "index.jsp");
 			return menu;
 		}
 
@@ -48,7 +60,7 @@ public class PicsMenu {
 			// Don't show a menu for Contractors, they will use their sub menu
 			// for now
 			if (permissions.getAccountStatus().isActiveDemo()) {
-				subMenu = menu.addChild("Home", "Home.action");
+				subMenu = menu.addChild(getText("global.Home"), "Home.action");
 
 				// Don't show for insurance only users
 				if (!permissions.isInsuranceOnlyContractorUser()) {
@@ -112,39 +124,39 @@ public class PicsMenu {
 			return menu;
 		}
 
-		subMenu = menu.addChild("Contractors");
+		subMenu = menu.addChild(getText("global.Contractors"));
 		if (permissions.hasPermission(OpPerms.AllContractors) || permissions.isOperatorCorporate()) {
-			subMenu.addChild("Contractor List", "ContractorList.action?filter.performedBy=Self Performed");
+			subMenu.addChild(getTitle("ContractorList"), "ContractorList.action?filter.performedBy=Self Performed");
 		}
 
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {
 			final String url = "NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true&filter.tradeInformation=true";
-			subMenu.addChild("Search For New", url);
+			subMenu.addChild(getTitle("NewContractorSearch"), url);
 		}
 		if (permissions.hasPermission(OpPerms.RequestNewContractor))
-			subMenu.addChild("Registration Requests", "ReportNewRequestedContractor.action");
+			addChildAction(subMenu, "ReportNewRequestedContractor");
 		if (permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
-			subMenu.addChild("Bid Only Account", "BiddingContractorSearch.action?filter.status=Active");
+			subMenu.addChild(getTitle("BiddingContractorSearch"), "BiddingContractorSearch.action?filter.status=Active");
 		}
 		if (permissions.isCorporate())
-			subMenu.addChild("By Flag", "ReportContractorOperatorFlag.action");
+			addChildAction(subMenu, "ReportContractorOperatorFlag");
 		if (permissions.isCorporate() || permissions.getCorporateParent().size() > 0)
-			subMenu.addChild("By Operator", "ReportContractorOperatorFlagMatrix.action");
+			addChildAction(subMenu, "ReportContractorOperatorFlagMatrix");
 		if (permissions.isOperatorCorporate() && permissions.hasPermission(OpPerms.OperatorFlagMatrix))
-			subMenu.addChild("Flag Criteria by Contractor", "OperatorFlagMatrix.action");
+			addChildAction(subMenu, "OperatorFlagMatrix");
 		if (permissions.hasPermission(OpPerms.DelinquentAccounts)) {
-			subMenu.addChild("Archived Accounts", "ArchivedContractorAccounts.action");
-			subMenu.addChild("Delinquent Accounts", "DelinquentContractorAccounts.action");
+			addChildAction(subMenu, "ArchivedContractorAccounts");
+			addChildAction(subMenu, "DelinquentContractorAccounts");
 		}
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
-			subMenu.addChild("Search By Question", "QuestionAnswerSearch.action");
+			addChildAction(subMenu, "QuestionAnswerSearch");
 
 		if (permissions.hasPermission(OpPerms.ContractorWatch))
-			subMenu.addChild("Activity Watch", "ReportActivityWatch.action");
+			addChildAction(subMenu, "ReportActivityWatch");
 		if (permissions.hasPermission(OpPerms.WatchListManager))
-			subMenu.addChild("Watch List Manager", "WatchListManager.action");
+			addChildAction(subMenu, "WatchListManager");
 
-		subMenu = menu.addChild("Auditing");
+		subMenu = menu.addChild(getText("global.AuditGUARD"));
 		if (permissions.isAuditor()) {
 			subMenu.addChild("My Audits",
 					"AuditListAuditor.action?filter.auditStatus=Pending&filter.auditStatus=Submitted");
@@ -159,7 +171,7 @@ public class PicsMenu {
 		if (permissions.isAdmin())
 			subMenu.addChild("Audit List Compress", "ReportAuditList.action");
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
-			subMenu.addChild("Audit List", "ReportCAOList.action");
+			addChildAction(subMenu, "ReportCAOList");
 
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Sched. &amp; Assign",
@@ -207,32 +219,30 @@ public class PicsMenu {
 			subMenu.addChild("QuickBooks Sync Canada", "QBSyncListCanada.action");
 		}
 
-		subMenu = menu.addChild("InsureGUARD&trade;");
+		subMenu = menu.addChild(getText("global.InsureGUARD"));
 		if (permissions.hasPermission(OpPerms.InsuranceCerts)) {
-			final String url = "ReportPolicyList.action";
-			subMenu.addChild("Contractor Policies", url);
+			addChildAction(subMenu, "ReportPolicyList");
 		}
 		if (permissions.hasPermission(OpPerms.InsuranceVerification))
 			subMenu.addChild("Policy Verification", "PolicyVerification.action"
 					+ (permissions.hasGroup(User.GROUP_CSR) ? "?filter.conAuditorId=" + permissions.getShadowedUserID()
 							: ""));
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
-			subMenu
-					.addChild("Policies Awaiting Decision",
+			subMenu.addChild(getTitle("ReportInsuranceApproval"),
 							"ReportInsuranceApproval.action?filter.auditStatus=Complete");
 
-		subMenu = menu.addChild("Management");
+		subMenu = menu.addChild(getText("menu.Management"));
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
-			subMenu.addChild("Approve Contractors", "ContractorApproval.action?filter.workStatus=P");
+			subMenu.addChild(getTitle("ContractorApproval"), "ContractorApproval.action?filter.workStatus=P");
 		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
-			subMenu.addChild("Contractor Tags", "OperatorTags.action");
+			addChildAction(subMenu, "OperatorTags");
 		if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
-			subMenu.addChild("Users", "UsersManage.action");
+			addChildAction(subMenu, "UsersManage");
 		}
 
 		if (permissions.hasPermission(OpPerms.EditUsers)) {
-			subMenu.addChild("Users", "UsersManage.action");
-			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
+			addChildAction(subMenu, "UsersManage");
+			addChildAction(subMenu, "ReportUserPermissionMatrix");
 		}
 
 		if (permissions.hasPermission(OpPerms.Translator)) {
@@ -240,10 +250,10 @@ public class PicsMenu {
 		}
 
 		if (permissions.hasPermission(OpPerms.ManageEmployees))
-			subMenu.addChild("Employees", "ManageEmployees.action?id=" + permissions.getAccountId());
+			subMenu.addChild(getTitle("ManageEmployees"), "ManageEmployees.action?id=" + permissions.getAccountId());
 
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
-			subMenu.addChild("Forms &amp; Docs", "manage_forms.jsp");
+			subMenu.addChild(getTitle("ManageForms"), "manage_forms.jsp");
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
 			subMenu.addChild("Audit Definitions", "ManageAuditType.action");
 			subMenu.addChild("Flag Criteria", "ManageFlagCriteria.action");
@@ -266,15 +276,16 @@ public class PicsMenu {
 		}
 
 		if (permissions.hasPermission(OpPerms.EmailTemplates)) {
-			subMenu.addChild("Email Wizard", "EmailWizard.action");
+			addChildAction(subMenu, "EmailWizard");
 		}
 
 		if (permissions.hasPermission(OpPerms.EmailTemplates, OpType.Edit)) {
-			subMenu.addChild("Email Template Editor", "EditEmailTemplate.action");
+			addChildAction(subMenu, "EditEmailTemplate");
 		}
 
 		if (permissions.hasPermission(OpPerms.EmailQueue))
-			subMenu.addChild("Email Queue", "EmailQueueList.action?filter.status=Pending");
+			addChildAction(subMenu, "EditEmailTemplate");
+			subMenu.addChild(getTitle("EmailQueueList"), "EmailQueueList.action?filter.status=Pending");
 
 		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
 			subMenu.addChild("Flag Criteria", "ManageFlagCriteriaOperator.action");
@@ -289,10 +300,10 @@ public class PicsMenu {
 			subMenu.addChild("Sales Report", "ReportSalesReps.action");
 		}
 		if (permissions.hasPermission(OpPerms.EditProfile)) {
-			subMenu.addChild("Edit Profile", "ProfileEdit.action");
+			addChildAction(subMenu, "ProfileEdit");
 		}
 		if (permissions.hasPermission(OpPerms.EditAccountDetails))
-			subMenu.addChild("Edit Account", "FacilitiesEdit.action?id=" + permissions.getAccountId());
+			subMenu.addChild(getTitle("FacilitiesEdit"), "FacilitiesEdit.action?id=" + permissions.getAccountId());
 
 		// Add a new permission for this
 		if (permissions.hasPermission(OpPerms.MyCalendar)) {
@@ -323,7 +334,8 @@ public class PicsMenu {
 			subMenu.addChild("Manage Accounts",
 					"ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending");
 
-		subMenu = menu.addChild("Reports");
+		subMenu = menu.addChild(getText("menu.Reports"));
+		
 		// TODO - remove these hacks
 		if (permissions.getAccountId() == 10850) {
 			subMenu.addChild("Orientation Video Report", "report_orientation.jsp");
@@ -338,37 +350,37 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.RiskRank))
 			subMenu.addChild("Contractor Risk Level", "ReportContractorRiskLevel.action");
 		if (permissions.hasPermission(OpPerms.EMRReport)) {
-			subMenu.addChild("EMR Rates (Graph)", "GraphEmrRates.action?years=2009");
-			subMenu.addChild("EMR Rates", "ReportEmrRates.action?filter.auditFor=2009");
+			subMenu.addChild(getTitle("GraphEmrRates"), "GraphEmrRates.action?years=2010");
+			subMenu.addChild(getTitle("ReportEmrRates"), "ReportEmrRates.action?filter.auditFor=2010");
 		}
 		if (permissions.hasPermission(OpPerms.FatalitiesReport)) {
-			final String url = "ReportFatalities.action?filter.auditFor=2009&filter.shaType=OSHA&filter.shaLocation=Corporate";
-			subMenu.addChild("Fatalities", url);
+			final String url = "ReportFatalities.action?filter.auditFor=2010&filter.shaType=OSHA&filter.shaLocation=Corporate";
+			subMenu.addChild(getTitle("ReportFatalities"), url);
 		}
 		if (permissions.hasPermission(OpPerms.ForcedFlagsReport))
-			subMenu.addChild("Forced Flags", "ReportContractorsWithForcedFlags.action");
+			addChildAction(subMenu, "ReportContractorsWithForcedFlags");
 
 		if (permissions.hasPermission(OpPerms.TRIRReport)) {
-			subMenu.addChild("Incidence Rates (Graph)", "GraphTrirRates.action");
+			addChildAction(subMenu, "GraphTrirRates");
 			final String url = "ReportIncidenceRate.action?filter.auditFor=2009&filter.shaType=OSHA&filter.shaLocation=Corporate";
-			subMenu.addChild("Incidence Rates", url);
+			subMenu.addChild(getTitle("ReportIncidenceRate"), url);
 		}
 
 		if (permissions.getAccountName().startsWith("Tesoro"))
 			subMenu.addChild("Background Check", "QuestionAnswerSearchByAudit.action");
 
 		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
-			subMenu.addChild("Untagged Contractors", "ReportUntaggedContractors.action");
+			addChildAction(subMenu, "ReportUntaggedContractors");
 
 		if (permissions.seesAllContractors())
 			subMenu.addChild("User Multi-Login", "MultiLoginUser.action");
 		if (permissions.hasPermission(OpPerms.EditUsers))
-			subMenu.addChild("User Search", "UserList.action");
+			addChildAction(subMenu, "UserList");
 		if (permissions.getAccountId() == 1813) // Hardcode to BP Cherry point
 			subMenu.addChild("Washington Audit",
 					"ReportWashingtonStateAudit.action?filter.riskLevel=3&filter.waAuditTypes=176");
 		if (permissions.hasPermission(OpPerms.EmployeeList))
-			subMenu.addChild("Employee List", "EmployeeList.action");
+			addChildAction(subMenu, "EmployeeList");
 
 		if (permissions.isAdmin()) {
 			String custom = "";
@@ -423,8 +435,14 @@ public class PicsMenu {
 	}
 
 	static public MenuComponent addSupportLink(MenuComponent menu) {
-		MenuComponent subMenu = menu.addChild("Support");
-		subMenu.addChild("Contact Us", "Contact.action");
+		MenuComponent subMenu = menu.addChild(getText("menu.Support"));
+		subMenu.addChild(getTitle("Contact"), "Contact.action");
 		return subMenu;
 	}
+	
+	static private void addChildAction(MenuComponent menu, String actionName) {
+		menu.addChild(getTitle(actionName), actionName + ".action");
+	}
+
+
 }
