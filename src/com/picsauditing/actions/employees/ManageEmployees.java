@@ -86,7 +86,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		this.indexer = indexer;
 
 		noteCategory = NoteCategory.Employee;
-		subHeading = "Manage Employees";
 	}
 
 	@Override

@@ -2,7 +2,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Manage Employees</title>
+<title><s:text name="%{scope}.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 
@@ -59,7 +59,7 @@ function show(id) {
 }
 
 function addJobRole(id) {
-	startThinking({div: 'thinking_roles', message: 'Adding Job Role'});
+	startThinking({div: 'thinking_roles', message: '<s:text name="%{scope}.message.AjaxLoad" />'});
 	$('#employee_role').load('ManageEmployeesAjax.action', {button: 'addRole', 'employee.id': employeeID, childID: id});
 }
 
@@ -67,16 +67,16 @@ function addJobSite(selection) {
 	var id = $(selection).val();
 	var name = $(selection).find('option[value=' + id + ']').text().trim().split(":");
 	
-	startThinking({div: 'employee_site', message: 'Assigning Employee to Job Site'});
+	startThinking({div: 'employee_site', message: '<s:text name="%{scope}.message.AjaxLoad" />'});
 	$('#employee_site').load('ManageEmployeesAjax.action', {button: 'addSite', 'employee.id': employeeID, 
 		'op.id': id, 'op.name' : name[0]});
 }
 
 function removeJobRole(id) {
-	var remove = confirm('Are you sure you want to remove this job role?');
+	var remove = confirm('<s:text name="%{scope}.confirm.RemoveRole" />');
 
 	if (remove) {
-		startThinking({div: 'thinking_roles', message: 'Removing Job Role'})
+		startThinking({div: 'thinking_roles', message: '<s:text name="%{scope}.message.AjaxLoad" />'})
 		$('#employee_role').load('ManageEmployeesAjax.action', {button: 'removeRole', 'employee.id': employeeID, childID: id});
 	}
 
@@ -84,10 +84,10 @@ function removeJobRole(id) {
 }
 
 function removeJobSite(id) {
-	var remove = confirm("Are you sure you want to remove this project from this employee?");
+	var remove = confirm('<s:text name="%{scope}.confirm.RemoveProject" />');
 
 	if (remove) {
-		startThinking({div: 'thinking_sites', message: 'Removing Employee from Job Site'});
+		startThinking({div: 'thinking_sites', message: '<s:text name="%{scope}.message.AjaxLoad" />'});
 		$('#employee_site').load('ManageEmployeesAjax.action', {button: 'removeSite', 'employee.id': employeeID, childID: id});
 		$.unblockUI();
 	}
@@ -96,12 +96,12 @@ function removeJobSite(id) {
 }
 
 function newJobSite() {
-	startThinking({div: 'thinking_sites', message: 'Adding New Job Site'})
+	startThinking({div: 'thinking_sites', message: '<s:text name="%{scope}.message.AjaxLoad" />'})
 	$('#employee_site').load('ManageEmployeesAjax.action?' + $('#newJobSiteForm input').serialize(), {button: 'newSite', 'employee.id': employeeID});
 }
 
 function editAssignedSites(id) {
-	startThinking({div: 'thinking_sites', message: 'Editing Assigned Sites for Employee'})
+	startThinking({div: 'thinking_sites', message: '<s:text name="%{scope}.message.AjaxLoad" />'})
 	$('#employee_site').load('ManageEmployeesAjax.action?' + $('#siteForm_' + id).serialize(), 
 			{button: 'editSite', 'employee.id': employeeID, childID: id});
 
@@ -110,7 +110,7 @@ function editAssignedSites(id) {
 }
 function showUpload(){
 	url = 'EmployeePhotoUploadAjax.action?employeeID='+employeeID;
-	title = 'Upload Photo';
+	title = '<s:text name="%{scope}.message.UploadPhoto" />';
 	pars = 'scrollbars=yes,resizable=yes,width=900,height=700,toolbar=0,directories=0,menubar=0';
 	photoUpload = window.open(url,title,pars);
 	photoUpload.focus();
@@ -185,19 +185,19 @@ div.dataTables_length { width: 35%; }
 </head>
 <body>
 	<s:if test="auditID > 0">
-		<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />">Return to Job Roles Self Assessment</a></div>
+		<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />"><s:text name="%{scope}.message.ReturnTo" /> <s:text name="AuditType.99.name" /></a></div>
 	</s:if>
-	<h1><s:property value="account.name" /><span class="sub"><s:property value="subHeading" escape="false"/></span></h1>
+	<h1><s:property value="account.name" /><span class="sub"><s:text name="%{scope}.title" /></span></h1>
 	<s:include value="../actionMessages.jsp"/>
 
 	<s:if test="account.employees.size() == 0 && employee == null">
 		<div class="info">
-			There are no employees on this account. Click the "Add New Employee" button to add a new employee.
+			<s:text name="%{scope}.message.NoEmployees"><s:param><s:text name="%{scope}.message.Add" /></s:param></s:text>
 		</div>
 	</s:if>
 
-	<a href="?id=<s:property value="account.id"/>&button=Add" class="add">Add New Employee</a><br />
-	<a href="#" onclick="showExcelUpload(); return false;" class="add">Import Excel File</a>
+	<a href="?id=<s:property value="account.id"/>&button=Add" class="add"><s:text name="%{scope}.message.Add" /></a><br />
+	<a href="#" onclick="showExcelUpload(); return false;" class="add"><s:text name="%{scope}.message.Import" /></a>
 
 	<table>
 		<tr>
@@ -211,7 +211,7 @@ div.dataTables_length { width: 35%; }
 								<th>First Name</th>
 								<th>Title</th>
 								<th>Classification</th>
-								<th>Profile</th>
+								<th><s:text name="%{scope}.message.Profile" /></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -222,7 +222,7 @@ div.dataTables_length { width: 35%; }
 									<td><a href="?employee.id=<s:property value="#e.id" />"><s:property value="#e.firstName"/></a></td>
 									<td><s:property value="#e.title"/></td>
 									<td><s:property value="#e.classification"/></td>
-									<td class="center"><a href="EmployeeDetail.action?employee.id=<s:property value="#e.id" />">View</a></td>
+									<td class="center"><a href="EmployeeDetail.action?employee.id=<s:property value="#e.id" />"><s:text name="%{scope}.message.View" /></a></td>
 								</tr>
 							</s:iterator>
 						</tbody>
@@ -234,10 +234,10 @@ div.dataTables_length { width: 35%; }
 			<s:if test="employee != null">
 				<td style="vertical-align:top;">
 					<s:if test="employee.id > 0">
-						<a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">View Profile/Assigned Tasks</a>
+						<a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />"><s:text name="%{scope}.message.ViewProfile" /></a>
 						<a href="#" class="help cluetip" rel="#cluetip1" title="View Profile/Assigned Tasks"></a>
 						<div id="cluetip1">
-							Each Employee has a profile page visible to other employees and operators that lists information including assigned tasks and qualifications.
+							<s:text name="%{scope}.help.ProfileInfo" />Each Employee has a profile page visible to other employees and operators that lists information including assigned tasks and qualifications.
 						</div>
 						<br clear="all" />
 					</s:if>
@@ -246,10 +246,10 @@ div.dataTables_length { width: 35%; }
 						<s:hidden name="employee.id"/>
 						<s:if test="!selectRolesSites">
 							<fieldset class="form">
-								<h2 class="formLegend">Employee Details</h2>
+								<h2 class="formLegend"><s:text name="%{scope}.header.EmployeeDetails" /></h2>
 								<ol>
 									<li<s:if test="employee.firstName == null || employee.firstName == ''"> class="required"</s:if>><label>First Name:</label>
-										<s:textfield name="employee.firstName"/>
+										<s:textfield name="employee.firstName" />
 										<pics:fieldhelp title="First Name">
 											<p>The first given name of the employee. This can include a middle initial or middle name if needed to differentiate between employees.</p>
 											<h5>Examples:</h5>
@@ -262,10 +262,9 @@ div.dataTables_length { width: 35%; }
 									</li>
 									<li<s:if test="employee.lastName == null || employee.lastName == ''"> class="required"</s:if>><label>Last Name:</label>
 										<s:textfield name="employee.lastName"/>
-										<div class="fieldhelp">
-										<h3>Last Name</h3>
-										<p>The last name (aka family name) of the employee.</p>
-										</div>
+										<pics:fieldhelp title="Last Name">
+											<p>The last name (aka family name) of the employee.</p>
+										</pics:fieldhelp>
 									</li>
 									<li><label>Title:</label>
 										<s:textfield id="titleSuggest" name="employee.title"/>
@@ -372,7 +371,7 @@ div.dataTables_length { width: 35%; }
 						<s:if test="employee.id > 0">
 							<s:if test="employee.account.requiresCompetencyReview && (unusedJobRoles.size() + employee.employeeRoles.size()) > 0">
 								<fieldset class="form">
-									<h2 class="formLegend">Job Roles</h2>
+									<h2 class="formLegend"><s:text name="%{scope}.header.JobRoles" /></h2>
 									<div id="employee_role">
 										<s:include value="manage_employee_roles.jsp" />
 									</div>
@@ -384,14 +383,17 @@ div.dataTables_length { width: 35%; }
 						</s:if>
 						<s:if test="!selectRolesSites">
 							<fieldset class="form submit">
-								<input type="submit" value="<s:property value="auditID > 0 && employee.id == 0 ? 'Continue' : 'Save'" />" name="button" class="picsbutton positive" />
-								<input type="submit" value="Delete" name="button" class="picsbutton negative" 
-									onclick="return confirm('Are you sure you want to delete this employee? This action cannot be undone.');"/>
+								<button type="submit" value="<s:property value="auditID > 0 && employee.id == 0 ? 'Continue' : 'Save'" />" name="button" class="picsbutton positive">
+									<s:text name="%{auditID > 0 && employee.id == 0 ? scope + '.button.Continue' : scope + '.button.Save'}" />
+								</button>
+								<button type="submit" value="" name="button" class="picsbutton negative" onclick="return confirm('<s:text name="%{scope}.confirm.DeleteEmployee" />');">
+									<s:text name="%{scope}.button.Delete" />
+								</button>
 							</fieldset>
 						</s:if>
 						<s:else>
 							<fieldset class="form submit" style="text-align: center;">
-								<a href="ManageEmployees.action?employee.id=<s:property value="employee.id" />" class="picsbutton">View Complete Employee Detail</a>
+								<a href="ManageEmployees.action?employee.id=<s:property value="employee.id" />" class="picsbutton"><s:text name="%{scope}.message.ViewComplete" /></a>
 							</fieldset>
 						</s:else>
 					</s:form>
