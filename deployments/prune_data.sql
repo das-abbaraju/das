@@ -349,3 +349,5 @@ delete p
 from osha_audit p
 LEFT JOIN contractor_audit i on i.id = p.auditID
 where i.id is null;
+
+DROP TABLE accounts_to_prune;
