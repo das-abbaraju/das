@@ -293,8 +293,10 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	}
 
 	public List<AuditType> getTypeList() {
-		Set<Integer> visibleAuditTypes = adtDAO.getAuditTypes(operator);
-		typeList = typeDAO.findWhere("t.id IN (" + Strings.implode(visibleAuditTypes) + ")");
+		if (typeList == null) {
+			Set<Integer> visibleAuditTypes = adtDAO.getAuditTypes(operator);
+			typeList = typeDAO.findWhere("t.id IN (" + Strings.implode(visibleAuditTypes) + ")");
+		}
 
 		return typeList;
 	}
@@ -319,8 +321,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 			List<AuditTypeRule> excludedAudits = adtDAO.findAuditTypeRulesByOperator(operator.getId(), "r.include = 0");
 
-			for (AuditType type : getTypeList())
-				usedAuditTypes.add(type);
+			usedAuditTypes.addAll(getTypeList());
 			for (AuditTypeRule type : excludedAudits)
 				usedAuditTypes.add(type.getAuditType());
 
@@ -345,8 +346,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 			List<AuditCategoryRule> excludedCategories = adtDAO.findAuditCategoryRulesByOperator(operator.getId(),
 					"r.include = 0");
 
-			for (AuditCategory type : getCategoryList())
-				usedCategories.add(type);
+			usedCategories.addAll(getCategoryList());
 			for (AuditCategoryRule type : excludedCategories)
 				usedCategories.add(type.getAuditCategory());
 
