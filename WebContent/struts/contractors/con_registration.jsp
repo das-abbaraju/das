@@ -1,9 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Contractor Registration</title>
+<title><s:text name="%{scope}.title" /></title>
 <meta name="help" content="User_Manual_for_Contractors">
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
@@ -95,7 +96,7 @@ $(function(){
 </head>
 <body>
 <s:include value="registrationHeader.jsp"></s:include>
-<span class="redMain required-info">Indicates required information</span>
+<span class="redMain required-info"><s:text name="%{scope}.IndicatesRequiredInfo" /></span>
 <s:form method="POST">
 <s:hidden name="requestID" />
 	<br clear="all" />
@@ -103,9 +104,9 @@ $(function(){
 		<tr>
 			<td style="vertical-align: top; width: 50%;">
 				<fieldset class="form">
-					<h2 class="formLegend">Company Details</h2>
+					<h2 class="formLegend"><s:text name="%{scope}.CompanyDetails.heading" /></h2>
 					<ol>
-						<li class="required"><label>Legal Company Name:</label>
+						<li class="required"><label><s:text name="%{scope}.CompanyDetails.LegalCompanyName"/>:</label>
 							<s:textfield name="contractor.name" size="35" onchange="checkName(this.value);"/>
 							<div class="fieldhelp">
 								<h3>Company Name</h3>
@@ -114,14 +115,14 @@ $(function(){
 							</div>
 							<div id="name_status"></div>
 						</li>
-						<li><label>Short Name or DBA: </label>
+						<li><label><s:text name="%{scope}.CompanyDetails.ShortNameorDBA" />:</label>
 							<s:textfield name="contractor.dbaName" size="35" />
 							<div class="fieldhelp">
 								<h3>Short Name</h3>
 								<p>An alternative (also known as Doing Business As) name of your company. This is optional but may help your customers search for you if they only know you by an acronym, shortened company name, or alternative DBA name.</p>
 							</div>
 						</li>
-						<li class="required"><label>Country:</label>
+						<li class="required"><label><s:text name="%{scope}.CompanyDetails.Country" />:</label>
 							<s:select list="countryList" id="contractorCountry"
 								name="contractor.country.isoCode"
 								onchange="changeCountry(this.value);"
@@ -132,7 +133,7 @@ $(function(){
 								<p>The headquarters of your company. This will affect the currency in which your PICS membership will be listed.</p>
 							</div>
 						</li>
-						<li class="required" id="taxIdItem" <s:if test="contractor.country.isoCode =='AE'">style="display: none;"</s:if>><label id="taxIdLabel">Tax ID:</label>
+						<li class="required" id="taxIdItem" <s:if test="contractor.country.isoCode =='AE'">style="display: none;"</s:if>><label><s:text name="%{scope}.CompanyDetails.TaxID" />:</label>
 							<s:textfield name="contractor.taxId" id="contractorTaxId"
 								size="9" maxLength="9" onchange="checkTaxId(this.value);" />
 							<div class="fieldhelp">
@@ -145,7 +146,7 @@ $(function(){
 							</div>
 							<div id="taxId_status"></div>
 						</li>
-						<li><label>Web URL:</label>
+						<li><label><s:text name="%{scope}.CompanyDetails.WebURL" />:</label>
 							<s:textfield name="contractor.webUrl" size="35" />
 							<div class="fieldhelp">
 								<h3>Web URL</h3>
@@ -154,14 +155,14 @@ $(function(){
 								www.yourcompany.com
 							</div>
 						</li>
-						<li class="required"><label>Company Phone:</label>
+						<li class="required"><label><s:text name="%{scope}.CompanyDetails.CompanyPhone" />:</label>
 							<s:textfield id="contractorPhone" name="contractor.phone" size="20" />
 							<div class="fieldhelp">
-								<h3>Company Phone</h3>
+								<h3><s:text name="%{scope}.CompanyDetails.CompanyPhone" />:</h3>
 								Your company's primary telephone line. If you are outside the United States or Canada, please include your country code.
 							</div>
 						</li>
-						<li><label>Company Fax:</label>
+						<li><label><s:text name="%{scope}.CompanyDetails.CompanyFax" />:</label>
 							<s:textfield name="contractor.fax" size="20" />
 							<div class="fieldhelp">
 								<h3>Company Fax</h3>
@@ -171,9 +172,9 @@ $(function(){
 					</ol>
 				</fieldset>
 				<fieldset class="form">
-					<h2 class="formLegend">Primary Address</h2>
+					<h2 class="formLegend"><s:text name="%{scope}.PrimaryAddress.heading" /></h2>
 					<ol>
-						<li class="required"><label>Address:</label>
+						<li class="required"><label><s:text name="%{scope}.PrimaryAddress.Address" />:</label>
 							<s:textfield name="contractor.address" size="35" /><br />
 							<s:textfield name="contractor.address2" size="35" cssClass="multifield" />
 							<div class="fieldhelp">
@@ -183,30 +184,30 @@ $(function(){
 								123 Main Street, Suite 100
 							</div>
 						</li>
-						<li class="required"><label>City:</label> 
+						<li class="required"><label><s:text name="%{scope}.PrimaryAddress.City" />:</label> 
 							<s:textfield name="contractor.city" size="35" />
 						</li>
-						<li><label>Country:</label>
+						<li><label><s:text name="%{scope}.PrimaryAddress.Country" />:</label>
 							<input type="text" disabled="disabled" id="country_display"/>
 						</li>
 						<s:if test="contractor == null || contractor.state == null"><li id="state_li"></li></s:if>
 						<s:else>
-							<li class="required"><label>State:</label>
+							<li class="required"><label><s:text name="%{scope}.PrimaryAddress.State" />:</label>
 								<s:select list="stateList" id="state_sel"
 									name="contractor.state.isoCode"
 									headerKey="" headerValue="- State -"
 									listKey="isoCode" listValue="name" />
 							</li>
 						</s:else>
-						<li class="required" id="zipItem" <s:if test="contractor.country.isoCode == 'AE'">style="display: none;"</s:if>><label>Zip/Postal Code:</label>
+						<li class="required" id="zipItem" <s:if test="contractor.country.isoCode == 'AE'">style="display: none;"</s:if>><label><s:text name="%{scope}.PrimaryAddress.ZipCode" />:</label>
 							<s:textfield name="contractor.zip" size="10" />
 						</li>
 					</ol>
 				</fieldset>
 				<fieldset class="form">
-					<h2 class="formLegend">Industry Details</h2>
+					<h2 class="formLegend"><s:text name="%{scope}.IndustryDetails.heading" /></h2>
 					<ol>
-						<li class="required"><label>Main Trade:</label>
+						<li class="required"><label><s:text name="%{scope}.IndustryDetails.MainTrade" />:</label>
 							<s:select list="tradeList"
 								name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" 
 								listKey="name" listValue="name" />
@@ -230,9 +231,9 @@ $(function(){
 					</ol>
 				</fieldset>
 				<fieldset class="form">
-					<h2 class="formLegend">Company Identification</h2>
+					<h2 class="formLegend"><s:text name="%{scope}.CompanyIdentification.heading" /></h2>
 					<ol>
-						<li><label>Description:</label>
+						<li><label><s:text name="%{scope}.CompanyIdentification.Description" />:</label>
 							<s:textarea name="contractor.description" cols="60" rows="15" />
 							<div class="fieldhelp">
 								<h3>Description</h3>
@@ -244,9 +245,9 @@ $(function(){
 					</ol>
 				</fieldset>
 				<fieldset class="form">
-					<h2 class="formLegend">Primary Contact</h2>
+					<h2 class="formLegend"><s:text name="%{scope}.PrimaryContact.heading" /></h2>
 					<ol>
-						<li class="required"><label>Name:</label>
+						<li class="required"><label><s:text name="%{scope}.PrimaryContact.Name" />:</label>
 							<s:textfield name="user.name" size="20" />
 							<div class="fieldhelp">
 								<h3>Name</h3>
@@ -256,24 +257,24 @@ $(function(){
 								John Doe
 							</div>
 						</li>
-						<li class="required"><label>Email:</label>
+						<li class="required"><label><s:text name="%{scope}.PrimaryContact.Email" />:</label>
 							<s:textfield name="user.email" size="20" /> 
 							<div class="fieldhelp">
 								<h3>Email</h3>
 								Your email address. We send vital information to this address, so it needs to be correct. Your customers that use PICS will be able to see primary contact(s) and their phone and email address.
 							</div>
 						</li>
-						<li><label>Phone:</label>
+						<li><label><s:text name="%{scope}.PrimaryContact.Phone" />:</label>
 							<s:textfield name="user.phone" size="20" />
 							<div class="fieldhelp">
 								<h3>Phone</h3>
 								This is the direct phone number and extension if applicable for the primary contact. This may be used by CSRs or auditors to contact you directly.
 							</div>
 						</li>
-						<li><label>Fax:</label>
+						<li><label><s:text name="%{scope}.PrimaryContact.Fax" />:</label>
 							<s:textfield name="user.fax" size="20" />
 						</li>
-						<li class="required"><label>Username:</label>
+						<li class="required"><label><s:text name="%{scope}.PrimaryContact.Username" />:</label>
 					 		<s:textfield name="user.username" onchange="checkUsername(this.value);"/>
 					 		<div class="fieldhelp">
 					 			<h3>Username</h3>
@@ -287,21 +288,18 @@ $(function(){
 					 		<br />
 					 		<div id="username_status"></div>
 					 	</li>
-						<li class="required"><label>Password:</label> 
+						<li class="required"><label><s:text name="%{scope}.PrimaryContact.Password" />:</label> 
 							<s:password name="password"/>
 							<div class="fieldhelp">
 								<h3>Password</h3>
 								Must be at least 5 characters long and different from your username
 							</div>
 						</li>
-						<li><label>Confirm Password:</label> 
+						<li><label><s:text name="%{scope}.PrimaryContact.ConfirmPassword" />:</label> 
 							<s:password name="confirmPassword"/>
 						</li>
-						<li><b>
-							By clicking <span style="color: #529214; font-family: 'Lucida Grande', Tahoma, Arial">[Create Account]</span> below, I certify that I agree to the 
-							terms and conditions of the <a href="#"
-								onClick="window.open('contractor_agreement.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=700,height=700'); return false;"
-								class="ext">PICS Contractor Agreement</a>.</b>
+						<li>
+							<b><s:text name="%{scope}.TermsAndConditions" /></b>
 						</li>
 					</ol>
 				</fieldset>

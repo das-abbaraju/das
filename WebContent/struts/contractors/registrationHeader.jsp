@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <h1>
 <s:if test="permissions.loggedIn"><s:property value="contractor.name" /></s:if>
-<s:else>Contractor Registration</s:else>
+<s:else><s:text name="%{scope}.title" /></s:else>
 <span class="sub"> <s:property value="subHeading" /> </span></h1>
 <div id="internalnavcontainer">
 <ul id="navlist">
