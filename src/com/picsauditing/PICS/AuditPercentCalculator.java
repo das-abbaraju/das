@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
+import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
 
 public class AuditPercentCalculator {
 
@@ -132,12 +133,13 @@ public class AuditPercentCalculator {
 							float scale = 1.0f;
 
 							if ("Radio".equals(question.getQuestionType())) {
-								for (AuditQuestionOption option : question.getOptions()) {
-									scale = Math.max(scale, option.getScore() - 1);
-									if (answer.getAnswer().equals(option.getOptionName())) {
-										answerValue = option.getScore();
-									}
-								}
+								throw new RuntimeException("Question getOptions hasn't been implemented yet.");
+//								for (AuditQuestionOption option : question.getOptions()) {
+//									scale = Math.max(scale, option.getScore() - 1);
+//									if (answer.getAnswer().equals(option.getOptionName())) {
+//										answerValue = option.getScore();
+//									}
+//								}
 							} else if ("Yes/No".equals(question.getQuestionType())) {
 								scale = 1.0f;
 								if (answer.getAnswer().equals("Yes"))

@@ -302,28 +302,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		AuditQuestion copy = new AuditQuestion(a, asc);
 		copy.setAuditColumns(permissions);
 		auditQuestionDAO.save(copy);
-
-		/*
-		 * for (AuditQuestionText text : a.getQuestionTexts()) {
-		 * AuditQuestionText aqtCopy = new AuditQuestionText(text, copy);
-		 * aqtCopy.setAuditColumns(permissions);
-		 * 
-		 * copy.getQuestionTexts().add(aqtCopy);
-		 * auditQuestionTextDAO.save(aqtCopy); }
-		 */
-
-		if (a.getOptions() != null && copy.getOptions() == null)
-			copy.setOptions(new ArrayList<AuditQuestionOption>());
-		for (AuditQuestionOption questionOption : a.getOptions()) {
-			AuditQuestionOption aqoCopy = new AuditQuestionOption(questionOption, copy);
-			aqoCopy.setAuditColumns(permissions);
-
-			copy.getOptions().add(questionOption);
-			auditQuestionDAO.save(aqoCopy);
-		}
-
-		auditQuestionDAO.save(copy);
-
 		return copy;
 	}
 

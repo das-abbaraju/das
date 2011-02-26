@@ -15,57 +15,43 @@ import org.hibernate.annotations.Type;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "pqfoptions")
+@Table(name = "audit_question_option")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditQuestionOption extends BaseTable implements
-		java.io.Serializable {
-	private AuditQuestion auditQuestion;
-	private String optionName;
-	private YesNo visible = YesNo.Yes;
+public class AuditQuestionOption extends BaseTable {
+
+	private String optionType;
+	private String name;
+	private boolean visible = true;
 	private int number;
 	private int score;
 
-	public AuditQuestionOption() {
-
+	public String getOptionType() {
+		return optionType;
 	}
 
-	public AuditQuestionOption(AuditQuestionOption a, AuditQuestion aq) {
-		a.auditQuestion = aq;
-		this.number = a.getNumber();
-		this.optionName = a.getOptionName();
-		this.visible = a.getVisible();
+	public void setOptionType(String optionType) {
+		this.optionType = optionType;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "questionID", nullable = false)
-	public AuditQuestion getAuditQuestion() {
-		return auditQuestion;
+	@Deprecated
+	public String getName() {
+		return name;
 	}
 
-	public void setAuditQuestion(AuditQuestion auditQuestion) {
-		this.auditQuestion = auditQuestion;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getOptionName() {
-		return optionName;
-	}
-
-	public void setOptionName(String optionName) {
-		this.optionName = optionName;
+	@Override
+	public String getI18nKey() {
+		return "AuditQuestion." + optionType + ".option." + id;
 	}
 	
-	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
-	@Enumerated(EnumType.STRING)
-	public YesNo getVisible() {
+	public boolean isVisible() {
 		return visible;
 	}
 
-	@Transient
-	public boolean isVisibleB() {
-		return YesNo.Yes.equals(visible);
-	}
-
-	public void setVisible(YesNo visible) {
+	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
 
@@ -77,31 +63,8 @@ public class AuditQuestionOption extends BaseTable implements
 		this.number = number;
 	}
 
-	@Override
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + id;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final AuditQuestionOption other = (AuditQuestionOption) obj;
-		if (id != other.id)
-			return false;
-		return true;
-	}
-
 	/**
-	 * @return
-	 * 		The score of this question to be used when scoring an audit
+	 * @return The score of this question to be used when scoring an audit
 	 */
 	public int getScore() {
 		return score;

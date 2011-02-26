@@ -70,7 +70,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	public AuditType(AuditType a) {
 		this.account = a.getAccount();
-		this.auditName = a.getAuditName();
+		this.auditName = a.getName();
 		this.canContractorEdit = a.isCanContractorEdit();
 		this.canContractorView = a.isCanContractorView();
 		this.classType = a.getClassType();
@@ -91,6 +91,11 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		this.id = id;
 	}
 
+	/**
+	 * @deprecated Use name
+	 * @return
+	 */
+	@Deprecated
 	public String getAuditName() {
 		return auditName;
 	}

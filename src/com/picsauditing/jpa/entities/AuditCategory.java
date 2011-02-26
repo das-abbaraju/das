@@ -20,11 +20,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.util.Strings;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_category")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditCategory extends BaseTable implements java.io.Serializable, Comparable<AuditCategory> {
+public class AuditCategory extends BaseTable implements Comparable<AuditCategory> {
 
 	public static final int WORK_HISTORY = 6;
 	public static final int OSHA_AUDIT = 151;
@@ -46,6 +48,8 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	private int numRequired;
 	private int numQuestions;
 	private String helpText;
+	private boolean hasHelpText;
+	private String uniqueCode;
 
 	private List<AuditCategory> subCategories = new ArrayList<AuditCategory>();
 	private List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
@@ -109,6 +113,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		return auditType;
 	}
 
+	@Deprecated
 	@Column(name = "name", nullable = false)
 	public String getName() {
 		return this.name;
@@ -116,6 +121,14 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public String getI18nKey() {
+		if (Strings.isEmpty(uniqueCode))
+			return super.getI18nKey();
+		else
+			return "AuditCategory." + uniqueCode;
 	}
 
 	@Column(nullable = false)
@@ -138,7 +151,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	@Transient
 	public String getFullyQualifiedName() {
 		if (parent == null)
-			return getAuditType().getAuditName() + " - " + name;
+			return getAuditType().getName() + " - " + name;
 
 		return parent.getFullyQualifiedName() + " : " + name;
 	}
@@ -150,6 +163,15 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 
 	public void setNumRequired(int numRequired) {
 		this.numRequired = numRequired;
+	}
+
+	@Column(length = 50)
+	public String getUniqueCode() {
+		return uniqueCode;
+	}
+
+	public void setUniqueCode(String uniqueCode) {
+		this.uniqueCode = uniqueCode;
 	}
 
 	@Column(nullable = false)
@@ -174,6 +196,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		}
 	}
 
+	@Deprecated
 	public String getHelpText() {
 		return helpText;
 	}
@@ -200,6 +223,14 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 
 	public void setQuestions(List<AuditQuestion> questions) {
 		this.questions = questions;
+	}
+
+	public boolean isHasHelpText() {
+		return hasHelpText;
+	}
+
+	public void setHasHelpText(boolean hasHelpText) {
+		this.hasHelpText = hasHelpText;
 	}
 
 	@Transient
