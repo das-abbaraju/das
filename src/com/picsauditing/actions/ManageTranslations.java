@@ -110,6 +110,7 @@ public class ManageTranslations extends ReportActionSupport {
 				sql.addJoin("JOIN (" + select + ") tcount ON tcount.msgValue = t1.msgValue");
 				// sql.addField("tcount.total");
 				sql.addWhere("tcount.total > 10");
+				sql.addWhere("t1.msgValue != 'Translation missing'");
 			}
 			if (searchType.equals("MissingTo")) {
 				sql.addWhere("t2.id IS NULL AND t1.msgValue != 'Translation missing'");
