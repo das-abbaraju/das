@@ -2,7 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 
-public enum AuditStatus {
+public enum AuditStatus implements Translatable {
 	Pending("Pending", "yellow"),
 	Incomplete("Reject", "red"),
 	Submitted("Submit", "aqua"),
@@ -147,4 +147,13 @@ public enum AuditStatus {
 		this.color = color;
 	}
 
+	@Override
+	public String getI18nKey() {
+		return getClass().getSimpleName() + "." + toString();
+	}
+
+	@Override
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
+	}
 }
