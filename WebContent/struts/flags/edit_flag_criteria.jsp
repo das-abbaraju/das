@@ -40,12 +40,12 @@ function showCriteriaOperators() {
 <s:if test="criteria != null">
 <s:include value="../actionMessages.jsp"/>
 </s:if>
-<s:form id="itemform" method="post" action="EditFlagCriteria">
+<s:form id="itemform" method="post" action="EditFlagCriteria" cssClass="form">
 	<s:hidden name="id"/>
 	<fieldset>
 		<h2>General</h2>
 		<div>
-			<label><s:text name="form.id"/></label>
+			<label><s:text name="global.id"/>:</label>
 			<s:if test="criteria.id == 0">NEW</s:if>
 			<s:else><s:property value="criteria.id"/></s:else>
 			<s:if test="criteria.id > 0">
@@ -56,7 +56,6 @@ function showCriteriaOperators() {
 		<s:textfield name="criteria.displayOrder" theme="form"/>
 		<s:textfield name="criteria.label" theme="formhelp" maxlength="30"/>
 		<s:textarea name="criteria.description" theme="formhelp" cols="30" rows="4" />
-		
 	</fieldset>
 	<fieldset>
 		<h2>Value</h2>
@@ -69,12 +68,12 @@ function showCriteriaOperators() {
 	<!-- problem area -->
 	<fieldset>
 		<h2>Audit | Question</h2>
-		<s:select name="auditTypeID" list="{}" headerKey="0" headerValue=" - Audit Type - " value="%{criteria.auditType.id}" theme="form">
+		<s:select name="criteria.auditType" list="{}" headerKey="0" headerValue=" - Audit Type - " value="%{criteria.auditType.id}" theme="form">
 			<s:iterator value="auditTypeMap" var="aType">
 				<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
 			</s:iterator>
 		</s:select>
-		<s:select name="questionID" list="{}" headerKey="-1" headerValue=" - Question - " value="%{criteria.question.id}" theme="form">
+		<s:select name="criteria.question" list="{}" headerKey="-1" headerValue=" - Question - " value="%{criteria.question.id}" theme="form">
 			<s:iterator value="questionMap" var="flagQuestion">
 				<s:optgroup label="%{#flagQuestion.key.auditName}" list="#flagQuestion.value" listKey="id" listValue="shortQuestion" />
 			</s:iterator>

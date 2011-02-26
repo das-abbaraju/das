@@ -95,7 +95,7 @@
 }
 
 .dropmenudiv a:link,.dropmenudiv a:visited {
-	width: 250px;
+	width: auto;
 	margin: 0;
 	padding: 0;
 	display: block;

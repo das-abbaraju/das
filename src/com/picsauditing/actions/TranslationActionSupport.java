@@ -14,7 +14,8 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.PICS.I18nCache;
-
+import com.picsauditing.jpa.entities.Translatable;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class TranslationActionSupport extends ActionSupport {
@@ -29,6 +30,43 @@ public class TranslationActionSupport extends ActionSupport {
 		} catch (Exception defaultToEnglish) {
 			return Locale.ENGLISH;
 		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	public String getTranslationName(String property) throws SecurityException, NoSuchFieldException {
+		String result = "";
+
+		List<String> hierarchy = Arrays.asList(property.split("\\."));
+		Class type = this.getClass().getDeclaredField(hierarchy.get(0)).getType();
+		int i;
+		for (i = 1; i < hierarchy.size(); i++) {
+			try {
+				Class childFieldType = type.getDeclaredField(hierarchy.get(i)).getType();
+				if (isTranslatable(childFieldType))
+					type = childFieldType;
+				else
+					break;
+			} catch (NoSuchFieldException fieldMissing) {
+				break;
+			}
+		}
+
+		result = type.getSimpleName();
+		if (i < hierarchy.size()) {
+			result += "." + Strings.implode(hierarchy.subList(i, hierarchy.size()), ".");
+		}
+		return result;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public boolean isTranslatable(Class c) {
+		if (c == null)
+			return false;
+		for (Class i : c.getInterfaces()) {
+			if (i.equals(Translatable.class))
+				return true;
+		}
+		return isTranslatable(c.getSuperclass());
 	}
 
 	public String getScope() {

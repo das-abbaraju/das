@@ -87,13 +87,12 @@
 	<tr>
 		<td>
 		
-<s:form id="saveProfileForm">
+<s:form id="saveProfileForm" cssClass="form">
 	<s:hidden name="url"/>
 	<s:hidden name="u.id" />
 	<fieldset class="form">
 	<h2 class="formLegend"><s:text name="%{scope}.Profile.heading" /></h2>
-	<ol>
-		<li><label><s:text name="%{scope}.AssignedToAccount"></s:text>:</label> <s:property value="u.account.name" /></li>
+		<div><label><s:text name="%{scope}.AssignedToAccount"></s:text>:</label> <s:property value="u.account.name" /></div>
 		<s:textfield name="u.name" theme="form" />
 		<s:textfield name="u.email" theme="form" />
 		<s:textfield name="u.phone" theme="form" />
@@ -102,8 +101,7 @@
 			list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
 		<s:select name="u.timezone" listKey="key" listValue="value" theme="form"
 			list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" />
-		<li><label><s:text name="global.CreationDate" />:</label> <s:date name="u.creationDate"/></li>
-	</ol>
+		<div><label><s:text name="global.CreationDate" />:</label> <s:date name="u.creationDate"/></div>
 	</fieldset>
 	<fieldset class="form">
 		<h2 class="formLegend"><s:text name="%{scope}.UsernameAndPassword.heading" /></h2>

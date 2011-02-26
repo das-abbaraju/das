@@ -1,5 +1,5 @@
 /******************** New Primary class="forms"  ************************/
-form fieldset, fieldset.form {
+fieldset.form, form.form fieldset {
 	margin: 0 0 0 0;
 	padding: 0 0 10px 0;
 	border-style: none;
@@ -16,7 +16,7 @@ fieldset.alt {
 	background-color: #F0F0F0;
 }
 
-form fieldset h2, fieldset.form h2.formLegend {
+fieldset.form h2, form.form h2 {
 	color: white;
 	font-weight:bold;
 	font-size:125%;
@@ -26,46 +26,22 @@ form fieldset h2, fieldset.form h2.formLegend {
 	text-indent:5px;
 	letter-spacing:0px;
 	min-height:25px;
-	height:expression(this.height<25?25:true);}
-
-fieldset.form legend {
-	color: white;
-	font-weight: bold;
-	padding: 0;
-	display:none;
+	height:expression(this.height<25?25:true);
 }
 
-fieldset.form legend span {
-	position: absolute;
-	margin: 0;
-	left: 0;
-	top: 0;
-	font-size: 125%;
-	padding: 0.2em 2%;
-	background-color: #012142;
-	display: block;
-	width: 96%;
-}
-
-form fieldset ol, fieldset.form ol {
+fieldset.form ol {
 	padding-left: 5px;
 	list-style: none;
 }
 
-form fieldset div {
-	padding: 10px 5px 12px 10px;
-	float: left;
-	clear: left;
-}
-
-form fieldset ol li, fieldset.form ol li {
+fieldset.form ol li, form.form div {
 	font-size: 15px;
 	padding: 4px 5px 12px 10px;
 	float: left;
 	clear: left;
 }
 
-form fieldset ol li.required, fieldset.form ol li.required {
+fieldset.form ol li.required, form.form div.required {
 	padding-right: 20px;
 	background: url(../images/required.png) no-repeat right 28px;	
 }
@@ -75,11 +51,11 @@ form fieldset ol li.required, fieldset.form ol li.required {
 	background: url(../images/required.png) no-repeat left center;	
 }
 
-form fieldset ol li.required.hasdata, fieldset.form ol li.required.hasdata {
+fieldset.form ol li.required.hasdata, form.form div.required.hasdata {
 	background-image: none;
 }
 
-fieldset.submit {
+fieldset.submit, form.form fieldset.submit {
 	padding: 1em 0;
 	border-bottom: 2px solid #4686bf;
 	border-top:2px solid #4686bf;
@@ -88,7 +64,7 @@ fieldset.submit {
 	float: none;
 }
 
-fieldset.submit .picsbutton.positive{
+fieldset.submit .picsbutton.positive {
 	float: left;
 	margin-left: 5em;
 }
@@ -104,7 +80,7 @@ fieldset.bottom {
 	width: auto;
 }
 
-form fieldset label, fieldset.form label {
+fieldset.form label, form.form label {
 	float: none;
 	width: 100%;
 	display: block;
@@ -118,7 +94,7 @@ form fieldset label, fieldset.form label {
 	width: auto;
 }
 
-form fieldset label.checkbox, fieldset.form label.checkbox {
+fieldset.form label.checkbox, form.form label.checkbox {
 	float: none;
 	width: auto;
 	margin-right: auto;
@@ -129,7 +105,7 @@ form fieldset label.checkbox, fieldset.form label.checkbox {
 	line-height: inherit;
 }
 
-form fieldset label.input, fieldset.form label.input {
+fieldset.form label.input, form.form label.input {
 	float: none;
 	width: inherit;
 	margin-right: auto;
@@ -140,8 +116,8 @@ form fieldset label.input, fieldset.form label.input {
 	display: inherit;
 }
 
-form fieldset input[type=text], form fieldset input[type=password], form fieldset textarea,
-fieldset.form input[type=text], fieldset.form input[type=password], fieldset.form textarea {
+form.form input[type=text],form.form input[type=password], form.form textarea,
+fieldset.form input[type=text],fieldset.form input[type=password], fieldset.form textarea {
 	width: 320px;
 	font-size: 14px;
 	padding: 2px;
@@ -150,12 +126,12 @@ fieldset.form input[type=text], fieldset.form input[type=password], fieldset.for
 /**
 * We have to separate these because IE 6 can't see the rules with input[type=text]
 **/
-form fieldset select, fieldset.form select {
+fieldset.form select, form.form select {
 	width: 320px;
 	font-size: 14px;
 	padding: 2px;	
 }
-form fieldset input.input-edit-field, fieldset.form input.input-edit-field {
+fieldset.form input.input-edit-field, form.form input.input-edit-field {
 	width: 320px;
 	font-size: 14px;
 	padding: 2px;
@@ -177,11 +153,11 @@ form fieldset input.input-edit-field, fieldset.form input.input-edit-field {
 }
 
 /** Field Help **/
-form fieldset .fieldhelp-focused, fieldset.form ol li.fieldhelp-focused {
+fieldset.form .fieldhelp-focused, form.form .fieldhelp-focused {
 	background-color: #ffff99;
 }
 
-form fieldset .fieldhelp-focused input, fieldset.form ol li.fieldhelp-focused input {
+fieldset.form .fieldhelp-focused input, form.form fieldhelp-focused input {
 	outline: none;	
 }
 
@@ -202,28 +178,29 @@ form fieldset .fieldhelp-focused input, fieldset.form ol li.fieldhelp-focused in
 	/* For IE 5.5 - 7 */
 }
 
-form fieldset .fieldhelp, fieldset.form ol li .fieldhelp {
+fieldset.form .fieldhelp, form.form .fieldhelp {
 	display: none;
 }
 
-form fieldset .fieldhelp-focused .fieldhelp, fieldset.form ol li.fieldhelp-focused .fieldhelp {
+fieldset.form .fieldhelp-focused .fieldhelp, form.form .fieldhelp-focused .fieldhelp {
 	position: absolute;
-	display: block;
+	display: block
 }
 
-form fieldset .fieldhelp.hover, form fieldset .fieldhelp.mousedown, fieldset.form ol li .fieldhelp.hover, fieldset.form ol li .fieldhelp.mousedown {
+form.form .fieldhelp.hover, form.form .fieldhelp.mousedown,
+fieldset.form .fieldhelp.hover, fieldset.form .fieldhelp.mousedown {
 	position: absolute;
 	display: block;
 	z-index: 1001;
 }
 
-form fieldset div.fieldhelp, fieldset.form div.fieldhelp {
+div.fieldhelp {
 	margin-left: 10px;
 	float:none;
 	clear:both;
 }
 
-div.fieldhelp li, fieldset.form div.fieldhelp li {
+div.fieldhelp li {
 	list-style-type: disc;
 	margin-left: 0;
 	margin-bottom:2px;
@@ -235,7 +212,7 @@ div.fieldhelp li, fieldset.form div.fieldhelp li {
 	width: 100%;
 }
 
-div.fieldhelp p, fieldset.form div.fieldhelp p {
+div.fieldhelp p {
 	clear : both;
 	line-height:16px;
 }
@@ -243,7 +220,7 @@ div.fieldhelp p, fieldset.form div.fieldhelp p {
 /* 
  * Jump To Styles for form headers
  */
-  
+
 h2 span.form-title {
 	float: left;
 }

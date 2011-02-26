@@ -4,14 +4,15 @@
 	Version: 1.0 (07/09/2010)
 */
 (function($){
-	$.fn.fieldfocus = function() {
+	$.fn.fieldfocus = function(options) {
+		options = $.extend({parent: '*'},options);
 		return $(this).live('focus', function() {
-			var parent = $(this).closest('div');
+			var parent = $(this).closest(options.parent);
 			parent.addClass('fieldhelp-focused');
 			var pos = parent.position();
 			parent.find('.fieldhelp').css({top: pos.top + 'px', left: (parent.width()+pos.left+40) +'px'});
 		}).live('blur', function() {
-			$(this).closest('div').removeClass('fieldhelp-focused');
+			$(this).closest(options.parent).removeClass('fieldhelp-focused');
 		});
 	}
 	$.fn.helpstay = function() {
@@ -92,17 +93,14 @@
 })(jQuery)
 
 jQuery(function(){
-	$('form fieldset :input:not(:button)').fieldfocus();
-	$('form fieldset .fieldhelp').helpstay();
-	$('.required :input:not(:checkbox)').requiredfields();
+	$('form.form :input:not(:button)').fieldfocus({parent: 'div'});
+	$('div.fieldhelp').helpstay();
+	$('required :input:not(:checkbox)').requiredfields();
 	
-	$('form fieldset ol li').live('click', function() {
-		$(this).not('.fieldhelp-focused').find(':input:visible:first:not(:disabled)').focus();
-	});
-	$('form fieldset > div').live('click', function() {
+	$('fieldset.form ol li, form.form div').live('click', function() {
 		$(this).not('.fieldhelp-focused').find(':input:visible:first:not(:disabled)').focus();
 	});
 	
-	$('form fieldset h2:not(.noJump)').jumpTo();
+	$('fieldset.form h2:not(.noJump), form.form h2:not(.noJump)').jumpTo();
 	 
 });

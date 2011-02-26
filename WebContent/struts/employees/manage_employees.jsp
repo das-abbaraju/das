@@ -193,7 +193,9 @@ div.dataTables_length { width: 35%; }
 
 	<s:if test="account.employees.size() == 0 && employee == null">
 		<div class="info">
-			<s:text name="%{scope}.message.NoEmployees"><s:param><s:text name="%{scope}.link.Add" /></s:param></s:text>
+			<s:text name="%{scope}.message.NoEmployees">
+				<s:param><s:text name="%{scope}.link.Add" /></s:param>
+			</s:text>
 		</div>
 	</s:if>
 
