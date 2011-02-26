@@ -46,13 +46,23 @@ public class I18nCache {
 
 	public String getText(String key, String locale, Object... args) {
 		if (hasKey(key, locale))
-			return MessageFormat.format(getText(key, locale), args);
+			return MessageFormat.format(fixFormatCharacters(getText(key, locale)), args);
 		else
 			return null;
 	}
 
 	public String getText(String key, Locale locale, Object... args) {
 		return getText(key, getLocaleFallback(key, locale), args);
+	}
+	
+	/**
+	 * Fix characters that cause problems with MessageFormat,
+	 * such as "'"
+	 * @param text the text to be formatted
+	 * @return text formatted to be used in MessageFormat.format
+	 */
+	public String fixFormatCharacters(String text) {
+		return text.replaceAll("'", "''");
 	}
 
 	public Table<String, String, String> getCache() {
