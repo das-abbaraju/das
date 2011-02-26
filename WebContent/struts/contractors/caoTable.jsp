@@ -5,14 +5,14 @@
 		<thead>
 			<tr>
 				<s:if test="systemEdit && !permissions.operatorCorporate">
-					<th>Visible</th>
+					<th><s:text name="%{scope}.header.Visible" />Visible</th>
 				</s:if>
-				<th>Operator Scope</th>
-				<th>Progress</th>
-				<th>Status</th>
-				<th>Date</th>
+				<th><s:text name="%{scope}.header.OperatorScope" /></th>
+				<th><s:text name="%{scope}.header.Progress" /></th>
+				<th><s:text name="global.Status" /></th>
+				<th><s:text name="global.Date" /></th>
 				<s:if test="conAudit.auditType.classType.policy">
-					<th>Suggested</th>
+					<th><s:text name="%{scope}.header.Suggested" />Suggested</th>
 				</s:if>
 				<s:if test="!systemEdit">
 					<th>
@@ -40,7 +40,7 @@
 </s:iterator>">
 						<s:if test="systemEdit">
 							<s:hidden name="caosSave[%{#rowStatus.index}].id" value="%{#currentCao.id}" />
-							<s:property value="operator.name"/>
+							<s:property value="operator.name" />
 						</s:if>
 						<s:elseif test="getViewableCaops(#currentCao).size() == 1">
 							<s:iterator value="getViewableCaops(#currentCao)">
@@ -71,7 +71,7 @@
 						<td class="caoStatus<s:if test="!systemEdit"> hoverable</s:if><s:else> systemEdit</s:else>">
 							<s:if test="!systemEdit">
 								<span class="caoDisplay">
-									<a onclick="loadStatus(<s:property value="#currentCao.id"/>)" class="showPointer preview <s:property value="status.color"/>"><s:property value="status"/></a>
+									<a onclick="loadStatus(<s:property value="#currentCao.id"/>)" class="showPointer preview <s:property value="status.color"/>"><s:text name="%{status.getI18nKey()}" /></a>
 								</span>
 							</s:if>
 							<s:if test="isCanEditCao(#currentCao)">
@@ -100,7 +100,7 @@
 								<s:iterator value="getCurrentCaoStep(#currentCao.id)" id="step">
 									<s:if test="!(conAudit.auditType.classType.policy && #currentCao.operator.autoApproveInsurance && permissions.admin && #step.newStatus.approved)">
 										<div class="singleButton button <s:property value="#step.newStatus.color"/>">
-											<s:property value="#step.buttonName" />
+											<s:text name="%{#step.newStatus.getI18nKey('button')}" />
 											<s:hidden cssClass="bCaoID" name="%{id}_%{#step.id}" value="%{#currentCao.id}"/>
 											<s:hidden cssClass="bStepID" name="%{id}_%{#buttonActions.key}_stepID" value="%{#step.id}" />
 											<s:hidden cssClass="bStatus" value="%{#step.newStatus}" name="%{id}_%{#step.newStatus}_action" />

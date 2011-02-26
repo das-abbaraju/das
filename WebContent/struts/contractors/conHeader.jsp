@@ -200,13 +200,13 @@ function loadStatus(caoID){
 
 <h1><s:property value="contractor.name" />
 <span class="sub">
-<s:if test="subHeading.length() > 0">
-	<s:property value="subHeading" escape="false" />
-</s:if>
-<s:elseif test="auditID > 0">
-	<s:text name="%{'AuditType.' + conAudit.auditType.id + '.name'}" />
+<s:if test="auditID > 0">
+	<s:text name="%{conAudit.auditType.getI18nKey('name')}" />
 	<s:if test="conAudit.auditFor != null && conAudit.auditFor.length() > 0">for <s:property value="conAudit.auditFor"/></s:if>
 	<s:elseif test="!conAudit.auditType.pqf">- <s:date name="conAudit.effectiveDateLabel" format="MMM yyyy" /></s:elseif>
+</s:if>
+<s:elseif test="subHeading.length() > 0">
+	<s:property value="subHeading" escape="false" />
 </s:elseif>
 </span>
 </h1>
@@ -232,11 +232,11 @@ function loadStatus(caoID){
 	<s:if test="!permissions.operator && !permissions.insuranceOnlyContractorUser">
 		<li><a
 			href="ContractorFacilities.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('contractor_facilities')">class="current"</s:if>>Facilities</a></li>
+			<s:if test="requestURI.contains('contractor_facilities')">class="current"</s:if>><s:text name="global.Facilities" /></a></li>
 	</s:if>
 	<s:if test="permissions.contractor">
 		<li><a href="ContractorForms.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('con_forms')">class="current"</s:if>>Forms &amp; Docs</a></li>
+			<s:if test="requestURI.contains('con_forms')">class="current"</s:if>><s:text name="global.FormsAndDocs" />Forms &amp; Docs</a></li>
 	</s:if>
 	<s:iterator value="#auditMenu">
 		<li>
@@ -259,11 +259,11 @@ function loadStatus(caoID){
 	<div id="fieldsHead" style="width: 95%; margin-left: auto; margin-right:auto;">
 		<fieldset>
 		<ul>
-			<li><label><s:text name="form.id" />:</label>
+			<li><label><s:text name="global.id" />:</label>
 				 <s:property value="conAudit.id" />
 			</li>
 			<s:if test="conAudit.auditType.scoreable">
-				<li><label>Score:</label>
+				<li><label><s:text name="%{scope}.message.Score" />Score:</label>
 					<s:if test="conAudit.auditType.classType.im">
 						<div id="auditScore"><s:property value="conAudit.printableScore"/></div>
 					</s:if>
@@ -273,14 +273,14 @@ function loadStatus(caoID){
 				</li>
 			</s:if>
 			<s:if test="conAudit.auditType.showManual">
-				<li><label><nobr><s:if test="conAudit.auditType.id == 96">Management Plan</s:if>
-						   <s:else>Safety Manual</s:else>:</nobr></label>
+				<li><label><nobr><s:if test="conAudit.auditType.id == 96"><s:text name="%{scope}.message.ManagementPlan" />Management Plan</s:if>
+						   <s:else><s:text name="%{scope}.message.SafetyManual" /></s:else>:</nobr></label>
 					<s:if test="hasSafetyManual">
 							<s:iterator value="safetyManualLink.values()">
-								<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&auditData.question.id=<s:property value="question.id"/>" target="_BLANK">Uploaded (<s:date name="updateDate" format="MMM yyyy"/>)</a>
+								<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&auditData.question.id=<s:property value="question.id"/>" target="_BLANK"><s:text name="%{scope}.message.Uploaded"><s:param><s:date name="updateDate" format="MMM yyyy"/></s:param></s:text></a>
 							</s:iterator>
 					</s:if>
-					<s:else>Not Uploaded</s:else>
+					<s:else><s:text name="%{scope}.message.NotUploaded" />Not Uploaded</s:else>
 				</li>
 			</s:if>
 		</ul>
@@ -288,13 +288,13 @@ function loadStatus(caoID){
 		<fieldset>
 		<ul>
 			<s:if test="conAudit.expiresDate != null">
-				<li><label>Expires:</label>
+				<li><label><s:text name="%{scope}.message.Expires" />:</label>
 					<s:date name="conAudit.expiresDate" format="MMM d, yyyy" />
 				</li>
 			</s:if>			
 			<s:if test="permissions.picsEmployee">
 				<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0 && conAudit.closingAuditor.name != conAudit.auditor.name">
-					<li><label>Closing Auditor:</label>
+					<li><label><s:text name="%{scope}.ClosingAuditor" />Closing Auditor:</label>
 						<s:property value="conAudit.closingAuditor.name" />
 					</li>
 				</s:if>
@@ -306,15 +306,15 @@ function loadStatus(caoID){
 			<s:if test="permissions.picsEmployee">
 				<s:if test="conAudit.auditType.hasAuditor">
 					<li><label>
-						<s:if test="conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy') || conAudit.auditType.annualAddendum">CSR:</s:if>
-						<s:else>Safety Professional:</s:else></label>
+						<s:if test="conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy') || conAudit.auditType.annualAddendum"><s:text name="global.CSR" />:</s:if>
+						<s:else><s:text name="global.SafetyProfessional" />:</s:else></label>
 						<s:if test="conAudit.auditor.id > 0"><s:property value="conAudit.auditor.name" /></s:if>
-						<s:else><a href="AuditAssignments.action?auditID=<s:property value="auditID"/>">Not Assigned</a></s:else>
+						<s:else><a href="AuditAssignments.action?auditID=<s:property value="auditID"/>"><s:text name="%{scope}.message.NotAssigned" />Not Assigned</a></s:else>
 					</li>
 				</s:if>
 			</s:if>			
 			<s:if test="conAudit.auditType.scheduled && conAudit.scheduledDate != null">
-				<li><label>Scheduled:</label>
+				<li><label><s:text name="%{scope}.message.Scheduled" />Scheduled:</label>
 					<s:date name="conAudit.scheduledDate"
 						format="MMM d, yyyy" /> <s:property
 						value="conAudit.auditLocation" />
@@ -328,7 +328,7 @@ function loadStatus(caoID){
 		<s:include value="caoTable.jsp"/>
 	</div>
 	<s:if test="systemEdit">
-		<span class="refresh"><a class="clickable save" id="saveEdit_cao"><span class="clean">Save</span><span class="dirty">Saving now...</span></a></span>
+		<span class="refresh"><a class="clickable save" id="saveEdit_cao"><span class="clean"><s:text name="button.Save" /></span><span class="dirty">Saving now...</span></a></span>
 	</s:if>
 	<s:else>
 		<span class="refresh"><a class="clickable refresh" id="refresh_cao"><span class="clean">Refresh</span><span class="dirty">Refreshing status now...</span></a></span>
