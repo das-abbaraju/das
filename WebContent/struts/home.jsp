@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:text name="Header.Home" /></title>
+<title><s:text name="global.Home" /></title>
 <s:include value="jquery.jsp"/>
 <script src="js/FusionCharts.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
