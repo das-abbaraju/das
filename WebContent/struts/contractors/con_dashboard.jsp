@@ -154,14 +154,11 @@ table.report tr.hurdle td {
 <body>
 <s:include value="conHeader.jsp"/>
 <s:if test="permissions.contractor">
-	<div class="info">This is your profile page that the operators see when they look up your account. 
-	Use the dropdown below to view the page from your operator's point of view.</div>
+	<div class="info"><s:text name="%{scope}.ContractorDashboard.Description" /></div>
 </s:if>
 <s:if test="permissions.admin">
 	<s:if test="contractor.hasPastDueInvoice()">
-		<div class="alert">
-			This Contractor has an open past due invoice
-		</div>
+		<div class="alert"><s:text name="%{scope}.ContractorDashboard.HasPastDueInvoice" /></div>
 	</s:if>
 </s:if>
 
@@ -172,11 +169,13 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Contractor Status <s:if test="co != null">at <s:property value="co.operatorAccount.name"/></s:if>
+				<s:text name="%{scope}.ContractorDashboard.ContractorStatus">
+					<s:param><s:if test="co != null"> at <s:property value="co.operatorAccount.name"/></s:if></s:param>
+				</s:text>
 			</div>
 			<div class="panel_content">
 				<s:if test="contractor.status.pending">
-					<div class="alert">This contractor has not activated their account.</div>
+					<div class="alert"><s:text name="%{scope}.ContractorDashboard.StatusPending" /></div>
 				</s:if>
 				<s:if test="contractor.status.deleted">
 					<div class="alert">This contractor was deleted<s:if test="contractor.reason.length > 0"> 
@@ -232,7 +231,7 @@ table.report tr.hurdle td {
 						<s:if test="!contractor.acceptsBids && contractor.balance > 0"><p>Balance: $<s:property value="format(contractor.balance)"/></p></s:if>
 					</s:if>
 					<s:if test="problems.categories.size() > 0">
-						<p>Problems:
+						<p><s:text name="%{scope}.ContractorDashboard.Problems" />:
 							<ul style="margin-left: 10px;">
 								<s:iterator value="problems.categories" id="probcat">
 									<s:iterator value="problems.getCriteria(#probcat)" id="probcrit">
@@ -243,7 +242,7 @@ table.report tr.hurdle td {
 						</p>
 					</s:if>
 					<s:if test="co != null">
-						<p>Waiting On:
+						<p><s:text name="%{scope}.ContractorDashboard.WaitingOn" />:
 							<s:property value="co.waitingOn"/>
 						</p>
 					</s:if>
@@ -255,7 +254,7 @@ table.report tr.hurdle td {
 							<s:if test="contractor.requiresCompetencyReview">HSE Competency Review: Enabled</s:if>
 						</p>
 					-->
-					<p>Last Login:
+					<p><s:text name="%{scope}.ContractorDashboard.LastLogin" />:
 						<s:property value="getFuzzyDate(contractor.lastLogin)"/>
 					</p>
 					<s:if test="activeOperators.size() > 1">
@@ -369,7 +368,7 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Flaggable Data
+				<s:text name="%{scope}.ContractorDashboard.FlaggableData" />
 			</div>
 			<div class="panel_content">
 				<div class="clear" style="height: 0px; overflow: hidden"></div>
@@ -399,7 +398,7 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Contractor Info
+				<s:text name="%{scope}.ContractorDashboard.ContractorInfo" />
 			</div>
 			<div class="panel_content">
 				<h4><s:property value="contractor.name" />
@@ -419,7 +418,7 @@ table.report tr.hurdle td {
 					</strong>
 				</p>
 				</pics:permission>
-				<p>Member Since: 
+				<p><s:text name="%{scope}.ContractorDashboard.MemberSince" />: 
 					<strong>
 						<strong><s:date name="contractor.membershipDate" format="M/d/yyyy" /></strong>
 					</strong>
@@ -428,7 +427,7 @@ table.report tr.hurdle td {
 					<strong><s:property value="contractor.auditor.name" /> / <s:property value="contractor.auditor.phone" /> / </strong>
 					<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email"><s:property value="contractor.auditor.email"/></a>
 				</p>
-				<p>Risk Level: <strong><s:property value="contractor.riskLevel"/></strong></p>
+				<p><s:text name="%{scope}.ContractorDashboard.RiskLevel" />: <strong><s:property value="contractor.riskLevel"/></strong></p>
 				<s:if test="hasOperatorTags">
 					<s:if test= "contractor.operatorTags.size() > 0 || operatorTags.size() > 0">
 						<div><span>Operator Tag Names: </span>
@@ -446,19 +445,19 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Contact Info
+				<s:text name="%{scope}.ContractorDashboard.ContactInfo" />
 			</div>
 			<div class="panel_content">
-				<p>Address: [<a
+				<p><s:text name="%{scope}.ContractorDashboard.Address" />: [<a
 					href="http://www.mapquest.com/maps/map.adp?city=<s:property value="contractor.city" />&state=<s:property value="contractor.state" />&address=<s:property value="contractor.address" />&zip=<s:property value="contractor.zip" />&zoom=5"
-					target="_blank">Show Map</a>]<br/>
+					target="_blank"><s:text name="%{scope}.ContractorDashboard.ShowMap" /></a>]<br/>
 					<span class="street-address"><s:property value="contractor.address" /></span><br />
 					<span class="locality"><s:property value="contractor.city" /></span>, 
 					<span class="region"><s:property value="contractor.state.isoCode" /></span> 
 					<span class="postal-code"><s:property value="contractor.zip" /></span> <br />
 				</p>
 				<div class="telecommunications">
-					<p class="tel">Main Phone: <span class="value"><s:property value="contractor.phone" /></span></p>
+					<p class="tel"><s:text name="%{scope}.ContractorDashboard.MainPhone" />: <span class="value"><s:property value="contractor.phone" /></span></p>
 					<s:if test="contractor.fax" ><p class="tel">Main Fax: <span class="value"><s:property value="contractor.fax" /></span></p></s:if>
 					<s:if test="contractor.webUrl.length() > 0" ><p class="url">Web site: <strong><a href="http://<s:property value="contractor.webUrl" />" class="value" target="_blank"><s:property value="contractor.webUrl" /></a></strong></p></s:if>
 					<s:iterator value="contractor.getUsersByRole('ContractorAdmin')">
@@ -477,7 +476,7 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Description
+				<s:text name="%{scope}.ContractorDashboard.DescriptionHeader" />
 			</div>
 			<div class="panel_content">
 				<s:if test="showLogo">
@@ -490,7 +489,7 @@ table.report tr.hurdle td {
 					</strong></p>
 				</s:if>
 				<s:if test="contractor.tradesSelf.length() > 0"><p id="services">
-					Self Performed Services: 
+					<s:text name="%{scope}.ContractorDashboard.SelfPerformedServices" />: 
 					<strong><span id="selfperformed"><s:property value="contractor.tradesSelf"/></span></strong>
 				</p></s:if>
 				<s:if test="contractor.tradesSub.length() > 0"><p id="services">
@@ -505,7 +504,7 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel" id="all">
 			<div class="panel_header">
-				All Locations
+				<s:text name="%{scope}.ContractorDashboard.AllLocations" />
 			</div>
 			<div class="panel_content">
 				<s:iterator value="activeOperatorsMap">
@@ -558,7 +557,7 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Synchronize Contractor <span style="float: right;"><a href="#" onclick="return false;" class="cluetip help" rel="#cluetip_sync" title="Synchronize Contractor"></a></span>
+				<s:text name="%{scope}.ContractorDashboard.SynchronizeContractor" /> <span style="float: right;"><a href="#" onclick="return false;" class="cluetip help" rel="#cluetip_sync" title="Synchronize Contractor"></a></span>
 				<div id="cluetip_sync">Click this button to update the PQF, audits, flags, and other requirements for this contractor. You need to click this button only when requirements have changed and you want to see the results immediately.</div>
 			</div>
 			<div class="panel_content" style="text-align: center;">
