@@ -9,8 +9,24 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />	
+<style type="text/css">
+#locales {
+	position: relative;
+	top: -30px
+}
+#locales a, #locales a:VISITED, #locales a:HOVER, #locales a:ACTIVE {
+	margin: 15px;
+	padding: 5px;
+	text-decoration: none;
+	font-weight: bold;
+	border: 1px solid white;
+}
+#locales a:HOVER, #locales a:ACTIVE {
+	border: 1px solid #012142;
+}
+</style>
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript">	
+<script type="text/javascript">
 function checkUsername(username) {
 	$('#username_status').text('checking availability of username...');
 	var data = {userID: 0, username: username};
@@ -95,6 +111,14 @@ $(function(){
 </script>
 </head>
 <body>
+<s:if test="debugging">
+<div id="locales">
+<a href="?request_locale=en">English</a>
+<a href="?request_locale=fr">Français</a>
+<a href="?request_locale=es">Español</a>
+</div>
+</s:if>
+
 <s:include value="registrationHeader.jsp"></s:include>
 <span class="redMain required-info"><s:text name="%{scope}.IndicatesRequiredInfo" /></span>
 <s:form method="POST">
