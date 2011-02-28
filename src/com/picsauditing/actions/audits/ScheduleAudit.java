@@ -275,7 +275,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				createInvoice(expedite, notes);
 
 				if (conAudit.isNeedsCamera()) {
-					List<UserAccess> webcamUsers = uaDAO.findByOpPerm(OpPerms.ManageWebcam);
+					List<UserAccess> webcamUsers = uaDAO.findByOpPerm(OpPerms.WebcamNotification);
 					List<String> emails = new ArrayList<String>();
 					for (UserAccess ua : webcamUsers) {
 						if (!ua.getUser().isGroup() && !Strings.isEmpty(ua.getUser().getEmail()))

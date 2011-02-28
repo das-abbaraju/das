@@ -93,6 +93,7 @@ public enum OpPerms {
 	UserZipcodeAssignment("User Zipcode Assignment", "Allow PICS employees to assign CSRs and Auditors to specific geographic locations.", false,false,true,false,false),
 	
 	ManageWebcam("Webcam Management", "Can view and edit PICS' inventory of web cameras", true, true, true, false, false),
+	WebcamNotification("Webcam Notifications", "Notifies users of actions needed regarding webcams", false, false, true, false, false),
 	AuditorPayments("Safety Professional Payments", "Create and manage independent contractor payments for audits.", true, true, true, false, false),
 
 	// Manage User Account Roles
