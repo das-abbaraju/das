@@ -9,3 +9,6 @@ alter table `accounts` add column `locale` varchar(5) DEFAULT 'en' NULL;
 
 -- PICS-1961
 update audit_type_rule set dependentAuditStatus = 'Submitted' where id in(2391,31120);
+
+--PICS-1810
+update `app_properties` set `value`='2' where `property` = 'schedule.mindays';
