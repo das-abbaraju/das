@@ -45,7 +45,7 @@ $(function() {
 	<span class="questionNumber">
 		<s:property value="#q.expandedNumber"/>
 	</span>
-	<s:text name="%{#q.getI18nKey('name')}" />
+	<s:property value="#q.name" escape="false"/>
 	<br />
 	<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
 </span>
