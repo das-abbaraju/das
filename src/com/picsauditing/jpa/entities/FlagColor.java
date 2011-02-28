@@ -2,7 +2,9 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 
-public enum FlagColor {
+import javax.persistence.Transient;
+
+public enum FlagColor implements Translatable {
 
 	Green("#339900", "Approve"),
 	Amber("#FFCC33", "Review"),
@@ -94,5 +96,17 @@ public enum FlagColor {
 			return true;
 
 		return false;
+	}
+	
+	@Transient
+	@Override
+	public String getI18nKey() {
+		return this.getClass().getSimpleName() + "." + this.name();
+	}
+	
+	@Transient
+	@Override
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
 	}
 }

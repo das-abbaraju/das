@@ -5,7 +5,7 @@
 		<thead>
 			<tr>
 				<s:if test="systemEdit && !permissions.operatorCorporate">
-					<th><s:text name="Audit.header.Visible" />Visible</th>
+					<th><s:text name="Audit.header.Visible" /></th>
 				</s:if>
 				<th><s:text name="Audit.header.OperatorScope" /></th>
 				<th><s:text name="Audit.header.Progress" /></th>
@@ -32,28 +32,31 @@
 				<s:if test="#currentCao.visible || systemEdit">
 					<tr id="cao_<s:property value="#currentCao.id"/>" class="caos">
 						<s:if test="systemEdit && !permissions.operatorCorporate">
+							<!-- Visible -->
 							<td class="center">
 								<s:checkbox cssClass="vis" value="#currentCao.visible" name="caosSave[%{#rowStatus.index}].visible" />
 							</td>
 						</s:if>
+						<!-- Operator Scope -->
 						<td title="<s:iterator value="getViewableCaops(#currentCao)"><s:property value="name"/>
 </s:iterator>">
-						<s:if test="systemEdit">
-							<s:hidden name="caosSave[%{#rowStatus.index}].id" value="%{#currentCao.id}" />
-							<s:property value="operator.name" />
-						</s:if>
-						<s:elseif test="getViewableCaops(#currentCao).size() == 1">
-							<s:iterator value="getViewableCaops(#currentCao)">
-								<s:property value="name" />
-							</s:iterator>
-						</s:elseif>
-						<s:elseif test="operator.id > 10">
-							<s:property value="operator.name"/>
-						</s:elseif>
-						<s:else>
-							<s:property value="operator.name.substring(4)" />: <s:property value="getViewableCaops(#currentCao).size()"/> operators
-						</s:else>
+							<s:if test="systemEdit">
+								<s:hidden name="caosSave[%{#rowStatus.index}].id" value="%{#currentCao.id}" />
+								<s:property value="operator.name" />
+							</s:if>
+							<s:elseif test="getViewableCaops(#currentCao).size() == 1">
+								<s:iterator value="getViewableCaops(#currentCao)">
+									<s:property value="name" />
+								</s:iterator>
+							</s:elseif>
+							<s:elseif test="operator.id > 10">
+								<s:property value="operator.name"/>
+							</s:elseif>
+							<s:else>
+								<s:property value="operator.name.substring(4)" />: <s:property value="getViewableCaops(#currentCao).size()"/> operators
+							</s:else>
 						</td>
+						<!-- Progress -->
 						<td class="progress nobr">
 							<s:if test="#currentCao.status.submittedResubmitted">
 								<div style="position: relative">
@@ -68,6 +71,7 @@
 								</div>
 							</s:elseif>
 						</td>
+						<!-- Status -->
 						<td class="caoStatus<s:if test="!systemEdit"> hoverable</s:if><s:else> systemEdit</s:else>">
 							<s:if test="!systemEdit">
 								<span class="caoDisplay">
@@ -83,7 +87,8 @@
 									<span class="right"><a href="#" class="edit"></a></span>
 								</s:if>
 							</s:if>
-						</td>					
+						</td>
+						<!-- Date -->
 						<td class="caoDate">
 							<s:if test="statusChangedDate == null">
 								N/A
@@ -92,9 +97,14 @@
 								<s:date name="statusChangedDate" format="dd MMM yyyy" />
 							</s:else>
 						</td>
+						<!-- Suggested -->
 						<s:if test="conAudit.auditType.classType.policy">
-							<td style="color : <s:property value="#currentCao.flag.hex"/>"><s:property value="#currentCao.flag.insuranceStatus" default="N/A" /></td>
+							<td style="color : <s:property value="#currentCao.flag.hex"/>">
+								<s:if test="#currentCao.flag != null"><s:text name="%{#currentCao.flag.getI18nKey('insuranceStatus')}" /></s:if>
+								<s:else><s:text name="global.NA" /></s:else>
+							</td>
 						</s:if>
+						<!-- Update status for all -->
 						<s:if test="!systemEdit">
 							<td class="buttonAction">
 								<s:iterator value="getCurrentCaoStep(#currentCao.id)" id="step">

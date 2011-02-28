@@ -263,7 +263,7 @@ function loadStatus(caoID){
 				 <s:property value="conAudit.id" />
 			</li>
 			<s:if test="conAudit.auditType.scoreable">
-				<li><label><s:text name="Audit.message.Score" />Score:</label>
+				<li><label><s:text name="Audit.message.Score" />:</label>
 					<s:if test="conAudit.auditType.classType.im">
 						<div id="auditScore"><s:property value="conAudit.printableScore"/></div>
 					</s:if>
