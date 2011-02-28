@@ -5,14 +5,14 @@
 		<thead>
 			<tr>
 				<s:if test="systemEdit && !permissions.operatorCorporate">
-					<th><s:text name="%{scope}.header.Visible" />Visible</th>
+					<th><s:text name="Audit.header.Visible" />Visible</th>
 				</s:if>
-				<th><s:text name="%{scope}.header.OperatorScope" /></th>
-				<th><s:text name="%{scope}.header.Progress" /></th>
+				<th><s:text name="Audit.header.OperatorScope" /></th>
+				<th><s:text name="Audit.header.Progress" /></th>
 				<th><s:text name="global.Status" /></th>
 				<th><s:text name="global.Date" /></th>
 				<s:if test="conAudit.auditType.classType.policy">
-					<th><s:text name="%{scope}.header.Suggested" />Suggested</th>
+					<th><s:text name="Audit.header.Suggested" /></th>
 				</s:if>
 				<s:if test="!systemEdit">
 					<th>

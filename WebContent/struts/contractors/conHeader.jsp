@@ -263,7 +263,7 @@ function loadStatus(caoID){
 				 <s:property value="conAudit.id" />
 			</li>
 			<s:if test="conAudit.auditType.scoreable">
-				<li><label><s:text name="%{scope}.message.Score" />Score:</label>
+				<li><label><s:text name="Audit.message.Score" />Score:</label>
 					<s:if test="conAudit.auditType.classType.im">
 						<div id="auditScore"><s:property value="conAudit.printableScore"/></div>
 					</s:if>
@@ -273,14 +273,14 @@ function loadStatus(caoID){
 				</li>
 			</s:if>
 			<s:if test="conAudit.auditType.showManual">
-				<li><label><nobr><s:if test="conAudit.auditType.id == 96"><s:text name="%{scope}.message.ManagementPlan" />Management Plan</s:if>
-						   <s:else><s:text name="%{scope}.message.SafetyManual" /></s:else>:</nobr></label>
+				<li><label><nobr><s:if test="conAudit.auditType.id == 96"><s:text name="Audit.message.ManagementPlan" />Management Plan</s:if>
+						   <s:else><s:text name="Audit.message.SafetyManual" /></s:else>:</nobr></label>
 					<s:if test="hasSafetyManual">
 							<s:iterator value="safetyManualLink.values()">
-								<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&auditData.question.id=<s:property value="question.id"/>" target="_BLANK"><s:text name="%{scope}.message.Uploaded"><s:param><s:date name="updateDate" format="MMM yyyy"/></s:param></s:text></a>
+								<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&auditData.question.id=<s:property value="question.id"/>" target="_BLANK"><s:text name="Audit.message.Uploaded"><s:param><s:date name="updateDate" format="MMM yyyy"/></s:param></s:text></a>
 							</s:iterator>
 					</s:if>
-					<s:else><s:text name="%{scope}.message.NotUploaded" />Not Uploaded</s:else>
+					<s:else><s:text name="Audit.message.NotUploaded" />Not Uploaded</s:else>
 				</li>
 			</s:if>
 		</ul>
@@ -288,13 +288,13 @@ function loadStatus(caoID){
 		<fieldset>
 		<ul>
 			<s:if test="conAudit.expiresDate != null">
-				<li><label><s:text name="%{scope}.message.Expires" />:</label>
+				<li><label><s:text name="Audit.message.Expires" />:</label>
 					<s:date name="conAudit.expiresDate" format="MMM d, yyyy" />
 				</li>
 			</s:if>			
 			<s:if test="permissions.picsEmployee">
 				<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0 && conAudit.closingAuditor.name != conAudit.auditor.name">
-					<li><label><s:text name="%{scope}.ClosingAuditor" />Closing Auditor:</label>
+					<li><label><s:text name="Audit.ClosingAuditor" />:</label>
 						<s:property value="conAudit.closingAuditor.name" />
 					</li>
 				</s:if>
@@ -309,12 +309,12 @@ function loadStatus(caoID){
 						<s:if test="conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy') || conAudit.auditType.annualAddendum"><s:text name="global.CSR" />:</s:if>
 						<s:else><s:text name="global.SafetyProfessional" />:</s:else></label>
 						<s:if test="conAudit.auditor.id > 0"><s:property value="conAudit.auditor.name" /></s:if>
-						<s:else><a href="AuditAssignments.action?auditID=<s:property value="auditID"/>"><s:text name="%{scope}.message.NotAssigned" />Not Assigned</a></s:else>
+						<s:else><a href="AuditAssignments.action?auditID=<s:property value="auditID"/>"><s:text name="Audit.message.NotAssigned" />Not Assigned</a></s:else>
 					</li>
 				</s:if>
 			</s:if>			
 			<s:if test="conAudit.auditType.scheduled && conAudit.scheduledDate != null">
-				<li><label><s:text name="%{scope}.message.Scheduled" />Scheduled:</label>
+				<li><label><s:text name="Audit.message.Scheduled" />:</label>
 					<s:date name="conAudit.scheduledDate"
 						format="MMM d, yyyy" /> <s:property
 						value="conAudit.auditLocation" />
@@ -328,10 +328,10 @@ function loadStatus(caoID){
 		<s:include value="caoTable.jsp"/>
 	</div>
 	<s:if test="systemEdit">
-		<span class="refresh"><a class="clickable save" id="saveEdit_cao"><span class="clean"><s:text name="button.Save" /></span><span class="dirty">Saving now...</span></a></span>
+		<span class="refresh"><a class="clickable save" id="saveEdit_cao"><span class="clean"><s:text name="button.Save" /></span><span class="dirty"><s:text name="Audit.message.SavingNow" /></span></a></span>
 	</s:if>
 	<s:else>
-		<span class="refresh"><a class="clickable refresh" id="refresh_cao"><span class="clean">Refresh</span><span class="dirty">Refreshing status now...</span></a></span>
+		<span class="refresh"><a class="clickable refresh" id="refresh_cao"><span class="clean"><s:text name="button.Refresh" /></span><span class="dirty"><s:text name="Audit.message.RefreshingStatus" /></span></a></span>
 	</s:else>
 	<div class="clear"></div>
 </div>
