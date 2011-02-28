@@ -3,69 +3,60 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"
 	pageEncoding="UTF-8"%>
 <ul id="toolbar" class="vert-toolbar">
-	<li class="head">TOOLBAR</li>
+	<li class="head"><s:text name="Audit.header.Toolbar" /></li>
 	<s:if test="canSystemEdit">
 		<li><a class="edit1"
-			href="ConAuditMaintain.action?auditID=<s:property value="auditID" />">System
-		Edit</a></li>
+			href="ConAuditMaintain.action?auditID=<s:property value="auditID" />"><s:text name="Audit.button.SystemEdit" /></a></li>
 	</s:if>
-	<li><a class="percent" href="Audit.action?auditID=<s:property value="auditID"/>&button=Recalculate"> Recalculate</a></li>
+	<li><a class="percent" href="Audit.action?auditID=<s:property value="auditID"/>&button=Recalculate"><s:text name="Audit.button.Recalculate" /></a></li>
 	<s:if test="canVerifyPqf">
 		<li><a class="verify"
-			href="VerifyView.action?id=<s:property value="id" />">Verify</a></li>
+			href="VerifyView.action?id=<s:property value="id" />"><s:text name="button.Verify" /></a></li>
 	</s:if>
 	<s:if test="canPreview">
-		<li><a class="preview" href="#mode=ViewQ">Preview Questions</a></li>
+		<li><a class="preview" href="#mode=ViewQ"><s:text name="Audit.button.Preview" /></a></li>
 	</s:if>
-	<li><a class="file" href="#viewBlanks=false&mode=View" id="viewBlanks">View Answered</a></li>
+	<li><a class="file" href="#viewBlanks=false&mode=View" id="viewBlanks"><s:text name="Audit.button.ViewAnswered" /></a></li>
 	<s:if test="(permissions.admin || permissions.auditor) && categories.keySet().size > 1">
 		<li><a class="addremove"
 			href="AddRemoveCategories.action?auditID=<s:property value="auditID"/>">
-		Add/Remove Categories </a></li>
+		<s:text name="Audit.button.AddRemoveCategories" /></a></li>
 	</s:if>
 	<s:if test="canViewRequirements">
 		<li><a class="print"
-			href="Audit.action?auditID=<s:property value="auditID"/>#onlyReq=true">Print
-		Requirements</a></li>
+			href="Audit.action?auditID=<s:property value="auditID"/>#onlyReq=true"><s:text name="Audit.button.PrintRequirements" /></a></li>
 		<s:if test="permissions.auditor">
 			<li><a class="edit2"
-				href="Audit.action?auditID=<s:property value="auditID"/>#onlyReq=true&mode=Edit">Edit
-			Requirements</a></li>
+				href="Audit.action?auditID=<s:property value="auditID"/>#onlyReq=true&mode=Edit"><s:text name="Audit.button.EditRequirements" /></a></li>
 		</s:if>
 		<s:if test="permissions.admin">
 			<li><a class="uploadreq"
-				href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload
-			Requirements</a></li>
+				href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>"><s:text name="Audit.button.UploadRequirements" /></a></li>
 		</s:if>
 		<s:elseif test="permissions.onlyAuditor">
 			<li><a class="uploadreq"
-				href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload
-			Requirements</a></li>
+				href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>"><s:text name="Audit.button.UploadRequirements" /></a></li>
 		</s:elseif>
 		<s:elseif test="permissions.contractor">
 			<li><a class="uploadreq"
-				href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload
-			Requirements</a></li>
+				href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>"><s:text name="Audit.button.UploadRequirements" /></a></li>
 		</s:elseif>
 		<s:if test="permissions.operatorCorporate">
 			<li><a class="file"
-				href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Review
-			Requirements</a></li>
+				href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>"><s:text name="Audit.button.ReviewRequirements" /></a></li>
 		</s:if>
 	</s:if>
 	<s:if test="canSchedule">
 		<li><a class="calendar"
-			href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>">Schedule
-		Audit</a></li>
+			href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>"<s:text name="Audit.button.ScheduleAudit" />></a></li>
 	</s:if>
-	<li><a class="print" href="#" onclick="window.print(); return false;">Print This Page</a></li>
+	<li><a class="print" href="#" onclick="window.print(); return false;"><s:text name="Audit.button.Print" /></a></li>
 </ul>
 
 <div
 	<s:if test="categories.keySet().size == 1"> style="display: none;"</s:if>>
 	<ul id="aCatlist" class="vert-toolbar catUL">
-		<li class="head">CATEGORIES <span class="hidden-button">Show
-		N/A</span></li>
+		<li class="head"><s:text name="Audit.header.Categories" /><span class="hidden-button"><s:text name="Audit.header.ShowNA" /></span></li>
 		<s:iterator value="categoryNodes" id="catNode">
 			<li id="category_<s:property value="#catNode.category.id"/>" class="catlist">
 				<a class="hist-category" href="#categoryID=<s:property value="#catNode.category.id"/>">
@@ -91,7 +82,7 @@
 		</s:iterator>
 	</ul>
 	<ul id="nacatlist" class="vert-toolbar catUL">
-		<li class="head">N/A CATEGORIES <span class="hidden-button">Back</span></li>
+		<li class="head"><s:text name="Audit.header.NACategories" /><span class="hidden-button"><s:text name="button.Back" /></span></li>
 		<s:iterator value="notApplicableCategoryNodes" id="catNode"
 			status="rowStatus">
 			<li id="category_<s:property value="#catNode.category.id"/>"
