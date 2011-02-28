@@ -7,7 +7,7 @@
 			onclick="noteEditor('<s:property value="id"/>', 0, 'edit');" value="Add Note" />
 	</div>
 </pics:permission>
-<div id="thinking_notesList">&nbsp;</div>
+<div id="thinking_notesList"></div>
 <table class="notes">
 	<thead>
 		<tr>
