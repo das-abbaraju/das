@@ -243,6 +243,8 @@ $(function(){
 							</div>
 						</li>
 						<s:checkbox id="Onsite" name="contractor.onsiteServices" theme="formhelp" onclick="updateRequiredField();"/>
+						<s:checkbox id="Offsite" name="contractor.offsiteServices" theme="formhelp" onclick="updateRequiredField();"/>
+						<s:checkbox id="Supplier" name="contractor.supplier" theme="formhelp" onclick="updateRequiredField();"/>
 					</ol>
 				</fieldset>
 				<fieldset class="form">
