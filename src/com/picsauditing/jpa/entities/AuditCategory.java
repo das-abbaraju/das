@@ -123,6 +123,7 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 		this.name = name;
 	}
 
+	@Transient
 	@Override
 	public String getI18nKey() {
 		if (Strings.isEmpty(uniqueCode))

@@ -2,6 +2,8 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 
+import javax.persistence.Transient;
+
 public enum AuditStatus implements Translatable {
 	Pending("Pending", "yellow"),
 	Incomplete("Reject", "red"),
@@ -147,6 +149,7 @@ public enum AuditStatus implements Translatable {
 		this.color = color;
 	}
 
+	@Transient
 	@Override
 	public String getI18nKey() {
 		return getClass().getSimpleName() + "." + toString();

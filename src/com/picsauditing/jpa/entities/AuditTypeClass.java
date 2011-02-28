@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import javax.persistence.Transient;
+
 public enum AuditTypeClass implements Translatable {
 	PQF, Audit, Policy, IM;
 
@@ -19,6 +21,7 @@ public enum AuditTypeClass implements Translatable {
 		return IM == this;
 	}
 
+	@Transient
 	@Override
 	public String getI18nKey() {
 		return getClass().getSimpleName() + "." + toString();

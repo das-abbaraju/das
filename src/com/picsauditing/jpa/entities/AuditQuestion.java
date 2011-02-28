@@ -138,6 +138,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.name = name;
 	}
 
+	@Transient
 	@Override
 	public String getI18nKey() {
 		if (Strings.isEmpty(uniqueCode))

@@ -42,6 +42,7 @@ public class AuditQuestionOption extends BaseTable {
 		this.name = name;
 	}
 
+	@Transient
 	@Override
 	public String getI18nKey() {
 		return "AuditQuestion." + optionType + ".option." + id;
