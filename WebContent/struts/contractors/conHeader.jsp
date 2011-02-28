@@ -236,7 +236,7 @@ function loadStatus(caoID){
 	</s:if>
 	<s:if test="permissions.contractor">
 		<li><a href="ContractorForms.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('con_forms')">class="current"</s:if>><s:text name="global.FormsAndDocs" />Forms &amp; Docs</a></li>
+			<s:if test="requestURI.contains('con_forms')">class="current"</s:if>><s:text name="global.FormsAndDocs" /></a></li>
 	</s:if>
 	<s:iterator value="#auditMenu">
 		<li>
