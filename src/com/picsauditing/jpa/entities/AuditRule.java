@@ -34,7 +34,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 	// Default to bid-only "No" (Needed to the increase the priority)
 	protected Boolean acceptsBids = false;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
 	public AuditType getAuditType() {
 		return auditType;
@@ -67,7 +67,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 		return risk.toString();
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "opID")
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
@@ -136,7 +136,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 		return tag.getTag();
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "questionID")
 	public AuditQuestion getQuestion() {
 		return question;

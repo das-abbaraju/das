@@ -236,7 +236,7 @@ public class ContractorAuditOperator extends BaseTable {
 		return 100;
 	}
 
-	@OneToMany(mappedBy = "cao", cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "cao", cascade = { CascadeType.ALL })
 	public List<ContractorAuditOperatorPermission> getCaoPermissions() {
 		return caoPermissions;
 	}

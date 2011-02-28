@@ -226,7 +226,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.brochureFile = brochureFile;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "requestedByID")
 	public OperatorAccount getRequestedBy() {
 		return requestedBy;

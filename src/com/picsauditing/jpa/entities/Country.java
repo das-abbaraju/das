@@ -12,10 +12,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.picsauditing.util.Strings;
 
 @Entity
 @Table(name = "ref_country")
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "daily")
 public class Country implements Serializable {
 	private static final long serialVersionUID = 6312208192653925848L;
 

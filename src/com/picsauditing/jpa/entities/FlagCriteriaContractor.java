@@ -33,7 +33,7 @@ public class FlagCriteriaContractor extends BaseTable implements Comparable<Flag
 		setAuditColumns(new User(User.SYSTEM));
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "conID", nullable = false)
 	public ContractorAccount getContractor() {
 		return contractor;

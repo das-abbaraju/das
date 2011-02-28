@@ -289,7 +289,7 @@ public class OperatorAccount extends Account {
 		return forms;
 	}
 
-	@OneToMany(mappedBy = "operator", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "operator")
 	public List<Facility> getCorporateFacilities() {
 		return corporateFacilities;
 	}

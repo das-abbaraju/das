@@ -7,11 +7,15 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "invoice_fee")
-public class InvoiceFee extends BaseTable implements java.io.Serializable {
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "daily")
+public class InvoiceFee extends BaseTable {
 	public final static int ACTIVATION = 1;
 	public final static int ACTIVATION99 = 104;
 	public final static int REACTIVATION = 2;

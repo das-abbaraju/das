@@ -37,7 +37,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "contractor_audit")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class ContractorAudit extends BaseTable implements java.io.Serializable {
+public class ContractorAudit extends BaseTable {
 
 	private AuditType auditType;
 	private ContractorAccount contractorAccount;
@@ -108,7 +108,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		this.oshas = oshas;
 	}
 
-	@OneToMany(mappedBy = "audit", cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "audit", cascade = { CascadeType.ALL })
 	public List<ContractorAuditOperator> getOperators() {
 		return operators;
 	}

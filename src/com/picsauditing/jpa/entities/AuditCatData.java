@@ -7,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -34,7 +33,7 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 	private int scoreCount = 0;
 	private Integer ruleID;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "categoryID", nullable = false)
 	public AuditCategory getCategory() {
 		return category;
@@ -135,14 +134,6 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 	
 	public void setRuleID(Integer ruleID) {
 		this.ruleID  = ruleID;
-	}
-
-	@Override
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + id;
-		return result;
 	}
 
 	@Transient
