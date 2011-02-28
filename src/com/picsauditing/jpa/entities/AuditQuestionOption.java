@@ -15,44 +15,57 @@ import org.hibernate.annotations.Type;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "audit_question_option")
+@Table(name = "pqfoptions")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditQuestionOption extends BaseTable {
 
-	private String optionType;
-	private String name;
-	private boolean visible = true;
+	private AuditQuestion auditQuestion;
+	private String optionName;
+	private YesNo visible = YesNo.Yes;
 	private int number;
 	private int score;
 
-	public String getOptionType() {
-		return optionType;
+	public AuditQuestionOption() {
+
 	}
 
-	public void setOptionType(String optionType) {
-		this.optionType = optionType;
+	public AuditQuestionOption(AuditQuestionOption a, AuditQuestion aq) {
+		a.auditQuestion = aq;
+		this.number = a.getNumber();
+		this.optionName = a.getOptionName();
+		this.visible = a.getVisible();
 	}
 
-	@Deprecated
-	public String getName() {
-		return name;
+	@ManyToOne
+	@JoinColumn(name = "questionID", nullable = false)
+	public AuditQuestion getAuditQuestion() {
+		return auditQuestion;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setAuditQuestion(AuditQuestion auditQuestion) {
+		this.auditQuestion = auditQuestion;
 	}
 
-	@Transient
-	@Override
-	public String getI18nKey() {
-		return "AuditQuestion." + optionType + ".option." + id;
+	public String getOptionName() {
+		return optionName;
+	}
+
+	public void setOptionName(String optionName) {
+		this.optionName = optionName;
 	}
 	
-	public boolean isVisible() {
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
+	@Enumerated(EnumType.STRING)
+	public YesNo getVisible() {
 		return visible;
 	}
 
-	public void setVisible(boolean visible) {
+	@Transient
+	public boolean isVisibleB() {
+		return YesNo.Yes.equals(visible);
+	}
+
+	public void setVisible(YesNo visible) {
 		this.visible = visible;
 	}
 

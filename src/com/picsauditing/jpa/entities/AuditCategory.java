@@ -113,7 +113,7 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 		return auditType;
 	}
 
-	@Deprecated
+	//@Deprecated
 	@Column(name = "name", nullable = false)
 	public String getName() {
 		return this.name;
@@ -197,7 +197,7 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 		}
 	}
 
-	@Deprecated
+	// @Deprecated
 	public String getHelpText() {
 		return helpText;
 	}

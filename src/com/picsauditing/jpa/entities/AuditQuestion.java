@@ -77,6 +77,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private List<AuditQuestion> dependentRequired;
 	private List<AuditQuestion> dependentVisible;
 	private Set<AuditQuestion> dependentQuestions;
+	protected List<AuditQuestionOption> options;
 	private List<AuditCategoryRule> auditCategoryRules;
 	private List<AuditTypeRule> auditTypeRules;
 
@@ -218,7 +219,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.visibleAnswer = visibleAnswer;
 	}
 
-	@Deprecated
+	// @Deprecated
 	@Column(length = 30)
 	public String getColumnHeader() {
 		return columnHeader;
@@ -237,7 +238,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.uniqueCode = uniqueCode;
 	}
 
-	@Deprecated
+	// @Deprecated
 	@Column(name = "title", length = 250)
 	public String getTitle() {
 		return this.title;
@@ -284,7 +285,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.riskLevel = risk;
 	}
 
-	@Deprecated
+	// @Deprecated
 	@Column(length = 100)
 	public String getHelpPage() {
 		return helpPage;
@@ -294,7 +295,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.helpPage = helpPage;
 	}
 
-	@Deprecated
+	// @Deprecated
 	@Column(length = 1000)
 	public String getHelpText() {
 		return helpText;
@@ -308,7 +309,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.requirement = requirement;
 	}
 
-	@Deprecated
+	// @Deprecated
 	public String getRequirement() {
 		return requirement;
 	}
@@ -424,6 +425,25 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.auditTypeRules = auditTypeRules;
 	}
 
+	@OneToMany(mappedBy = "auditQuestion")
+	@OrderBy("number")
+	public List<AuditQuestionOption> getOptions() {
+		return options;
+	}
+
+	@Transient
+	public List<AuditQuestionOption> getOptionsVisible() {
+		List<AuditQuestionOption> options = new ArrayList<AuditQuestionOption>();
+		for (AuditQuestionOption o : getOptions())
+			if (o.isVisibleB())
+				options.add(o);
+		return options;
+	}
+
+	public void setOptions(List<AuditQuestionOption> options) {
+		this.options = options;
+	}
+	
 	@Transient
 	public AuditType getAuditType() {
 		return category.getParentAuditType();

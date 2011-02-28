@@ -41,19 +41,20 @@ public class ManageQuestionOptions extends ManageQuestion implements Preparable 
 		if (!forceLogin())
 			return LOGIN;
 
-		throw new Exception("Need to implement saving AuditQuestionOptions");
-		
-//		if ("save".equalsIgnoreCase(button)) {
-//			for (AuditQuestionOption aQOption : options) {
-//				if (aQOption != null && !Strings.isEmpty(aQOption.getOptionName())) {
-//					aQOption.setAuditColumns(permissions);
-//					auditQuestionOptionDAO.save(aQOption);
-//				}
-//			}
-//			options = (List<AuditQuestionOption>) auditQuestionOptionDAO.findWhere(AuditQuestionOption.class,
-//					" t.auditQuestion.id = " + id, 0, "t.number");
-//		}
-		// return SUCCESS;
+		if ("save".equalsIgnoreCase(button)) {
+			for (AuditQuestionOption aQOption : options) {
+				if (aQOption != null && !Strings.isEmpty(aQOption.getOptionName())) {
+					if (aQOption.getId() == 0) {
+						aQOption.setAuditQuestion(question);
+					}
+					aQOption.setAuditColumns(permissions);
+					auditQuestionOptionDAO.save(aQOption);
+				}
+			}
+			options = (List<AuditQuestionOption>) auditQuestionOptionDAO.findWhere(AuditQuestionOption.class,
+					" t.auditQuestion.id = " + id, 0, "t.number");
+		}
+		return SUCCESS;
 	}
 
 	public List<AuditQuestionOption> getOptions() {
