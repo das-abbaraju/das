@@ -94,6 +94,7 @@
 
 jQuery(function(){
 	$('form.form :input:not(:button)').fieldfocus({parent: 'div'});
+	$('fieldset.form :input:not(:button)').fieldfocus({parent: 'li'});
 	$('div.fieldhelp').helpstay();
 	$('required :input:not(:checkbox)').requiredfields();
 	
