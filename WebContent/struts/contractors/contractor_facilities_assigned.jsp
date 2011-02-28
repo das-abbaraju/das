@@ -7,17 +7,17 @@
 	<a href="http://help.picsauditing.com/wiki/Facilities_List_Maintenance#Adding_Facilities" class="help" target="_BLANK">Click here for help.</a></div>
 </s:if>
 <s:else>
-<label># of Linked Facilities:</label> <s:property value="currentOperators.size()" /><br />
+<label><s:text name="%{scope}.ContractorFacilities.NumberOfLinkedFacilities" />:</label> <s:property value="currentOperators.size()" /><br />
 <s:if test="permissions.contractor || permissions.admin">
 	<s:if test="contractor.membershipLevel.amount > 0"> 
-		<label>Current Membership Level:</label> $<s:property value="contractor.membershipLevel.amount" /> per year<br />
+		<label><s:text name="%{scope}.ContractorFacilities.CurrentMembershipLevel" />:</label> $<s:property value="contractor.membershipLevel.amount" /> per year<br />
 	</s:if>
 	<s:if test="contractor.acceptsBids">
 		<label><s:property value="contractor.newMembershipLevel.fee" /> :</label> $25
 		<br/><b>If you are awarded the BID or decide to convert to a full membership your new membership fee will be $<s:property value="currentMembership.amount"/></b>.	
 	</s:if>
 	<s:else>
-		<label>New Membership Level:</label> $<s:property value="contractor.newMembershipLevel.amount" /> <br />
+		<label><s:text name="%{scope}.ContractorFacilities.NewMembershipLevel" />:</label> $<s:property value="contractor.newMembershipLevel.amount" /> <br />
 		<s:property value="contractor.newMembershipLevel.fee" />
 	</s:else>
 </s:if>

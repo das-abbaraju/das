@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
@@ -174,7 +175,7 @@
 <table width="100%">
 <tr>
 	<td style="width: 44%; vertical-align: top;">
-	<h3>Selected Facilities</h3>
+	<h3><s:text name="%{scope}.ContractorFacilities.SelctedFacilities" /></h3>
 		<div id="thinkingDiv"></div>
 
 		<div id="facilities" >
@@ -189,13 +190,11 @@
 	</td>
 	<td style="width: 2%"></td>
 	<td style="width: 44%; vertical-align: top;">
-	<h3>Add Facilities</h3>
+	<h3><s:text name="%{scope}.ContractorFacilities.AddFacilities" /></h3>
 		<s:if test="permissions.contractor || permissions.admin">
-			<div class="info">Please specify all facilities at which you work.<br/>
-			The pricing is based on the number of facilities you select below.
-			<br>
+			<div class="info"><s:text name="%{scope}.ContractorFacilities.AddFacilitiesInfo" />
 			<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
-				href="#" title="opens in new window">Click here to view pricing</a>
+				href="#" title="opens in new window"><s:text name="%{scope}.ContractorFacilities.ViewPricing" /></a>
 		</div></s:if>
 		<form id="facilitySearch" onsubmit="runSearch(); return false;">
 			<s:hidden name="id"/>
@@ -203,10 +202,10 @@
 				<div class="buttons" style="min-height: 30px;">
 					<button class="picsbutton positive" name="button" type="button" 
 						onclick="runSearch()">Search</button>
-					<nobr>Name: 
+					<nobr><s:text name="%{scope}.ContractorFacilities.Search.Name" />: 
 						<s:textfield cssClass="forms clearable" name="operator.name" onchange="runSearch()"/>
 					</nobr>
-					<nobr>Location: 
+					<nobr><s:text name="%{scope}.ContractorFacilities.Search.Location" />: 
 						<s:select cssClass="forms clearable" list="stateList" 
 							onchange="runSearch()" name="state" listKey="isoCode" listValue="english" 
 							headerKey="" headerValue="- State or Province -"></s:select>
