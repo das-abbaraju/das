@@ -43,7 +43,9 @@ fieldset.form ol li, form.form div {
 
 fieldset.form ol li.required, form.form div.required {
 	padding-right: 20px;
-	background: url(../images/required.png) no-repeat right 28px;	
+	background-image: url(../images/required.png);
+	background-repeat: no-repeat;
+	background-position: right 28px;
 }
 
 .required-info {
