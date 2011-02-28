@@ -26,10 +26,13 @@ public class ChartTradeCount extends ChartSSAction {
 		sql.addJoin("JOIN pqfdata d ON d.auditID = ca.id AND d.answer LIKE '%C%'");
 		sql.addJoin("JOIN audit_question q ON q.questionType = 'Service' AND d.questionID = q.id");
 
-		sql.addField("q.id as label");
+		// Reverting i18n changes
+		// sql.addField("q.id as label");
+		sql.addField("q.name as label");
 		sql.addField("count(*) as value");
 		sql.addGroupBy("q.id");
 		sql.addOrderBy("value DESC");
+		sql.setHavingClause("count(*) > 1");
 
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 		sql.addWhere("1 " + permQuery.toString());
@@ -40,7 +43,7 @@ public class ChartTradeCount extends ChartSSAction {
 		for (DataRow row : data) {
 			if (count < 20) {
 				Set set = new Set(row);
-				set.setLabel(getText("AuditQuestion." + row.getLabel() + ".name"));
+				// set.setLabel(getText("AuditQuestion." + row.getLabel() + ".name"));
 				chart.getSets().add(set);
 			}
 			count++;
