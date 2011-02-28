@@ -53,7 +53,10 @@
 								<s:property value="operator.name"/>
 							</s:elseif>
 							<s:else>
-								<s:property value="operator.name.substring(4)" />: <s:property value="getViewableCaops(#currentCao).size()"/> operators
+								<s:text name="Audit.message.ViewableCaops">
+									<s:param><s:property value="operator.name.substring(4)" /></s:param>
+									<s:param><s:property value="getViewableCaops(#currentCao).size()" /></s:param>
+								</s:text>
 							</s:else>
 						</td>
 						<!-- Progress -->
@@ -90,9 +93,7 @@
 						</td>
 						<!-- Date -->
 						<td class="caoDate">
-							<s:if test="statusChangedDate == null">
-								N/A
-							</s:if>
+							<s:if test="statusChangedDate == null"><s:text name="global.NA" /></s:if>
 							<s:else>
 								<s:date name="statusChangedDate" format="dd MMM yyyy" />
 							</s:else>
