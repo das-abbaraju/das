@@ -123,7 +123,7 @@ $(function(){
 
 <s:include value="registrationHeader.jsp"></s:include>
 <span class="redMain required-info"><s:text name="%{scope}.IndicatesRequiredInfo" /></span>
-<s:form method="POST">
+<s:form method="POST" cssClass="form">
 <s:hidden name="requestID" />
 	<br clear="all" />
 	<table>
@@ -242,18 +242,7 @@ $(function(){
 								This is your company's primary trade. You will have the opportunity to select additional trades later on.
 							</div>
 						</li>
-						<s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
-							<li class="required">
-								<label><s:property value="type" />:</label>
-								<s:if test="#conType.toString() == 'Onsite'"><s:checkbox id="Onsite" name="contractor.onsiteServices" onclick="updateRequiredField();"/></s:if>
-								<s:if test="#conType.toString() == 'Offsite'"><s:checkbox id="Offsite" name="contractor.offsiteServices" onclick="updateRequiredField();"/></s:if>
-								<s:if test="#conType.toString() == 'Supplier'"><s:checkbox id="Supplier" name="contractor.materialSupplier" onclick="updateRequiredField();"/></s:if>
-								<div class="fieldhelp">
-									<h3><s:property value="type" /></h3>
-									<s:property value="description" escape="false" />
-								</div>
-							</li>
-						</s:iterator>
+						<s:checkbox id="Onsite" name="contractor.onsiteServices" theme="formhelp" onclick="updateRequiredField();"/>
 					</ol>
 				</fieldset>
 				<fieldset class="form">
