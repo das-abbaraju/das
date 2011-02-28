@@ -16,13 +16,15 @@
 }
 #locales a, #locales a:VISITED, #locales a:HOVER, #locales a:ACTIVE {
 	margin: 15px;
-	padding: 5px;
+	padding: 4px;
 	text-decoration: none;
 	font-weight: bold;
 	border: 1px solid white;
+	color: gray;
 }
 #locales a:HOVER, #locales a:ACTIVE {
-	border: 1px solid #012142;
+	border: 1px solid gray;
+	background-color: #F0F0F0;
 }
 </style>
 <s:include value="../jquery.jsp"/>
