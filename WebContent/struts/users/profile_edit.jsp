@@ -97,8 +97,10 @@
 		<s:textfield name="u.email" theme="form" />
 		<s:textfield name="u.phone" theme="form" />
 		<s:textfield name="u.fax" theme="form" />
+		<s:if test="debugging">
 		<s:select name="u.locale" listValue="displayName" theme="form"
 			list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
+		</s:if>
 		<s:select name="u.timezone" listKey="key" listValue="value" theme="form"
 			list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" />
 		<div><label><s:text name="global.CreationDate" />:</label> <s:date name="u.creationDate"/></div>
