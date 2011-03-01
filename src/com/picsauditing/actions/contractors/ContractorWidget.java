@@ -195,7 +195,7 @@ public class ContractorWidget extends ContractorActionSupport {
 								if (conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 									openTasks.add("<a href=\"Audit.action?auditID=" + conAudit.getId()
 											+ "\">Please fix issues with your "
-											+ conAudit.getAuditType().getName() + " Policy");
+											+ conAudit.getAuditType().getName() + " Policy</a>");
 								} else {
 									openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
 											+ "\">upload and submit your " + conAudit.getAuditType().getName()
