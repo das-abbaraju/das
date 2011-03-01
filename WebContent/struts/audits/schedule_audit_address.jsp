@@ -1,9 +1,9 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Schedule Audit</title>
+<title><s:text name="%{scope}.title" /></title>
 <meta name="help" content="Scheduling_Audits">
 
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
@@ -30,45 +30,42 @@ var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 <body>
 <s:include value="../contractors/conHeader.jsp" />
 
-<div class="info" style="clear:left">
-	Please enter your company's primary representative for this audit. <br/>
-	By default we have used the information for the primary contact on your account.
-</div>
+<div class="info" style="clear:left"><s:text name="%{scope}.message.EnterPrimaryRepresentative" /></div>
 
 <s:form onsubmit="return submitForm();">
 	<s:hidden name="auditID" />
 	<s:hidden name="button" value="address"/>
 	<fieldset class="form">
-	<h2 class="formLegend">Contact Person</h2>
+	<h2 class="formLegend"><s:text name="%{scope}.label.ContactPerson" /></h2>
 	<ol>
 		<s:if test="permissions.admin">
-			<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>">Edit Schedule Manually</a></li>
+			<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>"><s:text name="%{scope}.button.EditScheduleManually" /></a></li>
 		</s:if>
-		<li><label>Name:</label> <s:textfield name="conAudit.contractorContact" value="%{conAudit.contractorAccount.primaryContact.name}" /></li>
-		<li><label>Email:</label> <s:textfield name="conAudit.phone2" value="%{conAudit.contractorAccount.primaryContact.email}"/></li>
-		<li><label>Phone:</label> <s:textfield name="conAudit.phone" value="%{conAudit.contractorAccount.primaryContact.phone}"/></li>
+		<li><label><s:text name="User.name" />:</label> <s:textfield name="conAudit.contractorContact" value="%{conAudit.contractorAccount.primaryContact.name}" /></li>
+		<li><label><s:text name="User.email" />:</label> <s:textfield name="conAudit.phone2" value="%{conAudit.contractorAccount.primaryContact.email}"/></li>
+		<li><label><s:text name="User.phone" />:</label> <s:textfield name="conAudit.phone" value="%{conAudit.contractorAccount.primaryContact.phone}"/></li>
 	</ol>
 	</fieldset>
 	<fieldset class="form">
-	<h2 class="formLegend">Enter the Audit Location</h2>
+	<h2 class="formLegend"><s:text name="%{scope}.label.EnterAuditLocation" /></h2>
 	<ol>
-		<li class="calculatedAddress"><label>Address:</label> <s:textfield id="conAudit_address" name="conAudit.address" size="50" value="%{conAudit.contractorAccount.address}"/> No PO Boxes</li>
-		<li><label>Address 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" value="%{conAudit.contractorAccount.address2}"/> Suite/Apartment</li>
-		<li class="calculatedAddress"><label>City:</label> <s:textfield id="conAudit_city" name="conAudit.city" value="%{conAudit.contractorAccount.city}" /></li>
-		<li class="calculatedAddress"><label>State/Province:</label> <s:textfield id="conAudit_state"
+		<li class="calculatedAddress"><label><s:text name="global.Address" />:</label> <s:textfield id="conAudit_address" name="conAudit.address" size="50" value="%{conAudit.contractorAccount.address}"/> <s:text name="%{scope}.message.NoPOBoxes" /></li>
+		<li><label><s:text name="global.Address" /> 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" value="%{conAudit.contractorAccount.address2}"/> <s:text name="%{scope}.message.SuiteApartment" /></li>
+		<li class="calculatedAddress"><label><s:text name="global.City" />:</label> <s:textfield id="conAudit_city" name="conAudit.city" value="%{conAudit.contractorAccount.city}" /></li>
+		<li class="calculatedAddress"><label><s:text name="global.State" />:</label> <s:textfield id="conAudit_state"
 			name="conAudit.state" size="6" value="%{conAudit.contractorAccount.state}" /></li>
-		<li><label>Zip or Postal Code:</label> <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" value="%{conAudit.contractorAccount.zip}"/></li>
-		<li class="calculatedAddress"><label>Country:</label> <s:select id="conAudit_country" name="conAudit.country"
+		<li><label><s:text name="global.ZipPostalCode" />:</label> <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" value="%{conAudit.contractorAccount.zip}"/></li>
+		<li class="calculatedAddress"><label><s:text name="global.Country" />:</label> <s:select id="conAudit_country" name="conAudit.country"
 			value="locale.country" list="countryList" listKey="isoCode" listValue="name"/></li>
 		<li id="unverifiedLI" style="display: none;"><s:checkbox id="unverifiedCheckbox"
-			onchange="$('#submitButton').toggle()" name="unverifiedCheckbox"></s:checkbox> This address is correct</li>
+			onchange="$('#submitButton').toggle()" name="unverifiedCheckbox"></s:checkbox> <s:text name="%{scope}.message.AddressIsCorrect" /></li>
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">
 	<div id="mainThinkingDiv"></div>
 	<div>
-	<button id="verifyButton" class="picsbutton" type="button" onclick="verifyAddress()">Verify Address</button>
-	<button id="submitButton" style="display: none;" class="picsbutton positive" type="submit">Next &gt;&gt;</button>
+	<button id="verifyButton" class="picsbutton" type="button" onclick="verifyAddress()"><s:text name="%{scope}.button.VerifyAddress" /></button>
+	<button id="submitButton" style="display: none;" class="picsbutton positive" type="submit"><s:text name="button.Next" /> &gt;&gt;</button>
 	</div>
 	</fieldset>
 	<s:hidden id="conAudit_latitude" name="conAudit.latitude" />

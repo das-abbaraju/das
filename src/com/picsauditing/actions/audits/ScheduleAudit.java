@@ -243,12 +243,12 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			availabilitySelected = auditorAvailabilityDAO.find(availabilitySelectedID);
 
 			if (availabilitySelected == null) {
-				addActionError("The time slot you selected is no longer available. Please choose a different time.");
+				addActionError(getText(getScope() + ".message.TimeSlotNotAvailable"));
 				return "select";
 			}
 
 			if (!confirmed) {
-				addActionError("You must agree to the terms by checking the box below.");
+				addActionError(getText(getScope() + ".message.AgreeToTerms"));
 				return "confirm";
 			}
 
@@ -266,7 +266,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
 			sendConfirmationEmail(conAudit.getAuditType().getAuditName() + " Scheduled for " + shortScheduleDate);
 
-			addActionMessage("Congratulations, your audit is now scheduled. You should receive a confirmation email for your records.");
+			addActionMessage(getText(getScope() + ".message.AuditNowScheduled"));
 
 			if (needsExpediteFee) {
 				String notes = conAudit.getAuditType().getAuditName()

@@ -1,8 +1,8 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Schedule Audit</title>
+<title><s:text name="%{scope}.title" /></title>
 <meta name="help" content="Scheduling_Audits">
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
@@ -91,9 +91,9 @@ $(function(){
 function showChooseDate(override) {
 	if (override) {
 		$('input[name=feeOverride]').val(true);
-		$('#needsReschedulingFee').text("This contractor will NOT be charged the rescheduling fee if the audit date and time is changed.");
+		$('#needsReschedulingFee').text('<s:text name="%{scope}.message.NoReschedulingFee" />' + "This contractor will NOT be charged the rescheduling fee if the audit date and time is changed.");
 	} else
-		$('#needsReschedulingFee').text("This contractor will be charged the rescheduling fee if the audit date and time is changed.");
+		$('#needsReschedulingFee').text('<s:text name="%{scope}.message.ReschedulingFee" />' + "This contractor will be charged the rescheduling fee if the audit date and time is changed.");
 
 	$('#scheduledDateDay').attr('disabled', false);
 	$('#scheduledDateTime').attr('disabled', false);
@@ -108,79 +108,78 @@ function showChooseDate(override) {
 <body>
 <s:include value="../contractors/conHeader.jsp" />
 
-<h2>Reschedule <s:property value="conAudit.auditType.auditName"/></h2>
+<h2><s:text name="%{scope}.label.Reschedule"><s:param><s:text name="%{conAudit.auditType.getI18nKey('name')}" /></s:param></s:text></h2>
 
 <div>
-<a href="MySchedule.action?currentUserID=<s:property value="conAudit.auditor.id"/>" class="picsbutton" target="_BLANK" title="opens in new window">Open <s:property value="conAudit.auditor.name"/>'s Schedule</a>
+<a href="MySchedule.action?currentUserID=<s:property value="conAudit.auditor.id"/>" class="picsbutton" target="_BLANK" title="opens in new window"><s:text name="%{scope}.button.OpenAuditorSchedule"><s:param><s:property value="conAudit.auditor.name"/></s:param></s:text></a>
 </div>
 
 <s:form onsubmit="return submitForm();">
 	<s:hidden name="auditID" />
 	<fieldset class="form">
-	<h2 class="formLegend">Date &amp; Time</h2>
+	<h2 class="formLegend"><s:text name="%{scope}.label.DateTime" /></h2>
 	<ol>
-		<li><label>Audit Date:</label> <s:textfield name="scheduledDateDay" id="scheduledDateDay"
-			value="%{formatDate(conAudit.scheduledDate, 'MM/dd/yyyy')}" /> <s:date name="conAudit.scheduledDate" nice="true" /> </li>
+		<li><label><s:text name="%{scope}.label.AuditDate" />:</label> <s:textfield name="scheduledDateDay" id="scheduledDateDay"
+			value="%{formatDate(conAudit.scheduledDate, 'dd/MM/yyyy')}" /> <s:date name="conAudit.scheduledDate" nice="true" /> </li>
 		<s:if test="needsReschedulingFee">
 			<input type="hidden" name="feeOverride" value="false" />
 			<div id="needsReschedulingFee" class="alert">
-				This audit is scheduled to be conducted within 48 hours.
-				If the scheduled date is changed, the contractor will be charged a $<s:property value="rescheduling.amount" /> rescheduling fee.<br />
-				<input type="button" onclick="showChooseDate(); return false;" value="Continue" class="picsbutton positive" />
+				<s:text name="%{scope}.message.ReschedulingWarning"><s:param value="%{rescheduling.amount}" /></s:text><br />
+				<input type="button" onclick="showChooseDate(); return false;" value="<s:text name="button.Continue" />" class="picsbutton positive" />
 				<s:if test="permissions.userId == 1029 || permissions.userId == 935 || permissions.userId == 11503 || permissions.userId == 9615">
 					<!-- This option is available for Mina, Harvey, Gary, and Rick only -->
-					<input type="button" onclick="showChooseDate(true); return false;" value="Override Fee" class="picsbutton" />
+					<input type="button" onclick="showChooseDate(true); return false;" value="<s:text name="%{scope}.button.OverrideFee" />" class="picsbutton" />
 				</s:if>
 			</div>
 		</s:if>
-		<li><label>Audit Time:</label> <s:textfield name="scheduledDateTime" id="scheduledDateTime"
+		<li><label><s:text name="%{scope}.label.AuditTime" />:</label> <s:textfield name="scheduledDateTime" id="scheduledDateTime"
 			value="%{formatDate(conAudit.scheduledDate, 'h:mm a')}" cssClass="time"/> <s:property value="permissions.timezone.displayName"/></li>
-		<li><label>Safety Professional:</label> <s:select list="auditorList" listKey="id" listValue="name" name="auditor.id" value="conAudit.auditor.id"/></li>
-		<li><label>Location:</label> <s:radio name="conAudit.conductedOnsite" theme="pics"
-			list="#{false: 'Web', true: 'On Site (address below)'}" /></li>
+		<li><label><s:text name="global.SafetyProfessional" />:</label> <s:select list="auditorList" listKey="id" listValue="name" name="auditor.id" value="conAudit.auditor.id"/></li>
+		<li><label><s:text name="%{scope}.label.Location" />:</label> <s:radio name="conAudit.conductedOnsite" theme="pics"
+			list="#{false: getText(scope + '.message.Web'), true: getText(scope + '.message.OnSite')}" /></li>
 		<s:if test="conAudit.contractorAccount.webcam.id > 0">
-			<li><label>Current Webcam:</label> <s:property value="conAudit.contractorAccount.webcam" /></li>
+			<li><label><s:text name="%{scope}.label.CurrentWebcam" />:</label> <s:property value="conAudit.contractorAccount.webcam" /></li>
 		</s:if>
 		<s:else>
-			<li><label>Webcam:</label> <s:checkbox name="conAudit.needsCamera" /> 
-			<label class="input" for="ScheduleAudit_conAudit_needsCamera">Ship webcam to address below (if Location = Web)</label></li>
+			<li><label><s:text name="%{scope}.label.Webcam" />:</label> <s:checkbox name="conAudit.needsCamera" /> 
+			<label class="input" for="ScheduleAudit_conAudit_needsCamera"><s:text name="%{scope}.message.ShipWebcam" /></label></li>
 		</s:else>
 	</ol>
 	</fieldset>
 	<fieldset class="form">
-	<h2 class="formLegend">Location</h2>
+	<h2 class="formLegend"><s:text name="%{scope}.label.Location" /></h2>
 	<ol style="float: left;">
-		<li>Please enter the address at which this audit will be conducted.</li>
-		<li><label></label><input type="button" value="Use Contractor Contact Info" onclick="useContractor()"/></li>
-		<li><label>Address:</label> <s:textfield id="conAudit_address" name="conAudit.address" /></li>
-		<li><label>Address 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" /></li>
-		<li class="calculatedAddress"><label>City:</label> <s:textfield id="conAudit_city" name="conAudit.city" /></li>
-		<li class="calculatedAddress"><label>State/Province:</label> <s:select id="conAudit_state"
+		<li><s:text name="%{scope}.message.AddressConducted" /></li>
+		<li><label></label><input type="button" value="<s:text name="%{scope}.button.UseContractorInfo" />" onclick="useContractor()"/></li>
+		<li><label><s:text name="global.Address" />:</label> <s:textfield id="conAudit_address" name="conAudit.address" /></li>
+		<li><label><s:text name="global.Address" /> 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" /></li>
+		<li class="calculatedAddress"><label><s:text name="global.City" />:</label> <s:textfield id="conAudit_city" name="conAudit.city" /></li>
+		<li class="calculatedAddress"><label><s:text name="global.State" />:</label> <s:select id="conAudit_state"
 			name="conAudit.state" list="stateList" listKey="isoCode" listValue="name" headerKey="" headerValue=" - State/Province - "/></li>
-		<li><label>Zip or Postal Code:</label> <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" /></li>
+		<li><label><s:text name="global.ZipPostalCode" />:</label> <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" /></li>
 		<li class="calculatedAddress"><label>Country:</label> <s:select id="conAudit_country" name="conAudit.country"
 			list="countryList" listKey="isoCode" listValue="name" headerKey="" headerValue=" - Country - " value="locale.country"/></li>
-		<li class="calculatedAddress"><label>Latitude:</label> <s:textfield id="conAudit_latitude" name="conAudit.latitude" size="10" /></li>
-		<li class="calculatedAddress"><label>Longitude:</label> <s:textfield id="conAudit_longitude" name="conAudit.longitude" size="10" /></li>
+		<li class="calculatedAddress"><label><s:text name="%{scope}.label.Latitude" />:</label> <s:textfield id="conAudit_latitude" name="conAudit.latitude" size="10" /></li>
+		<li class="calculatedAddress"><label><s:text name="%{scope}.label.Longitude" />:</label> <s:textfield id="conAudit_longitude" name="conAudit.longitude" size="10" /></li>
 		<li id="unverifiedLI" style="display: none;"><s:checkbox id="unverifiedCheckbox"
-			onchange="$('#submitButton').toggle()" name="unverifiedCheckbox"></s:checkbox> This address is correct</li>
+			onchange="$('#submitButton').toggle()" name="unverifiedCheckbox"></s:checkbox> <s:text name="%{scope}.message.AddressIsCorrect" /></li>
 	</ol>
 	<div id="mappreview"></div>
 	</fieldset>
 	<fieldset class="form">
-	<h2 class="formLegend">Contact Person</h2>
+	<h2 class="formLegend"><s:text name="%{scope}.label.ContactPerson" /></h2>
 	<ol>
-		<li>Please enter the primary representative for this audit.</li>
-		<li><label>Name:</label> <s:textfield name="conAudit.contractorContact" /></li>
-		<li><label>Email:</label> <s:textfield name="conAudit.phone2" /></li>
-		<li><label>Phone:</label> <s:textfield name="conAudit.phone" /></li>
+		<li><s:text name="%{scope}.message.PrimaryRepresentative" /></li>
+		<li><label><s:text name="User.name" />:</label> <s:textfield name="conAudit.contractorContact" /></li>
+		<li><label><s:text name="User.email" />:</label> <s:textfield name="conAudit.phone2" /></li>
+		<li><label><s:text name="User.phone" />:</label> <s:textfield name="conAudit.phone" /></li>
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">
 	<div id="mainThinkingDiv"></div>
 	<div>
-	<button id="verifyButton" class="picsbutton" type="button" onclick="verifyAddress()">Verify Address</button>
-	<button id="submitButton" class="picsbutton positive" type="submit" name="button" value="Save">Save</button>
+	<button id="verifyButton" class="picsbutton" type="button" onclick="verifyAddress()"><s:text name="%{scope}.button.VerifyAddress" /></button>
+	<button id="submitButton" class="picsbutton positive" type="submit" name="button" value="Save"><s:text name="button.Save" /></button>
 	</div>
 	</fieldset>
 </s:form>

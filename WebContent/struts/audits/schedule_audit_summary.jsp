@@ -1,5 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ page language="java" errorPage="/exception_handler.jsp"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
 <title><s:text name="%{scope}.title" /></title>
@@ -15,44 +16,54 @@
 	<button class="picsbutton" type="button" onclick="window.print();"><s:text name="button.Print" /></button>
 </div>
 <fieldset class="form">
-<h2 class="formLegend">Audit Time &amp; Location</h2>
+<h2 class="formLegend"><s:text name="%{scope}.header.AuditTimeAndLocation" /></h2>
 <ol>
 	<s:if test="permissions.admin">
-		<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>"><s:text name="%{scope}.message.EditScheduleManually" />Edit Schedule Manually</a></li>
+		<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>"><s:text name="%{scope}.button.EditScheduleManually" /></a></li>
 	</s:if>
-	<li><label>Audit Date:</label> <s:property value="formatDate(conAudit.scheduledDate, 'EEEE, MMM d, yyyy')" /></li>
-	<li><label>Audit Time:</label> <s:property value="formatDate(conAudit.scheduledDate, 'h:mm a z')" /></li>
+	<li><label><s:text name="%{scope}.label.AuditDate" />:</label> <s:date name="conAudit.scheduledDate" format="EEEE, MMM d, yyyy" /></li>
+	<li><label><s:text name="%{scope}.label.AuditTime" />:</label> <s:date name="conAudit.scheduledDate" format="h:mm a z" /></li>
 
 	<s:if test="conAudit.conductedOnsite">
-		<li><label>Location:</label> <s:property value="conAudit.fullAddress" /></li>
+		<li><label><s:text name="%{scope}.label.Location" />:</label> <s:property value="conAudit.fullAddress" /></li>
 	</s:if>
 	<s:else>
-		<li><label>Location:</label> Internet <a href="http://help.picsauditing.com/wiki/Office_Audit" class="help">What
-		is this?</a></li>
-		<li><label>Video Camera:</label>
-			<s:if test="conAudit.needsCamera">Please mail me a webcam for my computer to: <s:property value="conAudit.fullAddress"/></s:if>
-			<s:else>I have my own webcam that I can use for this audit</s:else>
+		<li><label><s:text name="%{scope}.label.Location" />:</label><s:text name="%{scope}.message.Internet" /> <a href="http://help.picsauditing.com/wiki/Office_Audit" class="help"><s:text name="%{scope}.help.WhatIsThis" /></a></li>
+		<li><label><s:text name="%{scope}.label.VideoCamera" />:</label>
+			<s:if test="conAudit.needsCamera"><s:text name="%{scope}.message.MailWebcam" />: <s:property value="conAudit.fullAddress"/></s:if>
+			<s:else><s:text name="%{scope}.message.HasWebcam" /></s:else>
 		</li>
 	</s:else>
-	<li><div class="alert">Any changes to the above schedule must be done 2 business days before this audit begins (<s:property value="formatDate(lastCancellationTime)" />) to avoid a $199 rescheduling fee.</div></li>
+	<li>
+		<div class="alert">
+			<s:text name="%{scope}.message.RescheduleWarning">
+				<s:param><s:date name="lastCancellationTime" /></s:param>
+				<s:param><s:property value="rescheduling.amount" /></s:param>
+			</s:text>
+		</div>
+	</li>
 </ol>
 </fieldset>
 <fieldset class="form">
-<h2 class="formLegend">PICS Safety Professional</h2>
+<h2 class="formLegend">PICS <s:text name="global.SafetyProfessional" /></h2>
 <ol>
-		<li><label>Name:</label> <s:property value="conAudit.auditor.name" /></li>
-		<li><label>Email:</label> <s:property value="conAudit.auditor.email" /></li>
-		<li><label>Phone:</label> <s:property value="conAudit.auditor.phone" /></li>
-		<li><label>Fax:</label> <s:property value="conAudit.auditor.fax" /></li>
-		<li>If you have any questions or concerns about your up coming audit, feel free to contact <s:property value="conAudit.auditor.name" /> directly.</li>
+		<li><label><s:text name="User.name" />:</label> <s:property value="conAudit.auditor.name" /></li>
+		<li><label><s:text name="User.email" />:</label> <s:property value="conAudit.auditor.email" /></li>
+		<li><label><s:text name="User.phone" />:</label> <s:property value="conAudit.auditor.phone" /></li>
+		<li><label><s:text name="User.fax" />:</label> <s:property value="conAudit.auditor.fax" /></li>
+		<li>
+			<s:text name="%{scope}.message.QuestionsConcerns">
+				<s:param><s:property value="conAudit.auditor.name" /></s:param>
+			</s:text>
+		</li>
 </ol>
 </fieldset>
 <fieldset class="form bottom">
-<h2 class="formLegend">Primary Contact</h2>
+<h2 class="formLegend"><s:text name="global.ContactPrimary" /></h2>
 <ol>
-	<li><label>Name:</label> <s:property value="conAudit.contractorContact" /></li>
-	<li><label>Email:</label> <s:property value="conAudit.phone2" /></li>
-	<li><label>Phone:</label> <s:property value="conAudit.phone" /></li>
+	<li><label><s:text name="User.name" />:</label> <s:property value="conAudit.contractorContact" /></li>
+	<li><label><s:text name="User.email" />:</label> <s:property value="conAudit.phone2" /></li>
+	<li><label><s:text name="User.phone" />:</label> <s:property value="conAudit.phone" /></li>
 </ol>
 </fieldset>
 

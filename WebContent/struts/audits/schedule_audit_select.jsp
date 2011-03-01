@@ -1,8 +1,8 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Schedule Audit</title>
+<title><s:text name="%{scope}.title" /></title>
 <meta name="help" content="Scheduling_Audits">
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
@@ -11,6 +11,13 @@
 <script type="text/javascript">
 var auditID = <s:property value="conAudit.id"/>;
 var startDate = '<s:date name="availableSet.latest" format="MM/dd/yyyy"/>';
+
+$(document).ready(function() {
+	$('a.expedite').click(function() {
+		return confirm("<s:text name="%{scope}.confirm.RushAudit"><s:param><s:property value="expedite.amount" /></s:param></s:text>");
+	});
+});
+
 </script>
 <style type="text/css">
 #auditHeader,#auditHeaderNav {
@@ -62,17 +69,17 @@ li#li_availability a:hover {
 
 <s:form>
 	<fieldset class="form bottom">
-	<h2 class="formLegend">Choose an Audit Time</h2>
+	<h2 class="formLegend"><s:text name="%{scope}.label.ChooseAuditTime" /></h2>
 	<ol>
 		<s:if test="permissions.admin">
-			<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>">Edit Schedule Manually</a></li>
+			<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>"><s:text name="%{scope}.button.EditScheduleManually" /></a></li>
 		</s:if>
-		<li>Please choose one of the available time blocks below for your audit.</li>
+		<li><s:text name="%{scope}.message.ChooseAvailableTime" /></li>
 		<li id="li_availability">
 			<s:include value="schedule_audit_select_content.jsp"/>
 		</li>
 		<li>
-			<input type="button" id="show_next" class="picsbutton" value="Show More Timeslots" onclick="showNextAvailable()"/>
+			<input type="button" id="show_next" class="picsbutton" value="<s:text name="%{scope}.button.ShowMoreTimeslots" />" onclick="showNextAvailable()"/>
 		</li>
 	</ol>
 	</fieldset>
