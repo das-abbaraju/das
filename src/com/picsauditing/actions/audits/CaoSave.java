@@ -150,11 +150,12 @@ public class CaoSave extends AuditActionSupport {
 				}
 
 				if (!accountNames.isEmpty()) {
-					saveMessage += status.getButton() + " " + Strings.implode(auditNames, ", ") + " for "
+					saveMessage += getText(status.getI18nKey("button")) + " " + Strings.implode(auditNames, ", ") + " for "
 							+ Strings.implode(accountNames, ", ") + "";
 
+					// "Explain why you are changing the status to " + status;
 					if (noteRequired)
-						noteMessage += "Explain why you are changing the status to " + status;
+						noteMessage += getText("Audit.message.ExplainStatusChange", new Object[] { getText(status.getI18nKey()) });
 				} else
 					return ERROR;
 

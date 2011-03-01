@@ -9,6 +9,6 @@
 	<s:textarea cssClass="clearOnce" rows="3" cols="30" id="addToNotes" name="note" />
 </div>
 <div id="buttonsDialog">
-	<div class="button <s:property value="status.color" />" id="yesButton" ><s:property value="status.button" /></div>
+	<div class="button <s:property value="status.color" />" id="yesButton" ><s:text name="%{status.getI18nKey('button')}" /></div>
 </div>
-<input class="picsbutton negative closeButton" type="button" value="Close" id="noButton" />
+<input class="picsbutton negative closeButton" type="button" value="<s:text name="button.Close" />" id="noButton" />
