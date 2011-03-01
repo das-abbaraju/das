@@ -1,6 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="/exception_handler.jsp" pageEncoding="UTF-8"%>
 <%@page import="com.picsauditing.util.URLUtils"%>
 <html>
 <head>
@@ -107,6 +107,13 @@ $(function() {
 						<li id="zip_li"><label>Zip:</label>
 							<s:textfield name="contractor.zip" size="7" />
 						</li>
+					</s:if>
+					<li><label>Company Phone:</label><s:textfield name="contractor.phone" /></li>
+					<s:if test="debugging">
+					<li><label>Default Language:</label>
+						<s:select name="contractor.locale" listValue="displayName"
+							list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
+					</li>
 					</s:if>
 					<li><label>Company Phone:</label><s:textfield name="contractor.phone" /></li>
 					<li><label>Company Fax:</label><s:textfield name="contractor.fax" /></li>
