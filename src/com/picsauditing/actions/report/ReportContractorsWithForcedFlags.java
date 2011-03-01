@@ -54,7 +54,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		sql.addField("o.name AS opName");
 		sql.addField("o.type AS opType");
 		sql.addField("o.id AS opId");
-		sql.addField("lower(ff.forceFlag) AS lflag");
+		sql.addField("lower(ff.forceFlag) AS flag");
 		sql.addField("label AS fLabel");
 		sql.addField("ff.forceend");
 		sql.addField("ff.forceBegin");

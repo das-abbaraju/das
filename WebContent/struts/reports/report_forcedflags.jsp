@@ -34,7 +34,7 @@
 			<s:if test="!permissions.operator">
 				<td><a href="?orderBy=o.name" >Operator Name</a></td>
 			</s:if>
-			<td><a href="?orderBy=lflag" >Flag</a></td>
+			<td><a href="?orderBy=flag" >Flag</a></td>
 			<td><a href="?orderBy=fLabel" >Flag Issue</a></td>
 			<td><a href="?orderBy=u.name" >ForcedBy</a></td>
 			<td><a href="?orderBy=ff.forceBegin" >Start Date</a></td>
@@ -57,11 +57,11 @@
 				<a
 				href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>"
 				title="Click to view Flag Color details"> <img
-				src="images/icon_<s:property value="get('lflag')"/>Flag.gif"
+				src="images/icon_<s:property value="get('flag')"/>Flag.gif"
 				width="12" height="15" border="0"></a>
 				</s:if>
 				<s:else>
-					<img src="images/icon_<s:property value="get('lflag')"/>Flag.gif"
+					<img src="images/icon_<s:property value="get('flag')"/>Flag.gif"
 					width="12" height="15" border="0">
 				</s:else>
 			</td>
