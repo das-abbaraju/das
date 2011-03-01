@@ -280,7 +280,7 @@ function loadStatus(caoID){
 								<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&auditData.question.id=<s:property value="question.id"/>" target="_BLANK"><s:text name="Audit.message.Uploaded"><s:param><s:date name="updateDate" format="MMM yyyy"/></s:param></s:text></a>
 							</s:iterator>
 					</s:if>
-					<s:else><s:text name="Audit.message.NotUploaded" />Not Uploaded</s:else>
+					<s:else><s:text name="Audit.message.NotUploaded" /></s:else>
 				</li>
 			</s:if>
 		</ul>
@@ -309,7 +309,7 @@ function loadStatus(caoID){
 						<s:if test="conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy') || conAudit.auditType.annualAddendum"><s:text name="global.CSR" />:</s:if>
 						<s:else><s:text name="global.SafetyProfessional" />:</s:else></label>
 						<s:if test="conAudit.auditor.id > 0"><s:property value="conAudit.auditor.name" /></s:if>
-						<s:else><a href="AuditAssignments.action?auditID=<s:property value="auditID"/>"><s:text name="Audit.message.NotAssigned" />Not Assigned</a></s:else>
+						<s:else><a href="AuditAssignments.action?auditID=<s:property value="auditID"/>"><s:text name="Audit.message.NotAssigned" /></a></s:else>
 					</li>
 				</s:if>
 			</s:if>			

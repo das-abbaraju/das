@@ -1,9 +1,14 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title><s:property value="conAudit.auditType.auditName" /> for
-<s:property value="conAudit.contractorAccount.name" /></title>
+<title>
+	<s:text name="%{scope}.title">
+		<s:param><s:property value="conAudit.auditType.auditName" /></s:param>
+		<s:param><s:property value="conAudit.contractorAccount.name" /></s:param>
+	</s:text>
+</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css?v=<s:property value="version"/>" />
@@ -25,23 +30,20 @@ function showAuditUpload(auditID, fileID, desc, question) {
 <s:include value="../audits/audit_catHeader.jsp"/>
 
 <s:include value="../actionMessages.jsp" />
-<div class="info">
-<b>Click on the Open Requirement(s) below to upload supporting documentation. If you have any further questions or believe that a section does not apply to your company, please contact the safety professional below.
-<br/>*** Please allow up to 3 days for a safety professional to review your files. ***</b>   
-</div>
+<div class="info"><s:text name="Audit.message.info.UploadRequirement" /></div>
 <ul>
 <h3><s:property value="conAudit.auditType.auditName" />
 #<s:property value="conAudit.id" /></h3>
 
-<li style="list-style-type: none;"><b>Safety Professional: </b> 
+<li style="list-style-type: none;"><b><s:text name="global.SafetyProfessional" />:</b> 
 	<s:if test="conAudit.closingAuditor != null"><s:property value="conAudit.closingAuditor.name"/></s:if>
 	<s:else><s:property value="conAudit.auditor.name"/></s:else>
 </li>
-<li style="list-style-type: none;"><b>Phone: </b> 
+<li style="list-style-type: none;"><b><s:text name="User.phone" />:</b> 
 	<s:if test="conAudit.closingAuditor != null"><s:property value="conAudit.closingAuditor.phone"/></s:if>
 	<s:else><s:property value="conAudit.auditor.phone"/></s:else>
 </li>
-<li style="list-style-type: none;"><b>Email: </b> 
+<li style="list-style-type: none;"><b><s:text name="User.email" />:</b> 
 	<s:if test="conAudit.closingAuditor != null"><a href="mailto:<s:property value="conAudit.closingAuditor.email"/>"><s:property value="conAudit.closingAuditor.email"/></a></s:if>
 	<s:else><a href="mailto:<s:property value="conAudit.auditor.email"/>"><s:property value="conAudit.auditor.email"/></a></s:else>
 </li>
@@ -49,11 +51,11 @@ function showAuditUpload(auditID, fileID, desc, question) {
 <table style="background-color:none; border:none; margin:10px;">
 	<tr>
 		<td style="vertical-align:top; width:65%;">
-		<h3 style="padding:10px 0 10px 0;">Requirements</h3>
+		<h3 style="padding:10px 0 10px 0;"><s:text name="Audit.header.Requirements" /></h3>
 			<table class="report" style="width:95%;">
 				<thead>
 					<tr>
-						<td>Requirements</td>
+						<td><s:text name="Audit.header.Requirements" /></td>
 					</tr>
 				</thead>
 				<s:iterator value="openReqs" id="data">
@@ -64,19 +66,19 @@ function showAuditUpload(auditID, fileID, desc, question) {
 							<s:if test="permissions.operatorCorporate || !#data.requirementOpen">
 								<s:property value="question.requirement" />
 								<s:if test="#data.dateVerified != null">
-									<br/><span class="verified">Closed on <s:date name="#data.dateVerified" format="MMM d, yyyy" /></span>
+									<br/><span class="verified"><s:text name="Audit.message.ClosedOn"><s:param><s:date name="#data.dateVerified" /></s:param></s:text></span>
 								</s:if>
 							</s:if>
 							<s:else>
-								<a style="cursor:pointer;" onclick="javascript: showAuditUpload(<s:property value="conAudit.id"/>,0,'<s:property value="#fileDesc"/>',<s:property value="question.id"/>); return false;" title="Click here to upload requirements"><s:property value="question.requirement" /></a>
+								<a style="cursor:pointer;" onclick="javascript: showAuditUpload(<s:property value="conAudit.id"/>,0,'<s:property value="#fileDesc"/>',<s:property value="question.id"/>); return false;" title="<s:text name="Audit.help.UploadRequirements" />"><s:property value="question.requirement" /></a>
 							</s:else>	
 							<br/>
 							<s:if test="comment.length() > 0">
-								<span class="redMain"><b>Safety Professional Comment : </b><s:property value="comment" escape="false"/></span>
+								<span class="redMain"><b><s:text name="Audit.message.SafetyProfessionalComment" />: </b><s:property value="comment" escape="false"/></span>
 							</s:if>
 							<s:if test="permissions.auditor">
 							<br/>
-								<a href="Audit.action?auditID=<s:property value="#data.audit.id"/>#categoryID=<s:property value="#data.question.category.id"/>&onlyReqs=true&mode=Edit">Close Requirement</a>									
+								<a href="Audit.action?auditID=<s:property value="#data.audit.id"/>#categoryID=<s:property value="#data.question.category.id"/>&onlyReqs=true&mode=Edit"><s:text name="Audit.button.CloseRequirement" /></a>									
 							</s:if>
 						</td>
 					</tr>
@@ -84,14 +86,14 @@ function showAuditUpload(auditID, fileID, desc, question) {
 			</table>		
 		</td>
 		<td style="vertical-align:top;">
-		<h3 style="padding:10px 0 10px 0;">Documents</h3>
+		<h3 style="padding:10px 0 10px 0;"><s:text name="Audit.header.Documents" /></h3>
 			<table class="report" style="width:95%;">
 				<thead>
 					<tr>
-						<td>Description</td>
-						<td>View</td>
-						<td>Edit</td>
-						<td>Reviewed</td>
+						<td><s:text name="global.Description" /></td>
+						<td><s:text name="button.View" /></td>
+						<td><s:text name="button.Edit" /></td>
+						<td><s:text name="Audit.header.Reviewed" /></td>
 					</tr>
 				</thead>
 				<s:iterator value="auditFiles">
@@ -103,7 +105,7 @@ function showAuditUpload(auditID, fileID, desc, question) {
 						<td> 
 						<s:if
 							test="permissions.admin || (!reviewed && permissions.userId == createdBy.Id)">
-							<a class="edit" href="#" onclick="showAuditUpload(<s:property value="conAudit.id"/>,<s:property value="id"/>, null, 0);">Edit</a>
+							<a class="edit" href="#" onclick="showAuditUpload(<s:property value="conAudit.id"/>,<s:property value="id"/>, null, 0);"><s:text name="button.Edit" /></a>
 						</s:if></td>
 							<td class="center">
 							<s:if test="reviewed">
@@ -112,8 +114,7 @@ function showAuditUpload(auditID, fileID, desc, question) {
 							<s:else>
 								<s:if test="permissions.auditor">
 								<a class="verify"
-									href="ContractorAuditFileUpload.action?auditID=<s:property value="conAudit.id"/>&fileID=<s:property value="id"/>&button=Review">Mark
-								As Reviewed</a>
+									href="ContractorAuditFileUpload.action?auditID=<s:property value="conAudit.id"/>&fileID=<s:property value="id"/>&button=Review"><s:text name="Audit.button.MarkAsReviewed" /></a>
 								</s:if>
 							</s:else>
 							</td>
