@@ -64,7 +64,7 @@ $(function() {
 
 <s:form id="save" method="POST" enctype="multipart/form-data">
 <div>
-	<input type="submit" class="picsbutton positive" name="button" value="Save"/>
+	<input type="submit" class="picsbutton positive" name="button" value="<s:text name="button.Save" />"/>
 </div>
 <br clear="all" />
 <s:hidden name="id" />
@@ -72,30 +72,30 @@ $(function() {
 		<tr>
 			<td style="vertical-align: top; width: 50%;">
 				<fieldset class="form">
-				<h2 class="formLegend">Details</h2>
+				<h2 class="formLegend"><s:text name="%{scope}.Details.heading"/></h2>
 				<ol>
-					<li><label>Name:</label>
+					<li><label><s:text name="%{scope}.Details.Name"/>:</label>
 						<s:textfield name="contractor.name" size="35" />
 					</li>
-					<li><label>DBA Name: </label>
+					<li><label><s:text name="%{scope}.Details.DBAName"/>: </label>
 						<s:textfield name="contractor.dbaName" size="35" />
 					</li>
-					<li><label>Date Created:</label>
+					<li><label><s:text name="%{scope}.Details.DateCreated"/>:</label>
 						<s:date name="contractor.creationDate" format="MMM d, yyyy" />
 					</li>
 				</ol>
 				</fieldset>
 				<fieldset class="form">
-				<h2 class="formLegend">Primary Address</h2>
+				<h2 class="formLegend"><s:text name="%{scope}.PrimaryAddress.heading"/></h2>
 				<ol>
-					<li><label>Address:</label>
+					<li><label><s:text name="%{scope}.PrimaryAddress.Address"/>:</label>
 						<s:textfield name="contractor.address" size="35" /><br />
 						<s:textfield name="contractor.address2" size="35" />
 					</li>
-					<li><label>City:</label>
+					<li><label><s:text name="%{scope}.PrimaryAddress.City"/>:</label>
 						<s:textfield name="contractor.city" size="20" />
 					</li>
-					<li><label>Country:</label>
+					<li><label><s:text name="%{scope}.PrimaryAddress.Country"/>:</label>
 						<s:select list="countryList"
 						name="country.isoCode" id="contractorCountry"
 						listKey="isoCode" listValue="name"
@@ -104,21 +104,20 @@ $(function() {
 						/></li>
 					<li id="state_li"></li>
 					<s:if test="contractor.country.isoCode != 'AE'">
-						<li id="zip_li"><label>Zip:</label>
+						<li id="zip_li"><label><s:text name="%{scope}.PrimaryAddress.Zip"/>:</label>
 							<s:textfield name="contractor.zip" size="7" />
 						</li>
 					</s:if>
-					<li><label>Company Phone:</label><s:textfield name="contractor.phone" /></li>
 					<s:if test="debugging">
-					<li><label>Default Language:</label>
+					<li><label><s:text name="%{scope}.PrimaryAddress.DefaultLanguage"/>:</label>
 						<s:select name="contractor.locale" listValue="displayName"
 							list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
 					</li>
 					</s:if>
-					<li><label>Company Phone:</label><s:textfield name="contractor.phone" /></li>
-					<li><label>Company Fax:</label><s:textfield name="contractor.fax" /></li>
+					<li><label><s:text name="%{scope}.PrimaryAddress.CompanyPhone"/>:</label><s:textfield name="contractor.phone" /></li>
+					<li><label><s:text name="%{scope}.PrimaryAddress.CompanyFax"/>:</label><s:textfield name="contractor.fax" /></li>
 					
-					<li><label>Primary Contact:</label> <s:select
+					<li><label><s:text name="%{scope}.PrimaryAddress.PrimaryContact"/>:</label> <s:select
 						list="userList"
 						name="contactID"
 						listKey="id"
@@ -137,52 +136,52 @@ $(function() {
 				</ol>
 				</fieldset>
 				<fieldset class="form">
-				<h2 class="formLegend">Industry Details</h2>
+				<h2 class="formLegend"><s:text name="%{scope}.IndustryDetails.heading"/></h2>
 				<ol>
 					<s:if test="contractor.country.isoCode != 'AE'">
-						<li id="tax_li"><label>Tax ID:</label>
+						<li id="tax_li"><label><s:text name="%{scope}.IndustryDetails.TaxID"/>:</label>
 							<s:property value="contractor.taxId"/>
 						</li>
 					</s:if>
-					<li><label>NAICS (Primary):</label>
+					<li><label><s:text name="%{scope}.IndustryDetails.NAICSPrimary"/>:</label>
 						<s:property value="contractor.naics.code"/>
 					</li>
-					<li><label>Main Trade:</label>
+					<li><label><s:text name="%{scope}.IndustryDetails.MainTrade"/>:</label>
 						<s:select cssStyle="font-size: 12px;" list="tradeList" name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" listKey="name" listValue="name"/>
 					</li>
-					<li><label>Risk Level:</label>
+					<li><label><s:text name="%{scope}.IndustryDetails.RiskLevel"/>:</label>
 						<s:property value="contractor.riskLevel"/>
 					</li>
-					<li><label>Requested By:</label>
+					<li><label><s:text name="%{scope}.IndustryDetails.RequestedBy"/>:</label>
 						<s:property value="contractor.requestedBy.name"/>
 					</li>
 				</ol>
 				</fieldset>
 				<fieldset class="form">
-				<h2 class="formLegend">Company Identification</h2>
+				<h2 class="formLegend"><s:text name="%{scope}.CompanyIdentification.heading"/></h2>
 				<ol>
-					<li><label>Web URL:</label> 
+					<li><label><s:text name="%{scope}.CompanyIdentification.WebURL"/>:</label> 
 						<s:textfield name="contractor.webUrl" size="35" /></li>
-					<li><label>Company Logo:</label>
+					<li><label><s:text name="%{scope}.CompanyIdentification.CompanyLogo"/>:</label>
 						<s:file name="logo" size="35" />
 					</li>
 					<li><label>&nbsp</label>
 						(Allowed formats: jpg, gif, png)
 					</li>
-					<li><label>Company Brochure:</label>
+					<li><label><s:text name="%{scope}.CompanyIdentification.CompanyBrochure"/>:</label>
 						<s:file name="brochure" size="35" />
 					</li>
 					<li><label>&nbsp</label>
 						(Allowed formats: pdf, doc, jpg, gif, png)
 					</li>
-					<li><label>Description:</label>
+					<li><label><s:text name="%{scope}.CompanyIdentification.Description"/>:</label>
 						<s:textarea name="contractor.description" cols="40"	rows="15" />
 					</li>	
 				</ol>
 				</fieldset>
 				<fieldset class="form submit">
 					<s:if test="permissions.contractor">
-						<input type="submit" class="picsbutton positive" name="button" value="Save"/>
+						<input type="submit" class="picsbutton positive" name="button" value="<s:text name="button.Save" />"/>
 					</s:if>
 					<s:else>
 						<pics:permission perm="ContractorAccounts" type="Edit">
