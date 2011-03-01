@@ -185,7 +185,7 @@ public class ContractorWidget extends ContractorActionSupport {
 						if (conAudit.getAuditType().isPqf())
 							auditName = "Pre-Qualification Form";
 						else
-							auditName = conAudit.getAuditType().getAuditName();
+							auditName = conAudit.getAuditType().getName();
 						String auditFor = "";
 						if (conAudit.getAuditFor() != null) {
 							auditFor = " for " + conAudit.getAuditFor();
@@ -195,10 +195,10 @@ public class ContractorWidget extends ContractorActionSupport {
 								if (conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 									openTasks.add("<a href=\"Audit.action?auditID=" + conAudit.getId()
 											+ "\">Please fix issues with your "
-											+ conAudit.getAuditType().getAuditName() + " Policy");
+											+ conAudit.getAuditType().getName() + " Policy");
 								} else {
 									openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-											+ "\">upload and submit your " + conAudit.getAuditType().getAuditName()
+											+ "\">upload and submit your " + conAudit.getAuditType().getName()
 											+ " Policy</a>");
 								}
 							}
@@ -216,7 +216,7 @@ public class ContractorWidget extends ContractorActionSupport {
 								if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
 									String text = "You have <a href=\"ContractorAuditFileUpload.action?auditID="
 											+ conAudit.getId() + "\">open requirements from your recent "
-											+ conAudit.getAuditType().getAuditName() + auditFor + "</a>";
+											+ conAudit.getAuditType().getName() + auditFor + "</a>";
 									if (!openReq) {
 										text += "<br/>NOTE: Open requirements can be uploaded online.";
 										openReq = true;
@@ -237,12 +237,12 @@ public class ContractorWidget extends ContractorActionSupport {
 											String auditorName = conAudit.getAuditor() == null ? "a Safety Professional"
 													: conAudit.getAuditor().getName();
 											text = "Your upcoming <a href=\"Audit.action?auditID=" + conAudit.getId()
-													+ "\">" + conAudit.getAuditType().getAuditName()
+													+ "\">" + conAudit.getAuditType().getName()
 													+ "</a> will be conducted by " + auditorName;
 
 										} else {
 											text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId()
-													+ "\">upcoming " + conAudit.getAuditType().getAuditName()
+													+ "\">upcoming " + conAudit.getAuditType().getName()
 													+ auditFor + "</a>";
 										}
 										if (conAudit.getScheduledDate() != null) {
