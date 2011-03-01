@@ -41,7 +41,7 @@ public class TranslationActionSupport extends ActionSupport {
 		int i;
 		for (i = 1; i < hierarchy.size(); i++) {
 			try {
-				Class childFieldType = type.getDeclaredField(hierarchy.get(i)).getType();
+				Class childFieldType = getTypeFromInheritedClasses(type,hierarchy.get(i));
 				if (isTranslatable(childFieldType))
 					type = childFieldType;
 				else
@@ -54,6 +54,20 @@ public class TranslationActionSupport extends ActionSupport {
 		result = type.getSimpleName();
 		if (i < hierarchy.size()) {
 			result += "." + Strings.implode(hierarchy.subList(i, hierarchy.size()), ".");
+		}
+		return result;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public Class getTypeFromInheritedClasses(Class type, String field) throws NoSuchFieldException {
+		if (type == null)
+			return null;
+
+		Class result;
+		try {
+			result = type.getDeclaredField(field).getType();
+		} catch (NoSuchFieldException e) {
+			return getTypeFromInheritedClasses(type.getSuperclass(), field);
 		}
 		return result;
 	}
