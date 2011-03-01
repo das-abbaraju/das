@@ -48,7 +48,7 @@
 	</s:if>
 	<s:if test="canSchedule">
 		<li><a class="calendar"
-			href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>"<s:text name="Audit.button.ScheduleAudit" />></a></li>
+			href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>"><s:text name="Audit.button.ScheduleAudit" /></a></li>
 	</s:if>
 	<li><a class="print" href="#" onclick="window.print(); return false;"><s:text name="Audit.button.Print" /></a></li>
 </ul>
