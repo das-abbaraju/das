@@ -84,7 +84,7 @@
 							<s:if test="isCanEditCao(#currentCao)">
 								<span class="caoEdit left">
 									<s:hidden cssClass="caoID" name="#currentCao.id"/>
-									<s:select cssClass="status" list="getValidStatuses(#currentCao.id)" name="caosSave[%{#rowStatus.index}].status" value="#currentCao.status" />
+									<s:select cssClass="status" list="getValidStatuses(#currentCao.id)" emptyOption="true" name="caosSave[%{#rowStatus.index}].status" value="#currentCao.status" />
 								</span>
 								<s:if test="!systemEdit">
 									<span class="right"><a href="#" class="edit"></a></span>
