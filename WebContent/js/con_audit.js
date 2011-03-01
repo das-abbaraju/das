@@ -38,7 +38,7 @@ $(function(){
 		if(state.onlyReq !== undefined){
 			var data = $.deparam.querystring($.param.querystring(location.href, state));
 			data.button='PrintReq';
-			$('#auditViewArea').block({message: 'Loading Requirements...', centerY: false, css: {top: '20px'} }).load('AuditAjax.action', data, function() {
+			$('#auditViewArea').block({message: '<s:text name="Audit.javascript.LoadingRequirements" />...', centerY: false, css: {top: '20px'} }).load('AuditAjax.action', data, function() {
 				$('ul.catUL li.current').removeClass('current');
 				$(this).unblock();
 			});
@@ -46,15 +46,15 @@ $(function(){
 		} else if (state.mode == 'ViewQ') {
 			var data = $.deparam.querystring($.param.querystring(location.href, state));
 			data.button='load';
-			loadCategories(data, 'Loading Preview...');
+			loadCategories(data, '<s:text name="Audit.javascript.LoadingPreview" />...');
 		} else if (state.viewBlanks == "false") {
 			var data = $.deparam.querystring($.param.querystring(location.href, state));
 			data.button='load';
-			loadCategories(data, 'Loading Answered Questions...');
+			loadCategories(data, '<s:text name="Audit.javascript.LoadingAnsweredQuestions" />...');
 		} else if (state.mode == "ViewAll") {
 			var data = $.deparam.querystring($.param.querystring(location.href, state));
 			data.button='load';
-			loadCategories(data, 'Loading All Categories...');
+			loadCategories(data, '<s:text name="Audit.javascript.LoadingAllCategories" />...');
 		} else if (state.categoryID === undefined) {
 			$.bbq.pushState($.param.fragment(location.href,$('a.hist-category:first').attr('href')));
 		} else if (!lastState || !lastState.categoryID || state.categoryID != lastState.categoryID || state.mode != lastState.mode || state["_"]) {

@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../jquery.jsp"/>
@@ -273,12 +273,12 @@ function loadStatus(caoID){
 				</li>
 			</s:if>
 			<s:if test="conAudit.auditType.showManual">
-				<li><label><nobr><s:if test="conAudit.auditType.id == 96"><s:text name="Audit.message.ManagementPlan" />Management Plan</s:if>
+				<li><label><nobr><s:if test="conAudit.auditType.id == 96"><s:text name="Audit.message.ManagementPlan" /></s:if>
 						   <s:else><s:text name="Audit.message.SafetyManual" /></s:else>:</nobr></label>
 					<s:if test="hasSafetyManual">
-							<s:iterator value="safetyManualLink.values()">
-								<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&auditData.question.id=<s:property value="question.id"/>" target="_BLANK"><s:text name="Audit.message.Uploaded"><s:param><s:date name="updateDate" format="MMM yyyy"/></s:param></s:text></a>
-							</s:iterator>
+						<s:iterator value="safetyManualLink.values()">
+							<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&auditData.question.id=<s:property value="question.id"/>" target="_BLANK"><s:text name="Audit.message.Uploaded"><s:param><s:date name="updateDate" format="MMM yyyy"/></s:param></s:text></a>
+						</s:iterator>
 					</s:if>
 					<s:else><s:text name="Audit.message.NotUploaded" /></s:else>
 				</li>
@@ -291,7 +291,7 @@ function loadStatus(caoID){
 				<li><label><s:text name="Audit.message.Expires" />:</label>
 					<s:date name="conAudit.expiresDate" format="MMM d, yyyy" />
 				</li>
-			</s:if>			
+			</s:if>
 			<s:if test="permissions.picsEmployee">
 				<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0 && conAudit.closingAuditor.name != conAudit.auditor.name">
 					<li><label><s:text name="Audit.ClosingAuditor" />:</label>

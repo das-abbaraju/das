@@ -33,8 +33,8 @@
 <s:include value="../audits/audit_catHeader.jsp"/>
 
 <s:if test="policy">
-	<a href="PolicyVerification.action?button=getFirst" class="picsbutton">First Policy</a>
-	<a href="PolicyVerification.action?button=showNext&auditID=<s:property value="auditID" />" class="picsbutton positive">Next Policy &gt;&gt;</a>
+	<a href="PolicyVerification.action?button=getFirst" class="picsbutton"><s:text name="Audit.button.FirstPolicy" /></a>
+	<a href="PolicyVerification.action?button=showNext&auditID=<s:property value="auditID" />" class="picsbutton positive"><s:text name="Audit.button.NextPolicy" /> &gt;&gt;</a>
 	<br clear="all" />
 </s:if>
 
@@ -42,13 +42,13 @@
 
 <div class="right noprint" id="modes">
 	<s:if test="canEditAudit">
-		<a class="edit modeset" href="#mode=Edit">Edit</a>
+		<a class="edit modeset" href="#mode=Edit"><s:text name="button.Edit" /></a>
 	</s:if>
-	<a class="view modeset" href="#mode=View">View</a>
+	<a class="view modeset" href="#mode=View"><s:text name="button.View" /></a>
 	<s:if test="canVerifyAudit">
-		<a class="verify modeset" href="#mode=Verify">Verify</a> 
+		<a class="verify modeset" href="#mode=Verify"><s:text name="button.Verify" /></a> 
 	</s:if>
-	<span style="display: none;" id="printReqButton"><a class="print" href="javascript:window.print();">Print</a></span>
+	<span style="display: none;" id="printReqButton"><a class="print" href="javascript:window.print();"><s:text name="button.Print" /></a></span>
 </div>
 
 <table id="audit-layout">
@@ -66,7 +66,7 @@
 
 <s:if test="!@com.picsauditing.util.Strings@isEmpty(auditorNotes)">
 	<div class="info">
-		<b>Safety Professional Notes:</b> <s:property value="auditorNotes"/>
+		<b><s:text name="Audit.message.SafetyProfessionalNotes" />:</b> <s:property value="auditorNotes"/>
 	</div>
 </s:if>
 <br clear="all"/>
