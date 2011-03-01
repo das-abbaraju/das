@@ -1,9 +1,9 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title><s:property value="conAudit.auditType.name"/> Preview</title>
+<title><s:text name="Audit.message.Preview"><s:param><s:property value="conAudit.auditType.name"/></s:param></s:text></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
@@ -19,13 +19,13 @@ $(document).ready(function() {
 </head>
 <body>
 
-<h1><s:property value="conAudit.auditType.name"/> Preview</h1>
+<h1><s:text name="Audit.message.Preview"><s:param><s:property value="conAudit.auditType.name"/></s:param></s:text></h1>
 
 <table>
 	<tr>
 		<td>
 		<ul id="aCatlist" class="vert-toolbar catUL">
-			<li class="head">CATEGORIES</li>
+			<li class="head"><s:text name="Audit.header.Categories" /></li>
 			<s:iterator value="conAudit.auditType.topCategories">
 				<li class="catlist<s:if test="categoryID == id"> current</s:if>"><a class=""
 					href="AuditCatPreview.action?categoryID=<s:property value="id" />&button=PreviewCategory"

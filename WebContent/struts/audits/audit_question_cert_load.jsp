@@ -5,16 +5,15 @@
 <s:if test="#cert != null">
 	<s:date name="#cert.creationDate" format="M/d/yy" /> - <s:property value="#cert.description" /> <br/>
 	<a href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="#cert.id"/>&button=download"
-		target="_BLANK" class="insurance">
-		View
+		target="_BLANK" class="insurance"><s:text name="button.View" />
 	</a>
 	<s:if test="#editable">
 		&nbsp;&nbsp;&nbsp;&nbsp;
-		<a href="#" class="detachCertificate remove">Detach</a>
+		<a href="#" class="detachCertificate remove"><s:text name="Audit.message.Detach" /></a>
 	</s:if>
 </s:if> 
 <s:else>
-	No File Attached
+	<s:text name="Audit.message.NoFileAttached" />
 </s:else> 
 <br />
 <s:if test="#editable">

@@ -30,7 +30,7 @@
 	
 	<s:property value="#q.name" escape="false"/>
 	<br />
-	<s:if test="#q.helpPage.length() > 0"><a href="http://help.picsauditing.com/wiki/<s:property value="#q.helpPage"/>" class="help" target="_BLANK" title="opens in new window">Help Center</a></s:if>
+	<s:if test="#q.helpPage.length() > 0"><a href="http://help.picsauditing.com/wiki/<s:property value="#q.helpPage"/>" class="help" target="_BLANK" title="opens in new window"><s:text name="Header.HelpCenter" /></a></s:if>
 	<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
 </span>
 
@@ -38,9 +38,9 @@
 	<s:if test="#q.questionType == 'File'">
 		<s:if test="#a.id > 0 && #a.answer.length() > 0">
 			<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&auditData.question.id=<s:property value="#q.id"/>" 
-				target="_BLANK">View File</a>
+				target="_BLANK"><s:text name="Audit.link.ViewFile" /></a>
 		</s:if>
-		<s:else>File Not Uploaded</s:else>
+		<s:else><s:text name="Audit.message.FileNotUploaded" /></s:else>
 	</s:if>
 	<s:elseif test="#q.questionType == 'FileCertificate'">
 		<s:include value="audit_question_cert_load.jsp" />
@@ -90,7 +90,7 @@
 	
 	<s:if test="#a.verified && !#q.hasRequirement">
 		<span class="verified">
-			Answer verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" />
+			<s:text name="Audit.message.AnswerVerifiedOn"><s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param></s:text>
 		</span>
 	</s:if>
 	<s:if test="#a.hasRequirements">
@@ -99,19 +99,19 @@
 			<s:set name="extraClass" value="'boxed'"/>
 		</s:if>
 		<span class="requirement <s:property value="#extraClass" default=""/>">
-			<label>Requirement Status:</label>
+			<label><s:text name="Audit.message.RequirementStatus" />:</label>
 			<s:if test="#a.requirementOpen">
-				<span class="unverified">Open</span>
+				<span class="unverified"><s:text name="Audit.message.Open" /></span>
 			</s:if>
 			<s:elseif test="#a.wasChangedB">
-				<span class="verified">Closed on <s:date name="#a.dateVerified" format="MMM d, yyyy" /></span>
+				<span class="verified"><s:text name="Audit.message.ClosedOn"><s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param></s:text></span>
 			</s:elseif>
 		</span>
 	</s:if>
 	<s:if test="#a.commentLength && #q.questionType != 'AMBest'">
 		<br/>
 		<div class="info">
-		<label>Comment:</label> <s:property value="#a.getHtmlDisplay(#a.comment)" escape="false"/>
+		<label><s:text name="Audit.message.Comment" />:</label> <s:property value="#a.getHtmlDisplay(#a.comment)" escape="false"/>
 		</div>
 	</s:if>
 </div>

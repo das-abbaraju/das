@@ -2,7 +2,7 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Schedule Audit</title>
+<title><s:text name="%{scope}.title" /></title>
 <meta name="help" content="Scheduling_Audits">
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
@@ -12,13 +12,13 @@
 <s:include value="../contractors/conHeader.jsp" />
 
 <div class="noprint">
-	<button class="picsbutton" type="button" onclick="window.print();">Print</button>
+	<button class="picsbutton" type="button" onclick="window.print();"><s:text name="button.Print" /></button>
 </div>
 <fieldset class="form">
 <h2 class="formLegend">Audit Time &amp; Location</h2>
 <ol>
 	<s:if test="permissions.admin">
-		<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>">Edit Schedule Manually</a></li>
+		<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>"><s:text name="%{scope}.message.EditScheduleManually" />Edit Schedule Manually</a></li>
 	</s:if>
 	<li><label>Audit Date:</label> <s:property value="formatDate(conAudit.scheduledDate, 'EEEE, MMM d, yyyy')" /></li>
 	<li><label>Audit Time:</label> <s:property value="formatDate(conAudit.scheduledDate, 'h:mm a z')" /></li>
