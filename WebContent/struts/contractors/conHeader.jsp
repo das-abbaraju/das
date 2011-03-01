@@ -205,9 +205,9 @@ function loadStatus(caoID){
 	<s:if test="conAudit.auditFor != null && conAudit.auditFor.length() > 0">for <s:property value="conAudit.auditFor"/></s:if>
 	<s:elseif test="!conAudit.auditType.pqf">- <s:date name="conAudit.effectiveDateLabel" format="MMM yyyy" /></s:elseif>
 </s:if>
-<s:elseif test="subHeading.length() > 0">
+<s:else>
 	<s:property value="subHeading" escape="false" />
-</s:elseif>
+</s:else>
 </span>
 </h1>
 

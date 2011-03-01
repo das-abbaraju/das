@@ -48,10 +48,11 @@ public class AccountActionSupport extends PicsActionSupport {
 		this.id = id;
 	}
 
+	/**
+	 * Delete this method and property when we start i18n
+	 * @return
+	 */
 	public String getSubHeading() {
-		if (subHeading == null) {
-			subHeading = getText(getPageTitle());
-		}
 		return subHeading;
 	}
 
