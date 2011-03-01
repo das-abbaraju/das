@@ -178,7 +178,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (download) {
 			addExcelColumns();
-			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
+			String filename = this.getClass().getSimpleName();
 			excelSheet.setName(filename);
 			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
 
