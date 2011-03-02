@@ -139,7 +139,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 				ContractorAudit audit = pqfs.get(0);
 				if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 					String url = "Audit.action?auditID=";
-					MenuComponent menuComponent = new MenuComponent(getText(audit.getI18nKey("name")), url
+					MenuComponent menuComponent = new MenuComponent(getText(audit.getAuditType().getI18nKey("name")), url
 							+ audit.getId());
 					menuComponent.setAuditId(audit.getId());
 					menu.add(menuComponent);
