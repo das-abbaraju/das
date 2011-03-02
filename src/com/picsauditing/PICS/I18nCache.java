@@ -48,14 +48,8 @@ public class I18nCache {
 		if (hasKey(key, locale)) {
 			if (args == null || args.length == 0)
 				return getText(key, locale);
-			else {
-				String[] list = locale.split("_");
-				MessageFormat message = new MessageFormat(fixFormatCharacters(getText(key, locale)), new Locale(
-						list[0], (list.length > 1 ? list[1] : "")));
-				StringBuffer buffer = new StringBuffer();
-				message.format(args, buffer, null);
-				return buffer.toString();
-			}
+			else
+				return MessageFormat.format(fixFormatCharacters(getText(key, locale)), args);
 		}
 
 		return null;
@@ -83,8 +77,8 @@ public class I18nCache {
 				Database db = new Database();
 				List<BasicDynaBean> messages = db.select("SELECT msgKey, locale, msgValue FROM app_translation", false);
 				for (BasicDynaBean message : messages) {
-					cache.put(String.valueOf(message.get("msgKey")), String.valueOf(message.get("locale")), String
-							.valueOf(message.get("msgValue")));
+					cache.put(String.valueOf(message.get("msgKey")), String.valueOf(message.get("locale")),
+							String.valueOf(message.get("msgValue")));
 				}
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
