@@ -734,8 +734,9 @@ public class ContractorAudit extends BaseTable {
 		if (u != null) {
 			if (u.getId() == 10600) // Mike Casey
 				return 11503; // Gary Rogers
-			else if (u.getId() == 910) // Dennis Dooley
-				return 9615; // Rick McGee
+			// Dennis is handling his own audits for now
+			// else if (u.getId() == 910) // Dennis Dooley 
+			// return 9615; // Rick McGee
 			else if (u.getId() == 902) // John McCaughey
 				return 1029; // Mina Mina
 			else
