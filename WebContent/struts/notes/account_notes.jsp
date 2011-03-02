@@ -4,7 +4,7 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title><s:property value="account.name" /><s:text name="%{scope}.ContractorNotes.title" /> Notes</title>
+<title><s:property value="account.name" /> <s:text name="%{scope}.ContractorNotes.title" /></title>
 
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
