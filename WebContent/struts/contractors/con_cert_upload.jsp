@@ -13,7 +13,7 @@
 <script type="text/javascript">
 var questionID  = '<s:property value="questionID"/>';
 var certID = '<s:property value="certID"/>';
-var message = 'You have NOT SAVED your file.\nPlease click CANCEL to stay on this page and then click SAVE to save your file.';
+var message = '<s:text name="Audit.message.CertNotSaved" />';
 
 <s:if test="changed">
 window.onload = function (event) {
@@ -40,7 +40,7 @@ function closePage() {
 <div id="main">
 	<div id="bodyholder">
 		<div id="content">
-			<h1>Upload Certificate <span class="sub"><s:property value="contractor.name" /></span></h1>
+			<h1><s:text name="Audit.header.UploadCertificate" /><span class="sub"><s:property value="contractor.name" /></span></h1>
 			<s:include value="../actionMessages.jsp" />
 			<div>
 			<s:form enctype="multipart/form-data" method="POST">
@@ -52,18 +52,18 @@ function closePage() {
 					<s:hidden name="auditID" />
 					<s:if test="certificate == null || certificate.caos == null || certificate.caos.size() == 0">
 						<div class="question">
-							<label>File:</label>
+							<label><s:text name="global.File" />:</label>
 								<s:file id="fileTextbox" name="file" value="%{file}" size="50" ></s:file><br />
 						</div>
 					</s:if>
 					<s:if test="file != null && file.exists()">
 						<div class="question">
 							<a href="CertificateUpload.action?id=<s:property value="id"/>&certID=<s:property value="certID"/>&button=download"
-								target="_BLANK">Open Existing <s:property value="fileSize" /> File</a>
+								target="_BLANK"><s:text name="Audit.link.OpenExistingFile" />Open Existing <s:property value="fileSize" /> File</a>
 						</div>
 					</s:if>
 					<div class="question shaded">
-						<label>Description:</label> <s:textfield name="fileName" value="%{certificate.description}" size="50"/><br/>
+						<label><s:text name="global.Description" />:</label> <s:textfield name="fileName" value="%{certificate.description}" size="50"/><br/>
 						<div align="center" style="font-size: 10px;font-style: italic;">
 							<table>
 								<tr><td align="left">Example: </td><td>Certificate For BP Cherry Point</td></tr>
@@ -74,16 +74,17 @@ function closePage() {
 					</div>
 					<div>
 						<div>
-							<button class="picsbutton" onclick="closePage()">Cancel</button>
+							<button class="picsbutton" onclick="closePage()"><s:text name="button.Cancel" /></button>
 							<s:if test="canDelete">
 								<button class="picsbutton negative" name="button" value="Delete" type="submit" 
 								onclick="return confirm('Are you sure you want to delete this file?');">DeleteFile</button>
 							</s:if>
-							<button class="picsbutton positive" name="button" value="Save" type="submit">Save</button>
+							<button class="picsbutton positive" name="button" value="Save" type="submit"><s:text name="button.Save" /></button>
 						</div>
 					</div>
 					<s:if test="certificate.caos != null && certificate.caos.size() > 0">
 						<div class="alert">
+							<s:text name="Audit.message.CertAttachedToPolicy" />
 							This certificate has been attached to a policy, it cannot be deleted.
 						</div>
 					</s:if>

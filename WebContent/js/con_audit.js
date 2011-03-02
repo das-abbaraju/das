@@ -38,7 +38,7 @@ $(function(){
 		if(state.onlyReq !== undefined){
 			var data = $.deparam.querystring($.param.querystring(location.href, state));
 			data.button='PrintReq';
-			$('#auditViewArea').block({message: '<s:text name="Audit.javascript.LoadingRequirements" />...', centerY: false, css: {top: '20px'} }).load('AuditAjax.action', data, function() {
+			$('#auditViewArea').block({message: messageLoadingRequirements, centerY: false, css: {top: '20px'} }).load('AuditAjax.action', data, function() {
 				$('ul.catUL li.current').removeClass('current');
 				$(this).unblock();
 			});
@@ -46,15 +46,15 @@ $(function(){
 		} else if (state.mode == 'ViewQ') {
 			var data = $.deparam.querystring($.param.querystring(location.href, state));
 			data.button='load';
-			loadCategories(data, '<s:text name="Audit.javascript.LoadingPreview" />...');
+			loadCategories(data, messageLoadingPreview);
 		} else if (state.viewBlanks == "false") {
 			var data = $.deparam.querystring($.param.querystring(location.href, state));
 			data.button='load';
-			loadCategories(data, '<s:text name="Audit.javascript.LoadingAnsweredQuestions" />...');
+			loadCategories(data, messageLoadingAnsweredQuestions);
 		} else if (state.mode == "ViewAll") {
 			var data = $.deparam.querystring($.param.querystring(location.href, state));
 			data.button='load';
-			loadCategories(data, '<s:text name="Audit.javascript.LoadingAllCategories" />...');
+			loadCategories(data, messageLoadingAllCategories);
 		} else if (state.categoryID === undefined) {
 			$.bbq.pushState($.param.fragment(location.href,$('a.hist-category:first').attr('href')));
 		} else if (!lastState || !lastState.categoryID || state.categoryID != lastState.categoryID || state.mode != lastState.mode || state["_"]) {
@@ -130,7 +130,7 @@ function showNavButtons() {
 }
 
 function loadCategories(data, msg) {
-	if (!msg) msg = 'Loading category...';
+	if (!msg) msg = messageLoadingCategory;
 	if (catXHR)
 		catXHR.abort();
 	$('#auditViewArea').block({message: msg, centerY: false, css: {top: '20px'} });

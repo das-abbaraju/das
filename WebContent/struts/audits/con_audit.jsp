@@ -9,6 +9,13 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css" />
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript">
+	var messageLoadingRequirements = '<s:text name="Audit.javascript.LoadingRequirements" />';
+	var messageLoadingCategory = '<s:text name="Audit.javascript.LoadingCategory" />';
+	var messageLoadingAllCategories = '<s:text name="Audit.javascript.LoadingAllCategories" />';
+	var messageAnsweredQuestions = '<s:text name="Audit.javascript.LoadingAnsweredQuestions" />';
+	var messageLoadingPreview = '<s:text name="Audit.javascript.LoadingPreview" />';
+</script>
 <script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
 <script type="text/javascript" src="js/con_audit.js?v=<s:property value="version"/>"></script>

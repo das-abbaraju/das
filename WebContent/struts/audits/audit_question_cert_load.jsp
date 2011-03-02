@@ -19,8 +19,8 @@
 <s:if test="#editable">
 	<s:hidden name="certID" value="%{#cert != null ? #cert.id : 0}"/>
 	<s:hidden name="auditData.answer" value="%{#a.answer}"/>
-	<a href="#" class="add uploadNewCertificate" title="Opens in new window (please disable your popup blocker)">Upload New File</a>
-	<a href="#" class="showExistingCertificates">Attach Existing File</a>
+	<a href="#" class="add uploadNewCertificate" title="<s:text name="Audit.help.OpensNewWindow" />"><s:text name="Audit.link.UploadNewFile" /></a>
+	<a href="#" class="showExistingCertificates"><s:text name="Audit.link.AttachExistingFile" /></a>
 	<br clear="all"/>
 	<div id="certificates<s:property value="#q.id"/>" class="certificateContainer left"></div>
 </s:if>
