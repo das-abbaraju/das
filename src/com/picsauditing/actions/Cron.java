@@ -499,14 +499,13 @@ public class Cron extends PicsActionSupport {
 
 		// Adding AM specific tokens to email and sending to AM
 		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.setTemplate(55);
+		emailBuilder.setFromAddress("\"PICS System\"<info@picsauditing.com>");
 
 		for (String accountMgr : amMap.keySet()) {
 			if (amMap.get(accountMgr) != null && amMap.get(accountMgr).size() > 0) {
-				EmailBuilder emailBuilder = new EmailBuilder();
-
 				emailBuilder.addToken("changes", amMap.get(accountMgr));
-				emailBuilder.setTemplate(55);
-				emailBuilder.setFromAddress("\"PICS System\"<info@picsauditing.com>");
 				emailBuilder.setToAddresses((accountMgr == null) ? "dtruitt@picsauditing.com" : accountMgr);
 				EmailQueue email = emailBuilder.build();
 				email.setPriority(30);
@@ -514,5 +513,14 @@ public class Cron extends PicsActionSupport {
 				emailQueueDAO.save(email);
 			}
 		}
+		
+		// Sending list of global changes to managers@picsauditing.com
+		emailBuilder.clear();
+		emailBuilder.addToken("changes", data);
+		emailBuilder.setToAddresses("managers@picsauditing.com");
+		EmailQueue email = emailBuilder.build();
+		email.setPriority(30);
+		email.setViewableById(Account.PicsID);
+		emailQueueDAO.save(email);
 	}
 }
