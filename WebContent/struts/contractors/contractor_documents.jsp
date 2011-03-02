@@ -33,19 +33,19 @@
 <s:include value="conHeader.jsp" />
 
 <s:if test="manuallyAddAudit">
-	<a class="add" href="AuditOverride.action?id=<s:property value="id"/>">Create New Audit</a>
+	<a class="add" href="AuditOverride.action?id=<s:property value="id"/>"><s:text name="%{scope}.link.CreateNewAudit" /></a>
 </s:if>
 <s:iterator value="auditTypes.keySet()" var="classType" status="stat">
 	<h3><a name="<s:property value="getSafeName(#classType.name)" />"><s:property value="#classType" escape="false" /></a></h3>
 	<table class="report" id="table_<s:property value="getSafeName(#classType.name)" />">
 		<thead>
 			<tr>
-				<th>Name</th>
-				<th>Safety Professional</th>
-				<th>Scheduled</th>
-				<th>View</th>
+				<th><s:text name="global.Name" /></th>
+				<th><s:text name="global.SafetyProfessional" /></th>
+				<th><s:text name="%{scope}.header.Scheduled" /></th>
+				<th><s:text name="button.View" /></th>
 				<pics:permission perm="AuditCopy">
-					<th>Copy</th>
+					<th><s:text name="button.Copy" /></th>
 				</pics:permission>
 			</tr>
 		</thead>
@@ -55,30 +55,33 @@
 					<tr>
 						<td>
 							<a href="Audit.action?auditID=<s:property value="#audit.id" />">
-								<s:property value="#auditType.auditName" />
-								<s:if test="#audit.auditFor.length() > 0">: <s:property value="#audit.auditFor" /></s:if>
+								<s:text name="%{#audit.auditType.getI18nKey('name')}" /><s:if test="#audit.auditFor.length() > 0">: <s:property value="#audit.auditFor" /></s:if>
 								<s:if test="#audit.auditType.classType.policy"><br /><span style="font-size: 10px"><s:date name="#audit.effectiveDate" format="MMM yyyy" /></span></s:if>
 							</a>
 						</td>
 						<td><s:property value="#audit.auditor.name" /></td>
-						<td><s:date name="#audit.scheduledDate" format="M/d/yy" /></td>
+						<td><s:date name="#audit.scheduledDate" /></td>
 						<td>
 							<s:if test="#audit.operators.size > 0">
 								<a href="#" onclick="$('tr.row_'+<s:property value="#audit.id" />).toggle(); return false;">
 									<s:iterator value="#audit.getCaoStats(permissions).keySet()" id="status" status="stat">
-										<s:if test="getCaoStats(permissions).get(#status) > 1 || #audit.getCaoStats(permissions).keySet().size > 1"><s:property value="getCaoStats(permissions).get(#status)"/></s:if>
-										<s:property value="#status"/><s:if test="!#stat.last">,</s:if>
+										<s:if test="getCaoStats(permissions).get(#status) > 1 || #audit.getCaoStats(permissions).keySet().size > 1"><s:property value="getCaoStats(permissions).get(#status)" /></s:if>
+										<s:text name="%{#status.getI18nKey()}" /><s:if test="!#stat.last">,</s:if>
 									</s:iterator>
 								</a>
 							</s:if>
 						</td>
 						<pics:permission perm="AuditCopy">
-							<td><a href="ConAuditCopy.action?auditID=<s:property value="#audit.id" />">Copy</a></td>
+							<td><a href="ConAuditCopy.action?auditID=<s:property value="#audit.id" />"><s:text name="button.Copy" /></a></td>
 						</pics:permission>
 					</tr>
 					<s:if test="#audit.operators.size > 0">
 						<tr class="row_<s:property value="#audit.id" /> hidden">
-							<td colspan="4">
+							<s:set name="colspan" value="4" />
+							<pics:permission perm="AuditCopy">
+								<s:set name="colspan" value="#colspan + 1" />
+							</pics:permission>
+							<td colspan="<s:property value="#colspan" />">
 								<table class="inner">
 									<s:iterator value="#audit.operators" id="cao">
 										<s:if test="#cao.isVisibleTo(permissions)">
@@ -91,10 +94,10 @@
 														<s:property value="#cao.operator.name" />
 													</pics:permission>
 												</td>
-												<td><s:property value="#cao.status" /></td>
-												<td><s:date name="#cao.statusChangedDate" format="dd MMM yyyy" /></td>
+												<td><s:text name="%{#cao.status.getI18nKey()}" /></td>
+												<td><s:date name="#cao.statusChangedDate" /></td>
 												<s:if test="#audit.auditType.classType.im">
-													<td class="center"><s:property value="#audit.printableScore" /></td>
+													<td class="center"><s:text name="ContractorAudit.PrintableScore.%{#audit.printableScore}" /></td>
 												</s:if>
 											</tr>
 										</s:if>
@@ -111,39 +114,39 @@
 					<s:set name="colspan" value="#colspan + 1" />
 				</pics:permission>
 				<td colspan="<s:property value="#colspan" />" class="center">
-					<a href="#" onclick="showAll('table_<s:property value="getSafeName(#classType.name)" escape="false" />'); return false;" class="preview">View All</a>
+					<a href="#" onclick="showAll('table_<s:property value="getSafeName(#classType.name)" escape="false" />'); return false;" class="preview"><s:text name="%{scope}.link.ViewAll" /></a>
 				</td>
 			</tr>
 		</tbody>
 	</table>
 	
 	<s:if test="#classType.name == getText('AuditType.17.name') && imScores.keySet().size > 0">
-		<h3>Overall <s:text name="AuditType.17.name" /></h3>
+		<h3><s:text name="%{scope}.header.OverallIntegrityManagement"><s:param><s:text name="AuditType.17.name" /></s:param></s:text></h3>
 		<table class="report">
 			<thead>
 			<tr>
-				<th>Audit Name</th>
-				<th>Overall Score</th>
+				<th><s:text name="%{scope}.header.Audit" /></th>
+				<th><s:text name="%{scope}.header.OverallScore" /></th>
 			</tr>
 			</thead>
 			<s:iterator value="imScores.keySet()" status="auditStatus" id="key">
 				<tr>
 					<td><s:property value="#key"/></td>
-					<td class="center"><s:property value="imScores.get(#key)"/></td>
+					<td class="center"><s:text name="ContractorAudit.PrintableScore.%{imScores.get(#key)}" /></td>
 				</tr>
 			</s:iterator>
 		</table>
 	</s:if>
 	
 	<s:if test="expiredAudits.get(#classType).size > 0">
-		<h3>Expired <s:property value="#classType" escape="false" /> Audits</h3>
-		<table class="report" id="expired_<s:property value="#classType" />">
+		<h3><s:text name="%{scope}.header.ExpiredAudits"><s:param value="%{#classType}" /></s:text></h3>
+		<table class="report" id="expired_<s:property value="getSafeName(#classType.name)" />">
 			<thead>
 			<tr>
-				<th>Name</th>
-				<th>Safety Professional</th>
-				<th>Expired</th>
-				<th>View</th>
+				<th><s:text name="global.Name" /></th>
+				<th><s:text name="global.SafetyProfessional" /></th>
+				<th><s:text name="AuditStatus.Expired" /></th>
+				<th><s:text name="button.View" /></th>
 			</tr>
 			</thead>
 			<s:iterator value="expiredAudits.get(#classType)">
@@ -152,16 +155,17 @@
 						<a href="Audit.action?auditID=<s:property value="id" />">
 							<s:property value="auditType.auditName" />
 							<s:if test="auditFor.length() > 0">: <s:property value="#audit.auditFor" /></s:if>
-							<s:if test="auditType.classType == 'Policy'"><br /><span style="font-size: 10px"><s:date name="effectiveDate" format="MMM yyyy" /></span></s:if>
+							<s:if test="auditType.classType == 'Policy'"><br /><span style="font-size: 10px"><s:date name="effectiveDate" /></span></s:if>
 						</a>
 					</td>
 					<td><s:property value="auditor.name" /></td>
-					<td><s:date name="expiresDate" format="M/d/yyyy" /></td>
+					<td><s:date name="expiresDate" /></td>
 					<td>
 						<s:if test="operators.size > 0">
 							<a href="#" onclick="$('tr.row_'+<s:property value="id" />).toggle(); return false;">
 								<s:iterator value="getCaoStats(permissions).keySet()" id="status" status="stat">
-									<s:property value="getCaoStats(permissions).get(#status)" /> Operator<s:if test="getCaoStats(permissions).get(#status) > 1">s</s:if><s:if test="!#stat.last">,</s:if>
+									<s:property value="getCaoStats(permissions).get(#status)" />
+									<s:if test="getCaoStats(permissions).get(#status) > 1"><s:text name="global.Operators" /></s:if><s:else><s:text name="global.Operator" /></s:else><s:if test="!#stat.last">,</s:if>
 								</s:iterator>
 							</a>
 						</s:if>
@@ -183,7 +187,7 @@
 												</pics:permission>
 											</td>
 											<td><s:property value="#cao.status" /></td>
-											<td><s:date name="#cao.statusChangedDate" format="M/d/yy" /></td>
+											<td><s:date name="#cao.statusChangedDate" /></td>
 										</tr>
 									</s:if>
 								</s:iterator>
@@ -193,8 +197,8 @@
 				</s:if>
 			</s:iterator>
 			<tr>
-				<td colspan="<s:property value="#colspan" />" class="center">
-					<a href="#" onclick="showAll('expired_<s:property value="#classType" escape="false" />'); return false;" class="preview">View All</a>
+				<td colspan="4" class="center">
+					<a href="#" onclick="showAll('expired_<s:property value="getSafeName(#classType.name)" />'); return false;" class="preview"><s:text name="%{scope}.link.ViewAll" /></a>
 				</td>
 			</tr>
 		</table>
