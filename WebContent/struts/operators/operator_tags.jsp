@@ -69,15 +69,17 @@ function showCategoryRules() {
 		<s:iterator value="tags" status="rowstatus">
 			<tr><s:hidden name="tags[%{#rowstatus.index}].id" value="%{id}" />
 				<td class="right"><s:property value="id" /></td>
-				<s:if test="operator.id == permissions.accountId">
-					<td><s:textfield
-						name="tags[%{#rowstatus.index}].tag" value="%{tag}" /></td>
-					<td><s:checkbox name="tags[%{#rowstatus.index}].active" value="%{active}" /></td>
-					<td><s:checkbox name="tags[%{#rowstatus.index}].visibleToContractor" value="%{visibleToContractor}" /></td>
-					<s:if test="operator.corporate">
-						<td><s:checkbox name="tags[%{#rowstatus.index}].inheritable" value="%{inheritable}" /></td>
+				<pics:permission perm="ContractorTags" type="Edit">
+					<s:if test="operator.id == permissions.accountId">
+						<td><s:textfield
+							name="tags[%{#rowstatus.index}].tag" value="%{tag}" /></td>
+						<td><s:checkbox name="tags[%{#rowstatus.index}].active" value="%{active}" /></td>
+						<td><s:checkbox name="tags[%{#rowstatus.index}].visibleToContractor" value="%{visibleToContractor}" /></td>
+						<s:if test="operator.corporate">
+							<td><s:checkbox name="tags[%{#rowstatus.index}].inheritable" value="%{inheritable}" /></td>
+						</s:if>
 					</s:if>
-				</s:if>
+				</pics:permission>
 				<s:else>
 					<td><s:property value="tag"/></td>
 					<td class="center"><s:if test="active">Yes</s:if><s:else>No</s:else></td>
@@ -97,11 +99,22 @@ function showCategoryRules() {
 				</pics:permission>
 			</tr>
 		</s:iterator>
-		<tr>
-			<td>NEW</td>
-			<td><s:textfield name="tags[%{tags.size}].tag" value="%{tag}" /></td>
-				<td colspan="<s:property value="operator.corporate ? 4 : 3"/>">Add New Tag</td>
-		</tr>
+		<s:if test="permissions.operatorCorporate">
+		<pics:permission perm="ContractorTags" type="Edit">
+			<tr>
+				<td>NEW</td>
+				<td><s:textfield name="tags[%{tags.size}].tag" value="%{tag}" /></td>
+					<td colspan="<s:property value="operator.corporate ? 4 : 3"/>">Add New Tag</td>
+			</tr>
+		</pics:permission>
+		</s:if>
+		<s:else>
+			<tr>
+				<td>NEW</td>
+				<td><s:textfield name="tags[%{tags.size}].tag" value="%{tag}" /></td>
+					<td colspan="<s:property value="operator.corporate ? 4 : 3"/>">Add New Tag</td>
+			</tr>
+		</s:else>
 	</table>
 
 	<div>
