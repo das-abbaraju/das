@@ -4,7 +4,7 @@
 	
 	<s:if test="conAudit.auditType.classType.policy">
 		<s:if test="conAudit.hasCaoStatusAfter('Pending') && conAudit.willExpireSoon() && !conAudit.expired">
-			<div class="alert">This policy is about to Expire and is currently locked for editing. Please use the up coming policy to record any changes 
+			<div class="alert"><s:text name="Audit.message.Locked" /> 
 				<s:iterator value="conAudit.contractorAccount.audits" id="newPending">
 					<s:if test="#newPending.auditType.classType.policy && conAudit.id != #newPending.id">
 						<s:if test="conAudit.auditType == #newPending.auditType && #newPending.auditStatus.pending">
@@ -17,7 +17,7 @@
 	</s:if>
 	
 	<s:if test="invoiceOverdue">
-		<div class="alert">This account has an overdue invoice. Auditors should not begin work on this audit until the balance is paid.</div>
+		<div class="alert"><s:text name="Audit.message.OverdueInvoice" /></div>
 	</s:if>
 </s:if>
 
@@ -26,29 +26,43 @@
 	<s:if test="conAudit.auditStatus.activeSubmitted || conAudit.auditStatus.activeResubmittedExempt">
 		<s:if test="activePendingEditableAudits.size > 0">
 			<div class="alert">
-				You have <strong><s:property value="activePendingEditableAudits.size"/></strong> Audits to complete. To see your list of open tasks go to your <a href="Home.action">home page</a>.
+				<s:text name="Audit.message.ActivePendingEditable"><s:param value="activePendingEditableAudits.size" /></s:text>
 				<ul>
 					<s:iterator value="activePendingEditableAudits">
-						<li>Please complete the <a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditFor"/> <s:property value="auditType.auditName"/></a>.</li>
+						<li>
+							<s:text name="Audit.message.PleaseCompleteAudit">
+								<s:param value="id" />
+								<s:param value="auditFor" />
+								<s:param><s:text name="%{auditType.getI18nKey('name')}" /></s:param>
+							</s:text>
+						</li>
 					</s:iterator>
 				</ul>
 			</div>
 			<div class="buttons">
-				<a href="Audit.action?auditID=<s:property value="activePendingEditableAudits.get(0).getId()"/>" class="picsbutton">Next Audit &gt;</a>
+				<a href="Audit.action?auditID=<s:property value="activePendingEditableAudits.get(0).getId()"/>" class="picsbutton"><s:text name="Audit.button.NextAudit" /> &gt;</a>
 			</div>
 		</s:if>
 	</s:if>
 	<s:if test="conAudit.auditType.classType.pqf && conAudit.auditStatus.activeSubmitted && conAudit.aboutToExpire">
-		<div class="alert">Your <s:property value="conAudit.auditType.auditName" /> is about to expire, please review every section and re-submit it.</div>
+		<div class="alert">
+			<s:text name="Audit.message.AboutToExpire"><s:param><s:text name="%{conAudit.auditType.getI18nKey('name')}" /></s:param></s:text>
+		</div>
 	</s:if>
 	<s:if test="conAudit.auditType.hasRequirements && conAudit.auditStatus.submitted && conAudit.percentVerified < 100">
-		<div class="info">The PICS safety professional has submitted your <s:property value="conAudit.auditType.auditName"/>. There are 
-			<a href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID" />" title="Click to see ALL Open Requirements">Open Requirements</a>
-			that need your attention.
+		<div class="info">
+			<s:text name="Audit.message.OpenRequirements">
+				<s:param><s:text name="%{conAudit.auditType.getI18nKey('name')}" /></s:param>
+				<s:param value="auditID" />
+			</s:text>
 		</div>
 	</s:if>
 	<s:if test="conAudit.auditStatus.name() == 'Pending' && !conAudit.contractorAccount.paymentMethodStatusValid && conAudit.contractorAccount.mustPayB">
-		<div class="info">Before you will be able to submit your information for review, you must <a href="ContractorPaymentOptions.action?id=<s:property value="conAudit.contractorAccount.id"/>"> update your payment method</a>.</div>		
+		<div class="info">
+			<s:text name="Audit.message.UpdatePaymentMethod">
+				<s:param value="conAudit.contractorAccount.id" />
+			</s:text>
+		</div>		
 	</s:if>
 </s:if>
 
@@ -59,22 +73,21 @@
 			<div class="alert" class="buttons" style="">
 				<s:if test="conAudit.auditStatus.pending">
 					<s:submit id="submit" value="Submit" name="button" cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: darkgreen; font-weight: bold;"></s:submit>
-					<s:if test="conAudit.auditType.pqf">
-						<br />You're almost done! Please take another opportunity to double check your information.
-						<br />Click Submit when you're ready to send your information to PICS for review.
-						<br />You MUST click this button before your PQF can become Activated.
-					</s:if>
+					<s:if test="conAudit.auditType.pqf"><br /><s:text name="Audit.message.PQFCheck" /></s:if>
 					<s:else>
-						<br />Click Submit when you're ready to finalize the <s:property value="conAudit.auditType.auditName"/>.
+						<br /><s:text name="Audit.message.FinalizeAudit">
+							<s:param><s:text name="AuditStatus.Submitted.button" /></s:param>
+							<s:param><s:text name="%{conAudit.auditType.getI18nKey('name')}" /></s:param>
+						</s:text>
 					</s:else>
 				</s:if>
 				<s:elseif test="conAudit.auditStatus.incomplete">
 					<s:submit id="submit" value="Submit" name="button" cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: darkgreen; font-weight: bold;"></s:submit>
-					<br/>Click Submit when you have completed all the pending requirements.
+					<br/><s:text name="Audit.message.CompleteRequirements"><s:param><s:text name="AuditStatus.Submitted.button" /></s:param></s:text>
 				</s:elseif>
 				<s:else>
 					<s:checkbox name="''" onchange="resubmitPqf(this);"/>
-					 I have reviewed and updated my previously submitted data and verified its accuracy.<br/>
+					<s:text name="Audit.message.ConfirmData" /><br/>
 					<s:submit id="submit" value="Submit" name="button" disabled="true"></s:submit>
 				</s:else>
 			</div>

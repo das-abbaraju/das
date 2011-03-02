@@ -91,9 +91,9 @@ $(function(){
 function showChooseDate(override) {
 	if (override) {
 		$('input[name=feeOverride]').val(true);
-		$('#needsReschedulingFee').text('<s:text name="%{scope}.message.NoReschedulingFee" />' + "This contractor will NOT be charged the rescheduling fee if the audit date and time is changed.");
+		$('#needsReschedulingFee').text('<s:text name="%{scope}.message.NoReschedulingFee" />');
 	} else
-		$('#needsReschedulingFee').text('<s:text name="%{scope}.message.ReschedulingFee" />' + "This contractor will be charged the rescheduling fee if the audit date and time is changed.");
+		$('#needsReschedulingFee').text('<s:text name="%{scope}.message.ReschedulingFee" />');
 
 	$('#scheduledDateDay').attr('disabled', false);
 	$('#scheduledDateTime').attr('disabled', false);
