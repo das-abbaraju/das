@@ -506,15 +506,19 @@ public class ContractorCron extends PicsActionSupport {
 			note.setCanContractorView(true);
 			note.setViewableById(co.getOperatorAccount().getId());
 			dao.save(note);
-			if (co.getFlagColor() == FlagColor.Clear)
+			if (co.getFlagColor() == FlagColor.Clear) {
 				co.setBaselineFlag(overallColor);
+				co.setBaselineFlagDetail(flagJson.toString());
+			}
 			co.setFlagColor(overallColor);
 			co.setFlagLastUpdated(new Date());
 		}
 
-		// set baseline to clear for null baselines
-		if (co.getBaselineFlag() == null)
+		// set baselineFlag to clear and baselineFlagDetail for null baselines
+		if (co.getBaselineFlag() == null) {
 			co.setBaselineFlag(FlagColor.Clear);
+			co.setBaselineFlagDetail(flagJson.toString());
+		}
 
 		Iterator<FlagData> flagDataList = BaseTable.insertUpdateDeleteManaged(co.getFlagDatas(), changes).iterator();
 		while (flagDataList.hasNext()) {
