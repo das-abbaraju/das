@@ -444,6 +444,9 @@ function getMatches(requestID) {
 						<s:select list="operatorsList" headerKey="0" headerValue="- Select a Operator -"
 							name="requestedOperator" onchange="updateUsersList();" listKey="id" listValue="name"
 							value="%{newContractor.requestedBy.id}" />
+						<s:if test="permissions.admin">&nbsp;
+							<a href="ContractorSimulator.action<s:if test="newContractor.requestedBy.id > 0">?operatorIds=<s:property value="newContractor.requestedBy.id" /></s:if>" id="contractorSimulatorLink"><s:if test="newContractor.requestedBy.id > 0">Run </s:if>Contractor Simulator</a><br />
+						</s:if>
 					</li>
 					<s:if test="newContractor.requestedByUser != null || newContractor.requestedByUserOther != null">
 						<li id="loadUsersList"><script type="text/javascript">updateUsersList();</script></li>
