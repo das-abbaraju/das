@@ -109,6 +109,13 @@ public class FacilityChanger {
 			}
 		}
 
+		// Need to upgrade this contractor if operator being added does not
+		// accept bid only contractors
+		if (contractor.isAcceptsBids() && !operator.isAcceptsBids()) {
+			contractor.setAcceptsBids(false);
+			contractor.setRenew(true);
+		}
+
 		contractor.setLastUpgradeDate(new Date());
 		checkOQ();
 		contractor.incrementRecalculation(10);
@@ -139,26 +146,21 @@ public class FacilityChanger {
 
 					// If user is a non-billing user, notify billing to
 					// adjust invoice
-					if (!permissions.isContractor()
-							&& !permissions.hasGroup(958)
+					if (!permissions.isContractor() && !permissions.hasGroup(958)
 							&& !co.getContractorAccount().isAcceptsBids()) { // Billing/Accounting
 						EmailBuilder emailBuilder = new EmailBuilder();
 						emailBuilder.setTemplate(47); // Notice of Facility Rem
 						emailBuilder.setPermissions(permissions);
-						emailBuilder.setContractor(co.getContractorAccount(),
-								OpPerms.ContractorAdmin);
-						emailBuilder.addToken("operator", co
-								.getOperatorAccount());
-						emailBuilder
-								.setFromAddress("\"IT\"<tbaker@picsauditing.com>");
-						emailBuilder
-								.setToAddresses("billing@picsauditing.com, aharker@picsauditing.com");
+						emailBuilder.setContractor(co.getContractorAccount(), OpPerms.ContractorAdmin);
+						emailBuilder.addToken("operator", co.getOperatorAccount());
+						emailBuilder.setFromAddress("\"IT\"<tbaker@picsauditing.com>");
+						emailBuilder.setToAddresses("billing@picsauditing.com, aharker@picsauditing.com");
 
 						EmailQueue emailQueue = emailBuilder.build();
 						emailQueue.setPriority(60);
 						EmailSender.send(emailQueue);
 					}
-					
+
 					checkOQ();
 					contractor.incrementRecalculation(5);
 
