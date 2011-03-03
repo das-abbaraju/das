@@ -148,7 +148,7 @@ class CronWorker(CronThread):
 		self.con_q = con_q
 		self.server_g = server_g
 		self.url = SERVER+"ContractorCron.action?conID=%s&steps=All&button=Run"
-		self.sleeptime = 3
+		self.sleeptime = 6
 		self.logger = logging.getLogger('worker')
 	def run(self):
 		while self.running:
