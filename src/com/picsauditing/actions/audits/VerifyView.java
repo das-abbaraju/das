@@ -284,7 +284,7 @@ public class VerifyView extends ContractorActionSupport {
 				public boolean check(ContractorAudit t) {
 					return (t.getAuditType().isPqf() || t.getAuditType().isAnnualAddendum())
 							&& (t.hasCaoStatusAfter(AuditStatus.Pending) && t.hasCaoStatusBefore(AuditStatus.Complete) && !t
-									.hasCaoStatus(AuditStatus.Incomplete));
+									.hasCaoStatus(AuditStatus.Incomplete) && !t.hasCaoStatus(AuditStatus.Resubmit));
 				}
 			}.grep(getActiveAudits());
 		}
