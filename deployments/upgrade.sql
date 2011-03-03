@@ -14,3 +14,4 @@ update audit_type_rule set dependentAuditStatus = 'Submitted' where id in(2391,3
 update `app_properties` set `value`='2' where `property` = 'schedule.mindays';
 insert into useraccess ()userID, accessType, viewFlag, editFlag, deleteFlag, grantFlag, grantedByID)
 values (1029, 'WebcamNotification', 1, 0, 0, 1, 23157), (11068, 'WebcamNotification', 1, 0, 0, 1, 23157);
+update `invoice_fee` set `defaultAmount`='199.00',`updatedBy`='23157',`updateDate`= NOW() where `id`='51';
