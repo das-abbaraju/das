@@ -64,7 +64,9 @@
 				<span class="cat-percent">
 					<s:if test="showVerified">
 						<s:if test="#catNode.percentVerified < 100">
-							<img src="images/icon_text_alert.png"/>
+							<s:if test="!conAudit.auditType.annualAddendum">
+								<img src="images/icon_text_alert.png"/>
+							</s:if>
 						</s:if>
 						<s:else>						
 							<img src="images/okCheck.gif" />

@@ -414,6 +414,30 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 		return false;
 	}
+	
+	public boolean isShowVerifiedBar(ContractorAuditOperator cao) {
+		if (conAudit.getAuditType().isAnnualAddendum()) {
+			return false;
+		} else {
+			if (cao.getStatus().isSubmittedResubmitted())
+				return true;
+			else
+				return false;
+		}
+	}
+	
+	public boolean isShowCompleteBar(ContractorAuditOperator cao) {
+		if (conAudit.getAuditType().isAnnualAddendum()) {
+			if (conAudit.hasCaoStatusBefore(AuditStatus.Submitted) || conAudit.hasCaoStatus(AuditStatus.Resubmit))
+				return true;
+			else
+				return false;
+		}
+		if (conAudit.hasCaoStatusBefore(AuditStatus.Complete))
+			return true;
+		else
+			return false;
+	}
 
 	public boolean isCanVerifyAudit() {
 		if (!permissions.isAuditor() && !permissions.hasGroup(959))
