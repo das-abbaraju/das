@@ -56,11 +56,15 @@ public class ReportAccountAudits extends ReportAccount {
 			sql.addField("pd2354.answer AS 2354answer");
 			sql.addField("pd2373.answer AS 2373answer");
 			sql.addField("pd3543.answer AS 3543answer");
+			sql.addField("pd66.answer AS 66answer");
+			sql.addField("pd66.answer AS 66answer");
 			if (getFilter().getMinorityQuestion() != 3) {
 				sql.addJoin("LEFT JOIN pqfdata pd2340 ON ca1.id = pd2340.auditID AND pd2340.questionID = 2340");
 				sql.addJoin("LEFT JOIN pqfdata pd2354 ON ca1.id = pd2354.auditID AND pd2354.questionID = 2354");
 				sql.addJoin("LEFT JOIN pqfdata pd2373 ON ca1.id = pd2373.auditID AND pd2373.questionID = 2373");
 				sql.addJoin("LEFT JOIN pqfdata pd3543 ON ca1.id = pd3543.auditID AND pd3543.questionID = 3543");
+				sql.addJoin("LEFT JOIN pqfdata pd66 on casd.id = pd66.auditID AND pd66.questionID = 66");
+				sql.addJoin("LEFT JOIN pqfdata pd77 on casd.id = pd77.auditID AND pd77.questionID = 77");
 			}
 			// Stop duplicates from appearing
 			sql.addGroupBy("a.name");
@@ -110,5 +114,7 @@ public class ReportAccountAudits extends ReportAccount {
 		excelSheet.addColumn(new ExcelColumn("2354answer", "Minority-Owned"));
 		excelSheet.addColumn(new ExcelColumn("2373answer", "Women-Owned"));
 		excelSheet.addColumn(new ExcelColumn("3543answer", "Disabled Veteran Owned"));
+		excelSheet.addColumn(new ExcelColumn("66answer", "Union Personnel"));
+		excelSheet.addColumn(new ExcelColumn("77answer", "Non-union Personnel"));
 	}
 }
