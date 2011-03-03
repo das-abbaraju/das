@@ -53,8 +53,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected Account account; // Current logged in user's account
 	private Set<User> auditorList;
 
+	// Should we put this in another file? so we don't always check in the PicsActionSupport file?
 	public static final String getVersion() {
-		return "5.3.2";
+		// Released 2011-03-03
+		return "5.4";
 	}
 
 	protected void loadPermissions() {
