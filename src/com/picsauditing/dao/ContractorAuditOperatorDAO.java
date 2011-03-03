@@ -172,30 +172,12 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 	public void expireAudits() throws SQLException {
 		String sql = "";
 		Database db = new Database();
-		// post contractor notes for non renewable audits
-		sql = "INSERT into note (accountID,creationDate,createdBy,updateDate,updatedBy,summary,noteCategory,priority,viewableBy,canContractorView) " +
-				"select ca.conid,Now(),1,Now(),1,CONCAT('Expiring ',at.auditname,' for ', a.name,'(',ca.id,')'),'Audits',1,cao.opid,1 from contractor_audit ca " +
-						"join contractor_audit_operator cao on cao.auditid = ca.id " +
-						"join audit_type at on at.id = ca.audittypeid " +
-						"join accounts a on a.id = cao.opid " +
-						"where cao.status != 'Expired' and ca.expiresDate < NOW() and at.renewable = 0";
-		db.executeInsert(sql);
-		
 		// post contractor audit workflow for non renewable audits
 		sql = "insert into contractor_audit_operator_workflow (createdBy,updatedBy,creationDate,updateDate,caoID,status,previousStatus) " +
 				"select 1,1,Now(),Now(),cao.id,'Expired',cao.status from contractor_audit ca " +
 				"join contractor_audit_operator cao on cao.auditid = ca.id " +
 				"join audit_type at on at.id = ca.audittypeid " +
 				"where cao.status != 'Expired' and ca.expiresDate < NOW() and at.renewable = 0";
-		db.executeInsert(sql);
-		
-		// post contractor notes for renewable audits
-		sql = "INSERT into note (accountID,creationDate,createdBy,updateDate,updatedBy,summary,noteCategory,priority, viewableBy,canContractorView) " +
-				"select ca.conid,Now(),1,Now(),1,CONCAT('Changing status to Pending for ',at.auditname,' for ', a.name,'(',ca.id,')'),'Audits',1,cao.opid,1 from contractor_audit ca " +
-						"join contractor_audit_operator cao on cao.auditid = ca.id " +
-						"join audit_type at on at.id = ca.audittypeid " +
-						"join accounts a on a.id = cao.opid " +
-						"where cao.status != 'Expired' and ca.expiresDate < NOW() and at.renewable = 1";
 		db.executeInsert(sql);
 		
 		// post contractor audit workflow for renewable audits
@@ -219,6 +201,9 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 				"where cao.auditid = ca.id and cao.status != 'Expired' and ca.expiresDate < NOW() " +
 				"and ca.audittypeid IN (select id from audit_type where renewable= 1)";
 		db.executeUpdate(sql);
+		
+		// TODO move update contractor_audit_operator set status = 'Expired' 
+		// from nightly_updates.sql to here
 	}
 	
 	public void activateAuditsWithReqs() throws SQLException {
