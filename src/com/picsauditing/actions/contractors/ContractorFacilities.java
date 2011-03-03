@@ -281,7 +281,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 			if (button.equals("validateBidOnly")) {
 				json.put("isBidOnlyOperator", operatorDao.find(operator.getId()).isAcceptsBids());
 				json.put("isBidOnlyContractor", accountDao.find(contractor.getId()).isAcceptsBids());
-				return "json";
+				return JSON;
 			}
 
 			if (button.equals("load")) {
