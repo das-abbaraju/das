@@ -20,6 +20,16 @@ function size(obj) {
     return size;
 }
 
+function includeDetail(x, y) {
+	if (x.category == 'Insurance Criteria')
+		return false;
+	if (!y) {
+		return x.flag != 'Green';
+	} else {
+		return x.flag != y.flag;
+	} 
+}
+
 var tr = $();
 
 var flags = {
@@ -46,8 +56,7 @@ var flags = {
 		<tr>
 			<th></th>
 			<th>Approve</th>
-			<th>Old</th>
-			<th>New</th>
+			<th>Flag</th>
 			<th><a href="?orderBy=a.name,operator.name">Contractor</a></th>
 			<pics:permission perm="AllContractors">
 				<th><a href="?orderBy=operator.name,a.name">Operator</a></th>
@@ -67,8 +76,9 @@ var flags = {
 				<a href="#<s:property value="#gcID"/>" onclick="approve(<s:property value="#gcID"/>); return false;"
 					>Approve <s:property value="get('flag')"/></a>
 			</td>
-			<td><s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('baselineFlag').toString())" escape="false"/></td>
-			<td><s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('flag').toString())" escape="false"/></td>
+			<td class="nobr"><img src="images/icon_<s:property value="get('baselineFlag').toString().toLowerCase()" />Flag.gif" width="10" height="12" border="0" title="From" />
+				→
+				<img src="images/icon_<s:property value="get('flag').toString().toLowerCase()" />Flag.gif" width="10" height="12" border="0" title="To" /></td>
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>" 
 					rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>" 
 					class="contractorQuick account<s:property value="get('status')"/>" title="<s:property value="get('name')"/>"
@@ -77,42 +87,44 @@ var flags = {
 				<td><a href="OperatorConfiguration.action?id=<s:property value="get('opId')"/>"><s:property value="get('opName')"/></a></td>
 			</pics:permission>
 			<td><s:property value="get('lastRecalculation')"/> mins ago</td>
-			<td><s:property value="get('membershipDate')"/></td>
-			<td id="detail_<s:property value="get('id')"/>">
+			<td><s:date name="get('membershipDate')" nice="true" /></td>
+			<td id="detail_<s:property value="get('gcID')"/>">
 				<script type="text/javascript">
 					$(function() {
 						var detail = <s:property value="get('flagDetail')" escape="false"/>;
 						var baseline = <s:property value="get('baselineFlagDetail')" escape="false"/>;
 						var changes = {};
+						$.each(baseline, function(criteriaID, data){
+							if (includeDetail(data, detail[criteriaID])) {
+								changes[criteriaID] = {
+										label: data.label,
+										detail: detail[criteriaID],
+										baseline: data
+								}; 
+							}
+						});
 						$.each(detail, function(criteriaID, data) {
-							if(!baseline[criteriaID] || baseline[criteriaID].flag != data.flag) {
+							if (includeDetail(data, baseline[criteriaID])) {
 								changes[criteriaID] = {
 										label: data.label,
 										detail: data,
 										baseline: baseline[criteriaID]
-								}; 
-							}
-						});
-						$.each(baseline, function(criteriaID, data){
-							if(!detail[criteriaID] || detail[criteriaID].flag != data.flag) {
-								if (!changes[criteriaID]) {
-									changes[criteriaID] = {
-											label: data.label,
-											detail: detail[criteriaID],
-											baseline: data
-									}; 
-								}
+								};
 							}
 						});
 						if (size(changes) > 0) {
 							var output = $('<table class="inner"/>');
 							$.each(changes, function(criteriaID, data) {
 								var tr = $('<tr><td/><td/></tr>');
-								tr.find('td:eq(0)').html(data.label);
-								tr.find('td:eq(1)').html((data.detail ? flags[data.detail.flag] : '?') + ' \u2192 ' + (data.baseline ? flags[data.baseline.flag] : '?'));
+								tr.find('td:eq(0)').html(
+									(data.baseline ? flags[data.baseline.flag] : '?') +
+									' \u2192 ' + 
+									(data.detail ? flags[data.detail.flag] : '?') 
+								);
+								tr.find('td:eq(1)').html(data.label);
 								output.append(tr);
 							});
-							$('#detail_<s:property value="get('id')"/>').html(output);
+							$('#detail_<s:property value="get('gcID')"/>').html(output);
 						}
 					})
 				</script>
@@ -124,6 +136,8 @@ var flags = {
 					href="ReportActivityWatch.action?conID=<s:property value="get('id')"/>">Activity</a>
 				<a class="file" target="_BLANK" title="Opens in new window"
 					href="ContractorCron.action?conID=<s:property value="get('id')"/>&steps=All&button=Run">Recalc</a>
+				<a class="file" target="_BLANK" title="Opens in new window"
+					href="ContractorDocuments.action?id=<s:property value="get('id')"/>">Documents</a>
 			</td>
 		</tr>
 	</s:iterator>
