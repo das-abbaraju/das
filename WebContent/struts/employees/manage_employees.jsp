@@ -372,7 +372,7 @@ div.dataTables_length { width: 35%; }
 						<s:if test="employee.id > 0">
 							<s:if test="employee.account.requiresCompetencyReview && (unusedJobRoles.size() + employee.employeeRoles.size()) > 0">
 								<fieldset class="form">
-									<h2 class="formLegend"><s:text name="%{scope}.header.JobRoles" /></h2>
+									<h2 class="formLegend">Job Roles</h2>
 									<div id="employee_role">
 										<s:include value="manage_employee_roles.jsp" />
 									</div>
