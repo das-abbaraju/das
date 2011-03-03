@@ -33,6 +33,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 
 		sql.addJoin("JOIN osha_audit os ON os.auditID = ca.id");
 		sql.addJoin("JOIN naics n ON n.code = a.naics");
+		sql.addJoin("JOIN flag_criteria_contractor fcc ON fcc.conID = a.id AND fcc.criteriaID = 559");
 		sql.addWhere("(os.recordableTotal*200000/os.manHours >= " + getFilter().getIncidenceRate() + ")");
 		sql.addWhere("(os.recordableTotal*200000/os.manHours < " + getFilter().getIncidenceRateMax() + ")");
 		sql.addWhere("(c.trirAverage >= " + getFilter().getIncidenceRateAvg() + "AND c.trirAverage < " + 
@@ -41,7 +42,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		sql.addField("os.location");
 		sql.addField("os.description");
 		sql.addField("os.SHAType");
-		sql.addField("c.trirAverage");
+		sql.addField("ROUND(fcc.answer, 2) trirAverage");
 		sql.addField("os.recordableTotal*200000/os.manHours AS incidenceRate");
 		sql.addField("os.verifiedDate");
 		sql.addField("os.cad7");
