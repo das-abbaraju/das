@@ -155,6 +155,14 @@ function showRules() {
 				</li>
 				<li><label>Months to Expire:</label>
 					<s:textfield name="auditType.monthsToExpire" /> 
+					<pics:fieldhelp>Determines when the audit will expire.
+					<ul>
+					<li>Set to zero to never expire.</li>
+					<li>Leave blank to set to March 1st of the following year.</li>
+					<li>If greater than 0 and class type is PQF, then this number of months is added to March 1st of this year. For example, 12 would be the same as leaving it blank. Setting it to 36 means that all audits completed during 2010 would expire March 1, 2013. Never set this number to less than 10.</li>
+					<li>If greater than 0 and class type is not PQF, then this number is added to today's date.</li>
+					</ul>
+					</pics:fieldhelp>
 				</li>
 			</ol>
 		</fieldset>

@@ -345,18 +345,18 @@ public class CaoSave extends AuditActionSupport {
 	}
 
 	private Date setExpirationDate() {
-		Date expiresDate = null;
 		Integer months = conAudit.getAuditType().getMonthsToExpire();
-		if (months != null && months > 0) {
-			if (conAudit.getAuditType().getClassType().isPqf())
-				expiresDate = DateBean.getMarchOfThatYear(DateBean.addMonths(new Date(), months));
-			else
-				expiresDate = DateBean.addMonths(new Date(), months);
-		} else {
+		if (months == null) {
 			// check months first, then do date if empty
-			expiresDate = DateBean.getMarchOfNextYear(new Date());
+			return DateBean.getMarchOfNextYear(new Date());
+		} else if (months > 0) {
+			if (conAudit.getAuditType().getClassType().isPqf())
+				return DateBean.getMarchOfThatYear(DateBean.addMonths(new Date(), months));
+			else
+				return DateBean.addMonths(new Date(), months);
+		} else {
+			return null;
 		}
-		return expiresDate;
 	}
 
 	private ContractorAuditOperator getCaoByID(int id) {
