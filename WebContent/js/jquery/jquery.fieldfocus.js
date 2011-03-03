@@ -6,9 +6,7 @@
 (function($){
 	$.fn.fieldfocus = function(options) {
 		options = $.extend({parent: '*'},options);
-		return $(this).live('click', function(e) {
-			return false;
-		}).live('focus', function() {
+		return $(this).live('focus', function() {
 			var parent = $(this).closest(options.parent);
 			parent.addClass('fieldhelp-focused');
 			var pos = parent.position();
@@ -95,8 +93,8 @@
 })(jQuery)
 
 jQuery(function(){
-	$('form.form :input:not(:button):not(:submit)').fieldfocus({parent: 'div'});
-	$('fieldset.form :input:not(:button):not(:submit)').fieldfocus({parent: 'li'});
+	$('form.form :input:not(:button)').fieldfocus({parent: 'div'});
+	$('fieldset.form :input:not(:button)').fieldfocus({parent: 'li'});
 	$('div.fieldhelp').helpstay();
 	$('required :input:not(:checkbox)').requiredfields();
 	
