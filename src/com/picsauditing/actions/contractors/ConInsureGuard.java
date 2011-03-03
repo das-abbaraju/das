@@ -158,10 +158,12 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	private ContractorAuditOperator findCao(List<AuditCategoryRule> rules, AuditData d) {
 		for (AuditCategoryRule rule : rules) {
-			if (rule.getAuditCategory().equals(d.getQuestion().getCategory())) {
-				for (ContractorAuditOperator cao : d.getAudit().getOperators()) {
-					if (cao.getOperator().equals(rule.getOperatorAccount()))
-						return cao;
+			if (rule.getAuditCategory() != null) {
+				if (rule.getAuditCategory().equals(d.getQuestion().getCategory())) {
+					for (ContractorAuditOperator cao : d.getAudit().getOperators()) {
+						if (cao.getOperator().equals(rule.getOperatorAccount()))
+							return cao;
+					}
 				}
 			}
 		}
