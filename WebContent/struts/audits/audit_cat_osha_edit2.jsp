@@ -31,10 +31,10 @@
 <tr>
 	<th class="label">
 	<s:if test="manHours > 0">	
-		<s:property value="getText('totalHoursWorked')"/>
+		<s:text name="totalHoursWorked"/>
 	</s:if>
 	<s:else>
-		<span style="color: #272;font-weight: bold;"><s:property value="getText('totalHoursWorked')"/></span>
+		<span style="color: #272;font-weight: bold;"><s:text name="AnnualUpdate.totalHoursWorked"/></span>
 	</s:else>
 	</th>
 	<td>
@@ -42,70 +42,92 @@
 	</td>
 </tr>
 <tr>
-	<th class="label"><s:property value="getText('fatalities')"/></th>
+	<th class="label">
+		<s:text name="AnnualUpdate.fatalities"/>
+	</th>
 	<td>
 		<s:textfield name='osha.fatalities' value="%{getText('format.plain',fatalities)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
-	<th class="label"><s:property value="getText('lostWorkDayCases.'.concat(type))"/></th>
+	<th class="label">
+		<s:text name="%{type}.lostWorkDayCases"/>
+	</th>
 	<td>
 		<s:textfield name='osha.lostWorkCases' value="%{getText('format.plain',lostWorkCases)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
-	<th class="label"><s:property value="getText('lostWorkDays.'.concat(type))"/></th>
+	<th class="label">
+		<s:text name="%{type}.lostWorkDays"/>
+	</th>
 	<td>
 		<s:textfield name='osha.lostWorkDays' value="%{getText('format.plain',lostWorkDays)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
-	<th class="label"><s:property value="getText('restrictedCases.'.concat(type))"/></th>
+	<th class="label">
+		<s:text name="%{type}.restrictedCases"/>
+	</th>
 	<td>
 		<s:textfield name='osha.restrictedWorkCases' value="%{getText('format.plain',restrictedWorkCases)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <s:if test="#category.id in { 151, 158 }">
 <tr>
-	<th class="label"><s:property value="getText('modifiedWorkDay.'.concat(type))"/></th>
+	<th class="label">
+		<s:text name="%{type}.modifiedWorkDay"/>
+	</th>
 	<td>
 		<s:textfield name='osha.modifiedWorkDay' value="%{getText('format.plain',modifiedWorkDay)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 </s:if>
 <tr>
-	<th class="label"><s:property value="getText('injuryAndIllness.'.concat(type))"/></th>
+	<th class="label">
+		<s:text name="%{type}.injuryAndIllness"/>
+	</th>
 	<td>
 		<s:textfield name='osha.injuryIllnessCases' value="%{getText('format.plain',injuryIllnessCases)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <s:if test="#category.id == 158">
 <tr>
-	<th class="label"><s:property value="getText('firstAidInjuries.'.concat(type))"/></th>
+	<th class="label">
+		<s:text name="%{type}.firstAidInjuries"/>
+	</th>
 	<td>
 		<s:textfield name='osha.firstAidInjuries' value="%{getText('format.plain',firstAidInjuries)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
-	<th class="label"><s:property value="getText('vehicleIncidents.'.concat(type))"/></th>
+	<th class="label">
+		<s:text name="%{type}.vehicleIncidents"/>
+	</th>
 	<td>
 		<s:textfield name='osha.vehicleIncidents' value="%{getText('format.plain',vehicleIncidents)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
-	<th class="label"><s:property value="getText('totalkmDriven.'.concat(type))"/></th>
+	<th class="label">
+		<s:text name="%{type}.totalkmDriven"/>
+	</th>
 	<td>
 		<s:textfield name='osha.totalkmDriven' value="%{getText('format.plain',totalkmDriven)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
-	<th class="label"><s:property value="getText('cad7.'.concat(type))"/></th>
+	<th class="label">
+		<s:text name="%{type}.cad7"/>
+	</th>
 	<td>
 		<s:textfield name='osha.cad7' value="%{cad7}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
-	<th class="label"><s:property value="getText('neer.'.concat(type))"/></th>
+	<th class="label">
+		<s:text name="%{type}.neer"/>
+	</th>
 	<td>
 		<s:textfield name='osha.neer' value="%{neer}" cssClass="osha"></s:textfield>
 	</td>
