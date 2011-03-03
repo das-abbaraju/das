@@ -71,7 +71,7 @@ public class ReportActivityWatch extends ReportAccount {
 
 						if (watch.getId() == watchID) {
 							redirect = watch.getContractor().getId();
-							watched.remove(watch);
+							iterator.remove();
 							userDAO.remove(watch);
 						}
 					}
