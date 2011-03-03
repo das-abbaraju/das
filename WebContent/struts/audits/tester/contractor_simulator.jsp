@@ -33,9 +33,9 @@ $(function() {
 		$("#operatorSelector").val("");
 	});
 	
-	<s:if test="operatorIds.size > 0">
-		<s:iterator value="operatorIds" var="opID">
-			$("#operatorSelect").append('<option value="<s:property value="#opID" />" selected="selected"><s:property value="#opID" /></option>');
+	<s:if test="operators.size > 0">
+		<s:iterator value="operators">
+			$("#operatorSelect").append('<option value="<s:property value="id" />" selected="selected">(<s:property value="id" />) <s:property value="name" /></option>');
 		</s:iterator>
 		$("#operatorSelector").val("");
 		run();

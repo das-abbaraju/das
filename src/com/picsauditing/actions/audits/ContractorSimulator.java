@@ -48,10 +48,19 @@ public class ContractorSimulator extends PicsActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		tryPermissions(OpPerms.ManageAudits);
 
 		if (contractor == null) {
+			if (operatorIds != null && operatorIds.size() == 1) {
+				operators = new ArrayList<OperatorAccount>();
+				for (Integer opID : operatorIds) {
+					OperatorAccount operator = (OperatorAccount) auditTypeDAO.findWhere(OperatorAccount.class,
+							"id = " + opID, 1).get(0);
+					operators.add(operator);
+				}
+			}
+
 			return SUCCESS;
 		}
 
@@ -170,7 +179,7 @@ public class ContractorSimulator extends PicsActionSupport {
 	public void setAuditType(AuditType audit) {
 		this.auditType = audit;
 	}
-	
+
 	public Set<Integer> getOperatorIds() {
 		return operatorIds;
 	}
@@ -179,8 +188,11 @@ public class ContractorSimulator extends PicsActionSupport {
 		this.operatorIds = operatorIds;
 	}
 
+	public List<OperatorAccount> getOperators() {
+		return operators;
+	}
+
 	public List<AuditCategory> getCategories() {
 		return categories;
 	}
-
 }
