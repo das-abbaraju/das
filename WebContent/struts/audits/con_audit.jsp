@@ -13,7 +13,7 @@
 	var messageLoadingRequirements = '<s:text name="Audit.javascript.LoadingRequirements" />';
 	var messageLoadingCategory = '<s:text name="Audit.javascript.LoadingCategory" />';
 	var messageLoadingAllCategories = '<s:text name="Audit.javascript.LoadingAllCategories" />';
-	var messageAnsweredQuestions = '<s:text name="Audit.javascript.LoadingAnsweredQuestions" />';
+	var messageLoadingAnsweredQuestions = '<s:text name="Audit.javascript.LoadingAnsweredQuestions" />';
 	var messageLoadingPreview = '<s:text name="Audit.javascript.LoadingPreview" />';
 </script>
 <script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
