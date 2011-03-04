@@ -52,7 +52,8 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 			rules = ruleDAO.getMoreGranular(ruleDAO.findAuditCategoryRule(id), date);
 		} else if ("tags".equals(button) && comparisonRule.getOperatorAccount() != null) {
 			List<OperatorTag> tags = operatorTagDAO.findByOperator(comparisonRule.getOperatorAccount().getId(), false);
-			rules = ruleDAO.findCategoryRulesByTags(tags);
+			if (tags.size() > 0)
+				rules = ruleDAO.findCategoryRulesByTags(tags);
 		} else if (comparisonRule != null) {
 			Set<String> whereClauses = new LinkedHashSet<String>();
 			whereClauses.add("(t.effectiveDate < NOW() AND t.expirationDate > NOW())");
