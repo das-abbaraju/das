@@ -187,6 +187,16 @@ public class OperatorAccount extends Account {
 					&& !f.getCorporate().getActivationFee().equals(activation.getAmount().intValue()))
 				return f.getCorporate();
 		
+		// checking parents as well
+		OperatorAccount parent = this.getParent();
+		while(parent != null){
+			if(parent.getActivationFee() != null
+				&&!parent.getActivationFee().equals(activation.getAmount().intValue()))
+				return parent;
+			
+			parent = parent.getParent();
+		}
+		
 		// If neither activation fee is set, return self and use default
 		return this;
 	}

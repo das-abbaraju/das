@@ -313,18 +313,14 @@ function checkFee(activationFee, oldValue) {
 			</li>
 			<li id="act_li"><label>Contractor Activation Fee:</label>
 				<s:if test="activationFeeOperator.id != operator.id">
-					<p>Activation Fee inherited from <a href="FacilitiesEdit.action?id=<s:property value="activationFeeOperator.id" />"><s:property value="activationFeeOperator.name" /> ($<s:property value="activationFeeOperator.activationFee" />)</a>.
-					<pics:permission perm="UserRolePicsOperator">
-						To override this value enter in a different value below or change the inherited rate.
-					</pics:permission>
-					</p>
+					$<s:property value="activationFeeOperator.activationFee" />
+						&nbsp;&nbsp;&nbsp;(Activation Fee inherited from <a href="FacilitiesEdit.action?id=<s:property value="activationFeeOperator.id" />"><s:property value="activationFeeOperator.name" /></a>).
 				</s:if>
-				<pics:permission perm="UserRolePicsOperator">
-					$ <s:textfield id="opActivationFee" name="operator.activationFee" onchange="checkFee(this.value,%{operator.activationFee})"/>
-				</pics:permission>
-				<pics:permission perm="UserRolePicsOperator" negativeCheck="true">
-					$ <s:property value="operator.activationFee" />
-				</pics:permission>
+				<s:else>
+					<pics:permission perm="UserRolePicsOperator">
+						<p>$ <s:textfield id="opActivationFee" name="operator.activationFee" onchange="checkFee(this.value,%{operator.activationFee})"/></p>
+					</pics:permission>
+				</s:else>
 				<pics:fieldhelp title="Contractor Activation Fee">
 					<p>The default Activation Fee that contractors are charged when selecting this operator as their primary requesting account. Leave blank to use the default (currently $199). The valid range is 0 to 199 </p>
 				</pics:fieldhelp>
