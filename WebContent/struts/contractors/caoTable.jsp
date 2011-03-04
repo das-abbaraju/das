@@ -1,4 +1,4 @@
-<%@ taglib prefix="s" uri="/struts-tags"%>
+s<%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:form id="caoTableForm">
 	<table class="statusOpBox">
@@ -95,7 +95,7 @@
 						<td class="caoDate">
 							<s:if test="statusChangedDate == null"><s:text name="global.NA" /></s:if>
 							<s:else>
-								<s:date name="statusChangedDate" format="dd MMM yyyy" />
+								<s:date name="statusChangedDate" format="MMMM dd yyyy" />
 							</s:else>
 						</td>
 						<!-- Suggested -->
