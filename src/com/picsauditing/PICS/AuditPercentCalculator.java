@@ -158,7 +158,8 @@ public class AuditPercentCalculator {
 
 						}
 
-						if (!answer.isRequirementOpen()) {
+						if ((catData.getAudit().getAuditType().isDesktop() && !answer.isRequirementOpen())
+								|| !catData.getAudit().getAuditType().isDesktop()) {
 							answeredCount++;
 							if (isRequired)
 								requiredAnsweredCount++;
