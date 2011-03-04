@@ -32,6 +32,7 @@ import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -260,10 +261,15 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			}
 
 			if (amountApplyMap.size() > 0) {
-				if ("Save".equals(button) || "Collect Payment".equals(button)) {
+				boolean collected = false;
+				if ("Save".equals(button))
+					button = "apply";
+
+				if("Collect Payment".equals(button)){
+					collected = true;
 					button = "apply";
 				}
-
+				
 				if (button.equals("unapply")) {
 					// Find the Invoice or Refund # passed through the
 					// amountApplyMap and remove it
@@ -301,6 +307,10 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 								if (txn.getId() == txnID) {
 									PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(), amountApplyMap
 											.get(txnID));
+
+									// Email Receipt to Contractor
+									if (collected)
+										EventSubscriptionBuilder.contractorInvoiceEvent(contractor, txn, permissions);
 								}
 							}
 							for (Refund txn : contractor.getRefunds()) {
