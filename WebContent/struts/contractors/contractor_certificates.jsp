@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<s:if test="certificates.size > 0 && !allExpired">
+<s:if test="certificates.size > 0">
 	<table class="report" id="choose_certs<s:property value="caoID"/>">
 		<thead>
 			<tr>
@@ -35,9 +35,6 @@
 		</tbody>
 	</table>
 </s:if>
-<s:elseif test="certificates.size > 0 && allExpired">
-	There are no active certificates.
-</s:elseif>
 <s:else>
-	There are no certificates attached to this contractor.
+	There are no certificates
 </s:else>
