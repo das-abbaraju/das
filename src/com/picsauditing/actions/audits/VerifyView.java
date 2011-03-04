@@ -64,14 +64,14 @@ public class VerifyView extends ContractorActionSupport {
 		this.subHeading = "Verify PQF/OSHA/EMR";
 
 		for (ContractorAudit conAudit : getVerificationAudits()) {
-			if (conAudit.getAuditType().isPqf()) {
+			if (conAudit.getAuditType().isPqf() && !conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 				List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 				pqfQuestions = new LinkedHashMap<Integer, AuditData>();
 				for (AuditData ad : temp) {
 					pqfQuestions.put(ad.getQuestion().getId(), ad);
 				}
 			}
-			if (conAudit.getAuditType().isAnnualAddendum()) {
+			if (conAudit.getAuditType().isAnnualAddendum() && !conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 				AuditData us = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
 					if (us != null && "Yes".equals(us.getAnswer()) && oshaAudit.isCorporate()
@@ -284,7 +284,7 @@ public class VerifyView extends ContractorActionSupport {
 				public boolean check(ContractorAudit t) {
 					return (t.getAuditType().isPqf() || t.getAuditType().isAnnualAddendum())
 							&& (t.hasCaoStatusAfter(AuditStatus.Pending) && t.hasCaoStatusBefore(AuditStatus.Complete) && !t
-									.hasCaoStatus(AuditStatus.Incomplete) && !t.hasCaoStatus(AuditStatus.Resubmit));
+									.hasCaoStatus(AuditStatus.Resubmit));
 				}
 			}.grep(getActiveAudits());
 		}
