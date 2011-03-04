@@ -83,7 +83,7 @@ class CronMonitor(CronThread):
 		super(CronMonitor, self).__init__()
 		# initially mark all servers off
 		self.active_servers = active_servers
-		self.url = SERVER+'keepalive.jsp'
+		self.url = SERVER+'keepalive.jsp?load_factor=0.5'
 		self.sleeptime = 5
 		self.logger = logging.getLogger('monitor')
 	def run(self):
