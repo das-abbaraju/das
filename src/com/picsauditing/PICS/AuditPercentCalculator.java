@@ -125,9 +125,7 @@ public class AuditPercentCalculator {
 
 				if (answer != null) {
 					if (answer.isAnswered()) {
-
 						if (catData.getAudit().getAuditType().isScoreable()) {
-
 							int answerValue = 0;
 							float scale = 1.0f;
 
@@ -160,9 +158,11 @@ public class AuditPercentCalculator {
 
 						}
 
-						answeredCount++;
-						if (isRequired)
-							requiredAnsweredCount++;
+						if (!answer.isRequirementOpen()) {
+							answeredCount++;
+							if (isRequired)
+								requiredAnsweredCount++;
+						}
 					}
 
 					if (answer.getQuestion().isHasRequirement()) {
@@ -292,8 +292,8 @@ public class AuditPercentCalculator {
 	 * @return
 	 */
 	private AuditCategoriesDetail getAuditCategoryDetail(ContractorAudit conAudit) {
-		List<AuditCategoryRule> applicableCategoryRules = auditCategoryRuleCache.getApplicableCategoryRules(conAudit
-				.getContractorAccount(), conAudit.getAuditType());
+		List<AuditCategoryRule> applicableCategoryRules = auditCategoryRuleCache.getApplicableCategoryRules(
+				conAudit.getContractorAccount(), conAudit.getAuditType());
 
 		AuditBuilder builder = new AuditBuilder();
 
