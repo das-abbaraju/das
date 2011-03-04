@@ -245,7 +245,7 @@ $(function(){
 				<s:checkbox id="Offsite" name="contractor.offsiteServices" theme="formhelp" onclick="updateRequiredField();"/>
 			</li>
 			<li>
-				<s:checkbox id="Supplier" name="contractor.supplier" theme="formhelp" onclick="updateRequiredField();"/>
+				<s:checkbox id="Supplier" name="contractor.materialSupplier" theme="formhelp" onclick="updateRequiredField();"/>
 			</li>
 		</ol>
 	</fieldset>
