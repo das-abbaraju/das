@@ -262,7 +262,7 @@ $(function(){
 					</ol>
 				</fieldset>
 				<fieldset class="form">
-					<h2 class="formLegend"><s:text name="%{scope}.PrimaryContact.heading" /></h2>
+					<h2 class="formLegend"><s:text name="global.ContactPrimary" /></h2>
 					<ol>
 						<li class="required"><label><s:text name="%{scope}.PrimaryContact.Name" />:</label>
 							<s:textfield name="user.name" size="20" />
