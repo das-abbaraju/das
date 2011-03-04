@@ -85,6 +85,8 @@ public class ReportFlagChanges extends ReportAccount {
 		sql.addField("gc_flag.baselineFlag");
 		sql.addField("gc_flag.baselineApproved");
 		sql.addField("gc_flag.baselineApprover");
+		sql.addField("gc_flag.flagLastUpdated");
+		sql.addField("gc_flag.creationDate");
 		sql.addField("IFNULL(gc_flag.flagDetail,'{}') flagDetail");
 		sql.addField("IFNULL(gc_flag.baselineFlagDetail,'{}') baselineFlagDetail");
 
@@ -94,7 +96,7 @@ public class ReportFlagChanges extends ReportAccount {
 		sql.addWhere("operator.status IN ('Active') AND operator.type = 'Operator'");
 
 		sql.addField("c.membershipDate");
-		sql.addField("TIMESTAMPDIFF(MINUTE, c.lastRecalculation, NOW()) AS lastRecalculation");
+		sql.addField("c.lastRecalculation");
 
 		if (!Strings.isEmpty(opIds))
 			sql.addWhere("operator.id in (" + opIds + ")");

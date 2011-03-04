@@ -27,7 +27,7 @@ function includeDetail(x, y) {
 		return x.flag != 'Green';
 	} else {
 		return x.flag != y.flag;
-	} 
+	}
 }
 
 var tr = $();
