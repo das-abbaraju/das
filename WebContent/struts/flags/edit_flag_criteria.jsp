@@ -41,7 +41,7 @@ function showCriteriaOperators() {
 <s:include value="../actionMessages.jsp"/>
 </s:if>
 <s:form id="itemform" method="post" action="EditFlagCriteria" cssClass="form">
-	<s:hidden name="id"/>
+	<s:hidden name="criteria"/>
 	<fieldset>
 		<h2>General</h2>
 		<div>

@@ -102,7 +102,7 @@ $(function() {
 				<td><s:property value="displayOrder"/></td>
 				<td><s:property value="label"/></td>
 				<td>
-					<a href="EditFlagCriteria.action?id=<s:property value="id"/>">
+					<a href="EditFlagCriteria.action?criteria=<s:property value="id"/>">
 						<s:if test="!isStringEmpty(description)">
 							<s:property value="description" />
 						</s:if>

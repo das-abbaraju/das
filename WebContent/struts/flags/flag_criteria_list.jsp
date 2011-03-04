@@ -17,7 +17,7 @@
 			<tbody>
 				<s:iterator value="criteriaList">
 					<tr>
-						<td class="center"><a href="EditFlagCriteria.action?id=<s:property value="id"/>" class="preview"></a></td>
+						<td class="center"><a href="EditFlagCriteria.action?criteria=<s:property value="id"/>" class="preview"></a></td>
 						<td><s:property value="category" /></td>
 						<td><s:property value="label" /></td>
 						<td><s:property value="description" /></td>
@@ -45,7 +45,7 @@
 			<tbody>
 				<s:iterator value="criteriaList">
 					<tr>
-						<td class="center"><a href="EditFlagCriteria.action?id=<s:property value="id"/>" class="preview"></a></td>
+						<td class="center"><a href="EditFlagCriteria.action?criteria=<s:property value="id"/>" class="preview"></a></td>
 						<td><s:property value="category" /></td>
 						<td><s:property value="label" /></td>
 						<td><s:property value="dataType" /></td>

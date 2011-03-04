@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -17,29 +16,18 @@ import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageFlagCriteria extends PicsActionSupport implements Preparable {
+public class ManageFlagCriteria extends PicsActionSupport {
 
 	private AuditTypeDAO auditTypeDAO;
 	private AuditQuestionDAO questionDAO;
 	private FlagCriteriaDAO criteriaDAO;
 
-	private int id;
 	private FlagCriteria criteria;
-
-	private int auditTypeID;
-	private int questionID;
 
 	public ManageFlagCriteria(AuditTypeDAO auditTypeDAO, AuditQuestionDAO questionDAO, FlagCriteriaDAO criteriaDAO) {
 		this.auditTypeDAO = auditTypeDAO;
 		this.questionDAO = questionDAO;
 		this.criteriaDAO = criteriaDAO;
-	}
-
-	public void prepare() throws Exception {
-		int criteriaID = getParameter("id");
-		if (criteriaID > 0)
-			criteria = criteriaDAO.find(criteriaID);
-
 	}
 
 	@Override
@@ -55,7 +43,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 			if ("Save".equals(button)) {
 				if (criteria != null) {
 					List<String> errors = new ArrayList<String>();
-					if (auditTypeID == 0 && questionID == 0) {
+					if (criteria.getAuditType() == null && criteria.getQuestion() == null) {
 						errors.add("Either a question or an audit type is required.");
 					}
 
@@ -72,44 +60,28 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 						return SUCCESS;
 					}
 
-					// set the auditType or the question based on the incoming
-					// value
-					if (criteria.getAuditType() == null || criteria.getAuditType().getId() != auditTypeID)
-						criteria.setAuditType(auditTypeDAO.find(auditTypeID));
-
-					if (criteria.getQuestion() == null || criteria.getQuestion().getId() != questionID)
-						criteria.setQuestion(questionDAO.find(questionID));
-
 					criteria.setAuditColumns(permissions);
 
 					criteriaDAO.save(criteria);
 					addActionMessage("Criteria saved successfully.");
 
-					this.redirect("EditFlagCriteria.action?id=" + criteria.getId());
+					this.redirect("EditFlagCriteria.action?criteria=" + criteria.getId());
 				}
 
 			}
 
 			if ("Delete".equals(button)) {
-				/*if (criteria != null) {
-					criteriaDAO.remove(criteria);
-					criteria = null;
-					addActionMessage("Criteria successfully deleted.");
-
-					this.redirect("ManageFlagCriteria.action");
-				}*/
+				/*
+				 * if (criteria != null) { criteriaDAO.remove(criteria);
+				 * criteria = null;
+				 * addActionMessage("Criteria successfully deleted.");
+				 * 
+				 * this.redirect("ManageFlagCriteria.action"); }
+				 */
 			}
 		}
 
 		return SUCCESS;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public List<FlagCriteria> getCriteriaList() {
@@ -122,22 +94,6 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 
 	public void setCriteria(FlagCriteria criteria) {
 		this.criteria = criteria;
-	}
-
-	public int getAuditTypeID() {
-		return auditTypeID;
-	}
-
-	public void setAuditTypeID(int auditTypeID) {
-		this.auditTypeID = auditTypeID;
-	}
-
-	public int getQuestionID() {
-		return questionID;
-	}
-
-	public void setQuestionID(int questionID) {
-		this.questionID = questionID;
 	}
 
 	public Map<AuditTypeClass, List<AuditType>> getAuditTypeMap() {
@@ -165,7 +121,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 	}
 
 	public String[] getCriteriaCategory() {
-		return new String[] {"Audits", "Insurance", "Insurance Criteria", "Paperwork", "Safety", "Statistics"};
+		return new String[] { "Audits", "Insurance", "Insurance Criteria", "Paperwork", "Safety", "Statistics" };
 	}
 
 }

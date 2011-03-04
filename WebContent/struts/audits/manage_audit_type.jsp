@@ -199,7 +199,7 @@ function showRules() {
 	<h3>Related Flag Criteria</h3>
 	<div id="flags"></div>
 	<pics:permission perm="EditFlagCriteria">
-		<a href="EditFlagCriteria.action?criteria.displayOrder=999&criteria.dataType=boolean&criteria.comparison=%3d&criteria.defaultValue=false&criteria.allowCustomValue=false&criteria.requiredStatus=Complete&criteria.category=Paperwork&criteria.auditType.id=<s:property value="auditType.id" />&criteria.label=<s:property value="auditType.name" />&criteria.description=<s:property value="auditType.name" />%20is%20missing" class="add">Add New Audit Type Flag Criteria</a>
+		<a href="EditFlagCriteria.action?criteria.displayOrder=999&criteria.dataType=boolean&criteria.comparison=%3d&criteria.defaultValue=false&criteria.allowCustomValue=false&criteria.requiredStatus=Complete&criteria.category=Paperwork&criteria.auditType=<s:property value="auditType.id" />&criteria.label=<s:property value="auditType.name" />&criteria.description=<s:property value="auditType.name" />%20is%20missing" class="add">Add New Audit Type Flag Criteria</a>
 	</pics:permission>
 	<br/>
 	<br/>
