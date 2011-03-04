@@ -93,12 +93,12 @@
 })(jQuery)
 
 jQuery(function(){
-	$('form.form :input:not(:button)').fieldfocus({parent: 'div'});
+	$('form.form :input:not(:button)').fieldfocus({parent: 'li'});
 	$('fieldset.form :input:not(:button)').fieldfocus({parent: 'li'});
 	$('div.fieldhelp').helpstay();
 	$('required :input:not(:checkbox)').requiredfields();
 	
-	$('fieldset.form ol li, form.form div').live('click', function() {
+	$('fieldset.form ol > li, form.form ol > li').live('click', function() {
 		$(this).not('.fieldhelp-focused').find(':input:visible:first:not(:disabled)').focus();
 	});
 	

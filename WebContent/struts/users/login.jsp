@@ -31,7 +31,9 @@ $(function() {
 				<label>Username:</label>
 				<s:textfield id="username" name="username" cssClass="login" tabindex="1"/>
 			</li>
-			<li><label>Password:</label> <s:password name="password" cssClass="login" tabindex="2"/></li>
+			<li>
+				<label>Password:</label> <s:password name="password" cssClass="login" tabindex="2"/>
+			</li>
 		</ol>
 		</fieldset>
 		<fieldset class="form submit">

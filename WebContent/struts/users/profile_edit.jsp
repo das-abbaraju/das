@@ -90,27 +90,52 @@
 <s:form id="saveProfileForm" cssClass="form">
 	<s:hidden name="url"/>
 	<s:hidden name="u.id" />
-	<fieldset class="form">
-	<h2 class="formLegend"><s:text name="%{scope}.Profile.heading" /></h2>
-		<div><label><s:text name="%{scope}.AssignedToAccount"></s:text>:</label> <s:property value="u.account.name" /></div>
-		<s:textfield name="u.name" theme="form" />
-		<s:textfield name="u.email" theme="form" />
-		<s:textfield name="u.phone" theme="form" />
-		<s:textfield name="u.fax" theme="form" />
-		<s:if test="debugging">
-		<s:select name="u.locale" listValue="displayName" theme="form"
-			list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
-		</s:if>
-		<s:select name="u.timezone" listKey="key" listValue="value" theme="form"
-			list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" />
-		<div><label><s:text name="global.CreationDate" />:</label> <s:date name="u.creationDate"/></div>
+	<fieldset>
+	<h2><s:text name="%{scope}.Profile.heading" /></h2>
+		<ol>
+			<li>
+				<label><s:text name="%{scope}.AssignedToAccount"></s:text>:</label> <s:property value="u.account.name" />
+			</li>
+			<li>
+				<s:textfield name="u.name" theme="form" />
+			</li>
+			<li>
+				<s:textfield name="u.email" theme="form" />
+			</li>
+			<li>
+				<s:textfield name="u.phone" theme="form" />
+			</li>
+			<li>
+				<s:textfield name="u.fax" theme="form" />
+			</li>
+			<s:if test="debugging">
+			<li>
+				<s:select name="u.locale" listValue="displayName" theme="form" list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
+			</li>
+			</s:if>
+			<li>
+				<s:select name="u.timezone" listKey="key" listValue="value" theme="form" list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" />
+			</li>
+			<li>
+				<label><s:text name="global.CreationDate" />:</label>
+				<s:date name="u.creationDate"/>
+			</li>
+		</ol>
 	</fieldset>
-	<fieldset class="form">
+	<fieldset>
 		<h2 class="formLegend"><s:text name="%{scope}.UsernameAndPassword.heading" /></h2>
-		<s:textfield name="u.username" label="global.Username" theme="form" onchange="checkUsername(this.value);" />
-		<div id="username_status"></div>
-		<s:textfield name="password1" label="global.Password" theme="form" />
-		<s:textfield name="password2" label="%{scope}.ConfirmPassword" theme="form" />
+		<ol>
+			<li>
+				<s:textfield name="u.username" label="global.Username" theme="form" onchange="checkUsername(this.value);" />
+				<div id="username_status"></div>
+			</li>
+			<li>
+				<s:password name="password1" label="global.Password" theme="form" />
+			</li>
+			<li>
+				<s:password name="password2" label="%{scope}.ConfirmPassword" theme="form" />
+			</li>
+		</ol>
 	</fieldset>
 	<fieldset class="form submit">
 		<input type="hidden" name="button" value="save">
