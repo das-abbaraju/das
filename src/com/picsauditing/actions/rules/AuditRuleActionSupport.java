@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
-import com.ibm.icu.util.Calendar;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
@@ -126,7 +125,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 			if (opAccount != null) {
 				if (permissions.isAdmin() && (opAccount.isDemo() || opAccount.getStatus().isPending()))
 					return true;
-				
+
 				for (AccountUser accUser : opAccount.getAccountUsers()) {
 					if (accUser.getUser().getId() == permissions.getUserId())
 						return true;
@@ -207,10 +206,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	protected abstract boolean save();
 
 	protected void delete() {
-		Calendar c = Calendar.getInstance();
-		c.add(Calendar.MINUTE, -5);
-
-		rule.setExpirationDate(c.getTime());
+		rule.expire();
 		rule.setAuditColumns(permissions);
 		dao.save(rule);
 		clear();
