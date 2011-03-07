@@ -275,7 +275,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.seesAllContractors()) {
 			// Pics employees can't approve/reject policies from operators that
 			// don't autoapprove
-			if (newStatus.isApproved() || newStatus.isIncomplete()) {
+			if (newStatus.isApproved()) {
 				if (type.getClassType().isPolicy() && !cao.getOperator().isAutoApproveInsurance())
 					return false;
 			}
