@@ -196,9 +196,9 @@ function buildAction(type, id){
 	<% if (permissions.isLoggedIn()) { %>
 		<span id="name">
 			<% if (permissions.hasPermission(OpPerms.EditProfile)) { %>
-				<%=i18nCache.getText("Header.WelcomeLink", locale, permissions.getAccountName(), permissions.getName())%>
+				<%=i18nCache.getText("Header.WelcomeLink", locale, permissions.getAccountName(), permissions.getName()) %>
 			<% } else { %>
-				<%=i18nCache.getText("Header.WelcomeNoLink", locale) %>
+				<%=i18nCache.getText("Header.WelcomeNoLink", locale, permissions.getName()) %>
 			<% } %>
 		</span>
 	| <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>"><%=i18nCache.getText("global.Home", locale) %></a> | <a href="http://www.picsauditing.com">PICS</a> | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale) %></a>
