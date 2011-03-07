@@ -1,4 +1,4 @@
-s<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:form id="caoTableForm">
 	<table class="statusOpBox">
