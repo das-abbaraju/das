@@ -96,7 +96,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			throw new NoRightsException("No Rights to View this Contractor");
 
 		if (!conAudit.isVisibleTo(permissions))
-			throw new NoRightsException(conAudit.getAuditType().getAuditName());
+			throw new NoRightsException(conAudit.getAuditType().getName());
 
 	}
 
