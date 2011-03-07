@@ -523,7 +523,7 @@ public class Permissions implements Serializable {
 			return true;
 		
 		if (operator != null) {
-			if (this.isAdmin() && (operator.isDemo() || operator.getStatus().isPending()))
+			if (this.isPicsEmployee() && (operator.isDemo() || operator.getStatus().isPending()))
 				return true;
 			
 			for (AccountUser accUser : operator.getAccountUsers()) {
