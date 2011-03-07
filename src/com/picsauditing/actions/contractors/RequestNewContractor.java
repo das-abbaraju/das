@@ -33,6 +33,7 @@ import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.StateDAO;
+import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -47,6 +48,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
@@ -64,6 +66,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected StateDAO stateDAO;
 	protected ContractorAccountDAO contractorAccountDAO;
 	protected AccountDAO accountDAO;
+	protected UserAssignmentDAO csrDAO;
 
 	protected boolean redirect = false;
 	protected int conID;
@@ -110,7 +113,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public RequestNewContractor(ContractorRegistrationRequestDAO crrDAO, OperatorAccountDAO operatorAccountDAO,
 			UserDAO userDAO, CountryDAO countryDAO, StateDAO stateDAO, ContractorAccountDAO contractorAccountDAO,
-			AccountDAO accountDAO) {
+			AccountDAO accountDAO, UserAssignmentDAO csrDAO) {
 		this.crrDAO = crrDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.userDAO = userDAO;
@@ -118,6 +121,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		this.stateDAO = stateDAO;
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.accountDAO = accountDAO;
+		this.csrDAO = csrDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -525,12 +529,15 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 
 	public User getAssignedCSR() {
-		if (newContractor.getId() > 0) {
-			if (newContractor.getCountry().getCsr() != null)
-				return newContractor.getCountry().getCsr();
-			else
-				return newContractor.getState().getCsr();
-		}
+		ContractorAccount temp = new ContractorAccount();
+		temp.setId(0);
+		temp.setCountry(newContractor.getCountry());
+		temp.setState(newContractor.getState());
+		temp.setZip(newContractor.getZip());
+		UserAssignment ua = csrDAO.findByContractor(temp);
+		if (ua != null)
+			return ua.getUser();
+		
 		return null;
 	}
 
