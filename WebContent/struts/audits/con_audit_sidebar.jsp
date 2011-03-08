@@ -52,8 +52,8 @@
 	<li>
 		<table>
 			<tr>
-				<td><a class="print" href="#" onclick="window.print(); return false;"><s:text name="Audit.button.PrintCategory" /></a></td>
 				<td><a class="print" href="#" onclick="printPreview(<s:property value="auditID"/>); return false;"><s:text name="Audit.button.PrintAll" /></td>
+				<td><a class="print" href="#" onclick="window.print(); return false;"><s:text name="Audit.button.PrintCategory" /></a></td>
 			</tr>
 		</table>
 	</li>
