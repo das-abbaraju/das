@@ -1,5 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-
 <s:set name="questionStillRequired" value="false" />
 <s:if test="(#a == null || #a.answer == null || #a.answer.length() < 1)">
 	<s:if test="#q.isRequired == 'Yes'">
