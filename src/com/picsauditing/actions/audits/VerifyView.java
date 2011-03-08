@@ -64,14 +64,15 @@ public class VerifyView extends ContractorActionSupport {
 		this.subHeading = "Verify PQF/OSHA/EMR";
 
 		for (ContractorAudit conAudit : getVerificationAudits()) {
-			if (conAudit.getAuditType().isPqf() && !conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
+			if (conAudit.getAuditType().isPqf() && !conAudit.hasCaoStatus(AuditStatus.Incomplete)
+					&& !conAudit.hasCaoStatus(AuditStatus.Complete)) {
 				List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 				pqfQuestions = new LinkedHashMap<Integer, AuditData>();
 				for (AuditData ad : temp) {
 					pqfQuestions.put(ad.getQuestion().getId(), ad);
 				}
 			}
-			if (conAudit.getAuditType().isAnnualAddendum() && !conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
+			if (conAudit.getAuditType().isAnnualAddendum()) {
 				AuditData us = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
 					if (us != null && "Yes".equals(us.getAnswer()) && oshaAudit.isCorporate()
@@ -105,6 +106,17 @@ public class VerifyView extends ContractorActionSupport {
 			}
 		}
 
+		int unverifiable = 0;
+		for (ContractorAudit ca : annualUpdates) {
+			if (ca.hasCaoStatus(AuditStatus.Complete) || ca.hasCaoStatus(AuditStatus.Incomplete))
+				unverifiable++;
+		}
+
+		if (annualUpdates.size() == unverifiable) {
+			oshasUS = null;
+			emrs = null;
+		}
+
 		Collections.sort(annualUpdates, new Comparator<ContractorAudit>() {
 			@Override
 			public int compare(ContractorAudit o1, ContractorAudit o2) {
@@ -124,7 +136,7 @@ public class VerifyView extends ContractorActionSupport {
 		StringBuffer sb = new StringBuffer("");
 
 		for (ContractorAudit conAudit : getVerificationAudits()) {
-			if (conAudit.getAuditType().isAnnualAddendum()) {
+			if (conAudit.getAuditType().isAnnualAddendum() && !conAudit.hasCaoStatus(AuditStatus.Complete)) {
 				StringBuffer sb2 = new StringBuffer("");
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
 					if (oshaAudit.getType().equals(OshaType.OSHA) && oshaAudit.isCorporate() && !oshaAudit.isVerified()
@@ -283,23 +295,22 @@ public class VerifyView extends ContractorActionSupport {
 				@Override
 				public boolean check(ContractorAudit t) {
 					return (t.getAuditType().isPqf() || t.getAuditType().isAnnualAddendum())
-							&& (t.hasCaoStatusAfter(AuditStatus.Pending) && t.hasCaoStatusBefore(AuditStatus.Complete) && !t
-									.hasCaoStatus(AuditStatus.Resubmit));
+							&& (t.hasCaoStatusAfter(AuditStatus.Pending) && !t.hasCaoStatus(AuditStatus.Resubmit));
 				}
 			}.grep(getActiveAudits());
-		}
 
-		if (verificationAudits.size() > 0) {
-			Collections.sort(verificationAudits, new Comparator<ContractorAudit>() {
-				@Override
-				public int compare(ContractorAudit o1, ContractorAudit o2) {
-					if (o1.getAuditFor() == null)
-						return -1;
-					if (o2.getAuditFor() == null)
-						return 1;
-					return o1.getAuditFor().compareTo(o2.getAuditFor());
-				}
-			});
+			if (verificationAudits.size() > 0) {
+				Collections.sort(verificationAudits, new Comparator<ContractorAudit>() {
+					@Override
+					public int compare(ContractorAudit o1, ContractorAudit o2) {
+						if (o1.getAuditFor() == null)
+							return -1;
+						if (o2.getAuditFor() == null)
+							return 1;
+						return o1.getAuditFor().compareTo(o2.getAuditFor());
+					}
+				});
+			}
 		}
 
 		return verificationAudits;
