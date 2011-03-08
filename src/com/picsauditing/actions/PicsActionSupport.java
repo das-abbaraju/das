@@ -56,7 +56,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	// Should we put this in another file? so we don't always check in the PicsActionSupport file?
 	public static final String getVersion() {
 		// Released 2011-03-03
-		return "5.4";
+		return "5.4.1";
 	}
 
 	protected void loadPermissions() {
