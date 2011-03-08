@@ -1,8 +1,7 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="/exception_handler.jsp"
-	pageEncoding="UTF-8"%>
-<ul id="toolbar" class="vert-toolbar">
+<ul id="toolbar" class="vert-toolbar clearfix">
 	<li class="head"><s:text name="Audit.header.Toolbar" /></li>
 	<s:if test="canSystemEdit">
 		<li><a class="edit1"
@@ -50,7 +49,14 @@
 		<li><a class="calendar"
 			href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>"><s:text name="Audit.button.ScheduleAudit" /></a></li>
 	</s:if>
-	<li><a class="print" href="#" onclick="window.print(); return false;"><s:text name="Audit.button.Print" /></a></li>
+	<li>
+		<table>
+			<tr>
+				<td><a class="print" href="#" onclick="window.print(); return false;"><s:text name="Audit.button.PrintCategory" /></a></td>
+				<td><a class="print" href="#" onclick="printPreview(<s:property value="auditID"/>); return false;"><s:text name="Audit.button.PrintAll" /></td>
+			</tr>
+		</table>
+	</li>
 </ul>
 
 <div

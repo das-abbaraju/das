@@ -1,3 +1,15 @@
+@media screen {
+	a.print {
+		padding-left: 17px;
+		margin-left: 5px;
+		background: url('../images/print_icon.gif') no-repeat left center;;
+		padding-right: 3px;
+		padding-top: 3px;
+		padding-bottom: 3px;
+		zoom: 1;
+	}	
+}
+
 .noprint {
 	display: none;
 }
@@ -110,9 +122,14 @@ td.question {
 	color: #999;
 }
 
-span.answer {
+span.answer, div.answer {
 	color: black;
 	font-weight: bold;
+	padding: 10px;
+}
+
+div.answer span.verified { 
+	display: none;
 }
 
 span.checked {
@@ -191,7 +208,6 @@ div.panel_placeholder {
 }
 
 span.required {
-	color: #272;
 	font-weight: bold;
 }
 

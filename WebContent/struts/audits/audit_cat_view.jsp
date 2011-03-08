@@ -19,7 +19,7 @@
 	<div class="audit_category" id="audit_cat_<s:property value="#category.id"/>">
 		<h2 id="cathead_<s:property value="#category.id"/>">
 			<s:property value="#category.name"/>
-			<pics:permission perm="ManageAudits" type="Edit"><a href="ManageCategory.action?id=<s:property value="#category.id"/>"><img src="images/edit_pencil.png" title="Manage Category"></a></pics:permission>
+			<pics:permission perm="ManageAudits" type="Edit"><a href="ManageCategory.action?id=<s:property value="#category.id"/>" class="edit"></a></pics:permission>
 			<span class="categoryNumber"><s:property value="#category.fullNumber"/></span>
 		</h2>
 		<s:if test="#category.sha">

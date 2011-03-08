@@ -229,3 +229,7 @@ function updateModes(mode) {
 	if (mode.length > 0)
 		$('#modes a.'+mode).hide();
 }
+
+function printPreview(auditID) {
+	window.open('AuditPrintAjax.action?button=load&mode=ViewAll&auditID='+auditID, 'preview', 'menubar=0,scrollbars=1,resizable=1,height=700,width=640')
+}

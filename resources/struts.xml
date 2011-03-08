@@ -1019,6 +1019,11 @@
 			class="com.picsauditing.actions.audits.ContractorAuditController">
 			<result>struts/audits/audit_cat_view_ajax.jsp</result>
 		</action>
+
+		<action name="AuditPrintAjax"
+			class="com.picsauditing.actions.audits.ContractorAuditController">
+			<result>struts/audits/con_audit_print.jsp</result>
+		</action>
 	
 		<action name="AuditDataSaveAjax"
 			class="com.picsauditing.actions.audits.AuditDataSave">
