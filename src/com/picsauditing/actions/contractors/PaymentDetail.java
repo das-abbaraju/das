@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.jboss.util.Strings;
+
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
@@ -128,8 +130,10 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				}
 				if (method.isCreditCard()) {
 					try {
-						paymentService
-								.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
+						String canadaProcessorID = appPropDao.find("brainTree.processor_id.canada").getValue();
+						if (Strings.isEmpty(canadaProcessorID) && payment.getCurrency().isCanada())
+							throw new RuntimeException("Canadian ProcessorID Mismatch");
+						paymentService.setCanadaProcessorID(canadaProcessorID);
 						paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
 						paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 						paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
@@ -265,11 +269,11 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				if ("Save".equals(button))
 					button = "apply";
 
-				if("Collect Payment".equals(button)){
+				if ("Collect Payment".equals(button)) {
 					collected = true;
 					button = "apply";
 				}
-				
+
 				if (button.equals("unapply")) {
 					// Find the Invoice or Refund # passed through the
 					// amountApplyMap and remove it

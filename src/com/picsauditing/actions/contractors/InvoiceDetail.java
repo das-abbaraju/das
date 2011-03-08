@@ -2,7 +2,6 @@ package com.picsauditing.actions.contractors;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,7 +21,6 @@ import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
@@ -176,7 +174,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			if (button.equals("pay")) {
 				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 					if (contractor.isCcValid()) {
-						paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
+						String canadaProcessorID = appPropDao.find("brainTree.processor_id.canada").getValue();
 						paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
 						paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 						paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
@@ -185,6 +183,10 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						try {
 							payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
 
+							if (Strings.isEmpty(canadaProcessorID) && payment.getCurrency().isCanada())
+								throw new RuntimeException("Canadian ProcessorID Mismatch");
+							paymentService.setCanadaProcessorID(canadaProcessorID);
+							
 							paymentService.processPayment(payment, invoice);
 
 							CreditCard creditCard = paymentService.getCreditCard(id);
@@ -268,10 +270,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		invoiceDAO.save(invoice);
 
 		contractor.syncBalance();
-		if (contractor.getStatus().isActive() && contractor.getPaymentExpires().before(new Date())) {
-			contractor.setStatus(AccountStatus.Deactivated);
-			addNote("Automatically inactivating account based on expired membership",new User(User.SYSTEM));
-		}
+
 		contractor.setAuditColumns(permissions);
 		accountDao.save(contractor);
 

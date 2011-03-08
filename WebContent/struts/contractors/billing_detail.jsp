@@ -163,7 +163,7 @@
 								<s:property value="id" />
 							</s:else></td>
 							<td class="right"><s:date name="creationDate" format="M/d/yy" /></td>
-							<td class="right"><s:property value="totalAmount" /> <s:property value="contractor.currencyCode"/></td>
+							<td class="right"><s:property value="totalAmount" /> <s:property value="currency"/></td>
 							<td class="right"><s:if
 								test="class.simpleName.equals('Payment') && status.toString() == 'Unpaid' && balance > 0">
 								-</s:if> <s:property value="balance" /> <s:property value="contractor.currencyCode"/></td>

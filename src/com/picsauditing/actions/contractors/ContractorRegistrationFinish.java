@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.struts2.ServletActionContext;
+import org.jboss.util.Strings;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -114,7 +115,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			} else {
 				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 					if (contractor.isCcValid()) {
-						paymentService.setCanadaProcessorID(appPropDAO.find("brainTree.processor_id.canada").getValue());
+						String canadaProcessorID = appPropDAO.find("brainTree.processor_id.canada").getValue();
 						paymentService.setUsProcessorID(appPropDAO.find("brainTree.processor_id.us").getValue());
 						paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
 						paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
@@ -123,6 +124,10 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 						try {
 							payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
 
+							if (Strings.isEmpty(canadaProcessorID) && payment.getCurrency().isCanada())
+								throw new RuntimeException("Canadian ProcessorID Mismatch");
+							paymentService.setCanadaProcessorID(canadaProcessorID);
+							
 							paymentService.processPayment(payment, invoice);
 
 							CreditCard creditCard = paymentService.getCreditCard(id);
