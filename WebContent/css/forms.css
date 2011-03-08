@@ -57,7 +57,7 @@ fieldset.form ol li.required.hasdata, form.form li.required.hasdata {
 	background-image: none;
 }
 
-fieldset.submit {
+fieldset.submit, form.form fieldset.submit {
 	padding: 1em 0;
 	border-bottom: 2px solid #4686bf;
 	border-top:2px solid #4686bf;
