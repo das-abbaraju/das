@@ -5,60 +5,50 @@ import java.util.List;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 
 @SuppressWarnings("serial")
 public class ReportFilterNewContractor extends ReportFilterContractor {
-	// If we need to add any specialized filters?
 	protected boolean showOpen = true;
 	protected boolean showState = false;
 	protected boolean showCountry = false;
 	protected boolean showHandledBy = true;
 	protected boolean showFollowUpDate = true;
 	protected boolean showViewAll = false;
-	
+
 	protected int open = 1;
 	protected String handledBy;
 	protected Date followUpDate;
 	protected boolean viewAll = false;
 	
+	@Override
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
-		
-		if (permissions.isOperatorCorporate()) {
-			this.setShowConAuditor(true);
-		} else if (permissions.hasGroup(981)) {
-			// Administrators only?
-			this.setShowConAuditor(true);
-			this.setShowState(true);
-			this.setShowCountry(true);
-			this.setShowOperator(true);
-		}
-		
-		if (permissions.hasGroup(981) || permissions.hasGroup(959))
-			this.setShowViewAll(true);
 	}
-	
-	// Booleans
+
+	// Show
+	public boolean isShowOpen() {
+		return showOpen;
+	}
+
 	public void setShowOpen(boolean showOpen) {
 		this.showOpen = showOpen;
 	}
 
-	public boolean isShowOpen() {
-		return showOpen;
-	}
-	
 	public boolean isShowState() {
 		return showState;
 	}
-	
+
 	public void setShowState(boolean showState) {
 		this.showState = showState;
 	}
-	
+
 	public boolean isShowCountry() {
 		return showCountry;
 	}
@@ -66,76 +56,95 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	public void setShowCountry(boolean showCountry) {
 		this.showCountry = showCountry;
 	}
-	
+
 	public boolean isShowHandledBy() {
 		return showHandledBy;
 	}
-	
+
 	public void setShowHandledBy(boolean showHandledBy) {
 		this.showHandledBy = showHandledBy;
 	}
-	
+
 	public boolean isShowFollowUpDate() {
 		return showFollowUpDate;
 	}
-	
+
 	public void setShowFollowUpDate(boolean showFollowUpDate) {
 		this.showFollowUpDate = showFollowUpDate;
 	}
-	
+
 	public boolean isShowViewAll() {
 		return showViewAll;
 	}
-	
-	public void setShowViewAll(boolean showAll) {
-		this.showViewAll = showAll;
+
+	public void setShowViewAll(boolean showViewAll) {
+		this.showViewAll = showViewAll;
 	}
-	
+
 	// Parameters
 	public int getOpen() {
 		return open;
 	}
-	
+
 	public void setOpen(int open) {
 		this.open = open;
 	}
-	
+
 	public String getHandledBy() {
 		return handledBy;
 	}
-	
+
 	public void setHandledBy(String handledBy) {
 		this.handledBy = handledBy;
 	}
-	
+
 	public Date getFollowUpDate() {
 		return followUpDate;
 	}
-	
+
 	public void setFollowUpDate(Date followUpDate) {
 		this.followUpDate = followUpDate;
 	}
-	
+
 	public boolean isViewAll() {
 		return viewAll;
 	}
-	
+
 	public void setViewAll(boolean viewAll) {
 		this.viewAll = viewAll;
 	}
-	
+
 	// Lists
+	public String[] getHandledByList() throws Exception {
+		return new String[] { WaitingOn.PICS.name(), WaitingOn.Operator.name() };
+	}
+
+	public List<OperatorAccount> getOperatorList() throws Exception {
+		if (permissions == null)
+			return null;
+		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
+
+		if (permissions.hasGroup(User.GROUP_MANAGER))
+			return dao.findWhere(true,
+					"a IN (SELECT au.account FROM AccountUser au WHERE au.user.id = " + permissions.getUserId()
+							+ " AND au.startDate < NOW() AND au.endDate > NOW())", permissions);
+		return dao.findWhere(false, "", permissions);
+	}
+
+	public List<OperatorAccount> getOperatorListWithCorporate() throws Exception {
+		if (permissions == null)
+			return null;
+		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
+		return dao.findWhere(true, "", permissions);
+	}
+
 	public List<State> getStateList() {
 		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
 		return stateDAO.findAll();
 	}
-	
+
 	public List<Country> getCountryList() {
 		CountryDAO countryDAO = (CountryDAO) SpringUtils.getBean("CountryDAO");
 		return countryDAO.findAll();
-	}
-	
-	public String[] getHandledByList() throws Exception {
-		return new String[] { WaitingOn.PICS.name(), WaitingOn.Operator.name() };
 	}
 }

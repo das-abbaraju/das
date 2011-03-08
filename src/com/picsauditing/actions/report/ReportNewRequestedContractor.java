@@ -1,8 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.ServletOutputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -11,41 +8,24 @@ import org.apache.struts2.ServletActionContext;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountUserDAO;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.StateDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterNewContractor;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportNewRequestedContractor extends ReportActionSupport {
-	protected ReportFilterNewContractor filter = new ReportFilterNewContractor();
-	protected StateDAO stateDAO;
-	protected CountryDAO countryDAO;
-	protected UserDAO userDAO;
-
-	public ReportNewRequestedContractor(StateDAO stateDAO, CountryDAO countryDAO, UserDAO userDAO) {
-		this.stateDAO = stateDAO;
-		this.countryDAO = countryDAO;
-		this.userDAO = userDAO;
-	}
+	protected AccountUserDAO auDAO;
 
 	protected SelectSQL sql = new SelectSQL();
+	protected ReportFilterNewContractor filter = new ReportFilterNewContractor();
 
-	public SelectSQL getSql() {
-		return sql;
-	}
-
-	public void setSql(SelectSQL sql) {
-		this.sql = sql;
+	public ReportNewRequestedContractor(AccountUserDAO auDAO) {
+		this.auDAO = auDAO;
 	}
 
 	public String execute() throws Exception {
@@ -53,63 +33,23 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			return LOGIN;
 
 		tryPermissions(OpPerms.RequestNewContractor);
-		
-		filter.setShowOperator(false);
-		filter.setShowTrade(false);
-		filter.setShowLicensedIn(false);
-		filter.setShowWorksIn(false);
-		filter.setShowOfficeIn(false);
-		filter.setShowTaxID(false);
-		filter.setShowRiskLevel(false);
-		filter.setShowRegistrationDate(false);
-		filter.setShowIndustry(false);
-		filter.setShowAddress(false);
-		filter.setPermissions(permissions);
 
-		if (permissions.isOperator()) {
-			sql.addWhere("op.id = " + permissions.getAccountId());
-		} else if (permissions.isCorporate()) {
-			sql.addWhere("op.id IN (SELECT opID FROM facilities WHERE corporateID = " + permissions.getAccountId()
-					+ ")");
-		} else if (!filter.isViewAll()) {
-			List<State> states = stateDAO.findByCSR(permissions.getShadowedUserID());
-			List<Country> countries = countryDAO.findByCSR(permissions.getShadowedUserID());
-			String where = "";
-			if (states.size() > 0 || countries.size() > 0) {
-				filter.setShowOperator(true);
-				if (states.size() > 0) {
-					List<String> state = new ArrayList<String>();
-					for (State s : states) {
-						state.add(s.getIsoCode());
-					}
-					where = "(cr.state IN (" + Strings.implodeForDB(state, ",")+")";
-					if(countries.size() > 0)
-						where += " OR "; 
-				}
-				if (countries.size() > 0) {
-					List<String> country = new ArrayList<String>();
-					for (Country c : countries) {
-						country.add(c.getIsoCode());
-					}
-					where += "cr.country IN (" + Strings.implodeForDB(country, ",")+")";
-				}
-				where += ")";
-				sql.addWhere(where);
-				
-				if (Strings.isEmpty(filter.getHandledBy()))
-					sql.addWhere("cr.handledBy = 'PICS'");
-			} else { // Account Managers and Sales Reps
-				filter.setShowConAuditor(true);
-				filter.setShowState(true);
-				filter.setShowCountry(true);
-				
-				if (isAMSales()) {
-					sql.addWhere("cr.requestedByID IN (SELECT DISTINCT accountID FROM account_user " +
-							"WHERE userID = " + permissions.getUserId() + " AND startDate < NOW() AND endDate > NOW())");
-				}
-			}
-		}
-		
+		getFilter().setShowOperator(false);
+		getFilter().setShowTrade(false);
+		getFilter().setShowLicensedIn(false);
+		getFilter().setShowWorksIn(false);
+		getFilter().setShowOfficeIn(false);
+		getFilter().setShowTaxID(false);
+		getFilter().setShowRiskLevel(false);
+		getFilter().setShowRegistrationDate(false);
+		getFilter().setShowIndustry(false);
+		getFilter().setShowAddress(false);
+		getFilter().setShowStatus(false);
+		getFilter().setShowPrimaryInformation(false);
+		getFilter().setShowTradeInformation(false);
+		getFilter().setShowConWithPendingAudits(false);
+		getFilter().setPermissions(permissions);
+
 		sql.setFromTable("contractor_registration_request cr");
 		sql.addJoin("JOIN accounts op ON op.id = cr.requestedByID");
 		sql.addJoin("LEFT JOIN users u ON u.id = cr.requestedByUserID");
@@ -142,15 +82,51 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("con.id AS conID");
 		sql.addField("con.name AS contractorName");
 		sql.addField("cr.notes AS Notes");
-		
+
 		sql.addOrderBy("cr.deadline, cr.name");
+
+		if (permissions.isOperatorCorporate()) {
+			getFilter().setShowConAuditor(true);
+
+			if (permissions.isCorporate()) {
+				getFilter().setShowOperator(true);
+				sql.addWhere("op.id IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
+						+ permissions.getAccountId() + ")");
+			} else
+				sql.addWhere("op.id = " + permissions.getAccountId());
+		}
+
+		if (permissions.isPicsEmployee()) {
+			getFilter().setShowViewAll(true);
+			getFilter().setShowOperator(true);
+
+			if (permissions.hasGroup(User.GROUP_CSR) && !getFilter().isViewAll()) {
+				if (!filterOn(getFilter().getHandledBy()))
+					getFilter().setHandledBy("PICS");
+
+				sql.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID = "
+						+ permissions.getUserId());
+				sql.addWhere("(cr.state = ua.state OR cr.zip BETWEEN ua.postal_start AND ua.postal_end)");
+			}
+
+			if (permissions.hasGroup(User.GROUP_MANAGER) && !getFilter().isViewAll()) {
+				sql.addJoin("JOIN account_user au ON au.accountID = op.id AND au.startDate < NOW() "
+						+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
+			}
+
+			if (!permissions.hasGroup(User.GROUP_CSR)) { // Everyone but CSRs
+				getFilter().setShowConAuditor(true);
+				getFilter().setShowState(true);
+				getFilter().setShowCountry(true);
+			}
+		}
+
 		addFilterToSQL();
-		
-		this.run(sql);
-		
+		run(sql);
+
 		if (download) {
 			addExcelColumns();
-			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
+			String filename = this.getClass().getSimpleName();
 			excelSheet.setName(filename);
 			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
 
@@ -184,7 +160,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			sql.addWhere("cr.state IN (" + stateList + ")");
 			setFiltered(true);
 		}
-		
+
 		String countryList = Strings.implodeForDB(f.getCountry(), ",");
 		if (filterOn(countryList) && !filterOn(stateList)) {
 			sql.addWhere("cr.country IN (" + countryList + ")");
@@ -196,7 +172,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			sql.addWhere("op.id IN (" + list + ")");
 			setFiltered(true);
 		}
-		
+
 		if (filterOn(f.getOpen())) {
 			sql.addWhere("cr.open = " + f.getOpen());
 			setFiltered(true);
@@ -208,29 +184,27 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		}
 
 		if (filterOn(f.getConAuditorId())) {
-			sql.addJoin("LEFT JOIN ref_state rs ON rs.isoCode = cr.state");
-			sql.addJoin("LEFT JOIN ref_country rc ON rc.isoCode = cr.country");
-			sql.addField("rs.csrID as stateCSR");
-			sql.addField("rc.csrID as countryCSR");
-			String list = Strings.implode(f.getConAuditorId(), ",");
-			sql.addWhere("rs.csrID IN (" + list + ") OR rc.csrID in (" + list + ")");
+			sql.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID IN ("
+					+ Strings.implode(f.getConAuditorId()) + ")");
+			sql.addWhere("CASE WHEN (cr.zip IS NULL OR ua.postal_start IS NULL) THEN cr.state = ua.state "
+					+ "ELSE cr.zip BETWEEN ua.postal_start AND ua.postal_end END");
 			setFiltered(true);
 		}
-		
+
 		if (filterOn(f.getFollowUpDate())) {
-			sql.addWhere("cr.deadline IS NULL OR cr.deadline < '"
-					+ DateBean.format(f.getFollowUpDate(), "yyyy-MM-dd") + "'");
+			sql.addWhere("cr.deadline IS NULL OR cr.deadline < '" + DateBean.format(f.getFollowUpDate(), "yyyy-MM-dd")
+					+ "'");
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getCustomAPI()) && permissions.isAdmin())
 			sql.addWhere(f.getCustomAPI());
 	}
-	
+
 	public ReportFilterNewContractor getFilter() {
 		return filter;
 	}
-	
+
 	protected void addExcelColumns() {
 		excelSheet.setData(data);
 
@@ -244,20 +218,20 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		excelSheet.addColumn(new ExcelColumn("State", "State"));
 		excelSheet.addColumn(new ExcelColumn("Zip", "Zip", ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("Country", "Country"));
-		
+
 		if (!permissions.isOperatorCorporate()) {
 			excelSheet.addColumn(new ExcelColumn("RequestedByID", "Requested By", ExcelCellType.Integer));
 			excelSheet.addColumn(new ExcelColumn("RequestedUserID", "Requested By User", ExcelCellType.Integer));
 			excelSheet.addColumn(new ExcelColumn("RequestedByUserOther", "Requested By User (Other)"));
 		}
-		
+
 		excelSheet.addColumn(new ExcelColumn("deadline", "Deadline Date", ExcelCellType.Date));
-		
+
 		if (permissions.isOperatorCorporate())
 			excelSheet.addColumn(new ExcelColumn("ContactedBy", "Contacted By"));
 		else
 			excelSheet.addColumn(new ExcelColumn("ContactedByID", "Contacted By"));
-		
+
 		excelSheet.addColumn(new ExcelColumn("lastContactDate", "On", ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("contactCount", "Attempts", ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("matchCount", "Matches", ExcelCellType.Integer));
@@ -265,9 +239,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		excelSheet.addColumn(new ExcelColumn("contractorName", "Contractor Name"));
 		excelSheet.addColumn(new ExcelColumn("Notes", "Notes"));
 	}
-	
+
 	public boolean isAMSales() {
-		AccountUserDAO auDAO = (AccountUserDAO) SpringUtils.getBean("AccountUserDAO");
 		return auDAO.findByUserSalesAM(permissions.getUserId()).size() > 0;
 	}
 }
