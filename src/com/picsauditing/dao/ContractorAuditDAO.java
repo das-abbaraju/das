@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,8 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.util.FileUtils;
@@ -66,6 +69,7 @@ public class ContractorAuditDAO extends IndexableDAO {
 			clear();
 			oCAudit.setId(0);
 			oCAudit.setContractorAccount(nContractor);
+			oCAudit.setManuallyAdded(true);
 
 			oCAudit.getData().clear();
 			for (AuditData auditData : auList) {
@@ -82,6 +86,8 @@ public class ContractorAuditDAO extends IndexableDAO {
 				auditCatData.setAudit(oCAudit);
 			}
 			oCAudit.getCategories().addAll(acList);
+			oCAudit.setOshas(new ArrayList<OshaAudit>());
+			oCAudit.setOperators(new ArrayList<ContractorAuditOperator>());
 		}
 		save(oCAudit);
 	}
