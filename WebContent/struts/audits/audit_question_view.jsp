@@ -2,20 +2,20 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <s:set name="questionStillRequired" value="false" />
 <s:if test="(#a == null || #a.answer == null || #a.answer.length() < 1)">
-	<s:if test="#q.isRequired == 'Yes'">
+	<s:if test="#q.required">
 		<s:set name="questionStillRequired" value="true" />
 	</s:if>
-	<s:if test="#q.isRequired == 'Depends' && #q.dependsOnQuestion.id > 0">
-		<s:set name="dependsAnswer" value="answerMap.get(#q.dependsOnQuestion.id)" />
-		<s:if test="#q.dependsOnAnswer == 'NULL' && (#dependsAnswer == null || #dependsAnswer.answer == '')">
+	<s:if test="#q.requiredQuestion.id > 0">
+		<s:set name="dependsAnswer" value="answerMap.get(#q.requiredQuestion.id)" />
+		<s:if test="#q.requiredAnswer == 'NULL' && (#dependsAnswer == null || #dependsAnswer.answer == '')">
         	<% // Policies must have either Policy Expiration Date OR In Good Standing %>
            	<s:set name="questionStillRequired" value="true" />
         </s:if>
-        <s:if test="#q.dependsOnAnswer == 'NOTNULL' && #dependsAnswer != null && #dependsAnswer.answer != ''">
+		<s:if test="#q.requiredAnswer == 'NOTNULL' && #dependsAnswer != null && #dependsAnswer.answer != ''">
         	<% // If dependsOnQuestion is a textfield, textbox or a select box etc where the dependsOnAnswer is not null %>
            	<s:set name="questionStillRequired" value="true" />
         </s:if>
-		<s:if test="#dependsAnswer != null && #q.dependsOnAnswer == #dependsAnswer.answer">
+		<s:if test="#dependsAnswer != null && #q.requiredAnswer == #dependsAnswer.answer">
 			<s:set name="questionStillRequired" value="true" />
 		</s:if>
 	</s:if>
