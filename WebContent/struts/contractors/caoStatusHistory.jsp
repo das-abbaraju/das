@@ -17,7 +17,7 @@
 		<s:if test="caoWorkflow.size() > 0">
 			<s:iterator value="caoWorkflow" var="caow">
 				<tr id=<s:property value="id"/>>
-					<td><s:property value="formatDate(updateDate, 'dd MMM yyyy')" default="N/A"/></td>
+					<td><s:date name="updateDate" format="%{getText('date.long')}"/></td>
 					<td><s:property value="updatedBy.name"/></td>
 					<td><s:text name="%{#caow.previousStatus.getI18nKey()}" /></td>
 					<td><s:text name="%{#caow.status.getI18nKey()}"/></td>
