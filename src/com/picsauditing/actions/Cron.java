@@ -42,7 +42,6 @@ import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -482,7 +481,7 @@ public class Cron extends PicsActionSupport {
 		query.append("and endDate > now() ");
 		query.append("LEFT join users u on au.userID = u.id ");
 		query.append("group by o.id) t ");
-		query.append("where changes > 1 and changes/total > .05 ");
+		query.append("where changes >= 10 and changes/total > .05 ");
 		query.append("order by accountManager, percent desc ");
 
 		Database db = new Database();
