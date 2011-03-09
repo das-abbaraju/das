@@ -191,7 +191,7 @@ $(function() {
 					</li>
 				</s:else>
 			</ol>
-			<s:if test="permissions.hasGroup(@com.picsauditing.jpa.entities.User@GROUP_MARKETING)">
+			<s:if test="!canEditRule">
 				<div class="alert">This rule is not specific to one of your Accounts. Please contact one of the Audit Rule Administrators if this rule needs to be changed.</div>
 			</s:if>
 		</fieldset>
