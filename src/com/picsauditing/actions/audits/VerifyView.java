@@ -22,6 +22,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -61,11 +62,13 @@ public class VerifyView extends ContractorActionSupport {
 
 		permissions.tryPermission(OpPerms.AuditVerification);
 		this.findContractor();
-		this.subHeading = "Verify PQF/OSHA/EMR";
+		subHeading = getText(getScope() + ".title");
+		
+		boolean needsOsha = false;
+		boolean needsEmr = false;
 
 		for (ContractorAudit conAudit : getVerificationAudits()) {
-			if (conAudit.getAuditType().isPqf() && !conAudit.hasCaoStatus(AuditStatus.Incomplete)
-					&& !conAudit.hasCaoStatus(AuditStatus.Complete)) {
+			if (conAudit.getAuditType().isPqf()) {
 				List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 				pqfQuestions = new LinkedHashMap<Integer, AuditData>();
 				for (AuditData ad : temp) {
@@ -78,6 +81,9 @@ public class VerifyView extends ContractorActionSupport {
 					if (us != null && "Yes".equals(us.getAnswer()) && oshaAudit.isCorporate()
 							&& oshaAudit.getType().equals(OshaType.OSHA)) {
 						oshasUS.add(oshaAudit);
+						
+						if (!needsOsha)
+							needsOsha = conAudit.hasCaoStatus(AuditStatus.Submitted) || conAudit.hasCaoStatus(AuditStatus.Resubmitted);
 					}
 
 					// TODO Work on verifying COHS
@@ -92,6 +98,9 @@ public class VerifyView extends ContractorActionSupport {
 					if (categoryID != AuditCategory.CITATIONS
 							|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired()) || (d
 									.getQuestion().getId() >= 3565 && d.getQuestion().getId() <= 3568 && d.isAnswered()))) {
+						if (!needsEmr)
+							needsEmr = conAudit.hasCaoStatus(AuditStatus.Submitted) || conAudit.hasCaoStatus(AuditStatus.Resubmitted);
+						
 						Map<Integer, AuditData> inner = emrs.get(d.getQuestion());
 
 						if (inner == null) {
@@ -100,22 +109,17 @@ public class VerifyView extends ContractorActionSupport {
 								inner.put(ca.getId(), null);
 							emrs.put(d.getQuestion(), inner);
 						}
+						
 						inner.put(conAudit.getId(), d);
 					}
 				}
 			}
 		}
-
-		int unverifiable = 0;
-		for (ContractorAudit ca : annualUpdates) {
-			if (ca.hasCaoStatus(AuditStatus.Complete) || ca.hasCaoStatus(AuditStatus.Incomplete))
-				unverifiable++;
-		}
-
-		if (annualUpdates.size() == unverifiable) {
-			oshasUS = null;
-			emrs = null;
-		}
+		
+		if (!needsOsha)
+			oshasUS.clear();
+		if (!needsEmr)
+			emrs.clear();
 
 		Collections.sort(annualUpdates, new Comparator<ContractorAudit>() {
 			@Override
@@ -136,7 +140,9 @@ public class VerifyView extends ContractorActionSupport {
 		StringBuffer sb = new StringBuffer("");
 
 		for (ContractorAudit conAudit : getVerificationAudits()) {
-			if (conAudit.getAuditType().isAnnualAddendum() && !conAudit.hasCaoStatus(AuditStatus.Complete)) {
+			if (conAudit.getAuditType().isAnnualAddendum()
+					&& (conAudit.hasCaoStatus(AuditStatus.Submitted) || conAudit.hasCaoStatus(AuditStatus.Resubmitted) || conAudit
+							.hasCaoStatus(AuditStatus.Incomplete))) {
 				StringBuffer sb2 = new StringBuffer("");
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
 					if (oshaAudit.getType().equals(OshaType.OSHA) && oshaAudit.isCorporate() && !oshaAudit.isVerified()
@@ -294,8 +300,17 @@ public class VerifyView extends ContractorActionSupport {
 			verificationAudits = new Grepper<ContractorAudit>() {
 				@Override
 				public boolean check(ContractorAudit t) {
-					return (t.getAuditType().isPqf() || t.getAuditType().isAnnualAddendum())
-							&& (t.hasCaoStatusAfter(AuditStatus.Pending) && !t.hasCaoStatus(AuditStatus.Resubmit));
+					if (t.getAuditType().isPqf() && (t.hasCaoStatus(AuditStatus.Submitted) || t.hasCaoStatus(AuditStatus.Resubmitted))) {
+						for (ContractorAuditOperator cao : t.getOperatorsVisible()) {
+							if (cao.getPercentComplete() < 100)
+								return false;
+						}
+						
+						return true;
+					} else if (t.getAuditType().isAnnualAddendum())
+						return true;
+
+					return false;
 				}
 			}.grep(getActiveAudits());
 
