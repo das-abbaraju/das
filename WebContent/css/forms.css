@@ -159,7 +159,7 @@ fieldset.form .fieldhelp-focused, form.form .fieldhelp-focused {
 	background-color: #ffff99;
 }
 
-fieldset.form .fieldhelp-focused input, form.form fieldhelp-focused input {
+fieldset.form .fieldhelp-focused input, form.form .fieldhelp-focused input {
 	outline: none;	
 }
 
