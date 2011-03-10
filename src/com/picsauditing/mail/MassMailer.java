@@ -53,7 +53,8 @@ public class MassMailer extends PicsActionSupport {
 	private String templateBody;
 	private OpPerms recipient;
 	private boolean templateAllowsVelocity;
-	private boolean fromMyAddress = true;
+	private String fromMyAddress = "info@picsauditing.com";
+	private List<String> fromAddresses = new ArrayList<String>();
 	private boolean editTemplate = false;
 	private boolean fromOtherAction;
 
@@ -161,10 +162,10 @@ public class MassMailer extends PicsActionSupport {
 				EmailTemplate template = buildEmailTemplate();
 				// TODO we may want to offer sending from another email
 				// other than their own
-				if (fromMyAddress)
-					emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
-				else
-					emailBuilder.setFromAddress(null);
+				//if (fromMyAddress)
+					//emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
+				//else
+				emailBuilder.setFromAddress(fromMyAddress);
 				emailBuilder.setTemplate(template);
 
 				for (Integer id : ids) {
@@ -402,11 +403,11 @@ public class MassMailer extends PicsActionSupport {
 		this.previewID = previewID;
 	}
 
-	public boolean isFromMyAddress() {
+	public String getFromMyAddress() {
 		return fromMyAddress;
 	}
 
-	public void setFromMyAddress(boolean fromMyAddress) {
+	public void setFromMyAddress(String fromMyAddress) {
 		this.fromMyAddress = fromMyAddress;
 	}
 
@@ -448,5 +449,17 @@ public class MassMailer extends PicsActionSupport {
 
 	public void setFromOtherAction(boolean fromOtherAction) {
 		this.fromOtherAction = fromOtherAction;
+	}
+	
+	public List<String> getFromAddresses() {
+		if (fromAddresses.isEmpty()) {
+			fromAddresses.add("info@picsauditing.com");
+			if (permissions.isAuditor()) {
+				fromAddresses.add("audits@picsauditing.com");
+			}
+			fromAddresses.add(permissions.getEmail());
+			
+		}
+		return fromAddresses;
 	}
 }

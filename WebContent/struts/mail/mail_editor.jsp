@@ -31,7 +31,7 @@
 <s:if test="!editTemplate">
 	<br />
 	Reply to:
-	<s:radio name="fromMyAddress" list="#{'false':'info@picsauditing.com','true':permissions.email}" value="%{fromMyAddress}" ></s:radio><br />
+	<s:radio name="fromMyAddress" list="fromAddresses" ></s:radio><br />
 </s:if>
 <s:textarea name="templateBody" rows="20" onkeyup="dirtyOn();" />
 <s:if test="templateAllowsVelocity">
