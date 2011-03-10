@@ -29,11 +29,11 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.AssignAudits);
 	}
-	
+
 	@Override
 	public void buildQuery() {
 		super.buildQuery();
-		
+
 		sql.addField("ca.contractorConfirm");
 		sql.addField("ca.auditorConfirm");
 		sql.addField("ca2.expiresDate AS current_expiresDate");
@@ -53,8 +53,12 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		sql.addField("manual.comment AS mcomment");
 		sql.addField("manual.id AS mid");
 		sql.addWhere("manual.dateVerified IS NOT NULL");
+		sql.addWhere("c.id not in (" + "select c.id from contractor_info c " + "join invoice i on i.accountID = c.id "
+				+ "join invoice_item ii on i.id = ii.invoiceID join invoice_fee invf on ii.feeID = invf.id "
+				+ "where invf.feeClass = 'Membership' and invf.id != 100 and invf.id != 4 and i.status = 'Unpaid'"
+				+ " and ii.amount = invf.defaultAmount)");
 		orderByDefault = "ca.creationDate";
-		
+
 		getFilter().setShowUnConfirmedAudits(true);
 		getFilter().setShowAuditFor(false);
 	}
@@ -76,14 +80,13 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		date.add(Calendar.DAY_OF_YEAR, -1);
 		return DateBean.format(date.getTime(), "M/d/yyyy");
 	}
-	
+
 	public String getFileSize(String dataID) {
 		int fileID = Integer.parseInt(dataID);
-		File dir = new File(getFtpDir() + "/files/"
-				+ FileUtils.thousandize(fileID));
+		File dir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(fileID));
 		File[] files = FileUtils.getSimilarFiles(dir, PICSFileType.data + "_" + fileID);
 		File file = files[0];
-		if(file != null)
+		if (file != null)
 			return FileUtils.size(file);
 		return "";
 	}
