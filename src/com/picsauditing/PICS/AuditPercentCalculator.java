@@ -131,7 +131,7 @@ public class AuditPercentCalculator {
 
 							if ("Radio".equals(question.getQuestionType())) {
 								for (AuditQuestionOption option : question.getOptions()) {
-									scale = Math.max(scale, option.getScore() - 1);
+									scale = Math.max(scale, option.getScore());
 									if (answer.getAnswer().equals(option.getOptionName())) {
 										answerValue = option.getScore();
 									}
@@ -141,7 +141,7 @@ public class AuditPercentCalculator {
 								if (answer.getAnswer().equals("Yes"))
 									answerValue = 1;
 							} else if ("Yes/No/NA".equals(question.getQuestionType())) {
-								scale = 1.0f;
+								scale = 2.0f;
 								if (answer.getAnswer().equals("Yes"))
 									answerValue = 2;
 								else if (answer.getAnswer().equals("NA"))

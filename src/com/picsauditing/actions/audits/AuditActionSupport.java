@@ -266,11 +266,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 		AuditType type = conAudit.getAuditType();
 		AuditStatus newStatus = workflowStep.getNewStatus();
-		
-		if (newStatus.isComplete() && type.getWorkFlow().isHasSubmittedStep()
-				&& cao.getPercentVerified() < 100)
+
+		if (newStatus.isComplete() && type.getWorkFlow().isHasSubmittedStep() && cao.getPercentVerified() < 100)
 			return false;
-		
+
 		// admins can perform any action
 		if (permissions.seesAllContractors()) {
 			// Pics employees can't approve/reject policies from operators that
@@ -329,7 +328,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public boolean isCanEditAudit() {
 		AuditType type = conAudit.getAuditType();
-		
+
 		if (type.getClassType().isPolicy() && permissions.isAdmin())
 			return true;
 		if (conAudit.isExpired())
@@ -414,7 +413,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 		return false;
 	}
-	
+
 	public boolean isShowVerifiedBar(ContractorAuditOperator cao) {
 		if (conAudit.getAuditType().isAnnualAddendum()) {
 			return false;
@@ -425,7 +424,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				return false;
 		}
 	}
-	
+
 	public boolean isShowCompleteBar(ContractorAuditOperator cao) {
 		if (conAudit.getAuditType().isAnnualAddendum()) {
 			if (conAudit.hasCaoStatusBefore(AuditStatus.Submitted) || conAudit.hasCaoStatus(AuditStatus.Resubmit))
@@ -538,8 +537,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				node.category = cat;
 				if (conAudit.getAuditType().getClassType().isIm()) {
 					node.total = getCategories().get(cat).getScoreCount();
-					node.answered = (int) (getCategories().get(cat).getScore() * getCategories().get(cat)
-							.getScoreCount());
+					node.verified = (int) (getCategories().get(cat).getScore());
 				} else {
 					node.total = getCategories().get(cat).getNumRequired();
 					node.answered = getCategories().get(cat).getRequiredCompleted();
