@@ -37,8 +37,9 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 	private int copyDataID = 0;
 
 	public AuditDataUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao, AuditQuestionDAO questionDAO,
-			AuditPercentCalculator auditPercentCalculator, AuditCategoryRuleCache auditCategoryRuleCache) {
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
+			AuditQuestionDAO questionDAO, AuditPercentCalculator auditPercentCalculator,
+			AuditCategoryRuleCache auditCategoryRuleCache) {
 		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
 		this.questionDAO = questionDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
@@ -93,9 +94,9 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 
 		if (button != null) {
 			if (button.equals("download")) {
-				if(dataID>0){
-					Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
-							.getServletContext());
+				if (dataID > 0) {
+					Downloader downloader = new Downloader(ServletActionContext.getResponse(),
+							ServletActionContext.getServletContext());
 					try {
 						File[] files = getFiles(dataID);
 						downloader.download(files[0], null);
@@ -196,7 +197,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		}
 
 		for (AuditCatData auditCatData : getCategories().values()) {
-			if (auditCatData.getCategory() == auditData.getQuestion().getCategory()){
+			if (auditCatData.getCategory().equals(auditData.getQuestion().getCategory())) {
 				auditPercentCalculator.updatePercentageCompleted(auditCatData);
 				auditDao.save(auditCatData);
 			}
