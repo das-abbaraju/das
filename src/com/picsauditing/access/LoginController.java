@@ -41,11 +41,6 @@ public class LoginController extends PicsActionSupport {
 	protected UserDAO userDAO;
 	protected UserLoginLogDAO loginLogDAO;
 
-	public LoginController(UserDAO userDAO, UserLoginLogDAO loginLogDAO) {
-		this.userDAO = userDAO;
-		this.loginLogDAO = loginLogDAO;
-	}
-
 	@Override
 	public String execute() throws Exception {
 		if (button == null) {
@@ -64,8 +59,6 @@ public class LoginController extends PicsActionSupport {
 			// Note: Sessions are saved even if cookies are disabled on
 			// Mozilla 5 and others.
 			if (ServletActionContext.getRequest().getCookies() == null
-			// TODO: Going to need to refactor to preference file check on
-			// localization update
 					&& ServletActionContext.getRequest().getParameter("msg") != null) {
 				ServletActionContext.getResponse().sendRedirect(
 						"Login.action?msg=Cookies are disabled on your browser. Please open your "
@@ -129,7 +122,7 @@ public class LoginController extends PicsActionSupport {
 					adminID = permissions.getUserId();
 
 				boolean translator = (adminID > 0 && permissions.hasPermission(OpPerms.Translator));
-				
+
 				permissions.login(user);
 				permissions.setAdminID(adminID);
 				if (translator)
@@ -338,7 +331,15 @@ public class LoginController extends PicsActionSupport {
 		loginLogDAO.save(loginLog);
 	}
 
-	// ////// GETTER & SETTERS ////////
+	/* GETTER & SETTERS */
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
+	}
+
+	public void setLoginLogDAO(UserLoginLogDAO loginLogDAO) {
+		this.loginLogDAO = loginLogDAO;
+	}
+
 	private HttpServletRequest getRequest() {
 		return ServletActionContext.getRequest();
 	}
