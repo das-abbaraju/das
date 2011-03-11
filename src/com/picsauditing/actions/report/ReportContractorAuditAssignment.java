@@ -56,7 +56,7 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		sql.addWhere("c.id not in (" + "select c.id from contractor_info c " + "join invoice i on i.accountID = c.id "
 				+ "join invoice_item ii on i.id = ii.invoiceID join invoice_fee invf on ii.feeID = invf.id "
 				+ "where invf.feeClass = 'Membership' and invf.id != 100 and invf.id != 4 and i.status = 'Unpaid'"
-				+ " and ii.amount = invf.defaultAmount)");
+				+ " and (ii.amount = invf.defaultAmount or i.totalAmount >= 450))");
 		orderByDefault = "ca.creationDate";
 
 		getFilter().setShowUnConfirmedAudits(true);

@@ -24,9 +24,12 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.util.AnswerMap;
 
 /**
@@ -104,14 +107,14 @@ public class ContractorAuditController extends AuditActionSupport {
 				this.redirect("Audit.action?auditID=" + conAudit.getId());
 				return SUCCESS;
 			}
-			
+
 			if ("SubmitRemind".equals(button)) {
 				for (ContractorAuditOperator cao : conAudit.getOperators()) {
 					// We looking for pending
-					if(cao.isVisible()){
+					if (cao.isVisible()) {
 						if (cao.getStatus() == AuditStatus.Pending || cao.getStatus() == AuditStatus.Incomplete
 								|| cao.getStatus() == AuditStatus.Resubmit) {
-							if(cao.getPercentComplete()==100){
+							if (cao.getPercentComplete() == 100) {
 								json.put("remind", "Please submit your audits when finished.");
 								break;
 							}
@@ -124,7 +127,7 @@ public class ContractorAuditController extends AuditActionSupport {
 			// Preview the Category from the manage audit type page
 			if ("PreviewCategory".equals(button)) {
 				if (auditID == 0 && categoryID > 0) {
-					
+
 					previewCat = true;
 					AuditCategory auditCategory = auditCategoryDAO.find(categoryID);
 					conAudit = new ContractorAudit();
@@ -132,7 +135,7 @@ public class ContractorAuditController extends AuditActionSupport {
 					if (auditCategory.getAuditType().isAnnualAddendum()) {
 						conAudit.setAuditFor(new Date().getYear() + "");
 					}
-					
+
 					categories = new HashMap<AuditCategory, AuditCatData>();
 					categoryData = new AuditCatData();
 					categoryData.setCategory(auditCategory);
@@ -314,11 +317,21 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 
 	public boolean isInvoiceOverdue() {
-		// Show everyone?
-		// if (permissions.isAuditor() || permissions.isContractor() || permissions.isOperatorCorporate()) {
 		if (conAudit.getAuditType().isDesktop() || conAudit.getAuditType().isImplementation()
 				|| conAudit.getAuditType().isAnnualAddendum() || conAudit.getAuditType().isPqf()) {
-			return contractor.hasPastDueInvoice();
+
+			for (Invoice i : this.getContractor().getInvoices()) {
+				if (i.getStatus().equals(TransactionStatus.Unpaid)) {
+					for (InvoiceItem ii : i.getItems()) {
+						if ("Membership".equals(ii.getInvoiceFee().getFeeClass())
+								&& !ii.getInvoiceFee().isBidonly()
+								&& !ii.getInvoiceFee().isPqfonly()
+								&& (ii.getInvoiceFee().getAmount().equals(ii.getAmount()) || i.getTotalAmount()
+										.intValue() > 450))
+							return true;
+					}
+				}
+			}
 		}
 
 		return false;
