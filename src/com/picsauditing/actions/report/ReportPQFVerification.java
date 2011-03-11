@@ -33,6 +33,10 @@ public class ReportPQFVerification extends ReportAccount {
 		sql.addWhere("a.acceptsBids = 0");
 		sql.addWhere("o.status IN ('Active')");
 		sql.addGroupBy("ca.conid");
+		sql.addWhere("c.id not in (" + "select c.id from contractor_info c " + "join invoice i on i.accountID = c.id "
+				+ "join invoice_item ii on i.id = ii.invoiceID join invoice_fee invf on ii.feeID = invf.id "
+				+ "where invf.feeClass = 'Membership' and invf.id != 100 and invf.id != 4 and i.status = 'Unpaid'"
+				+ " and (ii.amount = invf.defaultAmount or i.totalAmount >= 450))");
 		orderByDefault = "cao.statusChangedDate";
 
 		getFilter().setShowTradeInformation(false);
