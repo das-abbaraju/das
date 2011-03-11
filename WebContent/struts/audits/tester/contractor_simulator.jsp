@@ -71,7 +71,7 @@ $(function() {
 	class="picsbutton positive" onclick="run()">Run Simulation</button>
 </div>
 <div class="filterOption"><s:select
-	list="#{'Low':'Low Risk','Medium':'Medium Risk','High':'High Risk'}"
+	list="#{'Low':'Low Risk','Med':'Medium Risk','High':'High Risk'}"
 	name="contractor.riskLevel" value="'High'" /></div>
 
 <div class="filterOption"><s:checkbox name="contractor.onsiteServices" id="onsite" value="true" /><label for="onsite">Onsite Services</label></div>
