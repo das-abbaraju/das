@@ -325,6 +325,7 @@ public class ContractorAuditController extends AuditActionSupport {
 					for (InvoiceItem ii : i.getItems()) {
 						if ("Membership".equals(ii.getInvoiceFee().getFeeClass())
 								&& !ii.getInvoiceFee().isBidonly()
+								&& !ii.getInvoiceFee().isPqfonly()
 								&& (ii.getInvoiceFee().getAmount().equals(ii.getAmount()) || i.getTotalAmount()
 										.intValue() > 450))
 							return true;

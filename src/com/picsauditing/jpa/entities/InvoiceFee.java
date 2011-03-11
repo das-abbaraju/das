@@ -109,6 +109,11 @@ public class InvoiceFee extends BaseTable {
 	public boolean isBidonly() {
 		return this.id == BIDONLY;
 	}
+	
+	@Transient
+	public boolean isPqfonly() {
+		return this.id == PQFONLY;
+	}
 
 	@Transient
 	public BigDecimal getGSTSurchage(BigDecimal total) {
