@@ -518,6 +518,7 @@ public class Permissions implements Serializable {
 		return visibleAuditTypes;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {
 		if (this.hasPermission(OpPerms.AuditRuleAdmin))
 			return true;
@@ -529,6 +530,13 @@ public class Permissions implements Serializable {
 			for (AccountUser accUser : operator.getAccountUsers()) {
 				if (accUser.getUser().getId() == this.getUserId())
 					return true;
+			}
+			
+			for (OperatorAccount child : operator.getOperatorChildren()) {
+				for (AccountUser childAccUser : child.getAccountUsers()) {
+					if (childAccUser.getUser().getId() == this.getUserId())
+						return true;
+				}
 			}
 		}
 		
