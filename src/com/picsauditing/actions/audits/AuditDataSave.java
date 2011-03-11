@@ -97,7 +97,6 @@ public class AuditDataSave extends AuditActionSupport {
 						.getId());
 			}
 
-			loadAnswerMap();
 			if (newCopy == null) {
 				// insert mode
 				AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
@@ -164,12 +163,14 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 
 			auditID = auditData.getAudit().getId();
+			
+			loadAnswerMap();
+
 			// Load Dependent questions
 			auditData.getQuestion().getDependentRequired();
 			auditData.getQuestion().getDependentVisible();
 			auditData.setAuditColumns(permissions);
 			if ("reload".equals(button)) {
-				loadAnswerMap();
 				return SUCCESS;
 			}
 			if (auditData.getQuestion().getId() == 57) {
