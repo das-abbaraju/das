@@ -16,7 +16,6 @@ $(function(){
 				function(response, status) {
 					if (status=='success') {
 						$(this).trigger('updateDependent');
-						updateCategories();
 					} else {
 						alert('Failed to save answer.');
 					} 
@@ -34,7 +33,6 @@ $(function(){
 				function(response, status) {
 					if (status=='success') {
 						$(this).trigger('updateDependent');
-						updateCategories();
 					} else {
 						alert('Failed to save answer.');
 					} 
@@ -63,7 +61,15 @@ $(function(){
 	$('#auditViewArea').delegate('div.hasDependentRules', 'updateDependent', function() {
 		updateCategoriesNow();
 	});
-	
+
+	$('#auditViewArea').delegate('div.affectsAudit', 'updateDependent', function() {
+		updateCategoriesNow();
+	});
+
+	$('#auditViewArea').delegate('div.question:not(.affectsAudit)', 'updateDependent', function() { 
+		updateCategories();
+	});
+
 	// Insurance Methods
 	$('a.uploadNewCertificate').live('click',function(e) {
 		e.preventDefault();
@@ -113,6 +119,10 @@ function reloadQuestion(qid) {
 		.load('AuditDataSaveAjax.action',$('#node_'+qid).find('form.qform').serialize()+'&button=reload', function() {
 		$(this).unblock();
 	});
+}
+
+function triggerDependent(qid) {
+	$('#node_'+qid).trigger('updateDependent');
 }
 
 function setAnswer(questionID, answer) {

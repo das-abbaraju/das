@@ -14,6 +14,7 @@
 function closePage() {
 	try {
 		opener.reloadQuestion('<s:property value="auditData.question.id"/>');
+		opener.triggerDependent('<s:property value="auditData.question.id"/>');
 		opener.focus();
 	} catch(err) {}
 	self.close();

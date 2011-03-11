@@ -443,7 +443,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	public void setOptions(List<AuditQuestionOption> options) {
 		this.options = options;
 	}
-	
+
 	@Transient
 	public AuditType getAuditType() {
 		return category.getParentAuditType();
@@ -587,5 +587,10 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		if (comparisonAnswer.equals(answer))
 			return true;
 		return false;
+	}
+
+	@Transient
+	public boolean isAffectsAudit() {
+		return required || requiredQuestion != null || dependentRequired.size() > 0;
 	}
 }
