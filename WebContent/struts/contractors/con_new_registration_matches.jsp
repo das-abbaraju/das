@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-Potential Matches:<br />
+<s:text name="%{scope}.message.PotentialMatches" />:<br />
 <s:iterator value="potentialMatches" id="account">
 	<s:if test="#account.contractor">
 		<s:if test="permissions.admin || (permissions.operatorCorporate && worksForOperator(#account.id))">

@@ -113,6 +113,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.phone = phone;
 	}
 
+	@Column(nullable=false)
 	public String getEmail() {
 		return email;
 	}

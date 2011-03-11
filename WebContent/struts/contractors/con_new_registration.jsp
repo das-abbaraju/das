@@ -4,7 +4,7 @@
 
 <html>
 <head>
-<title>Registration Request</title>
+<title><s:text name="%{scope}.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
@@ -296,10 +296,10 @@ function getMatches(requestID) {
 </script>
 </head>
 <body>
-<h1>Registration Request</h1>
+<h1><s:text name="%{scope}.title" /></h1>
 
 <pics:permission perm="RequestNewContractor">
-	<a href="ReportNewRequestedContractor.action">&lt;&lt; Back to Registration Requests</a>
+	<a href="ReportNewRequestedContractor.action">&lt;&lt; <s:text name="%{scope}.link.BackToRequests" /></a>
 </pics:permission>
 
 <s:include value="../actionMessages.jsp"></s:include>
@@ -309,13 +309,19 @@ function getMatches(requestID) {
 <s:if test="newContractor.contractor != null || !newContractor.open">
 	<div class="info">
 		<s:if test="newContractor.contractor != null">
-			<s:property value="newContractor.contractor.name" /> has registered an account with PICS on <strong><s:date name="newContractor.contractor.creationDate" format="M/d/yyyy" /></strong><br/>
+			<s:text name="%{scope}.message.Registered">
+				<s:param><s:property value="newContractor.contractor.name" /></s:param>
+				<s:param><s:date name="newContractor.contractor.creationDate" /></s:param>
+			</s:text>
 		</s:if>
 		<s:if test="newContractor.open">
+			<s:text name="%{scope}.message.CloseRequest">
+				<s:param><s:property value="newContractor.id" /></s:param>
+			</s:text>
 			Click here to <a href="RequestNewContractor.action?requestID=<s:property value="newContractor.id" />&button=Close Request" class="picsbutton positive">Close the Request</a>
 		</s:if>
 		<s:else>
-			This request is closed.
+			<s:text name="%{scope}.message.RequestClosed" />
 		</s:else>
 	</div>
 </s:if>
@@ -327,44 +333,40 @@ function getMatches(requestID) {
 		<tr>
 			<td>
 				<fieldset class="form">
-				<h2 class="formLegend">Company Information</h2>
+				<h2 class="formLegend"><s:text name="%{scope}.header.CompanyInformation" /></h2>
 				<ol>
-					<li><label>Company Name:</label>
+					<li><label><s:text name="%{scope}.label.CompanyName" />:</label>
 						<s:textfield cssClass="checkReq" name="newContractor.name" size="35" />
 						<div id="think_name"></div>
 						<div id="match_name"></div>
 					</li>
-					<li><label>Contact Name:</label>
+					<li><label><s:text name="%{scope}.label.ContactName" />:</label>
 						<s:textfield cssClass="checkReq" name="newContractor.contact" />
 						<div id="think_contact"></div>
 						<div id="match_contact"></div>
-						<br />
 					</li>
-					<s:if test="newContractor.phone == null && newContractor.email == null">
-						<li>
-							<span style="margin-left: 11em; padding-bottom: 0px; clear: right;">
-								(Phone <i>or</i> Email is required)
-							</span>
-						</li>
-					</s:if>
 					<li>
-						<label>Phone:</label>
+						<label><s:text name="User.phone" />:</label>
 						<s:textfield cssClass="checkReq" name="newContractor.phone" size="20" />
 						<s:if test="newContractor.id > 0 && newContractor.phone != null && newContractor.phone.length() > 0 && !permissions.operatorCorporate">
-							<input type="submit" class="picsbutton" name="button" value="Contacted By Phone" />
+							<input type="submit" class="picsbutton" name="button" value="<s:text name="%{scope}.button.ContactedByPhone" />" />
 						</s:if>
+						<div class="fieldhelp">
+							<h3><s:text name="User.phone" /></h3>
+							<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="User.phone" /></s:param></s:text></p>
+						</div>
 						<div id="think_phone"></div>
 						<div id="match_phone"></div>
 					</li>
-					<li><label for="email">Email:</label>
+					<li><label for="email"><s:text name="User.email" />:</label>
 						<s:textfield cssClass="checkReq" name="newContractor.email" size="30" id="email" />
 						<s:if test="newContractor.id > 0 && newContractor.email.length() > 0 && !permissions.operatorCorporate">
-							<input type="button" onclick="$('#email_preview').toggle(); return false;" class="picsbutton" value="Edit Email" />
+							<input type="button" onclick="$('#email_preview').toggle(); return false;" class="picsbutton" value="<s:text name="%{scope}.button.EditEmail" />" />
 							<table id="email_preview">
 								<tr>
 									<td>
 										<s:if test="formsViewable && attachment == null && forms.size() > 0">
-											<a href="#operatorForms" class="add fancybox" title="Add Attachment" onclick="return false;">Add Attachment</a>
+											<a href="#operatorForms" class="add fancybox" title="Add Attachment" onclick="return false;"><s:text name="%{scope}.link.AddAttachment" /></a>
 										</s:if>
 									</td>
 									<td>
@@ -374,38 +376,38 @@ function getMatches(requestID) {
 									</td>
 								</tr>
 								<tr>
-									<td>Subject: <input id="email_subject" name="emailSubject" value="<s:property value="emailSubject" />" size="30"/></td>
-									<td>Fields: <s:select list="tokens" onchange="addToken(this.value);"></s:select></td>
+									<td><s:text name="%{scope}.header.Subject" />: <input id="email_subject" name="emailSubject" value="<s:property value="emailSubject" />" size="30"/></td>
+									<td><s:text name="%{scope}.header.Fields" />: <s:select list="tokens" onchange="addToken(this.value);"></s:select></td>
 								</tr>
 								<tr><td colspan="2">
 									<s:textarea cols="120" rows="10" name="emailBody" id="email_body" cssStyle="width: 600px;"></s:textarea>
 								</td></tr>
-								<tr><td colspan="2"><input type="submit" name="button" class="picsbutton positive" value="Send Email" /></td></tr>
+								<tr><td colspan="2"><input type="submit" name="button" class="picsbutton positive" value="<s:text name="button.SendEmail" />" /></td></tr>
 							</table>
 						</s:if>
 						<div id="think_email"></div>
 						<div id="match_email"></div>
 					</li>
-					<li><label for="taxID">Tax ID:</label>
+					<li><label for="taxID"><s:text name="%{scope}.label.TaxID" />:</label>
 						<s:textfield cssClass="checkReq" name="newContractor.taxID" size="9" maxLength="9" id="taxID" />
 						<div class="fieldhelp">
-						<h3>Tax ID</h3>
-						<p>Optional field for Tax ID</p>
+							<h3><s:text name="%{scope}.label.TaxID" /></h3>
+							<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="%{scope}.label.TaxID" /></s:param></s:text></p>
 						</div>
 						<div id="think_tax"></div>
 						<div id="match_tax"></div>
 					</li>
 					<s:if test="assignedCSR != null">
-						<li><label>Assigned PICS CSR:</label>
+						<li><label><s:text name="%{scope}.label.AssignedCSR" />:</label>
 							<nobr><s:property value="assignedCSR.name" /> / <s:property value="assignedCSR.phone"/></nobr>
 						</li>
 					</s:if>	
 				</ol>
 				</fieldset>
 				<fieldset class="form">
-				<h2 class="formLegend">Primary Address</h2>
+				<h2 class="formLegend"><s:text name="global.PrimaryAddress" /></h2>
 				<ol>
-					 <li><label for="newContractorCountry">Country:</label>
+					 <li><label for="newContractorCountry"><s:text name="global.Country" />:</label>
 						<s:select
 							list="countryList" name="country.isoCode" id="newContractorCountry"
 							listKey="isoCode" listValue="name" value="%{newContractor.country.isoCode}"
@@ -413,38 +415,38 @@ function getMatches(requestID) {
 					</li>
 					<li id="state_li"></li>
 					<li>
-						<label for="city">City:</label>
+						<label for="city"><s:text name="global.City" />:</label>
 						<s:textfield name="newContractor.city" size="20" id="city" cssClass="show-address"/>
 						<div class="fieldhelp">
-						<h3>City</h3>
-						<p>Optional field for City</p>
+							<h3><s:text name="global.City" /></h3>
+							<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="global.City" /></s:param></s:text></p>
 						</div>
 					</li>
 					<li class="address-zip">
-						<label for="address">Address:</label>
+						<label for="address"><s:text name="global.Address" />:</label>
 						<s:textfield name="newContractor.address" size="35" id="address" />
 						<div class="fieldhelp">
-						<h3>Address</h3>
-						<p>Optional field for Address</p>
+						<h3><s:text name="global.Address" /></h3>
+						<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="global.Address" /></s:param></s:text></p>
 						</div>
 					</li>
 					<li class="address-zip">
-						<label for="zip">Zip:</label><s:textfield name="newContractor.zip" size="7" id="zip" />
+						<label for="zip"><s:text name="global.ZipPostalCode" />:</label><s:textfield name="newContractor.zip" size="7" id="zip" />
 						<div class="fieldhelp">
-						<h3>Zip</h3>
-						<p>Optional field for Zip</p>
+						<h3><s:text name="global.ZipPostalCode" /></h3>
+						<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="global.ZipPostalCode" /></s:param></s:text></p>
 						</div>
 					</li>		
 				</ol>
 				</fieldset>
 				<fieldset class="form">
-				<h2 class="formLegend">Request Summary</h2>
+				<h2 class="formLegend"><s:text name="%{scope}.header.RequestSummary" /></h2>
 				<ol>
-					<li><label>Requested By Account:</label>
+					<li><label><s:text name="%{scope}.label.RequestedByAccount" />:</label>
 						<s:select list="operatorsList" headerKey="0" headerValue="- Select a Operator -"
 							name="requestedOperator" onchange="updateUsersList();" listKey="id" listValue="name"
 							value="%{newContractor.requestedBy.id}" />
-						<s:if test="permissions.admin">&nbsp;
+						<s:if test="permissions.admin && newContractor.requestedBy != null">&nbsp;
 							<a href="ContractorSimulator.action<s:if test="newContractor.requestedBy.id > 0">?operatorIds=<s:property value="newContractor.requestedBy.id" /></s:if>" id="contractorSimulatorLink"><s:if test="newContractor.requestedBy.id > 0">Run </s:if>Contractor Simulator</a><br />
 						</s:if>
 					</li>
@@ -455,41 +457,44 @@ function getMatches(requestID) {
 						<li id="loadUsersList"></li>
 					</s:else>
 					<s:if test="newContractor.requestedByUser != null && newContractor.id > 0">
-						<li><label>Add to Watchlist:</label>
+						<li><label><s:text name="%{scope}.label.AddToWatchlist" />:</label>
 							<s:checkbox name="newContractor.watch" />
 							<div class="fieldhelp">
-								<h3>Add To Watchlist</h3>
-								When a contractor in the PICS database is associated with this request, <s:property value="newContractor.requestedByUser.name" /> will be able to watch <s:property value="newContractor.name" /> on their watchlist.
+								<h3><s:text name="%{scope}.label.AddToWatchlist" /></h3>
+								<p><s:text name="%{scope}.help.Watchlist">
+									<s:param><s:property value="newContractor.requestedByUser.name" /></s:param>
+									<s:param><s:property value="newContractor.name" /></s:param>
+								</s:text></p>
 							</div>
 							<s:if test="!contractorWatch && newContractor.watch">
-								<div class="alert">This user does not have the Contractor Watch permission.</div>
+								<div class="alert"><s:text name="%{scope}.message.MissingWatchPermission" /></div>
 							</s:if>
 						</li>
 					</s:if>
-					<li><label>Registration Deadline:</label> <input id="regDate" name="newContractor.deadline" type="text"
+					<li><label><s:text name="%{scope}.label.RegistrationDeadline" />:</label> <input id="regDate" name="newContractor.deadline" type="text"
 						class="datepicker" size="10"
 						value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" onchange="checkDate()" />
 					</li>
 				</ol>
 				</fieldset>
 				<fieldset class="form">
-				<h2 class="formLegend">Contact Summary</h2>
+				<h2 class="formLegend"><s:text name="%{scope}.header.ContactSummary" /></h2>
 				<ol>
 					<s:if test="newContractor.id > 0">
-						<li><label>Last Contacted By:</label>
+						<li><label><s:text name="%{scope}.label.LastContactedBy" />:</label>
 							<s:property value="newContractor.lastContactedBy.name" /><br /></li>
-						<li><label>Date	Contacted:</label>
-							<s:date name="newContractor.lastContactDate" format="MM/dd/yyyy" /><br /></li>
+						<li><label><s:text name="%{scope}.label.DateContacted" />:</label>
+							<s:date name="newContractor.lastContactDate" /><br /></li>
 					</s:if>
 					<s:if test="newContractor.id > 0">
 						<s:if test="permissions.admin">
-							<li><label>Who should follow up?:</label>
-								<s:radio list="#{'PICS':'PICS','Operator':'Operator'}" name="newContractor.handledBy" theme="pics"/>
+							<li><label><s:text name="%{scope}.label.FollowUp" />:</label>
+								<s:radio list="#{'PICS':'PICS','Operator':getText('global.Operator')}" name="newContractor.handledBy" theme="pics"/>
 							</li>
 						</s:if>
-						<li><label># of Times Contacted:</label>
+						<li><label><s:text name="%{scope}.label.TimesContacted" />:</label>
 							<s:property value="newContractor.contactCount"/></li>
-						<li><label>Matches Found in PICS:</label>
+						<li><label><s:text name="%{scope}.label.MatchesFound" />:</label>
 							<s:if test="newContractor.matchCount > 0 && newContractor.open">
 								<a href="#potentialMatches" onclick="getMatches(<s:property value="newContractor.id" />);"><s:property value="newContractor.matchCount"/></a>
 							</s:if>
@@ -497,12 +502,12 @@ function getMatches(requestID) {
 								<s:property value="newContractor.matchCount" />
 							</s:else>
 						</li>
-						<li><label>PICS Contractor:</label>
+						<li><label><s:text name="%{scope}.label.PICSContractor" />:</label>
 							<s:if test="permissions.admin">
 								<s:textfield value="%{newContractor.contractor.name}" id="matchedContractor" size="20" />
 								<div class="fieldhelp">
-									<h3>Return To Operator</h3>
-									After you enter in a contractor and save, this request will be automatically returned to the operator.
+									<h3><s:text name="%{scope}.button.ReturnToOperator" /></h3>
+									<p><s:text name="%{scope}.help.ReturnToOperator" /></p>
 								</div>
 							</s:if>
 							<s:if test="newContractor.contractor != null">
@@ -511,7 +516,7 @@ function getMatches(requestID) {
 							</s:if>
 						</li>
 					</s:if>
-					<li><label>Notes:</label>
+					<li><label><s:text name="global.Notes" />:</label>
 						<s:if test="permissions.admin">
 							<s:select headerKey="0" headerValue="Select a preformatted note to add it to the Notes section" 
 								list="noteReason" id="noteReason" onchange="fillNotes()" cssStyle="margin-bottom: 10px;" />
@@ -520,8 +525,8 @@ function getMatches(requestID) {
 							<s:textarea name="addToNotes" cols="30" rows="3" id="addToNotes" />
 						</div>
 						<div class="fieldhelp">
-						<h3>Notes</h3>
-						<p>Information about this registration request</p>
+						<h3><s:text name="global.Notes" /></h3>
+						<p><s:text name="%{scope}.help.Notes" /></p>
 						</div>
 					</li>
 					<li>
@@ -538,12 +543,12 @@ function getMatches(requestID) {
 		</tr>
 	</table>
 	<fieldset class="forms submit">
-	  	<input type="submit" class="picsbutton positive" name="button" value="Save" />
+	  	<input type="submit" class="picsbutton positive" name="button" value="<s:text name="button.Save" />" />
 	  	<s:if test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0) || newContractor.handledBy.toString() == 'Operator'">
-		  	<input type="submit" class="picsbutton negative" name="button" value="Close Request" />
+		  	<input type="submit" class="picsbutton negative" name="button" value="<s:text name="%{scope}.button.CloseRequest" />" />
 		</s:if>
 		<s:elseif test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">
-			<input type="submit" class="picsbutton" name="button" value="Return To Operator" />
+			<input type="submit" class="picsbutton" name="button" value="<s:text name="%{scope}.button.ReturnToOperator" />" />
 		</s:elseif>
 	</fieldset>
 </s:form>

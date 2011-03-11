@@ -67,6 +67,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected ContractorAccountDAO contractorAccountDAO;
 	protected AccountDAO accountDAO;
 	protected UserAssignmentDAO csrDAO;
+	protected EmailTemplateDAO templateDAO;
 
 	protected boolean redirect = false;
 	protected int conID;
@@ -113,7 +114,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public RequestNewContractor(ContractorRegistrationRequestDAO crrDAO, OperatorAccountDAO operatorAccountDAO,
 			UserDAO userDAO, CountryDAO countryDAO, StateDAO stateDAO, ContractorAccountDAO contractorAccountDAO,
-			AccountDAO accountDAO, UserAssignmentDAO csrDAO) {
+			AccountDAO accountDAO, UserAssignmentDAO csrDAO, EmailTemplateDAO templateDAO) {
 		this.crrDAO = crrDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.userDAO = userDAO;
@@ -122,6 +123,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.accountDAO = accountDAO;
 		this.csrDAO = csrDAO;
+		this.templateDAO = templateDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -155,7 +157,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		if (!forceLogin())
 			return LOGIN;
 
-		EmailTemplateDAO templateDAO = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
 		template = templateDAO.find(83);
 
 		if (button != null) {
@@ -232,10 +233,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					if (state == null || Strings.isEmpty(state.getIsoCode()))
 						addActionError("Please select a State");
 				}
-				// One of phone OR email is required.
-				if (Strings.isEmpty(newContractor.getPhone()) && Strings.isEmpty(newContractor.getEmail()))
-					addActionError("Contact information is required. Please enter in a phone number and/or email address.");
-				if (!Strings.isEmpty(newContractor.getEmail()) && !Strings.isValidEmail(newContractor.getEmail()))
+				if (Strings.isEmpty(newContractor.getEmail()) || !Strings.isValidEmail(newContractor.getEmail()))
 					addActionError("Please fill in a Valid Email Address");
 				// There are errors, just exit out
 				if (getActionErrors().size() > 0)
