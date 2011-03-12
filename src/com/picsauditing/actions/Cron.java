@@ -235,6 +235,14 @@ public class Cron extends PicsActionSupport {
 		} catch (Throwable t) {
 			handleException(t);
 		}
+
+		try {
+			startTask("\nApproving Permitted Flag Changes");
+			approvePermittedFlagChanges();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
 		
 		try {
 			startTask("\nEmailing Flag Changes Report to Account Managers...");
@@ -466,6 +474,35 @@ public class Cron extends PicsActionSupport {
 		}
 	}
 
+	public void approvePermittedFlagChanges() throws Exception {
+		StringBuilder query = new StringBuilder();
+
+		// Ignore Clear Flag Changes 
+		query.append("update generalcontractors ");
+		query.append("set baselineFlag = flag, ");
+		query.append("baselineFlagDetail = flagDetail, ");
+		query.append("baselineApproved = now(), ");
+		query.append("baselineApprover = 1 ");
+		query.append("WHERE flag != baselineFlag ");
+		query.append("AND baselineFlag = 'Clear' ");
+
+		Database db = new Database();
+		db.executeUpdate(query.toString());
+
+		// Ignore Flag Changes that are a week old or longer 
+		query = new StringBuilder();
+		query.append("update generalcontractors ");
+		query.append("set baselineFlag = flag, ");
+		query.append("baselineFlagDetail = flagDetail, ");
+		query.append("baselineApproved = now(), ");
+		query.append("baselineApprover = 1 ");
+		query.append("WHERE flag != baselineFlag ");
+		query.append("AND flagLastUpdated <= DATE_SUB(NOW(), INTERVAL 14 DAY))");
+		
+		db = new Database();
+		db.executeUpdate(query.toString());
+	}
+	
 	public void sendFlagChangesEmailToAccountManagers() throws Exception {
 		// Running Query
 		StringBuilder query = new StringBuilder();
