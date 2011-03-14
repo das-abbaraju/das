@@ -50,12 +50,7 @@
 			href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>"><s:text name="Audit.button.ScheduleAudit" /></a></li>
 	</s:if>
 	<li>
-		<table>
-			<tr>
-				<td><a class="print" href="#" onclick="printPreview(<s:property value="auditID"/>); return false;"><s:text name="Audit.button.PrintAll" /></td>
-				<td><a class="print" href="#" onclick="window.print(); return false;"><s:text name="Audit.button.PrintCategory" /></a></td>
-			</tr>
-		</table>
+		<a class="print" href="#" onclick="printPreview(<s:property value="auditID"/>); return false;"><s:text name="Audit.button.PrintAll" /></a>
 	</li>
 </ul>
 
