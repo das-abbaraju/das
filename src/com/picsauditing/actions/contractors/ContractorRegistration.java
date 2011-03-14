@@ -65,15 +65,15 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 	public ContractorRegistration(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO,
-			UserDAO userDAO, ContractorRegistrationRequestDAO requestDAO, FacilityChanger facilityChanger, Indexer indexer, StateDAO stateDAO,
-			UserLoginLogDAO userLoginLogDAO) {
+			UserDAO userDAO, ContractorRegistrationRequestDAO requestDAO, FacilityChanger facilityChanger,
+			Indexer indexer, StateDAO stateDAO, UserLoginLogDAO userLoginLogDAO) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
 		this.noteDAO = noteDAO;
 		this.userDAO = userDAO;
 		this.requestDAO = requestDAO;
-		//this.subHeading = "New Contractor Information";
+		// this.subHeading = "New Contractor Information";
 		this.facilityChanger = facilityChanger;
 		this.indexer = indexer;
 		this.stateDAO = stateDAO;
@@ -86,7 +86,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			addActionError("You must logout before trying to register a new contractor account");
 			return BLANK;
 		}
-		
+
 		if ("request".equalsIgnoreCase(button)) {
 			// check for basic rID...?
 			if (getParameter("rID") > 0)
@@ -94,7 +94,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			// Check for new requestID
 			if (requestID == 0)
 				requestID = getParameter("requestID");
-			
+
 			if (requestID > 0) {
 				ContractorRegistrationRequest crr = requestDAO.find(requestID);
 
@@ -182,8 +182,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			user.setLastLogin(new Date());
 			userDAO.save(user);
 			indexer.runSingle(user, "users");
-			
-			
+
 			// adding this user to the login log
 			String remoteAddress = ServletActionContext.getRequest().getRemoteAddr();
 
@@ -193,15 +192,15 @@ public class ContractorRegistration extends ContractorActionSupport {
 			loginLog.setSuccessful(permissions.isLoggedIn());
 			loginLog.setUser(user);
 			userLoginLogDAO.save(loginLog);
-			
+
 			// agreeing to contractor agreement terms as stated at the end of
 			// con_registration.jsp
 			contractor.setAgreedBy(user);
 			contractor.setAgreementDate(contractor.getCreationDate());
 			contractor.setPrimaryContact(user);
-			if(contractor.getState()!=null)
+			if (contractor.getState() != null)
 				contractor.setState(stateDAO.find(contractor.getState().getIsoCode()));
-			if(contractor.getCountry()!=null)
+			if (contractor.getCountry() != null)
 				contractor.setCountry(getCountryDAO().find(contractor.getCountry().getIsoCode()));
 			accountDao.save(contractor);
 			indexer.runSingle(accountDao.find(contractor.getId()), "accounts");
@@ -246,8 +245,8 @@ public class ContractorRegistration extends ContractorActionSupport {
 				crr.setOpen(false);
 				crr.setAuditColumns();
 				crr.setHandledBy(WaitingOn.Operator);
-				crr.setNotes(maskDateFormat(new Date()) + " - " + contractor.getPrimaryContact().getName() + 
-						" - Account created through completing a Registration Request\n\n" + crr.getNotes());
+				crr.setNotes(maskDateFormat(new Date()) + " - " + contractor.getPrimaryContact().getName()
+						+ " - Account created through completing a Registration Request\n\n" + crr.getNotes());
 				requestDAO.save(crr);
 
 				note = new Note();
@@ -260,14 +259,13 @@ public class ContractorRegistration extends ContractorActionSupport {
 				note.setViewableById(Account.EVERYONE);
 				noteDAO.save(note);
 			}
-			
-			if (contractor.isMaterialSupplier() && !contractor.isOnsiteServices() && !contractor.isOffsiteServices()) {
-				redirect("ContractorFacilities.action?id=" + contractor.getId() + 
-						(requestID > 0 ? "&requestID=" + requestID : ""));
-			}
 
-			redirect("ContractorRegistrationServices.action?id=" + contractor.getId() + 
-					(requestID > 0 ? "&requestID=" + requestID : ""));
+			if (contractor.isMaterialSupplier() && !contractor.isOnsiteServices() && !contractor.isOffsiteServices())
+				redirect("ContractorFacilities.action?id=" + contractor.getId()
+						+ (requestID > 0 ? "&requestID=" + requestID : ""));
+			else
+				redirect("ContractorRegistrationServices.action?id=" + contractor.getId()
+						+ (requestID > 0 ? "&requestID=" + requestID : ""));
 			return BLANK;
 		}
 
@@ -321,11 +319,11 @@ public class ContractorRegistration extends ContractorActionSupport {
 	public void setCountry(Country country) {
 		this.country = country;
 	}
-	
+
 	public int getRequestID() {
 		return requestID;
 	}
-	
+
 	public void setRequestID(int requestID) {
 		this.requestID = requestID;
 	}
