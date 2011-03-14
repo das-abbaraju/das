@@ -2,6 +2,11 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,6 +14,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -26,6 +32,9 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable {
 	private ListType listType;
 	private boolean allowsVelocity = false;
 	private boolean html = false;
+
+	private static final Set<Integer> PRIVATE_VALID_DEACTIVATED_EMAILS = new HashSet<Integer>(Arrays.asList(48, 51, 71,
+			85, 86));
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -104,6 +113,11 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable {
 
 	public void setHtml(boolean html) {
 		this.html = html;
+	}
+
+	@Transient
+	public static final Set<Integer> VALID_DEACTIVATED_EMAILS() {
+		return Collections.unmodifiableSet(PRIVATE_VALID_DEACTIVATED_EMAILS);
 	}
 
 }

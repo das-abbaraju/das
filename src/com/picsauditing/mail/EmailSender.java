@@ -5,6 +5,7 @@ import java.util.Date;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailStatus;
+import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -25,8 +26,9 @@ public class EmailSender {
 		boolean useSendGrid = true;
 		if (attempts > 2 || email.getToAddresses().endsWith("@picsauditing.com"))
 			useSendGrid = false;
-		
 		try {
+			if(checkDeactivated(email))
+				return;
 			if (useSendGrid) {
 				GridSender gridSender;
 				if (!Strings.isEmpty(email.getFromPassword())) {
@@ -75,6 +77,24 @@ public class EmailSender {
 		}
 	}
 
+	private boolean checkDeactivated(EmailQueue email) {
+		if (email.getContractorAccount() != null && email.getContractorAccount().getStatus().isDeactivated()) {
+			if (email.getEmailTemplate() != null
+					&& !EmailTemplate.VALID_DEACTIVATED_EMAILS().contains(email.getEmailTemplate().getId())) {
+				email.setStatus(EmailStatus.Error);
+				email.setSentDate(new Date());
+				PicsLogger.log("Skipping Email \nFROM: " + email.getFromAddress() + "\nTO: " + email.getToAddresses()
+						+ "\nSUBJECT: " + email.getSubject());
+				if (emailQueueDAO == null)
+					emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+
+				emailQueueDAO.save(email);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Send this through GMail or SendMail
 	 * 
@@ -84,6 +104,8 @@ public class EmailSender {
 	public void sendNow(EmailQueue email) throws Exception {
 		PicsLogger.start("EmailSender", email.getSubject() + " to " + email.getToAddresses());
 		try {
+			if(checkDeactivated(email))
+				return;
 			// Check all the addresses
 			if (email.getFromAddress2() == null)
 				email.setFromAddress("info@picsauditing.com");
