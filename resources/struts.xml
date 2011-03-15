@@ -2159,10 +2159,5 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 		
-		<action name="DemoAuditType" class="com.picsauditing.actions.demo.ManageAuditType">
-			<result>/struts/demo/audit_type.jsp</result>
-			<result name="input">/struts/demo/audit_type_edit.jsp</result>
-		</action>
-		
 	</package>
 </struts>
