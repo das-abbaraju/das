@@ -237,8 +237,8 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nApproving Permitted Flag Changes");
-			approvePermittedFlagChanges();
+			startTask("\nExpiring Flag Changes");
+			expireFlagChanges();
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
@@ -474,20 +474,8 @@ public class Cron extends PicsActionSupport {
 		}
 	}
 
-	public void approvePermittedFlagChanges() throws Exception {
+	public void expireFlagChanges() throws Exception {
 		StringBuilder query = new StringBuilder();
-
-		// Ignore Clear Flag Changes 
-		query.append("update generalcontractors ");
-		query.append("set baselineFlag = flag, ");
-		query.append("baselineFlagDetail = flagDetail, ");
-		query.append("baselineApproved = now(), ");
-		query.append("baselineApprover = 1 ");
-		query.append("WHERE flag != baselineFlag ");
-		query.append("AND baselineFlag = 'Clear' ");
-
-		Database db = new Database();
-		db.executeUpdate(query.toString());
 
 		// Ignore Flag Changes that are a week old or longer 
 		query = new StringBuilder();
@@ -499,7 +487,7 @@ public class Cron extends PicsActionSupport {
 		query.append("WHERE flag != baselineFlag ");
 		query.append("AND flagLastUpdated <= DATE_SUB(NOW(), INTERVAL 14 DAY)");
 		
-		db = new Database();
+		Database db = new Database();
 		db.executeUpdate(query.toString());
 	}
 	
