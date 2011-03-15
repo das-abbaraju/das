@@ -41,6 +41,7 @@ public class LoginController extends PicsActionSupport {
 	protected UserDAO userDAO;
 	protected UserLoginLogDAO loginLogDAO;
 
+	@Anonymous
 	@Override
 	public String execute() throws Exception {
 		if (button == null) {

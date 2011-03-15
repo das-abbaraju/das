@@ -25,6 +25,7 @@ import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorFlagETL;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -109,6 +110,7 @@ public class ContractorCron extends PicsActionSupport {
 		this.conAuditDAO = conAuditDAO;
 	}
 
+	@Anonymous
 	public String execute() throws Exception {
 		if (steps == null)
 			return SUCCESS;

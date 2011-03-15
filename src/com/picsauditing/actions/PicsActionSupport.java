@@ -18,9 +18,11 @@ import org.json.simple.JSONObject;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.access.SecurityAware;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -31,7 +33,7 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
-public class PicsActionSupport extends TranslationActionSupport implements RequestAware {
+public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware {
 
 	protected static String LOGIN_AJAX = "LoginAjax";
 	protected static String BLANK = "blank";
@@ -53,10 +55,21 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected Account account; // Current logged in user's account
 	private Set<User> auditorList;
 
-	// Should we put this in another file? so we don't always check in the PicsActionSupport file?
+	// Should we put this in another file? so we don't always check in the
+	// PicsActionSupport file?
 	public static final String getVersion() {
 		// Released 2011-03-03
 		return "5.4.1";
+	}
+
+	public boolean isLoggedIn(boolean anonymous) {
+		if (!anonymous) {
+			loadPermissions();
+			if (!permissions.isLoggedIn()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	protected void loadPermissions() {
@@ -134,11 +147,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return true;
 	}
 
-	protected void tryPermissions(OpPerms opPerms) throws Exception {
+	public void tryPermissions(OpPerms opPerms) throws NoRightsException {
 		permissions.tryPermission(opPerms, OpType.View);
 	}
 
-	protected void tryPermissions(OpPerms opPerms, OpType opType) throws Exception {
+	public void tryPermissions(OpPerms opPerms, OpType opType) throws NoRightsException {
 		loadPermissions();
 		permissions.tryPermission(opPerms, opType);
 	}
@@ -351,7 +364,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return URLUtils.getProtocol(ServletActionContext.getRequest());
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void setRequest(Map arg0) {
 		if (requestURL == null)
@@ -416,8 +429,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public String getPageTitle() {
 		return getActionName() + ".title";
 	}
-	
+
 	public boolean isStringEmpty(String s) {
 		return Strings.isEmpty(s);
 	}
+
 }

@@ -12,11 +12,13 @@
 		<interceptors>
 			<interceptor name="http2https" class="com.picsauditing.interceptors.PicsInterceptor"/>
 			<interceptor name="i18n" class="com.picsauditing.interceptors.I18nInterceptor"/>
+			<interceptor name="security" class="com.picsauditing.interceptors.SecurityInterceptor"/>
 		
 			<interceptor-stack name="picsStack">
 				<interceptor-ref name="exception"/>
                 <interceptor-ref name="alias"/> <!-- maybe we can kill this -->
                 <interceptor-ref name="servletConfig"/>
+                <interceptor-ref name="security"/>
                 <interceptor-ref name="prepare"/>
                 <interceptor-ref name="i18n"/>
                 <interceptor-ref name="chain"/>
@@ -58,6 +60,9 @@
 			<result name="blank">/struts/blank.jsp</result>
 			<result name="json">/struts/json.jsp</result>
 			<result name="chartXML">struts/chart_xml.jsp</result>
+			<result name="login_redirect" type="redirect">
+				Login.action
+			</result>
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception"
@@ -2152,6 +2157,11 @@
 		
 		<action name="FileIndexingEngine" class="com.picsauditing.actions.files.FileIndexingEngine">
 			<result>/struts/blank.jsp</result>
+		</action>
+		
+		<action name="DemoAuditType" class="com.picsauditing.actions.demo.ManageAuditType">
+			<result>/struts/demo/audit_type.jsp</result>
+			<result name="input">/struts/demo/audit_type_edit.jsp</result>
 		</action>
 		
 	</package>
