@@ -497,7 +497,7 @@ public class Cron extends PicsActionSupport {
 		query.append("baselineApproved = now(), ");
 		query.append("baselineApprover = 1 ");
 		query.append("WHERE flag != baselineFlag ");
-		query.append("AND flagLastUpdated <= DATE_SUB(NOW(), INTERVAL 14 DAY))");
+		query.append("AND flagLastUpdated <= DATE_SUB(NOW(), INTERVAL 14 DAY)");
 		
 		db = new Database();
 		db.executeUpdate(query.toString());
