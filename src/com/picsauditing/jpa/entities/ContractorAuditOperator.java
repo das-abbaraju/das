@@ -79,6 +79,7 @@ public class ContractorAuditOperator extends BaseTable {
 	@Transient
 	public void changeStatus(AuditStatus auditStatus, Permissions permissions) {
 		setAuditColumns(permissions);
+		setStatusChangedDate(new Date());
 		this.status = auditStatus;
 
 		if (audit.getAuditType().isPqf() || audit.getAuditType().isAnnualAddendum())
