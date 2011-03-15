@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../actionMessages.jsp" />
@@ -11,17 +12,17 @@ $(document).ready(function() {
 	<thead>
 		<tr>
 			<s:if test="!insurance">
-				<th>Category</th>
+				<th><s:text name="ManageFlagCriteriaOperator.header.Category" /></th>
 			</s:if>
-			<th>Description</th>
-			<th>Tag</th>
-			<th>Flag</th>
-			<th><nobr># Affected</nobr></th>
+			<th><s:text name="ManageFlagCriteriaOperator.header.Description" /></th>
+			<th><s:text name="ManageFlagCriteriaOperator.header.Tag" /></th>
+			<th><s:text name="ManageFlagCriteriaOperator.header.Flag" /></th>
+			<th><nobr><s:text name="ManageFlagCriteriaOperator.header.NumberAffected" /></nobr></th>
 			<s:if test="canEdit">
-				<th>Updated</th>
-				<th>View</th>
-				<th>Edit</th>
-				<th>Remove</th>
+				<th><s:text name="ManageFlagCriteriaOperator.header.Updated" /></th>
+				<th><s:text name="button.View" /></th>
+				<th><s:text name="button.Edit" /></th>
+				<th><s:text name="button.Remove" /></th>
 			</s:if>
 		</tr>
 	</thead>

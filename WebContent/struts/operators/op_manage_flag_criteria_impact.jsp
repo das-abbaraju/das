@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
@@ -6,13 +7,13 @@
 		<tr>
 			<th colspan="<s:property value="affected.get(0).flagData.criteria.allowCustomValue ? 3 : 2" />"><s:property value="flagCriteriaOperator.replaceHurdle"/></th>
 			<s:if test="override">
-				<th>Forced Flag</th>
+				<th><s:text name="ManageFlagCriteriaOperator.header.ForcedFlag" /></th>
 			</s:if>
 		</tr>
 	</thead>
 	<tbody>
 		<s:if test="affected.size() == 0">
-			<tr><td <s:property value="(affected.get(0).flagData.criteria.allowCustomValue ? 3 : 2) + (override ? 1 : 0)" />" class="center">No Contractors Affected</td></tr>
+			<tr><td <s:property value="(affected.get(0).flagData.criteria.allowCustomValue ? 3 : 2) + (override ? 1 : 0)" />" class="center"><s:text name="ManageFlagCriteriaOperator.message.NoContractorsAffected" /></td></tr>
 		</s:if>
 		<s:else>
 			<s:iterator value="affected" status="stat" id="fdo">
@@ -38,7 +39,7 @@
 			</s:iterator>
 			<tr><td colspan="<s:property value="(affected.get(0).flagData.criteria.allowCustomValue ? 3 : 2) + (override ? 1 : 0)" />" class="center">
 				<a href="#" onclick="downloadImpact(<s:property value="fcoID"/>, <s:property value="opID" />); return false;"
-					class="excel">Download this list</a></td></tr>
+					class="excel"><s:text name="ManageFlagCriteriaOperator.link.DownloadList" /></a></td></tr>
 		</s:else>
 	</tbody>
 </table>

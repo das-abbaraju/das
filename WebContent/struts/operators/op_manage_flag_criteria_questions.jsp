@@ -1,17 +1,18 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <table class="report">
 	<thead>
 		<tr>
-			<th>Add</th>
-			<th>Flag</th>
+			<th><s:text name="button.Add" /></th>
+			<th><s:text name="ManageFlagCriteriaOperator.header.Flag" /></th>
 			<s:if test="!insurance">
-				<th>Category</th>
+				<th><s:text name="ManageFlagCriteriaOperator.header.Category" /></th>
 			</s:if>
-			<th>Type</th>
-			<th>Description</th>
-			<th>Tag</th>
+			<th><s:text name="ManageFlagCriteriaOperator.header.Type" /></th>
+			<th><s:text name="ManageFlagCriteriaOperator.header.Description" /></th>
+			<th><s:text name="ManageFlagCriteriaOperator.header.Tag" /></th>
 		</tr>
 	</thead>
 	

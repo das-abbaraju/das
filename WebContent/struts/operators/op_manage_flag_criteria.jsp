@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Manage Flag Criteria</title>
+<title><s:text name="%{scope}.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
@@ -46,7 +46,6 @@ table.report a {
 }
 </style>
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/op_manage_flag_criteria.js"></script>
 <script type="text/javascript">
 function getFlag(selectObject) {
 	var flagColor = $(selectObject).find("option:selected").val();
@@ -60,17 +59,40 @@ function getFlag(selectObject) {
 	
 	var flagImage = $(selectObject.parentNode).find("span.flagImage img").replaceWith(flagColor);
 }
+
+var confirmRemoveCriteria = "<s:text name="ManageFlagCriteriaOperator.javascript.ConfirmRemoveCriteria" />";
+var addingCriteria = "<s:text name="ManageFlagCriteriaOperator.javascript.AddingCriteria" />";
+var savingChanges = "<s:text name="ManageFlagCriteriaOperator.javascript.SavingChanges" />";
+var loadingCriteria = "<s:text name="ManageFlagCriteriaOperator.javascript.LoadingCriteria" />";
+var impactedContractors = "<s:text name="ManageFlagCriteriaOperator.javascript.ImpactedContractors" />";
+var loadingAffected = "<s:text name="ManageFlagCriteriaOperator.javascript.LoadingAffected" />";
+var loadingLinked = "<s:text name="ManageFlagCriteriaOperator.javascript.LoadingLinked" />";
 </script>
+<script type="text/javascript" src="js/op_manage_flag_criteria.js"></script>
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
-<s:if test="permissions.operatorCorporate">
-	<s:if test="!insurance && !operator.equals(operator.inheritFlagCriteria)">
-		<div id="info">Flag Criteria inherited from <s:property value="operator.inheritFlagCriteria.name" /></div>
-	</s:if>
-	<s:if test="insurance && !operator.equals(operator.inheritInsuranceCriteria)">
-		<div id="info">Insurance Criteria inherited from <s:property value="operator.inheritInsuranceCriteria.name" /></div>
-	</s:if>
+<s:if test="permissions.operatorCorporate && ((insurance && !operator.equals(operator.inheritInsuranceCriteria)) || (!insurance && !operator.equals(operator.inheritFlagCriteria)))">
+	<div id="info">
+		<s:text name="ManageFlagCriteriaOperator.message.InheritedFrom">
+			<s:param>
+				<s:if test="insurance">
+					<s:text name="%{scope}.header.Insurance" />
+				</s:if>
+				<s:else>
+					<s:text name="%{scope}.header.Flag" />
+				</s:else>
+			</s:param>
+			<s:param>
+				<s:if test="insurance && !operator.equals(operator.inheritInsuranceCriteria)">
+					<s:property value="operator.inheritInsuranceCriteria.name" />
+				</s:if>
+				<s:elseif test="!insurance && !operator.equals(operator.inheritFlagCriteria)">
+					<s:property value="operator.inheritFlagCriteria.name" />
+				</s:elseif>
+			</s:param>
+		</s:text>
+	</div>
 </s:if>
 
 <div style="vertical-align: top">
@@ -86,22 +108,29 @@ function getFlag(selectObject) {
 					<s:if test="canEdit">
 						<nobr>
 							<pics:permission perm="ManageAudits">
-								<a href="ManageFlagCriteria.action">Manage Flag Criteria List</a> &nbsp;|&nbsp;
+								<a href="ManageFlagCriteria.action"><s:text name="ManageFlagCriteriaOperator.link.ManageFlagCriteria" /></a> &nbsp;|&nbsp;
 							</pics:permission>
-							<a href="#" onclick="getAddQuestions(); return false;" class="add">Add New Criteria</a>
+							<a href="#" onclick="getAddQuestions(); return false;" class="add"><s:text name="ManageFlagCriteriaOperator.link.AddNewCriteria" /></a>
 						</nobr>
 						<div id="addCriteria" style="display:none;"></div>
 					</s:if>
 				<span id="thinking"></span>
 				<s:if test="(permissions.corporate || permissions.admin) && operator.operatorFacilities.size() > 0">
 					<div id="corporateList">
-						<div class="info">
-							Below is a list of all accounts that are linked to your corporate account, together with the link to their flag criteria.
-							Click on the flag criteria links for more details.
-						</div>
+						<div class="info"><s:text name="ManageFlagCriteriaOperator.message.LinkedAccounts" /></div>
 						<div id="childCriteria"></div>
 						<table class="report">
-							<thead><tr><th colspan="2">Linked Accounts</th><th>Inherits <s:if test="insurance">Insurance</s:if><s:else>Flag</s:else> Criteria From</th></tr></thead>
+							<thead>
+								<tr>
+									<th colspan="2"><s:text name="ManageFlagCriteriaOperator.header.LinkedAccounts" /></th>
+									<th><s:text name="ManageFlagCriteriaOperator.header.InheritsFrom">
+										<s:param>
+											<s:if test="insurance"><s:text name="ManageInsuranceCriteriaOperator.header.Insurance" /></s:if>
+											<s:else><s:text name="ManageFlagCriteriaOperator.header.Flag" /></s:else>
+										</s:param>
+									</s:text></th>
+								</tr>
+							</thead>
 							<tbody>
 							<s:iterator status="stat" id="linked" value="operator.operatorFacilities">
 								<s:set name="facility" value="#linked.operator" />
@@ -124,16 +153,26 @@ function getFlag(selectObject) {
 						</table>
 					</div>
 				</s:if>
-				<s:if test="permissions.admin">
+				<s:if test="permissions.admin && ((insurance && !operator.equals(operator.inheritInsuranceCriteria)) || (!insurance && !operator.equals(operator.inheritFlagCriteria)))">
 					<div style="clear: left;">
-						<s:if test="!insurance && !operator.equals(operator.inheritFlagCriteria)">
-							Flag Criteria inherited from <a href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.inheritFlagCriteria.id" />">
-								<s:property value="operator.inheritFlagCriteria.name" /></a>
-						</s:if>
+						<s:text name="ManageFlagCriteriaOperator.message.InheritedFrom">
+							<s:param>
+								<s:if test="insurance">
+									<s:text name="ManageInsuranceCriteriaOperator.header.Insurance" />
+								</s:if>
+								<s:else>
+									<s:text name="ManageFlagCriteriaOperator.header.Flag" />
+								</s:else>
+							</s:param>
+						</s:text>
+						<s:set name="linkedOp" value="operator" />
 						<s:if test="insurance && !operator.equals(operator.inheritInsuranceCriteria)">
-							Insurance Criteria inherited from <a href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.inheritInsuranceCriteria.id" />">
-								<s:property value="operator.inheritInsuranceCriteria.name" /></a>
+							<s:set name="linkedOp" value="operator.inheritFlagCriteria" />
 						</s:if>
+						<s:elseif test="!insurance && !operator.equals(operator.inheritFlagCriteria)">
+							<s:set name="linkedOp" value="operator.inheritInsuranceCriteria" />
+						</s:elseif>
+						<a href="ManageFlagCriteriaOperator.action?id=<s:property value="#linkedOp.id" />&insurance=<s:property value="insurance" />"><s:property value="#linkedOp.name" /></a>
 					</div>
 				</s:if>
 			</td>

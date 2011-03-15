@@ -1,5 +1,5 @@
 function checkSubmit(criteriaID) {
-	var checked = confirm('Are you sure you want to remove this criteria?');
+	var checked = confirm(confirmRemoveCriteria);
 	var insurance = $("#form1_insurance").val();
 
 	if (checked == true) {
@@ -15,7 +15,7 @@ function addCriteria(criteriaID) {
 	var fcOptions = $('#addCriteria tr#' + criteriaID).find('input,select').serialize();
 	
 	var insurance = $("#form1_insurance").val();
-	startThinking({div:'thinking', message:'Adding criteria...'});
+	startThinking({div:'thinking', message:addingCriteria});
 	
 	var data = {
 		button: 'add',
@@ -37,7 +37,7 @@ function submitHurdle(id) {
 	var insurance = $("#form1_insurance").val();
 	var fcoOptions = $("#criteriaDiv tr#" + id).find("input, select").serialize();
 	
-	startThinking({div:'thinking', message:'Saving changes...'});
+	startThinking({div:'thinking', message:savingChanges});
 	
 	var data = {
 		button: 'save',
@@ -58,7 +58,7 @@ function getAddQuestions() {
 			button: 'questions',
 			id: $('#form1_id').val()
 		};
-		startThinking({div:'thinking', message:'Fetching criteria...'});
+		startThinking({div:'thinking', message:loadingCriteria});
 		$('#addCriteria').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data, 
 			function() {
 				stopThinking({div:'thinking'});
@@ -94,7 +94,7 @@ function getImpact(fcoID, opID) {
 	};
 	
 	$('#impactDiv').empty();
-	startThinking({div:'thinking', message:'Getting impacted contractors...'});
+	startThinking({div:'thinking', message:impactedContractors});
 	$('#impactDiv').load('OperatorFlagsCalculatorAjax.action', data, 
 		function() {
 			$(this).show('slow');
@@ -116,7 +116,7 @@ function calculateImpact(fcoID, opID, newHurdle) {
 		opID: opID
 	};
 	
-	startThinking({div:'thinking', message:'Loading affected contractors...'});
+	startThinking({div:'thinking', message:loadingAffected});
 	$('#'+fcoID).find('span.newImpact').load('OperatorFlagsCalculatorAjax.action', data,
 		function() {
 			stopThinking({div:'thinking'});
@@ -158,7 +158,7 @@ function getChildCriteria(opID, opName) {
 			insurance: insurance
 		};
 		
-		startThinking({div:'thinking', message:'Loading linked facility criteria...'});
+		startThinking({div:'thinking', message:loadingLinked});
 		$('#childCriteria').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data, 
 			function() {
 				stopThinking({div:'thinking'});
