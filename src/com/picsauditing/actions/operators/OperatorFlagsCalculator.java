@@ -25,6 +25,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -32,6 +33,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorTag;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
@@ -277,22 +279,30 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 
 	static private List<BasicDynaBean> getResults(FlagCriteriaOperator fco, OperatorAccount op, Database db)
 			throws Exception {
+		List<Integer> children = new ArrayList<Integer>();
+		children.add(op.getId());
+		for (Facility f : op.getOperatorFacilities())
+			children.add(f.getOperator().getId());
+
 		SelectSQL sql = new SelectSQL("flag_criteria_contractor fcc");
-		sql.addJoin("JOIN accounts a ON a.id = fcc.conID");
+		sql.addJoin("JOIN accounts a ON a.id = fcc.conID AND a.status IN ('Active'"
+				+ (op.getStatus().isDemo() ? ",'Demo'" : "") + ")");
 		sql.addJoin("JOIN contractor_info c ON c.id = fcc.conID");
-		sql.addJoin("JOIN generalcontractors gc ON gc.subID = fcc.conID AND gc.genID = " + op.getId());
-		sql.addJoin("LEFT JOIN flag_data_override fdo ON fdo.conID = fcc.conID AND fdo.opID = gc.genID AND fdo.criteriaID = fcc.criteriaID");
+		sql.addJoin("JOIN generalcontractors gc ON gc.subID = fcc.conID AND gc.genID IN (" + Strings.implode(children)
+				+ ")");
+		// Get flag overrides set by operator/corporate or operator parents
+		// -- don't roll up operator flag overrides to corporate
+		sql.addJoin("LEFT JOIN flag_data_override fdo ON fdo.conID = fcc.conID AND fdo.opID IN ("
+				+ Strings.implode(op.getOperatorHeirarchy()) + ") AND fdo.criteriaID = fcc.criteriaID");
 		sql.addJoin("LEFT JOIN naics n on n.code = a.naics");
 		sql.addJoin("LEFT JOIN contractor_tag ct ON ct.conID = fcc.conID AND ct.tagID = "
 				+ (fco.getTag() != null ? fco.getTag().getId() : 0));
+
+		sql.addWhere("fcc.criteriaID = " + fco.getCriteria().getId());
+
 		sql.addField("n.lwcr");
 		sql.addField("n.trir");
 		sql.addField("n.code");
-		sql.addWhere("fcc.criteriaID = " + fco.getCriteria().getId());
-		if (op.getStatus().isDemo())
-			sql.addWhere("a.status IN ('Active','Demo')");
-		else
-			sql.addWhere("a.status = 'Active'");
 		sql.addField("fcc.conID");
 		sql.addField("a.name contractor_name");
 		sql.addField("a.acceptsBids");
@@ -301,6 +311,8 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		sql.addField("fcc.verified");
 		sql.addField("fdo.forceFlag");
 		sql.addField("ct.tagID");
+
+		sql.addGroupBy("a.id");
 		sql.addOrderBy("a.name");
 
 		return db.select(sql.toString(), false);
@@ -311,20 +323,38 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		Map<Integer, List<ContractorAudit>> auditMap = new HashMap<Integer, List<ContractorAudit>>();
 		if (results.size() > 0) {
 			if (fco.getCriteria().getAuditType() != null) {
+				// Use the operator we're viewing for pulling up
+				// audits/calculating affected contractors -- does it matter who
+				// the flag criteria belongs to?
 				Set<String> conIDs = new HashSet<String>();
 				for (BasicDynaBean row : results) {
 					conIDs.add(row.get("conID").toString());
 				}
 				SelectSQL sql2 = new SelectSQL("contractor_audit_operator cao");
-				sql2.addJoin("JOIN contractor_audit ca ON ca.id = cao.auditID");
+				sql2.addJoin("JOIN contractor_audit ca ON ca.id = cao.auditID AND ca.conID IN ("
+						+ Strings.implode(conIDs) + ") AND ca.expiresDate > NOW()");
+				sql2.addJoin("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id AND caop.opID = "
+						+ op.getId());
+
+				sql2.addWhere("cao.visible = 1");
+
 				sql2.addField("ca.auditTypeID");
 				sql2.addField("ca.conID");
 				sql2.addField("cao.status");
-				sql2.addWhere("ca.conID IN (" + Strings.implode(conIDs) + ")");
-				sql2.addWhere("cao.opID = " + fco.getOperator().getId());
-				sql2.addWhere("ca.expiresDate > NOW()");
-				// caop
-				sql2.addJoin("JOIN contractor_audit_operator_permission caop ON cao.id = caop.caoID AND cao.opID = caop.opID");
+				// Always add the PICS corporate umbrella
+				Set<Integer> viewableOps = new HashSet<Integer>(Account.PICS_CORPORATE);
+				if (op.isOperator()) {
+					// If I'm an operator, show audits created for myself, my
+					// corporate
+					viewableOps.addAll(op.getOperatorHeirarchy());
+				} else {
+					// If I'm corporate, show audits created for myself, my
+					// facilities
+					for (Facility f : op.getOperatorFacilities())
+						viewableOps.add(f.getOperator().getId());
+				}
+
+				sql2.addWhere("cao.opID IN (" + Strings.implode(viewableOps) + ")");
 
 				List<BasicDynaBean> auditResults = db.select(sql2.toString(), false);
 				for (BasicDynaBean row : auditResults) {
@@ -338,7 +368,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 						cao.changeStatus(AuditStatus.valueOf(row.get("status").toString()), permissions);
 						ca.setOperators(new ArrayList<ContractorAuditOperator>());
 						ca.getOperators().add(cao);
-						
+
 						ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
 						caop.setCao(cao);
 						caop.setOperator(op);
@@ -373,7 +403,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 				contractor.getNaics().setLwcr(Database.toFloat(row, "lwcr"));
 				contractor.getNaics().setTrir(Database.toFloat(row, "trir"));
 				contractor.getNaics().setCode(row.get("code").toString());
-				
+
 				if (row.get("tagID") != null) {
 					int tagID = Database.toInt(row, "tagID");
 					OperatorTag tag = new OperatorTag();
