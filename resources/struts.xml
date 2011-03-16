@@ -60,9 +60,6 @@
 			<result name="blank">/struts/blank.jsp</result>
 			<result name="json">/struts/json.jsp</result>
 			<result name="chartXML">struts/chart_xml.jsp</result>
-			<result name="login_redirect" type="redirect">
-				Login.action
-			</result>
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception"

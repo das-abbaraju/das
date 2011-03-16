@@ -65,7 +65,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public boolean isLoggedIn(boolean anonymous) {
 		if (!anonymous) {
 			loadPermissions();
-			if (!permissions.isLoggedIn()) {
+			if (!forceLogin()) {
 				return false;
 			}
 		}

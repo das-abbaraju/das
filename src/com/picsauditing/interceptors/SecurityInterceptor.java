@@ -1,16 +1,13 @@
 package com.picsauditing.interceptors;
 
-import javax.servlet.http.Cookie;
-
-import org.apache.struts2.ServletActionContext;
-
 import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.access.SecurityAware;
 
 @SuppressWarnings("serial")
-public class SecurityInterceptor extends com.opensymphony.xwork2.interceptor.I18nInterceptor {
+public class SecurityInterceptor extends AbstractInterceptor {
 
 	@Override
 	public String intercept(ActionInvocation invocation) throws Exception {
@@ -20,9 +17,7 @@ public class SecurityInterceptor extends com.opensymphony.xwork2.interceptor.I18
 			boolean anonymous = action.getClass().getMethod(invocation.getProxy().getMethod())
 					.isAnnotationPresent(Anonymous.class);
 			if (!action.isLoggedIn(anonymous)) {
-				ServletActionContext.getResponse().addCookie(
-						new Cookie("from", ServletActionContext.getRequest().getRequestURI()));
-				return "login_redirect";
+				return null;
 			}
 
 			boolean requiresPermissions = action.getClass().getMethod(invocation.getProxy().getMethod())
