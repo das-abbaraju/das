@@ -64,11 +64,15 @@ public class OperatorAccount extends Account {
 
 	public OperatorAccount() {
 		this.type = "Operator";
+		this.offsiteServices = true;
+		this.materialSupplier = true;
 	}
 
 	public OperatorAccount(String name) {
 		this.name = name;
 		this.type = "Operator";
+		this.offsiteServices = true;
+		this.materialSupplier = true;
 	}
 	
 	@Transient
