@@ -9,6 +9,7 @@ import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.PICS.FacilityChanger;
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.Indexer;
@@ -80,6 +81,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		this.userLoginLogDAO = userLoginLogDAO;
 	}
 
+	@Anonymous
 	public String execute() throws Exception {
 		loadPermissions(false);
 		if (permissions.isLoggedIn()) {
