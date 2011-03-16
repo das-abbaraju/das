@@ -1,7 +1,6 @@
 package com.picsauditing.actions.chart;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import com.picsauditing.PICS.DateBean;
@@ -74,7 +73,7 @@ public class GraphEmrRates extends ChartMSAction {
 		}
 		
 		if(operatorIDs.length > 0) {
-			sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = (" + Strings.implode(operatorIDs,",") +"))");
+			sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN (" + Strings.implode(operatorIDs,",") +"))");
 		}
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 		sql.addWhere("1 " + permQuery.toString());

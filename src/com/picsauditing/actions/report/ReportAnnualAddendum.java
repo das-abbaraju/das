@@ -18,6 +18,8 @@ public class ReportAnnualAddendum extends ReportContractorAuditOperator {
 		super.buildQuery();
 		sql.addWhere("ca.auditTypeID = 11");
 		
+		sql.addGroupBy("c.id");
+		
 		String auditFor = Strings.implodeForDB(getFilter().getAuditFor(), ",");
 		if (!Strings.isEmpty(auditFor))
 			sql.addWhere("ca.auditFor IN ("+ auditFor + ")");
