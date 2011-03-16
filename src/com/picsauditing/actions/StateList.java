@@ -1,5 +1,7 @@
 package com.picsauditing.actions;
 
+import com.picsauditing.access.Anonymous;
+
 @SuppressWarnings("serial")
 public class StateList extends AccountActionSupport {
 	private String countryString;
@@ -7,6 +9,7 @@ public class StateList extends AccountActionSupport {
 	private String prefix;
 
 	@Override
+	@Anonymous
 	public String execute() throws Exception {
 
 		return SUCCESS;
