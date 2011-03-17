@@ -1,3 +1,2 @@
-<#include "/${parameters.templateDir}/form/translate-label.ftl" />
-<#include "/${parameters.templateDir}/simple/text.ftl" />
-<#include "/${parameters.templateDir}/${parameters.theme}/fieldhelp.ftl" />
+<#include "/${parameters.templateDir}/form/text.ftl" />
+<#include "/${parameters.templateDir}/formhelp/fieldhelp.ftl" />

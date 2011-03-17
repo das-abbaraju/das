@@ -1,4 +1,4 @@
-<#include "/${parameters.templateDir}/${parameters.theme}/translate-label.ftl" />
+<#include "/${parameters.templateDir}/form/translate-label.ftl" />
 <#setting number_format="#.#####">
 <select<#rt/>
  name="${parameters.name?default("")?html}"<#rt/>
