@@ -1,5 +1,10 @@
 <#if parameters.label??>
-	<label><@s.text name="${parameters.label}"/>:</label>
+	<#assign labelValue>
+		<@s.text name="%{parameters.label}"/>
+	</#assign>
 <#else>
-	<label> <@s.text name="%{getTranslationName(parameters.name)}"/>:</label>
+	<#assign labelValue>
+		<@s.text name="%{getTranslationName(parameters.name)}"/>
+	</#assign>
 </#if>
+<label>${labelValue}:</label>

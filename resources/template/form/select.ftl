@@ -39,7 +39,7 @@
 	selected="selected"
 	</#if>
 	value="${parameters.headerKey?default("")}"
-	>- <@s.text name="%{getTranslationName(parameters.name)}"/> -
+	>- ${labelValue} -
 </#if>
 </option>
 <@s.iterator value="parameters.list">
