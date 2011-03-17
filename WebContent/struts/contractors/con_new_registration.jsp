@@ -55,11 +55,6 @@ pre {
 	word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 
-#requestTable tr td {
-	width: 50%;
-	vertical-align: top;
-}
-
 #addToNotes {
 	margin-bottom: 10px;
 }
@@ -329,221 +324,220 @@ function getMatches(requestID) {
 <s:form id="saveContractorForm">
 	<s:hidden name="requestID"/>
 	<s:hidden name="conID" id="conID" />
-	<table id="requestTable" style="width: 100%;">
-		<tr>
-			<td>
-				<fieldset class="form">
-				<h2 class="formLegend"><s:text name="%{scope}.header.CompanyInformation" /></h2>
-				<ol>
-					<li><label><s:text name="%{scope}.label.CompanyName" />:</label>
-						<s:textfield cssClass="checkReq" name="newContractor.name" size="35" />
-						<div id="think_name"></div>
-						<div id="match_name"></div>
-					</li>
-					<li><label><s:text name="%{scope}.label.ContactName" />:</label>
-						<s:textfield cssClass="checkReq" name="newContractor.contact" />
-						<div id="think_contact"></div>
-						<div id="match_contact"></div>
-					</li>
-					<li>
-						<label><s:text name="User.phone" />:</label>
-						<s:textfield cssClass="checkReq" name="newContractor.phone" size="20" />
-						<s:if test="newContractor.id > 0 && newContractor.phone != null && newContractor.phone.length() > 0 && !permissions.operatorCorporate">
-							<input type="submit" class="picsbutton" name="button" value="<s:text name="%{scope}.button.ContactedByPhone" />" />
-						</s:if>
-						<div class="fieldhelp">
-							<h3><s:text name="User.phone" /></h3>
-							<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="User.phone" /></s:param></s:text></p>
-						</div>
-						<div id="think_phone"></div>
-						<div id="match_phone"></div>
-					</li>
-					<li><label for="email"><s:text name="User.email" />:</label>
-						<s:textfield cssClass="checkReq" name="newContractor.email" size="30" id="email" />
-						<s:if test="newContractor.id > 0 && newContractor.email.length() > 0 && !permissions.operatorCorporate">
-							<input type="button" onclick="$('#email_preview').toggle(); return false;" class="picsbutton" value="<s:text name="%{scope}.button.EditEmail" />" />
-							<table id="email_preview">
-								<tr>
-									<td>
-										<s:if test="formsViewable && attachment == null && forms.size() > 0">
-											<a href="#operatorForms" class="add fancybox" title="Add Attachment" onclick="return false;"><s:text name="%{scope}.link.AddAttachment" /></a>
-										</s:if>
-									</td>
-									<td>
-										<s:if test="formsViewable && attachment == null && forms.size() > 0">
-											<div id="attachment"></div>
-										</s:if>
-									</td>
-								</tr>
-								<tr>
-									<td><s:text name="%{scope}.header.Subject" />: <input id="email_subject" name="emailSubject" value="<s:property value="emailSubject" />" size="30"/></td>
-									<td><s:text name="%{scope}.header.Fields" />: <s:select list="tokens" onchange="addToken(this.value);"></s:select></td>
-								</tr>
-								<tr><td colspan="2">
-									<s:textarea cols="120" rows="10" name="emailBody" id="email_body" cssStyle="width: 600px;"></s:textarea>
-								</td></tr>
-								<tr><td colspan="2"><input type="submit" name="button" class="picsbutton positive" value="<s:text name="button.SendEmail" />" /></td></tr>
-							</table>
-						</s:if>
-						<div id="think_email"></div>
-						<div id="match_email"></div>
-					</li>
-					<li><label for="taxID"><s:text name="%{scope}.label.TaxID" />:</label>
-						<s:textfield cssClass="checkReq" name="newContractor.taxID" size="9" maxLength="9" id="taxID" />
-						<div class="fieldhelp">
-							<h3><s:text name="%{scope}.label.TaxID" /></h3>
-							<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="%{scope}.label.TaxID" /></s:param></s:text></p>
-						</div>
-						<div id="think_tax"></div>
-						<div id="match_tax"></div>
-					</li>
-					<s:if test="assignedCSR != null">
-						<li><label><s:text name="%{scope}.label.AssignedCSR" />:</label>
-							<nobr><s:property value="assignedCSR.name" /> / <s:property value="assignedCSR.phone"/></nobr>
-						</li>
-					</s:if>	
-				</ol>
-				</fieldset>
-				<fieldset class="form">
-				<h2 class="formLegend"><s:text name="global.PrimaryAddress" /></h2>
-				<ol>
-					 <li><label for="newContractorCountry"><s:text name="global.Country" />:</label>
-						<s:select
-							list="countryList" name="country.isoCode" id="newContractorCountry"
-							listKey="isoCode" listValue="name" value="%{newContractor.country.isoCode}"
-							onchange="countryChanged(this.value)" />
-					</li>
-					<li id="state_li"></li>
-					<li>
-						<label for="city"><s:text name="global.City" />:</label>
-						<s:textfield name="newContractor.city" size="20" id="city" cssClass="show-address"/>
-						<div class="fieldhelp">
-							<h3><s:text name="global.City" /></h3>
-							<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="global.City" /></s:param></s:text></p>
-						</div>
-					</li>
-					<li class="address-zip">
-						<label for="address"><s:text name="global.Address" />:</label>
-						<s:textfield name="newContractor.address" size="35" id="address" />
-						<div class="fieldhelp">
-						<h3><s:text name="global.Address" /></h3>
-						<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="global.Address" /></s:param></s:text></p>
-						</div>
-					</li>
-					<li class="address-zip">
-						<label for="zip"><s:text name="global.ZipPostalCode" />:</label><s:textfield name="newContractor.zip" size="7" id="zip" />
-						<div class="fieldhelp">
-						<h3><s:text name="global.ZipPostalCode" /></h3>
-						<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="global.ZipPostalCode" /></s:param></s:text></p>
-						</div>
-					</li>		
-				</ol>
-				</fieldset>
-				<fieldset class="form">
-				<h2 class="formLegend"><s:text name="%{scope}.header.RequestSummary" /></h2>
-				<ol>
-					<li><label><s:text name="%{scope}.label.RequestedByAccount" />:</label>
-						<s:select list="operatorsList" headerKey="0" headerValue="- Select a Operator -"
-							name="requestedOperator" onchange="updateUsersList();" listKey="id" listValue="name"
-							value="%{newContractor.requestedBy.id}" />
-						<s:if test="permissions.admin && newContractor.requestedBy != null">&nbsp;
-							<a href="ContractorSimulator.action<s:if test="newContractor.requestedBy.id > 0">?operatorIds=<s:property value="newContractor.requestedBy.id" /></s:if>" id="contractorSimulatorLink"><s:if test="newContractor.requestedBy.id > 0">Run </s:if>Contractor Simulator</a><br />
-						</s:if>
-					</li>
-					<s:if test="newContractor.requestedByUser != null || newContractor.requestedByUserOther != null">
-						<li id="loadUsersList"><script type="text/javascript">updateUsersList();</script></li>
-					</s:if>
-					<s:else>
-						<li id="loadUsersList"></li>
-					</s:else>
-					<s:if test="newContractor.requestedByUser != null && newContractor.id > 0">
-						<li><label><s:text name="%{scope}.label.AddToWatchlist" />:</label>
-							<s:checkbox name="newContractor.watch" />
-							<div class="fieldhelp">
-								<h3><s:text name="%{scope}.label.AddToWatchlist" /></h3>
-								<p><s:text name="%{scope}.help.Watchlist">
-									<s:param><s:property value="newContractor.requestedByUser.name" /></s:param>
-									<s:param><s:property value="newContractor.name" /></s:param>
-								</s:text></p>
-							</div>
-							<s:if test="!contractorWatch && newContractor.watch">
-								<div class="alert"><s:text name="%{scope}.message.MissingWatchPermission" /></div>
+	<fieldset class="form">
+	<h2 class="formLegend"><s:text name="%{scope}.header.CompanyInformation" /></h2>
+	<ol>
+		<li><label><s:text name="%{scope}.label.CompanyName" />:</label>
+			<s:textfield cssClass="checkReq" name="newContractor.name" size="35" />
+			<div id="think_name"></div>
+			<div id="match_name"></div>
+		</li>
+		<li><label><s:text name="%{scope}.label.ContactName" />:</label>
+			<s:textfield cssClass="checkReq" name="newContractor.contact" />
+			<div id="think_contact"></div>
+			<div id="match_contact"></div>
+		</li>
+		<li>
+			<label><s:text name="User.phone" />:</label>
+			<s:textfield cssClass="checkReq" name="newContractor.phone" size="20" />
+			<s:if test="newContractor.id > 0 && newContractor.phone != null && newContractor.phone.length() > 0 && !permissions.operatorCorporate">
+				<s:submit value="%{getText(scope + '.button.ContactedByPhone')}" action="%{scope}!phone" cssClass="picsbutton" />
+			</s:if>
+			<div class="fieldhelp">
+				<h3><s:text name="User.phone" /></h3>
+				<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="User.phone" /></s:param></s:text></p>
+			</div>
+			<div id="think_phone"></div>
+			<div id="match_phone"></div>
+		</li>
+		<li><label for="email"><s:text name="User.email" />:</label>
+			<s:textfield cssClass="checkReq" name="newContractor.email" size="30" id="email" />
+			<s:if test="newContractor.id > 0 && newContractor.email.length() > 0 && !permissions.operatorCorporate">
+				<input type="button" onclick="$('#email_preview').toggle(); return false;" class="picsbutton" value="<s:text name="%{scope}.button.EditEmail" />" />
+				<table id="email_preview">
+					<tr>
+						<td>
+							<s:if test="formsViewable && attachment == null && forms.size() > 0">
+								<a href="#operatorForms" class="add fancybox" title="Add Attachment" onclick="return false;"><s:text name="%{scope}.link.AddAttachment" /></a>
 							</s:if>
-						</li>
-					</s:if>
-					<li><label><s:text name="%{scope}.label.RegistrationDeadline" />:</label> <input id="regDate" name="newContractor.deadline" type="text"
-						class="datepicker" size="10"
-						value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" onchange="checkDate()" />
-					</li>
-				</ol>
-				</fieldset>
-				<fieldset class="form">
-				<h2 class="formLegend"><s:text name="%{scope}.header.ContactSummary" /></h2>
-				<ol>
-					<s:if test="newContractor.id > 0">
-						<li><label><s:text name="%{scope}.label.LastContactedBy" />:</label>
-							<s:property value="newContractor.lastContactedBy.name" /><br /></li>
-						<li><label><s:text name="%{scope}.label.DateContacted" />:</label>
-							<s:date name="newContractor.lastContactDate" /><br /></li>
-					</s:if>
-					<s:if test="newContractor.id > 0">
-						<s:if test="permissions.admin">
-							<li><label><s:text name="%{scope}.label.FollowUp" />:</label>
-								<s:radio list="#{'PICS':'PICS','Operator':getText('global.Operator')}" name="newContractor.handledBy" theme="pics"/>
-							</li>
-						</s:if>
-						<li><label><s:text name="%{scope}.label.TimesContacted" />:</label>
-							<s:property value="newContractor.contactCount"/></li>
-						<li><label><s:text name="%{scope}.label.MatchesFound" />:</label>
-							<s:if test="newContractor.matchCount > 0 && newContractor.open">
-								<a href="#potentialMatches" onclick="getMatches(<s:property value="newContractor.id" />);"><s:property value="newContractor.matchCount"/></a>
+						</td>
+						<td>
+							<s:if test="formsViewable && attachment == null && forms.size() > 0">
+								<div id="attachment"></div>
 							</s:if>
-							<s:else>
-								<s:property value="newContractor.matchCount" />
-							</s:else>
-						</li>
-						<li><label><s:text name="%{scope}.label.PICSContractor" />:</label>
-							<s:if test="permissions.admin">
-								<s:textfield value="%{newContractor.contractor.name}" id="matchedContractor" size="20" />
-								<div class="fieldhelp">
-									<h3><s:text name="%{scope}.button.ReturnToOperator" /></h3>
-									<p><s:text name="%{scope}.help.ReturnToOperator" /></p>
-								</div>
-							</s:if>
-							<s:if test="newContractor.contractor != null">
-								<a href="ContractorView.action?id=<s:property value="newContractor.contractor.id"/>">
-								<s:property value="newContractor.contractor.name"/></a>
-							</s:if>
-						</li>
-					</s:if>
-					<li><label><s:text name="global.Notes" />:</label>
-						<s:if test="permissions.admin">
-							<s:select headerKey="0" headerValue="Select a preformatted note to add it to the Notes section" 
-								list="noteReason" id="noteReason" onchange="fillNotes()" cssStyle="margin-bottom: 10px;" />
-						</s:if>
-						<div>
-							<s:textarea name="addToNotes" cols="30" rows="3" id="addToNotes" />
-						</div>
-						<div class="fieldhelp">
-						<h3><s:text name="global.Notes" /></h3>
-						<p><s:text name="%{scope}.help.Notes" /></p>
-						</div>
-					</li>
-					<li>
-						<div id="notesHere">
-							<pre id="addHere"></pre>
-							<s:if test="newContractor.notes.length() > 0">
-								<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
-							</s:if>
-						</div>					
-					</li>
-				</ol>
-				</fieldset>
-			</td>
-		</tr>
-	</table>
+						</td>
+					</tr>
+					<tr>
+						<td><s:text name="%{scope}.header.Subject" />: <input id="email_subject" name="emailSubject" value="<s:property value="emailSubject" />" size="30"/></td>
+						<td><s:text name="%{scope}.header.Fields" />: <s:select list="tokens" onchange="addToken(this.value);"></s:select></td>
+					</tr>
+					<tr><td colspan="2">
+						<s:textarea cols="120" rows="10" name="emailBody" id="email_body" cssStyle="width: 600px;"></s:textarea>
+					</td></tr>
+					<tr><td colspan="2">
+						<s:submit value="%{getText('button.SendEmail')}" action="%{scope}!email" cssClass="picsbutton positive" />
+					</td></tr>
+				</table>
+			</s:if>
+			<div id="think_email"></div>
+			<div id="match_email"></div>
+		</li>
+		<li><label for="taxID"><s:text name="%{scope}.label.TaxID" />:</label>
+			<s:textfield cssClass="checkReq" name="newContractor.taxID" size="9" maxLength="9" id="taxID" />
+			<div class="fieldhelp">
+				<h3><s:text name="%{scope}.label.TaxID" /></h3>
+				<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="%{scope}.label.TaxID" /></s:param></s:text></p>
+			</div>
+			<div id="think_tax"></div>
+			<div id="match_tax"></div>
+		</li>
+		<s:if test="assignedCSR != null">
+			<li><label><s:text name="%{scope}.label.AssignedCSR" />:</label>
+				<nobr><s:property value="assignedCSR.name" /> / <s:property value="assignedCSR.phone"/></nobr>
+			</li>
+		</s:if>	
+	</ol>
+	</fieldset>
+	<fieldset class="form">
+	<h2 class="formLegend"><s:text name="global.PrimaryAddress" /></h2>
+	<ol>
+		 <li><label for="newContractorCountry"><s:text name="global.Country" />:</label>
+			<s:select
+				list="countryList" name="country.isoCode" id="newContractorCountry"
+				listKey="isoCode" listValue="name" value="%{newContractor.country.isoCode}"
+				onchange="countryChanged(this.value)" />
+		</li>
+		<li id="state_li"></li>
+		<li>
+			<label for="city"><s:text name="global.City" />:</label>
+			<s:textfield name="newContractor.city" size="20" id="city" cssClass="show-address"/>
+			<div class="fieldhelp">
+				<h3><s:text name="global.City" /></h3>
+				<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="global.City" /></s:param></s:text></p>
+			</div>
+		</li>
+		<li class="address-zip">
+			<label for="address"><s:text name="global.Address" />:</label>
+			<s:textfield name="newContractor.address" size="35" id="address" />
+			<div class="fieldhelp">
+			<h3><s:text name="global.Address" /></h3>
+			<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="global.Address" /></s:param></s:text></p>
+			</div>
+		</li>
+		<li class="address-zip">
+			<label for="zip"><s:text name="global.ZipPostalCode" />:</label><s:textfield name="newContractor.zip" size="7" id="zip" />
+			<div class="fieldhelp">
+			<h3><s:text name="global.ZipPostalCode" /></h3>
+			<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="global.ZipPostalCode" /></s:param></s:text></p>
+			</div>
+		</li>		
+	</ol>
+	</fieldset>
+	<fieldset class="form">
+	<h2 class="formLegend"><s:text name="%{scope}.header.RequestSummary" /></h2>
+	<ol>
+		<li><label><s:text name="%{scope}.label.RequestedByAccount" />:</label>
+			<s:select list="operatorsList" headerKey="0" headerValue="- Select a Operator -"
+				name="requestedOperator" onchange="updateUsersList();" listKey="id" listValue="name"
+				value="%{newContractor.requestedBy.id}" />
+			<s:if test="permissions.admin && newContractor.requestedBy != null">&nbsp;
+				<a href="ContractorSimulator.action<s:if test="newContractor.requestedBy.id > 0">?operatorIds=<s:property value="newContractor.requestedBy.id" /></s:if>" id="contractorSimulatorLink"><s:if test="newContractor.requestedBy.id > 0">Run </s:if>Contractor Simulator</a><br />
+			</s:if>
+		</li>
+		<s:if test="newContractor.requestedByUser != null || newContractor.requestedByUserOther != null">
+			<li id="loadUsersList"><script type="text/javascript">updateUsersList();</script></li>
+		</s:if>
+		<s:else>
+			<li id="loadUsersList"></li>
+		</s:else>
+		<s:if test="newContractor.requestedByUser != null && newContractor.id > 0">
+			<li><label><s:text name="%{scope}.label.AddToWatchlist" />:</label>
+				<s:checkbox name="newContractor.watch" />
+				<div class="fieldhelp">
+					<h3><s:text name="%{scope}.label.AddToWatchlist" /></h3>
+					<p><s:text name="%{scope}.help.Watchlist">
+						<s:param><s:property value="newContractor.requestedByUser.name" /></s:param>
+						<s:param><s:property value="newContractor.name" /></s:param>
+					</s:text></p>
+				</div>
+				<s:if test="!contractorWatch && newContractor.watch">
+					<div class="alert"><s:text name="%{scope}.message.MissingWatchPermission" /></div>
+				</s:if>
+			</li>
+		</s:if>
+		<li><label><s:text name="%{scope}.label.RegistrationDeadline" />:</label> <input id="regDate" name="newContractor.deadline" type="text"
+			class="datepicker" size="10"
+			value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" onchange="checkDate()" />
+		</li>
+	</ol>
+	</fieldset>
+	<fieldset class="form">
+	<h2 class="formLegend"><s:text name="%{scope}.header.ContactSummary" /></h2>
+	<ol>
+		<s:if test="newContractor.id > 0">
+			<li><label><s:text name="%{scope}.label.LastContactedBy" />:</label>
+				<s:property value="newContractor.lastContactedBy.name" /><br /></li>
+			<li><label><s:text name="%{scope}.label.DateContacted" />:</label>
+				<s:date name="newContractor.lastContactDate" /><br /></li>
+		</s:if>
+		<s:if test="newContractor.id > 0">
+			<s:if test="permissions.admin">
+				<li><label><s:text name="%{scope}.label.FollowUp" />:</label>
+					<s:radio list="#{'PICS':'PICS','Operator':getText('global.Operator')}" name="newContractor.handledBy" theme="pics"/>
+				</li>
+			</s:if>
+			<li><label><s:text name="%{scope}.label.TimesContacted" />:</label>
+				<s:property value="newContractor.contactCount"/></li>
+			<li><label><s:text name="%{scope}.label.MatchesFound" />:</label>
+				<s:if test="newContractor.matchCount > 0 && newContractor.open">
+					<a href="#potentialMatches" onclick="getMatches(<s:property value="newContractor.id" />);"><s:property value="newContractor.matchCount"/></a>
+				</s:if>
+				<s:else>
+					<s:property value="newContractor.matchCount" />
+				</s:else>
+			</li>
+			<li><label><s:text name="%{scope}.label.PICSContractor" />:</label>
+				<s:if test="permissions.admin">
+					<s:textfield value="%{newContractor.contractor.name}" id="matchedContractor" size="20" />
+					<div class="fieldhelp">
+						<h3><s:text name="%{scope}.button.ReturnToOperator" /></h3>
+						<p><s:text name="%{scope}.help.ReturnToOperator" /></p>
+					</div>
+				</s:if>
+				<s:if test="newContractor.contractor != null">
+					<a href="ContractorView.action?id=<s:property value="newContractor.contractor.id"/>">
+					<s:property value="newContractor.contractor.name"/></a>
+				</s:if>
+			</li>
+		</s:if>
+		<li><label><s:text name="global.Notes" />:</label>
+			<s:if test="permissions.admin">
+				<s:select headerKey="0" headerValue="Select a preformatted note to add it to the Notes section" 
+					list="noteReason" id="noteReason" onchange="fillNotes()" cssStyle="margin-bottom: 10px;" />
+			</s:if>
+			<div>
+				<s:textarea name="addToNotes" cols="30" rows="3" id="addToNotes" />
+			</div>
+			<div class="fieldhelp">
+			<h3><s:text name="global.Notes" /></h3>
+			<p><s:text name="%{scope}.help.Notes" /></p>
+			</div>
+		</li>
+		<li>
+			<div id="notesHere">
+				<pre id="addHere"></pre>
+				<s:if test="newContractor.notes.length() > 0">
+					<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
+				</s:if>
+			</div>					
+		</li>
+		<s:if test="newContractor.id == 0">
+			<li><div class="info"><s:text name="%{scope}.message.AutoEmailOnSave" /></div></li>
+		</s:if>
+	</ol>
+	</fieldset>
 	<fieldset class="forms submit">
-	  	<input type="submit" class="picsbutton positive" name="button" value="<s:text name="button.Save" />" />
+		<s:submit value="%{getText('button.Save')}" action="%{scope}!save" cssClass="picsbutton positive" />
 	  	<s:if test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0) || newContractor.handledBy.toString() == 'Operator'">
 		  	<input type="submit" class="picsbutton negative" name="button" value="<s:text name="%{scope}.button.CloseRequest" />" />
 		</s:if>
