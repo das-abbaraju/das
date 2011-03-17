@@ -302,10 +302,12 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "trirAverage")
+	@Deprecated
 	public Float getTrirAverage() {
 		return trirAverage;
 	}
 
+	@Deprecated
 	public void setTrirAverage(Float trirAverage) {
 		this.trirAverage = trirAverage;
 	}
