@@ -31,9 +31,11 @@
 	Locale locale = TranslationActionSupport.getLocaleStatic();
 
 	boolean pageIsSecure = false;
-	if (request.getLocalPort() == 443)
+	if (request.isSecure())
 		pageIsSecure = true;
-	if (request.getLocalPort() == 81)
+	else if (request.getLocalPort() == 443)
+		pageIsSecure = true;
+	else if (request.getLocalPort() == 81)
 		pageIsSecure = true;
 	String protocol = pageIsSecure ? "https" : "http";
 	MenuComponent menu = PicsMenu.getMenu(permissions);
@@ -54,7 +56,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=<%=version%>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/contractorstatistics.css?v=<%=version%>" />
 
-<script type="text/javascript" src="<%= request.isSecure() ? "https" : "http" %>://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="<%= pageIsSecure ? "https" : "http" %>://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="js/chrome.js"></script>
 <script type="text/javascript" src="js/pics_main.js?v=<%=version%>"></script>
 <script type="text/javascript" src="js/notes.js?v=<%=version%>"></script>
