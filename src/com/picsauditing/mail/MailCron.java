@@ -2,6 +2,7 @@ package com.picsauditing.mail;
 
 import java.util.List;
 
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -26,6 +27,7 @@ public class MailCron extends PicsActionSupport {
 		this.emailQueueDAO = emailQueueDAO;
 	}
 
+	@Anonymous
 	public String execute() {
 		// No authentication required since this runs as a cron job
 		PicsLogger.start("EmailSender");
