@@ -50,13 +50,17 @@ public class QuestionSelect extends PicsActionSupport {
 			if (permissions.isOperator())
 				operatorIDs.addAll(permissions.getCorporateParent());
 
-			String whereRules = "WHERE include = 1 AND effectiveDate < NOW() AND expirationDate > NOW() "
+			String auditCatRules = "WHERE include = 0 AND effectiveDate < NOW() AND expirationDate > NOW() "
+				+ "AND (operatorAccount.id IN (" + Strings.implode(operatorIDs, ",")+ ")" +
+					" AND auditCategory.id in (t.id))";
+
+			String auditTypeRules = "WHERE include = 1 AND effectiveDate < NOW() AND expirationDate > NOW() "
 					+ "AND (operatorAccount IS NULL OR operatorAccount.id IN (" + Strings.implode(operatorIDs, ",")
 					+ "))";
-			String categoryClause = "SELECT auditCategory FROM AuditCategoryRule r " + whereRules;
-			String auditTypeClause = "SELECT auditType FROM AuditTypeRule r " + whereRules;
+			String categoryClause = "SELECT auditCategory FROM AuditCategoryRule r " + auditCatRules;
+			String auditTypeClause = "SELECT auditType FROM AuditTypeRule r " + auditTypeRules;
 
-			where += " AND t.category IN (" + categoryClause + ")";
+			where += " AND t.category NOT IN (" + categoryClause + ")";
 			where += " AND t.category.auditType IN (" + auditTypeClause + ")";
 		}
 
