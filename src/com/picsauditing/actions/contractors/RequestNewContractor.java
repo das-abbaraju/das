@@ -95,14 +95,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	private String[] names = new String[] { "ContractorName", "ContractorPhone", "ContractorEmail",
 			"RequestedByOperator", "RequestedByUser", "ContractorContactName", "ContractorTaxID", "ContractorAddress",
 			"ContractorCity", "ContractorState", "ContractorZip", "ContractorCountry", "CSRName", "CSREmail",
-			"CSRPhone", "Deadline", "RegistrationLink", "PICSSignature" };
-
-	private String[] velocityCodes = new String[] { "${newContractor.name}", "${newContractor.phone}",
-			"${newContractor.email}", "${newContractor.requestedBy.name}", "${requestedBy}",
-			"${newContractor.contact}", "${newContractor.taxID}", "${newContractor.address}", "${newContractor.city}",
-			"${newContractor.state.english}", "${newContractor.zip}", "${newContractor.country.english}",
-			"${csr.name}", "${csr.email}", "${csr.phone}", "${newContractor.deadline}", "${requestLink}",
-			"<PICSSignature>" };
+			"CSRPhone", "Deadline", "RegistrationLink", "PICSSignature", };
 
 	private String[] noteReason = new String[] { "The Contractor doesn't want to register",
 			"The contractor wants to register but keeps delaying", "The company is no longer in business",
@@ -323,9 +316,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			newContractor.setMatchCount(potentialMatches.size());
 
 		newContractor.setAuditColumns(permissions);
-		newContractor = crrDAO.save(newContractor);
 
 		if (newContractor.getId() == 0) {
+			newContractor = crrDAO.save(newContractor);
+
 			EmailQueue emailQueue = createEmail();
 			if (newContractor.getRequestedByUser() != null
 					&& !Strings.isEmpty(newContractor.getRequestedByUser().getEmail()))
@@ -337,6 +331,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 			return "backToReport";
 		}
+
+		newContractor = crrDAO.save(newContractor);
 
 		return SUCCESS;
 	}
@@ -503,10 +499,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				emailSubject = "";
 		}
 
-		for (int i = 0; i < velocityCodes.length; i++) {
-			emailSubject = emailSubject.replace(velocityCodes[i], "<" + names[i] + ">");
-		}
-
 		return emailSubject;
 	}
 
@@ -517,10 +509,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public String getEmailBody() {
 		if (emailBody == null) {
 			emailBody = template.getBody();
-		}
-
-		for (int i = 0; i < velocityCodes.length; i++) {
-			emailBody = emailBody.replace(velocityCodes[i], "<" + names[i] + ">");
 		}
 
 		return emailBody;
@@ -542,8 +530,11 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			temp.setState(newContractor.getState());
 			temp.setZip(newContractor.getZip());
 			UserAssignment ua = csrDAO.findByContractor(temp);
+
 			if (ua != null)
 				return ua.getUser();
+			else
+				return userDAO.find(8397); // Default to Valeree
 		}
 
 		return null;
