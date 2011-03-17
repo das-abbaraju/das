@@ -427,6 +427,20 @@
 			onclick="clearSelected('form1_auditStatus'); return false;">Clear</a>
 		</span></div>
 	</s:if>
+	
+	<s:if test="filter.showCaowStatus">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_caowStatus'); return false;">Status Workflow</a> =
+		<span id="form1_caowStatus_query">ALL</span><br />
+		<span id="form1_caowStatus_select" style="display: none"
+			class="clearLink"> <s:select id="form1_caowStatus"
+			list="filter.auditStatusList" cssClass="forms"
+			name="filter.caowStatus" multiple="true" size="5" /> <script
+			type="text/javascript">updateQuery('form1_caowStatus');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_caowStatus'); return false;">Clear</a>
+		</span></div>
+	</s:if>
 
 	<s:if test="filter.showAuditor">
 		<div class="filterOption"><a href="#"

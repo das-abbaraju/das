@@ -657,6 +657,24 @@
 			<result>struts/reports/cao_list_data.jsp</result>
 		</action>
 		
+		<action name="ReportCAOByStatusList"
+			class="com.picsauditing.actions.report.ReportContractorAuditOperatorWorkflow">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportCAOByStatusList</param>
+			<result>struts/reports/caow_list.jsp</result>
+		</action>
+		
+		<action name="ReportCAOByStatusListAjax"
+			class="com.picsauditing.actions.report.ReportContractorAuditOperatorWorkflow">
+			<result>struts/reports/caow_list_data.jsp</result>
+		</action>
+		
+		<action name="ReportCAOByStatusListCSV"
+			class="com.picsauditing.actions.report.ReportContractorAuditOperatorWorkflow">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+		
 		<action name="ReportWashingtonStateAudit"
 			class="com.picsauditing.actions.report.ReportWashingtonStateAudit">
 			<result>struts/reports/washington_state_list.jsp</result>
