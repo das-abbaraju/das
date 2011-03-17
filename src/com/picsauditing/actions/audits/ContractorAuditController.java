@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.ibm.icu.util.Calendar;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -22,6 +23,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Invoice;
@@ -332,6 +334,20 @@ public class ContractorAuditController extends AuditActionSupport {
 					}
 				}
 			}
+		}
+
+		return false;
+	}
+
+	public boolean isWillExpireInOneMonth() {
+		if (conAudit.getAuditType().isDesktop() || conAudit.getAuditType().isImplementation()) {
+			ContractorAccount con = conAudit.getContractorAccount();
+
+			Calendar oneMonth = Calendar.getInstance();
+			oneMonth.add(Calendar.MONTH, 1);
+
+			if (con.getPaymentExpires() != null && con.getPaymentExpires().before(oneMonth.getTime()) && !con.isRenew())
+				return true;
 		}
 
 		return false;

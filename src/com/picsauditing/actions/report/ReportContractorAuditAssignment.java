@@ -39,9 +39,10 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		sql.addField("ca2.expiresDate AS current_expiresDate");
 		sql.addJoin("LEFT JOIN contractor_audit ca2 ON " + "ca2.conID = a.id "
 				+ "AND ca2.auditTypeID = ca.auditTypeID AND atype.hasMultiple = 0 AND ca2.id != ca.id");
-		
-		sql.addWhere("ca.id IN (SELECT auditID FROM contractor_audit_operator WHERE visible = 1 AND status = 'Pending')");
-		
+
+		sql
+				.addWhere("ca.id IN (SELECT auditID FROM contractor_audit_operator WHERE visible = 1 AND status = 'Pending')");
+
 		if (getFilter().isUnScheduledAudits()) {
 			sql.addWhere("(ca.contractorConfirm IS NULL OR ca.auditorConfirm IS NULL) AND atype.isScheduled = 1");
 		} else {
@@ -53,6 +54,8 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		sql.addField("manual.comment AS mcomment");
 		sql.addField("manual.id AS mid");
 		sql.addWhere("manual.dateVerified IS NOT NULL");
+		sql.addWhere("(c.renew = 1) or (c.renew = 0 and c.paymentExpires is not null "
+				+ "and c.paymentExpires >= DATE_add(NOW(), INTERVAL 1 month))");
 		sql.addWhere("c.id not in (" + "select c.id from contractor_info c " + "join invoice i on i.accountID = c.id "
 				+ "join invoice_item ii on i.id = ii.invoiceID join invoice_fee invf on ii.feeID = invf.id "
 				+ "where invf.feeClass = 'Membership' and invf.id != 100 and invf.id != 4 and i.status = 'Unpaid'"

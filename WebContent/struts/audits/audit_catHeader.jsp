@@ -19,6 +19,9 @@
 	<s:if test="invoiceOverdue">
 		<div class="alert"><s:text name="Audit.message.OverdueInvoice" /></div>
 	</s:if>
+	<s:if test="permissions.admin && willExpireInOneMonth">
+		<div class="alert"><s:text name="Audit.message.WillExpireInOneMonth" /></div>
+	</s:if>
 </s:if>
 
 
