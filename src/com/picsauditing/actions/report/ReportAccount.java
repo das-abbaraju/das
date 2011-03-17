@@ -341,7 +341,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (f.isPendingPqfAnnualUpdate()) {
 			String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca "
-					+ "JOIN contractor_audit_operator cao ON cao.auditID = ca.id WHERE cao.status = 'Pending' AND cao.visible = 1 AND ca.auditTypeID IN (1,11))";
+					+ "JOIN contractor_audit_operator cao ON cao.auditID = ca.id WHERE cao.status IN ('Pending','Incomplete','Resubmit') AND cao.visible = 1 AND ca.auditTypeID IN (1,11))";
 			sql.addWhere(query);
 		}
 
