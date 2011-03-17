@@ -477,7 +477,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			note.setNoteCategory(NoteCategory.General);
 			note.setCanContractorView(false);
 			note.setViewableById(Account.EVERYONE);
-	
+
+			// If contractor risk level being raised, stamp the last upgrade date
+			if(riskLevel.compareTo(contractor.getRiskLevel()) > 0)
+				contractor.setLastUpgradeDate(new Date());
 			contractor.setRiskLevel(riskLevel);
 			noteDAO.save(note);
 		}

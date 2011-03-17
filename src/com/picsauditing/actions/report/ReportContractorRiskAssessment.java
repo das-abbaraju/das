@@ -64,6 +64,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 				note = new Note(cAccount, getUser(), "RiskLevel adjusted from " + cAccount.getRiskLevel().toString()
 						+ " to " + aData.getAnswer() + " for " + auditorNotes);
 				cAccount.setRiskLevel(LowMedHigh.valueOf(answer));
+				cAccount.setLastUpgradeDate(new Date());
 				cAccount.setAuditColumns(permissions);
 				contractorAccountDAO.save(cAccount);
 			} else
