@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-
 <html>
 <head>
 <title><s:text name="%{scope}.title" /></title>
@@ -539,10 +538,10 @@ function getMatches(requestID) {
 	<fieldset class="forms submit">
 		<s:submit value="%{getText('button.Save')}" action="%{scope}!save" cssClass="picsbutton positive" />
 	  	<s:if test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0) || newContractor.handledBy.toString() == 'Operator'">
-		  	<input type="submit" class="picsbutton negative" name="button" value="<s:text name="%{scope}.button.CloseRequest" />" />
+			<s:submit value="%{getText(scope + '.button.CloseRequest')}" action="%{scope}!close" cssClass="picsbutton negative" />
 		</s:if>
 		<s:elseif test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">
-			<input type="submit" class="picsbutton" name="button" value="<s:text name="%{scope}.button.ReturnToOperator" />" />
+			<s:submit value="%{getText(scope + '.button.ReturnToOperator')}" action="%{scope}!returnToOperator" cssClass="picsbutton" />
 		</s:elseif>
 	</fieldset>
 </s:form>

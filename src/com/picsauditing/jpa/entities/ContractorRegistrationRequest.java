@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -40,7 +41,8 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private int matchCount;
 	private String notes;
 	private ContractorAccount contractor;
-	// Assuming most operators want to watch their contractor after they register
+	// Assuming most operators want to watch their contractor after they
+	// register
 	private boolean watch = true;
 
 	public String getName() {
@@ -71,7 +73,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.requestedByUser = requestedByUser;
 	}
 
-	@Column(name="requestedByUser")
+	@Column(name = "requestedByUser")
 	public String getRequestedByUserOther() {
 		return requestedByUserOther;
 	}
@@ -113,7 +115,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.phone = phone;
 	}
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	public String getEmail() {
 		return email;
 	}
@@ -233,12 +235,17 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	public void setContractor(ContractorAccount con) {
 		this.contractor = con;
 	}
-	
+
 	public boolean isWatch() {
 		return watch;
 	}
-	
+
 	public void setWatch(boolean watch) {
 		this.watch = watch;
+	}
+
+	@Transient
+	public String getRequestedByUserString() {
+		return requestedByUser == null ? requestedByUserOther : requestedByUser.getName();
 	}
 }

@@ -10,7 +10,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
@@ -23,6 +25,7 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
@@ -34,6 +37,7 @@ import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
@@ -364,6 +368,86 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 
 	public String returnToOperator() {
+		// TODO email operator
+		if (newContractor.getRequestedByUser() != null || Strings.isValidEmail(newContractor.getRequestedByUserOther())) {
+			String[] lines = newContractor.getNotes().split("\n");
+			Map<Integer, List<String>> noteTable = new TreeMap<Integer, List<String>>();
+			for (int i = 0; i < lines.length; i++) {
+				if (!Strings.isEmpty(lines[i])) {
+					noteTable.put(i, new ArrayList<String>());
+					for (String column : lines[i].split(" - "))
+						noteTable.get(i).add(column);
+				}
+			}
+
+			User am = null;
+			for (AccountUser au : newContractor.getRequestedBy().getAccountUsers()) {
+				if (au.isCurrent() && au.getRole().equals(UserAccountRole.PICSAccountRep))
+					am = au.getUser();
+			}
+
+			String subject = "Unsuccessful in having " + newContractor.getName() + " register at PICS";
+			String notes = "<table style=\"border-collapse: collapse; border: 2px solid #012142; color: #4C4D4D; background: #f9f9f9; clear: both; margin-bottom: 10px; position: relative; z-index: 10;\"><thead><tr>"
+					+ "<th style=\"border: 1px solid #e0e0e0; text-align: center; font-weight: bold; background-color: #012142; color: #FFF; vertical-align: middle; padding: 4px; font-size: 13px; line-height: 15px;\">Date</th>"
+					+ "<th style=\"border: 1px solid #e0e0e0; text-align: center; font-weight: bold; background-color: #012142; color: #FFF; vertical-align: middle; padding: 4px; font-size: 13px; line-height: 15px;\">Customer Service</th>"
+					+ "<th style=\"border: 1px solid #e0e0e0; text-align: center; font-weight: bold; background-color: #012142; color: #FFF; vertical-align: middle; padding: 4px; font-size: 13px; line-height: 15px;\">Notes</th>"
+					+ "</tr></thead><tbody>";
+
+			for (Integer i : noteTable.keySet()) {
+				notes += "<tr>";
+
+				for (String cell : noteTable.get(i))
+					notes += "<td style=\"border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px; line-height: 15px;\">"
+							+ cell + "</td>";
+
+				notes += "</tr>";
+			}
+
+			notes += "</tbody></table>";
+
+			String body = "<html><head><title>" + subject + "</title></head><body>";
+			body += "<table style=\"border-bottom: 1px solid rgb(123, 160, 205);\" width=\"900px\" cellpadding=\"5\" cellspacing=\"0\">"
+					+ "<tr><td style=\"border: 1px solid rgb(93, 155, 206); background-color: rgb(93, 155, 206); "
+					+ "color: rgb(255, 255, 255); width: 900px; text-align: left; padding-left:1em\" colspan=\"2\">"
+					+ "<b>" + subject + "</b></td></tr>";
+			body += "<tr><td style=\"border-left: 1px solid rgb(93, 155, 206); "
+					+ "border-right: 1px solid rgb(93, 155, 206); width: 900px; text-align: left; "
+					+ "vertical-align: top; padding-left: 1em; padding-right: 1em;\" colspan=\"2\">"
+					+ "<p><img height=\"90\" width=\"205\" alt=\"logo-pics\" "
+					+ "src=\"http://www.picsauditing.com/wp-content/themes/PICS/style/images/logo-pics.jpg\">";
+			body += "<br/>Hello " + newContractor.getRequestedByUserString() + ",<br/><br/>";
+			body += getAssignedCSR().getName() + " at PICS was unsuccessful in having " + newContractor.getName()
+					+ " to register for your prequalification program. ";
+			body += "Below, please find notes from " + getAssignedCSR().getName() + "'s interactions with "
+					+ newContractor.getContact() + " at " + newContractor.getName()
+					+ " regarding enrollment.<br /><br />";
+			body += "If you would still like to utilize the services of " + newContractor.getName()
+					+ " at your site, we request you to intervene and encourage the contractor to "
+					+ "register with PICS.<br /><br />";
+			body += "If you have further questions, please feel free to contact your PICS Account Manager "
+					+ am.getName() + ".<br /><br />";
+			body += notes + "<br /><br />Thank you and have a great day!<br />PICS Customer Service Team<br />"
+					+ "1-800-506-7427 x 1  (Toll free in the USA)</p></td></tr></table></body></html>";
+
+			String email = newContractor.getRequestedByUser() != null ? newContractor.getRequestedByUser().getEmail()
+					: newContractor.getRequestedByUserOther();
+			
+			EmailQueue emailQueue = new EmailQueue();
+			emailQueue.setSubject(subject);
+			emailQueue.setBody(body);
+			emailQueue.setToAddresses(email);
+			emailQueue.setFromAddress(getAssignedCSR().getName() + " at PICS <" + getAssignedCSR().getEmail() + ">");
+			emailQueue.setHtml(true);
+			emailQueue.setViewableBy(newContractor.getRequestedBy());
+			
+			try {
+				EmailSender.send(emailQueue);
+			} catch (Exception e) {
+				addActionError("Unable to send email notification to operator");
+				return SUCCESS;
+			}
+		}
+
 		newContractor.setHandledBy(WaitingOn.Operator);
 		newContractor.setAuditColumns(permissions);
 		newContractor = crrDAO.save(newContractor);
