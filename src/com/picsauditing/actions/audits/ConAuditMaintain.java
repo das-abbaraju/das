@@ -1,7 +1,6 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,18 +15,13 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.WorkflowStep;
-import com.picsauditing.util.Strings;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
@@ -38,19 +32,14 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 
-	protected ContractorAuditOperatorDAO caoDAO;
 	protected ContractorAuditOperatorWorkflowDAO caowDAO;
-	protected NoteDAO noteDAO;
 	protected List<ContractorAuditOperator> caosSave = new ArrayList<ContractorAuditOperator>();
 
 	public ConAuditMaintain(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			CertificateDAO certificateDao, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
 			ContractorAuditOperatorDAO caoDAO, ContractorAuditOperatorWorkflowDAO caowDAO,
-			AuditCategoryRuleCache auditCategoryRuleCache, NoteDAO noteDAO) {
+			AuditCategoryRuleCache auditCategoryRuleCache) {
 		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
-		this.caoDAO = caoDAO;
-		this.caowDAO = caowDAO;
-		this.noteDAO = noteDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -88,31 +77,13 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 						ContractorAuditOperator toSave = caoDAO.find(cao.getId());
 						if (toSave != null) {
 							toSave.setVisible(cao.isVisible());
+							AuditStatus prevStatus = toSave.getStatus();
+							AuditStatus newStatus = cao.getStatus();
+							auditSetExpiresDate(toSave, newStatus);
+							toSave.changeStatus(newStatus, permissions);
+							
+							setCaoUpdatedNote(prevStatus, toSave);
 
-							// Stamping cao workflow automatically...
-							ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
-							Note newNote = new Note();
-							newNote.setAccount(toSave.getAudit().getContractorAccount());
-							newNote.setAuditColumns(permissions);
-							String summary = "Changed Status for " + toSave.getAudit().getAuditType().getAuditName()
-									+ "(" + toSave.getAudit().getId() + ")" ;
-							if(!Strings.isEmpty(toSave.getAudit().getAuditFor()))
-								summary += " for " + toSave.getAudit().getAuditFor();
-							summary += " from " + toSave.getStatus() + " to "
-									+ cao.getStatus() + " for " + toSave.getOperator().getName();
-							newNote.setSummary(summary);
-							newNote.setNoteCategory(NoteCategory.Audits);
-							newNote.setViewableBy(toSave.getOperator());
-							noteDAO.save(newNote);
-							caoW.setNotes("Changed Status from " + toSave.getStatus() + " to " + cao.getStatus()
-									+ " by " + permissions.getName() + " on " + new Date());
-							caoW.setCao(toSave);
-							caoW.setAuditColumns(permissions);
-							caoW.setPreviousStatus(toSave.getStatus());
-							caoW.setStatus(cao.getStatus());
-							caoDAO.save(caoW);
-
-							toSave.changeStatus(cao.getStatus(), permissions);
 							caoDAO.save(toSave);
 						}
 					}
@@ -130,7 +101,7 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 				conAudit.setAuditColumns(permissions);
 				auditDao.save(conAudit);
 				findConAudit();
-				addNote(conAudit.getContractorAccount(), "Modified " + conAudit.getAuditType().getAuditName()
+				addNote(conAudit.getContractorAccount(), "Modified " + conAudit.getAuditType().getName()
 						+ " using System Edit", NoteCategory.Audits, LowMedHigh.Low, false, Account.PicsID,
 						this.getUser());
 				addActionMessage("Successfully saved data");
@@ -175,12 +146,12 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 		this.caosSave = caosSave;
 	}
 
-	private boolean requiresNote(AuditStatus o, AuditStatus n, ContractorAudit c) {
-		for (WorkflowStep s : c.getAuditType().getWorkFlow().getSteps()) {
-			if (((s.getOldStatus() != null && s.getOldStatus().equals(o)) || o == null) && s.getNewStatus().equals(n))
-				return s.isNoteRequired();
-		}
-
-		return false;
+	public void setCaoDAO(ContractorAuditOperatorDAO caoDAO) {
+		this.caoDAO = caoDAO;
 	}
+
+	public void setCaowDAO(ContractorAuditOperatorWorkflowDAO caowDAO) {
+		this.caowDAO = caowDAO;
+	}
+	
 }

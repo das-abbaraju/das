@@ -2,6 +2,7 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Map.Entry;
 import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -24,6 +26,8 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -35,11 +39,15 @@ import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WorkflowStep;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditActionSupport extends ContractorActionSupport {
@@ -54,6 +62,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected AuditCategoryDataDAO catDataDao;
 	protected AuditDataDAO auditDataDao;
 	protected CertificateDAO certificateDao;
+	protected NoteDAO noteDAO;
+	protected ContractorAuditOperatorDAO caoDAO;
+	
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
 	private Map<Integer, AuditData> hasManual;
@@ -63,6 +74,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
 
 	private List<CategoryNode> categoryNodes;
+	
 
 	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
@@ -478,6 +490,66 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return conAudit.hasCaoStatus(AuditStatus.Pending);
 		return false;
 	}
+	
+	protected void auditSetExpiresDate(ContractorAuditOperator cao, AuditStatus status) {
+		if (status.isSubmittedResubmitted()) {
+			if (cao.getAudit().getExpiresDate() == null)
+				cao.getAudit().setExpiresDate(getAuditExpirationDate());
+			else if (cao.getAudit().getAuditType().isRenewable())
+				cao.getAudit().setExpiresDate(getAuditExpirationDate());
+		}
+		if (!cao.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep())
+			cao.getAudit().setExpiresDate(getAuditExpirationDate());
+	}
+
+	protected Date getAuditExpirationDate() {
+		Integer months = conAudit.getAuditType().getMonthsToExpire();
+		if (months == null) {
+			// check months first, then do date if empty
+			return DateBean.getMarchOfNextYear(new Date());
+		} else if (months > 0) {
+			if (conAudit.getAuditType().getClassType().isPqf())
+				return DateBean.getMarchOfThatYear(DateBean.addMonths(new Date(), months));
+			else
+				return DateBean.addMonths(new Date(), months);
+		} else {
+			return null;
+		}
+	}
+	
+	protected void setCaoUpdatedNote(AuditStatus prevStatus, ContractorAuditOperator cao) {
+		setCaoUpdatedNote(prevStatus, cao, null);
+	}
+
+	protected void setCaoUpdatedNote(AuditStatus prevStatus, ContractorAuditOperator cao, String noteBody) {
+		if (prevStatus != cao.getStatus()) {
+			// Stamping cao workflow
+			ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
+			Note newNote = new Note();
+			newNote.setAccount(cao.getAudit().getContractorAccount());
+			newNote.setAuditColumns(permissions);
+			String summary = "Changed Status for " + cao.getAudit().getAuditType().getName() + "("
+					+ cao.getAudit().getId() + ") ";
+			if (!Strings.isEmpty(cao.getAudit().getAuditFor()))
+				summary += " for " + cao.getAudit().getAuditFor();
+			summary += " from " + prevStatus + " to " + cao.getStatus();
+			newNote.setSummary(summary);
+			newNote.setNoteCategory(NoteCategory.Audits);
+			newNote.setViewableBy(cao.getOperator());
+
+			if(noteBody== null)
+				noteBody = summary;
+			newNote.setBody(noteBody);
+			caoW.setNotes(noteBody);
+			noteDAO.save(newNote);
+
+			caoW.setCao(cao);
+			caoW.setAuditColumns(permissions);
+			caoW.setPreviousStatus(prevStatus);
+			caoW.setStatus(cao.getStatus());
+			caoDAO.save(caoW);
+		}
+	}
 
 	public boolean isAppliesSubCategory(AuditCategory auditCategory) {
 		if (categories.get(auditCategory).isApplies())
@@ -494,6 +566,38 @@ public class AuditActionSupport extends ContractorActionSupport {
 		} catch (NumberFormatException nfe) {
 			return null;
 		}
+	}
+
+	public boolean matchesType(int categoryId, OshaType oa) {
+		if (OshaTypeConverter.getTypeFromCategory(categoryId) == null || oa == null)
+			return false;
+		if (oa == OshaTypeConverter.getTypeFromCategory(categoryId))
+			return true;
+		return false;
+	}
+
+	public boolean isSystemEdit() {
+		return systemEdit;
+	}
+
+	public void setSystemEdit(boolean systemEdit) {
+		this.systemEdit = systemEdit;
+	}
+
+	public boolean isShowVerified() {
+		return showVerified;
+	}
+
+	public void setShowVerified(boolean showVerified) {
+		this.showVerified = showVerified;
+	}
+	
+	public void setNoteDAO(NoteDAO noteDAO) {
+		this.noteDAO = noteDAO;
+	}
+	
+	public void setCaoDAO(ContractorAuditOperatorDAO caoDAO) {
+		this.caoDAO = caoDAO;
 	}
 
 	class CategoryNode {
@@ -567,29 +671,5 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 		}
 		return nodes;
-	}
-
-	public boolean isSystemEdit() {
-		return systemEdit;
-	}
-
-	public void setSystemEdit(boolean systemEdit) {
-		this.systemEdit = systemEdit;
-	}
-
-	public boolean isShowVerified() {
-		return showVerified;
-	}
-
-	public void setShowVerified(boolean showVerified) {
-		this.showVerified = showVerified;
-	}
-
-	public boolean matchesType(int categoryId, OshaType oa) {
-		if (OshaTypeConverter.getTypeFromCategory(categoryId) == null || oa == null)
-			return false;
-		if (oa == OshaTypeConverter.getTypeFromCategory(categoryId))
-			return true;
-		return false;
 	}
 }

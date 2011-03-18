@@ -135,7 +135,7 @@ public class CaoSave extends AuditActionSupport {
 						else
 							accountNames.add(cao.getOperator().getName());
 
-						auditNames.add(cao.getAudit().getAuditType().getAuditName());
+						auditNames.add(cao.getAudit().getAuditType().getName());
 
 						if (!noteRequired) {
 							for (WorkflowStep s : cao.getAudit().getAuditType().getWorkFlow().getSteps()) {
@@ -174,16 +174,10 @@ public class CaoSave extends AuditActionSupport {
 					return SUCCESS;
 
 				AuditStatus prevStatus = cao.getStatus();
-				cao.changeStatus(step.getNewStatus(), permissions);
+				AuditStatus newStatus = step.getNewStatus();
+				cao.changeStatus(newStatus, permissions);
 				// Setting the expiration date
-				if (step.getNewStatus().isSubmittedResubmitted()) {
-					if (cao.getAudit().getExpiresDate() == null)
-						cao.getAudit().setExpiresDate(setExpirationDate());
-					else if (cao.getAudit().getAuditType().isRenewable())
-						cao.getAudit().setExpiresDate(setExpirationDate());
-				}
-				if (!cao.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep())
-					cao.getAudit().setExpiresDate(setExpirationDate());
+				auditSetExpiresDate(cao, newStatus);
 
 				if (cao.getAudit().getAuditType().getClassType().isPolicy()
 						&& cao.getStatus().after(AuditStatus.Incomplete))
@@ -202,7 +196,7 @@ public class CaoSave extends AuditActionSupport {
 					sendStatusChangeEmail(step, cao);
 
 				caoDAO.save(cao);
-				setCaoUpdatedNote(prevStatus, cao);
+				setCaoUpdatedNote(prevStatus, cao, note);
 			}
 
 			if (insurance && updatedContractors.size() > 0) {
@@ -288,77 +282,6 @@ public class CaoSave extends AuditActionSupport {
 		 */
 	}
 
-	public int getCaoID() {
-		return caoID;
-	}
-
-	public void setCaoID(int caoID) {
-		this.caoID = caoID;
-	}
-
-	public String getNote() {
-		return note;
-	}
-
-	public void setNote(String note) {
-		this.note = note;
-	}
-
-	public List<Integer> getCaoIDs() {
-		return caoIDs;
-	}
-
-	public void setCaoIDs(List<Integer> caoIDs) {
-		this.caoIDs = caoIDs;
-	}
-
-	public AuditStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(AuditStatus status) {
-		this.status = status;
-	}
-
-	public String getNoteMessage() {
-		return noteMessage;
-	}
-
-	public String getSaveMessage() {
-		return saveMessage;
-	}
-
-	public List<ContractorAuditOperatorWorkflow> getCaoWorkflow() {
-		return caoWorkflow;
-	}
-
-	public void setCaoWorkflow(List<ContractorAuditOperatorWorkflow> caoWorkflow) {
-		this.caoWorkflow = caoWorkflow;
-	}
-
-	public boolean isInsurance() {
-		return insurance;
-	}
-
-	public void setInsurance(boolean insurance) {
-		this.insurance = insurance;
-	}
-
-	private Date setExpirationDate() {
-		Integer months = conAudit.getAuditType().getMonthsToExpire();
-		if (months == null) {
-			// check months first, then do date if empty
-			return DateBean.getMarchOfNextYear(new Date());
-		} else if (months > 0) {
-			if (conAudit.getAuditType().getClassType().isPqf())
-				return DateBean.getMarchOfThatYear(DateBean.addMonths(new Date(), months));
-			else
-				return DateBean.addMonths(new Date(), months);
-		} else {
-			return null;
-		}
-	}
-
 	private ContractorAuditOperator getCaoByID(int id) {
 		if (caoList != null) {
 			for (ContractorAuditOperator cao : caoList) {
@@ -403,36 +326,6 @@ public class CaoSave extends AuditActionSupport {
 		return step;
 	}
 
-	private void setCaoUpdatedNote(AuditStatus prevStatus, ContractorAuditOperator cao) {
-		if (prevStatus != cao.getStatus()) {
-			// Stamping cao workflow
-			ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
-			Note newNote = new Note();
-			newNote.setAccount(cao.getAudit().getContractorAccount());
-			newNote.setAuditColumns(permissions);
-			String summary = "Changed Status for " + cao.getAudit().getAuditType().getAuditName() + "("
-					+ cao.getAudit().getId() + ") ";
-			if (!Strings.isEmpty(cao.getAudit().getAuditFor()))
-				summary += " for " + cao.getAudit().getAuditFor();
-			summary += " from " + prevStatus + " to " + cao.getStatus();
-			newNote.setSummary(summary);
-			newNote.setNoteCategory(NoteCategory.Audits);
-			newNote.setViewableBy(cao.getOperator());
-
-			if (!Strings.isEmpty(note)) {
-				newNote.setBody(note);
-				caoW.setNotes(note);
-			}
-			noteDAO.save(newNote);
-
-			caoW.setCao(cao);
-			caoW.setAuditColumns(permissions);
-			caoW.setPreviousStatus(prevStatus);
-			caoW.setStatus(cao.getStatus());
-			caoDAO.save(caoW);
-		}
-	}
-
 	private void sendStatusChangeEmail(WorkflowStep step, ContractorAuditOperator cao) throws Exception {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(step.getEmailTemplate());
@@ -458,11 +351,6 @@ public class CaoSave extends AuditActionSupport {
 
 	private void checkNewStatus(WorkflowStep step, ContractorAuditOperator cao) {
 		ContractorAudit audit = cao.getAudit();
-
-		if (step.getNewStatus().isSubmitted()) {
-			if (audit.getExpiresDate() == null)
-				audit.setExpiresDate(setExpirationDate());
-		}
 
 		if (step.getNewStatus().isComplete()) {
 			if (cao.getAudit().getAuditType().getClassType().isPolicy() && cao.getOperator().isAutoApproveInsurance()) {
@@ -530,6 +418,62 @@ public class CaoSave extends AuditActionSupport {
 				return;
 			}
 		}
+	}
+
+	public int getCaoID() {
+		return caoID;
+	}
+
+	public void setCaoID(int caoID) {
+		this.caoID = caoID;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public List<Integer> getCaoIDs() {
+		return caoIDs;
+	}
+
+	public void setCaoIDs(List<Integer> caoIDs) {
+		this.caoIDs = caoIDs;
+	}
+
+	public AuditStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(AuditStatus status) {
+		this.status = status;
+	}
+
+	public String getNoteMessage() {
+		return noteMessage;
+	}
+
+	public String getSaveMessage() {
+		return saveMessage;
+	}
+
+	public List<ContractorAuditOperatorWorkflow> getCaoWorkflow() {
+		return caoWorkflow;
+	}
+
+	public void setCaoWorkflow(List<ContractorAuditOperatorWorkflow> caoWorkflow) {
+		this.caoWorkflow = caoWorkflow;
+	}
+
+	public boolean isInsurance() {
+		return insurance;
+	}
+
+	public void setInsurance(boolean insurance) {
+		this.insurance = insurance;
 	}
 
 	public boolean isNoteRequired() {
