@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:if test="!permissions.insuranceOnlyContractorUser">
@@ -9,52 +10,51 @@
 		width: 200px; 
 		text-align: center;
 	">
-	<a href="ContractorView.action">Show Details Page</a>
+	<a href="ContractorView.action"><s:text name="ContractorStats.link.ShowDetailsPage" /></a>
 	</div>
 </s:if>
 <pics:permission perm="ContractorAdmin">
-	<a href="ContractorEdit.action" class="edit right">Edit Account Info</a>
+	<a href="ContractorEdit.action" class="edit right"><s:text name="ContractorStats.link.EditAccountInfo" /></a>
 </pics:permission>
-<p><label>Account Name:</label> <s:property value="contractor.name" /></p>
-<p><label>Address:</label> <s:property value="contractor.address" /><br />
+<p><label><s:text name="global.Account.name" />:</label> <s:property value="contractor.name" /></p>
+<p><label><s:text name="global.Account.address" />:</label> <s:property value="contractor.address" /><br />
 <s:property value="contractor.city" />, <s:property value="contractor.state.isoCode" /> <s:property value="contractor.zip" /></p>
-<p><label>Account Since:</label> <s:date name="contractor.creationDate" format="MMM d, yyyy" /></p>
-<p><label>Primary Contact:</label> <s:property value="contractor.primaryContact.name" /></p>
-<p><label>Primary Phone:</label> <s:property value="contractor.primaryContact.phone" /></p>
-<p><label>Primary Email:</label> <s:property value="contractor.primaryContact.email" /></p>
+<p><label><s:text name="global.Account.created" />:</label> <s:date name="contractor.creationDate" format="MMM d, yyyy" /></p>
+<p><label><s:text name="global.Account.primaryContact.name" />:</label> <s:property value="contractor.primaryContact.name" /></p>
+<p><label><s:text name="global.Account.primaryContact.phone" />:</label> <s:property value="contractor.primaryContact.phone" /></p>
+<p><label><s:text name="global.Account.primaryContact.email" />:</label> <s:property value="contractor.primaryContact.email" /></p>
 <s:if test="contractor.auditor.name != null">
-	<p><label>Assigned Representative:</label> <s:property value="contractor.auditor.name" /></p>
-	<p><label>Representative's Email:</label> <s:property value="contractor.auditor.email" /></p>
+	<p><label><s:text name="ContractorStats.auditor.name" />:</label> <s:property value="contractor.auditor.name" /></p>
+	<p><label><s:text name="ContractorStats.auditor.email" />:</label> <s:property value="contractor.auditor.email" /></p>
 </s:if>
 <s:if test="!permissions.insuranceOnlyContractorUser">
 	<p>
-		<label>Current Level:</label>
+		<label><s:text name="ContractorStats.label.CurrentMembershipLevel" />:</label>
 		<s:if test="contractor.mustPayB">$<s:property value="contractor.membershipLevel.amount" /> <s:property value="contractor.currencyCode" /> <br />
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</s:if><s:property value="contractor.membershipLevel.fee" />
 	</p>
 	<s:if test="contractor.mustPayB || (contractor.ccOnFile && creditCard != null)">
 		<pics:permission perm="ContractorBilling">
-			<a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id" />" class="edit right">Edit Credit Card Info</a>
+			<a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id" />" class="edit right"><s:text name="ContractorStats.link.EditCreditCardInfo" /></a>
 		</pics:permission>
 	</s:if>
 	<p>
-		<label>Credit Card:</label>
+		<label><s:text name="global.CreditCard" />:</label>
 		<s:if test="contractor.ccOnFile && creditCard != null">
-			<s:property value="creditCard.cardType"/> <s:property value="creditCard.cardNumber.substring(creditCard.cardNumber.length()-4)"/> exp <s:property value="creditCard.expirationDateFormatted"/><br/>
+			<s:property value="creditCard.cardType"/> <s:property value="creditCard.cardNumber.substring(creditCard.cardNumber.length()-4)"/> <s:text name="global.CreditCard.shortExpiration" /> <s:property value="creditCard.expirationDateFormatted"/><br/>
 			<s:if test="contractor.renew && contractor.mustPayB && contractor.paymentMethod.creditCard && contractor.ccValid">
-				<s:if test="hasUnpaidInvoices">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Will be charged on <s:property value="chargedOn" /></s:if>
-				<s:else>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your account will renew on <s:property value="contractor.paymentExpires"/></s:else>
+				<s:if test="hasUnpaidInvoices">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<s:text name="ContractorStats.message.WillBeChargedOn" ><s:param value="%{chargedOn}" /></s:text></s:if>
+				<s:else>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<s:text name="ContractorStats.message.WillRenewOn" ><s:param value="%{contractor.paymentExpires}" /></s:text></s:else>
 			</s:if>
 		</s:if>
 		<s:else>
-			No Credit Card on File
+			<s:text name="ContractorStats.message.NoCreditCard" />
 		</s:else>
 	</p>
 
 	<s:if test="contractor.renew == false">
 		<div class="alert">
-			Your account is not set to renew and will expire on 
-			<s:property value="contractor.paymentExpires"/>.
+			<s:text name="ContractorStats.message.WillExpireOn" ><s:param value="%{contractor.paymentExpires}" /></s:text>
 		</div>
 	</s:if>
 </s:if>
