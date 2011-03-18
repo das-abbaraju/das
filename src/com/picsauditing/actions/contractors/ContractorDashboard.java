@@ -471,7 +471,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 
 			String ind = "Industry";
-			auditForSet.add(ind);
+			if (auditForSet.size() != 0) {
+				auditForSet.add(ind);
+			}
 
 			if (data.get(OshaRateType.TrirAbsolute.getDescription()) != null)
 				put(OshaRateType.TrirAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(false,
@@ -508,6 +510,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			for (Map.Entry<String, AuditData> entry : contractor.getEmrs().entrySet()) {
 				if (entry.getValue() != null) {
 					put("EMR", entry.getKey(), entry.getValue().getAnswer());
+					auditForSet.add(entry.getKey());
 				}
 			}
 
