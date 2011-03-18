@@ -169,6 +169,9 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 			baselineApprover = permissions.getUserId();
 		else
 			baselineApprover = User.SYSTEM;
+		
+		for(FlagData fd : this.getFlagDatas())
+			fd.resetBaseline();
 	}
 
 	@Enumerated(EnumType.STRING)

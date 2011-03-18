@@ -21,6 +21,7 @@ public class FlagData extends BaseTable implements Comparable<FlagData> {
 	private OperatorAccount operator;
 	private FlagCriteria criteria;
 	private FlagColor flag;
+	private FlagColor baselineFlag;
 	private FlagCriteriaContractor criteriaContractor;
 
 	@ManyToOne
@@ -60,6 +61,14 @@ public class FlagData extends BaseTable implements Comparable<FlagData> {
 
 	public void setFlag(FlagColor flag) {
 		this.flag = flag;
+	}
+
+	public FlagColor getBaselineFlag() {
+		return baselineFlag;
+	}
+
+	public void setBaselineFlag(FlagColor baselineFlag) {
+		this.baselineFlag = baselineFlag;
 	}
 
 	@Transient
@@ -103,5 +112,10 @@ public class FlagData extends BaseTable implements Comparable<FlagData> {
 	@Override
 	public int compareTo(FlagData o) {
 		return criteria.compareTo(o.criteria);
+	}
+	
+	@Transient
+	public void resetBaseline() {
+		baselineFlag = flag;
 	}
 }
