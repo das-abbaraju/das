@@ -9,7 +9,7 @@
 			<td><s:text name="%{scope}.header.LastContacted" /></td>
 		</tr>
 	</thead>
-	<s:if test="requestedContractors.size()  == 0">
+	<s:if test="requestedContractors.size  == 0">
 		<tr><td colspan="4"><s:text name="%{scope}.message.NoOpenRequests" /></td></tr>
 	</s:if>
 	<s:else>
@@ -28,7 +28,7 @@
 	</s:iterator>
 	</s:else>
 </table>
-<s:if test="permissions.operator && returnedContractors.size > 0">
+<s:if test="permissions.operatorCorporate && returnedContractors.size > 0">
 	<table class="report" style="width: 100%">
 		<thead>
 			<tr>
@@ -47,4 +47,6 @@
 			</s:iterator>
 		</tbody>
 	</table>
+	
+	<a href="ReportNewRequestedContractor.action" class="preview">See all Open Registration Requests</a>
 </s:if>
