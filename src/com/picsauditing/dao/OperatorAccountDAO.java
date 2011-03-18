@@ -184,7 +184,7 @@ public class OperatorAccountDAO extends PicsDAO {
 		}
 
 		if (permissions.isApprovesRelationships() && !permissions.hasPermission(OpPerms.ViewUnApproved)) {
-			where += " AND workStatus = 'Y'";
+			where += " AND (operatorAccount.approvesRelationships = 'No' OR workStatus = 'Y')";
 		}
 
 		Query query = em
