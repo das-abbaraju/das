@@ -1,16 +1,19 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <body>
 
 <label>
 	<s:if test="openTasks.size == 0">
-		You have no more outstanding tasks.
+		<s:text name="ContractorStats.message.NoMoreTasks" />
 	</s:if>
 	<s:if test="openTasks.size == 1">
-		You have 1 more outstanding task.
+		<s:text name="ContractorStats.message.OneMoreTask" />
 	</s:if>
 	<s:if test="openTasks.size > 1">
-		You have <s:property value="openTasks.size" /> more outstanding tasks.
+		<s:text name="ContractorStats.message.MoreTasks" >
+			<s:param value="%{openTasks.size}" />
+		</s:text>
 	</s:if>
 </label>
 <ol>
@@ -19,13 +22,15 @@
 </s:iterator>
 </ol>
 <s:if test="reminderTask">
-	<label>Reminder : </label>
-	You haven't updated your facilities in more than 90 days.
+	<label><s:text name="global.Reminder" /> :</label>
+	<s:text name="ContractorStats.message.FacilityReminder" />
 	<s:if test="suggestedOperators.size() > 0">
-	Here are five operators that we suggest you look at:
-	<s:iterator value="suggestedOperators" status="stat"><a href="ContractorFacilities.action?id=<s:property value="contractor.id"/>&operator.name=<s:property value="get('name')"/>"><s:property value="get('name')"/></a><s:if test="!#stat.last">, </s:if></s:iterator>, or 
+		<s:text name="ContractorStats.message.SuggestFiveOperators" />:
+		<s:iterator value="suggestedOperators" status="stat"><a href="ContractorFacilities.action?id=<s:property value="contractor.id"/>&operator.name=<s:property value="get('name')"/>"><s:property value="get('name')"/></a><s:if test="!#stat.last">, </s:if></s:iterator> 
 	</s:if>
- 	<a href="ContractorFacilities.action?id=<s:property value="contractor.id"/>">Click here to update your facility list</a>
+	<s:text name="ContractorStats.link.UpdateYourFacilityList" >
+		<s:param value="%{contractor.id}" />
+	</s:text>
 </s:if>
 <s:if test="showAgreement">
 <script type="text/javascript">

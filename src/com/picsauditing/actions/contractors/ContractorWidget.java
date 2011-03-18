@@ -28,7 +28,6 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.Workflow;
 
 /**
  * Widgets for a single contractor
@@ -86,30 +85,18 @@ public class ContractorWidget extends ContractorActionSupport {
 							.hasPermission(OpPerms.ContractorSafety))) {
 				showAgreement = true;
 				openTasks
-						.add("Please <a title=\"Click here to view the PICS Contractor Agreement\" href=\"ContractorPaymentOptions.action?id="
-								+ contractor.getId()
-								+ "\" >"
-								+ "review the terms of our <strong>updated</strong> Contractor User Agreement and click 'I Agree'</a> to accept the terms of the Agreement.");
+						.add(getText("ContractorWidget.message.UpdatedAgreement", new Object[] { contractor.getId() }));
 			}
 
 			if (permissions.hasPermission(OpPerms.ContractorAdmin) || permissions.isAdmin()) {
 				if (contractor.getUsers().size() == 1
 						&& DateBean.getDateDifference(contractor.getCreationDate()) > -180) {
-					openTasks
-							.add("PICS now requires contractors to have two or more users to help maintain their account."
-									+ "Please click here <a href=\"UsersManage.action\"> to add a new user</a>");
+					openTasks.add(getText("ContractorWidget.message.RequiresTwoUsers"));
 				}
 
 				if (contractor.isAcceptsBids()) {
-					String due = null;
-					try {
-						due = DateBean.toShowFormat(contractor.getPaymentExpires());
-					} catch (Exception ignoreFormattingErrors) {
-					}
-					openTasks.add("Your Account is a BID-ONLY Account and will expire on " + due
-							+ ". To continue with the audit process" + " please <a href=\"ContractorView.action?id="
-							+ contractor.getId()
-							+ "&button=Upgrade to Full Membership\"> upgrade your account to a full membership</a>");
+					openTasks.add(getText("ContractorWidget.message.BidOnlyUpdgrade", new Object[] {
+							contractor.getPaymentExpires(), contractor.getId() }));
 				}
 			}
 
@@ -117,29 +104,22 @@ public class ContractorWidget extends ContractorActionSupport {
 				String billingStatus = contractor.getBillingStatus();
 				if ("Upgrade".equals(billingStatus)
 						|| ("Renewal".equals(billingStatus) && contractor.getMembershipLevel().getId() == InvoiceFee.BIDONLY)) {
-					openTasks.add("Your Account is upgraded to " + contractor.getNewMembershipLevel().getFee()
-							+ ". To continue working at your selected facilities"
-							+ " please <a href=\"BillingDetail.action?id=" + contractor.getId()
-							+ "&button=Create\"> generate and pay the invoice </a>");
+					openTasks.add(getText("ContractorWidget.message.GenerateInvoice", new Object[] {
+							contractor.getNewMembershipLevel().getFee(), contractor.getId() }));
 				}
 
 				if (contractor.getBalance().compareTo(BigDecimal.ZERO) > 0) {
 					for (Invoice invoice : contractor.getInvoices()) {
 						if (invoice.getStatus().isUnpaid()) {
-							String due = null;
-							try {
-								due = DateBean.toShowFormat(invoice.getDueDate());
-							} catch (Exception ignoreFormattingErrors) {
-							}
-							openTasks.add("You have an <a href=\"InvoiceDetail.action?invoice.id=" + invoice.getId()
-									+ "\">invoice of <b>$" + invoice.getBalance() + "</b></a> due " + due);
+							openTasks.add(getText("ContractorWidget.message.OpenInvoiceReminder", new Object[] {
+									invoice.getId(), invoice.getBalance(), invoice.getDueDate() }));
 						}
 					}
 				}
 
 				if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
-					openTasks.add("Please <a href=\"ContractorPaymentOptions.action?id=" + contractor.getId()
-							+ "\">update your payment method</a>");
+					openTasks.add(getText("ContractorWidget.message.UpdatePaymentMethod", new Object[] { contractor
+							.getId() }));
 				}
 			}
 			String auditName;
@@ -182,30 +162,24 @@ public class ContractorWidget extends ContractorActionSupport {
 
 					if (needed > 0) {
 						// Add to tasks
-						if (conAudit.getAuditType().isPqf())
-							auditName = "Pre-Qualification Form";
-						else
-							auditName = conAudit.getAuditType().getName();
-						String auditFor = "";
-						if (conAudit.getAuditFor() != null) {
-							auditFor = " for " + conAudit.getAuditFor();
-						}
+						auditName = getText(conAudit.getAuditType().getI18nKey("name"));
+						Object showAuditFor = (conAudit.getAuditFor() != null && !conAudit.getAuditFor().isEmpty()) ? 1
+								: 0;
+						String auditFor = conAudit.getAuditFor();
 						if (conAudit.getAuditType().getClassType().isPolicy()) {
 							if (permissions.hasPermission(OpPerms.ContractorInsurance) || permissions.isAdmin()) {
 								if (conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
-									openTasks.add("<a href=\"Audit.action?auditID=" + conAudit.getId()
-											+ "\">Please fix issues with your "
-											+ conAudit.getAuditType().getName() + " Policy</a>");
+									openTasks.add(getText("ContractorWidget.message.FixPolicyIssues", new Object[] {
+											conAudit.getId(), auditName }));
 								} else {
-									openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-											+ "\">upload and submit your " + conAudit.getAuditType().getName()
-											+ " Policy</a>");
+									openTasks.add(getText("ContractorWidget.message.UploadAndSubmitPolicy",
+											new Object[] { conAudit.getId(), auditName }));
 								}
 							}
 						} else if (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire()) {
 							if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
-								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-										+ "\">review and re-submit your " + auditName + auditFor + "</a>");
+								openTasks.add(getText("ContractorWidget.message.ResubmitPolicy", new Object[] {
+										conAudit.getId(), auditName, showAuditFor, auditFor }));
 							}
 						} else if (conAudit.getAuditType().getWorkFlow().isHasRequirements()
 								&& (conAudit.getAuditType().getId() != AuditType.WA_STATE_VERIFICATION || (conAudit
@@ -214,11 +188,11 @@ public class ContractorWidget extends ContractorActionSupport {
 							if (conAudit.hasCaoStatus(AuditStatus.Submitted)) {
 								// Submitted
 								if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
-									String text = "You have <a href=\"ContractorAuditFileUpload.action?auditID="
-											+ conAudit.getId() + "\">open requirements from your recent "
-											+ conAudit.getAuditType().getName() + auditFor + "</a>";
+									Integer conAuditID = conAudit.getId();
+									String text = getText("ContractorWidget.message.OpenRequirements", new Object[] {
+											conAuditID, auditName, showAuditFor, auditFor });
 									if (!openReq) {
-										text += "<br/>NOTE: Open requirements can be uploaded online.";
+										text += "<br/>" + getText("ContractorWidget.message.OpenRequirementsNote");
 										openReq = true;
 									}
 									openTasks.add(text);
@@ -229,50 +203,46 @@ public class ContractorWidget extends ContractorActionSupport {
 									String text = "";
 									if (conAudit.getAuditType().getId() == AuditType.OFFICE
 											&& conAudit.getScheduledDate() == null) {
-										text = "Please <a href='ScheduleAudit.action?auditID=" + conAudit.getId()
-												+ "'>click here to schedule your Implementation Audit" + auditFor
-												+ "</a>";
+										text = getText("ContractorWidget.message.ScheduleYourImplementationAudit",
+												new Object[] { conAudit.getId(), auditName, showAuditFor, auditFor });
 									} else {
+										Integer showScheduledDate = (conAudit.getScheduledDate() != null) ? 1 : 0;
+										Integer showAuditor = (conAudit.getAuditor() != null) ? 1 : 0;
 										if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
-											String auditorName = conAudit.getAuditor() == null ? "a Safety Professional"
-													: conAudit.getAuditor().getName();
-											text = "Your upcoming <a href=\"Audit.action?auditID=" + conAudit.getId()
-													+ "\">" + conAudit.getAuditType().getName()
-													+ "</a> will be conducted by " + auditorName;
-
+											text = getText(
+													"ContractorWidget.message.UpcomingAuditConductedBy",
+													new Object[] {
+															conAudit.getId(),
+															auditName,
+															showAuditor,
+															(conAudit.getAuditor() != null) ? conAudit.getAuditor()
+																	.getName() : "",
+															showScheduledDate,
+															conAudit.getScheduledDate() });
 										} else {
-											text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId()
-													+ "\">upcoming " + conAudit.getAuditType().getName()
-													+ auditFor + "</a>";
+											text = getText(
+													"ContractorWidget.message.PrepareForAnUpcomingAudit",
+													new Object[] {
+															conAudit.getId(),
+															auditName,
+															showAuditFor,
+															auditFor,
+															showScheduledDate,
+															conAudit.getScheduledDate(),
+															showAuditor,
+															(conAudit.getAuditor() != null) ? conAudit.getAuditor()
+																	.getName() : "" });
 										}
-										if (conAudit.getScheduledDate() != null) {
-											try {
-												text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
-											} catch (Exception e) {
-											}
-										}
-										if (conAudit.getAuditType().getId() != AuditType.DESKTOP
-												&& conAudit.getAuditor() != null)
-											text += " with " + conAudit.getAuditor().getName();
 									}
 									openTasks.add(text);
 								}
 							}
-						} else if(conAudit.getAuditType().isCanContractorEdit()) {
+						} else if (conAudit.getAuditType().isCanContractorEdit()) {
 							if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
-								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-										+ "\">complete and submit your " + auditName + auditFor + "</a>");
+								openTasks.add(getText("ContractorWidget.message.CompleteAndSubmitAudit", new Object[] {
+										conAudit.getId(), auditName, showAuditFor, auditFor }));
 							}
 						}
-
-						// IS THIS REALLY NECESSARY?
-						// if
-						// (conAudit.getAuditFor().equals(Integer.toString(DateBean.getCurrentYear()
-						// - 1)) &&
-						// conAudit.getContractorAccount().worksIn("US")) {
-						// text +=
-						// "<br/><b>NOTE: <a href=\"http://help.picsauditing.com/wiki/Annual_Updates\">Click here to watch the Annual Update tutorial</a></b>";
-						// }
 					}
 				}
 			}
@@ -281,16 +251,13 @@ public class ContractorWidget extends ContractorActionSupport {
 				if (!contractor.isNaicsValid() && contractor.getCountries().contains("US")) {
 					AuditCatData auditCatData = getAuditCatData(contractor);
 					if (auditCatData != null)
-						openTasks.add("Please <a href=\"Audit.action?auditID=" + auditCatData.getAudit().getId()
-								+ "#categoryID=" + auditCatData.getId()
-								+ "&mode=Edit\"> update your 2007 NAICS code</a>");
+						openTasks.add(getText("ContractorWidget.message.UpdateNAICSCode", new Object[] {
+								auditCatData.getAudit().getId(), auditCatData.getId() }));
 				}
 
 				if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
-					openTasks.add("Your webcam has been shipped. "
-							+ "<a href=\"http://www.fedex.com/Tracking?tracknumber_list="
-							+ contractor.getWebcam().getTrackingNumber() + "\" target=\"_blank\">"
-							+ "Click here to track your webcam." + "</a>");
+					openTasks.add(getText("ContractorWidget.message.WebcamHasShipped", new Object[] { contractor
+							.getWebcam().getTrackingNumber() }));
 				}
 			}
 
@@ -308,8 +275,7 @@ public class ContractorWidget extends ContractorActionSupport {
 
 				if (unmapped)
 					if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
-						openTasks.add("You have <a href=\"ManageUnmappedEmployees.action\">"
-								+ "assessment results that need to be matched with employees</a>");
+						openTasks.add(getText("ContractorWidget.message.AssessmentResultsNeedMatching"));
 					}
 			}
 		}
@@ -367,8 +333,7 @@ public class ContractorWidget extends ContractorActionSupport {
 
 	// Will return the earliest unpaid invoice with the assumption that
 	// is the one we want to display on con_stats.jsp
-	public String getChargedOn() {
-		String result = "";
+	public Date getChargedOn() {
 		try {
 			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
 			Date d = format.parse("12/31/4000");
@@ -379,10 +344,10 @@ public class ContractorWidget extends ContractorActionSupport {
 						d = d1;
 				}
 			}
-			result = format.format(d);
+			return d;
 		} catch (Exception ignoreFormattingErrors) {
 		}
-		return result;
+		return new Date();
 	}
 
 	public BrainTreeService.CreditCard getCreditCard() {
