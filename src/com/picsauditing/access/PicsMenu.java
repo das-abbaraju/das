@@ -339,8 +339,8 @@ public class PicsMenu {
 		subMenu = menu.addChild(getText("menu.Reports"));
 		
 		// TODO - remove these hacks
-		if (permissions.getAccountId() == 10850) {
-			subMenu.addChild("Orientation Video Report", "report_orientation.jsp");
+		if (permissions.getAccountId() == 6228) {
+			subMenu.addChild("Site Orientation Report", "report_orientation.jsp");
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");

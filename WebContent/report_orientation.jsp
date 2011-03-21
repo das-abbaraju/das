@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Orientation Video Report</title>
+<title>Site Orientation Report</title>
 
 <script type="text/javascript" src="js/jquery/util/jquery-utils.js"></script>
 <script type="text/javascript" src="js/jquery/gritter/jquery.gritter.js"></script>
@@ -46,7 +46,7 @@ function runSearch(search) {
 </script>
 </head>
 <body>
-<h1>Orientation Video Report</h1>
+<h1>Site Orientation Report</h1>
 <div id="search">
 	<form id="form1" method="post" onsubmit="runSearch($('#form1')); return false;">
 	<input type="hidden" name="showPage" value="1" />

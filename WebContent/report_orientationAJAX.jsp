@@ -13,6 +13,7 @@ sql.addJoin("JOIN contractor_audit ca ON ca.conID = c.id");
 sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id");
 
 sql.addWhere("ca.auditTypeID = 86");
+sql.addWhere("ca.auditFor IS NOT NULL");
 
 sql.addField("a.name");
 sql.addField("c.id conID");
