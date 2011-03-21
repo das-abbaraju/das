@@ -633,6 +633,20 @@
 		<a class="clearLink" href="#"
 			onclick="clearTextField('form1_trir'); return false;">Clear</a></span></div>
 	</s:if>
+	
+	<s:if test="filter.showScoreRange">
+		<br clear="all" />
+		<div class="filterOption"><a href="#"
+			onclick="showTextBox('form1_score'); return false;">Score</a> <span
+			id="form1_score_query">= ALL</span><br />
+		<span id="form1_score" style="display: none" class="clearLink"><s:textfield
+			name="filter.scoreMin" id="form1_score1" cssClass="forms" size="12"
+			onfocus="clearText(this)" /> To: <s:textfield name="filter.scoreMax"
+			id="form1_score2" cssClass="forms" size="12" onfocus="clearText(this)" />
+		<script type="text/javascript">textQuery('form1_score'); </script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearTextField('form1_score'); return false;">Clear</a></span></div>
+	</s:if>
 
 	<s:if test="filter.showIncidenceRate">
 		<div class="filterOption">Incidence Rate <s:textfield

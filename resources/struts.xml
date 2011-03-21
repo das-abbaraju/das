@@ -1025,6 +1025,24 @@
 			class="com.picsauditing.actions.report.ReportCriteriaOperators">
 			<result>struts/reports/criteria_operators.jsp</result>	
 		</action>
+		
+		<action name="ReportContractorScore"
+			class="com.picsauditing.actions.report.ReportContractorScore">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportContractorScore</param>
+			<result>struts/reports/report_contractor_score.jsp</result>
+		</action>
+		
+		<action name="ReportContractorScoreAjax"
+			class="com.picsauditing.actions.report.ReportContractorScore">
+			<result>struts/reports/report_contractor_score_data.jsp</result>
+		</action>
+
+		<action name="ReportContractorScoreCSV"
+			class="com.picsauditing.actions.report.ReportContractorScore">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
 
 		<!-- Audits View/Edit/Verify/Copy -->
 		<action name="Audit"
