@@ -13,6 +13,13 @@
 <script type="text/javascript">
 $(function(){
 	showCriteriaOperators();
+	$('.showCritOp').click(function(){
+		var data = {
+				'criteriaID': <s:property value="id"/>
+		};
+		startThinking({ div: "criteriaoperators", message: "Loading Affected Operators" });
+		$('#criteriaoperators').load('ReportCriteriaOperatorsAjax.action', data);		
+	});
 	$('.cluetip').cluetip({
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
 		arrows: true,
@@ -25,13 +32,6 @@ $(function(){
 	</s:if>	
 });
 
-function showCriteriaOperators() {
-	var data = {
-			'criteriaID': <s:property value="id"/>
-	};
-	startThinking({ div: "criteriaoperators", message: "Loading Affected Operators" });
-	$('#criteriaoperators').load('ReportCriteriaOperatorsAjax.action', data);
-}
 </script>
 </head>
 <body>
@@ -40,7 +40,7 @@ function showCriteriaOperators() {
 <s:if test="criteria != null">
 <s:include value="../actionMessages.jsp"/>
 </s:if>
-<s:form id="itemform" method="post" action="EditFlagCriteria" cssClass="form">
+<s:form id="itemform" method="post" cssClass="form">
 	<s:hidden name="criteria"/>
 	<fieldset>
 		<h2>General</h2>
@@ -75,6 +75,7 @@ function showCriteriaOperators() {
 			</li>
 			<li>
 				<s:select name="criteria.comparison" list="comparisonList" theme="form"/>
+			</li>
 			<li>
 				<s:textfield name="criteria.defaultValue" theme="form"/>
 			</li>
@@ -134,13 +135,13 @@ function showCriteriaOperators() {
 	</fieldset>
 	
 	<fieldset class="form submit">
-		<input type="submit" name="button" value="Save" class="picsbutton positive"/>
-		<input type="button" value="Cancel" class="picsbutton goback"/>
+		<s:submit action="ManageFlagCriteria!save" value="Save" cssClass="picsbutton positive" />
+		<s:submit action="ManageFlagCriteria" value="Cancel" cssClass="picsbutton" />
 	</fieldset>
 </s:form>
 
 <h3>Used By The Following Operators</h3>
-<a href="#" onclick="showCriteriaOperators(); return false;" class="refresh">Refresh</a>	
+<a class="refresh showCritOp showPointer">Refresh</a>	
 <div id="criteriaoperators"></div>
 
 </body>

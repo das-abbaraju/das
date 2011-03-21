@@ -298,7 +298,7 @@ function showCategoryRules() {
 <br/>
 <h3>Related Flag Criteria</h3>
 <div id="flags"></div>
-<a href="EditFlagCriteria.action?criteria.displayOrder=999&criteria.question=<s:property value="question.id" />&criteria.requiredStatus=Submitted&criteria.category=Paperwork<s:if test="question.columnHeader" >&criteria.label=<s:property value="auditType.name" />%3A%20<s:property value="question.columnHeader" />&criteria.description=<s:property value="auditType.name" />%3A%20<s:property value="question.columnHeader" /></s:if>" class="add">Add New Question Flag Criteria</a>
+<a href="ManageFlagCriteria!edit.action?criteria.displayOrder=999&criteria.question=<s:property value="question.id" />&criteria.requiredStatus=Submitted&criteria.category=Paperwork<s:if test="question.columnHeader" >&criteria.label=<s:property value="auditType.name" />%3A%20<s:property value="question.columnHeader" />&criteria.description=<s:property value="auditType.name" />%3A%20<s:property value="question.columnHeader" /></s:if>" class="add">Add New Question Flag Criteria</a>
 <br />
 <br />
 <h3>Related Audit Type Rules</h3>

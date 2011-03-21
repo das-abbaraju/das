@@ -1,9 +1,12 @@
 package com.picsauditing.actions.flags;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import javax.naming.ldap.HasControls;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -31,57 +34,40 @@ public class ManageFlagCriteria extends PicsActionSupport {
 	}
 
 	@Override
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN_AJAX;
-
-		if (button != null) {
-			if ("new".equals(button)) {
-				criteria = new FlagCriteria();
-				return SUCCESS;
-			}
-			if ("Save".equals(button)) {
-				if (criteria != null) {
-					List<String> errors = new ArrayList<String>();
-					if (criteria.getAuditType() == null && criteria.getQuestion() == null) {
-						errors.add("Either a question or an audit type is required.");
-					}
-
-					if (Strings.isEmpty(criteria.getDataType())) {
-						errors.add("DataType is a required field.");
-					}
-
-					if (errors.size() > 0) {
-						for (String e : errors) {
-							addActionError(e);
-						}
-						if (criteriaDAO.isContained(criteria))
-							criteriaDAO.refresh(criteria);
-						return SUCCESS;
-					}
-
-					criteria.setAuditColumns(permissions);
-
-					criteriaDAO.save(criteria);
-					addActionMessage("Criteria saved successfully.");
-
-					this.redirect("EditFlagCriteria.action?criteria=" + criteria.getId());
-				}
-
-			}
-
-			if ("Delete".equals(button)) {
-				/*
-				 * if (criteria != null) { criteriaDAO.remove(criteria);
-				 * criteria = null;
-				 * addActionMessage("Criteria successfully deleted.");
-				 * 
-				 * this.redirect("ManageFlagCriteria.action"); }
-				 */
-			}
-		}
+	public String execute(){
 
 		return SUCCESS;
+	}
+	
+	public String save() throws IOException {
+		if (criteria != null) {
+			if (criteria.getAuditType() == null && criteria.getQuestion() == null) {
+				addActionError("Either a question or an audit type is required.");
+			}
+
+			if (Strings.isEmpty(criteria.getDataType())) {
+				addActionError("DataType is a required field.");
+			}
+
+			if (hasActionErrors()) {
+				if (criteriaDAO.isContained(criteria))
+					criteriaDAO.refresh(criteria);
+				return "single";
+			}
+
+			criteria.setAuditColumns(permissions);
+
+			criteriaDAO.save(criteria);
+			addActionMessage("Criteria saved successfully.");
+
+			this.redirect("ManageFlagCriteria!edit.action?criteria=" + criteria.getId());
+		}
+		return SUCCESS;
+	}
+	
+	public String edit(){
+		
+		return "single";
 	}
 
 	public List<FlagCriteria> getCriteriaList() {

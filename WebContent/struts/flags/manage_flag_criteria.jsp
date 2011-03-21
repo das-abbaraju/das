@@ -14,36 +14,7 @@
 <script type="text/javascript">
 	var dtable;
 
-	function showTable() {
-		$('#item').hide();
-		$('#table').show();
-	}
-
-	function showForm() {
-		$('#item').show();
-		$('#table').hide();
-	}
-
-	function show(id) {
-		var data = {};
-		if (id === undefined) {
-			id = 0;
-			data.button = 'new';
-		}
-		data.id = id;
-		startThinking({div: 'thinking', message: 'Loading criteria...'});
-		$('#item').load('ManageFlagCriteriaAjax.action', data, function() {
-				stopThinking({div: 'thinking'}); 
-				showForm();
-			} 
-		);
-	}
-
 	$(function() {
-		$('.goback').live('click', function (event) {
-			event.preventDefault();
-			showTable();
-		});
 		
 		dtable = $('#criterialist').dataTable({
 			iDisplayLength: 25,
@@ -56,69 +27,44 @@
 	});
 </script>
 
-<s:if test="criteria != null">
-<script type="text/javascript">
-$(function() {
-	showForm();
-})
-</script>
-</s:if>
-
-<style>
-#item {
-	display: none;
-}
-#thinking {
-	float: right;	
-}
-</style>
 </head>
 <body>
 <h1>Manage Flag Criteria</h1>
 
-<div id="table">
-<s:if test="criteria == null">
-	<s:include value="../actionMessages.jsp"/>
-</s:if>
-	<div>
-	<input type="button" class="picsbutton positive add" onclick="show()" value="New Criteria"/>
-	<div id="thinking"></div>
-	</div>
-
-	<table id="criterialist" class="report">
-		<thead>
-			<tr>
-				<th>Category</th>
-				<th>Display Order</th>
-				<th>Label</th>
-				<th>Description</th>
-				<th>Updated</th>
-				<th>On</th>
-			</tr>
-		</thead>
-		<s:iterator value="criteriaList">
-			<tr>
-				<td><s:property value="category"/></td>
-				<td><s:property value="displayOrder"/></td>
-				<td><s:property value="label"/></td>
-				<td>
-					<a href="EditFlagCriteria.action?criteria=<s:property value="id"/>">
-						<s:if test="!isStringEmpty(description)">
-							<s:property value="description" />
-						</s:if>
-						<s:else>Description is missing...</s:else>
-					</a>
-				</td>
-				<td><s:property value="updatedBy2.name" /></td>
-				<td><s:date name="updateDate2" format="MM/dd/yyyy"/></td>
-			</tr>
-		</s:iterator>
-	</table>
+<s:include value="../actionMessages.jsp"/>
+<div>
+	<a href="ManageFlagCriteria!edit.action" class="add">New Criteria</a>
 </div>
 
-<div id="item">
-	<s:include value="manage_flag_criteria_ajax.jsp"/>
-</div>
+<table id="criterialist" class="report">
+	<thead>
+		<tr>
+			<th>Category</th>
+			<th>Display Order</th>
+			<th>Label</th>
+			<th>Description</th>
+			<th>Updated</th>
+			<th>On</th>
+		</tr>
+	</thead>
+	<s:iterator value="criteriaList">
+		<tr>
+			<td><s:property value="category"/></td>
+			<td><s:property value="displayOrder"/></td>
+			<td><s:property value="label"/></td>
+			<td>
+				<a href="ManageFlagCriteria!edit.action?criteria=<s:property value="id"/>">
+					<s:if test="!isStringEmpty(description)">
+						<s:property value="description" />
+					</s:if>
+					<s:else>Description is missing...</s:else>
+				</a>
+			</td>
+			<td><s:property value="updatedBy2.name" /></td>
+			<td><s:date name="updateDate2" format="MM/dd/yyyy"/></td>
+		</tr>
+	</s:iterator>
+</table>
 
 </body>
 </html>

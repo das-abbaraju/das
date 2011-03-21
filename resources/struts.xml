@@ -1756,14 +1756,7 @@
 		<action name="ManageFlagCriteria"
 			class="com.picsauditing.actions.flags.ManageFlagCriteria">
 			<result>struts/flags/manage_flag_criteria.jsp</result>	
-		</action>
-		<action name="ManageFlagCriteriaAjax"
-			class="com.picsauditing.actions.flags.ManageFlagCriteria">
-			<result>struts/flags/manage_flag_criteria_ajax.jsp</result>	
-		</action>
-		<action name="EditFlagCriteria"
-			class="com.picsauditing.actions.flags.ManageFlagCriteria">
-			<result>struts/flags/edit_flag_criteria.jsp</result>	
+			<result name="single">struts/flags/edit_flag_criteria.jsp</result>
 		</action>
 		<action name="FlagCriteriaList"
 			class="com.picsauditing.actions.flags.FlagCriteriaList">
