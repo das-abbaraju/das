@@ -24,7 +24,7 @@ public class ReportContractorScore extends ReportAccount {
 	protected void checkPermissions() throws Exception {
 		if (permissions.isOperatorCorporate()) {
 			OperatorAccount op = opDAO.find(permissions.getAccountId());
-			if (!op.getOperatorHeirarchy().contains(10566) && !op.getOperatorHeirarchy().contains(13282))
+			if (!op.getOperatorHeirarchy().contains(10566))
 				throw new NoRightsException("Suncor User or PICS Administrator");
 		}
 
