@@ -143,7 +143,8 @@ public class ReportNewReqConImport extends PicsActionSupport {
 					crr.setDeadline((Date) getValue(row, 13));
 					crr.setNotes((String) getValue(row, 14));
 
-					if (crr.getName() == null) // Assuming that no company name = empty row
+					// Assuming that no company name = empty row
+					if (crr.getName() == null)
 						continue;
 
 					if (crr.getRequestedByUser() != null && !Strings.isEmpty(crr.getRequestedByUserOther()))
@@ -153,20 +154,18 @@ public class ReportNewReqConImport extends PicsActionSupport {
 							|| crr.getRequestedBy() == null)
 						addActionError("Missing required fields in row " + j);
 
-					if (Strings.isEmpty(crr.getPhone()) && Strings.isEmpty(crr.getEmail()))
-						addActionError("Contact information is required. Missing phone and/or email in row " + j);
+					if (Strings.isEmpty(crr.getEmail()))
+						addActionError("Contact information is required. Missing email in row " + j);
 
 					if (Strings.isEmpty(crr.getRequestedByUserOther()) && crr.getRequestedByUser() == null)
 						addActionError("Missing requested by user field in row " + j);
 
-					if (crr.getDeadline() == null) {
+					if (crr.getDeadline() == null)
 						crr.setDeadline(DateBean.addMonths(new Date(), 2));
-					}
 
-					if (!Strings.isEmpty(crr.getNotes())) {
+					if (!Strings.isEmpty(crr.getNotes()))
 						crr.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + " - "
 								+ crr.getNotes());
-					}
 
 					requests.add(crr);
 				}
@@ -204,7 +203,6 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		String term = Strings.implode(searchTerms, " ");
 
 		List<String> unusedTerms = new ArrayList<String>();
-		List<String> usedTerms = new ArrayList<String>();
 
 		SearchEngine searchEngine = new SearchEngine(permissions);
 
@@ -221,13 +219,12 @@ public class ReportNewReqConImport extends PicsActionSupport {
 				e.printStackTrace();
 				return 0;
 			}
-			
+
 			if (!searchEngine.getNullTerms().isEmpty() && unusedTerms.isEmpty()) {
 				unusedTerms.addAll(searchEngine.getNullTerms());
 				termsArray.removeAll(searchEngine.getNullTerms());
 			}
 
-			usedTerms = termsArray;
 			termsArray = termsArray.subList(0, termsArray.size() - 1);
 		}
 
