@@ -120,7 +120,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
 				Sheet sheet = wb.getSheetAt(i);
 
-				for (int j = 0; j < sheet.getLastRowNum(); j++) {
+				for (int j = 0; j <= sheet.getLastRowNum(); j++) {
 					Row row = sheet.getRow(j);
 
 					if (row.getCell(0).getRichStringCellValue().getString().contains("Account"))
