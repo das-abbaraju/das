@@ -22,7 +22,7 @@ function closePage() {
 		<div id="content">
 			<h1>Import Registration Requests</h1>
 			<s:include value="../actionMessages.jsp" />
-			<a href="images/RequestNewContractors.xls">Registration Request Template</a>
+			<a href="resources/RequestNewContractors.xls">Registration Request Template</a>
 			<div>
 			<s:form enctype="multipart/form-data" method="POST">
 				<div style="background-color: #F9F9F9;">

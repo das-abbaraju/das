@@ -240,7 +240,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		excelSheet.addColumn(new ExcelColumn("Notes", "Notes"));
 	}
 
-	public boolean isAMSales() {
+	public boolean isAmSales() {
 		return auDAO.findByUserSalesAM(permissions.getUserId()).size() > 0;
 	}
 }
