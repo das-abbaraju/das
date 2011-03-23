@@ -340,7 +340,7 @@ function getMatches(requestID) {
 			<label><s:text name="User.phone" />:</label>
 			<s:textfield cssClass="checkReq" name="newContractor.phone" size="20" />
 			<s:if test="newContractor.id > 0 && newContractor.phone != null && newContractor.phone.length() > 0 && !permissions.operatorCorporate">
-				<s:submit value="%{getText(scope + '.button.ContactedByPhone')}" action="%{scope}!phone" cssClass="picsbutton" />
+				<s:submit value="%{getText(scope + '.button.ContactedByPhone')}" action="RequestNewContractor!phone" cssClass="picsbutton" />
 			</s:if>
 			<div class="fieldhelp">
 				<h3><s:text name="User.phone" /></h3>
@@ -374,7 +374,7 @@ function getMatches(requestID) {
 						<s:textarea cols="120" rows="10" name="emailBody" id="email_body" cssStyle="width: 600px;"></s:textarea>
 					</td></tr>
 					<tr><td colspan="2">
-						<s:submit value="%{getText('button.SendEmail')}" action="%{scope}!email" cssClass="picsbutton positive" />
+						<s:submit value="%{getText('button.SendEmail')}" action="RequestNewContractor!email" cssClass="picsbutton positive" />
 					</td></tr>
 				</table>
 			</s:if>
@@ -536,12 +536,12 @@ function getMatches(requestID) {
 	</ol>
 	</fieldset>
 	<fieldset class="forms submit">
-		<s:submit value="%{getText('button.Save')}" action="%{scope}!save" cssClass="picsbutton positive" />
+		<s:submit value="%{getText('button.Save')}" action="RequestNewContractor!save" cssClass="picsbutton positive" />
 	  	<s:if test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0) || newContractor.handledBy.toString() == 'Operator'">
-			<s:submit value="%{getText(scope + '.button.CloseRequest')}" action="%{scope}!close" cssClass="picsbutton negative" />
+			<s:submit value="%{getText(scope + '.button.CloseRequest')}" action="RequestNewContractor!close" cssClass="picsbutton negative" />
 		</s:if>
 		<s:elseif test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">
-			<s:submit value="%{getText(scope + '.button.ReturnToOperator')}" action="%{scope}!returnToOperator" cssClass="picsbutton" />
+			<s:submit value="%{getText(scope + '.button.ReturnToOperator')}" action="RequestNewContractor!returnToOperator" cssClass="picsbutton" />
 		</s:elseif>
 	</fieldset>
 </s:form>
