@@ -2,6 +2,7 @@ package com.picsauditing.actions.audits;
 
 import java.util.List;
 
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
@@ -25,6 +26,7 @@ public class OpenAuditsMailer extends PicsActionSupport {
 		this.emailQueueDAO = emailQueueDAO;
 	}
 
+	@Anonymous
 	public String execute() {
 		int nextID = 1;
 		while (nextID > 0) {

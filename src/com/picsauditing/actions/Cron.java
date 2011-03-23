@@ -22,6 +22,7 @@ import org.apache.commons.beanutils.DynaBean;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -101,6 +102,7 @@ public class Cron extends PicsActionSupport {
 		this.invoiceItemDAO = invoiceItemDAO;
 	}
 
+	@Anonymous
 	public String execute() throws Exception {
 
 		report = new StringBuffer();
@@ -243,7 +245,7 @@ public class Cron extends PicsActionSupport {
 		} catch (Throwable t) {
 			handleException(t);
 		}
-		
+
 		try {
 			startTask("\nEmailing Flag Changes Report to Account Managers...");
 			sendFlagChangesEmailToAccountManagers();
@@ -417,26 +419,26 @@ public class Cron extends PicsActionSupport {
 
 		for (Invoice i : invoicesMissingLateFees) {
 			boolean hasReactivation = false;
-			
+
 			// Skip Reactivations
-			for(InvoiceItem ii : i.getItems())
-				if(ii.getInvoiceFee().getId() == InvoiceFee.REACTIVATION)
+			for (InvoiceItem ii : i.getItems())
+				if (ii.getInvoiceFee().getId() == InvoiceFee.REACTIVATION)
 					hasReactivation = true;
-			
-			if(!hasReactivation) {
+
+			if (!hasReactivation) {
 				// Calculate Late Fee
-				BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05)).setScale(0,
-						BigDecimal.ROUND_HALF_UP);
+				BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05))
+						.setScale(0, BigDecimal.ROUND_HALF_UP);
 				if (lateFee.compareTo(BigDecimal.valueOf(20)) < 1)
 					lateFee = BigDecimal.valueOf(20);
-	
+
 				InvoiceItem lateFeeItem = new InvoiceItem(invoiceFeeDAO.find(InvoiceFee.LATEFEE));
 				lateFeeItem.setAmount(lateFee);
 				lateFeeItem.setAuditColumns(new User(User.SYSTEM));
 				lateFeeItem.setInvoice(i);
 				lateFeeItem.setDescription("Assessed " + new SimpleDateFormat("MM/dd/yyyy").format(new Date())
 						+ " due to delinquent payment.");
-	
+
 				// Add Late Fee to Invoice
 				i.getItems().add(lateFeeItem);
 				i.updateAmount();
@@ -477,7 +479,7 @@ public class Cron extends PicsActionSupport {
 	public void expireFlagChanges() throws Exception {
 		StringBuilder query = new StringBuilder();
 
-		// Ignore Flag Changes that are a week old or longer 
+		// Ignore Flag Changes that are a week old or longer
 		query = new StringBuilder();
 		query.append("update generalcontractors ");
 		query.append("set baselineFlag = flag, ");
@@ -486,23 +488,21 @@ public class Cron extends PicsActionSupport {
 		query.append("baselineApprover = 1 ");
 		query.append("WHERE flag != baselineFlag ");
 		query.append("AND flagLastUpdated <= DATE_SUB(NOW(), INTERVAL 14 DAY)");
-		
+
 		Database db = new Database();
 		db.executeUpdate(query.toString());
 	}
-	
+
 	public void sendFlagChangesEmailToAccountManagers() throws Exception {
 		// Running Query
 		StringBuilder query = new StringBuilder();
-		query
-				.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
+		query.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
 		query.append("select o.id, o.name operator, concat(u.name, ' <', u.email, '>') accountManager, ");
 		query.append("count(*) total, sum(case when gc.flag = gc.baselineFlag THEN 0 ELSE 1 END) changes ");
 		query.append("from generalcontractors gc ");
 		query.append("join accounts c on gc.subID = c.id and c.status = 'Active' ");
 		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' ");
-		query
-				.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
+		query.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
 		query.append("and endDate > now() ");
 		query.append("LEFT join users u on au.userID = u.id ");
 		query.append("group by o.id) t ");
@@ -537,7 +537,7 @@ public class Cron extends PicsActionSupport {
 				emailQueueDAO.save(email);
 			}
 		}
-		
+
 		// Sending list of global changes to managers@picsauditing.com
 		emailBuilder.clear();
 		emailBuilder.addToken("changes", data);

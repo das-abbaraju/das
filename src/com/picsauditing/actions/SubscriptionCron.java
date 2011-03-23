@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -65,6 +66,7 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 		this.contractorOperatorDAO = contractorOperatorDAO;
 	}
 
+	@Anonymous
 	@Override
 	public String execute() throws Exception {
 		Calendar calendar = Calendar.getInstance();
