@@ -2,18 +2,21 @@ package com.picsauditing.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.PermissionQueryBuilder;
 
 @Transactional
@@ -57,9 +60,11 @@ public class CertificateDAO extends PicsDAO {
 
 		String query = "SELECT c FROM Certificate c WHERE c.contractor.id = ? ";
 		query += permQuery.toString();
+		/*
 		if (permissions.isOperatorCorporate()) {
 			query += " AND c.createdBy = " + permissions.getUserId();
 		}
+		*/
 		if (!showExpired) {
 			query += " AND (c.expirationDate > NOW() OR c.expirationDate IS NULL)";
 		}
@@ -136,5 +141,31 @@ public class CertificateDAO extends PicsDAO {
 		
 		query.setParameter(1, conID);
 		return query.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Integer> findOpsByCert(int certID) {
+		List<Integer> ops = new ArrayList<Integer>();
+		Database db = new Database();
+		String sql = "SELECT distinct acr.opID " +
+					"FROM audit_category_rule acr " +
+						"JOIN audit_category ac ON acr.catID = ac.id " +
+						"JOIN audit_question aq ON acr.catID = aq.categoryID " +
+						"JOIN pqfdata pd ON pd.questionID = aq.id " +
+					"WHERE pd.answer =  '" + certID + "' " + 
+					"AND aq.questionType = 'FileCertificate';";
+		try {
+			List<BasicDynaBean> queryList = db.select(sql, false);
+			Iterator<BasicDynaBean> itr = queryList.iterator();
+			
+			while (itr.hasNext()) {
+				BasicDynaBean bdb = itr.next();
+				ops.add((Integer) bdb.get("opID"));
+			}
+		} catch (Exception e) {
+			
+		}
+		
+		return ops;
 	}
 }
