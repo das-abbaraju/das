@@ -612,7 +612,16 @@ public class ContractorAudit extends BaseTable {
 	public String getIndexType() {
 		return "AU";
 	}
-
+	
+	@Transient
+	public boolean isCategoryApplicable(int catID){
+		for (AuditCatData acd : this.categories) {
+			if (acd.getCategory().getId() == catID && acd.isApplies()) 
+				return true;
+		}
+		return false;
+	}
+	
 	@Transient
 	public ContractorAuditOperator getCao(OperatorAccount operator) {
 		return getCao(operator.getOperatorHeirarchy());

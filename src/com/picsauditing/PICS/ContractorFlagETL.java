@@ -184,6 +184,28 @@ public class ContractorFlagETL {
 							}
 						}
 					}
+				} else if (flagCriteria.getQuestion().getCategory() != null
+						&& flagCriteria.getQuestion().getAuditType().isAnnualAddendum()) {
+					// Temp work around for flagging on the citation questions
+					// on Annual Updates
+
+					FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
+							flagCriteria, "");
+					ContractorAudit annualUpdate = contractor.getCompleteAnnualUpdates().get(
+							flagCriteria.getMultiYearScope());
+
+					if (annualUpdate != null) {
+						if (annualUpdate.isCategoryApplicable(flagCriteria.getQuestion().getCategory().getId())) {
+							for (AuditData data : annualUpdate.getData()) {
+								if (data.getQuestion().getId() == flagCriteria.getQuestion().getId()) {
+									flagCriteriaContractor.setAnswer(parseAnswer(flagCriteria, data));
+									flagCriteriaContractor.setAnswer2("for Year: " + annualUpdate.getAuditFor());
+									changes.add(flagCriteriaContractor);
+									break;
+								}
+							}
+						}
+					}
 				} else {
 					// Non-EMR questions
 					// find answer in answermap if it exists to related question
