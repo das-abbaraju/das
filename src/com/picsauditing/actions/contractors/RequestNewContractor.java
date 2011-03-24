@@ -324,16 +324,23 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		if (newContractor.getId() == 0) {
 			newContractor = crrDAO.save(newContractor);
 
-			EmailQueue emailQueue = createEmail();
+			EmailQueue emailQueue = null;
 			if (newContractor.getRequestedByUser() != null
 					&& !Strings.isEmpty(newContractor.getRequestedByUser().getEmail()))
-				emailQueue.setCcAddresses(newContractor.getRequestedByUser().getEmail());
+				emailQueue = createEmail(newContractor.getRequestedByUser().getEmail());
+			else
+				emailQueue = createEmail();
 
 			OperatorForm form = getForm();
 			if (form != null)
 				addAttachments(emailQueue, form);
 
-			return "backToReport";
+			sendEmail(emailQueue);
+
+			if (getActionErrors().size() == 0)
+				return "backToReport";
+			else
+				return SUCCESS;
 		}
 
 		newContractor = crrDAO.save(newContractor);
@@ -353,7 +360,12 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				addAttachments(emailQueue, filename);
 		}
 
-		return contact("Contacted by email.");
+		sendEmail(emailQueue);
+
+		if (getActionErrors().size() == 0)
+			return contact("Contacted by email.");
+		else
+			return SUCCESS;
 	}
 
 	private String contact(String notes) {
@@ -431,7 +443,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 			String email = newContractor.getRequestedByUser() != null ? newContractor.getRequestedByUser().getEmail()
 					: newContractor.getRequestedByUserOther();
-			
+
 			EmailQueue emailQueue = new EmailQueue();
 			emailQueue.setSubject(subject);
 			emailQueue.setBody(body);
@@ -439,7 +451,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			emailQueue.setFromAddress(getAssignedCSR().getName() + " at PICS <" + getAssignedCSR().getEmail() + ">");
 			emailQueue.setHtml(true);
 			emailQueue.setViewableBy(newContractor.getRequestedBy());
-			
+
 			try {
 				EmailSender.send(emailQueue);
 			} catch (Exception e) {
@@ -804,6 +816,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 
 	private EmailQueue createEmail() {
+		return createEmail(null);
+	}
+
+	private EmailQueue createEmail(String cc) {
 		if (template == null)
 			template = templateDAO.find(83);
 
@@ -846,14 +862,17 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		emailQueue.setToAddresses(newContractor.getEmail());
 		emailQueue.setBody(emailBody);
 		emailQueue.setSubject(emailSubject);
+		emailQueue.setCcAddresses(cc);
+
+		return emailQueue;
+	}
+
+	private void sendEmail(EmailQueue emailQueue) {
 		try {
 			EmailSender.send(emailQueue);
-			return emailQueue;
-		} catch (Exception e1) {
-			addActionError("Could not send email with subject '" + emailSubject + "' to " + newContractor.getEmail());
+		} catch (Exception e) {
+			addActionError("Could not send registration request email to " + emailQueue.getToAddresses());
 		}
-
-		return null;
 	}
 
 	private void addAttachments(EmailQueue emailQueue, OperatorForm form) {
