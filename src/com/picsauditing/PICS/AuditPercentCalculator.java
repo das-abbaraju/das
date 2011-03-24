@@ -264,7 +264,10 @@ public class AuditPercentCalculator {
 			}
 
 			if (scoreCount > 0) {
-				conAudit.setScore((int) ((score / scoreCount) * 100));
+				if (conAudit.getAuditType().isScoreExtrapolated())
+					conAudit.setScore((int) ((score / scoreCount) * 100));
+				else
+					conAudit.setScore((int) score);
 			}
 
 			int percentComplete = 0;

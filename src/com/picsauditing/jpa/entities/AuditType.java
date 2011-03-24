@@ -42,6 +42,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public static final int HSE_COMPETENCY = 99;
 	public static final int SHELL_COMPETENCY_REVIEW = 100;
 	public static final int WA_STATE_VERIFICATION = 176;
+	public static final int PQF_SUNCOR = 195;
 
 	public static String DEFAULT_AUDITTYPE = "- Audit -";
 
@@ -352,4 +353,13 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public void setScoreable(boolean scoreable) {
 		this.scoreable = scoreable;
 	}
+
+	@Transient
+	public boolean isScoreExtrapolated() {
+		if (id == PQF_SUNCOR) {
+			return false;
+		}
+		return true;
+	}
+
 }
