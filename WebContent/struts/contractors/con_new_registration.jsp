@@ -535,7 +535,7 @@ function getMatches(requestID) {
 		</s:if>
 	</ol>
 	</fieldset>
-	<fieldset class="forms submit">
+	<fieldset class="form submit">
 		<s:submit value="%{getText('button.Save')}" action="RequestNewContractor!save" cssClass="picsbutton positive" />
 	  	<s:if test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0) || newContractor.handledBy.toString() == 'Operator'">
 			<s:submit value="%{getText(scope + '.button.CloseRequest')}" action="RequestNewContractor!close" cssClass="picsbutton negative" />
