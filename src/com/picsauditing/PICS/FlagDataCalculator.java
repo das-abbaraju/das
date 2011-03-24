@@ -103,7 +103,7 @@ public class FlagDataCalculator {
 		FlagCriteria criteria = opCriteria.getCriteria();
 		String hurdle = criteria.getDefaultValue();
 		ContractorAccount con = conCriteria.getContractor();
-		
+
 		if (criteria.isAllowCustomValue() && !Strings.isEmpty(opCriteria.getHurdle())) {
 			hurdle = opCriteria.getHurdle();
 		}
@@ -161,6 +161,31 @@ public class FlagDataCalculator {
 				}
 
 				return count < 3;
+			} else if ("number".equals(criteria.getDataType())) {
+				// Check for Audits with scoring
+				ContractorAudit scoredAudit = null;
+				for (ContractorAudit ca : con.getAudits()) {
+					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired()) {
+						scoredAudit = ca;
+						break;
+					}
+				}
+				boolean r = false;
+				if (scoredAudit != null) {
+					try {
+						if (">".equals(criteria.getComparison())) {
+							r = scoredAudit.getScore() > Float.parseFloat(hurdle);
+						} else if ("<".equals(criteria.getComparison())) {
+							r = scoredAudit.getScore() < Float.parseFloat(hurdle);
+						} else if ("=".equals(criteria.getComparison())) {
+							r = scoredAudit.getScore() == Float.parseFloat(hurdle);
+						} else if ("!=".equals(criteria.getComparison())) {
+							r = scoredAudit.getScore() != Float.parseFloat(hurdle);
+						}
+					} catch (NumberFormatException nfe) {
+					}
+				}
+				return r;
 			} else {
 				// Any other audit, PQF, or Policy
 				for (ContractorAudit ca : con.getAudits()) {
@@ -170,8 +195,8 @@ public class FlagDataCalculator {
 								return false;
 						}
 						for (ContractorAuditOperator cao : ca.getOperators()) {
-							// TODO Make sure we identify the right operator or
-							// corporate here
+							// TODO Make sure we identify the right operator
+							// or corporate here
 							if (cao.hasCaop(getOperator().getId())) {
 								if (cao.getStatus().isResubmit())
 									return false;
@@ -181,16 +206,16 @@ public class FlagDataCalculator {
 									return false;
 
 								if (!criteria.getAuditType().isHasMultiple())
-									// There aren't any more so we might as well
-									// return flagged right now
+									// There aren't any more so we might as
+									// we'll return flagged right now
 									return true;
 							}
 						}
 					}
 				}
 				if (criteria.isFlaggableWhenMissing())
-					// isFlaggableWhenMissing would be really useful for Manual
-					// Audits or Implementation Audits
+					// isFlaggableWhenMissing would be really useful for
+					// Manual Audits or Implementation Audits
 					return true;
 			}
 			return null;
