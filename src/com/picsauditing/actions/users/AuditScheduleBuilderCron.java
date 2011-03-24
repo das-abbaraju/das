@@ -1,6 +1,7 @@
 package com.picsauditing.actions.users;
 
 import com.picsauditing.PICS.AuditScheduleBuilder;
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
 
@@ -13,6 +14,7 @@ public class AuditScheduleBuilderCron extends PicsActionSupport {
 		this.auditScheduleBuilder = auditScheduleBuilder;
 	}
 
+	@Anonymous
 	public String execute() throws Exception {
 		addActionMessage("Running AuditScheduleBuilder");
 		auditScheduleBuilder.build();
