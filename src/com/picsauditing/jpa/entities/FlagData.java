@@ -63,6 +63,7 @@ public class FlagData extends BaseTable implements Comparable<FlagData> {
 		this.flag = flag;
 	}
 
+	@Enumerated(EnumType.STRING)
 	public FlagColor getBaselineFlag() {
 		return baselineFlag;
 	}
@@ -114,8 +115,7 @@ public class FlagData extends BaseTable implements Comparable<FlagData> {
 		return criteria.compareTo(o.criteria);
 	}
 	
-	@Transient
 	public void resetBaseline() {
-		baselineFlag = flag;
+		this.setBaselineFlag(this.getFlag());
 	}
 }
