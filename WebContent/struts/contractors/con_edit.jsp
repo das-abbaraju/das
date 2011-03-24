@@ -108,7 +108,7 @@ $(function() {
 							<s:textfield name="contractor.zip" size="7" />
 						</li>
 					</s:if>
-					<s:if test="debugging">
+					<s:if test="contractor.demo">
 					<li><label><s:text name="%{scope}.PrimaryAddress.DefaultLanguage"/>:</label>
 						<s:select name="contractor.locale" listValue="displayName"
 							list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />

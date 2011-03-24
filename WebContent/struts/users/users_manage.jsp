@@ -238,7 +238,7 @@ div.autocomplete ul li {
 				<li><label for="user.fax">Fax:</label>
 					<s:textfield name="user.fax" size="15" />
 				</li>
-				<s:if test="debugging">
+				<s:if test="user.account.demo || user.account.admin">
 				<li><label for="user.locale">Language:</label> <s:select
 					list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
 					name="user.locale" listValue="displayName"></s:select>

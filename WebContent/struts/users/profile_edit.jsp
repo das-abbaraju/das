@@ -108,7 +108,7 @@
 			<li>
 				<s:textfield name="u.fax" theme="form" />
 			</li>
-			<s:if test="debugging">
+			<s:if test="u.account.demo || u.account.admin">
 			<li>
 				<s:select name="u.locale" listValue="displayName" theme="form" list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
 			</li>
