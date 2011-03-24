@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.naming.ldap.HasControls;
-
+import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -34,11 +33,11 @@ public class ManageFlagCriteria extends PicsActionSupport {
 	}
 
 	@Override
-	public String execute(){
+	public String execute() {
 
 		return SUCCESS;
 	}
-	
+
 	public String save() throws IOException {
 		if (criteria != null) {
 			if (criteria.getAuditType() == null && criteria.getQuestion() == null) {
@@ -64,10 +63,12 @@ public class ManageFlagCriteria extends PicsActionSupport {
 		}
 		return SUCCESS;
 	}
-	
-	public String edit(){
-		
-		return "single";
+
+	public String edit() {
+		if (criteria == null)
+			criteria = new FlagCriteria();
+
+		return INPUT;
 	}
 
 	public List<FlagCriteria> getCriteriaList() {

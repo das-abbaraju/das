@@ -40,6 +40,8 @@ $(function(){
 <s:if test="criteria != null">
 <s:include value="../actionMessages.jsp"/>
 </s:if>
+
+<a href="ManageFlagCriteria.action">&lt;&lt; Back to List</a>
 <s:form id="itemform" method="post" cssClass="form">
 	<s:hidden name="criteria"/>
 	<fieldset>
