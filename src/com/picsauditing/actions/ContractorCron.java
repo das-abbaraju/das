@@ -120,47 +120,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (conID > 0) {
 			run(conID, opID);
 		} else {
-			try {
-				manager.add(this);
-
-				double serverLoad = ServerInfo.getLoad();
-				if (serverLoad > 3) {
-					addActionError("Server Load is too high (" + serverLoad + ")");
-				} else {
-					long totalQueueSize = contractorDAO.findNumberOfContractorsNeedingRecalculation();
-
-					double limitDefault = Double.parseDouble(appPropertyDAO.find("ContractorCron.limit.default")
-							.getValue());
-					double limitQueue = Double
-							.parseDouble(appPropertyDAO.find("ContractorCron.limit.queue").getValue());
-					double limitServerLoad = Double.parseDouble(appPropertyDAO.find("ContractorCron.limit.serverload")
-							.getValue());
-
-					// This is a formula based on a multiple regression analysis
-					// of what we want. Not sure if it will work
-					limit = (int) Math.round(limitDefault + (totalQueueSize / limitQueue)
-							- (serverLoad * limitServerLoad));
-
-					if (limit > 0) {
-						Set<Integer> contractorsToIgnore = new HashSet<Integer>();
-						for (ContractorCron cron : manager) {
-							if (!cron.equals(this))
-								contractorsToIgnore.addAll(cron.getQueue());
-						}
-						queue = contractorDAO.findContractorsNeedingRecalculation(limit, contractorsToIgnore);
-
-						for (Integer conID : queue) {
-							run(conID, opID);
-						}
-						addActionMessage("ContractorCron processed " + queue.size() + " record(s)");
-					}
-				}
-
-			} catch (Exception e) {
-				throw e;
-			} finally {
-				manager.remove(this);
-			}
+			addActionError("You must supply a contractor id.");
 		}
 
 		// PicsLogger.stop();
