@@ -309,10 +309,10 @@ function getMatches(requestID) {
 			</s:text>
 		</s:if>
 		<s:if test="newContractor.open">
-			<s:text name="%{scope}.message.CloseRequest">
-				<s:param><s:property value="newContractor.id" /></s:param>
-			</s:text>
-			Click here to <a href="RequestNewContractor.action?requestID=<s:property value="newContractor.id" />&button=Close Request" class="picsbutton positive">Close the Request</a>
+			<s:form>
+				<s:hidden name="requestID"/>
+				<s:submit action="RequestNewContractor!close" value="%{getText(scope + '.button.CloseRequest')}" cssClass="picsbutton positive" />
+			</s:form>
 		</s:if>
 		<s:else>
 			<s:text name="%{scope}.message.RequestClosed" />
