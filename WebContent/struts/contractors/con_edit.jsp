@@ -86,7 +86,7 @@ $(function() {
 				</ol>
 				</fieldset>
 				<fieldset class="form">
-				<h2 class="formLegend"><s:text name="%{scope}.PrimaryAddress.heading"/></h2>
+				<h2 class="formLegend"><s:text name="global.primaryAddress"/></h2>
 				<ol>
 					<li><label><s:text name="%{scope}.PrimaryAddress.Address"/>:</label>
 						<s:textfield name="contractor.address" size="35" /><br />
