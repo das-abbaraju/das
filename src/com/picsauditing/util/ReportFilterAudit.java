@@ -37,6 +37,8 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showCohsStats = false;
 	protected boolean showQuestionAnswer = false;
 	protected boolean showExpiredDate = false;
+	protected boolean showNotRenewingContractors = true;
+	protected boolean showContractorsWithPendingMembership = true;
 
 	// Filter values
 	protected int[] auditID;
@@ -71,6 +73,8 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected Date statusChangedDate2;
 	protected Date expiredDate1;
 	protected Date expiredDate2;
+	protected boolean notRenewingContractors = false;
+	protected boolean contractorsWithPendingMembership = false;
 
 	public boolean isShowAuditType() {
 		return showAuditType;
@@ -198,6 +202,22 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShowQuestionAnswer(boolean showQuestionAnswer) {
 		this.showQuestionAnswer = showQuestionAnswer;
+	}
+
+	public boolean isShowNotRenewingContractors() {
+		return showNotRenewingContractors;
+	}
+
+	public void setShowNotRenewingContractors(boolean showNotRenewingContractors) {
+		this.showNotRenewingContractors = showNotRenewingContractors;
+	}
+
+	public boolean isShowContractorsWithPendingMembership() {
+		return showContractorsWithPendingMembership;
+	}
+
+	public void setShowContractorsWithPendingMembership(boolean showContractorsWithPendingMembership) {
+		this.showContractorsWithPendingMembership = showContractorsWithPendingMembership;
 	}
 
 	public int[] getAuditID() {
@@ -532,5 +552,21 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setExpiredDate1(Date expiredDate1) {
 		this.expiredDate1 = expiredDate1;
+	}
+
+	public boolean isNotRenewingContractors() {
+		return notRenewingContractors;
+	}
+
+	public void setNotRenewingContractors(boolean notRenewingContractors) {
+		this.notRenewingContractors = notRenewingContractors;
+	}
+
+	public boolean isContractorsWithPendingMembership() {
+		return contractorsWithPendingMembership;
+	}
+
+	public void setContractorsWithPendingMembership(boolean contractorsWithPendingMembership) {
+		this.contractorsWithPendingMembership = contractorsWithPendingMembership;
 	}
 }

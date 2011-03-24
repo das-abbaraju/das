@@ -882,6 +882,19 @@
 			name="filter.pendingPqfAnnualUpdate" />Show contractors with pending
 		PQF and Annual Updates</label></div>
 	</s:if>
+	
+	<s:if test="filter.showNotRenewingContractors">
+		<br clear="all" />
+		<div class="filterOption"><label><s:checkbox
+			name="filter.notRenewingContractors" />Show contractors set to not renew</label></div>
+	</s:if>
+	
+	<s:if test="filter.showContractorsWithPendingMembership">
+		<br clear="all" />
+		<div class="filterOption"><label><s:checkbox
+			name="filter.contractorsWithPendingMembership" />Show contractors with unpaid
+		Membership Invoices</label></div>
+	</s:if>
 
 	<s:if test="filter.showPrimaryInformation">
 		<br clear="all" />
