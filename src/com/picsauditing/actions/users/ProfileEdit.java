@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
@@ -54,6 +55,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		u = dao.find(permissions.getUserId());
 	}
 
+	@Anonymous
 	public String execute() throws Exception {
 		loadPermissions();
 
