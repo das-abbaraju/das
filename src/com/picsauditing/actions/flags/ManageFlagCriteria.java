@@ -51,7 +51,7 @@ public class ManageFlagCriteria extends PicsActionSupport {
 			if (hasActionErrors()) {
 				if (criteriaDAO.isContained(criteria))
 					criteriaDAO.refresh(criteria);
-				return "single";
+				return INPUT;
 			}
 
 			criteria.setAuditColumns(permissions);
