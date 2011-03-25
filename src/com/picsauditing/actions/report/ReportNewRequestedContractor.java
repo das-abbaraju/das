@@ -109,7 +109,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 				sql.addWhere("(cr.state = ua.state OR cr.zip BETWEEN ua.postal_start AND ua.postal_end)");
 			}
 
-			if (permissions.hasGroup(User.GROUP_MANAGER) && !getFilter().isViewAll()) {
+			if (isAmSales() && !getFilter().isViewAll()) {
 				sql.addJoin("JOIN account_user au ON au.accountID = op.id AND au.startDate < NOW() "
 						+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
 			}
