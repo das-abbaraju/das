@@ -57,18 +57,6 @@ $(function(){
 			$('#title_'+v).addClass('hide');
 		});
 	});
-	
-	$('#auditViewArea').delegate('div.hasDependentRules', 'updateDependent', function() {
-		updateCategoriesNow();
-	});
-
-	$('#auditViewArea').delegate('div.affectsAudit', 'updateDependent', function() {
-		updateCategoriesNow();
-	});
-
-	$('#auditViewArea').delegate('div.question:not(.affectsAudit)', 'updateDependent', function() { 
-		updateCategories();
-	});
 
 	// Insurance Methods
 	$('a.uploadNewCertificate').live('click',function(e) {

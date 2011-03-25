@@ -109,6 +109,18 @@ $(function(){
 		$.scrollTo(0, 800, {axis: 'y'});
 	});
 	
+	$('#auditViewArea').delegate('div.hasDependentRules', 'updateDependent', function() {
+		updateCategoriesNow();
+	});
+
+	$('#auditViewArea').delegate('div.affectsAudit', 'updateDependent', function() {
+		updateCategoriesNow();
+	});
+
+	$('#auditViewArea').delegate('div.question:not(.affectsAudit)', 'updateDependent', function() { 
+		updateCategories();
+	});
+	
 	$('#submitRemind').ajaxComplete(function(e, xhr, settings){
 		if(settings.headers && settings.headers.refresh && 
 				settings.headers.refresh == 'true'){
