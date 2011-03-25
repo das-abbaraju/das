@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.util.List;
 
 import com.picsauditing.PICS.ContractorValidator;
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.UserDAO;
@@ -26,6 +27,7 @@ public class ContractorValidate extends ContractorActionSupport {
 		this.subHeading = "New Contractor Information";
 	}
 
+	@Anonymous
 	public String execute() throws Exception {
 
 		if ("name".equals(button)) {
