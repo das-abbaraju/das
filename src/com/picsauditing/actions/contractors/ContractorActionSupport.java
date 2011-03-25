@@ -139,13 +139,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 				ContractorAudit audit = pqfs.get(0);
 				if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 					String url = "Audit.action?auditID=";
-					MenuComponent menuComponent = new MenuComponent(getText(audit.getAuditType().getI18nKey("name")), url
-							+ audit.getId());
+					MenuComponent menuComponent = new MenuComponent(getText(audit.getAuditType().getI18nKey("name")),
+							url + audit.getId());
 					menuComponent.setAuditId(audit.getId());
 					menu.add(menuComponent);
 				}
 			} else if (pqfs.size() > 1) {
-				MenuComponent subMenu = new MenuComponent(getText("AuditType.1.name"), "ContractorDocuments.action?id=" + id);
+				MenuComponent subMenu = new MenuComponent(getText("AuditType.1.name"), "ContractorDocuments.action?id="
+						+ id);
 				menu.add(subMenu);
 				for (ContractorAudit audit : pqfs) {
 					// at least one cao needs to be created for the contractor
@@ -186,8 +187,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (isRequiresInsurance()
 				&& (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorInsurance))) {
 			// Add InsureGUARD
-			MenuComponent subMenu = new MenuComponent(getText("global.InsureGUARD"), "ContractorDocuments.action?id=" + id
-					+ "#" + ContractorDocuments.getSafeName(getText("global.InsureGUARD")));
+			MenuComponent subMenu = new MenuComponent(getText("global.InsureGUARD"), "ConInsureGUARD.action?id=" + id);
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
@@ -206,10 +206,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 			// href="ConInsureGUARD.action?id=<s:property value="id"/>">Manage
 			// Certificates</a>
 			subMenu.addChild("Manage Certificates", "ConInsureGUARD.action?id=" + contractor.getId());
-			
+
 			if (permissions.hasPermission(OpPerms.AuditVerification))
 				subMenu.addChild("Insurance Verification", "InsureGuardVerification.action?id=" + contractor.getId());
-			
+
 			addSubMenu(menu, subMenu);
 		}
 
