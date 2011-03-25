@@ -37,6 +37,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.UserLoginLog;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectAccount;
@@ -128,6 +129,37 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	}
 
 	public String execute() throws Exception {
+		checkPermissions();
+
+		if ("newUser".equalsIgnoreCase(button)) {
+			if (user.getIsGroup().isTrue())
+				sendActivationEmail = false;
+			else {
+				sendActivationEmail = true;
+				user.setLocale(account.getLocale());
+			}
+			return SUCCESS;
+		}
+
+		if (user == null)
+			return SUCCESS;
+
+		if ("resetPassword".equals(button)) {
+			// Seeding the time in the reset hash so that each one will be
+			// guaranteed unique
+			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
+			userDAO.save(user);
+
+			addActionMessage(AccountRecovery.sendRecoveryEmail(user));
+		}
+
+		if ("Suggest".equalsIgnoreCase(button))
+			return "suggest";
+
+		return SUCCESS;
+	}
+
+	private void checkPermissions() throws Exception {
 		if (permissions.isContractor())
 			permissions.tryPermission(OpPerms.ContractorAdmin);
 		else
@@ -143,130 +175,13 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		// Make sure we can edit users in this account
 		if (permissions.getAccountId() != accountId)
 			permissions.tryPermission(OpPerms.AllOperators);
-
-		if ("newUser".equalsIgnoreCase(button)) {
-			if (user.getIsGroup().isTrue())
-				sendActivationEmail = false;
-			else {
-				sendActivationEmail = true;
-				user.setLocale(account.getLocale());
-			}
-			return SUCCESS;
-		}
-
-		if (user == null) {
-			return SUCCESS;
-		}
-
-		if ("resetPassword".equals(button)) {
-			// Seeding the time in the reset hash so that each one will be
-			// guaranteed unique
-			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-			userDAO.save(user);
-
-			addActionMessage(AccountRecovery.sendRecoveryEmail(user));
-		}
-
-		if ("Unlock this Account".equalsIgnoreCase(button)) {
-			if (!isOK()) {
-				userDAO.clear();
-				return SUCCESS;
-			}
-
-			user.setLockUntil(null);
-			userDAO.save(user);
-		}
-
-		if ("Move".equals(button)) {
-			if (user == null) {
-				addActionError("You have selected an invalid user, please try again.");
-				return SUCCESS;
-			}
-			if (account.getId() != moveToAccount) {
-				// accounts are different so we are moving to a new account
-				// user.setOwnedPermissions(null);
-				List<UserAccess> userAccessList = userAccessDAO.findByUser(user.getId());
-				Iterator<UserAccess> uaIter = userAccessList.iterator();
-				while (uaIter.hasNext()) {
-					UserAccess next = uaIter.next();
-					user.getOwnedPermissions().remove(next);
-					uaIter.remove();
-					userAccessList.remove(next);
-					userAccessDAO.remove(next);
-				}
-				// user.setGroups(null);
-				List<UserGroup> userGroupList = userGroupDAO.findByUser(user.getId());
-				Iterator<UserGroup> ugIter = userGroupList.iterator();
-				while (ugIter.hasNext()) {
-					UserGroup next = ugIter.next();
-					user.getGroups().remove(next);
-					ugIter.remove();
-					userAccessList.remove(next);
-					userAccessDAO.remove(next);
-				}
-				// get new account
-				account = accountDAO.find(moveToAccount);
-				user.setAccount(account);
-				// user.setNeedsIndexing(true);
-				userDAO.save(user);
-				if (!user.isGroup())
-					indexer.runSingle(user, "users");
-			}
-			redirect("UsersManage.action?accountID=" + user.getAccount().getId() + "&user.id=" + user.getId()
-					+ "&msg=You have sucessfully moved " + user.getName() + " to " + user.getAccount().getName());
-		}
-
-		if ("Delete".equalsIgnoreCase(button)) {
-			permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
-			String message = "Cannot remove users who performed some actions in the system. Please inactivate them.";
-			if (!user.isGroup()) {
-				// This user is a user (not a group)
-				if (!userDAO.canRemoveUser("ContractorAudit", user.getId(), null)) {
-					addActionError(message);
-					return SUCCESS;
-				}
-				if (!userDAO.canRemoveUser("ContractorAuditOperator", user.getId(), null)) {
-					addActionError(message);
-					return SUCCESS;
-				}
-				if (!userDAO.canRemoveUser("AuditData", user.getId(), null)) {
-					addActionError(message);
-					return SUCCESS;
-				}
-				if (!userDAO.canRemoveUser("ContractorOperator", user.getId(), null)) {
-					addActionError(message);
-					return SUCCESS;
-				}
-				if (!userDAO.canRemoveUser("UserAccess", user.getId(), "t.grantedBy.id = :userID")) {
-					addActionError(message);
-					return SUCCESS;
-				}
-				if (user.getAccount().getPrimaryContact() != null
-						&& user.getId() == user.getAccount().getPrimaryContact().getId()) {
-					// Putting primary user check last so that primary users
-					// aren't switched that can't be deleted
-					addActionError("Cannot remove the primary user for " + user.getAccount().getName()
-							+ ". Please switch the primary user of this account and then attempt to delete them.");
-					return SUCCESS;
-				}
-			}
-
-			userDAO.remove(user);
-			addActionMessage("Successfully removed "
-					+ (user.isGroup() ? "group: " + user.getName() : "user: " + user.getUsername()));
-			user = null;
-		}
-
-		if ("Suggest".equalsIgnoreCase(button)) {
-			return "suggest";
-		}
-
-		return SUCCESS;
 	}
 
 	public String save() throws Exception {
+		checkPermissions();
+
 		if (!isOK()) {
-			userDAO.refresh(user);
+			userDAO.refresh(user); // Clear out ALL changes?
 			return SUCCESS;
 		}
 
@@ -283,7 +198,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 				if (userPerms.size() < 4) {
 					addActionError("Cannot inactivate this user");
-					userDAO.refresh(user);
+					user.setIsActive(YesNo.Yes); // Save everything but isActive
 					return SUCCESS;
 				}
 			}
@@ -421,7 +336,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			}
 		}
 
-		// CSR shadowing
+		// TODO CSR shadowing
 		if (shadowID == 0 || (user.getShadowedUser() != null && user.getShadowedUser().getId() != shadowID)) {
 			// Remove all non-groups from this user's groups
 			Iterator<UserGroup> iterator = user.getGroups().iterator();
@@ -465,6 +380,98 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		return SUCCESS;
 	}
 
+	public String unlock() throws Exception {
+		checkPermissions();
+
+		if (!isOK()) {
+			userDAO.clear();
+			return SUCCESS;
+		}
+
+		user.setLockUntil(null);
+		userDAO.save(user);
+		return SUCCESS;
+	}
+
+	public String move() throws Exception {
+		checkPermissions();
+		// accounts are different so we are moving to a new account
+		// user.setOwnedPermissions(null);
+		List<UserAccess> userAccessList = userAccessDAO.findByUser(user.getId());
+		Iterator<UserAccess> uaIter = userAccessList.iterator();
+		while (uaIter.hasNext()) {
+			UserAccess next = uaIter.next();
+			user.getOwnedPermissions().remove(next);
+			uaIter.remove();
+			userAccessList.remove(next);
+			userAccessDAO.remove(next);
+		}
+		// user.setGroups(null);
+		List<UserGroup> userGroupList = userGroupDAO.findByUser(user.getId());
+		Iterator<UserGroup> ugIter = userGroupList.iterator();
+		while (ugIter.hasNext()) {
+			UserGroup next = ugIter.next();
+			user.getGroups().remove(next);
+			ugIter.remove();
+			userAccessList.remove(next);
+			userAccessDAO.remove(next);
+		}
+		// get new account
+		account = accountDAO.find(moveToAccount);
+		user.setAccount(account);
+		// user.setNeedsIndexing(true);
+		userDAO.save(user);
+		if (!user.isGroup())
+			indexer.runSingle(user, "users");
+
+		return redirect("UsersManage.action?accountID=" + user.getAccount().getId() + "&user.id=" + user.getId()
+				+ "&msg=You have sucessfully moved " + user.getName() + " to " + user.getAccount().getName());
+	}
+
+	public String delete() throws Exception {
+		checkPermissions();
+		permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
+		String message = "Cannot remove users who performed some actions in the system. Please inactivate them.";
+		if (!user.isGroup()) {
+			// This user is a user (not a group)
+			if (!userDAO.canRemoveUser("ContractorAudit", user.getId(), null)) {
+				addActionError(message);
+				return SUCCESS;
+			}
+			if (!userDAO.canRemoveUser("ContractorAuditOperator", user.getId(), null)) {
+				addActionError(message);
+				return SUCCESS;
+			}
+			if (!userDAO.canRemoveUser("AuditData", user.getId(), null)) {
+				addActionError(message);
+				return SUCCESS;
+			}
+			if (!userDAO.canRemoveUser("ContractorOperator", user.getId(), null)) {
+				addActionError(message);
+				return SUCCESS;
+			}
+			if (!userDAO.canRemoveUser("UserAccess", user.getId(), "t.grantedBy.id = :userID")) {
+				addActionError(message);
+				return SUCCESS;
+			}
+			if (user.getAccount().getPrimaryContact() != null
+					&& user.getId() == user.getAccount().getPrimaryContact().getId()) {
+				// Putting primary user check last so that primary users
+				// aren't switched that can't be deleted
+				addActionError("Cannot remove the primary user for " + user.getAccount().getName()
+						+ ". Please switch the primary user of this account and then attempt to delete them.");
+				return SUCCESS;
+			}
+		}
+
+		userDAO.remove(user);
+		addActionMessage("Successfully removed "
+				+ (user.isGroup() ? "group: " + user.getName() : "user: " + user.getUsername()));
+		user = null;
+
+		return SUCCESS;
+	}
+
 	private boolean isOK() throws Exception {
 		if (user == null) {
 			addActionError("No user found");
@@ -479,18 +486,15 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			return (getActionErrors().size() == 0);
 
 		// Users only after this point
-		// Calling userDAO.duplicateUsername flushes values to the database when
-		// it tries to pull up the same user object -- Refreshing user object
-		// before that happens so nothing persists in this action
 		User temp = new User();
-		copyValues(user, temp);
+		copyTo(user, temp);
 		userDAO.refresh(user);
 
-		boolean hasduplicate = userDAO.duplicateUsername(user.getUsername().trim(), user.getId());
+		boolean hasduplicate = userDAO.duplicateUsername(temp.getUsername().trim(), temp.getId());
 		if (hasduplicate)
 			addActionError("This username is NOT available. Please choose a different one.");
 
-		copyValues(temp, user);
+		copyTo(temp, user);
 
 		String result = Strings.validUserName(user.getUsername().trim());
 		if (!result.equals("valid"))
@@ -831,15 +835,21 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		return null;
 	}
 
-	private void copyValues(User user1, User user2) {
-		user2.setName(user1.getName());
-		user2.setEmail(user1.getEmail());
-		user2.setUsername(user1.getUsername());
-		user2.setPhone(user1.getPhone());
-		user2.setFax(user1.getFax());
-		user2.setLocale(user1.getLocale());
-		user2.setTimezone(user1.getTimezone());
-		user2.setOwnedPermissions(user1.getOwnedPermissions());
-		user2.setIsActive(user1.getIsActive());
+	private void copyTo(User u1, User u2) {
+		u2.setAccount(u1.getAccount());
+		u2.setEmail(u1.getEmail());
+		u2.setFax(u1.getFax());
+		u2.setGroups(u1.getGroups());
+		u2.setId(u1.getId());
+		u2.setIsActive(u1.getIsActive());
+		u2.setIsGroup(u1.getIsGroup());
+		u2.setLocale(u1.getLocale());
+		u2.setMembers(u1.getMembers());
+		u2.setName(u1.getName());
+		u2.setOwnedPermissions(u1.getOwnedPermissions());
+		u2.setPhone(u1.getPhone());
+		u2.setSubscriptions(u1.getSubscriptions());
+		u2.setTimezone(u1.getTimezone());
+		u2.setUsername(u1.getUsername());
 	}
 }

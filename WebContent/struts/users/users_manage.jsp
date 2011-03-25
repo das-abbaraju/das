@@ -78,7 +78,7 @@ div.autocomplete ul li {
 &gt; <a href="?accountId=<s:property value="account.id"/>"><s:text name="%{scope}.title" /></a>
 <s:if test="user.id > 0">&gt; <a href="?user.id=<s:property value="user.id"/>"><s:property value="user.name" /></a>
 </s:if>
-<s:if test="button == 'newUser'">&gt; NEW USER</s:if>
+<s:if test="user.id == 0">&gt; NEW USER</s:if>
 
 <div id="manage_controls" <s:if test="user != null">style="display:none"</s:if>>
 <s:if test="!account.contractor">
@@ -185,7 +185,13 @@ div.autocomplete ul li {
 	</div>
 	<s:form id="UserSave">
 		<s:if test="user.locked">
-			<div class="alert">This user account is locked.<pics:permission perm="EditAccountDetails"> <span title="Press this button to unlock this user's account"><input class="picsbutton negative" type="submit" name="button" value="Unlock this Account"/></span></pics:permission></div>
+			<div class="alert">This user account is locked.
+				<pics:permission perm="EditAccountDetails">
+					<span title="<s:text name="%{scope}.help.Unlock" />Press this button to unlock this user's account">
+						<s:submit action="UsersManage!unlock" cssClass="picsbutton negative" value="%{getText(scope + '.button.UnlockThisAccount')}" />
+					</span>
+				</pics:permission>
+			</div>
 		</s:if>
 		<s:hidden name="user.id" />
 		<s:hidden name="accountId" />
@@ -298,8 +304,7 @@ div.autocomplete ul li {
 							<p>The name of the account you wish to move the user to.  
 							This field will autocomplete as you type.</p>
 						</div>
-						<button type="submit" name="button" class="picsbutton utility" value="Move" 
-							onclick="return confirm('Are you sure you want to move this user?');">Move User</button>
+						<s:submit action="UsersManage!move" cssClass="picsbutton" value="%{getText(scope + '.button.MoveUser')}" onclick="return confirm('%{getText(scope + '.confirm.Move')}');" />
 					</li>
 				</s:if>
 				<s:if test="hasProfileEdit">
@@ -322,9 +327,7 @@ div.autocomplete ul li {
 			<s:submit action="UsersManage!save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
 			<pics:permission perm="EditUsers" type="Delete">
 				<s:if test="user.id > 0 && !account.contractor">
-					<button type="submit" name="button" class="picsbutton negative"
-						value="Delete"
-						onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
+					<s:submit action="UsersManage!delete" cssClass="picsbutton negative" value="%{getText('button.Delete')}" onclick="return confirm('%{getText(scope + '.confirm.Delete')}');" />
 				</s:if>
 			</pics:permission>
 		</fieldset>
