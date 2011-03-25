@@ -126,7 +126,9 @@ public enum OpPerms {
 	RequestNewContractor("Registration Request", "Allows an operator to create registration requests to add new contractors.", true, false, true, false, true),
 	
 	// PICS Score
-	PicsScore("PICS Score", "Shows the Contractor's calculated PicsScore", false, false, true, false, true);
+	PicsScore("PICS Score", "Shows the Contractor's calculated PicsScore", false, false, true, false, true),
+	// Contractor Simulator
+	ContractorSimulator("Contractor Simulator", "Allows users to preview Audit configurations for operators", false, false, true, false, false);
 	
 	private String description;
 	private String helpText;

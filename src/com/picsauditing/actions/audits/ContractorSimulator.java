@@ -49,7 +49,7 @@ public class ContractorSimulator extends PicsActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
-		tryPermissions(OpPerms.ManageAudits);
+		tryPermissions(OpPerms.ContractorSimulator);
 
 		if (contractor == null) {
 			if (operatorIds != null && operatorIds.size() == 1) {
