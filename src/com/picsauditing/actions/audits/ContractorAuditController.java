@@ -319,7 +319,9 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 
 	public boolean isInvoiceOverdue() {
-		if ((!conAudit.getAuditType().isCanContractorEdit() && conAudit.getAuditType().getEditPermission() == null)
+		if (!conAudit.isExpired()
+				&& !conAudit.hasCaoStatus(AuditStatus.Complete)
+				&& (!conAudit.getAuditType().isCanContractorEdit() && conAudit.getAuditType().getEditPermission() == null)
 				|| conAudit.getAuditType().isAnnualAddendum() || conAudit.getAuditType().isPqf()) {
 
 			for (Invoice i : this.getContractor().getInvoices()) {
@@ -340,7 +342,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 
 	public boolean isWillExpireSoon() {
-		return !conAudit.getAuditType().isCanContractorEdit() && conAudit.getAuditType().getEditPermission() == null
-				&& !conAudit.getContractorAccount().isRenew();
+		return !conAudit.isExpired() && !conAudit.hasCaoStatus(AuditStatus.Complete)
+				&& !conAudit.getAuditType().isCanContractorEdit()
+				&& conAudit.getAuditType().getEditPermission() == null && !conAudit.getContractorAccount().isRenew();
 	}
 }
