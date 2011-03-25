@@ -142,16 +142,17 @@
 							<s:select onchange="return setComment(%{conAudit.id}, %{question.id}, %{id}, %{question.category.id} );" id="comment_%{question.id}" list="emrProblems" name="comment" />
 						</s:if>
 						<s:else>
-							<nobr><s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{id}, %{question.category.id} );" id="comment_%{question.id}" name="comment" />
-							<s:if test="question.id == 2033">
-								<s:select id="emrExempt" list="emrExemptReason" headerKey="" headerValue="- Exempt Reasons -" onchange="copyComment('emrExempt','comment_%{question.id}');"/>
-							</s:if>
-							<s:elseif test="question.id == 2064">
-								<s:select id="oshaExempt" list="oshaExemptReason" headerKey="" headerValue="- Exempt Reasons -" onchange="copyComment('oshaExempt','comment_%{question.id}');"/>
-							</s:elseif>
-							<s:elseif test="question.id == 2037">
-								<s:select id="emrFileExempt" list="emrProblems" headerKey="" headerValue="- Exempt Reasons -" onchange="copyComment('emrFileExempt','comment_%{question.id}');"/>
-							</s:elseif>
+							<nobr>
+								<s:if test="question.id == 2033">
+									<s:select id="emrExempt" list="emrExemptReason" headerKey="" headerValue="- Issues -" onchange="copyComment('emrExempt','comment_%{question.id}');"/>
+								</s:if>
+								<s:elseif test="question.id == 2064">
+									<s:select id="oshaExempt" list="oshaExemptReason" headerKey="" headerValue="- Issues -" onchange="copyComment('oshaExempt','comment_%{question.id}');"/>
+								</s:elseif>
+								<s:elseif test="question.id == 2037">
+									<s:select id="emrFileExempt" list="emrProblems" headerKey="" headerValue="- Issues -" onchange="copyComment('emrFileExempt','comment_%{question.id}');"/>
+								</s:elseif>
+								<s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{id}, %{question.category.id} );" id="comment_%{question.id}" name="comment" />
 							</nobr>
 						</s:else>
 					</li>

@@ -63,12 +63,12 @@ public class VerifyView extends ContractorActionSupport {
 		permissions.tryPermission(OpPerms.AuditVerification);
 		this.findContractor();
 		subHeading = getText(getScope() + ".title");
-		
+
 		boolean needsOsha = false;
 		boolean needsEmr = false;
 
 		for (ContractorAudit conAudit : getVerificationAudits()) {
-			if (conAudit.getAuditType().isPqf()) {
+			if (conAudit.getAuditType().isPqf() && !conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 				List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 				pqfQuestions = new LinkedHashMap<Integer, AuditData>();
 				for (AuditData ad : temp) {
@@ -81,14 +81,16 @@ public class VerifyView extends ContractorActionSupport {
 					if (us != null && "Yes".equals(us.getAnswer()) && oshaAudit.isCorporate()
 							&& oshaAudit.getType().equals(OshaType.OSHA)) {
 						oshasUS.add(oshaAudit);
-						
+
 						if (!needsOsha)
-							needsOsha = conAudit.hasCaoStatus(AuditStatus.Submitted) || conAudit.hasCaoStatus(AuditStatus.Resubmitted);
+							needsOsha = conAudit.hasCaoStatus(AuditStatus.Submitted)
+									|| conAudit.hasCaoStatus(AuditStatus.Resubmitted);
 					}
 
 					// TODO Work on verifying COHS
-//					if (oshaAudit.getType().equals(OshaType.COHS) && oshaAudit.isCorporate())
-//						oshasCA.add(oshaAudit);
+					// if (oshaAudit.getType().equals(OshaType.COHS) &&
+					// oshaAudit.isCorporate())
+					// oshasCA.add(oshaAudit);
 				}
 
 				annualUpdates.add(conAudit);
@@ -99,8 +101,9 @@ public class VerifyView extends ContractorActionSupport {
 							|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired()) || (d
 									.getQuestion().getId() >= 3565 && d.getQuestion().getId() <= 3568 && d.isAnswered()))) {
 						if (!needsEmr)
-							needsEmr = conAudit.hasCaoStatus(AuditStatus.Submitted) || conAudit.hasCaoStatus(AuditStatus.Resubmitted);
-						
+							needsEmr = conAudit.hasCaoStatus(AuditStatus.Submitted)
+									|| conAudit.hasCaoStatus(AuditStatus.Resubmitted);
+
 						Map<Integer, AuditData> inner = emrs.get(d.getQuestion());
 
 						if (inner == null) {
@@ -109,13 +112,13 @@ public class VerifyView extends ContractorActionSupport {
 								inner.put(ca.getId(), null);
 							emrs.put(d.getQuestion(), inner);
 						}
-						
+
 						inner.put(conAudit.getId(), d);
 					}
 				}
 			}
 		}
-		
+
 		if (!needsOsha)
 			oshasUS.clear();
 		if (!needsEmr)
@@ -300,12 +303,14 @@ public class VerifyView extends ContractorActionSupport {
 			verificationAudits = new Grepper<ContractorAudit>() {
 				@Override
 				public boolean check(ContractorAudit t) {
-					if (t.getAuditType().isPqf() && (t.hasCaoStatus(AuditStatus.Submitted) || t.hasCaoStatus(AuditStatus.Resubmitted))) {
+					if (t.getAuditType().isPqf()
+							&& (t.hasCaoStatus(AuditStatus.Submitted) || t.hasCaoStatus(AuditStatus.Resubmitted) || t
+									.hasCaoStatus(AuditStatus.Incomplete))) {
 						for (ContractorAuditOperator cao : t.getOperatorsVisible()) {
 							if (cao.getPercentComplete() < 100)
 								return false;
 						}
-						
+
 						return true;
 					} else if (t.getAuditType().isAnnualAddendum())
 						return true;
