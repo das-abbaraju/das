@@ -8,12 +8,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
-
-import javax.persistence.Query;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.hibernate.exception.ConstraintViolationException;
@@ -131,12 +128,6 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	}
 
 	public String execute() throws Exception {
-		loadPermissions();
-
-		if (!permissions.isLoggedIn()) {
-			return LOGIN;
-		}
-
 		if (permissions.isContractor())
 			permissions.tryPermission(OpPerms.ContractorAdmin);
 		else
@@ -225,205 +216,6 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 					+ "&msg=You have sucessfully moved " + user.getName() + " to " + user.getAccount().getName());
 		}
 
-		if ("Save".equalsIgnoreCase(button)) {
-			if (!isOK()) {
-				userDAO.clear();
-				return SUCCESS;
-			}
-
-			if (user.getId() > 0 && account.isContractor()) {
-				if (!user.isActiveB()) {
-					Set<OpPerms> userPerms = new HashSet<OpPerms>();
-					for (User users : user.getAccount().getUsers()) {
-						for (UserAccess ua : users.getOwnedPermissions()) {
-							if (ua.getUser() != user) {
-								userPerms.add(ua.getOpPerm());
-							}
-						}
-					}
-
-					if (userPerms.size() < 4) {
-						addActionError("Cannot inactivate this user");
-						userDAO.clear();
-						return SUCCESS;
-					}
-				}
-			}
-
-			if (user.getId() > 0) {
-				// We want to save data for an existing user
-				if (!Strings.isEmpty(password2) && password2.equals(password1)) {
-					user.setEncryptedPassword(password2);
-					user.setForcePasswordReset(false);
-				}
-
-			} else {
-				// We want to save a new user
-				final String randomPassword = Long.toString(new Random().nextLong());
-				user.setEncryptedPassword(randomPassword);
-				user.setForcePasswordReset(true);
-			}
-
-			user.setAuditColumns(permissions);
-
-			if (user.getAccount() == null) {
-				user.setAccount(new Account());
-				if (user.getId() == 0) {
-					account = accountDAO.find(accountId);
-					user.setAccount(account);
-				} else if (!permissions.hasPermission(OpPerms.AllOperators)) {
-					user.getAccount().setId(permissions.getAccountId());
-				}
-			}
-
-			if (user.isGroup()) {
-				// Create a unique username for this group
-				String username = "GROUP";
-				username += user.getAccount().getId();
-				username += user.getName();
-
-				user.setUsername(username);
-			} else {
-				int maxHistory = 0;
-				// TODO u.getAccount().getPasswordPreferences().getMaxHistory()
-				user.addPasswordToHistory(user.getPassword(), maxHistory);
-				user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
-			}
-
-			if (user.getAccount().isContractor()) {
-				Set<OpPerms> userPerms = new HashSet<OpPerms>();
-				userPerms = new HashSet<OpPerms>();
-				for (UserAccess ua : user.getOwnedPermissions()) {
-					userPerms.add(ua.getOpPerm());
-				}
-
-				if (!userPerms.contains(OpPerms.ContractorAdmin)) {
-					if (conAdmin) {
-						if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() >= 3) {
-							addActionError("You can only have 1-3 users with the "
-									+ OpPerms.ContractorAdmin.getDescription() + " permission");
-							return SUCCESS;
-						}
-						user.addOwnedPermissions(OpPerms.ContractorAdmin, permissions.getUserId());
-					}
-				} else {
-					if (!conAdmin) {
-						// We need both now to remove data from the useraccess
-						// database
-						if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() > 1) {
-							user.getOwnedPermissions().remove(
-									userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin));
-							userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(),
-									OpPerms.ContractorAdmin)).getId());
-						} else {
-							addActionError("You must have at least one user with the "
-									+ OpPerms.ContractorAdmin.getDescription() + " permission");
-						}
-					}
-				}
-
-				if (!userPerms.contains(OpPerms.ContractorBilling)) {
-					if (conBilling)
-						user.addOwnedPermissions(OpPerms.ContractorBilling, permissions.getUserId());
-				} else {
-					if (!conBilling) {
-						if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorBilling).size() > 1) {
-							user.getOwnedPermissions().remove(
-									userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling));
-							userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(),
-									OpPerms.ContractorBilling)).getId());
-						} else {
-							addActionError("You must have at least one user with the "
-									+ OpPerms.ContractorBilling.getDescription() + " permission");
-						}
-
-					}
-				}
-
-				if (!userPerms.contains(OpPerms.ContractorSafety)) {
-					if (conSafety)
-						user.addOwnedPermissions(OpPerms.ContractorSafety, permissions.getUserId());
-				} else {
-					if (!conSafety) {
-						if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorSafety).size() > 1) {
-							user.getOwnedPermissions().remove(
-									userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety));
-							userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(),
-									OpPerms.ContractorSafety)).getId());
-						} else {
-							addActionError("You must have at least one user with the "
-									+ OpPerms.ContractorSafety.getDescription() + " permission");
-						}
-					}
-				}
-
-				if (!userPerms.contains(OpPerms.ContractorInsurance)) {
-					if (conInsurance)
-						user.addOwnedPermissions(OpPerms.ContractorInsurance, permissions.getUserId());
-				} else {
-					if (!conInsurance) {
-						if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorInsurance).size() > 1) {
-							user.getOwnedPermissions().remove(
-									userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorInsurance));
-							userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(),
-									OpPerms.ContractorInsurance)).getId());
-						} else {
-							addActionError("You must have at least one user with the "
-									+ OpPerms.ContractorInsurance.getDescription() + " permission");
-						}
-					}
-				}
-
-				if (user.getOwnedPermissions().size() == 0 && user.isActiveB()) {
-					addActionError("Please add a permission to this user");
-					return SUCCESS;
-				}
-			}
-
-			// TODO CSR shadowing
-			if (shadowID == 0 || (user.getShadowedUser() != null && user.getShadowedUser().getId() != shadowID)) {
-				// Remove all non-groups from this user's groups
-				Iterator<UserGroup> iterator = user.getGroups().iterator();
-				while (iterator.hasNext()) {
-					UserGroup ug = iterator.next();
-					if (!ug.getGroup().isGroup()) {
-						iterator.remove();
-						userGroupDAO.remove(ug);
-					}
-				}
-			}
-
-			if (shadowID > 0 && shadowID != user.getId()) {
-				User shadow = userDAO.find(shadowID);
-
-				UserGroup ug = new UserGroup();
-				ug.setUser(user);
-				ug.setGroup(shadow);
-				ug.setAuditColumns(permissions);
-				userGroupDAO.save(ug);
-			}
-
-			// Send activation email if set
-			if (sendActivationEmail && user.getId() == 0)
-				addActionMessage(AccountRecovery.sendActivationEmail(user, permissions));
-
-			try {
-				user.setNeedsIndexing(true);
-				user = userDAO.save(user);
-				if (!user.isGroup())
-					indexer.runSingle(user, "users");
-				addActionMessage("User saved successfully.");
-				if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
-					user.getAccount().setPrimaryContact(user);
-			} catch (ConstraintViolationException e) {
-				addActionError("That Username is already in use.  Please select another.");
-				return SUCCESS;
-			} catch (DataIntegrityViolationException e) {
-				addActionError("That Username is already in use.  Please select another.");
-				return SUCCESS;
-			}
-		}
-
 		if ("Delete".equalsIgnoreCase(button)) {
 			permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
 			String message = "Cannot remove users who performed some actions in the system. Please inactivate them.";
@@ -472,8 +264,208 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		return SUCCESS;
 	}
 
-	private boolean isOK() throws Exception {
+	public String save() throws Exception {
+		if (!isOK()) {
+			userDAO.refresh(user);
+			return SUCCESS;
+		}
 
+		if (user.getId() > 0 && account.isContractor()) {
+			if (!user.isActiveB()) {
+				Set<OpPerms> userPerms = new HashSet<OpPerms>();
+				for (User users : user.getAccount().getUsers()) {
+					for (UserAccess ua : users.getOwnedPermissions()) {
+						if (ua.getUser() != user) {
+							userPerms.add(ua.getOpPerm());
+						}
+					}
+				}
+
+				if (userPerms.size() < 4) {
+					addActionError("Cannot inactivate this user");
+					userDAO.refresh(user);
+					return SUCCESS;
+				}
+			}
+		}
+
+		if (user.getId() > 0) {
+			// We want to save data for an existing user
+			if (!Strings.isEmpty(password2) && password2.equals(password1)) {
+				user.setEncryptedPassword(password2);
+				user.setForcePasswordReset(false);
+			}
+
+		} else {
+			// We want to save a new user
+			final String randomPassword = Long.toString(new Random().nextLong());
+			user.setEncryptedPassword(randomPassword);
+			user.setForcePasswordReset(true);
+		}
+
+		user.setAuditColumns(permissions);
+
+		if (user.getAccount() == null) {
+			user.setAccount(new Account());
+			if (user.getId() == 0) {
+				account = accountDAO.find(accountId);
+				user.setAccount(account);
+			} else if (!permissions.hasPermission(OpPerms.AllOperators)) {
+				user.getAccount().setId(permissions.getAccountId());
+			}
+		}
+
+		if (user.isGroup()) {
+			// Create a unique username for this group
+			String username = "GROUP";
+			username += user.getAccount().getId();
+			username += user.getName();
+
+			user.setUsername(username);
+		} else {
+			int maxHistory = 0;
+			// TODO u.getAccount().getPasswordPreferences().getMaxHistory()
+			user.addPasswordToHistory(user.getPassword(), maxHistory);
+			user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
+		}
+
+		if (user.getAccount().isContractor()) {
+			Set<OpPerms> userPerms = new HashSet<OpPerms>();
+			userPerms = new HashSet<OpPerms>();
+			for (UserAccess ua : user.getOwnedPermissions()) {
+				userPerms.add(ua.getOpPerm());
+			}
+
+			if (!userPerms.contains(OpPerms.ContractorAdmin)) {
+				if (conAdmin) {
+					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() >= 3) {
+						addActionError("You can only have 1-3 users with the "
+								+ OpPerms.ContractorAdmin.getDescription() + " permission");
+						return SUCCESS;
+					}
+					user.addOwnedPermissions(OpPerms.ContractorAdmin, permissions.getUserId());
+				}
+			} else {
+				if (!conAdmin) {
+					// We need both now to remove data from the useraccess
+					// database
+					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() > 1) {
+						user.getOwnedPermissions().remove(
+								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin));
+						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin))
+								.getId());
+					} else {
+						addActionError("You must have at least one user with the "
+								+ OpPerms.ContractorAdmin.getDescription() + " permission");
+					}
+				}
+			}
+
+			if (!userPerms.contains(OpPerms.ContractorBilling)) {
+				if (conBilling)
+					user.addOwnedPermissions(OpPerms.ContractorBilling, permissions.getUserId());
+			} else {
+				if (!conBilling) {
+					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorBilling).size() > 1) {
+						user.getOwnedPermissions().remove(
+								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling));
+						userAccessDAO
+								.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling))
+										.getId());
+					} else {
+						addActionError("You must have at least one user with the "
+								+ OpPerms.ContractorBilling.getDescription() + " permission");
+					}
+
+				}
+			}
+
+			if (!userPerms.contains(OpPerms.ContractorSafety)) {
+				if (conSafety)
+					user.addOwnedPermissions(OpPerms.ContractorSafety, permissions.getUserId());
+			} else {
+				if (!conSafety) {
+					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorSafety).size() > 1) {
+						user.getOwnedPermissions().remove(
+								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety));
+						userAccessDAO
+								.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety))
+										.getId());
+					} else {
+						addActionError("You must have at least one user with the "
+								+ OpPerms.ContractorSafety.getDescription() + " permission");
+					}
+				}
+			}
+
+			if (!userPerms.contains(OpPerms.ContractorInsurance)) {
+				if (conInsurance)
+					user.addOwnedPermissions(OpPerms.ContractorInsurance, permissions.getUserId());
+			} else {
+				if (!conInsurance) {
+					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorInsurance).size() > 1) {
+						user.getOwnedPermissions().remove(
+								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorInsurance));
+						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(),
+								OpPerms.ContractorInsurance)).getId());
+					} else {
+						addActionError("You must have at least one user with the "
+								+ OpPerms.ContractorInsurance.getDescription() + " permission");
+					}
+				}
+			}
+
+			if (user.getOwnedPermissions().size() == 0 && user.isActiveB()) {
+				addActionError("Please add a permission to this user");
+				return SUCCESS;
+			}
+		}
+
+		// CSR shadowing
+		if (shadowID == 0 || (user.getShadowedUser() != null && user.getShadowedUser().getId() != shadowID)) {
+			// Remove all non-groups from this user's groups
+			Iterator<UserGroup> iterator = user.getGroups().iterator();
+			while (iterator.hasNext()) {
+				UserGroup ug = iterator.next();
+				if (!ug.getGroup().isGroup()) {
+					iterator.remove();
+					userGroupDAO.remove(ug);
+				}
+			}
+		}
+
+		if (shadowID > 0 && shadowID != user.getId()) {
+			User shadow = userDAO.find(shadowID);
+
+			UserGroup ug = new UserGroup();
+			ug.setUser(user);
+			ug.setGroup(shadow);
+			ug.setAuditColumns(permissions);
+			userGroupDAO.save(ug);
+		}
+
+		// Send activation email if set
+		if (sendActivationEmail && user.getId() == 0)
+			addActionMessage(AccountRecovery.sendActivationEmail(user, permissions));
+
+		try {
+			user.setNeedsIndexing(true);
+			user = userDAO.save(user);
+			if (!user.isGroup())
+				indexer.runSingle(user, "users");
+			addActionMessage("User saved successfully.");
+			if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
+				user.getAccount().setPrimaryContact(user);
+		} catch (ConstraintViolationException e) {
+			addActionError("That Username is already in use.  Please select another.");
+		} catch (DataIntegrityViolationException e) {
+			addActionError("That Username is already in use.  Please select another.");
+		}
+
+		return SUCCESS;
+	}
+
+	private boolean isOK() throws Exception {
 		if (user == null) {
 			addActionError("No user found");
 			return false;
@@ -487,10 +479,18 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			return (getActionErrors().size() == 0);
 
 		// Users only after this point
+		// Calling userDAO.duplicateUsername flushes values to the database when
+		// it tries to pull up the same user object -- Refreshing user object
+		// before that happens so nothing persists in this action
+		User temp = new User();
+		copyValues(user, temp);
+		userDAO.refresh(user);
+
 		boolean hasduplicate = userDAO.duplicateUsername(user.getUsername().trim(), user.getId());
-		if (hasduplicate) {
+		if (hasduplicate)
 			addActionError("This username is NOT available. Please choose a different one.");
-		}
+
+		copyValues(temp, user);
 
 		String result = Strings.validUserName(user.getUsername().trim());
 		if (!result.equals("valid"))
@@ -829,5 +829,17 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			return user.getMembers();
 
 		return null;
+	}
+
+	private void copyValues(User user1, User user2) {
+		user2.setName(user1.getName());
+		user2.setEmail(user1.getEmail());
+		user2.setUsername(user1.getUsername());
+		user2.setPhone(user1.getPhone());
+		user2.setFax(user1.getFax());
+		user2.setLocale(user1.getLocale());
+		user2.setTimezone(user1.getTimezone());
+		user2.setOwnedPermissions(user1.getOwnedPermissions());
+		user2.setIsActive(user1.getIsActive());
 	}
 }

@@ -319,8 +319,7 @@ div.autocomplete ul li {
 		</ol>
 		</fieldset>
 		<fieldset class="form submit">
-			<button id="SaveButton" class="picsbutton positive" type="submit"
-				name="button" value="Save">Save</button>
+			<s:submit action="UsersManage!save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
 			<pics:permission perm="EditUsers" type="Delete">
 				<s:if test="user.id > 0 && !account.contractor">
 					<button type="submit" name="button" class="picsbutton negative"
