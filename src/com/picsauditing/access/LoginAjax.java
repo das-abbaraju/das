@@ -10,6 +10,7 @@ public class LoginAjax extends PicsActionSupport {
 	private String callback;
 
 	@SuppressWarnings("unchecked")
+	@Anonymous
 	@Override
 	public String execute() throws Exception {
 		loadPermissions(false);
