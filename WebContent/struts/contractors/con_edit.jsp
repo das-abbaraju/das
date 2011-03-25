@@ -203,8 +203,13 @@ $(function() {
 						<s:select list="statusList" name="contractor.status" value="%{contractor.status}" />
 					</li>
 					<li><label>Will Renew:</label>
-						<s:if test="contractor.renew">Yes - <a href="?id=<s:property value="id"/>&button=Cancel">Cancel Account</a></s:if>
-						<s:else>No - <a href="?id=<s:property value="id"/>&button=Reactivate">Reactivate</a></s:else>
+						<s:if test="contractor.renew">
+							Yes - <s:submit action="ContractorEdit!deactivate" value="Cancel Account" />
+						<pics:fieldhelp></pics:fieldhelp>
+						</s:if>
+						<s:else>
+							No - <s:submit action="ContractorEdit!reactivate" value="Reactivate" /> 
+						</s:else>
 					</li>
 					<li><label>Bid Only Account:</label>
 						<s:checkbox name="contractor.acceptsBids"/></li>	

@@ -331,8 +331,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 						|| type.equals(ContractorType.Offsite) && contractor.isOffsiteServices()
 						|| type.equals(ContractorType.Supplier) && contractor.isMaterialSupplier()) {
 					facilityChanger.setType(type);
-					if(!contractor.isRenew())
-						contractor.setRenew(true);
+					contractor.setRenew(true);
 					facilityChanger.add();
 					recalculate = true;
 				} else {

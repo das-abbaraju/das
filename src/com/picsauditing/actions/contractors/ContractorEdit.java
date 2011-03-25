@@ -225,36 +225,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				accountDao.remove(contractor, getFtpDir());
 
 				return "ConList";
-			} else if (button.equals("Reactivate")) {
-				contractor.setRenew(true);
-				if (contractor.getNewMembershipLevel().isFree())
-					contractor.setStatus(AccountStatus.Active);
-
-				accountDao.save(contractor);
-				this.addNote(contractor, "Reactivated account");
-				this.addActionMessage("Successfully reactivated this contractor account. "
-						+ "<a href='BillingDetail.action?id=" + id + "'>Click to Create their invoice</a>");
-			} else if (button.equals("Cancel")) {
-				if (Strings.isEmpty(contractor.getReason())) {
-					addActionError("Please select a deactivation reason before you cancel the account");
-				} else {
-					contractor.setRenew(false);
-					if (contractor.getNewMembershipLevel().isFree())
-						contractor.setStatus(AccountStatus.Deactivated);
-
-					String expiresMessage = "";
-					if (contractor.getPaymentExpires().after(new Date()))
-						expiresMessage = " This account will no longer be visible to operators after "
-								+ contractor.getPaymentExpires();
-					else {
-						expiresMessage = " This account is no longer visible to operators.";
-						contractor.setStatus(AccountStatus.Deactivated);
-					}
-					accountDao.save(contractor);
-
-					this.addNote(contractor, "Closed contractor account." + expiresMessage);
-					this.addActionMessage("Successfully closed this contractor account." + expiresMessage);
-				}
 			} else if (button.equals("SendDeactivationEmail")) {
 				permissions.tryPermission(OpPerms.EmailOperators);
 				Set<String> emailAddresses = new HashSet<String>();
@@ -345,6 +315,44 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		}
 		this.subHeading = "Contractor Edit";
 
+		return SUCCESS;
+	}
+	
+	public String deactivate() {
+		if (Strings.isEmpty(contractor.getReason())) {
+			addActionError("Please select a deactivation reason before you cancel the account");
+		} else {
+			contractor.setRenew(false);
+			if (contractor.getNewMembershipLevel().isFree())
+				contractor.setStatus(AccountStatus.Deactivated);
+
+			String expiresMessage = "";
+			if (contractor.getPaymentExpires().after(new Date()))
+				expiresMessage = " This account will no longer be visible to operators after "
+						+ contractor.getPaymentExpires();
+			else {
+				expiresMessage = " This account is no longer visible to operators.";
+				contractor.setStatus(AccountStatus.Deactivated);
+			}
+			accountDao.save(contractor);
+
+			this.addNote(contractor, "Closed contractor account." + expiresMessage);
+			this.addActionMessage("Successfully closed this contractor account." + expiresMessage);
+		}
+		this.subHeading = "Contractor Edit";
+		return SUCCESS;
+	}
+
+	public String reactivate() {
+		contractor.setRenew(true);
+		if (contractor.getNewMembershipLevel().isFree())
+			contractor.setStatus(AccountStatus.Active);
+
+		contractor.setReason("");
+		accountDao.save(contractor);
+		this.addNote(contractor, "Reactivated account");
+		this.addActionMessage("Successfully reactivated this contractor account. "
+				+ "<a href='BillingDetail.action?id=" + id + "'>Click to Create their invoice</a>");
 		return SUCCESS;
 	}
 
