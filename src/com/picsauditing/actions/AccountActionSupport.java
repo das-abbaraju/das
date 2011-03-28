@@ -115,20 +115,20 @@ public class AccountActionSupport extends PicsActionSupport {
 		return getNotes(" AND noteCategory IN ('" + noteCategory.toString() + "','General')", 0, 5);
 	}
 
-	protected void addNote(Account account, String newNote) throws Exception {
+	protected void addNote(Account account, String newNote) {
 		addNote(account, newNote, noteCategory);
 	}
 
-	protected void addNote(Account account, String newNote, NoteCategory noteCategory) throws Exception {
+	protected void addNote(Account account, String newNote, NoteCategory noteCategory) {
 		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, null);
 	}
 
-	protected void addNote(Account account, String newNote, NoteCategory noteCategory, int viewableBy) throws Exception {
+	protected void addNote(Account account, String newNote, NoteCategory noteCategory, int viewableBy) {
 		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, null);
 	}
 
 	protected void addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
-			boolean canContractorView, int viewableBy, User user) throws Exception {
+			boolean canContractorView, int viewableBy, User user) {
 		Note note = new Note();
 		note.setAccount(account);
 		note.setAuditColumns(permissions);
