@@ -19,9 +19,8 @@ public class EmailSender {
 	 * still fails, then try regular linux sendmail
 	 * 
 	 * @param email
-	 * @throws Exception
 	 */
-	private void sendMail(EmailQueue email, int attempts) throws Exception {
+	private void sendMail(EmailQueue email, int attempts) {
 		attempts++;
 		boolean useSendGrid = true;
 		if (attempts > 2 || email.getToAddresses().endsWith("@picsauditing.com"))
@@ -49,15 +48,10 @@ public class EmailSender {
 			}
 			email.setStatus(EmailStatus.Sent);
 			email.setSentDate(new Date());
-
-			if (emailQueueDAO == null)
-				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 			
 			emailQueueDAO.save(email);
 		} catch (javax.mail.internet.AddressException e) {
 			email.setStatus(EmailStatus.Error);
-			if (emailQueueDAO == null)
-				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 			emailQueueDAO.save(email);
 		} catch (Exception e) {
 			PicsLogger.log("Send Mail Exception with account info@picsauditing.com: " + e.toString() + " "
@@ -68,9 +62,6 @@ public class EmailSender {
 			} else {
 				PicsLogger.log("Failed to send email using sendmail...exiting");
 				email.setStatus(EmailStatus.Error);
-
-				if (emailQueueDAO == null)
-					emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 				
 				emailQueueDAO.save(email);
 			}
@@ -85,8 +76,6 @@ public class EmailSender {
 				email.setSentDate(new Date());
 				PicsLogger.log("Skipping Email \nFROM: " + email.getFromAddress() + "\nTO: " + email.getToAddresses()
 						+ "\nSUBJECT: " + email.getSubject());
-				if (emailQueueDAO == null)
-					emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 
 				emailQueueDAO.save(email);
 				return true;
@@ -101,7 +90,7 @@ public class EmailSender {
 	 * @param email
 	 * @throws Exception
 	 */
-	public void sendNow(EmailQueue email) throws Exception {
+	public void sendNow(EmailQueue email) {
 		PicsLogger.start("EmailSender", email.getSubject() + " to " + email.getToAddresses());
 		try {
 			if(checkDeactivated(email))
@@ -120,8 +109,6 @@ public class EmailSender {
 			
 		} catch (javax.mail.internet.AddressException e) {
 			email.setStatus(EmailStatus.Error);
-			if (emailQueueDAO == null)
-				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 			emailQueueDAO.save(email);
 		} finally {
 			PicsLogger.stop();
@@ -132,9 +119,8 @@ public class EmailSender {
 	 * Save this email to the queue for sending later
 	 * 
 	 * @param email
-	 * @throws Exception
 	 */
-	public static void send(EmailQueue email) throws Exception {
+	public static void send(EmailQueue email) {
 		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 		emailQueueDAO.save(email);
 	}
@@ -157,6 +143,10 @@ public class EmailSender {
 
 	public static void send(String toAddress, String subject, String body) throws Exception {
 		send(null, toAddress, null, subject, body);
+	}
+
+	public void setEmailQueueDAO(EmailQueueDAO emailQueueDAO) {
+		this.emailQueueDAO = emailQueueDAO;
 	}
 
 }

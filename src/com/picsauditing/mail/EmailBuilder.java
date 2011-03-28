@@ -1,5 +1,6 @@
 package com.picsauditing.mail;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,7 +61,7 @@ public class EmailBuilder {
 		tokens = new HashMap<String, Object>();
 	}
 
-	public EmailQueue build() throws Exception {
+	public EmailQueue build() throws IOException {
 		EmailQueue email = new EmailQueue();
 
 		email.setEmailTemplate(template);
