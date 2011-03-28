@@ -1616,6 +1616,11 @@
 			<result>struts/json.jsp</result>
 		</action>
 
+		<!-- Taxonomy -->
+		<action name="ServiceTaxonomy" class="com.picsauditing.actions.productservices.ServiceTaxonomy">
+			<result>struts/productservices/service_taxonomy.jsp</result>
+		</action>
+
 		<!-- Autocomplete Ajax -->
 		<action name="*Autocomplete" class="com.picsauditing.actions.autocomplete.{1}Autocomplete">
 			<result>struts/blank.jsp</result>
