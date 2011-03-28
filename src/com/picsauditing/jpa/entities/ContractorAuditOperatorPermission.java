@@ -2,6 +2,8 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,9 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_audit_operator_permission")
-public class ContractorAuditOperatorPermission {
+public class ContractorAuditOperatorPermission implements Serializable {
 
 	private int id;
 	private ContractorAuditOperator cao;
