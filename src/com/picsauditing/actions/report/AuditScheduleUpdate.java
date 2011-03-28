@@ -2,10 +2,9 @@ package com.picsauditing.actions.report;
 
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
+import org.apache.struts2.ServletActionContext;
 
-import org.apache.struts2.interceptor.ServletRequestAware;
-
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -18,27 +17,27 @@ import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
-public class AuditScheduleUpdate extends PicsActionSupport implements ServletRequestAware {
+public class AuditScheduleUpdate extends PicsActionSupport {
 	protected ContractorAudit contractorAudit = null;
 	protected ContractorAuditDAO dao = null;
 	protected NoteDAO noteDAO = null;
 
-	protected HttpServletRequest request;
 
 	public AuditScheduleUpdate(ContractorAuditDAO dao, NoteDAO noteDAO) {
 		this.dao = dao;
 		this.noteDAO = noteDAO;
 	}
 
+	@Anonymous
 	public String execute() {
-		String auditIDString = request.getParameter("auditID");
+		String auditIDString = ServletActionContext.getRequest().getParameter("auditID");
 		if (auditIDString == null || auditIDString.length() == 0) {
 			addActionError("Missing auditID, invalid URL");
 			return SUCCESS;
 		}
 
 		int auditID = Integer.parseInt(auditIDString);
-		String type = request.getParameter("type");
+		String type = ServletActionContext.getRequest().getParameter("type");
 		if (type == null || type.length() != 1) {
 			addActionError("Missing type, invalid URL");
 			return SUCCESS;
@@ -52,7 +51,7 @@ public class AuditScheduleUpdate extends PicsActionSupport implements ServletReq
 
 		if (type.equals("c")) {
 			contractorAudit.setContractorConfirm(new Date());
-			String newNote = " Confirmed the " + contractorAudit.getAuditType().getAuditName();
+			String newNote = " Confirmed the " + contractorAudit.getAuditType().getName();
 			
 			Note note = new Note();
 			note.setAccount(contractorAudit.getContractorAccount());
@@ -75,11 +74,6 @@ public class AuditScheduleUpdate extends PicsActionSupport implements ServletReq
 		return SUCCESS;
 	}
 
-	@Override
-	public void setServletRequest(HttpServletRequest request) {
-		this.request = request;
-
-	}
 
 	public void setAuditID(String auditID) {
 	}

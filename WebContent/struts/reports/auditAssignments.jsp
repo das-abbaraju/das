@@ -43,7 +43,6 @@
 				<td align="center"><a href="javascript: changeOrderBy('form1','auditLocation,a.name');">Location</a></td>
 				<td>Safety Manual</td>
 				<td></td>
-				<td></td>
 				<s:if test="showContact">
 					<td>Primary Contact</td>
 					<td>Phone</td>
@@ -77,7 +76,7 @@
 					format="M/d/yy" /></td>
 				<td><nobr>
 				<s:if test="[0].get('hasAuditor')">
-					<s:select onchange="javascript: saveAuditor(%{[0].get('auditID')}, this.value)" cssClass="blueMain" list="auditorList" listKey="id"
+					<s:select onchange="saveAuditor(%{[0].get('auditID')}, this.value)" cssClass="blueMain" list="auditorList" listKey="id"
 						listValue="name" value="%{[0].get('auditorID')}"
 						id="%{'auditor_'.concat([0].get('auditID'))}" headerKey="" headerValue="- Safety Professional -" />
 					<s:if test="[0].get('isScheduled') && [0].get('auditorConfirm') == NULL">
@@ -106,11 +105,8 @@
 					</s:if>
 				</td>
 				<td>
-					<input type="button" class="forms" value="Save" onclick="saveAudit('<s:property value="%{[0].get('auditID')}"/>'); return false;"/>
-				</td>
-				<td>
 					<s:if test="[0].get('isScheduled')">
-					<a href="ScheduleAudit.action?auditID=<s:property value="get('auditID')"/>" target="scheduleAudit">Schedule</a>
+						<a href="ScheduleAudit.action?auditID=<s:property value="get('auditID')"/>" target="scheduleAudit">Schedule</a>
 					</s:if>
 				</td>
 				<s:if test="showContact">
