@@ -32,7 +32,6 @@ import com.picsauditing.jpa.entities.NoteCategory;
 @SuppressWarnings("serial")
 public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 
-	protected ContractorAuditOperatorWorkflowDAO caowDAO;
 	protected List<ContractorAuditOperator> caosSave = new ArrayList<ContractorAuditOperator>();
 
 	public ConAuditMaintain(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
@@ -144,14 +143,6 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 
 	public void setCaosSave(List<ContractorAuditOperator> caosSave) {
 		this.caosSave = caosSave;
-	}
-
-	public void setCaoDAO(ContractorAuditOperatorDAO caoDAO) {
-		this.caoDAO = caoDAO;
-	}
-
-	public void setCaowDAO(ContractorAuditOperatorWorkflowDAO caowDAO) {
-		this.caowDAO = caowDAO;
 	}
 	
 }

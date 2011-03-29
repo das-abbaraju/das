@@ -1,5 +1,6 @@
 package com.picsauditing.actions.audits;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -17,9 +19,6 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -32,11 +31,10 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -50,6 +48,7 @@ public class CaoSave extends AuditActionSupport {
 	private String noteMessage = "";
 	private String saveMessage = "";
 	private boolean noteRequired = false;
+	private boolean viewCaoTable = false;
 	private List<Integer> caoIDs = new ArrayList<Integer>();
 	private AuditStatus status;
 	private List<ContractorAuditOperatorWorkflow> caoWorkflow = null;
@@ -59,227 +58,151 @@ public class CaoSave extends AuditActionSupport {
 
 	protected AuditPercentCalculator auditPercentCalculator;
 
-	private NoteDAO noteDAO;
-	protected ContractorAuditOperatorDAO caoDAO;
 	protected OshaAuditDAO oshaAuditDAO;
-	protected ContractorAuditOperatorWorkflowDAO caoWDAO;
 
 	// Update flags
 	private Set<FlagCriteriaContractor> fco;
 	private FlagDataCalculator flagCalc;
 
 	public CaoSave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, CertificateDAO certificateDao, OshaAuditDAO oshaAuditDAO,
-			ContractorAuditOperatorDAO caoDAO, AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO,
-			ContractorAuditOperatorWorkflowDAO caoWDAO, AuditCategoryRuleCache auditCategoryRuleCache) {
+			AuditDataDAO auditDataDao, CertificateDAO certificateDao, AuditCategoryRuleCache auditCategoryRuleCache) {
 		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
-		this.caoDAO = caoDAO;
-		this.oshaAuditDAO = oshaAuditDAO;
-		this.auditPercentCalculator = auditPercentCalculator;
-		this.noteDAO = noteDAO;
-		this.caoWDAO = caoWDAO;
 	}
 
-	@Override
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+	public String showHistory() {
+		if (caoID > 0)
+			caoWorkflow = caowDAO.findByCaoID(caoID);
 
-		if (auditID > 0) {
-			findConAudit();
+		if (caoWorkflow == null) {
+			addActionError("Error pulling up record, please try again");
+			return BLANK;
+		}
 
+		return "caoStatus";
+	}
+
+	public String editNote() {
+		ContractorAuditOperatorWorkflow caoW = caowDAO.findByCaoNoteID(caoID, noteID);
+		if (caoW != null) {
+			caoW.setNotes(note);
+			caowDAO.save(caoW);
+		}
+		return "caoStatus";
+	}
+
+	public String loadStatus() throws RecordNotFoundException, NoRightsException {
+		setup();
+		Set<String> accountNames = new HashSet<String>();
+		Set<String> auditNames = new HashSet<String>();
+
+		for (ContractorAuditOperator cao : caoList) {
+			if (caoIDs.contains(cao.getId())) {
+				if (insurance)
+					accountNames.add(cao.getAudit().getContractorAccount().getName());
+				else
+					accountNames.add(cao.getOperator().getName());
+
+				auditNames.add(cao.getAudit().getAuditType().getName());
+
+				if (!noteRequired) {
+					for (WorkflowStep s : cao.getAudit().getAuditType().getWorkFlow().getSteps()) {
+						if (s.getOldStatus() != null && cao.getStatus().equals(s.getOldStatus())
+								&& status.equals(s.getNewStatus()) && s.isNoteRequired()) {
+							noteRequired = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		if (!accountNames.isEmpty()) {
+			saveMessage += getText(status.getI18nKey("button")) + " " + Strings.implode(auditNames, ", ") + " for "
+					+ Strings.implode(accountNames, ", ") + "";
+
+			// "Explain why you are changing the status to " + status;
+			if (noteRequired)
+				noteMessage += getText("Audit.message.ExplainStatusChange",
+						new Object[] { getText(status.getI18nKey()) });
+		} else
+			return ERROR;
+
+		return "caoNoteSave";
+	}
+
+	public String refresh() throws RecordNotFoundException, NoRightsException {
+		findConAudit();
+		auditPercentCalculator.percentCalculateComplete(conAudit, false);
+		getValidSteps();
+		auditDao.save(conAudit);
+
+		return "refresh";
+	}
+
+	public String save() throws RecordNotFoundException, EmailException, IOException, NoRightsException {
+		setup();
+		if (conAudit != null) {
 			if (conAudit.isExpired() && !(conAudit.getAuditType().getClassType().isPolicy() && permissions.isAdmin())) {
 				addActionError("You can't change an expired " + conAudit.getAuditType().getName());
 				return SUCCESS;
 			}
+		}
+		for (Integer cID : caoIDs)
+			save(cID);
+		if (conAudit != null)
+			getValidSteps();
+		if (viewCaoTable)
+			return "caoTable";
+		else
+			return SUCCESS;
+	}
 
+	private void save(int id) throws RecordNotFoundException, EmailException, IOException {
+		ContractorAuditOperator cao = getCaoByID(id);
+		if (cao == null)
+			throw new RecordNotFoundException("ContractorAuditOperator");
+
+		WorkflowStep step = getStep(cao);
+
+		if (hasActionErrors())
+			return;
+
+		AuditStatus prevStatus = cao.getStatus();
+		AuditStatus newStatus = step.getNewStatus();
+		cao.changeStatus(newStatus, permissions);
+		// Setting the expiration date
+		auditSetExpiresDate(cao, newStatus);
+
+		if (cao.getAudit().getAuditType().getClassType().isPolicy() && cao.getStatus().after(AuditStatus.Incomplete))
+			updateFlag(cao);
+
+		// we need handle the PQF specific's
+		if (insurance) {
+			ContractorAccount con = cao.getAudit().getContractorAccount();
+			con.incrementRecalculation();
+			accountDao.save(con);
+			// updatedContractors.add(con.getName());
+		} else
+			checkNewStatus(step, cao);
+
+		if (step.getEmailTemplate() != null)
+			sendStatusChangeEmail(step, cao);
+
+		caoDAO.save(cao);
+		setCaoUpdatedNote(prevStatus, cao, note);
+	}
+
+	private void setup() throws RecordNotFoundException, NoRightsException {
+		if (auditID > 0) {
+			findConAudit();
 			caoList = conAudit.getOperators();
 		} else {
 			if (caoIDs.size() > 0)
 				caoList = caoDAO.find(caoIDs);
 		}
 		if (caoID > 0) {
-			if ("statusHistory".equals(button)) {
-				if (caoID > 0)
-					caoWorkflow = caoWDAO.findByCaoID(caoID);
-
-				if (caoWorkflow == null) {
-					addActionError("Error pulling up record, please try again");
-					return BLANK;
-				}
-
-				return "caoStatus";
-			}
-
 			caoIDs.add(caoID);
 		}
-
-		if (caoIDs.size() > 0) {
-			if ("updateEditNote".equals(button)) {
-				ContractorAuditOperatorWorkflow caoW = caoWDAO.findByCaoNoteID(caoID, noteID);
-				if (caoW != null) {
-					caoW.setNotes(note);
-					caoWDAO.save(caoW);
-				}
-				return "caoStatus";
-			}
-
-			if ("statusLoad".equals(button)) {
-				Set<String> accountNames = new HashSet<String>();
-				Set<String> auditNames = new HashSet<String>();
-
-				for (ContractorAuditOperator cao : caoList) {
-					if (caoIDs.contains(cao.getId())) {
-						if (insurance)
-							accountNames.add(cao.getAudit().getContractorAccount().getName());
-						else
-							accountNames.add(cao.getOperator().getName());
-
-						auditNames.add(cao.getAudit().getAuditType().getName());
-
-						if (!noteRequired) {
-							for (WorkflowStep s : cao.getAudit().getAuditType().getWorkFlow().getSteps()) {
-								if (s.getOldStatus() != null && cao.getStatus().equals(s.getOldStatus())
-										&& status.equals(s.getNewStatus()) && s.isNoteRequired()) {
-									noteRequired = true;
-									break;
-								}
-							}
-						}
-					}
-				}
-
-				if (!accountNames.isEmpty()) {
-					saveMessage += getText(status.getI18nKey("button")) + " " + Strings.implode(auditNames, ", ") + " for "
-							+ Strings.implode(accountNames, ", ") + "";
-
-					// "Explain why you are changing the status to " + status;
-					if (noteRequired)
-						noteMessage += getText("Audit.message.ExplainStatusChange", new Object[] { getText(status.getI18nKey()) });
-				} else
-					return ERROR;
-
-				return "caoNoteSave";
-			}
-
-			Set<String> updatedContractors = new HashSet<String>();
-			for (Integer caoID : caoIDs) {
-				ContractorAuditOperator cao = getCaoByID(caoID);
-				if (cao == null)
-					throw new RecordNotFoundException("ContractorAuditOperator");
-
-				WorkflowStep step = getStep(cao);
-
-				if (hasActionErrors())
-					return SUCCESS;
-
-				AuditStatus prevStatus = cao.getStatus();
-				AuditStatus newStatus = step.getNewStatus();
-				cao.changeStatus(newStatus, permissions);
-				// Setting the expiration date
-				auditSetExpiresDate(cao, newStatus);
-
-				if (cao.getAudit().getAuditType().getClassType().isPolicy()
-						&& cao.getStatus().after(AuditStatus.Incomplete))
-					updateFlag(cao);
-
-				// we need handle the PQF specific's
-				if (insurance) {
-					ContractorAccount con = cao.getAudit().getContractorAccount();
-					con.incrementRecalculation();
-					accountDao.save(con);
-					updatedContractors.add(con.getName());
-				} else
-					checkNewStatus(step, cao);
-
-				if (step.getEmailTemplate() != null)
-					sendStatusChangeEmail(step, cao);
-
-				caoDAO.save(cao);
-				setCaoUpdatedNote(prevStatus, cao, note);
-			}
-
-			if (insurance && updatedContractors.size() > 0) {
-				addActionMessage("Email is sent to " + Strings.implode(updatedContractors, ", ")
-						+ " notifying them about the policy status change");
-
-				return BLANK;
-			}
-		}
-
-		if (conAudit != null) {
-
-			if ("Refresh".equals(button)) {
-				auditPercentCalculator.percentCalculateComplete(conAudit, false);
-				getValidSteps();
-				auditDao.save(conAudit);
-				return "refresh";
-			}
-			getValidSteps();
-		}
-
-		if ("caoAjaxSave".equals(button))
-			return "caoTable";
-		return SUCCESS;
-	}
-
-	public void temp() {
-		// TODO Move this over to the CaoSave class
-		/*
-		 * findConAudit(); String note = ""; if
-		 * (auditStatus.equals(AuditStatus.Active.toString())) {
-		 * if(conAudit.getPercentComplete() < 100) return SUCCESS;
-		 * 
-		 * conAudit.changeStatus(AuditStatus.Active, getUser()); note =
-		 * "Verified and Activated the " +
-		 * conAudit.getAuditType().getAuditName();
-		 * 
-		 * if (conAudit.getAuditType().isAnnualAddendum() &&
-		 * DateBean.getCurrentYear() - 1 ==
-		 * Integer.parseInt(conAudit.getAuditFor())) { // We're activating the
-		 * most recent year's audit (ie 2008) for (ContractorAudit audit :
-		 * contractor.getAudits()) { if (audit.getAuditType().isAnnualAddendum()
-		 * && Integer.parseInt(audit.getAuditFor()) < DateBean.getCurrentYear()
-		 * - 3 && !audit.getAuditStatus().isExpired()) { // Any annual audit
-		 * before 2006 (ie 2005) audit.setAuditStatus(AuditStatus.Expired);
-		 * auditDao.save(audit); } } } } // TODO add a column to auditData to
-		 * keep track when the contractor has // changed the answer. if
-		 * (auditStatus.equals(AuditStatus.Incomplete.toString())) {
-		 * conAudit.changeStatus(AuditStatus.Incomplete, getUser()); if
-		 * (conAudit.getAuditType().isPqf()) { List<AuditData> temp =
-		 * auditDataDao.findCustomPQFVerifications(conAudit.getId()); for
-		 * (AuditData auditData : temp) { AuditCategory auditCategory =
-		 * auditData.getQuestion().getCategory(); for (AuditCatData aCatData :
-		 * conAudit.getCategories()) { if (aCatData.getCategory() ==
-		 * auditCategory && aCatData.getPercentVerified() < 100) {
-		 * aCatData.setRequiredCompleted(aCatData.getRequiredCompleted() - 1);
-		 * aCatData.setPercentCompleted(99); } } }
-		 * conAudit.setPercentComplete(99); auditDao.save(conAudit); } if
-		 * (conAudit.getAuditType().isAnnualAddendum()) { for (AuditCatData
-		 * aCatData : conAudit.getCategories()) { if
-		 * (aCatData.getCategory().getId() == AuditCategory.EMR ||
-		 * aCatData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION
-		 * || aCatData.getCategory().getId() == AuditCategory.OSHA_AUDIT ||
-		 * aCatData.getCategory().getId() == AuditCategory.LOSS_RUN) { if
-		 * (aCatData.getPercentVerified() < 100) {
-		 * aCatData.setRequiredCompleted(aCatData.getRequiredCompleted() - 1);
-		 * aCatData.setPercentCompleted(99);
-		 * aCatData.setAuditColumns(permissions); } } }
-		 * conAudit.setPercentComplete(99); conAudit.setLastRecalculation(new
-		 * Date()); auditDao.save(conAudit); } note = "Rejected " +
-		 * conAudit.getAuditType().getAuditName(); }
-		 * 
-		 * if(!Strings.isEmpty(note)) {
-		 * if(!Strings.isEmpty(conAudit.getAuditFor())) note += " " +
-		 * conAudit.getAuditFor(); addNote(contractor, note,
-		 * NoteCategory.Audits, LowMedHigh.Low, true, Account.EVERYONE,
-		 * getUser()); }
-		 * 
-		 * conAudit = auditDao.save(conAudit); ContractorAccount
-		 * contractorAccount = conAudit.getContractorAccount();
-		 * contractor.incrementRecalculation();
-		 * accountDao.save(contractorAccount);
-		 */
 	}
 
 	private ContractorAuditOperator getCaoByID(int id) {
@@ -295,6 +218,7 @@ public class CaoSave extends AuditActionSupport {
 
 	private WorkflowStep getStep(ContractorAuditOperator cao) {
 		WorkflowStep step = null;
+		String forString = " for " + cao.getOperator().getName();
 		for (WorkflowStep w : cao.getAudit().getAuditType().getWorkFlow().getSteps()) {
 			if (w.getOldStatus() != null && w.getOldStatus().equals(cao.getStatus()) && w.getNewStatus().equals(status)) {
 				step = w;
@@ -303,30 +227,31 @@ public class CaoSave extends AuditActionSupport {
 		}
 
 		if (step == null)
-			addActionError("No action specified");
+			addActionError("No action specified" + forString);
 		else {
 			if (step.getOldStatus().isSubmitted() && step.getNewStatus().isComplete()) {
 				if (cao.getPercentVerified() < 100)
-					addActionError("Please complete all requirements.");
+					addActionError("Please complete all requirements" + forString);
 			}
 
 			if (!cao.getStatus().equals(step.getOldStatus()))
 				addActionError("This action cannot be performed because it is not longer in the " + step.getOldStatus()
-						+ " state");
+						+ " state" + forString);
 
 			if (step.isNoteRequired() && Strings.isEmpty(note))
-				addActionError("You must enter a note");
+				addActionError("You must enter a note" + forString);
 
 			if (step.getNewStatus().isSubmittedResubmitted()) {
 				if (cao.getPercentComplete() < 100)
-					addActionError("Please complete all required questions.");
+					addActionError("Please complete all required questions" + forString);
 			}
 		}
 
 		return step;
 	}
 
-	private void sendStatusChangeEmail(WorkflowStep step, ContractorAuditOperator cao) throws Exception {
+	private void sendStatusChangeEmail(WorkflowStep step, ContractorAuditOperator cao) throws EmailException,
+			IOException {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(step.getEmailTemplate());
 
@@ -490,5 +415,21 @@ public class CaoSave extends AuditActionSupport {
 
 	public void setNoteID(int noteID) {
 		this.noteID = noteID;
+	}
+
+	public void setAuditPercentCalculator(AuditPercentCalculator auditPercentCalculator) {
+		this.auditPercentCalculator = auditPercentCalculator;
+	}
+
+	public void setOshaAuditDAO(OshaAuditDAO oshaAuditDAO) {
+		this.oshaAuditDAO = oshaAuditDAO;
+	}
+
+	public boolean isViewCaoTable() {
+		return viewCaoTable;
+	}
+
+	public void setViewCaoTable(boolean viewCaoTable) {
+		this.viewCaoTable = viewCaoTable;
 	}
 }

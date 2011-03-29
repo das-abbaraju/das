@@ -47,11 +47,10 @@ function changeAuditStatus() {
 	var data= {
 		status: status,
 		caoIDs: caoIDs,
-		button: 'statusLoad',
 		insurance: true
 	};
 
-	$('#noteAjax').load('CaoSaveAjax.action', data, function(){
+	$('#noteAjax').load('CaoSaveAjax!loadStatus.action', data, function(){
         $.blockUI({ message:$('#noteAjax'), css: { width: '350px'} });
          
         if($('.clearOnce').val()=='')
@@ -59,10 +58,9 @@ function changeAuditStatus() {
 		
 	    $('#yesButton').click(function(){
 	        $.blockUI({message: 'Saving Status, please wait...'});
-	        data.button = '';
 	        data.note = $('#addToNotes').val();
 	        data.insurance = true;
-	        $.post('CaoSaveAjax.action', data, function() { $.unblockUI(); clickSearch('form1') });
+	        $.post('CaoSaveAjax!save.action', data, function() { $.unblockUI(); clickSearch('form1') });
 	    });
 	     
 	    $('#noButton').click(function(){

@@ -187,10 +187,9 @@ function _updateCategories() {
 	if (ucXHR)
 		ucXHR.abort();
 	ucXHR = $.ajax({
-		url: 'CaoSaveAjax.action',
+		url: 'CaoSaveAjax!refresh.action',
 		data: {
-			auditID: auditID,
-			button: 'Refresh'
+			auditID: auditID
 		},
 		headers: {'refresh':'true'},
 		type: 'post',

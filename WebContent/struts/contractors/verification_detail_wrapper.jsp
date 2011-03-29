@@ -158,11 +158,10 @@ small {
 		var data= {
 			auditID: id,
 			status: auditStatus,
-			caoIDs: caoIDs,
-			button: 'statusLoad'
+			caoIDs: caoIDs
 		};
 
-		$('#noteAjax').load('CaoSaveAjax.action', data, function(){
+		$('#noteAjax').load('CaoSaveAjax!loadStatus.action', data, function(){
 	        $.blockUI({ message:$('#noteAjax')}); 
 			if($('#noteRequired').val()=='true'){
 				$('#yesButton').addClass('disabled');
@@ -177,10 +176,9 @@ small {
 				if($(this).hasClass('disabled'))
 					return false;
 		        $.blockUI({message: 'Saving Status, please wait...'});
-		        data.button = '';
 		        data.note = $('#addToNotes').val();
 
-		        $.post('CaoSaveAjax.action', data, function() {
+		        $.post('CaoSaveAjax!save.action', data, function() {
 					$.unblockUI();
 					$('#verification_audit').empty();
 					refreshNoteCategory(<s:property value="id"/>, '<s:property value="noteCategory"/>');

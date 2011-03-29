@@ -27,6 +27,7 @@ import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -64,6 +65,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected CertificateDAO certificateDao;
 	protected NoteDAO noteDAO;
 	protected ContractorAuditOperatorDAO caoDAO;
+	protected ContractorAuditOperatorWorkflowDAO caowDAO;
 	
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
@@ -94,7 +96,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	protected void findConAudit() throws Exception {
+	protected void findConAudit() throws RecordNotFoundException, NoRightsException {
 		conAudit = auditDao.find(auditID);
 		if (conAudit == null)
 			throw new RecordNotFoundException("Audit " + this.auditID);
@@ -102,7 +104,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		contractor = conAudit.getContractorAccount();
 		id = contractor.getId();
 		if (permissions.isContractor() && id != permissions.getAccountId())
-			throw new Exception("Contractors can only view their own audits");
+			throw new NoRightsException("Contractors can only view their own audits");
 
 		if (!checkPermissionToView())
 			throw new NoRightsException("No Rights to View this Contractor");
@@ -671,5 +673,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 		}
 		return nodes;
+	}
+
+	public void setCaowDAO(ContractorAuditOperatorWorkflowDAO caowDAO) {
+		this.caowDAO = caowDAO;
 	}
 }

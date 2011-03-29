@@ -38,7 +38,7 @@ $(function(){
 	
 	$('.singleButton').live('click', function() {
 		var data = {
-				auditID: $('#auditID').val(), button: 'statusLoad', 
+				auditID: $('#auditID').val(), 
 				caoID: $(this).children('.bCaoID').val(), 
 				status: $(this).children('.bStatus').val()
 		};
@@ -53,8 +53,7 @@ $(function(){
 		var caoString = $('#h_'+status).val();
 		var caoIDs = caoString.substring(1, caoString.length-1).replace(/\s/g,'').split(',');
 		var data = {
-				auditID: $('#auditID').val(), button: 'statusLoad',
-				caoIDs: caoIDs,
+				auditID: $('#auditID').val(), caoIDs: caoIDs,
 				status: status
 		}
 		$('#caoTable').block({message: 'Loading...'});
@@ -84,7 +83,7 @@ $(function(){
 
 function loadResults(data, noteText){
 	$.ajax({
-		url: 'CaoSaveAjax.action',
+		url: 'CaoSaveAjax!loadStatus.action',
 		data: data,
 		headers: {'refresh':'true'},
 		type: 'get',
@@ -105,10 +104,10 @@ function loadResults(data, noteText){
 					if($(this).hasClass('disabled'))
 						return false;
 			        $.blockUI({message: 'Saving Status, please wait...'});
-			        data.button = 'caoAjaxSave';
+			        data.viewCaoTable = true;
 			        if($('#addToNotes').val())
 			        	data.note =  $('#addToNotes').val();
-			        $('#caoTable').load('CaoSaveAjax.action', data, function(){
+			        $('#caoTable').load('CaoSaveAjax!save.action', data, function(){
 			            $.unblockUI();
 			        });
 			    });		     
@@ -131,7 +130,7 @@ function loadResults(data, noteText){
 }
 
 function loadStatus(caoID){
-	$('#caoAjax').load('CaoSaveAjax.action', {auditID: $('#auditID').val(), button: 'statusHistory', caoID: caoID}, function(){
+	$('#caoAjax').load('CaoSaveAjax!showHistory.action', {auditID: $('#auditID').val(), caoID: caoID}, function(){
 		$.blockUI({message: $('#caoAjax'), css: {width:'575px'}});
 		$('.editNote').click(function(){
 			var that = $(this);
@@ -145,9 +144,8 @@ function loadStatus(caoID){
 					.append($('<a>').append('Change').addClass('showPointer edit saveEdited'))
 					.append($('<a>').append('Cancel').addClass('showPointer remove noCancel'));
 			$('#'+parent+' .ac_cao_notes > .saveEdited').click(function(){
-				$.post('CaoSaveAjax.action', {
-					auditID: $('#auditID').val(), button: 'updateEditNote', 
-					caoID: caoID, noteID: parent,
+				$.post('CaoSaveAjax!editNote.action', {
+					auditID: $('#auditID').val(), caoID: caoID, noteID: parent,
 					note: $('#'+parent+' .ac_cao_notes textarea').val()}, function(){
 						$.unblockUI();
 						return false;
