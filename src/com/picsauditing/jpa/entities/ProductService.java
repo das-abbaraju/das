@@ -106,4 +106,10 @@ public class ProductService extends BaseTable {
 			return this.description;
 		return parent.getDescription() + ": " + description;
 	}
+	
+	@Override
+	@Transient
+	public String getAutocompleteValue() {
+		return "(" + classificationCode + ") " + description;
+	}
 }

@@ -1624,6 +1624,10 @@
 		<action name="ServiceIndexer" class="com.picsauditing.actions.productservices.ServiceIndexer">
 			<result>struts/productservices/service_indexer.jsp</result>
 		</action>
+		
+		<action name="UpdateProductServiceAjax" class="com.picsauditing.actions.productservices.UpdateProductService">
+			<result>struts/productservices/update_product_service.jsp</result>
+		</action>
 
 		<!-- Autocomplete Ajax -->
 		<action name="*Autocomplete" class="com.picsauditing.actions.autocomplete.{1}Autocomplete">

@@ -33,4 +33,15 @@ public class ProductServiceDAO extends PicsDAO {
 		query.setParameter(1, type);
 		return query.getResultList();
 	}
+
+	public List<ProductService> findWhere(String where) {
+		if (where == null)
+			where = "";
+		else
+			where = " WHERE " + where;
+		
+		Query query = em.createQuery("SELECT p FROM ProductService p" + where);
+		query.setMaxResults(100);
+		return query.getResultList();
+	}
 }
