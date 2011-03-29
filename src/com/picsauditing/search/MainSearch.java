@@ -60,13 +60,6 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	}
 
 	public String execute() throws SQLException, IOException {
-		if (ServletActionContext.getRequest().getRequestURI().endsWith("Ajax.action")) {
-			loadPermissions();
-			if (!permissions.isLoggedIn())
-				return BLANK;
-		} else if (!forceLogin()) {
-			return LOGIN;
-		}
 		searchEngine = new SearchEngine(permissions);
 		if ("getResult".equals(button)) { // pull up a result
 			Indexable record = null;
@@ -137,6 +130,19 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 			return BLANK;
 		}
+	}
+	
+	public boolean isLoggedIn(boolean anonymous) {
+		if (!anonymous) {
+			if (ServletActionContext.getRequest().getRequestURI().endsWith("Ajax.action")) {
+				loadPermissions();
+				if (!permissions.isLoggedIn())
+					return false;
+			} else if (!forceLogin()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private List<Indexable> getFullResults(List<BasicDynaBean> queryList) throws IOException {
