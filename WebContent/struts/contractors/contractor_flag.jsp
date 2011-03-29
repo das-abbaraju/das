@@ -176,15 +176,30 @@ function checkReason(id) {
 					</s:if>
 				</div>
 				<div style="margin-left:10px;">
-					<s:if test="co.forceOverallFlag != null">
+					<s:if test="co.forceOverallFlag != null || getFlagDataOverrides().size() > 0">
 						<s:form cssStyle="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
+							<s:if test="co.forceOverallFlag != null">
 							Manual Force Flag <s:property value="co.forceOverallFlag.forceFlag.smallIcon" escape="false" /><br/> until <s:date name="co.forceOverallFlag.forceEnd" format="MMM d, yyyy" /> 
 							by <s:property value="co.forceOverallFlag.forcedBy.name" /> from <s:property value="co.forceOverallFlag.forcedBy.account.name"/> 
 							<s:if test="co.forceOverallFlag.operatorAccount.type == 'Corporate'"> for all the sites</s:if>.
-							<s:if test="co.forceOverallFlag.forcedBy != null">
-								<br/>
-								<a href="ContractorNotes.action?id=<s:property value="contractor.id"/>&filter.userID=<s:property value="co.forceOverallFlag.forcedBy.id"/>&filter.category=Flags&filter.keyword=Forced">View Notes</a>
+							<br/>
 							</s:if>
+							<s:if test="getFlagDataOverrides().size() > 0">
+								<s:iterator id="key" value="flagDataMap.keySet()">
+									<s:iterator id="data" value="flagDataMap.get(#key)">
+										<s:if test="#data.flag.redAmber || isFlagDataOverride(#data)">
+										<s:set name="flagoverride" value="%{isFlagDataOverride(#data)}"/>							
+											<s:if test="#flagoverride != null">
+											Manual <s:property value="#flagoverride.criteria.label" /> Individual Force Flag to <s:property value="#flagoverride.forceflag.getSmallIcon()" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
+											by <s:property value="#flagoverride.updatedBy.name" /> from <s:property value="#flagoverride.updatedBy.account.name"/>
+											<s:if test="#flagoverride.updatedBy.account.corporate"> for all the sites.</s:if>
+											<br/>
+											</s:if>
+										</s:if>
+									</s:iterator>
+								</s:iterator>
+							</s:if>
+							<a href='ContractorNotes.action?id=<s:property value="contractor.id"/>&amp;filter.category=Flags&amp;filter.keyword=Forced'>View Notes</a>
 						</s:form>
 					</s:if>
 					<br/>
