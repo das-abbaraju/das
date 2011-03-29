@@ -17,6 +17,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.TransactionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -25,10 +26,12 @@ import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Transaction;
 import com.picsauditing.jpa.entities.TransactionStatus;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -38,6 +41,7 @@ public class BillingDetail extends ContractorActionSupport {
 	private InvoiceDAO invoiceDAO = new InvoiceDAO();
 	private TransactionDAO transactionDAO = null;
 	private InvoiceFeeDAO invoiceFeeDAO;
+	private NoteDAO noteDAO;
 	private BigDecimal invoiceTotal;
 
 	private List<InvoiceItem> invoiceItems;
@@ -47,12 +51,13 @@ public class BillingDetail extends ContractorActionSupport {
 	AppPropertyDAO appPropDao;
 
 	public BillingDetail(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, InvoiceDAO invoiceDAO,
-			InvoiceFeeDAO invoiceFeeDAO, AppPropertyDAO appPropDao, TransactionDAO transactionDAO) {
+			InvoiceFeeDAO invoiceFeeDAO, AppPropertyDAO appPropDao, TransactionDAO transactionDAO, NoteDAO noteDAO) {
 		super(accountDao, auditDao);
 		this.invoiceDAO = invoiceDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.appPropDao = appPropDao;
 		this.transactionDAO = transactionDAO;
+		this.noteDAO = noteDAO;
 		this.noteCategory = NoteCategory.Billing;
 	}
 
@@ -106,12 +111,12 @@ public class BillingDetail extends ContractorActionSupport {
 			} else if (contractor.getBillingStatus().startsWith("Renew")) {
 				invoice.setDueDate(contractor.getPaymentExpires());
 			}
-			
-			if(contractor.getNewMembershipLevel().isBidonly()) {
+
+			if (contractor.getNewMembershipLevel().isBidonly()) {
 				invoice.setDueDate(new Date());
 				contractor.setRenew(true);
 			}
-			
+
 			if (invoice.getDueDate() == null)
 				// For all other statuses like (Current)
 				invoice.setDueDate(DateBean.addDays(new Date(), 30));
@@ -122,10 +127,10 @@ public class BillingDetail extends ContractorActionSupport {
 			// End of Due date
 
 			notes += "Thank you for doing business with PICS!";
-//			AppProperty prop = appPropDao.find("invoice_comment");
-//			if (prop != null) {
-//				notes = prop.getValue();
-//			}
+			// AppProperty prop = appPropDao.find("invoice_comment");
+			// if (prop != null) {
+			// notes = prop.getValue();
+			// }
 			// Add the list of operators if this invoice has a membership level
 			// on it
 			boolean hasMembership = false;
@@ -162,6 +167,18 @@ public class BillingDetail extends ContractorActionSupport {
 			contractor.setStatus(AccountStatus.Active);
 			this.addNote(contractor, "Activated the account", NoteCategory.Billing, LowMedHigh.High, true,
 					Account.PicsID, this.getUser());
+		}
+
+		// Automatically deactivating account based on expired membership
+		String status = contractor.getBillingStatus();
+		if ("Renewal Overdue".equals(status)) {
+			contractor.setStatus(AccountStatus.Deactivated);
+			Note note = new Note(contractor, new User(User.SYSTEM),
+					"Automatically inactivating account based on expired membership");
+			note.setNoteCategory(NoteCategory.Billing);
+			note.setCanContractorView(true);
+			note.setViewableById(Account.PicsID);
+			noteDAO.save(note);
 		}
 
 		contractor.syncBalance();
