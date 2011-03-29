@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.PICS.Grepper;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.CertificateDAO;
@@ -30,6 +31,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	// Using CAOs
 	private List<Certificate> certificates;
+	private List<Certificate> active;
 	// Audit data
 	private Map<String, Map<ContractorAudit, List<ContractorAuditOperator>>> status;
 	private Map<ContractorAuditOperator, Certificate> caoCert;
@@ -106,7 +108,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 	public List<Certificate> getCertificates() {
 		if (certificates == null) {
 			certificates = certificateDAO.findByConId(contractor.getId(), permissions, true);
-			
+
 			Collections.sort(certificates, new Comparator<Certificate>() {
 				@Override
 				public int compare(Certificate o1, Certificate o2) {
@@ -116,6 +118,18 @@ public class ConInsureGuard extends ContractorActionSupport {
 		}
 
 		return certificates;
+	}
+
+	public List<Certificate> getActive() {
+		if (active == null) {
+			active = new Grepper<Certificate>() {
+				public boolean check(Certificate t) {
+					return !t.isExpired();
+				};
+			}.grep(getCertificates());
+		}
+		
+		return active;
 	}
 
 	public Map<ContractorAuditOperator, Certificate> getCaoCert() {
@@ -146,7 +160,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 		return null;
 	}
-	
+
 	public String getStatusName(AuditStatus status) {
 		if (status.isIncomplete())
 			return "Rejected";

@@ -94,7 +94,7 @@
 		</td>
 		<td style="padding-left: 2em;">
 			<h3>Certificates</h3>
-			<s:if test="certificates.size() > 0">
+			<s:if test="active.size() > 0">
 				<table class="report">
 					<thead>
 						<tr>
@@ -105,7 +105,7 @@
 							<th>Used By</th>
 						</tr>
 					</thead>
-					<s:iterator value="certificates" var="cert">
+					<s:iterator value="active" var="cert">
 						<tr>
 							<td><s:property value="description" /></td>
 							<td><s:date name="expirationDate" format="M/d/yy" /></td>
