@@ -191,8 +191,11 @@ public class ContractorAuditController extends AuditActionSupport {
 			return SUCCESS;
 		}
 
-		if (conAudit != null)
+		if (conAudit != null){
 			getValidSteps();
+			if(conAudit.getOperators().size()==0)
+				addAlertMessage("This audit has no valid CAOs and cannot be seen by external users.  As we do retain the audit data, the audit is still viewable by internal users");
+		}
 
 		return SUCCESS;
 	}
