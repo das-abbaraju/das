@@ -741,10 +741,9 @@ public class ContractorAudit extends BaseTable {
 	public Integer getIndependentClosingAuditor(User u) {
 		if (u != null) {
 			if (u.getId() == 10600) // Mike Casey
-				return 11503; // Gary Rogers
-			// Dennis is handling his own audits for now
-			// else if (u.getId() == 910) // Dennis Dooley 
-			// return 9615; // Rick McGee
+				return 33902; // James Smith
+			else if (u.getId() == 910) // Dennis Dooley 
+				return 33902; // James Smith
 			else if (u.getId() == 902) // John McCaughey
 				return 1029; // Mina Mina
 			else

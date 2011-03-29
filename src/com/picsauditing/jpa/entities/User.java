@@ -424,7 +424,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		switch (id) {
 		case 9556: // Austin Hatch
 		case 938: // Jake Fazeli
-		case 9615: // Rick McGee
+		case 33902: // Phillip Laraway
 		case 1725: // Royce Burnett
 		case 9463: // Tiffany Homayounshad
 		case 11503: // Gary Rogers
