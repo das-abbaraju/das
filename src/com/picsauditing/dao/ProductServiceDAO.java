@@ -44,4 +44,26 @@ public class ProductServiceDAO extends PicsDAO {
 		query.setMaxResults(100);
 		return query.getResultList();
 	}
+	
+	public List<ProductService> findByNode(ProductService productService) {
+		String parentString = "";
+		if (productService == null)
+			parentString = "is null";
+		else
+			parentString = "= " + productService.getParent().getId();
+		
+		String sql = "SELECT distinct(t0.id) " +
+					"FROM ref_product_service t0 " +
+					"JOIN ref_product_service t1 " +
+					"ON t1.classificationType = t0.classificationType AND t0.indexStart <= t1.indexStart AND t0.indexEnd >= t1.indexEnd " +
+					"JOIN ref_product_service t2 " +
+					"ON t1.id = t2.bestMatchID AND t2.classificationType = 'Suncor' " +
+					"WHERE t0.classificationType = 'Master'  " +
+					"and t0.parentID = ? " +
+					"ORDER BY t0.classificationCode, t1.classificationCode;";
+		
+		Query query = em.createNativeQuery(sql);
+		query.setParameter(1, parentString);
+		return query.getResultList();
+	}
 }
