@@ -21,7 +21,7 @@
 					<td><s:property value="updatedBy.name"/></td>
 					<td><s:text name="%{#caow.previousStatus.getI18nKey()}" /></td>
 					<td><s:text name="%{#caow.status.getI18nKey()}"/></td>
-					<td><div class="ac_cao_notes"><s:property value="notes"/></div>
+					<td><div class="ac_cao_notes"><s:property value="notes" escape="false"/></div>
 						<s:if test="permissions.userId == updatedBy.id"><a class="editNote showPointer edit"><s:text name="button.Edit" /></a></s:if>
 					</td>
 				</tr>

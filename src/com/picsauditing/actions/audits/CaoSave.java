@@ -22,6 +22,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -31,6 +32,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
+import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
@@ -103,7 +105,6 @@ public class CaoSave extends AuditActionSupport {
 					accountNames.add(cao.getOperator().getName());
 
 				auditNames.add(cao.getAudit().getAuditType().getName());
-
 				if (!noteRequired) {
 					for (WorkflowStep s : cao.getAudit().getAuditType().getWorkFlow().getSteps()) {
 						if (s.getOldStatus() != null && cao.getStatus().equals(s.getOldStatus())
@@ -124,6 +125,32 @@ public class CaoSave extends AuditActionSupport {
 			if (noteRequired)
 				noteMessage += getText("Audit.message.ExplainStatusChange",
 						new Object[] { getText(status.getI18nKey()) });
+			
+			if(status.isIncomplete() && Strings.isEmpty(note)) {
+				if (conAudit.getAuditType().isPqf()) {
+					List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
+					for (AuditData ad : temp) {
+						if (!ad.isVerified() && !Strings.isEmpty(ad.getComment())) {
+							note += ad.getQuestion().getColumnHeaderOrQuestion() + " Comment : " + ad.getComment();
+							note += "\n";
+						}
+					}
+				} else if (conAudit.getAuditType().isAnnualAddendum()) {
+					for (OshaAudit oshaAudit : conAudit.getOshas()) {
+						if (!oshaAudit.isVerified() && !Strings.isEmpty(oshaAudit.getComment())) {
+							note += "OSHA : " + oshaAudit.getComment();
+							note += "\n";
+						}
+					}
+					for (AuditData auditData : conAudit.getData()) {
+						if (!auditData.isVerified() && !Strings.isEmpty(auditData.getComment())) {
+							note += auditData.getQuestion().getColumnHeaderOrQuestion() + " Comment : "
+									+ auditData.getComment();
+							note += "\n";
+						}
+					}
+				}
+			}
 		} else
 			return ERROR;
 
@@ -169,6 +196,7 @@ public class CaoSave extends AuditActionSupport {
 
 		AuditStatus prevStatus = cao.getStatus();
 		AuditStatus newStatus = step.getNewStatus();
+
 		cao.changeStatus(newStatus, permissions);
 		// Setting the expiration date
 		auditSetExpiresDate(cao, newStatus);
