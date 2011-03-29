@@ -608,6 +608,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		public int total;
 		public int answered;
 		public int verified;
+		public boolean override = false;
 
 		public float getPercentComplete() {
 			int percent = (int) ((answered * 1f / total) * 100);
@@ -641,6 +642,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (addAll || (getCategories().get(cat) != null && getCategories().get(cat).isApplies())) {
 				CategoryNode node = new CategoryNode();
 				node.category = cat;
+				node.override = getCategories().get(cat).isOverride(); 
 				if (conAudit.getAuditType().getClassType().isIm()) {
 					node.total = getCategories().get(cat).getScoreCount();
 					node.verified = (int) (getCategories().get(cat).getScore());
@@ -668,6 +670,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (getCategories().get(cat) != null && !getCategories().get(cat).isApplies()) {
 				CategoryNode node = new CategoryNode();
 				node.category = cat;
+				node.override = getCategories().get(cat).isOverride();
 				node.subCategories = createCategoryNodes(cat.getSubCategories(), true);
 				nodes.add(node);
 			}

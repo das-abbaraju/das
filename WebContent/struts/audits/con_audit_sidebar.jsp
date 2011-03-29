@@ -61,7 +61,7 @@
 		<s:iterator value="categoryNodes" id="catNode">
 			<li id="category_<s:property value="#catNode.category.id"/>" class="catlist">
 				<a class="hist-category" href="#categoryID=<s:property value="#catNode.category.id"/>">
-				<s:property value="#catNode.category.name" /> 
+				<s:property value="#catNode.category.name" />
 				<span class="cat-percent">
 					<s:if test="showVerified">
 						<s:if test="#catNode.percentVerified < 100">
@@ -76,7 +76,13 @@
 					<s:else>
 						<s:property value="#catNode.percentComplete" />%
 					</s:else> 
-				</span></a> 
+					<s:if test="permissions.admin || permissions.auditor">
+						<s:if test="#catNode.override">
+							<img src="images/edit_pencil.gif" />
+						</s:if>
+					</s:if>
+				</span>
+				</a> 
 				<s:set name="subcatNode" value="%{#catNode}" /> 
 				<s:if test="#catNode.subCategories.size() > 0">
 					<div class="subcat"><s:include value="con_audit_sidebar_subcat.jsp" /></div>
@@ -91,7 +97,15 @@
 			<li id="category_<s:property value="#catNode.category.id"/>"
 				class="catlist"><a class="hist-category"
 				href="#categoryID=<s:property value="#catNode.category.id" />"><s:property
-				value="#catNode.category.name" /></a> <s:set name="subcatNode"
+				value="#catNode.category.name" />
+				<span class="cat-percent">
+					<s:if test="permissions.admin || permissions.auditor">
+						<s:if test="#catNode.override">
+							<img src="images/edit_pencil.gif" />
+						</s:if>
+					</s:if>
+				</span>
+				</a> <s:set name="subcatNode"
 				value="%{#catNode}" /> <s:if test="#catNode.subCategories.size() > 0">
 				<div class="subcat"><s:include
 					value="con_audit_sidebar_subcat.jsp" /></div>
