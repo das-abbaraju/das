@@ -273,7 +273,7 @@ public class AuditScheduleBuilder {
 							availability.setOnsiteOnly(onsiteOnly);
 							availability.setWebOnly(webOnly);
 
-							if (user.getId() == 33902) {
+							if (user.getId() == 34065) {
 								// Hi, I'm Phillip Laraway
 								String[] gulfCoastStates = { "TX", "AL", "LA", "MS" };
 								availability.setOnlyInStates(gulfCoastStates);
