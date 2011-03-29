@@ -698,30 +698,12 @@ public class ContractorCron extends PicsActionSupport {
 		for (ContractorTag tag : contractor.getOperatorTags()) {
 			if (tag.getTag().getId() == OperatorTag.SHELL_COMPETENCY_REVIEW) {
 				// Find if there are any manual audits
-				User auditor = null;
-				for (ContractorAudit audit : contractor.getAudits()) {
-					if (audit.getAuditType().isDesktop()) {
-						auditor = audit.getAuditor();
-						if (auditor != null) {
-							for (UserGroup ug : auditor.getGroups()) {
-								if (ug.getGroup().getId() == User.INDEPENDENT_CONTRACTOR) {
-									auditor = null;
-									// Dennis Dooly to Rick McGee
-									if (audit.getAuditor().getId() == 910)
-										auditor = new User(9615);
-									// Mike Casey to Harvey Staal
-									if (audit.getAuditor().getId() == 10600)
-										auditor = new User(935);
-								}
-							}
-						}
-					}
-				}
-
 				for (ContractorAudit audit : contractor.getAudits()) {
 					if (audit.getAuditType().getId() == AuditType.SHELL_COMPETENCY_REVIEW && audit.getAuditor() == null) {
-						// Assign automatically to Mina if auditor wasn't set
-						audit.setAuditor(auditor != null ? auditor : new User(1029));
+						// Reassign if given to an independent auditor
+						Integer auditor = audit.getIndependentClosingAuditor(audit.getAuditor());
+						// Assign to Mina if null
+						audit.setAuditor(auditor != null ? new User(auditor) : new User(1029));
 					}
 				}
 			}
