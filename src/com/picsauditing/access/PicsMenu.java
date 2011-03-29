@@ -329,6 +329,7 @@ public class PicsMenu {
 			subMenu.addChild("CSS Style Guide", "css.jsp");
 			subMenu.addChild("Manage App Properties", "ManageAppProperty.action");
 			subMenu.addChild("Exception Log", "ReportExceptions.action");
+			subMenu.addChild("Service Indexer", "ServiceIndexer.action");
 		}
 
 		subMenu = menu.addChild("Operators");

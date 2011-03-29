@@ -1620,6 +1620,10 @@
 		<action name="ServiceTaxonomy" class="com.picsauditing.actions.productservices.ServiceTaxonomy">
 			<result>struts/productservices/service_taxonomy.jsp</result>
 		</action>
+		
+		<action name="ServiceIndexer" class="com.picsauditing.actions.productservices.ServiceIndexer">
+			<result>struts/productservices/service_indexer.jsp</result>
+		</action>
 
 		<!-- Autocomplete Ajax -->
 		<action name="*Autocomplete" class="com.picsauditing.actions.autocomplete.{1}Autocomplete">

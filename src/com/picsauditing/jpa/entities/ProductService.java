@@ -9,7 +9,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ref_product_service")
 public class ProductService extends BaseTable {
-	private String classificationType;
+	private String classificationType = "Master";
 	private ProductService parent;
 	private int indexLevel;
 	private int indexStart;
@@ -78,6 +78,10 @@ public class ProductService extends BaseTable {
 		this.classificationCode = classificationCode;
 	}
 
+	/**
+	 * Temporary field until we move this to app_translation
+	 * @return
+	 */
 	public String getDescription() {
 		return description;
 	}
