@@ -20,8 +20,10 @@ public class ProductServiceDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<ProductService> findRoot() {
-		Query query = em.createQuery("SELECT p FROM ProductService p WHERE p.parent IS NULL");
+	public List<ProductService> findRoot(String type) {
+		Query query = em.createQuery("SELECT p FROM ProductService p " +
+				"WHERE p.parent IS NULL AND p.classificationType = ?");
+		query.setParameter(1, type);
 		return query.getResultList();
 	}
 }

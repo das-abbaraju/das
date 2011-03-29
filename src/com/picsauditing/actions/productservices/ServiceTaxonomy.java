@@ -23,7 +23,7 @@ public class ServiceTaxonomy extends PicsActionSupport {
 		final List<ProductService> nodes;
 
 		if (parentID == null) {
-			nodes = serviceDAO.findRoot();
+			nodes = serviceDAO.findRoot("NAICS");
 		} else {
 			nodes = serviceDAO.findByParent(parentID);
 		}

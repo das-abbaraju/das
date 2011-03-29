@@ -89,4 +89,11 @@ public class ProductService extends BaseTable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	@Override
+	public String toString() {
+		if (parent == null)
+			return this.description;
+		return parent.getDescription() + ": " + description;
+	}
 }

@@ -11,41 +11,42 @@ public class ServiceIndexer extends PicsActionSupport {
 
 	private ProductServiceDAO productServiceDAO;
 
+	public void setProductServiceDAO(ProductServiceDAO productServiceDAO) {
+		this.productServiceDAO = productServiceDAO;
+	}
+
 	public String index() throws Exception {
 		// s:button ServiceIndexer!index
-		index(null, 0, Integer.MAX_VALUE);
+		indexNode(null, 1);
 		return SUCCESS;
 	}
 
-	private void index(ProductService parent, int indexStart, int indexEnd) {
+	private int indexNode(ProductService parent, int counter) {
 		List<ProductService> childNodes;
 		int level = 1;
-		if (parent == null)
-			childNodes = productServiceDAO.findRoot();
-		else {
+		if (parent == null) {
+			// System.out.println("Starting Indexer");
+			childNodes = productServiceDAO.findRoot("NAICS");
+		} else {
+			// System.out.println("Indexing " + parent.getId());
 			level = parent.getIndexLevel() + 1;
+			counter = parent.getIndexStart();
 			childNodes = productServiceDAO.findByParent(parent.getId());
 		}
 
 		int size = childNodes.size();
 		if (size == 0)
-			return;
-
-		int gap = (int) Math.floor((indexEnd - indexStart) / size);
-		int childStart = indexStart;
-		int childEnd = childStart + gap - 1;
+			return counter;
 
 		for (ProductService node : childNodes) {
+			counter++;
 			node.setIndexLevel(level);
-			node.setIndexStart(childStart);
-			node.setIndexEnd(childEnd);
-			childStart += gap;
-			childEnd += gap;
-			index(node, childStart + 1, childEnd - 1);
+			node.setIndexStart(counter);
+			counter = indexNode(node, counter);
+			counter++;
+			node.setIndexEnd(counter);
 		}
-	}
-
-	public void setProductServiceDAO(ProductServiceDAO productServiceDAO) {
-		this.productServiceDAO = productServiceDAO;
+		
+		return counter;
 	}
 }
