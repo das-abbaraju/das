@@ -6,6 +6,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -83,6 +84,7 @@ public class ProductService extends BaseTable {
 
 	/**
 	 * Temporary field until we move this to app_translation
+	 * 
 	 * @return
 	 */
 	public String getDescription() {
@@ -92,7 +94,12 @@ public class ProductService extends BaseTable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
+	@Transient
+	public boolean isLeaf() {
+		return indexEnd - indexStart == 1;
+	}
+
 	@Override
 	public String toString() {
 		if (parent == null)
