@@ -15,6 +15,7 @@ import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageQuestion extends ManageCategory {
@@ -53,6 +54,11 @@ public class ManageQuestion extends ManageCategory {
 
 	public boolean save() {
 		if (question != null) {
+			if(Strings.isEmpty(question.getName())) {
+				addActionError("Question name is required");
+				return false;
+			}
+			
 			if (question.getNumber() == 0) {
 				int maxID = 0;
 				for (AuditQuestion sibling : category.getQuestions()) {
