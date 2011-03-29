@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ProductServiceDAO;
+import com.picsauditing.jpa.entities.ClassificationType;
 import com.picsauditing.jpa.entities.ProductService;
 
 @SuppressWarnings("serial")
@@ -23,7 +24,7 @@ public class ServiceTaxonomy extends PicsActionSupport {
 		final List<ProductService> nodes;
 
 		if (parentID == null) {
-			nodes = serviceDAO.findRoot("NAICS");
+			nodes = serviceDAO.findRoot(ClassificationType.Master);
 		} else {
 			nodes = serviceDAO.findByParent(parentID);
 		}
@@ -31,8 +32,8 @@ public class ServiceTaxonomy extends PicsActionSupport {
 		JSONArray result = new JSONArray();
 		for (ProductService productService : nodes) {
 			JSONObject o = new JSONObject();
-			o.put("data",
-					String.format("[%s] %s", productService.getClassificationCode(), productService.getDescription()));
+			o.put("data", String.format("[%s] %s", productService.getClassificationCode(), productService
+					.getDescription()));
 			o.put("state", "closed");
 
 			JSONObject attr = new JSONObject();

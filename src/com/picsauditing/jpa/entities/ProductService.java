@@ -1,6 +1,8 @@
 package com.picsauditing.jpa.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -18,6 +20,7 @@ public class ProductService extends BaseTable {
 	private String classificationCode;
 	private String description;
 
+	@Enumerated(EnumType.STRING)
 	public ClassificationType getClassificationType() {
 		return classificationType;
 	}

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ProductServiceDAO;
+import com.picsauditing.jpa.entities.ClassificationType;
 import com.picsauditing.jpa.entities.ProductService;
 
 @SuppressWarnings("serial")
@@ -26,7 +27,7 @@ public class ServiceIndexer extends PicsActionSupport {
 		int level = 1;
 		if (parent == null) {
 			// System.out.println("Starting Indexer");
-			childNodes = productServiceDAO.findRoot("NAICS");
+			childNodes = productServiceDAO.findRoot(ClassificationType.Master);
 		} else {
 			// System.out.println("Indexing " + parent.getId());
 			level = parent.getIndexLevel() + 1;
