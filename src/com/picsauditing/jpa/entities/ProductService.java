@@ -9,7 +9,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ref_product_service")
 public class ProductService extends BaseTable {
-	private String classificationType = "Master";
+	private ClassificationType classificationType = ClassificationType.Master;
 	private ProductService parent;
 	private int indexLevel;
 	private int indexStart;
@@ -18,11 +18,11 @@ public class ProductService extends BaseTable {
 	private String classificationCode;
 	private String description;
 
-	public String getClassificationType() {
+	public ClassificationType getClassificationType() {
 		return classificationType;
 	}
 
-	public void setClassificationType(String classificationType) {
+	public void setClassificationType(ClassificationType classificationType) {
 		this.classificationType = classificationType;
 	}
 
