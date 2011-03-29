@@ -857,6 +857,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		EmailQueue emailQueue = new EmailQueue();
 		emailQueue.setEmailTemplate(template);
 		emailQueue.setPriority(80);
+		emailQueue.setHtml(template.isHtml());
 
 		emailQueue.setFromAddress(getAssignedCSR() == null ? "info@picsauditing.com" : getAssignedCSR().getEmail());
 		emailQueue.setToAddresses(newContractor.getEmail());
