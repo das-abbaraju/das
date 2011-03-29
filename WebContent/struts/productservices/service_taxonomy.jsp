@@ -10,7 +10,7 @@
 <script type="text/javascript" src="js/jquery/jsTree/jquery.jstree.js"></script>
 <script type="text/javascript">
 $(function() {
-	$('#services').jstree({
+	var tree = $('#services').jstree({
 		"themes": {
 			theme: "classic"	
 		},
@@ -22,15 +22,18 @@ $(function() {
 					return data.result;
 				},
 				"data": function(node) {
-					result = {};
+					result = $('#filter').serialize();
 					if (node.attr) {
-						result.parentID = node.attr("id");
+						result += "&service=" + node.attr("id");
 					}
 					return result;
 				}
 			}
 		},
 		"plugins": ["themes", "json_data"]
+	});
+	$('.classification').change(function() {
+		tree.jstree('refresh');
 	});
 });
 </script>
@@ -39,9 +42,11 @@ $(function() {
 <h1>Service Taxonomy</h1>
 
 <div id="search">
+<form id="filter">
 <div class="filteroption">
-	<s:radio list="{'All','Suncor Only'}" theme="pics" name="which"/>
+	<s:radio list="@com.picsauditing.jpa.entities.ClassificationType@values()" name="classification" cssClass="classification"/>
 </div>
+</form>
 </div>
 <br />
 <div id="services"></div>

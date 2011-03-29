@@ -16,29 +16,35 @@ public class ServiceTaxonomy extends PicsActionSupport {
 	protected ProductServiceDAO serviceDAO;
 
 	private ProductService service;
-	private Integer parentID = null;
+	private ClassificationType classification = ClassificationType.Master;
 
 	@SuppressWarnings("unchecked")
 	public String json() {
 
 		final List<ProductService> nodes;
 
-		if (parentID == null) {
+		System.out.println(classification);
+
+		if (service == null) {
 			nodes = serviceDAO.findRoot(ClassificationType.Master);
 		} else {
-			nodes = serviceDAO.findByParent(parentID);
+			nodes = serviceDAO.findByParent(service.getId());
 		}
 
 		JSONArray result = new JSONArray();
 		for (ProductService productService : nodes) {
 			JSONObject o = new JSONObject();
-			o.put("data", String.format("[%s] %s", productService.getClassificationCode(), productService
-					.getDescription()));
-			o.put("state", "closed");
+			o.put("data",
+					String.format("[%s] %s", productService.getClassificationCode(), productService.getDescription()));
+
+			if (!productService.isLeaf()) {
+				o.put("state", "closed");
+			}
 
 			JSONObject attr = new JSONObject();
 			attr.put("id", productService.getId());
-			attr.put("rel", productService.getClassificationType());
+			attr.put("rel", productService.getClassificationType().toString());
+			attr.put("class", "Master");
 			o.put("attr", attr);
 
 			result.add(o);
@@ -61,11 +67,12 @@ public class ServiceTaxonomy extends PicsActionSupport {
 		this.service = service;
 	}
 
-	public Integer getParentID() {
-		return parentID;
+	public ClassificationType getClassification() {
+		return classification;
 	}
 
-	public void setParentID(Integer parentID) {
-		this.parentID = parentID;
+	public void setClassification(ClassificationType classification) {
+		this.classification = classification;
 	}
+
 }
