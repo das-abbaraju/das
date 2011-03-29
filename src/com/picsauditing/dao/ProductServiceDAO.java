@@ -52,7 +52,7 @@ public class ProductServiceDAO extends PicsDAO {
 		else
 			parentString = "= " + productService.getParent().getId();
 		
-		String sql = "SELECT distinct(t0.id) " +
+		String sql = "SELECT distinct t0.* " +
 					"FROM ref_product_service t0 " +
 					"JOIN ref_product_service t1 " +
 					"ON t1.classificationType = t0.classificationType AND t0.indexStart <= t1.indexStart AND t0.indexEnd >= t1.indexEnd " +
@@ -62,7 +62,7 @@ public class ProductServiceDAO extends PicsDAO {
 					"and t0.parentID = ? " +
 					"ORDER BY t0.classificationCode, t1.classificationCode;";
 		
-		Query query = em.createNativeQuery(sql);
+		Query query = em.createNativeQuery(sql, com.picsauditing.jpa.entities.ProductService.class);
 		query.setParameter(1, parentString);
 		return query.getResultList();
 	}
