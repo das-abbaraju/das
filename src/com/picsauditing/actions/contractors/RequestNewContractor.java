@@ -331,6 +331,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			else
 				emailQueue = createEmail();
 
+			newContractor.setNotes(prepend("Sent email on request creation", newContractor.getNotes()));
 			sendEmail(emailQueue);
 			OperatorForm form = getForm();
 			if (form != null)
@@ -870,7 +871,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	private void sendEmail(EmailQueue emailQueue) {
 		try {
 			EmailSender.send(emailQueue);
-			newContractor.setNotes(prepend("Sent email on request creation", newContractor.getNotes()));
 		} catch (Exception e) {
 			addActionError("Could not send registration request email to " + emailQueue.getToAddresses());
 		}
