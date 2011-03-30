@@ -105,7 +105,7 @@ public class MassMailer extends PicsActionSupport {
 			wizardSession.setTemplateID(templateID);
 		}
 		
-		if (wizardSession.getTemplateID() > 0)
+		if (wizardSession.getTemplateID() > 0 && templateID <= 0)
 			templateID = wizardSession.getTemplateID();
 
 		if ("MailEditorAjax".equals(button)) {
