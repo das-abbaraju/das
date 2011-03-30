@@ -4,7 +4,7 @@
 
 <ul>
 	<li class="center"><h3><s:property value="service.description"/></h3></li>
-	<li><label><s:property value="service.classificationType"/> ID:</label> <s:property value="service.classificationCode"/></li>
+	<li><label><s:property value="service.classificationType"/> ID:</label> <s:property value="service.id"/></li>
 	<s:if test="service.productI">
 		<li><label>Product Critical:</label> <s:property value="service.riskLevelI"/></li>
 	</s:if>
@@ -16,6 +16,9 @@
 	</s:if>
 	<s:if test="service.classificationCode.length() > 0">
 		<li><label>NAICS Code:</label> <s:property value="service.classificationCode"/></li>
+	</s:if>
+	<s:if test="service.bestMatch != null">
+		<li><label>Mapped To:</label> <s:property value="service.bestMatch.toString()"/></li>
 	</s:if>
 	<s:if test="service.mappedServices.get(@com.picsauditing.jpa.entities.ClassificationType@Suncor)">
 	<li><label>Suncor Mapping:</label>
