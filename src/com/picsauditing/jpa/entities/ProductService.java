@@ -1,12 +1,18 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 
 @SuppressWarnings("serial")
 @Entity
@@ -20,6 +26,8 @@ public class ProductService extends BaseTable {
 	private ProductService bestMatch;
 	private String classificationCode;
 	private String description;
+
+	private Map<ClassificationType, ProductService> mappedServices = new LinkedHashMap<ClassificationType, ProductService>();
 
 	@Enumerated(EnumType.STRING)
 	public ClassificationType getClassificationType() {
@@ -95,6 +103,16 @@ public class ProductService extends BaseTable {
 		this.description = description;
 	}
 
+	@OneToMany(mappedBy = "bestMatch")
+	@MapKey(name = "classificationType")
+	public Map<ClassificationType, ProductService> getMappedServices() {
+		return mappedServices;
+	}
+
+	public void setMappedServices(Map<ClassificationType, ProductService> suncorServices) {
+		this.mappedServices = suncorServices;
+	}
+
 	@Transient
 	public boolean isLeaf() {
 		return indexEnd - indexStart == 1;
@@ -106,7 +124,7 @@ public class ProductService extends BaseTable {
 			return this.description;
 		return parent.getDescription() + ": " + description;
 	}
-	
+
 	@Override
 	@Transient
 	public String getAutocompleteValue() {
