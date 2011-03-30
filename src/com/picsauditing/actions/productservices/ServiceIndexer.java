@@ -27,7 +27,7 @@ public class ServiceIndexer extends PicsActionSupport {
 		int level = 1;
 		if (parent == null) {
 			// System.out.println("Starting Indexer");
-			childNodes = productServiceDAO.findRoot(ClassificationType.Master);
+			childNodes = productServiceDAO.findRoot(ClassificationType.Suncor);
 		} else {
 			// System.out.println("Indexing " + parent.getId());
 			level = parent.getIndexLevel() + 1;
@@ -47,7 +47,7 @@ public class ServiceIndexer extends PicsActionSupport {
 			counter++;
 			node.setIndexEnd(counter);
 		}
-		
+
 		return counter;
 	}
 }

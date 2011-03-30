@@ -18,6 +18,6 @@ public class ProductServiceAutocomplete extends AutocompleteActionSupport<Produc
 	
 	@Override
 	protected String createOutputAutocomplete(ProductService item){
-		return item.getAutocompleteValue() + "\n";
+		return item.toString() + "\n";
 	}
 }

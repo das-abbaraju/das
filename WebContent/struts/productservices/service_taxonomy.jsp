@@ -35,11 +35,22 @@ $(function() {
 	$('.classification').change(function() {
 		tree.jstree('refresh');
 	});
+    $('.psAutocomplete').autocomplete('ProductServiceAutocomplete.action', {
+    	minChars: 2,
+    	formatResult: function(data,i,count) { return data[1]; }
+    });
 });
 </script>
 </head>
 <body>
 <h1>Service Taxonomy</h1>
+
+<div id="suggest">
+<form id="filter">
+	<label>Product/Service Search:</label>
+	<input class="psAutocomplete" name="productServiceSearch" style="width: 400px" />
+</form>
+</div>
 
 <div id="search">
 <form id="filter">
