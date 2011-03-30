@@ -2,6 +2,7 @@ package com.picsauditing.actions.productservices;
 
 import java.util.List;
 
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ProductServiceDAO;
 import com.picsauditing.jpa.entities.ClassificationType;
@@ -16,6 +17,7 @@ public class ServiceIndexer extends PicsActionSupport {
 		this.productServiceDAO = productServiceDAO;
 	}
 
+	@Anonymous
 	public String index() throws Exception {
 		// s:button ServiceIndexer!index
 		indexNode(null, 1);
@@ -27,7 +29,7 @@ public class ServiceIndexer extends PicsActionSupport {
 		int level = 1;
 		if (parent == null) {
 			// System.out.println("Starting Indexer");
-			childNodes = productServiceDAO.findRoot(ClassificationType.Suncor);
+			childNodes = productServiceDAO.findRoot(ClassificationType.Master);
 		} else {
 			// System.out.println("Indexing " + parent.getId());
 			level = parent.getIndexLevel() + 1;
