@@ -64,6 +64,7 @@ $(function() {
 	});
 	$('.psAutocomplete').autocomplete('ProductServiceAutocomplete.action', {
     	minChars: 2,
+    	max: 100,
     	formatResult: function(data,i,count) { return data[1]; }
     });
 });
