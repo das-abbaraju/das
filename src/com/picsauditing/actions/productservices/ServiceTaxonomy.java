@@ -35,7 +35,7 @@ public class ServiceTaxonomy extends PicsActionSupport {
 		for (ProductService productService : nodes) {
 			JSONObject o = new JSONObject();
 			o.put("data",
-					String.format("[%s] %s", productService.getClassificationCode(), productService.getDescription()));
+					String.format("[%s] %s %s", productService.getClassificationCode(), productService.getDescription(), productService.getId()));
 
 			if (!productService.isLeaf()) {
 				o.put("state", "closed");
