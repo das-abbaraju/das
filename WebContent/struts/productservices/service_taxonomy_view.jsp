@@ -14,8 +14,8 @@
 	<s:if test="service.psmApplies">
 		<li><label>PSM Critical:</label> Yes</li>
 	</s:if>
+	<s:if test="service.classificationCode.length() > 0">
 		<li><label>NAICS Code:</label> <s:property value="service.classificationCode"/></li>
-	<s:if test="service.classificationCode">
 	</s:if>
 	<s:if test="service.mappedServices.get(@com.picsauditing.jpa.entities.ClassificationType@Suncor)">
 	<li><label>Suncor Mapping:</label>
