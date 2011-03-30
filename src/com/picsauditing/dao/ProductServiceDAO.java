@@ -50,7 +50,7 @@ public class ProductServiceDAO extends PicsDAO {
 		if (productService == null)
 			parentString = "is null";
 		else
-			parentString = "= " + productService.getParent().getId();
+			parentString = "= " + productService.getId();
 		
 		String sql = "SELECT distinct t0.* " +
 					"FROM ref_product_service t0 " +
@@ -59,11 +59,10 @@ public class ProductServiceDAO extends PicsDAO {
 					"JOIN ref_product_service t2 " +
 					"ON t1.id = t2.bestMatchID AND t2.classificationType = 'Suncor' " +
 					"WHERE t0.classificationType = 'Master'  " +
-					"and t0.parentID = ? " +
-					"ORDER BY t0.classificationCode, t1.classificationCode;";
+					"and t0.parentID " + parentString +
+					" ORDER BY t0.classificationCode, t1.classificationCode;";
 		
 		Query query = em.createNativeQuery(sql, com.picsauditing.jpa.entities.ProductService.class);
-		query.setParameter(1, parentString);
 		return query.getResultList();
 	}
 }
