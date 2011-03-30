@@ -4,22 +4,24 @@
 
 <ul>
 	<li class="center"><h3><s:property value="service.description"/></h3></li>
-	<li><label><s:property value="service.classificationType"/></label> <s:property value="service.classificationCode"/></li>
+	<li><label><s:property value="service.classificationType"/> ID:</label> <s:property value="service.classificationCode"/></li>
 	<s:if test="service.productI">
-		<li><label>Product</label></li>
+		<li><label>Product Critical:</label> <s:property value="service.riskLevelI"/></li>
 	</s:if>
 	<s:if test="service.serviceI">
-		<li><label>Service</label></li>
+		<li><label>Safety Critical:</label> <s:property value="service.riskLevelI"/></li>
 	</s:if>
-	<li><label>Risk:</label> <s:property value="service.riskLevelI"/></li>
 	<s:if test="service.psmApplies">
-		<li><label>PSM Critical</label></li>
+		<li><label>PSM Critical:</label> Yes</li>
+	</s:if>
+		<li><label>NAICS Code:</label> <s:property value="service.classificationCode"/></li>
+	<s:if test="service.classificationCode">
 	</s:if>
 	<s:if test="service.mappedServices.get(@com.picsauditing.jpa.entities.ClassificationType@Suncor)">
-	<li><label>Suncor Children:</label>
+	<li><label>Suncor Mapping:</label>
 		<ul>
-		<s:iterator value="service.mappedServices.get(@com.picsauditing.jpa.entities.ClassificationType@Suncor)">
-			<li><label><s:property value="classificationType"/>-<s:property value="classificationCode"/>:</label> <s:property value="description"/></li>
+		<s:iterator value="service.mappedServices.get(@com.picsauditing.jpa.entities.ClassificationType@Suncor)" var="suncor">
+			<li><label>Suncor ID:</label> <s:property value="#suncor.toString()"/> (<s:property value="#suncor.id"/>)</li>
 		</s:iterator>
 		</ul>
 	</li>
