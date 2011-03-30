@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
@@ -18,8 +17,8 @@ $(function() {
 			"ajax": {
 				"url": 'ServiceTaxonomy!json.action',
 				"dataType": "json",
-				"success": function(data) {
-					return data.result;
+				"success": function(json) {
+					return json.result;
 				},
 				"data": function(node) {
 					result = $('#filter').serialize();
@@ -30,36 +29,123 @@ $(function() {
 				}
 			}
 		},
-		"plugins": ["themes", "json_data"]
+		"types": {
+			"default": {
+			"select_node": true,
+			"hover_node":true
+			}
+		},
+		"plugins": ["themes", "json_data", "types"]
+	});
+	$('#services').delegate('.jstree a', 'click', function(e) {
+		e.preventDefault();
+		var data = { service: $(this).parent().data('jstree').id };
+		$('#service-info').load('ServiceTaxonomy!serviceAjax.action', data);
 	});
 	$('.classification').change(function() {
 		tree.jstree('refresh');
+		$('#service-info').text("Click a service on the left to view more.");
 	});
-    $('.psAutocomplete').autocomplete('ProductServiceAutocomplete.action', {
+	$(document).ready(function () {  
+	  var top = $('#service-info').offset().top - parseFloat($('#service-info').css('marginTop').replace(/auto/, 0));
+	  $(window).scroll(function (event) {
+	    // what the y position of the scroll is
+	    var y = $(this).scrollTop();
+	  
+	    // whether that's below the form
+	    if (y >= top) {
+	      // if so, ad the fixed class
+	      $('#service-info').addClass('fixed');
+	    } else {
+	      // otherwise remove it
+	      $('#service-info').removeClass('fixed');
+	    }
+	  });
+	});
+	$('.psAutocomplete').autocomplete('ProductServiceAutocomplete.action', {
     	minChars: 2,
     	formatResult: function(data,i,count) { return data[1]; }
     });
 });
 </script>
+<style>
+#services li {
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+#info-wrapper { 
+  position: absolute;
+  width: 280px;
+  right: 22px;
+}
+
+#service-info {
+  position: absolute;
+  top: 0;
+  /* just used to show how to include the margin in the effect */
+  margin-top: 20px;
+  border: 1px solid #A84D10;
+  padding: 10px;
+  background-color: #eee;
+  width: 280px;
+}
+
+#service-info.fixed {
+  position: fixed;
+  top: 0;
+}
+
+#service-info h3 {
+	font-size: 18px;
+}
+#service-info ul {
+	list-style: none;
+}
+#service-info label {
+	font-weight: bold;
+}
+#service-info li li label {
+	color: #808285;
+}
+
+#wrapper {
+	margin-top: 20px;
+	position: relative
+}
+ 
+#service-info .center {
+	text-align: center;
+}
+
+</style>
 </head>
 <body>
 <h1>Service Taxonomy</h1>
 
 <div id="suggest">
-<form id="filter">
+<form>
 	<label>Product/Service Search:</label>
 	<input class="psAutocomplete" name="productServiceSearch" style="width: 400px" />
 </form>
 </div>
 
+<div id="wrapper">
 <div id="search">
 <form id="filter">
 <div class="filteroption">
-	<s:radio list="@com.picsauditing.jpa.entities.ClassificationType@values()" name="classification" cssClass="classification"/>
+	<s:radio list="listTypes" name="listType" listValue="description" cssClass="classification"/>
 </div>
 </form>
 </div>
+<div id="info-wrapper">
+	<div id="service-info"> Click a service on the left to view more. </div>
+</div>
 <br />
+
 <div id="services"></div>
+
+</div>
+
 </body>
 </html>

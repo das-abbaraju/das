@@ -1,5 +1,6 @@
 package com.picsauditing.actions.productservices;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -18,24 +19,33 @@ public class ServiceTaxonomy extends PicsActionSupport {
 	private ProductService service;
 	private ClassificationType classification = ClassificationType.Master;
 
+	private ListType listType = ListType.Master;
+
 	@SuppressWarnings("unchecked")
 	public String json() {
 
-		final List<ProductService> nodes;
+		List<ProductService> nodes = new ArrayList<ProductService>();
 
-		System.out.println(classification);
-
-		if (service == null) {
-			nodes = serviceDAO.findRoot(ClassificationType.Master);
-		} else {
-			nodes = serviceDAO.findByParent(service.getId());
+		if (listType == ListType.Master) {
+			if (service == null) {
+				nodes = serviceDAO.findRoot(ClassificationType.Master);
+			} else {
+				nodes = serviceDAO.findByParent(service.getId());
+			}
+		} else if (listType == ListType.Suncor) {
+			if (service == null) {
+				nodes = serviceDAO.findRoot(ClassificationType.Suncor);
+			} else {
+				nodes = serviceDAO.findByParent(service.getId());
+			}
+		} else if (listType == ListType.MasterSuncor) {
+			nodes = serviceDAO.findByNode(service);
 		}
 
 		JSONArray result = new JSONArray();
 		for (ProductService productService : nodes) {
 			JSONObject o = new JSONObject();
-			o.put("data",
-					String.format("[%s] %s %s", productService.getClassificationCode(), productService.getDescription(), productService.getId()));
+			o.put("data", productService.getDescription());
 
 			if (!productService.isLeaf()) {
 				o.put("state", "closed");
@@ -47,12 +57,21 @@ public class ServiceTaxonomy extends PicsActionSupport {
 			attr.put("class", "Master");
 			o.put("attr", attr);
 
+			JSONObject data = new JSONObject();
+			data.put("id", productService.getId());
+			o.put("metadata", data);
+
 			result.add(o);
 		}
 
 		json.put("result", result);
 
 		return JSON;
+	}
+
+	public String serviceAjax() {
+
+		return "service";
 	}
 
 	public void setServiceDAO(ProductServiceDAO serviceDAO) {
@@ -73,6 +92,32 @@ public class ServiceTaxonomy extends PicsActionSupport {
 
 	public void setClassification(ClassificationType classification) {
 		this.classification = classification;
+	}
+
+	public ListType getListType() {
+		return listType;
+	}
+
+	public void setListType(ListType listType) {
+		this.listType = listType;
+	}
+
+	public ListType[] getListTypes() {
+		return ListType.values();
+	}
+
+	enum ListType {
+		Master("Master List"), Suncor("Suncor"), MasterSuncor("Master/Suncor");
+
+		private String description;
+
+		ListType(String description) {
+			this.description = description;
+		}
+
+		public String getDescription() {
+			return description;
+		}
 	}
 
 }

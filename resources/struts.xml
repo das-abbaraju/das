@@ -1619,6 +1619,7 @@
 		<!-- Taxonomy -->
 		<action name="ServiceTaxonomy" class="com.picsauditing.actions.productservices.ServiceTaxonomy">
 			<result>struts/productservices/service_taxonomy.jsp</result>
+			<result name="service">struts/productservices/service_taxonomy_view.jsp</result>
 		</action>
 		
 		<action name="ServiceIndexer" class="com.picsauditing.actions.productservices.ServiceIndexer">
