@@ -2,31 +2,30 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<ul>
-	<li class="center"><h3><s:property value="service.description"/></h3></li>
-	<li><label><s:property value="service.classificationType"/> ID:</label> <s:property value="service.id"/></li>
-	<s:if test="service.productI">
-		<li><label>Product Critical:</label> <s:property value="service.riskLevelI"/></li>
-	</s:if>
-	<s:if test="service.serviceI">
-		<li><label>Safety Critical:</label> <s:property value="service.riskLevelI"/></li>
-	</s:if>
-	<s:if test="service.psmApplies">
-		<li><label>PSM Critical:</label> Yes</li>
-	</s:if>
-	<s:if test="service.classificationCode.length() > 0">
-		<li><label>NAICS Code:</label> <s:property value="service.classificationCode"/></li>
-	</s:if>
-	<s:if test="service.bestMatch != null">
-		<li><label>Mapped To:</label> <s:property value="service.bestMatch.toString()"/></li>
-	</s:if>
-	<s:if test="service.mappedServices.get(@com.picsauditing.jpa.entities.ClassificationType@Suncor)">
-	<li><label>Suncor Mapping:</label>
-		<ul>
-		<s:iterator value="service.mappedServices.get(@com.picsauditing.jpa.entities.ClassificationType@Suncor)" var="suncor">
-			<li><label>Suncor ID:</label> <s:property value="#suncor.toString()"/> (<s:property value="#suncor.id"/>)</li>
-		</s:iterator>
-		</ul>
-	</li>
-	</s:if>
-</ul>
+<h4><s:property value="service.description"/></h4>
+<hr />
+<p><label><s:property value="service.classificationType"/> ID:</label> <s:property value="service.id"/></p>
+<s:if test="service.productI">
+	<p><label>Product Critical:</label> <s:property value="service.riskLevelI"/></p>
+</s:if>
+<s:if test="service.serviceI">
+	<p><label>Safety Critical:</label> <s:property value="service.riskLevelI"/></p>
+</s:if>
+<s:if test="service.psmApplies">
+	<p><label>PSM Critical:</label> Yes</p>
+</s:if>
+<s:if test="service.classificationCode.length() > 0">
+	<p><label>NAICS Code:</label> <s:property value="service.classificationCode"/></p>
+</s:if>
+<s:if test="service.bestMatch != null">
+	<p><label>Mapped To:</label> <s:property value="service.bestMatch.toString()"/></p>
+</s:if>
+<s:if test="service.matches.size() > 0">
+<p><label>Suncor Mapping:</label>
+	<ul>
+	<s:iterator value="service.matches" var="suncor">
+		<li><s:property value="#suncor.toString()"/> (<s:property value="#suncor.id"/>)</li>
+	</s:iterator>
+	</ul>
+</p>
+</s:if>

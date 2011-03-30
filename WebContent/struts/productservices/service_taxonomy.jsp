@@ -100,9 +100,6 @@ $(function() {
 #service-info h3 {
 	font-size: 18px;
 }
-#service-info ul {
-	list-style: none;
-}
 #service-info label {
 	font-weight: bold;
 }

@@ -13,7 +13,7 @@ public class ProductServiceAutocomplete extends AutocompleteActionSupport<Produc
 
 	@Override
 	protected void findItems() {
-		items = psDAO.findWhere("p.classificationCode LIKE '" + q + "%' OR p.description LIKE '%" + q + "%'");
+		items = psDAO.findWhere("p.classificationType = 'Master' AND (p.classificationCode LIKE '" + q + "%' OR p.description LIKE '%" + q + "%')");
 	}
 	
 	@Override

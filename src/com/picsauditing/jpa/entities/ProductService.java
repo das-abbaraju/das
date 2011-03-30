@@ -1,14 +1,13 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -31,7 +30,7 @@ public class ProductService extends BaseTable {
 	private String classificationCode;
 	private String description;
 
-	private Map<ClassificationType, ProductService> mappedServices = new LinkedHashMap<ClassificationType, ProductService>();
+	private List<ProductService> matches = new ArrayList<ProductService>();
 
 	@Enumerated(EnumType.STRING)
 	public ClassificationType getClassificationType() {
@@ -94,7 +93,7 @@ public class ProductService extends BaseTable {
 		}
 		return product;
 	}
-	
+
 	@Transient
 	public boolean isServiceI() {
 		if (service == null) {
@@ -162,6 +161,15 @@ public class ProductService extends BaseTable {
 		this.bestMatch = bestMatch;
 	}
 
+	@OneToMany(mappedBy = "bestMatch")
+	public List<ProductService> getMatches() {
+		return matches;
+	}
+
+	public void setMatches(List<ProductService> matches) {
+		this.matches = matches;
+	}
+
 	public String getClassificationCode() {
 		return classificationCode;
 	}
@@ -181,16 +189,6 @@ public class ProductService extends BaseTable {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	@OneToMany(mappedBy = "bestMatch")
-	@MapKey(name = "classificationType")
-	public Map<ClassificationType, ProductService> getMappedServices() {
-		return mappedServices;
-	}
-
-	public void setMappedServices(Map<ClassificationType, ProductService> suncorServices) {
-		this.mappedServices = suncorServices;
 	}
 
 	@Transient
