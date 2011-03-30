@@ -246,6 +246,10 @@ public class PicsMenu {
 			addChildAction(subMenu, "UsersManage");
 			addChildAction(subMenu, "ReportUserPermissionMatrix");
 		}
+		
+		if (permissions.isAdmin()) {
+			subMenu.addChild("Service Taxonomy", "ServiceTaxonomy.action");
+		}
 
 		if (permissions.hasPermission(OpPerms.Translator)) {
 			subMenu.addChild("Manage Translations", "ManageTranslations.action");
