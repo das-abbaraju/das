@@ -18,7 +18,11 @@
 	<p><label>NAICS Code:</label> <s:property value="service.classificationCode"/></p>
 </s:if>
 <s:if test="service.bestMatch != null">
-	<p><label>Mapped To:</label> <s:property value="service.bestMatch.toString()"/></p>
+	<p><label>Mapped To:</label></p>
+	<ul>
+		<s:set var="ps" value="service.bestMatch" />
+		<s:include value="service_printer.jsp" />
+	</ul>
 </s:if>
 <s:if test="service.matches.size() > 0">
 <p><label>Suncor Mapping:</label>

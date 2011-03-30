@@ -40,6 +40,7 @@ $(function() {
 	$('#services').delegate('.jstree a', 'click', function(e) {
 		e.preventDefault();
 		var data = { service: $(this).parent().data('jstree').id };
+		startThinking({div: 'service-info', type: 'large'});
 		$('#service-info').load('ServiceTaxonomy!serviceAjax.action', data);
 	});
 	$('.classification').change(function() {
@@ -103,8 +104,12 @@ $(function() {
 #service-info label {
 	font-weight: bold;
 }
-#service-info li li label {
+#service-info li label {
 	color: #808285;
+}
+#service-info ul {
+	line-height: 14px;
+	padding-top: 10px;
 }
 
 #wrapper {
