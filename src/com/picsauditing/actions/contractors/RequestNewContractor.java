@@ -331,11 +331,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			else
 				emailQueue = createEmail();
 
+			sendEmail(emailQueue);
 			OperatorForm form = getForm();
 			if (form != null)
 				addAttachments(emailQueue, form);
-
-			sendEmail(emailQueue);
 
 			if (getActionErrors().size() == 0)
 				return "backToReport";
@@ -871,6 +870,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	private void sendEmail(EmailQueue emailQueue) {
 		try {
 			EmailSender.send(emailQueue);
+			newContractor.setNotes(prepend("Sent email on request creation", newContractor.getNotes()));
 		} catch (Exception e) {
 			addActionError("Could not send registration request email to " + emailQueue.getToAddresses());
 		}
@@ -894,8 +894,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			attachment.setFileSize((int) file.length());
 			attachment.setEmailQueue(emailQueue);
 			attachmentDAO.save(attachment);
-
-			newContractor.setNotes(prepend("Sent email on request creation", newContractor.getNotes()));
 		} catch (Exception e) {
 			System.out.println("Unable to open file: /forms/" + filename);
 		}
