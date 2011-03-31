@@ -33,6 +33,14 @@
 			window.location.href = $(this).attr('href') + ($(this).attr('href').indexOf("?") > 0 ? "&" : "?") + "auditID=" + auditID;
 			return false;
 		});
+		$('#auditProblems, #problemsHide').live('click', function(){
+			$('#problems').slideDown();
+			$('#problemsHide').hide();
+		});
+		$('#problems .bottom').live('click', function(){
+			$('#problems').slideUp();
+			$('#problemsHide').show();
+		});
 	});
 </script>
 </head>
@@ -45,6 +53,33 @@
 	<br clear="all" />
 </s:if>
 
+<s:if test="conAudit.auditType.classType.policy && conAudit.hasCaoStatus('Incomplete')">
+	<div id="auditProblems">
+		There are problems with your audit, please click here to review them.  You can also click on the status for each operator with an <span class="problemCao">icon</span> to see more info.
+	</div>
+	<div id="problems">
+		<table class="report" style="margin: 0 auto;">
+			<thead>
+				<tr>
+					<th>Operator</th>
+					<th>Problem</th>
+				</tr>
+			</thead>
+			<tbody>
+				<s:iterator value="problems" var="pro">
+					<tr>
+						<td><s:property value="getViewableCaops(#pro.key).iterator.next.name"/></td>
+						<td> <s:property value="#pro.value"/></td>
+					</tr>
+				</s:iterator>	
+			</tbody>
+		</table>
+		
+		<div class="bottom">Hide</div>
+	</div>
+	<div id="problemsHide">
+	</div>
+</s:if>
 <div id="submitRemind"></div>
 
 <div class="right noprint" id="modes">

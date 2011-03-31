@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import com.ibm.icu.util.Calendar;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -23,9 +24,9 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.MultiYearScope;
@@ -53,6 +54,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	private AuditPercentCalculator auditPercentCalculator;
 	protected int caoID;
 	protected boolean previewCat = false;
+	protected Map<ContractorAuditOperator, String> problems = new LinkedHashMap<ContractorAuditOperator, String>();
 	// Policy verification (next/first buttons)
 	private boolean policy;
 
@@ -191,9 +193,16 @@ public class ContractorAuditController extends AuditActionSupport {
 			return SUCCESS;
 		}
 
-		if (conAudit != null){
+		if (conAudit != null) {
 			getValidSteps();
-			if(conAudit.getOperators().size()==0)
+			if (conAudit.getAuditType().getClassType().isPolicy() && conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
+				for (ContractorAuditOperatorWorkflow caow : caowDAO.findbyAuditStatus(conAudit.getId(),
+						AuditStatus.Incomplete)) {
+					if (caow.getCao().isVisible())
+						problems.put(caow.getCao(), caow.getNotes());
+				}
+			}
+			if (conAudit.getOperators().size() == 0)
 				addAlertMessage("This audit has no valid CAOs and cannot be seen by external users.  As we do retain the audit data, the audit is still viewable by internal users");
 		}
 
@@ -348,5 +357,13 @@ public class ContractorAuditController extends AuditActionSupport {
 		return !conAudit.isExpired() && !conAudit.hasCaoStatus(AuditStatus.Complete)
 				&& !conAudit.getAuditType().isCanContractorEdit()
 				&& conAudit.getAuditType().getEditPermission() == null && !conAudit.getContractorAccount().isRenew();
+	}
+
+	public Map<ContractorAuditOperator, String> getProblems() {
+		return problems;
+	}
+
+	public void setProblems(Map<ContractorAuditOperator, String> problems) {
+		this.problems = problems;
 	}
 }

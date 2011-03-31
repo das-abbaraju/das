@@ -179,6 +179,18 @@ table.statusOpBox td.progress{
 	padding: 0;
 	width: 230px;
 }
+table.statusOpBox td.problemCao{
+	padding-left: 19px;
+	margin-left: 2px;
+	color: red;
+	background: url('../images/required.gif') no-repeat left center;
+}
+span.problemCao{
+	padding-left: 17px;
+	color: red;
+	background: url('../images/required.gif') no-repeat left center;	
+}
+
 /** Table for ProgressBar **/
 table.progressTable {
 	border: 1px solid #012142;
@@ -624,6 +636,46 @@ table.osha tfoot th {
 .noteMessage{
 	font-size: small;
 	color: 	#3E3E3E;
+}
+
+div#auditProblems {		
+	border-top: 2px solid #feabab;
+	border-bottom: 2px solid #feabab;
+	background: #ffdfdf url('../images/icon-error.gif') no-repeat 10px 10px;
+	padding: 1em 1em 1em 4em;
+	margin-left: auto;
+	margin-right: auto;
+	clear: left;
+	cursor: pointer;	
+}
+
+div#problems { 
+	border-left: 2px solid #C3C3C3;
+	border-right: 2px solid #C3C3C3;
+	border-bottom: 2px solid #C3C3C3;
+	color: #A84D10;
+	background: #F6F6F0;	
+	width: 90%;
+	padding-top: 1em;
+	margin-left: auto;
+	margin-right: auto;
+	display: none;
+}
+div#problems .bottom{
+	background: #C3C3C3;	
+	text-align: center;
+	margin-top: 1em;
+	width: 100%;
+	cursor: pointer;
+}
+div#problemsHide{
+	background: #FEABAB url('../images/arrow-blue-down.png') no-repeat center center;	
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	height: .5em;
+	line-height: .2em;	
+	cursor: pointer;
 }
 
 .button{

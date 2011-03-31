@@ -762,8 +762,7 @@ div#info,div.info {
 div#alert,div.alert {
 	border-top: 2px solid #D0AE10;
 	border-bottom: 2px solid #D0AE10;
-	background: #FBF2C9 url('../images/icon-warning.gif') no-repeat 10px
-		10px;
+	background: #FBF2C9 url('../images/icon-warning.gif') no-repeat 10px 10px;
 	zoom: 1;
 }
 
