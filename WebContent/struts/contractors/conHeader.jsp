@@ -307,7 +307,7 @@ function loadStatus(caoID){
 						<s:if test="conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy') || conAudit.auditType.annualAddendum"><s:text name="global.CSR" />:</s:if>
 						<s:else><s:text name="global.SafetyProfessional" />:</s:else></label>
 						<s:if test="conAudit.auditor.id > 0"><s:property value="conAudit.auditor.name" /></s:if>
-						<s:else><a href="AuditAssignments.action?auditID=<s:property value="auditID"/>"><s:text name="Audit.message.NotAssigned" /></a></s:else>
+						<s:else><a href="AuditAssignments.action?filter.auditID=<s:property value="auditID"/>"><s:text name="Audit.message.NotAssigned" /></a></s:else>
 					</li>
 				</s:if>
 			</s:if>			
