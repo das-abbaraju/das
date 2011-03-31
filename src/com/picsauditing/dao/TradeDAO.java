@@ -53,10 +53,10 @@ public class TradeDAO extends PicsDAO {
 			parentString = "= " + trade.getId();
 		
 		String sql = "SELECT distinct t0.* " +
-					"FROM ref_product_service t0 " +
-					"JOIN ref_product_service t1 " +
+					"FROM ref_trade t0 " +
+					"JOIN ref_trade t1 " +
 					"ON t1.classificationType = t0.classificationType AND t0.indexStart <= t1.indexStart AND t0.indexEnd >= t1.indexEnd " +
-					"JOIN ref_product_service t2 " +
+					"JOIN ref_trade t2 " +
 					"ON t1.id = t2.bestMatchID AND t2.classificationType = 'Suncor' " +
 					"WHERE t0.classificationType = 'Master'  " +
 					"and t0.parentID " + parentString +

@@ -14,7 +14,7 @@ import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "ref_product_service")
+@Table(name = "ref_trade")
 public class Trade extends BaseTable {
 
 	private ClassificationType classificationType = ClassificationType.Master;
