@@ -318,7 +318,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return SUCCESS;
 	}
 	
-	public String deactivate() {
+	public String deactivate() throws Exception {
 		if (Strings.isEmpty(contractor.getReason())) {
 			addActionError("Please select a deactivation reason before you cancel the account");
 		} else {
@@ -343,7 +343,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return SUCCESS;
 	}
 
-	public String reactivate() {
+	public String reactivate() throws Exception {
 		contractor.setRenew(true);
 		if (contractor.getNewMembershipLevel().isFree())
 			contractor.setStatus(AccountStatus.Active);
