@@ -41,3 +41,7 @@ q:before, q:after {
 blockquote, q {
 	quotes: "" "";
 }
+
+table, tbody, tfoot, thead, tr, th, td {
+	vertical-align: top;
+}

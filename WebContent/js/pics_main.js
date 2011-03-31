@@ -46,7 +46,6 @@ function clearText(thefield)
 }
 
 function startThinking( args ) {
-
 	 var oOptions = augment({
       div: "mainThinkingDiv",
       message: "Communicating with PICS",
@@ -68,6 +67,7 @@ function startThinking( args ) {
 	}
 	return true;
 }
+
 function stopThinking( args ) {
 	 var oOptions = augment({
       div: "mainThinkingDiv"
@@ -78,6 +78,21 @@ function stopThinking( args ) {
 	}
 	return true;
 }
+
+function setMainStatus(message) {
+	var targetDiv = getElement('mainStatus');
+	
+	if (message == null) {
+		targetDiv.style.display == "none";
+		targetDiv.innerHTML = message;
+	} else {
+		targetDiv.innerHTML = message;
+		targetDiv.style.display == "block";
+	}
+}
+
+mainStatus
+
 function augment (oSelf, oOther) {
     if (oSelf == null) {
         oSelf = {};

@@ -781,6 +781,17 @@ div.helpbox {
 	width: auto;
 }
 
+#mainStatus {
+	background-color: infobackground;
+	border: 1px solid #C3C3C3;
+	font-size: 12px;
+	left: 132px;
+	top: 103px;
+	padding: 3px;
+	position: absolute;
+	display: none;
+}
+
 td.money,th.money {
 	text-align: right;
 }
