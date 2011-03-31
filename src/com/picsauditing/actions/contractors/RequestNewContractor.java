@@ -355,12 +355,11 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public String email() throws Exception {
 		EmailQueue emailQueue = createEmail();
 
+		sendEmail(emailQueue);
 		if (filenames != null && emailQueue != null) {
 			for (String filename : filenames)
 				addAttachments(emailQueue, filename);
 		}
-
-		sendEmail(emailQueue);
 
 		if (getActionErrors().size() == 0)
 			return contact("Contacted by email.");
@@ -436,8 +435,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			body += "If you would still like to utilize the services of " + newContractor.getName()
 					+ " at your site, we request you to intervene and encourage the contractor to "
 					+ "register with PICS.<br /><br />";
-			body += "If you have further questions, please feel free to contact your PICS Account Manager "
-					+ am.getName() + ".<br /><br />";
+			if (am != null)
+				body += "If you have further questions, please feel free to contact your PICS Account Manager "
+						+ am.getName() + ".<br /><br />";
 			body += notes + "<br /><br />Thank you and have a great day!<br />PICS Customer Service Team<br />"
 					+ "1-800-506-7427 x 1  (Toll free in the USA)</p></td></tr></table></body></html>";
 
