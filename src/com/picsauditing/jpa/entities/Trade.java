@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -17,7 +15,6 @@ import javax.persistence.Transient;
 @Table(name = "ref_trade")
 public class Trade extends BaseTable {
 
-	private ClassificationType classificationType = ClassificationType.Master;
 	private Trade parent;
 	private Boolean product;
 	private Boolean service;
@@ -26,20 +23,12 @@ public class Trade extends BaseTable {
 	private int indexLevel;
 	private int indexStart;
 	private int indexEnd;
-	private Trade bestMatch;
-	private String classificationCode;
-	private String description;
 
-	private List<Trade> matches = new ArrayList<Trade>();
+	private String name;
+	private String name2;
+	private String help;
 
-	@Enumerated(EnumType.STRING)
-	public ClassificationType getClassificationType() {
-		return classificationType;
-	}
-
-	public void setClassificationType(ClassificationType classificationType) {
-		this.classificationType = classificationType;
-	}
+	private List<TradeAlternate> alternates = new ArrayList<TradeAlternate>();
 
 	@ManyToOne
 	@JoinColumn(name = "parentID")
@@ -151,44 +140,40 @@ public class Trade extends BaseTable {
 		this.indexEnd = indexEnd;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "bestMatchID")
-	public Trade getBestMatch() {
-		return bestMatch;
+	@OneToMany(mappedBy = "trade")
+	public List<TradeAlternate> getAlternates() {
+		return alternates;
 	}
 
-	public void setBestMatch(Trade bestMatch) {
-		this.bestMatch = bestMatch;
+	public void setAlternates(List<TradeAlternate> alternates) {
+		this.alternates = alternates;
 	}
 
-	@OneToMany(mappedBy = "bestMatch")
-	public List<Trade> getMatches() {
-		return matches;
+	@Transient
+	public String getName() {
+		return name;
 	}
 
-	public void setMatches(List<Trade> matches) {
-		this.matches = matches;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getClassificationCode() {
-		return classificationCode;
+	@Transient
+	public String getName2() {
+		return name2;
 	}
 
-	public void setClassificationCode(String classificationCode) {
-		this.classificationCode = classificationCode;
+	public void setName2(String name2) {
+		this.name2 = name2;
 	}
 
-	/**
-	 * Temporary field until we move this to app_translation
-	 * 
-	 * @return
-	 */
-	public String getDescription() {
-		return description;
+	@Transient
+	public String getHelp() {
+		return help;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setHelp(String help) {
+		this.help = help;
 	}
 
 	@Transient
@@ -197,16 +182,8 @@ public class Trade extends BaseTable {
 	}
 
 	@Override
-	public String toString() {
-		if (parent == null)
-			return this.description;
-		return parent.getDescription() + ": " + description;
-		// return parent.toString() + ": " + description;
-	}
-
-	@Override
 	@Transient
 	public String getAutocompleteValue() {
-		return "(" + classificationCode + ") " + description;
+		return name2;
 	}
 }

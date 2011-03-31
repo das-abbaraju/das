@@ -96,25 +96,10 @@ $(function() {
 	$('#trade-nav').delegate('.jstree a', 'click', function(e) {
 		e.preventDefault();
 		var data = { trade: $(this).parent().data('jstree').id };
-		startThinking({div: 'trade-detail', type: 'large'});
+		setMainStatus('Loading Trade');
 		$('#trade-detail').load('TradeTaxonomy!tradeAjax.action', data);
 	});
-	$(document).ready(function () {  
-	  var top = $('#trade-info').offset().top - parseFloat($('#trade-info').css('marginTop').replace(/auto/, 0));
-	  $(window).scroll(function (event) {
-	    // what the y position of the scroll is
-	    var y = $(this).scrollTop();
-	  
-	    // whether that's below the form
-	    if (y >= top) {
-	      // if so, ad the fixed class
-	      $('#trade-info').addClass('fixed');
-	    } else {
-	      // otherwise remove it
-	      $('#trade-info').removeClass('fixed');
-	    }
-	  });
-	});
+	
 	$('.psAutocomplete').autocomplete('TradeAutocomplete.action', {
     	minChars: 2,
     	max: 100,
@@ -123,52 +108,13 @@ $(function() {
 });
 </script>
 <style>
-#trades .nav li {
-	font-size: 14px;
-	line-height: 1.5;
+#trades {
+	width: 100%;
 }
 
-#info-wrapper {
-  position: absolute;
-  width: 280px;
-  right: 22px;
+#trade-nav {
+	width: 50%;
 }
-
-#trade-info {
-  position: absolute;
-  top: 0;
-  /* just used to show how to include the margin in the effect */
-  margin-top: 20px;
-  border: 1px solid #A84D10;
-  padding: 10px;
-  background-color: #eee;
-  width: 280px;
-}
-
-#trade-info.fixed {
-  position: fixed;
-  top: 0;
-}
-
-#trade-info label {
-	font-weight: bold;
-}
-#trade-info li label {
-	color: #808285;
-}
-#trade-info ul {
-	line-height: 14px;
-	padding-top: 10px;
-}
-
-#wrapper {
-	position: relative
-}
-
-#trade-info .center {
-	text-align: center;
-}
-
 </style>
 </head>
 <body>
@@ -183,10 +129,16 @@ $(function() {
 
 <table id="trades">
 	<tr>
-		<td id="trade-nav"></td>
-		<td id="trade-detail">Click a trade on the left</td>
+		<td id="trade-nav">Loading Trades</td>
+		<td id="trade-detail">Click a trade on the left
+			<div id="loadingTrade"></div>
+		</td>
 	</tr>
 </table>
+
+<s:form cssStyle="padding-top: 1em">
+	<s:submit action="TradeTaxonomy!index" value="Index Trade Taxonomy" cssClass="picsbutton" />
+</s:form>
 
 </body>
 </html>

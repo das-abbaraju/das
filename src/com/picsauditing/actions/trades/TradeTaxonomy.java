@@ -6,56 +6,37 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.TradeDAO;
-import com.picsauditing.jpa.entities.ClassificationType;
 import com.picsauditing.jpa.entities.Trade;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class TradeTaxonomy extends PicsActionSupport {
 
 	protected TradeDAO tradeDAO;
-
 	private Trade trade;
-	private ClassificationType classification = ClassificationType.Master;
-
-	private ListType listType = ListType.Master;
 
 	@SuppressWarnings("unchecked")
 	public String json() {
 
 		List<Trade> nodes = new ArrayList<Trade>();
 
-		if (listType == ListType.Master) {
-			if (trade == null) {
-				nodes = tradeDAO.findRoot(ClassificationType.Master);
-			} else {
-				nodes = tradeDAO.findByParent(trade.getId());
-			}
-		} else if (listType == ListType.Suncor) {
-			if (trade == null) {
-				nodes = tradeDAO.findRoot(ClassificationType.Suncor);
-			} else {
-				nodes = tradeDAO.findByParent(trade.getId());
-			}
-		} else if (listType == ListType.MasterSuncor) {
-			nodes = tradeDAO.findByNode(trade);
+		if (trade == null) {
+			nodes = tradeDAO.findWhere("p.parent IS NULL");
+		} else {
+			nodes = tradeDAO.findByParent(trade.getId());
 		}
 
 		JSONArray result = new JSONArray();
 		for (Trade trade : nodes) {
 			JSONObject o = new JSONObject();
-			o.put("data", trade.getDescription());
+			o.put("data", getText(trade.getI18nKey("name")));
 
 			if (!trade.isLeaf()) {
 				o.put("state", "closed");
 			}
-
-			JSONObject attr = new JSONObject();
-			attr.put("id", trade.getId());
-			attr.put("rel", trade.getClassificationType().toString());
-			attr.put("class", "Master");
-			o.put("attr", attr);
 
 			JSONObject data = new JSONObject();
 			data.put("id", trade.getId());
@@ -69,8 +50,40 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return JSON;
 	}
 
-	public String tradeAjax() {
+	@Anonymous
+	public String index() throws Exception {
+		indexNode(null, 1);
+		return SUCCESS;
+	}
 
+	private int indexNode(Trade parent, int counter) {
+		List<Trade> childNodes;
+		int level = 1;
+		if (parent == null) {
+			childNodes = tradeDAO.findWhere("p.parent IS NULL");
+		} else {
+			level = parent.getIndexLevel() + 1;
+			counter = parent.getIndexStart();
+			childNodes = tradeDAO.findByParent(parent.getId());
+		}
+
+		int size = childNodes.size();
+		if (size == 0)
+			return counter;
+
+		for (Trade node : childNodes) {
+			counter++;
+			node.setIndexLevel(level);
+			node.setIndexStart(counter);
+			counter = indexNode(node, counter);
+			counter++;
+			node.setIndexEnd(counter);
+		}
+
+		return counter;
+	}
+
+	public String tradeAjax() {
 		return "trade";
 	}
 
@@ -79,47 +92,18 @@ public class TradeTaxonomy extends PicsActionSupport {
 	}
 
 	public Trade getTrade() {
+		if (trade != null && trade.getName() == null) {
+			trade.setName(getText(trade.getI18nKey("name")));
+//			String name2 = getText(trade.getI18nKey("name2"), "");
+//			if (Strings.isEmpty(name2))
+//				name2 = trade.getName();
+//			trade.setName2(name2);
+		}
 		return trade;
 	}
 
 	public void setTrade(Trade trade) {
 		this.trade = trade;
-	}
-
-	public ClassificationType getClassification() {
-		return classification;
-	}
-
-	public void setClassification(ClassificationType classification) {
-		this.classification = classification;
-	}
-
-	public ListType getListType() {
-		return listType;
-	}
-
-	public void setListType(ListType listType) {
-		this.listType = listType;
-	}
-
-	public ListType[] getListTypes() {
-		return ListType.values();
-	}
-
-	enum ListType {
-		Master("Master List"),
-		Suncor("Suncor"),
-		MasterSuncor("Master/Suncor");
-
-		private String description;
-
-		ListType(String description) {
-			this.description = description;
-		}
-
-		public String getDescription() {
-			return description;
-		}
 	}
 
 }
