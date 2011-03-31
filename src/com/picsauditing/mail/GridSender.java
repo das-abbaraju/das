@@ -10,8 +10,6 @@ import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
-import javax.mail.BodyPart;
-import javax.mail.Message;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -53,28 +51,6 @@ public class GridSender extends javax.mail.Authenticator {
 	protected PasswordAuthentication getPasswordAuthentication() {
 		return new PasswordAuthentication(user, password);
 	}
-	
-	public void test() throws Exception{
-        MimeMessage message = new MimeMessage(session);
-        Multipart multipart = new MimeMultipart();
- 
-        BodyPart part1 = new MimeBodyPart();
-        part1.setText("Plain Text");
- 
-        BodyPart part2 = new MimeBodyPart();
-        part2.setContent("<b>Html</b>", "text/html");
- 
-        multipart.addBodyPart(part1);
-        multipart.addBodyPart(part2);
- 
-        message.setContent(multipart);
- 
-        message.setFrom(new InternetAddress("laung@picsauditing.com"));
-        message.addRecipient(Message.RecipientType.TO,
-             new InternetAddress("uaung@picsauditing.com"));
- 
-        Transport.send(message);
-    }
 
 	public synchronized void sendMail(EmailQueue email) throws MessagingException {
 		MimeMessage message = new MimeMessage(session);
@@ -108,6 +84,7 @@ public class GridSender extends javax.mail.Authenticator {
 
 				// Add in the text in the email
 				mbp.setText(email.getBody());
+				mbp.setDataHandler(handler);
 				mp.addBodyPart(mbp);
 
 				for (EmailAttachment attachment : attachments) {

@@ -41,22 +41,21 @@ public class SendMail {
 
 		message.setRecipients(RecipientType.TO, email.getToAddresses2());
 		message.setRecipients(RecipientType.CC, email.getCcAddresses2());
-		message.setRecipients(RecipientType.BCC, email.getBccAddresses2());
+		message.setRecipients(RecipientType.BCC, email.getBccAddresses2()); 
 
 		message.setSubject(email.getSubject());
 		message.setDataHandler(handler);
 		
 		EmailAttachmentDAO attachmentDAO = (EmailAttachmentDAO) SpringUtils.getBean("EmailAttachmentDAO");
-		
 		if (attachmentDAO != null) {
 			List<EmailAttachment> attachments = attachmentDAO.findByEmailID(email.getId());
-
+			
 			if (attachments != null && attachments.size() > 0) {
 				Multipart mp = new MimeMultipart();
 				MimeBodyPart mbp = new MimeBodyPart();
-
 				// Add in the text in the email
 				mbp.setText(email.getBody());
+				mbp.setDataHandler(handler);
 				mp.addBodyPart(mbp);
 
 				for (EmailAttachment attachment : attachments) {
