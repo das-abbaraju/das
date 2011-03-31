@@ -41,7 +41,7 @@ $(function() {
 		e.preventDefault();
 		var data = { service: $(this).parent().data('jstree').id };
 		startThinking({div: 'service-info', type: 'large'});
-		$('#service-info').load('ServiceTaxonomy!serviceAjax.action', data);
+		$('#service-info').load('TradeTaxonomy!serviceAjax.action', data);
 	});
 	$('.classification').change(function() {
 		tree.jstree('refresh');
