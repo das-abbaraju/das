@@ -10,7 +10,6 @@ import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.Trade;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class TradeTaxonomy extends PicsActionSupport {
@@ -49,7 +48,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 		return JSON;
 	}
-
+	
 	@Anonymous
 	public String index() throws Exception {
 		indexNode(null, 1);
@@ -81,6 +80,14 @@ public class TradeTaxonomy extends PicsActionSupport {
 		}
 
 		return counter;
+	}
+
+	public String saveTradeAjax() throws Exception {
+		if (trade != null) {
+			System.out.println(trade.getName());
+		}
+		
+		return "trade";
 	}
 
 	public String tradeAjax() {

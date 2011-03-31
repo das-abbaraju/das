@@ -37,7 +37,9 @@
 		</ol>
 	</fieldset>
 	<fieldset class="form submit">
-		<button class="picsbutton positive" type="button">Save</button>
-		<button class="picsbutton negative" type="button">Delete</button>
+		<button class="picsbutton positive" type="button" onclick="saveTrade()">Save</button>
+		<s:if test="trade.id > 0">
+			<button class="picsbutton negative" type="button" onclick="deleteTrade(<s:property value="trade.id"/>)">Delete</button>
+		</s:if>
 	</fieldset>
 </form>
