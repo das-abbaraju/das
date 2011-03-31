@@ -1617,17 +1617,17 @@
 		</action>
 
 		<!-- Taxonomy -->
-		<action name="ServiceTaxonomy" class="com.picsauditing.actions.productservices.ServiceTaxonomy">
-			<result>struts/productservices/service_taxonomy.jsp</result>
-			<result name="service">struts/productservices/service_taxonomy_view.jsp</result>
+		<action name="TradeTaxonomy" class="com.picsauditing.actions.trades.TradeTaxonomy">
+			<result>struts/trades/trade_taxonomy.jsp</result>
+			<result name="trade">struts/trades/trade_taxonomy_view.jsp</result>
 		</action>
 		
-		<action name="ServiceIndexer" class="com.picsauditing.actions.productservices.ServiceIndexer">
-			<result>struts/productservices/service_indexer.jsp</result>
+		<action name="TradeIndexer" class="com.picsauditing.actions.trades.TradeIndexer">
+			<result>struts/trades/trade_indexer.jsp</result>
 		</action>
 		
-		<action name="UpdateProductServiceAjax" class="com.picsauditing.actions.productservices.UpdateProductService">
-			<result>struts/productservices/update_product_service.jsp</result>
+		<action name="UpdateTradeAjax" class="com.picsauditing.actions.trades.UpdateTrade">
+			<result>struts/trades/update_trade.jsp</result>
 		</action>
 
 		<!-- Autocomplete Ajax -->

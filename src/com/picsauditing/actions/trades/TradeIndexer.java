@@ -1,20 +1,20 @@
-package com.picsauditing.actions.productservices;
+package com.picsauditing.actions.trades;
 
 import java.util.List;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.ProductServiceDAO;
+import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.ClassificationType;
-import com.picsauditing.jpa.entities.ProductService;
+import com.picsauditing.jpa.entities.Trade;
 
 @SuppressWarnings("serial")
-public class ServiceIndexer extends PicsActionSupport {
+public class TradeIndexer extends PicsActionSupport {
 
-	private ProductServiceDAO productServiceDAO;
+	private TradeDAO tradeDAO;
 
-	public void setProductServiceDAO(ProductServiceDAO productServiceDAO) {
-		this.productServiceDAO = productServiceDAO;
+	public void setTradeDAO(TradeDAO tradeDAO) {
+		this.tradeDAO = tradeDAO;
 	}
 
 	@Anonymous
@@ -24,24 +24,24 @@ public class ServiceIndexer extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	private int indexNode(ProductService parent, int counter) {
-		List<ProductService> childNodes;
+	private int indexNode(Trade parent, int counter) {
+		List<Trade> childNodes;
 		int level = 1;
 		if (parent == null) {
 			// System.out.println("Starting Indexer");
-			childNodes = productServiceDAO.findRoot(ClassificationType.Master);
+			childNodes = tradeDAO.findRoot(ClassificationType.Master);
 		} else {
 			// System.out.println("Indexing " + parent.getId());
 			level = parent.getIndexLevel() + 1;
 			counter = parent.getIndexStart();
-			childNodes = productServiceDAO.findByParent(parent.getId());
+			childNodes = tradeDAO.findByParent(parent.getId());
 		}
 
 		int size = childNodes.size();
 		if (size == 0)
 			return counter;
 
-		for (ProductService node : childNodes) {
+		for (Trade node : childNodes) {
 			counter++;
 			node.setIndexLevel(level);
 			node.setIndexStart(counter);

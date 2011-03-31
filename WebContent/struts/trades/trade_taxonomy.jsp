@@ -63,7 +63,7 @@ $(function() {
 	    }
 	  });
 	});
-	$('.psAutocomplete').autocomplete('ProductServiceAutocomplete.action', {
+	$('.psAutocomplete').autocomplete('TradeAutocomplete.action', {
     	minChars: 2,
     	max: 100,
     	formatResult: function(data,i,count) { return data[1]; }
@@ -129,7 +129,7 @@ $(function() {
 <div id="suggest">
 <form>
 	<label>Product/Service Search:</label>
-	<input class="psAutocomplete" name="productServiceSearch" style="width: 400px" />
+	<input class="psAutocomplete" name="tradeSearch" style="width: 400px" />
 </form>
 </div>
 

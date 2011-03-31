@@ -1,13 +1,13 @@
 package com.picsauditing.actions.autocomplete;
 
-import com.picsauditing.dao.ProductServiceDAO;
-import com.picsauditing.jpa.entities.ProductService;
+import com.picsauditing.dao.TradeDAO;
+import com.picsauditing.jpa.entities.Trade;
 
 @SuppressWarnings("serial")
-public class ProductServiceAutocomplete extends AutocompleteActionSupport<ProductService> {
-	private ProductServiceDAO psDAO;
+public class TradeAutocomplete extends AutocompleteActionSupport<Trade> {
+	private TradeDAO psDAO;
 
-	public ProductServiceAutocomplete(ProductServiceDAO psDAO) {
+	public TradeAutocomplete(TradeDAO psDAO) {
 		this.psDAO = psDAO;
 	}
 
@@ -17,7 +17,7 @@ public class ProductServiceAutocomplete extends AutocompleteActionSupport<Produc
 	}
 	
 	@Override
-	protected String createOutputAutocomplete(ProductService item){
+	protected String createOutputAutocomplete(Trade item){
 		return item.toString() + "\n";
 	}
 }

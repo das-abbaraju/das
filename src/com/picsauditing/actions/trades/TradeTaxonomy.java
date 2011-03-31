@@ -1,4 +1,4 @@
-package com.picsauditing.actions.productservices;
+package com.picsauditing.actions.trades;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,16 +7,16 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.ProductServiceDAO;
+import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.ClassificationType;
-import com.picsauditing.jpa.entities.ProductService;
+import com.picsauditing.jpa.entities.Trade;
 
 @SuppressWarnings("serial")
-public class ServiceTaxonomy extends PicsActionSupport {
+public class TradeTaxonomy extends PicsActionSupport {
 
-	protected ProductServiceDAO serviceDAO;
+	protected TradeDAO serviceDAO;
 
-	private ProductService service;
+	private Trade service;
 	private ClassificationType classification = ClassificationType.Master;
 
 	private ListType listType = ListType.Master;
@@ -24,7 +24,7 @@ public class ServiceTaxonomy extends PicsActionSupport {
 	@SuppressWarnings("unchecked")
 	public String json() {
 
-		List<ProductService> nodes = new ArrayList<ProductService>();
+		List<Trade> nodes = new ArrayList<Trade>();
 
 		if (listType == ListType.Master) {
 			if (service == null) {
@@ -43,22 +43,22 @@ public class ServiceTaxonomy extends PicsActionSupport {
 		}
 
 		JSONArray result = new JSONArray();
-		for (ProductService productService : nodes) {
+		for (Trade trade : nodes) {
 			JSONObject o = new JSONObject();
-			o.put("data", productService.getDescription());
+			o.put("data", trade.getDescription());
 
-			if (!productService.isLeaf()) {
+			if (!trade.isLeaf()) {
 				o.put("state", "closed");
 			}
 
 			JSONObject attr = new JSONObject();
-			attr.put("id", productService.getId());
-			attr.put("rel", productService.getClassificationType().toString());
+			attr.put("id", trade.getId());
+			attr.put("rel", trade.getClassificationType().toString());
 			attr.put("class", "Master");
 			o.put("attr", attr);
 
 			JSONObject data = new JSONObject();
-			data.put("id", productService.getId());
+			data.put("id", trade.getId());
 			o.put("metadata", data);
 
 			result.add(o);
@@ -74,15 +74,15 @@ public class ServiceTaxonomy extends PicsActionSupport {
 		return "service";
 	}
 
-	public void setServiceDAO(ProductServiceDAO serviceDAO) {
+	public void setServiceDAO(TradeDAO serviceDAO) {
 		this.serviceDAO = serviceDAO;
 	}
 
-	public ProductService getService() {
+	public Trade getService() {
 		return service;
 	}
 
-	public void setService(ProductService service) {
+	public void setService(Trade service) {
 		this.service = service;
 	}
 

@@ -15,10 +15,10 @@ import javax.persistence.Transient;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "ref_product_service")
-public class ProductService extends BaseTable {
+public class Trade extends BaseTable {
 
 	private ClassificationType classificationType = ClassificationType.Master;
-	private ProductService parent;
+	private Trade parent;
 	private Boolean product;
 	private Boolean service;
 	private LowMedHigh riskLevel;
@@ -26,11 +26,11 @@ public class ProductService extends BaseTable {
 	private int indexLevel;
 	private int indexStart;
 	private int indexEnd;
-	private ProductService bestMatch;
+	private Trade bestMatch;
 	private String classificationCode;
 	private String description;
 
-	private List<ProductService> matches = new ArrayList<ProductService>();
+	private List<Trade> matches = new ArrayList<Trade>();
 
 	@Enumerated(EnumType.STRING)
 	public ClassificationType getClassificationType() {
@@ -43,11 +43,11 @@ public class ProductService extends BaseTable {
 
 	@ManyToOne
 	@JoinColumn(name = "parentID")
-	public ProductService getParent() {
+	public Trade getParent() {
 		return parent;
 	}
 
-	public void setParent(ProductService parent) {
+	public void setParent(Trade parent) {
 		this.parent = parent;
 	}
 
@@ -153,20 +153,20 @@ public class ProductService extends BaseTable {
 
 	@ManyToOne
 	@JoinColumn(name = "bestMatchID")
-	public ProductService getBestMatch() {
+	public Trade getBestMatch() {
 		return bestMatch;
 	}
 
-	public void setBestMatch(ProductService bestMatch) {
+	public void setBestMatch(Trade bestMatch) {
 		this.bestMatch = bestMatch;
 	}
 
 	@OneToMany(mappedBy = "bestMatch")
-	public List<ProductService> getMatches() {
+	public List<Trade> getMatches() {
 		return matches;
 	}
 
-	public void setMatches(List<ProductService> matches) {
+	public void setMatches(List<Trade> matches) {
 		this.matches = matches;
 	}
 

@@ -5,52 +5,52 @@ import java.util.List;
 import javax.persistence.Query;
 
 import com.picsauditing.jpa.entities.ClassificationType;
-import com.picsauditing.jpa.entities.ProductService;
+import com.picsauditing.jpa.entities.Trade;
 
 @SuppressWarnings("unchecked")
-public class ProductServiceDAO extends PicsDAO {
+public class TradeDAO extends PicsDAO {
 
-	public ProductService find(int id) {
-		ProductService a = em.find(ProductService.class, id);
+	public Trade find(int id) {
+		Trade a = em.find(Trade.class, id);
 		return a;
 	}
 
-	public List<ProductService> findByParent(int productID) {
-		Query query = em.createQuery("SELECT p FROM ProductService p WHERE p.parent.id =  ?");
+	public List<Trade> findByParent(int productID) {
+		Query query = em.createQuery("SELECT p FROM Trade p WHERE p.parent.id =  ?");
 		query.setParameter(1, productID);
 		return query.getResultList();
 	}
 
-	public List<ProductService> findByBestMatch(int productID) {
-		Query query = em.createQuery("SELECT p FROM ProductService p WHERE p.bestMatch.id =  ?");
+	public List<Trade> findByBestMatch(int productID) {
+		Query query = em.createQuery("SELECT p FROM Trade p WHERE p.bestMatch.id =  ?");
 		query.setParameter(1, productID);
 		return query.getResultList();
 	}
 
-	public List<ProductService> findRoot(ClassificationType type) {
-		Query query = em.createQuery("SELECT p FROM ProductService p "
+	public List<Trade> findRoot(ClassificationType type) {
+		Query query = em.createQuery("SELECT p FROM Trade p "
 				+ "WHERE p.parent IS NULL AND p.classificationType = ?");
 		query.setParameter(1, type);
 		return query.getResultList();
 	}
 
-	public List<ProductService> findWhere(String where) {
+	public List<Trade> findWhere(String where) {
 		if (where == null)
 			where = "";
 		else
 			where = " WHERE " + where;
 		
-		Query query = em.createQuery("SELECT p FROM ProductService p" + where);
+		Query query = em.createQuery("SELECT p FROM Trade p" + where);
 		query.setMaxResults(100);
 		return query.getResultList();
 	}
 	
-	public List<ProductService> findByNode(ProductService productService) {
+	public List<Trade> findByNode(Trade trade) {
 		String parentString = "";
-		if (productService == null)
+		if (trade == null)
 			parentString = "is null";
 		else
-			parentString = "= " + productService.getId();
+			parentString = "= " + trade.getId();
 		
 		String sql = "SELECT distinct t0.* " +
 					"FROM ref_product_service t0 " +
@@ -62,7 +62,7 @@ public class ProductServiceDAO extends PicsDAO {
 					"and t0.parentID " + parentString +
 					" ORDER BY t0.classificationCode, t1.classificationCode;";
 		
-		Query query = em.createNativeQuery(sql, com.picsauditing.jpa.entities.ProductService.class);
+		Query query = em.createNativeQuery(sql, com.picsauditing.jpa.entities.Trade.class);
 		return query.getResultList();
 	}
 }
