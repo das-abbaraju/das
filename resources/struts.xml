@@ -1622,10 +1622,6 @@
 			<result name="trade">struts/trades/trade_taxonomy_view.jsp</result>
 		</action>
 		
-		<action name="TradeIndexer" class="com.picsauditing.actions.trades.TradeIndexer">
-			<result>struts/trades/trade_indexer.jsp</result>
-		</action>
-		
 		<action name="UpdateTradeAjax" class="com.picsauditing.actions.trades.UpdateTrade">
 			<result>struts/trades/update_trade.jsp</result>
 		</action>
