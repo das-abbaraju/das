@@ -34,12 +34,13 @@ var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 
 <s:form onsubmit="return submitForm();">
 	<s:hidden name="auditID" />
-	<s:hidden name="button" value="address"/>
 	<fieldset class="form">
 	<h2 class="formLegend"><s:text name="%{scope}.label.ContactPerson" /></h2>
 	<ol>
 		<s:if test="permissions.admin">
-			<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>"><s:text name="%{scope}.button.EditScheduleManually" /></a></li>
+			<li>
+				<s:submit action="ScheduleAudit!edit" cssClass="picsbutton" value="%{getText(scope + '.button.EditScheduleManually')}" /> 
+			</li>
 		</s:if>
 		<li><label><s:text name="User.name" />:</label> <s:textfield name="conAudit.contractorContact" value="%{conAudit.contractorAccount.primaryContact.name}" /></li>
 		<li><label><s:text name="User.email" />:</label> <s:textfield name="conAudit.phone2" value="%{conAudit.contractorAccount.primaryContact.email}"/></li>
@@ -65,7 +66,7 @@ var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 	<div id="mainThinkingDiv"></div>
 	<div>
 	<button id="verifyButton" class="picsbutton" type="button" onclick="verifyAddress()"><s:text name="%{scope}.button.VerifyAddress" /></button>
-	<button id="submitButton" style="display: none;" class="picsbutton positive" type="submit"><s:text name="button.Next" /> &gt;&gt;</button>
+	<s:submit id="submitButton" cssStyle="display: none;" cssClass="picsbutton positive" action="ScheduleAudit!address" value="%{getText('button.Next') + ' >>'}" />
 	</div>
 	</fieldset>
 	<s:hidden id="conAudit_latitude" name="conAudit.latitude" />

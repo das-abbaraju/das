@@ -20,7 +20,6 @@
 <s:form>
 	<s:hidden name="auditID" />
 	<s:hidden name="availabilitySelectedID" />
-	<s:hidden name="button" value="confirm"/>
 	<fieldset class="form">
 	<h2 class="formLegend"><s:text name="%{scope}.label.AuditConfirmation" /></h2>
 	<ol>
@@ -56,7 +55,7 @@
 			</s:text>
 		</li>
 	</ol>
-	<button id="confirmButton" class="picsbutton positive" type="submit"><s:text name="%{scope}.button.ConfirmAudit" /></button>
+	<s:submit cssClass="picsbutton positive" action="ScheduleAudit!confirm" value="%{getText(scope + '.button.ConfirmAudit')}" />
 	</div>
 	</fieldset>
 </s:form>

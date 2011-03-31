@@ -120,7 +120,7 @@ function showChooseDate(override) {
 	<h2 class="formLegend"><s:text name="%{scope}.label.DateTime" /></h2>
 	<ol>
 		<li><label><s:text name="%{scope}.label.AuditDate" />:</label> <s:textfield name="scheduledDateDay" id="scheduledDateDay"
-			value="%{formatDate(conAudit.scheduledDate, 'dd/MM/yyyy')}" /> <s:date name="conAudit.scheduledDate" nice="true" /> </li>
+			value="%{formatDate(conAudit.scheduledDate, 'MM/dd/yyyy')}" /> <s:date name="conAudit.scheduledDate" nice="true" /> </li>
 		<s:if test="needsReschedulingFee">
 			<input type="hidden" name="feeOverride" value="false" />
 			<div id="needsReschedulingFee" class="alert">
@@ -179,7 +179,7 @@ function showChooseDate(override) {
 	<div id="mainThinkingDiv"></div>
 	<div>
 	<button id="verifyButton" class="picsbutton" type="button" onclick="verifyAddress()"><s:text name="%{scope}.button.VerifyAddress" /></button>
-	<button id="submitButton" class="picsbutton positive" type="submit" name="button" value="Save"><s:text name="button.Save" /></button>
+	<s:submit cssClass="picsbutton positive" action="ScheduleAudit!save" value="%{getText('button.Save')}" />
 	</div>
 	</fieldset>
 </s:form>

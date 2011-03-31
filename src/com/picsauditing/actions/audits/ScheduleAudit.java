@@ -93,6 +93,19 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		if (auditorID > 0)
 			auditor = getUser(auditorID);
 	}
+	
+	public String edit() throws Exception {
+		if (conAudit.getScheduledDate() != null && conAudit.getScheduledDate().before(new Date()))
+			addActionMessage("This audit's scheduled appointment has already passed. ");
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus().after(AuditStatus.Pending)) {
+				addActionMessage("This has already been completed. It does not need to be rescheduled.");
+				return "edit";
+			}
+		}
+		
+		return "edit";
+	}
 
 	public String save() throws Exception {
 		if (!permissions.isAdmin())
@@ -109,7 +122,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		if (!sdf.format(scheduledDateInServerTime).equals(sdf.format(conAudit.getScheduledDate()))) {
 			if (isNeedsReschedulingFee() && !feeOverride) {
 				// Create invoice
-				String notes = "Fee for rescheduling " + conAudit.getAuditType().getAuditName()
+				String notes = "Fee for rescheduling " + getText(conAudit.getAuditType().getI18nKey("name"))
 						+ " within 48 hours of original scheduled date "
 						+ DateBean.format(conAudit.getScheduledDate(), "MMM dd, yyyy") + " to "
 						+ DateBean.format(scheduledDateInServerTime, "MMM dd, yyyy");
@@ -122,7 +135,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			if (permissions.getUserId() != conAudit.getAuditor().getId())
 				conAudit.setAuditorConfirm(null);
 			String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
-			sendConfirmationEmail(conAudit.getAuditType().getAuditName() + " Re-scheduled for " + shortScheduleDate);
+			sendConfirmationEmail(getText(conAudit.getAuditType().getI18nKey("name")) + " Re-scheduled for " + shortScheduleDate);
 		}
 
 		if (auditor != null) {
@@ -214,12 +227,12 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		auditorAvailabilityDAO.remove(availabilitySelected);
 
 		String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
-		sendConfirmationEmail(conAudit.getAuditType().getAuditName() + " Scheduled for " + shortScheduleDate);
+		sendConfirmationEmail(getText(conAudit.getAuditType().getI18nKey("name")) + " Scheduled for " + shortScheduleDate);
 
 		addActionMessage(getText(getScope() + ".message.AuditNowScheduled"));
 
 		if (needsExpediteFee) {
-			String notes = conAudit.getAuditType().getAuditName()
+			String notes = getText(conAudit.getAuditType().getI18nKey("name"))
 					+ " was scheduled within 7 business days, requiring an expedite fee.";
 
 			createInvoice(expedite, notes);
@@ -233,10 +246,10 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				}
 
 				EmailQueue email = new EmailQueue();
-				email.setSubject("Webcam needed for Rush " + conAudit.getAuditType().getAuditName() + " for "
+				email.setSubject("Webcam needed for Rush " + getText(conAudit.getAuditType().getI18nKey("name")) + " for "
 						+ conAudit.getContractorAccount().getName());
 				email.setBody(conAudit.getContractorContact() + " from " + conAudit.getContractorAccount().getName()
-						+ " has requested a Rush " + conAudit.getAuditType().getAuditName() + " on "
+						+ " has requested a Rush " + getText(conAudit.getAuditType().getI18nKey("name")) + " on "
 						+ DateBean.format(availabilitySelected.getStartDate(), "MMM dd h:mm a, z")
 						+ " and requires a webcam to be sent overnight.\n\nThank you,\nPICS");
 				email.setToAddresses(Strings.implode(emails));
@@ -250,30 +263,15 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		if (conAudit == null) {
 			addActionError("Missing auditID");
 			return BLANK;
 		}
 
-		subHeading = "Schedule " + conAudit.getAuditType().getAuditName();
+		subHeading = "Schedule " + getText(conAudit.getAuditType().getI18nKey("name"));
 
 		rescheduling = feeDAO.find(InvoiceFee.RESCHEDULING);
 		expedite = feeDAO.find(InvoiceFee.EXPEDITE);
-
-		if (permissions.isAdmin() && "edit".equals(button)) {
-			if (conAudit.getScheduledDate() != null && conAudit.getScheduledDate().before(new Date()))
-				addActionMessage("This audit's scheduled appointment has already passed. ");
-			for (ContractorAuditOperator cao : conAudit.getOperators()) {
-				if (cao.getStatus().after(AuditStatus.Pending)) {
-					addActionMessage("This has already been completed. It does not need to be rescheduled.");
-					return "edit";
-				}
-			}
-			return "edit";
-		}
 
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (cao.getStatus().after(AuditStatus.Pending)) {
@@ -282,7 +280,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 
 		if (button == null) {
-
 			if (conAudit.getScheduledDate() == null)
 				// We need to schedule this audit
 				return "address";
@@ -299,79 +296,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 			// Contractors can't change upcoming scheduled audits
 			return "summary";
-		}
-
-		if (button.equals("Save")) {
-			if (!permissions.isAdmin())
-				throw new NoRightsException("ScheduleAudits");
-
-			Date scheduledDateInUserTime = DateBean.parseDateTime(scheduledDateDay + " " + scheduledDateTime);
-			if (scheduledDateInUserTime == null) {
-				addActionError(scheduledDateTime + " is not a valid time");
-				return "edit";
-			}
-			Date scheduledDateInServerTime = DateBean.convertTime(scheduledDateInUserTime, permissions.getTimezone());
-
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss z");
-			if (!sdf.format(scheduledDateInServerTime).equals(sdf.format(conAudit.getScheduledDate()))) {
-				if (isNeedsReschedulingFee() && !feeOverride) {
-					// Create invoice
-					String notes = "Fee for rescheduling " + conAudit.getAuditType().getAuditName()
-							+ " within 48 hours of original scheduled date "
-							+ DateBean.format(conAudit.getScheduledDate(), "MMM dd, yyyy") + " to "
-							+ DateBean.format(scheduledDateInServerTime, "MMM dd, yyyy");
-
-					createInvoice(rescheduling, notes);
-				}
-
-				conAudit.setScheduledDate(scheduledDateInServerTime);
-				conAudit.setContractorConfirm(null);
-				if (permissions.getUserId() != conAudit.getAuditor().getId())
-					conAudit.setAuditorConfirm(null);
-				String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
-				sendConfirmationEmail(conAudit.getAuditType().getAuditName() + " Re-scheduled for " + shortScheduleDate);
-			}
-
-			if (auditor != null) {
-				conAudit.setAuditor(auditor);
-				conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(auditor)));
-			}
-
-			addActionMessage("Audit Saved Successfully");
-			// check for a time overlap here
-			List<ContractorAudit> conflicts = auditDao.findScheduledAudits(conAudit.getAuditor().getId(),
-					DateBean.addField(conAudit.getScheduledDate(), Calendar.MINUTE, -120),
-					DateBean.addField(conAudit.getScheduledDate(), Calendar.MINUTE, 120));
-			if (conflicts.size() > 1) {
-				addActionMessage("This audit may overlap with the following audits:");
-				for (ContractorAudit cAudit : conflicts) {
-					if (!cAudit.equals(conAudit)) {
-						addActionMessage(cAudit.getContractorAccount().getName() + " at "
-								+ formatDate(cAudit.getScheduledDate(), "h:mm a z"));
-					}
-				}
-			}
-
-			return "edit";
-		}
-
-		if (button.equals("address")) {
-			List<String> errors = new ArrayList<String>();
-			if (Strings.isEmpty(conAudit.getContractorContact()))
-				errors.add("Contact Name is a required field");
-			if (Strings.isEmpty(conAudit.getPhone2()))
-				errors.add("Email is a required field");
-			if (Strings.isEmpty(conAudit.getPhone()))
-				errors.add("Phone Number is a required field");
-			if (errors.size() > 0) {
-				addActionError("The following errors exist:");
-				for (String e : errors)
-					addActionError(e);
-				return "address";
-			}
-			auditDao.save(conAudit);
-			findTimeslots();
-			return "select";
 		}
 
 		if (button.equals("select")) {
@@ -395,66 +319,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			findTimeslots();
 			return "select";
 		}
-		if (button.equals("confirm")) {
-			availabilitySelected = auditorAvailabilityDAO.find(availabilitySelectedID);
-
-			if (availabilitySelected == null) {
-				addActionError(getText(getScope() + ".message.TimeSlotNotAvailable"));
-				return "select";
-			}
-
-			if (!confirmed) {
-				addActionError(getText(getScope() + ".message.AgreeToTerms"));
-				return "confirm";
-			}
-
-			boolean needsExpediteFee = isNeedsExpediteFee(availabilitySelected.getStartDate());
-
-			conAudit.setScheduledDate(availabilitySelected.getStartDate());
-			conAudit.setAuditor(availabilitySelected.getUser());
-			conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(availabilitySelected.getUser())));
-			if (permissions.isContractor())
-				conAudit.setContractorConfirm(new Date());
-			conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
-			auditDao.save(conAudit);
-			auditorAvailabilityDAO.remove(availabilitySelected);
-
-			String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
-			sendConfirmationEmail(conAudit.getAuditType().getAuditName() + " Scheduled for " + shortScheduleDate);
-
-			addActionMessage(getText(getScope() + ".message.AuditNowScheduled"));
-
-			if (needsExpediteFee) {
-				String notes = conAudit.getAuditType().getAuditName()
-						+ " was scheduled within 7 business days, requiring an expedite fee.";
-
-				createInvoice(expedite, notes);
-
-				if (conAudit.isNeedsCamera()) {
-					List<UserAccess> webcamUsers = uaDAO.findByOpPerm(OpPerms.WebcamNotification);
-					List<String> emails = new ArrayList<String>();
-					for (UserAccess ua : webcamUsers) {
-						if (!ua.getUser().isGroup() && !Strings.isEmpty(ua.getUser().getEmail()))
-							emails.add("\"" + ua.getUser().getName() + "\" <" + ua.getUser().getEmail() + ">");
-					}
-
-					EmailQueue email = new EmailQueue();
-					email.setSubject("Webcam needed for Rush " + conAudit.getAuditType().getAuditName() + " for "
-							+ conAudit.getContractorAccount().getName());
-					email.setBody(conAudit.getContractorContact() + " from "
-							+ conAudit.getContractorAccount().getName() + " has requested a Rush "
-							+ conAudit.getAuditType().getAuditName() + " on "
-							+ DateBean.format(availabilitySelected.getStartDate(), "MMM dd h:mm a, z")
-							+ " and requires a webcam to be sent overnight.\n\nThank you,\nPICS");
-					email.setToAddresses(Strings.implode(emails));
-					email.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
-					email.setViewableById(Account.PicsID);
-					EmailSender.send(email);
-				}
-			}
-
-			return "summary";
-		}
+		
 		return "address";
 	}
 
@@ -639,7 +504,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			Date now = new Date();
 			long diff = conAudit.getScheduledDate().getTime() - now.getTime();
 
-			return diff > 0 && diff < (3600 * 48 * 1000);
+			return diff < (3600 * 48 * 1000);
 		}
 
 		return false;

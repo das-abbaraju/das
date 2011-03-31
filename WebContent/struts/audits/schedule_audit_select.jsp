@@ -72,7 +72,10 @@ li#li_availability a:hover {
 	<h2 class="formLegend"><s:text name="%{scope}.label.ChooseAuditTime" /></h2>
 	<ol>
 		<s:if test="permissions.admin">
-			<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>"><s:text name="%{scope}.button.EditScheduleManually" /></a></li>
+			<li>
+				<s:hidden name="auditID" />
+				<s:submit cssClass="picsbutton" action="ScheduleAudit!edit" value="%{getText(scope + '.button.EditScheduleManually')}" />
+			</li>
 		</s:if>
 		<li><s:text name="%{scope}.message.ChooseAvailableTime" /></li>
 		<li id="li_availability">

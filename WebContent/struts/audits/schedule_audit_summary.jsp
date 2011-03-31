@@ -19,7 +19,10 @@
 <h2 class="formLegend"><s:text name="%{scope}.header.AuditTimeAndLocation" /></h2>
 <ol>
 	<s:if test="permissions.admin">
-		<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>"><s:text name="%{scope}.button.EditScheduleManually" /></a></li>
+		<li>
+			<s:hidden name="auditID" />
+			<s:submit action="ScheduleAudit!edit" cssClass="picsbutton" value="%{getText(scope + '.button.EditScheduleManually')}" /> 
+		</li>
 	</s:if>
 	<li><label><s:text name="%{scope}.label.AuditDate" />:</label> <s:date name="conAudit.scheduledDate" format="EEEE, MMM d, yyyy" /></li>
 	<li><label><s:text name="%{scope}.label.AuditTime" />:</label> <s:date name="conAudit.scheduledDate" format="h:mm a z" /></li>
