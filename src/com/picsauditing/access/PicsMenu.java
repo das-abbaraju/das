@@ -248,7 +248,7 @@ public class PicsMenu {
 		}
 		
 		if (permissions.isAdmin()) {
-			subMenu.addChild("Service Taxonomy", "ServiceTaxonomy.action");
+			subMenu.addChild("Trade Taxonomy", "TradeTaxonomy.action");
 		}
 
 		if (permissions.hasPermission(OpPerms.Translator)) {
