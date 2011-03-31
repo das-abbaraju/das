@@ -97,11 +97,15 @@ $(function() {
     });
 });
 
-saveTradeAjax {
-	$('#saveTrade').serialize();
-	autocomplete('TradeAutocomplete.action', {
-    	minChars: 2,
-    	max: 100,
-    	formatResult: function(data,i,count) { return data[1]; }
-    });
+function saveTrade() {
+	var data = $('#saveTrade').serialize();
+	$.ajax({
+		type: 'POST',
+		url: 'TradeTaxonomy!saveTradeAjax.action',
+		data: data,
+		success: function() {
+			alert("complete");
+		}
+	});
+	$('#trade-detail').load('', data);
 }
