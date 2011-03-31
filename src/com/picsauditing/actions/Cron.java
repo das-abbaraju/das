@@ -477,20 +477,29 @@ public class Cron extends PicsActionSupport {
 	}
 
 	public void expireFlagChanges() throws Exception {
-		StringBuilder query = new StringBuilder();
 
 		// Ignore Flag Changes that are a week old or longer
-		query = new StringBuilder();
-		query.append("update generalcontractors ");
-		query.append("set baselineFlag = flag, ");
-		query.append("baselineFlagDetail = flagDetail, ");
-		query.append("baselineApproved = now(), ");
-		query.append("baselineApprover = 1 ");
-		query.append("WHERE flag != baselineFlag ");
-		query.append("AND flagLastUpdated <= DATE_SUB(NOW(), INTERVAL 14 DAY)");
+		String query = "UPDATE generalcontractors ";
+		query += "SET baselineFlag = flag, ";
+		query += "baselineFlagDetail = flagDetail, ";
+		query += "baselineApproved = NOW(), ";
+		query += "baselineApprover = 1 ";
+		query += "WHERE flag != baselineFlag ";
+		query += "AND flagLastUpdated <= DATE_SUB(NOW(), INTERVAL 14 DAY)";
 
-		Database db = new Database();
-		db.executeUpdate(query.toString());
+		new Database().executeUpdate(query);
+		
+		// Automatically approve a. Audited - Unspecified Facility
+		// and a. PQF Only - Unspecified Facility
+		query = "UPDATE generalcontractors ";
+		query += "SET baselineFlag = flag, ";
+		query += "baselineFlagDetail = flagDetail, ";
+		query += "baselineApproved = NOW(), ";
+		query += "baselineApprover = 1 ";
+		query += "WHERE flag != baselineFlag ";
+		query += "AND genID IN (10403,2723)";
+
+		new Database().executeUpdate(query);
 	}
 
 	public void sendFlagChangesEmailToAccountManagers() throws Exception {
@@ -501,7 +510,7 @@ public class Cron extends PicsActionSupport {
 		query.append("count(*) total, sum(case when gc.flag = gc.baselineFlag THEN 0 ELSE 1 END) changes ");
 		query.append("from generalcontractors gc ");
 		query.append("join accounts c on gc.subID = c.id and c.status = 'Active' ");
-		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' ");
+		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (10403,2723) ");
 		query.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
 		query.append("and endDate > now() ");
 		query.append("LEFT join users u on au.userID = u.id ");
