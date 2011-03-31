@@ -31,7 +31,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 	protected Map<AuditType, List<ContractorAudit>> auditMap;
 	protected Map<DocumentTab, List<AuditType>> auditTypes;
 	protected Map<String, String> imScores = new TreeMap<String, String>();
-	protected Map<DocumentTab, List<ContractorAudit>> expiredAudits;
+	protected List<ContractorAudit> expiredAudits;
 
 	protected Integer selectedAudit;
 	protected Integer selectedOperator;
@@ -58,7 +58,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 		Map<String, List<ContractorAudit>> allIMAudits = new TreeMap<String, List<ContractorAudit>>();
 		auditMap = new TreeMap<AuditType, List<ContractorAudit>>();
 		auditTypes = new TreeMap<DocumentTab, List<AuditType>>();
-		expiredAudits = new TreeMap<DocumentTab, List<ContractorAudit>>();
+		expiredAudits = new ArrayList<ContractorAudit>();
 
 		for (ContractorAudit audit : getAudits()) {
 			DocumentTab tab = new DocumentTab(audit.getAuditType());
@@ -76,37 +76,25 @@ public class ContractorDocuments extends ContractorActionSupport {
 
 				// IM Audits
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM)) {
-					List<ContractorAudit> imAudits = allIMAudits.get(audit.getAuditType().getAuditName());
+					List<ContractorAudit> imAudits = allIMAudits.get(getText(audit.getAuditType().getI18nKey("name")));
 
 					if (imAudits == null) {
 						imAudits = new Vector<ContractorAudit>();
-						allIMAudits.put(audit.getAuditType().getAuditName(), imAudits);
+						allIMAudits.put(getText(audit.getAuditType().getI18nKey("name")), imAudits);
 					}
 
 					imAudits.add(audit);
 				}
 			} else if ((audit.getAuditType().getClassType().isAudit() || audit.getAuditType().getClassType().isPolicy())
 					&& !audit.getAuditType().isAnnualAddendum()) {
-				if (expiredAudits.get(tab) == null)
-					expiredAudits.put(tab, new ArrayList<ContractorAudit>());
-
-				expiredAudits.get(tab).add(audit);
+				if (!expiredAudits.contains(audit))
+					expiredAudits.add(audit);
 			}
 		}
 
 		for (AuditType type : auditMap.keySet()) {
-			if (type.getId() == AuditType.ANNUALADDENDUM) {
-				Collections.sort(auditMap.get(type), new Comparator<ContractorAudit>() {
-					public int compare(ContractorAudit o1, ContractorAudit o2) {
-						String s1 = o1.getAuditType().getAuditName() + o1.getAuditFor();
-						String s2 = o2.getAuditType().getAuditName() + o2.getAuditFor();
-
-						return (s2.compareTo(s1));
-					}
-				});
-
-				break;
-			}
+			if (type.getId() == AuditType.ANNUALADDENDUM)
+				Collections.sort(auditMap.get(type), new AuditByDate());
 		}
 
 		for (String auditName : allIMAudits.keySet()) {
@@ -130,6 +118,8 @@ public class ContractorDocuments extends ContractorActionSupport {
 			else
 				imScores.put(auditName, "Green");
 		}
+		
+		Collections.sort(expiredAudits, new AuditByDate());
 
 		return SUCCESS;
 	}
@@ -157,7 +147,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 		return imScores;
 	}
 
-	public Map<DocumentTab, List<ContractorAudit>> getExpiredAudits() {
+	public List<ContractorAudit> getExpiredAudits() {
 		return expiredAudits;
 	}
 
@@ -235,23 +225,23 @@ public class ContractorDocuments extends ContractorActionSupport {
 				return 1;
 			else if (type.getClassType().isAudit())
 				return 4;
-			
+
 			return type.getClassType().ordinal();
 		}
 
 		public String getName() {
 			if (type.isAnnualAddendum() || type.getClassType().isIm())
 				return getText(type.getI18nKey("name"));
-			
+
 			if (type.getClassType().isPqf())
 				return getText("AuditType.1.name");
-			
-			if (type.getClassType().isPolicy()) 
+
+			if (type.getClassType().isPolicy())
 				return getText("global.InsureGUARD");
-			
+
 			return getText("global.AuditGUARD");
 		}
-		
+
 		@Override
 		public int compareTo(DocumentTab o) {
 			return this.getOrder() - o.getOrder();
@@ -262,8 +252,20 @@ public class ContractorDocuments extends ContractorActionSupport {
 			return this.getName();
 		}
 	}
-	
+
 	public static String getSafeName(String name) {
 		return name.toLowerCase().replaceAll(" ", "_").replaceAll("&(.*?);", "");
+	}
+	
+	private class AuditByDate implements Comparator<ContractorAudit> {
+		@Override
+		public int compare(ContractorAudit o1, ContractorAudit o2) {
+			if (o1.getAuditType().isAnnualAddendum() && o2.getAuditType().isAnnualAddendum())
+				return o2.getAuditFor().compareTo(o1.getAuditFor());
+			else if (o1.isExpired() && o2.isExpired())
+				return o1.getExpiresDate().compareTo(o2.getExpiresDate());
+			else
+				return o1.getCreationDate().compareTo(o2.getCreationDate());
+		}
 	}
 }
