@@ -4,7 +4,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Service Indexer</title>
+<title>Trade Indexer</title>
 </head>
 <body>
 
