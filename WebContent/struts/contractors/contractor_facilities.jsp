@@ -13,6 +13,10 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 
 <script type="text/javascript">
+	$(function(){
+		runSearch();
+	});
+	
 	function runSearch(button) {
 		if (button === undefined)
 			button = "search";
@@ -153,7 +157,7 @@
 </style>
 
 </head>
-<body onload="runSearch();">
+<body>
 <s:if test="permissions.contractor && !contractor.status.activeDemo">
 	<s:include value="registrationHeader.jsp"></s:include>
 </s:if>
