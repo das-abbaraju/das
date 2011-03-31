@@ -9,7 +9,7 @@
 <script type="text/javascript" src="js/jquery/jsTree/jquery.jstree.js"></script>
 <script type="text/javascript">
 $(function() {
-	var tree = $('#trades').jstree({
+	var tree = $('#trade-nav').jstree({
 		"themes": {
 			theme: "classic"	
 		},
@@ -37,15 +37,11 @@ $(function() {
 		},
 		"plugins": ["themes", "json_data", "types"]
 	});
-	$('#trades').delegate('.jstree a', 'click', function(e) {
+	$('#trade-nav').delegate('.jstree a', 'click', function(e) {
 		e.preventDefault();
 		var data = { trade: $(this).parent().data('jstree').id };
-		startThinking({div: 'trade-info', type: 'large'});
-		$('#trade-info').load('TradeTaxonomy!tradeAjax.action', data);
-	});
-	$('.classification').change(function() {
-		tree.jstree('refresh');
-		$('#trade-info').text("Click a trade on the left to view more.");
+		startThinking({div: 'trade-detail', type: 'large'});
+		$('#trade-detail').load('TradeTaxonomy!tradeAjax.action', data);
 	});
 	$(document).ready(function () {  
 	  var top = $('#trade-info').offset().top - parseFloat($('#trade-info').css('marginTop').replace(/auto/, 0));
@@ -71,12 +67,12 @@ $(function() {
 });
 </script>
 <style>
-#trades li {
+#trades .nav li {
 	font-size: 14px;
 	line-height: 1.5;
 }
 
-#info-wrapper { 
+#info-wrapper {
   position: absolute;
   width: 280px;
   right: 22px;
@@ -98,9 +94,6 @@ $(function() {
   top: 0;
 }
 
-#trade-info h3 {
-	font-size: 18px;
-}
 #trade-info label {
 	font-weight: bold;
 }
@@ -113,10 +106,9 @@ $(function() {
 }
 
 #wrapper {
-	margin-top: 20px;
 	position: relative
 }
- 
+
 #trade-info .center {
 	text-align: center;
 }
@@ -128,27 +120,17 @@ $(function() {
 
 <div id="suggest">
 <form>
-	<label>Product/Service Search:</label>
+	<label>Trade Search:</label>
 	<input class="psAutocomplete" name="tradeSearch" style="width: 400px" />
 </form>
 </div>
 
-<div id="wrapper">
-<div id="search">
-<form id="filter">
-<div class="filteroption">
-	<s:radio list="listTypes" name="listType" listValue="description" cssClass="classification"/>
-</div>
-</form>
-</div>
-<div id="info-wrapper">
-	<div id="trade-info"> Click a trade on the left to view more. </div>
-</div>
-<br />
-
-<div id="trades"></div>
-
-</div>
+<table id="trades">
+	<tr>
+		<td id="trade-nav"></td>
+		<td id="trade-detail">Click a trade on the left</td>
+	</tr>
+</table>
 
 </body>
 </html>
