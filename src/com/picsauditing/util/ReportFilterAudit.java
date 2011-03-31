@@ -37,8 +37,8 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showCohsStats = false;
 	protected boolean showQuestionAnswer = false;
 	protected boolean showExpiredDate = false;
-	protected boolean showNotRenewingContractors = true;
-	protected boolean showContractorsWithPendingMembership = true;
+	protected boolean showNotRenewingContractors = false;
+	protected boolean showContractorsWithPendingMembership = false;
 
 	// Filter values
 	protected int[] auditID;
