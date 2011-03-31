@@ -14,9 +14,9 @@ import com.picsauditing.jpa.entities.Trade;
 @SuppressWarnings("serial")
 public class TradeTaxonomy extends PicsActionSupport {
 
-	protected TradeDAO serviceDAO;
+	protected TradeDAO tradeDAO;
 
-	private Trade service;
+	private Trade trade;
 	private ClassificationType classification = ClassificationType.Master;
 
 	private ListType listType = ListType.Master;
@@ -27,19 +27,19 @@ public class TradeTaxonomy extends PicsActionSupport {
 		List<Trade> nodes = new ArrayList<Trade>();
 
 		if (listType == ListType.Master) {
-			if (service == null) {
-				nodes = serviceDAO.findRoot(ClassificationType.Master);
+			if (trade == null) {
+				nodes = tradeDAO.findRoot(ClassificationType.Master);
 			} else {
-				nodes = serviceDAO.findByParent(service.getId());
+				nodes = tradeDAO.findByParent(trade.getId());
 			}
 		} else if (listType == ListType.Suncor) {
-			if (service == null) {
-				nodes = serviceDAO.findRoot(ClassificationType.Suncor);
+			if (trade == null) {
+				nodes = tradeDAO.findRoot(ClassificationType.Suncor);
 			} else {
-				nodes = serviceDAO.findByParent(service.getId());
+				nodes = tradeDAO.findByParent(trade.getId());
 			}
 		} else if (listType == ListType.MasterSuncor) {
-			nodes = serviceDAO.findByNode(service);
+			nodes = tradeDAO.findByNode(trade);
 		}
 
 		JSONArray result = new JSONArray();
@@ -69,21 +69,21 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return JSON;
 	}
 
-	public String serviceAjax() {
+	public String tradeAjax() {
 
-		return "service";
+		return "trade";
 	}
 
-	public void setServiceDAO(TradeDAO serviceDAO) {
-		this.serviceDAO = serviceDAO;
+	public void setTradeDAO(TradeDAO tradeDAO) {
+		this.tradeDAO = tradeDAO;
 	}
 
-	public Trade getService() {
-		return service;
+	public Trade getTrade() {
+		return trade;
 	}
 
-	public void setService(Trade service) {
-		this.service = service;
+	public void setTrade(Trade trade) {
+		this.trade = trade;
 	}
 
 	public ClassificationType getClassification() {
@@ -107,7 +107,9 @@ public class TradeTaxonomy extends PicsActionSupport {
 	}
 
 	enum ListType {
-		Master("Master List"), Suncor("Suncor"), MasterSuncor("Master/Suncor");
+		Master("Master List"),
+		Suncor("Suncor"),
+		MasterSuncor("Master/Suncor");
 
 		private String description;
 
