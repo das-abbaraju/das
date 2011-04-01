@@ -28,9 +28,9 @@ public class Trade extends BaseTable implements Indexable {
 	private int indexEnd;
 	private boolean needsIndexing;
 
-	private String name;
-	private String name2;
-	private String help;
+	private TranslatableString name;
+	private TranslatableString name2;
+	private TranslatableString help;
 
 	private List<TradeAlternate> alternates = new ArrayList<TradeAlternate>();
 	private List<Trade> children = new ArrayList<Trade>();
@@ -171,30 +171,39 @@ public class Trade extends BaseTable implements Indexable {
 		this.children = children;
 	}
 
+	/**
+	 * The name of this trade that's commonly used to describe it. Does not need
+	 * the parent trade to make sense. Can stand alone in a list and be
+	 * understood.
+	 */
 	@Transient
-	public String getName() {
+	public TranslatableString getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(TranslatableString name) {
 		this.name = name;
 	}
 
+	/**
+	 * The short version of the trade, typically only included when in context
+	 * with its parent trades
+	 */
 	@Transient
-	public String getName2() {
+	public TranslatableString getName2() {
 		return name2;
 	}
 
-	public void setName2(String name2) {
+	public void setName2(TranslatableString name2) {
 		this.name2 = name2;
 	}
 
 	@Transient
-	public String getHelp() {
+	public TranslatableString getHelp() {
 		return help;
 	}
 
-	public void setHelp(String help) {
+	public void setHelp(TranslatableString help) {
 		this.help = help;
 	}
 
@@ -205,13 +214,7 @@ public class Trade extends BaseTable implements Indexable {
 
 	@Transient
 	public String getAutocompleteValue() {
-		return name2;
-	}
-
-	// Indexing
-	@Transient
-	public int getId() {
-		return this.id;
+		return name.toString();
 	}
 
 	@Transient
@@ -225,12 +228,12 @@ public class Trade extends BaseTable implements Indexable {
 		// id
 		l.add(new IndexObject(String.valueOf(this.id), 10));
 		// name
-		String[] sA = this.name.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
+		String[] sA = this.name.toString().toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
 		for (String s : sA) {
 			if (s != null && !s.isEmpty())
 				l.add(new IndexObject(s, 8));
 		}
-		sA = this.name2.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
+		sA = this.name2.toString().toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
 		for (String s : sA) {
 			if (s != null && !s.isEmpty())
 				l.add(new IndexObject(s, 6));
@@ -255,8 +258,8 @@ public class Trade extends BaseTable implements Indexable {
 	public String getSearchText() {
 		List<String> st = new ArrayList<String>();
 		List<String> tas = new ArrayList<String>();
-		st.add(this.name);
-		st.add(this.name2);
+		st.add(this.name.toString());
+		st.add(this.name2.toString());
 
 		for (TradeAlternate ta : getAlternates())
 			tas.add(ta.getName());
