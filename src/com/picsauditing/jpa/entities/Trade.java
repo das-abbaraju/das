@@ -203,24 +203,23 @@ public class Trade extends BaseTable implements Indexable {
 		return indexEnd - indexStart == 1;
 	}
 
-	@Override
 	@Transient
 	public String getAutocompleteValue() {
 		return name2;
 	}
 
 	// Indexing
-	@Override
+	@Transient
 	public int getId() {
 		return this.id;
 	}
 
-	@Override
+	@Transient
 	public String getIndexType() {
 		return "T";
 	}
 
-	@Override
+	@Transient
 	public List<IndexObject> getIndexValues() {
 		List<IndexObject> l = new ArrayList<IndexObject>();
 		// id
@@ -247,12 +246,12 @@ public class Trade extends BaseTable implements Indexable {
 		return l;
 	}
 
-	@Override
+	@Transient
 	public String getReturnType() {
 		return "trade";
 	}
 
-	@Override
+	@Transient
 	public String getSearchText() {
 		List<String> st = new ArrayList<String>();
 		List<String> tas = new ArrayList<String>();
@@ -268,6 +267,7 @@ public class Trade extends BaseTable implements Indexable {
 		return Strings.implode(st, "|");
 	}
 
+	@Transient
 	public String getViewLink() {
 		return "TradeTaxonomy.action";
 	};
