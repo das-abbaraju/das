@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PostLoad;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -30,6 +32,7 @@ import com.picsauditing.dao.PicsDAO;
 @Entity
 @MappedSuperclass
 public abstract class BaseTable implements JSONable, Serializable, Autocompleteable, Translatable {
+
 	protected int id;
 	protected User createdBy;
 	protected User updatedBy;
@@ -42,6 +45,18 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
 	public BaseTable(User user) {
 		setAuditColumns(user);
 	}
+
+	/*
+	@PostLoad
+	public void before() {
+		System.out.println(this.getClass() + " " + id);
+		for (Field field : this.getClass().getFields()) {
+			if (field.getType().equals(TranslatableString.class)) {
+				
+			}
+		}
+	}
+	*/
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -58,9 +73,10 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
 	public String getI18nKey() {
 		return getClass().getSimpleName() + "." + id;
 	}
-	
+
 	/**
 	 * Example AuditType.1.name or AuditQuestion.123.requirement
+	 * 
 	 * @param property
 	 * @return
 	 */
@@ -68,7 +84,7 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
 	public String getI18nKey(String property) {
 		return getI18nKey() + "." + property;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "createdBy", nullable = true)
 	public User getCreatedBy() {
