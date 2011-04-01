@@ -10,6 +10,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
+import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.search.Database;
 
 public class I18nCache {
@@ -133,6 +134,10 @@ public class I18nCache {
 		}
 
 		return localeString;
+	}
+
+	public void saveTranslatableString(TranslatableString value) {
+		System.out.println("TODO save " + value);
 	}
 
 }
