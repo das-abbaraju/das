@@ -4,11 +4,10 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import com.picsauditing.jpa.entities.ClassificationType;
 import com.picsauditing.jpa.entities.Trade;
 
 @SuppressWarnings("unchecked")
-public class TradeDAO extends PicsDAO {
+public class TradeDAO extends IndexableDAO {
 
 	public Trade find(int id) {
 		Trade a = em.find(Trade.class, id);

@@ -14,6 +14,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.IndexableDAO;
+import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.search.Database;
@@ -41,15 +42,17 @@ public class Indexer extends PicsActionSupport {
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
 	private EmployeeDAO empDAO;
+	private TradeDAO tradeDAO;
 
 	private List<String> list;
 	private static Map<String, IndexableDAO> indexTables;
 	private static final int RUN_NUM = 50;
 
-	public Indexer(AccountDAO accountDAO, UserDAO userDAO, EmployeeDAO empDAO) {
+	public Indexer(AccountDAO accountDAO, UserDAO userDAO, EmployeeDAO empDAO, TradeDAO tradeDAO) {
 		this.accountDAO = accountDAO;
 		this.userDAO = userDAO;
 		this.empDAO = empDAO;
+		this.tradeDAO = tradeDAO;
 	}
 
 	@Override
@@ -70,6 +73,7 @@ public class Indexer extends PicsActionSupport {
 				getIndexTables().put("accounts", accountDAO);
 				getIndexTables().put("users", userDAO);
 				getIndexTables().put("employee", empDAO);
+				getIndexTables().put("trade", tradeDAO);
 			} else {
 				if (toRun.equals("accounts"))
 					getIndexTables().put("accounts", accountDAO);
@@ -77,6 +81,8 @@ public class Indexer extends PicsActionSupport {
 					getIndexTables().put("users", userDAO);
 				else if (toRun.equals("employee"))
 					getIndexTables().put("employee", empDAO);
+				else if (toRun.equals("trade"))
+					getIndexTables().put("trade", tradeDAO);
 			}
 			for (Entry<String, IndexableDAO> entry : getIndexTables()
 					.entrySet()) {
