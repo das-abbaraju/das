@@ -6,21 +6,47 @@ import com.picsauditing.util.IndexObject;
 
 public interface Indexable {
 
-	public String getName();
-
-	public boolean isNeedsIndexing();
-
-	public List<IndexObject> getIndexValues();
-
-	public String getIndexType();
-
-	public String getReturnType();
-
+	/**
+	 * If you Index a BaseTable object, then don't implement this again!
+	 * 
+	 * @return
+	 */
 	public int getId();
+
+	/**
+	 * a property on the Entity, used to query a list of Entities that need
+	 * reindexing.
+	 * 
+	 * @return
+	 */
+	public boolean isNeedsIndexing();
 
 	public void setNeedsIndexing(boolean b);
 
+	public List<IndexObject> getIndexValues();
+
+	/**
+	 * Examples: C, CO, AS, U, E, T
+	 * 
+	 * @return
+	 */
+	public String getIndexType();
+
+	/**
+	 * Examples: accounts, users, employee, trade
+	 * 
+	 * @return
+	 */
+	public String getReturnType();
+
+	/**
+	 * @return URL destination when the user clicks on this search result
+	 */
 	public String getViewLink();
 
+	/**
+	 * @return Return the Text to display in the search results. This should
+	 *         implement Locale-specific logic
+	 */
 	public String getSearchText();
 }
