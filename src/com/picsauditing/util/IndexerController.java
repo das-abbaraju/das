@@ -8,6 +8,7 @@ import com.picsauditing.actions.Indexer;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.IndexableDAO;
+import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.search.Database;
 
@@ -16,14 +17,15 @@ public class IndexerController {
 	private AccountDAO accountDAO;
 	private UserDAO userDAO;
 	private EmployeeDAO empDAO;
+	private TradeDAO tradeDAO;
 	private Indexer indexer;
 
 	public IndexerController(AccountDAO accountDAO, UserDAO userDAO,
-			EmployeeDAO empDao) {
+			EmployeeDAO empDao, TradeDAO tradeDAO) {
 		this.accountDAO = accountDAO;
 		this.userDAO = userDAO;
 		this.empDAO = empDao;
-		this.indexer = new Indexer(accountDAO, userDAO, empDao);
+		this.indexer = new Indexer(accountDAO, userDAO, empDao, tradeDAO);
 	}
 
 	public void runAll(String toRun, boolean runStats) throws SQLException {
@@ -37,6 +39,7 @@ public class IndexerController {
 			Indexer.getIndexTables().put("accounts", accountDAO);
 			Indexer.getIndexTables().put("users", userDAO);
 			Indexer.getIndexTables().put("employee", empDAO);
+			Indexer.getIndexTables().put("trade", tradeDAO);
 		} else {
 			if (toRun.equals("accounts"))
 				Indexer.getIndexTables().put("accounts", accountDAO);
@@ -44,6 +47,8 @@ public class IndexerController {
 				Indexer.getIndexTables().put("users", userDAO);
 			else if (toRun.equals("employee"))
 				Indexer.getIndexTables().put("employee", empDAO);
+			else if (toRun.equals("trade"))
+				Indexer.getIndexTables().put("trade", tradeDAO);
 		}
 		for (Entry<String, IndexableDAO> entry : Indexer.getIndexTables()
 				.entrySet()) {
