@@ -10,12 +10,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.picsauditing.util.IndexObject;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "ref_trade")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class Trade extends BaseTable implements Indexable {
 
 	private Trade parent;
