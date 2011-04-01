@@ -48,7 +48,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 		return JSON;
 	}
-	
+
 	@Anonymous
 	public String index() throws Exception {
 		indexNode(null, 1);
@@ -85,8 +85,18 @@ public class TradeTaxonomy extends PicsActionSupport {
 	public String saveTradeAjax() throws Exception {
 		if (trade != null) {
 			System.out.println(trade.getName());
+			// saveTranslatableField(trade, "name");
 		}
-		
+
+		return "trade";
+	}
+
+	public String deleteTradeAjax() throws Exception {
+		if (trade.getId() > 0) {
+			// deleteTranslations(trade);
+			tradeDAO.remove(trade);
+		}
+
 		return "trade";
 	}
 
@@ -100,11 +110,14 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 	public Trade getTrade() {
 		if (trade != null && trade.getName() == null) {
-			trade.setName(getText(trade.getI18nKey("name")));
-//			String name2 = getText(trade.getI18nKey("name2"), "");
-//			if (Strings.isEmpty(name2))
-//				name2 = trade.getName();
-//			trade.setName2(name2);
+			// fillTranslatableField(trade, "name");
+			// fillTranslatableField(trade, "name2");
+			// fillTranslatableField(trade, "help");
+			// trade.setName(getText(trade.getI18nKey("name")));
+			// String name2 = getText(trade.getI18nKey("name2"), "");
+			// if (Strings.isEmpty(name2))
+			// name2 = trade.getName();
+			// trade.setName2(name2);
 		}
 		return trade;
 	}

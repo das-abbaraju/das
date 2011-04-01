@@ -33,6 +33,9 @@ public class TranslatableString {
 		return modified.get(locale);
 	}
 
+	/**
+	 * Using the current Locale, return the best match 
+	 */
 	@Override
 	public String toString() {
 		Locale locale;
