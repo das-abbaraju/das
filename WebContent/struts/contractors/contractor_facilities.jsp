@@ -185,7 +185,12 @@
 		<div id="facilities" >
 			<s:include value="contractor_facilities_assigned.jsp"/>
 		</div>
-		
+		<s:if test="contractor.hasAuditWithOnlyInvisibleCaos()">
+			<div class="alert">
+				This contractor has some audits with no visible caos on them.  When you disassociate a contractor with an operator some data is kept in our system, but is 
+				not visible to external users.  Audits that	fall under this case are marked as such in the audit.
+			</div>		
+		</s:if>
 		<pics:permission perm="EditNotes" type="Edit">
 			<div id="notesList">
 				<s:include value="../notes/account_notes_embed.jsp"></s:include>

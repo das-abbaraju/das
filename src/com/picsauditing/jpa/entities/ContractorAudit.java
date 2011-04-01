@@ -684,6 +684,12 @@ public class ContractorAudit extends BaseTable {
 		}
 		return false;
 	}
+	
+	public boolean hasOnlyInvisibleCaos(){
+		if(this.operators.size() > 0 && this.getOperatorsVisible().size() == 0)
+			return true;
+		return false;
+	}
 
 	@Transient
 	public Map<AuditCategory, AuditCatData> getApplicableCategories(Permissions permissions,

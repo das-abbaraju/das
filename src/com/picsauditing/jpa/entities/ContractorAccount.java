@@ -945,6 +945,15 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return false;
 	}
+	
+	@Transient
+	public boolean hasAuditWithOnlyInvisibleCaos(){
+		for(ContractorAudit audit : this.audits){
+			if(audit.hasOnlyInvisibleCaos())
+				return true;
+		}
+		return false;
+	}
 
 	@Transient
 	public Set<String> getCountries() {
