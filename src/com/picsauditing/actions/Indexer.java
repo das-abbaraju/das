@@ -73,7 +73,7 @@ public class Indexer extends PicsActionSupport {
 				getIndexTables().put("accounts", accountDAO);
 				getIndexTables().put("users", userDAO);
 				getIndexTables().put("employee", empDAO);
-				getIndexTables().put("trade", tradeDAO);
+				getIndexTables().put("ref_trade", tradeDAO);
 			} else {
 				if (toRun.equals("accounts"))
 					getIndexTables().put("accounts", accountDAO);
@@ -82,7 +82,7 @@ public class Indexer extends PicsActionSupport {
 				else if (toRun.equals("employee"))
 					getIndexTables().put("employee", empDAO);
 				else if (toRun.equals("trade"))
-					getIndexTables().put("trade", tradeDAO);
+					getIndexTables().put("ref_trade", tradeDAO);
 			}
 			for (Entry<String, IndexableDAO> entry : getIndexTables()
 					.entrySet()) {
