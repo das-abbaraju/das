@@ -20,6 +20,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PostLoad;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -52,9 +54,9 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
 
 	@PostLoad
 	public void postLoad() throws Exception {
-		I18nCache i18nCache = I18nCache.getInstance();
 		for (Field field : this.getClass().getDeclaredFields()) {
 			if (field.getType().equals(TranslatableString.class)) {
+				I18nCache i18nCache = I18nCache.getInstance();
 				TranslatableString translatable = new TranslatableString();
 				translatable.putTranslations(i18nCache.getText(getI18nKey(field.getName())));
 				Method declaredMethod = this.getClass().getDeclaredMethod(
