@@ -23,6 +23,13 @@ public class TranslatableString {
 		this.modified.put(locale, true);
 	}
 
+	public void putTranslations(Map<String, String> translations) {
+		for (Map.Entry<String, String> translation : translations.entrySet()) {
+			this.translations.put(translation.getKey(), translation.getValue());
+			this.modified.put(translation.getKey(), false);
+		}
+	}
+
 	public void putTranslations(List<AppTranslation> translations) {
 		for (AppTranslation translation : translations) {
 			this.translations.put(translation.getLocale(), translation.getValue());
@@ -34,7 +41,7 @@ public class TranslatableString {
 	}
 
 	/**
-	 * Using the current Locale, return the best match 
+	 * Using the current Locale, return the best match
 	 */
 	@Override
 	public String toString() {
