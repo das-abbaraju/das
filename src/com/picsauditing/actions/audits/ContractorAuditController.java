@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,8 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.jboss.util.Strings;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
@@ -36,6 +35,7 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.Strings;
 
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
@@ -139,7 +139,7 @@ public class ContractorAuditController extends AuditActionSupport {
 					conAudit = new ContractorAudit();
 					conAudit.setAuditType(auditCategory.getAuditType());
 					if (auditCategory.getAuditType().isAnnualAddendum()) {
-						conAudit.setAuditFor(new Date().getYear() + "");
+						conAudit.setAuditFor(Calendar.getInstance().get(Calendar.YEAR) + "");
 					}
 
 					categories = new HashMap<AuditCategory, AuditCatData>();
