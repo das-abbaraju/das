@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.util.Strings;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -202,8 +204,13 @@ public class ContractorAuditController extends AuditActionSupport {
 						problems.put(caow.getCao(), caow.getNotes());
 				}
 			}
+			String message = "";
 			if (conAudit.getOperators().size() == 0)
-				addAlertMessage("This audit has no valid CAOs and cannot be seen by external users.  As we do retain the audit data, the audit is still viewable by internal users");
+				message = "This audit has no valid CAOs and cannot be seen by external users.  As we do retain the audit data, the audit is still viewable by internal users";
+			if (conAudit.hasOnlyInvisibleCaos())
+				message = "This audit has no visible CAOs and cannot be seen by external users.  Data is not deleted when facilities are disassociated, but it is no longer visible to external users.";
+			if (!Strings.isEmpty(message))
+				addAlertMessage(message);
 		}
 
 		return SUCCESS;
