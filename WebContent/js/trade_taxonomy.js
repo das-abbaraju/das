@@ -107,5 +107,4 @@ function saveTrade() {
 			alert("complete");
 		}
 	});
-	$('#trade-detail').load('', data);
 }
