@@ -1,18 +1,17 @@
 package com.picsauditing.actions.report;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.search.SelectFilterDate;
 import com.picsauditing.util.ReportFilterCAOW;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportContractorAuditOperatorWorkflow extends ReportContractorAuditOperator {
-
-	private ContractorAuditOperatorWorkflowDAO caowDAO;
 
 	public ReportContractorAuditOperatorWorkflow(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
 			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
@@ -28,11 +27,8 @@ public class ReportContractorAuditOperatorWorkflow extends ReportContractorAudit
 		sql.addJoin("JOIN contractor_audit_operator_workflow caow ON cao.id = caow.caoID");
 
 		getFilter().setShowAuditStatus(false);
+		getFilter().setShowCaoStatusChangedDate(false);
 
-	}
-
-	public void setCaowDAO(ContractorAuditOperatorWorkflowDAO caowDAO) {
-		this.caowDAO = caowDAO;
 	}
 
 	@Override
@@ -44,6 +40,16 @@ public class ReportContractorAuditOperatorWorkflow extends ReportContractorAudit
 		String caowStatusList = Strings.implodeForDB(f.getCaowStatus(), ",");
 		if (filterOn(caowStatusList)) {
 			sql.addWhere("caow.status IN (" + caowStatusList + ")");
+		}
+		
+		if (filterOn(f.getCaowUpdateDate1())) {
+			report.addFilter(new SelectFilterDate("caowUpdateDate1", "caow.updateDate >= '?'", DateBean
+					.format(f.getCaowUpdateDate1(), "M/d/yy")));
+		}
+
+		if (filterOn(f.getCaowUpdateDate2())) {
+			report.addFilter(new SelectFilterDate("caowUpdateDate2", "caow.updateDate < '?'", DateBean.format(
+					f.getCaowUpdateDate2(), "M/d/yy")));
 		}
 
 	}

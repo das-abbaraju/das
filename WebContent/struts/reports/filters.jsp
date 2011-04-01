@@ -789,6 +789,23 @@
 		</div>
 	</s:if>
 	
+	<s:if test="filter.showCaowUpdateDate">
+		<br clear="all">
+		<div class="filterOption"><a href="#"
+			onclick="showTextBox('form1_caowUpdateDate'); return false;">Workflow Status
+		Changed Date </a> <span id="form1_caowUpdateDate_query">= ALL</span><br />
+		<span id="form1_caowUpdateDate" style="display: none"
+			class="clearLink"><s:textfield cssClass="forms datepicker"
+			size="10" id="form1_caowUpdateDate1"
+			name="filter.caowUpdateDate1" /> To:<s:textfield
+			cssClass="forms datepicker" size="10" id="form1_caowUpdateDate2"
+			name="filter.caowUpdateDate2" /> <script type="text/javascript">textQuery('form1_caowUpdateDate');</script>
+		<br />
+		<a class="clearLink" href="#"
+			onclick="clearTextField('form1_caowUpdateDate'); return false;">Clear</a></span>
+		</div>
+	</s:if>
+	
 	<s:if test="filter.showDeactivationReason">
 		<div class="filterOption"><s:select
 			list="filter.deactivationReasons"
