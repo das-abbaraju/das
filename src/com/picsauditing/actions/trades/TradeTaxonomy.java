@@ -86,6 +86,8 @@ public class TradeTaxonomy extends PicsActionSupport {
 		if (trade != null) {
 			System.out.println(trade.getName());
 			// saveTranslatableField(trade, "name");
+			trade.setAuditColumns(permissions);
+			tradeDAO.save(trade);
 		}
 
 		return "trade";
