@@ -6,6 +6,8 @@ import java.lang.management.OperatingSystemMXBean;
 
 import org.json.simple.JSONObject;
 
+import com.picsauditing.access.Anonymous;
+
 @SuppressWarnings("serial")
 public class ServerInfo extends PicsActionSupport {
 	private static OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
@@ -15,6 +17,7 @@ public class ServerInfo extends PicsActionSupport {
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@Anonymous
 	public String execute() throws Exception {
 
 		if (jsonp) {
