@@ -11,9 +11,9 @@ $(function() {
 					return json.result;
 				},
 				"data": function(node) {
-					result = $('#filter').serialize();
+					result = $('#suggest').serialize();
 					if (node.attr) {
-						result += "&trade=" + node.attr("id");
+						result += "&trade=" + node.data('jstree').id;
 					}
 					return result;
 				}
