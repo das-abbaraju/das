@@ -4,6 +4,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,8 +26,11 @@ import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.PicsDAO;
+
+import freemarker.template.utility.StringUtil;
 
 @SuppressWarnings("serial")
 @Entity
@@ -46,17 +50,19 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
 		setAuditColumns(user);
 	}
 
-	/*
 	@PostLoad
-	public void before() {
-		System.out.println(this.getClass() + " " + id);
-		for (Field field : this.getClass().getFields()) {
+	public void postLoad() throws Exception {
+		I18nCache i18nCache = I18nCache.getInstance();
+		for (Field field : this.getClass().getDeclaredFields()) {
 			if (field.getType().equals(TranslatableString.class)) {
-				
+				TranslatableString translatable = new TranslatableString();
+				translatable.putTranslations(i18nCache.getText(getI18nKey(field.getName())));
+				Method declaredMethod = this.getClass().getDeclaredMethod(
+						"set" + StringUtil.capitalize(field.getName()), TranslatableString.class);
+				declaredMethod.invoke(this, translatable);
 			}
 		}
 	}
-	*/
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
