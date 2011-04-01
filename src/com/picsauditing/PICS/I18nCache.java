@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
@@ -33,6 +34,10 @@ public class I18nCache {
 
 	public boolean hasKey(String key, Locale locale) {
 		return hasKey(key, getLocaleFallback(key, locale, false));
+	}
+	
+	public Map<String, String> getText(String key) {
+		return getCache().row(key);
 	}
 
 	private String getText(String key, String locale) {
