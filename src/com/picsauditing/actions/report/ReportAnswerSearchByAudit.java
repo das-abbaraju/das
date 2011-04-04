@@ -46,7 +46,7 @@ public class ReportAnswerSearchByAudit extends ReportContractorAuditOperator {
 		
 		for(AuditQuestion auditQuestion : auditQuestions) {
 			int questionId = auditQuestion.getId();
-			String join = "LEFT JOIN pqfdata q" + questionId + " on q"
+			String join = "JOIN pqfdata q" + questionId + " on q"
 			+ questionId + ".auditID = ca.id AND q" + questionId
 			+ ".questionID = " + questionId;
 			if(!Strings.isEmpty(getFilter().getAnswer())) {
