@@ -52,9 +52,12 @@ public class TranslatableString {
 	public void handleTranslation(Locale locale, String translation) {
 
 		if (Strings.isEmpty(translation)) {
+			// Delete the translation
 			if (hasTranslation(locale.toString())) {
+				// i.e. Delete fr_CA
 				deleteTranslation(locale.toString());
 			} else if (hasTranslation(locale.getLanguage())) {
+				// i.e. Delete fr
 				deleteTranslation(locale.getLanguage());
 			} else {
 				deleteTranslation(Locale.ENGLISH.toString());
