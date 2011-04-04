@@ -39,7 +39,7 @@
 	<tr>
 		<td style="width: 45%; padding-right: 5%;">
 			<s:iterator value="auditTypes.keySet()" var="classType" status="stat">
-				<h3><a name="<s:property value="getSafeName(#classType.name)" />"><s:property value="#classType" escape="false" /></a></h3>
+				<a name="<s:property value="getSafeName(#classType.name)" />"></a><h3><s:property value="#classType" escape="false" /></h3>
 				<table class="report" id="table_<s:property value="getSafeName(#classType.name)" />">
 					<thead>
 						<tr>
@@ -110,6 +110,16 @@
 									</tr>
 								</s:if>
 							</s:iterator>
+							<s:if test="#classType.name == getText('AuditType.17.name') && imScores.keySet().size > 0">
+								<s:iterator value="imScores.keySet()" status="auditStatus" id="key">
+									<tr>
+										<td colspan="4">
+											<s:text name="%{scope}.header.OverallScore" />:
+											<s:text name="ContractorAudit.PrintableScore.%{imScores.get(#key)}" />
+										</td>
+									</tr>
+								</s:iterator>
+							</s:if>
 						</s:iterator>
 						<tr>
 							<s:set name="colspan" value="4" />
@@ -122,90 +132,6 @@
 						</tr>
 					</tbody>
 				</table>
-				
-				<s:if test="#classType.name == getText('AuditType.17.name') && imScores.keySet().size > 0">
-					<h3><s:text name="%{scope}.header.OverallIntegrityManagement"><s:param><s:text name="AuditType.17.name" /></s:param></s:text></h3>
-					<table class="report">
-						<thead>
-						<tr>
-							<th><s:text name="%{scope}.header.Audit" /></th>
-							<th><s:text name="%{scope}.header.OverallScore" /></th>
-						</tr>
-						</thead>
-						<s:iterator value="imScores.keySet()" status="auditStatus" id="key">
-							<tr>
-								<td><s:property value="#key"/></td>
-								<td class="center"><s:text name="ContractorAudit.PrintableScore.%{imScores.get(#key)}" /></td>
-							</tr>
-						</s:iterator>
-					</table>
-				</s:if>
-				
-				<s:if test="expiredAudits.get(#classType).size > 0">
-					<h3><s:text name="%{scope}.header.ExpiredAudits"><s:param value="%{#classType}" /></s:text></h3>
-					<table class="report" id="expired_<s:property value="getSafeName(#classType.name)" />">
-						<thead>
-						<tr>
-							<th><s:text name="global.Name" /></th>
-							<th><s:text name="global.SafetyProfessional" /></th>
-							<th><s:text name="AuditStatus.Expired" /></th>
-							<th><s:text name="button.View" /></th>
-						</tr>
-						</thead>
-						<s:iterator value="expiredAudits.get(#classType)">
-							<tr>
-								<td>
-									<a href="Audit.action?auditID=<s:property value="id" />">
-										<s:property value="auditType.auditName" />
-										<s:if test="auditFor.length() > 0">: <s:property value="#audit.auditFor" /></s:if>
-										<s:if test="auditType.classType == 'Policy'"><br /><span style="font-size: 10px"><s:date name="effectiveDate" /></span></s:if>
-									</a>
-								</td>
-								<td><s:property value="auditor.name" /></td>
-								<td><s:date name="expiresDate" /></td>
-								<td>
-									<s:if test="operators.size > 0">
-										<a href="#" onclick="$('tr.row_'+<s:property value="id" />).toggle(); return false;">
-											<s:iterator value="getCaoStats(permissions).keySet()" id="status" status="stat">
-												<s:property value="getCaoStats(permissions).get(#status)" />
-												<s:if test="getCaoStats(permissions).get(#status) > 1"><s:text name="global.Operators" /></s:if><s:else><s:text name="global.Operator" /></s:else><s:if test="!#stat.last">,</s:if>
-											</s:iterator>
-										</a>
-									</s:if>
-								</td>
-							</tr>
-							<s:if test="operators.size > 0">
-								<tr class="row_<s:property value="id" /> hidden">
-									<td colspan="4">
-										<table class="inner">
-											<s:iterator value="operators" id="cao">
-												<s:if test="#cao.isVisibleTo(permissions)">
-													<tr>
-														<td>
-															<pics:permission perm="ManageOperators">
-																<a href="FacilitiesEdit.action?id=<s:property value="#cao.operator.id"/>"><s:property value="#cao.operator.name"/></a>
-															</pics:permission>
-															<pics:permission perm="ManageOperators" negativeCheck="true">
-																<s:property value="#cao.operator.name" />
-															</pics:permission>
-														</td>
-														<td><s:property value="#cao.status" /></td>
-														<td><s:date name="#cao.statusChangedDate" /></td>
-													</tr>
-												</s:if>
-											</s:iterator>
-										</table>
-									</td>
-								</tr>
-							</s:if>
-						</s:iterator>
-						<tr>
-							<td colspan="4" class="center">
-								<a href="#" onclick="showAll('expired_<s:property value="getSafeName(#classType.name)" />'); return false;" class="preview"><s:text name="%{scope}.link.ViewAll" /></a>
-							</td>
-						</tr>
-					</table>
-				</s:if>
 			</s:iterator>
 		</td>
 		<td style="width: 45%; padding-right: 5%;">
@@ -215,63 +141,20 @@
 					<thead>
 					<tr>
 						<th><s:text name="global.Name" /></th>
-						<th><s:text name="global.SafetyProfessional" /></th>
 						<th><s:text name="AuditStatus.Expired" /></th>
-						<th><s:text name="button.View" /></th>
 					</tr>
 					</thead>
 					<s:iterator value="expiredAudits">
 						<tr>
 							<td>
 								<a href="Audit.action?auditID=<s:property value="id" />">
-									<s:property value="auditType.auditName" />
-									<s:if test="auditFor.length() > 0">: <s:property value="#audit.auditFor" /></s:if>
+									<s:property value="auditType.auditName" /><s:if test="auditFor.length() > 0">: <s:property value="auditFor" /></s:if>
 									<s:if test="auditType.classType == 'Policy'"><br /><span style="font-size: 10px"><s:date name="effectiveDate" /></span></s:if>
 								</a>
 							</td>
-							<td><s:property value="auditor.name" /></td>
 							<td><s:date name="expiresDate" /></td>
-							<td>
-								<s:if test="operators.size > 0">
-									<a href="#" onclick="$('tr.row_'+<s:property value="id" />).toggle(); return false;">
-										<s:iterator value="getCaoStats(permissions).keySet()" id="status" status="stat">
-											<s:property value="getCaoStats(permissions).get(#status)" />
-											<s:if test="getCaoStats(permissions).get(#status) > 1"><s:text name="global.Operators" /></s:if><s:else><s:text name="global.Operator" /></s:else><s:if test="!#stat.last">,</s:if>
-										</s:iterator>
-									</a>
-								</s:if>
-							</td>
 						</tr>
-						<s:if test="operatorsVisible.size > 0">
-							<tr class="row_<s:property value="id" /> hidden">
-								<td colspan="4">
-									<table class="inner">
-										<s:iterator value="operatorsVisible" id="cao">
-											<s:if test="#cao.isVisibleTo(permissions)">
-												<tr>
-													<td>
-														<pics:permission perm="ManageOperators">
-															<a href="FacilitiesEdit.action?id=<s:property value="#cao.operator.id"/>"><s:property value="#cao.operator.name"/></a>
-														</pics:permission>
-														<pics:permission perm="ManageOperators" negativeCheck="true">
-															<s:property value="#cao.operator.name" />
-														</pics:permission>
-													</td>
-													<td><s:property value="#cao.status" /></td>
-													<td><s:date name="#cao.statusChangedDate" /></td>
-												</tr>
-											</s:if>
-										</s:iterator>
-									</table>
-								</td>
-							</tr>
-						</s:if>
 					</s:iterator>
-					<tr>
-						<td colspan="4" class="center">
-							<a href="#" onclick="showAll('expired'); return false;" class="preview"><s:text name="%{scope}.link.ViewAll" /></a>
-						</td>
-					</tr>
 				</table>
 			</s:if>
 		</td>

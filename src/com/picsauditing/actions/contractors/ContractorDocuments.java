@@ -85,8 +85,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 
 					imAudits.add(audit);
 				}
-			} else if ((audit.getAuditType().getClassType().isAudit() || audit.getAuditType().getClassType().isPolicy())
-					&& !audit.getAuditType().isAnnualAddendum()) {
+			} else if (audit.isExpired() && audit.getCurrentOperators().size() > 0) {
 				if (!expiredAudits.contains(audit))
 					expiredAudits.add(audit);
 			}
@@ -263,7 +262,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 			if (o1.getAuditType().isAnnualAddendum() && o2.getAuditType().isAnnualAddendum())
 				return o2.getAuditFor().compareTo(o1.getAuditFor());
 			else if (o1.isExpired() && o2.isExpired())
-				return o1.getExpiresDate().compareTo(o2.getExpiresDate());
+				return o2.getExpiresDate().compareTo(o1.getExpiresDate());
 			else
 				return o1.getCreationDate().compareTo(o2.getCreationDate());
 		}
