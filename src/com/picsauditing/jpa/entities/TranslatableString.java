@@ -50,28 +50,30 @@ public class TranslatableString {
 	}
 
 	public void handleTranslation(Locale locale, String translation) {
+		// Use these variables to improve readability
+		String fr_CA = locale.toString();
+		String fr = locale.getLanguage();
+		String en = Locale.ENGLISH.toString();
 
 		if (Strings.isEmpty(translation)) {
 			// Delete the translation
-			if (hasTranslation(locale.toString())) {
-				// i.e. Delete fr_CA
-				deleteTranslation(locale.toString());
-			} else if (hasTranslation(locale.getLanguage())) {
-				// i.e. Delete fr
-				deleteTranslation(locale.getLanguage());
+			if (hasTranslation(fr_CA)) {
+				deleteTranslation(fr_CA);
+			} else if (hasTranslation(fr)) {
+				deleteTranslation(fr);
 			} else {
-				deleteTranslation(Locale.ENGLISH.toString());
+				deleteTranslation(en);
 			}
 		} else {
-			if (translation.equals(translations.get(Locale.ENGLISH.toString()).getValue())) {
+			if (translation.equals(translations.get(en).getValue())) {
 				// ignore this value
 			} else {
-				if (hasTranslation(locale.getLanguage())
-						&& translation.equals(translations.get(locale.getLanguage()).getValue())) {
+				if (hasTranslation(fr_CA)
+						&& translation.equals(translations.get(fr_CA).getValue())) {
 					// ignore values that are the same
 				} else {
-					boolean insert = !hasTranslation(locale.toString());
-					putTranslation(locale.toString(), translation, insert);
+					boolean insert = !hasTranslation(fr_CA);
+					putTranslation(fr_CA, translation, insert);
 				}
 			}
 		}
