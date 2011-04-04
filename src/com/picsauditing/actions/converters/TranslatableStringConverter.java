@@ -36,6 +36,10 @@ public class TranslatableStringConverter extends StrutsTypeConverter {
 
 	@Override
 	public String convertToString(Map context, Object o) {
-		return o.toString();
+		try {
+			return o.toString();
+		} catch (Exception e) {
+			return "";
+		}
 	}
 }
