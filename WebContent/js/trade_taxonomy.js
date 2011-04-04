@@ -13,7 +13,7 @@ $(function() {
 				"data": function(node) {
 					result = $('#suggest').serialize();
 					if (node.attr) {
-						result += "&trade=" + node.data('jstree').id;
+						result += "trade=" + node.data('jstree').id;
 					}
 					return result;
 				}
@@ -24,6 +24,11 @@ $(function() {
 			"select_node": true,
 			"hover_node":true
 			}
+		},
+		"ui": {
+			"select_limit": -1,
+			"select_multiple_modifier": "ctrl", 
+			/*"select_multiple_modifier": "shift"*/
 		},
 		"contextmenu": {
 			"show_at_node": false,
@@ -49,15 +54,8 @@ $(function() {
 			}
 		},
 		"plugins": ["themes", "json_data", "types", "dnd", "contextmenu", "ui"]
-	}).bind("move_node.jstree", function (e, data) {
-		var np = data.rslt.np.attr('id').split('_');
-		alert("move");
-		var types=[], ids=[];
-		data.inst._get_children(data.rslt.np).each(function(i) {
-			var n = $(this).attr('id').split('_');
-			types.push(n[0]);
-			ids.push(n[1]);
-		});
+	}).bind("move_node.jstree", function () {
+		console.log("move");
 		startThinking();
 		$.ajax({
 			async: false,
@@ -73,11 +71,13 @@ $(function() {
 			},
 			success: function(r) {
 				if (r.success) {
+					/*
 					data.inst.refresh(data.rslt.np);
 					data.inst.refresh(data.rslt.op);
 					data.inst.open_node(data.rslt.op);
+					*/
 				} else {
-					$.jstree.rollback(data.rlbk);
+					/*$.jstree.rollback(data.rlbk);*/
 				}
 				stopThinking();
 			}
