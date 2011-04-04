@@ -91,7 +91,7 @@ function setMainStatus(message) {
 	}
 }
 
-mainStatus
+/*mainStatus*/
 
 function augment (oSelf, oOther) {
     if (oSelf == null) {
