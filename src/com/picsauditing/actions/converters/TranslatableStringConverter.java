@@ -27,7 +27,7 @@ public class TranslatableStringConverter extends StrutsTypeConverter {
 			}
 
 			Locale locale = ActionContext.getContext().getLocale();
-			response.modifyTranslation(locale.toString(), values[0]);
+			response.handleTranslation(locale, values[0]);
 		} else {
 			response = null;
 		}

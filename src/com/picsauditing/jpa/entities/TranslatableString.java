@@ -1,43 +1,77 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.util.Strings;
 
 public class TranslatableString {
 
-	private Map<String, String> translations = new HashMap<String, String>();
-	private Map<String, Boolean> modified = new HashMap<String, Boolean>();
+	private Map<String, Translation> translations = new HashMap<String, Translation>();
 
 	public void putTranslation(String locale, String translation) {
-		this.translations.put(locale, translation);
-		this.modified.put(locale, false);
+		putTranslation(locale, translation, false);
+	}
+
+	public void putTranslation(String locale, String translation, boolean insert) {
+		Translation t = new Translation(translation);
+		t.setInsert(insert);
+		this.translations.put(locale, t);
 	}
 
 	public void modifyTranslation(String locale, String translation) {
-		this.translations.put(locale, translation);
-		this.modified.put(locale, true);
+		Translation t = new Translation(translation);
+		t.setModified(true);
+		translations.put("locale", t);
 	}
 
 	public void putTranslations(Map<String, String> translations) {
+		putTranslations(translations, false);
+	}
+
+	public void putTranslations(Map<String, String> translations, boolean insert) {
 		for (Map.Entry<String, String> translation : translations.entrySet()) {
-			this.translations.put(translation.getKey(), translation.getValue());
-			this.modified.put(translation.getKey(), false);
+			putTranslation(translation.getKey(), translation.getValue(), insert);
 		}
 	}
 
-	public void putTranslations(List<AppTranslation> translations) {
-		for (AppTranslation translation : translations) {
-			this.translations.put(translation.getLocale(), translation.getValue());
-		}
+	public void deleteTranslation(String locale) {
+		translations.get(locale).setDelete(true);
 	}
 
 	public boolean isModified(String locale) {
-		return modified.get(locale);
+		return translations.get(locale).isModified();
+	}
+
+	public boolean hasTranslation(String locale) {
+		return translations.containsKey(locale);
+	}
+
+	public void handleTranslation(Locale locale, String translation) {
+
+		if (Strings.isEmpty(translation)) {
+			if (hasTranslation(locale.toString())) {
+				deleteTranslation(locale.toString());
+			} else if (hasTranslation(locale.getLanguage())) {
+				deleteTranslation(locale.getLanguage());
+			} else {
+				deleteTranslation(Locale.ENGLISH.toString());
+			}
+		} else {
+			if (translation.equals(translations.get(Locale.ENGLISH.toString()).getValue())) {
+				// ignore this value
+			} else {
+				if (hasTranslation(locale.getLanguage())
+						&& translation.equals(translations.get(locale.getLanguage()).getValue())) {
+					// ignore values that are the same
+				} else {
+					boolean insert = !hasTranslation(locale.toString());
+					putTranslation(locale.toString(), translation, insert);
+				}
+			}
+		}
 	}
 
 	/**
@@ -52,7 +86,7 @@ public class TranslatableString {
 			locale = Locale.ENGLISH;
 		}
 
-		return translations.get(getLocale(locale));
+		return translations.get(getLocale(locale)).getValue();
 	}
 
 	private String getLocale(Locale locale) {
@@ -65,11 +99,46 @@ public class TranslatableString {
 		return Locale.ENGLISH.toString();
 	}
 
-	public boolean isSet() {
-		return translations.size() > 0;
-	}
+	public class Translation {
+		private String value;
+		private boolean modified = false;
+		private boolean insert = false;
+		private boolean delete = false;
 
-	public Collection<String> values() {
-		return translations.values();
+		public Translation(String value) {
+			this.value = value;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+		public boolean isModified() {
+			return modified;
+		}
+
+		public void setModified(boolean modified) {
+			this.modified = modified;
+		}
+
+		public boolean isInsert() {
+			return insert;
+		}
+
+		public void setInsert(boolean insert) {
+			this.insert = insert;
+		}
+
+		public boolean isDelete() {
+			return delete;
+		}
+
+		public void setDelete(boolean delete) {
+			this.delete = delete;
+		}
 	}
 }
