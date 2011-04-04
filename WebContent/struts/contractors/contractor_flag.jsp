@@ -59,7 +59,7 @@ $(function() {
 		changeMonth: true,
 		changeYear:true,
 		yearRange: '1940:'+ (new Date().getFullYear()+5),
-		showOn: 'button',
+		showOn: 'both',
 		buttonImage: 'images/icon_calendar.gif',
 		buttonImageOnly: true,
 		buttonText: 'Choose a date...',
@@ -232,7 +232,7 @@ function checkReason(id) {
 								</li>
 								<li> 
 									<span class="label-txt">Until:</span> 
-									<input id="forceEnd" name="forceEnd" size="8" type="text" class="datepicker" />
+									<input id="forceEnd" name="forceEnd" size="10" type="text" class="datepicker" />
 								</li>
 								<li class="required">
 									<span class="label-txt">Reason:</span> 
@@ -392,7 +392,7 @@ function checkReason(id) {
 															</li> 
 															<li> 
 																<label>Until:</label> 
-																<input id="forceEnd_<s:property value="%{#data.id}" />" name="forceEnd" size="8" type="text" class="datepicker" />
+																<input id="forceEnd_<s:property value="%{#data.id}" />" name="forceEnd" size="10" type="text" class="datepicker" />
 															</li>
 															<li class="required">
 																<label>Reason for Forcing:</label>
