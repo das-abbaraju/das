@@ -63,6 +63,11 @@
 				<a class="hist-category" href="#categoryID=<s:property value="#catNode.category.id"/>">
 				<s:property value="#catNode.category.name" />
 				<span class="cat-percent">
+					<s:if test="permissions.admin || permissions.auditor">
+						<s:if test="#catNode.override">
+							<img src="images/add_remove.png" />
+						</s:if>
+					</s:if>
 					<s:if test="showVerified">
 						<s:if test="#catNode.percentVerified < 100">
 							<s:if test="!conAudit.auditType.annualAddendum">
@@ -76,11 +81,6 @@
 					<s:else>
 						<s:property value="#catNode.percentComplete" />%
 					</s:else> 
-					<s:if test="permissions.admin || permissions.auditor">
-						<s:if test="#catNode.override">
-							<img src="images/edit_pencil.gif" />
-						</s:if>
-					</s:if>
 				</span>
 				</a> 
 				<s:set name="subcatNode" value="%{#catNode}" /> 
