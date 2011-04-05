@@ -128,8 +128,8 @@ public class TradeTaxonomy extends PicsActionSupport {
 		this.trade = trade;
 	}
 	
-	public void moveTrade(Trade [] nodes, Trade newParent) {
-		
+	public void moveTrade(Trade[] nodes, Trade newParent) {
+
 	}
 
 }
