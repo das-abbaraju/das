@@ -86,7 +86,6 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 	public String saveTradeAjax() throws Exception {
 		if (trade != null) {
-			System.out.println(trade.getName());
 			trade.setAuditColumns(permissions);
 			tradeDAO.save(trade);
 		}

@@ -16,12 +16,11 @@ public class TranslatableStringConverter extends StrutsTypeConverter {
 	public Object convertFromString(Map context, String[] values, Class toClass) {
 		TranslatableString response = new TranslatableString();
 
-		if (values.length > 0 && !Strings.isEmpty(values[0])) {
+		if (values.length > 0) {
 			try {
 				ActionInvocation invocation = ActionContext.getContext().getActionInvocation();
 				response = (TranslatableString) invocation.getStack().findValue(
 						context.get("conversion.property.fullName").toString());
-
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

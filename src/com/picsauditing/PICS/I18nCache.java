@@ -2,6 +2,7 @@ package com.picsauditing.PICS;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -144,17 +145,19 @@ public class I18nCache {
 			return;
 		Database db = new Database();
 		// Make sure we handle clearing the cache across multiple servers
-		for (Translation translation : value.getTranslations()) {
+		Iterator<Translation> iterator = value.getTranslations().iterator();
+		while(iterator.hasNext()) {
+			Translation translation = iterator.next();
 			String locale = translation.getLocale();
 			String newValue = Utilities.escapeQuotes(translation.getValue());
 			if (translation.isDelete()) {
 				String sql = "DELETE FROM app_translation WHERE msgKey = '" + key + "' AND locale = '" + locale + "'";
 				db.executeUpdate(sql);
 				cache.remove(key, locale);
-				translation.commit();
+				iterator.remove();
 			} else if (translation.isModified()) {
-				String sql = "UPDATE app_translation SET value = '" + newValue + "' WHERE msgKey = '" + key
-						+ "' AND locale = '" + locale + "' AND updateDate = NOW()";
+				String sql = "UPDATE app_translation SET msgValue = '" + newValue + "', updateDate = NOW() WHERE msgKey = '" + key
+						+ "' AND locale = '" + locale + "'";
 				db.executeUpdate(sql);
 				cache.put(key, locale, translation.getValue());
 				translation.commit();

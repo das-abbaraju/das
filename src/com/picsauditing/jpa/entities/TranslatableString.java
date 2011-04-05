@@ -96,6 +96,8 @@ public class TranslatableString {
 	public String toString() {
 
 		String fallback = getLocale();
+		if (fallback == null)
+			fallback = Locale.ENGLISH.toString();
 		if (translations.containsKey(fallback))
 			return translations.get(fallback).getValue();
 		else
@@ -107,8 +109,8 @@ public class TranslatableString {
 		try {
 			locale = ActionContext.getContext().getLocale();
 		} catch (Exception e) {
-			System.out.println("Warning: Failed to get Locale from ActionContext. Using English");
-			locale = Locale.ENGLISH;
+			System.out.println("Warning: Failed to get Locale from ActionContext");
+			return null;
 		}
 
 		if (translations.containsKey(locale.toString())) {
@@ -117,7 +119,7 @@ public class TranslatableString {
 		if (translations.containsKey(locale.getLanguage())) {
 			return locale.getLanguage();
 		}
-		return Locale.ENGLISH.toString();
+		return null;
 	}
 
 	public class Translation {
