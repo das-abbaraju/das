@@ -17,6 +17,7 @@
 	<fieldset>
 	<h2>Attributes</h2>
 		<ol>
+			<!--
 			<li><label>Product:</label> <s:checkbox name="trade.product" value="trade.productI" />
 				<s:if test="trade.parent != null && trade.product == null">Inherited from parent</s:if>
 			</li>
@@ -34,6 +35,7 @@
 			<li><label>PSM Critical:</label> <s:checkbox name="trade.psmApplies" value="trade.psmAppliesI" />
 				<s:if test="trade.parent != null && trade.psmApplies == null">Inherited from parent</s:if>
 			</li>
+			-->
 		</ol>
 	</fieldset>
 	<fieldset class="form submit">
