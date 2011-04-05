@@ -17,6 +17,23 @@
 	<fieldset>
 	<h2>Attributes</h2>
 		<ol>
+			<li><label>Product:</label> <s:checkbox name="trade.product" value="trade.productI" />
+				<s:if test="trade.parent != null && trade.product == null">Inherited from parent</s:if>
+			</li>
+			<li><label>Service:</label> <s:checkbox name="trade.service" value="trade.serviceI" />
+				<s:if test="trade.parent != null && trade.service == null">Inherited from parent</s:if>
+			</li>
+			<s:if test="trade.productI">
+				<li><label>Product Critical:</label> <s:checkbox name="trade.riskLevel" value="trade.riskLevelI" />
+					<s:if test="trade.parent != null && trade.riskLevel == null">Inherited from parent</s:if>
+				</li>
+			</s:if>
+			<s:if test="trade.serviceI">
+				<p><label>Safety Critical:</label> <s:property value="trade.riskLevelI"/></p>
+			</s:if>
+			<li><label>PSM Critical:</label> <s:checkbox name="trade.psmApplies" value="trade.psmAppliesI" />
+				<s:if test="trade.parent != null && trade.psmApplies == null">Inherited from parent</s:if>
+			</li>
 		</ol>
 	</fieldset>
 	<fieldset class="form submit">
