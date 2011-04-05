@@ -17,6 +17,8 @@ public class TradeTaxonomy extends PicsActionSupport {
 	protected TradeDAO tradeDAO;
 	private Trade trade;
 
+	private List<Trade> trades;
+
 	@SuppressWarnings("unchecked")
 	public String json() {
 
@@ -106,30 +108,33 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return "trade";
 	}
 
+	@SuppressWarnings("unchecked")
+	public String moveTradeJson() {
+		
+		json = new JSONObject();
+		json.put("success", true);
+
+		return JSON;
+	}
+
 	public void setTradeDAO(TradeDAO tradeDAO) {
 		this.tradeDAO = tradeDAO;
 	}
 
 	public Trade getTrade() {
-		if (trade != null && trade.getName() == null) {
-			// fillTranslatableField(trade, "name");
-			// fillTranslatableField(trade, "name2");
-			// fillTranslatableField(trade, "help");
-			// trade.setName(getText(trade.getI18nKey("name")));
-			// String name2 = getText(trade.getI18nKey("name2"), "");
-			// if (Strings.isEmpty(name2))
-			// name2 = trade.getName();
-			// trade.setName2(name2);
-		}
 		return trade;
 	}
 
 	public void setTrade(Trade trade) {
 		this.trade = trade;
 	}
-	
-	public void moveTrade(Trade[] nodes, Trade newParent) {
 
+	public List<Trade> getTrades() {
+		return trades;
+	}
+
+	public void setTrades(List<Trade> trades) {
+		this.trades = trades;
 	}
 
 }

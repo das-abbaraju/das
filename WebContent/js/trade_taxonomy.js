@@ -35,6 +35,12 @@ $(function() {
 			"select_node": true,
 			"items": function(node) {
 				return {
+					"refresh": {
+						"label": "Refresh",
+						"action": function(node) {
+							this.refresh(node);
+						}
+					},
 					"rename": {
 						"label": "Rename",
 						"action": function() {
@@ -53,37 +59,35 @@ $(function() {
 				};
 			}
 		},
-		"plugins": ["themes", "json_data", "types", "dnd", "contextmenu", "ui"]
-	}).bind("move_node.jstree", function () {
-		console.log("move");
-		startThinking();
-		$.ajax({
-			async: false,
-			type: 'POST',
-			dataType: 'json',
-			url: '',
-			data: {
-				button: 'move',
-				types: types,
-				ids: ids,
-				parentType: np[0],
-				parentID: np[1]
-			},
-			success: function(r) {
-				if (r.success) {
-					/*
-					data.inst.refresh(data.rslt.np);
-					data.inst.refresh(data.rslt.op);
-					data.inst.open_node(data.rslt.op);
-					*/
-				} else {
-					/*$.jstree.rollback(data.rlbk);*/
-				}
-				stopThinking();
-			}
+		"plugins": ["themes", "json_data", "types", "dnd", "crrm", "contextmenu", "ui"]
+	}).bind("move_node.jstree", function (e, data) {
+		var parent = null;
+		if (data.rslt.np[0] !== this)
+			parent = data.rslt.np.data('jstree').id;
+		
+		var trades = [];
+		$.each(data.rslt.o, function(i, v) {
+			trades.push($(v).data('jstree').id);
 		});
+		
+		$.post('TradeTaxonomy!moveTradeJson.action',
+				{
+					trade: parent,
+					trades: trades
+				}, 
+				function(json) {
+					if (json.success) {
+						data.inst.deselect_all(data.inst.get_selected());
+						data.inst.select_node(data.rslt.o);
+					} else {
+						alert("Error moving trades. Please try again later");
+						$.jstree.rollback(data.rlbk);
+					}
+				}, 
+				'json');
 	});
-	$('#trade-nav').delegate('.jstree a', 'click', function(e) {
+
+	$('#trade-nav').delegate('.jstree a', 'dblclick', function(e) {
 		e.preventDefault();
 		var data = { trade: $(this).parent().data('jstree').id };
 		setMainStatus('Loading Trade');

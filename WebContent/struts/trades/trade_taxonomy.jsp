@@ -6,6 +6,7 @@
 <title>Trade Taxonomy</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/jsTree/jquery.jstree.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript" src="js/trade_taxonomy.js?v=<s:property value="version"/>"></script>
 <style>
