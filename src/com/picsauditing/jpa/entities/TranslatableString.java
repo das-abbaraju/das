@@ -69,11 +69,12 @@ public class TranslatableString {
 			if (translation.equals(translations.get(en).getValue())) {
 				// ignore this value
 			} else {
-				if (hasTranslation(fr_CA) && translation.equals(translations.get(fr_CA).getValue())) {
-					// ignore values that are the same
+				if (hasTranslation(fr_CA)) {
+					modifyTranslation(fr_CA, translation);
+				} else if (hasTranslation(fr)) {
+					modifyTranslation(fr, translation);
 				} else {
-					boolean insert = !hasTranslation(fr_CA);
-					putTranslation(fr_CA, translation, insert);
+					putTranslation(fr, translation, true);
 				}
 			}
 		}
@@ -91,7 +92,11 @@ public class TranslatableString {
 			locale = Locale.ENGLISH;
 		}
 
-		return translations.get(getLocale(locale)).getValue();
+		String fallback = getLocale(locale);
+		if (translations.containsKey(fallback))
+			return translations.get(fallback).getValue();
+		else
+			return null;
 	}
 
 	private String getLocale(Locale locale) {
