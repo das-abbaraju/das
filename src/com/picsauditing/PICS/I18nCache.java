@@ -151,19 +151,19 @@ public class I18nCache {
 				String sql = "DELETE FROM app_translation WHERE msgKey = '" + key + "' AND locale = '" + locale + "'";
 				db.executeUpdate(sql);
 				cache.remove(key, locale);
-				translation.setDelete(false);
+				translation.commit();
 			} else if (translation.isModified()) {
 				String sql = "UPDATE app_translation SET value = '" + newValue + "' WHERE msgKey = '" + key
 						+ "' AND locale = '" + locale + "' AND updateDate = NOW()";
 				db.executeUpdate(sql);
 				cache.put(key, locale, translation.getValue());
-				translation.setModified(false);
+				translation.commit();
 			} else if (translation.isInsert()) {
 				String sql = "INSERT INTO app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, lastUsed)"
 						+ " VALUES ('" + key + "', '" + locale + "', '" + newValue + "', 1, 1, NOW(), NOW(), NOW())";
 				db.executeInsert(sql);
 				cache.put(key, locale, translation.getValue());
-				translation.setInsert(false);
+				translation.commit();
 			}
 		}
 	}

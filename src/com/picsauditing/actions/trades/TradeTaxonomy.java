@@ -87,7 +87,6 @@ public class TradeTaxonomy extends PicsActionSupport {
 	public String saveTradeAjax() throws Exception {
 		if (trade != null) {
 			System.out.println(trade.getName());
-			// saveTranslatableField(trade, "name");
 			trade.setAuditColumns(permissions);
 			tradeDAO.save(trade);
 		}
@@ -97,7 +96,6 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 	public String deleteTradeAjax() throws Exception {
 		if (trade.getId() > 0) {
-			// deleteTranslations(trade);
 			tradeDAO.remove(trade);
 		}
 

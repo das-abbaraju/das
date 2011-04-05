@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -58,7 +59,11 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
 			if (field.getType().equals(TranslatableString.class)) {
 				I18nCache i18nCache = I18nCache.getInstance();
 				TranslatableString translatable = new TranslatableString();
-				translatable.putTranslations(i18nCache.getText(getI18nKey(field.getName())));
+				Map<String, String> translationCache = i18nCache.getText(getI18nKey(field.getName()));
+				for (String key : translationCache.keySet()) {
+					translatable.putTranslation(key, translationCache.get(key), false);
+				}
+
 				Method declaredMethod = this.getClass().getDeclaredMethod(
 						"set" + StringUtil.capitalize(field.getName()), TranslatableString.class);
 				declaredMethod.invoke(this, translatable);

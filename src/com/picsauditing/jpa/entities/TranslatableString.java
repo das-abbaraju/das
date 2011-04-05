@@ -12,70 +12,79 @@ public class TranslatableString {
 
 	private Map<String, Translation> translations = new HashMap<String, Translation>();
 
-	public void putTranslation(String locale, String translation) {
-		putTranslation(locale, translation, false);
+	public Collection<Translation> getTranslations() {
+		return translations.values();
 	}
 
 	public void putTranslation(String locale, String translation, boolean insert) {
 		Translation t = new Translation(locale, translation);
-		t.setInsert(insert);
+		t.insert = insert;
 		translations.put(locale, t);
 	}
 
-	public void modifyTranslation(String locale, String translation) {
-		Translation t = new Translation(locale, translation);
-		t.setModified(true);
-		translations.put(locale, t);
-	}
-
-	public void putTranslations(Map<String, String> translations) {
-		putTranslations(translations, false);
-	}
-
-	public void putTranslations(Map<String, String> translations, boolean insert) {
-		for (Map.Entry<String, String> translation : translations.entrySet()) {
-			putTranslation(translation.getKey(), translation.getValue(), insert);
+	/**
+	 * Insert new or modify existing
+	 * 
+	 * @param locale
+	 * @param value
+	 */
+	private void postTranslation(String locale, String value) {
+		Translation t;
+		if (translations.containsKey(locale)) {
+			t = translations.get(locale);
+			if (value.equals(t.getValue()))
+				return;
+			t.value = value;
+			t.modified = true;
+		} else {
+			t = new Translation(locale, value);
+			t.insert = true;
 		}
+		translations.put(locale, t);
 	}
 
-	public void deleteTranslation(String locale) {
-		translations.get(locale).setDelete(true);
+	private void deleteTranslation(String locale) {
+		if (translations.containsKey(locale))
+			translations.get(locale).delete = true;
 	}
 
-	public boolean isModified(String locale) {
-		return translations.get(locale).isModified();
-	}
-
-	public boolean hasTranslation(String locale) {
+	private boolean hasTranslation(String locale) {
 		return translations.containsKey(locale);
 	}
 
-	public void handleTranslation(Locale locale, String translation) {
+	public void handleTranslation(Locale locale, String newValue) {
 		// Use these variables to improve readability
-		String fr_CA = locale.toString();
-		String fr = locale.getLanguage();
-		String en = Locale.ENGLISH.toString();
+		String en_US = locale.toString();
+		String en = locale.getLanguage();
 
-		if (Strings.isEmpty(translation)) {
-			// Delete the translation
-			if (hasTranslation(fr_CA)) {
-				deleteTranslation(fr_CA);
-			} else if (hasTranslation(fr)) {
-				deleteTranslation(fr);
+		if (en.equals(en_US)) {
+			// We aren't trying to save a country specific like "en_US"
+			// This is the easiest example, just save the language "en"
+			if (Strings.isEmpty(newValue))
+				deleteTranslation(en);
+			else
+				postTranslation(en, newValue);
+		}
+
+		// When we're saving a country specific language, it's more complex
+		if (Strings.isEmpty(newValue)) {
+			// If we are clearing out the field, we can just erase the translation value.
+			if (hasTranslation(en_US)) {
+				deleteTranslation(en_US);
 			} else {
+				// The only problem here is that if we clear out a French translation, the English will keep coming up
 				deleteTranslation(en);
 			}
 		} else {
-			if (translation.equals(translations.get(en).getValue())) {
-				// ignore this value
-			} else {
-				if (hasTranslation(fr_CA)) {
-					modifyTranslation(fr_CA, translation);
-				} else if (hasTranslation(fr)) {
-					modifyTranslation(fr, translation);
+			if (hasTranslation(en_US)) {
+				if (translations.get(en).getValue().equals(newValue)) {
+					// Delete the country specific, since this can now fall back to the base language version
+					deleteTranslation(en_US);
 				} else {
-					putTranslation(fr, translation, true);
+					postTranslation(en_US, newValue);
 				}
+			} else {
+				postTranslation(en, newValue);
 			}
 		}
 	}
@@ -85,21 +94,23 @@ public class TranslatableString {
 	 */
 	@Override
 	public String toString() {
-		Locale locale;
-		try {
-			locale = ActionContext.getContext().getLocale();
-		} catch (Exception e) {
-			locale = Locale.ENGLISH;
-		}
 
-		String fallback = getLocale(locale);
+		String fallback = getLocale();
 		if (translations.containsKey(fallback))
 			return translations.get(fallback).getValue();
 		else
 			return null;
 	}
 
-	private String getLocale(Locale locale) {
+	public String getLocale() {
+		Locale locale;
+		try {
+			locale = ActionContext.getContext().getLocale();
+		} catch (Exception e) {
+			System.out.println("Warning: Failed to get Locale from ActionContext. Using English");
+			locale = Locale.ENGLISH;
+		}
+
 		if (translations.containsKey(locale.toString())) {
 			return locale.toString();
 		}
@@ -107,10 +118,6 @@ public class TranslatableString {
 			return locale.getLanguage();
 		}
 		return Locale.ENGLISH.toString();
-	}
-
-	public Collection<Translation> getTranslations() {
-		return translations.values();
 	}
 
 	public class Translation {
@@ -129,36 +136,26 @@ public class TranslatableString {
 			return value;
 		}
 
-		public void setValue(String value) {
-			this.value = value;
-		}
-
 		public boolean isModified() {
 			return modified;
-		}
-
-		public void setModified(boolean modified) {
-			this.modified = modified;
 		}
 
 		public boolean isInsert() {
 			return insert;
 		}
 
-		public void setInsert(boolean insert) {
-			this.insert = insert;
-		}
-
 		public boolean isDelete() {
 			return delete;
 		}
 
-		public void setDelete(boolean delete) {
-			this.delete = delete;
-		}
-
 		public String getLocale() {
 			return locale;
+		}
+
+		public void commit() {
+			delete = false;
+			modified = false;
+			insert = false;
 		}
 	}
 }
