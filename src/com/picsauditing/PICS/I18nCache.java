@@ -10,13 +10,16 @@ import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.TranslatableString;
+import com.picsauditing.jpa.entities.TranslatableString.Translation;
 import com.picsauditing.search.Database;
+import com.picsauditing.util.Strings;
 
 public class I18nCache {
 
-	public final String DEFAULT_LANGUAGE = "en";
-	public final String DEFAULT_TRANSLATION = "Translation missing";
+	static public final String DEFAULT_LANGUAGE = "en";
+	static public final String DEFAULT_TRANSLATION = "Translation missing";
 
 	private final static I18nCache INSTANCE = new I18nCache();
 
@@ -36,7 +39,7 @@ public class I18nCache {
 	public boolean hasKey(String key, Locale locale) {
 		return hasKey(key, getLocaleFallback(key, locale, false));
 	}
-	
+
 	public Map<String, String> getText(String key) {
 		return getCache().row(key);
 	}
@@ -83,8 +86,8 @@ public class I18nCache {
 				Database db = new Database();
 				List<BasicDynaBean> messages = db.select("SELECT msgKey, locale, msgValue FROM app_translation", false);
 				for (BasicDynaBean message : messages) {
-					cache.put(String.valueOf(message.get("msgKey")), String.valueOf(message.get("locale")), String
-							.valueOf(message.get("msgValue")));
+					cache.put(String.valueOf(message.get("msgKey")), String.valueOf(message.get("locale")),
+							String.valueOf(message.get("msgValue")));
 				}
 				long endTime = System.currentTimeMillis();
 				System.out.println("Built i18n Cache in " + (endTime - startTime) + "ms");
@@ -136,8 +139,33 @@ public class I18nCache {
 		return localeString;
 	}
 
-	public void saveTranslatableString(TranslatableString value) {
-		System.out.println("TODO save " + value);
+	public void saveTranslatableString(String key, TranslatableString value) throws SQLException {
+		if (value == null)
+			return;
+		Database db = new Database();
+		// Make sure we handle clearing the cache across multiple servers
+		for (Translation translation : value.getTranslations()) {
+			String locale = translation.getLocale();
+			String newValue = Utilities.escapeQuotes(translation.getValue());
+			if (translation.isDelete()) {
+				String sql = "DELETE FROM app_translation WHERE msgKey = '" + key + "' AND locale = '" + locale + "'";
+				db.executeUpdate(sql);
+				cache.remove(key, locale);
+				translation.setDelete(false);
+			} else if (translation.isModified()) {
+				String sql = "UPDATE app_translation SET value = '" + newValue + "' WHERE msgKey = '" + key
+						+ "' AND locale = '" + locale + "' AND updateDate = NOW()";
+				db.executeUpdate(sql);
+				cache.put(key, locale, translation.getValue());
+				translation.setModified(false);
+			} else if (translation.isInsert()) {
+				String sql = "INSERT INTO app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, lastUsed)"
+						+ " VALUES ('" + key + "', '" + locale + "', '" + newValue + "', 1, 1, NOW(), NOW(), NOW())";
+				db.executeInsert(sql);
+				cache.put(key, locale, translation.getValue());
+				translation.setInsert(false);
+			}
+		}
 	}
 
 }

@@ -73,8 +73,9 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
 			if (field.getType().equals(TranslatableString.class)) {
 				I18nCache i18nCache = I18nCache.getInstance();
 				Method getField = this.getClass().getDeclaredMethod("get" + StringUtil.capitalize(field.getName()));
+				String key = this.getI18nKey(field.getName());
 				TranslatableString value = (TranslatableString) getField.invoke(this);
-				i18nCache.saveTranslatableString(value);
+				i18nCache.saveTranslatableString(key, value);
 			}
 		}
 	}

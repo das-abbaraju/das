@@ -190,8 +190,7 @@ public class Trade extends BaseTable implements Indexable {
 	}
 
 	/**
-	 * The short version of the trade, typically only included when in context
-	 * with its parent trades
+	 * The short version of the trade, typically only included when in context with its parent trades
 	 */
 	@Transient
 	public TranslatableString getName2() {

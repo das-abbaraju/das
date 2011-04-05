@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -16,15 +17,15 @@ public class TranslatableString {
 	}
 
 	public void putTranslation(String locale, String translation, boolean insert) {
-		Translation t = new Translation(translation);
+		Translation t = new Translation(locale, translation);
 		t.setInsert(insert);
-		this.translations.put(locale, t);
+		translations.put(locale, t);
 	}
 
 	public void modifyTranslation(String locale, String translation) {
-		Translation t = new Translation(translation);
+		Translation t = new Translation(locale, translation);
 		t.setModified(true);
-		translations.put("locale", t);
+		translations.put(locale, t);
 	}
 
 	public void putTranslations(Map<String, String> translations) {
@@ -68,8 +69,7 @@ public class TranslatableString {
 			if (translation.equals(translations.get(en).getValue())) {
 				// ignore this value
 			} else {
-				if (hasTranslation(fr_CA)
-						&& translation.equals(translations.get(fr_CA).getValue())) {
+				if (hasTranslation(fr_CA) && translation.equals(translations.get(fr_CA).getValue())) {
 					// ignore values that are the same
 				} else {
 					boolean insert = !hasTranslation(fr_CA);
@@ -104,13 +104,19 @@ public class TranslatableString {
 		return Locale.ENGLISH.toString();
 	}
 
+	public Collection<Translation> getTranslations() {
+		return translations.values();
+	}
+
 	public class Translation {
+		private String locale;
 		private String value;
 		private boolean modified = false;
 		private boolean insert = false;
 		private boolean delete = false;
 
-		public Translation(String value) {
+		public Translation(String locale, String value) {
+			this.locale = locale;
 			this.value = value;
 		}
 
@@ -144,6 +150,10 @@ public class TranslatableString {
 
 		public void setDelete(boolean delete) {
 			this.delete = delete;
+		}
+
+		public String getLocale() {
+			return locale;
 		}
 	}
 }
