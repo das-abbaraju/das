@@ -39,9 +39,9 @@ public class TradeTaxonomy extends PicsActionSupport {
 				o.put("state", "closed");
 			}
 
-			JSONObject data = new JSONObject();
-			data.put("id", trade.getId());
-			o.put("metadata", data);
+			JSONObject attr = new JSONObject();
+			attr.put("id", trade.getId());
+			o.put("attr", attr);
 
 			result.add(o);
 		}
@@ -93,12 +93,16 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return "trade";
 	}
 
+	@SuppressWarnings("unchecked")
 	public String deleteTradeAjax() throws Exception {
-		if (trade.getId() > 0) {
-			tradeDAO.remove(trade);
+		if (trades.size() > 0) {
+			// tradeDAO.remove(trade);
 		}
 
-		return "trade";
+		json = new JSONObject();
+		json.put("success", true);
+
+		return JSON;
 	}
 
 	public String tradeAjax() {
@@ -107,7 +111,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 	@SuppressWarnings("unchecked")
 	public String moveTradeJson() {
-		
+
 		json = new JSONObject();
 		json.put("success", true);
 

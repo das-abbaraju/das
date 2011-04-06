@@ -31,7 +31,8 @@
 <table id="trades">
 	<tr>
 		<td id="trade-nav">Loading Trades</td>
-		<td id="trade-detail">Click a trade on the left
+		<td id="trade-detail">
+			<div class="info">Click a trade on the left</div>
 			<div id="loadingTrade"></div>
 		</td>
 	</tr>
