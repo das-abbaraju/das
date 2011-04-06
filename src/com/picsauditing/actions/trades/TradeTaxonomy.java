@@ -97,17 +97,12 @@ public class TradeTaxonomy extends PicsActionSupport {
 	public String deleteTradeAjax() throws Exception {
 		if (trades.size() > 0) {
 			for (Trade t : trades) {
-				List<Trade> children = t.getChildren();
-				if (children.size() > 0) {
-					// has children
-					Trade parent = t.getParent();
-					for (Trade child : children) {
-						child.setParent(parent);
-					}
-				} else {
-					// no children
-					tradeDAO.remove(t);
+				Trade parent = t.getParent();
+				for (Trade child : t.getChildren()) {
+					child.setParent(parent);
+					tradeDAO.save(child);
 				}
+				tradeDAO.remove(t);
 			}
 		}
 
