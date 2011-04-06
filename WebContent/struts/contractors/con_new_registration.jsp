@@ -208,6 +208,12 @@ $(function() {
 		if ($('#addToNotes').val() == '')
 			$('#addHere').text('');
 	});
+	<s:if test="permissions.admin">
+		$('#notesHere').dblclick(function() {
+			$('#notesHere').hide();
+			$('#editRequestNotes').show();
+		});
+	</s:if>
 });
 
 function fillNotes(){
@@ -523,12 +529,20 @@ function getMatches(requestID) {
 			</div>
 		</li>
 		<li>
+			(<s:text name="%{scope}.message.MaximumCharacters" />)
+			<s:if test="permissions.admin">
+				<a href="#" onclick="return false;" class="cluetip" rel="#doubleClickMessage" title="Edit"><img src="images/help.gif" alt="Edit" /></a>
+				<div id="doubleClickMessage">
+					<s:text name="%{scope}.message.DoubleClickToEdit" />
+				</div>
+			</s:if><br />
 			<div id="notesHere">
 				<pre id="addHere"></pre>
 				<s:if test="newContractor.notes.length() > 0">
 					<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
 				</s:if>
-			</div>					
+			</div>
+			<s:textarea name="newContractor.notes" cssStyle="display: none; clear: both;" id="editRequestNotes" cols="40" rows="9" />					
 		</li>
 		<s:if test="newContractor.id == 0">
 			<li><div class="info"><s:text name="%{scope}.message.AutoEmailOnSave" /></div></li>

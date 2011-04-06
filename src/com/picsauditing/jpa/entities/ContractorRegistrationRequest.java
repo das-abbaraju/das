@@ -248,4 +248,9 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	public String getRequestedByUserString() {
 		return requestedByUser == null ? requestedByUserOther : requestedByUser.getName();
 	}
+	
+	@Transient
+	public void contact() {
+		contactCount = contactCount + 1;
+	}
 }

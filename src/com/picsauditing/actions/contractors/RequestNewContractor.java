@@ -73,6 +73,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected EmailAttachmentDAO attachmentDAO;
 
 	protected boolean redirect = false;
+	protected boolean increaseContactCount = true;
 	protected int conID;
 	protected int opID;
 	protected int requestID;
@@ -342,6 +343,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			else
 				return SUCCESS;
 		}
+		
+		if (increaseContactCount)
+			newContractor.contact();
 
 		newContractor = crrDAO.save(newContractor);
 
@@ -369,9 +373,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	private String contact(String notes) {
 		newContractor.setNotes(prepend(notes, newContractor.getNotes()));
-		newContractor.setContactCount(newContractor.getContactCount() + 1);
 		newContractor.setLastContactedBy(new User(permissions.getUserId()));
 		newContractor.setLastContactDate(new Date());
+		newContractor.contact();
 		newContractor.setAuditColumns(permissions);
 		crrDAO.save(newContractor);
 
@@ -553,6 +557,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public void setRequestedUser(int requestedUser) {
 		this.requestedUser = requestedUser;
+	}
+
+	public boolean isIncreaseContactCount() {
+		return increaseContactCount;
+	}
+
+	public void setIncreaseContactCount(boolean increaseContactCount) {
+		this.increaseContactCount = increaseContactCount;
 	}
 
 	public int getConID() {
