@@ -113,8 +113,15 @@ public class TradeTaxonomy extends PicsActionSupport {
 	public String moveTradeJson() {
 
 		json = new JSONObject();
-		json.put("success", true);
 
+		try {
+			for (Trade t : trades) {
+				t.setParent(trade);
+			}
+			json.put("success", true);
+		} catch (Exception e) {
+			json.put("success", false);
+		}
 		return JSON;
 	}
 
