@@ -23,6 +23,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
+import javax.persistence.PreRemove;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -83,6 +84,11 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
 				i18nCache.saveTranslatableString(key, value);
 			}
 		}
+	}
+
+	@PreRemove
+	public void preRemove() throws Exception {
+
 	}
 
 	@Id
