@@ -96,7 +96,19 @@ public class TradeTaxonomy extends PicsActionSupport {
 	@SuppressWarnings("unchecked")
 	public String deleteTradeAjax() throws Exception {
 		if (trades.size() > 0) {
-			// tradeDAO.remove(trade);
+			for (Trade t : trades) {
+				List<Trade> children = t.getChildren();
+				if (children.size() > 0) {
+					// has children
+					Trade parent = t.getParent();
+					for (Trade child : children) {
+						child.setParent(parent);
+					}
+				} else {
+					// no children
+					tradeDAO.remove(t);
+				}
+			}
 		}
 
 		json = new JSONObject();
@@ -111,9 +123,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 	@SuppressWarnings("unchecked")
 	public String moveTradeJson() {
-
 		json = new JSONObject();
-
 		try {
 			for (Trade t : trades) {
 				t.setParent(trade);
