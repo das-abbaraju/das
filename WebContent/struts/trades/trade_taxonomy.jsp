@@ -28,6 +28,8 @@
 </form>
 </div>
 
+<a href="#" class="add">Add Top Level Trade</a>
+
 <table id="trades">
 	<tr>
 		<td id="trade-nav">Loading Trades</td>

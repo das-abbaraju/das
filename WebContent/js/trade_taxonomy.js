@@ -36,7 +36,8 @@ $(function() {
 				},
 				"addChild": {
 					"label": "Add Child Object",
-					"action": function() {
+					"action": function(node) {
+						$('#trade-detail').load('TradeTaxonomy!tradeAjax.action', {"trade.parent": node.attr('id')});
 					}
 				}
 			}
@@ -79,6 +80,8 @@ $(function() {
 			function(json) {
 				if (json.success) {
 					$('#trade-detail').html(oldform);
+					data.inst.deselect_all(data.inst.get_selected());
+					tree.jstree("refresh");
 				} else {
 					alert("Error deleting trade. Please try again later");
 					$.jstree.rollback(data.rlbk);
@@ -100,11 +103,18 @@ $(function() {
     	formatResult: function(data,i,count) { return data[1]; }
     });
 	
+	$('a.add').live('click', function(e) {
+		e.preventDefault();
+		$('#trade-detail').load('TradeTaxonomy!tradeAjax.action');
+	});
+	
 	$('#trade-detail').delegate('.save', 'click', function(e) {
-		$.post('TradeTaxonomy!saveTradeAjax.action', $('#saveTrade').serialize(), function() {
-
+		e.preventDefault();
+		$('#trade-detail').load('TradeTaxonomy!saveTradeAjax.action', $('#saveTrade').serialize(), function() {
+			tree.jstree('refresh');
 		});
 	}).delegate('.delete', 'click', function(e) {
+		e.preventDefault();
 		tree.jstree('remove', '#'+$(this).closest('form').find('[name=trade]').val());
 	});
 });
