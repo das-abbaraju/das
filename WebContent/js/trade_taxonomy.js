@@ -27,18 +27,26 @@ $(function() {
 		"contextmenu": {
 			"show_at_node": false,
 			"select_node": true,
-			"items": {
-				"refresh": {
-					"label": "Refresh",
-					"action": function(node) {
-						this.refresh(node);
-					}
-				},
-				"addChild": {
-					"label": "Add Child Object",
-					"action": function(node) {
-						tree.jstree('open_node', node);
-						$('#trade-detail').load('TradeTaxonomy!tradeAjax.action', {"trade.parent": node.attr('id')});
+			"items": function(node) {
+				return {
+					"addChild": {
+						"label": "Add Child Object",
+						"action": function(node) {
+							tree.jstree('open_node', node);
+							$('#trade-detail').load('TradeTaxonomy!tradeAjax.action', {"trade.parent": node.attr('id')});
+						}
+					},
+					"refresh": {
+						"label": "Refresh",
+						"action": function(node) {
+							this.refresh(node);
+						}
+					},
+					"delete": {
+						"label": "Delete",
+						"action": function(node) {
+							this.remove(node);
+						}
 					}
 				}
 			}
