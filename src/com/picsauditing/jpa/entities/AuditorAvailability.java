@@ -212,7 +212,8 @@ public class AuditorAvailability extends BaseTable {
 			}
 		}
 
-		if (permissions.isAuditor() && user.getId() == permissions.getUserId())
+		if (permissions.isAuditor() && user.getId() == permissions.getUserId()
+				|| (conAudit.getAuditor() != null && user.getId() == conAudit.getAuditor().getId()))
 			rank += 1000;
 
 		return rank;
