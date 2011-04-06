@@ -633,7 +633,8 @@ public class AuditBuilderController {
 		// Auditor Assignments
 		if (audit.isRequiresAuditorAssignments()) {
 			UserAssignment ua = userAssignmentDAO.findByContractor(contractor, auditType);
-			audit.setAuditor(ua.getUser());
+			if (ua != null)
+				audit.setAuditor(ua.getUser());
 		}
 		
 		if (user != null)

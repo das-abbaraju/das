@@ -324,7 +324,12 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	private void findTimeslots() {
-		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
+		List<AuditorAvailability> timeslots = null;
+		if (conAudit.getAuditor() != null)
+			timeslots = auditorAvailabilityDAO.findByAuditorID(conAudit.getAuditor().getId());
+		else
+			timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
+		
 		for (AuditorAvailability timeslot : timeslots) {
 			if (timeslot.isConductedOnsite(conAudit)) {
 				if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {
