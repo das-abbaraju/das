@@ -1043,6 +1043,10 @@
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
+		<action name="ReportCsrActivity"
+			class="com.picsauditing.actions.report.ReportCsrActivity">
+			<result>struts/reports/csr_activity.jsp</result>
+		</action>
 
 		<!-- Audits View/Edit/Verify/Copy -->
 		<action name="Audit"
