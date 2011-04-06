@@ -19,6 +19,7 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
+import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -38,6 +39,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -67,11 +69,13 @@ public class AuditBuilderController {
 	private AuditTypeDAO auditTypeDao;
 	private ContractorAuditDAO conAuditDao;
 	private AuditCategoryMatrixDAO auditCatMatrixDAO;
+	private UserAssignmentDAO userAssignmentDAO;
 
 	public AuditBuilderController(ContractorAuditDAO cAuditDAO, AuditDataDAO auditDataDAO,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, ContractorTagDAO contractorTagDAO,
 			AuditCategoryRuleCache auditCategoryRuleCache, AuditTypeRuleCache auditTypeRuleCache,
-			AuditTypeDAO auditTypeDao, ContractorAuditDAO conAuditDao, AuditCategoryMatrixDAO auditCatMatrixDAO) {
+			AuditTypeDAO auditTypeDao, ContractorAuditDAO conAuditDao, AuditCategoryMatrixDAO auditCatMatrixDAO,
+			UserAssignmentDAO userAssignmentDAO) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
@@ -81,6 +85,7 @@ public class AuditBuilderController {
 		this.auditTypeDao = auditTypeDao;
 		this.conAuditDao = conAuditDao;
 		this.auditCatMatrixDAO = auditCatMatrixDAO;
+		this.userAssignmentDAO = userAssignmentDAO;
 	}
 
 	public void setup(ContractorAccount con, User user) {
@@ -486,7 +491,7 @@ public class AuditBuilderController {
 				PicsLogger.log("Adding missing cao");
 				ContractorAuditOperator cao = new ContractorAuditOperator();
 				// This is almost always Pending
-				AuditStatus changeStatus = conAudit.getAuditType().getWorkFlow().getFirstStep().getNewStatus(); 
+				AuditStatus changeStatus = conAudit.getAuditType().getWorkFlow().getFirstStep().getNewStatus();
 				cao.setAudit(conAudit);
 				cao.setOperator(operator);
 				cao.setAuditColumns(user);
@@ -521,7 +526,8 @@ public class AuditBuilderController {
 			operators.add(cao.getAudit().getRequestingOpAccount());
 		} else if (cao.getAudit().getAuditType().isDesktop() && cao.getAudit().hasCaoStatus(AuditStatus.Complete)) {
 			for (ContractorOperator co : cao.getAudit().getContractorAccount().getOperators()) {
-				if (cao.isVisible() && co.getOperatorAccount().getOperatorHeirarchy().contains(cao.getOperator().getId())) {
+				if (cao.isVisible()
+						&& co.getOperatorAccount().getOperatorHeirarchy().contains(cao.getOperator().getId())) {
 					operators.add(co.getOperatorAccount());
 				}
 			}
@@ -624,10 +630,17 @@ public class AuditBuilderController {
 		ContractorAudit audit = new ContractorAudit();
 		audit.setContractorAccount(contractor);
 		audit.setAuditType(auditType);
+		// Auditor Assignments
+		if (audit.isRequiresAuditorAssignments()) {
+			UserAssignment ua = userAssignmentDAO.findByContractor(contractor, auditType);
+			audit.setAuditor(ua.getUser());
+		}
+		
 		if (user != null)
 			audit.setAuditColumns(user);
 		else
 			audit.setAuditColumns(new User(User.SYSTEM));
+
 		return audit;
 	}
 

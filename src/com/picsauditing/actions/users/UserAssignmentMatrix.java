@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
@@ -25,17 +26,20 @@ public class UserAssignmentMatrix extends PicsActionSupport implements Preparabl
 	private UserDAO userDAO;
 	private CountryDAO countryDAO;
 	private StateDAO stateDAO;
+	private AuditTypeDAO auditTypeDAO;
 
 	private UserAssignment assignment;
 	private UserAssignmentType type = UserAssignmentType.CSR;
 	private List<User> users = new ArrayList<User>();
+	private int auditTypeID;
 
 	public UserAssignmentMatrix(UserAssignmentDAO assignmentDAO, UserDAO userDAO, CountryDAO countryDAO,
-			StateDAO stateDAO) {
+			StateDAO stateDAO, AuditTypeDAO auditTypeDAO) {
 		this.assignmentDAO = assignmentDAO;
 		this.userDAO = userDAO;
 		this.countryDAO = countryDAO;
 		this.stateDAO = stateDAO;
+		this.auditTypeDAO = auditTypeDAO;
 	}
 
 	@Override
@@ -66,6 +70,10 @@ public class UserAssignmentMatrix extends PicsActionSupport implements Preparabl
 				return JSON;
 			}
 			final boolean newAssignment = assignment.getId() == 0;
+			
+			if (auditTypeID > 0)
+				assignment.setAuditType(auditTypeDAO.find(auditTypeID));
+			
 			assignment.setAssignmentType(type);
 			assignment.setAuditColumns(permissions);
 			assignmentDAO.save(assignment);
@@ -139,5 +147,13 @@ public class UserAssignmentMatrix extends PicsActionSupport implements Preparabl
 
 	public void setType(UserAssignmentType type) {
 		this.type = type;
+	}
+
+	public int getAuditTypeID() {
+		return auditTypeID;
+	}
+
+	public void setAuditTypeID(int auditTypeID) {
+		this.auditTypeID = auditTypeID;
 	}
 }

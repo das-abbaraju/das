@@ -21,6 +21,7 @@ public class UserAssignment extends BaseTable implements Comparable<UserAssignme
 	private String postalStart;
 	private String postalEnd;
 	private ContractorAccount contractor;
+	private AuditType auditType;
 
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false)
@@ -90,6 +91,16 @@ public class UserAssignment extends BaseTable implements Comparable<UserAssignme
 		this.contractor = contractor;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "auditTypeID")
+	public AuditType getAuditType() {
+		return auditType;
+	}
+
+	public void setAuditType(AuditType auditType) {
+		this.auditType = auditType;
+	}
+
 	@Transient
 	public Integer getPriority() {
 		int priority = 0;
@@ -113,7 +124,8 @@ public class UserAssignment extends BaseTable implements Comparable<UserAssignme
 
 	@Override
 	public String toString() {
-		return String.format("%s state:%s, country:%s, zip:%s-%s, contractor:%s", user.getName(), state, country,
-				postalStart, postalEnd, contractor == null ? null : contractor.getName());
+		return String.format("%s state:%s, country:%s, zip:%s-%s, contractor:%s, auditType:%s", user.getName(), state,
+				country, postalStart, postalEnd, contractor == null ? null : contractor.getName(),
+				auditType == null ? null : auditType.getName());
 	}
 }

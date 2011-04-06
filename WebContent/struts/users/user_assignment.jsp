@@ -114,6 +114,9 @@ tr.dirty a.save { display: inline; }
 			<th>Zip Start</th>
 			<th>Zip End</th>
 			<th>Contractor</th>
+			<s:if test="type.toString() == 'Auditor'">
+				<th>Audit Type</th>
+			</s:if>
 			<th></th>
 		</tr>
 	</thead>
@@ -126,6 +129,9 @@ tr.dirty a.save { display: inline; }
 				<td><s:textfield name="assignment.postalStart" value="%{postalStart}" size="10"/></td>
 				<td><s:textfield name="assignment.postalEnd" value="%{postalEnd}" size="10"/></td>
 				<td><pics:autocomplete action="ContractorAutocomplete" htmlName="assignment.contractor" value="contractor" /></td>
+				<s:if test="type.toString() == 'Auditor'">
+					<td><s:select list="#{2:'Manual Audit',3:'Implementation Audit'}" headerKey="" headerValue="- Audit Type -" name="auditTypeID" value="%{auditType.id}" /></td>
+				</s:if>
 				<td><s:hidden name="assignment" value="%{id}"/><a href="#" class="remove"></a><a href="#" class="save"></a></td>
 			</tr>
 		</s:iterator>
@@ -141,6 +147,9 @@ tr.dirty a.save { display: inline; }
 		<td><s:textfield name="assignment.postalStart" size="10"/></td>
 		<td><s:textfield name="assignment.postalEnd" size="10"/></td>
 		<td><pics:autocomplete action="ContractorAutocomplete" htmlName="assignment.contractor" /></td>
+		<s:if test="type.toString() == 'Auditor'">
+			<td><s:select list="#{2:'Manual Audit',3:'Implementation Audit'}" headerKey="" headerValue="- Audit Type -" name="auditTypeID" /></td>
+		</s:if>
 		<td><s:hidden name="assignment" value=""/><a href="#" class="remove"></a><a href="#" class="save"></a></td>
 	</tr>
 </table>

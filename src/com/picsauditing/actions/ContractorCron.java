@@ -672,10 +672,8 @@ public class ContractorCron extends PicsActionSupport {
 
 		UserAssignment assignment = userAssignmentDAO.findByContractor(contractor);
 		if (assignment != null) {
-			if (!assignment.getUser().equals(contractor.getAuditor())) {
-				contractorDAO.save(contractor);
+			if (!assignment.getUser().equals(contractor.getAuditor()))
 				contractor.setAuditor(assignment.getUser());
-			}
 		}
 	}
 
