@@ -68,7 +68,12 @@ function changeCompetency(employeeID, competencyID, checkbox) {
 	</tr>
 	<tr>
 		<td><div class="box" style="background-color: #F9F9F9"></div></td>
-		<td>If blank, this employee does not require the given competency. Change this by either updating the <a href="ManageEmployees.action">employee's job roles</a> or by editing the <a href="ManageJobRoles.action">required competencies for this company's job roles</a>.</td>
+		<td>
+			If blank, this employee does not require the given competency.
+			<s:if test="permissions.contractor">
+				Change this by either updating the <a href="ManageEmployees.action">employee's job roles</a> or by editing the <a href="ManageJobRoles.action">required competencies for this company's job roles</a>.
+			</s:if>
+		</td>
 	</tr>
 </table>
 

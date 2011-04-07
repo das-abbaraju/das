@@ -38,8 +38,26 @@ $('input.ssn').mask('SSS-SS-SSSS');
 				<td><a href="ContractorView.action?id=<s:property value="#d.get('accountID')"/>"><s:property value="#d.get('name')" /></a></td>
 				<td class="right"><a href="ReportCompetencyByEmployee.action?filter.accountName=<s:property value="@java.net.URLEncoder@encode(#d.get('name'))" />"><s:property value="#d.get('eCount')" /></a></td>
 				<td class="right"><a href="JobCompetencyMatrix.action?id=<s:property value="#d.get('accountID')"/>"><s:property value="#d.get('jCount')"/></a></td>
-				<td><s:property value="#d.get('ca99status')" /></td>
-				<td><s:property value="#d.get('ca100status')" /></td>
+				<td>
+					<s:if test="#d.get('ca99status').toString().length() > 0">
+						<a href="Audit.action?auditID=<s:property value="#d.get('ca99ID')" />">
+							<s:property value="#d.get('ca99status')" />
+						</a>
+					</s:if>
+					<s:else>
+						<s:property value="#d.get('ca99status')" />
+					</s:else>
+				</td>
+				<td>
+					<s:if test="#d.get('ca100status').toString().length() > 0">
+						<a href="Audit.action?auditID=<s:property value="#d.get('ca100ID')" />">
+							<s:property value="#d.get('ca100status')" />
+						</a>
+					</s:if>
+					<s:else>
+						<s:property value="#d.get('ca100status')" />
+					</s:else>
+				</td>
 			</tr>
 		</s:iterator>
 	</tbody>

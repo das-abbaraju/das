@@ -29,10 +29,18 @@
 	});
 	</s:if>
 	$(function() {
-		$('a.passAudit').live('click', function() {
-			window.location.href = $(this).attr('href') + ($(this).attr('href').indexOf("?") > 0 ? "&" : "?") + "auditID=" + auditID;
-			return false;
-		});
+		<s:if test="!permissions.operatorCorporate">
+			$('a.passAudit').live('click', function() {
+				window.location.href = $(this).attr('href') + ($(this).attr('href').indexOf("?") > 0 ? "&" : "?") + "auditID=" + auditID;
+				return false;
+			});
+		</s:if>
+		<s:else>
+			$('a.operatorViewable').live('click', function() {
+				window.location.href = $(this).attr('href') + "?id=" + conID;
+				return false;
+			});
+		</s:else>
 		$('#auditProblems, #problemsHide').live('click', function(){
 			$('#problems').slideDown();
 			$('#problemsHide').hide();
@@ -42,6 +50,19 @@
 			$('#problemsHide').show();
 		});
 	});
+	
+	function clearLinks() {
+		<s:if test="permissions.operatorCorporate">
+			$('a.passAudit').not('.operatorViewable').each(function() {
+				var plaintext = $(this);
+				plaintext.after(plaintext.text());
+				plaintext.remove();
+			});
+		</s:if>
+		<s:else>
+			return false;
+		</s:else>
+	}
 </script>
 </head>
 <body>

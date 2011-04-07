@@ -75,8 +75,8 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 		return "LEFT JOIN (SELECT ca.id, ca.conID, CASE WHEN cao.status = 'Pending' THEN NULL "
 				+ "ELSE CONCAT(CASE WHEN cao.status = 'Complete' THEN 'Completed' ELSE cao.status END, "
 				+ "' on ', DATE_FORMAT(cao.statusChangedDate, '%c/%e/%Y')) "
-				+ "END status, caop.opID FROM contractor_audit ca "
-				+ "JOIN contractor_audit_operator cao ON cao.auditID = ca.id "
+				+ "END status, DATE_FORMAT(cao.statusChangedDate, '%c/%e/%Y') changedDate, "
+				+ "caop.opID FROM contractor_audit ca JOIN contractor_audit_operator cao ON cao.auditID = ca.id "
 				+ "JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id WHERE ca.auditTypeID = "
 				+ auditTypeID + " GROUP BY ca.conID ORDER BY ca.creationDate DESC) ca" + auditTypeID + " ON ca"
 				+ auditTypeID + ".conID = a.id AND ca" + auditTypeID + ".opID = " + permissions.getAccountId();
@@ -84,6 +84,6 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 
 	private String buildAuditField(int auditTypeID) {
 		return "ca" + auditTypeID + ".id ca" + auditTypeID + "ID, ca" + auditTypeID + ".status ca" + auditTypeID
-				+ "status";
+				+ "status, ca" + auditTypeID + ".changedDate ca" + auditTypeID + "date";
 	}
 }

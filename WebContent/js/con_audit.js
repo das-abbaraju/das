@@ -177,6 +177,7 @@ function loadCategories(data, msg) {
 				}
 				
 				showNavButtons();
+				clearLinks();
 			}
 		}
 	});

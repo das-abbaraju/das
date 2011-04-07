@@ -27,7 +27,13 @@
 				<s:iterator value="competencies" var="c">
 					<s:if test="map.get(#e, #c) != null">
 						<td class="center<s:if test="map.get(#e, #c).skilled"> green</s:if><s:else> red</s:else>">
-							<input type="checkbox" <s:if test="map.get(#e, #c).skilled">checked="checked" </s:if>onclick="changeCompetency(<s:property value="#e.id" />, <s:property value="#c.id" />, this)" id="<s:property value="#e.id" />_<s:property value="#c.id" />" />
+							<s:if test="permissions.contractor">
+								<input type="checkbox" <s:if test="map.get(#e, #c).skilled">checked="checked" </s:if>onclick="changeCompetency(<s:property value="#e.id" />, <s:property value="#c.id" />, this)" id="<s:property value="#e.id" />_<s:property value="#c.id" />" />
+							</s:if>
+							<s:else>
+								<s:if test="map.get(#e, #c).skilled"><img src="images/okCheck.gif" /></s:if>
+								<s:else><img src="images/notOkCheck.gif" /></s:else>
+							</s:else>
 						</td>
 					</s:if>
 					<s:else><td></td></s:else>
