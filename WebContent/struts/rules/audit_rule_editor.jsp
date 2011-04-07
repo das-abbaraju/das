@@ -234,11 +234,10 @@ $(function() {
 				<s:if test="auditTypeRule">
 					<li><label>Auto Add Audit</label>
 						<div class="nobr"><s:radio theme="pics" list="#{false:'Auto Add',true:'Manually Added'}" name="rule.manuallyAdded"/></div>
-						<div class="fieldhelp">
-						<h3>Auto Add Audit</h3>
+						<pics:fieldhelp title="Auto Add Audit">
 						<p>Auto Add (default) - a single audit is added to each contractor account that matches this rule.</p>
 						<p>Manually Added - audits are available to be manually added to a contractor's account. Examples include: Field Audit and Integrity Management</p>
-						</div>
+						</pics:fieldhelp>
 					</li>
 				</s:if>
 				<s:if test="!auditTypeRule">
@@ -257,19 +256,17 @@ $(function() {
 					</li>
 					<li><label>Top or Sub Category</label>
 						<s:select list="#{'':'Any',false:'Sub Categories',true:'Top Categories'}" name="rule.rootCategory"/> 
-						<div class="fieldhelp">
-						<h3>Top or Sub Category</h3>
+						<pics:fieldhelp title="Top or Sub Category">
 						<p>Only set this field if category is blank. This is auto selected by the system if a category has been selected.</p>
-						</div>
+						</pics:fieldhelp>
 					</li>
 				</s:if>
 				<li><label>Bid Only</label>
 					<div class="nobr"><s:radio theme="pics" name="ruleAcceptsBids" list="#{'':'Any',false:'Full Account',true:'Bid Only'}" value="rule.acceptsBids"/></div>
-					<div class="fieldhelp">
-					<h3>Bid Only</h3>
+					<pics:fieldhelp title="Bid Only">
 					<p>Full Account (default) - Regular paying contractor account.</p>
 					<p>Bid Only - A trial contractor account that is used for bidding.</p>
-					</div>
+					</pics:fieldhelp>
 				</li>
 				<li><label>Account Type</label>
 					<s:radio theme="pics" name="rule.contractorType" list="#{'':'Any','Onsite':'Onsite Services','Offsite':'Offsite Services','Supplier':'Material Supplier'}" />
@@ -286,10 +283,9 @@ $(function() {
 						</s:if>
 					</div>
 					<s:if test="operatorRequired">
-						<div class="fieldhelp">
-						<h3>Operator</h3>
+						<pics:fieldhelp title="Operator">
 						<p>You must specify the Operator that this rule will apply to</p>
-						</div>
+						</pics:fieldhelp>
 					</s:if>
 				</li>
 				<li id="opTagli" class="requiresOperator"<s:if test="rule.operatorAccount==null">style="display: none;"</s:if>><label>Tag</label>

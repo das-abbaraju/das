@@ -129,19 +129,17 @@ $(function(){
 		<ol>
 			<li class="required"><label><s:text name="%{scope}.CompanyDetails.LegalCompanyName"/>:</label>
 				<s:textfield name="contractor.name" size="35" onchange="checkName(this.value);"/>
-				<div class="fieldhelp">
-					<h3>Company Name</h3>
+				<pics:fieldhelp title="Company Name">
 					<p>The name of your company as listed on legal documents, trade certificates and licenses.</p>
 					<p>We'll search our database to see if your company has already been registered.</p>
-				</div>
+				</pics:fieldhelp>
 				<div id="name_status"></div>
 			</li>
 			<li><label><s:text name="%{scope}.CompanyDetails.ShortNameorDBA" />:</label>
 				<s:textfield name="contractor.dbaName" size="35" />
-				<div class="fieldhelp">
-					<h3>Short Name</h3>
+				<pics:fieldhelp title="Short Name">
 					<p>An alternative (also known as Doing Business As) name of your company. This is optional but may help your customers search for you if they only know you by an acronym, shortened company name, or alternative DBA name.</p>
-				</div>
+				</pics:fieldhelp>
 			</li>
 			<li class="required"><label><s:text name="%{scope}.CompanyDetails.Country" />:</label>
 				<s:select list="countryList" id="contractorCountry"
@@ -149,46 +147,42 @@ $(function(){
 					onchange="changeCountry(this.value);"
 					headerKey="" headerValue="- Country -"
 					listKey="isoCode" listValue="name" />
-				<div class="fieldhelp">
-					<h3>Country</h3>
+				<pics:fieldhelp title="Country">
 					<p>The headquarters of your company. This will affect the currency in which your PICS membership will be listed.</p>
-				</div>
+				</pics:fieldhelp>
 			</li>
 			<li class="required" id="taxIdItem" <s:if test="contractor.country.isoCode =='AE'">style="display: none;"</s:if>><label><s:text name="%{scope}.CompanyDetails.TaxID" />:</label>
 				<s:textfield name="contractor.taxId" id="contractorTaxId"
 					size="9" maxLength="9" onchange="checkTaxId(this.value);" />
-				<div class="fieldhelp">
-					<h3>Tax ID or Business Number</h3>
+				<pics:fieldhelp title="Tax ID or Business Number">
 					<p>The number your government uses to uniquely identify your company. We use this to see if your company has already registered.</p>
 					<h5>United States</h5>
 					9-digit number with no dashes
 					<h5>Canada</h5>
 					the first 9-digits of your 15 character Business Number
-				</div>
+				</pics:fieldhelp>
 				<div id="taxId_status"></div>
 			</li>
 			<li><label><s:text name="%{scope}.CompanyDetails.WebURL" />:</label>
 				<s:textfield name="contractor.webUrl" size="35" />
-				<div class="fieldhelp">
-					<h3>Web URL</h3>
+				<pics:fieldhelp title="Web URL">
 					The web site your customers can go to to learn more about your products and services.
 					<h5>Example:</h5>
 					www.yourcompany.com
-				</div>
+				</pics:fieldhelp>
 			</li>
 			<li class="required"><label><s:text name="%{scope}.CompanyDetails.CompanyPhone" />:</label>
 				<s:textfield id="contractorPhone" name="contractor.phone" size="20" />
-				<div class="fieldhelp">
+				<pics:fieldhelp>
 					<h3><s:text name="%{scope}.CompanyDetails.CompanyPhone" />:</h3>
 					Your company's primary telephone line. If you are outside the United States or Canada, please include your country code.
-				</div>
+				</pics:fieldhelp>
 			</li>
 			<li><label><s:text name="%{scope}.CompanyDetails.CompanyFax" />:</label>
 				<s:textfield name="contractor.fax" size="20" />
-				<div class="fieldhelp">
-					<h3>Company Fax</h3>
+				<pics:fieldhelp title="Company Fax">
 					Your company's primary fax line if any.
-				</div>
+				</pics:fieldhelp>
 			</li>
 		</ol>
 	</fieldset>
@@ -198,12 +192,11 @@ $(function(){
 			<li class="required"><label><s:text name="%{scope}.PrimaryAddress.Address" />:</label>
 				<s:textfield name="contractor.address" size="35" /><br />
 				<s:textfield name="contractor.address2" size="35" cssClass="multifield" />
-				<div class="fieldhelp">
-					<h3>Primary Address</h3>
+				<pics:fieldhelp title="Primary Address">
 					Your company's primary address or headquarters. This should be located in the country you selected in Company Details above.
 					<h5>Example:</h5>
 					123 Main Street, Suite 100
-				</div>
+				</pics:fieldhelp>
 			</li>
 			<li class="required"><label><s:text name="%{scope}.PrimaryAddress.City" />:</label> 
 				<s:textfield name="contractor.city" size="35" />
@@ -232,10 +225,9 @@ $(function(){
 				<s:select list="tradeList"
 					name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" 
 					listKey="name" listValue="name" />
-				<div class="fieldhelp">
-					<h3>Trade</h3>
+				<pics:fieldhelp title="Trade">
 					This is your company's primary trade. You will have the opportunity to select additional trades later on.
-				</div>
+				</pics:fieldhelp>
 			</li>
 			<li>
 				<s:checkbox id="Onsite" name="contractor.onsiteServices" theme="formhelp" onclick="updateRequiredField();"/>
@@ -253,12 +245,11 @@ $(function(){
 		<ol>
 			<li><label><s:text name="%{scope}.CompanyIdentification.Description" />:</label>
 				<s:textarea name="contractor.description" cols="60" rows="15" />
-				<div class="fieldhelp">
-					<h3>Description</h3>
+				<pics:fieldhelp title="Description">
 					<p>Include up to 2000 words to describe your company.</p>
 					<h5>Suggestion:</h5>
 					<p>Copy and paste text from the &quot;About&quot; section on your web site or company brochure.</p>
-				</div>
+				</pics:fieldhelp>
 			</li>
 		</ol>
 	</fieldset>
@@ -267,51 +258,46 @@ $(function(){
 		<ol>
 			<li class="required"><label><s:text name="%{scope}.PrimaryContact.Name" />:</label>
 				<s:textfield name="user.name" size="20" />
-				<div class="fieldhelp">
-					<h3>Name</h3>
+				<pics:fieldhelp title="Name">
 					This your name. We use the information in this section to create the first administrator user.
 					You'll have the opportunity to create more users later with varying levels of permissions or change the primary contact to another user.
 					<h5>Example</h5>
 					John Doe
-				</div>
+				</pics:fieldhelp>
 			</li>
 			<li class="required"><label><s:text name="%{scope}.PrimaryContact.Email" />:</label>
 				<s:textfield name="user.email" size="20" /> 
-				<div class="fieldhelp">
-					<h3>Email</h3>
+				<pics:fieldhelp title="Email">
 					Your email address. We send vital information to this address, so it needs to be correct. Your customers that use PICS will be able to see primary contact(s) and their phone and email address.
-				</div>
+				</pics:fieldhelp>
 			</li>
 			<li><label><s:text name="%{scope}.PrimaryContact.Phone" />:</label>
 				<s:textfield name="user.phone" size="20" />
-				<div class="fieldhelp">
-					<h3>Phone</h3>
+				<pics:fieldhelp title="Phone">
 					This is the direct phone number and extension if applicable for the primary contact. This may be used by CSRs or auditors to contact you directly.
-				</div>
+				</pics:fieldhelp>
 			</li>
 			<li><label><s:text name="%{scope}.PrimaryContact.Fax" />:</label>
 				<s:textfield name="user.fax" size="20" />
 			</li>
 			<li class="required"><label><s:text name="%{scope}.PrimaryContact.Username" />:</label>
 		 		<s:textfield name="user.username" onchange="checkUsername(this.value);"/>
-		 		<div class="fieldhelp">
-		 			<h3>Username</h3>
+		 		<pics:fieldhelp title="Username">
 		 			<p>Please type in your desired user name. We'll let you know if it's available.</p>
 		 			<ul>
 		 				<li>Must be at least 3 characters long</li>
 		 				<li>Don't use spaces in your name</li>
 		 				<li>Your email address is recommended because it's easy to remember.</li>
 		 			</ul>
-		 		</div>
+		 		</pics:fieldhelp>
 		 		<br />
 		 		<div id="username_status"></div>
 		 	</li>
 			<li class="required"><label><s:text name="%{scope}.PrimaryContact.Password" />:</label> 
 				<s:password name="password"/>
-				<div class="fieldhelp">
-					<h3>Password</h3>
+				<pics:fieldhelp title="Password">
 					Must be at least 5 characters long and different from your username
-				</div>
+				</pics:fieldhelp>
 			</li>
 			<li><label><s:text name="%{scope}.PrimaryContact.ConfirmPassword" />:</label> 
 				<s:password name="confirmPassword"/>

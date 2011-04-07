@@ -47,19 +47,17 @@ $(function() {
 		<ol style="margin-top:7px;">
 			<li class="showUser">
 				<div><label>Username:</label> <s:textfield id="usernameBox" name="username" cssClass="login"/></div>
-				<div class="fieldhelp">
-					<h3>Username</h3>
+				<pics:fieldhelp title="Username">
 					<p>Enter your username and we will send you an email containing a link that you can use to reset the password on your account. 
 						If you have any problems, please check your spam filters or <a href="Contact.action" title="Contact PICS">contact us</a> directly</p>
-				</div>
+				</pics:fieldhelp>
 			</li>
 			<li class="showEmail">
 				<div><label>Email:</label><s:textfield id="emailBox" name="email" cssClass="login" size="28"/></div>
-				<div class="fieldhelp">
-					<h3>Email</h3>
+				<pics:fieldhelp title="Email">
 					<p>Enter your email address to receive the username(s) associated with that address. If you have any problems, please check your spam filters or
 					 <a href="Contact.action" title="Contact PICS">contact us</a> directly</p>
-				</div>
+				</pics:fieldhelp>
 			</li>
 			<li>
 				<a class="showUser showPointer">Forgot your username?</a>
@@ -68,10 +66,9 @@ $(function() {
 			<li>
 				<label>Enter Verification:</label>
 				<s:property value="recaptcha.recaptchaHtml" escape="false"/>
-				<div class="fieldhelp">
-					<h3>Verification</h3>
+				<pics:fieldhelp title="Verification">
 					<p>Please complete the recaptcha to the left, this helps us to keep your information safe</p>
-				</div>
+				</pics:fieldhelp>
 			</li>
 		</ol>
 		</fieldset>

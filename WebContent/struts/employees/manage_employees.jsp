@@ -269,8 +269,7 @@ div.dataTables_length { width: 35%; }
 									</li>
 									<li><label>Title:</label>
 										<s:textfield id="titleSuggest" name="employee.title"/>
-										<div class="fieldhelp">
-										<h3>Title</h3>
+										<pics:fieldhelp title="Title">
 										<p>The optional title of the employee.</p>
 										<h5>Examples:</h5>
 										<ul>
@@ -279,14 +278,13 @@ div.dataTables_length { width: 35%; }
 											<li>Apprentice</li>
 										</ul>
 										<p>Suggestions are based on common titles from all companies located in PICS Organizer.</p>
-										</div>
+										</pics:fieldhelp>
 									</li>
 									<li><label>Birth Date:</label>
 										<s:textfield name="employee.birthDate" value="%{maskDateFormat(employee.birthDate)}" cssClass="datepicker"/>
-										<div class="fieldhelp">
-										<h3>Birth Date</h3>
+										<pics:fieldhelp title="Birth Date">
 										<p>Optional date of birth field. Included for future use.</p>
-										</div>
+										</pics:fieldhelp>
 									</li>
 									<li><label>Classification:</label>
 										<s:select name="employee.classification" 
@@ -295,17 +293,15 @@ div.dataTables_length { width: 35%; }
 									</li>
 									<li><label>Active</label>
 										<s:checkbox name="employee.active" onclick="$('#termDate').toggle();"/>
-										<div class="fieldhelp">
-										<h3>Active</h3>
+										<pics:fieldhelp title="Active">
 										<p>Unchecking this box will remove this employee from most reports. Uncheck this once the person no longer works for your company.</p>
-										</div>
+										</pics:fieldhelp>
 									</li>
 									<li><label>Hire Date:</label>
 										<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}" cssClass="datepicker"/>
-										<div class="fieldhelp">
-										<h3>Hire Date</h3>
+										<pics:fieldhelp title="Hire Date">
 										<p>The date (or best approximation) the employee first started working for this company.</p>
-										</div>
+										</pics:fieldhelp>
 									</li>
 									<li id="termDate"><label>Termination Date:</label>
 										<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="datepicker"/>
@@ -326,18 +322,16 @@ div.dataTables_length { width: 35%; }
 									</s:if>
 									<li><label>Email:</label>
 										<s:textfield name="employee.email"/>
-										<div class="fieldhelp">
-										<h3>Email</h3>
+										<pics:fieldhelp title="Email">
 										<p>The employee's primary work email address. This optional field is included for future use.
 										PICS will not SPAM email addresses or share this address without your permission.</p>
-										</div>
+										</pics:fieldhelp>
 									</li>
 									<li><label>Phone #:</label>
 										<s:textfield name="employee.phone"/>
-										<div class="fieldhelp">
-										<h3>Phone</h3>
+										<pics:fieldhelp title="Phone">
 										<p>The employee's primary work phone. This field is optional.</p>
-										</div>
+										</pics:fieldhelp>
 									</li>
 									<li><label>TWIC Card Expiration:</label>
 										<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" cssClass="datepicker"/>
@@ -347,16 +341,14 @@ div.dataTables_length { width: 35%; }
 									</li>
 									<li><label>SSN:</label>
 										<s:textfield name="ssn" cssClass="ssn"/>
-										<div class="fieldhelp">
-										<h3>Social Security Number</h3>
+										<pics:fieldhelp title="Social Security Number">
 										<p>The employee's Social Security Number issued by the United States. Leave blank if employee does not work in the USA.
 										This field is NOT used directly by PICS. However some third party data providers require this number. You can always add it later if needed.</p>
-										</div>
+										</pics:fieldhelp>
 									</li>
 									<li><label>Location:</label>
 										<s:textfield name="employee.location" id="locationSuggest"/>
-										<div class="fieldhelp">
-										<h3>Location</h3>
+										<pics:fieldhelp title="Location">
 										<p>The employee's primary work location. This could one of your own work locations or the location of one of your clients.</p>
 										<h5>Examples:</h5>
 										<ul>
@@ -364,7 +356,7 @@ div.dataTables_length { width: 35%; }
 											<li>Building C</li>
 										</ul>
 										<p>Suggestions based on common locations of other employees will appear after you start to type.</p>
-										</div>
+										</pics:fieldhelp>
 									</li>
 								</ol>
 							</fieldset>

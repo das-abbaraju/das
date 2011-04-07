@@ -256,10 +256,9 @@ div.autocomplete ul li {
 				<s:if test="user.account.id != 1100">
 				<li><label>&nbsp;Primary Contact:</label>
 					<s:checkbox id="setPrimaryAccount" name="setPrimaryAccount" />
-					<div class="fieldhelp">
-						<h2>Primary Contact</h2>
+					<pics:fieldhelp title="Primary Contact">
 						<p>Set User as Primary Contact</p>
-					</div>
+					</pics:fieldhelp>
 				</li>
 				</s:if>		
 				<s:if test="account.contractor">
@@ -299,11 +298,10 @@ div.autocomplete ul li {
 					<s:hidden name="moveToAccount" id="moveToAccount" />
 					<li><label>Move User to Account:</label>
 						<s:textfield id="accountMoveSuggest" /><br/>
-						<div class="fieldhelp">
-							<h3>Move User to Account</h3>
+						<pics:fieldhelp title="Move User to Account">
 							<p>The name of the account you wish to move the user to.  
 							This field will autocomplete as you type.</p>
-						</div>
+						</pics:fieldhelp>
 						<s:submit action="UsersManage!move" cssClass="picsbutton" value="%{getText(scope + '.button.MoveUser')}" onclick="return confirm('%{getText(scope + '.confirm.Move')}');" />
 					</li>
 				</s:if>

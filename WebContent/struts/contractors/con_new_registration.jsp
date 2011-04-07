@@ -389,10 +389,10 @@ function getMatches(requestID) {
 		</li>
 		<li><label for="taxID"><s:text name="%{scope}.label.TaxID" />:</label>
 			<s:textfield cssClass="checkReq" name="newContractor.taxID" size="9" maxLength="9" id="taxID" />
-			<div class="fieldhelp">
+			<pics:fieldhelp>
 				<h3><s:text name="%{scope}.label.TaxID" /></h3>
 				<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="%{scope}.label.TaxID" /></s:param></s:text></p>
-			</div>
+			</pics:fieldhelp>
 			<div id="think_tax"></div>
 			<div id="match_tax"></div>
 		</li>
@@ -416,25 +416,25 @@ function getMatches(requestID) {
 		<li>
 			<label for="city"><s:text name="global.City" />:</label>
 			<s:textfield name="newContractor.city" size="20" id="city" cssClass="show-address"/>
-			<div class="fieldhelp">
+			<pics:fieldhelp>
 				<h3><s:text name="global.City" /></h3>
 				<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="global.City" /></s:param></s:text></p>
-			</div>
-		</li>
+			</pics:fieldhelp>
+			</li>
 		<li class="address-zip">
 			<label for="address"><s:text name="global.Address" />:</label>
 			<s:textfield name="newContractor.address" size="35" id="address" />
-			<div class="fieldhelp">
+			<pics:fieldhelp>
 			<h3><s:text name="global.Address" /></h3>
 			<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="global.Address" /></s:param></s:text></p>
-			</div>
+			</pics:fieldhelp>
 		</li>
 		<li class="address-zip">
 			<label for="zip"><s:text name="global.ZipPostalCode" />:</label><s:textfield name="newContractor.zip" size="7" id="zip" />
-			<div class="fieldhelp">
+			<pics:fieldhelp>
 			<h3><s:text name="global.ZipPostalCode" /></h3>
 			<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="global.ZipPostalCode" /></s:param></s:text></p>
-			</div>
+			</pics:fieldhelp>
 		</li>		
 	</ol>
 	</fieldset>
@@ -458,13 +458,13 @@ function getMatches(requestID) {
 		<s:if test="newContractor.requestedByUser != null && newContractor.id > 0">
 			<li><label><s:text name="%{scope}.label.AddToWatchlist" />:</label>
 				<s:checkbox name="newContractor.watch" />
-				<div class="fieldhelp">
+				<pics:fieldhelp>
 					<h3><s:text name="%{scope}.label.AddToWatchlist" /></h3>
 					<p><s:text name="%{scope}.help.Watchlist">
 						<s:param><s:property value="newContractor.requestedByUser.name" /></s:param>
 						<s:param><s:property value="newContractor.name" /></s:param>
 					</s:text></p>
-				</div>
+				</pics:fieldhelp>
 				<s:if test="!contractorWatch && newContractor.watch">
 					<div class="alert"><s:text name="%{scope}.message.MissingWatchPermission" /></div>
 				</s:if>
@@ -504,10 +504,10 @@ function getMatches(requestID) {
 			<li><label><s:text name="%{scope}.label.PICSContractor" />:</label>
 				<s:if test="permissions.admin">
 					<s:textfield value="%{newContractor.contractor.name}" id="matchedContractor" size="20" />
-					<div class="fieldhelp">
+					<pics:fieldhelp>
 						<h3><s:text name="%{scope}.button.ReturnToOperator" /></h3>
 						<p><s:text name="%{scope}.help.ReturnToOperator" /></p>
-					</div>
+					</pics:fieldhelp>
 				</s:if>
 				<s:if test="newContractor.contractor != null">
 					<a href="ContractorView.action?id=<s:property value="newContractor.contractor.id"/>">
@@ -523,10 +523,10 @@ function getMatches(requestID) {
 			<div>
 				<s:textarea name="addToNotes" cols="30" rows="3" id="addToNotes" />
 			</div>
-			<div class="fieldhelp">
+			<pics:fieldhelp>
 			<h3><s:text name="global.Notes" /></h3>
 			<p><s:text name="%{scope}.help.Notes" /></p>
-			</div>
+			</pics:fieldhelp>
 		</li>
 		<li>
 			(<s:text name="%{scope}.message.MaximumCharacters" />)

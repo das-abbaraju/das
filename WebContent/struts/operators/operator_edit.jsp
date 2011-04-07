@@ -221,10 +221,9 @@ function checkFee(activationFee, oldValue) {
 			value="operator.country.isoCode"
 			onchange="countryChanged(this.value)" />
 			<s:if test="permissions.admin || operator.operator">
-				<div class="fieldhelp">
-					<h3>Address</h3>
+				<pics:fieldhelp title="Address">
 					<p>Please select the country in which operator is located. This is may affect what configuration is inherited from PICS Country configuration.</p>
-				</div>
+				</pics:fieldhelp>
 			</s:if>
 		</li>
 		<li id="state_li"></li>
@@ -276,10 +275,9 @@ function checkFee(activationFee, oldValue) {
 			<li><label>Health &amp; Safety Organization:</label>
 				<s:radio list="#{'OSHA':'OSHA','MSHA':'MSHA','COHS':'Canadian OHS'}"
 					name="operator.oshaType" theme="pics" />
-				<div class="fieldhelp">
-					<h3>Health &amp; Safety Organization</h3>
+				<pics:fieldhelp title="Health &amp; Safety Organization">
 					<p>The source of statistics that should be used to evaluate contractors. Operators can collect more than one, but only one can be used to evaluate stats.</p>
-				</div>
+				</pics:fieldhelp>
 			</li>
 			<li><label>Contractors pay:</label> <s:radio
 				list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"
