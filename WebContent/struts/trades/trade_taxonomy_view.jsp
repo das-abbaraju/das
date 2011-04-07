@@ -28,25 +28,29 @@
 		<ol>
 			<!-- product/service/psmApplies options -->
 			<li>
-				<label>Product:</label>
-				<s:radio theme="pics" name="trade.product" list="trade.radioList"/>
+				<label>Is Product:</label>
+				<s:checkbox name="trade.product" value="trade.productI" />
+				<s:property value="(trade.product==null)?'null':trade.product" />
+			</li>
+			<li>
+				<label>Is Service:</label>
+				<s:checkbox name="trade.service" value="trade.serviceI" />
+				<s:property value="(trade.service==null)?'null':trade.service" />
+			</li>
+			<li>
+				<label>PSM Applies:</label>
+				<s:checkbox name="trade.psmApplies" value="trade.psmAppliesI" />
+				<s:property value="(trade.psmApplies==null)?'null':trade.psmApplies" />
 			</li>
 			<!--
-			<s:if test="trade.parent != null">
-				<li><label>Product:</label> <s:checkbox name="trade.product" value="trade.productI" />(Inherited from parent)</li>
-				<li><label>Service:</label> <s:checkbox name="trade.service" value="trade.serviceI" />(Inherited from parent)</li>
-			</s:if>
+			<li>
+				<label>Product Critical:</label>
+				<s:radio list=""/>
+			</li>
+			
 			<li><label>Service:</label> <s:checkbox name="trade.service" value="trade.serviceI" />
 				<s:if test="trade.parent != null && trade.service == null">Inherited from parent</s:if>
 			</li>
-			<s:if test="trade.productI">
-				<li><label>Product Critical:</label> <s:checkbox name="trade.riskLevel" value="trade.riskLevelI" />
-					<s:if test="trade.parent != null && trade.riskLevel == null">Inherited from parent</s:if>
-				</li>
-			</s:if>
-			<s:if test="trade.serviceI">
-				<p><label>Safety Critical:</label> <s:property value="trade.riskLevelI"/></p>
-			</s:if>
 			<li><label>PSM Critical:</label> <s:checkbox name="trade.psmApplies" value="trade.psmAppliesI" />
 				<s:if test="trade.parent != null && trade.psmApplies == null">Inherited from parent</s:if>
 			</li>
