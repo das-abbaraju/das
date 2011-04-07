@@ -81,14 +81,6 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		return permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit);
 	}
 
-	public List<AuditType> getAuditTypeList() {
-		List<AuditType> list = new ArrayList<AuditType>();
-		list.add(new AuditType(AuditType.DEFAULT_AUDITTYPE));
-		AuditTypeDAO dao = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
-		list.addAll(dao.findWhere("isScheduled = 1 OR hasAuditor = 1"));
-		return list;
-	}
-
 	public String getYesterday() {
 		Calendar date = Calendar.getInstance();
 		date.add(Calendar.DAY_OF_YEAR, -1);

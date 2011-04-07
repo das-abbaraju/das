@@ -44,8 +44,6 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public static final int WA_STATE_VERIFICATION = 176;
 	public static final int PQF_SUNCOR = 195;
 
-	public static String DEFAULT_AUDITTYPE = "- Audit -";
-
 	protected String auditName;
 	protected AuditTypeClass classType = AuditTypeClass.Audit;
 	protected int displayOrder = 100;
@@ -69,6 +67,10 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public AuditType() {
 	}
 
+	public AuditType(int id) {
+		this.id = id;
+	}
+
 	public AuditType(AuditType a) {
 		this.account = a.getAccount();
 		this.auditName = a.getName();
@@ -82,14 +84,6 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		this.isScheduled = a.isScheduled();
 		this.monthsToExpire = a.getMonthsToExpire();
 		this.renewable = a.isRenewable();
-	}
-
-	public AuditType(String name) {
-		this.auditName = name;
-	}
-
-	public AuditType(int id) {
-		this.id = id;
 	}
 
 	/**
