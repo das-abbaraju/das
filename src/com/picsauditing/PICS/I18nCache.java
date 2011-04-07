@@ -11,7 +11,6 @@ import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.jpa.entities.TranslatableString.Translation;
 import com.picsauditing.search.Database;
@@ -146,7 +145,7 @@ public class I18nCache {
 		Database db = new Database();
 		// Make sure we handle clearing the cache across multiple servers
 		Iterator<Translation> iterator = value.getTranslations().iterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			Translation translation = iterator.next();
 			String locale = translation.getLocale();
 			String newValue = Utilities.escapeQuotes(translation.getValue());
@@ -156,8 +155,8 @@ public class I18nCache {
 				cache.remove(key, locale);
 				iterator.remove();
 			} else if (translation.isModified()) {
-				String sql = "UPDATE app_translation SET msgValue = '" + newValue + "', updateDate = NOW() WHERE msgKey = '" + key
-						+ "' AND locale = '" + locale + "'";
+				String sql = "UPDATE app_translation SET msgValue = '" + newValue
+						+ "', updateDate = NOW() WHERE msgKey = '" + key + "' AND locale = '" + locale + "'";
 				db.executeUpdate(sql);
 				cache.put(key, locale, translation.getValue());
 				translation.commit();
@@ -171,4 +170,13 @@ public class I18nCache {
 		}
 	}
 
+	public void removeTranslatableStrings(List<String> keys) throws SQLException {
+		for (String key : keys) {
+			getCache().row(key).clear();
+		}
+
+		String sql = "DELETE FROM app_translation WHERE msgKey IN (" + Strings.implodeForDB(keys, ",") + ")";
+		Database db = new Database();
+		db.executeUpdate(sql);
+	}
 }
