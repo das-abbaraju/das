@@ -192,7 +192,8 @@ public class Trade extends BaseTable implements Indexable {
 	}
 
 	/**
-	 * The short version of the trade, typically only included when in context with its parent trades
+	 * The short version of the trade, typically only included when in context
+	 * with its parent trades
 	 */
 	@Transient
 	public TranslatableString getName2() {
@@ -223,11 +224,6 @@ public class Trade extends BaseTable implements Indexable {
 	}
 
 	@Transient
-	public String getIndexType() {
-		return "T";
-	}
-
-	@Transient
 	public List<IndexObject> getIndexValues() {
 		List<IndexObject> l = new ArrayList<IndexObject>();
 		// id
@@ -238,10 +234,12 @@ public class Trade extends BaseTable implements Indexable {
 			if (s != null && !s.isEmpty())
 				l.add(new IndexObject(s, 8));
 		}
-		sA = this.name2.toString().toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
-		for (String s : sA) {
-			if (s != null && !s.isEmpty())
-				l.add(new IndexObject(s, 6));
+		if (!this.name2.getTranslations().isEmpty()) {
+			sA = this.name2.toString().toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
+			for (String s : sA) {
+				if (s != null && !s.isEmpty())
+					l.add(new IndexObject(s, 6));
+			}
 		}
 		// Alternates
 		for (TradeAlternate ta : getAlternates()) {
@@ -252,6 +250,11 @@ public class Trade extends BaseTable implements Indexable {
 			}
 		}
 		return l;
+	}
+
+	@Transient
+	public String getIndexType() {
+		return "T";
 	}
 
 	@Transient
