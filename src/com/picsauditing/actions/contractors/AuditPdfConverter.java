@@ -85,7 +85,10 @@ public class AuditPdfConverter extends AuditActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		limitedView = true;
-		findContractor();
+		if (auditID > 0) {
+			findConAudit();
+		} else
+			findContractor();
 
 		String filename = contractor.getName();
 		filename += ".pdf";
@@ -114,40 +117,44 @@ public class AuditPdfConverter extends AuditActionSupport {
 			Paragraph conName = new Paragraph(contractor.getName(), headerFont);
 			conName.setAlignment(Element.ALIGN_CENTER);
 			document.add(conName);
-
-			for (ContractorAudit conAudit : contractor.getAudits()) {
-				if (!conAudit.isExpired()
-						&& (conAudit.getAuditType().isPqf() || conAudit.getAuditType().isAnnualAddendum())) {
-
-					String auditName = conAudit.getAuditType().getAuditName() + " - ";
-					if (conAudit.getAuditType().isPqf())
-						auditName += DateBean.format(conAudit.getEffectiveDateLabel(), "MMM yyyy");
-					else if (!Strings.isEmpty(conAudit.getAuditFor()))
-						auditName += conAudit.getAuditFor();
-
-					Paragraph name = new Paragraph(auditName, auditFont);
-					name.setAlignment(Element.ALIGN_CENTER);
-					document.add(name);
-
-					AnswerMap answerMap = auditDataDAO.findAnswers(conAudit.getId());
-
-					Map<AuditCategory, AuditCatData> allCategories = getCategories(conAudit, true);
-
-					for (AuditCategory category : allCategories.keySet()) {
-						if (category.getParent() == null)
-							handleCategory(document, allCategories, answerMap, category, 0);
+			if (conAudit != null) {
+				loadAuditDocument(document, conAudit);
+			} else {
+				for (ContractorAudit audit : contractor.getAudits()) {
+					if (!audit.isExpired() && (audit.getAuditType().isPqf() || audit.getAuditType().isAnnualAddendum())) {
+						loadAuditDocument(document, audit);
 					}
+					document.newPage();
 				}
-				document.newPage();
 			}
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void addOshaLog(Document document, ContractorAudit conAudit, AuditCategory category)
-			throws DocumentException {
-		for (OshaAudit oshaAudit : conAudit.getOshas()) {
+	private void loadAuditDocument(Document document, ContractorAudit audit) throws DocumentException {
+		String auditName = audit.getAuditType().getAuditName() + " - ";
+		if (audit.getAuditType().isPqf())
+			auditName += DateBean.format(audit.getEffectiveDateLabel(), "MMM yyyy");
+		else if (!Strings.isEmpty(audit.getAuditFor()))
+			auditName += audit.getAuditFor();
+
+		Paragraph name = new Paragraph(auditName, auditFont);
+		name.setAlignment(Element.ALIGN_CENTER);
+		document.add(name);
+
+		AnswerMap answerMap = auditDataDAO.findAnswers(audit.getId());
+
+		Map<AuditCategory, AuditCatData> allCategories = getCategories(audit, true);
+
+		for (AuditCategory category : allCategories.keySet()) {
+			if (category.getParent() == null)
+				handleCategory(document, allCategories, answerMap, category, 0);
+		}
+	}
+
+	private void addOshaLog(Document document, ContractorAudit audit, AuditCategory category) throws DocumentException {
+		for (OshaAudit oshaAudit : audit.getOshas()) {
 			if (matchesType(category.getId(), oshaAudit.getType())) {
 				String logInfo = oshaAudit.getType().toString() + " - " + oshaAudit.getLocation();
 				if (!Strings.isEmpty(oshaAudit.getDescription()))

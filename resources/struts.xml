@@ -1178,7 +1178,7 @@
 			class="com.picsauditing.actions.audits.ContractorAuditController">
 			<result>struts/audits/addRemoveCategoryData.jsp</result>
 		</action>
-
+		
 		<!-- Track Auditor Payments -->
 
 		<action name="CreateAuditorInvoices"
