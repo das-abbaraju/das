@@ -11,7 +11,7 @@
 <table class="report">
 	<thead>
 		<tr>
-			<th><a href="?orderBy=e.lastName,e.firstName">Employees</a></th>
+			<th><a href="?orderBy=e.lastName,e.firstName<s:if test="!permissions.contractor">&id=<s:property value="id" /></s:if>">Employees</a></th>
 			<s:iterator value="competencies">
 				<th>
 					<s:property value="label" />
