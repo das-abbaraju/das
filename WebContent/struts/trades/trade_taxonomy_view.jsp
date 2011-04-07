@@ -26,10 +26,16 @@
 	<fieldset>
 	<h2>Attributes</h2>
 		<ol>
-			<!--
-			<li><label>Product:</label> <s:checkbox name="trade.product" value="trade.productI" />
-				<s:if test="trade.parent != null && trade.product == null">Inherited from parent</s:if>
+			<!-- product/service/psmApplies options -->
+			<li>
+				<label>Product:</label>
+				<s:radio theme="pics" name="trade.product" list="trade.radioList"/>
 			</li>
+			<!--
+			<s:if test="trade.parent != null">
+				<li><label>Product:</label> <s:checkbox name="trade.product" value="trade.productI" />(Inherited from parent)</li>
+				<li><label>Service:</label> <s:checkbox name="trade.service" value="trade.serviceI" />(Inherited from parent)</li>
+			</s:if>
 			<li><label>Service:</label> <s:checkbox name="trade.service" value="trade.serviceI" />
 				<s:if test="trade.parent != null && trade.service == null">Inherited from parent</s:if>
 			</li>

@@ -122,6 +122,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 		try {
 			for (Trade t : trades) {
 				t.setParent(trade);
+				tradeDAO.save(t);
 			}
 			json.put("success", true);
 		} catch (Exception e) {

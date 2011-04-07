@@ -1,7 +1,9 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -38,7 +40,7 @@ public class Trade extends BaseTable implements Indexable {
 
 	private List<TradeAlternate> alternates = new ArrayList<TradeAlternate>();
 	private List<Trade> children = new ArrayList<Trade>();
-
+	
 	@ManyToOne
 	@JoinColumn(name = "parentID")
 	public Trade getParent() {
@@ -276,5 +278,16 @@ public class Trade extends BaseTable implements Indexable {
 	@Transient
 	public String getViewLink() {
 		return "TradeTaxonomy.action";
-	};
+	}
+
+	@Transient
+	public Map<String, String> getRadioList() {
+		Map<String,String> radioList = new LinkedHashMap<String, String>();
+		radioList.put("true", "Yes");
+		radioList.put("false", "No");
+		if (parent != null)
+			radioList.put("null", "Inherited from parent (" + parent.isProductI() + ")");
+		
+		return radioList;
+	}
 }
