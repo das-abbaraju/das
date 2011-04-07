@@ -89,10 +89,9 @@ function showRules() {
 				<li><label>Apply on Question:</label>
 					<s:textfield name="applyOnQuestionID" />
 					<s:if test="applyOnQuestionID > 0"><a href="ManageQuestion.action?id=<s:property value="applyOnQuestionID" />">Show</a></s:if>
-					<div class="fieldhelp">
-					<h3>Apply on Question</h3>
+					<pics:fieldhelp title="Apply on Question">
 					<p>This field is only available on audits with dynamic categories</p>
-					</div>
+					</pics:fieldhelp>
 				</li>
 				<li><label>When Answer is:</label>
 					<s:textfield name="category.applyOnAnswer" />

@@ -79,10 +79,9 @@ function showRules() {
 				</li>
 				<li><label>Name:</label>
 					<s:textfield name="auditType.auditName"></s:textfield>
-					<div class="fieldhelp">
-						<h3>Audit Name</h3>
+					<pics:fieldhelp title="Audit Name">
 						<p>The name of the document, policy type, audit, or operator specific form</p>
-					</div>
+					</pics:fieldhelp>
 				</li>
 				<li><label>Class:</label>
 					<s:select list="classList" name="auditType.classType" />
@@ -92,24 +91,21 @@ function showRules() {
 				</li>
 				<li><label>Description:</label>
 					<s:textfield name="auditType.description"></s:textfield>
-					<div class="fieldhelp">
-						<h3>Description</h3>
+					<pics:fieldhelp title="Description">
 						<p>An optional description used for reference. Currently this is not used anywhere.</p>
-					</div>
+					</pics:fieldhelp>
 				</li>
 				<li><label>Has Multiple:</label>
 					<s:checkbox name="auditType.hasMultiple" />
-					<div class="fieldhelp">
-						<h3>Has Multiple</h3>
+					<pics:fieldhelp title="Has Multiple">
 						<p>Check this box if a given contractor can have more than one of these types of audits active at the same time. This is usually NOT checked.</p>
-					</div>
+					</pics:fieldhelp>
 				</li>
 				<li><label>Can Renew:</label>
 					<s:checkbox name="auditType.renewable" />
-					<div class="fieldhelp">
-						<h3>Can Renew</h3>
+					<pics:fieldhelp title="Can Renew">
 						<p>Check this box if the document or audit is reusable at the end of its life. For example, PQF is renewable because we don't make them fill out a whole new PQF each year. GL Policy is NOT renewable because we force them to fill out a brand new policy each time. One major drawback to renewable audit types is they don't maintain a history of past audits.</p>
-					</div>
+					</pics:fieldhelp>
 				</li>
 				<li><label>Is Scoreable:</label>
 					<s:checkbox name="auditType.scoreable" />
@@ -148,10 +144,9 @@ function showRules() {
 				<li>
 					<label>Required By Operator:</label>
 					<s:textfield name="operatorID" value="%{auditType.account.id}" />
-					<div class="fieldhelp">
-						<h3>Required By Operator</h3>
+					<pics:fieldhelp title="Required By Operator">
 						<p>Add the operator or corporateID only if requested by 1 account. We may be removing this field soon in favor of Audit Type Rules.</p>
-					</div>
+					</pics:fieldhelp>
 				</li>
 				<li><label>Months to Expire:</label>
 					<s:textfield name="auditType.monthsToExpire" /> 

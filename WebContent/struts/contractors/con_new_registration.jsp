@@ -348,10 +348,10 @@ function getMatches(requestID) {
 			<s:if test="newContractor.id > 0 && newContractor.phone != null && newContractor.phone.length() > 0 && !permissions.operatorCorporate">
 				<s:submit value="%{getText(scope + '.button.ContactedByPhone')}" action="RequestNewContractor!phone" cssClass="picsbutton" />
 			</s:if>
-			<div class="fieldhelp">
+			<pics:fieldhelp>
 				<h3><s:text name="User.phone" /></h3>
 				<p><s:text name="%{scope}.help.OptionalField"><s:param><s:text name="User.phone" /></s:param></s:text></p>
-			</div>
+			</pics:fieldhelp>			
 			<div id="think_phone"></div>
 			<div id="match_phone"></div>
 		</li>

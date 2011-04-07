@@ -246,13 +246,12 @@ $(function() {
 								<s:checkbox name="contractor.materialSupplier" /><s:property value="#conType.type" />
 							</s:else>
 						</s:iterator>
-						<div class="fieldhelp">
-							<h3>Contractor Type</h3>
+						<pics:fieldhelp title="Contractor Type">
 							<s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
 								<h5><s:property value="#conType.type" /></h5>
 								<s:property value="#conType.description" escape="false" /><br />
 							</s:iterator>
-						</div>
+						</pics:fieldhelp>
 					</li>
 				</ol>
 				</fieldset>

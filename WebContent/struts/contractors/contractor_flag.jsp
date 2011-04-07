@@ -237,10 +237,9 @@ function checkReason(id) {
 								<li class="required">
 									<span class="label-txt">Reason:</span> 
 									<s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea><br />
-									<div class="fieldhelp">
-										<h3>Reason</h3>
+									<pics:fieldhelp title="Reason">
 					                    <p class="redMain">* All Fields are required</p>									
-									</div>
+									</pics:fieldhelp>
 								</li>
 								<li>
 									<span class="label-txt">File Attachment:</span>
@@ -397,10 +396,9 @@ function checkReason(id) {
 															<li class="required">
 																<label>Reason for Forcing:</label>
 																<s:textarea name="forceNote" value="" rows="2" cols="30" cssStyle="vertical-align: top;"></s:textarea>
-																<div class="fieldhelp">
-																	<h3>Reason</h3>
+																<pics:fieldhelp title="Reason">
 			                     								<p class="redMain">* All Fields are required</p>									
-																</div>
+																</pics:fieldhelp>
 															</li>
 															<li>
 																<span class="label-txt">File Attachment:</span>

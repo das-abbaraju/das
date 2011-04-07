@@ -190,11 +190,9 @@ function showCategoryRules() {
 	<ol>
 		<li><label>Has Requirement:</label>
 			<s:checkbox name="question.hasRequirement"/>
-			<div class="fieldhelp">
-				<h3>Has Requirement</h3>
+			<pics:fieldhelp title="Has Requirement">
 				<p>If this is question has a requirement, you MUST make the question required as well.</p>
-			</div>
-			
+			</pics:fieldhelp>			
 		</li>
 		<li><label>OK Answer:</label>
 			<s:textfield name="question.okAnswer" />
@@ -210,40 +208,35 @@ function showCategoryRules() {
 				question.questionType.equals('Yes/No'))">
 				style="display: none;"</s:if>><label>Score Weight:</label>
 				<s:textfield name="question.scoreWeight" />
-				<div class="fieldhelp">
-					<h3>Score Weight</h3>
+				<pics:fieldhelp title="Score Weight">
 					<p>This number will affect the strength of the score</p>
-				</div>
+				</pics:fieldhelp>
 			</li>
 		</s:if>
 		<li><label>Required by Question:</label>
 			<s:textfield name="requiredQuestionID" />
 			<s:if test="requiredQuestionID > 0"><a href="?id=<s:property value="requiredQuestionID" />">Show</a></s:if>
-			<div class="fieldhelp">
-				<h3>Required by Question</h3>
+			<pics:fieldhelp title="Required by Question">
 				<p>The question that determines whether or not this question is required.</p>
-			</div>
+			</pics:fieldhelp>
 		</li>
 		<li><label>Required Answer:</label>
 			<s:textfield name="question.requiredAnswer" />
-			<div class="fieldhelp">
-				<h3>Required Answer</h3>
+			<pics:fieldhelp title="Required Answer">
 				<p>If the "Required by Question" has this answer, this question will become a required question.</p>
-			</div>
+			</pics:fieldhelp>
 		</li>
 		<li><label>Visible Question:</label>
 			<s:textfield name="visibleQuestionID" />
-			<div class="fieldhelp">
-				<h3>Visible Question</h3>
+			<pics:fieldhelp title="Visible Question">
 				<p>The question that determines whether or not this question is visible.</p>
-			</div>
+			</pics:fieldhelp>
 		</li>
 		<li><label>Visible Answer:</label>
 			<s:textfield name="question.visibleAnswer" />
-			<div class="fieldhelp">
-				<h3>Visible Answer</h3>
+			<pics:fieldhelp title="Visible Answer">
 				<p>If the "Visible" has this answer, this question will become a required question.</p>
-			</div>
+			</pics:fieldhelp>
 		</li>
 		<li><label>Risk Level:</label>
 			<s:select list="@com.picsauditing.jpa.entities.LowMedHigh@values()" name="question.riskLevel" />
