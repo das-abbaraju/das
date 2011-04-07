@@ -303,6 +303,11 @@
 			<result>struts/contractors/contractor_flag.jsp</result>
 		</action>
 		
+		<action name="ContractorFlagAjax"
+			class="com.picsauditing.actions.contractors.ContractorFlagAction">
+			<result>struts/contractors/contractor_flag_quick.jsp</result>
+		</action>
+		
 		<action name="ContractorFlagChangesAjax" 
 			class="com.picsauditing.actions.flags.ContractorFlagChanges">
 			<result>struts/contractors/contractor_flag_changes.jsp</result>
@@ -374,6 +379,11 @@
 		<action name="ContractorQuickAjax"
 			class="com.picsauditing.actions.contractors.ContractorDashboard">
 			<result>/struts/contractors/contractor_quick.jsp</result>
+		</action>
+		
+		<action name="ContractorQuickDocumentsAjax"
+			class="com.picsauditing.actions.contractors.ContractorDashboard">
+			<result>/struts/contractors/contractor_quick_documents.jsp</result>
 		</action>
 
 		<action name="ContractorJson"

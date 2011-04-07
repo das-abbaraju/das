@@ -60,6 +60,10 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showOQ = false;
 	protected boolean showHSE = false;
 	protected boolean showAccountManager = false;
+	protected boolean showBidOnlyFlagChanges = false;
+	protected boolean showAuditStatusFlagChanges = false;
+	protected boolean showAuditCreationFlagChanges = false;
+	protected boolean showAuditQuestionFlagChanges = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -99,6 +103,10 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected String exEachOccurrence = DEFAULT_AMOUNT;
 	protected boolean oq = false;
 	protected boolean hse = false;
+	protected boolean bidOnlyFlagChanges = false;
+	protected boolean auditStatusFlagChanges = false;
+	protected boolean auditCreationFlagChanges = false;
+	protected boolean auditQuestionFlagChanges = false;
 
 	// private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO)
 	// SpringUtils.getBean("AuditQuestionDAO");
@@ -318,6 +326,38 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowAccountManager(boolean showAccountManager) {
 		this.showAccountManager = showAccountManager;
+	}
+
+	public boolean isShowBidOnlyFlagChanges() {
+		return showBidOnlyFlagChanges;
+	}
+
+	public void setShowBidOnlyFlagChanges(boolean showBidOnlyFlagChanges) {
+		this.showBidOnlyFlagChanges = showBidOnlyFlagChanges;
+	}
+
+	public boolean isShowAuditStatusFlagChanges() {
+		return showAuditStatusFlagChanges;
+	}
+
+	public void setShowAuditStatusFlagChanges(boolean showAuditStatusFlagChanges) {
+		this.showAuditStatusFlagChanges = showAuditStatusFlagChanges;
+	}
+
+	public boolean isShowAuditCreationFlagChanges() {
+		return showAuditCreationFlagChanges;
+	}
+
+	public void setShowAuditCreationFlagChanges(boolean showAuditCreationFlagChanges) {
+		this.showAuditCreationFlagChanges = showAuditCreationFlagChanges;
+	}
+
+	public boolean isShowAuditQuestionFlagChanges() {
+		return showAuditQuestionFlagChanges;
+	}
+
+	public void setShowAuditQuestionFlagChanges(boolean showAuditQuestionFlagChanges) {
+		this.showAuditQuestionFlagChanges = showAuditQuestionFlagChanges;
 	}
 
 	public int[] getAccountManager() {
@@ -719,6 +759,38 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setHse(boolean hse) {
 		this.hse = hse;
+	}
+
+	public boolean isBidOnlyFlagChanges() {
+		return bidOnlyFlagChanges;
+	}
+
+	public void setBidOnlyFlagChanges(boolean bidOnlyFlagChanges) {
+		this.bidOnlyFlagChanges = bidOnlyFlagChanges;
+	}
+
+	public boolean isAuditStatusFlagChanges() {
+		return auditStatusFlagChanges;
+	}
+
+	public void setAuditStatusFlagChanges(boolean auditStatusFlagChanges) {
+		this.auditStatusFlagChanges = auditStatusFlagChanges;
+	}
+
+	public boolean isAuditCreationFlagChanges() {
+		return auditCreationFlagChanges;
+	}
+
+	public void setAuditCreationFlagChanges(boolean auditCreationFlagChanges) {
+		this.auditCreationFlagChanges = auditCreationFlagChanges;
+	}
+
+	public boolean isAuditQuestionFlagChanges() {
+		return auditQuestionFlagChanges;
+	}
+
+	public void setAuditQuestionFlagChanges(boolean auditQuestionFlagChanges) {
+		this.auditQuestionFlagChanges = auditQuestionFlagChanges;
 	}
 
 	// Getters for search lists

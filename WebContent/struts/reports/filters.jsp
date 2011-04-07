@@ -939,6 +939,35 @@
 			name="filter.customAPI" /></div>
 	</pics:permission>
 
+	<s:if test="filter.showAuditCreationFlagChanges || filter.showAuditStatusFlagChanges || filter.showBidOnlyFlagChanges">
+		<br clear="all" />
+		Expected Flag Changes:		
+	</s:if>
+
+	<s:if test="filter.showAuditCreationFlagChanges">
+		<br clear="all" />
+		<div class="filterOption"><label><s:checkbox
+			name="filter.auditCreationFlagChanges" />Show Flag Changes related to newly created Audits</label></div>
+	</s:if>
+
+	<s:if test="filter.showAuditStatusFlagChanges">
+		<br clear="all" />
+		<div class="filterOption"><label><s:checkbox
+			name="filter.auditStatusFlagChanges" />Show Flag Changes due to Audit Status changes</label></div>
+	</s:if>
+
+	<s:if test="filter.showAuditQuestionFlagChanges">
+		<br clear="all" />
+		<div class="filterOption"><label><s:checkbox
+			name="filter.auditQuestionFlagChanges" />Show Audit Question Related Flag Changes</label></div>
+	</s:if>
+
+	<s:if test="filter.showBidOnlyFlagChanges">
+		<br clear="all" />
+		<div class="filterOption"><label><s:checkbox
+			name="filter.bidOnlyFlagChanges" />Show Clear Flag Changes</label></div>
+	</s:if>
+
 	<br clear="all" />
 	<div class="alphapaging"><s:property
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>

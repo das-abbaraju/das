@@ -1,6 +1,8 @@
 package com.picsauditing.actions.report;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Vector;
 
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -16,27 +18,41 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ReportFlagChanges extends ReportAccount {
 
+	private ContractorOperatorDAO contractorOperatorDAO;
 	private int approveID = 0;
-
 	private List<User> accountManagers;
+	private int[] approvedChanges;
 
-	public ReportFlagChanges() {
+	public ReportFlagChanges(ContractorOperatorDAO contractorOperatorDAO) {
+		this.contractorOperatorDAO = contractorOperatorDAO;
 		setReportName("Flag Changes");
-		orderByDefault = "a.name, operator.name";
+		orderByDefault = "a.name, fd.criteriaID, operator.name";
 	}
 
 	@Override
 	public String execute() throws Exception {
 		if (approveID > 0) {
-			if (!forceLogin())
-				return LOGIN;
-
-			ContractorOperatorDAO dao = (ContractorOperatorDAO) SpringUtils.getBean("ContractorOperatorDAO");
-			ContractorOperator co = dao.find(approveID);
+			ContractorOperator co = contractorOperatorDAO.find(approveID);
 			co.resetBaseline(permissions);
-			dao.save(co);
+			contractorOperatorDAO.save(co);
 			return BLANK;
 		}
+		
+		if ("Approve Selected".equals(button)) {
+			if (approvedChanges != null) {
+				List<ContractorOperator> approvedFlagChanges = contractorOperatorDAO.findWhere("id IN ("+Strings.implode(approvedChanges)+")");
+				
+				for(ContractorOperator co : approvedFlagChanges) {
+					co.resetBaseline(permissions);
+					contractorOperatorDAO.save(co);
+				}
+				
+				approvedChanges = null;
+			} else {
+				addActionError("No Flag Changes were selected for Approval.");
+			}
+		}
+		
 		return super.execute();
 	}
 
@@ -60,7 +76,10 @@ public class ReportFlagChanges extends ReportAccount {
 		getFilter().setShowIndustry(false);
 		getFilter().setShowStatus(false);
 		getFilter().setShowAccountManager(true);
-		getFilter().setShowOperator(false);
+		getFilter().setShowBidOnlyFlagChanges(true);
+		getFilter().setShowAuditCreationFlagChanges(true);
+		getFilter().setShowAuditStatusFlagChanges(true);
+		getFilter().setShowAuditQuestionFlagChanges(true);
 
 		String opIds = "";
 		List<Integer> ops = new Vector<Integer>();
@@ -87,10 +106,48 @@ public class ReportFlagChanges extends ReportAccount {
 		sql.addField("gc_flag.baselineApprover");
 		sql.addField("gc_flag.flagLastUpdated");
 		sql.addField("gc_flag.creationDate");
+		
 		sql.addField("IFNULL(gc_flag.flagDetail,'{}') flagDetail");
 		sql.addField("IFNULL(gc_flag.baselineFlagDetail,'{}') baselineFlagDetail");
 
-		sql.addJoin("JOIN accounts operator on operator.id = gc_flag.genid");
+		sql.addJoin("JOIN accounts operator ON operator.id = gc_flag.genid AND operator.id NOT IN (10403,2723)");
+		sql
+				.addJoin("LEFT JOIN flag_data fd ON fd.conID = gc_flag.subID AND fd.opID = gc_flag.genID AND fd.baselineFlag != fd.flag");
+		sql.addJoin("LEFT JOIN flag_criteria fc ON fd.criteriaID = fc.id");
+		sql
+				.addJoin("LEFT JOIN contractor_audit ca ON ca.conID = gc_flag.subID AND ca.auditTypeID = fc.auditTypeID AND ca.expiresDate >= NOW()");
+		sql.addJoin("LEFT JOIN contractor_audit_operator cao ON cao.auditID = ca.id AND cao.visible = 1");
+		sql.addJoin("LEFT JOIN contractor_audit_operator_workflow caow ON caow.caoID = cao.id");
+		sql
+				.addJoin("LEFT JOIN contractor_audit_operator_permission caop ON cao.id = caop.caoID AND caop.opID = gc_flag.genID");
+		sql
+				.addJoin("LEFT JOIN contractor_audit_operator_workflow caow2 ON caow.caoID = caow2.caoID AND caow.updateDate < caow2.updateDate");
+
+		Queue<String> expectedChanges = new LinkedList<String>();
+
+		if (getFilter().isBidOnlyFlagChanges())
+			expectedChanges.offer("gc_flag.baselineFlag = 'Clear' OR gc_flag.flag = 'Clear'");
+		if (getFilter().isAuditStatusFlagChanges())
+			expectedChanges
+					.offer("(cao.id IS NOT NULL AND fc.requiredStatus = caow.status AND gc_flag.flag = 'Green') OR "
+							+ "(cao.id IS NOT NULL AND fc.requiredStatus != caow.status AND gc_flag.flag != 'Green')");
+		if (getFilter().isAuditCreationFlagChanges())
+			expectedChanges.offer("cao.id IS NOT NULL AND caow.id IS NULL");
+		if (getFilter().isAuditQuestionFlagChanges())
+			expectedChanges.offer("fc.questionID IS NOT NULL OR (fc.oshaRateType IS NOT NULL AND fc.oshaType IS NOT NULL AND fc.multiYearScope IS NOT NULL)");
+
+		if(!expectedChanges.isEmpty()) {
+			String whereExpected = "(" + expectedChanges.remove() + ")";
+			for (String expectedChange : expectedChanges)
+				whereExpected += " OR (" + expectedChange + ")";
+	
+			sql.addWhere(whereExpected);
+		}
+		
+		sql.addWhere("caow2.id IS NULL");
+
+		sql.addGroupBy("gc_flag.id");
+
 		sql.addField("operator.name AS opName");
 		sql.addField("operator.id AS opId");
 		sql.addWhere("operator.status IN ('Active') AND operator.type = 'Operator'");
@@ -100,21 +157,21 @@ public class ReportFlagChanges extends ReportAccount {
 
 		if (!Strings.isEmpty(opIds))
 			sql.addWhere("operator.id in (" + opIds + ")");
-
 	}
 
 	@Override
 	protected void addFilterToSQL() {
 		super.addFilterToSQL();
-		
+
 		ReportFilterContractor f = getFilter();
 		if (filterOn(f.getAccountManager())) {
 			String list = Strings.implode(f.getAccountManager(), ",");
-			sql.addWhere("gc_flag.genID IN (SELECT accountID FROM account_user WHERE userID IN (" + list + ") AND role = 'PICSAccountRep' AND startDate < NOW() AND endDate > NOW())");
+			sql.addWhere("gc_flag.genID IN (SELECT accountID FROM account_user WHERE userID IN (" + list
+					+ ") AND role = 'PICSAccountRep' AND startDate < NOW() AND endDate > NOW())");
 			setFiltered(true);
 		}
 	}
-	
+
 	public void setApproveID(int approveID) {
 		this.approveID = approveID;
 	}
@@ -126,5 +183,13 @@ public class ReportFlagChanges extends ReportAccount {
 		}
 
 		return accountManagers;
+	}
+
+	public int[] getApprovedChanges() {
+		return approvedChanges;
+	}
+
+	public void setApprovedChanges(int[] approvedChanges) {
+		this.approvedChanges = approvedChanges;
 	}
 }

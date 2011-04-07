@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -40,6 +42,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorWatch;
@@ -87,6 +90,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private List<ContractorAudit> insureGUARD = new ArrayList<ContractorAudit>();
 	private List<AuditData> servicesPerformed = null;
 	private Map<Integer, FlagCriteriaContractor> fccMap = null;
+	private Map<ContractorAuditOperator, AuditStatus> prevStats = null;
 
 	private ContractorFlagCriteriaList problems;
 
@@ -634,4 +638,38 @@ public class ContractorDashboard extends ContractorActionSupport {
 			return true;
 		return false;
 	}
+	
+	public Map<ContractorAuditOperator, AuditStatus> getCaoStats(Integer opID) {
+		if (prevStats == null) {
+			prevStats = new TreeMap<ContractorAuditOperator, AuditStatus>(new Comparator<ContractorAuditOperator>() {
+				public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
+					return o2.getStatusChangedDate().compareTo(o1.getStatusChangedDate());
+				}
+			});
+			for(ContractorAudit ca : this.getActiveAudits()) {
+				for (ContractorAuditOperator cao : ca.getOperators()) {
+					if (cao.hasCaop(opID)) {
+						if (prevStats.get(cao) == null)
+							prevStats.put(cao, null);
+	
+						// finding previous status from workflow if it exists
+						if (cao.getCaoWorkflow().size() > 0) {
+							List<ContractorAuditOperatorWorkflow> caow = cao.getCaoWorkflow();
+							Collections.sort(caow, new Comparator<ContractorAuditOperatorWorkflow>() {
+								@Override
+								public int compare(ContractorAuditOperatorWorkflow o1, ContractorAuditOperatorWorkflow o2) {
+									return o1.getCreationDate().compareTo(o2.getCreationDate());
+								}
+							});
+							prevStats.put(cao, cao.getCaoWorkflow().get(cao.getCaoWorkflow().size() - 1)
+									.getPreviousStatus());
+						}
+	
+					}
+				}
+			}
+		}
+		return prevStats;
+	}
+
 }
