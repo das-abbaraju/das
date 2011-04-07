@@ -27,7 +27,8 @@ public class Trade extends BaseTable implements Indexable {
 	private Trade parent;
 	private Boolean product;
 	private Boolean service;
-	private LowMedHigh riskLevel;
+	private LowMedHigh productRisk;
+	private LowMedHigh safetyRisk;
 	private Boolean psmApplies;
 	private int indexLevel;
 	private int indexStart;
@@ -56,7 +57,10 @@ public class Trade extends BaseTable implements Indexable {
 	}
 
 	public void setProduct(Boolean product) {
-		this.product = product;
+		if (parent != null && product == parent.product)
+			this.product = null;
+		else
+			this.product = product;
 	}
 
 	public Boolean getService() {
@@ -64,15 +68,10 @@ public class Trade extends BaseTable implements Indexable {
 	}
 
 	public void setService(Boolean service) {
-		this.service = service;
-	}
-
-	public LowMedHigh getRiskLevel() {
-		return riskLevel;
-	}
-
-	public void setRiskLevel(LowMedHigh riskLevel) {
-		this.riskLevel = riskLevel;
+		if (parent != null && service == parent.service)
+			this.service = null;
+		else
+			this.service = service;
 	}
 
 	public Boolean getPsmApplies() {
@@ -80,7 +79,10 @@ public class Trade extends BaseTable implements Indexable {
 	}
 
 	public void setPsmApplies(Boolean psmApplies) {
-		this.psmApplies = psmApplies;
+		if (parent != null && psmApplies == parent.psmApplies)
+			this.psmApplies = null;
+		else
+			this.psmApplies = psmApplies;
 	}
 
 	@Transient
@@ -106,14 +108,25 @@ public class Trade extends BaseTable implements Indexable {
 	}
 
 	@Transient
-	public LowMedHigh getRiskLevelI() {
-		if (riskLevel == null) {
+	public LowMedHigh getProductRiskI() {
+		if (productRisk == null) {
 			if (parent == null)
 				return LowMedHigh.Low;
 			else
-				return parent.getRiskLevelI();
+				return parent.getProductRiskI();
 		}
-		return riskLevel;
+		return productRisk;
+	}
+	
+	@Transient
+	public LowMedHigh getSafetyRiskI() {
+		if (safetyRisk == null) {
+			if (parent == null)
+				return LowMedHigh.Low;
+			else
+				return parent.getSafetyRiskI();
+		}
+		return safetyRisk;
 	}
 
 	@Transient
@@ -292,5 +305,21 @@ public class Trade extends BaseTable implements Indexable {
 			radioList.put("null", "Inherited from parent (" + parent.isProductI() + ")");
 		
 		return radioList;
+	}
+
+	public LowMedHigh getProductRisk() {
+		return productRisk;
+	}
+
+	public void setProductRisk(LowMedHigh productRisk) {
+		this.productRisk = productRisk;
+	}
+
+	public LowMedHigh getSafetyRisk() {
+		return safetyRisk;
+	}
+
+	public void setSafetyRisk(LowMedHigh safetyRisk) {
+		this.safetyRisk = safetyRisk;
 	}
 }
