@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Audit Calendar</title>
+<title>Implementation Audit Calendar</title>
 <s:include value="../jquery.jsp" />
 
 <link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css">
@@ -95,7 +95,7 @@ ul {
 </style>
 </head>
 <body>
-<h1>Audit Calendar</h1>
+<h1>Implementation Audit Calendar</h1>
 <s:include value="../actionMessages.jsp"></s:include>
 
 <div id="thinking"></div>
