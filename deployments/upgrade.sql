@@ -55,13 +55,68 @@ update accounts a
 set onsiteServices = true, offsiteServices = true, materialSupplier = true
 where a.type = 'Operator'
 and a.status = 'Active';
--- PICS-2072
-update `email_template`
-set `subject`='<RequestedByOperator> has requested you join PICS',
-`body`='<html>\r\n<head>\r\n<title><RequestedByOperator> has requested you join PICS</title> \r\n</head>\r\n<body>\r\n<table style=\"border-bottom: 1px solid rgb(123, 160, 205);\" width=\"900px\" cellpadding=\"5\" cellspacing=\"0\">\r\n<tr>\r\n<td style=\"border: 1px solid rgb(93, 155, 206); background-color: rgb(93, 155, 206); color: rgb(255, 255, 255); width: 900px; text-align: left; padding-left:1em\" colspan=\"2\"> \r\n<b><RequestedByOperator> has requested you join PICS</b>\r\n</td> \r\n</tr> \r\n<tr> \r\n<td style=\"border-left: 1px solid rgb(93, 155, 206); border-right: 1px solid rgb(93, 155, 206); width: 900px; text-align: left; vertical-align: top; padding-left: 1em; padding-right: 1em;\" colspan=\"2\">\r\n<p> \r\n<img height=\"90\" width=\"205\" alt=\"logo-pics\" src=\"http://www.picsauditing.com/wp-content/themes/PICS/style/images/logo-pics.jpg\"> \r\n<br/> \r\nHello <ContractorContactName>\r\n<br/>\r\n<br/> \r\n<RequestedByUser> at <RequestedByOperator> has requested for you to participate in their contractor/sub-contractor pre-qualification program through PICS (www.picsauditing.com).\r\n<br/>\r\n<br/> \r\nAttached, please find a letter from <RequestedByUser> with details on their prequalification program. Get started by registering your company in PICS Organizer by using the link below:\r\n<RegistrationLink>\r\n<br/>\r\n<br/> \r\nYour PICS Customer Service Representative is<br />\r\n<CSRName><br />\r\n<CSREmail>, <CSRPhone>\r\n<br/>\r\n<br/>\r\nIf you need assistance with the registration process or if you have questions regarding this email, please contact <CSRName> via email or at the phone number listed above.\r\n<br/>\r\n<br/>\r\nThank you and have a great day!<br/>\r\nPICS Customer Service Team<br/>\r\n1-800-506-7427 x 1  (Toll free in the USA)\r\n</p>\r\n</td>\r\n</tr>\r\n</table>\r\n</body>\r\n</html>',
-`updatedBy`='23157',`updateDate`=NOW(),`html`='1'
-where `id`='83';
 -- PICS-2032
 insert into useraccess 
 (userID, accessType, lastUpdate, grantedByID)
 values (959, 'ContractorSimulator', now(), 23157);
+-- PICS-462
+insert into 
+user_assignment(state,country,userID,assignmentType,auditTypeID,createdBy,creationDate) 
+values 
+('FL','US',11503,'Auditor',2,23157,NOW()),('FL','US',11503,'Auditor',3,23157,NOW()),
+('GA','US',11503,'Auditor',2,23157,NOW()),('GA','US',11503,'Auditor',3,23157,NOW()),
+('IN','US',11503,'Auditor',2,23157,NOW()),('IN','US',11503,'Auditor',3,23157,NOW()),
+('NH','US',11503,'Auditor',2,23157,NOW()),('NH','US',11503,'Auditor',3,23157,NOW()),
+('SC','US',11503,'Auditor',2,23157,NOW()),('SC','US',11503,'Auditor',3,23157,NOW()),
+('TX','US',11503,'Auditor',2,23157,NOW()),('TX','US',11503,'Auditor',3,23157,NOW()),
+('CA','US',935,'Auditor',2,23157,NOW()),('CA','US',935,'Auditor',3,23157,NOW()),
+('IA','US',935,'Auditor',2,23157,NOW()),('IA','US',935,'Auditor',3,23157,NOW()),
+('KS','US',935,'Auditor',2,23157,NOW()),('KS','US',935,'Auditor',3,23157,NOW()),
+('MN','US',935,'Auditor',2,23157,NOW()),('MN','US',935,'Auditor',3,23157,NOW()),
+('MS','US',935,'Auditor',2,23157,NOW()),('MS','US',935,'Auditor',3,23157,NOW()),
+('MO','US',935,'Auditor',2,23157,NOW()),('MO','US',935,'Auditor',3,23157,NOW()),
+('NE','US',935,'Auditor',2,23157,NOW()),('NE','US',935,'Auditor',3,23157,NOW()),
+('ND','US',935,'Auditor',2,23157,NOW()),('ND','US',935,'Auditor',3,23157,NOW()),
+('RI','US',935,'Auditor',2,23157,NOW()),('RI','US',935,'Auditor',3,23157,NOW()),
+('SD','US',935,'Auditor',2,23157,NOW()),('SD','US',935,'Auditor',3,23157,NOW()),
+('TN','US',935,'Auditor',2,23157,NOW()),('TN','US',935,'Auditor',3,23157,NOW()),
+('WA','US',935,'Auditor',2,23157,NOW()),('WA','US',935,'Auditor',3,23157,NOW()),
+('WI','US',935,'Auditor',2,23157,NOW()),('WI','US',935,'Auditor',3,23157,NOW()),
+('WY','US',935,'Auditor',2,23157,NOW()),('WY','US',935,'Auditor',3,23157,NOW()),
+('AZ','US',34067,'Auditor',2,23157,NOW()),('AZ','US',34067,'Auditor',3,23157,NOW()),
+('AR','US',34067,'Auditor',2,23157,NOW()),('AR','US',34067,'Auditor',3,23157,NOW()),
+('CO','US',34067,'Auditor',2,23157,NOW()),('CO','US',34067,'Auditor',3,23157,NOW()),
+('ID','US',34067,'Auditor',2,23157,NOW()),('ID','US',34067,'Auditor',3,23157,NOW()),
+('KY','US',34067,'Auditor',2,23157,NOW()),('KY','US',34067,'Auditor',3,23157,NOW()),
+('LA','US',34067,'Auditor',2,23157,NOW()),('LA','US',34067,'Auditor',3,23157,NOW()),
+('MI','US',34067,'Auditor',2,23157,NOW()),('MI','US',34067,'Auditor',3,23157,NOW()),
+('NM','US',34067,'Auditor',2,23157,NOW()),('NM','US',34067,'Auditor',3,23157,NOW()),
+('OK','US',34067,'Auditor',2,23157,NOW()),('OK','US',34067,'Auditor',3,23157,NOW()),
+('UT','US',34067,'Auditor',2,23157,NOW()),('UT','US',34067,'Auditor',3,23157,NOW()),
+('VA','US',34067,'Auditor',2,23157,NOW()),('VA','US',34067,'Auditor',3,23157,NOW()),
+('WV','US',34067,'Auditor',2,23157,NOW()),('WV','US',34067,'Auditor',3,23157,NOW()),
+('AK','US',1029,'Auditor',2,23157,NOW()),('AK','US',1029,'Auditor',3,23157,NOW()),
+('AS','US',1029,'Auditor',2,23157,NOW()),('AS','US',1029,'Auditor',3,23157,NOW()),
+('CT','US',1029,'Auditor',2,23157,NOW()),('CT','US',1029,'Auditor',3,23157,NOW()),
+('DC','US',1029,'Auditor',2,23157,NOW()),('DC','US',1029,'Auditor',3,23157,NOW()),
+('HI','US',1029,'Auditor',2,23157,NOW()),('HI','US',1029,'Auditor',3,23157,NOW()),
+('MT','US',1029,'Auditor',2,23157,NOW()),('MT','US',1029,'Auditor',3,23157,NOW()),
+('NV','US',1029,'Auditor',2,23157,NOW()),('NV','US',1029,'Auditor',3,23157,NOW()),
+('NC','US',1029,'Auditor',2,23157,NOW()),('NC','US',1029,'Auditor',3,23157,NOW()),
+('MP','US',1029,'Auditor',2,23157,NOW()),('MP','US',1029,'Auditor',3,23157,NOW()),
+('OH','US',1029,'Auditor',2,23157,NOW()),('OH','US',1029,'Auditor',3,23157,NOW()),
+('OR','US',1029,'Auditor',2,23157,NOW()),('OR','US',1029,'Auditor',3,23157,NOW()),
+('UM','US',1029,'Auditor',2,23157,NOW()),('UM','US',1029,'Auditor',3,23157,NOW()),
+('AL','US',34065,'Auditor',2,23157,NOW()),('AL','US',34065,'Auditor',3,23157,NOW()),
+('DE','US',34065,'Auditor',2,23157,NOW()),('DE','US',34065,'Auditor',3,23157,NOW()),
+('GU','US',34065,'Auditor',2,23157,NOW()),('GU','US',34065,'Auditor',3,23157,NOW()),
+('IL','US',34065,'Auditor',2,23157,NOW()),('IL','US',34065,'Auditor',3,23157,NOW()),
+('ME','US',34065,'Auditor',2,23157,NOW()),('ME','US',34065,'Auditor',3,23157,NOW()),
+('MD','US',34065,'Auditor',2,23157,NOW()),('MD','US',34065,'Auditor',3,23157,NOW()),
+('MA','US',34065,'Auditor',2,23157,NOW()),('MA','US',34065,'Auditor',3,23157,NOW()),
+('NJ','US',34065,'Auditor',2,23157,NOW()),('NJ','US',34065,'Auditor',3,23157,NOW()),
+('NY','US',34065,'Auditor',2,23157,NOW()),('NY','US',34065,'Auditor',3,23157,NOW()),
+('PA','US',34065,'Auditor',2,23157,NOW()),('PA','US',34065,'Auditor',3,23157,NOW()),
+('PR','US',34065,'Auditor',2,23157,NOW()),('PR','US',34065,'Auditor',3,23157,NOW()),
+('VT','US',34065,'Auditor',2,23157,NOW()),('VT','US',34065,'Auditor',3,23157,NOW()),
+('VI','US',34065,'Auditor',2,23157,NOW()),('VI','US',34065,'Auditor',3,23157,NOW());
