@@ -27,9 +27,9 @@ public class Trade extends BaseTable implements Indexable {
 	private Trade parent;
 	private Boolean product;
 	private Boolean service;
+	private Boolean psmApplies;
 	private LowMedHigh productRisk;
 	private LowMedHigh safetyRisk;
-	private Boolean psmApplies;
 	private int indexLevel;
 	private int indexStart;
 	private int indexEnd;
@@ -57,7 +57,22 @@ public class Trade extends BaseTable implements Indexable {
 	}
 
 	public void setProduct(Boolean product) {
-		if (parent != null && product == parent.isProductI())
+		this.product = product;
+	}
+
+	@Transient
+	public Boolean getProductI() {
+		if (product == null) {
+			if (parent != null)
+				return parent.getProductI();
+			else
+				return false;
+		}
+		return product;
+	}
+
+	public void setProductI(Boolean product) {
+		if (parent != null && product == parent.getProductI())
 			this.product = null;
 		else
 			this.product = product;
@@ -68,7 +83,22 @@ public class Trade extends BaseTable implements Indexable {
 	}
 
 	public void setService(Boolean service) {
-		if (parent != null && service == parent.isServiceI())
+		this.service = service;
+	}
+
+	@Transient
+	public boolean getServiceI() {
+		if (service == null) {
+			if (parent == null)
+				return false;
+			else
+				return parent.getServiceI();
+		}
+		return service;
+	}
+
+	public void setServiceI(Boolean service) {
+		if (parent != null && service == parent.getServiceI())
 			this.service = null;
 		else
 			this.service = service;
@@ -79,32 +109,33 @@ public class Trade extends BaseTable implements Indexable {
 	}
 
 	public void setPsmApplies(Boolean psmApplies) {
-		if (parent != null && psmApplies == parent.isPsmAppliesI())
+		this.psmApplies = psmApplies;
+	}
+
+	@Transient
+	public boolean getPsmAppliesI() {
+		if (psmApplies == null) {
+			if (parent != null)
+				return parent.getPsmAppliesI();
+			else
+				return false;
+		}
+		return psmApplies;
+	}
+
+	public void setPsmAppliesI(Boolean psmApplies) {
+		if (parent != null && psmApplies == parent.getPsmAppliesI())
 			this.psmApplies = null;
 		else
 			this.psmApplies = psmApplies;
 	}
 
-	@Transient
-	public boolean isProductI() {
-		if (product == null) {
-			if (parent == null)
-				return false;
-			else
-				return parent.isProductI();
-		}
-		return product;
+	public LowMedHigh getProductRisk() {
+		return productRisk;
 	}
 
-	@Transient
-	public boolean isServiceI() {
-		if (service == null) {
-			if (parent == null)
-				return false;
-			else
-				return parent.isServiceI();
-		}
-		return service;
+	public void setProductRisk(LowMedHigh productRisk) {
+		this.productRisk = productRisk;
 	}
 
 	@Transient
@@ -118,6 +149,21 @@ public class Trade extends BaseTable implements Indexable {
 		return productRisk;
 	}
 
+	public void setProductRiskI(LowMedHigh productRisk) {
+		if (parent != null && productRisk == parent.getProductRiskI())
+			this.productRisk = null;
+		else
+			this.productRisk = productRisk;
+	}
+
+	public LowMedHigh getSafetyRisk() {
+		return safetyRisk;
+	}
+
+	public void setSafetyRisk(LowMedHigh safetyRisk) {
+		this.safetyRisk = safetyRisk;
+	}
+
 	@Transient
 	public LowMedHigh getSafetyRiskI() {
 		if (safetyRisk == null) {
@@ -129,15 +175,11 @@ public class Trade extends BaseTable implements Indexable {
 		return safetyRisk;
 	}
 
-	@Transient
-	public boolean isPsmAppliesI() {
-		if (psmApplies == null) {
-			if (parent == null)
-				return false;
-			else
-				return parent.isPsmAppliesI();
-		}
-		return psmApplies;
+	public void setSafetyRiskI(LowMedHigh safetyRisk) {
+		if (parent != null && safetyRisk == parent.getSafetyRiskI())
+			this.safetyRisk = null;
+		else
+			this.safetyRisk = safetyRisk;
 	}
 
 	public int getIndexLevel() {
@@ -294,26 +336,5 @@ public class Trade extends BaseTable implements Indexable {
 	@Transient
 	public String getViewLink() {
 		return "TradeTaxonomy.action";
-	}
-	public LowMedHigh getProductRisk() {
-		return productRisk;
-	}
-
-	public void setProductRisk(LowMedHigh productRisk) {
-		if (parent != null && productRisk == parent.getProductRiskI())
-			this.productRisk = null;
-		else
-			this.productRisk = productRisk;
-	}
-
-	public LowMedHigh getSafetyRisk() {
-		return safetyRisk;
-	}
-
-	public void setSafetyRisk(LowMedHigh safetyRisk) {
-		if (parent != null && safetyRisk == parent.getSafetyRiskI())
-			this.safetyRisk = null;
-		else
-			this.safetyRisk = safetyRisk;
 	}
 }

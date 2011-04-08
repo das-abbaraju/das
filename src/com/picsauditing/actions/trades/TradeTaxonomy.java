@@ -3,6 +3,8 @@ package com.picsauditing.actions.trades;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Transient;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -152,5 +154,4 @@ public class TradeTaxonomy extends PicsActionSupport {
 	public void setTrades(List<Trade> trades) {
 		this.trades = trades;
 	}
-
 }
