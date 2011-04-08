@@ -1,8 +1,11 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.MenuComponent;
@@ -37,6 +40,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	private List<ContractorOperator> operators;
 	protected boolean limitedView = false;
 	protected List<ContractorOperator> activeOperators;
+	protected Map<ContractorAudit, AuditStatus> contractorAuditWithStatuses = null;
 
 	// TODO cleanup the PermissionToViewContractor duplicate code here
 	private PermissionToViewContractor permissionToViewContractor = null;
@@ -88,6 +92,31 @@ public class ContractorActionSupport extends AccountActionSupport {
 		contractorNonExpiredAudits = null;
 	}
 
+	public Map<ContractorAudit, AuditStatus> getActiveAuditsStatuses() {
+		if (contractorAuditWithStatuses == null) {
+			contractorAuditWithStatuses = new HashMap<ContractorAudit, AuditStatus>();
+			List<ContractorAudit> list = contractor.getAudits();
+			for (ContractorAudit contractorAudit : list) {
+				if (contractorAudit.getAuditType().isPqf() || !contractorAudit.isExpired()) {
+					if (permissions.isContractor()) {
+						if (contractorAudit.getAuditType().isCanContractorView()) {
+							contractorAuditWithStatuses.put(contractorAudit, null);
+						}
+					} else if (permissions.isPicsEmployee())
+						contractorAuditWithStatuses.put(contractorAudit, null);
+					else {
+						for (ContractorAuditOperator cao : contractorAudit.getOperators()) {
+							if (cao.isVisibleTo(permissions)) {
+								contractorAuditWithStatuses.put(contractorAudit, cao.getStatus());
+							}
+						}
+					}
+				}
+			}
+		}
+		return contractorAuditWithStatuses;
+	}
+
 	public List<ContractorAudit> getActiveAudits() {
 		if (contractorNonExpiredAudits == null) {
 			contractorNonExpiredAudits = new ArrayList<ContractorAudit>();
@@ -119,43 +148,31 @@ public class ContractorActionSupport extends AccountActionSupport {
 		List<MenuComponent> menu = new ArrayList<MenuComponent>();
 		// String checkIcon =
 		// "<img src=\"images/okCheck.gif\" border=\"0\" title=\"Complete\"/>";
-		List<ContractorAudit> auditList = getActiveAudits();
+		Set<ContractorAudit> auditList = getActiveAuditsStatuses().keySet();
 
 		PicsLogger.log("Found [" + auditList.size() + "] total active audits");
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add the PQF
-			List<ContractorAudit> pqfs = new ArrayList<ContractorAudit>();
-
+			MenuComponent subMenu = new MenuComponent(getText("AuditType.1.name"), "ContractorDocuments.action?id="
+					+ id);
 			Iterator<ContractorAudit> iter = auditList.iterator();
+			int count = 0;
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().getClassType().isPqf()) {
-					pqfs.add(audit);
+					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
+						MenuComponent childMenu = createMenuItem(subMenu, audit);
+						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
+						count++;
+					}
 					iter.remove();
 				}
 			}
-			if (pqfs.size() == 1) {
-				ContractorAudit audit = pqfs.get(0);
-				if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
-					String url = "Audit.action?auditID=";
-					MenuComponent menuComponent = new MenuComponent(getText(audit.getAuditType().getI18nKey("name")),
-							url + audit.getId());
-					menuComponent.setAuditId(audit.getId());
-					menu.add(menuComponent);
-				}
-			} else if (pqfs.size() > 1) {
-				MenuComponent subMenu = new MenuComponent(getText("AuditType.1.name"), "ContractorDocuments.action?id="
-						+ id);
-				menu.add(subMenu);
-				for (ContractorAudit audit : pqfs) {
-					// at least one cao needs to be created for the contractor
-					// to view the audit
-					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0)
-						createMenuItem(subMenu, audit);
-				}
-			}
-			PicsLogger.log("Found [" + pqfs.size() + "] PQFs");
+			if (count == 1) {
+				subMenu = subMenu.getChildren().get(0);
+			} 
+			menu.add(subMenu);
 		}
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
@@ -270,6 +287,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		MenuComponent menuItem = subMenu.addChild(linkText, "Audit.action?auditID=" + audit.getId());
 		menuItem.setAuditId(audit.getId());
+		if (isShowCheckIcon(audit))
+			menuItem.setCssClass("done");
+
 		return menuItem;
 	}
 
@@ -410,19 +430,11 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	public boolean isShowCheckIcon(ContractorAudit conAudit) {
-		// TODO I'm really not sure how we should handle these check marks
-		// anymore. This needs serious review
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (permissions.isContractor()) {
-				if (conAudit.getAuditType().isCanContractorEdit()) {
-					if (cao.getStatus().before(AuditStatus.Complete))
-						return false;
-				} else if (conAudit.getAuditType().getWorkFlow().isHasSubmittedStep() && cao.getStatus().isSubmitted())
-					return true;
-			} else if (cao.getStatus().after(AuditStatus.Pending))
-				return true;
+		AuditStatus status = getActiveAuditsStatuses().get(conAudit);
+		if (status == null)
 			return false;
-		}
-		return true;
+		if (status.after(AuditStatus.Resubmitted))
+			return true;
+		return false;
 	}
 }
