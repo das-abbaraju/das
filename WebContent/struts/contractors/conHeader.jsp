@@ -199,7 +199,7 @@ function loadStatus(caoID){
 <h1><s:property value="contractor.name" />
 <span class="sub">
 <s:if test="auditID > 0">
-	<s:text name="%{conAudit.auditType.getI18nKey('name')}" />
+	<s:property value="conAudit.auditType.name"/>
 	<s:if test="conAudit.auditFor != null && conAudit.auditFor.length() > 0">for <s:property value="conAudit.auditFor"/></s:if>
 	<s:elseif test="!conAudit.auditType.pqf">- <s:date name="conAudit.effectiveDateLabel" format="MMM yyyy" /></s:elseif>
 </s:if>
