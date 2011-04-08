@@ -1,8 +1,10 @@
 package com.picsauditing.actions.chart;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.search.SelectSQL;
@@ -18,7 +20,7 @@ public class GraphTrirRates extends ChartMSAction {
 	private ChartType chartType = ChartType.MSLine;
 	private String flashChart;
 	private OshaType[] shaType = new OshaType[] { OshaType.OSHA };
-	private int[] years = new int[] { 2009 };
+	private int[] years = new int[] { DateBean.getCurrentYear()-1 };
 
 	public String execute() throws Exception {
 		if (!forceLogin())
@@ -116,8 +118,12 @@ public class GraphTrirRates extends ChartMSAction {
 		this.years = years;
 	}
 	
-	public int[] getAllYears() {
-		return new int[] { 2005, 2006, 2007, 2008, 2009 };
+	public List<Integer> getAllYears() {
+		List<Integer> allYears = new ArrayList<Integer>();
+		for(int i=DateBean.getCurrentYear()-1; i>=2005; i--)
+			allYears.add(i);		
+		
+		return allYears;
 	}
 	
 	private SelectSQL setup() {
