@@ -60,7 +60,8 @@ function updateNotePage(accountID,button,returnType,result) {
 			id: accountID,
 			button: button,
 			returnType: returnType,
-			'filter.firstResult': result
+			'filter.firstResult': result,
+			'filter.category': $('#notesForm_filter_category').val()
 	};
 
 	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
