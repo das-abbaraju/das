@@ -41,7 +41,7 @@ public class Trade extends BaseTable implements Indexable {
 
 	private List<TradeAlternate> alternates = new ArrayList<TradeAlternate>();
 	private List<Trade> children = new ArrayList<Trade>();
-	
+
 	@ManyToOne
 	@JoinColumn(name = "parentID")
 	public Trade getParent() {
@@ -57,7 +57,7 @@ public class Trade extends BaseTable implements Indexable {
 	}
 
 	public void setProduct(Boolean product) {
-		if (parent != null && product == parent.product)
+		if (parent != null && product == parent.isProductI())
 			this.product = null;
 		else
 			this.product = product;
@@ -68,7 +68,7 @@ public class Trade extends BaseTable implements Indexable {
 	}
 
 	public void setService(Boolean service) {
-		if (parent != null && service == parent.service)
+		if (parent != null && service == parent.isServiceI())
 			this.service = null;
 		else
 			this.service = service;
@@ -79,7 +79,7 @@ public class Trade extends BaseTable implements Indexable {
 	}
 
 	public void setPsmApplies(Boolean psmApplies) {
-		if (parent != null && psmApplies == parent.psmApplies)
+		if (parent != null && psmApplies == parent.isPsmAppliesI())
 			this.psmApplies = null;
 		else
 			this.psmApplies = psmApplies;
@@ -117,7 +117,7 @@ public class Trade extends BaseTable implements Indexable {
 		}
 		return productRisk;
 	}
-	
+
 	@Transient
 	public LowMedHigh getSafetyRiskI() {
 		if (safetyRisk == null) {
@@ -295,24 +295,15 @@ public class Trade extends BaseTable implements Indexable {
 	public String getViewLink() {
 		return "TradeTaxonomy.action";
 	}
-
-	@Transient
-	public Map<String, String> getRadioList() {
-		Map<String,String> radioList = new LinkedHashMap<String, String>();
-		radioList.put("true", "Yes");
-		radioList.put("false", "No");
-		if (parent != null)
-			radioList.put("null", "Inherited from parent (" + parent.isProductI() + ")");
-		
-		return radioList;
-	}
-
 	public LowMedHigh getProductRisk() {
 		return productRisk;
 	}
 
 	public void setProductRisk(LowMedHigh productRisk) {
-		this.productRisk = productRisk;
+		if (parent != null && productRisk == parent.getProductRiskI())
+			this.productRisk = null;
+		else
+			this.productRisk = productRisk;
 	}
 
 	public LowMedHigh getSafetyRisk() {
@@ -320,6 +311,9 @@ public class Trade extends BaseTable implements Indexable {
 	}
 
 	public void setSafetyRisk(LowMedHigh safetyRisk) {
-		this.safetyRisk = safetyRisk;
+		if (parent != null && safetyRisk == parent.getSafetyRiskI())
+			this.safetyRisk = null;
+		else
+			this.safetyRisk = safetyRisk;
 	}
 }

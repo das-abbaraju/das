@@ -113,6 +113,8 @@ public class TradeTaxonomy extends PicsActionSupport {
 	}
 
 	public String tradeAjax() {
+		if (trade == null)
+			trade = new Trade();
 		return "trade";
 	}
 

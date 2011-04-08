@@ -42,12 +42,17 @@
 				<s:checkbox name="trade.psmApplies" value="trade.psmAppliesI" />
 				<s:property value="(trade.psmApplies==null)?'null':trade.psmApplies" />
 			</li>
-			<!--
 			<li>
 				<label>Product Critical:</label>
-				<s:radio list=""/>
+				<s:radio theme="pics" name="trade.productRisk" value="%{trade.productRiskI}" list="@com.picsauditing.jpa.entities.LowMedHigh@values()"/>
+				(<s:property value="(trade.productRisk==null)?'null':trade.productRisk" />)
 			</li>
-			
+			<li>
+				<label>Safety Critical:</label>
+				<s:radio theme="pics" name="trade.safetyRisk" value="%{trade.safetyRiskI}" list="@com.picsauditing.jpa.entities.LowMedHigh@values()"/>
+				(<s:property value="(trade.safetyRisk==null)?'null':trade.safetyRisk" />)
+			</li>
+			<!--			
 			<li><label>Service:</label> <s:checkbox name="trade.service" value="trade.serviceI" />
 				<s:if test="trade.parent != null && trade.service == null">Inherited from parent</s:if>
 			</li>
