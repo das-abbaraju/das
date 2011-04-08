@@ -126,6 +126,6 @@ public class UserAssignment extends BaseTable implements Comparable<UserAssignme
 	public String toString() {
 		return String.format("%s state:%s, country:%s, zip:%s-%s, contractor:%s, auditType:%s", user.getName(), state,
 				country, postalStart, postalEnd, contractor == null ? null : contractor.getName(),
-				auditType == null ? null : auditType.getName());
+				auditType == null ? null : auditType.getName().toString());
 	}
 }

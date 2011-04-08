@@ -241,7 +241,7 @@
 			<s:if test="permissions.operatorCorporate">
 			<ul>
 				<s:iterator value="viewableAuditsList">
-					<li><s:property value="auditName" /></li>
+					<li><s:property value="name" /></li>
 				</s:iterator>
 			</ul>
 			</s:if>

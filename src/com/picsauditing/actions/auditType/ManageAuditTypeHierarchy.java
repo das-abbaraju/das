@@ -88,7 +88,7 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 				json.put("result", result);
 			} else {
 				JSONObject result = new JSONObject();
-				result.put("data", auditType.getAuditName());
+				result.put("data", auditType.getName().toString());
 				result.put("state", "open");
 				result.put("attr", new JSONObject() {
 					{

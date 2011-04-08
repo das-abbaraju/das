@@ -64,27 +64,27 @@ public class TranslatableString {
 				deleteTranslation(en);
 			else
 				postTranslation(en, newValue);
-		}
-
-		// When we're saving a country specific language, it's more complex
-		if (Strings.isEmpty(newValue)) {
-			// If we are clearing out the field, we can just erase the translation value.
-			if (hasTranslation(en_US)) {
-				deleteTranslation(en_US);
-			} else {
-				// The only problem here is that if we clear out a French translation, the English will keep coming up
-				deleteTranslation(en);
-			}
 		} else {
-			if (hasTranslation(en_US)) {
-				if (translations.get(en).getValue().equals(newValue)) {
-					// Delete the country specific, since this can now fall back to the base language version
+			// When we're saving a country specific language, it's more complex
+			if (Strings.isEmpty(newValue)) {
+				// If we are clearing out the field, we can just erase the translation value.
+				if (hasTranslation(en_US)) {
 					deleteTranslation(en_US);
 				} else {
-					postTranslation(en_US, newValue);
+					// The only problem here is that if we clear out a French translation, the English will keep coming up
+					deleteTranslation(en);
 				}
 			} else {
-				postTranslation(en, newValue);
+				if (hasTranslation(en_US)) {
+					if (translations.get(en).getValue().equals(newValue)) {
+						// Delete the country specific, since this can now fall back to the base language version
+						deleteTranslation(en_US);
+					} else {
+						postTranslation(en_US, newValue);
+					}
+				} else {
+					postTranslation(en, newValue);
+				}
 			}
 		}
 	}

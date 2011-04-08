@@ -110,7 +110,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			throw new NoRightsException("No Rights to View this Contractor");
 
 		if (!conAudit.isVisibleTo(permissions))
-			throw new NoRightsException(conAudit.getAuditType().getName());
+			throw new NoRightsException(conAudit.getAuditType().getName().toString());
 
 	}
 
@@ -530,7 +530,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			Note newNote = new Note();
 			newNote.setAccount(cao.getAudit().getContractorAccount());
 			newNote.setAuditColumns(permissions);
-			String summary = "Changed Status for " + cao.getAudit().getAuditType().getName() + "("
+			String summary = "Changed Status for " + cao.getAudit().getAuditType().getName().toString() + "("
 					+ cao.getAudit().getId() + ") ";
 			if (!Strings.isEmpty(cao.getAudit().getAuditFor()))
 				summary += " for " + cao.getAudit().getAuditFor();

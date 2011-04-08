@@ -132,7 +132,7 @@ public class AuditBuilderController {
 				}
 
 				if (!found) {
-					PicsLogger.log("Adding: " + auditType.getId() + auditType.getAuditName());
+					PicsLogger.log("Adding: " + auditType.getId() + auditType.getName().toString());
 					// need to reconnect object (auditType is from Cache)
 					auditType = auditTypeDao.find(auditType.getId());
 					ContractorAudit pendingToInsert = createAudit(auditType);
@@ -145,7 +145,7 @@ public class AuditBuilderController {
 		Iterator<ContractorAudit> iter = contractor.getAudits().iterator();
 		while (iter.hasNext()) {
 			ContractorAudit conAudit = iter.next();
-			PicsLogger.log("checking to see if we still need existing " + conAudit.getAuditType().getAuditName()
+			PicsLogger.log("checking to see if we still need existing " + conAudit.getAuditType().getName().toString()
 					+ " - #" + conAudit.getId());
 			if (!conAudit.isManuallyAdded() && !getRequiredAuditTypeSet().contains(conAudit.getAuditType())) {
 				boolean needed = false;
@@ -165,7 +165,7 @@ public class AuditBuilderController {
 				}
 
 				if (!needed && conAudit.getData().size() == 0) {
-					PicsLogger.log("removing unneeded audit " + conAudit.getAuditType().getAuditName());
+					PicsLogger.log("removing unneeded audit " + conAudit.getAuditType().getName().toString());
 					iter.remove();
 					cAuditDAO.remove(conAudit);
 				}
@@ -298,7 +298,7 @@ public class AuditBuilderController {
 	 */
 	public void fillAuditCategories(ContractorAudit conAudit) {
 		PicsLogger.start("AuditCategories", "auditID=" + conAudit.getId() + " type="
-				+ conAudit.getAuditType().getAuditName());
+				+ conAudit.getAuditType().getName().toString());
 
 		// We're doing this step first so categories that get added or removed
 		// manually can be caught in the next block
@@ -443,7 +443,7 @@ public class AuditBuilderController {
 	 * @param governingBodies
 	 */
 	private void fillAuditOperators(ContractorAudit conAudit) {
-		PicsLogger.start("AuditOperators", conAudit.getAuditType().getAuditName());
+		PicsLogger.start("AuditOperators", conAudit.getAuditType().getName().toString());
 
 		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require a auditOperator.");
 
@@ -613,7 +613,7 @@ public class AuditBuilderController {
 		}
 		Calendar startDate = Calendar.getInstance();
 		startDate.set(year, Calendar.DECEMBER, 31);
-		PicsLogger.log("Adding: " + auditType.getId() + auditType.getAuditName());
+		PicsLogger.log("Adding: " + auditType.getId() + auditType.getName().toString());
 		ContractorAudit annualAudit = createAudit(auditType);
 		annualAudit.setAuditFor(Integer.toString(year));
 		Calendar effDate = Calendar.getInstance();

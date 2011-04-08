@@ -129,7 +129,7 @@
 				<tr>
 					<td><a href="Audit.action?auditID=<s:property value="id" />">
 						<s:if test="auditFor.length() > 0"><s:property value="auditFor" /></s:if>
-						<s:property value="auditType.auditName" /></a></td>
+						<s:property value="auditType.name" /></a></td>
 						<td><s:iterator value="getCaoStats(permissions).keySet()" id="status">
 							<nobr><s:if test="getCaoStats(permissions).get(#status) > 1"><s:property value="getCaoStats(permissions).get(#status)"/></s:if>
 							 <s:property value="#status"/></nobr><br/>							

@@ -15,7 +15,7 @@
 				<s:iterator value="typeList" id="type">
 					<tr id="type<s:property value="#type.id" />">
 						<td class="classType"><s:property value="#type.classType" /></td>
-						<td><a href="ManageAuditType.action?id=<s:property value="#type.id" />"><s:property value="#type.auditName" /></a></td>
+						<td><a href="ManageAuditType.action?id=<s:property value="#type.id" />"><s:property value="#type.name" /></a></td>
 						<td>
 							<a href="#" onclick="return showType(<s:property value="#type.id" />);" class="normal preview">Show Rules</a>
 							<a href="#" onclick="return hideType(<s:property value="#type.id" />);" class="hide remove">Hide Rules</a>
@@ -38,7 +38,7 @@
 				<s:hidden value="%{operator.id}" name="id" />
 				<s:hidden value="Add Audit" name="button" /> 
 				<s:select list="otherAudits" 
-					listKey="id" listValue="auditName" name="auditTypeID" />
+					listKey="id" listValue="name" name="auditTypeID" />
 				<s:submit cssClass="add_rule" value="Add Audit" />
 			</div>
 		</li>

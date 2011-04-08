@@ -84,7 +84,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 		else {
 			redirect = "CategoryRuleSearch.action?";
 			if (rule.getAuditType() != null)
-				redirect += "filter.auditType=" + rule.getAuditType().getAuditName();
+				redirect += "filter.auditType=" + rule.getAuditType().getName().toString();
 			if (rule.getAuditCategory() != null)
 				redirect += "filter.category=" + ((AuditCategoryRule) rule).getAuditCategory().getName();
 		}

@@ -30,7 +30,7 @@
 			<td><a href="ContractorView.action?id=<s:property value="contractorAccount.id"/>" target="_BLANK"><s:property
 				value="contractorAccount.name" /></a></td>
 			<td><a href="Audit.action?auditID=<s:property value="id"/>" target="_BLANK"><s:property value="id" /></a></td>
-			<td><s:property value="auditType.auditName" /></td>
+			<td><s:property value="auditType.name" /></td>
 			<td><s:date name="creationDate" format="MMM d" /></td>
 		</tr>
 	</s:iterator>

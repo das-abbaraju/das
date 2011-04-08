@@ -44,7 +44,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public static final int WA_STATE_VERIFICATION = 176;
 	public static final int PQF_SUNCOR = 195;
 
-	protected String auditName;
+	protected TranslatableString name;
 	protected AuditTypeClass classType = AuditTypeClass.Audit;
 	protected int displayOrder = 100;
 	protected String description;
@@ -70,10 +70,10 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public AuditType(int id) {
 		this.id = id;
 	}
-
+	
 	public AuditType(AuditType a) {
 		this.account = a.getAccount();
-		this.auditName = a.getName();
+		this.name = a.getName();
 		this.canContractorEdit = a.isCanContractorEdit();
 		this.canContractorView = a.isCanContractorView();
 		this.classType = a.getClassType();
@@ -86,22 +86,13 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		this.renewable = a.isRenewable();
 	}
 
-	/**
-	 * @deprecated Use name
-	 * @return
-	 */
-	@Deprecated
-	public String getAuditName() {
-		return auditName;
-	}
-
-	public void setAuditName(String auditName) {
-		this.auditName = auditName;
-	}
-
 	@Transient
-	public String getName() {
-		return this.auditName;
+	public TranslatableString getName() {
+		return this.name;
+	}
+	
+	public void setName(TranslatableString name) {
+		this.name = name;
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -307,7 +298,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	@Override
 	public JSONObject toJSON(boolean full) {
 		JSONObject j = super.toJSON(full);
-		j.put("auditName", auditName);
+		j.put("name", name);
 		j.put("displayOrder", displayOrder);
 
 		if (full) {
@@ -323,7 +314,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	@Override
 	public String toString() {
-		return auditName + "(" + id + ")";
+		return name + "(" + id + ")";
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

@@ -195,7 +195,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		try {
 			if (auditType == null)
 				return false;
-			if (auditType.getAuditName() == null || auditType.getAuditName().length() == 0) {
+			if (auditType.getName() == null || auditType.getName().toString().length() == 0) {
 				addActionError("Audit name is required");
 				return false;
 			}

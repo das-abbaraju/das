@@ -152,7 +152,7 @@
 						<tr>
 							<td>
 								<a href="Audit.action?auditID=<s:property value="id" />">
-									<s:property value="auditType.auditName" /><s:if test="auditFor.length() > 0">: <s:property value="auditFor" /></s:if>
+									<s:property value="auditType.name" /><s:if test="auditFor.length() > 0">: <s:property value="auditFor" /></s:if>
 									<s:if test="auditType.classType == 'Policy'"><br /><span style="font-size: 10px"><s:date name="effectiveDate" /></span></s:if>
 								</a>
 							</td>

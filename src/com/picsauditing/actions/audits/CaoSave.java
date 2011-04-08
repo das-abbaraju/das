@@ -104,7 +104,7 @@ public class CaoSave extends AuditActionSupport {
 				else
 					accountNames.add(cao.getOperator().getName());
 
-				auditNames.add(cao.getAudit().getAuditType().getName());
+				auditNames.add(cao.getAudit().getAuditType().getName().toString());
 				if (!noteRequired) {
 					for (WorkflowStep s : cao.getAudit().getAuditType().getWorkFlow().getSteps()) {
 						if (s.getOldStatus() != null && cao.getStatus().equals(s.getOldStatus())
@@ -170,7 +170,7 @@ public class CaoSave extends AuditActionSupport {
 		setup();
 		if (conAudit != null) {
 			if (conAudit.isExpired() && !(conAudit.getAuditType().getClassType().isPolicy() && permissions.isAdmin())) {
-				addActionError("You can't change an expired " + conAudit.getAuditType().getName());
+				addActionError("You can't change an expired " + conAudit.getAuditType().getName().toString());
 				return SUCCESS;
 			}
 		}

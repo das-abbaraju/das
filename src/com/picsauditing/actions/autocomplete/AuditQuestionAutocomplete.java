@@ -34,7 +34,7 @@ public class AuditQuestionAutocomplete extends AutocompleteActionSupport<AuditQu
 				outputBuffer.append("(").append(question.getId()).append(") ");
 
 			// Show hierarchy of question
-			outputBuffer.append(question.getAuditType().getAuditName()).append(" &gt; ");
+			outputBuffer.append(question.getAuditType().getName().toString()).append(" &gt; ");
 			for (AuditCategory category : question.getCategory().getAncestors()) {
 				outputBuffer.append(category.getName()).append(" &gt; ");
 			}

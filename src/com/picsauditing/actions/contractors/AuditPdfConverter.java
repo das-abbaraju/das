@@ -133,7 +133,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 	}
 
 	private void loadAuditDocument(Document document, ContractorAudit audit) throws DocumentException {
-		String auditName = audit.getAuditType().getAuditName() + " - ";
+		String auditName = audit.getAuditType().getName().toString() + " - ";
 		if (audit.getAuditType().isPqf())
 			auditName += DateBean.format(audit.getEffectiveDateLabel(), "MMM yyyy");
 		else if (!Strings.isEmpty(audit.getAuditFor()))

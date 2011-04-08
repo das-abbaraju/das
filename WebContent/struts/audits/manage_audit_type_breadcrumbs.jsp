@@ -1,10 +1,10 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <h1>Manage Audit Types
-	<s:if test="auditType != null"><span class="sub"><s:property value="auditType.auditName"/></span></s:if>
+	<s:if test="auditType != null"><span class="sub"><s:property value="auditType.name"/></span></s:if>
 </h1>
 <div id="breadcrumbs">
 	<a class="blueMain" href="ManageAuditType.action">Top</a>
-	&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain<s:if test="category == null"> current</s:if>" href="ManageAuditType.action?id=<s:property value="auditType.id"/>"><s:property value="auditType.auditName"/></a>
+	&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain<s:if test="category == null"> current</s:if>" href="ManageAuditType.action?id=<s:property value="auditType.id"/>"><s:property value="auditType.name"/></a>
 
 	<s:if test="category != null">
 		<s:if test="category.id > 0">

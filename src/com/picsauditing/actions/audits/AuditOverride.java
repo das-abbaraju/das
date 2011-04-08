@@ -58,20 +58,13 @@ public class AuditOverride extends ContractorDocuments {
 
 			auditDao.save(conAudit);
 
-			addNote(conAudit.getContractorAccount(), "Added " + conAudit.getAuditType().getAuditName() + " manually",
+			addNote(conAudit.getContractorAccount(), "Added " + conAudit.getAuditType().getName().toString() + " manually",
 					NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
 
 			if ("Create".equals(button)) {
 				this.redirect("ContractorCron.action?conID=" + id
 						+ "&button=Run&steps=AuditBuilder&redirectUrl=Audit.action?auditID=" + conAudit.getId());
 			}
-			/*
-			 * else {this.redirect(String.format(
-			 * "AuditOverride.action?id=%d&msg=%s successfully created.", id,
-			 * conAudit .getAuditType().getAuditName()));
-			 * 
-			 * }
-			 */
 		}
 
 		return SUCCESS;

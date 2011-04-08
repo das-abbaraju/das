@@ -225,7 +225,7 @@ $(function() {
 				<li><label>Audit Type</label>
 					<s:select id="auditType" name="ruleAuditTypeId" value="rule.auditType.id" list="{}" headerKey="0" headerValue="Any Audit Type">
 						<s:iterator value="auditTypeMap" var="aType">
-							<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
+							<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="name"/>
 						</s:iterator>
 					</s:select>
 					<div id="auditType_display"></div>
@@ -296,7 +296,7 @@ $(function() {
 					<li><label>Dependent Audit</label>
 						<s:select id="dependentAudit" name="ruleDependentAuditTypeId" value="rule.dependentAuditType.id" list="{}" headerKey="" headerValue="Any Audit Type">
 							<s:iterator value="auditTypeMap" var="aType">
-								<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
+								<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="name"/>
 							</s:iterator>
 						</s:select>
 						<div id="dependentAudit_display"></div>
@@ -309,7 +309,7 @@ $(function() {
 					<s:textfield cssClass="autocomplete" id="question" name="ruleQuestionId" value="%{rule.question.id}"/>
 					<div id="question_display">
 						<s:if test="rule.question != null">
-							<a href="ManageAuditType.action?id=<s:property value="rule.question.auditType.id"/>"><s:property value="rule.question.auditType.auditName"/></a> &gt;
+							<a href="ManageAuditType.action?id=<s:property value="rule.question.auditType.id"/>"><s:property value="rule.question.auditType.name"/></a> &gt;
 							<s:iterator value="rule.question.category.ancestors">
 								<a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="name"/></a> &gt;
 							</s:iterator>

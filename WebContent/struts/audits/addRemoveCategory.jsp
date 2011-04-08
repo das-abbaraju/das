@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Add/Remove Categories on <s:property value="conAudit.auditType.auditName" /> for
+<title>Add/Remove Categories on <s:property value="conAudit.auditType.name" /> for
 <s:property value="conAudit.contractorAccount.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
@@ -46,9 +46,9 @@ function addRemoveCat(cat, action){
 </head>
 <body>
 <h1>Add/Remove Category <span class="sub">
-on <s:property value="conAudit.auditType.auditName" /> for <s:property value="conAudit.contractorAccount.name" />
+on <s:property value="conAudit.auditType.name" /> for <s:property value="conAudit.contractorAccount.name" />
 </span></h1>
-<a href="Audit.action?auditID=<s:property value="conAudit.id"/>">&lt;&lt; Back to <s:property value="conAudit.auditType.auditName" /> for <s:property value="conAudit.contractorAccount.name" /></a>
+<a href="Audit.action?auditID=<s:property value="conAudit.id"/>">&lt;&lt; Back to <s:property value="conAudit.auditType.name" /> for <s:property value="conAudit.contractorAccount.name" /></a>
 <div id="loadingArea"></div>
 <div style="width: 100%">
 	<div id="categoryArea">

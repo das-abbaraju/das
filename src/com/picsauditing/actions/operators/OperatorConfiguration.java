@@ -77,6 +77,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 		subHeading = "Operator Configuration";
 	}
 
+	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
@@ -131,12 +132,11 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 			if ("buildCat".equals(button)) {
 				AuditType auditType = typeDAO.find(auditTypeID);
-				List<AuditCategory> policyAC = new ArrayList<AuditCategory>();
 				if (auditType == null)
 					throw new RecordNotFoundException("Audit Type not found :" + auditTypeID);
 				AuditCategory parent = null;
 				for (AuditCategory c : auditType.getTopCategories()) {
-					if (c.getName().startsWith(auditType.getAuditName())) {
+					if (c.getName().startsWith(auditType.getName().toString())) {
 						parent = c;
 						break;
 					}
@@ -331,7 +331,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 			Collections.sort(otherAudits, new Comparator<AuditType>() {
 				@Override
 				public int compare(AuditType type1, AuditType type2) {
-					return type1.getName().compareTo(type2.getName());
+					return type1.getName().toString().compareTo(type2.getName().toString());
 				}
 			});
 		}

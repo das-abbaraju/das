@@ -10,7 +10,7 @@
 	<s:iterator value="upcoming">
 		<tr>
 			<td><a href="ContractorView.action?id=<s:property value="audit.contractorAccount.id"/>"><s:property value="audit.contractorAccount.name"/></a></td>
-			<td><a href="Audit.action?auditID=<s:property value="audit.id"/>"><s:property value="audit.auditType.auditName"/></a></td>
+			<td><a href="Audit.action?auditID=<s:property value="audit.id"/>"><s:property value="audit.auditType.name"/></a></td>
 			<td class="center"><s:date name="creationDate" format="M/d/yy" /></td>
 		</tr>
 	</s:iterator>

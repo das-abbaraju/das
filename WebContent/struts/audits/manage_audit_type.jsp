@@ -78,7 +78,7 @@ function showRules() {
 					<s:else>NEW</s:else>
 				</li>
 				<li><label>Name:</label>
-					<s:textfield name="auditType.auditName"></s:textfield>
+					<s:textfield name="auditType.name" />
 					<pics:fieldhelp title="Audit Name">
 						<p>The name of the document, policy type, audit, or operator specific form</p>
 					</pics:fieldhelp>

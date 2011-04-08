@@ -9,7 +9,6 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 
@@ -43,7 +42,7 @@ public class AuditTypeDAO extends PicsDAO {
 			where = "WHERE " + where;
 
 		Query query = em
-				.createQuery("FROM AuditType t " + where + " ORDER BY t.classType, t.displayOrder, t.auditName");
+				.createQuery("FROM AuditType t " + where + " ORDER BY t.classType, t.displayOrder");
 		return query.getResultList();
 	}
 

@@ -62,7 +62,7 @@
 								<li>Supplier Diversity</li>
 								<s:iterator value="contractor.audits">
 									<s:if test="!auditType.pqf">
-										<li><s:property value="auditType.auditName"/> <s:property value="auditFor"/></li>
+										<li><s:property value="auditType.name"/> <s:property value="auditFor"/></li>
 									</s:if>
 								</s:iterator>
 							</ul>

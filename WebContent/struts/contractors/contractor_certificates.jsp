@@ -22,7 +22,7 @@
 							<s:iterator value="caos">
 								<s:if test="!permissions.operatorCorporate || permissions.insuranceOperatorID == operator.id">
 								<tr>
-									<td style="font-size:10px" class="nobr"><s:property value="audit.auditType.auditName"/></td>
+									<td style="font-size:10px" class="nobr"><s:property value="audit.auditType.name"/></td>
 									<td style="font-size:10px" class="nobr"><s:property value="operator.name"/></td>
 									<td style="font-size:10px" class="nobr"><s:date name="audit.expiresDate" format="M/d/yy"/></td>
 								</tr>

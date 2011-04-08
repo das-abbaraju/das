@@ -5,7 +5,7 @@
 <head>
 <title>
 	<s:text name="%{scope}.title">
-		<s:param><s:property value="conAudit.auditType.auditName" /></s:param>
+		<s:param><s:property value="conAudit.auditType.name" /></s:param>
 		<s:param><s:property value="conAudit.contractorAccount.name" /></s:param>
 	</s:text>
 </title>
@@ -32,7 +32,7 @@ function showAuditUpload(auditID, fileID, desc, question) {
 <s:include value="../actionMessages.jsp" />
 <div class="info"><s:text name="Audit.message.info.UploadRequirement" /></div>
 <ul>
-<h3><s:property value="conAudit.auditType.auditName" />
+<h3><s:property value="conAudit.auditType.name" />
 #<s:property value="conAudit.id" /></h3>
 
 <li style="list-style-type: none;"><b><s:text name="global.SafetyProfessional" />:</b> 

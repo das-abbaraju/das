@@ -87,7 +87,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 		else {
 			redirect = "AuditTypeRuleSearch.action?";
 			if (rule.getAuditType() != null)
-				redirect += "filter.auditType=" + rule.getAuditType().getName();
+				redirect += "filter.auditType=" + rule.getAuditType().getName().toString();
 		}
 		this.redirect(redirect);
 	}

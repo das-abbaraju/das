@@ -8,7 +8,7 @@
 				<s:iterator value="conAudit.contractorAccount.audits" id="newPending">
 					<s:if test="#newPending.auditType.classType.policy && conAudit.id != #newPending.id">
 						<s:if test="conAudit.auditType == #newPending.auditType && #newPending.auditStatus.pending">
-							<a href="Audit.action?auditID=<s:property value="#newPending.id"/>"><s:property value="#newPending.auditType.auditName"/></a>
+							<a href="Audit.action?auditID=<s:property value="#newPending.id"/>"><s:property value="#newPending.auditType.name"/></a>
 						</s:if>
 					</s:if>
 				</s:iterator>
@@ -103,7 +103,7 @@
 	<s:if test="canClose">
 		<div class="alert" class="buttons" style="">
 			<s:hidden name="auditStatus" value="Active" />
-			<s:submit value="%{'Close '.concat(conAudit.auditType.auditName)}"/>
+			<s:submit value="%{'Close '.concat(conAudit.auditType.name)}"/>
 		</div>
 	</s:if>
 </s:form>

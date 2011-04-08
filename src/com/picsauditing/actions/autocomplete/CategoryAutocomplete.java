@@ -35,7 +35,7 @@ public class CategoryAutocomplete extends AutocompleteActionSupport<AuditCategor
 			// The display of the category
 			if (isSearchDigit())
 				outputBuffer.append("(").append(category.getId()).append(") ");
-			outputBuffer.append(category.getAuditType().getAuditName()).append(" &gt; ");
+			outputBuffer.append(category.getAuditType().getName().toString()).append(" &gt; ");
 
 			Iterator<AuditCategory> ancestors = category.getAncestors().iterator();
 			while (ancestors.hasNext()) {

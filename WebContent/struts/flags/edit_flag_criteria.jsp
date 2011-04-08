@@ -94,14 +94,14 @@ $(function(){
 			<li>
 				<s:select name="criteria.auditType" list="{}" value="%{criteria.auditType.id}" theme="form">
 					<s:iterator value="auditTypeMap" var="aType">
-						<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
+						<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="name"/>
 					</s:iterator>
 				</s:select>
 			</li>
 			<li>
 				<s:select name="criteria.question" list="{}" value="%{criteria.question.id}" theme="form">
 					<s:iterator value="questionMap" var="flagQuestion">
-						<s:optgroup label="%{#flagQuestion.key.auditName}" list="#flagQuestion.value" listKey="id" listValue="shortQuestion" />
+						<s:optgroup label="%{#flagQuestion.key.name}" list="#flagQuestion.value" listKey="id" listValue="shortQuestion" />
 					</s:iterator>
 				</s:select>
 			</li>

@@ -37,10 +37,10 @@
 			<td>
 				<s:if test="auditType != null">
 					<a href="ManageAuditType.action?id=<s:property value="auditType.id" />">
-						<s:property value="auditType.auditName" /></a></s:if>
+						<s:property value="auditType.name" /></a></s:if>
 				<s:elseif test="question != null">
 					<a href="ManageAuditType.action?id=<s:property value="question.auditType.id" />">
-						<s:property value="question.auditType.auditName" /></a>
+						<s:property value="question.auditType.name" /></a>
 				</s:elseif>
 				<s:elseif test="oshaType != null"><s:property value="oshaType.toString()" /></s:elseif>
 			</td>

@@ -21,7 +21,7 @@
 				<tr>
 					<td><a href="Audit.action?auditID=<s:property value="audit.id" />">
 						<s:if test="audit.auditFor.length() > 0"><s:property value="audit.auditFor" /></s:if>
-						<s:property value="audit.auditType.auditName" /></a></td>
+						<s:property value="audit.auditType.name" /></a></td>
 						<td><s:property value="getCaoStats(opID).get(#status)"/></td>
 						<td><s:property value="#status.status"/></td>
 						<td><s:date name="#status.statusChangedDate"/></td>

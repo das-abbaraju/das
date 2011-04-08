@@ -37,7 +37,7 @@ table.report {
 <tr>
 	<td class="center"><s:property value="displayOrder"/></td>
 	<td><s:property value="classType"/></td>
-	<td><a title="<s:property value="auditName"/>" href="ManageAuditType.action?id=<s:property value="id"/>"><s:property value="auditName"/></a></td>
+	<td><a title="<s:property value="name"/>" href="ManageAuditType.action?id=<s:property value="id"/>"><s:property value="name"/></a></td>
 </tr>
 </s:iterator>
 </table>

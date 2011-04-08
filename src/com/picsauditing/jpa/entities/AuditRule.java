@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
@@ -48,7 +47,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 	public String getAuditTypeLabel() {
 		if (auditType == null)
 			return "*";
-		return auditType.getAuditName();
+		return auditType.getName().toString();
 	}
 
 	@Enumerated(EnumType.ORDINAL)
@@ -359,7 +358,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 		if (acceptsBids != null)
 			identifiers.add("Contactor " + (acceptsBids ? "can [bid-only]" : "has [full account]"));
 		if (auditType != null)
-			identifiers.add("Audit Type is [" + auditType.getAuditName() + "]");
+			identifiers.add("Audit Type is [" + auditType.getName().toString() + "]");
 
 		if (!identifiers.isEmpty()) {
 			sb.append(" when ").append(identifiers.get(0));

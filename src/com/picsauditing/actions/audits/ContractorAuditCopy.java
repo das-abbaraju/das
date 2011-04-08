@@ -66,7 +66,7 @@ public class ContractorAuditCopy extends AuditActionSupport {
 					// first
 					this
 							.addActionMessage(contractorSelect + " already has a "
-									+ conAudit.getAuditType().getAuditName());
+									+ conAudit.getAuditType().getName().toString());
 					if ("Copy Audit".equals(button)) {
 						hasDuplicate = true;
 						return SUCCESS;
@@ -125,7 +125,7 @@ public class ContractorAuditCopy extends AuditActionSupport {
 				}
 			}
 
-			String notes = conAudit.getAuditType().getAuditName() + " Copied from Contractor " + oldconID;
+			String notes = conAudit.getAuditType().getName().toString() + " Copied from Contractor " + oldconID;
 			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, getViewableByAccount(conAudit
 					.getAuditType().getAccount()));
 

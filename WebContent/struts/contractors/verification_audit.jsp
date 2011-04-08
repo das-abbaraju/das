@@ -19,7 +19,7 @@
 	<s:set name="showApproveButton" value="'none'"/>
 </s:else>
 
-<h2><s:property value="conAudit.auditFor" /> <s:property value="conAudit.auditType.auditName" /></h2>
+<h2><s:property value="conAudit.auditFor" /> <s:property value="conAudit.auditType.name" /></h2>
 <br clear="all" />
 <s:if test="caos.keySet().size > 1">
 	<div>

@@ -30,7 +30,7 @@ $(function() {
 			<h2 class="formLegend">Create New Audit</h2>
 			<ol>
 				<li><label>Audit Type:</label>
-					<s:radio theme="pics" name="selectedAudit" list="manuallyAddAudits" listKey="id" listValue="auditName"/>
+					<s:radio theme="pics" name="selectedAudit" list="manuallyAddAudits" listKey="id" listValue="name"/>
 				</li>
 				<s:if test="permissions.admin">
 					<li><label>Operator</label>

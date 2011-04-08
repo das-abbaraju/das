@@ -90,7 +90,7 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 			}
 			osha.getConAudit().setLastRecalculation(null);
 			auditDao.save(osha.getConAudit());
-			String note = "Deleted "+ osha.getLocation() +" " + osha.getType() + " log for " + osha.getConAudit().getAuditType().getAuditName() + " " + osha.getConAudit().getAuditFor();
+			String note = "Deleted "+ osha.getLocation() +" " + osha.getType() + " log for " + osha.getConAudit().getAuditType().getName().toString() + " " + osha.getConAudit().getAuditFor();
 				addNote(osha.getConAudit().getContractorAccount(), note, 
 					NoteCategory.Audits, LowMedHigh.Low, false, Account.PicsID, getUser());
 			oshaDAO.remove(id);

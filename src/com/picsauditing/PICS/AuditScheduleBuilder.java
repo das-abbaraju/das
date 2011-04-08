@@ -243,7 +243,7 @@ public class AuditScheduleBuilder {
 									// This audit overlaps my proposal
 									PicsLogger.log("Conflicting audit #" + audit.getId() + " "
 											+ audit.getScheduledDate() + " to " + scheduledEndtime.getTime() + " "
-											+ audit.getAuditType().getAuditName() + " for "
+											+ audit.getAuditType().getName().toString() + " for "
 											+ audit.getContractorAccount().getName());
 									available = false;
 								}

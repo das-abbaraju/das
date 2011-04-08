@@ -158,7 +158,7 @@ $(function() {
 
 <s:form id="audit-form" method="get">
 	<s:select id="audit-list" list="auditTypeList" headerKey=""
-		headerValue="- Audit Type -" listKey="id" listValue="auditName"
+		headerValue="- Audit Type -" listKey="id" listValue="name"
 		name="id" />
 </s:form>
 

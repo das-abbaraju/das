@@ -31,7 +31,7 @@
 					<s:if test="auditType.Pqf && (hasCaoStatus('Submitted') || hasCaoStatus('Resubmitted'))">
 						<tr>
 							<td class="center" colspan="2">
-								<input type="button" id="verifyaudit" value="Verify <s:property value="auditType.auditName"/>" onclick="showAudit(<s:property value="id"/>); return false;"/>
+								<input type="button" id="verifyaudit" value="Verify <s:property value="auditType.name"/>" onclick="showAudit(<s:property value="id"/>); return false;"/>
 							</td>
 						</tr>	
 					</s:if>

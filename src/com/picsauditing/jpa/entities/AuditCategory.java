@@ -152,7 +152,7 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 	@Transient
 	public String getFullyQualifiedName() {
 		if (parent == null)
-			return getAuditType().getName() + " - " + name;
+			return getAuditType().getName().toString() + " - " + name;
 
 		return parent.getFullyQualifiedName() + " : " + name;
 	}

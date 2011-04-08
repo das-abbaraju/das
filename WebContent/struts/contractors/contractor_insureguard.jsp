@@ -58,7 +58,7 @@
 									<tr>
 										<s:if test="#s.first">
 											<td rowspan="<s:property value="#rowspan" />">
-												<a href="Audit.action?auditID=<s:property value="#audit.id"/>"><s:property value="#audit.auditType.auditName" /></a>
+												<a href="Audit.action?auditID=<s:property value="#audit.id"/>"><s:property value="#audit.auditType.name" /></a>
 												<br />
 												<span style="font-size: 10px">
 													<s:if test="#stat == 'Expired'">
@@ -122,7 +122,7 @@
 									<s:if test="!permissions.operatorCorporate || permissions.insuranceOperatorID == operator.id">
 										<s:iterator value="certCaos.get(#cert)" var="cao">
 											<tr>
-												<td style="font-size:10px"><nobr><s:property value="#cao.audit.auditType.auditName"/></nobr></td>
+												<td style="font-size:10px"><nobr><s:property value="#cao.audit.auditType.name"/></nobr></td>
 												<td style="font-size:10px"><nobr><s:property value="#cao.audit.auditFor" /> <s:date name="#audit.effectiveDate" format="MMM yyyy" /></nobr></td>
 												<td style="font-size:10px"><nobr><s:property value="#cao.operator.name" /></nobr></td>
 												<td style="font-size:10px"><nobr><s:date name="#cao.audit.expiresDate" format="M/d/yy"/></nobr></td>

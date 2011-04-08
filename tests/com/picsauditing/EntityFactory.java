@@ -127,7 +127,7 @@ public class EntityFactory {
 	static public AuditType makeAuditType(int auditTypeID) {
 		AuditType auditType = new AuditType();
 		auditType.setId(auditTypeID);
-		auditType.setAuditName("Unit Test " + auditTypeID);
+		//auditType.setAuditName("Unit Test " + auditTypeID);
 		auditType.setClassType(AuditTypeClass.Audit);
 		return auditType;
 	}

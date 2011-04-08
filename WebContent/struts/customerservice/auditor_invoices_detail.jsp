@@ -18,7 +18,7 @@
 	<s:iterator value="auditList" status="stat">
 	<tr>
 		<td class="center"><s:property value="#stat.index + 1"/></td>
-		<td><a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.auditName"/></a></td>
+		<td><a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.name"/></a></td>
 		<td><a href="ContractorView.action?id=<s:property value="contractorAccount.id"/>"><s:property value="contractorAccount.name"/></a></td>
 		<td><s:date name="completedDate" format="MMM d"/></td>
 		<td class="right">$<s:if test="auditType.id == 2">75</s:if> </td>
