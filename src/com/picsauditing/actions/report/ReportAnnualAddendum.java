@@ -4,6 +4,7 @@ import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -26,6 +27,9 @@ public class ReportAnnualAddendum extends ReportContractorAuditOperator {
 		
 		if (filterOn(getFilter().getShaType())) {
 			sql.addWhere("os.SHAType = '"+ getFilter().getShaType() +"'");
+			if(getFilter().getShaType().equals(OshaType.MSHA) || getFilter().getShaType().equals(OshaType.COHS)) {
+				getFilter().setVerifiedAnnualUpdate(0);
+			}
 		}
 		
 		if(filterOn(getFilter().getShaLocation())) {
