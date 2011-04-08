@@ -631,7 +631,7 @@ public class AuditBuilderController {
 		audit.setContractorAccount(contractor);
 		audit.setAuditType(auditType);
 		// Auditor Assignments
-		if (audit.isRequiresAuditorAssignments()) {
+		if (auditType.isDesktop()) {
 			UserAssignment ua = userAssignmentDAO.findByContractor(contractor, auditType);
 			if (ua != null)
 				audit.setAuditor(ua.getUser());

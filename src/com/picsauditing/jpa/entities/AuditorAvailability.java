@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -192,6 +193,11 @@ public class AuditorAvailability extends BaseTable {
 
 	@Transient
 	public int rank(ContractorAudit conAudit, Permissions permissions) {
+		return rank(conAudit, permissions, null);
+	}
+
+	@Transient
+	public int rank(ContractorAudit conAudit, Permissions permissions, List<User> auditors) {
 		int rank = 1;
 
 		if (isConductedOnsite(conAudit)) {
@@ -213,10 +219,10 @@ public class AuditorAvailability extends BaseTable {
 		}
 
 		if (permissions.isAuditor() && user.getId() == permissions.getUserId()
-				|| (conAudit.getAuditor() != null && user.getId() == conAudit.getAuditor().getId()))
+				|| (conAudit.getAuditor() != null && user.getId() == conAudit.getAuditor().getId())
+				|| (auditors != null && auditors.contains(user)))
 			rank += 1000;
 
 		return rank;
 	}
-
 }

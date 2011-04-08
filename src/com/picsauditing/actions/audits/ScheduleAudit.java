@@ -25,6 +25,7 @@ import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.UserAccessDAO;
+import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditorAvailability;
@@ -38,6 +39,8 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
+import com.picsauditing.jpa.entities.UserAssignment;
+import com.picsauditing.jpa.entities.UserAssignmentType;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
@@ -64,6 +67,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private InvoiceFeeDAO feeDAO;
 	private InvoiceItemDAO itemDAO;
 	private UserAccessDAO uaDAO;
+	private UserAssignmentDAO userAssignmentDAO;
 
 	private User auditor = null;
 	private InvoiceFee rescheduling;
@@ -72,7 +76,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	public ScheduleAudit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, CertificateDAO certificateDao, AuditorAvailabilityDAO auditorAvailabilityDAO,
 			AuditCategoryRuleCache auditCategoryRuleCache, InvoiceDAO invoiceDAO, InvoiceFeeDAO feeDAO,
-			InvoiceItemDAO itemDAO, UserAccessDAO uaDAO) {
+			InvoiceItemDAO itemDAO, UserAccessDAO uaDAO, UserAssignmentDAO userAssignmentDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
 		this.auditorAvailabilityDAO = auditorAvailabilityDAO;
 		this.subHeading = "Schedule Audit";
@@ -81,6 +85,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		this.feeDAO = feeDAO;
 		this.itemDAO = itemDAO;
 		this.uaDAO = uaDAO;
+		this.userAssignmentDAO = userAssignmentDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -93,7 +98,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		if (auditorID > 0)
 			auditor = getUser(auditorID);
 	}
-	
+
 	public String edit() throws Exception {
 		if (conAudit.getScheduledDate() != null && conAudit.getScheduledDate().before(new Date()))
 			addActionMessage("This audit's scheduled appointment has already passed. ");
@@ -103,7 +108,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				return "edit";
 			}
 		}
-		
+
 		return "edit";
 	}
 
@@ -135,7 +140,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			if (permissions.getUserId() != conAudit.getAuditor().getId())
 				conAudit.setAuditorConfirm(null);
 			String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
-			sendConfirmationEmail(getText(conAudit.getAuditType().getI18nKey("name")) + " Re-scheduled for " + shortScheduleDate);
+			sendConfirmationEmail(getText(conAudit.getAuditType().getI18nKey("name")) + " Re-scheduled for "
+					+ shortScheduleDate);
 		}
 
 		if (auditor != null) {
@@ -181,10 +187,19 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public String select() throws Exception {
+		// Look up if there are multiple auditors for this area
+		List<UserAssignment> assignments = userAssignmentDAO.findList(conAudit, UserAssignmentType.Auditor,
+				conAudit.getAuditType());
+		List<User> auditors = new ArrayList<User>();
+		if (assignments.size() > 0) {
+			for (UserAssignment ua : assignments)
+				auditors.add(ua.getUser());
+		}
+
 		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findByTime(timeSelected);
 		int maxRank = -999;
 		for (AuditorAvailability timeslot : timeslots) {
-			int rank = timeslot.rank(conAudit, permissions);
+			int rank = timeslot.rank(conAudit, permissions, auditors);
 			if (rank > maxRank) {
 				maxRank = rank;
 				availabilitySelected = timeslot;
@@ -227,7 +242,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		auditorAvailabilityDAO.remove(availabilitySelected);
 
 		String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
-		sendConfirmationEmail(getText(conAudit.getAuditType().getI18nKey("name")) + " Scheduled for " + shortScheduleDate);
+		sendConfirmationEmail(getText(conAudit.getAuditType().getI18nKey("name")) + " Scheduled for "
+				+ shortScheduleDate);
 
 		addActionMessage(getText(getScope() + ".message.AuditNowScheduled"));
 
@@ -246,8 +262,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				}
 
 				EmailQueue email = new EmailQueue();
-				email.setSubject("Webcam needed for Rush " + getText(conAudit.getAuditType().getI18nKey("name")) + " for "
-						+ conAudit.getContractorAccount().getName());
+				email.setSubject("Webcam needed for Rush " + getText(conAudit.getAuditType().getI18nKey("name"))
+						+ " for " + conAudit.getContractorAccount().getName());
 				email.setBody(conAudit.getContractorContact() + " from " + conAudit.getContractorAccount().getName()
 						+ " has requested a Rush " + getText(conAudit.getAuditType().getI18nKey("name")) + " on "
 						+ DateBean.format(availabilitySelected.getStartDate(), "MMM dd h:mm a, z")
@@ -319,17 +335,36 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			findTimeslots();
 			return "select";
 		}
-		
+
 		return "address";
 	}
 
 	private void findTimeslots() {
 		List<AuditorAvailability> timeslots = null;
-		if (conAudit.getAuditor() != null)
+
+		List<UserAssignment> assignments = userAssignmentDAO.findList(conAudit, UserAssignmentType.Auditor,
+				conAudit.getAuditType());
+
+		if (conAudit.getAuditor() != null) {
+			// There's all ready an auditor set
 			timeslots = auditorAvailabilityDAO.findByAuditorID(conAudit.getAuditor().getId());
-		else
+		} else if (assignments.size() > 0) {
+			// There are assignments for the contractor's location
+			if (assignments.size() > 1) {
+				// There are multiple assignments, select the schedule for all
+				// the available auditors
+				List<User> auditors = new ArrayList<User>();
+				for (UserAssignment ua : assignments)
+					auditors.add(ua.getUser());
+
+				timeslots = auditorAvailabilityDAO.findAvailableLocal(availabilityStartDate, auditors);
+			} else
+				// Just select the auditor's schedule
+				timeslots = auditorAvailabilityDAO.findByAuditorID(assignments.get(0).getUser().getId());
+		} else
+			// Find the schedule for all auditors
 			timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
-		
+
 		for (AuditorAvailability timeslot : timeslots) {
 			if (timeslot.isConductedOnsite(conAudit)) {
 				if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {

@@ -757,9 +757,4 @@ public class ContractorAudit extends BaseTable {
 		}
 		return null;
 	}
-	
-	@Transient
-	public boolean isRequiresAuditorAssignments() {
-		return getAuditType().isDesktop() || getAuditType().isImplementation();
-	}
 }

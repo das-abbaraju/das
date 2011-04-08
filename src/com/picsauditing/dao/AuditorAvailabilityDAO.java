@@ -8,6 +8,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditorAvailability;
+import com.picsauditing.jpa.entities.User;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -48,6 +49,15 @@ public class AuditorAvailabilityDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<AuditorAvailability> findAvailableLocal(Date startDate, List<User> auditors) {
+		Query query = em
+				.createQuery("SELECT t FROM AuditorAvailability t WHERE t.startDate >= :startDate AND t.user IN (:users)"
+						+ "ORDER BY startDate");
+		query.setParameter("startDate", startDate);
+		query.setParameter("users", auditors);
+		return query.getResultList();
+	}
+
 	public List<AuditorAvailability> findByAuditorID(int auditorID) {
 		Query query = em.createQuery("SELECT t FROM AuditorAvailability t " + "WHERE t.user.id = ? ORDER BY startDate");
 		query.setParameter(1, auditorID);
@@ -59,5 +69,4 @@ public class AuditorAvailabilityDAO extends PicsDAO {
 		query.setParameter(1, timeSelected);
 		return query.getResultList();
 	}
-
 }
