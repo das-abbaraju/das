@@ -253,6 +253,7 @@ public class PicsMenu {
 
 		if (permissions.hasPermission(OpPerms.Translator)) {
 			subMenu.addChild("Manage Translations", "ManageTranslations.action");
+			subMenu.addChild("Import/Export Translations", "TranslationETL.action");
 		}
 
 		if (permissions.hasPermission(OpPerms.ManageEmployees))
