@@ -6,10 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts2.interceptor.ServletRequestAware;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
@@ -37,7 +33,7 @@ import com.picsauditing.mail.TrialContractorAccountsSubscription;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class SubscriptionCron extends PicsActionSupport implements ServletRequestAware {
+public class SubscriptionCron extends PicsActionSupport {
 
 	private int userID = 0;
 	private int accountID = 0;
@@ -49,8 +45,6 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 	private UserDAO userDAO;
 	private AccountDAO accountDAO;
 	private ContractorOperatorDAO contractorOperatorDAO;
-
-	protected HttpServletRequest request;
 
 	Set<Subscription> subs = new HashSet<Subscription>();
 	private String serverName;
@@ -70,7 +64,7 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 	@Override
 	public String execute() throws Exception {
 		Calendar calendar = Calendar.getInstance();
-		String name = request.getRequestURL().toString();
+		String name = requestURL.toString();
 		serverName = name.replace(ActionContext.getContext().getName() + ".action", "");
 
 		if (userID > 0) {
@@ -222,8 +216,4 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 		this.timePeriod = timePeriod;
 	}
 
-	@Override
-	public void setServletRequest(HttpServletRequest request) {
-		this.request = request;
-	}
 }
