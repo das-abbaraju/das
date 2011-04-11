@@ -21,7 +21,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.PicsDAO;
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
@@ -29,7 +29,7 @@ import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
 public class TranslationETL extends PicsActionSupport {
-	private PicsDAO dao;
+	private AuditTypeDAO dao;
 	
 	private boolean importTranslations = false;
 	private Date startDate;
@@ -44,7 +44,7 @@ public class TranslationETL extends PicsActionSupport {
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 	
-	public TranslationETL(PicsDAO dao) {
+	public TranslationETL(AuditTypeDAO dao) {
 		this.dao = dao;
 	}
 
