@@ -75,6 +75,7 @@ $(function() {
 </script>
 </head>
 <body>
+<s:include value="../actionMessages.jsp" />
 <s:form>
 	<input type="button" class="picsbutton" value="Import..." onclick="showImport(); return false;" />
 	<input type="button" class="picsbutton" value="Export..." onclick="showExport(); return false;" />

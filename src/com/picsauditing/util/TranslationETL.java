@@ -30,7 +30,7 @@ import com.picsauditing.search.SelectSQL;
 @SuppressWarnings("serial")
 public class TranslationETL extends PicsActionSupport {
 	private AuditTypeDAO dao;
-	
+
 	private boolean importTranslations = false;
 	private Date startDate;
 	private String translations;
@@ -43,7 +43,7 @@ public class TranslationETL extends PicsActionSupport {
 	private int foundRows;
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-	
+
 	public TranslationETL(AuditTypeDAO dao) {
 		this.dao = dao;
 	}
@@ -52,19 +52,29 @@ public class TranslationETL extends PicsActionSupport {
 	public String execute() throws Exception {
 		return SUCCESS;
 	}
-	
+
 	public String save() throws Exception {
 		importTranslationAjax();
-		
+
 		for (String key : allKeys) {
 			for (String locale : allLocales) {
 				if (importedTranslations.get(key, locale) != null) {
 					AppTranslation t = importedTranslations.get(key, locale).get(0);
+
+					if (importedTranslations.get(key, locale).size() > 1) {
+						AppTranslation t2 = importedTranslations.get(key, locale).get(1);
+
+						if (t2 != null && t2.getId() > 0)
+							t.setId(t2.getId());
+					}
+
 					dao.save(t);
 				}
 			}
 		}
 		
+		addActionMessage("Saved " + allKeys.size() + " new/updated translations");
+
 		return SUCCESS;
 	}
 
@@ -77,6 +87,7 @@ public class TranslationETL extends PicsActionSupport {
 		for (BasicDynaBean d : data) {
 			if (importedTranslations.get(d.get("msgKey").toString(), d.get("locale").toString()) != null) {
 				AppTranslation t = new AppTranslation();
+				addField(t, "id", d.get("id").toString());
 				addField(t, "msgKey", d.get("msgKey").toString());
 				addField(t, "msgValue", d.get("msgValue").toString());
 				addField(t, "locale", d.get("locale").toString());
@@ -86,7 +97,10 @@ public class TranslationETL extends PicsActionSupport {
 				addField(t, "updateDate", d.get("updateDate") == null ? null : d.get("updateDate").toString());
 				addField(t, "lastUsed", d.get("lastUsed") == null ? null : d.get("lastUsed").toString());
 
-				importedTranslations.get(t.getKey(), t.getLocale()).add(t);
+				if (t.getValue().equals(importedTranslations.get(t.getKey(), t.getLocale()).get(0).getValue()))
+					allKeys.remove(t.getKey());
+				else
+					importedTranslations.get(t.getKey(), t.getLocale()).add(t);
 			}
 		}
 
@@ -98,8 +112,8 @@ public class TranslationETL extends PicsActionSupport {
 			addActionError("Missing date");
 		else {
 			String sqlDate = DateBean.toDBFormat(startDate);
-			String where = "t.creationDate > '" + sqlDate + "' OR t.updateDate > '" + sqlDate
-					+ "' AND t.msgValue != 'Translation missing'";
+			String where = "(t.creationDate > '" + sqlDate + "' OR t.updateDate > '" + sqlDate
+					+ "') AND t.msgValue != 'Translation missing'";
 			setupSQL(where);
 
 			List<BasicDynaBean> data = db.select(sql.toString(), true);
@@ -162,7 +176,7 @@ public class TranslationETL extends PicsActionSupport {
 
 					addField(t, children.item(j).getNodeName(), children.item(j).getTextContent());
 				}
-				
+
 				allKeys.add(t.getKey());
 				allLocales.add(t.getLocale());
 
@@ -177,6 +191,7 @@ public class TranslationETL extends PicsActionSupport {
 	}
 
 	private void setupSQL(String where) {
+		sql.addField("t.id");
 		sql.addField("t.msgKey");
 		sql.addField("t.locale");
 		sql.addField("t.msgValue");
@@ -193,6 +208,8 @@ public class TranslationETL extends PicsActionSupport {
 		if (Strings.isEmpty(value) || (Strings.isEmpty(name) || name.equals("#text")))
 			return;
 
+		if (name.equals("id"))
+			t.setId(Integer.parseInt(value));
 		if (name.equals("msgKey"))
 			t.setKey(value);
 		if (name.equals("msgValue"))
@@ -200,30 +217,16 @@ public class TranslationETL extends PicsActionSupport {
 		if (name.equals("locale"))
 			t.setLocale(value);
 
-		if (name.equals("createdBy")) {
-			int id = Integer.parseInt(value);
-			t.setCreatedBy(new User(id));
-		}
-
-		if (name.equals("updatedBy")) {
-			int id = Integer.parseInt(value);
-			t.setUpdatedBy(new User(id));
-		}
-
-		if (name.equals("creationDate")) {
-			Date date = sdf.parse(value);
-			t.setCreationDate(date);
-		}
-
-		if (name.equals("updateDate")) {
-			Date date = sdf.parse(value);
-			t.setUpdateDate(date);
-		}
-
-		if (name.equals("lastUsed")) {
-			Date date = sdf2.parse(value);
-			t.setLastUsed(date);
-		}
+		if (name.equals("createdBy"))
+			t.setCreatedBy(new User(Integer.parseInt(value)));
+		if (name.equals("updatedBy"))
+			t.setUpdatedBy(new User(Integer.parseInt(value)));
+		if (name.equals("creationDate"))
+			t.setCreationDate(sdf.parse(value));
+		if (name.equals("updateDate"))
+			t.setUpdateDate(sdf.parse(value));
+		if (name.equals("lastUsed"))
+			t.setLastUsed(sdf2.parse(value));
 	}
 
 	public boolean isImportTranslations() {
@@ -257,11 +260,11 @@ public class TranslationETL extends PicsActionSupport {
 	public DoubleMap<String, String, List<AppTranslation>> getImportedTranslations() {
 		return importedTranslations;
 	}
-	
+
 	public Set<String> getAllLocales() {
 		return allLocales;
 	}
-	
+
 	public Set<String> getAllKeys() {
 		return allKeys;
 	}
