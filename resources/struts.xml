@@ -1817,6 +1817,16 @@
 			<result>struts/blank.jsp</result>
 		</action>
 		
+		<action name="TranslationETL"
+			class="com.picsauditing.util.TranslationETL">
+			<result>struts/i18n/translation_etl.jsp</result>
+		</action>
+		
+		<action name="TranslationETLAjax"
+			class="com.picsauditing.util.TranslationETL">
+			<result>struts/i18n/translation_etl_data.jsp</result>
+		</action>
+		
 		<action name="ManageWebcams"
 			class="com.picsauditing.actions.customerservice.ManageWebcams">
 			<result>struts/customerservice/manage_webcams.jsp</result>
