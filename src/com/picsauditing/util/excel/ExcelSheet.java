@@ -17,6 +17,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.util.Strings;
@@ -25,6 +27,8 @@ public class ExcelSheet {
 	private String name = "Report";
 	private Map<Integer, ExcelColumn> columns = new TreeMap<Integer, ExcelColumn>();
 	private List<BasicDynaBean> data;
+
+	private I18nCache i18nCache = I18nCache.getInstance();
 
 	private int lastDisplayOrderAdded = 0;
 
@@ -139,6 +143,9 @@ public class ExcelSheet {
 						else if ("waitingOn".equals(column.getName()))
 							value = WaitingOn.valueOf((Integer) row.get(column.getName())).toString();
 						c.setCellValue(new HSSFRichTextString(value));
+					} else if (ExcelCellType.Translated == column.getCellType()) {
+						String translated = i18nCache.getText(column.getName(), ActionContext.getContext().getLocale());
+						c.setCellValue(new HSSFRichTextString(translated));
 					} else
 						c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
 				} catch (Exception e) {
