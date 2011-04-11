@@ -15,6 +15,7 @@ function showImport() {
 	$('#exportOptions').hide();
 	$('#importDiv').show();
 	$('#translationETL').show();
+	$('#importedTable').html('<input type="button" class="picsbutton positive" id="importButton" value="Check" onclick="importTranslations(); return false;" />');
 }
 
 function showExport() {
@@ -25,15 +26,14 @@ function showExport() {
 
 function importTranslations() {
 	var translations = $('#translationsArea').val();
-	$('#translationETL').html('<img src="images/ajax_process.gif" />');
-	$('#translationETL').load('TranslationETL!importTranslationAjax.action', { importTranslations: true, translations: translations },
+	$('#importedTable').html('<img src="images/ajax_process.gif" />');
+	$('#importedTable').load('TranslationETL!importTranslationAjax.action', { importTranslations: true, translations: translations },
 		function(){
 			$('#translationETL').show();
 			$('#exportDiv').hide();
 			$('#importDiv').show();
 		}
 	);
-	
 }
 
 function exportTranslations() {
@@ -87,7 +87,9 @@ $(function() {
 		<s:textarea name="translations" id="translationsArea" rows="20" cssStyle="width: 100%;" />
 	</div>
 	<div id="importDiv" style="display: none; clear: both;">
-		<input type="button" class="picsbutton positive" value="Import" onclick="importTranslations(); return false;" />
+		<div id="importedTable">
+			<input type="button" class="picsbutton positive" id="importButton" value="Check" onclick="importTranslations(); return false;" />
+		</div>
 	</div>
 </s:form>
 </body>

@@ -5,19 +5,30 @@
 	<table class="report">
 		<thead>
 			<tr>
-				<th>New Translation</th>
-				<th>Old Translation</th>
+				<s:iterator value="allLocales">
+					<td colspan="2"><s:property /></td>
+				</s:iterator>
+			</tr>
+			<tr>
+				<s:iterator value="allLocales">
+					<td>New</td>
+					<td>Old</td>
+				</s:iterator>
 			</tr>
 		</thead>
 		<tbody>
-			<s:iterator value="importedTranslations.keySet()" id="key">
+			<s:iterator value="allKeys" id="key">
 				<tr>
-					<td><s:property value="importedTranslations.get(#key).get(0).value" /></td>
-					<td><s:property value="importedTranslations.get(#key).get(1).value" /></td>
+					<s:iterator value="allLocales" id="locale">
+						<td><s:property value="importedTranslations.get(#key, #locale).get(0).value" /></td>
+						<td><s:property value="importedTranslations.get(#key, #locale).get(1).value" /></td>
+					</s:iterator>
 				</tr>
 			</s:iterator>
 		</tbody>
 	</table>
+	
+	<s:submit action="TranslationETL!save" value="Save" cssClass="picsbutton positive" />
 </s:if>
 <s:else>
 	<style type="text/css">
