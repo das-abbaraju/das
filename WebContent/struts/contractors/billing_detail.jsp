@@ -150,23 +150,21 @@
 								<s:set name="url" value="'PaymentDetail.action?payment.id='+id" />
 							</pics:permission>
 						</s:elseif>
-						<tr
-							<s:if test="#url.length() > 0">
-								class="clickable <s:if test="status.void"> inactive</s:if> " 
-								onclick="window.location = '<s:property value="#url"/>'"
-							</s:if>
-							>
+						<tr>
 							<td><s:property value="class.simpleName" /></td>
-							<td class="right"><s:if test="#url.length() > 0">
-								<a href="<s:property value="#url" />"><s:property value="id" /></a>
-							</s:if><s:else>
-								<s:property value="id" />
-							</s:else></td>
+							<td class="right">
+								<s:if test="#url.length() > 0">
+									<a href="<s:property value="#url" />"><s:property value="id" /></a>
+								</s:if>
+								<s:else>
+									<s:property value="id" />
+								</s:else>
+							</td>
 							<td class="right"><s:date name="creationDate" format="M/d/yy" /></td>
 							<td class="right"><s:property value="totalAmount" /> <s:property value="currency"/></td>
-							<td class="right"><s:if
-								test="class.simpleName.equals('Payment') && status.toString() == 'Unpaid' && balance > 0">
-								-</s:if> <s:property value="balance" /> <s:property value="contractor.currencyCode"/></td>
+							<td class="right">
+								<s:if test="class.simpleName.equals('Payment') && status.toString() == 'Unpaid' && balance > 0">-</s:if><s:property value="balance" /> <s:property value="contractor.currencyCode"/>
+							</td>
 							<s:if test="permissions.admin">
 								<td><s:property value="status"/></td>
 							</s:if>
