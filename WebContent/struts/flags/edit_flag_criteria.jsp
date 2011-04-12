@@ -12,14 +12,11 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 $(function(){
-	showCriteriaOperators();
-	$('.showCritOp').click(function(){
-		var data = {
-				'criteriaID': <s:property value="id"/>
-		};
+	$('.showCritOp').click(function(e) {
+		e.preventDefault();
 		startThinking({ div: "criteriaoperators", message: "Loading Affected Operators" });
-		$('#criteriaoperators').load('ReportCriteriaOperatorsAjax.action', data);		
-	});
+		$('#criteriaoperators').load($(this).attr('href'));
+	}).trigger('click');
 	$('.cluetip').cluetip({
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
 		arrows: true,
@@ -27,9 +24,6 @@ $(function(){
 		local: true,
 		clickThrough: false
 	});
-	<s:if test="">
-		var jsonObj = <s:property value="" />
-	</s:if>	
 });
 
 </script>
@@ -139,9 +133,11 @@ $(function(){
 	</fieldset>
 </s:form>
 
+<s:if test="criteria.id > 0">
 <h3>Used By The Following Operators</h3>
-<a class="refresh showCritOp showPointer">Refresh</a>	
+<a class="refresh showCritOp showPointer" href="ReportCriteriaOperatorsAjax.action?criteriaID=<s:property value="criteria.id"/>">Refresh</a>	
 <div id="criteriaoperators"></div>
+</s:if>
 
 </body>
 </html>

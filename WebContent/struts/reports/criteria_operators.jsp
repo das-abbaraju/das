@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
+<s:if test="criteriaOperators.size > 0">
 <div id="table">
 	<table id="criteriaoperators" class="report">
 		<thead>
@@ -17,3 +18,7 @@
 		</s:iterator>
 	</table>
 </div>
+</s:if>
+<s:else>
+	<div class="info">No operators are currently using this criteria.</div>
+</s:else>
