@@ -9,8 +9,8 @@ public class ReportFilterCAO extends ReportFilterAudit {
 	protected boolean showPercentComplete = true;
 	protected boolean showCaoStatusChangedDate = true;
 	protected boolean showCaoOperator = true;
-	protected boolean showNotRenewingContractors = true;
-	protected boolean showContractorsWithPendingMembership = true;
+	protected boolean showNotRenewingContractors = false;
+	protected boolean showContractorsWithPendingMembership = false;
 
 	protected AuditStatus[] auditStatus;
 	protected String percentComplete1;
