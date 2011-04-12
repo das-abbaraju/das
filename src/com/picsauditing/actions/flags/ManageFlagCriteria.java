@@ -89,6 +89,10 @@ public class ManageFlagCriteria extends PicsActionSupport {
 		Collections.sort(auditTypes, new Comparator<AuditType>() {
 			@Override
 			public int compare(AuditType o1, AuditType o2) {
+				if (o1.getName() == null || o1.getName().toString() == null)
+					return -1;
+				if (o2.getName() == null || o2.getName().toString() == null)
+					return 1;
 				return o1.getName().toString().compareTo(o2.getName().toString());
 			}
 		});
