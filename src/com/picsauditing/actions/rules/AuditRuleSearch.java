@@ -4,7 +4,6 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterAuditRule;
 
@@ -28,7 +27,7 @@ public class AuditRuleSearch extends ReportActionSupport {
 		sql.addField("a_search.*");
 
 		sql.addJoin("LEFT JOIN audit_type aty ON aty.id = a_search.auditTypeID");
-		sql.addField("IFNULL(aty.auditName,'*') audit_type");
+		sql.addField("IFNULL(aty.id,'*') audit_type");
 
 		sql.addJoin("LEFT JOIN operator_tag ot ON ot.id = a_search.tagID");
 		sql.addField("IFNULL(ot.tag,'*') tag");
@@ -53,7 +52,7 @@ public class AuditRuleSearch extends ReportActionSupport {
 			sql.addWhere("a_search.risk = " + filter.getRiskLevel());
 		}
 		if (filterOn(filter.getAuditType())) {
-			sql.addWhere("aty.auditName LIKE '%" + Utilities.escapeQuotes(filter.getAuditType()) + "%'");
+			sql.addJoin("JOIN app_translation t ON t.msgKey = CONCAT('AuditType.',aty.id,'.name') AND t.msgValue LIKE '%" + Utilities.escapeQuotes(filter.getAuditType()) + "%'");
 		}
 		if (filter.getOpID() > 0) {
 			sql.addWhere("op.id = " + filter.getOpID());

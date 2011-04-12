@@ -22,7 +22,7 @@ public class WaitingOnWidget extends PicsActionSupport {
 			sql.addField("a.id");
 			sql.addField("a.conID");
 			sql.addField("con.name");
-			sql.addField("t.auditName");
+			sql.addField("CONCAT('AuditType.',t.id,'.name') `atype.name`");
 			sql.addField("cao.percentVerified");
 			sql.addJoin("JOIN audit_type t ON t.id = a.auditTypeID");
 			sql.addJoin("JOIN accounts con ON con.id = a.conID");

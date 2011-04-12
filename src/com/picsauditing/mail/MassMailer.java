@@ -223,7 +223,6 @@ public class MassMailer extends PicsActionSupport {
 			sql = new SelectContractorAudit();
 			sql.addWhere("ca.id IN (" + idList + ")");
 			sql.addOrderBy("a.name");
-			sql.addOrderBy("atype.auditName");
 		} else if (ListType.User.equals(type)) {
 			sqlUser = new SelectUser();
 			sqlUser.addWhere("u.id IN (" + idList + ")");
@@ -245,7 +244,7 @@ public class MassMailer extends PicsActionSupport {
 				list.add(new SelectOption(row.get("id").toString(), row.get("name").toString()));
 			} else if (ListType.Audit.equals(type)) {
 				list.add(new SelectOption(row.get("auditID").toString(), row.get("name").toString() + " - "
-						+ row.get("auditName").toString()));
+						+ getText(row.get("atype.name").toString())));
 			} else if (ListType.User.equals(type)) {
 				list.add(new SelectOption(row.get("id").toString(), row.get("name").toString()));
 			}

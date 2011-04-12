@@ -57,11 +57,11 @@ public class ReportContractorAudits extends ReportAccount {
 
 		if (download) {
 			sql.addField("atype.classType");
-			if (permissions.isAdmin()) { // Only for admins?
-				sql.addGroupBy("ca.conID");
-				sql.addField("GROUP_CONCAT(atype.auditName ORDER BY atype.auditName ASC SEPARATOR ', ') "
-						+ "AS groupAuditName");
-			}
+//			if (permissions.isAdmin()) { // Only for admins?
+//				sql.addGroupBy("ca.conID");
+//				sql.addField("GROUP_CONCAT(atype.auditName ORDER BY atype. ASC SEPARATOR ', ') "
+//						+ "AS groupAuditName");
+//			}
 		}
 
 		addFilterToSQL();
@@ -116,10 +116,7 @@ public class ReportContractorAudits extends ReportAccount {
 
 		excelSheet.addColumn(new ExcelColumn("auditID", "Audit ID", ExcelCellType.Integer));
 
-		if (permissions.isAdmin())
-			excelSheet.addColumn(new ExcelColumn("groupAuditName", "Audit Name"));
-		else
-			excelSheet.addColumn(new ExcelColumn("auditName", "Audit Name"));
+		excelSheet.addColumn(new ExcelColumn("atype.name", "Audit Name", ExcelCellType.Translated));
 
 		excelSheet.addColumn(new ExcelColumn("createdDate", "Creation Date", ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("scheduledDate", "Schedule Date", ExcelCellType.Date));

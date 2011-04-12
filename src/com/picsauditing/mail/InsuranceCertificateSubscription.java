@@ -57,7 +57,7 @@ public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 			sql.addField("a.name AS conName");
 			sql.addField("o.id AS opID");
 			sql.addField("o.name AS opName");
-			sql.addField("atype.auditName AS auditName");
+			sql.addField("CONCAT('AuditType.',aType.id,'.name') `atype.name`");
 			sql.addField("ca.expiresDate AS expiresDate");
 			sql.addField("d.answer AS certID");
 			sql.addField("ca.id AS auditID");
@@ -78,6 +78,7 @@ public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 			if (data.size() > 0) {
 				tokens.put("data", data);
 				tokens.put("caoStatus", caoStatus);
+				tokens.put("i18nCache", i18nCache);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

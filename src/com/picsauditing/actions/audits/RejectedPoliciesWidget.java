@@ -26,7 +26,7 @@ public class RejectedPoliciesWidget extends PicsActionSupport {
 		sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id");
 		sql.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID");
 		sql.addField("ca.id AS auditID");
-		sql.addField("atype.auditName");
+		sql.addField("CONCAT('AuditType.',aType.id,'.name') `atype.name`");
 		sql.addField("cao.statusChangedDate");
 		sql.addWhere("a.status = 'Active'");
 		sql.addWhere("atype.classType = 'Policy'");

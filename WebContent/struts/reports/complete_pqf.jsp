@@ -27,7 +27,7 @@
 				<td></td>
 				<td>Email</td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
-				<td><a href="javascript: changeOrderBy('form1','auditName');">Audit</a></td>
+				<td><a>Audit</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','createdDate ASC');">Created</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','cao.percentComplete ASC');">%Complete</a></td>
 				<td>Contacted</td>
@@ -41,7 +41,7 @@
 				<td align="center"><s:checkbox name="sendMail" fieldValue="%{get('auditID')}" /></td>
 				<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="[0].get('name')"/></a>
 				</td>
-				<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a></td>
+				<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:text name="%{[0].get('atype.name')}" /></a></td>
 				<td class="reportDate"><s:date name="get('createdDate')"
 					format="M/d/yy" /></td>
 				<td align="center"><s:property value="get('percentComplete')"/></td>

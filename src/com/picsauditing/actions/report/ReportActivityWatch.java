@@ -149,7 +149,7 @@ public class ReportActivityWatch extends ReportAccount {
 					"contractor_audit ca",
 					"ca.conID",
 					"caow.creationDate",
-					"CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), ' changed from ', caow.previousStatus , ' to ', caow.status)",
+					"aType.auditName","caow.previousStatus","caow.status","(CASE WHEN ca.auditFor IS NULL OR ca.auditFor = '' THEN 0 ELSE ca.auditFor END)",
 					"CONCAT('Audit.action?auditID=', ca.id)", joins);
 			sql2.addWhere("ca.expiresDate IS NOT NULL AND ca.expiresDate < NOW()");
 			watchOptions.add("(" + sql2.toString() + ")");
@@ -157,7 +157,7 @@ public class ReportActivityWatch extends ReportAccount {
 		if (flagColorChange) {
 			joins.add("JOIN accounts oper ON oper.id = gc.genID AND oper.type = 'Operator'");
 			SelectSQL sql2 = buildWatch("FlagColorChange", "generalcontractors gc", "gc.subID", "gc.flagLastUpdated",
-					"CONCAT('Flag Color changed to ', gc.flag,' for ', oper.name)",
+					"gc.flag", "oper.name", "''", "''",
 					"CONCAT('ContractorFlag.action?id=', gc.subID,'&opID=',gc.genID)", joins);
 
 			if (permissions.isOperatorCorporate())
@@ -168,14 +168,14 @@ public class ReportActivityWatch extends ReportAccount {
 		}
 		if (login) {
 			SelectSQL sql2 = buildWatch("Login", "users u", "u.accountID", "u.lastLogin",
-					"CONCAT(u.name, ' logged in')", "''", joins);
+					"u.name", "''", "''", "''", "''", joins);
 			sql2.addWhere("u.lastLogin IS NOT NULL AND u.isGroup = 'No'");
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
 		if (notesAndEmail) {
 			joins.add("JOIN users u ON n.createdBy = u.id");
 			SelectSQL sql2 = buildWatch("Note", "note n USE INDEX(creationDate)", "n.accountID", "n.creationDate",
-					"CONCAT(u.name, ' posted - ', n.summary)", "CONCAT('ContractorNotes.action?id=', n.accountID)",
+					"u.name", "n.summary", "''", "''", "CONCAT('ContractorNotes.action?id=', n.accountID)",
 					joins);
 			String viewableBy = " (n.createdBy = " + permissions.getUserId() + " AND n.viewableBy = " + Account.PRIVATE
 					+ ")";
@@ -191,7 +191,7 @@ public class ReportActivityWatch extends ReportAccount {
 			joins.clear();
 
 			sql2 = buildWatch("Email", "email_queue eq", "eq.conID", "eq.sentDate",
-					"CONCAT(eq.subject, ' Email Sent')", "''", joins);
+					"eq.subject", "''", "''", "''", "''", joins);
 			viewableBy = " (eq.createdBy = " + permissions.getUserId() + " AND eq.viewableBy = " + Account.PRIVATE
 					+ ")";
 			viewableBy += " OR (eq.viewableBy = " + Account.EVERYONE + ")";
@@ -211,7 +211,7 @@ public class ReportActivityWatch extends ReportAccount {
 					+ (permissions.isOperatorCorporate() ? " AND o.id = " + permissions.getAccountId() : ""));
 			joins.add("JOIN flag_data fd ON fd.opID = fco.opID AND fd.criteriaID = fc.id");
 			SelectSQL sql2 = buildWatch("FlagCriteriaOperator", "flag_criteria fc", "fd.conID", "fco.updateDate",
-					"CONCAT(o.name, ' flag criteria for ', fc.label, ' was changed or added')", "''", joins);
+					"o.name", "fc.label", "''", "''", "''", joins);
 			watchOptions.add("(" + sql2.toString() + ")");
 			joins.clear();
 
@@ -220,7 +220,7 @@ public class ReportActivityWatch extends ReportAccount {
 						+ (permissions.isOperatorCorporate() ? " AND opID = " + permissions.getAccountId() : "") + ")"
 						+ " fd ON fc.id = fd.criteriaID");
 				sql2 = buildWatch("FlagCriteria", "flag_criteria fc", "fd.conID", "fc.updateDate",
-						" CONCAT('Flag criteria for ', fc.label, ' was changed or added')", "''", joins);
+						"fc.label", "''", "''", "''", "''", joins);
 
 				watchOptions.add("(" + sql2.toString() + ")");
 			}
@@ -236,14 +236,17 @@ public class ReportActivityWatch extends ReportAccount {
 		report.setLimit(limit);
 	}
 
-	private SelectSQL buildWatch(String activityType, String from, String accountID, String activityDate, String body,
-			String url, List<String> joins) {
+	private SelectSQL buildWatch(String activityType, String from, String accountID, String activityDate,
+			String v1, String v2, String v3, String v4, String url, List<String> joins) {
 		SelectSQL sql = new SelectSQL(from);
 		sql.addField(accountID + " conID");
-		sql.addField("'" + activityType + "' activityType");
+		sql.addField("'ReportActivityWatch." + activityType + "' activityType");
 		sql.addField(activityDate + " activityDate");
-		sql.addField(body + " body");
 		sql.addField(url + " url");
+		sql.addField(v1 + " v1");
+		sql.addField(v2 + " v2");
+		sql.addField(v3 + " v3");
+		sql.addField(v4 + " v4");
 
 		if (activityType.equals("Audits")) {
 			sql.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id");
@@ -346,5 +349,9 @@ public class ReportActivityWatch extends ReportAccount {
 
 	public ReportFilterCAO getFilter() {
 		return filter;
+	}
+	
+	public Integer peanut(String integer){
+		return Integer.parseInt(integer);
 	}
 }

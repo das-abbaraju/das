@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -34,6 +35,8 @@ public abstract class SubscriptionBuilder {
 	private List<EmailSubscription> subscriptions;
 
 	protected SelectSQL sql;
+	
+	protected I18nCache i18nCache = I18nCache.getInstance();
 
 	public SubscriptionBuilder(Subscription subscription, SubscriptionTimePeriod timePeriod,
 			EmailSubscriptionDAO subscriptionDAO) {

@@ -26,7 +26,7 @@ public class SubmittedAuditsWidget extends PicsActionSupport {
 		sql.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID");
 		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
 		sql.addWhere("cao.visible = 1");
-		sql.addField("atype.auditName");
+		sql.addField("CONCAT('AuditType.',aType.id,'.name') `atype.name`");
 		sql.addField("ca.id AS auditID");
 		sql.addField("cao.statusChangedDate");
 		sql.addWhere("a.status = 'Active'");

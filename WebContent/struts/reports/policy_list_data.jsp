@@ -29,7 +29,7 @@
    		<s:if test="filter.primaryInformation">
 			<td>Contact</td>
 		</s:if>
-	    <td><a href="javascript: changeOrderBy('form1','atype.auditName');" >Policy Type</a></td>
+	    <td><a>Policy Type</a></td>
 		<s:if test="permissions.operator || permissions.corporate">
 			<td>Status</td>
 		</s:if>
@@ -52,7 +52,7 @@
 				<a href="mailto:<s:property value="get('contactemail')"/>"><s:property value="get('contactemail')"/></a> <br />
 			</td>
 		</s:if>
-		<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/> <s:property value="get('auditFor')"/></a></td>
+		<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:text name="%{get('atype.name')}" /> <s:property value="get('auditFor')"/></a></td>
 	    <s:if test="permissions.operator || permissions.corporate">
 		    <td><s:property value="get('auditStatus')"/></td>
 	    </s:if>

@@ -22,7 +22,7 @@
 	<tr>
 		<td></td>
 	    <th><a href="javascript: changeOrderBy('form1','a.name');" >Contractor</a></th>
-	    <td><a href="javascript: changeOrderBy('form1','atype.auditName');" >Type</a></td>
+	    <td><a>Type</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.creationDate DESC');" >Created</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.expiresDate DESC');" >Expired</a></td>
 	    <s:if test="permissions.picsEmployee">
@@ -47,7 +47,7 @@
 	<tr>
 		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 		<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
-		<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/> <s:property value="get('auditFor')"/></a></td>
+		<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:text name="%{get('atype.name')}" /> <s:property value="get('auditFor')"/></a></td>
 		<td class="center"><s:date name="get('createdDate')" format="M/d/yy" /></td>
 		<td class="center"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
 	    <s:if test="permissions.picsEmployee">

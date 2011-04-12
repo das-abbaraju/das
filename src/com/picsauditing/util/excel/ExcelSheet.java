@@ -144,7 +144,8 @@ public class ExcelSheet {
 							value = WaitingOn.valueOf((Integer) row.get(column.getName())).toString();
 						c.setCellValue(new HSSFRichTextString(value));
 					} else if (ExcelCellType.Translated == column.getCellType()) {
-						String translated = i18nCache.getText(column.getName(), ActionContext.getContext().getLocale());
+						String key = row.get(column.getName()).toString();
+						String translated = i18nCache.getText(key, ActionContext.getContext().getLocale());
 						c.setCellValue(new HSSFRichTextString(translated));
 					} else
 						c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));

@@ -34,7 +34,7 @@
 			<tr>
 				<td></td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
-				<td align="center"><a href="javascript: changeOrderBy('form1','atype.auditName');">Type</a></td>
+				<td align="center"><a>Type</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','createdDate DESC');">Created</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','current_expiresDate DESC');">Expires</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','auditorID DESC,name');">Safety Professional</a></td>
@@ -69,7 +69,7 @@
 						<span class="redMain">*</span>
 					</s:if>	
 				</td>
-				<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a></td>
+				<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:text name="%{[0].get('atype.name')}" /></a></td>
 				<td class="reportDate"><s:date name="[0].get('createdDate')"
 					format="M/d/yy" /></td>
 				<td class="reportDate"><s:date name="[0].get('current_expiresDate')"

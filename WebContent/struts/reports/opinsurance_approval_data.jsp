@@ -12,7 +12,7 @@
 		<td><input title="Check all" type="checkbox" onclick="setAllChecked(this);"/></td>
 		<td title="PICS Recommendation" style="cursor: help;"></td>
 		<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
-		<td><a href="javascript: changeOrderBy('form1','atype.auditName');">Policy</a></td>
+		<td><a>Policy</a></td>
 		<td align="center"><a href="javascript: changeOrderBy('form1','expiresDate ASC');">Expires</a></td>
 		<s:if test="filter.primaryInformation">
 			<td>Contact</td>
@@ -36,13 +36,13 @@
 			<a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="[0].get('name')"/></a>
 		</td>
 		<td>
-			<a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>" title="<s:property value="[0].get('auditName')"/> for <s:property value="[0].get('caoName')"/>"><s:property value="[0].get('auditName')"/></a>
+			<a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>" title="<s:text name="%{[0].get('atype.name')}" /> for <s:property value="[0].get('caoName')"/>"><s:text name="%{[0].get('atype.name')}" /></a>
 			<s:if test="permissions.corporate">
 				<br><s:property value="get('caoOperatorName')"/>
 			</s:if>
 		</td>
 		<td class="reportDate">
-			<s:if test="get('auditName') == 'Workers Comp'">
+			<s:if test="get('auditID') == 14">
 				<s:iterator value="getDataForAudit(get('auditID'),'GoodStanding')">
 					<s:if test='answer == "X"'>
 						In Good Standing

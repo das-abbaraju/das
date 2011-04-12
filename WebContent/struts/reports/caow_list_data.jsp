@@ -22,7 +22,7 @@
 	<tr>
 		<td></td>
 	    <th><a href="#" onclick="changeOrderBy('form1','a.name');" >Contractor</a></th>
-	    <td><a href="#" onclick="changeOrderBy('form1','atype.auditName');" >Document Type</a></td>
+	    <td><a href="#">Document Type</a></td>
 	    <pics:permission perm="AllOperators">
 		    <td><a href="#" onclick="changeOrderBy('form1','caoAccount.name');" >Scope</a></td>
 	    </pics:permission>
@@ -54,7 +54,7 @@
 	<tr>
 		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 		<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
-		<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/> <s:property value="get('auditFor')"/></a></td>
+		<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:text name="%{get('atype.name')}" /> <s:property value="get('auditFor')"/></a></td>
 	    <pics:permission perm="AllOperators">
 			<td><s:property value="get('caoAccountName')" /></td>
 		</pics:permission>

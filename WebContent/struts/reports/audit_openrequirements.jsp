@@ -20,7 +20,7 @@
 	    <td>
 	    	<a href="javascript: changeOrderBy('form1','a.name');">Contractor</a>
 	    </td>
-	    <td><a href="javascript: changeOrderBy('form1','atype.auditName');">Type</a></td>
+	    <td><a>Type</a></td>
 		<td>File</td>
 	    <td><a href="javascript: changeOrderBy('form1','caf.creationDate DESC');">UploadDate</a></td>
 	</tr>
@@ -29,7 +29,7 @@
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="get('name')"/></a></td>
-			<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="get('auditName')"/></a></td>
+			<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:text name="%{[0].get('atype.name')}" /></a></td>
 			<td><a href="ContractorAuditFileUpload.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="get('description')"/></a></td>
 			<td><s:date name="get('uploadDate')" format="M/d/yy" /></td>
 		</tr>

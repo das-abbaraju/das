@@ -35,7 +35,7 @@
 			<tr>
 				<td></td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
-				<td align="center"><a href="javascript: changeOrderBy('form1','atype.auditName');">Type</a></td>
+				<td align="center"><a>Type</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','createdDate DESC');">Submitted</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','auditorID DESC');">Safety Professional</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','closingAuditorID DESC,name');">Closing Safety Professional</a></td>
@@ -49,7 +49,7 @@
 				<td class="right"><s:property
 					value="#stat.index + report.firstRowNumber" /></td>
 				<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
-				<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/></a></td>
+				<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:text name="%{get('atype.name')}" /></a></td>
 				<td class="reportDate"><s:date name="get('completedDate')"format="M/d/yy" /></td>
 				<td><s:property value="get('auditor_name')"/></td>
 				<td><nobr>

@@ -18,7 +18,7 @@
 	<tr>
 		<td></td>
 	    <th><a href="?orderBy=a.name" >Contractor</a></th>
-	    <td><a href="?orderBy=atype.auditName" >Type</a></td>
+	    <td><a>Type</a></td>
 	    <td><a href="?orderBy=ca.completedDate DESC" >Submitted</a></td>
 	    <td><a href="?orderBy=ca.closedDate DESC" >Closed</a></td>
 	</tr>
@@ -27,7 +27,7 @@
 	<tr>
 		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 		<td><s:property value="[0].get('name')"/></td>
-		<td><s:property value="[0].get('auditName')"/></td>
+		<td><s:text name="%{[0].get('atype.name')}" /></td>
 		<td class="center"><s:date name="[0].get('completedDate')" format="M/d/yy" /></td>
 		<td class="center"><s:date name="[0].get('closedDate')" format="M/d/yy" /></td>
 	</tr>

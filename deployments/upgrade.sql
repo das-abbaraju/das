@@ -1,7 +1,55 @@
--- PICS-2137
-update contractor_audit ca
-set ca.closingAuditorID = 34065
-where ca.id in (6359,6696,7264,7294,7303,7617,9816,10103,10124,10136,10306,10502,11267,12359,12454,12814,12898,12910,13097,13166,13437,32833,32878,33091,45326,45852,48190,48191,51477,51534,57789,57798,57800,57811,58378,59013,60915,60989,63453,63484,63571,63739,63839,63840,66420,66624,67010,67709,69058,73895,84795,85398,85484,86726,88985,90374,91223,91399,92073,92175,93015,93181,93461,93496,93497,93498,93550,93566,93570,93585,93685,93714,93824,93895,93906,94348,94502,94523,94646,94737,95114,95176,95813,96462,96975,97003,97067,97243,97408,97535,97574,97598,97601,97639,97944,98223,98276,98314,98771,98793,98795,98914,100742,100753,101250,101252,101254,101758,101917,102268,102969,103147,103314,103316,103923,103981,104421,105617,105685,105898,106009,106387,106426,106468,106551,107146,108093,108176,108180,108264,108451,108523,108863,109044,109076,109085,109524,111678,112556,113039,113163,113214,114009,114013,114087,114219,116321,116396,116510,116686,116725,116744,116848,116852,120922,127614,127795,128067,128162,128334,128739,129216,129594,129971,130393,130938,131292,131988,132132,132182,132286,132566,132833,132971,134381,134475,134582,134604,136297,136750,136945,137257,138231,138377,138401,138758,138803,139077,139180,139259,139327,140153,142527,142917,144575,145585,148431,148526,149279,149324,151472,151681,151807,152216,152262,152302,152497,152654,153181,153257,153293,154099,154451,154583,154689,155605,158276,159200,160533,160838,160944,161090,161202,163489,163557,164550,164649,164881,165261,165276,165527,165669,166163,166164,166190,166266,166294,166432,169493,170552,171046,171314,171320,172102,172164,172304,173239,173767,175196,175756,175792,176635,177164,178441,179190,207401,218049,222131,223480,228493,274222,299865,301004,301891,304401,305949,305998,306599,306945,306998,307122,307854,311111,311149,359774,359800,360370,364597,365364,365751,367140,368457,368483,379380,382757,383070,383994,384160,384718,9052,11465,11989,12140,43622,55126,61293,64533,81614,81676,81855,90100,95675,96974,96995,109872,113662,116629,135199,136679,138201,166165,169904,178677,183978,186333,203694,266789,279167);
+-- PICS-2187
+update email_template et
+set et.body = '<SubscriptionHeader>
+There are <b>${data.size()} contractors</b> with #if($caoStatus.toString() == ''Complete'')
+Verified
+#else
+${caoStatus}
+#end Insurance Certificates.<br/><br/>
+#if($caoStatus.toString() == ''Complete'')
+You can approve or reject them on the <a href="http://www.picsorganizer.com/ReportInsuranceApproval.action?filter.caoStatus=Verified">Policies Awaiting Decision</a> report. 
+<br/>
+#else
+You can contact the contractor(s) below using the email addresses provided.
+<br/>
+#end
+<table style="border-collapse: collapse; border: 2px solid #003768; background: #f9f9f9;">
+ <thead>
+  <tr style="vertical-align: middle; font-size: 13px;font-weight: bold; background: #003768; color: #FFF;">
+#if(${user.account.corporate})
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Operator Name</td>
+#end
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Contractor</td>
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Policy</td>
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Expires</td>
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Certificate</td>
+#if($caoStatus == ''Pending'')
+  <td style="border: 1px solid #e0e0e0; padding: 4px;">Contractor Contact</td>
+  <td style="border: 1px solid #e0e0e0; padding: 4px;">Email</td>
+#end
+  </tr>
+ </thead>
+ <tbody>
+  #foreach( $d in $data )
+  <tr style="margin:0px">
+#if(${user.account.corporate})
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/FacilitiesEdit.action?id=${d.get(''opID'')}">${d.get(''opName'')}</a></td>
+#end
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/ContractorView.action?id=${d.get(''conID'')}">${d.get(''conName'')}</a></td>
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/Audit.action?auditID=${d.get(''auditID'')}">$i18nCache.getText(${d.get(''atype.name'')},$user.locale)</a></td>
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;">$pics_dateTool.format(''MM/dd/yy'', ${d.get(''expiresDate'')})</td>
+   <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;"><a href="http://www.picsorganizer.com/CertificateUpload.action?id=${d.get(''conID'')}&certID=${d.get(''certID'')}&button=download">Certificate</a></td>
+#if($caoStatus == ''Pending'')
+  <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;">${d.get(''primaryContactName'')}</td>
+  <td style="border: 1px solid #A84D10; padding: 4px; font-size: 13px;">${d.get(''primaryContactEmail'')}</td>
+#end
+  </tr>
+  #end
+ </tbody>
+</table>
+<TimeStampDisclaimer>
+<SubscriptionFooter>'
+where et.id = 61
 --
 
 update `email_template`

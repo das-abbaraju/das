@@ -37,7 +37,7 @@
 					<a href="mailto:<s:property value="get('contactemail')"/>"><s:property value="get('contactemail')"/></a> <br />
 				</td>
 			</s:if>
-			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/></a></td>
+			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:text name="%{get('atype.name')}" /></a></td>
 			<td><s:date name="get('statusChangedDate')" format="M/d/yy"/></td>
 			<td><s:property value="get('operatorCount')"/></td>
 			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>&policy=true" target="VERIFY">Open</a></td>

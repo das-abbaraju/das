@@ -20,7 +20,7 @@ public class AuditTypeRuleSearch extends AuditRuleSearch {
 	@Override
 	public void buildQuery() {
 		sql.addJoin("LEFT JOIN audit_type daty ON daty.id = a_search.dependentAuditTypeID");
-		sql.addField("IFNULL(daty.auditName, '*') dependentAuditType");
+		sql.addField("IFNULL(daty.id, '*') dependentAuditType");
 		sql.addField("IFNULL(a_search.dependentAuditStatus, '*') dependentAuditStatus");
 		super.buildQuery();
 	}
