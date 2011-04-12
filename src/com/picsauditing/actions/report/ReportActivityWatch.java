@@ -350,8 +350,4 @@ public class ReportActivityWatch extends ReportAccount {
 	public ReportFilterCAO getFilter() {
 		return filter;
 	}
-	
-	public Integer peanut(String integer){
-		return Integer.parseInt(integer);
-	}
 }
