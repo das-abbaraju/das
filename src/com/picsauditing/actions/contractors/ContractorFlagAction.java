@@ -489,8 +489,16 @@ public class ContractorFlagAction extends ContractorActionSupport {
 					+ format(Float.parseFloat(answer), "#,##0.000");
 		} else if (fc.getOshaRateType() != null) {
 			addLabel = false;
+			String rate = answer;
 			answer = fc.getOshaType().name() + " " + fc.getOshaRateType().getDescription() + " for "
-					+ fcc.getAnswer2().split("<br/>")[0] + " is " + Strings.formatDecimalComma(answer);
+					+ fcc.getAnswer2().split("<br/>")[0] + " is " ;
+			if(fc.getOshaRateType().equals(OshaRateType.Fatalities)) {
+				Double value = Double.parseDouble(rate);
+				answer += value.intValue();
+			}
+			else {
+				answer += Strings.formatDecimalComma(rate);
+			}
 
 			if (fc.getOshaRateType().equals(OshaRateType.LwcrNaics)
 					|| fc.getOshaRateType().equals(OshaRateType.TrirNaics)) {

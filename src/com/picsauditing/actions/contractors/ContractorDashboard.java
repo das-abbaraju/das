@@ -467,7 +467,13 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 					for (OshaRateType rate : new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
 							OshaRateType.Fatalities }) {
-						put(rate.getDescription(), auditFor, format(organizer.getRate(OshaType.OSHA, scope, rate)));
+						Float value = organizer.getRate(OshaType.OSHA, scope, rate);
+						if(rate.equals(OshaRateType.Fatalities)) {
+							put(rate.getDescription(), auditFor, Integer.toString((value.intValue())));
+						}
+						else {
+							put(rate.getDescription(), auditFor, format(value));
+						}
 					}
 
 					put("Hours Worked", auditFor, format(audit.getManHours()));
