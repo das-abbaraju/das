@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+
 import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.google.common.collect.Table;
@@ -18,10 +21,12 @@ import com.picsauditing.util.Strings;
 
 public class I18nCache {
 
+	static public final String I18N_CACHE_KEY = "I18nCache";
+	static public final String CACHE_NAME = "daily";
 	static public final String DEFAULT_LANGUAGE = "en";
 	static public final String DEFAULT_TRANSLATION = "Translation missing";
 
-	private final static I18nCache INSTANCE = new I18nCache();
+	private static I18nCache INSTANCE;
 
 	private Table<String, String, String> cache;
 
@@ -29,6 +34,19 @@ public class I18nCache {
 	}
 
 	public static I18nCache getInstance() {
+		if (INSTANCE == null) {
+			CacheManager cacheManager = CacheManager.getInstance();
+			if (cacheManager != null) {
+				Element cacheElement = cacheManager.getCache(CACHE_NAME).get(I18N_CACHE_KEY);
+				if (cacheElement == null) {
+					INSTANCE = new I18nCache();
+					cacheManager.getCache(CACHE_NAME).put(new Element(I18N_CACHE_KEY, INSTANCE));
+				} else {
+					INSTANCE = (I18nCache) cacheElement.getObjectValue();
+				}
+			}
+		}
+
 		return INSTANCE;
 	}
 
@@ -171,12 +189,14 @@ public class I18nCache {
 	}
 
 	public void removeTranslatableStrings(List<String> keys) throws SQLException {
-		for (String key : keys) {
-			getCache().row(key).clear();
-		}
+		if (keys.size() > 0) {
+			for (String key : keys) {
+				getCache().row(key).clear();
+			}
 
-		String sql = "DELETE FROM app_translation WHERE msgKey IN (" + Strings.implodeForDB(keys, ",") + ")";
-		Database db = new Database();
-		db.executeUpdate(sql);
+			String sql = "DELETE FROM app_translation WHERE msgKey IN (" + Strings.implodeForDB(keys, ",") + ")";
+			Database db = new Database();
+			db.executeUpdate(sql);
+		}
 	}
 }
