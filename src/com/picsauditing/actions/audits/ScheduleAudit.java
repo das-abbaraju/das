@@ -610,7 +610,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 					.getContractorAccount().getUsers().get(0));
 
 			String seed = "c" + conAudit.getContractorAccount().getId() + "id" + conAudit.getId();
-			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=c&auditID=" + conAudit.getId() + "&key="
+			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=c&contractorAudit=" + conAudit.getId() + "&key="
 					+ Strings.hashUrlSafe(seed);
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
@@ -625,7 +625,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			emailBuilder.setTemplate(14);
 
 			String seed = "a" + conAudit.getAuditor().getId() + "id" + conAudit.getId();
-			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=a&auditID=" + conAudit.getId() + "&key="
+			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=a&contractorAudit=" + conAudit.getId() + "&key="
 					+ Strings.hashUrlSafe(seed);
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setUser(conAudit.getAuditor());

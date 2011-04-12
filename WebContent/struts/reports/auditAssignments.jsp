@@ -7,7 +7,7 @@
 <script type="text/javascript">
 	function saveAuditor(auditId, auditorId) {
 		var data = {
-				'contractorAudit.id': auditId,
+				'contractorAudit': auditId,
 				'auditor.id': auditorId
 		};
 
