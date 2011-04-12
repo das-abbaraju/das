@@ -168,17 +168,13 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public String address() throws Exception {
-		List<String> errors = new ArrayList<String>();
 		if (Strings.isEmpty(conAudit.getContractorContact()))
-			errors.add("Contact Name is a required field");
+			addActionError("Contact Name is a required field");
 		if (Strings.isEmpty(conAudit.getPhone2()))
-			errors.add("Email is a required field");
+			addActionError("Email is a required field");
 		if (Strings.isEmpty(conAudit.getPhone()))
-			errors.add("Phone Number is a required field");
-		if (errors.size() > 0) {
-			addActionError("The following errors exist:");
-			for (String e : errors)
-				addActionError(e);
+			addActionError("Phone Number is a required field");
+		if (hasActionErrors()) {
 			return "address";
 		}
 		auditDao.save(conAudit);
@@ -277,6 +273,11 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		return "summary";
 	}
+	
+	public String viewMoreTimes(){
+		findTimeslots();
+		return "select";
+	}
 
 	public String execute() throws Exception {
 		if (conAudit == null) {
@@ -316,7 +317,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		if (button.equals("select")) {
 			List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findByTime(timeSelected);
-			int maxRank = -999;
+			int maxRank = Integer.MIN_VALUE;
 			for (AuditorAvailability timeslot : timeslots) {
 				int rank = timeslot.rank(conAudit, permissions);
 				if (rank > maxRank) {

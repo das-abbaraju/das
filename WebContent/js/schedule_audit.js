@@ -97,7 +97,7 @@ function submitForm() {
 function showNextAvailable() {
 	$('#show_next').attr("disabled","disabled");
 	$.ajax({
-		 url:'ScheduleAuditPickerAjax.action',
+		 url:'ScheduleAuditPickerAjax!viewMoreTimes.action',
 		 data:{button:'address',availabilityStartDate:startDate,auditID:auditID},
 		 success: function(text, textStatus) {
 		   $('#li_availability').append(text);

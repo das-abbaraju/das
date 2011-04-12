@@ -87,8 +87,8 @@ public class UserAssignmentDAO extends PicsDAO {
 
 	public List<UserAssignment> findList(String state, String country, String zip, int conID, UserAssignmentType type,
 			AuditType auditType) {
-		String where = "(country IS NULL OR country = :country)";
-		where += " AND (state IS NULL OR state = :state)";
+		String where = "(country IS NULL OR country.isoCode = :country)";
+		where += " AND (state IS NULL OR state.isoCode = :state)";
 		// If you want the assignment to be based on any zip code starting
 		// with 9, then use 9% in the postalStart
 		where += " AND (postalStart IS NULL OR postalStart < :postal OR :postal LIKE postalStart)";
