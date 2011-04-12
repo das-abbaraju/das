@@ -88,6 +88,7 @@ $(function(){
 			<li>
 				<s:select name="criteria.auditType" value="%{criteria.auditType.id}" list="auditTypes" listKey="id" listValue="name" theme="form">
 				</s:select>
+				<pics:fieldhelp title="Audit Type">Audit Type and Question cannot both be set.</pics:fieldhelp>
 			</li>
 			<li>
 				<s:select name="criteria.question" list="{}" value="%{criteria.question.id}" theme="form">
@@ -95,6 +96,7 @@ $(function(){
 						<s:optgroup label="%{#flagQuestion.key.name}" list="#flagQuestion.value" listKey="id" listValue="shortQuestion" />
 					</s:iterator>
 				</s:select>
+				<pics:fieldhelp title="Question">Question and Audit Type cannot both be set.</pics:fieldhelp>
 			</li>
 		</ol>
 	</fieldset>
@@ -117,6 +119,7 @@ $(function(){
 		<ol>
 			<li>
 				<s:select list="@com.picsauditing.jpa.entities.AuditStatus@values()" name="criteria.requiredStatus" theme="form"/>
+				<pics:fieldhelp title="Audit Status">Note: If Annual Update is selected for Audit Type this field cannot be null.</pics:fieldhelp>
 			</li>
 			<li>
 				<s:checkbox name="criteria.insurance" theme="form"/>

@@ -48,13 +48,16 @@ public class ManageFlagCriteria extends PicsActionSupport {
 			if (Strings.isEmpty(criteria.getDataType())) {
 				addActionError("DataType is a required field.");
 			}
+			
+			if (criteria.getAuditType().isAnnualAddendum() && criteria.getRequiredStatus() == null)
+				addActionError("Audit Status cannot be null when Audit Type Annual Update is selected.");
 
 			if (hasActionErrors()) {
 				if (criteriaDAO.isContained(criteria))
 					criteriaDAO.refresh(criteria);
 				return INPUT;
 			}
-
+			
 			criteria.setAuditColumns(permissions);
 
 			criteriaDAO.save(criteria);
