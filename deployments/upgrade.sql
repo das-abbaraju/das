@@ -49,7 +49,107 @@ You can contact the contractor(s) below using the email addresses provided.
 </table>
 <TimeStampDisclaimer>
 <SubscriptionFooter>'
-where et.id = 61
+where et.id = 61;
+
+update email_template et
+set et.body = 'Attn: <ContactName>,
+
+This is an automatic reminder that the following Policies for <CompanyName> have or are about to expire.
+
+#foreach($outer in $contractor.audits)
+#if($outer.auditType.classType.toString() == ''Policy'')
+#foreach($inner in $contractor.audits)
+#if($inner.id != $outer.id && $inner.auditType == $outer.auditType && $inner.getExpiringPolicies())
+#foreach($operator in $outer.operators)
+#if($operator.status.toString() == ''Pending'' && $operator.visible)
+$inner.auditType.name for $operator.operator.name Expires On $pics_dateTool.format(''yyyy-MM-dd'',$inner.expiresDate)
+#end
+#end
+#end
+#end
+#end
+#end
+
+Please upload a new insurance certificate using the insurance requirements of the above.
+
+If we do not receive this certificate prior to the expiration you may not be permitted to enter the facility.
+
+As always we appreciate your cooperation and are here to answer any questions you may have. Please reply to <CSRName> at <CSREmail> with any questions.
+
+Thank you,
+<CSRName>
+PICS
+P.O. Box 51387
+Irvine CA 92619-1387
+tel: <CSRPhone>
+fax: <CSRFax>
+<CSREmail>
+http://www.picsauditing.com'
+where et.id = 10;
+
+update email_template et
+set et.body = 'Hello <ContactName>,
+
+${cao.audit.contractorAccount.name}''s ${cao.audit.auditType.name} Insurance Certificate has been ${cao.status} by ${cao.operator.name}
+#if( $cao.notesLength ) for the following reasons:
+${cao.notes}.
+#end
+
+#if( $cao.status == "Rejected" )
+Please correct these issues and re-upload your insurance certificate to your PICS account.
+If you have any specific questions about ${cao.operator.name}''s insurance requirements, please contact ${permissions.username} at ${permissions.email}
+#else
+When you renew this policy, please make sure that you upload the new insurance certificate to keep the information up to date.
+#end
+
+Have a great day,
+PICS Customer Service'
+where et.id = 33;
+
+update email_template et
+set et.body = 'Hello <ContactName>,
+
+${cao.audit.contractorAccount.name}''s ${cao.audit.auditType.name} Insurance Certificate has been changed to ${cao.status} for ${cao.operator.name} by <MyName> at <MyCompanyName>#if( $note.length() > 0 ) for the following reason(s):
+${note}.
+#end
+
+#if( $cao.status.incomplete )
+Please correct these issues and re-upload your insurance certificate to your PICS account.
+If you have any specific questions about ${cao.operator.name}''s insurance requirements, please review the Insurance Requirements document in the Forms and Docs section. For more information, please contact <MyName> at <MyEmail>.
+#else
+When you renew this policy, please make sure that you upload the new insurance certificate to keep the information up to date.
+#end
+
+Have a great day,
+PICS Customer Service'
+where et.id = 52;
+
+update email_template et
+set et.body = 'Hello <ContactName>,
+
+The following insurance certificates have been approved or rejected by <MyName> at <MyCompanyName> for the following reasons:
+
+#foreach ( $cao in $caoList )
+#if ( $cao.status == "Incomplete" )
+#foreach ( $caow in $cao.caoWorkflow )
+#if ( $caow.status == "Incomplete" )
+-- ${cao.audit.auditType.name} Insurance Certificates has been ${cao.status.button}ed for ${cao.operator.name}
+#if ( $caow.notes.length() > 0 )because ${caow.notes}.
+
+#end
+#end
+#end
+#end
+#end
+
+Please correct these issues and re-upload your insurance certificate to your PICS account.
+If you have any specific questions about any operator''s insurance requirements, please review the Insurance Requirements documents in the Forms and Docs section. For questions, please contact ${permissions.name} at ${permissions.email}.
+
+When you renew any policy, please make sure that you upload the new insurance certificate to keep the information up to date.
+
+Have a great day,
+PICS Customer Service'
+where et.id = 132;
 --
 
 update `email_template`
