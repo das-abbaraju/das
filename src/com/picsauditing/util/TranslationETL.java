@@ -1,6 +1,6 @@
 package com.picsauditing.util;
 
-import java.io.StringReader;
+import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -72,7 +73,7 @@ public class TranslationETL extends PicsActionSupport {
 				}
 			}
 		}
-		
+
 		addActionMessage("Saved " + allKeys.size() + " new/updated translations");
 
 		return SUCCESS;
@@ -126,7 +127,8 @@ public class TranslationETL extends PicsActionSupport {
 				str.append("\t<translation>\n");
 				str.append("\t\t<msgKey>" + d.get("msgKey").toString() + "</msgKey>\n");
 				str.append("\t\t<locale>" + d.get("locale").toString() + "</locale>\n");
-				str.append("\t\t<msgValue>" + d.get("msgValue").toString() + "</msgValue>\n");
+				str.append("\t\t<msgValue>" + StringEscapeUtils.escapeXml(d.get("msgValue").toString())
+						+ "</msgValue>\n");
 
 				if (d.get("createdBy") != null)
 					str.append("\t\t<createdBy>" + d.get("createdBy").toString() + "</createdBy>\n");
@@ -156,7 +158,7 @@ public class TranslationETL extends PicsActionSupport {
 		allKeys = new HashSet<String>();
 		allLocales = new HashSet<String>();
 
-		InputSource source = new InputSource(new StringReader(translations));
+		InputSource source = new InputSource(new ByteArrayInputStream(translations.getBytes("utf-8")));
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document document = builder.parse(source);
