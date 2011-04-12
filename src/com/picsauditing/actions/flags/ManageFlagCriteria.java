@@ -2,6 +2,8 @@ package com.picsauditing.actions.flags;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -80,6 +82,17 @@ public class ManageFlagCriteria extends PicsActionSupport {
 
 	public void setCriteria(FlagCriteria criteria) {
 		this.criteria = criteria;
+	}
+
+	public List<AuditType> getAuditTypes() {
+		List<AuditType> auditTypes = auditTypeDAO.findAll();
+		Collections.sort(auditTypes, new Comparator<AuditType>() {
+			@Override
+			public int compare(AuditType o1, AuditType o2) {
+				return o1.getName().toString().compareTo(o2.getName().toString());
+			}
+		});
+		return auditTypes;
 	}
 
 	public Map<AuditTypeClass, List<AuditType>> getAuditTypeMap() {

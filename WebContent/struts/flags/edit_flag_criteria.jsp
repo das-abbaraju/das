@@ -92,10 +92,7 @@ $(function(){
 		<h2>Audit | Question</h2>
 		<ol>
 			<li>
-				<s:select name="criteria.auditType" list="{}" value="%{criteria.auditType.id}" theme="form">
-					<s:iterator value="auditTypeMap" var="aType">
-						<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="name"/>
-					</s:iterator>
+				<s:select name="criteria.auditType" value="%{criteria.auditType.id}" list="auditTypes" listKey="id" listValue="name" theme="form">
 				</s:select>
 			</li>
 			<li>
