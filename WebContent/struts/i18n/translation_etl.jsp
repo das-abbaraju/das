@@ -10,7 +10,7 @@
 <script type="text/javascript" src="js/zeroclipboard/ZeroClipboard.js"></script>
 <script type="text/javascript">
 function showImport() {
-	$('#translationsArea').val('');
+	$('#translationsArea').val('').show();
 	$('#exportDiv').hide();
 	$('#exportOptions').hide();
 	$('#importDiv').show();
@@ -26,9 +26,11 @@ function showExport() {
 
 function importTranslations() {
 	var translations = $('#translationsArea').val();
+	
 	$('#importedTable').html('<img src="images/ajax_process.gif" />');
-	$('#importedTable').load('TranslationETL!importTranslationAjax.action', { importTranslations: true, translations: translations },
-		function(){
+	$('#importedTable').load("TranslationETL!importTranslationAjax.action",
+		{ importTranslations: true, translations: translations },
+		function() {
 			$('#translationETL').show();
 			$('#exportDiv').hide();
 			$('#importDiv').show();
@@ -76,18 +78,20 @@ $(function() {
 </head>
 <body>
 <s:include value="../actionMessages.jsp" />
-<s:form>
+<s:form enctype="multipart/form-data" method="post">
 	<input type="button" class="picsbutton" value="Import..." onclick="showImport(); return false;" />
 	<input type="button" class="picsbutton" value="Export..." onclick="showExport(); return false;" />
 	<div id="exportDiv" style="display: none; clear: both;">
 		Start date: <s:textfield name="startDate" cssClass="datepicker" id="translationDate" /><br />
 		<input type="button" class="picsbutton positive" value="Export" onclick="exportTranslations(); return false;" />
-		<!-- <s:submit action="TranslationETL!exportTranslation" value="Export" cssClass="picsbutton positive" /> -->
 	</div>
 	<div id="translationETL" style="clear: both; display: none;">
 		<s:textarea name="translations" id="translationsArea" rows="20" cssStyle="width: 100%;" />
 	</div>
 	<div id="importDiv" style="display: none; clear: both;">
+		<label>File Upload:</label><s:file name="file" value="%{file}" size="50" id="translationFile"></s:file>
+		<s:submit value="Upload" action="TranslationETL!upload" />
+		<br /><br />
 		<div id="importedTable">
 			<input type="button" class="picsbutton positive" id="importButton" value="Check" onclick="importTranslations(); return false;" />
 		</div>

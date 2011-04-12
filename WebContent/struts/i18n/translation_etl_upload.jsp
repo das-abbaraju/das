@@ -1,8 +1,15 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
+<html>
+<head>
+<title>Import/Export Translations</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+</head>
+<body>
 <s:include value="../actionMessages.jsp" />
-<s:if test="importTranslations">
+<s:form enctype="multipart/form-data" method="post">
 	<table class="report">
 		<thead>
 			<tr>
@@ -37,29 +44,6 @@
 	</table>
 	
 	<s:submit action="TranslationETL!save" value="Save" cssClass="picsbutton positive" />
-</s:if>
-<s:else>
-	<style type="text/css">
-	#clipButton { 
-		padding-left: 20px;
-		background-image: url("images/plus.png");
-		background-position: left center;
-		background-repeat: no-repeat;
-	}
-	</style>
-	<div id="exportOptions">
-		<s:if test="download">
-			<div class="info">
-				Found <s:property value="foundRows" /> rows. A download is provided instead of printing to screen.<br />
-				<s:submit action="TranslationETL!download" value="Download" cssClass="picsbutton positive" />
-			</div>
-		</s:if>
-		<s:else>
-			<div class="right"><s:property value="foundRows" /> entries found</div>
-			<div id="clipDiv" style="position:relative"> 
-				<div id="clipButton">Copy to clipboard...</div> 
-			</div>
-		</s:else>
-	</div>
-	<s:textarea name="translations" id="translationsArea" rows="20" cssStyle="width: 100%;%{download ? ' display: none;' : ''}" />
-</s:else>
+</s:form>
+</body>
+</html>

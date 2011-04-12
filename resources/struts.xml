@@ -1821,6 +1821,7 @@
 			class="com.picsauditing.util.TranslationETL">
 			<result>struts/i18n/translation_etl.jsp</result>
 			<result name="data">struts/i18n/translation_etl_data.jsp</result>
+			<result name="upload">struts/i18n/translation_etl_upload.jsp</result>
 		</action>
 		
 		<action name="ManageWebcams"

@@ -1,6 +1,9 @@
 package com.picsauditing.util;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,11 +11,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.ServletOutputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.struts2.ServletActionContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -31,19 +36,25 @@ import com.picsauditing.search.SelectSQL;
 @SuppressWarnings("serial")
 public class TranslationETL extends PicsActionSupport {
 	private AuditTypeDAO dao;
-
-	private boolean importTranslations = false;
-	private Date startDate;
-	private String translations;
-	private DoubleMap<String, String, List<AppTranslation>> importedTranslations;
-	private Set<String> allKeys;
-	private Set<String> allLocales;
-
+	// Lookup
 	private SelectSQL sql = new SelectSQL("app_translation t");
 	private Database db = new Database();
 	private int foundRows;
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+	// Data
+	private boolean importTranslations = false;
+	private boolean download = false;
+	private Date startDate;
+	private String translations;
+	private DoubleMap<String, String, List<AppTranslation>> importedTranslations;
+	private Set<String> allKeys;
+	private Set<String> allLocales;
+	// Import
+	private File file;
+	protected String fileContentType = null;
+	protected String fileFileName = null;
+	protected String fileName = null;
 
 	public TranslationETL(AuditTypeDAO dao) {
 		this.dao = dao;
@@ -55,7 +66,16 @@ public class TranslationETL extends PicsActionSupport {
 	}
 
 	public String save() throws Exception {
-		importTranslationAjax();
+		try {
+			file = new File(getFtpDir() + "/" + permissions.getUserId() + "-Translations.xml");
+		} catch (Exception e) {
+			// Doesn't exist
+		}
+		
+		if (file != null)
+			importXML(FileUtils.getBytesFromFile(file));
+		else
+			importTranslationAjax();
 
 		for (String key : allKeys) {
 			for (String locale : allLocales) {
@@ -75,37 +95,31 @@ public class TranslationETL extends PicsActionSupport {
 		}
 
 		addActionMessage("Saved " + allKeys.size() + " new/updated translations");
+		
+		if (file != null)
+			FileUtils.deleteFile(file);
 
 		return SUCCESS;
 	}
 
 	public String importTranslationAjax() throws Exception {
 		importTranslations = true;
-		importXML();
-		setupSQL("t.msgKey IN ('" + Strings.implode(allKeys, "', '") + "')");
-		List<BasicDynaBean> data = db.select(sql.toString(), false);
-
-		for (BasicDynaBean d : data) {
-			if (importedTranslations.get(d.get("msgKey").toString(), d.get("locale").toString()) != null) {
-				AppTranslation t = new AppTranslation();
-				addField(t, "id", d.get("id").toString());
-				addField(t, "msgKey", d.get("msgKey").toString());
-				addField(t, "msgValue", d.get("msgValue").toString());
-				addField(t, "locale", d.get("locale").toString());
-				addField(t, "createdBy", d.get("createdBy") == null ? null : d.get("createdBy").toString());
-				addField(t, "updatedBy", d.get("updatedBy") == null ? null : d.get("updatedBy").toString());
-				addField(t, "creationDate", d.get("creationDate") == null ? null : d.get("creationDate").toString());
-				addField(t, "updateDate", d.get("updateDate") == null ? null : d.get("updateDate").toString());
-				addField(t, "lastUsed", d.get("lastUsed") == null ? null : d.get("lastUsed").toString());
-
-				if (t.getValue().equals(importedTranslations.get(t.getKey(), t.getLocale()).get(0).getValue()))
-					allKeys.remove(t.getKey());
-				else
-					importedTranslations.get(t.getKey(), t.getLocale()).add(t);
-			}
-		}
+		importXML(translations.getBytes("utf-8"));
 
 		return "data";
+	}
+
+	public String upload() throws Exception {
+		if (file != null && file.length() > 0) {
+			importXML(FileUtils.getBytesFromFile(file));
+			importTranslations = true;
+			File newFile = new File(getFtpDir() + "/" + permissions.getUserId() + "-Translations.xml");
+			file.renameTo(newFile);
+		} else if (file == null || file.length() == 0) {
+			addActionError("No file was selected");
+		}
+
+		return "upload";
 	}
 
 	public String exportTranslationAjax() throws Exception {
@@ -120,45 +134,115 @@ public class TranslationETL extends PicsActionSupport {
 			List<BasicDynaBean> data = db.select(sql.toString(), true);
 			foundRows = db.getAllRows();
 
-			StringBuilder str = new StringBuilder();
-			str.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
-			str.append("<translations>\n");
-			for (BasicDynaBean d : data) {
-				str.append("\t<translation>\n");
-				str.append("\t\t<msgKey>" + d.get("msgKey").toString() + "</msgKey>\n");
-				str.append("\t\t<locale>" + d.get("locale").toString() + "</locale>\n");
-				str.append("\t\t<msgValue>" + StringEscapeUtils.escapeXml(d.get("msgValue").toString())
-						+ "</msgValue>\n");
+			if (foundRows <= 2000) {
+				StringBuilder str = new StringBuilder();
+				str.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+				str.append("<translations>\n");
+				for (BasicDynaBean d : data) {
+					str.append("\t<translation>\n");
+					str.append("\t\t<msgKey>" + d.get("msgKey").toString() + "</msgKey>\n");
+					str.append("\t\t<locale>" + d.get("locale").toString() + "</locale>\n");
+					str.append("\t\t<msgValue>" + StringEscapeUtils.escapeXml(d.get("msgValue").toString())
+							+ "</msgValue>\n");
 
-				if (d.get("createdBy") != null)
-					str.append("\t\t<createdBy>" + d.get("createdBy").toString() + "</createdBy>\n");
-				if (d.get("creationDate") != null)
-					str.append("\t\t<creationDate>" + d.get("creationDate").toString() + "</creationDate>\n");
-				if (d.get("updatedBy") != null)
-					str.append("\t\t<updatedBy>" + d.get("updatedBy").toString() + "</updatedBy>\n");
-				if (d.get("updateDate") != null)
-					str.append("\t\t<updateDate>" + d.get("updateDate").toString() + "</updateDate>\n");
-				if (d.get("lastUsed") != null)
-					str.append("\t\t<lastUsed>" + d.get("lastUsed").toString() + "</lastUsed>\n");
+					if (d.get("createdBy") != null)
+						str.append("\t\t<createdBy>" + d.get("createdBy").toString() + "</createdBy>\n");
+					if (d.get("creationDate") != null)
+						str.append("\t\t<creationDate>" + d.get("creationDate").toString() + "</creationDate>\n");
+					if (d.get("updatedBy") != null)
+						str.append("\t\t<updatedBy>" + d.get("updatedBy").toString() + "</updatedBy>\n");
+					if (d.get("updateDate") != null)
+						str.append("\t\t<updateDate>" + d.get("updateDate").toString() + "</updateDate>\n");
+					if (d.get("lastUsed") != null)
+						str.append("\t\t<lastUsed>" + d.get("lastUsed").toString() + "</lastUsed>\n");
 
-				str.append("\t</translation>\n");
-			}
+					str.append("\t</translation>\n");
+				}
 
-			str.append("</translations>\n");
-			translations = str.toString().trim();
-
-			return "data";
+				str.append("</translations>\n");
+				translations = str.toString().trim();
+			} else
+				download = true;
 		}
 
-		return SUCCESS;
+		return "data";
 	}
 
-	private void importXML() throws Exception {
+	public String download() throws Exception {
+		if (startDate == null)
+			addActionError("Missing date");
+		else {
+			String sqlDate = DateBean.toDBFormat(startDate);
+			String where = "(t.creationDate > '" + sqlDate + "' OR t.updateDate > '" + sqlDate
+					+ "') AND t.msgValue != 'Translation missing'";
+			setupSQL(where);
+
+			List<BasicDynaBean> data = db.select(sql.toString(), true);
+			foundRows = db.getAllRows();
+
+			ServletActionContext.getResponse().setContentType("application/xml");
+			ServletActionContext.getResponse()
+					.setHeader("Content-Disposition", "attachment; filename=Translations.xml");
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			OutputStreamWriter outstreamWriter = new OutputStreamWriter(outstream);
+			BufferedWriter writer = new BufferedWriter(outstreamWriter);
+			writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
+			writer.newLine();
+			writer.write("<translations>");
+			writer.newLine();
+
+			for (BasicDynaBean d : data) {
+				writer.write("\t<translation>");
+				writer.newLine();
+				writer.write("\t\t<msgKey>" + d.get("msgKey").toString() + "</msgKey>");
+				writer.newLine();
+				writer.write("\t\t<locale>" + d.get("locale").toString() + "</locale>");
+				writer.newLine();
+				writer.write("\t\t<msgValue>" + StringEscapeUtils.escapeXml(d.get("msgValue").toString())
+						+ "</msgValue>");
+				writer.newLine();
+
+				if (d.get("createdBy") != null) {
+					writer.write("\t\t<createdBy>" + d.get("createdBy").toString() + "</createdBy>");
+					writer.newLine();
+				}
+				if (d.get("creationDate") != null) {
+					writer.write("\t\t<creationDate>" + d.get("creationDate").toString() + "</creationDate>");
+					writer.newLine();
+				}
+				if (d.get("updatedBy") != null) {
+					writer.write("\t\t<updatedBy>" + d.get("updatedBy").toString() + "</updatedBy>");
+					writer.newLine();
+				}
+				if (d.get("updateDate") != null) {
+					writer.write("\t\t<updateDate>" + d.get("updateDate").toString() + "</updateDate>");
+					writer.newLine();
+				}
+				if (d.get("lastUsed") != null) {
+					writer.write("\t\t<lastUsed>" + d.get("lastUsed").toString() + "</lastUsed>");
+					writer.newLine();
+				}
+
+				writer.write("\t</translation>");
+				writer.newLine();
+			}
+
+			writer.write("\t</translations>");
+			writer.close();
+			ServletActionContext.getResponse().flushBuffer();
+
+			return null;
+		}
+
+		return "data";
+	}
+
+	private void importXML(byte[] byteArray) throws Exception {
 		importedTranslations = new DoubleMap<String, String, List<AppTranslation>>();
 		allKeys = new HashSet<String>();
 		allLocales = new HashSet<String>();
 
-		InputSource source = new InputSource(new ByteArrayInputStream(translations.getBytes("utf-8")));
+		InputSource source = new InputSource(new ByteArrayInputStream(byteArray));
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document document = builder.parse(source);
@@ -168,16 +252,11 @@ public class TranslationETL extends PicsActionSupport {
 
 		for (int i = 0; i < xmlElements.getLength(); i++) {
 			Node translation = xmlElements.item(i);
-			System.out.println(i + 1);
 			if (translation.getNodeType() == Node.ELEMENT_NODE) {
 				NodeList children = translation.getChildNodes();
 				AppTranslation t = new AppTranslation();
-				for (int j = 0; j < children.getLength(); j++) {
-					if (isDebugging() && !children.item(j).getNodeName().equals("#text"))
-						System.out.println(children.item(j).getNodeName() + " - " + children.item(j).getTextContent());
-
+				for (int j = 0; j < children.getLength(); j++)
 					addField(t, children.item(j).getNodeName(), children.item(j).getTextContent());
-				}
 
 				allKeys.add(t.getKey());
 				allLocales.add(t.getLocale());
@@ -185,6 +264,34 @@ public class TranslationETL extends PicsActionSupport {
 				if (t.getKey() != null) {
 					if (importedTranslations.get(t.getKey(), t.getLocale()) == null)
 						importedTranslations.put(t.getKey(), t.getLocale(), new ArrayList<AppTranslation>());
+
+					importedTranslations.get(t.getKey(), t.getLocale()).add(t);
+				}
+			}
+		}
+
+		setupSQL("t.msgKey IN ('" + Strings.implode(allKeys, "', '") + "')");
+		List<BasicDynaBean> data = db.select(sql.toString(), false);
+
+		for (BasicDynaBean d : data) {
+			String msgKey = d.get("msgKey").toString();
+			String locale = d.get("locale").toString();
+			String msgValue = d.get("msgValue").toString();
+
+			if (importedTranslations.get(msgKey, locale) != null) {
+				if (msgValue.equals(importedTranslations.get(msgKey, locale).get(0).getValue()))
+					allKeys.remove(msgKey);
+				else {
+					AppTranslation t = new AppTranslation();
+					addField(t, "id", d.get("id").toString());
+					addField(t, "msgKey", msgKey);
+					addField(t, "locale", locale);
+					addField(t, "msgValue", msgValue);
+					addField(t, "createdBy", d.get("createdBy") == null ? null : d.get("createdBy").toString());
+					addField(t, "updatedBy", d.get("updatedBy") == null ? null : d.get("updatedBy").toString());
+					addField(t, "creationDate", d.get("creationDate") == null ? null : d.get("creationDate").toString());
+					addField(t, "updateDate", d.get("updateDate") == null ? null : d.get("updateDate").toString());
+					addField(t, "lastUsed", d.get("lastUsed") == null ? null : d.get("lastUsed").toString());
 
 					importedTranslations.get(t.getKey(), t.getLocale()).add(t);
 				}
@@ -239,6 +346,14 @@ public class TranslationETL extends PicsActionSupport {
 		this.importTranslations = importTranslations;
 	}
 
+	public boolean isDownload() {
+		return download;
+	}
+
+	public void setDownload(boolean download) {
+		this.download = download;
+	}
+
 	public Date getStartDate() {
 		return startDate;
 	}
@@ -269,5 +384,13 @@ public class TranslationETL extends PicsActionSupport {
 
 	public Set<String> getAllKeys() {
 		return allKeys;
+	}
+
+	public File getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
 	}
 }
