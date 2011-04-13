@@ -140,6 +140,11 @@ public class SubscriptionCron extends PicsActionSupport {
 				addActionError("Failed to find userID = " + userID);
 				return;
 			}
+			
+			if (!user.isActiveB()) {
+				addActionError("User is inactive");
+				return;
+			}				
 
 			if (accountID > 0) {
 				account = accountDAO.find(accountID);

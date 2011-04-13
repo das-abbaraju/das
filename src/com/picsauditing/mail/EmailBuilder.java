@@ -111,8 +111,10 @@ public class EmailBuilder {
 
 		Set<String> emails = new HashSet<String>();
 		for (User user : contractor.getUsersByRole(role)) {
-			if (Strings.isValidEmail(user.getEmail()))
-				emails.add(user.getEmail());
+			if (user.isActiveB()) {
+				if (Strings.isValidEmail(user.getEmail()))
+					emails.add(user.getEmail());
+			}
 		}
 		if (emails.size() > 0)
 			toAddresses = Strings.implode(emails, ", ");
