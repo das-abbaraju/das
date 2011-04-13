@@ -577,3 +577,19 @@ values
 ('Auditor', 23157, NOW(), 'US','TX',77873,NULL, 34065, 3), ('Auditor', 23157, NOW(), 'US','TX',77873,NULL, 11503, 3),
 ('Auditor', 23157, NOW(), 'US','TX',77880,NULL, 34065, 3), ('Auditor', 23157, NOW(), 'US','TX',77880,NULL, 11503, 3),
 ('Auditor', 23157, NOW(), 'US','TX',78933,NULL, 34065, 3), ('Auditor', 23157, NOW(), 'US','TX',78933,NULL, 11503, 3);
+
+
+-- PICS-1670
+update email_template 
+set 
+body = 'Dear <CompanyName>,
+
+Your company''s prequalification information submitted to <MyCompanyName> has been reviewed by their team. Unfortunately they will not be selecting <CompanyName> for services at this time. 
+However, we would like to extend an offer to continue your subscription with PICS as a full member. There are a number of benefits associated with being a <a href="www.picsorganizer.com/forms/form1273.pdf">member of the PICS Consortium</a>. 
+We invite you to find out more at http://www.picsauditing.com or by contacting us at (800) 506-PICS (7427). 
+
+ 
+Best Regards, 
+<PICSSignature>',
+html = 1, allowsVelocity = 1
+where templatename = 'Bid Only Contractor Account Rejection';    
