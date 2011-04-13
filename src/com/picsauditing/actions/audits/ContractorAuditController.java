@@ -33,7 +33,6 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
@@ -69,6 +68,7 @@ public class ContractorAuditController extends AuditActionSupport {
 		this.auditPercentCalculator = auditPercentCalculator;
 	}
 
+	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
@@ -343,15 +343,17 @@ public class ContractorAuditController extends AuditActionSupport {
 				&& (!conAudit.getAuditType().isCanContractorEdit() && conAudit.getAuditType().getEditPermission() == null)
 				|| conAudit.getAuditType().isAnnualAddendum() || conAudit.getAuditType().isPqf()) {
 
-			for (Invoice i : this.getContractor().getInvoices()) {
-				if (i.getStatus().equals(TransactionStatus.Unpaid)) {
-					for (InvoiceItem ii : i.getItems()) {
-						if ("Membership".equals(ii.getInvoiceFee().getFeeClass())
-								&& !ii.getInvoiceFee().isBidonly()
-								&& !ii.getInvoiceFee().isPqfonly()
-								&& (ii.getInvoiceFee().getAmount().equals(ii.getAmount()) || i.getTotalAmount()
-										.intValue() > 450))
-							return true;
+			if(contractor.getOperators().size() <= 9) {
+				for (Invoice i : this.getContractor().getInvoices()) {
+					if (i.isOverdue()) {
+						for (InvoiceItem ii : i.getItems()) {
+							if ("Membership".equals(ii.getInvoiceFee().getFeeClass())
+									&& !ii.getInvoiceFee().isBidonly()
+									&& !ii.getInvoiceFee().isPqfonly()
+									&& (ii.getInvoiceFee().getAmount().equals(ii.getAmount()) || i.getTotalAmount()
+											.intValue() > 450))
+								return true;
+						}
 					}
 				}
 			}
