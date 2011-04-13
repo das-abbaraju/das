@@ -119,7 +119,7 @@ $(function(){
 		<ol>
 			<li>
 				<s:select list="@com.picsauditing.jpa.entities.AuditStatus@values()" name="criteria.requiredStatus" theme="form"/>
-				<pics:fieldhelp title="Audit Status">Note: If Annual Update is selected for Audit Type this field cannot be null.</pics:fieldhelp>
+				<pics:fieldhelp title="Audit Status">You must choose an Audit Status if the Audit Type is Annual Update. For all other Audit Types, Audit Status is optional.</pics:fieldhelp>
 			</li>
 			<li>
 				<s:checkbox name="criteria.insurance" theme="form"/>
