@@ -4,9 +4,9 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
@@ -24,6 +24,7 @@ public class AccountRecovery extends PicsActionSupport {
 		this.userDAO = userDAO;
 	}
 
+	@Anonymous
 	@Override
 	public String execute() throws Exception {
 		recaptcha = new Recaptcha();
