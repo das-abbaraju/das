@@ -85,7 +85,7 @@
 			email.append("\nHeader-" + headerName + ": " + request.getHeader(headerName));
 		}
 		EmailQueue mail = new EmailQueue();
-		mail.setSubject("PICS Exception Error");
+		mail.setSubject("PICS Exception Error - User ID " + permissions.getUserId());
 		mail.setBody(email.toString());
 		mail.setToAddresses("errors@picsauditing.com");
 		try {
