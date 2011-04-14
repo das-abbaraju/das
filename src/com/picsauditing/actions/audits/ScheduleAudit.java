@@ -86,6 +86,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		this.itemDAO = itemDAO;
 		this.uaDAO = uaDAO;
 		this.userAssignmentDAO = userAssignmentDAO;
+
+		rescheduling = feeDAO.find(InvoiceFee.RESCHEDULING);
+		expedite = feeDAO.find(InvoiceFee.EXPEDITE);
 	}
 
 	public void prepare() throws Exception {
@@ -124,7 +127,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		Date scheduledDateInServerTime = DateBean.convertTime(scheduledDateInUserTime, permissions.getTimezone());
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss z");
-		if (!sdf.format(scheduledDateInServerTime).equals(sdf.format(conAudit.getScheduledDate()))) {
+		if (conAudit.getScheduledDate() == null
+				|| !sdf.format(scheduledDateInServerTime).equals(sdf.format(conAudit.getScheduledDate()))) {
 			if (isNeedsReschedulingFee() && !feeOverride) {
 				// Create invoice
 				String notes = "Fee for rescheduling " + getText(conAudit.getAuditType().getI18nKey("name"))
@@ -287,9 +291,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		subHeading = "Schedule " + getText(conAudit.getAuditType().getI18nKey("name"));
 
-		rescheduling = feeDAO.find(InvoiceFee.RESCHEDULING);
-		expedite = feeDAO.find(InvoiceFee.EXPEDITE);
-
+		
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (cao.getStatus().after(AuditStatus.Pending)) {
 				return "summary";
