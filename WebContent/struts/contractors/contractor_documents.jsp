@@ -51,7 +51,6 @@
 							<pics:permission perm="AuditCopy">
 								<th><s:text name="button.Copy" /></th>
 							</pics:permission>
-							<th></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -79,8 +78,6 @@
 									<pics:permission perm="AuditCopy">
 										<td><a href="ConAuditCopy.action?auditID=<s:property value="#audit.id" />"><s:text name="button.Copy" /></a></td>
 									</pics:permission>
-									<td><a class="pdf" href="AuditPdfConverter.action?auditID=<s:property value="#audit.id" />"></a></td>
-
 								</tr>
 								<s:if test="#audit.operators.size > 0">
 									<tr class="row_<s:property value="#audit.id" /> hidden">
