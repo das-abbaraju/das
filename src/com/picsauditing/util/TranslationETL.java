@@ -68,15 +68,12 @@ public class TranslationETL extends PicsActionSupport {
 	public String save() throws Exception {
 		try {
 			file = new File(getFtpDir() + "/" + permissions.getUserId() + "-Translations.xml");
+			importXML(FileUtils.getBytesFromFile(file));
 		} catch (Exception e) {
 			// Doesn't exist
+			importTranslationAjax();
 		}
 		
-		if (file != null)
-			importXML(FileUtils.getBytesFromFile(file));
-		else
-			importTranslationAjax();
-
 		for (String key : allKeys) {
 			for (String locale : allLocales) {
 				if (importedTranslations.get(key, locale) != null) {
