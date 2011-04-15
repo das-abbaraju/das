@@ -128,5 +128,12 @@ $(function() {
 	}).delegate('.delete', 'click', function(e) {
 		e.preventDefault();
 		tree.jstree('remove', '#'+$(this).closest('form').find('[name=trade]').val());
+	}).delegate('#add-alternate','click', function(e){
+		e.preventDefault();
+		$('#alternateNames').load('TradeTaxonomy!addAlternateAjax.action', {alternateName: $('#alternateName').val(), trade: $('#saveTrade [name=trade]').val()});
+		$('#alternateName').val('');
+	}).delegate('#delete-alternate', 'click', function(e){
+		e.preventDefault();
+		$('#alternateNames').load($(this).attr('href'), {trade: $('#saveTrade [name=trade]').val()});
 	});
 });

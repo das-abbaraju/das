@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -214,7 +215,7 @@ public class Trade extends BaseTable implements Indexable {
 		this.needsIndexing = needsIndexing;
 	}
 
-	@OneToMany(mappedBy = "trade")
+	@OneToMany(mappedBy = "trade", cascade = CascadeType.ALL )
 	public List<TradeAlternate> getAlternates() {
 		return alternates;
 	}

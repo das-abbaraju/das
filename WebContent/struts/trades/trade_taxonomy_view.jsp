@@ -54,6 +54,21 @@
 			</li>
 		</ol>
 	</fieldset>
+	<fieldset>
+		<h2>Alternate Names</h2>
+		<ol>
+			<li>
+				<label>New Alternate</label>
+				<input id="alternateName" class="" style="width: 300px" />
+				<button id="add-alternate" type="button">Add</button>
+			</li>
+			<li>
+				<div id="alternateNames">
+					<s:include value="trade_alternates.jsp" />
+				</div>
+			</li>
+		</ol>
+	</fieldset>
 	<fieldset class="form submit">
 		<button class="picsbutton positive save" type="button">Save</button>
 		<s:if test="trade.id > 0">

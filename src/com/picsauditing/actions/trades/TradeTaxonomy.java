@@ -10,16 +10,21 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.TradeAlternateDAO;
 import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.Trade;
+import com.picsauditing.jpa.entities.TradeAlternate;
 
 @SuppressWarnings("serial")
 public class TradeTaxonomy extends PicsActionSupport {
 
 	protected TradeDAO tradeDAO;
+	protected TradeAlternateDAO tradeAlternateDAO;
 	private Trade trade;
 
 	private List<Trade> trades;
+	private String alternateName;
+	private TradeAlternate alternate;
 
 	@SuppressWarnings("unchecked")
 	public String json() {
@@ -134,6 +139,28 @@ public class TradeTaxonomy extends PicsActionSupport {
 		}
 		return JSON;
 	}
+	
+	public String addAlternateAjax() {
+		if (alternateName == null || alternateName.equals("")) {
+			addActionError("Alternate Name cannot be blank.");
+			return "alternate";
+		}
+		
+		TradeAlternate tradeAlternate = new TradeAlternate(trade, alternateName); 
+		if (trade.getAlternates().contains(tradeAlternate))
+			addActionError("Alternate Already Exists.");
+		else {
+			trade.getAlternates().add(tradeAlternate);
+			tradeDAO.save(trade);
+		}
+		
+		return "alternate";
+	}
+	
+	public String removeAlternateAjax() {
+		tradeAlternateDAO.remove(alternate);
+		return "alternate";
+	}
 
 	public void setTradeDAO(TradeDAO tradeDAO) {
 		this.tradeDAO = tradeDAO;
@@ -154,4 +181,25 @@ public class TradeTaxonomy extends PicsActionSupport {
 	public void setTrades(List<Trade> trades) {
 		this.trades = trades;
 	}
+
+	public String getAlternateName() {
+		return alternateName;
+	}
+
+	public void setAlternateName(String alternateName) {
+		this.alternateName = alternateName;
+	}
+
+	public TradeAlternate getAlternate() {
+		return alternate;
+	}
+
+	public void setAlternate(TradeAlternate alternate) {
+		this.alternate = alternate;
+	}
+
+	public void setTradeAlternateDAO(TradeAlternateDAO tradeAlternateDAO) {
+		this.tradeAlternateDAO = tradeAlternateDAO;
+	}
+	
 }
