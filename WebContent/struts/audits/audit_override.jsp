@@ -24,7 +24,7 @@ $(function() {
 	<s:include value="../actionMessages.jsp"/>
 
 	<s:if test="manuallyAddAudits.size() > 0">
-	<form method="post">
+	<s:form method="post">
 		<s:hidden name="id"/>
 		<fieldset class="form">
 			<h2 class="formLegend">Create New Audit</h2>
@@ -46,7 +46,7 @@ $(function() {
 		<fieldset class="form submit">
 			<s:submit name="button" value="Create" cssClass="picsbutton positive block"/>
 		</fieldset>
-	</form>
+	</s:form>
 	</s:if>
 	<s:else>
 		<div class="info">There are no audits to add.</div>
