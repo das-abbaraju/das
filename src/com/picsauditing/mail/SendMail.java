@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
+import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -30,7 +31,7 @@ public class SendMail {
 		session = Session.getInstance(p);
 	}
 
-	public void send(EmailQueue email) throws Exception {
+	public void send(EmailQueue email) throws MessagingException {
 		MimeMessage message = new MimeMessage(session);
 
 		DataHandler handler = new DataHandler(new ByteArrayDataSource(email.getBody().getBytes(),

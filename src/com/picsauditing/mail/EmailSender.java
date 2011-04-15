@@ -2,6 +2,9 @@ package com.picsauditing.mail;
 
 import java.util.Date;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailStatus;
@@ -54,12 +57,12 @@ public class EmailSender {
 				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 
 			emailQueueDAO.save(email);
-		} catch (javax.mail.internet.AddressException e) {
+		} catch (AddressException e) {
 			email.setStatus(EmailStatus.Error);
 			if (emailQueueDAO == null)
 				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 			emailQueueDAO.save(email);
-		} catch (Exception e) {
+		} catch (MessagingException e) {
 			PicsLogger.log("Send Mail Exception with account info@picsauditing.com: " + e.toString() + " "
 					+ e.getMessage() + "\nFROM: " + email.getFromAddress() + "\nTO: " + email.getToAddresses()
 					+ "\nSUBJECT: " + email.getSubject());
@@ -118,7 +121,7 @@ public class EmailSender {
 
 			sendMail(email, 0);
 
-		} catch (javax.mail.internet.AddressException e) {
+		} catch (AddressException e) {
 			email.setStatus(EmailStatus.Error);
 			if (emailQueueDAO == null)
 				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
@@ -141,8 +144,7 @@ public class EmailSender {
 	/**
 	 * Save this email to the queue for sending later
 	 */
-	public static void send(String fromAddress, String toAddress, String ccAddress, String subject, String body)
-			throws Exception {
+	public static void send(String fromAddress, String toAddress, String ccAddress, String subject, String body) {
 		EmailQueue email = new EmailQueue();
 		email.setCreationDate(new Date());
 		email.setSubject(subject);
