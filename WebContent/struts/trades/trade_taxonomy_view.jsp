@@ -30,27 +30,27 @@
 			<li>
 				<label>Is Product:</label>
 				<s:checkbox name="trade.productI" />
-				<s:property value="(trade.product==null)?'null':trade.product" />
+				<!-- <s:property value="(trade.product==null)?'null':trade.product" /> -->
 			</li>
 			<li>
 				<label>Is Service:</label>
 				<s:checkbox name="trade.serviceI" />
-				<s:property value="(trade.service==null)?'null':trade.service" />
+				<!-- <s:property value="(trade.service==null)?'null':trade.service" /> -->
 			</li>
 			<li>
 				<label>PSM Applies:</label>
 				<s:checkbox name="trade.psmAppliesI" />
-				<s:property value="(trade.psmApplies==null)?'null':trade.psmApplies" />
+				<!-- <s:property value="(trade.psmApplies==null)?'null':trade.psmApplies" /> -->
 			</li>
 			<li>
 				<label>Product Critical:</label>
 				<s:radio theme="pics" name="trade.productRiskI" list="@com.picsauditing.jpa.entities.LowMedHigh@values()"/>
-				(<s:property value="(trade.productRisk==null)?'null':trade.productRisk" />)
+				<!-- (<s:property value="(trade.productRisk==null)?'null':trade.productRisk" />) -->
 			</li>
 			<li>
 				<label>Safety Critical:</label>
 				<s:radio theme="pics" name="trade.safetyRiskI" list="@com.picsauditing.jpa.entities.LowMedHigh@values()"/>
-				(<s:property value="(trade.safetyRisk==null)?'null':trade.safetyRisk" />)
+				<!-- (<s:property value="(trade.safetyRisk==null)?'null':trade.safetyRisk" />) -->
 			</li>
 		</ol>
 	</fieldset>
