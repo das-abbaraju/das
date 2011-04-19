@@ -74,6 +74,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	protected boolean conBilling = false;
 	protected boolean conSafety = false;
 	protected boolean conInsurance = false;
+	protected boolean newUser = false;
 
 	protected AccountDAO accountDAO;
 	protected OperatorAccountDAO operatorDao;
@@ -362,6 +363,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		// Send activation email if set
 		if (sendActivationEmail && user.getId() == 0)
 			addActionMessage(AccountRecovery.sendActivationEmail(user, permissions));
+		
+		if(user.getId() == 0) {
+			newUser = true;
+		}
 
 		try {
 			user.setNeedsIndexing(true);
@@ -375,6 +380,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			addActionError("That Username is already in use.  Please select another.");
 		} catch (DataIntegrityViolationException e) {
 			addActionError("That Username is already in use.  Please select another.");
+		}
+		
+		if(newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
+			this.redirect("NewUserManage.action?accountId="+accountId+"&user.id="+user.getId());
 		}
 
 		return SUCCESS;
@@ -851,5 +860,13 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		u2.setSubscriptions(u1.getSubscriptions());
 		u2.setTimezone(u1.getTimezone());
 		u2.setUsername(u1.getUsername());
+	}
+
+	public boolean isNewUser() {
+		return newUser;
+	}
+
+	public void setNewUser(boolean newUser) {
+		this.newUser = newUser;
 	}
 }
