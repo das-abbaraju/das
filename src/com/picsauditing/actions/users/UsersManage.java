@@ -848,12 +848,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		u2.setAccount(u1.getAccount());
 		u2.setEmail(u1.getEmail());
 		u2.setFax(u1.getFax());
-		u2.setGroups(u1.getGroups());
 		u2.setId(u1.getId());
 		u2.setIsActive(u1.getIsActive());
 		u2.setIsGroup(u1.getIsGroup());
 		u2.setLocale(u1.getLocale());
-		u2.setMembers(u1.getMembers());
 		u2.setName(u1.getName());
 		u2.setOwnedPermissions(u1.getOwnedPermissions());
 		u2.setPhone(u1.getPhone());
