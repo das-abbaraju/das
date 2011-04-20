@@ -12,6 +12,10 @@ import org.apache.struts2.ServletActionContext;
 @SuppressWarnings("serial")
 public class Recaptcha extends PicsActionSupport {
 	private ReCaptcha recaptcha;
+	static private final String PRIVATE_KEY = "6LfJpcMSAAAAAHrOAmxBr-HT5xhOPE4ffYp8lBIb";
+	static private final String PUBLIC_KEY = "6LfJpcMSAAAAAM7eGED7ItAEsS88YaMczh_JRRMX";
+	// Account under info@picsauditing.com
+	// https://www.google.com/recaptcha/admin/site?siteid=314811849
 
 	@Override
 	public String execute() throws Exception {
@@ -32,7 +36,7 @@ public class Recaptcha extends PicsActionSupport {
 
 		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
 
-		reCaptcha.setPrivateKey("6Lev0woAAAAAAIrXy4lxh5eOtaUq0W42iqP767zx");
+		reCaptcha.setPrivateKey(PRIVATE_KEY);
 
 		String challenge = request.getParameter("recaptcha_challenge_field");
 		String uresponse = request.getParameter("recaptcha_response_field");
@@ -56,10 +60,8 @@ public class Recaptcha extends PicsActionSupport {
 	}
 
 	public String getRecaptchaHtml() {
-		recaptcha = ReCaptchaFactory.newReCaptcha("6Lev0woAAAAAAIOP_MmACTSBbKjynJ7_MkirU0rz",
-				"6Lev0woAAAAAAIrXy4lxh5eOtaUq0W42iqP767zx", false);
+		recaptcha = ReCaptchaFactory.newReCaptcha(PUBLIC_KEY, PRIVATE_KEY, false);
 
 		return recaptcha.createRecaptchaHtml(null, null);
 	}
-
 }
