@@ -54,15 +54,17 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		if (getFilter().isContractorsWithPendingMembership())
 			sql.addWhere("c.id in (" + "select c.id from contractor_info c " + "join invoice i on i.accountID = c.id "
 					+ "join invoice_item ii on i.id = ii.invoiceID join invoice_fee invf on ii.feeID = invf.id "
-					+ "where invf.feeClass = 'Membership' and invf.id != 100 and invf.id != 4 and i.status = 'Unpaid'"
-					+ " and (ii.amount = invf.defaultAmount or i.totalAmount >= 450))");
+					+ "where c.payingFacilities <= 9 and invf.feeClass = 'Membership' and invf.id != 100 and invf.id != 4 and i.status = 'Unpaid'"
+					+ " and (ii.amount = invf.defaultAmount or i.totalAmount >= 450) and c.payingFacilities <= 9"
+					+ " and i.dueDate < NOW())");
 		if (!getFilter().isNotRenewingContractors() && !getFilter().isContractorsWithPendingMembership()) {
 			sql.addWhere("c.renew = 1");
 			sql.addWhere("c.id not in (" + "select c.id from contractor_info c "
 					+ "join invoice i on i.accountID = c.id "
 					+ "join invoice_item ii on i.id = ii.invoiceID join invoice_fee invf on ii.feeID = invf.id "
 					+ "where invf.feeClass = 'Membership' and invf.id != 100 and invf.id != 4 and i.status = 'Unpaid'"
-					+ " and (ii.amount = invf.defaultAmount or i.totalAmount >= 450))");
+					+ " and (ii.amount = invf.defaultAmount or i.totalAmount >= 450) and c.payingFacilities <= 9"
+					+ " and i.dueDate < NOW())");
 
 		}
 		orderByDefault = "ca.creationDate";
