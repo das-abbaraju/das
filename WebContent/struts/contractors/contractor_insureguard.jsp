@@ -34,7 +34,7 @@
 <table>
 	<tr>
 		<td>
-			<s:iterator value="@com.picsauditing.actions.contractors.ConInsureGuard@statuses" var="stat">
+			<s:iterator value="statuses" var="stat">
 				<s:if test="status.get(#stat).size > 0">
 					<h3><s:property value="#stat" /> Policies</h3>
 					<table class="report">
