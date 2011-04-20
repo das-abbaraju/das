@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -30,14 +31,13 @@ public class ConInsureGuard extends ContractorActionSupport {
 	private AuditTypeDAO auditTypeDAO;
 
 	// Using CAOs
-	private List<Certificate> certificates;
 	private List<Certificate> active;
 	// Audit data
 	private Map<String, Map<ContractorAudit, List<ContractorAuditOperator>>> status;
 	private Map<ContractorAuditOperator, Certificate> caoCert;
 	private Map<Certificate, List<ContractorAuditOperator>> certCaos;
 
-	public static final String[] statuses = new String[] { "Pending", "Current", "Expired", "Other" };
+	private static final String[] STATUSES = new String[] { "Pending", "Current", "Expired", "Other" };
 
 	public ConInsureGuard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, CertificateDAO certificateDAO,
 			AuditDecisionTableDAO adtDAO, AuditTypeDAO auditTypeDAO) {
@@ -59,8 +59,8 @@ public class ConInsureGuard extends ContractorActionSupport {
 		List<AuditData> data = certificateDAO.findConCertsAuditData(id);
 
 		status = new HashMap<String, Map<ContractorAudit, List<ContractorAuditOperator>>>();
-		for (String s : statuses)
-			status.put(s, new HashMap<ContractorAudit, List<ContractorAuditOperator>>());
+		for (String igStatus : STATUSES)
+			status.put(igStatus, new HashMap<ContractorAudit, List<ContractorAuditOperator>>());
 
 		caoCert = new HashMap<ContractorAuditOperator, Certificate>();
 		certCaos = new HashMap<Certificate, List<ContractorAuditOperator>>();
@@ -105,9 +105,10 @@ public class ConInsureGuard extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
+	@Override
 	public List<Certificate> getCertificates() {
 		if (certificates == null) {
-			certificates = certificateDAO.findByConId(contractor.getId(), permissions, true);
+			super.getCertificates();
 
 			Collections.sort(certificates, new Comparator<Certificate>() {
 				@Override
@@ -132,18 +133,6 @@ public class ConInsureGuard extends ContractorActionSupport {
 		return active;
 	}
 
-	public Map<ContractorAuditOperator, Certificate> getCaoCert() {
-		return caoCert;
-	}
-
-	public Map<Certificate, List<ContractorAuditOperator>> getCertCaos() {
-		return certCaos;
-	}
-
-	public Map<String, Map<ContractorAudit, List<ContractorAuditOperator>>> getStatus() {
-		return status;
-	}
-
 	public Certificate getCertByID(String certID) {
 		int id = 0;
 
@@ -154,7 +143,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 				if (c.getId() == id)
 					return c;
 			}
-		} catch (Exception e) {
+		} catch (NumberFormatException e) {
 			System.out.println("Could not find certificate: " + certID);
 		}
 
@@ -175,7 +164,11 @@ public class ConInsureGuard extends ContractorActionSupport {
 			if (rule.getAuditCategory() != null) {
 				if (rule.getAuditCategory().equals(d.getQuestion().getCategory())) {
 					for (ContractorAuditOperator cao : d.getAudit().getOperators()) {
-						if (cao.getOperator().equals(rule.getOperatorAccount()))
+						if(permissions.isOperatorCorporate()){
+							if(permissions.getVisibleAccounts().contains(cao.getOperator().getId()))
+								if (cao.getOperator().equals(rule.getOperatorAccount()))
+									return cao;
+						}else if (cao.getOperator().equals(rule.getOperatorAccount()))
 							return cao;
 					}
 				}
@@ -187,13 +180,13 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	private void addStatus(ContractorAuditOperator cao) {
 		if (cao.getStatus().isPendingSubmittedResubmitted())
-			addStatus(cao, statuses[0]);
+			addStatus(cao, STATUSES[0]);
 		else if (cao.getStatus().isApproved())
-			addStatus(cao, statuses[1]);
+			addStatus(cao, STATUSES[1]);
 		else if (cao.getStatus().isExpired())
-			addStatus(cao, statuses[2]);
+			addStatus(cao, STATUSES[2]);
 		else
-			addStatus(cao, statuses[3]);
+			addStatus(cao, STATUSES[3]);
 	}
 
 	private void addStatus(ContractorAuditOperator cao, String s) {
@@ -202,5 +195,21 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 		if (!status.get(s).get(cao.getAudit()).contains(cao))
 			status.get(s).get(cao.getAudit()).add(cao);
+	}
+
+	public Map<ContractorAuditOperator, Certificate> getCaoCert() {
+		return caoCert;
+	}
+
+	public Map<Certificate, List<ContractorAuditOperator>> getCertCaos() {
+		return certCaos;
+	}
+
+	public Map<String, Map<ContractorAudit, List<ContractorAuditOperator>>> getStatus() {
+		return status;
+	}
+	
+	public static List<String> getStatuses() {
+		return Collections.unmodifiableList(Arrays.asList(STATUSES));
 	}
 }

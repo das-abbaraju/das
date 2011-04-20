@@ -14,11 +14,13 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -37,10 +39,17 @@ public class ContractorActionSupport extends AccountActionSupport {
 	private List<ContractorAudit> contractorNonExpiredAudits = null;
 	protected ContractorAccountDAO accountDao;
 	protected ContractorAuditDAO auditDao;
+	
+	private CertificateDAO certificateDAO;
+	private OperatorAccountDAO operatorDAO;
+	
 	private List<ContractorOperator> operators;
 	protected boolean limitedView = false;
 	protected List<ContractorOperator> activeOperators;
 	protected Map<ContractorAudit, AuditStatus> contractorAuditWithStatuses = null;
+	
+
+	protected List<Certificate> certificates = null;
 
 	// TODO cleanup the PermissionToViewContractor duplicate code here
 	private PermissionToViewContractor permissionToViewContractor = null;
@@ -399,6 +408,55 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
+	 * 
+	 * @return
+	 * a list of the certificates, if the user is an operator/corporate then this does the
+	 * appropriate checking to remove the certs that they shouldn't be able to see 
+	 */
+	@SuppressWarnings("deprecation")
+	public List<Certificate> getCertificates() {
+		if (certificates == null)
+			certificates = certificateDAO.findByConId(contractor.getId(), permissions, true);
+
+		if (permissions.isOperatorCorporate()) {
+			int topID = permissions.getTopAccountID();
+			OperatorAccount opAcc = operatorDAO.find(topID);
+
+			List<Integer> allowedList = new ArrayList<Integer>();
+			List<Integer> certIds = new ArrayList<Integer>();
+			allowedList = opAcc.getOperatorHeirarchy();
+
+			for (OperatorAccount tmpOp : opAcc.getOperatorChildren())
+				allowedList.add(tmpOp.getId());
+
+			for (Certificate cert : certificates)
+				certIds.add(cert.getId());
+
+			Map<Integer, List<Integer>> certIdToOp = certificateDAO.findOpsMapByCert(certIds);
+			Iterator<Certificate> itr = certificates.iterator();
+
+			while (itr.hasNext()) {
+				Certificate c = itr.next();
+				int certID = c.getId();
+
+				boolean remove = true;
+
+				if (certIdToOp.get(certID) != null) {
+					for (Integer i : certIdToOp.get(certID)) {
+						if (allowedList.contains(i)) {
+							remove = false;
+							break;
+						}
+					}
+				}
+				if (remove)
+					itr.remove();
+			}
+		}
+		return certificates;
+	}
+
+	/**
 	 * Get a list of Audits that the current user can see Operators can't see
 	 * each other's audits Contractors can't see the Welcome Call This is a bit
 	 * complicated but needs to look at permissions
@@ -436,5 +494,13 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (status.after(AuditStatus.Resubmitted))
 			return true;
 		return false;
+	}
+
+	public void setCertificateDAO(CertificateDAO certificateDAO) {
+		this.certificateDAO = certificateDAO;
+	}
+
+	public void setOperatorDAO(OperatorAccountDAO operatorDAO) {
+		this.operatorDAO = operatorDAO;
 	}
 }

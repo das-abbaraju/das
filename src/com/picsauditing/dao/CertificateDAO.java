@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,6 +11,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.hibernate.Session;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
@@ -17,7 +19,9 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilder;
+import com.picsauditing.util.Strings;
 
 @Transactional
 public class CertificateDAO extends PicsDAO {
@@ -145,27 +149,41 @@ public class CertificateDAO extends PicsDAO {
 	
 	@SuppressWarnings("unchecked")
 	public List<Integer> findOpsByCert(int certID) {
-		List<Integer> ops = new ArrayList<Integer>();
+		SelectSQL sql = new SelectSQL("audit_category_rule acr");
+		sql.addField("DISTINCT acr.opID");
+		sql.addJoin("JOIN audit_category ac ON acr.catID = ac.id");
+		sql.addJoin("JOIN audit_question aq ON acr.catID = aq.categoryID");
+		sql.addJoin("JOIN pqfdata pd ON pd.questionID = aq.id");
+		sql.addWhere("pd.answer = " + certID + " AND aq.questionType = 'FileCertificate'");
+
+		Query query = em.createNativeQuery(sql.toString());
+		return query.getResultList();
+	}
+	
+	public Map<Integer, List<Integer>> findOpsMapByCert(List<Integer> certID) {
 		Database db = new Database();
-		String sql = "SELECT distinct acr.opID " +
-					"FROM audit_category_rule acr " +
-						"JOIN audit_category ac ON acr.catID = ac.id " +
-						"JOIN audit_question aq ON acr.catID = aq.categoryID " +
-						"JOIN pqfdata pd ON pd.questionID = aq.id " +
-					"WHERE pd.answer =  '" + certID + "' " + 
-					"AND aq.questionType = 'FileCertificate';";
+		Map<Integer, List<Integer>> resultMap = new HashMap<Integer, List<Integer>>();
+		SelectSQL sql = new SelectSQL("audit_category_rule acr");
+		sql.addField("DISTINCT acr.opID, pd.answer");
+		sql.addJoin("JOIN audit_category ac ON acr.catID = ac.id");
+		sql.addJoin("JOIN audit_question aq ON acr.catID = aq.categoryID");
+		sql.addJoin("JOIN pqfdata pd ON pd.questionID = aq.id");
+		sql.addWhere("pd.answer IN( " + Strings.implode(certID) + ") AND aq.questionType = 'FileCertificate'");
+
 		try {
-			List<BasicDynaBean> queryList = db.select(sql, false);
-			Iterator<BasicDynaBean> itr = queryList.iterator();
-			
-			while (itr.hasNext()) {
-				BasicDynaBean bdb = itr.next();
-				ops.add((Integer) bdb.get("opID"));
+			List<BasicDynaBean> resultBDB = db.select(sql.toString(), false);
+			for (BasicDynaBean row : resultBDB) {
+				Integer cID =  Integer.parseInt((String) row.get("answer"));
+				Integer opID = (Integer) row.get("opID");
+				if (resultMap.get(cID) == null)
+					resultMap.put(cID, new ArrayList<Integer>());
+				resultMap.get(cID).add(opID);
 			}
-		} catch (Exception e) {
-			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		return ops;
+
+		return resultMap;
 	}
 }
