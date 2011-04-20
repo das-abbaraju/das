@@ -36,7 +36,7 @@ public class Invoice extends Transaction {
 		if (totalAmount.compareTo(BigDecimal.ZERO) <= 0)
 			return false;
 
-		if (getStatus().isPaid())
+		if (getStatus().isPaid() || getStatus().isVoid())
 			return false;
 
 		if (dueDate == null)
