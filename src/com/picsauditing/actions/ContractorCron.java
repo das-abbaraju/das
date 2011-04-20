@@ -2,6 +2,7 @@ package com.picsauditing.actions;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -51,7 +52,9 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
+import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -59,7 +62,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAssignment;
-import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.SendMail;
@@ -80,7 +82,6 @@ public class ContractorCron extends PicsActionSupport {
 	private AuditBuilderController auditBuilder;
 	private ContractorFlagETL contractorFlagETL;
 	private FlagDataCalculator flagDataCalculator;
-	private AppPropertyDAO appPropertyDAO;
 	private UserAssignmentDAO userAssignmentDAO;
 	private ContractorAuditDAO conAuditDAO;
 
@@ -105,7 +106,6 @@ public class ContractorCron extends PicsActionSupport {
 		this.auditBuilder = auditBuilder;
 		this.contractorFlagETL = contractorFlagETL;
 		this.contractorOperatorDAO = contractorOperatorDAO;
-		this.appPropertyDAO = appPropertyDAO;
 		this.userAssignmentDAO = userAssignmentDAO;
 		this.conAuditDAO = conAuditDAO;
 	}
@@ -683,26 +683,62 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.AssignAudit))
 			return;
 
-		// Automatically set Harvey as the (closing) safety professional for the
-		// WA State Requirement
-		for (ContractorAudit ca : contractor.getAudits()) {
-			if (ca.getAuditType().getId() == AuditType.WA_STATE_VERIFICATION) {
-				ca.setAuditor(new User(935));
-				ca.setClosingAuditor(new User(935));
+		// See if the PQF is complete for manual audit auditor assignment
+		boolean pqfComplete = false;
+		// Save auditor for manual audit for HSE Competency Review
+		User manualAuditAuditor = null;
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (!audit.isExpired()) {
+				// Check PQF status
+				if (audit.getAuditType().isPqf())
+					pqfComplete = audit.hasCaoStatus(AuditStatus.Complete);
+				// If the manual audit comes after the HSE Competency Review, we
+				// can
+				// still get the auditor here
+				if (audit.getAuditType().isDesktop())
+					manualAuditAuditor = audit.getAuditor();
 			}
 		}
-
-		// Checking if the contractor is tagged
-		for (ContractorTag tag : contractor.getOperatorTags()) {
-			if (tag.getTag().getId() == OperatorTag.SHELL_COMPETENCY_REVIEW) {
-				// Find if there are any manual audits
-				for (ContractorAudit audit : contractor.getAudits()) {
-					if (audit.getAuditType().getId() == AuditType.SHELL_COMPETENCY_REVIEW && audit.getAuditor() == null) {
-						// Reassign if given to an independent auditor
-						Integer auditor = audit.getIndependentClosingAuditor(audit.getAuditor());
-						// Assign to Mina if null
-						audit.setAuditor(auditor != null ? new User(auditor) : new User(1029));
+		// TODO There are a lot of hardcoded auditors here, need to keep updated
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (!audit.isExpired()) {
+				// Automatically set Harvey as the (closing) safety professional
+				// for
+				// the WA State Requirement
+				if (audit.getAuditType().getId() == AuditType.WA_STATE_VERIFICATION) {
+					audit.setAuditor(new User(935));
+					audit.setClosingAuditor(new User(935));
+				}
+				// Auditor Assignments -- Manual audit
+				// Check for PQF completion, invoices for paying operators (less
+				// than 10 facilities) and totals under $450
+				if (audit.getAuditType().isDesktop() && audit.getAuditor() == null && pqfComplete) {
+					for (Invoice invoice : contractor.getInvoices()) {
+						for (InvoiceItem item : invoice.getItems()) {
+							if (item.getInvoiceFee().getFeeClass().equals("Membership")
+									&& item.getInvoiceFee().getId() != InvoiceFee.PQFONLY
+									&& item.getInvoiceFee().getId() != InvoiceFee.BIDONLY
+									&& !invoice.isOverdue()
+									&& (item.getAmount().equals(item.getInvoiceFee().getAmount()) || invoice
+											.getTotalAmount().compareTo(new BigDecimal(450)) < 0)
+									&& contractor.getPayingFacilities() < 10) {
+								UserAssignment ua = userAssignmentDAO
+										.findByContractor(contractor, audit.getAuditType());
+								if (ua != null) {
+									audit.setAuditor(ua.getUser());
+									audit.setAssignedDate(new Date());
+								}
+							}
+						}
 					}
+				}
+				// TODO Do we need to check for the Competency Tag?
+				// HSE Competency Review Auditor Reassignment
+				if (audit.getAuditType().getId() == AuditType.SHELL_COMPETENCY_REVIEW && audit.getAuditor() == null) {
+					// Reassign if given to an independent auditor
+					Integer auditorReassign = audit.getIndependentClosingAuditor(manualAuditAuditor);
+					// Assign to Mina if null
+					audit.setAuditor(auditorReassign != null ? new User(auditorReassign) : new User(1029));
 				}
 			}
 		}

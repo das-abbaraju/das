@@ -19,7 +19,6 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
-import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -39,7 +38,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -69,13 +67,11 @@ public class AuditBuilderController {
 	private AuditTypeDAO auditTypeDao;
 	private ContractorAuditDAO conAuditDao;
 	private AuditCategoryMatrixDAO auditCatMatrixDAO;
-	private UserAssignmentDAO userAssignmentDAO;
 
 	public AuditBuilderController(ContractorAuditDAO cAuditDAO, AuditDataDAO auditDataDAO,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, ContractorTagDAO contractorTagDAO,
 			AuditCategoryRuleCache auditCategoryRuleCache, AuditTypeRuleCache auditTypeRuleCache,
-			AuditTypeDAO auditTypeDao, ContractorAuditDAO conAuditDao, AuditCategoryMatrixDAO auditCatMatrixDAO,
-			UserAssignmentDAO userAssignmentDAO) {
+			AuditTypeDAO auditTypeDao, ContractorAuditDAO conAuditDao, AuditCategoryMatrixDAO auditCatMatrixDAO) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
@@ -85,7 +81,6 @@ public class AuditBuilderController {
 		this.auditTypeDao = auditTypeDao;
 		this.conAuditDao = conAuditDao;
 		this.auditCatMatrixDAO = auditCatMatrixDAO;
-		this.userAssignmentDAO = userAssignmentDAO;
 	}
 
 	public void setup(ContractorAccount con, User user) {
@@ -630,12 +625,6 @@ public class AuditBuilderController {
 		ContractorAudit audit = new ContractorAudit();
 		audit.setContractorAccount(contractor);
 		audit.setAuditType(auditType);
-		// Auditor Assignments
-		if (auditType.isDesktop()) {
-			UserAssignment ua = userAssignmentDAO.findByContractor(contractor, auditType);
-			if (ua != null)
-				audit.setAuditor(ua.getUser());
-		}
 		
 		if (user != null)
 			audit.setAuditColumns(user);
