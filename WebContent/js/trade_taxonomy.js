@@ -14,7 +14,7 @@ $(function() {
 				"data": function(node) {
 					result = $('#suggest').serialize();
 					if (node.attr) {
-						result += "trade=" + node.attr('id');
+						result += "&trade=" + node.attr('id');
 					}
 					return result;
 				}
@@ -22,7 +22,7 @@ $(function() {
 		},
 		"ui": {
 			"select_limit": -1,
-			"select_multiple_modifier": "ctrl", 
+			"select_multiple_modifier": "ctrl"
 		},
 		"contextmenu": {
 			"show_at_node": false,
@@ -87,7 +87,7 @@ $(function() {
 			$.post('TradeTaxonomy!deleteTradeAjax.action',
 				{
 					trades: trades
-				}, 
+				},
 				function(json) {
 					if (json.success) {
 						$('#trade-detail').html(oldform);
@@ -97,7 +97,7 @@ $(function() {
 						alert("Error deleting trade. Please try again later");
 						$.jstree.rollback(data.rlbk);
 					}
-				}, 
+				},
 				'json');
 		}
 	});
@@ -109,11 +109,10 @@ $(function() {
 		$('#trade-detail').load('TradeTaxonomy!tradeAjax.action', data);
 	});
 	
-	$('.psAutocomplete').autocomplete('TradeAutocomplete.action', {
-    	minChars: 2,
-    	max: 100,
-    	formatResult: function(data,i,count) { return data[1]; }
-    });
+	$('#suggest').submit(function(e) {
+		e.preventDefault();
+		tree.jstree('close_all').jstree('refresh');
+	});
 	
 	$('a.add').live('click', function(e) {
 		e.preventDefault();
@@ -128,11 +127,11 @@ $(function() {
 	}).delegate('.delete', 'click', function(e) {
 		e.preventDefault();
 		tree.jstree('remove', '#'+$(this).closest('form').find('[name=trade]').val());
-	}).delegate('#add-alternate','click', function(e){
+	}).delegate('#add-alternate','click', function(e) {
 		e.preventDefault();
 		$('#alternateNames').load('TradeTaxonomy!addAlternateAjax.action', {alternateName: $('#alternateName').val(), trade: $('#saveTrade [name=trade]').val()});
 		$('#alternateName').val('');
-	}).delegate('#delete-alternate', 'click', function(e){
+	}).delegate('#delete-alternate', 'click', function(e) {
 		e.preventDefault();
 		$('#alternateNames').load($(this).attr('href'), {trade: $('#saveTrade [name=trade]').val()});
 	});

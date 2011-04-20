@@ -5,8 +5,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.picsauditing.util.Strings;
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "ref_trade_alt")

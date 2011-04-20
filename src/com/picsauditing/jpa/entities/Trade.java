@@ -1,9 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -15,9 +13,12 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.json.simple.JSONObject;
 
 import com.picsauditing.util.IndexObject;
+import com.picsauditing.util.Node;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.Tree;
 
 @SuppressWarnings("serial")
 @Entity
@@ -215,7 +216,7 @@ public class Trade extends BaseTable implements Indexable {
 		this.needsIndexing = needsIndexing;
 	}
 
-	@OneToMany(mappedBy = "trade", cascade = CascadeType.ALL )
+	@OneToMany(mappedBy = "trade", cascade = CascadeType.ALL)
 	public List<TradeAlternate> getAlternates() {
 		return alternates;
 	}
@@ -337,5 +338,53 @@ public class Trade extends BaseTable implements Indexable {
 	@Transient
 	public String getViewLink() {
 		return "TradeTaxonomy.action";
+	}
+
+	@Transient
+	public Tree<Trade> getHierarchy() {
+		Node<Trade> root = getHierarchy(this);
+		Trade parent = this.parent;
+		while (parent != null) {
+			root = new Node<Trade>(parent, root);
+
+			parent = parent.parent;
+		}
+
+		return new Tree<Trade>(root);
+	}
+
+	private Node<Trade> getHierarchy(Trade t) {
+		Node<Trade> node = new Node<Trade>(t);
+		for (Trade child : t.getChildren()) {
+			node.addChild(getHierarchy(child));
+		}
+		return node;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject toJSON(boolean full) {
+		JSONObject json = new JSONObject();
+		json.put("data", name.toString());
+
+		if (!isLeaf()) {
+			if (full) {
+				json.put("state", "open");
+			} else {
+				json.put("state", "closed");
+			}
+		}
+
+		JSONObject attr = new JSONObject();
+		attr.put("id", id);
+
+		json.put("attr", attr);
+
+		return json;
+	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(name);
 	}
 }

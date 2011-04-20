@@ -21,10 +21,10 @@
 <body>
 <h1>Trade Taxonomy</h1>
 
-<div id="suggest">
-<form>
+<div>
+<form id="suggest">
 	<label>Trade Search:</label>
-	<input class="psAutocomplete" name="tradeSearch" style="width: 400px" />
+	<input type="search" name="q" style="width: 400px" />
 </form>
 </div>
 
@@ -40,7 +40,7 @@
 	</tr>
 </table>
 
-<s:form cssStyle="padding-top: 1em">
+<s:form cssStyle="padding-top: 1em" >
 	<s:submit action="TradeTaxonomy!index" value="Index Trade Taxonomy" cssClass="picsbutton" />
 </s:form>
 

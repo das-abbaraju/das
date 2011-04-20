@@ -3,8 +3,6 @@ package com.picsauditing.actions.trades;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Transient;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -14,6 +12,8 @@ import com.picsauditing.dao.TradeAlternateDAO;
 import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.jpa.entities.TradeAlternate;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.Tree;
 
 @SuppressWarnings("serial")
 public class TradeTaxonomy extends PicsActionSupport {
@@ -26,34 +26,39 @@ public class TradeTaxonomy extends PicsActionSupport {
 	private String alternateName;
 	private TradeAlternate alternate;
 
+	private String q;
+
 	@SuppressWarnings("unchecked")
 	public String json() {
 
 		List<Trade> nodes = new ArrayList<Trade>();
 
-		if (trade == null) {
-			nodes = tradeDAO.findWhere("p.parent IS NULL");
+		if (!Strings.isEmpty(q)) {
+			Tree<Trade> tradeTree = tradeDAO.findByIndexValue(q);
+			JSONArray value = (JSONArray) tradeTree.toJSON(true).get("children");
+			if (value.size() == 0) {
+				// TODO: Translate this field
+				value.add("No Results :(");
+			}
+			json.put("result", value);
 		} else {
-			nodes = tradeDAO.findByParent(trade.getId());
-		}
-
-		JSONArray result = new JSONArray();
-		for (Trade trade : nodes) {
-			JSONObject o = new JSONObject();
-			o.put("data", getText(trade.getI18nKey("name")));
-
-			if (!trade.isLeaf()) {
-				o.put("state", "closed");
+			if (trade == null) {
+				nodes = tradeDAO.findWhere("p.parent IS NULL");
+			} else {
+				nodes = tradeDAO.findByParent(trade.getId());
 			}
 
-			JSONObject attr = new JSONObject();
-			attr.put("id", trade.getId());
-			o.put("attr", attr);
-
-			result.add(o);
+			JSONArray result = new JSONArray();
+			for (Trade trade : nodes) {
+				result.add(trade.toJSON());
+			}
+			json.put("result", result);
 		}
 
-		json.put("result", result);
+		return JSON;
+	}
+
+	public String treeJson() {
 
 		return JSON;
 	}
@@ -139,24 +144,24 @@ public class TradeTaxonomy extends PicsActionSupport {
 		}
 		return JSON;
 	}
-	
+
 	public String addAlternateAjax() {
 		if (alternateName == null || alternateName.equals("")) {
 			addActionError("Alternate Name cannot be blank.");
 			return "alternate";
 		}
-		
-		TradeAlternate tradeAlternate = new TradeAlternate(trade, alternateName); 
+
+		TradeAlternate tradeAlternate = new TradeAlternate(trade, alternateName);
 		if (trade.getAlternates().contains(tradeAlternate))
 			addActionError("Alternate Already Exists.");
 		else {
 			trade.getAlternates().add(tradeAlternate);
 			tradeDAO.save(trade);
 		}
-		
+
 		return "alternate";
 	}
-	
+
 	public String removeAlternateAjax() {
 		tradeAlternateDAO.remove(alternate);
 		return "alternate";
@@ -201,5 +206,13 @@ public class TradeTaxonomy extends PicsActionSupport {
 	public void setTradeAlternateDAO(TradeAlternateDAO tradeAlternateDAO) {
 		this.tradeAlternateDAO = tradeAlternateDAO;
 	}
-	
+
+	public String getQ() {
+		return q;
+	}
+
+	public void setQ(String q) {
+		this.q = q;
+	}
+
 }
