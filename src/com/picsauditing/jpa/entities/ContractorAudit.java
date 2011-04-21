@@ -330,6 +330,9 @@ public class ContractorAudit extends BaseTable {
 
 	@Transient
 	public Date getEffectiveDateLabel() {
+		if(this.auditType.isDesktop() && effectiveDate!=null){
+			return effectiveDate;
+		}
 		for (ContractorAuditOperator cao : operators) {
 			if (cao.getStatus().equals(AuditStatus.Complete))
 				return cao.getStatusChangedDate();
