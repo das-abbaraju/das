@@ -192,7 +192,7 @@ function checkReason(id) {
 											<s:if test="#flagoverride != null">
 											Manual <s:property value="#flagoverride.criteria.label" /> Individual Force Flag to <s:property value="#flagoverride.forceflag.getSmallIcon()" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
 											by <s:property value="#flagoverride.updatedBy.name" /> from <s:property value="#flagoverride.updatedBy.account.name"/>
-											<s:if test="#flagoverride.updatedBy.account.corporate"> for all the sites.</s:if>
+											<s:if test="#flagoverride.operator.corporate"> for all the sites.</s:if>
 											<br/>
 											</s:if>
 										</s:if>
