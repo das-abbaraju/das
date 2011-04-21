@@ -7,6 +7,9 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+
+<s:include value="../jquery.jsp"/>
+
 <script type="text/javascript">
 $(document).ready(function() {
 	$('.catlist').live('mouseenter', function(){
