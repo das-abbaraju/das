@@ -18,20 +18,16 @@ function request(conID) {
 </script>
 <style type="text/css">
 table.report {
+	clear: none;
 	position: static;
 }
-td {
-	height: 35px;
+
+table.report td {
+	height: 30px !important;
 }
 
-th {
-	height: 90px;
-}
-
-.fixed {
-}
-
-.wide {
+table.report th {
+	height: 100px !important;
 }
 </style>
 </head>
@@ -42,15 +38,12 @@ th {
 <s:if test="map.keySet().size > 0">
 	<div class="right" style="line-height: 30px;">Requested field audits for <strong><s:property value="previouslyRequested.keySet().size" /></strong> contractors</div>
 	<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
-	<div style="width: 100%; overflow: auto;">
-		<table class="report">
+	<div style="position: relative;">
+		<table class="report" style="position: absolute; z-index: 1000; border-right: none;">
 			<thead>
 				<tr>
 					<th class="fixed">Request Field Audit</th>
-					<th class="fixed wide">Contractor</th>
-					<s:iterator value="waCategories" var="cat">
-						<th><s:property value="#cat.name" /></th>
-					</s:iterator>
+					<th class="fixed">Contractor</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -67,14 +60,45 @@ th {
 								<input type="button" value="Request" class="picsbutton" disabled="disabled" title="You have requested a field audit for this contractor." />
 							</s:else>
 						</td>
-						<td class="fixed wide"><a href="Audit.action?auditID=<s:property value="get('auditID')" />"><s:property value="get('name')" /></a></td>
-						<s:iterator value="waCategories" var="cat">
-							<td class="center"><s:if test="map.get(get('id')).contains(#cat.id)"><img src="images/okCheck.gif" alt="OK" /></s:if></td>
-						</s:iterator>
+						<td class="fixed"><a href="Audit.action?auditID=<s:property value="get('auditID')" />"><s:property value="get('name')" /></a></td>
 					</tr>
 				</s:iterator>
 			</tbody>
 		</table>
+		<div style="width: 100%; overflow-x: auto; padding-bottom: 10px;">
+			<table class="report">
+				<thead>
+					<tr>
+						<th><nobr>Request Field Audit</nobr></th>
+						<th>Contractor</th>
+						<s:iterator value="waCategories" var="cat">
+							<th><s:property value="#cat.name" /></th>
+						</s:iterator>
+					</tr>
+				</thead>
+				<tbody>
+					<s:iterator value="data">
+						<tr>
+							<td class="center fixed">
+								<s:if test="previouslyRequested.get(get('id')) == null">
+									<s:form>
+										<s:hidden name="conID" value="%{get('id')}" />
+										<input type="submit" value="Request" name="button" class="picsbutton" onclick="return request(<s:property value="get('id')" />)" />
+									</s:form>
+								</s:if>
+								<s:else>
+									<input type="button" value="Request" class="picsbutton" disabled="disabled" title="You have requested a field audit for this contractor." />
+								</s:else>
+							</td>
+							<td class="fixed"><nobr><a href="Audit.action?auditID=<s:property value="get('auditID')" />"><s:property value="get('name')" /></a></nobr></td>
+							<s:iterator value="waCategories" var="cat">
+								<td class="center"><s:if test="map.get(get('id')).contains(#cat.id)"><img src="images/okCheck.gif" alt="OK" /></s:if></td>
+							</s:iterator>
+						</tr>
+					</s:iterator>
+				</tbody>
+			</table>
+		</div>
 	</div>
 	<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 </s:if>
