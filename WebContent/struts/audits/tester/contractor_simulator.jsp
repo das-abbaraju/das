@@ -74,6 +74,7 @@ $(function() {
 	list="#{'Low':'Low Risk','Med':'Medium Risk','High':'High Risk'}"
 	name="contractor.riskLevel" value="'High'" /></div>
 
+<div class="filterOption"><s:checkbox name="contractor.acceptsBids" id="acceptsBids" value="true" /><label for="acceptsBids">Accepts Bids</label></div>
 <div class="filterOption"><s:checkbox name="contractor.onsiteServices" id="onsite" value="true" /><label for="onsite">Onsite Services</label></div>
 <div class="filterOption"><s:checkbox name="contractor.offsiteServices" id="offsite" value="true" /><label for="offsite">Offsite Services</label></div>
 <div class="filterOption"><s:checkbox name="contractor.materialSupplier" id="supplier" value="true" /><label for="supplier">Material Supplier</label></div>
