@@ -179,9 +179,7 @@ public class PicsMenu {
 			subMenu.addChild("Sched. &amp; Assign",
 					"AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
-			subMenu
-					.addChild("Close Assigned Audits",
-							"ReportCloseAuditAssignments.action?filter.auditStatus=Submitted");
+			subMenu.addChild("Close Assigned Audits", "ReportCloseAuditAssignments.action?filter.auditStatus=Submitted");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
 			subMenu.addChild("Audit Calendar", "AuditCalendar.action");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
@@ -204,9 +202,11 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("Pending PQF", "ReportCompletePQF.action?filter.auditStatus=Pending");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
-			subMenu.addChild("PQF Verification", "PqfVerification.action?filter.status=Active"
-					+ (permissions.hasGroup(User.GROUP_CSR) ? "&filter.conAuditorId=" + permissions.getShadowedUserID()
-							: ""));
+			subMenu.addChild(
+					"PQF Verification",
+					"PqfVerification.action?filter.status=Active"
+							+ (permissions.hasGroup(User.GROUP_CSR) ? "&filter.conAuditorId="
+									+ permissions.getShadowedUserID() : ""));
 		if (permissions.hasPermission(OpPerms.UserZipcodeAssignment))
 			subMenu.addChild("CSR Assignment", "CSRAssignmentMatrix.action");
 
@@ -231,7 +231,7 @@ public class PicsMenu {
 							: ""));
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
 			subMenu.addChild(getTitle("ReportInsuranceApproval"),
-							"ReportInsuranceApproval.action?filter.auditStatus=Complete");
+					"ReportInsuranceApproval.action?filter.auditStatus=Complete");
 
 		subMenu = menu.addChild(getText("menu.Management"));
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
@@ -246,7 +246,7 @@ public class PicsMenu {
 			addChildAction(subMenu, "UsersManage");
 			addChildAction(subMenu, "ReportUserPermissionMatrix");
 		}
-		
+
 		if (permissions.isAdmin()) {
 			subMenu.addChild("Trade Taxonomy", "TradeTaxonomy.action");
 		}
@@ -343,7 +343,7 @@ public class PicsMenu {
 					"ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending");
 
 		subMenu = menu.addChild(getText("menu.Reports"));
-		
+
 		// TODO - remove these hacks
 		if (permissions.getAccountId() == 6228) {
 			subMenu.addChild("Site Orientation Report", "report_orientation.jsp");
@@ -360,7 +360,8 @@ public class PicsMenu {
 			subMenu.addChild("Contractor Licenses", "ReportContractorLicenses.action");
 		if (permissions.hasPermission(OpPerms.RiskRank))
 			subMenu.addChild("Contractor Risk Level", "ReportContractorRiskLevel.action");
-		if (permissions.isAdmin() || (permissions.isOperatorCorporate() && permissions.getCorporateParent().contains(10566)))
+		if (permissions.isAdmin()
+				|| (permissions.isOperatorCorporate() && permissions.getCorporateParent().contains(10566)))
 			subMenu.addChild("Contractor Score", "ReportContractorScore.action");
 		if (permissions.hasPermission(OpPerms.EMRReport)) {
 			subMenu.addChild(getTitle("GraphEmrRates"), "GraphEmrRates.action?years=2010");
@@ -389,7 +390,8 @@ public class PicsMenu {
 			subMenu.addChild("User Multi-Login", "MultiLoginUser.action");
 		if (permissions.hasPermission(OpPerms.EditUsers))
 			addChildAction(subMenu, "UserList");
-		if (permissions.getAccountId() == 1813) // Hardcode to BP Cherry point
+		if (permissions.getAccountId() == 1813 || permissions.hasPermission(OpPerms.DevelopmentEnvironment)
+				|| permissions.isAuditor()) // Hardcode to BP Cherry point
 			subMenu.addChild("Washington Audit",
 					"ReportWashingtonStateAudit.action?filter.riskLevel=3&filter.waAuditTypes=176");
 		if (permissions.hasPermission(OpPerms.EmployeeList))
@@ -452,10 +454,9 @@ public class PicsMenu {
 		subMenu.addChild(getTitle("Contact"), "Contact.action");
 		return subMenu;
 	}
-	
+
 	static private void addChildAction(MenuComponent menu, String actionName) {
 		menu.addChild(getTitle(actionName), actionName + ".action");
 	}
-
 
 }

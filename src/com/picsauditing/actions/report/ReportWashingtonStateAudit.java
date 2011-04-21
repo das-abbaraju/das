@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,10 +12,8 @@ import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.dao.AmBestDAO;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -27,50 +26,49 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.util.ReportFilterCAO;
+import com.picsauditing.search.Database;
+import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
+public class ReportWashingtonStateAudit extends ReportAccount {
 	private AuditCategoryDAO auditCategoryDAO;
 	private AuditTypeDAO auditTypeDAO;
 	private ContractorAccountDAO conDAO;
 	private ContractorAuditDAO conAuditDAO;
 	// private ContractorAuditOperatorDAO caoDAO;
+	private OperatorAccountDAO operatorAccountDAO;
 	private AuditBuilderController auditBuilder;
 
 	private int conID;
 	private ReportFilterWashingtonAudit filter = new ReportFilterWashingtonAudit();
 
+	private Database db = new Database();
 	private List<AuditCategory> waCategories = new ArrayList<AuditCategory>();
-	private Map<ContractorAccount, List<AuditCategory>> map = new HashMap<ContractorAccount, List<AuditCategory>>();
-	private Map<ContractorAccount, ContractorAudit> previouslyRequested = new HashMap<ContractorAccount, ContractorAudit>();
+	private Map<Integer, List<Integer>> map = new HashMap<Integer, List<Integer>>();
+	private Map<Integer, ContractorAudit> previouslyRequested = new HashMap<Integer, ContractorAudit>();
 
-	public ReportWashingtonStateAudit(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO, AuditCategoryDAO auditCategoryDAO,
+	public ReportWashingtonStateAudit(OperatorAccountDAO operatorAccountDAO, AuditCategoryDAO auditCategoryDAO,
 			AuditTypeDAO auditTypeDAO, ContractorAccountDAO conDAO, ContractorAuditDAO conAuditDAO,
 			AuditBuilderController auditBuilder) {
-		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
-
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditTypeDAO = auditTypeDAO;
 		this.conDAO = conDAO;
 		this.conAuditDAO = conAuditDAO;
 		// this.caoDAO = caoDAO;
+		this.operatorAccountDAO = operatorAccountDAO;
 		this.auditBuilder = auditBuilder;
+
+		this.orderByDefault = "a.name";
 	}
 
 	@Override
 	public String execute() throws Exception {
-		loadPermissions();
-		// Turn on/off filters
 		getFilter().setShowConAuditor(false);
-		getFilter().setShowCaoStatusChangedDate(false);
 		getFilter().setShowOperator(false);
-		getFilter().setShowCaoOperator(false);
-		getFilter().setShowAuditType(false);
 
-		if (permissions.getAccountId() != 1813)
+		if (permissions.getAccountId() != 1813 && !permissions.isAuditor()
+				&& !permissions.hasPermission(OpPerms.DevelopmentEnvironment))
 			throw new NoRightsException("BP Cherry Point user");
 
 		if ("Request".equals(button) && conID > 0) {
@@ -119,16 +117,15 @@ public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
 	protected void buildQuery() {
 		super.buildQuery();
 
-		sql.addJoin("LEFT JOIN audit_cat_data acdWa ON acdWa.auditID = ca.id AND acdWa.applies = 1 "
-				+ "AND acdWa.numAnswered = acdWa.numVerified AND acdWa.numAnswered > 0");
-		sql.addJoin("LEFT JOIN audit_category acWa ON acWa.id = acdWa.categoryID AND acWa.number != 1");
+		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id AND ca.auditTypeID = "
+				+ AuditType.WA_STATE_VERIFICATION);
 
-		sql.addField("acWa.id waCatID");
-		sql.addField("acWa.name waCatName");
+		sql.addField("ca.id auditID");
+		
+		sql.addWhere("a.status = 'Active'");
 
-		sql.addWhere("cao.opID IN (4, 5, 1813)");
-
-		sql.addOrderBy("acWa.number ASC");
+		sql.setLimit(50);
+		report.setLimit(50);
 	}
 
 	@Override
@@ -139,41 +136,43 @@ public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
 			sql.addWhere("ca.auditTypeID IN (" + Strings.implode(getFilter().getWaAuditTypes()) + ")");
 		if (filterOn(getFilter().getWaCategories()))
 			sql.addWhere("acWa.id IN (" + Strings.implode(getFilter().getWaCategories()) + ")");
+		if (filterOn(getFilter().getWaCategories()))
+			waCategories = auditCategoryDAO.findWhere("id IN (" + Strings.implode(getFilter().getWaCategories()) + ")");
+		else
+			waCategories = getFilter().getWaCategoryList();
+
+		Collections.sort(waCategories);
 	}
 
 	@Override
 	protected String returnResult() throws IOException {
-		if (!filterOn(getFilter().getWaCategories()))
-			waCategories = getFilter().getWaCategoryList();
-		else
-			waCategories = auditCategoryDAO.findWhere("id IN (" + Strings.implode(getFilter().getWaCategories()) + ")");
+		String original = sql.toString();
+		sql.addJoin("JOIN audit_cat_data acd ON acd.auditID = ca.id AND acd.applies = 1 AND acd.numAnswered = acd.numVerified "
+				+ "AND acd.numAnswered > 0");
+		sql.addField("acd.categoryID");
 
-		for (BasicDynaBean d : data) {
-			ContractorAccount c = new ContractorAccount();
-			c.setId(Integer.parseInt(d.get("id").toString()));
-			c.setName(d.get("name").toString());
-			c.setStatus(AccountStatus.valueOf(d.get("status").toString()));
-			c.setType(d.get("type").toString());
-
-			if (map.get(c) == null)
-				map.put(c, new ArrayList<AuditCategory>());
-
-			if (d.get("waCatID") != null) {
-				AuditCategory ac = new AuditCategory();
-				ac.setId(Integer.parseInt(d.get("waCatID").toString()));
-				ac.setName(d.get("waCatName").toString());
-
-				if (!map.get(c).contains(ac))
-					map.get(c).add(ac);
-			}
+		List<BasicDynaBean> data2 = null;
+		try {
+			data2 = db.select(sql.toString(), false);
+		} catch (SQLException e) {
+			System.out.println("Error in SQL query: ");
+			e.printStackTrace();
 		}
+		
+		for (BasicDynaBean d : data2) {
+			int conID = Integer.parseInt(d.get("id").toString());
+			int catID = Integer.parseInt(d.get("categoryID").toString());
 
-		Collections.sort(waCategories);
+			if (map.get(conID) == null)
+				map.put(conID, new ArrayList<Integer>());
+
+			map.get(conID).add(catID);
+		}
 
 		List<ContractorAudit> requestedAudits = conAuditDAO.findWhere(1000,
 				"auditType.id = 5 AND requestingOpAccount.id = " + 1813, "");
 		for (ContractorAudit requested : requestedAudits) {
-			previouslyRequested.put(requested.getContractorAccount(), requested);
+			previouslyRequested.put(requested.getContractorAccount().getId(), requested);
 		}
 
 		return super.returnResult();
@@ -196,15 +195,15 @@ public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
 		return waCategories;
 	}
 
-	public Map<ContractorAccount, List<AuditCategory>> getMap() {
+	public Map<Integer, List<Integer>> getMap() {
 		return map;
 	}
 
-	public Map<ContractorAccount, ContractorAudit> getPreviouslyRequested() {
+	public Map<Integer, ContractorAudit> getPreviouslyRequested() {
 		return previouslyRequested;
 	}
 
-	public class ReportFilterWashingtonAudit extends ReportFilterCAO {
+	public class ReportFilterWashingtonAudit extends ReportFilterContractor {
 		private boolean showWaAuditTypes = true;
 		private boolean showWaCategories = true;
 
@@ -243,7 +242,6 @@ public class ReportWashingtonStateAudit extends ReportContractorAuditOperator {
 			this.waCategories = waCategories;
 		}
 
-		@Override
 		public AccountStatus[] getStatusList() {
 			return new AccountStatus[] { AccountStatus.Pending, AccountStatus.Active };
 		}
