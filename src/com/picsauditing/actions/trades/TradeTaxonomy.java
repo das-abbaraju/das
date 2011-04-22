@@ -58,7 +58,13 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return JSON;
 	}
 
-	public String treeJson() {
+	@SuppressWarnings("unchecked")
+	public String hierarchyJson() {
+		if (trade != null) {
+			Tree<Trade> tradeTree = tradeDAO.findHierarchyByTrade(trade.getId());
+			JSONArray result = (JSONArray) tradeTree.toJSON(true).get("children");
+			json.put("result", result);
+		}
 
 		return JSON;
 	}

@@ -1641,7 +1641,12 @@
 			<result name="trade">struts/trades/trade_taxonomy_view.jsp</result>
 			<result name="alternate">struts/trades/trade_alternates.jsp</result>
 		</action>
-		
+
+		<action name="ContractorTrades" class="com.picsauditing.actions.trades.ContractorTradeAction">
+			<result>struts/trades/contractor_trade.jsp</result>
+			<result name="trade">struts/trades/contractor_trade_view.jsp</result>
+		</action>
+
 		<!-- Autocomplete Ajax -->
 		<action name="*Autocomplete" class="com.picsauditing.actions.autocomplete.{1}Autocomplete">
 			<result>struts/blank.jsp</result>

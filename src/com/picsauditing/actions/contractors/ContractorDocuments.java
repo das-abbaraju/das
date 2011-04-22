@@ -117,7 +117,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 			else
 				imScores.put(auditName, "Green");
 		}
-		
+
 		Collections.sort(expiredAudits, new AuditByDate());
 
 		return SUCCESS;
@@ -186,6 +186,11 @@ public class ContractorDocuments extends ContractorActionSupport {
 		if (manuallyAddAudits == null) {
 			manuallyAddAudits = new HashSet<AuditType>();
 			List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache.getApplicableAuditRules(contractor);
+
+			for (AuditTypeRule auditTypeRule : applicableAuditRules) {
+				if (auditTypeRule.getAuditType() != null && auditTypeRule.getAuditType().getId() == 126)
+					System.out.println(auditTypeRule.getId() + " - " + auditTypeRule.getAuditType().getId());
+			}
 			for (AuditTypeRule auditTypeRule : applicableAuditRules) {
 				if (auditTypeRule.isInclude() && auditTypeRule.getAuditType() != null) {
 					if (!auditTypeRule.getAuditType().isAnnualAddendum()
@@ -255,7 +260,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 	public static String getSafeName(String name) {
 		return name.toLowerCase().replaceAll(" ", "_").replaceAll("&(.*?);", "");
 	}
-	
+
 	private class AuditByDate implements Comparator<ContractorAudit> {
 		@Override
 		public int compare(ContractorAudit o1, ContractorAudit o2) {

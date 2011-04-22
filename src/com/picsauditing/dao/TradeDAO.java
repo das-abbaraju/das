@@ -1,13 +1,10 @@
 package com.picsauditing.dao;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Query;
 
 import com.picsauditing.jpa.entities.Trade;
-import com.picsauditing.util.Node;
 import com.picsauditing.util.Tree;
 
 @SuppressWarnings("unchecked")
@@ -53,14 +50,22 @@ public class TradeDAO extends IndexableDAO {
 		Query query = em.createNativeQuery(sql, com.picsauditing.jpa.entities.Trade.class);
 		return query.getResultList();
 	}
+	
+	public Tree<Trade> findHierarchyByTrade(int tradeID) {
+		String sql = "SELECT t2.* " + 
+					"FROM ref_trade t1 " + 
+					"JOIN ref_trade t2 ON (t1.indexStart >= t2.indexStart AND t1.indexEnd <= t2.indexEnd) OR (t1.indexStart <= t2.indexStart AND t1.indexEnd >= t2.indexEnd) " + 
+					"WHERE t1.id = :tradeID " + 
+					"GROUP BY t2.id " +
+					"ORDER by t2.indexStart";
+		
+		Query query = em.createNativeQuery(sql, Trade.class);
+		query.setParameter("tradeID", tradeID);
+		
+		return Tree.createTreeFromOrderedList(query.getResultList());
+	}
 
 	public Tree<Trade> findByIndexValue(String q) {
-		Map<Trade, Node<Trade>> nodes = new HashMap<Trade, Node<Trade>>();
-		Tree<Trade> tree = new Tree<Trade>();
-		Node<Trade> root = new Node<Trade>();
-		tree.setRoot(root);
-		nodes.put(null, root);
-		
 		String sql = "SELECT t2.* " + 
 					"FROM app_index i " + 
 					"JOIN ref_trade t1 ON t1.id = i.foreignKey " + 
@@ -72,17 +77,6 @@ public class TradeDAO extends IndexableDAO {
 		Query query = em.createNativeQuery(sql, Trade.class);
 		query.setParameter("q", q + "%");
 
-		List<Trade> trades = query.getResultList();
-
-		for (Trade trade : trades) {
-			Node<Trade> node = new Node<Trade>(trade);
-
-			if (nodes.get(trade.getParent()) != null && !nodes.get(trade.getParent()).getChildren().contains(node)) {
-				nodes.get(trade.getParent()).addChild(node);
-				nodes.put(trade, node);
-			}
-		}
-
-		return tree;
+		return Tree.createTreeFromOrderedList(query.getResultList());
 	}
 }

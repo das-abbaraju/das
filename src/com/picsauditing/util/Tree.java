@@ -1,12 +1,15 @@
 package com.picsauditing.util;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.JSONable;
 
-public class Tree<T extends JSONable> implements JSONable {
+public class Tree<T extends Hierarchical<T>> implements JSONable {
 
 	private Node<T> root;
 
@@ -16,6 +19,24 @@ public class Tree<T extends JSONable> implements JSONable {
 
 	public Tree(Node<T> root) {
 		this.root = root;
+	}
+
+	public static <T extends Hierarchical<T>> Tree<T> createTreeFromOrderedList(Collection<T> treeList) {
+		Map<T, Node<T>> nodes = new HashMap<T, Node<T>>();
+		Tree<T> tree = new Tree<T>();
+		Node<T> root = new Node<T>();
+		tree.setRoot(root);
+		nodes.put(null, root);
+
+		for (T trade : treeList) {
+			Node<T> node = new Node<T>(trade);
+
+			if (nodes.get(trade.getParent()) != null && !nodes.get(trade.getParent()).getChildren().contains(node)) {
+				nodes.get(trade.getParent()).addChild(node);
+				nodes.put(trade, node);
+			}
+		}
+		return tree;
 	}
 
 	public Node<T> getRoot() {

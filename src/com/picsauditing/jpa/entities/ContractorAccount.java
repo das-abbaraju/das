@@ -20,11 +20,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -36,10 +36,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.util.SpringUtils;
@@ -102,6 +102,7 @@ public class ContractorAccount extends Account implements JSONable {
 	protected List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
 	protected List<Certificate> certificates = new ArrayList<Certificate>();
 	protected List<JobContractor> jobSites = new ArrayList<JobContractor>();
+	protected List<ContractorTrade> trades = new ArrayList<ContractorTrade>();
 
 	// Transient helper methods
 	protected OshaOrganizer oshaOrganizer = null;
@@ -519,6 +520,16 @@ public class ContractorAccount extends Account implements JSONable {
 		this.lastRecalculation = lastRecalculation;
 	}
 
+	@OneToMany(mappedBy = "contractor")
+	@OrderBy("activityPercent DESC")
+	public List<ContractorTrade> getTrades() {
+		return trades;
+	}
+
+	public void setTrades(List<ContractorTrade> trades) {
+		this.trades = trades;
+	}
+
 	public String getTradesSelf() {
 		return tradesSelf;
 	}
@@ -880,15 +891,16 @@ public class ContractorAccount extends Account implements JSONable {
 		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
 
 		if (acceptsBids) {
-			daysUntilRenewal = (paymentExpires == null || sdf.format(paymentExpires).equals(sdf.format(creationDate))) ? 0 : DateBean.getDateDifference(paymentExpires);
-			
+			daysUntilRenewal = (paymentExpires == null || sdf.format(paymentExpires).equals(sdf.format(creationDate))) ? 0
+					: DateBean.getDateDifference(paymentExpires);
+
 			if (status.isDeactivated() || daysUntilRenewal < 0)
 				return renew ? "Renewal" : "Membership Canceled";
 
 			// Do we want to do this?
 			if (status.isActive())
 				return "Current";
-			
+
 			return "Bid Only Account";
 		}
 
@@ -945,11 +957,11 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return false;
 	}
-	
+
 	@Transient
-	public boolean hasAuditWithOnlyInvisibleCaos(){
-		for(ContractorAudit audit : this.audits){
-			if(audit.hasOnlyInvisibleCaos())
+	public boolean hasAuditWithOnlyInvisibleCaos() {
+		for (ContractorAudit audit : this.audits) {
+			if (audit.hasOnlyInvisibleCaos())
 				return true;
 		}
 		return false;

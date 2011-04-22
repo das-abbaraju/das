@@ -15,6 +15,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.util.Hierarchical;
 import com.picsauditing.util.IndexObject;
 import com.picsauditing.util.Node;
 import com.picsauditing.util.Strings;
@@ -24,7 +25,7 @@ import com.picsauditing.util.Tree;
 @Entity
 @Table(name = "ref_trade")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class Trade extends BaseTable implements Indexable {
+public class Trade extends BaseTable implements Indexable, Hierarchical<Trade> {
 
 	private Trade parent;
 	private Boolean product;
