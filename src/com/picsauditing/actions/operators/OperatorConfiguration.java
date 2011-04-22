@@ -30,6 +30,7 @@ import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.BaseHistory;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -136,14 +137,15 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 					throw new RecordNotFoundException("Audit Type not found :" + auditTypeID);
 				AuditCategory parent = null;
 				for (AuditCategory c : auditType.getTopCategories()) {
-					if (c.getName().startsWith(auditType.getName().toString())) {
+					if (c.getName().toString().startsWith(auditType.getName().toString())) {
 						parent = c;
 						break;
 					}
 				}
 				AuditCategory cat = new AuditCategory();
 				cat.setAuditColumns(permissions);
-				cat.setName(operator.getName());
+				cat.setName(new TranslatableString());
+				cat.getName().putTranslation("en", operator.getName(), true);
 				cat.setParent(parent);
 				cat.setAuditType(auditType);
 				auditType.getCategories().add(cat);
@@ -152,11 +154,11 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 					public int compare(AuditCategory o1, AuditCategory o2) {
 						if (o1.getName().equals("Policy Information") || o1.getName().equals("Policy Limits")) {
 							if (o2.getName().equals("Policy Information") || o2.getName().equals("Policy Limits"))
-								return o1.getName().compareTo(o2.getName());
+								return o1.getName().toString().compareTo(o2.getName().toString());
 							return -1;
 						} else if (o2.getName().equals("Policy Information") || o2.getName().equals("Policy Limits"))
 							return 1;
-						return o1.getName().compareTo(o2.getName());
+						return o1.getName().toString().compareTo(o2.getName().toString());
 					}
 				});
 				int num = 1;
