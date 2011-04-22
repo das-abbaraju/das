@@ -62,6 +62,31 @@
 		</div>
 	</s:if>
 	
+	<s:if test="filter.showCompanyStatus">
+		<div class="filterOption"> 
+			<a href="#" onclick="toggleBox('form1_company_status'); return false;">Company Status</a> =
+			<span id="form1_company_status_query">ALL</span><br />
+			<span id="form1_company_status_select" style="display: none" class="clearLink">
+				<s:select list="filter.companyStatusList" multiple="true" cssClass="forms" name="filter.companyStatus" id="form1_company_status" /><br />
+				<script type="text/javascript">updateQuery('form1_company_status');</script>
+				<a class="clearLink" href="#" onclick="clearSelected('form1_company_status'); return false;">Clear</a>
+			</span>
+		</div>
+	</s:if>
+	
+	<s:if test="filter.showCompanyType">
+		<div class="filterOption"> 
+			<a href="#" onclick="toggleBox('form1_company_type'); return false;">Company Type</a> =
+			<span id="form1_company_type_query">ALL</span><br />
+			<span id="form1_company_type_select" style="display: none" class="clearLink">
+				<s:select list="#{'Contractor':'Contractor','Operator':'Operator','Corporate':'Corporate'}" multiple="true" 
+					cssClass="forms" name="filter.companyType" id="form1_company_type" /><br />
+				<script type="text/javascript">updateQuery('form1_company_type');</script>
+				<a class="clearLink" href="#" onclick="clearSelected('form1_company_type'); return false;">Clear</a>
+			</span>
+		</div>
+	</s:if>
+	
 	<br clear="all" />
 	<div class="alphapaging"><s:property
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>

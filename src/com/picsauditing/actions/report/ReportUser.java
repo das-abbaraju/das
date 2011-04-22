@@ -12,6 +12,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectFilter;
@@ -37,10 +38,8 @@ public class ReportUser extends ReportActionSupport {
 		this.sql = sql;
 	}
 
+	@RequiredPermission(value=OpPerms.EditUsers)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-		permissions.tryPermission(OpPerms.EditUsers);
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
 
@@ -49,6 +48,10 @@ public class ReportUser extends ReportActionSupport {
 		getFilter().setShowPhone(true);
 		getFilter().setShowUser(true);
 		getFilter().setShowActive(true);
+		
+		if (permissions.isAdmin())
+			getFilter().setShowCompanyType(true);
+		
 		addFilterToSQL();
 
 		if (button != null && button.contains("Write Email")) {
@@ -139,7 +142,19 @@ public class ReportUser extends ReportActionSupport {
 		if (filterOn(f.getActive())) {
 			report.addFilter(new SelectFilter("Active", "u.isActive LIKE '%?%'", f.getActive()));
 		}
-
+		
+		if (filterOn(f.getCompanyStatus())) {
+			String statuses = Strings.implodeForDB(f.getCompanyStatus(), ",");
+			sql.addWhere("a.status IN (" + statuses +")");
+			setFiltered(true);
+		}
+		
+		if (filterOn(f.getCompanyType())) {
+			String types = Strings.implodeForDB(f.getCompanyType(), ",");
+			sql.addWhere("a.type IN (" + types +")");
+			setFiltered(true);
+		}
+		
 		// If we're searching by nameIndexes, we should use the nameIndex format
 		// on the company name users input
 		if (filterOn(f.getCompanyName())) {

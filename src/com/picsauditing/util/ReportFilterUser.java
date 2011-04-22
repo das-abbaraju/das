@@ -1,5 +1,6 @@
 package com.picsauditing.util;
 
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ListType;
 
 public class ReportFilterUser extends ReportFilter {
@@ -11,6 +12,8 @@ public class ReportFilterUser extends ReportFilter {
 	protected boolean showUser = true;
 	protected boolean showCompanyName = true;
 	protected boolean showActive = true;
+	protected boolean showCompanyStatus = true;
+	protected boolean showCompanyType = false;
 
 	// /////// Parameter Values /////////////////
 	protected String startsWith;
@@ -21,6 +24,8 @@ public class ReportFilterUser extends ReportFilter {
 	protected String companyName;
 	protected String search;
 	protected String active;
+	protected AccountStatus[] companyStatus;
+	protected String[] companyType;
 
 	// Email Builder
 	protected boolean showEmailTemplate = false;
@@ -64,6 +69,32 @@ public class ReportFilterUser extends ReportFilter {
 
 	public void setShowCompanyName(boolean showCompanyName) {
 		this.showCompanyName = showCompanyName;
+	}
+
+	public boolean isShowActive() {
+		return showActive;
+	}
+
+	public void setShowActive(boolean showActive) {
+		this.showActive = showActive;
+	}
+
+	public boolean isShowCompanyStatus() {
+		return showCompanyStatus;
+	}
+
+	public void setShowCompanyStatus(boolean showCompanyStatus) {
+		this.showCompanyStatus = showCompanyStatus;
+	}
+	
+	
+
+	public boolean isShowCompanyType() {
+		return showCompanyType;
+	}
+
+	public void setShowCompanyType(boolean showCompanyType) {
+		this.showCompanyType = showCompanyType;
 	}
 
 	public String getStartsWith() {
@@ -146,12 +177,23 @@ public class ReportFilterUser extends ReportFilter {
 		this.active = active;
 	}
 
-	public boolean isShowActive() {
-		return showActive;
+	public AccountStatus[] getCompanyStatus() {
+		return companyStatus;
 	}
 
-	public void setShowActive(boolean showActive) {
-		this.showActive = showActive;
+	public void setCompanyStatus(AccountStatus[] companyStatus) {
+		this.companyStatus = companyStatus;
+	}
+	
+	public AccountStatus[] getCompanyStatusList() {
+		return AccountStatus.values();
 	}
 
+	public String[] getCompanyType() {
+		return companyType;
+	}
+
+	public void setCompanyType(String[] companyType) {
+		this.companyType = companyType;
+	}
 }
