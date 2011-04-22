@@ -107,7 +107,6 @@ public class EntityFactory {
 		auditCategory.setId(categoryID);
 		auditCategory.setAuditType(auditType);
 		auditType.getCategories().add(auditCategory);
-		auditCategory.setName(name == null ? "Test Category " + categoryID : name);
 		auditCategory.setNumber(auditType.getCategories().get(auditType.getCategories().size() - 1).getNumber() + 1);
 		return auditCategory;
 	}

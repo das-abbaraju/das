@@ -43,7 +43,7 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 
 	private AuditType auditType;
 	private AuditCategory parent;
-	private String name;
+	private TranslatableString name;
 	private int number;
 	private int numRequired;
 	private int numQuestions;
@@ -113,13 +113,12 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 		return auditType;
 	}
 
-	//@Deprecated
-	@Column(name = "name", nullable = false)
-	public String getName() {
+	@Transient
+	public TranslatableString getName() {
 		return this.name;
 	}
 
-	public void setName(String name) {
+	public void setName(TranslatableString name) {
 		this.name = name;
 	}
 
@@ -324,22 +323,12 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 		return getNumber() + " " + name;
 	}
 
-	@Override
 	@Transient
-	public AuditCategory clone() {
-		AuditCategory clone = new AuditCategory();
-
-		clone.auditType = this.getAuditType();
-		clone.createdBy = this.getCreatedBy();
-		clone.creationDate = this.getCreationDate();
-		clone.helpText = this.getHelpText();
-		clone.id = this.getId();
-		clone.name = this.getName();
-		clone.number = this.getNumber();
-		clone.numQuestions = this.getNumQuestions();
-		clone.numRequired = this.getNumRequired();
-		clone.parent = this.getParent();
-
-		return clone;
+	public boolean isContainsLimitsQuestion(){
+		for(AuditQuestion aq : getQuestions()){
+			if(aq.getQuestionType().equalsIgnoreCase("Limits"))
+				return true;
+		}
+		return false;
 	}
 }

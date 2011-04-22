@@ -177,7 +177,7 @@ function showRules() {
 		<s:iterator value="auditType.topCategories">
 		    <li id="item_<s:property value="id"/>" title="Drag and drop to change order">
 		    	<s:property value="number"/>.
-		    	<a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="name.trim().length() == 0 ? 'empty' : name"/></a>
+		    	<a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="name.toString().trim().length() == 0 ? 'empty' : name"/></a>
 				<a class="preview" href="AuditCatPreview.action?categoryID=<s:property value="id" />&button=PreviewCategory" title="Preview Category"></a>
 		    </li>
 		</s:iterator>

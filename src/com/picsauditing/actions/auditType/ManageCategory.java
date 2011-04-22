@@ -59,7 +59,7 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 		if (category != null) {
 			List<AuditCategory> ancestors = null;
 
-			if (category.getName() == null || category.getName().length() == 0) {
+			if (category.getName() == null || category.getName().toString().length() == 0) {
 				this.addActionError("Category name is required");
 				return false;
 			}

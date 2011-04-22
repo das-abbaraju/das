@@ -355,7 +355,7 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 
 		public ListItem(AuditCategory c) {
 			this.id = c.getId();
-			this.name = c.getName();
+			this.name = c.getName().toString();
 			this.type = CATEGORY;
 		}
 

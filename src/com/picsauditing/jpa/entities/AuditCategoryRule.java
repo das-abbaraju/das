@@ -33,7 +33,7 @@ public class AuditCategoryRule extends AuditRule implements AuditRuleTable {
 	public String getAuditCategoryLabel() {
 		if (auditCategory == null)
 			return "*";
-		return auditCategory.getName();
+		return auditCategory.getName().toString();
 	}
 
 	public Boolean getRootCategory() {

@@ -21,6 +21,7 @@ import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.TranslatableString;
 
 @SuppressWarnings("serial")
 public class ContractorSimulator extends PicsActionSupport {
@@ -133,7 +134,9 @@ public class ContractorSimulator extends PicsActionSupport {
 
 		if (auditType.getId() == AuditType.SHELL_COMPETENCY_REVIEW) {
 			AuditCategory category = new AuditCategory();
-			category.setName("Previewing Categories is not supported for this audit");
+			TranslatableString t = new TranslatableString();
+			t.putTranslation("en", "Previewing Categories is not supported for this audit", false);
+			category.setName(t);
 			categories.add(category);
 			return;
 		}

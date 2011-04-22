@@ -118,7 +118,7 @@ function showRules() {
 			<s:iterator value="category.subCategories">
 				<li id="item_<s:property value="id"/>" title="Drag and drop to change order">
 					<s:property value="number" />.
-			    	<a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="name.trim().length() == 0 ? 'empty' : name"/></a>
+			    	<a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="name.toString().trim().length() == 0 ? 'empty' : name"/></a>
 				</li>
 			</s:iterator>
 		</ul>
