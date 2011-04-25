@@ -171,13 +171,16 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			}
 
 			employee.setAuditColumns(permissions);
+			boolean existing = employee.getId() > 0;
 
 			// employee.setNeedsIndexing(true);
 			employee = (Employee) employeeDAO.save(employee);
-			createNewNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
+			if (!existing)
+				createNewNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
 			indexer.runSingle(employee, "employee");
 
-			redirect("ManageEmployees.action?employee.id=" + employee.getId() + ("Continue".equals(button) ? "&selectRolesSites=true" : ""));
+			redirect("ManageEmployees.action?employee.id=" + employee.getId()
+					+ ("Continue".equals(button) ? "&selectRolesSites=true" : ""));
 		}
 
 		if ("Delete".equals(button)) {
@@ -374,11 +377,11 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public void setChildID(int childID) {
 		this.childID = childID;
 	}
-	
+
 	public boolean isSelectRolesSites() {
 		return selectRolesSites;
 	}
-	
+
 	public void setSelectRolesSites(boolean selectRolesSites) {
 		this.selectRolesSites = selectRolesSites;
 	}
@@ -614,6 +617,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		note.setNoteCategory(noteCategory);
 		note.setCanContractorView(true);
 		note.setViewableById(Account.EVERYONE);
+		note.setPriority(priority);
 		getNoteDao().save(note);
 	}
 
