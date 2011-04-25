@@ -76,6 +76,10 @@ function showAuditUpload(auditID, fileID, desc, question) {
 							<s:if test="comment.length() > 0">
 								<span class="redMain"><b><s:text name="Audit.message.SafetyProfessionalComment" />: </b><s:property value="comment" escape="false"/></span>
 							</s:if>
+							<s:if test="!question.helpText.empty">
+								<br />
+								<s:property value="question.helpText" escape="false" />
+							</s:if>
 							<s:if test="permissions.auditor">
 							<br/>
 								<a href="Audit.action?auditID=<s:property value="#data.audit.id"/>#categoryID=<s:property value="#data.question.category.id"/>&onlyReqs=true&mode=Edit"><s:text name="Audit.button.CloseRequirement" /></a>									
