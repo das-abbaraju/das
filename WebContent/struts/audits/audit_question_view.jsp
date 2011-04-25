@@ -1,5 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<script type="text/javascript">
+$(function() {
+	$('#node_<s:property value="#q.id"/> .cluetip').cluetip({
+		arrows: true,
+		cluetipClass: 'jtip',
+		local: true,
+		clickThrough: false,
+		activation: 'click',
+		sticky: true,
+		showTitle: false,
+		closeText: "<img src='images/cross.png' width='16' height='16'>"
+	});
+});
+</script>
 <s:set name="questionStillRequired" value="false" />
 <s:if test="(#a == null || #a.answer == null || #a.answer.length() < 1)">
 	<s:if test="#q.required">
@@ -26,7 +40,17 @@
 </s:if>
 <span class="question<s:if test="questionStillRequired"> required</s:if>">
 	<a name="q<s:property value="#q.id"/>"></a>
-	<span class="questionNumber"><s:property value="#q.expandedNumber"/></span>
+	<span class="questionNumber"><s:property value="#q.expandedNumber"/>
+		<s:if test="!#q.helpText.empty">
+			<br />
+			<a class="cluetip helpBig" rel="#cluetip_<s:property value="#q.id"/>" title="Additional Information"></a>
+			<div id="cluetip_<s:property value="#q.id"/>" class="cluetipBox">
+				<span title="<s:property value="#q.name"/>">
+					<s:property value="#q.helpText" escape="false" />
+				</span>
+			</div>
+		</s:if>
+	</span>
 	
 	<s:property value="#q.name" escape="false"/>
 	<br />
