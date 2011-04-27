@@ -567,7 +567,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			compare.set(Calendar.SECOND, 0);
 
 			cal.set(Calendar.ZONE_OFFSET, compare.get(Calendar.ZONE_OFFSET));
-			return compare.getTime().after(cal.getTime()) && DateBean.getDateDifference(compare.getTime()) < 9;
+			return compare.getTime().after(cal.getTime()) && DateBean.getDateDifference(compare.getTime()) < 14;
 		}
 
 		return false;
