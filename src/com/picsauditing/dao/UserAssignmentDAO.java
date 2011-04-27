@@ -76,7 +76,8 @@ public class UserAssignmentDAO extends PicsDAO {
 	}
 
 	public List<UserAssignment> findList(ContractorAccount contractor, UserAssignmentType type, AuditType auditType) {
-		return findList(contractor.getState().getIsoCode(), contractor.getCountry().getIsoCode(), contractor.getZip(),
+		return findList(contractor.getState() != null ? contractor.getState().getIsoCode() : null,
+				contractor.getCountry() != null ? contractor.getCountry().getIsoCode() : null, contractor.getZip(),
 				contractor.getId(), type, auditType);
 	}
 
