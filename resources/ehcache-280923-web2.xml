@@ -4,7 +4,7 @@
 	<diskStore path="java.io.tmpdir" />
 
 	<!-- For changeable application objects, wait 4 hours -->
-	<cache name="daily" maxElementsInMemory="500" eternal="false"
+	<cache name="daily" maxElementsInMemory="2000" eternal="false"
 		timeToLiveSeconds="14400" overflowToDisk="false">
 		<cacheEventListenerFactory
 			class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
