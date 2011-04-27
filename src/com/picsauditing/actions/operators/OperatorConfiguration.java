@@ -152,11 +152,11 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				Collections.sort(auditType.getCategories(), new Comparator<AuditCategory>() {
 					@Override
 					public int compare(AuditCategory o1, AuditCategory o2) {
-						if (o1.getName().equals("Policy Information") || o1.getName().equals("Policy Limits")) {
-							if (o2.getName().equals("Policy Information") || o2.getName().equals("Policy Limits"))
+						if (o1.isPolicyInformationCategory() || o1.isPolicyLimitsCategory()) {
+							if (o2.isPolicyInformationCategory() || o2.isPolicyLimitsCategory())
 								return o1.getName().toString().compareTo(o2.getName().toString());
 							return -1;
-						} else if (o2.getName().equals("Policy Information") || o2.getName().equals("Policy Limits"))
+						} else if (o2.isPolicyInformationCategory() || o2.isPolicyLimitsCategory())
 							return 1;
 						return o1.getName().toString().compareTo(o2.getName().toString());
 					}

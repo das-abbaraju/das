@@ -322,4 +322,14 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 	public String toString() {
 		return getNumber() + " " + name;
 	}
+	
+	@Transient
+	public boolean isPolicyLimitsCategory(){
+		return "limits".equals(this.getUniqueCode());
+	}
+
+	@Transient
+	public boolean isPolicyInformationCategory(){
+		return "policyInformation".equals(this.getUniqueCode());
+	}
 }

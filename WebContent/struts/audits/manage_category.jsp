@@ -74,7 +74,10 @@ function showRules() {
 					<s:else>NEW</s:else>
 			</li>
 			<li><label>Category Name:</label>
-				<s:textfield name="category.name" size="30" />
+				<s:textfield name="category.name" />
+			</li>
+			<li><label>Unique Code:</label>
+				<s:textfield name="category.uniqueCode" />
 			</li>
 			<li><label># of Questions:</label>
 				<s:property value="category.numQuestions"/>

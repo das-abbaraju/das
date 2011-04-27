@@ -12,5 +12,23 @@ insert into app_translation
 	)
 select null, concat('AuditCategory.',ac.id,'.name'), 'en', ac.name, 20952, 20952, now(), now(), null from audit_category ac
 left join app_translation t on concat('AuditCategory.',ac.id,'.name') = t.msgKey
-where t.id is NULL;
+where t.id is NULL and ac.name not in ('Policy Limits','Policy Information');
+
+update audit_category ac set ac.uniqueCode = 'limits' where ac.name = 'Policy Limits';
+update audit_category ac set ac.uniqueCode = 'policyInformation' where ac.name = 'Policy Information';
+
+insert into app_translation 
+	(id, 
+	msgKey, 
+	locale, 
+	msgValue, 
+	createdBy, 
+	updatedBy, 
+	creationDate, 
+	updateDate, 
+	lastUsed
+	)
+values
+(NULL, 'AuditCategory.limits.name', 'en', 'Policy Limits', 20952, 20952, NOW(), NOW(), NULL),
+(NULL, 'AuditCategory.policyInformation.name', 'en', 'Policy Information', 20952, 20952, NOW(), NOW(), NULL);
 --

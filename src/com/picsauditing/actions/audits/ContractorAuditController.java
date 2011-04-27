@@ -305,7 +305,7 @@ public class ContractorAuditController extends AuditActionSupport {
 				&& conAudit.getOperatorsVisible().get(0).hasCaop(permissions.getAccountId()))
 			return true;
 
-		if (category.getName().equals("Policy Information") || category.getName().equals("Policy Limits")) {
+		if (category.isPolicyInformationCategory() || category.isPolicyLimitsCategory()) {
 			if (conAudit.hasCaoStatusAfter(AuditStatus.Pending) && !permissions.isAdmin())
 				return false;
 		}

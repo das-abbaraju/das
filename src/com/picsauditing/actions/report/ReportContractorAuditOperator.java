@@ -150,7 +150,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 				// add the answers, keyed by auditid
 				for (AuditData answer : answers) {
 					String uniqueCode = answer.getQuestion().getUniqueCode();
-					if (answer.getQuestion().getCategory().getName().equals("Policy Limits"))
+					if (answer.getQuestion().getCategory().isPolicyLimitsCategory())
 						uniqueCode = "Limits";
 
 					if (answer.getQuestion().getQuestionType().equals("AMBest")) {
