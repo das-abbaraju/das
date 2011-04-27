@@ -54,7 +54,8 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		sql.addField("cao.status auditStatus");
 		sql.addField("cao.statusChangedDate");
 		sql.addField("caoAccount.name caoAccountName");
-		sql.addWhere("a.status IN ('Active'" + (permissions.getAccountStatus().isDemo() ? ",'Demo'" : "") + ")");
+		sql.addWhere("a.status IN ('Active'" + (permissions.getAccountStatus().isDemo() ? ",'Demo'" : "")
+				+ ")");
 
 		if (permissions.isOperatorCorporate()) {
 			String opIDs = permissions.getAccountIdString();
@@ -91,15 +92,11 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		}
 
 		if (filterOn(f.getPercentComplete1())) {
-			report
-					.addFilter(new SelectFilter("percentComplete1", "cao.percentComplete >= '?'", f
-							.getPercentComplete1()));
+			report.addFilter(new SelectFilter("percentComplete1", "cao.percentComplete >= '?'", f.getPercentComplete1()));
 		}
 
 		if (filterOn(f.getPercentComplete2())) {
-			report
-					.addFilter(new SelectFilter("percentComplete2", "cao.percentComplete < '?'", f
-							.getPercentComplete2()));
+			report.addFilter(new SelectFilter("percentComplete2", "cao.percentComplete < '?'", f.getPercentComplete2()));
 		}
 
 		if (getFilter().getAmBestRating() > 0 || getFilter().getAmBestClass() > 0) {
@@ -153,7 +150,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 				// add the answers, keyed by auditid
 				for (AuditData answer : answers) {
 					String uniqueCode = answer.getQuestion().getUniqueCode();
-					if (answer.getQuestion().getQuestionType().equals("Limits"))
+					if (answer.getQuestion().getCategory().getName().equals("Policy Limits"))
 						uniqueCode = "Limits";
 
 					if (answer.getQuestion().getQuestionType().equals("AMBest")) {

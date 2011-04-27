@@ -322,13 +322,4 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 	public String toString() {
 		return getNumber() + " " + name;
 	}
-
-	@Transient
-	public boolean isContainsLimitsQuestion(){
-		for(AuditQuestion aq : getQuestions()){
-			if(aq.getQuestionType().equalsIgnoreCase("Limits"))
-				return true;
-		}
-		return false;
-	}
 }
