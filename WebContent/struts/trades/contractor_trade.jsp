@@ -15,7 +15,7 @@ a.trade, a.trade:hover, a.trade:active {
 }
 <s:iterator value="{0,1,2,3,4,5,6,7,8,9,10}" var="count">
 .trade-<s:property value="#count"/> {
-	font-size: <s:property value="6 + 6*#count"/>px;
+	font-size: <s:property value="12 + 6*#count"/>px;
 }
 .trade-<s:property value="#count"/>:hover {
 	color: white;
@@ -44,6 +44,7 @@ a.trade, a.trade:hover, a.trade:active {
 
 </style>
 <script>
+var conID = '<s:property value="id"/>';
 $(function() {
 	var tree = $('#trade-nav').jstree({
 		"themes": {
@@ -68,19 +69,69 @@ $(function() {
 		"plugins": ['themes', "json_data", "search"]
 	});
 	
-	$('#trade-cloud').delegate('a.trade', 'click', function(e) {
+	function loadHierarchy() {
+		$('#trade-hierarchy').jstree({
+			"themes": {
+				theme: "classic"	
+			},
+			"json_data": {
+				"ajax": {
+					"url": 'TradeTaxonomy!hierarchyJson.action',
+					"dataType": "json",
+					"success": function(json) {
+						return json.result;
+					},
+					"data": function(node) {
+						return {
+							trade: $('#trade-form [name=trade.trade]').val()
+						};
+					}
+				}
+			},
+			"plugins": ['themes', "json_data"]
+		});
+	}
+	
+	$('body').delegate('.jstree a', 'click', function(e) {
 		e.preventDefault();
-		$('#trade-view').load($(this).attr('href'))
+		var data = { contractor: conID, "trade.trade": $(this).parent().attr('id') };
+		$('#trade-view').load('ContractorTrades!tradeAjax.action', data, loadHierarchy);
 	});
 	
-	$('#suggest').submit(function (e) {
+	$('#trade-view').delegate('#trade-cloud a.trade', 'click', function(e) {
+		e.preventDefault();
+		$('#trade-view').load($(this).attr('href'), loadHierarchy);
+	});
+	
+	$('#suggest').submit(function(e) {
 		e.preventDefault();
 	});
 	
 	$('input.search').change(function(e) {
 		tree.jstree('close_all').jstree('refresh');
 	});
-	
+	$('#trade-view').delegate('#trade-form', 'submit', function(e) {
+		e.preventDefault();
+		console.log($(this).serialize());
+	}).delegate('#trade-form .save', 'click', function(e) {
+		$.post('ContractorTrades!saveTradeAjax.action',
+			$('#trade-form').serialize(),
+			function(html, status, xhr) {
+				$('#trade-view').html(html);
+				loadHierarchy();
+			}
+		);
+	}).delegate('#trade-form .remove', 'click', function(e) {
+		if (confirm("Are you sure you want to remove this trade?")) {
+			$.post('ContractorTrades!removeTradeAjax.action',
+				$('#trade-form').serialize(),
+				function(html, status, xhr) {
+					$('#trade-view').html(html);
+					loadHierarchy();
+				}
+			);
+		}
+	});
 });
 </script>
 </head>
@@ -99,13 +150,13 @@ $(function() {
 		</div>
 		<div id="trade-nav"></div>
 	</td>
-	<td>
+	<td id="trade-view">
 		<div id="trade-cloud">
 			<s:iterator value="contractor.trades" var="trade" status="stat">
-				<a href="ContractorTrades!tradeAjax.action?trade=<s:property value="#trade.id"/>" class="trade <s:property value="tradeCssMap.get(#trade)"/>"><s:property value="#trade.trade.name"/></a>
+				<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" class="trade <s:property value="tradeCssMap.get(#trade)"/>"><s:property value="#trade.trade.name"/></a>
 			</s:iterator>
 		</div>
-		<div id="trade-view"></div>
+		<div></div>
 	</td>
 	</tr>
 </table>

@@ -1,8 +1,12 @@
 package com.picsauditing.actions.trades;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -15,6 +19,7 @@ import com.picsauditing.util.Tree;
 @SuppressWarnings("serial")
 public class ContractorTradeAction extends ContractorActionSupport {
 
+	@Autowired
 	private TradeDAO tradeDAO;
 
 	private ContractorTrade trade;
@@ -26,11 +31,51 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	}
 
 	public String tradeAjax() {
+		if (trade.getId() == 0 && trade.getTrade() != null) {
+			for (ContractorTrade t : contractor.getTrades()) {
+				if (trade.getTrade().equals(t.getTrade())) {
+					trade = t;
+					break;
+				}
+			}
+		}
 		return "trade";
 	}
 
-	public void setTradeDAO(TradeDAO tradeDAO) {
-		this.tradeDAO = tradeDAO;
+	public String saveTradeAjax() {
+		List<Trade> ancestors = new ArrayList<Trade>();
+		Trade parent = trade.getTrade();
+		while (parent != null) {
+			ancestors.add(parent);
+			parent = parent.getParent();
+		}
+
+		/*
+		 * Check if the contractor already has a trade in this tree. If there is
+		 * one, it needs to be changed
+		 */
+		for (ContractorTrade conTrade : contractor.getTrades()) {
+			if (ancestors.contains(conTrade.getTrade())) {
+				conTrade.setTrade(trade.getTrade());
+				conTrade.setActivityPercent(trade.getActivityPercent());
+				conTrade.setManufacture(trade.isManufacture());
+				conTrade.setSelfPerformed(trade.isSelfPerformed());
+
+				trade = conTrade;
+				break;
+			}
+		}
+
+		trade.setContractor(contractor);
+		trade.setAuditColumns(permissions);
+		tradeDAO.save(trade);
+
+		return "trade";
+	}
+
+	public String removeTradeAjax() {
+
+		return "trade";
 	}
 
 	public ContractorTrade getTrade() {

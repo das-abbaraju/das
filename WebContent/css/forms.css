@@ -29,7 +29,7 @@ fieldset.form h2, form.form h2 {
 	height:expression(this.height<25?25:true);
 }
 
-fieldset.form ol, form.form ol{
+fieldset.form ol, form.form ol {
 	padding-left: 5px;
 	list-style: none;
 }
@@ -82,7 +82,7 @@ fieldset.bottom {
 	width: auto;
 }
 
-fieldset.form label, form.form label {
+fieldset.form label, form.form label, ol.form-style label {
 	float: none;
 	width: 100%;
 	display: block;

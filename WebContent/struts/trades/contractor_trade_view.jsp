@@ -2,7 +2,22 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
+<div id="trade-cloud">
+	<s:iterator value="contractor.trades" var="trade" status="stat">
+		<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" class="trade <s:property value="tradeCssMap.get(#trade)"/>"><s:property value="#trade.trade.name"/></a>
+	</s:iterator>
+</div>
+
 <h3><s:property value="trade.trade.name"/></h3>
+
+<s:form id="trade-form">
+<s:hidden name="contractor"/>
+<s:hidden name="trade"/>
+<s:hidden name="trade.trade"/>
+
+<s:hidden name="decorator" value="none"/>
+
+<s:include value="../actionMessages.jsp"/>
 
 <div class="clearfix">
 	<s:if test="trade.trade.productI">
@@ -20,7 +35,7 @@
 
 <div>
 	<s:text name="ContractorTrade.businessRepresentation">
-		<s:param><s:select name="trade.activityPercent" list="activityPercentMap" theme="translate"/></s:param>
+		<s:param><s:select name="trade.activityPercent" list="activityPercentMap" emptyOption="true" theme="translate"/></s:param>
 	</s:text>
 </div>
 
@@ -36,30 +51,6 @@
 			<label><s:text name="Trade"/></label>
 			<div class="hierarchy">
 				<div id="trade-hierarchy"></div>
-				<script type="text/javascript">
-					$(function() {
-						$('#trade-hierarchy').jstree({
-							"themes": {
-								theme: "classic"	
-							},
-							"json_data": {
-								"ajax": {
-									"url": 'TradeTaxonomy!hierarchyJson.action',
-									"dataType": "json",
-									"success": function(json) {
-										return json.result;
-									},
-									"data": function(node) {
-										return {
-											trade: '<s:property value="trade.trade.id"/>'
-										};
-									}
-								}
-							},
-							"plugins": ['themes', "json_data"]
-						});
-					});
-				</script>
 			</div>
 		</li>
 		<s:if test="!isStringEmpty(trade.trade.help.toString())">
@@ -80,3 +71,14 @@
 		</li>
 	</ol>
 </div>
+
+<div>
+	<s:if test="trade.id == 0">
+		<s:submit method="saveTradeAjax" value="Add" cssClass="save"/>
+	</s:if>
+	<s:else>
+		<s:submit method="saveTradeAjax" value="Save" cssClass="save"/>
+		<s:submit method="removeTradeAjax" value="Remove" cssClass="remove"/>
+	</s:else>
+</div>
+</s:form>
