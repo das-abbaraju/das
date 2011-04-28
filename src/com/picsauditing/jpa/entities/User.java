@@ -105,6 +105,43 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		this.id = id;
 	}
 
+	public User(User u, boolean copyAll) {
+		if (copyAll) {
+			this.id = u.id;
+			this.createdBy = u.createdBy;
+			this.creationDate = u.creationDate;
+			this.updatedBy = u.updatedBy;
+			this.updateDate = u.updateDate;
+		}
+		
+		this.username = u.username;
+		this.isGroup = u.isGroup;
+		this.email = u.email;
+		this.emailConfirmedDate = u.emailConfirmedDate;
+		this.name = u.name;
+		this.isActive = u.isActive;
+		this.lastLogin = u.lastLogin;
+		this.account = u.account;
+		this.phone = u.phone;
+		this.phoneIndex = u.phoneIndex;
+		this.fax = u.fax;
+		this.password = u.password;
+		this.passwordChanged = u.passwordChanged;
+		this.resetHash = u.resetHash;
+		this.passwordHistory = u.passwordHistory;
+		this.forcePasswordReset = u.forcePasswordReset;
+		this.failedAttempts = u.failedAttempts;
+		this.lockUntil = u.lockUntil;
+		this.timezone = u.timezone;
+		this.locale = u.locale;
+		this.groups = u.groups;
+		this.members = u.members;
+		this.ownedPermissions = u.ownedPermissions;
+		this.switchTos = u.switchTos;
+		this.switchFroms = u.switchFroms;
+		this.subscriptions = u.subscriptions;
+	}
+
 	@Column(length = 100, nullable = false, unique = true)
 	public String getUsername() {
 		return username;

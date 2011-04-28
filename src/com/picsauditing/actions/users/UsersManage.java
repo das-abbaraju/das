@@ -495,15 +495,14 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			return (getActionErrors().size() == 0);
 
 		// Users only after this point
-		User temp = new User();
-		copyTo(user, temp);
+		User temp = new User(user, true);
 		userDAO.refresh(user);
 
 		boolean hasduplicate = userDAO.duplicateUsername(temp.getUsername().trim(), temp.getId());
 		if (hasduplicate)
 			addActionError("This username is NOT available. Please choose a different one.");
 
-		copyTo(temp, user);
+		user = new User(temp, true);
 
 		String result = Strings.validUserName(user.getUsername().trim());
 		if (!result.equals("valid"))
@@ -842,22 +841,6 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			return user.getMembers();
 
 		return null;
-	}
-
-	private void copyTo(User u1, User u2) {
-		u2.setAccount(u1.getAccount());
-		u2.setEmail(u1.getEmail());
-		u2.setFax(u1.getFax());
-		u2.setId(u1.getId());
-		u2.setIsActive(u1.getIsActive());
-		u2.setIsGroup(u1.getIsGroup());
-		u2.setLocale(u1.getLocale());
-		u2.setName(u1.getName());
-		u2.setOwnedPermissions(u1.getOwnedPermissions());
-		u2.setPhone(u1.getPhone());
-		u2.setSubscriptions(u1.getSubscriptions());
-		u2.setTimezone(u1.getTimezone());
-		u2.setUsername(u1.getUsername());
 	}
 
 	public boolean isNewUser() {
