@@ -39,15 +39,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 	private List<ContractorAudit> contractorNonExpiredAudits = null;
 	protected ContractorAccountDAO accountDao;
 	protected ContractorAuditDAO auditDao;
-	
+
 	private CertificateDAO certificateDAO;
 	private OperatorAccountDAO operatorDAO;
-	
+
 	private List<ContractorOperator> operators;
 	protected boolean limitedView = false;
 	protected List<ContractorOperator> activeOperators;
 	protected Map<ContractorAudit, AuditStatus> contractorAuditWithStatuses = null;
-	
 
 	protected List<Certificate> certificates = null;
 
@@ -95,6 +94,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public ContractorAccount getContractor() {
 		return contractor;
+	}
+
+	public void setContractor(ContractorAccount contractor) {
+		this.contractor = contractor;
 	}
 
 	protected void resetActiveAudits() {
@@ -180,7 +183,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			}
 			if (count == 1) {
 				subMenu = subMenu.getChildren().get(0);
-			} 
+			}
 			menu.add(subMenu);
 		}
 
@@ -229,8 +232,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 					iter.remove();
 				}
 			}// <a
-			// href="ConInsureGUARD.action?id=<s:property value="id"/>">Manage
-			// Certificates</a>
+				// href="ConInsureGUARD.action?id=<s:property value="id"/>">Manage
+				// Certificates</a>
 			subMenu.addChild("Manage Certificates", "ConInsureGUARD.action?id=" + contractor.getId());
 
 			if (permissions.hasPermission(OpPerms.AuditVerification))
@@ -409,9 +412,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	/**
 	 * 
-	 * @return
-	 * a list of the certificates, if the user is an operator/corporate then this does the
-	 * appropriate checking to remove the certs that they shouldn't be able to see 
+	 * @return a list of the certificates, if the user is an operator/corporate
+	 *         then this does the appropriate checking to remove the certs that
+	 *         they shouldn't be able to see
 	 */
 	@SuppressWarnings("deprecation")
 	public List<Certificate> getCertificates() {
