@@ -125,8 +125,8 @@ public class FlagDataCalculator {
 			if (!worksForOperator || con.isAcceptsBids()) {
 				// This is a check for if the contractor doesn't
 				// work for the operator (Search for new), or is a bid only
-				if (!criteria.getAuditType().isPqf() && !criteria.getAuditType().isAnnualAddendum())
-					// Ignore all audit requirements other than PQF and AU
+				if (!criteria.getAuditType().isPqf())
+					// Ignore all audit requirements other than PQF
 					return null;
 			}
 
