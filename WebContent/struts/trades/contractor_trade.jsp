@@ -13,13 +13,21 @@
 a.trade, a.trade:hover, a.trade:active {
 	text-decoration: none;
 }
-<s:iterator value="{0,1,2,3,4,5,6,7,8,9,10}" var="count">
-.trade-<s:property value="#count"/> {
-	font-size: <s:property value="12 + 6*#count"/>px;
-}
-.trade-<s:property value="#count"/>:hover {
+a.trade:hover {
 	color: white;
 	background-color: black;
+}
+<s:iterator value="{0,1,2,3,4,5,6,7,8,9,10}" var="count">
+.trade-cloud-<s:property value="#count"/> {
+	font-size: <s:property value="12 + 6*#count"/>px;
+}
+</s:iterator>
+
+<s:iterator value="contractor.trades">
+li.trade-<s:property value="trade.id"/> > a {
+	font-weight: bold;
+	color: white;
+	background-color: #012142;
 }
 </s:iterator>
 
@@ -68,39 +76,41 @@ $(function() {
 		},
 		"plugins": ['themes', "json_data", "search"]
 	});
-	
-	function loadHierarchy() {
-		$('#trade-hierarchy').jstree({
-			"themes": {
-				theme: "classic"	
-			},
-			"json_data": {
-				"ajax": {
-					"url": 'TradeTaxonomy!hierarchyJson.action',
-					"dataType": "json",
-					"success": function(json) {
-						return json.result;
-					},
-					"data": function(node) {
-						return {
-							trade: $('#trade-form [name=trade.trade]').val()
-						};
+
+	function loadTrades(url, data) {
+		$('#trade-view').load(url, data, function() {
+			$('#trade-hierarchy').jstree({
+				"themes": {
+					theme: "classic"	
+				},
+				"json_data": {
+					"ajax": {
+						"url": 'TradeTaxonomy!hierarchyJson.action',
+						"dataType": "json",
+						"success": function(json) {
+							return json.result;
+						},
+						"data": function(node) {
+							return {
+								trade: $('#trade-form [name=trade.trade]').val()
+							};
+						}
 					}
-				}
-			},
-			"plugins": ['themes', "json_data"]
+				},
+				"plugins": ['themes', "json_data"]
+			});
 		});
 	}
-	
+
 	$('body').delegate('.jstree a', 'click', function(e) {
 		e.preventDefault();
 		var data = { contractor: conID, "trade.trade": $(this).parent().attr('id') };
-		$('#trade-view').load('ContractorTrades!tradeAjax.action', data, loadHierarchy);
+		loadTrades('ContractorTrades!tradeAjax.action', data);
 	});
 	
-	$('#trade-view').delegate('#trade-cloud a.trade', 'click', function(e) {
+	$('#trade-view').delegate('a.trade', 'click', function(e) {
 		e.preventDefault();
-		$('#trade-view').load($(this).attr('href'), loadHierarchy);
+		loadTrades($(this).attr('href'));
 	});
 	
 	$('#suggest').submit(function(e) {
@@ -110,9 +120,9 @@ $(function() {
 	$('input.search').change(function(e) {
 		tree.jstree('close_all').jstree('refresh');
 	});
+
 	$('#trade-view').delegate('#trade-form', 'submit', function(e) {
 		e.preventDefault();
-		console.log($(this).serialize());
 	}).delegate('#trade-form .save', 'click', function(e) {
 		$.post('ContractorTrades!saveTradeAjax.action',
 			$('#trade-form').serialize(),
@@ -150,13 +160,13 @@ $(function() {
 		</div>
 		<div id="trade-nav"></div>
 	</td>
+	<td width="20px"></td>
 	<td id="trade-view">
 		<div id="trade-cloud">
 			<s:iterator value="contractor.trades" var="trade" status="stat">
 				<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" class="trade <s:property value="tradeCssMap.get(#trade)"/>"><s:property value="#trade.trade.name"/></a>
 			</s:iterator>
 		</div>
-		<div></div>
 	</td>
 	</tr>
 </table>

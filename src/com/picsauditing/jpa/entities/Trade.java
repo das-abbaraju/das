@@ -378,6 +378,7 @@ public class Trade extends BaseTable implements Indexable, Hierarchical<Trade> {
 
 		JSONObject attr = new JSONObject();
 		attr.put("id", id);
+		attr.put("class", "trade-" + id);
 
 		json.put("attr", attr);
 

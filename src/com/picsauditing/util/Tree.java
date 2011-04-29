@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 
+import com.google.common.base.Objects;
 import com.picsauditing.jpa.entities.JSONable;
 
 public class Tree<T extends Hierarchical<T>> implements JSONable {
@@ -52,6 +53,21 @@ public class Tree<T extends Hierarchical<T>> implements JSONable {
 		for (Node<T> data : node.getChildren()) {
 			walk(data, list);
 		}
+	}
+
+	public boolean contains(T data) {
+		return contains(root, data);
+	}
+
+	public boolean contains(Node<T> node, T data) {
+		if (Objects.equal(data, node.getData()))
+			return true;
+		for (Node<T> child : node.getChildren()) {
+			if (contains(child, data))
+				return true;
+		}
+
+		return false;
 	}
 
 	@Override

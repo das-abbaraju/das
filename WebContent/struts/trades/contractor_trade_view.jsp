@@ -10,6 +10,20 @@
 
 <h3><s:property value="trade.trade.name"/></h3>
 
+<s:if test="affectedTrades.size > 0">
+	<div class="info">
+		<s:text name="ContractorTrades.affectedTrades">
+			<s:param>
+				<ul>
+				<s:iterator value="affectedTrades" var="trade">
+					<li><a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" class="trade"><s:property value="#trade.trade.name"/></a></li>
+				</s:iterator>
+				</ul>
+			</s:param>
+		</s:text>
+	</div>
+</s:if>
+
 <s:form id="trade-form">
 <s:hidden name="contractor"/>
 <s:hidden name="trade"/>

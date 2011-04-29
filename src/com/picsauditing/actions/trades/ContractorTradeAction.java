@@ -26,44 +26,34 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	private Tree<Trade> tradeHiererchy;
 	private Map<ContractorTrade, String> tradeCssMap;
 
+	private List<ContractorTrade> affectedTrades = new ArrayList<ContractorTrade>();
+
 	public ContractorTradeAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
 		super(accountDao, auditDao);
 	}
 
 	public String tradeAjax() {
 		if (trade.getId() == 0 && trade.getTrade() != null) {
+
+			/*
+			 * Look for the existing trade in the current contractor's trades
+			 * This will help prevent them from adding duplicates.
+			 */
 			for (ContractorTrade t : contractor.getTrades()) {
 				if (trade.getTrade().equals(t.getTrade())) {
 					trade = t;
 					break;
 				}
 			}
+
+			affectedTrades = findAffectedTrades();
 		}
 		return "trade";
 	}
 
 	public String saveTradeAjax() {
-		List<Trade> ancestors = new ArrayList<Trade>();
-		Trade parent = trade.getTrade();
-		while (parent != null) {
-			ancestors.add(parent);
-			parent = parent.getParent();
-		}
-
-		/*
-		 * Check if the contractor already has a trade in this tree. If there is
-		 * one, it needs to be changed
-		 */
-		for (ContractorTrade conTrade : contractor.getTrades()) {
-			if (ancestors.contains(conTrade.getTrade())) {
-				conTrade.setTrade(trade.getTrade());
-				conTrade.setActivityPercent(trade.getActivityPercent());
-				conTrade.setManufacture(trade.isManufacture());
-				conTrade.setSelfPerformed(trade.isSelfPerformed());
-
-				trade = conTrade;
-				break;
-			}
+		for (ContractorTrade t : findAffectedTrades()) {
+			tradeDAO.remove(t);
 		}
 
 		trade.setContractor(contractor);
@@ -74,8 +64,22 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	}
 
 	public String removeTradeAjax() {
+		tradeDAO.remove(trade);
 
 		return "trade";
+	}
+
+	public List<ContractorTrade> findAffectedTrades() {
+
+		List<ContractorTrade> trades = new ArrayList<ContractorTrade>();
+		Tree<Trade> hierarchy = tradeDAO.findHierarchyByTrade(trade.getTrade().getId());
+		for (ContractorTrade conTrade : contractor.getTrades()) {
+			if (!trade.getTrade().equals(conTrade.getTrade()) && hierarchy.contains(conTrade.getTrade())) {
+				trades.add(conTrade);
+			}
+		}
+
+		return trades;
 	}
 
 	public ContractorTrade getTrade() {
@@ -94,6 +98,10 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		this.tradeHiererchy = tradeHiererchy;
 	}
 
+	public List<ContractorTrade> getAffectedTrades() {
+		return affectedTrades;
+	}
+
 	public Map<ContractorTrade, String> getTradeCssMap() {
 		if (tradeCssMap == null) {
 			tradeCssMap = new HashMap<ContractorTrade, String>();
@@ -104,7 +112,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 			for (ContractorTrade trade : contractor.getTrades()) {
 				int percentage = (int) (((float) trade.getActivityPercent() / total) * 100);
-				tradeCssMap.put(trade, "trade-" + percentage / 10);
+				tradeCssMap.put(trade, "trade-cloud-" + percentage / 10);
 			}
 		}
 
