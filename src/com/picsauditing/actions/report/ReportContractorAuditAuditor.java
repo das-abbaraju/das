@@ -24,8 +24,7 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 	public void buildQuery() {
 		super.buildQuery();
 
-		sql.addWhere("(ca.auditorID=" + permissions.getUserId() + " OR ca.closingAuditorID=" + permissions.getUserId()
-				+ ")");
+		sql.addWhere("ca.auditorID=" + permissions.getUserId());
 		sql.addWhere("a.status IN ('Active','Demo')");
 		if (getFilter().isNotRenewingContractors())
 			sql.addWhere("c.renew = 0");
