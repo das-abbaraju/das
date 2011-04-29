@@ -13,7 +13,7 @@
 a.trade, a.trade:hover, a.trade:active {
 	text-decoration: none;
 }
-a.trade:hover {
+#trade-cloud a.trade:hover {
 	color: white;
 	background-color: black;
 }
@@ -124,22 +124,10 @@ $(function() {
 	$('#trade-view').delegate('#trade-form', 'submit', function(e) {
 		e.preventDefault();
 	}).delegate('#trade-form .save', 'click', function(e) {
-		$.post('ContractorTrades!saveTradeAjax.action',
-			$('#trade-form').serialize(),
-			function(html, status, xhr) {
-				$('#trade-view').html(html);
-				loadHierarchy();
-			}
-		);
+		loadTrades('ContractorTrades!saveTradeAjax.action', $('#trade-form').serialize())
 	}).delegate('#trade-form .remove', 'click', function(e) {
 		if (confirm("Are you sure you want to remove this trade?")) {
-			$.post('ContractorTrades!removeTradeAjax.action',
-				$('#trade-form').serialize(),
-				function(html, status, xhr) {
-					$('#trade-view').html(html);
-					loadHierarchy();
-				}
-			);
+			loadTrades('ContractorTrades!removeTradeAjax.action', $('#trade-form').serialize());
 		}
 	});
 });
