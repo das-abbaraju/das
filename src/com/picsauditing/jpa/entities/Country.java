@@ -20,7 +20,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "ref_country")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "daily")
-public class Country implements Serializable {
+public class Country implements Serializable, IsoCode {
 	private static final long serialVersionUID = 6312208192653925848L;
 
 	protected String isoCode;
@@ -112,7 +112,7 @@ public class Country implements Serializable {
 	public void setCsr(User csr) {
 		this.csr = csr;
 	}
-	
+
 	@Transient
 	public boolean isHasStates() {
 		if (isoCode.equals("US"))

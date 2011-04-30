@@ -30,7 +30,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.util.IndexObject;
+import com.picsauditing.search.IndexOverrideType;
+import com.picsauditing.search.IndexValueType;
+import com.picsauditing.search.IndexableField;
+import com.picsauditing.search.IndexableOverride;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -39,7 +42,8 @@ import com.picsauditing.util.log.PicsLogger;
 @Entity
 @Table(name = "users")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class User extends BaseTable implements java.io.Serializable, Comparable<User>, JSONable, Indexable {
+@IndexableOverride(overrides = { @IndexOverrideType(methodName = "getId", weight = 4) })
+public class User extends AbstractIndexableTable implements java.io.Serializable, Comparable<User>, JSONable {
 
 	public static String DEFAULT_AUDITOR = "- Auditor -";
 	public static int SYSTEM = 1;
@@ -113,7 +117,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 			this.updatedBy = u.updatedBy;
 			this.updateDate = u.updateDate;
 		}
-		
+
 		this.username = u.username;
 		this.isGroup = u.isGroup;
 		this.email = u.email;
@@ -143,6 +147,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	}
 
 	@Column(length = 100, nullable = false, unique = true)
+	@IndexableField(type = IndexValueType.EMAILTYPE, weight = 6)
 	public String getUsername() {
 		return username;
 	}
@@ -167,6 +172,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	}
 
 	@Column(length = 100)
+	@IndexableField(type = IndexValueType.EMAILTYPE, weight = 5)
 	public String getEmail() {
 		return email;
 	}
@@ -185,6 +191,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	}
 
 	@Column(length = 255, nullable = false)
+	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
 	public String getName() {
 		return name;
 	}
@@ -334,6 +341,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	}
 
 	@Column(length = 10)
+	@IndexableField(type = IndexValueType.PHONETYPE, weight = 7)
 	public String getPhoneIndex() {
 		return phoneIndex;
 	}
@@ -683,50 +691,6 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 			return "U";
 	}
 
-	@Transient
-	public List<IndexObject> getIndexValues() {
-		List<IndexObject> l = new ArrayList<IndexObject>();
-		String temp = "";
-		// type
-		if (this.isGroup())
-			l.add(new IndexObject("GROUP", 2));
-		else
-			l.add(new IndexObject("USER", 2));
-		// id
-		l.add(new IndexObject(String.valueOf(this.id), 4));
-		// username
-		temp = this.username;
-		if (temp != null && !temp.isEmpty()) {
-			int atIndex = temp.indexOf('@');
-			if (atIndex > 0)
-				l.add(new IndexObject(temp.toUpperCase().substring(0, atIndex).replaceAll("\\W", ""), 6));
-			else
-				l.add(new IndexObject(temp.toUpperCase().replaceAll("\\W", ""), 6));
-		}
-		// email
-		temp = this.email;
-		if (temp != null && !temp.isEmpty()) {
-			String[] sA = temp.toUpperCase().split("@");
-			for (String s : sA) {
-				// strip non word characters out
-				if (s != null && !s.isEmpty())
-					l.add(new IndexObject(s.replaceAll("\\W", ""), 5));
-			}
-		}
-		// name
-		String[] sA1 = this.name.replaceAll("[^a-zA-Z0-9\\s]", "").replaceAll("\\s+", " ").split(" ");
-		for (String s : sA1) {
-			if (s != null && !s.isEmpty())
-				l.add(new IndexObject(s.toUpperCase(), 7));
-		}
-		// phoneIndex
-		temp = this.phoneIndex;
-		if (temp != null && !temp.isEmpty()) {
-			l.add(new IndexObject(temp.replaceAll("\\D", ""), 2));
-		}
-		return l;
-	}
-
 	@Override
 	public boolean isNeedsIndexing() {
 		return needsIndexing;
@@ -739,6 +703,15 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	@Transient
 	public String getReturnType() {
 		return "user";
+	}
+
+	@Transient
+	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 2)
+	public String getType() {
+		if (this.isGroup())
+			return "GROUP";
+		else
+			return "USER";
 	}
 
 	@Transient

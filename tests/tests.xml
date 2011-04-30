@@ -76,6 +76,7 @@
 	<bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO"/>
 	<bean id="StateDAO" class="com.picsauditing.dao.StateDAO"/>
 	<bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO"/>
+	<bean id="TradeDAO" class="com.picsauditing.dao.TradeDAO"/>
 	<bean id="TransactionDAO" class="com.picsauditing.dao.TransactionDAO"/>
 	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO"/>
 	<bean id="UserAssignmentDAO" class="com.picsauditing.dao.UserAssignmentDAO"/>

@@ -14,18 +14,24 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
-import com.picsauditing.util.IndexObject;
+import com.picsauditing.search.IndexOverrideType;
+import com.picsauditing.search.IndexValueType;
+import com.picsauditing.search.IndexableField;
+import com.picsauditing.search.IndexableOverride;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
-public class Employee extends BaseTable implements Indexable {
+@Table(name = "employee")
+@IndexableOverride(overrides = { @IndexOverrideType(methodName = "getId", weight = 4) })
+public class Employee extends AbstractIndexableTable {
 
 	private String firstName;
 	private String lastName;
@@ -54,6 +60,7 @@ public class Employee extends BaseTable implements Indexable {
 	Set<EmployeeQualification> employeeQualifications = new HashSet<EmployeeQualification>();
 	List<AssessmentResult> assessmentResults = new ArrayList<AssessmentResult>();
 
+	@IndexableField(type = IndexValueType.CLEANSTRING, weight = 7)
 	public String getFirstName() {
 		return firstName;
 	}
@@ -62,6 +69,7 @@ public class Employee extends BaseTable implements Indexable {
 		this.firstName = firstName;
 	}
 
+	@IndexableField(type = IndexValueType.CLEANSTRING, weight = 7)
 	public String getLastName() {
 		return lastName;
 	}
@@ -74,14 +82,14 @@ public class Employee extends BaseTable implements Indexable {
 	public String getDisplayName() {
 		return firstName + " " + lastName;
 	}
-	
+
 	/**
 	 * Used for Indexable/Interface
-	 * @return
-	 * 		Returns display name
+	 * 
+	 * @return Returns display name
 	 */
 	@Transient
-	public String getName(){
+	public String getName() {
 		return getDisplayName();
 	}
 
@@ -114,6 +122,7 @@ public class Employee extends BaseTable implements Indexable {
 
 	/**
 	 * PICS Worker Number aka Worker Access Code
+	 * 
 	 * @return
 	 */
 	public String getPicsNumber() {
@@ -158,6 +167,7 @@ public class Employee extends BaseTable implements Indexable {
 		this.location = location;
 	}
 
+	@IndexableField(type = IndexValueType.EMAILTYPE, weight = 5)
 	public String getEmail() {
 		return email;
 	}
@@ -166,6 +176,7 @@ public class Employee extends BaseTable implements Indexable {
 		this.email = email;
 	}
 
+	@IndexableField(type = IndexValueType.PHONETYPE, weight = 2)
 	public String getPhone() {
 		return phone;
 	}
@@ -204,16 +215,16 @@ public class Employee extends BaseTable implements Indexable {
 	public List<EmployeeRole> getEmployeeRoles() {
 		return employeeRoles;
 	}
-	
+
 	public void setEmployeeRoles(List<EmployeeRole> jobRoles) {
 		this.employeeRoles = jobRoles;
 	}
-	
+
 	@OneToMany(mappedBy = "employee")
 	public List<EmployeeCompetency> getEmployeeCompetencies() {
 		return employeeCompetencies;
 	}
-	
+
 	public void setEmployeeCompetencies(List<EmployeeCompetency> employeeCompetencies) {
 		this.employeeCompetencies = employeeCompetencies;
 	}
@@ -319,44 +330,14 @@ public class Employee extends BaseTable implements Indexable {
 	}
 
 	@Transient
-	public String getIndexType() {
-		return "E";
+	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 2)
+	public String getType() {
+		return "EMPLOYEE";
 	}
 
 	@Transient
-	public List<IndexObject> getIndexValues() {
-		List<IndexObject> l = new ArrayList<IndexObject>();
-		String temp = "";
-		// type
-		l.add(new IndexObject("EMPLOYEE", 2));
-		// id
-		l.add(new IndexObject(String.valueOf(this.id), 4));
-		// name
-		temp = this.firstName;
-		if (temp != null && !temp.isEmpty())
-			l.add(new IndexObject(temp.toUpperCase().replaceAll("\\W", ""), 7));
-		temp = this.lastName;
-		if (temp != null && !temp.isEmpty())
-			l.add(new IndexObject(temp.toUpperCase().replaceAll("\\W", ""), 7));
-		// email
-		temp = this.email;
-		if (temp != null && !temp.isEmpty()) {
-			String[] sA = temp.toUpperCase().split("@");
-			for (String s : sA) {
-				if (s != null && !s.isEmpty())
-					l.add(new IndexObject(s.replaceAll("\\W", ""), 5)); // strip
-				// non
-				// word
-				// characters
-				// out
-			}
-		}
-		// phone
-		temp = this.phone;
-		if (temp != null && !temp.isEmpty()) {
-			l.add(new IndexObject(Strings.stripPhoneNumber(temp).replaceAll("\\D", ""), 2));
-		}
-		return l;
+	public String getIndexType() {
+		return "E";
 	}
 
 	@Override

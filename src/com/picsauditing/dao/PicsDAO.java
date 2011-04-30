@@ -9,7 +9,6 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.jpa.entities.Indexable;
 
 @Transactional
 abstract public class PicsDAO {
@@ -112,7 +111,6 @@ abstract public class PicsDAO {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public int deleteData(Class<? extends BaseTable> clazz, String where) {
 		Query query = em.createQuery("DELETE " + clazz.getName() + " t WHERE " + where);
 		return query.executeUpdate();

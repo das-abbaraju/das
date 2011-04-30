@@ -15,6 +15,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.search.IndexValueType;
+import com.picsauditing.search.IndexableField;
 import com.picsauditing.util.Hierarchical;
 import com.picsauditing.util.IndexObject;
 import com.picsauditing.util.Node;
@@ -25,7 +27,7 @@ import com.picsauditing.util.Tree;
 @Entity
 @Table(name = "ref_trade")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class Trade extends BaseTable implements Indexable, Hierarchical<Trade> {
+public class Trade extends AbstractIndexableTable implements Hierarchical<Trade> {
 
 	private Trade parent;
 	private Boolean product;
@@ -235,12 +237,27 @@ public class Trade extends BaseTable implements Indexable, Hierarchical<Trade> {
 		this.children = children;
 	}
 
+	@Override
+	@Transient
+	public List<IndexObject> getIndexValues() {
+		List<IndexObject> indexValues = super.getIndexValues();
+		for (TradeAlternate ta : getAlternates()) {
+			String[] strArray = ta.getName().toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
+			for (String str : strArray) {
+				if (!Strings.isEmpty(str))
+					indexValues.add(new IndexObject(str, 4));
+			}
+		}
+		return indexValues;
+	}
+
 	/**
 	 * The name of this trade that's commonly used to describe it. Does not need
 	 * the parent trade to make sense. Can stand alone in a list and be
 	 * understood.
 	 */
 	@Transient
+	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 8)
 	public TranslatableString getName() {
 		return name;
 	}
@@ -254,6 +271,7 @@ public class Trade extends BaseTable implements Indexable, Hierarchical<Trade> {
 	 * with its parent trades
 	 */
 	@Transient
+	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 6)
 	public TranslatableString getName2() {
 		return name2;
 	}
@@ -279,35 +297,6 @@ public class Trade extends BaseTable implements Indexable, Hierarchical<Trade> {
 	@Transient
 	public String getAutocompleteValue() {
 		return name.toString();
-	}
-
-	@Transient
-	public List<IndexObject> getIndexValues() {
-		List<IndexObject> l = new ArrayList<IndexObject>();
-		// id
-		l.add(new IndexObject(String.valueOf(this.id), 10));
-		// name
-		String[] sA = this.name.toString().toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
-		for (String s : sA) {
-			if (s != null && !s.isEmpty())
-				l.add(new IndexObject(s, 8));
-		}
-		if (!this.name2.getTranslations().isEmpty()) {
-			sA = this.name2.toString().toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
-			for (String s : sA) {
-				if (s != null && !s.isEmpty())
-					l.add(new IndexObject(s, 6));
-			}
-		}
-		// Alternates
-		for (TradeAlternate ta : getAlternates()) {
-			sA = ta.getName().toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
-			for (String s : sA) {
-				if (s != null && !s.isEmpty())
-					l.add(new IndexObject(s, 4));
-			}
-		}
-		return l;
 	}
 
 	@Transient

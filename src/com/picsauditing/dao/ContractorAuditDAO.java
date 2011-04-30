@@ -24,7 +24,7 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
 
 @Transactional
-public class ContractorAuditDAO extends IndexableDAO {
+public class ContractorAuditDAO extends PicsDAO {
 
 	public ContractorAudit save(ContractorAudit o) {
 		if (o.getId() == 0) {

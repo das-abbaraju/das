@@ -3,14 +3,10 @@ package com.picsauditing.util;
 public class IndexObject {
 	public String value;
 	public int weight;
-	
-	public IndexObject(String value, int weight){
+
+	public IndexObject(String value, int weight) {
 		this.value = value;
 		this.weight = weight;
-	}
-
-	public IndexObject() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public String getValue() {

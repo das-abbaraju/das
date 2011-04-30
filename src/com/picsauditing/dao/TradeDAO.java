@@ -8,7 +8,7 @@ import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.util.Tree;
 
 @SuppressWarnings("unchecked")
-public class TradeDAO extends IndexableDAO {
+public class TradeDAO extends PicsDAO {
 
 	public Trade find(int id) {
 		Trade a = em.find(Trade.class, id);

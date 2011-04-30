@@ -31,7 +31,8 @@ import org.hibernate.annotations.Type;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.util.IndexObject;
+import com.picsauditing.search.IndexValueType;
+import com.picsauditing.search.IndexableField;
 import com.picsauditing.util.Luhn;
 import com.picsauditing.util.Strings;
 
@@ -40,7 +41,7 @@ import com.picsauditing.util.Strings;
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class Account extends BaseTable implements Comparable<Account>, JSONable, Indexable {
+public class Account extends AbstractIndexableTable implements Comparable<Account>, JSONable {
 
 	static public int EVERYONE = 1;
 	static public int PRIVATE = 2;
@@ -104,6 +105,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	}
 
 	@Column(name = "name", nullable = false, length = 50)
+	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
 	public String getName() {
 		return this.name;
 	}
@@ -126,6 +128,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	}
 
 	@Column(length = 400)
+	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
 	public String getDbaName() {
 		return dbaName;
 	}
@@ -162,6 +165,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	}
 
 	@Column(length = 35)
+	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 3)
 	public String getCity() {
 		return this.city;
 	}
@@ -172,6 +176,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 
 	@ManyToOne
 	@JoinColumn(name = "country")
+	@IndexableField(type = IndexValueType.ISOTYPE, weight = 3)
 	public Country getCountry() {
 		return country;
 	}
@@ -186,6 +191,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 
 	@ManyToOne
 	@JoinColumn(name = "state")
+	@IndexableField(type = IndexValueType.ISOTYPE, weight = 4)
 	public State getState() {
 		return this.state;
 	}
@@ -195,6 +201,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	}
 
 	@Column(length = 15)
+	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 3)
 	public String getZip() {
 		return this.zip;
 	}
@@ -244,6 +251,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	}
 
 	@Column(length = 25)
+	@IndexableField(type = IndexValueType.PHONETYPE, weight = 2)
 	public String getPhone() {
 		return this.phone;
 	}
@@ -262,6 +270,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	}
 
 	@Column(name = "web_URL", length = 50)
+	@IndexableField(type = IndexValueType.URLTYPE, weight = 4)
 	public String getWebUrl() {
 		return this.webUrl;
 	}
@@ -390,6 +399,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	 * 
 	 * @return
 	 */
+	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 2)
 	public String getType() {
 		return type;
 	}
@@ -685,62 +695,6 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable,
 	@Override
 	public String toString() {
 		return name + "(" + id + ")";
-	}
-
-	@Transient
-	public List<IndexObject> getIndexValues() {
-		List<IndexObject> l = new ArrayList<IndexObject>();
-		// type
-		l.add(new IndexObject(this.type.toUpperCase(), 2));
-		// id
-		l.add(new IndexObject(String.valueOf(this.id), 10));
-		// name
-		String[] sA = this.name.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
-		for (String s : sA) {
-			if (s != null && !s.isEmpty())
-				l.add(new IndexObject(s, 7));
-		}
-		// dba
-		if (this.dbaName != null && !this.dbaName.equals(this.name)) {
-			sA = this.dbaName.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
-			for (String s : sA) {
-				if (s != null && !s.isEmpty())
-					l.add(new IndexObject(s, 7));
-			}
-		}
-		// city
-		if (this.city != null && !this.city.isEmpty()) {
-			l.add(new IndexObject(this.city.toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", ""), 3));
-		}
-		// state
-		// State s = s
-		if (this.state != null && !this.state.isoCode.isEmpty()) {
-			l.add(new IndexObject(this.state.isoCode, 4));
-			if (this.state.getEnglish() != null)
-				l.add(new IndexObject(this.state.getEnglish().toUpperCase(), 4));
-		}
-		// zip
-		if (this.zip != null && !this.zip.isEmpty())
-			l.add(new IndexObject(this.zip, 3));
-		// country
-		if (this.country != null && !this.country.isoCode.isEmpty()) {
-			l.add(new IndexObject(this.country.isoCode, 3));
-			if (this.country.getEnglish() != null)
-				l.add(new IndexObject(this.country.getEnglish().toUpperCase(), 3));
-		}
-		// phone
-		if (this.phone != null && !this.phone.isEmpty()) {
-			String p = Strings.stripPhoneNumber(this.phone);
-			if (p.length() >= 10 && !p.matches("\\W"))
-				l.add(new IndexObject(p, 2));
-		}
-		// email l.add(this.);
-		// web_URL
-		if (this.webUrl != null && !this.webUrl.isEmpty()) {
-			String s = this.webUrl.toUpperCase();
-			l.add(new IndexObject(s.replaceAll("^(HTTP://)(W{3})|^(W{3}.)|\\W", ""), 4));
-		}
-		return l;
 	}
 
 	@Transient

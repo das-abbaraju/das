@@ -15,7 +15,7 @@ import java.util.List;
 
 @Transactional
 @SuppressWarnings("unchecked")
-public class AccountDAO extends IndexableDAO {
+public class AccountDAO extends PicsDAO {
 	public Account save(Account o) {
 		if (o.getId() == 0) {
 			em.persist(o);

@@ -34,6 +34,8 @@ import org.json.simple.JSONObject;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.PicsDAO;
+import com.picsauditing.search.IndexValueType;
+import com.picsauditing.search.IndexableField;
 
 import freemarker.template.utility.StringUtil;
 
@@ -109,6 +111,7 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(nullable = false)
+	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 10)
 	public int getId() {
 		return id;
 	}

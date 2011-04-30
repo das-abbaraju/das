@@ -1757,7 +1757,7 @@
 		</action>
 		
 		<action name="RunIndexer"
-			class="com.picsauditing.actions.Indexer">
+			class="com.picsauditing.util.IndexerNew">
 			<result>/struts/blank.jsp</result>		
 		</action>
 

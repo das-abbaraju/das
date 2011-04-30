@@ -18,7 +18,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "ref_state")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "daily")
-public class State implements Serializable {
+public class State implements Serializable, IsoCode {
 	private static final long serialVersionUID = -7010252482295453919L;
 
 	protected String isoCode;

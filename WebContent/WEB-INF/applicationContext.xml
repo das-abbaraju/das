@@ -103,6 +103,7 @@
 	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
+	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
 	
 	<bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 

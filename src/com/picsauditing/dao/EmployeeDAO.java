@@ -15,7 +15,7 @@ import com.picsauditing.util.Strings;
 
 @Transactional
 @SuppressWarnings("unchecked")
-public class EmployeeDAO extends IndexableDAO{
+public class EmployeeDAO extends PicsDAO {
 
 	public Employee find(int id) {
 		return em.find(Employee.class, id);
@@ -88,28 +88,26 @@ public class EmployeeDAO extends IndexableDAO{
 
 		return query.getResultList();
 	}
-	
-	public List<String> findCommonTitles(){
+
+	public List<String> findCommonTitles() {
 		/*
-		 *  select title, count(*) from employee
-			where accountID in (select id from accounts where status in ('Active','Pending'))
-			group by title
-			having count(*) > 1
-			order by title
+		 * select title, count(*) from employee where accountID in (select id
+		 * from accounts where status in ('Active','Pending')) group by title
+		 * having count(*) > 1 order by title
 		 */
-		Query query = em.createQuery("SELECT e.title FROM Employee e " +
-				"WHERE e.account.id IN (SELECT a.id FROM Account a WHERE a.status IN ('Active', 'Pending'))" +
-				"GROUP BY e.title HAVING COUNT(*) > 1 ORDER BY e.title");
+		Query query = em.createQuery("SELECT e.title FROM Employee e "
+				+ "WHERE e.account.id IN (SELECT a.id FROM Account a WHERE a.status IN ('Active', 'Pending'))"
+				+ "GROUP BY e.title HAVING COUNT(*) > 1 ORDER BY e.title");
 		return query.getResultList();
 	}
-	
+
 	static public String generatePicsNumber(Employee employee) {
 		Random random = new Random(employee.getId() + Calendar.getInstance().getTimeInMillis());
 		long value = random.nextInt(899999999) + 100000000;
 		String value2 = Luhn.addCheckDigit(Long.toString(value));
-		return value2.substring(0,5) + "-" + value2.substring(5,10);
+		return value2.substring(0, 5) + "-" + value2.substring(5, 10);
 	}
-	
+
 	public void setPicsNumber(Employee employee) {
 		employee.setPicsNumber(generatePicsNumber(employee));
 	}

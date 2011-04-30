@@ -36,19 +36,19 @@ public class IndexerController {
 		System.out.println("Starting Indexer");
 		Indexer.setIndexTables(new HashMap<String, IndexableDAO>());
 		if (toRun == null) {
-			Indexer.getIndexTables().put("accounts", accountDAO);
-			Indexer.getIndexTables().put("users", userDAO);
-			Indexer.getIndexTables().put("employee", empDAO);
-			Indexer.getIndexTables().put("trade", tradeDAO);
+//			Indexer.getIndexTables().put("accounts", accountDAO);
+//			Indexer.getIndexTables().put("users", userDAO);
+//			Indexer.getIndexTables().put("employee", empDAO);
+//			Indexer.getIndexTables().put("trade", tradeDAO);
 		} else {
-			if (toRun.equals("accounts"))
-				Indexer.getIndexTables().put("accounts", accountDAO);
-			else if (toRun.equals("users"))
-				Indexer.getIndexTables().put("users", userDAO);
-			else if (toRun.equals("employee"))
-				Indexer.getIndexTables().put("employee", empDAO);
-			else if (toRun.equals("trade"))
-				Indexer.getIndexTables().put("trade", tradeDAO);
+//			if (toRun.equals("accounts"))
+//				Indexer.getIndexTables().put("accounts", accountDAO);
+//			else if (toRun.equals("users"))
+//				Indexer.getIndexTables().put("users", userDAO);
+//			else if (toRun.equals("employee"))
+//				Indexer.getIndexTables().put("employee", empDAO);
+//			else if (toRun.equals("trade"))
+//				Indexer.getIndexTables().put("trade", tradeDAO);
 		}
 		for (Entry<String, IndexableDAO> entry : Indexer.getIndexTables()
 				.entrySet()) {

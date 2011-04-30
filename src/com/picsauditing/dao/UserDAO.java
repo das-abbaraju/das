@@ -13,7 +13,7 @@ import com.picsauditing.jpa.entities.User;
 
 @Transactional
 @SuppressWarnings("unchecked")
-public class UserDAO extends IndexableDAO{
+public class UserDAO extends PicsDAO {
 	public User save(User o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -72,8 +72,7 @@ public class UserDAO extends IndexableDAO{
 		List<User> userList = new ArrayList<User>();
 
 		Query query = em.createQuery("FROM User u " + "WHERE u.isActive = 'Yes' " + "AND u.isGroup = 'No' "
-				+ "AND u IN (SELECT user FROM UserGroup WHERE group.id = " + groupID + ") "
-				+ "ORDER BY u.name");
+				+ "AND u IN (SELECT user FROM UserGroup WHERE group.id = " + groupID + ") " + "ORDER BY u.name");
 		userList.addAll(query.getResultList());
 
 		return userList;
@@ -128,7 +127,7 @@ public class UserDAO extends IndexableDAO{
 		query.setMaxResults(10);
 		return query.getResultList();
 	}
-	
+
 	public List<User> findRecentLoggedOperators() {
 		Query query = em.createQuery("SELECT u FROM User u WHERE u.account.type IN ('Operator','Corporate') "
 				+ "ORDER BY u.lastLogin DESC");
@@ -172,20 +171,20 @@ public class UserDAO extends IndexableDAO{
 		}
 		return false;
 	}
-	
+
 	public List<ContractorWatch> findContractorWatch(int userID) {
 		return findContractorWatchWhere("c.user.id = " + userID);
 	}
-	
+
 	public List<ContractorWatch> findContractorWatchWhere(String where) {
 		if (where == null)
 			where = "";
 		if (where.length() > 0)
 			where = " WHERE " + where;
-		
-		Query query = em.createQuery("SELECT c FROM ContractorWatch c" + where 
+
+		Query query = em.createQuery("SELECT c FROM ContractorWatch c" + where
 				+ " ORDER BY c.user.name, c.contractor.name");
-		
+
 		return query.getResultList();
 	}
 }
