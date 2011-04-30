@@ -12,16 +12,12 @@
 <style>
 a.trade, a.trade:hover, a.trade:active {
 	text-decoration: none;
+	white-space: nowrap;
 }
 #trade-cloud a.trade:hover {
 	color: white;
 	background-color: black;
 }
-<s:iterator value="{0,1,2,3,4,5,6,7,8,9,10}" var="count">
-.trade-cloud-<s:property value="#count"/> {
-	font-size: <s:property value="12 + 6*#count"/>px;
-}
-</s:iterator>
 
 <s:iterator value="contractor.trades">
 li.trade-<s:property value="trade.id"/> > a {
@@ -98,7 +94,7 @@ $(function() {
 					}
 				},
 				"plugins": ['themes', "json_data"]
-			});
+			}).resizeable();
 		});
 	}
 
@@ -150,11 +146,7 @@ $(function() {
 	</td>
 	<td width="20px"></td>
 	<td id="trade-view">
-		<div id="trade-cloud">
-			<s:iterator value="contractor.trades" var="trade" status="stat">
-				<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" class="trade <s:property value="tradeCssMap.get(#trade)"/>"><s:property value="#trade.trade.name"/></a>
-			</s:iterator>
-		</div>
+		<s:include value="contractor_trade_cloud.jsp"/>
 	</td>
 	</tr>
 </table>

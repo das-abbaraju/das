@@ -2,11 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<div id="trade-cloud">
-	<s:iterator value="contractor.trades" var="trade" status="stat">
-		<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" class="trade <s:property value="tradeCssMap.get(#trade)"/>"><s:property value="#trade.trade.name"/></a>
-	</s:iterator>
-</div>
+<s:include value="contractor_trade_cloud.jsp"/>
 
 <h3><s:property value="trade.trade.name"/></h3>
 
@@ -46,10 +42,15 @@
 	</s:if>
 </div>
 
+<s:if test="trade.id > 0 && trade.activityPercent == 0">
+<div class="error">
+	<s:text name="ContractorTrade.activityPercent.missing"/>
+</div>
+</s:if>
 
 <div>
 	<s:text name="ContractorTrade.businessRepresentation">
-		<s:param><s:select name="trade.activityPercent" list="activityPercentMap" emptyOption="true" theme="translate"/></s:param>
+		<s:param><s:select name="trade.activityPercent" list="activityPercentMap" theme="translate"/></s:param>
 	</s:text>
 </div>
 
