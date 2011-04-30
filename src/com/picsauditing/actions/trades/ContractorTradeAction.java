@@ -24,7 +24,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	private ContractorTrade trade;
 	private Tree<Trade> tradeHiererchy;
-	private Map<ContractorTrade, String> tradeCssMap;
+	private Map<ContractorTrade, Integer> tradeCssMap;
 
 	private List<ContractorTrade> affectedTrades = new ArrayList<ContractorTrade>();
 
@@ -102,9 +102,9 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		return affectedTrades;
 	}
 
-	public Map<ContractorTrade, String> getTradeCssMap() {
+	public Map<ContractorTrade, Integer> getTradeCssMap() {
 		if (tradeCssMap == null) {
-			tradeCssMap = new HashMap<ContractorTrade, String>();
+			tradeCssMap = new HashMap<ContractorTrade, Integer>();
 			int total = 0;
 			for (ContractorTrade trade : contractor.getTrades()) {
 				total += trade.getActivityPercent();
@@ -112,7 +112,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 			for (ContractorTrade trade : contractor.getTrades()) {
 				int percentage = (int) (((float) trade.getActivityPercent() / total) * 100);
-				tradeCssMap.put(trade, "trade-cloud-" + percentage / 10);
+				tradeCssMap.put(trade, 14 + (percentage * (30 - 14)) / 100);
 			}
 		}
 

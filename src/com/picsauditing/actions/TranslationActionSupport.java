@@ -1,10 +1,14 @@
 package com.picsauditing.actions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -15,7 +19,6 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.Translatable;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class TranslationActionSupport extends ActionSupport {
@@ -34,32 +37,67 @@ public class TranslationActionSupport extends ActionSupport {
 
 	@SuppressWarnings("rawtypes")
 	public String getTranslationName(String property) throws SecurityException, NoSuchFieldException {
-		String result = "";
 
-		List<String> hierarchy = Arrays.asList(property.split("\\."));
-		Class type = this.getClass().getDeclaredField(hierarchy.get(0)).getType();
-		int i;
-		for (i = 1; i < hierarchy.size(); i++) {
-			try {
-				Class childFieldType = getTypeFromInheritedClasses(type,hierarchy.get(i));
-				if (isTranslatable(childFieldType))
-					type = childFieldType;
-				else
-					break;
-			} catch (NoSuchFieldException fieldMissing) {
-				break;
-			}
+		/*
+		 * List<String> hierarchy = Arrays.asList(property.split("\\.")); Class
+		 * type = this.getClass().getDeclaredField(hierarchy.get(0)).getType();
+		 * int i; for (i = 1; i < hierarchy.size(); i++) { try { Class
+		 * childFieldType = getTypeFromInheritedClasses(type, hierarchy.get(i));
+		 * if (isTranslatable(childFieldType)) type = childFieldType; else
+		 * break; } catch (NoSuchFieldException fieldMissing) { break; } }
+		 * 
+		 * result = type.getSimpleName(); if (i < hierarchy.size()) { result +=
+		 * "." + Strings.implode(hierarchy.subList(i, hierarchy.size()), "."); }
+		 */
+
+		Map<String, Class<?>> typeMap = mapNameToType(property);
+		Class type = null;
+		Iterator<Entry<String, Class<?>>> iter = typeMap.entrySet().iterator();
+		List<Entry<String, Class<?>>> nonTranslatables = new ArrayList<Map.Entry<String, Class<?>>>();
+		do {
+			Entry<String, Class<?>> next = iter.next();
+			if (isTranslatable(next.getValue()))
+				type = next.getValue();
+			else
+				nonTranslatables.add(next);
+
+		} while (iter.hasNext() && isTranslatable(type));
+
+		StringBuilder result = new StringBuilder(type.getSimpleName());
+		for (Entry<String, Class<?>> entry : nonTranslatables) {
+			result.append(".").append(entry.getKey());
 		}
 
-		result = type.getSimpleName();
-		if (i < hierarchy.size()) {
-			result += "." + Strings.implode(hierarchy.subList(i, hierarchy.size()), ".");
+		return result.toString();
+	}
+
+	public String getDefaultValueFromType(String property) throws SecurityException, NoSuchFieldException {
+		Map<String, Class<?>> typeMap = mapNameToType(property);
+
+		Class<?> clazz = typeMap.values().toArray(new Class<?>[0])[typeMap.size() - 1];
+
+		if (clazz.isPrimitive() || Number.class.isAssignableFrom(clazz))
+			return "0";
+
+		return "";
+	}
+
+	public Map<String, Class<?>> mapNameToType(String property) throws SecurityException, NoSuchFieldException {
+		Map<String, Class<?>> result = new LinkedHashMap<String, Class<?>>();
+		String[] hierarchy = property.split("\\.");
+		Class<?> type = this.getClass().getDeclaredField(hierarchy[0]).getType();
+		result.put(hierarchy[0], type);
+
+		for (int i = 1; i < hierarchy.length; i++) {
+			type = type.getDeclaredField(hierarchy[i]).getType();
+			result.put(hierarchy[i], type);
 		}
+
 		return result;
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Class getTypeFromInheritedClasses(Class type, String field) throws NoSuchFieldException {
+	public Class getTypeFromInheritedClasses(Class type, String field) {
 		if (type == null)
 			return null;
 

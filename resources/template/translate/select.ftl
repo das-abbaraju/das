@@ -25,15 +25,17 @@
 <#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
 >
 <#if parameters.emptyOption?default(false)>
-	<option value="">
-<#elseif parameters.headerKey?? && parameters.headerValue??>
-	<#if tag.contains(parameters.nameValue, parameters.headerKey) == true>
-	selected="selected"
-	</#if>
-	value="${parameters.headerKey?html}"
-	<option>- <@s.text name="%{parameters.headerValue}"/> -
+	<option value=""></option>
+<#else>
+	<@s.if test="hasKey(getTranslationName(parameters.name))">
+		<option
+		<#if tag.contains(parameters.nameValue, parameters.headerKey) == true>
+			selected="selected"
+		</#if>
+		value="<@s.property value="%{getDefaultValueFromType(parameters.name)}"/>">- <@s.text name="%{getTranslationName(parameters.name)}"/> -
+		</option>
+	</@s.if>
 </#if>
-</option>
 <@s.iterator value="parameters.list">
 		<#if parameters.listKey??>
 			<#if stack.findValue(parameters.listKey)??>
