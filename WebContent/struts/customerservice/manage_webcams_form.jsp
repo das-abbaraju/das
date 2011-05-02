@@ -3,8 +3,8 @@
 <s:include value="../actionMessages.jsp" />
 <s:form action="ManageWebcams" id="webcam_form">
 	<s:hidden name="webcam.id" />
-	<fieldset class="form"><legend><span><s:property
-		value="%{webcam.id > 0 ? 'Edit' : 'Create'}" /> Webcam</span></legend>
+	<fieldset class="form">
+	<h2><s:property value="%{webcam.id > 0 ? 'Edit' : 'Create'}" /> Webcam</h2>
 	<ol>
 		<li><label>ID:</label> <s:property value="%{webcam.id > 0 ? webcam.id : 'NEW'}" /></li>
 		<li><label>Active:</label><s:checkbox name="webcam.active" /></li>
