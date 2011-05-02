@@ -34,6 +34,7 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentMethod;
@@ -240,8 +241,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							contractor.setRenew(true);
 
 						updateTotals();
-						this.addNote(contractor, "Created invoice for $" + invoice.getTotalAmount(),
-								NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
+						this.addNote("Created invoice for $" + invoice.getTotalAmount(),
+								NoteCategory.Billing);
 					}
 
 				} else {
@@ -249,8 +250,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 					if (!contractor.getMembershipLevel().equals(contractor.getNewMembershipLevel())) {
 						changeInvoiceItem(contractor.getMembershipLevel(), contractor.getNewMembershipLevel());
 						updateTotals();
-						this.addNote(contractor, "Modified current invoice, changed to $" + invoice.getTotalAmount(),
-								NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
+						this.addNote("Modified current invoice, changed to $" + invoice.getTotalAmount(),
+								NoteCategory.Billing);
 
 					}
 				}
@@ -282,8 +283,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			contractor.setRenew(true);
 			if(contractor.getStatus().isDeactivated()) {
 				contractor.setStatus(AccountStatus.Pending);
-				this.addNote(contractor, "Account Reactivated to Pending",
-						NoteCategory.General, LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
+				this.addNote("Account Reactivated to Pending", NoteCategory.General);
 			}
 			accountDao.save(contractor);
 		}
@@ -340,6 +340,19 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		note.setCanContractorView(true);
 		note.setViewableById(Account.PicsID);
 		noteDAO.save(note);
+	}
+	
+	private void addNote(String subject, NoteCategory category) {
+		Note note = new Note();
+		note.setAccount(contractor);
+		note.setAuditColumns(new User(User.SYSTEM));
+		note.setSummary(subject);
+		note.setPriority(LowMedHigh.Med);
+		note.setNoteCategory(category);
+		note.setViewableById(Account.PicsID);
+		note.setCanContractorView(false);
+		note.setStatus(NoteStatus.Closed);
+		getNoteDao().save(note);
 	}
 
 	public Invoice getInvoice() {
