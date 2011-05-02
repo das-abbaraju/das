@@ -351,7 +351,8 @@ public class FlagDataCalculator {
 											waitingOnOperator = true;
 										else
 											waitingOnPics = true;
-									}
+									} else // Assuming that a null permission means "Only PICS" can edit
+										waitingOnPics = true;
 								} else {
 									AuditStatus requiredStatus = key.getRequiredStatus();
 
