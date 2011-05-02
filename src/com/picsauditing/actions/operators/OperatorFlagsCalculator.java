@@ -69,7 +69,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		if (fcoID == 0 || opID == 0)
-			throw new Exception("Missing fcoID or opID");
+			throw new IllegalArgumentException("Missing fcoID or opID");
 
 		flagCriteriaOperator = flagCriteriaOperatorDAO.find(fcoID);
 		operator = opDAO.find(opID);
