@@ -1,0 +1,22 @@
+<html>
+<head>
+<script>
+
+function changeImage(i) {
+	$("#main").setAttribute("src",i);
+}
+
+var pages = [{
+	"contractor/registration1" => ["label": "Registration Page 2", "links": {"contractor/registration2"}],
+	"contractor/registration1" => {"Registration Page 2": "contractor/registration2"},
+	"login" => {"Contractor Home": "contractor/home","Operator Home": "operator/home"},
+}]
+
+</script>
+</head>
+<body style="margin: 0px">
+<div id="header"></div>
+<img id="main" src="">
+<script>changeImage("login");</script>
+</body>
+</html>
