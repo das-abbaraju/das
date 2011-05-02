@@ -60,7 +60,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showOQ = false;
 	protected boolean showHSE = false;
 	protected boolean showAccountManager = false;
-	protected boolean showBidOnlyFlagChanges = false;
 	protected boolean showAuditStatusFlagChanges = false;
 	protected boolean showAuditCreationFlagChanges = false;
 	protected boolean showAuditQuestionFlagChanges = false;
@@ -103,7 +102,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected String exEachOccurrence = DEFAULT_AMOUNT;
 	protected boolean oq = false;
 	protected boolean hse = false;
-	protected boolean bidOnlyFlagChanges = false;
 	protected boolean auditStatusFlagChanges = false;
 	protected boolean auditCreationFlagChanges = false;
 	protected boolean auditQuestionFlagChanges = false;
@@ -326,14 +324,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowAccountManager(boolean showAccountManager) {
 		this.showAccountManager = showAccountManager;
-	}
-
-	public boolean isShowBidOnlyFlagChanges() {
-		return showBidOnlyFlagChanges;
-	}
-
-	public void setShowBidOnlyFlagChanges(boolean showBidOnlyFlagChanges) {
-		this.showBidOnlyFlagChanges = showBidOnlyFlagChanges;
 	}
 
 	public boolean isShowAuditStatusFlagChanges() {
@@ -759,14 +749,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setHse(boolean hse) {
 		this.hse = hse;
-	}
-
-	public boolean isBidOnlyFlagChanges() {
-		return bidOnlyFlagChanges;
-	}
-
-	public void setBidOnlyFlagChanges(boolean bidOnlyFlagChanges) {
-		this.bidOnlyFlagChanges = bidOnlyFlagChanges;
 	}
 
 	public boolean isAuditStatusFlagChanges() {

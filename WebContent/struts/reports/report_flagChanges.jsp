@@ -8,16 +8,13 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <script type="text/javascript">
 $(function(){
-	$('#checkAllAuto').click(
-			function()
-			{
-				$('.approveBox').attr('checked', $('#checkAllAuto').is(':checked'));	
-			}
-		)
+$('a.approve').live('click', function(e) {
+	e.preventDefault();
+	$(this).attr('href')
+	})
 })
-
-function approve(id) {
-	$.post('ReportFlagChanges.action', {approveID: id});
+function approve(id,idList) {
+	$.post('ReportFlagChanges.action', {approvedChanges: idList.split(",")});
 	$("#row" + id).hide();
 }
 
@@ -59,14 +56,13 @@ var flags = {
 <s:else>
 <s:form>
 <div>
-	<input type="submit" class="picsbutton positive right" style="margin:7px;" name="button" value="Approve Selected">
 	<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
 <table class="report">
 	<thead>
 		<tr>
 			<th>Flag</th>
-			<th>Approve<br/><input type="checkbox" name="checkAllAuto" id="checkAllAuto" />(Select All)</th>
+			<th>Approve</th>
 			<th>Flag Differences</th>
 			<!-- <th></th> -->
 			<th><a href="?orderBy=a.name,operator.name">Contractor</a></th>
@@ -91,8 +87,7 @@ var flags = {
 				<img src="images/icon_<s:property value="get('flag').toString().toLowerCase()" />Flag.gif" width="10" height="12" border="0" /></a></td>
 			<td>
 				<span class="nobr">
-					<s:checkbox cssClass="approveBox" name="approvedChanges" fieldValue="%{get('gcID')}" />
-					<a href="#<s:property value="#gcID"/>" onclick="approve(<s:property value="#gcID"/>); return false;">Approve <s:property value="get('flag')"/></a>
+					<a href="<s:property value="#gcID"/>" onclick="approve(<s:property value="#gcID"/>,'<s:property value="get('gcIDs')"/>'); return false;">Approve <s:property value="get('flag')"/></a>
 				</span>
 			</td>
 			<td id="detail_<s:property value="get('gcID')"/>">
@@ -181,7 +176,7 @@ var flags = {
 					class="contractorQuick account<s:property value="get('status')"/>" title="<s:property value="get('name')"/>"
 				><s:property value="get('name')"/></a></td>
 			<pics:permission perm="AllContractors">
-				<td><a href="OperatorConfiguration.action?id=<s:property value="get('opId')"/>"><s:property value="get('opName')"/></a></td>
+				<td><s:property value="get('opName')"/></td>
 			</pics:permission>
 			<!-- <td><s:date name="get('lastRecalculation')" format="MM/dd/yyyy" /></td> -->
 			<!-- <td><s:date name="get('membershipDate')" nice="true" /></td> -->
@@ -196,7 +191,6 @@ var flags = {
 	</tbody>
 </table>
 <div>
-	<input type="submit" class="picsbutton positive right" style="margin:7px;" name="button" value="Approve Selected">
 	<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
 </s:form>

@@ -19,7 +19,6 @@ import com.picsauditing.util.Strings;
 public class ReportFlagChanges extends ReportAccount {
 
 	private ContractorOperatorDAO contractorOperatorDAO;
-	private int approveID = 0;
 	private List<User> accountManagers;
 	private int[] approvedChanges;
 
@@ -31,27 +30,17 @@ public class ReportFlagChanges extends ReportAccount {
 
 	@Override
 	public String execute() throws Exception {
-		if (approveID > 0) {
-			ContractorOperator co = contractorOperatorDAO.find(approveID);
-			co.resetBaseline(permissions);
-			contractorOperatorDAO.save(co);
-			return BLANK;
-		}
+		if (approvedChanges != null) {
+			List<ContractorOperator> approvedFlagChanges = contractorOperatorDAO.findWhere("id IN ("
+					+ Strings.implode(approvedChanges) + ")");
 
-		if ("Approve Selected".equals(button)) {
-			if (approvedChanges != null) {
-				List<ContractorOperator> approvedFlagChanges = contractorOperatorDAO.findWhere("id IN ("
-						+ Strings.implode(approvedChanges) + ")");
-
-				for (ContractorOperator co : approvedFlagChanges) {
-					co.resetBaseline(permissions);
-					contractorOperatorDAO.save(co);
-				}
-
-				approvedChanges = null;
-			} else {
-				addActionError("No Flag Changes were selected for Approval.");
+			for (ContractorOperator co : approvedFlagChanges) {
+				co.resetBaseline(permissions);
+				contractorOperatorDAO.save(co);
 			}
+
+			approvedChanges = null;
+			return BLANK;
 		}
 
 		return super.execute();
@@ -77,7 +66,6 @@ public class ReportFlagChanges extends ReportAccount {
 		getFilter().setShowIndustry(false);
 		getFilter().setShowStatus(false);
 		getFilter().setShowAccountManager(true);
-		getFilter().setShowBidOnlyFlagChanges(true);
 		getFilter().setShowAuditCreationFlagChanges(true);
 		getFilter().setShowAuditStatusFlagChanges(true);
 		getFilter().setShowAuditQuestionFlagChanges(true);
@@ -114,8 +102,6 @@ public class ReportFlagChanges extends ReportAccount {
 
 		Queue<String> expectedChanges = new LinkedList<String>();
 
-		if (getFilter().isBidOnlyFlagChanges())
-			expectedChanges.offer("gc_flag.baselineFlag = 'Clear' OR gc_flag.flag = 'Clear'");
 		if (getFilter().isAuditStatusFlagChanges())
 			expectedChanges
 					.offer("(cao.id IS NOT NULL AND fc.requiredStatus = caow.status AND gc_flag.flag = 'Green') OR "
@@ -136,7 +122,8 @@ public class ReportFlagChanges extends ReportAccount {
 
 		sql.addField("IFNULL(gc_flag.flagDetail,'{}') flagDetail");
 		sql.addField("IFNULL(gc_flag.baselineFlagDetail,'{}') baselineFlagDetail");
-		sql.addField("operator.name AS opName");
+		sql.addField("GROUP_CONCAT(DISTINCT operator.name SEPARATOR ', ') AS opName");
+		sql.addField("GROUP_CONCAT(DISTINCT CAST(gc_flag.id as CHAR)) AS gcIDs");
 		sql.addField("operator.id AS opId");
 		sql.addField("c.membershipDate");
 		sql.addField("c.lastRecalculation");
@@ -153,8 +140,12 @@ public class ReportFlagChanges extends ReportAccount {
 		sql.addWhere("a.status IN ('Active')");
 		sql.addWhere("operator.status IN ('Active') AND operator.type = 'Operator'");
 		sql.addWhere("caow2.id IS NULL");
-		sql.addGroupBy("gc_flag.id");
-		sql.addOrderBy("flagEnum");
+		sql.addWhere("a.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK)");
+		sql.addWhere("gc_flag.baselineFlag != 'Clear'");
+		sql.addWhere("gc_flag.flag != 'Clear'");
+		sql.addWhere("gc_flag.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK)");
+		sql.addGroupBy("c.id, gc_flag.flag, gc_flag.baselineFlag, gc_flag.flagDetail, gc_flag.baselineFlagDetail");
+		sql.addOrderBy("flagEnum,gc_flag.flagDetail");
 
 		if (!Strings.isEmpty(opIds))
 			sql.addWhere("operator.id in (" + opIds + ")");
@@ -171,10 +162,6 @@ public class ReportFlagChanges extends ReportAccount {
 					+ ") AND role = 'PICSAccountRep' AND startDate < NOW() AND endDate > NOW())");
 			setFiltered(true);
 		}
-	}
-
-	public void setApproveID(int approveID) {
-		this.approveID = approveID;
 	}
 
 	public List<User> getAccountManagers() {

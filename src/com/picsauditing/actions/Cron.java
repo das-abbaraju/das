@@ -478,26 +478,25 @@ public class Cron extends PicsActionSupport {
 
 	public void expireFlagChanges() throws Exception {
 
-		// Ignore Flag Changes that are a week old or longer
-		String query = "UPDATE generalcontractors ";
+		String query = "UPDATE generalcontractors gc ";
+		query += "JOIN accounts a ON gc.subID = a.id ";
+		query += "JOIN contractor_info c ON a.id = c.id ";
 		query += "SET baselineFlag = flag, ";
 		query += "baselineFlagDetail = flagDetail, ";
 		query += "baselineApproved = NOW(), ";
 		query += "baselineApprover = 1 ";
 		query += "WHERE flag != baselineFlag ";
-		query += "AND flagLastUpdated <= DATE_SUB(NOW(), INTERVAL 14 DAY)";
-
-		new Database().executeUpdate(query);
-		
+		// Ignore Flag Changes that are two weeks old or longer
+		query += "AND (flagLastUpdated <= DATE_SUB(NOW(), INTERVAL 14 DAY) ";
 		// Automatically approve a. Audited - Unspecified Facility
 		// and a. PQF Only - Unspecified Facility
-		query = "UPDATE generalcontractors ";
-		query += "SET baselineFlag = flag, ";
-		query += "baselineFlagDetail = flagDetail, ";
-		query += "baselineApproved = NOW(), ";
-		query += "baselineApprover = 1 ";
-		query += "WHERE flag != baselineFlag ";
-		query += "AND genID IN (10403,2723)";
+		query += "OR genID IN (10403,2723) ";
+		// Ignore Flag Changes for newly created contractors
+		query += "OR a.creationDate >= DATE_SUB(NOW(), INTERVAL 2 WEEK) ";
+		// Ignore Flag Changes for recently added contractors
+		query += "OR gc.creationDate >= DATE_SUB(NOW(), INTERVAL 2 WEEK) ";
+		// Ignore Clear Flag Changes
+		query += "OR flag = 'Clear' OR baselineFlag = 'Clear')";
 
 		new Database().executeUpdate(query);
 	}
