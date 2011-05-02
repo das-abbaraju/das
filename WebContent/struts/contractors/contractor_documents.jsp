@@ -45,7 +45,10 @@
 					<thead>
 						<tr>
 							<th><s:text name="global.Name" /></th>
-							<th><s:text name="global.SafetyProfessional" /></th>
+							<s:if test="#audit.auditType.classType.policy || #audit.auditType.classType.im">
+								<th><s:text name="global.Auditor" /></th>
+							</s:if>
+							<s:else><th><s:text name="global.PICSTeamMember" /></th></s:else>
 							<th><s:text name="%{scope}.header.Scheduled" /></th>
 							<th><s:text name="button.View" /></th>
 							<pics:permission perm="AuditCopy">
