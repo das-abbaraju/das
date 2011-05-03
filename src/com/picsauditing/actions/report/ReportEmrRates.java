@@ -6,6 +6,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
@@ -30,7 +31,7 @@ public class ReportEmrRates extends ReportAnnualAddendum {
 		getFilter().setShowEmrRange(true);
 		
 		sql.addJoin("JOIN pqfdata d ON d.auditID = ca.id");
-		sql.addJoin("JOIN flag_criteria_contractor fcc ON fcc.criteriaID = 506 AND fcc.conID = a.id");
+		sql.addJoin("JOIN flag_criteria_contractor fcc ON fcc.criteriaID = "+FlagCriteria.EMR_AVERAGE_ID+" AND fcc.conID = a.id");
 		sql.addField("d.answer");
 		sql.addField("fcc.answer emrAverage");
 		sql.addWhere("d.questionID = " + AuditQuestion.EMR);
