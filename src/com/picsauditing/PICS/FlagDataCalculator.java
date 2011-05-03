@@ -224,11 +224,16 @@ public class FlagDataCalculator {
 		} else {
 
 			if (criteria.getRequiredStatus() != null) {
-				if (criteria.getRequiredStatus().after(AuditStatus.Submitted) && !conCriteria.isVerified())
+				if (criteria.getRequiredStatus().after(AuditStatus.Submitted) && !conCriteria.isVerified()) {
+					// Verified data is required, but the answer hasn't been verified yet
+					// Look at ContractorFlagETL for details about how data becomes "verified"
+					// It's not as straight forward as you might think...evil laugh ha ha ha
+					// http://intranet.picsauditing.com/display/organizer/Annual+Updates
 					if (criteria.isFlaggableWhenMissing())
 						return true;
 					else
 						return null;
+				}
 			}
 
 			final String dataType = criteria.getDataType();
