@@ -1,22 +1,79 @@
 <html>
 <head>
+<script src="jquery-1.5.2.min.js" type="text/javascript" charset="utf-8"></script>
 <script>
 
-function changeImage(i) {
-	$("#main").setAttribute("src",i);
+$(window).bind("hashchange", function(e) {
+	if (location.hash)
+		changeImage(location.hash.substring(1));
+	else
+		changeImage("login");
+});
+
+function changeImage(image) {
+	var img = $("#main");
+	var header = $("#header");
+	
+	img.attr("src", image + ".png");
+	console.log(image);
+	console.log(pages[image])
+	if (pages[image]) {
+		var ul = $("<ul>");	
+		$.each(pages[image].links, function(i, val) {
+			ul.append(
+				$("<li>").append(
+					$("<a>", {href: "#" + val}).text(pages[val] ? pages[val].label : val)
+				)
+			)			
+		});
+	}
+	
+	header.html(ul);
 }
 
-var pages = [{
-	"contractor/registration1" => ["label": "Registration Page 2", "links": {"contractor/registration2"}],
-	"contractor/registration1" => {"Registration Page 2": "contractor/registration2"},
-	"login" => {"Contractor Home": "contractor/home","Operator Home": "operator/home"},
-}]
+var pages = {
+	"login" : {
+		"label": "Login",
+		"links": [
+			"contractor/registration1",
+			"contractor/registration2"
+		]
+	},
+	"contractor/registration1" : {
+		"label": "Registration Page 1",
+		"links": [
+			"contractor/registration2"
+		]
+	},
+	"contractor/registration2" : {
+		"label": "Registration Page 2",
+		"links": [
+			"contractor/registration2"
+		]
+	}
+};
 
 </script>
+
+<style>
+ul {
+	list-style:none;
+
+}
+ul li {
+	float: left;
+	padding: 4px;
+}
+#content {
+	clear: both;
+}
+</style>
 </head>
 <body style="margin: 0px">
 <div id="header"></div>
-<img id="main" src="">
+<div id="content">
+<img id="main" />
+</div>
 <script>changeImage("login");</script>
 </body>
 </html>
