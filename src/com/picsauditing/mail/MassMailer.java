@@ -104,7 +104,7 @@ public class MassMailer extends PicsActionSupport {
 			// Reset the templateID to this new passed in one
 			wizardSession.setTemplateID(templateID);
 		}
-		
+
 		if (wizardSession.getTemplateID() > 0 && templateID <= 0)
 			templateID = wizardSession.getTemplateID();
 
@@ -162,20 +162,27 @@ public class MassMailer extends PicsActionSupport {
 				EmailTemplate template = buildEmailTemplate();
 				// TODO we may want to offer sending from another email
 				// other than their own
-				//if (fromMyAddress)
-					//emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
-				//else
+				// if (fromMyAddress)
+				// emailBuilder.setFromAddress("\"" + permissions.getName() +
+				// "\"<" + permissions.getEmail() + ">");
+				// else
 				emailBuilder.setFromAddress(fromMyAddress);
 				emailBuilder.setTemplate(template);
 
 				for (Integer id : ids) {
 					getRecipient();
-					addTokens(id);
+					try {
+						addTokens(id);
+					} catch (EmailException e) {
+						e.printStackTrace();
+						continue;
+					}
 					EmailQueue email = emailBuilder.build();
-					// I really think we should be saving this. Not sure why we weren't
+					// I really think we should be saving this. Not sure why we
+					// weren't
 					if (templateID < 0)
 						email.setEmailTemplate(null);
-					
+
 					email.setViewableById(permissions.getTopAccountID());
 					emailQueueDAO.save(email);
 				}
@@ -449,7 +456,7 @@ public class MassMailer extends PicsActionSupport {
 	public void setFromOtherAction(boolean fromOtherAction) {
 		this.fromOtherAction = fromOtherAction;
 	}
-	
+
 	public List<String> getFromAddresses() {
 		if (fromAddresses.isEmpty()) {
 			fromAddresses.add("info@picsauditing.com");
@@ -457,7 +464,7 @@ public class MassMailer extends PicsActionSupport {
 				fromAddresses.add("audits@picsauditing.com");
 			}
 			fromAddresses.add(permissions.getEmail());
-			
+
 		}
 		return fromAddresses;
 	}
