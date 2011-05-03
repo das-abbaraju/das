@@ -5,6 +5,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * Iterator used to get a range of elements, functions exactly the same as a
+ * normal Iterator with the addition of a <code>next(int number)</code> method.
+ * 
+ * @author David Tomberlin
+ * @see <code>public Set<T> next(int number)</code>
+ * @param <T>
+ */
 public class IndexingIterator<T> implements Iterator<T> {
 
 	private final Collection<T> collection;
@@ -34,6 +42,15 @@ public class IndexingIterator<T> implements Iterator<T> {
 		it.remove();
 	}
 
+	/**
+	 * Returns the next n elements in the underlying collection. If
+	 * collection.size is < n, then only those elements are returns. Calling
+	 * this is the same as calling .next n number of times, so it does advance
+	 * the iterator as that would.
+	 * 
+	 * @param number
+	 * @return A Set containing up to n number of elements
+	 */
 	public Set<T> next(int number) {
 		int count = 0;
 		Set<T> result = new HashSet<T>();
