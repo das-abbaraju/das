@@ -2,63 +2,101 @@
 <head>
 <script src="jquery-1.5.2.min.js" type="text/javascript" charset="utf-8"></script>
 <script>
-
-$(window).bind("hashchange", function(e) {
-	if (location.hash)
-		changeImage(location.hash.substring(1));
-	else
-		changeImage("login");
-});
-
-function changeImage(image) {
-	var img = $("#main");
-	var header = $("#header");
+$(function() {
+	/*
+	BEGIN DEMO CONFIG
+	All lines above should not be changed.
 	
-	img.attr("src", image + ".png");
-	console.log(image);
-	console.log(pages[image])
-	if (pages[image]) {
-		var ul = $("<ul>");	
-		$.each(pages[image].links, function(i, val) {
-			ul.append(
-				$("<li>").append(
-					$("<a>", {href: "#" + val}).text(pages[val] ? pages[val].label : val)
-				)
-			)			
-		});
-	}
+	These comments will be ignored by the browser. Feel free to leave them in, they shouldn't affect anything.
 	
-	header.html(ul);
+	The format for the available links for each page is as follows:
+	
+		"folder_name/page_name" : { <============= This is the page name. The path is relative to this index.html file. If the screenshot is in a folder, you can prefix it here.
+			"label": "Page Label", <============== This is what is displayed on any page that links to this one
+			"links" [
+				"folder_name/link1" <============= This is a list of comma separated links.
+			]
+		}, <====================================== This comma is necessary. It should be omitted on the the last page.
+		
+		Here is a template for you to copy/paste (Don't forget the comma!):
+
+"rawr": {
+	"label": "RAWR",
+	"links": [
+		"link1",
+		"link2"
+	]
 }
+	
+	*/
+	
+	var default_page = "login";
+	
+	var pages = {
+		"login" : {
+			"label": "Login",
+			"links": [
+				"home"
+			]
+		},
+		"home" : {
+			"label": "Home",
+			"links": [
+				"contractors/contractor_list"
+			]
+		},
+		"contractors/contractor_list" : {
+			"label": "Contractor List",
+			"links": [
+				
+			]
+		}
+	};
+	
+	/*
+	END DEMO CONFIG
+	All lines below should not be changed.
+	*/
+	
+	$(window).bind("hashchange", function(e) {
+		if (location.hash)
+			changeImage(location.hash.substring(1));
+		else
+			changeImage(default_page);
+	});
+	
+	function changeImage(image) {
+		var img = $("#main");
+		var header = $("#header");
 
-var pages = {
-	"login" : {
-		"label": "Login",
-		"links": [
-			"contractor/registration1",
-			"contractor/registration2"
-		]
-	},
-	"contractor/registration1" : {
-		"label": "Registration Page 1",
-		"links": [
-			"contractor/registration2"
-		]
-	},
-	"contractor/registration2" : {
-		"label": "Registration Page 2",
-		"links": [
-			"contractor/registration2"
-		]
-	}
-};
+		if (pages[image]) {
+			img.attr("src", "screenshots/" + image + ".png");	
+		} else {
+			img.removeAttr("src");
+		}
+		
+		if (pages[image] && pages[image].links && pages[image].links.length) {
+			var ul = $("<ul>");	
+			$.each(pages[image].links, function(i, val) {
+				ul.append(
+					$("<li>").append(
+						$("<a>", {href: "#" + val}).text(pages[val] ? pages[val].label : val)
+					)
+				)			
+			});
+		} else {
+			header.text('');
+		}
+		
+		header.html(ul);
+	}	
 
+	$(window).trigger("hashchange");
+});
 </script>
-
 <style>
 ul {
 	list-style:none;
-
 }
 ul li {
 	float: left;
@@ -74,6 +112,5 @@ ul li {
 <div id="content">
 <img id="main" />
 </div>
-<script>changeImage("login");</script>
 </body>
 </html>
