@@ -86,7 +86,7 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 
 	@Override
 	public void runSingle(Class<? extends Indexable> clazz, int id) {
-		Indexable toIndex = indexableDao.find(clazz, id);
+		Indexable toIndex = indexableDao.findIndexable(clazz, id);
 		if (toIndex == null) {
 			return;
 		} else {

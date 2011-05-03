@@ -1,7 +1,6 @@
 package com.picsauditing.dao;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,7 +10,6 @@ import java.util.Set;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
-import org.apache.commons.beanutils.BasicDynaBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.BaseTable;
@@ -25,7 +23,7 @@ public class IndexableDAO extends PicsDAO {
 		return em.find(BaseTable.class, id);
 	}
 
-	public Indexable find(Class<? extends Indexable> clazz, int id) {
+	public Indexable findIndexable(Class<? extends Indexable> clazz, int id) {
 		return em.find(clazz, id);
 	}
 
@@ -38,8 +36,6 @@ public class IndexableDAO extends PicsDAO {
 	}
 
 	/**
-	 * @param indexable
-	 *            Table we are indexing
 	 * @param startId
 	 *            Id to start at, inclusive. If this is set and endId is not
 	 *            then pull up just the id matching startId. Set to 0 and endId
@@ -47,6 +43,8 @@ public class IndexableDAO extends PicsDAO {
 	 * @param endId
 	 *            Id to end at, inclusive. If this is set less than startId then
 	 *            pull up nothing
+	 * @param clazz
+	 *            Table we are indexing
 	 * @return Set of ids of a type that need to be indexed
 	 * @throws SQLException
 	 */
