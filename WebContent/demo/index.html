@@ -69,7 +69,7 @@ $(function() {
 	
 	function changeImage(image) {
 		var img = $("#main");
-		var header = $("#header");
+		var header = $("#header ul");
 
 		if (pages[image]) {
 			img.attr("src", "screenshots/" + image + ".png");
@@ -105,7 +105,10 @@ $(function() {
 <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 <body style="margin: 0px">
-<div id="header"></div>
+<div id="header">
+<div class="message">This is a DEMO. Use the links to the right to navigate.</div>
+<ul></ul>
+</div>
 <img id="main" />
 </body>
 </html>

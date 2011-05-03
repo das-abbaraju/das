@@ -11,6 +11,9 @@
 
 ul {
 	list-style: none;
+	top: 0px;
+	left: 200px;
+	position: relative;
 }
 
 ul li {
