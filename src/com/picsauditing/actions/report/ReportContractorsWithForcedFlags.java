@@ -78,9 +78,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 	protected void addExcelColumns() {
 		super.addExcelColumns();
 		
-		if (permissions.isAdmin())
-			excelSheet.addColumn(new ExcelColumn("opName"));
-		
+		excelSheet.addColumn(new ExcelColumn("opName"));
 		excelSheet.addColumn(new ExcelColumn("forceFlag", "Flag"));
 		excelSheet.addColumn(new ExcelColumn("fLabel", "Flag Issue"));
 		excelSheet.addColumn(new ExcelColumn("forcedBy", "Forced By"));
