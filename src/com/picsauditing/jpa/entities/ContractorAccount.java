@@ -294,10 +294,12 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "emrAverage")
+	@Deprecated
 	public Float getEmrAverage() {
 		return emrAverage;
 	}
 
+	@Deprecated
 	public void setEmrAverage(Float emrAverage) {
 		this.emrAverage = emrAverage;
 	}

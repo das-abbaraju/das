@@ -7,6 +7,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilder;
@@ -45,13 +46,14 @@ public class GraphEmrRates extends ChartMSAction {
 		SelectSQL sql = new SelectSQL("accounts a");
 
 		if (showAvg) {
-			sql.addJoin("JOIN contractor_info c ON c.id = a.id");
-			sql.addWhere("c.emrAverage IS NOT NULL");
-			sql.addWhere("c.emrAverage > 0");
+			sql.addJoin("JOIN flag_criteria_contractor fcc ON fcc.criteriaID = " + FlagCriteria.EMR_AVERAGE_ID
+					+ " AND fcc.conID = a.id");
+			sql.addWhere("fcc.answer IS NOT NULL");
+			sql.addWhere("fcc.answer > 0");
 			sql.addGroupBy("label");
-			sql.addOrderBy("c.id DESC, label");
+			sql.addOrderBy("fcc.conID DESC, label");
 			sql.addField("'AVERAGE' as series");
-			sql.addField("floor(c.emrAverage*10)/10 as label");
+			sql.addField("floor(fcc.answer*10)/10 as label");
 			sql.addField("count(*) as value");
 		} else {
 			sql.addJoin("JOIN contractor_audit pqf ON pqf.conID = a.id");

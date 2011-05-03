@@ -27,11 +27,12 @@ public class ReportEmrRates extends ReportAnnualAddendum {
 	@Override
 	public void buildQuery() {
 		super.buildQuery();
-		
+
 		getFilter().setShowEmrRange(true);
-		
+
 		sql.addJoin("JOIN pqfdata d ON d.auditID = ca.id");
-		sql.addJoin("JOIN flag_criteria_contractor fcc ON fcc.criteriaID = "+FlagCriteria.EMR_AVERAGE_ID+" AND fcc.conID = a.id");
+		sql.addJoin("JOIN flag_criteria_contractor fcc ON fcc.criteriaID = " + FlagCriteria.EMR_AVERAGE_ID
+				+ " AND fcc.conID = a.id");
 		sql.addField("d.answer");
 		sql.addField("fcc.answer emrAverage");
 		sql.addWhere("d.questionID = " + AuditQuestion.EMR);
@@ -39,10 +40,10 @@ public class ReportEmrRates extends ReportAnnualAddendum {
 		sql.addWhere("d.answer < " + getFilter().getMaxEMR());
 		sql.addWhere("d.answer > ''");
 		sql.addField("d.dateVerified");
-		
+
 		setVerifiedAnnualUpdateFilter("dateVerified");
 	}
-	
+
 	@Override
 	protected void addExcelColumns() {
 		super.addExcelColumns();
