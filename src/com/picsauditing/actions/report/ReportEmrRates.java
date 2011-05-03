@@ -30,8 +30,9 @@ public class ReportEmrRates extends ReportAnnualAddendum {
 		getFilter().setShowEmrRange(true);
 		
 		sql.addJoin("JOIN pqfdata d ON d.auditID = ca.id");
+		sql.addJoin("JOIN flag_criteria_contractor fcc ON fcc.criteriaID = 506 AND fcc.conID = a.id");
 		sql.addField("d.answer");
-		sql.addField("c.emrAverage");
+		sql.addField("fcc.answer emrAverage");
 		sql.addWhere("d.questionID = " + AuditQuestion.EMR);
 		sql.addWhere("d.answer >= " + getFilter().getMinEMR());
 		sql.addWhere("d.answer < " + getFilter().getMaxEMR());

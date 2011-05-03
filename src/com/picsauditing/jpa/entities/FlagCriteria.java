@@ -41,6 +41,8 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 	public static final String NUMBER = "number";
 	public static final String DATE = "date";
 	public static final String STRING = "string";
+	
+	public static final int EMR_AVERAGE_ID = 506;
 
 	public String getCategory() {
 		return category;
