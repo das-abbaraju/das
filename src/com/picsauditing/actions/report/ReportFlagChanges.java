@@ -1,8 +1,7 @@
 package com.picsauditing.actions.report;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Vector;
 
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -25,7 +24,7 @@ public class ReportFlagChanges extends ReportAccount {
 	public ReportFlagChanges(ContractorOperatorDAO contractorOperatorDAO) {
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		setReportName("Flag Changes");
-		orderByDefault = "a.name, fd.criteriaID, operator.name";
+		orderByDefault = "flagEnum, a.name, operator.name";
 	}
 
 	@Override
@@ -88,36 +87,38 @@ public class ReportFlagChanges extends ReportAccount {
 		sql.addJoin("JOIN generalcontractors gc_flag ON gc_flag.subid = a.id AND gc_flag.flag != gc_flag.baselineFlag");
 
 		sql.addJoin("JOIN accounts operator ON operator.id = gc_flag.genid AND operator.id NOT IN (10403,2723)");
-		sql.addJoin("LEFT JOIN flag_data fd ON fd.conID = gc_flag.subID "
-				+ "AND fd.opID = gc_flag.genID AND fd.baselineFlag != fd.flag");
-		sql.addJoin("LEFT JOIN flag_criteria fc ON fd.criteriaID = fc.id");
-		sql.addJoin("LEFT JOIN contractor_audit ca ON ca.conID = gc_flag.subID "
-				+ "AND ca.auditTypeID = fc.auditTypeID AND ca.expiresDate >= NOW()");
-		sql.addJoin("LEFT JOIN contractor_audit_operator cao ON cao.auditID = ca.id AND cao.visible = 1");
-		sql.addJoin("LEFT JOIN contractor_audit_operator_workflow caow ON caow.caoID = cao.id");
-		sql.addJoin("LEFT JOIN contractor_audit_operator_permission caop ON cao.id = caop.caoID "
-				+ "AND caop.opID = gc_flag.genID");
-		sql.addJoin("LEFT JOIN contractor_audit_operator_workflow caow2 ON caow.caoID = caow2.caoID "
-				+ "AND caow.updateDate < caow2.updateDate");
 
-		Queue<String> expectedChanges = new LinkedList<String>();
+		if (getFilter().isAuditStatusFlagChanges() || getFilter().isAuditCreationFlagChanges()
+				|| getFilter().isAuditQuestionFlagChanges()) {
+			sql.addJoin("LEFT JOIN flag_data fd ON fd.conID = gc_flag.subID "
+					+ "AND fd.opID = gc_flag.genID AND fd.baselineFlag != fd.flag");
+			sql.addJoin("LEFT JOIN flag_criteria fc ON fd.criteriaID = fc.id");
+			sql.addJoin("LEFT JOIN contractor_audit ca ON ca.conID = gc_flag.subID "
+					+ "AND ca.auditTypeID = fc.auditTypeID AND ca.expiresDate >= NOW()");
+			sql.addJoin("LEFT JOIN contractor_audit_operator cao ON cao.auditID = ca.id AND cao.visible = 1");
+			sql.addJoin("LEFT JOIN contractor_audit_operator_workflow caow ON caow.caoID = cao.id");
+			sql.addJoin("LEFT JOIN contractor_audit_operator_permission caop ON cao.id = caop.caoID "
+					+ "AND caop.opID = gc_flag.genID");
+			sql.addJoin("LEFT JOIN contractor_audit_operator_workflow caow2 ON caow.caoID = caow2.caoID "
+					+ "AND caow.updateDate < caow2.updateDate");
 
-		if (getFilter().isAuditStatusFlagChanges())
-			expectedChanges
-					.offer("(cao.id IS NOT NULL AND fc.requiredStatus = caow.status AND gc_flag.flag = 'Green') OR "
-							+ "(cao.id IS NOT NULL AND fc.requiredStatus != caow.status AND gc_flag.flag != 'Green')");
-		if (getFilter().isAuditCreationFlagChanges())
-			expectedChanges.offer("cao.id IS NOT NULL AND caow.id IS NULL");
-		if (getFilter().isAuditQuestionFlagChanges())
-			expectedChanges
-					.offer("fc.questionID IS NOT NULL OR (fc.oshaRateType IS NOT NULL AND fc.oshaType IS NOT NULL AND fc.multiYearScope IS NOT NULL)");
+			List<String> expectedChanges = new ArrayList<String>();
 
-		if (!expectedChanges.isEmpty()) {
-			String whereExpected = "(" + expectedChanges.remove() + ")";
-			for (String expectedChange : expectedChanges)
-				whereExpected += " OR (" + expectedChange + ")";
-
-			sql.addWhere(whereExpected);
+			if (getFilter().isAuditStatusFlagChanges()) {
+				expectedChanges.add("(cao.id IS NOT NULL AND fc.requiredStatus = caow.status"
+						+ " AND gc_flag.flag = 'Green')");
+				expectedChanges.add("(cao.id IS NOT NULL AND fc.requiredStatus != caow.status"
+						+ " AND gc_flag.flag != 'Green')");
+			}
+			if (getFilter().isAuditCreationFlagChanges())
+				expectedChanges.add("(cao.id IS NOT NULL AND caow.id IS NULL)");
+			if (getFilter().isAuditQuestionFlagChanges()) {
+				expectedChanges.add("(fc.questionID IS NOT NULL)");
+				expectedChanges.add("(fc.oshaRateType IS NOT NULL AND fc.oshaType IS NOT NULL"
+						+ " AND fc.multiYearScope IS NOT NULL)");
+			}
+			sql.addWhere(Strings.implode(expectedChanges," OR "));
+			sql.addWhere("caow2.id IS NULL");
 		}
 
 		sql.addField("IFNULL(gc_flag.flagDetail,'{}') flagDetail");
@@ -139,13 +140,11 @@ public class ReportFlagChanges extends ReportAccount {
 				+ "when gc_flag.baselineFlag = 'Clear' then 5 end as `flagEnum`");
 		sql.addWhere("a.status IN ('Active')");
 		sql.addWhere("operator.status IN ('Active') AND operator.type = 'Operator'");
-		sql.addWhere("caow2.id IS NULL");
 		sql.addWhere("a.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK)");
 		sql.addWhere("gc_flag.baselineFlag != 'Clear'");
 		sql.addWhere("gc_flag.flag != 'Clear'");
 		sql.addWhere("gc_flag.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK)");
 		sql.addGroupBy("c.id, gc_flag.flag, gc_flag.baselineFlag, gc_flag.flagDetail, gc_flag.baselineFlagDetail");
-		sql.addOrderBy("flagEnum,gc_flag.flagDetail");
 
 		if (!Strings.isEmpty(opIds))
 			sql.addWhere("operator.id in (" + opIds + ")");
