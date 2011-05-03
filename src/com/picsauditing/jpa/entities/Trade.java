@@ -38,6 +38,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	private int indexLevel;
 	private int indexStart;
 	private int indexEnd;
+	private int contractorCount;
 	private boolean needsIndexing;
 
 	private TranslatableString name;
@@ -377,5 +378,13 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Override
 	public String toString() {
 		return String.valueOf(name);
+	}
+
+	public int getContractorCount() {
+		return contractorCount;
+	}
+
+	public void setContractorCount(int contractorCount) {
+		this.contractorCount = contractorCount;
 	}
 }
