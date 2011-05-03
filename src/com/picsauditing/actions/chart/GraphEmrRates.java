@@ -71,9 +71,12 @@ public class GraphEmrRates extends ChartMSAction {
 			sql.addGroupBy("questionID, label");
 			sql.addOrderBy("questionID DESC, label");
 		}
-		
-		if(operatorIDs.length > 0) {
-			sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN (" + Strings.implode(operatorIDs,",") +"))");
+
+		if (permissions.isAdmin() || permissions.isCorporate()) {
+			if (operatorIDs.length > 0) {
+				sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN ("
+						+ Strings.implode(operatorIDs, ",") + "))");
+			}
 		}
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 		sql.addWhere("1 " + permQuery.toString());
@@ -81,14 +84,14 @@ public class GraphEmrRates extends ChartMSAction {
 		ChartDAO db = new ChartDAO();
 		List<DataRow> data = db.select(sql.toString());
 		for (DataRow row : data) {
-			if(!showAvg) {
+			if (!showAvg) {
 				int year = Integer.parseInt(row.getSeries());
 				row.setSeries(year + " EMR");
 				float labelEnd = Float.parseFloat(row.getLabel()) + 0.1F;
 				row.setLink("ReportEmrRates.action?year=" + year + "%26amp;filter.minEMR=" + row.getLabel()
 						+ "%26amp;filter.maxEMR=" + labelEnd);
 			}
-		}	
+		}
 		MultiSeriesConverterHistogram converter = new MultiSeriesConverterHistogram();
 
 		converter.setMaxCategory(2);
@@ -137,7 +140,7 @@ public class GraphEmrRates extends ChartMSAction {
 	public void setShowAvg(boolean showAvg) {
 		this.showAvg = showAvg;
 	}
-	
+
 	public List<OperatorAccount> getOperatorsList() {
 		if (permissions == null)
 			return null;
@@ -152,11 +155,11 @@ public class GraphEmrRates extends ChartMSAction {
 	public void setOperatorIDs(int[] operatorIDs) {
 		this.operatorIDs = operatorIDs;
 	}
-	
+
 	public List<String> getYearsList() {
 		List<String> yearsList = new ArrayList<String>();
-		int lastYear = DateBean.getCurrentYear()-1;
-		for(int i = lastYear; i > 2000; i--) {
+		int lastYear = DateBean.getCurrentYear() - 1;
+		for (int i = lastYear; i > 2000; i--) {
 			yearsList.add(Integer.toString(i));
 		}
 		return yearsList;
