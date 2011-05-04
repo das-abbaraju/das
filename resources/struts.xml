@@ -1309,6 +1309,11 @@
 			class="com.picsauditing.actions.auditType.ManageQuestionOptions">
 			<result>struts/audits/manage_question_options.jsp</result>
 		</action>
+		
+		<action name="ManageOptionType"
+			class="com.picsauditing.actions.auditType.ManageOptionType">
+			<result>struts/audits/manage_option_type.jsp</result>
+		</action>
 				
 		<action name="ManageQuestionCopyAjax"
 			class="com.picsauditing.actions.auditType.ManageQuestion">

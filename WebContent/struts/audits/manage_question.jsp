@@ -14,17 +14,20 @@
 <script type="text/javascript">
 $(function(){
 	$('select[name=question.questionType]').change(function(){
-		if($(this).val()=='Radio' || $(this).val()=='Yes/No/NA' || $(this).val()=='Yes/No' || $(this).val()=='Rating 1-5')
+		if($(this).val()=='MultipleChoice') {
 			$('.scoreWeight').show();
-		else{
+			$('#optionTypes').show();
+		} else {
 			$('.scoreWeight').hide();
 			$('.scoreWeight input[name=question.scoreWeight]').val(0);
+			$('#optionTypes').hide();
 		}
 	}).trigger('change');
 
 	showFlags();
 	showAuditTypeRules();
 	showCategoryRules();
+	toggleOtherOptionType();
 });
 
 function copyQuestion(atypeID) {
@@ -122,6 +125,16 @@ function showCategoryRules() {
 	$('#categoryrules').think({message: "Loading Related Category Rules..." }).load('CategoryRuleTableAjax.action', data);
 }
 
+function toggleOtherOptionType() {
+	if ($('#optionTypes select').val() == 0)
+		$('#optionTypeOther_text').show();
+	else {
+		$('#optionTypeOther_text').hide();
+		$('#optionTypeOther_text').val('');
+		$('#optionTypeOther_hidden').val($('#optionTypes select').val());
+	}
+}
+
 </script>
 </head>
 <body>
@@ -145,8 +158,12 @@ function showCategoryRules() {
 			</s:else>
 		</li>
 		<li><label>Question Type:</label>
-			<s:select list="questionTypes" name="question.questionType" headerKey="" headerValue="" /> 
-			<s:if test ="question.questionType == 'Radio'"><a href="ManageQuestionOption.action?id=<s:property value="question.id"/>">Manage Options</a></s:if>
+			<s:select list="questionTypes" name="question.questionType" headerKey="" headerValue="" />
+			<div id="optionTypes" style="<s:if test="!question.questionType.equals('MultipleChoice')">display: none; </s:if>clear: left;">
+				<s:select list="optionTypes" headerKey="0" headerValue="- Other -" listKey="id" 
+					listValue="name" id="optionTypes" id="optionTypes" onchange="toggleOtherOptionType();" />
+				<pics:autocomplete action="OptionTypeAutocomplete" htmlName="question.option.id" value="question.option" htmlId="optionTypeOther" />
+			</div>
 			<pics:fieldhelp title="Question Type">
 				<p>The type of widget to use on the user interface.</p>
 				<ul>
@@ -204,8 +221,7 @@ function showCategoryRules() {
 			<s:checkbox name="question.flaggable"/>
 		</li>
 		<s:if test="auditType.scoreable">
-			<li class="scoreWeight" <s:if test="!(question.questionType.equals('Radio') || question.questionType.equals('Yes/No/NA') ||
-				question.questionType.equals('Yes/No'))">
+			<li class="scoreWeight" <s:if test="!(question.questionType.equals('MultipleChoice'))">
 				style="display: none;"</s:if>><label>Score Weight:</label>
 				<s:textfield name="question.scoreWeight" />
 				<pics:fieldhelp title="Score Weight">

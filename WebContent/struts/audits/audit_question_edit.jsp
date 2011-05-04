@@ -74,42 +74,41 @@ $(function() {
 		<s:if test="mode == 'Verify'">
 			<s:property value="#a.answer"/>
 		</s:if>
+		
+		<!-- Option Types -->
+		<s:if test="#q.questionType.equals('MultipleChoice') && #q.option != null">
+			<s:if test="#q.option.radio">
+				<s:radio theme="audits" list="#q.option.questionOptions" listValue="name" listKey="i18nKey" name="auditData.answer" value="%{#a.answer}"></s:radio>
+				<s:if test="#q.auditType.policy && #q.option.uniqueCode.equals('YesNo')">
+					<s:set name="op" value="%{getOperatorByName(#q.category.name)}" />
+					<s:if test="#op != null && #op.id > 0">	
+						<div class="clearfix question shaded">
+							If it does NOT comply, please explain below.
+							<s:if test="#op.insuranceForms.size > 0">
+								<ul style="list-style:none">
+									<s:iterator value="#op.insuranceForms">
+										<li><a href="forms/<s:property value="file"/>" target="_BLANK" title="Opens in new Window"><s:property value="formName"/></a></li>
+									</s:iterator>
+								</ul>
+							</s:if>
+							<br clear="all"/>
+							<div class="clear"></div>
+						</div>
+					</s:if>
+				</s:if>
+			</s:if>
+			<s:else>
+				<s:select list="#q.option.questionOptions" listValue="name" listKey="i18nKey" name="auditData.answer" value="%{#a.answer}" />
+			</s:else>
+		</s:if>
+		
 		<!-- Radios/Check boxes -->
 		<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Main Work' || #q.questionType == 'Industry'">
 			<s:checkbox fieldValue="X" name="auditData.answer" value="#a.answer == \"X\""/>
 		</s:if>
-		<s:if test="#q.questionType == 'Yes/No'">
-			<s:radio theme="audits" list="#{'Yes':'Yes','No':'No'}" name="auditData.answer" value="%{#a.answer}"></s:radio>
-			<s:if test="#q.auditType.policy">
-				<s:set name="op" value="%{getOperatorByName(#q.category.name)}" />
-				<s:if test="#op != null && #op.id > 0">	
-					<div class="clearfix question shaded">
-						If it does NOT comply, please explain below.
-						<s:if test="#op.insuranceForms.size > 0">
-							<ul style="list-style:none">
-								<s:iterator value="#op.insuranceForms">
-									<li><a href="forms/<s:property value="file"/>" target="_BLANK" title="Opens in new Window"><s:property value="formName"/></a></li>
-								</s:iterator>
-							</ul>
-						</s:if>
-						<br clear="all"/>
-						<div class="clear"></div>
-					</div>
-				</s:if>
-			</s:if>
-		</s:if>
-		<s:if test="#q.questionType == 'Yes/No/NA'">
-			<s:radio theme="audits" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="auditData.answer" value="%{#a.answer}"></s:radio>
-		</s:if>
-		<s:if test="#q.questionType == 'Office Location'">
-			<s:radio theme="audits" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" name="auditData.answer" value="%{#a.answer}"></s:radio>
-		</s:if>
 		<s:if test="#q.questionType == 'Radio'">
 			<s:radio theme="audits" list="#q.optionsVisible" listKey="optionName" listValue="optionName" 
 				name="auditData.answer" value="#a.answer" />
-		</s:if>
-		<s:if test="#q.questionType == 'Rating 1-5'">
-			<s:select list="{1,2,3,4,5}" name="auditData.answer" value="#a.answer" headerKey="" headerValue=""/>
 		</s:if>
 		<!-- Non checkboxes/radio -->
 		<s:if test="#q.questionType == 'Text Area'">
@@ -128,15 +127,6 @@ $(function() {
 		<s:if test="#q.questionType == 'License'">
 			<s:textfield name="auditData.answer" value="%{#a.answer}" size="30"/>
 			<s:property value="@com.picsauditing.util.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
-		</s:if>
-		<s:if test="#q.questionType == 'State'">
-			<!-- TODO remove -->
-			<s:select list="stateList" value="%{#a.answer}" name="auditData.answer" headerKey="" headerValue="- State -" listKey="isoCode" listValue="name"></s:select>
-		</s:if>
-		<s:if test="#q.questionType == 'Country'">
-			<s:select list="countryList" name="auditData.answer" value="%{#a.answer}"
-				headerKey="" headerValue="- Country -" listKey="isoCode" listValue="english">
-			</s:select>
 		</s:if>
 		<s:if test="#q.questionType == 'Money' || #q.questionType == 'Number' || #q.questionType == 'Decimal Number'">
 			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="number" size="30"/>

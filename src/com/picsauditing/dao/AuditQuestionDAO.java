@@ -6,9 +6,11 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.AuditOptionType;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
 @Transactional
+@SuppressWarnings("unchecked")
 public class AuditQuestionDAO extends PicsDAO {
 
 	public AuditQuestion save(AuditQuestion o) {
@@ -37,7 +39,6 @@ public class AuditQuestionDAO extends PicsDAO {
 	 * @param where
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findWhere(String where) {
 		if (where == null)
 			where = "";
@@ -48,21 +49,18 @@ public class AuditQuestionDAO extends PicsDAO {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findFlaggableQuestions() {
 		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE flaggable = TRUE ORDER BY "
 				+ "t.category,t.number");
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findByCategory(int categoryID) {
 		Query query = em.createQuery("select t FROM AuditQuestion t WHERE t.category.id = ? " + "ORDER BY t.number");
 		query.setParameter(1, categoryID);
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findQuestionByType(String questionType) {
 		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE t.questionType = ? ORDER BY "
 				+ "t.category, t.number");
@@ -71,7 +69,6 @@ public class AuditQuestionDAO extends PicsDAO {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findQuestionsByUniqueCodes(List<String> uniqueCodes) {
 		StringBuilder sb = new StringBuilder("SELECT t FROM AuditQuestion t WHERE t.uniqueCode in ( ");
 
@@ -89,4 +86,23 @@ public class AuditQuestionDAO extends PicsDAO {
 
 	}
 
+	public List<AuditOptionType> getAllOptionTypes() {
+		return findOptionTypeWhere(null);
+	}
+
+	public AuditOptionType findOptionType(int id) {
+		Query query = em.createQuery("SELECT o FROM AuditOptionType o WHERE o.id = ?");
+		query.setParameter(1, id);
+		return (AuditOptionType) query.getSingleResult();
+	}
+	
+	public List<AuditOptionType> findOptionTypeWhere(String where) {
+		if (where != null && !where.isEmpty())
+			where = " WHERE " + where;
+		else
+			where = "";
+		
+		Query query = em.createQuery("SELECT o FROM AuditOptionType o" + where);
+		return query.getResultList();
+	}
 }

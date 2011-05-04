@@ -16,7 +16,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -42,9 +41,9 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	static public final int EXCESS_EACH = 2161;
 	static public final int EXCESS_AGGREGATE = 2165;
 
-	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest", "Check Box", "Country", "Date",
-			"Decimal Number", "File", "FileCertificate", "Industry", "License", "Main Work", "Money", "Number",
-			"Office Location", "Radio", "Service", "State", "Text", "Text Area", "Yes/No", "Yes/No/NA", "Rating 1-5" };
+	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest", "Check Box", "Date", "Decimal Number",
+			"File", "FileCertificate", "Industry", "License", "Main Work", "Money", "MultipleChoice", "Number",
+			"Service", "Text", "Text Area" };
 
 	private int number;
 	private int scoreWeight;
@@ -57,6 +56,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private String visibleAnswer;
 	private String name;
 	private String questionType;
+	private AuditOptionType option;
 	private String okAnswer;
 	private String columnHeader;
 	private String uniqueCode;
@@ -89,6 +89,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.number = a.number;
 		this.name = a.name;
 		this.questionType = a.questionType;
+		this.option = a.option;
 		this.hasRequirement = a.hasRequirement;
 		this.okAnswer = a.okAnswer;
 		this.required = a.required;
@@ -155,6 +156,16 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	public void setQuestionType(String questionType) {
 		this.questionType = questionType;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "optionID")
+	public AuditOptionType getOption() {
+		return option;
+	}
+
+	public void setOption(AuditOptionType option) {
+		this.option = option;
 	}
 
 	public void setHasRequirement(boolean hasRequirement) {
@@ -423,25 +434,6 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	public void setAuditTypeRules(List<AuditTypeRule> auditTypeRules) {
 		this.auditTypeRules = auditTypeRules;
-	}
-
-	@OneToMany(mappedBy = "auditQuestion")
-	@OrderBy("number")
-	public List<AuditQuestionOption> getOptions() {
-		return options;
-	}
-
-	@Transient
-	public List<AuditQuestionOption> getOptionsVisible() {
-		List<AuditQuestionOption> options = new ArrayList<AuditQuestionOption>();
-		for (AuditQuestionOption o : getOptions())
-			if (o.isVisibleB())
-				options.add(o);
-		return options;
-	}
-
-	public void setOptions(List<AuditQuestionOption> options) {
-		this.options = options;
 	}
 
 	@Transient

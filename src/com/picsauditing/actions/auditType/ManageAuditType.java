@@ -18,7 +18,6 @@ import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditQuestionOption;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -53,9 +52,8 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	List<? extends AuditRule> relatedRules;
 	List<Workflow> workFlowList = null;
 
-	public ManageAuditType(AuditTypeDAO auditTypeDAO,
-			AuditCategoryDAO auditCategoryDAO, AuditQuestionDAO auditQuestionDAO, AuditDecisionTableDAO ruleDAO,
-			WorkFlowDAO wfDAO) {
+	public ManageAuditType(AuditTypeDAO auditTypeDAO, AuditCategoryDAO auditCategoryDAO,
+			AuditQuestionDAO auditQuestionDAO, AuditDecisionTableDAO ruleDAO, WorkFlowDAO wfDAO) {
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.auditQuestionDAO = auditQuestionDAO;
@@ -310,15 +308,17 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		 * auditQuestionTextDAO.save(aqtCopy); }
 		 */
 
-		if (a.getOptions() != null && copy.getOptions() == null)
-			copy.setOptions(new ArrayList<AuditQuestionOption>());
-		for (AuditQuestionOption questionOption : a.getOptions()) {
-			AuditQuestionOption aqoCopy = new AuditQuestionOption(questionOption, copy);
-			aqoCopy.setAuditColumns(permissions);
-
-			copy.getOptions().add(questionOption);
-			auditQuestionDAO.save(aqoCopy);
-		}
+		// TODO Do we need to copy the option type and the question options?
+		/*
+		 * if (a.getOptions() != null && copy.getOptions() == null)
+		 * copy.setOptions(new ArrayList<AuditQuestionOption>()); for
+		 * (AuditQuestionOption questionOption : a.getOptions()) {
+		 * AuditQuestionOption aqoCopy = new AuditQuestionOption(questionOption,
+		 * copy); aqoCopy.setAuditColumns(permissions);
+		 * 
+		 * copy.getOptions().add(questionOption);
+		 * auditQuestionDAO.save(aqoCopy); }
+		 */
 
 		auditQuestionDAO.save(copy);
 

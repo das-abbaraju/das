@@ -13,16 +13,17 @@ import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditOptionType;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageQuestion extends ManageCategory {
-
 	protected AuditDataDAO auditDataDAO;
 	private Integer requiredQuestionID;
 	private Integer visibleQuestionID;
+	private List<AuditOptionType> optionTypes;
 
 	public ManageQuestion(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
 			AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO, AuditDecisionTableDAO ruleDAO,
@@ -54,11 +55,16 @@ public class ManageQuestion extends ManageCategory {
 
 	public boolean save() {
 		if (question != null) {
-			if(Strings.isEmpty(question.getName())) {
+			if (Strings.isEmpty(question.getName())) {
 				addActionError("Question name is required");
 				return false;
 			}
 			
+			if (question.getQuestionType().equals("MultipleChoice") && question.getOption() == null) {
+				addActionError("Option type is required when 'Multiple Choice' is used as the question type");
+				return false;
+			}
+
 			if (question.getNumber() == 0) {
 				int maxID = 0;
 				for (AuditQuestion sibling : category.getQuestions()) {
@@ -99,7 +105,7 @@ public class ManageQuestion extends ManageCategory {
 
 			question = auditQuestionDAO.save(question);
 			id = question.getCategory().getId();
-
+			
 			recalculateCategory();
 			return true;
 		}
@@ -207,6 +213,16 @@ public class ManageQuestion extends ManageCategory {
 
 	public String[] getQuestionTypes() {
 		return AuditQuestion.TYPE_ARRAY;
+	}
+
+	public List<AuditOptionType> getOptionTypes() {
+		if (optionTypes == null) {
+			// Get common
+			String ids = Strings.implode(AuditOptionType.COMMON_TYPES);
+			optionTypes = auditQuestionDAO.findOptionTypeWhere("o.id IN (" + ids + ") ORDER BY o.name");
+		}
+
+		return optionTypes;
 	}
 
 	public Integer getRequiredQuestionID() {

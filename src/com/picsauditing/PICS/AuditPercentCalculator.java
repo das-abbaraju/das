@@ -129,28 +129,36 @@ public class AuditPercentCalculator {
 							int answerValue = 0;
 							float scale = 1.0f;
 
-							if ("Radio".equals(question.getQuestionType())) {
-								for (AuditQuestionOption option : question.getOptions()) {
-									scale = Math.max(scale, option.getScore());
-									if (answer.getAnswer().equals(option.getOptionName())) {
-										answerValue = option.getScore();
+							if ("MultipleChoice".equals(question.getQuestionType()) && question.getOption() != null) {
+								if (!Strings.isEmpty(question.getOption().getUniqueCode())) {
+									final String uniqueCode = question.getOption().getUniqueCode();
+									if ("YesNo".equals(uniqueCode)) {
+										scale = 1.0f;
+										if (answer.getAnswer().equals("AuditOptionType.YesNo.Yes"))
+											answerValue = 1;
+									} else if ("YesNoNA".equals(uniqueCode)) {
+										scale = 2.0f;
+										if (answer.getAnswer().equals("AuditOptionType.YesNoNA.Yes"))
+											answerValue = 2;
+										else if (answer.getAnswer().equals("AuditOptionType.YesNoNA.No"))
+											answerValue = 1;
+									} else if ("Rating".equals(uniqueCode)) {
+										scale = 4.0f;
+										try {
+											// Rating values are saved as
+											// AuditOptionType.Rating.1
+											String numberValue = answer.getAnswer().substring(
+													answer.getAnswer().lastIndexOf("."), answer.getAnswer().length());
+											answerValue = Integer.parseInt(numberValue);
+										} catch (NumberFormatException justIgnoreIt) {
+										}
 									}
-								}
-							} else if ("Yes/No".equals(question.getQuestionType())) {
-								scale = 1.0f;
-								if (answer.getAnswer().equals("Yes"))
-									answerValue = 1;
-							} else if ("Yes/No/NA".equals(question.getQuestionType())) {
-								scale = 2.0f;
-								if (answer.getAnswer().equals("Yes"))
-									answerValue = 2;
-								else if (answer.getAnswer().equals("NA"))
-									answerValue = 1;
-							} else if ("Rating 1-5".equals(question.getQuestionType())) {
-								scale = 4.0f;
-								try {
-									answerValue = Integer.parseInt(answer.getAnswer()) - 1;
-								} catch (NumberFormatException justIgnoreIt) {
+								} else {
+									for (AuditQuestionOption option : question.getOption().getQuestionOptions()) {
+										scale = Math.max(scale, option.getScore());
+										if (answer.getAnswer().equals(option.getI18nKey()))
+											answerValue = option.getScore();
+									}
 								}
 							}
 
