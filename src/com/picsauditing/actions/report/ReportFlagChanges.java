@@ -24,7 +24,7 @@ public class ReportFlagChanges extends ReportAccount {
 	public ReportFlagChanges(ContractorOperatorDAO contractorOperatorDAO) {
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		setReportName("Flag Changes");
-		orderByDefault = "flagEnum, a.name, operator.name";
+		orderByDefault = "baselineEnum, flagEnum DESC, a.name, operator.name";
 	}
 
 	@Override
@@ -137,7 +137,10 @@ public class ReportFlagChanges extends ReportAccount {
 		sql.addField("gc_flag.creationDate");
 		sql.addField("case when gc_flag.baselineFlag = 'Green' then 1 when gc_flag.baselineFlag is null then "
 				+ "2 when gc_flag.baselineFlag = 'Amber' then 3 when gc_flag.baselineFlag = 'Red' then 4 "
-				+ "when gc_flag.baselineFlag = 'Clear' then 5 end as `flagEnum`");
+				+ "when gc_flag.baselineFlag = 'Clear' then 5 end as `baselineEnum`");
+		sql.addField("case when gc_flag.flag = 'Green' then 1 when gc_flag.flag is null then "
+				+ "2 when gc_flag.flag = 'Amber' then 3 when gc_flag.flag = 'Red' then 4 "
+				+ "when gc_flag.flag = 'Clear' then 5 end as `flagEnum`");
 		sql.addWhere("a.status IN ('Active')");
 		sql.addWhere("operator.status IN ('Active') AND operator.type = 'Operator'");
 		sql.addWhere("a.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK)");
