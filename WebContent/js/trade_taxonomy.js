@@ -4,6 +4,22 @@ $(function() {
 		"themes": {
 			theme: "classic"	
 		},
+		"types": {
+			"types": {
+				"service": {
+					"icon": {
+					}
+				},
+				"product": {
+					"icon": {
+					}
+				},
+				"product-service": {
+					"icon": {
+					}
+				}
+			}
+		},
 		"json_data": {
 			"ajax": {
 				"url": 'TradeTaxonomy!json.action',
@@ -51,7 +67,7 @@ $(function() {
 				}
 			}
 		},
-		"plugins": ["themes", "json_data", "dnd", "crrm", "contextmenu", "ui"]
+		"plugins": ["themes", "types", "json_data", "dnd", "crrm", "contextmenu", "ui"]
 	}).bind("move_node.jstree", function (e, data) {
 		var parent = null;
 		if (data.rslt.np[0] !== this)

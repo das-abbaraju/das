@@ -369,6 +369,12 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		JSONObject attr = new JSONObject();
 		attr.put("id", id);
 		attr.put("class", "trade-" + id);
+		if (getProductI() && getServiceI())
+			attr.put("rel", "product-service");
+		else if (getServiceI())
+			attr.put("rel", "service");
+		else if (getProductI())
+			attr.put("rel", "product");
 
 		json.put("attr", attr);
 
