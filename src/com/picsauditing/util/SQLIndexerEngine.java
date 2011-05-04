@@ -108,6 +108,7 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 			} catch (SQLException e) {
 				// TODO: handle exception
 				// Query didn't work, or db failed. Should we catch?
+				e.printStackTrace();
 			} finally {
 				closeConnection(connection);
 				closeStatement(indexBatch);

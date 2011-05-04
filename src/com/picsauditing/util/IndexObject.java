@@ -1,8 +1,8 @@
 package com.picsauditing.util;
 
-public class IndexObject {
-	public String value;
-	public int weight;
+public final class IndexObject {
+	private String value;
+	private int weight;
 
 	public IndexObject(String value, int weight) {
 		this.value = value;

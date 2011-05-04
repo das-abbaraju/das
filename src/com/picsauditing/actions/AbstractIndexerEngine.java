@@ -1,15 +1,10 @@
 package com.picsauditing.actions;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Table;
-
-import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.dao.IndexableDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -18,7 +13,6 @@ import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.IndexerEngine;
 import com.picsauditing.util.Strings;
 

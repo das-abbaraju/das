@@ -6,8 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation
+ * This annotation is used on getter methods to say that a value needs to be
+ * indexed Uses an <code>IndexValueType</code> to specific how to treat the
+ * value and <code>weight</code> to give a weight to the value
  * 
+ * @see IndexValueType
  * @author David Tomberlin
  * 
  */

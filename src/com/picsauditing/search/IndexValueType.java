@@ -11,6 +11,13 @@ import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.util.IndexObject;
 import com.picsauditing.util.Strings;
 
+/**
+ * Extensible enum handling how to treat retrieving the value from a method that
+ * is to be indexed
+ * 
+ * @author David Tomberlin
+ * 
+ */
 public enum IndexValueType {
 
 	STRINGTYPE { // Treat the value as a simple string
