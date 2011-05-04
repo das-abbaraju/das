@@ -73,6 +73,8 @@ public class Certificate extends BaseTable {
 
 	@Transient
 	public boolean isExpired(Date date) {
-		return expirationDate == null ? false : expirationDate.before(date);
+		if (expirationDate == null)
+			return false;
+		return expirationDate.before(date);
 	}
 }

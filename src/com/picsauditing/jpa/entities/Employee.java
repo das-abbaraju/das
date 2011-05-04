@@ -60,7 +60,7 @@ public class Employee extends AbstractIndexableTable {
 	Set<EmployeeQualification> employeeQualifications = new HashSet<EmployeeQualification>();
 	List<AssessmentResult> assessmentResults = new ArrayList<AssessmentResult>();
 
-	@IndexableField(type = IndexValueType.CLEANSTRING, weight = 7)
+	@IndexableField(type = IndexValueType.CLEANSTRING, weight = 6)
 	public String getFirstName() {
 		return firstName;
 	}

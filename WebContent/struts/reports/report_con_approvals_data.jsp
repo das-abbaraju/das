@@ -44,7 +44,7 @@
 			</td>
 			<td>
 				<div style="height:28px;">
-					Change Work Status to: 
+					Change Selected Status to: 
 					<s:radio cssClass="workStatus" list="#{'Y':'Yes','N':'No','P':'Pending'}" name="workStatus"/>
 				</div>
 				Notes: <s:textarea name="operatorNotes" cols="20" rows="4"/>
