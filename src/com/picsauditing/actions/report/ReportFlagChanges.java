@@ -147,6 +147,7 @@ public class ReportFlagChanges extends ReportAccount {
 		sql.addWhere("gc_flag.baselineFlag != 'Clear'");
 		sql.addWhere("gc_flag.flag != 'Clear'");
 		sql.addWhere("gc_flag.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK)");
+		sql.addWhere("gc_flag.forceFlag IS NULL OR NOW() >= gc_flag.forceEnd");
 		sql.addGroupBy("c.id, gc_flag.flag, gc_flag.baselineFlag, gc_flag.flagDetail, gc_flag.baselineFlagDetail");
 
 		if (!Strings.isEmpty(opIds))

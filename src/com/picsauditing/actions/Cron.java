@@ -496,7 +496,9 @@ public class Cron extends PicsActionSupport {
 		// Ignore Flag Changes for recently added contractors
 		query += "OR gc.creationDate >= DATE_SUB(NOW(), INTERVAL 2 WEEK) ";
 		// Ignore Clear Flag Changes
-		query += "OR flag = 'Clear' OR baselineFlag = 'Clear')";
+		query += "OR flag = 'Clear' OR baselineFlag = 'Clear'";
+		// Removed Forced Overall Flags
+		query += "OR (forceFlag IS NOT NULL AND NOW() < forceEnd))";
 
 		new Database().executeUpdate(query);
 	}
