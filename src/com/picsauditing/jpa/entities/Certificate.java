@@ -65,14 +65,14 @@ public class Certificate extends BaseTable {
 	public void setExpirationDate(Date expirationDate) {
 		this.expirationDate = expirationDate;
 	}
-	
+
 	@Transient
 	public boolean isExpired() {
 		return isExpired(new Date());
 	}
-	
+
 	@Transient
 	public boolean isExpired(Date date) {
-		return expirationDate.before(date);
+		return expirationDate == null ? false : expirationDate.before(date);
 	}
 }
