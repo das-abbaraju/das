@@ -119,6 +119,14 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		if (!permissions.isAdmin())
 			throw new NoRightsException("ScheduleAudits");
 
+		if(auditor==null){
+			addActionError("You must select an auditor when scheduling an audit");
+			return "edit";
+		}
+		
+		conAudit.setAuditor(auditor);
+		conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(auditor)));
+		
 		Date scheduledDateInUserTime = DateBean.parseDateTime(scheduledDateDay + " " + scheduledDateTime);
 		if (scheduledDateInUserTime == null) {
 			addActionError(scheduledDateTime + " is not a valid time");
@@ -146,11 +154,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
 			sendConfirmationEmail(getText(conAudit.getAuditType().getI18nKey("name")) + " Re-scheduled for "
 					+ shortScheduleDate);
-		}
-
-		if (auditor != null) {
-			conAudit.setAuditor(auditor);
-			conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(auditor)));
 		}
 
 		addActionMessage("Audit Saved Successfully");
