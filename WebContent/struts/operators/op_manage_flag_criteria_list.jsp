@@ -6,6 +6,12 @@
 $(document).ready(function() {
 	$('.datepicker').datepicker();
 });
+
+function recalculateAll() {
+	<s:iterator value="criteriaList">
+	updateAffected(<s:property value="id" />, <s:property value="account.id" />);
+	</s:iterator>
+}
 </script>
 <s:if test="criteriaList.size() > 0">
 <table class="report">
@@ -110,6 +116,9 @@ $(document).ready(function() {
 		</s:iterator>
 	</tbody>
 </table>
+<div style="text-align: right;">
+	<input type="button" value="<s:text name="ManageFlagCriteriaOperator.button.UpdateAffectedCounts" />" class="picsbutton" onclick="recalculateAll(); return false;" />
+</div>
 </s:if>
 <s:else>
 <div class="alert">This operator doesn't have any <s:if test="insurance">insurance</s:if><s:else>flag</s:else> criteria.</div>

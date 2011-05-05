@@ -333,8 +333,9 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 				SelectSQL sql2 = new SelectSQL("contractor_audit_operator cao");
 				sql2.addJoin("JOIN contractor_audit ca ON ca.id = cao.auditID AND ca.conID IN ("
 						+ Strings.implode(conIDs) + ")");
-				sql2.addJoin("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id AND caop.opID = "
-						+ op.getId());
+				if (op.isOperator())
+					sql2.addJoin("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id AND caop.opID = "
+							+ op.getId());
 
 				sql2.addWhere("cao.visible = 1");
 
