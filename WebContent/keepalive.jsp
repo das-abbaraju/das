@@ -2,6 +2,7 @@
     pageEncoding="ISO-8859-1"%>  
 <%@page import="java.lang.management.OperatingSystemMXBean"%>
 <%@page import="java.lang.management.ManagementFactory"%>
+<%@page session="false" %>
 
 <%
 String[] loadFactors = request.getParameterValues("load_factor");
