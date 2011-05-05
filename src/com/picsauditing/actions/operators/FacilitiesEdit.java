@@ -150,6 +150,36 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				salesRep = null;
 			}
 
+			if (button.equalsIgnoreCase("CopyToChildAccounts")) {
+				AccountUser accountUser = accountUserDAO.find(accountUserId);
+				for (Facility facility : operator.getOperatorFacilities()) {
+					if (facility.getOperator().getStatus().isActiveDemo()) {
+						boolean hasAccountRep = false;
+						int percent = 0;
+						for (AccountUser accountUser2 : facility.getOperator().getAccountUsers()) {
+							if (accountUser2.isCurrent() && accountUser2.getRole().equals(accountUser.getRole())) {
+								percent += accountUser2.getOwnerPercent();
+								if (accountUser2.getUser().equals(accountUser.getUser()) || percent >= 100) {
+									hasAccountRep = true;
+									break;
+								}
+							}
+						}
+						if (!hasAccountRep) {
+							AccountUser au = new AccountUser();
+							au.setUser(accountUser.getUser());
+							au.setOwnerPercent(accountUser.getOwnerPercent());
+							au.setRole(accountUser.getRole());
+							au.setStartDate(accountUser.getStartDate());
+							au.setEndDate(accountUser.getEndDate());
+							au.setAccount(facility.getOperator());
+							accountUserDAO.save(au);
+						}
+					}
+				}
+				addActionMessage("Successfully Copied to all child operators");
+			}
+
 			if (button.equalsIgnoreCase("Save Role")) {
 				operatorDao.save(operator);
 			}
@@ -373,11 +403,11 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		if (operator.getCountry() == null) {
 			errorMessages.addElement("Please select a country");
 		}
-		
-		if(operator.getActivationFee() != null && operator.getActivationFee() > 200) {
+
+		if (operator.getActivationFee() != null && operator.getActivationFee() > 200) {
 			errorMessages.addElement("Please enter a valid range of 0 to 199 for Activation fee");
 		}
-		
+
 		return errorMessages;
 	}
 

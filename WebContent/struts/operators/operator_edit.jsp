@@ -340,6 +340,9 @@ function checkFee(activationFee, oldValue) {
 								<td>Start</td>
 								<td>End</td>
 								<td></td>
+								<s:if test="operator.corporate">
+									<td></td>
+								</s:if>
 							</tr>
 						</thead>
 						<tbody>
@@ -358,6 +361,11 @@ function checkFee(activationFee, oldValue) {
 										<td><a
 											href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=Remove"
 											class="remove">Remove</a></td>
+										<s:if test="operator.corporate">
+											<td><a
+											href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=CopyToChildAccounts"
+											class="add">Copy To Child Accounts</a></td>
+										</s:if>										
 									</tr>
 									<tr id="show_<s:property value="id"/>" style="display: none;">
 										<td colspan="4"><nobr><s:textfield
@@ -382,14 +390,13 @@ function checkFee(activationFee, oldValue) {
 								<td colspan="4"><s:select name="salesRep.user.id"
 									list="userList" listKey="id" listValue="name" headerKey="0"
 									headerValue="- Select a User -" /></td>
-								<td><s:hidden value="PICSSalesRep" name="salesRep.role" /><input
+								<td <s:if test="operator.corporate">colspan="2"</s:if>><s:hidden value="PICSSalesRep" name="salesRep.role" /><input
 									type="submit" class="picsbutton positive" name="button"
 									value="Add Role" /></td>
 							</tr>
 						</tbody>
 					</table>
 					</li>
-
 					<li><label>Account Managers: </label>
 					<table class="report">
 						<thead>
@@ -399,6 +406,9 @@ function checkFee(activationFee, oldValue) {
 								<td>Start</td>
 								<td>End</td>
 								<td></td>
+								<s:if test="operator.corporate">
+									<td></td>
+								</s:if>
 							</tr>
 						</thead>
 						<tbody>
@@ -416,6 +426,11 @@ function checkFee(activationFee, oldValue) {
 										<td><a
 											href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=Remove"
 											class="remove">Remove</a></td>
+										<s:if test="operator.corporate">
+											<td><a
+											href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=CopyToChildAccounts"
+											class="add">Copy To Child Accounts</a></td>
+										</s:if>										
 									</tr>
 									<tr id="show_<s:property value="id"/>" style="display: none;">
 										<td colspan="4"><nobr><s:textfield
@@ -440,7 +455,7 @@ function checkFee(activationFee, oldValue) {
 								<td colspan="4"><s:select name="accountRep.user.id"
 									list="userList" listKey="id" listValue="name" headerKey="0"
 									headerValue="- Select a User -" /></td>
-								<td><s:hidden value="PICSAccountRep"
+								<td <s:if test="operator.corporate">colspan="2"</s:if>><s:hidden value="PICSAccountRep"
 									name="accountRep.role" /><input type="submit"
 									class="picsbutton positive" name="button" value="Add Role" /></td>
 							</tr>
