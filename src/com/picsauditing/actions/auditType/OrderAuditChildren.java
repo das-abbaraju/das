@@ -8,7 +8,9 @@ import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditOptionType;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditQuestionOption;
 import com.picsauditing.jpa.entities.AuditType;
 
 @SuppressWarnings("serial")
@@ -22,9 +24,10 @@ public class OrderAuditChildren extends PicsActionSupport {
 	protected AuditCategoryDAO auditCategoryDAO;
 	protected AuditQuestionDAO auditQuestionDAO;
 
-	public OrderAuditChildren(AuditTypeDAO auditTypeDAO, AuditCategoryDAO auditCategoryDAO) {
+	public OrderAuditChildren(AuditTypeDAO auditTypeDAO, AuditCategoryDAO auditCategoryDAO, AuditQuestionDAO auditQuestionDAO) {
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
+		this.auditQuestionDAO = auditQuestionDAO;
 	}
 
 	public String execute() {
@@ -64,6 +67,16 @@ public class OrderAuditChildren extends PicsActionSupport {
 				question.setNumber(list.get(question.getId()));
 			}
 			auditCategoryDAO.save(auditSubCategory);
+		}
+		
+		// Change the Order numbers of the AuditQuestions
+		if (type.equals("AuditQuestionOption")) {
+			AuditOptionType auditOptionType = auditQuestionDAO.findOptionType(id);
+			for (AuditQuestionOption questionOption : auditOptionType.getQuestionOptions()) {
+				questionOption.setNumber(list.get(questionOption.getId()));
+			}
+			
+			auditQuestionDAO.save(auditOptionType);
 		}
 
 		return SUCCESS;

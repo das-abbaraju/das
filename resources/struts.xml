@@ -1308,6 +1308,7 @@
 		<action name="ManageQuestionOption"
 			class="com.picsauditing.actions.auditType.ManageQuestionOptions">
 			<result>struts/audits/manage_question_options.jsp</result>
+			<result name="list">struts/audits/manage_question_options_list.jsp</result>
 		</action>
 		
 		<action name="ManageOptionType"

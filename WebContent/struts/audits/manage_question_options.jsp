@@ -23,15 +23,15 @@ function loadEdit(id) {
 	if (id > 0) {
 		$('#save input[name=\'optionID\']').val(id);
 		$('#optionIDField').text(id);
-		$('#save input[name=\'option.name\']').val($('tr#row_' + id + ' .optionName').text());
-		if ($('tr#row_' + id + ' .optionVisible').is(':empty'))
+		$('#save input[name=\'option.name\']').val($('tr#item_' + id + ' .optionName').text());
+		if ($('tr#item_' + id + ' .optionVisible').is(':empty'))
 			$('#save input[name=\'option.visible\']').removeAttr('checked');
 		else
 			$('#save input[name=\'option.visible\']').attr('checked', true);
 		
-		$('#save input[name=\'option.number\']').val($('tr#row_' + id + ' .optionNumber').text());
-		$('#save input[name=\'option.score\']').val($('tr#row_' + id + ' .optionScore').text());
-		$('#save input[name=\'option.uniqueCode\']').val($('tr#row_' + id + ' .optionUniqueCode').text());
+		$('#save input[name=\'option.number\']').val($('tr#item_' + id + ' .optionNumber').text());
+		$('#save input[name=\'option.score\']').val($('tr#item_' + id + ' .optionScore').text());
+		$('#save input[name=\'option.uniqueCode\']').val($('tr#item_' + id + ' .optionUniqueCode').text());
 	} else {
 		$('#save input[name=\'optionID\']').val(id);
 		$('#optionIDField').text(id);
@@ -42,20 +42,6 @@ function loadEdit(id) {
 		$('#save input[name=\'option.uniqueCode\']').val('');
 	}
 }
-
-$(function() {
-	$('#questionOptions table.report tbody').sortable({
-		helper: function(e, tr) {
-		  var $originals = tr.children();
-		  var $helper = tr.clone();
-		  $helper.children().each(function(index) {
-			  $(this).width($originals.eq(index).width())
-		  });
-		  
-		  return $helper;
-		}
-	}).disableSelection();
-});
 </script>
 </head>
 <body>
@@ -69,6 +55,7 @@ $(function() {
 			<div id="questionOptions">
 				<s:include value="manage_question_options_list.jsp" />
 			</div>
+			<div id="questionOptions-info"></div>
 		</td>
 		<td style="padding-left: 20px; vertical-align: top;">
 			<a href="#" onclick="loadEdit(0); return false;" class="add">Add New Question Option</a>

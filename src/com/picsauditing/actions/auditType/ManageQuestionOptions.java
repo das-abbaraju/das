@@ -62,6 +62,10 @@ public class ManageQuestionOptions extends PicsActionSupport implements Preparab
 		// TODO check which questions have this answer
 		return SUCCESS;
 	}
+	
+	public String listAjax() throws Exception {
+		return "list";
+	}
 
 	public AuditOptionType getType() {
 		return type;
