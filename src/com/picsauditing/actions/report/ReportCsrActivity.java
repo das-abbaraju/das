@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -20,7 +21,8 @@ public class ReportCsrActivity extends ReportActionSupport {
 	protected UserDAO userDAO = null;
 	protected int[] csrIds;
 	protected String year = "";
-
+	protected Date filterDate1;
+	protected Date filterDate2;
 
 	public ReportCsrActivity(UserDAO userDAO) {
 		this.userDAO = userDAO;
@@ -31,8 +33,8 @@ public class ReportCsrActivity extends ReportActionSupport {
 			return LOGIN;
 		
 		if(!filterOn(csrIds)) {
-			csrIds = new int[getCsrs().size()];
 			if(permissions.hasGroup(User.GROUP_MANAGER)) {
+				csrIds = new int[getCsrs().size()];
 				int i = 0;
 				for(User u : getCsrs()) {
 					csrIds[i] = u.getId();
@@ -40,6 +42,7 @@ public class ReportCsrActivity extends ReportActionSupport {
 				}
 			}
 			else {
+				csrIds = new int[1];
 				csrIds[0] = permissions.getUserId();
 			}
 		}
@@ -100,6 +103,11 @@ public class ReportCsrActivity extends ReportActionSupport {
 			addWhere("n.createdBy IN (" + list + ")");
 			addWhere("n.status = 2");
 			addWhere("year(n.creationDate) = " + year);
+			if(filterOn(filterDate1)) 
+				addWhere("n.creationDate >= '" + DateBean.format(filterDate1, "yyyy-M-d") + "'");
+			if(filterOn(filterDate2)) 
+				addWhere("n.creationDate < '" + DateBean.format(filterDate2, "yyyy-M-d") + "'");
+			
 			addGroupBy("month(n.creationDate), n.createdBy");
 			addField(AUVerified + " as AUVerified");
 			addField(AURejected + " as AURejected");
@@ -140,5 +148,21 @@ public class ReportCsrActivity extends ReportActionSupport {
 
 	public void setYear(String year) {
 		this.year = year;
+	}
+
+	public Date getFilterDate1() {
+		return filterDate1;
+	}
+
+	public void setFilterDate1(Date filterDate1) {
+		this.filterDate1 = filterDate1;
+	}
+
+	public Date getFilterDate2() {
+		return filterDate2;
+	}
+
+	public void setFilterDate2(Date filterDate2) {
+		this.filterDate2 = filterDate2;
 	}
 }

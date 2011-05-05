@@ -32,12 +32,27 @@
 		onclick="clearSelected('form1_conAuditorId'); return false;">Clear</a>
 	</span></div>
 	</s:if>
+
 	Year: <s:select list="yearsList"
 	cssClass="forms" name="year"/>
+	
+	<div class="filterOption"><a href="#"
+			onclick="showTextBox('form1_filterDate'); return false;">Filter 
+		Date</a> <span id="form1_filterDate_query">= ALL</span><br />
+		<span id="form1_filterDate" style="display: none"
+			class="clearLink"><s:textfield cssClass="forms datepicker"
+			size="10" id="form1_filterDate1"
+			name="filterDate1" /> To:<s:textfield
+			cssClass="forms datepicker" size="10" id="form1_filterDate2"
+			name="filterDate2" /> <script type="text/javascript">textQuery('form1_filterDate');</script>
+		<br />
+		<a class="clearLink" href="#"
+			onclick="clearTextField('form1_filterDate'); return false;">Clear</a></span>
+	</div>
 	<br clear="all"/>
 	</s:form>
 </div>
-
+<br/>
 <table class="report">
 	<thead>
 		<tr>
