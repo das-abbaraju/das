@@ -1929,11 +1929,7 @@
 		<action name="ManageEmployees"
 			class="com.picsauditing.actions.employees.ManageEmployees">
 			<result>struts/employees/manage_employees.jsp</result>
-		</action>
-
-		<action name="ManageEmployeesAjax"
-			class="com.picsauditing.actions.employees.ManageEmployees">
-			<result>struts/employees/manage_employee_roles.jsp</result>
+			<result name="roles">struts/employees/manage_employee_roles.jsp</result>
 			<result name="sites">struts/employees/manage_employee_sites.jsp</result>
 			<result name="getSite">struts/employees/manage_employee_sites_edit.jsp</result>
 			<result name="tasks">struts/employees/manage_employee_sites_tasks.jsp</result>
