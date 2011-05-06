@@ -58,7 +58,7 @@
 			</li>
 			<li>
 				<label>Default Hurdle:</label>
-				<s:if test="criteria.question != null && criteria.question.option != null">
+				<s:if test="criteria.dataType == 'string' && criteria.question != null && criteria.question.option != null">
 					<s:if test="criteria.question.option.radio">
 						<s:radio list="criteria.question.option.questionOptions" listKey="i18nKey" listValue="name" name="criteria.defaultValue" />
 					</s:if>
