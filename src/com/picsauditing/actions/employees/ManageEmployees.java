@@ -154,190 +154,196 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 					employeeSiteDAO.save(es);
 				}
 			}
-
+		
 		if ("Add".equals(button))
 			employee = new Employee();
 
-		if ("Save".equals(button) || "Continue".equals(button)) {
-			if (employee.getAccount() == null) {
-				employee.setAccount(account);
-			}
+		return SUCCESS;
+	}
 
-			if (!Strings.isEmpty(ssn)) {
-				if (ssn.length() == 9)
-					employee.setSsn(ssn);
-				else if (!ssn.matches("X{5}\\d{4}"))
-					addActionError("Invalid social security number entered.");
-			}
-
-			employee.setAuditColumns(permissions);
-			boolean existing = employee.getId() > 0;
-
-			// employee.setNeedsIndexing(true);
-			employee = (Employee) employeeDAO.save(employee);
-			if (!existing)
-				createNewNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
-			indexer.runSingle(employee, "employee");
-
-			redirect("ManageEmployees.action?employee.id=" + employee.getId()
-					+ ("Continue".equals(button) ? "&selectRolesSites=true" : ""));
+	public String save() throws Exception {
+		if (employee.getAccount() == null) {
+			employee.setAccount(account);
 		}
 
-		if ("Delete".equals(button)) {
-			employeeDAO.remove(employee);
-			addActionMessage("Employee " + employee.getDisplayName() + " Successfully Deleted.");
-			File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(employee.getId()) + "emp_"
-					+ employee.getId() + ".jpg");
-			if (f != null) {
-				f.delete();
-			}
-			employee = null;
+		if (!Strings.isEmpty(ssn)) {
+			if (ssn.length() == 9)
+				employee.setSsn(ssn);
+			else if (!ssn.matches("X{5}\\d{4}"))
+				addActionError("Invalid social security number entered.");
 		}
 
-		if ("addRole".equals(button)) {
-			JobRole jobRole = roleDAO.find(childID);
+		employee.setAuditColumns(permissions);
+		boolean existing = employee.getId() > 0;
 
-			if (employee != null && jobRole != null) {
-				EmployeeRole e = new EmployeeRole();
-				e.setEmployee(employee);
-				e.setJobRole(jobRole);
-				e.setAuditColumns(permissions);
+		// employee.setNeedsIndexing(true);
+		employee = (Employee) employeeDAO.save(employee);
+		if (!existing)
+			createNewNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
+		indexer.runSingle(employee, "employee");
 
-				if (!employee.getEmployeeRoles().contains(e)) {
-					employee.getEmployeeRoles().add(e);
-					employeeRoleDAO.save(e);
-					createNewNote("Added " + jobRole.getName() + " job role");
-				} else
-					addActionError("Employee already has " + jobRole.getName() + " as a Job Role");
+		return redirect("ManageEmployees.action?employee.id=" + employee.getId()
+				+ ("Continue".equals(button) ? "&selectRolesSites=true" : ""));
+	}
+
+	public String delete() throws Exception {
+		employeeDAO.remove(employee);
+		addActionMessage("Employee " + employee.getDisplayName() + " Successfully Deleted.");
+		File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(employee.getId()) + "emp_" + employee.getId()
+				+ ".jpg");
+		if (f != null) {
+			f.delete();
+		}
+		employee = null;
+
+		return SUCCESS;
+	}
+
+	public String addRoleAjax() throws Exception {
+		JobRole jobRole = roleDAO.find(childID);
+
+		if (employee != null && jobRole != null) {
+			EmployeeRole e = new EmployeeRole();
+			e.setEmployee(employee);
+			e.setJobRole(jobRole);
+			e.setAuditColumns(permissions);
+
+			if (!employee.getEmployeeRoles().contains(e)) {
+				employee.getEmployeeRoles().add(e);
+				employeeRoleDAO.save(e);
+				createNewNote("Added " + jobRole.getName() + " job role");
+			} else
+				addActionError("Employee already has " + jobRole.getName() + " as a Job Role");
+		}
+
+		return "roles";
+	}
+
+	public String removeRoleAjax() throws Exception {
+		if (employee != null && childID > 0) {
+			EmployeeRole e = employeeRoleDAO.find(childID);
+
+			if (e != null) {
+				employee.getEmployeeRoles().remove(e);
+				employeeRoleDAO.remove(e);
+				createNewNote("Removed " + e.getJobRole().getName() + " job role");
 			}
 		}
 
-		if ("removeRole".equals(button)) {
-			if (employee != null && childID > 0) {
-				EmployeeRole e = employeeRoleDAO.find(childID);
+		return "roles";
+	}
 
-				if (e != null) {
-					employee.getEmployeeRoles().remove(e);
-					employeeRoleDAO.remove(e);
-					createNewNote("Removed " + e.getJobRole().getName() + " job role");
+	public String addSiteAjax() throws Exception {
+		if (employee != null && op.getId() != 0) {
+			EmployeeSite es = new EmployeeSite();
+			es.setEmployee(employee);
+
+			if (op.getId() > 0)
+				es.setOperator(op);
+			else {
+				es.setJobSite(jobSiteDAO.find(-1 * op.getId()));
+				es.setOperator(es.getJobSite().getOperator());
+			}
+
+			es.setAuditColumns(permissions);
+			es.defaultDates();
+			employeeSiteDAO.save(es);
+			employee.getEmployeeSites().add(es);
+			createNewNote("Added "
+					+ (es.getJobSite() != null ? "OQ project " + es.getOperator().getName() + ": "
+							+ es.getJobSite().getLabel() : "HSE site " + es.getOperator().getName()));
+		}
+
+		return "sites";
+	}
+
+	public String removeSiteAjax() throws Exception {
+		if (employee != null && childID > 0) {
+			EmployeeSite es = employeeSiteDAO.find(childID);
+
+			if (es != null) {
+				boolean expired = es.getEffectiveDate() != null
+						&& es.getEffectiveDate().before(EmployeeSite.getMidnightToday());
+
+				if (expired) {
+					es.expire();
+					employeeSiteDAO.save(es);
+				} else {
+					employee.getEmployeeSites().remove(es);
+					employeeSiteDAO.remove(es);
 				}
-			}
-		}
 
-		if ("addSite".equals(button)) {
-			if (employee != null && op.getId() != 0) {
-				EmployeeSite es = new EmployeeSite();
-				es.setEmployee(employee);
-
-				if (op.getId() > 0)
-					es.setOperator(op);
-				else {
-					es.setJobSite(jobSiteDAO.find(-1 * op.getId()));
-					es.setOperator(es.getJobSite().getOperator());
-				}
-
-				es.setAuditColumns(permissions);
-				es.defaultDates();
-				employeeSiteDAO.save(es);
-				employee.getEmployeeSites().add(es);
-				createNewNote("Added "
+				createNewNote((expired ? "Expired " : "Removed ")
 						+ (es.getJobSite() != null ? "OQ project " + es.getOperator().getName() + ": "
 								+ es.getJobSite().getLabel() : "HSE site " + es.getOperator().getName()));
 			}
-
-			return "sites";
 		}
 
-		if ("removeSite".equals(button)) {
-			if (employee != null && childID > 0) {
-				EmployeeSite es = employeeSiteDAO.find(childID);
+		return "sites";
+	}
 
-				if (es != null) {
-					boolean expired = es.getEffectiveDate() != null
-							&& es.getEffectiveDate().before(EmployeeSite.getMidnightToday());
+	public String newSiteAjax() throws Exception {
+		if (!Strings.isEmpty(jobSite.getLabel()) && !Strings.isEmpty(jobSite.getName())) {
+			jobSite.setAuditColumns(permissions);
+			jobSite.setOperator(op);
+			jobSite = jobSiteDAO.save(jobSite);
 
-					if (expired) {
-						es.expire();
-						employeeSiteDAO.save(es);
-					} else {
-						employee.getEmployeeSites().remove(es);
-						employeeSiteDAO.remove(es);
-					}
+			esSite.setAuditColumns(permissions);
+			esSite.setEmployee(employee);
+			esSite.setJobSite(jobSite);
+			esSite.setOperator(op);
+			esSite.defaultDates();
+			employeeSiteDAO.save(esSite);
+		}
 
-					createNewNote((expired ? "Expired " : "Removed ")
-							+ (es.getJobSite() != null ? "OQ project " + es.getOperator().getName() + ": "
-									+ es.getJobSite().getLabel() : "HSE site " + es.getOperator().getName()));
-				}
+		return "sites";
+	}
+
+	public String editSiteAjax() throws Exception {
+		if (employee != null && childID != 0) {
+			List<String> notes = new ArrayList<String>();
+
+			EmployeeSite es = employeeSiteDAO.find(childID);
+
+			if (esSite.getEffectiveDate() != null && !esSite.getEffectiveDate().equals(es.getEffectiveDate()))
+				notes.add("Updated start date to " + esSite.getEffectiveDate());
+			else if (esSite.getEffectiveDate() == null && es.getEffectiveDate() != null)
+				notes.add("Removed start date");
+
+			if (esSite.getExpirationDate() != null && !esSite.getExpirationDate().equals(es.getExpirationDate()))
+				notes.add("Updated stop date to " + esSite.getExpirationDate());
+			else if (esSite.getExpirationDate() == null && es.getExpirationDate() != null)
+				notes.add("Removed stop date");
+
+			if (esSite.getOrientationDate() != null && !esSite.getOrientationDate().equals(es.getOrientationDate())) {
+				notes.add("Updated orientation date to " + esSite.getOrientationDate());
+
+				if (esSite.getOrientationExpiration() != null
+						&& !esSite.getOrientationExpiration().equals(es.getOrientationExpiration()))
+					notes.add("Updated orientation expiration date to " + esSite.getOrientationExpiration());
+			} else if (esSite.getOrientationDate() == null && es.getOrientationDate() != null) {
+				notes.add("Removed orientation date");
+				esSite.setOrientationExpiration(null);
 			}
 
-			return "sites";
+			es.setEffectiveDate(esSite.getEffectiveDate());
+			es.setExpirationDate(esSite.getExpirationDate());
+			es.setOrientationDate(esSite.getOrientationDate());
+			es.setOrientationExpiration(esSite.getOrientationExpiration());
+			es.setAuditColumns(permissions);
+
+			employeeSiteDAO.save(es);
+			createNewNote(Strings.implode(notes));
 		}
 
-		if ("getSite".equals(button)) {
-			if (childID != 0) {
-				esSite = employeeSiteDAO.find(childID);
-				return button;
-			}
-		}
+		return "sites";
+	}
 
-		if ("editSite".equals(button)) {
-			if (employee != null && childID != 0) {
-				List<String> notes = new ArrayList<String>();
+	public String getSiteAjax() throws Exception {
+		if (childID != 0)
+			esSite = employeeSiteDAO.find(childID);
 
-				EmployeeSite es = employeeSiteDAO.find(childID);
-
-				if (esSite.getEffectiveDate() != null && !esSite.getEffectiveDate().equals(es.getEffectiveDate()))
-					notes.add("Updated start date to " + esSite.getEffectiveDate());
-				else if (esSite.getEffectiveDate() == null && es.getEffectiveDate() != null)
-					notes.add("Removed start date");
-
-				if (esSite.getExpirationDate() != null && !esSite.getExpirationDate().equals(es.getExpirationDate()))
-					notes.add("Updated stop date to " + esSite.getExpirationDate());
-				else if (esSite.getExpirationDate() == null && es.getExpirationDate() != null)
-					notes.add("Removed stop date");
-
-				if (esSite.getOrientationDate() != null && !esSite.getOrientationDate().equals(es.getOrientationDate())) {
-					notes.add("Updated orientation date to " + esSite.getOrientationDate());
-
-					if (esSite.getOrientationExpiration() != null
-							&& !esSite.getOrientationExpiration().equals(es.getOrientationExpiration()))
-						notes.add("Updated orientation expiration date to " + esSite.getOrientationExpiration());
-				} else if (esSite.getOrientationDate() == null && es.getOrientationDate() != null) {
-					notes.add("Removed orientation date");
-					esSite.setOrientationExpiration(null);
-				}
-
-				es.setEffectiveDate(esSite.getEffectiveDate());
-				es.setExpirationDate(esSite.getExpirationDate());
-				es.setOrientationDate(esSite.getOrientationDate());
-				es.setOrientationExpiration(esSite.getOrientationExpiration());
-				es.setAuditColumns(permissions);
-
-				employeeSiteDAO.save(es);
-				createNewNote(Strings.implode(notes));
-			}
-
-			return "sites";
-		}
-
-		if ("newSite".equals(button)) {
-			if (!Strings.isEmpty(jobSite.getLabel()) && !Strings.isEmpty(jobSite.getName())) {
-				jobSite.setAuditColumns(permissions);
-				jobSite.setOperator(op);
-				jobSite = jobSiteDAO.save(jobSite);
-
-				esSite.setAuditColumns(permissions);
-				esSite.setEmployee(employee);
-				esSite.setJobSite(jobSite);
-				esSite.setOperator(op);
-				esSite.defaultDates();
-				employeeSiteDAO.save(esSite);
-			}
-
-			return "sites";
-		}
-
-		return SUCCESS;
+		return "getSite";
 	}
 
 	public String getFileName(int eID) {

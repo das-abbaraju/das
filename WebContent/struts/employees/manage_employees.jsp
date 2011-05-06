@@ -20,10 +20,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css" />
 
 <script type="text/javascript">
-var employeeID = 0;
-<s:if test="employee != null">
-employeeID = <s:property value="employee.id"/>;
-</s:if>
+var employeeID = <s:property value="employee.id > 0 ? employee.id : 0"/>;
 
 $(function() {
 	$('.datepicker').datepicker({
@@ -61,7 +58,7 @@ function show(id) {
 
 function addJobRole(id) {
 	startThinking({div: 'thinking_roles', message: '<s:text name="%{scope}.message.AjaxLoad" />'});
-	$('#employee_role').load('ManageEmployeesAjax.action', {button: 'addRole', 'employee.id': employeeID, childID: id});
+	$('#employee_role').load('ManageEmployees!addRoleAjax.action', {'employee.id': employeeID, childID: id});
 }
 
 function addJobSite(selection) {
@@ -69,7 +66,7 @@ function addJobSite(selection) {
 	var name = $(selection).find('option[value=' + id + ']').text().trim().split(":");
 	
 	startThinking({div: 'employee_site', message: '<s:text name="%{scope}.message.AjaxLoad" />'});
-	$('#employee_site').load('ManageEmployeesAjax.action', {button: 'addSite', 'employee.id': employeeID, 
+	$('#employee_site').load('ManageEmployees!addSiteAjax.action', {'employee.id': employeeID, 
 		'op.id': id, 'op.name' : name[0]});
 }
 
@@ -78,7 +75,7 @@ function removeJobRole(id) {
 
 	if (remove) {
 		startThinking({div: 'thinking_roles', message: '<s:text name="%{scope}.message.AjaxLoad" />'})
-		$('#employee_role').load('ManageEmployeesAjax.action', {button: 'removeRole', 'employee.id': employeeID, childID: id});
+		$('#employee_role').load('ManageEmployees!removeRoleAjax.action', {'employee.id': employeeID, childID: id});
 	}
 
 	return false;
@@ -89,7 +86,7 @@ function removeJobSite(id) {
 
 	if (remove) {
 		startThinking({div: 'thinking_sites', message: '<s:text name="%{scope}.message.AjaxLoad" />'});
-		$('#employee_site').load('ManageEmployeesAjax.action', {button: 'removeSite', 'employee.id': employeeID, childID: id});
+		$('#employee_site').load('ManageEmployees!removeSiteAjax.action', {'employee.id': employeeID, childID: id});
 		$.unblockUI();
 	}
 
@@ -98,13 +95,13 @@ function removeJobSite(id) {
 
 function newJobSite() {
 	startThinking({div: 'thinking_sites', message: '<s:text name="%{scope}.message.AjaxLoad" />'})
-	$('#employee_site').load('ManageEmployeesAjax.action?' + $('#newJobSiteForm input').serialize(), {button: 'newSite', 'employee.id': employeeID});
+	$('#employee_site').load('ManageEmployees!newSiteAjax.action?' + $('#newJobSiteForm input').serialize(), {'employee.id': employeeID});
 }
 
 function editAssignedSites(id) {
 	startThinking({div: 'thinking_sites', message: '<s:text name="%{scope}.message.AjaxLoad" />'})
-	$('#employee_site').load('ManageEmployeesAjax.action?' + $('#siteForm_' + id).serialize(), 
-			{button: 'editSite', 'employee.id': employeeID, childID: id});
+	$('#employee_site').load('ManageEmployees!editSiteAjax.action?' + $('#siteForm_' + id).serialize(), 
+			{'employee.id': employeeID, childID: id});
 
 	$.unblockUI();
 	return false;
@@ -118,12 +115,7 @@ function showUpload(){
 }
 
 function getSite(id) {
-	var data = {
-		button: 'getSite',
-		childID: id
-	};
-
-	$('#siteEditBox').load('ManageEmployeesAjax.action', data);
+	$('#siteEditBox').load('ManageEmployees!getSiteAjax.action', {'employee.id': employeeID, childID: id});
 	$.blockUI({ message: $('#siteEditBox') });
 }
 
@@ -376,12 +368,9 @@ div.dataTables_length { width: 35%; }
 						</s:if>
 						<s:if test="!selectRolesSites">
 							<fieldset class="form submit">
-								<button type="submit" value="<s:property value="auditID > 0 && employee.id == 0 ? 'Continue' : 'Save'" />" name="button" class="picsbutton positive">
-									<s:text name="%{auditID > 0 && employee.id == 0 ? 'button.Continue' : 'button.Save'}" />
-								</button>
-								<button type="submit" value="" name="button" class="picsbutton negative" onclick="return confirm('<s:text name="%{scope}.confirm.DeleteEmployee" />');">
-									<s:text name="button.Delete" />
-								</button>
+								<s:if test="auditID > 0 && employee.id == 0"><s:hidden name="button" value="Continue" /></s:if>
+								<s:submit action="ManageEmployees!save" cssClass="picsbutton positive" value="%{auditID > 0 && employee.id == 0 ? getText('button.Continue') : getText('button.Save')}" />
+								<s:submit action="ManageEmployees!delete" cssClass="picsbutton negative" onclick="return confirm('%{getText(scope + '.confirm.DeleteEmployee')}');" value="%{getText('button.Delete')}" />
 							</fieldset>
 						</s:if>
 						<s:else>
