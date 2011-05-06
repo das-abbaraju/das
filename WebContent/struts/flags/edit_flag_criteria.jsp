@@ -73,7 +73,17 @@ $(function(){
 				<s:select name="criteria.comparison" list="comparisonList" theme="form"/>
 			</li>
 			<li>
-				<s:textfield name="criteria.defaultValue" theme="form"/>
+				<s:if test="criteria.question != null && criteria.question.option != null">
+					<s:if test="criteria.question.option.radio">
+						<s:radio list="criteria.question.option.questionOptions" listKey="i18nKey" listValue="name" name="criteria.defaultValue" />
+					</s:if>
+					<s:else>
+						<s:select list="criteria.question.option.questionOptions" listKey="i18nKey" listValue="name" name="criteria.defaultValue" theme="form" />
+					</s:else>
+				</s:if>
+				<s:else>
+					<s:textfield name="criteria.defaultValue" theme="form"/>
+				</s:else>
 			</li>
 			<li>
 				<s:checkbox name="criteria.allowCustomValue" theme="form"/>

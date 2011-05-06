@@ -58,7 +58,17 @@
 			</li>
 			<li>
 				<label>Default Hurdle:</label>
-				<s:textfield name="criteria.defaultValue"/>
+				<s:if test="criteria.question != null && criteria.question.option != null">
+					<s:if test="criteria.question.option.radio">
+						<s:radio list="criteria.question.option.questionOptions" listKey="i18nKey" listValue="name" name="criteria.defaultValue" />
+					</s:if>
+					<s:else>
+						<s:select list="criteria.question.option.questionOptions" listKey="i18nKey" listValue="name" name="criteria.defaultValue" />
+					</s:else>
+				</s:if>
+				<s:else>
+					<s:textfield name="criteria.defaultValue"/>
+				</s:else>
 			</li>
 			<li>
 				<label>Allow Custom Hurdle:</label>

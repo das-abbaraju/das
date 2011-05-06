@@ -160,7 +160,7 @@ function toggleOtherOptionType() {
 		<li><label>Question Type:</label>
 			<s:select list="questionTypes" name="question.questionType" headerKey="" headerValue="" />
 			<div id="optionTypes" style="<s:if test="!question.questionType.equals('MultipleChoice')">display: none; </s:if>clear: left;">
-				<s:select list="optionTypes" headerKey="0" headerValue="- Other -" listKey="id" 
+				<s:select list="optionTypes" headerKey="0" headerValue="- Other -" listKey="id" value="%{question.option.id}"
 					listValue="name" id="optionTypes" id="optionTypes" onchange="toggleOtherOptionType();" />
 				<pics:autocomplete action="OptionTypeAutocomplete" htmlName="question.option.id" value="question.option" htmlId="optionTypeOther" />
 			</div>
