@@ -491,12 +491,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			addLabel = false;
 			String rate = answer;
 			answer = fc.getOshaType().name() + " " + fc.getOshaRateType().getDescription() + " for "
-					+ fcc.getAnswer2().split("<br/>")[0] + " is " ;
-			if(fc.getOshaRateType().equals(OshaRateType.Fatalities)) {
+					+ fcc.getAnswer2().split("<br/>")[0] + " is ";
+			if (fc.getOshaRateType().equals(OshaRateType.Fatalities)) {
 				Double value = Double.parseDouble(rate);
 				answer += value.intValue();
-			}
-			else {
+			} else {
 				answer += Strings.formatDecimalComma(rate);
 			}
 
@@ -602,7 +601,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			if (permissions.getAccountId() == opID || permissions.isCorporate())
 				return false;
 		}
-		if (conOperator.getForceOverallFlag().getOperatorAccount().getId() == permissions.getAccountId())
+		if ((conOperator.getForceOverallFlag().getOperatorAccount().getId() == permissions.getAccountId())
+				|| conOperator.getForcedBy().getId() == permissions.getUserId())
 			return true;
 
 		return false;
@@ -667,24 +667,25 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			List<ContractorAuditOperator> list = (List<ContractorAuditOperator>) caoDAO.findWhere(
 					ContractorAuditOperator.class, where, 0);
 			missingAudits = ArrayListMultimap.create();
-			
+
 			Map<AuditType, FlagCriteria> auditTypeToFlagCriteria = getAuditTypeToFlagCriteria();
 			for (ContractorAuditOperator cao : list) {
 				AuditType auditType = cao.getAudit().getAuditType();
-				if (auditTypeToFlagCriteria.get(auditType) != null && auditTypeToFlagCriteria.get(auditType).getRequiredStatus() != cao.getStatus())
+				if (auditTypeToFlagCriteria.get(auditType) != null
+						&& auditTypeToFlagCriteria.get(auditType).getRequiredStatus() != cao.getStatus())
 					missingAudits.put(auditType, cao);
 			}
 		}
 		return missingAudits;
 	}
-	
+
 	public Map<AuditType, FlagCriteria> getAuditTypeToFlagCriteria() {
 		Map<AuditType, FlagCriteria> result = new LinkedHashMap<AuditType, FlagCriteria>();
 		for (FlagData fd : co.getFlagDatas()) {
 			if (fd.getCriteria().getAuditType() != null)
 				result.put(fd.getCriteria().getAuditType(), fd.getCriteria());
 		}
-		
+
 		return result;
 	}
 
