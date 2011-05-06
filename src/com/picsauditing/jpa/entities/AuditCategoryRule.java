@@ -14,7 +14,7 @@ import com.picsauditing.actions.auditType.AuditRuleColumn;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_category_rule")
-public class AuditCategoryRule extends AuditRule implements AuditRuleTable {
+public class AuditCategoryRule extends AuditRule {
 
 	private AuditCategory auditCategory;
 	protected Boolean rootCategory;
@@ -98,16 +98,4 @@ public class AuditCategoryRule extends AuditRule implements AuditRuleTable {
 		return out;
 	}
 
-	@Override
-	@Transient
-	public Map<AuditRuleColumn, List<String>> getMapping() {
-		Map<AuditRuleColumn, List<String>> map = super.getMapping();
-
-		if (getAuditCategory() != null)
-			map.get(AuditRuleColumn.Category).add(getAuditCategoryLabel());
-		if (getRootCategory() != null)
-			map.get(AuditRuleColumn.RootCategory).add(getRootCategoryLabel());
-
-		return map;
-	}
 }

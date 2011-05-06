@@ -16,7 +16,7 @@ import com.picsauditing.actions.auditType.AuditRuleColumn;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_type_rule")
-public class AuditTypeRule extends AuditRule implements AuditRuleTable {
+public class AuditTypeRule extends AuditRule {
 
 	private AuditType dependentAuditType;
 	private AuditStatus dependentAuditStatus;
@@ -89,16 +89,4 @@ public class AuditTypeRule extends AuditRule implements AuditRuleTable {
 		return out;
 	}
 
-	@Override
-	@Transient
-	public Map<AuditRuleColumn, List<String>> getMapping() {
-		Map<AuditRuleColumn, List<String>> map = super.getMapping();
-
-		if (getDependentAuditType() != null) {
-			map.get(AuditRuleColumn.DependentAudit).add(getDependentAuditTypeLabel());
-			map.get(AuditRuleColumn.DependentAudit).add(getDependentAuditStatusLabel());
-		}
-
-		return map;
-	}
 }

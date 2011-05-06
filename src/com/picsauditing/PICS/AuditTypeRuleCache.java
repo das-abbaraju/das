@@ -13,10 +13,12 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.Trade;
 
 public class AuditTypeRuleCache {
 
@@ -28,7 +30,8 @@ public class AuditTypeRuleCache {
 	}
 
 	public List<AuditTypeRule> getApplicableAuditRules(ContractorAccount contractor) {
-//		PicsLogger.start("AuditTypeRuleCache", "Searching AuditTypeRuleCache for contractor " + contractor.getId());
+		// PicsLogger.start("AuditTypeRuleCache",
+		// "Searching AuditTypeRuleCache for contractor " + contractor.getId());
 		List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
 		if (getData() == null)
 			return null;
@@ -45,47 +48,78 @@ public class AuditTypeRuleCache {
 		contractorType.add(null);
 		contractorType.addAll(contractor.getAccountTypes());
 
+		Set<Trade> trades = new HashSet<Trade>();
+		trades.add(null);
+		for (ContractorTrade ct : contractor.getTrades()) {
+			trades.add(ct.getTrade());
+		}
+
 		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 		operators.add(null);
-		for(ContractorOperator co : contractor.getNonCorporateOperators()){
+		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 			operators.add(co.getOperatorAccount());
 			// adding parent facilities
-			for(Facility f : co.getOperatorAccount().getCorporateFacilities()){
+			for (Facility f : co.getOperatorAccount().getCorporateFacilities()) {
 				operators.add(f.getCorporate());
 			}
 		}
-		
 
 		for (LowMedHigh risk : risks) {
 			AcceptsBids data2 = getData().getData(risk);
 			if (data2 != null) {
-//				PicsLogger.log("found matching risk " + risk);
+				// PicsLogger.log("found matching risk " + risk);
 				for (Boolean acceptsBid : acceptsBids) {
 					ContractorTypes data3 = data2.getData(acceptsBid);
 					if (data3 != null) {
-//						PicsLogger.log(" found matching acceptsBid " + acceptsBid);
+						// PicsLogger.log(" found matching acceptsBid " +
+						// acceptsBid);
 						for (ContractorType conType : contractorType) {
-							Operators data4 = data3.getData(conType);
-							if (data4 != null) {
-//								PicsLogger.log("   found matching conType " + conType);
-								for (OperatorAccount o : operators) {
-									OperatorAccount operator = (o == null ? null : o);
-									Set<AuditTypeRule> data6 = data4.getData(operator);
-									if (data6 != null) {
-//										PicsLogger.log("    found matching operator " + operator);
-										for (AuditTypeRule auditTypeRule : data6) {
-											//boolean specificContractorRule = (conType != null && );
-											if (auditTypeRule.isInclude())
-												rules.add(auditTypeRule);
-											else {
-												// Exclude rules can be tricky if they are specific
-												// We could also add in functionality to support dependent question sets here are well
-												// 12/2010 Please discuss with both Trevor and Keerthi before changing this logic
-												if (conType == null)
-													rules.add(auditTypeRule);
-												else if (contractorType.size() == 2)
-													// This contractor has only one type so include the "exclusion rule"
-													rules.add(auditTypeRule);
+							Trades dataX = data3.getData(conType);
+							if (dataX != null) {
+								for (Trade t : trades) {
+									Operators data4 = dataX.getData(t);
+									if (data4 != null) {
+										// PicsLogger.log("   found matching conType "
+										// + conType);
+										for (OperatorAccount o : operators) {
+											OperatorAccount operator = o;
+											Set<AuditTypeRule> data6 = data4.getData(operator);
+											if (data6 != null) {
+												// PicsLogger.log("    found matching operator "
+												// + operator);
+												for (AuditTypeRule auditTypeRule : data6) {
+													// boolean
+													// specificContractorRule =
+													// (conType != null && );
+													if (auditTypeRule.isInclude())
+														rules.add(auditTypeRule);
+													else {
+														// Exclude rules can be
+														// tricky if they are
+														// specific
+														// We could also add in
+														// functionality to
+														// support
+														// dependent question
+														// sets
+														// here are well
+														// 12/2010 Please
+														// discuss
+														// with both Trevor and
+														// Keerthi before
+														// changing
+														// this logic
+														if (conType == null)
+															rules.add(auditTypeRule);
+														else if (contractorType.size() == 2)
+															// This contractor
+															// has
+															// only one type so
+															// include the
+															// "exclusion rule"
+															rules.add(auditTypeRule);
+													}
+												}
 											}
 										}
 									}
@@ -100,8 +134,9 @@ public class AuditTypeRuleCache {
 		Collections.sort(rules);
 		Collections.reverse(rules);
 
-//		PicsLogger.log("found " + rules.size() + " rules for contractor " + contractor.getId());
-//		PicsLogger.stop();
+		// PicsLogger.log("found " + rules.size() + " rules for contractor " +
+		// contractor.getId());
+		// PicsLogger.stop();
 
 		return rules;
 	}
@@ -129,14 +164,14 @@ public class AuditTypeRuleCache {
 		}
 
 		public void add(AuditTypeRule rule) {
-//			PicsLogger.log("Add rule to cache: " + rule);
+			// PicsLogger.log("Add rule to cache: " + rule);
 			AcceptsBids map = data.get(rule.getRisk());
 			if (map == null) {
 				map = new AcceptsBids();
 				data.put(rule.getRisk(), map);
 			}
 			map.add(rule);
-//			PicsLogger.log(" + Risk = " + rule.getRisk());
+			// PicsLogger.log(" + Risk = " + rule.getRisk());
 		}
 	}
 
@@ -155,27 +190,49 @@ public class AuditTypeRuleCache {
 				data.put(rule.getAcceptsBids(), map);
 			}
 			map.add(rule);
-//			PicsLogger.log(" + AcceptsBids = " + rule.getAcceptsBids());
+			// PicsLogger.log(" + AcceptsBids = " + rule.getAcceptsBids());
 		}
 	}
 
 	private class ContractorTypes {
 
-		private Map<ContractorType, Operators> data = new LinkedHashMap<ContractorType, Operators>();
+		private Map<ContractorType, Trades> data = new LinkedHashMap<ContractorType, Trades>();
 
-		public Operators getData(ContractorType value) {
+		public Trades getData(ContractorType value) {
 			return data.get(value);
 		}
 
 		public void add(AuditTypeRule rule) {
-			Operators map = data.get(rule.getContractorType());
+			Trades map = data.get(rule.getContractorType());
 			if (map == null) {
-				map = new Operators();
+				map = new Trades();
 				data.put(rule.getContractorType(), map);
 			}
 			map.add(rule);
-//			PicsLogger.log(" + ContractorType = " + rule.getContractorType());
+			// PicsLogger.log(" + ContractorType = " +
+			// rule.getContractorType());
 		}
+	}
+
+	private class Trades {
+
+		private Map<Trade, Operators> data = new LinkedHashMap<Trade, Operators>();
+
+		public Operators getData(Trade value) {
+			return data.get(value);
+		}
+
+		public void add(AuditTypeRule rule) {
+			Operators map = data.get(rule.getTrade());
+			if (map == null) {
+				map = new Operators();
+				data.put(rule.getTrade(), map);
+			}
+			map.add(rule);
+			// PicsLogger.log(" + ContractorType = " +
+			// rule.getContractorType());
+		}
+
 	}
 
 	private class Operators {
@@ -200,7 +257,7 @@ public class AuditTypeRuleCache {
 			if (rule.getQuestion() != null)
 				rule.getQuestion().getAuditType();
 			map.add(rule);
-//			PicsLogger.log(" + OperatorAccount = " + rule.getOperatorAccount());
+			// PicsLogger.log(" + OperatorAccount = " +
 		}
 	}
 

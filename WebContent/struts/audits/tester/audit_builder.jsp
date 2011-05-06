@@ -97,7 +97,7 @@ Operators/Corporates:
 	<s:set name="ruleURL" value="'CategoryRuleEditor.action'"/><s:set name="categoryRule" value="true"/>
 	<s:iterator value="auditCategoriesDetail">
 		<tr>
-			<td><s:property value="key.id" /> <s:property value="key.auditType" /> <s:date name="key.effectiveDate" format="yyyy" /></td>
+			<td>id: <s:property value="key.id" /><br />type: <s:property value="key.auditType" /><br />date: <s:date name="key.effectiveDate" format="yyyy" /></td>
 			<td>
 				<b>Operators:</b> <s:iterator value="value.operators"> <br /><s:property value="key"/> RuleID=<s:property value="value.id"/></s:iterator><br />
 				<b>Categories:</b> <s:iterator value="value.categories"><s:property value="name"/> | </s:iterator><br />

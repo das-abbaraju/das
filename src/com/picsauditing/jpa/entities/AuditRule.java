@@ -20,7 +20,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @MappedSuperclass
-public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
+public class AuditRule extends BaseDecisionTreeRule {
 
 	protected AuditType auditType;
 	protected LowMedHigh risk;
@@ -30,6 +30,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 	protected AuditQuestion question;
 	protected QuestionComparator questionComparator;
 	protected String questionAnswer;
+	protected Trade trade;
 	// Default to bid-only "No" (Needed to the increase the priority)
 	protected Boolean acceptsBids = false;
 
@@ -228,6 +229,11 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 			level++;
 		}
 
+		if (trade != null) {
+			priority += 121;
+			level++;
+		}
+		
 		if (question != null && questionComparator != null) {
 			// Potentially thousands but probably only hundreds
 			priority += 125;
@@ -305,6 +311,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 		return questionAnswer.equals(answer);
 	}
 
+	// TODO check to see if we still use this??
 	public void merge(AuditRule source) {
 		if (auditType == null)
 			auditType = source.auditType;
@@ -322,8 +329,11 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 			questionComparator = source.questionComparator;
 		if (questionAnswer == null)
 			questionAnswer = source.questionAnswer;
+		if (trade == null)
+			trade = source.trade;
 	}
 
+	// TODO check to see if we still use this??
 	public void update(AuditRule source) {
 		auditType = source.auditType;
 		risk = source.risk;
@@ -336,6 +346,7 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 		include = source.include;
 		acceptsBids = source.acceptsBids;
 		levelAdjustment = source.levelAdjustment;
+		trade = source.trade;
 	}
 
 	@Override
@@ -357,6 +368,8 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 			identifiers.add(question.getColumnHeaderOrQuestion() + " " + questionComparator + " " + questionAnswer);
 		if (acceptsBids != null)
 			identifiers.add("Contactor " + (acceptsBids ? "can [bid-only]" : "has [full account]"));
+		if (trade != null)
+			identifiers.add("TradeID " + trade.getName());
 		if (auditType != null)
 			identifiers.add("Audit Type is [" + auditType.getName().toString() + "]");
 
@@ -370,44 +383,13 @@ public class AuditRule extends BaseDecisionTreeRule implements AuditRuleTable {
 		return sb.toString();
 	}
 
-	@Override
-	@Transient
-	public Map<AuditRuleColumn, List<String>> getMapping() {
-		Map<AuditRuleColumn, List<String>> map = new HashMap<AuditRuleColumn, List<String>>();
+	@ManyToOne
+	@JoinColumn(name="tradeID")
+	public Trade getTrade() {
+		return trade;
+	}
 
-		for (AuditRuleColumn c : AuditRuleColumn.values()) {
-			map.put(c, new ArrayList<String>());
-		}
-		map.get(AuditRuleColumn.id).add(id + "");
-		map.get(AuditRuleColumn.Include).add(isInclude() ? "Yes" : "No");
-		map.get(AuditRuleColumn.Priority).add(getPriority() + "");
-
-		if (getAuditType() != null)
-			map.get(AuditRuleColumn.AuditType).add(getAuditTypeLabel());
-		if (getContractorType() != null)
-			map.get(AuditRuleColumn.ContractorType).add(getContractorTypeLabel());
-		if (getOperatorAccount() != null)
-			map.get(AuditRuleColumn.Operator).add(getOperatorAccountLabel());
-		if (getRisk() != null)
-			map.get(AuditRuleColumn.Risk).add(getRiskLabel());
-		if (getTag() != null)
-			map.get(AuditRuleColumn.Tag).add(getTagLabel());
-		if (getAcceptsBids() != null)
-			map.get(AuditRuleColumn.BidOnly).add(getAcceptsBidsLabel());
-		if (getQuestion() != null) {
-			map.get(AuditRuleColumn.Question).add(getQuestionLabel());
-			map.get(AuditRuleColumn.Question).add(getQuestionComparatorLabel());
-			map.get(AuditRuleColumn.Question).add(getQuestionAnswerLabel());
-		}
-		if (getCreatedBy() != null) {
-			map.get(AuditRuleColumn.CreatedBy).add(getCreatedBy().getName());
-			map.get(AuditRuleColumn.CreatedBy).add(getCreationDate().toString());
-		}
-		if (getUpdatedBy() != null) {
-			map.get(AuditRuleColumn.UpdatedBy).add(getUpdatedBy().getName());
-			map.get(AuditRuleColumn.UpdatedBy).add(getUpdateDate().toString());
-		}
-
-		return map;
+	public void setTrade(Trade trade) {
+		this.trade = trade;
 	}
 }

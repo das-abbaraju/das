@@ -70,6 +70,9 @@ public class AuditRuleSearch extends ReportActionSupport {
 			String checkDate = DateBean.toDBFormat(filter.getCheckDate());
 			sql.addWhere("a_search.effectiveDate <= '" + checkDate + " 23:59:59' AND a_search.expirationDate >= '"
 					+ checkDate + " 00:00:00'");
+		}
+		if (filterOn(filter.getTradeID())) {
+			sql.addWhere("a_search.tradeID = " + filter.getTradeID());
 		} else {
 			sql.addWhere("a_search.effectiveDate <= NOW() AND a_search.expirationDate >= NOW()");
 		}

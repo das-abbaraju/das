@@ -4,15 +4,17 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../actionMessages.jsp" />
 
-<div id="search"><s:if test="allowCollapsed">
-	<div id="showSearch" onclick="showSearch()"
-		<s:if test="filtered">style="display: none"</s:if>><a href="#">Show
-	Filter Options</a></div>
-	<div id="hideSearch"
-		<s:if test="!filtered">style="display: none"</s:if>><a href="#"
-		onclick="hideSearch()">Hide Filter Options</a></div>
-</s:if> <s:form id="form1" action="%{filter.destinationAction}">
+<div id="search">
+<s:if test="allowCollapsed">
+	<div id="showSearch" onclick="showSearch()" <s:if test="filtered">style="display: none"</s:if>>
+		<a href="#">Show Filter Options</a>
+	</div>
+	<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if>>
+		<a href="#" onclick="hideSearch()">Hide Filter Options</a>
+	</div>
+</s:if>
 
+<s:form id="form1" action="%{filter.destinationAction}">
 	<s:hidden name="filter.ajax" />
 	<s:hidden name="filter.destinationAction" />
 	<s:hidden name="filter.allowMailMerge" />
@@ -20,19 +22,20 @@
 	<s:hidden name="filter.startsWith" />
 	<s:hidden name="orderBy" />
 
-	<div><s:if test="filter.allowMailMerge">
-		<button type="submit" id="write_email_button" name="button"
+	<div>
+		<s:if test="filter.allowMailMerge">
+			<button type="submit" id="write_email_button" name="button"
 			value="Write Email" onclick="clickSearchSubmit('form1')"
-			class="picsbutton positive" style="display: none">Write
-		Email</button>
-		<button type="button" name="button" value="Find Recipients"
-			onclick="clickSearch('form1')" class="picsbutton">Find
-		Recipients</button>
-	</s:if> <s:else>
-		<button id="searchfilter" type="submit" name="button" value="Search"
+			class="picsbutton positive" style="display: none">Write Email</button>
+			<button type="button" name="button" value="Find Recipients"
+			onclick="clickSearch('form1')" class="picsbutton">Find Recipients</button>
+		</s:if>
+		<s:else>
+			<button id="searchfilter" type="submit" name="button" value="Search"
 			onclick="checkStateAndCountry('form1_state','form1_country'); return clickSearch('form1');"
 			class="picsbutton positive">Search</button>
-	</s:else></div>
+		</s:else>
+	</div>
 
 	<s:if test="filter.showAccountName">
 		<div class="filterOption"><s:textfield name="filter.accountName"
@@ -965,4 +968,5 @@
 	<br clear="all" />
 	<div class="alphapaging"><s:property
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
-</s:form></div>
+</s:form>
+</div>

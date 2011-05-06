@@ -46,6 +46,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
+import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -276,18 +277,21 @@ public class ContractorCron extends PicsActionSupport {
 	private void runTradeETL(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.TradeETL))
 			return;
-		List<AuditData> servicesPerformed = auditDataDAO.findServicesPerformed(contractor.getId());
+		
+		List<ContractorTrade> trades = contractor.getTrades();
 		List<String> selfPerform = new ArrayList<String>();
 		List<String> subContract = new ArrayList<String>();
-		for (AuditData auditData : servicesPerformed) {
-			if (auditData.getAnswer().startsWith("C"))
-				selfPerform.add(auditData.getQuestion().getName());
-			if (auditData.getAnswer().endsWith("S"))
-				subContract.add(auditData.getQuestion().getName());
+		
+		for (ContractorTrade trade : trades) {
+			if (trade.isSelfPerformed())
+				selfPerform.add(trade.getTrade().getName().toString());
+			else
+				subContract.add(trade.getTrade().getName().toString());
 		}
+		
 		contractor.setTradesSelf(Strings.implode(selfPerform, ";"));
 		contractor.setTradesSub(Strings.implode(subContract, ";"));
-
+		
 		boolean requiresOQ = false;
 		boolean requiresCompetency = false;
 		for (ContractorOperator co : contractor.getOperators()) {

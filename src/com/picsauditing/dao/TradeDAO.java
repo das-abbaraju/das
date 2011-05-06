@@ -50,33 +50,38 @@ public class TradeDAO extends PicsDAO {
 		Query query = em.createNativeQuery(sql, com.picsauditing.jpa.entities.Trade.class);
 		return query.getResultList();
 	}
-	
+
 	public Tree<Trade> findHierarchyByTrade(int tradeID) {
-		String sql = "SELECT t2.* " + 
-					"FROM ref_trade t1 " + 
-					"JOIN ref_trade t2 ON (t1.indexStart >= t2.indexStart AND t1.indexEnd <= t2.indexEnd) OR (t1.indexStart <= t2.indexStart AND t1.indexEnd >= t2.indexEnd) " + 
-					"WHERE t1.id = :tradeID " + 
-					"GROUP BY t2.id " +
-					"ORDER by t2.indexStart";
-		
+		String sql = "SELECT t2.* "
+				+ "FROM ref_trade t1 "
+				+ "JOIN ref_trade t2 ON (t1.indexStart >= t2.indexStart AND t1.indexEnd <= t2.indexEnd) OR (t1.indexStart <= t2.indexStart AND t1.indexEnd >= t2.indexEnd) "
+				+ "WHERE t1.id = :tradeID " + "GROUP BY t2.id " + "ORDER by t2.indexStart";
+
 		Query query = em.createNativeQuery(sql, Trade.class);
 		query.setParameter("tradeID", tradeID);
-		
+
 		return Tree.createTreeFromOrderedList(query.getResultList());
 	}
 
-	public Tree<Trade> findByIndexValue(String q) {
-		String sql = "SELECT t2.* " + 
-					"FROM app_index i " + 
-					"JOIN ref_trade t1 ON t1.id = i.foreignKey " + 
-					"JOIN ref_trade t2 ON t1.indexStart >= t2.indexStart AND t1.indexEnd <= t2.indexEnd " + 
-					"WHERE i.indexType = 'T' AND i.value LIKE :q " + 
-					"GROUP BY t2.id " +
-					"ORDER by t2.indexStart";
-		
+	public Tree<Trade> findHierarchyByIndexValue(String q) {
+		String sql = "SELECT t2.* " + "FROM app_index i " + "JOIN ref_trade t1 ON t1.id = i.foreignKey "
+				+ "JOIN ref_trade t2 ON t1.indexStart >= t2.indexStart AND t1.indexEnd <= t2.indexEnd "
+				+ "WHERE i.indexType = 'T' AND i.value LIKE :q " + "GROUP BY t2.id " + "ORDER by t2.indexStart";
+
 		Query query = em.createNativeQuery(sql, Trade.class);
 		query.setParameter("q", q + "%");
 
 		return Tree.createTreeFromOrderedList(query.getResultList());
 	}
+
+	public List<Trade> findByIndexValue(String q) {
+		String sql = "SELECT t1.* " + "FROM app_index i " + "JOIN ref_trade t1 ON t1.id = i.foreignKey "
+				+ "WHERE i.indexType = 'T' AND i.value LIKE :q " + "ORDER by t1.indexLevel DESC";
+
+		Query query = em.createNativeQuery(sql, Trade.class);
+		query.setParameter("q", q + "%");
+		
+		return query.getResultList();
+	}
+
 }

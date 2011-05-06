@@ -69,6 +69,21 @@
 			</li>
 		</ol>
 	</fieldset>
+	<fieldset>
+		<h2>Rules</h2>
+		<ol>
+			<li>
+				<h4>Category Rules</h4>
+				<div id="tradeCategoryRules"></div>
+			</li>
+			<li>
+				<h4>Audit Type Rules</h4>
+				<div id="tradeAuditRules">
+					<s:include value="/struts/rules/audit_rule_search_data.jsp" />
+				</div>
+			</li>
+		</ol>
+	</fieldset>
 	<fieldset class="form submit">
 		<button class="picsbutton positive save" type="button">Save</button>
 		<s:if test="trade.id > 0">

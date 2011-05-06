@@ -34,7 +34,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 		List<Trade> nodes = new ArrayList<Trade>();
 
 		if (!Strings.isEmpty(q)) {
-			Tree<Trade> tradeTree = tradeDAO.findByIndexValue(q);
+			Tree<Trade> tradeTree = tradeDAO.findHierarchyByIndexValue(q);
 			JSONArray value = (JSONArray) tradeTree.toJSON(true).get("children");
 			if (value.size() == 0) {
 				// TODO: Translate this field

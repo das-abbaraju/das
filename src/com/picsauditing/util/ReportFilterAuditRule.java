@@ -17,6 +17,7 @@ public class ReportFilterAuditRule extends ReportFilter {
 	protected String category = null;
 	protected String operator = null;
 	protected int opID;
+	protected int tradeID;
 
 	protected String contractorType = null;
 	protected int riskLevel;
@@ -115,6 +116,14 @@ public class ReportFilterAuditRule extends ReportFilter {
 
 	public void setCheckDate(String checkDate) {
 		this.checkDate = DateBean.parseDate(checkDate);
+	}
+
+	public int getTradeID() {
+		return tradeID;
+	}
+
+	public void setTradeID(int tradeID) {
+		this.tradeID = tradeID;
 	}
 
 }

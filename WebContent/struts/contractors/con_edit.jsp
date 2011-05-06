@@ -146,9 +146,6 @@ $(function() {
 					<li><label><s:text name="%{scope}.IndustryDetails.NAICSPrimary"/>:</label>
 						<s:property value="contractor.naics.code"/>
 					</li>
-					<li><label><s:text name="%{scope}.IndustryDetails.MainTrade"/>:</label>
-						<s:select cssStyle="font-size: 12px;" list="tradeList" name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" listKey="name" listValue="name"/>
-					</li>
 					<li><label><s:text name="%{scope}.IndustryDetails.RiskLevel"/>:</label>
 						<s:property value="contractor.riskLevel"/>
 					</li>

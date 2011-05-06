@@ -1,23 +1,20 @@
 package com.picsauditing.actions.autocomplete;
 
+import javax.persistence.Query;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.Trade;
 
 @SuppressWarnings("serial")
 public class TradeAutocomplete extends AutocompleteActionSupport<Trade> {
-	private TradeDAO psDAO;
+	@Autowired
+	private TradeDAO tradeDAO;
 
-	public TradeAutocomplete(TradeDAO psDAO) {
-		this.psDAO = psDAO;
-	}
-
-	@Override
-	protected void findItems() {
-		items = psDAO.findWhere("p.classificationType = 'Master' AND (p.classificationCode LIKE '" + q + "%' OR p.description LIKE '%" + q + "%')");
+	
+	public void findItems() {
+		items = tradeDAO.findByIndexValue(q);
 	}
 	
-	@Override
-	protected String createOutputAutocomplete(Trade item){
-		return item.toString() + "\n";
-	}
 }

@@ -221,14 +221,6 @@ $(function(){
 	<fieldset class="form">
 		<h2 class="formLegend"><s:text name="%{scope}.IndustryDetails.heading" /></h2>
 		<ol>
-			<li class="required"><label><s:text name="%{scope}.IndustryDetails.MainTrade" />:</label>
-				<s:select list="tradeList"
-					name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" 
-					listKey="name" listValue="name" />
-				<pics:fieldhelp title="Trade">
-					This is your company's primary trade. You will have the opportunity to select additional trades later on.
-				</pics:fieldhelp>
-			</li>
 			<li>
 				<s:checkbox id="Onsite" name="contractor.onsiteServices" theme="formhelp" onclick="updateRequiredField();"/>
 			</li>

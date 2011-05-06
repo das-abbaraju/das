@@ -28,3 +28,11 @@ ANALYZE TABLE app_index, app_index_stats;
 
 -- remove old data from the contractor_cron_log
 DELETE FROM contractor_cron_log WHERE DATEDIFF(NOW(), startDate) > 7;
+
+-- ref_trade.contractorCount
+UPDATE ref_trade AS rt,
+       (SELECT   rt.id AS id, count(ct.id) AS count
+        FROM     ref_trade rt JOIN contractor_trade ct ON ct.tradeID = rt.id
+        GROUP BY rt.id) AS counts
+SET    rt.contractorCount = counts.count
+WHERE  rt.id = counts.id;

@@ -64,6 +64,20 @@ $(function() {
 		$('#question_display').html(data[1]);
 		$('.requiresQuestion').show();
 	});
+	$('#trade').change(function() {
+		if ($(this).blank()) {
+			$('#trade_display').html('');
+		}
+	}).autocomplete('TradeAutocomplete.action', {
+		formatItem  : function(data,i,count) {
+			return data[1];
+		},
+		formatResult: function(data,i,count) {
+			return data[0];
+		}
+	}).result(function(event, data) {
+		$('#trade_display').html(data[1]);
+	});
 	<s:if test="!auditTypeRule">
 	$('#category').change(function() {
 		if ($(this).blank())
@@ -305,6 +319,13 @@ $(function() {
 						<s:select list="dependentAuditStatus" name="rule.dependentAuditStatus" id="dAuditSelect" headerKey="" headerValue="Any" />
 					</li>					
 				</s:if>
+				<li><label>Trade</label>
+					<s:textfield cssClass="autocomplete" id="trade" name="ruleTradeId" value="%{rule.trade.id}" />
+					<div id="trade_display">
+						<s:if test="rule.trade != null">
+						</s:if>
+					</div>
+				</li>
 				<li><label>Question</label>
 					<s:textfield cssClass="autocomplete" id="question" name="ruleQuestionId" value="%{rule.question.id}"/>
 					<div id="question_display">

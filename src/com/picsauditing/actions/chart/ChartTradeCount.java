@@ -21,19 +21,17 @@ public class ChartTradeCount extends ChartSSAction {
 		chart.setRotateLabels(true);
 
 		SelectSQL sql = new SelectSQL("accounts a");
-		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
-		sql.addJoin("JOIN contractor_audit ca ON a.id = ca.conID and ca.auditTypeID = 1");
-		sql.addJoin("JOIN pqfdata d ON d.auditID = ca.id AND d.answer LIKE '%C%'");
-		sql.addJoin("JOIN audit_question q ON q.questionType = 'Service' AND d.questionID = q.id");
-
-		// Reverting i18n changes
-		// sql.addField("q.id as label");
-		sql.addField("q.name as label");
+		sql.addJoin("JOIN contractor_info ci ON a.id = ci.id");
+		sql.addJoin("JOIN contractor_audit ca ON a.id = ca.conID AND ca.auditTypeID = 1");
+		sql.addJoin("JOIN contractor_trade ct ON ca.conID = ct.conID AND ct.selfPerformed = 1");
+		sql.addJoin("JOIN app_translation at ON CONCAT('Trade.', ct.tradeID, '.name') = at.msgKey");
+		
+		sql.addField("at.msgValue as label");
 		sql.addField("count(*) as value");
-		sql.addGroupBy("q.id");
+		sql.addGroupBy("label");
 		sql.addOrderBy("value DESC");
-		sql.setHavingClause("count(*) > 1");
-
+		sql.setHavingClause("value > 1");
+		
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 		sql.addWhere("1 " + permQuery.toString());
 
