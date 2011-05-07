@@ -1714,7 +1714,7 @@
 		</action>
 		
 		<action name="ContractorCronAjax" class="com.picsauditing.actions.ContractorCron">
-			<result>/struts/blank.jsp</result>
+			<result>/struts/sessionlessActionMessages.jsp</result>
 		</action>
 		
 		<action name="EmployeeQualificationCron" class="com.picsauditing.actions.employees.EmployeeQualificationCron">
