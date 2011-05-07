@@ -141,13 +141,13 @@ class CronPublisher(CronThread):
 			time.sleep(self.sleeptime)
 
 class CronWorker(CronThread):
-	"""This thread is responsible for calling the ContractorCron.action against the proper server/conID"""
+	"""This thread is responsible for calling the ContractorCronAjax.action against the proper server/conID"""
 	def __init__ (self, i, con_q, server_g):
 		super(CronWorker, self).__init__()
 		self.thread_id = i
 		self.con_q = con_q
 		self.server_g = server_g
-		self.url = SERVER+"ContractorCron.action?conID=%s&steps=All&button=Run"
+		self.url = SERVER+"ContractorCronAjax.action?conID=%s&steps=All&button=Run"
 		self.sleeptime = 6
 		self.logger = logging.getLogger('worker')
 	def run(self):
