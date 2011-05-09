@@ -12,29 +12,27 @@ import com.picsauditing.access.Anonymous;
 public class ServerInfo extends PicsActionSupport {
 	private static OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
 	private static MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
-	private boolean jsonp = false;
-	private String callback;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	@Anonymous
 	public String execute() throws Exception {
-
-		if (jsonp) {
-			json = new JSONObject();
-			json.put("OS Name", os.getName());
-			json.put("OS Architecture", os.getArch());
-			json.put("OS Version", os.getVersion());
-			json.put("Available Processors", os.getAvailableProcessors());
-			json.put("Load Average", os.getSystemLoadAverage());
-			json.put("Heap Memory Usage", getHeapMemoryUsage() / 1000000 + " MB");
-			json.put("Non-Heap Memory Usage", getNonHeapMemoryUsage() / 1000000 + " MB");
-			json.put("Total Memory Usage", getTotalMemoryUsage() / 1000000 + " MB");
-
-			return SUCCESS;
-		}
-
 		return SUCCESS;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Anonymous
+	public String jsonp() {
+		json = new JSONObject();
+		json.put("OS Name", os.getName());
+		json.put("OS Architecture", os.getArch());
+		json.put("OS Version", os.getVersion());
+		json.put("Available Processors", os.getAvailableProcessors());
+		json.put("Load Average", os.getSystemLoadAverage());
+		json.put("Heap Memory Usage", getHeapMemoryUsage() / 1000000 + " MB");
+		json.put("Non-Heap Memory Usage", getNonHeapMemoryUsage() / 1000000 + " MB");
+		json.put("Total Memory Usage", getTotalMemoryUsage() / 1000000 + " MB");
+
+		return JSONP;
 	}
 
 	public static void setOs(OperatingSystemMXBean os) {
@@ -51,22 +49,6 @@ public class ServerInfo extends PicsActionSupport {
 
 	public static void setMemory(MemoryMXBean memory) {
 		ServerInfo.memory = memory;
-	}
-
-	public boolean isJsonp() {
-		return jsonp;
-	}
-
-	public void setJsonp(boolean jsonp) {
-		this.jsonp = jsonp;
-	}
-
-	public String getCallback() {
-		return callback;
-	}
-
-	public void setCallback(String callback) {
-		this.callback = callback;
 	}
 
 	public static double getLoad() {

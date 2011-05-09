@@ -9,6 +9,12 @@
 	<constant name="struts.multipart.maxSize" value="1610612736" />
 
 	<package name="com.picsauditing" extends="struts-default">
+		<result-types>
+			<result-type name="plain-text" class="com.picsauditing.strutsutil.PlainTextResult" />
+			<result-type name="json" class="com.picsauditing.strutsutil.JsonResult" />
+			<result-type name="jsonp" class="com.picsauditing.strutsutil.JsonpResult" />
+		</result-types>
+
 		<interceptors>
 			<interceptor name="http2https" class="com.picsauditing.interceptors.PicsInterceptor"/>
 			<interceptor name="i18n" class="com.picsauditing.interceptors.I18nInterceptor"/>
@@ -46,7 +52,7 @@
 		</interceptors>
 		
  		<default-interceptor-ref name="picsStack"/> 
-			
+		
 		<global-results>
 			<result name="Exception">/exception_handler.jsp</result>
 			<result name="NoRightsException">
@@ -58,8 +64,10 @@
 			<result name="LoginAjax">struts/login_ajax.jsp</result>
 			<result name="login">/struts/login_ajax.jsp</result>
 			<result name="blank">/struts/blank.jsp</result>
-			<result name="json">/struts/json.jsp</result>
 			<result name="chartXML">struts/chart_xml.jsp</result>
+			<result name="json" type="json"></result>
+			<result name="jsonp" type="jsonp"></result>
+			<result name="plain-text" type="plain-text"></result>
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception"
@@ -1868,12 +1876,6 @@
 			<result>struts/server_info.jsp</result>
 		</action>
 
-		<action name="ServerInfoJSONP"
-			class="com.picsauditing.actions.ServerInfo">
-			<param name="jsonp">true</param>
-			<result>struts/jsonp.jsp</result>
-		</action>
-		
 		<!-- Insurance Reports -->
 		<action name="ReportPolicyList"
 			class="com.picsauditing.actions.report.ReportPolicyList">

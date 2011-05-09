@@ -38,6 +38,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected static String LOGIN_AJAX = "LoginAjax";
 	protected static String BLANK = "blank";
 	protected static String JSON = "json";
+	protected static String JSONP = "jsonp";
 	protected static String CHART_XML = "chartXML";
 	protected Collection<String> alertMessages;
 
@@ -49,7 +50,20 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	// single string to the page
 	protected String output = null;
 	protected String button = null;
+
+	/**
+	 * JSONObject used to return JSON strings.
+	 * 
+	 * @see com.picsauditing.strutsutil.JsonResult
+	 */
 	protected JSONObject json = new JSONObject();
+
+	/**
+	 * Callback used for jsonp requests
+	 * 
+	 * @see com.picsauditing.strutsutil.JsonpResult
+	 */
+	protected String callback;
 
 	private User user; // Current logged in user
 	protected Account account; // Current logged in user's account
@@ -313,6 +327,14 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public void setJson(JSONObject json) {
 		this.json = json;
+	}
+
+	public String getCallback() {
+		return callback;
+	}
+
+	public void setCallback(String callback) {
+		this.callback = callback;
 	}
 
 	protected int getParameter(String name) {
