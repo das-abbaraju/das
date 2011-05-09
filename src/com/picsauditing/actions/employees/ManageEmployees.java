@@ -41,9 +41,9 @@ import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
@@ -154,7 +154,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 					employeeSiteDAO.save(es);
 				}
 			}
-		
+
 		if ("Add".equals(button))
 			employee = new Employee();
 
@@ -179,7 +179,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		// employee.setNeedsIndexing(true);
 		employee = (Employee) employeeDAO.save(employee);
 		if (!existing)
-			createNewNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
+			addNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
 		indexer.runSingle(employee, "employee");
 
 		return redirect("ManageEmployees.action?employee.id=" + employee.getId()
@@ -211,7 +211,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			if (!employee.getEmployeeRoles().contains(e)) {
 				employee.getEmployeeRoles().add(e);
 				employeeRoleDAO.save(e);
-				createNewNote("Added " + jobRole.getName() + " job role");
+				addNote("Added " + jobRole.getName() + " job role");
 			} else
 				addActionError("Employee already has " + jobRole.getName() + " as a Job Role");
 		}
@@ -226,7 +226,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			if (e != null) {
 				employee.getEmployeeRoles().remove(e);
 				employeeRoleDAO.remove(e);
-				createNewNote("Removed " + e.getJobRole().getName() + " job role");
+				addNote("Removed " + e.getJobRole().getName() + " job role");
 			}
 		}
 
@@ -249,7 +249,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			es.defaultDates();
 			employeeSiteDAO.save(es);
 			employee.getEmployeeSites().add(es);
-			createNewNote("Added "
+			addNote("Added "
 					+ (es.getJobSite() != null ? "OQ project " + es.getOperator().getName() + ": "
 							+ es.getJobSite().getLabel() : "HSE site " + es.getOperator().getName()));
 		}
@@ -273,7 +273,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 					employeeSiteDAO.remove(es);
 				}
 
-				createNewNote((expired ? "Expired " : "Removed ")
+				addNote((expired ? "Expired " : "Removed ")
 						+ (es.getJobSite() != null ? "OQ project " + es.getOperator().getName() + ": "
 								+ es.getJobSite().getLabel() : "HSE site " + es.getOperator().getName()));
 			}
@@ -333,7 +333,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			es.setAuditColumns(permissions);
 
 			employeeSiteDAO.save(es);
-			createNewNote(Strings.implode(notes));
+			addNote(Strings.implode(notes));
 		}
 
 		return "sites";
@@ -610,23 +610,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		return null;
 	}
 
-	private void createNewNote(String summary) {
-		createNewNote(summary, LowMedHigh.Low);
-	}
-
-	private void createNewNote(String summary, LowMedHigh priority) {
-		Note note = new Note();
-		note.setAuditColumns(permissions);
-		note.setSummary(summary);
-		note.setAccount(account);
-		note.setEmployee(employee);
-		note.setNoteCategory(noteCategory);
-		note.setCanContractorView(true);
-		note.setViewableById(Account.EVERYONE);
-		note.setPriority(priority);
-		getNoteDao().save(note);
-	}
-
 	@SuppressWarnings("unchecked")
 	public JSONArray getPreviousLocationsJSON() {
 		JSONArray a = new JSONArray();
@@ -639,6 +622,15 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		JSONArray a = new JSONArray();
 		a.addAll(employeeDAO.findCommonTitles());
 		return a;
+	}
+
+	protected void addNote(String newNote) {
+		addNote(newNote, LowMedHigh.Low);
+	}
+
+	protected void addNote(String newNote, LowMedHigh priority) {
+		User user = new User(permissions.getUserId());
+		super.addNote(account, newNote, noteCategory, priority, true, Account.EVERYONE, user, employee);
 	}
 
 	public class OperatorSite implements Comparable<OperatorSite> {

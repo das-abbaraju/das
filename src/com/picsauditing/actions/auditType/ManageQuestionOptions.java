@@ -9,6 +9,7 @@ import com.picsauditing.dao.AuditQuestionOptionDAO;
 import com.picsauditing.jpa.entities.AuditOptionType;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditQuestionOption;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageQuestionOptions extends PicsActionSupport implements Preparable {
@@ -50,6 +51,9 @@ public class ManageQuestionOptions extends PicsActionSupport implements Preparab
 			addActionError("Missing answer");
 
 		if (getActionErrors().size() == 0) {
+			if (Strings.isEmpty(option.getUniqueCode()))
+				option.setUniqueCode(null);
+			
 			option.setType(type);
 			option.setAuditColumns(permissions);
 			auditQuestionOptionDAO.save(option);
@@ -65,6 +69,10 @@ public class ManageQuestionOptions extends PicsActionSupport implements Preparab
 	
 	public String listAjax() throws Exception {
 		return "list";
+	}
+	
+	public String editAjax() throws Exception {
+		return "edit";
 	}
 
 	public AuditOptionType getType() {

@@ -11,6 +11,7 @@ import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -50,6 +51,7 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	/**
 	 * Delete this method and property when we start i18n
+	 * 
 	 * @return
 	 */
 	public String getSubHeading() {
@@ -120,15 +122,20 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	protected void addNote(Account account, String newNote, NoteCategory noteCategory) {
-		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, null);
+		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, null, null);
 	}
 
 	protected void addNote(Account account, String newNote, NoteCategory noteCategory, int viewableBy) {
-		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, null);
+		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, null, null);
 	}
 
 	protected void addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
 			boolean canContractorView, int viewableBy, User user) {
+		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, user, null);
+	}
+
+	protected void addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
+			boolean canContractorView, int viewableBy, User user, Employee employee) {
 		Note note = new Note();
 		note.setAccount(account);
 		note.setAuditColumns(permissions);
@@ -138,6 +145,7 @@ public class AccountActionSupport extends PicsActionSupport {
 		note.setViewableById(viewableBy);
 		note.setCanContractorView(canContractorView);
 		note.setStatus(NoteStatus.Closed);
+		note.setEmployee(employee);
 		getNoteDao().save(note);
 	}
 

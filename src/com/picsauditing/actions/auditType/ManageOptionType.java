@@ -53,6 +53,10 @@ public class ManageOptionType extends PicsActionSupport implements Preparable {
 		// TODO Check which questions/answers use this option type!
 		return SUCCESS;
 	}
+	
+	public String editAjax() throws Exception {
+		return "edit";
+	}
 
 	public AuditQuestion getQuestion() {
 		return question;

@@ -200,12 +200,6 @@ function _updateCategories() {
 				$('#auditHeaderSideNav').html(me.filter('#audit_sidebar_refresh').html());
 				$('#caoTable').html(me.filter('#cao_table_refresh').html());
 				$('#auditScore').html(me.filter('#auditScore_refresh').html());
-				$('.cluetip').cluetip({
-					arrows: true,
-					cluetipClass: 'jtip',
-					local: true,
-					clickThrough: false
-				});
 				$('#auditHeader').removeClass('dirty');
 				var ccat = $('#category_'+$.bbq.getState().categoryID);
 				var list = ccat.parents('ul.catUL:first');

@@ -33,9 +33,8 @@ $(function() {
 </head>
 <body>
 
-<s:include value="../actionMessages.jsp"></s:include>
+<h1>Account Recovery</h1>
 <s:form id="accountRecovery">
-	<h1>Account Recovery</h1>
 	<div style="margin-bottom: 10px;">
 		<a href="Login.action">&lt;&lt; Return to Login Page</a>
 	</div>
@@ -78,5 +77,6 @@ $(function() {
 		</fieldset>
 	</div>
 </s:form>
+<s:include value="../actionMessages.jsp"></s:include>
 </body>
 </html>

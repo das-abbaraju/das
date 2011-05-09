@@ -232,7 +232,6 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
 			subMenu.addChild(getTitle("ReportInsuranceApproval"),
 					"ReportInsuranceApproval.action?filter.auditStatus=Complete");
-
 		subMenu = menu.addChild(getText("menu.Management"));
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
 			subMenu.addChild(getTitle("ContractorApproval"), "ContractorApproval.action");
@@ -241,43 +240,15 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
 			addChildAction(subMenu, "UsersManage");
 		}
-
 		if (permissions.hasPermission(OpPerms.EditUsers)) {
 			addChildAction(subMenu, "UsersManage");
 			addChildAction(subMenu, "ReportUserPermissionMatrix");
 		}
-
-		if (permissions.isAdmin()) {
-			subMenu.addChild("Trade Taxonomy", "TradeTaxonomy.action");
-		}
-
-		if (permissions.hasPermission(OpPerms.Translator)) {
-			subMenu.addChild("Manage Translations", "ManageTranslations.action");
-			subMenu.addChild("Import/Export Translations", "TranslationETL.action");
-		}
-
 		if (permissions.hasPermission(OpPerms.ManageEmployees))
 			subMenu.addChild(getTitle("ManageEmployees"), "ManageEmployees.action?id=" + permissions.getAccountId());
 
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
 			subMenu.addChild(getTitle("ManageForms"), "manage_forms.jsp");
-		if (permissions.hasPermission(OpPerms.ManageAudits)) {
-			subMenu.addChild("Audit Definitions", "ManageAuditType.action");
-			subMenu.addChild("Flag Criteria", "ManageFlagCriteria.action");
-		}
-		if (permissions.hasPermission(OpPerms.ContractorSimulator))
-			subMenu.addChild("Contractor Simulator", "ContractorSimulator.action");
-		if (permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit)) {
-			subMenu.addChild("Audit Type Rules", "AuditTypeRuleSearch.action");
-		}
-		if (permissions.hasPermission(OpPerms.ManageCategoryRules, OpType.Edit)) {
-			subMenu.addChild("Category Rules", "CategoryRuleSearch.action");
-		}
-		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit)) {
-			subMenu.addChild("Audit Category Matrix", "AuditCategoryMatrix.action");
-		}
-		if (permissions.hasPermission(OpPerms.ManageAuditWorkFlow))
-			subMenu.addChild("Manage Workflow", "ManageAuditWorkFlow.action");
 
 		if (permissions.seesAllContractors()) {
 			subMenu.addChild("Email Subscriptions", "ReportEmailSubscription.action");
@@ -286,21 +257,9 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EmailTemplates)) {
 			addChildAction(subMenu, "EmailWizard");
 		}
-
-		if (permissions.hasPermission(OpPerms.EmailTemplates, OpType.Edit)) {
-			addChildAction(subMenu, "EditEmailTemplate");
-		}
-
 		if (permissions.hasPermission(OpPerms.EmailQueue)) {
 			subMenu.addChild(getTitle("EmailQueueList"), "EmailQueueList.action?filter.status=Pending");
 		}
-
-		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
-			subMenu.addChild("Flag Criteria", "ManageFlagCriteriaOperator.action");
-			if (permissions.isCanSeeInsurance())
-				subMenu.addChild("Insurance Criteria", "ManageInsuranceCriteriaOperator.action");
-		}
-
 		if (permissions.isContractor() && permissions.hasPermission(OpPerms.ContractorSafety))
 			subMenu.addChild("Job Competency Matrix", "JobCompetencyMatrix.action");
 
@@ -316,6 +275,41 @@ public class PicsMenu {
 		// Add a new permission for this
 		if (permissions.hasPermission(OpPerms.MyCalendar)) {
 			subMenu.addChild("My Schedule", "MySchedule.action");
+		}
+		
+		subMenu = menu.addChild(getText("menu.Configuration"));
+		if (permissions.hasPermission(OpPerms.Translator)) {
+			subMenu.addChild("Manage Translations", "ManageTranslations.action");
+			subMenu.addChild("Import/Export Translations", "TranslationETL.action");
+		}
+		if (permissions.isAdmin()) {
+			subMenu.addChild("Trade Taxonomy", "TradeTaxonomy.action");
+		}
+		if (permissions.hasPermission(OpPerms.ManageAudits)) {
+			subMenu.addChild("Audit Definitions", "ManageAuditType.action");
+			subMenu.addChild("Manage Option Types", "ManageOptionType.action");
+			subMenu.addChild("Flag Criteria", "ManageFlagCriteria.action");
+		}
+		if (permissions.hasPermission(OpPerms.ContractorSimulator))
+			subMenu.addChild("Contractor Simulator", "ContractorSimulator.action");
+		if (permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit)) {
+			subMenu.addChild("Audit Type Rules", "AuditTypeRuleSearch.action");
+		}
+		if (permissions.hasPermission(OpPerms.ManageCategoryRules, OpType.Edit)) {
+			subMenu.addChild("Category Rules", "CategoryRuleSearch.action");
+		}
+		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit)) {
+			subMenu.addChild("Audit Category Matrix", "AuditCategoryMatrix.action");
+		}
+		if (permissions.hasPermission(OpPerms.ManageAuditWorkFlow))
+			subMenu.addChild("Manage Workflow", "ManageAuditWorkFlow.action");
+		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
+			subMenu.addChild("Flag Criteria", "ManageFlagCriteriaOperator.action");
+			if (permissions.isCanSeeInsurance())
+				subMenu.addChild("Insurance Criteria", "ManageInsuranceCriteriaOperator.action");
+		}
+		if (permissions.hasPermission(OpPerms.EmailTemplates, OpType.Edit)) {
+			addChildAction(subMenu, "EditEmailTemplate");
 		}
 
 		if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {

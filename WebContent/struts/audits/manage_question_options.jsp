@@ -18,29 +18,7 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 function loadEdit(id) {
-	$('#save').show();
-	
-	if (id > 0) {
-		$('#save input[name=\'optionID\']').val(id);
-		$('#optionIDField').text(id);
-		$('#save input[name=\'option.name\']').val($('tr#item_' + id + ' .optionName').text());
-		if ($('tr#item_' + id + ' .optionVisible').is(':empty'))
-			$('#save input[name=\'option.visible\']').removeAttr('checked');
-		else
-			$('#save input[name=\'option.visible\']').attr('checked', true);
-		
-		$('#save input[name=\'option.number\']').val($('tr#item_' + id + ' .optionNumber').text());
-		$('#save input[name=\'option.score\']').val($('tr#item_' + id + ' .optionScore').text());
-		$('#save input[name=\'option.uniqueCode\']').val($('tr#item_' + id + ' .optionUniqueCode').text());
-	} else {
-		$('#save input[name=\'optionID\']').val(id);
-		$('#optionIDField').text(id);
-		$('#save input[name=\'option.name\']').val('');
-		$('#save input[name=\'option.visible\']').removeAttr('checked');
-		$('#save input[name=\'option.number\']').val(id);
-		$('#save input[name=\'option.score\']').val(id);
-		$('#save input[name=\'option.uniqueCode\']').val('');
-	}
+	$('#editForm').load('ManageQuestionOption!editAjax.action', {optionID: id});
 }
 </script>
 </head>
@@ -59,28 +37,7 @@ function loadEdit(id) {
 		</td>
 		<td style="padding-left: 20px; vertical-align: top;">
 			<a href="#" onclick="loadEdit(0); return false;" class="add">Add New Question Option</a>
-			<s:form cssStyle="display: none;" id="save">
-				<s:hidden name="optionID" value="%{option == null ? 0 : option.id}" />
-				<s:hidden name="typeID" value="%{type.id}" />
-				<s:hidden name="questionID" value="%{question == null ? 0 : question.id}" />
-				<fieldset class="form">
-					<h2 class="formLegend">Question Option</h2>
-					<ol>
-						<li><label>ID:</label><span id="optionIDField"><s:property value="option.id" /></span></li>
-						<li><s:textfield theme="formhelp" name="option.name" /></li>
-						<li><s:checkbox theme="formhelp" name="option.visible" /></li>
-						<li><s:textfield theme="formhelp" name="option.number" /></li>
-						<li><s:textfield theme="formhelp" name="option.score" /></li>
-						<li><s:textfield theme="formhelp" name="option.uniqueCode" /></li>
-					</ol>
-				</fieldset>
-				<fieldset class="form submit">
-					<s:submit action="ManageQuestionOption!save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
-					<s:submit action="ManageQuestionOption!delete" cssClass="picsbutton negative" 
-						onclick="return confirm('Are you sure you want to delete this question option?');"
-						value="%{getText('button.Delete')}" />
-				</fieldset>
-			</s:form>
+			<div id="editForm"></div>
 		</td>
 	</tr>
 </table>

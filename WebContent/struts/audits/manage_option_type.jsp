@@ -14,18 +14,7 @@
 	});
 </s:if>
 function loadEdit(id) {
-	$('#save').show();
-	$('#typeID').val(id);
-	$('#typeIDField').text(id);
-	$('#typeName').val($('tr#row_' + id + ' .optionName').text());
-
-	if ($('tr#row_' + id + ' .optionRadio').is(':empty'))
-		$('#typeRadio').removeAttr('checked');
-	else
-		$('#typeRadio').attr('checked', true);
-	
-	$('#typeUniqueCode').val($('tr#row_' + id + ' .optionUniqueCode').text());
-	$('#saveNew').show();
+	$('#editForm').load('ManageOptionType!editAjax.action', {typeID: id});
 }
 </script>
 </head>
@@ -67,22 +56,7 @@ function loadEdit(id) {
 		</td>
 		<td style="padding-left: 20px; vertical-align: top;">
 			<a href="#" onclick="loadEdit(0); return false;" class="add">Add new option type</a>
-			<s:form id="save" cssStyle="display: none;">
-				<fieldset class="form">
-					<s:hidden name="typeID" id="typeID" />
-					<h2 class="formLegend">Option Type</h2>
-					<ol>
-						<li><label>ID:</label><span id="typeIDField"><s:property value="type.id" /></span></li>
-						<li><s:textfield theme="formhelp" name="type.name" id="typeName" /></li>
-						<li><s:checkbox theme="formhelp" name="type.radio" id="typeRadio" /></li>
-						<li><s:textfield theme="formhelp" name="type.uniqueCode" id="typeUniqueCode" /></li>
-					</ol>
-				</fieldset>
-				<fieldset class="form submit">
-					<s:submit value="%{getText('button.Save')}" action="ManageOptionType!save" cssClass="picsbutton positive" />
-					<s:submit value="%{getText('button.Delete')}" action="ManageOptionType!delete" cssClass="picsbutton negative" onclick="return confirm('Are you sure you want to delete this option type?');" />
-				</fieldset>
-			</s:form>
+			<div id="editForm"></div>
 		</td>
 	</tr>
 </table>
