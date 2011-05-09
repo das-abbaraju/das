@@ -122,7 +122,10 @@ $(function() {
 		e.preventDefault();
 		var data = { trade: $(this).parent().attr('id') };
 		setMainStatus('Loading Trade');
-		$('#trade-detail').load('TradeTaxonomy!tradeAjax.action', data);
+		$('#trade-detail').load('TradeTaxonomy!tradeAjax.action', data, function () {	
+			showCategoryRules();
+			showAuditTypeRules();
+		});
 	});
 	
 	$('#suggest').submit(function(e) {
@@ -151,4 +154,20 @@ $(function() {
 		e.preventDefault();
 		$('#alternateNames').load($(this).attr('href'), {trade: $('#saveTrade [name=trade]').val()});
 	});
+
+	function showCategoryRules() {
+		var data = {
+				'comparisonRule.trade': $('#saveTrade [name=trade]').val()
+		};
+		startThinking({ div: "tradeCategoryRules", message: "Loading Related Category Rules" });
+		$('#tradeCategoryRules').load('CategoryRuleTableAjax.action', data);
+	}
+	
+	function showAuditTypeRules() {
+		var data = {
+				'comparisonRule.trade': $('#saveTrade [name=trade]').val()
+		};
+		startThinking({ div: "tradeAuditRules", message: "Loading Related Audit Type Rules" });
+		$('#tradeAuditRules').load('AuditTypeRuleTableAjax.action', data);
+	}
 });

@@ -78,9 +78,7 @@
 			</li>
 			<li>
 				<h4>Audit Type Rules</h4>
-				<div id="tradeAuditRules">
-					<s:include value="/struts/rules/audit_rule_search_data.jsp" />
-				</div>
+				<div id="tradeAuditRules"></div>
 			</li>
 		</ol>
 	</fieldset>

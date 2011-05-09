@@ -74,6 +74,10 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 			if (comparisonRule.getQuestion() != null) {
 				whereClauses.add("t.question.id = " + comparisonRule.getQuestion().getId());
 			}
+			
+			if (comparisonRule.getTrade() != null) {
+				whereClauses.add("t.trade.id = " + comparisonRule.getTrade().getId());
+			}
 
 			rules = (List<AuditTypeRule>) ruleDAO.findWhere(AuditTypeRule.class,
 					Strings.implode(whereClauses, " AND "), 0);

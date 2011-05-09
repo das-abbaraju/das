@@ -356,7 +356,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Override
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();
-		json.put("data", name.toString());
+		json.put("data", name.toString() + " (" + contractorCount + ")");
 
 		if (!isLeaf()) {
 			if (full) {
