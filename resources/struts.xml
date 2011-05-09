@@ -11,8 +11,8 @@
 	<package name="com.picsauditing" extends="struts-default">
 		<result-types>
 			<result-type name="plain-text" class="com.picsauditing.strutsutil.PlainTextResult" />
-			<result-type name="json" class="com.picsauditing.strutsutil.JsonResult" />
-			<result-type name="jsonp" class="com.picsauditing.strutsutil.JsonpResult" />
+			<result-type name="json" class="com.picsauditing.strutsutil.JSONResult" />
+			<result-type name="jsonp" class="com.picsauditing.strutsutil.JSONPResult" />
 		</result-types>
 
 		<interceptors>

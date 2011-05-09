@@ -54,14 +54,14 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * JSONObject used to return JSON strings.
 	 * 
-	 * @see com.picsauditing.strutsutil.JsonResult
+	 * @see com.picsauditing.strutsutil.JSONResult
 	 */
 	protected JSONObject json = new JSONObject();
 
 	/**
 	 * Callback used for jsonp requests
 	 * 
-	 * @see com.picsauditing.strutsutil.JsonpResult
+	 * @see com.picsauditing.strutsutil.JSONPResult
 	 */
 	protected String callback;
 

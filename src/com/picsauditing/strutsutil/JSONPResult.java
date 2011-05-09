@@ -8,7 +8,7 @@ import org.json.simple.JSONAware;
 
 import com.opensymphony.xwork2.ActionInvocation;
 
-public class JsonpResult extends StreamResult {
+public class JSONPResult extends StreamResult {
 
 	private static final long serialVersionUID = 7789432829226367722L;
 
