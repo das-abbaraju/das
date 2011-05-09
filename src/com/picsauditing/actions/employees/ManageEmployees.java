@@ -91,13 +91,12 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	@Override
 	public void prepare() throws Exception {
 		int employeeID = getParameter("employee.id");
-		if (employeeID > 0) {
+		if (employeeID > 0)
 			employee = employeeDAO.find(employeeID);
-		}
 
-		if (employee != null) {
+		if (employee != null)
 			account = employee.getAccount();
-		} else {
+		else {
 			int accountID = getParameter("id");
 			if (accountID > 0)
 				account = accountDAO.find(accountID);
@@ -344,6 +343,10 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			esSite = employeeSiteDAO.find(childID);
 
 		return "getSite";
+	}
+	
+	public String loadAjax() throws Exception {
+		return "employees";
 	}
 
 	public String getFileName(int eID) {
