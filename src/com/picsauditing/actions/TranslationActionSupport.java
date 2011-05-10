@@ -38,18 +38,6 @@ public class TranslationActionSupport extends ActionSupport {
 	@SuppressWarnings("rawtypes")
 	public String getTranslationName(String property) throws SecurityException, NoSuchFieldException {
 
-		/*
-		 * List<String> hierarchy = Arrays.asList(property.split("\\.")); Class
-		 * type = this.getClass().getDeclaredField(hierarchy.get(0)).getType();
-		 * int i; for (i = 1; i < hierarchy.size(); i++) { try { Class
-		 * childFieldType = getTypeFromInheritedClasses(type, hierarchy.get(i));
-		 * if (isTranslatable(childFieldType)) type = childFieldType; else
-		 * break; } catch (NoSuchFieldException fieldMissing) { break; } }
-		 * 
-		 * result = type.getSimpleName(); if (i < hierarchy.size()) { result +=
-		 * "." + Strings.implode(hierarchy.subList(i, hierarchy.size()), "."); }
-		 */
-
 		Map<String, Class<?>> typeMap = mapNameToType(property);
 		Class type = null;
 		Iterator<Entry<String, Class<?>>> iter = typeMap.entrySet().iterator();
@@ -89,32 +77,32 @@ public class TranslationActionSupport extends ActionSupport {
 		result.put(hierarchy[0], type);
 
 		for (int i = 1; i < hierarchy.length; i++) {
-			type = type.getDeclaredField(hierarchy[i]).getType();
+			type = getTypeFromInheritedClasses(type, hierarchy[i]);
 			result.put(hierarchy[i], type);
 		}
 
 		return result;
 	}
 
-	@SuppressWarnings("rawtypes")
-	public Class getTypeFromInheritedClasses(Class type, String field) {
-		if (type == null)
-			return null;
+	public Class<?> getTypeFromInheritedClasses(Class<?> type, String field) throws SecurityException,
+			NoSuchFieldException {
 
-		Class result;
-		try {
-			result = type.getDeclaredField(field).getType();
-		} catch (NoSuchFieldException e) {
-			return getTypeFromInheritedClasses(type.getSuperclass(), field);
-		}
+		Class<?> result = null;
+		do {
+			try {
+				result = type.getDeclaredField(field).getType();
+			} catch (NoSuchFieldException e) {
+				type = type.getSuperclass();
+			}
+		} while (result == null && type != null);
+
 		return result;
 	}
 
-	@SuppressWarnings("rawtypes")
-	public boolean isTranslatable(Class c) {
+	public boolean isTranslatable(Class<?> c) {
 		if (c == null)
 			return false;
-		for (Class i : c.getInterfaces()) {
+		for (Class<?> i : c.getInterfaces()) {
 			if (i.equals(Translatable.class))
 				return true;
 		}
