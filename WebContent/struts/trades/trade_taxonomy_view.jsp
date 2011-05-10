@@ -3,10 +3,6 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <div id="loadingTrade"></div>
-<s:if test="trade.id > 0">
-<a class="edit translate" href="ManageTranslations.action?button=Search&key=Trade.<s:property value="trade.id"/>."
-	target="_BLANK">Manage Translations</a>
-</s:if>
 <form id="saveTrade" class="form">
 	<s:hidden name="trade" value="%{trade.id}" />
 	<s:if test="trade.id == 0">
@@ -21,6 +17,12 @@
 			<li><label>Short Trade Name:</label> <s:textfield name="trade.name"/> <a href=""></a><s:property value="trade.name.locale"/></li>
 			<li><label>Full Trade Name (optional):</label> <s:textfield name="trade.name2"/> <s:property value="trade.name2.locale"/></li>
 			<li><label>Help Text (optional):</label> <s:textarea name="trade.help"></s:textarea></li>
+			<li>
+				<s:if test="trade.id > 0">
+					<a class="edit translate" href="ManageTranslations.action?button=Search&key=Trade.<s:property value="trade.id"/>." target="_BLANK">Manage Translations</a>
+				</s:if>
+			</li>
+			<li><button class="picsbutton positive save" type="button">Save</button></li>
 		</ol>
 	</fieldset>
 	<fieldset>
@@ -73,11 +75,13 @@
 		<h2>Rules</h2>
 		<ol>
 			<li>
-				<h4>Category Rules</h4>
+				<h4>Manual Audit Category Rules</h4>
+				<a href="CategoryRuleEditor.action?rule.auditType=2&rule.trade=<s:property value="trade.id" />" id="">Add New Manual Audit Category Rule</a>
 				<div id="tradeCategoryRules"></div>
 			</li>
 			<li>
 				<h4>Audit Type Rules</h4>
+				<a href="AuditTypeRuleEditor.action?rule.trade=<s:property value="trade.id" />" id="">Add New Audit Type Rule</a>
 				<div id="tradeAuditRules"></div>
 			</li>
 		</ol>
