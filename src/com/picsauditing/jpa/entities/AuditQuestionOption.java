@@ -14,9 +14,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "audit_question_option")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
+// TODO AuditOptionValue
 public class AuditQuestionOption extends BaseTable {
-	private TranslatableString name;
 	private AuditOptionType type;
+	private TranslatableString name;
 	private boolean visible = true;
 	private int number = 0;
 	private String uniqueCode;
@@ -73,9 +74,15 @@ public class AuditQuestionOption extends BaseTable {
 	public int getScore() {
 		return score;
 	}
-
+	
 	public void setScore(int score) {
 		this.score = score;
+	}
+
+	@Transient
+	public float getScorePercent() {
+		// TODO write this!!
+		return score;
 	}
 
 	@Override

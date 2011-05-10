@@ -13,11 +13,15 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "audit_option_type")
 @SuppressWarnings("serial")
+// TODO AuditOptionGroup
 public class AuditOptionType extends BaseTable {
 	private String name;
 	private boolean radio = false;
 	private String uniqueCode;
 	private List<AuditQuestionOption> questionOptions = new ArrayList<AuditQuestionOption>();
+	/**
+	 * Periodically, we need to query commonly used QuestionOptions and update this list.
+	 */
 	static public int[] COMMON_TYPES = new int[] { 25, 26, 30, 31, 20, 19 };
 
 	@Column(nullable = false, length = 50)
@@ -53,6 +57,15 @@ public class AuditOptionType extends BaseTable {
 
 	public void setQuestionOptions(List<AuditQuestionOption> questionOptions) {
 		this.questionOptions = questionOptions;
+	}
+	
+	/**
+	 * TODO get the child option max score and use it 
+	 * @return
+	 */
+	@Transient
+	public int getMaxScore() {
+		return 0;
 	}
 
 	@Override

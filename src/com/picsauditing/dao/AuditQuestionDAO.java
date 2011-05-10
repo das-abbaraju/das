@@ -103,6 +103,7 @@ public class AuditQuestionDAO extends PicsDAO {
 			where = "";
 		
 		Query query = em.createQuery("SELECT o FROM AuditOptionType o" + where);
+		// TODO Add sort here
 		return query.getResultList();
 	}
 }

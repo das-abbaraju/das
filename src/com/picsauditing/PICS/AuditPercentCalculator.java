@@ -28,15 +28,13 @@ public class AuditPercentCalculator {
 
 	private AuditCategoryRuleCache auditCategoryRuleCache;
 	private AuditCategoryDataDAO categoryDataDAO;
-	private ContractorAuditOperatorDAO caoDao;
 	private AuditDataDAO auditDataDAO;
 	private List<AuditData> verifiedPqfData = null;
 
 	public AuditPercentCalculator(AuditCategoryRuleCache auditCategoryRuleCache, AuditCategoryDataDAO categoryDataDAO,
-			ContractorAuditOperatorDAO caoDao, AuditDataDAO auditDataDAO) {
+			AuditDataDAO auditDataDAO) {
 		this.auditCategoryRuleCache = auditCategoryRuleCache;
 		this.categoryDataDAO = categoryDataDAO;
-		this.caoDao = caoDao;
 		this.auditDataDAO = auditDataDAO;
 	}
 
@@ -130,6 +128,7 @@ public class AuditPercentCalculator {
 							float scale = 1.0f;
 
 							if ("MultipleChoice".equals(question.getQuestionType()) && question.getOption() != null) {
+								// TODO Remove all this below and use the AuditQuestionOption.getScorePercent()
 								if (!Strings.isEmpty(question.getOption().getUniqueCode())) {
 									final String uniqueCode = question.getOption().getUniqueCode();
 									if ("YesNo".equals(uniqueCode)) {
@@ -294,8 +293,8 @@ public class AuditPercentCalculator {
 	}
 
 	/**
-	 * Use the audit rule cache to query a list of applicable rules and the
-	 * figure out which rules apply to which operators and categories
+	 * Use the audit rule cache to query a list of applicable rules and the figure out which rules apply to which
+	 * operators and categories
 	 * 
 	 * @param conAudit
 	 * @return
