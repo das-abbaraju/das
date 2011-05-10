@@ -73,7 +73,7 @@ public class TranslationActionSupport extends ActionSupport {
 	public Map<String, Class<?>> mapNameToType(String property) throws SecurityException, NoSuchFieldException {
 		Map<String, Class<?>> result = new LinkedHashMap<String, Class<?>>();
 		String[] hierarchy = property.split("\\.");
-		Class<?> type = this.getClass().getDeclaredField(hierarchy[0]).getType();
+		Class<?> type = getTypeFromInheritedClasses(this.getClass(), hierarchy[0]);
 		result.put(hierarchy[0], type);
 
 		for (int i = 1; i < hierarchy.length; i++) {
