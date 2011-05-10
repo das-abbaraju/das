@@ -17,9 +17,39 @@
 </style>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
-function loadEdit(id) {
-	$('#editForm').load('ManageQuestionOption!editAjax.action', {optionID: id});
+function setupSortable() {
+	var sortList = $('#questionOptions table.report tbody').sortable({
+		helper: function(e, tr) {
+		  var $originals = tr.children();
+		  var $helper = tr.clone();
+		  $helper.children().each(function(index) {
+			  $(this).width($originals.eq(index).width())
+		  });
+		  
+		  return $helper;
+		},
+		update: function() {
+			$('#questionOptions-info').load('OrderAuditChildrenAjax.action?id=<s:property value="type.id"/>&type=AuditQuestionOption', 
+				sortList.sortable('serialize').replace(/\[|\]/g,''), 
+				function() {
+					startThinking({div: questionOptions, message: "Loading updated list..."});
+					$('#questionOptions').load('ManageQuestionOption!listAjax.action?typeID=<s:property value="type.id" />', function() {
+						setupSortable();
+					});
+				}
+			);
+		}
+	}).disableSelection();
 }
+$(function() {
+	setupSortable();
+	
+	$(window).bind('hashchange', function(){
+		$('#editForm').load($(this).attr('ManageQuestionOption!editAjax.action'), location.hash.substring(1));
+	})
+	
+	$(window).trigger('hashchange');
+});
 </script>
 </head>
 <body>
@@ -36,7 +66,7 @@ function loadEdit(id) {
 			<div id="questionOptions-info"></div>
 		</td>
 		<td style="padding-left: 20px; vertical-align: top;">
-			<a href="#" onclick="loadEdit(0); return false;" class="add">Add New Question Option</a>
+			<a href="#type=0" class="add">Add New Question Option</a>
 			<div id="editForm"></div>
 		</td>
 	</tr>

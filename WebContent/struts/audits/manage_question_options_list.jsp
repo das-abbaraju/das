@@ -1,30 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<script type="text/javascript">
-$(function() {
-	var sortList = $('#questionOptions table.report tbody').sortable({
-		helper: function(e, tr) {
-		  var $originals = tr.children();
-		  var $helper = tr.clone();
-		  $helper.children().each(function(index) {
-			  $(this).width($originals.eq(index).width())
-		  });
-		  
-		  return $helper;
-		},
-		update: function() {
-			$('#questionOptions-info').load('OrderAuditChildrenAjax.action?id=<s:property value="type.id"/>&type=AuditQuestionOption', 
-				sortList.sortable('serialize').replace(/\[|\]/g,''), 
-				function() {
-					startThinking({div: questionOptions, message: "Loading updated list..."});
-					$('#questionOptions').load('ManageQuestionOption!listAjax.action?typeID=<s:property value="type.id" />');
-				}
-			);
-		}
-	}).disableSelection();
-});
-</script>
 <table class="report">
 	<thead>
 		<tr>
@@ -44,7 +20,7 @@ $(function() {
 				<td class="center optionVisible"><s:if test="visible"><img src="images/okCheck.gif" /></s:if></td>
 				<td class="optionScore right"><s:property value="score" /></td>
 				<td class="optionUniqueCode"><s:property value="uniqueCode" /></td>
-				<td class="optionEdit"><a href="#" onclick="loadEdit(<s:property value="id" />); return false;" class="edit"></a></td>
+				<td class="optionEdit"><a href="#type=<s:property value="id"/>" class="edit"></a></td>
 			</tr>
 		</s:iterator>
 		<s:if test="type.questionOptions.size == 0">
