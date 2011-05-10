@@ -231,6 +231,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 		if (trade != null) {
 			priority += 121;
+			priority += trade.getIndexLevel();
 			level++;
 		}
 		
