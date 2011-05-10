@@ -710,13 +710,15 @@ public class ContractorCron extends PicsActionSupport {
 					manualAuditAuditor = audit.getAuditor();
 			}
 		}
-		// TODO There are a lot of hardcoded auditors here, need to keep updated
+		// TODO There are a lot of hardcoded auditors here, refactor this to use the new UserAssignment technology
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (!audit.isExpired()) {
+				// TODO Consider using a switch statement
 				// Automatically set Harvey as the (closing) safety professional
 				// for
 				// the WA State Requirement
 				if (audit.getAuditType().getId() == AuditType.WA_STATE_VERIFICATION) {
+					// UserAssignment ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
 					audit.setAuditor(new User(935));
 					audit.setClosingAuditor(new User(935));
 				}
@@ -724,8 +726,11 @@ public class ContractorCron extends PicsActionSupport {
 				// Check for PQF completion, invoices for paying operators (less
 				// than 10 facilities) and totals under $450
 				if (audit.getAuditType().isDesktop() && audit.getAuditor() == null && pqfComplete) {
+					// TODO create a private method ContractorAccount.isFinanciallyReadyForAudits
+					// Consider the total
 					for (Invoice invoice : contractor.getInvoices()) {
 						for (InvoiceItem item : invoice.getItems()) {
+							// TODO consider doing a query instead because this could result in a LOT of loops
 							if (item.getInvoiceFee().getFeeClass().equals("Membership")
 									&& item.getInvoiceFee().getId() != InvoiceFee.PQFONLY
 									&& item.getInvoiceFee().getId() != InvoiceFee.BIDONLY
@@ -733,6 +738,8 @@ public class ContractorCron extends PicsActionSupport {
 									&& (item.getAmount().equals(item.getInvoiceFee().getAmount()) || invoice
 											.getTotalAmount().compareTo(new BigDecimal(450)) < 0)
 									&& contractor.getPayingFacilities() < 10) {
+								// TODO This doesn't need to be executed more than once, so move outside of the for loop
+								// Then you can name your boolean somethings that is easy to understand like hasOpenMembershipFeeOverdue
 								UserAssignment ua = userAssignmentDAO
 										.findByContractor(contractor, audit.getAuditType());
 								if (ua != null) {
