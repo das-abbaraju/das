@@ -337,7 +337,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			}
 		}
 
-		// TODO CSR shadowing
+		// CSR shadowing
 		if (shadowID == 0 || (user.getShadowedUser() != null && user.getShadowedUser().getId() != shadowID)) {
 			// Remove all non-groups from this user's groups
 			Iterator<UserGroup> iterator = user.getGroups().iterator();
