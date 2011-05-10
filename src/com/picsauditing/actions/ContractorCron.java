@@ -133,6 +133,13 @@ public class ContractorCron extends PicsActionSupport {
 		return SUCCESS;
 	}
 
+	@Anonymous
+	public String listAjax() {
+		List<Integer> ids = contractorDAO.findContractorsNeedingRecalculation(15, new HashSet<Integer>());
+		output = Strings.implode(ids);
+		return "plain-text";
+	}
+
 	@Transactional
 	private void run(int conID, int opID) {
 		ContractorAccount contractor = contractorDAO.find(conID);
@@ -277,21 +284,21 @@ public class ContractorCron extends PicsActionSupport {
 	private void runTradeETL(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.TradeETL))
 			return;
-		
+
 		List<ContractorTrade> trades = contractor.getTrades();
 		List<String> selfPerform = new ArrayList<String>();
 		List<String> subContract = new ArrayList<String>();
-		
+
 		for (ContractorTrade trade : trades) {
 			if (trade.isSelfPerformed())
 				selfPerform.add(trade.getTrade().getName().toString());
 			else
 				subContract.add(trade.getTrade().getName().toString());
 		}
-		
+
 		contractor.setTradesSelf(Strings.implode(selfPerform, ";"));
 		contractor.setTradesSub(Strings.implode(subContract, ";"));
-		
+
 		boolean requiresOQ = false;
 		boolean requiresCompetency = false;
 		for (ContractorOperator co : contractor.getOperators()) {
@@ -382,8 +389,8 @@ public class ContractorCron extends PicsActionSupport {
 		});
 
 		if (roseburgAudits.size() > 0) {
-			List<ContractorAudit> mostRecentRoseburgAudits = roseburgAudits.subList(0,
-					Math.min(3, roseburgAudits.size()));
+			List<ContractorAudit> mostRecentRoseburgAudits = roseburgAudits.subList(0, Math.min(3, roseburgAudits
+					.size()));
 			int roseburgTotal = 0;
 			for (ContractorAudit roseburgAudit : mostRecentRoseburgAudits) {
 				roseburgTotal += roseburgAudit.getScore();
@@ -551,8 +558,8 @@ public class ContractorCron extends PicsActionSupport {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.getStatus().after(AuditStatus.Pending)) {
 							if (cao.hasCaop(co.getOperatorAccount().getId())) {
-								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(),
-										co.getFlagDatas());
+								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co
+										.getFlagDatas());
 
 								cao.setFlag(flagColor);
 							}
