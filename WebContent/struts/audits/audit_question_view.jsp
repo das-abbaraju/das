@@ -41,7 +41,7 @@ $(function() {
 <span class="question<s:if test="questionStillRequired"> required</s:if>">
 	<a name="q<s:property value="#q.id"/>"></a>
 	<span class="questionNumber"><s:property value="#q.expandedNumber"/>
-		<s:if test="!#q.helpText.empty">
+		<s:if test="!isStringEmpty(#q.helpText)">
 			<br />
 			<a class="cluetip helpBig" rel="#cluetip_<s:property value="#q.id"/>" title="Additional Information"></a>
 			<div id="cluetip_<s:property value="#q.id"/>" class="cluetipBox">

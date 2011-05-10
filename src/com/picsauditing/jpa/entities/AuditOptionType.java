@@ -61,6 +61,8 @@ public class AuditOptionType extends BaseTable {
 		if (uniqueCode != null && !uniqueCode.isEmpty()) {
 			if (uniqueCode.equals("Country") || uniqueCode.equals("State"))
 				return "global." + uniqueCode;
+			if (uniqueCode.equals("YesNo") || uniqueCode.equals("LowMedHigh"))
+				return uniqueCode;
 
 			return this.getClass().getSimpleName() + "." + uniqueCode.replaceAll(" ", "");
 		}

@@ -78,13 +78,19 @@ public class VerifyView extends ContractorActionSupport {
 			if (conAudit.getAuditType().isAnnualAddendum()) {
 				AuditData us = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
-					if (us != null && "Yes".equals(us.getAnswer()) && oshaAudit.isCorporate()
-							&& oshaAudit.getType().equals(OshaType.OSHA)) {
-						oshasUS.add(oshaAudit);
+					if (us != null) {
+						String requiredAnswer = "Yes";
+						if (us.isMultipleChoice())
+							requiredAnswer = us.getQuestion().getOption().getI18nKey() + ".Yes";
 
-						if (!needsOsha)
-							needsOsha = conAudit.hasCaoStatus(AuditStatus.Submitted)
-									|| conAudit.hasCaoStatus(AuditStatus.Resubmitted);
+						if (requiredAnswer.equals(us.getAnswer()) && oshaAudit.isCorporate()
+								&& oshaAudit.getType().equals(OshaType.OSHA)) {
+							oshasUS.add(oshaAudit);
+
+							if (!needsOsha)
+								needsOsha = conAudit.hasCaoStatus(AuditStatus.Submitted)
+										|| conAudit.hasCaoStatus(AuditStatus.Resubmitted);
+						}
 					}
 
 					// TODO Work on verifying COHS

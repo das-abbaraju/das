@@ -81,8 +81,12 @@ public class AuditQuestionOption extends BaseTable {
 	@Override
 	@Transient
 	public String getI18nKey() {
-		if (uniqueCode != null && !uniqueCode.isEmpty())
+		if (uniqueCode != null && !uniqueCode.isEmpty()) {
+			if (type.getUniqueCode() != null && (type.getUniqueCode().equals("Country") || type.getUniqueCode().equals("State")))
+				return type.getUniqueCode() + "." + uniqueCode.replaceAll(" ", "");
+			
 			return type.getI18nKey() + "." + uniqueCode.replaceAll(" ", "");
+		}
 
 		return type.getI18nKey() + "." + id;
 	}

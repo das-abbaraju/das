@@ -417,15 +417,6 @@ public class AuditDataSave extends AuditActionSupport {
 		String questionType = databaseCopy.getQuestion().getQuestionType();
 		String answer = auditData.getAnswer();
 
-		// Clean-up for service questions
-		if ("Service".equals(questionType)) {
-			if (multiAnswer != null)
-				answer = Joiner.on(" ").skipNulls().join(multiAnswer);
-			else
-				answer = "";
-			auditData.setAnswer(answer);
-		}
-
 		// Null or blank answers are always OK
 		if (Strings.isEmpty(answer))
 			return true;

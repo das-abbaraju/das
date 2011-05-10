@@ -204,6 +204,11 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		return "" + getQuestion().getId();
 	}
 
+	@Transient
+	public boolean isMultipleChoice() {
+		return question != null && question.getOption() != null;
+	}
+
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;

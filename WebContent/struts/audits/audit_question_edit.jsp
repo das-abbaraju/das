@@ -45,7 +45,7 @@ $(function() {
 
 <span class="question <s:if test="#questionStillRequired">required</s:if>">
 	<span class="questionNumber"><s:property value="#q.expandedNumber"/>
-		<s:if test="!#q.helpText.empty">
+		<s:if test="!isStringEmpty(#q.helpText)">
 			<br />
 			<a class="cluetip helpBig" rel="#cluetip_<s:property value="#q.id"/>" title="Additional Information"></a>
 			<div id="cluetip_<s:property value="#q.id"/>" class="cluetipBox">
@@ -102,15 +102,11 @@ $(function() {
 			</s:else>
 		</s:if>
 		
-		<!-- Radios/Check boxes -->
-		<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Main Work' || #q.questionType == 'Industry'">
+		<!-- Check box -->
+		<s:if test="#q.questionType == 'Check Box'">
 			<s:checkbox fieldValue="X" name="auditData.answer" value="#a.answer == \"X\""/>
 		</s:if>
-		<s:if test="#q.questionType == 'Radio'">
-			<s:radio theme="audits" list="#q.optionsVisible" listKey="optionName" listValue="optionName" 
-				name="auditData.answer" value="#a.answer" />
-		</s:if>
-		<!-- Non checkboxes/radio -->
+		<!-- Non checkbox -->
 		<s:if test="#q.questionType == 'Text Area'">
 			<s:textarea rows="4" cols="70" name="auditData.answer" value="%{#a.answer}"></s:textarea>
 		</s:if>
@@ -130,11 +126,6 @@ $(function() {
 		</s:if>
 		<s:if test="#q.questionType == 'Money' || #q.questionType == 'Number' || #q.questionType == 'Decimal Number'">
 			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="number" size="30"/>
-		</s:if>
-		<s:if test="#q.questionType == 'Service'">
-			<s:hidden name="auditData.answer" value="%{#a.answer}"/>
-			<nobr><s:checkbox fieldValue="C" name="multiAnswer" value="%{#a.answer.indexOf('C') != -1}" /> C </nobr>
-			<nobr><s:checkbox fieldValue="S" name="multiAnswer" value="%{#a.answer.indexOf('S') != -1}" /> S </nobr>
 		</s:if>
 		<s:if test="#q.questionType == 'AMBest'">
 			<s:hidden name="auditData.comment" value="%{#a.comment}"/>
