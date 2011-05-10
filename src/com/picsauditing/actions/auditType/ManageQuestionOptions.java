@@ -42,7 +42,7 @@ public class ManageQuestionOptions extends PicsActionSupport implements Preparab
 
 	@Override
 	public String execute() throws Exception {
-		// TODO Auto-generated method stub
+		// TODO Add permissions
 		return super.execute();
 	}
 

@@ -277,7 +277,9 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		return copy;
 	}
 
-	// Copy this audit category to this audit type
+	/**
+	 * Copy this audit category to this audit type
+	 */
 	@Transactional
 	protected AuditCategory copyAuditCategory(AuditCategory a, AuditType at) {
 		AuditCategory copy = new AuditCategory(a, at);
@@ -292,36 +294,14 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		return copy;
 	}
 
-	// Copy this audit question to this audit subcategory
+	/**
+	 * Copy this audit question to this audit subcategory
+	 */
 	@Transactional
-	protected AuditQuestion copyAuditQuestion(AuditQuestion a, AuditCategory asc) {
-		AuditQuestion copy = new AuditQuestion(a, asc);
+	protected AuditQuestion copyAuditQuestion(AuditQuestion sourceQuestion, AuditCategory destinationCategory) {
+		AuditQuestion copy = new AuditQuestion(sourceQuestion, destinationCategory);
 		copy.setAuditColumns(permissions);
 		auditQuestionDAO.save(copy);
-
-		/*
-		 * for (AuditQuestionText text : a.getQuestionTexts()) {
-		 * AuditQuestionText aqtCopy = new AuditQuestionText(text, copy);
-		 * aqtCopy.setAuditColumns(permissions);
-		 * 
-		 * copy.getQuestionTexts().add(aqtCopy);
-		 * auditQuestionTextDAO.save(aqtCopy); }
-		 */
-
-		// TODO Do we need to copy the option type and the question options?
-		/*
-		 * if (a.getOptions() != null && copy.getOptions() == null)
-		 * copy.setOptions(new ArrayList<AuditQuestionOption>()); for
-		 * (AuditQuestionOption questionOption : a.getOptions()) {
-		 * AuditQuestionOption aqoCopy = new AuditQuestionOption(questionOption,
-		 * copy); aqoCopy.setAuditColumns(permissions);
-		 * 
-		 * copy.getOptions().add(questionOption);
-		 * auditQuestionDAO.save(aqoCopy); }
-		 */
-
-		auditQuestionDAO.save(copy);
-
 		return copy;
 	}
 
