@@ -10,6 +10,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.picsauditing.util.Strings;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_option_value")
@@ -73,7 +75,7 @@ public class AuditOptionValue extends BaseTable {
 	public int getScore() {
 		return score;
 	}
-	
+
 	public void setScore(int score) {
 		this.score = score;
 	}
@@ -87,10 +89,11 @@ public class AuditOptionValue extends BaseTable {
 	@Override
 	@Transient
 	public String getI18nKey() {
-		if (uniqueCode != null && !uniqueCode.isEmpty()) {
-			if (type.getUniqueCode() != null && (type.getUniqueCode().equals("Country") || type.getUniqueCode().equals("State")))
+		if (!Strings.isEmpty(uniqueCode)) {
+			if (type.getUniqueCode() != null
+					&& (type.getUniqueCode().equals("Country") || type.getUniqueCode().equals("State")))
 				return type.getUniqueCode() + "." + uniqueCode.replaceAll(" ", "");
-			
+
 			return type.getI18nKey() + "." + uniqueCode.replaceAll(" ", "");
 		}
 
@@ -102,10 +105,10 @@ public class AuditOptionValue extends BaseTable {
 	public String getI18nKey(String property) {
 		if (property != null && !property.isEmpty() && property.equals("name"))
 			return getI18nKey();
-		
+
 		return super.getI18nKey(property);
 	}
-	
+
 	@Override
 	public String toString() {
 		return "(" + id + ") " + getI18nKey();

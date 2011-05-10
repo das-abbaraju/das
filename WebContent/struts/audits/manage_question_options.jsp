@@ -29,7 +29,7 @@ function setupSortable() {
 		  return $helper;
 		},
 		update: function() {
-			$('#questionOptions-info').load('OrderAuditChildrenAjax.action?id=<s:property value="type.id"/>&type=AuditQuestionOption', 
+			$('#questionOptions-info').load('OrderAuditChildrenAjax.action?id=<s:property value="type.id"/>&type=AuditOptionValue', 
 				sortList.sortable('serialize').replace(/\[|\]/g,''), 
 				function() {
 					startThinking({div: questionOptions, message: "Loading updated list..."});

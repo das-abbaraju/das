@@ -10,12 +10,11 @@ import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditOptionValue;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -128,7 +127,8 @@ public class AuditPercentCalculator {
 							float scale = 1.0f;
 
 							if ("MultipleChoice".equals(question.getQuestionType()) && question.getOption() != null) {
-								// TODO Remove all this below and use the AuditQuestionOption.getScorePercent()
+								// TODO Remove all this below and use the
+								// AuditQuestionOption.getScorePercent()
 								if (!Strings.isEmpty(question.getOption().getUniqueCode())) {
 									final String uniqueCode = question.getOption().getUniqueCode();
 									if ("YesNo".equals(uniqueCode)) {
@@ -153,7 +153,7 @@ public class AuditPercentCalculator {
 										}
 									}
 								} else {
-									for (AuditOptionValue option : question.getOption().getQuestionOptions()) {
+									for (AuditOptionValue option : question.getOption().getOptionValues()) {
 										scale = Math.max(scale, option.getScore());
 										if (answer.getAnswer().equals(option.getI18nKey()))
 											answerValue = option.getScore();
@@ -293,8 +293,8 @@ public class AuditPercentCalculator {
 	}
 
 	/**
-	 * Use the audit rule cache to query a list of applicable rules and the figure out which rules apply to which
-	 * operators and categories
+	 * Use the audit rule cache to query a list of applicable rules and the
+	 * figure out which rules apply to which operators and categories
 	 * 
 	 * @param conAudit
 	 * @return

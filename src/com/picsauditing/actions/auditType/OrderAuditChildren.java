@@ -69,9 +69,9 @@ public class OrderAuditChildren extends PicsActionSupport {
 		}
 
 		// Change the Order numbers of the AuditQuestions
-		if (type.equals("AuditQuestionOption")) {
+		if (type.equals("AuditOptionValue")) {
 			AuditOptionGroup auditOptionType = auditQuestionOptionDAO.findOptionType(id);
-			for (AuditOptionValue questionOption : auditOptionType.getQuestionOptions()) {
+			for (AuditOptionValue questionOption : auditOptionType.getOptionValues()) {
 				questionOption.setNumber(list.get(questionOption.getId()));
 			}
 

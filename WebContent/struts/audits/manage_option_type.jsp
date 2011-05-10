@@ -8,19 +8,16 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
-<s:if test="question != null">
-	$(function() {
-		$('#breadcrumbs').append('&nbsp;&gt;&nbsp;&nbsp;<a class="blueMain" href="ManageQuestion.action?id=<s:property value="question.id"/>"><s:property value="question.name"/></a>');
+$(function () {
+	$('a.add, a.edit').click(function(e) {
+		e.preventDefault();
+		$('#editForm').load($(this).attr('href'));
 	});
-</s:if>
-function loadEdit(id) {
-	$('#editForm').load('ManageOptionGroup!editAjax.action', {type: id});
-}
+});
 </script>
 </head>
 <body>
 <h1>Manage Option Group</h1>
-<s:if test="question != null && question.id > 0"><a href="ManageQuestion.action?id=<s:property value="question.id" />">&lt;&lt; Back to Manage Question</a></s:if>
 <table style="width: 100%;">
 	<tr>
 		<td style="width: 50%;">
@@ -43,7 +40,7 @@ function loadEdit(id) {
 							<td class="optionRadio center"><s:if test="radio"><img src="images/okCheck.gif" alt="Edit" /></s:if></td>
 							<td class="optionUniqueCode"><s:property value="uniqueCode" /></td>
 							<td class="center"><a href="ManageOptionValue.action?type=<s:property value="id"/>">Manage</a></td>
-							<td><a href="#" onclick="loadEdit(<s:property value="id" />); return false;" class="edit"></a></td>
+							<td><a href="ManageOptionGroup!editAjax.action?type=<s:property value="id" />" class="edit"></a></td>
 						</tr>
 					</s:iterator>
 					<s:if test="all.size == 0">
@@ -55,7 +52,7 @@ function loadEdit(id) {
 			</table>
 		</td>
 		<td style="padding-left: 20px; vertical-align: top;">
-			<a href="#" onclick="loadEdit(0); return false;" class="add">Add new option group</a>
+			<a href="ManageOptionGroup!editAjax.action" class="add">Add new option group</a>
 			<div id="editForm"></div>
 		</td>
 	</tr>

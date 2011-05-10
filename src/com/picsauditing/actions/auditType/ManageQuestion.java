@@ -221,8 +221,8 @@ public class ManageQuestion extends ManageCategory {
 	public List<AuditOptionGroup> getOptionTypes() {
 		if (optionTypes == null) {
 			// Get common
-			String ids = Strings.implode(AuditOptionGroup.COMMON_TYPES);
-			optionTypes = auditQuestionOptionDAO.findOptionTypeWhere("o.id IN (" + ids + ") ORDER BY o.name");
+			String uniqueCodes = Strings.implodeForDB(AuditOptionGroup.COMMON_TYPES, ",");
+			optionTypes = auditQuestionOptionDAO.findOptionTypeWhere("o.uniqueCode IN (" + uniqueCodes + ") ORDER BY o.name");
 		}
 
 		return optionTypes;

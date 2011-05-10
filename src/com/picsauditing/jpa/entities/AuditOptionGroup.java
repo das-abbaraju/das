@@ -10,6 +10,8 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.util.Strings;
+
 @Entity
 @Table(name = "audit_option_group")
 @SuppressWarnings("serial")
@@ -17,11 +19,13 @@ public class AuditOptionGroup extends BaseTable {
 	private String name;
 	private boolean radio = false;
 	private String uniqueCode;
-	private List<AuditOptionValue> questionOptions = new ArrayList<AuditOptionValue>();
+	private List<AuditOptionValue> optionValues = new ArrayList<AuditOptionValue>();
 	/**
-	 * Periodically, we need to query commonly used QuestionOptions and update this list.
+	 * Periodically, we need to query commonly used OptionValues and update this
+	 * list.
 	 */
-	static public int[] COMMON_TYPES = new int[] { 25, 26, 30, 31, 20, 19 };
+	static public String[] COMMON_TYPES = new String[] { "Colors", "LowMedHigh", "YesNo", "YesNoNA", "OfficeLocation",
+			"Rating" };
 
 	@Column(nullable = false, length = 50)
 	public String getName() {
@@ -50,16 +54,17 @@ public class AuditOptionGroup extends BaseTable {
 
 	@OneToMany(mappedBy = "type")
 	@OrderBy("number")
-	public List<AuditOptionValue> getQuestionOptions() {
-		return questionOptions;
+	public List<AuditOptionValue> getOptionValues() {
+		return optionValues;
 	}
 
-	public void setQuestionOptions(List<AuditOptionValue> questionOptions) {
-		this.questionOptions = questionOptions;
+	public void setOptionValues(List<AuditOptionValue> optionValues) {
+		this.optionValues = optionValues;
 	}
-	
+
 	/**
-	 * TODO get the child option max score and use it 
+	 * TODO get the child option max score and use it
+	 * 
 	 * @return
 	 */
 	@Transient
@@ -67,10 +72,18 @@ public class AuditOptionGroup extends BaseTable {
 		return 0;
 	}
 
+	@Transient
+	public String getValue() {
+		if (!Strings.isEmpty(uniqueCode))
+			return uniqueCode;
+
+		return id + "";
+	}
+
 	@Override
 	@Transient
 	public String getI18nKey() {
-		if (uniqueCode != null && !uniqueCode.isEmpty()) {
+		if (!Strings.isEmpty(uniqueCode)) {
 			if (uniqueCode.equals("Country") || uniqueCode.equals("State"))
 				return "global." + uniqueCode;
 			if (uniqueCode.equals("YesNo") || uniqueCode.equals("LowMedHigh"))
@@ -90,7 +103,7 @@ public class AuditOptionGroup extends BaseTable {
 
 		return super.getI18nKey(property);
 	}
-	
+
 	@Transient
 	@Override
 	public String getAutocompleteValue() {
