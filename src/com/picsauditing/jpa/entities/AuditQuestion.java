@@ -80,6 +80,8 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	protected List<AuditQuestionOption> options;
 	private List<AuditCategoryRule> auditCategoryRules;
 	private List<AuditTypeRule> auditTypeRules;
+	private List<AuditQuestionFunction> auditQuestionFunctions;
+	private List<AuditQuestionFunctionWatcher> auditQuestionFunctionWatchers;
 
 	public AuditQuestion() {
 
@@ -434,6 +436,24 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	public void setAuditTypeRules(List<AuditTypeRule> auditTypeRules) {
 		this.auditTypeRules = auditTypeRules;
+	}
+
+	@OneToMany(mappedBy = "question")
+	public List<AuditQuestionFunction> getAuditQuestionFunctions() {
+		return auditQuestionFunctions;
+	}
+
+	public void setAuditQuestionFunctions(List<AuditQuestionFunction> auditQuestionFunctions) {
+		this.auditQuestionFunctions = auditQuestionFunctions;
+	}
+
+	@OneToMany(mappedBy = "question")
+	public List<AuditQuestionFunctionWatcher> getAuditQuestionFunctionWatchers() {
+		return auditQuestionFunctionWatchers;
+	}
+
+	public void setAuditQuestionFunctionWatchers(List<AuditQuestionFunctionWatcher> auditQuestionFunctionWatchers) {
+		this.auditQuestionFunctionWatchers = auditQuestionFunctionWatchers;
 	}
 
 	@Transient
