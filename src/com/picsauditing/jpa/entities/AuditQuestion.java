@@ -56,7 +56,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private String visibleAnswer;
 	private String name;
 	private String questionType;
-	private AuditOptionType option;
+	private AuditOptionGroup option;
 	private String okAnswer;
 	private String columnHeader;
 	private String uniqueCode;
@@ -77,7 +77,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private List<AuditQuestion> dependentRequired;
 	private List<AuditQuestion> dependentVisible;
 	private Set<AuditQuestion> dependentQuestions;
-	protected List<AuditQuestionOption> options;
+	protected List<AuditOptionValue> options;
 	private List<AuditCategoryRule> auditCategoryRules;
 	private List<AuditTypeRule> auditTypeRules;
 	private List<AuditQuestionFunction> auditQuestionFunctions;
@@ -162,11 +162,11 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	@ManyToOne
 	@JoinColumn(name = "optionID")
-	public AuditOptionType getOption() {
+	public AuditOptionGroup getOption() {
 		return option;
 	}
 
-	public void setOption(AuditOptionType option) {
+	public void setOption(AuditOptionGroup option) {
 		this.option = option;
 	}
 

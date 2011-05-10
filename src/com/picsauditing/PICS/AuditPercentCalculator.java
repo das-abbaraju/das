@@ -15,7 +15,7 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditQuestionOption;
+import com.picsauditing.jpa.entities.AuditOptionValue;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -153,7 +153,7 @@ public class AuditPercentCalculator {
 										}
 									}
 								} else {
-									for (AuditQuestionOption option : question.getOption().getQuestionOptions()) {
+									for (AuditOptionValue option : question.getOption().getQuestionOptions()) {
 										scale = Math.max(scale, option.getScore());
 										if (answer.getAnswer().equals(option.getI18nKey()))
 											answerValue = option.getScore();

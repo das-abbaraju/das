@@ -6,7 +6,6 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.jpa.entities.AuditOptionType;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
 @Transactional
@@ -84,26 +83,5 @@ public class AuditQuestionDAO extends PicsDAO {
 
 		return query.getResultList();
 
-	}
-
-	public List<AuditOptionType> getAllOptionTypes() {
-		return findOptionTypeWhere(null);
-	}
-
-	public AuditOptionType findOptionType(int id) {
-		Query query = em.createQuery("SELECT o FROM AuditOptionType o WHERE o.id = ?");
-		query.setParameter(1, id);
-		return (AuditOptionType) query.getSingleResult();
-	}
-	
-	public List<AuditOptionType> findOptionTypeWhere(String where) {
-		if (where != null && !where.isEmpty())
-			where = " WHERE " + where;
-		else
-			where = "";
-		
-		Query query = em.createQuery("SELECT o FROM AuditOptionType o" + where);
-		// TODO Add sort here
-		return query.getResultList();
 	}
 }

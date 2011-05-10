@@ -3,14 +3,17 @@ package com.picsauditing.actions.auditType;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.AuditOptionValueDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditOptionType;
+import com.picsauditing.jpa.entities.AuditOptionGroup;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditQuestionOption;
+import com.picsauditing.jpa.entities.AuditOptionValue;
 import com.picsauditing.jpa.entities.AuditType;
 
 @SuppressWarnings("serial")
@@ -20,15 +23,11 @@ public class OrderAuditChildren extends PicsActionSupport {
 	protected int id;
 	protected String type;
 
+	@Autowired
 	protected AuditTypeDAO auditTypeDAO;
 	protected AuditCategoryDAO auditCategoryDAO;
 	protected AuditQuestionDAO auditQuestionDAO;
-
-	public OrderAuditChildren(AuditTypeDAO auditTypeDAO, AuditCategoryDAO auditCategoryDAO, AuditQuestionDAO auditQuestionDAO) {
-		this.auditTypeDAO = auditTypeDAO;
-		this.auditCategoryDAO = auditCategoryDAO;
-		this.auditQuestionDAO = auditQuestionDAO;
-	}
+	protected AuditOptionValueDAO auditQuestionOptionDAO;
 
 	public String execute() {
 		if (type == null)
@@ -68,14 +67,14 @@ public class OrderAuditChildren extends PicsActionSupport {
 			}
 			auditCategoryDAO.save(auditSubCategory);
 		}
-		
+
 		// Change the Order numbers of the AuditQuestions
 		if (type.equals("AuditQuestionOption")) {
-			AuditOptionType auditOptionType = auditQuestionDAO.findOptionType(id);
-			for (AuditQuestionOption questionOption : auditOptionType.getQuestionOptions()) {
+			AuditOptionGroup auditOptionType = auditQuestionOptionDAO.findOptionType(id);
+			for (AuditOptionValue questionOption : auditOptionType.getQuestionOptions()) {
 				questionOption.setNumber(list.get(questionOption.getId()));
 			}
-			
+
 			auditQuestionDAO.save(auditOptionType);
 		}
 

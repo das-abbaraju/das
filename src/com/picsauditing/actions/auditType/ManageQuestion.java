@@ -8,12 +8,13 @@ import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.AuditOptionValueDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditOptionType;
+import com.picsauditing.jpa.entities.AuditOptionGroup;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.util.Strings;
@@ -21,15 +22,17 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ManageQuestion extends ManageCategory {
 	protected AuditDataDAO auditDataDAO;
+	protected AuditOptionValueDAO auditQuestionOptionDAO;
 	private Integer requiredQuestionID;
 	private Integer visibleQuestionID;
-	private List<AuditOptionType> optionTypes;
+	private List<AuditOptionGroup> optionTypes;
 
 	public ManageQuestion(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
 			AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO, AuditDecisionTableDAO ruleDAO,
-			WorkFlowDAO wfDAO) {
+			WorkFlowDAO wfDAO, AuditOptionValueDAO auditQuestionOptionDAO) {
 		super(auditTypeDao, auditCategoryDao, auditQuestionDao, ruleDAO, wfDAO);
 		this.auditDataDAO = auditDataDAO;
+		this.auditQuestionOptionDAO = auditQuestionOptionDAO;
 	}
 
 	@Override
@@ -59,7 +62,7 @@ public class ManageQuestion extends ManageCategory {
 				addActionError("Question name is required");
 				return false;
 			}
-			
+
 			if (question.getQuestionType().equals("MultipleChoice") && question.getOption() == null) {
 				addActionError("Option type is required when 'Multiple Choice' is used as the question type");
 				return false;
@@ -105,7 +108,7 @@ public class ManageQuestion extends ManageCategory {
 
 			question = auditQuestionDAO.save(question);
 			id = question.getCategory().getId();
-			
+
 			recalculateCategory();
 			return true;
 		}
@@ -215,11 +218,11 @@ public class ManageQuestion extends ManageCategory {
 		return AuditQuestion.TYPE_ARRAY;
 	}
 
-	public List<AuditOptionType> getOptionTypes() {
+	public List<AuditOptionGroup> getOptionTypes() {
 		if (optionTypes == null) {
 			// Get common
-			String ids = Strings.implode(AuditOptionType.COMMON_TYPES);
-			optionTypes = auditQuestionDAO.findOptionTypeWhere("o.id IN (" + ids + ") ORDER BY o.name");
+			String ids = Strings.implode(AuditOptionGroup.COMMON_TYPES);
+			optionTypes = auditQuestionOptionDAO.findOptionTypeWhere("o.id IN (" + ids + ") ORDER BY o.name");
 		}
 
 		return optionTypes;

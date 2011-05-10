@@ -11,14 +11,13 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "audit_option_type")
+@Table(name = "audit_option_group")
 @SuppressWarnings("serial")
-// TODO AuditOptionGroup
-public class AuditOptionType extends BaseTable {
+public class AuditOptionGroup extends BaseTable {
 	private String name;
 	private boolean radio = false;
 	private String uniqueCode;
-	private List<AuditQuestionOption> questionOptions = new ArrayList<AuditQuestionOption>();
+	private List<AuditOptionValue> questionOptions = new ArrayList<AuditOptionValue>();
 	/**
 	 * Periodically, we need to query commonly used QuestionOptions and update this list.
 	 */
@@ -51,11 +50,11 @@ public class AuditOptionType extends BaseTable {
 
 	@OneToMany(mappedBy = "type")
 	@OrderBy("number")
-	public List<AuditQuestionOption> getQuestionOptions() {
+	public List<AuditOptionValue> getQuestionOptions() {
 		return questionOptions;
 	}
 
-	public void setQuestionOptions(List<AuditQuestionOption> questionOptions) {
+	public void setQuestionOptions(List<AuditOptionValue> questionOptions) {
 		this.questionOptions = questionOptions;
 	}
 	

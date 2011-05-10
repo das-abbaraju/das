@@ -276,7 +276,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.MyCalendar)) {
 			subMenu.addChild("My Schedule", "MySchedule.action");
 		}
-		
+
 		subMenu = menu.addChild(getText("menu.Configuration"));
 		if (permissions.hasPermission(OpPerms.Translator)) {
 			subMenu.addChild("Manage Translations", "ManageTranslations.action");
@@ -287,7 +287,7 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
 			subMenu.addChild("Audit Definitions", "ManageAuditType.action");
-			subMenu.addChild("Manage Option Types", "ManageOptionType.action");
+			subMenu.addChild("Manage Option Groups", "ManageOptionGroup.action");
 			subMenu.addChild("Flag Criteria", "ManageFlagCriteria.action");
 		}
 		if (permissions.hasPermission(OpPerms.ContractorSimulator))

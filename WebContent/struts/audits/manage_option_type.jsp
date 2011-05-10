@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Manage Option Types</title>
+<title>Manage Option Group</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
@@ -14,12 +14,12 @@
 	});
 </s:if>
 function loadEdit(id) {
-	$('#editForm').load('ManageOptionType!editAjax.action', {typeID: id});
+	$('#editForm').load('ManageOptionGroup!editAjax.action', {type: id});
 }
 </script>
 </head>
 <body>
-<h1>Manage Option Types</h1>
+<h1>Manage Option Group</h1>
 <s:if test="question != null && question.id > 0"><a href="ManageQuestion.action?id=<s:property value="question.id" />">&lt;&lt; Back to Manage Question</a></s:if>
 <table style="width: 100%;">
 	<tr>
@@ -42,7 +42,7 @@ function loadEdit(id) {
 							<td class="optionName"><s:property value="name" /></td>
 							<td class="optionRadio center"><s:if test="radio"><img src="images/okCheck.gif" alt="Edit" /></s:if></td>
 							<td class="optionUniqueCode"><s:property value="uniqueCode" /></td>
-							<td class="center"><a href="ManageQuestionOption.action?typeID=<s:property value="id"/><s:if test="question != null && question.id > 0">&questionID=<s:property value="question.id" /></s:if>">Manage</a></td>
+							<td class="center"><a href="ManageOptionValue.action?type=<s:property value="id"/>">Manage</a></td>
 							<td><a href="#" onclick="loadEdit(<s:property value="id" />); return false;" class="edit"></a></td>
 						</tr>
 					</s:iterator>
@@ -55,7 +55,7 @@ function loadEdit(id) {
 			</table>
 		</td>
 		<td style="padding-left: 20px; vertical-align: top;">
-			<a href="#" onclick="loadEdit(0); return false;" class="add">Add new option type</a>
+			<a href="#" onclick="loadEdit(0); return false;" class="add">Add new option group</a>
 			<div id="editForm"></div>
 		</td>
 	</tr>

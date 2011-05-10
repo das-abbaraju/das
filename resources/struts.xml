@@ -1313,17 +1313,17 @@
 			</result>
 		</action>
 
-		<action name="ManageQuestionOption"
-			class="com.picsauditing.actions.auditType.ManageQuestionOptions">
+		<action name="ManageOptionGroup"
+			class="com.picsauditing.actions.auditType.ManageOptionGroup">
+			<result>struts/audits/manage_option_type.jsp</result>
+			<result name="edit">struts/audits/manage_option_type_edit.jsp</result>
+		</action>
+		
+		<action name="ManageOptionValue"
+			class="com.picsauditing.actions.auditType.ManageOptionValue">
 			<result>struts/audits/manage_question_options.jsp</result>
 			<result name="list">struts/audits/manage_question_options_list.jsp</result>
 			<result name="edit">struts/audits/manage_question_options_edit.jsp</result>
-		</action>
-		
-		<action name="ManageOptionType"
-			class="com.picsauditing.actions.auditType.ManageOptionType">
-			<result>struts/audits/manage_option_type.jsp</result>
-			<result name="edit">struts/audits/manage_option_type_edit.jsp</result>
 		</action>
 				
 		<action name="ManageQuestionCopyAjax"

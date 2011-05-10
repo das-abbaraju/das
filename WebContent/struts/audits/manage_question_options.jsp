@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Manage Question Options</title>
+<title>Manage Option Values</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
@@ -53,8 +53,8 @@ $(function() {
 </script>
 </head>
 <body>
-<h1>Manage Question Option<span class="sub"><s:property value="type.name" /></span></h1>
-<a href="ManageOptionType.action<s:if test="question != null && question.id > 0">?questionID=<s:property value="question.id" /></s:if>">&lt;&lt; Back to Manage Option Type</a>
+<h1>Manage Option Value<span class="sub"><s:property value="type.name" /></span></h1>
+<a href="ManageOptionGroup.action">&lt;&lt; Back to Manage Option Type</a>
 <br />
 
 <table style="width: 100%;">
@@ -66,7 +66,7 @@ $(function() {
 			<div id="questionOptions-info"></div>
 		</td>
 		<td style="padding-left: 20px; vertical-align: top;">
-			<a href="#type=0" class="add">Add New Question Option</a>
+			<a href="#type=0" class="add">Add New Option Value</a>
 			<div id="editForm"></div>
 		</td>
 	</tr>

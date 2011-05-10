@@ -12,12 +12,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "audit_question_option")
+@Table(name = "audit_option_value")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-// TODO AuditOptionValue
-public class AuditQuestionOption extends BaseTable {
-	private AuditOptionType type;
+public class AuditOptionValue extends BaseTable {
 	private TranslatableString name;
+	private AuditOptionGroup type;
 	private boolean visible = true;
 	private int number = 0;
 	private String uniqueCode;
@@ -34,11 +33,11 @@ public class AuditQuestionOption extends BaseTable {
 
 	@ManyToOne
 	@JoinColumn(name = "typeID", nullable = false)
-	public AuditOptionType getType() {
+	public AuditOptionGroup getType() {
 		return type;
 	}
 
-	public void setType(AuditOptionType type) {
+	public void setType(AuditOptionGroup type) {
 		this.type = type;
 	}
 

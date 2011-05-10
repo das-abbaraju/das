@@ -27,9 +27,9 @@
 	<bean id="AuditCategoryDAO" class="com.picsauditing.dao.AuditCategoryDAO"/>
 	<bean id="AuditCategoryDataDAO" class="com.picsauditing.dao.AuditCategoryDataDAO"/>
 	<bean id="AuditCategoryMatrixDAO" class="com.picsauditing.dao.AuditCategoryMatrixDAO"/>
+	<bean id="AuditOptionValueDAO" class="com.picsauditing.dao.AuditOptionValueDAO"/>
 	<bean id="AuditQuestionDAO" class="com.picsauditing.dao.AuditQuestionDAO"/>
 	<bean id="AuditQuestionTextDAO" class="com.picsauditing.dao.AuditQuestionTextDAO"/>
-	<bean id="AuditQuestionOptionDAO" class="com.picsauditing.dao.AuditQuestionOptionDAO"/>
 	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO"/>
 	<bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO"/>
 	<bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO"/>
