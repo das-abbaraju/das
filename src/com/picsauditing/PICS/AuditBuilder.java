@@ -47,8 +47,7 @@ public class AuditBuilder {
 	 * 
 	 * @param rules
 	 * @param operators
-	 *            a list of operators (not corporate) accounts associated with
-	 *            this contractor
+	 *            a list of operators (not corporate) accounts associated with this contractor
 	 * @return
 	 */
 	public Map<AuditType, AuditTypeDetail> calculateRequiredAuditTypes(List<AuditTypeRule> rules,
@@ -95,10 +94,10 @@ public class AuditBuilder {
 		AuditBuilderController controller = (AuditBuilderController) SpringUtils.getBean("AuditBuilderController");
 		controller.setup(contractor, new User(User.SYSTEM));
 		List<AuditTypeRule> rules = auditTypeRuleCache.getApplicableAuditRules(contractor);
-		List<AuditRule> prunedRules = controller.pruneRules(rules,null);
+		List<AuditRule> prunedRules = controller.pruneRules(rules, null);
 		List<AuditTypeRule> prunedAuditRules = new ArrayList<AuditTypeRule>();
-		for(AuditRule ar : prunedRules)
-			prunedAuditRules.add((AuditTypeRule)ar);
+		for (AuditRule ar : prunedRules)
+			prunedAuditRules.add((AuditTypeRule) ar);
 		return builder.calculateRequiredAuditTypes(prunedAuditRules, contractor.getOperatorAccounts());
 	}
 
@@ -106,8 +105,7 @@ public class AuditBuilder {
 	 * Determine which categories should be on a given audit
 	 * 
 	 * @param rules
-	 *            Make sure that these rules are filtered for the requested
-	 *            contractorAudit
+	 *            Make sure that these rules are filtered for the requested contractorAudit
 	 */
 	public AuditCategoriesDetail getDetail(AuditType auditType, List<AuditCategoryRule> rules,
 			Collection<OperatorAccount> operators) {
@@ -132,9 +130,8 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * Find the first rule that applies to this operator. Consider rules for any
-	 * operator(*), this operator, or one its parent companies. Ignore rules for
-	 * other operators.
+	 * Find the first rule that applies to this operator. Consider rules for any operator(*), this operator, or one its
+	 * parent companies. Ignore rules for other operators.
 	 * 
 	 * @param rules
 	 * @param auditType
@@ -165,9 +162,10 @@ public class AuditBuilder {
 			}
 		}
 
-		/*for (AuditCategory subCategory : category.getSubCategories()) {
-			includeCategory(detail, subCategory, categoryRules);
-		}*/
+		/*
+		 * for (AuditCategory subCategory : category.getSubCategories()) { includeCategory(detail, subCategory,
+		 * categoryRules); }
+		 */
 	}
 
 	static public AuditCategoryRule getApplicable(List<AuditCategoryRule> rules, AuditCategory auditCategory,
@@ -210,60 +208,5 @@ public class AuditBuilder {
 
 		Collections.sort(rules);
 		Collections.reverse(rules);
-	}
-
-	static private void rulesToConvert() {
-		/*
-		 * // TODO Add rule for Annual Update needed by acceptsBids and
-		 * everything // else is acceptsBids = No // TODO test Welcome Call
-		 * Audits
-		 * 
-		 * // AuditData oqEmployees = //
-		 * auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), //
-		 * AuditQuestion.OQ_EMPLOYEES); // AuditData hasCOR = //
-		 * auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), 2954); //
-		 * Checking to see if the supplement COR or BPIISNCaseMgmt should be //
-		 * required for this contractor ContractorAudit corAudit = null;
-		 * ContractorAudit BpIisnSpecific = null; ContractorAudit HSECompetency
-		 * = null; for (ContractorAudit audit : currentAudits) { if
-		 * (auditTypeList.contains(audit.getAuditType())) { if
-		 * (audit.getAuditType().getId() == AuditType.BPIISNSPECIFIC)
-		 * BpIisnSpecific = audit; else if (audit.getAuditType().getId() == 99)
-		 * HSECompetency = audit; else if (audit.getAuditType().getId() ==
-		 * AuditType.COR && hasCOR != null && "Yes".equals(hasCOR.getAnswer()))
-		 * corAudit = audit; } }
-		 * 
-		 * // Find the PQF audit for this contractor // Only ever create ONE PQF
-		 * audit // TODO we should probably take this part out. I don't think
-		 * it's needed // anymore ContractorAudit pqfAudit = null; for
-		 * (ContractorAudit conAudit : currentAudits) { if
-		 * (conAudit.getAuditType().isPqf()) { if
-		 * (conAudit.getAuditStatus().equals(AuditStatus.Expired)) { // This
-		 * should never happen...but just in case
-		 * conAudit.changeStatus(AuditStatus.Pending, user);
-		 * cAuditDAO.save(conAudit); } pqfAudit = conAudit; break; } }
-		 * 
-		 * switch (auditType.getId()) { case AuditType.DESKTOP: if
-		 * (!pqfAudit.getAuditStatus().isActive()) { insertNow = false; break; }
-		 * // If the contractor has answered Yes to the COR // question // don't
-		 * create a Desktop Audit if (hasCOR != null &&
-		 * "Yes".equals(hasCOR.getAnswer())) insertNow = false; break; case
-		 * AuditType.OFFICE: if (!pqfAudit.getAuditStatus().isActiveSubmitted())
-		 * insertNow = false; break; case AuditType.DA: if
-		 * (!pqfAudit.getAuditStatus().isActiveSubmitted() || oqEmployees ==
-		 * null || !"Yes".equals(oqEmployees.getAnswer())) insertNow = false;
-		 * break; case AuditType.COR: if (hasCOR == null ||
-		 * !"Yes".equals(hasCOR.getAnswer())) insertNow = false; break; case
-		 * AuditType.SUPPLEMENTCOR: if (corAudit == null) insertNow = false;
-		 * else if (!corAudit.getAuditStatus().isActive()) insertNow = false;
-		 * break; case AuditType.BPIISNCASEMGMT: if (BpIisnSpecific != null &&
-		 * !BpIisnSpecific.getAuditStatus().isActiveResubmittedExempt())
-		 * insertNow = false; break; case 100: if
-		 * (!HSECompetency.getAuditStatus().isActiveResubmittedExempt())
-		 * insertNow = false; break; default: break; }
-		 * 
-		 * // TODO If the auditType is a Desktop, then make sure the PQF is //
-		 * ActiveSubmitted. Maybe we should add this to the ruleSet
-		 */
 	}
 }
