@@ -64,7 +64,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected String phone;
 	protected String fax;
 	protected String webUrl;
-	protected Industry industry;
+	protected Trade mainTrade;
 	private Naics naics;
 	private boolean naicsValid;
 	protected String type;
@@ -285,17 +285,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	public void setLocale(Locale locale) {
 		this.locale = locale;
-	}
-
-	@Column(name = "industry", length = 50)
-	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.Industry") })
-	@Enumerated(EnumType.STRING)
-	public Industry getIndustry() {
-		return this.industry;
-	}
-
-	public void setIndustry(Industry industry) {
-		this.industry = industry;
 	}
 
 	/**
@@ -659,7 +648,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 			obj.put("zip", zip);
 			obj.put("phone", phone);
 			obj.put("fax", fax);
-			obj.put("industry", industry == null ? null : industry.toString());
+			obj.put("mainTrade", mainTrade.toString());
 
 			obj.put("primaryContact", primaryContact == null ? null : primaryContact.toJSON());
 		}
@@ -771,5 +760,15 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Override
 	public String getAutocompleteValue() {
 		return name;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "mainTradeID")
+	public Trade getMainTrade() {
+		return mainTrade;
+	}
+
+	public void setMainTrade(Trade mainTrade) {
+		this.mainTrade = mainTrade;
 	}
 }

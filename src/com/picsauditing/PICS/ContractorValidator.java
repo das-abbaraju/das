@@ -60,7 +60,7 @@ public class ContractorValidator {
 			errorMessages.addElement("Please fill in the Tax ID field");
 
 		// Main Trade
-		if (Strings.isEmpty(contractor.getMainTrade()) || contractor.getMainTrade().equals("- Trade -"))
+		if (contractor.getMainTrade() == null)
 			errorMessages.addElement("Please select a main trade");
 
 		// Onsite / Offsite / Material Supplier

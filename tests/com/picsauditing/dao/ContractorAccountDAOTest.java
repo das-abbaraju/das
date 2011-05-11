@@ -70,7 +70,7 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setCreatedBy(new User(1100));
 		contractoraccount.setCreationDate(new Date());
 		contractoraccount.setTaxId("test17701");
-		contractoraccount.setMainTrade("Consulting");
+		//contractoraccount.setMainTrade("Consulting");
 		contractoraccount.setMembershipDate(cal.getTime());
 		contractoraccount.setRiskLevel(LowMedHigh.Med);
 		contractoraccount = (ContractorAccount) accountDAO.save(contractoraccount);

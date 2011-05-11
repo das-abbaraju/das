@@ -55,7 +55,6 @@ import com.picsauditing.util.comparators.ContractorAuditComparator;
 public class ContractorAccount extends Account implements JSONable {
 
 	private String taxId;
-	private String mainTrade;
 	private String logoFile;
 	private String brochureFile;
 	private String mustPay = "Yes";
@@ -200,15 +199,6 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setTaxId(String taxId) {
 		this.taxId = taxId;
-	}
-
-	@Column(name = "main_trade", length = 100)
-	public String getMainTrade() {
-		return this.mainTrade;
-	}
-
-	public void setMainTrade(String mainTrade) {
-		this.mainTrade = mainTrade;
 	}
 
 	@Column(name = "logo_file", length = 50)

@@ -48,7 +48,7 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setPhone("999-999-9999");
 		operatoraccount.setFax("999-999-9999");
 		operatoraccount.setWebUrl("www.picsorganizer.com");
-		operatoraccount.setIndustry(Industry.Petrochemical);
+		//operatoraccount.setIndustry(Industry.Petrochemical);
 		// operatoraccount.setActive('y');
 		operatoraccount.setStatus(AccountStatus.Active);
 		operatoraccount.setCreatedBy(new User(1100));
