@@ -184,6 +184,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 				}
 			}
 			if (count == 1) {
+				MenuComponent tradeItem = subMenu.addChild(getText("ContractorTrades.title"), "ContractorTrades.action?id=" + contractor.getId());
 				subMenu = subMenu.getChildren().get(0);
 			}
 			menu.add(subMenu);
