@@ -36,6 +36,8 @@ public class InvoiceFee extends BaseTable {
 	private String fee;
 	private BigDecimal amount = BigDecimal.ZERO;
 	private boolean visible = true;
+	// TODO Tom: Upgrade this to enum FeeClass
+	// private FeeClass feeClass;
 	private String feeClass;
 	private String qbFullName;
 	private Integer displayOrder = 999;
