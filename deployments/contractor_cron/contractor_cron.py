@@ -112,7 +112,7 @@ class CronPublisher(CronThread):
 		super(CronPublisher, self).__init__()
 		self.con_q = con_q
 		self.server_g = server_g
-		self.url = SERVER + "PyCron.action"  
+		self.url = SERVER + "ContractorCron!listAjax.action"  
 		self.sleeptime = 10
 		self.logger = logging.getLogger('publisher')
 	def run(self):
