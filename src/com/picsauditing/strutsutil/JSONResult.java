@@ -7,6 +7,12 @@ import org.json.simple.JSONAware;
 
 import com.opensymphony.xwork2.ActionInvocation;
 
+/**
+ * Custom result used to return JSON to the browser using the proper contentType.
+ * 
+ * @author kpartridge
+ *
+ */
 public class JSONResult extends StreamResult {
 
 	private static final long serialVersionUID = 7789432829226367722L;

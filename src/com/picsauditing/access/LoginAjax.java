@@ -17,7 +17,7 @@ public class LoginAjax extends PicsActionSupport {
 		json = new JSONObject();
 		json.put("loggedin", permissions.isLoggedIn());
 		json.put("user", permissions.getName());
-		return SUCCESS;
+		return JSON;
 	}
 
 	public String getCallback() {

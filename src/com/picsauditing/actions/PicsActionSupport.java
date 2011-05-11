@@ -35,20 +35,28 @@ import com.picsauditing.util.URLUtils;
 @SuppressWarnings("serial")
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware {
 
-	protected static String LOGIN_AJAX = "LoginAjax";
-	protected static String BLANK = "blank";
-	protected static String JSON = "json";
-	protected static String JSONP = "jsonp";
-	protected static String CHART_XML = "chartXML";
+	protected static final String PLAIN_TEXT = "plain-text";
+	protected static final String LOGIN_AJAX = "LoginAjax";
+	protected static final String BLANK = "blank";
+	protected static final String JSON = "json";
+	protected static final String JSONP = "jsonp";
+	protected static final String CHART_XML = "chartXML";
+
 	protected Collection<String> alertMessages;
 
 	protected String requestURL = null;
 
 	protected Permissions permissions = null;
 
-	// replaces the obsolete message in cases where we need to print out a
-	// single string to the page
+	/**
+	 * String that is used for simple messages.
+	 * 
+	 * This is also used for plain-text type results.
+	 * 
+	 * @see com.picsauditing.strutsutil.PlainTextResult
+	 */
 	protected String output = null;
+
 	protected String button = null;
 
 	/**
@@ -67,8 +75,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	private User user; // Current logged in user
 	/**
-	 * TODO Kyle, please research this field and document it. Also review if we need setAccount on AccountActionSupport
-	 * Maybe we should move the account field to AccountActionSupport???
+	 * TODO Kyle, please research this field and document it. Also review if we
+	 * need setAccount on AccountActionSupport Maybe we should move the account
+	 * field to AccountActionSupport???
 	 */
 	protected Account account; // Current logged in user's account
 	private Set<User> auditorList;

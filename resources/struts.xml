@@ -84,8 +84,7 @@
 			<result name="forgot">struts/users/account_recovery.jsp</result>
 		</action>
 
-		<action name="LoginAjax" class="com.picsauditing.access.LoginAjax">
-			<result>struts/login_json.jsp</result>
+		<action name="LoginAjax" class="com.picsauditing.access.LoginAjax" >
 		</action>
 		
 		<action name="AccountRecovery" class="com.picsauditing.actions.AccountRecovery">
@@ -1665,13 +1664,11 @@
 
 		<!-- Autocomplete Ajax -->
 		<action name="*Autocomplete" class="com.picsauditing.actions.autocomplete.{1}Autocomplete">
-			<result>struts/blank.jsp</result>
 		</action>
 		
 		<action name="*AutocompleteJSON"
 			class="com.picsauditing.actions.autocomplete.{1}Autocomplete">
 			<param name="button">json</param>
-			<result>struts/json.jsp</result>
 		</action>
 
 		<!-- Ajax Snippets -->
@@ -2199,11 +2196,6 @@
 		
 		<!-- Python Contractor Cron -->
 		
-		<action name="PyCron"
-			class="com.picsauditing.actions.cron.PyContractorCron">
-			<result>/struts/blank.jsp</result>
-		</action>
-
 		<!--  Development struts mappings -->
 		<action name="CertCleanUp"
 			class="com.picsauditing.actions.contractors.CertCleanUp">

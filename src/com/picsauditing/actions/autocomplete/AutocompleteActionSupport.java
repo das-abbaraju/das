@@ -22,7 +22,10 @@ public abstract class AutocompleteActionSupport<T extends BaseTable> extends Pic
 		findItems();
 		createOutput();
 		output = outputBuffer.toString();
-		return SUCCESS;
+		if ("json".equals(button))
+			return JSON;
+
+		return PLAIN_TEXT;
 	}
 
 	protected abstract void findItems();
@@ -36,28 +39,28 @@ public abstract class AutocompleteActionSupport<T extends BaseTable> extends Pic
 		for (T item : items) {
 			createOutput(item);
 		}
-		
-		if("json".equals(button))
+
+		if ("json".equals(button))
 			json.put("items", jsonObjs);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected void createOutput(T item) {
-		if ("json".equals(button)){
+		if ("json".equals(button)) {
 			jsonObjs.add(createOutputJSON(item));
 		} else {
 			outputBuffer.append(createOutputAutocomplete(item));
 		}
 	}
 
-	protected JSONObject createOutputJSON(T item){
+	protected JSONObject createOutputJSON(T item) {
 		return item.toJSON();
 	}
-	
-	protected String createOutputAutocomplete(T item){
+
+	protected String createOutputAutocomplete(T item) {
 		return item.getAutocompleteId() + "|" + item.getAutocompleteValue() + "\n";
 	}
-	
+
 	protected boolean isSearchDigit() {
 		try {
 			Integer.parseInt(q);

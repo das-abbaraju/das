@@ -137,7 +137,7 @@ public class ContractorCron extends PicsActionSupport {
 	public String listAjax() {
 		List<Integer> ids = contractorDAO.findContractorsNeedingRecalculation(15, new HashSet<Integer>());
 		output = Strings.implode(ids);
-		return "plain-text";
+		return PLAIN_TEXT;
 	}
 
 	@Transactional

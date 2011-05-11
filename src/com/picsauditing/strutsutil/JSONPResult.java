@@ -8,6 +8,12 @@ import org.json.simple.JSONAware;
 
 import com.opensymphony.xwork2.ActionInvocation;
 
+/**
+ * @see com.picsauditing.strutsutil.JSONResult
+ * 
+ * @author kpartridge
+ *
+ */
 public class JSONPResult extends StreamResult {
 
 	private static final long serialVersionUID = 7789432829226367722L;
