@@ -1,6 +1,7 @@
 package com.picsauditing.dao;
 
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.persistence.Query;
 
@@ -65,23 +66,44 @@ public class TradeDAO extends PicsDAO {
 
 	public Tree<Trade> findHierarchyByIndexValue(String q) {
 		String sql = "SELECT t2.* " + "FROM app_index i " + "JOIN ref_trade t1 ON t1.id = i.foreignKey "
-				+ "JOIN ref_trade t2 ON t1.indexStart >= t2.indexStart AND t1.indexEnd <= t2.indexEnd "
-				+ "WHERE i.indexType = 'T' AND i.value LIKE :q " + "GROUP BY t2.id " + "ORDER by t2.indexStart";
+		+ "JOIN ref_trade t2 ON t1.indexStart >= t2.indexStart AND t1.indexEnd <= t2.indexEnd "
+		+ "WHERE i.indexType = 'T' AND (" 
+		+ convertSearchTermsToQueryTerms("i.value",  q) 
+		+ ") GROUP BY t2.id " + "ORDER by t2.indexStart";
 
 		Query query = em.createNativeQuery(sql, Trade.class);
-		query.setParameter("q", q + "%");
 
 		return Tree.createTreeFromOrderedList(query.getResultList());
 	}
 
 	public List<Trade> findByIndexValue(String q) {
 		String sql = "SELECT t1.* " + "FROM app_index i " + "JOIN ref_trade t1 ON t1.id = i.foreignKey "
-				+ "WHERE i.indexType = 'T' AND i.value LIKE :q " + "ORDER by t1.indexLevel DESC";
+		+ "WHERE i.indexType = 'T' AND ("
+		+ convertSearchTermsToQueryTerms("i.value",  q)
+		+ ") ORDER by t1.indexLevel DESC";
 
 		Query query = em.createNativeQuery(sql, Trade.class);
-		query.setParameter("q", q + "%");
 		
 		return query.getResultList();
 	}
-
+	
+	/**
+	 * Converts a string of search terms into a SQL where query section
+	 * For example "dog cat" would be converted to "column llke 'dog%' or column like 'cat%'
+	 * @param column name of database column
+	 * @param searchTerms terms to search on
+	 * @return sql where clause snippet to match search terms
+	 */
+	private String convertSearchTermsToQueryTerms(String column,  String searchTerms) {
+		StringTokenizer st = new StringTokenizer(searchTerms);
+		StringBuilder sb = new StringBuilder();
+		
+		// break out search terms
+		while (st.hasMoreTokens()) {
+			if (sb.length() > 0) sb.append(" OR ");
+			sb.append(column).append(" LIKE '").append(st.nextToken()).append("%'");
+		}
+		
+		return sb.toString();
+	}
 }
