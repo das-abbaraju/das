@@ -29,7 +29,6 @@ public class AuditCategoryDataDAO extends PicsDAO {
 		return a;
 	}
 
-	@SuppressWarnings("unchecked")
 	public AuditCatData findAuditCatData(int auditID, int catID) {
 		String selectQuery = "FROM AuditCatData d " + "WHERE d.category.id=" + catID + " AND d.audit.id=" + auditID;
 		Query query = em.createQuery(selectQuery);
