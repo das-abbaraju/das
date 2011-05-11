@@ -8,9 +8,9 @@ import java.util.Map;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -33,7 +33,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
-import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -122,6 +121,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				payment.setAccount(contractor);
 				payment.setAuditColumns(permissions);
 				payment.setPaymentMethod(method);
+				payment.setCurrency(contractor.getCurrency());
 
 				if (payment.getTotalAmount().compareTo(BigDecimal.ZERO) <= 0) {
 					addActionError("Payments must be greater than zero");
@@ -129,10 +129,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				}
 				if (method.isCreditCard()) {
 					try {
-						String canadaProcessorID = appPropDao.find("brainTree.processor_id.canada").getValue();
-						if (Strings.isEmpty(canadaProcessorID) && payment.getCurrency().isCanada())
-							throw new RuntimeException("Canadian ProcessorID Mismatch");
-						paymentService.setCanadaProcessorID(canadaProcessorID);
+						paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
 						paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
 						paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 						paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
