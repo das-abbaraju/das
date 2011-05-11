@@ -18,7 +18,7 @@ import com.picsauditing.util.Strings;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditOptionValue extends BaseTable {
 	private TranslatableString name;
-	private AuditOptionGroup type;
+	private AuditOptionGroup group;
 	private boolean visible = true;
 	private int number = 0;
 	private String uniqueCode;
@@ -35,12 +35,12 @@ public class AuditOptionValue extends BaseTable {
 
 	@ManyToOne
 	@JoinColumn(name = "typeID", nullable = false)
-	public AuditOptionGroup getType() {
-		return type;
+	public AuditOptionGroup getGroup() {
+		return group;
 	}
 
-	public void setType(AuditOptionGroup type) {
-		this.type = type;
+	public void setGroup(AuditOptionGroup group) {
+		this.group = group;
 	}
 
 	public boolean isVisible() {
@@ -82,22 +82,27 @@ public class AuditOptionValue extends BaseTable {
 
 	@Transient
 	public float getScorePercent() {
-		// TODO write this!!
-		return score;
+		if (group.getMaxScore() == 0)
+			return 0;
+		return (((float) score) / group.getMaxScore());
+	}
+
+	@Transient
+	public String getIdentifier() {
+		if (!Strings.isEmpty(uniqueCode))
+			return uniqueCode;
+		return id + "";
 	}
 
 	@Override
 	@Transient
 	public String getI18nKey() {
-		if (!Strings.isEmpty(uniqueCode)) {
-			if (type.getUniqueCode() != null
-					&& (type.getUniqueCode().equals("Country") || type.getUniqueCode().equals("State")))
-				return type.getUniqueCode() + "." + uniqueCode.replaceAll(" ", "");
-
-			return type.getI18nKey() + "." + uniqueCode.replaceAll(" ", "");
+		if (!Strings.isEmpty(group.getUniqueCode())) {
+			if (group.getUniqueCode().equals("Country") || group.getUniqueCode().equals("State"))
+				return group.getUniqueCode() + "." + getIdentifier();
 		}
 
-		return type.getI18nKey() + "." + id;
+		return group.getI18nKey() + "." + getIdentifier();
 	}
 
 	@Override
@@ -107,10 +112,5 @@ public class AuditOptionValue extends BaseTable {
 			return getI18nKey();
 
 		return super.getI18nKey(property);
-	}
-
-	@Override
-	public String toString() {
-		return "(" + id + ") " + getI18nKey();
 	}
 }

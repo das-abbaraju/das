@@ -19,7 +19,10 @@ public class AuditOptionGroup extends BaseTable {
 	private String name;
 	private boolean radio = false;
 	private String uniqueCode;
-	private List<AuditOptionValue> optionValues = new ArrayList<AuditOptionValue>();
+	private List<AuditOptionValue> values = new ArrayList<AuditOptionValue>();
+	private List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
+
+	private int maxScore = 0;
 	/**
 	 * Periodically, we need to query commonly used OptionValues and update this
 	 * list.
@@ -52,28 +55,42 @@ public class AuditOptionGroup extends BaseTable {
 		this.uniqueCode = uniqueCode;
 	}
 
-	@OneToMany(mappedBy = "type")
+	@OneToMany(mappedBy = "group")
 	@OrderBy("number")
-	public List<AuditOptionValue> getOptionValues() {
-		return optionValues;
+	public List<AuditOptionValue> getValues() {
+		return values;
 	}
 
-	public void setOptionValues(List<AuditOptionValue> optionValues) {
-		this.optionValues = optionValues;
+	public void setValues(List<AuditOptionValue> values) {
+		this.values = values;
 	}
 
+	@OneToMany(mappedBy = "option")
+		public List<AuditQuestion> getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(List<AuditQuestion> questions) {
+		this.questions = questions;
+	}
+	
 	/**
-	 * TODO get the child option max score and use it
-	 * 
-	 * @return
+	 * Gets the max score from all option values linked to this type
 	 */
 	@Transient
 	public int getMaxScore() {
-		return 0;
+		if (maxScore == 0) {
+			for (AuditOptionValue value : getValues()) {
+				if (maxScore < value.getScore())
+					maxScore = value.getScore();
+			}
+		}
+
+		return maxScore;
 	}
 
 	@Transient
-	public String getValue() {
+	public String getIdentifier() {
 		if (!Strings.isEmpty(uniqueCode))
 			return uniqueCode;
 
@@ -88,11 +105,9 @@ public class AuditOptionGroup extends BaseTable {
 				return "global." + uniqueCode;
 			if (uniqueCode.equals("YesNo") || uniqueCode.equals("LowMedHigh"))
 				return uniqueCode;
-
-			return this.getClass().getSimpleName() + "." + uniqueCode.replaceAll(" ", "");
 		}
 
-		return super.getI18nKey();
+		return getClass().getSimpleName() + "." + getIdentifier();
 	}
 
 	@Override

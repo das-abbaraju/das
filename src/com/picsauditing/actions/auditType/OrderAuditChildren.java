@@ -25,8 +25,11 @@ public class OrderAuditChildren extends PicsActionSupport {
 
 	@Autowired
 	protected AuditTypeDAO auditTypeDAO;
+	@Autowired
 	protected AuditCategoryDAO auditCategoryDAO;
+	@Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
+	@Autowired
 	protected AuditOptionValueDAO auditQuestionOptionDAO;
 
 	public String execute() {
@@ -71,8 +74,8 @@ public class OrderAuditChildren extends PicsActionSupport {
 		// Change the Order numbers of the AuditQuestions
 		if (type.equals("AuditOptionValue")) {
 			AuditOptionGroup auditOptionType = auditQuestionOptionDAO.findOptionType(id);
-			for (AuditOptionValue questionOption : auditOptionType.getOptionValues()) {
-				questionOption.setNumber(list.get(questionOption.getId()));
+			for (AuditOptionValue optionValue : auditOptionType.getValues()) {
+				optionValue.setNumber(list.get(optionValue.getId()));
 			}
 
 			auditQuestionDAO.save(auditOptionType);

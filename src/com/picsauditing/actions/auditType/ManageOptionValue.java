@@ -5,20 +5,20 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageOptionValue extends ManageOptionComponent {
-	private AuditOptionValue optionValue;
+	private AuditOptionValue value;
 
 	@Override
 	public String save() throws Exception {
-		if (optionValue.getName() == null)
+		if (value.getName() == null)
 			addActionError("Missing answer");
 
 		if (getActionErrors().size() == 0) {
-			if (Strings.isEmpty(optionValue.getUniqueCode()))
-				optionValue.setUniqueCode(null);
+			if (Strings.isEmpty(value.getUniqueCode()))
+				value.setUniqueCode(null);
 
-			optionValue.setType(type);
-			optionValue.setAuditColumns(permissions);
-			auditOptionValueDAO.save(optionValue);
+			value.setGroup(group);
+			value.setAuditColumns(permissions);
+			auditOptionValueDAO.save(value);
 		}
 
 		return SUCCESS;
@@ -35,17 +35,17 @@ public class ManageOptionValue extends ManageOptionComponent {
 	}
 
 	public String editAjax() throws Exception {
-		if (optionValue == null)
-			optionValue = new AuditOptionValue();
+		if (value == null)
+			value = new AuditOptionValue();
 
 		return "edit";
 	}
 
-	public AuditOptionValue getOption() {
-		return optionValue;
+	public AuditOptionValue getValue() {
+		return value;
 	}
 
-	public void setOption(AuditOptionValue option) {
-		this.optionValue = option;
+	public void setValue(AuditOptionValue value) {
+		this.value = value;
 	}
 }

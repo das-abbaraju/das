@@ -14,7 +14,7 @@ public abstract class ManageOptionComponent extends PicsActionSupport {
 	@Autowired
 	protected AuditOptionValueDAO auditOptionValueDAO;
 
-	protected AuditOptionGroup type;
+	protected AuditOptionGroup group;
 
 	@Override
 	@RequiredPermission(value = OpPerms.ManageAudits)
@@ -28,11 +28,11 @@ public abstract class ManageOptionComponent extends PicsActionSupport {
 	@RequiredPermission(value = OpPerms.ManageAudits, type = OpType.Delete)
 	public abstract String delete() throws Exception;
 
-	public AuditOptionGroup getType() {
-		return type;
+	public AuditOptionGroup getGroup() {
+		return group;
 	}
 
-	public void setType(AuditOptionGroup type) {
-		this.type = type;
+	public void setGroup(AuditOptionGroup group) {
+		this.group = group;
 	}
 }

@@ -13,14 +13,14 @@
 		</tr>
 	</thead>
 	<tbody>
-		<s:iterator value="type.optionValues">
+		<s:iterator value="group.values">
 			<tr id="item_<s:property value="id" />">
 				<td class="optionNumber right"><s:property value="number" /></td>
 				<td class="optionName"><s:property value="name" /></td>
 				<td class="center optionVisible"><s:if test="visible"><img src="images/okCheck.gif" /></s:if></td>
 				<td class="optionScore right"><s:property value="score" /></td>
 				<td class="optionUniqueCode"><s:property value="uniqueCode" /></td>
-				<td class="optionEdit"><a href="#type=<s:property value="id"/>" class="edit"></a></td>
+				<td class="optionEdit"><a href="ManageOptionValue!editAjax.action?value=<s:property value="id"/>" class="edit"></a></td>
 			</tr>
 		</s:iterator>
 		<s:if test="type.questionOptions.size == 0">

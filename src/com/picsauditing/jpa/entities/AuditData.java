@@ -206,7 +206,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 	@Transient
 	public boolean isMultipleChoice() {
-		return question != null && question.getOption() != null;
+		return question != null && question.getQuestionType().equals("MultipleChoice") && question.getOption() != null;
 	}
 
 	@Override

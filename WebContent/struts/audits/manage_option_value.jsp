@@ -18,7 +18,7 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 function setupSortable() {
-	var sortList = $('#questionOptions table.report tbody').sortable({
+	var sortList = $('#optionValues table.report tbody').sortable({
 		helper: function(e, tr) {
 		  var $originals = tr.children();
 		  var $helper = tr.clone();
@@ -29,11 +29,11 @@ function setupSortable() {
 		  return $helper;
 		},
 		update: function() {
-			$('#questionOptions-info').load('OrderAuditChildrenAjax.action?id=<s:property value="type.id"/>&type=AuditOptionValue', 
+			$('#optionValues-info').load('OrderAuditChildrenAjax.action?id=<s:property value="type.id"/>&type=AuditOptionValue', 
 				sortList.sortable('serialize').replace(/\[|\]/g,''), 
 				function() {
-					startThinking({div: questionOptions, message: "Loading updated list..."});
-					$('#questionOptions').load('ManageQuestionOption!listAjax.action?typeID=<s:property value="type.id" />', function() {
+					startThinking({div: optionValues, message: "Loading updated list..."});
+					$('#optionValues').load('ManageOptionValue!listAjax.action?group=<s:property value="group.id" />', function() {
 						setupSortable();
 					});
 				}
@@ -44,29 +44,28 @@ function setupSortable() {
 $(function() {
 	setupSortable();
 	
-	$(window).bind('hashchange', function(){
-		$('#editForm').load($(this).attr('ManageQuestionOption!editAjax.action'), location.hash.substring(1));
-	})
-	
-	$(window).trigger('hashchange');
+	$('a.add, a.edit').click(function(e) {
+		e.preventDefault();
+		$('#editForm').load($(this).attr('href'));
+	});
 });
 </script>
 </head>
 <body>
-<h1>Manage Option Value<span class="sub"><s:property value="type.name" /></span></h1>
-<a href="ManageOptionGroup.action">&lt;&lt; Back to Manage Option Type</a>
+<h1>Manage Option Value<span class="sub"><s:property value="group.name" /></span></h1>
+<a href="ManageOptionGroup.action">&lt;&lt; Back to Manage Option Group</a>
 <br />
 
 <table style="width: 100%;">
 	<tr>
 		<td style="width: 50%;">
-			<div id="questionOptions">
-				<s:include value="manage_question_options_list.jsp" />
+			<div id="optionValues">
+				<s:include value="manage_option_value_list.jsp" />
 			</div>
-			<div id="questionOptions-info"></div>
+			<div id="optionValues-info"></div>
 		</td>
 		<td style="padding-left: 20px; vertical-align: top;">
-			<a href="#type=0" class="add">Add New Option Value</a>
+			<a href="ManageOptionValue!editAjax.action" class="add">Add New Option Value</a>
 			<div id="editForm"></div>
 		</td>
 	</tr>

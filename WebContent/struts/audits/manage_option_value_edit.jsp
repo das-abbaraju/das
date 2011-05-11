@@ -2,23 +2,22 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:form id="save">
-<s:hidden name="optionID" value="%{option == null ? 0 : option.id}" />
-<s:hidden name="typeID" value="%{type.id}" />
-<s:hidden name="questionID" value="%{question == null ? 0 : question.id}" />
+<s:hidden name="value" value="%{value.id}" />
+<s:hidden name="group" value="%{value.group.id}" />
 <fieldset class="form">
 	<h2 class="formLegend">Question Option</h2>
 	<ol>
-		<li><label>ID:</label><span id="optionIDField"><s:property value="option.id" /></span></li>
-		<li><s:textfield theme="formhelp" name="option.name" /></li>
-		<li><s:checkbox theme="formhelp" name="option.visible" /></li>
-		<li><s:textfield theme="formhelp" name="option.number" /></li>
-		<li><s:textfield theme="formhelp" name="option.score" /></li>
-		<li><s:textfield theme="formhelp" name="option.uniqueCode" /></li>
+		<li><label>ID:</label><s:property value="value.id" /></li>
+		<li><s:textfield theme="formhelp" name="value.name" /></li>
+		<li><s:checkbox theme="formhelp" name="value.visible" /></li>
+		<li><s:textfield theme="formhelp" name="value.number" /></li>
+		<li><s:textfield theme="formhelp" name="value.score" /></li>
+		<li><s:textfield theme="formhelp" name="value.uniqueCode" /></li>
 	</ol>
 </fieldset>
 <fieldset class="form submit">
-	<s:submit action="ManageQuestionOption!save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
-	<s:submit action="ManageQuestionOption!delete" cssClass="picsbutton negative" 
+	<s:submit action="ManageOptionValue!save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
+	<s:submit action="ManageOptionValue!delete" cssClass="picsbutton negative" 
 		onclick="return confirm('Are you sure you want to delete this question option?');"
 		value="%{getText('button.Delete')}" />
 </fieldset>

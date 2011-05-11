@@ -78,7 +78,7 @@ $(function() {
 		<!-- Option Types -->
 		<s:if test="#q.questionType.equals('MultipleChoice') && #q.option != null">
 			<s:if test="#q.option.radio">
-				<s:radio theme="audits" list="#q.option.questionOptions" listValue="name" listKey="i18nKey" name="auditData.answer" value="%{#a.answer}"></s:radio>
+				<s:radio theme="audits" list="#q.option.values" listValue="name" listKey="identifier" name="auditData.answer" value="%{#a.answer}"></s:radio>
 				<s:if test="#q.auditType.policy && #q.option.uniqueCode.equals('YesNo')">
 					<s:set name="op" value="%{getOperatorByName(#q.category.name)}" />
 					<s:if test="#op != null && #op.id > 0">	
@@ -98,7 +98,7 @@ $(function() {
 				</s:if>
 			</s:if>
 			<s:else>
-				<s:select list="#q.option.questionOptions" listValue="name" listKey="i18nKey" name="auditData.answer" value="%{#a.answer}" />
+				<s:select list="#q.option.values" listValue="name" listKey="identifier" name="auditData.answer" value="%{#a.answer}" />
 			</s:else>
 		</s:if>
 		

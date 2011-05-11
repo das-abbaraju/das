@@ -8,11 +8,11 @@ import com.picsauditing.jpa.entities.AuditOptionGroup;
 public class ManageOptionGroup extends ManageOptionComponent {
 	@Override
 	public String save() throws Exception {
-		if (type.getName() == null || type.getName().toString().isEmpty())
+		if (group.getName() == null || group.getName().toString().isEmpty())
 			addActionError("Missing name");
 
-		type.setAuditColumns(permissions);
-		auditOptionValueDAO.save(type);
+		group.setAuditColumns(permissions);
+		auditOptionValueDAO.save(group);
 
 		return SUCCESS;
 	}
@@ -24,8 +24,8 @@ public class ManageOptionGroup extends ManageOptionComponent {
 	}
 
 	public String editAjax() throws Exception {
-		if (type == null)
-			type = new AuditOptionGroup();
+		if (group == null)
+			group = new AuditOptionGroup();
 
 		return "edit";
 	}

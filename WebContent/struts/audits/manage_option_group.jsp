@@ -39,8 +39,8 @@ $(function () {
 							<td class="optionName"><s:property value="name" /></td>
 							<td class="optionRadio center"><s:if test="radio"><img src="images/okCheck.gif" alt="Edit" /></s:if></td>
 							<td class="optionUniqueCode"><s:property value="uniqueCode" /></td>
-							<td class="center"><a href="ManageOptionValue.action?type=<s:property value="id"/>">Manage</a></td>
-							<td><a href="ManageOptionGroup!editAjax.action?type=<s:property value="id" />" class="edit"></a></td>
+							<td class="center"><a href="ManageOptionValue.action?group=<s:property value="id"/>">Manage</a></td>
+							<td><a href="ManageOptionGroup!editAjax.action?group=<s:property value="id" />" class="edit"></a></td>
 						</tr>
 					</s:iterator>
 					<s:if test="all.size == 0">

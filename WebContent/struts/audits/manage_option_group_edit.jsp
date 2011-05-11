@@ -5,16 +5,16 @@
 	<fieldset class="form">
 		<h2 class="formLegend">Option Group</h2>
 		<ol>
-			<li><label>ID:</label><span id="typeIDField"><s:property value="type.id" /></span></li>
-			<li><s:textfield theme="formhelp" name="type.name" id="typeName" /></li>
-			<li><s:checkbox theme="formhelp" name="type.radio" id="typeRadio" /></li>
-			<s:if test="type.id == 0">
-				<li><s:textfield theme="formhelp" name="type.uniqueCode" id="typeUniqueCode" /></li>
+			<li><label>ID:</label><s:property value="group.id" /></li>
+			<li><s:textfield theme="formhelp" name="group.name" /></li>
+			<li><s:checkbox theme="formhelp" name="group.radio" /></li>
+			<s:if test="group.id == 0">
+				<li><s:textfield theme="formhelp" name="group.uniqueCode" /></li>
 			</s:if>
 		</ol>
 	</fieldset>
 	<fieldset class="form submit">
 		<s:submit value="%{getText('button.Save')}" action="ManageOptionGroup!save" cssClass="picsbutton positive" />
-		<s:submit value="%{getText('button.Delete')}" action="ManageOptionGroup!delete" cssClass="picsbutton negative" onclick="return confirm('Are you sure you want to delete this option type?');" />
+		<s:submit value="%{getText('button.Delete')}" action="ManageOptionGroup!delete" cssClass="picsbutton negative" onclick="return confirm('Are you sure you want to delete this option group?');" />
 	</fieldset>
 </s:form>
