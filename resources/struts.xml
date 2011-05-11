@@ -1485,7 +1485,7 @@
 		
 		<action name="ManageUserPermissionsAjax"
 			class="com.picsauditing.actions.users.UserAccessSave">
-			<result>struts/json.jsp</result>
+			<result type="json"></result>
 		</action>
 		
 		<action name="*AssignmentMatrix*"
@@ -1619,7 +1619,7 @@
 
 		<action name="MyScheduleJSON"
 			class="com.picsauditing.actions.users.MySchedule">
-			<result>struts/json.jsp</result>
+			<result type="json"></result>
 		</action>
 
 		<action name="ScheduleAudit"
@@ -1638,7 +1638,7 @@
 
 		<action name="ScheduleAuditAjax"
 			class="com.picsauditing.actions.audits.ScheduleAudit">
-			<result>struts/json.jsp</result>
+			<result type="json"></result>
 		</action>
 		
 		<action name="AuditCalendar"
@@ -1647,7 +1647,7 @@
 		</action>
 		<action name="AuditCalendarJSON"
 			class="com.picsauditing.actions.audits.AuditCalendar">
-			<result>struts/json.jsp</result>
+			<result type="json"></result>
 		</action>
 
 		<!-- Taxonomy -->
