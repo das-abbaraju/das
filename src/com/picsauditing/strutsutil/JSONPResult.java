@@ -29,9 +29,8 @@ public class JSONPResult extends StreamResult {
 
 			inputStream = new ByteArrayInputStream(sb.toString().getBytes());
 
-			contentType = "application/json";
+			contentType = "text/javascript";
 		} catch (NullPointerException e) {
-			contentType = "application/json";
 			inputStream = new ByteArrayInputStream("missing no. (ex: callback=?)".getBytes());
 		}
 		super.doExecute(finalLocation, invocation);
