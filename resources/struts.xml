@@ -1311,18 +1311,18 @@
 				struts/audits/audit_selectType.jsp
 			</result>
 		</action>
-
+		<!-- TODO: find a way to consolidate these - is there an "insensitive" flag on wildcards? -->
 		<action name="ManageOptionGroup"
 			class="com.picsauditing.actions.auditType.ManageOptionGroup">
-			<result>struts/audits/manage_option_type.jsp</result>
-			<result name="edit">struts/audits/manage_option_type_edit.jsp</result>
+			<result>struts/audits/manage_option_group.jsp</result>
+			<result name="edit">struts/audits/manage_option_group_edit.jsp</result>
 		</action>
 		
 		<action name="ManageOptionValue"
 			class="com.picsauditing.actions.auditType.ManageOptionValue">
-			<result>struts/audits/manage_question_options.jsp</result>
-			<result name="list">struts/audits/manage_question_options_list.jsp</result>
-			<result name="edit">struts/audits/manage_question_options_edit.jsp</result>
+			<result>struts/audits/manage_option_value.jsp</result>
+			<result name="list">struts/audits/manage_option_value_list.jsp</result>
+			<result name="edit">struts/audits/manage_option_value_edit.jsp</result>
 		</action>
 				
 		<action name="ManageQuestionCopyAjax"

@@ -13,7 +13,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<s:iterator value="type.questionOptions">
+		<s:iterator value="type.optionValues">
 			<tr id="item_<s:property value="id" />">
 				<td class="optionNumber right"><s:property value="number" /></td>
 				<td class="optionName"><s:property value="name" /></td>
