@@ -109,14 +109,16 @@ public class ContractorActionSupport extends AccountActionSupport {
 			contractorAuditWithStatuses = new HashMap<ContractorAudit, AuditStatus>();
 			List<ContractorAudit> list = contractor.getAudits();
 			for (ContractorAudit contractorAudit : list) {
+				// .isPqf may be wrong here. Consider using contractorAudit.getAuditType().isRenewable() instead
 				if (contractorAudit.getAuditType().isPqf() || !contractorAudit.isExpired()) {
+					// We're dealing with a non-archived document
 					if (permissions.isContractor()) {
 						if (contractorAudit.getAuditType().isCanContractorView()) {
 							contractorAuditWithStatuses.put(contractorAudit, null);
 						}
-					} else if (permissions.isPicsEmployee())
+					} else if (permissions.isPicsEmployee()) {
 						contractorAuditWithStatuses.put(contractorAudit, null);
-					else {
+					} else {
 						for (ContractorAuditOperator cao : contractorAudit.getOperators()) {
 							if (cao.isVisibleTo(permissions)) {
 								contractorAuditWithStatuses.put(contractorAudit, cao.getStatus());
@@ -231,9 +233,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 					}
 					iter.remove();
 				}
-			}// <a
-				// href="ConInsureGUARD.action?id=<s:property value="id"/>">Manage
-				// Certificates</a>
+			}
+			
 			subMenu.addChild("Manage Certificates", "ConInsureGUARD.action?id=" + contractor.getId());
 
 			if (permissions.hasPermission(OpPerms.AuditVerification))
