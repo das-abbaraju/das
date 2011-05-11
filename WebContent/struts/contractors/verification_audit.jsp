@@ -94,7 +94,7 @@
 <s:else>
 	<fieldset class="form">
 	<h2 class="formLegend">Audit Questions</h2>
-	<s:iterator value="conAudit.data">
+	<s:iterator value="applicableAuditData">
 		<s:if test="isShowQuestionToVerify(question, answered)">
 			<div id="qid_%{question.id}">
 				<ol>

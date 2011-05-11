@@ -3,6 +3,7 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -27,6 +29,8 @@ public class VerifyAudit extends AuditActionSupport {
 	private List<AuditData> pqfQuestions = null;
 	private Map<OperatorAccount, ContractorAuditOperator> caos;
 	private List<Integer> allCaoIDs;
+
+	private List<AuditData> applicableAuditData = null;
 
 	public VerifyAudit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, CertificateDAO certificateDao, AuditCategoryRuleCache auditCategoryRuleCache) {
@@ -104,6 +108,29 @@ public class VerifyAudit extends AuditActionSupport {
 		};
 	}
 
+	public List<AuditData> getApplicableAuditData() {
+		if (applicableAuditData == null) {
+			applicableAuditData = new ArrayList<AuditData>();
+			Map<Integer, AuditData> questionAuditData = new HashMap<Integer, AuditData>();
+			// Build map of AQ.id to AuditData
+			for (AuditData auditData : conAudit.getData()) {
+				questionAuditData.put(auditData.getQuestion().getId(), auditData);
+			}
+			// Iterate over categories, check for isApplies
+			for (AuditCatData acd : conAudit.getCategories()) {
+				if (acd.isApplies()) {
+					// Iterator over all questions, if exist then we'll add to
+					// return result
+					for (AuditQuestion aq : acd.getCategory().getQuestions()) {
+						if (questionAuditData.containsKey(aq.getId()))
+							applicableAuditData.add(questionAuditData.get(aq.getId()));
+					}
+				}
+			}
+		}
+		return applicableAuditData;
+	}
+
 	public OshaAudit getOsha() {
 		AuditData auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(), 2064);
 		if (auditData != null && "Yes".equals(auditData.getAnswer())) {
@@ -124,15 +151,15 @@ public class VerifyAudit extends AuditActionSupport {
 			if (ac.getTopParent().getId() != AuditCategory.CITATIONS)
 				return true;
 			else {
-				if (auditQuestion.isRequired() || questionid == 3565 || questionid == 3566
-						|| questionid == 3567 || questionid == 3568)
+				if (auditQuestion.isRequired() || questionid == 3565 || questionid == 3566 || questionid == 3567
+						|| questionid == 3568)
 					return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public Map<OperatorAccount, ContractorAuditOperator> getCaos() {
 		if (caos == null) {
 			allCaoIDs = new ArrayList<Integer>();
@@ -148,14 +175,14 @@ public class VerifyAudit extends AuditActionSupport {
 				}
 			}
 		}
-		
+
 		return caos;
 	}
-	
+
 	public String getAllCaoIDs() {
 		if (allCaoIDs == null)
 			getCaos();
-		
+
 		return Strings.implode(allCaoIDs);
 	}
 }
