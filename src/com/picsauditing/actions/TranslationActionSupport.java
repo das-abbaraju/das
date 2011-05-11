@@ -35,11 +35,10 @@ public class TranslationActionSupport extends ActionSupport {
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
 	public String getTranslationName(String property) throws SecurityException, NoSuchFieldException {
 
 		Map<String, Class<?>> typeMap = mapNameToType(property);
-		Class type = null;
+		Class<?> type = null;
 		Iterator<Entry<String, Class<?>>> iter = typeMap.entrySet().iterator();
 		List<Entry<String, Class<?>>> nonTranslatables = new ArrayList<Map.Entry<String, Class<?>>>();
 		do {
