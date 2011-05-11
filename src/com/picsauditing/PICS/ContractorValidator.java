@@ -59,10 +59,6 @@ public class ContractorValidator {
 		} else if (!uae)
 			errorMessages.addElement("Please fill in the Tax ID field");
 
-		// Main Trade
-		if (contractor.getMainTrade() == null)
-			errorMessages.addElement("Please select a main trade");
-
 		// Onsite / Offsite / Material Supplier
 		if (contractor.getAccountTypes().isEmpty())
 			errorMessages.addElement("Please select at least one of Onsite Services, Offsite Services "
