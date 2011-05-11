@@ -74,16 +74,6 @@
 				<s:property value="trade.trade.help"/>
 			</li>
 		</s:if>
-		<li>
-			<label><s:text name="Trade.alternateSearch"/></label>
-			<s:if test="trade.trade.alternates.size() > 0">
-				<ul>
-					<s:iterator value="trade.trade.alternates">
-						<li><s:property value="name"/></li>
-					</s:iterator>
-				</ul>
-			</s:if>
-		</li>
 	</ol>
 </div>
 
