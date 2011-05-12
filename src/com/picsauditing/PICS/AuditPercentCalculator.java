@@ -153,7 +153,7 @@ public class AuditPercentCalculator {
 										}
 									}
 								} else {
-									for (AuditOptionValue option : question.getOption().getOptionValues()) {
+									for (AuditOptionValue option : question.getOption().getValues()) {
 										scale = Math.max(scale, option.getScore());
 										if (answer.getAnswer().equals(option.getI18nKey()))
 											answerValue = option.getScore();
@@ -330,7 +330,6 @@ public class AuditPercentCalculator {
 	public void percentOshaComplete(OshaAudit osha, AuditCatData catData) {
 		int count = 0;
 		int numRequired = 2;
-		int requiredCompleted = 0;
 		int numVerified = 0;
 
 		if (osha.getType().equals(OshaType.OSHA)) {
