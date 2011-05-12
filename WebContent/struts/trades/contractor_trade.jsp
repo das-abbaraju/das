@@ -109,7 +109,7 @@ $(function() {
 					}
 				},
 				"plugins": ['themes', "json_data"]
-			}).resizeable();
+			});
 		});
 	}
 
