@@ -58,14 +58,9 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			Note note = null;
 			if ("Accept".equals(button)) {
 				String answer = aData.getAnswer();
-				if (aData.isMultipleChoice() && aData.getQuestion().getOption().getUniqueCode() != null
-						&& aData.getQuestion().getOption().getUniqueCode().equals("LowMedHigh")) {
-					answer = getText(answer);
-				}
-				
 				if (answer.equals("Medium"))
 					answer = "Med";
-
+				// TODO: Translate notes?
 				note = new Note(cAccount, getUser(), "RiskLevel adjusted from " + cAccount.getRiskLevel().toString()
 						+ " to " + aData.getAnswer() + " for " + auditorNotes);
 				cAccount.setRiskLevel(LowMedHigh.valueOf(answer));

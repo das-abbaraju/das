@@ -517,7 +517,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		} else if (fc.getDataType().equals(FlagCriteria.NUMBER))
 			answer = Strings.formatDecimalComma(answer);
 		else if (fc.getQuestion() != null && fc.getQuestion().getOption() != null)
-			answer = getText(answer);
+			answer = getText(fc.getQuestion().getOption().getI18nKey() + "." + answer);
 
 		answer = Utilities.escapeHTML(answer);
 

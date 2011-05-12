@@ -12,7 +12,6 @@ import javax.persistence.NoResultException;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.google.common.base.Joiner;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.AuditPercentCalculator;

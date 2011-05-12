@@ -12,7 +12,6 @@ import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditOptionGroup;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -245,15 +244,8 @@ public class FacilityChanger {
 		if (requiresOQ) {
 			AuditData oqAuditData = auditDataDAO
 					.findAnswerByConQuestion(contractor.getId(), AuditQuestion.OQ_EMPLOYEES);
-			String requiredAnswer = "Yes";
-			if (oqAuditData.isMultipleChoice()) {
-				AuditOptionGroup optionType = oqAuditData.getQuestion().getOption();
-				if (optionType.getUniqueCode() != null && optionType.getUniqueCode().startsWith("YesNo"))
-					requiredAnswer = optionType.getI18nKey() + ".Yes";
-			}
-			
 			contractor.setRequiresOQ(oqAuditData == null || oqAuditData.getAnswer() == null
-					|| oqAuditData.getAnswer().equals(requiredAnswer));
+					|| oqAuditData.getAnswer().equals("Yes"));
 		}
 
 		contractor.setRequiresCompetencyReview(false);
