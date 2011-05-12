@@ -179,12 +179,17 @@ public class ContractorActionSupport extends AccountActionSupport {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
 						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
 						count++;
+						
+						// Put Trades menu after 'PQF' menu entry
+						if (audit.getAuditType().isPqf()) {
+							subMenu.addChild(getText("ConctratorTrades.title"),
+									"ContractorTrades.action?id=" + id);
+						}
 					}
 					iter.remove();
 				}
 			}
 			if (count == 1) {
-				MenuComponent tradeItem = subMenu.addChild(getText("ContractorTrades.title"), "ContractorTrades.action?id=" + contractor.getId());
 				subMenu = subMenu.getChildren().get(0);
 			}
 			menu.add(subMenu);
