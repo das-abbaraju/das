@@ -9,8 +9,8 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 
 	private String name;
 	private String url;
+	private String htmlId;
 	private String title;
-	private int id = 1;
 	private String sortField;
 
 	protected int auditId = 0;
@@ -30,6 +30,12 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 	public MenuComponent(String name, String url) {
 		this.name = name;
 		this.url = url;
+	}
+
+	public MenuComponent(String name, String url, String htmlId) {
+		this.name = name;
+		this.url = url;
+		this.htmlId = htmlId;
 	}
 
 	public boolean visible() {
@@ -62,12 +68,12 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 		this.url = url;
 	}
 
-	public int getId() {
-		return id;
+	public String getHtmlId() {
+		return htmlId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setHtmlId(String htmlId) {
+		this.htmlId = htmlId;
 	}
 
 	public String getTitle() {
@@ -89,24 +95,20 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 	public MenuComponent addChild(String name) {
 		MenuComponent child = new MenuComponent(name);
 		this.children.add(child);
-		child.setId(this.children.size() + (100 * this.id));
 		return child;
 	}
 
 	public MenuComponent addChild(String name, String url) {
 		MenuComponent child = new MenuComponent(name, url);
 		this.children.add(child);
-		child.setId(this.children.size() + (100 * this.id));
 		return child;
 	}
 
 	public boolean isCurrent() {
-
 		if (current)
 			return true;
 
 		for (MenuComponent child : children) {
-
 			if (child.isCurrent()) {
 				return true;
 			}
