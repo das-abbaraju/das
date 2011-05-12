@@ -56,10 +56,10 @@
 
 <div>
 	<ol class="form-style">
-		<s:if test="!isStringEmpty(trade.trade.name2.toString())">
+		<s:if test="!isStringEmpty(trade.trade.help.toString())">
 			<li>
-				<label><s:text name="Trade.name2"/></label>
-				<s:property value="trade.trade.name2"/>	
+				<label><s:text name="Trade.help"/></label>
+				<s:property value="trade.trade.help"/>
 			</li>
 		</s:if>
 		<li>
@@ -68,12 +68,6 @@
 				<div id="trade-hierarchy"></div>
 			</div>
 		</li>
-		<s:if test="!isStringEmpty(trade.trade.help.toString())">
-			<li>
-				<label><s:text name="Trade.help"/></label>
-				<s:property value="trade.trade.help"/>
-			</li>
-		</s:if>
 	</ol>
 </div>
 
