@@ -1,11 +1,13 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.MenuComponent;
@@ -163,6 +165,26 @@ public class ContractorActionSupport extends AccountActionSupport {
 		// String checkIcon =
 		// "<img src=\"images/okCheck.gif\" border=\"0\" title=\"Complete\"/>";
 		Set<ContractorAudit> auditList = getActiveAuditsStatuses().keySet();
+		
+		// Sort audits, by throwing them into a tree set and sorting them by display and then name
+		TreeSet<ContractorAudit> treeSet = new TreeSet<ContractorAudit>(new Comparator<ContractorAudit>(){
+			@Override
+			public int compare(ContractorAudit o1, ContractorAudit o2) {
+				if (o1 == null || o2 == null) return 0; // can't compare null objects
+				
+				if (o1.getAuditType().getDisplayOrder() < o2.getAuditType().getDisplayOrder()) return -1;
+				if (o1.getAuditType().getDisplayOrder() > o2.getAuditType().getDisplayOrder()) return 1;
+				
+				// get display names as seen in menu
+				String name1 = getText(o1.getAuditType().getI18nKey("name"));
+				String name2 = getText(o2.getAuditType().getI18nKey("name"));
+				if (name1 == null || name2 == null) return 0; // can't compare names
+				
+				return name1.compareTo(name2);
+			}
+		});
+		treeSet.addAll(auditList);
+		auditList = treeSet;
 
 		PicsLogger.log("Found [" + auditList.size() + "] total active audits");
 
