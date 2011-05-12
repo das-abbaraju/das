@@ -24,7 +24,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	private TradeDAO tradeDAO;
 
 	private ContractorTrade trade;
-	private Tree<Trade> tradeHiererchy;
+	private Tree<Trade> tradeHierarchy;
 	private Map<ContractorTrade, Integer> tradeCssMap;
 
 	private List<ContractorTrade> affectedTrades = new ArrayList<ContractorTrade>();
@@ -92,12 +92,12 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		this.trade = trade;
 	}
 
-	public Tree<Trade> getTradeHiererchy() {
-		return tradeHiererchy;
+	public Tree<Trade> getTradeHierarchy() {
+		return tradeHierarchy;
 	}
 
-	public void setTradeHiererchy(Tree<Trade> tradeHiererchy) {
-		this.tradeHiererchy = tradeHiererchy;
+	public void setTradeHierarchy(Tree<Trade> tradeHierarchy) {
+		this.tradeHierarchy = tradeHierarchy;
 	}
 
 	public List<ContractorTrade> getAffectedTrades() {
