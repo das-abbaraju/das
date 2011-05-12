@@ -17,7 +17,6 @@ public class AuditBuilderDebugger extends ContractorActionSupport {
 
 	public AuditBuilderDebugger(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditBuilderController auditBuilder) {
-		super(accountDao, auditDao);
 		this.builder = auditBuilder;
 	}
 

@@ -62,10 +62,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	private Invoice invoice;
 	private boolean complete = false;
 
-	public ContractorRegistrationFinish(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			InvoiceDAO invoiceDAO, InvoiceFeeDAO invoiceFeeDAO, PaymentDAO paymentDAO, AppPropertyDAO appPropDAO,
+	public ContractorRegistrationFinish(InvoiceDAO invoiceDAO, InvoiceFeeDAO invoiceFeeDAO, PaymentDAO paymentDAO, AppPropertyDAO appPropDAO,
 			NoteDAO noteDAO, InvoiceItemDAO invoiceItemDAO, AuditBuilderController auditBuilder) {
-		super(accountDao, auditDao);
 		this.invoiceDAO = invoiceDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.paymentDAO = paymentDAO;

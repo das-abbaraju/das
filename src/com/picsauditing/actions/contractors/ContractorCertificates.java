@@ -13,7 +13,6 @@ public class ContractorCertificates extends ContractorActionSupport {
 
 	public ContractorCertificates(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			CertificateDAO certificateDAO) {
-		super(accountDao, auditDao);
 	}
 
 	public String execute() throws Exception {

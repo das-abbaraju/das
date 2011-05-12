@@ -64,11 +64,9 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 	protected Country country;
 
-	public ContractorRegistration(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO,
+	public ContractorRegistration(AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO,
 			UserDAO userDAO, ContractorRegistrationRequestDAO requestDAO, FacilityChanger facilityChanger,
 			Indexer indexer, StateDAO stateDAO, UserLoginLogDAO userLoginLogDAO) {
-		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
 		this.noteDAO = noteDAO;

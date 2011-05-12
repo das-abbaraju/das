@@ -42,7 +42,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 
 	public ContractorDocuments(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
 			ContractorAuditOperatorDAO caoDAO, AuditTypeRuleCache auditTypeRuleCache) {
-		super(accountDao, auditDao);
 		this.auditTypeDAO = auditTypeDAO;
 		this.caoDAO = caoDAO;
 		this.auditTypeRuleCache = auditTypeRuleCache;

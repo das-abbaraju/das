@@ -28,8 +28,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	private List<ContractorTrade> affectedTrades = new ArrayList<ContractorTrade>();
 
-	public ContractorTradeAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
-		super(accountDao, auditDao);
+	public ContractorTradeAction() {
 		this.subHeading = getText("ContractorTrades.title");
 	}
 

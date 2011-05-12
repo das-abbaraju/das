@@ -48,7 +48,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private InvoiceDAO invoiceDAO;
 	private InvoiceFeeDAO invoiceFeeDAO;
 	private PaymentDAO paymentDAO;
-	private NoteDAO noteDAO;
 
 	private int newFeeId;
 
@@ -60,14 +59,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	private BrainTreeService paymentService = new BrainTreeService();
 
-	public InvoiceDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao, NoteDAO noteDAO,
-			ContractorAccountDAO conAccountDAO, InvoiceFeeDAO invoiceFeeDAO, PaymentDAO paymentDAO,
-			ContractorAuditDAO auditDao) {
-		super(conAccountDAO, auditDao);
+	public InvoiceDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao,
+			InvoiceFeeDAO invoiceFeeDAO, PaymentDAO paymentDAO) {
 		this.invoiceDAO = invoiceDAO;
 		this.appPropDao = appPropDao;
 		this.paymentDAO = paymentDAO;
-		this.noteDAO = noteDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 	}
 
@@ -174,7 +170,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					note.setNoteCategory(NoteCategory.Billing);
 					note.setCanContractorView(true);
 					note.setViewableById(Account.PicsID);
-					noteDAO.save(note);
+					getNoteDao().save(note);
 				}
 				
 				contractor.syncBalance();
@@ -306,7 +302,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
 		note.setViewableById(Account.PicsID);
-		noteDAO.save(note);
+		getNoteDao().save(note);
 	}
 
 	private void addInvoiceItem(int feeId) {

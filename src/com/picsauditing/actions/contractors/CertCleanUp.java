@@ -27,7 +27,6 @@ public class CertCleanUp extends ContractorActionSupport {
 
 	public CertCleanUp(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, CertificateDAO certificateDAO, AuditDataDAO auditDataDAO) {
-		super(accountDao, auditDao);
 		this.certificateDAO = certificateDAO;
 		this.auditDataDAO = auditDataDAO;
 	}

@@ -82,7 +82,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			ContractorOperatorDAO contractorOperatorDao, FlagDataDAO flagDataDAO,
 			FlagDataOverrideDAO flagDataOverrideDAO, FacilitiesDAO facDAO, NaicsDAO naicsDAO,
 			ContractorAuditOperatorDAO caoDAO) {
-		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
 		this.flagDataDAO = flagDataDAO;
 		this.flagDataOverrideDAO = flagDataOverrideDAO;

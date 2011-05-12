@@ -48,9 +48,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	AppPropertyDAO appPropDao;
 
-	public ContractorPaymentOptions(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AppPropertyDAO appPropDao, InvoiceFeeDAO invoiceFeeDAO) {
-		super(accountDao, auditDao);
+	public ContractorPaymentOptions(AppPropertyDAO appPropDao, InvoiceFeeDAO invoiceFeeDAO) {
 		this.appPropDao = appPropDao;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.subHeading = "Payment Options";

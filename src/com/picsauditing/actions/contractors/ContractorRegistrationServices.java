@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -36,17 +37,14 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	private AuditData auditData;
 	private ContractorAudit conAudit;
 
-	private AuditCategoryDAO auditCateoryDAO;
-	private AuditQuestionDAO auditQuestionDAO;
+	@Autowired
+	private AuditCategoryDAO auditCategoryDAO;
+	@Autowired
 	private AuditDataDAO auditDataDAO;
 
-	public ContractorRegistrationServices(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDAO auditCategoryDAO, AuditQuestionDAO auditQuestionDAO, AuditDataDAO auditDataDAO) {
-		super(accountDao, auditDao);
-		this.auditCateoryDAO = auditCategoryDAO;
-		this.auditQuestionDAO = auditQuestionDAO;
-		this.auditDataDAO = auditDataDAO;
-		subHeading = "Services Performed";
+	public ContractorRegistrationServices() {
+		this.subHeading = getText("ContractorRegistrationServices.title");
+		// subHeading = "Services Performed";
 	}
 
 	public String execute() throws Exception {
@@ -76,7 +74,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			createPQF();
 
 		Set<Integer> questionIds = new HashSet<Integer>();
-		categories = auditCateoryDAO.findWhere("id IN (400, 422)");
+		categories = auditCategoryDAO.findWhere("id IN (400, 422)");
 		for (AuditCategory category : categories) {
 			if (category.getId() == 400) {
 				for (AuditQuestion question : category.getQuestions()) {

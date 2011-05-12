@@ -10,7 +10,6 @@ import com.picsauditing.dao.ContractorAuditDAO;
 public class ContractorAgreement extends ContractorActionSupport {
 
 	public ContractorAgreement(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
-		super(accountDao, auditDao);
 	}
 
 	public String execute() throws Exception {

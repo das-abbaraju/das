@@ -19,7 +19,6 @@ public class ContractorForms extends ContractorActionSupport {
 	
 	public ContractorForms(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			OperatorFormDAO operatorFormDAO) {
-		super(accountDao, auditDao);
 		this.operatorFormDAO = operatorFormDAO;
 	}
 	

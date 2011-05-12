@@ -2,11 +2,11 @@ package com.picsauditing.actions.users;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.jpa.entities.User;
 
@@ -16,14 +16,11 @@ public class ManageUserPermissions extends ContractorActionSupport {
 
 	static public OpPerms[] permissionTypes = new OpPerms[] { OpPerms.ContractorAdmin, OpPerms.ContractorBilling,
 			OpPerms.ContractorSafety, OpPerms.ContractorInsurance };
-	
-	protected ContractorAccountDAO accountDAO;
-	protected ContractorAuditDAO auditDAO;
+
+	@Autowired
 	protected UserAccessDAO userAccessDAO;
 
-	public ManageUserPermissions(ContractorAccountDAO accountDAO, ContractorAuditDAO auditDAO, UserAccessDAO userAccessDAO) {
-		super(accountDAO, auditDAO);
-		this.userAccessDAO = userAccessDAO;
+	public ManageUserPermissions() {
 		this.subHeading = "Manage User Permissions";
 	}
 
@@ -35,13 +32,14 @@ public class ManageUserPermissions extends ContractorActionSupport {
 			if (permissions.isContractor()) {
 				permissions.tryPermission(OpPerms.ContractorAdmin);
 			}
-			
+
 			findContractor();
 			userList = account.getUsers();
 
 			return SUCCESS;
-		} else
+		} else {
 			throw new NoRightsException("Contractor Administration or PICS Administration");
+		}
 	}
 
 	public List<User> getUserList() {

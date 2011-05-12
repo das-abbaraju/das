@@ -26,7 +26,6 @@ public class ContractorNotes extends ContractorActionSupport {
 
 	public ContractorNotes(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			EmailQueueDAO emailDAO) {
-		super(accountDao, auditDao);
 		this.emailDAO = emailDAO;
 		this.subHeading = "Notes/Emails";
 	}

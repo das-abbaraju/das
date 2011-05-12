@@ -46,9 +46,7 @@ public class ContractorWidget extends ContractorActionSupport {
 
 	protected boolean openReq = false;
 
-	public ContractorWidget(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AppPropertyDAO appPropDAO,
-			AssessmentTestDAO testDAO) {
-		super(accountDao, auditDao);
+	public ContractorWidget(AppPropertyDAO appPropDAO, AssessmentTestDAO testDAO) {
 		this.appPropDAO = appPropDAO;
 		this.testDAO = testDAO;
 	}
@@ -95,8 +93,8 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 
 				if (contractor.isAcceptsBids()) {
-					openTasks.add(getText("ContractorWidget.message.BidOnlyUpdgrade", new Object[] {
-							contractor.getPaymentExpires(), contractor.getId() }));
+					openTasks.add(getText("ContractorWidget.message.BidOnlyUpdgrade",
+							new Object[] { contractor.getPaymentExpires(), contractor.getId() }));
 				}
 			}
 
@@ -118,8 +116,8 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 
 				if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
-					openTasks.add(getText("ContractorWidget.message.UpdatePaymentMethod", new Object[] { contractor
-							.getId() }));
+					openTasks.add(getText("ContractorWidget.message.UpdatePaymentMethod",
+							new Object[] { contractor.getId() }));
 				}
 			}
 			String auditName;
@@ -216,12 +214,10 @@ public class ContractorWidget extends ContractorActionSupport {
 															auditName,
 															showAuditor,
 															(conAudit.getAuditor() != null) ? conAudit.getAuditor()
-																	.getName() : "",
-															showScheduledDate,
+																	.getName() : "", showScheduledDate,
 															conAudit.getScheduledDate() });
 										} else {
-											text = getText(
-													"ContractorWidget.message.PrepareForAnUpcomingAudit",
+											text = getText("ContractorWidget.message.PrepareForAnUpcomingAudit",
 													new Object[] {
 															conAudit.getId(),
 															auditName,

@@ -41,7 +41,6 @@ public class CertificateFileUpload extends ContractorActionSupport {
 
 	public CertificateFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			CertificateDAO certificateDAO, AuditQuestionDAO questionDAO, AuditDataDAO dataDAO) {
-		super(accountDao, auditDao);
 		this.certificateDAO = certificateDAO;
 		this.questionDAO = questionDAO;
 		this.dataDAO = dataDAO;

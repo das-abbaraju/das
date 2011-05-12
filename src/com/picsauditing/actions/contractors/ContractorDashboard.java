@@ -105,7 +105,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 			FlagDataDAO flagDataDAO, OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO,
 			UserDAO userDAO, NaicsDAO naicsDAO, AuditTypeRuleCache auditTypeRuleCache,
 			AuditPercentCalculator auditPercentCalculator, FlagCriteriaContractorDAO flagCriteriaContractorDAO) {
-		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.dataDAO = dataDAO;

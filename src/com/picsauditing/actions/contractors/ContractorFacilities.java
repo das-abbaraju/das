@@ -54,7 +54,6 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 	public ContractorFacilities(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			OperatorAccountDAO operatorDao, FacilityChanger facilityChanger, ContractorOperatorDAO contractorOperatorDAO) {
-		super(accountDao, auditDao);
 		this.operatorDao = operatorDao;
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.facilityChanger = facilityChanger;

@@ -81,7 +81,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
 			AuditCategoryRuleCache auditCategoryRuleCache) {
-		super(accountDao, auditDao);
 		this.catDataDao = catDataDao;
 		this.auditDataDao = auditDataDao;
 		this.certificateDao = certificateDao;

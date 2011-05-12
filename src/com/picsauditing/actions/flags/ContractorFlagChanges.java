@@ -23,7 +23,6 @@ public class ContractorFlagChanges extends ContractorActionSupport {
 
 	public ContractorFlagChanges(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDao) {
-		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
 
 	}

@@ -79,7 +79,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			InvoiceFeeDAO invoiceFeeDAO, OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO,
 			NoteDAO noteDAO, EmailSubscriptionDAO subscriptionDAO, UserSwitchDAO userSwitchDAO,
 			Indexer indexer) {
-		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
 		this.invoiceFeeDAO = invoiceFeeDAO;

@@ -17,7 +17,6 @@ public class ConFileUpload extends ContractorActionSupport {
 	private InputStream inputStream;
 
 	public ConFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
-		super(accountDao, auditDao);
 	}
 
 	public String execute() throws Exception {

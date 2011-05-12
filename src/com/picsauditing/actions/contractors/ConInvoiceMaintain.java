@@ -43,7 +43,6 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 
 	public ConInvoiceMaintain(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, InvoiceDAO invoiceDAO,
 			InvoiceFeeDAO invoiceFeeDAO, InvoiceItemDAO invoiceItemDAO) {
-		super(accountDao, auditDao);
 		this.invoiceDAO = invoiceDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.invoiceItemDAO = invoiceItemDAO;

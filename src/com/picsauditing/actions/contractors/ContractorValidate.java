@@ -19,9 +19,7 @@ public class ContractorValidate extends ContractorActionSupport {
 	protected UserDAO userDAO;
 	protected ContractorValidator contractorValidator;
 
-	public ContractorValidate(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			ContractorValidator contractorValidator, UserDAO userDAO) {
-		super(accountDao, auditDao);
+	public ContractorValidate(ContractorValidator contractorValidator, UserDAO userDAO) {
 		this.contractorValidator = contractorValidator;
 		this.userDAO = userDAO;
 		this.subHeading = "New Contractor Information";

@@ -24,7 +24,6 @@ public class CertHashUtil extends ContractorActionSupport {
 
 	public CertHashUtil(ContractorAccountDAO accountDao,
 			ContractorAuditDAO auditDao, CertificateDAO certificateDAO) {
-		super(accountDao, auditDao);
 		this.certificateDAO = certificateDAO;
 	}
 

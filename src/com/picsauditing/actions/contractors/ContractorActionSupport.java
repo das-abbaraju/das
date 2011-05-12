@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.NoRightsException;
@@ -39,7 +41,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	protected ContractorAccount contractor;
 	private List<ContractorAudit> contractorNonExpiredAudits = null;
+	@Autowired
 	protected ContractorAccountDAO accountDao;
+	@Autowired
 	protected ContractorAuditDAO auditDao;
 
 	private CertificateDAO certificateDAO;
@@ -56,9 +60,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 	private PermissionToViewContractor permissionToViewContractor = null;
 	private AuditDataDAO auditDataDAO;
 
+	@Deprecated
+	/**
+	 * DAOs are now autowired, you don't need to call super anymore
+	 */
 	public ContractorActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
-		this.accountDao = accountDao;
-		this.auditDao = auditDao;
+	}
+	
+	public ContractorActionSupport() {
 	}
 
 	@Override

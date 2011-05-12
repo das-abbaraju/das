@@ -41,7 +41,6 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	public ConInsureGuard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, CertificateDAO certificateDAO,
 			AuditDecisionTableDAO adtDAO, AuditTypeDAO auditTypeDAO) {
-		super(accountDao, auditDao);
 		this.certificateDAO = certificateDAO;
 		this.adtDAO = adtDAO;
 		this.auditTypeDAO = auditTypeDAO;
