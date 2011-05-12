@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
@@ -18,7 +19,9 @@ import com.picsauditing.util.Tree;
 @SuppressWarnings("serial")
 public class TradeTaxonomy extends PicsActionSupport {
 
+	@Autowired
 	protected TradeDAO tradeDAO;
+	@Autowired
 	protected TradeAlternateDAO tradeAlternateDAO;
 	private Trade trade;
 
@@ -173,10 +176,6 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return "alternate";
 	}
 
-	public void setTradeDAO(TradeDAO tradeDAO) {
-		this.tradeDAO = tradeDAO;
-	}
-
 	public Trade getTrade() {
 		return trade;
 	}
@@ -207,10 +206,6 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 	public void setAlternate(TradeAlternate alternate) {
 		this.alternate = alternate;
-	}
-
-	public void setTradeAlternateDAO(TradeAlternateDAO tradeAlternateDAO) {
-		this.tradeAlternateDAO = tradeAlternateDAO;
 	}
 
 	public String getQ() {

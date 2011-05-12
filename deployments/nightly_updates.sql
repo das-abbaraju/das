@@ -30,9 +30,19 @@ ANALYZE TABLE app_index, app_index_stats;
 DELETE FROM contractor_cron_log WHERE DATEDIFF(NOW(), startDate) > 7;
 
 -- ref_trade.contractorCount
+UPDATE ref_trade SET contractorCount = 0;
+
+UPDATE ref_trade AS rt, (
+	SELECT tradeID, count(ct.id) AS total
+	FROM contractor_trade ct GROUP BY tradeID
+) AS counts
+SET rt.contractorCount = counts.total
+WHERE rt.id = counts.tradeID;
+
 UPDATE ref_trade AS rt,
-       (SELECT   rt1.id AS id, sum(rt2.contractorCount) AS count
+       (SELECT   rt1.id AS id, sum(rt2.contractorCount) AS total
         FROM     ref_trade rt1 JOIN ref_trade rt2 ON rt1.indexStart < rt2.indexStart AND rt1.indexEnd > rt2.indexEnd
         GROUP BY rt1.id) AS counts
-SET    rt.contractorCount = counts.COUNT
+SET    rt.contractorCount = counts.total
 WHERE  rt.id = counts.id;
+

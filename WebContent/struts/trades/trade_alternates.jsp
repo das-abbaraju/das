@@ -6,7 +6,7 @@
 
 <s:if test="trade.alternates.size() > 0">
 	<div id="table">
-		<table class="report" style="width: 100%" width="100%">
+		<table class="report">
 			<thead>
 				<tr>
 					<th>Alternate</th>
