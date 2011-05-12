@@ -7,7 +7,7 @@
 <h3><s:property value="trade.trade.name"/></h3>
 
 <s:if test="affectedTrades.size > 0">
-	<div class="info">
+	<div class="alert">
 		<s:text name="ContractorTrades.affectedTrades">
 			<s:param>
 				<ul>
@@ -43,7 +43,7 @@
 </div>
 
 <s:if test="trade.id > 0 && trade.activityPercent == 0">
-<div class="error">
+<div class="alert">
 	<s:text name="ContractorTrade.activityPercent.missing"/>
 </div>
 </s:if>

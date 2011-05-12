@@ -63,9 +63,6 @@ $(function() {
 </s:if>
 
 <s:form id="save" method="POST" enctype="multipart/form-data">
-<div>
-	<input type="submit" class="picsbutton positive" name="button" value="<s:text name="button.Save" />"/>
-</div>
 <br clear="all" />
 <s:hidden name="id" />
 	<table width="100%">

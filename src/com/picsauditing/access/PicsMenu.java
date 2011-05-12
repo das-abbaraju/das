@@ -74,6 +74,7 @@ public class PicsMenu {
 					subMenu = menu.addChild("Edit");
 					subMenu.addChild("Company Account", "ContractorEdit.action");
 					subMenu.addChild("Users", "UsersManage.action");
+					subMenu.addChild(getText("ContractorTrades.title"), "ContractorTrades.action");
 					if (permissions.isRequiresOQ() || permissions.isRequiresCompetencyReview())
 						subMenu.addChild("Employees", "ManageEmployees.action");
 					if (permissions.isRequiresCompetencyReview()) {
@@ -99,9 +100,8 @@ public class PicsMenu {
 
 				subMenu = addSupportLink(menu);
 				subMenu.addChild("Edit Profile", "ProfileEdit.action");
-
 			} else {
-				subMenu = menu.addChild("Edit Account", "ContractorEdit.action");
+				subMenu = menu.addChild(getText("ContractorRegistration.CompanyDetails.heading"), "ContractorEdit.action");
 				addSupportLink(menu);
 			}
 			return menu;
@@ -444,8 +444,9 @@ public class PicsMenu {
 	}
 
 	static public MenuComponent addSupportLink(MenuComponent menu) {
-		MenuComponent subMenu = menu.addChild(getText("menu.Support"));
-		subMenu.addChild(getTitle("Contact"), "Contact.action");
+		MenuComponent subMenu = menu.addChild(getText("menu.Support"), "Contact.action");
+		// We may want to add the Contact page as a child menu after we have more "Support" options
+		// subMenu.addChild(getTitle("Contact"), "Contact.action");
 		return subMenu;
 	}
 

@@ -177,7 +177,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 				{
 					MenuComponent item = new MenuComponent("Trades");
 					item.setHtmlId("conTradesLink");
-					if (requestURL.contains("contractor_trades"))
+					if (getActionName().equals("ContractorTrades"))
 						item.setCurrent(true);
 					menu.add(item);
 				}
