@@ -173,6 +173,9 @@ public class BillingDetail extends ContractorActionSupport {
 		String status = contractor.getBillingStatus();
 		if ("Renewal Overdue".equals(status)) {
 			contractor.setStatus(AccountStatus.Deactivated);
+			contractor.setRenew(false);
+			if (contractor.isAcceptsBids())
+				contractor.setReason("Listed Account");
 			Note note = new Note(contractor, new User(User.SYSTEM),
 					"Automatically inactivating account based on expired membership");
 			note.setNoteCategory(NoteCategory.Billing);
@@ -182,6 +185,8 @@ public class BillingDetail extends ContractorActionSupport {
 		}
 
 		contractor.syncBalance();
+
+		accountDao.save(contractor);
 
 		this.subHeading = "Billing Detail";
 		return SUCCESS;

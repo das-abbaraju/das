@@ -2,7 +2,6 @@ package com.picsauditing.PICS;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,13 +23,7 @@ import com.picsauditing.jpa.entities.User;
 
 public class BillingCalculatorSingle {
 
-	public static final Date CONTRACT_RENEWAL_TIMKEN = DateBean.parseDate("2010-09-01");
 	public static final Date CONTRACT_RENEWAL_BASF = DateBean.parseDate("2012-01-01");
-	public static final Date CONTRACT_RENEWAL_LOREAL = DateBean.parseDate("2010-07-01");
-	public static final Date CONTRACT_RENEWAL_SUNDYNE = DateBean.parseDate("2010-10-01");
-	public static final Date CONTRACT_RENEWAL_GOODYEAR = DateBean.parseDate("2010-11-02");
-	public static final Date CONTRACT_RENEWAL_SINCLAIR = DateBean.parseDate("2010-12-21");
-	public static final Date CONTRACT_RENEWAL_NAVISTAR = DateBean.parseDate("2011-01-31");
 
 	static public void setPayingFacilities(ContractorAccount contractor) {
 
@@ -54,25 +47,7 @@ public class BillingCalculatorSingle {
 
 	static public InvoiceFee calculateAnnualFee(ContractorAccount contractor) {
 		InvoiceFee fee = new InvoiceFee();
-
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		int daysUntilRenewal = (contractor.getPaymentExpires() == null || sdf.format(contractor.getPaymentExpires())
-				.equals(sdf.format(contractor.getCreationDate()))) ? 0 : DateBean.getDateDifference(contractor
-				.getPaymentExpires());
-
-		if (contractor.isAcceptsBids()) {
-			daysUntilRenewal = (contractor.getPaymentExpires() == null || sdf.format(contractor.getPaymentExpires())
-					.equals(sdf.format(contractor.getCreationDate()))) ? 0 : DateBean.getDateDifference(contractor
-					.getPaymentExpires());
-
-			if (contractor.getStatus().isDeactivated() || daysUntilRenewal < 0)
-				calculateAnnualFeeForContractor(contractor, fee);
-			else
-				fee.setId(InvoiceFee.BIDONLY);
-		} else {
-			calculateAnnualFeeForContractor(contractor, fee);
-		}
-
+		calculateAnnualFeeForContractor(contractor, fee);
 		return fee;
 	}
 
@@ -100,6 +75,8 @@ public class BillingCalculatorSingle {
 				}
 			}
 			fee.setId(feeID);
+		} else if(contractor.isAcceptsBids()) {
+			fee.setId(InvoiceFee.BIDONLY);
 		} else
 			fee.setId(InvoiceFee.PQFONLY); // $99
 		return fee;
@@ -161,14 +138,12 @@ public class BillingCalculatorSingle {
 
 		String billingStatus = contractor.getBillingStatus();
 
-		if (billingStatus.equals("Not Calculated"))
+		if (billingStatus.equals("Not Calculated") || billingStatus.equals("Current"))
 			return items;
 
-		if (billingStatus.equals("Current"))
-			return items;
-
-		if (billingStatus.equals("Bid Only Account")) {
-			Date paymentExpires = DateBean.addMonths(new Date(), 3);
+		if (billingStatus.equals("Listed Account")) {
+			// This should be a listed renewal
+			Date paymentExpires = DateBean.addMonths(contractor.getPaymentExpires(), 12);
 			InvoiceFee fee = getFee(InvoiceFee.BIDONLY, feeDAO);
 			items.add(new InvoiceItem(fee, paymentExpires));
 

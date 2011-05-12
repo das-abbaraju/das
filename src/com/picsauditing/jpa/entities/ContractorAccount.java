@@ -887,13 +887,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 */
 	@Transient
 	public String getBillingStatus() {
-		if (!isMustPayB())
-			return "Current";
-
-		if (status.isDemo())
-			return "Current";
-
-		if (status.isDeleted())
+		if (!isMustPayB() || status.isDemo() || status.isDeleted())
 			return "Current";
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -904,13 +898,13 @@ public class ContractorAccount extends Account implements JSONable {
 					: DateBean.getDateDifference(paymentExpires);
 
 			if (status.isDeactivated() || daysUntilRenewal < 0)
-				return renew ? "Renewal" : "Membership Canceled";
+				return renew ? "Listed Account" : "Membership Canceled";
 
 			// Do we want to do this?
 			if (status.isActive())
 				return "Current";
 
-			return "Bid Only Account";
+			return "Listed Account";
 		}
 
 		if (newMembershipLevel == null)

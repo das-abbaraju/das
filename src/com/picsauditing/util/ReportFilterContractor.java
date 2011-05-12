@@ -29,7 +29,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public static final String DEFAULT_SELECT_PERFORMED_BY = "Self Performed";
 	public static final String[] DEACTIVATION_REASON = { "ChargeBack", "Did not Complete PICS process",
 			"Does not work for operator", "Duplicate/Merged Account", "Operator Exemption", "Payments not Current",
-			"Bid Only Account" };
+			"Listed Account" };
 
 	// /////// Filter Visibility /////////////
 	protected boolean showOperator = true;

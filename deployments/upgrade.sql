@@ -32,3 +32,8 @@ values
 (NULL, 'AuditCategory.limits.name', 'en', 'Policy Limits', 20952, 20952, NOW(), NOW(), NULL),
 (NULL, 'AuditCategory.policyInformation.name', 'en', 'Policy Information', 20952, 20952, NOW(), NOW(), NULL);
 --
+
+-- PICS-2332
+update invoice_fee set fee = 'Listed Account Fee' where id = 100;
+update invoice_item ii set ii.paymentExpires = date_add(ii.paymentExpires, interval 9 month) where ii.feeID = 100;
+--

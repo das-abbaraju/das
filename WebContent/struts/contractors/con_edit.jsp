@@ -208,7 +208,7 @@ $(function() {
 							No - <s:submit action="ContractorEdit!reactivate" value="Reactivate" /> 
 						</s:else>
 					</li>
-					<li><label>Bid Only Account:</label>
+					<li><label>Listed Account:</label>
 						<s:checkbox name="contractor.acceptsBids"/></li>	
 					<li><label>Reason:</label>
 						<s:select list="deactivationReasons" name="contractor.reason" headerKey="" headerValue="- Deactivation Reason -"/>

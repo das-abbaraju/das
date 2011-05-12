@@ -120,7 +120,7 @@ public class ReportBiddingContractors extends ReportAccount {
 				}
 
 				templateId = 73; // Trial Contractor Account Approval
-				summary = "Upgraded and Approved the Bid Only Account for " + permissions.getAccountName()
+				summary = "Upgraded and Approved the Listed Account for " + permissions.getAccountName()
 						+ " and notified contractor via email.";
 			}
 			if ("Reject".equals(button)) {
@@ -135,7 +135,7 @@ public class ReportBiddingContractors extends ReportAccount {
 					}
 				}
 				templateId = 75;// Trial Contractor Account Rejection
-				summary = "Rejected Contractor for the Bid Only Account for " + permissions.getAccountName();
+				summary = "Rejected Contractor for the Listed Account for " + permissions.getAccountName();
 			}
 
 			cAccount.incrementRecalculation();

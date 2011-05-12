@@ -11,7 +11,7 @@ public enum AuditRuleColumn {
 	Operator("Operator", 1),
 	Risk("Risk", 1),
 	Tag("Tag", 1),
-	BidOnly("Bid-Only", 1),
+	BidOnly("Listed", 1),
 	DependentAudit("Dependent Audit", 2),
 	Question("Question", 3),
 	Trade("Trade", 1),

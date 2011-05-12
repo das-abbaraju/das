@@ -21,6 +21,7 @@ import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
@@ -160,6 +161,21 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				invoice.setAuditColumns(permissions);
 				invoice.setQbSync(true);
 				invoice.setNotes("Cancelled Invoice");
+				
+				// Automatically deactivating account based on expired membership
+				String status = contractor.getBillingStatus();
+				if ("Renewal Overdue".equals(status)) {
+					contractor.setStatus(AccountStatus.Deactivated);
+					contractor.setRenew(false);
+					if (contractor.isAcceptsBids())
+						contractor.setReason("Listed Account");
+					Note note = new Note(contractor, new User(User.SYSTEM),
+							"Automatically inactivating account based on expired membership");
+					note.setNoteCategory(NoteCategory.Billing);
+					note.setCanContractorView(true);
+					note.setViewableById(Account.PicsID);
+					noteDAO.save(note);
+				}
 				
 				contractor.syncBalance();
 				contractor.incrementRecalculation(10);
