@@ -287,7 +287,7 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
 			subMenu.addChild("Audit Definitions", "ManageAuditType.action");
-			subMenu.addChild("Manage Option Groups", "ManageOptionGroup.action");
+			subMenu.addChild("Manage Audit Options", "ManageOptionGroup.action");
 			subMenu.addChild("Flag Criteria", "ManageFlagCriteria.action");
 		}
 		if (permissions.hasPermission(OpPerms.ContractorSimulator))

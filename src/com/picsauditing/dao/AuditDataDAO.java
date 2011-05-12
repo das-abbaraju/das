@@ -55,7 +55,8 @@ public class AuditDataDAO extends PicsDAO {
 
 	public int removeDataByCategory(int auditID, int categoryID) {
 		Query query = em.createQuery("DELETE FROM AuditData d "
-				+ "WHERE d.audit.id = :auditID AND d.question.id IN (SELECT id from AuditQuestion where category.id = "+ categoryID +")");
+				+ "WHERE d.audit.id = :auditID AND d.question.id IN (SELECT id from AuditQuestion where category.id = "
+				+ categoryID + ")");
 		query.setParameter("auditID", auditID);
 		return query.executeUpdate();
 	}
@@ -194,8 +195,8 @@ public class AuditDataDAO extends PicsDAO {
 	 */
 	public List<AuditData> findPolicyData(List<Integer> auditIds) {
 
-		StringBuilder sb = new StringBuilder("SELECT d FROM AuditData d JOIN d.question q JOIN q.category cat").append(
-				" WHERE d.audit.id in ( ").append(Strings.implode(auditIds, ",")).append(" ) ");
+		StringBuilder sb = new StringBuilder("SELECT d FROM AuditData d JOIN d.question q JOIN q.category cat")
+				.append(" WHERE d.audit.id in ( ").append(Strings.implode(auditIds, ",")).append(" ) ");
 
 		Query query = em.createQuery(sb.toString());
 
@@ -237,10 +238,9 @@ public class AuditDataDAO extends PicsDAO {
 			return null;
 		}
 	}
-	
+
 	public AuditData findAnswerByAuditQuestion(int auditID, int questionID) {
-		Query query = em.createQuery("SELECT d FROM AuditData d "
-				+ "WHERE d.audit.id = ? "
+		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.id = ? "
 				+ "AND d.question.id = ? ORDER BY d.audit.id DESC");
 		query.setParameter(1, auditID);
 		query.setParameter(2, questionID);
@@ -249,5 +249,20 @@ public class AuditDataDAO extends PicsDAO {
 		} catch (NoResultException nre) {
 			return null;
 		}
+	}
+
+	public List<AuditData> findByOptionGroupID(int optionGroupID) {
+		Query query = em.createQuery("FROM AuditData d WHERE d.question.option.id = ?");
+		query.setParameter(1, optionGroupID);
+		query.setMaxResults(10);
+		return query.getResultList();
+	}
+
+	public List<AuditData> findByOptionGroupAndValue(int optionGroupID, String value) {
+		Query query = em.createQuery("FROM AuditData d WHERE d.question.option.id = ? AND d.answer = ?");
+		query.setParameter(1, optionGroupID);
+		query.setParameter(2, value);
+		query.setMaxResults(10);
+		return query.getResultList();
 	}
 }

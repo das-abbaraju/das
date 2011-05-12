@@ -9,7 +9,9 @@
 			<th><s:text name="AuditQuestionOption.visible" /></th>
 			<th><s:text name="AuditQuestionOption.score" /></th>
 			<th><s:text name="AuditQuestionOption.uniqueCode" /></th>
-			<th><s:text name="button.Edit" /></th>
+			<pics:permission perm="ManageAudits" type="Edit">
+				<th><s:text name="button.Edit" /></th>
+			</pics:permission>
 		</tr>
 	</thead>
 	<tbody>
@@ -20,7 +22,9 @@
 				<td class="center optionVisible"><s:if test="visible"><img src="images/okCheck.gif" /></s:if></td>
 				<td class="optionScore right"><s:property value="score" /></td>
 				<td class="optionUniqueCode"><s:property value="uniqueCode" /></td>
-				<td class="optionEdit"><a href="ManageOptionValue!editAjax.action?value=<s:property value="id"/>" class="edit"></a></td>
+				<pics:permission perm="ManageAudits" type="Edit">
+					<td class="optionEdit"><a href="#value=<s:property value="id"/>" class="edit"></a></td>
+				</pics:permission>
 			</tr>
 		</s:iterator>
 		<s:if test="type.questionOptions.size == 0">
