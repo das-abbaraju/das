@@ -123,46 +123,18 @@ public class AuditPercentCalculator {
 				if (answer != null) {
 					if (answer.isAnswered()) {
 						if (catData.getAudit().getAuditType().isScoreable()) {
-							int answerValue = 0;
-							float scale = 1.0f;
+							float scorePercentage = 0.0f;
 
-							if ("MultipleChoice".equals(question.getQuestionType()) && question.getOption() != null) {
-								// TODO Remove all this below and use the
-								// AuditQuestionOption.getScorePercent()
-								if (!Strings.isEmpty(question.getOption().getUniqueCode())) {
-									final String uniqueCode = question.getOption().getUniqueCode();
-									if ("YesNo".equals(uniqueCode)) {
-										scale = 1.0f;
-										if (answer.getAnswer().equals("AuditOptionType.YesNo.Yes"))
-											answerValue = 1;
-									} else if ("YesNoNA".equals(uniqueCode)) {
-										scale = 2.0f;
-										if (answer.getAnswer().equals("AuditOptionType.YesNoNA.Yes"))
-											answerValue = 2;
-										else if (answer.getAnswer().equals("AuditOptionType.YesNoNA.No"))
-											answerValue = 1;
-									} else if ("Rating".equals(uniqueCode)) {
-										scale = 4.0f;
-										try {
-											// Rating values are saved as
-											// AuditOptionType.Rating.1
-											String numberValue = answer.getAnswer().substring(
-													answer.getAnswer().lastIndexOf("."), answer.getAnswer().length());
-											answerValue = Integer.parseInt(numberValue);
-										} catch (NumberFormatException justIgnoreIt) {
-										}
-									}
-								} else {
-									for (AuditOptionValue option : question.getOption().getValues()) {
-										scale = Math.max(scale, option.getScore());
-										if (answer.getAnswer().equals(option.getI18nKey()))
-											answerValue = option.getScore();
+							if (answer.isMultipleChoice()) {
+								for (AuditOptionValue value : question.getOption().getValues()) {
+									if (answer.getAnswer().equals(value.getIdentifier())) {
+										scorePercentage = value.getScorePercent();
+										break;
 									}
 								}
 							}
 
-							score += Math.round((question.getScoreWeight() / scale) * answerValue);
-
+							score += Math.round(question.getScoreWeight() * scorePercentage);
 						}
 
 						answeredCount++;

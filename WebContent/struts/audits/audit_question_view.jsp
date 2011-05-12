@@ -106,7 +106,12 @@ $(function() {
 		<s:property value="#a.getHtmlDisplay(#a.answer)" escape="false"/>
 	</s:elseif>	
 	<s:else>
-		<s:property value="#a.answer" />
+		<s:if test="#q.questionType == 'MultipleChoice' && #q.option != null && !isStringsEmpty(#a.answer)">
+			<s:text name="%{#q.option.i18nKey + '.' + #a.answer}" />
+		</s:if>
+		<s:else>
+			<s:property value="#a.answer" />
+		</s:else>
 		<s:if test="#q.questionType == 'License'">
 			<s:property value="@com.picsauditing.util.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
 		</s:if>
