@@ -46,7 +46,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 	@Autowired
 	protected ContractorAuditDAO auditDao;
 
+	@Autowired
 	private CertificateDAO certificateDAO;
+	@Autowired
 	private OperatorAccountDAO operatorDAO;
 
 	private List<ContractorOperator> operators;
@@ -60,17 +62,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 	private PermissionToViewContractor permissionToViewContractor = null;
 	private AuditDataDAO auditDataDAO;
 
-	@Deprecated
-	/**
-	 * DAOs are now autowired, you don't need to call super anymore
-	 */
-	public ContractorActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
-	}
-	
-	public ContractorActionSupport() {
-	}
-
-	@Override
 	public String execute() throws Exception {
 		findContractor();
 		return SUCCESS;
@@ -155,7 +146,85 @@ public class ContractorActionSupport extends AccountActionSupport {
 		}
 		return contractorNonExpiredAudits;
 	}
-
+	
+	public List<MenuComponent> getMenu() {
+		// Create the menu
+		List<MenuComponent> menu = new ArrayList<MenuComponent>();
+		getRequestString();
+		
+		Map<String, Boolean> steps = new HashMap<String, Boolean>();
+		// steps.put("Register", value)
+		
+		if (!permissions.isLoggedIn()) {
+			{
+				MenuComponent item = new MenuComponent(getText("Register"), "ContractorRegistration.action", "conRegisterLink");
+				item.setCurrent(true);
+				menu.add(item);
+			}
+			menu.add(new MenuComponent(getText("Services Performed")));
+			menu.add(new MenuComponent(getText("Add Facilities")));
+			menu.add(new MenuComponent(getText("Add Payment Options")));
+			menu.add(new MenuComponent(getText("Confirm")));
+		} else {
+			{
+				MenuComponent item = new MenuComponent("Edit Details", "ContractorEdit.action", "edit_contractor");
+				if (requestURL.contains("edit"))
+					item.setCurrent(true);
+				menu.add(item);
+			}
+			
+			if (contractor.isMaterialSupplier() && !contractor.isOnsiteServices() && !contractor.isOffsiteServices()) {
+				{
+					MenuComponent item = new MenuComponent("Trades");
+					item.setHtmlId("conTradesLink");
+					if (requestURL.contains("contractor_trades"))
+						item.setCurrent(true);
+					menu.add(item);
+				}
+				{
+					MenuComponent item = new MenuComponent("Add Facilities", "ContractorFacilities.action", "conFacilitiesLink");
+					item.setHtmlId("conFacilitiesLink");
+					if (requestURL.contains("contractor_facilities"))
+						item.setCurrent(true);
+					menu.add(item);
+				}
+				{
+					MenuComponent item = new MenuComponent("Add Payment Options");
+					item.setHtmlId("conPaymentLink");
+					if (contractor.getOperators().size() > 0 && contractor.getRequestedBy() != null)
+						item.setUrl("ContractorPaymentOptions.action");
+					if (requestURL.contains("contractor_payment"))
+						item.setCurrent(true);
+					menu.add(item);
+				}
+				{
+					MenuComponent item = new MenuComponent("Confirm");
+					item.setHtmlId("conConfirmLink");
+					if (contractor.getOperators().size() > 0 && contractor.isMustPayB() || contractor.isPaymentMethodStatusValid())
+						item.setUrl("ContractorRegistrationFinish.action");
+					if (requestURL.contains("finish"))
+						item.setCurrent(true);
+					menu.add(item);
+				}
+			} else {
+				{
+					MenuComponent item = new MenuComponent("Services Performed", "ContractorFacilities.action", "conFacilitiesLink");
+					if (requestURL.contains("contractor_facilities"))
+						item.setCurrent(true);
+					menu.add(item);
+				}
+			}
+		}
+		
+		int counter = 0;
+		for (MenuComponent item : menu) {
+			counter++;
+			item.setName(counter + ") " + item.getName());
+		}
+		
+		return menu;
+	}
+	
 	/**
 	 * Build a Menu (List<MenuComponent>) with the following:<br>
 	 * * PQF<br>
@@ -535,13 +604,5 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (status.after(AuditStatus.Resubmitted))
 			return true;
 		return false;
-	}
-
-	public void setCertificateDAO(CertificateDAO certificateDAO) {
-		this.certificateDAO = certificateDAO;
-	}
-
-	public void setOperatorDAO(OperatorAccountDAO operatorDAO) {
-		this.operatorDAO = operatorDAO;
 	}
 }
