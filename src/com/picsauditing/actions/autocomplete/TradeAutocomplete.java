@@ -1,7 +1,5 @@
 package com.picsauditing.actions.autocomplete;
 
-import javax.persistence.Query;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.TradeDAO;

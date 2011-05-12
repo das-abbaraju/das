@@ -1,11 +1,13 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import javax.persistence.Query;
 
 import com.picsauditing.jpa.entities.Trade;
+import com.picsauditing.search.SearchEngine;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Tree;
 
 @SuppressWarnings("unchecked")
@@ -65,45 +67,59 @@ public class TradeDAO extends PicsDAO {
 	}
 
 	public Tree<Trade> findHierarchyByIndexValue(String q) {
-		String sql = "SELECT t2.* " + "FROM app_index i " + "JOIN ref_trade t1 ON t1.id = i.foreignKey "
-		+ "JOIN ref_trade t2 ON t1.indexStart >= t2.indexStart AND t1.indexEnd <= t2.indexEnd "
-		+ "WHERE i.indexType = 'T' AND (" 
-		+ convertSearchTermsToQueryTerms("i.value",  q) 
-		+ ") GROUP BY t2.id " + "ORDER by t2.indexStart";
+		List<String> terms = new SearchEngine(null).buildTerm(q, true, false);
+		if (terms.isEmpty())
+			return Tree.createTreeFromOrderedList(new ArrayList<Trade>());
+		String searchJoins = buildSearchJoins(terms);
 
-		Query query = em.createNativeQuery(sql, Trade.class);
+		SelectSQL sql = new SelectSQL("app_index i1");
+		sql.addField("t2.*");
+		sql.addJoin("JOIN ref_trade t1 ON t1.id = i1.foreignKey");
+		sql.addJoin("JOIN ref_trade t2 ON t1.indexStart >= t2.indexStart AND t1.indexEnd <= t2.indexEnd");
+		if (!searchJoins.isEmpty())
+			sql.addJoin(searchJoins);
+		sql.addWhere("i1.indexType = 'T' AND i1.value LIKE '" + terms.get(0) + "%'");
+		sql.addGroupBy("t2.id");
+		sql.addOrderBy("t2.indexStart");
+
+		Query query = em.createNativeQuery(sql.toString(), Trade.class);
 
 		return Tree.createTreeFromOrderedList(query.getResultList());
 	}
 
 	public List<Trade> findByIndexValue(String q) {
-		String sql = "SELECT t1.* " + "FROM app_index i " + "JOIN ref_trade t1 ON t1.id = i.foreignKey "
-		+ "WHERE i.indexType = 'T' AND ("
-		+ convertSearchTermsToQueryTerms("i.value",  q)
-		+ ") ORDER by t1.indexLevel DESC";
+		List<String> terms = new SearchEngine(null).buildTerm(q, true, false);
+		if (terms.isEmpty())
+			return new ArrayList<Trade>();
+		String searchJoins = buildSearchJoins(terms);
 
-		Query query = em.createNativeQuery(sql, Trade.class);
-		
+		SelectSQL sql = new SelectSQL("app_index i1");
+		sql.addField("t1.*");
+		sql.addJoin("JOIN ref_trade t1 ON t1.id = i1.foreignKey");
+		if (!searchJoins.isEmpty())
+			sql.addJoin(searchJoins);
+		sql.addWhere("i1.indexType = 'T' AND i1.value LIKE '" + terms.get(0) + "%'");
+		sql.addOrderBy("t1.indexLevel DESC");
+
+		Query query = em.createNativeQuery(sql.toString(), Trade.class);
+
 		return query.getResultList();
 	}
-	
+
 	/**
-	 * Converts a string of search terms into a SQL where query section
-	 * For example "dog cat" would be converted to "column llke 'dog%' or column like 'cat%'
-	 * @param column name of database column
-	 * @param searchTerms terms to search on
-	 * @return sql where clause snippet to match search terms
+	 * Builds a String containing all the Joins for the app_index search
+	 * 
+	 * @param terms
+	 * @return JOIN String to use in a query
 	 */
-	private String convertSearchTermsToQueryTerms(String column,  String searchTerms) {
-		StringTokenizer st = new StringTokenizer(searchTerms);
+	private String buildSearchJoins(List<String> terms) {
 		StringBuilder sb = new StringBuilder();
-		
-		// break out search terms
-		while (st.hasMoreTokens()) {
-			if (sb.length() > 0) sb.append(" OR ");
-			sb.append(column).append(" LIKE '").append(st.nextToken()).append("%'");
+		for (int i = 1; i < terms.size(); i++) {
+			String alias = "i" + (i + 1);
+			sb.append("JOIN app_index ").append(alias).append(" ON i1.indexType = 'T' AND i1.foreignKey = ").append(
+					alias).append(".foreignKey AND ").append(alias).append(".value LIKE '").append(terms.get(i))
+					.append("%'");
 		}
-		
 		return sb.toString();
 	}
 }
