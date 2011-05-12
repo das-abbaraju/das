@@ -1,9 +1,9 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-
-<%@page import="com.picsauditing.util.URLUtils"%><html>
+<%@page import="com.picsauditing.util.URLUtils"%>
+<html>
 <head>
 <title>Contact Us</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 
 </head>
@@ -45,7 +45,7 @@
 			</s:elseif>	
 		</fieldset>
 	</s:if>
-		<fieldset class="form">
+		<fieldset class="form bottom">
 			<h2 class="formLegend">Support Links</h2>
 				<ol>
 					<li><label>Help Center:</label>
