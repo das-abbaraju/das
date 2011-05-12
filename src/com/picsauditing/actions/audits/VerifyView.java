@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
@@ -35,24 +37,23 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class VerifyView extends ContractorActionSupport {
 
+	@Autowired
+	protected AuditDataDAO auditDataDAO;
+	@Autowired
+	protected NoteDAO noteDAO;
+
 	private Map<Integer, AuditData> pqfQuestions = new LinkedHashMap<Integer, AuditData>();
 	private Map<Integer, AuditData> infoSection = new LinkedHashMap<Integer, AuditData>();
 	private List<OshaAudit> oshasUS = new ArrayList<OshaAudit>();
 	private List<OshaAudit> oshasCA = new ArrayList<OshaAudit>();
-	protected AuditDataDAO auditDataDAO;
 	protected List<ContractorAudit> annualUpdates = new ArrayList<ContractorAudit>();
 	protected Map<AuditQuestion, Map<Integer, AuditData>> emrs = new TreeMap<AuditQuestion, Map<Integer, AuditData>>();
 	protected List<ContractorAudit> verificationAudits = null;
 	protected String emailBody;
 	protected String emailSubject;
 	protected EmailQueue previewEmail;
-	protected NoteDAO noteDAO;
 
-	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO,
-			AuditDataDAO auditDataDAO, NoteDAO noteDAO) {
-		super(accountDao, contractorAuditDAO);
-		this.auditDataDAO = auditDataDAO;
-		this.noteDAO = noteDAO;
+	public VerifyView() {
 		noteCategory = NoteCategory.Audits;
 	}
 

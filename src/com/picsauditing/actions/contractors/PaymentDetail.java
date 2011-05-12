@@ -5,16 +5,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -38,25 +38,24 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class PaymentDetail extends ContractorActionSupport implements Preparable {
 
+	@Autowired
+	private PaymentDAO paymentDAO;
+	@Autowired
+	private NoteDAO noteDAO;
+	@Autowired
+	private AppPropertyDAO appPropDao;
+
 	private Payment payment;
 	private PaymentMethod method = null;
 	private CreditCard creditCard;
 	private Map<Integer, BigDecimal> amountApplyMap = new HashMap<Integer, BigDecimal>();
 
-	private PaymentDAO paymentDAO;
-	private NoteDAO noteDAO;
-	private AppPropertyDAO appPropDao;
 	private BrainTreeService paymentService = new BrainTreeService();
 	private String transactionCondition = null;
 	private BigDecimal refundAmount;
 	private boolean changePaymentMethodOnAccount = false;
 
-	public PaymentDetail(AppPropertyDAO appPropDao, NoteDAO noteDAO, ContractorAccountDAO conAccountDAO,
-			ContractorAuditDAO auditDao, PaymentDAO paymentDAO) {
-		super(conAccountDAO, auditDao);
-		this.appPropDao = appPropDao;
-		this.noteDAO = noteDAO;
-		this.paymentDAO = paymentDAO;
+	public PaymentDetail() {
 		this.subHeading = "Payment Detail";
 	}
 
@@ -129,7 +128,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				}
 				if (method.isCreditCard()) {
 					try {
-						paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
+						paymentService
+								.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
 						paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
 						paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 						paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
@@ -305,8 +305,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						if (amountApplyMap.get(txnID).compareTo(BigDecimal.ZERO) > 0) {
 							for (Invoice txn : contractor.getInvoices()) {
 								if (txn.getId() == txnID) {
-									PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(), amountApplyMap
-											.get(txnID));
+									PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(),
+											amountApplyMap.get(txnID));
 
 									// Email Receipt to Contractor
 									if (collected)
@@ -315,8 +315,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							}
 							for (Refund txn : contractor.getRefunds()) {
 								if (txn.getId() == txnID) {
-									PaymentProcessor.ApplyPaymentToRefund(payment, txn, getUser(), amountApplyMap
-											.get(txnID));
+									PaymentProcessor.ApplyPaymentToRefund(payment, txn, getUser(),
+											amountApplyMap.get(txnID));
 								}
 							}
 						}
