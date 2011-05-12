@@ -306,7 +306,7 @@ $(function() {
 					</li>					
 				</s:if>
 				<li><label>Trade</label>
-					<pics:autocomplete action="TradeAutoComplete" name="rule.trade" />
+					<pics:autocomplete action="TradeAutocomplete" name="rule.trade" />
 				</li>
 				<li><label>Question</label>
 					<s:textfield cssClass="autocomplete" id="question" name="ruleQuestionId" value="%{rule.question.id}"/>
