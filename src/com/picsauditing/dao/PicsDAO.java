@@ -5,10 +5,12 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.BaseTable;
+import com.picsauditing.jpa.entities.Translatable;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.ReflectUtil;
 
 @Transactional
 abstract public class PicsDAO {
@@ -71,6 +73,12 @@ abstract public class PicsDAO {
 		}
 	}
 
+	public void remove(BaseTable row) {
+		if (row != null) {
+			em.remove(row);
+		}
+	}
+
 	public BaseTable find(Class<? extends BaseTable> clazz, int id) {
 		return em.find(clazz, id);
 	}
@@ -88,7 +96,7 @@ abstract public class PicsDAO {
 			q.setMaxResults(limit);
 		return q.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<? extends BaseTable> findWhere(Class<? extends BaseTable> clazz, String where, int limit, String orderBy) {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t WHERE " + where + " ORDER BY " + orderBy);
@@ -96,7 +104,7 @@ abstract public class PicsDAO {
 			q.setMaxResults(limit);
 		return q.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List findWhere(String className, String where, int limit) {
 		Query q = em.createQuery("FROM " + className + " t WHERE " + where + " ORDER BY t.id");
@@ -105,10 +113,22 @@ abstract public class PicsDAO {
 		return q.getResultList();
 	}
 
-	public void remove(BaseTable row) {
-		if (row != null) {
-			em.remove(row);
-		}
+	@SuppressWarnings("unchecked")
+	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String name, String value) {
+
+		String tableName = ReflectUtil.getTableName(cls);
+
+		SelectSQL sql = new SelectSQL(tableName + " t");
+		sql.addJoin("JOIN app_translation tr ON CONCAT('" + cls.getSimpleName() + ".',t.id,'." + name
+				+ "') = tr.msgKey");
+		sql.addWhere("tr.msgValue LIKE :value");
+
+		sql.addField("t.*");
+
+		Query query = em.createNativeQuery(sql.toString(), cls);
+		query.setParameter("value", value);
+
+		return query.getResultList();
 	}
 
 	public int deleteData(Class<? extends BaseTable> clazz, String where) {

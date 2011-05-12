@@ -23,7 +23,7 @@ public class CategoryAutocomplete extends AutocompleteActionSupport<AuditCategor
 		if (isSearchDigit())
 			items = auditCategoryDAO.findWhere(where + "t.id LIKE '" + q + "%'");
 		else
-			items = auditCategoryDAO.findWhere(where + "t.name LIKE '%" + q + "%'");
+			items = auditCategoryDAO.findByTranslatableField(AuditCategory.class, "name", "%" + q + "%");
 	}
 
 	@Override
