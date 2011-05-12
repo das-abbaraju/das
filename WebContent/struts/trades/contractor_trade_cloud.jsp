@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <div id="trade-cloud">
-	<s:if test="trade.size() > 0">
+	<s:if test="contractor.trades.size() > 0">
 		<s:iterator value="contractor.trades" var="trade">
 			<a 	href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" 
 				style="font-size: <s:property value="tradeCssMap.get(#trade)"/>px"
