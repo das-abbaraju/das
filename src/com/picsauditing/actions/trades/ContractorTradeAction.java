@@ -1,5 +1,6 @@
 package com.picsauditing.actions.trades;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -58,6 +59,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		trade.setContractor(contractor);
 		trade.setAuditColumns(permissions);
+		contractor.setTradesUpdated(new Date());
 		tradeDAO.save(trade);
 
 		return "trade";

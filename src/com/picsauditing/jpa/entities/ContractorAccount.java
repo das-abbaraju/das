@@ -97,6 +97,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private String tradesSelf;
 	private String tradesSub;
 	private int score;
+	private Date tradesUpdated;
 
 	protected List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 	protected List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
@@ -1083,5 +1084,13 @@ public class ContractorAccount extends Account implements JSONable {
 	public boolean hasReducedActivation(InvoiceFee activation) {
 		return getReducedActivationFeeOperator(activation) != null
 				&& activation.getAmount().intValue() != getReducedActivationFeeOperator(activation).getActivationFee();
+	}
+
+	public Date getTradesUpdated() {
+		return tradesUpdated;
+	}
+
+	public void setTradesUpdated(Date tradesUpdated) {
+		this.tradesUpdated = tradesUpdated;
 	}
 }
