@@ -11,6 +11,7 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 	private String url;
 	private String htmlId;
 	private String title;
+	private int id = 1;
 	private String sortField;
 
 	protected int auditId = 0;
@@ -76,6 +77,14 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 		this.htmlId = htmlId;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -95,12 +104,14 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 	public MenuComponent addChild(String name) {
 		MenuComponent child = new MenuComponent(name);
 		this.children.add(child);
+		child.setId(this.children.size() + (100 * this.id));
 		return child;
 	}
 
 	public MenuComponent addChild(String name, String url) {
 		MenuComponent child = new MenuComponent(name, url);
 		this.children.add(child);
+		child.setId(this.children.size() + (100 * this.id));
 		return child;
 	}
 
