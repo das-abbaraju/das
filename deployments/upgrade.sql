@@ -37,3 +37,17 @@ values
 update invoice_fee set fee = 'Listed Account Fee' where id = 100;
 update invoice_item ii set ii.paymentExpires = date_add(ii.paymentExpires, interval 9 month) where ii.feeID = 100;
 --
+
+-- PICS-2324
+CREATE TABLE temp_con_trades AS 
+SELECT DISTINCT ct2.id contractor_trade_id 
+FROM contractor_trade ct1 
+JOIN ref_trade rt1 ON rt1.id = ct1.tradeID 
+JOIN contractor_trade ct2 ON ct1.conID = ct2.conID 
+JOIN ref_trade rt2 ON rt2.id = ct2.tradeID 
+WHERE rt1.indexStart < rt2.indexStart AND rt2.indexEnd < rt1.indexEnd;
+
+DELETE t1 FROM contractor_trade t1
+join temp_con_trades t2 ON t1.id = t2.contractor_trade_id;
+
+DROP TABLE temp_con_trades;
