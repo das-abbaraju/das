@@ -30,6 +30,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	public ContractorTradeAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
 		super(accountDao, auditDao);
+		this.subHeading = getText("ContractorTrades.title");
 	}
 
 	public String tradeAjax() {

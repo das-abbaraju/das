@@ -4,7 +4,7 @@
 
 <html>
 <head>
-<title>Contractor Trades</title>
+<title><s:text name="ContractorTrades.title"></s:text> </title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
@@ -27,8 +27,23 @@ li.trade-<s:property value="trade.id"/> > a {
 }
 </s:iterator>
 
+#suggest {
+	float: left;
+	width: 50%;
+}
+
+#trade-nav {
+	background-color: Snow;
+	border: 1px solid gray;
+	float: left;
+	width: 50%;
+	height: 500px;
+	overflow: auto;
+}
+
 #trade-view {
-	margin: 20px;
+	float: right;
+	width: 45%
 }
 
 #trade-view ul, #trade-view ol {
@@ -70,7 +85,7 @@ $(function() {
 				}
 			}
 		},
-		"plugins": ['themes', "json_data", "search"]
+		"plugins": ["themes", "json_data", "search", "sort"]
 	});
 
 	function loadTrades(url, data) {
@@ -133,22 +148,13 @@ $(function() {
 
 <s:include value="../contractors/conHeader.jsp"/>
 
-<table class="clearfix">
-	<tr>
-	<td>
-		<div>
-		<form id="suggest">
-			<label>Trade Search:</label>
-			<input type="search" name="q" class="search" />
-		</form>
-		</div>
-		<div id="trade-nav"></div>
-	</td>
-	<td width="20px"></td>
-	<td id="trade-view">
-		<s:include value="contractor_trade_cloud.jsp"/>
-	</td>
-	</tr>
-</table>
+<form id="suggest">
+	<label><s:text name="Header.Search"></s:text>:</label>
+	<input type="search" name="q" class="search" />
+</form>
+<div id="trade-nav"></div>
+<div id="trade-view">
+	<s:include value="contractor_trade_cloud.jsp"/>
+</div>
 </body>
 </html>
