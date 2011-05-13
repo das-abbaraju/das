@@ -88,7 +88,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		if ("Complete My Registration".equals(button)) {
 			// enforcing workflow steps before completing registration
 			String url = "";
-			if (contractor.getRiskLevel() == null && !contractor.isMaterialSupplierOnly()) {
+			// TODO add productRiskLevel ?
+			if (contractor.getSafetyRisk() == null && !contractor.isMaterialSupplierOnly()) {
 				url = "ContractorRegistrationServices.action?id=" + contractor.getId()
 						+ "&msg=Please select the services you perform.";
 			} else if (contractor.getNonCorporateOperators().size() == 0) {

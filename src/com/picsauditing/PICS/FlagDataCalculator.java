@@ -305,8 +305,13 @@ public class FlagDataCalculator {
 		ContractorAccount contractor = co.getContractorAccount();
 		OperatorAccount operator = co.getOperatorAccount();
 
-		if (contractor.getRiskLevel() == null)
+		// TODO add productRiskLevel ?
+		if (contractor.getSafetyRisk() == null)
 			return WaitingOn.Contractor;
+
+		// TODO add productRiskLevel ?
+//		if (contractor.getProductRiskLevel() == null)
+//			return WaitingOn.Contractor;
 
 		if (!contractor.getStatus().isActiveDemo())
 			return WaitingOn.Contractor; // This contractor is delinquent

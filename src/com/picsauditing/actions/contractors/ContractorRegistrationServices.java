@@ -78,8 +78,9 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 		answerMap = auditDataDAO.findAnswersByContractor(id, questionIds);
 
+		// TODO add productRiskLevel ?
 		if ("calculateRisk".equals(button)) {
-			if (contractor.getRiskLevel() == null) {
+			if (contractor.getSafetyRisk() == null) {
 				boolean requiredQuestions = false;
 				boolean performServices = false;
 				if (answerMap != null) {
@@ -93,8 +94,6 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				}
 				if (!requiredQuestions)
 					addActionError("Please answer all the questions on the General Info section");
-				if (!performServices)
-					addActionError("Please select the services you perform below");
 				if (requiredQuestions && performServices) {
 					Collection<AuditData> auditList = answerMap.values();
 					LowMedHigh riskLevel = LowMedHigh.Low;
@@ -113,7 +112,8 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 						if (riskLevel.equals(LowMedHigh.High))
 							break;
 					}
-					contractor.setRiskLevel(riskLevel);
+					contractor.setSafetyRisk(riskLevel);
+					// TODO add productRiskLevel ?
 					contractor.setAuditColumns(permissions);
 					accountDao.save(contractor);
 					redirect("ContractorFacilities.action?id=" + contractor.getId()

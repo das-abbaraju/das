@@ -59,7 +59,8 @@ public class EntityFactory {
 		// contractor.setActive('Y');
 		contractor.setStatus(AccountStatus.Active);
 		contractor.setName("Contractor Unit Test");
-		contractor.setRiskLevel(LowMedHigh.Med);
+		contractor.setSafetyRisk(LowMedHigh.Med);
+		contractor.setProductRisk(LowMedHigh.Med);
 		contractor.setCountry(new Country("US"));
 		return contractor;
 	}

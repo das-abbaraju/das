@@ -34,7 +34,8 @@ public class CalculateFee extends PicsActionSupport {
 		if (button != null && "pricing".equals(button)) {
 
 			ContractorAccount contractor = new ContractorAccount();
-			contractor.setRiskLevel(LowMedHigh.getMap().get(riskLevel));
+			// TODO add productRiskLevel ?
+			contractor.setSafetyRisk(LowMedHigh.getMap().get(riskLevel));
 			// contractor.setOqEmployees(oqEmployees);
 
 			List<Integer> selectedFacilities = new ArrayList<Integer>();

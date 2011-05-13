@@ -187,8 +187,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 			// Services
 			item = new MenuComponent(getText("ContractorRegistrationServices.title"), null, "conServicesLink");
 			if (requestURL.contains("ContractorRegistrationServices.action")) {
-				item.setCurrent(true);
-				steps.put("ContractorRegistrationServices.action", null);
+//				item.setCurrent(true);
+//				steps.put("ContractorRegistrationServices.action", null);
 			}
 			if (!contractor.isMaterialSupplier() 
 					  && !contractor.isOnsiteServices() 
@@ -202,8 +202,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 				item.setCurrent(true);
 				steps.put("ContractorFacilities.action", null);
 			}
+			// TODO add productRiskLevel ?
 			if (steps.containsKey("ContractorFacilities.action")
-					&& (contractor.getRiskLevel() != null)) {
+					&& (contractor.getSafetyRisk() != null)) {
 				item.setUrl("ContractorFacilities.action?id=" + id);
 			}
 			menu.add(item);
