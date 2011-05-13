@@ -63,7 +63,7 @@
 			</li>
 		</s:if>
 		<li>
-			<label><s:text name="Trade"/></label>
+			<label><s:text name="ContractorTrade.taxonomy"/></label>
 			<div class="hierarchy">
 				<div id="trade-hierarchy"></div>
 			</div>
