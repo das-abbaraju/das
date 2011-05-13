@@ -34,7 +34,7 @@ public class Autocomplete extends Component {
 					+ 		"$('#%2$s_text').change(function() {"
 					+			"var me = $(this);"
 					+ 			"if (me.blank())"
-					+ 				"me.parent().find('.ac_hidden').val('');"
+					+ 				"$('#%2$s_hidden').val('');"
 					+ 		"}).autocomplete('%5$s.action', {"
 					+ 			"formatItem  : function(data,i,count) {"
 					+ 				"return data[1];"
@@ -42,10 +42,10 @@ public class Autocomplete extends Component {
 					+ 			"formatResult: function(data,i,count) {"
 					+ 				"return data[1];"
 					+ 			"}"
+					+ 		"}).result(function(event, data) {"
+					+ 			"$('#%2$s_hidden').val(data[0]);"
 					+ 		"});"
-					+ 	"}).result(function(event, data) {"
-					+ 		"$(this).find('.ac_hidden').val(data[0]);"
-					+ 	"});"
+					+	"});"
 					+ "</script>"
 					+ "</div>";
 
