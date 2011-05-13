@@ -3,25 +3,30 @@ package com.picsauditing.jpa.entities;
 public enum ContractorRegistrationStep {
 	Register, EditAccount, Trades, Risk, Facilities, Payment, Confirmation, Done;
 
-	// private String url;
-
 	static public ContractorRegistrationStep getStep(
 			ContractorAccount contractor) {
-		ContractorRegistrationStep step = EditAccount;
-		
 		if (contractor == null || contractor.getId() == 0)
 			return Register;
-        //if (!permissions.isLoggedIn()) return Register;
-        
-        if (contractor.getId() != 0) step = Trades;
-        if (contractor.getTradesUpdated() != null) step = Risk;
-        if (contractor.getSafetyRisk() != null) step = Facilities;
-        
-        if (!contractor.isMaterialSupplier() 
-				  && !contractor.isOnsiteServices() 
-				  && !contractor.isOffsiteServices()) step = Facilities;
-        
-        
-		return Done;
+
+		if (contractor.getStatus().isActive())
+			return Done;
+		
+		if (contractor.getStatus().isDemo())
+			return Done;
+
+		if (contractor.getTradesUpdated() == null)
+			return Trades;
+		if (contractor.getSafetyRisk() == null)
+			return Risk;
+		if (contractor.isMaterialSupplier()
+				&& contractor.getProductRisk() == null)
+			return Risk;
+		if (contractor.getOperators().size() == 0)
+			return Facilities;
+		if (contractor.isMustPayB() && !contractor.isPaymentMethodStatusValid())
+			return Payment;
+
+		return Confirmation;
 	}
+//  static public boolean isActive(ContractorRegistrationStep currentStep, ContractorRegistrationStep activeStep)
 }
