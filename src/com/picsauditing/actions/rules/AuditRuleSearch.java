@@ -52,7 +52,8 @@ public class AuditRuleSearch extends ReportActionSupport {
 			sql.addWhere("a_search.risk = " + filter.getRiskLevel());
 		}
 		if (filterOn(filter.getAuditType())) {
-			sql.addJoin("JOIN app_translation t ON t.msgKey = CONCAT('AuditType.',aty.id,'.name') AND t.msgValue LIKE '%" + Utilities.escapeQuotes(filter.getAuditType()) + "%'");
+			sql.addJoin("JOIN app_translation t ON t.msgKey = CONCAT('AuditType.',aty.id,'.name') "
+					+ "AND t.msgValue LIKE '%" + Utilities.escapeQuotes(filter.getAuditType()) + "%'");
 		}
 		if (filter.getOpID() > 0) {
 			sql.addWhere("op.id = " + filter.getOpID());
@@ -70,11 +71,11 @@ public class AuditRuleSearch extends ReportActionSupport {
 			String checkDate = DateBean.toDBFormat(filter.getCheckDate());
 			sql.addWhere("a_search.effectiveDate <= '" + checkDate + " 23:59:59' AND a_search.expirationDate >= '"
 					+ checkDate + " 00:00:00'");
-		}
-		if (filterOn(filter.getTradeID())) {
-			sql.addWhere("a_search.tradeID = " + filter.getTradeID());
 		} else {
 			sql.addWhere("a_search.effectiveDate <= NOW() AND a_search.expirationDate >= NOW()");
+		}
+		if (filter.getTradeID() > 0) {
+			sql.addWhere("a_search.tradeID = " + filter.getTradeID());
 		}
 	}
 
