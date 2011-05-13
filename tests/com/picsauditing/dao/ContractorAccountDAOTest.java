@@ -45,8 +45,6 @@ public class ContractorAccountDAOTest {
 	// }
 	// }
 
-
-	
 	@Test
 	public void testSaveAndRemove() {
 		Calendar cal = Calendar.getInstance();
@@ -71,14 +69,16 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setCreationDate(new Date());
 		contractoraccount.setTaxId("test17701");
 		contractoraccount.setMembershipDate(cal.getTime());
-		contractoraccount.setRiskLevel(LowMedHigh.Med);
+		contractoraccount.setSafetyRisk(LowMedHigh.Med);
+		contractoraccount.setProductRisk(LowMedHigh.Med);
 		contractoraccount = (ContractorAccount) accountDAO.save(contractoraccount);
 		assertEquals("test17701", contractoraccount.getTaxId());
 		assertTrue(contractoraccount.getId() > 0);
 
 		List<ContractorAccount> testFindWhere = contractoraccountDAO
 				.findWhere("main_Trade LIKE 'Consulting' AND taxId = 'test17701'");
-		assertEquals(LowMedHigh.Med, testFindWhere.get(0).getRiskLevel());
+		assertEquals(LowMedHigh.Med, testFindWhere.get(0).getSafetyRisk());
+		assertEquals(LowMedHigh.Med, testFindWhere.get(0).getProductRisk());
 
 		accountDAO.remove(contractoraccount.getId());
 		ContractorAccount contractoraccount1 = (ContractorAccount) accountDAO.find(contractoraccount.getId());

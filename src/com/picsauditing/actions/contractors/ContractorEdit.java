@@ -77,8 +77,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
 			InvoiceFeeDAO invoiceFeeDAO, OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO,
-			NoteDAO noteDAO, EmailSubscriptionDAO subscriptionDAO, UserSwitchDAO userSwitchDAO,
-			Indexer indexer) {
+			NoteDAO noteDAO, EmailSubscriptionDAO subscriptionDAO, UserSwitchDAO userSwitchDAO, Indexer indexer) {
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
 		this.invoiceFeeDAO = invoiceFeeDAO;
@@ -121,8 +120,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
 				state = getStateDAO().find(stateIsos[0]);
 
-			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters().get(
-					"billingState.isoCode");
+			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters()
+					.get("billingState.isoCode");
 			if (billingStateIsos != null && billingStateIsos.length > 0 && !Strings.isEmpty(billingStateIsos[0]))
 				billingState = getStateDAO().find(billingStateIsos[0]);
 		}
@@ -189,7 +188,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					if (contactID > 0 && contactID != contractor.getPrimaryContact().getId()) {
 						contractor.setPrimaryContact(userDAO.find(contactID));
 					}
-					//contractor.setNeedsIndexing(true);
+					// contractor.setNeedsIndexing(true);
 					accountDao.save(contractor);
 					indexer.runSingle(contractor, "accounts");
 
@@ -198,7 +197,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			} else if (button.equalsIgnoreCase("Delete")) {
 				permissions.tryPermission(OpPerms.RemoveContractors);
 				findContractor();
-				
+
 				Iterator<ContractorAudit> auditList = contractor.getAudits().iterator();
 				while (auditList.hasNext()) {
 					ContractorAudit cAudit = auditList.next();
@@ -230,17 +229,18 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				if (operatorIds != null) {
 					for (int operatorID : operatorIds) {
 						OperatorAccount operator = operatorAccountDAO.find(operatorID);
-						
+
 						List<EmailSubscription> subscriptions = subscriptionDAO.find(
 								Subscription.ContractorDeactivation, operatorID);
 
 						OperatorAccount parent = operator.getParent();
-						while(parent != null){ // adding corporate subscriptions
-							subscriptions.addAll(subscriptionDAO.find(
-								Subscription.ContractorDeactivation, parent.getId()));
+						while (parent != null) { // adding corporate
+													// subscriptions
+							subscriptions.addAll(subscriptionDAO.find(Subscription.ContractorDeactivation,
+									parent.getId()));
 							parent = parent.getParent();
 						}
-						
+
 						Set<String> emails = new HashSet<String>();
 						boolean subscribed = false;
 						for (EmailSubscription subscription : subscriptions) {
@@ -316,7 +316,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 		return SUCCESS;
 	}
-	
+
 	public String deactivate() throws Exception {
 		if (Strings.isEmpty(contractor.getReason())) {
 			addActionError("Please select a deactivation reason before you cancel the account");
@@ -460,43 +460,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		this.contactID = contactID;
 	}
 
-	public LowMedHigh getRiskLevel() {
-		return contractor.getRiskLevel();
-	}
-
-	public void setRiskLevel(LowMedHigh riskLevel) {
-		if(riskLevel != contractor.getRiskLevel()) {
-			String userName = userDAO.find(permissions.getUserId()).getName();
-			String newRiskLevel = riskLevel.toString();
-			String oldRiskLevel = "null";
-			if (contractor.getRiskLevel() != null) {
-				oldRiskLevel = contractor.getRiskLevel().toString();
-				if (oldRiskLevel.equals("Med"))
-					oldRiskLevel = "Medium";
-				if (newRiskLevel.equals("Med"))
-					newRiskLevel = "Medium";
-			}
-	
-			Note note = new Note();
-			note.setAccount(contractor);
-			note.setAuditColumns(permissions);
-			note.setSummary(userName + " changed the risk level from " + oldRiskLevel + " to " + newRiskLevel);
-			note.setNoteCategory(NoteCategory.General);
-			note.setCanContractorView(false);
-			note.setViewableById(Account.EVERYONE);
-
-			// If contractor risk level being raised, stamp the last upgrade date
-			if(riskLevel.compareTo(contractor.getRiskLevel()) > 0)
-				contractor.setLastUpgradeDate(new Date());
-			contractor.setRiskLevel(riskLevel);
-			noteDAO.save(note);
-		}
-	}
-	
 	public boolean isCanEditRiskLevel() {
-		if(contractor.getStatus().isDemo())
+		if (contractor.getStatus().isDemo())
 			return true;
-		if(permissions.hasPermission(OpPerms.RiskRank))
+		if (permissions.hasPermission(OpPerms.RiskRank))
 			return true;
 		return false;
 	}

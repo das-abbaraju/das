@@ -377,6 +377,11 @@
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 		
+		<action name="ContractorEditRiskLevel"
+			class="com.picsauditing.actions.contractors.ContractorEditRiskLevel">
+			<result>struts/contractors/con_edit_risk.jsp</result>
+		</action>
+		
 		<action name="DownloadContractorFile"
 			class="com.picsauditing.actions.contractors.ConFileUpload">
 			<param name="button">download</param>

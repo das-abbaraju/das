@@ -143,8 +143,11 @@ $(function() {
 					<li><label><s:text name="%{scope}.IndustryDetails.NAICSPrimary"/>:</label>
 						<s:property value="contractor.naics.code"/>
 					</li>
-					<li><label><s:text name="%{scope}.IndustryDetails.RiskLevel"/>:</label>
-						<s:property value="contractor.riskLevel"/>
+					<li><label><s:text name="global.SafetyRisk"/>:</label>
+						<s:property value="contractor.safetyRisk"/>
+					</li>
+					<li><label><s:text name="global.ProductRisk"/>:</label>
+						<s:property value="contractor.productRisk"/>
 					</li>
 					<li><label><s:text name="%{scope}.IndustryDetails.RequestedBy"/>:</label>
 						<s:property value="contractor.requestedBy.name"/>
@@ -211,8 +214,8 @@ $(function() {
 						<s:select list="deactivationReasons" name="contractor.reason" headerKey="" headerValue="- Deactivation Reason -"/>
 					</li>
 					<s:if test="canEditRiskLevel">
-						<li><label>Risk Level:</label>
-							<s:radio list="riskLevelList" name="riskLevel" theme="pics" />
+						<li><label>Risk Levels:</label>
+							<a href="ContractorEditRiskLevel.action?id=<s:property value="contractor.id" />" class="edit">Edit Risk Levels</a>
 						</li>
 					</s:if>
 					<s:if test="contractor.country.isoCode != 'AE'">
