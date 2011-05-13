@@ -58,7 +58,7 @@ public class TradeDAO extends PicsDAO {
 
 		String searchJoins = buildSearchJoins(terms);
 
-		SelectSQL sql = new SelectSQL("app_index i0");
+		SelectSQL sql = new SelectSQL("app_index i1");
 		sql.addField("t2.*");
 		sql.addJoin("JOIN ref_trade t1 ON t1.id = i1.foreignKey");
 		sql.addJoin("JOIN ref_trade t2 ON t1.indexStart >= t2.indexStart AND t1.indexEnd <= t2.indexEnd");
