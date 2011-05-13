@@ -74,16 +74,16 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 
 			if (category.getNumber() == 0) {
 				int maxID = 0;
-				if (category.getAuditType() != null) {
-					AuditType audit = auditTypeDAO.find(category.getAuditType().getId());
-					for (AuditCategory sibling : audit.getCategories()) {
-						if (sibling.getNumber() > maxID)
-							maxID = sibling.getNumber();
-					}
-				} else if (categoryParent != null && ancestors.size() > 0) {
+				if (categoryParent != null && ancestors.size() > 0) {
 					// Ancestors should be loaded
 					categoryParent = ancestors.get(ancestors.size() - 1);
 					for (AuditCategory sibling : categoryParent.getSubCategories()) {
+						if (sibling.getNumber() > maxID)
+							maxID = sibling.getNumber();
+					}
+				} else if (category.getAuditType() != null) {
+					AuditType audit = auditTypeDAO.find(category.getAuditType().getId());
+					for (AuditCategory sibling : audit.getCategories()) {
 						if (sibling.getNumber() > maxID)
 							maxID = sibling.getNumber();
 					}

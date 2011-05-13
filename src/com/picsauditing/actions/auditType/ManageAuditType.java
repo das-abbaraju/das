@@ -126,7 +126,8 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		}
 
 		if ("AddNew".equals(button)) {
-			category = new AuditCategory();
+			if(category == null)
+				category = new AuditCategory();
 
 			if (auditType != null && auditType.getId() > 0)
 				category.setAuditType(auditType);
