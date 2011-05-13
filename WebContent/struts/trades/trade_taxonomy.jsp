@@ -30,8 +30,6 @@
 <body>
 <h1>Trade Taxonomy</h1>
 
-
-
 <a href="#" class="add">Add Top Level Trade</a>
 
 <table id="trades">
@@ -41,6 +39,8 @@
 			<form id="suggest">
 				<label>Trade Search:</label>
 				<input type="search" name="q" style="width: 400px" />
+				<input type="button" value ="Search" class="trade_search" />
+				<input type="button" value ="Clear" class="trade-clear" />
 			</form>
 			<div id="trade-nav"></div>
 		</div>

@@ -141,6 +141,10 @@ $(function() {
 			loadTrades('ContractorTrades!removeTradeAjax.action', $('#trade-form').serialize());
 		}
 	});
+	
+	$('.trade-clear').click(function(){
+		$('#suggest input[type="search"]').val('');
+	});
 });
 </script>
 </head>
@@ -151,6 +155,7 @@ $(function() {
 <form id="suggest">
 	<label><s:text name="Header.Search"></s:text>:</label>
 	<input type="search" name="q" class="search" />
+	<input type="button" value ="Clear" class="trade-clear" />
 </form>
 <div id="trade-nav"></div>
 <div id="trade-view">

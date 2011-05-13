@@ -143,6 +143,14 @@ $(function() {
 		$('#trade-detail').load('TradeTaxonomy!tradeAjax.action');
 	});
 	
+	$('.trade_search').click(function(){
+		$('#suggest').submit();
+	});
+	
+	$('.trade-clear').click(function(){
+		$('#suggest input[type="search"]').val('');
+	});
+	
 	$('#trade-detail').delegate('.save', 'click', function(e) {
 		e.preventDefault();
 		$('#trade-detail').load('TradeTaxonomy!saveTradeAjax.action', $('#saveTrade').serialize(), function() {
