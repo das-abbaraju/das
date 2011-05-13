@@ -245,14 +245,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 			switch (step) {
 			case Done:
 			case Confirmation:
-				itemConfirm.setUrl("ContractorRegistrationFinish.action");
+				itemConfirm.setUrl("ContractorRegistrationFinish.action?id=" + id);
 			case Payment:
 				itemPaymentOptions.setUrl("ContractorPaymentOptions.action?id="
 						+ id);
 			case Facilities:
 				itemFacilities.setUrl("ContractorFacilities.action?id=" + id);
 			case Risk:
-				itemServices.setUrl("ContractorTrades.action?id=" + id);
+				itemServices.setUrl("ContractorRegistrationServices.action?id=" + id);
 			default:
 				itemTrades.setUrl("ContractorTrades.action?id=" + id);
 			}

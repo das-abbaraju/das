@@ -28,5 +28,23 @@ public enum ContractorRegistrationStep {
 
 		return Confirmation;
 	}
-//  static public boolean isActive(ContractorRegistrationStep currentStep, ContractorRegistrationStep activeStep)
+
+  static public String getUrl(ContractorRegistrationStep step, int id) {
+	  
+	  switch (step) {
+	  case Register:
+		  return "ContractorRegistration.action?id=" + id;
+	  case Trades:
+		  return "ContractorTrades.action?id=" + id;
+	  case Risk:
+		  return "ContractorRegistrationServices.action?id=" + id;
+	  case Facilities:
+		  return "ContractorFacilities.action?id=" + id;
+	  case Payment:
+		  return "ContractorPaymentOptions.action?id=" + id;
+	  case Confirmation:
+		  return "ContractorRegistrationFinish.action?id=" + id;
+	  }
+	  return "ContractorEdit.action?id=" + id;
+  }
 }
