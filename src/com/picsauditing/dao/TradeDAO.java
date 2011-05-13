@@ -1,12 +1,10 @@
 package com.picsauditing.dao;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Query;
 
-import com.google.common.base.Splitter;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.search.SelectSQL;
@@ -60,17 +58,21 @@ public class TradeDAO extends PicsDAO {
 
 		String searchJoins = buildSearchJoins(terms);
 
-		SelectSQL sql = new SelectSQL("app_index i1");
+		SelectSQL sql = new SelectSQL("app_index i0");
 		sql.addField("t2.*");
 		sql.addJoin("JOIN ref_trade t1 ON t1.id = i1.foreignKey");
 		sql.addJoin("JOIN ref_trade t2 ON t1.indexStart >= t2.indexStart AND t1.indexEnd <= t2.indexEnd");
 		if (!searchJoins.isEmpty())
 			sql.addJoin(searchJoins);
-		sql.addWhere("i1.indexType = 'T' AND i1.value LIKE '" + terms.get(0) + "%'");
+		sql.addWhere("i1.indexType = 'T' AND i1.value LIKE :0");
 		sql.addGroupBy("t2.id");
 		sql.addOrderBy("t2.indexStart");
 
 		Query query = em.createNativeQuery(sql.toString(), Trade.class);
+
+		for (int i = 0; i < terms.size(); i++) {
+			query.setParameter("" + i, terms.get(i) + "%");
+		}
 
 		return Tree.createTreeFromOrderedList(query.getResultList());
 	}
@@ -82,15 +84,19 @@ public class TradeDAO extends PicsDAO {
 
 		String searchJoins = buildSearchJoins(terms);
 
-		SelectSQL sql = new SelectSQL("app_index i1");
+		SelectSQL sql = new SelectSQL("ref_trade t1");
 		sql.addField("t1.*");
-		sql.addJoin("JOIN ref_trade t1 ON t1.id = i1.foreignKey");
+		sql.addJoin("JOIN app_index i0 ON t1.id = i0.foreignKey");
 		if (!searchJoins.isEmpty())
 			sql.addJoin(searchJoins);
-		sql.addWhere("i1.indexType = 'T' AND i1.value LIKE '" + terms.get(0) + "%'");
+		sql.addWhere("i1.indexType = 'T' AND i0.value LIKE :0");
 		sql.addOrderBy("t1.indexLevel DESC");
 
 		Query query = em.createNativeQuery(sql.toString(), Trade.class);
+
+		for (int i = 0; i < terms.size(); i++) {
+			query.setParameter("" + i, terms.get(i));
+		}
 
 		return query.getResultList();
 	}
@@ -102,13 +108,11 @@ public class TradeDAO extends PicsDAO {
 	 * @return JOIN String to use in a query
 	 */
 	private String buildSearchJoins(List<String> terms) {
-
 		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i < terms.size(); i++) {
-			String alias = "i" + (i + 1);
+			String alias = "i" + i;
 			sb.append("JOIN app_index ").append(alias).append(" ON i1.indexType = 'T' AND i1.foreignKey = ")
-					.append(alias).append(".foreignKey AND ").append(alias).append(".value LIKE '")
-					.append(terms.get(i)).append("%'");
+					.append(alias).append(".foreignKey AND ").append(alias).append(".value LIKE :").append(i);
 		}
 		return sb.toString();
 	}
