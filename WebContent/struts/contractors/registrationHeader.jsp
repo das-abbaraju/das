@@ -6,70 +6,14 @@
 <span class="sub"> <s:property value="subHeading" /> </span></h1>
 <div id="internalnavcontainer">
 <ul id="navlist">
-	<s:if test="permissions.loggedIn">
-		<li><a id="edit_contractor" href="ContractorEdit.action?id=<s:property value="id" />"
-				<s:if test="requestURI.contains('edit')">class="current"</s:if>>1) Edit Details</a>
-		</li>
-		<s:if test="contractor.materialSupplier && !contractor.onsiteServices && !contractor.offsiteServices">
-			<li><a id="conFacilitiesLink" href="ContractorFacilities.action?id=<s:property value="id" />"
-				<s:if test="requestURI.contains('contractor_facilities')">class="current"</s:if>>2) Add Facilities</a></li>
-			<s:if test="contractor.operators.size() > 0 && (contractor.requestedBy != null || currentOpertors == 1)">
-				<li><a id="conPaymentLink" href="ContractorPaymentOptions.action?id=<s:property value="id" />"
-					<s:if test="requestURI.contains('payment')">class="current"</s:if>>3) Add Payment Options</a></li>
-			</s:if>
-			<s:else>
-				<li><span class="inactive">3) Add Payment Options</span></li>
-			</s:else>
-			<s:if test="(contractor.paymentMethodStatusValid || !contractor.mustPayB) && contractor.operators.size > 0">
-				<li><a id="conConfirmLink" href="ContractorRegistrationFinish.action"
-					<s:if test="requestURI.contains('finish')">class="current"</s:if>>4) Confirm</a></li>
-			</s:if>
-			<s:else>
-				<li><span class="inactive">4) Confirm</span></li>
-			</s:else>
-		</s:if>
-		<s:else>
-			<li><a id="conServicesLink" href="ContractorRegistrationServices.action?id=<s:property value="id" />"
-				<s:if test="requestURI.contains('con_reg_services')">class="current"</s:if>>2) Services Performed</a></li>
-			<s:if test="contractor.riskLevel != null">
-				<li><a id="conFacilitiesLink" href="ContractorFacilities.action?id=<s:property value="id" />"
-					<s:if test="requestURI.contains('contractor_facilities')">class="current"</s:if>>3) Add Facilities</a></li>
-				<s:if test="contractor.operators.size > 0 && (contractor.requestedBy != null || currentOpertors == 1)">
-					<li><a id="conPaymentLink" href="ContractorPaymentOptions.action?id=<s:property value="id" />"
-						<s:if test="requestURI.contains('payment')">class="current"</s:if>>4) Add Payment Options</a></li>
-				</s:if>
-				<s:else>
-					<li><a class="inactive">4) Add Payment Options</a></li>
-				</s:else>
-				<s:if test="(contractor.paymentMethodStatusValid || !contractor.mustPayB) && contractor.operators.size > 0">
-					<li><a id="conConfirmLink" href="ContractorRegistrationFinish.action"
-						<s:if test="requestURI.contains('finish')">class="current"</s:if>>5) Confirm</a></li>
-				</s:if>
-				<s:else>
-					<li><span class="inactive">5) Confirm</span></li>
-				</s:else>
-			</s:if>
-			<s:else>
-				<li><span class="inactive">3) Add Facilities</span></li>
-				<li><span class="inactive">4) Add Payment Options</span></li>
-				<li><span class="inactive">5) Confirm</span></li>
-			</s:else>
-		</s:else>
+	<s:iterator value="menu">
+	<s:if test="isStringEmpty(url)">
+		<li><span class="inactive"><s:property value="name"/></span></li>
 	</s:if>
 	<s:else>
-		<li><a id="conRegisterLink" href="ContractorRegistration.action"
-			<s:if test="requestURI.contains('con_registration')">class="current"</s:if>>1) Register</a></li>
-		<li id="step2"><span class="inactive">2) Services Performed</span></li>
-		<li><span class="inactive">
-			<span class="service">3</span><span class="vendor" style="display: none;">2</span>)
-				Add Facilities</span></li>
-		<li><span class="inactive">
-			<span class="service">4</span><span class="vendor" style="display: none;">3</span>)
-				Add Payment Options</span></li>
-		<li><span class="inactive">
-			<span class="service">5</span><span class="vendor" style="display: none;">4</span>)
-				Confirm</span></li>
+		<li><a <s:if test="current">class="current"</s:if> href=""><s:property value="name"/></a></li>
 	</s:else>
+	</s:iterator>
 </ul>
 </div>
 
