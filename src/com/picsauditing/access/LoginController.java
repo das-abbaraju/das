@@ -16,6 +16,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
@@ -298,15 +299,10 @@ public class LoginController extends PicsActionSupport {
 		String url = null;
 		if (permissions.isContractor() && !user.getAccount().getStatus().isActiveDemo()) {
 			ContractorAccount cAccount = (ContractorAccount) user.getAccount();
-			// TODO add productRiskLevel ?
-			if (cAccount.getSafetyRisk() == null && !cAccount.isMaterialSupplierOnly())
-				url = "ContractorRegistrationServices.action?id=" + cAccount.getId();
-			else if (cAccount.getNonCorporateOperators().size() == 0)
-				url = "ContractorFacilities.action?id=" + cAccount.getId();
-			else if (!cAccount.isPaymentMethodStatusValid() && cAccount.isMustPayB())
-				url = "ContractorPaymentOptions.action?id=" + cAccount.getId();
-			else
-				url = "ContractorEdit.action?id=" + cAccount.getId();
+
+			ContractorRegistrationStep step = ContractorRegistrationStep.getStep(cAccount);
+			url = ContractorRegistrationStep.getUrl(step, cAccount.getId());
+			
 		} else
 			url = PicsMenu.getHomePage(menu, permissions);
 		if (url == null)
