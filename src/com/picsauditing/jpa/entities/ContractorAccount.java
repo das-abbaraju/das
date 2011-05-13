@@ -1113,6 +1113,7 @@ public class ContractorAccount extends Account implements JSONable {
 				&& activation.getAmount().intValue() != getReducedActivationFeeOperator(activation).getActivationFee();
 	}
 
+	@Temporal(TemporalType.DATE)
 	public Date getTradesUpdated() {
 		return tradesUpdated;
 	}
