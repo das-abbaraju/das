@@ -54,7 +54,6 @@ function showRules() {
 <a class="preview" href="AuditCatPreview.action?categoryID=<s:property value="category.id" />&button=PreviewCategory">Preview Category</a>
 <s:form id="save">
 	<s:hidden name="id" />
-	-- <s:property value="category.auditType"/> -- your face
 	<s:if test="category.auditType != null">
 		<s:hidden name="category.auditType.id" />
 	</s:if>
