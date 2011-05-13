@@ -106,6 +106,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 							AuditData aData = answerMap.get(q.getId());
 							riskLevel = getRiskLevel(aData, riskLevel);
 						} else if (auditData.getAnswer().startsWith("C")) {
+							// TODO: Remove this -- this is related to services performed
 							// Self Performed Services
 							riskLevel = getMaxRiskLevel(riskLevel, q.getRiskLevel());
 						}
@@ -205,7 +206,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			if (auditData.getQuestion().getId() == 2444) {
 				// Question : What risk level do you believe your company should
 				// be rated?
-				if (auditData.getAnswer().equals("Med"))
+				if (auditData.getAnswer().equals("Medium"))
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
 				if (auditData.getAnswer().equals("High"))
 					return LowMedHigh.High;

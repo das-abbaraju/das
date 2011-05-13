@@ -227,7 +227,7 @@ public class ContractorFlagETL {
 						} else {
 							fcc.setAnswer(parseAnswer(flagCriteria, auditData));
 							fcc.setVerified(auditData.isVerified());
-							
+
 							if (flagCriteria.includeExcess() != null) {
 								final AuditData excess = answerMap.get(flagCriteria.includeExcess());
 								try {
@@ -297,7 +297,7 @@ public class ContractorFlagETL {
 
 	private boolean isLast2Years(String auditFor) {
 		int lastYear = DateBean.getCurrentYear() - 1;
-		if(Integer.toString(lastYear).equals(auditFor) || Integer.toString(lastYear-1).equals(auditFor))
+		if (Integer.toString(lastYear).equals(auditFor) || Integer.toString(lastYear - 1).equals(auditFor))
 			return true;
 		return false;
 	}
@@ -315,7 +315,14 @@ public class ContractorFlagETL {
 			else
 				return "false";
 		}
-		if ("Yes/No/NA".equals(qType) || "Yes/No".equals(qType) || "Manual".equals(qType)) {
+		if ("Manual".equals(qType)) {
+			if (!"string".equals(cType))
+				System.out.println("WARNING!! " + flagCriteria + " should be set to boolean but isn't");
+			return answer;
+		}
+		if (auditData.isMultipleChoice()
+				&& ("YesNoNA".equals(auditData.getQuestion().getOption().getUniqueCode()) || "Yes/No".equals(auditData
+						.getQuestion().getOption().getUniqueCode()))) {
 			if (!"string".equals(cType))
 				System.out.println("WARNING!! " + flagCriteria + " should be set to boolean but isn't");
 			return answer;
