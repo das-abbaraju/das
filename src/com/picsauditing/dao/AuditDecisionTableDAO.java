@@ -213,7 +213,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 		where += " AND (tradeID IS NULL";
 		if (rule.getTrade() != null)
-			where += " OR trade.id = " + rule.getTrade().getName();
+			where += " OR trade.id = " + rule.getTrade().getId();
 		where += " )";
 		
 		where += " AND (tag IS NULL";
@@ -267,7 +267,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		if (rule.getContractorType() != null)
 			where += " AND contractorType = '" + rule.getContractorType().toString() + "'";
 		if (rule.getTrade() != null)
-			where += " AND tradeID = '" + rule.getTrade().getName() + "'";
+			where += " AND trade.id = " + rule.getTrade().getId();
 		if (rule.getAcceptsBids() != null)
 			where += " AND acceptsBids = " + (rule.getAcceptsBids() ? 1 : 0);
 		if (rule.getQuestion() != null)
