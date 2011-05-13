@@ -68,6 +68,8 @@ public class ContractorAccount extends Account implements JSONable {
 	private int payingFacilities;
 	private User auditor;
 	private LowMedHigh riskLevel;
+	private LowMedHigh safetyRisk;
+	private LowMedHigh productRisk;
 	private Date viewedFacilities;
 	private Float emrAverage;
 	private Float trirAverage;
@@ -278,12 +280,35 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "riskLevel")
+	@Deprecated
+	/**
+	 * Use SafetyRisk and/or ProductRisk
+	 */
 	public LowMedHigh getRiskLevel() {
 		return riskLevel;
 	}
 
+	@Deprecated
 	public void setRiskLevel(LowMedHigh riskLevel) {
 		this.riskLevel = riskLevel;
+	}
+
+	@Enumerated(EnumType.ORDINAL)
+	public LowMedHigh getSafetyRisk() {
+		return safetyRisk;
+	}
+
+	public void setSafetyRisk(LowMedHigh safetyRisk) {
+		this.safetyRisk = safetyRisk;
+	}
+
+	@Enumerated(EnumType.ORDINAL)
+	public LowMedHigh getProductRisk() {
+		return productRisk;
+	}
+
+	public void setProductRisk(LowMedHigh productRisk) {
+		this.productRisk = productRisk;
 	}
 
 	@Column(name = "emrAverage")
@@ -309,10 +334,12 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "lwcrAverage")
+	@Deprecated
 	public Float getLwcrAverage() {
 		return lwcrAverage;
 	}
 
+	@Deprecated
 	public void setLwcrAverage(Float lwcrAverage) {
 		this.lwcrAverage = lwcrAverage;
 	}

@@ -51,3 +51,5 @@ DELETE t1 FROM contractor_trade t1
 join temp_con_trades t2 ON t1.id = t2.contractor_trade_id;
 
 DROP TABLE temp_con_trades;
+
+update contractor_info set safetyRisk = riskLevel, productRisk = riskLevel;
