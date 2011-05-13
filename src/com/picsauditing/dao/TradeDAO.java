@@ -112,7 +112,7 @@ public class TradeDAO extends PicsDAO {
 		for (int i = 1; i < terms.size(); i++) {
 			String alias = "i" + i;
 			sb.append("JOIN app_index ").append(alias).append(" ON i1.indexType = 'T' AND i0.foreignKey = ")
-					.append(alias).append(".foreignKey AND ").append(alias).append(".value LIKE :").append(i);
+					.append(alias).append(".foreignKey AND ").append(alias).append(".value LIKE :").append(i).append(" ");
 		}
 		return sb.toString();
 	}
