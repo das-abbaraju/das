@@ -67,7 +67,7 @@ $(function() {
 				}
 			}
 		},
-		"plugins": ["themes", "types", "json_data", "dnd", "crrm", "contextmenu", "ui"]
+		"plugins": ["themes", "types", "json_data", "dnd", "crrm", "contextmenu", "ui", "sort"]
 	}).bind("move_node.jstree", function (e, data) {
 		var parent = null;
 		if (data.rslt.np[0] !== this)
@@ -116,6 +116,9 @@ $(function() {
 				},
 				'json');
 		}
+	}).bind('refresh.jstree', function(e, data) {
+		$('#tree-wrapper').unblock();
+		$('body').removeClass('busy')
 	});
 
 	$('#trade-nav').delegate('.jstree a', 'click', function(e) {
@@ -128,9 +131,11 @@ $(function() {
 		});
 	});
 	
-	$('#suggest').submit(function(e) {
+	$('body:not(.busy)').delegate('#suggest','submit', function(e) {
 		e.preventDefault();
+		$('body').addClass('busy');
 		tree.jstree('close_all').jstree('refresh');
+		$('#tree-wrapper').block({message: 'Loading trades...',centerY: false, css: {top: '20px'} });
 	});
 	
 	$('a.add').live('click', function(e) {
