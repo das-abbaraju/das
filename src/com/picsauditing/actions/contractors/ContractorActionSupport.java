@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.bouncycastle.asn1.ocsp.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
@@ -62,6 +63,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 	private PermissionToViewContractor permissionToViewContractor = null;
 	private AuditDataDAO auditDataDAO;
 
+	private Map<String, Boolean> steps = new HashMap<String, Boolean>();
+	
 	public String execute() throws Exception {
 		findContractor();
 		return SUCCESS;
@@ -150,76 +153,94 @@ public class ContractorActionSupport extends AccountActionSupport {
 	public List<MenuComponent> getMenu() {
 		// Create the menu
 		List<MenuComponent> menu = new ArrayList<MenuComponent>();
+		MenuComponent item = null;
 		getRequestString();
 		
-		Map<String, Boolean> steps = new HashMap<String, Boolean>();
-		// steps.put("Register", value)
-		
 		if (!permissions.isLoggedIn()) {
-			{
-				MenuComponent item = new MenuComponent(getText("Register"), "ContractorRegistration.action", "conRegisterLink");
+			item = new MenuComponent(getText("ContractorRegistration.title"),
+					"ContractorRegistration.action", "conRegisterLink");
+			if (requestURL.contains("ContractorRegistration.action")) {
 				item.setCurrent(true);
-				menu.add(item);
+				steps.put("ContractorRegistration.action", true);
 			}
-			menu.add(new MenuComponent(getText("Services Performed")));
-			menu.add(new MenuComponent(getText("Add Facilities")));
-			menu.add(new MenuComponent(getText("Add Payment Options")));
-			menu.add(new MenuComponent(getText("Confirm")));
+			menu.add(item);
+			menu.add(new MenuComponent(getText("ConctratorTrades.title"), null, "conTradesLink")); // Trades
+			menu.add(new MenuComponent(getText("ContractorRegistrationServices.title"), null, "conServicesLink")); // Services Performed
+			menu.add(new MenuComponent(getText("ContractorFacilities.title", null, "conFacilitiesLink"))); // Facilities
+			menu.add(new MenuComponent(getText("ContractorPaymentOptions.title"), null, "conPaymentLink")); // Payment Options
+			menu.add(new MenuComponent(getText("ContractorRegistrationFinish.title"), null, "conConfirmLink")); // Confirm
 		} else {
-			{
-				MenuComponent item = new MenuComponent("Edit Details", "ContractorEdit.action", "edit_contractor");
-				if (requestURL.contains("edit"))
-					item.setCurrent(true);
+			item = new MenuComponent("ContractorEdit.title", "ContractorEdit.action?id=" + id, "edit_contractor");
+			if (requestURL.contains("ContractorEdit.action"))
+				item.setCurrent(true);
+			menu.add(item);
+			
+			// Trades
+			item = new MenuComponent(getText("ConctratorTrades.title"), null, "conTradesLink");
+			if (requestURL.contains("ConctratorTrades.action")) {
+				item.setCurrent(true);
+				steps.put("ContractorTrades.action", null);
+			}
+			if (steps.containsKey("ContractorTrades.action")) item.setUrl("ContractorTrades.action?id=" + id);
+			menu.add(item);
+
+			// Services
+			item = new MenuComponent(getText("ContractorRegistrationServices.title"), null, "conServicesLink");
+			if (requestURL.contains("ContractorRegistrationServices.action")) {
+				item.setCurrent(true);
+				steps.put("ContractorRegistrationServices.action", null);
+			}
+			if (!contractor.isMaterialSupplier() 
+					  && !contractor.isOnsiteServices() 
+					  && !contractor.isOffsiteServices()) {
 				menu.add(item);
 			}
-			
-			if (contractor.isMaterialSupplier() && !contractor.isOnsiteServices() && !contractor.isOffsiteServices()) {
-				{
-					MenuComponent item = new MenuComponent("Trades");
-					item.setHtmlId("conTradesLink");
-					if (getActionName().equals("ContractorTrades"))
-						item.setCurrent(true);
-					menu.add(item);
-				}
-				{
-					MenuComponent item = new MenuComponent("Add Facilities", "ContractorFacilities.action", "conFacilitiesLink");
-					item.setHtmlId("conFacilitiesLink");
-					if (requestURL.contains("contractor_facilities"))
-						item.setCurrent(true);
-					menu.add(item);
-				}
-				{
-					MenuComponent item = new MenuComponent("Add Payment Options");
-					item.setHtmlId("conPaymentLink");
-					if (contractor.getOperators().size() > 0 && contractor.getRequestedBy() != null)
-						item.setUrl("ContractorPaymentOptions.action");
-					if (requestURL.contains("contractor_payment"))
-						item.setCurrent(true);
-					menu.add(item);
-				}
-				{
-					MenuComponent item = new MenuComponent("Confirm");
-					item.setHtmlId("conConfirmLink");
-					if (contractor.getOperators().size() > 0 && contractor.isMustPayB() || contractor.isPaymentMethodStatusValid())
-						item.setUrl("ContractorRegistrationFinish.action");
-					if (requestURL.contains("finish"))
-						item.setCurrent(true);
-					menu.add(item);
-				}
-			} else {
-				{
-					MenuComponent item = new MenuComponent("Services Performed", "ContractorFacilities.action", "conFacilitiesLink");
-					if (requestURL.contains("contractor_facilities"))
-						item.setCurrent(true);
-					menu.add(item);
-				}
+
+			// Facilities
+			item = new MenuComponent(getText("ContractorFacilities.title"), null, "conFacilitiesLink");
+			if (requestURL.contains("ContractorFacilities.action")) {
+				item.setCurrent(true);
+				steps.put("ContractorFacilities.action", null);
 			}
+			if (steps.containsKey("ContractorFacilities.action")
+					&& (contractor.getRiskLevel() != null)) {
+				item.setUrl("ContractorFacilities.action?id=" + id);
+			}
+			menu.add(item);
+			
+			// Payment Options
+			item = new MenuComponent(getText("ContractorPaymentOptions.title"), null, "conPaymentLink");
+			if (requestURL.contains("ContractorPaymentOptions.action")) {
+				item.setCurrent(true);
+				steps.put("ContractorPaymentOptions.action", null);
+			}
+			if (steps.containsKey("ContractorPaymentOptions.action")
+					&& (contractor.getOperators().size() > 0)
+					&& (contractor.getRequestedBy() != null)) {
+				item.setUrl("ContractorPaymentOptions.action?id=" + id);
+			}
+			menu.add(item);
+			
+			// Confirm
+			item = new MenuComponent(getText("ContractorRegistrationFinish.title"), null, "conConfirmLink");
+			if (requestURL.contains("ContractorRegistrationFinish.action")) {
+				item.setCurrent(true);
+				steps.put("ContractorRegistrationFinish.action", null);
+			}
+			if (steps.containsKey("ContractorRegistrationFinish.action")
+					&& (contractor.getOperators().size() > 0)
+					&& (!contractor.isMustPayB() 
+							|| contractor.isPaymentMethodStatusValid())) {
+				item.setUrl("ContractorRegistrationFinish.action");
+			}
+			menu.add(item);
 		}
 		
+		// number menu steps
 		int counter = 0;
-		for (MenuComponent item : menu) {
+		for (MenuComponent menuItem : menu) {
 			counter++;
-			item.setName(counter + ") " + item.getName());
+			menuItem.setName(counter + ") " + menuItem.getName());
 		}
 		
 		return menu;
