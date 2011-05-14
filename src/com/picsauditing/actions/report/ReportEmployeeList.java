@@ -93,7 +93,6 @@ public class ReportEmployeeList extends ReportAccount {
 	@Override
 	public String execute() throws Exception {
 		// Turn off EVERYTHING or use ReportFilterEmployee....
-		getFilter().setShowTrade(false);
 		getFilter().setShowLicensedIn(false);
 		getFilter().setShowWorksIn(false);
 		getFilter().setShowOfficeIn(false);

@@ -53,7 +53,6 @@ public class ReportFlagChanges extends ReportAccount {
 		getFilter().setShowFlagStatus(true);
 
 		getFilter().setShowTaxID(false);
-		getFilter().setShowTrade(false);
 		getFilter().setShowCcOnFile(false);
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);

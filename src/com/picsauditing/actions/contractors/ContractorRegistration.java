@@ -272,10 +272,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	public List<AuditQuestion> getTradeList() throws Exception {
-		return auditQuestionDAO.findQuestionByType("Service");
-	}
-
 	public ContractorAccount getContractor() {
 		return contractor;
 	}

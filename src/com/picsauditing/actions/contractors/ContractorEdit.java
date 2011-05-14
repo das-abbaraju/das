@@ -29,7 +29,6 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -375,10 +374,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public void setBrochureFileName(String brochureFileName) {
 		this.brochureFileName = brochureFileName;
-	}
-
-	public List<AuditQuestion> getTradeList() throws Exception {
-		return auditQuestionDAO.findQuestionByType("Service");
 	}
 
 	public List<Integer> getOperatorIds() {

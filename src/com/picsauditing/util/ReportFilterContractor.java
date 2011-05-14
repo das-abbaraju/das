@@ -35,7 +35,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showOperator = true;
 	protected boolean showOperatorSingle = false;
 	protected boolean showIndustries = false;
-	protected boolean showTrade = true;
 	protected boolean showLicensedIn = true;
 	protected boolean showWorksIn = true;
 	protected boolean showOfficeIn = true;
@@ -67,7 +66,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
 	protected int[] industries;
-	protected int[] trade;
 	protected int[] operator;
 	protected int operatorSingle;
 	protected int[] stateLicensedIn;
@@ -132,14 +130,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowIndustries(boolean showIndustries) {
 		this.showIndustries = showIndustries;
-	}
-
-	public boolean isShowTrade() {
-		return showTrade;
-	}
-
-	public void setShowTrade(boolean showTrade) {
-		this.showTrade = showTrade;
 	}
 
 	public boolean isShowLicensedIn() {
@@ -374,14 +364,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.industries = industries;
 	}
 
-	public int[] getTrade() {
-		return trade;
-	}
-
-	public void setTrade(int[] trade) {
-		this.trade = trade;
-	}
-
 	public int[] getOperator() {
 		return operator;
 	}
@@ -491,16 +473,12 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		return getQuestionDAO().findQuestionByType("License");
 	}
 
-	public List<AuditQuestion> getTradeList() throws Exception {
-		return getQuestionDAO().findQuestionByType("Service");
-	}
-
 	public List<AuditQuestion> getWorksInList() throws Exception {
-		return getQuestionDAO().findQuestionByType("Office Location");
+		return getQuestionDAO().findQuestionByOptionGroupByUniqueCode("OfficeLocation");
 	}
 
 	public List<AuditQuestion> getOfficeInList() throws Exception {
-		return getQuestionDAO().findQuestionByType("Office Location");
+		return getQuestionDAO().findQuestionByOptionGroupByUniqueCode("OfficeLocation");
 	}
 
 	public String[] getTradePerformedByList() {

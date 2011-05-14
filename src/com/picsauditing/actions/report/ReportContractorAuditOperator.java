@@ -70,7 +70,6 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 			getFilter().setAuditStatus(AuditStatus.valuesWithoutPendingExpired());
 
 		getFilter().setShowOperator(false);
-		getFilter().setShowTrade(false);
 		getFilter().setShowLicensedIn(false);
 		getFilter().setShowWorksIn(false);
 		getFilter().setShowOfficeIn(false);

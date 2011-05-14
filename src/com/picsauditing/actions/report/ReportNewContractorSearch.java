@@ -256,9 +256,9 @@ public class ReportNewContractorSearch extends ReportAccount {
 		}
 
 		String accountName = getFilter().getAccountName();
-		if ((accountName == null || ReportFilterAccount.DEFAULT_NAME.equals(accountName) || accountName.length() < 3)
-				&& (getFilter().getTrade() == null || getFilter().getTrade().length == 0)) {
-			this.addActionError("Please enter a contractor name with at least 3 characters or select a trade");
+		// TODO We might want to add the new trade autocomplete here as well
+		if (accountName == null || ReportFilterAccount.DEFAULT_NAME.equals(accountName) || accountName.length() < 3) {
+			this.addActionError("Please enter a contractor name with at least 3 characters");
 			return SUCCESS;
 		}
 

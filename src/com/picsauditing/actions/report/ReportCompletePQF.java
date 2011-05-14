@@ -59,7 +59,6 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 		sql.addOrderBy("cao.percentComplete DESC");
 
 		getFilter().setShowStatus(false);
-		getFilter().setShowTrade(false);
 		getFilter().setShowClosingAuditor(false);
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowPrimaryInformation(false);

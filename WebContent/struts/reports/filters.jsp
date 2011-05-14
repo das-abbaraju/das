@@ -212,22 +212,6 @@
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_industries'); return false;">Clear</a> </span></div>
 	</s:if>
-	
-	<s:if test="filter.showTrade">
-		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_trade'); return false;">Trade</a> = <span
-			id="form1_trade_query">ALL</span> <s:select
-			list="filter.tradePerformedByList" cssClass="forms"
-			name="filter.performedBy" value="filter.defaultSelectPerformedBy" />
-		<br />
-		<span id="form1_trade_select" style="display: none" class="clearLink">
-		<s:select id="form1_trade" list="filter.tradeList" listKey="id"
-			listValue="name" cssClass="forms" name="filter.trade" multiple="true"
-			size="10" /> <script type="text/javascript">updateQuery('form1_trade');</script>
-		<br />
-		<a class="clearLink" href="#"
-			onclick="clearSelected('form1_trade'); return false;">Clear</a> </span></div>
-	</s:if>
 
 	<s:if test="filter.showMinorityOwned">
 		<div class="filterOption"><s:select cssClass="forms"

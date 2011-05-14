@@ -68,6 +68,20 @@ public class AuditQuestionDAO extends PicsDAO {
 
 	}
 
+	public List<AuditQuestion> findQuestionByOptionGroup(int optionGroupID) {
+		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE t.option.id = ? ORDER BY "
+				+ "t.category, t.number");
+		query.setParameter(1, optionGroupID);
+		return query.getResultList();
+	}
+
+	public List<AuditQuestion> findQuestionByOptionGroupByUniqueCode(String uniqueCode) {
+		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE t.option.uniqueCode = ? ORDER BY "
+				+ "t.category, t.number");
+		query.setParameter(1, uniqueCode);
+		return query.getResultList();
+	}
+
 	public List<AuditQuestion> findQuestionsByUniqueCodes(List<String> uniqueCodes) {
 		StringBuilder sb = new StringBuilder("SELECT t FROM AuditQuestion t WHERE t.uniqueCode in ( ");
 

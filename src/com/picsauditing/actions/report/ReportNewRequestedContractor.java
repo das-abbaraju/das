@@ -35,7 +35,6 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		tryPermissions(OpPerms.RequestNewContractor);
 
 		getFilter().setShowOperator(false);
-		getFilter().setShowTrade(false);
 		getFilter().setShowLicensedIn(false);
 		getFilter().setShowWorksIn(false);
 		getFilter().setShowOfficeIn(false);
