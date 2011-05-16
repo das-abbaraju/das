@@ -1136,4 +1136,12 @@ public class ContractorAccount extends Account implements JSONable {
 		return getReducedActivationFeeOperator(activation) != null
 				&& activation.getAmount().intValue() != getReducedActivationFeeOperator(activation).getActivationFee();
 	}
+	
+	@Transient
+	public boolean isFinanciallyReadyForAudits() {
+		// TODO need to refactor this
+		double halfMembership = getMembershipLevel().getAmount().doubleValue() * 0.5;
+		double balance = getBalance().doubleValue();
+		return balance < halfMembership;
+	}
 }
