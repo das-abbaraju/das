@@ -110,7 +110,9 @@ $(function() {
 						data.inst.deselect_all(data.inst.get_selected());
 						tree.jstree("refresh");
 					} else {
-						alert("Error deleting trade. Please try again later");
+						if (json.msg) {
+							alert(json.msg);
+						}
 						$.jstree.rollback(data.rlbk);
 					}
 				},
