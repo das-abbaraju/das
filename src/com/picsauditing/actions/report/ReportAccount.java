@@ -66,6 +66,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		else {
 			sql.setType(SelectAccount.Type.Contractor);
 			sql.addField("c.riskLevel");
+			sql.addField("c.safetyRisk");
+			sql.addField("c.productRisk");
 			sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
 		}
 
@@ -255,6 +257,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		/** **** Filters for Contractors ********** */
 
 		if (filterOn(f.getTrade())) {
+			// TODO Update this method for trade taxonomy
 			String tradeList = Strings.implode(f.getTrade(), ",");
 			String answerFilter = "";
 			if (!filterOn(f.getPerformedBy(), ReportFilterContractor.DEFAULT_PERFORMED_BY))
@@ -290,7 +293,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filterOn(f.getOfficeIn())) {
 			String list = Strings.implode(f.getOfficeIn(), ",");
-			createPqfDataClause(sql, "AND d.questionID IN (" + list + ") AND d.answer LIKE 'Yes with Office'");
+			createPqfDataClause(sql, "AND d.questionID IN (" + list + ") AND d.answer = 'YesWithOffice'");
 		}
 
 		if (filterOn(f.getTaxID(), ReportFilterContractor.DEFAULT_TAX_ID))
