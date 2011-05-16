@@ -37,20 +37,24 @@
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><a
-				href="ContractorView.action?id=<s:property value="get('id')"/>"
+			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>" 
 				rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>" 
-				class="contractorQuick" title="<s:property value="get('name')" />"
-				><s:property value="get('name')" /></a></td>
+				class="contractorQuick" title="<s:property value="get('name')" />"><s:property value="get('name')" /></a></td>
 			<td><s:date name="get('creationDate')" format="M/d/yy"/></td>
-			<td><s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('riskLevel'))"/></td>
+			<td><s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('safetyRisk'))"/></td>
 			<td><s:property value="get('answer')"/></td>
 			<s:form action="ReportContractorRiskLevel" method="POST">
 				<s:hidden value="%{get('id')}" name="conID"/>
 				<s:hidden value="%{get('answerID')}" name="answerID"/>
 				<td><s:textarea name="auditorNotes" cols="15" rows="4"/></td>
-				<td><input type="submit" class="picsbutton positive" name="button" value="Reject"/></td>
-				<td><input type="submit" class="picsbutton negative" name="button" value="Accept"/></td>
+				<td>
+					<s:submit action="ReportContractorRiskLevel!reject" cssClass="picsbutton positive"
+						value="%{getText(scope + '.button.Reject')}" />
+				</td>
+				<td>
+					<s:submit action="ReportContractorRiskLevel!accept" cssClass="picsbutton negative"
+						value="%{getText(scope + '.button.Accept')}" />
+				</td>
 			</s:form>
 		</tr>
 	</s:iterator>

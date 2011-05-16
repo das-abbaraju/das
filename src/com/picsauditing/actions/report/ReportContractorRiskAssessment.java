@@ -2,6 +2,8 @@ package com.picsauditing.actions.report;
 
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -19,21 +21,21 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	protected int conID;
 	protected int answerID;
 	protected String auditorNotes;
+
+	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
+	@Autowired
 	protected AuditDataDAO auditDataDAO;
+	@Autowired
 	protected NoteDAO noteDAO;
 
-	public ReportContractorRiskAssessment(ContractorAccountDAO contractorAccountDAO, AuditDataDAO auditDataDAO,
-			NoteDAO noteDAO) {
-		this.contractorAccountDAO = contractorAccountDAO;
-		this.auditDataDAO = auditDataDAO;
-		this.noteDAO = noteDAO;
+	public ReportContractorRiskAssessment() {
 		this.orderByDefault = "a.creationDate DESC, a.name";
 	}
 
 	@Override
 	public void checkPermissions() throws Exception {
-		permissions.tryPermission(OpPerms.ManageAudits);
+		permissions.tryPermission(OpPerms.RiskRank);
 	}
 
 	public void buildQuery() {
@@ -43,51 +45,67 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		sql.addJoin("JOIN pqfdata pd ON pd.auditid = ca.id");
 		sql.addWhere("ca.audittypeID = 1");
 		sql.addWhere("pd.questionid = 2444");
-		sql.addWhere("((pd.answer = 'Low' and c.riskLevel > 1) or (pd.answer like 'Med%' and c.riskLevel > 2))");
+		sql.addWhere("((pd.answer = 'Low' and c.safetyRisk > 1) or (pd.answer like 'Med%' and c.safetyRisk > 2))");
+		// TODO Add Product Risk question and modify this report to reject/accept either SafetyRisk or ProductRisk
 		sql.addWhere("pd.dateVerified is null");
 		sql.addField("pd.answer");
 		sql.addField("pd.id AS answerID");
 	}
 
-	@Override
-	public String execute() throws Exception {
-		loadPermissions();
-		if (button != null) {
-			ContractorAccount cAccount = contractorAccountDAO.find(conID);
-			AuditData aData = auditDataDAO.find(answerID);
-			Note note = null;
-			if ("Accept".equals(button)) {
-				String answer = aData.getAnswer();
-				if (answer.equals("Medium"))
-					answer = "Med";
-				// TODO: Translate notes?
-				note = new Note(cAccount, getUser(), "RiskLevel adjusted from " + cAccount.getRiskLevel().toString()
-						+ " to " + aData.getAnswer() + " for " + auditorNotes);
-				cAccount.setRiskLevel(LowMedHigh.valueOf(answer));
-				cAccount.setLastUpgradeDate(new Date());
-				cAccount.setAuditColumns(permissions);
-				contractorAccountDAO.save(cAccount);
-			} else
-				note = new Note(cAccount, getUser(), "Rejected RiskLevel adjustment from "
-						+ cAccount.getRiskLevel().toString() + " to " + aData.getAnswer() + " for " + auditorNotes);
+	public String accept() throws Exception {
+		ContractorAccount cAccount = contractorAccountDAO.find(conID);
+		AuditData aData = auditDataDAO.find(answerID);
 
-			aData.setDateVerified(new Date());
-			if (!Strings.isEmpty(auditorNotes))
-				aData.setComment(auditorNotes);
-			aData.setAuditColumns(permissions);
+		String answer = aData.getAnswer();
+		if (answer.equals("Medium"))
+			answer = "Med";
 
-			// Update the note and save it in the database.
-			note.setNoteCategory(NoteCategory.General);
-			note.setCanContractorView(false);
-			note.setViewableById(Account.EVERYONE);
-			note.setAccount(cAccount);
-			note.setAuditColumns(permissions);
-			noteDAO.save(note);
+		cAccount.setSafetyRisk(LowMedHigh.valueOf(answer));
+		cAccount.setLastUpgradeDate(new Date());
+		cAccount.setAuditColumns(permissions);
+		contractorAccountDAO.save(cAccount);
 
-			auditDataDAO.save(aData);
-			auditorNotes = "";
-		}
+		Note note = new Note(cAccount, getUser(), "Safety Risk adjusted from " + cAccount.getSafetyRisk().toString() + " to "
+				+ aData.getAnswer() + " for " + auditorNotes);
+		addNote(note, cAccount);
+
+		aData.setDateVerified(new Date());
+		if (!Strings.isEmpty(auditorNotes))
+			aData.setComment(auditorNotes);
+		aData.setAuditColumns(permissions);
+
+		auditDataDAO.save(aData);
+		auditorNotes = "";
+
 		return super.execute();
+	}
+
+	public String reject() throws Exception {
+		ContractorAccount cAccount = contractorAccountDAO.find(conID);
+		AuditData aData = auditDataDAO.find(answerID);
+
+		aData.setDateVerified(new Date());
+		if (!Strings.isEmpty(auditorNotes))
+			aData.setComment(auditorNotes);
+		aData.setAuditColumns(permissions);
+
+		Note note = new Note(cAccount, getUser(), "Rejected Safety Risk adjustment from "
+				+ cAccount.getSafetyRisk().toString() + " to " + aData.getAnswer() + " for " + auditorNotes);
+		addNote(note, cAccount);
+
+		auditDataDAO.save(aData);
+		auditorNotes = "";
+
+		return super.execute();
+	}
+
+	private void addNote(Note note, ContractorAccount account) {
+		note.setNoteCategory(NoteCategory.RiskRanking);
+		note.setCanContractorView(false);
+		note.setViewableById(Account.EVERYONE);
+		note.setAccount(account);
+		note.setAuditColumns(permissions);
+		noteDAO.save(note);
 	}
 
 	public int getConID() {
