@@ -41,8 +41,11 @@ function deleteRule(element,ruleID) {
 				<s:if test="columnMap.get('operatorAccount')">
 					<th>Operator</th>
 				</s:if>
-				<s:if test="columnMap.get('risk')">
-					<th>Risk</th>
+				<s:if test="columnMap.get('safetyRisk')">
+					<th>Safety Critical Risk</th>
+				</s:if>
+				<s:if test="columnMap.get('productRisk')">
+					<th>Product Critical Risk</th>
 				</s:if>
 				<s:if test="columnMap.get('tag')">
 					<th>Tag</th>
@@ -116,8 +119,11 @@ function deleteRule(element,ruleID) {
 							</s:else>
 						</td>
 					</s:if>
-					<s:if test="columnMap.get('risk')">
-						<td><s:property value="riskLabel"/></td>
+					<s:if test="columnMap.get('safetyRisk')">
+						<td><s:property value="safetyRiskLabel"/></td>
+					</s:if>
+					<s:if test="columnMap.get('productRisk')">
+						<td><s:property value="productRiskLabel"/></td>
 					</s:if>
 					<s:if test="columnMap.get('tag')">
 						<td><s:property value="tagLabel"/></td>

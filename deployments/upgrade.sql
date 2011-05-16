@@ -53,3 +53,12 @@ join temp_con_trades t2 ON t1.id = t2.contractor_trade_id;
 DROP TABLE temp_con_trades;
 
 update contractor_info set safetyRisk = riskLevel, productRisk = riskLevel;
+
+
+-- Convert rules risk level to the Enum value rather than the ordinal
+update audit_type_rule
+set safetyRisk = case risk when null then null when 0 then 'None' when 1 then 'Low' when 2 then 'Med' when 3 then 'High' end;
+
+update audit_category_rule
+set safetyRisk = case risk when null then null when 0 then 'None' when 1 then 'Low' when 2 then 'Med' when 3 then 'High' end;
+

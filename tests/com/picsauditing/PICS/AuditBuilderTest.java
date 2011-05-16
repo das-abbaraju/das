@@ -188,7 +188,7 @@ public class AuditBuilderTest {
 		AuditTypeRule rule = new AuditTypeRule();
 		rule.setInclude(include);
 		rule.setAuditType(auditType);
-		rule.setRisk(risk);
+		rule.setSafetyRisk(risk);
 		rule.setOperatorAccount(operator);
 
 		rule.calculatePriority();
@@ -201,7 +201,7 @@ public class AuditBuilderTest {
 		rule.setAuditCategory(category);
 		rule.setInclude(include);
 		rule.setAuditType(auditType);
-		rule.setRisk(risk);
+		rule.setSafetyRisk(risk);
 		rule.setOperatorAccount(operator);
 
 		rule.calculatePriority();

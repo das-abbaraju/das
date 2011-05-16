@@ -196,10 +196,10 @@ public class AuditCategoryRuleCache {
 
 		public void add(AuditCategoryRule rule) {
 			// PicsLogger.log("Add rule to cache: " + rule);
-			AcceptsBids map = data.get(rule.getRisk());
+			AcceptsBids map = data.get(rule.getSafetyRisk());
 			if (map == null) {
 				map = new AcceptsBids();
-				data.put(rule.getRisk(), map);
+				data.put(rule.getSafetyRisk(), map);
 			}
 			map.add(rule);
 			// PicsLogger.log(" + Risk = " + rule.getRisk());

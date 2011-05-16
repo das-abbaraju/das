@@ -112,10 +112,9 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	}
 
 	public List<AuditCategoryRule> findCategoryRulesByQuestionCategory(AuditCategory category) {
-		Query query = em.createQuery(findByQuery("AuditCategoryRule",
-				" AND r.question.category = ?"));
+		Query query = em.createQuery(findByQuery("AuditCategoryRule", " AND r.question.category = ?"));
 		query.setParameter(1, category);
-		
+
 		return query.getResultList();
 	}
 
@@ -191,9 +190,14 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " OR operatorAccount.id = " + rule.getOperatorAccount().getId();
 		where += " )";
 
-		where += " AND (risk IS NULL";
-		if (rule.getRisk() != null)
-			where += " OR risk = " + rule.getRisk().ordinal();
+		where += " AND (safetyRisk IS NULL";
+		if (rule.getSafetyRisk() != null)
+			where += " OR safetyRisk = '" + rule.getSafetyRisk() + "'";
+		where += " )";
+
+		where += " AND (productRisk IS NULL";
+		if (rule.getProductRisk() != null)
+			where += " OR productRisk = '" + rule.getProductRisk() + "'";
 		where += " )";
 
 		where += " AND (acceptsBids IS NULL";
@@ -211,11 +215,11 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " OR question.id = " + rule.getQuestion().getId();
 		where += " )";
 
-		where += " AND (tradeID IS NULL";
+		where += " AND (trade IS NULL";
 		if (rule.getTrade() != null)
 			where += " OR trade.id = " + rule.getTrade().getId();
 		where += " )";
-		
+
 		where += " AND (tag IS NULL";
 		if (rule.getTag() != null)
 			where += " OR tag.id = " + rule.getTag().getId();
@@ -274,8 +278,10 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " AND question.id = " + rule.getQuestion().getId();
 		if (rule.getTag() != null)
 			where += " AND tag.id = " + rule.getTag().getId();
-		if (rule.getRisk() != null)
-			where += " AND risk = " + rule.getRisk().ordinal();
+		if (rule.getSafetyRisk() != null)
+			where += " AND safetyRisk = '" + rule.getSafetyRisk() + "'";
+		if (rule.getProductRisk() != null)
+			where += " AND productRisk = '" + rule.getProductRisk() + "'";
 		return where;
 	}
 

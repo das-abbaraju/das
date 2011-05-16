@@ -64,15 +64,17 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 			columnMap.put("contractorType", true);
 		if (rule.getOperatorAccount() != null)
 			columnMap.put("operatorAccount", true);
-		if (rule.getRisk() != null)
-			columnMap.put("risk", true);
+		if (rule.getSafetyRisk() != null)
+			columnMap.put("safetyRisk", true);
+		if (rule.getProductRisk() != null)
+			columnMap.put("productRisk", true);
 		if (rule.getTag() != null)
 			columnMap.put("tag", true);
 		if (rule.getAcceptsBids() != null)
 			columnMap.put("bidOnly", true);
 		if (rule.getQuestion() != null)
 			columnMap.put("question", true);
-		if(rule.getTrade() != null)
+		if (rule.getTrade() != null)
 			columnMap.put("trade", true);
 		if (isCanEditRule(rule))
 			columnMap.put("delete", true);
@@ -147,10 +149,7 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 	}
 
 	/**
-	 * If user has a permission to edit the rule, created the rule, or is
-	 * associated with the operator then they can edit the rule
-	 * 
-	 * @return
+	 * TODO This should be inheriting from AuditRuleActionSupport to get access to the same method.
 	 */
 	public boolean isCanEditRule(AuditRule rule) {
 		if (rule != null) {

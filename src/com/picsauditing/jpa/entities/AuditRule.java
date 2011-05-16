@@ -23,7 +23,8 @@ import com.picsauditing.util.Strings;
 public class AuditRule extends BaseDecisionTreeRule {
 
 	protected AuditType auditType;
-	protected LowMedHigh risk;
+	protected LowMedHigh safetyRisk;
+	protected LowMedHigh productRisk;
 	protected OperatorAccount operatorAccount;
 	protected ContractorType contractorType;
 	protected OperatorTag tag;
@@ -51,20 +52,34 @@ public class AuditRule extends BaseDecisionTreeRule {
 		return auditType.getName().toString();
 	}
 
-	@Enumerated(EnumType.ORDINAL)
-	public LowMedHigh getRisk() {
-		return risk;
+	public LowMedHigh getSafetyRisk() {
+		return safetyRisk;
 	}
 
-	public void setRisk(LowMedHigh risk) {
-		this.risk = risk;
+	public void setSafetyRisk(LowMedHigh safetyRisk) {
+		this.safetyRisk = safetyRisk;
 	}
 
 	@Transient
-	public String getRiskLabel() {
-		if (risk == null)
+	public String getSafetyRiskLabel() {
+		if (safetyRisk == null)
 			return "*";
-		return risk.toString();
+		return safetyRisk.toString();
+	}
+
+	public LowMedHigh getProductRisk() {
+		return productRisk;
+	}
+
+	public void setProductRisk(LowMedHigh productRisk) {
+		this.productRisk = productRisk;
+	}
+
+	@Transient
+	public String getProductRiskLabel() {
+		if (safetyRisk == null)
+			return "*";
+		return safetyRisk.toString();
 	}
 
 	@ManyToOne
@@ -213,7 +228,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 			priority += 101;
 			level++;
 		}
-		if (risk != null) {
+		if (safetyRisk != null) {
 			// Only 3
 			priority += 102;
 			level++;
@@ -234,7 +249,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 			priority += trade.getIndexLevel();
 			level++;
 		}
-		
+
 		if (question != null && questionComparator != null) {
 			// Potentially thousands but probably only hundreds
 			priority += 125;
@@ -316,8 +331,8 @@ public class AuditRule extends BaseDecisionTreeRule {
 	public void merge(AuditRule source) {
 		if (auditType == null)
 			auditType = source.auditType;
-		if (risk == null)
-			risk = source.risk;
+		if (safetyRisk == null)
+			safetyRisk = source.safetyRisk;
 		if (operatorAccount == null)
 			operatorAccount = source.operatorAccount;
 		if (contractorType == null)
@@ -337,7 +352,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	// TODO check to see if we still use this??
 	public void update(AuditRule source) {
 		auditType = source.auditType;
-		risk = source.risk;
+		safetyRisk = source.safetyRisk;
 		operatorAccount = source.operatorAccount;
 		contractorType = source.contractorType;
 		tag = source.tag;
@@ -357,8 +372,8 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 		sb.append(include ? "Include" : "Exclude");
 
-		if (risk != null)
-			identifiers.add("Contractor is [" + risk + " risk]");
+		if (safetyRisk != null)
+			identifiers.add("Contractor is [" + safetyRisk + " risk]");
 		if (operatorAccount != null)
 			identifiers.add("Operator is [" + operatorAccount.getName() + "]");
 		if (contractorType != null)
@@ -385,7 +400,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	}
 
 	@ManyToOne
-	@JoinColumn(name="tradeID")
+	@JoinColumn(name = "tradeID")
 	public Trade getTrade() {
 		return trade;
 	}
