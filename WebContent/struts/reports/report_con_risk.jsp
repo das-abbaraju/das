@@ -49,11 +49,11 @@
 				<td><s:textarea name="auditorNotes" cols="15" rows="4"/></td>
 				<td>
 					<s:submit action="ReportContractorRiskLevel!reject" cssClass="picsbutton positive"
-						value="%{getText(scope + '.button.Reject')}" />
+						value="%{getText('button.Reject')}" />
 				</td>
 				<td>
 					<s:submit action="ReportContractorRiskLevel!accept" cssClass="picsbutton negative"
-						value="%{getText(scope + '.button.Accept')}" />
+						value="%{getText('button.Accept')}" />
 				</td>
 			</s:form>
 		</tr>
