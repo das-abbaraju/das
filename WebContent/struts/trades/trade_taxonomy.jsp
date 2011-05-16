@@ -31,6 +31,7 @@
 <h1>Trade Taxonomy</h1>
 
 <a href="#" class="add">Add Top Level Trade</a>
+<s:include value="../actionMessages.jsp"></s:include>
 
 <table id="trades">
 	<tr>

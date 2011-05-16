@@ -112,8 +112,11 @@ $(function() {
 					} else {
 						if (json.msg) {
 							alert(json.msg);
+						} else {
+							alert("Error deleting trade");
 						}
 						$.jstree.rollback(data.rlbk);
+						tree.jstree("refresh");
 					}
 				},
 				'json');

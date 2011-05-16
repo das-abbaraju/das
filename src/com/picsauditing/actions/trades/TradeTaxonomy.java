@@ -116,18 +116,27 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 	@SuppressWarnings("unchecked")
 	public String deleteTradeAjax() throws Exception {
+		json = new JSONObject();
+
 		if (trades.size() > 0) {
 			for (Trade t : trades) {
-				Trade parent = t.getParent();
-				for (Trade child : t.getChildren()) {
-					child.setParent(parent);
-					tradeDAO.save(child);
+				tradeDAO.refresh(t); // refresh data to check
+				if (t.getContractorCount() == 0) {
+					Trade parent = t.getParent();
+					for (Trade child : t.getChildren()) {
+						child.setParent(parent);
+						tradeDAO.save(child);
+					}
+					tradeDAO.remove(t);
+				} else {
+					json.put("success", false);
+					json.put("msg", getText("TradeTaxonomy.message.hasContractors"));
+					
+					return JSON;
 				}
-				tradeDAO.remove(t);
 			}
 		}
 
-		json = new JSONObject();
 		json.put("success", true);
 
 		return JSON;
