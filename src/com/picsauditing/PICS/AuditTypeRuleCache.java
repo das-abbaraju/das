@@ -22,7 +22,7 @@ import com.picsauditing.jpa.entities.Trade;
 
 public class AuditTypeRuleCache {
 
-	private Risks data;
+	private SafetyRisks data;
 	private AuditDecisionTableDAO auditRuleDAO;
 
 	public AuditTypeRuleCache(AuditDecisionTableDAO auditRuleDAO) {
@@ -36,9 +36,13 @@ public class AuditTypeRuleCache {
 		if (getData() == null)
 			return null;
 
-		Set<LowMedHigh> risks = new HashSet<LowMedHigh>();
-		risks.add(null);
-		risks.add(contractor.getRiskLevel());
+		Set<LowMedHigh> safetyRisks = new HashSet<LowMedHigh>();
+		safetyRisks.add(null);
+		safetyRisks.add(contractor.getSafetyRisk());
+
+		Set<LowMedHigh> productRisks = new HashSet<LowMedHigh>();
+		productRisks.add(null);
+		productRisks.add(contractor.getProductRisk());
 
 		Set<Boolean> acceptsBids = new HashSet<Boolean>();
 		acceptsBids.add(null);
@@ -64,60 +68,79 @@ public class AuditTypeRuleCache {
 			}
 		}
 
-		for (LowMedHigh risk : risks) {
-			AcceptsBids data2 = getData().getData(risk);
+		for (LowMedHigh risk : safetyRisks) {
+			ProductRisks data2 = getData().getData(risk);
 			if (data2 != null) {
-				// PicsLogger.log("found matching risk " + risk);
-				for (Boolean acceptsBid : acceptsBids) {
-					ContractorTypes data3 = data2.getData(acceptsBid);
-					if (data3 != null) {
-						// PicsLogger.log(" found matching acceptsBid " +
-						// acceptsBid);
-						for (ContractorType conType : contractorType) {
-							Trades dataX = data3.getData(conType);
-							if (dataX != null) {
-								for (Trade t : trades) {
-									Operators data4 = dataX.getData(t);
-									if (data4 != null) {
-										// PicsLogger.log("   found matching conType "
-										// + conType);
-										for (OperatorAccount o : operators) {
-											OperatorAccount operator = o;
-											Set<AuditTypeRule> data6 = data4.getData(operator);
-											if (data6 != null) {
-												// PicsLogger.log("    found matching operator "
-												// + operator);
-												for (AuditTypeRule auditTypeRule : data6) {
-													// boolean
-													// specificContractorRule =
-													// (conType != null && );
-													if (auditTypeRule.isInclude())
-														rules.add(auditTypeRule);
-													else {
-														// Exclude rules can be
-														// tricky if they are
-														// specific
-														// We could also add in
-														// functionality to
-														// support
-														// dependent question
-														// sets
-														// here are well
-														// 12/2010 Please
-														// discuss
-														// with both Trevor and
-														// Keerthi before
-														// changing
-														// this logic
-														if (conType == null)
-															rules.add(auditTypeRule);
-														else if (contractorType.size() == 2)
-															// This contractor
-															// has
-															// only one type so
-															// include the
-															// "exclusion rule"
-															rules.add(auditTypeRule);
+				for (LowMedHigh productRisk : productRisks) {
+					AcceptsBids dataZ = data2.getData(productRisk);
+					if (dataZ != null) {
+						// PicsLogger.log("found matching risk " + risk);
+						for (Boolean acceptsBid : acceptsBids) {
+							ContractorTypes data3 = dataZ.getData(acceptsBid);
+							if (data3 != null) {
+								// PicsLogger.log(" found matching acceptsBid "
+								// +
+								// acceptsBid);
+								for (ContractorType conType : contractorType) {
+									Trades dataX = data3.getData(conType);
+									if (dataX != null) {
+										for (Trade t : trades) {
+											Operators data4 = dataX.getData(t);
+											if (data4 != null) {
+												// PicsLogger.log("   found matching conType "
+												// + conType);
+												for (OperatorAccount o : operators) {
+													OperatorAccount operator = o;
+													Set<AuditTypeRule> data6 = data4.getData(operator);
+													if (data6 != null) {
+														// PicsLogger.log("    found matching operator "
+														// + operator);
+														for (AuditTypeRule auditTypeRule : data6) {
+															// boolean
+															// specificContractorRule
+															// =
+															// (conType != null
+															// &&
+															// );
+															if (auditTypeRule.isInclude())
+																rules.add(auditTypeRule);
+															else {
+																/*
+																 * Exclude rules
+																 * can be tricky
+																 * if they are
+																 * specific We
+																 * could also
+																 * add in
+																 * functionality
+																 * to support
+																 * dependent
+																 * question sets
+																 * here are well
+																 * 12/2010
+																 * Please
+																 * discuss with
+																 * both Trevor
+																 * and Keerthi
+																 * before
+																 * changing this
+																 * logic
+																 */
+																if (conType == null)
+																	rules.add(auditTypeRule);
+																else if (contractorType.size() == 2)
+																	// This
+																	// contractor
+																	// has
+																	// only one
+																	// type
+																	// so
+																	// include
+																	// the
+																	// "exclusion rule"
+																	rules.add(auditTypeRule);
+															}
+														}
 													}
 												}
 											}
@@ -141,9 +164,9 @@ public class AuditTypeRuleCache {
 		return rules;
 	}
 
-	public Risks getData() {
+	public SafetyRisks getData() {
 		if (data == null) {
-			data = new Risks();
+			data = new SafetyRisks();
 			for (AuditTypeRule rule : auditRuleDAO.findAuditTypeRules()) {
 				data.add(rule);
 			}
@@ -155,7 +178,27 @@ public class AuditTypeRuleCache {
 		data = null;
 	}
 
-	private class Risks {
+	private class SafetyRisks {
+
+		private Map<LowMedHigh, ProductRisks> data = new LinkedHashMap<LowMedHigh, ProductRisks>();
+
+		public ProductRisks getData(LowMedHigh value) {
+			return data.get(value);
+		}
+
+		public void add(AuditTypeRule rule) {
+			// PicsLogger.log("Add rule to cache: " + rule);
+			ProductRisks map = data.get(rule.getSafetyRisk());
+			if (map == null) {
+				map = new ProductRisks();
+				data.put(rule.getSafetyRisk(), map);
+			}
+			map.add(rule);
+			// PicsLogger.log(" + Risk = " + rule.getRisk());
+		}
+	}
+
+	private class ProductRisks {
 
 		private Map<LowMedHigh, AcceptsBids> data = new LinkedHashMap<LowMedHigh, AcceptsBids>();
 
@@ -165,10 +208,10 @@ public class AuditTypeRuleCache {
 
 		public void add(AuditTypeRule rule) {
 			// PicsLogger.log("Add rule to cache: " + rule);
-			AcceptsBids map = data.get(rule.getSafetyRisk());
+			AcceptsBids map = data.get(rule.getProductRisk());
 			if (map == null) {
 				map = new AcceptsBids();
-				data.put(rule.getSafetyRisk(), map);
+				data.put(rule.getProductRisk(), map);
 			}
 			map.add(rule);
 			// PicsLogger.log(" + Risk = " + rule.getRisk());
