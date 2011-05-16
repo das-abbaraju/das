@@ -154,6 +154,7 @@ $(function() {
 	
 	$('.trade-clear').click(function(){
 		$('#suggest input[type="search"]').val('');
+		$('#suggest').submit();
 	});
 	
 	$('#trade-detail').delegate('.save', 'click', function(e) {
