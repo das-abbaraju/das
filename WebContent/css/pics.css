@@ -24,7 +24,7 @@ p {
 	padding: 0px;
 }
 
-.closeButton{
+.closeButton {
 	position: absolute;
 	bottom: 20px;
 	right: 20px;
@@ -72,10 +72,10 @@ p {
 	background-image: url(../images/phone-icon.png);
 	background-repeat: no-repeat;
 	background-position: left center;
-	height:26px;
+	height: 26px;
 	padding-left: 20px;
-	padding-bottom:6px;
-	}
+	padding-bottom: 6px;
+}
 
 #name {
 	margin-right: 5px;
@@ -91,12 +91,11 @@ p {
 }
 
 /********************  NEW Header Search Styles  ************************/
-
 #search_box {
 	background: #fff;
 	border: 1px solid #AAA;
 	width: auto;
-	height:18px;
+	height: 18px;
 	background-image: url(../images/searchimg.gif);
 	background-repeat: no-repeat;
 	background-position: left center;
@@ -109,7 +108,7 @@ p {
 #search_box.ac_loading {
 	background-image: url(../images/ajax_process.gif);
 }
- 
+
 #search_button {
 	font-size: 12px;
 	font-style: normal;
@@ -128,9 +127,11 @@ p {
 }
 
 /* Hack for Mozilla! */
-@-moz-document url-prefix()
-{
-	#search_button { padding-bottom: 2px; }
+@
+-moz-document url-prefix () { #search_button { padding-bottom:2px;
+	
+}
+
 }
 
 /********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
@@ -344,6 +345,7 @@ ul {
 }
 
 ul li {
+	
 }
 
 .sub { /* used as a sub-header title */
@@ -469,6 +471,7 @@ a.file {
 	background: url('../images/file.png') no-repeat left center;
 	zoom: 1;
 }
+
 a.percent {
 	padding-left: 17px;
 	margin-left: 5px;
@@ -525,6 +528,7 @@ a.help {
 	zoom: 1;
 	cursor: help;
 }
+
 a.helpBig {
 	padding: 5px 12px 12px;
 	margin-left: 2px;
@@ -541,12 +545,12 @@ a.insurance {
 
 a.watch {
 	background: url('../images/binoculars.png') no-repeat left center;
-	padding-left:17px;
+	padding-left: 17px;
 }
 
 a.clearfield {
 	background: url('../images/clear.png') no-repeat left center;
-	padding-left:17px;
+	padding-left: 17px;
 }
 
 a.up-arrow {
@@ -581,8 +585,7 @@ label.tooltipped {
   margin-bottom: -5px;
 } */
 p.email a {
-	background: url('../images/icon_link_email.png') no-repeat right center;
-	;
+	background: url('../images/icon_link_email.png') no-repeat right center;;
 	padding-left: 0;
 	padding-right: 15px;
 	padding-top: 0;
@@ -679,10 +682,12 @@ ul#navlist {
 	background-color: #C0C0C0;
 	text-decoration: none;
 	font-weight: bold;
-	padding:6px 10px 8px 10px;
+	padding: 6px 10px 8px 10px;
 }
 
-#navlist a.inactive:hover, #navlist a.inactive:active {padding: 8px 10px;}
+#navlist a.inactive:hover,#navlist a.inactive:active {
+	padding: 8px 10px;
+}
 
 #navlist .current {
 	color: #fff;
@@ -711,7 +716,7 @@ table.report td a.inactive,table.report td a.accountDeactivated,table.report td 
 	text-decoration: line-through;
 }
 
-table.report tr.future{
+table.report tr.future {
 	background-color: #FFA;
 	color: #4C4D4D;
 }
@@ -745,40 +750,72 @@ ol {
 }
 
 /********************** Special Styles ******************************/
-div#info,div#alert,div#error,div.info,div.alert,div.error,div.helpbox {
-	padding: 1em 1em 1em 4em;
-	margin: 10px 0;
-	width: 86%;
-	clear: left;
+div.info,div.alert,div.error {
+	font: 14px/18px Helvetica, arial, sans-serif;
+	color: #383838;
 }
 
-div#info,div.info {
-	border-top: 2px solid #b7d2f2;
-	border-bottom: 2px solid #b7d2f2;
-	background: #dbe7f8 url('../images/icon-info.gif') no-repeat 10px 10px;
-	zoom: 1;
+div.info {
+	background-image: url('../images/info-trans.png');
+	background-repeat: no-repeat;
+	border: solid 1px #90abce;
+	background-color: #e2ecf9;
+	padding: 30px;
+	position: relative;
+	padding-left: 55px;
 }
 
-div#alert,div.alert {
-	border-top: 2px solid #D0AE10;
-	border-bottom: 2px solid #D0AE10;
-	background: #FBF2C9 url('../images/icon-warning.gif') no-repeat 10px 10px;
-	zoom: 1;
+div.info:after {
+	content: '';
+	position: absolute;
+	background-color: #cce3f2;
+	border: solid 1px #cce3f2;
+	height: 5px;
+	left: -1px;
+	bottom: -8px;
+	width: 100%;
 }
 
-div#error,div.error {
-	border-top: 2px solid #feabab;
-	border-bottom: 2px solid #feabab;
-	background: #ffdfdf url('../images/icon-error.gif') no-repeat 10px 10px;
-	zoom: 1;
+div.error {
+	background-image: url('../images/error-trans.png');
+	background-repeat: no-repeat;
+	border: solid 1px #e09a9a;
+	background-color: #fcf0f1;
+	padding: 30px;
+	position: relative;
+	padding-left: 55px;
 }
 
-div.helpbox {
-	border-top: 2px solid #F6E385;
-	border-bottom: 2px solid #F6E385;
-	background: #FBF2C9 url('../images/help-question.png') no-repeat 15px
-		15px;
-	width: auto;
+div.error:after {
+	content: '';
+	position: absolute;
+	background-color: #fce3e3;
+	border: solid 1px #fce3e3;
+	height: 5px;
+	left: -1px;
+	bottom: -8px;
+	width: 100%;
+}
+
+div.alert {
+	background-image: url('../images/alert-trans.png');
+	background-repeat: no-repeat;
+	border: solid 1px #f8d988;
+	background-color: #fffbe5;
+	padding: 30px;
+	position: relative;
+	padding-left: 55px;
+}
+
+div.alert:after {
+	content: '';
+	position: absolute;
+	background-color: #fbeabd;
+	border: solid 1px #fbeabd;
+	height: 5px;
+	left: -1px;
+	bottom: -8px;
+	width: 100%;
 }
 
 #mainStatus {
@@ -797,7 +834,7 @@ td.money,th.money {
 }
 
 /* add to table elements representing money to have it right aligned */
-	/********************** BUTTONS ******************************/
+/********************** BUTTONS ******************************/
 .picsbutton,a.picsbutton:visited,a.picsbutton:link {
 	margin: 0 7px 0 0;
 	border-top: 1px;
@@ -842,8 +879,8 @@ a.picsbutton {
 	height: 16px;
 }
 
-.showPointer{
-	cursor: pointer;	
+.showPointer {
+	cursor: pointer;
 }
 
 /* UTILITIES */
@@ -1053,7 +1090,11 @@ a.blueSmall:link {
 	line-height: 23px;
 }
 
-.redMain img {padding-right:2px;position:relative;top:4px;}
+.redMain img {
+	padding-right: 2px;
+	position: relative;
+	top: 4px;
+}
 
 .whiteMain {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -1116,7 +1157,8 @@ a.blueHeader:link {
 	font-weight: bold;
 }
 
-table.report tr.clickable:hover,table.notes tr.clickable:hover, .tr-hover-clickable {
+table.report tr.clickable:hover,table.notes tr.clickable:hover,.tr-hover-clickable
+	{
 	background-color: #FFC;
 	color: black;
 	cursor: pointer;
@@ -1136,27 +1178,26 @@ button .ui-icon {
 	display: none;
 }
 
-
 /****** ClearFix *************/
 /* float clearing for IE6 */
-* html .clearfix{
-  height: 1%;
-  overflow: visible;
+* html .clearfix {
+	height: 1%;
+	overflow: visible;
 }
 
 /* float clearing for IE7 */
-*+html .clearfix{
-  min-height: 1%;
+*+html .clearfix {
+	min-height: 1%;
 }
 
 /* float clearing for everyone else */
-.clearfix:after{
-  clear: both;
-  content: ".";
-  display: block;
-  height: 0;
-  visibility: hidden;
-  font-size: 0;
+.clearfix:after {
+	clear: both;
+	content: ".";
+	display: block;
+	height: 0;
+	visibility: hidden;
+	font-size: 0;
 }
 
 /************** Beta logo ******************/
@@ -1171,11 +1212,11 @@ div.beta {
 }
 
 /** blockUI ajaxDialog **/
-div.blockDialog{
-	display:none; 
-	cursor: default; 
-	height: 250px; 
+div.blockDialog {
+	display: none;
+	cursor: default;
+	height: 250px;
 	text-align: left;
 	padding: 15px 10px;
-	overflow-y: auto;	
+	overflow-y: auto;
 }
