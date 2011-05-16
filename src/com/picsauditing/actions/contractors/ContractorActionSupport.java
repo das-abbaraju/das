@@ -179,8 +179,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 			menu.add(new MenuComponent(
 					getText("ContractorRegistrationServices.title"), null,
 					"conServicesLink")); // Services Performed
-			menu.add(new MenuComponent(getText("ContractorFacilities.title",
-					null, "conFacilitiesLink"))); // Facilities
+			menu.add(new MenuComponent(getText("ContractorFacilities.title"),
+					null, "conFacilitiesLink")); // Facilities
 			menu.add(new MenuComponent(
 					getText("ContractorPaymentOptions.title"), null,
 					"conPaymentLink")); // Payment Options
@@ -191,7 +191,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			// setup account editing
 			
 			// Edit Details
-			item = new MenuComponent("ContractorEdit.title",
+			item = new MenuComponent(getText("ContractorEdit.title"),
 					"ContractorEdit.action?id=" + id, "edit_contractor");
 			if (requestURL.contains("ContractorEdit.action"))
 				item.setCurrent(true);
