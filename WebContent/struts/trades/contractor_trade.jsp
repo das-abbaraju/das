@@ -150,7 +150,21 @@ $(function() {
 </head>
 <body>
 
-<s:include value="../contractors/conHeader.jsp"/>
+<s:include value="../contractors/conRegistrationHeader.jsp"/>
+
+<s:if test="permissions.contractor">
+	<s:if test="registrationStep.done">
+		<s:if test="contractor.needsTradesUpdated">
+			<div class="alert"><s:text name="ContractorTrades.NeedsUpdating" />
+				<s:form><s:submit action="ContractorTrades!nextStep" cssClass="picsbutton positive" value="%{getText('button.Confirm')}"></s:submit></s:form>
+			</div>
+		</s:if>
+	</s:if>
+	<s:else>
+		<div class="alert"><s:text name="ContractorTrades.RegistrationMessage" /></div>
+		<s:form><s:submit action="ContractorTrades!nextStep" cssClass="picsbutton positive" value="%{getText('button.Next')}"></s:submit></s:form>
+	</s:else>
+</s:if>
 
 <form id="suggest">
 	<label><s:text name="Header.Search"></s:text>:</label>

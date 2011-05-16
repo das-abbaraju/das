@@ -121,6 +121,7 @@ $(function(){
 </s:if>
 
 <s:include value="registrationHeader.jsp"></s:include>
+
 <span class="redMain required-info"><s:text name="%{scope}.IndicatesRequiredInfo" /></span>
 <s:form method="POST" cssClass="form">
 	<s:hidden name="requestID" />	

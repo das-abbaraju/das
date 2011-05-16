@@ -1,5 +1,6 @@
 package com.picsauditing.actions.trades;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.TradeDAO;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.util.Tree;
@@ -59,7 +61,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		trade.setContractor(contractor);
 		trade.setAuditColumns(permissions);
-		contractor.setTradesUpdated(new Date());
 		tradeDAO.save(trade);
 
 		return "trade";
@@ -69,6 +70,17 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		tradeDAO.remove(trade);
 
 		return "trade";
+	}
+	
+	public String nextStep() throws Exception {
+		findContractor();
+		contractor.setTradesUpdated(new Date());
+		tradeDAO.save(contractor);
+		
+		if (!getRegistrationStep().isDone())
+			this.redirect(ContractorRegistrationStep.Risk.getUrl(contractor.getId()));
+		
+		return SUCCESS;
 	}
 
 	public List<ContractorTrade> findAffectedTrades() {

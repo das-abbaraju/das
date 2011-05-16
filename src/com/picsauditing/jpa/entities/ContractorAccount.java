@@ -564,6 +564,30 @@ public class ContractorAccount extends Account implements JSONable {
 		this.tradesSub = tradesSub;
 	}
 
+	@Temporal(TemporalType.DATE)
+	public Date getTradesUpdated() {
+		return tradesUpdated;
+	}
+
+	public void setTradesUpdated(Date tradesUpdated) {
+		this.tradesUpdated = tradesUpdated;
+	}
+	
+	/**
+	 * All contractors should update their trades every 6 months
+	 * @return 
+	 */
+	@Transient
+	public boolean isNeedsTradesUpdated() {
+		if (tradesUpdated == null)
+			return true;
+		
+		Calendar daysAgo = Calendar.getInstance();
+		daysAgo.add(Calendar.MONTH, -6);
+		
+		return daysAgo.after(tradesUpdated);
+	}
+
 	public int getScore() {
 		return score;
 	}
@@ -1111,22 +1135,5 @@ public class ContractorAccount extends Account implements JSONable {
 	public boolean hasReducedActivation(InvoiceFee activation) {
 		return getReducedActivationFeeOperator(activation) != null
 				&& activation.getAmount().intValue() != getReducedActivationFeeOperator(activation).getActivationFee();
-	}
-
-	@Temporal(TemporalType.DATE)
-	public Date getTradesUpdated() {
-		return tradesUpdated;
-	}
-
-	public void setTradesUpdated(Date tradesUpdated) {
-		this.tradesUpdated = tradesUpdated;
-	}
-
-	@Transient
-	public boolean isFinanciallyReadyForAudits() {
-		// TODO need to refactor this
-		double halfMembership = getMembershipLevel().getAmount().doubleValue() * 0.5;
-		double balance = getBalance().doubleValue();
-		return balance < halfMembership;
 	}
 }

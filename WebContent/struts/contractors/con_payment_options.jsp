@@ -30,14 +30,7 @@ function updateExpDate() {
 </script>
 </head>
 <body>
-<s:if test="permissions.contractor && !contractor.status.activeDemo">
-	<s:include value="registrationHeader.jsp"></s:include>
-</s:if>
-<s:else>
-<s:include value="conHeader.jsp"></s:include>
-</s:else>
-
-<s:include value="../actionMessages.jsp"></s:include>
+<s:include value="conRegistrationHeader.jsp"></s:include>
 
 <%-- All criteria are satisfied after contractor has entered CC info --%>
 <s:if test="contractor.paymentMethodStatusValid && contractor.paymentMethod.creditCard && contractor.mustPayB">

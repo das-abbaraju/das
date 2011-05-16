@@ -628,4 +628,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 			return true;
 		return false;
 	}
+	
+	public ContractorRegistrationStep getRegistrationStep() {
+		return ContractorRegistrationStep.getStep(contractor);
+	}
 }

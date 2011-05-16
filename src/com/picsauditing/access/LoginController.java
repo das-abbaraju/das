@@ -297,11 +297,11 @@ public class LoginController extends PicsActionSupport {
 			}
 		}
 		String url = null;
-		if (permissions.isContractor() && !user.getAccount().getStatus().isActiveDemo()) {
+		if (permissions.isContractor()) {
 			ContractorAccount cAccount = (ContractorAccount) user.getAccount();
 
 			ContractorRegistrationStep step = ContractorRegistrationStep.getStep(cAccount);
-			url = ContractorRegistrationStep.getUrl(step, cAccount.getId());
+			url = step.getUrl(cAccount.getId());
 			
 		} else
 			url = PicsMenu.getHomePage(menu, permissions);

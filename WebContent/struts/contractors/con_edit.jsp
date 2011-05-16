@@ -40,12 +40,7 @@ $(function() {
 </script>
 </head>
 <body>
-<s:if test="permissions.contractor && !contractor.status.activeDemo">
-	<s:include value="registrationHeader.jsp"></s:include>
-</s:if>
-<s:else>
-	<s:include value="conHeader.jsp"></s:include>
-</s:else>
+<s:include value="conRegistrationHeader.jsp"></s:include>
 <s:if test="permissions.admin && unpaidInvoices.size() > 0">
 	<div class="info">Invoices open for this contractor
 	<ol>

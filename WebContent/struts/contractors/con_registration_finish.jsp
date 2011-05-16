@@ -7,12 +7,7 @@
 </head>
 <body>
 
-<s:if test="contractor.status.activeDemo">
-	<s:include value="conHeader.jsp"></s:include>
-</s:if>
-<s:else>
-	<s:include value="registrationHeader.jsp"></s:include>
-</s:else>
+<s:include value="conRegistrationHeader.jsp"></s:include>
 
 <s:if test="contractor.operators.size == 0">
 	<div class="error">You haven't selected any facilities! We cannot process your account until do. <a
