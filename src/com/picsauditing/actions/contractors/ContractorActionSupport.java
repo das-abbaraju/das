@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.bouncycastle.asn1.ocsp.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
@@ -89,8 +88,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			return false;
 
 		if (permissionToViewContractor == null) {
-			permissionToViewContractor = new PermissionToViewContractor(id,
-					permissions);
+			permissionToViewContractor = new PermissionToViewContractor(id, permissions);
 			permissionToViewContractor.setActiveAudits(getActiveAudits());
 			permissionToViewContractor.setOperators(getOperators());
 		}
@@ -116,23 +114,18 @@ public class ContractorActionSupport extends AccountActionSupport {
 			for (ContractorAudit contractorAudit : list) {
 				// .isPqf may be wrong here. Consider using
 				// contractorAudit.getAuditType().isRenewable() instead
-				if (contractorAudit.getAuditType().isPqf()
-						|| !contractorAudit.isExpired()) {
+				if (contractorAudit.getAuditType().isPqf() || !contractorAudit.isExpired()) {
 					// We're dealing with a non-archived document
 					if (permissions.isContractor()) {
-						if (contractorAudit.getAuditType()
-								.isCanContractorView()) {
-							contractorAuditWithStatuses.put(contractorAudit,
-									null);
+						if (contractorAudit.getAuditType().isCanContractorView()) {
+							contractorAuditWithStatuses.put(contractorAudit, null);
 						}
 					} else if (permissions.isPicsEmployee()) {
 						contractorAuditWithStatuses.put(contractorAudit, null);
 					} else {
-						for (ContractorAuditOperator cao : contractorAudit
-								.getOperators()) {
+						for (ContractorAuditOperator cao : contractorAudit.getOperators()) {
 							if (cao.isVisibleTo(permissions)) {
-								contractorAuditWithStatuses.put(
-										contractorAudit, cao.getStatus());
+								contractorAuditWithStatuses.put(contractorAudit, cao.getStatus());
 							}
 						}
 					}
@@ -147,8 +140,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			contractorNonExpiredAudits = new ArrayList<ContractorAudit>();
 			List<ContractorAudit> list = getAudits();
 			for (ContractorAudit contractorAudit : list) {
-				if (contractorAudit.getAuditType().isPqf()
-						|| !contractorAudit.isExpired()) {
+				if (contractorAudit.getAuditType().isPqf() || !contractorAudit.isExpired()) {
 					if (contractorAudit.isVisibleTo(permissions))
 						contractorNonExpiredAudits.add(contractorAudit);
 				}
@@ -163,51 +155,42 @@ public class ContractorActionSupport extends AccountActionSupport {
 		MenuComponent item = null;
 		getRequestString();
 
-		ContractorRegistrationStep step = ContractorRegistrationStep
-				.getStep(contractor);
+		ContractorRegistrationStep step = ContractorRegistrationStep.getStep(contractor);
 
 		// setup initial registration
 		if (step == ContractorRegistrationStep.Register) {
-			item = new MenuComponent(getText("ContractorRegistration.title"),
-					"ContractorRegistration.action", "conRegisterLink");
+			item = new MenuComponent(getText("ContractorRegistration.title"), "ContractorRegistration.action",
+					"conRegisterLink");
 			if (requestURL.contains("ContractorRegistration.action")) {
 				item.setCurrent(true);
 			}
 			menu.add(item);
-			menu.add(new MenuComponent(getText("ConctratorTrades.title"), null,
-					"conTradesLink")); // Trades
-			menu.add(new MenuComponent(
-					getText("ContractorRegistrationServices.title"), null,
-					"conServicesLink")); // Services Performed
-			menu.add(new MenuComponent(getText("ContractorFacilities.title"),
-					null, "conFacilitiesLink")); // Facilities
-			menu.add(new MenuComponent(
-					getText("ContractorPaymentOptions.title"), null,
-					"conPaymentLink")); // Payment Options
-			menu.add(new MenuComponent(
-					getText("ContractorRegistrationFinish.title"), null,
-					"conConfirmLink")); // Confirm
+			menu.add(new MenuComponent(getText("ConctratorTrades.title"), null, "conTradesLink")); // Trades
+			menu.add(new MenuComponent(getText("ContractorRegistrationServices.title"), null, "conServicesLink")); // Services
+																													// Performed
+			menu.add(new MenuComponent(getText("ContractorFacilities.title"), null, "conFacilitiesLink")); // Facilities
+			menu.add(new MenuComponent(getText("ContractorPaymentOptions.title"), null, "conPaymentLink")); // Payment
+																											// Options
+			menu.add(new MenuComponent(getText("ContractorRegistrationFinish.title"), null, "conConfirmLink")); // Confirm
 		} else {
 			// setup account editing
-			
+
 			// Edit Details
-			item = new MenuComponent(getText("ContractorEdit.title"),
-					"ContractorEdit.action?id=" + id, "edit_contractor");
+			item = new MenuComponent(getText("ContractorEdit.title"), "ContractorEdit.action?id=" + id,
+					"edit_contractor");
 			if (requestURL.contains("ContractorEdit.action"))
 				item.setCurrent(true);
 			menu.add(item);
 
 			// Trades
-			MenuComponent itemTrades = new MenuComponent(
-					getText("ConctratorTrades.title"), null, "conTradesLink");
+			MenuComponent itemTrades = new MenuComponent(getText("ConctratorTrades.title"), null, "conTradesLink");
 			if (requestURL.contains("ConctratorTrades.action")) {
 				itemTrades.setCurrent(true);
 			}
 			menu.add(itemTrades);
 
 			// Services
-			MenuComponent itemServices = new MenuComponent(
-					getText("ContractorRegistrationServices.title"), null,
+			MenuComponent itemServices = new MenuComponent(getText("ContractorRegistrationServices.title"), null,
 					"conServicesLink");
 			if (requestURL.contains("ContractorRegistrationServices.action")) {
 				itemServices.setCurrent(true);
@@ -215,8 +198,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			menu.add(itemServices);
 
 			// Facilities
-			MenuComponent itemFacilities = new MenuComponent(
-					getText("ContractorFacilities.title"), null,
+			MenuComponent itemFacilities = new MenuComponent(getText("ContractorFacilities.title"), null,
 					"conFacilitiesLink");
 			if (requestURL.contains("ContractorFacilities.action")) {
 				itemFacilities.setCurrent(true);
@@ -224,8 +206,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			menu.add(itemFacilities);
 
 			// Payment Options
-			MenuComponent itemPaymentOptions = new MenuComponent(
-					getText("ContractorPaymentOptions.title"), null,
+			MenuComponent itemPaymentOptions = new MenuComponent(getText("ContractorPaymentOptions.title"), null,
 					"conPaymentLink");
 			if (requestURL.contains("ContractorPaymentOptions.action")) {
 				itemPaymentOptions.setCurrent(true);
@@ -233,8 +214,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			menu.add(itemPaymentOptions);
 
 			// Confirm
-			MenuComponent itemConfirm = new MenuComponent(
-					getText("ContractorRegistrationFinish.title"), null,
+			MenuComponent itemConfirm = new MenuComponent(getText("ContractorRegistrationFinish.title"), null,
 					"conConfirmLink");
 			if (requestURL.contains("ContractorRegistrationFinish.action")) {
 				itemConfirm.setCurrent(true);
@@ -247,8 +227,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			case Confirmation:
 				itemConfirm.setUrl("ContractorRegistrationFinish.action?id=" + id);
 			case Payment:
-				itemPaymentOptions.setUrl("ContractorPaymentOptions.action?id="
-						+ id);
+				itemPaymentOptions.setUrl("ContractorPaymentOptions.action?id=" + id);
 			case Facilities:
 				itemFacilities.setUrl("ContractorFacilities.action?id=" + id);
 			case Risk:
@@ -289,58 +268,48 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		// Sort audits, by throwing them into a tree set and sorting them by
 		// display and then name
-		TreeSet<ContractorAudit> treeSet = new TreeSet<ContractorAudit>(
-				new Comparator<ContractorAudit>() {
-					@Override
-					public int compare(ContractorAudit o1, ContractorAudit o2) {
-						if (o1 == null || o2 == null)
-							return 0; // can't compare null objects
+		TreeSet<ContractorAudit> treeSet = new TreeSet<ContractorAudit>(new Comparator<ContractorAudit>() {
+			@Override
+			public int compare(ContractorAudit o1, ContractorAudit o2) {
+				if (o1 == null || o2 == null)
+					return 0; // can't compare null objects
 
-						if (o1.getAuditType().getDisplayOrder() < o2
-								.getAuditType().getDisplayOrder())
-							return -1;
-						if (o1.getAuditType().getDisplayOrder() > o2
-								.getAuditType().getDisplayOrder())
-							return 1;
+				if (o1.getAuditType().getDisplayOrder() < o2.getAuditType().getDisplayOrder())
+					return -1;
+				if (o1.getAuditType().getDisplayOrder() > o2.getAuditType().getDisplayOrder())
+					return 1;
 
-						// get display names as seen in menu
-						String name1 = getText(o1.getAuditType().getI18nKey(
-								"name"));
-						String name2 = getText(o2.getAuditType().getI18nKey(
-								"name"));
-						if (name1 == null || name2 == null)
-							return 0; // can't compare names
+				// get display names as seen in menu
+				String name1 = getText(o1.getAuditType().getI18nKey("name"));
+				String name2 = getText(o2.getAuditType().getI18nKey("name"));
+				if (name1 == null || name2 == null)
+					return 0; // can't compare names
 
-						return name1.compareTo(name2);
-					}
-				});
+				return name1.compareTo(name2);
+			}
+		});
 		treeSet.addAll(auditList);
 		auditList = treeSet;
 
 		PicsLogger.log("Found [" + auditList.size() + "] total active audits");
 
-		if (!permissions.isContractor()
-				|| permissions.hasPermission(OpPerms.ContractorSafety)) {
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add the PQF
-			MenuComponent subMenu = new MenuComponent(
-					getText("AuditType.1.name"),
-					"ContractorDocuments.action?id=" + id);
+			MenuComponent subMenu = new MenuComponent(getText("AuditType.1.name"), "ContractorDocuments.action?id="
+					+ id);
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			int count = 0;
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().getClassType().isPqf()) {
-					if (!permissions.isContractor()
-							|| audit.getCurrentOperators().size() > 0) {
+					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
-						childMenu.setUrl("Audit.action?auditID="
-								+ audit.getId());
+						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
 						count++;
 
 						// Put Trades menu after 'PQF' menu entry
 						if (audit.getAuditType().isPqf()) {
-							subMenu.addChild(getText("ConctratorTrades.title"),
-									"ContractorTrades.action?id=" + id);
+							subMenu.addChild(getText("ConctratorTrades.title"), "ContractorTrades.action?id=" + id);
 						}
 					}
 					iter.remove();
@@ -352,23 +321,16 @@ public class ContractorActionSupport extends AccountActionSupport {
 			menu.add(subMenu);
 		}
 
-		if (!permissions.isContractor()
-				|| permissions.hasPermission(OpPerms.ContractorSafety)) {
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add the Annual Updates
-			MenuComponent subMenu = new MenuComponent(
-					getText("AuditType.11.name"),
-					"ContractorDocuments.action?id="
-							+ id
-							+ "#"
-							+ ContractorDocuments
-									.getSafeName(getText("AuditType.11.name")));
+			MenuComponent subMenu = new MenuComponent(getText("AuditType.11.name"), "ContractorDocuments.action?id="
+					+ id + "#" + ContractorDocuments.getSafeName(getText("AuditType.11.name")));
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().isAnnualAddendum()) {
 					String linkText = audit.getAuditFor() + " Update";
-					if (!permissions.isContractor()
-							|| audit.getCurrentOperators().size() > 0) {
+					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
 						childMenu.setName(linkText);
 						childMenu.setSortField(linkText);
@@ -386,67 +348,45 @@ public class ContractorActionSupport extends AccountActionSupport {
 		}
 
 		if (isRequiresInsurance()
-				&& (!permissions.isContractor() || permissions
-						.hasPermission(OpPerms.ContractorInsurance))) {
+				&& (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorInsurance))) {
 			// Add InsureGUARD
-			MenuComponent subMenu = new MenuComponent(
-					getText("global.InsureGUARD"), "ConInsureGUARD.action?id="
-							+ id);
+			MenuComponent subMenu = new MenuComponent(getText("global.InsureGUARD"), "ConInsureGUARD.action?id=" + id);
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().getClassType()
-						.equals(AuditTypeClass.Policy)
+				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
 						&& audit.getOperators().size() > 0) {
-					if (!permissions.isContractor()
-							|| audit.getCurrentOperators().size() > 0) {
+					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
-						String year = DateBean.format(
-								audit.getEffectiveDateLabel(), "yy");
-						String linkText = getText(audit.getAuditType()
-								.getI18nKey("name")) + " '" + year;
+						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
+						String linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
 						childMenu.setName(linkText);
-						childMenu.setUrl("Audit.action?auditID="
-								+ audit.getId());
+						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
 					}
 					iter.remove();
 				}
 			}
 
-			subMenu.addChild("Manage Certificates", "ConInsureGUARD.action?id="
-					+ contractor.getId());
+			subMenu.addChild("Manage Certificates", "ConInsureGUARD.action?id=" + contractor.getId());
 
 			if (permissions.hasPermission(OpPerms.AuditVerification))
-				subMenu.addChild(
-						"Insurance Verification",
-						"InsureGuardVerification.action?id="
-								+ contractor.getId());
+				subMenu.addChild("Insurance Verification", "InsureGuardVerification.action?id=" + contractor.getId());
 
 			addSubMenu(menu, subMenu);
 		}
 
-		if (!permissions.isContractor()
-				|| permissions.hasPermission(OpPerms.ContractorSafety)) {
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add Integrity Management
-			MenuComponent subMenu = new MenuComponent("IM",
-					"ContractorDocuments.action?id="
-							+ id
-							+ "#"
-							+ ContractorDocuments
-									.getSafeName(getText("AuditType.17.name")));
+			MenuComponent subMenu = new MenuComponent("IM", "ContractorDocuments.action?id=" + id + "#"
+					+ ContractorDocuments.getSafeName(getText("AuditType.17.name")));
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().getClassType()
-						.equals(AuditTypeClass.IM)
-						&& audit.getOperators().size() > 0) {
-					if (!permissions.isContractor()
-							|| audit.getCurrentOperators().size() > 0) {
+				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM) && audit.getOperators().size() > 0) {
+					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
-						String linkText = getText(audit.getAuditType()
-								.getI18nKey("name"))
-								+ (audit.getAuditFor() == null ? "" : " "
-										+ audit.getAuditFor());
+						String linkText = getText(audit.getAuditType().getI18nKey("name"))
+								+ (audit.getAuditFor() == null ? "" : " " + audit.getAuditFor());
 						childMenu.setName(linkText);
 					}
 					iter.remove();
@@ -455,27 +395,17 @@ public class ContractorActionSupport extends AccountActionSupport {
 			addSubMenu(menu, subMenu);
 		}
 
-		if (!permissions.isContractor()
-				|| permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
 			// All Other Audits
-			MenuComponent subMenu = new MenuComponent(
-					getText("global.AuditGUARD"),
-					"ContractorDocuments.action?id="
-							+ id
-							+ "#"
-							+ ContractorDocuments
-									.getSafeName(getText("global.AuditGUARD")));
+			MenuComponent subMenu = new MenuComponent(getText("global.AuditGUARD"), "ContractorDocuments.action?id="
+					+ id + "#" + ContractorDocuments.getSafeName(getText("global.AuditGUARD")));
 			for (ContractorAudit audit : auditList) {
-				if (audit.getAuditType().getClassType()
-						.equals(AuditTypeClass.Audit)) {
-					if (!permissions.isContractor()
-							|| audit.getCurrentOperators().size() > 0) {
+				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit)) {
+					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
 
-						String year = DateBean.format(
-								audit.getEffectiveDateLabel(), "yy");
-						String linkText = getText(audit.getAuditType()
-								.getI18nKey("name")) + " '" + year;
+						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
+						String linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
 						if (!Strings.isEmpty(audit.getAuditFor()))
 							linkText = audit.getAuditFor() + " " + linkText;
 						childMenu.setName(linkText);
@@ -491,19 +421,16 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	private void addSubMenu(List<MenuComponent> menu, MenuComponent subMenu) {
 		if (subMenu.getChildren().size() > 0) {
-			PicsLogger.log("Found [" + subMenu.getChildren().size() + "] "
-					+ subMenu.getName()
+			PicsLogger.log("Found [" + subMenu.getChildren().size() + "] " + subMenu.getName()
 					+ (subMenu.getChildren().size() == 1 ? "" : "s"));
 			menu.add(subMenu);
 		}
 	}
 
-	private MenuComponent createMenuItem(MenuComponent subMenu,
-			ContractorAudit audit) {
+	private MenuComponent createMenuItem(MenuComponent subMenu, ContractorAudit audit) {
 		String linkText = getText(audit.getAuditType().getI18nKey("name"));
 
-		MenuComponent menuItem = subMenu.addChild(linkText,
-				"Audit.action?auditID=" + audit.getId());
+		MenuComponent menuItem = subMenu.addChild(linkText, "Audit.action?auditID=" + audit.getId());
 		menuItem.setAuditId(audit.getId());
 		if (isShowCheckIcon(audit))
 			menuItem.setCssClass("done");
@@ -512,9 +439,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * Only show the insurance link for contractors who are linked to an
-	 * operator that collects insurance data. Also, don't show the link to users
-	 * who don't have the InsuranceCerts permission.
+	 * Only show the insurance link for contractors who are linked to an operator that collects insurance data. Also,
+	 * don't show the link to users who don't have the InsuranceCerts permission.
 	 * 
 	 */
 	public boolean isRequiresInsurance() {
@@ -530,8 +456,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (permissions.isOperator()) {
 			for (ContractorOperator insurContractors : getOperators()) {
 				OperatorAccount op = insurContractors.getOperatorAccount();
-				if (permissions.getAccountId() == op.getId()
-						&& op.getCanSeeInsurance().isTrue())
+				if (permissions.getAccountId() == op.getId() && op.getCanSeeInsurance().isTrue())
 					return true;
 			}
 			return false;
@@ -547,8 +472,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * Only show the COR/SECOR link for contractors who have answered Yes to
-	 * that question and linked to an operator that subscribes to COR
+	 * Only show the COR/SECOR link for contractors who have answered Yes to that question and linked to an operator
+	 * that subscribes to COR
 	 */
 
 	protected AuditDataDAO getAuditDataDAO() {
@@ -568,9 +493,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			return isCheckPermissionForCorporate();
 		if (permissions.isOnlyAuditor()) {
 			for (ContractorAudit audit : getActiveAudits()) {
-				if (audit.getAuditor() != null
-						&& audit.getAuditor().getId() == permissions
-								.getUserId())
+				if (audit.getAuditor() != null && audit.getAuditor().getId() == permissions.getUserId())
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.getStatus().before(AuditStatus.Complete))
 							return true;
@@ -583,8 +506,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public boolean isCheckPermissionForOperator() {
 		for (ContractorOperator operator : getOperators())
-			if (operator.getOperatorAccount().getId() == permissions
-					.getAccountId())
+			if (operator.getOperatorAccount().getId() == permissions.getAccountId())
 				return true;
 
 		return false;
@@ -604,36 +526,31 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public List<ContractorOperator> getOperators() {
 		if (operators == null)
-			operators = accountDao.findOperators(contractor, permissions,
-					" AND type IN ('Operator')");
+			operators = accountDao.findOperators(contractor, permissions, " AND type IN ('Operator')");
 		return operators;
 	}
 
 	public List<ContractorOperator> getActiveOperators() {
 		if (activeOperators == null)
-			activeOperators = accountDao
-					.findOperators(contractor, permissions,
-							" AND status IN ('Active','Demo') AND type IN ('Operator')");
+			activeOperators = accountDao.findOperators(contractor, permissions,
+					" AND status IN ('Active','Demo') AND type IN ('Operator')");
 		return activeOperators;
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
-		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils
-				.getBean("OperatorAccountDAO");
+		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
 		return dao.findWhere(false, "", permissions);
 	}
 
 	/**
 	 * 
-	 * @return a list of the certificates, if the user is an operator/corporate
-	 *         then this does the appropriate checking to remove the certs that
-	 *         they shouldn't be able to see
+	 * @return a list of the certificates, if the user is an operator/corporate then this does the appropriate checking
+	 *         to remove the certs that they shouldn't be able to see
 	 */
 	@SuppressWarnings("deprecation")
 	public List<Certificate> getCertificates() {
 		if (certificates == null)
-			certificates = certificateDAO.findByConId(contractor.getId(),
-					permissions, true);
+			certificates = certificateDAO.findByConId(contractor.getId(), permissions, true);
 
 		if (permissions.isOperatorCorporate()) {
 			int topID = permissions.getTopAccountID();
@@ -649,8 +566,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			for (Certificate cert : certificates)
 				certIds.add(cert.getId());
 
-			Map<Integer, List<Integer>> certIdToOp = certificateDAO
-					.findOpsMapByCert(certIds);
+			Map<Integer, List<Integer>> certIdToOp = certificateDAO.findOpsMapByCert(certIds);
 			Iterator<Certificate> itr = certificates.iterator();
 
 			while (itr.hasNext()) {
@@ -675,9 +591,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * Get a list of Audits that the current user can see Operators can't see
-	 * each other's audits Contractors can't see the Welcome Call This is a bit
-	 * complicated but needs to look at permissions
+	 * Get a list of Audits that the current user can see Operators can't see each other's audits Contractors can't see
+	 * the Welcome Call This is a bit complicated but needs to look at permissions
 	 * 
 	 * @return
 	 */
