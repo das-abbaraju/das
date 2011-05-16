@@ -20,17 +20,10 @@ public class ReportFilterAuditRule extends ReportFilter {
 	protected int tradeID;
 
 	protected String contractorType = null;
-	protected int riskLevel;
+	protected LowMedHigh safetyRisk;
+	protected LowMedHigh productRisk;
 
 	protected Date checkDate = null;
-
-	public int getRiskLevel() {
-		return riskLevel;
-	}
-
-	public void setRiskLevel(int riskLevel) {
-		this.riskLevel = riskLevel;
-	}
 
 	public String getContractorType() {
 		return contractorType;
@@ -124,6 +117,22 @@ public class ReportFilterAuditRule extends ReportFilter {
 
 	public void setTradeID(int tradeID) {
 		this.tradeID = tradeID;
+	}
+
+	public LowMedHigh getSafetyRisk() {
+		return safetyRisk;
+	}
+
+	public void setSafetyRisk(LowMedHigh safetyRisk) {
+		this.safetyRisk = safetyRisk;
+	}
+
+	public LowMedHigh getProductRisk() {
+		return productRisk;
+	}
+
+	public void setProductRisk(LowMedHigh productRisk) {
+		this.productRisk = productRisk;
 	}
 
 }

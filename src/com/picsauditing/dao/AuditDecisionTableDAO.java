@@ -288,9 +288,14 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	public List<AuditTypeRule> getApplicableAuditRules(ContractorAccount contractor) {
 		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW()";
 
-		where += " AND (risk IS NULL";
-		if (contractor.getRiskLevel() != null)
-			where += " OR risk = " + contractor.getRiskLevel().ordinal();
+		where += " AND (safetyRisk IS NULL";
+		if (contractor.getSafetyRisk() != null)
+			where += " OR safetyRisk = " + contractor.getSafetyRisk().ordinal();
+		where += ")";
+		
+		where += " AND (productRisk IS NULL";
+		if (contractor.getProductRisk() != null)
+			where += " OR productRisk = " + contractor.getProductRisk().ordinal();
 		where += ")";
 
 		where += " AND (acceptsBids IS NULL OR acceptsBids = " + (contractor.isAcceptsBids() ? 1 : 0) + ")";
@@ -336,9 +341,14 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	public List<AuditCategoryRule> getApplicableCategoryRules(ContractorAccount contractor, Set<AuditType> auditTypes) {
 		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW()";
 
-		where += " AND (risk IS NULL";
-		if (contractor.getRiskLevel() != null)
-			where += " OR risk = " + contractor.getRiskLevel().ordinal();
+		where += " AND (safetyRisk IS NULL";
+		if (contractor.getSafetyRisk() != null)
+			where += " OR safetyRisk = " + contractor.getSafetyRisk().ordinal();
+		where += ")";
+		
+		where += " AND (productRisk IS NULL";
+		if (contractor.getProductRisk() != null)
+			where += " OR productRisk = " + contractor.getProductRisk().ordinal();
 		where += ")";
 
 		where += " AND (acceptsBids IS NULL OR acceptsBids = " + (contractor.isAcceptsBids() ? 1 : 0) + ")";

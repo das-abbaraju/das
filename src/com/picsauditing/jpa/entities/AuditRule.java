@@ -247,6 +247,11 @@ public class AuditRule extends BaseDecisionTreeRule {
 			priority += 102;
 			level++;
 		}
+		if (productRisk != null) {
+			// Only 3
+			priority += 102;
+			level++;
+		}
 		if (acceptsBids != null) {
 			priority += 103;
 			level++;
@@ -347,6 +352,8 @@ public class AuditRule extends BaseDecisionTreeRule {
 			auditType = source.auditType;
 		if (safetyRisk == null)
 			safetyRisk = source.safetyRisk;
+		if (productRisk == null)
+			productRisk = source.productRisk;
 		if (operatorAccount == null)
 			operatorAccount = source.operatorAccount;
 		if (contractorType == null)
@@ -367,6 +374,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	public void update(AuditRule source) {
 		auditType = source.auditType;
 		safetyRisk = source.safetyRisk;
+		productRisk = source.productRisk;
 		operatorAccount = source.operatorAccount;
 		contractorType = source.contractorType;
 		tag = source.tag;
@@ -387,7 +395,9 @@ public class AuditRule extends BaseDecisionTreeRule {
 		sb.append(include ? "Include" : "Exclude");
 
 		if (safetyRisk != null)
-			identifiers.add("Contractor is [" + safetyRisk + " risk]");
+			identifiers.add("Contractor is [" + safetyRisk + " in safety risk]");
+		if (productRisk != null)
+			identifiers.add("Contractor is [" + productRisk + " in product risk]");
 		if (operatorAccount != null)
 			identifiers.add("Operator is [" + operatorAccount.getName() + "]");
 		if (contractorType != null)
