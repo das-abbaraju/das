@@ -2,7 +2,6 @@ package com.picsauditing.actions;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -53,9 +52,7 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
-import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -389,8 +386,8 @@ public class ContractorCron extends PicsActionSupport {
 		});
 
 		if (roseburgAudits.size() > 0) {
-			List<ContractorAudit> mostRecentRoseburgAudits = roseburgAudits.subList(0, Math.min(3, roseburgAudits
-					.size()));
+			List<ContractorAudit> mostRecentRoseburgAudits = roseburgAudits.subList(0,
+					Math.min(3, roseburgAudits.size()));
 			int roseburgTotal = 0;
 			for (ContractorAudit roseburgAudit : mostRecentRoseburgAudits) {
 				roseburgTotal += roseburgAudit.getScore();
@@ -558,8 +555,8 @@ public class ContractorCron extends PicsActionSupport {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.getStatus().after(AuditStatus.Pending)) {
 							if (cao.hasCaop(co.getOperatorAccount().getId())) {
-								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co
-										.getFlagDatas());
+								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(),
+										co.getFlagDatas());
 
 								cao.setFlag(flagColor);
 							}
@@ -710,53 +707,44 @@ public class ContractorCron extends PicsActionSupport {
 					manualAuditAuditor = audit.getAuditor();
 			}
 		}
-		// TODO There are a lot of hardcoded auditors here, refactor this to use the new UserAssignment technology
+
+		UserAssignment ua = null;
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (!audit.isExpired()) {
-				// TODO Consider using a switch statement
-				// Automatically set Harvey as the (closing) safety professional
-				// for
-				// the WA State Requirement
-				if (audit.getAuditType().getId() == AuditType.WA_STATE_VERIFICATION) {
-					// UserAssignment ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
-					audit.setAuditor(new User(935));
-					audit.setClosingAuditor(new User(935));
-				}
-				// Auditor Assignments -- Manual audit
-				// Check for PQF completion, invoices for paying operators (less
-				// than 10 facilities) and totals under $450
-				if (audit.getAuditType().isDesktop() && audit.getAuditor() == null && pqfComplete) {
-					// TODO create a private method ContractorAccount.isFinanciallyReadyForAudits
-					// Consider the total
-					for (Invoice invoice : contractor.getInvoices()) {
-						for (InvoiceItem item : invoice.getItems()) {
-							// TODO consider doing a query instead because this could result in a LOT of loops
-							if (item.getInvoiceFee().getFeeClass().equals("Membership")
-									&& item.getInvoiceFee().getId() != InvoiceFee.PQFONLY
-									&& item.getInvoiceFee().getId() != InvoiceFee.BIDONLY
-									&& !invoice.isOverdue()
-									&& (item.getAmount().equals(item.getInvoiceFee().getAmount()) || invoice
-											.getTotalAmount().compareTo(new BigDecimal(450)) < 0)
-									&& contractor.getPayingFacilities() < 10) {
-								// TODO This doesn't need to be executed more than once, so move outside of the for loop
-								// Then you can name your boolean somethings that is easy to understand like hasOpenMembershipFeeOverdue
-								UserAssignment ua = userAssignmentDAO
-										.findByContractor(contractor, audit.getAuditType());
-								if (ua != null) {
-									audit.setAuditor(ua.getUser());
-									audit.setAssignedDate(new Date());
-								}
-							}
+				switch (audit.getAuditType().getId()) {
+				case (AuditType.WA_STATE_VERIFICATION):
+					ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
+					if (ua != null) {
+						// Assign both auditor and closing auditor
+						audit.setAuditor(ua.getUser());
+						audit.setClosingAuditor(ua.getUser());
+						audit.setAssignedDate(new Date());
+					}
+					break;
+				case (AuditType.DESKTOP):
+					if (audit.getAuditor() == null && pqfComplete && contractor.isFinanciallyReadyForAudits()) {
+						ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
+						if (ua != null) {
+							audit.setAuditor(ua.getUser());
+							audit.setAssignedDate(new Date());
 						}
 					}
-				}
-				// TODO Do we need to check for the Competency Tag?
-				// HSE Competency Review Auditor Reassignment
-				if (audit.getAuditType().getId() == AuditType.SHELL_COMPETENCY_REVIEW && audit.getAuditor() == null) {
+					break;
+				case (AuditType.SHELL_COMPETENCY_REVIEW):
 					// Reassign if given to an independent auditor
-					Integer auditorReassign = audit.getIndependentClosingAuditor(manualAuditAuditor);
-					// Assign to Mina if null
-					audit.setAuditor(auditorReassign != null ? new User(auditorReassign) : new User(1029));
+					Integer auditorID = audit.getIndependentClosingAuditor(manualAuditAuditor);
+					User auditorReassign = null;
+
+					if (auditorID == null) {
+						ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
+						auditorReassign = ua.getUser();
+					} else {
+						auditorReassign = new User(auditorID);
+					}
+
+					audit.setAuditor(auditorReassign);
+					audit.setAssignedDate(new Date());
+					break;
 				}
 			}
 		}

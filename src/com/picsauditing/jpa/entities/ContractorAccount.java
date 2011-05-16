@@ -1121,4 +1121,12 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setTradesUpdated(Date tradesUpdated) {
 		this.tradesUpdated = tradesUpdated;
 	}
+
+	@Transient
+	public boolean isFinanciallyReadyForAudits() {
+		// TODO need to refactor this
+		double halfMembership = getMembershipLevel().getAmount().doubleValue() * 0.5;
+		double balance = getBalance().doubleValue();
+		return balance < halfMembership;
+	}
 }
