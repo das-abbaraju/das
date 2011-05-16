@@ -2,9 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,7 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
-import com.picsauditing.actions.auditType.AuditRuleColumn;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -28,10 +25,10 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected OperatorAccount operatorAccount;
 	protected ContractorType contractorType;
 	protected OperatorTag tag;
+	protected Trade trade;
 	protected AuditQuestion question;
 	protected QuestionComparator questionComparator;
 	protected String questionAnswer;
-	protected Trade trade;
 	// Default to bid-only "No" (Needed to the increase the priority)
 	protected Boolean acceptsBids = false;
 
@@ -149,6 +146,23 @@ public class AuditRule extends BaseDecisionTreeRule {
 		if (tag == null)
 			return "*";
 		return tag.getTag();
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "tradeID")
+	public Trade getTrade() {
+		return trade;
+	}
+
+	public void setTrade(Trade trade) {
+		this.trade = trade;
+	}
+
+	@Transient
+	public String getTradeLabel() {
+		if (trade == null)
+			return "*";
+		return trade.getName().toString();
 	}
 
 	@ManyToOne
@@ -385,7 +399,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 		if (acceptsBids != null)
 			identifiers.add("Contactor " + (acceptsBids ? "can [bid-only]" : "has [full account]"));
 		if (trade != null)
-			identifiers.add("TradeID " + trade.getName());
+			identifiers.add("Trade is [" + trade.getName() + "]");
 		if (auditType != null)
 			identifiers.add("Audit Type is [" + auditType.getName().toString() + "]");
 
@@ -397,15 +411,5 @@ public class AuditRule extends BaseDecisionTreeRule {
 		}
 
 		return sb.toString();
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "tradeID")
-	public Trade getTrade() {
-		return trade;
-	}
-
-	public void setTrade(Trade trade) {
-		this.trade = trade;
 	}
 }

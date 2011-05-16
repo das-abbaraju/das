@@ -47,3 +47,7 @@ tr.rule-percents {
 tr.rule-percents td {
 	vertical-align:top;
 }
+td.limitWidth {
+	max-width: 200px;
+	width: expression(this.width > 200 ? "200px" : "auto");
+}

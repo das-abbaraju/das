@@ -50,14 +50,14 @@ function deleteRule(element,ruleID) {
 				<s:if test="columnMap.get('tag')">
 					<th>Tag</th>
 				</s:if>
+				<s:if test="columnMap.get('trade')">
+					<th>Trade</th>
+				</s:if>
 				<s:if test="columnMap.get('bidOnly')">
 					<th>Bid-Only</th>
 				</s:if>
 				<s:if test="columnMap.get('question')">
 					<th colspan="3">Question</th>
-				</s:if>
-				<s:if test="columnMap.get('trade')">
-					<th>Trade</th>
 				</s:if>
 				<s:if test="columnMap.get('dependentAuditType')">
 					<th colspan="2">Dependent Audit</th>
@@ -128,11 +128,14 @@ function deleteRule(element,ruleID) {
 					<s:if test="columnMap.get('tag')">
 						<td><s:property value="tagLabel"/></td>
 					</s:if>
+					<s:if test="columnMap.get('trade')">
+						<td class="limitWidth"><s:property value="tradeLabel" /></td>
+					</s:if>
 					<s:if test="columnMap.get('bidOnly')">
 						<td><s:property value="acceptsBidsLabel"/></td>
 					</s:if>
 					<s:if test="columnMap.get('question')">
-						<td style="max-width: 200px">
+						<td class="limitWidth">
 							<s:if test="question != null && permissions.hasPermission('ManageAudits')">
 								<a href="ManageQuestion.action?id=<s:property value="question.id"/>"><s:property value="questionLabel"/></a>
 							</s:if>
@@ -143,9 +146,6 @@ function deleteRule(element,ruleID) {
 						<td><s:property value="questionComparatorLabel"/></td>
 						<td><s:property value="questionAnswerLabel"/></td>
 					</s:if>					
-					<s:if test="columnMap.get('trade')">
-						<td style="max-width: 200px"><s:property value="trade.name" /></td>
-					</s:if>
 					<s:if test="columnMap.get('dependentAuditType')">
 						<td>
 							<s:if test="dependentAuditType != null && permissions.hasPermission('ManageAudits')">
