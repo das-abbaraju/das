@@ -427,7 +427,12 @@ table.report tr.hurdle td {
 					<strong><s:property value="contractor.auditor.name" /> / <s:property value="contractor.auditor.phone" /> / </strong>
 					<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email"><s:property value="contractor.auditor.email"/></a>
 				</p>
-				<p><s:text name="%{scope}.ContractorDashboard.RiskLevel" />: <strong><s:property value="contractor.riskLevel"/></strong></p>
+				<s:if test="!contractor.materialSupplierOnly">
+					<p><s:text name="%{scope}.ContractorDashboard.SafetyRisk" />: <strong><s:property value="contractor.safetyRisk"/></strong></p>
+				</s:if>
+				<s:if test="">
+					<p><s:text name="%{scope}.ContractorDashboard.ProductRisk" />: <strong><s:property value="contractor.productRisk"/></strong></p>
+				</s:if>
 				<s:if test="hasOperatorTags">
 					<s:if test= "contractor.operatorTags.size() > 0 || operatorTags.size() > 0">
 						<div><span>Operator Tag Names: </span>

@@ -43,7 +43,12 @@
 		<h2 class="formLegend"><s:text name="%{scope}.Facilities.heading" /></h2>
 		<ol>
 			<li><label><s:text name="%{scope}.Facilities.RequestedBy" />:</label> <s:property value="requestedBy.name" /></li>
-			<li><label><s:text name="%{scope}.Facilities.RiskLevel" />:</label> <s:property value="contractor.riskLevel" /></li>
+			<s:if test="!contractor.materialSupplierOnly">
+				<li><label><s:text name="%{scope}.Facilities.SafetyRisk" />:</label> <s:property value="contractor.safetyRisk" /></li>
+			</s:if>
+			<s:if test="contractor.materialSupplier">
+				<li><label><s:text name="%{scope}.Facilities.ProductRisk" />:</label> <s:property value="contractor.productRisk" /></li>
+			</s:if>
 			<li><label><s:text name="%{scope}.Facilities.Facilities" />:</label> <s:property value="contractor.payingFacilities" /> paying operator(s)<br />
 			<br />
 			<ul style="position: relative; left: 1em; list-style-type: disc;">

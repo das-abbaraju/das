@@ -27,7 +27,7 @@
 		<td></td>
 		<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor Name</a></td>
 		<td><a href="javascript: changeOrderBy('form1','a.creationDate');">Registration Date</a></td>
-		<td><a href="javascript: changeOrderBy('form1','c.riskLevel');">Calculated Risk</a></td>
+		<td><a href="javascript: changeOrderBy('form1','c.safetyRisk');">Calculated Risk</a></td>
 		<td><a href="javascript: changeOrderBy('form1','pd.answer');">Contractor Risk</a></td>
 		<td>Notes</td>
 		<td></td>

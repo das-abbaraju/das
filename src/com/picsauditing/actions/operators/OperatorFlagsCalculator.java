@@ -307,6 +307,8 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		sql.addField("a.name contractor_name");
 		sql.addField("a.acceptsBids");
 		sql.addField("c.riskLevel");
+		sql.addField("c.safetyRisk");
+		sql.addField("c.productRisk");
 		sql.addField("fcc.answer");
 		sql.addField("fcc.verified");
 		sql.addField("fdo.forceFlag");

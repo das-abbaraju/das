@@ -70,9 +70,12 @@ $(function() {
 <button id="searchfilter" type="button" name="button"
 	class="picsbutton positive" onclick="run()">Run Simulation</button>
 </div>
-<div class="filterOption"><s:select
+<div class="filterOption"><label>Safety Risk</label><s:select
 	list="#{'Low':'Low Risk','Med':'Medium Risk','High':'High Risk'}"
-	name="contractor.riskLevel" value="'High'" /></div>
+	name="contractor.safetyRisk" value="'High'" /></div>
+<div class="filterOption"><label>Product Risk</label><s:select
+	list="#{'Low':'Low Risk','Med':'Medium Risk','High':'High Risk'}"
+	name="contractor.productRisk" value="'High'" /></div>
 
 <div class="filterOption"><s:checkbox name="contractor.acceptsBids" id="acceptsBids" value="true" /><label for="acceptsBids">Accepts Bids</label></div>
 <div class="filterOption"><s:checkbox name="contractor.onsiteServices" id="onsite" value="true" /><label for="onsite">Onsite Services</label></div>

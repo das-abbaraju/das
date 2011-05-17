@@ -36,7 +36,8 @@ with any of these contractors, please encourage them to renew their membership b
 			<td><a href="javascript: changeOrderBy('form1','a.creationDate');">Created On</a></td>
 			<td><a href="javascript: changeOrderBy('form1','c.paymentExpires');">Expired</a></td>
 			<td>Reason</td>
-			<td>RiskLevel</td>
+			<td>Safety Assessment</td>
+			<td>Product Assessment</td>
 			<td># of Employees</td>
 		</s:if>
 		<s:if test="showContact">
@@ -75,7 +76,16 @@ with any of these contractors, please encourage them to renew their membership b
 				<td><s:date name="get('creationDate')" format="M/d/yy"/></td>
 				<td><s:date name="get('paymentExpires')" format="M/d/yy"/></td>
 				<td><s:property value="get('reason')" /></td>
-				<td><s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('riskLevel'))" /></td>
+				<td>
+					<s:if test="get('safetyRisk') != null">
+						<s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('safetyRisk'))" />
+					</s:if>
+				</td>
+				<td>
+					<s:if test="get('productRisk') != null">
+						<s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('productRisk'))" />
+					</s:if>
+				</td>
 				<td><s:property value="get('answer69')" /></td>
 			</s:if>
 			<s:if test="showContact">

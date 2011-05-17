@@ -45,8 +45,8 @@
 				<s:form>
 					<s:hidden name="id" value="%{contractor.id}"/>
 					<div>
-						<s:if test="contractor.riskLevel.toString().equals('None')">
-						Based on the information provided your level of risk for the the work your company performs is <strong><s:property value="contractor.riskLevel"/></strong>.	<br/>
+						<s:if test="contractor.safetyRisk.toString().equals('None')">
+						Based on the information provided your level of risk for the the work your company performs is <strong><s:property value="contractor.safetyRisk"/></strong>.	<br/>
 						</s:if>
 						<s:if test="contractor.acceptsBids">
 							With a Listed Account, you will only be able to complete the following Audits: <br clear="all"/>

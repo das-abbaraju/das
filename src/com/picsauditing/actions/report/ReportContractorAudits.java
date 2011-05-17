@@ -110,7 +110,8 @@ public class ReportContractorAudits extends ReportAccount {
 		super.addExcelColumns();
 		// Remove fields from the parent that are not accessible/necessary here
 		excelSheet.removeColumn("creationDate");
-		excelSheet.removeColumn("riskLevel");
+		excelSheet.removeColumn("safetyRisk");
+		excelSheet.removeColumn("productRisk");
 		excelSheet.removeColumn("fax");
 		excelSheet.removeColumn("phone");
 

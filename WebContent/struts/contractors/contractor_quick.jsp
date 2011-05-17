@@ -42,9 +42,16 @@
 		<label>Trade:</label>
 		<s:property value="contractor.mainTrade" />
 		<br />
-		<label>Risk Level:</label>
-		<s:property value="contractor.riskLevel" />
-		<br />
+		<s:if test="!contractor.materialSupplierOnly">
+			<label>Safety Risk:</label>
+			<s:property value="contractor.safetyRisk" />
+			<br />
+		</s:if>
+		<s:if test="contractor.materialSupplier">
+			<label>Product Risk:</label>
+			<s:property value="contractor.productRisk" />
+			<br />
+		</s:if>
 		<label>Location:</label>
 		<s:property value="contractor.city" />,
 		<s:if test="contractor.country.hasStates">

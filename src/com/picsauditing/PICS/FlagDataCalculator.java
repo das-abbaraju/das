@@ -125,7 +125,7 @@ public class FlagDataCalculator {
 			if (!worksForOperator || con.isAcceptsBids()) {
 				// This is a check for if the contractor doesn't
 				// work for the operator (Search for new), or is a bid only
-				if (!criteria.getAuditType().isPqf()){
+				if (!criteria.getAuditType().isPqf()) {
 					// Ignore all audit requirements other than PQF
 					return null;
 				}
@@ -305,13 +305,11 @@ public class FlagDataCalculator {
 		ContractorAccount contractor = co.getContractorAccount();
 		OperatorAccount operator = co.getOperatorAccount();
 
-		// TODO add productRiskLevel ?
-		if (contractor.getSafetyRisk() == null)
+		if (!contractor.isMaterialSupplierOnly() && contractor.getSafetyRisk() == null)
 			return WaitingOn.Contractor;
 
-		// TODO add productRiskLevel ?
-//		if (contractor.getProductRiskLevel() == null)
-//			return WaitingOn.Contractor;
+		if (contractor.isMaterialSupplier() && contractor.getProductRisk() == null)
+			return WaitingOn.Contractor;
 
 		if (!contractor.getStatus().isActiveDemo())
 			return WaitingOn.Contractor; // This contractor is delinquent
@@ -361,7 +359,8 @@ public class FlagDataCalculator {
 											waitingOnOperator = true;
 										else
 											waitingOnPics = true;
-									} else // Assuming that a null permission means "Only PICS" can edit
+									} else
+										// Assuming that a null permission means "Only PICS" can edit
 										waitingOnPics = true;
 								} else {
 									AuditStatus requiredStatus = key.getRequiredStatus();

@@ -95,7 +95,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			}
 		}
 		excelSheet.addColumn(new ExcelColumn("creationDate", "Creation Date", ExcelCellType.Date), 500);
-		excelSheet.addColumn(new ExcelColumn("riskLevel", "Risk Level", ExcelCellType.Enum));
+		excelSheet.addColumn(new ExcelColumn("safetyRisk", "Safety Assessment", ExcelCellType.Enum));
+		excelSheet.addColumn(new ExcelColumn("productRisk", "Product Assessment", ExcelCellType.Enum));
 		if (isShowContact()) {
 			excelSheet.addColumn(new ExcelColumn("contactname", "Primary Contact"));
 			excelSheet.addColumn(new ExcelColumn("contactphone", "Phone"));
@@ -317,7 +318,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filterOn(f.getRiskLevel())) {
 			String list = Strings.implode(f.getRiskLevel(), ",");
-			sql.addWhere("c.riskLevel IN (" + list + ")");
+			sql.addWhere("c.safetyRisk IN (" + list + ")");
 			setFiltered(true);
 		}
 

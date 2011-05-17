@@ -138,7 +138,7 @@ public class ExcelSheet {
 						c.setCellValue(Double.parseDouble(row.get(column.getName()).toString()));
 					else if (ExcelCellType.Enum.equals(column.getCellType())) {
 						String value = "";
-						if ("riskLevel".equals(column.getName()))
+						if ("safetyRisk".equals(column.getName()) || "productRisk".equals(column.getName()))
 							value = LowMedHigh.getName((Integer) row.get(column.getName()));
 						else if ("waitingOn".equals(column.getName()))
 							value = WaitingOn.valueOf((Integer) row.get(column.getName())).toString();

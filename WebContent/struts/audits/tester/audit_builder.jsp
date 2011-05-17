@@ -16,8 +16,10 @@
 
 <label>Name:</label>
 <s:property value="contractor.name" />
-Risk:
-<s:property value="contractor.riskLevel" />
+Safety Risk:
+<s:property value="contractor.safetyRisk" />
+Property Risk:
+<s:property value="contractor.productRisk" />
 Contractor Type:
 <s:if test="contractor.onsiteServices">Onsite Services</s:if>
 <s:if test="contractor.offsiteServices">Offsite Services</s:if>
