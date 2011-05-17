@@ -259,13 +259,9 @@ public class ContractorRegistration extends ContractorActionSupport {
 				note.setViewableById(Account.EVERYONE);
 				noteDAO.save(note);
 			}
+			
+			redirect("ContractorTrades.action?id=" + contractor.getId());
 
-			if (contractor.isMaterialSupplier() && !contractor.isOnsiteServices() && !contractor.isOffsiteServices())
-				redirect("ContractorFacilities.action?id=" + contractor.getId()
-						+ (requestID > 0 ? "&requestID=" + requestID : ""));
-			else
-				redirect("ContractorRegistrationServices.action?id=" + contractor.getId()
-						+ (requestID > 0 ? "&requestID=" + requestID : ""));
 			return BLANK;
 		}
 
