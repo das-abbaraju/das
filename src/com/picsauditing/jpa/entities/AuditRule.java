@@ -74,9 +74,9 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 	@Transient
 	public String getProductRiskLabel() {
-		if (safetyRisk == null)
+		if (productRisk == null)
 			return "*";
-		return safetyRisk.toString();
+		return productRisk.toString();
 	}
 
 	@ManyToOne

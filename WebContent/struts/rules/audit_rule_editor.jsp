@@ -271,9 +271,15 @@ $(function() {
 				<li><label>Account Type</label>
 					<s:radio theme="pics" name="rule.contractorType" list="#{'':'Any','Onsite':'Onsite Services','Offsite':'Offsite Services','Supplier':'Material Supplier'}" />
 				</li>
-				<li><label>Risk</label>
-					<div class="nobr"><s:radio theme="pics" name="rule.risk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/></div>
+				<li>
+					<label>Safety Risk</label>
+					<div class="nobr"><s:radio theme="pics" name="rule.safetyRisk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/></div>
 				</li>
+				<li>
+					<label>Product Risk</label>
+					<div class="nobr"><s:radio theme="pics" name="rule.productRisk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/></div>
+				</li>
+
 				<li <s:if test="operatorRequired">class="required"</s:if>>
 					<label>Operator</label>
 					<s:textfield cssClass="autocomplete" id="operator" name="ruleOperatorAccountId" value="%{rule.operatorAccount.id}"/>
