@@ -67,7 +67,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private Date membershipDate;
 	private int payingFacilities;
 	private User auditor;
-	private LowMedHigh riskLevel;
 	private LowMedHigh safetyRisk;
 	private LowMedHigh productRisk;
 	private Date viewedFacilities;
@@ -278,22 +277,6 @@ public class ContractorAccount extends Account implements JSONable {
 		this.ccEmail = ccEmail;
 	}
 
-	@Enumerated(EnumType.ORDINAL)
-	@Column(name = "riskLevel")
-	@Deprecated
-	/**
-	 * Use SafetyRisk and/or ProductRisk
-	 */
-	public LowMedHigh getRiskLevel() {
-		return riskLevel;
-	}
-
-	@Deprecated
-	public void setRiskLevel(LowMedHigh riskLevel) {
-		this.riskLevel = riskLevel;
-	}
-
-	@Enumerated(EnumType.ORDINAL)
 	public LowMedHigh getSafetyRisk() {
 		return safetyRisk;
 	}
@@ -302,7 +285,6 @@ public class ContractorAccount extends Account implements JSONable {
 		this.safetyRisk = safetyRisk;
 	}
 
-	@Enumerated(EnumType.ORDINAL)
 	public LowMedHigh getProductRisk() {
 		return productRisk;
 	}
