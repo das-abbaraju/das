@@ -274,6 +274,11 @@ public class ContractorWidget extends ContractorActionSupport {
 						openTasks.add(getText("ContractorWidget.message.AssessmentResultsNeedMatching"));
 					}
 			}
+			
+			// check if trades need review
+			if (contractor.isNeedsTradesUpdated()) {
+				openTasks.add(getText("ContractorWidget.message.NeedsTradesUpdated", new Object[] {contractor.getId()}));
+			}
 		}
 
 		return openTasks;
