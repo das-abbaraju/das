@@ -30,8 +30,6 @@ public class AuditTypeRuleCache {
 	}
 
 	public List<AuditTypeRule> getApplicableAuditRules(ContractorAccount contractor) {
-		// PicsLogger.start("AuditTypeRuleCache",
-		// "Searching AuditTypeRuleCache for contractor " + contractor.getId());
 		List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
 		if (getData() == null)
 			return null;
@@ -74,70 +72,40 @@ public class AuditTypeRuleCache {
 				for (LowMedHigh productRisk : productRisks) {
 					AcceptsBids dataZ = data2.getData(productRisk);
 					if (dataZ != null) {
-						// PicsLogger.log("found matching risk " + risk);
 						for (Boolean acceptsBid : acceptsBids) {
 							ContractorTypes data3 = dataZ.getData(acceptsBid);
 							if (data3 != null) {
-								// PicsLogger.log(" found matching acceptsBid "
-								// +
-								// acceptsBid);
 								for (ContractorType conType : contractorType) {
 									Trades dataX = data3.getData(conType);
 									if (dataX != null) {
 										for (Trade t : trades) {
 											Operators data4 = dataX.getData(t);
 											if (data4 != null) {
-												// PicsLogger.log("   found matching conType "
-												// + conType);
 												for (OperatorAccount o : operators) {
 													OperatorAccount operator = o;
 													Set<AuditTypeRule> data6 = data4.getData(operator);
 													if (data6 != null) {
-														// PicsLogger.log("    found matching operator "
-														// + operator);
 														for (AuditTypeRule auditTypeRule : data6) {
-															// boolean
-															// specificContractorRule
-															// =
-															// (conType != null
-															// &&
-															// );
+															/*
+															 * boolean specificContractorRule = (conType != null && );
+															 */
 															if (auditTypeRule.isInclude())
 																rules.add(auditTypeRule);
 															else {
 																/*
-																 * Exclude rules
-																 * can be tricky
-																 * if they are
-																 * specific We
-																 * could also
-																 * add in
-																 * functionality
-																 * to support
-																 * dependent
-																 * question sets
-																 * here are well
-																 * 12/2010
-																 * Please
-																 * discuss with
-																 * both Trevor
-																 * and Keerthi
-																 * before
-																 * changing this
+																 * Exclude rules can be tricky if they are specific We
+																 * could also add in functionality to support dependent
+																 * question sets here are well 12/2010 Please discuss
+																 * with both Trevor and Keerthi before changing this
 																 * logic
 																 */
 																if (conType == null)
 																	rules.add(auditTypeRule);
 																else if (contractorType.size() == 2)
-																	// This
-																	// contractor
-																	// has
-																	// only one
-																	// type
-																	// so
-																	// include
-																	// the
-																	// "exclusion rule"
+																	/*
+																	 * This contractor has only one type so include the
+																	 * "exclusion rule"
+																	 */
 																	rules.add(auditTypeRule);
 															}
 														}
@@ -156,10 +124,6 @@ public class AuditTypeRuleCache {
 
 		Collections.sort(rules);
 		Collections.reverse(rules);
-
-		// PicsLogger.log("found " + rules.size() + " rules for contractor " +
-		// contractor.getId());
-		// PicsLogger.stop();
 
 		return rules;
 	}
