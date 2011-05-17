@@ -224,6 +224,14 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		this.needsIndexing = needsIndexing;
 	}
 
+	public int getContractorCount() {
+		return contractorCount;
+	}
+
+	public void setContractorCount(int contractorCount) {
+		this.contractorCount = contractorCount;
+	}
+
 	@OneToMany(mappedBy = "trade", cascade = CascadeType.ALL)
 	public List<TradeAlternate> getAlternates() {
 		return alternates;
@@ -394,11 +402,4 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		return String.valueOf(name);
 	}
 
-	public int getContractorCount() {
-		return contractorCount;
-	}
-
-	public void setContractorCount(int contractorCount) {
-		this.contractorCount = contractorCount;
-	}
 }
