@@ -59,8 +59,20 @@ public class AuditorAvailabilityDAO extends PicsDAO {
 	}
 
 	public List<AuditorAvailability> findByAuditorID(int auditorID) {
-		Query query = em.createQuery("SELECT t FROM AuditorAvailability t " + "WHERE t.user.id = ? ORDER BY startDate");
+		return findByAuditorID(auditorID, null);
+	}
+
+	public List<AuditorAvailability> findByAuditorID(int auditorID, Date startDate) {
+		String where = "t.user.id = ?";
+		if (startDate != null)
+			where += " AND t.startDate >= ?";
+
+		Query query = em.createQuery("SELECT t FROM AuditorAvailability t WHERE " + where + " ORDER BY startDate");
 		query.setParameter(1, auditorID);
+
+		if (startDate != null)
+			query.setParameter(2, startDate);
+
 		return query.getResultList();
 	}
 

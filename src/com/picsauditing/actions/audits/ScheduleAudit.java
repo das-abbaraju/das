@@ -119,14 +119,14 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		if (!permissions.isAdmin())
 			throw new NoRightsException("ScheduleAudits");
 
-		if(auditor==null){
+		if (auditor == null) {
 			addActionError("You must select an auditor when scheduling an audit");
 			return "edit";
 		}
-		
+
 		conAudit.setAuditor(auditor);
 		conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(auditor)));
-		
+
 		Date scheduledDateInUserTime = DateBean.parseDateTime(scheduledDateDay + " " + scheduledDateTime);
 		if (scheduledDateInUserTime == null) {
 			addActionError(scheduledDateTime + " is not a valid time");
@@ -280,8 +280,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		return "summary";
 	}
-	
-	public String viewMoreTimes(){
+
+	public String viewMoreTimes() {
 		findTimeslots();
 		return "select";
 	}
@@ -294,7 +294,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		subHeading = "Schedule " + getText(conAudit.getAuditType().getI18nKey("name"));
 
-		
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (cao.getStatus().after(AuditStatus.Pending)) {
 				return "summary";
@@ -353,7 +352,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		if (conAudit.getAuditor() != null) {
 			// There's all ready an auditor set
-			timeslots = auditorAvailabilityDAO.findByAuditorID(conAudit.getAuditor().getId());
+			timeslots = auditorAvailabilityDAO.findByAuditorID(conAudit.getAuditor().getId(), availabilityStartDate);
 		} else if (assignments.size() > 0) {
 			// There are assignments for the contractor's location
 			if (assignments.size() > 1) {
@@ -366,7 +365,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				timeslots = auditorAvailabilityDAO.findAvailableLocal(availabilityStartDate, auditors);
 			} else
 				// Just select the auditor's schedule
-				timeslots = auditorAvailabilityDAO.findByAuditorID(assignments.get(0).getUser().getId());
+				timeslots = auditorAvailabilityDAO.findByAuditorID(assignments.get(0).getUser().getId(),
+						availabilityStartDate);
 		} else
 			// Find the schedule for all auditors
 			timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
@@ -615,8 +615,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 					.getContractorAccount().getUsers().get(0));
 
 			String seed = "c" + conAudit.getContractorAccount().getId() + "id" + conAudit.getId();
-			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=c&contractorAudit=" + conAudit.getId() + "&key="
-					+ Strings.hashUrlSafe(seed);
+			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=c&contractorAudit=" + conAudit.getId()
+					+ "&key=" + Strings.hashUrlSafe(seed);
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 			EmailQueue email = emailBuilder.build();
@@ -630,8 +630,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			emailBuilder.setTemplate(14);
 
 			String seed = "a" + conAudit.getAuditor().getId() + "id" + conAudit.getId();
-			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=a&contractorAudit=" + conAudit.getId() + "&key="
-					+ Strings.hashUrlSafe(seed);
+			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=a&contractorAudit=" + conAudit.getId()
+					+ "&key=" + Strings.hashUrlSafe(seed);
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setUser(conAudit.getAuditor());
 			emailBuilder.setFromAddress("\"Jesse Cota\"<jcota@picsauditing.com>");
