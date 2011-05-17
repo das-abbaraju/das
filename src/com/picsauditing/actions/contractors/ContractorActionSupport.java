@@ -165,7 +165,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 				item.setCurrent(true);
 			}
 			menu.add(item);
-			menu.add(new MenuComponent(getText("ConctratorTrades.title"), null, "conTradesLink")); // Trades
+			menu.add(new MenuComponent(getText("ContractorTrades.title"), null, "conTradesLink")); // Trades
 			menu.add(new MenuComponent(getText("ContractorRegistrationServices.title"), null, "conServicesLink")); // Services
 																													// Performed
 			menu.add(new MenuComponent(getText("ContractorFacilities.title"), null, "conFacilitiesLink")); // Facilities
@@ -183,8 +183,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 			menu.add(item);
 
 			// Trades
-			MenuComponent itemTrades = new MenuComponent(getText("ConctratorTrades.title"), null, "conTradesLink");
-			if (requestURL.contains("ConctratorTrades.action")) {
+			MenuComponent itemTrades = new MenuComponent(getText("ContractorTrades.title"), null, "conTradesLink");
+			if (requestURL.contains("ContractorTrades.action")) {
 				itemTrades.setCurrent(true);
 			}
 			menu.add(itemTrades);
