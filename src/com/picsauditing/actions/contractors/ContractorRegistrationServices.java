@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.User;
 
@@ -43,8 +44,6 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	}
 
 	public String execute() throws Exception {
-		loadPermissions();
-
 		findContractor();
 
 		auditData = new AuditData();
@@ -68,7 +67,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			createPQF();
 
 		Set<Integer> questionIds = new HashSet<Integer>();
-		categories = auditCategoryDAO.findWhere("id IN (400)");
+		categories = auditCategoryDAO.findWhere("id IN (400, 1682, 1683)");
 		for (AuditCategory category : categories) {
 			for (AuditQuestion question : category.getQuestions()) {
 				infoQuestions.add(question);
@@ -78,51 +77,78 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 		answerMap = auditDataDAO.findAnswersByContractor(id, questionIds);
 
-		// TODO add productRiskLevel ?
-		if ("calculateRisk".equals(button)) {
-			if (contractor.getSafetyRisk() == null) {
-				boolean requiredQuestions = false;
-				boolean performServices = false;
-				if (answerMap != null) {
-					for (AuditQuestion aq : infoQuestions) {
-						if (answerMap.get(aq.getId()) == null) {
-							requiredQuestions = false;
-							break;
-						} else
-							requiredQuestions = true;
+		return SUCCESS;
+	}
+
+	public String calculateRisk() throws Exception {
+		execute();
+
+		contractor.setSafetyRisk(null);
+		if (contractor.getSafetyRisk() == null || contractor.getProductRisk() == null) {
+			boolean requiredQuestions = false;
+			if (answerMap != null) {
+				for (AuditQuestion aq : infoQuestions) {
+					if (answerMap.get(aq.getId()) == null) {
+						requiredQuestions = false;
+						break;
+					} else
+						requiredQuestions = true;
+				}
+			}
+			if (!requiredQuestions)
+				addActionError("Please answer all the questions on the General Info section");
+			if (requiredQuestions) {
+				Collection<AuditData> auditList = answerMap.values();
+				LowMedHigh safetyRisk = LowMedHigh.Low;
+				LowMedHigh productRisk = LowMedHigh.Low;
+				for (ContractorTrade trade : contractor.getTrades()) {
+					if (trade.getTrade().getSafetyRisk() != null)
+						safetyRisk = getMaxRiskLevel(safetyRisk, trade.getTrade().getSafetyRisk());
+					if (trade.getTrade().getProductRisk() != null)
+						productRisk = getMaxRiskLevel(productRisk, trade.getTrade().getProductRisk());
+				}
+				LowMedHigh conSafetyAssessment = LowMedHigh.Low;
+				// LowMedHigh conProductAssessment = LowMedHigh.Low;
+				for (AuditData auditData : auditList) {
+					AuditQuestion q = auditData.getQuestion();
+					// if (q.getCategory().getId() == 269) {
+					if (q.getCategory().getId() == 400) {
+						// Subcategory is RISK ASSESSMENT
+						AuditData aData = answerMap.get(q.getId());
+						safetyRisk = getRiskLevel(aData, safetyRisk);
+
+						if (q.getId() == 2444)
+							conSafetyAssessment = getRiskLevel(aData, conSafetyAssessment);
+					} else if (q.getCategory().getId() == 1682 || q.getCategory().getId() == 1683) {
+						// 1682: Product Critical Assessment
+						// 1683: Product Safety Critical
+						AuditData aData = answerMap.get(q.getId());
+						productRisk = getRiskLevel(aData, productRisk);
 					}
 				}
-				if (!requiredQuestions)
-					addActionError("Please answer all the questions on the General Info section");
-				if (requiredQuestions && performServices) {
-					Collection<AuditData> auditList = answerMap.values();
-					LowMedHigh riskLevel = LowMedHigh.Low;
-					for (AuditData auditData : auditList) {
-						AuditQuestion q = auditData.getQuestion();
-						// if (q.getCategory().getId() == 269) {
-						if (q.getCategory().getId() == 400) {
-							// Subcategory is RISK ASSESSMENT
-							AuditData aData = answerMap.get(q.getId());
-							riskLevel = getRiskLevel(aData, riskLevel);
-						} else if (auditData.getAnswer().startsWith("C")) {
-							// TODO: Remove this -- this is related to services performed
-							// Self Performed Services
-							riskLevel = getMaxRiskLevel(riskLevel, q.getRiskLevel());
-						}
-						if (riskLevel.equals(LowMedHigh.High))
-							break;
-					}
-					contractor.setSafetyRisk(riskLevel);
-					// TODO add productRiskLevel ?
+				// Contractor's safety assessment is the same (or higher?) than
+				// what we've calculated
+				if (conSafetyAssessment.ordinal() >= safetyRisk.ordinal()) {
+					contractor.setSafetyRisk(safetyRisk);
+					contractor.setProductRisk(productRisk);
 					contractor.setAuditColumns(permissions);
 					accountDao.save(contractor);
-					redirect("ContractorFacilities.action?id=" + contractor.getId()
-							+ (requestID > 0 ? "&requestID=" + requestID : ""));
-					return BLANK;
+				} else {
+					String risk = safetyRisk.toString();
+					if (risk.equals("Med"))
+						risk = "Medium";
+
+					addActionError("The answers you have provided indicate a higher risk level than the "
+							+ "rating you have selected. We recommend increasing your risk ranking to " + risk
+							+ ".<br />Please contact PICS with any questions.");
+					return SUCCESS;
 				}
 			}
 		}
-		return SUCCESS;
+
+		redirect("ContractorFacilities.action?id=" + contractor.getId()
+				+ (requestID > 0 ? "&requestID=" + requestID : ""));
+		return BLANK;
 	}
 
 	public int getAuditID() {
@@ -210,6 +236,28 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
 				if (auditData.getAnswer().equals("High"))
 					return LowMedHigh.High;
+			}
+			// Product Critical Assessment
+			if (auditData.getQuestion().getId() == 7660 || auditData.getQuestion().getId() == 7661) {
+				// 7660: Can failures in your products result in a work stoppage
+				// or major business interruption for your customer?
+				// 7661: If you fail to deliver your products on-time, can it
+				// result in a work stoppage or major business interruption for
+				// your customer?
+				if (auditData.getAnswer().equals("Yes"))
+					return LowMedHigh.High;
+			}
+			// Product Safety Critical
+			if (auditData.getQuestion().getId() == 7662) {
+				// Can failures in your products result in bodily injury or
+				// illness to your customer or end-user?
+				if (auditData.getAnswer().equals("Yes"))
+					return LowMedHigh.High;
+			}
+			if (auditData.getQuestion().getId() == 7663) {
+				// Are you required to carry Product Liability Insurance?
+				if (auditData.getAnswer().equals("Medium"))
+					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
 			}
 		}
 		return riskLevel;

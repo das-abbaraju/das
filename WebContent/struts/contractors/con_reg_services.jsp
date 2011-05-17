@@ -35,9 +35,12 @@ display:none}
 	<s:include value="../audits/audit_cat_view.jsp"/>
 	</s:iterator>
 </div>
-
 <div class="buttons">
-	<a id="next_link" class="picsbutton positive" href="ContractorRegistrationServices.action?id=<s:property value="id"/>&button=calculateRisk<s:if test="requestID > 0">&requestID=<s:property value="requestID" /></s:if>">Next &gt;&gt;</a>
+	<s:form>
+		<s:hidden name="id" />
+		<s:hidden name="requestID" />
+		<s:submit action="ContractorRegistrationServices!calculateRisk" cssClass="picsbutton positive" id="next_link" value="%{getText('button.Next')} >>" />
+	</s:form>
 </div>
 </body>
 </html>
