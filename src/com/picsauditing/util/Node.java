@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 
 import com.google.common.base.Objects;
 import com.picsauditing.jpa.entities.JSONable;
+import com.picsauditing.jpa.entities.Trade;
 
 public class Node<T extends Hierarchical<T>> implements JSONable {
 
@@ -75,10 +76,11 @@ public class Node<T extends Hierarchical<T>> implements JSONable {
 			 * opened up properly.
 			 */
 			if (!data.isLeaf()) {
-				if (children.size() == 0)
+				if (children.size() == 0) {
 					json.put("state", "closed");
-				else
-					json.put("state", "open");
+				} else {
+					json.put("state", (isShownOpen(this)) ? "open" : "closed");
+				}
 			}
 		}
 
@@ -89,6 +91,28 @@ public class Node<T extends Hierarchical<T>> implements JSONable {
 		json.put("children", children);
 
 		return json;
+	}
+	
+	/**
+	 * Determines whether a node should be open or not. Currently only Trades
+	 * are examined. All others default to true.
+	 * 
+	 * @param node
+	 * @return true if the node should be shown open
+	 */
+	private boolean isShownOpen(Node<T> node) {
+		if ((node.getData() == null) || !(node.getData() instanceof Trade))
+			return true;
+		if (((Trade) node.getData()).getContractorCount() > 0)
+			return true;
+		if (node.getChildren() == null || node.getChildren().size() == 0)
+			return false;
+
+		boolean search = false;
+		for (Node<T> child : node.getChildren()) {
+			search |= isShownOpen(child);
+		}
+		return search;
 	}
 
 	@SuppressWarnings("unchecked")
