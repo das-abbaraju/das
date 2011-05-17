@@ -6,10 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
@@ -19,7 +24,14 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 @SuppressWarnings("serial")
 public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsActionSupport {
 
+	@Autowired
 	protected AuditDecisionTableDAO ruleDAO;
+	@Autowired
+	protected OperatorAccountDAO operatorDAO;
+	@Autowired
+	protected OperatorTagDAO operatorTagDAO;
+	@Autowired
+	protected TradeDAO tradeDAO;
 
 	protected Integer id;
 	protected String ruleType;
@@ -149,7 +161,8 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 	}
 
 	/**
-	 * TODO This should be inheriting from AuditRuleActionSupport to get access to the same method.
+	 * TODO This should be inheriting from AuditRuleActionSupport to get access
+	 * to the same method.
 	 */
 	public boolean isCanEditRule(AuditRule rule) {
 		if (rule != null) {

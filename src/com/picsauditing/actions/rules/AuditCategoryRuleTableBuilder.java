@@ -4,14 +4,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.dao.AuditCategoryDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.util.Strings;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -20,16 +20,10 @@ import edu.emory.mathcs.backport.java.util.Collections;
 public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCategoryRule> {
 
 	protected AuditCategoryRule comparisonRule;
-	protected OperatorAccountDAO operatorDAO;
+	@Autowired
 	protected AuditCategoryDAO auditCategoryDAO;
-	protected OperatorTagDAO operatorTagDAO;
 
-	public AuditCategoryRuleTableBuilder(AuditDecisionTableDAO ruleDAO, OperatorAccountDAO operatorDAO,
-			AuditCategoryDAO auditCategoryDAO, OperatorTagDAO operatorTagDAO) {
-		this.ruleDAO = ruleDAO;
-		this.operatorDAO = operatorDAO;
-		this.auditCategoryDAO = auditCategoryDAO;
-		this.operatorTagDAO = operatorTagDAO;
+	public AuditCategoryRuleTableBuilder() {
 		this.ruleType = "Category";
 		this.urlPrefix = "Category";
 	}
@@ -62,10 +56,10 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 			}
 			if (comparisonRule.getAuditCategory() != null) {
 				AuditCategory category = auditCategoryDAO.find(comparisonRule.getAuditCategory().getId());
-				whereClauses.add("(((t.auditType IS NULL OR t.auditType.id = "
-							+ category.getAuditType().getId() + ") AND t.auditCategory IS NULL AND (t.rootCategory = "
-						+ (category.getParent() == null ? 1 : 0) + " OR t.rootCategory IS NULL)) OR t.auditCategory.id = " + category.getId()
-						+ ")");
+				whereClauses.add("(((t.auditType IS NULL OR t.auditType.id = " + category.getAuditType().getId()
+						+ ") AND t.auditCategory IS NULL AND (t.rootCategory = "
+						+ (category.getParent() == null ? 1 : 0)
+						+ " OR t.rootCategory IS NULL)) OR t.auditCategory.id = " + category.getId() + ")");
 			} else {
 				if (comparisonRule.getAuditType() != null) {
 					whereClauses.add("(t.auditType IS NULL OR t.auditType.id = "
@@ -90,9 +84,16 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 			if (comparisonRule.getQuestion() != null) {
 				whereClauses.add("t.question.id = " + comparisonRule.getQuestion().getId());
 			}
-			
+
 			if (comparisonRule.getTrade() != null) {
-				whereClauses.add("t.trade.id = " + comparisonRule.getTrade().getId());
+				List<Trade> trades = tradeDAO.findListByTrade(comparisonRule.getTrade().getId(), 0);
+				StringBuilder sb = new StringBuilder("t.trade.id IN (");
+				for (Trade t : trades) {
+					sb.append(t.getId()).append(",");
+				}
+				sb.setLength(sb.lastIndexOf(","));
+				sb.append(")");
+				whereClauses.add(sb.toString());
 			}
 
 			rules = (List<AuditCategoryRule>) ruleDAO.findWhere(AuditCategoryRule.class, Strings.implode(whereClauses,

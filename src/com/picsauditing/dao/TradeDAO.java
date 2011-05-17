@@ -40,6 +40,10 @@ public class TradeDAO extends PicsDAO {
 	}
 
 	public Tree<Trade> findHierarchyByTrade(int tradeID, int depth) {
+		return Tree.createTreeFromOrderedList(findListByTrade(tradeID, depth));
+	}
+
+	public List<Trade> findListByTrade(int tradeID, int depth) {
 		SelectSQL sql = new SelectSQL("ref_trade t1");
 
 		sql.addJoin("JOIN ref_trade t2 ON (t1.indexStart >= t2.indexStart AND t1.indexEnd <= t2.indexEnd) "
@@ -55,7 +59,7 @@ public class TradeDAO extends PicsDAO {
 		query.setParameter("tradeID", tradeID);
 		query.setParameter("depth", depth);
 
-		return Tree.createTreeFromOrderedList(query.getResultList());
+		return query.getResultList();
 	}
 
 	public Tree<Trade> findHierarchyByIndexValue(String q) {
@@ -118,9 +122,8 @@ public class TradeDAO extends PicsDAO {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i < terms.size(); i++) {
 			String alias = "i" + i;
-			sb.append("JOIN app_index ").append(alias).append(" ON i1.indexType = 'T' AND i0.foreignKey = ")
-					.append(alias).append(".foreignKey AND ").append(alias).append(".value LIKE :").append(i)
-					.append(" ");
+			sb.append("JOIN app_index ").append(alias).append(" ON i1.indexType = 'T' AND i0.foreignKey = ").append(
+					alias).append(".foreignKey AND ").append(alias).append(".value LIKE :").append(i).append(" ");
 		}
 		return sb.toString();
 	}

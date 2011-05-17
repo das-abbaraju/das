@@ -4,12 +4,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.util.Strings;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -18,14 +16,8 @@ import edu.emory.mathcs.backport.java.util.Collections;
 public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRule> {
 
 	protected AuditTypeRule comparisonRule;
-	protected OperatorAccountDAO operatorDAO;
-	protected OperatorTagDAO operatorTagDAO;
 
-	public AuditTypeRuleTableBuilder(AuditDecisionTableDAO ruleDAO, OperatorAccountDAO operatorDAO,
-			OperatorTagDAO operatorTagDAO) {
-		this.ruleDAO = ruleDAO;
-		this.operatorDAO = operatorDAO;
-		this.operatorTagDAO = operatorTagDAO;
+	public AuditTypeRuleTableBuilder() {
 		this.ruleType = "Audit Type";
 		this.urlPrefix = "AuditType";
 	}
@@ -74,9 +66,16 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 			if (comparisonRule.getQuestion() != null) {
 				whereClauses.add("t.question.id = " + comparisonRule.getQuestion().getId());
 			}
-			
+
 			if (comparisonRule.getTrade() != null) {
-				whereClauses.add("t.trade.id = " + comparisonRule.getTrade().getId());
+				List<Trade> trades = tradeDAO.findListByTrade(comparisonRule.getTrade().getId(), 0);
+				StringBuilder sb = new StringBuilder("t.trade.id IN (");
+				for (Trade t : trades) {
+					sb.append(t.getId()).append(",");
+				}
+				sb.setLength(sb.lastIndexOf(","));
+				sb.append(")");
+				whereClauses.add(sb.toString());
 			}
 
 			rules = (List<AuditTypeRule>) ruleDAO.findWhere(AuditTypeRule.class,
