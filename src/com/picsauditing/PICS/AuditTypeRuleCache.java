@@ -50,6 +50,10 @@ public class AuditTypeRuleCache {
 		contractorType.add(null);
 		contractorType.addAll(contractor.getAccountTypes());
 
+		Set<Boolean> soleProprietors = new HashSet<Boolean>();
+		soleProprietors.add(null);
+		soleProprietors.add(contractor.getSoleProprietor());
+
 		Set<Trade> trades = new HashSet<Trade>();
 		trades.add(null);
 		for (ContractorTrade ct : contractor.getTrades()) {
@@ -76,37 +80,43 @@ public class AuditTypeRuleCache {
 							ContractorTypes data3 = dataZ.getData(acceptsBid);
 							if (data3 != null) {
 								for (ContractorType conType : contractorType) {
-									Trades dataX = data3.getData(conType);
+									SoleProprietors dataX = data3.getData(conType);
 									if (dataX != null) {
-										for (Trade t : trades) {
-											Operators data4 = dataX.getData(t);
-											if (data4 != null) {
-												for (OperatorAccount o : operators) {
-													OperatorAccount operator = o;
-													Set<AuditTypeRule> data6 = data4.getData(operator);
-													if (data6 != null) {
-														for (AuditTypeRule auditTypeRule : data6) {
-															/*
-															 * boolean specificContractorRule = (conType != null && );
-															 */
-															if (auditTypeRule.isInclude())
-																rules.add(auditTypeRule);
-															else {
-																/*
-																 * Exclude rules can be tricky if they are specific We
-																 * could also add in functionality to support dependent
-																 * question sets here are well 12/2010 Please discuss
-																 * with both Trevor and Keerthi before changing this
-																 * logic
-																 */
-																if (conType == null)
-																	rules.add(auditTypeRule);
-																else if (contractorType.size() == 2)
+										for (Boolean soleProprietor : soleProprietors) {
+											Trades dataY = dataX.getData(soleProprietor);
+											if (dataY != null) {
+												for (Trade t : trades) {
+													Operators data4 = dataY.getData(t);
+													if (data4 != null) {
+														for (OperatorAccount o : operators) {
+															OperatorAccount operator = o;
+															Set<AuditTypeRule> data6 = data4.getData(operator);
+															if (data6 != null) {
+																for (AuditTypeRule auditTypeRule : data6) {
 																	/*
-																	 * This contractor has only one type so include the
-																	 * "exclusion rule"
+																	 * boolean specificContractorRule = (conType != null
+																	 * && );
 																	 */
-																	rules.add(auditTypeRule);
+																	if (auditTypeRule.isInclude())
+																		rules.add(auditTypeRule);
+																	else {
+																		/*
+																		 * Exclude rules can be tricky if they are
+																		 * specific We could also add in functionality
+																		 * to support dependent question sets here are
+																		 * well 12/2010 Please discuss with both Trevor
+																		 * and Keerthi before changing this logic
+																		 */
+																		if (conType == null)
+																			rules.add(auditTypeRule);
+																		else if (contractorType.size() == 2)
+																			/*
+																			 * This contractor has only one type so
+																			 * include the "exclusion rule"
+																			 */
+																			rules.add(auditTypeRule);
+																	}
+																}
 															}
 														}
 													}
@@ -151,14 +161,12 @@ public class AuditTypeRuleCache {
 		}
 
 		public void add(AuditTypeRule rule) {
-			// PicsLogger.log("Add rule to cache: " + rule);
 			ProductRisks map = data.get(rule.getSafetyRisk());
 			if (map == null) {
 				map = new ProductRisks();
 				data.put(rule.getSafetyRisk(), map);
 			}
 			map.add(rule);
-			// PicsLogger.log(" + Risk = " + rule.getRisk());
 		}
 	}
 
@@ -171,14 +179,12 @@ public class AuditTypeRuleCache {
 		}
 
 		public void add(AuditTypeRule rule) {
-			// PicsLogger.log("Add rule to cache: " + rule);
 			AcceptsBids map = data.get(rule.getProductRisk());
 			if (map == null) {
 				map = new AcceptsBids();
 				data.put(rule.getProductRisk(), map);
 			}
 			map.add(rule);
-			// PicsLogger.log(" + Risk = " + rule.getRisk());
 		}
 	}
 
@@ -197,27 +203,42 @@ public class AuditTypeRuleCache {
 				data.put(rule.getAcceptsBids(), map);
 			}
 			map.add(rule);
-			// PicsLogger.log(" + AcceptsBids = " + rule.getAcceptsBids());
 		}
 	}
 
 	private class ContractorTypes {
 
-		private Map<ContractorType, Trades> data = new LinkedHashMap<ContractorType, Trades>();
+		private Map<ContractorType, SoleProprietors> data = new LinkedHashMap<ContractorType, SoleProprietors>();
 
-		public Trades getData(ContractorType value) {
+		public SoleProprietors getData(ContractorType value) {
 			return data.get(value);
 		}
 
 		public void add(AuditTypeRule rule) {
-			Trades map = data.get(rule.getContractorType());
+			SoleProprietors map = data.get(rule.getContractorType());
 			if (map == null) {
-				map = new Trades();
+				map = new SoleProprietors();
 				data.put(rule.getContractorType(), map);
 			}
 			map.add(rule);
-			// PicsLogger.log(" + ContractorType = " +
-			// rule.getContractorType());
+		}
+	}
+
+	private class SoleProprietors {
+
+		private Map<Boolean, Trades> data = new LinkedHashMap<Boolean, Trades>();
+
+		public Trades getData(Boolean value) {
+			return data.get(value);
+		}
+
+		public void add(AuditTypeRule rule) {
+			Trades map = data.get(rule.getSoleProprietor());
+			if (map == null) {
+				map = new Trades();
+				data.put(rule.getSoleProprietor(), map);
+			}
+			map.add(rule);
 		}
 	}
 
@@ -236,10 +257,7 @@ public class AuditTypeRuleCache {
 				data.put(rule.getTrade(), map);
 			}
 			map.add(rule);
-			// PicsLogger.log(" + ContractorType = " +
-			// rule.getContractorType());
 		}
-
 	}
 
 	private class Operators {
@@ -264,7 +282,6 @@ public class AuditTypeRuleCache {
 			if (rule.getQuestion() != null)
 				rule.getQuestion().getAuditType();
 			map.add(rule);
-			// PicsLogger.log(" + OperatorAccount = " +
 		}
 	}
 

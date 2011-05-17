@@ -39,9 +39,6 @@ public class AuditCategoryRuleCache {
 
 	public List<AuditCategoryRule> getApplicableCategoryRules(ContractorAccount contractor,
 			Collection<AuditType> auditTypes) {
-		// PicsLogger.start("AuditCategoryRuleCache",
-		// "Searching AuditCategoryRuleCache for contractor "
-		// + contractor.getId());
 		List<AuditCategoryRule> rules = new ArrayList<AuditCategoryRule>();
 		if (getData() == null)
 			return null;
@@ -67,6 +64,10 @@ public class AuditCategoryRuleCache {
 		contractorType.add(null);
 		contractorType.addAll(contractor.getAccountTypes());
 
+		Set<Boolean> soleProprietors = new HashSet<Boolean>();
+		soleProprietors.add(null);
+		soleProprietors.add(contractor.getSoleProprietor());
+
 		Set<Trade> trades = new HashSet<Trade>();
 		trades.add(null);
 		for (ContractorTrade ct : contractor.getTrades()) {
@@ -89,95 +90,52 @@ public class AuditCategoryRuleCache {
 				for (LowMedHigh productRisk : productRisks) {
 					AcceptsBids dataZ = data2.getData(productRisk);
 					if (dataZ != null) {
-						// PicsLogger.log("found matching risk " + risk);
 						for (Boolean acceptsBid : acceptsBids) {
 							AuditTypes data3 = dataZ.getData(acceptsBid);
 							if (data3 != null) {
-								// PicsLogger.log(" found matching acceptsBid "
-								// +
-								// acceptsBid);
 								for (AuditType auditType : auditTypes2) {
 									ContractorTypes data4 = data3.getData(auditType);
 									if (data4 != null) {
-										// PicsLogger.log("  found matching auditType "
-										// + auditType);
 										for (ContractorType conType : contractorType) {
-											Trades dataX = data4.getData(conType);
+											SoleProprietors dataX = data4.getData(conType);
 											if (dataX != null) {
-												for (Trade t : trades) {
-													Operators data5 = dataX.getData(t);
-													if (data5 != null) {
-														// PicsLogger.log("   found matching conType "
-														// + conType);
-														for (OperatorAccount o : operators) {
-															OperatorAccount operator = (o == null ? null : o);
-															Set<AuditCategoryRule> data6 = data5.getData(operator);
-															if (data6 != null) {
-																// PicsLogger.log("    found matching operator "
-																// + operator);
-																for (AuditCategoryRule auditCategoryRule : data6) {
-																	// boolean
-																	// specificContractorRule
-																	// =
-																	// (conType
-																	// !=
-																	// null &&
-																	// );
-																	if (auditCategoryRule.isInclude())
-																		rules.add(auditCategoryRule);
-																	else {
-																		/*
-																		 * Exclude
-																		 * rules
-																		 * can
-																		 * be
-																		 * tricky
-																		 * if
-																		 * they
-																		 * are
-																		 * specific
-																		 * We
-																		 * could
-																		 * also
-																		 * add
-																		 * in
-																		 * functionality
-																		 * to
-																		 * support
-																		 * dependent
-																		 * question
-																		 * sets
-																		 * here
-																		 * are
-																		 * well
-																		 * 12
-																		 * /2010
-																		 * Please
-																		 * discuss
-																		 * with
-																		 * both
-																		 * Trevor
-																		 * and
-																		 * Keerthi
-																		 * before
-																		 * changing
-																		 * this
-																		 * logic
-																		 */
-																		if (conType == null)
-																			rules.add(auditCategoryRule);
-																		else if (contractorType.size() == 2)
-																			// This
-																			// contractor
-																			// has
-																			// only
-																			// one
-																			// type
-																			// so
-																			// include
-																			// the
-																			// "exclusion rule"
-																			rules.add(auditCategoryRule);
+												for (Boolean soleProprietor : soleProprietors) {
+													Trades dataY = dataX.getData(soleProprietor);
+													if (dataY != null) {
+														for (Trade t : trades) {
+															Operators data5 = dataY.getData(t);
+															if (data5 != null) {
+																for (OperatorAccount o : operators) {
+																	OperatorAccount operator = (o == null ? null : o);
+																	Set<AuditCategoryRule> data6 = data5
+																			.getData(operator);
+																	if (data6 != null) {
+																		for (AuditCategoryRule auditCategoryRule : data6) {
+																			/*
+																			 * boolean specificContractorRule = (conType
+																			 * != null);
+																			 */
+																			if (auditCategoryRule.isInclude())
+																				rules.add(auditCategoryRule);
+																			else {
+																				/*
+																				 * Exclude rules can be tricky if they
+																				 * are specific We could also add in
+																				 * functionality to support dependent
+																				 * question sets here are well 12 /2010
+																				 * Please discuss with both Trevor and
+																				 * Keerthi before changing this logic
+																				 */
+																				if (conType == null)
+																					rules.add(auditCategoryRule);
+																				else if (contractorType.size() == 2)
+																					/*
+																					 * This contractor has only one type
+																					 * so include the "exclusion rule"
+																					 */
+																					rules.add(auditCategoryRule);
+																			}
+																		}
 																	}
 																}
 															}
@@ -197,10 +155,6 @@ public class AuditCategoryRuleCache {
 
 		Collections.sort(rules);
 		Collections.reverse(rules);
-
-		// PicsLogger.log("found " + rules.size() + " rules for contractor " +
-		// contractor.getId());
-		// PicsLogger.stop();
 
 		return rules;
 	}
@@ -228,14 +182,12 @@ public class AuditCategoryRuleCache {
 		}
 
 		public void add(AuditCategoryRule rule) {
-			// PicsLogger.log("Add rule to cache: " + rule);
 			ProductRisks map = data.get(rule.getSafetyRisk());
 			if (map == null) {
 				map = new ProductRisks();
 				data.put(rule.getSafetyRisk(), map);
 			}
 			map.add(rule);
-			// PicsLogger.log(" + Risk = " + rule.getRisk());
 		}
 	}
 
@@ -248,14 +200,12 @@ public class AuditCategoryRuleCache {
 		}
 
 		public void add(AuditCategoryRule rule) {
-			// PicsLogger.log("Add rule to cache: " + rule);
 			AcceptsBids map = data.get(rule.getProductRisk());
 			if (map == null) {
 				map = new AcceptsBids();
 				data.put(rule.getProductRisk(), map);
 			}
 			map.add(rule);
-			// PicsLogger.log(" + Risk = " + rule.getRisk());
 		}
 	}
 
@@ -274,7 +224,6 @@ public class AuditCategoryRuleCache {
 				data.put(rule.getAcceptsBids(), map);
 			}
 			map.add(rule);
-			// PicsLogger.log(" + AcceptsBids = " + rule.getAcceptsBids());
 		}
 	}
 
@@ -293,27 +242,42 @@ public class AuditCategoryRuleCache {
 				data.put(rule.getAuditType(), map);
 			}
 			map.add(rule);
-			// PicsLogger.log(" + AuditType = " + rule.getAuditType());
 		}
 	}
 
 	private class ContractorTypes {
 
-		private Map<ContractorType, Trades> data = new LinkedHashMap<ContractorType, Trades>();
+		private Map<ContractorType, SoleProprietors> data = new LinkedHashMap<ContractorType, SoleProprietors>();
 
-		public Trades getData(ContractorType value) {
+		public SoleProprietors getData(ContractorType value) {
 			return data.get(value);
 		}
 
 		public void add(AuditCategoryRule rule) {
-			Trades map = data.get(rule.getContractorType());
+			SoleProprietors map = data.get(rule.getContractorType());
 			if (map == null) {
-				map = new Trades();
+				map = new SoleProprietors();
 				data.put(rule.getContractorType(), map);
 			}
 			map.add(rule);
-			// PicsLogger.log(" + ContractorType = " +
-			// rule.getContractorType());
+		}
+	}
+
+	private class SoleProprietors {
+
+		private Map<Boolean, Trades> data = new LinkedHashMap<Boolean, Trades>();
+
+		public Trades getData(Boolean value) {
+			return data.get(value);
+		}
+
+		public void add(AuditCategoryRule rule) {
+			Trades map = data.get(rule.getSoleProprietor());
+			if (map == null) {
+				map = new Trades();
+				data.put(rule.getSoleProprietor(), map);
+			}
+			map.add(rule);
 		}
 	}
 
@@ -332,9 +296,7 @@ public class AuditCategoryRuleCache {
 				data.put(rule.getTrade(), map);
 			}
 			map.add(rule);
-			// PicsLogger.log(" + ContractorType = " +
 		}
-
 	}
 
 	private class Operators {
@@ -359,8 +321,6 @@ public class AuditCategoryRuleCache {
 			if (rule.getQuestion() != null)
 				rule.getQuestion().getAuditType();
 			map.add(rule);
-			// PicsLogger.log(" + OperatorAccount = " +
-			// rule.getOperatorAccount());
 		}
 	}
 

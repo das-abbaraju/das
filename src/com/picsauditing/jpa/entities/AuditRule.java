@@ -26,6 +26,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected ContractorType contractorType;
 	protected OperatorTag tag;
 	protected Trade trade;
+	protected Boolean soleProprietor;
 	protected AuditQuestion question;
 	protected QuestionComparator questionComparator;
 	protected String questionAnswer;
@@ -256,31 +257,30 @@ public class AuditRule extends BaseDecisionTreeRule {
 			priority += 103;
 			level++;
 		}
-
 		if (auditType != null) {
 			// Hundred
 			priority += 105;
 			level++;
 		}
-
+		if (soleProprietor != null) {
+			priority += 107;
+			level++;
+		}
 		if (trade != null) {
 			priority += 121;
 			priority += trade.getIndexLevel();
 			level++;
 		}
-
 		if (question != null && questionComparator != null) {
 			// Potentially thousands but probably only hundreds
 			priority += 125;
 			level++;
 		}
-
 		if (tag != null) {
 			// Several per operator, potentially thousands
 			priority += 130;
 			level++;
 		}
-
 		if (operatorAccount != null) {
 			if (operatorAccount.isPrimaryCorporate())
 				priority += 135;
@@ -368,6 +368,8 @@ public class AuditRule extends BaseDecisionTreeRule {
 			questionAnswer = source.questionAnswer;
 		if (trade == null)
 			trade = source.trade;
+		if (soleProprietor == null)
+			soleProprietor = source.soleProprietor;
 	}
 
 	// TODO check to see if we still use this??
@@ -385,6 +387,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 		acceptsBids = source.acceptsBids;
 		levelAdjustment = source.levelAdjustment;
 		trade = source.trade;
+		soleProprietor = source.soleProprietor;
 	}
 
 	@Override
@@ -412,6 +415,8 @@ public class AuditRule extends BaseDecisionTreeRule {
 			identifiers.add("Trade is [" + trade.getName() + "]");
 		if (auditType != null)
 			identifiers.add("Audit Type is [" + auditType.getName().toString() + "]");
+		if (soleProprietor != null)
+			identifiers.add("Sole Proprietor is [" + soleProprietor.toString() + "]");
 
 		if (!identifiers.isEmpty()) {
 			sb.append(" when ").append(identifiers.get(0));
@@ -421,5 +426,13 @@ public class AuditRule extends BaseDecisionTreeRule {
 		}
 
 		return sb.toString();
+	}
+
+	public Boolean getSoleProprietor() {
+		return soleProprietor;
+	}
+
+	public void setSoleProprietor(Boolean soleProprietor) {
+		this.soleProprietor = soleProprietor;
 	}
 }

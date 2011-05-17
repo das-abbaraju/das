@@ -16,6 +16,7 @@ public enum AuditRuleColumn {
 	DependentAudit("Dependent Audit", 2),
 	Question("Question", 3),
 	Trade("Trade", 1),
+	SoleProprietor("Sole Proprietor", 1),
 	CreatedBy("Created By", 2),
 	UpdatedBy("Updated By", 2);
 

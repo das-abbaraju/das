@@ -88,6 +88,8 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 			columnMap.put("question", true);
 		if (rule.getTrade() != null)
 			columnMap.put("trade", true);
+		if (rule.getSoleProprietor() != null)
+			columnMap.put("soleProprietor", true);
 		if (isCanEditRule(rule))
 			columnMap.put("delete", true);
 

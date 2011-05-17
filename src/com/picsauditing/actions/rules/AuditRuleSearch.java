@@ -80,6 +80,9 @@ public class AuditRuleSearch extends ReportActionSupport {
 		if (filter.getTradeID() > 0) {
 			sql.addWhere("a_search.tradeID = " + filter.getTradeID());
 		}
+		if (filter.getSoleProprietor() != null) {
+			sql.addWhere("a_search.soleProprietor = " + filter.getSoleProprietor());
+		}
 	}
 
 	public String getRisk(int id) {

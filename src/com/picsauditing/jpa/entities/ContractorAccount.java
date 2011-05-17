@@ -77,6 +77,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private boolean ccOnFile = false;
 	private Date ccExpiration;
 	private Webcam webcam;
+	private Boolean soleProprietor;
 
 	private Date paymentExpires;
 	private boolean renew = true;
@@ -1125,5 +1126,13 @@ public class ContractorAccount extends Account implements JSONable {
 		double halfMembership = getMembershipLevel().getAmount().doubleValue() * 0.5;
 		double balance = getBalance().doubleValue();
 		return balance < halfMembership;
+	}
+
+	public Boolean getSoleProprietor() {
+		return soleProprietor;
+	}
+
+	public void setSoleProprietor(Boolean soleProprietor) {
+		this.soleProprietor = soleProprietor;
 	}
 }

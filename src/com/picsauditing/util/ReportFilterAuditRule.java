@@ -22,6 +22,7 @@ public class ReportFilterAuditRule extends ReportFilter {
 	protected String contractorType = null;
 	protected LowMedHigh safetyRisk;
 	protected LowMedHigh productRisk;
+	protected Boolean soleProprietor;
 
 	protected Date checkDate = null;
 
@@ -133,6 +134,14 @@ public class ReportFilterAuditRule extends ReportFilter {
 
 	public void setProductRisk(LowMedHigh productRisk) {
 		this.productRisk = productRisk;
+	}
+
+	public Boolean getSoleProprietor() {
+		return soleProprietor;
+	}
+
+	public void setSoleProprietor(Boolean soleProprietor) {
+		this.soleProprietor = soleProprietor;
 	}
 
 }
