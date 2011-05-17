@@ -139,10 +139,11 @@ $(function() {
 	
 	$('#suggest').submit(function(e) {
 		e.preventDefault();
+		tree.jstree('close_all').jstree('refresh');
 	});
 	
 	$('input.search').change(function(e) {
-		tree.jstree('close_all').jstree('refresh');
+		$('#suggest').submit();
 	});
 
 	$('#trade-view').delegate('#trade-form', 'submit', function(e) {
@@ -156,7 +157,12 @@ $(function() {
 	});
 	
 	$('.trade-clear').click(function(){
-		$('#suggest input[type="search"]').val('');
+		$('#suggest input[name="q"]').val('');
+		$('#suggest').submit();
+	});
+	
+	$('.trade-search').click(function(){
+		$('#suggest').submit();
 	});
 });
 </script>
@@ -182,6 +188,7 @@ $(function() {
 <form id="suggest">
 	<label><s:text name="Header.Search"></s:text>:</label>
 	<input type="search" name="q" class="search" />
+	<input type="button" value ="Search" class="trade-search" />
 	<input type="button" value ="Clear" class="trade-clear" />
 </form>
 <div id="trade-nav"></div>

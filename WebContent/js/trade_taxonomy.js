@@ -153,7 +153,7 @@ $(function() {
 	});
 	
 	$('.trade-clear').click(function(){
-		$('#suggest input[type="search"]').val('');
+		$('#suggest input[name="q"]').val('');
 		$('#suggest').submit();
 	});
 	
