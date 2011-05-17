@@ -8,4 +8,6 @@ public interface Hierarchical<T> extends JSONable {
 	T getParent();
 
 	Collection<T> getChildren();
+
+	boolean isLeaf();
 }

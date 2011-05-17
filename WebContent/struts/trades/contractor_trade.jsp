@@ -96,19 +96,32 @@ $(function() {
 				},
 				"json_data": {
 					"ajax": {
-						"url": 'TradeTaxonomy!hierarchyJson.action',
+						"url": function(node) {
+							if (node == -1)
+								return 'TradeTaxonomy!hierarchyJson.action';
+							else
+								return 'TradeTaxonomy!json.action';
+						},
 						"dataType": "json",
 						"success": function(json) {
 							return json.result;
 						},
 						"data": function(node) {
-							return {
-								trade: $('#trade-form [name=trade.trade]').val()
-							};
+							if (node == -1) {
+								return {
+									trade: $('#trade-form [name=trade.trade]').val()
+								};
+							} else {
+								result = $('#suggest').serialize();
+								if (node.attr) {
+									result += "&trade=" + node.attr('id');
+								}
+								return result;
+							}
 						}
 					}
 				},
-				"plugins": ['themes', "json_data"]
+				"plugins": ["themes", "json_data"]
 			});
 		});
 	}

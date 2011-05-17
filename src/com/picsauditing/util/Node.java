@@ -10,7 +10,7 @@ import org.json.simple.JSONObject;
 import com.google.common.base.Objects;
 import com.picsauditing.jpa.entities.JSONable;
 
-public class Node<T extends JSONable> implements JSONable {
+public class Node<T extends Hierarchical<T>> implements JSONable {
 
 	private T data;
 	private List<Node<T>> children = new ArrayList<Node<T>>();
@@ -68,6 +68,17 @@ public class Node<T extends JSONable> implements JSONable {
 
 		if (data != null) {
 			json = data.toJSON(full);
+			/*
+			 * The children did not come up in the result, but there are
+			 * children. Setting the state to closed here will allow them to be
+			 * opened up properly.
+			 */
+			if (!data.isLeaf()) {
+				if (children.size() == 0)
+					json.put("state", "closed");
+				else
+					json.put("state", "open");
+			} 
 		}
 
 		JSONArray children = new JSONArray();
@@ -84,7 +95,7 @@ public class Node<T extends JSONable> implements JSONable {
 	public boolean equals(Object obj) {
 		if (obj instanceof Node) {
 			Node<T> other = (Node<T>) obj;
-			return Objects.equal(this, other.getData());
+			return Objects.equal(this.getData(), other.getData());
 		}
 		return false;
 	}

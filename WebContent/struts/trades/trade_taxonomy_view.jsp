@@ -61,7 +61,7 @@
 		<ol>
 			<li>
 				<label>New Alternate</label>
-				<input id="alternateName" class="" style="width: 300px" />
+				<input id="alternateName" type="text"/>
 				<button id="add-alternate" type="button">Add</button>
 			</li>
 			<li>
@@ -76,12 +76,12 @@
 		<ol>
 			<li>
 				<h4>Manual Audit Category Rules</h4>
-				<a href="CategoryRuleEditor.action?rule.auditType=2&rule.trade=<s:property value="trade.id" />" id="">Add New Manual Audit Category Rule</a>
+				<a href="CategoryRuleEditor.action?rule.auditType=2&rule.trade=<s:property value="trade.id" />">Add New Manual Audit Category Rule</a>
 				<div id="tradeCategoryRules"></div>
 			</li>
 			<li>
 				<h4>Audit Type Rules</h4>
-				<a href="AuditTypeRuleEditor.action?rule.trade=<s:property value="trade.id" />" id="">Add New Audit Type Rule</a>
+				<a href="AuditTypeRuleEditor.action?rule.trade=<s:property value="trade.id" />" class="add">Add New Audit Type Rule</a>
 				<div id="tradeAuditRules"></div>
 			</li>
 		</ol>
