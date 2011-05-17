@@ -1,7 +1,10 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Query;
 
@@ -71,6 +74,7 @@ public class TradeDAO extends PicsDAO {
 
 		SelectSQL sql = new SelectSQL("app_index i0");
 		sql.addField("t2.*");
+		sql.addField("IF(t2.id = t1.id, 'true', 'false') matching");
 		sql.addJoin("JOIN ref_trade t1 ON t1.id = i0.foreignKey");
 		sql.addJoin("JOIN ref_trade t2 ON t1.indexStart >= t2.indexStart AND t1.indexEnd <= t2.indexEnd");
 		if (!searchJoins.isEmpty())
@@ -79,13 +83,22 @@ public class TradeDAO extends PicsDAO {
 		sql.addGroupBy("t2.id");
 		sql.addOrderBy("t2.indexStart");
 
-		Query query = em.createNativeQuery(sql.toString(), Trade.class);
+		Query query = em.createNativeQuery(sql.toString(), "matchingTradeResults");
 
 		for (int i = 0; i < terms.size(); i++) {
 			query.setParameter("" + i, terms.get(i) + "%");
 		}
 
-		return Tree.createTreeFromOrderedList(query.getResultList());
+		List<Trade> trades = new ArrayList<Trade>();
+		Set<Trade> matches = new HashSet<Trade>();
+		for (Object result : query.getResultList()) {
+			Object[] resultArray = (Object[]) result;
+			trades.add((Trade) resultArray[0]);
+			if (Boolean.valueOf(resultArray[1].toString()))
+				matches.add((Trade) resultArray[0]);
+		}
+
+		return Tree.createDecoratedTreeFromOrderedList(trades, matches);
 	}
 
 	public List<Trade> findByIndexValue(String q) {

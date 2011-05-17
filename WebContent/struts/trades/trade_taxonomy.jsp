@@ -25,6 +25,13 @@
 #tree-wrapper {
 	min-height: 200px;
 }
+
+#trade-nav li.decorated > a {
+	font-style: italic;
+	font-weight: bold;
+	color: white;
+	background-color: #012142;
+}
 </style>
 </head>
 <body>
@@ -39,7 +46,7 @@
 		<div id="tree-wrapper">
 			<form id="suggest">
 				<label>Trade Search:</label>
-				<input type="search" name="q" style="width: 400px" />
+				<s:textfield name="q" style="width: 400px" />
 				<input type="button" value ="Search" class="trade_search" />
 				<input type="button" value ="Clear" class="trade-clear" />
 			</form>

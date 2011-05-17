@@ -16,6 +16,7 @@ public class Node<T extends Hierarchical<T>> implements JSONable {
 	private List<Node<T>> children = new ArrayList<Node<T>>();
 
 	public Node() {
+
 	}
 
 	public Node(T data) {
@@ -78,7 +79,7 @@ public class Node<T extends Hierarchical<T>> implements JSONable {
 					json.put("state", "closed");
 				else
 					json.put("state", "open");
-			} 
+			}
 		}
 
 		JSONArray children = new JSONArray();

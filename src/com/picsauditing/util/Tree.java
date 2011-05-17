@@ -40,6 +40,27 @@ public class Tree<T extends Hierarchical<T>> implements JSONable {
 		return tree;
 	}
 
+	public static <T extends Hierarchical<T>> Tree<T> createDecoratedTreeFromOrderedList(Collection<T> treeList,
+			Collection<T> decoratedItems) {
+		Map<T, Node<T>> nodes = new HashMap<T, Node<T>>();
+		Tree<T> tree = new Tree<T>();
+		Node<T> root = new Node<T>();
+		tree.setRoot(root);
+		nodes.put(null, root);
+
+		for (T trade : treeList) {
+			DecoratedNode<T> node = new DecoratedNode<T>(trade);
+			if (decoratedItems.contains(trade))
+				node.setDecorated(true);
+
+			if (nodes.get(trade.getParent()) != null && !nodes.get(trade.getParent()).getChildren().contains(node)) {
+				nodes.get(trade.getParent()).addChild(node);
+				nodes.put(trade, node);
+			}
+		}
+		return tree;
+	}
+
 	public Node<T> getRoot() {
 		return root;
 	}

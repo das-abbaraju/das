@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.ColumnResult;
 import javax.persistence.Entity;
+import javax.persistence.EntityResult;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -27,6 +30,7 @@ import com.picsauditing.util.Tree;
 @Entity
 @Table(name = "ref_trade")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
+@SqlResultSetMapping(name = "matchingTradeResults", entities = @EntityResult(entityClass = Trade.class), columns = @ColumnResult(name = "matching"))
 public class Trade extends AbstractIndexableTable implements Hierarchical<Trade> {
 
 	private Trade parent;
@@ -356,7 +360,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Override
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();
-		
+
 		if (name2 == null || name2.toString() == null)
 			json.put("data", name.toString() + " (" + contractorCount + ")");
 		else
