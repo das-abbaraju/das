@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorRegistrationServices extends ContractorActionSupport {
@@ -66,8 +67,16 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		if (pqfID == 0 && catDataID == 0)
 			createPQF();
 
+		Set<Integer> categoryIds = new HashSet<Integer>();
+		if (contractor.isOnsiteServices() || contractor.isOffsiteServices())
+			categoryIds.add(400);
+		if (contractor.isMaterialSupplier()) {
+			categoryIds.add(1682);
+			categoryIds.add(1683);
+		}
+
 		Set<Integer> questionIds = new HashSet<Integer>();
-		categories = auditCategoryDAO.findWhere("id IN (400, 1682, 1683)");
+		categories = auditCategoryDAO.findWhere("id IN (" + Strings.implode(categoryIds) + ")");
 		for (AuditCategory category : categories) {
 			for (AuditQuestion question : category.getQuestions()) {
 				infoQuestions.add(question);
@@ -83,8 +92,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	public String calculateRisk() throws Exception {
 		execute();
 
-		contractor.setSafetyRisk(null);
-		if (contractor.getSafetyRisk() == null || contractor.getProductRisk() == null) {
+		if (contractor.getSafetyRisk() == null && contractor.getProductRisk() == null) {
 			boolean requiredQuestions = false;
 			if (answerMap != null) {
 				for (AuditQuestion aq : infoQuestions) {
@@ -101,14 +109,15 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				Collection<AuditData> auditList = answerMap.values();
 				LowMedHigh safetyRisk = LowMedHigh.Low;
 				LowMedHigh productRisk = LowMedHigh.Low;
+				LowMedHigh conSafetyAssessment = LowMedHigh.Low;
+
 				for (ContractorTrade trade : contractor.getTrades()) {
 					if (trade.getTrade().getSafetyRisk() != null)
 						safetyRisk = getMaxRiskLevel(safetyRisk, trade.getTrade().getSafetyRisk());
 					if (trade.getTrade().getProductRisk() != null)
 						productRisk = getMaxRiskLevel(productRisk, trade.getTrade().getProductRisk());
 				}
-				LowMedHigh conSafetyAssessment = LowMedHigh.Low;
-				// LowMedHigh conProductAssessment = LowMedHigh.Low;
+
 				for (AuditData auditData : auditList) {
 					AuditQuestion q = auditData.getQuestion();
 					// if (q.getCategory().getId() == 269) {
@@ -129,8 +138,11 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				// Contractor's safety assessment is the same (or higher?) than
 				// what we've calculated
 				if (conSafetyAssessment.ordinal() >= safetyRisk.ordinal()) {
-					contractor.setSafetyRisk(safetyRisk);
-					contractor.setProductRisk(productRisk);
+					if (contractor.isOnsiteServices() || contractor.isOffsiteServices())
+						contractor.setSafetyRisk(safetyRisk);
+					if (contractor.isMaterialSupplier())
+						contractor.setProductRisk(productRisk);
+
 					contractor.setAuditColumns(permissions);
 					accountDao.save(contractor);
 				} else {
