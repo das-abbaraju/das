@@ -750,72 +750,41 @@ ol {
 }
 
 /********************** Special Styles ******************************/
-div.info,div.alert,div.error {
-	font: 14px/18px Helvetica, arial, sans-serif;
-	color: #383838;
+div#info,div#alert,div#error,div.info,div.alert,div.error,div.helpbox {
+	padding: 1em 1em 1em 4em;
+	margin: 10px 0;
+	width: 86%;
+	clear: left;
 }
 
-div.info {
-	background-image: url('../images/info-trans.png');
-	background-repeat: no-repeat;
-	border: solid 1px #90abce;
-	background-color: #e2ecf9;
-	padding: 30px;
-	position: relative;
-	padding-left: 55px;
+div#info,div.info {
+	border-top: 2px solid #b7d2f2;
+	border-bottom: 2px solid #b7d2f2;
+	background: #dbe7f8 url('../images/icon-info.gif') no-repeat 10px 10px;
+	zoom: 1;
 }
 
-div.info:after {
-	content: '';
-	position: absolute;
-	background-color: #cce3f2;
-	border: solid 1px #cce3f2;
-	height: 5px;
-	left: -1px;
-	bottom: -8px;
-	width: 100%;
+div#alert,div.alert {
+	border-top: 2px solid #D0AE10;
+	border-bottom: 2px solid #D0AE10;
+	background: #FBF2C9 url('../images/icon-warning.gif') no-repeat 10px
+		10px;
+	zoom: 1;
 }
 
-div.error {
-	background-image: url('../images/error-trans.png');
-	background-repeat: no-repeat;
-	border: solid 1px #e09a9a;
-	background-color: #fcf0f1;
-	padding: 30px;
-	position: relative;
-	padding-left: 55px;
+div#error,div.error {
+	border-top: 2px solid #feabab;
+	border-bottom: 2px solid #feabab;
+	background: #ffdfdf url('../images/icon-error.gif') no-repeat 10px 10px;
+	zoom: 1;
 }
 
-div.error:after {
-	content: '';
-	position: absolute;
-	background-color: #fce3e3;
-	border: solid 1px #fce3e3;
-	height: 5px;
-	left: -1px;
-	bottom: -8px;
-	width: 100%;
-}
-
-div.alert {
-	background-image: url('../images/alert-trans.png');
-	background-repeat: no-repeat;
-	border: solid 1px #f8d988;
-	background-color: #fffbe5;
-	padding: 30px;
-	position: relative;
-	padding-left: 55px;
-}
-
-div.alert:after {
-	content: '';
-	position: absolute;
-	background-color: #fbeabd;
-	border: solid 1px #fbeabd;
-	height: 5px;
-	left: -1px;
-	bottom: -8px;
-	width: 100%;
+div.helpbox {
+	border-top: 2px solid #F6E385;
+	border-bottom: 2px solid #F6E385;
+	background: #FBF2C9 url('../images/help-question.png') no-repeat 15px
+		15px;
+	width: auto;
 }
 
 #mainStatus {
