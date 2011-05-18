@@ -5,9 +5,8 @@
 <div id="trade-cloud">
 	<s:if test="contractor.trades.size() > 0">
 		<s:iterator value="contractor.trades" var="trade">
-			<a 	href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" 
-				style="font-size: <s:property value="tradeCssMap.get(#trade)"/>px"
-				class="trade"><s:property value="#trade.trade.name"/></a>
+			<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" 
+				class="trade <s:property value="tradeCssMap.get(#trade)"/"><s:property value="#trade.trade.name"/></a>
 		</s:iterator>
 	</s:if>
 	<s:else>
