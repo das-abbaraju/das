@@ -304,6 +304,11 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	public boolean isLeaf() {
 		return indexEnd - indexStart == 1;
 	}
+	
+	@Override
+	public boolean showChildren() {
+		return contractorCount > 0;
+	}
 
 	@Transient
 	public String getIndexType() {

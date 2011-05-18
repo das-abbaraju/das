@@ -9,7 +9,6 @@ import org.json.simple.JSONObject;
 
 import com.google.common.base.Objects;
 import com.picsauditing.jpa.entities.JSONable;
-import com.picsauditing.jpa.entities.Trade;
 
 public class Node<T extends Hierarchical<T>> implements JSONable {
 
@@ -101,9 +100,9 @@ public class Node<T extends Hierarchical<T>> implements JSONable {
 	 * @return true if the node should be shown open
 	 */
 	private boolean isShownOpen(Node<T> node) {
-		if ((node.getData() == null) || !(node.getData() instanceof Trade))
+		if ((node.getData() == null))
 			return true;
-		if (((Trade) node.getData()).getContractorCount() > 0)
+		if (node.getData().showChildren())
 			return true;
 		if (node.getChildren() == null || node.getChildren().size() == 0)
 			return false;
