@@ -128,6 +128,12 @@ $(function() {
 				</ol>
 				</fieldset>
 				<fieldset class="form">
+					<h2 class="formLegend"><s:text name="%{scope}.SoleProprietor.heading"/></h2>
+					<ol>
+					<li><s:checkbox name="contractor.soleProprietor" /><s:text name="ContractorAccount.soleProprietor" /></li>
+					</ol>
+				</fieldset>
+				<fieldset class="form">
 				<h2 class="formLegend"><s:text name="%{scope}.IndustryDetails.heading"/></h2>
 				<ol>
 					<s:if test="contractor.country.isoCode != 'AE'">

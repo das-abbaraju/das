@@ -220,6 +220,14 @@ $(function(){
 		</ol>
 	</fieldset>
 	<fieldset class="form">
+		<h2 class="formLegend"><s:text name="%{scope}.SoleProprietor.heading" /></h2>
+		<ol>
+			<li>
+				<s:checkbox id="SoleProprietor" name="contractor.soleProprietor" theme="formhelp" />
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset class="form">
 		<h2 class="formLegend"><s:text name="%{scope}.IndustryDetails.heading" /></h2>
 		<ol>
 			<li>
