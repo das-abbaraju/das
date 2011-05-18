@@ -181,6 +181,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	public String save() throws Exception {
 		checkPermissions();
 
+		// Lazy init fix for isOk method
+		user.getGroups().size();
 		if (!isOK()) {
 			userDAO.refresh(user); // Clear out ALL changes?
 			return SUCCESS;
@@ -285,9 +287,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorBilling).size() > 1) {
 						user.getOwnedPermissions().remove(
 								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling));
-						userAccessDAO
-								.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling))
-										.getId());
+						userAccessDAO.remove((userAccessDAO
+								.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling)).getId());
 					} else {
 						addActionError("You must have at least one user with the "
 								+ OpPerms.ContractorBilling.getDescription() + " permission");
@@ -363,8 +364,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		// Send activation email if set
 		if (sendActivationEmail && user.getId() == 0)
 			addActionMessage(AccountRecovery.sendActivationEmail(user, permissions));
-		
-		if(user.getId() == 0) {
+
+		if (user.getId() == 0) {
 			newUser = true;
 		}
 
@@ -381,9 +382,9 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		} catch (DataIntegrityViolationException e) {
 			addActionError("That Username is already in use.  Please select another.");
 		}
-		
-		if(newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
-			this.redirect("NewUserManage.action?accountId="+accountId+"&user.id="+user.getId());
+
+		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
+			this.redirect("NewUserManage.action?accountId=" + accountId + "&user.id=" + user.getId());
 		}
 
 		return SUCCESS;
