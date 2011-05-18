@@ -49,7 +49,7 @@ public class ManageFlagCriteria extends PicsActionSupport {
 				addActionError("DataType is a required field.");
 			}
 			
-			if (criteria.getAuditType().isAnnualAddendum() && criteria.getRequiredStatus() == null)
+			if (criteria.getAuditType()!=null && criteria.getAuditType().isAnnualAddendum() && criteria.getRequiredStatus() == null)
 				addActionError("Audit Status cannot be null when Audit Type Annual Update is selected.");
 
 			if (hasActionErrors()) {
