@@ -38,12 +38,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 		if (!Strings.isEmpty(q)) {
 			Tree<Trade> tradeTree = tradeDAO.findHierarchyByIndexValue(q);
-			JSONArray value = (JSONArray) tradeTree.toJSON(true).get("children");
-			if (value.size() == 0) {
-				// TODO: Translate this field
-				value.add("No Results :(");
-			}
-			json.put("result", value);
+			json.put("result", tradeTree.toJSON(true).get("children"));
 		} else {
 			if (trade == null) {
 				nodes = tradeDAO.findWhere("p.parent IS NULL");

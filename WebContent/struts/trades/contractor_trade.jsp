@@ -19,22 +19,7 @@ a.trade, a.trade:hover, a.trade:active {
 	background-color: black;
 }
 
-<s:iterator value="contractor.trades">
-li.trade-<s:property value="trade.id"/> > a {
-	font-weight: bold;
-	color: white;
-	background-color: #012142;
-}
-</s:iterator>
-
-#suggest {
-	float: left;
-	width: 50%;
-}
-
 #trade-nav {
-	background-color: Snow;
-	border: 1px solid gray;
 	float: left;
 	width: 50%;
 	height: 500px;
@@ -49,6 +34,7 @@ li.trade-<s:property value="trade.id"/> > a {
 #trade-view ul, #trade-view ol {
 	list-style: none;
 }
+
 #trade-view ol > li {
 	padding: 5px;
 }
@@ -56,73 +42,92 @@ li.trade-<s:property value="trade.id"/> > a {
 .fieldoption {
 	padding: 10px;
 }
-
 .search {
 	width: 400px;
 }
-
 </style>
 <script>
 var conID = '<s:property value="id"/>';
+
 $(function() {
-	var tree = $('#trade-nav').jstree({
-		"themes": {
-			theme: "classic"	
-		},
-		"json_data": {
-			"ajax": {
-				"url": 'TradeTaxonomy!json.action',
-				"dataType": "json",
-				"success": function(json) {
-					return json.result;
-				},
-				"data": function(node) {
-					result = $('#suggest').serialize();
-					if (node.attr) {
-						result += "&trade=" + node.attr('id');
+	$('#trade-nav').tabs();
+
+	var treeOptions = {
+			"themes": {
+				theme: "classic"	
+			},
+			"json_data": {
+				"ajax": {
+					"url": 'TradeTaxonomy!json.action',
+					"success": function(json) {
+						return json.result;
+					},
+					"data": function(node) {
+						result = {};
+						if (node.attr) {
+							result.trade = node.attr('id');
+						}
+						return result;
 					}
-					return result;
+				}
+			},
+			"plugins": ["themes", "json_data", "search", "sort"]
+		}
+
+	var search_tree = $('#search-tree').jstree(
+		$.extend(true, {}, treeOptions, {
+			"json_data": {
+				"ajax": {
+					"success": function(json) {
+						if (json.result.length == 0)
+							$('#search-tree').msg('alert', 'No trades found');
+						else
+							$('#search-tree .alert').remove();
+						return json.result;
+					},
+					"data": function(node) {
+						result = $('#suggest').serialize();
+						if (node.attr) {
+							result += "&trade=" + node.attr('id');
+						}
+						return result;
+					}
 				}
 			}
-		},
-		"plugins": ["themes", "json_data", "search", "sort"]
-	});
+		})
+	);
+	
+	var browse_tree = $('#browse-tree').jstree(treeOptions);
 
 	function loadTrades(url, data) {
 		$('#trade-view').load(url, data, function() {
-			$('#trade-hierarchy').jstree({
-				"themes": {
-					theme: "classic"	
-				},
-				"json_data": {
-					"ajax": {
-						"url": function(node) {
-							if (node == -1)
-								return 'TradeTaxonomy!hierarchyJson.action';
-							else
-								return 'TradeTaxonomy!json.action';
-						},
-						"dataType": "json",
-						"success": function(json) {
-							return json.result;
-						},
-						"data": function(node) {
-							if (node == -1) {
-								return {
-									trade: $('#trade-form [name=trade.trade]').val()
-								};
-							} else {
-								result = $('#suggest').serialize();
-								if (node.attr) {
-									result += "&trade=" + node.attr('id');
+			$('#trade-hierarchy').jstree(
+				$.extend(true, {}, treeOptions, {
+					"json_data": {
+						"ajax": {
+							"url": function(node) {
+								if (node == -1)
+									return 'TradeTaxonomy!hierarchyJson.action';
+								else
+									return 'TradeTaxonomy!json.action';
+							},
+							"data": function(node) {
+								if (node == -1) {
+									return {
+										trade: $('#trade-form [name=trade.trade]').val()
+									};
+								} else {
+									result = $('#suggest').serialize();
+									if (node.attr) {
+										result += "&trade=" + node.attr('id');
+									}
+									return result;
 								}
-								return result;
 							}
 						}
 					}
-				},
-				"plugins": ["themes", "json_data"]
-			});
+				})
+			);
 		});
 	}
 
@@ -139,31 +144,19 @@ $(function() {
 	
 	$('#suggest').submit(function(e) {
 		e.preventDefault();
-		tree.jstree('close_all').jstree('refresh');
-	});
-	
-	$('input.search').change(function(e) {
-		$('#suggest').submit();
+		search_tree.jstree('close_all').jstree('refresh');
 	});
 
 	$('#trade-view').delegate('#trade-form', 'submit', function(e) {
 		e.preventDefault();
 	}).delegate('#trade-form .save', 'click', function(e) {
-		loadTrades('ContractorTrades!saveTradeAjax.action', $('#trade-form').serialize())
+		loadTrades('ContractorTrades!saveTradeAjax.action', $('#trade-form').serializeArray())
 	}).delegate('#trade-form .remove', 'click', function(e) {
 		if (confirm("Are you sure you want to remove this trade?")) {
 			loadTrades('ContractorTrades!removeTradeAjax.action', $('#trade-form').serialize());
 		}
 	});
 	
-	$('.trade-clear').click(function(){
-		$('#suggest input[name="q"]').val('');
-		$('#suggest').submit();
-	});
-	
-	$('.trade-search').click(function(){
-		$('#suggest').submit();
-	});
 });
 </script>
 </head>
@@ -185,13 +178,26 @@ $(function() {
 	</s:else>
 </s:if>
 
-<form id="suggest">
-	<label><s:text name="Header.Search"></s:text>:</label>
-	<input type="search" name="q" class="search" />
-	<input type="button" value ="Search" class="trade-search" />
-	<input type="button" value ="Clear" class="trade-clear" />
-</form>
-<div id="trade-nav"></div>
+
+
+
+<div id="trade-nav">
+	<ul>
+		<li><a href="#search-tab"><s:text name="%{scope}.header.Search"/></a></li>
+		<li><a href="#browse-tab"><s:text name="%{scope}.header.Browse"/></a></li>
+	</ul>
+	<div id="search-tab">
+		<form id="suggest">
+			<input type="search" name="q" class="search" />
+			<input type="submit" value="Search" class="trade-search" />
+		</form>
+		<div class="messages"></div>
+		<div id="search-tree"></div>
+	</div>
+	<div id="browse-tab">
+		<div id="browse-tree"></div>
+	</div>
+</div>
 <div id="trade-view">
 	<s:include value="contractor_trade_cloud.jsp"/>
 </div>

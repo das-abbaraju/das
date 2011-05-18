@@ -11,6 +11,9 @@ public interface Hierarchical<T> extends JSONable {
 
 	boolean isLeaf();
 
+	/**
+	 * If this node has children, should they be shown be default?
+	 */
 	boolean showChildren();
 
 }

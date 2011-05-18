@@ -30,4 +30,9 @@
 			return $(this);
 		return $(this).empty();
 	}
+	$.fn.msg = function(type, message) {
+		if (!message)
+			message = 'Please add an error message to make this work.';
+		$(this).prepend($("<div>", {"class": type}).text(message))
+	}
 })(jQuery)
