@@ -490,9 +490,8 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	}
 
 	/**
-	 * Comparator for comparing AuditQuestions not based on natural ordering.
-	 * Use compareTo if you want to order based on the AuditQuestion's number
-	 * and direct Category (it's natural order)
+	 * Comparator for comparing AuditQuestions not based on natural ordering. Use compareTo if you want to order based
+	 * on the AuditQuestion's number and direct Category (it's natural order)
 	 * 
 	 * @return The comparator for full ordering of AuditQuestions
 	 */
@@ -527,8 +526,8 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	}
 
 	/**
-	 * Return true if there are category rules that require immediate
-	 * recalculation when the answer to this question changes
+	 * Return true if there are category rules that require immediate recalculation when the answer to this question
+	 * changes
 	 * 
 	 * @return
 	 */
@@ -554,8 +553,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	}
 
 	/**
-	 * @return int showing the weight to adjust the score by for this question
-	 *         when scoring an audit
+	 * @return int showing the weight to adjust the score by for this question when scoring an audit
 	 */
 	public int getScoreWeight() {
 		return scoreWeight;
@@ -604,5 +602,11 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	@Transient
 	public boolean isAffectsAudit() {
 		return required || requiredQuestion != null || dependentRequired.size() > 0;
+	}
+
+	@Transient
+	@Override
+	public String getAutocompleteItem() {
+		return "[" + id + "] " + name;
 	}
 }

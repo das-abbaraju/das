@@ -1,5 +1,7 @@
 package com.picsauditing.actions.autocomplete;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.TradeDAO;
@@ -10,9 +12,8 @@ public class TradeAutocomplete extends AutocompleteActionSupport<Trade> {
 	@Autowired
 	private TradeDAO tradeDAO;
 
-	
-	public void findItems() {
-		items = tradeDAO.findByIndexValue(q);
+	@Override
+	protected Collection<Trade> getItems() {
+		return tradeDAO.findByIndexValue(q);
 	}
-	
 }

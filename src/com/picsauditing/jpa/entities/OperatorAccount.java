@@ -74,7 +74,7 @@ public class OperatorAccount extends Account {
 		this.offsiteServices = true;
 		this.materialSupplier = true;
 	}
-	
+
 	@Transient
 	public String getFullName() {
 		if (Strings.isNullOrEmpty(dbaName))
@@ -177,12 +177,11 @@ public class OperatorAccount extends Account {
 	public void setActivationFee(Integer activationFee) {
 		this.activationFee = activationFee;
 	}
-	
+
 	@Transient
 	public OperatorAccount getActivationFeeOperator(InvoiceFee activation) {
 		// if Operator activation fee is reduced, then use Operator account activation fee
-		if(this.getActivationFee() != null
-				&&!this.getActivationFee().equals(activation.getAmount().intValue()))
+		if (this.getActivationFee() != null && !this.getActivationFee().equals(activation.getAmount().intValue()))
 			return this;
 
 		// if Corporate activation fee is reduced, return Corporate account
@@ -190,17 +189,17 @@ public class OperatorAccount extends Account {
 			if (f.getCorporate().getActivationFee() != null
 					&& !f.getCorporate().getActivationFee().equals(activation.getAmount().intValue()))
 				return f.getCorporate();
-		
+
 		// checking parents as well
 		OperatorAccount parent = this.getParent();
-		while(parent != null){
-			if(parent.getActivationFee() != null
-				&&!parent.getActivationFee().equals(activation.getAmount().intValue()))
+		while (parent != null) {
+			if (parent.getActivationFee() != null
+					&& !parent.getActivationFee().equals(activation.getAmount().intValue()))
 				return parent;
-			
+
 			parent = parent.getParent();
 		}
-		
+
 		// If neither activation fee is set, return self and use default
 		return this;
 	}
@@ -314,9 +313,8 @@ public class OperatorAccount extends Account {
 
 	/**
 	 * @see getOperatorAccounts()
-	 * @return a list of all "associated" operator accounts associated via the
-	 *         facilities intersection table for example, BASF would contain
-	 *         BASF Port Arthur but not BASF Freeport Hub
+	 * @return a list of all "associated" operator accounts associated via the facilities intersection table for
+	 *         example, BASF would contain BASF Port Arthur but not BASF Freeport Hub
 	 */
 	@OneToMany(mappedBy = "corporate")
 	public List<Facility> getOperatorFacilities() {
@@ -329,9 +327,8 @@ public class OperatorAccount extends Account {
 
 	/**
 	 * @see getOperatorFacilities()
-	 * @return a list of all the "direct" child operators/corporates mapped
-	 *         through operator.parentID for example, BASF would contain BASF
-	 *         Freeport Hub, but not BASF Port Arthur
+	 * @return a list of all the "direct" child operators/corporates mapped through operator.parentID for example, BASF
+	 *         would contain BASF Freeport Hub, but not BASF Port Arthur
 	 */
 	@OneToMany(mappedBy = "parent")
 	@Deprecated
@@ -456,15 +453,15 @@ public class OperatorAccount extends Account {
 		}
 		return visibleAuditTypes;
 	}
-	
+
 	@Transient
 	public boolean isInPicsConsortium() {
 		return this.getId() > 3 && this.getId() < 14;
 	}
-	
-	@Override
+
 	@Transient
-	public String getAutocompleteValue() {
-		return "(" + this.getId() + ") " + this.getName();
+	@Override
+	public String getAutocompleteItem() {
+		return "[" + id + "] " + name;
 	}
 }

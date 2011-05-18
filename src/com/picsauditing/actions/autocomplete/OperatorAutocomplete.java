@@ -1,5 +1,10 @@
 package com.picsauditing.actions.autocomplete;
 
+import java.util.Collection;
+import java.util.Collections;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -7,23 +12,19 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 @SuppressWarnings("serial")
 public class OperatorAutocomplete extends AutocompleteActionSupport<OperatorAccount> {
 
+	@Autowired
 	private OperatorAccountDAO dao;
 
-	public OperatorAutocomplete(OperatorAccountDAO dao) {
-		this.dao = dao;
-	}
-
 	@Override
-	protected void findItems() {
-		loadPermissions();
+	protected Collection<OperatorAccount> getItems() {
 		if (!permissions.isAdmin()) {
 			// TODO Non admin queries not supported yet
-			return;
+			return Collections.<OperatorAccount> emptyList();
 		}
-		
+
 		if (isSearchDigit())
-			items = dao.findWhere(true, "a.id LIKE '%" + Utilities.escapeQuotes(q) + "%'");
+			return dao.findWhere(true, "a.id LIKE '%" + Utilities.escapeQuotes(q) + "%'");
 		else
-			items = dao.findWhere(true, "a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'");
+			return dao.findWhere(true, "a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'");
 	}
 }

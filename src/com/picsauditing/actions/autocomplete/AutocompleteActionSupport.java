@@ -1,6 +1,6 @@
 package com.picsauditing.actions.autocomplete;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -8,58 +8,72 @@ import org.json.simple.JSONObject;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.BaseTable;
 
-@SuppressWarnings("serial")
+/**
+ * 
+ * @author kpartridge
+ *
+ */
+@SuppressWarnings({ "serial", "unchecked" })
 public abstract class AutocompleteActionSupport<T extends BaseTable> extends PicsActionSupport {
 
-	protected List<T> items;
 	protected String q;
-	protected StringBuffer outputBuffer = new StringBuffer();
-	protected JSONArray jsonObjs = new JSONArray();
 
-	@Override
-	public String execute() throws Exception {
-		checkPermissions();
-		findItems();
-		createOutput();
-		output = outputBuffer.toString();
-		if ("json".equals(button))
-			return JSON;
+	public final String autocomplete() throws Exception {
+		StringBuilder sb = new StringBuilder();
+
+		for (T item : getItems()) {
+			sb.append(formatAutocomplete(item)).append("\n");
+		}
+
+		output = sb.toString();
 
 		return PLAIN_TEXT;
 	}
 
-	protected abstract void findItems();
+	public final String json() {
+		json = new JSONObject();
 
-	protected void checkPermissions() throws Exception {
-
-	}
-
-	@SuppressWarnings("unchecked")
-	protected void createOutput() {
-		for (T item : items) {
-			createOutput(item);
+		JSONArray result = new JSONArray();
+		for (T item : getItems()) {
+			result.add(formatJson(item));
 		}
 
-		if ("json".equals(button))
-			json.put("items", jsonObjs);
+		json.put("result", result);
+
+		return JSON;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected void createOutput(T item) {
-		if ("json".equals(button)) {
-			jsonObjs.add(createOutputJSON(item));
-		} else {
-			outputBuffer.append(createOutputAutocomplete(item));
+	public final String tokenJson() {
+		json = new JSONObject();
+
+		JSONArray result = new JSONArray();
+		for (T item : getItems()) {
+			result.add(formatTokenJson(item));
 		}
+
+		json.put("result", result);
+
+		return JSON;
 	}
 
-	protected JSONObject createOutputJSON(T item) {
+	public StringBuilder formatAutocomplete(T item) {
+		StringBuilder sb = new StringBuilder();
+		return sb.append(item.getAutocompleteResult()).append("|").append(item.getAutocompleteItem()).append("|")
+				.append(item.getAutocompleteValue());
+	}
+
+	public JSONObject formatJson(T item) {
 		return item.toJSON();
 	}
 
-	protected String createOutputAutocomplete(T item) {
-		return item.getAutocompleteId() + "|" + item.getAutocompleteValue() + "\n";
+	public JSONObject formatTokenJson(T item) {
+		JSONObject o = new JSONObject();
+		o.put("id", item.getAutocompleteResult());
+		o.put("name", item.getAutocompleteValue());
+		return o;
 	}
+
+	protected abstract Collection<T> getItems();
 
 	protected boolean isSearchDigit() {
 		try {

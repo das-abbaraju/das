@@ -372,14 +372,18 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
 	}
 
 	@Transient
-	@Override
-	public String getAutocompleteId() {
+	public String getAutocompleteResult() {
 		return "" + id;
 	}
 
 	@Transient
-	@Override
-	public String getAutocompleteValue() {
-		return getAutocompleteId();
+	public String getAutocompleteItem() {
+		return getAutocompleteResult();
 	}
+
+	@Transient
+	public String getAutocompleteValue() {
+		return getAutocompleteItem();
+	}
+
 }

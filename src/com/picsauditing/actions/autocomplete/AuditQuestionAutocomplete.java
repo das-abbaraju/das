@@ -1,5 +1,8 @@
 package com.picsauditing.actions.autocomplete;
 
+import java.util.Collection;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.util.HtmlUtils;
 
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -9,38 +12,39 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 @SuppressWarnings("serial")
 public class AuditQuestionAutocomplete extends AutocompleteActionSupport<AuditQuestion> {
 
+	@Autowired
 	private AuditQuestionDAO auditQuestionDAO;
 
-	public AuditQuestionAutocomplete(AuditQuestionDAO auditQuestionDAO) {
-		this.auditQuestionDAO = auditQuestionDAO;
-	}
-
 	@Override
-	protected void findItems() {
+	protected Collection<AuditQuestion> getItems() {
 		if (isSearchDigit())
-			items = auditQuestionDAO.findWhere("t.id LIKE '" + q + "%'");
+			return auditQuestionDAO.findWhere("t.id LIKE '" + q + "%'");
 		else
-			items = auditQuestionDAO.findWhere("t.name LIKE '%" + q + "%'");
+			return auditQuestionDAO.findWhere("t.name LIKE '%" + q + "%'");
 	}
 
 	@Override
-	protected void createOutput() {
-		for (AuditQuestion question : items) {
-			// The ID is what we are really searching for
-			outputBuffer.append(question.getId()).append("|");
-			
-			// Show ID if searching by ID
-			if (isSearchDigit())
-				outputBuffer.append("(").append(question.getId()).append(") ");
+	public StringBuilder formatAutocomplete(AuditQuestion item) {
+		// TODO-kyle: This should be in the getAutocompleteItem method for auditQuestions
+		StringBuilder sb = new StringBuilder();
 
-			// Show hierarchy of question
-			outputBuffer.append(question.getAuditType().getName().toString()).append(" &gt; ");
-			for (AuditCategory category : question.getCategory().getAncestors()) {
-				outputBuffer.append(category.getName()).append(" &gt; ");
-			}
+		// The ID is what we are really searching for
+		sb.append(item.getId()).append("|");
 
-			// Show question (escaped)
-			outputBuffer.append(HtmlUtils.htmlEscape(question.getName())).append("\n");
+		// Show ID if searching by ID
+		if (isSearchDigit())
+			sb.append("(").append(item.getId()).append(") ");
+
+		// Show hierarchy of question
+		sb.append(item.getAuditType().getName().toString()).append(" &gt; ");
+		for (AuditCategory category : item.getCategory().getAncestors()) {
+			sb.append(category.getName()).append(" &gt; ");
 		}
+
+		// Show question (escaped)
+		sb.append(HtmlUtils.htmlEscape(item.getName()));
+
+		return sb;
 	}
+
 }

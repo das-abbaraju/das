@@ -278,6 +278,12 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 		ancestors.add(category);
 	}
 
+	@Transient
+	@Override
+	public String getAutocompleteItem() {
+		return "[" + id + "] " + name;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject toJSON(boolean full) {
@@ -322,14 +328,14 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 	public String toString() {
 		return getNumber() + " " + name;
 	}
-	
+
 	@Transient
-	public boolean isPolicyLimitsCategory(){
+	public boolean isPolicyLimitsCategory() {
 		return "limits".equals(this.getUniqueCode());
 	}
 
 	@Transient
-	public boolean isPolicyInformationCategory(){
+	public boolean isPolicyInformationCategory() {
 		return "policyInformation".equals(this.getUniqueCode());
 	}
 }

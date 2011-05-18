@@ -40,7 +40,7 @@ public class Autocomplete extends Component {
 					+ 				"return data[1];"
 					+ 			"},"
 					+ 			"formatResult: function(data,i,count) {"
-					+ 				"return data[1];"
+					+ 				"return data[2];"
 					+ 			"}"
 					+ 		"}).result(function(event, data) {"
 					+ 			"$('#%2$s_hidden').val(data[0]);"
@@ -62,7 +62,7 @@ public class Autocomplete extends Component {
 				Autocompleteable b = (Autocompleteable) stack.findValue(searchWith);
 
 				if (b != null) {
-					hiddenValue = b.getAutocompleteId();
+					hiddenValue = b.getAutocompleteResult();
 					textValue = b.getAutocompleteValue();
 				}
 			}

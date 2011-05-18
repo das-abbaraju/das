@@ -1,5 +1,7 @@
 package com.picsauditing.actions.autocomplete;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.AuditOptionValueDAO;
@@ -11,7 +13,7 @@ public class OptionGroupAutocomplete extends AutocompleteActionSupport<AuditOpti
 	protected AuditOptionValueDAO auditQuestionOptionDAO;
 
 	@Override
-	protected void findItems() {
-		items = auditQuestionOptionDAO.findOptionTypeWhere("o.name LIKE '%" + q + "%'");
+	protected Collection<AuditOptionGroup> getItems() {
+		return auditQuestionOptionDAO.findOptionTypeWhere("o.name LIKE '%" + q + "%'");
 	}
 }

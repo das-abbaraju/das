@@ -85,6 +85,6 @@ public class OperatorTag extends BaseTable {
 	@Override
 	@Transient
 	public String getAutocompleteValue() {
-		return "(" + getAutocompleteId() + ") " + this.getTag();
+		return "(" + getAutocompleteResult() + ") " + this.getTag();
 	}
 }

@@ -288,8 +288,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * North American Industry Classification System
-	 * http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
+	 * North American Industry Classification System http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
 	 * 
 	 * @return
 	 */
@@ -340,8 +339,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	// }
 
 	/**
-	 * True if QuickBooks Web Connector needs to pull this record into
-	 * QuickBooks
+	 * True if QuickBooks Web Connector needs to pull this record into QuickBooks
 	 * 
 	 * @return
 	 */
@@ -414,8 +412,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * Are they subject to Operator Qualification regulation, and if Contractor,
-	 * do they work for an operator who does too?
+	 * Are they subject to Operator Qualification regulation, and if Contractor, do they work for an operator who does
+	 * too?
 	 * 
 	 * @return
 	 */
@@ -460,8 +458,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * Are they subject to Competency Reviews, and if Contractor, do they work
-	 * for an operator who does too?
+	 * Are they subject to Competency Reviews, and if Contractor, do they work for an operator who does too?
 	 * 
 	 * @return
 	 */
@@ -483,9 +480,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * Account currency code is the country we are assuming for billing a
-	 * customer. These two may differ in cases where the customer resides in a
-	 * Country which we bill as a US customer.
+	 * Account currency code is the country we are assuming for billing a customer. These two may differ in cases where
+	 * the customer resides in a Country which we bill as a US customer.
 	 * 
 	 */
 	@Enumerated(EnumType.STRING)
@@ -506,9 +502,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * The date HSAN accredited the Training Provider to provide training
-	 * services. If HSAN training providers use a lot more custom fields then
-	 * we'll create a new table for this and other fields.
+	 * The date HSAN accredited the Training Provider to provide training services. If HSAN training providers use a lot
+	 * more custom fields then we'll create a new table for this and other fields.
 	 * 
 	 * @return
 	 */
@@ -703,8 +698,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Transient
 	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(
-				this.name).append('|');
+		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|')
+				.append(this.name).append('|');
 		if (this.city != null)
 			sb.append(this.city);
 		if (this.state != null)

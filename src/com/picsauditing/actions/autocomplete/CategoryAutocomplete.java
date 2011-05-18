@@ -1,51 +1,53 @@
 package com.picsauditing.actions.autocomplete;
 
+import java.util.Collection;
 import java.util.Iterator;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 
 @SuppressWarnings("serial")
 public class CategoryAutocomplete extends AutocompleteActionSupport<AuditCategory> {
 
+	@Autowired
 	protected AuditCategoryDAO auditCategoryDAO;
+
 	protected Integer auditTypeID;
 
-	public CategoryAutocomplete(AuditCategoryDAO auditCategoryDAO) {
-		this.auditCategoryDAO = auditCategoryDAO;
-	}
-
 	@Override
-	protected void findItems() {
+	protected Collection<AuditCategory> getItems() {
 		String where = "";
 		if (auditTypeID != null && auditTypeID > 0)
 			where = "t.auditType.id =" + auditTypeID + " AND ";
 		if (isSearchDigit())
-			items = auditCategoryDAO.findWhere(where + "t.id LIKE '" + q + "%'");
+			return auditCategoryDAO.findWhere(where + "t.id LIKE '" + Utilities.escapeQuotes(q) + "%'");
 		else
-			items = auditCategoryDAO.findByTranslatableField(AuditCategory.class, "name", "%" + q + "%");
+			return auditCategoryDAO.findByTranslatableField(AuditCategory.class, "name",
+					"%" + Utilities.escapeQuotes(q) + "%");
 	}
 
 	@Override
-	protected void createOutput() {
-		for (AuditCategory category : items) {
-			// The ID of the category we are searching for
-			outputBuffer.append(category.getId()).append("|");
+	public StringBuilder formatAutocomplete(AuditCategory item) {
+		StringBuilder outputBuffer = new StringBuilder();
+		// The ID of the category we are searching for
+		outputBuffer.append(item.getId()).append("|");
 
-			// The display of the category
-			if (isSearchDigit())
-				outputBuffer.append("(").append(category.getId()).append(") ");
-			outputBuffer.append(category.getAuditType().getName().toString()).append(" &gt; ");
+		// The display of the category
+		if (isSearchDigit())
+			outputBuffer.append("(").append(item.getId()).append(") ");
+		outputBuffer.append(item.getAuditType().getName().toString()).append(" &gt; ");
 
-			Iterator<AuditCategory> ancestors = category.getAncestors().iterator();
-			while (ancestors.hasNext()) {
-				outputBuffer.append(ancestors.next().getName());
-				if (ancestors.hasNext())
-					outputBuffer.append(" &gt; ");
-			}
-
-			outputBuffer.append("\n");
+		Iterator<AuditCategory> ancestors = item.getAncestors().iterator();
+		while (ancestors.hasNext()) {
+			outputBuffer.append(ancestors.next().getName());
+			if (ancestors.hasNext())
+				outputBuffer.append(" &gt; ");
 		}
+
+		return outputBuffer;
 	}
 
 	public Integer getAuditTypeID() {

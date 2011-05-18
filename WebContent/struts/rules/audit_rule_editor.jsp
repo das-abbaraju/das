@@ -33,11 +33,11 @@ $(function() {
 		max	: 50
 	}).result(function(event, data) {
 		$('#operator_display').html("<a target='_BLANK' href=\"OperatorConfiguration.action?id=" + data[0] + "\">" + data[1] + " Configuration</a>");
-		$.getJSON('OperatorTagAutocompleteJSON.action',{'q': data[0]},
+		$.getJSON('OperatorTagAutocomplete!json.action',{'q': data[0]},
 			function(json) {
 				if (json) {
 					$('#tag').html('');
-					var tags = json.items;
+					var tags = json.result;
 					$('#tag').append($('<option>').attr('value', 0).text("Any"));
 					for(var i=0; i<tags.length; i++) {
 						$('#tag').append($('<option>').attr('value', tags[i].id).text(tags[i].tag));
