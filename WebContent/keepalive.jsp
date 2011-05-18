@@ -1,10 +1,8 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>  
+<%@page language="java" contentType="text/plain; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="java.lang.management.OperatingSystemMXBean"%>
 <%@page import="java.lang.management.ManagementFactory"%>
 <%@page session="false" %>
-
-<%
+<% 
 String[] loadFactors = request.getParameterValues("load_factor");
 float loadFactor = 1f;
 try {
@@ -19,5 +17,6 @@ if(os.getSystemLoadAverage() > os.getAvailableProcessors() * loadFactor)
 	status = "SYSTEM LOAD = " + os.getSystemLoadAverage();
 else
 	status = "SYSTEM OK";
+
 %>
-<%=status%>
+<%=status %>
