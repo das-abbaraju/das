@@ -1,8 +1,7 @@
 package com.picsauditing.actions.trades;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,8 +10,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.contractors.ContractorActionSupport;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorTrade;
@@ -67,6 +64,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	public String removeTradeAjax() {
 		tradeDAO.remove(trade);
+		trade = null;
 
 		return "trade";
 	}

@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-
 <html>
 <head>
 <title><s:text name="ContractorTrades.title"></s:text> </title>
@@ -14,16 +13,43 @@ a.trade, a.trade:hover, a.trade:active {
 	text-decoration: none;
 	white-space: nowrap;
 }
+#trade-cloud {
+	background-color: Snow;
+	border: 2px solid #A84D10;
+	padding: 1em;
+}
+
+#trade-cloud a.trade {
+	padding: 3px;
+	margin-right: 1em;
+	color: white;
+	background-color: black;
+}
+
+#trade-cloud a.trade1 { font-size: 8px; }
+#trade-cloud a.trade2 { font-size: 10px; }
+#trade-cloud a.trade3 { font-size: 12px; }
+#trade-cloud a.trade4 { font-size: 14px; }
+#trade-cloud a.trade5 { font-size: 16px; }
+#trade-cloud a.trade6 { font-size: 18px; }
+#trade-cloud a.trade7 { font-size: 21px; font-weight: bold; }
+#trade-cloud a.trade8 { font-size: 24px; font-weight: bold; }
+#trade-cloud a.trade9 { font-size: 28px; font-weight: bold; }
+#trade-cloud a.trade10 { font-size: 32px; font-weight: bold; }
+
 #trade-cloud a.trade:hover {
 	color: white;
 	background-color: black;
 }
 
 #trade-nav {
+	background-color: #E0EEFF;
+	border: 2px solid #4686BF;
 	float: left;
-	width: 50%;
 	height: 500px;
 	overflow: auto;
+	padding: 0;
+	width: 50%;
 }
 
 #trade-view {
@@ -39,8 +65,26 @@ a.trade, a.trade:hover, a.trade:active {
 	padding: 5px;
 }
 
+#trade-view-single {
+	margin-top: 1em;
+}
+
+#trade-view-single .buttons {
+	float: right;
+}
+
+#trade-view-single .hierarchy {
+	border: 2px solid #DDDDDD;
+	height: 250px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding: 0;
+	width: 100%;
+}
+
 .fieldoption {
 	padding: 10px;
+	width: 100%;
 }
 .search {
 	width: 400px;

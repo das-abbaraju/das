@@ -4,7 +4,8 @@
 
 <s:include value="contractor_trade_cloud.jsp"/>
 
-<h3><s:property value="trade.trade.name"/></h3>
+<s:if test="trade != null">
+<div id="trade-view-single">
 
 <s:if test="affectedTrades.size > 0">
 	<div class="alert">
@@ -20,14 +21,26 @@
 	</div>
 </s:if>
 
+<s:include value="../actionMessages.jsp"/>
+
 <s:form id="trade-form">
+<div class="buttons">
+	<s:if test="trade.id == 0">
+		<s:submit method="saveTradeAjax" value="Add" cssClass="save picsbutton positive"/>
+	</s:if>
+	<s:else>
+		<s:submit method="saveTradeAjax" value="Save" cssClass="save picsbutton positive"/>
+		<s:submit method="removeTradeAjax" value="Remove" cssClass="remove picsbutton negative"/>
+	</s:else>
+</div>
+
+<h3><s:property value="trade.trade.name"/></h3>
+
 <s:hidden name="contractor"/>
 <s:hidden name="trade"/>
 <s:hidden name="trade.trade"/>
 
 <s:hidden name="decorator" value="none"/>
-
-<s:include value="../actionMessages.jsp"/>
 
 <div class="clearfix">
 	<s:if test="trade.trade.productI">
@@ -37,7 +50,8 @@
 	</s:if>
 	<s:if test="trade.trade.serviceI">
 		<div class="fieldoption left">
-			<s:radio name="trade.selfPerformed" theme="translate" list="#{true: 'SelfPerform', false:'SubContract' }"/>
+			How is this service performed?
+			<s:radio name="trade.selfPerformed" theme="translate" list="#{true: 'SelfPerform', false:'SubContract' }" />
 		</div>
 	</s:if>
 </div>
@@ -70,14 +84,6 @@
 		</li>
 	</ol>
 </div>
-
-<div>
-	<s:if test="trade.id == 0">
-		<s:submit method="saveTradeAjax" value="Add" cssClass="save"/>
-	</s:if>
-	<s:else>
-		<s:submit method="saveTradeAjax" value="Save" cssClass="save"/>
-		<s:submit method="removeTradeAjax" value="Remove" cssClass="remove"/>
-	</s:else>
-</div>
 </s:form>
+</div>
+</s:if>
