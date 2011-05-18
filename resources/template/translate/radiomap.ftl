@@ -44,5 +44,4 @@
     <@s.text name="%{getTranslationName(parameters.name)}.${itemValue}" /><#t/>
 </label>
 </nobr>
-<br/>
 </@s.iterator>

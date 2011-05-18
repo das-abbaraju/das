@@ -6,90 +6,9 @@
 <title><s:text name="ContractorTrades.title"></s:text> </title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/jsTree/jquery.jstree.js?v=<s:property value="version"/>"></script>
-<style>
-a.trade, a.trade:hover, a.trade:active {
-	text-decoration: none;
-	white-space: nowrap;
-}
-#trade-cloud {
-	background-color: Snow;
-	border: 2px solid #A84D10;
-	padding: 1em;
-}
-
-#trade-cloud a.trade {
-	padding: 3px;
-	margin-right: 1em;
-	color: white;
-	background-color: black;
-}
-
-#trade-cloud a.trade1 { font-size: 8px; }
-#trade-cloud a.trade2 { font-size: 10px; }
-#trade-cloud a.trade3 { font-size: 12px; }
-#trade-cloud a.trade4 { font-size: 14px; }
-#trade-cloud a.trade5 { font-size: 16px; }
-#trade-cloud a.trade6 { font-size: 18px; }
-#trade-cloud a.trade7 { font-size: 21px; font-weight: bold; }
-#trade-cloud a.trade8 { font-size: 24px; font-weight: bold; }
-#trade-cloud a.trade9 { font-size: 28px; font-weight: bold; }
-#trade-cloud a.trade10 { font-size: 32px; font-weight: bold; }
-
-#trade-cloud a.trade:hover {
-	color: white;
-	background-color: black;
-}
-
-#trade-nav {
-	background-color: #E0EEFF;
-	border: 2px solid #4686BF;
-	float: left;
-	height: 500px;
-	overflow: auto;
-	padding: 0;
-	width: 50%;
-}
-
-#trade-view {
-	float: right;
-	width: 45%
-}
-
-#trade-view ul, #trade-view ol {
-	list-style: none;
-}
-
-#trade-view ol > li {
-	padding: 5px;
-}
-
-#trade-view-single {
-	margin-top: 1em;
-}
-
-#trade-view-single .buttons {
-	float: right;
-}
-
-#trade-view-single .hierarchy {
-	border: 2px solid #DDDDDD;
-	height: 250px;
-	overflow-y: auto;
-	overflow-x: hidden;
-	padding: 0;
-	width: 100%;
-}
-
-.fieldoption {
-	padding: 10px;
-	width: 100%;
-}
-.search {
-	width: 400px;
-}
-</style>
 <script>
 var conID = '<s:property value="id"/>';
 
@@ -223,8 +142,7 @@ $(function() {
 </s:if>
 
 
-
-
+<h4>What are your business trades?</h4>
 <div id="trade-nav">
 	<ul>
 		<li><a href="#search-tab"><s:text name="%{scope}.header.Search"/></a></li>
@@ -232,8 +150,8 @@ $(function() {
 	</ul>
 	<div id="search-tab">
 		<form id="suggest">
-			<input type="search" name="q" class="search" />
-			<input type="submit" value="Search" class="trade-search" />
+			<input type="search" class="searchText" name="q" placeholder="Search..."/>
+			<input type="submit" class="searchButton" title="Submit Search" value="Search" />
 		</form>
 		<div class="messages"></div>
 		<div id="search-tree"></div>
@@ -242,6 +160,7 @@ $(function() {
 		<div id="browse-tree"></div>
 	</div>
 </div>
+
 <div id="trade-view">
 	<s:include value="contractor_trade_cloud.jsp"/>
 </div>

@@ -5,21 +5,8 @@
 <s:include value="contractor_trade_cloud.jsp"/>
 
 <s:if test="trade != null">
-<div id="trade-view-single">
-
-<s:if test="affectedTrades.size > 0">
-	<div class="alert">
-		<s:text name="ContractorTrades.affectedTrades">
-			<s:param>
-				<ul>
-				<s:iterator value="affectedTrades" var="trade">
-					<li><a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" class="trade"><s:property value="#trade.trade.name"/></a></li>
-				</s:iterator>
-				</ul>
-			</s:param>
-		</s:text>
-	</div>
-</s:if>
+<div id="trade-view-single" 
+	<s:if test="trade.id > 0">class="current"</s:if>>
 
 <s:include value="../actionMessages.jsp"/>
 
@@ -34,13 +21,27 @@
 	</s:else>
 </div>
 
-<h3><s:property value="trade.trade.name"/></h3>
+<h3 <s:if test="trade.id == 0">class="new"</s:if>><s:property value="trade.trade.name"/></h3>
 
 <s:hidden name="contractor"/>
 <s:hidden name="trade"/>
 <s:hidden name="trade.trade"/>
 
 <s:hidden name="decorator" value="none"/>
+
+<s:if test="affectedTrades.size > 0">
+	<div class="alert">
+		<s:text name="ContractorTrades.affectedTrades">
+			<s:param>
+				<ul>
+				<s:iterator value="affectedTrades" var="trade">
+					<li><a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" class="trade"><s:property value="#trade.trade.name"/></a></li>
+				</s:iterator>
+				</ul>
+			</s:param>
+		</s:text>
+	</div>
+</s:if>
 
 <div class="clearfix">
 	<s:if test="trade.trade.productI">
