@@ -109,15 +109,45 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	public Map<ContractorTrade, String> getTradeCssMap() {
 		if (tradeCssMap == null) {
+			// table to count frequency, later on it will be used
+			// to assign styles
+			int[] freq = {-1, 0, -1, 0, -1, 0, -1, 0, -1, 0};
+			
 			tradeCssMap = new HashMap<ContractorTrade, String>();
-			int total = 0;
-			for (ContractorTrade trade : contractor.getTrades()) {
-				total += trade.getActivityPercent();
-			}
 
+			// determine frequencies of each activity percents
 			for (ContractorTrade trade : contractor.getTrades()) {
-				int percentage = (int) (((float) trade.getActivityPercent() / total) * 100);
-				tradeCssMap.put(trade, "trade-cloud-" + percentage / 10);
+				freq[trade.getActivityPercent()]++;
+			}
+			
+			// determine the most frequent
+			// this will be given the mid-point style
+			int mostFreqIndex = 0;
+			for (int i=1; i<10; i++) {
+				if (freq[i] > freq[mostFreqIndex]) mostFreqIndex = i;
+			}
+			
+			int css = 5; // most frequent style
+			freq[mostFreqIndex] = css++; // assign most frequent style
+			
+			// assign activity percents above most frequent with greater style
+			for (int i=mostFreqIndex+1; i<10; i++) {
+				if (freq[i] >=0) {
+					freq[i] = css++;
+				}
+			}
+			
+			// assign activity percents below most frequent with lesser style
+			css = 4;
+			for (int i=mostFreqIndex-1; i>=0; i--) {
+				if (freq[i] >=0) {
+					freq[i] = css--;
+				}
+			}
+			
+			// assign style mappings
+			for (ContractorTrade trade : contractor.getTrades()) {
+				tradeCssMap.put(trade, "trade-cloud-" + freq[trade.getActivityPercent()]);
 			}
 		}
 
