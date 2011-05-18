@@ -3,30 +3,38 @@ a.trade, a.trade:hover, a.trade:active {
 	white-space: nowrap;
 }
 #trade-cloud {
+	position: relative;
 	background-color: Snow;
 	border: 2px solid #A84D10;
 	padding: 1em;
 }
 
+#trade-cloud h4 {
+	position: absolute;
+	top: -30px;
+	left: 0;
+}
+
 #trade-cloud a.trade {
 	padding: 3px;
 	margin-right: 1em;
+	color: #012142;
 }
 
-#trade-cloud a.trade1 { font-size: 8px; }
-#trade-cloud a.trade2 { font-size: 10px; }
-#trade-cloud a.trade3 { font-size: 12px; }
-#trade-cloud a.trade4 { font-size: 14px; }
-#trade-cloud a.trade5 { font-size: 16px; }
-#trade-cloud a.trade6 { font-size: 18px; }
-#trade-cloud a.trade7 { font-size: 21px; font-weight: bold; }
-#trade-cloud a.trade8 { font-size: 24px; font-weight: bold; }
-#trade-cloud a.trade9 { font-size: 28px; font-weight: bold; }
-#trade-cloud a.trade10 { font-size: 32px; font-weight: bold; }
+#trade-cloud a.trade-cloud-1 { font-size: 8px; }
+#trade-cloud a.trade-cloud-2 { font-size: 10px; }
+#trade-cloud a.trade-cloud-3 { font-size: 12px; }
+#trade-cloud a.trade-cloud-4 { font-size: 14px; }
+#trade-cloud a.trade-cloud-5 { font-size: 16px; }
+#trade-cloud a.trade-cloud-6 { font-size: 18px; }
+#trade-cloud a.trade-cloud-7 { font-size: 21px; font-weight: bold; }
+#trade-cloud a.trade-cloud-8 { font-size: 24px; font-weight: bold; }
+#trade-cloud a.trade-cloud-9 { font-size: 28px; font-weight: bold; }
+#trade-cloud a.trade-cloud-10 { font-size: 32px; font-weight: bold; }
 
 #trade-cloud a.trade:hover {
 	color: white;
-	background-color: black;
+	background-color: #012142;
 }
 
 #trade-nav {
