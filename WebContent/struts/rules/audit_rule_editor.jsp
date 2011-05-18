@@ -279,7 +279,10 @@ $(function() {
 					<label>Product Risk</label>
 					<div class="nobr"><s:radio theme="pics" name="rule.productRisk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/></div>
 				</li>
-
+				<li>
+					<label>Sole Proprietor</label>
+					<div class="nobr"><s:checkbox them="pics" name="rule.soleProprietor" /></div>
+				</li>
 				<li <s:if test="operatorRequired">class="required"</s:if>>
 					<label>Operator</label>
 					<s:textfield cssClass="autocomplete" id="operator" name="ruleOperatorAccountId" value="%{rule.operatorAccount.id}"/>
