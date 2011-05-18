@@ -26,8 +26,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	private TradeDAO tradeDAO;
 
 	private ContractorTrade trade;
-	private Tree<Trade> tradeHierarchy;
-	private Map<ContractorTrade, Integer> tradeCssMap;
+	private Map<ContractorTrade, String> tradeCssMap;
 
 	private List<ContractorTrade> affectedTrades = new ArrayList<ContractorTrade>();
 
@@ -39,8 +38,8 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		if (trade.getId() == 0 && trade.getTrade() != null) {
 
 			/*
-			 * Look for the existing trade in the current contractor's trades
-			 * This will help prevent them from adding duplicates.
+			 * Look for the existing trade in the current contractor's trades This will help prevent them from adding
+			 * duplicates.
 			 */
 			for (ContractorTrade t : contractor.getTrades()) {
 				if (trade.getTrade().equals(t.getTrade())) {
@@ -71,15 +70,15 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		return "trade";
 	}
-	
+
 	public String nextStep() throws Exception {
 		findContractor();
 		contractor.setTradesUpdated(new Date());
 		tradeDAO.save(contractor);
-		
+
 		if (!getRegistrationStep().isDone())
 			this.redirect(ContractorRegistrationStep.Risk.getUrl(contractor.getId()));
-		
+
 		return SUCCESS;
 	}
 
@@ -104,21 +103,13 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		this.trade = trade;
 	}
 
-	public Tree<Trade> getTradeHierarchy() {
-		return tradeHierarchy;
-	}
-
-	public void setTradeHierarchy(Tree<Trade> tradeHierarchy) {
-		this.tradeHierarchy = tradeHierarchy;
-	}
-
 	public List<ContractorTrade> getAffectedTrades() {
 		return affectedTrades;
 	}
 
-	public Map<ContractorTrade, Integer> getTradeCssMap() {
+	public Map<ContractorTrade, String> getTradeCssMap() {
 		if (tradeCssMap == null) {
-			tradeCssMap = new HashMap<ContractorTrade, Integer>();
+			tradeCssMap = new HashMap<ContractorTrade, String>();
 			int total = 0;
 			for (ContractorTrade trade : contractor.getTrades()) {
 				total += trade.getActivityPercent();
@@ -126,7 +117,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 			for (ContractorTrade trade : contractor.getTrades()) {
 				int percentage = (int) (((float) trade.getActivityPercent() / total) * 100);
-				tradeCssMap.put(trade, 14 + (percentage * (30 - 14)) / 100);
+				tradeCssMap.put(trade, "trade-cloud-" + percentage / 10);
 			}
 		}
 
