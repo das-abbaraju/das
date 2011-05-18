@@ -54,10 +54,14 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		for (ContractorTrade t : findAffectedTrades()) {
 			tradeDAO.remove(t);
 		}
-
+		
 		trade.setContractor(contractor);
 		trade.setAuditColumns(permissions);
 		tradeDAO.save(trade);
+		
+		if (!contractor.getTrades().contains(trade))
+			contractor.getTrades().add(trade);
+		tradeCssMap = null;
 
 		return "trade";
 	}
