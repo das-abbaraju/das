@@ -232,7 +232,13 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
 			subMenu.addChild(getTitle("ReportInsuranceApproval"),
 					"ReportInsuranceApproval.action?filter.auditStatus=Complete");
+		
+		// Management
 		subMenu = menu.addChild(getText("menu.Management"));
+		if (permissions.hasPermission(OpPerms.ManageCorporate) || permissions.hasPermission(OpPerms.ManageOperators)
+				|| permissions.hasPermission(OpPerms.ManageAssessment))
+			subMenu.addChild("Manage Accounts",
+					"ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
 			subMenu.addChild(getTitle("ContractorApproval"), "ContractorApproval.action");
 		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
@@ -272,11 +278,11 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EditAccountDetails))
 			subMenu.addChild(getTitle("FacilitiesEdit"), "FacilitiesEdit.action?id=" + permissions.getAccountId());
 
-		// Add a new permission for this
 		if (permissions.hasPermission(OpPerms.MyCalendar)) {
 			subMenu.addChild("My Schedule", "MySchedule.action");
 		}
 
+		// Configuration
 		subMenu = menu.addChild(getText("menu.Configuration"));
 		if (permissions.hasPermission(OpPerms.Translator)) {
 			subMenu.addChild("Manage Translations", "ManageTranslations.action");
@@ -329,12 +335,6 @@ public class PicsMenu {
 			subMenu.addChild("Manage App Properties", "ManageAppProperty.action");
 			subMenu.addChild("Exception Log", "ReportExceptions.action");
 		}
-
-		subMenu = menu.addChild("Operators");
-		if (permissions.hasPermission(OpPerms.ManageCorporate) || permissions.hasPermission(OpPerms.ManageOperators)
-				|| permissions.hasPermission(OpPerms.ManageAssessment))
-			subMenu.addChild("Manage Accounts",
-					"ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending");
 
 		subMenu = menu.addChild(getText("menu.Reports"));
 
