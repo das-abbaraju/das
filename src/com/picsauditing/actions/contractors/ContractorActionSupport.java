@@ -315,9 +315,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 					iter.remove();
 				}
 			}
-			if (count == 1) {
-				subMenu = subMenu.getChildren().get(0);
-			}
 			menu.add(subMenu);
 		}
 
