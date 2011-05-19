@@ -136,7 +136,6 @@ $(function() {
 		</s:if>
 	</s:if>
 	<s:else>
-		<div class="alert"><s:text name="ContractorTrades.RegistrationMessage" /></div>
 		<s:form><s:submit action="ContractorTrades!nextStep" cssClass="picsbutton positive" value="%{getText('button.Next')}"></s:submit></s:form>
 	</s:else>
 </s:if>
