@@ -51,6 +51,10 @@ public class ContractorTrade extends BaseTable {
 		this.manufacture = manufacture;
 	}
 
+	/**
+	 * Number 1-9 that represents the frequency of that trade for a given business
+	 * @return
+	 */
 	public int getActivityPercent() {
 		return activityPercent;
 	}

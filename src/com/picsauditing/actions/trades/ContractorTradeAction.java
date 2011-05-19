@@ -54,11 +54,11 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		for (ContractorTrade t : findAffectedTrades()) {
 			tradeDAO.remove(t);
 		}
-		
+
 		trade.setContractor(contractor);
 		trade.setAuditColumns(permissions);
 		tradeDAO.save(trade);
-		
+
 		if (!contractor.getTrades().contains(trade))
 			contractor.getTrades().add(trade);
 		tradeCssMap = null;
@@ -111,45 +111,26 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	public Map<ContractorTrade, String> getTradeCssMap() {
 		if (tradeCssMap == null) {
-			// table to count frequency, later on it will be used
-			// to assign styles
-			int[] freq = {-1, 0, -1, 0, -1, 0, -1, 0, -1, 0};
-			
 			tradeCssMap = new HashMap<ContractorTrade, String>();
-
-			// determine frequencies of each activity percents
+			int sumTrades = 0;
 			for (ContractorTrade trade : contractor.getTrades()) {
-				freq[trade.getActivityPercent()]++;
+				sumTrades += trade.getActivityPercent() * trade.getActivityPercent();
+				if (trade.isSelfPerformed() || trade.isManufacture())
+					sumTrades++;
 			}
-			
-			// determine the most frequent
-			// this will be given the mid-point style
-			int mostFreqIndex = 0;
-			for (int i=1; i<10; i++) {
-				if (freq[i] > freq[mostFreqIndex]) mostFreqIndex = i;
-			}
-			
-			int css = 5; // most frequent style
-			freq[mostFreqIndex] = css++; // assign most frequent style
-			
-			// assign activity percents above most frequent with greater style
-			for (int i=mostFreqIndex+1; i<10; i++) {
-				if (freq[i] >=0) {
-					freq[i] = css++;
-				}
-			}
-			
-			// assign activity percents below most frequent with lesser style
-			css = 4;
-			for (int i=mostFreqIndex-1; i>=0; i--) {
-				if (freq[i] >=0) {
-					freq[i] = css--;
-				}
-			}
-			
+
 			// assign style mappings
 			for (ContractorTrade trade : contractor.getTrades()) {
-				tradeCssMap.put(trade, "trade-cloud-" + freq[trade.getActivityPercent()]);
+				int activityPercent = trade.getActivityPercent() * trade.getActivityPercent();
+				if (trade.isSelfPerformed() || trade.isManufacture())
+					activityPercent++;
+				
+				int tradePercent = Math.round(10f * activityPercent / sumTrades);
+				if (tradePercent > 10)
+					tradePercent = 10;
+				if (tradePercent < 1)
+					tradePercent = 1;
+				tradeCssMap.put(trade, "trade-cloud-" + tradePercent);
 			}
 		}
 
