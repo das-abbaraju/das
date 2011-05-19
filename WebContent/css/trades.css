@@ -1,12 +1,15 @@
-a.trade, a.trade:hover, a.trade:active {
+a.trade,a.trade:hover,a.trade:active {
 	text-decoration: none;
 	white-space: nowrap;
 }
+
 #trade-cloud {
+	overflow: hidden;
 	position: relative;
 	background-color: Snow;
 	border: 2px solid #A84D10;
 	padding: 1em;
+	position: relative;
 }
 
 #trade-cloud h4 {
@@ -16,25 +19,74 @@ a.trade, a.trade:hover, a.trade:active {
 }
 
 #trade-cloud a.trade {
-	padding: 3px;
-	margin-right: 1em;
+	display: block;
+	float: left;
+	font-family: Helvetica, sans-serif;
+	font-weight: normal;
+	margin: 0 3px;
+	padding: 8px;
 	color: #012142;
+	margin-right: 12px;
+	text-decoration: none;
 }
-
-#trade-cloud a.trade-cloud-1 { font-size: 10px; }
-#trade-cloud a.trade-cloud-2 { font-size: 15px; }
-#trade-cloud a.trade-cloud-3 { font-size: 20px; }
-#trade-cloud a.trade-cloud-4 { font-size: 25px; }
-#trade-cloud a.trade-cloud-5 { font-size: 30px; font-weight: bold; }
-#trade-cloud a.trade-cloud-6 { font-size: 33px; font-weight: bold; }
-#trade-cloud a.trade-cloud-7 { font-size: 36px; font-weight: bold; }
-#trade-cloud a.trade-cloud-8 { font-size: 38px; font-weight: bold; }
-#trade-cloud a.trade-cloud-9 { font-size: 39px; font-weight: bold; }
-#trade-cloud a.trade-cloud-10 { font-size: 40px; font-weight: bold; }
 
 #trade-cloud a.trade:hover {
 	color: white;
-	background-color: #012142;
+	background-color: rgba(0, 45, 84, 0.75);
+	border-radius: 10px;
+}
+
+#trade-cloud a.trade-cloud-1 {
+	color: rgba(0, 45, 84, 0.40);
+	font-size: 12px;
+}
+
+#trade-cloud   a.trade-cloud-2 {
+	color: rgba(0, 45, 84, 0.5);
+	font-size: 15px;
+}
+
+#trade-cloud a.trade-cloud-3 {
+	color: rgba(0, 45, 84, 0.6);
+	font-size: 18px;
+}
+
+#trade-cloud a.trade-cloud-4 {
+	color: rgba(0, 45, 84, 0.7);
+	font-size: 21px;
+}
+
+#trade-cloud a.trade-cloud-5 {
+	color: rgba(0, 45, 84, 0.8);
+	font-size: 24px;
+}
+
+#trade-cloud a.trade-cloud-6 {
+	color: rgba(0, 45, 84, 0.9);
+	font-size: 27px;
+}
+
+#trade-cloud a.trade-cloud-7 {
+	color: rgba(0, 45, 84, 1);
+	font-size: 31px;
+}
+
+#trade-cloud a.trade-cloud-8 {
+	color: rgba(0, 45, 84, 1);
+	font-size: 31px;
+	font-weight: bold;
+}
+
+#trade-cloud a.trade-cloud-9 {
+	color: rgba(0, 45, 84, 1);
+	font-size: 35px;
+	font-weight: bold;
+}
+
+#trade-cloud a.trade-cloud-10 {
+	color: rgba(0, 45, 84, 1);
+	font-size: 39px;
+	font-weight: bold;
 }
 
 #trade-nav {
@@ -47,12 +99,17 @@ a.trade, a.trade:hover, a.trade:active {
 }
 
 #trade-nav .ui-tabs-panel {
-	background-color: #E0EEFF;
+	background-color: white;
+}
+
+#search-tree,#browse-tree {
+	height: 500px;
+	overflow: auto;
+	padding: 1em;
 }
 
 #search-tree {
-	height: 500px;
-	overflow: auto;
+	height: 464px;
 }
 
 #trade-view {
@@ -60,22 +117,22 @@ a.trade, a.trade:hover, a.trade:active {
 	width: 45%
 }
 
-#trade-view ul, #trade-view ol {
+#trade-view ul,#trade-view ol {
 	list-style: none;
 }
 
-#trade-view ol > li {
+#trade-view ol>li {
 	padding: 5px;
 }
 
 #trade-view-single {
 	margin-top: 1em;
-    border: 2px solid #4686BF;
-    padding: 1em;
+	border: 2px solid #4686BF;
+	padding: 1em;
 }
 
 #trade-view-single.current {
-    border-color: #A84D10;
+	border-color: #A84D10;
 }
 
 #trade-view-single .buttons {
@@ -97,31 +154,36 @@ a.trade, a.trade:hover, a.trade:active {
 }
 
 #suggest {
+	overflow: hidden;
 	white-space: nowrap;
-    width: 100%;
+	width: 100%;
 }
 
 #suggest input.searchText {
-    border: 1px solid #CCCACA;
-    border-radius: 15px 15px 15px 15px;
-    color: #CACCCD;
-    font-family: Helvetica,Arial,sans-serif;
-    font-size: 18px;
-    height: 29px;
-    padding: 2px 13px;
-    width: 400px;
+	border: 3px solid #CCCACA;
+	border-radius: 15px 15px 15px 15px;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 18px;
+	height: 25px;
+	padding: 2px 13px;
+	width: 400px;
 }
 
 #suggest input.searchButton {
-    background: url("../images/btn-search.png") no-repeat scroll right top transparent;
-    border: medium none;
-    cursor: pointer;
-    height: 34px;
-    left: -49px;
-    position: relative;
-    text-indent: -9999px;
-    top: -2px;
-    width: 49px;
+	background: url("../images/btn-search.png") no-repeat scroll right top
+		transparent;
+	border: medium none;
+	cursor: pointer;
+	height: 34px;
+	left: -52px;
+	position: relative;
+	text-indent: -9999px;
+	top: -2px;
+	width: 49px;
+}
+
+#suggest .filter {
+	
 }
 
 .jstree li {

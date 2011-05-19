@@ -11,6 +11,6 @@
 		</s:iterator>
 	</s:if>
 	<s:else>
-		<div class="alert"><s:text name="ContractorTrades.instructions"></s:text></div>
+		<p><s:text name="ContractorTrades.instructions"></s:text></p>
 	</s:else>
 </div>

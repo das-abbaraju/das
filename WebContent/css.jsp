@@ -5,6 +5,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>CSS Test Page</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
 </head>
 <body>
 
@@ -51,6 +54,15 @@
 <h1>Forms</h1>
 
 <h1>Reports</h1>
+
+<h1>Trade Cloud</h1>
+
+<div id="trade-cloud">
+<% for (int i=1; i <= 10; i++) { %>
+	<a href="#" class="trade trade-cloud-<%= i %>">Trade Tag Level <%= i %></a>
+<% } %>
+</div>
+
 
 </body>
 </html>

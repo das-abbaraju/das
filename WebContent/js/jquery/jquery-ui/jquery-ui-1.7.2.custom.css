@@ -131,11 +131,11 @@
 /* Interaction states
 ----------------------------------*/
 .ui-state-default,.ui-widget-content .ui-state-default {
-	border: 1px solid #c5dbec;
 	background: #dfeffc url(images/ui-bg_glass_85_dfeffc_1x400.png) 50% 50%
 		repeat-x;
 	font-weight: normal;
 	color: #003768;
+	border: 1px solid #c5dbec;
 	outline: none;
 }
 
@@ -1540,7 +1540,7 @@
 .ui-tabs .ui-tabs-nav {
 	list-style: none;
 	position: relative;
-	padding: .2em .2em 0;
+    padding: 1em 1em 0;
 }
 
 .ui-tabs .ui-tabs-nav li {
@@ -1564,14 +1564,17 @@
 
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected a,.ui-tabs .ui-tabs-nav li.ui-state-disabled a,.ui-tabs .ui-tabs-nav li.ui-state-processing a
 	{
+	color: #012142;
 	cursor: text;
+	font-weight: bold;
 }
 
 .ui-tabs .ui-tabs-nav li a,.ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a
 	{
 	cursor: pointer;
 }
-	/* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+
+/* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
 .ui-tabs .ui-tabs-panel {
 	padding: 1em 1.4em;
 	display: block;

@@ -1189,7 +1189,3 @@ div.blockDialog {
 	padding: 15px 10px;
 	overflow-y: auto;
 }
-/********* jQuery UI customizations **********/
-.ui-tabs-selected a {
-	font-weight: bold;
-}

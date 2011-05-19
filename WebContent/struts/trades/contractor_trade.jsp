@@ -9,6 +9,12 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/jsTree/jquery.jstree.js?v=<s:property value="version"/>"></script>
+<style>
+#browse-tab, #search-tab {
+	padding: 1em 0 0 1em;
+}
+
+</style>
 <script>
 var conID = '<s:property value="id"/>';
 
@@ -151,6 +157,10 @@ $(function() {
 		<form id="suggest">
 			<input type="search" class="searchText" name="q" placeholder="Search..."/>
 			<input type="submit" class="searchButton" title="Submit Search" value="Search" />
+			<ul class="filter">
+				<li><a href="#">Most Used Products</a></li>
+				<li><a href="#">Show All</a></li>
+			</ul>
 		</form>
 		<div class="messages"></div>
 		<div id="search-tree"></div>
