@@ -1667,6 +1667,7 @@
 		<action name="ContractorTrades" class="com.picsauditing.actions.trades.ContractorTradeAction">
 			<result>struts/trades/contractor_trade.jsp</result>
 			<result name="trade">struts/trades/contractor_trade_view.jsp</result>
+			<result name="cloud">struts/trades/contractor_trade_cloud.jsp</result>
 		</action>
 
 		<!-- Autocomplete Ajax -->

@@ -1,6 +1,7 @@
 package com.picsauditing.actions.trades;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -15,6 +16,8 @@ import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.util.Tree;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class ContractorTradeAction extends ContractorActionSupport {
@@ -174,6 +177,26 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		result.put(1, "rarely");
 
 		return result;
+	}
+	
+	/**
+	 * Sorts contractor trades for cloud
+	 * 
+	 * @return
+	 */
+	public String cloudTrades() throws Exception {
+		findContractor();
+
+		Collections.sort(contractor.getTrades(), new Comparator<ContractorTrade>() {
+			@Override
+			public int compare(ContractorTrade o1, ContractorTrade o2) {
+				if (o1 == null || o2 == null)
+					return 0;
+				return o1.getTrade().getName().toString().compareTo(o2.getTrade().getName().toString());
+			}
+		});
+
+		return "cloud";
 	}
 
 }
