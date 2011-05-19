@@ -26,7 +26,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected ContractorType contractorType;
 	protected OperatorTag tag;
 	protected Trade trade;
-	protected Boolean soleProprietor = false;
+	protected Boolean soleProprietor;
 	protected AuditQuestion question;
 	protected QuestionComparator questionComparator;
 	protected String questionAnswer;
