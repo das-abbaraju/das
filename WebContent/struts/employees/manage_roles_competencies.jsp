@@ -28,7 +28,11 @@
 		</s:if>
 		<td>
 			<s:if test="jobCompetencies.size == 0">
-				<div class="alert">Use the table below to select competencies required for the <s:property value="role.name" /> role.</div>
+				<div class="alert">
+					Use the table below to select competencies required for the <s:property value="role.name" /> role.
+					<br />
+					<a href="resources/HSECompetencyReview.pdf" title="Click on this link to review questions that may be applicable to your HSE Competency Review audit.">Preview HSE Competency Review questions</a>
+				</div>
 			</s:if>
 			<table class="report">
 				<thead>
