@@ -61,7 +61,8 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		if (!contractor.getTrades().contains(trade))
 			contractor.getTrades().add(trade);
-		tradeCssMap = null;
+
+		// TODO Sort Contractor Trades by Name
 
 		return "trade";
 	}
@@ -114,27 +115,54 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			tradeCssMap = new HashMap<ContractorTrade, String>();
 			int sumTrades = 0;
 			for (ContractorTrade trade : contractor.getTrades()) {
-				sumTrades += trade.getActivityPercent() * trade.getActivityPercent();
+				sumTrades += trade.getActivityPercent();
 				if (trade.isSelfPerformed() || trade.isManufacture())
 					sumTrades++;
 			}
 
 			// assign style mappings
 			for (ContractorTrade trade : contractor.getTrades()) {
-				int activityPercent = trade.getActivityPercent() * trade.getActivityPercent();
-				if (trade.isSelfPerformed() || trade.isManufacture())
-					activityPercent++;
-				
+				// int activityPercent = trade.getActivityPercent() * trade.getActivityPercent();
+				int activityPercent = trade.getActivityPercent();
+				// if (trade.isSelfPerformed() || trade.isManufacture())
+				// activityPercent++;
+
 				int tradePercent = Math.round(10f * activityPercent / sumTrades);
-				if (tradePercent > 10)
-					tradePercent = 10;
-				if (tradePercent < 1)
-					tradePercent = 1;
-				tradeCssMap.put(trade, "trade-cloud-" + tradePercent);
+
+				switch (trade.getActivityPercent()) {
+				case 1:
+					tradePercent = cap(tradePercent, 1, 6);
+					break;
+				case 3:
+					tradePercent = cap(tradePercent, 2, 7);
+					break;
+				case 5:
+					tradePercent = cap(tradePercent, 3, 8);
+					break;
+				case 7:
+					tradePercent = cap(tradePercent, 4, 9);
+					break;
+				case 9:
+					tradePercent = cap(tradePercent, 5, 10);
+					break;
+
+				default:
+					tradePercent = cap(tradePercent, 1, 10);
+				}
+				tradeCssMap.put(trade, "" + tradePercent);
+
 			}
 		}
 
 		return tradeCssMap;
+	}
+
+	private int cap(int value, int min, int max) {
+		if (value < min)
+			return min;
+		if (value > max)
+			return max;
+		return value;
 	}
 
 	public Map<Integer, String> getActivityPercentMap() {

@@ -14,8 +14,8 @@
 			<s:if test="trade.id > 0">
 			<li><label>Trade ID:</label> <s:property value="trade.id"/></li>
 			</s:if>
-			<li><label>Short Trade Name:</label> <s:textfield name="trade.name"/> <a href=""></a><s:property value="trade.name.locale"/></li>
-			<li><label>Full Trade Name (optional):</label> <s:textfield name="trade.name2"/> <s:property value="trade.name2.locale"/></li>
+			<li><label>Trade Name:</label> <s:textfield name="trade.name"/> <a href=""></a><s:property value="trade.name.locale"/></li>
+			<li><label>Tree Name (optional):</label> <s:textfield name="trade.name2"/> <s:property value="trade.name2.locale"/></li>
 			<li><label>Help Text (optional):</label> <s:textarea name="trade.help"></s:textarea></li>
 			<li>
 				<s:if test="trade.id > 0">
@@ -53,6 +53,10 @@
 				<label>Safety Critical:</label>
 				<s:radio theme="pics" name="trade.safetyRiskI" list="@com.picsauditing.jpa.entities.LowMedHigh@values()"/>
 				<!-- (<s:property value="(trade.safetyRisk==null)?'null':trade.safetyRisk" />) -->
+			</li>
+			<li>
+				<label>Contractor Count:</label>
+				<s:property value="trade.contractorCount" />
 			</li>
 		</ol>
 	</fieldset>

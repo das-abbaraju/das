@@ -48,6 +48,9 @@ a.trade, a.trade:hover, a.trade:active {
 
 #trade-nav .ui-tabs-panel {
 	background-color: #E0EEFF;
+}
+
+#search-tree {
 	height: 500px;
 	overflow: auto;
 }
@@ -93,6 +96,11 @@ a.trade, a.trade:hover, a.trade:active {
 	width: 100%;
 }
 
+#suggest {
+	white-space: nowrap;
+    width: 100%;
+}
+
 #suggest input.searchText {
     border: 1px solid #CCCACA;
     border-radius: 15px 15px 15px 15px;
@@ -101,7 +109,7 @@ a.trade, a.trade:hover, a.trade:active {
     font-size: 18px;
     height: 29px;
     padding: 2px 13px;
-    width: 495px;
+    width: 400px;
 }
 
 #suggest input.searchButton {

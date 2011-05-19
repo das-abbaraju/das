@@ -522,7 +522,6 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@OneToMany(mappedBy = "contractor")
-	@OrderBy("activityPercent DESC")
 	public List<ContractorTrade> getTrades() {
 		return trades;
 	}
