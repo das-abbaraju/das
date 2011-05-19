@@ -571,7 +571,9 @@ table.report tr.hurdle td {
 					<s:hidden name="button" value="Synchronize Contractor" />
 					<input type="submit" class="picsbutton" onclick="$(this).attr('disabled', true); $('#form_sync').submit();" 
 						style="margin: 5px auto;" value="Synchronize" />
-					<br />Last synchronized <s:date name="contractor.lastRecalculation" nice="true" />
+					<s:if test="contractor.lastRecalculation != null">
+						<br />Last synchronized <s:date name="contractor.lastRecalculation" nice="true" />
+					</s:if>
 				</s:form>
 			</div>
 		</div>

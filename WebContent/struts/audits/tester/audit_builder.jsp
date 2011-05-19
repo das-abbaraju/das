@@ -15,15 +15,16 @@
 <p></p><a href="ContractorCron.action?conID=<s:property value="id" />">Contractor Cron</a></p>
 
 <label>Name:</label>
-<s:property value="contractor.name" />
+<s:property value="contractor.name" /><br />
 Safety Risk:
-<s:property value="contractor.safetyRisk" />
-Property Risk:
-<s:property value="contractor.productRisk" />
+<s:property value="contractor.safetyRisk" /><br />
+Product Risk:
+<s:property value="contractor.productRisk" /><br />
 Contractor Type:
 <s:if test="contractor.onsiteServices">Onsite Services</s:if>
 <s:if test="contractor.offsiteServices">Offsite Services</s:if>
 <s:if test="contractor.materialSupplier">Materials Supplier</s:if>
+<br />
 Tags:
 <br />
 Operators/Corporates: 

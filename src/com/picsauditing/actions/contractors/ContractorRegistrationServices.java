@@ -107,51 +107,71 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				addActionError("Please answer all the questions on the General Info section");
 			if (requiredQuestions) {
 				Collection<AuditData> auditList = answerMap.values();
-				LowMedHigh safetyRisk = LowMedHigh.Low;
-				LowMedHigh productRisk = LowMedHigh.Low;
-				LowMedHigh conSafetyAssessment = LowMedHigh.Low;
+				// Calculated assessments
+				LowMedHigh safety = LowMedHigh.Low;
+				LowMedHigh product = LowMedHigh.Low;
+				// Self assessments
+				LowMedHigh conSafety = LowMedHigh.Low;
+				LowMedHigh conProduct = LowMedHigh.Low;
+				LowMedHigh conProductSafety = LowMedHigh.Low;
 
 				for (ContractorTrade trade : contractor.getTrades()) {
 					if (trade.getTrade().getSafetyRisk() != null)
-						safetyRisk = getMaxRiskLevel(safetyRisk, trade.getTrade().getSafetyRisk());
+						safety = getMaxRiskLevel(safety, trade.getTrade().getSafetyRisk());
 					if (trade.getTrade().getProductRisk() != null)
-						productRisk = getMaxRiskLevel(productRisk, trade.getTrade().getProductRisk());
+						product = getMaxRiskLevel(product, trade.getTrade().getProductRisk());
 				}
 
 				for (AuditData auditData : auditList) {
 					AuditQuestion q = auditData.getQuestion();
 					// if (q.getCategory().getId() == 269) {
-					if (q.getCategory().getId() == 400) {
-						// Subcategory is RISK ASSESSMENT
+					if (q.getCategory().getId() == AuditCategory.RISK_ASSESSMENT
+							|| q.getCategory().getId() == AuditCategory.PRODUCT_SAFETY_CRITICAL) {
 						AuditData aData = answerMap.get(q.getId());
-						safetyRisk = getRiskLevel(aData, safetyRisk);
+						safety = getRiskLevel(aData, safety);
 
-						if (q.getId() == 2444)
-							conSafetyAssessment = getRiskLevel(aData, conSafetyAssessment);
-					} else if (q.getCategory().getId() == 1682 || q.getCategory().getId() == 1683) {
-						// 1682: Product Critical Assessment
-						// 1683: Product Safety Critical
+						if (q.getId() == AuditQuestion.RISK_LEVEL_ASSESSMENT)
+							conSafety = getRiskLevel(aData, conSafety);
+						if (q.getId() == AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT)
+							conProductSafety = getRiskLevel(aData, conProductSafety);
+					} else if (q.getCategory().getId() == AuditCategory.PRODUCT_CRITICAL) {
 						AuditData aData = answerMap.get(q.getId());
-						productRisk = getRiskLevel(aData, productRisk);
+						product = getRiskLevel(aData, product);
+
+						if (q.getId() == AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT)
+							conProduct = getRiskLevel(aData, conProduct);
 					}
 				}
-				// Contractor's safety assessment is the same (or higher?) than
-				// what we've calculated
-				if (conSafetyAssessment.ordinal() >= safetyRisk.ordinal()) {
+				// Contractor's assessments are the same (or higher?) than what we've calculated
+				if (conSafety.ordinal() >= safety.ordinal() && conProductSafety.ordinal() > safety.ordinal()
+						&& conProduct.ordinal() >= product.ordinal()) {
 					if (contractor.isOnsiteServices() || contractor.isOffsiteServices())
-						contractor.setSafetyRisk(safetyRisk);
+						contractor.setSafetyRisk(safety);
 					if (contractor.isMaterialSupplier())
-						contractor.setProductRisk(productRisk);
+						contractor.setProductRisk(product);
 
 					contractor.setAuditColumns(permissions);
 					accountDao.save(contractor);
 				} else {
-					String risk = safetyRisk.toString();
-					if (risk.equals("Med"))
-						risk = "Medium";
+					String safetyAssessment = safety.toString();
+					if (safetyAssessment.equals("Med"))
+						safetyAssessment = "Medium";
 
-					addActionError("The answers you have provided indicate a higher risk level than the "
-							+ "rating you have selected. We recommend increasing your risk ranking to " + risk
+					String productAssessment = product.toString();
+					if (productAssessment.equals("Med"))
+						productAssessment = "Medium";
+
+					List<String> increases = new ArrayList<String>();
+					if (safety.ordinal() > conSafety.ordinal())
+						increases.add("risk assessment to <b>" + safety + "</b>");
+					if (product.ordinal() > conProduct.ordinal())
+						increases.add("product critical assessment to <b>" + productAssessment + "</b>");
+					if (safety.ordinal() > conProductSafety.ordinal())
+						increases.add("product safety critical assessment to <b>" + safetyAssessment + "</b>");
+					
+					addActionError("The answers you have provided indicate higher risk levels than the "
+							+ "ratings you have selected. We recommend increasing your "
+							+ Strings.implode(increases, ", and your ")
 							+ ".<br />Please contact PICS with any questions.");
 					return SUCCESS;
 				}
@@ -223,53 +243,49 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 	public LowMedHigh getRiskLevel(AuditData auditData, LowMedHigh riskLevel) {
 		if (auditData != null && !auditData.getAnswer().equals(riskLevel)) {
-			if (auditData.getQuestion().getId() == 2442 || auditData.getQuestion().getId() == 2445) {
+			switch (auditData.getQuestion().getId()) {
+			case 2442:
+			case 2445:
 				// Question : Does your company perform mechanical services
 				// OR Services conducted at heights greater than six feet?
 				if (auditData.getAnswer().equals("Yes"))
 					return LowMedHigh.High;
-			}
-			if (auditData.getQuestion().getId() == 3793) {
-				// Question : Does your company perform mechanical services
-				// that require the use of hand/power tools?
+			case 3793:
+				// Question : Does your company perform mechanical services that require the use of hand/power tools?
 				if (auditData.getAnswer().equals("Yes"))
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
-			}
-			if (auditData.getQuestion().getId() == 2443) {
-				// Question : Does your company perform all services from only
-				// an office?
+			case 2443:
+				// Question : Does your company perform all services from only an office?
 				if (auditData.getAnswer().equals("No"))
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
-			}
-			if (auditData.getQuestion().getId() == 2444) {
-				// Question : What risk level do you believe your company should
-				// be rated?
+			case AuditQuestion.RISK_LEVEL_ASSESSMENT:
+			case AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT:
+			case AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT:
+				// Question : What risk level do you believe your company should be rated?
 				if (auditData.getAnswer().equals("Medium"))
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
 				if (auditData.getAnswer().equals("High"))
 					return LowMedHigh.High;
-			}
-			// Product Critical Assessment
-			if (auditData.getQuestion().getId() == 7660 || auditData.getQuestion().getId() == 7661) {
-				// 7660: Can failures in your products result in a work stoppage
-				// or major business interruption for your customer?
-				// 7661: If you fail to deliver your products on-time, can it
-				// result in a work stoppage or major business interruption for
-				// your customer?
+			case 7660:
+			case 7661:
+				// Product Critical Assessment
+				// 7660: Can failures in your products result in a work stoppage or major business interruption for your
+				// customer?
+				// 7661: If you fail to deliver your products on-time, can it result in a work stoppage or major
+				// business interruption for your customer?
 				if (auditData.getAnswer().equals("Yes"))
 					return LowMedHigh.High;
-			}
-			// Product Safety Critical
-			if (auditData.getQuestion().getId() == 7662) {
-				// Can failures in your products result in bodily injury or
-				// illness to your customer or end-user?
+			case 7662:
+				// Product Safety Critical
+				// Can failures in your products result in bodily injury or illness to your customer or end-user?
 				if (auditData.getAnswer().equals("Yes"))
 					return LowMedHigh.High;
-			}
-			if (auditData.getQuestion().getId() == 7663) {
+			case 7663:
 				// Are you required to carry Product Liability Insurance?
 				if (auditData.getAnswer().equals("Medium"))
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
+				if (auditData.getAnswer().equals("High"))
+					return LowMedHigh.High;
 			}
 		}
 		return riskLevel;
