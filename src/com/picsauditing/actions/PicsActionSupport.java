@@ -36,6 +36,7 @@ import com.picsauditing.util.URLUtils;
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware {
 
 	protected static final String PLAIN_TEXT = "plain-text";
+	protected static final String ACTION_MESSAGES = "action-messages";
 	protected static final String LOGIN_AJAX = "LoginAjax";
 	protected static final String BLANK = "blank";
 	protected static final String JSON = "json";
