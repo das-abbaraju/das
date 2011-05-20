@@ -142,11 +142,17 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 							conProduct = getRiskLevel(aData, conProduct);
 					}
 				}
+
+				boolean isOK = false;
 				// Contractor's assessments are the same (or higher?) than what we've calculated
-				if (conSafety.ordinal() >= safety.ordinal() && conProductSafety.ordinal() > safety.ordinal()
-						&& conProduct.ordinal() >= product.ordinal()) {
-					if (contractor.isOnsiteServices() || contractor.isOffsiteServices())
-						contractor.setSafetyRisk(safety);
+				if (!contractor.isMaterialSupplierOnly())
+					isOK = conSafety.ordinal() >= safety.ordinal();
+				if (contractor.isMaterialSupplier())
+					isOK = conProductSafety.ordinal() >= safety.ordinal() && conProduct.ordinal() >= product.ordinal();
+
+				if (isOK) {
+					contractor.setSafetyRisk(safety);
+
 					if (contractor.isMaterialSupplier())
 						contractor.setProductRisk(product);
 
@@ -168,7 +174,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 						increases.add("product critical assessment to <b>" + productAssessment + "</b>");
 					if (safety.ordinal() > conProductSafety.ordinal())
 						increases.add("product safety critical assessment to <b>" + safetyAssessment + "</b>");
-					
+
 					addActionError("The answers you have provided indicate higher risk levels than the "
 							+ "ratings you have selected. We recommend increasing your "
 							+ Strings.implode(increases, ", and your ")
