@@ -87,3 +87,9 @@ a:hover.panel_edit {
 	font-weight: bold;
 	color: #012142;
 }
+
+#trade-cloud {
+	border: 0;
+	padding: inherit;
+	background:inherit;	
+}

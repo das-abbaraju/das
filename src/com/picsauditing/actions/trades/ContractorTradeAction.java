@@ -26,7 +26,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	private TradeDAO tradeDAO;
 
 	private ContractorTrade trade;
-	private Map<ContractorTrade, String> tradeCssMap;
 
 	private List<ContractorTrade> affectedTrades = new ArrayList<ContractorTrade>();
 
@@ -112,62 +111,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	public List<ContractorTrade> getAffectedTrades() {
 		return affectedTrades;
-	}
-
-	public Map<ContractorTrade, String> getTradeCssMap() {
-		if (tradeCssMap == null) {
-			/**
-			 * the power to raise the activityPercent. Larger numbers mean that 9s (most of the time) are less prone to
-			 * dilution when other trades are added
-			 */
-			final float factor = 1.8f;
-
-			tradeCssMap = new HashMap<ContractorTrade, String>();
-			int sumTrades = 0;
-			for (ContractorTrade trade : contractor.getTrades()) {
-				sumTrades += (int) Math.round(Math.pow(trade.getActivityPercent(), factor));
-			}
-
-			// assign style mappings
-			for (ContractorTrade trade : contractor.getTrades()) {
-				int activityPercent = (int) Math.round(Math.pow(trade.getActivityPercent(), factor));
-
-				int tradePercent = Math.round(10f * activityPercent / sumTrades);
-
-				switch (trade.getActivityPercent()) {
-				case 1:
-					tradePercent = cap(tradePercent, 1, 6);
-					break;
-				case 3:
-					tradePercent = cap(tradePercent, 2, 7);
-					break;
-				case 5:
-					tradePercent = cap(tradePercent, 3, 8);
-					break;
-				case 7:
-					tradePercent = cap(tradePercent, 4, 9);
-					break;
-				case 9:
-					tradePercent = cap(tradePercent, 5, 10);
-					break;
-
-				default:
-					tradePercent = cap(tradePercent, 1, 10);
-				}
-				tradeCssMap.put(trade, "" + tradePercent);
-
-			}
-		}
-
-		return tradeCssMap;
-	}
-
-	private int cap(int value, int min, int max) {
-		if (value < min)
-			return min;
-		if (value > max)
-			return max;
-		return value;
 	}
 
 	public Map<Integer, String> getActivityPercentMap() {

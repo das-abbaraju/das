@@ -8,7 +8,8 @@
 <s:include value="../jquery.jsp" />
 <s:include value="../reports/reportHeader.jsp"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css?v=<s:property value="version"/>" />
 <script type="text/javascript">
 	function removeTag(tagId) {
 		var data = {button: 'RemoveTag', tagId: tagId, id: <s:property value="id"/>};
@@ -82,6 +83,9 @@
 		limit('description', '\n');
 		$('.reloadPage').live('click', function(){
 			location.reload();
+		});
+		$('a.trade').each(function() {
+			$(this).attr('href', 'ContractorTrades.action?id=<s:property value="id"/>');
 		});
 	});
 
@@ -501,6 +505,9 @@ table.report tr.hurdle td {
 					Sub Contracted Services:
 					<strong><span id="subcontracted"><s:property value="contractor.tradesSub"/></span></strong>
 				</p></s:if>
+				<s:if test="contractor.trades.size() > 0"><p id="services">
+					<s:include value="../trades/contractor_trade_cloud.jsp"/>
+				</s:if>
 				<div class="clear"></div>
 			</div>
 		</div>
