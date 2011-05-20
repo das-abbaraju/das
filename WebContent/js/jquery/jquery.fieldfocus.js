@@ -8,9 +8,11 @@
 		options = $.extend({parent: '*'},options);
 		return $(this).live('focus', function() {
 			var parent = $(this).closest(options.parent);
-			parent.addClass('fieldhelp-focused');
-			var pos = parent.position();
-			parent.find('.fieldhelp').css({top: pos.top + 'px', left: (parent.width()+pos.left+40) +'px'});
+			if (parent.length) {
+				parent.addClass('fieldhelp-focused');
+				var pos = parent.position();
+				parent.find('.fieldhelp').css({top: pos.top + 'px', left: (parent.width()+pos.left+40) +'px'});
+			}
 		}).live('blur', function() {
 			$(this).closest(options.parent).removeClass('fieldhelp-focused');
 		});
