@@ -13,11 +13,9 @@ public class BooleanConverter extends StrutsTypeConverter {
 	public Object convertFromString(Map context, String[] values, Class toClass) {
 		Object test = null;
 
-		if (test == null) {
-			if (values.length > 0 && !Strings.isEmpty(values[0])) {
-				String temp = values[0];
-				test = Boolean.valueOf(temp);
-			}
+		if (values.length > 0 && !Strings.isEmpty(values[0])) {
+			String temp = values[0];
+			test = Boolean.valueOf(temp);
 		}
 
 		return test;
