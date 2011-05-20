@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
+import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.search.SelectSQL;
@@ -123,6 +124,19 @@ public class TradeDAO extends PicsDAO {
 		}
 
 		return query.getResultList();
+	}
+	
+	public List<ContractorTrade> findContractorTradeByTrade(int tradeID) {
+		Query query = em.createQuery("SELECT ct FROM ContractorTrade ct WHERE ct.trade.id = ?");
+		query.setParameter(1, tradeID);
+		return query.getResultList();
+	}
+	
+	public int updateContractorTrades(int oldTradeID, int newTradeID) {
+		Query query = em.createQuery("UPDATE ContractorTrade ct SET ct.trade.id = :newTrade WHERE ct.trade.id = :oldTrade");
+		query.setParameter("oldTrade", oldTradeID);
+		query.setParameter("newTrade", newTradeID);
+		return query.executeUpdate();
 	}
 
 	/**

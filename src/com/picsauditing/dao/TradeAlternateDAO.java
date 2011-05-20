@@ -17,4 +17,11 @@ public class TradeAlternateDAO extends PicsDAO {
 		query.setParameter(1, tradeID);
 		return query.getResultList();
 	}
+	
+	public int updateAlternates(int oldTradeID, int newTradeID) {
+		Query query = em.createQuery("UPDATE TradeAlternate ta SET ta.trade.id = :newTrade WHERE ta.trade.id = :oldTrade");
+		query.setParameter("oldTrade", oldTradeID);
+		query.setParameter("newTrade", newTradeID);
+		return query.executeUpdate();
+	}
 }

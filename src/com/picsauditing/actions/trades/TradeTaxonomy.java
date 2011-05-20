@@ -115,20 +115,17 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 		if (trades.size() > 0) {
 			for (Trade t : trades) {
-				tradeDAO.refresh(t); // refresh data to check
-				if (t.getContractorCount() == 0) {
-					Trade parent = t.getParent();
-					for (Trade child : t.getChildren()) {
-						child.setParent(parent);
-						tradeDAO.save(child);
-					}
-					tradeDAO.remove(t);
-				} else {
-					json.put("success", false);
-					json.put("msg", getText("TradeTaxonomy.message.hasContractors"));
-					
-					return JSON;
+				Trade parent = t.getParent();
+				for (Trade child : t.getChildren()) {
+					child.setParent(parent);
+					tradeDAO.save(child);
 				}
+
+				tradeDAO.updateContractorTrades(t.getId(), parent.getId());
+
+				tradeAlternateDAO.updateAlternates(t.getId(), parent.getId());
+				tradeDAO.refresh(t);
+				tradeDAO.remove(t);
 			}
 		}
 
