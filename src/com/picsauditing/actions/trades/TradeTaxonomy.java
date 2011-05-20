@@ -116,16 +116,19 @@ public class TradeTaxonomy extends PicsActionSupport {
 		if (trades.size() > 0) {
 			for (Trade t : trades) {
 				Trade parent = t.getParent();
-				for (Trade child : t.getChildren()) {
-					child.setParent(parent);
-					tradeDAO.save(child);
+				
+				if (parent != null) {
+					for (Trade child : t.getChildren()) {
+						child.setParent(parent);
+						tradeDAO.save(child);
+					}
+
+					tradeDAO.updateContractorTrades(t.getId(), parent.getId());
+
+					tradeAlternateDAO.updateAlternates(t.getId(), parent.getId());
+					tradeDAO.refresh(t);
+					tradeDAO.remove(t);
 				}
-
-				tradeDAO.updateContractorTrades(t.getId(), parent.getId());
-
-				tradeAlternateDAO.updateAlternates(t.getId(), parent.getId());
-				tradeDAO.refresh(t);
-				tradeDAO.remove(t);
 			}
 		}
 
