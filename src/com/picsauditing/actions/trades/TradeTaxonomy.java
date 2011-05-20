@@ -1,18 +1,24 @@
 package com.picsauditing.actions.trades;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.struts2.dispatcher.StreamResult;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.Result;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.TradeAlternateDAO;
 import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.jpa.entities.TradeAlternate;
+import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.Tree;
 
@@ -30,6 +36,14 @@ public class TradeTaxonomy extends PicsActionSupport {
 	private TradeAlternate alternate;
 
 	private String q;
+
+	/*
+	 * Values used for the trade logo.
+	 */
+	private File tradeLogo;
+	private String tradeLogoContentType = null;
+	private String tradeLogoFileName = null;
+	private String tradeLogoName = null;
 
 	@SuppressWarnings("unchecked")
 	public String json() {
@@ -104,6 +118,13 @@ public class TradeTaxonomy extends PicsActionSupport {
 		if (trade != null) {
 			trade.setAuditColumns(permissions);
 			tradeDAO.save(trade);
+
+			if (tradeLogo != null) {
+				trade.setImageExtension(FileUtils.getExtension(tradeLogoFileName));
+				FileUtils.moveFile(tradeLogo, getFtpDir(), "files/" + FileUtils.thousandize(trade.getId()), "trade_"
+						+ trade.getId(), trade.getImageExtension(), true);
+				tradeDAO.save(trade);
+			}
 		}
 
 		return "trade";
@@ -116,7 +137,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 		if (trades.size() > 0) {
 			for (Trade t : trades) {
 				Trade parent = t.getParent();
-				
+
 				if (parent != null) {
 					for (Trade child : t.getChildren()) {
 						child.setParent(parent);
@@ -180,6 +201,23 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return "alternate";
 	}
 
+	public String removeFileAjax() {
+		if (trade != null && trade.getId() > 0) {
+			FileUtils.deleteFile(getFtpDir() + trade.getImageLocation());
+			trade.setImageExtension(null);
+			trade.setAuditColumns(permissions);
+			tradeDAO.save(trade);
+		}
+
+		return "trade";
+	}
+
+	public Result tradeLogo() throws FileNotFoundException {
+		File logo = new File(getFtpDir() + trade.getImageLocationI());
+
+		return new StreamResult(new FileInputStream(logo));
+	}
+
 	public Trade getTrade() {
 		return trade;
 	}
@@ -218,6 +256,38 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 	public void setQ(String q) {
 		this.q = q;
+	}
+
+	public File getTradeLogo() {
+		return tradeLogo;
+	}
+
+	public void setTradeLogo(File tradeLogo) {
+		this.tradeLogo = tradeLogo;
+	}
+
+	public String getTradeLogoContentType() {
+		return tradeLogoContentType;
+	}
+
+	public void setTradeLogoContentType(String tradeLogoContentType) {
+		this.tradeLogoContentType = tradeLogoContentType;
+	}
+
+	public String getTradeLogoFileName() {
+		return tradeLogoFileName;
+	}
+
+	public void setTradeLogoFileName(String tradeLogoFileName) {
+		this.tradeLogoFileName = tradeLogoFileName;
+	}
+
+	public String getTradeLogoName() {
+		return tradeLogoName;
+	}
+
+	public void setTradeLogoName(String tradeLogoName) {
+		this.tradeLogoName = tradeLogoName;
 	}
 
 }

@@ -7,6 +7,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/jquery.form.js"></script>
 <script type="text/javascript" src="js/jquery/jsTree/jquery.jstree.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript" src="js/trade_taxonomy.js?v=<s:property value="version"/>"></script>
 
@@ -31,6 +32,13 @@
 	font-weight: bold;
 	color: white;
 	background-color: #012142;
+}
+
+.tradelogo {
+	float: right;
+	margin: 10px;
+	width: 200px;
+	height: 200px;
 }
 </style>
 </head>

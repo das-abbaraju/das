@@ -28,8 +28,6 @@
 <s:hidden name="trade"/>
 <s:hidden name="trade.trade"/>
 
-<s:hidden name="decorator" value="none"/>
-
 <s:if test="affectedTrades.size > 0">
 	<div class="alert">
 		<s:text name="ContractorTrades.affectedTrades">

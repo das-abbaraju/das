@@ -20,6 +20,7 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
+import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Hierarchical;
 import com.picsauditing.util.IndexObject;
 import com.picsauditing.util.Node;
@@ -43,6 +44,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	private int indexStart;
 	private int indexEnd;
 	private int contractorCount;
+	private String imageExtension;
 	private boolean needsIndexing;
 
 	private TranslatableString name;
@@ -232,6 +234,32 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		this.contractorCount = contractorCount;
 	}
 
+	public String getImageExtension() {
+		return imageExtension;
+	}
+
+	public void setImageExtension(String imageExtension) {
+		this.imageExtension = imageExtension;
+	}
+
+	@Transient
+	public String getImageLocationI() {
+		if (Strings.isEmpty(imageExtension)) {
+			if (parent == null)
+				return "";
+			else
+				return parent.getImageLocationI();
+		}
+		return getImageLocation();
+	}
+
+	@Transient
+	public String getImageLocation() {
+		if (Strings.isEmpty(imageExtension))
+			return "";
+		return "/files/" + FileUtils.thousandize(id) + "trade_" + id + "." + imageExtension;
+	}
+
 	@OneToMany(mappedBy = "trade", cascade = CascadeType.ALL)
 	public List<TradeAlternate> getAlternates() {
 		return alternates;
@@ -304,7 +332,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	public boolean isLeaf() {
 		return indexEnd - indexStart == 1;
 	}
-	
+
 	@Override
 	public boolean showChildren() {
 		return contractorCount > 0;
@@ -378,7 +406,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		JSONObject json = new JSONObject();
 
 		if (name2 == null || name2.toString() == null) {
-			//  + " (" + contractorCount + ")"
+			// + " (" + contractorCount + ")"
 			json.put("data", name.toString());
 		} else {
 			json.put("data", name2.toString());

@@ -1664,6 +1664,13 @@
 			<result name="alternate">struts/trades/trade_alternates.jsp</result>
 		</action>
 
+		<!-- TODO: Added this to get around sitemesh decorating multipart forms. Look into this later. -->
+		<action name="TradeTaxonomyAjax" class="com.picsauditing.actions.trades.TradeTaxonomy">
+			<result>struts/trades/trade_taxonomy.jsp</result>
+			<result name="trade">struts/trades/trade_taxonomy_view.jsp</result>
+			<result name="alternate">struts/trades/trade_alternates.jsp</result>
+		</action>
+
 		<action name="ContractorTrades" class="com.picsauditing.actions.trades.ContractorTradeAction">
 			<result>struts/trades/contractor_trade.jsp</result>
 			<result name="trade">struts/trades/contractor_trade_view.jsp</result>

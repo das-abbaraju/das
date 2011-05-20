@@ -3,13 +3,18 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <div id="loadingTrade"></div>
-<form id="saveTrade" class="form">
+<s:form id="saveTrade" cssClass="form" action="TradeTaxonomyAjax" method="POST" enctype="multipart/form-data">
 	<s:hidden name="trade" value="%{trade.id}" />
 	<s:if test="trade.id == 0">
-	<s:hidden name="trade.parent" />
+		<s:hidden name="trade.parent" />
 	</s:if>
 	<fieldset>
 	<h2>Trade</h2>
+		<s:if test="!isStringEmpty(trade.imageLocationI)">
+			<div class="tradelogo">
+				<img src="TradeTaxonomy!tradeLogo.action?trade=<s:property value="trade.id"/>" width="200" height="200"/>
+			</div>
+		</s:if>
 		<ol>
 			<s:if test="trade.id > 0">
 			<li><label>Trade ID:</label> <s:property value="trade.id"/></li>
@@ -22,7 +27,15 @@
 					<a class="edit translate" href="ManageTranslations.action?button=Search&key=Trade.<s:property value="trade.id"/>." target="_BLANK">Manage Translations</a>
 				</s:if>
 			</li>
-			<li><button class="picsbutton positive save" type="button">Save</button></li>
+			<li>
+				<label>Image:</label>
+				<s:file name="tradeLogo"></s:file>
+				<s:if test="!isStringEmpty(trade.imageExtension)">
+					<br/>
+					<a id="removelogo" class="remove" href="TradeTaxonomy!removeFileAjax.action?trade=<s:property value="trade.id"/>">Remove File</a>
+				</s:if>
+			</li>
+			<li><s:submit cssClass="picsbutton positive save" method="saveTradeAjax" value="Save" /></li>
 		</ol>
 	</fieldset>
 	<fieldset>
@@ -91,9 +104,9 @@
 		</ol>
 	</fieldset>
 	<fieldset class="form submit">
-		<button class="picsbutton positive save" type="button">Save</button>
+		<s:submit cssClass="picsbutton positive" method="saveTradeAjax" value="Save"/>
 		<s:if test="trade.id > 0">
-			<button class="picsbutton negative delete" type="button">Delete</button>
+			<s:submit cssClass="picsbutton negative" method="deleteTradeAjax" value="Delete"/>
 		</s:if>
 	</fieldset>
-</form>
+</s:form>

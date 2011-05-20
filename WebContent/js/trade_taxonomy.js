@@ -126,14 +126,20 @@ $(function() {
 		$('body').removeClass('busy')
 	});
 
+	function loadTradeCallback() {
+		$('#saveTrade').ajaxForm({
+			target: '#trade-detail',
+			success: loadTradeCallback
+		});
+		showCategoryRules();
+		showAuditTypeRules();
+	}
+
 	$('#trade-nav').delegate('.jstree a', 'click', function(e) {
 		e.preventDefault();
 		var data = { trade: $(this).parent().attr('id') };
 		setMainStatus('Loading Trade');
-		$('#trade-detail').load('TradeTaxonomy!tradeAjax.action', data, function () {	
-			showCategoryRules();
-			showAuditTypeRules();
-		});
+		$('#trade-detail').load('TradeTaxonomy!tradeAjax.action', data, loadTradeCallback);
 	});
 	
 	$('body:not(.busy)').delegate('#suggest','submit', function(e) {
@@ -145,7 +151,7 @@ $(function() {
 	
 	$('a.add').live('click', function(e) {
 		e.preventDefault();
-		$('#trade-detail').load('TradeTaxonomy!tradeAjax.action');
+		$('#trade-detail').load('TradeTaxonomy!tradeAjax.action', loadTradeCallback);
 	});
 	
 	$('.trade_search').click(function(){
@@ -157,14 +163,10 @@ $(function() {
 		$('#suggest').submit();
 	});
 	
-	$('#trade-detail').delegate('.save', 'click', function(e) {
+	
+	$('#trade-detail').delegate('#removelogo','click',function(e) {
 		e.preventDefault();
-		$('#trade-detail').load('TradeTaxonomy!saveTradeAjax.action', $('#saveTrade').serialize(), function() {
-			tree.jstree('refresh');
-		});
-	}).delegate('.delete', 'click', function(e) {
-		e.preventDefault();
-		tree.jstree('remove', '#'+$(this).closest('form').find('[name=trade]').val());
+		$('#trade-detail').load('TradeTaxonomy!removeFileAjax.action', {trade: $('#saveTrade [name=trade]').val()}, loadTradeCallback);
 	}).delegate('#add-alternate','click', function(e) {
 		e.preventDefault();
 		$('#alternateNames').load('TradeTaxonomy!addAlternateAjax.action', {alternateName: $('#alternateName').val(), trade: $('#saveTrade [name=trade]').val()});
