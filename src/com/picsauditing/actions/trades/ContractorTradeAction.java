@@ -50,6 +50,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 			affectedTrades = findAffectedTrades();
 		}
+		sortTrades();
 		return "trade";
 	}
 
@@ -65,14 +66,14 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		if (!contractor.getTrades().contains(trade))
 			contractor.getTrades().add(trade);
 
-		// TODO Sort Contractor Trades by Name
-
+		sortTrades();
 		return "trade";
 	}
 
 	public String removeTradeAjax() {
 		tradeDAO.remove(trade);
 		trade = null;
+		sortTrades();
 
 		return "trade";
 	}
@@ -115,20 +116,21 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	public Map<ContractorTrade, String> getTradeCssMap() {
 		if (tradeCssMap == null) {
+			/**
+			 * the power to raise the activityPercent. Larger numbers mean that 9s (most of the time) are less prone to
+			 * dilution when other trades are added
+			 */
+			final float factor = 1.8f;
+
 			tradeCssMap = new HashMap<ContractorTrade, String>();
 			int sumTrades = 0;
 			for (ContractorTrade trade : contractor.getTrades()) {
-				sumTrades += trade.getActivityPercent();
-				if (trade.isSelfPerformed() || trade.isManufacture())
-					sumTrades++;
+				sumTrades += (int) Math.round(Math.pow(trade.getActivityPercent(), factor));
 			}
 
 			// assign style mappings
 			for (ContractorTrade trade : contractor.getTrades()) {
-				// int activityPercent = trade.getActivityPercent() * trade.getActivityPercent();
-				int activityPercent = trade.getActivityPercent();
-				// if (trade.isSelfPerformed() || trade.isManufacture())
-				// activityPercent++;
+				int activityPercent = (int) Math.round(Math.pow(trade.getActivityPercent(), factor));
 
 				int tradePercent = Math.round(10f * activityPercent / sumTrades);
 
@@ -184,9 +186,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	 * 
 	 * @return
 	 */
-	public String cloudTrades() throws Exception {
-		findContractor();
-
+	private void sortTrades() {
 		Collections.sort(contractor.getTrades(), new Comparator<ContractorTrade>() {
 			@Override
 			public int compare(ContractorTrade o1, ContractorTrade o2) {
@@ -195,8 +195,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 				return o1.getTrade().getName().toString().compareTo(o2.getTrade().getName().toString());
 			}
 		});
-
-		return "cloud";
 	}
 
 }

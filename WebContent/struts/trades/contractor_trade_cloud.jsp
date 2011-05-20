@@ -7,10 +7,12 @@
 	<s:if test="contractor.trades.size() > 0">
 		<s:iterator value="contractor.trades" var="trade">
 			<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" 
-				class="trade trade-cloud-<s:property value="tradeCssMap.get(#trade)"/>"><s:property value="#trade.activityPercent"/>-<s:property value="tradeCssMap.get(#trade)"/> <s:property value="#trade.trade.name"/></a>
+				class="trade trade-cloud-<s:property value="tradeCssMap.get(#trade)"/> <s:if test="#trade.id == [1].trade.id">current</s:if>"
+				title="<s:property value="#trade.activityPercent"/>-<s:property value="tradeCssMap.get(#trade)"/>"><s:property value="#trade.trade.name"/></a>
 		</s:iterator>
 	</s:if>
 	<s:else>
 		<p><s:text name="ContractorTrades.instructions"></s:text></p>
 	</s:else>
 </div>
+

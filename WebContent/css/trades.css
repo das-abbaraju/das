@@ -19,21 +19,20 @@ a.trade,a.trade:hover,a.trade:active {
 }
 
 #trade-cloud a.trade {
+	background-color: #EFF0FF;
+	border-color: #DDDDDD;
+	border-radius: 10px 10px 10px 10px;
+	border-style: solid;
+	border-width: 3px;
 	display: block;
 	float: left;
 	font-family: Helvetica, sans-serif;
 	font-weight: normal;
-	margin: 0 3px;
-	padding: 8px;
+	margin: 0 3px 3px;
+	padding: 5px;
 	color: #012142;
 	margin-right: 12px;
 	text-decoration: none;
-}
-
-#trade-cloud a.trade:hover {
-	color: white;
-	background-color: rgba(0, 45, 84, 0.75);
-	border-radius: 10px;
 }
 
 #trade-cloud a.trade-cloud-1 {
@@ -87,6 +86,19 @@ a.trade,a.trade:hover,a.trade:active {
 	color: rgba(0, 45, 84, 1);
 	font-size: 39px;
 	font-weight: bold;
+}
+
+#trade-cloud a.trade:hover {
+	color: white;
+	background-color: rgba(0, 45, 84, 0.75);
+	border-radius: 10px;
+	border-color: rgba(0, 45, 84, 0.75);
+}
+
+#trade-cloud a.current:hover, #trade-cloud a.current, #trade-cloud a.trade:active, #trade-cloud a.trade:after {
+	color: white;
+	background-color: rgba(0, 45, 84, 0.75);
+	border-color: yellow;
 }
 
 #trade-nav {
