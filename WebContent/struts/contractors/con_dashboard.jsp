@@ -467,8 +467,8 @@ table.report tr.hurdle td {
 				</p>
 				<div class="telecommunications">
 					<p class="tel"><s:text name="%{scope}.ContractorDashboard.MainPhone" />: <span class="value"><s:property value="contractor.phone" /></span></p>
-					<s:if test="contractor.fax" ><p class="tel">Main Fax: <span class="value"><s:property value="contractor.fax" /></span></p></s:if>
-					<s:if test="contractor.webUrl.length() > 0" ><p class="url">Web site: <strong><a href="http://<s:property value="contractor.webUrl" />" class="value" target="_blank"><s:property value="contractor.webUrl" /></a></strong></p></s:if>
+					<s:if test="!isStringEmpty(contractor.fax)"><p class="tel">Main Fax: <span class="value"><s:property value="contractor.fax" /></span></p></s:if>
+					<s:if test="contractor.webUrl.length() > 0"><p class="url">Web site: <strong><a href="http://<s:property value="contractor.webUrl" />" class="value" target="_blank"><s:property value="contractor.webUrl" /></a></strong></p></s:if>
 					<s:iterator value="contractor.getUsersByRole('ContractorAdmin')">
 					<p class="contact"><s:if test="contractor.primaryContact.id == id">Primary </s:if>Contact: <span class="value"><s:property value="name" /></span></p>
 					<p class="tel">&nbsp;&nbsp;Email: <a href="mailto:<s:property value="email" />" class="email"><s:property value="email" /></a>
