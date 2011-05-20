@@ -47,6 +47,7 @@
 <div class="clearfix">
 	<s:if test="trade.trade.productI">
 		<div class="fieldoption left">
+			What do you do with this product?
 			<s:radio name="trade.manufacture" theme="translate" list="#{true: 'Manufacture', false:'Distribute' }"/>
 		</div>
 	</s:if>
