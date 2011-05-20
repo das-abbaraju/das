@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -65,16 +66,27 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
 
+	@Autowired
 	private AuditBuilderController auditBuilder;
+	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
+	@Autowired
 	private AuditDataDAO dataDAO;
+	@Autowired
 	private FlagDataDAO flagDataDAO;
+	@Autowired
 	private OperatorTagDAO operatorTagDAO;
+	@Autowired
 	private ContractorTagDAO contractorTagDAO;
+	@Autowired
 	private UserDAO userDAO;
+	@Autowired
 	private NaicsDAO naicsDAO;
+	@Autowired
 	private FlagCriteriaContractorDAO flagCriteriaContractorDAO;
+	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
+
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
 	protected boolean runTagConCronAjax = false;
@@ -99,24 +111,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private Map<FlagColor, Integer> flagCounts;
 
 	private OshaDisplay oshaDisplay;
-
-	public ContractorDashboard(AuditBuilderController auditBuilder, ContractorAccountDAO accountDao,
-			ContractorAuditDAO auditDao, ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO,
-			FlagDataDAO flagDataDAO, OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO,
-			UserDAO userDAO, NaicsDAO naicsDAO, AuditTypeRuleCache auditTypeRuleCache,
-			AuditPercentCalculator auditPercentCalculator, FlagCriteriaContractorDAO flagCriteriaContractorDAO) {
-		this.auditBuilder = auditBuilder;
-		this.contractorOperatorDAO = contractorOperatorDAO;
-		this.dataDAO = dataDAO;
-		this.flagDataDAO = flagDataDAO;
-		this.operatorTagDAO = operatorTagDAO;
-		this.contractorTagDAO = contractorTagDAO;
-		this.flagCriteriaContractorDAO = flagCriteriaContractorDAO;
-		this.userDAO = userDAO;
-		this.naicsDAO = naicsDAO;
-		this.auditTypeRuleCache = auditTypeRuleCache;
-		this.auditPercentCalculator = auditPercentCalculator;
-	}
 
 	@Override
 	public String execute() throws Exception {
@@ -467,10 +461,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 					for (OshaRateType rate : new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
 							OshaRateType.Fatalities }) {
 						Float value = organizer.getRate(OshaType.OSHA, scope, rate);
-						if(rate.equals(OshaRateType.Fatalities)) {
+						if (rate.equals(OshaRateType.Fatalities)) {
 							put(rate.getDescription(), auditFor, Integer.toString((value.intValue())));
-						}
-						else {
+						} else {
 							put(rate.getDescription(), auditFor, format(value));
 						}
 					}
@@ -485,11 +478,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 
 			if (data.get(OshaRateType.TrirAbsolute.getDescription()) != null)
-				put(OshaRateType.TrirAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(false,
-						contractor.getNaics())));
+				put(OshaRateType.TrirAbsolute.getDescription(), ind,
+						format(naicsDAO.getIndustryAverage(false, contractor.getNaics())));
 			if (data.get(OshaRateType.LwcrAbsolute.getDescription()) != null)
-				put(OshaRateType.LwcrAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(true,
-						contractor.getNaics())));
+				put(OshaRateType.LwcrAbsolute.getDescription(), ind,
+						format(naicsDAO.getIndustryAverage(true, contractor.getNaics())));
 
 			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
 			for (ContractorOperator co : contractorOperators) {
@@ -643,7 +636,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			return true;
 		return false;
 	}
-	
+
 	public Map<ContractorAuditOperator, AuditStatus> getCaoStats(Integer opID) {
 		if (prevStats == null) {
 			prevStats = new TreeMap<ContractorAuditOperator, AuditStatus>(new Comparator<ContractorAuditOperator>() {
@@ -651,25 +644,26 @@ public class ContractorDashboard extends ContractorActionSupport {
 					return o2.getStatusChangedDate().compareTo(o1.getStatusChangedDate());
 				}
 			});
-			for(ContractorAudit ca : this.getActiveAudits()) {
+			for (ContractorAudit ca : this.getActiveAudits()) {
 				for (ContractorAuditOperator cao : ca.getOperators()) {
 					if (cao.hasCaop(opID)) {
 						if (prevStats.get(cao) == null)
 							prevStats.put(cao, null);
-	
+
 						// finding previous status from workflow if it exists
 						if (cao.getCaoWorkflow().size() > 0) {
 							List<ContractorAuditOperatorWorkflow> caow = cao.getCaoWorkflow();
 							Collections.sort(caow, new Comparator<ContractorAuditOperatorWorkflow>() {
 								@Override
-								public int compare(ContractorAuditOperatorWorkflow o1, ContractorAuditOperatorWorkflow o2) {
+								public int compare(ContractorAuditOperatorWorkflow o1,
+										ContractorAuditOperatorWorkflow o2) {
 									return o1.getCreationDate().compareTo(o2.getCreationDate());
 								}
 							});
 							prevStats.put(cao, cao.getCaoWorkflow().get(cao.getCaoWorkflow().size() - 1)
 									.getPreviousStatus());
 						}
-	
+
 					}
 				}
 			}
