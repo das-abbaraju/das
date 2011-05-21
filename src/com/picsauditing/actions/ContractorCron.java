@@ -729,6 +729,10 @@ public class ContractorCron extends PicsActionSupport {
 							audit.setAssignedDate(new Date());
 						}
 					}
+					if (audit.getClosingAuditor() == null && audit.getAuditor() != null
+							&& audit.hasCaoStatusAfter(AuditStatus.Pending)) {
+						audit.setClosingAuditor(new User(audit.getIndependentClosingAuditor(audit.getAuditor())));
+					}
 					break;
 				case (AuditType.SHELL_COMPETENCY_REVIEW):
 					// Reassign if given to an independent auditor

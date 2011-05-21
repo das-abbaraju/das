@@ -12,6 +12,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
@@ -45,7 +46,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	@Override
 	public void prepare() throws Exception {
 
-		String[] ids =  (String[]) ActionContext.getContext().getParameters().get("contractorAudit.id");
+		String[] ids = (String[]) ActionContext.getContext().getParameters().get("contractorAudit.id");
 
 		if (ids != null && ids.length > 0) {
 			int auditId = Integer.parseInt(ids[0]);
@@ -59,8 +60,8 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
-		if(auditor.getId() == 0) {
+
+		if (auditor.getId() == 0) {
 			return SUCCESS;
 		}
 		auditor = userDao.find(auditor.getId());
@@ -77,7 +78,11 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		}
 		contractorAudit.setAssignedDate(new Date());
 		contractorAudit.setAuditor(auditor);
-		contractorAudit.setClosingAuditor(new User(contractorAudit.getIndependentClosingAuditor(auditor)));
+		boolean pendingManualAudit = contractorAudit.getAuditType().isDesktop()
+				&& contractorAudit.hasCaoStatus(AuditStatus.Pending);
+		// Don't automatically assign a closing auditor to a pending Manual Audit
+		if (!pendingManualAudit)
+			contractorAudit.setClosingAuditor(new User(contractorAudit.getIndependentClosingAuditor(auditor)));
 
 		if (permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit))
 			dao.save(contractorAudit);
@@ -85,12 +90,11 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		if (contractorAudit.getAssignedDate() != null) {
 			output = new SimpleDateFormat("MM/dd/yy hh:mm a").format(contractorAudit.getAssignedDate());
 		}
-		
+
 		String name = getRequestURL();
 		String serverName = name.replace(ActionContext.getContext().getName() + ".action", "");
 
-		if (contractorAudit.getAuditType().isScheduled()
-				&& contractorAudit.getAuditor() != null
+		if (contractorAudit.getAuditType().isScheduled() && contractorAudit.getAuditor() != null
 				&& contractorAudit.getScheduledDate() != null) {
 			if (contractorAudit.getContractorConfirm() == null) {
 				emailBuilder.setTemplate(15);
@@ -98,14 +102,14 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(contractorAudit);
 				emailBuilder.setUser(contractorAudit.getContractorAccount().getUsers().get(0));
-				
+
 				String seed = "c" + contractorAudit.getContractorAccount().getId() + "id" + contractorAudit.getId();
-				String confirmLink = serverName+"ScheduleAuditUpdate.action?type=c&contractorAudit=" + contractorAudit.getId() + 
-					"&key="	+ Strings.hashUrlSafe(seed);
+				String confirmLink = serverName + "ScheduleAuditUpdate.action?type=c&contractorAudit="
+						+ contractorAudit.getId() + "&key=" + Strings.hashUrlSafe(seed);
 				emailBuilder.addToken("confirmLink", confirmLink);
 				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 				EmailQueue email = emailBuilder.build();
-				if(contractorAudit.getAuditType().getAccount() != null)
+				if (contractorAudit.getAuditType().getAccount() != null)
 					email.setViewableBy(contractorAudit.getAuditType().getAccount());
 				else
 					email.setViewableById(Account.EVERYONE);
@@ -117,10 +121,10 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(contractorAudit);
 				emailBuilder.setUser(contractorAudit.getAuditor());
-				
+
 				String seed = "a" + contractorAudit.getAuditor().getId() + "id" + contractorAudit.getId();
-				String confirmLink = serverName+"ScheduleAuditUpdate.action?type=a&contractorAudit=" + contractorAudit.getId() + 
-					"&key="	+ Strings.hashUrlSafe(seed);
+				String confirmLink = serverName + "ScheduleAuditUpdate.action?type=a&contractorAudit="
+						+ contractorAudit.getId() + "&key=" + Strings.hashUrlSafe(seed);
 				emailBuilder.addToken("confirmLink", confirmLink);
 				emailBuilder.setFromAddress("\"Jesse Cota\"<jcota@picsauditing.com>");
 				EmailQueue email = emailBuilder.build();
@@ -128,16 +132,16 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				email.setViewableById(Account.PicsID);
 				EmailSender.send(email);
 			}
-		
+
 			NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 			Note note = new Note();
 			note.setAccount(contractorAudit.getContractorAccount());
 			note.setAuditColumns(permissions);
 			note.setSummary("Audit Schedule updated");
 			note.setNoteCategory(NoteCategory.Audits);
-			if(contractorAudit.getAuditType().getAccount() != null)
+			if (contractorAudit.getAuditType().getAccount() != null)
 				note.setViewableBy(contractorAudit.getAuditType().getAccount());
-			else	
+			else
 				note.setViewableById(Account.EVERYONE);
 			noteDAO.save(note);
 		}
