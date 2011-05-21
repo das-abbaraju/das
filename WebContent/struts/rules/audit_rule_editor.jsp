@@ -281,7 +281,7 @@ $(function() {
 				</li>
 				<li>
 					<label>Sole Proprietor</label>
-					<div class="nobr"><s:checkbox them="pics" name="rule.soleProprietor" /></div>
+					<div class="nobr"><s:checkbox theme="pics" name="rule.soleProprietor" /></div>
 				</li>
 				<li <s:if test="operatorRequired">class="required"</s:if>>
 					<label>Operator</label>
