@@ -47,7 +47,7 @@
                 <interceptor-ref name="workflow">
                     <param name="excludeMethods">input,back,cancel,browse</param>
                 </interceptor-ref>
-				<interceptor-ref name="http2https"/>                
+                <interceptor-ref name="annotationWorkflow"/>
 			</interceptor-stack>
 		
 		</interceptors>

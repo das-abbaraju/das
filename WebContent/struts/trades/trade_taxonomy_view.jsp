@@ -11,9 +11,7 @@
 	<fieldset>
 	<h2>Trade</h2>
 		<s:if test="!isStringEmpty(trade.imageLocationI)">
-			<div class="tradelogo">
-				<img src="TradeTaxonomy!tradeLogo.action?trade=<s:property value="trade.id"/>" width="200" height="200"/>
-			</div>
+			<img src="TradeTaxonomy!tradeLogo.action?trade=<s:property value="trade.id"/>" class="trade"/>
 		</s:if>
 		<ol>
 			<s:if test="trade.id > 0">
@@ -73,6 +71,7 @@
 			</li>
 		</ol>
 	</fieldset>
+	<s:if test="trade.id > 0">
 	<fieldset>
 		<h2>Alternate Names</h2>
 		<ol>
@@ -88,21 +87,22 @@
 			</li>
 		</ol>
 	</fieldset>
-	<fieldset>
-		<h2>Rules</h2>
-		<ol>
-			<li>
-				<h4>Manual Audit Category Rules</h4>
-				<a href="CategoryRuleEditor.action?rule.auditType=2&rule.trade=<s:property value="trade.id" />">Add New Manual Audit Category Rule</a>
-				<div id="tradeCategoryRules"></div>
-			</li>
-			<li>
-				<h4>Audit Type Rules</h4>
-				<a href="AuditTypeRuleEditor.action?rule.trade=<s:property value="trade.id" />" class="add">Add New Audit Type Rule</a>
-				<div id="tradeAuditRules"></div>
-			</li>
-		</ol>
-	</fieldset>
+		<fieldset>
+			<h2>Rules</h2>
+			<ol>
+				<li>
+					<h4>Manual Audit Category Rules</h4>
+					<a href="CategoryRuleEditor.action?rule.auditType=2&rule.trade=<s:property value="trade.id" />">Add New Manual Audit Category Rule</a>
+					<div id="tradeCategoryRules"></div>
+				</li>
+				<li>
+					<h4>Audit Type Rules</h4>
+					<a href="AuditTypeRuleEditor.action?rule.trade=<s:property value="trade.id" />" class="add">Add New Audit Type Rule</a>
+					<div id="tradeAuditRules"></div>
+				</li>
+			</ol>
+		</fieldset>
+	</s:if>
 	<fieldset class="form submit">
 		<s:submit cssClass="picsbutton positive" method="saveTradeAjax" value="Save"/>
 		<s:if test="trade.id > 0">

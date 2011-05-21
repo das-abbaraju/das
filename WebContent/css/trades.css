@@ -219,3 +219,12 @@ img.trade {
 	height: 100px;
 	width: 100px;
 }
+
+#browse-tab, #search-tab {
+	padding: 1em 0 0 1em;
+}
+
+#trade-nav li.matching > a {
+	font-weight: bold;
+	font-style: italic;
+}

@@ -9,12 +9,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/jsTree/jquery.jstree.js?v=<s:property value="version"/>"></script>
-<style>
-#browse-tab, #search-tab {
-	padding: 1em 0 0 1em;
-}
-
-</style>
 <script>
 var conID = '<s:property value="id"/>';
 
@@ -47,11 +41,8 @@ $(function() {
 		$.extend(true, {}, treeOptions, {
 			"json_data": {
 				"ajax": {
+					"url": 'TradeTaxonomy!searchJson.action',
 					"success": function(json) {
-						if (json.result.length == 0)
-							$('#search-tree').msg('alert', 'No trades found');
-						else
-							$('#search-tree .alert').remove();
 						return json.result;
 					},
 					"data": function(node) {
@@ -166,27 +157,7 @@ $(function() {
 
 
 <h4>What are your business trades?</h4>
-<div id="trade-nav">
-	<ul>
-		<li><a href="#search-tab"><s:text name="%{scope}.header.Search"/></a></li>
-		<li><a href="#browse-tab"><s:text name="%{scope}.header.Browse"/></a></li>
-	</ul>
-	<div id="search-tab">
-		<form id="suggest">
-			<input type="search" class="searchText" name="q" placeholder="Search..."/>
-			<input type="submit" class="searchButton" title="Submit Search" value="Search" />
-			<ul class="filter">
-				<li><a href="#">Most Used Products</a></li>
-				<li><a href="#">Show All</a></li>
-			</ul>
-		</form>
-		<div class="messages"></div>
-		<div id="search-tree"></div>
-	</div>
-	<div id="browse-tab">
-		<div id="browse-tree"></div>
-	</div>
-</div>
+<s:include value="trade_search.jsp"/>
 
 <div id="trade-view">
 	<s:include value="contractor_trade_cloud.jsp"/>
