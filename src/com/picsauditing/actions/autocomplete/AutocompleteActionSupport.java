@@ -1,6 +1,7 @@
 package com.picsauditing.actions.autocomplete;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -17,6 +18,7 @@ import com.picsauditing.jpa.entities.BaseTable;
 public abstract class AutocompleteActionSupport<T extends BaseTable> extends PicsActionSupport {
 
 	protected String q;
+	protected List<Integer> ids;
 
 	public final String autocomplete() throws Exception {
 		StringBuilder sb = new StringBuilder();

@@ -1,6 +1,8 @@
 package com.picsauditing.util;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -106,8 +108,17 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean auditCreationFlagChanges = false;
 	protected boolean auditQuestionFlagChanges = false;
 
-	// private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO)
-	// SpringUtils.getBean("AuditQuestionDAO");
+	protected final Map<Integer, String> MINORITY_QUESTIONS;
+	{
+		Map<Integer, String> temp = new HashMap<Integer, String>();
+		temp.put(2340, "Small Business");
+		temp.put(2373, "Women-Owned");
+		temp.put(3543, "Disabled Veteran Owned");
+		temp.put(66, "Union Personnel");
+		temp.put(77, "Non-union Personnel");
+		temp.put(3, "All the Above");		
+		MINORITY_QUESTIONS = Collections.unmodifiableMap(temp);
+	}
 
 	// // setting the filter
 	public boolean isShowOperator() {
@@ -775,5 +786,9 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public List<AuditQuestion> getIndustriesList() {
 		// Do we want to hard code this?
 		return getQuestionDAO().findWhere("categoryID = 423");
+	}
+
+	public Map<Integer, String> getMinorityQuestions() {
+		return MINORITY_QUESTIONS;
 	}
 }

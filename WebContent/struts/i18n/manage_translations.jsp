@@ -10,7 +10,6 @@
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/reports.css?v=<s:property value="version"/>" />
 <script type="text/javascript" src="js/jquery/translate/jquery.translate-1.4.7-debug-all.js"></script>
-<script type="text/javascript" src="js/Search.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript">
 $(function(){
 	$('table.report .showEdit').click(function() {

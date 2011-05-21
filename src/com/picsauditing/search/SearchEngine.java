@@ -3,6 +3,7 @@ package com.picsauditing.search;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -287,6 +288,8 @@ public class SearchEngine {
 	 * @return An array of search terms, sorted from least to most common
 	 */
 	public List<String> buildTerm(String check, boolean sort, boolean removeDups) {
+		if(Strings.isEmpty(check))
+			return Collections.emptyList();
 		String[] terms = check.toUpperCase().split("\\s+|@");
 		Collection<String> stringCollection;
 		if (removeDups)

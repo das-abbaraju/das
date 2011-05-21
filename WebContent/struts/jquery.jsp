@@ -29,6 +29,10 @@
 <script type="text/javascript" src="js/jquery/scrollTo/jquery.scrollTo-min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 
+<script type="text/javascript" src="js/jquery/tokeninput/jquery.tokeninput.js"></script>
+<link rel="stylesheet" type="text/css" href="js/jquery/tokeninput/styles/token-input.css" />
+
+
 <script type="text/javascript">
 	$(document).ready(function() {
 		$.ajaxSettings.traditional = true;
