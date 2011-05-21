@@ -43,15 +43,17 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	protected ContractorAccount contractor;
 	private List<ContractorAudit> contractorNonExpiredAudits = null;
+
 	@Autowired
 	protected ContractorAccountDAO accountDao;
 	@Autowired
 	protected ContractorAuditDAO auditDao;
-
 	@Autowired
 	private CertificateDAO certificateDAO;
 	@Autowired
 	private OperatorAccountDAO operatorDAO;
+	@Autowired
+	private AuditDataDAO auditDataDAO;
 
 	private List<ContractorOperator> operators;
 	protected boolean limitedView = false;
@@ -59,12 +61,11 @@ public class ContractorActionSupport extends AccountActionSupport {
 	protected Map<ContractorAudit, AuditStatus> contractorAuditWithStatuses = null;
 
 	protected List<Certificate> certificates = null;
-	
+
 	private Map<ContractorTrade, String> tradeCssMap;
 
 	// TODO cleanup the PermissionToViewContractor duplicate code here
 	private PermissionToViewContractor permissionToViewContractor = null;
-	private AuditDataDAO auditDataDAO;
 
 	public String execute() throws Exception {
 		findContractor();
@@ -472,15 +473,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
+	 * TODO: Find out if this comment is useful. Is the method it is for missing.
 	 * Only show the COR/SECOR link for contractors who have answered Yes to that question and linked to an operator
 	 * that subscribes to COR
 	 */
-
-	protected AuditDataDAO getAuditDataDAO() {
-		if (auditDataDAO == null)
-			auditDataDAO = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
-		return auditDataDAO;
-	}
 
 	public boolean isShowHeader() {
 		if (permissions.isContractor())
@@ -628,11 +624,11 @@ public class ContractorActionSupport extends AccountActionSupport {
 			return true;
 		return false;
 	}
-	
+
 	public ContractorRegistrationStep getRegistrationStep() {
 		return ContractorRegistrationStep.getStep(contractor);
 	}
-	
+
 	public Map<ContractorTrade, String> getTradeCssMap() {
 		if (tradeCssMap == null) {
 			/**
