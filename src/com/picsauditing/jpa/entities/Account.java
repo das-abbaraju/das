@@ -730,6 +730,20 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 			types.add(ContractorType.Offsite);
 		return types;
 	}
+	
+	public void addAccountTypes(List<ContractorType> conTypes) {
+		for (ContractorType conType: conTypes) {
+			if (conType.equals(ContractorType.Onsite) && !isOnsiteServices()) {
+				setOnsiteServices(true);
+			}
+			if (conType.equals(ContractorType.Offsite) && !isOffsiteServices()) {
+				setOffsiteServices(true);
+			}
+			if (conType.equals(ContractorType.Supplier) && !isMaterialSupplier()) {
+				setMaterialSupplier(true);
+			}
+		}
+	}
 
 	@Transient
 	public boolean isMaterialSupplierOnly() {

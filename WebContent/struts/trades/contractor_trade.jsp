@@ -97,6 +97,10 @@ $(function() {
 					}
 				})
 			);
+
+			if ('<s:property value="requiresMaterial" />' || '<s:property value="requiresService" />') {
+				$("#addButton").attr("disabled", "disabled");
+			}
 		});
 	}
 
@@ -125,7 +129,21 @@ $(function() {
 			loadTrades('ContractorTrades!removeTradeAjax.action', $('#trade-form').serialize());
 		}
 	});
+
+	$('input.service').live("change", function() {
+		console.log($('input.service:checked').length > 0)
+		if ($('input.service:checked').length > 0)
+			$("div.buttons .picsbutton").removeAttr("disabled");
+		else
+			$("div.buttons .picsbutton").attr("disabled", "disabled");
+	});
 	
+	$('input.product').live('change', function() {
+		if ($(this).is(':checked'))
+			$("#addButton").removeAttr("disabled");
+		else
+			$("#addButton").attr("disabled", "disabled");
+	});
 });
 </script>
 </head>

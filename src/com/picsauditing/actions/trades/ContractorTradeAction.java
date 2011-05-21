@@ -3,7 +3,6 @@ package com.picsauditing.actions.trades;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,10 @@ import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorTrade;
+import com.picsauditing.jpa.entities.ContractorType;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Trade;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Tree;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -28,6 +30,10 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	private ContractorTrade trade;
 
 	private List<ContractorTrade> affectedTrades = new ArrayList<ContractorTrade>();
+	
+	private boolean requiresMaterial = false;
+	private boolean requiresService = false;
+	private List<ContractorType> conTypes;
 
 	public ContractorTradeAction() {
 		this.subHeading = getText("ContractorTrades.title");
@@ -45,6 +51,19 @@ public class ContractorTradeAction extends ContractorActionSupport {
 					trade = t;
 					break;
 				}
+			}
+			
+			boolean onsite = contractor.isOnsiteServices();
+			boolean offsite = contractor.isOffsiteServices();
+			boolean material = contractor.isMaterialSupplier();
+			
+			boolean product = trade.getTrade().getProductI();
+			boolean service = trade.getTrade().getServiceI();
+			
+			if (!material && product) {
+				requiresMaterial = true;				
+			} else if (!onsite && !offsite && service) {
+				requiresService = true;
 			}
 
 			affectedTrades = findAffectedTrades();
@@ -64,6 +83,21 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		if (!contractor.getTrades().contains(trade))
 			contractor.getTrades().add(trade);
+
+		// PICS-2364 if selected trade has contractorCount of 0 send email to auditors
+		if (trade.getTrade().getContractorCount() == 0) {
+			EmailQueue emailQueue = new EmailQueue();
+			emailQueue.setSubject("New Trade Selected.");
+			emailQueue.setToAddresses("auditors@picsauditing.com");
+			emailQueue.setBody("Trade: " + trade.getTrade().getId() + "-" + trade.getTrade().getName()
+					+ " Contractor: " + contractor.getId() + "-" + contractor.getName());
+
+			EmailSender sender = new EmailSender();
+			sender.sendNow(emailQueue);
+		}
+		
+		contractor.addAccountTypes(conTypes);
+		accountDao.save(contractor);
 
 		sortTrades();
 		return "trade";
@@ -123,7 +157,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		return result;
 	}
-	
+
 	/**
 	 * Sorts contractor trades for cloud
 	 * 
@@ -138,6 +172,30 @@ public class ContractorTradeAction extends ContractorActionSupport {
 				return o1.getTrade().getName().toString().compareTo(o2.getTrade().getName().toString());
 			}
 		});
+	}
+
+	public boolean isRequiresMaterial() {
+		return requiresMaterial;
+	}
+
+	public void setRequiresMaterial(boolean requiresMaterial) {
+		this.requiresMaterial = requiresMaterial;
+	}
+
+	public boolean isRequiresService() {
+		return requiresService;
+	}
+
+	public void setRequiresService(boolean requiresService) {
+		this.requiresService = requiresService;
+	}
+
+	public List<ContractorType> getConTypes() {
+		return conTypes;
+	}
+
+	public void setConTypes(List<ContractorType> conTypes) {
+		this.conTypes = conTypes;
 	}
 
 }

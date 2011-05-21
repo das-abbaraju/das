@@ -13,7 +13,7 @@
 <s:form id="trade-form">
 <div class="buttons">
 	<s:if test="trade.id == 0">
-		<s:submit method="saveTradeAjax" value="Add" cssClass="save picsbutton positive"/>
+		<s:submit method="saveTradeAjax" value="Add" cssClass="save picsbutton positive" id="addButton"/>
 	</s:if>
 	<s:else>
 		<s:submit method="saveTradeAjax" value="Save" cssClass="save picsbutton positive"/>
@@ -68,6 +68,18 @@
 		<s:param><s:select name="trade.activityPercent" list="activityPercentMap" theme="translate"/></s:param>
 	</s:text>
 </div>
+
+<s:if test="trade.id == 0">
+<div>
+	<s:if test="requiresService">
+		<s:checkbox name="conTypes" fieldValue="Onsite" value="%{contractor.onsiteServices}" cssClass="service" /> OnSite Services
+		<s:checkbox name="conTypes" fieldValue="Offsite" value="%{contractor.offsiteServices}" cssClass="service" /> OffSite Services
+	</s:if>
+	<s:elseif test="requiresMaterial">
+		<s:checkbox name="conTypes" fieldValue="Supplier" value="%{contractor.materialSupplier}" cssClass="product"/> I understand that this will list my account as a material supplier.
+	</s:elseif>
+</div>
+</s:if>
 
 <div>
 	<ol class="form-style">
