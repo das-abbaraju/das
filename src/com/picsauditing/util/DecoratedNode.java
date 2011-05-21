@@ -6,7 +6,7 @@ import org.json.simple.JSONObject;
 
 public class DecoratedNode<T extends Hierarchical<T>> extends Node<T> {
 	private boolean decorated = false;
-
+	
 	public DecoratedNode() {
 		super();
 	}
@@ -40,11 +40,11 @@ public class DecoratedNode<T extends Hierarchical<T>> extends Node<T> {
 			JSONObject attr = (JSONObject) json.get("attr");
 			if (attr != null) {
 				if (attr.get("class") != null) {
-					attr.put("class", attr.get("class") + " decorated");
+					attr.put("class", attr.get("class") + " matching");
 				}
 			} else {
 				attr = new JSONObject();
-				attr.put("class", "decorated");
+				attr.put("class", "matching");
 				json.put("attr", attr);
 			}
 		}
