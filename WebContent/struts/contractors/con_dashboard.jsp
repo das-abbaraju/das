@@ -84,6 +84,9 @@
 		$('.reloadPage').live('click', function(){
 			location.reload();
 		});
+		$('a.tradeInfo').live('click',function() {
+			$($(this).attr('href')).toggle();
+			})
 		$('a.trade').each(function() {
 			$(this).attr('href', 'ContractorTrades.action?id=<s:property value="id"/>');
 		});
