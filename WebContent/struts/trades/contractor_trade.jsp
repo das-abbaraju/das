@@ -94,7 +94,7 @@ $(function() {
 				})
 			);
 
-			if ('<s:property value="requiresMaterial" />' || '<s:property value="requiresService" />') {
+			if ($('input.service').length > 0 || $('input.product').length > 0)
 				$("#addButton").attr("disabled", "disabled");
 			}
 		});
