@@ -201,8 +201,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 					}
 					FlagData flagData = flagDataDAO.find(dataID);
 
-					if (forceFlag.equals(co.getForceFlag()))
-						addActionError("You didn't change the flag color");
 					if (forceEnd == null)
 						addActionError("You didn't specify an end date");
 					if (getActionErrors().size() > 0) {
