@@ -40,7 +40,8 @@ function setupTree() {
 }
 
 $(function() {
-	$('a.tradeInfo').live('click',function() {
+	$('a.tradeInfo').live('click',function(e) {
+		e.preventDefault();
 		$($(this).attr('href')).toggle();
 	});
 	

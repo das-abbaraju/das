@@ -1,4 +1,5 @@
-var search_tree,browse_tree;
+var search_tree, browse_tree;
+
 function loadTradeCallback() {
 	$('#saveTrade').ajaxForm({
 		target: '#trade-view',
