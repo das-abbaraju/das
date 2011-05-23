@@ -66,7 +66,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected NoteDAO noteDAO;
 	protected ContractorAuditOperatorDAO caoDAO;
 	protected ContractorAuditOperatorWorkflowDAO caowDAO;
-	
+
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
 	private Map<Integer, AuditData> hasManual;
@@ -76,7 +76,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
 
 	private List<CategoryNode> categoryNodes;
-	
 
 	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
@@ -146,8 +145,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 				} else
 					operators.add(getOperatorAccount());
 
-				AuditCategoriesDetail auditCategoryDetail = builder.getDetail(conAudit.getAuditType(),
-						getRules(conAudit, reload), operators);
+				AuditCategoriesDetail auditCategoryDetail = builder.getDetail(conAudit.getAuditType(), getRules(
+						conAudit, reload), operators);
 				requiredCategories = auditCategoryDetail.categories;
 			}
 
@@ -199,8 +198,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	protected List<AuditCategoryRule> getRules(ContractorAudit conAudit, boolean reload) {
 		if (rules == null || reload) {
-			rules = auditCategoryRuleCache.getApplicableCategoryRules(conAudit.getContractorAccount(),
-					conAudit.getAuditType());
+			rules = auditCategoryRuleCache.getApplicableCategoryRules(conAudit.getContractorAccount(), conAudit
+					.getAuditType());
 		}
 		return rules;
 	}
@@ -491,7 +490,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return conAudit.hasCaoStatus(AuditStatus.Pending);
 		return false;
 	}
-	
+
 	protected void auditSetExpiresDate(ContractorAuditOperator cao, AuditStatus status) {
 		if (status.isSubmittedResubmitted()) {
 			if (cao.getAudit().getExpiresDate() == null)
@@ -517,7 +516,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return null;
 		}
 	}
-	
+
 	protected void setCaoUpdatedNote(AuditStatus prevStatus, ContractorAuditOperator cao) {
 		setCaoUpdatedNote(prevStatus, cao, null);
 	}
@@ -535,10 +534,15 @@ public class AuditActionSupport extends ContractorActionSupport {
 				summary += " for " + cao.getAudit().getAuditFor();
 			summary += " from " + prevStatus + " to " + cao.getStatus();
 			newNote.setSummary(summary);
-			newNote.setNoteCategory(NoteCategory.Audits);
+			
+			if (cao.getAudit().getAuditType().getClassType().isPolicy())
+				newNote.setNoteCategory(NoteCategory.Insurance);
+			else
+				newNote.setNoteCategory(NoteCategory.Audits);
+			
 			newNote.setViewableBy(cao.getOperator());
 
-			if(noteBody== null)
+			if (noteBody == null)
 				noteBody = summary;
 			newNote.setBody(noteBody);
 			caoW.setNotes(noteBody);
@@ -592,11 +596,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public void setShowVerified(boolean showVerified) {
 		this.showVerified = showVerified;
 	}
-	
+
 	public void setNoteDAO(NoteDAO noteDAO) {
 		this.noteDAO = noteDAO;
 	}
-	
+
 	public void setCaoDAO(ContractorAuditOperatorDAO caoDAO) {
 		this.caoDAO = caoDAO;
 	}
@@ -641,7 +645,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (addAll || (getCategories().get(cat) != null && getCategories().get(cat).isApplies())) {
 				CategoryNode node = new CategoryNode();
 				node.category = cat;
-				node.override = getCategories().get(cat).isOverride(); 
+				node.override = getCategories().get(cat).isOverride();
 				if (conAudit.getAuditType().getClassType().isIm()) {
 					node.total = getCategories().get(cat).getScoreCount();
 					node.verified = (int) (getCategories().get(cat).getScore());
