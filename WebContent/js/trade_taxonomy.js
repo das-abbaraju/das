@@ -214,4 +214,22 @@ $(function() {
 		startThinking({ div: "tradeAuditRules", message: "Loading Related Audit Type Rules" });
 		$('#tradeAuditRules').load('AuditTypeRuleTableAjax.action', data);
 	}
+		
+	if ($.browser.msie) {
+		placeholder();
+
+		$('#suggest input.searchText').blur(function() {
+			if ($(this).val().length == 0)
+				placeholder();
+		});
+	}
 });
+
+function placeholder() {
+	$('#suggest input.searchText').val($('#suggest input.searchText').attr("placeholder")).css("color", "#999");
+	$('#suggest input.searchText').click(function() {
+		$(this).val("");
+		$(this).css("color", "black");
+		$(this).unbind("click");
+	});
+}

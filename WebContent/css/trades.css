@@ -175,19 +175,22 @@ a.trade,a.trade:hover,a.trade:active {
 }
 
 #suggest {
-	overflow: hidden;
 	white-space: nowrap;
 	width: 100%;
 }
 
 #suggest input.searchText {
 	border: 3px solid #CCCACA;
-	border-radius: 15px 15px 15px 15px;
+	border-radius: 0px 15px 15px 0px;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 18px;
 	height: 25px;
-	padding: 2px 13px;
+	padding: 0px 30px 0px 10px;
 	width: 400px;
+}
+
+#suggest input.searchText:focus {
+	outline: none;
 }
 
 #suggest input.searchButton {
