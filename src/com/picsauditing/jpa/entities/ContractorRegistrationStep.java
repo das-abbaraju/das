@@ -47,7 +47,7 @@ public enum ContractorRegistrationStep {
 		case Done:
 		default:
 			return "Home.action";
-			
+
 		}
 	}
 
