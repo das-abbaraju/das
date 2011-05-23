@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
 
@@ -102,10 +103,8 @@ public class ContractorAuditDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findNonExpiredByContractor(int conID) {
-		Query query = em
-				.createQuery("SELECT t FROM ContractorAudit t "
-						+ "WHERE t.contractorAccount.id = ? "
-						+ "AND expiresDate > Now() ORDER BY t.auditType.displayOrder, t.auditFor, t.creationDate DESC");
+		Query query = em.createQuery("SELECT t FROM ContractorAudit t " + "WHERE t.contractorAccount.id = ? "
+				+ "AND expiresDate > Now() ORDER BY t.auditType.displayOrder, t.auditFor, t.creationDate DESC");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
@@ -155,30 +154,29 @@ public class ContractorAuditDAO extends PicsDAO {
 	}
 
 	/**
-	 * This is for getting a list of policies that we need to send emails on.
-	 * The final result of all of this logic below is that we send emails: 14
-	 * days before it expires 7 days after it expires 26 days after it expires
-	 * for a total of 3 emails
-	 * 
+	 * Returns a list of policies that will expire 14 days from now or today or expired 7 days ago, 
+	 * where a new pending policy of that type is ready.
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findExpiredCertificates() {
-		String hql = "SELECT ca FROM ContractorAudit ca " + "WHERE ca.auditType.classType = 'Policy' "
-				+ "AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status = 'Pending') "
-				+ "AND (ca.contractorAccount NOT IN (SELECT contractorAccount FROM EmailQueue et "
-				+ "WHERE et.sentDate > :Before14Days " + "AND et.emailTemplate.id = 10)" + ") " + "AND EXISTS ( "
-				+ "SELECT ca2 FROM ContractorAudit ca2 " + "WHERE ca.auditType = ca2.auditType "
-				+ "AND ca.contractorAccount = ca2.contractorAccount " + "AND ca.id > ca2.id "
-				+ "AND ca2.expiresDate BETWEEN :Before14Days AND :After26Days " + ") "
-				+ "AND ca.contractorAccount.status = 'Active' " + "ORDER BY ca.contractorAccount";
-		Query query = em.createQuery(hql);
+		SelectSQL sql = new SelectSQL("contractor_audit ca");
+		sql.addField("ca.*");
+		sql.addJoin("JOIN audit_type aty ON ca.auditTypeID = aty.id");
+		sql.addJoin("JOIN contractor_audit_operator cao ON ca.id = cao.auditID");
+		sql.addWhere("aty.classType = 'Policy'");
+		sql.addWhere("(cao.status = 'Pending' AND cao.visible = 1)");
+		sql.addWhere("EXISTS (SELECT id FROM contractor_audit ca1 WHERE ca1.auditTypeID = ca.auditTypeID"
+				+ " AND ca1.conID = ca.conID AND ca.id > ca1.id AND ca1.expiresDate IN (:Before14, NOW(), :After7))");
+		sql.addOrderBy("ca.id");
+
+		Query query = em.createNativeQuery(sql.toString(), ContractorAudit.class);
 		query.setMaxResults(100);
 		Calendar calendar1 = Calendar.getInstance();
-		calendar1.add(Calendar.WEEK_OF_YEAR, -2);
-		query.setParameter("Before14Days", calendar1.getTime());
-		calendar1.add(Calendar.DATE, 40);
-		query.setParameter("After26Days", calendar1.getTime());
+		calendar1.add(Calendar.WEEK_OF_YEAR, 2);
+		query.setParameter("Before14", calendar1.getTime());
+		calendar1.add(Calendar.DATE, -21);
+		query.setParameter("After7", calendar1.getTime());
 		return query.getResultList();
 	}
 
