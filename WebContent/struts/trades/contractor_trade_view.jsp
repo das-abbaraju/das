@@ -11,7 +11,9 @@
 <s:include value="../actionMessages.jsp"/>
 
 <s:form id="trade-form">
-<img class="trade" src="images/trades/construction.jpg" />
+<s:if test="!isStringEmpty(trade.trade.imageLocationI)">
+	<img src="TradeTaxonomy!tradeLogo.action?trade=<s:property value="trade.trade.id"/>" class="trade"/>
+</s:if>
 <h3 <s:if test="trade.id == 0">class="new"</s:if>><s:property value="trade.trade.name"/></h3>
 
 <s:hidden name="contractor"/>
