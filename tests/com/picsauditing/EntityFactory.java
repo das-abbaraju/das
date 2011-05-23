@@ -1,7 +1,5 @@
 package com.picsauditing;
 
-import java.math.BigDecimal;
-
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -17,7 +15,6 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -157,50 +154,6 @@ public class EntityFactory {
 		data.setQuestion(EntityFactory.makeAuditQuestion());
 		data.setAnswer(answer);
 		return data;
-	}
-
-	/**
-	 * Creates a fee that would normally be stored in the database without
-	 * having to access a DAO
-	 * 
-	 * @param feeID
-	 * @return
-	 */
-	static public InvoiceFee makeInvoiceFee(int feeID) {
-		InvoiceFee fee = new InvoiceFee(feeID);
-		fee.setFeeClass("Membership");
-
-		if (feeID == InvoiceFee.ACTIVATION || feeID == InvoiceFee.REACTIVATION)
-			fee.setFeeClass("Activation");
-
-		int amount = 0;
-
-		switch (feeID) {
-		case InvoiceFee.PQFONLY:
-			amount = 99;
-			break;
-		case InvoiceFee.FACILITIES1:
-			amount = 399;
-			break;
-		case InvoiceFee.FACILITIES2:
-			amount = 699;
-			break;
-		case InvoiceFee.FACILITIES5:
-			amount = 999;
-			break;
-		case InvoiceFee.FACILITIES9:
-			amount = 1399;
-			break;
-		case InvoiceFee.FACILITIES13:
-			amount = 1699;
-			break;
-		case InvoiceFee.FACILITIES20:
-			amount = 1999;
-			break;
-		}
-		fee.setAmount(new BigDecimal(amount));
-
-		return fee;
 	}
 
 	static public EmailSubscription makeEmailSubscription(User user, Subscription subscription,

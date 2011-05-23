@@ -596,10 +596,6 @@
 			class="com.picsauditing.actions.contractors.PaymentDetail">
 			<result>struts/contractors/credit_card.jsp</result>
 		</action>		
-		<action name="CalculateFeeAjax"
-			class="com.picsauditing.actions.contractors.CalculateFee">
-			<result>struts/contractors/calculate_fee_ajax.jsp</result>
-		</action>
 		<action name="ConInvoiceMaintain"
 			class="com.picsauditing.actions.contractors.ConInvoiceMaintain">
 			<result>struts/contractors/invoice_maintain.jsp</result>

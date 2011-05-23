@@ -14,7 +14,6 @@ import com.intuit.developer.QBSession;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.quickbooks.qbxml.InvoiceAdd;
@@ -112,7 +111,7 @@ public class InsertInvoices extends CustomerAdaptor {
 						lineItem.setDesc(item.getDescription());
 						
 						// cannot set a quantity for Tax items
-						if(item.getInvoiceFee().getId() != InvoiceFee.GST)
+						if(!item.getInvoiceFee().isGST())
 							lineItem.setQuantity("1");
 	
 						lineItem.setClassRef(factory.createClassRef());

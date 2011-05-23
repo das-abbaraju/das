@@ -50,7 +50,7 @@
 		// Changes status if contractor refuses bid only upgrade
 		var r = true;
 		
-		// Validating bid-only contractor and operator
+		// Validating listed contractor and operator
 		var validationData = {id: conId, button: 'validateBidOnly', 'operator.id': opId};
 		$.ajax({
 			url: 'ContractorFacilityAjax.action', 
@@ -59,7 +59,7 @@
 			dataType: "json",
 	        success: function(result) {
 				if(result.isBidOnlyContractor && !result.isBidOnlyOperator)
-					r = confirm("The Operator you have selected does not accept Listed-Only Contractors. Would you like to Upgrade this Account to a Regular Account and Add this Operator?\n\nNote: There will be a fee upgrade when changing from a Listed account to a Regular Account");
+					r = confirm("The Operator you have selected does not accept List Only Contractors. Would you like to Upgrade this Account to a Regular Account and Add this Operator?\n\nNote: There will be a fee upgrade when changing from a List Only account to a Regular Account");
 	        }
 		});
 
@@ -125,11 +125,11 @@
 	}
 
 	function changeToTrialAccount(conId) {
-		var r = confirm("Are you sure you need to switch to a Listed account? With a listed account you will only be able to complete the process for the facilities/operators that you are bidding for 90 days.")
+		var r = confirm("Are you sure you need to switch to a List Only account? You will still be required to upgrade in the future if you selected for work by this Operator.")
 		if(r == false) {
 			return false;
 		}
-		startThinking( {div: 'thinkingDiv', message: 'Switching to Listed Account' } );
+		startThinking( {div: 'thinkingDiv', message: 'Switching to List Only Account' } );
 		var data= {id: conId, button: 'SwitchToTrialAccount'};
 		$.ajax({
 			url: 'ContractorFacilityAjax.action', 

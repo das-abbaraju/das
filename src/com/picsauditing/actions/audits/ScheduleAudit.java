@@ -33,6 +33,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -64,6 +65,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	private AuditorAvailabilityDAO auditorAvailabilityDAO;
 	private InvoiceDAO invoiceDAO;
+	@SuppressWarnings("unused")
 	private InvoiceFeeDAO feeDAO;
 	private InvoiceItemDAO itemDAO;
 	private UserAccessDAO uaDAO;
@@ -87,8 +89,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		this.uaDAO = uaDAO;
 		this.userAssignmentDAO = userAssignmentDAO;
 
-		rescheduling = feeDAO.find(InvoiceFee.RESCHEDULING);
-		expedite = feeDAO.find(InvoiceFee.EXPEDITE);
+		rescheduling = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ReschedulingFee, 0);
+		expedite = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ExpediteFee, 0);
 	}
 
 	public void prepare() throws Exception {

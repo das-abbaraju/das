@@ -10,9 +10,8 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.PaymentMethod;
@@ -104,25 +103,31 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				addActionError("Only account Administrators, Billing, and Safety can accept this Contractor Agreement");
 			}
 		}
-		
+
 		accountDao.save(contractor);
 		activationFee = null;
 		if (contractor.getStatus().isPendingDeactivated()) {
 			if (contractor.getMembershipDate() == null) {
-				activationFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
-				if(contractor.hasReducedActivation(activationFee)) {
+				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
+				if (contractor.hasReducedActivation(activationFee)) {
 					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activationFee);
-					activationFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION99);
+					activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 0);
 					activationFee.setAmount(new BigDecimal(reducedOperator.getActivationFee()));
 				}
 			} else
-				activationFee = invoiceFeeDAO.find(InvoiceFee.REACTIVATION);
+				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, contractor
+						.getPayingFacilities());
 		}
-		
-		if(contractor.getCurrencyCode().isCanada()) {
-			gstFee = invoiceFeeDAO.find(InvoiceFee.GST);
-			BigDecimal total = contractor.getNewMembershipLevel().getAmount();
-			if(activationFee != null)
+
+		if (contractor.getCurrencyCode().isCanada()) {
+			gstFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
+			BigDecimal total = BigDecimal.ZERO;
+			for(FeeClass feeClass : contractor.getFees().keySet()) {
+				if(!contractor.getFees().get(feeClass).getNewLevel().isFree())
+					total.add(contractor.getFees().get(feeClass).getNewLevel().getAmount());
+			}
+				
+			if (activationFee != null)
 				total.add(activationFee.getAmount());
 			gstFee.setAmount(gstFee.getGSTSurchage(total));
 		}
@@ -386,7 +391,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public InvoiceFee getActivationFee() {
 		return activationFee;
 	}
-	
+
 	public InvoiceFee getGstFee() {
 		return gstFee;
 	}

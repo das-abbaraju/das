@@ -9,16 +9,20 @@
 <s:else>
 <label><s:text name="%{scope}.ContractorFacilities.NumberOfLinkedFacilities" />:</label> <s:property value="currentOperators.size()" /><br />
 <s:if test="permissions.contractor || permissions.admin">
-	<s:if test="contractor.membershipLevel.amount > 0"> 
-		<label><s:text name="%{scope}.ContractorFacilities.CurrentMembershipLevel" />:</label> $<s:property value="contractor.membershipLevel.amount" /> per year<br />
-	</s:if>
 	<s:if test="contractor.acceptsBids">
-		<label><s:property value="contractor.newMembershipLevel.fee" /> :</label> $25
-		<br/><b>If you are awarded the BID or decide to convert to a full membership your new membership fee will be $<s:property value="currentMembership.amount"/></b>.	
+		<b>If you are awarded a bid or decide to convert from list only to a full membership your new membership fee will increase</b>.<br />
+	</s:if>
+	<s:if test="contractor.currentMembership.size > 0"> 
+		<label><s:text name="%{scope}.ContractorFacilities.CurrentMembershipLevel" /></label><br />
+		<s:iterator value="contractor.currentMembership">
+			 <s:property value="fee" />: $<s:property value="amount" /> per year<br />
+		</s:iterator>
 	</s:if>
 	<s:else>
-		<label><s:text name="%{scope}.ContractorFacilities.NewMembershipLevel" />:</label> $<s:property value="contractor.newMembershipLevel.amount" /> <br />
-		<s:property value="contractor.newMembershipLevel.fee" />
+		<label><s:text name="%{scope}.ContractorFacilities.NewMembershipLevel" /></label><br />
+		<s:iterator value="contractor.newMembership">
+			 <s:property value="fee" />: $<s:property value="amount" /> per year<br />
+		</s:iterator>
 	</s:else>
 </s:if>
 
@@ -35,16 +39,15 @@
 <s:if test="trialContractor">
 	<div class="info" style="80%">
 		<a href="#" class="picsbutton" id="bidonly"
-			onclick="javascript: return changeToTrialAccount( <s:property value="contractor.id"/>);">Switch To Listed Account</a> 
+			onclick="javascript: return changeToTrialAccount( <s:property value="contractor.id"/>);">Switch To List Only Account</a> 
 			<span class="block" style="position: relative;">
 				<a class="whatsthis" href="#"><img src="images/help.gif" height="15" width="15">
 					<span class="hoverhelp" style="bottom: 20px; left: -100px;">
-					By switching to a BID-ONLY account you will only be able to complete the process for the 
-					facilities/operators that you are bidding for. Your account will only be valid for 90 days.
+					By switching to a List Only account you will only be able to complete an introductory process for the 
+					facilities/operators that you are listed with.
 			</span></a></span><br/>
-			By switching to a BID-ONLY account you will only be able to complete the process for 
-			the facilities/operators that you are bidding for. Your account will only be 
-			valid for 90 days.</div>
+			By switching to a List Only account you will only be able to complete an introductory process for
+			the facilities/operators that you are listed with.</div>
 </s:if>
 
 <table class="report">

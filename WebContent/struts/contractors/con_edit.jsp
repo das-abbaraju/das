@@ -54,7 +54,7 @@ $(function() {
 	<div class="alert" class="noprint">This contractor is still waiting to be synced with QuickBooks!</div>
 </s:if>
 <s:if test="contractor.acceptsBids">
-	<div class="alert">This is a BID-ONLY Contractor Account.</div>
+	<div class="alert">This is a List Only Contractor Account.</div>
 </s:if>
 
 <s:form id="save" method="POST" enctype="multipart/form-data">
@@ -209,7 +209,7 @@ $(function() {
 							No - <s:submit action="ContractorEdit!reactivate" value="Reactivate" /> 
 						</s:else>
 					</li>
-					<li><label>Listed Account:</label>
+					<li><label>List Only Account:</label>
 						<s:checkbox name="contractor.acceptsBids"/></li>	
 					<li><label>Reason:</label>
 						<s:select list="deactivationReasons" name="contractor.reason" headerKey="" headerValue="- Deactivation Reason -"/>

@@ -16,7 +16,6 @@ import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.quickbooks.qbxml.InvoiceLineMod;
@@ -148,7 +147,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 							lineItem.setTxnLineID("-1");
 		
 							lineItem.setDesc(item.getDescription());
-							if(item.getInvoiceFee().getId() != InvoiceFee.GST)
+							if(!item.getInvoiceFee().isGST())
 								lineItem.setQuantity("1");
 		
 							lineItem.setClassRef(factory.createClassRef());
@@ -246,7 +245,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 								lineItem.setTxnLineID("-1");
 			
 								lineItem.setDesc(item.getDescription());
-								if(item.getInvoiceFee().getId() != InvoiceFee.GST)
+								if(!item.getInvoiceFee().isGST())
 									lineItem.setQuantity("1");
 			
 								lineItem.setClassRef(factory.createClassRef());

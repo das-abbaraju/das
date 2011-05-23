@@ -6,11 +6,12 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
 
 @Transactional
 public class InvoiceFeeDAO extends PicsDAO {
-	
+
 	public InvoiceFee save(InvoiceFee o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -34,21 +35,34 @@ public class InvoiceFeeDAO extends PicsDAO {
 		return em.find(InvoiceFee.class, id);
 	}
 
+	public InvoiceFee findByNumberOfOperatorsAndClass(FeeClass feeClass, int numPayingFacilities) {
+		Query query = em.createQuery("FROM InvoiceFee WHERE feeClass = :feeClass"
+				+ " AND :numPayingFacilities >= minFacilities AND :numPayingFacilities <= maxFacilities");
+
+		query.setParameter("feeClass", feeClass);
+		query.setParameter("numPayingFacilities", numPayingFacilities);
+
+		try {
+			return (InvoiceFee) query.getSingleResult();
+		} catch (Exception nre) {
+			return null;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<InvoiceFee> findAll() {
 		Query query = em.createQuery("FROM InvoiceFee ORDER BY fee");
 		return query.getResultList();
 	}
-	
+
 	public InvoiceFee findByName(String feeName) {
 		Query query = em.createQuery("FROM InvoiceFee where fee = ?");
-		
-		query.setParameter(1, feeName );
-		
+
+		query.setParameter(1, feeName);
+
 		try {
 			return (InvoiceFee) query.getSingleResult();
-		}
-		catch( Exception nre ) {
+		} catch (Exception nre) {
 			return null;
 		}
 	}

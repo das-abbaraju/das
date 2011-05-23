@@ -17,8 +17,6 @@ import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AssessmentTestDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -27,7 +25,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
 
 /**
  * Widgets for a single contractor
@@ -93,17 +90,16 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 
 				if (contractor.isAcceptsBids()) {
-					openTasks.add(getText("ContractorWidget.message.BidOnlyUpdgrade",
-							new Object[] { contractor.getPaymentExpires(), contractor.getId() }));
+					openTasks.add(getText("ContractorWidget.message.BidOnlyUpdgrade", new Object[] {
+							contractor.getPaymentExpires(), contractor.getId() }));
 				}
 			}
 
 			if (permissions.hasPermission(OpPerms.ContractorBilling)) {
 				String billingStatus = contractor.getBillingStatus();
-				if ("Upgrade".equals(billingStatus)
-						|| ("Renewal".equals(billingStatus) && contractor.getMembershipLevel().getId() == InvoiceFee.BIDONLY)) {
-					openTasks.add(getText("ContractorWidget.message.GenerateInvoice", new Object[] {
-							contractor.getNewMembershipLevel().getFee(), contractor.getId() }));
+				if ("Upgrade".equals(billingStatus) || ("Renewal".equals(billingStatus) && contractor.isAcceptsBids())) {
+					openTasks.add(getText("ContractorWidget.message.GenerateInvoice",
+							new Object[] { contractor.getId() }));
 				}
 
 				if (contractor.getBalance().compareTo(BigDecimal.ZERO) > 0) {
@@ -116,8 +112,8 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 
 				if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
-					openTasks.add(getText("ContractorWidget.message.UpdatePaymentMethod",
-							new Object[] { contractor.getId() }));
+					openTasks.add(getText("ContractorWidget.message.UpdatePaymentMethod", new Object[] { contractor
+							.getId() }));
 				}
 			}
 			String auditName;
@@ -207,8 +203,7 @@ public class ContractorWidget extends ContractorActionSupport {
 										Integer showScheduledDate = (conAudit.getScheduledDate() != null) ? 1 : 0;
 										Integer showAuditor = (conAudit.getAuditor() != null) ? 1 : 0;
 										if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
-											text = getText(
-													"ContractorWidget.message.UpcomingAuditConductedBy",
+											text = getText("ContractorWidget.message.UpcomingAuditConductedBy",
 													new Object[] {
 															conAudit.getId(),
 															auditName,
@@ -274,10 +269,11 @@ public class ContractorWidget extends ContractorActionSupport {
 						openTasks.add(getText("ContractorWidget.message.AssessmentResultsNeedMatching"));
 					}
 			}
-			
+
 			// check if trades need review
 			if (contractor.isNeedsTradesUpdated()) {
-				openTasks.add(getText("ContractorWidget.message.NeedsTradesUpdated", new Object[] {contractor.getId()}));
+				openTasks.add(getText("ContractorWidget.message.NeedsTradesUpdated",
+						new Object[] { contractor.getId() }));
 			}
 		}
 

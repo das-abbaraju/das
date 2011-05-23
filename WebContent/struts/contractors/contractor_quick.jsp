@@ -150,9 +150,10 @@
 			<s:iterator value="operatorTags"><s:property value="tag"/> </s:iterator>
 			<label>PICS Membership:</label><s:property value="contractor.status"/>
 			<br />
-			<label>Membership:</label>
-			<s:property value="contractor.membershipLevel.fee" />
-			<br />
+			<label>Membership:</label><br />
+			<s:iterator value="contractor.currentMembership">
+				 <s:property value="fee" />: $<s:property value="amount" /> <s:property value="contractor.currencyCode" /><br />
+			</s:iterator>
 			<label>Balance:</label>
 			$<s:property value="contractor.balance" />
 			<br />

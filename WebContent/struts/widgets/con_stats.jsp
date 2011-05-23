@@ -30,8 +30,14 @@
 <s:if test="!permissions.insuranceOnlyContractorUser">
 	<p>
 		<label><s:text name="ContractorStats.label.CurrentMembershipLevel" />:</label>
-		<s:if test="contractor.mustPayB">$<s:property value="contractor.membershipLevel.amount" /> <s:property value="contractor.currencyCode" /> <br />
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</s:if><s:property value="contractor.membershipLevel.fee" />
+		<s:if test="contractor.mustPayB">
+			<s:iterator value="contractor.currentMembership">
+				 <s:property value="fee" />: $<s:property value="amount" /> <s:property value="contractor.currencyCode" /><br />
+			</s:iterator>
+		</s:if>
+		<s:else>
+			Free
+		</s:else>
 	</p>
 	<s:if test="contractor.mustPayB || (contractor.ccOnFile && creditCard != null)">
 		<pics:permission perm="ContractorBilling">

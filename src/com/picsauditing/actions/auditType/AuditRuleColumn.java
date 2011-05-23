@@ -12,7 +12,7 @@ public enum AuditRuleColumn {
 	SafetyRisk("Safety Risk", 1),
 	ProductRisk("Product Risk", 1),
 	Tag("Tag", 1),
-	BidOnly("Listed", 1),
+	BidOnly("List Only", 1),
 	DependentAudit("Dependent Audit", 2),
 	Question("Question", 3),
 	Trade("Trade", 1),

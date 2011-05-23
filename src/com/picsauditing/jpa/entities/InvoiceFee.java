@@ -4,47 +4,32 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "invoice_fee")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "daily")
 public class InvoiceFee extends BaseTable {
-	public final static int ACTIVATION = 1;
-	public final static int ACTIVATION99 = 104;
-	public final static int REACTIVATION = 2;
-	public final static int FREE = 3;
-	public final static int PQFONLY = 4;
-	public final static int FACILITIES1 = 5;
-	public final static int FACILITIES2 = 6;
-	public final static int FACILITIES5 = 7;
-	public final static int FACILITIES9 = 8;
-	public final static int FACILITIES13 = 9;
-	public final static int FACILITIES20 = 10;
-	public final static int FACILITIES50 = 11;
-	public final static int BIDONLY = 100;
-	public final static int LATEFEE = 55;
-	public final static int GST = 200;
-	public final static int EXPEDITE = 51;
-	public final static int RESCHEDULING = 54;
+	public final static int LATEFEE = 336;
 	private String fee;
 	private BigDecimal amount = BigDecimal.ZERO;
 	private boolean visible = true;
-	// TODO Tom: Upgrade this to enum FeeClass
-	// private FeeClass feeClass;
-	private String feeClass;
+	private FeeClass feeClass;
+	private int minFacilities;
+	private int maxFacilities;
 	private String qbFullName;
 	private Integer displayOrder = 999;
-	
+
 	public InvoiceFee() {
 	}
-	
+
 	public InvoiceFee(int id) {
 		this.id = id;
 	}
@@ -57,7 +42,7 @@ public class InvoiceFee extends BaseTable {
 		this.fee = fee;
 	}
 
-	@Column( name = "defaultAmount")
+	@Column(name = "defaultAmount", nullable = false)
 	public BigDecimal getAmount() {
 		return amount;
 	}
@@ -76,14 +61,32 @@ public class InvoiceFee extends BaseTable {
 
 	/**
 	 * Activation, Membership, Misc, Free, Other
+	 * 
 	 * @return
 	 */
-	public String getFeeClass() {
+	@Enumerated(EnumType.STRING)
+	public FeeClass getFeeClass() {
 		return feeClass;
 	}
 
-	public void setFeeClass(String feeClass) {
+	public void setFeeClass(FeeClass feeClass) {
 		this.feeClass = feeClass;
+	}
+
+	public int getMinFacilities() {
+		return minFacilities;
+	}
+
+	public void setMinFacilities(int minFacilities) {
+		this.minFacilities = minFacilities;
+	}
+
+	public int getMaxFacilities() {
+		return maxFacilities;
+	}
+
+	public void setMaxFacilities(int maxFacilities) {
+		this.maxFacilities = maxFacilities;
 	}
 
 	public String getQbFullName() {
@@ -104,21 +107,42 @@ public class InvoiceFee extends BaseTable {
 
 	@Transient
 	public boolean isFree() {
-		return this.id == FREE;
+		return this.getMaxFacilities() == 0 && this.getMinFacilities() == 0;
 	}
-	
+
 	@Transient
 	public boolean isBidonly() {
-		return this.id == BIDONLY;
+		return this.getFeeClass() == FeeClass.ListOnly;
+	}
+
+	@Transient
+	public boolean isPqfonly() {
+		return this.getFeeClass() == FeeClass.DocuGUARD;
+	}
+
+	@Transient
+	public boolean isMembership() {
+		return this.getFeeClass() == FeeClass.ListOnly || this.getFeeClass() == FeeClass.DocuGUARD || this.getFeeClass() == FeeClass.AuditGUARD
+				|| this.getFeeClass() == FeeClass.InsureGUARD || this.getFeeClass() == FeeClass.EmployeeGUARD;
+	}
+
+	@Transient
+	public boolean isActivation() {
+		return this.getFeeClass() == FeeClass.Activation;
 	}
 	
 	@Transient
-	public boolean isPqfonly() {
-		return this.id == PQFONLY;
+	public boolean isReactivation() {
+		return this.getFeeClass() == FeeClass.Reactivation;
+	}
+	
+	@Transient
+	public boolean isGST() {
+		return this.getFeeClass() == FeeClass.GST;
 	}
 
 	@Transient
 	public BigDecimal getGSTSurchage(BigDecimal total) {
-		return total.multiply(BigDecimal.valueOf(0.05)).setScale(2,BigDecimal.ROUND_UP);
+		return total.multiply(BigDecimal.valueOf(0.05)).setScale(2, BigDecimal.ROUND_UP);
 	}
 }

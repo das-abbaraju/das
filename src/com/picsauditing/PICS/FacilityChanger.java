@@ -154,7 +154,7 @@ public class FacilityChanger {
 						emailBuilder.setContractor(co.getContractorAccount(), OpPerms.ContractorAdmin);
 						emailBuilder.addToken("operator", co.getOperatorAccount());
 						emailBuilder.setFromAddress("\"IT\"<tbaker@picsauditing.com>");
-						emailBuilder.setToAddresses("billing@picsauditing.com, aharker@picsauditing.com");
+						emailBuilder.setToAddresses("billing@picsauditing.com");
 
 						EmailQueue emailQueue = emailBuilder.build();
 						emailQueue.setPriority(60);

@@ -206,7 +206,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			contractor.setAuditColumns(permissions);
 			accountDao.save(contractor);
 
-			addNote(contractor, "Upgraded the Listed Account to a full membership.", NoteCategory.General);
+			addNote(contractor, "Upgraded the List Only Account to a full membership.", NoteCategory.General);
 
 			// Sending a Email to the contractor for upgrade
 			EmailBuilder emailBuilder = new EmailBuilder();

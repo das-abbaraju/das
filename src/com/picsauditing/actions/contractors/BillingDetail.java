@@ -22,6 +22,7 @@ import com.picsauditing.dao.TransactionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -65,9 +66,7 @@ public class BillingDetail extends ContractorActionSupport {
 			return LOGIN;
 
 		this.findContractor();
-		InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
-		newFee = invoiceFeeDAO.find(newFee.getId());
-		contractor.setNewMembershipLevel(newFee);
+		BillingCalculatorSingle.calculateAnnualFees(contractor);
 
 		invoiceItems = BillingCalculatorSingle.createInvoiceItems(contractor, invoiceFeeDAO);
 
@@ -97,7 +96,7 @@ public class BillingDetail extends ContractorActionSupport {
 			// Calculate the due date for the invoice
 			if (contractor.getBillingStatus().equals("Activation")) {
 				invoice.setDueDate(new Date());
-				InvoiceFee activation = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
+				InvoiceFee activation = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
 				if (contractor.hasReducedActivation(activation)) {
 					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
 					notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from $"
@@ -111,7 +110,7 @@ public class BillingDetail extends ContractorActionSupport {
 				invoice.setDueDate(contractor.getPaymentExpires());
 			}
 
-			if (contractor.getNewMembershipLevel().isBidonly()) {
+			if (contractor.isAcceptsBids()) {
 				invoice.setDueDate(new Date());
 				contractor.setRenew(true);
 			}
@@ -170,11 +169,12 @@ public class BillingDetail extends ContractorActionSupport {
 
 		// Automatically deactivating account based on expired membership
 		String status = contractor.getBillingStatus();
-		if ("Renewal Overdue".equals(status)) {
+		if ("Renewal Overdue".equals(status) || "Reactivation".equals(status)) {
 			contractor.setStatus(AccountStatus.Deactivated);
-			contractor.setRenew(false);
+			if("Renewal Overdue".equals(status))
+				contractor.setRenew(false);
 			if (contractor.isAcceptsBids())
-				contractor.setReason("Listed Account");
+				contractor.setReason("List Only Account");
 			Note note = new Note(contractor, new User(User.SYSTEM),
 					"Automatically inactivating account based on expired membership");
 			note.setNoteCategory(NoteCategory.Billing);

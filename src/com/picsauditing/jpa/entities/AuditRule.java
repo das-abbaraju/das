@@ -30,7 +30,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected AuditQuestion question;
 	protected QuestionComparator questionComparator;
 	protected String questionAnswer;
-	// Default to bid-only "No" (Needed to the increase the priority)
+	// Default to list only "No" (Needed to the increase the priority)
 	protected Boolean acceptsBids = false;
 
 	@ManyToOne

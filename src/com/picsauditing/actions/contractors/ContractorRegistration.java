@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -17,6 +18,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
@@ -29,9 +31,11 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Naics;
@@ -61,12 +65,14 @@ public class ContractorRegistration extends ContractorActionSupport {
 	private Indexer indexer;
 	private StateDAO stateDAO;
 	private UserLoginLogDAO userLoginLogDAO;
+	private InvoiceFeeDAO invoiceFeeDAO;
 
 	protected Country country;
 
-	public ContractorRegistration(AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO,
+	public ContractorRegistration(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO,
 			UserDAO userDAO, ContractorRegistrationRequestDAO requestDAO, FacilityChanger facilityChanger,
-			Indexer indexer, StateDAO stateDAO, UserLoginLogDAO userLoginLogDAO) {
+			Indexer indexer, StateDAO stateDAO, UserLoginLogDAO userLoginLogDAO, InvoiceFeeDAO invoiceFeeDAO) {
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
 		this.noteDAO = noteDAO;
@@ -77,6 +83,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		this.indexer = indexer;
 		this.stateDAO = stateDAO;
 		this.userLoginLogDAO = userLoginLogDAO;
+		this.invoiceFeeDAO = invoiceFeeDAO;
 	}
 
 	@Anonymous
@@ -153,7 +160,20 @@ public class ContractorRegistration extends ContractorActionSupport {
 			}
 
 			// Default their current membership to 0
-			contractor.setMembershipLevel(new InvoiceFee(InvoiceFee.FREE));
+			List<FeeClass> feeClasses = Arrays.asList(FeeClass.ListOnly, FeeClass.DocuGUARD, FeeClass.AuditGUARD,
+					FeeClass.InsureGUARD, FeeClass.EmployeeGUARD);
+			for(FeeClass feeClass : feeClasses){
+				ContractorFee newConFee = new ContractorFee();
+				newConFee.setAuditColumns(new User(User.CONTRACTOR));
+				newConFee.setContractor(contractor);
+				
+				InvoiceFee currentFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(feeClass, 0);
+				newConFee.setCurrentLevel(currentFee);
+				newConFee.setNewLevel(currentFee);
+				newConFee.setFeeClass(feeClass);
+				contractor.getFees().put(feeClass, newConFee);
+			}
+
 			contractor.setPaymentExpires(new Date());
 			contractor.setAuditColumns(new User(User.CONTRACTOR));
 			contractor.setNameIndex();
@@ -259,13 +279,21 @@ public class ContractorRegistration extends ContractorActionSupport {
 				note.setViewableById(Account.EVERYONE);
 				noteDAO.save(note);
 			}
-			
-			redirect("ContractorTrades.action?id=" + contractor.getId());
 
+			if (contractor.isMaterialSupplier() && !contractor.isOnsiteServices() && !contractor.isOffsiteServices())
+				redirect("ContractorFacilities.action?id=" + contractor.getId()
+						+ (requestID > 0 ? "&requestID=" + requestID : ""));
+			else
+				redirect("ContractorRegistrationServices.action?id=" + contractor.getId()
+						+ (requestID > 0 ? "&requestID=" + requestID : ""));
 			return BLANK;
 		}
 
 		return SUCCESS;
+	}
+
+	public List<AuditQuestion> getTradeList() throws Exception {
+		return auditQuestionDAO.findQuestionByType("Service");
 	}
 
 	public ContractorAccount getContractor() {

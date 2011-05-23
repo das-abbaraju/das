@@ -16,7 +16,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -24,7 +23,6 @@ import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
@@ -81,8 +79,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 			facilityChanger.setPermissions(permissions);
 			facilityChanger.add();
 
-			InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
-			contractor.setNewMembershipLevel(fee);
+			BillingCalculatorSingle.calculateAnnualFees(contractor);
+			contractor.syncBalance();
 
 			accountDao.save(contractor);
 		}
@@ -294,8 +292,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 					if (contractor.isAcceptsBids() && !contractor.getRequestedBy().isAcceptsBids()) {
 						contractor.setAcceptsBids(false);
 						contractor.setRenew(true);
-						InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
-						contractor.setNewMembershipLevel(fee);
+						BillingCalculatorSingle.calculateAnnualFees(contractor);
+						contractor.syncBalance();
 					}
 					accountDao.save(contractor);
 				}
@@ -305,8 +303,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 			if (button.equals("SwitchToTrialAccount")) {
 				contractor.setAcceptsBids(true);
 				contractor.setRenew(false);
-				InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
-				contractor.setNewMembershipLevel(fee);
+				BillingCalculatorSingle.calculateAnnualFees(contractor);
+				contractor.syncBalance();
 				accountDao.save(contractor);
 				return SUCCESS;
 			}
@@ -347,9 +345,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 			if (recalculate) {
 				findContractor();
-				InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
-
-				contractor.setNewMembershipLevel(fee);
+				BillingCalculatorSingle.calculateAnnualFees(contractor);
+				contractor.syncBalance();
 				accountDao.save(contractor);
 			}
 		}
@@ -433,19 +430,13 @@ public class ContractorFacilities extends ContractorActionSupport {
 		this.type = type;
 	}
 
-	public InvoiceFee getCurrentMembership() {
-		InvoiceFee invoiceFee = BillingCalculatorSingle.calculateAnnualFeeForContractor(contractor, new InvoiceFee());
-		InvoiceFeeDAO invoiceFeeDAO = (InvoiceFeeDAO) SpringUtils.getBean("InvoiceFeeDAO");
-		return invoiceFeeDAO.find(invoiceFee.getId());
-	}
-
 	public boolean isTrialContractor() {
-		// Enforcing that bid-only contractors should not be associated with an
-		// operator which does not accept bid-only
+		// Enforcing that list only contractors should not be associated with an
+		// operator which does not accept list only
 		for (ContractorOperator co : contractor.getOperators())
 			if (!co.getOperatorAccount().isAcceptsBids())
 				return false;
-		// All current Operators accept bid-only
+		// All current Operators accept list only
 
 		// This is called after the co has been created and set. So no need to
 		// check current operator. Current operator should be in list already.

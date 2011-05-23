@@ -289,7 +289,7 @@ function checkFee(activationFee, oldValue) {
 			<s:if test="!operator.corporate">
 				<li><label>Accepts Bid Only Contractor:</label> <s:checkbox
 					name="operator.acceptsBids" />
-					<pics:fieldhelp>Does this operator allow listed contractors to register at a reduced rate? If Yes, then contractors who select this only this operator, will have the option to choose a listed account.</pics:fieldhelp>
+					<pics:fieldhelp>Does this operator allow list only contractors to register at a reduced rate? If Yes, then contractors who select only this operator, will have the option to choose a list only account.</pics:fieldhelp>
 				</li>
 			</s:if>
 			<li><label>InsureGUARD&trade;:</label> <s:radio

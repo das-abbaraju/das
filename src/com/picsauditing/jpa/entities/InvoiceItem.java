@@ -23,7 +23,7 @@ public class InvoiceItem extends BaseTable {
 	private Date paymentExpires;
 	private boolean refunded = false;
 	private String qbRefundID;
-	
+
 	public InvoiceItem() {
 	}
 
@@ -35,7 +35,7 @@ public class InvoiceItem extends BaseTable {
 
 	public InvoiceItem(InvoiceFee fee, Date paymentExpires) {
 		this(fee);
-		this.paymentExpires = paymentExpires;
+		this.paymentExpires = fee.getFeeClass().isPaymentExpiresNeeded() ? paymentExpires : null;
 	}
 
 	@ManyToOne
@@ -66,7 +66,7 @@ public class InvoiceItem extends BaseTable {
 		this.amount = amount;
 	}
 
-	@Column(length=100)
+	@Column(length = 100)
 	public String getDescription() {
 		return description;
 	}
@@ -76,7 +76,9 @@ public class InvoiceItem extends BaseTable {
 	}
 
 	/**
-	 * If the fee is for a contractor membership, the date the membership is valid until
+	 * If the fee is for a contractor membership, the date the membership is
+	 * valid until
+	 * 
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -96,7 +98,7 @@ public class InvoiceItem extends BaseTable {
 		this.refunded = refunded;
 	}
 
-	@Column(length=25)
+	@Column(length = 25)
 	public String getQbRefundID() {
 		return qbRefundID;
 	}

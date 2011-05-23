@@ -1,7 +1,6 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.jpa.entities.InvoiceFee;
 
 @SuppressWarnings("serial")
 public class ReportBilling extends ReportAccount {
@@ -15,12 +14,13 @@ public class ReportBilling extends ReportAccount {
 		sql.addField("c.membershipDate");
 		sql.addField("c.paymentExpires");
 
-		sql.addJoin("LEFT JOIN invoice_fee f1 ON c.membershipLevelID = f1.id");
-		sql.addJoin("LEFT JOIN invoice_fee f2 ON c.newMembershipLevelID = f2.id");
+		sql.addJoin("JOIN contractor_fee cf ON c.id = cf.conID");
+		sql.addJoin("LEFT JOIN invoice_fee f1 ON cf.currentLevel = f1.id");
+		sql.addJoin("LEFT JOIN invoice_fee f2 ON cf.newLevel = f2.id");
 
 		sql.addField("f2.fee");
-		sql.addField("ROUND(f1.defaultAmount) as oldAmount");
-		sql.addField("ROUND(f2.defaultAmount) as newAmount");
+		sql.addField("SUM(f1.defaultAmount) as oldAmount");
+		sql.addField("SUM(f2.defaultAmount) as newAmount");
 		sql.addField("c.ccOnFile");
 		sql.addField("c.lastUpgradeDate");
 
@@ -37,17 +37,15 @@ public class ReportBilling extends ReportAccount {
 
 		String where = "";
 		// Show activations and reactivations
-		if (billingState.equals("All") || billingState.equals("Activations")) {
-			where += "(a.status IN ('Pending','Deactivated') AND (c.membershipLevelID IS NULL OR c.membershipLevelID = "
-					+ InvoiceFee.FREE + "))";
+		if (billingState.equals("Activations")) {
+			where += "(a.status IN ('Pending','Deactivated')) AND c.membershipDate IS NULL AND NOT (f2.feeClass = 'ListOnly' AND f2.defaultAmount > 0)";
 		}
-		// Show renewals (only on non-bid-only accounts)
+		// Show renewals (only on non-list only accounts)
 		if (billingState.equals("All") || billingState.equals("Renewals")) {
 			sql.addWhere("");
 			if (where.length() > 0)
 				where += " OR ";
-			where += "(a.status = 'Active' AND f2.defaultAmount > 0 AND "
-					+ "((a.acceptsBids = 0 AND c.paymentExpires < ADDDATE(NOW(), INTERVAL 30 DAY)) OR (a.acceptsBids = 1 AND c.paymentExpires < NOW())))";
+			where += "(a.status = 'Active' AND f2.defaultAmount > 0 AND c.paymentExpires < ADDDATE(NOW(), INTERVAL 30 DAY))";
 		}
 		// Show upgrades
 		if (billingState.equals("All") || billingState.equals("Upgrades")) {
@@ -67,6 +65,8 @@ public class ReportBilling extends ReportAccount {
 				+ "WHEN c.paymentExpires < ADDDATE(NOW(), INTERVAL 45 DAY) THEN 'Renewals' "
 				+ "WHEN f2.defaultAmount > f1.defaultAmount THEN 'Upgrades' ELSE 'Other' END billingStatus");
 		sql.addWhere(where);
+		
+		sql.addGroupBy("a.id HAVING SUM(f2.defaultAmount) > 0");
 
 	}
 

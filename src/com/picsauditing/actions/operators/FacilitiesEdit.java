@@ -31,6 +31,7 @@ import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.Naics;
@@ -610,7 +611,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	}
 
 	public OperatorAccount getActivationFeeOperator() {
-		InvoiceFee invoiceFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
+		InvoiceFee invoiceFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
 		return operator.getActivationFeeOperator(invoiceFee);
 	}
 }

@@ -34,8 +34,184 @@ values
 --
 
 -- PICS-2332
-update invoice_fee set fee = 'Listed Account Fee' where id = 100;
+update invoice_fee set fee = 'List Only Account Fee' where id = 100;
 update invoice_item ii set ii.paymentExpires = date_add(ii.paymentExpires, interval 9 month) where ii.feeID = 100;
+--
+
+-- PICS-1639
+update invoice_fee invf set invf.minFacilities = -1, invf.maxFacilities = -1, invf.feeClass = 'Deprecated', invf.visible = 0, invf.fee = concat('Old ',invf.fee) where invf.id in (1,2,4,5,6,7,8,9,10,11,50,51,52,54,55,100,101,104,105);
+update invoice_fee invf set invf.feeClass = 'Misc' where invf.feeClass = 'Other';
+update invoice_fee invf set invf.feeClass = 'Activation' where invf.id in (1,104);
+update invoice_fee invf set invf.feeClass = 'DocuGUARD' where invf.id = 4;
+update invoice_fee invf set invf.feeClass = 'AuditGUARD' where invf.id in (5,6,7,8,9,10,11,105);
+update invoice_fee invf set invf.feeClass = 'ListOnly' where invf.id = 100;
+update invoice_fee invf set invf.feeClass = 'GST' where invf.id = 200;
+
+insert into invoice_fee 
+	(id, 
+	fee, 
+	defaultAmount, 
+	visible, 
+	feeClass, 
+	minFacilities,
+	maxFacilities,
+	qbFullName, 
+	createdBy, 
+	updatedBy, 
+	creationDate, 
+	updateDate, 
+	displayOrder
+	)
+values 	(299, 'List Only 0 Operators', 0.00, 1, 'ListOnly', 0, 0, 'LTVEN0', 20952, 20952, now(), now(), 1),
+	(300, 'List Only', 25.00, 1, 'ListOnly', 1, 10000, 'LTVEN25', 20952, 20952, now(), now(), 1),
+	(301, 'DocuGUARD for 0 Operators', 0.00, 1, 'DocuGUARD', 0, 0, 'DGVEN0', 20952, 20952, now(), now(), 2),
+	(302, 'DocuGUARD for 1 Operator', 99.00, 1, 'DocuGUARD', 1, 1, 'DGVEN1', 20952, 20952, now(), now(), 3),
+	(303, 'DocuGUARD for 2-4 Operators', 99.00, 1, 'DocuGUARD', 2, 4, 'DGVEN2', 20952, 20952, now(), now(), 4),
+	(304, 'DocuGUARD for 5-8 Operators', 99.00, 1, 'DocuGUARD', 5, 8, 'DGVEN5', 20952, 20952, now(), now(), 5),
+	(305, 'DocuGUARD for 9-12 Operators', 99.00, 1, 'DocuGUARD', 9, 12, 'DGVEN9', 20952, 20952, now(), now(), 6),
+	(306, 'DocuGUARD for 13-19 Operators', 99.00, 1, 'DocuGUARD', 13, 19, 'DGVEN13', 20952, 20952, now(), now(), 7),
+	(307, 'DocuGUARD for 20-49 Operators', 99.00, 1, 'DocuGUARD', 20, 49, 'DGVEN20', 20952, 20952, now(), now(), 8),
+	(308, 'DocuGUARD for 50+ Operators', 99.00, 1, 'DocuGUARD', 50, 10000, 'DGVEN50', 20952, 20952, now(), now(), 9),
+	(309, 'InsureGUARD for 0 Operators', 0.00, 1, 'InsureGUARD', 0, 0, 'IGVEN0', 20952, 20952, now(), now(), 10),
+	(310, 'InsureGUARD for 1 Operator', 0.00, 1, 'InsureGUARD', 1, 1, 'IGVEN1', 20952, 20952, now(), now(), 11),
+	(311, 'InsureGUARD for 2-4 Operators', 0.00, 1, 'InsureGUARD', 2, 4, 'IGVEN2', 20952, 20952, now(), now(), 12),
+	(312, 'InsureGUARD for 5-8 Operators', 0.00, 1, 'InsureGUARD', 5, 8, 'IGVEN5', 20952, 20952, now(), now(), 13),
+	(313, 'InsureGUARD for 9-12 Operators', 0.00, 1, 'InsureGUARD', 9, 12, 'IGVEN9', 20952, 20952, now(), now(), 14),
+	(314, 'InsureGUARD for 13-19 Operators', 0.00, 1, 'InsureGUARD', 13, 19, 'IGVEN13', 20952, 20952, now(), now(), 15),
+	(315, 'InsureGUARD for 20-49 Operators', 0.00, 1, 'InsureGUARD', 20, 49, 'IGVEN20', 20952, 20952, now(), now(), 16),
+	(316, 'InsureGUARD for 50+ Operators', 0.00, 1, 'InsureGUARD', 50, 10000, 'IGVEN50', 20952, 20952, now(), now(), 17),
+	(317, 'AuditGUARD for 0 Operators', 0.00, 1, 'AuditGUARD', 0, 0, 'AGVEN0', 20952, 20952, now(), now(), 18),
+	(318, 'AuditGUARD for 1 Operator', 399.00, 1, 'AuditGUARD', 1, 1, 'AGVEN1', 20952, 20952, now(), now(), 19),
+	(319, 'AuditGUARD for 2-4 Operators', 799.00, 1, 'AuditGUARD', 2, 4, 'AGVEN2', 20952, 20952, now(), now(), 20),
+	(320, 'AuditGUARD for 5-8 Operators', 1199.00, 1, 'AuditGUARD', 5, 8, 'AGVEN5', 20952, 20952, now(), now(), 21),
+	(321, 'AuditGUARD for 9-12 Operators', 1499.00, 1, 'AuditGUARD', 9, 12, 'AGVEN9', 20952, 20952, now(), now(), 22),
+	(322, 'AuditGUARD for 13-19 Operators', 1899.00, 1, 'AuditGUARD', 13, 19, 'AGVEN13', 20952, 20952, now(), now(), 23),
+	(323, 'AuditGUARD for 20-49 Operators', 2899.00, 1, 'AuditGUARD', 20, 49, 'AGVEN20', 20952, 20952, now(), now(), 24),
+	(324, 'AuditGUARD for 50+ Operators', 3899.00, 1, 'AuditGUARD', 50, 10000, 'AGVEN50', 20952, 20952, now(), now(), 25),
+	(325, 'EmployeeGUARD for 0 Operators', 0.00, 1, 'EmployeeGUARD', 0, 0, 'EGVEN0', 20952, 20952, now(), now(), 26),
+	(326, 'EmployeeGUARD for 1 Operator', 99.00, 1, 'EmployeeGUARD', 1, 1, 'EGVEN1', 20952, 20952, now(), now(), 27),
+	(327, 'EmployeeGUARD for 2-4 Operators', 199.00, 1, 'EmployeeGUARD', 2, 4, 'EGVEN2', 20952, 20952, now(), now(), 28),
+	(328, 'EmployeeGUARD for 5-8 Operators', 299.00, 1, 'EmployeeGUARD', 5, 8, 'EGVEN5', 20952, 20952, now(), now(), 29),
+	(329, 'EmployeeGUARD for 9-12 Operators', 399.00, 1, 'EmployeeGUARD', 9, 12, 'EGVEN9', 20952, 20952, now(), now(), 30),
+	(330, 'EmployeeGUARD for 13-19 Operators', 599.00, 1, 'EmployeeGUARD', 13, 19, 'EGVEN13', 20952, 20952, now(), now(), 31),
+	(331, 'EmployeeGUARD for 20-49 Operators', 799.00, 1, 'EmployeeGUARD', 20, 49, 'EGVEN20', 20952, 20952, now(), now(), 32),
+	(332, 'EmployeeGUARD for 50+ Operators', 999.00, 1, 'EmployeeGUARD', 50, 10000, 'EGVEN50', 20952, 20952, now(), now(), 33),
+	(333, 'Activation Fee', 199.00, 1, 'Activation', 1, 10000, 'FVEN10', 20952, 20952, now(), now(), 34),
+	(334, 'Reactivation Fee', 199.00, 1, 'Reactivation', 0, 10000, 'FVEN11', 20952, 20952, now(), now(), 35),
+	(335, 'Audit Cancellation/Rescheduling Fee', 199.00, 1, 'ReschedulingFee', 0, 10000, 'FVEN12', 20952, 20952, now(), now(), 36),
+	(336, 'Late Fee', 0.00, 1, 'LateFee', 0, 10000, 'FVEN13', 20952, 20952, now(), now(), 37),
+	(337, 'Safety/Quality Manual Scanning Fee', 99.00, 1, 'ScanningFee', 0, 10000, 'FVEN14', 20952, 20952, now(), now(), 38),
+	(338, 'Webcam Replacement Fee', 65.00, 1, 'WebcamFee', 0, 10000, 'FVEN15', 20952, 20952, now(), now(), 39),
+	(339, 'Audit Expedite Fee', 99.00, 1, 'ExpediteFee', 0, 10000, 'FVEN16', 20952, 20952, now(), now(), 40),
+	(340, 'Data Import Fee', 199.00, 1, 'ImportFee', 0, 10000, 'FVEN17', 20952, 20952, now(), now(), 41),
+	(341, 'Activation Fee (Discounted from standard rate of $199)', 99.00, 1, 'Activation', 0, 0, 'FVEN18', 20952, 20952, now(), now(), 42);
+
+	-- AuditGUARD
+insert into contractor_fee 
+	(id, 
+	conID, 
+	feeClass, 
+	newLevel, 
+	currentLevel, 
+	createdBy, 
+	updatedBy, 
+	creationDate, 
+	updateDate
+	)
+select null, c.id, 'AuditGUARD', 
+  case when c.newMembershipLevelID in (3, 100, 4) or c.newMembershipLevelID is null then 317
+	when c.newMembershipLevelID in (5, 105) then 318
+	when c.newMembershipLevelID = 6 then 319
+	when c.newMembershipLevelID = 7 then 320
+	when c.newMembershipLevelID = 8 then 321
+	when c.newMembershipLevelID = 9 then 322
+	when c.newMembershipLevelID = 10 then 323
+	when c.newMembershipLevelID = 11 then 324 end,
+  case when c.membershipLevelID in (3, 100, 4) or c.membershipLevelID is null then 317
+	when c.membershipLevelID = 5 or c.membershipLevelID = 105 then 318
+	when c.membershipLevelID = 6 then 319
+	when c.membershipLevelID = 7 then 320
+	when c.membershipLevelID = 8 then 321
+	when c.membershipLevelID = 9 then 322
+	when c.membershipLevelID = 10 then 323
+	when c.membershipLevelID = 11 then 324 end,
+  20952, 20952, now(), now() from contractor_info c;
+
+-- InsureGUARD (Inserting free levels and letting Cron calculate proper values)
+insert into contractor_fee 
+	(id, 
+	conID, 
+	feeClass, 
+	newLevel, 
+	currentLevel, 
+	createdBy, 
+	updatedBy, 
+	creationDate, 
+	updateDate
+	)
+select null, c.id, 'InsureGUARD', 309, 309, 20952, 20952, now(), now() from contractor_info c;
+
+-- EmployeeGUARD (Inserting free levels and letting Cron calculate proper values)
+insert into contractor_fee 
+	(id, 
+	conID, 
+	feeClass, 
+	newLevel, 
+	currentLevel, 
+	createdBy, 
+	updatedBy, 
+	creationDate, 
+	updateDate
+	)
+select null, c.id, 'EmployeeGUARD', 325, 325, 20952, 20952, now(), now() from contractor_info c;
+
+-- DocuGUARD
+insert into contractor_fee 
+	(id, 
+	conID, 
+	feeClass, 
+	newLevel, 
+	currentLevel, 
+	createdBy, 
+	updatedBy, 
+	creationDate, 
+	updateDate
+	)
+select null, c.id, 'DocuGUARD', 
+  case when c.newMembershipLevelID = 3 or c.newMembershipLevelID = 100 or c.newMembershipLevelID is null then 301
+	when (c.newMembershipLevelID = 4 and c.payingFacilities in (0,1)) or (c.newMembershipLevelID in (5,105)) then 302
+	when (c.newMembershipLevelID = 4 and c.payingFacilities >= 2 and c.payingFacilities <= 4) or (c.newMembershipLevelID = 6) then 303
+	when (c.newMembershipLevelID = 4 and c.payingFacilities >= 5 and c.payingFacilities <= 8) or (c.newMembershipLevelID = 7) then 304
+	when (c.newMembershipLevelID = 4 and c.payingFacilities >= 9 and c.payingFacilities <= 12) or (c.newMembershipLevelID = 8) then 305
+	when (c.newMembershipLevelID = 4 and c.payingFacilities >= 13 and c.payingFacilities <= 19) or (c.newMembershipLevelID = 9) then 306
+	when (c.newMembershipLevelID = 4 and c.payingFacilities >= 20 and c.payingFacilities <= 49) OR (c.newMembershipLevelID = 10) then 307
+	when (c.newMembershipLevelID = 4 and c.payingFacilities >= 50) or (c.newMembershipLevelID = 11) then 308 end,
+  case when c.membershipLevelID = 3 or c.membershipLevelID = 100 or c.membershipLevelID is null then 301
+	when (c.membershipLevelID = 4 and c.payingFacilities in (0,1)) or (c.membershipLevelID in (5,105)) then 302
+	when (c.membershipLevelID = 4 and c.payingFacilities >= 2 and c.payingFacilities <= 4) or (c.membershipLevelID = 6) then 303
+	when (c.membershipLevelID = 4 and c.payingFacilities >= 5 and c.payingFacilities <= 8) or (c.membershipLevelID = 7) then 304
+	when (c.membershipLevelID = 4 and c.payingFacilities >= 9 and c.payingFacilities <= 12) or (c.membershipLevelID = 8) then 305
+	when (c.membershipLevelID = 4 and c.payingFacilities >= 13 and c.payingFacilities <= 19) or (c.membershipLevelID = 9) then 306
+	when (c.membershipLevelID = 4 and c.payingFacilities >= 20 and c.payingFacilities <= 49) OR (c.membershipLevelID = 10) then 307
+	when (c.membershipLevelID = 4 and c.payingFacilities >= 50) or (c.membershipLevelID = 11) then 308 end,
+  20952, 20952, now(), now() from contractor_info c;
+  
+  -- ListOnly
+insert into contractor_fee 
+	(id, 
+	conID, 
+	feeClass, 
+	newLevel, 
+	currentLevel, 
+	createdBy, 
+	updatedBy, 
+	creationDate, 
+	updateDate
+	)
+select null, c.id, 'ListOnly', 
+  case when c.newMembershipLevelID = 100 then 300 else 299 end,
+  case when c.membershipLevelID = 100 then 300 else 299 end,
+  20952, 20952, now(), now() from contractor_info c;
 --
 
 -- PICS-2324

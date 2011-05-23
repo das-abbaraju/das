@@ -314,7 +314,7 @@ public class FlagDataCalculator {
 		if (!contractor.getStatus().isActiveDemo())
 			return WaitingOn.Contractor; // This contractor is delinquent
 
-		// If Listed Account
+		// If List Only Account
 		if (contractor.isAcceptsBids()) {
 			return WaitingOn.Operator;
 		}

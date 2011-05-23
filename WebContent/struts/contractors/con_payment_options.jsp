@@ -43,7 +43,7 @@ function updateExpDate() {
 		<a href="ContractorFacilities.action?id=<s:property value="contractor.id"/>">Click to update your operator listings.</a>
 	</div>
 </s:if>
-<s:elseif test="contractor.newMembershipLevel.amount == 0">
+<s:elseif test="contractor.newMembership.size == 0">
 	<div class="alert">
 		You are currently at the free level and do not owe any membership dues.  
 		However, a valid credit card is required to maintain an account with PICS.  
@@ -52,9 +52,9 @@ function updateExpDate() {
 	</div>
 </s:elseif>
 <s:elseif test="contractor.status.active && !contractor.paymentMethodStatusValid && contractor.mustPayB">
-		<div class="info">
-			As an improvement, you may now pay by credit card.  Even though you are providing your credit card information at this time, your card will not be charged until the next billing date.  PICS will email you 7 days prior to renewal before any charges are applied.  If you have questions, contact PICS Accounting any time at (800) 506-7427 x 708.
-		</div>
+	<div class="info">
+		As an improvement, you may now pay by credit card.  Even though you are providing your credit card information at this time, your card will not be charged until the next billing date.  PICS will email you 7 days prior to renewal before any charges are applied.  If you have questions, contact PICS Accounting any time at (800) 506-7427 x 708.
+	</div>
 </s:elseif>
 <s:if test="!contractor.paymentMethod.creditCard && contractor.mustPayB">
 	<div class="info">PICS will email each invoice. Please make sure your contact information is updated.</div>
@@ -73,9 +73,9 @@ function updateExpDate() {
 <fieldset class="form">
 <h2 class="formLegend">Membership Details</h2>
 <ol>
-<s:if test="contractor.newMembershipLevel.amount > 0">
+<s:if test="contractor.newMembership.size > 0">
 	<li>
-		<s:if test="contractor.paymentMethod.creditCard && contractor.newMembershipLevel.amount < 500">
+		<s:if test="contractor.paymentMethod.creditCard && contractor.newMembershipAmount < 500">
 			<i>Please Note: Credit Card payment is required for memberships under $500.</i>
 		</s:if>
 	</li>
@@ -83,10 +83,19 @@ function updateExpDate() {
 	<s:if test="contractor.status.activeDemo">
 		<li><label>Next Billing Date:</label> <s:date
 			name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
-		<li><label>Next Billing Amount:</label> $<s:property
-			value="contractor.newMembershipLevel.amount" /> <s:property value="contractor.currencyCode" />
-			<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
-				href="#" title="opens in new window">Click here to view pricing</a>
+		<li><label>Next Billing Amount: (<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
+				href="#" title="opens in new window">Click here to view pricing</a>)</label>
+			<s:iterator value="contractor.newMembership">
+				 <s:property value="fee" />: $<s:property value="amount" /> <s:property value="contractor.currencyCode" /><br />
+			</s:iterator>
+			<s:if test="contractor.currencyCode.canada">
+				<li><label>Goods & Services Tax:</label> $<s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
+				<li><label>Total:</label> $<s:property value="contractor.newMembershipAmount+gstFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
+			</s:if>
+			<s:else>
+				<li><label>Total:</label> $<s:property value="contractor.newMembershipAmount"/> <s:property value="contractor.currencyCode" /> </li>
+			</s:else>
+			
 		</li>
 	</s:if>
 	<s:else>
@@ -100,29 +109,20 @@ function updateExpDate() {
 				</s:iterator>
 			</li>
 		</s:if>
-		<s:elseif test="contractor.acceptsBids">
-			<s:if test="contractor.currencyCode.canada">
-				<li><label>Listed Account Fee:</label> $<s:property value="contractor.newMembershipLevel.amount"/> <s:property value="contractor.currencyCode" /></li>
-				<li><label>Goods & Services Tax:</label> $<s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
-				<li><label>Total:</label> $<s:property value="contractor.newMembershipLevel.amount+gstFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
-			</s:if>
-			<s:else>
-				<li><label>Total:</label> $<s:property value="contractor.newMembershipLevel.amount"/> <s:property value="contractor.currencyCode" /> </li>
-			</s:else>
-		</s:elseif>
 		<s:else>
-			<li><label>Annual Membership:</label> $<s:property
-				value="contractor.newMembershipLevel.amount" /> <s:property value="contractor.currencyCode" />
-				<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
-					href="#" title="opens in new window">Click here to view pricing</a>
-				</li>
+			<li><label>Annual Membership: (<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
+					href="#" title="opens in new window">Click here to view pricing</a>)</label>
+				<s:iterator value="contractor.newMembership">
+					 <s:property value="fee" />: $<s:property value="amount" /> <s:property value="contractor.currencyCode" /><br />
+				</s:iterator>
+			</li>
 			<li><label><s:property value="activationFee.fee"/>:</label> $<s:property value="activationFee.amount"/> <s:property value="contractor.currencyCode" /></li>
 			<s:if test="contractor.currencyCode.canada">
 				<li><label>Goods & Services Tax:</label> $<s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
-				<li><label>Total:</label> $<s:property value="activationFee.amount+contractor.newMembershipLevel.amount+gstFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label>Total:</label> $<s:property value="activationFee.amount+contractor.newMembershipAmount+gstFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:if>
 			<s:else>
-				<li><label>Total:</label> $<s:property value="activationFee.amount+contractor.newMembershipLevel.amount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label>Total:</label> $<s:property value="activationFee.amount+contractor.newMembershipAmount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:else>
 		</s:else>
 	</s:else>
@@ -168,7 +168,7 @@ function updateExpDate() {
 	<a title="Click here to view the PICS Contractor Agreement" href="ContractorAgreementAjax.action?id=<s:property value="contractor.id"/>" rel="facebox">
 	Contractor Agreement </a>
 </li>
-<s:if test="contractor.newMembershipLevel.amount > 500 || permissions.admin">
+<s:if test="contractor.newMembershipAmount > 500 || permissions.admin">
 	<li>
 		<div>
 			<s:if test="contractor.paymentMethod.creditCard">

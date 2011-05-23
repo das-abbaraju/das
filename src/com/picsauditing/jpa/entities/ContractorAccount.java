@@ -1,12 +1,12 @@
 package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -37,10 +37,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.util.SpringUtils;
@@ -83,9 +83,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private boolean renew = true;
 	private Date lastUpgradeDate;
 	private BigDecimal balance;
-	private InvoiceFee membershipLevel;
-	private InvoiceFee newMembershipLevel;
-	private Map<FeeClass, ContractorFee> fees;
+	private Map<FeeClass, ContractorFee> fees = new HashMap<FeeClass, ContractorFee>();
 	private Date agreementDate;
 	private User agreedBy;
 	private List<Invoice> invoices = new ArrayList<Invoice>();
@@ -554,19 +552,20 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setTradesUpdated(Date tradesUpdated) {
 		this.tradesUpdated = tradesUpdated;
 	}
-	
+
 	/**
 	 * All contractors should update their trades every 6 months
-	 * @return 
+	 * 
+	 * @return
 	 */
 	@Transient
 	public boolean isNeedsTradesUpdated() {
 		if (tradesUpdated == null)
 			return true;
-		
+
 		Calendar daysAgo = Calendar.getInstance();
 		daysAgo.add(Calendar.MONTH, -6);
-		
+
 		return daysAgo.after(tradesUpdated);
 	}
 
@@ -761,17 +760,23 @@ public class ContractorAccount extends Account implements JSONable {
 		for (Invoice invoice : getSortedInvoices()) {
 			if (!invoice.getStatus().isVoid()) {
 				for (InvoiceItem invoiceItem : invoice.getItems()) {
-					if (invoiceItem.getInvoiceFee().getFeeClass().equals("Membership")) {
-						if (!foundCurrentMembership) {
-							membershipLevel = invoiceItem.getInvoiceFee();
-							foundCurrentMembership = true;
+					if (invoiceItem.getInvoiceFee().isMembership()) {
+						foundCurrentMembership = true;
+						for (FeeClass feeClass : this.getFees().keySet()) {
+							// if the current invoice item is for the new fee
+							// level then move us into the next level
+							if (invoiceItem.getInvoiceFee().equals(this.getFees().get(feeClass).getNewLevel())) {
+								InvoiceFee newFee = this.getFees().get(feeClass).getNewLevel();
+								this.getFees().get(feeClass).setCurrentLevel(newFee);
+							}
 						}
+
 						if (!foundPaymentExpires && invoiceItem.getPaymentExpires() != null) {
 							paymentExpires = invoiceItem.getPaymentExpires();
 							foundPaymentExpires = true;
 						}
 					}
-					if (!foundMembershipDate && invoiceItem.getInvoiceFee().getFeeClass().equals("Activation")) {
+					if (!foundMembershipDate && invoiceItem.getInvoiceFee().isActivation()) {
 						if (invoiceItem.getPaymentExpires() != null)
 							membershipDate = invoiceItem.getPaymentExpires();
 						else
@@ -783,34 +788,26 @@ public class ContractorAccount extends Account implements JSONable {
 			if (foundCurrentMembership && foundMembershipDate && foundPaymentExpires)
 				return;
 		}
-		if (!foundCurrentMembership)
-			membershipLevel = new InvoiceFee(InvoiceFee.FREE);
+
 		if (!foundPaymentExpires && !this.isAcceptsBids())
 			paymentExpires = creationDate;
 		if (!foundMembershipDate)
 			membershipDate = null;
 	}
 
-	@Deprecated
-	@ManyToOne
-	@JoinColumn(name = "membershipLevelID", nullable = false)
-	public InvoiceFee getMembershipLevel() {
-		return membershipLevel;
+	@Transient
+	public boolean isHasMembershipChanged() {
+		for (FeeClass feeClass : this.getFees().keySet()) {
+			if (this.getFees().get(feeClass).isHasChanged())
+				return true;
+		}
+
+		return false;
 	}
 
-	public void setMembershipLevel(InvoiceFee membershipLevel) {
-		this.membershipLevel = membershipLevel;
-	}
-
-	@Deprecated
-	@ManyToOne
-	@JoinColumn(name = "newMembershipLevelID")
-	public InvoiceFee getNewMembershipLevel() {
-		return newMembershipLevel;
-	}
-
-	public void setNewMembershipLevel(InvoiceFee newMembershipLevel) {
-		this.newMembershipLevel = newMembershipLevel;
+	@Transient
+	public boolean isHasFreeMembership() {
+		return this.getPayingFacilities() == 0 || !this.isMustPayB();
 	}
 
 	/**
@@ -819,8 +816,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 * 
 	 * @return
 	 */
-	@OneToMany
-	@JoinColumn(name = "contractorID")
+	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
 	@MapKey(name = "feeClass")
 	public Map<FeeClass, ContractorFee> getFees() {
 		return fees;
@@ -921,31 +917,11 @@ public class ContractorAccount extends Account implements JSONable {
 	 */
 	@Transient
 	public String getBillingStatus() {
-		if (!isMustPayB() || status.isDemo() || status.isDeleted())
+		// If contractor is Free, Deleted, or Demo, give a pass on billing
+		if (!isMustPayB() || this.getPayingFacilities() == 0 || status.isDemo() || status.isDeleted())
 			return "Current";
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
-
-		if (acceptsBids) {
-			daysUntilRenewal = (paymentExpires == null || sdf.format(paymentExpires).equals(sdf.format(creationDate))) ? 0
-					: DateBean.getDateDifference(paymentExpires);
-
-			if (status.isDeactivated() || daysUntilRenewal < 0)
-				return renew ? "Listed Account" : "Membership Canceled";
-
-			// Do we want to do this?
-			if (status.isActive())
-				return "Current";
-
-			return "Listed Account";
-		}
-
-		if (newMembershipLevel == null)
-			return "Not Calculated";
-
-		if (newMembershipLevel.isFree())
-			return "Current";
 
 		if (status.isPending() && membershipDate == null)
 			return "Activation";
@@ -955,19 +931,9 @@ public class ContractorAccount extends Account implements JSONable {
 			// than 90 days ago
 			if (!renew)
 				return "Membership Canceled";
-			else {
-				if (new Date().before(paymentExpires))
-					return "Current";
-
+			else
 				return "Reactivation";
-			}
 		}
-
-		if (membershipLevel.getId() == InvoiceFee.BIDONLY) {
-			return "Renewal";
-		}
-		if (newMembershipLevel.getAmount().compareTo(membershipLevel.getAmount()) > 0)
-			return "Upgrade";
 
 		if (!renew)
 			return "Do not renew";
@@ -976,6 +942,11 @@ public class ContractorAccount extends Account implements JSONable {
 			return "Renewal Overdue";
 		if (daysUntilRenewal < 45)
 			return "Renewal";
+
+		// if any membership levels differ, amount is an upgrade
+		for (FeeClass feeClass : getFees().keySet())
+			if (this.getFees().get(feeClass).isUpgrade())
+				return "Upgrade";
 
 		if (hasPastDueInvoice())
 			return "Past Due";
@@ -1118,11 +1089,16 @@ public class ContractorAccount extends Account implements JSONable {
 		return getReducedActivationFeeOperator(activation) != null
 				&& activation.getAmount().intValue() != getReducedActivationFeeOperator(activation).getActivationFee();
 	}
-	
+
 	@Transient
 	public boolean isFinanciallyReadyForAudits() {
-		// TODO need to refactor this
-		double halfMembership = getMembershipLevel().getAmount().doubleValue() * 0.5;
+		double halfMembership = 0.0;
+		for (FeeClass feeClass : this.getFees().keySet()) {
+			if (!this.getFees().get(feeClass).getCurrentLevel().isFree())
+				halfMembership += this.getFees().get(feeClass).getCurrentLevel().getAmount().doubleValue();
+		}
+		halfMembership *= 0.5;
+
 		double balance = getBalance().doubleValue();
 		return balance < halfMembership;
 	}
@@ -1133,5 +1109,49 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setSoleProprietor(Boolean soleProprietor) {
 		this.soleProprietor = soleProprietor;
+	}
+
+	@Transient
+	public List<InvoiceFee> getNewMembership() {
+		List<InvoiceFee> memberships = new ArrayList<InvoiceFee>();
+		for (FeeClass feeclass : this.getFees().keySet()) {
+			if (!this.getFees().get(feeclass).getNewLevel().isFree())
+				memberships.add(this.getFees().get(feeclass).getNewLevel());
+		}
+
+		return memberships;
+	}
+
+	@Transient
+	public BigDecimal getNewMembershipAmount() {
+		BigDecimal newAmount = BigDecimal.ZERO;
+		for (FeeClass feeclass : this.getFees().keySet()) {
+			if (!this.getFees().get(feeclass).getNewLevel().isFree())
+				newAmount = newAmount.add(this.getFees().get(feeclass).getNewLevel().getAmount());
+		}
+
+		return newAmount;
+	}
+
+	@Transient
+	public List<InvoiceFee> getCurrentMembership() {
+		List<InvoiceFee> memberships = new ArrayList<InvoiceFee>();
+		for (FeeClass feeclass : this.getFees().keySet()) {
+			if (!this.getFees().get(feeclass).getCurrentLevel().isFree())
+				memberships.add(this.getFees().get(feeclass).getCurrentLevel());
+		}
+
+		return memberships;
+	}
+
+	@Transient
+	public BigDecimal getCurrentMembershipAmount() {
+		BigDecimal currentAmount = BigDecimal.ZERO;
+		for (FeeClass feeclass : this.getFees().keySet()) {
+			if (!this.getFees().get(feeclass).getCurrentLevel().isFree())
+				currentAmount = currentAmount.add(this.getFees().get(feeclass).getCurrentLevel().getAmount());
+		}
+
+		return currentAmount;
 	}
 }

@@ -22,7 +22,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
@@ -36,7 +35,6 @@ import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -58,7 +56,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private File brochure = null;
 	private String brochureFileName = null;
 	protected AuditQuestionDAO auditQuestionDAO;
-	private InvoiceFeeDAO invoiceFeeDAO;
 	protected ContractorValidator contractorValidator;
 	protected OperatorAccountDAO operatorAccountDAO;
 	protected UserDAO userDAO;
@@ -75,11 +72,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
-			InvoiceFeeDAO invoiceFeeDAO, OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO,
-			NoteDAO noteDAO, EmailSubscriptionDAO subscriptionDAO, UserSwitchDAO userSwitchDAO, Indexer indexer) {
+			OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO, NoteDAO noteDAO,
+			EmailSubscriptionDAO subscriptionDAO, UserSwitchDAO userSwitchDAO, Indexer indexer) {
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
-		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.userDAO = userDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.emailQueueDAO = emailQueueDAO;
@@ -102,9 +98,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (conID > 0) {
 				contractor = accountDao.find(conID);
 
-				InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
-				newFee = invoiceFeeDAO.find(newFee.getId());
-				contractor.setNewMembershipLevel(newFee);
+				BillingCalculatorSingle.calculateAnnualFees(contractor);
+				contractor.syncBalance();
 				for (ContractorOperator conOperator : contractor.getNonCorporateOperators()) {
 					operatorIds.add(conOperator.getOperatorAccount().getId());
 				}
@@ -119,8 +114,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
 				state = getStateDAO().find(stateIsos[0]);
 
-			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters()
-					.get("billingState.isoCode");
+			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters().get(
+					"billingState.isoCode");
 			if (billingStateIsos != null && billingStateIsos.length > 0 && !Strings.isEmpty(billingStateIsos[0]))
 				billingState = getStateDAO().find(billingStateIsos[0]);
 		}
@@ -234,9 +229,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 						OperatorAccount parent = operator.getParent();
 						while (parent != null) { // adding corporate
-													// subscriptions
-							subscriptions.addAll(subscriptionDAO.find(Subscription.ContractorDeactivation,
-									parent.getId()));
+							// subscriptions
+							subscriptions.addAll(subscriptionDAO.find(Subscription.ContractorDeactivation, parent
+									.getId()));
 							parent = parent.getParent();
 						}
 
@@ -274,7 +269,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 						emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ","));
 						emailBuilder.setCcAddresses("");
-						emailBuilder.setToAddresses("aharker@picsauditing.com");
+						emailBuilder.setToAddresses("billing@picsauditing.com");
 						emailBuilder.setFromAddress("\"PICS Billing\"<billing@picsauditing.com>");
 						EmailQueue email = emailBuilder.build();
 						email.setViewableById(Account.PicsID);
@@ -321,7 +316,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			addActionError("Please select a deactivation reason before you cancel the account");
 		} else {
 			contractor.setRenew(false);
-			if (contractor.getNewMembershipLevel().isFree())
+			if (contractor.isHasFreeMembership())
 				contractor.setStatus(AccountStatus.Deactivated);
 
 			String expiresMessage = "";
@@ -343,7 +338,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public String reactivate() throws Exception {
 		contractor.setRenew(true);
-		if (contractor.getNewMembershipLevel().isFree())
+		if (contractor.isHasFreeMembership())
 			contractor.setStatus(AccountStatus.Active);
 
 		contractor.setReason("");

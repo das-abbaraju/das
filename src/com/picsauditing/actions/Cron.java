@@ -43,6 +43,7 @@ import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -199,7 +200,7 @@ public class Cron extends PicsActionSupport {
 				contractor.setStatus(AccountStatus.Deactivated);
 				// Setting a deactivation reason
 				if (contractor.isAcceptsBids()) {
-					contractor.setReason("Listed Account");
+					contractor.setReason("List Only Account");
 				}
 				// Leave the PaymentExpires in the past
 				// conAcct.setPaymentExpires(null);
@@ -224,7 +225,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nSending No Action Email to Listed Accounts ...");
+			startTask("\nSending No Action Email to List Only Accounts ...");
 			sendNoActionEmailToTrialAccounts();
 			endTask();
 		} catch (Throwable t) {
@@ -422,7 +423,7 @@ public class Cron extends PicsActionSupport {
 
 			// Skip Reactivations
 			for (InvoiceItem ii : i.getItems())
-				if (ii.getInvoiceFee().getId() == InvoiceFee.REACTIVATION)
+				if (ii.getInvoiceFee().isReactivation())
 					hasReactivation = true;
 
 			if (!hasReactivation) {
@@ -432,7 +433,8 @@ public class Cron extends PicsActionSupport {
 				if (lateFee.compareTo(BigDecimal.valueOf(20)) < 1)
 					lateFee = BigDecimal.valueOf(20);
 
-				InvoiceItem lateFeeItem = new InvoiceItem(invoiceFeeDAO.find(InvoiceFee.LATEFEE));
+				InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, ((ContractorAccount) i.getAccount()).getPayingFacilities());
+				InvoiceItem lateFeeItem = new InvoiceItem(fee);
 				lateFeeItem.setAmount(lateFee);
 				lateFeeItem.setAuditColumns(new User(User.SYSTEM));
 				lateFeeItem.setInvoice(i);

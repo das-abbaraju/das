@@ -52,7 +52,6 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
-import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -253,8 +252,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runBilling(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.Billing))
 			return;
-		InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
-		contractor.setNewMembershipLevel(fee);
+		BillingCalculatorSingle.calculateAnnualFees(contractor);
 		contractor.syncBalance();
 	}
 

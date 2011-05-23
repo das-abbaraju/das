@@ -13,8 +13,11 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -45,77 +48,111 @@ public class BillingCalculatorSingle {
 		contractor.setPayingFacilities(payingOperators.size());
 	}
 
-	static public InvoiceFee calculateAnnualFee(ContractorAccount contractor) {
-		InvoiceFee fee = new InvoiceFee();
-		calculateAnnualFeeForContractor(contractor, fee);
-		return fee;
-	}
-
-	static public InvoiceFee calculateAnnualFeeForContractor(ContractorAccount contractor, InvoiceFee fee) {
+	static public void calculateAnnualFees(ContractorAccount contractor) {
 		setPayingFacilities(contractor);
 
-		if (contractor.getPayingFacilities() == 0) {
+		InvoiceFeeDAO invoiceDAO = (InvoiceFeeDAO) com.picsauditing.util.SpringUtils.getBean("InvoiceFeeDAO");
+
+		int payingFacilities = contractor.getPayingFacilities();
+
+		if (payingFacilities == 0) {
 			// Contractors with no paying facilities are free
-			fee.setId(InvoiceFee.FREE); // $0
-			return fee;
+			for (FeeClass feeClass : contractor.getFees().keySet()) {
+				InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(feeClass, payingFacilities);
+				contractor.getFees().get(feeClass).setNewLevel(newLevel);
+			}
+
+			return;
 		}
 
-		if (isAudited(contractor)) {
+		// Checking Audits
+		boolean auditGUARD = false;
+		boolean insureGUARD = false;
+		boolean implementationAuditPlus = false;
+
+		Map<AuditType, AuditTypeDetail> map = AuditBuilder.calculateRequiredAuditTypes(contractor);
+		for (AuditType auditType : map.keySet()) {
+			if (auditType.isDesktop() || auditType.getId() == AuditType.OFFICE)
+				auditGUARD = true;
+			if (auditType.getClassType().equals(AuditTypeClass.Policy))
+				insureGUARD = true;
+			if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS)
+				implementationAuditPlus = true;
+		}
+
+		if (auditGUARD) {
 			// Audited Contractors have a tiered pricing scheme
-			int feeID = calculatePriceTier(contractor.getPayingFacilities());
+			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD, payingFacilities);
+
 			// Check to see if the the contractor only has one BASF operator
-			if (feeID == InvoiceFee.FACILITIES1) {
+			if (payingFacilities == 1) {
 				Date now = new Date();
 				if (CONTRACT_RENEWAL_BASF.after(now)) {
 					for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
 						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
-							feeID = 105;
+							newLevel.setAmount(new BigDecimal(299));
 						}
 					}
 				}
 			}
-			fee.setId(feeID);
-		} else if(contractor.isAcceptsBids()) {
-			fee.setId(InvoiceFee.BIDONLY);
-		} else
-			fee.setId(InvoiceFee.PQFONLY); // $99
-		return fee;
-	}
 
-	static private boolean isAudited(ContractorAccount contractor) {
-		// We have at least one paying operator, let's see if they need to be
-		// audited
-		Map<AuditType, AuditTypeDetail> map = AuditBuilder.calculateRequiredAuditTypes(contractor);
-
-		for (AuditType auditType : map.keySet()) {
-			if (auditType.isDesktop())
-				return true;
-			if (auditType.getId() == AuditType.OFFICE)
-				return true;
+			contractor.getFees().get(FeeClass.AuditGUARD).setNewLevel(newLevel);
+		} else {
+			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD, 0);
+			contractor.getFees().get(FeeClass.AuditGUARD).setNewLevel(newLevel);
 		}
-		return false;
-	}
 
-	/**
-	 * 
-	 * @param billable
-	 *            the number of billable facilities
-	 * @return the InvoiceFee.id for the annual membership level
-	 */
-	static private Integer calculatePriceTier(int billable) {
-		if (billable >= 50)
-			return InvoiceFee.FACILITIES50;
-		if (billable >= 20)
-			return InvoiceFee.FACILITIES20;
-		if (billable >= 13)
-			return InvoiceFee.FACILITIES13;
-		if (billable >= 9)
-			return InvoiceFee.FACILITIES9;
-		if (billable >= 5)
-			return InvoiceFee.FACILITIES5;
-		if (billable >= 2)
-			return InvoiceFee.FACILITIES2;
-		return InvoiceFee.FACILITIES1;
+		if (insureGUARD) {
+			// InsureGUARD Contractors have free pricing currently
+			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, payingFacilities);
+			contractor.getFees().get(FeeClass.InsureGUARD).setNewLevel(newLevel);
+		} else {
+			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, 0);
+			contractor.getFees().get(FeeClass.InsureGUARD).setNewLevel(newLevel);
+		}
+
+		// EmployeeGUARD
+		boolean requiresOQ = false;
+		boolean requiresCompetency = false;
+		for (ContractorOperator co : contractor.getOperators()) {
+			if (co.getOperatorAccount().isRequiresOQ())
+				requiresOQ = true;
+			if (co.getOperatorAccount().isRequiresCompetencyReview())
+				requiresCompetency = true;
+		}
+
+		if (requiresCompetency) {
+			// EmployeeGUARD HSE Contractors have a tiered pricing scheme
+			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, payingFacilities);
+			contractor.getFees().get(FeeClass.EmployeeGUARD).setNewLevel(newLevel);
+		} else if (requiresOQ || implementationAuditPlus) {
+			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, payingFacilities);
+			newLevel.setAmount(BigDecimal.ZERO);
+			contractor.getFees().get(FeeClass.EmployeeGUARD).setNewLevel(newLevel);
+		} else {
+			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, 0);
+			contractor.getFees().get(FeeClass.EmployeeGUARD).setNewLevel(newLevel);
+		}
+
+		// Selecting either list-only fee or DocuGUARD fee
+		if (contractor.isAcceptsBids()) {
+			// Set list-only
+			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 1);
+			contractor.getFees().get(FeeClass.ListOnly).setNewLevel(newLevel);
+
+			// Turn off DocuGUARD fee
+			newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 0);
+			contractor.getFees().get(FeeClass.DocuGUARD).setNewLevel(newLevel);
+		} else {
+			// Turn on DocuGUARD fee
+			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, payingFacilities);
+			contractor.getFees().get(FeeClass.DocuGUARD).setNewLevel(newLevel);
+
+			// Turn off list-only
+			newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 0);
+			contractor.getFees().get(FeeClass.ListOnly).setNewLevel(newLevel);
+		}
+
 	}
 
 	/**
@@ -123,8 +160,6 @@ public class BillingCalculatorSingle {
 	 * following contractor fields are used:
 	 * <ul>
 	 * <li>membershipDate</li>
-	 * <li>newMembershipLevel</li>
-	 * <li>membershipLevel</li>
 	 * <li>billingStatus</li>
 	 * <li>lastUpgradeDate</li>
 	 * <li>paymentExpires</li>
@@ -133,111 +168,102 @@ public class BillingCalculatorSingle {
 	 * @param contractor
 	 * @return
 	 */
+
 	static public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, InvoiceFeeDAO feeDAO) {
 		List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 
 		String billingStatus = contractor.getBillingStatus();
-
 		if (billingStatus.equals("Not Calculated") || billingStatus.equals("Current"))
 			return items;
 
-		if (billingStatus.equals("Listed Account")) {
-			// This should be a listed renewal
-			Date paymentExpires = DateBean.addMonths(contractor.getPaymentExpires(), 12);
-			InvoiceFee fee = getFee(InvoiceFee.BIDONLY, feeDAO);
-			items.add(new InvoiceItem(fee, paymentExpires));
+		int payingFacilities = contractor.getPayingFacilities();
 
-			if (contractor.getCurrencyCode().isCanada()) {
-				BigDecimal total = BigDecimal.ZERO;
-				for (InvoiceItem ii : items)
-					total = total.add(ii.getAmount());
+		// Activations / Reactivations do not apply to list only contractors
+		if (!contractor.isAcceptsBids()) {
+			if (contractor.getMembershipDate() == null) {
+				// This contractor has never paid their activation fee, make
+				// them now this applies regardless if this is a new reg or
+				// renewal
+				InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
+				if (contractor.hasReducedActivation(fee)) {
+					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(fee);
+					fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 0);
+					fee.setAmount(new BigDecimal(reducedOperator.getActivationFee()));
+				}
 
-				InvoiceFee gst = getFee(InvoiceFee.GST, feeDAO);
-				InvoiceItem invoiceItem = new InvoiceItem();
-				invoiceItem.setInvoiceFee(gst);
-				invoiceItem.setAmount(gst.getGSTSurchage(total));
-				invoiceItem.setDescription("5% Goods & Services Tax");
-				items.add(invoiceItem);
+				// Activate effective today
+				items.add(new InvoiceItem(fee, new Date()));
+				// For Reactivation Fee and Reactivating Membership
+			} else if ("Reactivation".equals(billingStatus) || "Membership Canceled".equals(billingStatus)) {
+				InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, payingFacilities);
+				// Reactivate effective today
+				items.add(new InvoiceItem(fee, new Date()));
 			}
-			return items;
-		}
-
-		if (contractor.getMembershipDate() == null) {
-			// This contractor has never paid their activation fee, make
-			// them now this applies regardless if this is a new reg or renewal
-			InvoiceFee fee = getFee(InvoiceFee.ACTIVATION, feeDAO);
-			if (contractor.hasReducedActivation(fee)) {
-				OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(fee);
-				fee = getFee(InvoiceFee.ACTIVATION99, feeDAO);
-				fee.setAmount(new BigDecimal(reducedOperator.getActivationFee()));
-			}
-
-			// Activate effective today
-			items.add(new InvoiceItem(fee, new Date()));
-		}
-
-		// For Reactivation Fee and Reactivating Membership
-		else if ("Reactivation".equals(billingStatus) || "Membership Canceled".equals(billingStatus)) {
-			InvoiceFee fee = getFee(InvoiceFee.REACTIVATION, feeDAO);
-			// Reactivate effective today
-			items.add(new InvoiceItem(fee, new Date()));
 		}
 
 		if ("Activation".equals(billingStatus) || "Reactivation".equals(billingStatus)
 				|| "Membership Canceled".equals(billingStatus)) {
 			Date paymentExpires = DateBean.addMonths(new Date(), 12);
-			items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
+			for (FeeClass feeClass : contractor.getFees().keySet())
+				if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
+					items.add(new InvoiceItem(contractor.getFees().get(feeClass).getNewLevel(), feeClass
+							.isPaymentExpiresNeeded() ? paymentExpires : null));
 		}
 
 		if (billingStatus.startsWith("Renew")) {
 			// We could eventually customize the 12 months to support
 			// monthly/quarterly billing cycles
-			Date paymentExpires = contractor.getMembershipLevel().isBidonly() ? DateBean.addMonths(new Date(), 12)
-					: DateBean.addMonths(contractor.getPaymentExpires(), 12);
-
-			items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
+			Date paymentExpires = DateBean.addMonths(contractor.getPaymentExpires(), 12);
+			for (FeeClass feeClass : contractor.getFees().keySet())
+				if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
+					items.add(new InvoiceItem(contractor.getFees().get(feeClass).getNewLevel(), paymentExpires));
 		}
 		// For Upgrades
 		// Calculate a prorated amount depending on when the upgrade happens
 		// and when the actual membership expires
 		if ("Upgrade".equals(billingStatus)) {
-			if (contractor.getNewMembershipLevel() != null && contractor.getMembershipLevel() != null) {
+			List<ContractorFee> upgrades = new ArrayList<ContractorFee>();
+			for (FeeClass feeClass : contractor.getFees().keySet()) {
+				ContractorFee fee = contractor.getFees().get(feeClass);
+				if (fee.isUpgrade())
+					upgrades.add(fee);
+			}
+
+			if (!upgrades.isEmpty()) {
 				BigDecimal upgradeAmount = BigDecimal.ZERO;
 				String description = "";
 
-				if (contractor.getMembershipLevel().isFree()) {
-					// Starting from scratch/Free Membership Level
-					upgradeAmount = contractor.getNewMembershipLevel().getAmount();
-					description = "Membership Level is: $" + contractor.getNewMembershipLevel().getAmount();
+				// Actual prorated Upgrade
+				Date upgradeDate = (contractor.getLastUpgradeDate() == null) ? new Date() : contractor
+						.getLastUpgradeDate();
+				double daysUntilExpiration = DateBean.getDateDifference(upgradeDate, contractor.getPaymentExpires());
+				if (daysUntilExpiration > 365)
+					daysUntilExpiration = 365.0;
 
-				} else if (DateBean.getDateDifference(contractor.getPaymentExpires()) < 0) {
-					// Their membership has already expired so we need to do a
-					// full renewal amount
-					upgradeAmount = contractor.getNewMembershipLevel().getAmount();
-					description = "Membership Level is: $" + contractor.getNewMembershipLevel().getAmount();
-
-				} else {
-					// Actual prorated Upgrade
-					Date upgradeDate = (contractor.getLastUpgradeDate() == null) ? new Date() : contractor
-							.getLastUpgradeDate();
-					double daysUntilExpiration = DateBean
-							.getDateDifference(upgradeDate, contractor.getPaymentExpires());
-					BigDecimal upgradeAmountDifference = contractor.getNewMembershipLevel().getAmount().subtract(
-							contractor.getMembershipLevel().getAmount());
+				BigDecimal upgradeTotal = BigDecimal.ZERO;
+				for (ContractorFee upgrade : upgrades) {
+					BigDecimal upgradeAmountDifference = upgrade.getNewLevel().getAmount();
+					if (!contractor.isAcceptsBids()) {
+						upgradeAmountDifference = upgradeAmountDifference.subtract(upgrade.getCurrentLevel()
+								.getAmount());
+					}
 
 					upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference).divide(
 							new BigDecimal(365), 0, RoundingMode.HALF_UP);
 
-					description = "Upgrading from $" + contractor.getMembershipLevel().getAmount() + ". Prorated $"
-							+ upgradeAmount;
-				}
+					upgradeTotal = upgradeTotal.add(upgradeAmount);
 
-				InvoiceItem invoiceItem = new InvoiceItem();
-				invoiceItem.setInvoiceFee(contractor.getNewMembershipLevel());
-				invoiceItem.setAmount(upgradeAmount);
-				invoiceItem.setDescription(description);
-				invoiceItem.setPaymentExpires(contractor.getPaymentExpires());
-				items.add(invoiceItem);
+					description = "Upgrading from $" + upgrade.getCurrentLevel().getAmount() + ". Prorated $"
+							+ upgradeAmount;
+
+					InvoiceItem invoiceItem = new InvoiceItem();
+					invoiceItem.setInvoiceFee(upgrade.getNewLevel());
+					invoiceItem.setAmount(upgradeAmount);
+					invoiceItem.setDescription(description);
+					if (upgrade.getFeeClass().isPaymentExpiresNeeded())
+						invoiceItem.setPaymentExpires(contractor.getPaymentExpires());
+					items.add(invoiceItem);
+				}
 			}
 		}
 
@@ -247,7 +273,7 @@ public class BillingCalculatorSingle {
 			for (InvoiceItem ii : items)
 				total = total.add(ii.getAmount());
 
-			InvoiceFee gst = getFee(InvoiceFee.GST, feeDAO);
+			InvoiceFee gst = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
 			InvoiceItem invoiceItem = new InvoiceItem();
 			invoiceItem.setInvoiceFee(gst);
 			invoiceItem.setAmount(gst.getGSTSurchage(total));
@@ -286,25 +312,11 @@ public class BillingCalculatorSingle {
 		return false;
 	}
 
-	static private InvoiceFee getFee(int feeID, InvoiceFeeDAO feeDao) {
-		InvoiceFee fee = null;
-		if (feeID > 0) {
-			if (feeDao == null) {
-				System.out.println("WARNING: dao was not passed in, so fee " + feeID + " will not be linked");
-				fee = new InvoiceFee(feeID);
-				// fee.setAmount(new BigDecimal(99));
-			} else
-				fee = feeDao.find(feeID);
-		}
-		return fee;
-	}
-
 	static public boolean activateContractor(ContractorAccount contractor, Invoice invoice,
 			ContractorAccountDAO accountDao) {
 		if (contractor.getStatus().isPendingDeactivated() && invoice.getStatus().isPaid()) {
 			for (InvoiceItem item : invoice.getItems()) {
-				if (item.getInvoiceFee().getFeeClass().equals("Activation")
-						|| item.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
+				if (item.getInvoiceFee().isActivation() || item.getInvoiceFee().isBidonly()) {
 					contractor.setStatus(AccountStatus.Active);
 					contractor.setAuditColumns(new User(User.SYSTEM));
 					accountDao.save(contractor);

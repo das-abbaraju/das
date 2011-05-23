@@ -18,7 +18,7 @@
 	<div class="alert">This contractor is NOT set to sync with QuickBooks</div>
 </s:if>
 <s:if test="contractor.acceptsBids">
-	<div class="alert">This is a BID-ONLY Contractor Account.</div>
+	<div class="alert">This is a List Only Contractor Account.</div>
 </s:if>
 
 <table width="100%">
@@ -56,7 +56,7 @@
 					<s:if test="operatorAccount.status.activeDemo">
 						<li>
 							<s:if test="permissions.admin">
-								<a href="AuditOperator.action?oID=<s:property value="operatorAccount.id" />">
+								<a href="OperatorConfiguration.action?id=<s:property value="operatorAccount.id" />">
 									<s:property value="operatorAccount.name" />
 								</a>
 							</s:if>
@@ -89,13 +89,25 @@
 			</s:if></li>
 			<li><label><s:text name="%{scope}.Invoicing.BillingStatus" />:</label> <s:property value="contractor.billingStatus" /></li>
 			<li><label><s:text name="%{scope}.Invoicing.MustPay" />:</label> <s:property value="contractor.mustPay" /></li>
-			<li><label><s:text name="%{scope}.Invoicing.CurrentLevel" />:</label> <s:property value="contractor.membershipLevel.amount" /> <s:property value="contractor.currencyCode"/><br>
-			<s:property value="contractor.membershipLevel.fee" /></li>
-			<s:if test="contractor.newMembershipLevel != contractor.membershipLevel">
-				<li><label>New Level:</label> <s:property value="contractor.newMembershipLevel.amount" /> <s:property value="contractor.currencyCode"/> <br>
-				<s:property value="contractor.newMembershipLevel.fee" /></li>
+			<li><label><s:text name="%{scope}.Invoicing.CurrentLevel" />:</label>
+				<s:iterator value="contractor.currentMembership">
+					 <s:property value="fee" />: $<s:property value="amount" /> <s:property value="contractor.currencyCode" /><br />
+				</s:iterator>
+			</li>
+			<s:if test="contractor.newMembershipAmount != contractor.currentMembershipAmount">
+				<li><label>New Level:</label>
+					<s:if test="contractor.newMembership.size > 0">
+						<s:iterator value="contractor.fees.keySet()" status="feeKey">
+							<s:if test="contractor.fees.get(#feeKey).hasChanged">
+								<s:property value="fee" />: $<s:property value="amount" /> <s:property value="contractor.currencyCode" /><br />
+							</s:if>
+						</s:iterator>
+					</s:if>
+					<s:else>
+						Free
+					</s:else>
+				</li>
 			</s:if>
-
 		</ol>
 		</fieldset>
 

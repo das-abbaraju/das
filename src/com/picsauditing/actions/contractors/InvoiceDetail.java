@@ -14,11 +14,8 @@ import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -114,17 +111,17 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				invoice.setQbSync(true);
 			}
 			if (button.startsWith("Change to")) {
-				for (InvoiceItem item : invoice.getItems()) {
-					if (item.getInvoiceFee().equals(contractor.getMembershipLevel())) {
-						item.setInvoiceFee(contractor.getNewMembershipLevel());
-						item.setAmount(contractor.getNewMembershipLevel().getAmount());
-						item.setAuditColumns(permissions);
-					}
-				}
-
-				contractor.setMembershipLevel(contractor.getNewMembershipLevel());
-				addNote("Changed invoice " + invoice.getId() + " to " + contractor.getNewMembershipLevel().getFee(),getUser());
-				message = "Changed Membership Level";
+//				for (InvoiceItem item : invoice.getItems()) {
+//					if (item.getInvoiceFee().equals(contractor.getMembershipLevel())) {
+//						item.setInvoiceFee(contractor.getNewMembershipLevel());
+//						item.setAmount(contractor.getNewMembershipLevel().getAmount());
+//						item.setAuditColumns(permissions);
+//					}
+//				}
+//
+//				contractor.setMembershipLevel(contractor.getNewMembershipLevel());
+//				addNote("Changed invoice " + invoice.getId() + " to " + contractor.getNewMembershipLevel().getFee(),getUser());
+//				message = "Changed Membership Level";
 			}
 
 			if (button.startsWith("Email")) {
@@ -160,11 +157,12 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				
 				// Automatically deactivating account based on expired membership
 				String status = contractor.getBillingStatus();
-				if ("Renewal Overdue".equals(status)) {
+				if ("Renewal Overdue".equals(status) || "Reactivation".equals(status)) {
 					contractor.setStatus(AccountStatus.Deactivated);
-					contractor.setRenew(false);
+					if("Renewal Overdue".equals(status))
+						contractor.setRenew(false);
 					if (contractor.isAcceptsBids())
-						contractor.setReason("Listed Account");
+						contractor.setReason("List Only Account");
 					Note note = new Note(contractor, new User(User.SYSTEM),
 							"Automatically inactivating account based on expired membership");
 					note.setNoteCategory(NoteCategory.Billing);

@@ -12,14 +12,12 @@ import org.apache.struts2.ServletActionContext;
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.BrainTreeServiceErrorResponseException;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
@@ -28,6 +26,7 @@ import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -62,8 +61,9 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	private Invoice invoice;
 	private boolean complete = false;
 
-	public ContractorRegistrationFinish(InvoiceDAO invoiceDAO, InvoiceFeeDAO invoiceFeeDAO, PaymentDAO paymentDAO, AppPropertyDAO appPropDAO,
-			NoteDAO noteDAO, InvoiceItemDAO invoiceItemDAO, AuditBuilderController auditBuilder) {
+	public ContractorRegistrationFinish(InvoiceDAO invoiceDAO, InvoiceFeeDAO invoiceFeeDAO, PaymentDAO paymentDAO,
+			AppPropertyDAO appPropDAO, NoteDAO noteDAO, InvoiceItemDAO invoiceItemDAO,
+			AuditBuilderController auditBuilder) {
 		this.invoiceDAO = invoiceDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.paymentDAO = paymentDAO;
@@ -104,7 +104,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 				return SUCCESS;
 			}
 
-			if (contractor.getNewMembershipLevel().isFree() || !contractor.isMustPayB()) {
+			if (contractor.isHasFreeMembership()) {
 				// Free accounts should just be activated
 				contractor.setStatus(AccountStatus.Active);
 				contractor.setAuditColumns(permissions);
@@ -127,7 +127,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							if (Strings.isEmpty(canadaProcessorID) && payment.getCurrency().isCanada())
 								throw new RuntimeException("Canadian ProcessorID Mismatch");
 							paymentService.setCanadaProcessorID(canadaProcessorID);
-							
+
 							paymentService.processPayment(payment, invoice);
 
 							CreditCard creditCard = paymentService.getCreditCard(id);
@@ -204,11 +204,9 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			complete = true;
 
 		} else if (contractor.getStatus().isPendingDeactivated()) {
-			InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
-			newFee = invoiceFeeDAO.find(newFee.getId());
-			contractor.setNewMembershipLevel(newFee);
+			BillingCalculatorSingle.calculateAnnualFees(contractor);
 
-			if (!contractor.getNewMembershipLevel().isFree()) {
+			if (!contractor.isHasFreeMembership()) {
 				String notes = "";
 				// There are no unpaid invoices - we should create a new one
 				// (could be a re-activation)
@@ -223,11 +221,13 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 						invoice.setAuditColumns(new User(User.SYSTEM));
 						invoice.setDueDate(new Date());
 
-						InvoiceFee activation = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
+						InvoiceFee activation = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
+						// Just wanting to add note, reduced activation is saved
+						// in invoice item list already
 						if (contractor.hasReducedActivation(activation)) {
 							OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
-							notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from $" + activation.getAmount() + " to $"
-									+ reducedOperator.getActivationFee() + ". ";
+							notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from $"
+									+ activation.getAmount() + " to $" + reducedOperator.getActivationFee() + ". ";
 							invoice.setNotes(notes);
 						}
 
@@ -235,23 +235,26 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							item.setInvoice(invoice);
 							item.setAuditColumns(new User(User.SYSTEM));
 						}
-						
-						if(contractor.getNewMembershipLevel().isBidonly())
+
+						if (contractor.isAcceptsBids())
 							contractor.setRenew(true);
 
 						updateTotals();
-						this.addNote("Created invoice for $" + invoice.getTotalAmount(),
-								NoteCategory.Billing);
+						this.addNote("Created invoice for $" + invoice.getTotalAmount(), NoteCategory.Billing);
 					}
 
 				} else {
 
-					if (!contractor.getMembershipLevel().equals(contractor.getNewMembershipLevel())) {
-						changeInvoiceItem(contractor.getMembershipLevel(), contractor.getNewMembershipLevel());
-						updateTotals();
+					if (contractor.isHasMembershipChanged()) {
+						for (FeeClass feeClass : contractor.getFees().keySet()) {
+							if (contractor.getFees().get(feeClass).isHasChanged()) {
+								changeInvoiceItem(contractor.getFees().get(feeClass).getCurrentLevel(), contractor
+										.getFees().get(feeClass).getNewLevel());
+								updateTotals();
+							}
+						}
 						this.addNote("Modified current invoice, changed to $" + invoice.getTotalAmount(),
 								NoteCategory.Billing);
-
 					}
 				}
 
@@ -261,10 +264,10 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 						invoice.setQbSync(true);
 
 					notes += "Thank you for doing business with PICS!";
-//					AppProperty prop = appPropDAO.find("invoice_comment");
-//					if (prop != null) {
-//						notes = prop.getValue();
-//					}
+					// AppProperty prop = appPropDAO.find("invoice_comment");
+					// if (prop != null) {
+					// notes = prop.getValue();
+					// }
 					invoice.setNotes(notes);
 
 					invoice = invoiceDAO.save(invoice);
@@ -280,7 +283,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 		if (!contractor.isAcceptsBids() && !contractor.isRenew()) {
 			contractor.setRenew(true);
-			if(contractor.getStatus().isDeactivated()) {
+			if (contractor.getStatus().isDeactivated()) {
 				contractor.setStatus(AccountStatus.Pending);
 				this.addNote("Account Reactivated to Pending", NoteCategory.General);
 			}
@@ -321,8 +324,6 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 		newInvoiceItem.setInvoice(invoice);
 		invoice.getItems().add(newInvoiceItem);
-
-		contractor.setMembershipLevel(newFee);
 	}
 
 	private void updateTotals() {
@@ -340,7 +341,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		note.setViewableById(Account.PicsID);
 		noteDAO.save(note);
 	}
-	
+
 	private void addNote(String subject, NoteCategory category) {
 		Note note = new Note();
 		note.setAccount(contractor);

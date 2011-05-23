@@ -171,10 +171,15 @@ input[type=submit] {
 						<s:if test="edit">
 							<td><s:textfield name="invoice.items[%{#stat.index}].description" value="%{description}" size="30" />
 							(optional description) <pics:permission perm="Billing" type="Edit">
-								<s:if test="invoiceFee.feeClass == 'Membership' && invoiceFee.fee != contractor.newMembershipLevel.fee">
+								<s:if test="invoiceFee.feeClass == 'AuditGUARD' && invoiceFee.fee != contractor.fees.get('AuditGUARD').newLevel.fee">
 									<div class="buttons"><a
 										href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />&button=Change to"
-										class="picsbutton positive">Change to: <s:property value="contractor.newMembershipLevel.fee" /></a></div>
+										class="picsbutton positive">Change to: <s:property value="contractor.fees.get('AuditGUARD').newLevel.fee" /></a></div>
+								</s:if>
+								<s:if test="invoiceFee.feeClass == 'EmployeeGUARD' && invoiceFee.fee != contractor.fees.get('EmployeeGUARD').newLevel.fee">
+									<div class="buttons"><a
+										href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />&button=Change to"
+										class="picsbutton positive">Change to: <s:property value="contractor.fees.get('EmployeeGUARD').newLevel.fee" /></a></div>
 								</s:if>
 							</pics:permission></td>
 							<td class="right"><s:textfield value="%{amount}" size="6" name="invoice.items[%{#stat.index}].amount" /> <s:property value="invoice.currency"/>

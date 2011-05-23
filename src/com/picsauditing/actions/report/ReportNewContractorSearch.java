@@ -133,7 +133,6 @@ public class ReportNewContractorSearch extends ReportAccount {
 			sql.addWhere(whereQuery);
 		}
 
-		sql.addJoin("JOIN invoice_fee fee on fee.id = c.membershipLevelID");
 		sql.addField("a.city");
 		sql.addField("a.state");
 		sql.addField("a.country");
@@ -148,7 +147,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		if (!Strings.isEmpty(getOrderBy()))
 			sql.addOrderBy(getOrderBy());
 		else
-			sql.addOrderBy("fee.defaultAmount, a.creationDate DESC");
+			sql.addOrderBy("a.creationDate DESC");
 
 		if (getFilter().getFlagStatus() != null && getFilter().getFlagStatus().length > 0) {
 			try {
