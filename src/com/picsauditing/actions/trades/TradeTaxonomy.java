@@ -19,7 +19,6 @@ import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.jpa.entities.TradeAlternate;
 import com.picsauditing.util.FileUtils;
-import com.picsauditing.util.Strings;
 import com.picsauditing.util.Tree;
 
 @SuppressWarnings("serial")
@@ -133,31 +132,24 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return "trade";
 	}
 
-	@SuppressWarnings("unchecked")
 	public String deleteTradeAjax() throws Exception {
-		json = new JSONObject();
-
-		if (trades.size() > 0) {
-			for (Trade t : trades) {
-				Trade parent = t.getParent();
-
-				if (parent != null) {
-					for (Trade child : t.getChildren()) {
-						child.setParent(parent);
-						tradeDAO.save(child);
-					}
-
-					tradeDAO.updateContractorTrades(t.getId(), parent.getId());
-
-					tradeAlternateDAO.updateAlternates(t.getId(), parent.getId());
-					tradeDAO.refresh(t);
-					tradeDAO.remove(t);
-				}
-			}
+		if (trade != null) {
+			if (deleteTrade(trade))
+				trade = null;
 		}
 
-		json.put("success", true);
+		return "trade";
+	}
 
+	@SuppressWarnings("unchecked")
+	public String deleteMultipleJson() {
+		boolean success = true;
+		for (Trade t : trades) {
+			if (!deleteTrade(t))
+				success = false;
+		}
+
+		json.put("success", success);
 		return JSON;
 	}
 
@@ -219,6 +211,32 @@ public class TradeTaxonomy extends PicsActionSupport {
 		File logo = new File(getFtpDir() + trade.getImageLocationI());
 
 		return new StreamResult(new FileInputStream(logo));
+	}
+
+	private boolean deleteTrade(Trade trade) {
+		boolean success = true;
+
+		Trade parent = trade.getParent();
+
+		if (parent != null) {
+			for (Trade child : trade.getChildren()) {
+				child.setParent(parent);
+				tradeDAO.save(child);
+			}
+
+			tradeDAO.updateContractorTrades(trade.getId(), parent.getId());
+
+			tradeAlternateDAO.updateAlternates(trade.getId(), parent.getId());
+			tradeDAO.refresh(trade);
+			tradeDAO.remove(trade);
+		} else if (trade.getContractorCount() == 0 && trade.getChildren().size() == 0) {
+			tradeDAO.remove(trade);
+		} else {
+			addActionError("You cannot delete a root level trade that is associated with any contractors or trades.");
+			success = false;
+		}
+
+		return success;
 	}
 
 	public Trade getTrade() {

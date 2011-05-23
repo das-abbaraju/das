@@ -10,11 +10,13 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/jquery.form.js"></script>
 <script type="text/javascript" src="js/jquery/jsTree/jquery.jstree.js?v=<s:property value="version"/>"></script>
-<script type="text/javascript" src="js/trade_taxonomy.js?v=<s:property value="version"/>"></script>
 
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css" />
 <script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
-
+<script type="text/javascript" src="js/trade_taxonomy_admin.js?v=<s:property value="version"/>"></script>
+<script type="text/javascript" src="js/trade_taxonomy_common.js?v=<s:property value="version"/>"></script>
+<script>
+</script>
 <style>
 img.trade {
 	margin: 10px;
@@ -34,7 +36,6 @@ img.trade {
 
 <div id="trade-view">
 	<div class="info">Click a trade on the left</div>
-	<div id="loadingTrade"></div>
 </div>
 
 <div class="clear">

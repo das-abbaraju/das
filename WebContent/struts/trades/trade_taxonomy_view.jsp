@@ -2,7 +2,8 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<div id="loadingTrade"></div>
+<s:include value="../actionMessages.jsp"/>
+<s:if test="trade != null">
 <s:form id="saveTrade" cssClass="form" action="TradeTaxonomyAjax" method="POST" enctype="multipart/form-data">
 	<s:hidden name="trade" value="%{trade.id}" />
 	<s:if test="trade.id == 0">
@@ -92,7 +93,7 @@
 			<ol>
 				<li>
 					<h4>Manual Audit Category Rules</h4>
-					<a href="CategoryRuleEditor.action?rule.auditType=2&rule.trade=<s:property value="trade.id" />">Add New Manual Audit Category Rule</a>
+					<a href="CategoryRuleEditor.action?rule.auditType=2&rule.trade=<s:property value="trade.id" />" class="add">Add New Manual Audit Category Rule</a>
 					<div id="tradeCategoryRules"></div>
 				</li>
 				<li>
@@ -110,3 +111,7 @@
 		</s:if>
 	</fieldset>
 </s:form>
+</s:if>
+<s:else>
+<div class="info">Click a trade on the left</div>
+</s:else>
