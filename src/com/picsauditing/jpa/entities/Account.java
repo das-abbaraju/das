@@ -698,8 +698,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Transient
 	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|')
-				.append(this.name).append('|');
+		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(
+				this.name).append('|');
 		if (this.city != null)
 			sb.append(this.city);
 		if (this.state != null)
@@ -730,17 +730,19 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 			types.add(ContractorType.Offsite);
 		return types;
 	}
-	
+
 	public void addAccountTypes(List<ContractorType> conTypes) {
-		for (ContractorType conType: conTypes) {
-			if (conType.equals(ContractorType.Onsite) && !isOnsiteServices()) {
-				setOnsiteServices(true);
-			}
-			if (conType.equals(ContractorType.Offsite) && !isOffsiteServices()) {
-				setOffsiteServices(true);
-			}
-			if (conType.equals(ContractorType.Supplier) && !isMaterialSupplier()) {
-				setMaterialSupplier(true);
+		if (conTypes != null) {
+			for (ContractorType conType : conTypes) {
+				if (conType.equals(ContractorType.Onsite) && !isOnsiteServices()) {
+					setOnsiteServices(true);
+				}
+				if (conType.equals(ContractorType.Offsite) && !isOffsiteServices()) {
+					setOffsiteServices(true);
+				}
+				if (conType.equals(ContractorType.Supplier) && !isMaterialSupplier()) {
+					setMaterialSupplier(true);
+				}
 			}
 		}
 	}
