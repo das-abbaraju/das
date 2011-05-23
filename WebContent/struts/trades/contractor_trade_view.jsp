@@ -11,22 +11,44 @@
 <s:include value="../actionMessages.jsp"/>
 
 <s:form id="trade-form">
-<div class="buttons">
-	<s:if test="trade.id == 0">
-		<s:submit method="saveTradeAjax" value="Add" cssClass="save picsbutton positive" id="addButton"/>
-	</s:if>
-	<s:else>
-		<s:submit method="saveTradeAjax" value="Save" cssClass="save picsbutton positive"/>
-		<s:submit method="removeTradeAjax" value="Remove" cssClass="remove picsbutton negative"/>
-	</s:else>
-</div>
-
 <img class="trade" src="images/trades/construction.jpg" />
 <h3 <s:if test="trade.id == 0">class="new"</s:if>><s:property value="trade.trade.name"/></h3>
 
 <s:hidden name="contractor"/>
 <s:hidden name="trade"/>
 <s:hidden name="trade.trade"/>
+
+<div id="trade-section-nav">
+	<ul>
+		<s:if test="!isStringEmpty(trade.trade.help.toString())"><li><a href="#trade_description" class="tradeInfo">Description</a></li></s:if>
+		<s:if test="trade.trade.parent != null"><li><a href="#trade_classification" class="tradeInfo">Classification</a></li></s:if>
+		<s:if test="trade.trade.children.size > 0"><li><a href="#trade_children" class="tradeInfo">Child Trades</a></li></s:if>
+	</ul>
+</div>
+
+<div id="trade_description" class="trade-section">
+<hr />
+<s:property value="trade.trade.help.toString()" />
+	<hr />
+</div>
+
+
+<div id="trade_classification" class="trade-section">
+	<hr />
+	<s:property value="classification"/>
+	<hr />
+</div>
+
+<div id="trade_children" class="trade-section">
+<hr />
+	<ul>
+		<s:iterator value="trade.trade.children" var="atrade">
+			<li><s:property value="#atrade.name"/></li>
+		</s:iterator>
+	</ul>
+	<hr />
+</div>
+
 
 <s:if test="affectedTrades.size > 0">
 	<div class="alert">
@@ -42,21 +64,6 @@
 	</div>
 </s:if>
 
-<div class="clearfix">
-	<s:if test="trade.trade.productI">
-		<div class="fieldoption left">
-			What do you do with this product?
-			<s:radio name="trade.manufacture" theme="translate" list="#{true: 'Manufacture', false:'Distribute' }"/>
-		</div>
-	</s:if>
-	<s:if test="trade.trade.serviceI">
-		<div class="fieldoption left">
-			How is this service performed?
-			<s:radio name="trade.selfPerformed" theme="translate" list="#{true: 'SelfPerform', false:'SubContract' }" />
-		</div>
-	</s:if>
-</div>
-
 <s:if test="trade.id > 0 && trade.activityPercent == 0">
 <div class="alert">
 	<s:text name="ContractorTrade.activityPercent.missing"/>
@@ -67,6 +74,27 @@
 	<s:text name="ContractorTrade.businessRepresentation">
 		<s:param><s:select name="trade.activityPercent" list="activityPercentMap" theme="translate"/></s:param>
 	</s:text>
+</div>
+
+<div class="clearfix">
+	<s:if test="trade.trade.productI">
+		<div>
+			<s:text name="ContractorTrade.businessProduct">
+				<s:param>
+					<s:select name="trade.manufacture" theme="translate" list="#{true: 'Manufacture', false:'Distribute' }" />
+				</s:param>
+			</s:text>
+		</div>
+	</s:if>
+	<s:if test="trade.trade.serviceI">
+		<div>
+			<s:text name="ContractorTrade.businessService">
+				<s:param>
+					<s:select name="trade.selfPerformed" theme="translate" list="#{true: 'SelfPerform', false:'SubContract' }" />
+				</s:param>
+			</s:text>
+		</div>
+	</s:if>
 </div>
 
 <s:if test="trade.id == 0">
@@ -82,21 +110,15 @@
 </s:if>
 
 <div>
-	<ol class="form-style">
-		<s:if test="!isStringEmpty(trade.trade.help.toString())">
-			<li>
-				<label><s:text name="Trade.help"/></label>
-				<s:property value="trade.trade.help"/>
-			</li>
-		</s:if>
-		<li>
-			<label><s:text name="ContractorTrade.taxonomy"/></label>
-			<div class="hierarchy">
-				<div id="trade-hierarchy"></div>
-			</div>
-		</li>
-	</ol>
+	<s:if test="trade.id == 0">
+		<s:submit method="saveTradeAjax" value="Add" cssClass="save picsbutton positive" id="addButton"/>
+	</s:if>
+	<s:else>
+		<s:submit method="saveTradeAjax" value="Save" cssClass="save picsbutton positive"/>
+		<s:submit method="removeTradeAjax" value="Remove" cssClass="remove picsbutton negative"/>
+	</s:else>
 </div>
+
 </s:form>
 </div>
 </s:if>

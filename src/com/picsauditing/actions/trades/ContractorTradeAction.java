@@ -134,6 +134,16 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		return trades;
 	}
+	
+	public String getClassification() {
+		StringBuilder sb = new StringBuilder();
+		List<Trade> list = tradeDAO.findListByTrade(trade.getTrade().getId(), 0);
+		for (Trade t:list) {
+			if (sb.length() > 0) sb.append(" > ");
+			sb.append(t.getName().toString());
+		}
+		return sb.toString();
+	}
 
 	public ContractorTrade getTrade() {
 		return trade;
@@ -154,7 +164,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		result.put(5, "average");
 		result.put(3, "belowAverage");
 		result.put(1, "rarely");
-
 		return result;
 	}
 

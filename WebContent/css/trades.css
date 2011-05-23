@@ -114,6 +114,15 @@ a.trade,a.trade:hover,a.trade:active {
 	background-color: white;
 }
 
+#trade-section-nav {
+	padding: 5px;
+	background-color: white;
+}
+#trade-section-nav li {
+	display: inline;
+	padding: 10px;
+}
+
 #search-tree,#browse-tree {
 	height: 500px;
 	overflow: auto;

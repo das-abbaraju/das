@@ -15,6 +15,11 @@ var conID = '<s:property value="id"/>';
 $(function() {
 	$('#trade-nav').tabs();
 
+	$('a.tradeInfo').live('click',function() {
+		$('div.trade-section').hide();
+		$($(this).attr('href')).toggle();
+		});
+	
 	var treeOptions = {
 			"themes": {
 				theme: "classic"	
