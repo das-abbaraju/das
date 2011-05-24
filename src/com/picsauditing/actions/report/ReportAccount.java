@@ -70,6 +70,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addField("c.productRisk");
 			sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
 		}
+		sql.addJoin("LEFT JOIN contractor_trade ct on ct.conID = a.id");
 
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
@@ -258,18 +259,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		/** **** Filters for Contractors ********** */
 
 		if (filterOn(f.getTrade())) {
-			// TODO Update this method for trade taxonomy
-			String tradeList = Strings.implode(f.getTrade(), ",");
-			String answerFilter = "";
-			if (!filterOn(f.getPerformedBy(), ReportFilterContractor.DEFAULT_PERFORMED_BY))
-				answerFilter = "_%";
-			else {
-				if ("Sub Contracted".equals(f.getPerformedBy()))
-					answerFilter = "%S";
-				else if ("Self Performed".equals(f.getPerformedBy()))
-					answerFilter = "C%";
-			}
-			createPqfDataClause(sql, "AND d.questionID IN (" + tradeList + ") AND d.answer LIKE '" + answerFilter + "'");
+			report.addFilter(new SelectFilter("trades", "ct.tradeID IN (?)", Strings.implode(f.getTrade())));			
 		}
 
 		if (filterOn(f.getOperator())) {

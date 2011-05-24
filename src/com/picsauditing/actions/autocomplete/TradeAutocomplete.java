@@ -1,6 +1,7 @@
 package com.picsauditing.actions.autocomplete;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,12 @@ public class TradeAutocomplete extends AutocompleteActionSupport<Trade> {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Collection<Trade> getItems() {
-		if(ids == null)
-			return tradeDAO.findByIndexValue(q);
-		else
-			return (List<Trade>)tradeDAO.findWhere(Trade.class, Strings.implode(ids), 0);
+		if (itemKeys == null) {
+			if (!Strings.isEmpty(q))
+				return tradeDAO.findByIndexValue(q, limit);
+		} else if (itemKeys.length > 0) {
+			return (List<Trade>) tradeDAO.findWhere(Trade.class, "t.id = " + Strings.implode(itemKeys), 0);
+		}
+		return Collections.emptyList();
 	}
 }

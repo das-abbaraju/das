@@ -102,7 +102,7 @@ public class TradeDAO extends PicsDAO {
 		return Tree.createDecoratedTreeFromOrderedList(trades, matches);
 	}
 
-	public List<Trade> findByIndexValue(String q) {
+	public List<Trade> findByIndexValue(String q, Integer limit) {
 		List<String> terms = new SearchEngine(null).buildTerm(q, true, false);
 		if (terms.isEmpty())
 			return Collections.<Trade> emptyList();
@@ -122,6 +122,9 @@ public class TradeDAO extends PicsDAO {
 		for (int i = 0; i < terms.size(); i++) {
 			query.setParameter("" + i, terms.get(i) + "%");
 		}
+
+		if (limit != null)
+			query.setMaxResults(limit);
 
 		return query.getResultList();
 	}

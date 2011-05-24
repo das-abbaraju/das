@@ -126,7 +126,7 @@ public class PicsMenu {
 
 		subMenu = menu.addChild(getText("global.Contractors"));
 		if (permissions.hasPermission(OpPerms.AllContractors) || permissions.isOperatorCorporate()) {
-			subMenu.addChild(getTitle("ContractorList"), "ContractorList.action?filter.performedBy=Self Performed");
+			subMenu.addChild(getTitle("ContractorList"), "ContractorList.action");
 		}
 
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {

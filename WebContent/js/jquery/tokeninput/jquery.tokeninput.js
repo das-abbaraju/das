@@ -310,8 +310,12 @@ $.TokenList = function (input, url_or_data, settings) {
     hidden_input.val("");
     li_data = settings.prePopulate || hidden_input.data("pre");
     if(li_data && li_data.length) {
+    	var callback = settings.onAdd;
         $.each(li_data, function (index, value) {
             insert_token(value.id, value.name);
+            if($.isFunction(callback)){
+            	callback(value);
+            }
         });
     }
 

@@ -1,5 +1,6 @@
 package com.picsauditing.actions.autocomplete;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,15 +13,16 @@ import com.picsauditing.jpa.entities.BaseTable;
 /**
  * 
  * @author kpartridge
- *
+ * 
  */
-@SuppressWarnings({ "serial", "unchecked" })
+@SuppressWarnings( { "serial", "unchecked" })
 public abstract class AutocompleteActionSupport<T extends BaseTable> extends PicsActionSupport {
 
 	protected String q;
-	protected List<Integer> ids;
+	protected Integer limit;
+	public int[] itemKeys;
 
-	public final String autocomplete() throws Exception {
+	public final String autocomplete() {
 		StringBuilder sb = new StringBuilder();
 
 		for (T item : getItems()) {
@@ -92,6 +94,22 @@ public abstract class AutocompleteActionSupport<T extends BaseTable> extends Pic
 
 	public void setQ(String q) {
 		this.q = q;
+	}
+
+	public Integer getLimit() {
+		return limit;
+	}
+
+	public void setLimit(Integer limit) {
+		this.limit = limit;
+	}
+
+	public int[] getItemKeys() {
+		return itemKeys;
+	}
+
+	public void setItemKeys(int[] itemKeys) {
+		this.itemKeys = itemKeys;
 	}
 
 }
