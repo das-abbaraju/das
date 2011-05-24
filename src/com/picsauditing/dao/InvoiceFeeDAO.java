@@ -49,7 +49,7 @@ public class InvoiceFeeDAO extends PicsDAO {
 		}
 	}
 	
-	public InvoiceFee findDocuguardMembershipByLegacyAuditGUARDID(InvoiceFee legacyAuditGUARDfee) {
+	public InvoiceFee findMembershipByLegacyAuditGUARDID(FeeClass classType, InvoiceFee legacyAuditGUARDfee) {
 		int numPayingFacilities = 0;
 		// assigning numFacilities based on legacy id
 		switch(legacyAuditGUARDfee.getId()) {
@@ -62,7 +62,7 @@ public class InvoiceFeeDAO extends PicsDAO {
 			case 11: numPayingFacilities = 50; break;
 		}
 		
-		return this.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, numPayingFacilities);
+		return this.findByNumberOfOperatorsAndClass(classType, numPayingFacilities);
 	}
 
 	@SuppressWarnings("unchecked")

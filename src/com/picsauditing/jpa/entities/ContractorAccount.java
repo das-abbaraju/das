@@ -777,22 +777,42 @@ public class ContractorAccount extends Account implements JSONable {
 						if (!foundDocuGUARDMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.DocuGUARD)) {
 								foundDocuGUARDMembership = true;
-								this.getFees().get(FeeClass.DocuGUARD).setCurrentLevel(invoiceItem.getInvoiceFee());
+
+								if (invoiceItem.getInvoiceFee().isLegacyMembership())
+									// We have no way of knowing how many paying
+									// facilities the contractor had when we
+									// transitioned fee levels. Since all
+									// DocuGUARD fee amounts are currently the
+									// same, set fee level based on current
+									// number of paying facilities if contractor
+									// paid legacy DocuGUARD fee.
+									this.getFees().get(FeeClass.DocuGUARD).setCurrentLevel(
+											invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, this
+													.getPayingFacilities()));
+								else
+									this.getFees().get(FeeClass.DocuGUARD).setCurrentLevel(invoiceItem.getInvoiceFee());
 							}
 						}
 
 						if (!foundAuditGUARDMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.AuditGUARD)) {
 								foundAuditGUARDMembership = true;
-								this.getFees().get(FeeClass.AuditGUARD).setCurrentLevel(invoiceItem.getInvoiceFee());
+
+								if (invoiceItem.getInvoiceFee().isLegacyMembership())
+									this.getFees().get(FeeClass.AuditGUARD).setCurrentLevel(
+											invoiceFeeDAO.findMembershipByLegacyAuditGUARDID(FeeClass.AuditGUARD,
+													invoiceItem.getInvoiceFee()));
+								else
+									this.getFees().get(FeeClass.AuditGUARD)
+											.setCurrentLevel(invoiceItem.getInvoiceFee());
 
 								// Old AuditGUARD included DocuGUARD fee
 								// For legacy compliance
 								if (invoiceItem.getInvoiceFee().isLegacyMembership()) {
 									foundDocuGUARDMembership = true;
 									this.getFees().get(FeeClass.DocuGUARD).setCurrentLevel(
-											invoiceFeeDAO.findDocuguardMembershipByLegacyAuditGUARDID(invoiceItem
-													.getInvoiceFee()));
+											invoiceFeeDAO.findMembershipByLegacyAuditGUARDID(FeeClass.DocuGUARD,
+													invoiceItem.getInvoiceFee()));
 								}
 							}
 						}

@@ -181,6 +181,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					getNoteDao().save(note);
 				}
 
+				BillingCalculatorSingle.calculateAnnualFees(contractor);
 				contractor.syncBalance();
 				contractor.incrementRecalculation(10);
 				accountDao.save(contractor);
@@ -289,6 +290,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		updateTotals();
 		invoiceDAO.save(invoice);
 
+		BillingCalculatorSingle.calculateAnnualFees(contractor);
 		contractor.syncBalance();
 
 		contractor.setAuditColumns(permissions);
