@@ -42,6 +42,7 @@ function setupTree() {
 $(function() {
 	$('a.tradeInfo').live('click',function(e) {
 		e.preventDefault();
+		$('div.trade-section').hide();
 		$($(this).attr('href')).toggle();
 	});
 	
