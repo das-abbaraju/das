@@ -1,6 +1,5 @@
 package com.picsauditing.dao;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,7 +10,6 @@ import javax.persistence.Query;
 
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Trade;
-import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Tree;
@@ -127,15 +125,16 @@ public class TradeDAO extends PicsDAO {
 
 		return query.getResultList();
 	}
-	
+
 	public List<ContractorTrade> findContractorTradeByTrade(int tradeID) {
 		Query query = em.createQuery("SELECT ct FROM ContractorTrade ct WHERE ct.trade.id = ?");
 		query.setParameter(1, tradeID);
 		return query.getResultList();
 	}
-	
+
 	public int updateContractorTrades(int oldTradeID, int newTradeID) {
-		Query query = em.createQuery("UPDATE ContractorTrade ct SET ct.trade.id = :newTrade WHERE ct.trade.id = :oldTrade");
+		Query query = em
+				.createQuery("UPDATE ContractorTrade ct SET ct.trade.id = :newTrade WHERE ct.trade.id = :oldTrade");
 		query.setParameter("oldTrade", oldTradeID);
 		query.setParameter("newTrade", newTradeID);
 		return query.executeUpdate();
@@ -151,8 +150,9 @@ public class TradeDAO extends PicsDAO {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i < terms.size(); i++) {
 			String alias = "i" + i;
-			sb.append("JOIN app_index ").append(alias).append(" ON i1.indexType = 'T' AND i0.foreignKey = ").append(
-					alias).append(".foreignKey AND ").append(alias).append(".value LIKE :").append(i).append(" ");
+			sb.append("JOIN app_index ").append(alias).append(" ON i1.indexType = 'T' AND i0.foreignKey = ")
+					.append(alias).append(".foreignKey AND ").append(alias).append(".value LIKE :").append(i)
+					.append(" ");
 		}
 		return sb.toString();
 	}
