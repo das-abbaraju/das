@@ -6,21 +6,21 @@ function download(url) {
 
 function changePage( formid, pageNum ) {
 	var search = $("#"+formid);
-	search.find('[name=showPage]').val(pageNum);
+	search.find('[name="showPage"]').val(pageNum);
 	runSearch(search);
 }
 
 function changeOrderBy( formid, orderBy ) {
 	var search = $("#"+formid);
-	search.find('[name=showPage]').val("1");
-	search.find('[name=orderBy]').val(orderBy);
+	search.find('[name="showPage"]').val("1");
+	search.find('[name="orderBy"]').val(orderBy);
 	runSearch(search);
 }
 
 function changeStartsWith( formid, v ) {
 	var search = $("#"+formid);
-	search.find('[name=showPage]').val("1");
-	search.find('[name=filter.startsWith]').val(v);
+	search.find('[name="showPage"]').val("1");
+	search.find('[name="filter.startsWith"]').val(v);
 	runSearch(search);
 }
 
@@ -33,33 +33,33 @@ function checkStateAndCountry( formidState, formidCountry ) {
 
 function clickSearch( formid ) {
 	var search = $("#"+formid);
-	search.find('[name=showPage]').val("1");
-	search.find('[name=filter.startsWith]').val("");
+	search.find('[name="showPage"]').val("1");
+	search.find('[name="filter.startsWith"]').val("");
 	runSearch(search);
-	if (search.find('[name=filter.allowMailMerge]').val() == "true")
+	if (search.find('[name="filter.allowMailMerge"]').val() == "true")
 		$('#write_email_button').show();
 	return false;
 }
 
 function clickSearchSubmit( formid ) {
 	var search = $("#"+formid);
-	search.find('[name=showPage]').val("1");
-	search.find('[name=filter.startsWith]').val("");
+	search.find('[name="showPage"]').val("1");
+	search.find('[name="filter.startsWith"]').val("");
 }
 
 function runSearch(search) {
-	var ajax = $(search).find('[name=filter.ajax]').val();
+	var ajax = $(search).find('[name="filter.ajax"]').val();
 	
 	if (ajax == "false") {
 		$(search).submit();
 	} else {
 		// if this is an ajax call, then get the form elements and then post them through ajax and return the results to a div
 		startThinking({div:'report_data', type: 'large', message: 'finding search results'});
-		var destinationAction = $(search).find('[name=filter.destinationAction]').val();
+		var destinationAction = $(search).find('[name="filter.destinationAction"]').val();
 		var accountType = "";
 		
-		if ($(search).find('[name=filter.accountType]').val() != null)
-			var accountType = "&accountType="+$(search).find('[name=filter.accountType]').val();
+		if ($(search).find('[name="filter.accountType"]').val() != null)
+			var accountType = "&accountType="+$(search).find('[name="filter.accountType"]').val();
 		
 		var data = $(search).serialize();
 		$.post(destinationAction+'Ajax.action?button=Search'+accountType, data, function(text, status) {
