@@ -180,11 +180,11 @@ a.trade,a.trade:hover,a.trade:active {
 }
 
 #suggest input.searchText {
-	border: 3px solid #CCCACA;
+	border: 1px solid #BBB;
 	border-radius: 0px 15px 15px 0px;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 18px;
-	height: 25px;
+	height: 34px;
 	padding: 0px 30px 0px 10px;
 	width: 400px;
 }
@@ -198,11 +198,11 @@ a.trade,a.trade:hover,a.trade:active {
 		transparent;
 	border: medium none;
 	cursor: pointer;
-	height: 34px;
+	height: 37px;
 	left: -52px;
 	position: relative;
 	text-indent: -9999px;
-	top: -2px;
+	top: 0px;
 	width: 49px;
 }
 
