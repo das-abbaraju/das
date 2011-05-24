@@ -207,10 +207,13 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return "trade";
 	}
 
-	public Result tradeLogo() throws FileNotFoundException {
-		File logo = new File(getFtpDir() + trade.getImageLocationI());
-
-		return new StreamResult(new FileInputStream(logo));
+	public Result tradeLogo() {
+		try {
+			File logo = new File(getFtpDir() + trade.getImageLocationI());
+			return new StreamResult(new FileInputStream(logo));
+		} catch (FileNotFoundException e) {
+			return null;
+		}
 	}
 
 	private boolean deleteTrade(Trade trade) {
