@@ -9,7 +9,6 @@
 
 <script type="text/javascript">
 $(function(){
-	var token_tradePre = [];
 
 	$('input.tokenAuto').each(function() {
 		var that = $(this);
@@ -19,6 +18,7 @@ $(function(){
 	    var r_ids = that.val().split(',').map(Number);
 	    that.removeAttr('name');
 	    that.removeAttr('value');
+	    console.log(field_type +" "+r_ids);
 		
 		$.getJSON(field_type+'Autocomplete!tokenJson.action', {itemKeys: r_ids}, function(json) {
 			var results;
@@ -29,7 +29,7 @@ $(function(){
 				jsonContainer: 'result',
 				prePopulate: results,
 		        onAdd: function(item) {
-					that.closest('.q_box').find('select[name="' + name + '"]').append(opt.clone().attr('value', item.id));
+					that.closest('.q_box').find('select[name="' + name + '"]').append(opt.clone().attr('value', item.id).append(item.name));
 	        	},
 		       	onDelete: function(item) {
 	        		that.closest('.q_box').find('select[name="' + name + '"]').find('option[value="'+item.id+'"]').remove();
@@ -78,7 +78,7 @@ $(function(){
 		$(this).closest('.filterOption').find('a.filterBox').click();
 	});	
 
-	$('div.filterOption').delegate('.select', 'updateQuery', function() {
+	$('div.filterOption').delegate('span.select', 'updateQuery', function() {
 		var status_text = '';
 		$(this).find('select option:selected').each(function() {
 			if(status_text!='')
@@ -91,7 +91,7 @@ $(function(){
 		$(this).closest('.filterOption').find('.q_status').text(status_text);			
 	});
 	
-	$('.filterOption').delegate('.textfield', 'updateQuery', function() {
+	$('dev.filterOption').delegate('span.textfield', 'updateQuery', function() {
 		var status_text = '';
 		var text1 = $(this).find(':input[type="text"]').eq(0);
 		var text2 = $(this).find(':input[type="text"]').eq(1);
@@ -129,7 +129,7 @@ $(function(){
 	//	$(this).closest('.filterOption').find('.filterBox').click();
 	//});
 	
-	$('.q_box').trigger('updateQuery');
+	$('span.q_box').trigger('updateQuery');
 });
 
 </script>
@@ -346,7 +346,7 @@ select.hidden {
 		<div class="filterOption">
 			<a href="#" class="filterBox">Trade</a> = 
 			<span class="q_status">ALL</span><br />
-			<span class="clearLink q_box">
+			<span class="clearLink q_box select">
 				<s:textfield rel="Trade" name="filter.trade" cssClass="tokenAuto" />
 				<a class="clearLink" href="#">Clear</a>
 			</span>
@@ -425,9 +425,8 @@ select.hidden {
 				<a href="#" class="filterBox">Operators</a> =
 				<span class="q_status">ALL</span><br />
 				<span class="clearLink q_box select"> 
-					<s:select list="filter.operatorList" cssClass="forms" name="filter.operator" listKey="id" 
-						listValue="name" multiple="true" size="%{filter.operatorList.size() < 25 ? filter.operatorList.size() : 25}" />
-					<a class="clearLink">Clear</a> 
+					<s:textfield rel="Operator" name="filter.operator" cssClass="tokenAuto" />
+					<a class="clearLink" href="#">Clear</a>
 				</span>
 			</s:else>
 		</div>
@@ -464,9 +463,8 @@ select.hidden {
 			<a href="#" class="filterBox">Operators</a> =
 			<span class="q_status">ALL</span><br />
 			<span class="clearLink q_box select"> 
-				<s:select list="filter.operatorList" cssClass="forms" name="filter.caoOperator"
-					listKey="id" listValue="name" multiple="true" size="%{filter.operatorList.size() < 25 ? filter.operatorList.size() : 25}" />
-				<a class="clearLink" href="#">Clear</a> 
+				<s:textfield rel="Operator" name="filter.operator" cssClass="tokenAuto" />
+				<a class="clearLink" href="#">Clear</a>
 			</span>
 		</div>
 	</s:if>

@@ -60,7 +60,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	protected void buildQuery() {
 		sql = new SelectAccount();
-		
+
 		if (permissions.isAssessment())
 			sql.addWhere("a.requiresOQ = 1");
 		else {
@@ -70,7 +70,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addField("c.productRisk");
 			sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
 		}
-		sql.addJoin("LEFT JOIN contractor_trade ct on ct.conID = a.id");
+		if (filterOn(filter.getTrade()))
+			sql.addJoin("JOIN contractor_trade ct on ct.conID = a.id");
 
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
@@ -259,7 +260,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		/** **** Filters for Contractors ********** */
 
 		if (filterOn(f.getTrade())) {
-			report.addFilter(new SelectFilter("trades", "ct.tradeID IN (?)", Strings.implode(f.getTrade())));			
+			report.addFilter(new SelectFilter("trades", "ct.tradeID IN (?)", Strings.implode(f.getTrade())));
 		}
 
 		if (filterOn(f.getOperator())) {
@@ -359,8 +360,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			if (getFilter().getMinorityQuestion() != 3) {
 				sql.addJoin("JOIN pqfdata pdsd on casd.id = pdsd.auditID AND pdsd.questionID = "
 						+ getFilter().getMinorityQuestion());
-				if ((getFilter().getMinorityQuestion() == 3543) 
-						|| (getFilter().getMinorityQuestion() == 66) || (getFilter().getMinorityQuestion() == 77))
+				if ((getFilter().getMinorityQuestion() == 3543) || (getFilter().getMinorityQuestion() == 66)
+						|| (getFilter().getMinorityQuestion() == 77))
 					sql.addWhere("pdsd.answer = 'X'");
 				else
 					sql.addWhere("pdsd.answer = 'Yes'");
@@ -404,17 +405,18 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 			sql.addGroupBy("a.id");
 		}
-		
+
 		if (getFilter().isOq())
 			sql.addWhere("a.requiresOQ = 1");
-		
+
 		if (getFilter().isHse())
 			sql.addWhere("a.requiresCompetencyReview = 1");
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {
 		String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca JOIN pqfdata d on ca.id = d.auditID "
-				+ "JOIN contractor_audit_operator cao ON cao.auditID = ca.id WHERE cao.status IN ('Complete','Submitted','Resubmit','Resubmitted') AND cao.visible = 1  AND ca.auditTypeID = 1 " + where + ")";
+				+ "JOIN contractor_audit_operator cao ON cao.auditID = ca.id WHERE cao.status IN ('Complete','Submitted','Resubmit','Resubmitted') AND cao.visible = 1  AND ca.auditTypeID = 1 "
+				+ where + ")";
 		sql.addWhere(query);
 		setFiltered(true);
 	}
