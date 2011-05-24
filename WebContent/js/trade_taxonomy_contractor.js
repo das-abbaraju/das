@@ -68,7 +68,7 @@ $(function() {
 		$('#trade-view').load('ContractorTrades!saveTradeAjax.action', $('#trade-form').serializeArray(), loadTradeCallback)
 	}).delegate('#trade-form .remove', 'click', function(e) {
 		if (confirm("Are you sure you want to remove this trade?")) {
-			loadTrades('ContractorTrades!removeTradeAjax.action', $('#trade-form').serializeArray());
+			$('#trade-view').load('ContractorTrades!removeTradeAjax.action', $('#trade-form').serializeArray());
 		}
 	});
 

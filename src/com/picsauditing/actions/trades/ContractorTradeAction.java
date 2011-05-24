@@ -74,6 +74,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	public String saveTradeAjax() {
 		for (ContractorTrade t : findAffectedTrades()) {
+			contractor.getTrades().remove(t);
 			tradeDAO.remove(t);
 		}
 
@@ -104,6 +105,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	}
 
 	public String removeTradeAjax() {
+		contractor.getTrades().remove(trade);		
 		tradeDAO.remove(trade);
 		trade = null;
 		sortTrades();
