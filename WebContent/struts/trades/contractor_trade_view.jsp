@@ -29,42 +29,28 @@
 </div>
 
 <div id="trade_description" class="trade-section">
-<hr />
-<s:property value="trade.trade.help.toString()" />
+	<hr />
+		<s:property value="trade.trade.help.toString()" />
 	<hr />
 </div>
 
 
 <div id="trade_classification" class="trade-section">
 	<hr />
-	<s:property value="classification"/>
+		<s:property value="classification"/>
 	<hr />
 </div>
 
 <div id="trade_children" class="trade-section">
-<hr />
-	<ul>
-		<s:iterator value="trade.trade.children" var="atrade">
-			<li><s:property value="#atrade.name"/></li>
-		</s:iterator>
-	</ul>
+	<hr />
+		<ul>
+			<s:iterator value="trade.trade.children" var="atrade">
+				<li><s:property value="#atrade.name"/></li>
+			</s:iterator>
+		</ul>
 	<hr />
 </div>
 
-
-<s:if test="affectedTrades.size > 0">
-	<div class="alert">
-		<s:text name="ContractorTrades.affectedTrades">
-			<s:param>
-				<ul>
-				<s:iterator value="affectedTrades" var="trade">
-					<li><a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" class="trade"><s:property value="#trade.trade.name"/></a></li>
-				</s:iterator>
-				</ul>
-			</s:param>
-		</s:text>
-	</div>
-</s:if>
 
 <s:if test="trade.id > 0 && trade.activityPercent == 0">
 <div class="alert">
@@ -109,6 +95,20 @@
 		<s:checkbox name="conTypes" fieldValue="Supplier" value="%{contractor.materialSupplier}" cssClass="product"/> I understand that this will list my account as a material supplier.
 	</s:elseif>
 </div>
+</s:if>
+
+<s:if test="affectedTrades.size > 0">
+	<div class="alert">
+		<s:text name="ContractorTrades.affectedTrades">
+			<s:param>
+				<ul>
+				<s:iterator value="affectedTrades" var="trade">
+					<li><a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" class="trade"><s:property value="#trade.trade.name"/></a></li>
+				</s:iterator>
+				</ul>
+			</s:param>
+		</s:text>
+	</div>
 </s:if>
 
 <div>
