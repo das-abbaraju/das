@@ -13,7 +13,7 @@ public class TradeAlternateDAO extends PicsDAO {
 	}
 
 	public List<TradeAlternate> findByTrade(int tradeID) {
-		Query query = em.createQuery("SELECT p FROM Trade p WHERE p.trade.id =  ?");
+		Query query = em.createQuery("SELECT p FROM TradeAlternate p WHERE p.trade.id =  ?");
 		query.setParameter(1, tradeID);
 		return query.getResultList();
 	}

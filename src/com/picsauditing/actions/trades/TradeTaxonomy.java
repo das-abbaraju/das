@@ -215,7 +215,15 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 			tradeDAO.updateContractorTrades(trade.getId(), parent.getId());
 
-			tradeAlternateDAO.updateAlternates(trade.getId(), parent.getId());
+			List<TradeAlternate> alternates = tradeAlternateDAO.findByTrade(trade.getId());
+			for (TradeAlternate ta : alternates) {
+				if (hasAlternate(ta, parent))
+					trade.getAlternates().remove(ta);
+				else
+					ta.setTrade(parent);
+			}
+
+			tradeDAO.refresh(parent);
 			tradeDAO.refresh(trade);
 			tradeDAO.remove(trade);
 		} else if (trade.getContractorCount() == 0 && trade.getChildren().size() == 0) {
@@ -298,6 +306,15 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 	public void setTradeLogoName(String tradeLogoName) {
 		this.tradeLogoName = tradeLogoName;
+	}
+	
+	public boolean hasAlternate(TradeAlternate tradeAlternate, Trade parent) {
+		boolean result = false;
+		for (TradeAlternate ta : parent.getAlternates()) {
+			if (ta.getName().equals(tradeAlternate.getName()))
+				result = true;
+		}
+		return result;
 	}
 
 }
