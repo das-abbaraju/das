@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -56,8 +58,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	private BrainTreeService paymentService = new BrainTreeService();
 
-	public InvoiceDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao,
-			InvoiceFeeDAO invoiceFeeDAO, PaymentDAO paymentDAO) {
+	public InvoiceDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao, InvoiceFeeDAO invoiceFeeDAO,
+			PaymentDAO paymentDAO) {
 		this.invoiceDAO = invoiceDAO;
 		this.appPropDao = appPropDao;
 		this.paymentDAO = paymentDAO;
@@ -111,17 +113,24 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				invoice.setQbSync(true);
 			}
 			if (button.startsWith("Change to")) {
-//				for (InvoiceItem item : invoice.getItems()) {
-//					if (item.getInvoiceFee().equals(contractor.getMembershipLevel())) {
-//						item.setInvoiceFee(contractor.getNewMembershipLevel());
-//						item.setAmount(contractor.getNewMembershipLevel().getAmount());
-//						item.setAuditColumns(permissions);
-//					}
-//				}
-//
-//				contractor.setMembershipLevel(contractor.getNewMembershipLevel());
-//				addNote("Changed invoice " + invoice.getId() + " to " + contractor.getNewMembershipLevel().getFee(),getUser());
-//				message = "Changed Membership Level";
+				List<String> changedItems = new ArrayList<String>();
+
+				for (InvoiceItem item : invoice.getItems()) {
+					for (FeeClass feeClass : contractor.getFees().keySet()) {
+						if (item.getInvoiceFee().equals(contractor.getFees().get(feeClass).getCurrentLevel())
+								&& contractor.getFees().get(feeClass).isHasChanged()) {
+							item.setInvoiceFee(contractor.getFees().get(feeClass).getNewLevel());
+							item.setAmount(contractor.getFees().get(feeClass).getNewLevel().getAmount());
+							item.setAuditColumns(permissions);
+
+							changedItems.add(contractor.getFees().get(feeClass).getNewLevel().getFee());
+						}
+					}
+				}
+
+				contractor.syncBalance();
+				addNote("Changed invoice " + invoice.getId() + " to " + Strings.implode(changedItems), getUser());
+				message = "Changed Membership Level";
 			}
 
 			if (button.startsWith("Email")) {
@@ -137,7 +146,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					note += " emailed to " + email.getToAddresses();
 					if (!Strings.isEmpty(email.getCcAddresses()))
 						note += " and cc'd " + email.getCcAddresses();
-					addNote(note,getUser());
+					addNote(note, getUser());
 					message = "Sent Email";
 
 				} catch (Exception e) {
@@ -154,12 +163,13 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				invoice.setAuditColumns(permissions);
 				invoice.setQbSync(true);
 				invoice.setNotes("Cancelled Invoice");
-				
-				// Automatically deactivating account based on expired membership
+
+				// Automatically deactivating account based on expired
+				// membership
 				String status = contractor.getBillingStatus();
 				if ("Renewal Overdue".equals(status) || "Reactivation".equals(status)) {
 					contractor.setStatus(AccountStatus.Deactivated);
-					if("Renewal Overdue".equals(status))
+					if ("Renewal Overdue".equals(status))
 						contractor.setRenew(false);
 					if (contractor.isAcceptsBids())
 						contractor.setReason("List Only Account");
@@ -170,16 +180,16 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					note.setViewableById(Account.PicsID);
 					getNoteDao().save(note);
 				}
-				
+
 				contractor.syncBalance();
 				contractor.incrementRecalculation(10);
 				accountDao.save(contractor);
-				
+
 				message = "Cancelled Invoice";
 
 				String noteText = "Cancelled Invoice " + invoice.getId() + " for $"
 						+ invoice.getTotalAmount().toString();
-				addNote(noteText,getUser());
+				addNote(noteText, getUser());
 			}
 			if (button.equals("pay")) {
 				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
@@ -196,7 +206,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							if (Strings.isEmpty(canadaProcessorID) && payment.getCurrency().isCanada())
 								throw new RuntimeException("Canadian ProcessorID Mismatch");
 							paymentService.setCanadaProcessorID(canadaProcessorID);
-							
+
 							paymentService.processPayment(payment, invoice);
 
 							CreditCard creditCard = paymentService.getCreditCard(id);
@@ -216,9 +226,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							accountDao.save(contractor);
 
 							addNote("Credit Card transaction completed and emailed the receipt for $"
-									+ invoice.getTotalAmount(),getUser());
+									+ invoice.getTotalAmount(), getUser());
 						} catch (NoBrainTreeServiceResponseException re) {
-							addNote("Credit Card service connection error: " + re.getMessage(),getUser());
+							addNote("Credit Card service connection error: " + re.getMessage(), getUser());
 
 							EmailBuilder emailBuilder = new EmailBuilder();
 							emailBuilder.setTemplate(106);
@@ -255,7 +265,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 							return SUCCESS;
 						} catch (Exception e) {
-							addNote("Credit Card transaction failed: " + e.getMessage(),getUser());
+							addNote("Credit Card transaction failed: " + e.getMessage(), getUser());
 							this.addActionError("Failed to charge credit card. " + e.getMessage());
 							return SUCCESS;
 						}
@@ -373,5 +383,19 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	public User getBillingUser() {
 		return contractor.getUsersByRole(OpPerms.ContractorBilling).get(0);
+	}
+
+	public boolean isHasInvoiceMembershipChanged() {
+		for (InvoiceItem item : this.getInvoice().getItems()) {
+			for (FeeClass feeClass : contractor.getFees().keySet()) {
+				if (item.getInvoiceFee().isMembership()
+						&& item.getInvoiceFee().getFeeClass().equals(
+								contractor.getFees().get(feeClass).getNewLevel().getFeeClass())
+						&& !item.getInvoiceFee().equals(contractor.getFees().get(feeClass).getNewLevel()))
+					return true;
+			}
+		}
+
+		return false;
 	}
 }

@@ -37,7 +37,7 @@ public class ReportBilling extends ReportAccount {
 
 		String where = "";
 		// Show activations and reactivations
-		if (billingState.equals("Activations")) {
+		if (billingState.equals("All") || billingState.equals("Activations")) {
 			where += "(a.status IN ('Pending','Deactivated')) AND c.membershipDate IS NULL AND NOT (f2.feeClass = 'ListOnly' AND f2.defaultAmount > 0)";
 		}
 		// Show renewals (only on non-list only accounts)

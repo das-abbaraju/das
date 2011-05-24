@@ -324,6 +324,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 		newInvoiceItem.setInvoice(invoice);
 		invoice.getItems().add(newInvoiceItem);
+		
+		contractor.syncBalance();
 	}
 
 	private void updateTotals() {

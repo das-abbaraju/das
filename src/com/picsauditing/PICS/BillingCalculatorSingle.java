@@ -72,6 +72,8 @@ public class BillingCalculatorSingle {
 
 		Map<AuditType, AuditTypeDetail> map = AuditBuilder.calculateRequiredAuditTypes(contractor);
 		for (AuditType auditType : map.keySet()) {
+			if (auditType == null)
+				continue;
 			if (auditType.isDesktop() || auditType.getId() == AuditType.OFFICE)
 				auditGUARD = true;
 			if (auditType.getClassType().equals(AuditTypeClass.Policy))
