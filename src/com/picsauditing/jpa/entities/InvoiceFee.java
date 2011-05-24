@@ -145,4 +145,9 @@ public class InvoiceFee extends BaseTable {
 	public BigDecimal getGSTSurchage(BigDecimal total) {
 		return total.multiply(BigDecimal.valueOf(0.05)).setScale(2, BigDecimal.ROUND_UP);
 	}
+	
+	@Transient
+	public boolean isLegacyMembership() {
+		return this.getId() >= 4 && this.getId() <= 11;
+	}
 }

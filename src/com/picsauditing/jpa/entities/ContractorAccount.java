@@ -25,7 +25,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -43,6 +42,7 @@ import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
@@ -735,7 +735,11 @@ public class ContractorAccount extends Account implements JSONable {
 	 */
 	@Transient
 	public void syncBalance() {
-		boolean foundCurrentMembership = false;
+		boolean foundListOnlyMembership = false;
+		boolean foundDocuGUARDMembership = false;
+		boolean foundAuditGUARDMembership = false;
+		boolean foundInsureGUARDMembership = false;
+		boolean foundEmployeeGUARDMembership = false;
 		boolean foundMembershipDate = false;
 		boolean foundPaymentExpires = false;
 
@@ -757,17 +761,53 @@ public class ContractorAccount extends Account implements JSONable {
 
 		balance = balance.setScale(2);
 
+		InvoiceFeeDAO invoiceFeeDAO = (InvoiceFeeDAO) SpringUtils.getBean("InvoiceFeeDAO");
+
 		for (Invoice invoice : getSortedInvoices()) {
 			if (!invoice.getStatus().isVoid()) {
 				for (InvoiceItem invoiceItem : invoice.getItems()) {
 					if (invoiceItem.getInvoiceFee().isMembership()) {
-						foundCurrentMembership = true;
-						for (FeeClass feeClass : this.getFees().keySet()) {
-							// if the current invoice item is for the new fee
-							// level then move us into the next level
-							if (invoiceItem.getInvoiceFee().equals(this.getFees().get(feeClass).getNewLevel())) {
-								InvoiceFee newFee = this.getFees().get(feeClass).getNewLevel();
-								this.getFees().get(feeClass).setCurrentLevel(newFee);
+						if (!foundListOnlyMembership) {
+							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.ListOnly)) {
+								foundListOnlyMembership = true;
+								this.getFees().get(FeeClass.ListOnly).setCurrentLevel(invoiceItem.getInvoiceFee());
+							}
+						}
+
+						if (!foundDocuGUARDMembership) {
+							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.DocuGUARD)) {
+								foundDocuGUARDMembership = true;
+								this.getFees().get(FeeClass.DocuGUARD).setCurrentLevel(invoiceItem.getInvoiceFee());
+							}
+						}
+
+						if (!foundAuditGUARDMembership) {
+							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.AuditGUARD)) {
+								foundAuditGUARDMembership = true;
+								this.getFees().get(FeeClass.AuditGUARD).setCurrentLevel(invoiceItem.getInvoiceFee());
+
+								// Old AuditGUARD included DocuGUARD fee
+								// For legacy compliance
+								if (invoiceItem.getInvoiceFee().isLegacyMembership()) {
+									foundDocuGUARDMembership = true;
+									this.getFees().get(FeeClass.DocuGUARD).setCurrentLevel(
+											invoiceFeeDAO.findDocuguardMembershipByLegacyAuditGUARDID(invoiceItem
+													.getInvoiceFee()));
+								}
+							}
+						}
+
+						if (!foundInsureGUARDMembership) {
+							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.InsureGUARD)) {
+								foundInsureGUARDMembership = true;
+								this.getFees().get(FeeClass.InsureGUARD).setCurrentLevel(invoiceItem.getInvoiceFee());
+							}
+						}
+
+						if (!foundEmployeeGUARDMembership) {
+							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.EmployeeGUARD)) {
+								foundEmployeeGUARDMembership = true;
+								this.getFees().get(FeeClass.EmployeeGUARD).setCurrentLevel(invoiceItem.getInvoiceFee());
 							}
 						}
 
@@ -776,7 +816,9 @@ public class ContractorAccount extends Account implements JSONable {
 							foundPaymentExpires = true;
 						}
 					}
-					if (!foundMembershipDate && invoiceItem.getInvoiceFee().isActivation()) {
+					if (!foundMembershipDate
+							&& (invoiceItem.getInvoiceFee().isActivation() || invoiceItem.getInvoiceFee()
+									.isReactivation())) {
 						if (invoiceItem.getPaymentExpires() != null)
 							membershipDate = invoiceItem.getPaymentExpires();
 						else
@@ -785,10 +827,29 @@ public class ContractorAccount extends Account implements JSONable {
 					}
 				}
 			}
-			if (foundCurrentMembership && foundMembershipDate && foundPaymentExpires)
+
+			// If all memberships have been found, exit
+			if (foundListOnlyMembership && foundDocuGUARDMembership && foundAuditGUARDMembership
+					&& foundInsureGUARDMembership && foundEmployeeGUARDMembership && foundMembershipDate
+					&& foundPaymentExpires)
 				return;
 		}
 
+		if (!foundListOnlyMembership)
+			this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
+					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 0));
+		if (!foundDocuGUARDMembership)
+			this.getFees().get(FeeClass.DocuGUARD).setCurrentLevel(
+					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 0));
+		if (!foundAuditGUARDMembership)
+			this.getFees().get(FeeClass.AuditGUARD).setCurrentLevel(
+					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD, 0));
+		if (!foundInsureGUARDMembership)
+			this.getFees().get(FeeClass.InsureGUARD).setCurrentLevel(
+					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, 0));
+		if (!foundEmployeeGUARDMembership)
+			this.getFees().get(FeeClass.EmployeeGUARD).setCurrentLevel(
+					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, 0));
 		if (!foundPaymentExpires && !this.isAcceptsBids())
 			paymentExpires = creationDate;
 		if (!foundMembershipDate)

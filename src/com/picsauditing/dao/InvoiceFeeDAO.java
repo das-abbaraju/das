@@ -48,6 +48,22 @@ public class InvoiceFeeDAO extends PicsDAO {
 			return null;
 		}
 	}
+	
+	public InvoiceFee findDocuguardMembershipByLegacyAuditGUARDID(InvoiceFee legacyAuditGUARDfee) {
+		int numPayingFacilities = 0;
+		// assigning numFacilities based on legacy id
+		switch(legacyAuditGUARDfee.getId()) {
+			case 5: numPayingFacilities = 1; break;
+			case 6: numPayingFacilities = 2; break;
+			case 7: numPayingFacilities = 5; break;
+			case 8: numPayingFacilities = 9; break;
+			case 9: numPayingFacilities = 13; break;
+			case 10: numPayingFacilities = 20; break;
+			case 11: numPayingFacilities = 50; break;
+		}
+		
+		return this.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, numPayingFacilities);
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<InvoiceFee> findAll() {
