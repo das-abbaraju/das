@@ -97,7 +97,7 @@
 			<s:if test="contractor.newMembershipAmount != contractor.currentMembershipAmount">
 				<li><label>New Level:</label>
 					<s:if test="contractor.newMembership.size > 0">
-						<s:iterator value="contractor.newMembership" id="key">
+						<s:iterator value="contractor.newMembership">
 							<s:property value="fee" />: $<s:property value="amount" /> <s:property value="contractor.currencyCode" /><br />
 						</s:iterator>
 					</s:if>

@@ -68,6 +68,6 @@ public class ContractorFee extends BaseTable {
 	
 	@Transient
 	public boolean isHasChanged() {
-		return this.getNewLevel().getAmount().compareTo(this.getCurrentLevel().getAmount()) != 0;
+		return !this.getNewLevel().equals(this.getCurrentLevel());
 	}
 }

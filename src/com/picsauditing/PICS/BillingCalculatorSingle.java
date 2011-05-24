@@ -227,7 +227,7 @@ public class BillingCalculatorSingle {
 			List<ContractorFee> upgrades = new ArrayList<ContractorFee>();
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
 				ContractorFee fee = contractor.getFees().get(feeClass);
-				if (fee.isUpgrade())
+				if (fee.isHasChanged())
 					upgrades.add(fee);
 			}
 
@@ -255,8 +255,11 @@ public class BillingCalculatorSingle {
 
 					upgradeTotal = upgradeTotal.add(upgradeAmount);
 
-					description = "Upgrading from $" + upgrade.getCurrentLevel().getAmount() + ". Prorated $"
-							+ upgradeAmount;
+					if (upgradeAmount.floatValue() > 0)
+						description = "Upgrading from $" + upgrade.getCurrentLevel().getAmount() + ". Prorated $"
+								+ upgradeAmount;
+					else
+						description = "";
 
 					InvoiceItem invoiceItem = new InvoiceItem();
 					invoiceItem.setInvoiceFee(upgrade.getNewLevel());
