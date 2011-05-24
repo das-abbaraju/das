@@ -36,19 +36,16 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		$.ajaxSettings.traditional = true;
-
-	    if($.browser.mozilla) 
-	         $("form").attr("autocomplete", "off");
-
-        if($.browser.msie && $.browser.version == '6.0'){
-            try {
-	        	var xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-            } catch(e) {
+		if ($.browser.mozilla) 
+			$("form").attr("autocomplete", "off");
+		if ($.browser.msie && $.browser.version == '6.0'){
+			try {
+				var xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			} catch(e) {
 				$('#content').prepend($('<div/>').addClass('error').text('ActiveX is required for PICS to function properly in your browser. Please Contact your IT Department.'));
-            }
-        }
-
-        if ($.browser.msie && $.browser.version == '6.0') {
+			}
+		}
+		if ($.browser.msie && $.browser.version == '6.0') {
 			$('table.report tr').live('mouseenter', function(event) {
 				$(this).addClass('tr-hover');
 			}).live('mouseleave', function(event) {
@@ -60,13 +57,11 @@
 				$(this).removeClass('tr-hover-clickable');
 			});
 			$('fieldset.form ol :input:not(:checkbox):not(:button):not([type=hidden]):not(:radio):not(:submit)').addClass('input-edit-field');
-        }
-        
-        $('.hoverable').live('mouseenter', function(){
+		}
+		$('.hoverable').live('mouseenter', function(){
    			$(this).addClass('hover');
    		}).live('mouseleave', function(){
    			$(this).removeClass('hover');
  		});
-        
 	});
 </script>
