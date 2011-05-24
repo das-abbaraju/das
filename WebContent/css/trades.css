@@ -135,6 +135,7 @@ a.trade,a.trade:hover,a.trade:active {
 #trade_children {
 	border: 1px solid;
 	height: 56px;
+	overflow-x: hidden;
 	overflow-y: auto;
 }
 
