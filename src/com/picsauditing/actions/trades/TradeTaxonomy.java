@@ -13,11 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Result;
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.TradeAlternateDAO;
 import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.jpa.entities.TradeAlternate;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Tree;
 
@@ -85,37 +89,12 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 	@Anonymous
 	public String index() throws Exception {
-		indexNode(null, 1);
+		Database db = new Database();
+		db.execute("CALL reindexTrades(" + Trade.TOP + ",1,0,@counter)");
 		return SUCCESS;
 	}
 
-	private int indexNode(Trade parent, int counter) {
-		List<Trade> childNodes;
-		int level = 1;
-		if (parent == null) {
-			childNodes = tradeDAO.findWhere("p.parent IS NULL");
-		} else {
-			level = parent.getIndexLevel() + 1;
-			counter = parent.getIndexStart();
-			childNodes = tradeDAO.findByParent(parent.getId());
-		}
-
-		int size = childNodes.size();
-		if (size == 0)
-			return counter;
-
-		for (Trade node : childNodes) {
-			counter++;
-			node.setIndexLevel(level);
-			node.setIndexStart(counter);
-			counter = indexNode(node, counter);
-			counter++;
-			node.setIndexEnd(counter);
-		}
-
-		return counter;
-	}
-
+	@RequiredPermission(value = OpPerms.ManageTrades, type = OpType.Edit)
 	public String saveTradeAjax() throws Exception {
 		if (trade != null) {
 			trade.setAuditColumns(permissions);
@@ -132,6 +111,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return "trade";
 	}
 
+	@RequiredPermission(value = OpPerms.ManageTrades, type = OpType.Delete)
 	public String deleteTradeAjax() throws Exception {
 		if (trade != null) {
 			if (deleteTrade(trade))
@@ -142,6 +122,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 	}
 
 	@SuppressWarnings("unchecked")
+	@RequiredPermission(value = OpPerms.ManageTrades, type = OpType.Delete)
 	public String deleteMultipleJson() {
 		boolean success = true;
 		for (Trade t : trades) {
@@ -153,6 +134,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return JSON;
 	}
 
+	@RequiredPermission(value = OpPerms.ManageTrades, type = OpType.Edit)
 	public String tradeAjax() {
 		if (trade == null)
 			trade = new Trade();
@@ -160,6 +142,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 	}
 
 	@SuppressWarnings("unchecked")
+	@RequiredPermission(value = OpPerms.ManageTrades, type = OpType.Edit)
 	public String moveTradeJson() {
 		json = new JSONObject();
 		try {
@@ -174,6 +157,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return JSON;
 	}
 
+	@RequiredPermission(value = OpPerms.ManageTrades, type = OpType.Edit)
 	public String addAlternateAjax() {
 		if (alternateName == null || alternateName.equals("")) {
 			addActionError("Alternate Name cannot be blank.");
@@ -191,11 +175,13 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return "alternate";
 	}
 
+	@RequiredPermission(value = OpPerms.ManageTrades, type = OpType.Edit)
 	public String removeAlternateAjax() {
 		tradeAlternateDAO.remove(alternate);
 		return "alternate";
 	}
 
+	@RequiredPermission(value = OpPerms.ManageTrades, type = OpType.Edit)
 	public String removeFileAjax() {
 		if (trade != null && trade.getId() > 0) {
 			FileUtils.deleteFile(getFtpDir() + trade.getImageLocation());

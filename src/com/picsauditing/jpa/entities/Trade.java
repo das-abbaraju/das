@@ -33,6 +33,8 @@ import com.picsauditing.util.Tree;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 @SqlResultSetMapping(name = "matchingTradeResults", entities = @EntityResult(entityClass = Trade.class), columns = @ColumnResult(name = "matching"))
 public class Trade extends AbstractIndexableTable implements Hierarchical<Trade> {
+	
+	static public int TOP = 5;
 
 	private Trade parent;
 	private Boolean product;

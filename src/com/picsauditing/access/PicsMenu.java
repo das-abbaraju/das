@@ -288,8 +288,8 @@ public class PicsMenu {
 			subMenu.addChild("Manage Translations", "ManageTranslations.action");
 			subMenu.addChild("Import/Export Translations", "TranslationETL.action");
 		}
-		if (permissions.isAdmin()) {
-			subMenu.addChild("Trade Taxonomy", "TradeTaxonomy.action");
+		if (permissions.hasPermission(OpPerms.ManageTrades)) {
+			subMenu.addChild("Manage Trades", "TradeTaxonomy.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
 			subMenu.addChild("Audit Definitions", "ManageAuditType.action");

@@ -67,6 +67,17 @@ public class Database {
 		}
 	}
 
+	public boolean execute(String sql) throws SQLException {
+		Connection Conn = DBBean.getDBConnection();
+		Statement stmt = Conn.createStatement();
+		try {
+			return stmt.execute(sql);
+		} finally {
+			stmt.close();
+			Conn.close();
+		}
+	}
+
 	public int getAllRows() {
 		return allRows;
 	}

@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import javax.persistence.Query;
 
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Trade;
+import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Tree;

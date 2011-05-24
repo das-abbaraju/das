@@ -24,7 +24,7 @@ img.trade {
 </style>
 </head>
 <body>
-<h1>Trade Taxonomy</h1>
+<h1>Manage Trades</h1>
 
 <s:include value="../actionMessages.jsp"></s:include>
 
@@ -35,13 +35,7 @@ img.trade {
 <s:include value="trade_search.jsp"/>
 
 <div id="trade-view">
-	<div class="info">Click a trade on the left</div>
-</div>
-
-<div class="clear">
-<s:form>
-	<s:submit action="TradeTaxonomy!index" value="Index Trade Taxonomy" cssClass="picsbutton" />
-</s:form>
+	<div class="info">Search or Browse for a trade on the left</div>
 </div>
 
 </body>
