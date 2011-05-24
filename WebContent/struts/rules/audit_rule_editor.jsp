@@ -261,12 +261,16 @@ $(function() {
 						</pics:fieldhelp>
 					</li>
 				</s:if>
-				<li><label>Bid Only</label>
-					<div class="nobr"><s:radio theme="pics" name="ruleAcceptsBids" list="#{'':'Any',false:'Full Account',true:'Bid Only'}" value="rule.acceptsBids"/></div>
-					<pics:fieldhelp title="Bid Only">
+				<li><label>List Only</label>
+					<div class="nobr"><s:radio theme="pics" name="ruleAcceptsBids" list="#{'':'Any',false:'Full Account',true:'List Only'}" value="rule.acceptsBids"/></div>
+					<pics:fieldhelp title="List Only">
 					<p>Full Account (default) - Regular paying contractor account.</p>
-					<p>Bid Only - A trial contractor account that is used for bidding.</p>
+					<p>List Only - A trial contractor account that is used for bidding.</p>
 					</pics:fieldhelp>
+				</li>
+				<li>
+					<label>Sole Proprietor</label>
+					<div class="nobr"><s:radio theme="pics" name="rule.soleProprietor" list="#{'':'Any',false:'Full Account',true:'Sole Proprietor'}" /></div>
 				</li>
 				<li><label>Account Type</label>
 					<s:radio theme="pics" name="rule.contractorType" list="#{'':'Any','Onsite':'Onsite Services','Offsite':'Offsite Services','Supplier':'Material Supplier'}" />
@@ -278,10 +282,6 @@ $(function() {
 				<li>
 					<label>Product Risk</label>
 					<div class="nobr"><s:radio theme="pics" name="rule.productRisk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/></div>
-				</li>
-				<li>
-					<label>Sole Proprietor</label>
-					<div class="nobr"><s:checkbox name="rule.soleProprietor" /></div>
 				</li>
 				<li <s:if test="operatorRequired">class="required"</s:if>>
 					<label>Operator</label>
