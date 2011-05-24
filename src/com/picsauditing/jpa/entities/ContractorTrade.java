@@ -11,9 +11,9 @@ import javax.persistence.Table;
 public class ContractorTrade extends BaseTable {
 	private ContractorAccount contractor;
 	private Trade trade;
-	private boolean selfPerformed;
-	private boolean manufacture;
-	private int activityPercent;
+	private boolean selfPerformed = true;
+	private boolean manufacture = true;
+	private int activityPercent = 5;
 
 	@OneToOne
 	@JoinColumn(name = "conID")
