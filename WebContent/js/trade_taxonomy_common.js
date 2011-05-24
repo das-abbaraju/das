@@ -18,7 +18,7 @@ $(function() {
 
 	$.extend(true, $.jstree.defaults, {
 		"themes": {
-			theme: "classic"	
+			theme: "classic"
 		},
 		"types": {
 			"types": {
