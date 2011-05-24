@@ -9,7 +9,7 @@ function placeholder() {
 
 $(function() {
 	var oldform = $('#trade-view').html();
-	
+
 	if (typeof(setupTree) == 'function') {
 		setupTree();
 	}
@@ -74,11 +74,11 @@ $(function() {
 						return result;
 					}
 				}
-			},
+			}
 	});
 
 	browse_tree = $('#browse-tree').jstree();
-	
+
 	if ($.browser.msie) {
 		placeholder();
 
