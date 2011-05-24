@@ -95,6 +95,8 @@ public enum OpPerms {
 	ManageWebcam("Webcam Management", "Can view and edit PICS' inventory of web cameras", true, true, true, false, false),
 	WebcamNotification("Webcam Notifications", "Notifies users of actions needed regarding webcams", false, false, true, false, false),
 	AuditorPayments("Safety Professional Payments", "Create and manage independent contractor payments for audits.", true, true, true, false, false),
+	
+	ManageTrades("Manage Trades", "Allow PICS employees view and edit the Trade taxonomy", true, true, true, false, false),
 
 	// Manage User Account Roles
 	UserRolePicsOperator("User Roles PICS Operator", "Allow PICS users to assign the users to a Role.", true, true, true, false, false),
