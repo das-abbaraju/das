@@ -10,7 +10,7 @@
 		<form id="suggest">
 			<input type="search" class="searchText" name="q" placeholder="Search..."/>
 			<input type="submit" class="searchButton" title="Submit Search" value="Search" />
-			<ul class="filter">
+			<ul class="filter" style="display: none">
 				<li><a href="#">Most Used Products</a></li>
 				<li><a href="#">Show All</a></li>
 			</ul>
@@ -20,5 +20,10 @@
 	</div>
 	<div id="browse-tab">
 		<div id="browse-tree"></div>
+		<pics:permission perm="ManageTrades" type="Edit">
+			<s:form>
+				<s:submit action="TradeTaxonomy!index" value="Reindex Trade Nested Set" title="Click this button after rearranging the trades." />
+			</s:form>
+		</pics:permission>
 	</div>
 </div>
