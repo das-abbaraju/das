@@ -33,6 +33,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
@@ -279,8 +280,10 @@ public class ContractorRegistration extends ContractorActionSupport {
 				note.setViewableById(Account.EVERYONE);
 				noteDAO.save(note);
 			}
-
-			redirect("ContractorTrades.action?id=" + contractor.getId());
+			
+			// Redirect to Step 2, usually Trades
+			ContractorRegistrationStep next = ContractorRegistrationStep.getStep(contractor);
+			redirect(next.getUrl(contractor.getId()));
 			
 			return BLANK;
 		}
