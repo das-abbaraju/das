@@ -12,7 +12,7 @@ a.trade,a.trade:hover,a.trade:active {
 	position: relative;
 }
 
-#trade-cloud h4 {
+#trade-view h4 {
 	position: absolute;
 	top: -30px;
 	left: 0;
@@ -136,7 +136,8 @@ a.trade,a.trade:hover,a.trade:active {
 
 #trade-view {
 	float: right;
-	width: 45%
+	width: 45%;
+	position: relative;
 }
 
 #trade-view ul,#trade-view ol {

@@ -2,8 +2,8 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
+<h4>Selected trades</h4>
 <div id="trade-cloud">
-	<h4>Selected trades</h4>
 	<s:if test="contractor.trades.size() > 0">
 		<s:iterator value="contractor.trades" var="trade">
 			<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>" 

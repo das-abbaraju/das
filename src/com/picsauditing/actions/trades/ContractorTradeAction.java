@@ -38,6 +38,13 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	public ContractorTradeAction() {
 		this.subHeading = getText("ContractorTrades.title");
 	}
+	
+	// TODO Check the security here
+	public String execute() throws Exception {
+		super.execute();
+		sortTrades();
+		return SUCCESS;
+	}
 
 	public String tradeAjax() {
 		if (trade.getId() == 0 && trade.getTrade() != null) {
