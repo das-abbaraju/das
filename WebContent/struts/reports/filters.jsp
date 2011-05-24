@@ -38,7 +38,7 @@ $(function(){
 		});
 
 	    that.closest('.q_box').append($('<select>').attr({
-	        'class': 'hidden tokenSelectHidden',
+	        'class': 'hidden tokenSelect',
 	        'name': name,
 	        'multiple': 'multiple'
 	    }));
@@ -61,6 +61,7 @@ $(function(){
 	$('a.clearLink').click(function(e) {
 		e.preventDefault();
 		var ele = $(this).closest('span.clearLink');
+		var tokenInput = ele.find('ul.token-input-list');
 		ele.find(':input:not(:hidden)').each(function() {
 			switch(this.type) {
 				case 'select-multiple':
@@ -70,6 +71,10 @@ $(function(){
 					break;
 			}
 		});
+		if(tokenInput.length){
+			tokenInput.find('li.token-input-token').remove();
+			ele.find('select.tokenSelect option').remove();
+		}
 		$(this).closest('.filterOption').find('a.filterBox').click();
 	});	
 
