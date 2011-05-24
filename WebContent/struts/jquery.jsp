@@ -20,18 +20,11 @@
 <link rel="stylesheet" type="text/css" href="js/jquery/facebox/facebox.css" media="screen" />
 <script type="text/javascript" src="js/jquery/facebox/facebox.js"></script>
 
-<script type="text/javascript" src="js/jquery/jcrop/js/jquery.Jcrop.min.js"></script>
-<link rel="stylesheet" type="text/css" href="js/jquery/jcrop/css/jquery.Jcrop.css" media="screen" />
-
 <script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.min.js"></script>
 <link type="text/css" rel="stylesheet" href="js/jquery/cluetip/jquery.cluetip.css" media="screen">
 
 <script type="text/javascript" src="js/jquery/scrollTo/jquery.scrollTo-min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
-
-<script type="text/javascript" src="js/jquery/tokeninput/jquery.tokeninput.js"></script>
-<link rel="stylesheet" type="text/css" href="js/jquery/tokeninput/styles/token-input.css" />
-
 
 <script type="text/javascript">
 	$(document).ready(function() {

@@ -4,29 +4,47 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../actionMessages.jsp" />
 
+<script type="text/javascript" src="js/jquery/tokeninput/jquery.tokeninput.js"></script>
+<link rel="stylesheet" type="text/css" href="js/jquery/tokeninput/styles/token-input.css" />
+
 <script type="text/javascript">
 $(function(){
 	var token_tradePre = [];
 
-	$('.tokenAuto').each(function() {
-		var name = $(this).attr('rel'); 
-		var r_ids = $(this).val();
+	$('input.tokenAuto').each(function() {
+		var that = $(this);
+		var field_type = that.attr('rel');
+	    var name = that.attr('name');
+	    var opt = $('<option>').attr('selected', 'selected');
+	    var r_ids = that.val().split(',').map(Number);
+	    that.removeAttr('name');
+	    that.removeAttr('value');
 		
-		$.getJSON(name+'Autocomplete!tokenJson.action', {ids: r_ids}, function(json) {
+		$.getJSON(field_type+'Autocomplete!tokenJson.action', {itemKeys: r_ids}, function(json) {
 			var results;
 			if(json.result) {
 				results = json.result;
 			}
-			$('.tokenAuto').tokenInput(name+'Autocomplete!tokenJson.action', {
+			that.tokenInput(field_type+'Autocomplete!tokenJson.action?limit=10', {
 				jsonContainer: 'result',
-				prePopulate: results
-			});
+				prePopulate: results,
+		        onAdd: function(item) {
+					that.closest('.q_box').find('select[name="' + name + '"]').append(opt.clone().attr('value', item.id));
+	        	},
+		       	onDelete: function(item) {
+	        		that.closest('.q_box').find('select[name="' + name + '"]').find('option[value="'+item.id+'"]').remove();
+		        }
+	    	});
 		});
 
-
+	    that.closest('.q_box').append($('<select>').attr({
+	        'class': 'hidden tokenSelectHidden',
+	        'name': name,
+	        'multiple': 'multiple'
+	    }));
 	});
 
-	$('.filterBox').click(function(e) {
+	$('a.filterBox').click(function(e) {
 		e.preventDefault(); 
 		var box = $(this).closest('.filterOption').find('.q_box');
 		var query = $(this).closest('.filterOption').find('.q_status');
@@ -55,7 +73,7 @@ $(function(){
 		$(this).closest('.filterOption').find('a.filterBox').click();
 	});	
 
-	$('.filterOption').delegate('.select', 'updateQuery', function() {
+	$('div.filterOption').delegate('.select', 'updateQuery', function() {
 		var status_text = '';
 		$(this).find('select option:selected').each(function() {
 			if(status_text!='')
@@ -118,6 +136,10 @@ $(function(){
 
 .open {
 	display: inline-block;
+}
+
+select.hidden {
+	display: none;
 }
 
 </style>
@@ -199,7 +221,7 @@ $(function(){
 	</s:if>
 
 	<s:if test="filter.showWorksIn">
-		<div class="filterOption">\
+		<div class="filterOption">
 			<a href="#" class="filterBox">Works In State/Province</a> = 
 			<span class="q_status">ALL</span><br />
 			<span class="clearLink q_box select"> 
