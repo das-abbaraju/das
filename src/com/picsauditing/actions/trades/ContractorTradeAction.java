@@ -154,6 +154,14 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		return sb.toString();
 	}
 
+	
+	public List<Trade> getTradeClassification() {
+		List<Trade> list = tradeDAO.findListByTrade(trade.getTrade().getId(), 0);
+		
+		list.remove(list.size() - 1); // remove last
+		return list;
+	}
+
 	public ContractorTrade getTrade() {
 		return trade;
 	}

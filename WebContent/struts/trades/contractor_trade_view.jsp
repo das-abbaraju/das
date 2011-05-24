@@ -14,6 +14,17 @@
 <s:if test="!isStringEmpty(trade.trade.imageLocationI)">
 	<img src="TradeTaxonomy!tradeLogo.action?trade=<s:property value="trade.trade.id"/>" class="trade"/>
 </s:if>
+
+<s:if test="trade.trade.parent != null">
+	<div class="trade-class-path">
+		<s:iterator value="tradeClassification" var="atrade">
+			<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade.trade=<s:property value="#atrade.id"/>" class="trade">
+				<s:property value="#atrade.name"/>
+			</a> >
+		</s:iterator>
+	</div>
+</s:if>
+
 <h3 <s:if test="trade.id == 0">class="new"</s:if>><s:property value="trade.trade.name"/></h3>
 
 <s:hidden name="contractor"/>
@@ -23,7 +34,6 @@
 <div id="trade-section-nav">
 	<ul>
 		<s:if test="!isStringEmpty(trade.trade.help.toString())"><li><a href="#trade_description" class="tradeInfo">Description</a></li></s:if>
-		<s:if test="trade.trade.parent != null"><li><a href="#trade_classification" class="tradeInfo">Classification</a></li></s:if>
 		<s:if test="trade.trade.children.size > 0"><li><a href="#trade_children" class="tradeInfo">Child Trades</a></li></s:if>
 	</ul>
 </div>
