@@ -16,7 +16,7 @@
 </s:if>
 
 <s:if test="trade.trade.parent != null">
-	<div class="trade-class-path">
+	<div class="trade-section">
 		<s:iterator value="tradeClassification" var="atrade">
 			<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade.trade=<s:property value="#atrade.id"/>" class="trade">
 				<s:property value="#atrade.name"/>
@@ -31,36 +31,25 @@
 <s:hidden name="trade"/>
 <s:hidden name="trade.trade"/>
 
-<div id="trade-section-nav">
+<s:if test="!isStringEmpty(trade.trade.help.toString())">
+	<div id="trade_description" class="trade-section">
+		<s:property value="trade.trade.help.toString()" />
+	</div>
+</s:if>
+
+<s:if test="trade.trade.children.size > 0">
+<div id="trade_children" class="trade-section">
 	<ul>
-		<s:if test="!isStringEmpty(trade.trade.help.toString())"><li><a href="#trade_description" class="tradeInfo">Description</a></li></s:if>
-		<s:if test="trade.trade.children.size > 0"><li><a href="#trade_children" class="tradeInfo">Child Trades</a></li></s:if>
+		<s:iterator value="trade.trade.children" var="atrade">
+			<li>
+				<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade.trade=<s:property value="#atrade.id"/>" class="trade">
+					<s:property value="#atrade.name"/>
+				</a>
+			</li>
+		</s:iterator>
 	</ul>
 </div>
-
-<div id="trade_description" class="trade-section">
-	<hr />
-		<s:property value="trade.trade.help.toString()" />
-	<hr />
-</div>
-
-
-<div id="trade_classification" class="trade-section">
-	<hr />
-		<s:property value="classification"/>
-	<hr />
-</div>
-
-<div id="trade_children" class="trade-section">
-	<hr />
-		<ul>
-			<s:iterator value="trade.trade.children" var="atrade">
-				<li><s:property value="#atrade.name"/></li>
-			</s:iterator>
-		</ul>
-	<hr />
-</div>
-
+</s:if>
 
 <s:if test="trade.id > 0 && trade.activityPercent == 0">
 <div class="alert">

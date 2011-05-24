@@ -29,8 +29,6 @@ function loadTradeCallback() {
 	if ($('input.services,input.products').length > 0) {
 		$("#addButton").attr("disabled", "disabled");
 	}
-
-	$('div.trade-section').hide();
 }
 
 function setupTree() {
