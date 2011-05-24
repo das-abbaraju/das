@@ -435,10 +435,10 @@ table.report tr.hurdle td {
 					<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email"><s:property value="contractor.auditor.email"/></a>
 				</p>
 				<s:if test="!contractor.materialSupplierOnly">
-					<p><s:text name="%{scope}.ContractorDashboard.SafetyRisk" />: <strong><s:property value="contractor.safetyRisk"/></strong></p>
+					<p><s:text name="global.SafetyRisk" />: <strong><s:property value="contractor.safetyRisk"/></strong></p>
 				</s:if>
 				<s:if test="">
-					<p><s:text name="%{scope}.ContractorDashboard.ProductRisk" />: <strong><s:property value="contractor.productRisk"/></strong></p>
+					<p><s:text name="global.ProductRisk" />: <strong><s:property value="contractor.productRisk"/></strong></p>
 				</s:if>
 				<s:if test="hasOperatorTags">
 					<s:if test= "contractor.operatorTags.size() > 0 || operatorTags.size() > 0">
