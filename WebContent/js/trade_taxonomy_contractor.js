@@ -29,6 +29,9 @@ function loadTradeCallback() {
 	if ($('input.services,input.products').length > 0) {
 		$("#addButton").attr("disabled", "disabled");
 	}
+	
+
+	$('#trade_children').hide();
 }
 
 function setupTree() {
@@ -40,7 +43,6 @@ function setupTree() {
 $(function() {
 	$('a.tradeInfo').live('click',function(e) {
 		e.preventDefault();
-		$('div.trade-section').hide();
 		$($(this).attr('href')).toggle();
 	});
 	

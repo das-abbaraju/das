@@ -38,6 +38,11 @@
 </s:if>
 
 <s:if test="trade.trade.children.size > 0">
+<div id="trade-section-nav">
+	<ul>
+		<li><a href="#trade_children" class="tradeInfo"><s:property value="trade.trade.children.size"/> Child Trade(s)</a></li>
+	</ul>
+</div>
 <div id="trade_children" class="trade-section">
 	<ul>
 		<s:iterator value="trade.trade.children" var="atrade">
