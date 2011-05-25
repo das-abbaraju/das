@@ -18,14 +18,13 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
+import com.google.common.base.Objects;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Hierarchical;
 import com.picsauditing.util.IndexObject;
-import com.picsauditing.util.Node;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.Tree;
 
 @SuppressWarnings("serial")
 @Entity
@@ -33,10 +32,11 @@ import com.picsauditing.util.Tree;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 @SqlResultSetMapping(name = "matchingTradeResults", entities = @EntityResult(entityClass = Trade.class), columns = @ColumnResult(name = "matching"))
 public class Trade extends AbstractIndexableTable implements Hierarchical<Trade> {
-	
-	static public int TOP = 5;
 
-	private Trade parent;
+	static public final int TOP_ID = 5;
+	static public final Trade TOP = new Trade(TOP_ID);
+
+	private Trade parent = TOP;
 	private Boolean product;
 	private Boolean service;
 	private Boolean psmApplies;
@@ -55,6 +55,13 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 
 	private List<TradeAlternate> alternates = new ArrayList<TradeAlternate>();
 	private List<Trade> children = new ArrayList<Trade>();
+
+	public Trade() {
+	}
+
+	public Trade(int id) {
+		this.id = id;
+	}
 
 	@ManyToOne
 	@JoinColumn(name = "parentID")
@@ -77,16 +84,16 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public Boolean getProductI() {
 		if (product == null) {
-			if (parent != null)
-				return parent.getProductI();
-			else
+			if (Objects.equal(parent, TOP))
 				return false;
+			else
+				return parent.getProductI();
 		}
 		return product;
 	}
 
 	public void setProductI(Boolean product) {
-		if (parent != null && product == parent.getProductI())
+		if (!Objects.equal(parent, TOP) && product == parent.getProductI())
 			this.product = null;
 		else
 			this.product = product;
@@ -103,7 +110,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public boolean getServiceI() {
 		if (service == null) {
-			if (parent == null)
+			if (Objects.equal(parent, TOP))
 				return false;
 			else
 				return parent.getServiceI();
@@ -112,7 +119,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	}
 
 	public void setServiceI(Boolean service) {
-		if (parent != null && service == parent.getServiceI())
+		if (!Objects.equal(parent, TOP) && service == parent.getServiceI())
 			this.service = null;
 		else
 			this.service = service;
@@ -129,16 +136,16 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public boolean getPsmAppliesI() {
 		if (psmApplies == null) {
-			if (parent != null)
-				return parent.getPsmAppliesI();
-			else
+			if (Objects.equal(parent, TOP))
 				return false;
+			else
+				return parent.getPsmAppliesI();
 		}
 		return psmApplies;
 	}
 
 	public void setPsmAppliesI(Boolean psmApplies) {
-		if (parent != null && psmApplies == parent.getPsmAppliesI())
+		if (!Objects.equal(parent, TOP) && psmApplies == parent.getPsmAppliesI())
 			this.psmApplies = null;
 		else
 			this.psmApplies = psmApplies;
@@ -155,7 +162,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public LowMedHigh getProductRiskI() {
 		if (productRisk == null) {
-			if (parent == null)
+			if (Objects.equal(parent, TOP))
 				return LowMedHigh.Low;
 			else
 				return parent.getProductRiskI();
@@ -164,7 +171,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	}
 
 	public void setProductRiskI(LowMedHigh productRisk) {
-		if (parent != null && productRisk == parent.getProductRiskI())
+		if (!Objects.equal(parent, TOP) && productRisk == parent.getProductRiskI())
 			this.productRisk = null;
 		else
 			this.productRisk = productRisk;
@@ -181,7 +188,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public LowMedHigh getSafetyRiskI() {
 		if (safetyRisk == null) {
-			if (parent == null)
+			if (Objects.equal(parent, TOP))
 				return LowMedHigh.Low;
 			else
 				return parent.getSafetyRiskI();
@@ -190,7 +197,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	}
 
 	public void setSafetyRiskI(LowMedHigh safetyRisk) {
-		if (parent != null && safetyRisk == parent.getSafetyRiskI())
+		if (!Objects.equal(parent, TOP) && safetyRisk == parent.getSafetyRiskI())
 			this.safetyRisk = null;
 		else
 			this.safetyRisk = safetyRisk;
@@ -247,7 +254,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public String getImageLocationI() {
 		if (Strings.isEmpty(imageExtension)) {
-			if (parent == null)
+			if (Objects.equal(parent, TOP))
 				return "";
 			else
 				return parent.getImageLocationI();
@@ -369,27 +376,6 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public String getViewLink() {
 		return "TradeTaxonomy.action";
-	}
-
-	@Transient
-	public Tree<Trade> getHierarchy() {
-		Node<Trade> root = getHierarchy(this);
-		Trade parent = this.parent;
-		while (parent != null) {
-			root = new Node<Trade>(parent, root);
-
-			parent = parent.parent;
-		}
-
-		return new Tree<Trade>(root);
-	}
-
-	private Node<Trade> getHierarchy(Trade t) {
-		Node<Trade> node = new Node<Trade>(t);
-		for (Trade child : t.getChildren()) {
-			node.addChild(getHierarchy(child));
-		}
-		return node;
 	}
 
 	@Transient

@@ -8,6 +8,7 @@ function placeholder() {
 }
 
 $(function() {
+	var ROOT_NODE = 5;
 	var oldform = $('#trade-view').html();
 
 	if (typeof(setupTree) == 'function') {
@@ -55,6 +56,8 @@ $(function() {
 					result = {};
 					if (node.attr) {
 						result.trade = node.attr('id');
+					} else {
+						result.trade = ROOT_NODE;
 					}
 					return result;
 				}
@@ -75,9 +78,11 @@ $(function() {
 						return json.result;
 					},
 					"data": function(node) {
-						result = $('#suggest').serialize();
+						result = $('#suggest').serializeArray();
 						if (node.attr) {
-							result += "&trade=" + node.attr('id');
+							result.push({name: "trade", value: node.attr('id')});
+						} else {
+							result.push({name: "trade", value: ROOT_NODE});
 						}
 						return result;
 					}

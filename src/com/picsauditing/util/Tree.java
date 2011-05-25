@@ -2,6 +2,7 @@ package com.picsauditing.util;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -22,40 +23,53 @@ public class Tree<T extends Hierarchical<T>> implements JSONable {
 		this.root = root;
 	}
 
-	public static <T extends Hierarchical<T>> Tree<T> createTreeFromOrderedList(Collection<T> treeList) {
+	public static <T extends Hierarchical<T>> Tree<T> createTreeFromOrderedList(Collection<T> materializedPath) {
 		Map<T, Node<T>> nodes = new HashMap<T, Node<T>>();
 		Tree<T> tree = new Tree<T>();
 		Node<T> root = new Node<T>();
 		tree.setRoot(root);
-		nodes.put(null, root);
 
-		for (T trade : treeList) {
-			Node<T> node = new Node<T>(trade);
+		if (materializedPath.size() > 0) {
+			Iterator<T> iter = materializedPath.iterator();
 
-			if (nodes.get(trade.getParent()) != null && !nodes.get(trade.getParent()).getChildren().contains(node)) {
-				nodes.get(trade.getParent()).addChild(node);
-				nodes.put(trade, node);
+			nodes.put(iter.next(), root);
+
+			while (iter.hasNext()) {
+				T item = iter.next();
+				Node<T> node = new Node<T>(item);
+
+				if (nodes.get(item.getParent()) != null && !nodes.get(item.getParent()).getChildren().contains(node)) {
+					nodes.get(item.getParent()).addChild(node);
+					nodes.put(item, node);
+				}
 			}
 		}
+
 		return tree;
 	}
 
-	public static <T extends Hierarchical<T>> Tree<T> createDecoratedTreeFromOrderedList(Collection<T> treeList,
+	public static <T extends Hierarchical<T>> Tree<T> createDecoratedTreeFromOrderedList(Collection<T> materializedPath,
 			Collection<T> decoratedItems) {
 		Map<T, Node<T>> nodes = new HashMap<T, Node<T>>();
 		Tree<T> tree = new Tree<T>();
 		Node<T> root = new Node<T>();
 		tree.setRoot(root);
-		nodes.put(null, root);
 
-		for (T trade : treeList) {
-			DecoratedNode<T> node = new DecoratedNode<T>(trade);
-			if (decoratedItems.contains(trade))
-				node.setDecorated(true);
+		if (materializedPath.size() > 0) {
+			Iterator<T> iter = materializedPath.iterator();
 
-			if (nodes.get(trade.getParent()) != null && !nodes.get(trade.getParent()).getChildren().contains(node)) {
-				nodes.get(trade.getParent()).addChild(node);
-				nodes.put(trade, node);
+			nodes.put(iter.next(), root);
+
+			while (iter.hasNext()) {
+				T item = iter.next();
+				DecoratedNode<T> node = new DecoratedNode<T>(item);
+				if (decoratedItems.contains(item))
+					node.setDecorated(true);
+
+				if (nodes.get(item.getParent()) != null && !nodes.get(item.getParent()).getChildren().contains(node)) {
+					nodes.get(item.getParent()).addChild(node);
+					nodes.put(item, node);
+				}
 			}
 		}
 		return tree;

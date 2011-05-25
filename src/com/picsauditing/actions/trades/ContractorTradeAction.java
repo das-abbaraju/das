@@ -144,19 +144,12 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		return trades;
 	}
 
-	public String getClassification() {
-		StringBuilder sb = new StringBuilder();
-		List<Trade> list = tradeDAO.findListByTrade(trade.getTrade().getId(), 0);
-		for (Trade t:list) {
-			if (sb.length() > 0) sb.append(" > ");
-			sb.append(t.getName().toString());
-		}
-		return sb.toString();
-	}
-
-
 	public List<Trade> getTradeClassification() {
 		List<Trade> list = tradeDAO.findListByTrade(trade.getTrade().getId(), -1);
+		/*
+		 * TODO: This is the only instance I have found to exclude TOP. Find out if the other usages need changing.
+		 */
+		list.remove(Trade.TOP);
 
 		return list;
 	}

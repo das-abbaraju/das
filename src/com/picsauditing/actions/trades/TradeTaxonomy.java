@@ -11,6 +11,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.google.common.base.Objects;
 import com.opensymphony.xwork2.Result;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
@@ -53,7 +54,11 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 		List<Trade> nodes = new ArrayList<Trade>();
 
+		/*
+		 * By default the tree will pass in 5, which is the Trade.TOP node.
+		 */
 		if (trade == null) {
+			// TODO: Consider throwing an exception here instead
 			nodes = tradeDAO.findWhere("p.parent IS NULL");
 		} else {
 			nodes = tradeDAO.findByParent(trade.getId());
@@ -90,7 +95,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 	@Anonymous
 	public String index() throws Exception {
 		Database db = new Database();
-		db.execute("CALL reindexTrades(" + Trade.TOP + ",1,0,@counter)");
+		db.execute("CALL reindexTrades(" + Trade.TOP_ID + ",1,0,@counter)");
 		return SUCCESS;
 	}
 
@@ -203,11 +208,19 @@ public class TradeTaxonomy extends PicsActionSupport {
 	}
 
 	private boolean deleteTrade(Trade trade) {
+		if (Objects.equal(trade, Trade.TOP)) {
+			/*
+			 * This is a sanity check. It should never happen as there is nothing in the UI to allow it.
+			 */
+			addActionError("You cannot delete the top level node.");
+			return false;
+		}
+
 		boolean success = true;
 
 		Trade parent = trade.getParent();
 
-		if (parent != null) {
+		if (!Objects.equal(parent, Trade.TOP)) {
 			for (Trade child : trade.getChildren()) {
 				child.setParent(parent);
 				tradeDAO.save(child);
@@ -307,7 +320,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 	public void setTradeLogoName(String tradeLogoName) {
 		this.tradeLogoName = tradeLogoName;
 	}
-	
+
 	public boolean hasAlternate(TradeAlternate tradeAlternate, Trade parent) {
 		boolean result = false;
 		for (TradeAlternate ta : parent.getAlternates()) {
