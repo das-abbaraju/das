@@ -178,7 +178,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	/**
 	 * Sorts contractor trades for cloud
-	 *
+	 * 
 	 * @return
 	 */
 	private void sortTrades() {
@@ -216,4 +216,10 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		this.conTypes = conTypes;
 	}
 
+	public int getHalf() {
+		if (contractor != null && contractor.getTrades().size() > 0)
+			return (int) Math.floor((double) contractor.getTrades().size() / 2.0);
+
+		return 0;
+	}
 }
