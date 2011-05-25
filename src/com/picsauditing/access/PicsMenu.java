@@ -1,11 +1,16 @@
 package com.picsauditing.access;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class PicsMenu {
 
@@ -284,38 +289,51 @@ public class PicsMenu {
 
 		// Configuration
 		subMenu = menu.addChild(getText("menu.Configuration"));
+		HashMap<String, String> menuItems = new HashMap<String, String>();
+		
 		if (permissions.hasPermission(OpPerms.Translator)) {
-			subMenu.addChild("Manage Translations", "ManageTranslations.action");
-			subMenu.addChild("Import/Export Translations", "TranslationETL.action");
+			menuItems.put("Manage Translations", "ManageTranslations.action");
+			menuItems.put("Import/Export Translations", "TranslationETL.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageTrades)) {
-			subMenu.addChild("Manage Trades", "TradeTaxonomy.action");
+			menuItems.put("Manage Trades", "TradeTaxonomy.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
-			subMenu.addChild("Audit Definitions", "ManageAuditType.action");
-			subMenu.addChild("Manage Audit Options", "ManageOptionGroup.action");
-			subMenu.addChild("Flag Criteria", "ManageFlagCriteria.action");
+			menuItems.put("Audit Definition", "ManageAuditType.action");
+			menuItems.put("Manage Audit Options", "ManageOptionGroup.action");
+			menuItems.put("Flag Criteria", "ManageFlagCriteria.action");
 		}
 		if (permissions.hasPermission(OpPerms.ContractorSimulator))
-			subMenu.addChild("Contractor Simulator", "ContractorSimulator.action");
+			menuItems.put("Contractor Simulator", "ContractorSimulator.action");
 		if (permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit)) {
-			subMenu.addChild("Audit Type Rules", "AuditTypeRuleSearch.action");
+			menuItems.put("Audit Type Rules", "AuditTypeRuleSearch.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageCategoryRules, OpType.Edit)) {
-			subMenu.addChild("Category Rules", "CategoryRuleSearch.action");
+			menuItems.put("Category Rules", "CategoryRuleSearch.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit)) {
-			subMenu.addChild("Audit Category Matrix", "AuditCategoryMatrix.action");
+			menuItems.put("Audit Category Matrix", "AuditCategoryMatrix.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageAuditWorkFlow))
-			subMenu.addChild("Manage Workflow", "ManageAuditWorkFlow.action");
+			menuItems.put("Manage Workflow", "ManageAuditWorkFlow.action");
 		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
-			subMenu.addChild("Flag Criteria", "ManageFlagCriteriaOperator.action");
+			menuItems.put("Flag Criteria", "ManageFlagCriteriaOperator.action");
 			if (permissions.isCanSeeInsurance())
-				subMenu.addChild("Insurance Criteria", "ManageInsuranceCriteriaOperator.action");
+				menuItems.put("Insurance Criteria", "ManageInsuranceCriteriaOperator.action");
 		}
 		if (permissions.hasPermission(OpPerms.EmailTemplates, OpType.Edit)) {
-			addChildAction(subMenu, "EditEmailTemplate");
+			menuItems.put(getTitle("EditEmailTemplate"), "EditEmailTemplate.action");
+		}
+		
+		// add to menu in sorted order
+		ArrayList<String> keys = new ArrayList<String>(menuItems.keySet());
+		Collections.sort(keys, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.compareTo(o2);
+			}});
+		for (String key:keys) {
+			subMenu.addChild(key, menuItems.get(key));
 		}
 
 		if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
