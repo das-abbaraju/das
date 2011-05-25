@@ -27,7 +27,6 @@ a.trade,a.trade:hover,a.trade:active {
 	float: left;
 	font-family: Helvetica, sans-serif;
 	font-weight: normal;
-	letter-spacing: -1px;
 	padding: 1px 3px;
 	color: #012142;
 	margin-bottom: 2px;
@@ -134,10 +133,15 @@ a.trade,a.trade:hover,a.trade:active {
 }
 
 #trade_children {
-	border: 1px solid;
-	height: 56px;
+	border: 1px solid #DDDDDD;
+	height: 100px;
 	overflow-x: hidden;
 	overflow-y: auto;
+}
+
+li.trade-child {
+	list-style: disc;
+	list-style-position: inside;
 }
 
 #search-tree,#browse-tree {

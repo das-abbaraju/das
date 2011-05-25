@@ -45,13 +45,13 @@
 <s:if test="trade.trade.children.size > 0">
 <div id="trade-section-nav">
 	<ul>
-		<li><a href="#trade_children" class="tradeInfo"><s:property value="trade.trade.children.size"/> Child Trade(s)</a></li>
+		<li><a href="#trade_children" class="tradeInfo"><s:property value="trade.trade.children.size"/> sub trade(s)</a></li>
 	</ul>
 </div>
 <div id="trade_children" class="trade-section">
-	<ul>
+	<ul >
 		<s:iterator value="trade.trade.children" var="atrade">
-			<li>
+			<li class="trade-child">
 				<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade.trade=<s:property value="#atrade.id"/>" class="trade">
 					<s:if test="isStringEmpty(#atrade.name2)">
 						<s:property value="#atrade.name"/>
