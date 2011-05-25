@@ -220,14 +220,6 @@ $(function(){
 		</ol>
 	</fieldset>
 	<fieldset class="form">
-		<h2 class="formLegend"><s:text name="%{scope}.SoleProprietor.heading" /></h2>
-		<ol>
-			<li>
-				<s:checkbox id="SoleProprietor" name="contractor.soleProprietor" theme="formhelp" />
-			</li>
-		</ol>
-	</fieldset>
-	<fieldset class="form">
 		<h2 class="formLegend"><s:text name="%{scope}.IndustryDetails.heading" /></h2>
 		<ol>
 			<li>
@@ -244,6 +236,9 @@ $(function(){
 	<fieldset class="form">
 		<h2 class="formLegend"><s:text name="%{scope}.CompanyIdentification.heading" /></h2>
 		<ol>
+			<li>
+				<s:checkbox id="SoleProprietor" name="contractor.soleProprietor" theme="formhelp" />
+			</li>
 			<li><label><s:text name="%{scope}.CompanyIdentification.Description" />:</label>
 				<s:textarea name="contractor.description" cols="60" rows="15" />
 				<pics:fieldhelp title="Description">

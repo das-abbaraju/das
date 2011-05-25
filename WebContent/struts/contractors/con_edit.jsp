@@ -128,12 +128,6 @@ $(function() {
 				</ol>
 				</fieldset>
 				<fieldset class="form">
-					<h2 class="formLegend"><s:text name="%{scope}.SoleProprietor.heading"/></h2>
-					<ol>
-					<li><s:checkbox name="contractor.soleProprietor" /><s:text name="ContractorAccount.soleProprietor" /></li>
-					</ol>
-				</fieldset>
-				<fieldset class="form">
 				<h2 class="formLegend"><s:text name="%{scope}.IndustryDetails.heading"/></h2>
 				<ol>
 					<s:if test="contractor.country.isoCode != 'AE'">
@@ -171,6 +165,9 @@ $(function() {
 					</li>
 					<li><label>&nbsp</label>
 						(Allowed formats: pdf, doc, jpg, gif, png)
+					</li>
+					<li><label><s:text name="%{scope}.SoleProprietor.heading"/></label>
+						<s:checkbox name="contractor.soleProprietor" /><s:text name="ContractorAccount.soleProprietor" />
 					</li>
 					<li><label><s:text name="%{scope}.CompanyIdentification.Description"/>:</label>
 						<s:textarea name="contractor.description" cols="40"	rows="15" />
