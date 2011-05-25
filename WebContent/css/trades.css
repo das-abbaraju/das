@@ -34,6 +34,7 @@ a.trade,a.trade:hover,a.trade:active {
 	text-align: center;
 	text-decoration: none;
 	white-space: normal;
+	width: 95%;
 }
 
 #trade-cloud a.trade-cloud-1 {
@@ -100,6 +101,10 @@ a.trade,a.trade:hover,a.trade:active {
 	color: white;
 	background-color: rgba(0, 45, 84, 0.75);
 	border-color: yellow;
+}
+
+#trade-cloud-table td {
+	padding: 2px;
 }
 
 #trade-nav {
