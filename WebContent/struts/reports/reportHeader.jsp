@@ -4,6 +4,12 @@
 // queries/reports and display the results in table format
 %>
 <s:include value="../jquery.jsp"/>
+
+<script type="text/javascript" src="js/jquery/tokeninput/jquery.tokeninput.js"></script>
+<link rel="stylesheet" type="text/css" href="js/jquery/tokeninput/styles/token-input.css" />
+
+<script type="text/javascript" src="js/filters.js?v=<s:property value="version"/>"></script>
+
 <script type="text/javascript" src="js/Search.js?v=<s:property value="version"/>"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 

@@ -24,10 +24,12 @@ public final class OperatorAutocomplete extends AutocompleteActionSupport<Operat
 		}
 
 		if (itemKeys == null) {
-			if (isSearchDigit())
-				return dao.findWhere(true, "a.id LIKE '%" + Utilities.escapeQuotes(q) + "%'");
-			else
-				return dao.findWhere(true, "a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'");
+			if (!Strings.isEmpty(q)) {
+				if (isSearchDigit())
+					return dao.findWhere(true, "a.id LIKE '%" + Utilities.escapeQuotes(q) + "%'");
+				else
+					return dao.findWhere(true, "a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'");
+			}
 		} else if (itemKeys.length > 0) {
 			return dao.findWhere(true, "a.id IN (" + Strings.implode(itemKeys) + ")", limit);
 		}
