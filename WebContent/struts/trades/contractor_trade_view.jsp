@@ -53,7 +53,12 @@
 		<s:iterator value="trade.trade.children" var="atrade">
 			<li>
 				<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade.trade=<s:property value="#atrade.id"/>" class="trade">
-					<s:property value="#atrade.name"/>
+					<s:if test="isStringEmpty(#atrade.name2)">
+						<s:property value="#atrade.name"/>
+					</s:if>
+					<s:else>
+						<s:property value="#atrade.name2"/>
+					</s:else>
 				</a>
 			</li>
 		</s:iterator>
