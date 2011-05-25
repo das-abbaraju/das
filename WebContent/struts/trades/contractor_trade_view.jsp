@@ -78,7 +78,7 @@
 		<div>
 			<s:text name="ContractorTrade.businessProduct">
 				<s:param>
-					<s:select name="trade.manufacture" theme="translate" list="#{true: 'Manufacture & Distribute', false:'Distribute Only' }" />
+					<s:select name="trade.manufacture" theme="translate" list="#{true: 'Manufacture', false:'Distribute' }" />
 				</s:param>
 			</s:text>
 		</div>
