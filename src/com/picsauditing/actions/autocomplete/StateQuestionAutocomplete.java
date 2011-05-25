@@ -21,10 +21,16 @@ public final class StateQuestionAutocomplete extends AutocompleteActionSupport<A
 	@Override
 	@SuppressWarnings("unchecked")
 	protected Collection<AuditQuestion> getItems() {
-		if (!Strings.isEmpty(extraArgs) && !Strings.isEmpty(q)) {
-			return (Collection<AuditQuestion>) auditQuestionDAO.findWhere(AuditQuestion.class, "t.option.uniqueCode = '"
-					+ Utilities.escapeQuotes(extraArgs) + "' AND t.name LIKE '" + Utilities.escapeQuotes(q) + "%'",
-					limit);
+		if (itemKeys == null) {
+			if (!Strings.isEmpty(extraArgs) && !Strings.isEmpty(q)) {
+				return (Collection<AuditQuestion>) auditQuestionDAO.findWhere(AuditQuestion.class,
+						"t.option.uniqueCode = '" + Utilities.escapeQuotes(extraArgs) + "' AND t.name LIKE '"
+								+ Utilities.escapeQuotes(q) + "%'", limit);
+			}
+		} else if (itemKeys.length > 0 && !Strings.isEmpty(extraArgs)) {
+			return (Collection<AuditQuestion>) auditQuestionDAO.findWhere(AuditQuestion.class,
+					"t.option.uniqueCode = '" + Utilities.escapeQuotes(extraArgs) + "' AND t.id IN ("
+							+ Strings.implode(itemKeys) + ")", limit);
 		}
 		return Collections.emptyList();
 	}

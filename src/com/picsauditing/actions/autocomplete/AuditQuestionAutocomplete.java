@@ -10,7 +10,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
 @SuppressWarnings("serial")
-public class AuditQuestionAutocomplete extends AutocompleteActionSupport<AuditQuestion> {
+public final class AuditQuestionAutocomplete extends AutocompleteActionSupport<AuditQuestion> {
 
 	@Autowired
 	private AuditQuestionDAO auditQuestionDAO;

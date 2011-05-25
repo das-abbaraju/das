@@ -1,8 +1,6 @@
 package com.picsauditing.actions.autocomplete;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,7 +17,7 @@ import com.picsauditing.jpa.entities.BaseTable;
 public abstract class AutocompleteActionSupport<T extends BaseTable> extends PicsActionSupport {
 
 	protected String q;
-	protected Integer limit;
+	protected int limit;
 	public int[] itemKeys;
 
 	public final String autocomplete() {
@@ -96,11 +94,11 @@ public abstract class AutocompleteActionSupport<T extends BaseTable> extends Pic
 		this.q = q;
 	}
 
-	public Integer getLimit() {
+	public int getLimit() {
 		return limit;
 	}
 
-	public void setLimit(Integer limit) {
+	public void setLimit(int limit) {
 		this.limit = limit;
 	}
 

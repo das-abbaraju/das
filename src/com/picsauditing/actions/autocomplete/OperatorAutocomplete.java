@@ -29,8 +29,7 @@ public final class OperatorAutocomplete extends AutocompleteActionSupport<Operat
 			else
 				return dao.findWhere(true, "a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'");
 		} else if (itemKeys.length > 0) {
-			// this where wants limit to be 0 if no limit is to be used, so changing null to 0
-			return dao.findWhere(true, "a.id IN (" + Strings.implode(itemKeys) + ")", limit == null ? 0 : limit);
+			return dao.findWhere(true, "a.id IN (" + Strings.implode(itemKeys) + ")", limit);
 		}
 		return Collections.emptyList();
 	}

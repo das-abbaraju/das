@@ -17,19 +17,15 @@ $(function(){
 	    var name = that.attr('name');
 	    var opt = $('<option>').attr('selected', 'selected');
 	    var r_ids = that.val().split(',').map(Number);
-	    console.log("that: "+that);
-	    console.log("r_ids: "+r_ids);
-	    console.log("rel: "+that.attr('rel'));
-	    console.log("extraArgs: "+extraArgs);
 	    that.removeAttr('name');
 	    that.removeAttr('value');
 		
-		$.getJSON(field_type+'Autocomplete!tokenJson.action', {itemKeys: r_ids}, function(json) {
+		$.getJSON(field_type+'Autocomplete!tokenJson.action', {'itemKeys': r_ids, 'extraArgs': extraArgs}, function(json) {
 			var results;
 			if(json.result) {
 				results = json.result;
 			}
-			var url = field_type+'Autocomplete!tokenJson.action?' + (extraArgs==undefined? '' : 'extraArgs=' + extraArgs + '&') + 'limit=10';
+			var url = field_type+'Autocomplete!tokenJson.action?' + (extraArgs == undefined? '' : 'extraArgs=' + extraArgs + '&') + 'limit=10';
 			that.tokenInput(url, {
 				jsonContainer: 'result',
 				prePopulate: results,
