@@ -1,8 +1,14 @@
 package com.picsauditing.interceptors;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts2.ServletActionContext;
+
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+import com.picsauditing.access.AjaxNotLoggedInException;
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.access.NotLoggedInException;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.access.SecurityAware;
 
@@ -17,7 +23,13 @@ public class SecurityInterceptor extends AbstractInterceptor {
 			boolean anonymous = action.getClass().getMethod(invocation.getProxy().getMethod())
 					.isAnnotationPresent(Anonymous.class);
 			if (!action.isLoggedIn(anonymous)) {
-				return null;
+				HttpServletRequest request = ServletActionContext.getRequest();
+				String pageHead = request.getHeader("X-Requested-With");
+
+				if ("XMLHttpRequest".equalsIgnoreCase(pageHead))
+					throw new AjaxNotLoggedInException();
+				else
+					throw new NotLoggedInException();
 			}
 
 			boolean requiresPermissions = action.getClass().getMethod(invocation.getProxy().getMethod())
