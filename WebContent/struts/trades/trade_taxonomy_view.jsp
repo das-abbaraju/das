@@ -92,12 +92,12 @@
 			<h2>Rules</h2>
 			<ol>
 				<li>
-					<h4>Manual Audit Category Rules</h4>
+					<label>Manual Audit Category Rules</label>
 					<a href="CategoryRuleEditor.action?rule.auditType=2&rule.trade=<s:property value="trade.id" />" class="add">Add New Manual Audit Category Rule</a>
 					<div id="tradeCategoryRules"></div>
 				</li>
 				<li>
-					<h4>Audit Type Rules</h4>
+					<label>Audit Type Rules</label>
 					<a href="AuditTypeRuleEditor.action?rule.trade=<s:property value="trade.id" />" class="add">Add New Audit Type Rule</a>
 					<div id="tradeAuditRules"></div>
 				</li>
