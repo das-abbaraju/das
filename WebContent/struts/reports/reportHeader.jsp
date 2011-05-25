@@ -16,6 +16,7 @@
 <script type="text/javascript" src="js/jquery/jquery.hoverIntent.js"></script>
 <script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.bgiframe.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/cluetip/jquery.cluetip.css"/>
 
 <script type="text/javascript">

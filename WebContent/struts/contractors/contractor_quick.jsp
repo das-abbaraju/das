@@ -3,12 +3,21 @@
 <html>
 <head>
 <title><s:property value="contractor.name" /></title>
+
+<script>
+$(document).ready(function() {
+	$('a.trade').each(function() {
+		$(this).attr('href', 'ContractorTrades.action?id=<s:property value="id"/>');
+	});
+});
+</script>
 </head>
 <body>
 <div id="tabs">
 	<ul>
 		<li><a href="#tabs-general">General</a></li>
 		<li><a href="#tabs-contact">Contact</a></li>
+		<li><a href="#tabs-trades">Trades</a></li>
 		<li><a href="#tabs-facilities">Facilities</a></li>
 		<li><a href="#tabs-audits">Documents</a></li>
 		<s:if test="permissions.admin || permissions.contractor">
@@ -96,6 +105,9 @@
 		<label>Email:</label>
 		<s:property value="contractor.primaryContact.email"/>
 		<br />	
+	</div>
+	<div id="tabs-trades">
+		<s:include value="../trades/contractor_trade_cloud.jsp"/>
 	</div>
 	<div id="tabs-facilities">
 		<table class="report">

@@ -242,7 +242,7 @@ function wireClueTips() {
 		},
 		arrows : true,
 		dropShadow : false,
-		width : 500,
+		width : 550,
 		cluetipClass : 'jtip',
 		ajaxProcess : function(data) {
 			data = $(data).not('meta, link, title');
