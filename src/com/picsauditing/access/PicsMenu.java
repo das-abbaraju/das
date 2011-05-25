@@ -1,6 +1,7 @@
 package com.picsauditing.access;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,8 +10,6 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class PicsMenu {
 
