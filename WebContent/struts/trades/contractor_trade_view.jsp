@@ -19,8 +19,13 @@
 	<div class="trade-section">
 		<s:iterator value="tradeClassification" var="atrade">
 			<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade.trade=<s:property value="#atrade.id"/>" class="trade">
+			<s:if test="isStringEmpty(#atrade.name2)">
 				<s:property value="#atrade.name"/>
-			</a> >
+			</s:if>
+			<s:else>
+				<s:property value="#atrade.name2"/>
+			</s:else>
+			</a> &gt;
 		</s:iterator>
 	</div>
 </s:if>
