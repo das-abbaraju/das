@@ -29,6 +29,7 @@ ANALYZE TABLE app_index, app_index_stats;
 -- remove old data from the contractor_cron_log
 DELETE FROM contractor_cron_log WHERE DATEDIFF(NOW(), startDate) > 7;
 
+------------------------- TRADES -----------------------------
 -- ref_trade.contractorCount
 UPDATE ref_trade SET contractorCount = 0;
 
@@ -46,3 +47,33 @@ UPDATE ref_trade AS rt,
 SET    rt.contractorCount = counts.total
 WHERE  rt.id = counts.id;
 
+update ref_trade set parentID = null where parentID = 5;
+
+update ref_trade set childCount = 0, childCountTotal = 0;
+
+update ref_trade p
+join (select parentID, count(*) total FROM ref_trade GROUP BY parentID) c ON p.id = c.parentID
+SET p.childCount = c.total;
+
+-- run until now rows are updated (7 times)
+update ref_trade p
+join (select parentID, count(*) + SUM(childCountTotal) total FROM ref_trade GROUP BY parentID) c ON p.id = c.parentID
+SET p.childCountTotal = c.total;
+update ref_trade p
+join (select parentID, count(*) + SUM(childCountTotal) total FROM ref_trade GROUP BY parentID) c ON p.id = c.parentID
+SET p.childCountTotal = c.total;
+update ref_trade p
+join (select parentID, count(*) + SUM(childCountTotal) total FROM ref_trade GROUP BY parentID) c ON p.id = c.parentID
+SET p.childCountTotal = c.total;
+update ref_trade p
+join (select parentID, count(*) + SUM(childCountTotal) total FROM ref_trade GROUP BY parentID) c ON p.id = c.parentID
+SET p.childCountTotal = c.total;
+update ref_trade p
+join (select parentID, count(*) + SUM(childCountTotal) total FROM ref_trade GROUP BY parentID) c ON p.id = c.parentID
+SET p.childCountTotal = c.total;
+update ref_trade p
+join (select parentID, count(*) + SUM(childCountTotal) total FROM ref_trade GROUP BY parentID) c ON p.id = c.parentID
+SET p.childCountTotal = c.total;
+update ref_trade p
+join (select parentID, count(*) + SUM(childCountTotal) total FROM ref_trade GROUP BY parentID) c ON p.id = c.parentID
+SET p.childCountTotal = c.total;
