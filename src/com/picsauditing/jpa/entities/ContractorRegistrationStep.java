@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.List;
+
 public enum ContractorRegistrationStep {
 	Register, EditAccount, Trades, Risk, Facilities, Payment, Confirmation, Done;
 
@@ -19,12 +21,24 @@ public enum ContractorRegistrationStep {
 			return Risk;
 		if (contractor.isMaterialSupplier() && contractor.getProductRisk() == null)
 			return Risk;
-		if (contractor.getOperators().size() == 0)
+		if (!containsOperator(contractor.getOperators()))
 			return Facilities;
 		if (contractor.isMustPayB() && !contractor.isPaymentMethodStatusValid())
 			return Payment;
 
 		return Confirmation;
+	}
+	
+	static private boolean containsOperator(List<ContractorOperator> cos) {
+		if (cos == null)
+			return false;
+		
+		for (ContractorOperator co : cos) {
+			if (co.getOperatorAccount().isOperator())
+				return true;
+		}
+		
+		return false;
 	}
 
 	public String getUrl(int id) {
