@@ -103,10 +103,6 @@ a.trade,a.trade:hover,a.trade:active {
 	border-color: yellow;
 }
 
-#trade-cloud-table td {
-	padding: 2px;
-}
-
 #trade-nav {
 	float: left;
 	width: 50%;

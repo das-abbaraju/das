@@ -7,7 +7,7 @@
 <div id="trade-cloud">
 	<s:if test="contractor.trades.size() > 0">
 		<s:sort comparator="#tradeComparator" source="contractor.trades">
-			<table id="trade-cloud-table">
+			<table>
 				<tr>
 					<td>
 						<s:iterator value="contractor.trades" var="trade" begin="0" end="(contractor.trades.size / 2) - 1">
