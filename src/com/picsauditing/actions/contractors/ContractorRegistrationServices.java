@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.User;
@@ -40,6 +41,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 	public ContractorRegistrationServices() {
 		this.subHeading = getText("ContractorRegistrationServices.title");
+		this.currentStep = ContractorRegistrationStep.Risk;
 	}
 
 	public String execute() throws Exception {
@@ -87,7 +89,8 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	public String calculateRisk() throws Exception {
+	@Override
+	public String nextStep() throws Exception {
 		execute();
 
 		if (contractor.getSafetyRisk() == null && contractor.getProductRisk() == null) {
@@ -101,8 +104,12 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 						requiredQuestions = true;
 				}
 			}
-			if (!requiredQuestions)
+
+			if (!requiredQuestions) {
 				addActionError("Please answer all the questions on the General Info section");
+				return SUCCESS;
+			}
+
 			if (requiredQuestions) {
 				Collection<AuditData> auditList = answerMap.values();
 				// Calculated assessments
@@ -148,15 +155,15 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				if (contractor.isMaterialSupplier())
 					isOK = conProductSafety.ordinal() >= safety.ordinal() && conProduct.ordinal() >= product.ordinal();
 
-				if (isOK) {
-					contractor.setSafetyRisk(safety);
+				contractor.setSafetyRisk(safety);
 
-					if (contractor.isMaterialSupplier())
-						contractor.setProductRisk(product);
+				if (contractor.isMaterialSupplier())
+					contractor.setProductRisk(product);
 
-					contractor.setAuditColumns(permissions);
-					accountDao.save(contractor);
-				} else {
+				contractor.setAuditColumns(permissions);
+				accountDao.save(contractor);
+
+				if (!isOK) {
 					String safetyAssessment = safety.toString();
 					if (safetyAssessment.equals("Med"))
 						safetyAssessment = "Medium";
@@ -173,10 +180,12 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 					if (safety.ordinal() > conProductSafety.ordinal() && contractor.isMaterialSupplier())
 						increases.add("product safety critical assessment to <b>" + safetyAssessment + "</b>");
 
-					addActionError("The answers you have provided indicate higher risk levels than the "
+					output = "The answers you have provided indicate higher risk levels than the "
 							+ "ratings you have selected. We recommend increasing your "
 							+ Strings.implode(increases, ", and your ")
-							+ ".<br />Please contact PICS with any questions.");
+							+ ". You can still continue with the registration process. "
+							+ "<br />Please contact PICS with any questions.";
+
 					return SUCCESS;
 				}
 			}

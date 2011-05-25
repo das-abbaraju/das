@@ -11,6 +11,7 @@ import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -51,12 +52,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		this.appPropDao = appPropDao;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.subHeading = "Payment Options";
+		this.currentStep = ContractorRegistrationStep.Payment;
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		this.findContractor();
 
 		// Only during registration - redirect if no requestedBy operator is set
@@ -115,18 +114,18 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 					activationFee.setAmount(new BigDecimal(reducedOperator.getActivationFee()));
 				}
 			} else
-				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, contractor
-						.getPayingFacilities());
+				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
+						contractor.getPayingFacilities());
 		}
 
 		if (contractor.getCurrencyCode().isCanada()) {
 			gstFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
 			BigDecimal total = BigDecimal.ZERO;
-			for(FeeClass feeClass : contractor.getFees().keySet()) {
-				if(!contractor.getFees().get(feeClass).getNewLevel().isFree())
+			for (FeeClass feeClass : contractor.getFees().keySet()) {
+				if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
 					total.add(contractor.getFees().get(feeClass).getNewLevel().getAmount());
 			}
-				
+
 			if (activationFee != null)
 				total.add(activationFee.getAmount());
 			gstFee.setAmount(gstFee.getGSTSurchage(total));
@@ -243,6 +242,15 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		accountDao.save(contractor);
 		return SUCCESS;
+	}
+
+	@Override
+	public ContractorRegistrationStep getNextRegistrationStep() {
+		if (permissions.isContractor() && contractor.getStatus().isPendingDeactivated()
+				&& (contractor.isPaymentMethodStatusValid() || !contractor.isMustPayB()))
+			return ContractorRegistrationStep.Confirmation;
+
+		return null;
 	}
 
 	/** ******** BrainTree Getters/Setters ******** */

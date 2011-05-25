@@ -67,6 +67,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 	// TODO cleanup the PermissionToViewContractor duplicate code here
 	private PermissionToViewContractor permissionToViewContractor = null;
 
+	protected ContractorRegistrationStep currentStep = null;
+
 	public String execute() throws Exception {
 		findContractor();
 		return SUCCESS;
@@ -627,6 +629,40 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public ContractorRegistrationStep getRegistrationStep() {
 		return ContractorRegistrationStep.getStep(contractor);
+	}
+
+	/**
+	 * We're assuming that the ording in the enum is the standard order of contractor registration.
+	 * 
+	 * @return Previous ContractorRegistrationStep, according to the ContractorRegistrationStep enum order
+	 */
+	public ContractorRegistrationStep getPreviousRegistrationStep() {
+		if (currentStep != null && currentStep.ordinal() > 1)
+			return ContractorRegistrationStep.values()[currentStep.ordinal() - 1];
+
+		return null;
+	}
+
+	/**
+	 * @return Next ContractorRegistrationStep, according to the ContractorRegistrationStep enum order
+	 */
+	public ContractorRegistrationStep getNextRegistrationStep() {
+		if (currentStep != null && !currentStep.isDone() && !currentStep.equals(ContractorRegistrationStep.Confirmation))
+			return ContractorRegistrationStep.values()[currentStep.ordinal() + 1];
+
+		return null;
+	}
+
+	public String previousStep() throws Exception {
+		findContractor();
+		redirect(getPreviousRegistrationStep().getUrl(contractor.getId()));
+		return SUCCESS;
+	}
+
+	public String nextStep() throws Exception {
+		findContractor();
+		redirect(getNextRegistrationStep().getUrl(contractor.getId()));
+		return SUCCESS;
 	}
 
 	public Map<ContractorTrade, String> getTradeCssMap() {

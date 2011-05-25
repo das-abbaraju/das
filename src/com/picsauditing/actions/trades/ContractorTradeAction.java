@@ -1,6 +1,7 @@
 package com.picsauditing.actions.trades;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -19,8 +20,6 @@ import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Tree;
 
-import edu.emory.mathcs.backport.java.util.Collections;
-
 @SuppressWarnings("serial")
 public class ContractorTradeAction extends ContractorActionSupport {
 
@@ -37,6 +36,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	public ContractorTradeAction() {
 		this.subHeading = getText("ContractorTrades.title");
+		this.currentStep = ContractorRegistrationStep.Trades;
 	}
 
 	// TODO Check the security here
@@ -120,6 +120,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		return "trade";
 	}
 
+	@Override
 	public String nextStep() throws Exception {
 		findContractor();
 		contractor.setTradesUpdated(new Date());

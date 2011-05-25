@@ -965,6 +965,18 @@ span.block:hover .hoverhelp {
 	display: block;
 }
 
+/* PREVIOUS & NEXT */
+.navigationButtons {
+	clear: both;
+	width: 100%;
+	padding: 10px 0;
+}
+
+.navigationButtons .next {
+	float: right;
+	margin-right: 0;
+}
+
 /********************** LIVE HELP BOX ******************************/
 #helpbox {
 	position: absolute;

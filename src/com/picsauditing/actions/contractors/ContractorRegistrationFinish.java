@@ -8,14 +8,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.BrainTreeServiceErrorResponseException;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceDAO;
@@ -25,6 +26,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
@@ -47,13 +49,19 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorRegistrationFinish extends ContractorActionSupport {
-
+	@Autowired
 	private InvoiceDAO invoiceDAO;
+	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
 	private PaymentDAO paymentDAO;
+	@Autowired
 	private AppPropertyDAO appPropDAO;
+	@Autowired
 	private NoteDAO noteDAO;
+	@Autowired
 	private InvoiceItemDAO invoiceItemDAO;
+	@Autowired
 	private AuditBuilderController auditBuilder;
 
 	private BrainTreeService paymentService = new BrainTreeService();
@@ -61,23 +69,12 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	private Invoice invoice;
 	private boolean complete = false;
 
-	public ContractorRegistrationFinish(InvoiceDAO invoiceDAO, InvoiceFeeDAO invoiceFeeDAO, PaymentDAO paymentDAO,
-			AppPropertyDAO appPropDAO, NoteDAO noteDAO, InvoiceItemDAO invoiceItemDAO,
-			AuditBuilderController auditBuilder) {
-		this.invoiceDAO = invoiceDAO;
-		this.invoiceFeeDAO = invoiceFeeDAO;
-		this.paymentDAO = paymentDAO;
-		this.appPropDAO = appPropDAO;
-		this.noteDAO = noteDAO;
-		this.invoiceItemDAO = invoiceItemDAO;
-		this.auditBuilder = auditBuilder;
+	public ContractorRegistrationFinish() {
 		subHeading = "Confirm Registration";
+		this.currentStep = ContractorRegistrationStep.Confirmation;
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		findContractor();
 
 		findUnpaidInvoice();
@@ -88,10 +85,10 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		if ("Complete My Registration".equals(button)) {
 			// enforcing workflow steps before completing registration
 			String url = "";
-			// TODO add productRiskLevel ?
-			if (contractor.getSafetyRisk() == null && !contractor.isMaterialSupplierOnly()) {
+			if ((contractor.getSafetyRisk() == null && !contractor.isMaterialSupplierOnly())
+					|| (contractor.isMaterialSupplier() && contractor.getProductRisk() == null)) {
 				url = "ContractorRegistrationServices.action?id=" + contractor.getId()
-						+ "&msg=Please select the services you perform.";
+						+ "&msg=Please select the trades you perform.";
 			} else if (contractor.getNonCorporateOperators().size() == 0) {
 				url = "ContractorFacilities.action?id=" + contractor.getId() + "&msg=Please add at least one facility.";
 			} else if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
@@ -134,8 +131,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							payment.setCcNumber(creditCard.getCardNumber());
 
 							// Only if the transaction succeeds
-							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment
-									.getTotalAmount());
+							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(),
+									payment.getTotalAmount());
 							payment.setQbSync(true);
 
 							paymentDAO.save(payment);
@@ -324,7 +321,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 		newInvoiceItem.setInvoice(invoice);
 		invoice.getItems().add(newInvoiceItem);
-		
+
 		contractor.syncBalance();
 	}
 

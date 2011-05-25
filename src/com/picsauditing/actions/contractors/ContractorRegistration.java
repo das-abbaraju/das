@@ -33,6 +33,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
@@ -50,7 +51,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorRegistration extends ContractorActionSupport {
-	protected ContractorAccount contractor;
 	protected User user;
 	protected String password;
 	protected String confirmPassword;
@@ -84,6 +84,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		this.stateDAO = stateDAO;
 		this.userLoginLogDAO = userLoginLogDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
+		this.currentStep = ContractorRegistrationStep.Register;
 	}
 
 	@Anonymous

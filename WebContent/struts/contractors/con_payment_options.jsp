@@ -259,11 +259,5 @@ function updateExpDate() {
 		</fieldset>
 	</form>
 </s:if>
-<br clear="all" /><br/><br/>
-<s:if test="permissions.contractor && contractor.status.pendingDeactivated && (contractor.paymentMethodStatusValid || !contractor.mustPayB)">
-	<div class="buttons" style="float: right;">
-		<a id="next_link" href="ContractorRegistrationFinish.action" class="picsbutton positive">Next &gt;&gt;</a>
-	</div>
-</s:if>
 </body>
 </html>

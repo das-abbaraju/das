@@ -21,6 +21,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
@@ -56,6 +57,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 		this.facilityChanger = facilityChanger;
 		this.subHeading = "Facilities";
 		this.noteCategory = NoteCategory.OperatorChanges;
+		this.currentStep = ContractorRegistrationStep.Facilities;
 	}
 
 	@SuppressWarnings("unchecked")

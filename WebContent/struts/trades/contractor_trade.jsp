@@ -19,20 +19,6 @@ var conID = '<s:property value="id"/>';
 
 <s:include value="../contractors/conRegistrationHeader.jsp"/>
 
-<s:if test="permissions.contractor">
-	<s:if test="registrationStep.done">
-		<s:if test="contractor.needsTradesUpdated">
-			<div class="alert"><s:text name="ContractorTrades.NeedsUpdating" />
-				<s:form><s:submit action="ContractorTrades!nextStep" cssClass="picsbutton positive" value="%{getText('button.Confirm')}"></s:submit></s:form>
-			</div>
-		</s:if>
-	</s:if>
-	<s:else>
-		<s:form><s:submit action="ContractorTrades!nextStep" cssClass="picsbutton positive" value="%{getText('button.Next')}"></s:submit></s:form>
-	</s:else>
-</s:if>
-
-
 <h4>What are your business trades?</h4>
 <s:include value="trade_search.jsp"/>
 
@@ -40,5 +26,15 @@ var conID = '<s:property value="id"/>';
 	<h4>Selected trades</h4>
 	<s:include value="contractor_trade_cloud.jsp"/>
 </div>
+
+<s:if test="permissions.contractor">
+	<div class="navigationButtons">
+		<s:if test="registrationStep.done">
+			<s:if test="contractor.needsTradesUpdated">
+				<div class="alert"><s:text name="ContractorTrades.NeedsUpdating" /></div>
+			</s:if>
+		</s:if>
+	</div>
+</s:if>
 </body>
 </html>

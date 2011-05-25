@@ -31,6 +31,7 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
@@ -83,6 +84,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		this.subscriptionDAO = subscriptionDAO;
 		this.userSwitchDAO = userSwitchDAO;
 		this.indexer = indexer;
+		
+		this.currentStep = ContractorRegistrationStep.EditAccount;
 	}
 
 	public void prepare() throws Exception {
@@ -122,9 +125,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		if (button != null) {
 			String ftpDir = getFtpDir();
 
