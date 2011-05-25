@@ -26,7 +26,7 @@ function loadTradeCallback() {
 		}
 	});
 
-	if ($('input.services,input.products').length > 0) {
+	if ($('input.service,input.product').length > 0) {
 		$("#addButton").attr("disabled", "disabled");
 	}
 	
