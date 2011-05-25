@@ -24,17 +24,20 @@ $(function() {
 			"types": {
 				"service": {
 					"icon": {
-						"image": "images/icon_box_blue.png"
+						"image": "images/icon_box_blue.png",
+						"position": "0px 2px"
 					}
 				},
 				"product": {
 					"icon": {
-						"image": "images/icon_box_orange.png"
+						"image": "images/icon_box_orange.png",
+						"position": "0px 2px"
 					}
 				},
 				"product-service": {
 					"icon": {
-						"image": "images/icon_box_combo.png"
+						"image": "images/icon_box_combo.png",
+						"position": "0px 2px"
 					}
 				}
 			}
