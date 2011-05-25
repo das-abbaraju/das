@@ -62,7 +62,12 @@ $(function() {
 	search_tree = $('#search-tree').jstree({
 			"json_data": {
 				"ajax": {
-					"url": 'TradeTaxonomy!searchJson.action',
+					"url": function(node) {
+						if (node.attr) {
+							return 'TradeTaxonomy!json.action';
+						}
+						return 'TradeTaxonomy!searchJson.action';
+					},
 					"success": function(json) {
 						return json.result;
 					},
