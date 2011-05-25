@@ -27,7 +27,6 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 	private int pqfID = 0;
 	private int catDataID = 0;
-	private int requestID = 0;
 	private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
 	private List<AuditCategory> categories;
 	private Map<Integer, AuditData> answerMap;
@@ -168,11 +167,11 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 						productAssessment = "Medium";
 
 					List<String> increases = new ArrayList<String>();
-					if (safety.ordinal() > conSafety.ordinal())
+					if (safety.ordinal() > conSafety.ordinal() && !contractor.isMaterialSupplierOnly())
 						increases.add("risk assessment to <b>" + safety + "</b>");
-					if (product.ordinal() > conProduct.ordinal())
+					if (product.ordinal() > conProduct.ordinal() && contractor.isMaterialSupplier())
 						increases.add("product critical assessment to <b>" + productAssessment + "</b>");
-					if (safety.ordinal() > conProductSafety.ordinal())
+					if (safety.ordinal() > conProductSafety.ordinal() && contractor.isMaterialSupplier())
 						increases.add("product safety critical assessment to <b>" + safetyAssessment + "</b>");
 
 					addActionError("The answers you have provided indicate higher risk levels than the "
@@ -184,8 +183,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			}
 		}
 
-		redirect("ContractorFacilities.action?id=" + contractor.getId()
-				+ (requestID > 0 ? "&requestID=" + requestID : ""));
+		redirect(getRegistrationStep().getUrl(contractor.getId()));
 		return BLANK;
 	}
 
@@ -195,14 +193,6 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 	public int getCatDataID() {
 		return catDataID;
-	}
-
-	public int getRequestID() {
-		return requestID;
-	}
-
-	public void setRequestID(int requestID) {
-		this.requestID = requestID;
 	}
 
 	public List<AuditQuestion> getInfoQuestions() {

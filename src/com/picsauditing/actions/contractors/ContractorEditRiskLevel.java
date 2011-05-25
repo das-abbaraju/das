@@ -54,7 +54,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			String userName = userDAO.find(permissions.getUserId()).getName();
 
 			String newSafetyRisk = safetyRisk.toString();
-			String oldSafetyRisk = "null";
+			String oldSafetyRisk = null;
 			if (contractor.getSafetyRisk() != null) {
 				oldSafetyRisk = contractor.getSafetyRisk().toString();
 				if (oldSafetyRisk.equals("Med"))
@@ -63,20 +63,23 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 					newSafetyRisk = "Medium";
 			}
 
-			String newProductRisk = productRisk.toString();
-			String oldProductRisk = "null";
-			if (contractor.getProductRisk() != null) {
-				oldProductRisk = contractor.getProductRisk().toString();
-				if (oldProductRisk.equals("Med"))
-					oldProductRisk = "Medium";
-				if (newProductRisk.equals("Med"))
-					newProductRisk = "Medium";
+			String oldProductRisk = null;
+			String newProductRisk = null;
+			if (productRisk != null) {
+				newProductRisk = productRisk.toString();
+				if (contractor.getProductRisk() != null) {
+					oldProductRisk = contractor.getProductRisk().toString();
+					if (oldProductRisk.equals("Med"))
+						oldProductRisk = "Medium";
+					if (newProductRisk.equals("Med"))
+						newProductRisk = "Medium";
+				}
 			}
 
 			List<String> noteSummary = new ArrayList<String>();
-			if (!contractor.getSafetyRisk().equals(safetyRisk))
+			if (!oldSafetyRisk.equals(newSafetyRisk))
 				noteSummary.add("changed the safety risk level from " + oldSafetyRisk + " to " + newSafetyRisk);
-			if (!contractor.getProductRisk().equals(productRisk))
+			if (oldProductRisk != null && newProductRisk != null && !oldProductRisk.equals(newProductRisk))
 				noteSummary.add("changed the product risk level from " + oldProductRisk + " to " + newProductRisk);
 
 			Note note = new Note();
@@ -88,10 +91,9 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			note.setViewableById(Account.EVERYONE);
 			getNoteDao().save(note);
 
-			// If contractor risk level being raised, stamp the last upgrade
-			// date
+			// If contractor risk level being raised, stamp the last upgrade date
 			if (safetyRisk.compareTo(contractor.getSafetyRisk()) > 0
-					|| productRisk.compareTo(contractor.getProductRisk()) > 0)
+					|| (productRisk != null && productRisk.compareTo(contractor.getProductRisk()) > 0))
 				contractor.setLastUpgradeDate(new Date());
 			contractor.setSafetyRisk(safetyRisk);
 			contractor.setProductRisk(productRisk);

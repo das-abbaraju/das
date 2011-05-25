@@ -33,7 +33,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
@@ -104,6 +103,8 @@ public class ContractorRegistration extends ContractorActionSupport {
 				requestID = getParameter("requestID");
 
 			if (requestID > 0) {
+				// Set the session variable
+				ActionContext.getContext().getSession().put("requestID", requestID);
 				ContractorRegistrationRequest crr = requestDAO.find(requestID);
 
 				if (crr.getContractor() == null) {
@@ -163,11 +164,11 @@ public class ContractorRegistration extends ContractorActionSupport {
 			// Default their current membership to 0
 			List<FeeClass> feeClasses = Arrays.asList(FeeClass.ListOnly, FeeClass.DocuGUARD, FeeClass.AuditGUARD,
 					FeeClass.InsureGUARD, FeeClass.EmployeeGUARD);
-			for(FeeClass feeClass : feeClasses){
+			for (FeeClass feeClass : feeClasses) {
 				ContractorFee newConFee = new ContractorFee();
 				newConFee.setAuditColumns(new User(User.CONTRACTOR));
 				newConFee.setContractor(contractor);
-				
+
 				InvoiceFee currentFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(feeClass, 0);
 				newConFee.setCurrentLevel(currentFee);
 				newConFee.setNewLevel(currentFee);
@@ -280,11 +281,10 @@ public class ContractorRegistration extends ContractorActionSupport {
 				note.setViewableById(Account.EVERYONE);
 				noteDAO.save(note);
 			}
-			
+
 			// Redirect to Step 2, usually Trades
-			ContractorRegistrationStep next = ContractorRegistrationStep.getStep(contractor);
-			redirect(next.getUrl(contractor.getId()));
-			
+			redirect(getRegistrationStep().getUrl(contractor.getId()));
+
 			return BLANK;
 		}
 

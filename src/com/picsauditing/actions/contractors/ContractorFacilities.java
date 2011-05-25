@@ -8,6 +8,7 @@ import javax.naming.NoPermissionException;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.SmartFacilitySuggest;
@@ -33,8 +34,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorFacilities extends ContractorActionSupport {
-	private int requestID;
-
 	private ContractorOperatorDAO contractorOperatorDAO;
 	private OperatorAccountDAO operatorDao = null;
 	private FacilityChanger facilityChanger = null;
@@ -62,13 +61,20 @@ public class ContractorFacilities extends ContractorActionSupport {
 	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		limitedView = true;
 		findContractor();
 
+		// Get request off of the session
+		Object request = ActionContext.getContext().getSession().get("requestID");
+
+		int requestID = 0;
+		if (request != null)
+			requestID = (Integer) request;
+
 		if (requestID > 0) {
+			// Clear session variable
+			ActionContext.getContext().getSession().remove("requestID");
+
 			ContractorRegistrationRequestDAO crrDAO = (ContractorRegistrationRequestDAO) SpringUtils
 					.getBean("ContractorRegistrationRequestDAO");
 			ContractorRegistrationRequest crr = crrDAO.find(requestID);
@@ -234,9 +240,9 @@ public class ContractorFacilities extends ContractorActionSupport {
 						int limit = 10;
 						List<BasicDynaBean> data = SmartFacilitySuggest.getSimilarOperators(contractor, limit);
 						proccessSearchResults(data);
-						
+
 						addActionMessage("This list of operators is generated based on the operators you currently have selected."
-									+ "To find a specific operator, use the search filters above or click Show ALL Operators.");
+								+ "To find a specific operator, use the search filters above or click Show ALL Operators.");
 					} else {
 						// Corporate users should only see the operators under
 						// their umbrella
@@ -249,7 +255,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 				}
 				return "search";
 			}
-			
+
 			if ("searchShowAll".equals(button)) {
 				searchResults = new ArrayList<OperatorAccount>();
 				Database db = new Database();
@@ -380,14 +386,6 @@ public class ContractorFacilities extends ContractorActionSupport {
 					&& o.isOffsiteServices() || contractor.isMaterialSupplier() && o.isMaterialSupplier())
 				searchResults.add(o);
 		}
-	}
-
-	public int getRequestID() {
-		return requestID;
-	}
-
-	public void setRequestID(int requestID) {
-		this.requestID = requestID;
 	}
 
 	public String getState() {
