@@ -11,7 +11,7 @@ import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class TradeAutocomplete extends AutocompleteActionSupport<Trade> {
+public final class TradeAutocomplete extends AutocompleteActionSupport<Trade> {
 	@Autowired
 	private TradeDAO tradeDAO;
 

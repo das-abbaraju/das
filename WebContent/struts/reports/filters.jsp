@@ -12,20 +12,25 @@ $(function(){
 
 	$('input.tokenAuto').each(function() {
 		var that = $(this);
-		var field_type = that.attr('rel');
+		var field_type = that.attr('rel').split('/')[0];
+		var extraArgs = that.attr('rel').split('/')[1];
 	    var name = that.attr('name');
 	    var opt = $('<option>').attr('selected', 'selected');
 	    var r_ids = that.val().split(',').map(Number);
+	    console.log("that: "+that);
+	    console.log("r_ids: "+r_ids);
+	    console.log("rel: "+that.attr('rel'));
+	    console.log("extraArgs: "+extraArgs);
 	    that.removeAttr('name');
 	    that.removeAttr('value');
-	    console.log(field_type +" "+r_ids);
 		
 		$.getJSON(field_type+'Autocomplete!tokenJson.action', {itemKeys: r_ids}, function(json) {
 			var results;
 			if(json.result) {
 				results = json.result;
 			}
-			that.tokenInput(field_type+'Autocomplete!tokenJson.action?limit=10', {
+			var url = field_type+'Autocomplete!tokenJson.action?' + (extraArgs==undefined? '' : 'extraArgs=' + extraArgs + '&') + 'limit=10';
+			that.tokenInput(url, {
 				jsonContainer: 'result',
 				prePopulate: results,
 		        onAdd: function(item) {
@@ -219,7 +224,7 @@ select.hidden {
 			<a href="#"class="filterBox">Office In State/Province</a> = 
 			<span class="q_status">ALL</span><br />
 			<span class="clearLink q_box select"> 
-				<s:select list="filter.officeInList" cssClass="forms" name="filter.officeIn" listKey="id" listValue="name" multiple="true" size="5" /> 
+				<s:textfield rel="StateQuestion/OfficeLocation" name="filter.officeIn" cssClass="tokenAuto" />
 				<a class="clearLink" href="#">Clear</a> 
 			</span>
 		</div>
@@ -230,7 +235,7 @@ select.hidden {
 			<a href="#" class="filterBox">Works In State/Province</a> = 
 			<span class="q_status">ALL</span><br />
 			<span class="clearLink q_box select"> 
-				<s:select list="filter.worksInList" cssClass="forms" name="filter.worksIn" listKey="id" listValue="name" multiple="true" size="5" /> 
+				<s:textfield rel="StateQuestion/OfficeLocation" name="filter.worksIn" cssClass="tokenAuto" />
 				<a class="clearLink" href="#">Clear</a> 
 			</span>
 		</div>
@@ -241,9 +246,8 @@ select.hidden {
 			<a href="#" class="filterBox">Licensed In State/Province</a> = 
 			<span class="q_status">ALL</span><br />
 			<span class="clearLink q_box select"> 
-				<s:select list="filter.stateLicensesList" cssClass="forms" 
-					name="filter.stateLicensedIn" listKey="id" listValue="name" multiple="true" size="5" /><br />
-				<a class="clearLink" href="#">Clear</a>
+				<s:textfield rel="StateQuestion/OfficeLocation" name="filter.stateLicensedIn" cssClass="tokenAuto" />
+				<a class="clearLink" href="#">Clear</a> 
 			</span>
 		</div>
 	</s:if>

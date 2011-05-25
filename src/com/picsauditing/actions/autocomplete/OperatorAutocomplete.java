@@ -11,7 +11,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class OperatorAutocomplete extends AutocompleteActionSupport<OperatorAccount> {
+public final class OperatorAutocomplete extends AutocompleteActionSupport<OperatorAccount> {
 
 	@Autowired
 	private OperatorAccountDAO dao;

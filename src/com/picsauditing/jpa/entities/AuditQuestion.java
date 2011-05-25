@@ -612,4 +612,10 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	public String getAutocompleteItem() {
 		return "[" + id + "] " + name;
 	}
+	
+	@Transient
+	@Override
+	public String getAutocompleteValue() {
+		return name;
+	}
 }
