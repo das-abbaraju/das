@@ -30,7 +30,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	private ContractorTrade trade;
 
 	private List<ContractorTrade> affectedTrades = new ArrayList<ContractorTrade>();
-	
+
 	private boolean requiresMaterial = false;
 	private boolean requiresService = false;
 	private List<ContractorType> conTypes;
@@ -38,7 +38,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	public ContractorTradeAction() {
 		this.subHeading = getText("ContractorTrades.title");
 	}
-	
+
 	// TODO Check the security here
 	public String execute() throws Exception {
 		super.execute();
@@ -59,16 +59,16 @@ public class ContractorTradeAction extends ContractorActionSupport {
 					break;
 				}
 			}
-			
+
 			boolean onsite = contractor.isOnsiteServices();
 			boolean offsite = contractor.isOffsiteServices();
 			boolean material = contractor.isMaterialSupplier();
-			
+
 			boolean product = trade.getTrade().getProductI();
 			boolean service = trade.getTrade().getServiceI();
-			
+
 			if (!material && product) {
-				requiresMaterial = true;				
+				requiresMaterial = true;
 			} else if (!onsite && !offsite && service) {
 				requiresService = true;
 			}
@@ -103,7 +103,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			EmailSender sender = new EmailSender();
 			sender.sendNow(emailQueue);
 		}
-		
+
 		contractor.addAccountTypes(conTypes);
 		accountDao.save(contractor);
 
@@ -112,7 +112,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	}
 
 	public String removeTradeAjax() {
-		contractor.getTrades().remove(trade);		
+		contractor.getTrades().remove(trade);
 		tradeDAO.remove(trade);
 		trade = null;
 		sortTrades();
@@ -143,7 +143,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		return trades;
 	}
-	
+
 	public String getClassification() {
 		StringBuilder sb = new StringBuilder();
 		List<Trade> list = tradeDAO.findListByTrade(trade.getTrade().getId(), 0);
@@ -154,11 +154,10 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		return sb.toString();
 	}
 
-	
+
 	public List<Trade> getTradeClassification() {
-		List<Trade> list = tradeDAO.findListByTrade(trade.getTrade().getId(), 0);
-		
-		list.remove(list.size() - 1); // remove last
+		List<Trade> list = tradeDAO.findListByTrade(trade.getTrade().getId(), -1);
+
 		return list;
 	}
 
@@ -186,7 +185,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	/**
 	 * Sorts contractor trades for cloud
-	 * 
+	 *
 	 * @return
 	 */
 	private void sortTrades() {
