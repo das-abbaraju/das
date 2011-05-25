@@ -40,7 +40,6 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 	public ContractorRegistrationServices() {
 		this.subHeading = getText("ContractorRegistrationServices.title");
-		// subHeading = "Services Performed";
 	}
 
 	public String execute() throws Exception {

@@ -71,7 +71,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		this.noteDAO = noteDAO;
 		this.invoiceItemDAO = invoiceItemDAO;
 		this.auditBuilder = auditBuilder;
-		subHeading = "Finish Registration";
+		subHeading = "Confirm Registration";
 	}
 
 	public String execute() throws Exception {
