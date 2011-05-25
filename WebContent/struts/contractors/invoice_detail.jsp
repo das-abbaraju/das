@@ -148,7 +148,12 @@ input[type=submit] {
 		</tr>
 		<tr>
 			<td style="padding-top: 15px;">
-
+						<s:if test="edit && hasInvoiceMembershipChanged" >
+							<div class="buttons right" style="padding:7px;">
+								<a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />&button=Change to"
+								class="picsbutton positive">Change Membership Level(s)<s:property value="contractor.fees.get('AuditGUARD').newLevel.fee" /></a>
+							</div>
+						</s:if>
 			<table width="100%" class="allborder">
 				<tr>
 					<th colspan="2">Item &amp; Description</th>
@@ -169,12 +174,6 @@ input[type=submit] {
 								expires <s:date name="paymentExpires" format="MMM d, yyyy" />
 						</s:if> </span></td>
 						<s:if test="edit">
-							<s:if test="hasInvoiceMembershipChanged" >
-								<div class="buttons right" style="padding:7px;">
-									<a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />&button=Change to"
-									class="picsbutton positive">Change Membership Level(s)<s:property value="contractor.fees.get('AuditGUARD').newLevel.fee" /></a>
-								</div>
-							</s:if>
 							<td><s:textfield name="invoice.items[%{#stat.index}].description" value="%{description}" size="30" />
 							(optional description) </td>
 							<td class="right"><s:textfield value="%{amount}" size="6" name="invoice.items[%{#stat.index}].amount" /> <s:property value="invoice.currency"/>

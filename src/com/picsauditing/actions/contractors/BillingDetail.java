@@ -169,9 +169,10 @@ public class BillingDetail extends ContractorActionSupport {
 
 		// Automatically deactivating account based on expired membership
 		String status = contractor.getBillingStatus();
-		if ("Renewal Overdue".equals(status) || "Reactivation".equals(status)) {
+		if (!contractor.getStatus().equals(AccountStatus.Deactivated)
+				&& ("Renewal Overdue".equals(status) || "Reactivation".equals(status))) {
 			contractor.setStatus(AccountStatus.Deactivated);
-			if("Renewal Overdue".equals(status))
+			if ("Renewal Overdue".equals(status))
 				contractor.setRenew(false);
 			if (contractor.isAcceptsBids())
 				contractor.setReason("List Only Account");

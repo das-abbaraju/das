@@ -114,18 +114,43 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			}
 			if (button.startsWith("Change to")) {
 				List<String> changedItems = new ArrayList<String>();
+				List<InvoiceItem> removalList = new ArrayList<InvoiceItem>();
 
-				for (InvoiceItem item : invoice.getItems()) {
-					for (FeeClass feeClass : contractor.getFees().keySet()) {
+				for (FeeClass feeClass : contractor.getFees().keySet()) {
+					boolean found = false;
+					for (InvoiceItem item : invoice.getItems()) {
 						if (item.getInvoiceFee().equals(contractor.getFees().get(feeClass).getCurrentLevel())
-								&& contractor.getFees().get(feeClass).isHasChanged()) {
+								&& !contractor.getFees().get(feeClass).getNewLevel().equals(item.getInvoiceFee())) {
+							found = true;
 							item.setInvoiceFee(contractor.getFees().get(feeClass).getNewLevel());
 							item.setAmount(contractor.getFees().get(feeClass).getNewLevel().getAmount());
 							item.setAuditColumns(permissions);
 
 							changedItems.add(contractor.getFees().get(feeClass).getNewLevel().getFee());
+							if (contractor.getFees().get(feeClass).getNewLevel().isFree())
+								removalList.add(item);
 						}
 					}
+
+					// found a new fee
+					if (!found && !contractor.getFees().get(feeClass).getNewLevel().isFree()) {
+						InvoiceItem newInvoiceItem = new InvoiceItem();
+						newInvoiceItem.setInvoiceFee(contractor.getFees().get(feeClass).getNewLevel());
+						newInvoiceItem.setAmount(contractor.getFees().get(feeClass).getNewLevel().getAmount());
+						newInvoiceItem.setAuditColumns(new User(User.SYSTEM));
+
+						newInvoiceItem.setInvoice(invoice);
+						invoice.getItems().add(newInvoiceItem);
+
+						changedItems.add(contractor.getFees().get(feeClass).getNewLevel().getFee());
+					}
+				}
+
+				for (Iterator<InvoiceItem> iterator = removalList.iterator(); iterator.hasNext();) {
+					InvoiceItem item = iterator.next();
+					invoice.getItems().remove(item);
+					invoiceDAO.remove(item);
+					iterator.remove();
 				}
 
 				contractor.syncBalance();
@@ -167,7 +192,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				// Automatically deactivating account based on expired
 				// membership
 				String status = contractor.getBillingStatus();
-				if ("Renewal Overdue".equals(status) || "Reactivation".equals(status)) {
+				if (!contractor.getStatus().equals(AccountStatus.Deactivated)
+						&& ("Renewal Overdue".equals(status) || "Reactivation".equals(status))) {
 					contractor.setStatus(AccountStatus.Deactivated);
 					if ("Renewal Overdue".equals(status))
 						contractor.setRenew(false);
