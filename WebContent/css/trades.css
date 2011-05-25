@@ -130,6 +130,7 @@ a.trade,a.trade:hover,a.trade:active {
 
 #trade_description {
 	padding-left: 1em;
+	font-style: italic;
 }
 
 #trade_children {
