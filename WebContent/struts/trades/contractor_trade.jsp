@@ -37,6 +37,7 @@ var conID = '<s:property value="id"/>';
 <s:include value="trade_search.jsp"/>
 
 <div id="trade-view">
+	<h4>Selected trades</h4>
 	<s:include value="contractor_trade_cloud.jsp"/>
 </div>
 </body>

@@ -509,6 +509,7 @@ table.report tr.hurdle td {
 					<strong><span id="subcontracted"><s:property value="contractor.tradesSub"/></span></strong>
 				</p></s:if>
 				<s:if test="contractor.trades.size() > 0"><p id="services">
+					<p>Trades:</p>
 					<s:include value="../trades/contractor_trade_cloud.jsp"/>
 				</s:if>
 				<div class="clear"></div>
