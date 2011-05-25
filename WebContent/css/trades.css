@@ -1,6 +1,5 @@
 a.trade,a.trade:hover,a.trade:active {
 	text-decoration: none;
-	white-space: nowrap;
 }
 
 #trade-cloud {
@@ -204,7 +203,7 @@ a.trade,a.trade:hover,a.trade:active {
 	font-size: 18px;
 	height: 34px;
 	padding: 0px 30px 0px 10px;
-	width: 400px;
+	width: 350px;
 }
 
 #suggest input.searchText:focus {
@@ -248,6 +247,7 @@ img.trade {
 	float: right;
 	height: 100px;
 	width: 100px;
+	margin: 2px;
 }
 
 #browse-tab, #search-tab {
