@@ -40,30 +40,15 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 	protected boolean showPriority = true;
 	protected boolean showWho = true;
 	protected Map<String, Boolean> columnMap = new HashMap<String, Boolean>();
+	protected String[] columnsIgnore = new String[0];
 	protected List<T> rules = new ArrayList<T>();
 
 	protected Date date = new Date();
 
 	@Override
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		if ("DeleteRule".equals(button)) {
-			if ("category".equals(ruleType)) {
-				AuditCategoryRule acr = ruleDAO.findAuditCategoryRule(id);
-				if (acr != null && this.isCanEditRule(acr))
-					ruleDAO.remove(acr);
-			} else if ("audittype".equals(ruleType)) {
-				AuditTypeRule atr = ruleDAO.findAuditTypeRule(id);
-				if (atr != null && this.isCanEditRule(atr))
-					ruleDAO.remove(atr);
-			}
-
-			return SUCCESS;
-		}
-
+	public final String execute() throws Exception {
 		setup();
+		removeColumns();
 		return SUCCESS;
 	}
 
@@ -114,6 +99,13 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 		}
 	}
 
+	public void removeColumns() {
+		for (String column : columnsIgnore) {
+			if (columnMap.containsKey(column))
+				columnMap.remove(column);
+		}
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -148,6 +140,14 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 
 	public Map<String, Boolean> getColumnMap() {
 		return columnMap;
+	}
+
+	public String[] getColumnsIgnore() {
+		return columnsIgnore;
+	}
+
+	public void setColumnsIgnore(String[] columnsIgnore) {
+		this.columnsIgnore = columnsIgnore;
 	}
 
 	public List<T> getRules() {

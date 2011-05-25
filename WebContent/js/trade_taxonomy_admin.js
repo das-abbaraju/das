@@ -17,12 +17,12 @@ function loadTradeCallback() {
 
 function showCategoryRules(tradeID) {
 	startThinking({ div: "tradeCategoryRules", message: "Loading Related Category Rules" });
-	$('#tradeCategoryRules').load('CategoryRuleTableAjax.action', { 'comparisonRule.trade': tradeID });
+	$('#tradeCategoryRules').load('CategoryRuleTableAjax.action', { 'comparisonRule.trade': tradeID, 'columnsIgnore': 'auditType' });
 }
 
 function showAuditTypeRules(tradeID) {
 	startThinking({ div: "tradeAuditRules", message: "Loading Related Audit Type Rules" });
-	$('#tradeAuditRules').load('AuditTypeRuleTableAjax.action', { 'comparisonRule.trade': tradeID });
+	$('#tradeAuditRules').load('AuditTypeRuleTableAjax.action', { 'comparisonRule.trade': tradeID, 'columnsIgnore': 'auditType' });
 }
 
 function setupTree() {
