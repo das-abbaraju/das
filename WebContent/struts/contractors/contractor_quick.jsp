@@ -48,16 +48,11 @@ $(document).ready(function() {
 		<s:property value="contractor.score" />
 		<br />
 		</pics:permission>
-		<label>Trade:</label>
-		<s:property value="contractor.mainTrade" />
+		<label>Safety Critical:</label>
+		<s:property value="contractor.safetyRisk" />
 		<br />
-		<s:if test="!contractor.materialSupplierOnly">
-			<label>Safety Risk:</label>
-			<s:property value="contractor.safetyRisk" />
-			<br />
-		</s:if>
 		<s:if test="contractor.materialSupplier">
-			<label>Product Risk:</label>
+			<label>Product Critical:</label>
 			<s:property value="contractor.productRisk" />
 			<br />
 		</s:if>
