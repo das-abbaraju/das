@@ -48,6 +48,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	private int contractorCount;
 	private String imageExtension;
 	private boolean needsIndexing;
+	private boolean selectable = true;
 
 	private TranslatableString name;
 	private TranslatableString name2;
@@ -428,6 +429,14 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Override
 	public String toString() {
 		return String.valueOf(name);
+	}
+
+	public boolean isSelectable() {
+		return selectable;
+	}
+
+	public void setSelectable(boolean selectable) {
+		this.selectable = selectable;
 	}
 
 }

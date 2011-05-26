@@ -21,6 +21,7 @@
 			<li><label>Trade Name:</label> <s:textfield name="trade.name"/> <a href=""></a><s:property value="trade.name.locale"/></li>
 			<li><label>Tree Name (optional):</label> <s:textfield name="trade.name2"/> <s:property value="trade.name2.locale"/></li>
 			<li><label>Help Text (optional):</label> <s:textarea name="trade.help"></s:textarea></li>
+			<li><label>Selectable:</label><s:checkbox name="trade.selectable"/></li>
 			<li>
 				<s:if test="trade.id > 0">
 					<a class="edit translate" href="ManageTranslations.action?button=Search&key=Trade.<s:property value="trade.id"/>." target="_BLANK">Manage Translations</a>
