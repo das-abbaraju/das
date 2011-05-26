@@ -292,6 +292,28 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public List<IndexObject> getIndexValues() {
 		List<IndexObject> indexValues = super.getIndexValues();
+		
+		// add in parents index values
+		if (!parent.equals(Trade.TOP)) {
+			List<IndexObject> parentValues = parent.getIndexValues();
+			
+			// add in unique parent values at a reduced weight
+			for (IndexObject parentItem: parentValues) {
+				boolean found = false;
+				for (IndexObject item:indexValues) {
+					if (item.getValue().compareTo(parentItem.getValue()) == 0) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					parentItem.setWeight(parentItem.getWeight() - 2);
+					if (parentItem.getWeight() < 1) parentItem.setWeight(1);
+					indexValues.add(parentItem);
+				}
+			}
+		}
+		
 		for (TradeAlternate ta : getAlternates()) {
 			String[] strArray = ta.getName().toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
 			for (String str : strArray) {
