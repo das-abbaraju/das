@@ -1152,13 +1152,13 @@ public class ContractorAccount extends Account implements JSONable {
 		// if Operator activation fee is reduced, return Operator account
 		if (getRequestedBy() != null) {
 			if (getRequestedBy().getActivationFee() != null
-					&& !getRequestedBy().getActivationFee().equals(activation.getAmount().intValue()))
+					&& !getRequestedBy().getActivationFee().equals(activation.getAmount(this).intValue()))
 				return getRequestedBy();
 
 			// if Corporate activation fee is reduced, return Corporate account
 			for (Facility f : getRequestedBy().getCorporateFacilities())
 				if (f.getCorporate().getActivationFee() != null
-						&& !f.getCorporate().getActivationFee().equals(activation.getAmount().intValue()))
+						&& !f.getCorporate().getActivationFee().equals(activation.getAmount(this).intValue()))
 					return f.getCorporate();
 		}
 		return null;
@@ -1167,7 +1167,7 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public boolean hasReducedActivation(InvoiceFee activation) {
 		return getReducedActivationFeeOperator(activation) != null
-				&& activation.getAmount().intValue() != getReducedActivationFeeOperator(activation).getActivationFee();
+				&& activation.getAmount(this).intValue() != getReducedActivationFeeOperator(activation).getActivationFee();
 	}
 
 	@Transient
@@ -1175,7 +1175,7 @@ public class ContractorAccount extends Account implements JSONable {
 		double halfMembership = 0.0;
 		for (FeeClass feeClass : this.getFees().keySet()) {
 			if (!this.getFees().get(feeClass).getCurrentLevel().isFree())
-				halfMembership += this.getFees().get(feeClass).getCurrentLevel().getAmount().doubleValue();
+				halfMembership += this.getFees().get(feeClass).getCurrentLevel().getAmount(this).doubleValue();
 		}
 		halfMembership *= 0.5;
 
@@ -1207,7 +1207,7 @@ public class ContractorAccount extends Account implements JSONable {
 		BigDecimal newAmount = BigDecimal.ZERO;
 		for (FeeClass feeclass : this.getFees().keySet()) {
 			if (!this.getFees().get(feeclass).getNewLevel().isFree())
-				newAmount = newAmount.add(this.getFees().get(feeclass).getNewLevel().getAmount());
+				newAmount = newAmount.add(this.getFees().get(feeclass).getNewLevel().getAmount(this));
 		}
 
 		return newAmount;
@@ -1229,7 +1229,7 @@ public class ContractorAccount extends Account implements JSONable {
 		BigDecimal currentAmount = BigDecimal.ZERO;
 		for (FeeClass feeclass : this.getFees().keySet()) {
 			if (!this.getFees().get(feeclass).getCurrentLevel().isFree())
-				currentAmount = currentAmount.add(this.getFees().get(feeclass).getCurrentLevel().getAmount());
+				currentAmount = currentAmount.add(this.getFees().get(feeclass).getCurrentLevel().getAmount(this));
 		}
 
 		return currentAmount;

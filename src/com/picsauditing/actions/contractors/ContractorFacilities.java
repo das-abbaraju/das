@@ -338,6 +338,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 					facilityChanger.setType(type);
 					contractor.setRenew(true);
 					facilityChanger.add();
+					BillingCalculatorSingle.calculateAnnualFees(contractor);
+					contractor.syncBalance();
 					recalculate = true;
 				} else {
 					// Not sure when this happens

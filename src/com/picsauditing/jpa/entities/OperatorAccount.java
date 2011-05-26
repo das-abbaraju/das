@@ -178,6 +178,7 @@ public class OperatorAccount extends Account {
 		this.activationFee = activationFee;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Transient
 	public OperatorAccount getActivationFeeOperator(InvoiceFee activation) {
 		// if Operator activation fee is reduced, then use Operator account activation fee

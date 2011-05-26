@@ -12,6 +12,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.picsauditing.PICS.BillingCalculatorSingle;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "invoice_fee")
@@ -42,9 +44,20 @@ public class InvoiceFee extends BaseTable {
 		this.fee = fee;
 	}
 
+	/**
+	 * Please use getAmount(contractor) to get the properly discounted
+	 * amount for every contractor.
+	 * @return
+	 */
+	@Deprecated
 	@Column(name = "defaultAmount", nullable = false)
 	public BigDecimal getAmount() {
 		return amount;
+	}
+
+	@Transient
+	public BigDecimal getAmount(ContractorAccount contractor) {
+		return BillingCalculatorSingle.getDiscountedMembershipAmount(this, contractor);
 	}
 
 	public void setAmount(BigDecimal amount) {
@@ -122,20 +135,21 @@ public class InvoiceFee extends BaseTable {
 
 	@Transient
 	public boolean isMembership() {
-		return this.getFeeClass() == FeeClass.ListOnly || this.getFeeClass() == FeeClass.DocuGUARD || this.getFeeClass() == FeeClass.AuditGUARD
-				|| this.getFeeClass() == FeeClass.InsureGUARD || this.getFeeClass() == FeeClass.EmployeeGUARD;
+		return this.getFeeClass() == FeeClass.ListOnly || this.getFeeClass() == FeeClass.DocuGUARD
+				|| this.getFeeClass() == FeeClass.AuditGUARD || this.getFeeClass() == FeeClass.InsureGUARD
+				|| this.getFeeClass() == FeeClass.EmployeeGUARD;
 	}
 
 	@Transient
 	public boolean isActivation() {
 		return this.getFeeClass() == FeeClass.Activation;
 	}
-	
+
 	@Transient
 	public boolean isReactivation() {
 		return this.getFeeClass() == FeeClass.Reactivation;
 	}
-	
+
 	@Transient
 	public boolean isGST() {
 		return this.getFeeClass() == FeeClass.GST;
@@ -145,9 +159,9 @@ public class InvoiceFee extends BaseTable {
 	public BigDecimal getGSTSurchage(BigDecimal total) {
 		return total.multiply(BigDecimal.valueOf(0.05)).setScale(2, BigDecimal.ROUND_UP);
 	}
-	
+
 	@Transient
 	public boolean isLegacyMembership() {
-		return this.getId() >= 4 && this.getId() <= 11;
+		return (this.getId() >= 4 && this.getId() <= 11) || this.getId() == 105;
 	}
 }

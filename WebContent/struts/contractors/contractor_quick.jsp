@@ -159,7 +159,7 @@ $(document).ready(function() {
 			<br />
 			<label>Membership:</label><br />
 			<s:iterator value="contractor.currentMembership">
-				 <s:property value="fee" />: $<s:property value="amount" /> <s:property value="contractor.currencyCode" /><br />
+				 <s:property value="fee" />: $<s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
 			</s:iterator>
 			<label>Balance:</label>
 			$<s:property value="contractor.balance" />

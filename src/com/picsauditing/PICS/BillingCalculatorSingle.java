@@ -68,7 +68,7 @@ public class BillingCalculatorSingle {
 		// Checking Audits
 		boolean auditGUARD = false;
 		boolean insureGUARD = false;
-		boolean implementationAuditPlus = false;
+		boolean employeeGUARD = false;
 
 		Map<AuditType, AuditTypeDetail> map = AuditBuilder.calculateRequiredAuditTypes(contractor);
 		for (AuditType auditType : map.keySet()) {
@@ -78,26 +78,13 @@ public class BillingCalculatorSingle {
 				auditGUARD = true;
 			if (auditType.getClassType().equals(AuditTypeClass.Policy))
 				insureGUARD = true;
-			if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS)
-				implementationAuditPlus = true;
+			if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isIm())
+				employeeGUARD = true;
 		}
 
 		if (auditGUARD) {
 			// Audited Contractors have a tiered pricing scheme
 			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD, payingFacilities);
-
-			// Check to see if the the contractor only has one BASF operator
-			if (payingFacilities == 1) {
-				Date now = new Date();
-				if (CONTRACT_RENEWAL_BASF.after(now)) {
-					for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
-						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
-							newLevel.setAmount(new BigDecimal(299));
-						}
-					}
-				}
-			}
-
 			contractor.getFees().get(FeeClass.AuditGUARD).setNewLevel(newLevel);
 		} else {
 			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD, 0);
@@ -114,22 +101,18 @@ public class BillingCalculatorSingle {
 		}
 
 		// EmployeeGUARD
-		boolean requiresOQ = false;
-		boolean requiresCompetency = false;
-		for (ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().isRequiresOQ())
-				requiresOQ = true;
-			if (co.getOperatorAccount().isRequiresCompetencyReview())
-				requiresCompetency = true;
+		if (!employeeGUARD) {
+			for (ContractorOperator co : contractor.getOperators()) {
+				if (co.getOperatorAccount().isRequiresOQ())
+					employeeGUARD = true;
+				if (co.getOperatorAccount().isRequiresCompetencyReview())
+					employeeGUARD = true;
+			}
 		}
 
-		if (requiresCompetency) {
+		if (employeeGUARD) {
 			// EmployeeGUARD HSE Contractors have a tiered pricing scheme
 			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, payingFacilities);
-			contractor.getFees().get(FeeClass.EmployeeGUARD).setNewLevel(newLevel);
-		} else if (requiresOQ || implementationAuditPlus) {
-			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, payingFacilities);
-			newLevel.setAmount(BigDecimal.ZERO);
 			contractor.getFees().get(FeeClass.EmployeeGUARD).setNewLevel(newLevel);
 		} else {
 			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, 0);
@@ -194,12 +177,12 @@ public class BillingCalculatorSingle {
 				}
 
 				// Activate effective today
-				items.add(new InvoiceItem(fee, new Date()));
+				items.add(new InvoiceItem(fee, new Date(), contractor));
 				// For Reactivation Fee and Reactivating Membership
 			} else if ("Reactivation".equals(billingStatus) || "Membership Canceled".equals(billingStatus)) {
 				InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, payingFacilities);
 				// Reactivate effective today
-				items.add(new InvoiceItem(fee, new Date()));
+				items.add(new InvoiceItem(fee, new Date(), contractor));
 			}
 		}
 
@@ -207,18 +190,26 @@ public class BillingCalculatorSingle {
 				|| "Membership Canceled".equals(billingStatus)) {
 			Date paymentExpires = DateBean.addMonths(new Date(), 12);
 			for (FeeClass feeClass : contractor.getFees().keySet())
-				if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
-					items.add(new InvoiceItem(contractor.getFees().get(feeClass).getNewLevel(), feeClass
-							.isPaymentExpiresNeeded() ? paymentExpires : null));
+				if (!contractor.getFees().get(feeClass).getNewLevel().isFree()) {
+					InvoiceItem newItem = new InvoiceItem(contractor.getFees().get(feeClass).getNewLevel(), feeClass
+							.isPaymentExpiresNeeded() ? paymentExpires : null, contractor);
+					newItem.setAmount(contractor.getFees().get(feeClass).getNewLevel().getAmount(contractor));
+					items.add(newItem);
+				}
 		}
 
 		if (billingStatus.startsWith("Renew")) {
 			// We could eventually customize the 12 months to support
 			// monthly/quarterly billing cycles
 			Date paymentExpires = DateBean.addMonths(contractor.getPaymentExpires(), 12);
-			for (FeeClass feeClass : contractor.getFees().keySet())
-				if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
-					items.add(new InvoiceItem(contractor.getFees().get(feeClass).getNewLevel(), paymentExpires));
+			for (FeeClass feeClass : contractor.getFees().keySet()) {
+				if (!contractor.getFees().get(feeClass).getNewLevel().isFree()) {
+					InvoiceItem newItem = new InvoiceItem(contractor.getFees().get(feeClass).getNewLevel(), feeClass
+							.isPaymentExpiresNeeded() ? paymentExpires : null, contractor);
+					newItem.setAmount(contractor.getFees().get(feeClass).getNewLevel().getAmount(contractor));
+					items.add(newItem);
+				}
+			}
 		}
 		// For Upgrades
 		// Calculate a prorated amount depending on when the upgrade happens
@@ -244,10 +235,10 @@ public class BillingCalculatorSingle {
 
 				BigDecimal upgradeTotal = BigDecimal.ZERO;
 				for (ContractorFee upgrade : upgrades) {
-					BigDecimal upgradeAmountDifference = upgrade.getNewLevel().getAmount();
+					BigDecimal upgradeAmountDifference = upgrade.getNewLevel().getAmount(contractor);
 					if (!contractor.isAcceptsBids()) {
-						upgradeAmountDifference = upgradeAmountDifference.subtract(upgrade.getCurrentLevel()
-								.getAmount());
+						upgradeAmountDifference = upgradeAmountDifference.subtract(upgrade.getCurrentLevel().getAmount(
+								contractor));
 					}
 
 					upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference).divide(
@@ -256,8 +247,8 @@ public class BillingCalculatorSingle {
 					upgradeTotal = upgradeTotal.add(upgradeAmount);
 
 					if (upgradeAmount.floatValue() > 0)
-						description = "Upgrading from $" + upgrade.getCurrentLevel().getAmount() + ". Prorated $"
-								+ upgradeAmount;
+						description = "Upgrading from $" + upgrade.getCurrentLevel().getAmount(contractor)
+								+ ". Prorated $" + upgradeAmount;
 					else
 						description = "";
 
@@ -267,6 +258,7 @@ public class BillingCalculatorSingle {
 					invoiceItem.setDescription(description);
 					if (upgrade.getFeeClass().isPaymentExpiresNeeded())
 						invoiceItem.setPaymentExpires(contractor.getPaymentExpires());
+
 					items.add(invoiceItem);
 				}
 			}
@@ -303,20 +295,6 @@ public class BillingCalculatorSingle {
 		return false;
 	}
 
-	/**
-	 * Return TRUE if any one of the items is for a Fee Class = "Membership" and
-	 * the amount isn't prorated
-	 * 
-	 * @param items
-	 * @return
-	 */
-	static public boolean isContainsFullMembership(List<InvoiceItem> items) {
-		for (InvoiceItem item : items)
-			if (item.getInvoiceFee().getFeeClass().equals("Membership"))
-				return (item.getAmount() == item.getInvoiceFee().getAmount());
-		return false;
-	}
-
 	static public boolean activateContractor(ContractorAccount contractor, Invoice invoice,
 			ContractorAccountDAO accountDao) {
 		if (contractor.getStatus().isPendingDeactivated() && invoice.getStatus().isPaid()) {
@@ -330,5 +308,54 @@ public class BillingCalculatorSingle {
 			}
 		}
 		return false;
+	}
+
+	@SuppressWarnings("deprecation")
+	static public BigDecimal getDiscountedMembershipAmount(InvoiceFee fee, ContractorAccount contractor) {
+		if (fee.isFree())
+			return BigDecimal.ZERO;
+
+		// AuditGUARD Discounts
+		if (fee.getFeeClass().equals(FeeClass.AuditGUARD)) {
+
+			// BASF discount for 1 operator
+			if (contractor.getPayingFacilities() == 1) {
+				Date now = new Date();
+				if (CONTRACT_RENEWAL_BASF.after(now)) {
+					for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
+						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
+							return new BigDecimal(299);
+						}
+					}
+				}
+			}
+		}
+		// EmployeeGUARD Discounts
+		else if (fee.getFeeClass().equals(FeeClass.EmployeeGUARD)) {
+			boolean employeeAudits = false;
+			boolean oq = false;
+			boolean hseCompetency = false;
+
+			Map<AuditType, AuditTypeDetail> map = AuditBuilder.calculateRequiredAuditTypes(contractor);
+			for (AuditType auditType : map.keySet()) {
+				if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isIm()) {
+					employeeAudits = true;
+					break;
+				}
+			}
+
+			for (ContractorOperator co : contractor.getOperators()) {
+				if (co.getOperatorAccount().isRequiresOQ())
+					oq = true;
+				if (co.getOperatorAccount().isRequiresCompetencyReview())
+					hseCompetency = true;
+			}
+
+			if (!hseCompetency && (employeeAudits || oq))
+				return BigDecimal.ZERO;
+		}
+
+		// No discounts apply
+		return fee.getAmount();
 	}
 }

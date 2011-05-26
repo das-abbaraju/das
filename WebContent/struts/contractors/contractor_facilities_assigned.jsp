@@ -12,16 +12,16 @@
 	<s:if test="contractor.acceptsBids">
 		<b>If you are awarded a bid or decide to convert from list only to a full membership your new membership fee will increase</b>.<br />
 	</s:if>
-	<s:if test="contractor.currentMembership.size > 0"> 
-		<label><s:text name="%{scope}.ContractorFacilities.CurrentMembershipLevel" /></label><br />
-		<s:iterator value="contractor.currentMembership">
-			 <s:property value="fee" />: $<s:property value="amount" /> per year<br />
+	<s:if test="contractor.currentMembership.size == 0 || contractor.currentMembershipAmount < contractor.newMembershipAmount"> 
+		<label><s:text name="%{scope}.ContractorFacilities.NewMembershipLevel" /></label><br />
+		<s:iterator value="contractor.newMembership">
+			 <s:property value="fee" />: $<s:property value="getAmount(contractor)" /> per year<br />
 		</s:iterator>
 	</s:if>
 	<s:else>
-		<label><s:text name="%{scope}.ContractorFacilities.NewMembershipLevel" /></label><br />
-		<s:iterator value="contractor.newMembership">
-			 <s:property value="fee" />: $<s:property value="amount" /> per year<br />
+		<label><s:text name="%{scope}.ContractorFacilities.CurrentMembershipLevel" /></label><br />
+		<s:iterator value="contractor.currentMembership">
+			 <s:property value="fee" />: $<s:property value="getAmount(contractor)" /> per year<br />
 		</s:iterator>
 	</s:else>
 </s:if>

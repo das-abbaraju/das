@@ -436,7 +436,7 @@ public class Cron extends PicsActionSupport {
 					lateFee = BigDecimal.valueOf(20);
 
 				InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, ((ContractorAccount) i.getAccount()).getPayingFacilities());
-				InvoiceItem lateFeeItem = new InvoiceItem(fee);
+				InvoiceItem lateFeeItem = new InvoiceItem(fee, (ContractorAccount)i.getAccount());
 				lateFeeItem.setAmount(lateFee);
 				lateFeeItem.setAuditColumns(new User(User.SYSTEM));
 				lateFeeItem.setInvoice(i);

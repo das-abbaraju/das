@@ -54,6 +54,7 @@ public class InvoiceFeeDAO extends PicsDAO {
 		// assigning numFacilities based on legacy id
 		switch(legacyAuditGUARDfee.getId()) {
 			case 5: numPayingFacilities = 1; break;
+			case 105: numPayingFacilities = 1; break;
 			case 6: numPayingFacilities = 2; break;
 			case 7: numPayingFacilities = 5; break;
 			case 8: numPayingFacilities = 9; break;

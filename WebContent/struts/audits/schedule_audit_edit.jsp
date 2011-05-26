@@ -124,7 +124,7 @@ function showChooseDate(override) {
 		<s:if test="needsReschedulingFee">
 			<input type="hidden" name="feeOverride" value="false" />
 			<div id="needsReschedulingFee" class="alert">
-				<s:text name="%{scope}.message.ReschedulingWarning"><s:param value="%{rescheduling.amount}" /></s:text><br />
+				<s:text name="%{scope}.message.ReschedulingWarning"><s:param value="%{rescheduling.getAmount(conAudit.contractorAccount)}" /></s:text><br />
 				<input type="button" onclick="showChooseDate(); return false;" value="<s:text name="button.Continue" />" class="picsbutton positive" />
 				<s:if test="permissions.userId == 1029 || permissions.userId == 935 || permissions.userId == 11503 || permissions.userId == 34065">
 					<!-- This option is available for Mina, Harvey, Gary, and Rick only -->

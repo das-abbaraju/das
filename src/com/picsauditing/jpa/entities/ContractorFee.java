@@ -30,7 +30,7 @@ public class ContractorFee extends BaseTable {
 	public void setContractor(ContractorAccount contractor) {
 		this.contractor = contractor;
 	}
-	
+
 	@Enumerated(EnumType.STRING)
 	@JoinColumn(name = "feeClass", nullable = false)
 	public FeeClass getFeeClass() {
@@ -63,9 +63,9 @@ public class ContractorFee extends BaseTable {
 
 	@Transient
 	public boolean isUpgrade() {
-		return this.getNewLevel().getAmount().compareTo(this.getCurrentLevel().getAmount()) > 0;
+		return this.getNewLevel().getAmount(contractor).compareTo(this.getCurrentLevel().getAmount(contractor)) > 0;
 	}
-	
+
 	@Transient
 	public boolean isHasChanged() {
 		return !this.getNewLevel().equals(this.getCurrentLevel());

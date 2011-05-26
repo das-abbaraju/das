@@ -343,15 +343,15 @@ public class ContractorAuditController extends AuditActionSupport {
 				&& (!conAudit.getAuditType().isCanContractorEdit() && conAudit.getAuditType().getEditPermission() == null)
 				|| conAudit.getAuditType().isAnnualAddendum() || conAudit.getAuditType().isPqf()) {
 
-			if(contractor.getOperators().size() <= 9) {
+			if (contractor.getOperators().size() <= 9) {
 				for (Invoice i : this.getContractor().getInvoices()) {
 					if (i.isOverdue()) {
 						for (InvoiceItem ii : i.getItems()) {
 							if ("Membership".equals(ii.getInvoiceFee().getFeeClass())
 									&& !ii.getInvoiceFee().isBidonly()
 									&& !ii.getInvoiceFee().isPqfonly()
-									&& (ii.getInvoiceFee().getAmount().equals(ii.getAmount()) || i.getTotalAmount()
-											.intValue() > 450))
+									&& (ii.getInvoiceFee().getAmount(conAudit.getContractorAccount()).equals(
+											ii.getAmount()) || i.getTotalAmount().intValue() > 450))
 								return true;
 						}
 					}

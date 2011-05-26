@@ -100,7 +100,7 @@ public class BillingDetail extends ContractorActionSupport {
 				if (contractor.hasReducedActivation(activation)) {
 					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
 					notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from $"
-							+ activation.getAmount() + " to $" + reducedOperator.getActivationFee() + ". ";
+							+ activation.getAmount(contractor) + " to $" + reducedOperator.getActivationFee() + ". ";
 				}
 			} else if (contractor.getBillingStatus().equals("Reactivation")) {
 				invoice.setDueDate(new Date());

@@ -41,7 +41,7 @@
 		<div class="alert">
 			<s:text name="%{scope}.message.RescheduleWarning">
 				<s:param><s:date name="lastCancellationTime" /></s:param>
-				<s:param><s:property value="rescheduling.amount" /></s:param>
+				<s:param><s:property value="rescheduling.getAmount(conAudit.contractorAccount)" /></s:param>
 			</s:text>
 		</div>
 	</li>

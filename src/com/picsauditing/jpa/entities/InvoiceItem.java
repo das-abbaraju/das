@@ -27,14 +27,14 @@ public class InvoiceItem extends BaseTable {
 	public InvoiceItem() {
 	}
 
-	public InvoiceItem(InvoiceFee fee) {
+	public InvoiceItem(InvoiceFee fee, ContractorAccount contractor) {
 		super();
 		invoiceFee = fee;
-		amount = fee.getAmount();
+		amount = fee.getAmount(contractor);
 	}
 
-	public InvoiceItem(InvoiceFee fee, Date paymentExpires) {
-		this(fee);
+	public InvoiceItem(InvoiceFee fee, Date paymentExpires, ContractorAccount contractor) {
+		this(fee, contractor);
 		this.paymentExpires = fee.getFeeClass().isPaymentExpiresNeeded() ? paymentExpires : null;
 	}
 
