@@ -293,44 +293,31 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	public List<IndexObject> getIndexValues() {
 		List<IndexObject> indexValues = super.getIndexValues();
 		
-		// add in parents index values
-		if (!parent.equals(Trade.TOP)) {
-			List<IndexObject> parentValues = parent.getIndexValues();
-			
-			// add in unique parent values at a reduced weight
-			for (IndexObject parentItem: parentValues) {
-				boolean found = false;
-				for (IndexObject item:indexValues) {
-					if (item.getValue().compareTo(parentItem.getValue()) == 0) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					parentItem.setWeight(parentItem.getWeight() - 2);
-					if (parentItem.getWeight() < 1) parentItem.setWeight(1);
-					indexValues.add(parentItem);
-				}
-			}
-		}
-		
 		for (TradeAlternate ta : getAlternates()) {
 			String[] strArray = ta.getName().toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
 			for (String str : strArray) {
 				if (!Strings.isEmpty(str))
-					indexValues.add(new IndexObject(str, 4));
+					indexValues.add(new IndexObject(str, 6));
+			}
+		}
+		
+		if (parent != null && parent.getId() != TOP_ID) {
+			for (IndexObject parentIndex : parent.getIndexValues()) {
+				IndexObject inheritedIndex = new IndexObject(parentIndex.getValue(), parentIndex.getWeight() - 2);
+				indexValues.add(inheritedIndex);
+				if (inheritedIndex.getWeight() < 1)
+					inheritedIndex.setWeight(1);
 			}
 		}
 		return indexValues;
 	}
 
 	/**
-	 * The name of this trade that's commonly used to describe it. Does not need
-	 * the parent trade to make sense. Can stand alone in a list and be
-	 * understood.
+	 * The name of this trade that's commonly used to describe it. Does not need the parent trade to make sense. Can
+	 * stand alone in a list and be understood.
 	 */
 	@Transient
-	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 8)
+	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 6)
 	public TranslatableString getName() {
 		return name;
 	}
@@ -340,11 +327,10 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	}
 
 	/**
-	 * The short version of the trade, typically only included when in context
-	 * with its parent trades
+	 * The short version of the trade, typically only included when in context with its parent trades
 	 */
 	@Transient
-	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 6)
+	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 8)
 	public TranslatableString getName2() {
 		return name2;
 	}

@@ -199,6 +199,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 	@RequiredPermission(value = OpPerms.ManageTrades, type = OpType.Edit)
 	public String removeAlternateAjax() {
 		tradeAlternateDAO.remove(alternate);
+		indexer.runSingle(trade, "ref_trade");
 		return "alternate";
 	}
 

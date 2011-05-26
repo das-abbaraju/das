@@ -3,25 +3,23 @@ package com.picsauditing.actions;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.IndexableDAO;
-import com.picsauditing.dao.TradeDAO;
-import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.IndexObject;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class Indexer extends PicsActionSupport {
@@ -39,21 +37,8 @@ public class Indexer extends PicsActionSupport {
 			"INSERT INTO app_index_stats SELECT indexType, value, count(*) FROM app_index GROUP BY indexType, value;",
 			"ANALYZE TABLE app_index, app_index_stats;" };
 
-	private AccountDAO accountDAO;
-	private UserDAO userDAO;
-	private EmployeeDAO empDAO;
-	private TradeDAO tradeDAO;
-
-	private List<String> list;
 	private static Map<String, IndexableDAO> indexTables;
 	private static final int RUN_NUM = 50;
-
-	public Indexer(AccountDAO accountDAO, UserDAO userDAO, EmployeeDAO empDAO, TradeDAO tradeDAO) {
-		this.accountDAO = accountDAO;
-		this.userDAO = userDAO;
-		this.empDAO = empDAO;
-		this.tradeDAO = tradeDAO;
-	}
 
 	@Override
 	public String execute() throws NoRightsException {
@@ -68,22 +53,6 @@ public class Indexer extends PicsActionSupport {
 				isRunning = true;
 //			PicsLogger.start("Indexer", "Starting Indexer");
 			setIndexTables(new HashMap<String, IndexableDAO>());
-			// if not specified then we will run all tables to check the index
-			/*if (toRun == null) {
-				getIndexTables().put("accounts", accountDAO);
-				getIndexTables().put("users", userDAO);
-				getIndexTables().put("employee", empDAO);
-				getIndexTables().put("ref_trade", tradeDAO);
-			} else {
-				if (toRun.equals("accounts"))
-					getIndexTables().put("accounts", accountDAO);
-				else if (toRun.equals("users"))
-					getIndexTables().put("users", userDAO);
-				else if (toRun.equals("employee"))
-					getIndexTables().put("employee", empDAO);
-				else if (toRun.equals("trade"))
-					getIndexTables().put("ref_trade", tradeDAO);
-			}*/
 			for (Entry<String, IndexableDAO> entry : getIndexTables().entrySet()) {
 				// for each table get those rows that need indexing
 				// and pass the list of ids in and run the indexer
@@ -107,7 +76,6 @@ public class Indexer extends PicsActionSupport {
 	}
 
 	public void runSingle(Indexable table, String tblName) {
-		List<IndexObject> l = null; // our list of ids
 		StringBuilder queryIndex = new StringBuilder("INSERT IGNORE INTO app_index VALUES ");
 		StringBuilder queryStats = new StringBuilder("INSERT IGNORE INTO app_index_stats VALUES ");
 		StringBuilder queryDelete = new StringBuilder("DELETE FROM app_index WHERE foreignKey = ");
@@ -115,11 +83,26 @@ public class Indexer extends PicsActionSupport {
 
 		if (table == null)
 			return;
-		l = table.getIndexValues();
+		
 		queryDelete.append(table.getId()).append(" AND indexType = '").append(table.getIndexType()).append("'");
 		try {
 			db.executeUpdate(queryDelete.toString());
-			for (IndexObject s : l) {
+			
+			// Create a list of unique indexes using the highest weights
+			Set<IndexObject> uniqueList = new HashSet<IndexObject>();
+			for (IndexObject candidate : table.getIndexValues()) {
+				boolean added = false;
+				for (IndexObject existing : uniqueList) {
+					if (existing.equals(candidate)) {
+						added = true;
+						if (existing.getWeight() < candidate.getWeight())
+							existing.setWeight(candidate.getWeight());
+					}
+				}
+				if (!added)
+					uniqueList.add(candidate);
+			}
+			for (IndexObject s : uniqueList) {
 				queryIndex.append("('").append(table.getIndexType()).append("',").append(table.getId()).append(",'")
 						.append(s.getValue()).append("','").append(s.getWeight()).append("'),");
 				queryStats.append("('").append(table.getIndexType()).append("','").append(s.getValue()).append("',")
@@ -132,9 +115,8 @@ public class Indexer extends PicsActionSupport {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 	}
-
+	
 	public void runIndexer(List<BasicDynaBean> ids, IndexableDAO dao, String tblName) {
 		// batch is the number we use to control how many to run
 		int batch = 0;
@@ -241,14 +223,6 @@ public class Indexer extends PicsActionSupport {
 		return db.select(sql.toString(), false);
 	}
 
-	public List<String> getList() {
-		return list;
-	}
-
-	public void setList(List<String> list) {
-		this.list = list;
-	}
-
 	public String getToRun() {
 		return toRun;
 	}
@@ -299,30 +273,6 @@ public class Indexer extends PicsActionSupport {
 
 	public static String[] getStatsQueryBuilder1() {
 		return statsQueryBuilder1;
-	}
-
-	public AccountDAO getAccountDAO() {
-		return accountDAO;
-	}
-
-	public void setAccountDAO(AccountDAO accountDAO) {
-		this.accountDAO = accountDAO;
-	}
-
-	public UserDAO getUserDAO() {
-		return userDAO;
-	}
-
-	public void setUserDAO(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
-
-	public EmployeeDAO getEmpDAO() {
-		return empDAO;
-	}
-
-	public void setEmpDAO(EmployeeDAO empDAO) {
-		this.empDAO = empDAO;
 	}
 
 	public static boolean isRunStats() {
