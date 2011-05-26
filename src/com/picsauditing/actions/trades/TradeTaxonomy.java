@@ -120,7 +120,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 						+ trade.getId(), trade.getImageExtension(), true);
 				tradeDAO.save(trade);
 			}
-			
+
 			indexer.runSingle(trade, "ref_trade");
 		}
 
@@ -191,6 +191,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 			trade.getAlternates().add(tradeAlternate);
 			tradeDAO.save(trade);
 		}
+		indexer.runSingle(trade, "ref_trade");
 
 		return "alternate";
 	}
@@ -225,8 +226,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 	private boolean deleteTrade(Trade trade) {
 		if (Objects.equal(trade, Trade.TOP)) {
 			/*
-			 * This is a sanity check. It should never happen as there is
-			 * nothing in the UI to allow it.
+			 * This is a sanity check. It should never happen as there is nothing in the UI to allow it.
 			 */
 			addActionError("You cannot delete the top level node.");
 			return false;
