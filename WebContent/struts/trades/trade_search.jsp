@@ -19,9 +19,16 @@
 	<div id="browse-tab">
 		<div id="browse-tree"></div>
 		<pics:permission perm="ManageTrades" type="Edit">
+		<div id="indexTrades">
 			<s:form>
 				<s:submit action="TradeTaxonomy!index" value="Reindex Trade Nested Set" title="Click this button after rearranging the trades." />
 			</s:form>
+		</div>
 		</pics:permission>
+	</div>
+	<div>
+		<img src="images/icon_box_blue.png" /> Service
+		<img src="images/icon_box_orange.png" /> Product
+		<img src="images/icon_box_combo.png" /> Both 
 	</div>
 </div>

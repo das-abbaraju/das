@@ -14,6 +14,9 @@ var conID = '<s:property value="id"/>';
 </script>
 <script type="text/javascript" src="js/trade_taxonomy_contractor.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript" src="js/trade_taxonomy_common.js?v=<s:property value="version"/>"></script>
+<style>
+#indexTrades {display: none;}
+</style>
 </head>
 <body>
 
