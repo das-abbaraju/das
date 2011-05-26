@@ -78,6 +78,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Date ccExpiration;
 	private Webcam webcam;
 	private Boolean soleProprietor;
+	private Boolean competitorMembership;
 
 	private Date paymentExpires;
 	private boolean renew = true;
@@ -776,7 +777,8 @@ public class ContractorAccount extends Account implements JSONable {
 						if (!foundListOnlyMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.ListOnly)) {
 								foundListOnlyMembership = true;
-								this.getFees().get(FeeClass.ListOnly).setCurrentLevel(invoiceItem.getInvoiceFee());
+								this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
+										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 1));
 							}
 						}
 
@@ -797,6 +799,11 @@ public class ContractorAccount extends Account implements JSONable {
 													.getPayingFacilities()));
 								else
 									this.getFees().get(FeeClass.DocuGUARD).setCurrentLevel(invoiceItem.getInvoiceFee());
+
+								// DocuGUARD overrides List Only membership
+								foundListOnlyMembership = true;
+								this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
+										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 0));
 							}
 						}
 
@@ -1031,9 +1038,21 @@ public class ContractorAccount extends Account implements JSONable {
 			return "Renewal";
 
 		// if any membership levels differ, amount is an upgrade
-		for (FeeClass feeClass : getFees().keySet())
-			if (this.getFees().get(feeClass).isUpgrade())
+		boolean upgrade = false;
+		boolean currentListOnly = false;
+		for (FeeClass feeClass : getFees().keySet()) {
+			if (!upgrade && this.getFees().get(feeClass).isUpgrade())
+				upgrade = true;
+			if (this.getFees().get(feeClass).getCurrentLevel().isBidonly())
+				currentListOnly = true;
+		}
+
+		if (upgrade) {
+			if (currentListOnly)
+				return "Renewal";
+			else
 				return "Upgrade";
+		}
 
 		if (hasPastDueInvoice())
 			return "Past Due";
@@ -1174,7 +1193,8 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public boolean hasReducedActivation(InvoiceFee activation) {
 		return getReducedActivationFeeOperator(activation) != null
-				&& activation.getAmount(this).intValue() != getReducedActivationFeeOperator(activation).getActivationFee();
+				&& activation.getAmount(this).intValue() != getReducedActivationFeeOperator(activation)
+						.getActivationFee();
 	}
 
 	@Transient
@@ -1196,6 +1216,14 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setSoleProprietor(Boolean soleProprietor) {
 		this.soleProprietor = soleProprietor;
+	}
+
+	public void setCompetitorMembership(Boolean competitorMembership) {
+		this.competitorMembership = competitorMembership;
+	}
+
+	public Boolean getCompetitorMembership() {
+		return competitorMembership;
 	}
 
 	@Transient

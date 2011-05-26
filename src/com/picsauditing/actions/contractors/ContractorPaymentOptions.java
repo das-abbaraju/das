@@ -11,6 +11,7 @@ import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
@@ -103,8 +104,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		}
 
 		accountDao.save(contractor);
-		activationFee = null;
-		if (contractor.getStatus().isPendingDeactivated()) {
+		activationFee = new InvoiceFee();
+		if (contractor.getStatus().isPendingDeactivated() && !contractor.isAcceptsBids()) {
 			if (contractor.getMembershipDate() == null) {
 				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
 				if (contractor.hasReducedActivation(activationFee)) {
@@ -113,8 +114,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 					activationFee.setAmount(new BigDecimal(reducedOperator.getActivationFee()));
 				}
 			} else
-				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
-						contractor.getPayingFacilities());
+				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, contractor
+						.getPayingFacilities());
 		}
 
 		if (!contractor.getPaymentMethod().isCreditCard())
@@ -392,5 +393,15 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	public void setBraintreeCommunicationError(boolean braintreeCommunicationError) {
 		this.braintreeCommunicationError = braintreeCommunicationError;
+	}
+
+	public boolean isHasSuncorMembership() {
+		for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
+			if (contractorOperator.getOperatorAccount().getName().toLowerCase().startsWith("suncor")) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

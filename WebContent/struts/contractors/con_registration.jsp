@@ -239,6 +239,9 @@ $(function(){
 			<li>
 				<s:checkbox id="SoleProprietor" name="contractor.soleProprietor" theme="formhelp" />
 			</li>
+			<li>
+				<s:checkbox id="CompetitorMembership" name="contractor.competitorMembership" theme="formhelp" />
+			</li>
 			<li><label><s:text name="%{scope}.CompanyIdentification.Description" />:</label>
 				<s:textarea name="contractor.description" cols="60" rows="15" />
 				<pics:fieldhelp title="Description">

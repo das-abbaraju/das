@@ -10,6 +10,14 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 $(function() {
+	$('.cluetip').cluetip({
+		closeText: "<img src='images/cross.png' width='16' height='16'>",
+		arrows: true,
+		cluetipClass: 'jtip',
+		local: true,
+		clickThrough: false
+	});
+
 	$('a[rel*=facebox]').facebox({
  		loading_image : 'loading.gif',
  		close_image : 'closelabel.gif'
@@ -31,7 +39,6 @@ function updateExpDate() {
 </head>
 <body>
 <s:include value="conRegistrationHeader.jsp"></s:include>
-
 <%-- All criteria are satisfied after contractor has entered CC info --%>
 <s:if test="contractor.paymentMethodStatusValid && contractor.paymentMethod.creditCard && contractor.mustPayB">
 	<div class="info">Your credit card will be kept on file and used for any upgrades or renewals. We will notify the primary user via email 30 days before any charges occur for renewals and 7 days before any charge occurs for upgrades. If you choose to deactivate your account, please call us at 800-506-7427.</div>
@@ -73,6 +80,19 @@ function updateExpDate() {
 <fieldset class="form">
 <h2 class="formLegend">Membership Details</h2>
 <ol>
+<s:if test="contractor.competitorMembership && contractor.status.pending">
+	<li>
+		<div class="alert">
+			You have indicated you are a member of another consortium or registry.  Press the Import button if you would like to have PICS import your data for a $200 fee.  (<a href="#" class="cluetip help" title="Let us Import Your Data" rel="#watchtip">Learn More</a>).
+			<br />
+			<div id="watchtip">
+				It's Simple.
+				PICS can fill out up to 80% of your forms if you give us access to the prequalification data you submitted in another consortium or registry.  If you purchase this service, once you have an active membership, you can upload your prequal info and it will be transferred into your new account at PICS within 3-5 days.
+			</div>
+			<input type="submit" name="button" class="picsbutton positive" value="Import my Data" />
+		</div>
+	</li>
+</s:if>
 <s:if test="contractor.newMembership.size > 0">
 	<li>
 		<s:if test="contractor.paymentMethod.creditCard && contractor.newMembershipAmount < 500">
@@ -109,7 +129,9 @@ function updateExpDate() {
 					 <s:property value="fee" />: $<s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
 				</s:iterator>
 			</li>
-			<li><label><s:property value="activationFee.fee"/>:</label> $<s:property value="activationFee.getAmount(contractor)"/> <s:property value="contractor.currencyCode" /></li>
+			<s:if test="!contractor.acceptsBids">
+				<li><label><s:property value="activationFee.fee"/>:</label> $<s:property value="activationFee.getAmount(contractor)"/> <s:property value="contractor.currencyCode" /></li>
+			</s:if>
 			<li><label>Total Membership Dues:</label> $<s:property value="activationFee.getAmount(contractor)+contractor.newMembershipAmount"/> <s:property value="contractor.currencyCode" /> </li>
 		</s:else>
 	</s:else>

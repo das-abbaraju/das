@@ -218,7 +218,9 @@ public class BillingCalculatorSingle {
 			List<ContractorFee> upgrades = new ArrayList<ContractorFee>();
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
 				ContractorFee fee = contractor.getFees().get(feeClass);
-				if (fee.isHasChanged())
+				// Bid-only should not be an upgrade
+				// Just a safety check
+				if (fee.isHasChanged() && !fee.getNewLevel().isBidonly())
 					upgrades.add(fee);
 			}
 
