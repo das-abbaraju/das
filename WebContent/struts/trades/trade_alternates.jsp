@@ -10,6 +10,7 @@
 			<thead>
 				<tr>
 					<th>Alternate</th>
+					<th>Category</th>
 					<th>Delete</th>
 				</tr>
 			</thead>
@@ -17,6 +18,7 @@
 				<s:iterator value="trade.alternates">
 					<tr>
 						<td><s:property value="name" /></td>
+						<td><s:property value="category" /></td>
 						<td><a class="remove" id="delete-alternate" href="TradeTaxonomy!removeAlternateAjax.action?alternate=<s:property value='id' />" /></td>
 					</tr>
 				</s:iterator>

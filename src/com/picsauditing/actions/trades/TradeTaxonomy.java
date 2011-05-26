@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.struts2.dispatcher.StreamResult;
@@ -24,6 +26,7 @@ import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.jpa.entities.TradeAlternate;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.Tree;
 
 @SuppressWarnings("serial")
@@ -37,9 +40,12 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 	private List<Trade> trades;
 	private String alternateName;
+	private String alternateCategory;
 	private TradeAlternate alternate;
 
 	private String q;
+
+	private static final List<String> ALTERNATE_CATEGORIES = Arrays.asList("Alias", "ISIC", "NACE", "NAICS", "SIC");
 
 	/*
 	 * Values used for the trade logo.
@@ -164,12 +170,16 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 	@RequiredPermission(value = OpPerms.ManageTrades, type = OpType.Edit)
 	public String addAlternateAjax() {
-		if (alternateName == null || alternateName.equals("")) {
+		if (Strings.isEmpty(alternateName)) {
 			addActionError("Alternate Name cannot be blank.");
 			return "alternate";
 		}
+		if (Strings.isEmpty(alternateCategory)) {
+			addActionError("Alternate Category cannot be blank.");
+			return "alternate";
+		}
 
-		TradeAlternate tradeAlternate = new TradeAlternate(trade, alternateName);
+		TradeAlternate tradeAlternate = new TradeAlternate(trade, alternateName, alternateCategory);
 		if (trade.getAlternates().contains(tradeAlternate))
 			addActionError("Alternate Already Exists.");
 		else {
@@ -210,7 +220,8 @@ public class TradeTaxonomy extends PicsActionSupport {
 	private boolean deleteTrade(Trade trade) {
 		if (Objects.equal(trade, Trade.TOP)) {
 			/*
-			 * This is a sanity check. It should never happen as there is nothing in the UI to allow it.
+			 * This is a sanity check. It should never happen as there is
+			 * nothing in the UI to allow it.
 			 */
 			addActionError("You cannot delete the top level node.");
 			return false;
@@ -273,6 +284,14 @@ public class TradeTaxonomy extends PicsActionSupport {
 		this.alternateName = alternateName;
 	}
 
+	public String getAlternateCategory() {
+		return alternateCategory;
+	}
+
+	public void setAlternateCategory(String alternateCategory) {
+		this.alternateCategory = alternateCategory;
+	}
+
 	public TradeAlternate getAlternate() {
 		return alternate;
 	}
@@ -287,6 +306,10 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 	public void setQ(String q) {
 		this.q = q;
+	}
+
+	public List<String> getAlternateCategories() {
+		return Collections.unmodifiableList(ALTERNATE_CATEGORIES);
 	}
 
 	public File getTradeLogo() {

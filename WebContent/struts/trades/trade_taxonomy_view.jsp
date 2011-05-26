@@ -79,6 +79,7 @@
 			<li>
 				<label>New Alternate</label>
 				<input id="alternateName" type="text"/>
+				<s:select list="alternateCategories" id="alternateCategory" />
 				<button id="add-alternate" type="button">Add</button>
 			</li>
 			<li>

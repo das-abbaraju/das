@@ -17,12 +17,12 @@ function loadTradeCallback() {
 
 function showCategoryRules(tradeID) {
 	startThinking({ div: "tradeCategoryRules", message: "Loading Related Category Rules" });
-	$('#tradeCategoryRules').load('CategoryRuleTableAjax.action', { 'comparisonRule.trade': tradeID, 'columnsIgnore': 'auditType' });
+	$('#tradeCategoryRules').load('CategoryRuleTableAjax.action', { 'comparisonRule.trade': tradeID, 'columnsIgnore': ['auditType','bidOnly','rootCategory'] });
 }
 
 function showAuditTypeRules(tradeID) {
 	startThinking({ div: "tradeAuditRules", message: "Loading Related Audit Type Rules" });
-	$('#tradeAuditRules').load('AuditTypeRuleTableAjax.action', { 'comparisonRule.trade': tradeID, 'columnsIgnore': 'auditType' });
+	$('#tradeAuditRules').load('AuditTypeRuleTableAjax.action', { 'comparisonRule.trade': tradeID, 'columnsIgnore': ['auditType','bidOnly','rootCategory'] });
 }
 
 function setupTree() {
@@ -142,7 +142,8 @@ $(function() {
 		$('#trade-view').load('TradeTaxonomy!removeFileAjax.action', {trade: $('#saveTrade [name=trade]').val()}, loadTradeCallback);
 	}).delegate('#add-alternate','click', function(e) {
 		e.preventDefault();
-		$('#alternateNames').load('TradeTaxonomy!addAlternateAjax.action', {alternateName: $('#alternateName').val(), trade: $('#saveTrade [name=trade]').val()});
+		$('#alternateNames').load('TradeTaxonomy!addAlternateAjax.action', 
+				{alternateCategory: $('#alternateCategory').val(), alternateName: $('#alternateName').val(), trade: $('#saveTrade [name=trade]').val()});
 		$('#alternateName').val('');
 	}).delegate('#delete-alternate', 'click', function(e) {
 		e.preventDefault();

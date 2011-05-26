@@ -266,3 +266,11 @@ img.trade {
 	font-weight: bold;
 	font-style: italic;
 }
+
+#alternateName {
+	width: 200px;	
+}
+
+#alternateCategory {
+	width: 200px;	
+}

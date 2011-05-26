@@ -302,8 +302,9 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	}
 
 	/**
-	 * The name of this trade that's commonly used to describe it. Does not need the parent trade to make sense. Can
-	 * stand alone in a list and be understood.
+	 * The name of this trade that's commonly used to describe it. Does not need
+	 * the parent trade to make sense. Can stand alone in a list and be
+	 * understood.
 	 */
 	@Transient
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 8)
@@ -316,7 +317,8 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	}
 
 	/**
-	 * The short version of the trade, typically only included when in context with its parent trades
+	 * The short version of the trade, typically only included when in context
+	 * with its parent trades
 	 */
 	@Transient
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 6)
