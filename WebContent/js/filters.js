@@ -19,7 +19,7 @@ $(function(){
 			if(json.result) {
 				results = json.result;
 			}
-			var url = field_type+'Autocomplete!tokenJson.action?' + (extraArgs == undefined? '' : 'extraArgs=' + extraArgs + '&') + 'limit=10';
+			var url = field_type+'Autocomplete!tokenJson.action?' + (extraArgs == undefined? '' : 'extraArgs=' + extraArgs + '&') + 'limit=25';
 			that.tokenInput(url, {
 				jsonContainer: 'result',
 				prePopulate: results,
