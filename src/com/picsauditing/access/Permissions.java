@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.strutsutil.AjaxUtils;
 
 /**
  * This is the main class that is stored for each user containing information if they are logged in, which groups
@@ -361,10 +362,14 @@ public class Permissions implements Serializable {
 
 	public boolean loginRequired(javax.servlet.http.HttpServletResponse response, HttpServletRequest request)
 			throws IOException {
-		String url = request.getRequestURI();
-		if (request.getQueryString() != null)
-			url += "?" + request.getQueryString();
-		return this.loginRequired(response, url);
+		if (AjaxUtils.isAjax(request)) {
+			return this.loginRequired(response);
+		} else {
+			String url = request.getRequestURI();
+			if (request.getQueryString() != null)
+				url += "?" + request.getQueryString();
+			return this.loginRequired(response, url);
+		}
 	}
 
 	public boolean hasGroup(Integer group) {

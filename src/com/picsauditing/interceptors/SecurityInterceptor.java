@@ -1,9 +1,6 @@
 package com.picsauditing.interceptors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts2.ServletActionContext;
-import org.json.simple.JSONObject;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
@@ -12,11 +9,11 @@ import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.NotLoggedInException;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.access.SecurityAware;
+import com.picsauditing.strutsutil.AjaxUtils;
 
 @SuppressWarnings("serial")
 public class SecurityInterceptor extends AbstractInterceptor {
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public String intercept(ActionInvocation invocation) throws Exception {
 
@@ -25,13 +22,8 @@ public class SecurityInterceptor extends AbstractInterceptor {
 			boolean anonymous = action.getClass().getMethod(invocation.getProxy().getMethod())
 					.isAnnotationPresent(Anonymous.class);
 			if (!action.isLoggedIn(anonymous)) {
-				HttpServletRequest request = ServletActionContext.getRequest();
-				String pageHead = request.getHeader("X-Requested-With");
 
-				if ("XMLHttpRequest".equalsIgnoreCase(pageHead)) {
-					JSONObject json = new JSONObject();
-					json.put("loggedIn", "false");
-					invocation.getStack().setValue("json", json);
+				if (AjaxUtils.isAjax(ServletActionContext.getRequest())) {
 					throw new AjaxNotLoggedInException();
 				} else {
 					throw new NotLoggedInException();

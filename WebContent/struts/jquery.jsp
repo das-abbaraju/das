@@ -30,6 +30,12 @@
 	$(function() {
 		$.ajaxSettings.traditional = true;
 
+		$(document).ajaxError(function(e, xhr, settings, exception) {
+			if (xhr.status == 401) {
+				$.facebox({ ajax: 'Login!overlay.action'});
+			}
+		});
+
 		if ($.browser.mozilla)
 			$("form").attr("autocomplete", "off");
 		if ($.browser.msie && $.browser.version == '6.0'){

@@ -16,9 +16,8 @@ public class AjaxDecoratorMapper extends AbstractDecoratorMapper {
 	}
 
 	public Decorator getDecorator(HttpServletRequest request, Page page) {
-		String pageHead = request.getHeader("X-Requested-With");
 
-		if ("XMLHttpRequest".equalsIgnoreCase(pageHead)) {
+		if (AjaxUtils.isAjax(request)) {
 			return getNamedDecorator(request, null);
 		}
 		return super.getDecorator(request, page);

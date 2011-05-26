@@ -54,6 +54,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?v=<%=version%>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<%=version%>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=<%=version%>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<%=version%>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/contractorstatistics.css?v=<%=version%>" />
 
 <script type="text/javascript" src="<%= pageIsSecure ? "https" : "http" %>://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
@@ -89,14 +90,14 @@ var autoSearch;
 var SEARCH_DELAY = 200;
 $(function(){
 	autoSearch = $('#search_box').autocomplete('HeaderSearchAjax.action', {
-		width: 325, 
-		scroll: false, 
+		width: 325,
+		scroll: false,
 		max: 11,
 		delay: SEARCH_DELAY*2,
 		selectFirst: false,
 		highlight : false,
 		formatItem: function(data,i,count){
-			return format(data, i);						
+			return format(data, i);
 		},
 		formatResult: function(data,i,count){
 			if(data[0]=='FULL')
@@ -117,18 +118,18 @@ $(function(){
 			sDelay = SEARCH_DELAY * 1.25;
 		else
 			sDelay = SEARCH_DELAY;
-		$(this).setOptions({delay: sDelay});		
+		$(this).setOptions({delay: sDelay});
 	});
 });
 function getResult(data){
 	if(data[0]=='FULL'){
 		location.href='Search.action?button=search&searchTerm='+data[2];
-		return;	
-	}	
+		return;
+	}
 	if(data[0]=='NULL'){
-		return;	
-	}    		
-	location.href='HeaderSearchAjax.action?button=getResult&searchID='+data[2]+'&searchType='+data[0];	
+		return;
+	}
+	location.href='HeaderSearchAjax.action?button=getResult&searchID='+data[2]+'&searchType='+data[0];
 }
 function format(row, i){
 	if(row[0]=='account'){
@@ -214,10 +215,10 @@ function buildAction(type, id){
 </div>
 
 <!-- !begin navigation -->
-<div id="nav">		
+<div id="nav">
 <div id="MainMenu">
 	<div id="tab">
-		<div id="navbar">		
+		<div id="navbar">
 			<ul>
 			<%
 			for(MenuComponent item : menu.getChildren()) {
@@ -227,7 +228,7 @@ function buildAction(type, id){
 			}
 			%>
 			</ul>
-		</div>		
+		</div>
 	</div>
 </div>
 </div>
@@ -238,8 +239,8 @@ function buildAction(type, id){
 <div id="mainStatus"></div>
 <div id="helpbox">
 <%
-	String chatIcon = protocol + 
-		"://server.iad.liveperson.net/hc/90511184/?cmd=repstate&amp;site=90511184&amp;channel=web&amp;ver=1&amp;imageUrl=" + 
+	String chatIcon = protocol +
+		"://server.iad.liveperson.net/hc/90511184/?cmd=repstate&amp;site=90511184&amp;channel=web&amp;ver=1&amp;imageUrl=" +
 		protocol + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a";
 	if ("1".equals(System.getProperty("pics.debug")))
 		chatIcon = "";
@@ -248,7 +249,7 @@ function buildAction(type, id){
 	<a id="_lpChatBtn"
 	onmouseover="showChat();"
 	onmouseout="hideChat();"
-	href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
+	href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'
 	target='chat90511184'
 	onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><%=i18nCache.getText("Header.Chat", locale) %></a>
 </div>
@@ -276,7 +277,7 @@ function buildAction(type, id){
 		<li>
 			<% if(item.getName().equals("Online Chat"))  { %>
 					<a id="_lpChatBtn"
-						href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
+						href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'
 						target='chat90511184'
 						onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><span><%=item.getName()%></span></a>
 			<% } else { %>
@@ -299,7 +300,7 @@ function buildAction(type, id){
 <script type="text/javascript">
 	var lpPosY = 100;
 	var lpPosX = 100;
-	
+
 	if (typeof(tagVars) == "undefined") tagVars = "";
 <%	if (permissions.isLoggedIn()) { %>
 		tagVars += "&VISITORVAR!UserID=<%=permissions.getUserId()%>&VISITORVAR!UserName=<%=URLEncoder.encode(permissions.getUsername())%>&VISITORVAR!DisplayName=<%=URLEncoder.encode(permissions.getName())%>";
@@ -307,16 +308,16 @@ function buildAction(type, id){
 </script>
 <!-- End Monitor Tracking Variables  -->
 
-<script 
-	type="text/javascript" 
-	src='<%= protocol %>://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'> 
+<script
+	type="text/javascript"
+	src='<%= protocol %>://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'>
 </script>
 <!-- END LivePerson -->
 
 <script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? 
+var gaJsHost = (("https:" == document.location.protocol) ?
 	"https://ssl." : "http://www.");
-	document.write(unescape("%3Cscript src='" + gaJsHost + 
+	document.write(unescape("%3Cscript src='" + gaJsHost +
 	"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 try {
 	var pageTracker = _gat._getTracker("UA-2785572-1");
@@ -341,7 +342,7 @@ try {
 		} catch (SQLException e) {
 		}
 	}
-	Date startDate = (Date) request.getAttribute("pics_request_start_time"); 
+	Date startDate = (Date) request.getAttribute("pics_request_start_time");
 	if( startDate != null ) {
 		long totalTime = System.currentTimeMillis() - startDate.getTime();
 		%><div class="pageStats" title="Server: <%= java.net.InetAddress.getLocalHost().getHostName() %>">

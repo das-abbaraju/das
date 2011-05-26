@@ -187,6 +187,14 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	/**
+	 * Result for when the user is not logged in during an ajax request.
+	 */
+	@Anonymous
+	public String overlay() {
+		return "ajax";
+	}
+
+	/**
 	 * Figure out if the current username/password is a valid user or account that can actually login. But don't
 	 * actually login yet
 	 *
