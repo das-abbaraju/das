@@ -2,7 +2,7 @@
 
 <s:include value="../actionMessages.jsp"></s:include>
 
-<div style="width:500px;">
+<div class="loginForm">
 	<s:form id="login">
 		<fieldset class="form">
 		<h2 class="formLegend">Login to PICS Organizer</h2>
@@ -21,7 +21,7 @@
 		</fieldset>
 	</s:form>
 
-	<div class="info">
+	<div class="info other">
 		<p>Forget your login information? <a href="AccountRecovery.action">Click here to recover it</a></p>
 		<p>Are you a contractor? <a href="ContractorRegistration.action">Click to Register your company</a></p>
 	</div>

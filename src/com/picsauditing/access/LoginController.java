@@ -1,5 +1,6 @@
 package com.picsauditing.access;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -21,6 +23,7 @@ import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -65,9 +68,8 @@ public class LoginController extends PicsActionSupport {
 			// Mozilla 5 and others.
 			if (ServletActionContext.getRequest().getCookies() == null
 					&& ServletActionContext.getRequest().getParameter("msg") != null) {
-				ServletActionContext.getResponse().sendRedirect(
-						"Login.action?msg=Cookies are disabled on your browser. Please open your "
-								+ "browser settings and make sure cookies are enabled to log in to PICS");
+				redirect("Login.action?msg=Cookies are disabled on your browser. Please open your "
+						+ "browser settings and make sure cookies are enabled to log in to PICS");
 			}
 
 			int adminID = permissions.getAdminID();
@@ -187,11 +189,33 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	/**
+	 * Method to log in via an ajax overlay
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Anonymous
+	public String ajax() throws Exception {
+		String result = execute();
+		if ("success".equals(result)) {
+			json = new JSONObject();
+			json.put("loggedIn", permissions.isLoggedIn());
+			return JSON;
+		}
+
+		return BLANK;
+	}
+
+	/**
 	 * Result for when the user is not logged in during an ajax request.
+	 *
+	 * @return
 	 */
 	@Anonymous
 	public String overlay() {
-		return "ajax";
+		setRedirect(true);
+		return "overlay";
 	}
 
 	/**
@@ -303,7 +327,7 @@ public class LoginController extends PicsActionSupport {
 			}
 
 			if (cookieFromURL.length() > 0) {
-				getResponse().sendRedirect(cookieFromURL);
+				redirect(cookieFromURL);
 				return;
 			}
 		}
@@ -319,7 +343,7 @@ public class LoginController extends PicsActionSupport {
 		if (url == null)
 			throw new Exception("No Permissions or Default Webpages found");
 
-		getResponse().sendRedirect(url);
+		redirect(url);
 		return;
 	}
 
@@ -391,6 +415,14 @@ public class LoginController extends PicsActionSupport {
 
 	public void setKey(String key) {
 		this.key = key;
+	}
+
+	@Override
+	public String redirect(String url) throws IOException {
+		if (!AjaxUtils.isAjax(getRequest())) {
+			return super.redirect(url);
+		}
+		return BLANK;
 	}
 
 	public void setRedirect(boolean redirect) {
