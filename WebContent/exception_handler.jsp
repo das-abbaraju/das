@@ -1,3 +1,4 @@
+<%@page import="com.picsauditing.strutsutil.AjaxUtils"%>
 <%@ page isErrorPage="true" language="java"
 	import="java.util.*,java.io.*,com.opensymphony.xwork2.ActionContext"%>
 <jsp:useBean id="permissions"
@@ -10,16 +11,18 @@
 <%@page import="java.sql.SQLException"%>
 <%@page import="java.sql.Timestamp"%>
 
-<%@page import="com.picsauditing.access.OpPerms"%><html>
+<%@page import="com.picsauditing.access.OpPerms"%>
 <%
 	/*
-	 If the exception is coming from the non-struts world, ActionContext.getContext().getActionInvocation() will 
+	 If the exception is coming from the non-struts world, ActionContext.getContext().getActionInvocation() will
 	 be null.
-	
+
 	 In normal JSP, the exception variable is an implicit variable on an error page, but coming from struts
-	 we have to pull it off the value stack and assign it ourselves to fit struts exceptions into the same 
+	 we have to pull it off the value stack and assign it ourselves to fit struts exceptions into the same
 	 error page.
 	 */
+
+	boolean ajax = AjaxUtils.isAjax(request);
 
 	if (ActionContext.getContext() != null && ActionContext.getContext().getActionInvocation() != null) {
 		pageContext
@@ -114,36 +117,39 @@
 	} catch (Exception e) {System.out.println(e.getMessage());}
 %>
 
+<%if (!ajax) { %>
+<html>
 <head>
 <jsp:include page="/struts/jquery.jsp"/>
 <link rel="stylesheet" type="text/css" media="screen" href="/css/forms.css" />
 <script type="text/javascript">
-    $(document).ready(function() { 
+    $(document).ready(function() {
         $('#response_form').submit(function() {
         	var user_message = $("textarea#user_message").val();
         	var to_address = "errors@picsauditing.com";
         	var from_address = $("#from_address").val();
         	var user_name = $("#user_name").val();
-        	var dataString = 'priority=5&user_message=' + user_message + '&to_address=' + to_address + '&from_address=' + from_address + '&exceptionID=' + <%= exceptionID %> + '&user_name=' + user_name;  
-        	$.ajax({  
-        		type: "POST",  
-        		url: "send_exception_email.jsp",  
-        		data: dataString,  
-        			success: function() {  
+        	var dataString = 'priority=5&user_message=' + user_message + '&to_address=' + to_address + '&from_address=' + from_address + '&exceptionID=' + <%= exceptionID %> + '&user_name=' + user_name;
+        	$.ajax({
+        		type: "POST",
+        		url: "send_exception_email.jsp",
+        		data: dataString,
+        			success: function() {
         				$('#response_form').html("<div id='message1'></div>");
         				$('#message1').html("<h3>Response Submitted!</h3>")
         				.append("<h5>Thank you for your assistance.</h5>")
-        				.hide()  
-        				.fadeIn(1500);  
-        			}  
-        		});  
-        	return false;  
-        }); 
-    }); 
+        				.hide()
+        				.fadeIn(1500);
+        			}
+        		});
+        	return false;
+        });
+    });
 </script>
 <title>PICS Error</title>
 </head>
 <body>
+<% } // end if (!ajax) %>
 <div class="error">
 	Oops!! An unexpected error just occurred.<br>
 </div>
@@ -178,5 +184,8 @@
 	</form>
 	<input id="backButton" class="picsbutton" style="float:left; display:none;" type="button" value="&lt;&lt; Back" onclick="window.history.back().back()" />
 <% } %>
+
+<% if (!ajax) { %>
 </body>
 </html>
+<% } %>
