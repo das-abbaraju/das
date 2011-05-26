@@ -24,4 +24,14 @@ public final class IndexObject {
 	public void setWeight(int weight) {
 		this.weight = weight;
 	}
+
+	public boolean equals(Object obj) {
+		try {
+			IndexObject o2 = (IndexObject) obj;
+			return o2.getValue().equals(value);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 }
