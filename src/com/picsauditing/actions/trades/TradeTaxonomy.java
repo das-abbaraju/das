@@ -19,6 +19,7 @@ import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.actions.Indexer;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.TradeAlternateDAO;
 import com.picsauditing.dao.TradeDAO;
@@ -37,6 +38,8 @@ public class TradeTaxonomy extends PicsActionSupport {
 	@Autowired
 	protected TradeAlternateDAO tradeAlternateDAO;
 	private Trade trade;
+	@Autowired
+	protected Indexer indexer;
 
 	private List<Trade> trades;
 	private String alternateName;
@@ -117,6 +120,8 @@ public class TradeTaxonomy extends PicsActionSupport {
 						+ trade.getId(), trade.getImageExtension(), true);
 				tradeDAO.save(trade);
 			}
+			
+			indexer.runSingle(trade, "ref_trade");
 		}
 
 		return "trade";
