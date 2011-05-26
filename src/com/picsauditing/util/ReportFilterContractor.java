@@ -36,7 +36,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	// /////// Filter Visibility /////////////
 	protected boolean showOperator = true;
 	protected boolean showOperatorSingle = false;
-	protected boolean showIndustries = false;
 	protected boolean showTrade = true;
 	protected boolean showLicensedIn = true;
 	protected boolean showWorksIn = true;
@@ -68,7 +67,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
-	protected int[] industries;
 	protected int[] trade;
 	protected int[] operator;
 	protected int operatorSingle;
@@ -135,14 +133,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowOperatorSingle(boolean showOperatorSingle) {
 		this.showOperatorSingle = showOperatorSingle;
-	}
-
-	public boolean isShowIndustries() {
-		return showIndustries;
-	}
-
-	public void setShowIndustries(boolean showIndustries) {
-		this.showIndustries = showIndustries;
 	}
 
 	public boolean isShowTrade() {
@@ -375,14 +365,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setPerformedBy(String performedBy) {
 		this.performedBy = performedBy;
-	}
-
-	public int[] getIndustries() {
-		return industries;
-	}
-
-	public void setIndustries(int[] industries) {
-		this.industries = industries;
 	}
 
 	public int[] getTrade() {
@@ -780,12 +762,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setAuditQuestionFlagChanges(boolean auditQuestionFlagChanges) {
 		this.auditQuestionFlagChanges = auditQuestionFlagChanges;
-	}
-
-	// Getters for search lists
-	public List<AuditQuestion> getIndustriesList() {
-		// Do we want to hard code this?
-		return getQuestionDAO().findWhere("categoryID = 423");
 	}
 
 	public Map<Integer, String> getMinorityQuestions() {

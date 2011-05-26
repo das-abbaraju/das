@@ -61,7 +61,6 @@ public class ReportFlagChanges extends ReportAccount {
 		getFilter().setShowOfficeIn(false);
 		getFilter().setShowWorksIn(false);
 		getFilter().setShowLicensedIn(false);
-		getFilter().setShowIndustry(false);
 		getFilter().setShowStatus(false);
 		getFilter().setShowAccountManager(true);
 		getFilter().setShowAuditCreationFlagChanges(true);

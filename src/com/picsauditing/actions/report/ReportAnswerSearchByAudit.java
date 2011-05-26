@@ -58,7 +58,6 @@ public class ReportAnswerSearchByAudit extends ReportContractorAuditOperator {
 		}
 
 		getFilter().setShowAddress(false);
-		getFilter().setShowIndustry(false);
 		getFilter().setShowTaxID(false);
 		getFilter().setShowLicensedIn(false);
 		getFilter().setShowWorksIn(false);

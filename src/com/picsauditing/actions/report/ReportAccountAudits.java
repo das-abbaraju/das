@@ -27,8 +27,6 @@ public class ReportAccountAudits extends ReportAccount {
 		super.buildQuery();
 
 		getFilter().setShowMinorityOwned(true);
-		getFilter().setShowIndustry(false);
-		getFilter().setShowIndustries(true);
 
 		if (filterOn(getFilter().getInvoiceDueDate1()) || filterOn(getFilter().getInvoiceDueDate2())) {
 			sql.addJoin("JOIN invoice i ON a.id = i.accountID AND i.status = 'Unpaid' AND i.tableType = 'I'");
@@ -43,13 +41,6 @@ public class ReportAccountAudits extends ReportAccount {
 		}
 
 		sql.addAudit(AuditType.PQF);
-
-		if (filterOn(getFilter().getIndustries())) {
-			sql.addField("GROUP_CONCAT(q.name ORDER BY q.number SEPARATOR ', ') AS industries");
-			sql.addJoin("JOIN pqfdata d ON d.auditID = ca" + AuditType.PQF + ".id");
-			sql.addJoin("JOIN audit_question q ON q.id = d.questionID AND q.id IN (" + Strings.implode(getFilter().getIndustries()) + ")");
-			sql.addWhere("d.answer = 'X'");
-		}
 
 		if (download) {
 			sql.addField("pd2340.answer AS 2340answer");

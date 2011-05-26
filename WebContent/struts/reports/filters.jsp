@@ -189,30 +189,6 @@ select.hidden {
 			<s:textfield name="filter.taxID" cssClass="forms" size="9"  title="must be 9 digits" />
 		</div>
 	</s:if>
-
-	<s:if test="filter.showIndustry">
-		<div class="filterOption">
-			<a href="#" class="filterBox">Industry</a> = 
-			<span class="q_status">ALL</span> <br />
-			<span class="clearLink q_box select">
-				<s:select id="form1_industry" list="filter.industryList" cssClass="forms"
-					name="filter.industry" multiple="true" size="10" listKey="id" listValue="name" /><br />
-				<a class="clearLink" href="#">Clear</a> 
-			</span>
-		</div>
-	</s:if>
-	
-	<s:if test="filter.showIndustries">
-		<div class="filterOption">
-			<a href="#" class="filterBox">Industries</a> = 
-			<span class="q_status">ALL</span><br />
-			<span class="clearLink q_box"> 
-				<s:select id="form1_industries" name="filter.industries" list="filter.industriesList" listKey="id"
-					listValue="name" cssClass="forms" multiple="true" size="5" /><br />
-				<a class="clearLink" href="#">Clear</a> 
-			</span>
-		</div>
-	</s:if>
 	
 	<s:if test="filter.showTrade">
 		<div class="filterOption">

@@ -160,12 +160,6 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 			setFiltered(true);
 		}
 
-		String industryList = Strings.implodeForDB(f.getIndustry(), ",");
-		if (filterOn(industryList)) {
-			sql.addWhere("a.industry IN (" + industryList + ")");
-			setFiltered(true);
-		}
-
 		if (filterOn(f.getCity(), ReportFilterAccount.DEFAULT_CITY))
 			report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", f.getCity()));
 
