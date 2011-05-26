@@ -571,15 +571,25 @@
 		<action name="ReportBillingAjax" class="com.picsauditing.actions.report.ReportBilling">
 			<result>struts/reports/report_billing_data.jsp</result>
 		</action>
-
 		<action name="ReportUnpaidInvoices"
 			class="com.picsauditing.actions.report.ReportUnpaidInvoices">
 			<param name="reportName">Unpaid Invoices Report</param>
+			<param name="filter.ajax">true</param>
+			<param name="filter.allowMailMerge">true</param>
 			<result>struts/reports/unpaid_invoice_report.jsp</result>
+		</action>
+		<action name="ReportUnpaidInvoicesAjax" class="com.picsauditing.actions.report.ReportUnpaidInvoices">
+			<result>struts/reports/unpaid_invoice_report_data.jsp</result>
 		</action>
 		<action name="ReportExpiredCreditCards"
 			class="com.picsauditing.actions.report.ReportExpiredCreditCards">
+			<param name="reportName">Expired Credit Card Report</param>
+			<param name="filter.ajax">true</param>
+			<param name="filter.allowMailMerge">true</param>
 			<result>struts/reports/report_expired_creditcards.jsp</result>
+		</action>
+		<action name="ReportExpiredCreditCardsAjax" class="com.picsauditing.actions.report.ReportExpiredCreditCards">
+			<result>struts/reports/report_expired_creditcards_data.jsp</result>
 		</action>
 		<action name="BillingDetail"
 			class="com.picsauditing.actions.contractors.BillingDetail">

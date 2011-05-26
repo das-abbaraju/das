@@ -15,53 +15,9 @@ function setAllChecked(elm) {
 <h1><s:property value="reportName" /></h1>
 
 <s:include value="filters.jsp"/>
-
-<div><s:property value="report.pageLinksWithDynamicForm"
-	escape="false" /></div>
-	
-<s:form method="post" cssClass="forms">
-<div>
-	<input type="submit" class="picsbutton positive" name="button" value="Send Email"/>
+<div id="report_data">
+<s:include value="report_expired_creditcards_data.jsp"></s:include>
 </div>
-
-<table class="report">
-	<thead>
-	<tr>
-		<td></td>
-		<td>Email <br/>
-			<input title="Check all" type="checkbox" onclick="setAllChecked(this);"/>
-		</td>
-	    <th><a href="javascript: changeOrderBy('form1','a.name');" >Contractor</a></th>
-	    <th>Status</th>
-	    <th>Payment Expires</th>
-	    <th>CC Expiration</th>
-	    <th>Balance</th>
-	    <th>Email Sent</th>
-	</tr>
-	</thead>
-	<tbody>
-	<s:iterator value="data" status="stat">
-		<tr>
-			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td align="center"><s:checkbox name="sendMail" cssClass="massCheckable" fieldValue="%{get('id')}" /></td>
-			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')" /></a></td>
-			<td class="center"><s:property value="get('status')"/></td>
-			<td class="center"><s:date name="get('paymentExpires')" format="M/d/yy"/></td>
-			<td class="right"><s:date name="get('ccExpiration')" format="M/yy"/></td>
-			<td class="right">$<s:property value="get('balance')"/></td>
-			<td class="right"><s:date name="get('lastSent')" format="M/d/yy h:mm" /></td>
-		</tr>
-	</s:iterator>
-	</tbody>
-</table>
-
-<div>
-	<input type="submit" class="picsbutton positive" name="button" value="Send Email"/>
-</div>
-</s:form>
-
-<div><s:property value="report.pageLinksWithDynamicForm"
-	escape="false" /></div>
 
 </body>
 </html>
