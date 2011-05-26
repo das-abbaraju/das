@@ -16,10 +16,8 @@ $(function(){
 				function(response, status) {
 					if (status=='success') {
 						$(this).trigger('updateDependent');
-					} else {
-						alert('Failed to save answer.');
-					} 
-					$(this).unblock();
+						$(this).unblock();
+					}
 				});
 		return false;
 	});
@@ -33,14 +31,12 @@ $(function(){
 				function(response, status) {
 					if (status=='success') {
 						$(this).trigger('updateDependent');
-					} else {
-						alert('Failed to save answer.');
-					} 
-					$(this).unblock();
+						$(this).unblock();
+					}
 				});
 		return false;
 	});
-	
+
 	$('#auditViewArea').delegate('div.hasDependentRequired', 'updateDependent', function() {
 		$.each($(this).find('div.dependentRequired:first').text().split(','), function(i,v) {
 			reloadQuestion(v);
@@ -64,7 +60,7 @@ $(function(){
 		var data = $.deparam($(this).parents('form.qform:first').serialize());
 		showCertUpload(data['certID'], data['auditData.question.id']);
 	});
-	
+
 	$('#auditViewArea').delegate('div.question a.showExistingCertificates','click',function(e) {
 		e.preventDefault();
 		var container = $(this).parents('div.question:first').find('div.certificateContainer');
@@ -76,7 +72,7 @@ $(function(){
 		$(this).parents('form.qform:first').find('input[name=auditData.answer]').val($(this).attr('rel'));
 		$(this).parents('div.question:first').trigger('saveQuestion');
 	});
-	
+
 	$('#auditViewArea').delegate('div.question a.detachCertificate','click',function(e) {
 		e.preventDefault();
 		$(this).parents('form.qform:first').find('input[name=auditData.answer]').val('');
