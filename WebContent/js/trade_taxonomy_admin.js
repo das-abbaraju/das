@@ -1,5 +1,7 @@
 var search_tree, browse_tree;
 
+var ajaxUrl = 'TradeTaxonomy!tradeAjax.action?trade=';
+
 function loadTradeCallback() {
 	$('#saveTrade').ajaxForm({
 		target: '#trade-view',
@@ -112,24 +114,16 @@ $(function() {
 		$('body').removeClass('busy')
 	});
 
-	$('#trade-nav').delegate('.jstree a', 'click', function(e) {
+	$('#trade-nav').delegate('.jstree a, #search-list a.trade', 'click', function(e) {
 		e.preventDefault();
 		var data = { trade: $(this).parent().attr('id') };
 		setMainStatus('Loading Trade');
 		$('#trade-view').load('TradeTaxonomy!tradeAjax.action', data, loadTradeCallback);
 	});
 
-	/*
-	$('body:not(.busy)').delegate('#suggest', 'submit', function(e) {
+	$('#search-list').delegate('a.trade', 'click', function(e) {
 		e.preventDefault();
-		$('body').addClass('busy');
-		tree.jstree('close_all').jstree('refresh');
-		$('#tree-wrapper').block({message: 'Loading trades...',centerY: false, css: {top: '20px'} });
-	});*/
-
-	$('#suggest').submit(function(e) {
-		e.preventDefault();
-		search_tree.jstree('close_all').jstree('refresh');
+		$('#trade-view').load($(this).attr('href'), loadTradeCallback);
 	});
 
 	$('a.add.trade').live('click', function(e) {
@@ -142,7 +136,7 @@ $(function() {
 		$('#trade-view').load('TradeTaxonomy!removeFileAjax.action', {trade: $('#saveTrade [name=trade]').val()}, loadTradeCallback);
 	}).delegate('#add-alternate','click', function(e) {
 		e.preventDefault();
-		$('#alternateNames').load('TradeTaxonomy!addAlternateAjax.action', 
+		$('#alternateNames').load('TradeTaxonomy!addAlternateAjax.action',
 				{alternateCategory: $('#alternateCategory').val(), alternateName: $('#alternateName').val(), trade: $('#saveTrade [name=trade]').val()});
 		$('#alternateName').val('');
 	}).delegate('#delete-alternate', 'click', function(e) {

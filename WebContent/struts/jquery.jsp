@@ -27,9 +27,10 @@
 <script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 
 <script type="text/javascript">
-	$(document).ready(function() {
+	$(function() {
 		$.ajaxSettings.traditional = true;
-		if ($.browser.mozilla) 
+
+		if ($.browser.mozilla)
 			$("form").attr("autocomplete", "off");
 		if ($.browser.msie && $.browser.version == '6.0'){
 			try {

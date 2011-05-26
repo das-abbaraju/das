@@ -1,4 +1,7 @@
 var search_tree, browse_tree;
+
+var ajaxUrl = 'ContractorTrades!tradeAjax.action?contractor='+conID+'&trade.trade=';
+
 function loadTradeCallback() {
 	$('#trade-hierarchy').jstree({
 		"json_data": {
@@ -29,7 +32,7 @@ function loadTradeCallback() {
 	if ($('input.service,input.product').length > 0) {
 		$("#addButton").attr("disabled", "disabled");
 	}
-	
+
 
 	$('#trade_children').hide();
 }
@@ -45,21 +48,21 @@ $(function() {
 		e.preventDefault();
 		$($(this).attr('href')).toggle();
 	});
-	
+
 	$('body').delegate('.jstree a', 'click', function(e) {
 		e.preventDefault();
 		var data = { contractor: conID, "trade.trade": $(this).parent().attr('id') };
 		$('#trade-view').load('ContractorTrades!tradeAjax.action', data, loadTradeCallback);
 	});
-	
-	$('#trade-view').delegate('a.trade', 'click', function(e) {
+
+	$('#search-list').delegate('a.trade', 'click', function(e) {
 		e.preventDefault();
 		$('#trade-view').load($(this).attr('href'), loadTradeCallback);
 	});
-	
-	$('#suggest').submit(function(e) {
+
+	$('#trade-view').delegate('a.trade', 'click', function(e) {
 		e.preventDefault();
-		search_tree.jstree('close_all').jstree('refresh');
+		$('#trade-view').load($(this).attr('href'), loadTradeCallback);
 	});
 
 	$('#trade-view').delegate('#trade-form', 'submit', function(e) {
@@ -78,7 +81,7 @@ $(function() {
 		else
 			$("div.buttons .picsbutton").attr("disabled", "disabled");
 	});
-	
+
 	$('input.product').live('change', function() {
 		if ($(this).is(':checked'))
 			$("#addButton").removeAttr("disabled");

@@ -123,7 +123,7 @@ public class TradeDAO extends PicsDAO {
 			query.setParameter("" + i, terms.get(i) + "%");
 		}
 
-		if (limit != null)
+		if (limit != null && limit > 0)
 			query.setMaxResults(limit);
 
 		return query.getResultList();
@@ -145,7 +145,7 @@ public class TradeDAO extends PicsDAO {
 
 	/**
 	 * Builds a String containing all the Joins for the app_index search
-	 * 
+	 *
 	 * @param terms
 	 * @return JOIN String to use in a query
 	 */

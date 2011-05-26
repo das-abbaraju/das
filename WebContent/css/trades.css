@@ -148,13 +148,13 @@ li.trade-child {
 	list-style-position: inside;
 }
 
-#search-tree,#browse-tree {
+#search-tree,#browse-tree,#search-list {
 	height: 500px;
 	overflow: auto;
 	padding: 1em;
 }
 
-#search-tree {
+#search-tree, #search-list {
 	height: 464px;
 }
 
@@ -164,7 +164,7 @@ li.trade-child {
 	position: relative;
 }
 
-#trade-view ul,#trade-view ol {
+#trade-view ul, #trade-nav ul, #trade-view ol {
 	list-style: none;
 }
 
@@ -233,7 +233,15 @@ li.trade-child {
 }
 
 #suggest .filter {
-	
+
+}
+
+.searchType-list #search-tree {
+	display:none;
+}
+
+.searchType-tree #search-list {
+	display:none;
 }
 
 .jstree li {
@@ -269,9 +277,9 @@ img.trade {
 }
 
 #alternateName {
-	width: 200px;	
+	width: 200px;
 }
 
 #alternateCategory {
-	width: 200px;	
+	width: 200px;
 }

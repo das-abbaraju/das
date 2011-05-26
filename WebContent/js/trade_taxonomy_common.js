@@ -92,6 +92,60 @@ $(function() {
 
 	browse_tree = $('#browse-tree').jstree();
 
+	$('#search-tab').delegate('input.searchType', 'click', function(e) {
+		var parent = $(this).closest('#search-tab');
+		parent.removeClass(function (index, css) {
+		    return (css.match (/\bsearchType-\S+/g) || []).join(' ');
+		});
+
+		parent.addClass('searchType-' + $(this).val());
+	});
+
+	$('#search-tab input.searchType:checked').trigger('click');
+
+	$('div.searchType-list #suggest').live('submit', function(e) {
+		var q = $('input[name="q"]', this).val();
+		if ($.trim(q).length > 0) {
+			$.post('TradeAutocomplete!tokenJson.action', $(this).serializeArray(), function(json) {
+				if (json.result) {
+					if (json.result.length > 0) {
+						var ul = $('<ul>');
+						$.each(json.result, function(i, trade) {
+							var linkText = trade.name;
+							$.each(q.split(' '), function(i, term) {
+								if ($.trim(term).length > 0) {
+									var regex = new RegExp("("+term+")", "ig")
+									linkText = linkText.replace(regex,"<strong>$1</strong>");
+								}
+							});
+
+							var li = $('<li>')
+								.append(
+									$('<a>', { "href":ajaxUrl+trade.id, "class":"trade" })
+										.html(linkText)
+									);
+							ul.append(li);
+						});
+						console.log(ul);
+						$('#search-list').html(ul);
+					} else {
+						$('#search-list').msg('alert', 'No results for that query.', true);
+					}
+				}
+			}, 'json')
+		} else {
+			$('#search-list').html('');
+		}
+	});
+
+	$('div.searchType-tree #suggest').live('submit', function(e) {
+		search_tree.jstree('close_all').jstree('refresh');
+	});
+
+	$('#suggest').submit(function(e) {
+		e.preventDefault();
+	});
+
 	if ($.browser.msie) {
 		placeholder();
 
