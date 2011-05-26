@@ -164,6 +164,10 @@ li.trade-child {
 	position: relative;
 }
 
+#trade-view.fullwidth {
+	width: auto;
+}
+
 #trade-view ul, #trade-nav ul, #trade-view ol {
 	list-style: none;
 }

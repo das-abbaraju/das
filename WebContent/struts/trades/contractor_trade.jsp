@@ -27,7 +27,7 @@ var conID = '<s:property value="id"/>';
 <s:include value="trade_search.jsp"/>
 </s:if>
 
-<div id="trade-view">
+<div id="trade-view" <s:if test="permissions.operator">class="fullwidth"</s:if>>
 	<s:include value="contractor_trade_cloud.jsp"/>
 </div>
 
