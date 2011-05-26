@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.DateBean;
@@ -24,23 +25,25 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
- * Populate the permissions object in session with appropriate login credentials
- * and access/permission data
- * 
+ * Populate the permissions object in session with appropriate login credentials and access/permission data
+ *
  * @author Glenn & Trevor
- * 
+ *
  */
 @SuppressWarnings("serial")
 public class LoginController extends PicsActionSupport {
+
+	@Autowired
+	protected UserDAO userDAO;
+	@Autowired
+	protected UserLoginLogDAO loginLogDAO;
+
 	private User user;
 	private String email;
 	private String username;
 	private String password;
 	private String key;
 	private int switchToUser;
-
-	protected UserDAO userDAO;
-	protected UserLoginLogDAO loginLogDAO;
 
 	@Anonymous
 	@Override
@@ -184,9 +187,9 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	/**
-	 * Figure out if the current username/password is a valid user or account
-	 * that can actually login. But don't actually login yet
-	 * 
+	 * Figure out if the current username/password is a valid user or account that can actually login. But don't
+	 * actually login yet
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -302,7 +305,7 @@ public class LoginController extends PicsActionSupport {
 
 			ContractorRegistrationStep step = ContractorRegistrationStep.getStep(cAccount);
 			url = step.getUrl(cAccount.getId());
-			
+
 		} else
 			url = PicsMenu.getHomePage(menu, permissions);
 		if (url == null)
@@ -380,5 +383,11 @@ public class LoginController extends PicsActionSupport {
 
 	public void setKey(String key) {
 		this.key = key;
+	}
+
+	public void setRedirect(boolean redirect) {
+		if (redirect) {
+			addActionMessage(getText("Login.Redirect"));
+		}
 	}
 }

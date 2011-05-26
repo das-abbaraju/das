@@ -25,11 +25,10 @@ import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.YesNo;
 
 /**
- * This is the main class that is stored for each user containing information if
- * they are logged in, which groups they're in, and what permission(s) they have
- * 
- * Warning: this class is stored in the session Make sure you keep the footprint
- * very small
+ * This is the main class that is stored for each user containing information if they are logged in, which groups
+ * they're in, and what permission(s) they have
+ *
+ * Warning: this class is stored in the session Make sure you keep the footprint very small
  */
 public class Permissions implements Serializable {
 
@@ -283,9 +282,8 @@ public class Permissions implements Serializable {
 	}
 
 	/**
-	 * This gets the shadowed user from the User object, if it's set. Otherwise
-	 * this returns the user's own id
-	 * 
+	 * This gets the shadowed user from the User object, if it's set. Otherwise this returns the user's own id
+	 *
 	 * @return user ID or shadowed user ID
 	 */
 	public int getShadowedUserID() {
@@ -298,7 +296,7 @@ public class Permissions implements Serializable {
 
 	/**
 	 * Does this user have 'oType' access to 'opPerm'
-	 * 
+	 *
 	 * @param opPerm
 	 *            OSHA, ContractorDetails, UserAdmin, etc
 	 * @param oType
@@ -354,7 +352,6 @@ public class Permissions implements Serializable {
 		Cookie c = new Cookie("PICSCookiesEnabled", "true");
 		c.setMaxAge(60);
 		ServletActionContext.getResponse().addCookie(c);
-		response.sendRedirect("Login.action?button=logout&msg=Your session has timed out. Please log back in");
 		return false;
 	}
 
@@ -392,7 +389,7 @@ public class Permissions implements Serializable {
 
 	/**
 	 * True if operator or corporate
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isOperatorCorporate() {
@@ -424,7 +421,7 @@ public class Permissions implements Serializable {
 
 	/**
 	 * Is the logged in user an non-PICS employee auditor?
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isOnlyAuditor() {
@@ -511,27 +508,27 @@ public class Permissions implements Serializable {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Map of AuditTypeID to OperatorID (aka governing body)
 	 */
 	public Set<Integer> getVisibleAuditTypes() {
 		return visibleAuditTypes;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {
 		if (this.hasPermission(OpPerms.AuditRuleAdmin))
 			return true;
-		
+
 		if (operator != null) {
 			if (this.isPicsEmployee() && (operator.isDemo() || operator.getStatus().isPending()))
 				return true;
-			
+
 			for (AccountUser accUser : operator.getAccountUsers()) {
 				if (accUser.getUser().getId() == this.getUserId())
 					return true;
 			}
-			
+
 			for (OperatorAccount child : operator.getOperatorChildren()) {
 				for (AccountUser childAccUser : child.getAccountUsers()) {
 					if (childAccUser.getUser().getId() == this.getUserId())
@@ -539,7 +536,7 @@ public class Permissions implements Serializable {
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -554,7 +551,7 @@ public class Permissions implements Serializable {
 		ua.setEditFlag(true);
 		ua.setDeleteFlag(true);
 		ua.setGrantFlag(false);
-		
+
 		this.permissions.add(ua);
 	}
 }

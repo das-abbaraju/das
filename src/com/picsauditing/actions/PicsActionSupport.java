@@ -51,9 +51,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * String that is used for simple messages.
-	 * 
+	 *
 	 * This is also used for plain-text type results.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.PlainTextResult
 	 */
 	protected String output = null;
@@ -62,23 +62,22 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * JSONObject used to return JSON strings.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONResult
 	 */
 	protected JSONObject json = new JSONObject();
 
 	/**
 	 * Callback used for jsonp requests
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONPResult
 	 */
 	protected String callback;
 
 	private User user; // Current logged in user
 	/**
-	 * TODO Kyle, please research this field and document it. Also review if we
-	 * need setAccount on AccountActionSupport Maybe we should move the account
-	 * field to AccountActionSupport???
+	 * TODO Kyle, please research this field and document it. Also review if we need setAccount on AccountActionSupport
+	 * Maybe we should move the account field to AccountActionSupport???
 	 */
 	protected Account account; // Current logged in user's account
 	private Set<User> auditorList;
@@ -92,7 +91,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isLoggedIn(boolean anonymous) {
 		if (!anonymous) {
-			loadPermissions();
 			if (!forceLogin()) {
 				return false;
 			}
@@ -302,10 +300,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	/**
-	 * Get the directory to store file uploads Use the System property or the
-	 * Init parameter or C:/temp/ To set the System property add
-	 * -Dpics.ftpDir=folder_location to your startup command
-	 * 
+	 * Get the directory to store file uploads Use the System property or the Init parameter or C:/temp/ To set the
+	 * System property add -Dpics.ftpDir=folder_location to your startup command
+	 *
 	 * @return
 	 */
 	static protected String getFtpDir() {
@@ -362,9 +359,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	// This should be moved into an intercepter at a later date
 	/**
-	 * Checks to see if this value is in the parameter map. If it is and the
-	 * value is an empty string ("") then we will replace that value with a null
-	 * 
+	 * Checks to see if this value is in the parameter map. If it is and the value is an empty string ("") then we will
+	 * replace that value with a null
+	 *
 	 * @param name
 	 *            Name of the parameter you want to check in the map
 	 */
@@ -417,7 +414,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public void setMsg(String message) {
-		addActionMessage(message);
+		if (!Strings.isEmpty(message)) {
+			addActionMessage(message);
+		}
 	}
 
 	public String getFormattedDollarAmount(String answer) {
