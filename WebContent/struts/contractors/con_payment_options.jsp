@@ -88,14 +88,7 @@ function updateExpDate() {
 			<s:iterator value="contractor.newMembership">
 				 <s:property value="fee" />: $<s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
 			</s:iterator>
-			<s:if test="contractor.currencyCode.canada">
-				<li><label>Goods & Services Tax:</label> $<s:property value="gstFee.getAmount(contractor)"/> <s:property value="contractor.currencyCode" /></li>
-				<li><label>Total:</label> $<s:property value="contractor.newMembershipAmount+gstFee.getAmount(contractor)"/> <s:property value="contractor.currencyCode" /> </li>
-			</s:if>
-			<s:else>
-				<li><label>Total:</label> $<s:property value="contractor.newMembershipAmount"/> <s:property value="contractor.currencyCode" /> </li>
-			</s:else>
-			
+			<li><label>Total Membership Dues:</label> $<s:property value="contractor.newMembershipAmount"/> <s:property value="contractor.currencyCode" /> </li>
 		</li>
 	</s:if>
 	<s:else>
@@ -117,13 +110,7 @@ function updateExpDate() {
 				</s:iterator>
 			</li>
 			<li><label><s:property value="activationFee.fee"/>:</label> $<s:property value="activationFee.getAmount(contractor)"/> <s:property value="contractor.currencyCode" /></li>
-			<s:if test="contractor.currencyCode.canada">
-				<li><label>Goods & Services Tax:</label> $<s:property value="gstFee.getAmount(contractor)"/> <s:property value="contractor.currencyCode" /></li>
-				<li><label>Total:</label> $<s:property value="activationFee.getAmount(contractor)+contractor.newMembershipAmount+gstFee.getAmount(contractor)"/> <s:property value="contractor.currencyCode" /> </li>
-			</s:if>
-			<s:else>
-				<li><label>Total:</label> $<s:property value="activationFee.getAmount(contractor)+contractor.newMembershipAmount"/> <s:property value="contractor.currencyCode" /> </li>
-			</s:else>
+			<li><label>Total Membership Dues:</label> $<s:property value="activationFee.getAmount(contractor)+contractor.newMembershipAmount"/> <s:property value="contractor.currencyCode" /> </li>
 		</s:else>
 	</s:else>
 </s:if>

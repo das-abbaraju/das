@@ -41,7 +41,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private InvoiceFeeDAO invoiceFeeDAO;
 
 	private InvoiceFee activationFee;
-	private InvoiceFee gstFee; // Canadian goods and services tax
 	// Any time we do a get w/o an exception we set the communication status.
 	// That way we know the information switched off of in the jsp is valid
 	private boolean braintreeCommunicationError = false;
@@ -116,19 +115,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			} else
 				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
 						contractor.getPayingFacilities());
-		}
-
-		if (contractor.getCurrencyCode().isCanada()) {
-			gstFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
-			BigDecimal total = BigDecimal.ZERO;
-			for (FeeClass feeClass : contractor.getFees().keySet()) {
-				if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
-					total.add(contractor.getFees().get(feeClass).getNewLevel().getAmount(contractor));
-			}
-
-			if (activationFee != null)
-				total.add(activationFee.getAmount(contractor));
-			gstFee.setAmount(gstFee.getGSTSurchage(total));
 		}
 
 		if (!contractor.getPaymentMethod().isCreditCard())
@@ -398,10 +384,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	public InvoiceFee getActivationFee() {
 		return activationFee;
-	}
-
-	public InvoiceFee getGstFee() {
-		return gstFee;
 	}
 
 	public boolean isBraintreeCommunicationError() {
