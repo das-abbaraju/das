@@ -29,6 +29,7 @@ a.trade,a.trade:hover,a.trade:active {
 	font-weight: normal;
 	padding: 1px 3px;
 	color: #012142;
+	line-height: 100%;
 	margin-bottom: 2px;
 	margin-right: 5px;
 	text-align: center;
