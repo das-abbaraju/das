@@ -29,7 +29,7 @@
 </s:if>
 <s:if test="!permissions.insuranceOnlyContractorUser">
 	<p>
-		<label><s:text name="ContractorStats.label.CurrentMembershipLevel" />:</label>
+		<label><s:text name="ContractorStats.label.CurrentMembershipLevel" />:</label><br />
 		<s:if test="contractor.mustPayB">
 			<s:iterator value="contractor.currentMembership">
 				 <s:property value="fee" />: $<s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
