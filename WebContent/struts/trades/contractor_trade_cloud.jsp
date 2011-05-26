@@ -4,6 +4,7 @@
 
 <s:bean name="com.picsauditing.util.ContractorTradeComparator" var="tradeComparator" />
 
+<h4>Selected trades</h4>
 <div id="trade-cloud">
 	<s:if test="contractor.trades.size() > 0">
 		<s:sort comparator="#tradeComparator" source="contractor.trades">

@@ -19,11 +19,12 @@ var conID = '<s:property value="id"/>';
 
 <s:include value="../contractors/conRegistrationHeader.jsp"/>
 
+<s:if test="!permissions.operator">
 <h4>What are your business trades?</h4>
 <s:include value="trade_search.jsp"/>
+</s:if>
 
 <div id="trade-view">
-	<h4>Selected trades</h4>
 	<s:include value="contractor_trade_cloud.jsp"/>
 </div>
 
