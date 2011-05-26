@@ -564,6 +564,11 @@
 			<result>struts/reports/report_activity_watch.jsp</result>
 		</action>
 		
+		<action name="ReportContractorTradeConflict"
+			class="com.picsauditing.actions.report.ReportContractorTradeConflict">
+			<result>struts/reports/contractor_trade_conflicts.jsp</result>
+		</action>
+		
 		<!-- Billing -->
 		<action name="ReportBilling"
 			class="com.picsauditing.actions.report.ReportBilling">
@@ -1679,7 +1684,7 @@
 			<result name="trade">struts/trades/contractor_trade_view.jsp</result>
 			<result name="cloud">struts/trades/contractor_trade_cloud.jsp</result>
 		</action>
-
+		
 		<!-- Autocomplete Ajax -->
 		<action name="*Autocomplete"
 			class="com.picsauditing.actions.autocomplete.{1}Autocomplete"

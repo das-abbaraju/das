@@ -396,6 +396,8 @@ public class PicsMenu {
 
 		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
 			addChildAction(subMenu, "ReportUntaggedContractors");
+		if (permissions.hasPermission(OpPerms.ManageTrades) && permissions.isAdmin())
+			subMenu.addChild("Contractor Trade Conflicts", "ReportContractorTradeConflict.action");
 
 		if (permissions.seesAllContractors())
 			subMenu.addChild("User Multi-Login", "MultiLoginUser.action");
