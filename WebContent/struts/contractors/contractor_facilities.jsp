@@ -125,7 +125,7 @@
 	}
 
 	function changeToTrialAccount(conId) {
-		var r = confirm("Are you sure you need to switch to a List Only account? You will still be required to upgrade in the future if you selected for work by this Operator.")
+		var r = confirm("Are you sure you need to switch to a List Only account? You will still be required to upgrade in the future if you are selected for work by this Operator.")
 		if(r == false) {
 			return false;
 		}

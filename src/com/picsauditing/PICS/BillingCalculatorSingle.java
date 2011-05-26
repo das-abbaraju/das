@@ -312,47 +312,49 @@ public class BillingCalculatorSingle {
 
 	@SuppressWarnings("deprecation")
 	static public BigDecimal getDiscountedMembershipAmount(InvoiceFee fee, ContractorAccount contractor) {
-		if (fee.isFree())
-			return BigDecimal.ZERO;
+		if (fee.isMembership()) {
+			if (fee.isFree())
+				return BigDecimal.ZERO;
 
-		// AuditGUARD Discounts
-		if (fee.getFeeClass().equals(FeeClass.AuditGUARD)) {
+			// AuditGUARD Discounts
+			if (fee.getFeeClass().equals(FeeClass.AuditGUARD)) {
 
-			// BASF discount for 1 operator
-			if (contractor.getPayingFacilities() == 1) {
-				Date now = new Date();
-				if (CONTRACT_RENEWAL_BASF.after(now)) {
-					for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
-						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
-							return new BigDecimal(299);
+				// BASF discount for 1 operator
+				if (contractor.getPayingFacilities() == 1) {
+					Date now = new Date();
+					if (CONTRACT_RENEWAL_BASF.after(now)) {
+						for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
+							if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
+								return new BigDecimal(299);
+							}
 						}
 					}
 				}
 			}
-		}
-		// EmployeeGUARD Discounts
-		else if (fee.getFeeClass().equals(FeeClass.EmployeeGUARD)) {
-			boolean employeeAudits = false;
-			boolean oq = false;
-			boolean hseCompetency = false;
+			// EmployeeGUARD Discounts
+			else if (fee.getFeeClass().equals(FeeClass.EmployeeGUARD)) {
+				boolean employeeAudits = false;
+				boolean oq = false;
+				boolean hseCompetency = false;
 
-			Map<AuditType, AuditTypeDetail> map = AuditBuilder.calculateRequiredAuditTypes(contractor);
-			for (AuditType auditType : map.keySet()) {
-				if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isIm()) {
-					employeeAudits = true;
-					break;
+				Map<AuditType, AuditTypeDetail> map = AuditBuilder.calculateRequiredAuditTypes(contractor);
+				for (AuditType auditType : map.keySet()) {
+					if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isIm()) {
+						employeeAudits = true;
+						break;
+					}
 				}
-			}
 
-			for (ContractorOperator co : contractor.getOperators()) {
-				if (co.getOperatorAccount().isRequiresOQ())
-					oq = true;
-				if (co.getOperatorAccount().isRequiresCompetencyReview())
-					hseCompetency = true;
-			}
+				for (ContractorOperator co : contractor.getOperators()) {
+					if (co.getOperatorAccount().isRequiresOQ())
+						oq = true;
+					if (co.getOperatorAccount().isRequiresCompetencyReview())
+						hseCompetency = true;
+				}
 
-			if (!hseCompetency && (employeeAudits || oq))
-				return BigDecimal.ZERO;
+				if (!hseCompetency && (employeeAudits || oq))
+					return BigDecimal.ZERO;
+			}
 		}
 
 		// No discounts apply
