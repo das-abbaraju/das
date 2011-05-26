@@ -74,13 +74,7 @@ public class Node<T extends Hierarchical<T>> implements JSONable {
 			 * children. Setting the state to closed here will allow them to be
 			 * opened up properly.
 			 */
-			if (!data.isLeaf()) {
-				if (children.size() == 0) {
-					json.put("state", "closed");
-				} else {
-					json.put("state", (isShownOpen(this)) ? "open" : "closed");
-				}
-			}
+			json.put("state", "open");
 		}
 
 		JSONArray children = new JSONArray();
