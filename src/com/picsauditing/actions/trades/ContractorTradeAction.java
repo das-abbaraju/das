@@ -1,8 +1,6 @@
 package com.picsauditing.actions.trades;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,7 +40,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	// TODO Check the security here
 	public String execute() throws Exception {
 		super.execute();
-		sortTrades();
 		return SUCCESS;
 	}
 
@@ -75,7 +72,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 			affectedTrades = findAffectedTrades();
 		}
-		sortTrades();
 		return "trade";
 	}
 
@@ -107,7 +103,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		contractor.addAccountTypes(conTypes);
 		accountDao.save(contractor);
 
-		sortTrades();
 		return "trade";
 	}
 
@@ -115,7 +110,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		contractor.getTrades().remove(trade);
 		tradeDAO.remove(trade);
 		trade = null;
-		sortTrades();
 
 		return "trade";
 	}
@@ -175,22 +169,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		result.put(3, "belowAverage");
 		result.put(1, "rarely");
 		return result;
-	}
-
-	/**
-	 * Sorts contractor trades for cloud
-	 * 
-	 * @return
-	 */
-	private void sortTrades() {
-		Collections.sort(contractor.getTrades(), new Comparator<ContractorTrade>() {
-			@Override
-			public int compare(ContractorTrade o1, ContractorTrade o2) {
-				if (o1 == null || o2 == null)
-					return 0;
-				return o1.getTrade().getName().toString().compareTo(o2.getTrade().getName().toString());
-			}
-		});
 	}
 
 	public boolean isRequiresMaterial() {

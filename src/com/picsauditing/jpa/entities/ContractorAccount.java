@@ -42,6 +42,7 @@ import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.util.ContractorTradeComparator;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
@@ -525,6 +526,12 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setTrades(List<ContractorTrade> trades) {
 		this.trades = trades;
+	}
+	
+	@Transient
+	public List<ContractorTrade> getTradesSorted() {
+		Collections.sort(getTrades(), new ContractorTradeComparator());
+		return trades;
 	}
 
 	public String getTradesSelf() {
