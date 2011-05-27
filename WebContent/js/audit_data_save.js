@@ -12,7 +12,7 @@ $(function(){
 		$(this)
 			.block({message: 'Saving answer...'})
 			.load('AuditDataSaveAjax.action',
-				$('form.qform', this).serialize(),
+				$('form.qform', this).serializeArray(),
 				function(response, status) {
 					if (status=='success') {
 						$(this).trigger('updateDependent');
@@ -24,7 +24,8 @@ $(function(){
 
 	$('#auditViewArea').delegate('input.verify', 'click', function(e) {
 		var me = $(this).parents('div.question:first');
-		var pars = $('form.qform', me).serialize() + "&toggleVerify=true";
+		var pars = $('form.qform', me).serializeArray()
+		pars.push({name: "toggleVerify", value:"true"});
 		me.block({message: $(this).val()+'ing...'})
 			.load('AuditDataSaveAjax.action',
 				pars,
@@ -98,9 +99,10 @@ function showCertUpload(certID, questionID) {
 }
 
 function reloadQuestion(qid) {
+	var pars = $('#node_'+qid).find('form.qform').serialize()+'&button=reload';
 	$('#node_'+qid)
 		.block({message: 'Reloading question...'})
-		.load('AuditDataSaveAjax.action',$('#node_'+qid).find('form.qform').serialize()+'&button=reload', function() {
+		.load('AuditDataSaveAjax.action',pars, function() {
 		$(this).unblock();
 	});
 }
