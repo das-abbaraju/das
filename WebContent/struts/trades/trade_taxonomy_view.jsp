@@ -35,8 +35,10 @@
 					<a id="removelogo" class="remove" href="TradeTaxonomy!removeFileAjax.action?trade=<s:property value="trade.id"/>">Remove File</a>
 				</s:if>
 			</li>
-			<li><s:submit cssClass="picsbutton positive save" method="saveTradeAjax" value="Save" /></li>
 		</ol>
+	</fieldset>
+	<fieldset class="submit">
+		<s:submit cssClass="picsbutton positive" method="saveTradeAjax" value="Save"/>
 	</fieldset>
 	<fieldset>
 	<h2>Attributes</h2>
@@ -45,27 +47,27 @@
 			<li>
 				<label>Is Product:</label>
 				<s:checkbox name="trade.productI" />
-				<!-- <s:property value="(trade.product==null)?'null':trade.product" /> -->
+				<s:if test="trade.product==null">inherited from parent</s:if>
 			</li>
 			<li>
 				<label>Is Service:</label>
 				<s:checkbox name="trade.serviceI" />
-				<!-- <s:property value="(trade.service==null)?'null':trade.service" /> -->
+				<s:if test="trade.service==null">inherited from parent</s:if>
 			</li>
 			<li>
 				<label>PSM Applies:</label>
 				<s:checkbox name="trade.psmAppliesI" />
-				<!-- <s:property value="(trade.psmApplies==null)?'null':trade.psmApplies" /> -->
+				<s:if test="trade.psmApplies==null">inherited from parent</s:if>
 			</li>
 			<li>
 				<label>Product Critical:</label>
 				<s:radio theme="pics" name="trade.productRiskI" list="@com.picsauditing.jpa.entities.LowMedHigh@values()"/>
-				<!-- (<s:property value="(trade.productRisk==null)?'null':trade.productRisk" />) -->
+				<br /><s:if test="trade.productRisk==null">inherited from parent</s:if>
 			</li>
 			<li>
 				<label>Safety Critical:</label>
 				<s:radio theme="pics" name="trade.safetyRiskI" list="@com.picsauditing.jpa.entities.LowMedHigh@values()"/>
-				<!-- (<s:property value="(trade.safetyRisk==null)?'null':trade.safetyRisk" />) -->
+				<br /><s:if test="trade.safetyRisk==null">inherited from parent</s:if>
 			</li>
 			<li>
 				<label>Contractor Count:</label>
