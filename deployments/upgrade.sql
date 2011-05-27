@@ -1,4 +1,44 @@
+-- Copied all these tables from LIVE to Alpha2 (5/27)
+app_translation audit_category audit_category_rule audit_question audit_type audit_type_rule pqfoptions workflow workflow_step
+-- Need to copy this all back to Live when we release
+ref_trade ref_trade_alt
+
+-- Already ran this on Alpha2, don't run again
+insert into pics_alpha2.app_translation
+select null, 
+	t1.msgKey, 
+	t1.locale, 
+	t1.msgValue, 
+	t1.createdBy, 
+	t1.updatedBy, 
+	t1.creationDate, 
+	t1.updateDate, 
+	t1.lastUsed
+from pics_alpha1.app_translation t1
+LEFT JOIN pics_alpha2.app_translation t2 ON t1.msgKey = t2.msgKey AND t1.locale = t2.locale
+where t2.id IS NULL
+-- AND t1.msgKey NOT LIKE 'Trade.%'
+AND t1.msgKey NOT LIKE 'AuditCategory.%'
+AND t1.msgKey NOT LIKE 'AuditQuestion.%'
+AND t1.msgKey NOT LIKE 'AuditQuestionOption.%'
+AND t1.msgKey NOT LIKE 'AuditType.%'
+AND t1.locale = 'en'
+AND t1.msgValue != 'Translation missing'
+AND t1.msgValue = t2.msgValue
+;
+
+-- Move over the ref trades somehow
+SET foreign_key_checks = 0;
+INSERT INTO pics_alpha2.ref_trade
+SELECT * FROM pics_alpha1.ref_trade;
+
+INSERT INTO pics_alpha2.ref_trade_alt
+SELECT * FROM pics_alpha1.ref_trade_alt;
+SET foreign_key_checks = 1;
+
 -- PICS-2254
+DELETE FROM app_translation WHERE msgKey LIKE 'AuditCategory.%';
+
 insert into app_translation 
 	(id, 
 	msgKey, 
@@ -18,8 +58,7 @@ update audit_category ac set ac.uniqueCode = 'limits' where ac.name = 'Policy Li
 update audit_category ac set ac.uniqueCode = 'policyInformation' where ac.name = 'Policy Information';
 
 insert into app_translation 
-	(id, 
-	msgKey, 
+	(msgKey, 
 	locale, 
 	msgValue, 
 	createdBy, 
@@ -29,8 +68,8 @@ insert into app_translation
 	lastUsed
 	)
 values
-(NULL, 'AuditCategory.limits.name', 'en', 'Policy Limits', 20952, 20952, NOW(), NOW(), NULL),
-(NULL, 'AuditCategory.policyInformation.name', 'en', 'Policy Information', 20952, 20952, NOW(), NOW(), NULL);
+('AuditCategory.limits.name', 'en', 'Policy Limits', 20952, 20952, NOW(), NOW(), NULL),
+('AuditCategory.policyInformation.name', 'en', 'Policy Information', 20952, 20952, NOW(), NOW(), NULL);
 --
 
 -- PICS-2332
@@ -296,7 +335,6 @@ update pqfdata set answer = '499' where answer = 'You have a Quality Plan or equ
 update pqfdata set answer = '500' where answer = 'You have an Inspection Test Plan (ITP) or equivalent' and questionID = 7128;
 update pqfdata set answer = '501' where answer = 'Both of the above.' and questionID = 7128;
 update pqfdata set answer = '502' where answer = 'None of the above' and questionID = 7128;
-
 
 -- Final DDL Changes
 ALTER TABLE `audit_category`
