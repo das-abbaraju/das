@@ -3,38 +3,13 @@ var search_tree, browse_tree;
 var ajaxUrl = 'ContractorTrades!tradeAjax.action?contractor='+conID+'&trade.trade=';
 
 function loadTradeCallback() {
-	$('#trade-hierarchy').jstree({
-		"json_data": {
-			"ajax": {
-				"url": function(node) {
-					if (node == -1)
-						return 'TradeTaxonomy!hierarchyJson.action';
-					else
-						return 'TradeTaxonomy!json.action';
-				},
-				"data": function(node) {
-					if (node == -1) {
-						return {
-							trade: $('#trade-form [name=trade.trade]').val()
-						};
-					} else {
-						result = $('#suggest').serialize();
-						if (node.attr) {
-							result += "&trade=" + node.attr('id');
-						}
-						return result;
-					}
-				}
-			}
-		}
-	});
-
 	if ($('input.service,input.product').length > 0) {
 		$("#addButton").attr("disabled", "disabled");
 	}
 
 
 	$('#trade_children').hide();
+	wireTradeClueTips();
 }
 
 function setupTree() {

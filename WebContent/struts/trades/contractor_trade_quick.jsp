@@ -2,11 +2,6 @@
 <html>
 <head>
 <title></title>
-<s:include value="../jquery.jsp"/>
-
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/cluetip/jquery.cluetip.css"/>
-<link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
-
 </head>
 <body>
 <s:if test="trade != null">
