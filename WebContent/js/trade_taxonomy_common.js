@@ -111,6 +111,7 @@ $(function() {
 
 	$('div.searchType-list:not(.clean-list) #suggest').live('submit', function(e) {
 		var q = $('input[name="q"]', this).val();
+		$('#search-list').empty();
 		if ($.trim(q).length > 0) {
 			$.post('TradeAutocomplete!json.action', $(this).serializeArray(), function(json) {
 				if (json.result) {
@@ -138,8 +139,6 @@ $(function() {
 					}
 				}
 			}, 'json')
-		} else {
-			$('#search-list').empty();
 		}
 		$(this).parent().addClass('clean-list');
 	});
