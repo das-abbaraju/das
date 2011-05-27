@@ -27,7 +27,7 @@ public class ReportExpiredCreditCards extends ReportAccount {
 		this.emailBuilder = emailBuilder;
 		this.noteDAO = noteDAO;
 		
-		orderByDefault = "lastSent, c.paymentExpires, c.ccExpiration";
+		orderByDefault = "c.balance DESC, c.paymentExpires DESC, c.ccExpiration";
 	}
 
 	public void buildQuery() {
@@ -37,6 +37,8 @@ public class ReportExpiredCreditCards extends ReportAccount {
 
 		sql.addWhere("c.paymentMethod = 'CreditCard'");
 		sql.addWhere("c.ccExpiration < NOW()");
+		sql.addWhere("c.ccOnFile = 1");
+		sql.addWhere("eq.creationDate IS NULL");
 		
 		sql.addGroupBy("c.id");
 		sql.addGroupBy("eq.templateID");
