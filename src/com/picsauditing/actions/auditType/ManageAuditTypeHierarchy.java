@@ -79,7 +79,7 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 									put("rel", "category");
 								}
 							});
-							put("data", cat.getName());
+							put("data", cat.getName().toString());
 							put("state", "closed");
 						}
 					});
