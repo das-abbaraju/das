@@ -528,7 +528,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setTrades(List<ContractorTrade> trades) {
 		this.trades = trades;
 	}
-	
+
 	@Transient
 	public List<ContractorTrade> getTradesSorted() {
 		Collections.sort(getTrades(), new ContractorTradeComparator());
@@ -1043,7 +1043,8 @@ public class ContractorAccount extends Account implements JSONable {
 		for (FeeClass feeClass : getFees().keySet()) {
 			if (!upgrade && this.getFees().get(feeClass).isUpgrade())
 				upgrade = true;
-			if (this.getFees().get(feeClass).getCurrentLevel().isBidonly())
+			if (this.getFees().get(feeClass).getCurrentLevel().isBidonly()
+					&& !this.getFees().get(feeClass).getCurrentLevel().isFree())
 				currentListOnly = true;
 		}
 
