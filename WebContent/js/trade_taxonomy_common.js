@@ -99,11 +99,17 @@ $(function() {
 		});
 
 		parent.addClass('searchType-' + $(this).val());
+
+		$('#suggest').trigger('submit');
 	});
 
-	$('#search-tab input.searchType:checked').trigger('click');
+	$('#suggest .searchText').live('change', function(e) {
+		$(this).closest('#search-tab').removeClass(function (index, css) {
+		    return (css.match (/\bclean-\S+/g) || []).join(' ');
+		});
+	});
 
-	$('div.searchType-list #suggest').live('submit', function(e) {
+	$('div.searchType-list:not(.clean-list) #suggest').live('submit', function(e) {
 		var q = $('input[name="q"]', this).val();
 		if ($.trim(q).length > 0) {
 			$.post('TradeAutocomplete!json.action', $(this).serializeArray(), function(json) {
@@ -121,29 +127,33 @@ $(function() {
 
 							var li = $('<li>')
 								.append(
-									$('<a>', { "href":ajaxUrl+trade.id, "class":"trade "+ trade.type })
+									$('<a>', { "href":ajaxUrl+trade.id, "class":"trade "+trade.type })
 										.html(linkText)
 									);
 							ul.append(li);
 						});
 						$('#search-list').html(ul);
 					} else {
-						$('#search-list').msg('alert', 'No results for that query.', true);
+						$('#search-list').msg('alert', 'There are no trades matching these terms.', true);
 					}
 				}
 			}, 'json')
 		} else {
-			$('#search-list').html('');
+			$('#search-list').empty();
 		}
+		$(this).parent().addClass('clean-list');
 	});
 
-	$('div.searchType-tree #suggest').live('submit', function(e) {
+	$('div.searchType-tree:not(.clean-tree) #suggest').live('submit', function(e) {
 		search_tree.jstree('close_all').jstree('refresh');
+		$(this).parent().addClass('clean-tree');
 	});
 
 	$('#suggest').submit(function(e) {
 		e.preventDefault();
 	});
+
+	$('#search-tab input.searchType:checked').trigger('click');
 
 	if ($.browser.msie) {
 		placeholder();
