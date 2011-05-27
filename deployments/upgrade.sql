@@ -36,42 +36,6 @@ INSERT INTO pics_alpha2.ref_trade_alt
 SELECT * FROM pics_alpha1.ref_trade_alt;
 SET foreign_key_checks = 1;
 
--- PICS-2254
-DELETE FROM app_translation WHERE msgKey LIKE 'AuditCategory.%';
-
-insert into app_translation 
-	(id, 
-	msgKey, 
-	locale, 
-	msgValue, 
-	createdBy, 
-	updatedBy, 
-	creationDate, 
-	updateDate, 
-	lastUsed
-	)
-select null, concat('AuditCategory.',ac.id,'.name'), 'en', ac.name, 20952, 20952, now(), now(), null from audit_category ac
-left join app_translation t on concat('AuditCategory.',ac.id,'.name') = t.msgKey
-where t.id is NULL and ac.name not in ('Policy Limits','Policy Information');
-
-update audit_category ac set ac.uniqueCode = 'limits' where ac.name = 'Policy Limits';
-update audit_category ac set ac.uniqueCode = 'policyInformation' where ac.name = 'Policy Information';
-
-insert into app_translation 
-	(msgKey, 
-	locale, 
-	msgValue, 
-	createdBy, 
-	updatedBy, 
-	creationDate, 
-	updateDate, 
-	lastUsed
-	)
-values
-('AuditCategory.limits.name', 'en', 'Policy Limits', 20952, 20952, NOW(), NOW(), NULL),
-('AuditCategory.policyInformation.name', 'en', 'Policy Information', 20952, 20952, NOW(), NOW(), NULL);
---
-
 -- PICS-2332
 update invoice_fee set fee = 'List Only Account Fee' where id = 100;
 update invoice_item ii set ii.paymentExpires = date_add(ii.paymentExpires, interval 9 month) where ii.feeID = 100;
@@ -252,6 +216,25 @@ select null, c.id, 'ListOnly',
   case when c.membershipLevelID = 100 then 300 else 299 end,
   20952, 20952, now(), now() from contractor_info c;
 --
+
+INSERT INTO contractor_trade(conID, tradeID, createdBy, updatedBy, creationDate, updateDate, selfPerformed,
+manufacture, activityPercent)
+SELECT ca.conID,
+tm.tradeID,
+MIN(pd.createdBy),
+MIN(pd.updatedBy),
+MAX(pd.creationDate),
+MAX(pd.updateDate),
+IF(LOCATE('C', GROUP_CONCAT(pd.answer)) > 0, 1, 0) AS selfPerformed,
+IF(LOCATE('Y', GROUP_CONCAT(tm.product)) > 0, 1, 0) manufacture,
+5 AS activityPercent
+FROM pqfdata pd
+JOIN audit_question aq ON aq.id = pd.questionID
+JOIN contractor_audit ca ON ca.id = pd.auditID
+JOIN accounts a ON a.id = ca.conID AND a.status IN ('Active', 'Pending')
+JOIN pics_temp.tax_mapping tm ON tm.questionID = aq.id
+WHERE aq.categoryID = 422 AND length(trim(pd.answer)) > 0
+GROUP BY ca.conID, tm.tradeID;
 
 -- PICS-2324
 CREATE TABLE temp_con_trades AS 
