@@ -296,3 +296,24 @@ update pqfdata set answer = '499' where answer = 'You have a Quality Plan or equ
 update pqfdata set answer = '500' where answer = 'You have an Inspection Test Plan (ITP) or equivalent' and questionID = 7128;
 update pqfdata set answer = '501' where answer = 'Both of the above.' and questionID = 7128;
 update pqfdata set answer = '502' where answer = 'None of the above' and questionID = 7128;
+
+
+-- Final DDL Changes
+ALTER TABLE `audit_category`
+	DROP COLUMN `name`,
+	DROP KEY `auditTypeCategory`,
+	ADD KEY `auditTypeCategory`(`auditTypeID`,`parentID`),
+	DROP KEY `auditTypeID`;
+
+ALTER TABLE `audit_type` 
+	DROP COLUMN `auditName`, 
+	DROP KEY `auditName`;
+
+ALTER TABLE `accounts` 
+	DROP COLUMN `industry`, 
+	DROP COLUMN `industryID`;
+
+ALTER TABLE `audit_question` 
+	DROP COLUMN `name`;
+
+DROP TABLE `audit_question_option`;
