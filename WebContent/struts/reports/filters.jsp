@@ -123,7 +123,7 @@ select.hidden {
 	<s:if test="filter.showAddress">
 		<br clear="all" />
 		<div class="filterOption">
-			Address:
+			<span class="q_status">Address:</span>
 			<s:textfield name="filter.city" cssClass="forms" size="15"  />
 			<s:textfield name="filter.zip" cssClass="forms" size="5"  />
 			<span class="filterOption">
