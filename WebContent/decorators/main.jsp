@@ -63,26 +63,27 @@
 <script type="text/javascript" src="js/notes.js?v=<%=version%>"></script>
 <script type="text/javascript" src="js/jquery/jquery.form.js"></script>
 <script type="text/javascript">
-$(document).ajaxError(function(e, xhr, originalSettings, exception) {
-	console.log(originalSettings);
-	if (xhr.status == 401) {
-		$.facebox(function() {
-			$.get('Login!overlay.action', function(response, status, loginXhr) {
-				var html = $(response).addClass('overlay');
-				html.find('#login').ajaxForm({
-					url: 'Login!ajax.action',
-					success: function(response, status, formXhr, $form) {
-						$.facebox.close();
-						if (originalSettings.url.indexOf('?') != -1) {
-							originalSettings.url = originalSettings.url.replace(/\?.*$/,'');
+$(function() {
+	$(document).ajaxError(function(e, xhr, originalSettings, exception) {
+		if (xhr.status == 401) {
+			$.facebox(function() {
+				$.get('Login!overlay.action', function(response, status, loginXhr) {
+					var html = $(response).addClass('overlay');
+					html.find('#login').ajaxForm({
+						url: 'Login!ajax.action',
+						success: function(response, status, formXhr, $form) {
+							$.facebox.close();
+							if (originalSettings.url.indexOf('?') != -1) {
+								originalSettings.url = originalSettings.url.replace(/\?.*$/,'');
+							}
+							$.ajax(originalSettings);
 						}
-						$.ajax(originalSettings);
-					}
+					});
+					$.facebox(html);
 				});
-				$.facebox(html);
 			});
-		});
-	}
+		}
+	});
 });
 </script>
 
