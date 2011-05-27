@@ -336,6 +336,34 @@ update pqfdata set answer = '500' where answer = 'You have an Inspection Test Pl
 update pqfdata set answer = '501' where answer = 'Both of the above.' and questionID = 7128;
 update pqfdata set answer = '502' where answer = 'None of the above' and questionID = 7128;
 
+-- Audit Question Options don't have a conversion script (copied from sqldump)
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('13','0','Form of Business',NULL,'23157','23157','2011-04-28 13:29:09','2011-05-03 14:12:44');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('14','0','Safety US Citations',NULL,'23157','23157','2011-04-28 13:52:38','2011-04-28 13:53:39');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('15','0','Communications',NULL,'23157','23157','2011-04-28 13:52:42','2011-04-28 14:02:56');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('16','0','Drug and Alcohol Testing Service',NULL,'23157','23157','2011-04-28 14:24:15','2011-04-28 14:24:29');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('17','0','US Assessment Programs',NULL,'23157','23157','2011-04-28 14:26:55','2011-04-28 14:26:55');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('18','0','IH Substance Testing',NULL,'23157','23157','2011-04-28 14:28:53','2011-04-28 14:28:53');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('19','1','Competency Colors','Colors','23157','23157','2011-04-28 14:30:17','2011-05-09 11:05:46');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('20','1','Low/Medium/High','LowMedHigh','23157','23157','2011-04-28 14:35:00','2011-04-28 14:35:00');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('21','1','COR Type','COR','23157','23157','2011-04-28 14:42:07','2011-05-03 14:58:37');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('22','1','Contractor Acceptance',NULL,'23157','23157','2011-04-28 14:49:53','2011-04-28 14:49:53');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('23','1','UAE Stock Value',NULL,'23157','23157','2011-04-28 14:56:09','2011-04-28 14:56:09');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('24','1','UAE Company Country',NULL,'23157','23157','2011-04-28 15:01:46','2011-04-28 15:01:46');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('25','1','Yes/No','YesNo','23157','23157','2011-04-28 15:10:46','2011-04-28 15:10:46');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('26','1','Yes/No/NA','YesNoNA','23157','23157','2011-04-28 15:12:39','2011-04-28 15:12:39');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('27','0','Country','Country','23157','23157','2011-04-28 15:21:41','2011-04-28 16:15:07');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('28','0','State','State','23157',NULL,'2011-05-02 10:07:31',NULL);
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('30','1','Office Location','OfficeLocation','23157','23157','2011-05-03 14:12:27','2011-05-03 14:12:27');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('31','0','Rating 1-5','Rating','23157','23157','2011-05-03 14:26:56','2011-05-03 14:26:56');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('32','1','Sample Radio Question',NULL,'23157','23157','2011-05-03 17:40:51','2011-05-04 16:35:36');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('33','0','EMR Rate Type',NULL,'23157','23157','2011-05-04 08:29:35','2011-05-04 08:29:35');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('35','0','Suncor QM External Registrations',NULL,'23157','23157','2011-05-04 08:43:59','2011-05-04 08:43:59');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('36','0','Suncor QM Facility Test Procedures',NULL,'23157','23157','2011-05-04 08:48:01','2011-05-04 08:48:01');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('37','1','Suncor QM Quality Planning Company Description',NULL,'23157','23157','2011-05-04 08:55:06','2011-05-04 08:55:06');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('38','1','Suncor QM Scored Yes/No/NA 4pts',NULL,'23157','23157','2011-05-12 16:08:30','2011-05-12 16:08:30');
+insert into `audit_option_group` (`id`, `radio`, `name`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('39','1','Suncor QM Scored Yes/No/NA 1pt',NULL,'23157','23157','2011-05-12 16:09:12','2011-05-12 16:09:12');
+--
+
 -- Final DDL Changes
 ALTER TABLE `audit_category`
 	DROP COLUMN `name`,
