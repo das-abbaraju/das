@@ -70,8 +70,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addField("c.productRisk");
 			sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
 		}
-		if (filterOn(filter.getTrade()))
-			sql.addJoin("JOIN contractor_trade ct on ct.conID = a.id");
 
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
@@ -127,8 +125,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	 * Do not override this method!<br>
 	 * <br>
 	 * 
-	 * 1) This method checks the user is logged in and has the appropriate
-	 * permissions.<br>
+	 * 1) This method checks the user is logged in and has the appropriate permissions.<br>
 	 * 2) Next it determines if the report should run by default.<br>
 	 * 3) It builds the Query and runs the report<br>
 	 * 4) Finally, it returns the results
@@ -260,7 +257,17 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		/** **** Filters for Contractors ********** */
 
 		if (filterOn(f.getTrade())) {
-			report.addFilter(new SelectFilter("trades", "ct.tradeID IN (?)", Strings.implode(f.getTrade())));
+			for (int tradeID : f.getTrade()) {
+				SelectSQL tradeSQL = new SelectSQL("contractor_trade ct");
+				tradeSQL.addJoin("JOIN ref_trade base ON ct.tradeID = base.id");
+				tradeSQL.addJoin("JOIN ref_trade related ON (base.indexStart >= related.indexStart and base.indexEnd <= related.indexEnd) OR (base.indexStart <= related.indexStart and base.indexEnd >= related.indexEnd)");
+				tradeSQL.addWhere("a.id = ct.conID");
+				// TODO allow users to search for Self Performed, Manufacture and Activity Percent
+				tradeSQL.addWhere("ct.activityPercent > 1");
+				tradeSQL.addWhere("ct.selfPerformed = 1");
+				tradeSQL.addWhere("related.id IN (" + tradeID + ")");
+				sql.addWhere("EXISTS ( " + tradeSQL.toString() + ")");
+			}
 		}
 
 		if (filterOn(f.getOperator())) {
@@ -325,13 +332,13 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 
 		if (filterOn(f.getRegistrationDate1())) {
-			report.addFilter(new SelectFilterDate("registrationDate1", "a.creationDate >= '?'", DateBean.format(f
-					.getRegistrationDate1(), "M/d/yy")));
+			report.addFilter(new SelectFilterDate("registrationDate1", "a.creationDate >= '?'", DateBean.format(
+					f.getRegistrationDate1(), "M/d/yy")));
 		}
 
 		if (filterOn(f.getRegistrationDate2())) {
-			report.addFilter(new SelectFilterDate("registrationDate2", "a.creationDate < '?'", DateBean.format(f
-					.getRegistrationDate2(), "M/d/yy")));
+			report.addFilter(new SelectFilterDate("registrationDate2", "a.creationDate < '?'", DateBean.format(
+					f.getRegistrationDate2(), "M/d/yy")));
 		}
 
 		if (f.isPendingPqfAnnualUpdate()) {
@@ -372,8 +379,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 				sql.addJoin("LEFT JOIN pqfdata pd3543 on casd.id = pd3543.auditID AND pd3543.questionID = 3543");
 				sql.addJoin("LEFT JOIN pqfdata pd66 on casd.id = pd66.auditID AND pd66.questionID = 66");
 				sql.addJoin("LEFT JOIN pqfdata pd77 on casd.id = pd77.auditID AND pd77.questionID = 77");
-				sql
-						.addWhere("pd2340.answer = 'Yes' OR pd2354.answer = 'Yes' OR pd2373.answer = 'Yes' OR pd3543.answer = 'X' OR pd66.answer = 'X' OR pd77.answer = 'X'");
+				sql.addWhere("pd2340.answer = 'Yes' OR pd2354.answer = 'Yes' OR pd2373.answer = 'Yes' OR pd3543.answer = 'X' OR pd66.answer = 'X' OR pd77.answer = 'X'");
 			}
 		}
 
@@ -422,9 +428,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	}
 
 	/**
-	 * Return the number of active contractors visible to an Operator or a
-	 * Corporate account This method shouldn't be use be Admins, auditors, and
-	 * contractors
+	 * Return the number of active contractors visible to an Operator or a Corporate account This method shouldn't be
+	 * use be Admins, auditors, and contractors
 	 * 
 	 * @return
 	 */

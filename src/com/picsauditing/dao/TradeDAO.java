@@ -115,7 +115,12 @@ public class TradeDAO extends PicsDAO {
 		if (!searchJoins.isEmpty())
 			sql.addJoin(searchJoins);
 		sql.addWhere("i0.indexType = 'T' AND i0.value LIKE :0");
-		sql.addOrderBy("t1.indexLevel ASC");
+		String orderBy = "i0.weight";
+		for (int i = 1; i < terms.size(); i++) {
+			orderBy += " + i" + i + ".weight";
+		}
+		sql.addOrderBy(orderBy + " DESC");
+		sql.addOrderBy("t1.contractorCount DESC");
 
 		Query query = em.createNativeQuery(sql.toString(), Trade.class);
 
