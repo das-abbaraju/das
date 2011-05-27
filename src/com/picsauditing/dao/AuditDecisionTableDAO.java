@@ -290,12 +290,12 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 		where += " AND (safetyRisk IS NULL";
 		if (contractor.getSafetyRisk() != null)
-			where += " OR safetyRisk = " + contractor.getSafetyRisk();
+			where += " OR safetyRisk = " + contractor.getSafetyRisk().ordinal();
 		where += ")";
 		
 		where += " AND (productRisk IS NULL";
 		if (contractor.getProductRisk() != null)
-			where += " OR productRisk = " + contractor.getProductRisk();
+			where += " OR productRisk = " + contractor.getProductRisk().ordinal();
 		where += ")";
 
 		where += " AND (acceptsBids IS NULL OR acceptsBids = " + (contractor.isAcceptsBids() ? 1 : 0) + ")";
@@ -343,12 +343,12 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 		where += " AND (safetyRisk IS NULL";
 		if (contractor.getSafetyRisk() != null)
-			where += " OR safetyRisk = " + contractor.getSafetyRisk();
+			where += " OR safetyRisk = " + contractor.getSafetyRisk().ordinal();
 		where += ")";
 		
 		where += " AND (productRisk IS NULL";
 		if (contractor.getProductRisk() != null)
-			where += " OR productRisk = " + contractor.getProductRisk();
+			where += " OR productRisk = " + contractor.getProductRisk().ordinal();
 		where += ")";
 
 		where += " AND (acceptsBids IS NULL OR acceptsBids = " + (contractor.isAcceptsBids() ? 1 : 0) + ")";
