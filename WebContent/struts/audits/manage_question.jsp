@@ -7,10 +7,12 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/mcdropdown/css/jquery.mcdropdown.min.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/jquery.bgiframe.min.js"></script>
 <script type="text/javascript" src="js/jquery/mcdropdown/jquery.mcdropdown.min.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/mcdropdown/css/jquery.mcdropdown.min.css" />
+<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
 $(function(){
 	$('select[name=question.questionType]').change(function(){
@@ -126,12 +128,23 @@ function showCategoryRules() {
 }
 
 function toggleOtherOptionType() {
-	if ($('#optionTypes select').val() == 0)
+	if ($('#optionTypes').val() == 0 || $('#optionTypes').val() == null)
 		$('#optionTypeOther_text').show();
 	else {
 		$('#optionTypeOther_text').hide();
 		$('#optionTypeOther_text').val('');
-		$('#optionTypeOther_hidden').val($('#optionTypes select').val());
+		$('#optionTypeOther_hidden').val($('#optionTypes').val());
+	}
+}
+
+function showOption() {
+	if ($('#questionTypes select').val() == 'MultipleChoice') {
+		$('#optionTypesArea').show();
+		toggleOtherOptionType();
+	} else {
+		$('#optionTypesArea').hide();
+		$('#optionTypes').val('');
+		toggleOtherOptionType();
 	}
 }
 
@@ -158,11 +171,16 @@ function toggleOtherOptionType() {
 			</s:else>
 		</li>
 		<li><label>Question Type:</label>
-			<s:select list="questionTypes" name="question.questionType" headerKey="" headerValue="" />
-			<div id="optionTypes" style="<s:if test="!question.questionType.equals('MultipleChoice')">display: none; </s:if>clear: left;">
+			<div id="questionTypes">
+				<s:select list="questionTypes" name="question.questionType" headerKey="" headerValue="" onchange="showOption()" />
+			</div>
+		</li>
+		<li class="required">
+			<div id="optionTypesArea" style="display: none; clear: left;">
+				<label>Option Type:</label>
 				<s:select list="optionTypes" headerKey="0" headerValue="- Other -" listKey="id" value="%{question.option.id}"
-					listValue="name" id="optionTypes" id="optionTypes" onchange="toggleOtherOptionType();" />
-				<pics:autocomplete action="OptionTypeAutocomplete" htmlName="question.option.id" value="question.option" htmlId="optionTypeOther" />
+					listValue="name" id="optionTypes" onchange="toggleOtherOptionType();" />
+				<pics:autocomplete action="OptionGroupAutocomplete" name="question.option" htmlName="question.option" value="question.option" htmlId="optionTypeOther" />
 			</div>
 			<pics:fieldhelp title="Question Type">
 				<p>The type of widget to use on the user interface.</p>
