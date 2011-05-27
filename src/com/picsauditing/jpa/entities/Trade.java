@@ -1,7 +1,9 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.ColumnResult;
@@ -292,7 +294,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public List<IndexObject> getIndexValues() {
 		List<IndexObject> indexValues = super.getIndexValues();
-		
+
 		for (TradeAlternate ta : getAlternates()) {
 			String[] strArray = ta.getName().toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
 			for (String str : strArray) {
@@ -300,7 +302,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 					indexValues.add(new IndexObject(str, 6));
 			}
 		}
-		
+
 		if (parent != null && parent.getId() != TOP_ID) {
 			for (IndexObject parentIndex : parent.getIndexValues()) {
 				IndexObject inheritedIndex = new IndexObject(parentIndex.getValue(), parentIndex.getWeight() - 2);
@@ -399,28 +401,21 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		return name.toString();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public JSONObject toJSON(boolean full) {
-		JSONObject json = new JSONObject();
-
+	@Transient
+	public String getNodeDisplay() {
 		if (name2 == null || name2.toString() == null) {
-			// + " (" + contractorCount + ")"
-			json.put("data", name.toString());
+			return name.toString();
 		} else {
-			json.put("data", name2.toString());
+			return name2.toString();
 		}
+	}
 
-		if (!isLeaf()) {
-			if (full) {
-				json.put("state", "open");
-			} else {
-				json.put("state", "closed");
-			}
-		}
-
-		JSONObject attr = new JSONObject();
-		attr.put("id", id);
+	@SuppressWarnings("unchecked")
+	@Transient
+	@Override
+	public Map<String, String> getNodeAttributes() {
+		Map<String, String> attr = new JSONObject();
+		attr.put("id", "" + id);
 		attr.put("class", "trade-" + id);
 		if (getProductI() && getServiceI())
 			attr.put("rel", "product-service");
@@ -428,8 +423,27 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 			attr.put("rel", "service");
 		else if (getProductI())
 			attr.put("rel", "product");
+		return attr;
+	}
 
-		json.put("attr", attr);
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject toJSON(boolean full) {
+		JSONObject json = super.toJSON(full);
+
+		if (name != null)
+			json.put("name", name.toString());
+		if (name2 != null)
+			json.put("name2", name2.toString());
+		if (help != null)
+			json.put("name2", help.toString());
+
+		if (getProductI() && getServiceI())
+			json.put("type", "product-service");
+		else if (getServiceI())
+			json.put("type", "service");
+		else if (getProductI())
+			json.put("type", "product");
 
 		return json;
 	}

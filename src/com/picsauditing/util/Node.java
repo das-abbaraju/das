@@ -33,6 +33,10 @@ public class Node<T extends Hierarchical<T>> implements JSONable {
 		this.children = new ArrayList<Node<T>>(children);
 	}
 
+	public static <T extends Hierarchical<T>> Node<T> newNode(T t) {
+		return new Node<T>(t);
+	}
+
 	public T getData() {
 		return data;
 	}
@@ -68,13 +72,19 @@ public class Node<T extends Hierarchical<T>> implements JSONable {
 		JSONObject json = new JSONObject();
 
 		if (data != null) {
-			json = data.toJSON(full);
+			json.put("data", data.getNodeDisplay());
 			/*
-			 * The children did not come up in the result, but there are
-			 * children. Setting the state to closed here will allow them to be
-			 * opened up properly.
+			 * The children did not come up in the result, but there are children. Setting the state to closed here will
+			 * allow them to be opened up properly.
 			 */
-			json.put("state", "open");
+			if (!data.isLeaf()) {
+				if (children.size() > 0) {
+					json.put("state", "open");
+				} else {
+					json.put("state", "closed");
+				}
+			}
+			json.put("attr", data.getNodeAttributes());
 		}
 
 		JSONArray children = new JSONArray();
@@ -85,11 +95,10 @@ public class Node<T extends Hierarchical<T>> implements JSONable {
 
 		return json;
 	}
-	
+
 	/**
-	 * Determines whether a node should be open or not. Currently only Trades
-	 * are examined. All others default to true.
-	 * 
+	 * Determines whether a node should be open or not. Currently only Trades are examined. All others default to true.
+	 *
 	 * @param node
 	 * @return true if the node should be shown open
 	 */

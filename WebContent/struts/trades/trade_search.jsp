@@ -27,8 +27,8 @@
 		</pics:permission>
 	</div>
 	<div>
-		<img src="images/icon_box_blue.png" /> Service
-		<img src="images/icon_box_orange.png" /> Product
-		<img src="images/icon_box_combo.png" /> Both 
+		<span class="service">Service</span>
+		<span class="product">Product</span>
+		<span class="product-service">Both</span>
 	</div>
 </div>

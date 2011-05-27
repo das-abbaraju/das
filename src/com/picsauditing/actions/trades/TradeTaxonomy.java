@@ -3,7 +3,6 @@ package com.picsauditing.actions.trades;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +26,7 @@ import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.jpa.entities.TradeAlternate;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.Node;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.Tree;
 
@@ -61,21 +61,21 @@ public class TradeTaxonomy extends PicsActionSupport {
 	@SuppressWarnings("unchecked")
 	public String json() {
 
-		List<Trade> nodes = new ArrayList<Trade>();
+		List<Trade> trades = Collections.emptyList();
 
 		/*
 		 * By default the tree will pass in 5, which is the Trade.TOP node.
 		 */
 		if (trade == null) {
 			// TODO: Consider throwing an exception here instead
-			nodes = tradeDAO.findWhere("p.parent IS NULL");
+			trades = tradeDAO.findWhere("p.parent IS NULL");
 		} else {
-			nodes = tradeDAO.findByParent(trade.getId());
+			trades = tradeDAO.findByParent(trade.getId());
 		}
 
 		JSONArray result = new JSONArray();
-		for (Trade trade : nodes) {
-			result.add(trade.toJSON());
+		for (Trade trade : trades) {
+			result.add(Node.newNode(trade).toJSON());
 		}
 		json.put("result", result);
 

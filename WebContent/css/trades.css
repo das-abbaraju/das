@@ -287,3 +287,21 @@ img.trade {
 #alternateCategory {
 	width: 200px;
 }
+
+.service,.product,.product-service {
+	background-repeat: no-repeat;
+	padding-left: 16px;
+	padding-right: 4px;
+}
+
+.service {
+	background-image: url(../images/icon_box_blue.png);
+}
+
+.product {
+	background-image: url(../images/icon_box_orange.png);
+}
+
+.product-service {
+	background-image: url(../images/icon_box_combo.png);
+}

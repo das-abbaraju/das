@@ -106,7 +106,7 @@ $(function() {
 	$('div.searchType-list #suggest').live('submit', function(e) {
 		var q = $('input[name="q"]', this).val();
 		if ($.trim(q).length > 0) {
-			$.post('TradeAutocomplete!tokenJson.action', $(this).serializeArray(), function(json) {
+			$.post('TradeAutocomplete!json.action', $(this).serializeArray(), function(json) {
 				if (json.result) {
 					if (json.result.length > 0) {
 						var ul = $('<ul>');
@@ -121,7 +121,7 @@ $(function() {
 
 							var li = $('<li>')
 								.append(
-									$('<a>', { "href":ajaxUrl+trade.id, "class":"trade" })
+									$('<a>', { "href":ajaxUrl+trade.id, "class":"trade "+ trade.type })
 										.html(linkText)
 									);
 							ul.append(li);

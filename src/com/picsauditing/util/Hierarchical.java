@@ -1,13 +1,16 @@
 package com.picsauditing.util;
 
 import java.util.Collection;
+import java.util.Map;
 
-import com.picsauditing.jpa.entities.JSONable;
-
-public interface Hierarchical<T> extends JSONable {
+public interface Hierarchical<T> {
 	T getParent();
 
 	Collection<T> getChildren();
+
+	String getNodeDisplay();
+
+	Map<String, String> getNodeAttributes();
 
 	boolean isLeaf();
 
