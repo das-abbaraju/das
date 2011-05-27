@@ -57,7 +57,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private boolean showComment;
 	private String requiredAnswer;
 	private String visibleAnswer;
-	private String name;
+	private TranslatableString name;
 	private String questionType;
 	private AuditOptionGroup option;
 	private String okAnswer;
@@ -136,12 +136,12 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.number = number;
 	}
 
-	@Column(nullable = false)
-	public String getName() {
+	@Transient
+	public TranslatableString getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(TranslatableString name) {
 		this.name = name;
 	}
 
@@ -475,7 +475,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 			return columnHeader;
 		if (getName() == null)
 			return "";
-		return getName();
+		return getName().toString();
 	}
 
 	@Override
@@ -545,7 +545,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	@Transient
 	public String getShortQuestion() {
-		String columnText = getName();
+		String columnText = getName().toString();
 
 		if (columnText.length() > 45) {
 			columnText = columnText.substring(0, 45);
@@ -616,6 +616,6 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	@Transient
 	@Override
 	public String getAutocompleteValue() {
-		return name;
+		return name.toString();
 	}
 }

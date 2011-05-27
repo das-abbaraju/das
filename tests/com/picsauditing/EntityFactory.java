@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.Subscription;
@@ -145,7 +146,8 @@ public class EntityFactory {
 
 	static public AuditQuestion makeAuditQuestion() {
 		AuditQuestion question = new AuditQuestion();
-		question.setName("jUnit Question");
+		question.setName(new TranslatableString());
+		question.getName().putTranslation("en", "jUnit Question", true);
 		return question;
 	}
 

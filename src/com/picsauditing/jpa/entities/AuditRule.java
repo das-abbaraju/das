@@ -180,7 +180,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	public String getQuestionLabel() {
 		if (question == null)
 			return "*";
-		return question.getName();
+		return question.getName().toString();
 	}
 
 	@Enumerated(EnumType.STRING)

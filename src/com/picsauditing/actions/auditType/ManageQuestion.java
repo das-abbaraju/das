@@ -58,7 +58,7 @@ public class ManageQuestion extends ManageCategory {
 
 	public boolean save() {
 		if (question != null) {
-			if (Strings.isEmpty(question.getName())) {
+			if (Strings.isEmpty(question.getName().toString())) {
 				addActionError("Question name is required");
 				return false;
 			}

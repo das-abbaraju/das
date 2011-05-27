@@ -80,7 +80,7 @@ public class ReportAnswerSearch extends ReportAccount {
 		super.addExcelColumns();
 		int i = 30;
 		for(AuditQuestion auditQuestion : questions) {
-			excelSheet.addColumn(new ExcelColumn("answer"+auditQuestion.getId(), auditQuestion.getName()), i);
+			excelSheet.addColumn(new ExcelColumn("answer"+auditQuestion.getId(), auditQuestion.getName().toString()), i);
 			i++;
 		}
 	}

@@ -176,7 +176,8 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				AuditQuestion aq1 = new AuditQuestion();
 				aq1.setNumber(1);
 				aq1.setAuditColumns(permissions);
-				aq1.setName(QUESTION1);
+				aq1.setName(new TranslatableString());
+				aq1.getName().putTranslation("en", QUESTION1, true);
 				aq1.setCategory(cat);
 				aq1.setQuestionType("FileCertificate");
 				aq1.setRequired(true);
@@ -186,7 +187,8 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				AuditQuestion aq2 = new AuditQuestion();
 				aq2.setNumber(2);
 				aq2.setAuditColumns(permissions);
-				aq2.setName(QUESTION2 + operator.getName() + ".");
+				aq2.setName(new TranslatableString());
+				aq2.getName().putTranslation("en", QUESTION2 + operator.getName() + ".", true);
 				aq2.setCategory(cat);
 				aq2.setQuestionType("Yes/No");
 				aq2.setRequired(true);

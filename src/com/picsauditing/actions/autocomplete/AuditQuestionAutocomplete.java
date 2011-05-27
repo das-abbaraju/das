@@ -42,7 +42,7 @@ public final class AuditQuestionAutocomplete extends AutocompleteActionSupport<A
 		}
 
 		// Show question (escaped)
-		sb.append(HtmlUtils.htmlEscape(item.getName()));
+		sb.append(HtmlUtils.htmlEscape(item.getName().toString()));
 
 		return sb;
 	}
