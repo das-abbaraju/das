@@ -57,7 +57,7 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 					if (q.isCurrent()) {
 						result.add(new JSONObject() {
 							{
-								put("data", q.getNumber() + ". " + q.getName());
+								put("data", q.getNumber() + ". " + q.getName().toString());
 								put("attr", new JSONObject() {
 									{
 										put("id", "question_" + q.getId());
@@ -106,7 +106,7 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 									put("rel", "category");
 								}
 							});
-							put("data", cat.getName());
+							put("data", cat.getName().toString());
 							put("state", "closed");
 						}
 					});
