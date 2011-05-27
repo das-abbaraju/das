@@ -126,7 +126,6 @@ $(function() {
 									);
 							ul.append(li);
 						});
-						console.log(ul);
 						$('#search-list').html(ul);
 					} else {
 						$('#search-list').msg('alert', 'No results for that query.', true);
