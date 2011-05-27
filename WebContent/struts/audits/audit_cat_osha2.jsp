@@ -122,25 +122,15 @@
 	<td><s:text name="format.number"><s:param value="totalkmDriven" /></s:text></td>
 	<td>&nbsp;</td>
 </tr>
-<tr>
-	<th class="label"><s:text name="%{type}.cad7"/></th>
-	<td><s:text name="format.decimal"><s:param value="cad7" /></s:text></td>
-	<td>&nbsp;</td>
-</tr>
-<tr>
-	<th class="label"><s:text name="%{type}.neer"/></th>
-	<td><s:text name="format.decimal"><s:param value="neer" /></s:text></td>
-	<td>&nbsp;</td>
-</tr>
 </s:if>
 
-<s:if test="type.toString().equals('OSHA')">	
+<s:if test="type.toString().equals('OSHA')">
 	<tr>
 		<th class="label">Uploaded Log Files</th>
 		<th colspan="2"><s:if test="fileUploaded"><a href="DownloadOsha.action?id=<s:property value="id"/>" target="_BLANK">Download</a></s:if></th>
 		<s:if test="type.toString().equals('OSHA') && corporate"><th colspan="2" class="label">&nbsp;</th></s:if>
 	</tr>
-</s:if>	
+</s:if>
 	<s:if test="type.toString().equals('OSHA') && corporate">
 		<tr>
 			<th class="label">Verification Issues</th>

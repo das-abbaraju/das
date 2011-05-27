@@ -30,7 +30,7 @@
 </s:if>
 <tr>
 	<th class="label">
-	<s:if test="manHours > 0">	
+	<s:if test="manHours > 0">
 		<s:text name="totalHoursWorked"/>
 	</s:if>
 	<s:else>
@@ -116,24 +116,8 @@
 		<s:textfield name='osha.totalkmDriven' value="%{getText('format.plain',totalkmDriven)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
-<tr>
-	<th class="label">
-		<s:text name="%{type}.cad7"/>
-	</th>
-	<td>
-		<s:textfield name='osha.cad7' value="%{cad7}" cssClass="osha"></s:textfield>
-	</td>
-</tr>
-<tr>
-	<th class="label">
-		<s:text name="%{type}.neer"/>
-	</th>
-	<td>
-		<s:textfield name='osha.neer' value="%{neer}" cssClass="osha"></s:textfield>
-	</td>
-</tr>
 </s:if>
-<s:if test="type.toString().equals('OSHA')">	
+<s:if test="type.toString().equals('OSHA')">
 	<tr>
 		<th class="label">
 		<s:if test="fileUploaded">
@@ -183,7 +167,7 @@
 		<tr>
 			<td></td>
 			<td><span style="font-size: 11px;color:#003768;">(2)   If your company is not required to maintain <s:property value="type"/> 300 forms, please provide information from your
-			Worker's Compensation insurance carrier itemizing all claims for the last three years.</span> 
+			Worker's Compensation insurance carrier itemizing all claims for the last three years.</span>
 			</td>
 		</tr>
 		<tr>
