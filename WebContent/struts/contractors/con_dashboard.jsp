@@ -7,6 +7,7 @@
 
 <s:include value="../jquery.jsp" />
 <s:include value="../reports/reportHeader.jsp"/>
+<s:include value="../trades/trade_cloud_header.jsp" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css?v=<s:property value="version"/>" />

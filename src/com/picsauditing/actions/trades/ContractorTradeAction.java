@@ -113,7 +113,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		return "trade";
 	}
-
+	
 	@Override
 	public String nextStep() throws Exception {
 		findContractor();
@@ -124,6 +124,10 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			this.redirect(ContractorRegistrationStep.Risk.getUrl(contractor.getId()));
 
 		return SUCCESS;
+	}
+	
+	public String quickTrade() throws Exception {
+		return "quick";
 	}
 
 	public List<ContractorTrade> findAffectedTrades() {

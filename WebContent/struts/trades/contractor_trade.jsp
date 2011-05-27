@@ -12,6 +12,8 @@
 <script>
 var conID = '<s:property value="id"/>';
 </script>
+<s:include value="trade_cloud_header.jsp" />
+
 <script type="text/javascript" src="js/trade_taxonomy_contractor.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript" src="js/trade_taxonomy_common.js?v=<s:property value="version"/>"></script>
 <style>
