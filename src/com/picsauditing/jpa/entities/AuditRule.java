@@ -26,11 +26,11 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected ContractorType contractorType;
 	protected OperatorTag tag;
 	protected Trade trade;
-	protected Boolean soleProprietor;
 	protected AuditQuestion question;
 	protected QuestionComparator questionComparator;
 	protected String questionAnswer;
 	// Default to list only "No" (Needed to the increase the priority)
+	protected Boolean soleProprietor = false;
 	protected Boolean acceptsBids = false;
 
 	@ManyToOne
