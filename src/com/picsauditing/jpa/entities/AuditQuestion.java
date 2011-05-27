@@ -138,7 +138,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	@Transient
 	public TranslatableString getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(TranslatableString name) {
