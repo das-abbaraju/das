@@ -65,7 +65,8 @@ function showType(typeID) {
 function showCat(catID) {
 	var data = {
 		'comparisonRule.operatorAccount.id': <s:property value="operator.id" />,
-		'comparisonRule.auditCategory.id': catID
+		'comparisonRule.auditCategory.id': catID,
+		'columnsIgnore': ['auditType','auditCategory','rootCategory']
 	};
 
 	$('tr#cat'+catID).find('.hide').show();
