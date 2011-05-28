@@ -15,13 +15,13 @@
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
 $(function(){
-	$('select[name=question.questionType]').change(function(){
+	$('select[name="question.questionType"]').change(function(){
 		if($(this).val()=='MultipleChoice') {
 			$('.scoreWeight').show();
 			$('#optionTypes').show();
 		} else {
 			$('.scoreWeight').hide();
-			$('.scoreWeight input[name=question.scoreWeight]').val(0);
+			$('.scoreWeight input[name="question.scoreWeight"]').val(0);
 			$('#optionTypes').hide();
 		}
 	}).trigger('change');
