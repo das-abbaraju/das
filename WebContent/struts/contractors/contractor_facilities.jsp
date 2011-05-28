@@ -195,7 +195,7 @@
 	<h3><s:text name="%{scope}.ContractorFacilities.AddFacilities" /></h3>
 		<s:if test="permissions.contractor || permissions.admin">
 			<div class="info"><s:text name="%{scope}.ContractorFacilities.AddFacilitiesInfo" />
-			<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
+			<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;"
 				href="#" title="opens in new window"><s:text name="%{scope}.ContractorFacilities.ViewPricing" /></a>
 		</div></s:if>
 		<form id="facilitySearch" onsubmit="runSearch(); return false;">

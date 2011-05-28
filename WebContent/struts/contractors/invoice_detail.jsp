@@ -163,16 +163,14 @@ input[type=submit] {
 					<tr>
 						<td style="border-right: 0"><s:set name="o" value="[0]"></s:set> <s:include value="../who.jsp"></s:include> <s:property
 							value="invoiceFee.fee" /> <span style="color: #444; font-style: italic; font-size: 10px;"> <s:if
-							test="invoiceFee.feeClass == 'Activation'">effective
+							test="invoiceFee.feeClass.paymentExpiresNeeded">effective
 								<s:if test="paymentExpires == null">
 								<s:date name="invoice.creationDate" format="MMM d, yyyy" />
 							</s:if>
 							<s:else>
 								<s:date name="paymentExpires" />
 							</s:else>
-						</s:if> <s:if test="invoiceFee.feeClass == 'Membership' && paymentExpires != null">
-								expires <s:date name="paymentExpires" format="MMM d, yyyy" />
-						</s:if> </span></td>
+						</s:if></span></td>
 						<s:if test="edit">
 							<td><s:textfield name="invoice.items[%{#stat.index}].description" value="%{description}" size="30" />
 							(optional description) </td>

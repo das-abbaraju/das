@@ -133,7 +133,7 @@ public class BillingDetail extends ContractorActionSupport {
 			// on it
 			boolean hasMembership = false;
 			for (InvoiceItem item : invoiceItems) {
-				if (item.getInvoiceFee().getFeeClass().equals("Membership"))
+				if (item.getInvoiceFee().isMembership())
 					hasMembership = true;
 			}
 			if (hasMembership) {

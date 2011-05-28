@@ -65,9 +65,8 @@ public class ReportBilling extends ReportAccount {
 				+ "WHEN c.paymentExpires < ADDDATE(NOW(), INTERVAL 45 DAY) THEN 'Renewals' "
 				+ "WHEN f2.defaultAmount > f1.defaultAmount THEN 'Upgrades' ELSE 'Other' END billingStatus");
 		sql.addWhere(where);
-		
+		sql.addWhere("cf.feeClass != 'EmployeeGUARD' OR a.requiresCompetencyReview = 1");
 		sql.addGroupBy("a.id HAVING SUM(f2.defaultAmount) > 0");
-
 	}
 
 	@Override
