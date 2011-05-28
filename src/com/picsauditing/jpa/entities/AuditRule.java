@@ -50,6 +50,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 		return auditType.getName().toString();
 	}
 
+	@Enumerated(EnumType.STRING)
 	public LowMedHigh getSafetyRisk() {
 		return safetyRisk;
 	}
@@ -65,6 +66,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 		return safetyRisk.toString();
 	}
 
+	@Enumerated(EnumType.STRING)
 	public LowMedHigh getProductRisk() {
 		return productRisk;
 	}
@@ -99,7 +101,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 	/**
 	 * Does this rule apply to the given operator?
-	 * 
+	 *
 	 * @param operator
 	 * @return
 	 */
