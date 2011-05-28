@@ -83,6 +83,9 @@ function showRules() {
 						<p>The name of the document, policy type, audit, or operator specific form</p>
 					</pics:fieldhelp>
 				</li>
+				<li>
+					<a class="edit translate" href="ManageTranslations.action?button=Search&key=AuditType.<s:property value="auditType.id"/>" target="_BLANK">Manage Translations</a>
+				</li>
 				<li><label>Class:</label>
 					<s:select list="classList" name="auditType.classType" />
 				</li>

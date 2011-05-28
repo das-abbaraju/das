@@ -80,6 +80,9 @@ function showRules() {
 			<li><label>Category Name:</label>
 				<s:textfield name="category.name" />
 			</li>
+			<li>
+				<a class="edit translate" href="ManageTranslations.action?button=Search&key=AuditCategory.<s:property value="category.id"/>" target="_BLANK">Manage Translations</a>
+			</li>
 			<li><label>Unique Code:</label>
 				<s:textfield name="category.uniqueCode" />
 			</li>
