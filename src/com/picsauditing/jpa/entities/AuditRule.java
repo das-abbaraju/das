@@ -228,7 +228,22 @@ public class AuditRule extends BaseDecisionTreeRule {
 	public String getAcceptsBidsLabel() {
 		if (acceptsBids == null)
 			return "*";
-		return acceptsBids ? "Yes" : "No";
+		return acceptsBids ? "List" : "Full";
+	}
+
+	public Boolean getSoleProprietor() {
+		return soleProprietor;
+	}
+
+	public void setSoleProprietor(Boolean soleProprietor) {
+		this.soleProprietor = soleProprietor;
+	}
+
+	@Transient
+	public String getSoleProprietorLabel() {
+		if (soleProprietor == null)
+			return "*";
+		return soleProprietor ? "Sole" : "Full";
 	}
 
 	@Override
@@ -428,13 +443,5 @@ public class AuditRule extends BaseDecisionTreeRule {
 		}
 
 		return sb.toString();
-	}
-
-	public Boolean getSoleProprietor() {
-		return soleProprietor;
-	}
-
-	public void setSoleProprietor(Boolean soleProprietor) {
-		this.soleProprietor = soleProprietor;
 	}
 }
