@@ -215,6 +215,10 @@ public class AuditRule extends BaseDecisionTreeRule {
 		return questionAnswer;
 	}
 
+	/**
+	 * aka List Only or Bid Only
+	 * @return
+	 */
 	public Boolean getAcceptsBids() {
 		return acceptsBids;
 	}
@@ -272,14 +276,24 @@ public class AuditRule extends BaseDecisionTreeRule {
 		if (acceptsBids != null) {
 			priority += 103;
 			level++;
+			if (acceptsBids) {
+				// Always consider list Only rules to be more specific
+				priority += 400;
+				level = level + 4;
+			}
+		}
+		if (soleProprietor != null) {
+			priority += 107;
+			level++;
+			if (soleProprietor) {
+				// Always consider sole proprietor rules to be more specific
+				priority += 400;
+				level = level + 4;
+			}
 		}
 		if (auditType != null) {
 			// Hundred
 			priority += 105;
-			level++;
-		}
-		if (soleProprietor != null) {
-			priority += 107;
 			level++;
 		}
 		if (trade != null) {
