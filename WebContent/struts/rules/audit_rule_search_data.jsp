@@ -23,7 +23,7 @@
 				<td>Tag</td>
 				<td>Risk</td>
 				<td>Account Type</td>
-				<td>Bid-Only</td>
+				<td>List Only</td>
 				<s:if test="!categoryRule">
 					<td colspan="2">Dependency</td>
 				</s:if>
@@ -51,7 +51,7 @@
 					<td><s:property value="get('tag')"/></td>
 					<td><s:property value="get('risk') > 0 ? getRisk(get('risk')) : '*'"/></td>
 					<td><s:property value="get('con_type')"/></td>
-					<td><s:property value="get('acceptsBids') == null ? '*' : (get('acceptsBids') ? 'Bid-only' : 'Full-only')"/></td>
+					<td><s:property value="get('acceptsBids') == null ? '*' : (get('acceptsBids') ? 'List Only' : 'Full-only')"/></td>
 					<s:if test="!categoryRule">
 						<td><s:property value="get('dependentAuditType')"/></td>
 						<td><s:property value="get('dependentAuditStatus')"/></td>
