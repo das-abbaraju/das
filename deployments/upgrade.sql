@@ -260,6 +260,9 @@ set safetyRisk = case risk when null then null when 0 then 'None' when 1 then 'L
 update audit_category_rule
 set safetyRisk = case risk when null then null when 0 then 'None' when 1 then 'Low' when 2 then 'Med' when 3 then 'High' end;
 
+alter table audit_type_rule drop column `risk`;
+alter table audit_category_rule drop column `risk`;
+
 -- PICS-2289
 update pqfdata set answer = '1' where answer = 'Sole Owner' and questionID = 63;
 update pqfdata set answer = '2' where answer = 'Ltd' and questionID = 63;
