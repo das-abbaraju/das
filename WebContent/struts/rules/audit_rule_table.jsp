@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <script>
 function deleteRule(element,ruleID) {
-	var deleteMe = confirm('You are deleting a rule with potentially broad reaching affects. Are you sure you want to do this?');
+	var deleteMe = confirm('You are sure you want to archive (delete) this rule?');
 	if (!deleteMe)
 		return;
 	
@@ -35,11 +35,11 @@ function deleteRule(element,ruleID) {
 				<s:if test="columnMap.get('rootCategory')">
 					<th title="Category">Root</th>
 				</s:if>
-				<s:if test="columnMap.get('contractorType')">
-					<th>Contractor Type</th>
-				</s:if>
 				<s:if test="columnMap.get('operatorAccount')">
 					<th>Operator</th>
+				</s:if>
+				<s:if test="columnMap.get('contractorType')">
+					<th title="Onsite/Offsite/Supplier">Type</th>
 				</s:if>
 				<s:if test="columnMap.get('safetyRisk')">
 					<th title="Safety Critical">Safety</th>
@@ -109,11 +109,8 @@ function deleteRule(element,ruleID) {
 					<s:if test="columnMap.get('rootCategory')">
 						<td><s:property value="rootCategoryLabel"/></td>
 					</s:if>
-					<s:if test="columnMap.get('contractorType')">
-						<td><s:property value="contractorTypeLabel"/></td>
-					</s:if>
 					<s:if test="columnMap.get('operatorAccount')">
-						<td>
+						<td class="limitWidth">
 							<s:if test="operatorAccount != null">
 								<a href="OperatorConfiguration.action?id=<s:property value="operatorAccount.id"/>" class="account<s:property value="operatorAccount.status"/>"><s:property value="operatorAccountLabel"/></a>
 							</s:if>
@@ -121,6 +118,9 @@ function deleteRule(element,ruleID) {
 								<s:property value="operatorAccountLabel"/>
 							</s:else>
 						</td>
+					</s:if>
+					<s:if test="columnMap.get('contractorType')">
+						<td><s:property value="contractorTypeLabel"/></td>
 					</s:if>
 					<s:if test="columnMap.get('safetyRisk')">
 						<td><s:property value="safetyRiskLabel"/></td>
