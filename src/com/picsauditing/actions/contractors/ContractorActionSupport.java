@@ -17,7 +17,6 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -52,8 +51,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 	private CertificateDAO certificateDAO;
 	@Autowired
 	private OperatorAccountDAO operatorDAO;
-	@Autowired
-	private AuditDataDAO auditDataDAO;
 
 	private List<ContractorOperator> operators;
 	protected boolean limitedView = false;
@@ -285,11 +282,25 @@ public class ContractorActionSupport extends AccountActionSupport {
 				if (o1.getAuditType().getDisplayOrder() > o2.getAuditType().getDisplayOrder())
 					return 1;
 
+				if (o1.getAuditType().equals(o2.getAuditType())) {
+					if (o1.getAuditFor() != null && o2.getAuditFor() != null) {
+						if (o1.getAuditType().isAnnualAddendum())
+							// Annual Update 2011 vs Annual Update 2010
+							return o2.getAuditFor().compareTo(o1.getAuditFor());
+						else
+							return o1.getAuditFor().compareTo(o2.getAuditFor());
+					} else {
+						// Just in case
+						return o1.getId() - o2.getId();
+					}
+				}
+				
 				// get display names as seen in menu
 				String name1 = getText(o1.getAuditType().getI18nKey("name"));
 				String name2 = getText(o2.getAuditType().getI18nKey("name"));
 				if (name1 == null || name2 == null)
-					return 0; // can't compare names
+					// Just in case
+					return o1.getId() - o2.getId();
 
 				return name1.compareTo(name2);
 			}
@@ -336,17 +347,11 @@ public class ContractorActionSupport extends AccountActionSupport {
 					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
 						childMenu.setName(linkText);
-						childMenu.setSortField(linkText);
 					}
 					iter.remove();
 				}
 			}
 
-			try {
-				subMenu.sortChildren();
-			} catch (Exception e) {
-				PicsLogger.log("Failed to sort Annual Updates");
-			}
 			addSubMenu(menu, subMenu);
 		}
 
