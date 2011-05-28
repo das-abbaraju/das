@@ -14,11 +14,11 @@ $(function() {
 	$('#audit-list').change(function() {
 		$('#audit-form').submit();
 	});
-	
+
 	$('#audit-tree').jstree({
 		"core": { "animation": 200 },
 		"themes": {
-			theme: "classic"	
+			theme: "classic"
 		},
 		"json_data": {
 			"ajax": {
@@ -53,20 +53,16 @@ $(function() {
 					}
 				},
 				"category": {
-					"valid_children": ["question", "category"],
+					"valid_children": ['question', 'category'],
 					"icon": {
 						"image": "images/folder.png"
 					}
 				},
 				"audit": {
-					"valid_children": ["category"],
+					"valid_children": ['category'],
 					"icon": {
 						"image": "images/root.png"
-					},
-					"start_drag" : false,
-					"move_node" : false,
-					"delete_node" : false,
-					"remove" : false
+					}
 				}
 			}
 		},
