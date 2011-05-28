@@ -78,10 +78,6 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 				whereClauses.add(sb.toString());
 			}
 			
-			if (comparisonRule.getSoleProprietor() != null) {
-				whereClauses.add("t.soleProprietor = " + comparisonRule.getSoleProprietor().toString());
-			}
-
 			rules = (List<AuditTypeRule>) ruleDAO.findWhere(AuditTypeRule.class,
 					Strings.implode(whereClauses, " AND "), 0);
 			Collections.sort(rules);
