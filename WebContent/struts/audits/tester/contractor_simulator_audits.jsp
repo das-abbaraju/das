@@ -12,7 +12,7 @@
 	<div class="ruleDetail">
 	<s:iterator value="audits.get(#audit)">
 		<s:property value="include ? 'Include' : 'Exclude'"/> if
-		<s:if test="acceptsBids">is Bid Only</s:if>
+		<s:if test="acceptsBids">is List Only</s:if>
 		<s:if test="question">
 			<b><s:property value="question.columnHeaderOrQuestion"/></b>
 			<s:property value="questionComparator"/>

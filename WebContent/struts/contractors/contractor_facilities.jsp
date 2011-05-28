@@ -47,7 +47,7 @@
 		runSearch("searchShowAll");
 	}
 	function addOperator( conId, opId ) {
-		// Changes status if contractor refuses bid only upgrade
+		// Changes status if contractor refuses list only upgrade
 		var r = true;
 		
 		// Validating listed contractor and operator

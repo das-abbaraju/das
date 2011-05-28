@@ -110,7 +110,7 @@ public class FacilityChanger {
 		}
 
 		// Need to upgrade this contractor if operator being added does not
-		// accept bid only contractors
+		// accept list only contractors
 		if (contractor.isAcceptsBids() && !operator.isAcceptsBids()) {
 			contractor.setAcceptsBids(false);
 			contractor.setRenew(true);
