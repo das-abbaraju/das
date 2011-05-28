@@ -29,9 +29,8 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected AuditQuestion question;
 	protected QuestionComparator questionComparator;
 	protected String questionAnswer;
-	// Default to list only "No" (Needed to the increase the priority)
-	protected Boolean soleProprietor = false;
-	protected Boolean acceptsBids = false;
+	protected Boolean soleProprietor;
+	protected Boolean acceptsBids;
 
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
