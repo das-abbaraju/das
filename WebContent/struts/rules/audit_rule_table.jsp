@@ -33,7 +33,7 @@ function deleteRule(element,ruleID) {
 					<th>Category</th>
 				</s:if>
 				<s:if test="columnMap.get('rootCategory')">
-					<th>Root Category</th>
+					<th title="Category">Root</th>
 				</s:if>
 				<s:if test="columnMap.get('contractorType')">
 					<th>Contractor Type</th>
@@ -42,10 +42,10 @@ function deleteRule(element,ruleID) {
 					<th>Operator</th>
 				</s:if>
 				<s:if test="columnMap.get('safetyRisk')">
-					<th>Safety Critical Risk</th>
+					<th title="Safety Critical">Safety</th>
 				</s:if>
 				<s:if test="columnMap.get('productRisk')">
-					<th>Product Critical Risk</th>
+					<th title="Product Critical">Product</th>
 				</s:if>
 				<s:if test="columnMap.get('tag')">
 					<th>Tag</th>
