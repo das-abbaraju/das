@@ -1,15 +1,10 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.picsauditing.actions.auditType.AuditRuleColumn;
 
 @SuppressWarnings("serial")
 @Entity
@@ -81,16 +76,16 @@ public class AuditCategoryRule extends AuditRule {
 	@Override
 	public String toString() {
 		String out = super.toString();
-		if (rootCategory != null){
-			if(out.contains("when"))
-				out += " and";	
+		if (rootCategory != null) {
+			if (out.contains("when"))
+				out += " and";
 			else
 				out += " when";
 			out += " Root Category is [" + rootCategory.toString() + "]";
 		}
-		if (auditCategory != null){
-			if(out.contains("when"))
-				out += " and";	
+		if (auditCategory != null) {
+			if (out.contains("when"))
+				out += " and";
 			else
 				out += " when";
 			out += " Category is [" + auditCategory.toString() + "]";
