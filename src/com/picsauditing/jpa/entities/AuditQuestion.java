@@ -43,6 +43,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	static public final int RISK_LEVEL_ASSESSMENT = 2444;
 	static public final int PRODUCT_CRITICAL_ASSESSMENT = 7678;
 	static public final int PRODUCT_SAFETY_CRITICAL_ASSESSMENT = 7679;
+	static public final int IMPORT_PQF = 7727;
 
 	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest", "Check Box", "Date", "Decimal Number",
 			"File", "FileCertificate", "Industry", "License", "Main Work", "Money", "MultipleChoice", "Number",

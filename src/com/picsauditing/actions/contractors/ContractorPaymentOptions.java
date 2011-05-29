@@ -10,8 +10,10 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
@@ -40,6 +42,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private String company;
 	private CreditCard cc;
 	private InvoiceFeeDAO invoiceFeeDAO;
+	private AuditTypeDAO auditTypeDAO;
 
 	private InvoiceFee activationFee;
 	// Any time we do a get w/o an exception we set the communication status.
@@ -48,9 +51,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	AppPropertyDAO appPropDao;
 
-	public ContractorPaymentOptions(AppPropertyDAO appPropDao, InvoiceFeeDAO invoiceFeeDAO) {
+	public ContractorPaymentOptions(AppPropertyDAO appPropDao, InvoiceFeeDAO invoiceFeeDAO, AuditTypeDAO auditTypeDAO) {
 		this.appPropDao = appPropDao;
 		this.invoiceFeeDAO = invoiceFeeDAO;
+		this.auditTypeDAO = auditTypeDAO;
 		this.subHeading = "Payment Options";
 		this.currentStep = ContractorRegistrationStep.Payment;
 	}
@@ -101,6 +105,17 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			} else {
 				addActionError("Only account Administrators, Billing, and Safety can accept this Contractor Agreement");
 			}
+		}
+
+		if ("Import my Data".equals(button) && !isHasPQFImportAudit()) {
+			ContractorAudit conAudit = new ContractorAudit();
+			conAudit.setAuditType(auditTypeDAO.find(AuditType.IMPORT_PQF));
+			conAudit.setManuallyAdded(true);
+			conAudit.setAuditColumns(permissions);
+			conAudit.setContractorAccount(contractor);
+
+			auditDao.save(conAudit);
+			this.redirect("ContractorPaymentOptions.action");
 		}
 
 		accountDao.save(contractor);
@@ -395,11 +410,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		this.braintreeCommunicationError = braintreeCommunicationError;
 	}
 
-	public boolean isHasSuncorMembership() {
-		for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
-			if (contractorOperator.getOperatorAccount().getName().toLowerCase().startsWith("suncor")) {
+	public boolean isHasPQFImportAudit() {
+		for (ContractorAudit ca : contractor.getAudits()) {
+			if (ca.getAuditType().getId() == AuditType.IMPORT_PQF)
 				return true;
-			}
 		}
 
 		return false;

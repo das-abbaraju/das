@@ -80,7 +80,7 @@ function updateExpDate() {
 <fieldset class="form">
 <h2 class="formLegend">Membership Details</h2>
 <ol>
-<s:if test="contractor.competitorMembership && contractor.status.pending">
+<s:if test="contractor.competitorMembership && contractor.status.pending && !hasPQFImportAudit">
 	<li>
 		<div class="alert">
 			You have indicated you are a member of another consortium or registry.  Press the Import button if you would like to have PICS import your data for a $200 fee.  (<a href="#" class="cluetip help" title="Let us Import Your Data" rel="#watchtip">Learn More</a>).
@@ -103,7 +103,7 @@ function updateExpDate() {
 	<s:if test="contractor.status.activeDemo">
 		<li><label>Next Billing Date:</label> <s:date
 			name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
-		<li><label>Next Billing Amount: (<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
+		<li><label>Next Billing Amount: (<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;"
 				href="#" title="opens in new window">Click here to view pricing</a>)</label>
 			<s:iterator value="contractor.newMembership">
 				 <s:property value="fee" />: $<s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
@@ -123,7 +123,7 @@ function updateExpDate() {
 			</li>
 		</s:if>
 		<s:else>
-			<li><label>Annual Membership: (<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
+			<li><label>Annual Membership: (<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;"
 					href="#" title="opens in new window">Click here to view pricing</a>)</label>
 				<s:iterator value="contractor.newMembership">
 					 <s:property value="fee" />: $<s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
@@ -263,7 +263,7 @@ function updateExpDate() {
 		</ol>
 		</fieldset>
 		<fieldset class="form submit">
-			<input type="submit" class="picsbutton positive" name="button" value="Submit"/>
+			<input type="submit" class="picsbutton positive" name="commit" value="<s:if test="cc == null">Add</s:if><s:else>Replace</s:else> Credit Card"/>
 			<br clear="all">
 		</fieldset>
 	</form>

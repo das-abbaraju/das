@@ -44,6 +44,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public static final int SHELL_COMPETENCY_REVIEW = 100;
 	public static final int WA_STATE_VERIFICATION = 176;
 	public static final int PQF_SUNCOR = 195;
+	public static final int IMPORT_PQF = 232;
 
 	protected TranslatableString name;
 	protected AuditTypeClass classType = AuditTypeClass.Audit;
