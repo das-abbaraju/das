@@ -121,7 +121,13 @@ public class AuditOptionGroup extends BaseTable {
 
 	@Transient
 	@Override
+	public String getAutocompleteItem() {
+		return "[" + id + "] " + name;
+	}
+	
+	@Transient
+	@Override
 	public String getAutocompleteValue() {
-		return getName();
+		return name;
 	}
 }
