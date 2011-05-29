@@ -15,7 +15,7 @@ public enum ContractorRegistrationStep {
 		if (contractor.getStatus().isDemo())
 			return Done;
 
-		if (contractor.getTradesUpdated() == null)
+		if (contractor.getTrades().size() == 0)
 			return Trades;
 		if (contractor.getSafetyRisk() == null)
 			return Risk;
@@ -23,7 +23,7 @@ public enum ContractorRegistrationStep {
 			return Risk;
 		if (!containsOperator(contractor.getOperators()))
 			return Facilities;
-		if (contractor.isMustPayB() && !contractor.isPaymentMethodStatusValid())
+		if (!contractor.isHasFreeMembership() && !contractor.isPaymentMethodStatusValid())
 			return Payment;
 
 		return Confirmation;
@@ -67,5 +67,21 @@ public enum ContractorRegistrationStep {
 
 	public boolean isDone() {
 		return this == Done;
+	}
+	
+	public boolean isHasNext() {
+		return this.ordinal() < Confirmation.ordinal();
+	}
+
+	public boolean isHasPrevious() {
+		return this.ordinal() > EditAccount.ordinal();
+	}
+	
+	public boolean isShowTop() {
+		return this != Facilities && this != Risk;
+	}
+	
+	public boolean isShowBottom() {
+		return true;
 	}
 }

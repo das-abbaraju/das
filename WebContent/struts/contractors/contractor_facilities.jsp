@@ -78,6 +78,7 @@
 				$('#facilitySearch .clearable').val('');
 				runSearch();
 				refreshNoteCategory(conId, 'OperatorChanges');
+				$('#next_button').show();
 			}
 		});
 		return false;
@@ -97,6 +98,9 @@
 				refreshNoteCategory(conId, 'OperatorChanges');
 			}
 		});
+		<s:if test="currentOperators.size() == 0">
+		$('#next_button').hide();
+		</s:if>
 		return false;
 	}
 	function reloadOperators( conId ) {

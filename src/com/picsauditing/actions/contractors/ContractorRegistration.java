@@ -359,4 +359,29 @@ public class ContractorRegistration extends ContractorActionSupport {
 		catData.setAuditColumns(new User(User.SYSTEM));
 		audit.getCategories().add(catData);
 	}
+
+	@Override
+	public ContractorRegistrationStep getPreviousRegistrationStep() {
+		return null;
+	}
+
+	@Override
+	public ContractorRegistrationStep getNextRegistrationStep() {
+		return null;
+	}
+	
+	@Override
+	public String previousStep() throws Exception {
+		// This shouldn't be getting called
+		return SUCCESS;
+	}
+
+	@Override
+	public String nextStep() throws Exception {
+		// This shouldn't be getting called either
+		// After the first step of registration
+		// the Contractor account is created
+		// and this should redirect to ConEdit
+		return SUCCESS;
+	}
 }

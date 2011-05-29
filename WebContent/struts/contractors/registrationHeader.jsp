@@ -28,9 +28,9 @@ $(function(){
 		<s:if test="previousRegistrationStep != null">
 			<s:submit action="%{scope}!previousStep" cssClass="picsbutton previous" value="<< %{getText('button.Previous')}" />
 		</s:if>
-		<s:if test="nextRegistrationStep != null">
+		<div id="next_button" <s:if test="nextRegistrationStep == null">style="display:none;"</s:if>>
 			<s:submit action="%{scope}!nextStep" cssClass="picsbutton positive next" value="%{getText('button.Next')} >>" />
-		</s:if>
+		</div>
 	</s:form>
 </div>
 

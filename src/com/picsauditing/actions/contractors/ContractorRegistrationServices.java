@@ -254,14 +254,17 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				// OR Services conducted at heights greater than six feet?
 				if (auditData.getAnswer().equals("Yes"))
 					return LowMedHigh.High;
+				break;
 			case 3793:
 				// Question : Does your company perform mechanical services that require the use of hand/power tools?
 				if (auditData.getAnswer().equals("Yes"))
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
+				break;
 			case 2443:
 				// Question : Does your company perform all services from only an office?
 				if (auditData.getAnswer().equals("No"))
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
+				break;
 			case AuditQuestion.RISK_LEVEL_ASSESSMENT:
 			case AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT:
 			case AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT:
@@ -270,6 +273,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
 				if (auditData.getAnswer().equals("High"))
 					return LowMedHigh.High;
+				break;
 			case 7660:
 			case 7661:
 				// Product Critical Assessment
@@ -279,17 +283,20 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				// business interruption for your customer?
 				if (auditData.getAnswer().equals("Yes"))
 					return LowMedHigh.High;
+				break;
 			case 7662:
 				// Product Safety Critical
 				// Can failures in your products result in bodily injury or illness to your customer or end-user?
 				if (auditData.getAnswer().equals("Yes"))
 					return LowMedHigh.High;
+				break;
 			case 7663:
 				// Are you required to carry Product Liability Insurance?
 				if (auditData.getAnswer().equals("Medium"))
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
 				if (auditData.getAnswer().equals("High"))
 					return LowMedHigh.High;
+				break;
 			}
 		}
 		return riskLevel;
@@ -333,4 +340,5 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	public boolean isCanEditCategory(AuditCategory category) {
 		return true;
 	}
+	
 }

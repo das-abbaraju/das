@@ -632,6 +632,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 		return false;
 	}
 
+	public ContractorRegistrationStep getCurrentStep() {
+		return currentStep;
+	}
+
+	public void setCurrentStep(ContractorRegistrationStep currentStep) {
+		this.currentStep = currentStep;
+	}
+
 	public ContractorRegistrationStep getRegistrationStep() {
 		return ContractorRegistrationStep.getStep(contractor);
 	}
@@ -642,7 +650,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * @return Previous ContractorRegistrationStep, according to the ContractorRegistrationStep enum order
 	 */
 	public ContractorRegistrationStep getPreviousRegistrationStep() {
-		if (currentStep != null && currentStep.ordinal() > 1)
+		if (currentStep != null && currentStep.isHasPrevious())
 			return ContractorRegistrationStep.values()[currentStep.ordinal() - 1];
 
 		return null;
@@ -652,7 +660,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * @return Next ContractorRegistrationStep, according to the ContractorRegistrationStep enum order
 	 */
 	public ContractorRegistrationStep getNextRegistrationStep() {
-		if (currentStep != null && !currentStep.isDone() && !currentStep.equals(ContractorRegistrationStep.Confirmation))
+		if (currentStep != null && currentStep.isHasNext())
 			return ContractorRegistrationStep.values()[currentStep.ordinal() + 1];
 
 		return null;

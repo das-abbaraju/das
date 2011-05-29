@@ -107,7 +107,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					operatorIds.add(conOperator.getOperatorAccount().getId());
 				}
 			}
-			accountDao.clear();
+			//accountDao.clear();
 
 			String[] countryIsos = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
 			if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
@@ -456,5 +456,26 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		if (permissions.hasPermission(OpPerms.RiskRank))
 			return true;
 		return false;
+	}
+	
+	/**
+	 * During Registration ConRegistration becomes ConEdit after the
+	 * first step has been completed.
+	 */
+	@Override
+	public ContractorRegistrationStep getPreviousRegistrationStep() {
+		return null;
+	}
+	
+	@Override
+	public String nextStep() throws Exception {
+		redirect(ContractorRegistrationStep.Trades.getUrl(contractor.getId()));
+		return SUCCESS;
+	}
+
+	@Override
+	public String previousStep() throws Exception {
+		redirect(ContractorRegistrationStep.EditAccount.getUrl(contractor.getId()));
+		return SUCCESS;
 	}
 }

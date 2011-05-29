@@ -8,11 +8,14 @@
 <body>
 
 <s:include value="conRegistrationHeader.jsp"></s:include>
-
-<s:if test="contractor.operators.size == 0">
-	<div class="error">You haven't selected any facilities! We cannot process your account until do. <a
-		href="ContractorFacilities.action">Click to Add Facilities</a></div>
+<s:if test="contractor.trades.size == 0">
+	<div class="error">You haven't selected any trades! We cannot process your account until you do. <a
+		href="ContractorTrades.action">Click to Add Trades</a></div>
 </s:if>
+<s:elseif test="contractor.operators.size == 0">
+	<div class="error">You haven't selected any facilities! We cannot process your account until you do. <a
+		href="ContractorFacilities.action">Click to Add Facilities</a></div>
+</s:elseif>
 <s:elseif test="!contractor.paymentMethodStatusValid && contractor.mustPayB">
 	<div class="error">You didn't add a credit card to your account. You must enter a valid payment method before we can
 	process your account. <a href="ContractorPaymentOptions.action">Click to Add a Credit Card</a></div>

@@ -460,4 +460,12 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 		return count;
 	}
+	
+	@Override
+	public ContractorRegistrationStep getNextRegistrationStep() {
+		if (contractor.getOperators().size() > 0)
+			return ContractorRegistrationStep.values()[ContractorRegistrationStep.Facilities.ordinal() + 1];
+
+		return null;
+	}
 }

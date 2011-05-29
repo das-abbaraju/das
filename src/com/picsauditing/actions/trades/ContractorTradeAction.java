@@ -114,18 +114,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		return "trade";
 	}
 	
-	@Override
-	public String nextStep() throws Exception {
-		findContractor();
-		contractor.setTradesUpdated(new Date());
-		tradeDAO.save(contractor);
-
-		if (!getRegistrationStep().isDone())
-			this.redirect(ContractorRegistrationStep.Risk.getUrl(contractor.getId()));
-
-		return SUCCESS;
-	}
-	
 	public String quickTrade() throws Exception {
 		return "quick";
 	}
@@ -204,5 +192,28 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			return (int) Math.floor((double) contractor.getTrades().size() / 2.0);
 
 		return 0;
+	}
+	
+	/**
+	 * @return Next ContractorRegistrationStep, according to the ContractorRegistrationStep enum order
+	 */
+	@Override
+	public ContractorRegistrationStep getNextRegistrationStep() {
+		if (contractor.getTrades().size() > 0)
+			return ContractorRegistrationStep.values()[ContractorRegistrationStep.Trades.ordinal() + 1];
+
+		return null;
+	}
+
+	@Override
+	public String nextStep() throws Exception {
+		findContractor();
+		contractor.setTradesUpdated(new Date());
+		tradeDAO.save(contractor);
+
+		if (!getRegistrationStep().isDone())
+			this.redirect(ContractorRegistrationStep.Risk.getUrl(contractor.getId()));
+
+		return SUCCESS;
 	}
 }

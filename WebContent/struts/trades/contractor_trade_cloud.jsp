@@ -28,6 +28,9 @@
 	</s:if>
 	<s:else>
 		<p><s:text name="ContractorTrades.instructions"></s:text></p>
+		<script>
+			$('#next_button').hide()
+		</script>
 	</s:else>
 </div>
 
