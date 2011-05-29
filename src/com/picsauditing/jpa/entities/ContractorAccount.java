@@ -774,7 +774,7 @@ public class ContractorAccount extends Account implements JSONable {
 		for (Invoice invoice : getSortedInvoices()) {
 			if (!invoice.getStatus().isVoid()) {
 				for (InvoiceItem invoiceItem : invoice.getItems()) {
-					if (invoiceItem.getInvoiceFee().isMembership() && !foundMembership) {
+					if (invoiceItem.getInvoiceFee().isMembership()) {
 						if (!foundListOnlyMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.ListOnly)) {
 								foundListOnlyMembership = true;
@@ -848,7 +848,6 @@ public class ContractorAccount extends Account implements JSONable {
 						if (!foundPaymentExpires && invoiceItem.getPaymentExpires() != null) {
 							paymentExpires = invoiceItem.getPaymentExpires();
 							foundPaymentExpires = true;
-							foundMembership = true;
 						}
 					}
 					if (!foundMembershipDate
@@ -860,6 +859,10 @@ public class ContractorAccount extends Account implements JSONable {
 							membershipDate = invoice.getCreationDate();
 						foundMembershipDate = true;
 					}
+				}
+				
+				if (foundPaymentExpires) {
+					foundMembership = true;
 				}
 			}
 
