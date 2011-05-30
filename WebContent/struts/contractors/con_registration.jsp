@@ -69,7 +69,7 @@ function changeCountry(country) {
 
 function changeState(country) {
 	$('#state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: 'contractor.'});
-	$('#country_display').val($('#contractorCountry').find('option[selected]').text());
+	$('#country_display').val($('#contractorCountry option:selected').text());
 	if (country == 'US')
 		$('#taxIdLabel').text('Tax ID:');
 	else if (country == 'CA')
