@@ -26,6 +26,12 @@ $(function(){
 	});
 });
 
+var aqvExtraParams = {
+	question: function() {
+		return $('input[name="criteria.question"]').val()
+	}
+}
+
 </script>
 </head>
 <body>
@@ -73,17 +79,8 @@ $(function(){
 				<s:select name="criteria.comparison" list="comparisonList" theme="form"/>
 			</li>
 			<li>
-				<s:if test="criteria.dataType == 'string' && criteria.question != null && criteria.question.option != null">
-					<s:if test="criteria.question.option.radio">
-						<s:radio list="criteria.question.option.questionOptions" listKey="identifier" listValue="name" name="criteria.defaultValue" />
-					</s:if>
-					<s:else>
-						<s:select list="criteria.question.option.questionOptions" listKey="identifier" listValue="name" name="criteria.defaultValue" theme="form" />
-					</s:else>
-				</s:if>
-				<s:else>
-					<s:textfield name="criteria.defaultValue" theme="form"/>
-				</s:else>
+				<label><s:text name="FlagCriteria.defaultValue"/>:</label>
+				<pics:autocomplete name="criteria.defaultValue" action="AuditOptionValueAutocomplete" extraParams="aqvExtraParams" minChars="0" cacheLength="1"/>
 			</li>
 			<li>
 				<s:checkbox name="criteria.allowCustomValue" theme="form"/>
@@ -96,16 +93,13 @@ $(function(){
 		<h2>Audit | Question</h2>
 		<ol>
 			<li>
-				<s:select name="criteria.auditType" value="%{criteria.auditType.id}" list="auditTypes" listKey="id" listValue="name" theme="form">
-				</s:select>
+				<label><s:text name="AuditType"/>:</label>
+				<pics:autocomplete name="criteria.auditType" action="AuditTypeAutocomplete" />
 				<pics:fieldhelp title="Audit Type">Audit Type and Question cannot both be set.</pics:fieldhelp>
 			</li>
 			<li>
-				<s:select name="criteria.question" list="{}" value="%{criteria.question.id}" theme="form">
-					<s:iterator value="questionMap" var="flagQuestion">
-						<s:optgroup label="%{#flagQuestion.key.name}" list="#flagQuestion.value" listKey="id" listValue="shortQuestion" />
-					</s:iterator>
-				</s:select>
+				<label><s:text name="AuditQuestion"/>:</label>
+				<pics:autocomplete name="criteria.question" action="AuditQuestionAutocomplete"/>
 				<pics:fieldhelp title="Question">Question and Audit Type cannot both be set.</pics:fieldhelp>
 			</li>
 		</ol>

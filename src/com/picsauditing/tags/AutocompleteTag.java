@@ -18,6 +18,9 @@ public class AutocompleteTag extends ComponentTagSupport {
 	private String value;
 	private String hiddenValue;
 	private String textValue;
+	private String extraParams;
+	private int minChars = 1;
+	private int cacheLength = 10;
 
 	@Override
 	public Component getBean(ValueStack stack, HttpServletRequest req, HttpServletResponse res) {
@@ -36,6 +39,9 @@ public class AutocompleteTag extends ComponentTagSupport {
 		autocomplete.setValue(value);
 		autocomplete.setHiddenValue(hiddenValue);
 		autocomplete.setTextValue(textValue);
+		autocomplete.setExtraParams(extraParams);
+		autocomplete.setMinChars(minChars);
+		autocomplete.setCacheLength(cacheLength);
 	}
 
 	public String getAction() {
@@ -92,6 +98,30 @@ public class AutocompleteTag extends ComponentTagSupport {
 
 	public void setTextValue(String valueString) {
 		this.textValue = valueString;
+	}
+
+	public String getExtraParams() {
+		return extraParams;
+	}
+
+	public void setExtraParams(String extraParams) {
+		this.extraParams = extraParams;
+	}
+
+	public int getMinChars() {
+		return minChars;
+	}
+
+	public void setMinChars(int minChars) {
+		this.minChars = minChars;
+	}
+
+	public int getCacheLength() {
+		return cacheLength;
+	}
+
+	public void setCacheLength(int cacheLength) {
+		this.cacheLength = cacheLength;
 	}
 
 }

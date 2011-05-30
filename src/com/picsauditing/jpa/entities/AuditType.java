@@ -72,7 +72,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public AuditType(int id) {
 		this.id = id;
 	}
-	
+
 	public AuditType(AuditType a) {
 		this.account = a.getAccount();
 		this.name = a.getName();
@@ -92,7 +92,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public TranslatableString getName() {
 		return this.name;
 	}
-	
+
 	public void setName(TranslatableString name) {
 		this.name = name;
 	}
@@ -330,8 +330,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	}
 
 	/**
-	 * @return boolean indicating whether or not this Audit Type can be scored.
-	 *         Used for implementing audit score
+	 * @return boolean indicating whether or not this Audit Type can be scored. Used for implementing audit score
 	 */
 	public boolean isScoreable() {
 		return scoreable;
@@ -347,6 +346,12 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	@Transient
+	public String getAutocompleteItem() {
+		return name.toString();
 	}
 
 }

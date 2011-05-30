@@ -89,7 +89,7 @@ a:hover.panel_edit {
 }
 
 #trade-cloud {
-	border: 0;
+	border: none;
 	padding: inherit;
 	background:inherit;	
 }

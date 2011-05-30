@@ -1,9 +1,10 @@
 package com.picsauditing.tags;
-
+import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
 import java.io.IOException;
 import java.io.Writer;
 
 import org.apache.struts2.components.Component;
+import org.apache.velocity.app.event.implement.EscapeHtmlReference;
 
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.jpa.entities.Autocompleteable;
@@ -18,6 +19,9 @@ public class Autocomplete extends Component {
 	private String value;
 	private String hiddenValue;
 	private String textValue;
+	private String extraParams;
+	private int minChars = 1;
+	private int cacheLength = 10;
 
 	public Autocomplete(ValueStack stack) {
 		super(stack);
@@ -41,7 +45,10 @@ public class Autocomplete extends Component {
 					+ 			"},"
 					+ 			"formatResult: function(data,i,count) {"
 					+ 				"return data[2];"
-					+ 			"}"
+					+ 			"}," 
+					+			"extraParams: %6$s,"
+					+			"minChars: %7$d,"
+					+			"cacheLength: %8$d"
 					+ 		"}).result(function(event, data) {"
 					+ 			"$('#%2$s_hidden').val(data[0]);"
 					+ 		"});"
@@ -58,12 +65,15 @@ public class Autocomplete extends Component {
 					searchWith = name;
 				else
 					searchWith = value;
+				try {
+					Autocompleteable b = (Autocompleteable) stack.findValue(searchWith);
+					if (b != null) {
 
-				Autocompleteable b = (Autocompleteable) stack.findValue(searchWith);
-
-				if (b != null) {
-					hiddenValue = b.getAutocompleteResult();
-					textValue = b.getAutocompleteValue();
+						hiddenValue = escapeHtml(b.getAutocompleteResult());
+						textValue = escapeHtml(b.getAutocompleteValue());
+					}
+				} catch (ClassCastException e) {
+					hiddenValue = textValue = escapeHtml((String) stack.findValue(searchWith));
 				}
 			}
 
@@ -88,8 +98,13 @@ public class Autocomplete extends Component {
 			if (htmlId == null) {
 				htmlId = htmlName.replaceAll("\\.", "") + System.nanoTime();
 			}
+			
+			String extra = "''";
+			if (!Strings.isEmpty(extraParams)) {
+				extra = extraParams;
+			}
 
-			result = String.format(result, htmlName, htmlId, hiddenValue, textValue, action);
+			result = String.format(result, htmlName, htmlId, hiddenValue, textValue, action, extra, minChars, cacheLength);
 
 			writer.write(result);
 		} catch (IOException e) {
@@ -152,6 +167,30 @@ public class Autocomplete extends Component {
 
 	public void setTextValue(String textValue) {
 		this.textValue = textValue;
+	}
+
+	public String getExtraParams() {
+		return extraParams;
+	}
+
+	public void setExtraParams(String extraParams) {
+		this.extraParams = extraParams;
+	}
+
+	public int getMinChars() {
+		return minChars;
+	}
+
+	public void setMinChars(int minChars) {
+		this.minChars = minChars;
+	}
+
+	public int getCacheLength() {
+		return cacheLength;
+	}
+
+	public void setCacheLength(int cacheLength) {
+		this.cacheLength = cacheLength;
 	}
 
 }

@@ -71,7 +71,7 @@ public class AuditOptionValue extends BaseTable {
 	/**
 	 * @return The score of this question to be used when scoring an audit
 	 */
-	@JoinColumn(nullable = false)
+	@Column(nullable = false)
 	public int getScore() {
 		return score;
 	}
@@ -112,5 +112,11 @@ public class AuditOptionValue extends BaseTable {
 			return getI18nKey();
 
 		return super.getI18nKey(property);
+	}
+
+	@Override
+	@Transient
+	public String getAutocompleteResult() {
+		return name.toString();
 	}
 }

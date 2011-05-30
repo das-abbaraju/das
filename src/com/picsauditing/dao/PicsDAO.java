@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.BaseTable;
@@ -119,8 +120,17 @@ abstract public class PicsDAO {
 		String tableName = ReflectUtil.getTableName(cls);
 
 		SelectSQL sql = new SelectSQL(tableName + " t");
-		sql.addJoin("JOIN app_translation tr ON CONCAT('" + cls.getSimpleName() + ".',t.id,'." + name
-				+ "') = tr.msgKey");
+
+		try {
+			if (cls.getField("uniqueCode") != null)
+				sql.addJoin("JOIN app_translation tr ON CONCAT('" + cls.getSimpleName()
+						+ ".',IF(t.uniqueCode <> '',t.uniqueCode,t.id),'." + name + "') = tr.msgKey");
+		} catch (NoSuchFieldException theFieldDoesNotExist) {
+			sql.addJoin("JOIN app_translation tr ON CONCAT('" + cls.getSimpleName() + ".',t.id,'." + name
+					+ "') = tr.msgKey");
+		} catch (SecurityException justIgnoreIt) {
+		}
+
 		sql.addWhere("tr.msgValue LIKE :value");
 
 		sql.addField("t.*");

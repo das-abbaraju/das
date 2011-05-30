@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -21,17 +23,14 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ManageFlagCriteria extends PicsActionSupport {
 
+	@Autowired
 	private AuditTypeDAO auditTypeDAO;
+	@Autowired
 	private AuditQuestionDAO questionDAO;
+	@Autowired
 	private FlagCriteriaDAO criteriaDAO;
 
 	private FlagCriteria criteria;
-
-	public ManageFlagCriteria(AuditTypeDAO auditTypeDAO, AuditQuestionDAO questionDAO, FlagCriteriaDAO criteriaDAO) {
-		this.auditTypeDAO = auditTypeDAO;
-		this.questionDAO = questionDAO;
-		this.criteriaDAO = criteriaDAO;
-	}
 
 	@Override
 	public String execute() {
@@ -48,16 +47,18 @@ public class ManageFlagCriteria extends PicsActionSupport {
 			if (Strings.isEmpty(criteria.getDataType())) {
 				addActionError("DataType is a required field.");
 			}
-			
-			if (criteria.getAuditType()!=null && criteria.getAuditType().isAnnualAddendum() && criteria.getRequiredStatus() == null)
+
+			if (criteria.getAuditType() != null && criteria.getAuditType().isAnnualAddendum()
+					&& criteria.getRequiredStatus() == null) {
 				addActionError("Audit Status cannot be null when Audit Type Annual Update is selected.");
+			}
 
 			if (hasActionErrors()) {
 				if (criteriaDAO.isContained(criteria))
 					criteriaDAO.refresh(criteria);
 				return INPUT;
 			}
-			
+
 			criteria.setAuditColumns(permissions);
 
 			criteriaDAO.save(criteria);

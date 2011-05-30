@@ -6,15 +6,15 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.jpa.entities.BaseTable;
+import com.picsauditing.jpa.entities.Autocompleteable;
 
 /**
  * 
  * @author kpartridge
  * 
  */
-@SuppressWarnings( { "serial", "unchecked" })
-public abstract class AutocompleteActionSupport<T extends BaseTable> extends PicsActionSupport {
+@SuppressWarnings({ "serial", "unchecked" })
+public abstract class AutocompleteActionSupport<T extends Autocompleteable> extends PicsActionSupport {
 
 	protected String q;
 	protected int limit;
