@@ -174,7 +174,7 @@ table.report tr.hurdle td {
 				<s:if test="contractor.acceptsBids">
 					<s:if test="canUpgrade">
 						<div class="info">This is a List Only Account. You will have to upgrade to a Full Membership if you intend to work at any of your selected facilities.<br/>
-						Click <a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('Are you sure you want to upgrade this account to a full membership? As a result a invoice will be generated for the upgrade and the flag color also will be affected based on the operator requirements.');">Upgrade to Full Membership</a> if you are ready to start working at any of your selected facilities.</div>
+						<div style="margin-top: 7px;"><a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('Are you sure you want to upgrade this account to a full membership? As a result a invoice will be generated for the upgrade and the flag color also will be affected based on the operator requirements.');">Upgrade to Full Membership</a></div></div>
 					</s:if>
 					<s:else>
 						<div class="alert">This is a List Only Contractor Account.</div>
