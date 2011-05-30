@@ -143,7 +143,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 								searchResults.add(opToAdd);
 						}
 					}
-				} else if (contractor.getOperators().size() == 0) {
+				} else if (contractor.getOperatorAccounts().size() == 0) {
 					// Only turn on smart facility suggest for US and Canada
 					searchResults = new ArrayList<OperatorAccount>();
 					if (contractor.getCountry().getIsoCode().equals("US")
