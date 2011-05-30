@@ -224,7 +224,7 @@ select.hidden {
 
 	<s:if test="filter.showRiskLevel">
 		<div class="filterOption" id="risklevel">
-			<a href="#" class="filterBox">Risk Level</a> =
+			<a href="#" class="filterBox">Safety Critical</a> =
 			<span class="q_status">ALL</span><br />
 			<span class="clearLink q_box select">
 				<s:select list="#{1:'Low', 2:'Med', 3:'High'}" cssClass="forms" name="filter.riskLevel" multiple="true" size="3" />
@@ -232,7 +232,26 @@ select.hidden {
 			</span>
 		</div>
 	</s:if>
-
+	<s:if test="filter.showProductRiskLevel">
+		<div class="filterOption" id="productRisklevel">
+			<a href="#" class="filterBox">Product Critical</a> =
+			<span class="q_status">ALL</span><br />
+			<span class="clearLink q_box select">
+				<s:select list="#{1:'Low', 2:'Med', 3:'High'}" cssClass="forms" name="filter.productRiskLevel" multiple="true" size="3" />
+				<a class="clearLink" href="#">Clear</a>
+			</span>
+		</div>
+	</s:if>
+	<s:if test="filter.showService">
+		<div class="filterOption" id="service">
+			<a href="#" class="filterBox">Services</a> =
+			<span class="q_status">ALL</span><br />
+			<span class="clearLink q_box select">
+				<s:select list="#{'Onsite':'Onsite', 'Offsite':'Offsite', 'Material Supplier':'Material Supplier'}" cssClass="forms" name="filter.service" multiple="true" size="3" />
+				<a class="clearLink" href="#">Clear</a>
+			</span>
+		</div>
+	</s:if>
 
 	<s:if
 		test="filter.showOpertorTagName && filter.operatorTagNamesList.size() > 0">
@@ -823,6 +842,13 @@ select.hidden {
 		<div class="filterOption">
 			<label>
 				<s:checkbox name="filter.hse" /> Show contractors requiring competency reviews
+			</label>
+		</div>
+	</s:if>
+	<s:if test="filter.showSoleProprietership">
+		<div class="filterOption">
+			<label>
+				<s:checkbox name="filter.soleProprietership" /> Show Sole Proprietors
 			</label>
 		</div>
 	</s:if>

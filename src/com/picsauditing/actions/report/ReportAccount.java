@@ -320,7 +320,27 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addWhere("c.safetyRisk IN (" + list + ")");
 			setFiltered(true);
 		}
-
+		if (filterOn(f.getProductRiskLevel())) {
+			String list = Strings.implode(f.getProductRiskLevel(), ",");
+			sql.addWhere("c.productRisk IN (" + list + ")");
+			setFiltered(true);
+		}
+		if (filterOn(f.getService())) {
+			List<String> clauses = new ArrayList<String>();
+			for(String service : f.getService()){
+				if("Onsite".equals(service))
+					clauses.add("a.onsiteServices = 1");
+				else if("Offsite".equals(service))
+					clauses.add("a.offsiteServices = 1");
+				else if("Material Supplier".equals(service))
+					clauses.add("a.materialSupplier = 1");
+			}
+			if(clauses.size() > 0) {
+				sql.addWhere(Strings.implode(clauses, " OR "));
+				setFiltered(true);
+			}
+		}
+		
 		if (f.getEmailTemplate() > 0) {
 			String emailQueueJoin = "LEFT JOIN email_queue eq on eq.conid = a.id AND eq.templateID = "
 					+ f.getEmailTemplate();
@@ -418,6 +438,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (getFilter().isHse())
 			sql.addWhere("a.requiresCompetencyReview = 1");
+		if (getFilter().isSoleProprietership())
+			sql.addWhere("c.soleProprietor = 1");
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {

@@ -3,7 +3,6 @@ package com.picsauditing.actions.report;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.search.SelectFilterDate;
-import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 

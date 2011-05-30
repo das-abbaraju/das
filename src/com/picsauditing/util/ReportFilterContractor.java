@@ -44,6 +44,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showFlagStatus = false;
 	protected boolean showConAuditor = false;
 	protected boolean showRiskLevel = true;
+	protected boolean showProductRiskLevel = true;
+	protected boolean showService = true;
 	protected boolean showAssignedCon = false;
 	protected boolean showInParentCorporation = false;
 	protected boolean showWaitingOn = false;
@@ -64,6 +66,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showAuditStatusFlagChanges = false;
 	protected boolean showAuditCreationFlagChanges = false;
 	protected boolean showAuditQuestionFlagChanges = false;
+	protected boolean showSoleProprietership = true;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -77,6 +80,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int[] officeIn;
 	protected int[] conAuditorId;
 	protected int[] riskLevel;
+	protected int[] productRiskLevel;
+	protected String[] service;
 	protected int[] accountManager;
 	protected boolean assignedCon = false;
 	protected boolean inParentCorporation = false;
@@ -105,6 +110,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean auditStatusFlagChanges = false;
 	protected boolean auditCreationFlagChanges = false;
 	protected boolean auditQuestionFlagChanges = false;
+	protected boolean soleProprietership = false;
 
 	protected final Map<Integer, String> MINORITY_QUESTIONS;
 	{
@@ -197,6 +203,22 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowRiskLevel(boolean showRiskLevel) {
 		this.showRiskLevel = showRiskLevel;
+	}
+
+	public boolean isShowProductRiskLevel() {
+		return showProductRiskLevel;
+	}
+
+	public void setShowProductRiskLevel(boolean showProductRiskLevel) {
+		this.showProductRiskLevel = showProductRiskLevel;
+	}
+
+	public boolean isShowService() {
+		return showService;
+	}
+
+	public void setShowService(boolean showService) {
+		this.showService = showService;
 	}
 
 	public boolean isShowInParentCorporation() {
@@ -351,6 +373,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.showAuditQuestionFlagChanges = showAuditQuestionFlagChanges;
 	}
 
+	public boolean isShowSoleProprietership() {
+		return showSoleProprietership;
+	}
+
+	public void setShowSoleProprietership(boolean showSoleProprietership) {
+		this.showSoleProprietership = showSoleProprietership;
+	}
+
 	public int[] getAccountManager() {
 		return accountManager;
 	}
@@ -445,6 +475,22 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setRiskLevel(int[] riskLevel) {
 		this.riskLevel = riskLevel;
+	}
+
+	public int[] getProductRiskLevel() {
+		return productRiskLevel;
+	}
+
+	public void setProductRiskLevel(int[] productRiskLevel) {
+		this.productRiskLevel = productRiskLevel;
+	}
+
+	public String[] getService() {
+		return service;
+	}
+
+	public void setService(String[] service) {
+		this.service = service;
 	}
 
 	public void setPermissions(Permissions permissions) {
@@ -762,6 +808,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setAuditQuestionFlagChanges(boolean auditQuestionFlagChanges) {
 		this.auditQuestionFlagChanges = auditQuestionFlagChanges;
+	}
+
+	public boolean isSoleProprietership() {
+		return soleProprietership;
+	}
+
+	public void setSoleProprietership(boolean soleProprietership) {
+		this.soleProprietership = soleProprietership;
 	}
 
 	public Map<Integer, String> getMinorityQuestions() {
