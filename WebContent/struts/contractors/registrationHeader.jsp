@@ -1,11 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <s:include value="../jquery.jsp" />
-<script type="text/javascript">
-$(function(){
-	$('div.navigationButtons').clone().appendTo('div#content');
-});
-</script>
 <h1>
 <s:if test="permissions.loggedIn"><s:property value="contractor.name" /></s:if>
 <s:else><s:text name="%{scope}.title" /></s:else>
@@ -22,16 +17,16 @@ $(function(){
 </s:iterator>
 </ul>
 </div>
-
-<div class="navigationButtons">
-	<s:form>
-		<s:if test="previousRegistrationStep != null">
-			<s:submit action="%{scope}!previousStep" cssClass="picsbutton previous" value="<< %{getText('button.Previous')}" />
-		</s:if>
-		<div id="next_button" <s:if test="nextRegistrationStep == null">style="display:none;"</s:if>>
-			<s:submit action="%{scope}!nextStep" cssClass="picsbutton positive next" value="%{getText('button.Next')} >>" />
-		</div>
-	</s:form>
-</div>
-
+<s:if test="currentStep.showTop">
+	<div class="navigationButtons">
+		<s:form>
+			<s:if test="previousRegistrationStep != null">
+				<s:submit action="%{scope}!previousStep" cssClass="picsbutton previous" value="<< %{getText('button.Previous')}" />
+			</s:if>
+			<div id="next_button" <s:if test="nextRegistrationStep == null">style="display:none;"</s:if>>
+				<s:submit action="%{scope}!nextStep" cssClass="picsbutton positive next" value="%{getText('button.Next')} >>" />
+			</div>
+		</s:form>
+	</div>
+</s:if>
 <s:include value="../actionMessages.jsp" />

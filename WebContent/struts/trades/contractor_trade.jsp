@@ -42,5 +42,6 @@ var conID = '<s:property value="id"/>';
 		</s:if>
 	</div>
 </s:if>
+<s:include value="../contractors/registrationFooter.jsp" />
 </body>
 </html>

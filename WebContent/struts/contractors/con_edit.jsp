@@ -268,5 +268,6 @@ $(function() {
 		</tr>
 	</table>
 </s:form>
+<s:include value="registrationFooter.jsp" />
 </body>
 </html>

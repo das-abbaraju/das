@@ -312,5 +312,6 @@ $(function(){
 		</div>
 	</fieldset>
 </s:form>
+<s:include value="registrationFooter.jsp" />
 </body>
 </html>

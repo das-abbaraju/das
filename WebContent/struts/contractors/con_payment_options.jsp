@@ -40,9 +40,6 @@ function updateExpDate() {
 <body>
 <s:include value="conRegistrationHeader.jsp"></s:include>
 <%-- All criteria are satisfied after contractor has entered CC info --%>
-<s:if test="contractor.paymentMethodStatusValid && contractor.paymentMethod.creditCard && contractor.mustPayB">
-	<div class="info">Your credit card will be kept on file and used for any upgrades or renewals. We will notify the primary user via email 30 days before any charges occur for renewals and 7 days before any charge occurs for upgrades. If you choose to deactivate your account, please call us at 800-506-7427.</div>
-</s:if>
 
 <s:if test="contractor.operators.size == 0">
 	<div class="alert">
@@ -92,6 +89,9 @@ function updateExpDate() {
 			<input type="submit" name="button" class="picsbutton positive" value="Import my Data" />
 		</div>
 	</li>
+</s:if>
+<s:if test="contractor.paymentMethodStatusValid && contractor.paymentMethod.creditCard && contractor.mustPayB">
+	<li><div class="info">Your credit card will be kept on file and used for any upgrades or renewals. We will notify the primary user via email 30 days before any charges occur for renewals and 7 days before any charge occurs for upgrades. If you choose to deactivate your account, please call us at 800-506-7427.</div></li>
 </s:if>
 <s:if test="contractor.newMembership.size > 0">
 	<li>
@@ -268,5 +268,6 @@ function updateExpDate() {
 		</fieldset>
 	</form>
 </s:if>
+<s:include value="registrationFooter.jsp" />
 </body>
 </html>

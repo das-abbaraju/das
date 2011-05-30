@@ -78,10 +78,10 @@ public enum ContractorRegistrationStep {
 	}
 	
 	public boolean isShowTop() {
-		return this != Facilities && this != Risk;
+		return Trades == this || EditAccount == this || Facilities == this || Payment == this;
 	}
 	
 	public boolean isShowBottom() {
-		return true;
+		return Risk == this;
 	}
 }

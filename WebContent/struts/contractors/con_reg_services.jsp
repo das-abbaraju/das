@@ -39,5 +39,6 @@ display:none}
 	<s:include value="../audits/audit_cat_view.jsp"/>
 	</s:iterator>
 </div>
+<s:include value="registrationFooter.jsp" />
 </body>
 </html>

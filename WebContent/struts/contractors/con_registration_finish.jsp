@@ -132,7 +132,7 @@
 		</s:if>
 	</s:else>
 </s:else>
-
+<s:include value="registrationFooter.jsp" />
 </body>
 </html>
 									
