@@ -138,6 +138,14 @@ $(function() {
 					<li><label><s:text name="%{scope}.IndustryDetails.NAICSPrimary"/>:</label>
 						<s:property value="contractor.naics.code"/>
 					</li>
+					<li><label><s:text name="%{scope}.SoleProprietor.heading"/></label>
+						<s:if test="contractor.soleProprietor">
+							<s:text name="ContractorAccount.soleProprietor" />
+						</s:if>
+						<s:else>
+							<s:text name="ContractorAccount.notSoleProprietor" />
+						</s:else>
+					</li>
 					<li><label><s:text name="global.SafetyRisk"/>:</label>
 						<s:property value="contractor.safetyRisk"/>
 					</li>
@@ -165,9 +173,6 @@ $(function() {
 					</li>
 					<li><label>&nbsp</label>
 						(Allowed formats: pdf, doc, jpg, gif, png)
-					</li>
-					<li><label><s:text name="%{scope}.SoleProprietor.heading"/></label>
-						<s:checkbox name="contractor.soleProprietor" /><s:text name="ContractorAccount.soleProprietor" />
 					</li>
 					<li><label><s:text name="%{scope}.CompanyIdentification.Description"/>:</label>
 						<s:textarea name="contractor.description" cols="40"	rows="15" />
@@ -205,6 +210,9 @@ $(function() {
 						<s:else>
 							No - <s:submit action="ContractorEdit!reactivate" value="Reactivate" /> 
 						</s:else>
+					</li>
+					<li><label><s:text name="%{scope}.SoleProprietor.heading"/></label>
+						<s:checkbox name="contractor.soleProprietor" />
 					</li>
 					<li><label>List Only Account:</label>
 						<s:checkbox name="contractor.acceptsBids"/></li>	
