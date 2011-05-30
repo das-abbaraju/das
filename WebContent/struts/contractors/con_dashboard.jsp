@@ -32,23 +32,6 @@
 		return false;
 	}
 
-	function truncate(id) {
-		var data = $('#' + id).text();
-		data = data.replace(/;/g,", ");
-		
-		if ($('#' + id).text().length > 100) {
-			var data1 = data.substring(0,100).replace(/^\s*/, "").replace(/\s*$/, "") + '<span id="' + id + '_ext">... <a href="#" onclick="$(\'#'
-				+ id + '_more\').show(); $(\'#' + id + '_ext\').hide(); return false;" style="font-weight: normal;"'
-				+ '>Show more</a></span>';
-			var data2 = '<span id="' + id + '_more" style="display: none;">' + data.substring(100, data.length)
-				+ ' <a href="#" onclick="$(\'#' + id + '_ext\').show(); $(\'#' + id
-				+ '_more\').hide(); return false;" style="font-weight: normal;">Hide</a></span>';
-			data = data1 + data2;
-		};
-		
-		$('#'+ id).html(data);
-	}
-
 	function limit(id, pat) {
 		var data = $('#' + id).text();
 		var size = 500;
@@ -79,8 +62,6 @@
 	}
 	
 	$(document).ready(function() {
-		truncate('selfperformed');
-		truncate('subcontracted');
 		limit('description', '\n');
 		$('.reloadPage').live('click', function(){
 			location.reload();
@@ -501,16 +482,7 @@ table.report tr.hurdle td {
 						<a href="DownloadContractorFile.action?id=<s:property value="id" />" target="_BLANK">Company Brochure</a>
 					</strong></p>
 				</s:if>
-				<s:if test="contractor.tradesSelf.length() > 0"><p id="services">
-					<s:text name="%{scope}.ContractorDashboard.SelfPerformedServices" />: 
-					<strong><span id="selfperformed"><s:property value="contractor.tradesSelf"/></span></strong>
-				</p></s:if>
-				<s:if test="contractor.tradesSub.length() > 0"><p id="services">
-					Sub Contracted Services:
-					<strong><span id="subcontracted"><s:property value="contractor.tradesSub"/></span></strong>
-				</p></s:if>
-				<s:if test="contractor.trades.size() > 0"><p id="services">
-					<p>Trades:</p>
+				<s:if test="contractor.trades.size() > 0">
 					<s:include value="../trades/contractor_trade_cloud.jsp"/>
 				</s:if>
 				<div class="clear"></div>

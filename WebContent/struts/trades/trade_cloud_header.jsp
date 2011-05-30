@@ -15,7 +15,7 @@ function wireTradeClueTips() {
 		dropShadow: false,
 		width: 500,
 		cluetipClass: 'jtip',
-		ajaxProcess:      function(data) {
+		ajaxProcess: function(data) {
 			data = $(data).not('meta, link, title');
 			return data;
 		}
