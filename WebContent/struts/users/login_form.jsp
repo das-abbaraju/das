@@ -1,6 +1,8 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
+<div id="loginMessages">
 <s:include value="../actionMessages.jsp"></s:include>
+</div>
 
 <div class="loginForm">
 	<s:form id="login">

@@ -11,7 +11,6 @@
 <script type="text/javascript" src="js/jquery/jquery-ui/i18n/jquery.ui.datepicker-<%= TranslationActionSupport.getLocaleStatic().getLanguage() %>.js"></script>
 <% } %>
 
-<script type="text/javascript" src="js/jquery/util/jquery-utils.js"></script>
 <script type="text/javascript" src="js/jquery/gritter/jquery.gritter.js"></script>
 
 <link rel="stylesheet" href="js/jquery/jquery-ui/jquery-ui-1.7.2.custom.css">

@@ -58,6 +58,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/contractorstatistics.css?v=<%=version%>" />
 
 <script type="text/javascript" src="<%= pageIsSecure ? "https" : "http" %>://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery/util/jquery.utils.js"></script>
 <script type="text/javascript" src="js/chrome.js"></script>
 <script type="text/javascript" src="js/pics_main.js?v=<%=version%>"></script>
 <script type="text/javascript" src="js/notes.js?v=<%=version%>"></script>
@@ -71,15 +72,22 @@ $(function() {
 					var html = $(response).addClass('overlay');
 					html.find('#login').ajaxForm({
 						url: 'Login!ajax.action',
+						dataType: 'json',
 						success: function(response, status, formXhr, $form) {
-							$.facebox.close();
-							if (originalSettings.url.indexOf('?') != -1) {
-								originalSettings.url = originalSettings.url.replace(/\?.*$/,'');
+							if (response.loggedIn) {
+								$.facebox.close();
+								if (originalSettings.url.indexOf('?') != -1) {
+									originalSettings.url = originalSettings.url.replace(/\?.*$/,'');
+								}
+								$.ajax(originalSettings);
+							} else {
+								$('#loginMessages').msg('error', response.actionError, true);
+								$('#username').focus();
 							}
-							$.ajax(originalSettings);
 						}
 					});
 					$.facebox(html);
+					html.find('#username').focus();
 				});
 			});
 		}

@@ -2,7 +2,7 @@
 <head>
 <title>Site Orientation Report</title>
 
-<script type="text/javascript" src="js/jquery/util/jquery-utils.js"></script>
+<script type="text/javascript" src="js/jquery/util/jquery.utils.js"></script>
 <script type="text/javascript" src="js/jquery/gritter/jquery.gritter.js"></script>
 
 <script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
