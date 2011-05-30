@@ -553,7 +553,7 @@ table.report tr.hurdle td {
 			</div>
 		</div>
 	</div>
-	<s:if test="permissions.admin">
+	<s:if test="permissions.admin || permissions.contractor">
 	<!-- Open Tasks -->
 	<div class="panel_placeholder">
 		<div class="panel">
