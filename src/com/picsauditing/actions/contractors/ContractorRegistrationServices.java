@@ -174,11 +174,11 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 					List<String> increases = new ArrayList<String>();
 					if (safety.ordinal() > conSafety.ordinal() && !contractor.isMaterialSupplierOnly())
-						increases.add("risk assessment to <b>" + safety + "</b>");
+						increases.add("Service Safety Evaluation to <b>" + safety + "</b>");
 					if (product.ordinal() > conProduct.ordinal() && contractor.isMaterialSupplier())
-						increases.add("product critical assessment to <b>" + productAssessment + "</b>");
+						increases.add("Business Interruption Evaluation to <b>" + productAssessment + "</b>");
 					if (safety.ordinal() > conProductSafety.ordinal() && contractor.isMaterialSupplier())
-						increases.add("product safety critical assessment to <b>" + safetyAssessment + "</b>");
+						increases.add("Product Safety Evaluation to <b>" + safetyAssessment + "</b>");
 
 					output = "The answers you have provided indicate higher risk levels than the "
 							+ "ratings you have selected. We recommend increasing your "
