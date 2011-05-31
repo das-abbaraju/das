@@ -70,13 +70,13 @@ $(function(){
 
 	$('#auditViewArea').delegate('div.question a.saveCertificate','click',function(e) {
 		e.preventDefault();
-		$(this).parents('form.qform:first').find('input[name=auditData.answer]').val($(this).attr('rel'));
+		$(this).parents('form.qform:first').find('input[name="auditData.answer"]').val($(this).attr('rel'));
 		$(this).parents('div.question:first').trigger('saveQuestion');
 	});
 
 	$('#auditViewArea').delegate('div.question a.detachCertificate','click',function(e) {
 		e.preventDefault();
-		$(this).parents('form.qform:first').find('input[name=auditData.answer]').val('');
+		$(this).parents('form.qform:first').find('input[name="auditData.answer"]').val('');
 		$(this).parents('div.question:first').trigger('saveQuestion');
 	});
 
@@ -112,5 +112,5 @@ function triggerDependent(qid) {
 }
 
 function setAnswer(questionID, answer) {
-	$('input[name=auditData.answer]', '#node_'+questionID).val(answer);
+	$('input[name="auditData.answer"]', '#node_'+questionID).val(answer);
 }
