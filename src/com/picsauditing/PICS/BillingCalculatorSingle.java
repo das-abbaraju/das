@@ -258,9 +258,6 @@ public class BillingCalculatorSingle {
 					invoiceItem.setInvoiceFee(upgrade.getNewLevel());
 					invoiceItem.setAmount(upgradeAmount);
 					invoiceItem.setDescription(description);
-					if (upgrade.getFeeClass().isPaymentExpiresNeeded())
-						invoiceItem.setPaymentExpires(contractor.getPaymentExpires());
-
 					items.add(invoiceItem);
 				}
 			}
