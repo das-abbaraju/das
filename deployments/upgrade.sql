@@ -48,7 +48,7 @@ update invoice_fee invf set invf.feeClass = 'Activation' where invf.id in (1,104
 update invoice_fee invf set invf.feeClass = 'DocuGUARD' where invf.id = 4;
 update invoice_fee invf set invf.feeClass = 'AuditGUARD' where invf.id in (5,6,7,8,9,10,11,105);
 update invoice_fee invf set invf.feeClass = 'ListOnly' where invf.id = 100;
-update invoice_fee invf set invf.feeClass = 'GST' where invf.id = 200;
+update invoice_fee invf set invf.feeClass = 'GST', invf.minFacilities = 0, invf.maxFacilities = 10000 where invf.id = 200;
 
 insert into invoice_fee 
 	(id, 
