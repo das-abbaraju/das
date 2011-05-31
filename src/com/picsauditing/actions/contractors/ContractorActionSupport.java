@@ -355,8 +355,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			addSubMenu(menu, subMenu);
 		}
 
-		if (isRequiresInsurance()
-				&& (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorInsurance))) {
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorInsurance)) {
 			// Add InsureGUARD
 			MenuComponent subMenu = new MenuComponent(getText("global.InsureGUARD"), "ConInsureGUARD.action?id=" + id);
 			Iterator<ContractorAudit> iter = auditList.iterator();
@@ -375,12 +374,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 				}
 			}
 
-			subMenu.addChild("Manage Certificates", "ConInsureGUARD.action?id=" + contractor.getId());
-
-			if (permissions.hasPermission(OpPerms.AuditVerification))
-				subMenu.addChild("Insurance Verification", "InsureGuardVerification.action?id=" + contractor.getId());
-
-			addSubMenu(menu, subMenu);
+			if (subMenu.getChildren().size() > 0) {
+				subMenu.addChild("Manage Certificates", "ConInsureGUARD.action?id=" + contractor.getId());
+	
+				if (permissions.hasPermission(OpPerms.AuditVerification))
+					subMenu.addChild("Insurance Verification", "InsureGuardVerification.action?id=" + contractor.getId());
+	
+				addSubMenu(menu, subMenu);
+			}
 		}
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
@@ -444,39 +445,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 			menuItem.setCssClass("done");
 
 		return menuItem;
-	}
-
-	/**
-	 * Only show the insurance link for contractors who are linked to an operator that collects insurance data. Also,
-	 * don't show the link to users who don't have the InsuranceCerts permission.
-	 * 
-	 */
-	public boolean isRequiresInsurance() {
-		if (contractor.isAcceptsBids())
-			return false;
-
-		if (getOperators().iterator().hasNext()) {
-			if (!accountDao.isContained(getOperators().iterator().next()))
-				operators = null;
-		} else
-			operators = null;
-
-		if (permissions.isOperator()) {
-			for (ContractorOperator insurContractors : getOperators()) {
-				OperatorAccount op = insurContractors.getOperatorAccount();
-				if (permissions.getAccountId() == op.getId() && op.getCanSeeInsurance().isTrue())
-					return true;
-			}
-			return false;
-		}
-		// If Contractor or admin, any operator requiring certs will see this
-		// If corporate, then the operators list is already restricted to my
-		// facilities
-		for (ContractorOperator co : getOperators()) {
-			if (co.getOperatorAccount().getCanSeeInsurance().isTrue())
-				return true;
-		}
-		return false;
 	}
 
 	/**
