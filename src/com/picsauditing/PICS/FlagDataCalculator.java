@@ -162,7 +162,7 @@ public class FlagDataCalculator {
 				}
 
 				return count < 3;
-			} else if ("number".equals(criteria.getDataType())) {
+			} else if ("number".equals(criteria.getDataType()) && criteria.getAuditType().isScoreable()) {
 				// Check for Audits with scoring
 				ContractorAudit scoredAudit = null;
 				for (ContractorAudit ca : con.getAudits()) {
