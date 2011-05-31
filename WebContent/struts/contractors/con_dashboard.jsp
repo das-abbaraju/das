@@ -20,7 +20,7 @@
 				});
 		return false;
 	}
-	
+
 	function addTag() {
 		var data = {button: 'AddTag', tagId: $('#tagName').val(), id: <s:property value="id"/>};
 		$('#conoperator_tags').html('<img src="images/ajax_process.gif"/>')
@@ -35,7 +35,7 @@
 		var data = $('#' + id).text();
 		var size = 500;
 		var count = index = prev = 0;
-		while(count < 15){			
+		while(count < 15){
 			prev = index;
 			index = data.indexOf(pat, prev+pat.length);
 			if(index!=-1)
@@ -46,7 +46,7 @@
 			if(prev<size)
 				size = prev;
 		}
-		
+
 		if (data.length > size) {
 			var data1 = data.substring(0,size).replace(/\n/gi, "<br>") + '<span id="' + id + '_ext">...<br> <a href="#" onclick="$(\'#'
 				+ id + '_more\').show(); $(\'#' + id + '_ext\').hide(); return false;" style="font-weight: normal;"'
@@ -56,11 +56,45 @@
 				+ '_more\').hide(); return false;" style="font-weight: normal;">Hide</a><br><br></span>';
 			data = data1 + data2;
 		};
-		
+
 		$('#' + id).html(data);
 	}
-	
+
+	function startWatch() {
+		$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" />Adding Contractor watch...');
+		$.get('ContractorViewAjax.action', {button: 'Start Watch', id: <s:property value="contractor.id" />}, function (output) {
+			$('#contractorWatch').html('You are watching this contractor. <a href="#" onclick="stopWatch(); return false;">Stop Watching</a>')
+				.effect('highlight', {color: '#FFFF11'}, 1000);
+		});
+	}
+
+	function stopWatch() {
+		$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" />Removing Contractor Watch...');
+		$.get('ContractorViewAjax.action', {button: 'Stop Watch', id: <s:property value="contractor.id" />}, function (output) {
+			$('#contractorWatch').html('<a href="#" onclick="startWatch(); return false;" class="watch">Watch This Contractor</a>')
+				.effect('highlight', {color: '#FFFF11'}, 1000);
+		});
+	}
+
+	function wireTradeClueTips() {
+		$("#trade-cloud a.trade").cluetip({
+			clickThrough: true,
+			ajaxCache: false,
+			closeText: "<img src='images/cross.png' width='16' height='16' />",
+			hoverIntent: {interval: 200},
+			arrows: true,
+			dropShadow: false,
+			width: 500,
+			cluetipClass: 'jtip',
+			ajaxProcess: function(data) {
+				data = $(data).not('meta, link, title');
+				return data;
+			}
+		});
+	}
+
 	$(document).ready(function() {
+		wireTradeClueTips();
 		limit('description', '\n');
 		$('.reloadPage').live('click', function(){
 			location.reload();
@@ -72,22 +106,6 @@
 			$(this).attr('href', 'ContractorTrades.action?id=<s:property value="id"/>');
 		});
 	});
-
-	function startWatch() {
-		$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" />Adding Contractor watch...');
-		$.get('ContractorViewAjax.action', {button: 'Start Watch', id: <s:property value="contractor.id" />}, function (output) {
-			$('#contractorWatch').html('You are watching this contractor. <a href="#" onclick="stopWatch(); return false;">Stop Watching</a>')
-				.effect('highlight', {color: '#FFFF11'}, 1000);
-		});
-	}
-	
-	function stopWatch() {
-		$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" />Removing Contractor Watch...');
-		$.get('ContractorViewAjax.action', {button: 'Stop Watch', id: <s:property value="contractor.id" />}, function (output) {
-			$('#contractorWatch').html('<a href="#" onclick="startWatch(); return false;" class="watch">Watch This Contractor</a>')
-				.effect('highlight', {color: '#FFFF11'}, 1000);
-		});
-	}
 </script>
 <style>
 div#opTagAjax{
@@ -166,7 +184,7 @@ table.report tr.hurdle td {
 					<div class="alert"><s:text name="%{scope}.ContractorDashboard.StatusPending" /></div>
 				</s:if>
 				<s:if test="contractor.status.deleted">
-					<div class="alert">This contractor was deleted<s:if test="contractor.reason.length > 0"> 
+					<div class="alert">This contractor was deleted<s:if test="contractor.reason.length > 0">
 							because of the following reason: <s:property value="contractor.reason"/></s:if>.
 						<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
 					</div>
@@ -234,8 +252,8 @@ table.report tr.hurdle td {
 							<s:property value="co.waitingOn"/>
 						</p>
 					</s:if>
-					<!-- 
-						<p>						
+					<!--
+						<p>
 							<s:if test="contractor.requiresOQ">Operator Qualification: Enabled</s:if>
 						</p>
 						<p>
@@ -266,7 +284,7 @@ table.report tr.hurdle td {
 				</div>
 				<s:if test="activeOperators.size() > 1">
 				<div class="co_select nobr">
-					Select Operator: 
+					Select Operator:
 					<s:select list="activeOperators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="opID"
 						headerKey="" headerValue=" - Operator - "
 							onchange="location.href='ContractorView.action?id=%{id}&opID='+this.value"/>
@@ -274,7 +292,7 @@ table.report tr.hurdle td {
 				</s:if>
 				<div class="clear"></div>
 			</div>
-			
+
 		</div>
 	</div>
 	<s:iterator value="#{'DocuGUARD': docuGUARD, 'AuditGUARD': auditGUARD, 'InsureGUARD': insureGUARD}">
@@ -331,7 +349,7 @@ table.report tr.hurdle td {
 						</tr>
 					</thead>
 					<s:iterator value="oshaDisplay.rateTypeSet" id="rateType">
-							
+
 						<tr <s:if test="#rateType.startsWith('P:')">class="hurdle"</s:if>>
 							<s:if test="#rateType.startsWith('P:')">
 								<td style="padding-left: 10px;"><s:property value="#rateType.substring(2)" escape="false"/></td>
@@ -350,7 +368,7 @@ table.report tr.hurdle td {
 		</div>
 	</div>
 	</s:if>
-	
+
 	<s:if test="criteriaList.categories.size() > 0">
 	<!-- Flaggable Data -->
 	<div class="panel_placeholder">
@@ -394,24 +412,24 @@ table.report tr.hurdle td {
 						<br/>DBA <s:property value="contractor.dbaName" />
 					</s:if>
 				</h4>
-				<p>PICS Contractor ID: 
+				<p>PICS Contractor ID:
 					<strong>
 						<s:property value="contractor.id" />
 					</strong>
 				</p>
 				<pics:permission perm="PicsScore">
-				<p>Score: 
+				<p>Score:
 					<strong>
 						<s:property value="contractor.score" />
 					</strong>
 				</p>
 				</pics:permission>
-				<p><s:text name="%{scope}.ContractorDashboard.MemberSince" />: 
+				<p><s:text name="%{scope}.ContractorDashboard.MemberSince" />:
 					<strong>
 						<strong><s:date name="contractor.membershipDate" format="M/d/yyyy" /></strong>
 					</strong>
 				</p>
-				<p>PICS CSR: 
+				<p>PICS CSR:
 					<strong><s:property value="contractor.auditor.name" /> / <s:property value="contractor.auditor.phone" /> / </strong>
 					<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email"><s:property value="contractor.auditor.email"/></a>
 				</p>
@@ -429,11 +447,11 @@ table.report tr.hurdle td {
 							</div>
 						</div>
 					</s:if>
-				</s:if>	
+				</s:if>
 				<div class="clear"></div>
 			</div>
 		</div>
-	</div>	
+	</div>
 	<!-- Contact Info -->
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -445,8 +463,8 @@ table.report tr.hurdle td {
 					href="http://www.mapquest.com/maps/map.adp?city=<s:property value="contractor.city" />&state=<s:property value="contractor.state" />&address=<s:property value="contractor.address" />&zip=<s:property value="contractor.zip" />&zoom=5"
 					target="_blank"><s:text name="%{scope}.ContractorDashboard.ShowMap" /></a>]<br/>
 					<span class="street-address"><s:property value="contractor.address" /></span><br />
-					<span class="locality"><s:property value="contractor.city" /></span>, 
-					<span class="region"><s:property value="contractor.state.isoCode" /></span> 
+					<span class="locality"><s:property value="contractor.city" /></span>,
+					<span class="region"><s:property value="contractor.state.isoCode" /></span>
 					<span class="postal-code"><s:property value="contractor.zip" /></span> <br />
 				</p>
 				<div class="telecommunications">
@@ -552,7 +570,7 @@ table.report tr.hurdle td {
 				<s:form id="form_sync">
 					<s:hidden name="id" />
 					<s:hidden name="button" value="Synchronize Contractor" />
-					<input type="submit" class="picsbutton" onclick="$(this).attr('disabled', true); $('#form_sync').submit();" 
+					<input type="submit" class="picsbutton" onclick="$(this).attr('disabled', true); $('#form_sync').submit();"
 						style="margin: 5px auto;" value="Synchronize" />
 					<s:if test="contractor.lastRecalculation != null">
 						<br />Last synchronized <s:date name="contractor.lastRecalculation" nice="true" />
@@ -560,7 +578,7 @@ table.report tr.hurdle td {
 				</s:form>
 			</div>
 		</div>
-	</div>	
+	</div>
 </td>
 </tr>
 </table>
