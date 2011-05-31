@@ -164,7 +164,7 @@ fieldset.form .fieldhelp-focused input, form.form .fieldhelp-focused input {
 }
 
 .fieldhelp {
-	z-index: 1000;
+	z-index: 99999;
 	max-width: 250px;
 	width: 250px;
 	padding: 10px;
