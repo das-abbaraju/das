@@ -33,7 +33,6 @@ display:none}
 	<div class="alert"><s:property value="output" escape="false" /></div>
 </s:if>
 
-<div class="info">Answers on this page automatically saved. Once you are finished, click <b>Next</b> at the bottom to go to the next step.</div>
 <div id="auditViewArea">
 	<s:iterator value="categories" id="category">
 	<s:include value="../audits/audit_cat_view.jsp"/>

@@ -69,7 +69,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 		Set<Integer> categoryIds = new HashSet<Integer>();
 		if (contractor.isOnsiteServices() || contractor.isOffsiteServices())
-			categoryIds.add(400);
+			categoryIds.add(AuditCategory.RISK_ASSESSMENT);
 		if (contractor.isMaterialSupplier()) {
 			categoryIds.add(1682);
 			categoryIds.add(1683);

@@ -40,7 +40,7 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 	public static final int SERVICES_PERFORMED = 28;
 	public static final int WCB = 210;
 	public static final int CITATIONS = 278;
-	public static final int RISK_ASSESSMENT = 400;
+	public static final int RISK_ASSESSMENT = 1721;
 	public static final int PRODUCT_CRITICAL = 1682;
 	public static final int PRODUCT_SAFETY_CRITICAL = 1683;
 
