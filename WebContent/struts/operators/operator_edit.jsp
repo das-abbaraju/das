@@ -241,8 +241,6 @@ function checkFee(activationFee, oldValue) {
 	<fieldset class="form">
 	<h2 class="formLegend">Company Identification</h2>
 	<ol>
-		<li><label>Industry:</label> <s:select list="industryList"
-			name="operator.industry" listValue="description" /></li>
 		<li><label>Description:</label> <s:textarea
 			name="operator.description" cols="40" rows="15" />
 			<pics:fieldhelp>General notes about this owner operator.</pics:fieldhelp>
