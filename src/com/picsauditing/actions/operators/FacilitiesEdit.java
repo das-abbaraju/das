@@ -374,11 +374,14 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 			relatedFacilities.add(operator);
 			if (operator.getId() > 0) {
 				// Add all my parents
-				if (operator.getCorporateFacilities() != null)
+				if (operator.getCorporateFacilities() != null) {
 					for (Facility parent : operator.getCorporateFacilities())
 						relatedFacilities.add(parent.getCorporate());
-				relatedFacilities.add(operator.getInheritFlagCriteria());
-				relatedFacilities.add(operator.getInheritInsuranceCriteria());
+				}
+				if (operator.getInheritFlagCriteria() != null)
+					relatedFacilities.add(operator.getInheritFlagCriteria());
+				if (operator.getInheritInsuranceCriteria() != null)
+					relatedFacilities.add(operator.getInheritInsuranceCriteria());
 			}
 		}
 
