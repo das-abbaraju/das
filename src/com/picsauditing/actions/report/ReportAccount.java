@@ -260,7 +260,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			for (int tradeID : f.getTrade()) {
 				SelectSQL tradeSQL = new SelectSQL("contractor_trade ct");
 				tradeSQL.addJoin("JOIN ref_trade base ON ct.tradeID = base.id");
-				tradeSQL.addJoin("JOIN ref_trade related ON (base.indexStart >= related.indexStart and base.indexEnd <= related.indexEnd) OR (base.indexStart <= related.indexStart and base.indexEnd >= related.indexEnd)");
+				tradeSQL.addJoin("JOIN ref_trade related ON base.indexStart <= related.indexStart and base.indexEnd >= related.indexEnd");
 				tradeSQL.addWhere("a.id = ct.conID");
 				// TODO allow users to search for Self Performed, Manufacture and Activity Percent
 				tradeSQL.addWhere("ct.activityPercent > 1");
