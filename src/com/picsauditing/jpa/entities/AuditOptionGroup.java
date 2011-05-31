@@ -24,8 +24,7 @@ public class AuditOptionGroup extends BaseTable {
 
 	private int maxScore = 0;
 	/**
-	 * Periodically, we need to query commonly used OptionValues and update this
-	 * list.
+	 * Periodically, we need to query commonly used OptionValues and update this list.
 	 */
 	static public String[] COMMON_TYPES = new String[] { "Colors", "LowMedHigh", "YesNo", "YesNoNA", "OfficeLocation",
 			"Rating" };
@@ -66,14 +65,14 @@ public class AuditOptionGroup extends BaseTable {
 	}
 
 	@OneToMany(mappedBy = "option")
-		public List<AuditQuestion> getQuestions() {
+	public List<AuditQuestion> getQuestions() {
 		return questions;
 	}
 
 	public void setQuestions(List<AuditQuestion> questions) {
 		this.questions = questions;
 	}
-	
+
 	/**
 	 * Gets the max score from all option values linked to this type
 	 */
@@ -101,9 +100,8 @@ public class AuditOptionGroup extends BaseTable {
 	@Transient
 	public String getI18nKey() {
 		if (!Strings.isEmpty(uniqueCode)) {
-			if (uniqueCode.equals("Country") || uniqueCode.equals("State"))
-				return "global." + uniqueCode;
-			if (uniqueCode.equals("YesNo") || uniqueCode.equals("LowMedHigh"))
+			if (uniqueCode.equals("Country") || uniqueCode.equals("State") || uniqueCode.equals("YesNo")
+					|| uniqueCode.equals("LowMedHigh"))
 				return uniqueCode;
 		}
 
@@ -124,7 +122,7 @@ public class AuditOptionGroup extends BaseTable {
 	public String getAutocompleteItem() {
 		return "[" + id + "] " + name;
 	}
-	
+
 	@Transient
 	@Override
 	public String getAutocompleteValue() {
