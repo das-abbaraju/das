@@ -81,7 +81,7 @@
 			<artifactId>struts2-core</artifactId>
 			<version>2.1.8.1</version>
 		</dependency>
-		<!-- 
+		<!--
 		<dependency>
 		    <groupId>org.apache.struts</groupId>
 		    <artifactId>struts2-convention-plugin</artifactId>
@@ -403,14 +403,14 @@
 			<artifactId>poi</artifactId>
 			<version>3.6</version>
 		</dependency>
-		
+
 		<dependency>
 			<!-- XSLX Creator -->
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 			<version>3.6</version>
 		</dependency>
-		
+
 		<dependency>
 			<!-- XLSX Creator -->
 			<groupId>org.apache.poi</groupId>
@@ -451,6 +451,13 @@
 			<groupId>com.braintree</groupId>
 			<artifactId>braintree</artifactId>
 			<version>2.6.1</version>
+		</dependency>
+
+		<dependency>
+			<!-- Crowd -->
+		    <groupId>com.atlassian.crowd</groupId>
+		    <artifactId>crowd-integration-client</artifactId>
+		    <version>2.1.1</version>
 		</dependency>
 
 	</dependencies>
