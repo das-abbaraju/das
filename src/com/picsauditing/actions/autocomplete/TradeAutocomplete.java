@@ -15,6 +15,7 @@ import com.picsauditing.util.Strings;
 public final class TradeAutocomplete extends AutocompleteActionSupport<Trade> {
 	@Autowired
 	private TradeDAO tradeDAO;
+	// extraArgs: restrictTrades
 	private boolean extraArgs;
 
 	@SuppressWarnings("unchecked")
@@ -41,6 +42,14 @@ public final class TradeAutocomplete extends AutocompleteActionSupport<Trade> {
 				return (List<Trade>) tradeDAO.findWhere(Trade.class, "t.id = " + Strings.implode(itemKeys), 0);
 		}
 		return Collections.emptyList();
+	}
+
+	public boolean isExtraArgs() {
+		return extraArgs;
+	}
+
+	public void setExtraArgs(boolean extraArgs) {
+		this.extraArgs = extraArgs;
 	}
 	
 }
