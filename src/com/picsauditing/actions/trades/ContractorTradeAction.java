@@ -40,6 +40,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	// TODO Check the security here
 	public String execute() throws Exception {
 		super.execute();
+		if (this.permissions.isOperator()) selectHighestTrade();
 		return SUCCESS;
 	}
 
@@ -187,6 +188,23 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		this.conTypes = conTypes;
 	}
 
+	public void selectHighestTrade() {
+		if (trade != null) return;
+		List<ContractorTrade> list = contractor.getTrades();
+		if (list == null || list.size() == 0) return;
+		
+		ContractorTrade selTrade = null;
+		for (ContractorTrade t:list) {
+			if (selTrade == null 
+					|| t.getActivityPercent() > selTrade.getActivityPercent()) {
+				selTrade = t;
+			}
+		}
+		
+		setTrade(selTrade);
+		tradeAjax();
+	}
+	
 	public int getHalf() {
 		if (contractor != null && contractor.getTrades().size() > 0)
 			return (int) Math.floor((double) contractor.getTrades().size() / 2.0);
