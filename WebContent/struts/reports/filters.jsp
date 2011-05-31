@@ -184,7 +184,7 @@ select.hidden {
 			<a href="#" class="filterBox">Trade</a> =
 			<span class="q_status">ALL</span><br />
 			<span class="clearLink q_box select">
-				<s:textfield rel="Trade" name="filter.trade" cssClass="tokenAuto" />
+				<s:textfield rel="Trade/false" name="filter.trade" cssClass="tokenAuto" />
 				<a class="clearLink" href="#">Clear</a>
 			</span>
 		</div>
