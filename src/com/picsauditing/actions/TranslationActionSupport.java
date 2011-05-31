@@ -50,12 +50,17 @@ public class TranslationActionSupport extends ActionSupport {
 
 		} while (iter.hasNext() && isTranslatable(type));
 
-		StringBuilder result = new StringBuilder(type.getSimpleName());
-		for (Entry<String, Class<?>> entry : nonTranslatables) {
-			result.append(".").append(entry.getKey());
+		if (type == null) {
+			System.out.println("The field [" + property + "] is not translatable. Please add a label for this field.");
+		} else {
+			StringBuilder result = new StringBuilder(type.getSimpleName());
+			for (Entry<String, Class<?>> entry : nonTranslatables) {
+				result.append(".").append(entry.getKey());
+			}
+			return result.toString();
 		}
 
-		return result.toString();
+		return "";
 	}
 
 	public String getDefaultValueFromType(String property) throws SecurityException, NoSuchFieldException {
