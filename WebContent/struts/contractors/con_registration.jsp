@@ -128,79 +128,45 @@ $(function(){
 	<fieldset class="form">
 		<h2 class="formLegend"><s:text name="%{scope}.CompanyDetails.heading" /></h2>
 		<ol>
-			<li class="required"><label><s:text name="%{scope}.CompanyDetails.LegalCompanyName"/>:</label>
-				<s:textfield name="contractor.name" size="35" onchange="checkName(this.value);"/>
-				<pics:fieldhelp title="Company Name">
-					<p>The name of your company as listed on legal documents, trade certificates and licenses.</p>
-					<p>We'll search our database to see if your company has already been registered.</p>
-				</pics:fieldhelp>
+			<li class="required">
+				<s:textfield name="contractor.name" size="35" theme="formhelp" onchange="checkName(this.value);"/>
 				<div id="name_status"></div>
 			</li>
-			<li><label><s:text name="%{scope}.CompanyDetails.ShortNameorDBA" />:</label>
-				<s:textfield name="contractor.dbaName" size="35" />
-				<pics:fieldhelp title="Short Name">
-					<p>An alternative (also known as Doing Business As) name of your company. This is optional but may help your customers search for you if they only know you by an acronym, shortened company name, or alternative DBA name.</p>
-				</pics:fieldhelp>
+			<li>
+				<s:textfield name="contractor.dbaName"  theme="formhelp" size="35" />
 			</li>
-			<li class="required"><label><s:text name="%{scope}.CompanyDetails.Country" />:</label>
+			<li class="required">
 				<s:select list="countryList" id="contractorCountry"
+					theme="formhelp"
 					name="contractor.country.isoCode"
 					onchange="changeCountry(this.value);"
-					headerKey="" headerValue="- Country -"
 					listKey="isoCode" listValue="name" />
-				<pics:fieldhelp title="Country">
-					<p>The headquarters of your company. This will affect the currency in which your PICS membership will be listed.</p>
-				</pics:fieldhelp>
 			</li>
-			<li class="required" id="taxIdItem" <s:if test="contractor.country.isoCode =='AE'">style="display: none;"</s:if>><label><s:text name="%{scope}.CompanyDetails.TaxID" />:</label>
+			<li class="required" id="taxIdItem" <s:if test="contractor.country.isoCode =='AE'">style="display: none;"</s:if>>
 				<s:textfield name="contractor.taxId" id="contractorTaxId"
-					size="9" maxLength="9" onchange="checkTaxId(this.value);" />
-				<pics:fieldhelp title="Tax ID or Business Number">
-					<p>The number your government uses to uniquely identify your company. We use this to see if your company has already registered.</p>
-					<h5>United States</h5>
-					9-digit number with no dashes
-					<h5>Canada</h5>
-					the first 9-digits of your 15 character Business Number
-				</pics:fieldhelp>
+					theme="formhelp" size="9" maxLength="9" onchange="checkTaxId(this.value);" />
 				<div id="taxId_status"></div>
 			</li>
-			<li><label><s:text name="%{scope}.CompanyDetails.WebURL" />:</label>
-				<s:textfield name="contractor.webUrl" size="35" />
-				<pics:fieldhelp title="Web URL">
-					The web site your customers can go to to learn more about your products and services.
-					<h5>Example:</h5>
-					www.yourcompany.com
-				</pics:fieldhelp>
+			<li>
+				<s:textfield name="contractor.webUrl" theme="formhelp" size="35" />
 			</li>
-			<li class="required"><label><s:text name="%{scope}.CompanyDetails.CompanyPhone" />:</label>
-				<s:textfield id="contractorPhone" name="contractor.phone" size="20" />
-				<pics:fieldhelp>
-					<h3><s:text name="%{scope}.CompanyDetails.CompanyPhone" />:</h3>
-					Your company's primary telephone line. If you are outside the United States or Canada, please include your country code.
-				</pics:fieldhelp>
+			<li class="required">
+				<s:textfield id="contractorPhone" name="contractor.phone" theme="formhelp" size="20" />
 			</li>
-			<li><label><s:text name="%{scope}.CompanyDetails.CompanyFax" />:</label>
-				<s:textfield name="contractor.fax" size="20" />
-				<pics:fieldhelp title="Company Fax">
-					Your company's primary fax line if any.
-				</pics:fieldhelp>
+			<li>
+				<s:textfield name="contractor.fax" theme="formhelp" size="20" />
 			</li>
 		</ol>
 	</fieldset>
 	<fieldset class="form">
 		<h2 class="formLegend"><s:text name="global.PrimaryAddress" /></h2>
 		<ol>
-			<li class="required"><label><s:text name="%{scope}.PrimaryAddress.Address" />:</label>
-				<s:textfield name="contractor.address" size="35" /><br />
+			<li class="required">
+				<s:textfield name="contractor.address" theme="formhelp" size="35" /><br />
 				<s:textfield name="contractor.address2" size="35" cssClass="multifield" />
-				<pics:fieldhelp title="Primary Address">
-					Your company's primary address or headquarters. This should be located in the country you selected in Company Details above.
-					<h5>Example:</h5>
-					123 Main Street, Suite 100
-				</pics:fieldhelp>
 			</li>
-			<li class="required"><label><s:text name="%{scope}.PrimaryAddress.City" />:</label> 
-				<s:textfield name="contractor.city" size="35" />
+			<li class="required">
+				<s:textfield name="contractor.city" theme="formhelp" size="35" />
 			</li>
 			<li><label><s:text name="%{scope}.PrimaryAddress.Country" />:</label>
 				<input type="text" disabled="disabled" id="country_display"/>
@@ -210,12 +176,12 @@ $(function(){
 				<li class="required"><label><s:text name="%{scope}.PrimaryAddress.State" />:</label>
 					<s:select list="stateList" id="state_sel"
 						name="contractor.state.isoCode"
-						headerKey="" headerValue="- State -"
+						theme="formhelp"
 						listKey="isoCode" listValue="name" />
 				</li>
 			</s:else>
-			<li class="required" id="zipItem" <s:if test="contractor.country.isoCode == 'AE'">style="display: none;"</s:if>><label><s:text name="%{scope}.PrimaryAddress.ZipCode" />:</label>
-				<s:textfield name="contractor.zip" size="10" />
+			<li class="required" id="zipItem" <s:if test="contractor.country.isoCode == 'AE'">style="display: none;"</s:if>>
+				<s:textfield name="contractor.zip" theme="formhelp" size="10" />
 			</li>
 		</ol>
 	</fieldset>
@@ -242,64 +208,36 @@ $(function(){
 			<li>
 				<s:checkbox id="CompetitorMembership" name="contractor.competitorMembership" theme="formhelp" />
 			</li>
-			<li><label><s:text name="%{scope}.CompanyIdentification.Description" />:</label>
-				<s:textarea name="contractor.description" cols="60" rows="15" />
-				<pics:fieldhelp title="Description">
-					<p>Include up to 2000 words to describe your company.</p>
-					<h5>Suggestion:</h5>
-					<p>Copy and paste text from the &quot;About&quot; section on your web site or company brochure.</p>
-				</pics:fieldhelp>
+			<li>
+				<s:textarea name="contractor.description" cols="60" rows="15" theme="formhelp" />
 			</li>
 		</ol>
 	</fieldset>
 	<fieldset class="form">
 		<h2 class="formLegend"><s:text name="global.ContactPrimary" /></h2>
 		<ol>
-			<li class="required"><label><s:text name="%{scope}.PrimaryContact.Name" />:</label>
-				<s:textfield name="user.name" size="20" />
-				<pics:fieldhelp title="Name">
-					This your name. We use the information in this section to create the first administrator user.
-					You'll have the opportunity to create more users later with varying levels of permissions or change the primary contact to another user.
-					<h5>Example</h5>
-					John Doe
-				</pics:fieldhelp>
+			<li class="required">
+				<s:textfield name="user.name" size="20" theme="formhelp" />
 			</li>
-			<li class="required"><label><s:text name="%{scope}.PrimaryContact.Email" />:</label>
-				<s:textfield name="user.email" size="20" /> 
-				<pics:fieldhelp title="Email">
-					Your email address. We send vital information to this address, so it needs to be correct. Your customers that use PICS will be able to see primary contact(s) and their phone and email address.
-				</pics:fieldhelp>
+			<li class="required">
+				<s:textfield name="user.email" size="20" theme="formhelp" /> 
 			</li>
-			<li><label><s:text name="%{scope}.PrimaryContact.Phone" />:</label>
-				<s:textfield name="user.phone" size="20" />
-				<pics:fieldhelp title="Phone">
-					This is the direct phone number and extension if applicable for the primary contact. This may be used by CSRs or auditors to contact you directly.
-				</pics:fieldhelp>
+			<li>
+				<s:textfield name="user.phone" size="20" theme="formhelp" />
 			</li>
-			<li><label><s:text name="%{scope}.PrimaryContact.Fax" />:</label>
-				<s:textfield name="user.fax" size="20" />
+			<li>
+				<s:textfield name="user.fax" size="20" theme="formhelp" />
 			</li>
-			<li class="required"><label><s:text name="%{scope}.PrimaryContact.Username" />:</label>
-		 		<s:textfield name="user.username" onchange="checkUsername(this.value);"/>
-		 		<pics:fieldhelp title="Username">
-		 			<p>Please type in your desired user name. We'll let you know if it's available.</p>
-		 			<ul>
-		 				<li>Must be at least 3 characters long</li>
-		 				<li>Don't use spaces in your name</li>
-		 				<li>Your email address is recommended because it's easy to remember.</li>
-		 			</ul>
-		 		</pics:fieldhelp>
+			<li class="required">
+		 		<s:textfield name="user.username" onchange="checkUsername(this.value);"  theme="formhelp"/>
 		 		<br />
 		 		<div id="username_status"></div>
 		 	</li>
-			<li class="required"><label><s:text name="%{scope}.PrimaryContact.Password" />:</label> 
-				<s:password name="password"/>
-				<pics:fieldhelp title="Password">
-					Must be at least 5 characters long and different from your username
-				</pics:fieldhelp>
+			<li class="required">
+				<s:password name="password" theme="formhelp" label="global.Password"/>
 			</li>
-			<li><label><s:text name="%{scope}.PrimaryContact.ConfirmPassword" />:</label> 
-				<s:password name="confirmPassword"/>
+			<li>
+				<s:password name="confirmPassword" theme="formhelp" label="global.ConfirmPassword"/>
 			</li>
 			<li>
 				<b><s:text name="%{scope}.TermsAndConditions" /></b>
