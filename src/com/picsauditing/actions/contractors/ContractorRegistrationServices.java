@@ -150,11 +150,15 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 					}
 				}
 
-				boolean isOK = false;
+				boolean isSafetyOK = false;
+				boolean isProductOK = false;
 				// Contractor's assessments are the same (or higher?) than what
 				// we've calculated
-				isOK = (conSafety.ordinal() >= safety.ordinal() && conProductSafety.ordinal() >= safety.ordinal() && conProduct
-						.ordinal() >= product.ordinal());
+				if (!contractor.isMaterialSupplierOnly())
+					isSafetyOK = conSafety.ordinal() >= safety.ordinal();
+				if (contractor.isMaterialSupplier())
+					isProductOK = conProductSafety.ordinal() >= safety.ordinal() && conProduct.ordinal() >= product.ordinal();
+
 
 				contractor.setSafetyRisk(safety);
 
@@ -164,7 +168,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				contractor.setAuditColumns(permissions);
 				accountDao.save(contractor);
 
-				if (!isOK) {
+				if (!isSafetyOK || !isProductOK) {
 					String safetyAssessment = safety.toString();
 					if (safetyAssessment.equals("Med"))
 						safetyAssessment = "Medium";
