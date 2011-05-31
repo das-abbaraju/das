@@ -145,7 +145,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 	public List<ContractorAuditOperator> findByCaoStatus(int limit, Permissions perm, String where, String orderBy) {
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(perm, PermissionQueryBuilder.HQL);
 		permQuery.setAccountAlias("ca.contractorAccount"); 
-		String query = "SELECT cao FROM ContractorAudit as ca LEFT JOIN ca.operators AS cao ";
+		String query = "SELECT DISTINCT cao FROM ContractorAudit as ca LEFT JOIN ca.operators AS cao ";
 		
 		if(perm.isOperatorCorporate()) {
 			query += " LEFT JOIN cao.caoPermissions AS caop ";
