@@ -77,7 +77,8 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		}
 
 		Set<Integer> questionIds = new HashSet<Integer>();
-		categories = new TreeSet<AuditCategory>(auditCategoryDAO.findWhere("id IN (" + Strings.implode(categoryIds) + ")"));
+		categories = new TreeSet<AuditCategory>(auditCategoryDAO.findWhere("id IN (" + Strings.implode(categoryIds)
+				+ ")"));
 		for (AuditCategory category : categories) {
 			for (AuditQuestion question : category.getQuestions()) {
 				infoQuestions.add(question);
@@ -122,10 +123,10 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				LowMedHigh conProductSafety = LowMedHigh.Low;
 
 				for (ContractorTrade trade : contractor.getTrades()) {
-					if (trade.getTrade().getSafetyRisk() != null)
-						safety = getMaxRiskLevel(safety, trade.getTrade().getSafetyRisk());
-					if (trade.getTrade().getProductRisk() != null)
-						product = getMaxRiskLevel(product, trade.getTrade().getProductRisk());
+					if (trade.getTrade().getSafetyRiskI() != null)
+						safety = getMaxRiskLevel(safety, trade.getTrade().getSafetyRiskI());
+					if (trade.getTrade().getProductRiskI() != null)
+						product = getMaxRiskLevel(product, trade.getTrade().getProductRiskI());
 				}
 
 				for (AuditData auditData : auditList) {
@@ -150,10 +151,11 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				}
 
 				boolean isOK = false;
-				// Contractor's assessments are the same (or higher?) than what we've calculated
+				// Contractor's assessments are the same (or higher?) than what
+				// we've calculated
 				if (!contractor.isMaterialSupplierOnly())
 					isOK = conSafety.ordinal() >= safety.ordinal();
-				if (contractor.isMaterialSupplier())
+				if (isOK && contractor.isMaterialSupplier())
 					isOK = conProductSafety.ordinal() >= safety.ordinal() && conProduct.ordinal() >= product.ordinal();
 
 				contractor.setSafetyRisk(safety);
@@ -257,19 +259,22 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 					return LowMedHigh.High;
 				break;
 			case 3793:
-				// Question : Does your company perform mechanical services that require the use of hand/power tools?
+				// Question : Does your company perform mechanical services that
+				// require the use of hand/power tools?
 				if (auditData.getAnswer().equals("Yes"))
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
 				break;
 			case 2443:
-				// Question : Does your company perform all services from only an office?
+				// Question : Does your company perform all services from only
+				// an office?
 				if (auditData.getAnswer().equals("No"))
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
 				break;
 			case AuditQuestion.RISK_LEVEL_ASSESSMENT:
 			case AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT:
 			case AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT:
-				// Question : What risk level do you believe your company should be rated?
+				// Question : What risk level do you believe your company should
+				// be rated?
 				if (auditData.getAnswer().equals("Medium"))
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
 				if (auditData.getAnswer().equals("High"))
@@ -278,16 +283,19 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			case 7660:
 			case 7661:
 				// Product Critical Assessment
-				// 7660: Can failures in your products result in a work stoppage or major business interruption for your
+				// 7660: Can failures in your products result in a work stoppage
+				// or major business interruption for your
 				// customer?
-				// 7661: If you fail to deliver your products on-time, can it result in a work stoppage or major
+				// 7661: If you fail to deliver your products on-time, can it
+				// result in a work stoppage or major
 				// business interruption for your customer?
 				if (auditData.getAnswer().equals("Yes"))
 					return LowMedHigh.High;
 				break;
 			case 7662:
 				// Product Safety Critical
-				// Can failures in your products result in bodily injury or illness to your customer or end-user?
+				// Can failures in your products result in bodily injury or
+				// illness to your customer or end-user?
 				if (auditData.getAnswer().equals("Yes"))
 					return LowMedHigh.High;
 				break;
@@ -341,5 +349,5 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	public boolean isCanEditCategory(AuditCategory category) {
 		return true;
 	}
-	
+
 }
