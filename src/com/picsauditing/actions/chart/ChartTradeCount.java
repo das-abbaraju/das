@@ -29,8 +29,7 @@ public class ChartTradeCount extends ChartSSAction {
 		sql.addField("at.msgValue as label");
 		sql.addField("count(*) as value");
 		sql.addGroupBy("label");
-		sql.addOrderBy("value DESC");
-		sql.setHavingClause("value > 1");
+		sql.addOrderBy("value DESC, label");
 		
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 		sql.addWhere("1 " + permQuery.toString());
