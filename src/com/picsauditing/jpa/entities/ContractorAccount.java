@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -1233,8 +1234,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
-	public List<InvoiceFee> getNewMembership() {
-		List<InvoiceFee> memberships = new ArrayList<InvoiceFee>();
+	public Set<InvoiceFee> getNewMembership() {
+		Set<InvoiceFee> memberships = new TreeSet<InvoiceFee>();
 		for (FeeClass feeclass : this.getFees().keySet()) {
 			if (!this.getFees().get(feeclass).getNewLevel().isFree())
 				memberships.add(this.getFees().get(feeclass).getNewLevel());
@@ -1255,8 +1256,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
-	public List<InvoiceFee> getCurrentMembership() {
-		List<InvoiceFee> memberships = new ArrayList<InvoiceFee>();
+	public Set<InvoiceFee> getCurrentMembership() {
+		Set<InvoiceFee> memberships = new TreeSet<InvoiceFee>();
 		for (FeeClass feeclass : this.getFees().keySet()) {
 			if (!this.getFees().get(feeclass).getCurrentLevel().isFree())
 				memberships.add(this.getFees().get(feeclass).getCurrentLevel());
