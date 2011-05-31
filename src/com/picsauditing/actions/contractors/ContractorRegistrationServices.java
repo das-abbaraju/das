@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,7 +30,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	private int pqfID = 0;
 	private int catDataID = 0;
 	private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
-	private List<AuditCategory> categories;
+	private Set<AuditCategory> categories;
 	private Map<Integer, AuditData> answerMap;
 	private AuditData auditData;
 	private ContractorAudit conAudit;
@@ -76,7 +77,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		}
 
 		Set<Integer> questionIds = new HashSet<Integer>();
-		categories = auditCategoryDAO.findWhere("id IN (" + Strings.implode(categoryIds) + ")");
+		categories = new TreeSet<AuditCategory>(auditCategoryDAO.findWhere("id IN (" + Strings.implode(categoryIds) + ")"));
 		for (AuditCategory category : categories) {
 			for (AuditQuestion question : category.getQuestions()) {
 				infoQuestions.add(question);
@@ -207,11 +208,11 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		return infoQuestions;
 	}
 
-	public List<AuditCategory> getCategories() {
+	public Set<AuditCategory> getCategories() {
 		return categories;
 	}
 
-	public void setCategories(List<AuditCategory> categories) {
+	public void setCategories(Set<AuditCategory> categories) {
 		this.categories = categories;
 	}
 
