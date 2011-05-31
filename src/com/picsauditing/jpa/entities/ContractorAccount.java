@@ -860,7 +860,7 @@ public class ContractorAccount extends Account implements JSONable {
 						foundMembershipDate = true;
 					}
 				}
-				
+
 				if (foundPaymentExpires) {
 					foundMembership = true;
 				}
@@ -1240,6 +1240,12 @@ public class ContractorAccount extends Account implements JSONable {
 				memberships.add(this.getFees().get(feeclass).getNewLevel());
 		}
 
+		Collections.sort(memberships, new Comparator<InvoiceFee>() {
+			@Override
+			public int compare(InvoiceFee o1, InvoiceFee o2) {
+				return o1.getDisplayOrder().compareTo(o2.getDisplayOrder());
+			}
+		});
 		return memberships;
 	}
 
@@ -1262,6 +1268,12 @@ public class ContractorAccount extends Account implements JSONable {
 				memberships.add(this.getFees().get(feeclass).getCurrentLevel());
 		}
 
+		Collections.sort(memberships, new Comparator<InvoiceFee>() {
+			@Override
+			public int compare(InvoiceFee o1, InvoiceFee o2) {
+				return o1.getDisplayOrder().compareTo(o2.getDisplayOrder());
+			}
+		});
 		return memberships;
 	}
 
