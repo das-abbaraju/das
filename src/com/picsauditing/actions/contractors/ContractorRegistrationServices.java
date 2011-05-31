@@ -153,10 +153,8 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				boolean isOK = false;
 				// Contractor's assessments are the same (or higher?) than what
 				// we've calculated
-				if (!contractor.isMaterialSupplierOnly())
-					isOK = conSafety.ordinal() >= safety.ordinal();
-				if (isOK && contractor.isMaterialSupplier())
-					isOK = conProductSafety.ordinal() >= safety.ordinal() && conProduct.ordinal() >= product.ordinal();
+				isOK = (conSafety.ordinal() >= safety.ordinal() && conProductSafety.ordinal() >= safety.ordinal() && conProduct
+						.ordinal() >= product.ordinal());
 
 				contractor.setSafetyRisk(safety);
 
