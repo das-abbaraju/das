@@ -23,12 +23,15 @@ public final class StateQuestionAutocomplete extends AutocompleteActionSupport<A
 	protected Collection<AuditQuestion> getItems() {
 		if (itemKeys == null) {
 			if (!Strings.isEmpty(extraArgs) && !Strings.isEmpty(q)) {
-				return (Collection<AuditQuestion>) auditQuestionDAO.findWhere(AuditQuestion.class,
-						"t.option.uniqueCode = '" + Utilities.escapeQuotes(extraArgs) + "' AND t.name LIKE '"
-								+ Utilities.escapeQuotes(q) + "%'", limit);
+
+				return auditQuestionDAO.findByTranslatableField(
+						AuditQuestion.class,
+						"t.optionID IN (SELECT id FROM audit_option_group WHERE uniqueCode = '"
+								+ Utilities.escapeQuotes(extraArgs) + "')", "name", Utilities.escapeQuotes(q) + "%");
 			}
 		} else if (itemKeys.length > 0 && !Strings.isEmpty(extraArgs)) {
-			return (Collection<AuditQuestion>) auditQuestionDAO.findWhere(AuditQuestion.class,
+			return (Collection<AuditQuestion>) auditQuestionDAO.findWhere(
+					AuditQuestion.class,
 					"t.option.uniqueCode = '" + Utilities.escapeQuotes(extraArgs) + "' AND t.id IN ("
 							+ Strings.implode(itemKeys) + ")", limit);
 		}

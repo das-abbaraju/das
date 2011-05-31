@@ -12,6 +12,7 @@ import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReflectUtil;
+import com.picsauditing.util.Strings;
 
 @Transactional
 abstract public class PicsDAO {
@@ -114,21 +115,30 @@ abstract public class PicsDAO {
 		return q.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String name, String value) {
+		return findByTranslatableField(cls, "", name, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String where, String name,
+			String value) {
 
 		String tableName = ReflectUtil.getTableName(cls);
 
 		SelectSQL sql = new SelectSQL(tableName + " t");
 
 		try {
-			if (cls.getField("uniqueCode") != null)
+			if (cls.getDeclaredField("uniqueCode") != null)
 				sql.addJoin("JOIN app_translation tr ON CONCAT('" + cls.getSimpleName()
 						+ ".',IF(t.uniqueCode <> '',t.uniqueCode,t.id),'." + name + "') = tr.msgKey");
 		} catch (NoSuchFieldException theFieldDoesNotExist) {
 			sql.addJoin("JOIN app_translation tr ON CONCAT('" + cls.getSimpleName() + ".',t.id,'." + name
 					+ "') = tr.msgKey");
 		} catch (SecurityException justIgnoreIt) {
+		}
+
+		if (!Strings.isEmpty(where)) {
+			sql.addWhere(where);
 		}
 
 		sql.addWhere("tr.msgValue LIKE :value");
