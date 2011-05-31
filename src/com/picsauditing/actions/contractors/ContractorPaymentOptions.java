@@ -45,6 +45,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private AuditTypeDAO auditTypeDAO;
 
 	private InvoiceFee activationFee;
+	private InvoiceFee gstFee;
 	// Any time we do a get w/o an exception we set the communication status.
 	// That way we know the information switched off of in the jsp is valid
 	private boolean braintreeCommunicationError = false;
@@ -133,6 +134,19 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 						.getPayingFacilities());
 		}
 
+		if (contractor.getCurrencyCode().isCanada()) {
+			gstFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
+			BigDecimal total = BigDecimal.ZERO;
+			for (FeeClass feeClass : contractor.getFees().keySet()) {
+				if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
+					total = total.add(contractor.getFees().get(feeClass).getNewLevel().getAmount(contractor));
+			}
+
+			if (activationFee != null)
+				total = total.add(activationFee.getAmount(contractor));
+			gstFee.setAmount(gstFee.getGSTSurchage(total));
+		}
+		
 		if (!contractor.getPaymentMethod().isCreditCard())
 			return SUCCESS;
 
@@ -417,5 +431,13 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		}
 
 		return false;
+	}
+
+	public InvoiceFee getGstFee() {
+		return gstFee;
+	}
+
+	public void setGstFee(InvoiceFee gstFee) {
+		this.gstFee = gstFee;
 	}
 }
