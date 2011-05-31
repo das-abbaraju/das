@@ -105,7 +105,7 @@ public class BillingDetail extends ContractorActionSupport {
 			} else if (contractor.getBillingStatus().equals("Reactivation")) {
 				invoice.setDueDate(new Date());
 			} else if (contractor.getBillingStatus().equals("Upgrade")) {
-				invoice.setDueDate(DateBean.addDays(contractor.getLastUpgradeDate(), 30));
+				invoice.setDueDate(DateBean.addDays(new Date(), 7));
 			} else if (contractor.getBillingStatus().startsWith("Renew")) {
 				invoice.setDueDate(contractor.getPaymentExpires());
 			}
