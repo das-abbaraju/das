@@ -15,14 +15,14 @@ import com.picsauditing.util.Strings;
 public final class TradeAutocomplete extends AutocompleteActionSupport<Trade> {
 	@Autowired
 	private TradeDAO tradeDAO;
-	private boolean restrictTrades;
+	private boolean extraArgs;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Collection<Trade> getItems() {
 		if (itemKeys == null) {
 			if (!Strings.isEmpty(q))
-				if (restrictTrades) {
+				if (extraArgs) {
 					List<Trade> tradeList = tradeDAO.findByIndexValue(q, limit);
 					Iterator<Trade> itr = tradeList.iterator();
 					while (itr.hasNext()) {
@@ -35,7 +35,7 @@ public final class TradeAutocomplete extends AutocompleteActionSupport<Trade> {
 					return tradeDAO.findByIndexValue(q, limit);
 				}
 		} else if (itemKeys.length > 0) {
-			if (restrictTrades)
+			if (extraArgs)
 				return (List<Trade>) tradeDAO.findWhere(Trade.class, "t.id = " + Strings.implode(itemKeys) + " AND t.selectable = 1 AND t.contractorCount > 0", 0);
 			else
 				return (List<Trade>) tradeDAO.findWhere(Trade.class, "t.id = " + Strings.implode(itemKeys), 0);
