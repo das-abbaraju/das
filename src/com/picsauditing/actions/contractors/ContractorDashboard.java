@@ -27,8 +27,6 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
@@ -86,6 +84,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private FlagCriteriaContractorDAO flagCriteriaContractorDAO;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
+	@Autowired
+	private AuditTypeRuleCache auditTypeRuleCache;
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -95,7 +95,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private int opID;
 
 	private ContractorWatch watch;
-	private AuditTypeRuleCache auditTypeRuleCache;
 
 	private List<ContractorAudit> docuGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> auditGUARD = new ArrayList<ContractorAudit>();
@@ -478,11 +477,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 
 			if (data.get(OshaRateType.TrirAbsolute.getDescription()) != null)
-				put(OshaRateType.TrirAbsolute.getDescription(), ind,
-						format(naicsDAO.getIndustryAverage(false, contractor.getNaics())));
+				put(OshaRateType.TrirAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(false,
+						contractor.getNaics())));
 			if (data.get(OshaRateType.LwcrAbsolute.getDescription()) != null)
-				put(OshaRateType.LwcrAbsolute.getDescription(), ind,
-						format(naicsDAO.getIndustryAverage(true, contractor.getNaics())));
+				put(OshaRateType.LwcrAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(true,
+						contractor.getNaics())));
 
 			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
 			for (ContractorOperator co : contractorOperators) {
