@@ -37,7 +37,7 @@ public class ContractorValidate extends ContractorActionSupport {
 			List<ContractorAccount> matches = accountDao.findWhere("nameIndex = ?", nameIndex);
 
 			if (matches.size() > 0)
-				addActionError(companyName + " is already in use. Please contact a PICS representative.");
+				addActionError(getText("status.companyinuse", new Object[] {companyName}));
 
 			return BLANK;
 		}
@@ -46,8 +46,7 @@ public class ContractorValidate extends ContractorActionSupport {
 			if (!Strings.isEmpty(taxId) && !Strings.isEmpty(country)) {
 				ContractorAccount con = accountDao.findTaxID(taxId, country);
 				if (con != null) {
-					addActionError(taxId + " already exists in " + con.getCountry().getName()
-							+ ". Please contact a PICS representative at 949-936-4598.");
+					addActionError(getText("status.taxidinuse", new Object[] {taxId, con.getCountry().getName()}));
 				}
 			}
 
