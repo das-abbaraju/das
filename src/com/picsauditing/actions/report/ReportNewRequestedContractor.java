@@ -4,9 +4,11 @@ import javax.servlet.ServletOutputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectFilter;
@@ -19,21 +21,14 @@ import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportNewRequestedContractor extends ReportActionSupport {
+	@Autowired
 	protected AccountUserDAO auDAO;
 
 	protected SelectSQL sql = new SelectSQL();
 	protected ReportFilterNewContractor filter = new ReportFilterNewContractor();
 
-	public ReportNewRequestedContractor(AccountUserDAO auDAO) {
-		this.auDAO = auDAO;
-	}
-
+	@RequiredPermission(value=OpPerms.RequestNewContractor)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		tryPermissions(OpPerms.RequestNewContractor);
-
 		getFilter().setShowOperator(false);
 		getFilter().setShowLicensedIn(false);
 		getFilter().setShowWorksIn(false);
@@ -46,6 +41,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowConWithPendingAudits(false);
+		getFilter().setShowSoleProprietership(false);
 		getFilter().setPermissions(permissions);
 
 		sql.setFromTable("contractor_registration_request cr");

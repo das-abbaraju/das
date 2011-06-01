@@ -95,6 +95,14 @@ pre {
 
 <script type="text/javascript">
 var show=false;
+var checkingForMatches = '<s:text name="%{scope}.js.CheckingForMatches" />';
+var matchingOnWords = '<s:text name="%{scope}.js.MatchingOnWords" />';
+var noMatches = '<s:text name="%{scope}.js.NoMatches" />';
+var companyInSystem = '<s:text name="%{scope}.js.CompanyInSystem" />';
+var potentialMatches = '<s:text name="%{scope}.js.PotentialMatches" />';
+var possibleMatches = '<s:text name="%{scope}.js.PossibleMatches" />';
+var chooseADate = '<s:text name="javascript.ChooseADate" />';
+
 $(function() {
 	$('#notesHere').hide();
 	<s:if test="newContractor.notes.length() > 0">
@@ -115,7 +123,7 @@ $(function() {
 		var term = ele.val();
 		var fType = ele.attr('name').substr(ele.attr('name').indexOf('.')+1, ele.attr('name').length);
 		$('#_'+fType).hide();
-		startThinking( {div: 'think_'+fType, message: 'Checking for matches', type: 'small' } );
+		startThinking( {div: 'think_'+fType, message: checkingForMatches, type: 'small' } );
 		if(fType=='name' || fType=='phone' || fType=='taxID') var type = 'C';
 		else if(fType=='contact' || fType=='email') var type = 'U';
 		$.getJSON(
@@ -132,7 +140,7 @@ $(function() {
 					for(var i=0; i<used.length; i++){
 						usedStr += used[i].used+' ' ;
 					}
-					usedList.append('Matching on these words:').append('<br/>');
+					usedList.append(matchingOnWords).append('<br/>');
 					usedList.append($('<div>').append(usedStr).css('font','italic').css('color','#A84D10'));
 					var unused = result[1];
 					var matchList = $('<div>');
@@ -143,12 +151,12 @@ $(function() {
 							uStr += unused[i].unused+', ' ;
 						}
 						uStr = uStr.substr(0, uStr.length-2);
-						unusedList.append('These words found no matches, you might want to check to see if they are misspelled').append('<br/>');
+						unusedList.append(noMatches).append('<br/>');
 						unusedList.append(uStr).append('<br/>'); 
 						matchList.append(unusedList);
 					}
 					matchList.append(usedList);
-					matchList.append('If you see the company below then you do not need to request for them to register.  Click on their name to be taken to their page')
+					matchList.append(companyInSystem)
 					.append('<br/>');
 					var ul = $('<ul>');
 					for(var i=3; i<result.length; i++){
@@ -163,11 +171,11 @@ $(function() {
 					var hasResults = $('#match_'+fType).attr('matched');
 					if(hasResults!=null)
 						$('#match_'+fType).html(' ');
-					$('#match_'+fType).attr('matched', 'true').css('width','600px').append($('<h2>').text('Potential Matches'))
+					$('#match_'+fType).attr('matched', 'true').css('width','600px').append($('<h2>').text(potentialMatches))
 						.append($('<div>').attr('id','inner_'+fType).append(matchList)).hide();
 					var link = $('#_'+fType);
 					if(!link.length>0){
-						link = $('<div>').attr('id','_'+fType).append($('<a>').attr('href','#').css('float', 'left').text('Click to view possible matches').click(function(e){
+						link = $('<div>').attr('id','_'+fType).append($('<a>').attr('href','#').css('float', 'left').text(possibleMatches).click(function(e){
 							e.preventDefault();
 							$.facebox({div: '#match_'+fType});
 						}));
@@ -185,7 +193,7 @@ $(function() {
 		showOn: 'button',
 		buttonImage: 'images/icon_calendar.gif',
 		buttonImageOnly: true,
-		buttonText: 'Choose a date...',
+		buttonText: chooseADate,
 		showAnim: 'fadeIn',
 		minDate: new Date()
 	});
@@ -574,8 +582,8 @@ function getMatches(requestID) {
 	<table class="report">
 		<thead>
 			<tr>
-				<th colspan="2">Forms</th>
-				<th>Facility</th>
+				<th colspan="2"><s:text name="ManageForms.title" /></th>
+				<th><s:text name="global.Facility" /></th>
 			</tr>
 		</thead>
 		<tbody>

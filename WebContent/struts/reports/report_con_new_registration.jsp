@@ -2,9 +2,10 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Registration Requests</title>
+<title><s:text name="%{scope}.title" /></title>
 <s:include value="reportHeader.jsp" />
 <script type="text/javascript">
+var downloadAll = '<s:text name="javascript.ConfirmDownloadAllRows"><s:param><s:property value="report.allRows" /></s:param></s:text>'
 function download() {
 	newurl = "ReportNewRequestedContractorCSV.action?" + $('#form1').serialize();
 	popupWin = window.open(newurl, 'ReportNewRequestedContractor', '');
@@ -19,20 +20,19 @@ function showExcelUpload() {
 </script>
 </head>
 <body>
-<h1>Registration Requests</h1>
+<h1><s:text name="%{scope}.title" /></h1>
 <s:include value="filters.jsp" />
 <div class="right"><a class="excel" 
-	<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all
-		<s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
+	<s:if test="report.allRows > 500">onclick="return confirm(downloadAll);"</s:if> 
 		href="javascript: download();"
-		title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a>
+		title="<s:text name="javascript.DownloadAllRows"><s:param><s:property value="report.allRows" /></s:param></s:text>"><s:text name="global.Download" /></a>
 </div>
 <form id="test" action="ReportNewRequestedContractorImport.action" method="post">
 	<div style="padding: 5px;">
-	<a href="RequestNewContractor.action" class="add">Add Registration Request</a>
+	<a href="RequestNewContractor.action" class="add"><s:text name="%{scope}.link.AddRegistrationRequest" /></a>
 	<s:if test="amSales">
 		<a class="add" onclick="showExcelUpload(); return false;" href="#"
-			title="Opens in new window (please disable your popup blocker)">Import Registration Requests</a>
+			title="<s:text name="javascript.OpensInNewWindow" />"><s:text name="%{scope}.link.ImportRegistrationRequests" /></a>
 	</s:if>
 	</div>
 </form>
@@ -42,15 +42,15 @@ function showExcelUpload() {
 <table class="report">
 	<thead>
 	<tr>
-		<td colspan="2">Account Name</td>
-		<td>Requested By</td>
-		<td>DeadLine</td>
-		<td>Follow Up</td>
-		<td>Contacted By</td>
-		<td>On</td>
-		<td>Attempts</td>
-		<td title="Potential Matches in PICS">Matches</td>
-		<td>In PICS</td>
+		<td colspan="2"><s:text name="global.Account.name" /></td>
+		<td><s:text name="ContractorRegistrationRequest.requestedBy" /></td>
+		<td><s:text name="ContractorRegistrationRequest.deadline" /></td>
+		<td><s:text name="%{scope}.label.FollowUp" /></td>
+		<td><s:text name="%{scope}.label.ContactedBy" /></td>
+		<td><s:text name="%{scope}.label.On" /></td>
+		<td><s:text name="%{scope}.label.Attempts" /></td>
+		<td title="<s:text name="%{scope}.label.PotentialMatches" />"><s:text name="%{scope}.label.Matches" /></td>
+		<td><s:text name="%{scope}.label.InPics" /></td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
