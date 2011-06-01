@@ -173,7 +173,7 @@ $(function(){
 			</li>
 			<s:if test="contractor == null || contractor.state == null"><li id="state_li"></li></s:if>
 			<s:else>
-				<li class="required"><label><s:text name="%{scope}.PrimaryAddress.State" />:</label>
+				<li class="required">
 					<s:select list="stateList" id="state_sel"
 						name="contractor.state.isoCode"
 						theme="formhelp"
