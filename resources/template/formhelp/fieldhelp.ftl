@@ -1,13 +1,11 @@
-<@s.if test="hasKey(getTranslationName(parameters.name) + '.fieldhelp')">
-
-<div class="fieldhelp">
-	<@s.if test="hasKey(getTranslationName(parameters.name) + '.fieldhelptitle')">
-		<h3><@s.text name="%{getTranslationName(parameters.name)}.fieldhelptitle"/></h3>
-	</@s.if>
-	<@s.else>
-		<h3><@s.text name="%{getTranslationName(parameters.name)}"/></h3>
-	</@s.else>
-	<@s.text name="%{getTranslationName(parameters.name)}.fieldhelp"/>
-</div>
-
+<@s.if test="hasKey('${labelKey}.fieldhelp')">
+	<div class="fieldhelp">
+		<@s.if test="hasKey('${labelKey}.fieldhelptitle')">
+			<h3><@s.text name="${labelKey}.fieldhelptitle"/></h3>
+		</@s.if>
+		<@s.else>
+			<h3><@s.text name="${labelKey}"/></h3>
+		</@s.else>
+		<@s.text name="${labelKey}.fieldhelp"/>
+	</div>
 </@s.if>

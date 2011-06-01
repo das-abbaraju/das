@@ -25,7 +25,7 @@
 <#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
 <#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
 >
-<option 
+<option
 <#if parameters.emptyOption?default(false)>
 	value="">
 <#elseif parameters.headerKey?? && parameters.headerValue??>
@@ -39,7 +39,7 @@
 	selected="selected"
 	</#if>
 	value="${parameters.headerKey?default("")}"
-	>- ${labelValue} -
+	>- <@s.text name="${labelKey}"/> -
 </#if>
 </option>
 <@s.iterator value="parameters.list">
