@@ -191,6 +191,7 @@ public class TranslationETL extends PicsActionSupport {
 			String where = "(t.creationDate > '" + sqlDate + "' OR t.updateDate > '" + sqlDate
 					+ "') AND t.msgValue != 'Translation missing'";
 
+			db = new Database();
 			sql = new SelectSQL("app_translation t");
 			setupSQL(where);
 
