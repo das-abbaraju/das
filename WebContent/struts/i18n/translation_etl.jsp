@@ -5,7 +5,8 @@
 <html>
 <head>
 <title>Import/Export Translations</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen"
+	href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"></s:include>
 <script type="text/javascript" src="js/zeroclipboard/ZeroClipboard.js"></script>
 <script type="text/javascript">
@@ -15,7 +16,11 @@ function showImport() {
 	$('#exportOptions').hide();
 	$('#importDiv').show();
 	$('#translationETL').show();
-	$('#importedTable').html('<input type="button" class="picsbutton positive" id="importButton" value="Check" onclick="importTranslations(); return false;" />');
+	$('#importedTable').html('<input type="button" class="picsbutton positive" id="importTranslationsButton" value="Check" />');
+	$('#importTranslationsButton').click(function (e) {
+		e.preventDefault();
+		importTranslations();
+	});
 }
 
 function showExport() {
@@ -53,7 +58,7 @@ function exportTranslations() {
 
 $(function() {
 	$('.datepicker').datepicker();
-	ZeroClipboard.setMoviePath( "http://localhost:8080/picsWeb2/js/zeroclipboard/ZeroClipboard10.swf" );
+	ZeroClipboard.setMoviePath( "js/zeroclipboard/ZeroClipboard.swf" );
 	// Create our clipboard object as per usual
 	clip = new ZeroClipboard.Client();
 	clip.setHandCursor( true );
@@ -73,29 +78,53 @@ $(function() {
 		$('#clipButton').text("Copy to clipboard...");
 		$('#clipButton').css("background-image", 'url("images/plus.png")');
 	});
+	
+	$('#importButton').click(function (e) {
+		e.preventDefault();
+		showImport();
+	});
+	
+	$('#exportButton').click(function (e) {
+		e.preventDefault();
+		showExport();
+	});
+	
+	$('#importTranslationsButton').click(function (e) {
+		e.preventDefault();
+		importTranslations();
+	});
+	
+	$('#exportTranslationsButton').click(function (e) {
+		e.preventDefault();
+		exportTranslations();
+	});
 });
 </script>
 </head>
 <body>
-<s:include value="../actionMessages.jsp" />
-<s:form enctype="multipart/form-data" method="post">
-	<input type="button" class="picsbutton" value="Import..." onclick="showImport(); return false;" />
-	<input type="button" class="picsbutton" value="Export..." onclick="showExport(); return false;" />
-	<div id="exportDiv" style="display: none; clear: both;">
-		Start date: <s:textfield name="startDate" cssClass="datepicker" id="translationDate" /><br />
-		<input type="button" class="picsbutton positive" value="Export" onclick="exportTranslations(); return false;" />
-	</div>
-	<div id="translationETL" style="clear: both; display: none;">
-		<s:textarea name="translations" id="translationsArea" rows="20" cssStyle="width: 100%;" />
-	</div>
-	<div id="importDiv" style="display: none; clear: both;">
-		<label>File Upload:</label><s:file name="file" value="%{file}" size="50" id="translationFile"></s:file>
-		<s:submit value="Upload" action="TranslationETL!upload" />
-		<br /><br />
-		<div id="importedTable">
-			<input type="button" class="picsbutton positive" id="importButton" value="Check" onclick="importTranslations(); return false;" />
+	<s:include value="../actionMessages.jsp" />
+	<s:form enctype="multipart/form-data" method="post">
+		<input type="button" class="picsbutton" value="Import..." id="importButton" />
+		<input type="button" class="picsbutton" value="Export..." id="exportButton" />
+		<div id="exportDiv" style="display: none; clear: both;">
+			Start date:
+			<s:textfield name="startDate" cssClass="datepicker" id="translationDate" />
+			<br />
+			<input type="button" class="picsbutton positive" value="Export" id="exportTranslationsButton" />
 		</div>
-	</div>
-</s:form>
+		<div id="translationETL" style="clear: both; display: none;">
+			<s:textarea name="translations" id="translationsArea" rows="20" cssStyle="width: 100%;" />
+		</div>
+		<div id="importDiv" style="display: none; clear: both;">
+			<label>File Upload:</label>
+			<s:file name="file" value="%{file}" size="50" id="translationFile"></s:file>
+			<s:submit value="Upload" action="TranslationETL!upload" />
+			<br />
+			<br />
+			<div id="importedTable">
+				<input type="button" class="picsbutton positive" id="importTranslationsButton" value="Check" />
+			</div>
+		</div>
+	</s:form>
 </body>
 </html>

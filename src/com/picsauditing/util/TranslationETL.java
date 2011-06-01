@@ -18,12 +18,15 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
@@ -35,36 +38,34 @@ import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
 public class TranslationETL extends PicsActionSupport {
+	@Autowired
 	private AuditTypeDAO dao;
 	// Lookup
-	private SelectSQL sql = new SelectSQL("app_translation t");
-	private Database db = new Database();
+	private SelectSQL sql;
+	private Database db;
 	private int foundRows;
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+	private SimpleDateFormat sdf;
+	private SimpleDateFormat sdf2;
 	// Data
 	private boolean importTranslations = false;
 	private boolean download = false;
 	private Date startDate;
 	private String translations;
 	private DoubleMap<String, String, List<AppTranslation>> importedTranslations;
-	private Set<String> allKeys;
-	private Set<String> allLocales;
+	private List<String> allKeys;
+	private List<String> allLocales;
 	// Import
 	private File file;
 	protected String fileContentType = null;
 	protected String fileFileName = null;
 	protected String fileName = null;
 
-	public TranslationETL(AuditTypeDAO dao) {
-		this.dao = dao;
-	}
-
 	@RequiredPermission(value = OpPerms.Translator)
 	public String execute() throws Exception {
 		return SUCCESS;
 	}
 
+	@RequiredPermission(value = OpPerms.Translator)
 	public String save() throws Exception {
 		try {
 			file = new File(getFtpDir() + "/" + permissions.getUserId() + "-Translations.xml");
@@ -73,7 +74,8 @@ public class TranslationETL extends PicsActionSupport {
 			// Doesn't exist
 			importTranslationAjax();
 		}
-		
+
+		List<AppTranslation> translations = new ArrayList<AppTranslation>();
 		for (String key : allKeys) {
 			for (String locale : allLocales) {
 				if (importedTranslations.get(key, locale) != null) {
@@ -86,19 +88,29 @@ public class TranslationETL extends PicsActionSupport {
 							t.setId(t2.getId());
 					}
 
-					dao.save(t);
+					translations.add(t);
+					if (translations.size() == 100) {
+						saveTranslations(translations);
+						translations.clear();
+					}
 				}
 			}
 		}
 
+		if (translations.size() > 0)
+			saveTranslations(translations);
+
 		addActionMessage("Saved " + allKeys.size() + " new/updated translations");
-		
+
 		if (file != null)
 			FileUtils.deleteFile(file);
+
+		I18nCache.getInstance().clear();
 
 		return SUCCESS;
 	}
 
+	@RequiredPermission(value = OpPerms.Translator)
 	public String importTranslationAjax() throws Exception {
 		importTranslations = true;
 		importXML(translations.getBytes("utf-8"));
@@ -106,6 +118,7 @@ public class TranslationETL extends PicsActionSupport {
 		return "data";
 	}
 
+	@RequiredPermission(value = OpPerms.Translator)
 	public String upload() throws Exception {
 		if (file != null && file.length() > 0) {
 			importXML(FileUtils.getBytesFromFile(file));
@@ -119,10 +132,14 @@ public class TranslationETL extends PicsActionSupport {
 		return "upload";
 	}
 
+	@RequiredPermission(value = OpPerms.Translator)
 	public String exportTranslationAjax() throws Exception {
 		if (startDate == null)
 			addActionError("Missing date");
 		else {
+			db = new Database();
+			sql = new SelectSQL("app_translation t");
+
 			String sqlDate = DateBean.toDBFormat(startDate);
 			String where = "(t.creationDate > '" + sqlDate + "' OR t.updateDate > '" + sqlDate
 					+ "') AND t.msgValue != 'Translation missing'";
@@ -165,6 +182,7 @@ public class TranslationETL extends PicsActionSupport {
 		return "data";
 	}
 
+	@RequiredPermission(value = OpPerms.Translator)
 	public String download() throws Exception {
 		if (startDate == null)
 			addActionError("Missing date");
@@ -172,6 +190,8 @@ public class TranslationETL extends PicsActionSupport {
 			String sqlDate = DateBean.toDBFormat(startDate);
 			String where = "(t.creationDate > '" + sqlDate + "' OR t.updateDate > '" + sqlDate
 					+ "') AND t.msgValue != 'Translation missing'";
+
+			sql = new SelectSQL("app_translation t");
 			setupSQL(where);
 
 			List<BasicDynaBean> data = db.select(sql.toString(), true);
@@ -236,8 +256,11 @@ public class TranslationETL extends PicsActionSupport {
 
 	private void importXML(byte[] byteArray) throws Exception {
 		importedTranslations = new DoubleMap<String, String, List<AppTranslation>>();
-		allKeys = new HashSet<String>();
-		allLocales = new HashSet<String>();
+		Set<String> allKeysSet = new HashSet<String>();
+		Set<String> allLocalesSet = new HashSet<String>();
+
+		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 
 		InputSource source = new InputSource(new ByteArrayInputStream(byteArray));
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -255,8 +278,8 @@ public class TranslationETL extends PicsActionSupport {
 				for (int j = 0; j < children.getLength(); j++)
 					addField(t, children.item(j).getNodeName(), children.item(j).getTextContent());
 
-				allKeys.add(t.getKey());
-				allLocales.add(t.getLocale());
+				allKeysSet.add(t.getKey());
+				allLocalesSet.add(t.getLocale());
 
 				if (t.getKey() != null) {
 					if (importedTranslations.get(t.getKey(), t.getLocale()) == null)
@@ -277,7 +300,7 @@ public class TranslationETL extends PicsActionSupport {
 
 			if (importedTranslations.get(msgKey, locale) != null) {
 				if (msgValue.equals(importedTranslations.get(msgKey, locale).get(0).getValue()))
-					allKeys.remove(msgKey);
+					allKeysSet.remove(msgKey);
 				else {
 					AppTranslation t = new AppTranslation();
 					addField(t, "id", d.get("id").toString());
@@ -294,6 +317,9 @@ public class TranslationETL extends PicsActionSupport {
 				}
 			}
 		}
+
+		allKeys = new ArrayList<String>(allKeysSet);
+		allLocales = new ArrayList<String>(allLocalesSet);
 	}
 
 	private void setupSQL(String where) {
@@ -333,6 +359,12 @@ public class TranslationETL extends PicsActionSupport {
 			t.setUpdateDate(sdf.parse(value));
 		if (name.equals("lastUsed"))
 			t.setLastUsed(sdf2.parse(value));
+	}
+
+	@Transactional
+	private void saveTranslations(List<AppTranslation> translations) {
+		for (AppTranslation t : translations)
+			dao.save(t);
 	}
 
 	public boolean isImportTranslations() {
@@ -375,11 +407,11 @@ public class TranslationETL extends PicsActionSupport {
 		return importedTranslations;
 	}
 
-	public Set<String> getAllLocales() {
+	public List<String> getAllLocales() {
 		return allLocales;
 	}
 
-	public Set<String> getAllKeys() {
+	public List<String> getAllKeys() {
 		return allKeys;
 	}
 
