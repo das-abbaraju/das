@@ -114,7 +114,7 @@ $(function() {
 		$('body').removeClass('busy')
 	});
 
-	$('#trade-nav').delegate('.jstree a, #search-list a.trade', 'click', function(e) {
+	$('#trade-nav').delegate('.jstree a', 'click', function(e) {
 		e.preventDefault();
 		var data = { trade: $(this).parent().attr('id') };
 		setMainStatus('Loading Trade');
