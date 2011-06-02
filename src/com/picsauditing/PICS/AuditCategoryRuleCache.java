@@ -84,8 +84,8 @@ public class AuditCategoryRuleCache {
 			}
 		}
 
-		for (LowMedHigh risk : safetyRisks) {
-			ProductRisks data2 = getData().getData(risk);
+		for (LowMedHigh safetyRisk : safetyRisks) {
+			ProductRisks data2 = getData().getData(safetyRisk);
 			if (data2 != null) {
 				for (LowMedHigh productRisk : productRisks) {
 					AcceptsBids dataZ = data2.getData(productRisk);
