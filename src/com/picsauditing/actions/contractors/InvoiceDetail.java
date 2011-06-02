@@ -136,12 +136,13 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					if (!found && !contractor.getFees().get(feeClass).getNewLevel().isFree()) {
 						InvoiceItem newInvoiceItem = new InvoiceItem();
 						newInvoiceItem.setInvoiceFee(contractor.getFees().get(feeClass).getNewLevel());
-						newInvoiceItem.setAmount(contractor.getFees().get(feeClass).getNewLevel().getAmount(contractor));
+						newInvoiceItem
+								.setAmount(contractor.getFees().get(feeClass).getNewLevel().getAmount(contractor));
 						newInvoiceItem.setAuditColumns(new User(User.SYSTEM));
 
-						if("Renewal".equals(contractor.getStatus()) && feeClass.isPaymentExpiresNeeded())
+						if ("Renewal".equals(contractor.getStatus()) && feeClass.isPaymentExpiresNeeded())
 							newInvoiceItem.setPaymentExpires(invoice.getCreationDate());
-							
+
 						newInvoiceItem.setInvoice(invoice);
 						invoice.getItems().add(newInvoiceItem);
 
@@ -217,8 +218,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 				message = "Cancelled Invoice";
 
-				String noteText = "Cancelled Invoice " + invoice.getId() + " for $"
-						+ invoice.getTotalAmount().toString();
+				String noteText = "Cancelled Invoice " + invoice.getId() + " for "
+						+ contractor.getCurrencyCode().getIcon() + invoice.getTotalAmount().toString();
 				addNote(noteText, getUser());
 			}
 			if (button.equals("pay")) {
@@ -255,8 +256,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							BillingCalculatorSingle.activateContractor(contractor, invoice, accountDao);
 							accountDao.save(contractor);
 
-							addNote("Credit Card transaction completed and emailed the receipt for $"
-									+ invoice.getTotalAmount(), getUser());
+							addNote("Credit Card transaction completed and emailed the receipt for "
+									+ contractor.getCurrencyCode().getIcon() + invoice.getTotalAmount(), getUser());
 						} catch (NoBrainTreeServiceResponseException re) {
 							addNote("Credit Card service connection error: " + re.getMessage(), getUser());
 
@@ -348,7 +349,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		InvoiceItem newItem = new InvoiceItem();
 		InvoiceFee newFee = invoiceFeeDAO.find(feeId);
 		newItem.setInvoiceFee(newFee);
-		newItem.setAmount(newFee.getAmount((ContractorAccount)this.getInvoice().getAccount()));
+		newItem.setAmount(newFee.getAmount((ContractorAccount) this.getInvoice().getAccount()));
 		newItem.setInvoice(invoice);
 		newItem.setAuditColumns(permissions);
 

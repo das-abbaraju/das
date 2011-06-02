@@ -17,18 +17,18 @@
 		<table>
 			<tr><td colspan="4"><label>Annual Membership</label></td></tr>
 			<s:iterator value="contractor.newMembership">
-				<tr><td colspan="2"><s:property value="fee" />:</td><td class="right">$<s:property value="getAmount(contractor)" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
+				<tr><td colspan="2"><s:property value="fee" />:</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="getAmount(contractor)" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 			</s:iterator>
-			<tr><td class="left"><a onclick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;" href="#" title="opens in new window">View Pricing</a></td><td>Total:</td><td class="right">$<s:property value="contractor.newMembershipAmount"/></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
+			<tr><td class="left"><a onclick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;" href="#" title="opens in new window">View Pricing</a></td><td>Total:</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.newMembershipAmount"/></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 		</table>
 	</s:if>
 	<s:else>
 		<table>
 			<tr><td colspan="4"><label>Annual Membership</label></td></tr>
 			<s:iterator value="contractor.currentMembership">
-				<tr><td colspan="2"><s:property value="fee" />:</td><td class="right">$<s:property value="getAmount(contractor)" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
+				<tr><td colspan="2"><s:property value="fee" />:</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="getAmount(contractor)" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 			</s:iterator>
-			<tr><td class="left"><a onclick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;" href="#" title="opens in new window">View Pricing</a></td><td>Total:</td><td class="right">$<s:property value="contractor.currentMembershipAmount"/></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
+			<tr><td class="left"><a onclick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;" href="#" title="opens in new window">View Pricing</a></td><td>Total:</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.currentMembershipAmount"/></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 		</table>
 	</s:else>
 </s:if>

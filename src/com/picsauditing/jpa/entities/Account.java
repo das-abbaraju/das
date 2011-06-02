@@ -486,8 +486,12 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	 */
 	@Enumerated(EnumType.STRING)
 	public Currency getCurrencyCode() {
-		if (getCountry() != null && "CA".equals(this.getCountry().getIsoCode()))
+		if(getCountry() ==  null)
+			return Currency.USD;
+		if ("CA".equals(this.getCountry().getIsoCode()))
 			return Currency.CAD;
+		if ("GB".equals(this.getCountry().getIsoCode()))
+			return Currency.GBP;
 
 		return Currency.USD;
 	}

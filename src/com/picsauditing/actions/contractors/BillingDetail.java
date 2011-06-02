@@ -2,7 +2,6 @@ package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +20,6 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.TransactionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
@@ -34,7 +32,6 @@ import com.picsauditing.jpa.entities.Transaction;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class BillingDetail extends ContractorActionSupport {
@@ -99,8 +96,9 @@ public class BillingDetail extends ContractorActionSupport {
 				InvoiceFee activation = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
 				if (contractor.hasReducedActivation(activation)) {
 					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
-					notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from $"
-							+ activation.getAmount(contractor) + " to $" + reducedOperator.getActivationFee() + ". ";
+					notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
+							+ contractor.getCurrencyCode().getIcon() + activation.getAmount(contractor) + " to "
+							+ contractor.getCurrencyCode().getIcon() + reducedOperator.getActivationFee() + ". ";
 				}
 			} else if (contractor.getBillingStatus().equals("Reactivation")) {
 				invoice.setDueDate(new Date());
@@ -137,7 +135,7 @@ public class BillingDetail extends ContractorActionSupport {
 					hasMembership = true;
 			}
 			if (hasMembership) {
-				notes += getOperatorsString();
+				notes += BillingCalculatorSingle.getOperatorsString(contractor);
 			}
 			invoice.setNotes(notes);
 
@@ -154,8 +152,9 @@ public class BillingDetail extends ContractorActionSupport {
 			accountDao.save(contractor);
 
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
-				this.addNote(contractor, "Created invoice for $" + invoiceTotal, NoteCategory.Billing, LowMedHigh.Med,
-						false, Account.PicsID, this.getUser());
+				this.addNote(contractor,
+						"Created invoice for " + contractor.getCurrencyCode().getIcon() + invoiceTotal,
+						NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, this.getUser());
 			}
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 			return BLANK;
@@ -190,21 +189,6 @@ public class BillingDetail extends ContractorActionSupport {
 
 		this.subHeading = "Billing Detail";
 		return SUCCESS;
-	}
-
-	private String getOperatorsString() {
-		List<String> operatorsString = new ArrayList<String>();
-
-		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
-			String doContractorsPay = co.getOperatorAccount().getDoContractorsPay();
-
-			if (doContractorsPay.equals("Yes") || !doContractorsPay.equals("Multiple"))
-				operatorsString.add(co.getOperatorAccount().getName());
-		}
-
-		Collections.sort(operatorsString);
-
-		return " You are listed on the following operator list(s): " + Strings.implode(operatorsString, ", ");
 	}
 
 	public OperatorAccount getRequestedBy() {

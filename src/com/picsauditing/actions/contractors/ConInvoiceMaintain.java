@@ -21,8 +21,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 
 /**
- * Class used to edit a Invoice and Invoice Item record with virtually no
- * restrictions
+ * Class used to edit a Invoice and Invoice Item record with virtually no restrictions
  * 
  * @author Keerthi
  * 
@@ -89,7 +88,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 						items.remove();
 						invoiceItemDAO.remove(item);
 						addActionMessage("Removed line item <strong>" + item.getInvoiceFee().getFee()
-								+ "</strong> for $" + item.getAmount());
+								+ "</strong> for " + contractor.getCurrencyCode().getIcon() + item.getAmount());
 					}
 				}
 
@@ -100,7 +99,8 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 		}
 
 		if ("Delete".equals(button)) {
-			addNote(contractor, "Removed Invoice #"+ invoiceId +" for "+ invoice.getTotalAmount(), NoteCategory.Billing, LowMedHigh.Low, false, Account.PicsID, this.getUser());
+			addNote(contractor, "Removed Invoice #" + invoiceId + " for " + invoice.getTotalAmount(),
+					NoteCategory.Billing, LowMedHigh.Low, false, Account.PicsID, this.getUser());
 			invoiceDAO.remove(invoiceId);
 			return "BillingDetail";
 		}

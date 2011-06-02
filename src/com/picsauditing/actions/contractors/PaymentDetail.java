@@ -140,8 +140,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						paymentService.processPayment(payment, null);
 						payment.setCcNumber(creditCard.getCardNumber());
 
-						addNote("Credit Card transaction completed and emailed the receipt for $"
-								+ payment.getTotalAmount());
+						addNote("Credit Card transaction completed and emailed the receipt for "
+								+ contractor.getCurrencyCode().getIcon() + payment.getTotalAmount());
 					} catch (NoBrainTreeServiceResponseException re) {
 						addNote("Credit Card service connection error: " + re.getMessage());
 
@@ -305,8 +305,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						if (amountApplyMap.get(txnID).compareTo(BigDecimal.ZERO) > 0) {
 							for (Invoice txn : contractor.getInvoices()) {
 								if (txn.getId() == txnID) {
-									PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(),
-											amountApplyMap.get(txnID));
+									PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(), amountApplyMap
+											.get(txnID));
 
 									// Email Receipt to Contractor
 									if (collected)
@@ -315,8 +315,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							}
 							for (Refund txn : contractor.getRefunds()) {
 								if (txn.getId() == txnID) {
-									PaymentProcessor.ApplyPaymentToRefund(payment, txn, getUser(),
-											amountApplyMap.get(txnID));
+									PaymentProcessor.ApplyPaymentToRefund(payment, txn, getUser(), amountApplyMap
+											.get(txnID));
 								}
 							}
 						}

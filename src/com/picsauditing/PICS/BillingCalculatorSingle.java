@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.Strings;
 
 public class BillingCalculatorSingle {
 
@@ -141,8 +143,7 @@ public class BillingCalculatorSingle {
 	}
 
 	/**
-	 * Create a list of fees that this contractor should be charge for. The
-	 * following contractor fields are used:
+	 * Create a list of fees that this contractor should be charge for. The following contractor fields are used:
 	 * <ul>
 	 * <li>membershipDate</li>
 	 * <li>billingStatus</li>
@@ -249,8 +250,9 @@ public class BillingCalculatorSingle {
 					upgradeTotal = upgradeTotal.add(upgradeAmount);
 
 					if (upgradeAmount.floatValue() > 0)
-						description = "Upgrading from $" + upgrade.getCurrentLevel().getAmount(contractor)
-								+ ". Prorated $" + upgradeAmount;
+						description = "Upgrading from " + contractor.getCurrencyCode().getIcon()
+								+ upgrade.getCurrentLevel().getAmount(contractor) + ". Prorated "
+								+ contractor.getCurrencyCode().getIcon() + upgradeAmount;
 					else
 						description = "";
 
@@ -358,5 +360,20 @@ public class BillingCalculatorSingle {
 
 		// No discounts apply
 		return fee.getAmount();
+	}
+	
+	public static String getOperatorsString(ContractorAccount contractor) {
+		List<String> operatorsString = new ArrayList<String>();
+
+		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
+			String doContractorsPay = co.getOperatorAccount().getDoContractorsPay();
+
+			if (doContractorsPay.equals("Yes") || !doContractorsPay.equals("Multiple"))
+				operatorsString.add(co.getOperatorAccount().getName());
+		}
+
+		Collections.sort(operatorsString);
+
+		return " You are listed on the following operator list(s): " + Strings.implode(operatorsString, ", ");
 	}
 }

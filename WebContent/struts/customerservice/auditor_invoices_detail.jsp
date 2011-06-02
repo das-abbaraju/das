@@ -21,12 +21,12 @@
 		<td><a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.name"/></a></td>
 		<td><a href="ContractorView.action?id=<s:property value="contractorAccount.id"/>"><s:property value="contractorAccount.name"/></a></td>
 		<td><s:date name="completedDate" format="MMM d"/></td>
-		<td class="right">$<s:if test="auditType.id == 2">75</s:if> </td>
+		<td class="right"><s:property value="contractorAccount.currencyCode.icon" /><s:if test="auditType.id == 2">75</s:if> </td>
 	</tr>
 	</s:iterator>
 	<tr>
 		<td></td>
 		<td class="right" colspan="3"><h4>Total</h4></td>
-		<td class="right"><h4>$<s:property value="total"/></h4></td>
+		<td class="right"><h4><s:property value="contractorAccount.currencyCode.icon" /><s:property value="total"/></h4></td>
 	</tr>
 </table>

@@ -1,14 +1,14 @@
 package com.picsauditing.jpa.entities;
 
 public enum Currency {
-	USD("USD $","$"), CAD("CAD $","$"), GBP("GBP £","£");
+	USD("USD","$"), CAD("CAD","$"), GBP("GBP","£");
 
 	private String display;
 	private String icon;
 
 	private Currency(String display, String icon) {
 		this.display = display;
-		this.setIcon(display);
+		this.icon = icon;
 	}
 
 	public String getDisplay() {

@@ -67,7 +67,7 @@ function updateExpDate() {
 	<div class="alert">
 		<s:iterator value="contractor.invoices">
 			<s:if test="status.unpaid">
-			You have an <a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>">unpaid invoice</a> for $<s:property value="balance"/> due <s:property value="@com.picsauditing.PICS.DateBean@toShowFormat(dueDate)"/><br/> 	
+			You have an <a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>">unpaid invoice</a> for <s:property value="contractor.currencyCode.icon"/><s:property value="balance"/> due <s:property value="@com.picsauditing.PICS.DateBean@toShowFormat(dueDate)"/><br/> 	
 			</s:if>
 		</s:iterator>
 	</div>
@@ -80,7 +80,7 @@ function updateExpDate() {
 <s:if test="contractor.competitorMembership && contractor.status.pending && !hasPQFImportAudit">
 	<li>
 		<div class="alert">
-			You have indicated you are a member of another consortium or registry.  Press the Import button if you would like to have PICS import your data for a $200 fee.  (<a href="#" class="cluetip help" title="Let us Import Your Data" rel="#watchtip">Learn More</a>).
+			You have indicated you are a member of another consortium or registry.  Press the Import button if you would like to have PICS import your data for a <s:property value="contractor.currencyCode.icon"/>200 fee.  (<a href="#" class="cluetip help" title="Let us Import Your Data" rel="#watchtip">Learn More</a>).
 			<br />
 			<div id="watchtip">
 				It's Simple.
@@ -96,7 +96,7 @@ function updateExpDate() {
 <s:if test="contractor.newMembership.size > 0">
 	<li>
 		<s:if test="contractor.paymentMethod.creditCard && contractor.newMembershipAmount < 500">
-			<i>Please Note: Credit Card payment is required for memberships under $500.</i>
+			<i>Please Note: Credit Card payment is required for memberships under <s:property value="contractor.currencyCode.icon" />500.</i>
 		</s:if>
 	</li>
 
@@ -106,14 +106,14 @@ function updateExpDate() {
 		<li><label>Next Billing Amount: (<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;"
 				href="#" title="opens in new window">Click here to view pricing</a>)</label>
 			<s:iterator value="contractor.newMembership">
-				 <s:property value="fee" />: $<s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
+				 <s:property value="fee" />: <s:property value="contractor.currencyCode.icon" /><s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
 			</s:iterator>
 			<s:if test="contractor.currencyCode.canada">
-				<li><label>Goods & Services Tax:</label> $<s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
-				<li><label>Total:</label> $<s:property value="contractor.newMembershipAmount+gstFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label>Goods & Services Tax:</label> <s:property value="contractor.currencyCode.icon" /><s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
+				<li><label>Total:</label> <s:property value="contractor.currencyCode.icon" /><s:property value="contractor.newMembershipAmount+gstFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:if>
 			<s:else>
-				<li><label>Total:</label> $<s:property value="contractor.newMembershipAmount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label>Total:</label> <s:property value="contractor.currencyCode.icon" /><s:property value="contractor.newMembershipAmount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:else>
 			</li>
 	</s:if>
@@ -132,18 +132,18 @@ function updateExpDate() {
 			<li><label>Annual Membership: (<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;"
 					href="#" title="opens in new window">Click here to view pricing</a>)</label>
 				<s:iterator value="contractor.newMembership">
-					 <s:property value="fee" />: $<s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
+					 <s:property value="fee" />: <s:property value="contractor.currencyCode.icon"/><s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
 				</s:iterator>
 			</li>
 			<s:if test="!contractor.acceptsBids">
-				<li><label><s:property value="activationFee.fee"/>:</label> $<s:property value="activationFee.getAmount(contractor)"/> <s:property value="contractor.currencyCode" /></li>
+				<li><label><s:property value="activationFee.fee"/>:</label> <s:property value="contractor.currencyCode.icon"/><s:property value="activationFee.getAmount(contractor)"/> <s:property value="contractor.currencyCode" /></li>
 			</s:if>
 			<s:if test="contractor.currencyCode.canada">
-				<li><label>Goods & Services Tax:</label> $<s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
-				<li><label>Total:</label> $<s:property value="activationFee.getAmount(contractor)+contractor.newMembershipAmount+gstFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label>Goods & Services Tax:</label> <s:property value="contractor.currencyCode.icon"/><s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
+				<li><label>Total:</label> <s:property value="contractor.currencyCode.icon"/><s:property value="activationFee.getAmount(contractor)+contractor.newMembershipAmount+gstFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:if>
 			<s:else>
-				<li><label>Total:</label> $<s:property value="activationFee.getAmount(contractor)+contractor.newMembershipAmount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label>Total:</label> <s:property value="contractor.currencyCode.icon"/><s:property value="activationFee.getAmount(contractor)+contractor.newMembershipAmount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:else>
 		</s:else>
 	</s:else>

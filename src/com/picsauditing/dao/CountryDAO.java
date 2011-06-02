@@ -18,6 +18,7 @@ public class CountryDAO extends PicsDAO {
 		List<Country> list = new ArrayList<Country>();
 		list.add(find("US"));
 		list.add(find("CA"));
+		list.add(find("GB"));
 		list.addAll(query.getResultList());
 		return list;
 	}

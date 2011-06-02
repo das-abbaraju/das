@@ -32,7 +32,7 @@
 		<label><s:text name="ContractorStats.label.CurrentMembershipLevel" />:</label><br />
 		<s:if test="contractor.mustPayB">
 			<s:iterator value="contractor.currentMembership">
-				 <s:property value="fee" />: $<s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
+				 <s:property value="fee" />: <s:property value="contractor.currencyCode.icon" /><s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
 			</s:iterator>
 		</s:if>
 		<s:else>

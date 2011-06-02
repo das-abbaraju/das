@@ -147,8 +147,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							BillingCalculatorSingle.activateContractor(contractor, invoice, accountDao);
 							accountDao.save(contractor);
 
-							addNote("Credit Card transaction completed and emailed the receipt for $"
-									+ invoice.getTotalAmount());
+							addNote("Credit Card transaction completed and emailed the receipt for "
+									+ contractor.getCurrencyCode().getIcon() + invoice.getTotalAmount());
 						} catch (NoBrainTreeServiceResponseException re) {
 							addNote("Credit Card service connection error: " + re.getMessage());
 
@@ -227,8 +227,10 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 						// in invoice item list already
 						if (contractor.hasReducedActivation(activation)) {
 							OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
-							notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from $"
-									+ activation.getAmount(contractor) + " to $" + reducedOperator.getActivationFee() + ". ";
+							notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
+									+ contractor.getCurrencyCode().getIcon() + activation.getAmount(contractor)
+									+ " to " + contractor.getCurrencyCode().getIcon()
+									+ reducedOperator.getActivationFee() + ". ";
 							invoice.setNotes(notes);
 						}
 
@@ -241,7 +243,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							contractor.setRenew(true);
 
 						updateTotals();
-						this.addNote("Created invoice for $" + invoice.getTotalAmount(), NoteCategory.Billing);
+						this.addNote("Created invoice for " + contractor.getCurrencyCode().getIcon()
+								+ invoice.getTotalAmount(), NoteCategory.Billing);
 					}
 
 				} else {
@@ -254,7 +257,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 								updateTotals();
 							}
 						}
-						this.addNote("Modified current invoice, changed to $" + invoice.getTotalAmount(),
+						this.addNote("Modified current invoice, changed to "+contractor.getCurrencyCode().getIcon()  + invoice.getTotalAmount(),
 								NoteCategory.Billing);
 					}
 				}
@@ -265,6 +268,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 						invoice.setQbSync(true);
 
 					notes += "Thank you for doing business with PICS!";
+					notes += BillingCalculatorSingle.getOperatorsString(contractor);
 					// AppProperty prop = appPropDAO.find("invoice_comment");
 					// if (prop != null) {
 					// notes = prop.getValue();
@@ -320,12 +324,12 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 		InvoiceItem newInvoiceItem = new InvoiceItem();
 		newInvoiceItem.setInvoiceFee(newFee);
-		newInvoiceItem.setAmount(newFee.getAmount((ContractorAccount)this.getInvoice().getAccount()));
+		newInvoiceItem.setAmount(newFee.getAmount((ContractorAccount) this.getInvoice().getAccount()));
 		newInvoiceItem.setAuditColumns(new User(User.SYSTEM));
 
 		newInvoiceItem.setInvoice(invoice);
 		invoice.getItems().add(newInvoiceItem);
-		
+
 		contractor.syncBalance();
 	}
 
