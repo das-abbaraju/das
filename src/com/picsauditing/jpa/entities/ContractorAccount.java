@@ -805,7 +805,7 @@ public class ContractorAccount extends Account implements JSONable {
 								// DocuGUARD overrides List Only membership
 								foundListOnlyMembership = true;
 								this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
-										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 0));
+										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 0));
 							}
 						}
 
