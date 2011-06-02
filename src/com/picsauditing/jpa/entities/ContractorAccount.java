@@ -79,6 +79,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Webcam webcam;
 	private Boolean soleProprietor;
 	private Boolean competitorMembership;
+	private AccountLevel accountLevel;
 
 	private Date paymentExpires;
 	private boolean renew = true;
@@ -1232,6 +1233,14 @@ public class ContractorAccount extends Account implements JSONable {
 		return competitorMembership;
 	}
 
+	public AccountLevel getAccountLevel() {
+		return accountLevel;
+	}
+
+	public void setAccountLevel(AccountLevel accountLevel) {
+		this.accountLevel = accountLevel;
+	}
+
 	@Transient
 	public List<InvoiceFee> getNewMembership() {
 		List<InvoiceFee> memberships = new ArrayList<InvoiceFee>();
@@ -1286,5 +1295,25 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		return currentAmount;
+	}
+	
+//	@Override
+//	public boolean isAcceptsBids() {
+//		return this.getAccountLevel().equals(AccountLevel.BidOnly);
+//	}
+//	
+//	@Override
+//	public void setAcceptsBids(boolean acceptsBids) {
+//		// If we're setting bid only to false, it means
+//		// to upgrade the contractor
+//		if(acceptsBids)
+//			this.setAccountLevel(AccountLevel.BidOnly);
+//		else
+//			this.setAccountLevel(AccountLevel.Full);
+//	}
+
+	@Transient
+	public boolean isListed() {
+		return this.getAccountLevel().equals(AccountLevel.ListOnly);
 	}
 }
