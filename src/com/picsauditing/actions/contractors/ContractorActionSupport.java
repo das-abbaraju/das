@@ -327,7 +327,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 						// Put Trades menu after 'PQF' menu entry
 						if (audit.getAuditType().isPqf()) {
 							MenuComponent tradeItem = subMenu.addChild(getText("ContractorTrades.title"), "ContractorTrades.action?id=" + id);
-							if (contractor != null && !contractor.isNeedsTradesUpdated())
+							if (contractor != null && !contractor.isNeedsTradesUpdated() && permissions.isOperatorCorporate())
+								// Only operators need to see the checkmarks?
 								tradeItem.setCssClass("done");
 						}
 					}
