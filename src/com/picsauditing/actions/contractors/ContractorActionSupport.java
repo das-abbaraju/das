@@ -326,7 +326,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 						// Put Trades menu after 'PQF' menu entry
 						if (audit.getAuditType().isPqf()) {
-							subMenu.addChild(getText("ConctratorTrades.title"), "ContractorTrades.action?id=" + id);
+							MenuComponent tradeItem = subMenu.addChild(getText("ContractorTrades.title"), "ContractorTrades.action?id=" + id);
+							if (contractor != null && !contractor.isNeedsTradesUpdated())
+								tradeItem.setCssClass("done");
 						}
 					}
 					iter.remove();
