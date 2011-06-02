@@ -24,6 +24,40 @@ public class AuditCategoryRule extends AuditRule {
 		this.auditCategory = category;
 	}
 
+	/**
+	 * Does this rule apply to the given category?
+	 * 
+	 * @param operator
+	 * @return
+	 */
+	@Transient
+	public boolean isApplies(AuditCategory category) {
+		if (this.auditCategory == null) {
+			// We have a wildcard category, so let's figure out if it
+			// matches on categories or subcategories or both
+			if (this.rootCategory == null) {
+				// Any category or subcategory matches
+				return true;
+			} else {
+				if (this.rootCategory) {
+					if (auditCategory.getParent() == null)
+						// Only categories match
+						return true;
+				} else {
+					if (auditCategory.getParent() != null)
+						// Only subcategories match
+						return true;
+				}
+			}
+		}
+
+		if (this.auditCategory.equals(category)) {
+			// We have a direct category match
+			return true;
+		}
+		return false;
+	}
+
 	@Transient
 	public String getAuditCategoryLabel() {
 		if (auditCategory == null)

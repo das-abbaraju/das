@@ -349,6 +349,28 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		this.help = help;
 	}
 
+	/**
+	 * Is this trade equal to t or a child of t? For example, Residential Construction is a childOf Residential
+	 * Construction and Construction.
+	 * 
+	 * @param t
+	 * @return
+	 */
+	@Transient
+	public boolean childOf(Trade t) {
+		if (this.parent == null)
+			// Gone all the way up and didn't find our parent
+			return false;
+
+		if (t == null)
+			return false;
+
+		if (this.equals(t))
+			return true;
+
+		return t.childOf(parent);
+	}
+
 	@Transient
 	public boolean isLeaf() {
 		return indexEnd - indexStart == 1;
