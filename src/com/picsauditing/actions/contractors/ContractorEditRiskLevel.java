@@ -50,7 +50,8 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 	public String save() throws Exception {
 		checkPermissions();
 
-		if (!contractor.getSafetyRisk().equals(safetyRisk) || !contractor.getProductRisk().equals(productRisk)) {
+		if ((contractor.getSafetyRisk() != null && !contractor.getSafetyRisk().equals(safetyRisk))
+				|| (contractor.getProductRisk() != null && !contractor.getProductRisk().equals(productRisk))) {
 			String userName = userDAO.find(permissions.getUserId()).getName();
 
 			String newSafetyRisk = safetyRisk.toString();
@@ -100,6 +101,10 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 
 			accountDao.save(contractor);
 			addActionMessage("Successfully updated Risk Level" + (noteSummary.size() > 1 ? "s" : ""));
+		} else {
+			// This contractor doesn't have any safety/product risk levels set somehow
+			contractor.setSafetyRisk(safetyRisk);
+			contractor.setProductRisk(productRisk);
 		}
 
 		return SUCCESS;

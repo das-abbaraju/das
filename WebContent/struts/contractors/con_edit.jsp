@@ -149,9 +149,11 @@ $(function() {
 					<li><label><s:text name="global.SafetyRisk"/>:</label>
 						<s:property value="contractor.safetyRisk"/>
 					</li>
-					<li><label><s:text name="global.ProductRisk"/>:</label>
-						<s:property value="contractor.productRisk"/>
-					</li>
+					<s:if test="contractor.materialSupplier">
+						<li><label><s:text name="global.ProductRisk"/>:</label>
+							<s:property value="contractor.productRisk"/>
+						</li>
+					</s:if>
 					<li><label><s:text name="%{scope}.IndustryDetails.RequestedBy"/>:</label>
 						<s:property value="contractor.requestedBy.name"/>
 					</li>
