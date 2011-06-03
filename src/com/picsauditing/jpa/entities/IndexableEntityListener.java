@@ -13,6 +13,8 @@ public final class IndexableEntityListener {
 	public void postIndexSave(Indexable entity) {
 		IndexerEngine engine = (IndexerEngine) SpringUtils.getBean("SQLIndexerEngine");
 		if (engine != null)
-			engine.runSingle(entity.getClass(), entity.getId());
+			engine.runSingle(entity);
 	}
+	
+	//todo: remove
 }

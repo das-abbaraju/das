@@ -15,7 +15,7 @@ public interface IndexerEngine {
 	 * @param id
 	 *            id of record to index
 	 */
-	public void runSingle(Class<? extends Indexable> clazz, int id);
+	public void runSingle(Indexable toIndex);
 
 	/**
 	 * Inserts all records into the index

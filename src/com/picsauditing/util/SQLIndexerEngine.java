@@ -85,8 +85,7 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 	}
 
 	@Override
-	public void runSingle(Class<? extends Indexable> clazz, int id) {
-		Indexable toIndex = indexableDao.findIndexable(clazz, id);
+	public void runSingle(Indexable toIndex) {
 		if (toIndex == null) {
 			return;
 		} else {
@@ -104,7 +103,7 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 				indexBatch.executeBatch();
 				statsBatch.executeBatch();
 				connection.commit();
-				updateIndex(toIndex.getId(), toIndex.getClass());
+				//updateIndex(toIndex.getId(), toIndex.getClass());
 			} catch (SQLException e) {
 				// TODO: handle exception
 				// Query didn't work, or db failed. Should we catch?
