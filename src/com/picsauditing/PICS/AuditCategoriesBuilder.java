@@ -35,9 +35,7 @@ public class AuditCategoriesBuilder {
 	public AuditCategoriesBuilder(AuditCategoryRuleCache auditCategoryRuleCache, ContractorAccount contractor) {
 		this.ruleCache = auditCategoryRuleCache;
 		this.contractor = contractor;
-		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
-			this.operators.put(operator, null);
-		}
+
 		for (ContractorTrade ct : contractor.getTrades()) {
 			this.trades.add(ct.getTrade());
 		}
@@ -124,6 +122,7 @@ public class AuditCategoriesBuilder {
 			OperatorAccount picsGlobal = new OperatorAccount("PICS Global");
 			picsGlobal.setId(4);
 
+			// TODO: Hook operators to governing body for generating CAOPs
 			for (AuditCategoryRule rule : operators.values()) {
 				if (rule == null)
 					governingBodies.add(picsGlobal);

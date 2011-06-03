@@ -190,6 +190,8 @@ public class AuditRule extends BaseDecisionTreeRule {
 	@Transient
 	public boolean isApplies(Trade candidate) {
 		if (this.trade == null) {
+			//TODO: this
+			// Fill in logic to determine parent child trade hierarchy
 		}
 		
 		return candidate.childOf(this.trade);
