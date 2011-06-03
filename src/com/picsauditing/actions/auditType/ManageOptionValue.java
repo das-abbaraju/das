@@ -2,15 +2,21 @@ package com.picsauditing.actions.auditType;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOptionValue;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageOptionValue extends ManageOptionComponent {
+	@Autowired
+	protected AuditDataDAO auditDataDAO;
+	
 	private AuditOptionValue value;
 
 	@Override
@@ -48,8 +54,20 @@ public class ManageOptionValue extends ManageOptionComponent {
 		if (data.size() > 0)
 			addActionError("Option value '" + value.getName() + "' is being used in Audit Data");
 
-		if (getActionErrors().size() == 0)
+		if (getActionErrors().size() == 0) {
+			String valueName = value.getName().toString();
+			group.getValues().remove(value);
 			auditOptionValueDAO.remove(value);
+			addActionMessage("Option value " + valueName + " successfully deleted.");
+			
+			// Renumber the remaining
+			int count = 1;
+			for (AuditOptionValue v : group.getValues()) {
+				v.setNumber(count);
+				count++;
+			}
+			auditOptionValueDAO.save(group);
+		}
 
 		return SUCCESS;
 	}
@@ -74,5 +92,15 @@ public class ManageOptionValue extends ManageOptionComponent {
 
 	public void setValue(AuditOptionValue value) {
 		this.value = value;
+	}
+	
+	public int getNextNumber() {
+		int number = 0;
+		for (AuditOptionValue value : group.getValues()) {
+			if (number < value.getNumber())
+				number = value.getNumber();
+		}
+		
+		return number + 1;
 	}
 }

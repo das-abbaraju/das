@@ -2,7 +2,8 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:form id="save">
-	<s:hidden name="group.id" />
+	<s:hidden name="question" />
+	<s:hidden name="group" />
 	<fieldset class="form">
 		<h2 class="formLegend">Option Group</h2>
 		<ol>

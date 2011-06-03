@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -54,7 +55,7 @@ public class AuditOptionGroup extends BaseTable {
 		this.uniqueCode = uniqueCode;
 	}
 
-	@OneToMany(mappedBy = "group")
+	@OneToMany(mappedBy = "group", cascade = { CascadeType.REMOVE })
 	@OrderBy("number")
 	public List<AuditOptionValue> getValues() {
 		return values;

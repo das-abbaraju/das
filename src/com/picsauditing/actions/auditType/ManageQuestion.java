@@ -3,14 +3,12 @@ package com.picsauditing.actions.auditType;
 import java.util.Calendar;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditOptionValueDAO;
-import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
@@ -20,20 +18,16 @@ import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageQuestion extends ManageCategory {
+public class ManageQuestion extends ManageCategory implements Preparable {
+	@Autowired
 	protected AuditDataDAO auditDataDAO;
-	protected AuditOptionValueDAO auditQuestionOptionDAO;
+	@Autowired
+	protected AuditOptionValueDAO auditOptionValueDAO;
+	
 	private Integer requiredQuestionID;
 	private Integer visibleQuestionID;
 	private List<AuditOptionGroup> optionTypes;
-
-	public ManageQuestion(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
-			AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO, AuditDecisionTableDAO ruleDAO,
-			WorkFlowDAO wfDAO, AuditOptionValueDAO auditQuestionOptionDAO) {
-		super(auditTypeDao, auditCategoryDao, auditQuestionDao, ruleDAO, wfDAO);
-		this.auditDataDAO = auditDataDAO;
-		this.auditQuestionOptionDAO = auditQuestionOptionDAO;
-	}
+	private int groupID;
 
 	@Override
 	protected void load(int id) {
@@ -56,6 +50,15 @@ public class ManageQuestion extends ManageCategory {
 		load(question.getCategory());
 	}
 
+	@Override
+	public void prepare() throws Exception {
+		super.prepare();
+		
+		groupID = getParameter("groupID");
+		if (groupID > 0)
+			question.setOption(auditOptionValueDAO.findOptionGroup(groupID));
+	}
+	
 	public boolean save() {
 		if (question != null) {
 			if (Strings.isEmpty(question.getName().toString())) {
@@ -222,7 +225,8 @@ public class ManageQuestion extends ManageCategory {
 		if (optionTypes == null) {
 			// Get common
 			String uniqueCodes = Strings.implodeForDB(AuditOptionGroup.COMMON_TYPES, ",");
-			optionTypes = auditQuestionOptionDAO.findOptionTypeWhere("o.uniqueCode IN (" + uniqueCodes + ") ORDER BY o.name");
+			optionTypes = auditOptionValueDAO.findOptionTypeWhere("o.uniqueCode IN (" + uniqueCodes
+					+ ") ORDER BY o.name");
 		}
 
 		return optionTypes;
@@ -242,5 +246,13 @@ public class ManageQuestion extends ManageCategory {
 
 	public void setVisibleQuestionID(Integer visibleQuestionID) {
 		this.visibleQuestionID = visibleQuestionID;
+	}
+
+	public int getGroupID() {
+		return groupID;
+	}
+
+	public void setGroupID(int groupID) {
+		this.groupID = groupID;
 	}
 }

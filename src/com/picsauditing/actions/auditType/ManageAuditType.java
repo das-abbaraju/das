@@ -3,12 +3,14 @@ package com.picsauditing.actions.auditType;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
@@ -27,7 +29,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageAuditType extends PicsActionSupport implements Preparable {
-
 	protected int id = 0;
 	protected AuditType auditType = null;
 	protected AuditCategory category = null;
@@ -43,30 +44,22 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	private List<AuditType> auditTypes = null;
 
+	@Autowired
 	protected AuditTypeDAO auditTypeDAO;
+	@Autowired
 	protected AuditCategoryDAO auditCategoryDAO;
+	@Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
+	@Autowired
 	protected AuditDecisionTableDAO ruleDAO;
+	@Autowired
 	protected WorkFlowDAO wfDAO;
 
 	List<? extends AuditRule> relatedRules;
 	List<Workflow> workFlowList = null;
 
-	public ManageAuditType(AuditTypeDAO auditTypeDAO, AuditCategoryDAO auditCategoryDAO,
-			AuditQuestionDAO auditQuestionDAO, AuditDecisionTableDAO ruleDAO, WorkFlowDAO wfDAO) {
-		this.auditTypeDAO = auditTypeDAO;
-		this.auditCategoryDAO = auditCategoryDAO;
-		this.auditQuestionDAO = auditQuestionDAO;
-		this.ruleDAO = ruleDAO;
-		this.wfDAO = wfDAO;
-	}
-
+	@RequiredPermission(value = OpPerms.ManageAudits)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		permissions.tryPermission(OpPerms.ManageAudits);
-
 		if (button != null) {
 			if (button.equalsIgnoreCase("save")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
@@ -126,7 +119,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		}
 
 		if ("AddNew".equals(button)) {
-			if(category == null)
+			if (category == null)
 				category = new AuditCategory();
 
 			if (auditType != null && auditType.getId() > 0)

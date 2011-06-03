@@ -184,12 +184,17 @@ function showOption() {
 				<s:select list="optionTypes" headerKey="0" headerValue="- Other -" listKey="id" value="%{question.option.id}"
 					listValue="name" id="optionTypes" onchange="toggleOtherOptionType();" />
 				<pics:autocomplete action="OptionGroupAutocomplete" name="question.option" htmlName="question.option" value="question.option" htmlId="optionTypeOther" />
+				<a href="ManageOptionGroup.action?question=<s:property value="question.id" />&group.id=0&editOnly=true" class="add">Create Option</a>
+				<a href="ManageOptionGroup.action?question=<s:property value="question.id" />" class="preview">See all Option Types</a>
 			</div>
-			<pics:fieldhelp title="Question Type">
+			<pics:fieldhelp title="Option Type">
 				<p>The type of widget to use on the user interface.</p>
 				<ul>
 					<li>Yes/No</li>
 				</ul>
+				<p>Commonly used option types are listed in the dropdown.</p>
+				<p>If an option type is not listed, select "- Other -" and search by the option name.</p>
+				<p>If an option type does not exist, click on the "Create Option" link to create a new option type.</p>
 			</pics:fieldhelp>
 		</li>
 		<li><label>Question Text:</label>

@@ -30,7 +30,7 @@ public class AuditOptionValueDAO extends PicsDAO {
 		return findOptionTypeWhere(null);
 	}
 
-	public AuditOptionGroup findOptionType(int id) {
+	public AuditOptionGroup findOptionGroup(int id) {
 		Query query = em.createQuery("SELECT o FROM AuditOptionGroup o WHERE o.id = ?");
 		query.setParameter(1, id);
 		return (AuditOptionGroup) query.getSingleResult();

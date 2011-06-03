@@ -5,18 +5,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditOptionValueDAO;
 import com.picsauditing.jpa.entities.AuditOptionGroup;
+import com.picsauditing.jpa.entities.AuditQuestion;
 
 @SuppressWarnings("serial")
 public abstract class ManageOptionComponent extends PicsActionSupport {
 	@Autowired
 	protected AuditOptionValueDAO auditOptionValueDAO;
-	@Autowired
-	protected AuditDataDAO auditDataDAO;
 
 	protected AuditOptionGroup group;
+	protected AuditQuestion question;
 
 	@Override
 	@RequiredPermission(value = OpPerms.ManageAudits)
@@ -36,5 +35,13 @@ public abstract class ManageOptionComponent extends PicsActionSupport {
 
 	public void setGroup(AuditOptionGroup group) {
 		this.group = group;
+	}
+
+	public AuditQuestion getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(AuditQuestion question) {
+		this.question = question;
 	}
 }

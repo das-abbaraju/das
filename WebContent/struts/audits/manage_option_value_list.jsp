@@ -4,11 +4,11 @@
 <table class="report">
 	<thead>
 		<tr>
-			<th><s:text name="AuditQuestionOption.number" /></th>
-			<th><s:text name="AuditQuestionOption.name" /></th>
-			<th><s:text name="AuditQuestionOption.visible" /></th>
-			<th><s:text name="AuditQuestionOption.score" /></th>
-			<th><s:text name="AuditQuestionOption.uniqueCode" /></th>
+			<th><s:text name="AuditOptionValue.number" /></th>
+			<th><s:text name="AuditOptionValue.name" /></th>
+			<th><s:text name="AuditOptionValue.visible" /></th>
+			<th><s:text name="AuditOptionValue.score" /></th>
+			<th><s:text name="AuditOptionValue.uniqueCode" /></th>
 			<pics:permission perm="ManageAudits" type="Edit">
 				<th><s:text name="button.Edit" /></th>
 			</pics:permission>
@@ -27,7 +27,7 @@
 				</pics:permission>
 			</tr>
 		</s:iterator>
-		<s:if test="type.questionOptions.size == 0">
+		<s:if test="group.values.size == 0">
 			<tr>
 				<td colspan="7" class="center">No question options found</td>
 			</tr>
