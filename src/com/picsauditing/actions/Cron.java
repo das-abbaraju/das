@@ -18,6 +18,7 @@ import javax.persistence.NoResultException;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.DynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -55,7 +56,7 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.EbixLoader;
-import com.picsauditing.util.IndexerController;
+import com.picsauditing.util.IndexerEngine;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -74,9 +75,11 @@ public class Cron extends PicsActionSupport {
 	protected InvoiceDAO invoiceDAO = null;
 	protected AuditPercentCalculator auditPercentCalculator;
 	private EbixLoader ebixLoader;
-	private IndexerController indexer;
 	private InvoiceFeeDAO invoiceFeeDAO;
 	private InvoiceItemDAO invoiceItemDAO;
+	
+	@Autowired
+	private IndexerEngine indexer;
 
 	protected long startTime = 0L;
 	StringBuffer report = null;
@@ -86,7 +89,7 @@ public class Cron extends PicsActionSupport {
 	public Cron(OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilderController ab,
 			ContractorAuditDAO contractorAuditDAO, ContractorAccountDAO contractorAccountDAO,
 			AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO, InvoiceDAO invoiceDAO,
-			EbixLoader ebixLoader, ContractorAuditOperatorDAO contractorAuditOperatorDAO, IndexerController indexer,
+			EbixLoader ebixLoader, ContractorAuditOperatorDAO contractorAuditOperatorDAO,
 			InvoiceFeeDAO invoiceFeeDAO, InvoiceItemDAO invoiceItemDAO) {
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
@@ -98,7 +101,6 @@ public class Cron extends PicsActionSupport {
 		this.invoiceDAO = invoiceDAO;
 		this.ebixLoader = ebixLoader;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
-		this.indexer = indexer;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.invoiceItemDAO = invoiceItemDAO;
 	}
@@ -347,7 +349,7 @@ public class Cron extends PicsActionSupport {
 
 	public void runIndexer() throws Exception {
 		PicsLogger.start("");
-		indexer.runAll(null, true);
+		indexer.runAll(indexer.getEntries());
 		PicsLogger.stop();
 	}
 

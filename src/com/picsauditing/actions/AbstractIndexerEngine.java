@@ -4,8 +4,6 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Table;
-
 import com.picsauditing.dao.IndexableDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
@@ -14,6 +12,7 @@ import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.IndexerEngine;
+import com.picsauditing.util.ReflectUtil;
 import com.picsauditing.util.Strings;
 
 public abstract class AbstractIndexerEngine implements IndexerEngine {
@@ -42,8 +41,8 @@ public abstract class AbstractIndexerEngine implements IndexerEngine {
 	public void updateIndex(Set<Integer> saved, Class<? extends Indexable> clazz) {
 		if (saved.isEmpty())
 			return;
-		String updateIndexing = "UPDATE " + clazz.getAnnotation(Table.class).name()
-				+ " SET needsIndexing=0 WHERE id IN (" + Strings.implode(saved) + ")";
+		String updateIndexing = "UPDATE " + ReflectUtil.getTableName(clazz) + " SET needsIndexing=0 WHERE id IN ("
+				+ Strings.implode(saved) + ")";
 		try {
 			db.executeUpdate(updateIndexing);
 		} catch (SQLException e) {

@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Query;
-import javax.persistence.Table;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.ReflectUtil;
 import com.picsauditing.util.Strings;
 
 @Transactional
@@ -50,7 +50,7 @@ public class IndexableDAO extends PicsDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Integer> getIndexable(Class<? extends Indexable> clazz, int id, int limit) {
-		String tableName = clazz.getAnnotation(Table.class).name();
+		String tableName = ReflectUtil.getTableName(clazz);
 		SelectSQL sql = new SelectSQL(tableName);
 		sql.addField("id");
 		sql.addWhere("needsIndexing = 1");

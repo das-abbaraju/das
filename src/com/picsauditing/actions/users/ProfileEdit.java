@@ -11,7 +11,6 @@ import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.Indexer;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
@@ -37,17 +36,15 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	protected String password2;
 	protected List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
 	protected String url;
-	private Indexer indexer;
 	
 	private boolean goEmailSub = false;
 
 	public ProfileEdit(UserDAO dao, ContractorAccountDAO accountDao, UserSwitchDAO userSwitchDao,
-			EmailSubscriptionDAO emailSubscriptionDAO, Indexer indexer) {
+			EmailSubscriptionDAO emailSubscriptionDAO) {
 		this.dao = dao;
 		this.accountDao = accountDao;
 		this.userSwitchDao = userSwitchDao;
 		this.emailSubscriptionDAO = emailSubscriptionDAO;
-		this.indexer = indexer;
 	}
 
 	public void prepare() throws Exception {
@@ -113,7 +110,6 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 				permissions.setLocale(u.getLocale());
 				ActionContext.getContext().getSession().put("permissions", permissions);
 				u = dao.save(u);
-				indexer.runSingle(u, "users");
 				permissions.setLocale(u.getLocale());
 
 				addActionMessage("Your profile was saved successfully");

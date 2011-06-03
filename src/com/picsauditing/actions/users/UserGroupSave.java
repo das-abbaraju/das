@@ -1,6 +1,5 @@
 package com.picsauditing.actions.users;
 
-import com.picsauditing.actions.Indexer;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
@@ -20,17 +19,13 @@ public class UserGroupSave extends UsersManage {
 	protected UserSwitchDAO userSwitchDAO;
 
 	public UserGroupSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO,
-			UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO, UserSwitchDAO userSwitchDAO, Indexer indexer) {
-		super(accountDao, operatorDao, userDAO, userAccessDAO, userGroupDAO, indexer);
+			UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO, UserSwitchDAO userSwitchDAO) {
+		super(accountDao, operatorDao, userDAO, userAccessDAO, userGroupDAO);
 		this.userGroupDAO = userGroupDAO;
 		this.userSwitchDAO = userSwitchDAO;
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin()) {
-			addActionError("Timeout: you need to login again");
-			return LOGIN;
-		}
 		super.execute();
 		if (user == null) {
 			addActionError("user is not set");

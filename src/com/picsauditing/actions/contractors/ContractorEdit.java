@@ -16,7 +16,6 @@ import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.actions.Indexer;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -69,12 +68,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected State state;
 	protected State billingState;
 	protected int contactID;
-	protected Indexer indexer;
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
 			OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO, NoteDAO noteDAO,
-			EmailSubscriptionDAO subscriptionDAO, UserSwitchDAO userSwitchDAO, Indexer indexer) {
+			EmailSubscriptionDAO subscriptionDAO, UserSwitchDAO userSwitchDAO) {
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
 		this.userDAO = userDAO;
@@ -83,7 +81,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		this.noteDAO = noteDAO;
 		this.subscriptionDAO = subscriptionDAO;
 		this.userSwitchDAO = userSwitchDAO;
-		this.indexer = indexer;
 		
 		this.currentStep = ContractorRegistrationStep.EditAccount;
 	}
@@ -184,7 +181,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					}
 					// contractor.setNeedsIndexing(true);
 					accountDao.save(contractor);
-					indexer.runSingle(contractor, "accounts");
 
 					addActionMessage("Successfully modified " + contractor.getName());
 				}

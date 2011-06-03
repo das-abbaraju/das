@@ -30,7 +30,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.search.IndexOverrideType;
+import com.picsauditing.search.IndexOverrideWeight;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.search.IndexableOverride;
@@ -42,7 +42,7 @@ import com.picsauditing.util.log.PicsLogger;
 @Entity
 @Table(name = "users")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-@IndexableOverride(overrides = { @IndexOverrideType(methodName = "getId", weight = 4) })
+@IndexableOverride(overrides = { @IndexOverrideWeight(methodName = "getId", weight = 4) })
 public class User extends AbstractIndexableTable implements java.io.Serializable, Comparable<User>, JSONable {
 
 	public static String DEFAULT_AUDITOR = "- Auditor -";

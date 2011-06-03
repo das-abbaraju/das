@@ -21,7 +21,7 @@ import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
-import com.picsauditing.search.IndexOverrideType;
+import com.picsauditing.search.IndexOverrideWeight;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.search.IndexableOverride;
@@ -30,7 +30,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "employee")
-@IndexableOverride(overrides = { @IndexOverrideType(methodName = "getId", weight = 4) })
+@IndexableOverride(overrides = { @IndexOverrideWeight(methodName = "getId", weight = 4) })
 public class Employee extends AbstractIndexableTable {
 
 	private String firstName;

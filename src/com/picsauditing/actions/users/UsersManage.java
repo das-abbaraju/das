@@ -22,7 +22,6 @@ import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AccountRecovery;
-import com.picsauditing.actions.Indexer;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -81,16 +80,14 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	protected UserDAO userDAO;
 	protected UserAccessDAO userAccessDAO;
 	protected UserGroupDAO userGroupDAO;
-	private Indexer indexer;
 
 	public UsersManage(AccountDAO accountDAO, OperatorAccountDAO operatorDao, UserDAO userDAO,
-			UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO, Indexer indexer) {
+			UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO) {
 		this.accountDAO = accountDAO;
 		this.operatorDao = operatorDao;
 		this.userDAO = userDAO;
 		this.userAccessDAO = userAccessDAO;
 		this.userGroupDAO = userGroupDAO;
-		this.indexer = indexer;
 	}
 
 	@Override
@@ -373,7 +370,6 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			user.setNeedsIndexing(true);
 			user = userDAO.save(user);
 			if (!user.isGroup())
-				indexer.runSingle(user, "users");
 			addActionMessage("User saved successfully.");
 			if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
 				user.getAccount().setPrimaryContact(user);
@@ -431,8 +427,6 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		user.setAccount(account);
 		// user.setNeedsIndexing(true);
 		userDAO.save(user);
-		if (!user.isGroup())
-			indexer.runSingle(user, "users");
 
 		return redirect("UsersManage.action?accountID=" + user.getAccount().getId() + "&user.id=" + user.getId()
 				+ "&msg=You have sucessfully moved " + user.getName() + " to " + user.getAccount().getName());

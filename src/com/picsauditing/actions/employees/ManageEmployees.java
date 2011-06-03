@@ -19,7 +19,6 @@ import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.actions.Indexer;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
@@ -57,7 +56,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	private JobSiteDAO jobSiteDAO;
 	private EmployeeSiteDAO employeeSiteDAO;
 	private JobSiteTaskDAO siteTaskDAO;
-	private Indexer indexer;
 
 	protected Employee employee;
 	protected String ssn;
@@ -75,7 +73,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	public ManageEmployees(AccountDAO accountDAO, EmployeeDAO employeeDAO, JobRoleDAO roleDAO,
 			EmployeeRoleDAO employeeRoleDAO, EmployeeSiteDAO employeeSiteDAO, JobSiteDAO jobSiteDAO,
-			JobSiteTaskDAO siteTaskDAO, Indexer indexer) {
+			JobSiteTaskDAO siteTaskDAO) {
 		this.accountDAO = accountDAO;
 		this.employeeDAO = employeeDAO;
 		this.roleDAO = roleDAO;
@@ -83,7 +81,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		this.jobSiteDAO = jobSiteDAO;
 		this.employeeSiteDAO = employeeSiteDAO;
 		this.siteTaskDAO = siteTaskDAO;
-		this.indexer = indexer;
 
 		noteCategory = NoteCategory.Employee;
 	}
@@ -179,7 +176,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		employee = (Employee) employeeDAO.save(employee);
 		if (!existing)
 			addNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
-		indexer.runSingle(employee, "employee");
 
 		return redirect("ManageEmployees.action?employee.id=" + employee.getId()
 				+ ("Continue".equals(button) ? "&selectRolesSites=true" : ""));

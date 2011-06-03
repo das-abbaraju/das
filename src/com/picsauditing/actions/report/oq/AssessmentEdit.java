@@ -9,7 +9,6 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.actions.Indexer;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -28,19 +27,17 @@ public class AssessmentEdit extends AccountActionSupport implements Preparable {
 	protected Country country;
 	protected State state;
 	protected int contactID;
-	private Indexer indexer;
 
-	public AssessmentEdit(AccountDAO accountDAO, UserDAO userDAO, Indexer indexer) {
+	public AssessmentEdit(AccountDAO accountDAO, UserDAO userDAO) {
 		this.accountDAO = accountDAO;
 		this.userDAO = userDAO;
-		this.indexer = indexer;
 	}
 
 	public void prepare() throws Exception {
 		loadPermissions();
-		
+
 		id = getParameter("id");
-		
+
 		if (permissions.isAssessment())
 			id = permissions.getAccountId();
 
@@ -90,8 +87,8 @@ public class AssessmentEdit extends AccountActionSupport implements Preparable {
 					center.setNameIndex();
 				}
 
-				if (contactID > 0 && (center.getPrimaryContact() == null 
-						|| contactID != center.getPrimaryContact().getId()))
+				if (contactID > 0
+						&& (center.getPrimaryContact() == null || contactID != center.getPrimaryContact().getId()))
 					center.setPrimaryContact(userDAO.find(contactID));
 
 				if (center.getId() == 0) {
@@ -103,7 +100,7 @@ public class AssessmentEdit extends AccountActionSupport implements Preparable {
 					if (center.getName().length() > 19) {
 						// Get acronym if there are any spaces?
 						if (center.getName().contains(" ")) {
-							center.setQbListID("NOLOAD"	+ center.getName().replaceAll("(\\w)(\\w+\\s?)", "$1"));
+							center.setQbListID("NOLOAD" + center.getName().replaceAll("(\\w)(\\w+\\s?)", "$1"));
 							center.setQbListCAID("NOLOAD" + center.getName().replaceAll("(\\w)(\\w+\\s?)", "$1"));
 						} else {
 							center.setQbListID("NOLOAD" + center.getName().substring(0, 20));
@@ -117,9 +114,8 @@ public class AssessmentEdit extends AccountActionSupport implements Preparable {
 					center.setRequiresCompetencyReview(false);
 				}
 
-				//center.setNeedsIndexing(true);
+				// center.setNeedsIndexing(true);
 				center = accountDAO.save(center);
-				indexer.runSingle(center, "accounts");
 				id = center.getId();
 
 				addActionMessage("Successfully saved " + center.getName());
@@ -184,7 +180,7 @@ public class AssessmentEdit extends AccountActionSupport implements Preparable {
 	public void setCenter(Account center) {
 		this.center = center;
 	}
-	
+
 	public List<User> getUsers() {
 		return userDAO.findByAccountID(center.getId(), "Yes", "No");
 	}

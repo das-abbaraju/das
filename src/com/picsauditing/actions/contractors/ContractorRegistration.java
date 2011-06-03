@@ -13,7 +13,6 @@ import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.Indexer;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -62,7 +61,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 	protected ContractorRegistrationRequestDAO requestDAO;
 	protected ContractorValidator contractorValidator;
 	protected FacilityChanger facilityChanger;
-	private Indexer indexer;
 	private StateDAO stateDAO;
 	private UserLoginLogDAO userLoginLogDAO;
 	private InvoiceFeeDAO invoiceFeeDAO;
@@ -72,7 +70,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 	public ContractorRegistration(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO,
 			UserDAO userDAO, ContractorRegistrationRequestDAO requestDAO, FacilityChanger facilityChanger,
-			Indexer indexer, StateDAO stateDAO, UserLoginLogDAO userLoginLogDAO, InvoiceFeeDAO invoiceFeeDAO) {
+			StateDAO stateDAO, UserLoginLogDAO userLoginLogDAO, InvoiceFeeDAO invoiceFeeDAO) {
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
 		this.noteDAO = noteDAO;
@@ -80,7 +78,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 		this.requestDAO = requestDAO;
 		// this.subHeading = "New Contractor Information";
 		this.facilityChanger = facilityChanger;
-		this.indexer = indexer;
 		this.stateDAO = stateDAO;
 		this.userLoginLogDAO = userLoginLogDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
@@ -204,7 +201,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 			user.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
 			user.setLastLogin(new Date());
 			userDAO.save(user);
-			indexer.runSingle(user, "users");
 
 			// adding this user to the login log
 			String remoteAddress = ServletActionContext.getRequest().getRemoteAddr();
@@ -226,7 +222,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 			if (contractor.getCountry() != null)
 				contractor.setCountry(getCountryDAO().find(contractor.getCountry().getIsoCode()));
 			accountDao.save(contractor);
-			indexer.runSingle(accountDao.find(contractor.getId()), "accounts");
 
 			// Create a blank PQF for this contractor
 			ContractorAudit audit = new ContractorAudit();

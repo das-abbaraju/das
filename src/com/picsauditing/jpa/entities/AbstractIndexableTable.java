@@ -7,14 +7,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityListeners;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
-import com.picsauditing.search.IndexOverrideType;
+import com.picsauditing.search.IndexOverrideWeight;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.search.IndexableOverride;
 import com.picsauditing.util.IndexObject;
 
 @SuppressWarnings("serial")
+@MappedSuperclass
+@EntityListeners(IndexableEntityListener.class)
 public abstract class AbstractIndexableTable extends BaseTable implements Indexable {
 
 	@Transient

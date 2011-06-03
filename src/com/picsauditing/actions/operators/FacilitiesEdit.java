@@ -19,7 +19,6 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.actions.Indexer;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.FacilitiesDAO;
@@ -61,11 +60,10 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	protected State state;
 	protected int contactID;
 	protected UserSwitchDAO userSwitchDAO;
-	private Indexer indexer;
 	private InvoiceFeeDAO invoiceFeeDAO;
 
 	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO, OperatorFormDAO formDAO,
-			AccountUserDAO accountUserDAO, UserDAO userDAO, UserSwitchDAO userSwitchDAO, Indexer indexer,
+			AccountUserDAO accountUserDAO, UserDAO userDAO, UserSwitchDAO userSwitchDAO,
 			InvoiceFeeDAO invoiceFeeDAO) {
 		super(operatorAccountDAO);
 		this.facilitiesDAO = facilitiesDAO;
@@ -73,7 +71,6 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		this.accountUserDAO = accountUserDAO;
 		this.userDAO = userDAO;
 		this.userSwitchDAO = userSwitchDAO;
-		this.indexer = indexer;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 	}
 
@@ -295,7 +292,6 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 				// operator.setNeedsIndexing(true);
 				operator = operatorDao.save(operator);
-				indexer.runSingle(operator, "accounts");
 				id = operator.getId();
 
 				addActionMessage("Successfully saved " + operator.getName());
