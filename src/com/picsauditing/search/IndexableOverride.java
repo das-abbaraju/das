@@ -6,7 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Class level annotation to specific overrides for the values to be indexed 
+ * Class level annotation to specific overrides for the values to be indexed
+ * 
  * <pre>
  * <bold>Example:</bold><code>
  * &#064;IndexableOverride(overrides = { &#064;IndexOverrideType(methodName = "getId", weight = 4) })
@@ -20,5 +21,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface IndexableOverride {
 
-	IndexOverrideType[] overrides();
+	IndexOverrideWeight[] overrides() default {};
+
+	IndexOverrideIgnore[] ignores() default {};
 }

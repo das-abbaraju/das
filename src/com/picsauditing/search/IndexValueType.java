@@ -40,7 +40,7 @@ public enum IndexValueType {
 			String strResult = getString(getValue(method, record));
 
 			if (!Strings.isEmpty(strResult)) {
-				String[] strArray = strResult.replaceAll(NAME_REGEX, "").split("\\s+");
+				String[] strArray = strResult.replaceAll(NAME_REGEX, " ").split("\\s+");
 				for (String str : strArray) {
 					if (!Strings.isEmpty(str))
 						indexValues.add(new IndexObject(str, weight));

@@ -20,8 +20,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
 import com.google.common.base.Objects;
+import com.picsauditing.search.IndexOverrideIgnore;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
+import com.picsauditing.search.IndexableOverride;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Hierarchical;
 import com.picsauditing.util.IndexObject;
@@ -32,6 +34,7 @@ import com.picsauditing.util.Strings;
 @Table(name = "ref_trade")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 @SqlResultSetMapping(name = "matchingTradeResults", entities = @EntityResult(entityClass = Trade.class), columns = @ColumnResult(name = "matching"))
+@IndexableOverride(ignores = {@IndexOverrideIgnore(methodName="getId")})
 public class Trade extends AbstractIndexableTable implements Hierarchical<Trade> {
 
 	static public final int TOP_ID = 5;
@@ -295,7 +298,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		List<IndexObject> indexValues = super.getIndexValues();
 
 		for (TradeAlternate ta : getAlternates()) {
-			String[] strArray = ta.getName().toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+");
+			String[] strArray = ta.getName().toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", " ").split("\\s+");
 			for (String str : strArray) {
 				if (!Strings.isEmpty(str))
 					indexValues.add(new IndexObject(str, 6));

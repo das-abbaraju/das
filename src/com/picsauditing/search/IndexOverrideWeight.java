@@ -1,6 +1,6 @@
 package com.picsauditing.search;
 
-public @interface IndexOverrideType {
+public @interface IndexOverrideWeight {
 	String methodName();
 
 	int weight();
