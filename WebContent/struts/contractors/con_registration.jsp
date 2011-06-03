@@ -29,14 +29,14 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 function checkUsername(username) {
-	var msg = '<s:text name="progress.username" />';
+	var msg = '<s:text name="Progress.Username" />';
 	$('#username_status').text(msg);
 	var data = {userID: 0, username: username};
 	$('#username_status').load('user_ajax.jsp', data);
 }
 
 function checkTaxId(taxId) {
-	var msg = '<s:text name="progress.taxId" />';
+	var msg = '<s:text name="Progress.TaxId" />';
 	startThinking({div:'taxId_status', message: msg});
 	var data = {taxId: taxId, button: 'taxId', country: $('#contractorCountry').val()};
 	$('#taxId_status').load('ContractorValidateAjax.action', data);
@@ -49,7 +49,7 @@ function checkName(name) {
 		$('#contractorPhone').val('949-387-1940');
 		return;
 	}
-	var msg = '<s:text name="progress.name" />';
+	var msg = '<s:text name="Progress.Name" />';
 	startThinking({div:'name_status', message: msg});
 	var data = {companyName: name, button: 'name'};
 	$('#name_status').load('ContractorValidateAjax.action', data);

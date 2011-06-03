@@ -37,7 +37,7 @@ public class ContractorValidate extends ContractorActionSupport {
 			List<ContractorAccount> matches = accountDao.findWhere("nameIndex = ?", nameIndex);
 
 			if (matches.size() > 0)
-				addActionError(getText("status.companyinuse", new Object[] {companyName}));
+				addActionError(getText("Status.CompanyInUse", new Object[] {companyName}));
 
 			return BLANK;
 		}
@@ -46,7 +46,7 @@ public class ContractorValidate extends ContractorActionSupport {
 			if (!Strings.isEmpty(taxId) && !Strings.isEmpty(country)) {
 				ContractorAccount con = accountDao.findTaxID(taxId, country);
 				if (con != null) {
-					addActionError(getText("status.taxidinuse", new Object[] {taxId, con.getCountry().getName()}));
+					addActionError(getText("Status.TaxIdInUse", new Object[] {taxId, con.getCountry().getName()}));
 				}
 			}
 

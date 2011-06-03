@@ -13,7 +13,7 @@
 		if (!Strings.isEmpty(username)) {
 			String result = Strings.validUserName(username);
 			if (!result.equals("valid")) {
-				String msg = I18nCache.getInstance().getText("status.valid", Locale.getDefault());
+				String msg = I18nCache.getInstance().getText("Status.Valid", Locale.getDefault());
 				%> <%= msg %> <%
 				return;
 			}
@@ -23,11 +23,11 @@
 				userID = Integer.parseInt(request.getParameter("userID"));
 				UserDAO ud = (UserDAO) SpringUtils.getBean("UserDAO");
 				if (ud.duplicateUsername(username, userID)) {
-					String msg = I18nCache.getInstance().getText("status.usernamenotavailable", 
+					String msg = I18nCache.getInstance().getText("Status.UsernameNotAvailable", 
 							Locale.getDefault(), new Object[] {username});
 					%><img src="images/notOkCheck.gif" title="Username is NOT available" /> <%=msg%><%
 				} else {
-					String msg = I18nCache.getInstance().getText("status.usernameavailable", 
+					String msg = I18nCache.getInstance().getText("Status.UsernameAvailable", 
 							Locale.getDefault(), new Object[] {username});
 					%><img src="images/okCheck.gif" title="Username is available" /> <%=msg%><%
 				}
@@ -37,7 +37,7 @@
 		if (!Strings.isEmpty(taxId)) {
 			ContractorAccount cAccount = cAccountDAO.findTaxID(taxId, "US");
 			if (cAccount != null) {
-				String msg = I18nCache.getInstance().getText("status.taxidinuse", 
+				String msg = I18nCache.getInstance().getText("Status.TaxIdInUse", 
 						Locale.getDefault(), new Object[] {taxId, "United States"});
 				%><%=msg%><br/><%
 				} else {
@@ -47,7 +47,7 @@
 		if (!Strings.isEmpty(companyName)) {
 			ContractorAccount cAccount = cAccountDAO.findConID(companyName);
 			if (cAccount != null) {
-				String msg = I18nCache.getInstance().getText("status.companyinuse", 
+				String msg = I18nCache.getInstance().getText("Status.CompanyInUse", 
 						Locale.getDefault(), new Object[] {companyName});
 				%><%=msg%><br/><%
 				} else {
