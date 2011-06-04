@@ -23,6 +23,16 @@ var conID = '<s:property value="id"/>';
 
 <s:include value="../contractors/conRegistrationHeader.jsp"/>
 
+<s:if test="contractor.tradesUpdated == null && contractor.trades.size() > 0">
+	<s:form>
+		<div class="alert" id="reviewTrades">
+			<s:hidden name="contractor" />
+			<s:text name="ContractorTrade.reviewTrades"/><br /><br />
+			<s:submit method="removeAllTradesAjax" value="Start" cssClass="picsbutton" />
+		</div>
+	</s:form>
+</s:if>
+
 <s:if test="!permissions.operator">
 <h4>What are your business trades?</h4>
 <s:include value="trade_search.jsp"/>

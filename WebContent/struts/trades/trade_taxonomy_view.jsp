@@ -18,6 +18,22 @@
 			<s:if test="trade.id > 0">
 			<li><label>Trade ID:</label> <s:property value="trade.id"/></li>
 			</s:if>
+			<s:if test="trade.indexLevel > 1">
+			<li>
+				<label>Hierarchy:</label>
+				<div class="trade-section">
+					<s:iterator value="tradeClassification" var="atrade" status="stat">
+						<s:if test="isStringEmpty(#atrade.name2)">
+							<s:property value="#atrade.name"/>
+						</s:if>
+						<s:else>
+							<s:property value="#atrade.name2"/>
+						</s:else>
+						<s:if test="!#stat.last">&gt;</s:if>
+					</s:iterator>
+				</div>
+			</li>
+			</s:if>
 			<li><label>Trade Name:</label> <s:textfield name="trade.name"/> <a href=""></a><s:property value="trade.name.locale"/></li>
 			<li><label>Tree Name (optional):</label> <s:textfield name="trade.name2"/> <s:property value="trade.name2.locale"/></li>
 			<li><label>Help Text (optional):</label> <s:textarea name="trade.help"></s:textarea></li>

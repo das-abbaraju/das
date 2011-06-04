@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -62,4 +64,5 @@ public class ContractorTrade extends BaseTable {
 	public void setActivityPercent(int activityPercent) {
 		this.activityPercent = activityPercent;
 	}
+	
 }

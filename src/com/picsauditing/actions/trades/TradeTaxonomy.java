@@ -353,4 +353,14 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return result;
 	}
 
+	public List<Trade> getTradeClassification() {
+		List<Trade> list = tradeDAO.findListByTrade(trade.getId(), -1);
+		/*
+		 * TODO: This is the only instance I have found to exclude TOP. Find out if the other usages need changing.
+		 */
+		list.remove(Trade.TOP);
+
+		return list;
+	}
+	
 }

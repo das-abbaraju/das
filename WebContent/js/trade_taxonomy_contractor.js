@@ -7,9 +7,17 @@ function loadTradeCallback() {
 		$("#addButton").attr("disabled", "disabled");
 	}
 
-
 	$('#trade_children').hide();
-	wireTradeClueTips();
+
+	if ($('#nonSelectable').length > 0) {
+		$("#addButton").attr("disabled", "disabled");
+		$('#activityPercent').addClass('hide');
+		$('#tradeOptions').addClass('hide');
+	}
+	
+	if ($('#reviewTrades').length > 0) {
+		$("#addButton").attr("disabled", "disabled");
+	}
 }
 
 function setupTree() {
@@ -38,6 +46,7 @@ $(function() {
 	$('#trade-view').delegate('a.trade', 'click', function(e) {
 		e.preventDefault();
 		$('#trade-view').load($(this).attr('href'), loadTradeCallback);
+		
 	});
 
 	$('#trade-view').delegate('#trade-form', 'submit', function(e) {
@@ -63,4 +72,5 @@ $(function() {
 		else
 			$("#addButton").attr("disabled", "disabled");
 	});
+	
 });

@@ -2,6 +2,7 @@ package com.picsauditing.actions.trades;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,6 +103,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		}
 
 		contractor.addAccountTypes(conTypes);
+		contractor.setTradesUpdated(new Date());
 		accountDao.save(contractor);
 
 		return "trade";
@@ -232,6 +234,20 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		if (!getRegistrationStep().isDone())
 			this.redirect(ContractorRegistrationStep.Risk.getUrl(contractor.getId()));
 
+		return SUCCESS;
+	}
+	
+	public String removeAllTradesAjax() throws Exception {
+		Iterator<ContractorTrade> itr = contractor.getTrades().iterator();
+		
+		while (itr.hasNext()) {
+			ContractorTrade t = itr.next();
+			tradeDAO.remove(t);
+			itr.remove();
+		}
+		
+		this.redirect("ContractorTrades.action?id="+ contractor.getId());
+		
 		return SUCCESS;
 	}
 }

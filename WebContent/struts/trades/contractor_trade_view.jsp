@@ -70,13 +70,20 @@
 	</s:if>
 </s:if>
 
+<s:if test="!trade.trade.selectable">
+	<div id="nonSelectable" class="alert">
+		<s:text name="ContractorTrade.nonSelectable" />
+	</div>
+</s:if>
+
+
 <s:if test="trade.id > 0 && trade.activityPercent == 0">
 	<div class="alert">
 		<s:text name="ContractorTrade.activityPercent.missing"/>
 	</div>
 </s:if>
 
-<div>
+<div id="activityPercent">
 	<s:if test="permissions.operator">
 		<s:text name="ContractorTrade.businessRepresentationOther">
 			<s:param>
@@ -91,7 +98,7 @@
 	</s:else>
 </div>
 
-<div class="clearfix">
+<div id="tradeOptions" class="clearfix">
 	<s:if test="trade.trade.productI">
 		<div>
 			<s:if test="permissions.operator">
