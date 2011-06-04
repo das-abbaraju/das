@@ -1,6 +1,0 @@
-<config 
-	host="${host.name}"
-	port="${host.port}"
-	protocol="http"
-	basepath="${host.path_marketing}"
-	 />

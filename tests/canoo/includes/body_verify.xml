@@ -1,5 +1,0 @@
-<verifyText description="Checks for the copyright in the footer"
-	text="Copyright &copy;" />
-<verifyText description="Checks for the existence of HTML body tags"
-	text="(?i:.*&lt;/body&gt;)"
-	regex="true" />
