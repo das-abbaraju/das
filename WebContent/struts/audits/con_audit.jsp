@@ -74,7 +74,7 @@
 	<br clear="all" />
 </s:if>
 
-<s:if test="conAudit.auditType.classType.policy && conAudit.hasCaoStatus('Incomplete')">
+<s:if test="conAudit.auditType.classType.policy && conAudit.hasCaoStatus('Incomplete') && problems.size() > 0">
 	<div id="auditProblems">
 		There are problems with your audit, please click here to review them.  You can also click on the status for each operator with an <span class="problemCao">icon</span> to see more info.
 	</div>

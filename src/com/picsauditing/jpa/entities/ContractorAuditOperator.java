@@ -22,7 +22,7 @@ import com.picsauditing.access.Permissions;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_audit_operator")
-public class ContractorAuditOperator extends BaseTable {
+public class ContractorAuditOperator extends BaseTable implements Comparable<ContractorAuditOperator>{
 
 	private ContractorAudit audit;
 	private OperatorAccount operator;
@@ -293,5 +293,10 @@ public class ContractorAuditOperator extends BaseTable {
 			return hasCaop(opID);
 		}
 		return false;
+	}
+
+	@Override
+	public int compareTo(ContractorAuditOperator o) {
+		return this.getOperator().getName().compareTo(o.getOperator().getName());
 	}
 }

@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.AuditCategoryRuleCache;
@@ -55,7 +56,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	private AuditPercentCalculator auditPercentCalculator;
 	protected int caoID;
 	protected boolean previewCat = false;
-	protected Map<ContractorAuditOperator, String> problems = new LinkedHashMap<ContractorAuditOperator, String>();
+	protected Map<ContractorAuditOperator, String> problems = new TreeMap<ContractorAuditOperator, String>();
 	// Policy verification (next/first buttons)
 	private boolean policy;
 
@@ -200,8 +201,13 @@ public class ContractorAuditController extends AuditActionSupport {
 			if (conAudit.getAuditType().getClassType().isPolicy() && conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 				for (ContractorAuditOperatorWorkflow caow : caowDAO.findbyAuditStatus(conAudit.getId(),
 						AuditStatus.Incomplete)) {
-					if (caow.getCao().isVisible())
-						problems.put(caow.getCao(), caow.getNotes());
+					if (caow.getCao().isVisible()) {
+						if (permissions.isAdmin() || (permissions.isContractor() && permissions.getAccountId() == conAudit.getContractorAccount().getId())) {
+							problems.put(caow.getCao(), caow.getNotes());
+						} else if (getViewableOperators(permissions).contains(caow.getCao())) {
+							problems.put(caow.getCao(), caow.getNotes());							
+						}
+					}
 				}
 			}
 			String message = "";
