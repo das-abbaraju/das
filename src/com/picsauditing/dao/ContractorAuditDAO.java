@@ -56,12 +56,6 @@ public class ContractorAuditDAO extends PicsDAO {
 		remove(row);
 	}
 
-	public void remove(ContractorAudit row) {
-		if (row != null) {
-			em.remove(row);
-		}
-	}
-
 	public void copy(ContractorAudit oCAudit, ContractorAccount nContractor,
 			Map<Integer, AuditData> preToPostAuditDataIdMapper) {
 		if (oCAudit != null) {
