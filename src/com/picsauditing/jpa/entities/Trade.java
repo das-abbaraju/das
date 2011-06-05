@@ -34,7 +34,7 @@ import com.picsauditing.util.Strings;
 @Table(name = "ref_trade")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 @SqlResultSetMapping(name = "matchingTradeResults", entities = @EntityResult(entityClass = Trade.class), columns = @ColumnResult(name = "matching"))
-@IndexableOverride(ignores = {@IndexOverrideIgnore(methodName="getId")})
+@IndexableOverride(ignores = { @IndexOverrideIgnore(methodName = "getId") })
 public class Trade extends AbstractIndexableTable implements Hierarchical<Trade> {
 
 	static public final int TOP_ID = 5;
@@ -356,22 +356,31 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	 * Is this trade equal to t or a child of t? For example, Residential Construction is a childOf Residential
 	 * Construction and Construction.
 	 * 
-	 * @param t
+	 * @param candidateParent
 	 * @return
 	 */
 	@Transient
-	public boolean childOf(Trade t) {
+	public boolean childOf(Trade candidateParent) {
 		if (this.parent == null)
 			// Gone all the way up and didn't find our parent
 			return false;
 
-		if (t == null)
+		if (candidateParent == null)
 			return false;
 
-		if (this.equals(t))
-			return true;
+		if (this.equals(candidateParent))
+			// We don't consider you to be a child of yourself
+			return false;
 
-		return t.childOf(parent);
+		// Parent Level,Start,End = 1,1,12
+		// Child Level,Start,End = 2,6,9
+		return candidateParent.indexLevel < this.indexLevel && candidateParent.indexStart < this.indexStart
+				&& candidateParent.indexEnd > this.indexEnd;
+	}
+
+	@Transient
+	public boolean parentOf(Trade t) {
+		return t.childOf(this);
 	}
 
 	@Transient
