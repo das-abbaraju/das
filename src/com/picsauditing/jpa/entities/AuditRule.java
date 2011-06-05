@@ -100,7 +100,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 	/**
 	 * Does this rule apply to the given operator?
-	 *
+	 * 
 	 * @param operator
 	 * @return
 	 */
@@ -128,18 +128,18 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 	/**
 	 * Does this rule apply to the given category?
-	 *
+	 * 
 	 * @param operator
 	 * @return
 	 */
 	@Transient
 	public boolean isApplies(ContractorType candidate) {
 		if (this.contractorType == null)
-						return true;
-		
+			return true;
+
 		return this.contractorType.equals(candidate);
 	}
-	
+
 	@Transient
 	public String getContractorTypeLabel() {
 		if (contractorType == null)
@@ -183,20 +183,24 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 	/**
 	 * Does this rule apply to the given category?
-	 *
+	 * 
 	 * @param operator
 	 * @return
 	 */
 	@Transient
 	public boolean isApplies(Trade candidate) {
-		if (this.trade == null) {
-			//TODO: this
-			// Fill in logic to determine parent child trade hierarchy
-		}
-		
+		if (this.trade == null)
+			return true;
+
+		if (this.trade.equals(candidate))
+			return true;
+
+		if (trade.childOf(candidate))
+			return true;
+
 		return candidate.childOf(this.trade);
 	}
-	
+
 	@ManyToOne
 	@JoinColumn(name = "questionID")
 	public AuditQuestion getQuestion() {
@@ -247,6 +251,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 	/**
 	 * aka List Only or Bid Only
+	 * 
 	 * @return
 	 */
 	public Boolean getAcceptsBids() {
