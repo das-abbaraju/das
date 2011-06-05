@@ -1,5 +1,7 @@
 package com.picsauditing;
 
+import java.util.Locale;
+
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -35,6 +37,12 @@ public class EntityFactory {
 
 	static private int counter = 1;
 
+	static public TranslatableString makeTranslatableString(String value) {
+		TranslatableString string = new TranslatableString();
+		string.putTranslation(Locale.ENGLISH.getLanguage(), value, false);
+		return string;
+	}
+	
 	static public OperatorAccount makeOperator() {
 		OperatorAccount operator = new OperatorAccount();
 		operator.setId(counter++);
@@ -107,6 +115,7 @@ public class EntityFactory {
 		auditCategory.setAuditType(auditType);
 		auditType.getCategories().add(auditCategory);
 		auditCategory.setNumber(auditType.getCategories().get(auditType.getCategories().size() - 1).getNumber() + 1);
+		auditCategory.setName(makeTranslatableString(name));
 		return auditCategory;
 	}
 
@@ -125,7 +134,7 @@ public class EntityFactory {
 	static public AuditType makeAuditType(int auditTypeID) {
 		AuditType auditType = new AuditType();
 		auditType.setId(auditTypeID);
-		//auditType.setAuditName("Unit Test " + auditTypeID);
+		auditType.setName(makeTranslatableString("Unit Test " + auditTypeID));
 		auditType.setClassType(AuditTypeClass.Audit);
 		return auditType;
 	}
@@ -146,8 +155,8 @@ public class EntityFactory {
 
 	static public AuditQuestion makeAuditQuestion() {
 		AuditQuestion question = new AuditQuestion();
-		question.setName(new TranslatableString());
-		question.getName().putTranslation("en", "jUnit Question", true);
+		question.setId(counter++);
+		question.setName(makeTranslatableString("jUnit Question " + question.getId()));
 		return question;
 	}
 

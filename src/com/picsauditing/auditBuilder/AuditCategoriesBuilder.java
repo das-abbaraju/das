@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
@@ -34,51 +33,36 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	 */
 	private Map<OperatorAccount, AuditCategoryRule> operators = new HashMap<OperatorAccount, AuditCategoryRule>();
 
-	private Set<ContractorType> contractorTypes = new HashSet<ContractorType>();
-	private Set<Trade> trades = new HashSet<Trade>();
-
 	public AuditCategoriesBuilder(AuditCategoryRuleCache auditCategoryRuleCache, ContractorAccount contractor) {
+		super(contractor);
 		this.ruleCache = auditCategoryRuleCache;
-		this.contractor = contractor;
-
-		for (ContractorTrade ct : contractor.getTrades()) {
-			this.trades.add(ct.getTrade());
-		}
-		if (this.trades.size() == 0) {
-			// We have to add a blank trade in case the contractor is missing trades.
-			// If we don't then no rules will be found, even wildcard trade rules.
-			Trade blank = new Trade();
-			blank.setId(-1);
-			this.trades.add(blank);
-		}
-		if (contractor.isOnsiteServices())
-			contractorTypes.add(ContractorType.Onsite);
-		if (contractor.isOffsiteServices())
-			contractorTypes.add(ContractorType.Offsite);
-		if (contractor.isMaterialSupplier())
-			contractorTypes.add(ContractorType.Supplier);
 	}
 
 	public Set<AuditCategory> calculate(ContractorAudit conAudit, Collection<OperatorAccount> auditOperators) {
+		Set<AuditCategory> categories = new HashSet<AuditCategory>();
+
 		operators.clear();
+		if (auditOperators.size() == 0)
+			return categories;
+
 		for (OperatorAccount operator : auditOperators) {
 			operators.put(operator, null);
 		}
 
-		List<AuditCategoryRule> rules = ruleCache.getApplicableCategoryRules(contractor, conAudit.getAuditType());
-		
+		List<AuditCategoryRule> rules = ruleCache.getRules(contractor, conAudit.getAuditType());
+
 		// Prune Rules
 		Set<OperatorTag> tags = getRequiredTags(rules);
 		Map<Integer, AuditData> answers = getAuditAnswers(rules, conAudit);
-		Iterator<AuditCategoryRule> iterator = rules.iterator();
-		while (iterator.hasNext()) {
-			AuditCategoryRule rule = iterator.next();
-			if (!isValid(rule, answers, tags))
-				iterator.remove();
+		if (tags.size() > 0 || answers.size() > 0) {
+			Iterator<AuditCategoryRule> iterator = rules.iterator();
+			while (iterator.hasNext()) {
+				AuditCategoryRule rule = iterator.next();
+				if (!isValid(rule, answers, tags))
+					iterator.remove();
+			}
 		}
-		reSortRules(rules);
 
-		Set<AuditCategory> categories = new HashSet<AuditCategory>();
 		for (AuditCategory category : conAudit.getAuditType().getCategories()) {
 			for (Trade trade : trades) {
 				for (ContractorType type : contractorTypes) {
@@ -110,10 +94,11 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	private AuditCategoryRule getApplicable(List<AuditCategoryRule> rules, AuditCategory auditCategory, Trade trade,
 			ContractorType type, OperatorAccount operator) {
 		for (AuditCategoryRule rule : rules) {
-			if (rule.isApplies(auditCategory) && rule.isApplies(trade) && rule.isApplies(type)
-					&& rule.isApplies(operator)) {
-				return rule;
-			}
+			if (rule.isApplies(auditCategory))
+				if (rule.isApplies(trade))
+					if (rule.isApplies(type))
+						if (rule.isApplies(operator))
+							return rule;
 		}
 		return null;
 	}

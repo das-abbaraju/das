@@ -13,23 +13,97 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.util.SpringUtils;
 
 /**
  * Determine which audits and categories are needed for a contractor.
  */
 public class AuditTypesBuilder extends AuditBuilderBase {
+	private AuditTypeRuleCache ruleCache;
 
 	public class AuditTypeDetail {
-
+		/**
+		 * The AuditTypeRule that is responsible for including this auditType for this contractor
+		 */
 		public AuditTypeRule rule;
 		/**
-		 * Operator Accounts, not corporate, may be the same as the CAO
+		 * Operator Accounts that require this audit (CAOPs)
 		 */
 		public Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+	}
+
+	public AuditTypesBuilder(AuditTypeRuleCache ruleCache, ContractorAccount contractor) {
+		super(contractor);
+		this.ruleCache = ruleCache;
+	}
+
+	public Set<AuditTypeDetail> calculate() {
+		Set<AuditTypeDetail> types = new HashSet<AuditTypeDetail>();
+
+		List<AuditTypeRule> rules = ruleCache.getRules(contractor);
+
+		// Prune Rules
+		Set<OperatorTag> tags = getRequiredTags(rules);
+		Map<Integer, AuditData> answers = getAnswers(rules);
+		if (tags.size() > 0 || answers.size() > 0) {
+			Iterator<AuditTypeRule> iterator = rules.iterator();
+			while (iterator.hasNext()) {
+				AuditTypeRule rule = iterator.next();
+				if (!isValid(rule, answers, tags))
+					iterator.remove();
+			}
+		}
+
+		/**
+		 * We will never have a rule that says to include all audit types. So assuming that rule.getAuditType is never
+		 * NULL is fine. This fact also allows us to only evaluate the auditTypes for the rules we have rather than
+		 * using all auditTypes.
+		 */
+		Set<AuditType> allCandidateAuditTypes = new HashSet<AuditType>();
+		for (AuditTypeRule rule : rules) {
+			if (rule.isInclude()) {
+				allCandidateAuditTypes.add(rule.getAuditType());
+			}
+		}
+
+		// Get the operator list once
+		List<OperatorAccount> operatorAccounts = contractor.getOperatorAccounts();
+		for (AuditType auditType : allCandidateAuditTypes) {
+			AuditTypeDetail detail = new AuditTypeDetail();
+			for (Trade trade : trades) {
+				for (ContractorType type : contractorTypes) {
+					for (OperatorAccount operator : operatorAccounts) {
+						AuditTypeRule rule = getApplicable(rules, auditType, trade, type, operator);
+						if (rule != null && rule.isInclude()) {
+							// We need to add this category to the audit
+							detail.operators.add(operator);
+							if (rule.isMoreSpecific(detail.rule))
+								detail.rule = rule;
+						}
+					}
+				}
+			}
+		}
+
+		return types;
+	}
+
+	private AuditTypeRule getApplicable(List<AuditTypeRule> rules, AuditType auditType, Trade trade,
+			ContractorType type, OperatorAccount operator) {
+		for (AuditTypeRule rule : rules) {
+			if (auditType.equals(rule.getAuditType()))
+				if (rule.isApplies(trade))
+					if (rule.isApplies(type))
+						if (rule.isApplies(operator))
+							return rule;
+		}
+		return null;
 	}
 
 	protected void pruneRules(List<AuditTypeRule> rules) {
@@ -79,11 +153,6 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 
 		Map<Integer, AuditData> answers = new HashMap<Integer, AuditData>();
 		if (contractorAnswersNeeded.size() > 0) {
-			if (testing) {
-				System.out.println("Skipping call to AuditDataDAO with " + contractorAnswersNeeded.size()
-						+ " answers needed");
-				return answers;
-			}
 			AuditDataDAO dao = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
 			answers = dao.findAnswersByContractor(contractor.getId(), contractorAnswersNeeded);
 		}
