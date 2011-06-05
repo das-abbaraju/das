@@ -15,7 +15,6 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
@@ -32,6 +31,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	 * category
 	 */
 	private Map<OperatorAccount, AuditCategoryRule> operators = new HashMap<OperatorAccount, AuditCategoryRule>();
+	private Map<OperatorAccount, Set<AuditCategory>> categoriesPerGoverningBody = new HashMap<OperatorAccount, Set<AuditCategory>>();
 
 	public AuditCategoriesBuilder(AuditCategoryRuleCache auditCategoryRuleCache, ContractorAccount contractor) {
 		super(contractor);
@@ -71,6 +71,11 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 						if (rule != null && rule.isInclude()) {
 							// We need to add this category to the audit
 							categories.add(category);
+
+							if (!categoriesPerGoverningBody.containsKey(rule.getOperatorAccount()))
+								categoriesPerGoverningBody.put(rule.getOperatorAccount(), new HashSet<AuditCategory>());
+							categoriesPerGoverningBody.get(rule.getOperatorAccount()).add(category);
+
 							if (rule.isMoreSpecific(operators.get(operator)))
 								operators.put(operator, rule);
 						}
@@ -155,4 +160,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		return answers;
 	}
 
+	public boolean isCategoryApplicable(AuditCategory category, OperatorAccount operator) {
+		return categoriesPerGoverningBody.get(operator).contains(category);
+	}
 }
