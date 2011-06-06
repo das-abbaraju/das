@@ -743,7 +743,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 */
 	@Transient
 	public void syncBalance() {
-		boolean foundListOnlyMembership = false;
+		boolean foundBidOnlyMembership = false;
 		boolean foundDocuGUARDMembership = false;
 		boolean foundAuditGUARDMembership = false;
 		boolean foundInsureGUARDMembership = false;
@@ -776,11 +776,11 @@ public class ContractorAccount extends Account implements JSONable {
 			if (!invoice.getStatus().isVoid()) {
 				for (InvoiceItem invoiceItem : invoice.getItems()) {
 					if (!foundMembership && invoiceItem.getInvoiceFee().isMembership()) {
-						if (!foundListOnlyMembership) {
-							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.ListOnly)) {
-								foundListOnlyMembership = true;
-								this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
-										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 1));
+						if (!foundBidOnlyMembership) {
+							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.BidOnly)) {
+								foundBidOnlyMembership = true;
+								this.getFees().get(FeeClass.BidOnly).setCurrentLevel(
+										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 1));
 							}
 						}
 
@@ -802,10 +802,10 @@ public class ContractorAccount extends Account implements JSONable {
 								else
 									this.getFees().get(FeeClass.DocuGUARD).setCurrentLevel(invoiceItem.getInvoiceFee());
 
-								// DocuGUARD overrides List Only membership
-								foundListOnlyMembership = true;
-								this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
-										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 0));
+								// DocuGUARD overrides Bid/List Only membership
+								foundBidOnlyMembership = true;
+								this.getFees().get(FeeClass.BidOnly).setCurrentLevel(
+										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 0));
 							}
 						}
 
@@ -868,15 +868,15 @@ public class ContractorAccount extends Account implements JSONable {
 			}
 
 			// If all memberships have been found, exit
-			if (foundListOnlyMembership && foundDocuGUARDMembership && foundAuditGUARDMembership
+			if (foundBidOnlyMembership && foundDocuGUARDMembership && foundAuditGUARDMembership
 					&& foundInsureGUARDMembership && foundEmployeeGUARDMembership && foundMembershipDate
 					&& foundPaymentExpires)
 				return;
 		}
 
-		if (!foundListOnlyMembership)
-			this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
-					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 0));
+		if (!foundBidOnlyMembership)
+			this.getFees().get(FeeClass.BidOnly).setCurrentLevel(
+					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 0));
 		if (!foundDocuGUARDMembership)
 			this.getFees().get(FeeClass.DocuGUARD).setCurrentLevel(
 					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 0));

@@ -10,7 +10,7 @@
 <label><s:text name="%{scope}.ContractorFacilities.NumberOfLinkedFacilities" />:</label> <s:property value="currentOperators.size()" /><br />
 <s:if test="permissions.contractor || permissions.admin">
 	<s:if test="contractor.acceptsBids">
-		<b>If you are awarded a bid or decide to convert from list only to a full membership your new membership fee will increase</b>.<br />
+		<b>If you are awarded a bid or decide to convert from bid only to a full membership your new membership fee will increase</b>.<br />
 	</s:if>
 
 	<s:if test="contractor.currentMembership.size == 0 || contractor.currentMembershipAmount < contractor.newMembershipAmount"> 
@@ -46,14 +46,14 @@
 <s:if test="trialContractor">
 	<div class="info" style="80%">
 		<a href="#" class="picsbutton" id="bidonly"
-			onclick="javascript: return changeToTrialAccount( <s:property value="contractor.id"/>);">Switch To List Only Account</a> 
+			onclick="javascript: return changeToTrialAccount( <s:property value="contractor.id"/>);">Switch To Bid Only Account</a> 
 			<span class="block" style="position: relative;">
 				<a class="whatsthis" href="#"><img src="images/help.gif" height="15" width="15">
 					<span class="hoverhelp" style="bottom: 20px; left: -100px;">
-					By switching to a List Only account you will only be able to complete an introductory process for the 
+					By switching to a Bid Only account you will only be able to complete an introductory process for the 
 					facilities/operators that you are listed with.
 			</span></a></span><br/>
-			By switching to a List Only account you will only be able to complete an introductory process for
+			By switching to a Bid Only account you will only be able to complete an introductory process for
 			the facilities/operators that you are listed with.</div>
 </s:if>
 

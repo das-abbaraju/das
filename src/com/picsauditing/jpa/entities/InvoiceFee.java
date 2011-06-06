@@ -125,7 +125,7 @@ public class InvoiceFee extends BaseTable {
 
 	@Transient
 	public boolean isBidonly() {
-		return this.getFeeClass() == FeeClass.ListOnly;
+		return this.getFeeClass() == FeeClass.BidOnly;
 	}
 
 	@Transient
@@ -135,7 +135,7 @@ public class InvoiceFee extends BaseTable {
 
 	@Transient
 	public boolean isMembership() {
-		return this.getFeeClass() == FeeClass.ListOnly || this.getFeeClass() == FeeClass.DocuGUARD
+		return this.getFeeClass() == FeeClass.ListOnly || this.getFeeClass() == FeeClass.BidOnly || this.getFeeClass() == FeeClass.DocuGUARD
 				|| this.getFeeClass() == FeeClass.AuditGUARD || this.getFeeClass() == FeeClass.InsureGUARD
 				|| this.getFeeClass() == FeeClass.EmployeeGUARD;
 	}

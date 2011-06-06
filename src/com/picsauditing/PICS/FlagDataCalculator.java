@@ -124,7 +124,7 @@ public class FlagDataCalculator {
 		if (criteria.getAuditType() != null) {
 			if (!worksForOperator || con.isAcceptsBids()) {
 				// This is a check for if the contractor doesn't
-				// work for the operator (Search for new), or is a list only
+				// work for the operator (Search for new), or is a bid only
 				if (!criteria.getAuditType().isPqf()) {
 					// Ignore all audit requirements other than PQF
 					return null;
@@ -314,7 +314,7 @@ public class FlagDataCalculator {
 		if (!contractor.getStatus().isActiveDemo())
 			return WaitingOn.Contractor; // This contractor is delinquent
 
-		// If List Only Account
+		// If Bid Only Account
 		if (contractor.isAcceptsBids()) {
 			return WaitingOn.Operator;
 		}

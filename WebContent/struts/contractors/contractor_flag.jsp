@@ -169,7 +169,7 @@ function checkReason(id) {
 				<div style="margin-left:10px;">
 					<s:if test="co.flagColor.clear" >
 						This <s:property value="co.contractorAccount.status"/> 
-						<s:if test="co.contractorAccount.acceptsBids"> List Only </s:if>
+						<s:if test="co.contractorAccount.acceptsBids"> Bid Only </s:if>
 						contractor has a "Not Applicable" flag color.
 						The old way of representing with Green/Red flag color was 
 						misleading as the contractor has not yet completed all the operator requirements.

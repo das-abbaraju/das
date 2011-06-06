@@ -3,11 +3,11 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>List Only Contractor Accounts </title>
+<title>Bid Only Contractor Accounts </title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>List Only Contractor Accounts List</h1>
+<h1>Bid Only Contractor Accounts List</h1>
 
 <s:include value="filters.jsp" />
 

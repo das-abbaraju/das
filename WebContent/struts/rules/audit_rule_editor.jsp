@@ -261,11 +261,11 @@ $(function() {
 						</pics:fieldhelp>
 					</li>
 				</s:if>
-				<li><label>List Only</label>
-					<div class="nobr"><s:radio theme="pics" name="ruleAcceptsBids" list="#{'':'Any',false:'Full Account',true:'List Only'}" value="rule.acceptsBids"/></div>
-					<pics:fieldhelp title="List Only">
+				<li><label>Bid Only</label>
+					<div class="nobr"><s:radio theme="pics" name="ruleAcceptsBids" list="#{'':'Any',false:'Full Account',true:'Bid Only'}" value="rule.acceptsBids"/></div>
+					<pics:fieldhelp title="Bid Only">
 					<p>Full Account (default) - Regular paying contractor account.</p>
-					<p>List Only - A trial contractor account that is used for bidding.</p>
+					<p>Bid Only - A trial contractor account that is used for bidding.</p>
 					</pics:fieldhelp>
 				</li>
 				<li>

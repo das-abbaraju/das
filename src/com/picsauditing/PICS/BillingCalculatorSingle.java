@@ -121,11 +121,11 @@ public class BillingCalculatorSingle {
 			contractor.getFees().get(FeeClass.EmployeeGUARD).setNewLevel(newLevel);
 		}
 
-		// Selecting either list-only fee or DocuGUARD fee
+		// Selecting either bid-only fee or DocuGUARD fee
 		if (contractor.isAcceptsBids()) {
-			// Set list-only
-			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 1);
-			contractor.getFees().get(FeeClass.ListOnly).setNewLevel(newLevel);
+			// Set bid-only
+			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 1);
+			contractor.getFees().get(FeeClass.BidOnly).setNewLevel(newLevel);
 
 			// Turn off DocuGUARD fee
 			newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 0);
@@ -135,9 +135,9 @@ public class BillingCalculatorSingle {
 			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, payingFacilities);
 			contractor.getFees().get(FeeClass.DocuGUARD).setNewLevel(newLevel);
 
-			// Turn off list-only
-			newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 0);
-			contractor.getFees().get(FeeClass.ListOnly).setNewLevel(newLevel);
+			// Turn off bid-only
+			newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 0);
+			contractor.getFees().get(FeeClass.BidOnly).setNewLevel(newLevel);
 		}
 
 	}
@@ -164,7 +164,7 @@ public class BillingCalculatorSingle {
 
 		int payingFacilities = contractor.getPayingFacilities();
 
-		// Activations / Reactivations do not apply to list only contractors
+		// Activations / Reactivations do not apply to bid only contractors
 		if (!contractor.isAcceptsBids()) {
 			if (contractor.getMembershipDate() == null) {
 				// This contractor has never paid their activation fee, make
@@ -219,7 +219,7 @@ public class BillingCalculatorSingle {
 			List<ContractorFee> upgrades = new ArrayList<ContractorFee>();
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
 				ContractorFee fee = contractor.getFees().get(feeClass);
-				// List-only should not be an upgrade
+				// Bid-only should not be an upgrade
 				// Just a safety check
 				if (fee.isHasChanged() && !fee.getNewLevel().isBidonly())
 					upgrades.add(fee);

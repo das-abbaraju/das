@@ -204,7 +204,7 @@ public class Cron extends PicsActionSupport {
 				contractor.setStatus(AccountStatus.Deactivated);
 				// Setting a deactivation reason
 				if (contractor.isAcceptsBids()) {
-					contractor.setReason("List Only Account");
+					contractor.setReason("Bid Only Account");
 				}
 				// Leave the PaymentExpires in the past
 				// conAcct.setPaymentExpires(null);
@@ -229,7 +229,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nSending No Action Email to List Only Accounts ...");
+			startTask("\nSending No Action Email to Bid Only Accounts ...");
 			sendNoActionEmailToTrialAccounts();
 			endTask();
 		} catch (Throwable t) {

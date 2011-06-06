@@ -202,7 +202,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					if ("Renewal Overdue".equals(status))
 						contractor.setRenew(false);
 					if (contractor.isAcceptsBids())
-						contractor.setReason("List Only Account");
+						contractor.setReason("Bid Only Account");
 					Note note = new Note(contractor, new User(User.SYSTEM),
 							"Automatically inactivating account based on expired membership");
 					note.setNoteCategory(NoteCategory.Billing);

@@ -46,8 +46,8 @@ public enum Subscription {
 			"This email notifies users of all the contractors with completed Insurance Certificates for their account. You can choose to receive this daily, weekly or monthly.",
 			 OpPerms.InsuranceApproval, true, false), 
 	TrialContractorAccounts(
-			"List Only Contractor Accounts",
-			"This email includes a list of List Only contractor accounts who have recently registered at PICS with your account and are awaiting Approval. You can choose to receive this daily, weekly or monthly.",
+			"Bid Only Contractor Accounts",
+			"This email includes a list of Bid Only contractor accounts who have recently registered at PICS with your account and are awaiting Approval. You can choose to receive this daily, weekly or monthly.",
 			OpPerms.ViewTrialAccounts, true, false), 
 	ContractorInvoices(
 			"Contractor Invoices",

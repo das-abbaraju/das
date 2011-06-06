@@ -433,12 +433,12 @@ public class ContractorFacilities extends ContractorActionSupport {
 	}
 
 	public boolean isTrialContractor() {
-		// Enforcing that list only contractors should not be associated with an
-		// operator which does not accept list only
+		// Enforcing that bid only contractors should not be associated with an
+		// operator which does not accept bid only
 		for (ContractorOperator co : contractor.getOperators())
 			if (!co.getOperatorAccount().isAcceptsBids())
 				return false;
-		// All current Operators accept list only
+		// All current Operators accept bid only
 
 		// This is called after the co has been created and set. So no need to
 		// check current operator. Current operator should be in list already.

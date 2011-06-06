@@ -71,7 +71,7 @@ $(function() {
 		</div>
 		
 		<div class="filterOption">
-			Full/List-Only: <s:select list="#{'-1':'All',1:'List Only',0:'Full Account'}" name="filter.bid" value="filter.bid" />
+			Full/Bid-Only: <s:select list="#{'-1':'All',1:'Bid Only',0:'Full Account'}" name="filter.bid" value="filter.bid" />
 		</div>
 		
 		<s:if test="!categoryRule">

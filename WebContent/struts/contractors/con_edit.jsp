@@ -54,7 +54,7 @@ $(function() {
 	<div class="alert" class="noprint">This contractor is still waiting to be synced with QuickBooks!</div>
 </s:if>
 <s:if test="contractor.acceptsBids">
-	<div class="alert">This is a List Only Contractor Account.</div>
+	<div class="alert">This is a Bid Only Contractor Account.</div>
 </s:if>
 
 <s:form id="save" method="POST" enctype="multipart/form-data">
@@ -216,7 +216,7 @@ $(function() {
 					<li><label><s:text name="%{scope}.SoleProprietor.heading"/></label>
 						<s:checkbox name="contractor.soleProprietor" />
 					</li>
-					<li><label>List Only Account:</label>
+					<li><label>Bid Only Account:</label>
 						<s:checkbox name="contractor.acceptsBids"/></li>	
 					<li><label>Reason:</label>
 						<s:select list="deactivationReasons" name="contractor.reason" headerKey="" headerValue="- Deactivation Reason -"/>

@@ -160,7 +160,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			}
 
 			// Default their current membership to 0
-			List<FeeClass> feeClasses = Arrays.asList(FeeClass.ListOnly, FeeClass.DocuGUARD, FeeClass.AuditGUARD,
+			List<FeeClass> feeClasses = Arrays.asList(FeeClass.BidOnly, FeeClass.ListOnly, FeeClass.DocuGUARD, FeeClass.AuditGUARD,
 					FeeClass.InsureGUARD, FeeClass.EmployeeGUARD);
 			for (FeeClass feeClass : feeClasses) {
 				ContractorFee newConFee = new ContractorFee();

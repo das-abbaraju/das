@@ -18,7 +18,7 @@
 	<div class="alert">This contractor is NOT set to sync with QuickBooks</div>
 </s:if>
 <s:if test="contractor.acceptsBids">
-	<div class="alert">This is a List Only Contractor Account.</div>
+	<div class="alert">This is a Bid Only Contractor Account.</div>
 </s:if>
 
 <table width="100%">

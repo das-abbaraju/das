@@ -47,7 +47,7 @@
 		runSearch("searchShowAll");
 	}
 	function addOperator( conId, opId ) {
-		// Changes status if contractor refuses list only upgrade
+		// Changes status if contractor refuses bid only upgrade
 		var r = true;
 		
 		// Validating listed contractor and operator
@@ -59,7 +59,7 @@
 			dataType: "json",
 	        success: function(result) {
 				if(result.isBidOnlyContractor && !result.isBidOnlyOperator)
-					r = confirm("The Operator you have selected does not accept List Only Contractors. Would you like to Upgrade this Account to a Regular Account and Add this Operator?\n\nNote: There will be a fee upgrade when changing from a List Only account to a Regular Account");
+					r = confirm("The Operator you have selected does not accept Bid Only Contractors. Would you like to Upgrade this Account to a Regular Account and Add this Operator?\n\nNote: There will be a fee upgrade when changing from a Bid Only account to a Regular Account");
 	        }
 		});
 
@@ -129,11 +129,11 @@
 	}
 
 	function changeToTrialAccount(conId) {
-		var r = confirm("Are you sure you need to switch to a List Only account? You will still be required to upgrade in the future if you are selected for work by this Operator.")
+		var r = confirm("Are you sure you need to switch to a Bid Only account? You will still be required to upgrade in the future if you are selected for work by this Operator.")
 		if(r == false) {
 			return false;
 		}
-		startThinking( {div: 'thinkingDiv', message: 'Switching to List Only Account' } );
+		startThinking( {div: 'thinkingDiv', message: 'Switching to Bid Only Account' } );
 		var data= {id: conId, button: 'SwitchToTrialAccount'};
 		$.ajax({
 			url: 'ContractorFacilityAjax.action', 

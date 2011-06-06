@@ -36,18 +36,13 @@ INSERT INTO pics_alpha2.ref_trade_alt
 SELECT * FROM pics_alpha1.ref_trade_alt;
 SET foreign_key_checks = 1;
 
--- PICS-2332
-update invoice_fee set fee = 'List Only Account Fee' where id = 100;
-update invoice_item ii set ii.paymentExpires = date_add(ii.paymentExpires, interval 9 month) where ii.feeID = 100;
---
-
 -- PICS-1639
 update invoice_fee invf set invf.minFacilities = -1, invf.maxFacilities = -1, invf.feeClass = 'Deprecated', invf.visible = 0, invf.fee = concat('Old ',invf.fee) where invf.id in (1,2,4,5,6,7,8,9,10,11,50,51,52,54,55,100,101,104,105);
 update invoice_fee invf set invf.feeClass = 'Misc' where invf.feeClass = 'Other';
 update invoice_fee invf set invf.feeClass = 'Activation' where invf.id in (1,104);
 update invoice_fee invf set invf.feeClass = 'DocuGUARD' where invf.id = 4;
 update invoice_fee invf set invf.feeClass = 'AuditGUARD' where invf.id in (5,6,7,8,9,10,11,105);
-update invoice_fee invf set invf.feeClass = 'ListOnly' where invf.id = 100;
+update invoice_fee invf set invf.feeClass = 'BidOnly' where invf.id = 100;
 update invoice_fee invf set invf.feeClass = 'GST', invf.minFacilities = 0, invf.maxFacilities = 10000 where invf.id = 200;
 
 insert into invoice_fee 
@@ -65,8 +60,10 @@ insert into invoice_fee
 	updateDate, 
 	displayOrder
 	)
-values 	(299, 'List Only 0 Operators', 0.00, 1, 'ListOnly', 0, 0, 'LTVEN0', 20952, 20952, now(), now(), 1),
-	(300, 'List Only', 25.00, 1, 'ListOnly', 1, 10000, 'LTVEN25', 20952, 20952, now(), now(), 1),
+values 	(297, 'List Only 0 Operators', 0.00, 1, 'ListOnly', 0, 0, 'LTVEN0', 20952, 20952, now(), now(), 1),
+	(298, 'List Only', 25.00, 1, 'ListOnly', 1, 10000, 'LTVEN25', 20952, 20952, now(), now(), 1),
+	(299, 'Bid Only 0 Operators', 0.00, 1, 'BidOnly', 0, 0, 'BTVEN0', 20952, 20952, now(), now(), 1),
+	(300, 'Bid Only', 25.00, 1, 'BidOnly', 1, 10000, 'BTVEN25', 20952, 20952, now(), now(), 1),
 	(301, 'DocuGUARD for 0 Operators', 0.00, 1, 'DocuGUARD', 0, 0, 'DGVEN0', 20952, 20952, now(), now(), 2),
 	(302, 'DocuGUARD for 1 Operator', 99.00, 1, 'DocuGUARD', 1, 1, 'DGVEN1', 20952, 20952, now(), now(), 3),
 	(303, 'DocuGUARD for 2-4 Operators', 99.00, 1, 'DocuGUARD', 2, 4, 'DGVEN2', 20952, 20952, now(), now(), 4),
@@ -109,7 +106,7 @@ values 	(299, 'List Only 0 Operators', 0.00, 1, 'ListOnly', 0, 0, 'LTVEN0', 2095
 	(340, 'Data Import Fee', 199.00, 1, 'ImportFee', 0, 10000, 'FVEN17', 20952, 20952, now(), now(), 41),
 	(341, 'Activation Fee (Discounted from standard rate of $199)', 99.00, 1, 'Activation', 0, 0, 'FVEN18', 20952, 20952, now(), now(), 42);
 
-	-- AuditGUARD
+-- AuditGUARD
 insert into contractor_fee 
 	(id, 
 	conID, 
@@ -199,7 +196,7 @@ select null, c.id, 'DocuGUARD',
 	when (c.membershipLevelID = 4 and c.payingFacilities >= 50) or (c.membershipLevelID = 11) then 308 end,
   20952, 20952, now(), now() from contractor_info c;
   
-  -- ListOnly
+-- ListOnly
 insert into contractor_fee 
 	(id, 
 	conID, 
@@ -211,12 +208,34 @@ insert into contractor_fee
 	creationDate, 
 	updateDate
 	)
-select null, c.id, 'ListOnly', 
+select null, c.id, 'ListOnly', 297, 297,
+  20952, 20952, now(), now() from contractor_info c;
+--
+
+-- BidOnly
+insert into contractor_fee 
+	(id, 
+	conID, 
+	feeClass, 
+	newLevel, 
+	currentLevel, 
+	createdBy, 
+	updatedBy, 
+	creationDate, 
+	updateDate
+	)
+select null, c.id, 'BidOnly', 
   case when c.newMembershipLevelID = 100 then 300 else 299 end,
   case when c.membershipLevelID = 100 then 300 else 299 end,
   20952, 20952, now(), now() from contractor_info c;
 --
+--
 
+-- PICS-2492
+update accounts a join contractor_info c on a.id = c.id set c.accountLevel = 'BidOnly' where a.acceptsBids = 1 and a.type = 'Contractor';
+update accounts a join contractor_info c on a.id = c.id set c.accountLevel = 'Full' where a.acceptsBids = 0 and a.type = 'Contractor';
+--
+  
 INSERT INTO contractor_trade(conID, tradeID, createdBy, updatedBy, creationDate, updateDate, selfPerformed,
 manufacture, activityPercent)
 SELECT ca.conID,

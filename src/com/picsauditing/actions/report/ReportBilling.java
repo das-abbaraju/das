@@ -40,7 +40,7 @@ public class ReportBilling extends ReportAccount {
 		if (billingState.equals("All") || billingState.equals("Activations")) {
 			where += "(a.status IN ('Pending','Deactivated')) AND c.membershipDate IS NULL AND NOT (f2.feeClass = 'ListOnly' AND f2.defaultAmount > 0)";
 		}
-		// Show renewals (only on non-list only accounts)
+		// Show renewals (only on non-bid only accounts)
 		if (billingState.equals("All") || billingState.equals("Renewals")) {
 			sql.addWhere("");
 			if (where.length() > 0)
