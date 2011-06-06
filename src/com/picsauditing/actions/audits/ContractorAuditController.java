@@ -226,7 +226,7 @@ public class ContractorAuditController extends AuditActionSupport {
 			findConAudit();
 
 			InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 0);
-			User system = new User(User.SYSTEM);
+			User conUser = new User(User.CONTRACTOR);
 
 			Invoice invoice = new Invoice();
 			invoice.setAccount(contractor);
@@ -234,19 +234,20 @@ public class ContractorAuditController extends AuditActionSupport {
 			invoice.setDueDate(new Date());
 			invoice.setTotalAmount(fee.getAmount(contractor));
 			invoice.setNotes("Thank you for doing business with PICS!");
-			invoice.setAuditColumns(system);
+			invoice.setAuditColumns(conUser);
 			invoice.setQbSync(true);
 			invoice = (Invoice) invoiceFeeDAO.save(invoice);
 
 			InvoiceItem item = new InvoiceItem(fee, contractor);
 			item.setInvoice(invoice);
+			item.setAuditColumns(conUser);
 			invoiceFeeDAO.save(item);
 			invoice.getItems().add(item);
 
 			ContractorAudit importAudit = new ContractorAudit();
 			importAudit.setAuditType(auditTypeDAO.find(AuditType.IMPORT_PQF));
 			importAudit.setManuallyAdded(true);
-			importAudit.setAuditColumns(system);
+			importAudit.setAuditColumns(conUser);
 			importAudit.setContractorAccount(contractor);
 			importAudit = auditDao.save(importAudit);
 			
