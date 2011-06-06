@@ -284,6 +284,10 @@ public class ContractorWidget extends ContractorActionSupport {
 				openTasks.add(getText("ContractorWidget.message.NeedsTradesUpdated",
 						new Object[] { contractor.getId() }));
 			}
+			if (contractor.getTrades().size() == 0) {
+				openTasks.add(getText("ContractorWidget.message.NoTradesSelected",
+						new Object [] { contractor.getId() }));
+			}
 		}
 
 		return openTasks;
