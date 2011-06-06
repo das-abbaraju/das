@@ -1,5 +1,7 @@
 package com.picsauditing.util;
 
+import java.util.Map;
+
 /**
  * Experimental Class
  * @author Trevor
@@ -33,9 +35,9 @@ public class QuestionFunctions {
 	 * @param inManHours
 	 * @return
 	 */
-	public static String getTRIR(String inTotalRecordables, String inManHours) {
-		int totalRecordables = Integer.parseInt(inTotalRecordables);
-		int manHours = Integer.parseInt(inManHours);
+	public static String getTRIR(Map<String, String> values) {
+		int totalRecordables = Integer.parseInt(values.get("totalRecordables"));
+		int manHours = Integer.parseInt(values.get("manHours"));
 		return Integer.toString(totalRecordables * 200000 / manHours);
 	}
 
