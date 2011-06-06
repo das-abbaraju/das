@@ -85,6 +85,7 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 							detail.operators.add(operator);
 							if (rule.isMoreSpecific(detail.rule))
 								detail.rule = rule;
+							types.add(detail);
 						}
 					}
 				}

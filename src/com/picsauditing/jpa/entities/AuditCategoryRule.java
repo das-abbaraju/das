@@ -40,18 +40,16 @@ public class AuditCategoryRule extends AuditRule {
 				return true;
 			} else {
 				if (this.rootCategory) {
-					if (auditCategory.getParent() == null)
+					if (category.getParent() == null)
 						// Only categories match
 						return true;
 				} else {
-					if (auditCategory.getParent() != null)
+					if (category.getParent() != null)
 						// Only subcategories match
 						return true;
 				}
 			}
-		}
-
-		if (this.auditCategory.equals(category)) {
+		} else if (this.auditCategory.equals(category)) {
 			// We have a direct category match
 			return true;
 		}

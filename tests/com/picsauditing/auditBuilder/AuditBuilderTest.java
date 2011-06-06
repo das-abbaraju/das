@@ -2,74 +2,107 @@ package com.picsauditing.auditBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
-
-import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class AuditBuilderTest extends TestCase {
-	@Test
+	ContractorAccount contractor1;
+	ContractorAudit conAudit1PQF;
+	AuditType pqf;
+	AuditCategory pqfCategory2;
+
+	AuditTypeRuleCache typeRuleCache = new AuditTypeRuleCache();
+	List<AuditTypeRule> typeRules = new ArrayList<AuditTypeRule>();
+	AuditTypesBuilder typeBuilder;
+	Set<AuditTypeDetail> auditTypes;
+
+	AuditCategoryRuleCache catRuleCache = new AuditCategoryRuleCache();
+	List<AuditCategoryRule> catRules = new ArrayList<AuditCategoryRule>();
+	AuditCategoriesBuilder catBuilder;
+	Set<AuditCategory> categories;
+	Map<OperatorAccount, Set<OperatorAccount>> caos;
+
+	/**
+	 * Setup Contractors and Audit Types and Categories
+	 */
+	protected void setUp() throws Exception {
+		contractor1 = EntityFactory.makeContractor();
+		conAudit1PQF = EntityFactory.makeContractorAudit(1, contractor1);
+		pqf = conAudit1PQF.getAuditType();
+		EntityFactory.addCategories(pqf, 101, "PQF Category 1");
+		pqfCategory2 = EntityFactory.addCategories(pqf, 102, "PQF Category 2");
+
+		typeBuilder = new AuditTypesBuilder(typeRuleCache, contractor1);
+		catBuilder = new AuditCategoriesBuilder(catRuleCache, contractor1);
+	}
+
 	public void testBuilder() {
-		ContractorAccount contractor = EntityFactory.makeContractor();
-		ContractorAudit conAudit = EntityFactory.makeContractorAudit(1, contractor);
-		AuditType pqf = conAudit.getAuditType();
-		AuditCategory category1 = EntityFactory.addCategories(pqf, 101, "PQF Category 1");
-		AuditCategory category2 = EntityFactory.addCategories(pqf, 102, "PQF Category 2");
+		{
+			// Include the PQF for Everyone
+			AuditTypeRule rule = new AuditTypeRule();
+			rule.setAuditType(pqf);
+			typeRules.add(rule);
 
-		AuditTypeRuleCache auditRuleCache = new AuditTypeRuleCache();
-		AuditTypesBuilder builder1 = new AuditTypesBuilder(auditRuleCache, contractor);
-		Set<AuditTypeDetail> auditTypes = builder1.calculate();
+			// Include All categories by default
+			catRules.add(new AuditCategoryRule());
+		}
+		typeRuleCache.initialize(typeRules);
+		catRuleCache.initialize(catRules);
+
+		// Contractor has no operators, so should needs zero audits and categories
+		auditTypes = typeBuilder.calculate();
 		assertEquals(0, auditTypes.size());
-
-		AuditCategoryRuleCache categoryRuleCache = new AuditCategoryRuleCache();
-		List<AuditCategoryRule> rules = new ArrayList<AuditCategoryRule>();
-		rules.add(new AuditCategoryRule());
-		categoryRuleCache.initialize(rules);
-
-		AuditCategoriesBuilder builder2 = new AuditCategoriesBuilder(categoryRuleCache, contractor);
-		List<OperatorAccount> auditOperators = new ArrayList<OperatorAccount>();
-
-		Set<AuditCategory> categories = builder2.calculate(conAudit, auditOperators);
-		// We don't create categories when there's no operator
+		categories = catBuilder.calculate(conAudit1PQF, contractor1.getOperatorAccounts());
 		assertEquals(0, categories.size());
 
 		OperatorAccount operator1 = EntityFactory.makeOperator();
-		auditOperators.add(operator1);
-		EntityFactory.addContractorOperator(contractor, operator1);
+		EntityFactory.addContractorOperator(contractor1, operator1);
 
-		categories = builder2.calculate(conAudit, auditOperators);
+		// Now we should have 1 audit and 2 categories for the single operator
+		auditTypes = typeBuilder.calculate();
+		assertEquals(1, auditTypes.size());
+		categories = catBuilder.calculate(conAudit1PQF, contractor1.getOperatorAccounts());
 		assertEquals(2, categories.size());
+		caos = catBuilder.getCaos();
+		assertEquals(1, caos.size());
 
 		{
 			AuditCategoryRule rule = new AuditCategoryRule();
-			rules.add(rule);
+			catRules.add(rule);
 			rule.setInclude(false);
-			rule.setAuditCategory(category2);
+			rule.setAuditCategory(pqfCategory2);
 
-			categoryRuleCache.initialize(rules);
-			categories = builder2.calculate(conAudit, auditOperators);
+			catRuleCache.initialize(catRules);
+			categories = catBuilder.calculate(conAudit1PQF, contractor1.getOperatorAccounts());
 			assertEquals(1, categories.size());
 		}
 		{
 			AuditCategoryRule rule = new AuditCategoryRule();
-			rules.add(rule);
+			catRules.add(rule);
 			rule.setInclude(true);
-			rule.setAuditCategory(category2);
+			rule.setAuditCategory(pqfCategory2);
 			rule.setOperatorAccount(operator1);
 
-			categoryRuleCache.initialize(rules);
-			categories = builder2.calculate(conAudit, auditOperators);
+			catRuleCache.initialize(catRules);
+			categories = catBuilder.calculate(conAudit1PQF, contractor1.getOperatorAccounts());
 			assertEquals(2, categories.size());
 		}
+	}
+
+	public void testBuilder1() {
+		contractor1.setOnsiteServices(true);
+		contractor1.setMaterialSupplier(true);
 	}
 }

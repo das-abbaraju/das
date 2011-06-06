@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -83,6 +84,15 @@ public class AuditTypeRuleCache extends AuditRuleCache {
 		data = new SafetyRisks();
 		for (AuditTypeRule rule : rules) {
 			data.add(rule);
+		}
+	}
+	
+	public void initialize(AuditDecisionTableDAO auditRuleDAO) {
+		if (data == null) {
+			long startTime = System.currentTimeMillis();
+			initialize(auditRuleDAO.findAuditTypeRules());
+			long endTime = System.currentTimeMillis();
+			System.out.println("Filled AuditTypeRuleCache in " + (endTime - startTime) + "ms");
 		}
 	}
 

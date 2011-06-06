@@ -15,6 +15,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditCategoryMatrixDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -39,12 +40,17 @@ public class AuditBuilder {
 	private ContractorAuditDAO conAuditDao;
 	@Autowired
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
-
-	private AuditTypeRuleCache typeRuleCache = new AuditTypeRuleCache();
-	private AuditCategoryRuleCache categoryRuleCache = new AuditCategoryRuleCache();
+	@Autowired
+	private AuditDecisionTableDAO auditDecisionTableDAO;
+	@Autowired
+	private AuditTypeRuleCache typeRuleCache;
+	@Autowired
+	private AuditCategoryRuleCache categoryRuleCache;
 	private User systemUser = new User(User.SYSTEM);
 
 	public void buildAudits(ContractorAccount contractor) {
+		typeRuleCache.initialize(auditDecisionTableDAO);
+		categoryRuleCache.initialize(auditDecisionTableDAO);
 
 		AuditTypesBuilder typesBuilder = new AuditTypesBuilder(typeRuleCache, contractor);
 
@@ -137,9 +143,13 @@ public class AuditBuilder {
 		/** Generate Categories and CAOs **/
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 			AuditTypeDetail auditTypeDetail = findDetailForAuditType(requiredAuditTypeDetails, conAudit.getAuditType());
-			Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, auditTypeDetail.operators);
-			fillAuditCategories(conAudit, categories);
-			fillAuditOperators(conAudit, categoriesBuilder.getCaos());
+			if (auditTypeDetail != null) {
+				Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, auditTypeDetail.operators);
+				fillAuditCategories(conAudit, categories);
+				fillAuditOperators(conAudit, categoriesBuilder.getCaos());
+			} else {
+				System.out.println("Missing auditTypeDetail for " + conAudit.getAuditType());
+			}
 		}
 
 		conAuditDao.save(contractor);
