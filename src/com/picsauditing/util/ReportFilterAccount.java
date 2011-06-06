@@ -11,7 +11,6 @@ import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.State;
 
 @SuppressWarnings("serial")
@@ -65,8 +64,7 @@ public class ReportFilterAccount extends ReportFilter {
 			Set<String> accountCountries = new HashSet<String>();
 			accountCountries.add(permissions.getCountry());
 			result = stateDAO.findByCountries(accountCountries, false);
-		}	
-		else
+		} else
 			result = stateDAO.findAll();
 
 		return result;

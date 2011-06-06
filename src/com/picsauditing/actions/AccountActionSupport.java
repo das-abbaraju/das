@@ -3,6 +3,8 @@ package com.picsauditing.actions;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.CountryDAO;
@@ -12,7 +14,6 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -30,16 +31,12 @@ public class AccountActionSupport extends PicsActionSupport {
 	protected List<Note> notes;
 	protected NoteCategory noteCategory = NoteCategory.General;
 
+	@Autowired
 	private NoteDAO noteDao;
+	@Autowired
 	private CountryDAO countryDAO;
+	@Autowired
 	private StateDAO stateDAO;
-
-	@Override
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-		return SUCCESS;
-	}
 
 	public int getId() {
 		return id;
@@ -76,10 +73,8 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	/************* NOTES ************/
-
+	@Deprecated
 	protected NoteDAO getNoteDao() {
-		if (noteDao == null)
-			noteDao = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		return noteDao;
 	}
 
@@ -103,7 +98,7 @@ public class AccountActionSupport extends PicsActionSupport {
 	 */
 	public List<Note> getNotes(String where, int firstLimit, int limit) {
 		if (notes == null)
-			notes = getNoteDao().getNotes(id, permissions, "status IN (1,2)" + where, firstLimit, limit);
+			notes = noteDao.getNotes(id, permissions, "status IN (1,2)" + where, firstLimit, limit);
 
 		return notes;
 	}
@@ -157,45 +152,39 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	/***** END of NOTES *****/
 
+	@Deprecated
 	public CountryDAO getCountryDAO() {
-		if (countryDAO == null)
-			countryDAO = (CountryDAO) SpringUtils.getBean("CountryDAO");
 		return countryDAO;
 	}
 
+	@Deprecated
 	public StateDAO getStateDAO() {
-		if (stateDAO == null)
-			stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
 		return stateDAO;
 	}
 
 	public List<Country> getCountryList() {
-		return getCountryDAO().findAll();
+		return countryDAO.findAll();
 	}
 
 	public List<State> getStateList() {
 		if (account == null)
-			return getStateDAO().findAll();
-		return getStateDAO().findByCountry(account.getCountry());
+			return stateDAO.findAll();
+		return stateDAO.findByCountry(account.getCountry());
 	}
 
 	public List<State> getStateList(String countries) {
 		List<State> result;
 		if (countries == null)
-			result = getStateDAO().findAll();
+			result = stateDAO.findAll();
 		else {
 			boolean negative = false;
 			if (countries.startsWith("!")) {
 				countries = countries.replace("!", "");
 				negative = true;
 			}
-			result = getStateDAO().findByCountries(Arrays.asList(countries.split("[|]")), negative);
+			result = stateDAO.findByCountries(Arrays.asList(countries.split("[|]")), negative);
 		}
 		return result;
-	}
-
-	public Industry[] getIndustryList() {
-		return Industry.values();
 	}
 
 	public boolean isShowMoreNotes() {
