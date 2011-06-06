@@ -343,14 +343,13 @@ public class BillingCalculatorSingle {
 				boolean oq = false;
 				boolean hseCompetency = false;
 
-				// TODO Tom, please figure out if we should repeat the code here from line 77-81
-				Map<AuditType, AuditTypeDetail> map = AuditBuilder.calculateRequiredAuditTypes(contractor);
-				for (AuditType auditType : map.keySet()) {
-					if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isIm()) {
-						employeeAudits = true;
-						break;
-					}
-				}
+//				Map<AuditType, AuditTypeDetail> map = AuditBuilder.calculateRequiredAuditTypes(contractor);
+//				for (AuditType auditType : map.keySet()) {
+//					if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isIm()) {
+//						employeeAudits = true;
+//						break;
+//					}
+//				}
 
 				for (ContractorOperator co : contractor.getOperators()) {
 					if (co.getOperatorAccount().isRequiresOQ())
