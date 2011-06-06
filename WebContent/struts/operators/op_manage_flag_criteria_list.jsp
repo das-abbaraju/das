@@ -103,7 +103,7 @@ function recalculateAll() {
 						<s:date name="updateDate" format="MMM dd, yyyy"/>
 					</td>
 					<td class="center">
-						<a href="ManageFlagCriteria.action?id=<s:property value="criteria.id"/>" class="preview"></a>
+						<a href="ManageFlagCriteria!edit.action?criteria=<s:property value="criteria.id"/>" class="preview"></a>
 					</td>
 					<td class="center">
 						<a href="#" onclick="editCriteria(<s:property value="id" />); return false;" class="edit"></a>
