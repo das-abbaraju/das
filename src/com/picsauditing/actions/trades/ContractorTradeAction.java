@@ -112,6 +112,12 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	public String removeTradeAjax() {
 		contractor.getTrades().remove(trade);
 		tradeDAO.remove(trade);
+		
+		if (contractor.getTrades().size() > 0) {
+			contractor.setTradesUpdated(new Date());
+			accountDao.save(contractor);
+		}
+		
 		trade = null;
 
 		return "trade";

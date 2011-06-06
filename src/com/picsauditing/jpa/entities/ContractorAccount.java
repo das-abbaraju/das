@@ -552,7 +552,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.tradesSub = tradesSub;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getTradesUpdated() {
 		return tradesUpdated;
 	}
