@@ -1322,3 +1322,10 @@ insert into widget (caption, widgetType, synchronous, url)
 values ('Submitted Import PQF Audits', 'Html', 0, 'SubmittedImportPQFAuditsAjax.action');
 insert into widget_user (widgetID, userID, expanded, `column`, sortOrder)
 values (35, 959, 1, 1, 40);
+
+-- audit_question -> app_translation
+INSERT INTO pics_alpha1.app_translation(msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate)
+  SELECT CONCAT('AuditQuestion.', aq.id, '.name') AS msgKey, 'en' AS locale, aq.name AS msgValue, 33884 AS createdBy,
+         33884 AS updatedBy, now() AS creationDate, now() AS updateDate
+  FROM   pics_alpha1.audit_question aq
+  WHERE  aq.expirationDate > now();
