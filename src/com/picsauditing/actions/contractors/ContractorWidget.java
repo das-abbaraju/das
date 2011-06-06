@@ -87,7 +87,7 @@ public class ContractorWidget extends ContractorActionSupport {
 				if (audit.getAuditType().getId() == AuditType.IMPORT_PQF
 						&& audit.hasCaoStatusBefore(AuditStatus.Submitted))
 					openTasks.add(getText("ContractorWidget.message.ImportAndSubmitPQF", new Object[] {
-							new Integer(audit.getId()), audit.getAuditType().getName(), new Integer(0), null }));
+							new Integer(audit.getId()), audit.getAuditType().getName() }));
 			}
 
 			if (permissions.hasPermission(OpPerms.ContractorAdmin) || permissions.isAdmin()) {
@@ -236,7 +236,8 @@ public class ContractorWidget extends ContractorActionSupport {
 									openTasks.add(text);
 								}
 							}
-						} else if (conAudit.getAuditType().isCanContractorEdit()) {
+						} else if (conAudit.getAuditType().isCanContractorEdit()
+								&& conAudit.getAuditType().getId() != AuditType.IMPORT_PQF) {
 							if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
 								openTasks.add(getText("ContractorWidget.message.CompleteAndSubmitAudit", new Object[] {
 										conAudit.getId(), auditName, showAuditFor, auditFor }));

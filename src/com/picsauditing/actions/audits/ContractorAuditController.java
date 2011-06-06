@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.MenuComponent;
+import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -69,6 +70,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
 	private AuditTypeDAO auditTypeDAO;
+	@Autowired
+	private AuditBuilder auditBuilder;
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
@@ -217,6 +220,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 
 	public String importPQFYes() throws Exception {
+		int importAuditID = auditID;
+		
 		if (auditID > 0) {
 			findConAudit();
 
@@ -244,6 +249,12 @@ public class ContractorAuditController extends AuditActionSupport {
 			importAudit.setAuditColumns(system);
 			importAudit.setContractorAccount(contractor);
 			importAudit = auditDao.save(importAudit);
+			
+			contractor.getAudits().add(importAudit);
+			importAuditID = importAudit.getId();
+			
+			auditBuilder.buildAudits(contractor);
+			auditPercentCalculator.percentCalculateComplete(importAudit);
 
 			contractor.setCompetitorMembership(true);
 			contractor.getInvoices().add(invoice);
@@ -254,7 +265,7 @@ public class ContractorAuditController extends AuditActionSupport {
 		}
 
 		checkMode();
-		return redirect("Audit.action?auditID=" + auditID);
+		return redirect("Audit.action?auditID=" + importAuditID);
 	}
 
 	public String importPQFNo() throws Exception {
