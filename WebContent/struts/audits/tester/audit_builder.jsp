@@ -4,7 +4,6 @@
 <html>
 <head>
 <title>Audit Builder</title>
-<s:include value="../jquery.jsp" />
 <link rel="stylesheet" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" href="css/rules.css?v=<s:property value="version"/>" />
 </head>
@@ -12,7 +11,7 @@
 <h1><s:property value="contractor.name" />
 <span class="sub">Audit Builder</span>
 </h1>
-<s:include value="../actionMessages.jsp"></s:include>
+<s:include value="../../actionMessages.jsp"></s:include>
 
 Safety Critical: <s:property value="contractor.safetyRisk" /><br />
 Product  Critical: <s:property value="contractor.productRisk" /><br />
