@@ -161,9 +161,11 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	}
 
 	public boolean isCategoryApplicable(AuditCategory category, OperatorAccount operator) {
-		// Clean this up
-		if (operator.getId() == 4)
-			return categoriesPerGoverningBody.get(null).contains(category);
-		return categoriesPerGoverningBody.get(operator).contains(category);
+		Set<AuditCategory> applicableCategories = categoriesPerGoverningBody.get(operator);
+		if (applicableCategories == null && operator.getId() == 4)
+			applicableCategories = categoriesPerGoverningBody.get(null);
+		if (applicableCategories == null)
+			return false;
+		return applicableCategories.contains(category);
 	}
 }
