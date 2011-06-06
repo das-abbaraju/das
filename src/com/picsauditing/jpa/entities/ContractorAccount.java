@@ -79,7 +79,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Webcam webcam;
 	private Boolean soleProprietor;
 	private Boolean competitorMembership;
-	private AccountLevel accountLevel;
+	private AccountLevel accountLevel = AccountLevel.Full;
 
 	private Date paymentExpires;
 	private boolean renew = true;
@@ -1233,6 +1233,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return competitorMembership;
 	}
 
+	@Enumerated(EnumType.STRING)
 	public AccountLevel getAccountLevel() {
 		return accountLevel;
 	}
