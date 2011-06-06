@@ -14,11 +14,13 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.PaymentMethod;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.BrainTree;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -116,6 +118,17 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			conAudit.setContractorAccount(contractor);
 
 			auditDao.save(conAudit);
+			
+			ContractorFee newConFee = new ContractorFee();
+			newConFee.setAuditColumns(new User(User.CONTRACTOR));
+			newConFee.setContractor(contractor);
+
+			InvoiceFee currentFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 0);
+			newConFee.setCurrentLevel(currentFee);
+			newConFee.setNewLevel(currentFee);
+			newConFee.setFeeClass(FeeClass.ImportFee);
+			contractor.getFees().put(FeeClass.ImportFee, newConFee);
+			
 			this.redirect("ContractorPaymentOptions.action");
 		}
 

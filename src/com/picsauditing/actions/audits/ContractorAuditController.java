@@ -1,5 +1,6 @@
 package com.picsauditing.actions.audits;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,25 +17,31 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditCategoryDAO;
+import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
+import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
 /**
- * Used by Audit.action to show a list of categories for a given audit. Also
- * allows users to change the status of an audit.
+ * Used by Audit.action to show a list of categories for a given audit. Also allows users to change the status of an
+ * audit.
  */
 @SuppressWarnings("serial")
 public class ContractorAuditController extends AuditActionSupport {
@@ -57,6 +64,11 @@ public class ContractorAuditController extends AuditActionSupport {
 	private AuditCategoryDAO auditCategoryDAO;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
+	// Import PQF
+	@Autowired
+	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
+	private AuditTypeDAO auditTypeDAO;
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
@@ -172,13 +184,7 @@ public class ContractorAuditController extends AuditActionSupport {
 				answerMap = auditDataDao.findAnswers(auditID);
 			}
 
-			if (mode == null)
-				mode = VIEW;
-			if (mode.equals(EDIT) && !isCanEditAudit())
-				mode = VIEW;
-			if (mode.equals(VERIFY) && !isCanVerifyAudit())
-				mode = VIEW;
-
+			checkMode();
 			return SUCCESS;
 		}
 
@@ -188,10 +194,12 @@ public class ContractorAuditController extends AuditActionSupport {
 				for (ContractorAuditOperatorWorkflow caow : caowDAO.findbyAuditStatus(conAudit.getId(),
 						AuditStatus.Incomplete)) {
 					if (caow.getCao().isVisible()) {
-						if (permissions.isAdmin() || (permissions.isContractor() && permissions.getAccountId() == conAudit.getContractorAccount().getId())) {
+						if (permissions.isAdmin()
+								|| (permissions.isContractor() && permissions.getAccountId() == conAudit
+										.getContractorAccount().getId())) {
 							problems.put(caow.getCao(), caow.getNotes());
 						} else if (getViewableOperators(permissions).contains(caow.getCao())) {
-							problems.put(caow.getCao(), caow.getNotes());							
+							problems.put(caow.getCao(), caow.getNotes());
 						}
 					}
 				}
@@ -206,6 +214,59 @@ public class ContractorAuditController extends AuditActionSupport {
 		}
 
 		return SUCCESS;
+	}
+
+	public String importPQFYes() throws Exception {
+		if (auditID > 0) {
+			findConAudit();
+
+			InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 0);
+			User system = new User(User.SYSTEM);
+
+			Invoice invoice = new Invoice();
+			invoice.setAccount(contractor);
+			invoice.setCurrency(contractor.getCurrency());
+			invoice.setDueDate(new Date());
+			invoice.setTotalAmount(fee.getAmount(contractor));
+			invoice.setNotes("Thank you for doing business with PICS!");
+			invoice.setAuditColumns(system);
+			invoice.setQbSync(true);
+			invoice = (Invoice) invoiceFeeDAO.save(invoice);
+
+			InvoiceItem item = new InvoiceItem(fee, contractor);
+			item.setInvoice(invoice);
+			invoiceFeeDAO.save(item);
+			invoice.getItems().add(item);
+
+			ContractorAudit importAudit = new ContractorAudit();
+			importAudit.setAuditType(auditTypeDAO.find(AuditType.IMPORT_PQF));
+			importAudit.setManuallyAdded(true);
+			importAudit.setAuditColumns(system);
+			importAudit.setContractorAccount(contractor);
+			importAudit = auditDao.save(importAudit);
+
+			contractor.setCompetitorMembership(true);
+			contractor.getInvoices().add(invoice);
+			contractor.syncBalance();
+			accountDao.save(contractor);
+		} else {
+			addActionError("Missing Audit ID");
+		}
+
+		checkMode();
+		return redirect("Audit.action?auditID=" + auditID);
+	}
+
+	public String importPQFNo() throws Exception {
+		if (auditID > 0) {
+			findConAudit();
+
+			contractor.setCompetitorMembership(false);
+			accountDao.save(contractor);
+		}
+
+		checkMode();
+		return redirect("Audit.action?auditID=" + auditID);
 	}
 
 	public List<MenuComponent> getAuditMenu() {
@@ -342,8 +403,8 @@ public class ContractorAuditController extends AuditActionSupport {
 							if ("Membership".equals(ii.getInvoiceFee().getFeeClass())
 									&& !ii.getInvoiceFee().isBidonly()
 									&& !ii.getInvoiceFee().isPqfonly()
-									&& (ii.getInvoiceFee().getAmount(conAudit.getContractorAccount()).equals(
-											ii.getAmount()) || i.getTotalAmount().intValue() > 450))
+									&& (ii.getInvoiceFee().getAmount(conAudit.getContractorAccount())
+											.equals(ii.getAmount()) || i.getTotalAmount().intValue() > 450))
 								return true;
 						}
 					}
@@ -358,6 +419,40 @@ public class ContractorAuditController extends AuditActionSupport {
 		return !conAudit.isExpired() && !conAudit.hasCaoStatus(AuditStatus.Complete)
 				&& !conAudit.getAuditType().isCanContractorEdit()
 				&& conAudit.getAuditType().getEditPermission() == null && !conAudit.getContractorAccount().isRenew();
+	}
+
+	/**
+	 * This yes/no question only appears on the PQF audit itself. If they answer yes to this, generate an Import Fee
+	 * invoice.
+	 * 
+	 * @return True if the PQF is less than 50% complete for every CAO, and the contractor hasn't answered the
+	 *         competitor membership question on registration.
+	 */
+	public boolean isNeedsImportPQFQuestion() {
+		if (conAudit.getAuditType().isPqf() && conAudit.getContractorAccount().getCompetitorMembership() == null) {
+			for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
+				if (cao.getPercentComplete() > 50)
+					return false;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public BigDecimal getImportPQFFeeAmount() {
+		InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 0);
+		return fee.getAmount(contractor);
+	}
+
+	private void checkMode() {
+		if (mode == null)
+			mode = VIEW;
+		if (mode.equals(EDIT) && !isCanEditAudit())
+			mode = VIEW;
+		if (mode.equals(VERIFY) && !isCanVerifyAudit())
+			mode = VIEW;
 	}
 
 	public Map<ContractorAuditOperator, String> getProblems() {

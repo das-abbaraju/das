@@ -83,6 +83,13 @@ public class ContractorWidget extends ContractorActionSupport {
 						.add(getText("ContractorWidget.message.UpdatedAgreement", new Object[] { contractor.getId() }));
 			}
 
+			for (ContractorAudit audit : contractor.getAudits()) {
+				if (audit.getAuditType().getId() == AuditType.IMPORT_PQF
+						&& audit.hasCaoStatusBefore(AuditStatus.Submitted))
+					openTasks.add(getText("ContractorWidget.message.ImportAndSubmitPQF", new Object[] {
+							new Integer(audit.getId()), audit.getAuditType().getName(), new Integer(0), null }));
+			}
+
 			if (permissions.hasPermission(OpPerms.ContractorAdmin) || permissions.isAdmin()) {
 				if (contractor.getUsers().size() == 1
 						&& DateBean.getDateDifference(contractor.getCreationDate()) > -180) {
@@ -90,8 +97,8 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 
 				if (contractor.isAcceptsBids()) {
-					openTasks.add(getText("ContractorWidget.message.BidOnlyUpdgrade", new Object[] {
-							contractor.getPaymentExpires(), contractor.getId() }));
+					openTasks.add(getText("ContractorWidget.message.BidOnlyUpdgrade",
+							new Object[] { contractor.getPaymentExpires(), contractor.getId() }));
 				}
 			}
 
@@ -112,8 +119,8 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 
 				if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
-					openTasks.add(getText("ContractorWidget.message.UpdatePaymentMethod", new Object[] { contractor
-							.getId() }));
+					openTasks.add(getText("ContractorWidget.message.UpdatePaymentMethod",
+							new Object[] { contractor.getId() }));
 				}
 			}
 			String auditName;
@@ -203,7 +210,8 @@ public class ContractorWidget extends ContractorActionSupport {
 										Integer showScheduledDate = (conAudit.getScheduledDate() != null) ? 1 : 0;
 										Integer showAuditor = (conAudit.getAuditor() != null) ? 1 : 0;
 										if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
-											text = getText("ContractorWidget.message.UpcomingAuditConductedBy",
+											text = getText(
+													"ContractorWidget.message.UpcomingAuditConductedBy",
 													new Object[] {
 															conAudit.getId(),
 															auditName,

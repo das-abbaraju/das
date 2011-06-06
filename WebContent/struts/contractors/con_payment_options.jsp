@@ -80,11 +80,13 @@ function updateExpDate() {
 <s:if test="contractor.competitorMembership && contractor.status.pending && !hasPQFImportAudit">
 	<li>
 		<div class="alert">
-			You have indicated you are a member of another consortium or registry.  Press the Import button if you would like to have PICS import your data for a <s:property value="contractor.currencyCode.icon"/>200 fee.  (<a href="#" class="cluetip help" title="Let us Import Your Data" rel="#watchtip">Learn More</a>).
+			<s:text name="%{scope}.ConsortiumMember">
+				<s:param value="%{contractor.currencyCode.icon}" />
+				<s:param value="'watchtip'" />
+			</s:text>
 			<br />
 			<div id="watchtip">
-				It's Simple.
-				PICS can fill out up to 80% of your forms if you give us access to the prequalification data you submitted in another consortium or registry.  If you purchase this service, once you have an active membership, you can upload your prequal info and it will be transferred into your new account at PICS within 3-5 days.
+				<s:text name="%{scope}.ConsortiumMember.cluetip" />
 			</div>
 			<input type="submit" name="button" class="picsbutton positive" value="Import my Data" />
 		</div>

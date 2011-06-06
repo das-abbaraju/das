@@ -71,6 +71,31 @@
 			</s:text>
 		</div>		
 	</s:if>
+	<s:if test="needsImportPQFQuestion">
+		<div class="info">
+			<s:text name="Audit.message.ImportPQF">
+				<s:param value="'importPQFCluetip'" />
+				<s:param value="'importPQFCluetipLink'" />
+			</s:text>
+			<s:form id="importPQF">
+				<s:hidden name="auditID" />
+				<s:submit action="Audit!importPQFYes" cssClass="picsbutton positive" value="%{getText('Audit.button.ImportPQFYes')}" />
+				<s:submit action="Audit!importPQFNo" cssClass="picsbutton negative" value="%{getText('Audit.button.ImportPQFNo')}" />
+			</s:form>
+			<div id="importPQFCluetip">
+				<table>
+					<tr>
+						<td style="padding-right: 10px; vertical-align: middle;"><img src="images/help/import_pqf_sml.jpg" alt="Import PQF" /></td>
+						<td>
+							<s:text name="Audit.message.ImportPQF.cluetip">
+								<s:param value="%{contractor.currencyCode.icon + importPQFFeeAmount.toPlainString()}" />
+							</s:text>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>		
+	</s:if>
 </s:if>
 
 <s:form>

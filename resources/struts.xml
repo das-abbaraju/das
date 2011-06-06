@@ -259,6 +259,10 @@
 		<action name="FlagChangesWidgetAjax" class="com.picsauditing.actions.flags.FlagChangesWidget">
 			<result>struts/widgets/flag_changes.jsp</result>
 		</action>
+		
+		<action name="SubmittedImportPQFAuditsAjax" class="com.picsauditing.actions.audits.SubmittedImportPQFAudits">
+			<result>struts/widgets/submitted_import_pqf_audits.jsp</result>
+		</action>
 
 		<!-- Contractor Information -->
 		<action name="ContractorView"

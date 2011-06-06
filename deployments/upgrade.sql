@@ -1317,3 +1317,8 @@ ALTER TABLE `audit_question`
 	DROP COLUMN `name`;
 
 DROP TABLE `audit_question_option`;
+-- PICS-2336
+insert into widget (caption, widgetType, synchronous, url)
+values ('Submitted Import PQF Audits', 'Html', 0, 'SubmittedImportPQFAuditsAjax.action');
+insert into widget_user (widgetID, userID, expanded, `column`, sortOrder)
+values (35, 959, 1, 1, 40);
