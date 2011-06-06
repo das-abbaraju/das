@@ -150,8 +150,8 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 					}
 				}
 
-				boolean isSafetyOK = false;
-				boolean isProductOK = false;
+				boolean isSafetyOK = true;
+				boolean isProductOK = true;
 				// Contractor's assessments are the same (or higher?) than what
 				// we've calculated
 				if (!contractor.isMaterialSupplierOnly())
