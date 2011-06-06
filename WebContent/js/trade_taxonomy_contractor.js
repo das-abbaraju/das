@@ -61,9 +61,9 @@ $(function() {
 
 	$('input.service').live("change", function() {
 		if ($('input.service:checked').length > 0)
-			$("div.buttons .picsbutton").removeAttr("disabled");
+			$("#addButton").removeAttr("disabled");
 		else
-			$("div.buttons .picsbutton").attr("disabled", "disabled");
+			$("#addButton").attr("disabled", "disabled");
 	});
 
 	$('input.product').live('change', function() {
