@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.PICS.AuditCategoryRuleCache;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;

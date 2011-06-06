@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import com.picsauditing.PICS.AuditBuilder.AuditTypeDetail;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import com.picsauditing.auditBuilder.AuditTypesBuilder;
+import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -71,9 +73,12 @@ public class BillingCalculatorSingle {
 		boolean auditGUARD = false;
 		boolean insureGUARD = false;
 		boolean employeeGUARD = false;
+		
+		AuditTypeRuleCache ruleCache = (AuditTypeRuleCache) com.picsauditing.util.SpringUtils.getBean("AuditTypeRuleCache");
+		AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
 
-		Map<AuditType, AuditTypeDetail> map = AuditBuilder.calculateRequiredAuditTypes(contractor);
-		for (AuditType auditType : map.keySet()) {
+		for (AuditTypeDetail detail : builder.calculate() ) {
+			AuditType auditType = detail.rule.getAuditType();
 			if (auditType == null)
 				continue;
 			if (auditType.isDesktop() || auditType.getId() == AuditType.OFFICE)
@@ -338,6 +343,7 @@ public class BillingCalculatorSingle {
 				boolean oq = false;
 				boolean hseCompetency = false;
 
+				// TODO Tom, please figure out if we should repeat the code here from line 77-81
 				Map<AuditType, AuditTypeDetail> map = AuditBuilder.calculateRequiredAuditTypes(contractor);
 				for (AuditType auditType : map.keySet()) {
 					if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isIm()) {

@@ -26,6 +26,7 @@ import com.picsauditing.util.SpringUtils;
  */
 public class AuditTypesBuilder extends AuditBuilderBase {
 	private AuditTypeRuleCache ruleCache;
+	private List<AuditTypeRule> rules;
 
 	public class AuditTypeDetail {
 		/**
@@ -46,7 +47,7 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 	public Set<AuditTypeDetail> calculate() {
 		Set<AuditTypeDetail> types = new HashSet<AuditTypeDetail>();
 
-		List<AuditTypeRule> rules = ruleCache.getRules(contractor);
+		rules = ruleCache.getRules(contractor);
 
 		// Prune Rules
 		Set<OperatorTag> tags = getRequiredTags(rules);
@@ -154,9 +155,14 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 
 		Map<Integer, AuditData> answers = new HashMap<Integer, AuditData>();
 		if (contractorAnswersNeeded.size() > 0) {
+			// Don't load the DAO if not needed. This is especially helpful for unit testing
 			AuditDataDAO dao = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
 			answers = dao.findAnswersByContractor(contractor.getId(), contractorAnswersNeeded);
 		}
 		return answers;
+	}
+	
+	public List<AuditTypeRule> getRules() {
+		return rules;
 	}
 }

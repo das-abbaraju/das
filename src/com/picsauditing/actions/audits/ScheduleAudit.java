@@ -9,18 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
@@ -49,6 +45,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
+	// TODO Move this to a common location
 	static final public String GOOGLE_API_KEY = "ABQIAAAAgozVvI8r_S5nN6njMJJ7aBTTvY0m40rW8_sKxH-4kQuUdYdvuxQdivgdKinXBN5YPCA6h_z5hoeBaA";
 	static final public String DATE_FORMAT = "yyyyMMddHHmm";
 
@@ -63,31 +60,23 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private String scheduledDateTime;
 	private Date availabilityStartDate = new Date();
 
+	@Autowired
 	private AuditorAvailabilityDAO auditorAvailabilityDAO;
+	@Autowired
 	private InvoiceDAO invoiceDAO;
-	@SuppressWarnings("unused")
-	private InvoiceFeeDAO feeDAO;
+	@Autowired
 	private InvoiceItemDAO itemDAO;
+	@Autowired
 	private UserAccessDAO uaDAO;
+	@Autowired
 	private UserAssignmentDAO userAssignmentDAO;
 
 	private User auditor = null;
 	private InvoiceFee rescheduling;
 	private InvoiceFee expedite;
 
-	public ScheduleAudit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, CertificateDAO certificateDao, AuditorAvailabilityDAO auditorAvailabilityDAO,
-			AuditCategoryRuleCache auditCategoryRuleCache, InvoiceDAO invoiceDAO, InvoiceFeeDAO feeDAO,
-			InvoiceItemDAO itemDAO, UserAccessDAO uaDAO, UserAssignmentDAO userAssignmentDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
-		this.auditorAvailabilityDAO = auditorAvailabilityDAO;
+	public ScheduleAudit(InvoiceFeeDAO feeDAO) {
 		this.subHeading = "Schedule Audit";
-
-		this.invoiceDAO = invoiceDAO;
-		this.feeDAO = feeDAO;
-		this.itemDAO = itemDAO;
-		this.uaDAO = uaDAO;
-		this.userAssignmentDAO = userAssignmentDAO;
 
 		rescheduling = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ReschedulingFee, 0);
 		expedite = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ExpediteFee, 0);

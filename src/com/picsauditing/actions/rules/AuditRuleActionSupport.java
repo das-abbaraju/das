@@ -8,20 +8,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.AuditCategoryRuleCache;
-import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AccountUser;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -32,14 +33,20 @@ import com.picsauditing.jpa.entities.User;
 @SuppressWarnings("serial")
 public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsActionSupport implements Preparable {
 
+	@Autowired
 	protected AuditDecisionTableDAO dao;
+	@Autowired
 	protected OperatorAccountDAO operatorDAO;
+	@Autowired
 	protected OperatorTagDAO opTagDAO;
+	@Autowired
 	protected AuditTypeDAO auditTypeDAO;
+	@Autowired
 	protected OperatorTagDAO tagDAO;
+	@Autowired
 	protected AuditQuestionDAO questionDAO;
-	protected AuditTypeRuleCache auditTypeRuleCache;
-	protected AuditCategoryRuleCache auditCategoryRuleCache;
+	@Autowired
+	protected AppPropertyDAO appPropertyDAO;
 
 	protected int id;
 	protected String ruleType;
@@ -110,8 +117,8 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	}
 
 	/**
-	 * If user has a permission to edit the rule, created the rule, or is
-	 * associated with the operator then they can edit the rule
+	 * If user has a permission to edit the rule, created the rule, or is associated with the operator then they can
+	 * edit the rule
 	 * 
 	 * @return
 	 */
@@ -172,7 +179,16 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 		return true;
 	}
 
-	protected abstract void clear();
+	abstract protected void clear();
+	
+	protected void clearAppProperties() {
+		AppProperty appProp = appPropertyDAO.find("clear_cache");
+		if (appProp != null) {
+			appProp.setValue("true");
+			appPropertyDAO.save(appProp);
+		}
+		addActionMessage("Clearing Cache...");
+	}
 
 	protected void saveFields() {
 		rule.setInclude(ruleInclude);

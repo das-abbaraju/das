@@ -20,11 +20,11 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.DynaBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.AuditBuilderController;
-import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -65,19 +65,30 @@ import com.picsauditing.util.log.PicsLogger;
 public class Cron extends PicsActionSupport {
 
 	static protected User system = new User(User.SYSTEM);
+	@Autowired
 	protected OperatorAccountDAO operatorDAO = null;
+	@Autowired
 	protected AppPropertyDAO appPropDao = null;
-	protected AuditBuilderController auditBuilder = null;
+	@Autowired
+	protected AuditBuilder auditBuilder = null;
+	@Autowired
 	protected ContractorAuditDAO contractorAuditDAO = null;
+	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO = null;
+	@Autowired
 	protected ContractorAuditOperatorDAO contractorAuditOperatorDAO = null;
+	@Autowired
 	protected NoteDAO noteDAO = null;
+	@Autowired
 	protected InvoiceDAO invoiceDAO = null;
+	@Autowired
 	protected AuditPercentCalculator auditPercentCalculator;
+	@Autowired
 	private EbixLoader ebixLoader;
+	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
 	private InvoiceItemDAO invoiceItemDAO;
-	
 	@Autowired
 	private IndexerEngine indexer;
 
@@ -85,25 +96,6 @@ public class Cron extends PicsActionSupport {
 	StringBuffer report = null;
 
 	protected boolean flagsOnly = false;
-
-	public Cron(OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilderController ab,
-			ContractorAuditDAO contractorAuditDAO, ContractorAccountDAO contractorAccountDAO,
-			AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO, InvoiceDAO invoiceDAO,
-			EbixLoader ebixLoader, ContractorAuditOperatorDAO contractorAuditOperatorDAO,
-			InvoiceFeeDAO invoiceFeeDAO, InvoiceItemDAO invoiceItemDAO) {
-		this.operatorDAO = ops;
-		this.appPropDao = appProps;
-		this.auditBuilder = ab;
-		this.contractorAuditDAO = contractorAuditDAO;
-		this.contractorAccountDAO = contractorAccountDAO;
-		this.auditPercentCalculator = auditPercentCalculator;
-		this.noteDAO = noteDAO;
-		this.invoiceDAO = invoiceDAO;
-		this.ebixLoader = ebixLoader;
-		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
-		this.invoiceFeeDAO = invoiceFeeDAO;
-		this.invoiceItemDAO = invoiceItemDAO;
-	}
 
 	@Anonymous
 	public String execute() throws Exception {
@@ -117,16 +109,22 @@ public class Cron extends PicsActionSupport {
 		if (!flagsOnly) {
 
 			startTask("\nRunning auditBuilder.addAuditRenewals...");
-			auditBuilder.addAuditRenewals();
+			List<ContractorAccount> contractors = contractorAuditDAO.findContractorsWithExpiringAudits();
+			for (ContractorAccount contractor : contractors) {
+				try {
+					auditBuilder.buildAudits(contractor);
+					contractorAuditDAO.save(contractor);
+				} catch (Exception e) {
+					System.out.println("ERROR!! AuditBuiler.addAuditRenewals() " + e.getMessage());
+				}
+			}
 			endTask();
 
 			try {
 				// TODO - Move this to the db.picsauditing.com cron bash script
 				/*
-				 * OPTIMIZE TABLE
-				 * OSHA,accounts,auditCategories,auditData,auditQuestions
-				 * ,certificates,contractor_info," +
-				 * "forms,generalContractors,loginLog,users;
+				 * OPTIMIZE TABLE OSHA,accounts,auditCategories,auditData,auditQuestions ,certificates,contractor_info,"
+				 * + "forms,generalContractors,loginLog,users;
 				 */
 			} catch (Throwable t) {
 				handleException(t);
@@ -199,7 +197,7 @@ public class Cron extends PicsActionSupport {
 			String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
 			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
 			for (ContractorAccount contractor : conAcctList) {
-				if("Renewal Overdue".equals(contractor.getBillingStatus()))
+				if ("Renewal Overdue".equals(contractor.getBillingStatus()))
 					contractor.setRenew(false);
 				contractor.setStatus(AccountStatus.Deactivated);
 				// Setting a deactivation reason
@@ -437,8 +435,9 @@ public class Cron extends PicsActionSupport {
 				if (lateFee.compareTo(BigDecimal.valueOf(20)) < 1)
 					lateFee = BigDecimal.valueOf(20);
 
-				InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, ((ContractorAccount) i.getAccount()).getPayingFacilities());
-				InvoiceItem lateFeeItem = new InvoiceItem(fee, (ContractorAccount)i.getAccount());
+				InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee,
+						((ContractorAccount) i.getAccount()).getPayingFacilities());
+				InvoiceItem lateFeeItem = new InvoiceItem(fee, (ContractorAccount) i.getAccount());
 				lateFeeItem.setAmount(lateFee);
 				lateFeeItem.setAuditColumns(new User(User.SYSTEM));
 				lateFeeItem.setInvoice(i);

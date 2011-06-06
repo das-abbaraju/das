@@ -3,18 +3,12 @@ package com.picsauditing.actions.rules;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.AuditCategoryRuleCache;
-import com.picsauditing.PICS.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.dao.AuditCategoryDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 
 @SuppressWarnings("serial")
@@ -22,24 +16,12 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 
 	protected Integer ruleAuditCategoryId;
 
+	@Autowired
 	protected AuditCategoryDAO auditCategoryDAO;
-	protected AppPropertyDAO appPropertyDAO;
+	@Autowired
+	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
-	public AuditCategoryRuleEditor(AuditDecisionTableDAO dao, OperatorAccountDAO opDAO, OperatorTagDAO opTagDAO,
-			AuditTypeDAO auditTypeDAO, OperatorTagDAO tagDAO, AuditQuestionDAO questionDAO,
-			AuditTypeRuleCache auditTypeRuleCache, AuditCategoryRuleCache auditCategoryRuleCache,
-			AuditCategoryDAO auditCategoryDAO, AppPropertyDAO appPropertyDAO) {
-		this.dao = dao;
-		this.operatorDAO = opDAO;
-		this.opTagDAO = opTagDAO;
-		this.auditTypeDAO = auditTypeDAO;
-		this.tagDAO = tagDAO;
-		this.questionDAO = questionDAO;
-		this.auditCategoryDAO = auditCategoryDAO;
-		this.auditTypeRuleCache = auditTypeRuleCache;
-		this.auditCategoryRuleCache = auditCategoryRuleCache;
-		this.appPropertyDAO = appPropertyDAO;
-
+	public AuditCategoryRuleEditor() {
 		this.requiredPermission = OpPerms.ManageCategoryRules;
 		this.ruleType = "Category";
 		this.urlPrefix = "Category";
@@ -68,7 +50,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 	protected void redirectTo() throws IOException {
 		if (getActionErrors().size() > 0)
 			ActionContext.getContext().getSession().put("actionErrors", getActionErrors());
-		
+
 		if (rule != null)
 			this.redirect(urlPrefix + "RuleEditor.action?id=" + rule.getId());
 		else
@@ -105,7 +87,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 	@Override
 	protected boolean save() {
 		saveFields();
-		
+
 		if (isOperatorRequired()) {
 			if (rule.getOperatorAccount() == null) {
 				addActionError("You must specify an operator for this rule");
@@ -124,12 +106,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 	@Override
 	protected void clear() {
 		auditCategoryRuleCache.clear();
-		AppProperty appProp = appPropertyDAO.find("clear_cache");
-		if (appProp != null) {
-			appProp.setValue("true");
-			appPropertyDAO.save(appProp);
-		}
-		addActionMessage("Clearing Category Cache...");
+		clearAppProperties();
 	}
 
 	@Override

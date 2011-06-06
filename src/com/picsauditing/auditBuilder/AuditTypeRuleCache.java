@@ -210,4 +210,7 @@ public class AuditTypeRuleCache extends AuditRuleCache {
 		}
 	}
 
+	public void clear() {
+		data = null;
+	}
 }

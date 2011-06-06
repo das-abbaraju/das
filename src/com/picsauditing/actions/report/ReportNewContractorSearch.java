@@ -9,13 +9,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.AuditBuilderController;
-import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -47,7 +48,9 @@ public class ReportNewContractorSearch extends ReportAccount {
 	private ContractorAccountDAO contractorAccountDAO;
 	private OperatorAccountDAO operatorAccountDAO;
 	private AuditDataDAO auditDataDAO;
-	private AuditBuilderController auditBuilder;
+	@Autowired
+	private AuditBuilder auditBuilder;
+	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 
 	private FacilityChanger facilityChanger;
@@ -56,24 +59,19 @@ public class ReportNewContractorSearch extends ReportAccount {
 	private Map<Integer, FlagColor> byConID = new HashMap<Integer, FlagColor>();
 
 	public ReportNewContractorSearch(ContractorAccountDAO contractorAccountDAO, FacilityChanger facilityChanger,
-			OperatorAccountDAO operatorAccountDAO, AuditDataDAO auditDataDAO, AuditBuilderController auditBuilder,
-			AuditPercentCalculator auditPercentCalculator) {
+			OperatorAccountDAO operatorAccountDAO, AuditDataDAO auditDataDAO) {
 		this.skipPermissions = true;
 		this.filteredDefault = true;
 		this.facilityChanger = facilityChanger;
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.auditDataDAO = auditDataDAO;
-		this.auditBuilder = auditBuilder;
-		this.auditPercentCalculator = auditPercentCalculator;
 	}
 
 	@Override
 	public void prepare() throws Exception {
 		super.prepare();
 
-		// getFilter().setPrimaryInformation(true);
-		// getFilter().setTradeInformation(true);
 		getFilter().setShowMinorityOwned(true);
 
 		if (permissions.getCorporateParent().size() > 0)
@@ -209,7 +207,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 						contractor.setAcceptsBids(false);
 						contractor.setRenew(true);
 
-						auditBuilder.buildAudits(contractor, null);
+						auditBuilder.buildAudits(contractor);
 
 						for (ContractorAudit cAudit : contractor.getAudits()) {
 							if (cAudit.getAuditType().isPqf()) {
@@ -219,9 +217,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 										auditDataDAO.save(cao);
 									}
 								}
-
-								auditBuilder.setup(contractor, null);
-								auditBuilder.fillAuditCategories(cAudit);
+								
+								auditBuilder.recalculateCategories(cAudit);
 								auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
 								auditPercentCalculator.percentCalculateComplete(cAudit);
 								auditDataDAO.save(cAudit);

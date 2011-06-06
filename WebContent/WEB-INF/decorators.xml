@@ -33,7 +33,6 @@
 		<pattern>/send_welcome_email.jsp</pattern>
 		<pattern>/ChartXML*</pattern>
 		<pattern>/con_pricing.jsp</pattern>
-		<pattern>/ConHeader.action</pattern>
 		<pattern>/AuditFileUpload.action</pattern>
 	</decorator>
 </decorators>

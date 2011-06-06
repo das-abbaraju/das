@@ -6,9 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -23,19 +26,22 @@ import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
 public class AuditPercentCalculator {
-
-	private AuditCategoryRuleCache auditCategoryRuleCache;
-	private AuditCategoryDataDAO categoryDataDAO;
-	private AuditDataDAO auditDataDAO;
 	private List<AuditData> verifiedPqfData = null;
 
-	public AuditPercentCalculator(AuditCategoryRuleCache auditCategoryRuleCache, AuditCategoryDataDAO categoryDataDAO,
-			AuditDataDAO auditDataDAO) {
-		this.auditCategoryRuleCache = auditCategoryRuleCache;
-		this.categoryDataDAO = categoryDataDAO;
-		this.auditDataDAO = auditDataDAO;
-	}
+	@Autowired
+	private AuditCategoryRuleCache auditCategoryRuleCache;
+	@Autowired
+	private AuditCategoryDataDAO categoryDataDAO;
+	@Autowired
+	private AuditDecisionTableDAO auditDecisionTableDAO;
+	@Autowired
+	private AuditDataDAO auditDataDAO;
 
+	/**
+	 * Calculate the percent complete for all questions in this category
+	 * 
+	 * @param catData
+	 */
 	public void updatePercentageCompleted(AuditCatData catData) {
 		if (catData == null)
 			return;
@@ -200,10 +206,17 @@ public class AuditPercentCalculator {
 		percentCalculateComplete(conAudit, false);
 	}
 
+	/**
+	 * For each CAO, roll up all the category complete stats to calculate the percent complete for the cao
+	 * 
+	 * @param conAudit
+	 * @param recalcCats
+	 */
 	public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats) {
 		if (recalcCats)
 			recalcAllAuditCatDatas(conAudit);
 
+		auditCategoryRuleCache.initialize(auditDecisionTableDAO);
 		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache,
 				conAudit.getContractorAccount());
 
@@ -266,6 +279,11 @@ public class AuditPercentCalculator {
 		}
 	}
 
+	/**
+	 * Recalculate all categories including the OSHA ones too
+	 * 
+	 * @param conAudit
+	 */
 	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
 		for (AuditCatData data : conAudit.getCategories()) {
 			OshaType typeFromCategory = OshaTypeConverter.getTypeFromCategory(data.getCategory().getId());

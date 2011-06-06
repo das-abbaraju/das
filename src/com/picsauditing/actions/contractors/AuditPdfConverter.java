@@ -14,6 +14,7 @@ import java.util.TreeMap;
 import javax.servlet.ServletOutputStream;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Chunk;
@@ -32,15 +33,10 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
-import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.actions.audits.AuditActionSupport;
-import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -57,9 +53,10 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditPdfConverter extends AuditActionSupport {
+	@Autowired
 	protected OperatorAccountDAO operatorAccountDAO;
+	@Autowired
 	protected AuditDataDAO auditDataDAO;
-	protected AuditCategoryDataDAO catDataDao;
 
 	private Map<String, File> attachments = new TreeMap<String, File>();
 
@@ -70,15 +67,6 @@ public class AuditPdfConverter extends AuditActionSupport {
 	private Font questionTitleFont = FontFactory.getFont(FontFactory.HELVETICA, 13, new Color(0xa8, 0x4d, 0x10));
 	private Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
 	private Font answerFont = FontFactory.getFont(FontFactory.COURIER, 10, Color.BLUE);
-
-	public AuditPdfConverter(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			CertificateDAO certificateDao, AuditCategoryRuleCache auditCategoryRuleCache,
-			OperatorAccountDAO operatorAccountDAO, AuditDataDAO auditDataDAO, AuditCategoryDataDAO catDataDao) {
-		super(accountDao, auditDao, catDataDao, auditDataDAO, certificateDao, auditCategoryRuleCache);
-		this.operatorAccountDAO = operatorAccountDAO;
-		this.auditDataDAO = auditDataDAO;
-		this.catDataDao = catDataDao;
-	}
 
 	@Override
 	public String execute() throws Exception {

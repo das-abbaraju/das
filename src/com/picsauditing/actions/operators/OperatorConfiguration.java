@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.AuditCategoryRuleCache;
-import com.picsauditing.PICS.AuditTypeRuleCache;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;

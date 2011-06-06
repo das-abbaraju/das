@@ -3,8 +3,8 @@ package com.picsauditing.actions;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 
-import com.picsauditing.PICS.AuditCategoryRuleCache;
-import com.picsauditing.PICS.AuditTypeRuleCache;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.dao.AppPropertyDAO;

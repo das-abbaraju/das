@@ -7,18 +7,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.picsauditing.PICS.AuditCategoryRuleCache;
-import com.picsauditing.PICS.AuditPercentCalculator;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
-import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -58,6 +54,7 @@ public class CaoSave extends AuditActionSupport {
 	private List<ContractorAuditOperator> caoList;
 	private boolean insurance = false;
 
+	@Autowired
 	protected AuditPercentCalculator auditPercentCalculator;
 
 	protected OshaAuditDAO oshaAuditDAO;
@@ -65,11 +62,6 @@ public class CaoSave extends AuditActionSupport {
 	// Update flags
 	private Set<FlagCriteriaContractor> fco;
 	private FlagDataCalculator flagCalc;
-
-	public CaoSave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, CertificateDAO certificateDao, AuditCategoryRuleCache auditCategoryRuleCache) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
-	}
 
 	public String showHistory() {
 		if (caoID > 0)

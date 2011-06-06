@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import com.picsauditing.PICS.AuditTypeRuleCache;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -184,7 +184,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 	public Set<AuditType> getManuallyAddAudits() {
 		if (manuallyAddAudits == null) {
 			manuallyAddAudits = new HashSet<AuditType>();
-			List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache.getApplicableAuditRules(contractor);
+			List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache.getRules(contractor);
 
 			for (AuditTypeRule auditTypeRule : applicableAuditRules) {
 				if (auditTypeRule.getAuditType() != null && auditTypeRule.getAuditType().getId() == 126)

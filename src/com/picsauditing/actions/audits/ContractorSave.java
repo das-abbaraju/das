@@ -2,9 +2,11 @@ package com.picsauditing.actions.audits;
 
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -15,14 +17,11 @@ import com.picsauditing.util.log.PicsLogger;
 public class ContractorSave extends PicsActionSupport implements Preparable {
 
 	private ContractorAccount ca = null;
-	private ContractorAccountDAO dao;
 	private int auditorId;
-	private AuditBuilderController auditBuilder;
-
-	public ContractorSave(ContractorAccountDAO dao, AuditBuilderController auditBuilder) {
-		this.dao = dao;
-		this.auditBuilder = auditBuilder;
-	}
+	@Autowired
+	private AuditBuilder auditBuilder;
+	@Autowired
+	private ContractorAccountDAO dao;
 
 	public String execute() {
 		if (!forceLogin())
@@ -35,14 +34,15 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 
 		if (auditorId > 0) {
 			ca.setAuditor(new User(auditorId));
-			auditBuilder.buildAudits(ca, getUser());
+			auditBuilder.buildAudits(ca);
 
 			for (ContractorAudit conAudit : ca.getAudits()) {
 				if (!conAudit.getAuditType().getClassType().isAudit()) {
 					conAudit.setAuditor(ca.getAuditor());
 					conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(ca.getAuditor())));
 					conAudit.setAssignedDate(new Date());
-					PicsLogger.log(" assigning auditorID " + auditorId + " to " + conAudit.getAuditType().getName().toString());
+					PicsLogger.log(" assigning auditorID " + auditorId + " to "
+							+ conAudit.getAuditType().getName().toString());
 				}
 			}
 		}

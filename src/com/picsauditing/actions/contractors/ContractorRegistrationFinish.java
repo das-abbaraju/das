@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.BrainTreeServiceErrorResponseException;
@@ -17,6 +17,7 @@ import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
@@ -49,41 +50,35 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class ContractorRegistrationFinish extends ContractorActionSupport {
 
+	// we probably can reuse BaseTabe save methods and eliminate some of these DAOs
+	@Autowired
 	private InvoiceDAO invoiceDAO;
+	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
 	private PaymentDAO paymentDAO;
+	@Autowired
 	private AppPropertyDAO appPropDAO;
+	@Autowired
 	private NoteDAO noteDAO;
+	@Autowired
 	private InvoiceItemDAO invoiceItemDAO;
-	private AuditBuilderController auditBuilder;
+	@Autowired
+	private AuditBuilder auditBuilder;
 
 	private BrainTreeService paymentService = new BrainTreeService();
 
 	private Invoice invoice;
 	private boolean complete = false;
 
-	public ContractorRegistrationFinish(InvoiceDAO invoiceDAO, InvoiceFeeDAO invoiceFeeDAO, PaymentDAO paymentDAO,
-			AppPropertyDAO appPropDAO, NoteDAO noteDAO, InvoiceItemDAO invoiceItemDAO,
-			AuditBuilderController auditBuilder) {
-		this.invoiceDAO = invoiceDAO;
-		this.invoiceFeeDAO = invoiceFeeDAO;
-		this.paymentDAO = paymentDAO;
-		this.appPropDAO = appPropDAO;
-		this.noteDAO = noteDAO;
-		this.invoiceItemDAO = invoiceItemDAO;
-		this.auditBuilder = auditBuilder;
-		subHeading = "Finish Registration";
-	}
-
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+		subHeading = "Finish Registration";
 
 		findContractor();
 
 		findUnpaidInvoice();
 
-		auditBuilder.buildAudits(contractor, getUser());
+		auditBuilder.buildAudits(contractor);
 		this.resetActiveAudits();
 
 		if ("Complete My Registration".equals(button)) {

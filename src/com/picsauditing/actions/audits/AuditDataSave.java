@@ -11,21 +11,15 @@ import java.util.List;
 import javax.persistence.NoResultException;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.AuditBuilderController;
-import com.picsauditing.PICS.AuditCategoryRuleCache;
-import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NaicsDAO;
-import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
@@ -49,30 +43,21 @@ public class AuditDataSave extends AuditActionSupport {
 	private AuditData auditData = null;
 	private String[] multiAnswer;
 	private AnswerMap answerMap;
-	private AuditQuestionDAO questionDao = null;
-	private NaicsDAO naicsDAO;
-	private AuditBuilderController auditBuilder;
 	private String mode;
 	private boolean toggleVerify = false;
 
+	@Autowired
+	private AuditQuestionDAO questionDao = null;
+	@Autowired
+	private NaicsDAO naicsDAO;
+	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
+	@Autowired
 	private AuditDecisionTableDAO auditRuleDAO;
-
-	public AuditDataSave(ContractorAccountDAO accountDAO, AuditDataDAO dao, AuditCategoryDataDAO catDataDao,
-			AuditQuestionDAO questionDao, ContractorAuditDAO auditDao, CertificateDAO certificateDao,
-			OshaAuditDAO oshaAuditDAO, NaicsDAO naicsDAO, AuditBuilderController auditBuilder,
-			AuditDecisionTableDAO auditRuleDAO, AuditPercentCalculator auditPercentCalculator,
-			AuditCategoryRuleCache auditCategoryRuleCache) {
-		super(accountDAO, auditDao, catDataDao, dao, certificateDao, auditCategoryRuleCache);
-		this.auditRuleDAO = auditRuleDAO;
-		this.questionDao = questionDao;
-		this.naicsDAO = naicsDAO;
-		this.auditBuilder = auditBuilder;
-		this.auditPercentCalculator = auditPercentCalculator;
-	}
+	@Autowired
+	private AuditBuilder auditBuilder;
 
 	public String execute() throws Exception {
-
 		if (getCategoryID() == 0) {
 			addActionError("Missing categoryID");
 			return BLANK;
@@ -227,8 +212,10 @@ public class AuditDataSave extends AuditActionSupport {
 					auditDao.save(tempAudit);
 				}
 
-				if (auditData.getQuestion().isRecalculateCategories())
-					auditBuilder.fillAuditCategories(auditData);
+				if (auditData.getQuestion().isRecalculateCategories()) {
+					auditBuilder.recalculateCategories(tempAudit);
+					auditDao.save(tempAudit);
+				}
 
 				// Stop concurrent modification exception
 				if (tempAudit.getAuditType().isAnnualAddendum()) {
@@ -302,7 +289,7 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 
 			if (checkDependentQuestions() || checkOtherRules()) {
-				auditBuilder.fillAuditCategories(auditData);
+				auditBuilder.recalculateCategories(conAudit);
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
 				auditDao.save(conAudit);
 			} else if (catData != null) {

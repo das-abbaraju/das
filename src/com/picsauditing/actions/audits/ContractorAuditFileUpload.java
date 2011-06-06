@@ -6,42 +6,29 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.picsauditing.PICS.AuditCategoryRuleCache;
-import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.AuditDataDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditFileDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAuditFile;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
 
 @SuppressWarnings("serial")
 public class ContractorAuditFileUpload extends AuditActionSupport {
 
+	@Autowired
 	protected ContractorAuditFileDAO contractorAuditFileDAO;
+	@Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
 
 	protected List<AuditData> openReqs = null;
 	protected int fileID;
 
-	public ContractorAuditFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao, ContractorAuditFileDAO contractorAuditFileDAO,
-			AuditQuestionDAO auditQuestionDAO, AuditCategoryRuleCache auditCategoryRuleCache) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
-		this.contractorAuditFileDAO = contractorAuditFileDAO;
-		this.auditQuestionDAO = auditQuestionDAO;
-	}
-
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
 		this.findConAudit();
 
 		if ("Review".equals(button)) {

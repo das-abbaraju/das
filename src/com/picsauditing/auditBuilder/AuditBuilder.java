@@ -137,7 +137,8 @@ public class AuditBuilder {
 				}
 			}
 		}
-
+		
+		categoryRuleCache.initialize(auditDecisionTableDAO);
 		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache, contractor);
 
 		/** Generate Categories and CAOs **/
@@ -207,8 +208,7 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * Determine which categories should be on a given audit and add ones that aren't there and remove ones that
-	 * shouldn't be there
+	 * Given a set of required categories, add/remove auditCatData
 	 * 
 	 * @param conAudit
 	 */
@@ -253,6 +253,7 @@ public class AuditBuilder {
 			}
 		}
 
+		// Now we have an updated list categoriesNeeded, update the catData
 		for (AuditCategory category : conAudit.getAuditType().getCategories()) {
 
 			AuditCatData catData = getCatData(conAudit, category);
@@ -272,9 +273,8 @@ public class AuditBuilder {
 					addOshaLog(catData);
 				}
 			}
+			// Where are we saving the catData??
 		}
-		// Save all auditCatData rows at once
-		// cAuditDAO.save(conAudit);
 	}
 
 	private void fillAuditOperatorPermissions(ContractorAuditOperator cao, Set<OperatorAccount> caopOperators) {
@@ -398,6 +398,28 @@ public class AuditBuilder {
 		catData.setNumRequired(category.getNumRequired());
 		conAudit.getCategories().add(catData);
 		return catData;
+	}
+
+	public void recalculateCategories(ContractorAudit conAudit) {
+		categoryRuleCache.initialize(auditDecisionTableDAO);
+		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache,
+				conAudit.getContractorAccount());
+
+		/*
+		 * I really don't like this. We should probably have the list of operators somewhere else, but I couldn't find
+		 * it. If we find ourselves doing this more often, then this method should be placed in ContractorAudit as a
+		 * transient method.
+		 */
+		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+		for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
+			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+				operators.add(caop.getOperator());
+			}
+		}
+
+		Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, operators);
+		fillAuditCategories(conAudit, categories);
+		fillAuditOperators(conAudit, categoriesBuilder.getCaos());
 	}
 
 }

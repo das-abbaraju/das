@@ -5,17 +5,12 @@ import java.io.File;
 import javax.persistence.NoResultException;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.AuditPercentCalculator;
-import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.PICSFileType;
-import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -25,25 +20,17 @@ import com.picsauditing.util.FileUtils;
 public class AuditDataUpload extends AuditActionSupport implements Preparable {
 	private static final long serialVersionUID = 2438788697676816034L;
 
-	protected AuditQuestionDAO questionDAO;
-
 	private String divId;
 	private AuditData auditData;
 	private File file;
 	protected String fileContentType = null;
 	protected String fileFileName = null;
+	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
+	@Autowired
+	protected AuditQuestionDAO questionDAO;
 
 	private int copyDataID = 0;
-
-	public AuditDataUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
-			AuditQuestionDAO questionDAO, AuditPercentCalculator auditPercentCalculator,
-			AuditCategoryRuleCache auditCategoryRuleCache) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
-		this.questionDAO = questionDAO;
-		this.auditPercentCalculator = auditPercentCalculator;
-	}
 
 	@Override
 	public void prepare() throws Exception {
@@ -51,8 +38,6 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
 		this.findConAudit();
 
 		if (auditData == null) {

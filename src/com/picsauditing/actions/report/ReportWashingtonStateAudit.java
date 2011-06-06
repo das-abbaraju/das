@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.AuditBuilderController;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -32,13 +33,18 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportWashingtonStateAudit extends ReportAccount {
+	@Autowired
 	private AuditCategoryDAO auditCategoryDAO;
+	@Autowired
 	private AuditTypeDAO auditTypeDAO;
+	@Autowired
 	private ContractorAccountDAO conDAO;
+	@Autowired
 	private ContractorAuditDAO conAuditDAO;
-	// private ContractorAuditOperatorDAO caoDAO;
+	@Autowired
 	private OperatorAccountDAO operatorAccountDAO;
-	private AuditBuilderController auditBuilder;
+	@Autowired
+	private AuditBuilder auditBuilder;
 
 	private int conID;
 	private ReportFilterWashingtonAudit filter = new ReportFilterWashingtonAudit();
@@ -48,17 +54,7 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 	private Map<Integer, List<Integer>> map = new HashMap<Integer, List<Integer>>();
 	private Map<Integer, ContractorAudit> previouslyRequested = new HashMap<Integer, ContractorAudit>();
 
-	public ReportWashingtonStateAudit(OperatorAccountDAO operatorAccountDAO, AuditCategoryDAO auditCategoryDAO,
-			AuditTypeDAO auditTypeDAO, ContractorAccountDAO conDAO, ContractorAuditDAO conAuditDAO,
-			AuditBuilderController auditBuilder) {
-		this.auditCategoryDAO = auditCategoryDAO;
-		this.auditTypeDAO = auditTypeDAO;
-		this.conDAO = conDAO;
-		this.conAuditDAO = conAuditDAO;
-		// this.caoDAO = caoDAO;
-		this.operatorAccountDAO = operatorAccountDAO;
-		this.auditBuilder = auditBuilder;
-
+	public ReportWashingtonStateAudit() {
 		this.orderByDefault = "a.name";
 	}
 
@@ -92,7 +88,7 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 			// cao.setAuditColumns(permissions);
 			// caoDAO.save(cao);
 
-			auditBuilder.buildAudits(con, null);
+			auditBuilder.buildAudits(con);
 
 			// TODO clean up email language?
 			EmailQueue email = new EmailQueue();
@@ -121,7 +117,7 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 				+ AuditType.WA_STATE_VERIFICATION);
 
 		sql.addField("ca.id auditID");
-		
+
 		sql.addWhere("a.status = 'Active'");
 
 		sql.setLimit(50);
@@ -158,7 +154,7 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 			System.out.println("Error in SQL query: ");
 			e.printStackTrace();
 		}
-		
+
 		for (BasicDynaBean d : data2) {
 			int conID = Integer.parseInt(d.get("id").toString());
 			int catID = Integer.parseInt(d.get("categoryID").toString());

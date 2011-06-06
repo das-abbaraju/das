@@ -18,14 +18,15 @@ import java.util.TreeMap;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.AuditBuilderController;
-import com.picsauditing.PICS.AuditPercentCalculator;
-import com.picsauditing.PICS.AuditTypeRuleCache;
+import com.google.common.base.Objects;
 import com.picsauditing.PICS.ContractorFlagCriteriaList;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
@@ -65,7 +66,7 @@ import com.picsauditing.util.Strings;
 public class ContractorDashboard extends ContractorActionSupport {
 
 	@Autowired
-	private AuditBuilderController auditBuilder;
+	private AuditBuilder auditBuilder;
 	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
@@ -89,7 +90,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
-	protected boolean runTagConCronAjax = false;
+	private boolean runTagConCronAjax = false;
 
 	private ContractorOperator co;
 	private int opID;
@@ -142,6 +143,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		if ("AddTag".equals(button)) {
+			// TODO Move this into a new class 
+			// and then redirect back to Dashboard if necessary
 			if (tagId > 0) {
 				ContractorTag cTag = new ContractorTag();
 				cTag.setContractor(contractor);
@@ -151,8 +154,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 				contractor.getOperatorTags().add(cTag);
 				contractor.incrementRecalculation(10);
 				accountDao.save(contractor);
-				for (AuditTypeRule atr : auditTypeRuleCache.getApplicableAuditRules(contractor)) {
-					if (atr.getTag() != null && atr.getTag().equals(cTag.getTag())) {
+				for (AuditTypeRule atr : auditTypeRuleCache.getRules(contractor)) {
+					if (Objects.equal(cTag.getTag(), atr.getTag())) {
 						runTagConCronAjax = true;
 						break;
 					}
@@ -167,11 +170,14 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		if ("Upgrade to Full Membership".equals(button)) {
+			
+			// TODO Move this into a new class (maybe Payment Options or Facilities or Billing Details) 
+			// and then redirect back to Dashboard if necessary
 			// See also ReportBiddingContractors/RequestNewContractor Upgrade
 			contractor.setAcceptsBids(false);
 			contractor.setRenew(true);
 
-			auditBuilder.buildAudits(contractor, null);
+			auditBuilder.buildAudits(contractor);
 
 			for (ContractorAudit cAudit : contractor.getAudits()) {
 				if (cAudit.getAuditType().isPqf()) {
@@ -181,9 +187,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 							auditDao.save(cao);
 						}
 					}
-
-					auditBuilder.setup(contractor, null);
-					auditBuilder.fillAuditCategories(cAudit);
+					
+					auditBuilder.recalculateCategories(cAudit);
 					auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
 					auditPercentCalculator.percentCalculateComplete(cAudit);
 					auditDao.save(cAudit);

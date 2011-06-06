@@ -6,19 +6,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import com.picsauditing.PICS.AuditBuilder;
-import com.picsauditing.PICS.AuditCategoryRuleCache;
-import com.picsauditing.PICS.AuditTypeRuleCache;
-import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
-import com.picsauditing.PICS.AuditBuilder.AuditTypeDetail;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import com.picsauditing.auditBuilder.AuditTypesBuilder;
+import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.TranslatableString;
@@ -32,26 +36,19 @@ public class ContractorSimulator extends PicsActionSupport {
 	private Map<AuditType, List<AuditTypeRule>> audits;
 	private AuditType auditType;
 	private List<AuditCategory> categories = new ArrayList<AuditCategory>();
-	private AuditBuilder builder = new AuditBuilder();
+	// private AuditBuilder builder = new AuditBuilder();
+	@Autowired
 	private AuditCategoryRuleCache auditCategoryRuleCache;
+	@Autowired
 	private AuditTypeRuleCache auditTypeRuleCache;
-
+	@Autowired
 	private AuditTypeDAO auditTypeDAO;
-
-	public ContractorSimulator(AuditTypeDAO auditTypeDAO, AuditCategoryRuleCache auditCategoryRuleCache,
-			AuditTypeRuleCache auditTypeRuleCache) {
-		this.auditCategoryRuleCache = auditCategoryRuleCache;
-		this.auditTypeRuleCache = auditTypeRuleCache;
-		this.auditTypeDAO = auditTypeDAO;
-	}
+	@Autowired
+	private List<AuditCategoryRule> auditDecisionTableDAO;
 
 	@Override
+	@RequiredPermission(value = OpPerms.ContractorSimulator)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		tryPermissions(OpPerms.ContractorSimulator);
-
 		if (contractor == null) {
 			if (operatorIds != null && operatorIds.size() == 1) {
 				operators = new ArrayList<OperatorAccount>();
@@ -87,22 +84,21 @@ public class ContractorSimulator extends PicsActionSupport {
 
 	private void fillAuditTypes() {
 		audits = new TreeMap<AuditType, List<AuditTypeRule>>();
-		List<AuditTypeRule> rules = auditTypeRuleCache.getApplicableAuditRules(contractor);
+		AuditTypesBuilder builder = new AuditTypesBuilder(auditTypeRuleCache, contractor);
+		for (AuditTypeDetail detail : builder.calculate()) {
+			AuditType auditType = detail.rule.getAuditType();
 
-		Map<AuditType, AuditTypeDetail> requiredAuditTypes = builder.calculateRequiredAuditTypes(rules, operators);
-		for (AuditType auditType : requiredAuditTypes.keySet()) {
 			boolean includeAlways = false;
 			List<AuditTypeRule> list = new ArrayList<AuditTypeRule>();
-			for (AuditTypeRule rule : rules) {
+			for (AuditTypeRule rule : builder.getRules()) {
 				if (rule.getAuditType() == null || rule.getAuditType().equals(auditType)) {
 					// We have a matching rule
 					if (includeAlways) {
 						// We are already including this auditType always, so we
 						// can ignore any rules after this
 					} else {
-						if ((rule.getAcceptsBids() != null && rule.getAcceptsBids())
-								|| rule.getDependentAuditType() != null || rule.getQuestion() != null
-								|| rule.getTag() != null || rule.isManuallyAdded()) {
+						if (rule.getDependentAuditType() != null || rule.getQuestion() != null || rule.getTag() != null
+								|| rule.isManuallyAdded()) {
 							list.add(rule);
 						} else {
 							// We found a rule that will always include this
@@ -123,8 +119,8 @@ public class ContractorSimulator extends PicsActionSupport {
 	}
 
 	/**
-	 * Determine which categories should be on a given audit and add ones that
-	 * aren't there and remove ones that shouldn't be there
+	 * Determine which categories should be on a given audit and add ones that aren't there and remove ones that
+	 * shouldn't be there
 	 * 
 	 * @param conAudit
 	 */
@@ -143,21 +139,25 @@ public class ContractorSimulator extends PicsActionSupport {
 
 		auditType = auditTypeDAO.find(auditType.getId());
 
-		List<AuditCategoryRule> rules = auditCategoryRuleCache.getApplicableCategoryRules(contractor, auditType);
-		AuditCategoriesDetail detail = builder.getDetail(auditType, rules, operators);
+		auditCategoryRuleCache.initialize(auditDecisionTableDAO);
+		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 
+		ContractorAudit conAudit = new ContractorAudit();
+		conAudit.setContractorAccount(contractor);
+		conAudit.setAuditType(auditType);
+		Set<AuditCategory> requiredCategories = builder.calculate(conAudit, operators);
 		for (AuditCategory category : auditType.getTopCategories()) {
-			addCategory(categories, category, detail);
+			addCategory(categories, category, requiredCategories);
 		}
 	}
 
-	private void addCategory(List<AuditCategory> list, AuditCategory category, AuditCategoriesDetail detail) {
-		if (detail.categories.contains(category)) {
+	private void addCategory(List<AuditCategory> list, AuditCategory category, Set<AuditCategory> requiredCategories) {
+		if (requiredCategories.contains(category)) {
 			list.add(category);
 			category.setSubCategories(new ArrayList<AuditCategory>());
 			for (AuditCategory subCategory : auditType.getCategories()) {
 				if (category.equals(subCategory.getParent())) {
-					addCategory(category.getSubCategories(), subCategory, detail);
+					addCategory(category.getSubCategories(), subCategory, requiredCategories);
 				}
 			}
 		}

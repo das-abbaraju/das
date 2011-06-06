@@ -6,17 +6,12 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.AuditPercentCalculator;
-import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.actions.converters.OshaTypeConverter;
-import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -35,18 +30,12 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 	private int conID;
 	private int catDataID;
 	private OshaAudit osha;
-	private OshaAuditDAO oshaDAO;
 	private File uploadFile;
 	private String uploadFileFileName;
+	@Autowired
+	private OshaAuditDAO oshaDAO;
+	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
-
-	public OshaSave(ContractorAccountDAO accountDAO, OshaAuditDAO oshaDAO, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDAO, AuditDataDAO dao, CertificateDAO certificateDao,
-			AuditPercentCalculator auditPercentCalculator, AuditCategoryRuleCache auditCategoryRuleCache) {
-		super(accountDAO, auditDao, catDataDAO, dao, certificateDao, auditCategoryRuleCache);
-		this.oshaDAO = oshaDAO;
-		this.auditPercentCalculator = auditPercentCalculator;
-	}
 
 	@Override
 	public void prepare() throws Exception {
@@ -66,8 +55,8 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 		}
 
 		if (button.equals("download")) {
-			Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
-					.getServletContext());
+			Downloader downloader = new Downloader(ServletActionContext.getResponse(),
+					ServletActionContext.getServletContext());
 			try {
 				File[] files = getFiles();
 				downloader.download(files[0], null);
@@ -90,9 +79,10 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 			}
 			osha.getConAudit().setLastRecalculation(null);
 			auditDao.save(osha.getConAudit());
-			String note = "Deleted "+ osha.getLocation() +" " + osha.getType() + " log for " + osha.getConAudit().getAuditType().getName().toString() + " " + osha.getConAudit().getAuditFor();
-				addNote(osha.getConAudit().getContractorAccount(), note, 
-					NoteCategory.Audits, LowMedHigh.Low, false, Account.PicsID, getUser());
+			String note = "Deleted " + osha.getLocation() + " " + osha.getType() + " log for "
+					+ osha.getConAudit().getAuditType().getName().toString() + " " + osha.getConAudit().getAuditFor();
+			addNote(osha.getConAudit().getContractorAccount(), note, NoteCategory.Audits, LowMedHigh.Low, false,
+					Account.PicsID, getUser());
 			oshaDAO.remove(id);
 			return redirectToOsha();
 		}
@@ -159,11 +149,11 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 		} else {
 			osha.setVerifiedDate(null);
 		}
-		
-		//AutoPopulating Total OSHA Recordable Injuries and Illnesses
+
+		// AutoPopulating Total OSHA Recordable Injuries and Illnesses
 		float recordableTotalCalc = 0.0f;
 		recordableTotalCalc = osha.getLostWorkCases() + osha.getInjuryIllnessCases() + osha.getRestrictedWorkCases();
-		if(!osha.getType().equals(OshaType.COHS)) { 
+		if (!osha.getType().equals(OshaType.COHS)) {
 			recordableTotalCalc += osha.getFatalities();
 		}
 		osha.setRecordableTotal(recordableTotalCalc);
@@ -256,15 +246,16 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 		list.add("Incorrect Year");
 		return list;
 	}
+
 	public int getCatID() {
-		if(osha != null) {
+		if (osha != null) {
 			return OshaTypeConverter.getCategoryFromType(osha.getType());
 		}
 		return 155;
 	}
-	
+
 	private String redirectToOsha() throws IOException {
-		String url = "Audit.action?auditID="+auditID+"#categoryID="+getCatID();
+		String url = "Audit.action?auditID=" + auditID + "#categoryID=" + getCatID();
 		return redirect(url);
 	}
 }

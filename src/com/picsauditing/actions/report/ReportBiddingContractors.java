@@ -2,9 +2,11 @@ package com.picsauditing.actions.report;
 
 import java.util.Iterator;
 
-import com.picsauditing.PICS.AuditBuilderController;
-import com.picsauditing.PICS.AuditPercentCalculator;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
@@ -31,26 +33,20 @@ public class ReportBiddingContractors extends ReportAccount {
 	protected int conID;
 	protected String operatorNotes;
 
+	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
+	@Autowired
 	protected NoteDAO noteDAO;
+	@Autowired
 	protected ContractorOperatorDAO contractorOperatorDAO;
+	@Autowired
 	protected InvoiceItemDAO invoiceItemDAO;
+	@Autowired
 	protected OperatorAccountDAO operatorAccountDAO;
+	@Autowired
 	protected AuditPercentCalculator auditPercentCalculator;
-	protected AuditBuilderController auditBuilderController;
-
-	public ReportBiddingContractors(ContractorAccountDAO contractorAccountDAO, NoteDAO noteDAO,
-			ContractorOperatorDAO contractorOperatorDAO, InvoiceItemDAO invoiceItemDAO,
-			OperatorAccountDAO operatorAccountDAO, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilderController auditBuilderController) {
-		this.contractorAccountDAO = contractorAccountDAO;
-		this.noteDAO = noteDAO;
-		this.contractorOperatorDAO = contractorOperatorDAO;
-		this.invoiceItemDAO = invoiceItemDAO;
-		this.operatorAccountDAO = operatorAccountDAO;
-		this.auditPercentCalculator = auditPercentCalculator;
-		this.auditBuilderController = auditBuilderController;
-	}
+	@Autowired
+	protected AuditBuilder auditBuilderController;
 
 	@Override
 	protected void buildQuery() {
@@ -87,7 +83,7 @@ public class ReportBiddingContractors extends ReportAccount {
 				cAccount.setAcceptsBids(false);
 				cAccount.setRenew(true);
 
-				auditBuilderController.buildAudits(cAccount, null);
+				auditBuilderController.buildAudits(cAccount);
 				
 				for (ContractorAudit cAudit : cAccount.getAudits()) {
 					if (cAudit.getAuditType().isPqf()) {
@@ -98,8 +94,7 @@ public class ReportBiddingContractors extends ReportAccount {
 							}
 						}
 
-						auditBuilderController.setup(cAccount, null);
-						auditBuilderController.fillAuditCategories(cAudit);
+						auditBuilderController.recalculateCategories(cAudit);
 						auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
 						auditPercentCalculator.percentCalculateComplete(cAudit);
 						contractorAccountDAO.save(cAudit);

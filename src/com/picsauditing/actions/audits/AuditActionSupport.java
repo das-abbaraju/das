@@ -7,31 +7,29 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.picsauditing.PICS.AuditBuilder;
-import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.AuditBuilder.AuditCategoriesDetail;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.actions.converters.OshaTypeConverter;
+import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -60,37 +58,31 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected boolean showVerified = false;
 
 	protected ContractorAudit conAudit;
-	protected AuditCategoryDataDAO catDataDao;
-	protected AuditDataDAO auditDataDao;
-	protected CertificateDAO certificateDao;
-	protected NoteDAO noteDAO;
-	protected ContractorAuditOperatorDAO caoDAO;
-	protected ContractorAuditOperatorWorkflowDAO caowDAO;
 
+	@Autowired
+	protected AuditCategoryDataDAO catDataDao;
+	@Autowired
+	protected AuditDataDAO auditDataDao;
+	@Autowired
+	protected CertificateDAO certificateDao;
+	@Autowired
+	protected NoteDAO noteDAO;
+	@Autowired
+	protected ContractorAuditOperatorDAO caoDAO;
+	@Autowired
+	protected ContractorAuditOperatorWorkflowDAO caowDAO;
+	@Autowired
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
 	private Map<Integer, AuditData> hasManual;
-	private List<AuditCategoryRule> rules = null;
 	protected Map<AuditCategory, AuditCatData> categories = null;
 	protected ArrayListMultimap<Integer, WorkflowStep> caoSteps = ArrayListMultimap.create();
 	protected ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
 
 	private List<CategoryNode> categoryNodes;
 
-	public AuditActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
-			AuditCategoryRuleCache auditCategoryRuleCache) {
-		this.catDataDao = catDataDao;
-		this.auditDataDao = auditDataDao;
-		this.certificateDao = certificateDao;
-		this.auditCategoryRuleCache = auditCategoryRuleCache;
-	}
-
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
 		this.findConAudit();
-
 		return SUCCESS;
 	}
 
@@ -136,7 +128,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (categories == null || reload) {
 			Set<AuditCategory> requiredCategories = null;
 			if (permissions.isOperatorCorporate()) {
-				AuditBuilder builder = new AuditBuilder();
+				AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
+
 				Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 				if (permissions.isCorporate()) {
 					for (Facility facility : getOperatorAccount().getOperatorFacilities()) {
@@ -145,9 +138,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				} else
 					operators.add(getOperatorAccount());
 
-				AuditCategoriesDetail auditCategoryDetail = builder.getDetail(conAudit.getAuditType(), getRules(
-						conAudit, reload), operators);
-				requiredCategories = auditCategoryDetail.categories;
+				requiredCategories = builder.calculate(conAudit, operators);
 			}
 
 			categories = conAudit.getApplicableCategories(permissions, requiredCategories);
@@ -190,18 +181,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 			else
 				descriptionText = "OSHA Recordable";
 		return descriptionText;
-	}
-
-	protected List<AuditCategoryRule> getRules(ContractorAudit conAudit) {
-		return getRules(conAudit, false);
-	}
-
-	protected List<AuditCategoryRule> getRules(ContractorAudit conAudit, boolean reload) {
-		if (rules == null || reload) {
-			rules = auditCategoryRuleCache.getApplicableCategoryRules(conAudit.getContractorAccount(), conAudit
-					.getAuditType());
-		}
-		return rules;
 	}
 
 	public int getCategoryID() {
@@ -534,12 +513,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 				summary += " for " + cao.getAudit().getAuditFor();
 			summary += " from " + prevStatus + " to " + cao.getStatus();
 			newNote.setSummary(summary);
-			
+
 			if (cao.getAudit().getAuditType().getClassType().isPolicy())
 				newNote.setNoteCategory(NoteCategory.Insurance);
 			else
 				newNote.setNoteCategory(NoteCategory.Audits);
-			
+
 			newNote.setViewableBy(cao.getOperator());
 
 			if (noteBody == null)

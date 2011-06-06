@@ -6,15 +6,7 @@ import java.util.List;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -33,13 +25,6 @@ import com.picsauditing.jpa.entities.NoteCategory;
 public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 
 	protected List<ContractorAuditOperator> caosSave = new ArrayList<ContractorAuditOperator>();
-
-	public ConAuditMaintain(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			CertificateDAO certificateDao, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
-			ContractorAuditOperatorDAO caoDAO, ContractorAuditOperatorWorkflowDAO caowDAO,
-			AuditCategoryRuleCache auditCategoryRuleCache) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
-	}
 
 	public void prepare() throws Exception {
 		if (!forceLogin())

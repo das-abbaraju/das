@@ -18,7 +18,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Trade;
 
-public class AuditRuleCache {
+abstract public class AuditRuleCache {
 
 	protected class Contractor {
 		public Set<LowMedHigh> safetyRisks = new HashSet<LowMedHigh>();
@@ -108,5 +108,6 @@ public class AuditRuleCache {
 			map.add(rule);
 		}
 	}
-
+	
+	abstract public void clear();
 }

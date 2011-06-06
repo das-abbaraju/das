@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import com.picsauditing.PICS.AuditCategoryRuleCache;
-import com.picsauditing.PICS.AuditTypeRuleCache;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDecisionTableDAO;

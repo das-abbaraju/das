@@ -19,13 +19,13 @@ import java.util.Set;
 import org.json.simple.JSONObject;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.AuditBuilderController;
-import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorFlagETL;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -76,7 +76,7 @@ public class ContractorCron extends PicsActionSupport {
 	private EmailSubscriptionDAO subscriptionDAO;
 
 	private AuditPercentCalculator auditPercentCalculator;
-	private AuditBuilderController auditBuilder;
+	private AuditBuilder auditBuilder;
 	private ContractorFlagETL contractorFlagETL;
 	private FlagDataCalculator flagDataCalculator;
 	private UserAssignmentDAO userAssignmentDAO;
@@ -92,7 +92,7 @@ public class ContractorCron extends PicsActionSupport {
 
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilderController auditBuilder, ContractorFlagETL contractorFlagETL,
+			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL,
 			ContractorOperatorDAO contractorOperatorDAO, AppPropertyDAO appPropertyDAO,
 			UserAssignmentDAO userAssignmentDAO, ContractorAuditDAO conAuditDAO) {
 		this.dao = contractorDAO;
@@ -273,7 +273,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runAuditBuilder(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.AuditBuilder))
 			return;
-		auditBuilder.buildAudits(contractor, null);
+		auditBuilder.buildAudits(contractor);
 	}
 
 	private void runTradeETL(ContractorAccount contractor) {
@@ -635,7 +635,7 @@ public class ContractorCron extends PicsActionSupport {
 				FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData
 						.get(parent) : FlagColor.Green;
 				FlagColor currentFacilityColor = corporateRollupData.get(corporate);
-
+				
 				FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, currentFacilityColor);
 				corporateRollupData.put(parent, worstColor);
 

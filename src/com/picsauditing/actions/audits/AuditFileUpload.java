@@ -3,15 +3,10 @@ package com.picsauditing.actions.audits;
 import java.io.File;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.AuditCategoryRuleCache;
 import com.picsauditing.PICS.PICSFileType;
-import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditFileDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAuditFile;
@@ -25,25 +20,18 @@ public class AuditFileUpload extends AuditActionSupport {
 	private File file;
 	protected String fileContentType = null;
 	protected String fileFileName = null;
-	private ContractorAuditFileDAO contractorAuditFileDAO  = null;
-	private AuditQuestionDAO auditQuestionDAO = null;
 	protected int fileID;
 	protected String fileName = null;
 	private ContractorAuditFile contractorAuditFile = null;
 	private int question;
 	private String desc;
-	private AuditQuestion auditQuestion;
 
-	public AuditFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao, ContractorAuditFileDAO contractorAuditFileDAO, AuditQuestionDAO auditQuestionDAO, AuditCategoryRuleCache auditCategoryRuleCache) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
-		this.contractorAuditFileDAO = contractorAuditFileDAO;
-		this.auditQuestionDAO = auditQuestionDAO;
-	}
-
+	@Autowired
+	private ContractorAuditFileDAO contractorAuditFileDAO  = null;
+	@Autowired
+	private AuditQuestionDAO auditQuestionDAO = null;
+	
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
 		this.findConAudit();
 		
 		if (fileID > 0) {

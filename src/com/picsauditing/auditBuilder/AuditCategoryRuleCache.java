@@ -109,6 +109,10 @@ public class AuditCategoryRuleCache extends AuditRuleCache {
 		}
 	}
 
+	public void clear() {
+		data = null;
+	}
+
 	public SafetyRisks getData() {
 		if (data == null)
 			throw new RuntimeException("No rules were found. Please initialize() before getting data.");

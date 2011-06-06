@@ -5,22 +5,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.AuditCategoryRuleCache;
-import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.MenuComponent;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditCategoryDAO;
-import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -52,28 +47,19 @@ public class ContractorAuditController extends AuditActionSupport {
 	protected boolean onlyReq = false;
 	protected AnswerMap answerMap = null;
 	protected AuditCatData categoryData;
-	private AuditCategoryDAO auditCategoryDAO;
-	private AuditPercentCalculator auditPercentCalculator;
 	protected int caoID;
 	protected boolean previewCat = false;
 	protected Map<ContractorAuditOperator, String> problems = new TreeMap<ContractorAuditOperator, String>();
 	// Policy verification (next/first buttons)
 	private boolean policy;
 
-	public ContractorAuditController(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
-			AuditCategoryDAO auditCategoryDAO, AuditPercentCalculator auditPercentCalculator,
-			AuditCategoryRuleCache auditCategoryRuleCache) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
-		this.auditCategoryDAO = auditCategoryDAO;
-		this.auditPercentCalculator = auditPercentCalculator;
-	}
+	@Autowired
+	private AuditCategoryDAO auditCategoryDAO;
+	@Autowired
+	private AuditPercentCalculator auditPercentCalculator;
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		ActionContext.getContext().getSession().remove("auditID");
 
 		if (auditID > 0)

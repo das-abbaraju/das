@@ -1,6 +1,6 @@
 package com.picsauditing.actions.audits;
 
-import com.picsauditing.PICS.AuditTypeRuleCache;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.contractors.ContractorDocuments;
 import com.picsauditing.dao.AuditTypeDAO;

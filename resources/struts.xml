@@ -261,14 +261,6 @@
 		</action>
 
 		<!-- Contractor Information -->
-		<action name="ConHeader" class="com.picsauditing.actions.contractors.ConHeader">
-			<result>struts/contractors/conHeader.jsp</result>
-		</action>
-
-		<action name="RegistrationHeader" class="com.picsauditing.actions.contractors.ConHeader">
-			<result>struts/contractors/registrationHeader.jsp</result>
-		</action>
-
 		<action name="ContractorView"
 			class="com.picsauditing.actions.contractors.ContractorDashboard">
 			<result>/struts/contractors/con_dashboard.jsp</result>

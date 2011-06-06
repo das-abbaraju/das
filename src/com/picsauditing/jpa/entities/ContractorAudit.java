@@ -700,7 +700,6 @@ public class ContractorAudit extends BaseTable {
 		Map<AuditCategory, AuditCatData> categories = new LinkedHashMap<AuditCategory, AuditCatData>();
 		List<AuditCatData> sortedCats = getCategories();
 		Collections.sort(sortedCats, new Comparator<AuditCatData>() {
-
 			@Override
 			public int compare(AuditCatData o1, AuditCatData o2) {
 				return ((Integer) o1.getCategory().getNumber()).compareTo(o2.getCategory().getNumber());

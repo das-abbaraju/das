@@ -6,13 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.PICS.AuditCategoryRuleCache;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
 import com.picsauditing.jpa.entities.AuditData;
@@ -25,8 +22,8 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.util.FileUtils;
 
 /**
- * Used by Audit.action to show a list of categories for a given audit. Also
- * allows users to change the status of an audit.
+ * Used by Audit.action to show a list of categories for a given audit. Also allows users to change the status of an
+ * audit.
  * 
  */
 @SuppressWarnings("serial")
@@ -34,22 +31,13 @@ public class ContractorAuditCopy extends AuditActionSupport {
 
 	protected String contractorSelect = "";
 	private boolean hasDuplicate = false;
+	@Autowired
 	private ContractorAuditOperatorWorkflowDAO caowDAO;
+	@Autowired
 	private ContractorAuditOperatorDAO caoDAO;
 
-	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, CertificateDAO certificateDao,
-			AuditCategoryRuleCache auditCategoryRuleCache, ContractorAuditOperatorWorkflowDAO caowDAO,
-			ContractorAuditOperatorDAO caoDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, certificateDao, auditCategoryRuleCache);
-		this.caowDAO = caowDAO;
-		this.caoDAO = caoDAO;
-	}
-
+	@RequiredPermission(value = OpPerms.AuditCopy)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-		permissions.tryPermission(OpPerms.AuditCopy);
 		this.findConAudit();
 		int oldconID = conAudit.getContractorAccount().getId();
 		if (button != null) {
@@ -64,9 +52,8 @@ public class ContractorAuditCopy extends AuditActionSupport {
 						&& !existingAudit.getAuditType().isAnnualAddendum()) {
 					// We already have an existing audit that we should delete
 					// first
-					this
-							.addActionMessage(contractorSelect + " already has a "
-									+ conAudit.getAuditType().getName().toString());
+					this.addActionMessage(contractorSelect + " already has a "
+							+ conAudit.getAuditType().getName().toString());
 					if ("Copy Audit".equals(button)) {
 						hasDuplicate = true;
 						return SUCCESS;
