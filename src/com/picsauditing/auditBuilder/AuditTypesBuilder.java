@@ -146,22 +146,25 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 	}
 
 	private Map<Integer, AuditData> getAnswers(List<? extends AuditRule> rules) {
-		Set<Integer> contractorAnswersNeeded = new HashSet<Integer>();
+		Map<Integer, AuditData> contractorAnswersNeeded = new HashMap<Integer, AuditData>();
 		for (AuditRule rule : rules) {
 			if (rule.getQuestion() != null) {
-				contractorAnswersNeeded.add(rule.getQuestion().getId());
+				contractorAnswersNeeded.put(rule.getQuestion().getId(), null);
 			}
 		}
 
-		Map<Integer, AuditData> answers = new HashMap<Integer, AuditData>();
 		if (contractorAnswersNeeded.size() > 0) {
 			// Don't load the DAO if not needed. This is especially helpful for unit testing
 			AuditDataDAO dao = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
-			answers = dao.findAnswersByContractor(contractor.getId(), contractorAnswersNeeded);
+			Map<Integer, AuditData> findAnswersByContractor = dao.findAnswersByContractor(contractor.getId(),
+					contractorAnswersNeeded.keySet());
+			for (Integer questionID : findAnswersByContractor.keySet()) {
+				contractorAnswersNeeded.put(questionID, findAnswersByContractor.get(questionID));
+			}
 		}
-		return answers;
+		return contractorAnswersNeeded;
 	}
-	
+
 	public List<AuditTypeRule> getRules() {
 		return rules;
 	}
