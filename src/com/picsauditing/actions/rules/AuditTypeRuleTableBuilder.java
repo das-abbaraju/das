@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
-import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -46,6 +45,7 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 		} else if ("moreGranular".equals(button)) {
 			rules = ruleDAO.getMoreGranular(ruleDAO.findAuditTypeRule(id), date);
 		} else if ("debugContractor".equals(button)) {
+			setShowWho(false);
 			auditTypeRuleCache.initialize(auditRuleDAO);
 			ContractorAccount contractor = contractorDAO.find(conID);
 			AuditTypesBuilder builder = new AuditTypesBuilder(auditTypeRuleCache, contractor);
