@@ -2,6 +2,7 @@ package com.picsauditing.dao;
 
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +45,7 @@ public class InvoiceFeeDAO extends PicsDAO {
 
 		try {
 			return (InvoiceFee) query.getSingleResult();
-		} catch (Exception nre) {
+		} catch (EntityNotFoundException nre) {
 			return null;
 		}
 	}

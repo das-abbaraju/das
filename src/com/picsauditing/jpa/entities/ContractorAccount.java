@@ -745,16 +745,9 @@ public class ContractorAccount extends Account implements JSONable {
 	 */
 	@Transient
 	public void syncBalance() {
-		boolean foundListOnlyMembership = false;
-		boolean foundBidOnlyMembership = false;
-		boolean foundDocuGUARDMembership = false;
-		boolean foundAuditGUARDMembership = false;
-		boolean foundInsureGUARDMembership = false;
-		boolean foundEmployeeGUARDMembership = false;
-		boolean foundMembership = false;
-		boolean foundMembershipDate = false;
-		boolean foundPaymentExpires = false;
-
+		/**
+		 * Roll up the outstanding balance on all transactions
+		 */
 		balance = BigDecimal.ZERO;
 		for (Invoice invoice : getInvoices()) {
 			if (!invoice.getStatus().isVoid())
@@ -773,8 +766,27 @@ public class ContractorAccount extends Account implements JSONable {
 
 		balance = balance.setScale(2);
 
+		// STart here, call private method and set the contractor.fee
 		InvoiceFeeDAO feeDAO = (InvoiceFeeDAO) SpringUtils.getBean("InvoiceFeeDAO");
 
+		boolean foundListOnlyMembership = false;
+		boolean foundBidOnlyMembership = false;
+		boolean foundDocuGUARDMembership = false;
+		boolean foundAuditGUARDMembership = false;
+		boolean foundInsureGUARDMembership = false;
+		boolean foundEmployeeGUARDMembership = false;
+		/**
+		 * TRUE if we found the most recent membership activation/reactivation or renewal. We're not looking for
+		 * upgrades here.
+		 */
+		boolean foundMembership = false;
+		boolean foundMembershipDate = false;
+		boolean foundPaymentExpires = false;
+
+		/**
+		 * Go through the list of invoices in reverse order (most recent first). Find the first invoice with a
+		 * membership line and grab all the invoiceFees.
+		 */
 		for (Invoice invoice : getSortedInvoices()) {
 			if (!invoice.getStatus().isVoid()) {
 				for (InvoiceItem invoiceItem : invoice.getItems()) {
@@ -782,28 +794,18 @@ public class ContractorAccount extends Account implements JSONable {
 						if (!foundListOnlyMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.ListOnly)) {
 								foundListOnlyMembership = true;
-								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 1);
+								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly,
+										getPayingFacilities());
 								setCurrentFee(FeeClass.ListOnly, fee);
-								// Overriding BidOnly if current ListOnly was found and two exist in
-								// same time period
-								foundBidOnlyMembership = true;
-								clearCurrentFee(FeeClass.BidOnly, feeDAO);
 							}
-						}
-
-						if (!foundBidOnlyMembership) {
+						} else if (!foundBidOnlyMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.BidOnly)) {
 								foundBidOnlyMembership = true;
-								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 1);
+								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly,
+										getPayingFacilities());
 								setCurrentFee(FeeClass.BidOnly, fee);
-								// Overriding ListOnly if current BidOnly was found and two exist in
-								// same time period
-								foundListOnlyMembership = true;
-								clearCurrentFee(FeeClass.ListOnly, feeDAO);
 							}
-						}
-
-						if (!foundDocuGUARDMembership) {
+						} else if (!foundDocuGUARDMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.DocuGUARD)) {
 								foundDocuGUARDMembership = true;
 
@@ -815,8 +817,8 @@ public class ContractorAccount extends Account implements JSONable {
 									// same, set fee level based on current
 									// number of paying facilities if contractor
 									// paid legacy DocuGUARD fee.
-									InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, this
-											.getPayingFacilities());
+									InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD,
+											this.getPayingFacilities());
 									setCurrentFee(FeeClass.DocuGUARD, fee);
 								} else {
 									setCurrentFee(FeeClass.DocuGUARD, invoiceItem.getInvoiceFee());
@@ -829,9 +831,7 @@ public class ContractorAccount extends Account implements JSONable {
 								clearCurrentFee(FeeClass.ListOnly, feeDAO);
 
 							}
-						}
-
-						if (!foundAuditGUARDMembership) {
+						} else if (!foundAuditGUARDMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.AuditGUARD)) {
 								foundAuditGUARDMembership = true;
 
@@ -852,16 +852,12 @@ public class ContractorAccount extends Account implements JSONable {
 									setCurrentFee(FeeClass.DocuGUARD, fee);
 								}
 							}
-						}
-
-						if (!foundInsureGUARDMembership) {
+						} else if (!foundInsureGUARDMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.InsureGUARD)) {
 								foundInsureGUARDMembership = true;
 								setCurrentFee(FeeClass.InsureGUARD, invoiceItem.getInvoiceFee());
 							}
-						}
-
-						if (!foundEmployeeGUARDMembership) {
+						} else if (!foundEmployeeGUARDMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.EmployeeGUARD)) {
 								foundEmployeeGUARDMembership = true;
 								setCurrentFee(FeeClass.EmployeeGUARD, invoiceItem.getInvoiceFee());
@@ -919,11 +915,12 @@ public class ContractorAccount extends Account implements JSONable {
 		this.getFees().get(feeClass).setCurrentAmount(BigDecimal.ZERO);
 	}
 
+	// TODO don't pass in feeClass twice
 	private void setCurrentFee(FeeClass feeClass, InvoiceFee fee) {
 		this.getFees().get(feeClass).setCurrentLevel(fee);
 		this.getFees().get(feeClass).setCurrentAmount(getDiscountedAmount(fee));
 	}
-	
+
 	@Transient
 	public void clearNewFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
 		this.getFees().get(feeClass).setNewLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
@@ -949,10 +946,8 @@ public class ContractorAccount extends Account implements JSONable {
 				}
 			}
 		} else if (fee.getFeeClass().equals(FeeClass.EmployeeGUARD)) {
-			AuditTypeRuleCache ruleCache = (AuditTypeRuleCache) com.picsauditing.util.SpringUtils
-					.getBean("AuditTypeRuleCache");
-			AuditDecisionTableDAO auditDAO = (AuditDecisionTableDAO) com.picsauditing.util.SpringUtils
-					.getBean("AuditDecisionTableDAO");
+			AuditTypeRuleCache ruleCache = (AuditTypeRuleCache) SpringUtils.getBean("AuditTypeRuleCache");
+			AuditDecisionTableDAO auditDAO = (AuditDecisionTableDAO) SpringUtils.getBean("AuditDecisionTableDAO");
 			ruleCache.initialize(auditDAO);
 			AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, this);
 
@@ -981,6 +976,9 @@ public class ContractorAccount extends Account implements JSONable {
 				return BigDecimal.ZERO;
 		}
 
+		/*
+		 * DocuGUARD (including Bid/List only) and InsureGUARD don't have any custom pricing (for now)
+		 */
 		return fee.getAmount();
 	}
 
@@ -1350,16 +1348,19 @@ public class ContractorAccount extends Account implements JSONable {
 		else
 			this.setAccountLevel(AccountLevel.Full);
 	}
-	
+
 	@Transient
 	public boolean isFullAccount() {
 		return this.getAccountLevel().equals(AccountLevel.Full);
 	}
-	
+
 	@Transient
+	// Add documentation
 	public BigDecimal getNewMembershipAmount() {
 		BigDecimal newAmount = BigDecimal.ZERO;
-		for (FeeClass feeclass : this.getFees().keySet()) {
+		// TODO Use entry set instead
+		for (FeeClass feeclass : fees.keySet()) {
+			// Get rid of the isFree if we're doing a sum
 			if (!this.getFees().get(feeclass).getNewLevel().isFree())
 				newAmount = newAmount.add(this.getFees().get(feeclass).getNewAmount());
 		}
@@ -1370,7 +1371,7 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public BigDecimal getCurrentMembershipAmount() {
 		BigDecimal currentAmount = BigDecimal.ZERO;
-		for (FeeClass feeclass : this.getFees().keySet()) {
+		for (FeeClass feeclass : fees.keySet()) {
 			if (!this.getFees().get(feeclass).getCurrentLevel().isFree())
 				currentAmount = currentAmount.add(this.getFees().get(feeclass).getCurrentAmount());
 		}

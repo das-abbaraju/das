@@ -78,11 +78,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			}
 		}
 	}
-
+	
 	public String execute() throws NoRightsException, IOException {
-		if (!forceLogin())
-			return LOGIN;
-
 		if (invoice == null) {
 			addActionError("We could not find the invoice you were looking for");
 			return BLANK;
