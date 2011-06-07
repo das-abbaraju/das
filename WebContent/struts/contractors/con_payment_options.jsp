@@ -95,7 +95,7 @@ function updateExpDate() {
 <s:if test="contractor.paymentMethodStatusValid && contractor.paymentMethod.creditCard && contractor.mustPayB">
 	<li><div class="info">Your credit card will be kept on file and used for any upgrades or renewals. We will notify the primary user via email 30 days before any charges occur for renewals and 7 days before any charge occurs for upgrades. If you choose to deactivate your account, please call us at 800-506-7427.</div></li>
 </s:if>
-<s:if test="contractor.newMembership.size > 0">
+<s:if test="contractor.newMembershipAmount > 0">
 	<li>
 		<s:if test="contractor.paymentMethod.creditCard && contractor.newMembershipAmount < 500">
 			<i>Please Note: Credit Card payment is required for memberships under <s:property value="contractor.currencyCode.icon" />500.</i>

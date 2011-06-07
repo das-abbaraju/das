@@ -97,6 +97,13 @@ public class BillingCalculatorSingle {
 				employeeAudits = true;
 		}
 
+		for (ContractorOperator co : contractor.getOperators()) {
+			if (co.getOperatorAccount().isRequiresOQ())
+				oq = true;
+			if (co.getOperatorAccount().isRequiresCompetencyReview())
+				hseCompetency = true;
+		}
+
 		if (auditGUARD) {
 			// Audited Contractors have a tiered pricing scheme
 			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD, payingFacilities);
@@ -275,7 +282,8 @@ public class BillingCalculatorSingle {
 				ContractorFee fee = contractor.getFees().get(feeClass);
 				// Bid-only should not be an upgrade
 				// Just a safety check
-				if (fee.isHasChanged() && !fee.getNewLevel().isBidonly())
+				if (fee.isHasChanged()
+						&& (!fee.getNewLevel().isBidonly() || !fee.getNewLevel().equals(AccountLevel.ListOnly)))
 					upgrades.add(fee);
 			}
 

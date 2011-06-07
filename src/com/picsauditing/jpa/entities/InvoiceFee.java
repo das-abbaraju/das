@@ -114,6 +114,11 @@ public class InvoiceFee extends BaseTable {
 	public boolean isBidonly() {
 		return this.getFeeClass() == FeeClass.BidOnly;
 	}
+	
+	@Transient
+	public boolean isListonly() {
+		return this.getFeeClass() == FeeClass.ListOnly;
+	}
 
 	@Transient
 	public boolean isPqfonly() {
