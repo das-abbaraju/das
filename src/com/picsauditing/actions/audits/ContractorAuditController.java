@@ -16,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -62,8 +62,6 @@ public class ContractorAuditController extends AuditActionSupport {
 	private boolean policy;
 
 	@Autowired
-	private AuditCategoryDAO auditCategoryDAO;
-	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 	// Import PQF
 	@Autowired
@@ -82,7 +80,7 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		if (button != null) {
 			if (categoryID > 0 && permissions.isPicsEmployee()) {
-				AuditCategory auditCategory = auditCategoryDAO.find(categoryID);
+				AuditCategory auditCategory = (AuditCategory) catDataDao.find(AuditCategory.class, categoryID);
 				if ("IncludeCategory".equals(button)) {
 					AuditCatData auditCatData = getCategories().get(auditCategory);
 					if (auditCatData != null) {
@@ -137,7 +135,7 @@ public class ContractorAuditController extends AuditActionSupport {
 				if (auditID == 0 && categoryID > 0) {
 
 					previewCat = true;
-					AuditCategory auditCategory = auditCategoryDAO.find(categoryID);
+					AuditCategory auditCategory = (AuditCategory) catDataDao.find(AuditCategory.class, categoryID);
 					conAudit = new ContractorAudit();
 					conAudit.setAuditType(auditCategory.getAuditType());
 					if (auditCategory.getAuditType().isAnnualAddendum()) {
@@ -156,7 +154,7 @@ public class ContractorAuditController extends AuditActionSupport {
 			}
 
 			if (categoryID > 0) {
-				AuditCategory auditCategory = auditCategoryDAO.find(categoryID);
+				AuditCategory auditCategory = (AuditCategory) catDataDao.find(AuditCategory.class, categoryID);
 				Set<Integer> questionIDs = new HashSet<Integer>();
 				categoryData = getCategories().get(auditCategory);
 				if (categoryData == null) {
@@ -219,9 +217,15 @@ public class ContractorAuditController extends AuditActionSupport {
 		return SUCCESS;
 	}
 
+	public String debugCategoriesBuilder() {
+		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
+		Set<AuditCategory> auditCategories = builder.calculate(conAudit);
+		return "debugCategoriesBuilder";
+	}
+
 	public String importPQFYes() throws Exception {
 		int importAuditID = auditID;
-		
+
 		if (auditID > 0) {
 			findConAudit();
 
@@ -250,10 +254,10 @@ public class ContractorAuditController extends AuditActionSupport {
 			importAudit.setAuditColumns(conUser);
 			importAudit.setContractorAccount(contractor);
 			importAudit = auditDao.save(importAudit);
-			
+
 			contractor.getAudits().add(importAudit);
 			importAuditID = importAudit.getId();
-			
+
 			auditBuilder.buildAudits(contractor);
 			auditPercentCalculator.percentCalculateComplete(importAudit);
 
