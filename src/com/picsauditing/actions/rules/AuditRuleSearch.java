@@ -40,9 +40,6 @@ public class AuditRuleSearch extends ReportActionSupport {
 		
 		sql.addJoin("LEFT JOIN audit_question aq ON aq.id = a_search.questionID");
 
-		sql.addJoin("LEFT JOIN app_translation at ON at.msgKey = CONCAT('AuditQuestion.',IF(LENGTH(aq.uniqueCode)>0,aq.uniqueCode,a_search.questionID), '.name')");
-		sql.addField("IFNULL(at.msgValue,'*') question");
-
 		sql.addOrderBy("a_search.priority");
 	}
 

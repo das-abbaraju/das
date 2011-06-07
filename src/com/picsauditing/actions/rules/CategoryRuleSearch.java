@@ -19,8 +19,6 @@ public class CategoryRuleSearch extends AuditRuleSearch {
 	@Override
 	public void buildQuery() {
 		super.buildQuery();
-		sql.addJoin("LEFT JOIN app_translation at1 ON at1.msgKey = CONCAT('AuditCategory.',a_search.catID, '.name')");
-		sql.addField("at1.msgValue category");
 	}
 
 	@Override
