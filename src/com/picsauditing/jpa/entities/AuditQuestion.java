@@ -48,9 +48,9 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	static public final int PRODUCT_SAFETY_CRITICAL_ASSESSMENT = 7679;
 	static public final int IMPORT_PQF = 7727;
 
-	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest", "Check Box", "Date", "Decimal Number",
-			"File", "FileCertificate", "Industry", "License", "Main Work", "Money", "MultipleChoice", "Number",
-			"Service", "Text", "Text Area", "Calculation" };
+	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest", "Calculation", "Check Box", "Date",
+			"Decimal Number", "File", "FileCertificate", "License", "Money", "MultipleChoice", "Number", "Text",
+			"Text Area" };
 
 	private int number;
 	private int scoreWeight;
@@ -524,7 +524,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	/**
 	 * Comparator for comparing AuditQuestions not based on natural ordering. Use compareTo if you want to order based
 	 * on the AuditQuestion's number and direct Category (it's natural order)
-	 *
+	 * 
 	 * @return The comparator for full ordering of AuditQuestions
 	 */
 	@Transient
@@ -561,7 +561,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	/**
 	 * Return true if there are category rules that require immediate recalculation when the answer to this question
 	 * changes
-	 *
+	 * 
 	 * @return
 	 */
 	@Transient

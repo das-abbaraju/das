@@ -3,30 +3,6 @@ app_translation audit_category audit_category_rule audit_question audit_type aud
 -- Need to copy this all back to Live when we release
 ref_trade ref_trade_alt
 
--- Already ran this on Alpha2, don't run again
-insert into pics_alpha2.app_translation
-select null, 
-	t1.msgKey, 
-	t1.locale, 
-	t1.msgValue, 
-	t1.createdBy, 
-	t1.updatedBy, 
-	t1.creationDate, 
-	t1.updateDate, 
-	t1.lastUsed
-from pics_alpha1.app_translation t1
-LEFT JOIN pics_alpha2.app_translation t2 ON t1.msgKey = t2.msgKey AND t1.locale = t2.locale
-where t2.id IS NULL
--- AND t1.msgKey NOT LIKE 'Trade.%'
-AND t1.msgKey NOT LIKE 'AuditCategory.%'
-AND t1.msgKey NOT LIKE 'AuditQuestion.%'
-AND t1.msgKey NOT LIKE 'AuditQuestionOption.%'
-AND t1.msgKey NOT LIKE 'AuditType.%'
-AND t1.locale = 'en'
-AND t1.msgValue != 'Translation missing'
-AND t1.msgValue = t2.msgValue
-;
-
 -- Move over the ref trades somehow
 SET foreign_key_checks = 0;
 INSERT INTO pics_alpha2.ref_trade
@@ -1333,3 +1309,11 @@ INSERT INTO pics_alpha1.app_translation(msgKey, locale, msgValue, createdBy, upd
 -- PICS-2211
 insert into flag_criteria (category, displayOrder, label, description, dataType, comparison, defaultValue, allowCustomValue, oshaType, oshaRateType, multiYearScope, insurance, flaggableWhenMissing, createdBy, creationDate, updatedBy, updateDate)
 values ('Statistics', 130, 'Severity Rate Average', 'Severity Rate three year average must be less than or equal to {HURDLE}', 'number', '>', 1.0, 1, 'OSHA', 'SeverityRate', 'ThreeYearAverage', 0, 0, 23157, NOW(), 23157, NOW());
+
+-- DROP Services Performed
+DELETE from pqfdata
+where questionID IN (
+	select q.id from audit_question q where q.questionType IN ('Service','Main Work','Industry') OR q.categoryID IN (423,1197)
+);
+
+DELETE from pqfdata where questionID = 870;
