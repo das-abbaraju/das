@@ -5,6 +5,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * There are the values that are used by the {@link AuditQuestionFunction} for calculating the answers to
+ * {@link AuditQuestion}s, as well as their Visiblity and Required status.
+ *
+ * @author kpartridge
+ *
+ */
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_question_function_watcher")

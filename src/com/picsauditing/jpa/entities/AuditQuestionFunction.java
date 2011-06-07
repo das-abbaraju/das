@@ -17,6 +17,13 @@ import javax.persistence.Transient;
 
 import com.picsauditing.util.AnswerMap;
 
+/**
+ * Entity used to determine either the Answer (Calculation), Visibility and whether or not a {@link AuditQuestion} is
+ * Required.
+ *
+ * @author kpartridge
+ *
+ */
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_question_function")

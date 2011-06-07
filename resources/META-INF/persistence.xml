@@ -43,7 +43,7 @@
 		<class>com.picsauditing.jpa.entities.JobSite</class>
 		<class>com.picsauditing.jpa.entities.JobSiteTask</class>
 		<class>com.picsauditing.jpa.entities.JobTask</class>
-		<class>com.picsauditing.jpa.entities.JobTaskCriteria</class>		
+		<class>com.picsauditing.jpa.entities.JobTaskCriteria</class>
 		<class>com.picsauditing.jpa.entities.ListType</class>
 		<class>com.picsauditing.jpa.entities.LowMedHigh</class>
 		<class>com.picsauditing.jpa.entities.MultiYearScope</class>
