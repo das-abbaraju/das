@@ -12,9 +12,9 @@ import com.picsauditing.util.log.PicsLogger;
  * Run the email task every minute Send 5 emails at a time This translates into
  * 300/hour or 7200/day If this seems slow, it is because of strict limits by
  * gmail
- * 
+ *
  * @author Trevor
- * 
+ *
  */
 @SuppressWarnings("serial")
 public class MailCron extends PicsActionSupport {
@@ -35,7 +35,7 @@ public class MailCron extends PicsActionSupport {
 			List<EmailQueue> emails = emailQueueDAO.getPendingEmails(limit);
 			if (emails.size() == 0) {
 				addActionMessage("The email queue is empty");
-				return SUCCESS;
+				return ACTION_MESSAGES;
 			}
 
 			// Get the default sender (info@pics)
@@ -54,7 +54,7 @@ public class MailCron extends PicsActionSupport {
 		} finally {
 			PicsLogger.stop();
 		}
-		return SUCCESS;
+		return ACTION_MESSAGES;
 	}
 
 	public int getLimit() {
