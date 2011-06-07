@@ -36,7 +36,7 @@ function copyQuestion(atypeID) {
 	$('#copy_audit').load('ManageQuestionCopyAjax.action', {button: 'text', 'id': atypeID},
 		function() {
 			$(this).dialog({
-				modal: true, 
+				modal: true,
 				title: 'Copy Question',
 				width: '55%',
 				close: function(event, ui) {
@@ -73,7 +73,7 @@ function moveQuestion(atypeID) {
 	$('#copy_audit').load('ManageQuestionMoveAjax.action', {button: 'text', 'id': atypeID},
 		function() {
 			$(this).dialog({
-				modal: true, 
+				modal: true,
 				title: 'Move Question',
 				width: '55%',
 				close: function(event, ui) {
@@ -235,7 +235,7 @@ function showOption() {
 			<s:checkbox name="question.hasRequirement"/>
 			<pics:fieldhelp title="Has Requirement">
 				<p>If this is question has a requirement, you MUST make the question required as well.</p>
-			</pics:fieldhelp>			
+			</pics:fieldhelp>
 		</li>
 		<li><label>OK Answer:</label>
 			<s:textfield name="question.okAnswer" />
@@ -312,7 +312,7 @@ function showOption() {
 			<input type="button" class="picsbutton" value="Copy" onclick="copyQuestion(<s:property value="id"/>)"/>
 			<input type="button" class="picsbutton" value="Move" onclick="moveQuestion(<s:property value="id"/>)"/>
 		<s:if test="question.id > 0">
-			<input type="submit" name="button" class="picsbutton negative" value="Delete" 
+			<input type="submit" name="button" class="picsbutton negative" value="Delete"
 				onclick="return confirm('Are you sure you want to delete this question?');" />
 		</s:if>
 		</div>

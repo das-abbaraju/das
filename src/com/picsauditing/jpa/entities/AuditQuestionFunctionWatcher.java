@@ -41,4 +41,5 @@ public final class AuditQuestionFunctionWatcher extends BaseTable {
 	public void setUniqueCode(String uniqueCode) {
 		this.uniqueCode = uniqueCode;
 	}
+
 }

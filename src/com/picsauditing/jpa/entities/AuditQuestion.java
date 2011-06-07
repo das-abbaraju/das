@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
@@ -23,6 +24,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
@@ -47,7 +50,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest", "Check Box", "Date", "Decimal Number",
 			"File", "FileCertificate", "Industry", "License", "Main Work", "Money", "MultipleChoice", "Number",
-			"Service", "Text", "Text Area" };
+			"Service", "Text", "Text Area", "Calculation" };
 
 	private int number;
 	private int scoreWeight;
@@ -84,8 +87,8 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	protected List<AuditOptionValue> options;
 	private List<AuditCategoryRule> auditCategoryRules;
 	private List<AuditTypeRule> auditTypeRules;
-	private List<AuditQuestionFunction> auditQuestionFunctions;
-	private List<AuditQuestionFunctionWatcher> auditQuestionFunctionWatchers;
+	private List<AuditQuestionFunction> functions;
+	private List<AuditQuestionFunctionWatcher> functionWatchers;
 
 	public AuditQuestion() {
 
@@ -174,13 +177,13 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.option = option;
 	}
 
-	public void setHasRequirement(boolean hasRequirement) {
-		this.hasRequirement = hasRequirement;
-	}
-
 	@Column(nullable = false)
 	public boolean isHasRequirement() {
 		return hasRequirement;
+	}
+
+	public void setHasRequirement(boolean hasRequirement) {
+		this.hasRequirement = hasRequirement;
 	}
 
 	public String getOkAnswer() {
@@ -443,21 +446,46 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	}
 
 	@OneToMany(mappedBy = "question")
-	public List<AuditQuestionFunction> getAuditQuestionFunctions() {
-		return auditQuestionFunctions;
+	public List<AuditQuestionFunction> getFunctions() {
+		return functions;
 	}
 
-	public void setAuditQuestionFunctions(List<AuditQuestionFunction> auditQuestionFunctions) {
-		this.auditQuestionFunctions = auditQuestionFunctions;
+	public void setFunctions(List<AuditQuestionFunction> functions) {
+		this.functions = functions;
 	}
 
 	@OneToMany(mappedBy = "question")
-	public List<AuditQuestionFunctionWatcher> getAuditQuestionFunctionWatchers() {
-		return auditQuestionFunctionWatchers;
+	public List<AuditQuestionFunctionWatcher> getFunctionWatchers() {
+		return functionWatchers;
 	}
 
-	public void setAuditQuestionFunctionWatchers(List<AuditQuestionFunctionWatcher> auditQuestionFunctionWatchers) {
-		this.auditQuestionFunctionWatchers = auditQuestionFunctionWatchers;
+	public void setFunctionWatchers(List<AuditQuestionFunctionWatcher> functionWatchers) {
+		this.functionWatchers = functionWatchers;
+	}
+
+	@Transient
+	public Multimap<AuditQuestion, Object> runFunctions(QuestionFunctionType runType, AnswerMap answerMap) {
+		Multimap<AuditQuestion, Object> results = ArrayListMultimap.create();
+		for (AuditQuestionFunctionWatcher watcher : functionWatchers) {
+			if (watcher.getFunction().getType() == runType) {
+				results.put(watcher.getFunction().getQuestion(), watcher.getFunction().calculate(answerMap));
+			}
+		}
+		return results;
+	}
+
+	/**
+	 * @return
+	 */
+	@Transient
+	public Collection<Integer> getSiblingQuestionWatchers() {
+		Set<Integer> siblings = new HashSet<Integer>();
+		for (AuditQuestionFunctionWatcher myWatcher : functionWatchers) {
+			for (AuditQuestionFunctionWatcher sibling : myWatcher.getFunction().getWatchers()) {
+				siblings.add(sibling.getQuestion().getId());
+			}
+		}
+		return siblings;
 	}
 
 	@Transient
@@ -496,9 +524,10 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	/**
 	 * Comparator for comparing AuditQuestions not based on natural ordering. Use compareTo if you want to order based
 	 * on the AuditQuestion's number and direct Category (it's natural order)
-	 * 
+	 *
 	 * @return The comparator for full ordering of AuditQuestions
 	 */
+	@Transient
 	public static Comparator<AuditQuestion> getComparator() {
 		return new Comparator<AuditQuestion>() {
 
@@ -532,7 +561,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	/**
 	 * Return true if there are category rules that require immediate recalculation when the answer to this question
 	 * changes
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -613,7 +642,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	public String getAutocompleteItem() {
 		return "[" + id + "] " + name;
 	}
-	
+
 	@Transient
 	@Override
 	public String getAutocompleteValue() {

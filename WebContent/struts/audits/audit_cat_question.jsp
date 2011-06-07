@@ -4,7 +4,7 @@
 	<s:include value="audit_question_view.jsp"></s:include>
 </s:if>
 <s:if test="#mode == 'Edit'">
- 	<s:if test="isCanEditCategory(#category)">
+ 	<s:if test="isCanEditCategory(#category) || #q.type != 'Calculation'">
 		<s:include value="audit_question_edit.jsp"></s:include>
 	</s:if><s:else>
 		<s:include value="audit_question_view.jsp"></s:include>

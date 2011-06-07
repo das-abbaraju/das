@@ -5,14 +5,17 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.persistence.NoResultException;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.google.common.collect.Multimap;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.auditBuilder.AuditBuilder;
@@ -32,6 +35,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.Naics;
+import com.picsauditing.jpa.entities.QuestionFunctionType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
@@ -77,8 +81,8 @@ public class AuditDataSave extends AuditActionSupport {
 					throw new Exception("Missing Audit");
 				if (auditData.getQuestion() == null)
 					throw new Exception("Missing Question");
-				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
-						.getId());
+				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(),
+						auditData.getQuestion().getId());
 			}
 
 			if (newCopy == null) {
@@ -164,6 +168,32 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 			auditDataDao.save(auditData);
 
+			/*
+			 * Update my function questions;
+			 */
+			Multimap<AuditQuestion, Object> functionResults = auditData.getQuestion().runFunctions(
+					QuestionFunctionType.Calculation, answerMap);
+			for (Entry<AuditQuestion, Collection<Object>> entry : functionResults.asMap().entrySet()) {
+				if (entry.getValue().size() > 1) {
+					System.out.printf(
+							"Too many calculations for question %d. I will only use the first one. You need to fix this.\n",
+							entry.getKey().getId());
+				}
+				/*
+				 * Only take the first one
+				 */
+				Object result = entry.getValue().iterator().next();
+				AuditData target = auditDataDao.findAnswerByAuditQuestion(auditID, entry.getKey().getId());
+				if (target == null) {
+					target = new AuditData();
+					target.setAudit(auditData.getAudit());
+					target.setQuestion(entry.getKey());
+				}
+				target.setAnswer(result.toString());
+				target.setAuditColumns(permissions);
+				auditDataDao.save(target);
+			}
+
 			if (auditData.getAudit() != null) {
 				ContractorAudit tempAudit = null;
 				if (!auditDao.isContained(auditData.getAudit())) {
@@ -242,8 +272,8 @@ public class AuditDataSave extends AuditActionSupport {
 			// hook to calculation read/update
 			// the ContractorAudit and AuditCatData
 			try {
-				catData = catDataDao.findAuditCatData(auditData.getAudit().getId(), auditData.getQuestion()
-						.getCategory().getId());
+				catData = catDataDao.findAuditCatData(auditData.getAudit().getId(),
+						auditData.getQuestion().getCategory().getId());
 			} catch (NoResultException e) {
 				// Create AuditCatData for categories that don't have one
 				// yet
@@ -303,8 +333,7 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	/**
-	 * @return True if a rule that would be triggered from this question, false
-	 *         otherwise
+	 * @return True if a rule that would be triggered from this question, false otherwise
 	 */
 	private boolean checkOtherRules() {
 		for (AuditCategoryRule acr : auditRuleDAO.findCategoryRulesByQuestion(auditData.getQuestion().getId())) {
@@ -315,8 +344,7 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	/**
-	 * @return True if a dependent question is in a different category, false
-	 *         otherwise
+	 * @return True if a dependent question is in a different category, false otherwise
 	 */
 	private boolean checkDependentQuestions() {
 		for (AuditQuestion aq : auditData.getQuestion().getDependentQuestions()) {
@@ -346,6 +374,9 @@ public class AuditDataSave extends AuditActionSupport {
 			questionIds.add(auditData.getQuestion().getRequiredQuestion().getId());
 		if (auditData.getQuestion().getVisibleQuestion() != null)
 			questionIds.add(auditData.getQuestion().getVisibleQuestion().getId());
+
+		questionIds.addAll(auditData.getQuestion().getSiblingQuestionWatchers());
+
 		answerMap = auditDataDao.findAnswers(auditID, questionIds);
 	}
 

@@ -11,7 +11,7 @@
 			<s:set value="false" name="req" />
 			<s:set name="category" value="key" />
 			<s:include value="audit_cat_view.jsp" />
-		</s:if> 
+		</s:if>
 	</s:iterator>
 </s:if>
 <s:else>
@@ -28,10 +28,10 @@
 		<s:else>
 			<s:if test="#category.helpText.length() > 0">
 				<div class="helpbox" style="margin-top: -8px"><s:property value="#category.helpText" escape="false"/></div>
-			</s:if> 
+			</s:if>
 			<s:set name="shaded" value="true" scope="action"/>
 			<s:set name="mode" value="mode"/>
-			
+
 			<s:iterator value="#category.questions" id="q">
 				<s:set name="hidden" value="!#q.isVisible(answerMap)" />
 				<s:if test="previewCat || #q.isValidQuestion(conAudit.validDate)">
@@ -60,9 +60,9 @@
 					<s:if test="previewCat || #visible">
 						<s:if test="!#q.groupedWithPrevious">
 							<s:set name="shaded" value="!#shaded" scope="action"/>
-						</s:if> 
-						
-						<div id="node_<s:property value="#q.id"/>" class="clearfix question<s:if test="#shaded"> shaded</s:if><s:if test="#hidden"> hide</s:if><s:if test="#q.dependentRequired.size() > 0"> hasDependentRequired</s:if><s:if test="#q.dependentVisible.size() > 0"> hasDependentVisible</s:if><s:if test="#q.auditCategoryRules.size() > 0"> hasDependentRules</s:if><s:if test="affectsAudit"> affectsAudit</s:if>">
+						</s:if>
+
+						<div id="node_<s:property value="#q.id"/>" class="clearfix question<s:if test="#shaded"> shaded</s:if><s:if test="#hidden"> hide</s:if><s:if test="#q.dependentRequired.size() > 0"> hasDependentRequired</s:if><s:if test="#q.dependentVisible.size() > 0"> hasDependentVisible</s:if><s:if test="#q.auditCategoryRules.size() > 0"> hasDependentRules</s:if><s:if test="affectsAudit"> affectsAudit</s:if><s:if test="#q.functionWatchers.size > 0"> hasFunctions</s:if>">
 							<s:include value="audit_cat_question.jsp"></s:include>
 						</div>
 					</s:if>
@@ -72,9 +72,9 @@
 				<s:if test="previewCat || isAppliesSubCategory(#category)">
 					<s:include value="audit_cat_view.jsp"/>
 				</s:if>
-			</s:iterator>	
+			</s:iterator>
 		</s:else>
-			<s:if test="!#showCat && onlyReq">	
+			<s:if test="!#showCat && onlyReq">
 				<script>
 					$(function() {
 						$('#audit_cat_'+<s:property value="#category.id"/>).hide();

@@ -55,6 +55,12 @@ $(function(){
 		});
 	});
 
+	$('#auditViewArea').delegate('div.hasFunctions', 'updateDependent', function() {
+		$.each($(this).find('div.dependentFunction:first').text().split(','), function(i,v) {
+			reloadQuestion(v);
+		});
+	});
+
 	// Insurance Methods
 	$('a.uploadNewCertificate').live('click',function(e) {
 		e.preventDefault();
@@ -99,7 +105,7 @@ function showCertUpload(certID, questionID) {
 }
 
 function reloadQuestion(qid) {
-	var pars = $('#node_'+qid).find('form.qform').serialize()+'&button=reload';
+	var pars = $('#node_'+qid).find('form.qform input.get_request').serialize()+'&button=reload';
 	$('#node_'+qid)
 		.block({message: 'Reloading question...'})
 		.load('AuditDataSaveAjax.action',pars, function() {

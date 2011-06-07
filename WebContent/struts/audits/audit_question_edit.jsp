@@ -62,26 +62,26 @@ $(function() {
 
 <div class="answer">
 	<s:form cssClass="qform" id="qform%{#q.id}" onsubmit="return false;">
-		<s:hidden name="categoryID" value="%{#q.category.id}"/>
+		<s:hidden name="categoryID" value="%{#q.category.id}" cssClass="get_request"/>
 		<s:if test="auditData.audit != null">
-			<s:hidden name="auditData.audit.id"/>
+			<s:hidden name="auditData.audit.id" cssClass="get_request"/>
 		</s:if>
 		<s:else>
-			<s:hidden name="auditData.audit.id" value="%{conAudit.id}"/>
+			<s:hidden name="auditData.audit.id" value="%{conAudit.id}" cssClass="get_request"/>
 		</s:else>
-		<s:hidden name="auditData.question.id" value="%{#q.id}"/>
-		<s:hidden name="mode"/>
+		<s:hidden name="auditData.question.id" value="%{#q.id}" cssClass="get_request"/>
+		<s:hidden name="mode" cssClass="get_request"/>
 		<s:if test="mode == 'Verify'">
 			<s:property value="#a.answer"/>
 		</s:if>
-		
+
 		<!-- Option Types -->
 		<s:if test="#q.questionType.equals('MultipleChoice') && #q.option != null">
 			<s:if test="#q.option.radio">
 				<s:radio theme="audits" list="#q.option.values" listValue="name" listKey="identifier" name="auditData.answer" value="%{#a.answer}"></s:radio>
 				<s:if test="#q.auditType.policy && #q.option.uniqueCode.equals('YesNo')">
 					<s:set name="op" value="%{getOperatorByName(#q.category.name)}" />
-					<s:if test="#op != null && #op.id > 0">	
+					<s:if test="#op != null && #op.id > 0">
 						<div class="clearfix question shaded">
 							If it does NOT comply, please explain below.
 							<s:if test="#op.insuranceForms.size > 0">
@@ -101,7 +101,7 @@ $(function() {
 				<s:select list="#q.option.values" headerValue="- Select -" headerKey="" listValue="name" listKey="identifier" name="auditData.answer" value="%{#a.answer}" />
 			</s:else>
 		</s:if>
-		
+
 		<!-- Check box -->
 		<s:if test="#q.questionType == 'Check Box'">
 			<s:checkbox fieldValue="X" name="auditData.answer" value="#a.answer == \"X\""/>
@@ -130,7 +130,7 @@ $(function() {
 		<s:if test="#q.questionType == 'AMBest'">
 			<s:hidden name="auditData.comment" value="%{#a.comment}"/>
 			<s:textfield id="ambest" name="auditData.answer" value="%{#a.answer}" size="30"/>
-			
+
 			<script type="text/javascript">
 			$(function() {
 				$('#ambest').autocomplete('AmBestSuggestAjax.action',
@@ -152,7 +152,7 @@ $(function() {
 				});
 			});
 			</script>
-			
+
 			<s:if test="#a.commentLength">
 				<s:set name="ambest" value="@com.picsauditing.dao.AmBestDAO@getAmBest(#a.comment)" />
 				<br>
@@ -167,11 +167,11 @@ $(function() {
 		<s:if test="#q.questionType == 'File'">
 			<nobr>
 				<s:if test="#a.id > 0 && #a.answer.length() > 0">
-					<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&auditData.question.id=<s:property value="#q.id"/>" 
+					<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&auditData.question.id=<s:property value="#q.id"/>"
 						target="_BLANK">View File</a>
 				</s:if>
 				<s:else>File Not Uploaded</s:else>
-				<input id="show_button_<s:property value="#q.id"/>" type="button" 
+				<input id="show_button_<s:property value="#q.id"/>" type="button"
 					value="<s:if test="#a.id > 0 && #a.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File"
 					class="fileUpload" title="Opens in new window (please disable your popup blocker)" />
 			</nobr>
@@ -179,7 +179,10 @@ $(function() {
 		<s:if test="#q.questionType == 'FileCertificate'">
 			<s:include value="audit_question_cert_load.jsp" />
 		</s:if>
-		
+		<s:if test="#q.questionType == 'Calculation'">
+			<s:property value="#a.answer"/>
+		</s:if>
+
 		<s:if test="#a.verified && !#q.hasRequirement">
 			<span class="verified">
 				Answer verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" />
@@ -221,13 +224,14 @@ $(function() {
 		<s:set name="verifyText" value="'Verify'" />
 		<s:set name="verifyDetailDisplay" value="'none'" />
 	</s:else>
-	
+
 	<input class="verify" id="verifyButton_<s:property value="#q.id"/>" type="submit" value="<s:property value="#attr.verifyText"/>" />
 
 	<span id="verify_details_<s:property value="#q.id"/>" style='display: <s:property value ="#attr.verifyDetailDisplay"/>;' class="verified">
 		Verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" />
 	</span>
 </s:if>
+<div class="dependentFunction hide"><s:iterator value="#q.functionWatchers" status="s"><s:property value="function.question.id"/><s:if test="!#s.last">,</s:if></s:iterator></div>
 <div class="dependentRequired hide"><s:iterator value="#q.dependentRequired" status="s"><s:property value="id"/><s:if test="!#s.last">,</s:if></s:iterator></div>
 <div class="dependentVisible hide"><s:iterator value="#q.getDependentVisible(#a.answer)" status="s"><s:property value="id"/><s:if test="!#s.last">,</s:if></s:iterator></div>
 <div class="dependentVisibleHide hide"><s:iterator value="#q.getDependentVisibleHide(#a.answer)" status="s"><s:property value="id"/><s:if test="!#s.last">,</s:if></s:iterator></div>
