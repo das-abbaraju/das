@@ -17,7 +17,7 @@
 	</div>
 	<div class="clear"></div>
 	<div class="filterOption" id="select_items">
-		<a href="#" onclick="toggleBox('form1_items'); return false;"><s:if test="auditType.desktop">Services Performed</s:if><s:else>Competencies</s:else></a> =
+		<a href="#" onclick="toggleBox('form1_items'); return false;">Competencies</a> =
 		<span id="form1_items_query">NONE</span>
 		<br />
 		<span id="form1_items_select" style="display: none" class="clearLink">
@@ -93,5 +93,5 @@
 	</table>
 </s:if>
 <s:else>
-	<div class="info">Please select categories and <s:if test="auditType.desktop">services performed</s:if><s:else>competencies</s:else> to view the matrix.</div>
+	<div class="info">Please select categories and competencies to view the matrix.</div>
 </s:else>

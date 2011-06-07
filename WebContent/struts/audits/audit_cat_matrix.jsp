@@ -4,9 +4,7 @@
 <html>
 <head>
 <title>Audit Category Matrix</title>
-<s:include value="../jquery.jsp"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <script type="text/javascript" src="js/jquery/autocompletefb/jquery.autocompletefb.js"></script>
@@ -15,19 +13,7 @@
 function getCategories(id) {
 	$('#tableLoad').empty();
 	$('#filterLoad').empty();
-	
-	if (id == 2) {
-		var data = {
-			auditTypeID: id,
-			button: "DesktopCategories"
-		};
-	
-		startThinking({div: "categoryLoad", message: "Loading categories..."});
-		$('#categoryLoad').load("AuditCategoryMatrixAjax.action", data);
-	} else {
-		$('#categoryLoad').empty();
-		getTable(id, 0);
-	}
+	$('#categoryLoad').empty();
 }
 
 function getTable(auditTypeID, categoryID) {
@@ -130,7 +116,7 @@ function viewTable() {
 <div id="search">
 	<s:form id="form1">
 		<div class="filterOption">
-			Audit: <s:select list="#{100:'Competency Review',2:'Manual Audit'}" headerKey="0" headerValue="- Select Audit Type -" 
+			Audit: <s:select list="#{100:'Competency Review'}" headerKey="0" headerValue="- Select Audit Type -" 
 				onchange="getCategories(this.value);" name="auditTypeID" />
 		</div>
 		<div class="clear"></div>

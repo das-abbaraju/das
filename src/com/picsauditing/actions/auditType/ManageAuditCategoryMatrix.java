@@ -2,7 +2,6 @@ package com.picsauditing.actions.auditType;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -49,8 +48,6 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 	protected int[] categoryIDs;
 	protected int[] itemIDs;
 	private List<AuditCategory> auditCategories;
-	private List<AuditCategory> desktopCategories;
-	private List<AuditQuestion> desktopQuestions;
 	private List<ListItem> selectedCategories = new ArrayList<ListItem>();
 	private List<ListItem> selectedItems = new ArrayList<ListItem>();
 	private DoubleMap<Integer, Integer, Boolean> matrix = new DoubleMap<Integer, Integer, Boolean>();
@@ -103,7 +100,7 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 						}
 
 						if (r != null && !checked) {
-							// TODO Delete or expire this category rule?
+							// TODO Expire this category rule instead of deleting it
 							json.put("msg", "Successfully removed " + ac.getName() + " from " + aq.getName());
 							rules.remove(r);
 							adtDAO.remove(r);
@@ -115,11 +112,7 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 								r.setAcceptsBids(false);
 								r.setQuestion(aq);
 
-								if (aq.getQuestionType().equals("Service")) {
-									r.setQuestionComparator(QuestionComparator.StartsWith);
-									r.setQuestionAnswer("C");
-								} else if (aq.getQuestionType().equals("Main Work")
-										|| aq.getQuestionType().equals("Check Box")) {
+								if (aq.getQuestionType().equals("Check Box")) {
 									r.setQuestionComparator(QuestionComparator.Equals);
 									r.setQuestionAnswer("X");
 								} else if (aq.getQuestionType().equals("Text"))
@@ -178,28 +171,6 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 
 			auditCategories = auditType.getTopCategories();
 
-			if ("DesktopCategories".equals(button)) {
-				AuditCategory cat = acDAO.find(AuditCategory.SERVICES_PERFORMED);
-				desktopCategories = new ArrayList<AuditCategory>(cat.getChildren());
-				desktopCategories.remove(cat);
-				Collections.sort(desktopCategories, new Comparator<AuditCategory>() {
-					@Override
-					public int compare(AuditCategory o1, AuditCategory o2) {
-						if (o1.getAncestors().size() == o2.getAncestors().size())
-							return o1.compareTo(o2);
-
-						return o1.getAncestors().size() - o2.getAncestors().size();
-					}
-				});
-
-				return SUCCESS;
-			}
-
-			if (auditType.isDesktop() && categoryID > 0) {
-				AuditCategory cat = acDAO.find(categoryID);
-				desktopQuestions = cat.getQuestions();
-			}
-
 			if ("Table".equals(button)) {
 				if (categoryIDs != null || itemIDs != null)
 					buildMatrix();
@@ -217,16 +188,9 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 
 				if (itemIDs != null) {
 					for (Integer i : itemIDs) {
-						if (auditType.isDesktop()) {
-							for (AuditQuestion aq : desktopQuestions) {
-								if (aq.getId() == i)
-									selectedItems.add(new ListItem(aq));
-							}
-						} else {
-							for (OperatorCompetency oc : getOperatorCompetencies()) {
-								if (oc.getId() == i)
-									selectedItems.add(new ListItem(oc));
-							}
+						for (OperatorCompetency oc : getOperatorCompetencies()) {
+							if (oc.getId() == i)
+								selectedItems.add(new ListItem(oc));
 						}
 					}
 
@@ -311,14 +275,6 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 
 	public void setItemIDs(int[] itemIDs) {
 		this.itemIDs = itemIDs;
-	}
-
-	public List<AuditCategory> getDesktopCategories() {
-		return desktopCategories;
-	}
-
-	public List<AuditQuestion> getDesktopQuestions() {
-		return desktopQuestions;
 	}
 
 	public List<OperatorCompetency> getOperatorCompetencies() {
