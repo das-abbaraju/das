@@ -445,6 +445,13 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.auditTypeRules = auditTypeRules;
 	}
 
+	/**
+	 * The list of {@link AuditQuestionFunction}s that apply to this {@link AuditQuestion}.
+	 *
+	 * Note: Only the first {@link AuditQuestionFunction} with a {@link QuestionFunctionType} of "Calculation" will take
+	 * effect.
+	 *
+	 */
 	@OneToMany(mappedBy = "question")
 	public List<AuditQuestionFunction> getFunctions() {
 		return functions;
@@ -454,6 +461,11 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.functions = functions;
 	}
 
+	/**
+	 * This is a reference to the {@link AuditQuestionFunction}s that this {@link AuditQuestion} is required for
+	 * calcualtion.
+	 *
+	 */
 	@OneToMany(mappedBy = "question")
 	public List<AuditQuestionFunctionWatcher> getFunctionWatchers() {
 		return functionWatchers;
@@ -463,6 +475,13 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.functionWatchers = functionWatchers;
 	}
 
+	/**
+	 * This method runs all {@link AuditQuestionFunction} of a specific {@link QuestionFunctionType} "runType".
+	 *
+	 * @param runType
+	 * @param answerMap
+	 * @return Multimap of the {@link AuditQuestion} => a collection of Function Results.
+	 */
 	@Transient
 	public Multimap<AuditQuestion, Object> runFunctions(QuestionFunctionType runType, AnswerMap answerMap) {
 		Multimap<AuditQuestion, Object> results = ArrayListMultimap.create();
@@ -475,7 +494,10 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	}
 
 	/**
-	 * @return
+	 * This method is used to find a Set of {@link AuditQuestion}.id's that are needed by the
+	 * {@link AuditQuestionFunction}s of this {@link AuditQuestion}.
+	 *
+	 * This is to help create an {@link AnswerMap} of the answers that are required for calculation.
 	 */
 	@Transient
 	public Collection<Integer> getSiblingQuestionWatchers() {
