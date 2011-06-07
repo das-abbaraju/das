@@ -93,7 +93,7 @@
 				<table>
 				<s:iterator value="contractor.fees.keySet()" var="feeClass">
 					<s:if test="!contractor.fees.get(#feeClass).currentLevel.free">
-						<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).currentLevel.fee" />:</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.fees.get(#feeClass).currentAmount" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
+						<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).currentLevel.fee" />:&nbsp;</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.fees.get(#feeClass).currentAmount" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 					</s:if>
 				</s:iterator>
 				</table>
@@ -104,7 +104,7 @@
 					<table>
 						<s:iterator value="contractor.fees.keySet()" var="feeClass">
 							<s:if test="!contractor.fees.get(#feeClass).newLevel.free">
-								<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).newLevel.fee" />:</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.fees.get(#feeClass).newAmount" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
+								<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).newLevel.fee" />:&nbsp;</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.fees.get(#feeClass).newAmount" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 							</s:if>
 						</s:iterator>					
 					</table>
