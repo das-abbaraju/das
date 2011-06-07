@@ -65,6 +65,9 @@ function deleteRule(element,ruleID) {
 				<s:if test="columnMap.get('question')">
 					<th colspan="3">Question</th>
 				</s:if>
+				<s:if test="columnMap.get('manuallyAdded')">
+					<th>Man. Added</th>
+				</s:if>
 				<s:if test="columnMap.get('dependentAuditType')">
 					<th colspan="2">Dependent Audit</th>
 				</s:if>
@@ -158,6 +161,14 @@ function deleteRule(element,ruleID) {
 						<td><s:property value="questionComparatorLabel"/></td>
 						<td><s:property value="questionAnswerLabel"/></td>
 					</s:if>					
+					<s:if test="columnMap.get('manuallyAdded')">
+						<s:if test="manuallyAdded">
+							<td>Yes</td>
+						</s:if>
+						<s:else>
+							<td>No</td>
+						</s:else>
+					</s:if>
 					<s:if test="columnMap.get('dependentAuditType')">
 						<td>
 							<s:if test="dependentAuditType != null && permissions.hasPermission('ManageAudits')">

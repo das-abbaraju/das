@@ -86,6 +86,8 @@ public class AuditTypeRule extends AuditRule {
 			out += " Dependent Audit Type is " + dependentAuditType
 					+ (dependentAuditStatus == null ? "" : " is " + dependentAuditStatus);
 		}
+		if (manuallyAdded)
+			out += " (manually added)";
 		return out;
 	}
 

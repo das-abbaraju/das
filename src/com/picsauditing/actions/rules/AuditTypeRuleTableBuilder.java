@@ -33,6 +33,8 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 	@Override
 	public void checkColumns(AuditTypeRule rule) {
 		super.checkColumns(rule);
+		if (rule.isManuallyAdded())
+			columnMap.put("manuallyAdded", true);
 		if (rule.getDependentAuditType() != null)
 			columnMap.put("dependentAuditType", true);
 	}
