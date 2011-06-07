@@ -42,4 +42,10 @@
 			"class" : type
 		}).html(message));
 	}
+
+	$.mainStatus = function(message) {
+		var options = {target: '#mainStatus', delay: 2000}
+
+		$(options.target).text(message).show('slow').delay(2000).hide('slow');
+	}
 })(jQuery)
