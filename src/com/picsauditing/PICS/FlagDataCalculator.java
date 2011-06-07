@@ -172,6 +172,12 @@ public class FlagDataCalculator {
 					}
 				}
 				boolean r = false;
+				
+				if (criteria.getRequiredStatus() != null) {
+					if (!scoredAudit.hasCaoStatus(criteria.getRequiredStatus()))
+						return null;
+				}
+				
 				if (scoredAudit != null) {
 					try {
 						if (">".equals(criteria.getComparison())) {
