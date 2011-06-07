@@ -30,7 +30,8 @@
 		$.ajaxSettings.traditional = true;
 
 		if ($.browser.mozilla)
-			$("form").attr("autocomplete", "off");
+			$("form:not(#login)").attr("autocomplete", "off");
+
 		if ($.browser.msie && $.browser.version == '6.0'){
 			try {
 				var xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
