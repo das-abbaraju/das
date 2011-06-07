@@ -773,7 +773,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 		balance = balance.setScale(2);
 
-		InvoiceFeeDAO invoiceFeeDAO = (InvoiceFeeDAO) SpringUtils.getBean("InvoiceFeeDAO");
+		InvoiceFeeDAO feeDAO = (InvoiceFeeDAO) SpringUtils.getBean("InvoiceFeeDAO");
 
 		for (Invoice invoice : getSortedInvoices()) {
 			if (!invoice.getStatus().isVoid()) {
@@ -782,32 +782,24 @@ public class ContractorAccount extends Account implements JSONable {
 						if (!foundListOnlyMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.ListOnly)) {
 								foundListOnlyMembership = true;
-								this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
-										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 1));
-								this.getFees().get(FeeClass.ListOnly).setCurrentAmount(
-										invoiceItem.getInvoiceFee().getAmount());
+								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 1);
+								setCurrentFee(FeeClass.ListOnly, fee);
 								// Overriding BidOnly if current ListOnly was found and two exist in
 								// same time period
 								foundBidOnlyMembership = true;
-								this.getFees().get(FeeClass.BidOnly).setCurrentLevel(
-										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 0));
-								this.getFees().get(FeeClass.BidOnly).setCurrentAmount(BigDecimal.ZERO);
+								clearCurrentFee(FeeClass.BidOnly, feeDAO);
 							}
 						}
 
 						if (!foundBidOnlyMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.BidOnly)) {
 								foundBidOnlyMembership = true;
-								this.getFees().get(FeeClass.BidOnly).setCurrentLevel(
-										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 1));
-								this.getFees().get(FeeClass.BidOnly).setCurrentAmount(
-										invoiceItem.getInvoiceFee().getAmount());
+								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 1);
+								setCurrentFee(FeeClass.BidOnly, fee);
 								// Overriding ListOnly if current BidOnly was found and two exist in
 								// same time period
 								foundListOnlyMembership = true;
-								this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
-										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 0));
-								this.getFees().get(FeeClass.ListOnly).setCurrentAmount(BigDecimal.ZERO);
+								clearCurrentFee(FeeClass.ListOnly, feeDAO);
 							}
 						}
 
@@ -823,25 +815,19 @@ public class ContractorAccount extends Account implements JSONable {
 									// same, set fee level based on current
 									// number of paying facilities if contractor
 									// paid legacy DocuGUARD fee.
-									InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD,
-											this.getPayingFacilities());
-									this.getFees().get(FeeClass.DocuGUARD).setCurrentLevel(fee);
-									this.getFees().get(FeeClass.DocuGUARD).setCurrentAmount(fee.getAmount());
+									InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, this
+											.getPayingFacilities());
+									setCurrentFee(FeeClass.DocuGUARD, fee);
 								} else {
-									this.getFees().get(FeeClass.DocuGUARD).setCurrentLevel(invoiceItem.getInvoiceFee());
-									this.getFees().get(FeeClass.DocuGUARD).setCurrentAmount(
-											invoiceItem.getInvoiceFee().getAmount());
+									setCurrentFee(FeeClass.DocuGUARD, invoiceItem.getInvoiceFee());
 								}
 
 								// DocuGUARD overrides Bid/List Only membership
 								foundBidOnlyMembership = true;
-								this.getFees().get(FeeClass.BidOnly).setCurrentLevel(
-										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 0));
-								this.getFees().get(FeeClass.BidOnly).setCurrentAmount(BigDecimal.ZERO);
+								clearCurrentFee(FeeClass.BidOnly, feeDAO);
 								foundListOnlyMembership = true;
-								this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
-										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 0));
-								this.getFees().get(FeeClass.ListOnly).setCurrentAmount(BigDecimal.ZERO);
+								clearCurrentFee(FeeClass.ListOnly, feeDAO);
+
 							}
 						}
 
@@ -850,26 +836,20 @@ public class ContractorAccount extends Account implements JSONable {
 								foundAuditGUARDMembership = true;
 
 								if (invoiceItem.getInvoiceFee().isLegacyMembership()) {
-									this.getFees().get(FeeClass.AuditGUARD).setCurrentLevel(
-											invoiceFeeDAO.findMembershipByLegacyAuditGUARDID(FeeClass.AuditGUARD,
-													invoiceItem.getInvoiceFee()));
-									this.getFees().get(FeeClass.AuditGUARD).setCurrentAmount(
-											getDiscountedAmount(invoiceItem.getInvoiceFee()));
+									InvoiceFee fee = feeDAO.findMembershipByLegacyAuditGUARDID(FeeClass.AuditGUARD,
+											invoiceItem.getInvoiceFee());
+									setCurrentFee(FeeClass.AuditGUARD, fee);
 								} else {
-									this.getFees().get(FeeClass.AuditGUARD)
-											.setCurrentLevel(invoiceItem.getInvoiceFee());
-									this.getFees().get(FeeClass.AuditGUARD).setCurrentAmount(
-											getDiscountedAmount(invoiceItem.getInvoiceFee()));
+									setCurrentFee(FeeClass.AuditGUARD, invoiceItem.getInvoiceFee());
 								}
 
 								// Old AuditGUARD included DocuGUARD fee
 								// For legacy compliance
 								if (invoiceItem.getInvoiceFee().isLegacyMembership()) {
 									foundDocuGUARDMembership = true;
-									InvoiceFee fee = invoiceFeeDAO.findMembershipByLegacyAuditGUARDID(
-											FeeClass.DocuGUARD, invoiceItem.getInvoiceFee());
-									this.getFees().get(FeeClass.DocuGUARD).setCurrentLevel(fee);
-									this.getFees().get(FeeClass.DocuGUARD).setCurrentAmount(fee.getAmount());
+									InvoiceFee fee = feeDAO.findMembershipByLegacyAuditGUARDID(FeeClass.DocuGUARD,
+											invoiceItem.getInvoiceFee());
+									setCurrentFee(FeeClass.DocuGUARD, fee);
 								}
 							}
 						}
@@ -877,16 +857,14 @@ public class ContractorAccount extends Account implements JSONable {
 						if (!foundInsureGUARDMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.InsureGUARD)) {
 								foundInsureGUARDMembership = true;
-								this.getFees().get(FeeClass.InsureGUARD).setCurrentLevel(invoiceItem.getInvoiceFee());
-								this.getFees().get(FeeClass.InsureGUARD).setCurrentAmount(invoiceItem.getAmount());
+								setCurrentFee(FeeClass.InsureGUARD, invoiceItem.getInvoiceFee());
 							}
 						}
 
 						if (!foundEmployeeGUARDMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.EmployeeGUARD)) {
 								foundEmployeeGUARDMembership = true;
-								this.getFees().get(FeeClass.EmployeeGUARD).setCurrentLevel(invoiceItem.getInvoiceFee());
-								this.getFees().get(FeeClass.EmployeeGUARD).setCurrentAmount(getDiscountedAmount(invoiceItem.getInvoiceFee()));
+								setCurrentFee(FeeClass.EmployeeGUARD, invoiceItem.getInvoiceFee());
 							}
 						}
 
@@ -918,40 +896,44 @@ public class ContractorAccount extends Account implements JSONable {
 				return;
 		}
 
-		if (!foundListOnlyMembership) {
-			this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
-					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 0));
-			this.getFees().get(FeeClass.ListOnly).setCurrentAmount(BigDecimal.ZERO);
-		}
-		if (!foundBidOnlyMembership) {
-			this.getFees().get(FeeClass.BidOnly).setCurrentLevel(
-					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 0));
-			this.getFees().get(FeeClass.BidOnly).setCurrentAmount(BigDecimal.ZERO);
-		}
-		if (!foundDocuGUARDMembership) {
-			this.getFees().get(FeeClass.DocuGUARD).setCurrentLevel(
-					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 0));
-			this.getFees().get(FeeClass.DocuGUARD).setCurrentAmount(BigDecimal.ZERO);
-		}
-		if (!foundAuditGUARDMembership) {
-			this.getFees().get(FeeClass.AuditGUARD).setCurrentLevel(
-					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD, 0));
-			this.getFees().get(FeeClass.AuditGUARD).setCurrentAmount(BigDecimal.ZERO);
-		}
-		if (!foundInsureGUARDMembership) {
-			this.getFees().get(FeeClass.InsureGUARD).setCurrentLevel(
-					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, 0));
-			this.getFees().get(FeeClass.InsureGUARD).setCurrentAmount(BigDecimal.ZERO);
-		}
-		if (!foundEmployeeGUARDMembership) {
-			this.getFees().get(FeeClass.EmployeeGUARD).setCurrentLevel(
-					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, 0));
-			this.getFees().get(FeeClass.EmployeeGUARD).setCurrentAmount(BigDecimal.ZERO);
-		}
+		if (!foundListOnlyMembership)
+			clearCurrentFee(FeeClass.ListOnly, feeDAO);
+		if (!foundBidOnlyMembership)
+			clearCurrentFee(FeeClass.BidOnly, feeDAO);
+		if (!foundDocuGUARDMembership)
+			clearCurrentFee(FeeClass.DocuGUARD, feeDAO);
+		if (!foundAuditGUARDMembership)
+			clearCurrentFee(FeeClass.AuditGUARD, feeDAO);
+		if (!foundInsureGUARDMembership)
+			clearCurrentFee(FeeClass.InsureGUARD, feeDAO);
+		if (!foundEmployeeGUARDMembership)
+			clearCurrentFee(FeeClass.EmployeeGUARD, feeDAO);
 		if (!foundPaymentExpires && !this.isAcceptsBids())
 			paymentExpires = creationDate;
 		if (!foundMembershipDate)
 			membershipDate = null;
+	}
+
+	private void clearCurrentFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
+		this.getFees().get(feeClass).setCurrentLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
+		this.getFees().get(feeClass).setCurrentAmount(BigDecimal.ZERO);
+	}
+
+	private void setCurrentFee(FeeClass feeClass, InvoiceFee fee) {
+		this.getFees().get(feeClass).setCurrentLevel(fee);
+		this.getFees().get(feeClass).setCurrentAmount(getDiscountedAmount(fee));
+	}
+	
+	@Transient
+	public void clearNewFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
+		this.getFees().get(feeClass).setNewLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
+		this.getFees().get(feeClass).setNewAmount(BigDecimal.ZERO);
+	}
+
+	@Transient
+	public void setNewFee(FeeClass feeClass, InvoiceFee fee, BigDecimal amount) {
+		this.getFees().get(feeClass).setNewLevel(fee);
+		this.getFees().get(feeClass).setNewAmount(amount);
 	}
 
 	private BigDecimal getDiscountedAmount(InvoiceFee fee) {
