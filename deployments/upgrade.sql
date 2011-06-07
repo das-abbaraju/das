@@ -1329,3 +1329,7 @@ INSERT INTO pics_alpha1.app_translation(msgKey, locale, msgValue, createdBy, upd
          33884 AS updatedBy, now() AS creationDate, now() AS updateDate
   FROM   pics_alpha1.audit_question aq
   WHERE  aq.expirationDate > now();
+  
+-- PICS-2211
+insert into flag_criteria (category, displayOrder, label, description, dataType, comparison, defaultValue, allowCustomValue, oshaType, oshaRateType, multiYearScope, insurance, flaggableWhenMissing, createdBy, creationDate, updatedBy, updateDate)
+values ('Statistics', 130, 'Severity Rate Average', 'Severity Rate three year average must be less than or equal to {HURDLE}', 'number', '>', 1.0, 1, 'OSHA', 'SeverityRate', 'ThreeYearAverage', 0, 0, 23157, NOW(), 23157, NOW());
