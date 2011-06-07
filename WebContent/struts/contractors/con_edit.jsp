@@ -216,8 +216,8 @@ $(function() {
 					<li><label><s:text name="%{scope}.SoleProprietor.heading"/></label>
 						<s:checkbox name="contractor.soleProprietor" />
 					</li>
-					<li><label>Bid Only Account:</label>
-						<s:checkbox name="contractor.acceptsBids"/></li>	
+					<li><label>Account Level:</label>
+						<s:select list="@com.picsauditing.jpa.entities.AccountLevel@values()" name="contractor.accountLevel"/></li>	
 					<li><label>Reason:</label>
 						<s:select list="deactivationReasons" name="contractor.reason" headerKey="" headerValue="- Deactivation Reason -"/>
 					</li>

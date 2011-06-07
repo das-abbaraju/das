@@ -12,8 +12,6 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "invoice_fee")
@@ -44,20 +42,9 @@ public class InvoiceFee extends BaseTable {
 		this.fee = fee;
 	}
 
-	/**
-	 * Please use getAmount(contractor) to get the properly discounted
-	 * amount for every contractor.
-	 * @return
-	 */
-	@Deprecated
 	@Column(name = "defaultAmount", nullable = false)
 	public BigDecimal getAmount() {
 		return amount;
-	}
-
-	@Transient
-	public BigDecimal getAmount(ContractorAccount contractor) {
-		return BillingCalculatorSingle.getDiscountedMembershipAmount(this, contractor);
 	}
 
 	public void setAmount(BigDecimal amount) {

@@ -6,14 +6,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -64,6 +65,7 @@ public class BillingCalculatorSingle {
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
 				InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(feeClass, payingFacilities);
 				contractor.getFees().get(feeClass).setNewLevel(newLevel);
+				contractor.getFees().get(feeClass).setNewAmount(newLevel.getAmount());
 			}
 
 			return;
@@ -72,12 +74,18 @@ public class BillingCalculatorSingle {
 		// Checking Audits
 		boolean auditGUARD = false;
 		boolean insureGUARD = false;
-		boolean employeeGUARD = false;
-		
-		AuditTypeRuleCache ruleCache = (AuditTypeRuleCache) com.picsauditing.util.SpringUtils.getBean("AuditTypeRuleCache");
+		boolean employeeAudits = false;
+		boolean oq = false;
+		boolean hseCompetency = false;
+
+		AuditTypeRuleCache ruleCache = (AuditTypeRuleCache) com.picsauditing.util.SpringUtils
+				.getBean("AuditTypeRuleCache");
+		AuditDecisionTableDAO auditDAO = (AuditDecisionTableDAO) com.picsauditing.util.SpringUtils
+				.getBean("AuditDecisionTableDAO");
+		ruleCache.initialize(auditDAO);
 		AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
 
-		for (AuditTypeDetail detail : builder.calculate() ) {
+		for (AuditTypeDetail detail : builder.calculate()) {
 			AuditType auditType = detail.rule.getAuditType();
 			if (auditType == null)
 				continue;
@@ -86,63 +94,104 @@ public class BillingCalculatorSingle {
 			if (auditType.getClassType().equals(AuditTypeClass.Policy))
 				insureGUARD = true;
 			if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isIm())
-				employeeGUARD = true;
+				employeeAudits = true;
 		}
 
 		if (auditGUARD) {
 			// Audited Contractors have a tiered pricing scheme
 			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD, payingFacilities);
+			BigDecimal newAmount = newLevel.getAmount();
+
+			// calculating discount(s)
+			if (contractor.getPayingFacilities() == 1) {
+				Date now = new Date();
+				if (CONTRACT_RENEWAL_BASF.after(now)) {
+					for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
+						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
+							newAmount = new BigDecimal(299);
+						}
+					}
+				}
+			}
+
 			contractor.getFees().get(FeeClass.AuditGUARD).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.AuditGUARD).setNewAmount(newAmount);
 		} else {
 			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.AuditGUARD, 0);
 			contractor.getFees().get(FeeClass.AuditGUARD).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.AuditGUARD).setNewAmount(newLevel.getAmount());
 		}
 
 		if (insureGUARD) {
 			// InsureGUARD Contractors have free pricing currently
 			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, payingFacilities);
 			contractor.getFees().get(FeeClass.InsureGUARD).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.InsureGUARD).setNewAmount(newLevel.getAmount());
 		} else {
 			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, 0);
 			contractor.getFees().get(FeeClass.InsureGUARD).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.InsureGUARD).setNewAmount(newLevel.getAmount());
 		}
 
-		// EmployeeGUARD
-		if (!employeeGUARD) {
-			for (ContractorOperator co : contractor.getOperators()) {
-				if (co.getOperatorAccount().isRequiresOQ())
-					employeeGUARD = true;
-				if (co.getOperatorAccount().isRequiresCompetencyReview())
-					employeeGUARD = true;
-			}
-		}
-
-		if (employeeGUARD) {
+		if (oq || hseCompetency || employeeAudits) {
 			// EmployeeGUARD HSE Contractors have a tiered pricing scheme
 			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, payingFacilities);
+			BigDecimal newAmount = newLevel.getAmount();
+
+			if (!hseCompetency && (employeeAudits || oq))
+				newAmount = BigDecimal.ZERO;
+
 			contractor.getFees().get(FeeClass.EmployeeGUARD).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.EmployeeGUARD).setNewAmount(newAmount);
 		} else {
 			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, 0);
 			contractor.getFees().get(FeeClass.EmployeeGUARD).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.EmployeeGUARD).setNewAmount(newLevel.getAmount());
 		}
 
-		// Selecting either bid-only fee or DocuGUARD fee
-		if (contractor.isAcceptsBids()) {
-			// Set bid-only
-			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 1);
-			contractor.getFees().get(FeeClass.BidOnly).setNewLevel(newLevel);
+		// Selecting either bid-only/list-only fee or DocuGUARD fee
+		if (contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
+			// Set list-only
+			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 1);
+			contractor.getFees().get(FeeClass.ListOnly).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.ListOnly).setNewAmount(newLevel.getAmount());
 
 			// Turn off DocuGUARD fee
 			newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 0);
 			contractor.getFees().get(FeeClass.DocuGUARD).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.DocuGUARD).setNewAmount(newLevel.getAmount());
+			// Turn off BidOnly fee
+			newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 0);
+			contractor.getFees().get(FeeClass.BidOnly).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.BidOnly).setNewAmount(newLevel.getAmount());
+		} else if (contractor.isAcceptsBids()) {
+			// Set bid-only
+			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 1);
+			contractor.getFees().get(FeeClass.BidOnly).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.BidOnly).setNewAmount(newLevel.getAmount());
+
+			// Turn off DocuGUARD fee
+			newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, 0);
+			contractor.getFees().get(FeeClass.DocuGUARD).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.DocuGUARD).setNewAmount(newLevel.getAmount());
+			// Turn off ListOnly fee
+			newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 0);
+			contractor.getFees().get(FeeClass.ListOnly).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.ListOnly).setNewAmount(newLevel.getAmount());
 		} else {
 			// Turn on DocuGUARD fee
 			InvoiceFee newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, payingFacilities);
 			contractor.getFees().get(FeeClass.DocuGUARD).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.DocuGUARD).setNewAmount(newLevel.getAmount());
 
 			// Turn off bid-only
 			newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 0);
 			contractor.getFees().get(FeeClass.BidOnly).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.BidOnly).setNewAmount(newLevel.getAmount());
+			// Turn off ListOnly fee
+			newLevel = invoiceDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 0);
+			contractor.getFees().get(FeeClass.ListOnly).setNewLevel(newLevel);
+			contractor.getFees().get(FeeClass.ListOnly).setNewAmount(newLevel.getAmount());
 		}
 
 	}
@@ -183,12 +232,12 @@ public class BillingCalculatorSingle {
 				}
 
 				// Activate effective today
-				items.add(new InvoiceItem(fee, new Date(), contractor));
+				items.add(new InvoiceItem(fee, fee.getAmount(), new Date()));
 				// For Reactivation Fee and Reactivating Membership
 			} else if ("Reactivation".equals(billingStatus) || "Membership Canceled".equals(billingStatus)) {
 				InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, payingFacilities);
 				// Reactivate effective today
-				items.add(new InvoiceItem(fee, new Date(), contractor));
+				items.add(new InvoiceItem(fee, fee.getAmount(), new Date()));
 			}
 		}
 
@@ -197,9 +246,9 @@ public class BillingCalculatorSingle {
 			Date paymentExpires = DateBean.addMonths(new Date(), 12);
 			for (FeeClass feeClass : contractor.getFees().keySet())
 				if (!contractor.getFees().get(feeClass).getNewLevel().isFree()) {
-					InvoiceItem newItem = new InvoiceItem(contractor.getFees().get(feeClass).getNewLevel(), feeClass
-							.isPaymentExpiresNeeded() ? paymentExpires : null, contractor);
-					newItem.setAmount(contractor.getFees().get(feeClass).getNewLevel().getAmount(contractor));
+					InvoiceItem newItem = new InvoiceItem(contractor.getFees().get(feeClass).getNewLevel(), contractor
+							.getFees().get(feeClass).getNewAmount(), feeClass.isPaymentExpiresNeeded() ? paymentExpires
+							: null);
 					items.add(newItem);
 				}
 		}
@@ -210,9 +259,9 @@ public class BillingCalculatorSingle {
 			Date paymentExpires = DateBean.addMonths(contractor.getPaymentExpires(), 12);
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
 				if (!contractor.getFees().get(feeClass).getNewLevel().isFree()) {
-					InvoiceItem newItem = new InvoiceItem(contractor.getFees().get(feeClass).getNewLevel(), feeClass
-							.isPaymentExpiresNeeded() ? paymentExpires : null, contractor);
-					newItem.setAmount(contractor.getFees().get(feeClass).getNewLevel().getAmount(contractor));
+					InvoiceItem newItem = new InvoiceItem(contractor.getFees().get(feeClass).getNewLevel(), contractor
+							.getFees().get(feeClass).getNewAmount(), feeClass.isPaymentExpiresNeeded() ? paymentExpires
+							: null);
 					items.add(newItem);
 				}
 			}
@@ -243,10 +292,9 @@ public class BillingCalculatorSingle {
 
 				BigDecimal upgradeTotal = BigDecimal.ZERO;
 				for (ContractorFee upgrade : upgrades) {
-					BigDecimal upgradeAmountDifference = upgrade.getNewLevel().getAmount(contractor);
+					BigDecimal upgradeAmountDifference = upgrade.getNewAmount();
 					if (!contractor.isAcceptsBids()) {
-						upgradeAmountDifference = upgradeAmountDifference.subtract(upgrade.getCurrentLevel().getAmount(
-								contractor));
+						upgradeAmountDifference = upgradeAmountDifference.subtract(upgrade.getCurrentAmount());
 					}
 
 					upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference).divide(
@@ -256,8 +304,8 @@ public class BillingCalculatorSingle {
 
 					if (upgradeAmount.floatValue() > 0)
 						description = "Upgrading from " + contractor.getCurrencyCode().getIcon()
-								+ upgrade.getCurrentLevel().getAmount(contractor) + ". Prorated "
-								+ contractor.getCurrencyCode().getIcon() + upgradeAmount;
+								+ upgrade.getCurrentAmount() + ". Prorated " + contractor.getCurrencyCode().getIcon()
+								+ upgradeAmount;
 					else
 						description = "";
 
@@ -316,57 +364,6 @@ public class BillingCalculatorSingle {
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
-	static public BigDecimal getDiscountedMembershipAmount(InvoiceFee fee, ContractorAccount contractor) {
-		if (fee.isMembership()) {
-			if (fee.isFree())
-				return BigDecimal.ZERO;
-
-			// AuditGUARD Discounts
-			if (fee.getFeeClass().equals(FeeClass.AuditGUARD)) {
-
-				// BASF discount for 1 operator
-				if (contractor.getPayingFacilities() == 1) {
-					Date now = new Date();
-					if (CONTRACT_RENEWAL_BASF.after(now)) {
-						for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
-							if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
-								return new BigDecimal(299);
-							}
-						}
-					}
-				}
-			}
-			// EmployeeGUARD Discounts
-			else if (fee.getFeeClass().equals(FeeClass.EmployeeGUARD)) {
-				boolean employeeAudits = false;
-				boolean oq = false;
-				boolean hseCompetency = false;
-
-//				Map<AuditType, AuditTypeDetail> map = AuditBuilder.calculateRequiredAuditTypes(contractor);
-//				for (AuditType auditType : map.keySet()) {
-//					if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isIm()) {
-//						employeeAudits = true;
-//						break;
-//					}
-//				}
-
-				for (ContractorOperator co : contractor.getOperators()) {
-					if (co.getOperatorAccount().isRequiresOQ())
-						oq = true;
-					if (co.getOperatorAccount().isRequiresCompetencyReview())
-						hseCompetency = true;
-				}
-
-				if (!hseCompetency && (employeeAudits || oq))
-					return BigDecimal.ZERO;
-			}
-		}
-
-		// No discounts apply
-		return fee.getAmount();
-	}
-	
 	public static String getOperatorsString(ContractorAccount contractor) {
 		List<String> operatorsString = new ArrayList<String>();
 

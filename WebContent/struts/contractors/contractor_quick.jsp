@@ -158,9 +158,13 @@ $(document).ready(function() {
 			<label>PICS Membership:</label><s:property value="contractor.status"/>
 			<br />
 			<label>Membership:</label><br />
-			<s:iterator value="contractor.currentMembership">
-				 <s:property value="fee" />: $<s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
-			</s:iterator>
+			<table>
+				<s:iterator value="contractor.fees.keySet()" var="feeClass">
+					<s:if test="!contractor.fees.get(#feeClass).currentLevel.free">
+						<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).currentLevel.fee" />:</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.fees.get(#feeClass).currentAmount" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
+					</s:if>
+				</s:iterator>
+			</table>
 			<label>Balance:</label>
 			$<s:property value="contractor.balance" />
 			<br />

@@ -26,6 +26,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -81,7 +82,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		this.noteDAO = noteDAO;
 		this.subscriptionDAO = subscriptionDAO;
 		this.userSwitchDAO = userSwitchDAO;
-		
+
 		this.currentStep = ContractorRegistrationStep.EditAccount;
 	}
 
@@ -104,7 +105,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					operatorIds.add(conOperator.getOperatorAccount().getId());
 				}
 			}
-			//accountDao.clear();
+			// Don't comment this. Otherwise changes made to the Contractor object will be directly saved
+			accountDao.clear();
 
 			String[] countryIsos = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
 			if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
@@ -167,6 +169,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					}
 
 					Vector<String> errors = contractorValidator.validateContractor(contractor);
+
+					if ((!contractor.isMaterialSupplierOnly() || !contractor.getProductRisk().equals(LowMedHigh.Low))
+							&& contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
+						errors.addElement("Only Low Risk Material Supplier Only contractor accounts can be set to "
+								+ "List Only. Please verify contractor information before setting List Only status.");
+					}
+
 					if (errors.size() > 0) {
 						for (String error : errors)
 							addActionError(error);
@@ -453,16 +462,15 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			return true;
 		return false;
 	}
-	
+
 	/**
-	 * During Registration ConRegistration becomes ConEdit after the
-	 * first step has been completed.
+	 * During Registration ConRegistration becomes ConEdit after the first step has been completed.
 	 */
 	@Override
 	public ContractorRegistrationStep getPreviousRegistrationStep() {
 		return null;
 	}
-	
+
 	@Override
 	public String nextStep() throws Exception {
 		redirect(ContractorRegistrationStep.Trades.getUrl(contractor.getId()));

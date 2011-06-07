@@ -123,7 +123,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 								&& !contractor.getFees().get(feeClass).getNewLevel().equals(item.getInvoiceFee())) {
 							found = true;
 							item.setInvoiceFee(contractor.getFees().get(feeClass).getNewLevel());
-							item.setAmount(contractor.getFees().get(feeClass).getNewLevel().getAmount(contractor));
+							item.setAmount(contractor.getFees().get(feeClass).getNewAmount());
 							item.setAuditColumns(permissions);
 
 							changedItems.add(contractor.getFees().get(feeClass).getNewLevel().getFee());
@@ -137,7 +137,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						InvoiceItem newInvoiceItem = new InvoiceItem();
 						newInvoiceItem.setInvoiceFee(contractor.getFees().get(feeClass).getNewLevel());
 						newInvoiceItem
-								.setAmount(contractor.getFees().get(feeClass).getNewLevel().getAmount(contractor));
+								.setAmount(contractor.getFees().get(feeClass).getNewAmount());
 						newInvoiceItem.setAuditColumns(new User(User.SYSTEM));
 
 						if ("Renewal".equals(contractor.getStatus()) && feeClass.isPaymentExpiresNeeded())
@@ -349,7 +349,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		InvoiceItem newItem = new InvoiceItem();
 		InvoiceFee newFee = invoiceFeeDAO.find(feeId);
 		newItem.setInvoiceFee(newFee);
-		newItem.setAmount(newFee.getAmount((ContractorAccount) this.getInvoice().getAccount()));
+		newItem.setAmount(newFee.getAmount());
 		newItem.setInvoice(invoice);
 		newItem.setAuditColumns(permissions);
 

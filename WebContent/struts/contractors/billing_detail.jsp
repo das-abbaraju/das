@@ -90,16 +90,24 @@
 			<li><label><s:text name="%{scope}.Invoicing.BillingStatus" />:</label> <s:property value="contractor.billingStatus" /></li>
 			<li><label><s:text name="%{scope}.Invoicing.MustPay" />:</label> <s:property value="contractor.mustPay" /></li>
 			<li><label><s:text name="%{scope}.Invoicing.CurrentLevel" />:</label>
-				<s:iterator value="contractor.currentMembership">
-					 <s:property value="fee" />: <s:property value="contractor.currencyCode.icon" /><s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
+				<table>
+				<s:iterator value="contractor.fees.keySet()" var="feeClass">
+					<s:if test="!contractor.fees.get(#feeClass).currentLevel.free">
+						<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).currentLevel.fee" />:</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.fees.get(#feeClass).currentAmount" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
+					</s:if>
 				</s:iterator>
+				</table>
 			</li>
-			<s:if test="contractor.newMembershipAmount > contractor.currentMembershipAmount || (permissions.admin && contractor.newMembershipAmount != contractor.currentMembershipAmount)">
+			<s:if test="contractor.hasUpgrade || (permissions.admin && contractor.hasMembershipChanged)">
 				<li><label>New Level:</label>
-					<s:if test="contractor.newMembership.size > 0">
-						<s:iterator value="contractor.newMembership">
-							<s:property value="fee" />: <s:property value="contractor.currencyCode.icon" /><s:property value="getAmount(contractor)" /> <s:property value="contractor.currencyCode" /><br />
-						</s:iterator>
+					<s:if test="!contractor.hasFreeMembership">
+					<table>
+						<s:iterator value="contractor.fees.keySet()" var="feeClass">
+							<s:if test="!contractor.fees.get(#feeClass).newLevel.free">
+								<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).newLevel.fee" />:</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.fees.get(#feeClass).newAmount" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
+							</s:if>
+						</s:iterator>					
+					</table>
 					</s:if>
 					<s:else>
 						Free

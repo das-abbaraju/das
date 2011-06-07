@@ -743,6 +743,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 */
 	@Transient
 	public void syncBalance() {
+		boolean foundListOnlyMembership = false;
 		boolean foundBidOnlyMembership = false;
 		boolean foundDocuGUARDMembership = false;
 		boolean foundAuditGUARDMembership = false;
@@ -776,11 +777,29 @@ public class ContractorAccount extends Account implements JSONable {
 			if (!invoice.getStatus().isVoid()) {
 				for (InvoiceItem invoiceItem : invoice.getItems()) {
 					if (!foundMembership && invoiceItem.getInvoiceFee().isMembership()) {
+						if (!foundListOnlyMembership) {
+							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.ListOnly)) {
+								foundListOnlyMembership = true;
+								this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
+										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 1));
+								// Overriding BidOnly if current ListOnly was found and two exist in
+								// same time period
+								foundBidOnlyMembership = true;
+								this.getFees().get(FeeClass.BidOnly).setCurrentLevel(
+										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 0));
+							}
+						}
+
 						if (!foundBidOnlyMembership) {
 							if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.BidOnly)) {
 								foundBidOnlyMembership = true;
 								this.getFees().get(FeeClass.BidOnly).setCurrentLevel(
 										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 1));
+								// Overriding ListOnly if current BidOnly was found and two exist in
+								// same time period
+								foundListOnlyMembership = true;
+								this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
+										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 0));
 							}
 						}
 
@@ -806,6 +825,9 @@ public class ContractorAccount extends Account implements JSONable {
 								foundBidOnlyMembership = true;
 								this.getFees().get(FeeClass.BidOnly).setCurrentLevel(
 										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 0));
+								foundListOnlyMembership = true;
+								this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
+										invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 0));
 							}
 						}
 
@@ -874,6 +896,9 @@ public class ContractorAccount extends Account implements JSONable {
 				return;
 		}
 
+		if (!foundListOnlyMembership)
+			this.getFees().get(FeeClass.ListOnly).setCurrentLevel(
+					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 0));
 		if (!foundBidOnlyMembership)
 			this.getFees().get(FeeClass.BidOnly).setCurrentLevel(
 					invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 0));
@@ -899,6 +924,16 @@ public class ContractorAccount extends Account implements JSONable {
 	public boolean isHasMembershipChanged() {
 		for (FeeClass feeClass : this.getFees().keySet()) {
 			if (this.getFees().get(feeClass).isHasChanged())
+				return true;
+		}
+
+		return false;
+	}
+	
+	@Transient
+	public boolean isHasUpgrade() {
+		for (FeeClass feeClass : this.getFees().keySet()) {
+			if (this.getFees().get(feeClass).isUpgrade())
 				return true;
 		}
 
@@ -1185,13 +1220,13 @@ public class ContractorAccount extends Account implements JSONable {
 		// if Operator activation fee is reduced, return Operator account
 		if (getRequestedBy() != null) {
 			if (getRequestedBy().getActivationFee() != null
-					&& !getRequestedBy().getActivationFee().equals(activation.getAmount(this).intValue()))
+					&& !getRequestedBy().getActivationFee().equals(activation.getAmount().intValue()))
 				return getRequestedBy();
 
 			// if Corporate activation fee is reduced, return Corporate account
 			for (Facility f : getRequestedBy().getCorporateFacilities())
 				if (f.getCorporate().getActivationFee() != null
-						&& !f.getCorporate().getActivationFee().equals(activation.getAmount(this).intValue()))
+						&& !f.getCorporate().getActivationFee().equals(activation.getAmount().intValue()))
 					return f.getCorporate();
 		}
 		return null;
@@ -1200,7 +1235,7 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public boolean hasReducedActivation(InvoiceFee activation) {
 		return getReducedActivationFeeOperator(activation) != null
-				&& activation.getAmount(this).intValue() != getReducedActivationFeeOperator(activation)
+				&& activation.getAmount().intValue() != getReducedActivationFeeOperator(activation)
 						.getActivationFee();
 	}
 
@@ -1209,7 +1244,7 @@ public class ContractorAccount extends Account implements JSONable {
 		double halfMembership = 0.0;
 		for (FeeClass feeClass : this.getFees().keySet()) {
 			if (!this.getFees().get(feeClass).getCurrentLevel().isFree())
-				halfMembership += this.getFees().get(feeClass).getCurrentLevel().getAmount(this).doubleValue();
+				halfMembership += this.getFees().get(feeClass).getCurrentAmount().doubleValue();
 		}
 		halfMembership *= 0.5;
 
@@ -1242,21 +1277,21 @@ public class ContractorAccount extends Account implements JSONable {
 		this.accountLevel = accountLevel;
 	}
 
+	@Override
 	@Transient
-	public List<InvoiceFee> getNewMembership() {
-		List<InvoiceFee> memberships = new ArrayList<InvoiceFee>();
-		for (FeeClass feeclass : this.getFees().keySet()) {
-			if (!this.getFees().get(feeclass).getNewLevel().isFree())
-				memberships.add(this.getFees().get(feeclass).getNewLevel());
-		}
-
-		Collections.sort(memberships, new Comparator<InvoiceFee>() {
-			@Override
-			public int compare(InvoiceFee o1, InvoiceFee o2) {
-				return o1.getDisplayOrder().compareTo(o2.getDisplayOrder());
-			}
-		});
-		return memberships;
+	public boolean isAcceptsBids() {
+		return this.getAccountLevel().equals(AccountLevel.BidOnly);
+	}
+	
+	@Override
+	@Transient
+	public void setAcceptsBids(boolean acceptsBids) {
+		// If we're setting bid only to false, it means
+		// to upgrade the contractor
+		if(acceptsBids)
+			this.setAccountLevel(AccountLevel.BidOnly);
+		else
+			this.setAccountLevel(AccountLevel.Full);
 	}
 
 	@Transient
@@ -1264,27 +1299,10 @@ public class ContractorAccount extends Account implements JSONable {
 		BigDecimal newAmount = BigDecimal.ZERO;
 		for (FeeClass feeclass : this.getFees().keySet()) {
 			if (!this.getFees().get(feeclass).getNewLevel().isFree())
-				newAmount = newAmount.add(this.getFees().get(feeclass).getNewLevel().getAmount(this));
+				newAmount = newAmount.add(this.getFees().get(feeclass).getNewAmount());
 		}
 
 		return newAmount;
-	}
-
-	@Transient
-	public List<InvoiceFee> getCurrentMembership() {
-		List<InvoiceFee> memberships = new ArrayList<InvoiceFee>();
-		for (FeeClass feeclass : this.getFees().keySet()) {
-			if (!this.getFees().get(feeclass).getCurrentLevel().isFree())
-				memberships.add(this.getFees().get(feeclass).getCurrentLevel());
-		}
-
-		Collections.sort(memberships, new Comparator<InvoiceFee>() {
-			@Override
-			public int compare(InvoiceFee o1, InvoiceFee o2) {
-				return o1.getDisplayOrder().compareTo(o2.getDisplayOrder());
-			}
-		});
-		return memberships;
 	}
 
 	@Transient
@@ -1292,29 +1310,9 @@ public class ContractorAccount extends Account implements JSONable {
 		BigDecimal currentAmount = BigDecimal.ZERO;
 		for (FeeClass feeclass : this.getFees().keySet()) {
 			if (!this.getFees().get(feeclass).getCurrentLevel().isFree())
-				currentAmount = currentAmount.add(this.getFees().get(feeclass).getCurrentLevel().getAmount(this));
+				currentAmount = currentAmount.add(this.getFees().get(feeclass).getCurrentAmount());
 		}
 
 		return currentAmount;
-	}
-	
-//	@Override
-//	public boolean isAcceptsBids() {
-//		return this.getAccountLevel().equals(AccountLevel.BidOnly);
-//	}
-//	
-//	@Override
-//	public void setAcceptsBids(boolean acceptsBids) {
-//		// If we're setting bid only to false, it means
-//		// to upgrade the contractor
-//		if(acceptsBids)
-//			this.setAccountLevel(AccountLevel.BidOnly);
-//		else
-//			this.setAccountLevel(AccountLevel.Full);
-//	}
-
-	@Transient
-	public boolean isListed() {
-		return this.getAccountLevel().equals(AccountLevel.ListOnly);
 	}
 }

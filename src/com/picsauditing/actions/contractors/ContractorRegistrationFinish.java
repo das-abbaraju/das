@@ -26,7 +26,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
@@ -223,7 +223,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 						if (contractor.hasReducedActivation(activation)) {
 							OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
 							notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
-									+ contractor.getCurrencyCode().getIcon() + activation.getAmount(contractor)
+									+ contractor.getCurrencyCode().getIcon() + activation.getAmount()
 									+ " to " + contractor.getCurrencyCode().getIcon()
 									+ reducedOperator.getActivationFee() + ". ";
 							invoice.setNotes(notes);
@@ -246,12 +246,29 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 					if (contractor.isHasMembershipChanged()) {
 						for (FeeClass feeClass : contractor.getFees().keySet()) {
-							if (contractor.getFees().get(feeClass).isHasChanged()) {
-								changeInvoiceItem(contractor.getFees().get(feeClass).getCurrentLevel(), contractor
-										.getFees().get(feeClass).getNewLevel());
+							ContractorFee cf = contractor.getFees().get(feeClass);
+							if (cf.isHasChanged()) {
+								for (Iterator<InvoiceItem> iterator = invoice.getItems().iterator(); iterator.hasNext();) {
+									InvoiceItem item = iterator.next();
+									if (item.getInvoiceFee().getId() == cf.getCurrentLevel().getId()) {
+										iterator.remove();
+										invoiceItemDAO.remove(item);
+									}
+								}
+
+								InvoiceItem newInvoiceItem = new InvoiceItem();
+								newInvoiceItem.setInvoiceFee(cf.getNewLevel());
+								newInvoiceItem.setAmount(cf.getNewAmount());
+								newInvoiceItem.setAuditColumns(new User(User.SYSTEM));
+
+								newInvoiceItem.setInvoice(invoice);
+								invoice.getItems().add(newInvoiceItem);
+
 								updateTotals();
 							}
 						}
+						contractor.syncBalance();
+
 						this.addNote("Modified current invoice, changed to "+contractor.getCurrencyCode().getIcon()  + invoice.getTotalAmount(),
 								NoteCategory.Billing);
 					}
@@ -306,26 +323,6 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 				break;
 			}
 		}
-	}
-
-	private void changeInvoiceItem(InvoiceFee currentFee, InvoiceFee newFee) {
-		for (Iterator<InvoiceItem> iterator = invoice.getItems().iterator(); iterator.hasNext();) {
-			InvoiceItem item = iterator.next();
-			if (item.getInvoiceFee().getId() == currentFee.getId()) {
-				iterator.remove();
-				invoiceItemDAO.remove(item);
-			}
-		}
-
-		InvoiceItem newInvoiceItem = new InvoiceItem();
-		newInvoiceItem.setInvoiceFee(newFee);
-		newInvoiceItem.setAmount(newFee.getAmount((ContractorAccount) this.getInvoice().getAccount()));
-		newInvoiceItem.setAuditColumns(new User(User.SYSTEM));
-
-		newInvoiceItem.setInvoice(invoice);
-		invoice.getItems().add(newInvoiceItem);
-
-		contractor.syncBalance();
 	}
 
 	private void updateTotals() {

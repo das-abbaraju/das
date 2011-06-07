@@ -151,7 +151,7 @@ input[type=submit] {
 						<s:if test="edit && hasInvoiceMembershipChanged" >
 							<div class="buttons right" style="padding:7px;">
 								<a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />&button=Change to"
-								class="picsbutton positive">Change Membership Level(s)<s:property value="contractor.fees.get('AuditGUARD').newLevel.fee" /></a>
+								class="picsbutton positive">Change Membership Level(s)</a>
 							</div>
 						</s:if>
 			<table width="100%" class="allborder">

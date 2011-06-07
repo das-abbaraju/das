@@ -232,13 +232,13 @@ public class ContractorAuditController extends AuditActionSupport {
 			invoice.setAccount(contractor);
 			invoice.setCurrency(contractor.getCurrency());
 			invoice.setDueDate(new Date());
-			invoice.setTotalAmount(fee.getAmount(contractor));
+			invoice.setTotalAmount(fee.getAmount());
 			invoice.setNotes("Thank you for doing business with PICS!");
 			invoice.setAuditColumns(conUser);
 			invoice.setQbSync(true);
 			invoice = (Invoice) invoiceFeeDAO.save(invoice);
 
-			InvoiceItem item = new InvoiceItem(fee, contractor);
+			InvoiceItem item = new InvoiceItem(fee);
 			item.setInvoice(invoice);
 			item.setAuditColumns(conUser);
 			invoiceFeeDAO.save(item);
@@ -415,8 +415,8 @@ public class ContractorAuditController extends AuditActionSupport {
 							if ("Membership".equals(ii.getInvoiceFee().getFeeClass())
 									&& !ii.getInvoiceFee().isBidonly()
 									&& !ii.getInvoiceFee().isPqfonly()
-									&& (ii.getInvoiceFee().getAmount(conAudit.getContractorAccount())
-											.equals(ii.getAmount()) || i.getTotalAmount().intValue() > 450))
+									&& (ii.getInvoiceFee().getAmount().equals(ii.getAmount()) || i.getTotalAmount()
+											.intValue() > 450))
 								return true;
 						}
 					}
@@ -455,7 +455,7 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	public BigDecimal getImportPQFFeeAmount() {
 		InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 0);
-		return fee.getAmount(contractor);
+		return fee.getAmount();
 	}
 
 	private void checkMode() {

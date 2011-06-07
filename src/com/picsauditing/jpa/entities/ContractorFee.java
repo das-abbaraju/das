@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -19,7 +21,9 @@ public class ContractorFee extends BaseTable {
 	private ContractorAccount contractor;
 	private FeeClass feeClass;
 	private InvoiceFee currentLevel;
+	private BigDecimal currentAmount = BigDecimal.ZERO;
 	private InvoiceFee newLevel;
+	private BigDecimal newAmount = BigDecimal.ZERO;
 
 	@ManyToOne
 	@JoinColumn(name = "conID", nullable = false)
@@ -51,6 +55,14 @@ public class ContractorFee extends BaseTable {
 		this.currentLevel = currentLevel;
 	}
 
+	public void setCurrentAmount(BigDecimal currentAmount) {
+		this.currentAmount = currentAmount;
+	}
+
+	public BigDecimal getCurrentAmount() {
+		return currentAmount;
+	}
+
 	@ManyToOne
 	@JoinColumn(name = "newLevel", nullable = false)
 	public InvoiceFee getNewLevel() {
@@ -61,9 +73,17 @@ public class ContractorFee extends BaseTable {
 		this.newLevel = newLevel;
 	}
 
+	public void setNewAmount(BigDecimal newAmount) {
+		this.newAmount = newAmount;
+	}
+
+	public BigDecimal getNewAmount() {
+		return newAmount;
+	}
+
 	@Transient
 	public boolean isUpgrade() {
-		return this.getNewLevel().getAmount(contractor).compareTo(this.getCurrentLevel().getAmount(contractor)) > 0;
+		return this.getNewAmount().compareTo(this.getCurrentAmount()) > 0;
 	}
 
 	@Transient

@@ -14,7 +14,7 @@ var startDate = '<s:date name="availableSet.latest" format="MM/dd/yyyy"/>';
 
 $(document).ready(function() {
 	$('a.expedite').click(function() {
-		return confirm("<s:text name="%{scope}.confirm.RushAudit"><s:param><s:property value="expedite.getAmount(conAudit.contractorAccount)" /></s:param></s:text>");
+		return confirm("<s:text name="%{scope}.confirm.RushAudit"><s:param><s:property value="expedite.amount" /></s:param></s:text>");
 	});
 });
 

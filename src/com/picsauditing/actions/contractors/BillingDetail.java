@@ -97,7 +97,7 @@ public class BillingDetail extends ContractorActionSupport {
 				if (contractor.hasReducedActivation(activation)) {
 					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
 					notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
-							+ contractor.getCurrencyCode().getIcon() + activation.getAmount(contractor) + " to "
+							+ contractor.getCurrencyCode().getIcon() + activation.getAmount() + " to "
 							+ contractor.getCurrencyCode().getIcon() + reducedOperator.getActivationFee() + ". ";
 				}
 			} else if (contractor.getBillingStatus().equals("Reactivation")) {

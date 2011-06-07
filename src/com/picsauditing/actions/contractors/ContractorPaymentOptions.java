@@ -152,11 +152,11 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			BigDecimal total = BigDecimal.ZERO;
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
 				if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
-					total = total.add(contractor.getFees().get(feeClass).getNewLevel().getAmount(contractor));
+					total = total.add(contractor.getFees().get(feeClass).getNewAmount());
 			}
 
 			if (activationFee != null)
-				total = total.add(activationFee.getAmount(contractor));
+				total = total.add(activationFee.getAmount());
 			gstFee.setAmount(gstFee.getGSTSurchage(total));
 		}
 		
