@@ -4,7 +4,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import com.picsauditing.auditBuilder.AuditTypesBuilder;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.Trade;
@@ -17,6 +23,9 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 
 	protected AuditTypeRule comparisonRule;
 
+	@Autowired
+	protected AuditTypeRuleCache auditTypeRuleCache;
+	
 	public AuditTypeRuleTableBuilder() {
 		this.ruleType = "Audit Type";
 		this.urlPrefix = "AuditType";
@@ -36,6 +45,12 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 			rules = ruleDAO.getLessGranular(ruleDAO.findAuditTypeRule(id), date);
 		} else if ("moreGranular".equals(button)) {
 			rules = ruleDAO.getMoreGranular(ruleDAO.findAuditTypeRule(id), date);
+		} else if ("debugContractor".equals(button)) {
+			auditTypeRuleCache.initialize(auditRuleDAO);
+			ContractorAccount contractor = contractorDAO.find(conID);
+			AuditTypesBuilder builder = new AuditTypesBuilder(auditTypeRuleCache, contractor);
+			builder.calculate();
+			rules = builder.getRules();
 		} else if ("tags".equals(button) && comparisonRule.getOperatorAccount() != null) {
 			List<OperatorTag> tags = operatorTagDAO.findByOperator(comparisonRule.getOperatorAccount().getId(), false);
 			rules = ruleDAO.findAuditTypeRulesByTags(tags);

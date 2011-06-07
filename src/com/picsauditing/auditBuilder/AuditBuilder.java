@@ -422,4 +422,7 @@ public class AuditBuilder {
 		fillAuditOperators(conAudit, categoriesBuilder.getCaos());
 	}
 
+	public AuditTypeRuleCache getTypeRuleCache() {
+		return typeRuleCache;
+	}
 }

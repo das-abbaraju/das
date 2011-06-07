@@ -6,6 +6,21 @@
 <title>Audit Builder</title>
 <link rel="stylesheet" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" href="css/rules.css?v=<s:property value="version"/>" />
+<script type="text/javascript">
+$(function(){
+	showRules();
+});
+
+function showRules() {
+	var data = {
+		'conID': <s:property value="id"/>,
+		'button':'debugContractor' 
+	};
+	startThinking({ div: "allTypeRules"});
+	$('#allTypeRules').load('AuditTypeRuleTableAjax.action', data);
+}
+
+</script>
 </head>
 <body>
 <h1><s:property value="contractor.name" />
@@ -34,34 +49,7 @@ Product  Critical: <s:property value="contractor.productRisk" /><br />
 
 <h2>Audit Type Rules</h2>
 <a href="#" onclick="$('#auditCatRules').toggle(); return false;">Show/Hide</a>
-<table class="report" id="auditCatRules">
-	<thead>
-		<tr>
-			<th>Inc</th>
-			<th>Audit Type</th>
-			<th>Risk</th>
-			<th>Operator</th>
-			<th>Tag</th>
-			<th>Type</th>
-			<th colspan="3">Question</th>
-			<th>Bid</th>
-		</tr>
-	</thead>
-	<s:iterator value="builder.auditTypeRules">
-		<tr>
-			<td><s:property value="(include ? 'Yes' : 'No')" /></td>
-			<td><s:property value="auditTypeLabel" /></td>
-			<td><s:property value="riskLabel" /></td>
-			<td><s:property value="operatorAccountLabel" /></td>
-			<td><s:property value="contractorTypeLabel" /></td>
-			<td><s:property value="tagLabel" /></td>
-			<td><s:property value="questionLabel" /></td>
-			<td><s:property value="questionComparatorLabel" /></td>
-			<td><s:property value="questionAnswerLabel" /></td>
-			<td><s:property value="acceptsBidsLabel" /></td>
-		</tr>
-	</s:iterator>
-</table>
+<div id="allTypeRules"></div>
 
 <h2>Audit Types &amp; Rules</h2>
 <a href="#" onclick="$('#auditTypeRules').toggle(); return false;">Show/Hide</a>
@@ -69,17 +57,15 @@ Product  Critical: <s:property value="contractor.productRisk" /><br />
 	<thead>
 		<tr>
 			<th>Audit Type</th>
-			<th></th>
+			<th>Rule</th>
+			<th>Operators</th>
 		</tr>
 	</thead>
-	<s:set name="ruleURL" value="'AuditTypeRuleEditor.action'"/><s:set name="categoryRule" value="false"/>
-	<s:iterator value="builder.requiredAuditTypes">
+	<s:iterator value="auditTypeDetails">
 		<tr>
-			<td><s:property value="key" /></td>
-			<td>
-				<b>Rule:</b><table><s:include value="rules/audit_rule_header.jsp"/><s:iterator value="value.rule" id="r"><s:include value="rules/audit_rule_view.jsp" /></s:iterator></table>
-				<b>Operators:</b> | <s:iterator value="value.operators"><s:property value="name"/> | </s:iterator>
-			</td>
+			<td><h4><s:property value="rule.auditType" /></h4></td>
+			<td><s:property value="rule" /></td>
+			<td><s:iterator value="rule.operators"><s:property value="name"/> | </s:iterator></td>
 		</tr>
 	</s:iterator>
 </table>

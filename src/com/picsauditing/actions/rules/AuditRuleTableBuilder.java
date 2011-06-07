@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.TradeDAO;
@@ -29,13 +32,18 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 	@Autowired
 	protected OperatorAccountDAO operatorDAO;
 	@Autowired
+	protected ContractorAccountDAO contractorDAO;
+	@Autowired
 	protected OperatorTagDAO operatorTagDAO;
 	@Autowired
 	protected TradeDAO tradeDAO;
+	@Autowired
+	protected AuditDecisionTableDAO auditRuleDAO;
 
 	protected Integer id;
 	protected String ruleType;
 	protected String urlPrefix;
+	protected int conID;
 
 	protected boolean showPriority = true;
 	protected boolean showWho = true;
@@ -160,6 +168,14 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	
+	public int getConID() {
+		return conID;
+	}
+
+	public void setConID(int conID) {
+		this.conID = conID;
 	}
 
 	/**
