@@ -63,9 +63,9 @@ Product  Critical: <s:property value="contractor.productRisk" /><br />
 	</thead>
 	<s:iterator value="auditTypeDetails">
 		<tr>
-			<td><h4><s:property value="rule.auditType" /></h4></td>
+			<td><h4><s:property value="rule.auditType.name" /></h4></td>
 			<td><s:property value="rule" /></td>
-			<td><s:iterator value="rule.operators"><s:property value="name"/> | </s:iterator></td>
+			<td><s:iterator value="operators"><s:property value="name"/> | </s:iterator></td>
 		</tr>
 	</s:iterator>
 </table>
