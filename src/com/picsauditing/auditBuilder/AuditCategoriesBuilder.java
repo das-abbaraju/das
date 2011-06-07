@@ -15,6 +15,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
@@ -36,6 +37,16 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	public AuditCategoriesBuilder(AuditCategoryRuleCache auditCategoryRuleCache, ContractorAccount contractor) {
 		super(contractor);
 		this.ruleCache = auditCategoryRuleCache;
+	}
+
+	public Set<AuditCategory> calculate(ContractorAudit conAudit) {
+		Collection<OperatorAccount> operators = new HashSet<OperatorAccount>();
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.isVisible())
+				operators.add(cao.getOperator());
+		}
+		return calculate(conAudit, operators);
+
 	}
 
 	public Set<AuditCategory> calculate(ContractorAudit conAudit, Collection<OperatorAccount> auditOperators) {
@@ -168,4 +179,5 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 			return false;
 		return applicableCategories.contains(category);
 	}
+
 }

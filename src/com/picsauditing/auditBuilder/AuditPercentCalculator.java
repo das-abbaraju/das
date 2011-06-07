@@ -19,7 +19,6 @@ import com.picsauditing.jpa.entities.AuditOptionValue;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.AnswerMap;
@@ -220,11 +219,7 @@ public class AuditPercentCalculator {
 		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache,
 				conAudit.getContractorAccount());
 
-		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			operators.add(cao.getOperator());
-		}
-		Set<AuditCategory> auditCategories = builder.calculate(conAudit, operators);
+		Set<AuditCategory> auditCategories = builder.calculate(conAudit);
 
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			int required = 0;
