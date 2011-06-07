@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -77,6 +75,8 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 			columnMap.put("tag", true);
 		if (rule.getAcceptsBids() != null)
 			columnMap.put("bidOnly", true);
+		if (rule.getAccountLevel() != null)
+			columnMap.put("accountLevel", true);
 		if (rule.getQuestion() != null)
 			columnMap.put("question", true);
 		if (rule.getTrade() != null)

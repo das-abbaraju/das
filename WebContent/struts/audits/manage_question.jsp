@@ -339,14 +339,14 @@ function showOption() {
 <h3>Related Audit Type Rules</h3>
 <div id="auditrules"></div>
 <pics:permission perm="ManageAuditTypeRules" type="Edit" >
-	<a href="AuditTypeRuleEditor.action?button=New&ruleAcceptsBids=false&ruleQuestionId=<s:property value="id" />" class="add">Add New Audit Type Rule</a>
+	<a href="AuditTypeRuleEditor.action?button=New&ruleQuestionId=<s:property value="id" />" class="add">Add New Audit Type Rule</a>
 </pics:permission>
 <br/>
 <br/>
 <h3>Related Category Rules</h3>
 <div id="categoryrules"></div>
 <pics:permission perm="ManageCategoryRules" type="Edit" >
-	<a href="CategoryRuleEditor.action?button=New&ruleAcceptsBids=false&ruleQuestionId=<s:property value="id" />" class="add">Add New Category Rule</a>
+	<a href="CategoryRuleEditor.action?button=New&ruleQuestionId=<s:property value="id" />" class="add">Add New Category Rule</a>
 </pics:permission>
 </body>
 </html>

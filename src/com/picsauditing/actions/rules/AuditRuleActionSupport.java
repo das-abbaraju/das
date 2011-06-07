@@ -21,6 +21,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditRule;
@@ -57,6 +58,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	protected Integer ruleOperatorTagId;
 	protected Integer ruleQuestionId;
 	protected Boolean ruleAcceptsBids;
+	protected AccountLevel ruleAccountLevel;
 	protected boolean ruleInclude = true;
 
 	protected OpPerms requiredPermission;
@@ -193,6 +195,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	protected void saveFields() {
 		rule.setInclude(ruleInclude);
 		rule.setAcceptsBids(ruleAcceptsBids);
+		rule.setAccountLevel(ruleAccountLevel);
 		if (ruleAuditTypeId != null) {
 			rule.setAuditType(auditTypeDAO.find(ruleAuditTypeId));
 		} else
@@ -292,6 +295,14 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 
 	public void setRuleAcceptsBids(Boolean ruleAcceptsBids) {
 		this.ruleAcceptsBids = ruleAcceptsBids;
+	}
+
+	public AccountLevel getRuleAccountLevel() {
+		return ruleAccountLevel;
+	}
+
+	public void setRuleAccountLevel(AccountLevel ruleAccountLevel) {
+		this.ruleAccountLevel = ruleAccountLevel;
 	}
 
 	public String getUrlPrefix() {

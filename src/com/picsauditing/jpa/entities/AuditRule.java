@@ -31,6 +31,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected String questionAnswer;
 	protected Boolean soleProprietor;
 	protected Boolean acceptsBids;
+	protected AccountLevel accountLevel;
 
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
@@ -262,11 +263,27 @@ public class AuditRule extends BaseDecisionTreeRule {
 		this.acceptsBids = acceptsBids;
 	}
 
+	@Enumerated(EnumType.STRING)
+	public AccountLevel getAccountLevel() {
+		return accountLevel;
+	}
+
+	public void setAccountLevel(AccountLevel accountLevel) {
+		this.accountLevel = accountLevel;
+	}
+
 	@Transient
 	public String getAcceptsBidsLabel() {
 		if (acceptsBids == null)
 			return "*";
-		return acceptsBids ? "List" : "Full";
+		return acceptsBids ? "Bid" : "Full";
+	}
+	
+	@Transient
+	public String getAccountLevelLabel() {
+		if (accountLevel == null)
+			return "*";
+		return accountLevel.name();
 	}
 
 	public Boolean getSoleProprietor() {

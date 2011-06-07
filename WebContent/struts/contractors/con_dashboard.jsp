@@ -234,7 +234,7 @@ table.report tr.hurdle td {
 				<div class="co_problems">
 					<s:if test="permissions.admin">
 						<p>Account Status: <strong><s:property value="contractor.status"/></strong></p>
-						<s:if test="!contractor.acceptsBids && contractor.balance > 0"><p>Balance: $<s:property value="format(contractor.balance)"/></p></s:if>
+						<s:if test="contractor.fullAccount && contractor.balance > 0"><p>Balance: $<s:property value="format(contractor.balance)"/></p></s:if>
 					</s:if>
 					<s:if test="problems.categories.size() > 0">
 						<p><s:text name="%{scope}.ContractorDashboard.Problems" />:

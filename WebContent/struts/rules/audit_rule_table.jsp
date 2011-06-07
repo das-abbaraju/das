@@ -56,6 +56,9 @@ function deleteRule(element,ruleID) {
 				<s:if test="columnMap.get('bidOnly')">
 					<th title="Bid Only or Full Account">List</th>
 				</s:if>
+				<s:if test="columnMap.get('accountLevel')">
+					<th title="Bid Only, List Only, or Full Account">List</th>
+				</s:if>
 				<s:if test="columnMap.get('soleProprietor')">
 					<th title="Sole Proprietor or Full Account">Sole</th>
 				</s:if>
@@ -136,6 +139,9 @@ function deleteRule(element,ruleID) {
 					</s:if>
 					<s:if test="columnMap.get('bidOnly')">
 						<td><s:property value="acceptsBidsLabel"/></td>
+					</s:if>
+					<s:if test="columnMap.get('accountLevel')">
+						<td><s:property value="accountLevelLabel"/></td>
 					</s:if>
 					<s:if test="columnMap.get('soleProprietor')">
 						<td><s:property value="soleProprietorLabel"/></td>

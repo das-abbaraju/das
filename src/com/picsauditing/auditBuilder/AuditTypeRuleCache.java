@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -33,7 +34,6 @@ public class AuditTypeRuleCache extends AuditRuleCache {
 
 		Contractor contractor2 = new Contractor(contractor);
 
-
 		for (LowMedHigh safetyRisk : contractor2.safetyRisks) {
 			ProductRisks data2 = getData().getData(safetyRisk);
 			if (data2 != null) {
@@ -41,23 +41,28 @@ public class AuditTypeRuleCache extends AuditRuleCache {
 					AcceptsBids dataZ = data2.getData(productRisk);
 					if (dataZ != null) {
 						for (Boolean acceptsBid : contractor2.acceptsBids) {
-							ContractorTypes data3 = dataZ.getData(acceptsBid);
+							AccountLevels data3 = dataZ.getData(acceptsBid);
 							if (data3 != null) {
-								for (ContractorType conType : contractor2.contractorType) {
-									SoleProprietors dataX = data3.getData(conType);
-									if (dataX != null) {
-										for (Boolean soleProprietor : contractor2.soleProprietors) {
-											Trades dataY = dataX.getData(soleProprietor);
-											if (dataY != null) {
-												for (Trade t : contractor2.trades) {
-													Operators data4 = dataY.getData(t);
-													if (data4 != null) {
-														for (OperatorAccount o : contractor2.operators) {
-															OperatorAccount operator = o;
-															Set<AuditRule> data6 = data4.getData(operator);
-															if (data6 != null) {
-																for (AuditRule rule : data6) {
-																	rules.add((AuditTypeRule) rule);
+								for (AccountLevel accountLevel : contractor2.accountLevels) {
+									ContractorTypes data7 = data3.getData(accountLevel);
+									if (data7 != null) {
+										for (ContractorType conType : contractor2.contractorType) {
+											SoleProprietors dataX = data7.getData(conType);
+											if (dataX != null) {
+												for (Boolean soleProprietor : contractor2.soleProprietors) {
+													Trades dataY = dataX.getData(soleProprietor);
+													if (dataY != null) {
+														for (Trade t : contractor2.trades) {
+															Operators data4 = dataY.getData(t);
+															if (data4 != null) {
+																for (OperatorAccount o : contractor2.operators) {
+																	OperatorAccount operator = o;
+																	Set<AuditRule> data6 = data4.getData(operator);
+																	if (data6 != null) {
+																		for (AuditRule rule : data6) {
+																			rules.add((AuditTypeRule) rule);
+																		}
+																	}
 																}
 															}
 														}
@@ -86,7 +91,7 @@ public class AuditTypeRuleCache extends AuditRuleCache {
 			data.add(rule);
 		}
 	}
-	
+
 	public void initialize(AuditDecisionTableDAO auditRuleDAO) {
 		if (data == null) {
 			long startTime = System.currentTimeMillis();
@@ -140,17 +145,35 @@ public class AuditTypeRuleCache extends AuditRuleCache {
 
 	private class AcceptsBids {
 
-		private Map<Boolean, ContractorTypes> data = new LinkedHashMap<Boolean, ContractorTypes>();
+		private Map<Boolean, AccountLevels> data = new LinkedHashMap<Boolean, AccountLevels>();
 
-		public ContractorTypes getData(Boolean value) {
+		public AccountLevels getData(Boolean value) {
 			return data.get(value);
 		}
 
 		public void add(AuditTypeRule rule) {
-			ContractorTypes map = data.get(rule.getAcceptsBids());
+			AccountLevels map = data.get(rule.getAcceptsBids());
+			if (map == null) {
+				map = new AccountLevels();
+				data.put(rule.getAcceptsBids(), map);
+			}
+			map.add(rule);
+		}
+	}
+
+	private class AccountLevels {
+
+		private Map<AccountLevel, ContractorTypes> data = new LinkedHashMap<AccountLevel, ContractorTypes>();
+
+		public ContractorTypes getData(AccountLevel value) {
+			return data.get(value);
+		}
+
+		public void add(AuditTypeRule rule) {
+			ContractorTypes map = data.get(rule.getAccountLevel());
 			if (map == null) {
 				map = new ContractorTypes();
-				data.put(rule.getAcceptsBids(), map);
+				data.put(rule.getAccountLevel(), map);
 			}
 			map.add(rule);
 		}

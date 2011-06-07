@@ -268,6 +268,14 @@ $(function() {
 					<p>Bid Only - A trial contractor account that is used for bidding.</p>
 					</pics:fieldhelp>
 				</li>
+				<li><label>Account Level</label>
+					<div class="nobr"><s:radio theme="pics" name="ruleAccountLevel" list="#{'':'Any','Full':'Full Account','BidOnly':'Bid Only','ListOnly':'List Only'}" value="rule.accountLevel"/></div>
+					<pics:fieldhelp title="Account Level">
+					<p>Full Account (default) - Regular paying contractor account.</p>
+					<p>Bid Only - A trial contractor account that is used for bidding.</p>
+					<p>List Only - A renewable account with a subset of the PQF. Currently for Low Risk Material Suppliers.</p>
+					</pics:fieldhelp>
+				</li>
 				<li>
 					<label>Sole Proprietor</label>
 					<div class="nobr"><s:radio theme="pics" name="rule.soleProprietor" list="#{'':'Any',false:'Full Account',true:'Sole Proprietor'}" /></div>

@@ -1350,7 +1350,12 @@ public class ContractorAccount extends Account implements JSONable {
 		else
 			this.setAccountLevel(AccountLevel.Full);
 	}
-
+	
+	@Transient
+	public boolean isFullAccount() {
+		return this.getAccountLevel().equals(AccountLevel.Full);
+	}
+	
 	@Transient
 	public BigDecimal getNewMembershipAmount() {
 		BigDecimal newAmount = BigDecimal.ZERO;

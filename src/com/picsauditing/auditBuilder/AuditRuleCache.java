@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -26,6 +27,7 @@ abstract public class AuditRuleCache {
 		public Set<Boolean> acceptsBids = new HashSet<Boolean>();
 		public Set<ContractorType> contractorType = new HashSet<ContractorType>();
 		public Set<Boolean> soleProprietors = new HashSet<Boolean>();
+		public Set<AccountLevel> accountLevels = new HashSet<AccountLevel>();
 		public Set<Trade> trades = new HashSet<Trade>();
 		public Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 
@@ -45,6 +47,9 @@ abstract public class AuditRuleCache {
 			soleProprietors.add(null);
 			soleProprietors.add(contractor.getSoleProprietor());
 
+			accountLevels.add(null);
+			accountLevels.add(contractor.getAccountLevel());
+			
 			trades.add(null);
 			for (ContractorTrade ct : contractor.getTrades()) {
 				trades.add(ct.getTrade());
