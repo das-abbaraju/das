@@ -98,9 +98,8 @@
 				</s:iterator>
 				</table>
 			</li>
-			<s:if test="contractor.hasUpgrade || (permissions.admin && contractor.hasMembershipChanged)">
+			<s:if test="contractor.hasUpgrade">
 				<li><label>New Level:</label>
-					<s:if test="!contractor.hasFreeMembership">
 					<table>
 						<s:iterator value="contractor.fees.keySet()" var="feeClass">
 							<s:if test="!contractor.fees.get(#feeClass).newLevel.free">
@@ -108,10 +107,6 @@
 							</s:if>
 						</s:iterator>					
 					</table>
-					</s:if>
-					<s:else>
-						Free
-					</s:else>
 				</li>
 			</s:if>
 		</ol>

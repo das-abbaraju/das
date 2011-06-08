@@ -157,6 +157,10 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				contractor.syncBalance();
 				addNote("Changed invoice " + invoice.getId() + " to " + Strings.implode(changedItems), getUser());
 				message = "Changed Membership Level";
+				
+				String notes = "Thank you for doing business with PICS!";
+				notes += BillingCalculatorSingle.getOperatorsString(contractor);
+				invoice.setNotes(notes);
 			}
 
 			if (button.startsWith("Email")) {

@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -1103,7 +1102,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
 
-		if (status.isPending() && membershipDate == null)
+		if (status.isPending() && membershipDate == null && getAccountLevel().isFull())
 			return "Activation";
 
 		if (status.isDeactivated() || daysUntilRenewal < -90) {
