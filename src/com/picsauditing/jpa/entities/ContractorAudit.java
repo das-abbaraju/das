@@ -308,8 +308,10 @@ public class ContractorAudit extends BaseTable {
 		else
 			daysToExpiration = DateBean.getDateDifference(expiresDate);
 
-		if (getAuditType().getClassType() == AuditTypeClass.Policy) {
+		if (auditType.getClassType() == AuditTypeClass.Policy) {
 			return daysToExpiration <= 15;
+		} else if (auditType.getId() == AuditType.COR) {
+			return daysToExpiration <= 45;
 		} else {
 			return daysToExpiration <= 60;
 		}
@@ -317,9 +319,9 @@ public class ContractorAudit extends BaseTable {
 
 	@Transient
 	public Date getValidDate() {
-		if(auditType.isAnnualAddendum())
+		if (auditType.isAnnualAddendum())
 			return effectiveDate;
-		if(hasCaoStatusAfter(AuditStatus.Incomplete)){
+		if (hasCaoStatusAfter(AuditStatus.Incomplete)) {
 			if (effectiveDate == null)
 				return new Date();
 			else
@@ -330,7 +332,7 @@ public class ContractorAudit extends BaseTable {
 
 	@Transient
 	public Date getEffectiveDateLabel() {
-		if(this.auditType.isDesktop() && effectiveDate!=null){
+		if (this.auditType.isDesktop() && effectiveDate != null) {
 			return effectiveDate;
 		}
 		for (ContractorAuditOperator cao : operators) {
@@ -615,16 +617,16 @@ public class ContractorAudit extends BaseTable {
 	public String getIndexType() {
 		return "AU";
 	}
-	
+
 	@Transient
-	public boolean isCategoryApplicable(int catID){
+	public boolean isCategoryApplicable(int catID) {
 		for (AuditCatData acd : this.categories) {
-			if (acd.getCategory().getId() == catID && acd.isApplies()) 
+			if (acd.getCategory().getId() == catID && acd.isApplies())
 				return true;
 		}
 		return false;
 	}
-	
+
 	@Transient
 	public ContractorAuditOperator getCao(OperatorAccount operator) {
 		return getCao(operator.getOperatorHeirarchy());
@@ -687,9 +689,9 @@ public class ContractorAudit extends BaseTable {
 		}
 		return false;
 	}
-	
-	public boolean hasOnlyInvisibleCaos(){
-		if(this.operators.size() > 0 && this.getOperatorsVisible().size() == 0)
+
+	public boolean hasOnlyInvisibleCaos() {
+		if (this.operators.size() > 0 && this.getOperatorsVisible().size() == 0)
 			return true;
 		return false;
 	}
@@ -750,7 +752,7 @@ public class ContractorAudit extends BaseTable {
 		if (u != null) {
 			if (u.getId() == 10600) // Mike Casey
 				return 34067; // James Smith
-			else if (u.getId() == 910) // Dennis Dooley 
+			else if (u.getId() == 910) // Dennis Dooley
 				return 34067; // James Smith
 			else if (u.getId() == 902) // John McCaughey
 				return 1029; // Mina Mina

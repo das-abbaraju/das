@@ -82,8 +82,7 @@ public class AuditBuilder {
 							found = true;
 						} else {
 							if (!conAudit.isExpired() && !conAudit.willExpireSoon())
-								// The audit is still valid for at least another
-								// 60 days
+								// The audit is still valid for a number of days dependent on its type
 								found = true;
 						}
 					}
