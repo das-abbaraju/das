@@ -48,9 +48,9 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	static public final int PRODUCT_SAFETY_CRITICAL_ASSESSMENT = 7679;
 	static public final int IMPORT_PQF = 7727;
 
-	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest", "Calculation", "Check Box", "Date",
-			"Decimal Number", "File", "FileCertificate", "License", "Money", "MultipleChoice", "Number", "Text",
-			"Text Area" };
+	static public final String[] TYPE_ARRAY = { "MultipleChoice", "Text", "Text Area", "Check Box",
+			"Additional Insured", "AMBest", "Calculation", "Date", "Decimal Number", "File", "FileCertificate",
+			"License", "Money", "Number" };
 
 	private int number;
 	private int scoreWeight;
