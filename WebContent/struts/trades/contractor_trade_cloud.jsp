@@ -4,7 +4,6 @@
 
 <h4>Selected trades</h4>
 
-
 <s:if test="trade == null">
 	<div id="trade-instructions">
 		<p><s:text name="ContractorTrades.instructions"></s:text></p>
@@ -12,7 +11,10 @@
 </s:if>
 <s:else>
 <div>
-	<a class="CTInstructions help" href="#ContractorTradesInstructions" rel="#ContractorTradesInstructions">Instructions</a>
+	<a class="CTInstructions help" rel="#ContractorTradesInstructions">Instructions</a>
+	<div id="ContractorTradesInstructions">
+		<p><s:text name="ContractorTrades.instructions"></s:text></p>
+	</div>
 </div>
 </s:else>
 
@@ -43,7 +45,3 @@
 <s:else>
 	<script>$('#next_button').hide()</script>
 </s:else>
-
-<div id="ContractorTradesInstructions" Class="hide">
-	<p><s:text name="ContractorTrades.instructions"></s:text></p>
-</div>

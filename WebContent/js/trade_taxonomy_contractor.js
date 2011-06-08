@@ -19,19 +19,24 @@ function loadTradeCallback() {
 		$("#addButton").attr("disabled", "disabled");
 	}
 	
-	$('a.CTInstructions').cluetip( {
-		local: true,
-		hideLocal: true,
-		showTitle: false,
-		hoverClass : 'cluetip',
-		cluetipClass : 'jtip'
-	});
+	setupCluetip();
 }
 
 function setupTree() {
 	$.extend(true, $.jstree.defaults, {
 		"plugins": ["themes", "types", "json_data", "ui", "sort"]
 	});
+}
+
+function setupCluetip() {
+	$('a.CTInstructions').cluetip( {
+		local: true,
+		hideLocal: true,
+		showTitle: false,
+		hoverClass : 'cluetip',
+		cluetipClass : 'jtip',
+		arrows: true
+	});	
 }
 
 $(function() {
@@ -81,11 +86,5 @@ $(function() {
 			$("#addButton").attr("disabled", "disabled");
 	});
 
-	$('a.CTInstructions').cluetip( {
-		local: true,
-		hideLocal: true,
-		showTitle: false,
-		hoverClass : 'cluetip',
-		cluetipClass : 'jtip'
-	});
+	setupCluetip();
 });
