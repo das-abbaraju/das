@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Trade;
+import common.Logger;
 
 public class AuditTypeRuleCache extends AuditRuleCache {
 
@@ -35,35 +36,36 @@ public class AuditTypeRuleCache extends AuditRuleCache {
 		Contractor contractor2 = new Contractor(contractor);
 
 		for (LowMedHigh safetyRisk : contractor2.safetyRisks) {
-			System.out.println("safetyRisk = " + safetyRisk);
+			// System.out.println("safetyRisk = " + safetyRisk);
 			ProductRisks data2 = getData().getData(safetyRisk);
 			if (data2 != null) {
 				for (LowMedHigh productRisk : contractor2.productRisks) {
-					System.out.println("  productRisk = " + safetyRisk);
+					// System.out.println("  productRisk = " + safetyRisk);
 					AccountLevels data3 = data2.getData(productRisk);
 					if (data3 != null) {
 						for (AccountLevel accountLevel : contractor2.accountLevels) {
-							System.out.println("    accountLevel = " + accountLevel);
+							// System.out.println("    accountLevel = " + accountLevel);
 							ContractorTypes data7 = data3.getData(accountLevel);
 							if (data7 != null) {
 								for (ContractorType conType : contractor2.contractorType) {
-									System.out.println("      conType = " + conType);
+									// System.out.println("      conType = " + conType);
 									SoleProprietors dataX = data7.getData(conType);
 									if (dataX != null) {
 										for (Boolean soleProprietor : contractor2.soleProprietors) {
-											System.out.println("        soleProprietor = " + soleProprietor);
+											// System.out.println("        soleProprietor = " + soleProprietor);
 											Trades dataY = dataX.getData(soleProprietor);
 											if (dataY != null) {
 												for (Trade trade : contractor2.trades) {
-													System.out.println("          trade = " + trade);
+													// System.out.println("          trade = " + trade);
 													Operators data4 = dataY.getData(trade);
 													if (data4 != null) {
 														for (OperatorAccount operator : contractor2.operators) {
-															System.out.println("            operator = " + operator);
+															// System.out.println("            operator = " + operator);
 															Set<AuditRule> data6 = data4.getData(operator);
 															if (data6 != null) {
 																for (AuditRule rule : data6) {
-																	System.out.println("              rule = " + rule);
+																	// System.out.println("              rule = " +
+																	// rule);
 																	rules.add((AuditTypeRule) rule);
 																}
 															}
