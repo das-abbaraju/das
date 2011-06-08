@@ -48,7 +48,7 @@
 	<s:if test="trade.trade.children.size > 0">
 		<div id="trade-section-nav">
 			<ul>
-				<li><a href="#trade_children" class="tradeInfo"><s:property value="trade.trade.children.size"/> sub trade(s)</a></li>
+				<li><a href="#trade_children" class="tradeInfo"><s:property value="trade.trade.children.size"/><s:if test="trade.trade.children.size == 1"> Specialty</s:if><s:else> Specialties</s:else></a></li>
 			</ul>
 		</div>
 		<div id="trade_children" class="trade-section">
@@ -150,7 +150,7 @@
 <s:if test="!permissions.operator">
 	<s:if test="trade.id == 0">
 		<div>
-			<s:if test="requiresService">
+			<s:if test="requiresService"><br />I understand that this will list my account as an (or both)<br />
 				<s:checkbox name="conTypes" fieldValue="Onsite" value="%{contractor.onsiteServices}" cssClass="service" /> OnSite Services
 				<s:checkbox name="conTypes" fieldValue="Offsite" value="%{contractor.offsiteServices}" cssClass="service" /> OffSite Services
 			</s:if>

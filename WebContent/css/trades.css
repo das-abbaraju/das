@@ -11,6 +11,15 @@ a.trade,a.trade:hover,a.trade:active {
 	position: relative;
 }
 
+#trade-instructions {
+	overflow: hidden;
+	position: relative;
+	background-color: Snow;
+	border: 2px solid #A84D10;
+	padding: 1em;
+	position: relative;
+}
+
 #trade-view h4 {
 	position: absolute;
 	top: -30px;

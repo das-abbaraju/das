@@ -3,11 +3,19 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <h4>Selected trades</h4>
-<s:if test="trade != null">
-<div>
-	<a class="CTInstructions" href="#ContractorTradesInstructions" rel="#ContractorTradesInstructions">[Instructions]</a>
-</div>
+
+
+<s:if test="trade == null">
+	<div id="trade-instructions">
+		<p><s:text name="ContractorTrades.instructions"></s:text></p>
+	</div><br />
 </s:if>
+<s:else>
+<div>
+	<a class="CTInstructions help" href="#ContractorTradesInstructions" rel="#ContractorTradesInstructions">Instructions</a>
+</div>
+</s:else>
+
 <s:if test="contractor.trades.size() > 0">
 	<div id="trade-cloud">
 		<table>
@@ -33,15 +41,9 @@
 	</div>
 </s:if>
 <s:else>
-	<s:if test="trade == null">
-		<div id="trade-cloud">
-			<p><s:text name="ContractorTrades.instructions"></s:text></p>
-		</div>
-	</s:if>
-	<script>
-		$('#next_button').hide()
-	</script>
+	<script>$('#next_button').hide()</script>
 </s:else>
+
 <div id="ContractorTradesInstructions" Class="hide">
 	<p><s:text name="ContractorTrades.instructions"></s:text></p>
 </div>
