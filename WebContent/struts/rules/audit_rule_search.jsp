@@ -47,16 +47,6 @@ $(function() {
 		</div>
 		
 		<div class="filterOption">
-			Audit Type: <s:textfield cssClass="searchAuto" id="auditType" name="filter.auditType"/>
-		</div>
-		
-		<s:if test="categoryRule">
-			<div class="filterOption">
-				Category: <s:textfield cssClass="searchAuto" id="category" name="filter.category"/>
-			</div>
-		</s:if>
-		
-		<div class="filterOption">
 			Operator: <s:textfield cssClass="searchAuto" id="operator" name="filter.operator"/>
 		</div>
 		
@@ -65,20 +55,21 @@ $(function() {
 			 	listKey="name()" listValue="name()" headerKey="" headerValue="*" />
 		</div>
 		
-		<div class="filterOption">Risk: 
-			<s:select list="filter.riskLevelList" name="filter.riskLevel" value="filter.riskLevel"
+		<!-- 
+		TODO This may need a converter for LowMedHigh types. See LowMedHighConverter
+		<div class="filterOption">Safety: 
+			<s:select list="filter.riskLevelList" name="filter.safetyRisk" value="filter.safetyRisk"
 				listKey="ordinal()" listValue="name()" headerKey="-1" headerValue="*" />
 		</div>
+		<div class="filterOption">Product: 
+			<s:select list="filter.riskLevelList" name="filter.productRisk" value="filter.productRisk"
+				listKey="ordinal()" listValue="name()" headerKey="-1" headerValue="*" />
+		</div>
+		 -->
 		
 		<div class="filterOption">
 			Full/Bid-Only: <s:select list="#{'-1':'All',1:'Bid Only',0:'Full Account'}" name="filter.bid" value="filter.bid" />
 		</div>
-		
-		<s:if test="!categoryRule">
-			<div class="filterOption">
-				Dependent Audit Type: <s:textfield cssClass="searchAuto" id="dependentAuditType" name="filter.dependentAuditType"/>
-			</div>
-		</s:if>
 		
 		<div class="filterOption">
 			Effective Date: <s:textfield cssClass="datepicker" name="filter.checkDate" />
