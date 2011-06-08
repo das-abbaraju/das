@@ -96,7 +96,8 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	public String nextStep() throws Exception {
 		execute();
 
-		if (contractor.getSafetyRisk() == null && contractor.getProductRisk() == null) {
+		if (contractor.getSafetyRisk() == null
+				|| (contractor.isMaterialSupplier() && contractor.getProductRisk() == null)) {
 			boolean requiredQuestions = false;
 			if (answerMap != null) {
 				for (AuditQuestion aq : infoQuestions) {
@@ -158,17 +159,17 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				if (!contractor.isMaterialSupplierOnly())
 					isSafetyOK = conSafety.ordinal() >= safety.ordinal();
 				if (contractor.isMaterialSupplier())
-					isProductOK = conProductSafety.ordinal() >= safety.ordinal() && conProduct.ordinal() >= product.ordinal();
-
+					isProductOK = conProductSafety.ordinal() >= safety.ordinal()
+							&& conProduct.ordinal() >= product.ordinal();
 
 				contractor.setSafetyRisk(safety);
 
 				if (contractor.isMaterialSupplier())
 					contractor.setProductRisk(product);
 
-				if(contractor.isMaterialSupplierOnly() && contractor.getProductRisk().equals(LowMedHigh.Low))
+				if (contractor.isMaterialSupplierOnly() && contractor.getProductRisk().equals(LowMedHigh.Low))
 					contractor.setAccountLevel(AccountLevel.ListOnly);
-				
+
 				contractor.setAuditColumns(permissions);
 				accountDao.save(contractor);
 
