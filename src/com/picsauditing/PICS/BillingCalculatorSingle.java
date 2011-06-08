@@ -119,7 +119,7 @@ public class BillingCalculatorSingle {
 				}
 			}
 
-			contractor.setNewFee(FeeClass.AuditGUARD, newLevel, newAmount);
+			contractor.setNewFee(newLevel, newAmount);
 		} else {
 			contractor.clearNewFee(FeeClass.AuditGUARD, feeDAO);
 		}
@@ -127,7 +127,7 @@ public class BillingCalculatorSingle {
 		if (insureGUARD) {
 			// InsureGUARD Contractors have free pricing currently
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, payingFacilities);
-			contractor.setNewFee(FeeClass.InsureGUARD, newLevel, newLevel.getAmount());
+			contractor.setNewFee(newLevel, newLevel.getAmount());
 		} else {
 			contractor.clearNewFee(FeeClass.InsureGUARD, feeDAO);
 		}
@@ -140,7 +140,7 @@ public class BillingCalculatorSingle {
 			if (!hseCompetency && (employeeAudits || oq))
 				newAmount = BigDecimal.ZERO;
 
-			contractor.setNewFee(FeeClass.EmployeeGUARD, newLevel, newAmount);
+			contractor.setNewFee(newLevel, newAmount);
 		} else {
 			contractor.clearNewFee(FeeClass.EmployeeGUARD, feeDAO);
 		}
@@ -149,7 +149,7 @@ public class BillingCalculatorSingle {
 		if (contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
 			// Set list-only
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 1);
-			contractor.setNewFee(FeeClass.ListOnly, newLevel, newLevel.getAmount());
+			contractor.setNewFee(newLevel, newLevel.getAmount());
 
 			// Turn off DocuGUARD fee
 			contractor.clearNewFee(FeeClass.DocuGUARD, feeDAO);
@@ -158,7 +158,7 @@ public class BillingCalculatorSingle {
 		} else if (contractor.isAcceptsBids()) {
 			// Set bid-only
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 1);
-			contractor.setNewFee(FeeClass.BidOnly, newLevel, newLevel.getAmount());
+			contractor.setNewFee(newLevel, newLevel.getAmount());
 
 			// Turn off DocuGUARD fee
 			contractor.clearNewFee(FeeClass.DocuGUARD, feeDAO);
@@ -167,7 +167,7 @@ public class BillingCalculatorSingle {
 		} else {
 			// Turn on DocuGUARD fee
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, payingFacilities);
-			contractor.setNewFee(FeeClass.DocuGUARD, newLevel, newLevel.getAmount());
+			contractor.setNewFee(newLevel, newLevel.getAmount());
 
 			// Turn off bid-only
 			contractor.clearNewFee(FeeClass.BidOnly, feeDAO);
