@@ -19,11 +19,9 @@
 			<li><label>Safety Risk:</label>
 				<s:radio list="riskLevelList" name="safetyRisk" theme="pics" value="%{contractor.safetyRisk}" />
 			</li>
-			<s:if test="contractor.materialSupplier">
-				<li><label>Product Risk:</label>
-					<s:radio list="riskLevelList" name="productRisk" theme="pics" value="%{contractor.productRisk}" />
-				</li>
-			</s:if>
+			<li><label>Product Risk:</label>
+				<s:radio list="riskLevelList" name="productRisk" theme="pics" value="%{contractor.productRisk}" />
+			</li>
 		</ol>
 	</fieldset>
 	<fieldset class="form submit">

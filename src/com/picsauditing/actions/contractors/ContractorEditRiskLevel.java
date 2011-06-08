@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -19,6 +20,8 @@ import com.picsauditing.util.Strings;
 public class ContractorEditRiskLevel extends ContractorActionSupport implements Preparable {
 	@Autowired
 	protected UserDAO userDAO;
+	@Autowired
+	protected NoteDAO noteDAO;
 
 	protected LowMedHigh safetyRisk;
 	protected LowMedHigh productRisk;
@@ -50,39 +53,35 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 	public String save() throws Exception {
 		checkPermissions();
 
-		if ((contractor.getSafetyRisk() != null && !contractor.getSafetyRisk().equals(safetyRisk))
-				|| (contractor.getProductRisk() != null && !contractor.getProductRisk().equals(productRisk))) {
-			String userName = userDAO.find(permissions.getUserId()).getName();
+		String userName = userDAO.find(permissions.getUserId()).getName();
+		List<String> noteSummary = new ArrayList<String>();
+		LowMedHigh oldSafety = contractor.getSafetyRisk();
+		LowMedHigh oldProduct = contractor.getProductRisk();
+		boolean needsUpgrades = false;
 
-			String newSafetyRisk = safetyRisk.toString();
-			String oldSafetyRisk = null;
-			if (contractor.getSafetyRisk() != null) {
-				oldSafetyRisk = contractor.getSafetyRisk().toString();
-				if (oldSafetyRisk.equals("Med"))
-					oldSafetyRisk = "Medium";
-				if (newSafetyRisk.equals("Med"))
-					newSafetyRisk = "Medium";
-			}
+		if (contractor.getSafetyRisk() != null && safetyRisk != null && !contractor.getSafetyRisk().equals(safetyRisk)) {
+			noteSummary.add("changed the safety risk level from " + oldSafety.toString() + " to "
+					+ safetyRisk.toString());
+			contractor.setSafetyRisk(safetyRisk);
 
-			String oldProductRisk = null;
-			String newProductRisk = null;
-			if (productRisk != null) {
-				newProductRisk = productRisk.toString();
-				if (contractor.getProductRisk() != null) {
-					oldProductRisk = contractor.getProductRisk().toString();
-					if (oldProductRisk.equals("Med"))
-						oldProductRisk = "Medium";
-					if (newProductRisk.equals("Med"))
-						newProductRisk = "Medium";
-				}
-			}
+			if (oldSafety.compareTo(safetyRisk) < 0)
+				needsUpgrades = true;
+		}
 
-			List<String> noteSummary = new ArrayList<String>();
-			if (!oldSafetyRisk.equals(newSafetyRisk))
-				noteSummary.add("changed the safety risk level from " + oldSafetyRisk + " to " + newSafetyRisk);
-			if (oldProductRisk != null && newProductRisk != null && !oldProductRisk.equals(newProductRisk))
-				noteSummary.add("changed the product risk level from " + oldProductRisk + " to " + newProductRisk);
+		if (contractor.getProductRisk() != null && productRisk != null
+				&& !contractor.getProductRisk().equals(productRisk)) {
+			noteSummary.add("changed the product risk level from " + oldProduct.toString() + " to "
+					+ productRisk.toString());
+			contractor.setProductRisk(productRisk);
 
+			if (oldProduct.compareTo(productRisk) < 0)
+				needsUpgrades = true;
+		} else if (contractor.getProductRisk() == null && productRisk != null) {
+			// Add a product risk if it doesn't exist...?
+			noteSummary.add("set product risk level to " + productRisk.toString());
+		}
+
+		if (noteSummary.size() > 0) {
 			Note note = new Note();
 			note.setAccount(contractor);
 			note.setAuditColumns(permissions);
@@ -90,21 +89,16 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			note.setNoteCategory(NoteCategory.General);
 			note.setCanContractorView(false);
 			note.setViewableById(Account.EVERYONE);
-			getNoteDao().save(note);
+			noteDAO.save(note);
+		}
 
+		if (!safetyRisk.equals(oldSafety) || (productRisk != null && !productRisk.equals(oldProduct))) {
 			// If contractor risk level being raised, stamp the last upgrade date
-			if (safetyRisk.compareTo(contractor.getSafetyRisk()) > 0
-					|| (productRisk != null && productRisk.compareTo(contractor.getProductRisk()) > 0))
+			if (needsUpgrades)
 				contractor.setLastUpgradeDate(new Date());
-			contractor.setSafetyRisk(safetyRisk);
-			contractor.setProductRisk(productRisk);
 
 			accountDao.save(contractor);
 			addActionMessage("Successfully updated Risk Level" + (noteSummary.size() > 1 ? "s" : ""));
-		} else {
-			// This contractor doesn't have any safety/product risk levels set somehow
-			contractor.setSafetyRisk(safetyRisk);
-			contractor.setProductRisk(productRisk);
 		}
 
 		return SUCCESS;

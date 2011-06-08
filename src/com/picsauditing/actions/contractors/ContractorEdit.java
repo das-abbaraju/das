@@ -116,8 +116,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
 				state = getStateDAO().find(stateIsos[0]);
 
-			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters().get(
-					"billingState.isoCode");
+			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters()
+					.get("billingState.isoCode");
 			if (billingStateIsos != null && billingStateIsos.length > 0 && !Strings.isEmpty(billingStateIsos[0]))
 				billingState = getStateDAO().find(billingStateIsos[0]);
 		}
@@ -170,15 +170,25 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 					Vector<String> errors = contractorValidator.validateContractor(contractor);
 
-					if ((!contractor.isMaterialSupplierOnly() || !contractor.getProductRisk().equals(LowMedHigh.Low))
-							&& contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
-						errors.addElement("Only Low Risk Material Supplier Only contractor accounts can be set to "
-								+ "List Only. Please verify contractor information before setting List Only status.");
+					if (contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
+						// Now check if they have a product risk level
+						if (!contractor.isMaterialSupplierOnly()
+								|| (contractor.getProductRisk() != null && !contractor.getProductRisk().equals(
+										LowMedHigh.Low))) {
+							errors.addElement("Only Low Risk Material Supplier Only contractor accounts can be set to "
+									+ "List Only. Please verify contractor information before setting List Only status.");
+						} else if (contractor.getProductRisk() == null) {
+							// Contractor doesn't have a product risk. Set to material supplier and add open task to
+							// answer the product questions on the PQF
+							errors.addElement("This contractor does not have a Product Risk.");
+							// TODO add an open task for the contractor?
+						}
 					}
 
 					if (errors.size() > 0) {
 						for (String error : errors)
 							addActionError(error);
+						// TODO the changes are still saved to the database
 						return SUCCESS;
 					}
 					contractor.setQbSync(true);
@@ -235,8 +245,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						OperatorAccount parent = operator.getParent();
 						while (parent != null) { // adding corporate
 							// subscriptions
-							subscriptions.addAll(subscriptionDAO.find(Subscription.ContractorDeactivation, parent
-									.getId()));
+							subscriptions.addAll(subscriptionDAO.find(Subscription.ContractorDeactivation,
+									parent.getId()));
 							parent = parent.getParent();
 						}
 
