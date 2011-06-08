@@ -235,6 +235,25 @@ function updateModes(mode) {
 		$('#modes a.'+mode).hide();
 }
 
+// Not using yet...
+function showRules(auditCataDataID) {
+	$("#categoryRules").show();
+	var data = {
+		'auditID': auditID
+	};
+	$('#categoryRules').load('AuditBuilder!category.action', data);
+}
+
+function showCategoryRules(categoryID) {
+	$("#categoryRules").show();
+	var data = {
+		'comparisonRule.auditCategory.id': categoryID,
+		'id': auditID,
+		'button':'debugCategory'
+	};
+	$('#categoryRules').load('CategoryRuleTableAjax.action', data);
+}
+
 function printPreview(auditID) {
 	window.open('AuditPrintAjax.action?button=load&mode=ViewAll&auditID='+auditID, 'preview', 'menubar=0,scrollbars=1,resizable=1,height=700,width=640')
 }

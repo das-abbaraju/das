@@ -126,6 +126,8 @@
 	<span style="display: none;" id="printReqButton"><a class="print" href="javascript:window.print();"><s:text name="button.Print" /></a></span>
 </div>
 
+<div id="categoryRules"></div>
+
 <table id="audit-layout">
 	<tr>
 		<td class="auditHeaderSideNav noprint">
