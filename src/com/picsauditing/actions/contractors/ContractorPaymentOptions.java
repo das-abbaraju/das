@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -43,22 +45,23 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private String key_id;
 	private String company;
 	private CreditCard cc;
+	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
 	private AuditTypeDAO auditTypeDAO;
 
 	private InvoiceFee activationFee;
 	private InvoiceFee gstFee;
+	private InvoiceFee importFee;
 	// Any time we do a get w/o an exception we set the communication status.
 	// That way we know the information switched off of in the jsp is valid
 	private boolean braintreeCommunicationError = false;
+	@Autowired
+	private AppPropertyDAO appPropDao;
 
-	AppPropertyDAO appPropDao;
 
-	public ContractorPaymentOptions(AppPropertyDAO appPropDao, InvoiceFeeDAO invoiceFeeDAO, AuditTypeDAO auditTypeDAO) {
-		this.appPropDao = appPropDao;
-		this.invoiceFeeDAO = invoiceFeeDAO;
-		this.auditTypeDAO = auditTypeDAO;
-		this.subHeading = "Payment Options";
+	public ContractorPaymentOptions() {
+		this.subHeading = getText(getScope() + ".title");
 		this.currentStep = ContractorRegistrationStep.Payment;
 	}
 
@@ -78,6 +81,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				this.redirect("ContractorFacilities.action?id=" + contractor.getId() + "&msg=" + msg);
 				return BLANK;
 			}
+		}
+		if (permissions.isContractor() && contractor.getCompetitorMembership() != null && contractor.getCompetitorMembership()) {
+			importFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 0);
 		}
 
 		// The payment method has changed.
@@ -122,12 +128,13 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			ContractorFee newConFee = new ContractorFee();
 			newConFee.setAuditColumns(new User(User.CONTRACTOR));
 			newConFee.setContractor(contractor);
-
-			InvoiceFee currentFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 0);
-			newConFee.setCurrentLevel(currentFee);
-			newConFee.setNewLevel(currentFee);
-			newConFee.setFeeClass(FeeClass.ImportFee);
-			contractor.getFees().put(FeeClass.ImportFee, newConFee);
+			newConFee.setCurrentAmount(importFee.getAmount());
+			newConFee.setNewAmount(importFee.getAmount());
+			newConFee.setCurrentLevel(importFee);
+			newConFee.setNewLevel(importFee);
+			newConFee.setFeeClass(importFee.getFeeClass());
+			contractor.getFees().put(importFee.getFeeClass(), newConFee);
+			accountDao.save(contractor);
 			
 			this.redirect("ContractorPaymentOptions.action");
 		}
@@ -452,5 +459,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	public void setGstFee(InvoiceFee gstFee) {
 		this.gstFee = gstFee;
+	}
+	
+	public InvoiceFee getImportFee() {
+		return importFee;
 	}
 }

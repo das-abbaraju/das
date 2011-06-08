@@ -82,6 +82,7 @@ function updateExpDate() {
 		<div class="alert">
 			<s:text name="%{scope}.ConsortiumMember">
 				<s:param value="%{contractor.currencyCode.icon}" />
+				<s:param value="%{importFee.amount.intValue()}" />
 				<s:param value="'watchtip'" />
 			</s:text>
 			<br />
