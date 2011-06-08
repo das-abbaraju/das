@@ -155,7 +155,7 @@ public class BillingCalculatorSingle {
 			contractor.clearNewFee(FeeClass.DocuGUARD, feeDAO);
 			// Turn off BidOnly fee
 			contractor.clearNewFee(FeeClass.BidOnly, feeDAO);
-		} else if (contractor.isAcceptsBids()) {
+		} else if (contractor.getAccountLevel().isBidOnly()) {
 			// Set bid-only
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 1);
 			contractor.setNewFee(newLevel, newLevel.getAmount());
@@ -237,9 +237,15 @@ public class BillingCalculatorSingle {
 		if (billingStatus.startsWith("Renew")) {
 			// We could eventually customize the 12 months to support
 			// monthly/quarterly billing cycles
-			Date paymentExpires = DateBean.addMonths(contractor.getPaymentExpires(), 12);
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
 				if (!contractor.getFees().get(feeClass).getNewLevel().isFree()) {
+					Date paymentExpires = DateBean.addMonths(contractor.getPaymentExpires(), 12);
+					// If I'm upgrading from ListOnly or BidOnly, set renewal date from today for
+					// new full term membership
+					if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
+							|| !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree())
+						paymentExpires = DateBean.addMonths(new Date(), 12);
+
 					InvoiceItem newItem = new InvoiceItem(contractor.getFees().get(feeClass).getNewLevel(), contractor
 							.getFees().get(feeClass).getNewAmount(), feeClass.isPaymentExpiresNeeded() ? paymentExpires
 							: null);

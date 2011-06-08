@@ -108,7 +108,7 @@ public class BillingDetail extends ContractorActionSupport {
 				invoice.setDueDate(contractor.getPaymentExpires());
 			}
 
-			if (contractor.isAcceptsBids()) {
+			if (!contractor.getAccountLevel().isFull()) {
 				invoice.setDueDate(new Date());
 				contractor.setRenew(true);
 			}
@@ -173,7 +173,7 @@ public class BillingDetail extends ContractorActionSupport {
 			contractor.setStatus(AccountStatus.Deactivated);
 			if ("Renewal Overdue".equals(status))
 				contractor.setRenew(false);
-			if (contractor.isAcceptsBids())
+			if (contractor.getAccountLevel().isBidOnly())
 				contractor.setReason("Bid Only Account");
 			Note note = new Note(contractor, new User(User.SYSTEM),
 					"Automatically inactivating account based on expired membership");
