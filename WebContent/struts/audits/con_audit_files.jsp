@@ -12,6 +12,12 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css?v=<s:property value="version"/>" />
+<style type="text/css">
+.cluetipHolder {
+	margin-left: 3px;
+	margin-bottom: 3px;
+}
+</style>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
@@ -23,6 +29,19 @@ function showAuditUpload(auditID, fileID, desc, question) {
 	fileUpload = window.open(url,title,pars);
 	fileUpload.focus();
 }
+
+$(function(){
+	$('.cluetip').cluetip({
+		arrows: true,
+		cluetipClass: 'jtip',
+		local: true,
+		clickThrough: false,
+		activation: 'click',
+		sticky: true,
+		showTitle: false,
+		closeText: "<img src='images/cross.png' width='16' height='16'>"
+	});
+});
 </script>
 </head>
 <body>
@@ -61,6 +80,14 @@ function showAuditUpload(auditID, fileID, desc, question) {
 				<s:iterator value="openReqs" id="data">
 					<tr>
 						<td>
+							<s:if test="!isStringEmpty(question.helpText)">
+								<div class="right cluetipHolder">
+									<a class="cluetip help" rel="#cluetip_<s:property value="question.id"/>" title="Additional Information"></a>
+									<div id="cluetip_<s:property value="question.id" />">
+										<s:property value="question.helpText" escape="false" />
+									</div>
+								</div>
+							</s:if>
 							<s:set name="fileDesc" value="getFileDesc(#data.question)"/>
 							<s:property value="#fileDesc"/>&nbsp;&nbsp; 
 							<s:if test="permissions.operatorCorporate || !#data.requirementOpen">
@@ -75,10 +102,6 @@ function showAuditUpload(auditID, fileID, desc, question) {
 							<br/>
 							<s:if test="comment.length() > 0">
 								<span class="redMain"><b><s:text name="Audit.message.SafetyProfessionalComment" />: </b><s:property value="comment" escape="false"/></span>
-							</s:if>
-							<s:if test="!isStringEmpty(question.helpText)">
-								<br />
-								<s:property value="question.helpText" escape="false" />
 							</s:if>
 							<s:if test="permissions.auditor">
 							<br/>
