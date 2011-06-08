@@ -477,8 +477,20 @@ public class AuditRule extends BaseDecisionTreeRule {
 			return true;
 		if (this.equals(o))
 			return false;
+		
 		// TODO Compare operators
-		return compareTo(o) > 0;
+		int rulePriorityLevel = operatorAccount.getRulePriorityLevel();
+		int oRulePriorityLevel = o.getOperatorAccount().getRulePriorityLevel();
+		
+		if (rulePriorityLevel == oRulePriorityLevel)
+			return true;
+		else if (rulePriorityLevel < oRulePriorityLevel)
+			return true;
+		else
+			return false;
+		
+		
+		//return compareTo(o) > 0;
 	}
 
 	@Override

@@ -465,4 +465,43 @@ public class OperatorAccount extends Account {
 	public String getAutocompleteItem() {
 		return "[" + id + "] " + name;
 	}
+	
+	@Transient
+	public int getRulePriorityLevel() {
+		/*
+		 * Account IDs
+		 * 4 - PICS Global
+		 * 5 - PICS US
+		 * 6 - PICS Canada
+		 * 7 - PICS UAE
+		 * ? - PICS UK
+		 * 17174 - PICS PSM
+		 */
+		switch (id) {
+			case 4:
+				return 1;
+			case 5:
+				return 2;
+			case 6:
+				return 2;
+			case 7:
+				return 2;
+			case 17174:
+				return 2;
+			default:
+				break;
+		}
+		
+		if (isCorporate())
+			return 3;
+
+		//TODO if hub return 4
+		
+		if (("Operator").equals(type)) {
+			return 5;
+		}
+
+		//should never happen
+		return 6;
+	}
 }
