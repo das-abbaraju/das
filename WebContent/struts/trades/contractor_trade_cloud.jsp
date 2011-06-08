@@ -3,8 +3,13 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <h4>Selected trades</h4>
-<div id="trade-cloud">
-	<s:if test="contractor.trades.size() > 0">
+<s:if test="trade != null">
+<div>
+	<a class="CTInstructions" href="#ContractorTradesInstructions" rel="#ContractorTradesInstructions">[Instructions]</a>
+</div>
+</s:if>
+<s:if test="contractor.trades.size() > 0">
+	<div id="trade-cloud">
 		<table>
 			<tr>
 				<td>
@@ -25,12 +30,18 @@
 				</td>
 			</tr>
 		</table>
+	</div>
+</s:if>
+<s:else>
+	<s:if test="trade == null">
+		<div id="trade-cloud">
+			<p><s:text name="ContractorTrades.instructions"></s:text></p>
+		</div>
 	</s:if>
-	<s:else>
-		<p><s:text name="ContractorTrades.instructions"></s:text></p>
-		<script>
-			$('#next_button').hide()
-		</script>
-	</s:else>
+	<script>
+		$('#next_button').hide()
+	</script>
+</s:else>
+<div id="ContractorTradesInstructions" Class="hide">
+	<p><s:text name="ContractorTrades.instructions"></s:text></p>
 </div>
-

@@ -18,6 +18,14 @@ function loadTradeCallback() {
 	if ($('#reviewTrades').length > 0) {
 		$("#addButton").attr("disabled", "disabled");
 	}
+	
+	$('a.CTInstructions').cluetip( {
+		local: true,
+		hideLocal: true,
+		showTitle: false,
+		hoverClass : 'cluetip',
+		cluetipClass : 'jtip'
+	});
 }
 
 function setupTree() {
@@ -72,5 +80,12 @@ $(function() {
 		else
 			$("#addButton").attr("disabled", "disabled");
 	});
-	
+
+	$('a.CTInstructions').cluetip( {
+		local: true,
+		hideLocal: true,
+		showTitle: false,
+		hoverClass : 'cluetip',
+		cluetipClass : 'jtip'
+	});
 });
