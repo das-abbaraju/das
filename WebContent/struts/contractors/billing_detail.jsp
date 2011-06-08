@@ -44,10 +44,10 @@
 		<ol>
 			<li><label><s:text name="%{scope}.Facilities.RequestedBy" />:</label> <s:property value="requestedBy.name" /></li>
 			<s:if test="!contractor.materialSupplierOnly">
-				<li><label><s:text name="global.SafetyRisk" />:</label> <s:property value="contractor.safetyRisk" /></li>
+				<li><label><s:text name="global.SafetyRisk" />:</label> <s:text name="%{contractor.safetyRisk.i18nKey}" /></li>
 			</s:if>
 			<s:if test="contractor.materialSupplier">
-				<li><label><s:text name="global.ProductRisk" />:</label> <s:property value="contractor.productRisk" /></li>
+				<li><label><s:text name="global.ProductRisk" />:</label> <s:text name="%{contractor.productRisk.i18nKey}" /></li>
 			</s:if>
 			<li><label><s:text name="%{scope}.Facilities.Facilities" />:</label> <s:property value="contractor.payingFacilities" /> paying operator(s)<br />
 			<br />

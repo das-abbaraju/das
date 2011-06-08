@@ -433,11 +433,16 @@ table.report tr.hurdle td {
 					<strong><s:property value="contractor.auditor.name" /> / <s:property value="contractor.auditor.phone" /> / </strong>
 					<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email"><s:property value="contractor.auditor.email"/></a>
 				</p>
-				<s:if test="!contractor.materialSupplierOnly">
-					<p><s:text name="global.SafetyRisk" />: <strong><s:property value="contractor.safetyRisk"/></strong></p>
+				<p><s:text name="global.SafetyRisk" />:
+					<strong><s:text name="%{contractor.safetyRisk.i18nKey}" /></strong>
+				</p>
+				<s:if test="contractor.materialSupplier">
+					<p><s:text name="global.ProductRisk" />: <strong><s:text name="%{contractor.productRisk.i18nKey} "/></strong></p>
 				</s:if>
-				<s:if test="">
-					<p><s:text name="global.ProductRisk" />: <strong><s:property value="contractor.productRisk"/></strong></p>
+				<s:if test="contractor.soleProprietor">
+					<p><s:text name="ContractorAccount.soleProprietor.fieldhelptitle" />:
+						<strong><s:text name="YesNo.Yes" /></strong>
+					</p>
 				</s:if>
 				<s:if test="hasOperatorTags">
 					<s:if test= "contractor.operatorTags.size() > 0 || operatorTags.size() > 0">

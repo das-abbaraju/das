@@ -6,7 +6,7 @@ import java.util.Map;
 /*
  * Contractor Risk Level
  */
-public enum LowMedHigh {
+public enum LowMedHigh implements Translatable {
 	None, Low, Med, High;
 
 	static public Map<Integer, LowMedHigh> getMap() {
@@ -25,4 +25,13 @@ public enum LowMedHigh {
 		return "";
 	}
 
+	@Override
+	public String getI18nKey() {
+		return this.getClass().getSimpleName() + "." + this.toString();
+	}
+
+	@Override
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
+	}
 }

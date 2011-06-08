@@ -49,11 +49,11 @@ $(document).ready(function() {
 		<br />
 		</pics:permission>
 		<label>Safety Critical:</label>
-		<s:property value="contractor.safetyRisk" />
+		<s:text name="%{contractor.safetyRisk.i18nKey}" />
 		<br />
 		<s:if test="contractor.materialSupplier">
 			<label>Product Critical:</label>
-			<s:property value="contractor.productRisk" />
+			<s:text name="%{contractor.productRisk.i18nKey}" />
 			<br />
 		</s:if>
 		<label>Location:</label>

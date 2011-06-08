@@ -147,11 +147,11 @@ $(function() {
 						</s:else>
 					</li>
 					<li><label><s:text name="global.SafetyRisk"/>:</label>
-						<s:property value="contractor.safetyRisk"/>
+						<s:text name="%{contractor.safetyRisk.i18nKey}"/>
 					</li>
 					<s:if test="contractor.materialSupplier">
 						<li><label><s:text name="global.ProductRisk"/>:</label>
-							<s:property value="contractor.productRisk"/>
+							<s:text name="%{contractor.productRisk.i18nKey}"/>
 						</li>
 					</s:if>
 					<li><label><s:text name="%{scope}.IndustryDetails.RequestedBy"/>:</label>

@@ -268,14 +268,12 @@ $(function(){
 		<li><label>CSR:</label>
 			<strong><s:property value="contractor.auditor.name" /></strong>
 		</li>
-		<s:if test="!contractor.materialSupplierOnly">
-			<li><label>Safety Assessment:</label>
-				<strong><s:property value="contractor.safetyRisk" /></strong>
-			</li>
-		</s:if>
+		<li><label>Safety Assessment:</label>
+			<strong><s:text name="%{contractor.safetyRisk.i18nKey}" /></strong>
+		</li>
 		<s:if test="contractor.materialSupplier">
-			<li><label>Safety Assessment:</label>
-				<strong><s:property value="contractor.safetyRisk" /></strong>
+			<li><label>Product Assessment:</label>
+				<strong><s:text name="%{contractor.productRisk.i18nKey}" /></strong>
 			</li>
 		</s:if>
 		<li><label>Seasonal:</label>
