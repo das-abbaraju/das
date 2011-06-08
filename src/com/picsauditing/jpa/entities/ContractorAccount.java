@@ -93,7 +93,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private boolean renew = true;
 	private Date lastUpgradeDate;
 	private BigDecimal balance;
-	private Map<FeeClass, ContractorFee> fees = new HashMap<FeeClass, ContractorFee>();
+	private Map<FeeClass, ContractorFee> fees = new TreeMap<FeeClass, ContractorFee>();
 	private Date agreementDate;
 	private User agreedBy;
 	private List<Invoice> invoices = new ArrayList<Invoice>();
