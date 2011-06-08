@@ -3,7 +3,6 @@ package com.picsauditing.dao;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +10,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.hibernate.Session;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
@@ -60,15 +58,13 @@ public class CertificateDAO extends PicsDAO {
 	@SuppressWarnings("unchecked")
 	public List<Certificate> findByConId(int conID, Permissions permissions, boolean showExpired) {
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
-		permQuery.setAccountAlias("c.contractor"); 
+		permQuery.setAccountAlias("c.contractor");
 
 		String query = "SELECT c FROM Certificate c WHERE c.contractor.id = ? ";
 		query += permQuery.toString();
 		/*
-		if (permissions.isOperatorCorporate()) {
-			query += " AND c.createdBy = " + permissions.getUserId();
-		}
-		*/
+		 * if (permissions.isOperatorCorporate()) { query += " AND c.createdBy = " + permissions.getUserId(); }
+		 */
 		if (!showExpired) {
 			query += " AND (c.expirationDate > NOW() OR c.expirationDate IS NULL)";
 		}
@@ -134,19 +130,17 @@ public class CertificateDAO extends PicsDAO {
 		q.setMaxResults(limit);
 		return q.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<AuditData> findConCertsAuditData(int conID) {
-		Query query = em.createQuery("SELECT d FROM AuditData d " +
-				"WHERE d.audit.auditType.classType = 'Policy' " +
-				"AND d.question.columnHeader= 'Certificate' " +
-				"AND d.question.questionType = 'FileCertificate' " +
-				"AND d.audit.contractorAccount.id = ?");
-		
+		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.auditType.classType = 'Policy' "
+				+ "AND d.question.columnHeader= 'Certificate' " + "AND d.question.questionType = 'FileCertificate' "
+				+ "AND d.audit.contractorAccount.id = ?");
+
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Integer> findOpsByCert(int certID) {
 		SelectSQL sql = new SelectSQL("audit_category_rule acr");
@@ -159,7 +153,7 @@ public class CertificateDAO extends PicsDAO {
 		Query query = em.createNativeQuery(sql.toString());
 		return query.getResultList();
 	}
-	
+
 	public Map<Integer, List<Integer>> findOpsMapByCert(List<Integer> certID) {
 		Database db = new Database();
 		Map<Integer, List<Integer>> resultMap = new HashMap<Integer, List<Integer>>();
@@ -173,7 +167,7 @@ public class CertificateDAO extends PicsDAO {
 		try {
 			List<BasicDynaBean> resultBDB = db.select(sql.toString(), false);
 			for (BasicDynaBean row : resultBDB) {
-				Integer cID =  Integer.parseInt((String) row.get("answer"));
+				Integer cID = Integer.parseInt((String) row.get("answer"));
 				Integer opID = (Integer) row.get("opID");
 				if (resultMap.get(cID) == null)
 					resultMap.put(cID, new ArrayList<Integer>());

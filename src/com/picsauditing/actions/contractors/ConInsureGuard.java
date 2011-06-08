@@ -2,19 +2,21 @@ package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.Grepper;
-import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -26,11 +28,16 @@ import com.picsauditing.jpa.entities.NoteCategory;
 
 @SuppressWarnings("serial")
 public class ConInsureGuard extends ContractorActionSupport {
+	@Autowired
 	private CertificateDAO certificateDAO;
-	private AuditDecisionTableDAO adtDAO;
+	@Autowired
 	private AuditTypeDAO auditTypeDAO;
+	@Autowired
+	private AuditCategoryRuleCache categoryRuleCache;
 
-	// Using CAOs
+	/**
+	 * A list of Insurance Certificates that are currently being used by a CAO
+	 */
 	private List<Certificate> active;
 	// Audit data
 	private Map<String, Map<ContractorAudit, List<ContractorAuditOperator>>> status;
@@ -39,23 +46,15 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	private static final String[] STATUSES = new String[] { "Pending", "Current", "Expired", "Other" };
 
-	public ConInsureGuard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, CertificateDAO certificateDAO,
-			AuditDecisionTableDAO adtDAO, AuditTypeDAO auditTypeDAO) {
-		this.certificateDAO = certificateDAO;
-		this.adtDAO = adtDAO;
-		this.auditTypeDAO = auditTypeDAO;
-		this.noteCategory = NoteCategory.Audits;
+	public ConInsureGuard() {
+		this.noteCategory = NoteCategory.Insurance;
 		subHeading = "InsureGUARD&trade;";
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
 		findContractor();
 
-		List<AuditType> policies = auditTypeDAO.findWhere("t.classType = 'Policy'");
-		List<AuditCategoryRule> rules = adtDAO.getApplicableCategoryRules(contractor, new HashSet<AuditType>(policies));
-		List<AuditData> data = certificateDAO.findConCertsAuditData(id);
+		List<AuditData> certificates = certificateDAO.findConCertsAuditData(id);
 
 		status = new HashMap<String, Map<ContractorAudit, List<ContractorAuditOperator>>>();
 		for (String igStatus : STATUSES)
@@ -64,9 +63,17 @@ public class ConInsureGuard extends ContractorActionSupport {
 		caoCert = new HashMap<ContractorAuditOperator, Certificate>();
 		certCaos = new HashMap<Certificate, List<ContractorAuditOperator>>();
 
-		for (AuditData d : data) {
-			ContractorAuditOperator cao = findCao(rules, d);
-			Certificate cert = getCertByID(d.getAnswer());
+		Set<AuditCategoryRule> rules = new HashSet<AuditCategoryRule>();
+		{
+			List<AuditType> policies = auditTypeDAO.findWhere("t.classType = 'Policy'");
+			for (AuditType auditType : policies) {
+				rules.addAll(categoryRuleCache.getRules(contractor, auditType));
+			}
+		}
+
+		for (AuditData certificate : certificates) {
+			ContractorAuditOperator cao = findCao(rules, certificate);
+			Certificate cert = getCertByID(certificate.getAnswer());
 
 			if (cert != null && cao != null) {
 				if (caoCert.get(cao) == null)
@@ -128,7 +135,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 				};
 			}.grep(getCertificates());
 		}
-		
+
 		return active;
 	}
 
@@ -158,18 +165,16 @@ public class ConInsureGuard extends ContractorActionSupport {
 			return status.name();
 	}
 
-	private ContractorAuditOperator findCao(List<AuditCategoryRule> rules, AuditData d) {
+	private ContractorAuditOperator findCao(Collection<AuditCategoryRule> rules, AuditData d) {
 		for (AuditCategoryRule rule : rules) {
-			if (rule.getAuditCategory() != null) {
-				if (rule.getAuditCategory().equals(d.getQuestion().getCategory())) {
-					for (ContractorAuditOperator cao : d.getAudit().getOperators()) {
-						if(permissions.isOperatorCorporate()){
-							if(permissions.getVisibleAccounts().contains(cao.getOperator().getId()))
-								if (cao.getOperator().equals(rule.getOperatorAccount()))
-									return cao;
-						}else if (cao.getOperator().equals(rule.getOperatorAccount()))
-							return cao;
-					}
+			if (rule.isInclude() && rule.isApplies(d.getQuestion().getCategory())) {
+				for (ContractorAuditOperator cao : d.getAudit().getOperators()) {
+					if (permissions.isOperatorCorporate()) {
+						if (permissions.getVisibleAccounts().contains(cao.getOperator().getId()))
+							if (cao.getOperator().equals(rule.getOperatorAccount()))
+								return cao;
+					} else if (cao.getOperator().equals(rule.getOperatorAccount()))
+						return cao;
 				}
 			}
 		}
@@ -207,7 +212,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 	public Map<String, Map<ContractorAudit, List<ContractorAuditOperator>>> getStatus() {
 		return status;
 	}
-	
+
 	public static List<String> getStatuses() {
 		return Collections.unmodifiableList(Arrays.asList(STATUSES));
 	}
