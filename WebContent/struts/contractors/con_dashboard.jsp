@@ -183,6 +183,12 @@ table.report tr.hurdle td {
 				<s:if test="contractor.status.pending">
 					<div class="alert"><s:text name="%{scope}.ContractorDashboard.StatusPending" /></div>
 				</s:if>
+				<s:if test="contractor.soleProprietor">
+					<div class="alert"><s:text name="%{scope}.ContractorDashboard.SoleProprietor" />
+					<a href="#" onclick="return false;" class="cluetip help" rel="#cluetip_sole_sync" title="Sole Proprietor"></a>
+						<div style="display: none;" id="cluetip_sole_sync"><s:text name="%{scope}.ContractorDashboard.SoleProprietor.fieldhelp" /></div>
+					</div>
+				</s:if>
 				<s:if test="contractor.status.deleted">
 					<div class="alert">This contractor was deleted<s:if test="contractor.reason.length > 0">
 							because of the following reason: <s:property value="contractor.reason"/></s:if>.
