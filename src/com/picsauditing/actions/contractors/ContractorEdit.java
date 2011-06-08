@@ -105,8 +105,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					operatorIds.add(conOperator.getOperatorAccount().getId());
 				}
 			}
-			// Don't comment this. Otherwise changes made to the Contractor object will be directly saved
-			accountDao.clear();
 
 			String[] countryIsos = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
 			if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
@@ -188,7 +186,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					if (errors.size() > 0) {
 						for (String error : errors)
 							addActionError(error);
-						// TODO the changes are still saved to the database
+						// TODO I don't know if this is the right answer here, but we don't want to save anything if
+						// there are errors.
+						accountDao.refresh(contractor);
 						return SUCCESS;
 					}
 					contractor.setQbSync(true);
