@@ -472,6 +472,15 @@ public class AuditRule extends BaseDecisionTreeRule {
 		soleProprietor = source.soleProprietor;
 	}
 
+	public boolean isMoreSpecific(AuditRule o) {
+		if (o == null)
+			return true;
+		if (this.equals(o))
+			return false;
+		// TODO Compare operators
+		return compareTo(o) > 0;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
