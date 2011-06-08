@@ -1,7 +1,6 @@
 var lastState, ucTimeout, catXHR, ucXHR;
-$(function(){	
+$(function(){
 	// AJAX HISTORY
-	$('.inner-answer :input').fieldfocus();
 	$('a.hist-category, a.modeset').live('click', function() {
 		$.bbq.pushState(this.href);
 		$.bbq.removeState('onlyReq');
@@ -15,7 +14,7 @@ $(function(){
 			$.bbq.removeState('mode');
 		return false;
 	});
-	
+
 	$('ul.subcat-list li a').live('click', function() {
 		$.bbq.pushState(this.href);
 		$.bbq.removeState('viewBlanks');
@@ -23,7 +22,7 @@ $(function(){
 		$.bbq.removeState("_");
 		return false;
 	});
-	
+
 	$('ul.vert-toolbar a.preview').live('click', function() {
 		$.bbq.pushState(this.href);
 		$.bbq.removeState('viewBlanks');
@@ -69,16 +68,16 @@ $(function(){
 		}
 		lastState = state;
 	});
-	
+
 	$(window).trigger('hashchange');
-	
+
 	// END AJAX HISTORY
-	
+
 	$('ul.vert-toolbar li.head .hidden-button').live('click',function() {
 		var hidden = $('ul.catUL:hidden')
 		$('ul.catUL:visible').fadeOut('slow', function() { hidden.fadeIn('slow'); });
 	});
-	
+
 	$('ul.vert-toolbar > li').live('mouseenter', function() {
 		$(this).addClass('hover');
 	}).live('mouseleave', function() {
@@ -92,7 +91,7 @@ $(function(){
 			$(this).removeClass('hover');
 		});
 	}
-	
+
 	$('#refresh_cao').live('click', function(e) {
 		updateCategoriesNow();
 		e.preventDefault();
@@ -108,7 +107,7 @@ $(function(){
 		updateCategoriesNow();
 		$.scrollTo(0, 800, {axis: 'y'});
 	});
-	
+
 	$('#auditViewArea').delegate('div.hasDependentRules', 'updateDependent', function() {
 		updateCategoriesNow();
 	});
@@ -117,12 +116,12 @@ $(function(){
 		updateCategoriesNow();
 	});
 
-	$('#auditViewArea').delegate('div.question:not(.affectsAudit)', 'updateDependent', function() { 
+	$('#auditViewArea').delegate('div.question:not(.affectsAudit)', 'updateDependent', function() {
 		updateCategories();
 	});
-	
+
 	$('#submitRemind').ajaxComplete(function(e, xhr, settings){
-		if(settings.headers && settings.headers.refresh && 
+		if(settings.headers && settings.headers.refresh &&
 				settings.headers.refresh == 'true'){
 			$.getJSON('AuditAjax.action', {auditID: auditID, button: 'SubmitRemind'}, function(json){
 				if(json && json.remind)
@@ -147,14 +146,14 @@ function loadCategories(data, msg) {
 		catXHR.abort();
 	$('#auditViewArea').block({message: msg, centerY: false, css: {top: '20px'} });
 	catXHR = $.ajax({
-		url:'AuditAjax.action', 
+		url:'AuditAjax.action',
 		data:data,
 		success: function(html, status, xhr) {
 			if (xhr.status) {
 				var state = $.bbq.getState();
 				$('li.current').removeClass('current');
 				$('#auditViewArea').html(html).unblock();
-				
+
 				var subCatScroll = $('#cathead_'+state.subCat);
 				if (subCatScroll.length)
 					$.scrollTo(subCatScroll, 800, {axis: 'y'});
@@ -171,11 +170,11 @@ function loadCategories(data, msg) {
 				if (state.mode == 'ViewQ') {
 					$('a.preview').parents('li:first').addClass('current');
 				}
-				
+
 				if (state.viewBlanks == "false") {
 					$('#viewBlanks').parents('li:first').addClass('current');
 				}
-				
+
 				showNavButtons();
 				clearLinks();
 			}
@@ -208,9 +207,9 @@ function _updateCategories() {
 					$('ul.catUL:visible').hide();
 					list.show();
 				}
-				
+
 				showNavButtons();
-				
+
 				if (!$('#aCatlist li.catlist').hasClass('current') || $('#auditViewArea .question').length == 0)
 					$('a.hist-category :first').click();
 			}
