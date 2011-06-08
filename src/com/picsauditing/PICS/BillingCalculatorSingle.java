@@ -93,13 +93,13 @@ public class BillingCalculatorSingle {
 				insureGUARD = true;
 			if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isIm())
 				employeeAudits = true;
+			if (auditType.getId() == AuditType.HSE_COMPETENCY)
+				hseCompetency = true;
 		}
 
 		for (ContractorOperator co : contractor.getOperators()) {
 			if (co.getOperatorAccount().isRequiresOQ())
 				oq = true;
-			if (co.getOperatorAccount().isRequiresCompetencyReview())
-				hseCompetency = true;
 		}
 
 		if (auditGUARD) {

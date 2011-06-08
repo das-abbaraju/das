@@ -817,8 +817,8 @@ public class ContractorAccount extends Account implements JSONable {
 								// same, set fee level based on current
 								// number of paying facilities if contractor
 								// paid legacy DocuGUARD fee.
-								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD,
-										this.getPayingFacilities());
+								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, this
+										.getPayingFacilities());
 								setCurrentFee(fee);
 							} else {
 								setCurrentFee(invoiceItem.getInvoiceFee());
@@ -947,17 +947,15 @@ public class ContractorAccount extends Account implements JSONable {
 				AuditType auditType = detail.rule.getAuditType();
 				if (auditType == null)
 					continue;
-				if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isIm()) {
+				if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isIm())
 					employeeAudits = true;
-					break;
-				}
+				if (auditType.getId() == AuditType.HSE_COMPETENCY)
+					hseCompetency = true;
 			}
 
 			for (ContractorOperator co : this.getOperators()) {
 				if (co.getOperatorAccount().isRequiresOQ())
 					oq = true;
-				if (co.getOperatorAccount().isRequiresCompetencyReview())
-					hseCompetency = true;
 			}
 
 			if (!hseCompetency && (employeeAudits || oq))
@@ -1113,9 +1111,6 @@ public class ContractorAccount extends Account implements JSONable {
 			else
 				return "Reactivation";
 		}
-
-		if (!renew)
-			return "Do not renew";
 
 		if (daysUntilRenewal < 0)
 			return "Renewal Overdue";
@@ -1334,7 +1329,7 @@ public class ContractorAccount extends Account implements JSONable {
 		// to upgrade the contractor
 		accountLevel = acceptsBids ? AccountLevel.BidOnly : AccountLevel.Full;
 	}
-	
+
 	@Transient
 	public BigDecimal getNewMembershipAmount() {
 		BigDecimal newTotal = BigDecimal.ZERO;
