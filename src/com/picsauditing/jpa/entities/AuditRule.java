@@ -30,7 +30,6 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected QuestionComparator questionComparator;
 	protected String questionAnswer;
 	protected Boolean soleProprietor;
-	protected Boolean acceptsBids;
 	protected AccountLevel accountLevel;
 
 	@ManyToOne
@@ -250,19 +249,6 @@ public class AuditRule extends BaseDecisionTreeRule {
 		return questionAnswer;
 	}
 
-	/**
-	 * aka List Only or Bid Only
-	 * 
-	 * @return
-	 */
-	public Boolean getAcceptsBids() {
-		return acceptsBids;
-	}
-
-	public void setAcceptsBids(Boolean acceptsBids) {
-		this.acceptsBids = acceptsBids;
-	}
-
 	@Enumerated(EnumType.STRING)
 	public AccountLevel getAccountLevel() {
 		return accountLevel;
@@ -270,13 +256,6 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 	public void setAccountLevel(AccountLevel accountLevel) {
 		this.accountLevel = accountLevel;
-	}
-
-	@Transient
-	public String getAcceptsBidsLabel() {
-		if (acceptsBids == null)
-			return "*";
-		return acceptsBids ? "Bid" : "Full";
 	}
 
 	@Transient
@@ -325,11 +304,11 @@ public class AuditRule extends BaseDecisionTreeRule {
 			priority += 102;
 			level++;
 		}
-		if (acceptsBids != null) {
+		if (accountLevel != null) {
 			priority += 103;
 			level++;
-			if (acceptsBids) {
-				// Always consider list Only rules to be more specific
+			if (accountLevel.equals(AccountLevel.BidOnly) || accountLevel.equals(AccountLevel.ListOnly)) {
+				// Always consider list Only and bid only rules to be more specific
 				priority += 400;
 				level = level + 4;
 			}
@@ -466,7 +445,6 @@ public class AuditRule extends BaseDecisionTreeRule {
 		questionComparator = source.questionComparator;
 		questionAnswer = source.questionAnswer;
 		include = source.include;
-		acceptsBids = source.acceptsBids;
 		levelAdjustment = source.levelAdjustment;
 		trade = source.trade;
 		soleProprietor = source.soleProprietor;
@@ -486,8 +464,13 @@ public class AuditRule extends BaseDecisionTreeRule {
 		if (this.equals(o))
 			return false;
 
-		int thisPriority = operatorAccount.getRulePriorityLevel();
-		int otherPriority = o.getOperatorAccount().getRulePriorityLevel();
+		// Default to 1 = PICS Global
+		int thisPriority = 1;
+		int otherPriority = 1;
+		if (operatorAccount != null)
+			thisPriority = operatorAccount.getRulePriorityLevel();
+		if (o.getOperatorAccount() != null)
+			otherPriority = o.getOperatorAccount().getRulePriorityLevel();
 
 		if (thisPriority == otherPriority)
 			return compareTo(o) > 0;
@@ -513,8 +496,19 @@ public class AuditRule extends BaseDecisionTreeRule {
 			identifiers.add("has tag [" + tag.getTag() + "]");
 		if (question != null)
 			identifiers.add(question.getColumnHeaderOrQuestion() + " " + questionComparator + " " + questionAnswer);
-		if (acceptsBids != null)
-			identifiers.add("Contactor " + (acceptsBids ? "can [bid-only]" : "has [full account]"));
+		if (accountLevel != null) {
+			switch (accountLevel) {
+			case BidOnly:
+				identifiers.add("Contactor can [BID only]");
+				break;
+			case ListOnly:
+				identifiers.add("Contactor is [LIST only]");
+				break;
+			case Full:
+				identifiers.add("Contactor has a [FULL account]");
+				break;
+			}
+		}
 		if (trade != null)
 			identifiers.add("Trade is [" + trade.getName() + "]");
 		if (auditType != null)

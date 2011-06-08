@@ -109,7 +109,6 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 								r = new AuditCategoryRule();
 								r.setAuditType(ac.getAuditType());
 								r.setAuditCategory(ac);
-								r.setAcceptsBids(false);
 								r.setQuestion(aq);
 
 								if (aq.getQuestionType().equals("Check Box")) {

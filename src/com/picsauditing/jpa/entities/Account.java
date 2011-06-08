@@ -403,10 +403,13 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.reason = reason;
 	}
 
+	// We should move this to operator. The contractor already has an accountLevel field that replaces this
+	@Deprecated
 	public boolean isAcceptsBids() {
 		return acceptsBids;
 	}
 
+	@Deprecated
 	public void setAcceptsBids(boolean acceptsBids) {
 		this.acceptsBids = acceptsBids;
 	}
@@ -486,7 +489,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	 */
 	@Enumerated(EnumType.STRING)
 	public Currency getCurrencyCode() {
-		if(getCountry() ==  null)
+		if (getCountry() == null)
 			return Currency.USD;
 		if ("CA".equals(this.getCountry().getIsoCode()))
 			return Currency.CAD;
@@ -702,8 +705,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Transient
 	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(
-				this.name).append('|');
+		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|')
+				.append(this.name).append('|');
 		if (this.city != null)
 			sb.append(this.city);
 		if (this.state != null)

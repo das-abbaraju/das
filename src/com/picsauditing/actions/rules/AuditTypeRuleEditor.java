@@ -27,7 +27,6 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 	@Override
 	public void prepare() throws Exception {
-		super.prepare();
 		int ruleID = getParameter("id");
 		if (ruleID > 0)
 			rule = dao.findAuditTypeRule(ruleID);

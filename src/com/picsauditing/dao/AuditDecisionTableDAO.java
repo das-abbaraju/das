@@ -17,8 +17,6 @@ import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
@@ -200,9 +198,9 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " OR productRisk = '" + rule.getProductRisk() + "'";
 		where += " )";
 
-		where += " AND (acceptsBids IS NULL";
-		if (rule.getAcceptsBids() != null)
-			where += " OR acceptsBids = " + (rule.getAcceptsBids() ? 1 : 0);
+		where += " AND (accountLevel IS NULL";
+		if (rule.getAccountLevel() != null)
+			where += " OR accountLevel = '" + rule.getAccountLevel().toString() + "'";
 		where += " )";
 
 		where += " AND (soleProprietor IS NULL";
@@ -277,8 +275,8 @@ public class AuditDecisionTableDAO extends PicsDAO {
 			where += " AND contractorType = '" + rule.getContractorType().toString() + "'";
 		if (rule.getTrade() != null)
 			where += " AND trade.id = " + rule.getTrade().getId();
-		if (rule.getAcceptsBids() != null)
-			where += " AND acceptsBids = " + (rule.getAcceptsBids() ? 1 : 0);
+		if (rule.getAccountLevel() != null)
+			where += " AND accountLevel = '" + rule.getAccountLevel().toString() + "'";
 		if (rule.getSoleProprietor() != null)
 			where += " AND soleProprietor = " + (rule.getSoleProprietor() ? 1 : 0);
 		if (rule.getQuestion() != null)
@@ -290,111 +288,6 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		if (rule.getProductRisk() != null)
 			where += " AND productRisk = '" + rule.getProductRisk() + "'";
 		return where;
-	}
-
-	public List<AuditTypeRule> getApplicableAuditRules(ContractorAccount contractor) {
-		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW()";
-
-		where += " AND (safetyRisk IS NULL";
-		if (contractor.getSafetyRisk() != null)
-			where += " OR safetyRisk = " + contractor.getSafetyRisk().ordinal();
-		where += ")";
-		
-		where += " AND (productRisk IS NULL";
-		if (contractor.getProductRisk() != null)
-			where += " OR productRisk = " + contractor.getProductRisk().ordinal();
-		where += ")";
-
-		where += " AND (acceptsBids IS NULL OR acceptsBids = " + (contractor.isAcceptsBids() ? 1 : 0) + ")";
-
-		where += " AND (contractorType IS NULL";
-		if (contractor.isOnsiteServices())
-			where += " OR contractorType = 'Onsite'";
-		if (contractor.isOffsiteServices())
-			where += " OR contractorType = 'Offsite'";
-		if (contractor.isMaterialSupplier())
-			where += " OR contractorType = 'Supplier'";
-		where += ")";
-
-		Set<Integer> operatorIDs = new HashSet<Integer>();
-		for (ContractorOperator co : contractor.getOperators()) {
-			// There's a bug where corporate accounts not associated with this
-			// operator get added to this contractor. So just skip all
-			// corporates and pick them up in the
-			// co.getOperatorAccount().getCorporateFacilities()
-			if (co.getOperatorAccount().isOperator()) {
-				operatorIDs.add(co.getOperatorAccount().getId());
-				for (Facility facility : co.getOperatorAccount().getCorporateFacilities()) {
-					operatorIDs.add(facility.getCorporate().getId());
-				}
-			}
-		}
-
-		where += " AND (opID IS NULL";
-		if (operatorIDs.size() > 0)
-			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
-		where += ")";
-
-		Query query = em.createQuery("SELECT a FROM AuditTypeRule a " + where + " ORDER BY priority DESC");
-		return query.getResultList();
-	}
-
-	public List<AuditCategoryRule> getApplicableCategoryRules(ContractorAccount contractor, AuditType auditType) {
-		Set<AuditType> auditTypes = new HashSet<AuditType>();
-		auditTypes.add(auditType);
-		return getApplicableCategoryRules(contractor, auditTypes);
-	}
-
-	public List<AuditCategoryRule> getApplicableCategoryRules(ContractorAccount contractor, Set<AuditType> auditTypes) {
-		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW()";
-
-		where += " AND (safetyRisk IS NULL";
-		if (contractor.getSafetyRisk() != null)
-			where += " OR safetyRisk = " + contractor.getSafetyRisk().ordinal();
-		where += ")";
-		
-		where += " AND (productRisk IS NULL";
-		if (contractor.getProductRisk() != null)
-			where += " OR productRisk = " + contractor.getProductRisk().ordinal();
-		where += ")";
-
-		where += " AND (acceptsBids IS NULL OR acceptsBids = " + (contractor.isAcceptsBids() ? 1 : 0) + ")";
-
-		where += " AND (contractorType IS NULL";
-		if (contractor.isOnsiteServices())
-			where += " OR contractorType = 'Onsite'";
-		if (contractor.isOffsiteServices())
-			where += " OR contractorType = 'Offsite'";
-		if (contractor.isMaterialSupplier())
-			where += " OR contractorType = 'Supplier'";
-		where += ")";
-
-		Set<Integer> operatorIDs = new HashSet<Integer>();
-		for (ContractorOperator co : contractor.getOperators()) {
-			// There's a bug where corporate accounts not associated with this
-			// operator get added to this contractor. So just skip all
-			// corporates and pick them up in the
-			// co.getOperatorAccount().getCorporateFacilities()
-			if (co.getOperatorAccount().isOperator()) {
-				operatorIDs.add(co.getOperatorAccount().getId());
-				for (Facility facility : co.getOperatorAccount().getCorporateFacilities()) {
-					operatorIDs.add(facility.getCorporate().getId());
-				}
-			}
-		}
-		where += " AND (opID IS NULL";
-		if (operatorIDs.size() > 0)
-			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
-		where += ")";
-
-		where += " AND (auditType IS NULL OR auditType.id IN (0";
-		for (AuditType auditType : auditTypes) {
-			where += "," + auditType.getId();
-		}
-		where += "))";
-
-		Query query = em.createQuery("SELECT a FROM AuditCategoryRule a " + where + " ORDER BY priority DESC");
-		return query.getResultList();
 	}
 
 	public int deleteChildren(AuditCategoryRule rule, Permissions permissions) {

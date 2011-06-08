@@ -57,7 +57,6 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	protected Integer ruleOperatorAccountId;
 	protected Integer ruleOperatorTagId;
 	protected Integer ruleQuestionId;
-	protected Boolean ruleAcceptsBids;
 	protected AccountLevel ruleAccountLevel;
 	protected boolean ruleInclude = true;
 
@@ -65,13 +64,6 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 
 	protected T rule;
 	protected Date date = new Date();
-
-	@Override
-	public void prepare() throws Exception {
-		// cleans up empty string to be null
-		// probably not the best way but works for now.
-		parameterCleanUp("ruleAcceptsBids");
-	}
 
 	@Override
 	public String execute() throws Exception {
@@ -194,7 +186,6 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 
 	protected void saveFields() {
 		rule.setInclude(ruleInclude);
-		rule.setAcceptsBids(ruleAcceptsBids);
 		rule.setAccountLevel(ruleAccountLevel);
 		if (ruleAuditTypeId != null) {
 			rule.setAuditType(auditTypeDAO.find(ruleAuditTypeId));
@@ -287,14 +278,6 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 
 	public void setRuleQuestionId(Integer ruleQuestionId) {
 		this.ruleQuestionId = ruleQuestionId;
-	}
-
-	public Boolean getRuleAcceptsBids() {
-		return ruleAcceptsBids;
-	}
-
-	public void setRuleAcceptsBids(Boolean ruleAcceptsBids) {
-		this.ruleAcceptsBids = ruleAcceptsBids;
 	}
 
 	public AccountLevel getRuleAccountLevel() {

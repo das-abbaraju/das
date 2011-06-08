@@ -24,7 +24,6 @@ abstract public class AuditRuleCache {
 	protected class Contractor {
 		public Set<LowMedHigh> safetyRisks = new HashSet<LowMedHigh>();
 		public Set<LowMedHigh> productRisks = new HashSet<LowMedHigh>();
-		public Set<Boolean> acceptsBids = new HashSet<Boolean>();
 		public Set<ContractorType> contractorType = new HashSet<ContractorType>();
 		public Set<Boolean> soleProprietors = new HashSet<Boolean>();
 		public Set<AccountLevel> accountLevels = new HashSet<AccountLevel>();
@@ -37,9 +36,6 @@ abstract public class AuditRuleCache {
 
 			productRisks.add(null);
 			productRisks.add(contractor.getProductRisk());
-
-			acceptsBids.add(null);
-			acceptsBids.add(contractor.isAcceptsBids());
 
 			contractorType.add(null);
 			contractorType.addAll(contractor.getAccountTypes());

@@ -29,7 +29,6 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 
 	@Override
 	public void prepare() throws Exception {
-		super.prepare();
 		parameterCleanUp("rule.rootCategory");
 		int ruleID = getParameter("id");
 		if (ruleID > 0)

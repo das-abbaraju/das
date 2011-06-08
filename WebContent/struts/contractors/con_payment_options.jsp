@@ -145,7 +145,7 @@ function updateExpDate() {
 				</s:iterator>
 				</table>
 			</li>
-			<s:if test="contractor.fullAccount">
+			<s:if test="contractor.accountLevel.full">
 				<li><label><s:property value="activationFee.fee"/>:</label> <s:property value="contractor.currencyCode.icon"/><s:property value="activationFee.amount"/> <s:property value="contractor.currencyCode" /></li>
 			</s:if>
 			<s:if test="contractor.currencyCode.canada">

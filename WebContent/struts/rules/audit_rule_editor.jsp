@@ -261,13 +261,6 @@ $(function() {
 						</pics:fieldhelp>
 					</li>
 				</s:if>
-				<li><label>Bid Only</label>
-					<div class="nobr"><s:radio theme="pics" name="ruleAcceptsBids" list="#{'':'Any',false:'Full Account',true:'Bid Only'}" value="rule.acceptsBids"/></div>
-					<pics:fieldhelp title="Bid Only">
-					<p>Full Account (default) - Regular paying contractor account.</p>
-					<p>Bid Only - A trial contractor account that is used for bidding.</p>
-					</pics:fieldhelp>
-				</li>
 				<li><label>Account Level</label>
 					<div class="nobr"><s:radio theme="pics" name="ruleAccountLevel" list="#{'':'Any','Full':'Full Account','BidOnly':'Bid Only','ListOnly':'List Only'}" value="rule.accountLevel"/></div>
 					<pics:fieldhelp title="Account Level">

@@ -73,8 +73,6 @@ public abstract class AuditRuleTableBuilder<T extends AuditRule> extends PicsAct
 			columnMap.put("productRisk", true);
 		if (rule.getTag() != null)
 			columnMap.put("tag", true);
-		if (rule.getAcceptsBids() != null)
-			columnMap.put("bidOnly", true);
 		if (rule.getAccountLevel() != null)
 			columnMap.put("accountLevel", true);
 		if (rule.getQuestion() != null)

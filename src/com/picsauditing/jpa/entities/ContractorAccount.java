@@ -818,8 +818,8 @@ public class ContractorAccount extends Account implements JSONable {
 								// same, set fee level based on current
 								// number of paying facilities if contractor
 								// paid legacy DocuGUARD fee.
-								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, this
-										.getPayingFacilities());
+								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD,
+										this.getPayingFacilities());
 								setCurrentFee(fee);
 							} else {
 								setCurrentFee(invoiceItem.getInvoiceFee());
@@ -1322,26 +1322,24 @@ public class ContractorAccount extends Account implements JSONable {
 		this.accountLevel = accountLevel;
 	}
 
-	@Override
 	@Transient
+	@Deprecated
 	public boolean isAcceptsBids() {
-		return this.getAccountLevel().equals(AccountLevel.BidOnly);
+		return accountLevel.isBidOnly();
 	}
 
-	@Override
 	@Transient
+	@Deprecated
 	public void setAcceptsBids(boolean acceptsBids) {
 		// If we're setting bid only to false, it means
 		// to upgrade the contractor
-		if (acceptsBids)
-			this.setAccountLevel(AccountLevel.BidOnly);
-		else
-			this.setAccountLevel(AccountLevel.Full);
+		accountLevel = acceptsBids ? AccountLevel.BidOnly : AccountLevel.Full;
 	}
 
 	@Transient
+	@Deprecated
 	public boolean isFullAccount() {
-		return this.getAccountLevel().equals(AccountLevel.Full);
+		return accountLevel.isFull();
 	}
 
 	@Transient
