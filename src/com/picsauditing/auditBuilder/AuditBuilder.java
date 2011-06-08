@@ -142,6 +142,7 @@ public class AuditBuilder {
 
 		/** Generate Categories and CAOs **/
 		for (ContractorAudit conAudit : contractor.getAudits()) {
+			// We may want to consider only calculating the detail for non-expired Audits
 			AuditTypeDetail auditTypeDetail = findDetailForAuditType(requiredAuditTypeDetails, conAudit.getAuditType());
 			if (auditTypeDetail != null) {
 				Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, auditTypeDetail.operators);

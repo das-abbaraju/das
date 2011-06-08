@@ -1,8 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -10,8 +7,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.picsauditing.actions.auditType.AuditRuleColumn;
 
 @SuppressWarnings("serial")
 @Entity
@@ -87,7 +82,7 @@ public class AuditTypeRule extends AuditRule {
 					+ (dependentAuditStatus == null ? "" : " is " + dependentAuditStatus);
 		}
 		if (manuallyAdded)
-			out += " (manually added)";
+			out += " [MANUALLY added]";
 		return out;
 	}
 

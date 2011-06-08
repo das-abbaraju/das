@@ -75,9 +75,13 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		}
 
 		for (AuditCategory category : conAudit.getAuditType().getCategories()) {
+			// System.out.println(" Category " + category.toString());
 			for (Trade trade : trades) {
+				// System.out.println("   Trade " + trade.toString());
 				for (ContractorType type : contractorTypes) {
+					// System.out.println("     Type " + type.toString());
 					for (OperatorAccount operator : auditOperators) {
+						// System.out.println("       Operator " + operator.toString());
 						AuditCategoryRule rule = getApplicable(rules, category, trade, type, operator);
 						if (rule != null && rule.isInclude()) {
 							// We need to add this category to the audit
@@ -87,8 +91,11 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 								categoriesPerGoverningBody.put(rule.getOperatorAccount(), new HashSet<AuditCategory>());
 							categoriesPerGoverningBody.get(rule.getOperatorAccount()).add(category);
 
-							if (rule.isMoreSpecific(operators.get(operator)))
+							if (rule.isMoreSpecific(operators.get(operator))) {
+								// System.out.print(" *** MORE SPECIFIC ***");
 								operators.put(operator, rule);
+							}
+							// System.out.println("         Rule " + rule.getPriority() + " " + rule.toString());
 						}
 					}
 				}
@@ -179,5 +186,4 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 			return false;
 		return applicableCategories.contains(category);
 	}
-
 }

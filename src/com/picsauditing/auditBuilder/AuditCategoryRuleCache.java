@@ -46,37 +46,29 @@ public class AuditCategoryRuleCache extends AuditRuleCache {
 			ProductRisks data2 = getData().getData(safetyRisk);
 			if (data2 != null) {
 				for (LowMedHigh productRisk : contractor2.productRisks) {
-					AcceptsBids dataZ = data2.getData(productRisk);
-					if (dataZ != null) {
-						for (Boolean acceptsBid : contractor2.acceptsBids) {
-							AccountLevels data3 = dataZ.getData(acceptsBid);
-							if (data3 != null) {
-								for (AccountLevel accountLevel : contractor2.accountLevels) {
-									AuditTypes data7 = data3.getData(accountLevel);
-									if (data7 != null) {
-										for (AuditType auditType2 : auditTypes) {
-											ContractorTypes data4 = data7.getData(auditType2);
-											if (data4 != null) {
-												for (ContractorType conType : contractor2.contractorType) {
-													SoleProprietors dataX = data4.getData(conType);
-													if (dataX != null) {
-														for (Boolean soleProprietor : contractor2.soleProprietors) {
-															Trades dataY = dataX.getData(soleProprietor);
-															if (dataY != null) {
-																for (Trade t : contractor2.trades) {
-																	Operators data5 = dataY.getData(t);
-																	if (data5 != null) {
-																		for (OperatorAccount o : contractor2.operators) {
-																			OperatorAccount operator = (o == null ? null
-																					: o);
-																			Set<AuditRule> data6 = data5
-																					.getData(operator);
-																			if (data6 != null) {
-																				for (AuditRule auditRule : data6) {
-																					rules
-																							.add((AuditCategoryRule) auditRule);
-																				}
-																			}
+					AccountLevels data3 = data2.getData(productRisk);
+					if (data3 != null) {
+						for (AccountLevel accountLevel : contractor2.accountLevels) {
+							AuditTypes data7 = data3.getData(accountLevel);
+							if (data7 != null) {
+								for (AuditType auditType2 : auditTypes) {
+									ContractorTypes data4 = data7.getData(auditType2);
+									if (data4 != null) {
+										for (ContractorType conType : contractor2.contractorType) {
+											SoleProprietors dataX = data4.getData(conType);
+											if (dataX != null) {
+												for (Boolean soleProprietor : contractor2.soleProprietors) {
+													Trades dataY = dataX.getData(soleProprietor);
+													if (dataY != null) {
+														for (Trade t : contractor2.trades) {
+															Operators data5 = dataY.getData(t);
+															if (data5 != null) {
+																for (OperatorAccount o : contractor2.operators) {
+																	OperatorAccount operator = (o == null ? null : o);
+																	Set<AuditRule> data6 = data5.getData(operator);
+																	if (data6 != null) {
+																		for (AuditRule auditRule : data6) {
+																			rules.add((AuditCategoryRule) auditRule);
 																		}
 																	}
 																}
@@ -148,35 +140,17 @@ public class AuditCategoryRuleCache extends AuditRuleCache {
 
 	private class ProductRisks {
 
-		private Map<LowMedHigh, AcceptsBids> data = new LinkedHashMap<LowMedHigh, AcceptsBids>();
+		private Map<LowMedHigh, AccountLevels> data = new LinkedHashMap<LowMedHigh, AccountLevels>();
 
-		public AcceptsBids getData(LowMedHigh value) {
+		public AccountLevels getData(LowMedHigh value) {
 			return data.get(value);
 		}
 
 		public void add(AuditCategoryRule rule) {
-			AcceptsBids map = data.get(rule.getProductRisk());
-			if (map == null) {
-				map = new AcceptsBids();
-				data.put(rule.getProductRisk(), map);
-			}
-			map.add(rule);
-		}
-	}
-
-	private class AcceptsBids {
-
-		private Map<Boolean, AccountLevels> data = new LinkedHashMap<Boolean, AccountLevels>();
-
-		public AccountLevels getData(Boolean value) {
-			return data.get(value);
-		}
-
-		public void add(AuditCategoryRule rule) {
-			AccountLevels map = data.get(rule.getAcceptsBids());
+			AccountLevels map = data.get(rule.getProductRisk());
 			if (map == null) {
 				map = new AccountLevels();
-				data.put(rule.getAcceptsBids(), map);
+				data.put(rule.getProductRisk(), map);
 			}
 			map.add(rule);
 		}

@@ -16,7 +16,7 @@
 			<s:if test="conID > 0"><a href="ContractorView.action?id=<s:property value="conID"/>">Account Summary</a></s:if>
 		</li>
 		<li><label>Steps:</label> <s:select name="steps"
-			list="stepValues" multiple="5" value="%{'All'}" /></li>
+			list="stepValues" multiple="true" value="%{'All'}" size="15" /></li>
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">

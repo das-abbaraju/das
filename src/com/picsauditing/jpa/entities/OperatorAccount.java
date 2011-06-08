@@ -486,9 +486,11 @@ public class OperatorAccount extends Account {
 		if (isPrimaryCorporate())
 			return 3;
 
+		// Hubs and Divisions
 		if (isCorporate())
 			return 4;
 
+		// All other operators
 		return 5;
 	}
 }
