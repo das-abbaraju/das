@@ -46,7 +46,7 @@
 			<s:if test="!contractor.materialSupplierOnly">
 				<li><label><s:text name="global.SafetyRisk" />:</label> <s:text name="%{contractor.safetyRisk.i18nKey}" /></li>
 			</s:if>
-			<s:if test="contractor.materialSupplier">
+			<s:if test="contractor.materialSupplier && contractor.productRisk != null">
 				<li><label><s:text name="global.ProductRisk" />:</label> <s:text name="%{contractor.productRisk.i18nKey}" /></li>
 			</s:if>
 			<li><label><s:text name="%{scope}.Facilities.Facilities" />:</label> <s:property value="contractor.payingFacilities" /> paying operator(s)<br />

@@ -79,6 +79,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		} else if (contractor.getProductRisk() == null && productRisk != null) {
 			// Add a product risk if it doesn't exist...?
 			noteSummary.add("set product risk level to " + productRisk.toString());
+			contractor.setProductRisk(productRisk);
 		}
 
 		if (noteSummary.size() > 0) {

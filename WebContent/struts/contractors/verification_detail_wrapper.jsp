@@ -271,7 +271,7 @@ $(function(){
 		<li><label>Safety Assessment:</label>
 			<strong><s:text name="%{contractor.safetyRisk.i18nKey}" /></strong>
 		</li>
-		<s:if test="contractor.materialSupplier">
+		<s:if test="contractor.materialSupplier && contractor.productRisk != null">
 			<li><label>Product Assessment:</label>
 				<strong><s:text name="%{contractor.productRisk.i18nKey}" /></strong>
 			</li>

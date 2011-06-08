@@ -436,7 +436,7 @@ table.report tr.hurdle td {
 				<p><s:text name="global.SafetyRisk" />:
 					<strong><s:text name="%{contractor.safetyRisk.i18nKey}" /></strong>
 				</p>
-				<s:if test="contractor.materialSupplier">
+				<s:if test="contractor.materialSupplier && contractor.productRisk != null">
 					<p><s:text name="global.ProductRisk" />: <strong><s:text name="%{contractor.productRisk.i18nKey} "/></strong></p>
 				</s:if>
 				<s:if test="contractor.soleProprietor">

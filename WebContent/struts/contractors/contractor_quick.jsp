@@ -51,7 +51,7 @@ $(document).ready(function() {
 		<label>Safety Critical:</label>
 		<s:text name="%{contractor.safetyRisk.i18nKey}" />
 		<br />
-		<s:if test="contractor.materialSupplier">
+		<s:if test="contractor.materialSupplier && contractor.productRisk != null">
 			<label>Product Critical:</label>
 			<s:text name="%{contractor.productRisk.i18nKey}" />
 			<br />
