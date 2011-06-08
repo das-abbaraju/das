@@ -16,6 +16,7 @@ import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -44,7 +45,7 @@ public class ContractorSimulator extends PicsActionSupport {
 	@Autowired
 	private AuditTypeDAO auditTypeDAO;
 	@Autowired
-	private List<AuditCategoryRule> auditDecisionTableDAO;
+	private AuditDecisionTableDAO auditDecisionTableDAO;
 
 	@Override
 	@RequiredPermission(value = OpPerms.ContractorSimulator)
