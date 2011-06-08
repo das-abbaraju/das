@@ -53,10 +53,6 @@ public class AuditRuleSearch extends ReportActionSupport {
 		if (filter.getProductRisk() != null) {
 			sql.addWhere("a_search.productRisk = " + filter.getProductRisk());
 		}
-		if (filterOn(filter.getAuditType())) {
-			sql.addJoin("JOIN app_translation t ON t.msgKey = CONCAT('AuditType.',aty.id,'.name') "
-					+ "AND t.msgValue LIKE '%" + Utilities.escapeQuotes(filter.getAuditType()) + "%'");
-		}
 		if (filter.getOpID() > 0) {
 			sql.addWhere("op.id = " + filter.getOpID());
 		}

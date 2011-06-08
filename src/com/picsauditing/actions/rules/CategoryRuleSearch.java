@@ -1,6 +1,5 @@
 package com.picsauditing.actions.rules;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.search.SelectSQL;
@@ -19,13 +18,5 @@ public class CategoryRuleSearch extends AuditRuleSearch {
 	@Override
 	public void buildQuery() {
 		super.buildQuery();
-	}
-
-	@Override
-	protected void addFilterToSQL() throws Exception {
-		super.addFilterToSQL();
-		if (filterOn(filter.getCategory())) {
-			sql.addWhere("ac.name LIKE '%" + Utilities.escapeQuotes(filter.getCategory()) + "%'");
-		}
 	}
 }

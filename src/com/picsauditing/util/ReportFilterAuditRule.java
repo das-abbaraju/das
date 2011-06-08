@@ -12,9 +12,6 @@ public class ReportFilterAuditRule extends ReportFilter {
 	protected Integer include = null;
 	protected Integer bid = null;
 
-	protected String auditType = null;
-	protected String dependentAuditType = null;
-	protected String category = null;
 	protected String operator = null;
 	protected int opID;
 	protected int tradeID;
@@ -36,22 +33,6 @@ public class ReportFilterAuditRule extends ReportFilter {
 
 	public ContractorType[] getContractorTypeList() {
 		return ContractorType.values();
-	}
-
-	public String getAuditType() {
-		return auditType;
-	}
-
-	public void setAuditType(String auditType) {
-		this.auditType = auditType;
-	}
-
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
 	}
 
 	public String getOperator() {
@@ -90,14 +71,6 @@ public class ReportFilterAuditRule extends ReportFilter {
 			this.bid = null;
 		else
 			this.bid = bid;
-	}
-
-	public String getDependentAuditType() {
-		return dependentAuditType;
-	}
-
-	public void setDependentAuditType(String dependentAuditType) {
-		this.dependentAuditType = dependentAuditType;
 	}
 
 	public LowMedHigh[] getRiskLevelList() {
