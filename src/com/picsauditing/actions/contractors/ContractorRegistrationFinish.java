@@ -298,7 +298,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			}
 		}
 
-		if (!contractor.isAcceptsBids() && !contractor.isRenew()) {
+		if (contractor.getAccountLevel().isFull() && !contractor.isRenew()) {
 			contractor.setRenew(true);
 			if (contractor.getStatus().isDeactivated()) {
 				contractor.setStatus(AccountStatus.Pending);

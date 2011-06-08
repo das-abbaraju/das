@@ -1335,13 +1335,7 @@ public class ContractorAccount extends Account implements JSONable {
 		// to upgrade the contractor
 		accountLevel = acceptsBids ? AccountLevel.BidOnly : AccountLevel.Full;
 	}
-
-	@Transient
-	@Deprecated
-	public boolean isFullAccount() {
-		return accountLevel.isFull();
-	}
-
+	
 	@Transient
 	public BigDecimal getNewMembershipAmount() {
 		BigDecimal newTotal = BigDecimal.ZERO;

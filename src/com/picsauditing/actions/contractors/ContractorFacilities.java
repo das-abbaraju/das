@@ -442,7 +442,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 		// This is called after the co has been created and set. So no need to
 		// check current operator. Current operator should be in list already.
-		if (contractor.getStatus().isPending() && !contractor.isAcceptsBids())
+		if (contractor.getStatus().isPending() && contractor.getAccountLevel().isFull())
 			return true;
 
 		return false;

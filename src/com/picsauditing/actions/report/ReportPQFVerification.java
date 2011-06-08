@@ -30,7 +30,7 @@ public class ReportPQFVerification extends ReportAccount {
 				+ "AND cao.visible = 1 AND cao.status IN ('Submitted','Resubmitted') AND cao.percentComplete = 100");
 		sql.addJoin("JOIN accounts o ON o.id = cao.opID");
 		sql.addField("MIN(cao.statusChangedDate) statusChangedDate");
-		sql.addWhere("a.acceptsBids = 0");
+		sql.addWhere("c.accountLevel = 'Full'");
 		sql.addWhere("o.status IN ('Active')");
 		sql.addGroupBy("ca.conid");
 		sql.addWhere("c.id not in (" + "select c.id from contractor_info c " + "join invoice i on i.accountID = c.id "

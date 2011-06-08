@@ -336,7 +336,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		calendar1.add(Calendar.WEEK_OF_YEAR, -1);
 		dates.add(DBFormat.format(calendar1.getTime()));// Before14Days
 
-		String hql = "SELECT c FROM ContractorAccount c WHERE c.status = 'Active' AND c.acceptsBids = 1 AND "
+		String hql = "SELECT c FROM ContractorAccount c WHERE c.status = 'Active' AND c.accountLevel = 'BidOnly' AND "
 				+ " c.paymentExpires IN (" + Strings.implodeForDB(dates, ",") + ")";
 
 		Query query = em.createQuery(hql);

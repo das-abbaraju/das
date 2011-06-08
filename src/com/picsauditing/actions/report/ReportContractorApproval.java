@@ -63,7 +63,7 @@ public class ReportContractorApproval extends ReportAccount {
 			sql.addField("gc.workStatus");
 		}
 
-		sql.addWhere("a.acceptsBids = 0");
+		sql.addWhere("c.accountLevel = 'Full'");
 		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addOrderBy("a.creationDate");
 

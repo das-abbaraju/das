@@ -64,7 +64,7 @@ public class ReportBiddingContractors extends ReportAccount {
 			sql.addField("gc.waitingOn");
 			sql.addWhere("gc.genID = " + permissions.getAccountId());
 		}
-		sql.addWhere("a.acceptsBids = 1");
+		sql.addWhere("c.accountLevel = 'BidOnly'");
 
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.SQL);
 		qb.setWorkingFacilities(false);

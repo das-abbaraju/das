@@ -210,6 +210,10 @@ select null, c.id, 'BidOnly',
 -- PICS-2492
 update accounts a join contractor_info c on a.id = c.id set c.accountLevel = 'BidOnly' where a.acceptsBids = 1 and a.type = 'Contractor';
 update accounts a join contractor_info c on a.id = c.id set c.accountLevel = 'Full' where a.acceptsBids = 0 and a.type = 'Contractor';
+update audit_type_rule atr set atr.accountLevel = 'BidOnly' where atr.acceptsBids = 1;
+update audit_type_rule atr set atr.accountLevel = 'Full' where atr.acceptsBids = 0;
+update audit_category_rule acr set acr.accountLevel = 'BidOnly' where acr.acceptsBids = 1;
+update audit_category_rule acr set acr.accountLevel = 'Full' where acr.acceptsBids = 0;
 --
   
 INSERT INTO contractor_trade(conID, tradeID, createdBy, updatedBy, creationDate, updateDate, selfPerformed,

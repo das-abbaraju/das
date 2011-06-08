@@ -101,7 +101,7 @@ public class FacilityChanger {
 			EmailSender.send(emailQueue);
 		}
 
-		if (!contractor.isAcceptsBids()) {
+		if (contractor.getAccountLevel().isFull()) {
 			if (permissions.isContractor()) {
 				// If the contractor logs in and adds a facility,
 				// then let's assume they want to be part of PICS

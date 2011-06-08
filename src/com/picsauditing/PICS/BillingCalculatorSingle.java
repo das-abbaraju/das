@@ -200,7 +200,7 @@ public class BillingCalculatorSingle {
 		int payingFacilities = contractor.getPayingFacilities();
 
 		// Activations / Reactivations do not apply to bid only contractors
-		if (!contractor.isAcceptsBids()) {
+		if (contractor.getAccountLevel().isFull()) {
 			if (contractor.getMembershipDate() == null) {
 				// This contractor has never paid their activation fee, make
 				// them now this applies regardless if this is a new reg or
@@ -275,7 +275,7 @@ public class BillingCalculatorSingle {
 				BigDecimal upgradeTotal = BigDecimal.ZERO;
 				for (ContractorFee upgrade : upgrades) {
 					BigDecimal upgradeAmountDifference = upgrade.getNewAmount();
-					if (!contractor.isAcceptsBids()) {
+					if (contractor.getAccountLevel().isFull()) {
 						upgradeAmountDifference = upgradeAmountDifference.subtract(upgrade.getCurrentAmount());
 					}
 

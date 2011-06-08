@@ -87,9 +87,9 @@ public class ContractorOperatorDAO extends PicsDAO {
 		where += " AND co.workStatus = 'P' AND co.contractorAccount.status IN ('Active','Demo')";
 
 		if (includeBidding) {
-			where += " AND co.contractorAccount.acceptsBids = 1";
+			where += " AND co.contractorAccount.accountLevel = 'BidOnly'";
 		} else {
-			where += " AND co.contractorAccount.acceptsBids = 0";
+			where += " AND co.contractorAccount.accountLevel = 'Full'";
 		}
 		if(!isCorporate)
 			where += " GROUP BY co.contractorAccount ORDER BY co.creationDate DESC";

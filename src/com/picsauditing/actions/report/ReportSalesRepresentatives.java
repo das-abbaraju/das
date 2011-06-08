@@ -438,7 +438,7 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 			addJoin("JOIN accounts con ON con.id = c.id");
 			addWhere("con.status = 'Active'");
 			addWhere("c.mustPay = 'Yes'");
-			addWhere("con.acceptsBids = 0");
+			addWhere("c.accountLevel = 'Full'");
 			addGroupBy("a.id");
 			addGroupBy("au.id");
 		}
