@@ -278,7 +278,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 			return "*";
 		return acceptsBids ? "Bid" : "Full";
 	}
-	
+
 	@Transient
 	public String getAccountLevelLabel() {
 		if (accountLevel == null)
@@ -472,25 +472,26 @@ public class AuditRule extends BaseDecisionTreeRule {
 		soleProprietor = source.soleProprietor;
 	}
 
+	/**
+	 * This rule is more specific if it's defined for a smaller Governing Body. For example, a rule for BASF
+	 * Construction is more granular than BASF Corporate. PICS PSM is more granular than PICS Global. If the operators
+	 * are equivalent, then the priority is used.
+	 * 
+	 * @param o
+	 * @return
+	 */
 	public boolean isMoreSpecific(AuditRule o) {
 		if (o == null)
 			return true;
 		if (this.equals(o))
 			return false;
-		
-		// TODO Compare operators
-		int rulePriorityLevel = operatorAccount.getRulePriorityLevel();
-		int oRulePriorityLevel = o.getOperatorAccount().getRulePriorityLevel();
-		
-		if (rulePriorityLevel == oRulePriorityLevel)
-			return true;
-		else if (rulePriorityLevel < oRulePriorityLevel)
-			return true;
-		else
-			return false;
-		
-		
-		//return compareTo(o) > 0;
+
+		int thisPriority = operatorAccount.getRulePriorityLevel();
+		int otherPriority = o.getOperatorAccount().getRulePriorityLevel();
+
+		if (thisPriority == otherPriority)
+			return compareTo(o) > 0;
+		return thisPriority > otherPriority;
 	}
 
 	@Override
