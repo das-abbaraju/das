@@ -244,7 +244,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		sql2.addField("c.id");
 		sql2.addField("c." + type.toLowerCase() + "Risk calcRisk");
 		sql2.addField("'" + type + "' riskType");
-		sql2.addField("GROUP_CONCAT(CONCAT(ac.name, ': ', d.answer) SEPARATOR '<br />') choice");
+		sql2.addField("GROUP_CONCAT(d.answer SEPARATOR '<br />') choice");
 		sql2.addField(ordinal + " ordinal");
 
 		sql2.addJoin("JOIN contractor_audit ca ON c.id = ca.conID");
