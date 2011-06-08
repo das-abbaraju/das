@@ -15,7 +15,7 @@
 	<img src="TradeTaxonomy!tradeLogo.action?trade=<s:property value="trade.trade.id"/>" class="trade"/>
 </s:if>
 
-<s:if test="!permissions.operator">
+<s:if test="!permissions.operatorCorporate">
 	<s:if test="trade.trade.parent != null">
 		<div class="trade-section">
 			<s:iterator value="tradeClassification" var="atrade">
@@ -44,7 +44,7 @@
 	</div>
 </s:if>
 
-<s:if test="!permissions.operator">
+<s:if test="!permissions.operatorCorporate">
 	<s:if test="trade.trade.children.size > 0">
 		<div id="trade-section-nav">
 			<ul>
@@ -84,7 +84,7 @@
 </s:if>
 
 <div id="activityPercent">
-	<s:if test="permissions.operator">
+	<s:if test="permissions.operatorCorporate">
 		<s:text name="ContractorTrade.businessRepresentationOther">
 			<s:param>
 				<s:text name="ContractorTrade.activityPercent.%{trade.activityPercent}"/>
@@ -101,7 +101,7 @@
 <div id="tradeOptions" class="clearfix">
 	<s:if test="trade.trade.productI">
 		<div>
-			<s:if test="permissions.operator">
+			<s:if test="permissions.operatorCorporate">
 				<s:text name="ContractorTrade.businessProductOther">
 					<s:param>
 						<s:if test="trade.manufacture">
@@ -124,7 +124,7 @@
 	</s:if>
 	<s:if test="trade.trade.serviceI">
 		<div>
-			<s:if test="permissions.operator">
+			<s:if test="permissions.operatorCorporate">
 				<s:text name="ContractorTrade.businessServiceOther">
 					<s:param>
 						<s:if test="trade.selfPerformed">
@@ -147,7 +147,7 @@
 	</s:if>
 </div>
 
-<s:if test="!permissions.operator">
+<s:if test="!permissions.operatorCorporate">
 	<s:if test="trade.id == 0">
 		<div>
 			<s:if test="requiresService"><br />I understand that this will list my account as an (or both)<br />
