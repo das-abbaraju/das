@@ -21,27 +21,27 @@
 
 package com.picsauditing.strutsutil;
 
-import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.util.logging.Logger;
-import com.opensymphony.xwork2.util.logging.LoggerFactory;
-import com.opensymphony.xwork2.interceptor.Interceptor;
-
-import java.util.Map;
-import java.util.Set;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.interceptor.Interceptor;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 /**
- * <!-- START SNIPPET: description -->
- * Looks for a hidden identification field that specifies the original value of the checkbox.
- * If the checkbox isn't submitted, insert it into the parameters as if it was with the value
- * of 'false'.
- * <!-- END SNIPPET: description -->
+ * <!-- START SNIPPET: description --> Looks for a hidden identification field that specifies the original value of the
+ * checkbox. If the checkbox isn't submitted, insert it into the parameters as if it was with the value of 'false'. <!--
+ * END SNIPPET: description -->
  * <p/>
  * <!-- START SNIPPET: parameters -->
- * <ul><li>setUncheckedValue -
- * The default value of an unchecked box can be overridden by setting the 'uncheckedValue' property.
- * </li></ul>
+ * <ul>
+ * <li>setUncheckedValue - The default value of an unchecked box can be overridden by setting the 'uncheckedValue'
+ * property.</li>
+ * </ul>
  * <!-- END SNIPPET: parameters -->
  * <p/>
  * <!-- START SNIPPET: extending -->
@@ -50,56 +50,64 @@ import java.util.Iterator;
  */
 public class CheckboxInterceptor implements Interceptor {
 
-    /** Auto-generated serialization id */
-    private static final long serialVersionUID = -586878104807229585L;
+	/** Auto-generated serialization id */
+	private static final long serialVersionUID = -586878104807229585L;
 
-    private String uncheckedValue = Boolean.FALSE.toString();
+	private String uncheckedValue = Boolean.FALSE.toString();
 
-    private static final Logger LOG = LoggerFactory.getLogger(CheckboxInterceptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CheckboxInterceptor.class);
 
-    public void destroy() {
-    }
+	public void destroy() {
+	}
 
-    public void init() {
-    }
+	public void init() {
+	}
 
-    public String intercept(ActionInvocation ai) throws Exception {
-        Map parameters = ai.getInvocationContext().getParameters();
-        Map<String, String[]> newParams = new HashMap<String, String[]>();
-        Set<Map.Entry> entries = parameters.entrySet();
-        for (Iterator<Map.Entry> iterator = entries.iterator(); iterator.hasNext();) {
-            Map.Entry entry = iterator.next();
-            String key = (String)entry.getKey();
+	public String intercept(ActionInvocation ai) throws Exception {
+		Map parameters = ai.getInvocationContext().getParameters();
+		Map<String, String[]> newParams = new HashMap<String, String[]>();
+		Set<Map.Entry> entries = parameters.entrySet();
+		for (Iterator<Map.Entry> iterator = entries.iterator(); iterator.hasNext();) {
+			Map.Entry entry = iterator.next();
+			String key = (String) entry.getKey();
 
-            if (key.startsWith("__checkbox_")) {
-                String name = key.substring("__checkbox_".length());
+			if (key.startsWith("__checkbox_")) {
 
-                Object values = entry.getValue();
-                iterator.remove();
-                if (values != null && values instanceof String[] && ((String[])values).length > 1) {
-                    LOG.debug("Bypassing automatic checkbox detection due to multiple checkboxes of the same name: #1", name);
-                    continue;
-                }
+				String name = key.substring("__checkbox_".length());
 
-                // is this checkbox checked/submitted?
-                if (!parameters.containsKey(name)) {
-                    // if not, let's be sure to default the value to false
-                    newParams.put(name, new String[]{uncheckedValue});
-                }
-            }
-        }
+				Object values = entry.getValue();
+				iterator.remove();
+				if (values != null && values instanceof String[] && ((String[]) values).length > 1) {
+					LOG.debug("Bypassing automatic checkbox detection due to multiple checkboxes of the same name: #1",
+							name);
+					continue;
+				}
 
-        parameters.putAll(newParams);
+				// is this checkbox checked/submitted?
+				if (!parameters.containsKey(name)) {
+					// if not, let's be sure to default the value to false
 
-        return ai.invoke();
-    }
+					boolean isList = false;
+					isList = ai.getAction().getClass().getDeclaredField(name).getType().isAssignableFrom(List.class);
+					if (!isList) {
+						newParams.put(name, new String[] { uncheckedValue });
+					}
+				}
+			}
+		}
 
-    /**
-     * Overrides the default value for an unchecked checkbox
-     *
-     * @param uncheckedValue The uncheckedValue to set
-     */
-    public void setUncheckedValue(String uncheckedValue) {
-        this.uncheckedValue = uncheckedValue;
-    }
+		parameters.putAll(newParams);
+
+		return ai.invoke();
+	}
+
+	/**
+	 * Overrides the default value for an unchecked checkbox
+	 *
+	 * @param uncheckedValue
+	 *            The uncheckedValue to set
+	 */
+	public void setUncheckedValue(String uncheckedValue) {
+		this.uncheckedValue = uncheckedValue;
+	}
 }
