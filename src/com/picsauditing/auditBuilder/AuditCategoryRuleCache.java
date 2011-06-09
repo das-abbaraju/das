@@ -43,31 +43,41 @@ public class AuditCategoryRuleCache extends AuditRuleCache {
 			auditTypes.add(auditType);
 
 		for (LowMedHigh safetyRisk : contractor2.safetyRisks) {
+			// System.out.println("safetyRisk = " + safetyRisk);
 			ProductRisks data2 = getData().getData(safetyRisk);
 			if (data2 != null) {
 				for (LowMedHigh productRisk : contractor2.productRisks) {
+					// System.out.println(" productRisk = " + productRisk);
 					AccountLevels data3 = data2.getData(productRisk);
 					if (data3 != null) {
 						for (AccountLevel accountLevel : contractor2.accountLevels) {
+							// System.out.println("  accountLevel = " + accountLevel);
 							AuditTypes data7 = data3.getData(accountLevel);
 							if (data7 != null) {
 								for (AuditType auditType2 : auditTypes) {
+									// System.out.println("   auditType2 = " + auditType2);
 									ContractorTypes data4 = data7.getData(auditType2);
 									if (data4 != null) {
 										for (ContractorType conType : contractor2.contractorType) {
+											// System.out.println("    conType = " + conType);
 											SoleProprietors dataX = data4.getData(conType);
 											if (dataX != null) {
 												for (Boolean soleProprietor : contractor2.soleProprietors) {
+													// System.out.println("     soleProprietor = " + soleProprietor);
 													Trades dataY = dataX.getData(soleProprietor);
 													if (dataY != null) {
-														for (Trade t : contractor2.trades) {
-															Operators data5 = dataY.getData(t);
+														for (Trade trade : contractor2.trades) {
+															// System.out.println("      trade = " + trade);
+															Operators data5 = dataY.getData(trade);
 															if (data5 != null) {
 																for (OperatorAccount o : contractor2.operators) {
+																	// System.out.println("       operator = " + o);
 																	OperatorAccount operator = (o == null ? null : o);
 																	Set<AuditRule> data6 = data5.getData(operator);
 																	if (data6 != null) {
 																		for (AuditRule auditRule : data6) {
+																			// System.out.println("        rule = "
+																			// 		+ auditRule);
 																			rules.add((AuditCategoryRule) auditRule);
 																		}
 																	}
@@ -233,7 +243,15 @@ public class AuditCategoryRuleCache extends AuditRuleCache {
 		private Map<Trade, Operators> data = new LinkedHashMap<Trade, Operators>();
 
 		public Operators getData(Trade value) {
-			return data.get(value);
+			Operators operator = new Operators();
+			for (Trade trade : data.keySet()) {
+				if (value != null && trade != null && (value.childOf(trade) || trade.childOf(value))) {
+					// System.out.println("         related to " + trade);
+					operator.add(data.get(trade));
+				}
+			}
+			operator.add(data.get(value));
+			return operator;
 		}
 
 		public void add(AuditCategoryRule rule) {

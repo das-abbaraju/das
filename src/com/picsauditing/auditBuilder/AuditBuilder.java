@@ -136,7 +136,7 @@ public class AuditBuilder {
 				}
 			}
 		}
-		
+
 		categoryRuleCache.initialize(auditDecisionTableDAO);
 		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache, contractor);
 
@@ -149,7 +149,9 @@ public class AuditBuilder {
 				fillAuditCategories(conAudit, categories);
 				fillAuditOperators(conAudit, categoriesBuilder.getCaos());
 			} else {
-				System.out.println("Missing auditTypeDetail for " + conAudit.getAuditType());
+				// This audit is no longer required either because of a rule change or a data change (like removing
+				// operators)
+				// System.out.println("Missing auditTypeDetail for " + conAudit.getAuditType());
 			}
 		}
 

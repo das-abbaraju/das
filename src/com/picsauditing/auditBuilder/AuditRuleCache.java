@@ -45,7 +45,7 @@ abstract public class AuditRuleCache {
 
 			accountLevels.add(null);
 			accountLevels.add(contractor.getAccountLevel());
-			
+
 			trades.add(null);
 			for (ContractorTrade ct : contractor.getTrades()) {
 				trades.add(ct.getTrade());
@@ -99,16 +99,29 @@ abstract public class AuditRuleCache {
 				map = new LinkedHashSet<AuditRule>();
 				data.put(rule.getOperatorAccount(), map);
 			}
-			// Trying to ensure that needed objects are loaded in memory before
-			// they are cached so that when they are referenced later, lazy
-			// initializations do not occur
-			if (rule.getOperatorAccount() != null)
-				rule.getOperatorAccount().getCorporateFacilities();
-			if (rule.getQuestion() != null)
-				rule.getQuestion().getAuditType();
+			{
+				/*
+				 * Trying to ensure that needed objects are loaded in memory before they are cached so that when they
+				 * are referenced later, lazy initializations do not occur
+				 */
+				if (rule.getOperatorAccount() != null)
+					rule.getOperatorAccount().getCorporateFacilities();
+				if (rule.getQuestion() != null)
+					rule.getQuestion().getAuditType();
+			}
 			map.add(rule);
 		}
+
+		public void add(Operators operators) {
+			if(operators == null)
+				return;
+			for (Set<AuditRule> operatorRules : operators.data.values()) {
+				for (AuditRule rule : operatorRules) {
+					add(rule);
+				}
+			}
+		}
 	}
-	
+
 	abstract public void clear();
 }

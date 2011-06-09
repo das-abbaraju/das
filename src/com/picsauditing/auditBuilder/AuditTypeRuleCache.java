@@ -16,7 +16,6 @@ import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Trade;
-import common.Logger;
 
 public class AuditTypeRuleCache extends AuditRuleCache {
 
@@ -219,9 +218,17 @@ public class AuditTypeRuleCache extends AuditRuleCache {
 		private Map<Trade, Operators> data = new LinkedHashMap<Trade, Operators>();
 
 		public Operators getData(Trade value) {
-			return data.get(value);
+			Operators operator = new Operators();
+			for (Trade trade : data.keySet()) {
+				if (value != null && trade != null && (value.childOf(trade) || trade.childOf(value))) {
+					System.out.println("         related to " + trade);
+					operator.add(data.get(trade));
+				}
+			}
+			operator.add(data.get(value));
+			return operator;
 		}
-
+		
 		public void add(AuditTypeRule rule) {
 			Operators map = data.get(rule.getTrade());
 			if (map == null) {
