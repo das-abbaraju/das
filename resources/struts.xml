@@ -1394,11 +1394,7 @@
 		<action name="AuditCategoryMatrix"
 			class="com.picsauditing.actions.auditType.ManageAuditCategoryMatrix">
 			<result>struts/audits/audit_cat_matrix.jsp</result>
-		</action>
-
-		<action name="AuditCategoryMatrixAjax"
-			class="com.picsauditing.actions.auditType.ManageAuditCategoryMatrix">
-			<result>struts/audits/audit_cat_matrix_categories.jsp</result>
+			<result name="toggle">struts/audits/audit_cat_matrix_categories.jsp</result>
 			<result name="table">struts/audits/audit_cat_matrix_table.jsp</result>
 		</action>
 

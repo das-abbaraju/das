@@ -54,7 +54,7 @@
 					<th><button onclick="editTable(); return false;" class="picsbutton">Edit</button></th>
 				</s:else>
 				<s:iterator value="pivot ? selectedItems : selectedCategories">
-					<th><s:property value="name" /></th>
+					<th style="width: 100%"><s:property value="name" /></th>
 				</s:iterator>
 			</tr>
 		</thead>

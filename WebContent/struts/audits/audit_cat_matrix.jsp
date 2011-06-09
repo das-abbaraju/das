@@ -14,6 +14,7 @@ function getCategories(id) {
 	$('#tableLoad').empty();
 	$('#filterLoad').empty();
 	$('#categoryLoad').empty();
+	getTable(id, 0);
 }
 
 function getTable(auditTypeID, categoryID) {
@@ -24,13 +25,12 @@ function getTable(auditTypeID, categoryID) {
 	} else {
 		if (auditTypeID > 0) {
 			var data = {
-				button: "Table",
 				auditTypeID: auditTypeID,
 				categoryID: categoryID
 			};
 		
 			startThinking({div: "tableLoad", message: "Building matrix..."});
-			$('#tableLoad').load("AuditCategoryMatrixAjax.action", data);
+			$('#tableLoad').load("AuditCategoryMatrix!tableAjax.action", data);
 		} else
 			$('#tableLoad').html('<div class="error">Please select an audit type</div>');
 	}
@@ -38,14 +38,13 @@ function getTable(auditTypeID, categoryID) {
 
 function toggle(auditTypeID, itemID, categoryID, checkbox) {
 	var data = {
-		button: "Toggle",
 		auditTypeID: auditTypeID,
 		itemID: itemID,
 		categoryID: categoryID,
 		checked: checkbox.checked
 	};
 
-	$.getJSON("AuditCategoryMatrixAjax.action", data, function(json) {
+	$.getJSON("AuditCategoryMatrix!toggleAjax.action", data, function(json) {
 			if (json.reset == true)
 				checkbox.checked = !checkbox.checked;
 			$.gritter.add({
@@ -58,7 +57,7 @@ function toggle(auditTypeID, itemID, categoryID, checkbox) {
 
 function addFilter(auditTypeID, categoryID, itemID, type) {
 	startThinking({div: "tableLoad", message: "Building Matrix..."});
-	$('#tableLoad').load("AuditCategoryMatrixAjax.action?" + $('#form1').serialize(), { button: 'Table' });
+	$('#tableLoad').load("AuditCategoryMatrix!tableAjax.action?" + $('#form1').serialize());
 }
 
 function toggleBox(name) {
@@ -100,12 +99,12 @@ function selectAll(name) {
 
 function editTable() {
 	startThinking({div: "table_thinking", message: "Updating table..."});
-	$('#tableLoad').load("AuditCategoryMatrixAjax.action?" + $('#form1').serialize(), { button: 'Table', editTable: true });
+	$('#tableLoad').load("AuditCategoryMatrix!tableAjax.action?" + $('#form1').serialize(), { editTable: true });
 }
 
 function viewTable() {
 	startThinking({div: "table_thinking", message: "Updating table..."});
-	$('#tableLoad').load("AuditCategoryMatrixAjax.action?" + $('#form1').serialize(), { button: 'Table', editTable: false });
+	$('#tableLoad').load("AuditCategoryMatrix!tableAjax.action?" + $('#form1').serialize(), { editTable: false });
 }
 </script>
 </head>
