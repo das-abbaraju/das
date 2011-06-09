@@ -149,7 +149,7 @@ public class ReportActivityWatch extends ReportAccount {
 					"contractor_audit ca",
 					"ca.conID",
 					"caow.creationDate",
-					"t.msgValue","caow.previousStatus","caow.status","(CASE WHEN ca.auditFor IS NULL OR ca.auditFor = '' THEN 0 ELSE ca.auditFor END)",
+					"aType.id","caow.previousStatus","caow.status","(CASE WHEN ca.auditFor IS NULL OR ca.auditFor = '' THEN 0 ELSE ca.auditFor END)",
 					"CONCAT('Audit.action?auditID=', ca.id)", joins);
 			sql2.addWhere("ca.expiresDate IS NOT NULL AND ca.expiresDate < NOW()");
 			watchOptions.add("(" + sql2.toString() + ")");
@@ -252,9 +252,6 @@ public class ReportActivityWatch extends ReportAccount {
 			sql.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id");
 			sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id AND cao.visible = 1");
 			sql.addJoin("JOIN contractor_audit_operator_workflow caow ON caow.caoID = cao.id");
-			sql.addJoin("LEFT JOIN app_translation t ON t.msgKey = CONCAT('AuditType.',aType.id,'.name') AND t.locale = 'en'");
-			
-			sql.addWhere("t.id IS NOT NULL");
 
 			if (permissions.isOperatorCorporate())
 				sql.addJoin("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id AND caop.opID IN ("
