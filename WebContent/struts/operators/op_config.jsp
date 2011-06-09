@@ -110,7 +110,7 @@ function hideCat(id) {
 <s:if test="operator.operator">
 	<h2 class="formLegend">Parent Accounts</h2>
 	<ol>
-		<li><label>Country:</label>
+		<li><label><s:text name="global.Country" />:</label>
 			<s:property value="operator.country.name"/>
 		</li>
 		<s:if test="allParents.size > 0">

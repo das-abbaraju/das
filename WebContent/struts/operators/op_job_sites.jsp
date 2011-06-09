@@ -141,7 +141,7 @@ $(function() {
 						<s:else>
 							<th>City</th>
 							<th>State</th>
-							<th>Country</th>
+							<th><s:text name="global.Country" /></th>
 							<th>Start Date</th>
 							<th>End Date</th>
 						</s:else>
@@ -235,7 +235,7 @@ $(function() {
 								<li><label>City:</label>
 									<s:textfield name="siteCity" size="20" maxlength="30" />
 								</li>
-								<li><label>Country:</label>
+								<li><label><s:text name="global.Country" />:</label>
 									<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode"
 										headerValue="- Country -" headerKey="" listValue="name"
 										onchange="getStates(this.value);"></s:select>

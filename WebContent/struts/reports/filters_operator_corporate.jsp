@@ -58,7 +58,7 @@
 						onclick="toggleBox('form1_state'); return false;">State</a> = <span
 						id="form1_state_query">ALL</span></td>
 					<td style="padding-left: 1ex;"><a href="#"
-						onclick="toggleBox('form1_country'); return false;">Country</a> = <span
+						onclick="toggleBox('form1_country'); return false;"><s:text name="global.Country" /></a> = <span
 						id="form1_country_query">ALL</span></td>
 				</tr>
 				<tr>

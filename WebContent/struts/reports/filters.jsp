@@ -137,7 +137,7 @@ select.hidden {
 				</span>
 			</span>
 			<span class="filterOption">
-				<a href="#" class="filterBox">Country</a> =
+				<a href="#" class="filterBox"><s:text name="global.Country" /></a> =
 				<span class="q_status">ALL</span>
 				<span id="form1_country_select" class="clearLink q_box">
 					<s:select id="form1_country" name="filter.country" list="filter.countryList" listKey="isoCode"
@@ -163,7 +163,7 @@ select.hidden {
 
 	<s:if test="filter.showCountry">
 		<div class="filterOption">
-			<a href="#" class="filterBox">Country</a> =
+			<a href="#" class="filterBox"><s:text name="global.Country" /></a> =
 			<span class="q_status">ALL</span><br />
 			<span class="clearLink q_box select">
 				<s:select id="form1_country" name="filter.country" list="filter.countryList" listKey="isoCode"

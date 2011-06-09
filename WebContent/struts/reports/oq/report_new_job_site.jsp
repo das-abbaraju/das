@@ -85,7 +85,7 @@ function addEmployee(jobSiteID, employeeID) {
 			</div>
 		
 			<div class="filterOption">
-				<a href="#" onclick="toggleBox('form1_country'); return false;">Country</a> =
+				<a href="#" onclick="toggleBox('form1_country'); return false;"><s:text name="global.Country" /></a> =
 				<span id="form1_country_query">ALL</span><br />
 				<span id="form1_country_select" style="display: none" class="clearLink">
 					<s:select id="form1_country" name="filter.country" list="filter.countryList" listKey="isoCode"

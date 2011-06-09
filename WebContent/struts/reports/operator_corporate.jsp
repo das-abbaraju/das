@@ -57,7 +57,7 @@ $(document).ready(function() {
 				<th>Address</th>
 				<th>City</th>
 				<th>State</th>
-				<th>Country</th>
+				<th><s:text name="global.Country" /></th>
 				<th>Zip</th>
 			</s:if>
 			<s:if test="canDeleteOp || canDeleteCorp">

@@ -87,7 +87,7 @@ $(function() {
 					<li><label><s:text name="%{scope}.PrimaryAddress.City"/>:</label>
 						<s:textfield name="contractor.city" size="20" />
 					</li>
-					<li><label><s:text name="%{scope}.PrimaryAddress.Country"/>:</label>
+					<li><label><s:text name="global.Country" />:</label>
 						<s:select list="countryList"
 						name="country.isoCode" id="contractorCountry"
 						listKey="isoCode" listValue="name"

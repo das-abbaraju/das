@@ -18,7 +18,7 @@ $('.datepicker').datepicker();
 			<li><label>City:</label>
 				<input type="text" name="siteCity" value="<s:property value="newSite.city" />" size="20" />
 			</li>
-			<li><label>Country:</label>
+			<li><label><s:text name="global.Country" />:</label>
 				<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode" headerKey=""
 					headerValue="- Country -" listValue="name" value="newSite.country.isoCode"></s:select>
 			</li>
