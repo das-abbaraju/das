@@ -43,7 +43,7 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 					+ " and (ii.amount = invf.defaultAmount or i.totalAmount >= 450))");
 			
 		}
-		orderByDefault = "ca.assignedDate DESC";
+		orderByDefault = "expiresDate, ca.assignedDate DESC";
 
 		getFilter().setShowAuditor(false);
 		getFilter().setShowStatus(false);
