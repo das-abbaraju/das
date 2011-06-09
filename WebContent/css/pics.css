@@ -129,7 +129,7 @@ p {
 /* Hack for Mozilla! */
 @
 -moz-document url-prefix () { #search_button { padding-bottom:2px;
-	
+
 }
 
 }
@@ -345,7 +345,7 @@ ul {
 }
 
 ul li {
-	
+
 }
 
 .sub { /* used as a sub-header title */
@@ -794,15 +794,34 @@ div.helpbox {
 	width: auto;
 }
 
-#mainStatus {
-	background-color: infobackground;
-	border: 1px solid #C3C3C3;
-	font-size: 12px;
-	left: 132px;
-	top: 103px;
-	padding: 3px;
-	position: absolute;
-	display: none;
+#notify {
+    background-color: #FBF2C9;
+    font-size: 14px;
+    margin-left: 20%;
+    position: absolute;
+    text-align: center;
+    width: 60%;
+}
+
+#notify .notification {
+    padding: 2px 0px;
+}
+
+#notify .notification .processing {
+    background-image: url(../images/spinner.gif);
+    background-repeat: no-repeat;
+    padding-left: 22px;
+}
+#notify .notification .sticky {
+    background-image: url(../images/cross.png);
+    background-repeat: no-repeat;
+    margin-left: 5px;
+    padding-left: 22px;
+    cursor: pointer;
+}
+
+#notify .notification:last-child {
+    border-bottom: 1px solid #D0AE10;
 }
 
 td.money,th.money {
@@ -1004,7 +1023,7 @@ span.block:hover .hoverhelp {
 }
 
 #helpbox a,a:active,a:hover,a:visited {
-	
+
 }
 
 #chatIcon {

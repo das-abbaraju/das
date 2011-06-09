@@ -269,7 +269,7 @@ function buildAction(type, id){
 
 <div id="main">
 <div id="bodyholder">
-<div id="mainStatus"></div>
+<div id="notify"></div>
 <div id="helpbox">
 <%
 	String chatIcon = protocol +

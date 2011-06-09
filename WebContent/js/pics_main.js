@@ -39,9 +39,9 @@ function clearText(thefield)
 	var patt1 = /^-[^-]*-$/;
 	var str = thefield.value;
 	str = $.trim(str);
-	if(str.match(patt1)!=null)	
+	if(str.match(patt1)!=null)
 		thefield.value = "";
-	else 
+	else
 		thefield.select();
 }
 
@@ -51,7 +51,7 @@ function startThinking( args ) {
       message: "Communicating with PICS",
       type: "small"
     }, args);
-	
+
 	var targetDiv = getElement(oOptions.div);
 	var innerSrc;
 	if( oOptions.type == 'small' ) {
@@ -60,10 +60,10 @@ function startThinking( args ) {
 	if( oOptions.type == 'large' ) {
 		innerSrc="<img src='images/ajax_process2.gif' /> ";
 	}
-	
+
 	innerSrc=innerSrc+oOptions.message;
 	if(typeof(targetDiv) != 'undefined' && targetDiv != null) {
-		targetDiv.innerHTML=innerSrc;		
+		targetDiv.innerHTML=innerSrc;
 	}
 	return true;
 }
@@ -74,24 +74,10 @@ function stopThinking( args ) {
     }, args);
 	var targetDiv = getElement(oOptions.div);
 	if(typeof(targetDiv) != 'undefined' && targetDiv != null) {
-		targetDiv.innerHTML='';		
+		targetDiv.innerHTML='';
 	}
 	return true;
 }
-
-function setMainStatus(message) {
-	var targetDiv = getElement('mainStatus');
-	
-	if (message == null) {
-		targetDiv.style.display == "none";
-		targetDiv.innerHTML = message;
-	} else {
-		targetDiv.innerHTML = message;
-		targetDiv.style.display == "block";
-	}
-}
-
-/*mainStatus*/
 
 function augment (oSelf, oOther) {
     if (oSelf == null) {

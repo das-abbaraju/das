@@ -42,9 +42,52 @@
 			"class" : type
 		}).html(message));
 	}
+	$.notify = function(options) {
+		var settings = {
+			"target" : "#notify",
+			"delay" : 2000,
+			"type" : "timed",
+			"message" : "placeholder"
+		}
 
-	$.mainStatus = function(message) {
-		var options = {target: '#mainStatus', delay: 2000}
-		$(options.target).text(message).show('slow').delay(2000).hide('slow');
+		if ($.isPlainObject(options)) {
+			$.extend(settings, options);
+		} else {
+			settings.message = options;
+		}
+
+		var message = $("<div>", {
+			"class" : "notification"
+		}).hide().bind("remove.notify", function() {
+			message.slideUp("slow", function() {
+				message.unbind('.notify').remove();
+			});
+		});
+
+		if (settings.type == "process") {
+			message.append($("<span>", {
+				"class" : "processing"
+			}));
+		}
+		message.append(settings.message);
+
+		if (settings.type == "sticky") {
+			message.append($("<span>", {
+				"class" : "sticky"
+			})).bind("click", function() {
+				message.trigger("remove.notify");
+			});
+		}
+
+		var target = $(settings.target).prepend(message);
+		message.slideDown("slow")
+
+		if (settings.type == "timed") {
+			setTimeout(function() {
+				message.trigger("remove.notify");
+			}, settings.delay);
+		}
+
+		return message;
 	}
 })(jQuery)
