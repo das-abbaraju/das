@@ -150,9 +150,13 @@
 <s:if test="!permissions.operatorCorporate">
 	<s:if test="trade.id == 0">
 		<div>
-			<s:if test="requiresService"><br />I understand that this will list my account as an (or both)<br />
-				<s:checkbox name="conTypes" fieldValue="Onsite" value="%{contractor.onsiteServices}" cssClass="service" /> OnSite Services
-				<s:checkbox name="conTypes" fieldValue="Offsite" value="%{contractor.offsiteServices}" cssClass="service" /> OffSite Services
+			<s:if test="requiresService"><br />
+				<s:if test="!onsite">
+					<s:checkbox name="conTypes" fieldValue="Onsite" value="%{contractor.onsiteServices}" cssClass="service" /> You perform this service on a customer’s property.<br />
+				</s:if>
+				<s:if test="!offsite">
+					<s:checkbox name="conTypes" fieldValue="Offsite" value="%{contractor.offsiteServices}" cssClass="service" /> You perform this service somewhere other than the customer’s property.<br />
+				</s:if>
 			</s:if>
 			<s:elseif test="requiresMaterial">
 				<s:checkbox name="conTypes" fieldValue="Supplier" value="%{contractor.materialSupplier}" cssClass="product"/> I understand that this will list my account as a material supplier.

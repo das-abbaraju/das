@@ -33,6 +33,14 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	private boolean requiresMaterial = false;
 	private boolean requiresService = false;
+	
+	private boolean onsite;
+	private boolean offsite;
+	private boolean material;
+	
+	private boolean product;
+	private boolean service;
+	
 	private List<ContractorType> conTypes;
 
 	public ContractorTradeAction() {
@@ -62,16 +70,16 @@ public class ContractorTradeAction extends ContractorActionSupport {
 				}
 			}
 
-			boolean onsite = contractor.isOnsiteServices();
-			boolean offsite = contractor.isOffsiteServices();
-			boolean material = contractor.isMaterialSupplier();
+			onsite = contractor.isOnsiteServices();
+			offsite = contractor.isOffsiteServices();
+			material = contractor.isMaterialSupplier();
 
-			boolean product = trade.getTrade().getProductI();
-			boolean service = trade.getTrade().getServiceI();
+			product = trade.getTrade().getProductI();
+			service = trade.getTrade().getServiceI();
 
 			if (!material && product) {
 				requiresMaterial = true;
-			} else if (!onsite && !offsite && service) {
+			} else if ((!onsite || !offsite) && service) {
 				requiresService = true;
 			}
 
@@ -272,5 +280,45 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		this.redirect("ContractorTrades.action?id=" + contractor.getId());
 
 		return SUCCESS;
+	}
+
+	public boolean isOnsite() {
+		return onsite;
+	}
+
+	public void setOnsite(boolean onsite) {
+		this.onsite = onsite;
+	}
+
+	public boolean isOffsite() {
+		return offsite;
+	}
+
+	public void setOffsite(boolean offsite) {
+		this.offsite = offsite;
+	}
+
+	public boolean isMaterial() {
+		return material;
+	}
+
+	public void setMaterial(boolean material) {
+		this.material = material;
+	}
+
+	public boolean isProduct() {
+		return product;
+	}
+
+	public void setProduct(boolean product) {
+		this.product = product;
+	}
+
+	public boolean isService() {
+		return service;
+	}
+
+	public void setService(boolean service) {
+		this.service = service;
 	}
 }

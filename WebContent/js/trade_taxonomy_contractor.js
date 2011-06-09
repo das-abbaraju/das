@@ -3,7 +3,7 @@ var search_tree, browse_tree;
 var ajaxUrl = 'ContractorTrades!tradeAjax.action?contractor='+conID+'&trade.trade=';
 
 function loadTradeCallback() {
-	if ($('input.service,input.product').length > 0) {
+	if (($('input.product').length > 0) || ($('input.service').length == 2 && $('input.service:checked').length == 0)) {
 		$("#addButton").attr("disabled", "disabled");
 	}
 
@@ -73,7 +73,7 @@ $(function() {
 	});
 
 	$('input.service').live("change", function() {
-		if ($('input.service:checked').length > 0)
+		if ($('input.service').length == 2 && $('input.service:checked').length > 0)
 			$("#addButton").removeAttr("disabled");
 		else
 			$("#addButton").attr("disabled", "disabled");
