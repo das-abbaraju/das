@@ -38,7 +38,6 @@ public class ReportPolicyVerification extends ReportContractorAuditOperator {
 		sql.addField("COUNT(cao.auditID) as operatorCount");
 		sql.addGroupBy("ca.id");
 
-		sql.addJoin("contractor_info c ON ca.conID = c.id");
 		sql.addWhere("c.accountLevel != 'BidOnly'");
 		
 		getFilter().setShowAuditFor(false);
