@@ -49,18 +49,20 @@ $(function () {
 <body>
 <h1>Manage Audit Options<span class="sub">Option Groups</span></h1>
 <s:include value="../actionMessages.jsp" />
-<table style="width: 100%;">
-	<tr>
-		<td style="width: 50%;">
-			<s:if test="question != null">
-				<a href="ManageQuestion.action?id=<s:property value="question.id" />">&lt;&lt; Back to Manage Question</a>
-			</s:if>
-			<s:if test="editOnly">
-				<br />
-				<a href="ManageOptionGroup.action?question=<s:property value="question.id" />">View all option groups</a>
-				<s:include value="manage_option_group_edit.jsp" />
-			</s:if>
-			<s:else>
+<s:if test="editOnly">
+	<s:if test="question != null">
+		<a href="ManageQuestion.action?id=<s:property value="question.id" />">&lt;&lt; Back to Manage Question</a><br/>
+	</s:if>
+	<a href="ManageOptionGroup.action?question=<s:property value="question.id" />" class="preview">View all option groups</a>
+	<s:include value="manage_option_group_edit.jsp" />
+</s:if>
+<s:else>
+	<table style="width: 100%;">
+		<tr>
+			<td style="width: 50%;">
+				<s:if test="question != null">
+					<a href="ManageQuestion.action?id=<s:property value="question.id" />">&lt;&lt; Back to Manage Question</a>
+				</s:if>
 				<table class="report">
 					<thead>
 						<tr>
@@ -92,15 +94,15 @@ $(function () {
 						</s:if>
 					</tbody>
 				</table>
-			</s:else>
-		</td>
-		<td style="padding-left: 20px; vertical-align: top;">
-			<pics:permission perm="ManageAudits" type="Edit">
-				<a href="ManageOptionGroup!editAjax.action" class="add">Add new option group</a>
-				<div id="editForm"></div>
-			</pics:permission>
-		</td>
-	</tr>
-</table>
+			</td>
+			<td style="padding-left: 20px; vertical-align: top;">
+				<pics:permission perm="ManageAudits" type="Edit">
+					<a href="ManageOptionGroup!editAjax.action" class="add">Add new option group</a>
+					<div id="editForm"></div>
+				</pics:permission>
+			</td>
+		</tr>
+	</table>
+</s:else>
 </body>
 </html>

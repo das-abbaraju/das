@@ -27,9 +27,11 @@
 	</fieldset>
 	<fieldset class="form submit">
 		<s:submit value="%{getText('button.Save')}" action="ManageOptionGroup!save" cssClass="picsbutton positive" />
-		<pics:permission perm="ManageAudits" type="Delete">
-			<s:submit value="%{getText('button.Delete')}" action="ManageOptionGroup!delete" cssClass="picsbutton negative"
-				onclick="return confirm('Are you sure you want to delete this option group?');" />
-		</pics:permission>
+		<s:if test="group.id > 0">
+			<pics:permission perm="ManageAudits" type="Delete">
+				<s:submit value="%{getText('button.Delete')}" action="ManageOptionGroup!delete" cssClass="picsbutton negative"
+					onclick="return confirm('Are you sure you want to delete this option group?');" />
+			</pics:permission>
+		</s:if>
 	</fieldset>
 </s:form>
