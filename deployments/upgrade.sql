@@ -1322,8 +1322,3 @@ where questionID IN (
 
 DELETE from pqfdata where questionID = 870;
 
-update audit_cat_data acd
-join contractor_audit ca on acd.auditID = ca.id AND ca.auditTypeID = 2
-JOIN contractor_audit_operator cao on cao.auditID = ca.id and cao.status != 'Pending'
-SET acd.override = 1
-;
