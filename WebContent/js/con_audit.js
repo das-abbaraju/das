@@ -178,7 +178,7 @@ function loadCategories(data, msg) {
 				showNavButtons();
 				clearLinks();
 			}
-			$('a.CategoryRulesClueTip').cluetip( {
+			$('a.filter').cluetip( {
 				sticky: true,
 				showTitle: false,
 				dropShadow: false,
