@@ -74,7 +74,7 @@ public class InvoiceDAO extends PicsDAO {
 		cal.add(Calendar.DAY_OF_WEEK, -30);
 
 		String hql = "SELECT i FROM Invoice i JOIN i.account AS account "
-				+ "LEFT JOIN i.items AS item WITH item.invoiceFee.id = :fee "
+				+ "LEFT JOIN i.items AS item WITH item.invoiceFee.id = :oldfee OR item.invoiceFee.id = :fee "
 				+ "WHERE i.dueDate < :dueDate AND i.status = :status AND item IS NULL "
 				+ "AND i.account.status = :astatus AND i.account.membershipDate IS NOT NULL "
 				+ "AND i.totalAmount > :totalAmount";
@@ -82,6 +82,7 @@ public class InvoiceDAO extends PicsDAO {
 		query.setParameter("dueDate", cal.getTime());
 		query.setParameter("status", TransactionStatus.Unpaid);
 		query.setParameter("fee", InvoiceFee.LATEFEE);
+		query.setParameter("oldfee", InvoiceFee.OLDLATEFEE);
 		query.setParameter("astatus", AccountStatus.Active);
 		query.setParameter("totalAmount", BigDecimal.ZERO);
 		return query.getResultList();
