@@ -23,7 +23,9 @@
 				<a href="ManageCategory.action?id=<s:property value="#category.id"/>" class="edit"></a>
 			</pics:permission>
 			<pics:permission perm="ManageCategoryRules">
-				<a onclick="showCategoryRules(<s:property value="#category.id"/>); return false;" class="edit2" href="#"></a>
+				<a class="CategoryRulesClueTip" 
+					href="CategoryRuleTableAjax.action?comparisonRule.auditCategory.id=<s:property value="#category.id" />" 
+					rel="CategoryRuleTableAjax.action?comparisonRule.auditCategory.id=<s:property value="#category.id" />"></a>
 			</pics:permission>
 			<span class="categoryNumber"><s:property value="#category.fullNumber"/></span>
 		</h2>

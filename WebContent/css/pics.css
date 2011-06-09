@@ -458,6 +458,13 @@ a.edit2 {
 	zoom: 1;
 }
 
+a.filter {
+	padding-left: 17px;
+	margin-left: 5px;
+	background: url('../images/filter.png') no-repeat left center;
+	zoom: 1;
+}
+
 a.calendar {
 	padding-left: 17px;
 	margin-left: 5px;

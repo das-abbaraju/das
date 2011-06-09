@@ -178,6 +178,13 @@ function loadCategories(data, msg) {
 				showNavButtons();
 				clearLinks();
 			}
+			$('a.CategoryRulesClueTip').cluetip( {
+				sticky: true,
+				showTitle: false,
+				dropShadow: false,
+				mouseOutClose: true,
+				clickThrough: false
+			});
 		}
 	});
 }
@@ -233,25 +240,6 @@ function updateModes(mode) {
 	$('#modes a').show();
 	if (mode.length > 0)
 		$('#modes a.'+mode).hide();
-}
-
-// Not using yet...
-function showRules(auditCataDataID) {
-	$("#categoryRules").show();
-	var data = {
-		'auditID': auditID
-	};
-	$('#categoryRules').load('AuditBuilder!category.action', data);
-}
-
-function showCategoryRules(categoryID) {
-	$("#categoryRules").show();
-	var data = {
-		'comparisonRule.auditCategory.id': categoryID,
-		'id': auditID,
-		'button':'debugCategory'
-	};
-	$('#categoryRules').load('CategoryRuleTableAjax.action', data);
 }
 
 function printPreview(auditID) {

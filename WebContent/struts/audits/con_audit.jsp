@@ -8,6 +8,10 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css" />
+
+<pics:permission perm="ManageCategoryRules">
+	<link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
+</pics:permission>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 	var messageLoadingRequirements = '<s:text name="Audit.javascript.LoadingRequirements" />';
@@ -125,8 +129,6 @@
 	</s:if>
 	<span style="display: none;" id="printReqButton"><a class="print" href="javascript:window.print();"><s:text name="button.Print" /></a></span>
 </div>
-
-<div id="categoryRules"></div>
 
 <table id="audit-layout">
 	<tr>
