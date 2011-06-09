@@ -114,8 +114,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
 				state = getStateDAO().find(stateIsos[0]);
 
-			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters()
-					.get("billingState.isoCode");
+			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters().get(
+					"billingState.isoCode");
 			if (billingStateIsos != null && billingStateIsos.length > 0 && !Strings.isEmpty(billingStateIsos[0]))
 				billingState = getStateDAO().find(billingStateIsos[0]);
 		}
@@ -173,8 +173,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						if (!contractor.isMaterialSupplierOnly()
 								|| (contractor.getProductRisk() != null && !contractor.getProductRisk().equals(
 										LowMedHigh.Low))) {
-							errors.addElement("Only Low Risk Material Supplier Only contractor accounts can be set to "
-									+ "List Only. Please verify contractor information before setting List Only status.");
+							errors.addElement("Only Low Product Risk and Material Supplier Only (not Onsite or "
+									+ "Offsite) contractor accounts can be set to List Only. Please verify contractor "
+									+ "information before setting List Only status.");
 						} else if (contractor.getProductRisk() == null) {
 							// Contractor doesn't have a product risk. Set to material supplier and add open task to
 							// answer the product questions on the PQF
@@ -245,8 +246,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						OperatorAccount parent = operator.getParent();
 						while (parent != null) { // adding corporate
 							// subscriptions
-							subscriptions.addAll(subscriptionDAO.find(Subscription.ContractorDeactivation,
-									parent.getId()));
+							subscriptions.addAll(subscriptionDAO.find(Subscription.ContractorDeactivation, parent
+									.getId()));
 							parent = parent.getParent();
 						}
 
