@@ -440,7 +440,14 @@ table.report tr.hurdle td {
 					<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email"><s:property value="contractor.auditor.email"/></a>
 				</p>
 				<p><s:text name="global.SafetyRisk" />:
-					<strong><s:text name="%{contractor.safetyRisk.i18nKey}" /></strong>
+					<strong>
+						<s:if test="contractor.safetyRisk != null">
+							<s:text name="%{contractor.safetyRisk.i18nKey}" />
+						</s:if>
+						<s:else>
+							<s:text name="ContractorAccount.safetyRisk.missing" />
+						</s:else>
+					</strong>
 				</p>
 				<s:if test="contractor.materialSupplier && contractor.productRisk != null">
 					<p><s:text name="global.ProductRisk" />: <strong><s:text name="%{contractor.productRisk.i18nKey}" /></strong></p>
