@@ -78,8 +78,7 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 						+ " OR t.rootCategory IS NULL)) OR t.auditCategory.id = " + category.getId() + ")");
 			} else {
 				if (comparisonRule.getAuditType() != null) {
-					whereClauses.add("t.auditType IS NULL OR t.auditType.id = " + comparisonRule.getAuditType().getId()
-							+ " OR t.dependentAuditType.id = " + comparisonRule.getAuditType().getId());
+					whereClauses.add("t.auditType IS NULL OR t.auditType.id = " + comparisonRule.getAuditType().getId());
 				}
 			}
 			if (comparisonRule.getOperatorAccount() != null) {

@@ -63,7 +63,8 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 				whereClauses.add("t.include = 0");
 			}
 			if (comparisonRule.getAuditType() != null) {
-				whereClauses.add("t.auditType.id = " + comparisonRule.getAuditType().getId());
+				whereClauses.add("t.auditType IS NULL OR t.auditType.id = " + comparisonRule.getAuditType().getId()
+						+ " OR t.dependentAuditType.id = " + comparisonRule.getAuditType().getId());
 			}
 			if (comparisonRule.getOperatorAccount() != null) {
 				if (!comparisonRule.isInclude()) {
