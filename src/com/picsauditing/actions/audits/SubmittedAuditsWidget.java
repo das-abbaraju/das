@@ -29,11 +29,13 @@ public class SubmittedAuditsWidget extends PicsActionSupport {
 		sql.addField("CONCAT('AuditType.',aType.id,'.name') `atype.name`");
 		sql.addField("ca.id AS auditID");
 		sql.addField("cao.statusChangedDate");
+		sql.addField("cao.percentComplete");
 		sql.addWhere("a.status = 'Active'");
 		sql.addWhere("ca.auditTypeID IN (2,3)"); // Manual and Implementation Audits
 		sql.addWhere("cao.status = 'Submitted'");
 		sql.addWhere("cao.statusChangedDate < DATE_SUB(NOW(), INTERVAL 45 DAY)"); // 45 days after
 		sql.addWhere("c.welcomeAuditor_id = "+ permissions.getShadowedUserID());
+		sql.addOrderBy("cao.percentComplete DESC");
 		sql.addOrderBy("cao.statusChangedDate DESC");
 		sql.setLimit(10);
 
