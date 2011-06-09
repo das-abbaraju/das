@@ -18,6 +18,17 @@ public class ArchivedAccounts extends ReportAccount {
 		skipPermissions = true;
 		super.buildQuery();
 
+		if (permissions.isOperatorCorporate()) {
+			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id");
+			sql.addField("gc.flag");
+
+			if (permissions.isCorporate()) {
+				sql.addJoin("JOIN facilities f ON f.opID = gc.genID AND f.corporateID = " + permissions.getAccountId());
+			} else if (permissions.isOperator()) {
+				sql.addWhere("gc.genID = " + permissions.getAccountId());
+			}
+		}
+
 		sql.addWhere("a.status IN ('Pending','Deactivated')");
 
 		if (permissions.seesAllContractors()) {
@@ -34,7 +45,7 @@ public class ArchivedAccounts extends ReportAccount {
 		getFilter().setShowStatus(false);
 		getFilter().setShowFlagStatus(false);
 		getFilter().setShowWaitingOn(false);
-		if(permissions.seesAllContractors())
+		if (permissions.seesAllContractors())
 			getFilter().setShowDeactivationReason(true);
 	}
 
