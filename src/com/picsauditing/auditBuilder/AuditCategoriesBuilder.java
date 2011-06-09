@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
@@ -32,7 +33,9 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	 * category
 	 */
 	private Map<OperatorAccount, AuditCategoryRule> operators = new HashMap<OperatorAccount, AuditCategoryRule>();
-	private Map<OperatorAccount, Set<AuditCategory>> categoriesPerGoverningBody = new HashMap<OperatorAccount, Set<AuditCategory>>();
+	// TODO: the operator in both these maps are the same. Maybe we should consider creating an OperatorDetail object to
+	// contain the rule and the Set
+	private Map<OperatorAccount, Set<AuditCategory>> categoriesPerOperator = new HashMap<OperatorAccount, Set<AuditCategory>>();
 
 	public AuditCategoriesBuilder(AuditCategoryRuleCache auditCategoryRuleCache, ContractorAccount contractor) {
 		super(contractor);
@@ -42,13 +45,22 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	public Set<AuditCategory> calculate(ContractorAudit conAudit) {
 		Collection<OperatorAccount> operators = new HashSet<OperatorAccount>();
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.isVisible())
-				operators.add(cao.getOperator());
+			if (cao.isVisible()) {
+				for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+					operators.add(caop.getOperator());
+				}
+			}
 		}
 		return calculate(conAudit, operators);
 
 	}
 
+	/**
+	 * 
+	 * @param conAudit
+	 * @param auditOperators Pass the Operators (CAOP), NOT the Governing Bodies (CAO)
+	 * @return
+	 */
 	public Set<AuditCategory> calculate(ContractorAudit conAudit, Collection<OperatorAccount> auditOperators) {
 		Set<AuditCategory> categories = new HashSet<AuditCategory>();
 
@@ -87,9 +99,9 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 							// We need to add this category to the audit
 							categories.add(category);
 
-							if (!categoriesPerGoverningBody.containsKey(rule.getOperatorAccount()))
-								categoriesPerGoverningBody.put(rule.getOperatorAccount(), new HashSet<AuditCategory>());
-							categoriesPerGoverningBody.get(rule.getOperatorAccount()).add(category);
+							if (!categoriesPerOperator.containsKey(operator))
+								categoriesPerOperator.put(operator, new HashSet<AuditCategory>());
+							categoriesPerOperator.get(operator).add(category);
 
 							if (rule.isMoreSpecific(operators.get(operator))) {
 								// System.out.print(" *** MORE SPECIFIC ***");
@@ -178,12 +190,12 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		return answers;
 	}
 
-	public boolean isCategoryApplicable(AuditCategory category, OperatorAccount operator) {
-		Set<AuditCategory> applicableCategories = categoriesPerGoverningBody.get(operator);
-		if (applicableCategories == null && operator.getId() == 4)
-			applicableCategories = categoriesPerGoverningBody.get(null);
-		if (applicableCategories == null)
-			return false;
-		return applicableCategories.contains(category);
+	public boolean isCategoryApplicable(AuditCategory category, ContractorAuditOperator cao) {
+		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+			Set<AuditCategory> operatorCategories = categoriesPerOperator.get(caop.getOperator());
+			if (operatorCategories != null && operatorCategories.contains(category))
+				return true;
+		}
+		return false;
 	}
 }

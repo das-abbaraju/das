@@ -235,7 +235,7 @@ public class AuditPercentCalculator {
 					applies = data.isApplies();
 				else {
 					if (data.isApplies() && auditCategories.contains(data.getCategory())) {
-						applies = builder.isCategoryApplicable(data.getCategory(), cao.getOperator());
+						applies = builder.isCategoryApplicable(data.getCategory(), cao);
 					}
 				}
 				if (applies) {
