@@ -24,8 +24,7 @@
 		<td><a href="javascript: changeOrderBy('form1','ca.scheduledDate DESC');">Scheduled</a></td>
 		<td><a href="javascript: changeOrderBy('form1','ca.assignedDate DESC');">Assigned</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.completedDate DESC');">Submitted</a></td>
-	    <td><a href="javascript: changeOrderBy('form1','ISNULL(ca2.expired), ca2.expired');">Previous Expired</a></td>
-	    <td><a href="javascript: changeOrderBy('form1','ca.expiresDate');">Expires</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','ISNULL(ca2.expired), ca2.expired');">Previous Audit Expiration</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','cao.status DESC');">Status</a></td>
 	</tr>
 	</thead>
@@ -38,7 +37,6 @@
 			<td><s:date name="[0].get('assignedDate')" format="M/d/yy" /></td>
 			<td><s:date name="[0].get('completedDate')" format="M/d/yy" /></td>
 			<td><s:date name="[0].get('expired')" format="M/d/yy" /></td>
-			<td><s:date name="[0].get('expiresDate')" format="M/d/yy" /></td>
 			<td><s:property value="[0].get('auditStatus')"/></td>
 		</tr>
 	</s:iterator>
