@@ -120,8 +120,8 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 
 		sql.addWhere("a.status = 'Active'");
 
-		sql.setLimit(50);
-		report.setLimit(50);
+		sql.setLimit(25);
+		report.setLimit(25);
 	}
 
 	@Override
