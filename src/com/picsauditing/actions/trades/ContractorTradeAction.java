@@ -115,18 +115,20 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		contractor.addAccountTypes(conTypes);
 
-		List<String> noteSummary = new ArrayList<String>();
-		for (ContractorType conType : conTypes) {
-			if ((conType.equals(ContractorType.Onsite) && !contractor.isOnsiteServices())
-					|| (conType.equals(ContractorType.Offsite) && !contractor.isOffsiteServices())
-					|| (conType.equals(ContractorType.Supplier) && !contractor.isMaterialSupplier()))
-				noteSummary.add(conType.getType());
-		}
+		if (conTypes.size() > 0) {
+			List<String> noteSummary = new ArrayList<String>();
+			for (ContractorType conType : conTypes) {
+				if ((conType.equals(ContractorType.Onsite) && !contractor.isOnsiteServices())
+						|| (conType.equals(ContractorType.Offsite) && !contractor.isOffsiteServices())
+						|| (conType.equals(ContractorType.Supplier) && !contractor.isMaterialSupplier()))
+					noteSummary.add(conType.getType());
+			}
 
-		Note note = new Note(contractor, new User(permissions.getUserId()), "Added contractor type"
-				+ (noteSummary.size() > 1 ? "s" : "") + Strings.implode(noteSummary) + " when selecting trade "
-				+ trade.getTrade().getName());
-		getNoteDao().save(note);
+			Note note = new Note(contractor, new User(permissions.getUserId()), "Added contractor type"
+					+ (noteSummary.size() > 1 ? "s" : "") + Strings.implode(noteSummary) + " when selecting trade "
+					+ trade.getTrade().getName());
+			getNoteDao().save(note);
+		}
 
 		contractor.setTradesUpdated(new Date());
 		accountDao.save(contractor);
