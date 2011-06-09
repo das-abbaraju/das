@@ -108,7 +108,8 @@ public class BillingDetail extends ContractorActionSupport {
 				invoice.setDueDate(contractor.getPaymentExpires());
 			}
 
-			if (!contractor.getAccountLevel().isFull()) {
+			if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
+					|| !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree()) {
 				invoice.setDueDate(new Date());
 				contractor.setRenew(true);
 			}
