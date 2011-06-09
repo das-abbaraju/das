@@ -24,7 +24,7 @@
 		<td><a href="javascript: changeOrderBy('form1','ca.scheduledDate DESC');">Scheduled</a></td>
 		<td><a href="javascript: changeOrderBy('form1','ca.assignedDate DESC');">Assigned</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.completedDate DESC');">Submitted</a></td>
-	    <td><a href="javascript: changeOrderBy('form1','ca2.expired');">Previous Expired</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','ISNULL(ca2.expired), ca2.expired');">Previous Expired</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.expiresDate');">Expires</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','cao.status DESC');">Status</a></td>
 	</tr>
