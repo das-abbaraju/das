@@ -59,6 +59,13 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		LowMedHigh oldProduct = contractor.getProductRisk();
 		boolean needsUpgrades = false;
 
+		if (contractor.getAccountLevel().isListOnly() && productRisk != null && !productRisk.equals(LowMedHigh.Low)) {
+			addActionError("You cannot change a List Only contractor's Product Risk to " + productRisk.toString()
+					+ ". Please change this contractor's Account Level to a Full Account "
+					+ "and then change the Product Risk.");
+			return SUCCESS;
+		}
+
 		if (contractor.getSafetyRisk() != null && safetyRisk != null && !contractor.getSafetyRisk().equals(safetyRisk)) {
 			noteSummary.add("changed the safety risk level from " + oldSafety.toString() + " to "
 					+ safetyRisk.toString());
