@@ -73,10 +73,10 @@ $(function() {
 	});
 
 	$('input.service').live("change", function() {
-		if ($('input.service').length == 2 && $('input.service:checked').length > 0)
-			$("#addButton").removeAttr("disabled");
-		else
+		if ($('input.service').length == 2 && $('input.service:checked').length == 0)
 			$("#addButton").attr("disabled", "disabled");
+		else
+			$("#addButton").removeAttr("disabled");
 	});
 
 	$('input.product').live('change', function() {
