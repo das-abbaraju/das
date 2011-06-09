@@ -31,6 +31,7 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.Interceptor;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import com.picsauditing.util.ReflectUtil;
 
 /**
  * <!-- START SNIPPET: description --> Looks for a hidden identification field that specifies the original value of the
@@ -88,7 +89,10 @@ public class CheckboxInterceptor implements Interceptor {
 					// if not, let's be sure to default the value to false
 
 					boolean isList = false;
-					isList = ai.getAction().getClass().getDeclaredField(name).getType().isAssignableFrom(List.class);
+					try {
+						isList = ai.getAction().getClass().getDeclaredField(name).getType().isAssignableFrom(List.class);
+					} catch (NoSuchFieldException ignoreMePlz) {
+					}
 					if (!isList) {
 						newParams.put(name, new String[] { uncheckedValue });
 					}
