@@ -340,7 +340,8 @@ public class BillingCalculatorSingle {
 			ContractorAccountDAO accountDao) {
 		if (contractor.getStatus().isPendingDeactivated() && invoice.getStatus().isPaid()) {
 			for (InvoiceItem item : invoice.getItems()) {
-				if (item.getInvoiceFee().isActivation() || item.getInvoiceFee().isBidonly()) {
+				if (item.getInvoiceFee().isActivation() || item.getInvoiceFee().isBidonly()
+						|| item.getInvoiceFee().isListonly()) {
 					contractor.setStatus(AccountStatus.Active);
 					contractor.setAuditColumns(new User(User.SYSTEM));
 					accountDao.save(contractor);
