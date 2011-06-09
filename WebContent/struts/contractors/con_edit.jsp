@@ -258,6 +258,9 @@ $(function() {
 							</s:iterator>
 						</pics:fieldhelp>
 					</li>
+					<li>
+						<input type="submit" class="picsbutton positive" name="button" value="<s:text name="button.Save" />"/>
+					</li>
 				</ol>
 				</fieldset>
 				<pics:permission perm="EmailOperators">
