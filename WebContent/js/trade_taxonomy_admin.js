@@ -117,7 +117,6 @@ $(function() {
 	$('#trade-nav').delegate('.jstree a', 'click', function(e) {
 		e.preventDefault();
 		var data = { trade: $(this).parent().attr('id') };
-		setMainStatus('Loading Trade');
 		$('#trade-view').load('TradeTaxonomy!tradeAjax.action', data, loadTradeCallback);
 	});
 
