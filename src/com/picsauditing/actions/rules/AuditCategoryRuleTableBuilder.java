@@ -11,6 +11,7 @@ import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
@@ -107,7 +108,7 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 					sb.append(t.getId()).append(",");
 				}
 				sb.setLength(sb.lastIndexOf(","));
-				sb.append(")");
+				sb.append(") OR t.trade IS NULL AND t.auditType.id =").append(AuditType.DESKTOP);
 				whereClauses.add(sb.toString());
 			}
 
