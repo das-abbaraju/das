@@ -262,7 +262,7 @@ public class BillingCalculatorSingle {
 				ContractorFee fee = contractor.getFees().get(feeClass);
 				// Bid-only should not be an upgrade
 				// Just a safety check
-				if (fee.isHasChanged()
+				if (fee.isHasChanged() && !fee.getNewLevel().isFree()
 						&& (!fee.getNewLevel().isBidonly() || !fee.getNewLevel().equals(AccountLevel.ListOnly)))
 					upgrades.add(fee);
 			}
@@ -288,14 +288,13 @@ public class BillingCalculatorSingle {
 					upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference).divide(
 							new BigDecimal(365), 0, RoundingMode.HALF_UP);
 
-					upgradeTotal = upgradeTotal.add(upgradeAmount);
-
-					if (upgradeAmount.floatValue() > 0)
+					if (upgradeAmount.floatValue() > 0) {
+						upgradeTotal = upgradeTotal.add(upgradeAmount);
 						description = "Upgrading from " + contractor.getCurrencyCode().getIcon()
 								+ upgrade.getCurrentAmount() + ". Prorated " + contractor.getCurrencyCode().getIcon()
 								+ upgradeAmount;
-					else
-						description = "";
+					} else
+						upgradeAmount = BigDecimal.ZERO;
 
 					InvoiceItem invoiceItem = new InvoiceItem();
 					invoiceItem.setInvoiceFee(upgrade.getNewLevel());
