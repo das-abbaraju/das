@@ -15,13 +15,15 @@ import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.Trade;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.Tree;
 
 @SuppressWarnings("serial")
 public class ContractorTradeAction extends ContractorActionSupport {
-
 	@Autowired
 	private TradeDAO tradeDAO;
 
@@ -41,7 +43,8 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	// TODO Check the security here
 	public String execute() throws Exception {
 		super.execute();
-		if (this.permissions.isOperator()) selectHighestTrade();
+		if (this.permissions.isOperator())
+			selectHighestTrade();
 		return SUCCESS;
 	}
 
@@ -103,6 +106,19 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		}
 
 		contractor.addAccountTypes(conTypes);
+
+		List<String> noteSummary = new ArrayList<String>();
+		for (ContractorType conType : conTypes) {
+			if ((conType.equals(ContractorType.Onsite) && !contractor.isOnsiteServices())
+					|| (conType.equals(ContractorType.Offsite) && !contractor.isOffsiteServices())
+					|| (conType.equals(ContractorType.Supplier) && !contractor.isMaterialSupplier()))
+				noteSummary.add(conType.getType());
+		}
+
+		Note note = new Note(contractor, new User(permissions.getUserId()), "Added contractor type"
+				+ (noteSummary.size() > 1 ? "s" : "") + ": " + Strings.implode(noteSummary));
+		getNoteDao().save(note);
+
 		contractor.setTradesUpdated(new Date());
 		accountDao.save(contractor);
 
@@ -112,17 +128,17 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	public String removeTradeAjax() {
 		contractor.getTrades().remove(trade);
 		tradeDAO.remove(trade);
-		
+
 		if (contractor.getTrades().size() > 0) {
 			contractor.setTradesUpdated(new Date());
 			accountDao.save(contractor);
 		}
-		
+
 		trade = null;
 
 		return "trade";
 	}
-	
+
 	public String quickTrade() throws Exception {
 		return "quick";
 	}
@@ -197,29 +213,30 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	}
 
 	public void selectHighestTrade() {
-		if (trade != null) return;
+		if (trade != null)
+			return;
 		List<ContractorTrade> list = contractor.getTrades();
-		if (list == null || list.size() == 0) return;
-		
+		if (list == null || list.size() == 0)
+			return;
+
 		ContractorTrade selTrade = null;
-		for (ContractorTrade t:list) {
-			if (selTrade == null 
-					|| t.getActivityPercent() > selTrade.getActivityPercent()) {
+		for (ContractorTrade t : list) {
+			if (selTrade == null || t.getActivityPercent() > selTrade.getActivityPercent()) {
 				selTrade = t;
 			}
 		}
-		
+
 		setTrade(selTrade);
 		tradeAjax();
 	}
-	
+
 	public int getHalf() {
 		if (contractor != null && contractor.getTrades().size() > 0)
 			return (int) Math.floor((double) contractor.getTrades().size() / 2.0);
 
 		return 0;
 	}
-	
+
 	/**
 	 * @return Next ContractorRegistrationStep, according to the ContractorRegistrationStep enum order
 	 */
@@ -242,18 +259,18 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		return SUCCESS;
 	}
-	
+
 	public String removeAllTradesAjax() throws Exception {
 		Iterator<ContractorTrade> itr = contractor.getTrades().iterator();
-		
+
 		while (itr.hasNext()) {
 			ContractorTrade t = itr.next();
 			tradeDAO.remove(t);
 			itr.remove();
 		}
-		
-		this.redirect("ContractorTrades.action?id="+ contractor.getId());
-		
+
+		this.redirect("ContractorTrades.action?id=" + contractor.getId());
+
 		return SUCCESS;
 	}
 }
