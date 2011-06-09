@@ -117,8 +117,8 @@ public class CaoSave extends AuditActionSupport {
 			if (noteRequired)
 				noteMessage += getText("Audit.message.ExplainStatusChange",
 						new Object[] { getText(status.getI18nKey()) });
-			
-			if(status.isIncomplete() && Strings.isEmpty(note)) {
+
+			if (status.isIncomplete() && Strings.isEmpty(note)) {
 				if (conAudit.getAuditType().isPqf()) {
 					List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
 					for (AuditData ad : temp) {
@@ -297,7 +297,19 @@ public class CaoSave extends AuditActionSupport {
 	private void checkNewStatus(WorkflowStep step, ContractorAuditOperator cao) {
 		ContractorAudit audit = cao.getAudit();
 
-		if (step.getNewStatus().isComplete()) {
+		if (step.getNewStatus().after(AuditStatus.Pending)) {
+			if (audit.getAuditType().isDesktop()) {
+				// Desktops after Pending mode should have their categories locked down
+				for (AuditCatData catData : audit.getCategories()) {
+					if (!catData.isOverride()) {
+						catData.setOverride(true);
+						auditDao.save(catData);
+					}
+				}
+			}
+		}
+
+		if (step.getNewStatus().after(AuditStatus.Resubmitted)) {
 			if (cao.getAudit().getAuditType().getClassType().isPolicy() && cao.getOperator().isAutoApproveInsurance()) {
 				if (cao.getFlag() != null) {
 					if (cao.getFlag().isGreen())
