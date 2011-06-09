@@ -78,10 +78,15 @@ public class FlagDataCalculator {
 						data.setOperator(operator);
 						data.setFlag(flag);
 						data.setAuditColumns(new User(User.SYSTEM));
-						if (dataSet.get(key) == null)
-							dataSet.put(key, data);
-						else if (dataSet.get(key).getFlag().isWorseThan(flag))
-							dataSet.put(key, data);
+						// If contractor is not a full account, do not add AU data to the list of flaggable data.
+						if (data.getContractor().getAccountLevel().isFull()
+								|| (!key.getAuditType().isAnnualAddendum() && !data.getContractor().getAccountLevel()
+										.isFull())) {
+							if (dataSet.get(key) == null)
+								dataSet.put(key, data);
+							else if (dataSet.get(key).getFlag().isWorseThan(flag))
+								dataSet.put(key, data);
+						}
 					}
 				}
 			}
@@ -122,7 +127,7 @@ public class FlagDataCalculator {
 
 		String answer = conCriteria.getAnswer();
 		if (criteria.getAuditType() != null) {
-			if (!worksForOperator || con.isAcceptsBids()) {
+			if (!worksForOperator || con.getAccountLevel().isBidOnly()) {
 				// This is a check for if the contractor doesn't
 				// work for the operator (Search for new), or is a bid only
 				if (!criteria.getAuditType().isPqf()) {
@@ -137,17 +142,20 @@ public class FlagDataCalculator {
 			if (criteria.getAuditType().isAnnualAddendum()) {
 				// Annual Update Audit
 				int count = 0;
+				// Check to see if there is any AUs
+				boolean hasAnnualUpdate = false;
 
 				// Checking for at least 3 active annual updates
 				for (ContractorAudit ca : con.getAudits()) {
 					boolean hasFlaggedAudit = false;
 					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired()) {
+						hasAnnualUpdate = true;
 						for (ContractorAuditOperator cao : ca.getOperators()) {
 							if (!hasFlaggedAudit && cao.hasCaop(getOperator().getId())) {
 								if (!cao.getStatus().before(criteria.getRequiredStatus())
 										|| cao.getStatus().isResubmit())
 									hasFlaggedAudit = true;
-								else if (cao.getStatus().isSubmitted() && con.isAcceptsBids())
+								else if (cao.getStatus().isSubmitted() && con.getAccountLevel().isBidOnly())
 									hasFlaggedAudit = true;
 							}
 						}
@@ -161,7 +169,12 @@ public class FlagDataCalculator {
 					}
 				}
 
-				return count < 3;
+				// Return true if they have less than 3 only if they have an
+				// annual update
+				boolean result = false;
+				if (count < 3)
+					result = hasAnnualUpdate;
+				return result;
 			} else if ("number".equals(criteria.getDataType()) && criteria.getAuditType().isScoreable()) {
 				// Check for Audits with scoring
 				ContractorAudit scoredAudit = null;
@@ -172,12 +185,12 @@ public class FlagDataCalculator {
 					}
 				}
 				boolean r = false;
-				
+
 				if (criteria.getRequiredStatus() != null) {
 					if (!scoredAudit.hasCaoStatus(criteria.getRequiredStatus()))
 						return null;
 				}
-				
+
 				if (scoredAudit != null) {
 					try {
 						if (">".equals(criteria.getComparison())) {
@@ -209,7 +222,7 @@ public class FlagDataCalculator {
 									return false;
 								else if (!cao.getStatus().before(criteria.getRequiredStatus()))
 									return false;
-								else if (cao.getStatus().isSubmitted() && con.isAcceptsBids())
+								else if (cao.getStatus().isSubmitted() && con.getAccountLevel().isBidOnly())
 									return false;
 
 								if (!criteria.getAuditType().isHasMultiple())
@@ -231,9 +244,12 @@ public class FlagDataCalculator {
 
 			if (criteria.getRequiredStatus() != null) {
 				if (criteria.getRequiredStatus().after(AuditStatus.Submitted) && !conCriteria.isVerified()) {
-					// Verified data is required, but the answer hasn't been verified yet
-					// Look at ContractorFlagETL for details about how data becomes "verified"
-					// It's not as straight forward as you might think...evil laugh ha ha ha
+					// Verified data is required, but the answer hasn't been
+					// verified yet
+					// Look at ContractorFlagETL for details about how data
+					// becomes "verified"
+					// It's not as straight forward as you might think...evil
+					// laugh ha ha ha
 					// http://intranet.picsauditing.com/display/organizer/Annual+Updates
 					if (criteria.isFlaggableWhenMissing())
 						return true;
@@ -321,7 +337,7 @@ public class FlagDataCalculator {
 			return WaitingOn.Contractor; // This contractor is delinquent
 
 		// If Bid Only Account
-		if (contractor.isAcceptsBids()) {
+		if (contractor.getAccountLevel().isBidOnly()) {
 			return WaitingOn.Operator;
 		}
 
@@ -366,7 +382,8 @@ public class FlagDataCalculator {
 										else
 											waitingOnPics = true;
 									} else
-										// Assuming that a null permission means "Only PICS" can edit
+										// Assuming that a null permission means
+										// "Only PICS" can edit
 										waitingOnPics = true;
 								} else {
 									AuditStatus requiredStatus = key.getRequiredStatus();
