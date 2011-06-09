@@ -271,7 +271,7 @@ $(function() {
 				</li>
 				<li>
 					<label>Sole Proprietor</label>
-					<div class="nobr"><s:radio theme="pics" name="rule.soleProprietor" list="#{'':'Any',false:'Full Account',true:'Sole Proprietor'}" /></div>
+					<div class="nobr"><s:radio theme="pics" name="rule.soleProprietor" list="#{'':'Any',false:'Not a Sole Proprietor',true:'Sole Proprietor'}" /></div>
 				</li>
 				<li><label>Account Type</label>
 					<s:radio theme="pics" name="rule.contractorType" list="#{'':'Any','Onsite':'Onsite Services','Offsite':'Offsite Services','Supplier':'Material Supplier'}" />

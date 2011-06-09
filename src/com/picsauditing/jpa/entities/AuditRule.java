@@ -277,7 +277,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	public String getSoleProprietorLabel() {
 		if (soleProprietor == null)
 			return "*";
-		return soleProprietor ? "Sole" : "Full";
+		return soleProprietor ? "Sole" : "Not Sole";
 	}
 
 	@Override

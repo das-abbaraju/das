@@ -57,7 +57,7 @@ function deleteRule(element,ruleID) {
 					<th title="Bid Only, List Only, or Full Account">List</th>
 				</s:if>
 				<s:if test="columnMap.get('soleProprietor')">
-					<th title="Sole Proprietor or Full Account">Sole</th>
+					<th title="Sole Proprietor or Not a Sole Proprietor">Sole</th>
 				</s:if>
 				<s:if test="columnMap.get('question')">
 					<th colspan="3">Question</th>
