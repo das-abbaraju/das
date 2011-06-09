@@ -33,14 +33,14 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	private boolean requiresMaterial = false;
 	private boolean requiresService = false;
-	
+
 	private boolean onsite;
 	private boolean offsite;
 	private boolean material;
-	
+
 	private boolean product;
 	private boolean service;
-	
+
 	private List<ContractorType> conTypes;
 
 	public ContractorTradeAction() {
@@ -124,7 +124,8 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		}
 
 		Note note = new Note(contractor, new User(permissions.getUserId()), "Added contractor type"
-				+ (noteSummary.size() > 1 ? "s" : "") + ": " + Strings.implode(noteSummary));
+				+ (noteSummary.size() > 1 ? "s" : "") + Strings.implode(noteSummary) + " when selecting trade "
+				+ trade.getTrade().getName());
 		getNoteDao().save(note);
 
 		contractor.setTradesUpdated(new Date());
