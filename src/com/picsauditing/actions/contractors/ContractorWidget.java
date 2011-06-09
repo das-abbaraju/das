@@ -97,8 +97,8 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 
 				if (contractor.isAcceptsBids()) {
-					openTasks.add(getText("ContractorWidget.message.BidOnlyUpdgrade",
-							new Object[] { contractor.getPaymentExpires(), contractor.getId() }));
+					openTasks.add(getText("ContractorWidget.message.BidOnlyUpdgrade", new Object[] {
+							contractor.getPaymentExpires(), contractor.getId() }));
 				}
 			}
 
@@ -119,8 +119,8 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 
 				if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
-					openTasks.add(getText("ContractorWidget.message.UpdatePaymentMethod",
-							new Object[] { contractor.getId() }));
+					openTasks.add(getText("ContractorWidget.message.UpdatePaymentMethod", new Object[] { contractor
+							.getId() }));
 				}
 			}
 			String auditName;
@@ -210,8 +210,7 @@ public class ContractorWidget extends ContractorActionSupport {
 										Integer showScheduledDate = (conAudit.getScheduledDate() != null) ? 1 : 0;
 										Integer showAuditor = (conAudit.getAuditor() != null) ? 1 : 0;
 										if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
-											text = getText(
-													"ContractorWidget.message.UpcomingAuditConductedBy",
+											text = getText("ContractorWidget.message.UpcomingAuditConductedBy",
 													new Object[] {
 															conAudit.getId(),
 															auditName,
@@ -248,7 +247,9 @@ public class ContractorWidget extends ContractorActionSupport {
 			}
 
 			if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
-				if (!contractor.isNaicsValid() && contractor.getCountries().contains("US")) {
+				if (!contractor.isNaicsValid()
+						&& (contractor.getCountries().contains("US") || contractor.getCountries().contains("CA"))
+						&& contractor.getAccountLevel().isFull()) {
 					AuditCatData auditCatData = getAuditCatData(contractor);
 					if (auditCatData != null)
 						openTasks.add(getText("ContractorWidget.message.UpdateNAICSCode", new Object[] {
@@ -285,8 +286,8 @@ public class ContractorWidget extends ContractorActionSupport {
 						new Object[] { contractor.getId() }));
 			}
 			if (contractor.getTrades().size() == 0) {
-				openTasks.add(getText("ContractorWidget.message.NoTradesSelected",
-						new Object [] { contractor.getId() }));
+				openTasks
+						.add(getText("ContractorWidget.message.NoTradesSelected", new Object[] { contractor.getId() }));
 			}
 		}
 
