@@ -277,8 +277,18 @@ function buildAction(type, id){
 		protocol + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a";
 	if ("1".equals(System.getProperty("pics.debug")))
 		chatIcon = "";
+
+	String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
+
+	if (permissions.isOperatorCorporate()) {
+		helpUrl += "os_username=operator&os_password=oper456ator";
+	} else if (permissions.isContractor()) {
+		helpUrl += "os_username=contractor&os_password=con123tractor";
+	} else {
+		helpUrl += "os_username=admin&os_password=ad9870mins";
+	}
 %>
-	<a href="http://help.picsauditing.com/wiki/<decorator:getProperty property="meta.help" default="Help_Center" />" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
+	<a href="<%= helpUrl %>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
 	<a id="_lpChatBtn"
 	onmouseover="showChat();"
 	onmouseout="hideChat();"
