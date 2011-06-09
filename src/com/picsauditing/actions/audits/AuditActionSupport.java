@@ -423,7 +423,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			else
 				return false;
 		}
-		if (conAudit.hasCaoStatusBefore(AuditStatus.Complete))
+		if (cao.getStatus().before(AuditStatus.Complete))
 			return true;
 		else
 			return false;
