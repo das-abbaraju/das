@@ -78,7 +78,8 @@ public class FlagDataCalculator {
 						data.setOperator(operator);
 						data.setFlag(flag);
 						data.setAuditColumns(new User(User.SYSTEM));
-						// If contractor is not a full account, do not add AU data to the list of flaggable data.
+						// If contractor is not a full account, do not add AU
+						// data to the list of flaggable data.
 						if (data.getContractor().getAccountLevel().isFull()
 								|| (!key.getAuditType().isAnnualAddendum() && !data.getContractor().getAccountLevel()
 										.isFull())) {
@@ -183,6 +184,9 @@ public class FlagDataCalculator {
 						scoredAudit = ca;
 						break;
 					}
+				}
+				if (scoredAudit == null) {
+					return false;
 				}
 				boolean r = false;
 
