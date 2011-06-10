@@ -6,4 +6,9 @@ public enum FeeClass {
 	public boolean isPaymentExpiresNeeded() {
 		return this == BidOnly || this == ListOnly || this == DocuGUARD || this == Activation || this == Reactivation;
 	}
+
+	public boolean isMembership() {
+		return this == BidOnly || this == ListOnly || this == DocuGUARD || this == AuditGUARD || this == EmployeeGUARD
+				|| this == InsureGUARD;
+	}
 }

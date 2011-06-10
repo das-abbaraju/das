@@ -1121,7 +1121,7 @@ public class ContractorAccount extends Account implements JSONable {
 		boolean upgrade = false;
 		boolean currentListOrBidOnly = false;
 		for (FeeClass feeClass : getFees().keySet()) {
-			if (!upgrade && this.getFees().get(feeClass).isUpgrade())
+			if (!upgrade && this.getFees().get(feeClass).isUpgrade() && feeClass.isMembership())
 				upgrade = true;
 			if ((this.getFees().get(feeClass).getCurrentLevel().isBidonly() || this.getFees().get(feeClass)
 					.getCurrentLevel().isListonly())
@@ -1282,7 +1282,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public boolean isFinanciallyReadyForAudits() {
 		double halfMembership = 0.0;
 		for (FeeClass feeClass : this.getFees().keySet()) {
-			if (!this.getFees().get(feeClass).getCurrentLevel().isFree())
+			if (!this.getFees().get(feeClass).getCurrentLevel().isFree() && feeClass.isMembership())
 				halfMembership += this.getFees().get(feeClass).getCurrentAmount().doubleValue();
 		}
 		halfMembership *= 0.5;

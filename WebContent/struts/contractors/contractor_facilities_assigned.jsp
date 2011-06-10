@@ -17,7 +17,7 @@
 		<table>
 			<tr><td colspan="4"><label>Annual Membership</label></td></tr>
 			<s:iterator value="contractor.fees.keySet()" var="feeClass">
-				<s:if test="!contractor.fees.get(#feeClass).newLevel.free">
+				<s:if test="!contractor.fees.get(#feeClass).newLevel.free && #feeClass.membership">
 					<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).newLevel.fee" />:&nbsp;</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.fees.get(#feeClass).newAmount" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 				</s:if>
 			</s:iterator>
