@@ -146,9 +146,12 @@ $(function() {
 							<s:text name="ContractorAccount.notSoleProprietor" />
 						</s:else>
 					</li>
-					<li><label><s:text name="global.SafetyRisk"/>:</label>
+					<s:if test="contractor.safetyRisk != null">
+					<li>
+					<label><s:text name="global.SafetyRisk"/>:</label>
 						<s:text name="%{contractor.safetyRisk.i18nKey}"/>
 					</li>
+					</s:if>
 					<s:if test="contractor.materialSupplier && contractor.productRisk != null">
 						<li><label><s:text name="global.ProductRisk"/>:</label>
 							<s:text name="%{contractor.productRisk.i18nKey}"/>
