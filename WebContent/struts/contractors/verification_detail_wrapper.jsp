@@ -269,7 +269,12 @@ $(function(){
 			<strong><s:property value="contractor.auditor.name" /></strong>
 		</li>
 		<li><label>Safety Assessment:</label>
-			<strong><s:text name="%{contractor.safetyRisk.i18nKey}" /></strong>
+			<s:if test="contractor.safetyRisk != null">
+				<strong><s:text name="%{contractor.safetyRisk.i18nKey}" /></strong>
+			</s:if>
+			<s:else>
+				<strong><s:text name="ContractorAccount.safetyRisk.missing" /></strong>
+			</s:else>
 		</li>
 		<s:if test="contractor.materialSupplier && contractor.productRisk != null">
 			<li><label>Product Assessment:</label>
