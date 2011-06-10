@@ -41,8 +41,7 @@ public class QuestionSelect extends PicsActionSupport {
 		loadPermissions();
 		questions = new LinkedHashSet<AuditQuestion>();
 
-		String where = "t.name LIKE '%" + Utilities.escapeQuotes(questionName) + "%' "
-				+ "AND t.effectiveDate < NOW() AND t.expirationDate > NOW()";
+		String where = "t.effectiveDate < NOW() AND t.expirationDate > NOW()";
 		if (permissions.isOperatorCorporate()) {
 			Set<Integer> operatorIDs = new HashSet<Integer>();
 			operatorIDs.add(permissions.getAccountId());
@@ -51,8 +50,8 @@ public class QuestionSelect extends PicsActionSupport {
 				operatorIDs.addAll(permissions.getCorporateParent());
 
 			String auditCatRules = "WHERE include = 0 AND effectiveDate < NOW() AND expirationDate > NOW() "
-				+ "AND (operatorAccount.id IN (" + Strings.implode(operatorIDs, ",")+ ")" +
-					" AND auditCategory.id in (t.id))";
+					+ "AND (operatorAccount.id IN (" + Strings.implode(operatorIDs, ",") + ")"
+					+ " AND auditCategory.id in (t.id))";
 
 			String auditTypeRules = "WHERE include = 1 AND effectiveDate < NOW() AND expirationDate > NOW() "
 					+ "AND (operatorAccount IS NULL OR operatorAccount.id IN (" + Strings.implode(operatorIDs, ",")
@@ -64,7 +63,8 @@ public class QuestionSelect extends PicsActionSupport {
 			where += " AND t.category.auditType IN (" + auditTypeClause + ")";
 		}
 
-		List<AuditQuestion> questionList = auditQuestionDAO.findWhere(where);
+		List<AuditQuestion> questionList = auditQuestionDAO.findByTranslatableField(AuditQuestion.class, where, "name",
+				Utilities.escapeQuotes(questionName) + "%");
 
 		Collections.sort(questionList, AuditQuestion.getComparator());
 		questions.addAll(questionList);
