@@ -169,12 +169,14 @@ public class AuditBuilder {
 	 * For each audit, get a list of operators and create Contractor Audit Operator CAOs
 	 * 
 	 * @param conAudit
-	 * @param caoMap Map of CAOs to CAOPs
+	 * @param caoMap
+	 *            Map of CAOs to CAOPs
 	 */
 	private void fillAuditOperators(ContractorAudit conAudit, Map<OperatorAccount, Set<OperatorAccount>> caoMap) {
-		// 6/9/2011 Trevor We don't need this because of nightly Cron calling contractorAuditOperatorDAO.activateAuditsWithReqs();
-		//if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
-		//	return;
+		// 6/9/2011 Trevor We don't need this because of nightly Cron calling
+		// contractorAuditOperatorDAO.activateAuditsWithReqs();
+		// if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+		// return;
 
 		// Make sure that the caos' visibility is set correctly
 		Set<OperatorAccount> caosToCreate = caoMap.keySet();
@@ -207,7 +209,7 @@ public class AuditBuilder {
 			if (conAudit.isExpired()) {
 				cao.changeStatus(AuditStatus.Expired, null);
 			}
-			
+
 			fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
 		}
 	}
@@ -237,7 +239,7 @@ public class AuditBuilder {
 
 		for (AuditCatData auditCatData : conAudit.getCategories()) {
 			if (auditCatData.getCategory().getParent() == null) {
-				if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
+				if (conAudit.getAuditType().isDesktop() && hasAnyCaoStatusAfterIncomplete(conAudit)) {
 					/*
 					 * this is to ensure that we don't add new categories or remove the existing ones except the
 					 * override categories for a manual audit after is it being submitted
@@ -281,20 +283,28 @@ public class AuditBuilder {
 		}
 	}
 
+	private boolean hasAnyCaoStatusAfterIncomplete(ContractorAudit conAudit) {
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus().after(AuditStatus.Incomplete))
+				return true;
+		}
+		return false;
+	}
+
 	private void fillAuditOperatorPermissions(ContractorAuditOperator cao, Set<OperatorAccount> caopOperators) {
 		if (cao.getAudit().getRequestingOpAccount() != null) {
 			// Warning, this only works for operator sites, not corporate accounts
 			caopOperators.add(cao.getAudit().getRequestingOpAccount());
 		} else if (cao.getAudit().getAuditType().isDesktop() && cao.getAudit().hasCaoStatus(AuditStatus.Complete)) {
 			// Trevor 6/9/2011 Removed this because we're switching to allow multiple CAOs for Desktop
-//			for (ContractorOperator co : cao.getAudit().getContractorAccount().getOperators()) {
-//				if (cao.isVisible()
-//						&& co.getOperatorAccount().getOperatorHeirarchy().contains(cao.getOperator().getId())) {
-//					// Once the Manual Audit has at least one status that's Complete, then show it to all the
-//					// contractor's operators
-//					caopOperators.add(co.getOperatorAccount());
-//				}
-//			}
+			// for (ContractorOperator co : cao.getAudit().getContractorAccount().getOperators()) {
+			// if (cao.isVisible()
+			// && co.getOperatorAccount().getOperatorHeirarchy().contains(cao.getOperator().getId())) {
+			// // Once the Manual Audit has at least one status that's Complete, then show it to all the
+			// // contractor's operators
+			// caopOperators.add(co.getOperatorAccount());
+			// }
+			// }
 		}
 
 		/*
@@ -304,11 +314,11 @@ public class AuditBuilder {
 		if (cao.getAudit().getAuditType().getId() == AuditType.WELCOME)
 			caopOperators.clear();
 		// Removed this because of PICS-2596
-		//if (cao.getAudit().getAuditType().getId() == AuditType.IMPORT_PQF)
-		//	caopOperators.clear();
+		// if (cao.getAudit().getAuditType().getId() == AuditType.IMPORT_PQF)
+		// caopOperators.clear();
 		if (!cao.isVisible())
 			caopOperators.clear();
-		
+
 		Iterator<ContractorAuditOperatorPermission> caopIter = cao.getCaoPermissions().iterator();
 		while (caopIter.hasNext()) {
 			ContractorAuditOperatorPermission caop = caopIter.next();
