@@ -256,6 +256,12 @@ public class ContractorCron extends PicsActionSupport {
 		contractor.syncBalance();
 	}
 
+	private void runAuditBuilder(ContractorAccount contractor) {
+		if (!runStep(ContractorCronStep.AuditBuilder))
+			return;
+		auditBuilder.buildAudits(contractor);
+	}
+
 	private void runAuditCategory(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.AuditCategory))
 			return;
@@ -268,12 +274,6 @@ public class ContractorCron extends PicsActionSupport {
 				conAuditDAO.save(cAudit);
 			}
 		}
-	}
-
-	private void runAuditBuilder(ContractorAccount contractor) {
-		if (!runStep(ContractorCronStep.AuditBuilder))
-			return;
-		auditBuilder.buildAudits(contractor);
 	}
 
 	private void runTradeETL(ContractorAccount contractor) {
