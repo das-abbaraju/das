@@ -47,6 +47,8 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 					+ " and (ii.amount = invf.defaultAmount or i.totalAmount >= 450))");
 
 		}
+		
+		sql.addGroupBy("a.id, ca.id");
 		orderByDefault = "ISNULL(ca2.expired), ca2.expired, ca.assignedDate DESC";
 
 		getFilter().setShowAuditor(false);
