@@ -635,7 +635,7 @@ public class ContractorCron extends PicsActionSupport {
 				FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData
 						.get(parent) : FlagColor.Green;
 				FlagColor currentFacilityColor = corporateRollupData.get(corporate);
-				
+
 				FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, currentFacilityColor);
 				corporateRollupData.put(parent, worstColor);
 
@@ -701,7 +701,7 @@ public class ContractorCron extends PicsActionSupport {
 				// If the manual audit comes after the HSE Competency Review, we
 				// can
 				// still get the auditor here
-				if (audit.getAuditType().isDesktop())
+				if (audit.getAuditType().isDesktop() && pqfComplete)
 					manualAuditAuditor = audit.getAuditor();
 			}
 		}
@@ -739,13 +739,17 @@ public class ContractorCron extends PicsActionSupport {
 
 					if (auditorID == null) {
 						ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
-						auditorReassign = ua.getUser();
-					} else {
+
+						if (ua != null)
+							auditorReassign = ua.getUser();
+					} else if (auditorID != null && auditorID > 0) {
 						auditorReassign = new User(auditorID);
 					}
 
-					audit.setAuditor(auditorReassign);
-					audit.setAssignedDate(new Date());
+					if (auditorReassign != null) {
+						audit.setAuditor(auditorReassign);
+						audit.setAssignedDate(new Date());
+					}
 					break;
 				}
 			}
