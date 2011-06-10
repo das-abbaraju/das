@@ -1,5 +1,6 @@
 package com.picsauditing.auditBuilder;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -42,29 +43,28 @@ public abstract class AuditBuilderBase {
 			contractorTypes.add(ContractorType.Supplier);
 	}
 	
-	protected Set<OperatorTag> getRequiredTags(List<? extends AuditRule> rules) {
-		Set<Integer> tagsNeeded = new HashSet<Integer>();
+	protected Map<Integer, OperatorTag> getRequiredTags(List<? extends AuditRule> rules) {
+		Map<Integer, OperatorTag> tagsNeeded = new HashMap<Integer, OperatorTag>();
 		for (AuditRule rule : rules) {
 			if (rule.getTag() != null)
-				tagsNeeded.add(rule.getTag().getId());
+				tagsNeeded.put(rule.getTag().getId(), null);
 		}
-		Set<OperatorTag> tags = new HashSet<OperatorTag>();
 		if (tagsNeeded.size() > 0) {
 			ContractorTagDAO dao = (ContractorTagDAO) SpringUtils.getBean("ContractorTagDAO");
-			List<ContractorTag> contractorTags = dao.getContractorTags(contractor.getId(), tagsNeeded);
+			List<ContractorTag> contractorTags = dao.getContractorTags(contractor.getId(), tagsNeeded.keySet());
 			for (ContractorTag contractorTag : contractorTags) {
-				tags.add(contractorTag.getTag());
+				tagsNeeded.put(contractorTag.getTag().getId(), contractorTag.getTag());
 			}
 		}
-		return tags;
+		return tagsNeeded;
 	}
-
-	protected boolean isValid(AuditRule rule, Map<Integer, AuditData> contractorAnswers, Set<OperatorTag> opTags) {
+	
+	protected boolean isValid(AuditRule rule, Map<Integer, AuditData> contractorAnswers, Map<Integer, OperatorTag> opTags) {
 		if (rule.getQuestion() != null && !rule.isMatchingAnswer(contractorAnswers.get(rule.getQuestion().getId()))) {
 			return false;
 		}
 
-		if (rule.getTag() != null && !opTags.contains(rule.getTag())) {
+		if (rule.getTag() != null && opTags.get(rule.getTag().getId()) == null) {
 			return false;
 		}
 

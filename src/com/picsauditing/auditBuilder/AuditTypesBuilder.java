@@ -50,7 +50,7 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		rules = ruleCache.getRules(contractor);
 
 		// Prune Rules
-		Set<OperatorTag> tags = getRequiredTags(rules);
+		Map<Integer, OperatorTag> tags = getRequiredTags(rules);
 		Map<Integer, AuditData> answers = getAnswers(rules);
 		if (tags.size() > 0 || answers.size() > 0) {
 			Iterator<AuditTypeRule> iterator = rules.iterator();
@@ -108,19 +108,7 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		return null;
 	}
 
-	protected void pruneRules(List<AuditTypeRule> rules) {
-		// Prune Rules
-		Set<OperatorTag> tags = getRequiredTags(rules);
-		Map<Integer, AuditData> answers = getAnswers(rules);
-		Iterator<AuditTypeRule> iterator = rules.iterator();
-		while (iterator.hasNext()) {
-			AuditTypeRule rule = iterator.next();
-			if (!isValid(rule, answers, tags))
-				iterator.remove();
-		}
-	}
-
-	protected boolean isValid(AuditRule rule, Map<Integer, AuditData> contractorAnswers, Set<OperatorTag> opTags) {
+	protected boolean isValid(AuditRule rule, Map<Integer, AuditData> contractorAnswers, Map<Integer, OperatorTag> opTags) {
 		AuditTypeRule auditTypeRule = (AuditTypeRule) rule;
 		if (auditTypeRule.getAuditType() != null && auditTypeRule.getAuditType().getId() == AuditType.WELCOME) {
 			if (DateBean.getDateDifference(contractor.getCreationDate()) < -90)

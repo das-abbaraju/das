@@ -75,7 +75,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		List<AuditCategoryRule> rules = ruleCache.getRules(contractor, conAudit.getAuditType());
 
 		// Prune Rules
-		Set<OperatorTag> tags = getRequiredTags(rules);
+		Map<Integer, OperatorTag> tags = getRequiredTags(rules);
 		Map<Integer, AuditData> answers = getAuditAnswers(rules, conAudit);
 		if (tags.size() > 0 || answers.size() > 0) {
 			Iterator<AuditCategoryRule> iterator = rules.iterator();
