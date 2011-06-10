@@ -304,15 +304,27 @@ public class CaoSave extends AuditActionSupport {
 		 * join contractor_audit ca on acd.auditID = ca.id AND ca.auditTypeID = 2 JOIN contractor_audit_operator cao on
 		 * cao.auditID = ca.id and cao.status != 'Pending' SET acd.override = 1 ;
 		 */
-		// if (step.getNewStatus().after(AuditStatus.Resubmitted)) {
-		// if (cao.getAudit().getAuditType().getClassType().isPolicy() && cao.getOperator().isAutoApproveInsurance()) {
-		// if (cao.getFlag() != null) {
-		// if (cao.getFlag().isGreen())
-		// cao.changeStatus(AuditStatus.Approved, permissions);
-		// }
-		// }
-		// }
+//		if (step.getNewStatus().after(AuditStatus.Pending)) {
+//			if (audit.getAuditType().isDesktop()) {
+//				// Desktops after Pending mode should have their categories locked down
+//				for (AuditCatData catData : audit.getCategories()) {
+//					if (!catData.isOverride()) {
+//						catData.setOverride(true);
+//						auditDao.save(catData);
+//					}
+//				}
+//			}
+//		}
 
+		if (step.getNewStatus().after(AuditStatus.Resubmitted)) {
+			if (cao.getAudit().getAuditType().getClassType().isPolicy() && cao.getOperator().isAutoApproveInsurance()) {
+				if (cao.getFlag() != null) {
+					if (cao.getFlag().isGreen())
+						cao.changeStatus(AuditStatus.Approved, permissions);
+				}
+			}
+		}
+		
 		if (step.getNewStatus().after(AuditStatus.Resubmitted)) {
 			// Expire previous audits
 			int lastYear = DateBean.getCurrentYear() - 1;
