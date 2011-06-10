@@ -1,6 +1,7 @@
 package com.picsauditing.actions.trades;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -41,7 +42,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	private boolean product;
 	private boolean service;
 
-	private List<ContractorType> conTypes;
+	private List<ContractorType> conTypes = Collections.emptyList();
 
 	public ContractorTradeAction() {
 		this.subHeading = getText("ContractorTrades.title");
