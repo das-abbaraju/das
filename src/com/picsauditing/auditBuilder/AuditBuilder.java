@@ -27,7 +27,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
@@ -173,19 +172,10 @@ public class AuditBuilder {
 	 * @param caoMap Map of CAOs to CAOPs
 	 */
 	private void fillAuditOperators(ContractorAudit conAudit, Map<OperatorAccount, Set<OperatorAccount>> caoMap) {
-		// 6/9/2011 Trevro We don't need this because of nightly Cron calling contractorAuditOperatorDAO.activateAuditsWithReqs();
+		// 6/9/2011 Trevor We don't need this because of nightly Cron calling contractorAuditOperatorDAO.activateAuditsWithReqs();
 		//if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
 		//	return;
 
-		// Check Audit and if expired, expire all caos to expire and don't add any
-		if (conAudit.isExpired()) {
-			for (ContractorAuditOperator cao : conAudit.getOperators()) {
-				cao.changeStatus(AuditStatus.Expired, null);
-			}
-			
-			return;
-		}
-		
 		// Make sure that the caos' visibility is set correctly
 		Set<OperatorAccount> caosToCreate = caoMap.keySet();
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
@@ -214,6 +204,10 @@ public class AuditBuilder {
 				conAudit.getOperators().add(cao);
 				conAudit.setLastRecalculation(null);
 			}
+			if (conAudit.isExpired()) {
+				cao.changeStatus(AuditStatus.Expired, null);
+			}
+			
 			fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
 		}
 	}

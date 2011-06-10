@@ -78,6 +78,8 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 
 	@Transient
 	public void changeStatus(AuditStatus auditStatus, Permissions permissions) {
+		if (auditStatus.equals(status))
+			return;
 		setAuditColumns(permissions);
 		setStatusChangedDate(new Date());
 		this.status = auditStatus;
