@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOptionValue;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -261,8 +262,9 @@ public class AuditPercentCalculator {
 			int percentVerified = 0;
 			if (required > 0) {
 				percentComplete = (int) Math.floor(100 * answered / required);
-				if (percentComplete >= 100)
+				if (percentComplete >= 100) {
 					percentComplete = 100;
+				}
 
 				percentVerified = (int) Math.floor(100 * verified / required);
 				if (percentVerified >= 100)
@@ -271,6 +273,28 @@ public class AuditPercentCalculator {
 
 			cao.setPercentComplete(percentComplete);
 			cao.setPercentVerified(percentVerified);
+			
+			AuditStatus newStatus = null;
+			if (cao.getStatus().isPending()) {
+				if (conAudit.getAuditType().isPqf() && percentComplete == 100) {
+					if (conAudit.hasCaoStatus(AuditStatus.Complete))
+						newStatus = AuditStatus.Complete;
+					else if (conAudit.hasCaoStatus(AuditStatus.Submitted))
+						newStatus = AuditStatus.Submitted;
+					else if (conAudit.hasCaoStatus(AuditStatus.Resubmitted))
+						newStatus = AuditStatus.Resubmitted;
+				} else if (conAudit.getAuditType().isDesktop()) {
+					if (conAudit.hasCaoStatus(AuditStatus.Complete))
+						newStatus = AuditStatus.Complete;
+					else if (conAudit.hasCaoStatus(AuditStatus.Submitted))
+						newStatus = AuditStatus.Submitted;
+				}
+			}
+			
+			if (newStatus != null) {
+				cao.changeStatus(newStatus, null);
+			}
+
 		}
 	}
 

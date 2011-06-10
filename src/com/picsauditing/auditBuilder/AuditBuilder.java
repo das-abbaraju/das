@@ -203,6 +203,7 @@ public class AuditBuilder {
 				AuditStatus firstStatus = conAudit.getAuditType().getWorkFlow().getFirstStep().getNewStatus();
 				cao.changeStatus(firstStatus, null);
 				conAudit.getOperators().add(cao);
+				conAudit.setLastRecalculation(null);
 			}
 			fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
 		}
