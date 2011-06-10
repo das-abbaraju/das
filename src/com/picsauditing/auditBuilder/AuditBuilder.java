@@ -177,6 +177,15 @@ public class AuditBuilder {
 		//if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
 		//	return;
 
+		// Check Audit and if expired, expire all caos to expire and don't add any
+		if (conAudit.isExpired()) {
+			for (ContractorAuditOperator cao : conAudit.getOperators()) {
+				cao.changeStatus(AuditStatus.Expired, null);
+			}
+			
+			return;
+		}
+		
 		// Make sure that the caos' visibility is set correctly
 		Set<OperatorAccount> caosToCreate = caoMap.keySet();
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
