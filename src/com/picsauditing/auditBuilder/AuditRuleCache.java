@@ -67,24 +67,6 @@ abstract public class AuditRuleCache {
 		return rules;
 	}
 
-	protected class SafetyRisks {
-
-		private Map<LowMedHigh, Operators> data = new LinkedHashMap<LowMedHigh, Operators>();
-
-		public Operators getData(LowMedHigh value) {
-			return data.get(value);
-		}
-
-		public void add(AuditRule rule) {
-			Operators map = data.get(rule.getSafetyRisk());
-			if (map == null) {
-				map = new Operators();
-				data.put(rule.getSafetyRisk(), map);
-			}
-			map.add(rule);
-		}
-	}
-
 	protected class Operators {
 
 		private Map<OperatorAccount, Set<AuditRule>> data = new LinkedHashMap<OperatorAccount, Set<AuditRule>>();

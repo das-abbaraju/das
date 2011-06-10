@@ -84,7 +84,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private boolean ccOnFile = false;
 	private Date ccExpiration;
 	private Webcam webcam;
-	private Boolean soleProprietor;
+	private boolean soleProprietor;
 	private Boolean competitorMembership;
 	private AccountLevel accountLevel = AccountLevel.Full;
 
@@ -1291,11 +1291,11 @@ public class ContractorAccount extends Account implements JSONable {
 		return balance < halfMembership;
 	}
 
-	public Boolean getSoleProprietor() {
+	public boolean getSoleProprietor() {
 		return soleProprietor;
 	}
 
-	public void setSoleProprietor(Boolean soleProprietor) {
+	public void setSoleProprietor(boolean soleProprietor) {
 		this.soleProprietor = soleProprietor;
 	}
 

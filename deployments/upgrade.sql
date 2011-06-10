@@ -1322,3 +1322,6 @@ where questionID IN (
 
 DELETE from pqfdata where questionID = 870;
 
+UPDATE contractor_info
+SET soleProprietor = 0
+where soleProprietor is null;
