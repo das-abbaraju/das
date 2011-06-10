@@ -35,7 +35,12 @@ Product  Critical: <s:property value="contractor.productRisk" /><br />
 <s:if test="contractor.offsiteServices">Offsite Services</s:if>
 <s:if test="contractor.materialSupplier">Materials Supplier</s:if>
 <br />
+Sole Proprietor: <s:if test="contractor.soleProprietor">Yes</s:if><s:else>No</s:else>
+<br />
 <h4>Tags:</h4>
+<s:iterator value="contractor.operatorTags">
+	<s:property value="tag.tag" /> | 
+</s:iterator>
 <br />
 <h4>Trades:</h4>
 <s:iterator value="contractor.trades">
