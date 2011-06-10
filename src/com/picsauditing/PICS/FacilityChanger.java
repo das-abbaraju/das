@@ -3,12 +3,13 @@ package com.picsauditing.PICS;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditData;
@@ -33,11 +34,15 @@ import com.picsauditing.mail.EmailSender;
  * Adds and removed contractors from operator accounts
  */
 public class FacilityChanger {
-
+	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
+	@Autowired
 	private ContractorAccountDAO contractorAccountDAO;
+	@Autowired
 	private OperatorAccountDAO operatorAccountDAO;
+	@Autowired
 	private NoteDAO noteDAO;
+	@Autowired
 	private AuditDataDAO auditDataDAO;
 
 	private ContractorAccount contractor;
@@ -45,16 +50,6 @@ public class FacilityChanger {
 	private Permissions permissions;
 	private User user;
 	private ContractorType type = ContractorType.Onsite;
-
-	public FacilityChanger(ContractorAccountDAO contractorAccountDAO, OperatorAccountDAO operatorAccountDAO,
-			ContractorOperatorDAO contractorOperatorDAO, NoteDAO noteDAO, FlagDataDAO flagDataDAO,
-			AuditDataDAO auditDataDAO) {
-		this.contractorOperatorDAO = contractorOperatorDAO;
-		this.contractorAccountDAO = contractorAccountDAO;
-		this.operatorAccountDAO = operatorAccountDAO;
-		this.noteDAO = noteDAO;
-		this.auditDataDAO = auditDataDAO;
-	}
 
 	public void add() throws Exception {
 		if (contractor == null || contractor.getId() == 0)

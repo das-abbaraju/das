@@ -63,7 +63,8 @@ public class BillingCalculatorSingle {
 		if (payingFacilities == 0) {
 			// Contractors with no paying facilities are free
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
-				contractor.clearNewFee(feeClass, feeDAO);
+				if (feeClass.isMembership())
+					contractor.clearNewFee(feeClass, feeDAO);
 			}
 
 			return;

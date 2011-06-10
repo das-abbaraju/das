@@ -122,7 +122,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			conAudit.setManuallyAdded(true);
 			conAudit.setAuditColumns(permissions);
 			conAudit.setContractorAccount(contractor);
-
 			auditDao.save(conAudit);
 			
 			ContractorFee newConFee = new ContractorFee();
@@ -133,6 +132,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			newConFee.setCurrentLevel(importFee);
 			newConFee.setNewLevel(importFee);
 			newConFee.setFeeClass(importFee.getFeeClass());
+			newConFee = (ContractorFee) invoiceFeeDAO.save(newConFee);
+			
 			contractor.getFees().put(importFee.getFeeClass(), newConFee);
 			accountDao.save(contractor);
 			
