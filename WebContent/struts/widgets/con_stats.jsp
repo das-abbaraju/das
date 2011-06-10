@@ -33,7 +33,7 @@
 		<s:if test="contractor.mustPayB">
 			<table>
 			<s:iterator value="contractor.fees.keySet()" var="feeClass">
-				<s:if test="!contractor.fees.get(#feeClass).currentLevel.free">
+				<s:if test="!contractor.fees.get(#feeClass).currentLevel.free && #feeClass.membership">
 					<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).currentLevel.fee" />:&nbsp;</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.fees.get(#feeClass).currentAmount" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 				</s:if>
 			</s:iterator>

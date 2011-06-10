@@ -1334,7 +1334,8 @@ public class ContractorAccount extends Account implements JSONable {
 	public BigDecimal getNewMembershipAmount() {
 		BigDecimal newTotal = BigDecimal.ZERO;
 		for (ContractorFee fee : fees.values()) {
-			newTotal = newTotal.add(fee.getNewAmount());
+			if(fee.getFeeClass().isMembership())
+				newTotal = newTotal.add(fee.getNewAmount());
 		}
 
 		return newTotal;
@@ -1344,7 +1345,8 @@ public class ContractorAccount extends Account implements JSONable {
 	public BigDecimal getCurrentMembershipAmount() {
 		BigDecimal currentTotal = BigDecimal.ZERO;
 		for (ContractorFee fee : fees.values()) {
-			currentTotal = currentTotal.add(fee.getCurrentAmount());
+			if(fee.getFeeClass().isMembership())
+				currentTotal = currentTotal.add(fee.getCurrentAmount());
 		}
 
 		return currentTotal;
