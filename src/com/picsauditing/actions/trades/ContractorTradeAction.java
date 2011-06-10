@@ -102,7 +102,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		if (!contractor.getTrades().contains(trade))
 			contractor.getTrades().add(trade);
 
-		// PICS-2364 if selected trade has contractorCount of 0 send email to auditors
 		if (trade.getTrade().getContractorCount() == 0) {
 			EmailQueue emailQueue = new EmailQueue();
 			emailQueue.setSubject("New Trade Selected.");
@@ -113,6 +112,9 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			EmailSender sender = new EmailSender();
 			sender.sendNow(emailQueue);
 		}
+		
+		trade.getTrade().setContractorCount(trade.getTrade().getContractorCount()+1);
+		tradeDAO.save(trade);		
 
 		contractor.addAccountTypes(conTypes);
 
