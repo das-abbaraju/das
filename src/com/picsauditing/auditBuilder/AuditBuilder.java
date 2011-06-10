@@ -167,26 +167,25 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * For each audit (policy), get a list of operators and create Contractor Audit Operator
+	 * For each audit, get a list of operators and create Contractor Audit Operator CAOs
 	 * 
 	 * @param conAudit
-	 * @param governingBodies
+	 * @param caoMap Map of CAOs to CAOPs
 	 */
 	private void fillAuditOperators(ContractorAudit conAudit, Map<OperatorAccount, Set<OperatorAccount>> caoMap) {
-		if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
-			return;
+		// 6/9/2011 Trevro We don't need this because of nightly Cron calling contractorAuditOperatorDAO.activateAuditsWithReqs();
+		//if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+		//	return;
 
 		// Make sure that the caos' visibility is set correctly
+		Set<OperatorAccount> caosToCreate = caoMap.keySet();
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			boolean contains = contains(caoMap.keySet(), cao.getOperator());
-			if (contains != cao.isVisible()) {
-				cao.setVisible(contains);
-				// contractorAuditOperatorDAO.save(cao);
-			}
+			boolean caoShouldBeVisible = contains(caosToCreate, cao.getOperator());
+			cao.setVisible(caoShouldBeVisible);
 		}
 
 		// Add CAOs that don't yet exist
-		for (OperatorAccount governingBody : caoMap.keySet()) {
+		for (OperatorAccount governingBody : caosToCreate) {
 			// Now find the existing cao record for this operator (if one exists)
 			ContractorAuditOperator cao = null;
 			for (ContractorAuditOperator cao2 : conAudit.getOperators()) {
@@ -279,27 +278,32 @@ public class AuditBuilder {
 	}
 
 	private void fillAuditOperatorPermissions(ContractorAuditOperator cao, Set<OperatorAccount> caopOperators) {
+		if (cao.getAudit().getRequestingOpAccount() != null) {
+			// Warning, this only works for operator sites, not corporate accounts
+			caopOperators.add(cao.getAudit().getRequestingOpAccount());
+		} else if (cao.getAudit().getAuditType().isDesktop() && cao.getAudit().hasCaoStatus(AuditStatus.Complete)) {
+			// Trevor 6/9/2011 Removed this because we're switching to allow multiple CAOs for Desktop
+//			for (ContractorOperator co : cao.getAudit().getContractorAccount().getOperators()) {
+//				if (cao.isVisible()
+//						&& co.getOperatorAccount().getOperatorHeirarchy().contains(cao.getOperator().getId())) {
+//					// Once the Manual Audit has at least one status that's Complete, then show it to all the
+//					// contractor's operators
+//					caopOperators.add(co.getOperatorAccount());
+//				}
+//			}
+		}
+
 		/*
 		 * For now we have decided to hard code Welcome Call audit to not be viewable for operators. We might add a
 		 * field later if required.
 		 */
 		if (cao.getAudit().getAuditType().getId() == AuditType.WELCOME)
-			return;
-
-		if (cao.getAudit().getRequestingOpAccount() != null) {
-			// Warning, this only works for operator sites, not corporate accounts
-			caopOperators.add(cao.getAudit().getRequestingOpAccount());
-		} else if (cao.getAudit().getAuditType().isDesktop() && cao.getAudit().hasCaoStatus(AuditStatus.Complete)) {
-			for (ContractorOperator co : cao.getAudit().getContractorAccount().getOperators()) {
-				if (cao.isVisible()
-						&& co.getOperatorAccount().getOperatorHeirarchy().contains(cao.getOperator().getId())) {
-					// Once the Manual Audit has at least one status that's Complete, then show it to all the
-					// contractor's operators
-					caopOperators.add(co.getOperatorAccount());
-				}
-			}
-		}
-
+			caopOperators.clear();
+		if (cao.getAudit().getAuditType().getId() == AuditType.IMPORT_PQF)
+			caopOperators.clear();
+		if (!cao.isVisible())
+			caopOperators.clear();
+		
 		Iterator<ContractorAuditOperatorPermission> caopIter = cao.getCaoPermissions().iterator();
 		while (caopIter.hasNext()) {
 			ContractorAuditOperatorPermission caop = caopIter.next();
