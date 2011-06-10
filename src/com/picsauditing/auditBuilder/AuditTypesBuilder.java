@@ -52,13 +52,11 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		// Prune Rules
 		Map<Integer, OperatorTag> tags = getRequiredTags(rules);
 		Map<Integer, AuditData> answers = getAnswers(rules);
-		if (tags.size() > 0 || answers.size() > 0) {
-			Iterator<AuditTypeRule> iterator = rules.iterator();
-			while (iterator.hasNext()) {
-				AuditTypeRule rule = iterator.next();
-				if (!isValid(rule, answers, tags))
-					iterator.remove();
-			}
+		Iterator<AuditTypeRule> iterator = rules.iterator();
+		while (iterator.hasNext()) {
+			AuditTypeRule rule = iterator.next();
+			if (!isValid(rule, answers, tags))
+				iterator.remove();
 		}
 
 		/**
@@ -108,24 +106,23 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		return null;
 	}
 
-	protected boolean isValid(AuditRule rule, Map<Integer, AuditData> contractorAnswers, Map<Integer, OperatorTag> opTags) {
+	protected boolean isValid(AuditRule rule, Map<Integer, AuditData> contractorAnswers,
+			Map<Integer, OperatorTag> opTags) {
 		AuditTypeRule auditTypeRule = (AuditTypeRule) rule;
 		if (auditTypeRule.getAuditType() != null && auditTypeRule.getAuditType().getId() == AuditType.WELCOME) {
 			if (DateBean.getDateDifference(contractor.getCreationDate()) < -90)
 				return false;
 		}
-		if (auditTypeRule.isManuallyAdded() || (auditTypeRule.getDependentAuditType() != null)) {
+		if (auditTypeRule.isManuallyAdded()) {
+			return false;
+		}
+		if (auditTypeRule.getDependentAuditType() != null && auditTypeRule.getDependentAuditStatus() != null) {
 			for (ContractorAudit audit : contractor.getAudits()) {
-				if (auditTypeRule.isManuallyAdded()) {
-					if (auditTypeRule.getAuditType().equals(audit.getAuditType())) {
-						return true;
-					}
-				} else if (!audit.isExpired() && auditTypeRule.getDependentAuditType() != null
-						&& audit.getAuditType().equals(auditTypeRule.getDependentAuditType())) {
-					if (auditTypeRule.getDependentAuditStatus() != null
-							&& (audit.hasCaoStatus(auditTypeRule.getDependentAuditStatus()) || audit
-									.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus())))
-						return true;
+				if (!audit.isExpired()
+						&& audit.getAuditType().equals(auditTypeRule.getDependentAuditType())
+						&& (audit.hasCaoStatus(auditTypeRule.getDependentAuditStatus()) || audit
+								.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus()))) {
+					return true;
 				}
 			}
 			return false;
