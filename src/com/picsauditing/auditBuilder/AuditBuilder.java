@@ -300,8 +300,9 @@ public class AuditBuilder {
 		 */
 		if (cao.getAudit().getAuditType().getId() == AuditType.WELCOME)
 			caopOperators.clear();
-		if (cao.getAudit().getAuditType().getId() == AuditType.IMPORT_PQF)
-			caopOperators.clear();
+		// Removed this because of PICS-2596
+		//if (cao.getAudit().getAuditType().getId() == AuditType.IMPORT_PQF)
+		//	caopOperators.clear();
 		if (!cao.isVisible())
 			caopOperators.clear();
 		
