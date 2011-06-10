@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Transient;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.converters.OshaTypeConverter;
@@ -273,29 +275,37 @@ public class AuditPercentCalculator {
 
 			cao.setPercentComplete(percentComplete);
 			cao.setPercentVerified(percentVerified);
-			
+
 			AuditStatus newStatus = null;
 			if (cao.getStatus().isPending()) {
 				if (conAudit.getAuditType().isPqf() && percentComplete == 100) {
-					if (conAudit.hasCaoStatus(AuditStatus.Complete))
+					if (hasCaoStatus(conAudit, AuditStatus.Complete))
 						newStatus = AuditStatus.Complete;
-					else if (conAudit.hasCaoStatus(AuditStatus.Submitted))
+					else if (hasCaoStatus(conAudit, AuditStatus.Submitted))
 						newStatus = AuditStatus.Submitted;
-					else if (conAudit.hasCaoStatus(AuditStatus.Resubmitted))
+					else if (hasCaoStatus(conAudit, AuditStatus.Resubmitted))
 						newStatus = AuditStatus.Resubmitted;
 				} else if (conAudit.getAuditType().isDesktop()) {
-					if (conAudit.hasCaoStatus(AuditStatus.Complete))
+					if (hasCaoStatus(conAudit, AuditStatus.Complete))
 						newStatus = AuditStatus.Complete;
-					else if (conAudit.hasCaoStatus(AuditStatus.Submitted))
+					else if (hasCaoStatus(conAudit, AuditStatus.Submitted))
 						newStatus = AuditStatus.Submitted;
 				}
 			}
-			
+
 			if (newStatus != null) {
 				cao.changeStatus(newStatus, null);
 			}
 
 		}
+	}
+
+	private boolean hasCaoStatus(ContractorAudit conAudit, AuditStatus auditStatus) {
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus().equals(auditStatus))
+				return true;
+		}
+		return false;
 	}
 
 	/**

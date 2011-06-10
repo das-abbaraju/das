@@ -77,3 +77,5 @@ SET p.childCountTotal = c.total;
 update ref_trade p
 join (select parentID, count(*) + SUM(childCountTotal) total FROM ref_trade GROUP BY parentID) c ON p.id = c.parentID
 SET p.childCountTotal = c.total;
+
+DELETE from contractor_audit_operator where visible = 0 and status = 'Pending';
