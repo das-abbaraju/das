@@ -1,5 +1,6 @@
 package com.picsauditing.actions.rules;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,8 +16,6 @@ import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.util.Strings;
 
-import edu.emory.mathcs.backport.java.util.Collections;
-
 @SuppressWarnings("serial")
 public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRule> {
 
@@ -24,7 +23,7 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 
 	@Autowired
 	protected AuditTypeRuleCache auditTypeRuleCache;
-	
+
 	public AuditTypeRuleTableBuilder() {
 		this.ruleType = "Audit Type";
 		this.urlPrefix = "AuditType";
@@ -63,8 +62,8 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 				whereClauses.add("t.include = 0");
 			}
 			if (comparisonRule.getAuditType() != null) {
-				whereClauses.add("t.auditType IS NULL OR t.auditType.id = " + comparisonRule.getAuditType().getId()
-						+ " OR t.dependentAuditType.id = " + comparisonRule.getAuditType().getId());
+				whereClauses.add("(t.auditType IS NULL OR t.auditType.id = " + comparisonRule.getAuditType().getId()
+						+ " OR t.dependentAuditType.id = " + comparisonRule.getAuditType().getId() + ")");
 			}
 			if (comparisonRule.getOperatorAccount() != null) {
 				if (!comparisonRule.isInclude()) {
@@ -95,7 +94,7 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 				sb.append(")");
 				whereClauses.add(sb.toString());
 			}
-			
+
 			rules = (List<AuditTypeRule>) ruleDAO.findWhere(AuditTypeRule.class,
 					Strings.implode(whereClauses, " AND "), 0);
 			Collections.sort(rules);

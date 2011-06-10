@@ -9,12 +9,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
+import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
@@ -35,13 +38,19 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class OperatorConfiguration extends OperatorActionSupport implements Preparable {
-
+	@Autowired
 	protected AuditDecisionTableDAO adtDAO;
+	@Autowired
 	protected AuditCategoryDAO auditCategoryDAO;
+	@Autowired
 	protected AuditTypeDAO typeDAO;
+	@Autowired
 	protected FacilitiesDAO facilitiesDAO;
+	@Autowired
 	protected AuditTypeRuleCache auditTypeRuleCache;
+	@Autowired
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
+	@Autowired
 	private AppPropertyDAO appPropDAO;
 
 	private List<OperatorAccount> allParents;
@@ -60,17 +69,8 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	private static final String QUESTION1 = "Upload a Certificate of Insurance or other supporting documentation for this policy.";
 	private static final String QUESTION2 = "This insurance policy complies with all additional ";
 
-	public OperatorConfiguration(OperatorAccountDAO operatorDao, AuditDecisionTableDAO adtDAO, AuditTypeDAO typeDAO,
-			FacilitiesDAO facilitiesDAO, AuditTypeRuleCache auditTypeRuleCache,
-			AuditCategoryRuleCache auditCategoryRuleCache, AuditCategoryDAO auditCategoryDAO, AppPropertyDAO appPropDAO) {
+	public OperatorConfiguration(OperatorAccountDAO operatorDao) {
 		super(operatorDao);
-		this.appPropDAO = appPropDAO;
-		this.adtDAO = adtDAO;
-		this.typeDAO = typeDAO;
-		this.facilitiesDAO = facilitiesDAO;
-		this.auditTypeRuleCache = auditTypeRuleCache;
-		this.auditCategoryRuleCache = auditCategoryRuleCache;
-		this.auditCategoryDAO = auditCategoryDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -79,13 +79,9 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	}
 
 	@SuppressWarnings("unchecked")
+	// Same as AuditOperator
+	@RequiredPermission(value=OpPerms.ManageOperators, type=OpType.Edit)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		// Same as AuditOperator
-		permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
-
 		if (button != null) {
 			if ("Clear".equals(button)) {
 				AppProperty appProp = appPropDAO.find("clear_cache");
