@@ -1,14 +1,12 @@
 package com.picsauditing.PICS;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
@@ -19,7 +17,9 @@ import com.picsauditing.jpa.entities.TranslatableString.Translation;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.Strings;
 
-public class I18nCache {
+public class I18nCache implements Serializable {
+
+	private static final long serialVersionUID = -9105914451729814391L;
 
 	static public final String I18N_CACHE_KEY = "I18nCache";
 	static public final String CACHE_NAME = "daily";
@@ -35,16 +35,7 @@ public class I18nCache {
 
 	public static I18nCache getInstance() {
 		if (INSTANCE == null) {
-			CacheManager cacheManager = CacheManager.getInstance();
-			if (cacheManager != null) {
-				Element cacheElement = cacheManager.getCache(CACHE_NAME).get(I18N_CACHE_KEY);
-				if (cacheElement == null) {
-					INSTANCE = new I18nCache();
-					cacheManager.getCache(CACHE_NAME).put(new Element(I18N_CACHE_KEY, INSTANCE));
-				} else {
-					INSTANCE = (I18nCache) cacheElement.getObjectValue();
-				}
-			}
+			INSTANCE = new I18nCache();
 		}
 
 		return INSTANCE;
@@ -87,7 +78,7 @@ public class I18nCache {
 
 	/**
 	 * Fix characters that cause problems with MessageFormat, such as "'"
-	 * 
+	 *
 	 * @param text
 	 *            the text to be formatted
 	 * @return text formatted to be used in MessageFormat.format
