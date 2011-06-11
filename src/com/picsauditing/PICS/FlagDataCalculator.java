@@ -78,11 +78,16 @@ public class FlagDataCalculator {
 						data.setOperator(operator);
 						data.setFlag(flag);
 						data.setAuditColumns(new User(User.SYSTEM));
-						// If contractor is not a full account, do not add AU
-						// data to the list of flaggable data.
-						if (data.getContractor().getAccountLevel().isFull()
-								|| (!key.getAuditType().isAnnualAddendum() && !data.getContractor().getAccountLevel()
-										.isFull())) {
+
+						/*
+						 * This logic is intended, if the critera is an AU then
+						 * we only add if the account is full and not a sole
+						 * proprietor
+						 */
+						if (data.getCriteria().getAuditType() != null
+								&& !data.getCriteria().getAuditType().isAnnualAddendum()
+								|| (data.getContractor().getAccountLevel().isFull() && !data.getContractor()
+										.getSoleProprietor())) {
 							if (dataSet.get(key) == null)
 								dataSet.put(key, data);
 							else if (dataSet.get(key).getFlag().isWorseThan(flag))
