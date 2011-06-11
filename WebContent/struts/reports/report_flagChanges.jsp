@@ -7,12 +7,11 @@
 <s:include value="reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <script type="text/javascript">
-$(function(){
-$('a.approve').live('click', function(e) {
-	e.preventDefault();
-	$(this).attr('href')
-	})
-})
+$(function() {
+	$('a.approve').live('click', function(e) {
+		e.preventDefault();
+	});
+});
 function approve(id,idList) {
 	$.post('ReportFlagChanges.action', {approvedChanges: idList.split(",")});
 	$("#row" + id).hide();
@@ -36,12 +35,71 @@ function includeDetail(x, y) {
 	}
 }
 
-var tr = $();
-
 var flags = {
 		"Red": '<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon('Red')" escape="false"/>',
 		"Green": '<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon('Green')" escape="false"/>',
 		"Amber": '<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon('Amber')" escape="false"/>'
+}
+
+function resolveFlags(detail, baseline, title, gcId, id, opId) {
+	var changes = {};
+	$.each(baseline, function(criteriaID, data) {
+		if (includeDetail(data, detail[criteriaID])) {
+			changes[criteriaID] = {
+					label: data.label,
+					detail: detail[criteriaID],
+					baseline: data
+			};
+		}
+	});
+	$.each(detail, function(criteriaID, data) {
+		if (includeDetail(data, baseline[criteriaID])) {
+			changes[criteriaID] = {
+				label: data.label,
+				detail: data,
+				baseline: baseline[criteriaID]
+			};
+		}
+	});
+	var output = $('<table>', {
+		'class': 'inner',
+		'title' : title,
+		'rel' : "ContractorQuickDocumentsAjax.action?id="+id+"&opID="+opId
+	});
+	if (size(changes) > 0) {
+		$.each(changes, function(criteriaID, data) {
+			var tr = $('<tr><td/><td/></tr>');
+			tr.find('td:eq(0)').html(
+				(data.baseline ? flags[data.baseline.flag] : '?') +
+				' \u2192 ' +
+				(data.detail ? flags[data.detail.flag] : '?')
+			);
+			tr.find('td:eq(1)').html(data.label);
+			output.append(tr);
+		});
+	} else {
+		output.append('<tr><td/>?<td/></tr>');
+	}
+	$('#detail_' + gcId).html(output);
+	output.cluetip({
+		sticky : true,
+		hoverClass : 'cluetip',
+		mouseOutClose : true,
+		clickThrough : true,
+		ajaxCache : true,
+		closeText : "<img src='images/cross.png' width='16' height='16'>",
+		hoverIntent : {
+			interval : 300
+		},
+		arrows : true,
+		dropShadow : false,
+		width : 500,
+		cluetipClass : 'jtip',
+		ajaxProcess : function(data) {
+			data = $(data).not('meta, link, title');
+			return data;
+		}
+	});
 }
 </script>
 </head>
@@ -78,11 +136,10 @@ var flags = {
 	<s:iterator value="data" status="stat">
 		<s:set name="gcID" value="get('gcID')"></s:set>
 		<tr id="row<s:property value="#gcID"/>">
-			<td class="nobr"><a target="_BLANK" title="<s:property value="get(\'name\')" escape="true" /> (Last Calculated: <s:date name="get('lastRecalculation')" format="MM/dd/yyyy" />)"
+			<td class="nobr"><a title="<s:property value="get(\'name\')" escape="true" /> (Last Calculated: <s:date name="get('lastRecalculation')" format="MM/dd/yyyy" />)"
 					rel="ContractorFlagAjax.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>" class="contractorQuick"
 					href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>">
 						<img src="images/icon_<s:property value="get('baselineFlag').toString().toLowerCase()" />Flag.gif" width="10" height="12" border="0" />
-					
 				→
 				<img src="images/icon_<s:property value="get('flag').toString().toLowerCase()" />Flag.gif" width="10" height="12" border="0" /></a></td>
 			<td>
@@ -91,88 +148,20 @@ var flags = {
 				</span>
 			</td>
 			<td id="detail_<s:property value="get('gcID')"/>">
-				
 				<script type="text/javascript">
-					$(function() {
-						var detail = <s:property value="get('flagDetail')" escape="false"/>;
-						var baseline = <s:property value="get('baselineFlagDetail')" escape="false"/>;
-						var changes = {};
-						$.each(baseline, function(criteriaID, data){
-							if (includeDetail(data, detail[criteriaID])) {
-								changes[criteriaID] = {
-										label: data.label,
-										detail: detail[criteriaID],
-										baseline: data
-								}; 
-							}
-						});
-						$.each(detail, function(criteriaID, data) {
-							if (includeDetail(data, baseline[criteriaID])) {
-								changes[criteriaID] = {
-										label: data.label,
-										detail: data,
-										baseline: baseline[criteriaID]
-								};
-							}
-						});
-						
-						if (size(changes) > 0) {
-							var output = $('<table class="inner" title="<s:property value="get(\'name\')" escape="true" /> Documents" rel="ContractorQuickDocumentsAjax.action?id=<s:property value="get(\'id\')"/>&opID=<s:property value="get(\'opId\')"/>" />');
-							$.each(changes, function(criteriaID, data) {
-								var tr = $('<tr><td/><td/></tr>');
-								tr.find('td:eq(0)').html(
-									(data.baseline ? flags[data.baseline.flag] : '?') +
-									' \u2192 ' + 
-									(data.detail ? flags[data.detail.flag] : '?') 
-								);
-								tr.find('td:eq(1)').html(data.label);
-								output.append(tr);
-							});
-							$('#detail_<s:property value="get('gcID')"/>').html(output);
-							output.cluetip({sticky : true,
-								hoverClass : 'cluetip',
-								mouseOutClose : true,
-								clickThrough : true,
-								ajaxCache : true,
-								closeText : "<img src='images/cross.png' width='16' height='16'>",
-								hoverIntent : {
-									interval : 300
-								},
-								arrows : true,
-								dropShadow : false,
-								width : 500,
-								cluetipClass : 'jtip',
-								ajaxProcess : function(data) {
-									data = $(data).not('meta, link, title');
-									return data;
-								}});
-						} else {
-							var output = $('<table class="inner" title="<s:property value="get(\'name\')" escape="true" /> Documents" rel="ContractorQuickDocumentsAjax.action?id=<s:property value="get(\'id\')"/>&opID=<s:property value="get(\'opId\')"/>" ><tr><td>?</tr></td></table>');
-							$('#detail_<s:property value="get('gcID')"/>').html(output);
-							output.cluetip({sticky : true,
-								hoverClass : 'cluetip',
-								mouseOutClose : true,
-								clickThrough : true,
-								ajaxCache : true,
-								closeText : "<img src='images/cross.png' width='16' height='16'>",
-								hoverIntent : {
-									interval : 300
-								},
-								arrows : true,
-								dropShadow : false,
-								width : 500,
-								cluetipClass : 'jtip',
-								ajaxProcess : function(data) {
-									data = $(data).not('meta, link, title');
-									return data;
-								}});
-						}
-					})
+					resolveFlags(
+						<s:property value="get('flagDetail')" escape="false"/>,
+						<s:property value="get('baselineFlagDetail')" escape="false"/>,
+						'<s:property value="@org.apache.commons.lang.StringEscapeUtils@escapeJavaScript(get('name'))"/> Documents',
+						'<s:property value="#gcID"/>',
+						'<s:property value="get('id')"/>',
+						'<s:property value="get('opId')"/>'
+					);
 				</script>
 			</td>
 			<!-- <td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td> -->
-			<td><a target="_BLANK" href="ContractorView.action?id=<s:property value="get('id')"/>" 
-					rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>" 
+			<td><a target="_BLANK" href="ContractorView.action?id=<s:property value="get('id')"/>"
+					rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>"
 					class="contractorQuick account<s:property value="get('status')"/>" title="<s:property value="get('name')"/>"
 				><s:property value="get('name')"/></a></td>
 			<pics:permission perm="AllContractors">
