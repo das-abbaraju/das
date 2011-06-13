@@ -208,8 +208,12 @@ $(function(){
 			<li>
 				<s:checkbox id="SoleProprietor" name="contractor.soleProprietor" theme="formhelp" />
 			</li>
-			<li>
-				<s:checkbox id="CompetitorMembership" name="contractor.competitorMembership" theme="formhelp" />
+			<li><label><s:text name="ContractorAccount.competitorMembership" /></label>
+				<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" id="CompetitorMembership" name="contractor.competitorMembership" theme="pics" />
+				<div class="fieldhelp">
+					<h3><s:text name="ContractorAccount.competitorMembership.fieldhelptitle" /></h3>
+					<s:text name="ContractorAccount.competitorMembership.fieldhelp" />
+				</div>
 			</li>
 			<li>
 				<s:textarea name="contractor.description" cols="60" rows="15" theme="formhelp" />
