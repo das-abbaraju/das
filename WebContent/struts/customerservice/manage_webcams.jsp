@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
@@ -5,9 +6,7 @@
 <link rel="stylesheet" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp" />
-<script type="text/javascript" src="js/jquery/jquery.hoverIntent.js"></script>
-<script type="text/javascript" src="js/jquery/address/jquery.address-1.0.min.js"></script>
-<script type="text/javascript" src="js/jquery/jquery.layout.min.js"></script>
+<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript">
 
 function loadForm(id) {
@@ -38,19 +37,15 @@ function wireClueTips() {
 }
 
 $(function() {
-	$.address.change(function(event) {
-			var val = event.value.replace('/', '');
-			if (val != '')
-				loadForm(event.value.replace('/', ''));
-			else
-				loadForm(0);
-		}
-	);
+	
+	$(window).bind('hashchange', function(e) {
+		loadForm($.bbq.getState('webcam'));
+	});
 
-	$('tr.clickable').address(function() {
-			return $(this).attr('id');
-		}
-	);
+	$('tr.clickable').live('click', function(e) {
+		e.preventDefault();
+		$.bbq.pushState({webcam: $(this).attr('id') });
+	});
 });
 </script>
 <style>
