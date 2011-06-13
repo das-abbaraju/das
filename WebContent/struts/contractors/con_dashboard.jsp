@@ -428,7 +428,7 @@ table.report tr.hurdle td {
 					</strong>
 				</p>
 				<p>PICS CSR:
-					<strong><s:property value="contractor.auditor.name" /> / <s:property value="contractor.auditor.phone" /> / </strong>
+					<strong><s:property value="contractor.auditor.name" /> / <s:property value="contractor.auditor.phone" /> / </strong> Fax: <s:property value="contractor.auditor.fax" /> / 
 					<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email"><s:property value="contractor.auditor.email"/></a>
 				</p>
 				<p><s:text name="global.SafetyRisk" />:
