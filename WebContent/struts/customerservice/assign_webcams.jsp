@@ -84,7 +84,7 @@ function changeState(state) {
 	<s:form>
 		<s:hidden name="audit.id"/>
 		<fieldset class="form">
-			<legend><span><s:property value="audit.contractorAccount.name"/></span></legend>
+			<h2><s:property value="audit.contractorAccount.name"/></h2>
 			<ol>
 				<li><label></label><input type="button" value="Same as Primary" onclick="useContractor()"/>
 					<input type="button" value="Show Primary Info" onclick="showContractor()"/></li>
