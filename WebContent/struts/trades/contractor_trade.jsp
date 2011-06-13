@@ -23,7 +23,7 @@ var conID = '<s:property value="id"/>';
 
 <s:include value="../contractors/conRegistrationHeader.jsp"/>
 
-<s:if test="contractor.tradesUpdated == null && contractor.trades.size() > 0">
+<s:if test="contractor.tradesUpdated == null && contractor.trades.size() > 0 && !permissions.operatorCorporate">
 	<s:form>
 		<div class="alert" id="reviewTrades">
 			<s:hidden name="contractor" />
