@@ -18,20 +18,26 @@ public final class OperatorAutocomplete extends AutocompleteActionSupport<Operat
 
 	@Override
 	protected Collection<OperatorAccount> getItems() {
-		if (!permissions.isAdmin()) {
-			// TODO Non admin queries not supported yet
+		if (!permissions.isAdmin() && !permissions.isCorporate()) {
+			// TODO Non admin/corporate queries not supported yet
 			return Collections.emptyList();
+		}
+
+		String corpPerms = "";
+		if (permissions.isCorporate()) {
+			corpPerms = String.format(" AND a.id IN (SELECT f.operator.id FROM Facility f "
+					+ "WHERE f.corporate.id = %d)", permissions.getAccountId());
 		}
 
 		if (itemKeys == null) {
 			if (!Strings.isEmpty(q)) {
 				if (isSearchDigit())
-					return dao.findWhere(true, "a.id LIKE '%" + Utilities.escapeQuotes(q) + "%'");
+					return dao.findWhere(true, "a.id LIKE '%" + Utilities.escapeQuotes(q) + "%'" + corpPerms);
 				else
-					return dao.findWhere(true, "a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'");
+					return dao.findWhere(true, "a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'" + corpPerms);
 			}
 		} else if (itemKeys.length > 0) {
-			return dao.findWhere(true, "a.id IN (" + Strings.implode(itemKeys) + ")", limit);
+			return dao.findWhere(true, "a.id IN (" + Strings.implode(itemKeys) + ")" + corpPerms, limit);
 		}
 		return Collections.emptyList();
 	}
