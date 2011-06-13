@@ -191,7 +191,7 @@ public class FlagDataCalculator {
 					}
 				}
 				if (scoredAudit == null) {
-					return false;
+					return null;
 				}
 				boolean r = false;
 
