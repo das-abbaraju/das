@@ -105,7 +105,8 @@ public class PicsMenu {
 				subMenu = addSupportLink(menu);
 				subMenu.addChild("Edit Profile", "ProfileEdit.action");
 			} else {
-				subMenu = menu.addChild(getText("ContractorRegistration.CompanyDetails.heading"), "ContractorEdit.action");
+				subMenu = menu.addChild(getText("ContractorRegistration.CompanyDetails.heading"),
+						"ContractorEdit.action");
 				addSupportLink(menu);
 			}
 			return menu;
@@ -236,7 +237,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
 			subMenu.addChild(getTitle("ReportInsuranceApproval"),
 					"ReportInsuranceApproval.action?filter.auditStatus=Complete");
-		
+
 		// Management
 		subMenu = menu.addChild(getText("menu.Management"));
 		if (permissions.hasPermission(OpPerms.ManageCorporate) || permissions.hasPermission(OpPerms.ManageOperators)
@@ -289,7 +290,7 @@ public class PicsMenu {
 		// Configuration
 		subMenu = menu.addChild(getText("menu.Configuration"));
 		HashMap<String, String> menuItems = new HashMap<String, String>();
-		
+
 		if (permissions.hasPermission(OpPerms.Translator)) {
 			menuItems.put("Manage Translations", "ManageTranslations.action");
 			menuItems.put("Import/Export Translations", "TranslationETL.action");
@@ -323,15 +324,16 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EmailTemplates, OpType.Edit)) {
 			menuItems.put(getTitle("EditEmailTemplate"), "EditEmailTemplate.action");
 		}
-		
+
 		// add to menu in sorted order
 		ArrayList<String> keys = new ArrayList<String>(menuItems.keySet());
 		Collections.sort(keys, new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
 				return o1.compareTo(o2);
-			}});
-		for (String key:keys) {
+			}
+		});
+		for (String key : keys) {
 			subMenu.addChild(key, menuItems.get(key));
 		}
 
@@ -374,7 +376,7 @@ public class PicsMenu {
 		if (permissions.isAdmin()
 				|| (permissions.isOperatorCorporate() && permissions.getCorporateParent().contains(10566)))
 			subMenu.addChild("Contractor Score", "ReportContractorScore.action");
-		if (permissions.hasPermission(OpPerms.EMRReport)) {
+		if (permissions.hasPermission(OpPerms.EMRReport) && "US".equals(permissions.getCountry())) {
 			subMenu.addChild(getTitle("GraphEmrRates"), "GraphEmrRates.action?years=2010");
 			subMenu.addChild(getTitle("ReportEmrRates"), "ReportEmrRates.action?filter.auditFor=2010");
 		}

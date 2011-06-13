@@ -486,6 +486,10 @@ public class Permissions implements Serializable {
 		return locale;
 	}
 
+	/**
+	 * user.getAccount().getCountry().getIsoCode()
+	 * @return
+	 */
 	public String getCountry() {
 		return country;
 	}
