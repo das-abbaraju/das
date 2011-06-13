@@ -217,7 +217,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 										auditDataDAO.save(cao);
 									}
 								}
-								
+
 								auditBuilder.recalculateCategories(cAudit);
 								auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
 								auditPercentCalculator.percentCalculateComplete(cAudit);
@@ -250,9 +250,9 @@ public class ReportNewContractorSearch extends ReportAccount {
 		}
 
 		String accountName = getFilter().getAccountName();
-		// TODO We might want to add the new trade autocomplete here as well
-		if (accountName == null || ReportFilterAccount.DEFAULT_NAME.equals(accountName) || accountName.length() < 3) {
-			this.addActionError("Please enter a contractor name with at least 3 characters");
+		if ((accountName == null || ReportFilterAccount.DEFAULT_NAME.equals(accountName) || accountName.length() < 3)
+				&& (getFilter().getTrade() == null || getFilter().getTrade().length == 0)) {
+			this.addActionError("Please select a trade or enter a contractor name with at least 3 characters");
 			return SUCCESS;
 		}
 
