@@ -87,4 +87,22 @@ $(function() {
 	});
 
 	setupCluetip();
+	
+	if (!$('#trade-view-single').length > 0) {
+		var maxArray = [];
+		$('a.trade').each(function(){
+			var classArray = $.trim($(this).attr('class')).split(' ');
+			for (var cls in classArray) {
+				var str = classArray[cls];
+				if(str.indexOf('trade-cloud-') > -1){
+					maxArray.push(Number((str.slice(str.lastIndexOf('-')+1, str.length))));
+					break;
+				}
+			}
+		});
+		if(maxArray.length > 0){
+			var max = Math.max.apply(Math, maxArray);
+			$('a.trade-cloud-'+max).first().click();
+		}
+	}
 });

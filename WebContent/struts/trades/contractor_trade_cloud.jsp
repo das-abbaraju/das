@@ -4,20 +4,22 @@
 
 <h4>Selected trades</h4>
 
-<s:if test="scope != 'ContractorView'">
-	<s:if test="trade == null">
-		<div id="trade-instructions">
-			<p><s:text name="ContractorTrades.instructions"></s:text></p>
-		</div><br />
-	</s:if>
-	<s:else>
-		<div>
-			<a class="CTInstructions help" rel="#ContractorTradesInstructions">Instructions</a>
-			<div id="ContractorTradesInstructions">
+<s:if test="!permissions.operatorCorporate">
+	<s:if test="scope != 'ContractorView'">
+		<s:if test="trade == null">
+			<div id="trade-instructions">
 				<p><s:text name="ContractorTrades.instructions"></s:text></p>
+			</div><br />
+		</s:if>
+		<s:else>
+			<div>
+				<a class="CTInstructions help" rel="#ContractorTradesInstructions">Instructions</a>
+				<div id="ContractorTradesInstructions">
+					<p><s:text name="ContractorTrades.instructions"></s:text></p>
+				</div>
 			</div>
-		</div>
-	</s:else>
+		</s:else>
+	</s:if>
 </s:if>
 
 <s:if test="contractor.trades.size() > 0">

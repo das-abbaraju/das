@@ -33,12 +33,12 @@ var conID = '<s:property value="id"/>';
 	</s:form>
 </s:if>
 
-<s:if test="!permissions.operator">
+<s:if test="!permissions.operatorCorporate">
 <h4>What are your business trades?</h4>
 <s:include value="trade_search.jsp"/>
 </s:if>
 
-<div id="trade-view" <s:if test="permissions.operator">class="fullwidth"</s:if>>
+<div id="trade-view" <s:if test="permissions.operatorCorporate">class="fullwidth"</s:if>>
 	<s:include value="contractor_trade_view.jsp"/>
 </div>
 
