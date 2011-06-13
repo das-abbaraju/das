@@ -72,6 +72,7 @@ public class ContractorSimulator extends PicsActionSupport {
 			co.setOperatorAccount(operator);
 			contractor.getOperators().add(co);
 		}
+		contractor.setAuditColumns();
 
 		if (auditType != null && auditType.getId() > 0) {
 			fillAuditCategories();

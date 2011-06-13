@@ -105,32 +105,14 @@ public class AuditBuilder {
 			ContractorAudit conAudit = iter.next();
 			// checking to see if we still need audit
 			if (!conAudit.isManuallyAdded() && !requiredAuditTypes.contains(conAudit.getAuditType())) {
-				boolean needed = false;
-				// Never delete the PQF
-				if (conAudit.getAuditType().isPqf())
-					needed = true;
-				for (ContractorAuditOperator cao : conAudit.getOperators()) {
-					if (cao.getStatus().after(AuditStatus.Pending))
-						needed = true;
-					else if (cao.getPercentComplete() > 0)
-						needed = true;
-				}
-
-				if (!needed && conAudit.getScheduledDate() != null) {
-					System.out.println("WARNING: Leaving unneeded scheduled audit " + conAudit.getId());
-					needed = true;
-				}
-
-				if (!needed && conAudit.getData().size() == 0) {
-					// removing unneeded audit
+				if (canDelete(conAudit)) {
 					iter.remove();
 					conAuditDao.remove(conAudit);
-				}
-
-				if (!needed) {
+				} else {
 					// Make sure that the caos' visibility is set correctly
 					for (ContractorAuditOperator cao : conAudit.getOperators()) {
-						cao.setVisible(false);
+						if (cao.isVisible())
+							cao.setVisible(false);
 					}
 				}
 			}
@@ -143,18 +125,42 @@ public class AuditBuilder {
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 			// We may want to consider only calculating the detail for non-expired Audits
 			AuditTypeDetail auditTypeDetail = findDetailForAuditType(requiredAuditTypeDetails, conAudit.getAuditType());
-			if (auditTypeDetail != null) {
+			if (auditTypeDetail == null) {
+				/*
+				 * This audit is no longer required either because of a rule change or a data change (like removing
+				 * operators)
+				 */
+				// TODO testing updating categories and caos for a manually added audit
+			} else {
 				Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, auditTypeDetail.operators);
 				fillAuditCategories(conAudit, categories);
 				fillAuditOperators(conAudit, categoriesBuilder.getCaos());
-			} else {
-				// This audit is no longer required either because of a rule change or a data change (like removing
-				// operators)
-				// System.out.println("Missing auditTypeDetail for " + conAudit.getAuditType());
 			}
 		}
 
 		conAuditDao.save(contractor);
+	}
+
+	private boolean canDelete(ContractorAudit conAudit) {
+		// Never delete the PQF
+		if (conAudit.getAuditType().isPqf())
+			return false;
+
+		if (conAudit.getScheduledDate() != null) {
+			return false;
+		}
+
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus().after(AuditStatus.Pending))
+				return false;
+			else if (cao.getPercentComplete() > 0)
+				return false;
+		}
+
+		if (conAudit.getData().size() == 0) {
+			return false;
+		}
+		return true;
 	}
 
 	private AuditTypeDetail findDetailForAuditType(Set<AuditTypeDetail> requiredAuditTypeDetails, AuditType auditType) {

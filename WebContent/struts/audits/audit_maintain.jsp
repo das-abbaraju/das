@@ -23,6 +23,8 @@
 				<s:textfield name="conAudit.auditLocation"/></li>
 			<li><label>Audit For:</label>
 				<s:textfield name="conAudit.auditFor"/></li>
+			<li><label>Manually Added:</label>
+				<s:checkbox name="conAudit.manuallyAdded"></s:checkbox></li>
 		</ol>
 	</fieldset>
 	<fieldset class="form">
