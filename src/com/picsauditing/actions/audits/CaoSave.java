@@ -16,8 +16,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.OshaAuditDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -29,13 +27,11 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class CaoSave extends AuditActionSupport {
@@ -298,23 +294,27 @@ public class CaoSave extends AuditActionSupport {
 		ContractorAudit audit = cao.getAudit();
 
 		/*
-		 * // TODO Consider locking the Manual Audit categories here instead of on the
-		 * AuditBuilder.fillAuditCategories() advantage is that newly added categories will get added to a Submitted
-		 * Manual Audit and existing Subcategories we be locked on Manual Audit. UPGRADE SQL: UPDATE audit_cat_data acd
-		 * join contractor_audit ca on acd.auditID = ca.id AND ca.auditTypeID = 2 JOIN contractor_audit_operator cao on
-		 * cao.auditID = ca.id and cao.status != 'Pending' SET acd.override = 1 ;
+		 * // TODO Consider locking the Manual Audit categories here instead of
+		 * on the AuditBuilder.fillAuditCategories() advantage is that newly
+		 * added categories will get added to a Submitted Manual Audit and
+		 * existing Subcategories we be locked on Manual Audit. UPGRADE SQL:
+		 * UPDATE audit_cat_data acd join contractor_audit ca on acd.auditID =
+		 * ca.id AND ca.auditTypeID = 2 JOIN contractor_audit_operator cao on
+		 * cao.auditID = ca.id and cao.status != 'Pending' SET acd.override = 1
+		 * ;
 		 */
-//		if (step.getNewStatus().after(AuditStatus.Pending)) {
-//			if (audit.getAuditType().isDesktop()) {
-//				// Desktops after Pending mode should have their categories locked down
-//				for (AuditCatData catData : audit.getCategories()) {
-//					if (!catData.isOverride()) {
-//						catData.setOverride(true);
-//						auditDao.save(catData);
-//					}
-//				}
-//			}
-//		}
+		// if (step.getNewStatus().after(AuditStatus.Pending)) {
+		// if (audit.getAuditType().isDesktop()) {
+		// // Desktops after Pending mode should have their categories locked
+		// down
+		// for (AuditCatData catData : audit.getCategories()) {
+		// if (!catData.isOverride()) {
+		// catData.setOverride(true);
+		// auditDao.save(catData);
+		// }
+		// }
+		// }
+		// }
 
 		if (step.getNewStatus().after(AuditStatus.Resubmitted)) {
 			if (cao.getAudit().getAuditType().getClassType().isPolicy() && cao.getOperator().isAutoApproveInsurance()) {
@@ -324,7 +324,7 @@ public class CaoSave extends AuditActionSupport {
 				}
 			}
 		}
-		
+
 		if (step.getNewStatus().after(AuditStatus.Resubmitted)) {
 			// Expire previous audits
 			int lastYear = DateBean.getCurrentYear() - 1;
@@ -341,27 +341,6 @@ public class CaoSave extends AuditActionSupport {
 							oldAudit.setExpiresDate(new Date());
 							auditDao.save(oldAudit);
 						}
-					}
-				}
-			}
-
-			for (AuditCatData auditCatData : audit.getCategories()) {
-				if (!auditCatData.isApplies()) {
-					PicsLogger.log("removing unused data for category " + auditCatData.getCategory().getName());
-					if (audit.getAuditType().isAnnualAddendum() && auditCatData.getCategory().isSha()) {
-						switch (auditCatData.getCategory().getId()) {
-						case AuditCategory.OSHA_AUDIT:
-							oshaAuditDAO.removeByType(audit.getId(), OshaType.OSHA);
-							break;
-						case AuditCategory.MSHA:
-							oshaAuditDAO.removeByType(audit.getId(), OshaType.MSHA);
-							break;
-						case AuditCategory.CANADIAN_STATISTICS:
-							oshaAuditDAO.removeByType(audit.getId(), OshaType.COHS);
-							break;
-						}
-					} else {
-						auditDataDao.removeDataByCategory(audit.getId(), auditCatData.getCategory().getId());
 					}
 				}
 			}
