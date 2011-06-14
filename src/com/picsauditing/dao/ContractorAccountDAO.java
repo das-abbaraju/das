@@ -103,7 +103,7 @@ public class ContractorAccountDAO extends PicsDAO {
 			// Show corporate users operators in their facility
 			where = "AND operatorAccount IN (SELECT operator FROM Facility " + "WHERE corporate = "
 					+ permissions.getAccountId() + ")";
-		if (permissions.isOperator())
+		if (permissions.isOperator()) {
 			// Show operator users operators that share the same corporate
 			// facility
 			where = "AND (operatorAccount.id = " + permissions.getAccountId()
@@ -111,6 +111,7 @@ public class ContractorAccountDAO extends PicsDAO {
 					+ "WHERE corporate IN (SELECT corporate FROM Facility " + "WHERE operator.id = "
 					+ permissions.getAccountId() + " AND corporate.id NOT IN ( "
 					+ Strings.implode(Account.PICS_CORPORATE, ",") + "))))";
+		}
 
 		Query query = em.createQuery("FROM ContractorOperator WHERE contractorAccount = ? " + where
 				+ " ORDER BY operatorAccount.name");
