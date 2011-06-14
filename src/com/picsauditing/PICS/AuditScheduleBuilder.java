@@ -109,7 +109,7 @@ public class AuditScheduleBuilder {
 
 		public Auditor(User user, List<AuditorVacation> holidays) {
 			this.user = user;
-			this.userTimeZone = user.getTimezoneObject();
+			this.userTimeZone = user.getTimezone();
 			this.vacations.addAll(holidays);
 		}
 

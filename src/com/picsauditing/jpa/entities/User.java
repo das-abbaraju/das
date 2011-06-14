@@ -81,7 +81,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private boolean forcePasswordReset;
 	private int failedAttempts = 0;
 	private Date lockUntil = null;
-	private String timezone = "US/Central";
+	private TimeZone timezone = null;
 	private Locale locale = Locale.ENGLISH;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
@@ -433,13 +433,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.ownedPermissions = ownedPermissions;
 	}
 
-	@Transient
-	public TimeZone getTimezoneObject() {
-		if (timezone == null)
-			return TimeZone.getDefault();
-		return TimeZone.getTimeZone(timezone);
-	}
-
 	public Locale getLocale() {
 		return locale;
 	}
@@ -448,11 +441,11 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.locale = locale;
 	}
 
-	public String getTimezone() {
+	public TimeZone getTimezone() {
 		return timezone;
 	}
 
-	public void setTimezone(String timezone) {
+	public void setTimezone(TimeZone timezone) {
 		this.timezone = timezone;
 	}
 
@@ -535,11 +528,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	/**
 	 * 
 	 * @param permissions
-	 *            The new set of permission for this user (transient version of
-	 *            user.permissions)
+	 *            The new set of permission for this user (transient version of user.permissions)
 	 * @param perm
-	 *            The actual UserAccess object owned by either the current user
-	 *            or one of its parent groups.
+	 *            The actual UserAccess object owned by either the current user or one of its parent groups.
 	 * @param overrideBoth
 	 *            True if perm is from "this", false if perm is from a parent
 	 */
@@ -728,8 +719,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	/**
-	 * In UsersManage, another user (non-group) is inserted into this user's
-	 * groups for shadowing
+	 * In UsersManage, another user (non-group) is inserted into this user's groups for shadowing
 	 * 
 	 * @return shadowed user or null
 	 */

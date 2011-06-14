@@ -19,6 +19,7 @@ import org.json.simple.JSONObject;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "auditor_vacation")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
@@ -85,7 +86,7 @@ public class AuditorVacation extends BaseTable {
 		Calendar end = null;
 		start.setTime(startDate);
 		if (user != null)
-			start.setTimeZone(user.getTimezoneObject());
+			start.setTimeZone(user.getTimezone());
 
 		obj.put("start", start.getTimeInMillis());
 
@@ -97,7 +98,7 @@ public class AuditorVacation extends BaseTable {
 
 		DateFormat format = new SimpleDateFormat("HH");
 		if (user != null)
-			format.setTimeZone(user.getTimezoneObject());
+			format.setTimeZone(user.getTimezone());
 
 		if (format.format(startDate).equals("00")
 				&& (end == null || end.getTime().equals(DateBean.getNextDayMidnight(startDate))))

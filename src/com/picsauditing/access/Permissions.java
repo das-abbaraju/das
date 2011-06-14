@@ -137,7 +137,7 @@ public class Permissions implements Serializable {
 	}
 
 	public void setTimeZone(User user) {
-		timezone = TimeZone.getTimeZone(user.getTimezone());
+		timezone = user.getTimezone();
 	}
 
 	public void setAccountPerms(User user) throws Exception {
