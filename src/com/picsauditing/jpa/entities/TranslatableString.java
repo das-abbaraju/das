@@ -128,7 +128,10 @@ public class TranslatableString implements Serializable {
 		return null;
 	}
 
-	public class Translation {
+	public class Translation implements Serializable {
+
+		private static final long serialVersionUID = 4991157182068077703L;
+
 		private String locale;
 		private String value;
 		private boolean modified = false;
