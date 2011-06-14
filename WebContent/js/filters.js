@@ -4,7 +4,6 @@ function loadFiltersCallback() {
 		var field_type = that.attr('rel').split('/')[0];
 		var extraArgs = that.attr('rel').split('/')[1];
 	    var name = that.attr('name');
-	    var opt = $('<option>').attr('selected', 'selected');
 	    var value = that.val();
 	    var r_ids;
 	    if(value != 'undefined' && value.length > 0){
@@ -22,7 +21,8 @@ function loadFiltersCallback() {
 				jsonContainer: 'result',
 				prePopulate: results,
 		        onAdd: function(item) {
-					that.closest('.q_box').find('select[name="' + name + '"]').append(opt.clone().attr('value', item.id).append(item.name));
+					var ele = $('<option>', {'value': item.id, 'selected': 'selected'}).append(item.name);
+					that.closest('.q_box').find('select[name="' + name + '"]').append(ele);
 	        	},
 		       	onDelete: function(item) {
 	        		that.closest('.q_box').find('select[name="' + name + '"]').find('option[value="'+item.id+'"]').remove();
