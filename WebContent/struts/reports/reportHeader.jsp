@@ -8,9 +8,6 @@
 <script type="text/javascript" src="js/jquery/tokeninput/jquery.tokeninput.js"></script>
 <link rel="stylesheet" type="text/css" href="js/jquery/tokeninput/styles/token-input.css" />
 
-<script type="text/javascript" src="js/filters.js?v=<s:property value="version"/>"></script>
-
-<script type="text/javascript" src="js/Search.js?v=<s:property value="version"/>"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 
 <script type="text/javascript" src="js/jquery/jquery.hoverIntent.js"></script>
@@ -18,6 +15,9 @@
 <script type="text/javascript" src="js/jquery/jquery.bgiframe.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/cluetip/jquery.cluetip.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
+
+<script type="text/javascript" src="js/filters.js?v=<s:property value="version"/>"></script>
+<script type="text/javascript" src="js/Search.js?v=<s:property value="version"/>"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {

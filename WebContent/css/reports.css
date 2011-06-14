@@ -361,3 +361,15 @@ table.report tbody .Green td {color:#272;}
 	font-size: .85em; 
 	color: #999
 }
+
+.q_box{
+	display: none;
+}
+
+.open {
+	display: inline-block;
+}
+
+select.hidden {
+	display: none;
+}

@@ -1,4 +1,4 @@
-$(function(){
+function loadFiltersCallback() {
 	$('input.tokenAuto').each(function() {
 		var that = $(this);
 		var field_type = that.attr('rel').split('/')[0];
@@ -11,7 +11,6 @@ $(function(){
 		    r_ids = value.split(',').map(Number);
 	    }
 	    that.removeAttr('name');
-	    //that.removeAttr('value');
 
 		$.getJSON(field_type+'Autocomplete!tokenJson.action', {'itemKeys': r_ids, 'extraArgs': extraArgs}, function(json) {
 			var results;
@@ -29,6 +28,8 @@ $(function(){
 	        		that.closest('.q_box').find('select[name="' + name + '"]').find('option[value="'+item.id+'"]').remove();
 		        }
 	    	});
+			
+			that.trigger('updateQuery');
 		});
 
 	    that.closest('.q_box').append($('<select>').attr({
@@ -37,8 +38,15 @@ $(function(){
 	        'multiple': 'multiple'
 	    }));
 	});
+	
+	$('span.q_box:not(.tokenAuto)').trigger('updateQuery');
+}
 
-	$('a.filterBox').click(function(e) {
+$(function() {
+	
+	loadFiltersCallback();
+	
+	$('body').delegate('.filterOption a.filterBox', 'click', function(e) {
 		e.preventDefault();
 		var box = $(this).closest('.filterOption').find('.q_box');
 		var query = $(this).closest('.filterOption').find('.q_status');
@@ -52,7 +60,7 @@ $(function(){
 		}
 	});
 
-	$('a.clearLink').click(function(e) {
+	$('body').delegate('.filterOption a.clearLink', 'click', function(e) {
 		e.preventDefault();
 		var ele = $(this).closest('span.clearLink');
 		var tokenInput = ele.find('ul.token-input-list');
@@ -72,7 +80,7 @@ $(function(){
 		$(this).closest('.filterOption').find('a.filterBox').click();
 	});
 
-	$('div.filterOption').delegate('span.select', 'updateQuery', function() {
+	$('body').delegate('.filterOption span.select', 'updateQuery', function() {
 		var status_text = '';
 		$(this).find('select option:selected').each(function() {
 			if(status_text!='')
@@ -85,7 +93,7 @@ $(function(){
 		$(this).closest('.filterOption').find('.q_status').text(status_text);
 	});
 
-	$('dev.filterOption').delegate('span.textfield', 'updateQuery', function() {
+	$('body').delegate('.filterOption span.textfield', 'updateQuery', function() {
 		var status_text = '';
 		var text1 = $(this).find(':input[type="text"]').eq(0);
 		var text2 = $(this).find(':input[type="text"]').eq(1);
@@ -105,16 +113,16 @@ $(function(){
 
 		$(this).closest('.filterOption').find('.q_status').text(status_text);
 	});
-
-	$(':input[type="text"].forms:not(.datepicker)').focus(function() {
-		clearText($(this).get(0));
+	
+	$('body').delegate('.filterOption :input[type="text"]:not(.datepicker)','focus', function() {
+		clearText($(this)[0]);
 	});
-
-	$('#write_email_button').click(function() {
+	
+	$('body').delegate('#write_email_button','click', function() {
 		clickSearchSubmit('form1');
 	});
 
-	$('#find_recipients').click(function() {
+	$('body').delegate('#find_recipients','click',function() {
 		clickSearch('form1');
 	});
 
@@ -123,5 +131,4 @@ $(function(){
 	//	$(this).closest('.filterOption').find('.filterBox').click();
 	//});
 
-	$('span.q_box').trigger('updateQuery');
 });

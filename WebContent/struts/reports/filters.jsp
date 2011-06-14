@@ -4,24 +4,6 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../actionMessages.jsp" />
 
-<script type="text/javascript" src="js/jquery/tokeninput/jquery.tokeninput.js"></script>
-<link rel="stylesheet" type="text/css" href="js/jquery/tokeninput/styles/token-input.css" />
-
-<style>
-.q_box{
-	display: none;
-}
-
-.open {
-	display: inline-block;
-}
-
-select.hidden {
-	display: none;
-}
-
-</style>
-
 <div id="search">
 <s:if test="allowCollapsed">
 	<div id="showSearch" onclick="showSearch()" <s:if test="filtered">style="display: none"</s:if>>
@@ -129,20 +111,18 @@ select.hidden {
 			<span class="filterOption">
 				<a href="#" class="filterBox">State</a> =
 				<span class="q_status">ALL</span>
-				<span id="form1_state_select" class="clearLink q_box">
+				<span id="form1_state_select" class="clearLink q_box select">
 					<s:select id="form1_state" name="filter.state" list="filter.stateList" listKey="isoCode"
 						listValue="name" cssClass="forms" multiple="true" size="15" onclick="clearSelected('form1_country');" /><br />
-					<script type="text/javascript">updateQuery('form1_state');</script>
 					<a class="clearLink" href="#" onclick="clearSelected('form1_state'); return false;">Clear</a>
 				</span>
 			</span>
 			<span class="filterOption">
 				<a href="#" class="filterBox"><s:text name="global.Country" /></a> =
 				<span class="q_status">ALL</span>
-				<span id="form1_country_select" class="clearLink q_box">
+				<span id="form1_country_select" class="clearLink q_box select">
 					<s:select id="form1_country" name="filter.country" list="filter.countryList" listKey="isoCode"
 						listValue="name" cssClass="forms" multiple="true" size="15" /><br />
-					<script type="text/javascript">updateQuery('form1_country');</script>
 					<a class="clearLink" href="#" onclick="clearSelected('form1_country'); return false;">Clear</a>
 				</span>
 			</span>
@@ -175,7 +155,7 @@ select.hidden {
 
 	<s:if test="filter.showTaxID">
 		<div class="filterOption">
-			<s:textfield name="filter.taxID" cssClass="forms" size="9"  title="must be 9 digits" />
+			<s:textfield name="filter.taxID" cssClass="forms" size="9" title="must be 9 digits" />
 		</div>
 	</s:if>
 

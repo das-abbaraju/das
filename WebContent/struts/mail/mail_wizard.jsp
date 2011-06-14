@@ -9,27 +9,28 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 function selectList(listType) {
-	jQuery('#filter_recipients').show();
-	jQuery('#filter_recipients').html("<img src='images/ajax_process2.gif' width='48' height='48' />Loading filters for "+listType+"s");
-	jQuery('#report_data').empty();
-	jQuery('#target_recipients').hide('normal');
-	jQuery('#back_to_step1').show();
-	jQuery('#filter_recipients').load('ReportFilterAjax.action', {listType:listType}, 
-			function(response, status){ 
-				if (status=='success') {
-					jQuery('#selectedListType').html(listType + " List").fadeIn('normal');
-				}
+	$('#filter_recipients').show();
+	$('#filter_recipients').html("<img src='images/ajax_process2.gif' width='48' height='48' />Loading filters for "+listType+"s");
+	$('#report_data').empty();
+	$('#target_recipients').hide('normal');
+	$('#back_to_step1').show();
+	$('#filter_recipients').load('ReportFilterAjax.action', {listType:listType}, 
+		function(response, status) {
+			if (status=='success') {
+				loadFiltersCallback();
+				$('#selectedListType').html(listType + " List").fadeIn('normal');
 			}
+		}
 	);
 }
 function showLists() {
-	jQuery('#back_to_step1').hide();
-	jQuery('#target_recipients').show('normal');
-	jQuery('#filter_recipients').fadeOut('normal');
-	jQuery('#report_data').hide('normal');
-	jQuery('#selectedListType').hide();
+	$('#back_to_step1').hide();
+	$('#target_recipients').show('normal');
+	$('#filter_recipients').fadeOut('normal');
+	$('#report_data').hide('normal');
+	$('#selectedListType').hide();
 
-	jQuery.ajax({
+	$.ajax({
 		url: 'ReportFilterAjax.action',
 		data: {
 			clear: true
@@ -37,7 +38,7 @@ function showLists() {
 	});
 }
 <s:if test="type != null">
-jQuery(function(){
+$(function() {
 	selectList('<s:property value="type"/>');
 });
 </s:if>
