@@ -44,6 +44,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	// Assuming most operators want to watch their contractor after they
 	// register
 	private boolean watch = true;
+	private String operatorTags;
 
 	public String getName() {
 		return name;
@@ -243,7 +244,15 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	public void setWatch(boolean watch) {
 		this.watch = watch;
 	}
+	
+	public String getOperatorTags() {
+		return operatorTags;
+	}
 
+	public void setOperatorTags(String operatorTags) {
+		this.operatorTags = operatorTags;
+	}
+	
 	@Transient
 	public String getRequestedByUserString() {
 		return requestedByUser == null ? requestedByUserOther : requestedByUser.getName();
