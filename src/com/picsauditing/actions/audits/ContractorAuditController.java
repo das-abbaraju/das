@@ -26,6 +26,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
@@ -439,22 +440,41 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	/**
 	 * This yes/no question only appears on the PQF audit itself. If they answer yes to this, generate an Import Fee
-	 * invoice.
+	 * invoice. <br/>
+	 * <br/>
+	 * Check whether the contractor answered the Competitor Membership question. If there is no answer, show this
+	 * message. If they've answered yes but the Import PQF audit/fee doesn't exist, show this message.
 	 * 
-	 * @return True if the PQF is less than 50% complete for every CAO, and the contractor hasn't answered the
-	 *         competitor membership question on registration.
+	 * @return true if they should see the upsell message
 	 */
 	public boolean isNeedsImportPQFQuestion() {
-		if (conAudit.getAuditType().isPqf() && conAudit.getContractorAccount().getCompetitorMembership() == null) {
-			for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
-				if (cao.getPercentComplete() > 50)
-					return false;
-			}
+		if (!conAudit.getAuditType().isPqf())
+			return false;
 
-			return true;
+		ContractorAccount con = conAudit.getContractorAccount();
+		if (con.getCompetitorMembership() != null) {
+			// They answered yes to this question
+			if (con.getCompetitorMembership()) {
+				// TODO: We might need to clean this logic up later. The import fee is a one time charge. If there is a
+				// contractor fee with the Import Fee class, then I'm assuming that they've been charged for this
+				// before.
+				if (con.getFees().get(FeeClass.ImportFee) != null)
+					return false;
+
+				for (ContractorAudit importAudit : con.getAudits()) {
+					if (importAudit.getAuditType().getId() == AuditType.IMPORT_PQF)
+						return false;
+				}
+			} else
+				return false;
 		}
 
-		return false;
+		for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
+			if (cao.getPercentComplete() > 50)
+				return false;
+		}
+
+		return true;
 	}
 
 	public BigDecimal getImportPQFFeeAmount() {

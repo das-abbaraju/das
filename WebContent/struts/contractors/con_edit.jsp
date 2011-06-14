@@ -186,16 +186,16 @@ $(function() {
 				</fieldset>
 				<fieldset class="form submit">
 					<s:if test="permissions.contractor">
-						<input type="submit" class="picsbutton positive" name="button" value="<s:text name="button.Save" />"/>
+						<s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />
 					</s:if>
 					<s:else>
 						<pics:permission perm="ContractorAccounts" type="Edit">
-							<input type="submit" class="picsbutton positive" name="button" value="Save"/>
+							<s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />
 						</pics:permission>
 					</s:else>
 					<pics:permission perm="RemoveContractors">
-						<input type="submit" class="picsbutton negative" name="button" value="Delete" 
-							onClick="return confirm('Are you sure you want to delete this account?');"/>
+						<s:submit cssClass="picsbutton negative" method="delete" value="%{getText('button.Delete')}" 
+							onclick="return confirm('Are you sure you want to delete this account?');"/>
 					</pics:permission>
 				</fieldset>				
 			</td>
@@ -209,11 +209,11 @@ $(function() {
 					</li>
 					<li><label>Will Renew:</label>
 						<s:if test="contractor.renew">
-							Yes - <s:submit action="ContractorEdit!deactivate" value="Cancel Account" />
+							Yes - <s:submit method="deactivate" value="Cancel Account" />
 						<pics:fieldhelp></pics:fieldhelp>
 						</s:if>
 						<s:else>
-							No - <s:submit action="ContractorEdit!reactivate" value="Reactivate" /> 
+							No - <s:submit method="reactivate" value="Reactivate" /> 
 						</s:else>
 					</li>
 					<li><label><s:text name="%{scope}.SoleProprietor.heading"/></label>
@@ -262,7 +262,11 @@ $(function() {
 						</pics:fieldhelp>
 					</li>
 					<li>
-						<input type="submit" class="picsbutton positive" name="button" value="<s:text name="button.Save" />"/>
+						<label for="conCompetitorMembership">Has Competitor Membership:</label>
+						<s:radio id="conCompetitorMembership" theme="pics" list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" name="contractor.competitorMembership" />
+					</li>
+					<li>
+						<s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />
 					</li>
 				</ol>
 				</fieldset>
@@ -271,7 +275,7 @@ $(function() {
 					<h2 class="formLegend">De-activation Email</h2>
 					<ol>
 						<li>
-							<input type="submit" class="picsbutton positive" name="button" value="SendDeactivationEmail"/>
+							<s:submit cssClass="picsbutton positive" method="sendDeactivationEmail" value="%{getText(scope + '.button.SendDeactivationEmail')}" />
 						</li>
 						<li>
 							<s:select cssStyle="font-size: 12px;" list="operatorList" name="operatorIds" listKey="id" listValue="name" multiple="true" size="10"/>

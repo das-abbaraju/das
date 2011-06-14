@@ -10,15 +10,16 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -56,34 +57,33 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private String logoFileName = null;
 	private File brochure = null;
 	private String brochureFileName = null;
+
+	@Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
+	@Autowired
 	protected ContractorValidator contractorValidator;
+	@Autowired
 	protected OperatorAccountDAO operatorAccountDAO;
+	@Autowired
 	protected UserDAO userDAO;
+	@Autowired
 	protected EmailQueueDAO emailQueueDAO;
+	@Autowired
 	protected NoteDAO noteDAO;
+	@Autowired
 	protected EmailSubscriptionDAO subscriptionDAO;
+	@Autowired
 	protected UserSwitchDAO userSwitchDAO;
+
 	protected List<Integer> operatorIds = new ArrayList<Integer>();
 	protected Country country;
 	protected State state;
 	protected State billingState;
 	protected int contactID;
 
-	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
-			OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO, NoteDAO noteDAO,
-			EmailSubscriptionDAO subscriptionDAO, UserSwitchDAO userSwitchDAO) {
-		this.auditQuestionDAO = auditQuestionDAO;
-		this.contractorValidator = contractorValidator;
-		this.userDAO = userDAO;
-		this.operatorAccountDAO = operatorAccountDAO;
-		this.emailQueueDAO = emailQueueDAO;
-		this.noteDAO = noteDAO;
-		this.subscriptionDAO = subscriptionDAO;
-		this.userSwitchDAO = userSwitchDAO;
-
+	public ContractorEdit() {
 		this.currentStep = ContractorRegistrationStep.EditAccount;
+		this.subHeading = "Contractor Edit";
 	}
 
 	public void prepare() throws Exception {
@@ -114,215 +114,213 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
 				state = getStateDAO().find(stateIsos[0]);
 
-			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters().get(
-					"billingState.isoCode");
+			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters()
+					.get("billingState.isoCode");
 			if (billingStateIsos != null && billingStateIsos.length > 0 && !Strings.isEmpty(billingStateIsos[0]))
 				billingState = getStateDAO().find(billingStateIsos[0]);
 		}
 	}
 
-	public String execute() throws Exception {
-		if (button != null) {
-			String ftpDir = getFtpDir();
+	public String save() throws Exception {
+		String ftpDir = getFtpDir();
 
-			if (button.equalsIgnoreCase("Save")) {
-				if (permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)) {
-					if (logo != null) {
-						String extension = logoFileName.substring(logoFileName.lastIndexOf(".") + 1);
-						String[] validExtensions = { "jpg", "gif", "png" };
+		if (permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)) {
+			if (logo != null) {
+				String extension = logoFileName.substring(logoFileName.lastIndexOf(".") + 1);
+				String[] validExtensions = { "jpg", "gif", "png" };
 
-						if (!FileUtils.checkFileExtension(extension, validExtensions)) {
-							addActionError("Logos must be a jpg, gif or png image");
-							return SUCCESS;
-						}
-						String fileName = "logo_" + contractor.getId();
-						FileUtils.moveFile(logo, ftpDir, "/logos/", fileName, extension, true);
-						contractor.setLogoFile(fileName + "." + extension);
-					}
-
-					if (brochure != null) {
-						String extension = brochureFileName.substring(brochureFileName.lastIndexOf(".") + 1);
-						String[] validExtensions = { "jpg", "gif", "png", "doc", "pdf" };
-
-						if (!FileUtils.checkFileExtension(extension, validExtensions)) {
-							addActionError("Brochure must be a image, doc or pdf file");
-							return SUCCESS;
-						}
-						String fileName = "brochure_" + contractor.getId();
-						FileUtils.moveFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
-						contractor.setBrochureFile(extension);
-					}
-
-					if (country != null && !country.equals(contractor.getCountry())) {
-						contractor.setCountry(country);
-					}
-
-					if (state != null && !state.equals(contractor.getState())) {
-						contractor.setState(state);
-					}
-
-					if (billingState != null && !"".equals(billingState.getIsoCode())
-							&& !billingState.equals(contractor.getBillingState())) {
-						contractor.setBillingState(billingState);
-					}
-
-					Vector<String> errors = contractorValidator.validateContractor(contractor);
-
-					if (contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
-						// Now check if they have a product risk level
-						if (!contractor.isMaterialSupplierOnly()
-								|| (contractor.getProductRisk() != null && !contractor.getProductRisk().equals(
-										LowMedHigh.Low))) {
-							errors.addElement("Only Low Product Risk and Material Supplier Only (not Onsite or "
-									+ "Offsite) contractor accounts can be set to List Only. Please verify contractor "
-									+ "information before setting List Only status.");
-						} else if (contractor.getProductRisk() == null) {
-							// Contractor doesn't have a product risk. Set to material supplier and add open task to
-							// answer the product questions on the PQF
-							errors.addElement("This contractor does not have a Product Risk.");
-							// TODO add an open task for the contractor?
-						}
-					}
-
-					if (errors.size() > 0) {
-						for (String error : errors)
-							addActionError(error);
-						// TODO I don't know if this is the right answer here, but we don't want to save anything if
-						// there are errors.
-						accountDao.refresh(contractor);
-						return SUCCESS;
-					}
-					contractor.setQbSync(true);
-					contractor.incrementRecalculation();
-					contractor.setNameIndex();
-
-					if (contactID > 0 && contactID != contractor.getPrimaryContact().getId()) {
-						contractor.setPrimaryContact(userDAO.find(contactID));
-					}
-					// contractor.setNeedsIndexing(true);
-					accountDao.save(contractor);
-
-					addActionMessage("Successfully modified " + contractor.getName());
-				}
-			} else if (button.equalsIgnoreCase("Delete")) {
-				permissions.tryPermission(OpPerms.RemoveContractors);
-				findContractor();
-
-				Iterator<ContractorAudit> auditList = contractor.getAudits().iterator();
-				while (auditList.hasNext()) {
-					ContractorAudit cAudit = auditList.next();
-					if (!cAudit.hasCaoStatusAfter(AuditStatus.Pending)) {
-						auditList.remove();
-						auditDao.remove(cAudit);
-					}
-				}
-
-				if (contractor.getAudits().size() > 0) {
-					addActionError("Cannot Remove Contractor with Audits");
+				if (!FileUtils.checkFileExtension(extension, validExtensions)) {
+					addActionError("Logos must be a jpg, gif or png image");
 					return SUCCESS;
 				}
+				String fileName = "logo_" + contractor.getId();
+				FileUtils.moveFile(logo, ftpDir, "/logos/", fileName, extension, true);
+				contractor.setLogoFile(fileName + "." + extension);
+			}
 
-				Iterator<User> userList = contractor.getUsers().iterator();
+			if (brochure != null) {
+				String extension = brochureFileName.substring(brochureFileName.lastIndexOf(".") + 1);
+				String[] validExtensions = { "jpg", "gif", "png", "doc", "pdf" };
 
-				while (userList.hasNext()) {
-					User user = userList.next();
-					userList.remove();
-					userDAO.remove(user);
+				if (!FileUtils.checkFileExtension(extension, validExtensions)) {
+					addActionError("Brochure must be a image, doc or pdf file");
+					return SUCCESS;
 				}
+				String fileName = "brochure_" + contractor.getId();
+				FileUtils.moveFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
+				contractor.setBrochureFile(extension);
+			}
 
-				accountDao.remove(contractor, getFtpDir());
+			if (country != null && !country.equals(contractor.getCountry())) {
+				contractor.setCountry(country);
+			}
 
-				return "ConList";
-			} else if (button.equals("SendDeactivationEmail")) {
-				permissions.tryPermission(OpPerms.EmailOperators);
-				Set<String> emailAddresses = new HashSet<String>();
-				if (operatorIds != null) {
-					for (int operatorID : operatorIds) {
-						OperatorAccount operator = operatorAccountDAO.find(operatorID);
+			if (state != null && !state.equals(contractor.getState())) {
+				contractor.setState(state);
+			}
 
-						List<EmailSubscription> subscriptions = subscriptionDAO.find(
-								Subscription.ContractorDeactivation, operatorID);
+			if (billingState != null && !"".equals(billingState.getIsoCode())
+					&& !billingState.equals(contractor.getBillingState())) {
+				contractor.setBillingState(billingState);
+			}
 
-						OperatorAccount parent = operator.getParent();
-						while (parent != null) { // adding corporate
-							// subscriptions
-							subscriptions.addAll(subscriptionDAO.find(Subscription.ContractorDeactivation, parent
-									.getId()));
-							parent = parent.getParent();
-						}
+			Vector<String> errors = contractorValidator.validateContractor(contractor);
 
-						Set<String> emails = new HashSet<String>();
-						boolean subscribed = false;
-						for (EmailSubscription subscription : subscriptions) {
-							if (!subscription.getTimePeriod().equals(SubscriptionTimePeriod.None)) {
-								emails.add(subscription.getUser().getEmail());
-								subscribed = true;
-							}
-						}
-
-						// only want to access dao if no subscription exists
-						// (very slow operation)
-						// sending email to primary contact if no subscribers
-						// exist
-						if (!subscribed && operator != null && operator.getPrimaryContact() != null)
-							emails.add(operator.getPrimaryContact().getEmail());
-
-						if (emails.size() > 0)
-							emailAddresses.addAll(emails);
-						else
-							addActionError("No primary contact or 'Contractor Registration' Subscriber for Operator ID: "
-									+ operatorID);
-					}
-
-					if (emailAddresses.size() > 0) {
-						if (!accountDao.isContained(contractor)) {
-							contractor = accountDao.find(contractor.getId());
-						}
-						EmailBuilder emailBuilder = new EmailBuilder();
-						emailBuilder.setTemplate(51); // Deactivation Email for
-						// operators
-						emailBuilder.setPermissions(permissions);
-						emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
-						emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ","));
-						emailBuilder.setCcAddresses("");
-						emailBuilder.setToAddresses("billing@picsauditing.com");
-						emailBuilder.setFromAddress("\"PICS Billing\"<billing@picsauditing.com>");
-						EmailQueue email = emailBuilder.build();
-						email.setViewableById(Account.PicsID);
-						email.setPriority(50);
-						emailQueueDAO.save(email);
-
-						Note note = new Note();
-						note.setAccount(contractor);
-						note.setAuditColumns(permissions);
-						note.setSummary("Deactivation Email Sent to the following email Addresses ");
-						note.setBody(Strings.implode(emailAddresses, ", "));
-						note.setPriority(LowMedHigh.Med);
-						note.setNoteCategory(NoteCategory.General);
-						note.setViewableById(Account.PicsID);
-						note.setCanContractorView(false);
-						note.setStatus(NoteStatus.Closed);
-						noteDAO.save(note);
-
-						this.addActionMessage("Successfully sent the email to operators");
-					}
+			if (contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
+				// Now check if they have a product risk level
+				if (!contractor.isMaterialSupplierOnly()
+						|| (contractor.getProductRisk() != null && !contractor.getProductRisk().equals(LowMedHigh.Low))) {
+					errors.addElement("Only Low Product Risk and Material Supplier Only (not Onsite or "
+							+ "Offsite) contractor accounts can be set to List Only. Please verify contractor "
+							+ "information before setting List Only status.");
+				} else if (contractor.getProductRisk() == null) {
+					// Contractor doesn't have a product risk. Set to material supplier and add open task to
+					// answer the product questions on the PQF
+					errors.addElement("This contractor does not have a Product Risk.");
+					// TODO add an open task for the contractor?
 				}
-			} else if (button.equals("copyPrimary")) {
-				contractor.setBillingAddress(contractor.getAddress());
-				contractor.setBillingCity(contractor.getCity());
-				contractor.setBillingState(contractor.getState());
-				contractor.setBillingZip(contractor.getZip());
-				accountDao.save(contractor);
-			} else {
-				// Because there are anomalies between browsers and how they
-				// pass
-				// in the button values, this is a catch all so we can get
-				// notified
-				// when the button name isn't set correctly
-				throw new Exception("no button action found called " + button);
+			}
+
+			if (errors.size() > 0) {
+				for (String error : errors)
+					addActionError(error);
+				// TODO I don't know if this is the right answer here, but we don't want to save anything if
+				// there are errors.
+				accountDao.refresh(contractor);
+				return SUCCESS;
+			}
+			contractor.setQbSync(true);
+			contractor.incrementRecalculation();
+			contractor.setNameIndex();
+
+			if (contactID > 0 && contactID != contractor.getPrimaryContact().getId()) {
+				contractor.setPrimaryContact(userDAO.find(contactID));
+			}
+			// contractor.setNeedsIndexing(true);
+			accountDao.save(contractor);
+
+			addActionMessage("Successfully modified " + contractor.getName());
+		}
+
+		return SUCCESS;
+	}
+
+	@RequiredPermission(value = OpPerms.RemoveContractors)
+	public String delete() throws Exception {
+		findContractor();
+
+		Iterator<ContractorAudit> auditList = contractor.getAudits().iterator();
+		while (auditList.hasNext()) {
+			ContractorAudit cAudit = auditList.next();
+			if (!cAudit.hasCaoStatusAfter(AuditStatus.Pending)) {
+				auditList.remove();
+				auditDao.remove(cAudit);
 			}
 		}
-		this.subHeading = "Contractor Edit";
+
+		if (contractor.getAudits().size() > 0) {
+			addActionError("Cannot Remove Contractor with Audits");
+			return SUCCESS;
+		}
+
+		Iterator<User> userList = contractor.getUsers().iterator();
+
+		while (userList.hasNext()) {
+			User user = userList.next();
+			userList.remove();
+			userDAO.remove(user);
+		}
+
+		accountDao.remove(contractor, getFtpDir());
+
+		return "ConList";
+	}
+
+	@RequiredPermission(value = OpPerms.EmailOperators)
+	public String sendDeactivationEmail() throws Exception {
+		Set<String> emailAddresses = new HashSet<String>();
+		if (operatorIds != null) {
+			for (int operatorID : operatorIds) {
+				OperatorAccount operator = operatorAccountDAO.find(operatorID);
+
+				List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.ContractorDeactivation,
+						operatorID);
+
+				OperatorAccount parent = operator.getParent();
+				while (parent != null) { // adding corporate
+					// subscriptions
+					subscriptions.addAll(subscriptionDAO.find(Subscription.ContractorDeactivation, parent.getId()));
+					parent = parent.getParent();
+				}
+
+				Set<String> emails = new HashSet<String>();
+				boolean subscribed = false;
+				for (EmailSubscription subscription : subscriptions) {
+					if (!subscription.getTimePeriod().equals(SubscriptionTimePeriod.None)) {
+						emails.add(subscription.getUser().getEmail());
+						subscribed = true;
+					}
+				}
+
+				// only want to access dao if no subscription exists
+				// (very slow operation)
+				// sending email to primary contact if no subscribers
+				// exist
+				if (!subscribed && operator != null && operator.getPrimaryContact() != null)
+					emails.add(operator.getPrimaryContact().getEmail());
+
+				if (emails.size() > 0)
+					emailAddresses.addAll(emails);
+				else
+					addActionError("No primary contact or 'Contractor Registration' Subscriber for Operator ID: "
+							+ operatorID);
+			}
+
+			if (emailAddresses.size() > 0) {
+				if (!accountDao.isContained(contractor)) {
+					contractor = accountDao.find(contractor.getId());
+				}
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setTemplate(51); // Deactivation Email for
+				// operators
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
+				emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ","));
+				emailBuilder.setCcAddresses("");
+				emailBuilder.setToAddresses("billing@picsauditing.com");
+				emailBuilder.setFromAddress("\"PICS Billing\"<billing@picsauditing.com>");
+				EmailQueue email = emailBuilder.build();
+				email.setViewableById(Account.PicsID);
+				email.setPriority(50);
+				emailQueueDAO.save(email);
+
+				Note note = new Note();
+				note.setAccount(contractor);
+				note.setAuditColumns(permissions);
+				note.setSummary("Deactivation Email Sent to the following email Addresses ");
+				note.setBody(Strings.implode(emailAddresses, ", "));
+				note.setPriority(LowMedHigh.Med);
+				note.setNoteCategory(NoteCategory.General);
+				note.setViewableById(Account.PicsID);
+				note.setCanContractorView(false);
+				note.setStatus(NoteStatus.Closed);
+				noteDAO.save(note);
+
+				this.addActionMessage("Successfully sent the email to operators");
+			}
+		}
+
+		return SUCCESS;
+	}
+
+	public String copyPrimary() throws Exception {
+		findContractor();
+
+		contractor.setBillingAddress(contractor.getAddress());
+		contractor.setBillingCity(contractor.getCity());
+		contractor.setBillingState(contractor.getState());
+		contractor.setBillingZip(contractor.getZip());
+		accountDao.save(contractor);
 
 		return SUCCESS;
 	}
