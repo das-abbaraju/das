@@ -117,6 +117,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		conAudit.setAuditor(auditor);
 		conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(auditor)));
+		conAudit.setAssignedDate(new Date());
 
 		Date scheduledDateInUserTime = DateBean.parseDateTime(scheduledDateDay + " " + scheduledDateTime);
 		if (scheduledDateInUserTime == null) {
@@ -228,6 +229,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		conAudit.setScheduledDate(availabilitySelected.getStartDate());
 		conAudit.setAuditor(availabilitySelected.getUser());
+		conAudit.setAssignedDate(new Date());
 		conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(availabilitySelected.getUser())));
 		if (permissions.isContractor())
 			conAudit.setContractorConfirm(new Date());

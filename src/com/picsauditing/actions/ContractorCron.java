@@ -683,25 +683,30 @@ public class ContractorCron extends PicsActionSupport {
 		}
 	}
 
+	/**
+	 * 
+	 * This is so audits like the HSE Competency Submittal can have an auditor automatically assigned
+	 * 
+	 * @param contractor
+	 */
 	private void runAssignAudit(ContractorAccount contractor) {
-		// This is so audits like the HSE Competency Submittal can have an
-		// auditor automatically assigned
 		if (!runStep(ContractorCronStep.AssignAudit))
 			return;
 
 		// See if the PQF is complete for manual audit auditor assignment
-		boolean pqfComplete = false;
+		boolean pqfSafetyManualVerified = false;
 		// Save auditor for manual audit for HSE Competency Review
 		User manualAuditAuditor = null;
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (!audit.isExpired()) {
-				// Check PQF status
-				if (audit.getAuditType().isPqf())
-					pqfComplete = audit.hasCaoStatus(AuditStatus.Complete);
-				// If the manual audit comes after the HSE Competency Review, we
-				// can
-				// still get the auditor here
-				if (audit.getAuditType().isDesktop() && pqfComplete)
+				if (audit.getAuditType().isPqf()) {
+					for (AuditData d : audit.getData()) {
+						if (d.getQuestion().getId() == AuditQuestion.MANUAL_PQF)
+							pqfSafetyManualVerified = d.getDateVerified() != null;
+					}
+				}
+				// If the manual audit comes after the HSE Competency Review, we can still get the auditor here
+				if (audit.getAuditType().isDesktop() && pqfSafetyManualVerified)
 					manualAuditAuditor = audit.getAuditor();
 			}
 		}
@@ -720,7 +725,8 @@ public class ContractorCron extends PicsActionSupport {
 					}
 					break;
 				case (AuditType.DESKTOP):
-					if (audit.getAuditor() == null && pqfComplete && contractor.isFinanciallyReadyForAudits()) {
+					if (audit.getAuditor() == null && pqfSafetyManualVerified
+							&& contractor.isFinanciallyReadyForAudits()) {
 						ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
 						if (ua != null) {
 							audit.setAuditor(ua.getUser());
