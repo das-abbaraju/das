@@ -478,7 +478,7 @@ public class OperatorAccount extends Account {
 			// PICS Canada
 		case 7:
 			// PICS UAE
-		case 17174:
+		case 8:
 			// PICS PSM
 			return 2;
 		}
