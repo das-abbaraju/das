@@ -694,19 +694,19 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 
 		// See if the PQF is complete for manual audit auditor assignment
-		boolean pqfSafetyManualVerified = false;
+		boolean pqfCompleteSafetyManualVerified = false;
 		// Save auditor for manual audit for HSE Competency Review
 		User manualAuditAuditor = null;
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (!audit.isExpired()) {
-				if (audit.getAuditType().isPqf()) {
+				if (audit.getAuditType().isPqf() && audit.hasCaoStatus(AuditStatus.Complete)) {
 					for (AuditData d : audit.getData()) {
 						if (d.getQuestion().getId() == AuditQuestion.MANUAL_PQF)
-							pqfSafetyManualVerified = d.getDateVerified() != null;
+							pqfCompleteSafetyManualVerified = d.getDateVerified() != null;
 					}
 				}
 				// If the manual audit comes after the HSE Competency Review, we can still get the auditor here
-				if (audit.getAuditType().isDesktop() && pqfSafetyManualVerified)
+				if (audit.getAuditType().isDesktop() && pqfCompleteSafetyManualVerified)
 					manualAuditAuditor = audit.getAuditor();
 			}
 		}
@@ -725,7 +725,7 @@ public class ContractorCron extends PicsActionSupport {
 					}
 					break;
 				case (AuditType.DESKTOP):
-					if (audit.getAuditor() == null && pqfSafetyManualVerified
+					if (audit.getAuditor() == null && pqfCompleteSafetyManualVerified
 							&& contractor.isFinanciallyReadyForAudits()) {
 						ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
 						if (ua != null) {
