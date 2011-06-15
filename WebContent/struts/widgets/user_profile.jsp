@@ -22,7 +22,7 @@
 	&nbsp;&nbsp;&nbsp;&nbsp;
 	<label><s:text name="ProfileEdit.u.fax" />:</label> <s:property value="u.fax" />
 </s:if>
-<p><label><s:text name="ProfileEdit.u.timezone" />:</label> <s:property value="u.timezone" /></p>
+<p><label><s:text name="ProfileEdit.u.timezone" />:</label> <s:property value="u.timezone.iD" /></p>
 <a href="ProfileEdit.action" class="edit"><s:text name="ProfileEdit.Profile.heading" /></a>
 
 <s:if test="eList.size > 0">
