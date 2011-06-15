@@ -148,10 +148,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 						+ "</b> already exists.  Please contact a PICS representative.");
 			}
 			
-			if (contractor.getCompetitorMembership() == null) {
-				errors.add("Please indicate whether your company has a membership with another consortium.");
-			}
-
 			if (errors.size() > 0) {
 				for (String error : errors)
 					addActionError(error);
