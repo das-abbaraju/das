@@ -131,6 +131,12 @@ public class AuditBuilder {
 				 * operators)
 				 */
 				// TODO testing updating categories and caos for a manually added audit
+				if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF) {
+					// Import PQF does not have an audit type detail because it is manually added, and the audit is an
+					// exception in that the only CAO is PICS Global. The audit_cat_data need to be generated here. We
+					// need all the categories for this audit.
+					fillAuditCategories(conAudit, new HashSet<AuditCategory>(conAudit.getAuditType().getCategories()));
+				}
 			} else {
 				Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, auditTypeDetail.operators);
 				fillAuditCategories(conAudit, categories);

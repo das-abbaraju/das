@@ -22,6 +22,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -294,7 +295,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 						return o1.getId() - o2.getId();
 					}
 				}
-				
+
 				// get display names as seen in menu
 				String name1 = getText(o1.getAuditType().getI18nKey("name"));
 				String name2 = getText(o2.getAuditType().getI18nKey("name"));
@@ -319,15 +320,18 @@ public class ContractorActionSupport extends AccountActionSupport {
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().getClassType().isPqf()) {
-					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
+					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0
+							|| audit.getAuditType().getId() == AuditType.IMPORT_PQF) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
 						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
 						count++;
 
 						// Put Trades menu after 'PQF' menu entry
 						if (audit.getAuditType().isPqf()) {
-							MenuComponent tradeItem = subMenu.addChild(getText("ContractorTrades.title"), "ContractorTrades.action?id=" + id);
-							if (contractor != null && !contractor.isNeedsTradesUpdated() && permissions.isOperatorCorporate())
+							MenuComponent tradeItem = subMenu.addChild(getText("ContractorTrades.title"),
+									"ContractorTrades.action?id=" + id);
+							if (contractor != null && !contractor.isNeedsTradesUpdated()
+									&& permissions.isOperatorCorporate())
 								// Only operators need to see the checkmarks?
 								tradeItem.setCssClass("done");
 						}
@@ -379,10 +383,11 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 			if (subMenu.getChildren().size() > 0) {
 				subMenu.addChild("Manage Certificates", "ConInsureGUARD.action?id=" + contractor.getId());
-	
+
 				if (permissions.hasPermission(OpPerms.AuditVerification))
-					subMenu.addChild("Insurance Verification", "InsureGuardVerification.action?id=" + contractor.getId());
-	
+					subMenu.addChild("Insurance Verification",
+							"InsureGuardVerification.action?id=" + contractor.getId());
+
 				addSubMenu(menu, subMenu);
 			}
 		}
@@ -451,9 +456,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * TODO: Find out if this comment is useful. Is the method it is for missing.
-	 * Only show the COR/SECOR link for contractors who have answered Yes to that question and linked to an operator
-	 * that subscribes to COR
+	 * TODO: Find out if this comment is useful. Is the method it is for missing. Only show the COR/SECOR link for
+	 * contractors who have answered Yes to that question and linked to an operator that subscribes to COR
 	 */
 
 	public boolean isShowHeader() {

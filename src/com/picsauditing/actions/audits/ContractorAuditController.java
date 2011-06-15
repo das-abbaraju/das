@@ -29,12 +29,14 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.MultiYearScope;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
@@ -255,6 +257,15 @@ public class ContractorAuditController extends AuditActionSupport {
 			importAudit.setAuditColumns(conUser);
 			importAudit.setContractorAccount(contractor);
 			importAudit = auditDao.save(importAudit);
+
+			ContractorAuditOperator cao = new ContractorAuditOperator();
+			cao.setAudit(conAudit);
+			cao.setOperator(new OperatorAccount());
+			cao.getOperator().setId(4);
+			cao = (ContractorAuditOperator) auditDao.save(cao);
+			ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+			caop.setCao(cao);
+			caop.setOperator(cao.getOperator());
 
 			contractor.getAudits().add(importAudit);
 			importAuditID = importAudit.getId();

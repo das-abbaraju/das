@@ -16,6 +16,8 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.FeeClass;
@@ -59,7 +61,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	@Autowired
 	private AppPropertyDAO appPropDao;
 
-
 	public ContractorPaymentOptions() {
 		this.subHeading = getText(getScope() + ".title");
 		this.currentStep = ContractorRegistrationStep.Payment;
@@ -82,7 +83,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				return BLANK;
 			}
 		}
-		if (permissions.isContractor() && contractor.getCompetitorMembership() != null && contractor.getCompetitorMembership()) {
+		if (permissions.isContractor() && contractor.getCompetitorMembership() != null
+				&& contractor.getCompetitorMembership()) {
 			importFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 0);
 		}
 
@@ -122,8 +124,17 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			conAudit.setManuallyAdded(true);
 			conAudit.setAuditColumns(permissions);
 			conAudit.setContractorAccount(contractor);
-			auditDao.save(conAudit);
-			
+			conAudit = auditDao.save(conAudit);
+
+			ContractorAuditOperator cao = new ContractorAuditOperator();
+			cao.setAudit(conAudit);
+			cao.setOperator(new OperatorAccount());
+			cao.getOperator().setId(4);
+			cao = (ContractorAuditOperator) auditDao.save(cao);
+			ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+			caop.setCao(cao);
+			caop.setOperator(cao.getOperator());
+
 			ContractorFee newConFee = new ContractorFee();
 			newConFee.setAuditColumns(new User(User.CONTRACTOR));
 			newConFee.setContractor(contractor);
@@ -133,10 +144,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			newConFee.setNewLevel(importFee);
 			newConFee.setFeeClass(importFee.getFeeClass());
 			newConFee = (ContractorFee) invoiceFeeDAO.save(newConFee);
-			
+
 			contractor.getFees().put(importFee.getFeeClass(), newConFee);
 			accountDao.save(contractor);
-			
+
 			this.redirect("ContractorPaymentOptions.action");
 		}
 
@@ -151,8 +162,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 					activationFee.setAmount(new BigDecimal(reducedOperator.getActivationFee()));
 				}
 			} else
-				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, contractor
-						.getPayingFacilities());
+				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
+						contractor.getPayingFacilities());
 		}
 
 		if (contractor.getCurrencyCode().isCanada()) {
@@ -167,7 +178,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				total = total.add(activationFee.getAmount());
 			gstFee.setAmount(gstFee.getGSTSurchage(total));
 		}
-		
+
 		if (!contractor.getPaymentMethod().isCreditCard())
 			return SUCCESS;
 
@@ -461,7 +472,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public void setGstFee(InvoiceFee gstFee) {
 		this.gstFee = gstFee;
 	}
-	
+
 	public InvoiceFee getImportFee() {
 		return importFee;
 	}
