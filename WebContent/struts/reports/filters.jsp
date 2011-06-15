@@ -390,7 +390,7 @@
 			<a href="#" class="filterBox">Account Mgr</a> =
 			<span class="q_status">ALL</span><br />
 			<span class="clearLink q_box select">
-				<s:select name="filter.accountManager"cssClass="forms" list="accountManagers" listKey="id" listValue="name"
+				<s:select name="filter.accountManager" cssClass="forms" list="accountManagers" listKey="id" listValue="name"
 					multiple="true" size="5" id="form1_accountManager" />
 				<a class="clearLink" href="#">Clear</a>
 			</span>
@@ -402,7 +402,7 @@
 			<a href="#" class="filterBox">CSR</a> =
 			<span class="q_status">ALL</span><br />
 			<span class="clearLink q_box select">
-				<s:select name="filter.conAuditorId"cssClass="forms" list="auditorList" listKey="id" listValue="name"
+				<s:select name="filter.conAuditorId" cssClass="forms" list="auditorList" listKey="id" listValue="name"
 					multiple="true" size="5" id="form1_conAuditorId" />
 				<a class="clearLink" href="#">Clear</a>
 			</span>
