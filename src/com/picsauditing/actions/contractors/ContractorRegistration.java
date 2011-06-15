@@ -186,6 +186,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			user.setPhone(contractor.getPhone());
 			user.setActive(true);
 			user.setAccount(contractor);
+			user.setTimezone(contractor.getTimezone());
 			user.setAuditColumns(new User(User.CONTRACTOR));
 			user.setIsGroup(YesNo.No);
 			userDAO.save(user);

@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.Vector;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -135,6 +136,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			else {
 				sendActivationEmail = true;
 				user.setLocale(account.getLocale());
+				user.setTimezone(account.getTimezone());
 			}
 			return SUCCESS;
 		}

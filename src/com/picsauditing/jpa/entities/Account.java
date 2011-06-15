@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -85,6 +86,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected Date accreditation;
 	private Locale locale = Locale.ENGLISH;
 	protected Currency currencyCode = Currency.USD;
+	protected TimeZone timezone;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -285,6 +287,14 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	public void setLocale(Locale locale) {
 		this.locale = locale;
+	}
+
+	public TimeZone getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(TimeZone timezone) {
+		this.timezone = timezone;
 	}
 
 	/**

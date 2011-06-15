@@ -27,6 +27,7 @@
 }
 </style>
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/detect_timezone.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript">
 function checkUsername(username) {
 	var msg = '<s:text name="Progress.Username" />';
@@ -111,7 +112,10 @@ function updateRequiredField() {
 
 $(function(){
 	changeState($('#contractorCountry').val());
+
+	$('#timezone').val(jzTimezoneDetector.determine_timezone().timezone.olson_tz);
 })
+
 </script>
 </head>
 <body>
@@ -185,6 +189,10 @@ $(function(){
 			</s:else>
 			<li class="required" id="zipItem" <s:if test="contractor.country.isoCode == 'AE'">style="display: none;"</s:if>>
 				<s:textfield name="contractor.zip" theme="formhelp" size="10" />
+			</li>
+			<li class="required">
+				<s:select name="contractor.timezone" id="timezone" listKey="key" listValue="value" theme="formhelp" 
+				    list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" />
 			</li>
 		</ol>
 	</fieldset>
