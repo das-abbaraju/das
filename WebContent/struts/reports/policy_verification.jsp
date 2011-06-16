@@ -42,7 +42,7 @@
 			<td><s:property value="get('operatorCount')"/></td>
 			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>&policy=true" target="VERIFY">Open</a></td>
 		</tr>
-	</s:iterator>	
+	</s:iterator>
 </table>
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />

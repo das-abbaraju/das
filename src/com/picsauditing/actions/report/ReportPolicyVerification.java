@@ -29,6 +29,8 @@ public class ReportPolicyVerification extends ReportContractorAuditOperator {
 	protected void buildQuery() {
 		getFilter().setShowAuditStatus(false);
 		getFilter().setShowStatus(false);
+		getFilter().setShowOperator(false);
+		getFilter().setShowCaoOperator(true);
 		super.buildQuery();
 
 		sql.addWhere("cao.status = 'Submitted'");
@@ -59,7 +61,7 @@ public class ReportPolicyVerification extends ReportContractorAuditOperator {
 						break;
 					}
 					
-					if ((Long) d.get("auditID") == auditID)
+					if ((Integer) d.get("auditID") == auditID)
 						next = true;
 				}
 				

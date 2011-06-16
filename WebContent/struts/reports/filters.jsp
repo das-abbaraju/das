@@ -299,7 +299,7 @@
 			<a href="#" class="filterBox">Operators</a> =
 			<span class="q_status">ALL</span><br />
 			<span class="clearLink q_box select">
-				<s:textfield rel="Operator" name="filter.operator" cssClass="tokenAuto" />
+				<s:textfield rel="Operator" name="filter.caoOperator" cssClass="tokenAuto" />
 				<a class="clearLink" href="#">Clear</a>
 			</span>
 		</div>
