@@ -25,11 +25,11 @@ public class SubmittedImportPQFAudits extends PicsActionSupport {
 		sql.addField("ca.id auditID");
 		sql.addField("GROUP_CONCAT(DISTINCT cao.status SEPARATOR ', ') auditStatus");
 		
-		sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id AND cao.visible = 1");
+		sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id AND cao.visible = 1 AND cao.status = 'Submitted'");
 		sql.addJoin("JOIN accounts a ON a.id = ca.conID AND a.status = 'Active'");
 		sql.addJoin("JOIN contractor_info c ON c.id = a.id AND c.competitorMembership = 1 AND c.welcomeAuditor_id = "
 				+ permissions.getUserId());
-		sql.addJoin("JOIN invoice i ON i.accountID = a.id");
+		sql.addJoin("JOIN invoice i ON i.accountID = a.id AND i.status = 'Paid'");
 		sql.addJoin("JOIN invoice_item ii ON ii.invoiceID = i.id");
 		sql.addJoin("JOIN invoice_fee fee ON fee.id = ii.feeID AND fee.feeClass = 'ImportFee'");
 

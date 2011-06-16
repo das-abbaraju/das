@@ -14,7 +14,7 @@
 			<tr>
 				<td><a href="ContractorView.action?id=<s:property value="get('accountID')" />"><s:property value="get('name')" /></a></td>
 				<td><a href="Audit.action?auditID=<s:property value="get('auditID')" />"><s:text name="ContractorDocuments.header.Audit" /></a></td>
-				<td><s:property value="get('invoiceStatus')" /></td>
+				<td><a href="InvoiceDetail.action?invoice.id=<s:property value="get('invoiceID')" />"><s:property value="get('invoiceStatus')" /></a></td>
 			</tr>
 		</s:iterator>
 		<s:if test="allRows > 10">
