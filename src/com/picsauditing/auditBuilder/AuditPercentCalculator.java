@@ -102,20 +102,13 @@ public class AuditPercentCalculator {
 							isRequired = true;
 					}
 				}
-				// Getting all the dependsVisible Questions
-				if (question.getVisibleQuestion() != null && question.getVisibleAnswer() != null) {
-					if (question.getVisibleAnswer().equals("NULL")) {
+
+				// make sure this dependent required question is visible
+				if (isRequired) {
+					if (question.getVisibleQuestion() != null && question.getVisibleAnswer() != null) {
 						AuditData otherAnswer = answers.get(question.getVisibleQuestion().getId());
-						if (otherAnswer == null || Strings.isEmpty(otherAnswer.getAnswer()))
-							isRequired = true;
-					} else if (question.getVisibleAnswer().equals("NOTNULL")) {
-						AuditData otherAnswer = answers.get(question.getVisibleQuestion().getId());
-						if (otherAnswer != null && !Strings.isEmpty(otherAnswer.getAnswer()))
-							isRequired = true;
-					} else {
-						AuditData otherAnswer = answers.get(question.getVisibleQuestion().getId());
-						if (otherAnswer != null && question.getVisibleAnswer().equals(otherAnswer.getAnswer()))
-							isRequired = true;
+						if (!question.isVisible(otherAnswer))
+							isRequired = false;
 					}
 				}
 

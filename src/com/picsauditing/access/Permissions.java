@@ -412,6 +412,10 @@ public class Permissions implements Serializable {
 	public boolean seesAllContractors() {
 		return this.hasPermission(OpPerms.AllContractors);
 	}
+	
+	public boolean isDeveloperEnvironment() {
+		return this.hasPermission(OpPerms.DevelopmentEnvironment);
+	}
 
 	/**
 	 * @return

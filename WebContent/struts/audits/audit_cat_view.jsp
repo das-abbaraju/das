@@ -23,10 +23,15 @@
 				<a href="ManageCategory.action?id=<s:property value="#category.id"/>" class="edit"></a>
 			</pics:permission>
 			<pics:permission perm="ManageCategoryRules">
-				<a class="filter" 
+				<a class="filter debug" 
 					href="CategoryRuleTableAjax.action?comparisonRule.auditCategory.id=<s:property value="#category.id" />" 
 					rel="CategoryRuleTableAjax.action?comparisonRule.auditCategory.id=<s:property value="#category.id" />"></a>
 			</pics:permission>
+			<s:if test="permissions.developerEnvironment">
+				<span class="debug">
+					Required=<s:property value="categoryData.requiredCompleted"/>/<s:property value="categoryData.numRequired"/> Overide=<s:property value="categoryData.override"/>
+				</span>
+			</s:if>
 			<span class="categoryNumber"><s:property value="#category.fullNumber"/></span>
 		</h2>
 		<s:if test="#category.sha">
