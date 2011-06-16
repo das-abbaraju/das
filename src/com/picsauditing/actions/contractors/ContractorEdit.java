@@ -30,12 +30,14 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
+import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -198,6 +200,32 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			}
 			// contractor.setNeedsIndexing(true);
 			accountDao.save(contractor);
+
+			// Check if the contractor has been checked for Other Competitor Membership
+			if (contractor.getCompetitorMembership() != null && contractor.getCompetitorMembership()) {
+				// Check if they've been charged for this audit all ready
+				boolean hasFee = false;
+				for (FeeClass feeClass : contractor.getFees().keySet()) {
+					if (feeClass.equals(FeeClass.ImportFee)) {
+						hasFee = true;
+						break;
+					}
+				}
+
+				// Now check for the audit itself
+				boolean hasAudit = false;
+				for (ContractorAudit audit : contractor.getAudits()) {
+					if (audit.getAuditType().getId() == AuditType.IMPORT_PQF) {
+						hasAudit = true;
+						break;
+					}
+				}
+
+				if (!hasFee && !hasAudit) {
+					this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId()
+							+ "&url=ContractorEdit.action?id=" + contractor.getId());
+				}
+			}
 
 			addActionMessage("Successfully modified " + contractor.getName());
 		}

@@ -717,6 +717,10 @@
 			<result>struts/audits/audit_quick.jsp</result>
 		</action>
 
+		<action name="CreateImportPQFAudit" class="com.picsauditing.util.CreateImportPQFAudit">
+			<result>/struts/blank.jsp</result>
+		</action>
+
 		<!-- Operator List -->
 		<action name="ReportAccountList"
 			class="com.picsauditing.actions.report.ReportOperatorCorporate">

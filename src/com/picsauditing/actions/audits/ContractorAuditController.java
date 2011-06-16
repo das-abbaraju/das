@@ -15,10 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.MenuComponent;
-import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -29,17 +27,14 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.MultiYearScope;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
@@ -69,10 +64,6 @@ public class ContractorAuditController extends AuditActionSupport {
 	// Import PQF
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
-	@Autowired
-	private AuditTypeDAO auditTypeDAO;
-	@Autowired
-	private AuditBuilder auditBuilder;
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
@@ -228,60 +219,15 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	public String importPQFYes() throws Exception {
 		int importAuditID = auditID;
+		checkMode();
 
 		if (auditID > 0) {
 			findConAudit();
-
-			InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 0);
-			User conUser = new User(User.CONTRACTOR);
-
-			Invoice invoice = new Invoice();
-			invoice.setAccount(contractor);
-			invoice.setCurrency(contractor.getCurrency());
-			invoice.setDueDate(new Date());
-			invoice.setTotalAmount(fee.getAmount());
-			invoice.setNotes("Thank you for doing business with PICS!");
-			invoice.setAuditColumns(conUser);
-			invoice.setQbSync(true);
-			invoice = (Invoice) invoiceFeeDAO.save(invoice);
-
-			InvoiceItem item = new InvoiceItem(fee);
-			item.setInvoice(invoice);
-			item.setAuditColumns(conUser);
-			invoiceFeeDAO.save(item);
-			invoice.getItems().add(item);
-
-			ContractorAudit importAudit = new ContractorAudit();
-			importAudit.setAuditType(auditTypeDAO.find(AuditType.IMPORT_PQF));
-			importAudit.setManuallyAdded(true);
-			importAudit.setAuditColumns(conUser);
-			importAudit.setContractorAccount(contractor);
-			importAudit = auditDao.save(importAudit);
-
-			ContractorAuditOperator cao = new ContractorAuditOperator();
-			cao.setAudit(conAudit);
-			cao.setOperator(new OperatorAccount());
-			cao.getOperator().setId(4);
-			cao = (ContractorAuditOperator) auditDao.save(cao);
-			ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
-			caop.setCao(cao);
-			caop.setOperator(cao.getOperator());
-
-			contractor.getAudits().add(importAudit);
-			importAuditID = importAudit.getId();
-
-			auditBuilder.buildAudits(contractor);
-			auditPercentCalculator.percentCalculateComplete(importAudit);
-
-			contractor.setCompetitorMembership(true);
-			contractor.getInvoices().add(invoice);
-			contractor.syncBalance();
-			accountDao.save(contractor);
+			return redirect("CreateImportPQFAudit.action?id=" + contractor.getId());
 		} else {
 			addActionError("Missing Audit ID");
 		}
 
-		checkMode();
 		return redirect("Audit.action?auditID=" + importAuditID);
 	}
 

@@ -12,19 +12,14 @@ import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.PaymentMethod;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.BrainTree;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -49,8 +44,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private CreditCard cc;
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
-	@Autowired
-	private AuditTypeDAO auditTypeDAO;
 
 	private InvoiceFee activationFee;
 	private InvoiceFee gstFee;
@@ -119,36 +112,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		}
 
 		if ("Import my Data".equals(button) && !isHasPQFImportAudit()) {
-			ContractorAudit conAudit = new ContractorAudit();
-			conAudit.setAuditType(auditTypeDAO.find(AuditType.IMPORT_PQF));
-			conAudit.setManuallyAdded(true);
-			conAudit.setAuditColumns(permissions);
-			conAudit.setContractorAccount(contractor);
-			conAudit = auditDao.save(conAudit);
-
-			ContractorAuditOperator cao = new ContractorAuditOperator();
-			cao.setAudit(conAudit);
-			cao.setOperator(new OperatorAccount());
-			cao.getOperator().setId(4);
-			cao = (ContractorAuditOperator) auditDao.save(cao);
-			ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
-			caop.setCao(cao);
-			caop.setOperator(cao.getOperator());
-
-			ContractorFee newConFee = new ContractorFee();
-			newConFee.setAuditColumns(new User(User.CONTRACTOR));
-			newConFee.setContractor(contractor);
-			newConFee.setCurrentAmount(importFee.getAmount());
-			newConFee.setNewAmount(importFee.getAmount());
-			newConFee.setCurrentLevel(importFee);
-			newConFee.setNewLevel(importFee);
-			newConFee.setFeeClass(importFee.getFeeClass());
-			newConFee = (ContractorFee) invoiceFeeDAO.save(newConFee);
-
-			contractor.getFees().put(importFee.getFeeClass(), newConFee);
-			accountDao.save(contractor);
-
-			this.redirect("ContractorPaymentOptions.action");
+			this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId()
+					+ "&url=ContractorPaymentOptions.action&newRegistration=true");
 		}
 
 		accountDao.save(contractor);
