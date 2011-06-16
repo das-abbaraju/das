@@ -18,7 +18,7 @@ $(function() {
 		clickThrough: false
 	});
 
-	$('a[rel*=facebox]').facebox({
+	$('a[rel*="facebox"]').facebox({
  		loading_image : 'loading.gif',
  		close_image : 'closelabel.gif'
  	});

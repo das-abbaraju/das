@@ -66,7 +66,7 @@
 <script type="text/javascript">
     $(document).ready(function() { 
         $('#response_form').submit(function() {
-        	var priority = $('input[name=priority]:checked').val();
+        	var priority = $('input[name="priority"]:checked').val();
         	var user_message = $("textarea#user_message").val();
         	var to_address = "info@picsauditing.com";
         	var from_address = $("#from_address").val();

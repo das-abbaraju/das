@@ -55,7 +55,7 @@ $(function() {
 			if (json.status=='success') {
 				me.closest('tr').removeClass('dirty');
 				if (me.closest('.new').length) {
-					me.closest('tr').removeClass('new').find(':input[name=assignment]').val(json.assignment.id);
+					me.closest('tr').removeClass('new').find(':input[name="assignment"]').val(json.assignment.id);
 				}
 			}
 		}, 'json');

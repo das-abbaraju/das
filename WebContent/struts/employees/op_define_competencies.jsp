@@ -35,11 +35,11 @@ fieldset.bottom {
 			if (v == null)
 				v = "";
 			if (v === true)
-				$('form#itemform [name=competency.'+i+']').attr('checked', 'checked');
+				$('form#itemform [name="competency.'+i+'"]').attr('checked', 'checked');
 			else if (v === false)
-				$('form#itemform [name=competency.'+i+']').removeAttr('checked');
+				$('form#itemform [name="competency.'+i+'"]').removeAttr('checked');
 			else
-				$('form#itemform [name=competency.'+i+']').val(v);
+				$('form#itemform [name="competency.'+i+'"]').val(v);
 		});
 	}
 
@@ -62,8 +62,8 @@ fieldset.bottom {
 			);
 		} else {
 			$('form#itemform :input').val('');
-			$('form#itemform input[name=id]').val('<s:property value="operator.id"/>');
-			$('form#itemform input[name=competency.id]').val(0);
+			$('form#itemform input[name="id"]').val('<s:property value="operator.id"/>');
+			$('form#itemform input[name="competency.id"]').val(0);
 			$('form#itemform :checked').removeAttr('checked');
 			newItem = true;
 			dialog.dialog('open');

@@ -7,7 +7,7 @@
 <s:include value="../reportHeader.jsp" />
 <script type="text/javascript">
 function changeOrderBy(orderBy) {
-	$('#form1 input[name=orderBy]').val(orderBy);
+	$('#form1 input[name="orderBy"]').val(orderBy);
 	startThinking({ div: "report_data", type: "large" });
 	$('#report_data').load('ReportAssessmentTestsAjax.action?' + $('#form1').serialize());
 }

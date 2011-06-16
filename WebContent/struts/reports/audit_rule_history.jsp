@@ -32,7 +32,7 @@ $(function() {
 
 	
 	<button id="searchfilter" type="submit" name="button" value="Search"
-		class="picsbutton positive" onclick="$('[name=showPage]').val(1)">Search</button>
+		class="picsbutton positive" onclick="$('[name="showPage"]').val(1)">Search</button>
 	<br clear="all" />
 	
 	<s:hidden name="orderBy" />

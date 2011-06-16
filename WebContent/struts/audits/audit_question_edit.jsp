@@ -141,13 +141,13 @@ $(function() {
 					}
 				}).change(function(e) {
 					if ($(this).blank())
-						$(this).closest('div.question').find('[name=auditData.comment]').val('');
+						$(this).closest('div.question').find('[name="auditData.comment"]').val('');
 				}).result(function(event, data){
 					var div = $(this).closest('div.question');
 					if (data[2]!="UNKNOWN")
-						div.find('[name=auditData.comment]').val(data[2])
+						div.find('[name="auditData.comment"]').val(data[2])
 					else
-						div.find('[name=auditData.comment]').val('');
+						div.find('[name="auditData.comment"]').val('');
 					$(this).trigger('change');
 				});
 			});

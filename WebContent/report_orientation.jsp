@@ -29,7 +29,7 @@ $(document).ready(function() {
 });
 
 function runSearch(search) {
-	var ajax = $(search).find('[name=filter.ajax]').val();
+	var ajax = $(search).find('[name="filter.ajax"]').val();
 	if (ajax == "false") {
 		$(search).submit();
 	} else {

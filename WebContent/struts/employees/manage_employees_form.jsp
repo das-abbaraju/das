@@ -48,7 +48,7 @@ function addJobRole(id) {
 
 function addJobSite(selection) {
 	var id = $(selection).val();
-	var name = $(selection).find('option[value=' + id + ']').text().trim().split(":");
+	var name = $(selection).find('option[value="' + id + '"]').text().trim().split(":");
 	
 	startThinking({div: 'employee_site', message: '<s:text name="%{scope}.message.AjaxLoad" />'});
 	$('#employee_site').load('ManageEmployees!addSiteAjax.action', {'employee.id': employeeID, 

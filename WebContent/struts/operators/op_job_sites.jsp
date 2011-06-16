@@ -46,7 +46,7 @@ function getNewSiteTasks(siteID) {
 }
 
 function addTask(siteID, taskID) {
-	var controlSpan = $('tr#' + taskID).find('input[name=controlSpan]').val();
+	var controlSpan = $('tr#' + taskID).find('input[name="controlSpan"]').val();
 	var data = {
 		button: 'AddTask',
 		siteID: siteID,

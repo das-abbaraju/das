@@ -22,16 +22,16 @@ var contractor = {
 
 function useContractor() {
 	$.each(contractor, function(k,v) {
-		$('form [name='+k+']').parent().find('span').fadeOut().remove();
-		$('form [name='+k+']').val(v);
+		$('form [name="'+k+'"]').parent().find('span').fadeOut().remove();
+		$('form [name="'+k+'"]').val(v);
 	});
 	changeState(contractor['audit.country']);
 }
 
 function showContractor() {
 	$.each(contractor, function(k,v) {
-		$('form [name='+k+']').parent().find('span').fadeOut().remove();
-		$('form [name='+k+']').parent().append($('<span style="float:right">'+v+'</span>').hide()).find('span').fadeIn();
+		$('form [name="'+k+'"]').parent().find('span').fadeOut().remove();
+		$('form [name="'+k+'"]').parent().append($('<span style="float:right">'+v+'</span>').hide()).find('span').fadeIn();
 	});
 }
 

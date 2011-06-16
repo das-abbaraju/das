@@ -14,7 +14,7 @@ type = "<s:property value="type" />";
 <s:if test="templateID != 0">
 $(function(){
 	chooseTemplate(<s:property value="templateID"/>);
-	$('a[rel*=facebox]').facebox({
+	$('a[rel*="facebox"]').facebox({
  		loading_image : 'loading.gif',
  		close_image : 'closelabel.gif'
  	});

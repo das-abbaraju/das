@@ -6,7 +6,7 @@
 <s:include value="reportHeader.jsp" />
 <script type="text/javascript">
 function orderBy(orderBy) {
-	$('#form1').find('input[name=orderBy]').val(orderBy);
+	$('#form1').find('input[name="orderBy"]').val(orderBy);
 	$('#form1').submit();
 }
 </script>

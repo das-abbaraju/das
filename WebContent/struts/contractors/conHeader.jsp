@@ -27,7 +27,7 @@ $(function(){
 		$('.dirty').show();
 		$('#auditHeader').addClass('dirty');
 		var caoMap = $('.dirtyCao :input').serialize();
-		$.post('ConAuditMaintainAjax.action', 'button=caoSave&systemEdit=true&'+'auditID='+$('input[name=auditID]').val()+'&'+caoMap, function(data){
+		$.post('ConAuditMaintainAjax.action', 'button=caoSave&systemEdit=true&'+'auditID='+$('input[name="auditID"]').val()+'&'+caoMap, function(data){
 			$('#caoTable').html(data);
 			$('#auditHeader').removeClass('dirty');
 			$('.clean').show();

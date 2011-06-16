@@ -68,7 +68,7 @@
 			return;
 
 		startThinking( {div: 'thinkingDiv', message: 'Linking contractor and operator' } );
-		var data= {id: conId, button: 'addOperator', 'operator.id': opId, type: $('#results_' + opId + ' input[name=type]:checked').val()};
+		var data= {id: conId, button: 'addOperator', 'operator.id': opId, type: $('#results_' + opId + ' input[name="type"]:checked').val()};
 		$.ajax({
 			url: 'ContractorFacilityAjax.action', 
 			data: data, 

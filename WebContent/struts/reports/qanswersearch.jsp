@@ -12,7 +12,7 @@ var myTimer = null;
 
 function getQuestionList() {
 		var data = {
-			questionName: $('[name=questionSelect]').val()
+			questionName: $('[name="questionSelect"]').val()
 		};
 		startThinking({div: 'thinking',message:'Finding matching questions...'});
 		$('#selected_question').load('QuestionSelectAjax.action', data, function() {

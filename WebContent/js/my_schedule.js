@@ -59,15 +59,15 @@ function loadPreview() {
 			var end = NaN;
 
 			if ($('#all-day').is(':checked')) {
-				start = new Date($dialog.find('[name=startDate]').val());
+				start = new Date($dialog.find('[name="startDate"]').val());
 			} else {
-				start = new Date($dialog.find('[name=startDate]').val() + " " + $dialog.find('[name=startTime]').val());
-				end = new Date($dialog.find('[name=endDate]').val() + " " + $dialog.find('[name=endTime]').val());
+				start = new Date($dialog.find('[name="startDate"]').val() + " " + $dialog.find('[name="startTime"]').val());
+				end = new Date($dialog.find('[name="endDate"]').val() + " " + $dialog.find('[name="endTime"]').val());
 			}
 			var data = {
-				'calEvent.id': $dialog.find('[name=id]').val(),
-				'calEvent.title':$dialog.find('[name=title]').val(),
-				'type': $dialog.find('[name=type]').val(),
+				'calEvent.id': $dialog.find('[name="id"]').val(),
+				'calEvent.title':$dialog.find('[name="title"]').val(),
+				'type': $dialog.find('[name="type"]').val(),
 				'button': 'save',
 				'currentUserID': $('#currentUserID').val()
 			};
@@ -100,10 +100,10 @@ function loadPreview() {
 			);
 		},
 		Delete: function() {
-			var calID = $dialog.find('[name=id]').val();
+			var calID = $dialog.find('[name="id"]').val();
 			if (calID == 0)
 				return;
-			var type = $dialog.find('[name=type]').val();
+			var type = $dialog.find('[name="type"]').val();
 			$.getJSON('MyScheduleJSON.action',
 				{button: 'delete',type: type, 'calEvent.id': calID, 'currentUserID': $('#currentUserID').val()},
 				function(json) {
@@ -158,14 +158,14 @@ function loadPreview() {
 					allDayCB.click();
 
 				clearForm();
-				$dialog.find('[name=id]').val(getId(calEvent));
-				$dialog.find('[name=type]').val(getType(calEvent));
-				$dialog.find('[name=title]').val(calEvent.title);
-				$dialog.find('[name=startDate]').val($.fullCalendar.formatDate(calEvent.start,'MM/dd/yyyy'));
-				$dialog.find('[name=startTime]').val($.fullCalendar.formatDate(calEvent.start, 'hh:mm TT'));
+				$dialog.find('[name="id"]').val(getId(calEvent));
+				$dialog.find('[name="type"]').val(getType(calEvent));
+				$dialog.find('[name="title"]').val(calEvent.title);
+				$dialog.find('[name="startDate"]').val($.fullCalendar.formatDate(calEvent.start,'MM/dd/yyyy'));
+				$dialog.find('[name="startTime"]').val($.fullCalendar.formatDate(calEvent.start, 'hh:mm TT'));
 				if (!calEvent.allDay) {
-					$dialog.find('[name=endDate]').val($.fullCalendar.formatDate(calEvent.end,'MM/dd/yyyy'));
-					$dialog.find('[name=endTime]').val($.fullCalendar.formatDate(calEvent.end, 'hh:mm TT'));
+					$dialog.find('[name="endDate"]').val($.fullCalendar.formatDate(calEvent.end,'MM/dd/yyyy'));
+					$dialog.find('[name="endTime"]').val($.fullCalendar.formatDate(calEvent.end, 'hh:mm TT'));
 				}
 				$dialog.dialog('option', 'buttons', {'Save':buttons.Save, 'Delete':buttons.Delete, 'Cancel':buttons.Cancel});
 				$dialog.dialog('open');
@@ -194,8 +194,8 @@ function loadPreview() {
 			},
 		dayClick: function(dayDate, view) {
 				clearForm();
-				$dialog.find('[name=id]').val(0);
-				$dialog.find('[name=startDate]').val($.fullCalendar.formatDate(dayDate,'MM/dd/yyyy'));
+				$dialog.find('[name="id"]').val(0);
+				$dialog.find('[name="startDate"]').val($.fullCalendar.formatDate(dayDate,'MM/dd/yyyy'));
 				$dialog.dialog('option', 'buttons', {'Save':buttons.Save, 'Cancel':buttons.Cancel});
 				$dialog.dialog('open');
 			},

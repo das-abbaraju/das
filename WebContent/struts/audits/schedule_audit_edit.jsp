@@ -67,14 +67,14 @@ var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 function useContractor() {
 	$.getJSON("ContractorJson.action", {id: conID}, 
 		function(con){
-			$('form [name=conAudit.contractorContact]').val(con.primaryContact.name);
-			$('form [name=conAudit.phone]').val(con.primaryContact.phone);
-			$('form [name=conAudit.phone2]').val(con.primaryContact.email);
-			$('form [name=conAudit.address]').val(con.address);
-			$('form [name=conAudit.city]').val(con.city);
-			$('form [name=conAudit.state]').val(con.state);
-			$('form [name=conAudit.zip]').val(con.zip);
-			$('form [name=conAudit.country]').val(con.country);
+			$('form [name="conAudit.contractorContact"]').val(con.primaryContact.name);
+			$('form [name="conAudit.phone"]').val(con.primaryContact.phone);
+			$('form [name="conAudit.phone2"]').val(con.primaryContact.email);
+			$('form [name="conAudit.address"]').val(con.address);
+			$('form [name="conAudit.city"]').val(con.city);
+			$('form [name="conAudit.state"]').val(con.state);
+			$('form [name="conAudit.zip"]').val(con.zip);
+			$('form [name="conAudit.country"]').val(con.country);
 			recenterMap();
 		});
 }
@@ -90,7 +90,7 @@ $(function(){
 
 function showChooseDate(override) {
 	if (override) {
-		$('input[name=feeOverride]').val(true);
+		$('input[name="feeOverride"]').val(true);
 		$('#needsReschedulingFee').text('<s:text name="%{scope}.message.NoReschedulingFee" />');
 	} else
 		$('#needsReschedulingFee').text('<s:text name="%{scope}.message.ReschedulingFee" />');

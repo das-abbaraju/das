@@ -186,7 +186,7 @@ function saveCao(form, button, divName) {
 
 function saveCert(certID, caoID) {
 	var form = "#cao_form"+caoID;
-	$("#cao_form"+caoID).find('[name=certID]').val(certID);
+	$("#cao_form"+caoID).find('[name="certID"]').val(certID);
 	saveCao(form, 'Save', '#fileQuestion'+caoID);
 }
 
@@ -217,6 +217,6 @@ function savePolicy(form, button, divName, dataID, catDataID) {
 
 function saveCertQ(certID, questionID, button, dataID, catDataID) {
 	var form = "#cert_form"+questionID;
-	$(form).find('[name=certID]').val(certID);
+	$(form).find('[name="certID"]').val(certID);
 	savePolicy(form, (button == undefined || button == '') ? 'Save' : button, '#fileQuestion'+questionID, dataID, catDataID);
 }

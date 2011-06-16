@@ -59,7 +59,7 @@ $(function() {
 function loadData(that, action){
 		var stepID = $(that).closest('tr').attr('id').replace('step_', '');
 		var data = $('#step_'+stepID+' :input').serialize();
-		var workflowID = $('[name=workflowID]').val();
+		var workflowID = $('[name="workflowID"]').val();
 		data += '&id='+workflowID+'&stepID='+stepID+'&button='+action;
 		$('#workflowSteps').load('ManageAuditWorkFlowAjax.action', data);	
 }

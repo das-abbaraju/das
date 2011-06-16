@@ -18,7 +18,7 @@ function getCategories(id) {
 }
 
 function getTable(auditTypeID, categoryID) {
-	$('#form1').find('input[name=auditTypeID]').val(auditTypeID);
+	$('#form1').find('input[name="auditTypeID"]').val(auditTypeID);
 	
 	if (auditTypeID == 2 && categoryID == 0) {
 		$('#tableLoad').html('<div class="error">Please select a category</div>');
