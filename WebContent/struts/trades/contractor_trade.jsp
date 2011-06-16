@@ -28,7 +28,8 @@ var conID = '<s:property value="id"/>';
 		<div class="alert" id="reviewTrades">
 			<s:hidden name="contractor" />
 			<s:text name="ContractorTrade.reviewTrades"/><br /><br />
-			<s:submit method="removeAllTradesAjax" value="Start" cssClass="picsbutton" />
+			<s:submit method="removeAllTradesAjax" value="Start Over (recommended)" cssClass="picsbutton" />
+			<s:submit method="continueWithTradesAjax" value="Keep Existing Trades" cssClass="picsbutton" />
 		</div>
 	</s:form>
 </s:if>

@@ -287,6 +287,13 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		return SUCCESS;
 	}
+	
+	public String continueWithTradesAjax() throws Exception {
+		contractor.setTradesUpdated(new Date());
+		tradeDAO.save(contractor);
+
+		return SUCCESS;
+	}
 
 	public boolean isOnsite() {
 		return onsite;

@@ -15,9 +15,11 @@ function loadTradeCallback() {
 		$('#tradeOptions').addClass('hide');
 	}
 	
+	/*
 	if ($('#reviewTrades').length > 0) {
 		$("#addButton").attr("disabled", "disabled");
 	}
+	*/
 	
 	setupCluetip();
 }
