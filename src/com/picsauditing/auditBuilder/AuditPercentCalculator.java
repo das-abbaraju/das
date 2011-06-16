@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Transient;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.converters.OshaTypeConverter;
@@ -20,6 +18,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOptionValue;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -234,6 +233,10 @@ public class AuditPercentCalculator {
 						applies = builder.isCategoryApplicable(data.getCategory(), cao);
 					}
 				}
+				
+				if (conAudit.getAuditType().getId() == AuditType.WELCOME)
+					applies = true;
+				
 				if (applies) {
 					required += data.getNumRequired();
 					answered += data.getRequiredCompleted();
