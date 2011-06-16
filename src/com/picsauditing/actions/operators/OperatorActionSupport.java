@@ -93,14 +93,6 @@ public class OperatorActionSupport extends AccountActionSupport {
 	}
 
 	public String getOperatorIds() {
-		String where = "";
-		if (operator.isCorporate()) {
-			for (Facility facility : operator.getOperatorFacilities()) {
-				where += "&filter.operator=" + facility.getOperator().getId();
-			}
-		} else {
-			where += "&filter.operator=" + operator.getId();
-		}
-		return where;
+		return "&filter.operator=" + operator.getId();
 	}
 }
