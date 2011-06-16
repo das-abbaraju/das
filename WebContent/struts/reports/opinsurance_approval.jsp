@@ -12,7 +12,7 @@ function setAllChecked(elm) {
 }
 
 function searchByFlag(flag) {
-	$('[name=filter.recommendedFlag]').val(flag);
+	$('[name="filter.recommendedFlag"]').val(flag);
 	return clickSearch('form1');
 }
 
@@ -34,11 +34,11 @@ function saveRows() {
 
 function changeAuditStatus() {
 	var caoIDs = new Array();
-	$('#approveInsuranceForm').find('input[name=caoIDs]:checked').each(function() {
+	$('#approveInsuranceForm').find('input[name="caoIDs"]:checked').each(function() {
 		caoIDs.push($(this).val());
 	});
 
-	var status = $('#approveInsuranceForm').find('input[name=newStatuses]:checked').val();
+	var status = $('#approveInsuranceForm').find('input[name="newStatuses"]:checked').val();
 	if (status == undefined) {
 		alert("Please choose a status");
 		return false;
