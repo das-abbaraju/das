@@ -71,6 +71,8 @@ public class ContractorWidget extends ContractorActionSupport {
 	public List<String> getOpenTasks() {
 		if (openTasks == null) {
 			openTasks = new ArrayList<String>();
+			boolean hasImportPQF = false;
+			boolean importPQFComplete = false;
 
 			// Adding a note to agree to terms of updated Contractor Agreement
 			if (contractor != null
@@ -84,10 +86,14 @@ public class ContractorWidget extends ContractorActionSupport {
 			}
 
 			for (ContractorAudit audit : contractor.getAudits()) {
-				if (audit.getAuditType().getId() == AuditType.IMPORT_PQF
-						&& audit.hasCaoStatusBefore(AuditStatus.Submitted))
-					openTasks.add(getText("ContractorWidget.message.ImportAndSubmitPQF", new Object[] {
-							new Integer(audit.getId()), audit.getAuditType().getName() }));
+				if (audit.getAuditType().getId() == AuditType.IMPORT_PQF) {
+					if (audit.hasCaoStatusBefore(AuditStatus.Submitted))
+						openTasks.add(getText("ContractorWidget.message.ImportAndSubmitPQF",
+								new Object[] { audit.getId() }));
+
+					hasImportPQF = true;
+					importPQFComplete = audit.hasCaoStatus(AuditStatus.Complete);
+				}
 			}
 
 			if (permissions.hasPermission(OpPerms.ContractorAdmin) || permissions.isAdmin()) {
@@ -97,8 +103,8 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 
 				if (contractor.isAcceptsBids()) {
-					openTasks.add(getText("ContractorWidget.message.BidOnlyUpdgrade", new Object[] {
-							contractor.getPaymentExpires(), contractor.getId() }));
+					openTasks.add(getText("ContractorWidget.message.BidOnlyUpdgrade",
+							new Object[] { contractor.getPaymentExpires(), contractor.getId() }));
 				}
 			}
 
@@ -119,8 +125,8 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 
 				if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
-					openTasks.add(getText("ContractorWidget.message.UpdatePaymentMethod", new Object[] { contractor
-							.getId() }));
+					openTasks.add(getText("ContractorWidget.message.UpdatePaymentMethod",
+							new Object[] { contractor.getId() }));
 				}
 			}
 			String auditName;
@@ -133,11 +139,8 @@ public class ContractorWidget extends ContractorActionSupport {
 						if (cao.isVisible()) {
 							if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
 								if (conAudit.getAuditType().isCanContractorEdit()) {
-									// Maybe use conAudit.isAboutToRenew()
-									// instead
-									// of conAudit.getAuditType().isRenewable()
-									// &&
-									// conAudit.isAboutToExpire()
+									// Maybe use conAudit.isAboutToRenew() instead of
+									// conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire()
 									if (conAudit.getAuditType().getId() == 176) {
 										if (cao.getStatus().before(AuditStatus.Complete)) {
 											needed++;
@@ -210,7 +213,8 @@ public class ContractorWidget extends ContractorActionSupport {
 										Integer showScheduledDate = (conAudit.getScheduledDate() != null) ? 1 : 0;
 										Integer showAuditor = (conAudit.getAuditor() != null) ? 1 : 0;
 										if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
-											text = getText("ContractorWidget.message.UpcomingAuditConductedBy",
+											text = getText(
+													"ContractorWidget.message.UpcomingAuditConductedBy",
 													new Object[] {
 															conAudit.getId(),
 															auditName,
@@ -238,8 +242,16 @@ public class ContractorWidget extends ContractorActionSupport {
 						} else if (conAudit.getAuditType().isCanContractorEdit()
 								&& conAudit.getAuditType().getId() != AuditType.IMPORT_PQF) {
 							if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
-								openTasks.add(getText("ContractorWidget.message.CompleteAndSubmitAudit", new Object[] {
-										conAudit.getId(), auditName, showAuditFor, auditFor }));
+								if (conAudit.getAuditType().isPqf() && hasImportPQF) {
+									// Show a message for filling out the rest of the PQF if the Import PQF is COMPLETE
+									if (importPQFComplete) {
+										openTasks.add(getText("ContractorWidget.message.PQFOtherRegistry",
+												new Object[] { conAudit.getId() }));
+									}
+								} else {
+									openTasks.add(getText("ContractorWidget.message.CompleteAndSubmitAudit",
+											new Object[] { conAudit.getId(), auditName, showAuditFor, auditFor }));
+								}
 							}
 						}
 					}
