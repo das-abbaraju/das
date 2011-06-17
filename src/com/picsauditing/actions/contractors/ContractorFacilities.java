@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.naming.NoPermissionException;
 
@@ -22,11 +23,13 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
+import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -87,6 +90,24 @@ public class ContractorFacilities extends ContractorActionSupport {
 			facilityChanger.setPermissions(permissions);
 			facilityChanger.add();
 
+			// add in tags
+			String ids = crr.getOperatorTags();
+			if (ids == null) ids = "";
+			StringTokenizer st = new StringTokenizer(ids, ", ");
+			while (st.hasMoreElements()) {
+				int tagId = Integer.parseInt(st.nextToken());
+				if (tagId > 0) {
+					ContractorTag cTag = new ContractorTag();
+					cTag.setContractor(contractor);
+					cTag.setTag(new OperatorTag());
+					cTag.getTag().setId(tagId);
+					cTag.setAuditColumns(permissions);
+					contractor.getOperatorTags().add(cTag);
+					contractor.incrementRecalculation(10);
+					accountDao.save(contractor);
+				}
+			}
+			
 			BillingCalculatorSingle.calculateAnnualFees(contractor);
 			contractor.syncBalance();
 

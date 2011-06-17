@@ -12,11 +12,13 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
@@ -33,6 +35,7 @@ import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.EmailAttachmentDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.dao.UserDAO;
@@ -49,6 +52,7 @@ import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAssignment;
@@ -72,6 +76,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected EmailTemplateDAO templateDAO;
 	protected EmailAttachmentDAO attachmentDAO;
 
+	@Autowired
+	private OperatorTagDAO operatorTagDAO;
+
 	protected boolean redirect = false;
 	protected boolean increaseContactCount = true;
 	protected int conID;
@@ -94,6 +101,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected List<String> unusedTerms;
 	protected List<String> usedTerms;
 	protected List<OperatorForm> forms;
+	protected List<OperatorTag> requestedTags = new ArrayList<OperatorTag>(); // selected tags of requestor
+	protected List<OperatorTag> operatorTags = new ArrayList<OperatorTag>(); // available tags of the operator
 
 	protected boolean continueCheck = true;
 
@@ -142,6 +151,18 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				newContractor.setRequestedByUser(userDAO.find(permissions.getUserId()));
 			}
 		}
+		
+		// initialize tags
+		if (!Strings.isEmpty(newContractor.getOperatorTags())) {
+			StringTokenizer st = new StringTokenizer(newContractor.getOperatorTags(), ", ");
+			while (st.hasMoreTokens()) {
+				OperatorTag tag = operatorTagDAO.find(Integer.parseInt(st.nextToken()));
+				if (tag != null) {
+					requestedTags.add(tag);
+				}
+			}
+		}
+		loadOperatorTags();
 
 		String[] countryIsos = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
 		if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
@@ -321,6 +342,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			newContractor.setMatchCount(potentialMatches.size());
 
 		newContractor.setAuditColumns(permissions);
+		
+		StringBuffer tagIds = new StringBuffer("");
+		for (OperatorTag tag : requestedTags) {
+			if (tagIds.length() > 0)
+				tagIds.append(",");
+			tagIds.append("" + tag.getId());
+		}
+		newContractor.setOperatorTags(tagIds.toString());
 
 		if (newContractor.getId() == 0) {
 			newContractor = crrDAO.save(newContractor);
@@ -910,6 +939,32 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		} catch (Exception e) {
 			System.out.println("Unable to open file: /forms/" + filename);
 		}
+	}
+	
+	private void loadOperatorTags() {
+		List<OperatorTag> list= operatorTagDAO.findByOperator(permissions.getAccountId(), true);
+		
+		// add only tags not in request
+		for (OperatorTag tag : list) {
+			if (!requestedTags.contains(tag))
+				operatorTags.add(tag);
+		}
+	}
+
+	public List<OperatorTag> getRequestedTags() {
+		return requestedTags;
+	}
+
+	public void setRequestedTags(List<OperatorTag> requestedTags) {
+		this.requestedTags = requestedTags;
+	}
+
+	public List<OperatorTag> getOperatorTags() {
+		return operatorTags;
+	}
+
+	public void setOperatorTags(List<OperatorTag> operatorTags) {
+		this.operatorTags = operatorTags;
 	}
 
 	public String getTerm() {
