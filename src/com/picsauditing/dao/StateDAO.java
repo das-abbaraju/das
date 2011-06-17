@@ -7,6 +7,8 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.State;
 
@@ -21,6 +23,19 @@ public class StateDAO extends PicsDAO {
 
 	public State find(String id) {
 		return em.find(State.class, id);
+	}
+
+	public Multimap<Country, State> getStateMap(String country) {
+		Multimap<Country, State> result = LinkedHashMultimap.create();
+
+		Query query = em.createQuery("FROM State t ORDER BY t.english");
+		List<State> states = (List<State>) query.getResultList();
+
+		for (State state : states) {
+			result.put(state.getCountry(), state);
+		}
+
+		return result;
 	}
 
 	public List<State> findByCountry(Country country) {

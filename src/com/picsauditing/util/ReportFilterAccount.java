@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.Multimap;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.StateDAO;
@@ -68,6 +69,14 @@ public class ReportFilterAccount extends ReportFilter {
 			result = stateDAO.findAll();
 
 		return result;
+	}
+
+	public Multimap<Country, State> getStateMap() {
+		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
+		
+		Multimap<Country, State> stateMap = stateDAO.getStateMap(permissions.getCountry());
+		
+		return stateMap;
 	}
 
 	public List<Country> getCountryList() {

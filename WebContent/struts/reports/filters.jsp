@@ -112,9 +112,12 @@
 				<a href="#" class="filterBox">State</a> =
 				<span class="q_status">ALL</span>
 				<span id="form1_state_select" class="clearLink q_box select">
-					<s:select id="form1_state" name="filter.state" list="filter.stateList" listKey="isoCode"
-						listValue="name" cssClass="forms" multiple="true" size="15" onclick="clearSelected('form1_country');" /><br />
-					<a class="clearLink" href="#" onclick="clearSelected('form1_state'); return false;">Clear</a>
+					<s:select name="filter.state" list="{}" cssClass="forms" multiple="true" size="15">
+						<s:iterator value="filter.stateMap.asMap()">
+							<s:optgroup label="%{key.name}" list="value" listKey="isoCode" listValue="name"></s:optgroup>
+						</s:iterator>
+					</s:select><br/>
+					<a class="clearLink" href="#">Clear</a>
 				</span>
 			</span>
 			<span class="filterOption">
@@ -123,7 +126,7 @@
 				<span id="form1_country_select" class="clearLink q_box select">
 					<s:select id="form1_country" name="filter.country" list="filter.countryList" listKey="isoCode"
 						listValue="name" cssClass="forms" multiple="true" size="15" /><br />
-					<a class="clearLink" href="#" onclick="clearSelected('form1_country'); return false;">Clear</a>
+					<a class="clearLink" href="#">Clear</a>
 				</span>
 			</span>
 		</div>
@@ -134,8 +137,11 @@
 			<a href="#" class="filterBox">State</a> =
 			<span class="q_status">ALL</span><br />
 			<span class="clearLink q_box select">
-				<s:select id="form1_state" name="filter.state" list="filter.stateList" listKey="isoCode"
-					listValue="name" cssClass="forms" multiple="true" size="15" /><br />
+				<s:select name="filter.state" list="{}" cssClass="forms" multiple="true" size="15">
+					<s:iterator value="filter.stateMap.asMap()">
+						<s:optgroup label="%{key.name}" list="value" listKey="isoCode" listValue="name"></s:optgroup>
+					</s:iterator>
+				</s:select><br/>
 				<a class="clearLink" href="#">Clear</a>
 			</span>
 		</div>
