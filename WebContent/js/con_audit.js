@@ -131,6 +131,27 @@ $(function(){
 			});
 		}
 	});
+	
+	$('#auditProblems, #problemsHide').live('click', function(){
+		$('#problems').slideDown();
+		$('#problemsHide').hide();
+	});
+	$('#problems .bottom').live('click', function(){
+		$('#problems').slideUp();
+		$('#problemsHide').show();
+	});
+
+	$('#importPQFCluetipLink').cluetip({
+		arrows: true,
+		cluetipClass: 'jtip',
+		local: true,
+		clickThrough: false,
+		activation: 'click',
+		sticky: true,
+		showTitle: false,
+		closeText: "<img src='images/cross.png' width='16' height='16'>",
+		width: 675
+	});
 });
 
 function showNavButtons() {

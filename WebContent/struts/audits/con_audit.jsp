@@ -27,12 +27,10 @@
 <script type="text/javascript">
 	var auditID = '<s:property value="conAudit.id"/>';
 	var conID = '<s:property value="id"/>';
-	<s:if test="conAudit.categories.size == 0">
 	$(function() {
-		updateCategoriesNow();
-	});
-	</s:if>
-	$(function() {
+		<s:if test="conAudit.categories.size == 0">
+			updateCategoriesNow();
+		</s:if>
 		<s:if test="!permissions.operatorCorporate">
 			$('a.passAudit').live('click', function() {
 				window.location.href = $(this).attr('href') + ($(this).attr('href').indexOf("?") > 0 ? "&" : "?") + "auditID=" + auditID;
@@ -45,26 +43,6 @@
 				return false;
 			});
 		</s:else>
-		$('#auditProblems, #problemsHide').live('click', function(){
-			$('#problems').slideDown();
-			$('#problemsHide').hide();
-		});
-		$('#problems .bottom').live('click', function(){
-			$('#problems').slideUp();
-			$('#problemsHide').show();
-		});
-
-		$('#importPQFCluetipLink').cluetip({
-			arrows: true,
-			cluetipClass: 'jtip',
-			local: true,
-			clickThrough: false,
-			activation: 'click',
-			sticky: true,
-			showTitle: false,
-			closeText: "<img src='images/cross.png' width='16' height='16'>",
-			width: 675
-		});
 	});
 	
 	function clearLinks() {

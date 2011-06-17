@@ -2,12 +2,14 @@ package com.picsauditing.util;
 
 import java.util.List;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.OperatorCompetency;
@@ -213,13 +215,13 @@ public class ReportFilterEmployee extends ReportFilter {
 
 	// Lists
 	public List<JobSite> getProjectList() {
-		JobSiteDAO siteDAO = (JobSiteDAO) SpringUtils.getBean("JobSiteDAO");
+		JobSiteDAO jobSiteDAO = (JobSiteDAO) SpringUtils.getBean("JobSiteDAO");
 
 		if (permissions.isOperatorCorporate())
-			return siteDAO.findByOperator(permissions.getAccountId(), true);
+			return jobSiteDAO.findByOperator(permissions.getAccountId(), true);
 		else if (permissions.isContractor())
-			return siteDAO.findByContractor(permissions.getAccountId(), true);
-		
+			return jobSiteDAO.findByContractor(permissions.getAccountId(), true);
+
 		return null;
 	}
 
@@ -240,7 +242,16 @@ public class ReportFilterEmployee extends ReportFilter {
 			return operatorCompetencyDAO.findByOperator(permissions.getAccountId());
 		else if (permissions.isContractor())
 			return operatorCompetencyDAO.findByContractor(permissions.getAccountId());
-		
+		else if (permissions.isAdmin()) {
+			int auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
+					.getContext().getSession().get("auditID"));
+			
+			if (auditID > 0) {
+				ContractorAudit audit = (ContractorAudit) operatorCompetencyDAO.find(ContractorAudit.class, auditID);
+				return operatorCompetencyDAO.findByContractor(audit.getContractorAccount().getId());
+			}
+		}
+
 		return null;
 	}
 }

@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
@@ -17,6 +19,7 @@ import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmployeeRole;
 import com.picsauditing.jpa.entities.JobCompetency;
@@ -37,18 +40,16 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 	private int competencyID = 0;
 	private int auditID;
 
+	@Autowired
 	protected JobRoleDAO jobRoleDAO;
+	@Autowired
 	protected AccountDAO accountDAO;
+	@Autowired
 	protected OperatorCompetencyDAO competencyDAO;
+	@Autowired
 	protected EmployeeRoleDAO erDAO;
 
-	public ManageJobRoles(AccountDAO accountDAO, JobRoleDAO jobRoleDAO, OperatorCompetencyDAO competencyDAO,
-			EmployeeRoleDAO erDAO) {
-		this.accountDAO = accountDAO;
-		this.jobRoleDAO = jobRoleDAO;
-		this.competencyDAO = competencyDAO;
-		this.erDAO = erDAO;
-		
+	public ManageJobRoles() {
 		subHeading = "Manage Job Roles";
 	}
 
@@ -67,35 +68,37 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 				account = accountDAO.find(accountID);
 		}
 
-		if (role == null && account == null) {
-			loadPermissions();
+		if (role == null && account == null && permissions.isContractor()) {
 			account = accountDAO.find(permissions.getAccountId());
 		}
-		
-		if (account == null)
+
+		if (account == null && permissions.isContractor())
 			throw new RecordNotFoundException("account");
 	}
 
 	@Override
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		if (permissions.isContractor())
 			permissions.tryPermission(OpPerms.ContractorAdmin);
 		else {
 			permissions.tryPermission(OpPerms.DefineRoles);
 
-			if (permissions.getAccountId() != account.getId())
+			if (permissions.isOperatorCorporate() && permissions.getAccountId() != account.getId())
 				permissions.tryPermission(OpPerms.AllOperators);
 		}
 
 		// Get auditID
-		if (auditID > 0)
+		if (auditID > 0) {
 			ActionContext.getContext().getSession().put("auditID", auditID);
-		else
+
+			if (permissions.isAdmin()) {
+				ContractorAudit audit = (ContractorAudit) accountDAO.find(ContractorAudit.class, auditID);
+				this.account = audit.getContractorAccount();
+			}
+		} else {
 			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
 					.getContext().getSession().get("auditID"));
+		}
 
 		if ("Add".equals(button)) {
 			role = new JobRole();
@@ -235,19 +238,19 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 	public void setAuditID(int auditID) {
 		this.auditID = auditID;
 	}
-	
+
 	public List<OperatorAccount> getShellOps() {
 		List<OperatorAccount> shellOps = new ArrayList<OperatorAccount>();
-		
+
 		if (account.isContractor()) {
 			ContractorAccount con = (ContractorAccount) account;
-			
+
 			for (ContractorOperator co : con.getOperators()) {
 				if (co.getOperatorAccount().isRequiresCompetencyReview())
 					shellOps.add(co.getOperatorAccount());
 			}
 		}
-		
+
 		return shellOps;
 	}
 

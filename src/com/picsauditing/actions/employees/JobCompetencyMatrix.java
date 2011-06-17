@@ -15,12 +15,14 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
@@ -28,8 +30,11 @@ import com.picsauditing.util.DoubleMap;
 
 @SuppressWarnings("serial")
 public class JobCompetencyMatrix extends AccountActionSupport {
+	@Autowired
 	protected JobRoleDAO jobRoleDAO;
+	@Autowired
 	protected AccountDAO accountDAO;
+	@Autowired
 	private OperatorCompetencyDAO competencyDAO;
 
 	private int auditID;
@@ -38,26 +43,31 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 	private List<OperatorCompetency> competencies;
 	private DoubleMap<JobRole, OperatorCompetency, JobCompetency> map;
 
-	public JobCompetencyMatrix(AccountDAO accountDAO, JobRoleDAO jobRoleDAO, OperatorCompetencyDAO competencyDAO) {
-		this.accountDAO = accountDAO;
-		this.jobRoleDAO = jobRoleDAO;
-		this.competencyDAO = competencyDAO;
-
+	public JobCompetencyMatrix() {
 		subHeading = "HSE Competency Matrix";
 	}
 
 	@Override
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		getPermissions();
 		if (permissions.isContractor())
 			id = permissions.getAccountId();
-
-		if (id == 0)
+		
+		if (id == 0 && auditID == 0)
 			throw new Exception("Missing id");
 
+		// Get auditID
+		if (auditID > 0) {
+			ActionContext.getContext().getSession().put("auditID", auditID);
+			
+			if (permissions.isAdmin()) {
+				ContractorAudit audit = (ContractorAudit) jobRoleDAO.find(ContractorAudit.class, auditID);
+				id = audit.getContractorAccount().getId();
+			}
+		} else {
+			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
+					.getContext().getSession().get("auditID"));
+		}
+		
 		account = accountDAO.find(id);
 		roles = jobRoleDAO.findMostUsed(id, true);
 
@@ -75,13 +85,6 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 
 		competencies = competencyDAO.findMostUsed(id, true);
 		map = jobRoleDAO.findJobCompetencies(id, true);
-
-		// Get auditID
-		if (auditID > 0)
-			ActionContext.getContext().getSession().put("auditID", auditID);
-		else
-			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
-					.getContext().getSession().get("auditID"));
 
 		if (button != null && "Download".equals(button)) {
 			String filename = "HSECompetencyMatrix";
@@ -158,14 +161,14 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 		int columnCount = 0;
 		HSSFRow r = sheet.createRow(rowNumber);
 		HSSFCell c = r.createCell(columnCount);
-		
+
 		if (permissions.isOperatorCorporate()) {
 			c.setCellStyle(headerStyle);
 			c.setCellValue(new HSSFRichTextString(account.getName()));
 			rowNumber++;
 			r = sheet.createRow(rowNumber);
 		}
-		
+
 		// HSE Competency Category & Label
 		c = r.createCell(columnCount);
 		c.setCellValue(new HSSFRichTextString("HSE Competency Category"));

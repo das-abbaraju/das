@@ -16,6 +16,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.RecordNotFoundException;
@@ -24,6 +25,7 @@ import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeCompetencyDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetency;
@@ -34,9 +36,13 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class EmployeeCompetencies extends ReportEmployee {
+	@Autowired
 	protected AccountDAO accountDAO;
+	@Autowired
 	protected EmployeeDAO employeeDAO;
+	@Autowired
 	protected EmployeeCompetencyDAO ecDAO;
+	@Autowired
 	protected OperatorCompetencyDAO ocDAO;
 
 	protected int id;
@@ -49,32 +55,27 @@ public class EmployeeCompetencies extends ReportEmployee {
 	private List<OperatorCompetency> competencies;
 	private DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
 
-	public EmployeeCompetencies(AccountDAO accountDAO, EmployeeDAO employeeDAO, EmployeeCompetencyDAO ecDAO,
-			OperatorCompetencyDAO ocDAO) {
-		this.accountDAO = accountDAO;
-		this.employeeDAO = employeeDAO;
-		this.ecDAO = ecDAO;
-		this.ocDAO = ocDAO;
-	}
-
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		if (permissions.isContractor())
 			id = permissions.getAccountId();
+		
+		// Get auditID
+		if (auditID > 0) {
+			ActionContext.getContext().getSession().put("auditID", auditID);
+			
+			if (permissions.isAdmin()) {
+				ContractorAudit audit = (ContractorAudit) accountDAO.find(ContractorAudit.class, auditID);
+				id = audit.getContractorAccount().getId();
+			}
+		} else {
+			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
+					.getContext().getSession().get("auditID"));
+		}
 
 		if (id > 0)
 			account = accountDAO.find(id);
 		else
 			throw new RecordNotFoundException("Missing account ID");
-		
-		// Get auditID
-		if (auditID > 0)
-			ActionContext.getContext().getSession().put("auditID", auditID);
-		else
-			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
-					.getContext().getSession().get("auditID"));
 		
 		getFilter().setPermissions(permissions);
 		getFilter().setAccountID(account.getId());
