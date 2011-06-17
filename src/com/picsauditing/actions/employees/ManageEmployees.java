@@ -12,12 +12,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.json.simple.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
@@ -28,6 +27,7 @@ import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeQualification;
@@ -47,19 +47,26 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageEmployees extends AccountActionSupport implements Preparable {
-
-	private AccountDAO accountDAO;
-	private EmployeeDAO employeeDAO;
-	private JobRoleDAO roleDAO;
-	private EmployeeRoleDAO employeeRoleDAO;
-	private JobSiteDAO jobSiteDAO;
-	private EmployeeSiteDAO employeeSiteDAO;
-	private JobSiteTaskDAO siteTaskDAO;
+public class ManageEmployees extends AccountActionSupport {
+	@Autowired
+	protected AccountDAO accountDAO;
+	@Autowired
+	protected EmployeeDAO employeeDAO;
+	@Autowired
+	protected JobRoleDAO roleDAO;
+	@Autowired
+	protected EmployeeRoleDAO employeeRoleDAO;
+	@Autowired
+	protected JobSiteDAO jobSiteDAO;
+	@Autowired
+	protected EmployeeSiteDAO employeeSiteDAO;
+	@Autowired
+	protected JobSiteTaskDAO siteTaskDAO;
 
 	protected Employee employee;
 	protected String ssn;
 
+	protected int id;
 	protected int auditID;
 	protected int childID;
 	protected boolean selectRolesSites = false;
@@ -71,63 +78,26 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	private EmployeeSite esSite = new EmployeeSite();
 	private JobSite jobSite = new JobSite();
 
-	public ManageEmployees(AccountDAO accountDAO, EmployeeDAO employeeDAO, JobRoleDAO roleDAO,
-			EmployeeRoleDAO employeeRoleDAO, EmployeeSiteDAO employeeSiteDAO, JobSiteDAO jobSiteDAO,
-			JobSiteTaskDAO siteTaskDAO) {
-		this.accountDAO = accountDAO;
-		this.employeeDAO = employeeDAO;
-		this.roleDAO = roleDAO;
-		this.employeeRoleDAO = employeeRoleDAO;
-		this.jobSiteDAO = jobSiteDAO;
-		this.employeeSiteDAO = employeeSiteDAO;
-		this.siteTaskDAO = siteTaskDAO;
-
+	public ManageEmployees() {
 		noteCategory = NoteCategory.Employee;
 	}
 
 	@Override
-	public void prepare() throws Exception {
-		int employeeID = getParameter("employee.id");
-		if (employeeID > 0)
-			employee = employeeDAO.find(employeeID);
-
-		if (employee != null)
-			account = employee.getAccount();
-		else {
-			int accountID = getParameter("id");
-			if (accountID > 0)
-				account = accountDAO.find(accountID);
-		}
-
-		if (employee == null && account == null) {
-			loadPermissions();
-			account = accountDAO.find(permissions.getAccountId());
-		}
-
-		if (account == null)
-			throw new RecordNotFoundException("Account not found");
-	}
-
-	@Override
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		if (permissions.isContractor())
-			permissions.tryPermission(OpPerms.ContractorAdmin);
-		else {
-			permissions.tryPermission(OpPerms.ManageEmployees);
-
-			if (permissions.getAccountId() != account.getId())
-				permissions.tryPermission(OpPerms.AllOperators);
-		}
+		checkPermissionsLoadAccount();
 
 		// Get auditID
-		if (auditID > 0)
+		if (auditID > 0) {
 			ActionContext.getContext().getSession().put("auditID", auditID);
-		else
+
+			if (permissions.isAdmin()) {
+				ContractorAudit audit = (ContractorAudit) accountDAO.find(ContractorAudit.class, auditID);
+				account = audit.getContractorAccount();
+			}
+		} else {
 			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
 					.getContext().getSession().get("auditID"));
+		}
 
 		if (employee != null)
 			// TODO Put this into the employee cron
@@ -151,13 +121,19 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				}
 			}
 
-		if ("Add".equals(button))
-			employee = new Employee();
+		return SUCCESS;
+	}
 
+	public String add() throws Exception {
+		checkPermissionsLoadAccount();
+
+		employee = new Employee();
 		return SUCCESS;
 	}
 
 	public String save() throws Exception {
+		checkPermissionsLoadAccount();
+
 		if (employee.getAccount() == null) {
 			employee.setAccount(account);
 		}
@@ -171,17 +147,19 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 		employee.setAuditColumns(permissions);
 		boolean existing = employee.getId() > 0;
-
 		// employee.setNeedsIndexing(true);
 		employee = (Employee) employeeDAO.save(employee);
 		if (!existing)
 			addNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
 
-		return redirect("ManageEmployees.action?employee.id=" + employee.getId()
-				+ ("Continue".equals(button) ? "&selectRolesSites=true" : ""));
+		return redirect("ManageEmployees.action?id=" + account.getId()
+				+ ("Continue".equals(button) ? "&selectRolesSites=true" : "") + "#employee=" + employee.getId());
 	}
 
 	public String delete() throws Exception {
+		checkPermissionsLoadAccount();
+
+		employeeDAO.refresh(employee);
 		employeeDAO.remove(employee);
 		addActionMessage("Employee " + employee.getDisplayName() + " Successfully Deleted.");
 		File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(employee.getId()) + "emp_" + employee.getId()
@@ -195,8 +173,9 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public String addRoleAjax() throws Exception {
-		JobRole jobRole = roleDAO.find(childID);
+		checkPermissionsLoadAccount();
 
+		JobRole jobRole = roleDAO.find(childID);
 		if (employee != null && jobRole != null) {
 			EmployeeRole e = new EmployeeRole();
 			e.setEmployee(employee);
@@ -215,6 +194,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public String removeRoleAjax() throws Exception {
+		checkPermissionsLoadAccount();
+
 		if (employee != null && childID > 0) {
 			EmployeeRole e = employeeRoleDAO.find(childID);
 
@@ -229,6 +210,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public String addSiteAjax() throws Exception {
+		checkPermissionsLoadAccount();
+
 		if (employee != null && op.getId() != 0) {
 			EmployeeSite es = new EmployeeSite();
 			es.setEmployee(employee);
@@ -253,6 +236,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public String removeSiteAjax() throws Exception {
+		checkPermissionsLoadAccount();
+
 		if (employee != null && childID > 0) {
 			EmployeeSite es = employeeSiteDAO.find(childID);
 
@@ -278,6 +263,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public String newSiteAjax() throws Exception {
+		checkPermissionsLoadAccount();
+
 		if (!Strings.isEmpty(jobSite.getLabel()) && !Strings.isEmpty(jobSite.getName())) {
 			jobSite.setAuditColumns(permissions);
 			jobSite.setOperator(op);
@@ -295,6 +282,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public String editSiteAjax() throws Exception {
+		checkPermissionsLoadAccount();
+
 		if (employee != null && childID != 0) {
 			List<String> notes = new ArrayList<String>();
 
@@ -335,14 +324,38 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public String getSiteAjax() throws Exception {
+		checkPermissionsLoadAccount();
+
 		if (childID != 0)
 			esSite = employeeSiteDAO.find(childID);
 
 		return "getSite";
 	}
-	
+
 	public String loadAjax() throws Exception {
+		checkPermissionsLoadAccount();
+
 		return "employees";
+	}
+
+	private void checkPermissionsLoadAccount() throws Exception {
+		if (permissions.isContractor()) {
+			permissions.tryPermission(OpPerms.ContractorAdmin);
+		} else {
+			permissions.tryPermission(OpPerms.ManageEmployees);
+
+			if (account != null && permissions.getAccountId() != account.getId())
+				permissions.tryPermission(OpPerms.AllOperators);
+		}
+
+		if (id > 0)
+			account = accountDAO.find(id);
+
+		if (employee != null && employee.getId() > 0)
+			account = employee.getAccount();
+
+		if (account == null)
+			account = accountDAO.find(permissions.getAccountId());
 	}
 
 	public String getFileName(int eID) {
@@ -365,6 +378,14 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		ssn = ssn.replaceAll("[^X0-9]", "");
 		if (ssn.length() <= 9)
 			this.ssn = ssn;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getAuditID() {
@@ -585,9 +606,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	/**
-	 * Gets all job tasks across all associated operators (if you're a
-	 * contractor). Returns the list of job tasks per project you have under
-	 * your umbrella if you're an operator.
+	 * Gets all job tasks across all associated operators (if you're a contractor). Returns the list of job tasks per
+	 * project you have under your umbrella if you're an operator.
 	 * 
 	 * @return
 	 */

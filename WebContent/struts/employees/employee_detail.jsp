@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
@@ -100,7 +101,7 @@
 									Title: <s:property value="employee.title" /><br />
 								</s:if>
 								<s:if test="(permissions.admin && permissions.hasPermission('ManageEmployees')) || permissions.accountId == employee.account.id">
-									<a href="ManageEmployees.action?employee.id=<s:property value="employee.id" />" class="edit">Edit Employee</a><br />
+									<a href="ManageEmployees.action?employee=<s:property value="employee.id" />" class="edit">Edit Employee</a><br />
 								</s:if>
 								<s:if test="employee.account.contractor && (permissions.admin || (permissions.operatorCorporate && canViewContractor) || permissions.accountId == employee.account.id)">
 									<a href="ContractorView.action?id=<s:property value="employee.account.id" />"><s:property value="employee.account.name" /></a><br />

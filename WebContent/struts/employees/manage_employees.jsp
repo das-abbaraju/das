@@ -8,6 +8,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/manage_employees.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min.js"></script>
 
 <script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
@@ -22,43 +23,33 @@
 div.dataTables_filter { width: 65%; }
 div.dataTables_length { width: 35%; }
 .newJobSite { display: none; }
+<s:if test="employee.id == 0 || employee.active">
+	#termDate { display: none; }
+</s:if>
 </style>
 <script type="text/javascript">
 var employeeID = <s:property value="employee == null ? 0 : employee.id"/>;
-$(function() {
-	$('#employees').dataTable({
-		aoColumns: [
-	            {bVisible: false},
-	            {sType: "html"},
-	            {sType: "html"},
-	            null,
-	            null,
-	            null
-			],
-		aaSorting: [[1, 'asc']],
-		bJQueryUi: true,
-		bStateSave: true,
-		bLengthChange: false,
-		oLanguage: {
-			sSearch:"Search",
-			sLengthMenu: '_MENU_', 
-			sInfo:"_START_ to _END_ of _TOTAL_",
-			sInfoEmpty:"",
-			sInfoFiltered:"(filtered from _MAX_)" },
-		fnRowCallback: function( nRow, aData, iDisplayIndex ) {
-			if (aData[0] == employeeID)
-				$(nRow).not('.highlight').addClass('highlight');
 
-			return nRow;
-		}
-	});
-	if (employeeID > 0)
-		loadEmployee(employeeID, false);
+var json_previousLocations = '<s:property value="previousLocationsJSON" escape="false"/>';
+var json_previousTitles = '<s:property value="previousTitlesJSON" escape="false"/>';
+
+var translation_ajaxLoad = '<s:text name="%{scope}.message.AjaxLoad" />';
+var translation_chooseADate = '<s:text name="javascript.ChooseADate" />';
+var translation_removeRole = '<s:text name="%{scope}.confirm.RemoveRole" />';
+var translation_removeProject = '<s:text name="%{scope}.confirm.RemoveProject" />';
+var translation_uploadPhoto = '<s:text name="%{scope}.message.UploadPhoto" />';
+var translation_uploadEmployees = '<s:text name="%{scope}.message.UploadEmployees" />';
+
+$(function() {
+	startup();
 });
 
-function loadEmployee(id, add) {
-	$('#employeeForm').load('ManageEmployees!loadAjax.action', {'employee.id' : id, button: (add ? "Add" : null) })
-	return false;
+function showExcelUpload() {
+	url = 'ManageEmployeesUpload.action?accountID=<s:property value="account.id" />';
+	title = translation_uploadEmployees;
+	pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
+	fileUpload = window.open(url, title, pars);
+	fileUpload.focus();
 }
 </script>
 </head>
@@ -77,8 +68,8 @@ function loadEmployee(id, add) {
 		</div>
 	</s:if>
 
-	<a href="#" class="add" onclick="return loadEmployee(0, true);"><s:text name="%{scope}.link.Add" /></a><br />
-	<a href="#" onclick="showExcelUpload(); return false;" class="add"><s:text name="%{scope}.link.Import" /></a>
+	<a href="ManageEmployees!add.action?id=<s:property value="account.id" />" class="add"><s:text name="%{scope}.link.Add" /></a><br />
+	<a href="#" onclick="showExcelUpload(); return false;" class="add" id="addExcel"><s:text name="%{scope}.link.Import" /></a>
 	<table>
 		<tr>
 			<s:if test="account.employees.size() > 0">
@@ -87,10 +78,10 @@ function loadEmployee(id, add) {
 						<thead>
 							<tr>
 								<th>id</th>
-								<th>Last Name</th>
-								<th>First Name</th>
-								<th>Title</th>
-								<th>Classification</th>
+								<th><s:text name="Employee.lastName" /></th>
+								<th><s:text name="Employee.firstName" /></th>
+								<th><s:text name="Employee.title" /></th>
+								<th><s:text name="Employee.classification" /></th>
 								<th><s:text name="%{scope}.message.Profile" /></th>
 							</tr>
 						</thead>
@@ -98,11 +89,11 @@ function loadEmployee(id, add) {
 							<s:iterator value="account.employees" id="e">
 								<tr>
 									<td><s:property value="#e.id"/></td>
-									<td><a href="#" onclick="return loadEmployee(<s:property value="#e.id" />);"><s:property value="#e.lastName"/></a></td>
-									<td><a href="#" onclick="return loadEmployee(<s:property value="#e.id" />);"><s:property value="#e.firstName"/></a></td>
+									<td><a href="#employee=<s:property value="#e.id" />" class="loadEmployee"><s:property value="#e.lastName"/></a></td>
+									<td><a href="#employee=<s:property value="#e.id" />" class="loadEmployee"><s:property value="#e.firstName"/></a></td>
 									<td><s:property value="#e.title"/></td>
 									<td><s:property value="#e.classification"/></td>
-									<td class="center"><a href="EmployeeDetail.action?employee.id=<s:property value="#e.id" />"><s:text name="%{scope}.link.View" /></a></td>
+									<td class="center"><a href="EmployeeDetail.action?employee=<s:property value="#e.id" />"><s:text name="%{scope}.link.View" /></a></td>
 								</tr>
 							</s:iterator>
 						</tbody>
@@ -112,7 +103,12 @@ function loadEmployee(id, add) {
 				<td style="width: 20px;"></td>
 			</s:if>
 			<td style="vertical-align:top;">
-				<div id="employeeForm"></div>
+				<div id="employeeForm">
+					<s:if test="employee != null && employee.id == 0">
+						<s:include value="manage_employees_form.jsp" />
+						<script type="text/javascript">setupEmployee();</script>
+					</s:if>
+				</div>
 			</td>
 		</tr>
 	</table>

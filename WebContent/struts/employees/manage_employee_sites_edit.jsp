@@ -1,22 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<script type="text/javascript">
-	$(function() {
-		$('.datepicker').datepicker({
-				changeMonth: true,
-				changeYear:true,
-				yearRange: '1940:2039',
-				showOn: 'button',
-				buttonImage: 'images/icon_calendar.gif',
-				buttonImageOnly: true,
-				buttonText: 'Choose a date...',
-				constrainInput: true,
-				showAnim: 'fadeIn'
-			});
-	});
-</script>
-
 <form id="siteForm_<s:property value="esSite.id" />">
 	<fieldset class="form">
 		<input type="hidden" value="<s:property value="esSite.id" />" name="childID" />

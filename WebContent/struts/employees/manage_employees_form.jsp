@@ -4,17 +4,8 @@
 <script type="text/javascript">
 employeeID = <s:property value="employee == null ? 0 : employee.id"/>;
 $(function() {
-	$('.datepicker').datepicker({
-			changeMonth: true,
-			changeYear:true,
-			yearRange: '1940:2039',
-			showOn: 'button',
-			buttonImage: 'images/icon_calendar.gif',
-			buttonImageOnly: true,
-			buttonText: 'Choose a date...',
-			constrainInput: true,
-			showAnim: 'fadeIn'
-		});
+	setupEmployee();
+	
 	<s:if test="employee.id != 0">
 		<s:if test="employee.active">
 			$('#termDate').hide();
@@ -26,91 +17,7 @@ $(function() {
 	<s:else>
 		$('#termDate').hide();
 	</s:else>
-	
-	$.mask.definitions['S']='[X0-9]';
-	$('input.ssn').mask('SSS-SS-SSSS');
-	$('input.date').mask('99/99/9999');
-	$('#locationSuggest').autocomplete(<s:property value="previousLocationsJSON" escape="false"/>);
-	$('#titleSuggest').autocomplete(<s:property value="previousTitlesJSON" escape="false"/>);
-	$('.cluetip').cluetip({
-		closeText: "<img src='images/cross.png' width='16' height='16'>",
-		arrows: true,
-		cluetipClass: 'jtip',
-		local: true,
-		clickThrough: false
-	});
 });
-
-function addJobRole(id) {
-	startThinking({div: 'thinking_roles', message: '<s:text name="%{scope}.message.AjaxLoad" />'});
-	$('#employee_role').load('ManageEmployees!addRoleAjax.action', {'employee.id': employeeID, childID: id});
-}
-
-function addJobSite(selection) {
-	var id = $(selection).val();
-	var name = $(selection).find('option[value="' + id + '"]').text().trim().split(":");
-	
-	startThinking({div: 'employee_site', message: '<s:text name="%{scope}.message.AjaxLoad" />'});
-	$('#employee_site').load('ManageEmployees!addSiteAjax.action', {'employee.id': employeeID, 
-		'op.id': id, 'op.name' : name[0]});
-}
-
-function removeJobRole(id) {
-	var remove = confirm('<s:text name="%{scope}.confirm.RemoveRole" />');
-
-	if (remove) {
-		startThinking({div: 'thinking_roles', message: '<s:text name="%{scope}.message.AjaxLoad" />'})
-		$('#employee_role').load('ManageEmployees!removeRoleAjax.action', {'employee.id': employeeID, childID: id});
-	}
-
-	return false;
-}
-
-function removeJobSite(id) {
-	var remove = confirm('<s:text name="%{scope}.confirm.RemoveProject" />');
-
-	if (remove) {
-		startThinking({div: 'thinking_sites', message: '<s:text name="%{scope}.message.AjaxLoad" />'});
-		$('#employee_site').load('ManageEmployees!removeSiteAjax.action', {'employee.id': employeeID, childID: id});
-		$.unblockUI();
-	}
-
-	return false;
-}
-
-function newJobSite() {
-	startThinking({div: 'thinking_sites', message: '<s:text name="%{scope}.message.AjaxLoad" />'})
-	$('#employee_site').load('ManageEmployees!newSiteAjax.action?' + $('#newJobSiteForm input').serialize(), {'employee.id': employeeID});
-}
-
-function editAssignedSites(id) {
-	startThinking({div: 'thinking_sites', message: '<s:text name="%{scope}.message.AjaxLoad" />'})
-	$('#employee_site').load('ManageEmployees!editSiteAjax.action?' + $('#siteForm_' + id).serialize(), 
-			{'employee.id': employeeID, childID: id});
-
-	$.unblockUI();
-	return false;
-}
-function showUpload(){
-	url = 'EmployeePhotoUploadAjax.action?employeeID='+employeeID;
-	title = '<s:text name="%{scope}.message.UploadPhoto" />';
-	pars = 'scrollbars=yes,resizable=yes,width=900,height=700,toolbar=0,directories=0,menubar=0';
-	photoUpload = window.open(url,title,pars);
-	photoUpload.focus();
-}
-
-function getSite(id) {
-	$('#siteEditBox').load('ManageEmployees!getSiteAjax.action', {'employee.id': employeeID, childID: id});
-	$.blockUI({ message: $('#siteEditBox') });
-}
-
-function showExcelUpload() {
-	url = 'ManageEmployeesUpload.action?accountID=<s:property value="account.id" />';
-	title = 'Upload';
-	pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
-	fileUpload = window.open(url,title,pars);
-	fileUpload.focus();
-}
 </script>
 <s:if test="employee.id > 0">
 	<a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />"><s:text name="%{scope}.link.ViewProfile" /></a>
