@@ -7,7 +7,7 @@ This is the web site of <b>PICS</b>.<br>
 Irvine, CA 92619-1387<br>
 USA</b></p>
 We can be reached via e-mail at <a href="mailto:info@picsauditing.com">info@picsauditing.com</a><br>
-or you can reach us by telephone at +1(949)936-4500<br>
+or you can reach us by telephone at (800) 506-PICS (7427)<br>
 <br/>
 <b><u>DISCLAIMER AND INDEMNITY</u></b>
 <p>As the duly authorized representative of your company that has been delegated the task of filling out the requested
