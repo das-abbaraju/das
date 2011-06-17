@@ -565,12 +565,12 @@ function getMatches(requestID) {
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">
-		<s:submit value="%{getText('button.Save')}" action="RequestNewContractor!save" cssClass="picsbutton positive" />
+		<s:submit value="%{getText('button.Save')}" method="save" cssClass="picsbutton positive" />
 	  	<s:if test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0) || newContractor.handledBy.toString() == 'Operator'">
-			<s:submit value="%{getText(scope + '.button.CloseRequest')}" action="RequestNewContractor!close" cssClass="picsbutton negative" />
+			<s:submit value="%{getText(scope + '.button.CloseRequest')}" method="close" cssClass="picsbutton negative" />
 		</s:if>
 		<s:elseif test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">
-			<s:submit value="%{getText(scope + '.button.ReturnToOperator')}" action="RequestNewContractor!returnToOperator" cssClass="picsbutton" />
+			<s:submit value="%{getText(scope + '.button.ReturnToOperator')}" method="returnToOperator" cssClass="picsbutton" />
 		</s:elseif>
 	</fieldset>
 </s:form>

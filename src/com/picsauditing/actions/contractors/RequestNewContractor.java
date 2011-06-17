@@ -10,10 +10,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
@@ -64,21 +62,30 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class RequestNewContractor extends PicsActionSupport implements Preparable {
-	private ContractorRegistrationRequest newContractor = new ContractorRegistrationRequest();
+	@Autowired
 	protected ContractorRegistrationRequestDAO crrDAO;
+	@Autowired
 	protected OperatorAccountDAO operatorAccountDAO;
+	@Autowired
 	protected UserDAO userDAO;
+	@Autowired
 	protected CountryDAO countryDAO;
+	@Autowired
 	protected StateDAO stateDAO;
+	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
+	@Autowired
 	protected AccountDAO accountDAO;
+	@Autowired
 	protected UserAssignmentDAO csrDAO;
+	@Autowired
 	protected EmailTemplateDAO templateDAO;
+	@Autowired
 	protected EmailAttachmentDAO attachmentDAO;
-
 	@Autowired
 	private OperatorTagDAO operatorTagDAO;
 
+	private ContractorRegistrationRequest newContractor = new ContractorRegistrationRequest();
 	protected boolean redirect = false;
 	protected boolean increaseContactCount = true;
 	protected int conID;
@@ -118,22 +125,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	private String picsSignature = "PICS\nP.O. Box 51387\nIrvine CA 92619-1387\nTel: (800)506-7427\n"
 			+ "Fax: (949)269-9153\nhttp://www.picsauditing.com\nemail: info@picsauditing.com "
 			+ "(Please add this email address to your address book to prevent it from being labeled as spam)";
-
-	public RequestNewContractor(ContractorRegistrationRequestDAO crrDAO, OperatorAccountDAO operatorAccountDAO,
-			UserDAO userDAO, CountryDAO countryDAO, StateDAO stateDAO, ContractorAccountDAO contractorAccountDAO,
-			AccountDAO accountDAO, UserAssignmentDAO csrDAO, EmailTemplateDAO templateDAO,
-			EmailAttachmentDAO attachmentDAO) {
-		this.crrDAO = crrDAO;
-		this.operatorAccountDAO = operatorAccountDAO;
-		this.userDAO = userDAO;
-		this.countryDAO = countryDAO;
-		this.stateDAO = stateDAO;
-		this.contractorAccountDAO = contractorAccountDAO;
-		this.accountDAO = accountDAO;
-		this.csrDAO = csrDAO;
-		this.templateDAO = templateDAO;
-		this.attachmentDAO = attachmentDAO;
-	}
 
 	public void prepare() throws Exception {
 		getPermissions();
@@ -372,7 +363,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			else
 				return SUCCESS;
 		}
-		
+
 		if (increaseContactCount)
 			newContractor.contact();
 
@@ -414,16 +405,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public String returnToOperator() {
 		// TODO email operator
 		if (newContractor.getRequestedByUser() != null || Strings.isValidEmail(newContractor.getRequestedByUserOther())) {
-			String[] lines = newContractor.getNotes().split("\n");
-			Map<Integer, List<String>> noteTable = new TreeMap<Integer, List<String>>();
-			for (int i = 0; i < lines.length; i++) {
-				if (!Strings.isEmpty(lines[i])) {
-					noteTable.put(i, new ArrayList<String>());
-					for (String column : lines[i].split(" - "))
-						noteTable.get(i).add(column);
-				}
-			}
-
 			User am = null;
 			for (AccountUser au : newContractor.getRequestedBy().getAccountUsers()) {
 				if (au.isCurrent() && au.getRole().equals(UserAccountRole.PICSAccountRep))
@@ -431,23 +412,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			}
 
 			String subject = "Unsuccessful in having " + newContractor.getName() + " register at PICS";
-			String notes = "<table style=\"border-collapse: collapse; border: 2px solid #012142; color: #4C4D4D; background: #f9f9f9; clear: both; margin-bottom: 10px; position: relative; z-index: 10;\"><thead><tr>"
-					+ "<th style=\"border: 1px solid #e0e0e0; text-align: center; font-weight: bold; background-color: #012142; color: #FFF; vertical-align: middle; padding: 4px; font-size: 13px; line-height: 15px;\">Date</th>"
-					+ "<th style=\"border: 1px solid #e0e0e0; text-align: center; font-weight: bold; background-color: #012142; color: #FFF; vertical-align: middle; padding: 4px; font-size: 13px; line-height: 15px;\">Customer Service</th>"
-					+ "<th style=\"border: 1px solid #e0e0e0; text-align: center; font-weight: bold; background-color: #012142; color: #FFF; vertical-align: middle; padding: 4px; font-size: 13px; line-height: 15px;\">Notes</th>"
-					+ "</tr></thead><tbody>";
-
-			for (Integer i : noteTable.keySet()) {
-				notes += "<tr>";
-
-				for (String cell : noteTable.get(i))
-					notes += "<td style=\"border: 1px solid #A84D10; vertical-align: middle; padding: 4px; font-size: 13px; line-height: 15px;\">"
-							+ cell + "</td>";
-
-				notes += "</tr>";
-			}
-
-			notes += "</tbody></table>";
 
 			String body = "<html><head><title>" + subject + "</title></head><body>";
 			body += "<table style=\"border-bottom: 1px solid rgb(123, 160, 205);\" width=\"900px\" cellpadding=\"5\" cellspacing=\"0\">"
@@ -471,7 +435,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			if (am != null)
 				body += "If you have further questions, please feel free to contact your PICS Account Manager "
 						+ am.getName() + ".<br /><br />";
-			body += notes + "<br /><br />Thank you and have a great day!<br />PICS Customer Service Team<br />"
+			body += "Thank you and have a great day!<br />PICS Customer Service Team<br />"
 					+ "1-800-506-7427 x 1  (Toll free in the USA)</p></td></tr></table></body></html>";
 
 			String email = newContractor.getRequestedByUser() != null ? newContractor.getRequestedByUser().getEmail()
