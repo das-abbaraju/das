@@ -213,8 +213,12 @@ $(function(){
 	<fieldset class="form">
 		<h2 class="formLegend"><s:text name="%{scope}.CompanyIdentification.heading" /></h2>
 		<ol>
-			<li>
-				<s:checkbox id="SoleProprietor" name="contractor.soleProprietor" theme="formhelp" />
+			<li><label><s:text name="ContractorAccount.soleProprietor" /></label>
+				<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" id="SoleProprietor" name="contractor.soleProprietor" theme="pics" />
+				<div class="fieldhelp">
+					<h3><s:text name="ContractorAccount.soleProprietor.fieldhelptitle" /></h3>
+					<s:text name="ContractorAccount.soleProprietor.fieldhelp" />
+				</div>
 			</li>
 			<li><label><s:text name="ContractorAccount.competitorMembership" /></label>
 				<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" id="CompetitorMembership" name="contractor.competitorMembership" theme="pics" />
