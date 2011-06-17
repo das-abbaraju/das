@@ -139,7 +139,7 @@ public class TranslationETL extends PicsActionSupport {
 		else {
 			db = new Database();
 			sql = new SelectSQL("app_translation t");
-
+			
 			String sqlDate = DateBean.toDBFormat(startDate);
 			String where = "(t.creationDate > '" + sqlDate + "' OR t.updateDate > '" + sqlDate
 					+ "') AND t.msgValue != 'Translation missing'";
@@ -187,14 +187,14 @@ public class TranslationETL extends PicsActionSupport {
 		if (startDate == null)
 			addActionError("Missing date");
 		else {
+			db = new Database();
+			sql = new SelectSQL("app_translation t");
+			
 			String sqlDate = DateBean.toDBFormat(startDate);
 			String where = "(t.creationDate > '" + sqlDate + "' OR t.updateDate > '" + sqlDate
 					+ "') AND t.msgValue != 'Translation missing'";
-
-			db = new Database();
-			sql = new SelectSQL("app_translation t");
+			
 			setupSQL(where);
-
 			List<BasicDynaBean> data = db.select(sql.toString(), true);
 			foundRows = db.getAllRows();
 
@@ -256,6 +256,9 @@ public class TranslationETL extends PicsActionSupport {
 	}
 
 	private void importXML(byte[] byteArray) throws Exception {
+		db = new Database();
+		sql = new SelectSQL("app_translation t");
+		
 		importedTranslations = new DoubleMap<String, String, List<AppTranslation>>();
 		Set<String> allKeysSet = new HashSet<String>();
 		Set<String> allLocalesSet = new HashSet<String>();
