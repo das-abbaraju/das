@@ -19,11 +19,12 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
+import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -57,6 +58,9 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 
 	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
 	private OperatorAccountDAO opDAO;
+
+	@Autowired
+	private FlagDataDAO flagDataDAO;
 
 	private FlagCriteriaOperator flagCriteriaOperator;
 	private OperatorAccount operator;
@@ -104,13 +108,9 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 					contractor.getOperatorTags().add(ct);
 				}
 
-				FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteriaOperator.getCriteria(),
-						row.get("answer") == null ? null : row.get("answer").toString());
-				fcc.setVerified(Database.toBoolean(row, "verified"));
-
-				FlagDataCalculator calculator = new FlagDataCalculator(fcc, flagCriteriaOperator);
-				calculator.setOperator(operator);
-				List<FlagData> conResults = calculator.calculate();
+				List<FlagData> conResults = flagDataDAO.findByContractorAndOperatorAndCriteria(contractor.getId(), 
+						opID, 
+						flagCriteriaOperator.getCriteria().getId());
 				for (FlagData flagData : conResults) {
 					if (flagCriteriaOperator.getFlag().equals(flagData.getFlag())) {
 						FlagAndOverride flagAndOverride = new FlagAndOverride(flagData);
