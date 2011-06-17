@@ -20,7 +20,7 @@ $(function() {
 });
 </script>
 <s:if test="employee.id > 0">
-	<a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />"><s:text name="%{scope}.link.ViewProfile" /></a>
+	<a href="EmployeeDetail.action?employee=<s:property value="employee.id" />"><s:text name="%{scope}.link.ViewProfile" /></a>
 	<a href="#" class="help cluetip" rel="#cluetip1" title="View Profile/Assigned Tasks"></a>
 	<div id="cluetip1"><s:text name="%{scope}.help.ProfileInfo" /></div>
 	<br clear="all" />
@@ -156,6 +156,19 @@ $(function() {
 		<div id="employee_site">
 			<s:include value="manage_employee_sites.jsp" />
 		</div>
+		<s:if test="employee.account.requiresOQ">
+			<div id="employee_nccer">
+				<fieldset class="form">
+					<h2 class="formLegend"><s:text name="%{scope}.label.EmployeeNCCERUpload" /></h2>
+					<ol>
+						<li>
+							<s:text name="%{scope}.label.EmployeeNCCERUploadText" /><br />
+							<br /><a href="#" id="employee_nccer_link" class="add"><s:text name="%{scope}.link.EmployeeNCCERUpload" /></a>
+						</li>
+					</ol>
+				</fieldset>
+			</div>
+		</s:if>
 	</s:if>
 	<s:if test="!selectRolesSites">
 		<fieldset class="form submit">

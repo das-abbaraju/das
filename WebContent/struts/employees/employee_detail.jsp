@@ -79,6 +79,16 @@
 			else
 				$('.assessmentResults').show();
 		}
+		
+		$(function() {
+			$('.cluetip').cluetip({
+				closeText : "<img src='images/cross.png' width='16' height='16'>",
+				arrows : true,
+				cluetipClass : 'jtip',
+				local : true,
+				clickThrough : false
+			});
+		});
 	</script>
 </head>
 <body>
@@ -347,6 +357,28 @@
 						<s:if test="#qualCount > 0">
 							<a href="#" onclick="showHideResults(); return false;">See/Hide all qualifications</a>
 						</s:if>
+					</s:if>
+					<s:if test="nccerData.size > 0">
+						<div class="panel_placeholder">
+							<div class="panel">
+								<div class="panel_header">
+									NCCER Assessment Data
+								</div>
+								<div class="panel_content">
+									<s:iterator value="nccerData">
+										<s:property value="assessmentTest.qualificationType" /> -
+										<s:property value="assessmentTest.qualificationMethod" /> 
+										<a href="#" rel="#cluetip_<s:property value="id" />" class="cluetip help" 
+											title="<s:property value="assessmentTest.qualificationType" /> - <s:property value="assessmentTest.qualificationMethod" />"></a>
+										<div id="cluetip_<s:property value="id" />">
+											<s:property value="assessmentTest.description" /><br />
+											Effective Date: <s:date name="effectiveDate" /><br />
+											Expiration Date: <s:date name="expirationDate" />
+										</div>
+									</s:iterator>
+								</div>
+							</div>
+						</div>
 					</s:if>
 				</td>
 			</tr>

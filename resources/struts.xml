@@ -1882,6 +1882,12 @@
 			<result>struts/employees/import_employees.jsp</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
+		
+		<action name="EmployeeNCCERUpload"
+			class="com.picsauditing.actions.employees.EmployeeNCCERUpload">
+			<result>struts/employees/employee_nccer_upload.jsp</result>
+			<result name="input">/struts/blank.jsp</result>
+		</action>
 
 		<action name="ManageUnmappedEmployees"
 			class="com.picsauditing.actions.employees.ManageUnmappedEmployees">

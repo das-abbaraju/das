@@ -3,13 +3,16 @@ package com.picsauditing.actions.employees;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.opensymphony.xwork2.Preparable;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
+import com.picsauditing.dao.AssessmentResultDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
@@ -33,11 +36,18 @@ import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
 
 @SuppressWarnings("serial")
-public class EmployeeDetail extends AccountActionSupport implements Preparable {
+public class EmployeeDetail extends AccountActionSupport {
+	@Autowired
 	protected EmployeeDAO employeeDAO;
+	@Autowired
+	protected AssessmentResultDAO assessmentResultDAO;
+	@Autowired
 	protected OperatorCompetencyDAO competencyDAO;
+	@Autowired
 	protected JobSiteTaskDAO siteTaskDAO;
+	@Autowired
 	protected JobTaskDAO taskDAO;
+	@Autowired
 	protected ContractorOperatorDAO coDAO;
 
 	protected Employee employee;
@@ -50,34 +60,18 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 	protected Map<JobSite, List<JobTask>> tasksByJob;
 	protected Map<JobRole, List<OperatorCompetency>> missingCompetencies;
 	protected List<OperatorCompetency> skilledCompetencies;
+	protected List<AssessmentResult> nccerData;
 
-	public EmployeeDetail(EmployeeDAO employeeDAO, OperatorCompetencyDAO competencyDAO, JobSiteTaskDAO siteTaskDAO,
-			ContractorOperatorDAO coDAO, JobTaskDAO taskDAO) {
-		this.employeeDAO = employeeDAO;
-		this.competencyDAO = competencyDAO;
-		this.siteTaskDAO = siteTaskDAO;
-		this.coDAO = coDAO;
-		this.taskDAO = taskDAO;
-
+	public EmployeeDetail() {
 		noteCategory = NoteCategory.Employee;
 	}
 
 	@Override
-	public void prepare() throws Exception {
-		int employeeID = getParameter("employee.id");
-		if (employeeID > 0) {
-			employee = employeeDAO.find(employeeID);
-			account = employee.getAccount();
-		}
-	}
-
-	@Override
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		if (employee == null || employee.getId() == 0)
 			throw new RecordNotFoundException("Missing employee id");
+
+		account = employee.getAccount();
 
 		notes = getNoteDao().findWhere(account.getId(),
 				"noteCategory = 'Employee' AND employeeID = " + employee.getId(), 10);
@@ -100,26 +94,26 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 		for (EmployeeRole er : employee.getEmployeeRoles()) {
 			for (JobCompetency jc : er.getJobRole().getJobCompetencies()) {
 				EmployeeCompetency ec = findEmployeeCompetency(jc.getCompetency());
-				
+
 				if (ec != null && ec.isSkilled()) {
 					if (!skilledCompetencies.contains(jc.getCompetency()))
 						skilledCompetencies.add(jc.getCompetency());
 				} else {
 					if (missingCompetencies.get(er.getJobRole()) == null)
 						missingCompetencies.put(er.getJobRole(), new ArrayList<OperatorCompetency>());
-					
+
 					missingCompetencies.get(er.getJobRole()).add(jc.getCompetency());
 				}
 			}
 		}
 	}
-	
+
 	private EmployeeCompetency findEmployeeCompetency(OperatorCompetency oc) {
 		for (EmployeeCompetency ec : employee.getEmployeeCompetencies()) {
 			if (ec.getCompetency().equals(oc))
 				return ec;
 		}
-		
+
 		return null;
 	}
 
@@ -216,5 +210,21 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 			tasksByJob = siteTaskDAO.findByEmployee(employee.getId());
 
 		return tasksByJob;
+	}
+
+	public List<AssessmentResult> getNccerData() {
+		if (nccerData == null) {
+			nccerData = assessmentResultDAO.findByEmployee(employee.getId());
+			Iterator<AssessmentResult> iterator = nccerData.iterator();
+
+			while (iterator.hasNext()) {
+				AssessmentResult result = iterator.next();
+				if (result.getAssessmentTest().getAssessmentCenter().getId() != 11069
+						|| result.getAssessmentTest().getId() < 12)
+					iterator.remove();
+			}
+		}
+
+		return nccerData;
 	}
 }

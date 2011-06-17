@@ -47,6 +47,11 @@ function startup() {
 
 	if (employeeID > 0)
 		loadEmployee(employeeID);
+	
+	$('#employeeForm').delegate('#employee_nccer_link', 'click', function(e) {
+		e.preventDefault();
+		showNCCERUpload();
+	});
 }
 
 function setupEmployee() {
@@ -204,4 +209,12 @@ function getSite(id) {
 
 function getEmployeeIDFromHash() {
 	return parseInt(location.hash.substring(location.hash.indexOf("=") + 1));
+}
+
+function showNCCERUpload() {
+	url = 'EmployeeNCCERUpload.action?employee=' + employeeID;
+	title = translation_uploadEmployees;
+	pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
+	fileUpload = window.open(url, title, pars);
+	fileUpload.focus();
 }
