@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.TradeDAO;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.ContractorType;
@@ -97,6 +100,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		trade.setContractor(contractor);
 		trade.setAuditColumns(permissions);
+
 		tradeDAO.save(trade);
 
 		if (!contractor.getTrades().contains(trade))
@@ -112,9 +116,9 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			EmailSender sender = new EmailSender();
 			sender.sendNow(emailQueue);
 		}
-		
-		trade.getTrade().setContractorCount(trade.getTrade().getContractorCount()+1);
-		tradeDAO.save(trade);		
+
+		trade.getTrade().setContractorCount(trade.getTrade().getContractorCount() + 1);
+		tradeDAO.save(trade);
 
 		contractor.addAccountTypes(conTypes);
 
@@ -131,6 +135,39 @@ public class ContractorTradeAction extends ContractorActionSupport {
 					+ (noteSummary.size() > 1 ? "s" : "") + Strings.implode(noteSummary) + " when selecting trade "
 					+ trade.getTrade().getName());
 			getNoteDao().save(note);
+		}
+
+		// If the risk level for either product or safety increases due to this new trade, reset the verified date on
+		// the contractor's answers
+		if (contractor.getSafetyRisk() != null && trade.getTrade().getSafetyRiskI() != null) {
+			if (contractor.getSafetyRisk().ordinal() < trade.getTrade().getSafetyRiskI().ordinal()) {
+				for (ContractorAudit audit : contractor.getAudits()) {
+					if (audit.getAuditType().isPqf()) {
+						for (AuditData data : audit.getData()) {
+							if (data.getQuestion().getId() == AuditQuestion.RISK_LEVEL_ASSESSMENT
+									|| data.getQuestion().getId() == AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT) {
+								data.setDateVerified(null);
+								tradeDAO.save(data);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if (contractor.getProductRisk() != null && trade.getTrade().getProductRiskI() != null) {
+			if (contractor.getProductRisk().ordinal() < trade.getTrade().getProductRiskI().ordinal()) {
+				for (ContractorAudit audit : contractor.getAudits()) {
+					if (audit.getAuditType().isPqf()) {
+						for (AuditData data : audit.getData()) {
+							if (data.getQuestion().getId() == AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT) {
+								data.setDateVerified(null);
+								tradeDAO.save(data);
+							}
+						}
+					}
+				}
+			}
 		}
 
 		contractor.setTradesUpdated(new Date());
@@ -287,7 +324,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		return SUCCESS;
 	}
-	
+
 	public String continueWithTradesAjax() throws Exception {
 		contractor.setTradesUpdated(new Date());
 		tradeDAO.save(contractor);
