@@ -197,8 +197,7 @@ public class Cron extends PicsActionSupport {
 			String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
 			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
 			for (ContractorAccount contractor : conAcctList) {
-				if ("Renewal Overdue".equals(contractor.getBillingStatus()))
-					contractor.setRenew(false);
+				contractor.setRenew(false);
 				contractor.setStatus(AccountStatus.Deactivated);
 				// Setting a deactivation reason
 				if (contractor.isAcceptsBids()) {

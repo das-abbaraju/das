@@ -200,8 +200,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				if (!contractor.getStatus().equals(AccountStatus.Deactivated)
 						&& ("Renewal Overdue".equals(status) || "Reactivation".equals(status))) {
 					contractor.setStatus(AccountStatus.Deactivated);
-					if ("Renewal Overdue".equals(status))
-						contractor.setRenew(false);
+					contractor.setRenew(false);
 					if (contractor.isAcceptsBids())
 						contractor.setReason("Bid Only Account");
 					Note note = new Note(contractor, new User(User.SYSTEM),
