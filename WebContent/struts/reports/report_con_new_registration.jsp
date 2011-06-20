@@ -44,11 +44,8 @@ function showExcelUpload() {
 	<tr>
 		<td colspan="2"><s:text name="global.Account.name" /></td>
 		<td><s:text name="ContractorRegistrationRequest.requestedBy" /></td>
-		<td>
-			<a href="javascript: changeOrderBy('form1','cr.deadline');">
-				<s:text name="ContractorRegistrationRequest.deadline" />
-			</a>
-		</td>
+		<td><a href="javascript: changeOrderBy('form1','cr.creationDate');"><s:text name="global.CreationDate" /></a></td>
+		<td><a href="javascript: changeOrderBy('form1','cr.deadline');"><s:text name="ContractorRegistrationRequest.deadline" /></a></td>
 		<td><s:text name="%{scope}.label.FollowUp" /></td>
 		<td><s:text name="%{scope}.label.ContactedBy" /></td>
 		<td>
@@ -56,12 +53,10 @@ function showExcelUpload() {
 		</td>
 		<td><s:text name="%{scope}.label.Attempts" /></td>
 		<td title="<s:text name="%{scope}.label.PotentialMatches" />"><s:text name="%{scope}.label.Matches" /></td>
-		<td>
-			<a href="javascript: changeOrderBy('form1','cr.creationDate');">
-				<s:text name="global.CreationDate" />
-			</a>
-		</td>
 		<td><s:text name="%{scope}.label.InPics" /></td>
+		<s:if test="filter.open == 0">
+			<td><s:text name="%{scope}.label.ClosedDate" /></td>
+		</s:if>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -73,18 +68,21 @@ function showExcelUpload() {
 			<td title="<s:property value="get('RequestedUser')"/>">
 				<s:property value="get('RequestedBy')"/>
 			</td>
+			<td><s:date name="get('creationDate')" /></td>
 			<td><s:date name="get('deadline')" format="MM/dd/yyyy"/></td>
 			<td><s:property value="get('handledBy')"/></td>
 			<td><s:property value="get('ContactedBy')" /></td>
 			<td><s:date name="get('lastContactDate')" format="MM/dd/yyyy"/></td>
 			<td><s:property value="get('contactCount')" /></td>
 			<td><s:property value="get('matchCount')" /></td>
-			<td><s:date name="get('creationDate')" /></td>
 			<td><s:if test="get('conID') != null">
 					<a href="ContractorView.action?id=<s:property value="get('conID')"/>">
 					<s:property value="get('contractorName')" /></a>			
 				</s:if>
 			</td>
+			<s:if test="filter.open == 0">
+				<td><s:date name="getClosedDate(get('notes'))" /></td>
+			</s:if>
 		</tr>
 	</s:iterator>
 

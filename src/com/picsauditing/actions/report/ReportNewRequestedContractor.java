@@ -1,5 +1,8 @@
 package com.picsauditing.actions.report;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.servlet.ServletOutputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -89,6 +92,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("cr.state AS State");
 		sql.addField("cr.zip AS Zip");
 		sql.addField("cr.country AS Country");
+		sql.addField("cr.notes AS notes");
 		sql.addField("op.name AS RequestedBy");
 		sql.addField("op.id AS RequestedByID");
 		sql.addField("u.name AS RequestedUser");
@@ -105,8 +109,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("con.id AS conID");
 		sql.addField("con.name AS contractorName");
 		sql.addField("cr.notes AS Notes");
-		
-		orderByDefault = "cr.deadline, cr.name"; 
+
+		orderByDefault = "cr.deadline, cr.name";
 
 		if (permissions.isOperatorCorporate()) {
 			getFilter().setShowConAuditor(true);
@@ -253,5 +257,19 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 
 	public boolean isAmSales() {
 		return auDAO.findByUserSalesAM(permissions.getUserId()).size() > 0;
+	}
+
+	public Date getClosedDate(String notes) throws Exception {
+		String[] lines = notes.split("\r\n");
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		
+		for (String line : lines) {
+			if (line.contains("Closed the request.")) {
+				String[] pieces = line.split(" - ");
+				return sdf.parse(pieces[0]);
+			}
+		}
+		
+		return null;
 	}
 }
