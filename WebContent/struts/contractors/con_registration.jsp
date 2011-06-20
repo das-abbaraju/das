@@ -227,8 +227,12 @@ $(function(){
 					<s:text name="ContractorAccount.competitorMembership.fieldhelp" />
 				</div>
 			</li>
-			<li>
-				<s:textarea name="contractor.description" cols="60" rows="15" theme="formhelp" />
+			<li><label><s:text name="ContractorAccount.description.alttitle" />:</label>
+				<s:textarea name="contractor.description" cols="60" rows="15" />
+				<div class="fieldhelp">
+					<h3><s:text name="ContractorAccount.description" /></h3>
+					<s:text name="ContractorAccount.description.fieldhelp" />
+				</div>
 			</li>
 		</ol>
 	</fieldset>
