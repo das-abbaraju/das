@@ -30,6 +30,7 @@
 				<td></td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor Name</a></td>
 				<td><a href="javascript: changeOrderBy('form1','a.creationDate');">Registration Date</a></td>
+				<td>Type</td>
 				<td>Calculated Risk</td>
 				<td>Contractor Risk</td>
 				<td>Notes</td>
@@ -46,24 +47,12 @@
 						title="<s:property value="get('name')" />"><s:property value="get('name')" /></a>
 				</td>
 				<td><s:date name="get('creationDate')" format="M/d/yy" /></td>
-				<td>
-					Safety Risk: <b><s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('safetyRisk'))" /></b>
-					<s:if test="get('materialSupplier') == 1">
-						<br />Product Risk: <b><s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('productRisk'))" /></b>
-					</s:if>
-				</td>
-				<td>
-					Safety Risk: <b><s:property value="get('safetyRiskAnswer')" /></b>
-					<s:if test="get('materialSupplier') == 1">
-						<br />Safety Risk (Product): <b><s:property value="get('productSafetyRiskAnswer')" /></b>
-						<br />Product Risk: <b><s:property value="get('productRiskAnswer')" /></b>
-					</s:if>
-				</td>
+				<td><s:property value="get('riskType')" /></td>
+				<td><s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('risk'))" /></td>
+				<td><s:property value="get('answer')" escape="false" /></td>
 				<s:form action="ReportContractorRiskLevel" method="POST">
 					<s:hidden value="%{get('id')}" name="conID" />
-					<s:hidden value="%{get('safetyID')}" name="safetyID" />
-					<s:hidden value="%{get('productSafetyID')}" name="productSafetyID" />
-					<s:hidden value="%{get('productID')}" name="productID" />
+					<s:hidden value="%{get('riskType')}" name="type" />
 					<td><s:textarea name="auditorNotes" cols="15" rows="4" /></td>
 					<td>
 						<s:submit method="reject" cssClass="picsbutton positive" value="%{getText('button.Reject')}" />

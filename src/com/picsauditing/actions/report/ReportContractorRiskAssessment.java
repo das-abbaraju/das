@@ -5,30 +5,27 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportContractorRiskAssessment extends ReportAccount {
 	protected int conID;
-	protected int safetyID;
-	protected int productSafetyID;
-	protected int productID;
 	protected String auditorNotes;
 	protected Note note;
-
-	private ContractorAccount con;
-	private LowMedHigh safetyRisk;
-	private LowMedHigh productSafetyRisk;
-	private LowMedHigh productRisk;
-	private String adjustments;
+	protected String type;
+	protected ContractorAccount con;
 
 	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
@@ -50,60 +47,50 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		skipPermissions = true;
 		super.buildQuery();
 
-		sql.addField("a.onsiteServices");
-		sql.addField("a.offsiteServices");
-		sql.addField("a.materialSupplier");
+		String safetyRisk = getRiskSQL("Safety", "d.answer", AuditQuestion.RISK_LEVEL_ASSESSMENT);
+		String productRisk = getRiskSQL("Product",
+				"GROUP_CONCAT(CONCAT(CASE d.questionID WHEN 7678 THEN 'Business Interruption' "
+						+ "ELSE 'Product Safety' END, ': ', d.answer) SEPARATOR '<br />') answer", new int[] {
+						AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT, AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT });
 
-		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		sql.addJoin("LEFT JOIN pqfdata safety ON safety.auditID = ca.id AND safety.questionID = 2444 AND safety.dateVerified IS NULL");
-		sql.addJoin("LEFT JOIN pqfdata productSafety ON productSafety.auditID = ca.id AND productSafety.questionID = 7679 AND productSafety.dateVerified IS NULL");
-		sql.addJoin("LEFT JOIN pqfdata product ON product.auditID = ca.id AND product.questionID = 7678 AND product.dateVerified IS NULL");
+		sql.addJoin("JOIN (" + safetyRisk + "\nUNION\n" + productRisk + ") r ON r.id = a.id");
 
-		sql.addField("safety.id safetyID");
-		sql.addField("safety.answer safetyRiskAnswer");
-		sql.addField("productSafety.id productSafetyID");
-		sql.addField("productSafety.answer productSafetyRiskAnswer");
-		sql.addField("product.id productID");
-		sql.addField("product.answer productRiskAnswer");
-
-		sql.addWhere("(safety.answer = 'Low' and c.safetyRisk > 1) OR (safety.answer = 'Medium' and c.safetyRisk > 2) "
-				+ "OR (productSafety.answer = 'Low' and c.safetyRisk > 1) OR (productSafety.answer = 'Medium' and c.safetyRisk > 2) "
-				+ "OR (product.answer = 'Low' and c.productRisk > 1) OR (product.answer = 'Medium' and c.productRisk > 2)");
+		sql.addField("r.riskType");
+		sql.addField("r.risk");
+		sql.addField("r.answer");
 	}
 
+	@RequiredPermission(value = OpPerms.RiskRank)
 	public String accept() throws Exception {
-		setup();
-		
-		if (safetyRisk != null && productSafetyRisk != null) {
-			// Grab the highest of product safety risk or safety risk
-			if (productSafetyRisk.ordinal() > safetyRisk.ordinal())
-				safetyRisk = productSafetyRisk;
-		}
+		String noteMessage = type + " risk adjusted from ";
 
-		if (safetyRisk != null) {
-			adjustments += "Safety risk adjusted from " + con.getSafetyRisk().toString() + " to "
-					+ safetyRisk.toString();
+		if (type.equals("Safety")) {
+			LowMedHigh safetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
 
+			noteMessage += con.getSafetyRisk().toString() + " to " + safetyRisk.toString();
+
+			// How can this happen?
 			if (safetyRisk.ordinal() > con.getSafetyRisk().ordinal())
 				con.setLastUpgradeDate(new Date());
 
 			con.setSafetyRisk(safetyRisk);
-		}
+		} else {
+			LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
+			LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
+			// Get highest
+			if (productRisk.ordinal() < businessRisk.ordinal())
+				productRisk = businessRisk;
 
-		if (productRisk != null) {
-			if (adjustments.length() > 0)
-				adjustments += ", ";
+			noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
 
-			adjustments += "Product risk adjusted from " + con.getProductRisk().toString() + " to "
-					+ productRisk.toString();
-
+			// How can this happen?
 			if (productRisk.ordinal() > con.getProductRisk().ordinal())
 				con.setLastUpgradeDate(new Date());
 
 			con.setProductRisk(productRisk);
 		}
 
-		note = new Note(con, getUser(), adjustments + " for " + auditorNotes);
+		Note note = new Note(con, getUser(), noteMessage);
 		note.setNoteCategory(NoteCategory.RiskRanking);
 		noteDAO.save(note);
 
@@ -114,29 +101,25 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		return super.execute();
 	}
 
+	@RequiredPermission(value = OpPerms.RiskRank)
 	public String reject() throws Exception {
-		setup();
-		
-		if (safetyRisk != null && productSafetyRisk != null) {
-			// Grab the lowest of product safety risk or safety risk
-			if (productSafetyRisk.ordinal() < safetyRisk.ordinal())
-				safetyRisk = productSafetyRisk;
+		String noteMessage = "Rejected " + type.toLowerCase() + " adjustment from ";
+
+		if (type.equals("Safety")) {
+			LowMedHigh safetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
+
+			noteMessage += con.getSafetyRisk().toString() + " to " + safetyRisk.toString();
+		} else {
+			LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
+			LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
+			// Get highest
+			if (productRisk.ordinal() < businessRisk.ordinal())
+				productRisk = businessRisk;
+
+			noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
 		}
 
-		if (safetyRisk != null) {
-			adjustments += "Rejected safety risk adjustment from " + con.getSafetyRisk().toString() + " to "
-					+ safetyRisk.toString();
-		}
-
-		if (productRisk != null) {
-			if (adjustments.length() > 0)
-				adjustments += ", ";
-
-			adjustments += "Rejected product risk adjustment from " + con.getProductRisk().toString() + " to "
-					+ productRisk.toString();
-		}
-
-		note = new Note(con, getUser(), adjustments + " for " + auditorNotes);
+		Note note = new Note(con, getUser(), noteMessage);
 		note.setNoteCategory(NoteCategory.RiskRanking);
 		noteDAO.save(note);
 
@@ -144,36 +127,65 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		return super.execute();
 	}
 
-	private void setup() {
-		con = contractorAccountDAO.find(conID);
-		adjustments = "";
+	private String getRiskSQL(String type, String answer, int... questionIDs) {
+		String questionString = "";
 
-		if (safetyID > 0)
-			safetyRisk = updateAuditData(safetyID);
+		if (questionIDs.length == 1)
+			questionString = "= " + questionIDs[0];
+		else
+			questionString = String.format("IN (%s)", Strings.implode(questionIDs));
 
-		if (productSafetyID > 0)
-			productSafetyRisk = updateAuditData(productSafetyID);
+		SelectSQL sql2 = new SelectSQL("accounts a");
+		sql2.addJoin("JOIN contractor_info c ON c.id = a.id");
+		sql2.addJoin("JOIN contractor_audit ca ON ca.conID = a.id AND ca.auditTypeID = 1");
+		sql2.addJoin("JOIN pqfdata d ON d.auditID = ca.id AND d.questionID " + questionString
+				+ " AND d.dateVerified IS NULL");
 
-		if (productID > 0)
-			productRisk = updateAuditData(productID);
+		sql2.addField("a.id");
+		sql2.addField("'" + type + "' riskType");
+		sql2.addField("c." + type.toLowerCase() + "Risk risk");
+		sql2.addField(answer);
+		
+		String checkMaterialSupplier = "";
+		if (type.equals("Product")) {
+			checkMaterialSupplier = " AND a.materialSupplier = 1";
+			sql2.addGroupBy("a.id");
+		}
+
+		sql2.addWhere("(d.answer = 'Low' AND c." + type.toLowerCase() + "Risk > 1" + checkMaterialSupplier
+				+ ") OR (d.answer = 'Medium' AND c." + type.toLowerCase() + "Risk > 2" + checkMaterialSupplier + ")");
+
+		return sql2.toString();
 	}
 
-	private LowMedHigh updateAuditData(int riskDataID) {
-		AuditData riskData = auditDataDAO.find(riskDataID);
+	private LowMedHigh getContractorAnswer(int questionID) {
+		if (con == null)
+			con = contractorAccountDAO.find(conID);
 
 		if (Strings.isEmpty(auditorNotes))
 			auditorNotes = null;
 
-		riskData.setDateVerified(new Date());
-		riskData.setComment(auditorNotes);
-		riskData.setAuditColumns(permissions);
-		auditDataDAO.save(riskData);
+		for (ContractorAudit audit : con.getAudits()) {
+			if (audit.getAuditType().isPqf()) {
+				for (AuditData d : audit.getData()) {
+					if (d.getQuestion().getId() == questionID) {
+						// Save audit data
+						d.setDateVerified(new Date());
+						d.setComment(auditorNotes);
+						d.setAuditColumns(permissions);
+						auditDataDAO.save(d);
 
-		String answer = riskData.getAnswer();
-		if (answer.equals("Medium"))
-			answer = "Med";
+						String answer = d.getAnswer();
+						if (answer.equals("Medium"))
+							answer = "Med";
 
-		return LowMedHigh.valueOf(answer);
+						return LowMedHigh.valueOf(answer);
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 
 	public int getConID() {
@@ -190,29 +202,5 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 	public void setAuditorNotes(String auditorNotes) {
 		this.auditorNotes = auditorNotes;
-	}
-
-	public int getSafetyID() {
-		return safetyID;
-	}
-
-	public void setSafetyID(int safetyID) {
-		this.safetyID = safetyID;
-	}
-
-	public int getProductSafetyID() {
-		return productSafetyID;
-	}
-
-	public void setProductSafetyID(int productSafetyID) {
-		this.productSafetyID = productSafetyID;
-	}
-
-	public int getProductID() {
-		return productID;
-	}
-
-	public void setProductID(int productID) {
-		this.productID = productID;
 	}
 }

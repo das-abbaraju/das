@@ -134,19 +134,19 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				for (AuditData auditData : auditList) {
 					AuditQuestion q = auditData.getQuestion();
 					// if (q.getCategory().getId() == 269) {
-					if (q.getCategory().getId() == AuditCategory.RISK_ASSESSMENT
-							|| q.getCategory().getId() == AuditCategory.PRODUCT_SAFETY_CRITICAL) {
+					if (q.getCategory().getId() == AuditCategory.RISK_ASSESSMENT) {
 						AuditData aData = answerMap.get(q.getId());
 						safety = getRiskLevel(aData, safety);
 
 						if (q.getId() == AuditQuestion.RISK_LEVEL_ASSESSMENT)
 							conSafety = getRiskLevel(aData, conSafety);
-						if (q.getId() == AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT)
-							conProductSafety = getRiskLevel(aData, conProductSafety);
-					} else if (q.getCategory().getId() == AuditCategory.PRODUCT_CRITICAL) {
+					} else if (q.getCategory().getId() == AuditCategory.PRODUCT_CRITICAL
+							|| q.getCategory().getId() == AuditCategory.PRODUCT_SAFETY_CRITICAL) {
 						AuditData aData = answerMap.get(q.getId());
 						product = getRiskLevel(aData, product);
 
+						if (q.getId() == AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT)
+							conProductSafety = getRiskLevel(aData, conProductSafety);
 						if (q.getId() == AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT)
 							conProduct = getRiskLevel(aData, conProduct);
 					}
@@ -159,7 +159,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				if (!contractor.isMaterialSupplierOnly())
 					isSafetyOK = conSafety.ordinal() >= safety.ordinal();
 				if (contractor.isMaterialSupplier())
-					isProductOK = conProductSafety.ordinal() >= safety.ordinal()
+					isProductOK = conProductSafety.ordinal() >= product.ordinal()
 							&& conProduct.ordinal() >= product.ordinal();
 
 				contractor.setSafetyRisk(safety);
@@ -187,8 +187,8 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 						increases.add("Service Safety Evaluation to <b>" + safety + "</b>");
 					if (product.ordinal() > conProduct.ordinal() && contractor.isMaterialSupplier())
 						increases.add("Business Interruption Evaluation to <b>" + productAssessment + "</b>");
-					if (safety.ordinal() > conProductSafety.ordinal() && contractor.isMaterialSupplier())
-						increases.add("Product Safety Evaluation to <b>" + safetyAssessment + "</b>");
+					if (product.ordinal() > conProductSafety.ordinal() && contractor.isMaterialSupplier())
+						increases.add("Product Safety Evaluation to <b>" + productAssessment + "</b>");
 
 					output = "The answers you have provided indicate higher risk levels than the "
 							+ "ratings you have selected. We recommend increasing your "
