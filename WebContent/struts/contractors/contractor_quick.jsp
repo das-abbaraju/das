@@ -102,6 +102,7 @@ $(document).ready(function() {
 		<br />	
 	</div>
 	<div id="tabs-trades">
+		<s:set var="hideTradeCloudInstructions" value="true" />
 		<s:include value="../trades/contractor_trade_cloud.jsp"/>
 	</div>
 	<div id="tabs-facilities">
