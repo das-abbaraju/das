@@ -12,6 +12,7 @@ import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectFilter;
+import com.picsauditing.search.SelectFilterDate;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterNewContractor;
@@ -24,10 +25,10 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 	@Autowired
 	protected AccountUserDAO auDAO;
 
-	protected SelectSQL sql = new SelectSQL();
+	protected SelectSQL sql;
 	protected ReportFilterNewContractor filter = new ReportFilterNewContractor();
 
-	@RequiredPermission(value=OpPerms.RequestNewContractor)
+	@RequiredPermission(value = OpPerms.RequestNewContractor)
 	public String execute() throws Exception {
 		getFilter().setShowOperator(false);
 		getFilter().setShowLicensedIn(false);
@@ -42,9 +43,36 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowConWithPendingAudits(false);
 		getFilter().setShowSoleProprietership(false);
+		getFilter().setShowProductRiskLevel(false);
+		getFilter().setShowTrade(false);
 		getFilter().setPermissions(permissions);
 
-		sql.setFromTable("contractor_registration_request cr");
+		buildQuery();
+		addFilterToSQL();
+		run(sql);
+
+		if (download) {
+			addExcelColumns();
+			String filename = this.getClass().getSimpleName();
+			excelSheet.setName(filename);
+			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
+
+			filename += ".xls";
+
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			wb.write(outstream);
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+			return null;
+		}
+
+		return SUCCESS;
+	}
+
+	protected void buildQuery() {
+		sql = new SelectSQL("contractor_registration_request cr");
 		sql.addJoin("JOIN accounts op ON op.id = cr.requestedByID");
 		sql.addJoin("LEFT JOIN users u ON u.id = cr.requestedByUserID");
 		sql.addJoin("LEFT JOIN users uc ON uc.id = cr.lastContactedBy");
@@ -73,11 +101,12 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("cr.contactCount");
 		sql.addField("cr.matchCount");
 		sql.addField("cr.handledBy");
+		sql.addField("cr.creationDate");
 		sql.addField("con.id AS conID");
 		sql.addField("con.name AS contractorName");
 		sql.addField("cr.notes AS Notes");
-
-		sql.addOrderBy("cr.deadline, cr.name");
+		
+		orderByDefault = "cr.deadline, cr.name"; 
 
 		if (permissions.isOperatorCorporate()) {
 			getFilter().setShowConAuditor(true);
@@ -114,31 +143,9 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 				getFilter().setShowCountry(true);
 			}
 		}
-
-		addFilterToSQL();
-		run(sql);
-
-		if (download) {
-			addExcelColumns();
-			String filename = this.getClass().getSimpleName();
-			excelSheet.setName(filename);
-			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
-
-			filename += ".xls";
-
-			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-			wb.write(outstream);
-			outstream.flush();
-			ServletActionContext.getResponse().flushBuffer();
-			return null;
-		}
-
-		return SUCCESS;
 	}
 
-	private void addFilterToSQL() {
+	protected void addFilterToSQL() {
 		ReportFilterNewContractor f = getFilter();
 
 		if (filterOn(f.getStartsWith()))
@@ -189,6 +196,16 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			sql.addWhere("cr.deadline IS NULL OR cr.deadline < '" + DateBean.format(f.getFollowUpDate(), "yyyy-MM-dd")
 					+ "'");
 			setFiltered(true);
+		}
+
+		if (filterOn(f.getCreationDate1())) {
+			report.addFilter(new SelectFilterDate("creationDate1", "cr.creationDate >= '?'", DateBean.format(
+					f.getCreationDate1(), "M/d/yy")));
+		}
+
+		if (filterOn(f.getCreationDate2())) {
+			report.addFilter(new SelectFilterDate("creationDate2", "cr.creationDate < '?'", DateBean.format(
+					f.getCreationDate2(), "M/d/yy")));
 		}
 
 		if (filterOn(f.getCustomAPI()) && permissions.isAdmin())

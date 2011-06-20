@@ -21,12 +21,15 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	protected boolean showHandledBy = true;
 	protected boolean showFollowUpDate = true;
 	protected boolean showViewAll = false;
+	protected boolean showCreationDate = true;
 
 	protected int open = 1;
 	protected String handledBy;
 	protected Date followUpDate;
 	protected boolean viewAll = false;
-	
+	protected Date creationDate1;
+	protected Date creationDate2;
+
 	@Override
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
@@ -81,6 +84,14 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 		this.showViewAll = showViewAll;
 	}
 
+	public boolean isShowCreationDate() {
+		return showCreationDate;
+	}
+
+	public void setShowCreationDate(boolean showCreationDate) {
+		this.showCreationDate = showCreationDate;
+	}
+
 	// Parameters
 	public int getOpen() {
 		return open;
@@ -112,6 +123,22 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 
 	public void setViewAll(boolean viewAll) {
 		this.viewAll = viewAll;
+	}
+
+	public Date getCreationDate1() {
+		return creationDate1;
+	}
+
+	public void setCreationDate1(Date creationDate1) {
+		this.creationDate1 = creationDate1;
+	}
+
+	public Date getCreationDate2() {
+		return creationDate2;
+	}
+
+	public void setCreationDate2(Date creationDate2) {
+		this.creationDate2 = creationDate2;
 	}
 
 	// Lists

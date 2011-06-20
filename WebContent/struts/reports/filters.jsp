@@ -649,6 +649,18 @@
 			</span>
 		</div>
 	</s:if>
+	
+	<s:if test="filter.showCreationDate">
+		<div class="filterOption">
+			<a href="#" class="filterBox"><s:text name="global.CreationDate" /></a> =
+			<span class="q_status">ALL</span><br />
+			<span class="clearLink q_box textfield">
+				<s:textfield cssClass="forms datepicker" size="10" id="form1_creationDate1" name="filter.creationDate1" />
+				To:<s:textfield cssClass="forms datepicker" size="10" id="form1_creationDate2" name="filter.creationDate2" />
+				<a class="clearLink" href="#">Clear</a>
+			</span>
+		</div>
+	</s:if>
 
 	<s:if test="filter.showViewAll">
 		<br clear="all" />
