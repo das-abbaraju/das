@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -266,7 +267,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	public void selectHighestTrade() {
 		if (trade != null)
 			return;
-		List<ContractorTrade> list = contractor.getTrades();
+		Set<ContractorTrade> list = contractor.getTrades();
 		if (list == null || list.size() == 0)
 			return;
 

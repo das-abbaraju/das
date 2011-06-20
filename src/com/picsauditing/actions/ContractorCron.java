@@ -280,7 +280,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.TradeETL))
 			return;
 
-		List<ContractorTrade> trades = contractor.getTrades();
+		Set<ContractorTrade> trades = contractor.getTrades();
 		List<String> selfPerform = new ArrayList<String>();
 		List<String> subContract = new ArrayList<String>();
 

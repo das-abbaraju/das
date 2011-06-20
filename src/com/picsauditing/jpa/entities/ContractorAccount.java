@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -38,10 +39,10 @@ import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
@@ -112,7 +113,7 @@ public class ContractorAccount extends Account implements JSONable {
 	protected List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
 	protected List<Certificate> certificates = new ArrayList<Certificate>();
 	protected List<JobContractor> jobSites = new ArrayList<JobContractor>();
-	protected List<ContractorTrade> trades = new ArrayList<ContractorTrade>();
+	protected Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
 
 	// Transient helper methods
 	protected OshaOrganizer oshaOrganizer = null;
@@ -526,18 +527,24 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@OneToMany(mappedBy = "contractor")
-	public List<ContractorTrade> getTrades() {
+	@Sort(type = SortType.NATURAL)
+	public Set<ContractorTrade> getTrades() {
 		return trades;
 	}
 
-	public void setTrades(List<ContractorTrade> trades) {
+	public void setTrades(Set<ContractorTrade> trades) {
 		this.trades = trades;
 	}
 
+	/**
+	 * Returns a list of the trades in a sorted order
+	 * This is needed for the struts iterator for the trade cloud
+	 */
 	@Transient
 	public List<ContractorTrade> getTradesSorted() {
-		Collections.sort(getTrades());
-		return trades;
+		List<ContractorTrade> list = new ArrayList<ContractorTrade>();
+		list.addAll(trades);
+		return list;
 	}
 
 	public String getTradesSelf() {
