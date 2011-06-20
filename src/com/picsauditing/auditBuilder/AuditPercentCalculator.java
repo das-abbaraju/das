@@ -12,6 +12,7 @@ import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -21,8 +22,10 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
@@ -37,6 +40,9 @@ public class AuditPercentCalculator {
 	private AuditDecisionTableDAO auditDecisionTableDAO;
 	@Autowired
 	private AuditDataDAO auditDataDAO;
+	@Autowired
+	protected ContractorAuditOperatorDAO caoDAO;
+
 
 	/**
 	 * Calculate the percent complete for all questions in this category
@@ -272,36 +278,42 @@ public class AuditPercentCalculator {
 			cao.setPercentComplete(percentComplete);
 			cao.setPercentVerified(percentVerified);
 
-			AuditStatus newStatus = null;
+			ContractorAuditOperator caoWithStatus = null;
 			if (cao.getStatus().isPending()) {
 				if (conAudit.getAuditType().isPqf() && percentComplete == 100) {
-					if (hasCaoStatus(conAudit, AuditStatus.Complete))
-						newStatus = AuditStatus.Complete;
-					else if (hasCaoStatus(conAudit, AuditStatus.Submitted))
-						newStatus = AuditStatus.Submitted;
-					else if (hasCaoStatus(conAudit, AuditStatus.Resubmitted))
-						newStatus = AuditStatus.Resubmitted;
+					caoWithStatus = findCaoWithStatus(conAudit, AuditStatus.Complete);
+					if (caoWithStatus == null)
+						caoWithStatus = findCaoWithStatus(conAudit, AuditStatus.Submitted);
+					if (caoWithStatus == null)
+						caoWithStatus = findCaoWithStatus(conAudit, AuditStatus.Resubmitted);
 				} else if (conAudit.getAuditType().isDesktop()) {
-					if (hasCaoStatus(conAudit, AuditStatus.Complete))
-						newStatus = AuditStatus.Complete;
-					else if (hasCaoStatus(conAudit, AuditStatus.Submitted))
-						newStatus = AuditStatus.Submitted;
+					caoWithStatus = findCaoWithStatus(conAudit, AuditStatus.Complete);
+					if (caoWithStatus == null)
+						caoWithStatus = findCaoWithStatus(conAudit, AuditStatus.Submitted);
 				}
 			}
 
-			if (newStatus != null) {
-				cao.changeStatus(newStatus, null);
-			}
+			if (caoWithStatus != null) {
+				ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
+				caoW.setCao(cao);
+				caoW.setNotes("Updating status to same as " + caoWithStatus.getOperator().getName());
+				caoW.setPreviousStatus(cao.getStatus());
+				caoW.setAuditColumns(new User(User.SYSTEM));
+				caoW.setStatus(caoWithStatus.getStatus());
+				caoDAO.save(caoW);
 
+				cao.changeStatus(caoWithStatus.getStatus(), null);
+				cao.setStatusChangedDate(caoWithStatus.getStatusChangedDate());
+			}
 		}
 	}
 
-	private boolean hasCaoStatus(ContractorAudit conAudit, AuditStatus auditStatus) {
+	private ContractorAuditOperator findCaoWithStatus(ContractorAudit conAudit, AuditStatus auditStatus) {
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (cao.getStatus().equals(auditStatus))
-				return true;
+				return cao;
 		}
-		return false;
+		return null;
 	}
 
 	/**
