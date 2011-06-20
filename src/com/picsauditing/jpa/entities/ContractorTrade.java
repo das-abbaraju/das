@@ -1,7 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -10,7 +8,7 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_trade")
-public class ContractorTrade extends BaseTable {
+public class ContractorTrade extends BaseTable implements Comparable<ContractorTrade> {
 	private ContractorAccount contractor;
 	private Trade trade;
 	private boolean selfPerformed = true;
@@ -64,5 +62,13 @@ public class ContractorTrade extends BaseTable {
 	public void setActivityPercent(int activityPercent) {
 		this.activityPercent = activityPercent;
 	}
+
+	@Override
+	public int compareTo(ContractorTrade o) {
+		if (o == null)
+			throw new NullPointerException();
+		return getTrade().getName().toString().compareTo(o.getTrade().getName().toString());
+	}
+
 	
 }

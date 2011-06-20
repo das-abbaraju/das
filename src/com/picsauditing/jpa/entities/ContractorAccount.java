@@ -49,7 +49,6 @@ import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.util.ContractorTradeComparator;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
@@ -537,7 +536,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public List<ContractorTrade> getTradesSorted() {
-		Collections.sort(getTrades(), new ContractorTradeComparator());
+		Collections.sort(getTrades());
 		return trades;
 	}
 
