@@ -245,7 +245,7 @@ public class PicsMenu {
 			subMenu.addChild("Manage Accounts",
 					"ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
-			subMenu.addChild(getTitle("ContractorApproval"), "ContractorApproval.action");
+			subMenu.addChild(getTitle("ContractorApproval"), "ContractorApproval.action?filter.workStatus=P");
 		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
 			addChildAction(subMenu, "OperatorTags");
 		if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
