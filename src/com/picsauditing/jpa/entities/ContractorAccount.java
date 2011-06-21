@@ -74,8 +74,8 @@ public class ContractorAccount extends Account implements JSONable {
 	private Date membershipDate;
 	private int payingFacilities;
 	private User auditor;
-	private LowMedHigh safetyRisk;
-	private LowMedHigh productRisk;
+	private LowMedHigh safetyRisk = LowMedHigh.None;
+	private LowMedHigh productRisk = LowMedHigh.None;
 	private Date viewedFacilities;
 	private Float emrAverage;
 	private Float trirAverage;
@@ -285,6 +285,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.ccEmail = ccEmail;
 	}
 
+	@Column(nullable = false)
 	public LowMedHigh getSafetyRisk() {
 		return safetyRisk;
 	}
@@ -293,6 +294,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.safetyRisk = safetyRisk;
 	}
 
+	@Column(nullable = false)
 	public LowMedHigh getProductRisk() {
 		return productRisk;
 	}
