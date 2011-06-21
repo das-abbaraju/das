@@ -11,6 +11,7 @@
 			<input type="search" class="searchText" name="q" placeholder="Search..."/>
 			<input type="submit" class="searchButton" title="Submit Search" value="Search" />
 		</form>
+		Use one or more key words to search for what your company does. Examples might include "drilling wells", "asbestos abatement", "civil engineering" or even a NAICS code.<br/><strong>Display results as:</strong>
 		<s:radio cssClass="searchType" name="searchType" list="#{'list':'List', 'tree':'Tree'}" value="'list'"/>
 		<div class="messages"></div>
 		<div id="search-list"></div>
