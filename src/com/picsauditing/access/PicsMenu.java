@@ -164,7 +164,7 @@ public class PicsMenu {
 		subMenu = menu.addChild(getText("global.AuditGUARD"));
 		if (permissions.isAuditor()) {
 			subMenu.addChild("My Audits",
-					"AuditListAuditor.action?filter.auditStatus=Pending&filter.auditStatus=Submitted");
+					"AuditListAuditor.action?filter.auditStatus=Pending");
 			subMenu.addChild("My Audit History", "MyAuditHistory.action");
 		}
 
