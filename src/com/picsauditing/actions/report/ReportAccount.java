@@ -315,6 +315,17 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		}
 
+		if (filterOn(f.getAccountLevel())) {
+			List<String> list = new ArrayList<String>();
+			for(String level : f.getAccountLevel()){
+				list.add("c.accountLevel LIKE '" + level + "'");
+			}
+			if(list.size() > 0) {
+				sql.addWhere(Strings.implode(list, " OR "));
+				setFiltered(true);
+			}
+		}
+
 		if (filterOn(f.getRiskLevel())) {
 			String list = Strings.implode(f.getRiskLevel(), ",");
 			sql.addWhere("c.safetyRisk IN (" + list + ")");

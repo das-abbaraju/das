@@ -102,6 +102,17 @@
 		</div>
 	</s:if>
 
+	<s:if test="filter.showAccountLevel">
+		<div class="filterOption">
+			<a href="#" class="filterBox">Account Level</a> =
+			<span class="q_status">ALL</span><br />
+			<span class="clearLink q_box select">
+				<s:select list="#{'Full':'Full', 'ListOnly':'List Only'}" cssClass="forms" name="filter.accountLevel" multiple="true" size="3" />
+				<a class="clearLink" href="#">Clear</a>
+			</span>
+		</div>
+	</s:if>
+
 	<s:if test="filter.showAddress">
 		<br clear="all" />
 		<div class="filterOption">

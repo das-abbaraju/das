@@ -67,6 +67,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showAuditCreationFlagChanges = false;
 	protected boolean showAuditQuestionFlagChanges = false;
 	protected boolean showSoleProprietership = true;
+	protected boolean showAccountLevel = true;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -111,6 +112,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean auditCreationFlagChanges = false;
 	protected boolean auditQuestionFlagChanges = false;
 	protected boolean soleProprietership = false;
+	protected String[] accountLevel;
 
 	protected final Map<Integer, String> MINORITY_QUESTIONS;
 	{
@@ -379,6 +381,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowSoleProprietership(boolean showSoleProprietership) {
 		this.showSoleProprietership = showSoleProprietership;
+	}
+
+	public boolean isShowAccountLevel() {
+		return showAccountLevel;
+	}
+
+	public void setShowAccountLevel(boolean showAccountLevel) {
+		this.showAccountLevel = showAccountLevel;
 	}
 
 	public int[] getAccountManager() {
@@ -820,5 +830,13 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public Map<Integer, String> getMinorityQuestions() {
 		return MINORITY_QUESTIONS;
+	}
+
+	public String[] getAccountLevel() {
+		return accountLevel;
+	}
+
+	public void setAccountLevel(String[] accountLevel) {
+		this.accountLevel = accountLevel;
 	}
 }
