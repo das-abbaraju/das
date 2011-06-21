@@ -23,7 +23,7 @@ jzTimezoneDetector.olson = {};
  * 
  * @constructor
  * @param {string} offset - for example '-11:00'
- * @param {string} olson_tz - the olson Identifier, such as "America/Denver"
+ * @param {string} olson_tz - the olson Identifier, such as "US/Mountain"
  * @param {boolean} uses_dst - flag for whether the time zone somehow cares about daylight savings.
  */
 jzTimezoneDetector.TimeZone = function (offset, olson_tz, uses_dst) {
@@ -48,7 +48,7 @@ jzTimezoneDetector.TimeZone.prototype.display = function() {
 /**
  * Checks if a timezone has possible ambiguities. I.e timezones that are similar.
  * 
- * If the preliminary scan determines that we're in America/Denver. We double check
+ * If the preliminary scan determines that we're in US/Mountain. We double check
  * here that we're really there and not in America/Mazatlan.
  * 
  * This is done by checking known dates for when daylight savings start for different
@@ -175,77 +175,126 @@ jzTimezoneDetector.determine_timezone = function () {
  * The values of the dictionary are TimeZone objects.
  */
 jzTimezoneDetector.olson.timezones = {
-    '-720,0'   : new jzTimezoneDetector.TimeZone('-12:00','Etc/GMT+12', false),
-    '-660,0'   : new jzTimezoneDetector.TimeZone('-11:00','Pacific/Pago_Pago', false),
-    '-600,1'   : new jzTimezoneDetector.TimeZone('-11:00','America/Adak',true),
-    '-660,1,s' : new jzTimezoneDetector.TimeZone('-11:00','Pacific/Apia', true),
-    '-600,0'   : new jzTimezoneDetector.TimeZone('-10:00','Pacific/Honolulu', false),
-    '-570,0'   : new jzTimezoneDetector.TimeZone('-10:30','Pacific/Marquesas',false),
-    '-540,0'   : new jzTimezoneDetector.TimeZone('-09:00','Pacific/Gambier',false),
-    '-540,1'   : new jzTimezoneDetector.TimeZone('-09:00','America/Anchorage', true),
-    '-480,1'   : new jzTimezoneDetector.TimeZone('-08:00','America/Los_Angeles', true),
-    '-480,0'   : new jzTimezoneDetector.TimeZone('-08:00','Pacific/Pitcairn',false),
-    '-420,0'   : new jzTimezoneDetector.TimeZone('-07:00','America/Phoenix', false),
-    '-420,1'   : new jzTimezoneDetector.TimeZone('-07:00','America/Denver', true),
-    '-360,0'   : new jzTimezoneDetector.TimeZone('-06:00','America/Guatemala', false),
-    '-360,1'   : new jzTimezoneDetector.TimeZone('-06:00','America/Chicago', true),
-    '-360,1,s' : new jzTimezoneDetector.TimeZone('-06:00','Pacific/Easter',true),
-    '-300,0'   : new jzTimezoneDetector.TimeZone('-05:00','America/Bogota', false),
-    '-300,1'   : new jzTimezoneDetector.TimeZone('-05:00','America/New_York', true),
-    '-270,0'   : new jzTimezoneDetector.TimeZone('-04:30','America/Caracas', false),
-    '-240,1'   : new jzTimezoneDetector.TimeZone('-04:00','America/Halifax', true),
-    '-240,0'   : new jzTimezoneDetector.TimeZone('-04:00','America/Santo_Domingo', false),
-    '-240,1,s' : new jzTimezoneDetector.TimeZone('-04:00','America/Asuncion', true),
-    '-210,1'   : new jzTimezoneDetector.TimeZone('-03:30','America/St_Johns', true),
-    '-180,1'   : new jzTimezoneDetector.TimeZone('-03:00','America/Godthab', true),
-    '-180,0'   : new jzTimezoneDetector.TimeZone('-03:00','America/Argentina/Buenos_Aires', false),
-    '-180,1,s' : new jzTimezoneDetector.TimeZone('-03:00','America/Montevideo', true),
-    '-120,0'   : new jzTimezoneDetector.TimeZone('-02:00','America/Noronha', false),
-    '-120,1'   : new jzTimezoneDetector.TimeZone('-02:00','Etc/GMT+2', true),
-    '-60,1'    : new jzTimezoneDetector.TimeZone('-01:00','Atlantic/Azores', true),
-    '-60,0'    : new jzTimezoneDetector.TimeZone('-01:00','Atlantic/Cape_Verde', false),
-    '0,0'      : new jzTimezoneDetector.TimeZone('00:00','Etc/UTC', false),
-    '0,1'      : new jzTimezoneDetector.TimeZone('00:00','Europe/London', true),
-    '60,1'     : new jzTimezoneDetector.TimeZone('+01:00','Europe/Berlin', true),
-    '60,0'     : new jzTimezoneDetector.TimeZone('+01:00','Africa/Lagos', false),
-    '60,1,s'   : new jzTimezoneDetector.TimeZone('+01:00','Africa/Windhoek',true),
-    '120,1'    : new jzTimezoneDetector.TimeZone('+02:00','Asia/Beirut', true),
-    '120,0'    : new jzTimezoneDetector.TimeZone('+02:00','Africa/Johannesburg', false),
-    '180,1'    : new jzTimezoneDetector.TimeZone('+03:00','Europe/Moscow', true),
-    '180,0'    : new jzTimezoneDetector.TimeZone('+03:00','Asia/Baghdad', false),
-    '210,1'    : new jzTimezoneDetector.TimeZone('+03:30','Asia/Tehran', true),
-    '240,0'    : new jzTimezoneDetector.TimeZone('+04:00','Asia/Dubai', false),
-    '240,1'    : new jzTimezoneDetector.TimeZone('+04:00','Asia/Yerevan', true),
-    '270,0'    : new jzTimezoneDetector.TimeZone('+04:30','Asia/Kabul', false),
-    '300,1'    : new jzTimezoneDetector.TimeZone('+05:00','Asia/Yekaterinburg', true),
-    '300,0'    : new jzTimezoneDetector.TimeZone('+05:00','Asia/Karachi', false),
-    '330,0'    : new jzTimezoneDetector.TimeZone('+05:30','Asia/Kolkata', false),
-    '345,0'    : new jzTimezoneDetector.TimeZone('+05:45','Asia/Kathmandu', false),
-    '360,0'    : new jzTimezoneDetector.TimeZone('+06:00','Asia/Dhaka', false),
-    '360,1'    : new jzTimezoneDetector.TimeZone('+06:00','Asia/Omsk', true),
-    '390,0'    : new jzTimezoneDetector.TimeZone('+06:30','Asia/Rangoon', false),
-    '420,1'    : new jzTimezoneDetector.TimeZone('+07:00','Asia/Krasnoyarsk', true),
-    '420,0'    : new jzTimezoneDetector.TimeZone('+07:00','Asia/Jakarta', false),
-    '480,0'    : new jzTimezoneDetector.TimeZone('+08:00','Asia/Shanghai', false),
-    '480,1'    : new jzTimezoneDetector.TimeZone('+08:00','Asia/Irkutsk', true),
-    '525,0'    : new jzTimezoneDetector.TimeZone('+08:45','Australia/Eucla', true),
-    '525,1,s'  : new jzTimezoneDetector.TimeZone('+08:45','Australia/Eucla', true),
-    '540,1'    : new jzTimezoneDetector.TimeZone('+09:00','Asia/Yakutsk', true),
-    '540,0'    : new jzTimezoneDetector.TimeZone('+09:00','Asia/Tokyo', false),
-    '570,0'    : new jzTimezoneDetector.TimeZone('+09:30','Australia/Darwin', false),
-    '570,1,s'  : new jzTimezoneDetector.TimeZone('+09:30','Australia/Adelaide', true),
-    '600,0'    : new jzTimezoneDetector.TimeZone('+10:00','Australia/Brisbane', false),
-    '600,1'    : new jzTimezoneDetector.TimeZone('+10:00','Asia/Vladivostok', true),
-    '600,1,s'  : new jzTimezoneDetector.TimeZone('+10:00','Australia/Sydney', true),
-    '630,1,s'  : new jzTimezoneDetector.TimeZone('+10:30','Australia/Lord_Howe', true),
-    '660,1'    : new jzTimezoneDetector.TimeZone('+11:00','Asia/Kamchatka', true),
-    '660,0'    : new jzTimezoneDetector.TimeZone('+11:00','Pacific/Noumea', false),
-    '690,0'    : new jzTimezoneDetector.TimeZone('+11:30','Pacific/Norfolk', false),
-    '720,1,s'  : new jzTimezoneDetector.TimeZone('+12:00','Pacific/Auckland', true),
-    '720,0'    : new jzTimezoneDetector.TimeZone('+12:00','Pacific/Tarawa', false),
-    '765,1,s'  : new jzTimezoneDetector.TimeZone('+12:45','Pacific/Chatham', true),
-    '780,0'    : new jzTimezoneDetector.TimeZone('+13:00','Pacific/Tongatapu', false),
-    '840,0'    : new jzTimezoneDetector.TimeZone('+14:00','Pacific/Kiritimati', false)
+	    '-720,1,s' : new jzTimezoneDetector.TimeZone('-12:00','Etc/GMT+12', true), // unused timezone, defaulted to another timezone
+	    '-720,1'   : new jzTimezoneDetector.TimeZone('-13:00','Etc/GMT+12', true), // unused timezone, defaulted to another timezone
+	    '-720,0'   : new jzTimezoneDetector.TimeZone('-12:00','Etc/GMT+12', false),
+	    '-660,1,s' : new jzTimezoneDetector.TimeZone('-11:00','Pacific/Samoa', true), // unused timezone, defaulted to another timezone
+	    '-660,1'   : new jzTimezoneDetector.TimeZone('-12:00','Pacific/Samoa', true), // unused timezone, defaulted to another timezone
+	    '-660,0'   : new jzTimezoneDetector.TimeZone('-11:00','Pacific/Samoa', false),
+	    '-600,1,s' : new jzTimezoneDetector.TimeZone('-10:00','Pacific/Tahiti', true),
+	    '-600,1'   : new jzTimezoneDetector.TimeZone('-11:00','US/Aleutian',true),
+	    '-600,0'   : new jzTimezoneDetector.TimeZone('-10:00','Pacific/Honolulu', false),
+	    '-570,1,s' : new jzTimezoneDetector.TimeZone('-09:30','Pacific/Marquesas', true), // unused timezone, defaulted to another timezone
+	    '-570,1'   : new jzTimezoneDetector.TimeZone('-10:30','Pacific/Marquesas', true), // unused timezone, defaulted to another timezone
+	    '-570,0'   : new jzTimezoneDetector.TimeZone('-09:30','Pacific/Marquesas',false),
+	    '-540,1,s' : new jzTimezoneDetector.TimeZone('-09:00','US/Alaska', true), // unused timezone, defaulted to another timezone
+	    '-540,1'   : new jzTimezoneDetector.TimeZone('-10:00','US/Alaska', true),
+	    '-540,0'   : new jzTimezoneDetector.TimeZone('-09:00','SystemV/YST9',false),
+	    '-480,1,s' : new jzTimezoneDetector.TimeZone('-08:00','US/Pacific', true), // unused timezone, defaulted to another timezone
+	    '-480,1'   : new jzTimezoneDetector.TimeZone('-09:00','US/Pacific', true),
+	    '-480,0'   : new jzTimezoneDetector.TimeZone('-08:00','Pacific/Pitcairn',false),
+	    '-420,1,s' : new jzTimezoneDetector.TimeZone('-07:00','America/Bahia_Banderas', true),
+	    '-420,1'   : new jzTimezoneDetector.TimeZone('-08:00','US/Mountain', true),
+	    '-420,0'   : new jzTimezoneDetector.TimeZone('-07:00','US/Arizona', false),
+	    '-360,1,s' : new jzTimezoneDetector.TimeZone('-06:00','Pacific/Galapagos', true),
+	    '-360,1'   : new jzTimezoneDetector.TimeZone('-07:00','US/Central', true),
+	    '-360,0'   : new jzTimezoneDetector.TimeZone('-06:00','Canada/Saskatchewan', false), // between saskatchewan and costa rica
+	    '-300,1,s' : new jzTimezoneDetector.TimeZone('-05:00','Pacific/Easter', true),
+	    '-300,1'   : new jzTimezoneDetector.TimeZone('-06:00','US/Eastern', true),
+	    '-300,0'   : new jzTimezoneDetector.TimeZone('-05:00','America/Port-au-Prince', false), // between cayman and port-au-prince
+	    '-270,1,s' : new jzTimezoneDetector.TimeZone('-04:30','America/Caracas', true), // unused timezone, defaulted to another timezone
+	    '-270,1'   : new jzTimezoneDetector.TimeZone('-05:30','America/Caracas', true), // unused timezone, defaulted to another timezone
+	    '-270,0'   : new jzTimezoneDetector.TimeZone('-04:30','America/Caracas', false), // unused timezone, defaulted to another timezone
+	    '-240,1,s' : new jzTimezoneDetector.TimeZone('-04:00','America/Santiago', true),
+	    '-240,1'   : new jzTimezoneDetector.TimeZone('-05:00','Atlantic/Bermuda', true),
+	    '-240,0'   : new jzTimezoneDetector.TimeZone('-04:00','America/La_Paz', false),
+	    '-210,1,s' : new jzTimezoneDetector.TimeZone('-03:30','Canada/Newfoundland', true), // unused timezone, defaulted to another timezone
+	    '-210,1'   : new jzTimezoneDetector.TimeZone('-04:30','Canada/Newfoundland', true),
+	    '-210,0'   : new jzTimezoneDetector.TimeZone('-03:30','Canada/Newfoundland', false), // unused timezone, defaulted to another timezone
+	    '-180,1,s' : new jzTimezoneDetector.TimeZone('-03:00','America/Sao_Paulo', true),
+	    '-180,1'   : new jzTimezoneDetector.TimeZone('-04:00','America/Godthab', true),
+	    '-180,0'   : new jzTimezoneDetector.TimeZone('-03:00','America/Argentina/Buenos_Aires', false),
+	    '-120,1,s' : new jzTimezoneDetector.TimeZone('-02:00','Brazil/DeNoronha', true), // unused timezone, defaulted to another timezone
+	    '-120,1'   : new jzTimezoneDetector.TimeZone('-03:00','Brazil/DeNoronha', true), // unused timezone, defaulted to another timezone
+	    '-120,0'   : new jzTimezoneDetector.TimeZone('-02:00','Brazil/DeNoronha', false),
+	    '-60,0'    : new jzTimezoneDetector.TimeZone('-01:00','Atlantic/Cape_Verde', false),
+	    '-60,1'    : new jzTimezoneDetector.TimeZone('-02:00','Atlantic/Azores', true),
+	    '-60,1,s'  : new jzTimezoneDetector.TimeZone('-01:00','Atlantic/Azores', true), // unused timezone, defaulted to another timezone
+	    '0,0'      : new jzTimezoneDetector.TimeZone('00:00','Greenwich', false),
+	    '0,1'      : new jzTimezoneDetector.TimeZone('-01:00','Europe/London', true),
+	    '0,1,s'    : new jzTimezoneDetector.TimeZone('00:00','Etc/UTC', true),
+	    '60,0'     : new jzTimezoneDetector.TimeZone('+01:00','Africa/Lagos', false),
+	    '60,1'     : new jzTimezoneDetector.TimeZone('00:00','Europe/Paris', true),
+	    '60,1,s'   : new jzTimezoneDetector.TimeZone('+01:00','Africa/Windhoek', true),
+	    '120,0'    : new jzTimezoneDetector.TimeZone('+02:00','Africa/Tripoli', false),
+	    '120,1'    : new jzTimezoneDetector.TimeZone('+01:00','Asia/Jerusalem', true),
+	    '120,1,s'  : new jzTimezoneDetector.TimeZone('+02:00','Asia/Jerusalem', true), // unused timezone, defaulted to another timezone
+	    '180,0'    : new jzTimezoneDetector.TimeZone('+03:00','Asia/Riyadh', false),
+	    '180,1'    : new jzTimezoneDetector.TimeZone('+02:00','Europe/Moscow', true),
+	    '180,1,s'  : new jzTimezoneDetector.TimeZone('+03:00','Europe/Moscow', true), // unused timezone, defaulted to another timezone
+	    '210,0'    : new jzTimezoneDetector.TimeZone('+03:30','Asia/Tehran', false),
+	    '210,1'    : new jzTimezoneDetector.TimeZone('+02:30','Asia/Tehran', true), // unused timezone, defaulted to another timezone
+	    '210,1,s'  : new jzTimezoneDetector.TimeZone('+03:30','Asia/Tehran', true), // unused timezone, defaulted to another timezone
+	    '240,0'    : new jzTimezoneDetector.TimeZone('+04:00','Asia/Dubai', false),
+	    '240,1'    : new jzTimezoneDetector.TimeZone('+03:00','Asia/Tbilisi', true),
+	    '240,1,s'  : new jzTimezoneDetector.TimeZone('+04:00','Asia/Tbilisi', true), // unused timezone, defaulted to another timezone
+	    '270,0'    : new jzTimezoneDetector.TimeZone('+04:30','Asia/Kabul', false),
+	    '270,1'    : new jzTimezoneDetector.TimeZone('+03:30','Asia/Kabul', true), // unused timezone, defaulted to another timezone
+	    '270,1,s'  : new jzTimezoneDetector.TimeZone('+04:30','Asia/Kabul', true), // unused timezone, defaulted to another timezone
+	    '300,0'    : new jzTimezoneDetector.TimeZone('+05:00','Asia/Karachi', false),
+	    '300,1'    : new jzTimezoneDetector.TimeZone('+04:00','Asia/Bishkek', true),
+	    '300,1,s'  : new jzTimezoneDetector.TimeZone('+05:00','Asia/Bishkek', true), // unused timezone, defaulted to another timezone
+	    '330,0'    : new jzTimezoneDetector.TimeZone('+05:30','Asia/Kolkata', false),
+	    '330,1'    : new jzTimezoneDetector.TimeZone('+04:30','Asia/Kolkata', true), // unused timezone, defaulted to another timezone
+	    '330,1,s'  : new jzTimezoneDetector.TimeZone('+05:30','Asia/Kolkata', true), // unused timezone, defaulted to another timezone
+	    '345,0'    : new jzTimezoneDetector.TimeZone('+05:45','Asia/Kathmandu', false),
+	    '345,1'    : new jzTimezoneDetector.TimeZone('+04:45','Asia/Kathmandu', true), // unused timezone, defaulted to another timezone
+	    '345,1,s'  : new jzTimezoneDetector.TimeZone('+05:45','Asia/Kathmandu', true), // unused timezone, defaulted to another timezone
+	    '360,0'    : new jzTimezoneDetector.TimeZone('+06:00','Asia/Colombo', false),
+	    '360,1'    : new jzTimezoneDetector.TimeZone('+05:00','Asia/Almaty', true),
+	    '360,1,s'  : new jzTimezoneDetector.TimeZone('+06:00','Asia/Almaty', true), // unused timezone, defaulted to another timezone
+	    '390,0'    : new jzTimezoneDetector.TimeZone('+06:30','Asia/Rangoon', false),
+	    '390,1'    : new jzTimezoneDetector.TimeZone('+05:30','Asia/Rangoon', true), // unused timezone, defaulted to another timezone
+	    '390,1,s'  : new jzTimezoneDetector.TimeZone('+06:30','Asia/Rangoon', true), // unused timezone, defaulted to another timezone
+	    '420,0'    : new jzTimezoneDetector.TimeZone('+07:00','Asia/Bangkok', false),
+	    '420,1'    : new jzTimezoneDetector.TimeZone('+06:00','Asia/Hovd', true),
+	    '420,1,s'  : new jzTimezoneDetector.TimeZone('+07:00','Asia/Hovd', true), // unused timezone, defaulted to another timezone
+	    '480,0'    : new jzTimezoneDetector.TimeZone('+08:00','Asia/Shanghai', false),
+	    '480,1'    : new jzTimezoneDetector.TimeZone('+07:00','Asia/Irkutsk', true),
+	    '480,1,s'  : new jzTimezoneDetector.TimeZone('+08:00','Asia/Irkutsk', true), // unused timezone, defaulted to another timezone
+	    '525,0'    : new jzTimezoneDetector.TimeZone('+08:45','Australia/Eucla', false),
+	    '525,1'    : new jzTimezoneDetector.TimeZone('+07:45','Australia/Eucla', true), // unused timezone, defaulted to another timezone
+	    '525,1,s'  : new jzTimezoneDetector.TimeZone('+08:45','Australia/Eucla', true), // unused timezone, defaulted to another timezone
+	    '540,0'    : new jzTimezoneDetector.TimeZone('+09:00','Asia/Tokyo', false),
+	    '540,1'    : new jzTimezoneDetector.TimeZone('+08:00','Asia/Yakutsk', true),
+	    '540,1,s'  : new jzTimezoneDetector.TimeZone('+09:00','Asia/Yakutsk', true), // unused timezone, defaulted to another timezone
+	    '570,0'    : new jzTimezoneDetector.TimeZone('+09:30','Australia/Darwin', false),
+	    '570,1'    : new jzTimezoneDetector.TimeZone('+08:30','Australia/Adelaide', true), // unused timezone, defaulted to another timezone
+	    '570,1,s'  : new jzTimezoneDetector.TimeZone('+09:30','Australia/Adelaide', true),
+	    '600,0'    : new jzTimezoneDetector.TimeZone('+10:00','Australia/Brisbane', false),
+	    '600,1'    : new jzTimezoneDetector.TimeZone('+09:00','Asia/Vladivostok', true),
+	    '600,1,s'  : new jzTimezoneDetector.TimeZone('+10:00','Australia/Sydney', true),
+	    '630,0'    : new jzTimezoneDetector.TimeZone('+10:30','Australia/Lord_Howe', true), // unused timezone, defaulted to another timezone
+	    '630,1'    : new jzTimezoneDetector.TimeZone('+09:30','Australia/Lord_Howe', true), // unused timezone, defaulted to another timezone
+	    '630,1,s'  : new jzTimezoneDetector.TimeZone('+10:30','Australia/Lord_Howe', true),
+	    '660,0'    : new jzTimezoneDetector.TimeZone('+11:00','Pacific/Pohnpei', false),
+	    '660,1'    : new jzTimezoneDetector.TimeZone('+10:00','Asia/Magadan', true),
+	    '660,1,s'  : new jzTimezoneDetector.TimeZone('+11:00','Asia/Magadan', true), // unused timezone, defaulted to another timezone
+	    '690,0'    : new jzTimezoneDetector.TimeZone('+11:30','Pacific/Norfolk', false),
+	    '690,1'    : new jzTimezoneDetector.TimeZone('+10:30','Pacific/Norfolk', true), // unused timezone, defaulted to another timezone
+	    '690,1,s'  : new jzTimezoneDetector.TimeZone('+11:30','Pacific/Norfolk', true), // unused timezone, defaulted to another timezone
+	    '720,0'    : new jzTimezoneDetector.TimeZone('+12:00','Pacific/Fiji', false),
+	    '720,1'    : new jzTimezoneDetector.TimeZone('+11:00','Asia/Anadyr', true),
+	    '720,1,s'  : new jzTimezoneDetector.TimeZone('+12:00','Pacific/Auckland', true),
+	    '765,0'    : new jzTimezoneDetector.TimeZone('+12:45','Pacific/Chatham', false), // unused timezone, defaulted to another timezone
+	    '765,1'    : new jzTimezoneDetector.TimeZone('+11:45','Pacific/Chatham', true), // unused timezone, defaulted to another timezone
+	    '765,1,s'  : new jzTimezoneDetector.TimeZone('+12:45','Pacific/Chatham', true),
+	    '780,0'    : new jzTimezoneDetector.TimeZone('+13:00','Pacific/Tongatapu', false),
+	    '780,1'    : new jzTimezoneDetector.TimeZone('+12:00','Pacific/Tongatapu', true), // unused timezone, defaulted to another timezone
+	    '780,1,s'  : new jzTimezoneDetector.TimeZone('+13:00','Pacific/Tongatapu', true), // unused timezone, defaulted to another timezone
+	    '840,0'    : new jzTimezoneDetector.TimeZone('+14:00','Pacific/Kiritimati', false),
+		'840,1'    : new jzTimezoneDetector.TimeZone('+13:00','Pacific/Kiritimati', true), // unused timezone, defaulted to another timezone
+		'840,1,s'  : new jzTimezoneDetector.TimeZone('+14:00','Pacific/Kiritimati', true) // unused timezone, defaulted to another timezone
 }
 
 /**
@@ -259,22 +308,22 @@ jzTimezoneDetector.olson.timezones = {
  * Each value is a date denoting when daylight savings starts for that timezone.
  */
 jzTimezoneDetector.olson.dst_start_dates = {
-    'America/Denver' : new Date(2011, 2, 13, 3, 0, 0, 0),
+    'US/Mountain' : new Date(2011, 2, 13, 3, 0, 0, 0),
     'America/Mazatlan' : new Date(2011, 3, 3, 3, 0, 0, 0),
-    'America/Chicago' : new Date(2011, 2, 13, 3, 0, 0, 0),
+    'US/Central' : new Date(2011, 2, 13, 3, 0, 0, 0),
     'America/Mexico_City' : new Date(2011, 3, 3, 3, 0, 0, 0),
     'Atlantic/Stanley' : new Date(2011, 8, 4, 7, 0, 0, 0),
-    'America/Asuncion' : new Date(2011, 9, 2, 3, 0, 0, 0),
+    'America/Santiago' : new Date(2011, 9, 2, 3, 0, 0, 0),
     'America/Santiago' : new Date(2011, 9, 9, 3, 0, 0, 0),
     'America/Campo_Grande' : new Date(2011, 9, 16, 5, 0, 0, 0),
-    'America/Montevideo' : new Date(2011, 9, 2, 3, 0, 0, 0),
+    'America/Sao_Paulo' : new Date(2011, 9, 2, 3, 0, 0, 0),
     'America/Sao_Paulo' : new Date(2011, 9, 16, 5, 0, 0, 0),
-    'America/Los_Angeles' : new Date(2011, 2, 13, 8, 0, 0, 0),
+    'US/Pacific' : new Date(2011, 2, 13, 8, 0, 0, 0),
     'America/Santa_Isabel' : new Date(2011, 3, 5, 8, 0, 0, 0),
     'America/Havana' : new Date(2011, 2, 13, 2, 0, 0, 0),
-    'America/New_York' : new Date(2011, 2, 13, 7, 0, 0, 0),
+    'US/Eastern' : new Date(2011, 2, 13, 7, 0, 0, 0),
     'Asia/Gaza' : new Date(2011, 2, 26, 23, 0, 0, 0),
-    'Asia/Beirut' : new Date(2011, 2, 27, 1, 0, 0, 0),
+    'Asia/Jerusalem' : new Date(2011, 2, 27, 1, 0, 0, 0),
     'Europe/Minsk' : new Date(2011, 2, 27, 3, 0, 0, 0),
     'Europe/Istanbul' : new Date(2011, 2, 27, 7, 0, 0, 0),
     'Asia/Damascus' : new Date(2011, 3, 1, 2, 0, 0, 0),
@@ -284,7 +333,7 @@ jzTimezoneDetector.olson.dst_start_dates = {
     'Asia/Baku'    : new Date(2011, 2, 27, 8, 0, 0, 0),
     'Pacific/Auckland' : new Date(2011, 8, 26, 7, 0, 0, 0),
     'Pacific/Fiji' : new Date(2010, 11, 29, 23, 0, 0, 0),
-    'America/Halifax' : new Date(2011, 2, 13, 6, 0, 0, 0),
+    'Atlantic/Bermuda' : new Date(2011, 2, 13, 6, 0, 0, 0),
     'America/Goose_Bay' : new Date(2011, 2, 13, 2, 1, 0, 0),
     'America/Miquelon' : new Date(2011, 2, 13, 5, 0, 0, 0),
     'America/Godthab' : new Date(2011, 2, 27, 1, 0, 0, 0)
@@ -298,15 +347,15 @@ jzTimezoneDetector.olson.dst_start_dates = {
  * starts for the regions.
  */
 jzTimezoneDetector.olson.ambiguity_list = {
-    'America/Denver' : ['America/Denver','America/Mazatlan'],
-    'America/Chicago' : ['America/Chicago','America/Mexico_City'],
-    'America/Asuncion' : ['Atlantic/Stanley', 'America/Asuncion', 'America/Santiago','America/Campo_Grande'],
-    'America/Montevideo' : ['America/Montevideo', 'America/Sao_Paulo'],
-    'Asia/Beirut' : ['Asia/Gaza','Asia/Beirut', 'Europe/Minsk', 'Europe/Istanbul', 'Asia/Damascus', 'Asia/Jerusalem','Africa/Cairo'],
+    'US/Mountain' : ['US/Mountain','America/Mazatlan'],
+    'US/Central' : ['US/Central','America/Mexico_City'],
+    'America/Santiago' : ['Atlantic/Stanley', 'America/Santiago', 'America/Santiago','America/Campo_Grande'],
+    'America/Sao_Paulo' : ['America/Sao_Paulo', 'America/Sao_Paulo'],
+    'Asia/Jerusalem' : ['Asia/Gaza','Asia/Jerusalem', 'Europe/Minsk', 'Europe/Istanbul', 'Asia/Damascus', 'Asia/Jerusalem','Africa/Cairo'],
     'Asia/Yerevan' : ['Asia/Yerevan', 'Asia/Baku'],
     'Pacific/Auckland' : ['Pacific/Auckland', 'Pacific/Fiji'],
-    'America/Los_Angeles' : ['America/Los_Angeles', 'America/Santa_Isabel'],
-    'America/New_York' : ['America/Havana','America/New_York'],
-    'America/Halifax' : ['America/Goose_Bay','America/Halifax'],
+    'US/Pacific' : ['US/Pacific', 'America/Santa_Isabel'],
+    'US/Eastern' : ['America/Havana','US/Eastern'],
+    'Atlantic/Bermuda' : ['America/Goose_Bay','Atlantic/Bermuda'],
     'America/Godthab' : ['America/Miquelon', 'America/Godthab']
 }
