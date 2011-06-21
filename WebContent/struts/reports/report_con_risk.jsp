@@ -9,9 +9,6 @@
 .red {
 	color: red;
 }
-td a {
-	background: none !important;
-}
 </style>
 <script type="text/javascript">
 $(function() {
@@ -21,6 +18,11 @@ $(function() {
 </head>
 <body>
 	<h1>Contractor Risk Assessment</h1>
+	
+	<a href="#" class="cluetip help" rel="#approve_cluetip" title="Approve Risk Level">Approving Product risk levels</a>
+	<div id="approve_cluetip">If approved, the highest of the Contractor selected product risk Levels will be 
+		set as their new product risk level.</div>
+	
 	<s:form id="form1">
 		<s:hidden name="filter.ajax" value="false" />
 		<s:hidden name="filter.destinationAction" />
@@ -43,13 +45,7 @@ $(function() {
 				<td>Contractor Risk</td>
 				<td>Notes</td>
 				<td></td>
-				<td>
-					<a href="#" class="cluetip help" rel="#approve_cluetip" title="Approve Risk Level">
-						<img src="images/help.gif" alt="help" />
-					</a>
-					<div id="approve_cluetip">If approved, the highest of the Contractor selected product risk Levels will be 
-						set as their new product risk level.</div>
-				</td>
+				<td></td>
 			</tr>
 		</thead>
 		<s:iterator value="data" status="stat">
