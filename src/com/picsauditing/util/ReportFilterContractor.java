@@ -68,6 +68,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showAuditQuestionFlagChanges = false;
 	protected boolean showSoleProprietership = true;
 	protected boolean showAccountLevel = true;
+	protected boolean showState = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -838,5 +839,13 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setAccountLevel(String[] accountLevel) {
 		this.accountLevel = accountLevel;
+	}
+	
+	public boolean isShowState() {
+		return showState;
+	}
+
+	public void setShowState(boolean showState) {
+		this.showState = showState;
 	}
 }

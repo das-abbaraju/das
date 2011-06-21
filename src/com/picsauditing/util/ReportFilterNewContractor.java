@@ -16,7 +16,6 @@ import com.picsauditing.jpa.entities.WaitingOn;
 @SuppressWarnings("serial")
 public class ReportFilterNewContractor extends ReportFilterContractor {
 	protected boolean showOpen = true;
-	protected boolean showState = false;
 	protected boolean showCountry = false;
 	protected boolean showHandledBy = true;
 	protected boolean showFollowUpDate = true;
@@ -42,14 +41,6 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 
 	public void setShowOpen(boolean showOpen) {
 		this.showOpen = showOpen;
-	}
-
-	public boolean isShowState() {
-		return showState;
-	}
-
-	public void setShowState(boolean showState) {
-		this.showState = showState;
 	}
 
 	public boolean isShowCountry() {

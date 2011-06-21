@@ -57,7 +57,6 @@ public class ReportAnswerSearchByAudit extends ReportContractorAuditOperator {
 			sql.addField("q" + questionId + ".answer AS answer" + questionId);
 		}
 
-		getFilter().setShowAddress(false);
 		getFilter().setShowTaxID(false);
 		getFilter().setShowLicensedIn(false);
 		getFilter().setShowWorksIn(false);

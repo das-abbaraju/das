@@ -145,7 +145,7 @@
 
 	<s:if test="filter.showState">
 		<div class="filterOption">
-			<a href="#" class="filterBox">State</a> =
+			<a href="#" class="filterBox">State/Province</a> =
 			<span class="q_status">ALL</span><br />
 			<span class="clearLink q_box select">
 				<s:select name="filter.state" list="{}" cssClass="forms" multiple="true" size="15">
@@ -898,6 +898,13 @@
 			<label>
 				<s:checkbox name="filter.auditQuestionFlagChanges" />Show Audit Question Related Flag Changes
 			</label>
+		</div>
+	</s:if>
+	
+	<s:if test="filter.showCaowDetail">
+		<br clear="all" />
+		<div class="filterOption">
+				<s:radio list="filter.caowDetailList" name="filter.caowDetailLevel" />
 		</div>
 	</s:if>
 

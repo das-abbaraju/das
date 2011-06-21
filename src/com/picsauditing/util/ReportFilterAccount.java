@@ -23,7 +23,7 @@ public class ReportFilterAccount extends ReportFilter {
 	// /////// Filter Visibility /////////////
 	protected boolean showAccountName = true;
 	protected boolean showIndustry = true;
-	protected boolean showAddress = true;
+	protected boolean showAddress = false;
 	protected boolean showStatus = false;
 	protected boolean showType = false;
 	protected boolean showPrimaryInformation = false;

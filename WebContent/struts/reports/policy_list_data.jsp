@@ -63,8 +63,8 @@
 				<s:if test="get('certID') != null">
 					<a href="CertificateUpload.action?id=<s:property value="get('id')"/>&certID=<s:property value="get('certID')"/>&button=download"
 						target="_BLANK"><img src="images/icon_insurance.gif" /></a>	
-			</s:if>
-			<s:else></s:else>
+				</s:if>
+				<s:else></s:else>
 			</td>
 		</s:if>
 	   	<td>

@@ -76,7 +76,6 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		getFilter().setShowOfficeIn(false);
 		getFilter().setShowTaxID(false);
 		getFilter().setShowWaitingOn(true);
-		getFilter().setShowAddress(false);
 	}
 
 	@Override

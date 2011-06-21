@@ -81,7 +81,6 @@ public class ReportNewContractorSearch extends ReportAccount {
 		getFilter().setShowWaitingOn(false);
 		getFilter().setShowOpertorTagName(false);
 		getFilter().setShowRegistrationDate(false);
-		getFilter().setShowAddress(false);
 
 		operator = operatorAccountDAO.find(permissions.getAccountId());
 
