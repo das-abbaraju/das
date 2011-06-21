@@ -9,7 +9,15 @@
 .red {
 	color: red;
 }
+td a {
+	background: none !important;
+}
 </style>
+<script type="text/javascript">
+$(function() {
+	wireClueTips();
+});
+</script>
 </head>
 <body>
 	<h1>Contractor Risk Assessment</h1>
@@ -35,7 +43,13 @@
 				<td>Contractor Risk</td>
 				<td>Notes</td>
 				<td></td>
-				<td></td>
+				<td>
+					<a href="#" class="cluetip help" rel="#approve_cluetip" title="Approve Risk Level">
+						<img src="images/help.gif" alt="help" />
+					</a>
+					<div id="approve_cluetip">If approved, the highest of the Contractor selected product risk Levels will be 
+						set as their new product risk level.</div>
+				</td>
 			</tr>
 		</thead>
 		<s:iterator value="data" status="stat">

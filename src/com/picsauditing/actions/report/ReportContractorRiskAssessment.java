@@ -141,19 +141,23 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		sql2.addJoin("JOIN pqfdata d ON d.auditID = ca.id AND d.questionID " + questionString
 				+ " AND d.dateVerified IS NULL");
 
+		String where = "(d.answer = 'Low' AND c." + type.toLowerCase() + "Risk > 1) OR (d.answer = 'Medium' AND c."
+				+ type.toLowerCase() + "Risk > 2)";
+
+		if (type.equals("Product")) {
+			sql2.addWhere("a.materialSupplier = 1");
+
+			String affectedContractors = sql2.toString().replace("*", "DISTINCT a.id") + "\n AND " + where;
+			sql2.addWhere("a.id IN (" + affectedContractors + ")");
+			sql2.addGroupBy("a.id");
+		} else {
+			sql2.addWhere(where);
+		}
+
 		sql2.addField("a.id");
 		sql2.addField("'" + type + "' riskType");
 		sql2.addField("c." + type.toLowerCase() + "Risk risk");
 		sql2.addField(answer);
-		
-		String checkMaterialSupplier = "";
-		if (type.equals("Product")) {
-			checkMaterialSupplier = " AND a.materialSupplier = 1";
-			sql2.addGroupBy("a.id");
-		}
-
-		sql2.addWhere("(d.answer = 'Low' AND c." + type.toLowerCase() + "Risk > 1" + checkMaterialSupplier
-				+ ") OR (d.answer = 'Medium' AND c." + type.toLowerCase() + "Risk > 2" + checkMaterialSupplier + ")");
 
 		return sql2.toString();
 	}
@@ -194,6 +198,14 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 	public void setConID(int conID) {
 		this.conID = conID;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getAuditorNotes() {
