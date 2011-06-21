@@ -1,7 +1,10 @@
 package com.picsauditing.util;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.AuditStatus;
 
 @SuppressWarnings("serial")
@@ -9,10 +12,12 @@ public class ReportFilterCAOW extends ReportFilterCAO {
 
 	protected boolean showCaowStatus = true;
 	protected boolean showCaowUpdateDate = true;
+	protected boolean showCaowDetail = false;
 
 	protected AuditStatus[] caowStatus;
 	protected Date caowUpdateDate1;
 	protected Date caowUpdateDate2;
+	protected Boolean caowDetailLevel = null;
 
 	public boolean isShowCaowStatus() {
 		return showCaowStatus;
@@ -54,4 +59,27 @@ public class ReportFilterCAOW extends ReportFilterCAO {
 		this.caowUpdateDate2 = caowUpdateDate2;
 	}
 
+	public boolean getShowCaowDetail() {
+		return showCaowDetail;
+	}
+
+	public void setShowCaowDetail(boolean showCaowDetail) {
+		this.showCaowDetail = showCaowDetail;
+	}
+
+	public Boolean getCaowDetailLevel() {
+		return caowDetailLevel;
+	}
+
+	public void setCaowDetailLevel(Boolean caowDetailLevel) {
+		this.caowDetailLevel = caowDetailLevel;
+	}
+
+	public Map<String, String> getCaowDetailList() {
+		Map<String, String> map = new LinkedHashMap<String, String>();
+		map.put("", "Audit Only");
+		map.put("false", "Audits with Status");
+		map.put("true", "Audits with Status Detail");
+		return map;
+	}
 }

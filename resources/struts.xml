@@ -701,6 +701,11 @@
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
+    
+    <action name="ReportCAOCombined"
+    	class="com.picsauditing.actions.report.ReportContractorAuditCombined">
+    	<result>/struts/reports/cao_combined.jsp</result>
+    </action>
 
 		<action name="ReportWashingtonStateAudit"
 			class="com.picsauditing.actions.report.ReportWashingtonStateAudit">
