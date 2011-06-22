@@ -47,9 +47,29 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 		InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 0);
 		int importAuditID = 0;
 
+		if (Strings.isEmpty(url)) {
+			for (ContractorAudit audit : contractor.getAudits()) {
+				if (audit.getAuditType().isPqf()) {
+					importAuditID = audit.getId();
+					break;
+				}
+			}
+		}
+
 		// Did the contractor all ready pay for this?
 		if (contractor.getCompetitorMembership() == null || contractor.getCompetitorMembership() == true) {
-			if (!contractor.getFees().containsKey(fee.getFeeClass())) {
+			boolean hasImportInvoice = false;
+
+			for (Invoice invoice : contractor.getInvoices()) {
+				for (InvoiceItem item : invoice.getItems()) {
+					if (item.getInvoiceFee().getFeeClass().equals(FeeClass.ImportFee)) {
+						hasImportInvoice = true;
+						break;
+					}
+				}
+			}
+
+			if (!contractor.getFees().containsKey(fee.getFeeClass()) && !hasImportInvoice) {
 				if (newRegistration) {
 					ContractorFee newConFee = new ContractorFee();
 					newConFee.setAuditColumns(new User(User.CONTRACTOR));
@@ -88,8 +108,11 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 			boolean hasImportPQFAudit = false;
 
 			for (ContractorAudit audit : contractor.getAudits()) {
-				if (audit.getAuditType().getId() == AuditType.IMPORT_PQF)
+				if (audit.getAuditType().getId() == AuditType.IMPORT_PQF) {
 					hasImportPQFAudit = true;
+					importAuditID = audit.getId();
+					break;
+				}
 			}
 
 			if (!hasImportPQFAudit) {
@@ -120,8 +143,7 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 			accountDao.save(contractor);
 		}
 
-		this.redirect(Strings.isEmpty(url) && importAuditID > 0 ? String.format("Audit.action?auditID=%d",
-				importAuditID) : url);
+		this.redirect(Strings.isEmpty(url) ? String.format("Audit.action?auditID=%d", importAuditID) : url);
 		return BLANK;
 	}
 
