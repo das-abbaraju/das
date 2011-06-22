@@ -163,9 +163,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 							&& conProduct.ordinal() >= product.ordinal();
 
 				contractor.setSafetyRisk(safety);
-
-				if (contractor.isMaterialSupplier())
-					contractor.setProductRisk(product);
+				contractor.setProductRisk(product);
 
 				if (contractor.isMaterialSupplierOnly() && contractor.getProductRisk().equals(LowMedHigh.Low))
 					contractor.setAccountLevel(AccountLevel.ListOnly);
