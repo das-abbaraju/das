@@ -405,9 +405,9 @@ public class ContractorAuditController extends AuditActionSupport {
 	 * @return true if they should see the upsell message
 	 */
 	public boolean isNeedsImportPQFQuestion() {
-		if (!conAudit.getAuditType().isPqf())
+		if (!conAudit.getAuditType().isPqf() || conAudit.hasCaoStatusAfter(AuditStatus.Pending))
 			return false;
-
+		
 		ContractorAccount con = conAudit.getContractorAccount();
 		if (con.getCompetitorMembership() != null) {
 			// They answered yes to this question
