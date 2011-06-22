@@ -407,7 +407,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	public boolean isNeedsImportPQFQuestion() {
 		if (!conAudit.getAuditType().isPqf() || conAudit.hasCaoStatusAfter(AuditStatus.Pending))
 			return false;
-		
+
 		ContractorAccount con = conAudit.getContractorAccount();
 		if (con.getCompetitorMembership() != null) {
 			// They answered yes to this question
@@ -419,7 +419,8 @@ public class ContractorAuditController extends AuditActionSupport {
 					return false;
 
 				for (ContractorAudit importAudit : con.getAudits()) {
-					if (importAudit.getAuditType().getId() == AuditType.IMPORT_PQF)
+					if (importAudit.getAuditType().getId() == AuditType.IMPORT_PQF
+							&& importAudit.hasCaoStatusBefore(AuditStatus.NotApplicable))
 						return false;
 				}
 			} else
