@@ -21,7 +21,6 @@ import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class CreateImportPQFAudit extends ContractorActionSupport {
@@ -72,7 +71,7 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 			if (!contractor.getFees().containsKey(fee.getFeeClass()) && !hasImportInvoice) {
 				if (newRegistration) {
 					ContractorFee newConFee = new ContractorFee();
-					newConFee.setAuditColumns(new User(User.CONTRACTOR));
+					newConFee.setAuditColumns(permissions);
 					newConFee.setContractor(contractor);
 					newConFee.setCurrentAmount(fee.getAmount());
 					newConFee.setNewAmount(fee.getAmount());
