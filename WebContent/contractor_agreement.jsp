@@ -1,3 +1,11 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.picsauditing.access.Permissions"%>
+<%
+	Permissions permissions = (Permissions)session.getAttribute("permissions");
+	if (permissions == null) {
+		permissions = new Permissions();
+	}
+%>
 <h1 align="center">Contractor Agreement Statement</h1>
 
 <div style="width: 740px;">
@@ -7,7 +15,7 @@ This is the web site of <b>PICS</b>.<br>
 Irvine, CA 92619-1387<br>
 USA</b></p>
 We can be reached via e-mail at <a href="mailto:info@picsauditing.com">info@picsauditing.com</a><br>
-or you can reach us by telephone at (800) 506-PICS (7427)<br>
+or you can reach us by telephone at <%=permissions.getPicsPhone()%><br>
 <br/>
 <b><u>DISCLAIMER AND INDEMNITY</u></b>
 <p>As the duly authorized representative of your company that has been delegated the task of filling out the requested
@@ -55,7 +63,7 @@ password protection.</p>
 <p>Sensitive Data will be shared only with authorized users from operators appearing on your "facility list" which are linked
 to your account. You control which operators are linked to your account and can review any time by logging in to your
 account. At any time you can add or remove any operator from the facility list by either calling in to Customer Service
-(800-506-7427) or controlling it using the web interface. Any user from an operator not listed on your facility can not
+(<%=permissions.getPicsPhone()%>) or controlling it using the web interface. Any user from an operator not listed on your facility can not
 access your Sensitive Data. Other Contractors do not have access to your Sensitive Data.</p>
 <p>Non-Sensitive Data will be used to assist Operators who are searching for potential bidders. Only Operators listed on the
 PICS Facility list will be able to view this Non-Sensitive Data. In other words, even your Non-Sensitive Data is not public

@@ -57,7 +57,7 @@ function updateExpDate() {
 </s:elseif>
 <s:elseif test="contractor.status.active && !contractor.paymentMethodStatusValid && contractor.mustPayB">
 	<div class="info">
-		As an improvement, you may now pay by credit card.  Even though you are providing your credit card information at this time, your card will not be charged until the next billing date.  PICS will email you 7 days prior to renewal before any charges are applied.  If you have questions, contact PICS Accounting any time at (800) 506-7427 x 708.
+		As an improvement, you may now pay by credit card.  Even though you are providing your credit card information at this time, your card will not be charged until the next billing date.  PICS will email you 7 days prior to renewal before any charges are applied.  If you have questions, contact PICS Accounting any time at <s:property value="permissions.picsBillingPhone" />.
 	</div>
 </s:elseif>
 <s:if test="!contractor.paymentMethod.creditCard && contractor.mustPayB">
@@ -94,7 +94,7 @@ function updateExpDate() {
 	</li>
 </s:if>
 <s:if test="contractor.paymentMethodStatusValid && contractor.paymentMethod.creditCard && contractor.mustPayB">
-	<li><div class="info">Your credit card will be kept on file and used for any upgrades or renewals. We will notify the primary user via email 30 days before any charges occur for renewals and 7 days before any charge occurs for upgrades. If you choose to deactivate your account, please call us at 800-506-7427.</div></li>
+	<li><div class="info">Your credit card will be kept on file and used for any upgrades or renewals. We will notify the primary user via email 30 days before any charges occur for renewals and 7 days before any charge occurs for upgrades. If you choose to deactivate your account, please call us at <s:property value="permissions.picsPhone" />.</div></li>
 </s:if>
 <s:if test="contractor.newMembershipAmount > 0">
 	<li>

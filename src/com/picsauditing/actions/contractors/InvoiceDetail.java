@@ -287,7 +287,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 												+ invoice.getId());
 							}
 
-							addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at 1-(800)506-PICS x708.");
+							addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at " + permissions.getPicsBillingPhone() + ".");
 
 							// Assuming Unpaid status per Aaron so that he can
 							// refund or void manually.

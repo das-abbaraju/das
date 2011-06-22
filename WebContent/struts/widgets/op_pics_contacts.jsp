@@ -13,4 +13,4 @@
 	</ul>
 </s:iterator>
 
-<p><label><s:text name="ContactPage.GeneralInquiries"></s:text>:</label> 1-800-506-PICS (7427)</p>
+<p><label><s:text name="ContactPage.GeneralInquiries"></s:text>:</label> <s:property value="permissions.picsPhone" /></p>

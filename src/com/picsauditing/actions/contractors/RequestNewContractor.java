@@ -122,9 +122,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			"The contractor wants to register but keeps delaying", "The company is no longer in business",
 			"We were unable to locate this company" };
 
-	private String picsSignature = "PICS\nP.O. Box 51387\nIrvine CA 92619-1387\nTel: (800)506-7427\n"
-			+ "Fax: (949)269-9153\nhttp://www.picsauditing.com\nemail: info@picsauditing.com "
-			+ "(Please add this email address to your address book to prevent it from being labeled as spam)";
+	private String picsSignature;
 
 	public void prepare() throws Exception {
 		getPermissions();
@@ -162,6 +160,11 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		String[] stateIsos = (String[]) ActionContext.getContext().getParameters().get("state.isoCode");
 		if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
 			state = stateDAO.find(stateIsos[0]);
+		
+		picsSignature = "PICS\nP.O. Box 51387\nIrvine CA 92619-1387\nTel: " + permissions.getPicsPhone() + "\n"
+		+ "Fax: " + permissions.getPicsCustomerServiceFax() + "\nhttp://www.picsauditing.com\nemail: info@picsauditing.com "
+		+ "(Please add this email address to your address book to prevent it from being labeled as spam)";
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -436,7 +439,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				body += "If you have further questions, please feel free to contact your PICS Account Manager "
 						+ am.getName() + ".<br /><br />";
 			body += "Thank you and have a great day!<br />PICS Customer Service Team<br />"
-					+ "1-800-506-7427 x 1  (Toll free in the USA)</p></td></tr></table></body></html>";
+					+ permissions.getPicsCustomerServicePhone() + "</p></td></tr></table></body></html>";
 
 			String email = newContractor.getRequestedByUser() != null ? newContractor.getRequestedByUser().getEmail()
 					: newContractor.getRequestedByUserOther();

@@ -246,8 +246,8 @@ input[type=submit] {
 					<th width="25%">Website</th>
 				</tr>
 				<tr>
-					<td class="center">(800) 506-PICS (7427)</td>
-					<td class="center">(949) 269-9146</td>
+					<td class="center"><s:property value="permissions.picsPhone" /></td>
+					<td class="center"><s:property value="permissions.picsBillingFax" /></td>
 					<td class="center">billing@picsauditing.com</td>
 					<td class="center">www.picsauditing.com</td>
 				</tr>

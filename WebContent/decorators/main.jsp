@@ -220,15 +220,7 @@ function buildAction(type, id){
 <% } %>
 <td id="sidebox">
 	<p>
-	<%
-	String phone = "1-800-506-PICS (7427)";
-	if (permissions.isLoggedIn()) {
-		String countryCode = permissions.getCountry();
-		if (countryCode != null && !countryCode.equals("US") && !countryCode.equals("CA"))
-			phone = "1-949-936-4500";
-	}
-	%>
-		<b class="head-phone"><%=phone%></b>&emsp;&emsp;
+		<b class="head-phone"><%=permissions.getPicsPhone()%></b>&emsp;&emsp;
 	<% if (permissions.isLoggedIn()) { %>
 		<span id="name">
 			<% if (permissions.hasPermission(OpPerms.EditProfile)) { %>

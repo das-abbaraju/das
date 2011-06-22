@@ -482,6 +482,70 @@ public class Strings {
 		return expression.replace("|", "");
 	}
 
+	public static String getPicsPhone(String countryCode) {
+		if (isEmpty(countryCode))
+			return "949-936-4500";
+		
+		// US and CANADA
+		if ("US".equalsIgnoreCase(countryCode) || "CA".equalsIgnoreCase(countryCode))
+			return "800-506-PICS (7427)";
+
+		return "949-936-4500";
+	}
+
+	public static String getPicsFax(String countryCode) {
+		if (isEmpty(countryCode))
+			return "949-269-9177";
+
+		return "949-269-9177";
+	}
+
+	public static String getPicsMainPhone(String countryCode) {
+		if (isEmpty(countryCode))
+			return "949-936-4500";
+		
+		return "949-936-4500";
+	}
+
+	public static String getPicsTollFreePhone(String countryCode) {
+		if (isEmpty(countryCode))
+			return "800-506-PICS (7427)";
+		
+		return "800-506-PICS (7427)";
+	}
+
+	public static String getPicsBillingPhone(String countryCode) {
+		if (isEmpty(countryCode))
+			return "800-506-PICS x708";
+		
+		return "800-506-PICS x708";
+	}
+
+	public static String getPicsBillingFax(String countryCode) {
+		if (isEmpty(countryCode))
+			return "949-269-9146";
+		
+		return "949-269-9146";
+	}
+
+	public static String getPicsCustomerServiceFax(String countryCode) {
+		if (isEmpty(countryCode))
+			return "949-269-9177";
+		
+		return "949-269-9177";
+	}
+
+	public static String getPicsCustomerServicePhone(String countryCode) {
+		if (isEmpty(countryCode))
+			return "949-936-4598";
+		
+		// US and CANADA
+		if ("US".equalsIgnoreCase(countryCode) || "CA".equalsIgnoreCase(countryCode))
+			return "800-506-7427 x1";
+
+		return "949-936-4598";
+	}
+
 	public static Locale parseLocale(String locale) {
 		Locale test = null;
 		String[] loc = locale.split("[_-]");
