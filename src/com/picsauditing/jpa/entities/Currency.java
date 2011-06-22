@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 public enum Currency {
-	USD("USD","$"), CAD("CAD","$"), GBP("GBP","£");
+	USD("USD","$"), CAD("CAD","$"), GBP("GBP","\u00a3");
 
 	private String display;
 	private String icon;
