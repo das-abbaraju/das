@@ -416,12 +416,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			Collections.sort(flagDataList, new ByOrderCategoryLabel());
 
 			for (FlagData flagData2 : flagDataList) {
-				if (!flagData2.getCriteria().isInsurance()) {
-					if (flagDataMap.get(flagData2.getCriteria().getCategory()) == null) {
-						flagDataMap.put(flagData2.getCriteria().getCategory(), new ArrayList<FlagData>());
-					}
-					flagDataMap.get(flagData2.getCriteria().getCategory()).add(flagData2);
+				if (flagDataMap.get(flagData2.getCriteria().getCategory()) == null) {
+					flagDataMap.put(flagData2.getCriteria().getCategory(), new ArrayList<FlagData>());
 				}
+				flagDataMap.get(flagData2.getCriteria().getCategory()).add(flagData2);
 			}
 		}
 		return flagDataMap;
