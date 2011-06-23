@@ -96,8 +96,8 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	public String nextStep() throws Exception {
 		execute();
 
-		if (contractor.getSafetyRisk() == null
-				|| (contractor.isMaterialSupplier() && contractor.getProductRisk() == null)) {
+		if (contractor.getSafetyRisk().equals(LowMedHigh.None)
+				|| (contractor.isMaterialSupplier() && contractor.getProductRisk().equals(LowMedHigh.None))) {
 			boolean requiredQuestions = false;
 			if (answerMap != null) {
 				for (AuditQuestion aq : infoQuestions) {
