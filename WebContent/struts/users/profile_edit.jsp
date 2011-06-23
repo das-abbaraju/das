@@ -114,7 +114,7 @@
 			</li>
 			</s:if>
 			<li>
-				<s:select name="u.timezone" listKey="key" listValue="value" theme="form" list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" />
+				<s:select name="u.timezone" value="u.timezone.iD" theme="form" list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" />
 			</li>
 			<li>
 				<label><s:text name="global.CreationDate" />:</label>

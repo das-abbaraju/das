@@ -1,89 +1,95 @@
 package com.picsauditing.util;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class TimeZoneUtil {
 
-	// 73 timezones, a subset from the java library of 605 timezones. These are organized by displayed offset.
-	public static List<TimeZoneOption> TimeZones = new ArrayList<TimeZoneOption>();
+	/*
+	 * 
+	 */
+	public static Map<String, String> TIME_ZONES;
 
 	static {
-		TimeZones.add(new TimeZoneOption("Etc/GMT+12", "TimeZone.Etc.GMT+12"));
-		TimeZones.add(new TimeZoneOption("Pacific/Samoa", "TimeZone.Pacific.Samoa"));
-		TimeZones.add(new TimeZoneOption("Pacific/Honolulu", "TimeZone.Pacific.Honolulu"));
-		TimeZones.add(new TimeZoneOption("Pacific/Tahiti", "TimeZone.Pacific.Tahiti"));
-		TimeZones.add(new TimeZoneOption("US/Aleutian", "TimeZone.US.Aleutian"));
-		TimeZones.add(new TimeZoneOption("Pacific/Marquesas", "TimeZone.Pacific.Marquesas"));
-		TimeZones.add(new TimeZoneOption("SystemV/YST9", "TimeZone.SystemV.YST9"));
-		TimeZones.add(new TimeZoneOption("US/Alaska", "TimeZone.US.Alaska"));
-		TimeZones.add(new TimeZoneOption("Pacific/Pitcairn", "TimeZone.Pacific.Pitcairn"));
-		TimeZones.add(new TimeZoneOption("US/Pacific", "TimeZone.US.Pacific"));
-		TimeZones.add(new TimeZoneOption("US/Arizona", "TimeZone.US.Arizona"));
-		TimeZones.add(new TimeZoneOption("US/Mountain", "TimeZone.US.Mountain"));
-		TimeZones.add(new TimeZoneOption("Canada/Saskatchewan", "TimeZone.Canada.Saskatchewan"));
-		TimeZones.add(new TimeZoneOption("Pacific/Galapagos", "TimeZone.Pacific.Galapagos"));
-		TimeZones.add(new TimeZoneOption("Pacific/Easter", "TimeZone.Pacific.Easter"));
-		TimeZones.add(new TimeZoneOption("America/Bahia_Banderas", "TimeZone.America.Bahia_Banderas"));
-		TimeZones.add(new TimeZoneOption("US/Central", "TimeZone.US.Central"));
-		TimeZones.add(new TimeZoneOption("America/Port-au-Prince", "TimeZone.America.Port-au-Prince"));
-		TimeZones.add(new TimeZoneOption("US/Eastern", "TimeZone.US.Eastern"));
-		TimeZones.add(new TimeZoneOption("America/Caracas", "TimeZone.America.Caracas"));
-		TimeZones.add(new TimeZoneOption("America/La_Paz", "TimeZone.America.La_Paz"));
-		TimeZones.add(new TimeZoneOption("America/Santiago", "TimeZone.America.Santiago"));
-		TimeZones.add(new TimeZoneOption("Atlantic/Bermuda", "TimeZone.Atlantic.Bermuda"));
-		TimeZones.add(new TimeZoneOption("America/Argentina/Buenos_Aires", "TimeZone.America.Argentina.Buenos_Aires"));
-		TimeZones.add(new TimeZoneOption("America/Sao_Paulo", "TimeZone.America.Sao_Paulo"));
-		TimeZones.add(new TimeZoneOption("Canada/Newfoundland", "TimeZone.Canada.Newfoundland"));
-		TimeZones.add(new TimeZoneOption("America/Godthab", "TimeZone.America.Godthab"));
-		TimeZones.add(new TimeZoneOption("Brazil/DeNoronha", "TimeZone.Brazil.DeNoronha"));
-		TimeZones.add(new TimeZoneOption("Atlantic/Cape_Verde", "TimeZone.Atlantic.Cape_Verde"));
-		TimeZones.add(new TimeZoneOption("Atlantic/Azores", "TimeZone.Atlantic.Azores"));
-		TimeZones.add(new TimeZoneOption("Greenwich", "TimeZone.Greenwich"));
-		TimeZones.add(new TimeZoneOption("Etc/UTC", "TimeZone.Etc.UTC"));
-		TimeZones.add(new TimeZoneOption("Europe/London", "TimeZone.Europe.London"));
-		TimeZones.add(new TimeZoneOption("Africa/Lagos", "TimeZone.Africa.Lagos"));
-		TimeZones.add(new TimeZoneOption("Africa/Windhoek", "TimeZone.Africa.Windhoek"));
-		TimeZones.add(new TimeZoneOption("Europe/Paris", "TimeZone.Europe.Paris"));
-		TimeZones.add(new TimeZoneOption("Africa/Tripoli", "TimeZone.Africa.Tripoli"));
-		TimeZones.add(new TimeZoneOption("Asia/Jerusalem", "TimeZone.Asia.Jerusalem"));
-		TimeZones.add(new TimeZoneOption("Asia/Riyadh", "TimeZone.Asia.Riyadh"));
-		TimeZones.add(new TimeZoneOption("Europe/Moscow", "TimeZone.Europe.Moscow"));
-		TimeZones.add(new TimeZoneOption("Asia/Tehran", "TimeZone.Asia.Tehran"));
-		TimeZones.add(new TimeZoneOption("Asia/Dubai", "TimeZone.Asia.Dubai"));
-		TimeZones.add(new TimeZoneOption("Asia/Tbilisi", "TimeZone.Asia.Tbilisi"));
-		TimeZones.add(new TimeZoneOption("Asia/Kabul", "TimeZone.Asia.Kabul"));
-		TimeZones.add(new TimeZoneOption("Asia/Karachi", "TimeZone.Asia.Karachi"));
-		TimeZones.add(new TimeZoneOption("Asia/Kolkata", "TimeZone.Asia.Kolkata"));
-		TimeZones.add(new TimeZoneOption("Asia/Kathmandu", "TimeZone.Asia.Kathmandu"));
-		TimeZones.add(new TimeZoneOption("Asia/Colombo", "TimeZone.Asia.Colombo"));
-		TimeZones.add(new TimeZoneOption("Asia/Bishkek", "TimeZone.Asia.Bishkek"));
-		TimeZones.add(new TimeZoneOption("Asia/Almaty", "TimeZone.Asia.Almaty"));
-		TimeZones.add(new TimeZoneOption("Asia/Rangoon", "TimeZone.Asia.Rangoon"));
-		TimeZones.add(new TimeZoneOption("Asia/Bangkok", "TimeZone.Asia.Bangkok"));
-		TimeZones.add(new TimeZoneOption("Asia/Hovd", "TimeZone.Asia.Hovd"));
-		TimeZones.add(new TimeZoneOption("Asia/Shanghai", "TimeZone.Asia.Shanghai"));
-		TimeZones.add(new TimeZoneOption("Australia/Eucla", "TimeZone.Australia.Eucla"));
-		TimeZones.add(new TimeZoneOption("Asia/Irkutsk", "TimeZone.Asia.Irkutsk"));
-		TimeZones.add(new TimeZoneOption("Asia/Tokyo", "TimeZone.Asia.Tokyo"));
-		TimeZones.add(new TimeZoneOption("Australia/Darwin", "TimeZone.Australia.Darwin"));
-		TimeZones.add(new TimeZoneOption("Australia/Adelaide", "TimeZone.Australia.Adelaide"));
-		TimeZones.add(new TimeZoneOption("Asia/Yakutsk", "TimeZone.Asia.Yakutsk"));
-		TimeZones.add(new TimeZoneOption("Australia/Brisbane", "TimeZone.Australia.Brisbane"));
-		TimeZones.add(new TimeZoneOption("Australia/Sydney", "TimeZone.Australia.Sydney"));
-		TimeZones.add(new TimeZoneOption("Australia/Lord_Howe", "TimeZone.Australia.Lord_Howe"));
-		TimeZones.add(new TimeZoneOption("Asia/Vladivostok", "TimeZone.Asia.Vladivostok"));
-		TimeZones.add(new TimeZoneOption("Pacific/Pohnpei", "TimeZone.Pacific.Pohnpei"));
-		TimeZones.add(new TimeZoneOption("Pacific/Norfolk", "TimeZone.Pacific.Norfolk"));
-		TimeZones.add(new TimeZoneOption("Asia/Magadan", "TimeZone.Asia.Magadan"));
-		TimeZones.add(new TimeZoneOption("Pacific/Fiji", "TimeZone.Pacific.Fiji"));
-		TimeZones.add(new TimeZoneOption("Pacific/Auckland", "TimeZone.Pacific.Auckland"));
-		TimeZones.add(new TimeZoneOption("Asia/Anadyr", "TimeZone.Asia.Anadyr"));
-		TimeZones.add(new TimeZoneOption("Pacific/Chatham", "TimeZone.Pacific.Chatham"));
-		TimeZones.add(new TimeZoneOption("Pacific/Tongatapu", "TimeZone.Pacific.Tongatapu"));
-		TimeZones.add(new TimeZoneOption("Pacific/Kiritimati", "TimeZone.Pacific.Kiritimati"));
+		Map<String, String> timeZones = new LinkedHashMap<String, String>();
+		timeZones.put("Etc/GMT+12", "TimeZone.Etc.GMT+12");
+		timeZones.put("Pacific/Samoa", "TimeZone.Pacific.Samoa");
+		timeZones.put("Pacific/Honolulu", "TimeZone.Pacific.Honolulu");
+		timeZones.put("Pacific/Tahiti", "TimeZone.Pacific.Tahiti");
+		timeZones.put("US/Aleutian", "TimeZone.US.Aleutian");
+		timeZones.put("Pacific/Marquesas", "TimeZone.Pacific.Marquesas");
+		timeZones.put("SystemV/YST9", "TimeZone.SystemV.YST9");
+		timeZones.put("US/Alaska", "TimeZone.US.Alaska");
+		timeZones.put("Pacific/Pitcairn", "TimeZone.Pacific.Pitcairn");
+		timeZones.put("US/Pacific", "TimeZone.US.Pacific");
+		timeZones.put("US/Arizona", "TimeZone.US.Arizona");
+		timeZones.put("US/Mountain", "TimeZone.US.Mountain");
+		timeZones.put("Canada/Saskatchewan", "TimeZone.Canada.Saskatchewan");
+		timeZones.put("Pacific/Galapagos", "TimeZone.Pacific.Galapagos");
+		timeZones.put("Pacific/Easter", "TimeZone.Pacific.Easter");
+		timeZones.put("America/Bahia_Banderas", "TimeZone.America.Bahia_Banderas");
+		timeZones.put("US/Central", "TimeZone.US.Central");
+		timeZones.put("America/Port-au-Prince", "TimeZone.America.Port-au-Prince");
+		timeZones.put("US/Eastern", "TimeZone.US.Eastern");
+		timeZones.put("America/Caracas", "TimeZone.America.Caracas");
+		timeZones.put("America/La_Paz", "TimeZone.America.La_Paz");
+		timeZones.put("America/Santiago", "TimeZone.America.Santiago");
+		timeZones.put("Atlantic/Bermuda", "TimeZone.Atlantic.Bermuda");
+		timeZones.put("America/Argentina/Buenos_Aires", "TimeZone.America.Argentina.Buenos_Aires");
+		timeZones.put("America/Sao_Paulo", "TimeZone.America.Sao_Paulo");
+		timeZones.put("Canada/Newfoundland", "TimeZone.Canada.Newfoundland");
+		timeZones.put("America/Godthab", "TimeZone.America.Godthab");
+		timeZones.put("Brazil/DeNoronha", "TimeZone.Brazil.DeNoronha");
+		timeZones.put("Atlantic/Cape_Verde", "TimeZone.Atlantic.Cape_Verde");
+		timeZones.put("Atlantic/Azores", "TimeZone.Atlantic.Azores");
+		timeZones.put("Greenwich", "TimeZone.Greenwich");
+		timeZones.put("Etc/UTC", "TimeZone.Etc.UTC");
+		timeZones.put("Europe/London", "TimeZone.Europe.London");
+		timeZones.put("Africa/Lagos", "TimeZone.Africa.Lagos");
+		timeZones.put("Africa/Windhoek", "TimeZone.Africa.Windhoek");
+		timeZones.put("Europe/Paris", "TimeZone.Europe.Paris");
+		timeZones.put("Africa/Tripoli", "TimeZone.Africa.Tripoli");
+		timeZones.put("Asia/Jerusalem", "TimeZone.Asia.Jerusalem");
+		timeZones.put("Asia/Riyadh", "TimeZone.Asia.Riyadh");
+		timeZones.put("Europe/Moscow", "TimeZone.Europe.Moscow");
+		timeZones.put("Asia/Tehran", "TimeZone.Asia.Tehran");
+		timeZones.put("Asia/Dubai", "TimeZone.Asia.Dubai");
+		timeZones.put("Asia/Tbilisi", "TimeZone.Asia.Tbilisi");
+		timeZones.put("Asia/Kabul", "TimeZone.Asia.Kabul");
+		timeZones.put("Asia/Karachi", "TimeZone.Asia.Karachi");
+		timeZones.put("Asia/Kolkata", "TimeZone.Asia.Kolkata");
+		timeZones.put("Asia/Kathmandu", "TimeZone.Asia.Kathmandu");
+		timeZones.put("Asia/Colombo", "TimeZone.Asia.Colombo");
+		timeZones.put("Asia/Bishkek", "TimeZone.Asia.Bishkek");
+		timeZones.put("Asia/Almaty", "TimeZone.Asia.Almaty");
+		timeZones.put("Asia/Rangoon", "TimeZone.Asia.Rangoon");
+		timeZones.put("Asia/Bangkok", "TimeZone.Asia.Bangkok");
+		timeZones.put("Asia/Hovd", "TimeZone.Asia.Hovd");
+		timeZones.put("Asia/Shanghai", "TimeZone.Asia.Shanghai");
+		timeZones.put("Australia/Eucla", "TimeZone.Australia.Eucla");
+		timeZones.put("Asia/Irkutsk", "TimeZone.Asia.Irkutsk");
+		timeZones.put("Asia/Tokyo", "TimeZone.Asia.Tokyo");
+		timeZones.put("Australia/Darwin", "TimeZone.Australia.Darwin");
+		timeZones.put("Australia/Adelaide", "TimeZone.Australia.Adelaide");
+		timeZones.put("Asia/Yakutsk", "TimeZone.Asia.Yakutsk");
+		timeZones.put("Australia/Brisbane", "TimeZone.Australia.Brisbane");
+		timeZones.put("Australia/Sydney", "TimeZone.Australia.Sydney");
+		timeZones.put("Australia/Lord_Howe", "TimeZone.Australia.Lord_Howe");
+		timeZones.put("Asia/Vladivostok", "TimeZone.Asia.Vladivostok");
+		timeZones.put("Pacific/Pohnpei", "TimeZone.Pacific.Pohnpei");
+		timeZones.put("Pacific/Norfolk", "TimeZone.Pacific.Norfolk");
+		timeZones.put("Asia/Magadan", "TimeZone.Asia.Magadan");
+		timeZones.put("Pacific/Fiji", "TimeZone.Pacific.Fiji");
+		timeZones.put("Pacific/Auckland", "TimeZone.Pacific.Auckland");
+		timeZones.put("Asia/Anadyr", "TimeZone.Asia.Anadyr");
+		timeZones.put("Pacific/Chatham", "TimeZone.Pacific.Chatham");
+		timeZones.put("Pacific/Tongatapu", "TimeZone.Pacific.Tongatapu");
+		timeZones.put("Pacific/Kiritimati", "TimeZone.Pacific.Kiritimati");
+
+		TIME_ZONES = Collections.unmodifiableMap(timeZones);
 	}
 
 	static public int getOffset(TimeZone tz, Date today) {
@@ -92,20 +98,6 @@ public class TimeZoneUtil {
 			rawOffset += (60 * 60 * 1000);
 		}
 		return rawOffset;
-	}
-
-	static public List<TimeZoneOption> getTimeZoneSelector() {
-		return TimeZones;
-	}
-
-	static public class TimeZoneOption {
-		public String key;
-		public String value;
-
-		public TimeZoneOption(String tzShort, String tzLong) {
-			this.key = tzShort;
-			this.value = tzLong;
-		}
 	}
 
 }
