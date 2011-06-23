@@ -43,7 +43,6 @@ public class AuditPercentCalculator {
 	@Autowired
 	protected ContractorAuditOperatorDAO caoDAO;
 
-
 	/**
 	 * Calculate the percent complete for all questions in this category
 	 * 
@@ -239,10 +238,11 @@ public class AuditPercentCalculator {
 						applies = builder.isCategoryApplicable(data.getCategory(), cao);
 					}
 				}
-				
-				if (conAudit.getAuditType().getId() == AuditType.WELCOME)
+
+				if (conAudit.getAuditType().getId() == AuditType.WELCOME
+						|| conAudit.getAuditType().getId() == AuditType.IMPORT_PQF)
 					applies = true;
-				
+
 				if (applies) {
 					required += data.getNumRequired();
 					answered += data.getRequiredCompleted();
