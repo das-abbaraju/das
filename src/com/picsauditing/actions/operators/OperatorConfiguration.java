@@ -71,16 +71,16 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 	public OperatorConfiguration(OperatorAccountDAO operatorDao) {
 		super(operatorDao);
+		subHeading = "Operator Configuration";
 	}
 
 	public void prepare() throws Exception {
 		findOperator();
-		subHeading = "Operator Configuration";
 	}
 
 	@SuppressWarnings("unchecked")
 	// Same as AuditOperator
-	@RequiredPermission(value=OpPerms.ManageOperators, type=OpType.Edit)
+	@RequiredPermission(value = OpPerms.ManageOperators, type = OpType.Edit)
 	public String execute() throws Exception {
 		if (button != null) {
 			if ("Clear".equals(button)) {
@@ -93,19 +93,8 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				return SUCCESS;
 			}
 
-			if (corpID > 0) {
-				if ("Add".equals(button)) {
-					OperatorAccount corp = operatorDao.find(corpID);
-					if (corp != null) {
-						Facility facility = new Facility();
-						facility.setCorporate(corp);
-						facility.setOperator(operator);
-						facility.setAuditColumns(permissions);
-						facilitiesDAO.save(facility);
-					}
-				}
-
-				if ("Remove".equals(button)) {
+			if ("Remove".equals(button)) {
+				if (corpID > 0) {
 					// Remove facility
 					Facility corp = facilitiesDAO.findByCorpOp(corpID, operator.getId());
 					facilitiesDAO.remove(corp);
@@ -263,6 +252,23 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 		return SUCCESS;
 	}
 
+	public String addParentAccount() throws Exception {
+		if (corpID > 0) {
+			OperatorAccount corp = operatorDao.find(corpID);
+			if (corp != null) {
+				Facility facility = new Facility();
+				facility.setCorporate(corp);
+				facility.setOperator(operator);
+				facility.setAuditColumns(permissions);
+				facilitiesDAO.save(facility);
+			}
+		} else {
+			addActionError("Missing parent account ID");
+		}
+
+		return SUCCESS;
+	}
+
 	public List<OperatorAccount> getAllParents() {
 		if (allParents == null) {
 			allParents = new ArrayList<OperatorAccount>();
@@ -285,8 +291,9 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 	public List<OperatorAccount> getOtherCorporates() {
 		if (otherCorporates == null) {
-			otherCorporates = operatorDao.findWhere(true, "a.id NOT IN ("
-					+ Strings.implode(operator.getOperatorHeirarchy()) + ") AND a.type = 'Corporate' AND a.id >= 14");
+			otherCorporates = operatorDao.findWhere(true,
+					"a.id NOT IN (" + Strings.implode(operator.getOperatorHeirarchy())
+							+ ") AND a.type = 'Corporate' AND a.id >= 14");
 		}
 
 		return otherCorporates;

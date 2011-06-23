@@ -36,7 +36,7 @@
 				<s:hidden value="Add Cat" name="button" />
 				<s:select list="otherCategories" headerKey="0" headerValue="- Include Another Category -" 
 					listKey="id" listValue="name" name="catID" />
-				<s:submit cssClass="add_rule" value="Add Category" />
+				<s:submit cssClass="add_rule picsbutton" value="Add Category" />
 			</div>
 		</li>
 	</s:if>

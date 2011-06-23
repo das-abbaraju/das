@@ -39,7 +39,7 @@
 				<s:hidden value="Add Audit" name="button" /> 
 				<s:select list="otherAudits" 
 					listKey="id" listValue="name" name="auditTypeID" />
-				<s:submit cssClass="add_rule" value="Add Audit" />
+				<s:submit cssClass="add_rule picsbutton" value="Add Audit" />
 			</div>
 		</li>
 	</s:if>

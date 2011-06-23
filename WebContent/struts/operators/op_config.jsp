@@ -142,10 +142,9 @@ function hideCat(id) {
 		<s:if test="permissions.isCanAddRuleForOperator(operator)">
 			<li><s:form id="includeNewParent">
 					<s:hidden value="%{operator.id}" name="id" />
-					<s:hidden value="Add" name="button" />
 					<s:select list="otherCorporates" listValue="name" listKey="id" name="corpID" 
-						headerValue="- Add Parent Account -" headerKey="0"
-						onchange="$('#includeNewParent').submit();" />
+						headerValue="- Select Parent Account -" headerKey="0" />
+					<s:submit method="addParentAccount" value="Add Parent Account" cssClass="picsbutton" />
 				</s:form>
 			</li>
 		</s:if>
