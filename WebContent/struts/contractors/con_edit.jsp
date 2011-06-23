@@ -100,6 +100,10 @@ $(function() {
 							<s:textfield name="contractor.zip" size="7" />
 						</li>
 					</s:if>
+					<li>
+						<s:select name="contractor.timezone" value="contractor.timezone.iD" theme="form"  
+							list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" />
+					</li>
 					<s:if test="contractor.demo">
 					<li><label><s:text name="%{scope}.PrimaryAddress.DefaultLanguage"/>:</label>
 						<s:select name="contractor.locale" listValue="displayName"

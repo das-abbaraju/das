@@ -250,8 +250,8 @@ div.autocomplete ul li {
 					name="user.locale" listValue="displayName"></s:select>
 				</li>
 				</s:if>
-				<li>
-					<s:select name="user.timezone" value="user.timezone.iD" list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" theme="form"></s:select>
+				<li><s:select name="user.timezone" value="user.timezone.iD" theme="form" 
+					list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES"></s:select>
 				</li>
 				<s:if test="user.account.id != 1100">
 				<li><label>&nbsp;Primary Contact:</label>

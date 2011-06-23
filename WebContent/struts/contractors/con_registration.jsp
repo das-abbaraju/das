@@ -191,8 +191,8 @@ $(function(){
 				<s:textfield name="contractor.zip" theme="formhelp" size="10" />
 			</li>
 			<li class="required">
-				<s:select name="contractor.timezone" id="timezone" listKey="key" listValue="value" theme="formhelp" 
-				    list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" />
+				<s:select name="contractor.timezone" id="timezone" value="contractor.timezone.iD" theme="form" 
+					list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" />
 			</li>
 		</ol>
 	</fieldset>

@@ -232,6 +232,10 @@ function checkFee(activationFee, oldValue) {
 				<s:textfield name="operator.zip" size="7" />
 			</li>
 		</s:if>
+		<li>
+			<s:select name="operator.timezone" value="operator.timezone.iD" theme="form" 
+				list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" />
+		</li>
 		<li><label>Main Phone:</label><s:textfield name="operator.phone" /></li>
 		<li><label>Main Fax:</label><s:textfield name="operator.fax" /></li>
 		<li><label>Web URL:</label> <s:textfield name="operator.webUrl"

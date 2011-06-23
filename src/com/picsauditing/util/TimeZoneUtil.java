@@ -1,10 +1,8 @@
 package com.picsauditing.util;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TimeZone;
 
 public class TimeZoneUtil {
 
@@ -91,13 +89,4 @@ public class TimeZoneUtil {
 
 		TIME_ZONES = Collections.unmodifiableMap(timeZones);
 	}
-
-	static public int getOffset(TimeZone tz, Date today) {
-		int rawOffset = tz.getRawOffset();
-		if (tz.inDaylightTime(today)) {
-			rawOffset += (60 * 60 * 1000);
-		}
-		return rawOffset;
-	}
-
 }
