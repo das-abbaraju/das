@@ -81,6 +81,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	protected UserDAO userDAO;
 	protected UserAccessDAO userAccessDAO;
 	protected UserGroupDAO userGroupDAO;
+	
+	Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
 	public UsersManage(AccountDAO accountDAO, OperatorAccountDAO operatorDao, UserDAO userDAO,
 			UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO) {
@@ -179,7 +181,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	public String save() throws Exception {
 		checkPermissions();
-
+		
 		// Lazy init fix for isOk method
 		user.getGroups().size();
 		if (!isOK()) {
@@ -267,10 +269,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 					// We need both now to remove data from the useraccess
 					// database
 					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() > 1) {
-						user.getOwnedPermissions().remove(
-								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin));
-						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin))
-								.getId());
+						removeUserAccess(OpPerms.ContractorAdmin);
 					} else {
 						addActionError("You must have at least one user with the "
 								+ OpPerms.ContractorAdmin.getDescription() + " permission");
@@ -284,10 +283,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			} else {
 				if (!conBilling) {
 					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorBilling).size() > 1) {
-						user.getOwnedPermissions().remove(
-								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling));
-						userAccessDAO.remove((userAccessDAO
-								.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling)).getId());
+						removeUserAccess(OpPerms.ContractorBilling);
 					} else {
 						addActionError("You must have at least one user with the "
 								+ OpPerms.ContractorBilling.getDescription() + " permission");
@@ -302,11 +298,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			} else {
 				if (!conSafety) {
 					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorSafety).size() > 1) {
-						user.getOwnedPermissions().remove(
-								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety));
-						userAccessDAO
-								.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety))
-										.getId());
+						removeUserAccess(OpPerms.ContractorSafety);
 					} else {
 						addActionError("You must have at least one user with the "
 								+ OpPerms.ContractorSafety.getDescription() + " permission");
@@ -320,10 +312,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			} else {
 				if (!conInsurance) {
 					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorInsurance).size() > 1) {
-						user.getOwnedPermissions().remove(
-								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorInsurance));
-						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(),
-								OpPerms.ContractorInsurance)).getId());
+						removeUserAccess(OpPerms.ContractorInsurance);
 					} else {
 						addActionError("You must have at least one user with the "
 								+ OpPerms.ContractorInsurance.getDescription() + " permission");
@@ -379,6 +368,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			addActionError("That Username is already in use.  Please select another.");
 		} catch (DataIntegrityViolationException e) {
 			addActionError("That Username is already in use.  Please select another.");
+		} finally {
+			for (UserAccess userAccess : accessToBeRemoved) {
+				userAccessDAO.remove(userAccess);
+			}
 		}
 
 		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
@@ -846,5 +839,16 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	public void setNewUser(boolean newUser) {
 		this.newUser = newUser;
+	}
+	
+	public void removeUserAccess(OpPerms perm) {
+		Iterator<UserAccess> permissions = user.getOwnedPermissions().iterator();
+		while (permissions.hasNext()) {
+			UserAccess ua = permissions.next();
+			if (ua.getOpPerm() == perm) {
+				permissions.remove();
+				accessToBeRemoved.add(ua);
+			}
+		}
 	}
 }
