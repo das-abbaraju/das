@@ -718,7 +718,7 @@ public class ContractorAudit extends BaseTable {
 			} else {
 				if (auditCatData.isApplies()) {
 					if (permissions.isOperatorCorporate()) {
-						if (requiredCategories.contains(auditCatData.getCategory()))
+						if (requiredCategories == null || requiredCategories.contains(auditCatData.getCategory()))
 							add = true;
 					} else
 						add = true;

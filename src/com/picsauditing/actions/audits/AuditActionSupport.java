@@ -24,6 +24,7 @@ import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
@@ -73,6 +74,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected ContractorAuditOperatorWorkflowDAO caowDAO;
 	@Autowired
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
+	@Autowired
+	private AuditDecisionTableDAO auditRuleDAO;
 
 	private Map<Integer, AuditData> hasManual;
 	protected Map<AuditCategory, AuditCatData> categories = null;
@@ -127,7 +130,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public Map<AuditCategory, AuditCatData> getCategories(ContractorAudit conAudit, boolean reload) {
 		if (categories == null || reload) {
 			Set<AuditCategory> requiredCategories = null;
-			if (permissions.isOperatorCorporate()) {
+			if (permissions.isOperatorCorporate() && !conAudit.getAuditType().isDesktop()) {
+				auditCategoryRuleCache.initialize(auditRuleDAO);
 				AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 
 				Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
