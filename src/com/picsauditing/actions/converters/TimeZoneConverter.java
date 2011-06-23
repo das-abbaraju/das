@@ -24,7 +24,7 @@ public class TimeZoneConverter extends StrutsTypeConverter {
 
 	@Override
 	public String convertToString(Map context, Object o) {
-		return String.valueOf(o);
+		return ((TimeZone) o).getID();
 	}
 
 }
