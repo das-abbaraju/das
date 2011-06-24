@@ -794,36 +794,6 @@ div.helpbox {
 	width: auto;
 }
 
-#notify {
-    background-color: #FBF2C9;
-    font-size: 14px;
-    margin-left: 20%;
-    position: absolute;
-    text-align: center;
-    width: 60%;
-}
-
-#notify .notification {
-    padding: 2px 0px;
-}
-
-#notify .notification .processing {
-    background-image: url(../images/spinner.gif);
-    background-repeat: no-repeat;
-    padding-left: 22px;
-}
-#notify .notification .sticky {
-    background-image: url(../images/cross.png);
-    background-repeat: no-repeat;
-    margin-left: 5px;
-    padding-left: 22px;
-    cursor: pointer;
-}
-
-#notify .notification:last-child {
-    border-bottom: 1px solid #D0AE10;
-}
-
 td.money,th.money {
 	text-align: right;
 }
