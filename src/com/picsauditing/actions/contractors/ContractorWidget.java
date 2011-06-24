@@ -93,7 +93,7 @@ public class ContractorWidget extends ContractorActionSupport {
 			}
 
 			if (permissions.hasPermission(OpPerms.ContractorAdmin) || permissions.isAdmin()) {
-				if (contractor.getUsers().size() == 1
+				if (contractor.getUsers().size() == 1 && !contractor.getSoleProprietor()
 						&& DateBean.getDateDifference(contractor.getCreationDate()) > -180) {
 					openTasks.add(getText("ContractorWidget.message.RequiresTwoUsers"));
 				}
