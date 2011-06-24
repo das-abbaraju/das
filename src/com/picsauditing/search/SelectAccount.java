@@ -87,8 +87,9 @@ public class SelectAccount extends SelectSQL {
 	public void addAuditQuestion(int questionID, int auditTypeID, boolean require) {
 		String name = "ca" + questionID;
 		this.addJoin("LEFT JOIN contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
-				+ ".auditTypeID = " + auditTypeID + " AND " + name
-				+ ".expiresDate > NOW()");
+				+ ".auditTypeID = " + auditTypeID + " AND (" + name
+				+ ".expiresDate IS NULL OR " + name
+				+ ".expiresDate > NOW())");
 
 		String join = "";
 		if (!require)

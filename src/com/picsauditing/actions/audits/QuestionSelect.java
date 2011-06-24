@@ -50,17 +50,17 @@ public class QuestionSelect extends PicsActionSupport {
 				operatorIDs.addAll(permissions.getCorporateParent());
 
 			String auditCatRules = "WHERE include = 0 AND effectiveDate < NOW() AND expirationDate > NOW() "
-					+ "AND (operatorAccount.id IN (" + Strings.implode(operatorIDs, ",") + ")"
-					+ " AND auditCategory.id in (t.id))";
+					+ "AND ((opID IS NULL OR opID IN (" + Strings.implode(operatorIDs, ",") + "))"
+					+ " AND catID in (t.id))";
 
 			String auditTypeRules = "WHERE include = 1 AND effectiveDate < NOW() AND expirationDate > NOW() "
-					+ "AND (operatorAccount IS NULL OR operatorAccount.id IN (" + Strings.implode(operatorIDs, ",")
+					+ "AND (opID IS NULL OR opID IN (" + Strings.implode(operatorIDs, ",")
 					+ "))";
-			String categoryClause = "SELECT auditCategory FROM AuditCategoryRule r " + auditCatRules;
-			String auditTypeClause = "SELECT auditType FROM AuditTypeRule r " + auditTypeRules;
+			String categoryClause = "SELECT catID FROM audit_category_rule r " + auditCatRules;
+			String auditTypeClause = "SELECT auditTypeID FROM audit_type_rule r " + auditTypeRules;
 
-			where += " AND t.category NOT IN (" + categoryClause + ")";
-			where += " AND t.category.auditType IN (" + auditTypeClause + ")";
+			where += " AND t.categoryID NOT IN (" + categoryClause + ")";
+			where += " AND (SELECT auditTypeID " + " FROM audit_category ac " + " WHERE t.categoryID = ac.id) IN (" + auditTypeClause + ")";
 		}
 
 		List<AuditQuestion> questionList = auditQuestionDAO.findByTranslatableField(AuditQuestion.class, where, "name",
