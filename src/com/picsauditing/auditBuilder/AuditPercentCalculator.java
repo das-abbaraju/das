@@ -242,7 +242,13 @@ public class AuditPercentCalculator {
 				if (conAudit.getAuditType().getId() == AuditType.WELCOME
 						|| conAudit.getAuditType().getId() == AuditType.IMPORT_PQF)
 					applies = true;
-
+				
+				// for manual audits already submitted, add the category if any answered
+				if (!applies && conAudit.getAuditType().isDesktop() 
+						&& cao.getStatus().after(AuditStatus.Incomplete) 
+						&& data.getRequiredCompleted() > 0)
+					applies = true;
+				
 				if (applies) {
 					required += data.getNumRequired();
 					answered += data.getRequiredCompleted();
