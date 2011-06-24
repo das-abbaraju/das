@@ -1120,11 +1120,6 @@ public class ContractorAccount extends Account implements JSONable {
 				return "Reactivation";
 		}
 
-		if (daysUntilRenewal < 0)
-			return "Renewal Overdue";
-		if (daysUntilRenewal < 45)
-			return "Renewal";
-
 		// if any membership levels differ, amount is an upgrade
 		boolean upgrade = false;
 		boolean currentListOrBidOnly = false;
@@ -1143,6 +1138,11 @@ public class ContractorAccount extends Account implements JSONable {
 			else
 				return "Upgrade";
 		}
+
+		if (daysUntilRenewal < 0)
+			return "Renewal Overdue";
+		if (daysUntilRenewal < 45)
+			return "Renewal";
 
 		if (hasPastDueInvoice())
 			return "Past Due";
