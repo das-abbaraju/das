@@ -3,6 +3,8 @@ package com.picsauditing.actions.report;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
@@ -30,18 +32,15 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	protected User auditor = null;
 	protected User origAuditor = null;
 
+	@Autowired
 	protected ContractorAuditDAO dao = null;
+	@Autowired
 	protected UserDAO userDao = null;
+	@Autowired
 	protected EmailBuilder emailBuilder;
 
 	protected Date origScheduledDate = null;
 	protected String origLocation = null;
-
-	public AuditAssignmentUpdate(ContractorAuditDAO dao, UserDAO userDao, EmailBuilder emailBuilder) {
-		this.dao = dao;
-		this.userDao = userDao;
-		this.emailBuilder = emailBuilder;
-	}
 
 	@Override
 	public void prepare() throws Exception {
@@ -58,9 +57,6 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		if (auditor.getId() == 0) {
 			return SUCCESS;
 		}
@@ -78,10 +74,11 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		}
 		contractorAudit.setAssignedDate(new Date());
 		contractorAudit.setAuditor(auditor);
-		boolean pendingManualAudit = contractorAudit.getAuditType().isDesktop()
-				&& contractorAudit.hasCaoStatus(AuditStatus.Pending);
-		// Don't automatically assign a closing auditor to a pending Manual Audit
-		if (!pendingManualAudit)
+		// Don't automatically assign a closing auditor to a (new) pending Manual Audit unless it all ready has a
+		// closing auditor
+		boolean newManualAudit = contractorAudit.getAuditType().isDesktop()
+				&& contractorAudit.hasCaoStatus(AuditStatus.Pending) && contractorAudit.getClosingAuditor() == null;
+		if (!newManualAudit)
 			contractorAudit.setClosingAuditor(new User(contractorAudit.getIndependentClosingAuditor(auditor)));
 
 		if (permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit))
