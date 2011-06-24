@@ -88,6 +88,7 @@ div.autocomplete ul li {
 		<br />
 		<div class="filterOption">
 		<h4><s:text name="%{scope}.Type" />:</h4>
+		<s:hidden name="accountId" value="%{accountId}" />
 		<s:radio name="isGroup"
 			list="#{'Yes':'Groups', 'No':'Users', '':'Both'}" value="isGroup" />
 		</div>
