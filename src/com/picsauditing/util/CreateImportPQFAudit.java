@@ -11,6 +11,7 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -20,7 +21,10 @@ import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class CreateImportPQFAudit extends ContractorActionSupport {
@@ -136,6 +140,9 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 
 				auditBuilder.buildAudits(contractor);
 				auditPercentCalculator.percentCalculateComplete(importAudit);
+
+				addNote(contractor, "Import PQF audit and import fee created.", NoteCategory.Audits,
+						LowMedHigh.Med, true, Account.EVERYONE, new User(permissions.getUserId()));
 			}
 
 			contractor.setCompetitorMembership(true);
