@@ -234,21 +234,20 @@ public class AuditPercentCalculator {
 				if (data.isOverride())
 					applies = data.isApplies();
 				else {
-					if (data.isApplies() && auditCategories.contains(data.getCategory())) {
-						applies = builder.isCategoryApplicable(data.getCategory(), cao);
+					if (data.isApplies()) {
+						if (conAudit.getAuditType().isDesktop() && cao.getStatus().after(AuditStatus.Incomplete))
+							applies = true;
+						else if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF)
+							// Import PQF and Welcome Call don't have any operators, so just always assume the
+							// categories apply
+							applies = true;
+						else if (conAudit.getAuditType().getId() == AuditType.WELCOME)
+							applies = true;
+						else
+							applies = builder.isCategoryApplicable(data.getCategory(), cao);
 					}
 				}
 
-				if (conAudit.getAuditType().getId() == AuditType.WELCOME
-						|| conAudit.getAuditType().getId() == AuditType.IMPORT_PQF)
-					applies = true;
-				
-				// for manual audits already submitted, add the category if any answered
-				if (!applies && conAudit.getAuditType().isDesktop() 
-						&& cao.getStatus().after(AuditStatus.Incomplete) 
-						&& data.getRequiredCompleted() > 0)
-					applies = true;
-				
 				if (applies) {
 					required += data.getNumRequired();
 					answered += data.getRequiredCompleted();
