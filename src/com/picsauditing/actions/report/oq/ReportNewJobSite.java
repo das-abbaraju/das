@@ -235,7 +235,8 @@ public class ReportNewJobSite extends ReportActionSupport implements Preparable 
 		sql.addWhere("js.active = 1");
 		sql.addWhere("js.projectStop IS NULL OR js.projectStop > NOW()");
 		sql.addWhere("js.id NOT IN (SELECT jobID FROM job_contractor WHERE conID = " + account.getId() + ")");
-		sql.addWhere("o.status IN ('Active'" + (permissions.isAdmin() ? ", 'Demo'" : "") + ")");
+		sql.addWhere("o.status IN ('Active'"
+				+ (permissions.isAdmin() || permissions.getAccountStatus().isDemo() ? ", 'Demo'" : "") + ")");
 
 		sql.addOrderBy("js.projectStart");
 
