@@ -257,9 +257,11 @@ function loadStatus(caoID){
 	<div id="fieldsHead" style="width: 95%; margin-left: auto; margin-right:auto;">
 		<fieldset>
 		<ul>
+		<s:if test="!permissions.contractor">
 			<li><label><s:text name="global.id" />:</label>
 				 <s:property value="conAudit.id" />
 			</li>
+		</s:if>	
 			<s:if test="conAudit.auditType.scoreable">
 				<li><label><s:text name="Audit.message.Score" />:</label>
 					<s:if test="conAudit.auditType.classType.im">
