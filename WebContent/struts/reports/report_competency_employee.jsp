@@ -41,7 +41,7 @@ function orderBy(orderBy) {
 		<s:iterator value="data" status="stat" id="data">
 			<tr>
 				<td><a href="ContractorView.action?id=<s:property value="#data.get('accountID')"/>"><s:property value="#data.get('name')" /></a></td>
-				<td><a href="EmployeeDetail.action?employee.id=<s:property value="#data.get('employeeID')"/>"><s:property value="#data.get('lastName')" />, <s:property value="#data.get('firstName')" /></a></td>
+				<td><a href="EmployeeDetail.action?employee=<s:property value="#data.get('employeeID')"/>"><s:property value="#data.get('lastName')" />, <s:property value="#data.get('firstName')" /></a></td>
 				<td><s:property value="get('title')"/></td>
 				<td><s:property value="get('roles')"/></td>
 				<td class="right"><s:property value="#data.get('skilled')" /> / <s:property value="#data.get('required')" /></td>

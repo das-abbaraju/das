@@ -26,7 +26,7 @@
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><a href="EmployeeDetail.action?employee.id=<s:property value="get('employeeID')" />">
+			<td><a href="EmployeeDetail.action?employee=<s:property value="get('employeeID')" />">
 				<s:property value="get('firstName')" /> <s:property value="get('lastName')" /></a></td>
 			<td>
 				<s:if test="get('type') == 'Contractor' && (permissions.admin || canViewContractor(get('id')))">

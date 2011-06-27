@@ -27,7 +27,7 @@ $(function() {
 </s:if>
 <s:form id="employeeForm">
 	<s:hidden name="id"/>
-	<s:hidden name="employee.id"/>
+	<s:hidden name="employee" />
 	<s:if test="!selectRolesSites">
 		<fieldset class="form">
 			<h2 class="formLegend"><s:text name="%{scope}.header.EmployeeDetails" /></h2>
@@ -158,28 +158,72 @@ $(function() {
 		</div>
 		<s:if test="employee.account.requiresOQ">
 			<div id="employee_nccer">
-				<fieldset class="form">
-					<h2 class="formLegend"><s:text name="%{scope}.label.EmployeeNCCERUpload" /></h2>
-					<ol>
-						<li>
-							<s:text name="%{scope}.label.EmployeeNCCERUploadText" /><br />
-							<br /><a href="#" id="employee_nccer_link" class="add"><s:text name="%{scope}.link.EmployeeNCCERUpload" /></a>
-						</li>
-					</ol>
-				</fieldset>
+				<s:if test="nccerResults.size > 0">
+					<fieldset class="form">
+						<h2 class="formLegend"><s:text name="EmployeeDetail.label.NCCERAssessmentData" /></h2>
+						<ol>
+							<li>
+								<table class="report">
+									<thead>
+										<tr>
+											<th>Qualification Type</th>
+											<th>Qualification Method</th>
+											<th>More Information</th>
+										</tr>
+									</thead>
+									<tbody>
+										<s:iterator value="nccerResults">
+											<tr>
+												<td><s:property value="assessmentTest.qualificationType" /></td>
+												<td><s:property value="assessmentTest.qualificationMethod" /></td>
+												<td>
+													<a href="#" rel="#cluetip_<s:property value="id" />" class="cluetip help" 
+														title="<s:property value="assessmentTest.qualificationType" /> - <s:property value="assessmentTest.qualificationMethod" />"></a>
+													<div id="cluetip_<s:property value="id" />">
+														<s:property value="assessmentTest.description" /><br />
+														Effective Date: <s:date name="effectiveDate" /><br />
+														Expiration Date: <s:date name="expirationDate" />
+													</div>
+												</td>
+											</tr>
+										</s:iterator>
+									</tbody>
+								</table>
+							</li>
+							<li>
+								<s:text name="%{scope}.label.EmployeeNCCERUploadMore" /><br />
+								<a href="#" id="employee_nccer_link" class="add"><s:text name="%{scope}.link.EmployeeNCCERUpload" /></a>
+							</li>
+						</ol>
+					</fieldset>
+				</s:if>
+				<s:else>
+					<fieldset class="form">
+						<h2 class="formLegend"><s:text name="%{scope}.label.EmployeeNCCERUpload" /></h2>
+						<ol>
+							<li>
+								<a href="#" id="employee_nccer_link" class="add"><s:text name="%{scope}.link.EmployeeNCCERUpload" /></a>
+								<div id="nccerUploadFieldhelp">
+									<h3><s:text name="%{scope}.label.EmployeeNCCERUpload" /></h3>
+									<s:text name="%{scope}.label.EmployeeNCCERUploadText" />
+								</div>
+							</li>
+						</ol>
+					</fieldset>
+				</s:else>
 			</div>
 		</s:if>
 	</s:if>
 	<s:if test="!selectRolesSites">
 		<fieldset class="form submit">
 			<s:if test="auditID > 0 && employee.id == 0"><s:hidden name="button" value="Continue" /></s:if>
-			<s:submit action="ManageEmployees!save" cssClass="picsbutton positive" value="%{auditID > 0 && employee.id == 0 ? getText('button.Continue') : getText('button.Save')}" />
-			<s:submit action="ManageEmployees!delete" cssClass="picsbutton negative" onclick="return confirm('%{getText(scope + '.confirm.DeleteEmployee')}');" value="%{getText('button.Delete')}" />
+			<s:submit method="save" cssClass="picsbutton positive" value="%{auditID > 0 && employee.id == 0 ? getText('button.Continue') : getText('button.Save')}" />
+			<s:submit method="delete" cssClass="picsbutton negative" id="deleteEmployee" value="%{getText('button.Delete')}" />
 		</fieldset>
 	</s:if>
 	<s:else>
 		<fieldset class="form submit" style="text-align: center;">
-			<a href="ManageEmployees.action?employee.id=<s:property value="employee.id" />" class="picsbutton"><s:text name="%{scope}.message.ViewComplete" /></a>
+			<a href="ManageEmployees.action?employee=<s:property value="employee.id" />" class="picsbutton"><s:text name="%{scope}.message.ViewComplete" /></a>
 		</fieldset>
 	</s:else>
 </s:form>

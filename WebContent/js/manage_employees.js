@@ -26,31 +26,36 @@ function startup() {
 			return nRow;
 		}
 	});
-	
+
 	$(window).bind('hashchange', function() {
 		loadEmployee(getEmployeeIDFromHash());
 	});
-	
+
 	$('#addExcel').click(function(e) {
 		e.preventDefault();
 		showExcelUpload();
 	});
-	
+
 	$('a.loadEmployee').click(function() {
 		$('#employees tr.highlight').removeClass('highlight');
 		// Put highlight class on the clicked row
 		$(this).parent().parent().addClass('highlight');
 	});
-	
+
 	if (getEmployeeIDFromHash() > 0)
 		employeeID = getEmployeeIDFromHash();
 
 	if (employeeID > 0)
 		loadEmployee(employeeID);
-	
-	$('#employeeForm').delegate('#employee_nccer_link', 'click', function(e) {
+
+	$('#employeeFormDiv').delegate('#employee_nccer_link', 'click', function(e) {
 		e.preventDefault();
 		showNCCERUpload();
+	});
+	
+	$('#employeeFormDiv').delegate('#deleteEmployee', 'click', function(e) {
+		e.preventDefault();
+		return confirm(translation_confirmDelete);
 	});
 }
 
@@ -67,7 +72,7 @@ function setupEmployee() {
 		local : true,
 		clickThrough : false
 	});
-	
+
 	setupDatepicker();
 }
 
@@ -86,7 +91,7 @@ function setupDatepicker() {
 }
 
 function loadEmployee(id) {
-	$('#employeeForm').load('ManageEmployees!loadAjax.action', {
+	$('#employeeFormDiv').load('ManageEmployees!loadAjax.action', {
 		'employee' : id
 	}, function() {
 		setupEmployee();
@@ -118,7 +123,7 @@ function addJobSite(selection) {
 		'employee' : employeeID,
 		'op.id' : id,
 		'op.name' : name[0]
-	}, function () {
+	}, function() {
 		setupDatepicker();
 	});
 }
@@ -165,11 +170,9 @@ function newJobSite() {
 		div : 'thinking_sites',
 		message : translation_ajaxLoad
 	})
-	$('#employee_site').load(
-			'ManageEmployees!newSiteAjax.action?'
-					+ $('#newJobSiteForm input').serialize(), {
-				'employee' : employeeID
-			});
+	$('#employee_site').load('ManageEmployees!newSiteAjax.action?' + $('#newJobSiteForm input').serialize(), {
+		'employee' : employeeID
+	});
 }
 
 function editAssignedSites(id) {
@@ -214,7 +217,7 @@ function getEmployeeIDFromHash() {
 function showNCCERUpload() {
 	url = 'EmployeeNCCERUpload.action?employee=' + employeeID;
 	title = translation_uploadEmployees;
-	pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
+	pars = 'scrollbars=yes,resizable=yes,width=650,height=500,toolbar=0,directories=0,menubar=0';
 	fileUpload = window.open(url, title, pars);
 	fileUpload.focus();
 }

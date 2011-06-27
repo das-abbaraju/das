@@ -23,7 +23,12 @@ function closePage() {
 		<div id="content">
 			<h1>Upload NCCER Assessments</h1>
 			<s:include value="../actionMessages.jsp" />
-			<a href="resources/NCCERAssessmentTests.xls">Please fill out both the effective dates and expiration dates on this form.</a>
+			<div class="info">
+				Click on the link below to get a spreadsheet of NCCER assessment tests.
+				For all tests that your employee has taken, please fill out the effective date as well as how many
+				months the assessment is effective. 
+			</div>
+			<a href="resources/NCCERAssessmentTests.xls">NCCER Assessment Tests</a>
 			<br /><br />
 			<div>
 			<s:form enctype="multipart/form-data" method="POST">

@@ -20,15 +20,24 @@
 		<tr>
 			<th>Company</th>
 			<th>Project</th>
-			<th>Employees</th>
+			<th>Qualified Employees</th>
+			<th>Total Employees</th>
 		</tr>
 	</thead>
 	<tbody>
 		<s:iterator value="data">
 			<tr>
-				<td><s:property value="get('name')" /></td>
+				<td>
+					<s:if test="get('isContractor') == 1">
+						<a href="ContractorView.action?id=<s:property value="get('accountID')" />"><s:property value="get('name')" /></a>
+					</s:if>
+					<s:else>
+						<s:property value="get('name')" />
+					</s:else>
+				</td>
 				<td><s:property value="get('jsName')" /></td>
 				<td class="right"><a href="ReportOQEmployees.action?filter.accountName=<s:property value="get('accountID')" />&filter.projects=<s:property value="get('jsID')" />"><s:property value="get('employeeCount')" /></a></td>
+				<td class="right"><s:property value="get('employeeTotals')" /></td>
 			</tr>
 		</s:iterator>
 	</tbody>

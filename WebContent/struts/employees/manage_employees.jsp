@@ -39,6 +39,7 @@ var translation_removeRole = '<s:text name="%{scope}.confirm.RemoveRole" />';
 var translation_removeProject = '<s:text name="%{scope}.confirm.RemoveProject" />';
 var translation_uploadPhoto = '<s:text name="%{scope}.message.UploadPhoto" />';
 var translation_uploadEmployees = '<s:text name="%{scope}.message.UploadEmployees" />';
+var translation_confirmDelete = '<s:text name="%{scope}.confirm.DeleteEmployee" />';
 
 $(function() {
 	startup();
@@ -103,7 +104,7 @@ function showExcelUpload() {
 				<td style="width: 20px;"></td>
 			</s:if>
 			<td style="vertical-align:top;">
-				<div id="employeeForm">
+				<div id="employeeFormDiv">
 					<s:if test="employee != null && employee.id == 0">
 						<s:include value="manage_employees_form.jsp" />
 						<script type="text/javascript">setupEmployee();</script>

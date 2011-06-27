@@ -362,7 +362,7 @@
 						<div class="panel_placeholder">
 							<div class="panel">
 								<div class="panel_header">
-									NCCER Assessment Data
+									<s:text name="%{scope}.label.NCCERAssessmentData" />
 								</div>
 								<div class="panel_content">
 									<s:iterator value="nccerData">

@@ -214,14 +214,10 @@ public class EmployeeDetail extends AccountActionSupport {
 
 	public List<AssessmentResult> getNccerData() {
 		if (nccerData == null) {
-			nccerData = assessmentResultDAO.findByEmployee(employee.getId());
+			nccerData = new ArrayList<AssessmentResult>(employee.getAssessmentResults());
+			
 			Iterator<AssessmentResult> iterator = nccerData.iterator();
-
 			while (iterator.hasNext()) {
-				AssessmentResult result = iterator.next();
-				if (result.getAssessmentTest().getAssessmentCenter().getId() != 11069
-						|| result.getAssessmentTest().getId() < 12)
-					iterator.remove();
 			}
 		}
 

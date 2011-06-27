@@ -33,7 +33,7 @@
 						<s:property value="get('name')" />
 					</s:else>
 				</td>
-				<td><a href="EmployeeDetail.action?employee.id=<s:property value="get('employeeID')" />"><s:property value="get('lastName')" />, <s:property value="get('firstName')" /></a></td>
+				<td><a href="EmployeeDetail.action?employee=<s:property value="get('employeeID')" />"><s:property value="get('lastName')" />, <s:property value="get('firstName')" /></a></td>
 				<td><s:property value="get('centerName')" /></td>
 				<td><s:property value="get('test')" /></td>
 				<td class="center"><s:property value="get('inEffect')" /></td>

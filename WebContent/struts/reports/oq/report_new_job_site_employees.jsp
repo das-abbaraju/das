@@ -16,7 +16,7 @@
 			<s:iterator value="employees" status="stat">
 				<tr>
 					<td class="right"><s:property value="#stat.count" /></td>
-					<td><a href="EmployeeDetail.action?employee.id=<s:property value="id" />"><s:property value="lastName" />, <s:property value="firstName" /></a></td>
+					<td><a href="EmployeeDetail.action?employee=<s:property value="id" />"><s:property value="lastName" />, <s:property value="firstName" /></a></td>
 					<td class="center"><a href="#" onclick="return removeEmployee(<s:property value="jobSite.id" />, <s:property value="id" />);" class="remove"></a></td>
 				</tr>
 			</s:iterator>
@@ -50,7 +50,7 @@
 			<s:iterator value="prevEmployees" status="stat">
 				<tr>
 					<td class="right"><s:property value="#stat.count" /></td>
-					<td><a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />"><s:property value="employee.lastName" />, <s:property value="employee.firstName" /></a></td>
+					<td><a href="EmployeeDetail.action?employee=<s:property value="employee.id" />"><s:property value="employee.lastName" />, <s:property value="employee.firstName" /></a></td>
 					<td><s:date name="expirationDate" format="M/d/yyyy" /></td>
 				</tr>
 			</s:iterator>

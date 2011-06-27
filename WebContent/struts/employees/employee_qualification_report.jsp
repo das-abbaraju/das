@@ -30,6 +30,9 @@ function orderBy(orderBy) {
 		<a href="#" onclick="download('ReportOQEmployees'); return false;" target="_blank" class="excel">Download</a>
 	</div>
 	<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
+	<s:if test="jobSiteTasks.keySet().size == 0">
+		<div class="alert">You are currently not associated with any projects. Please <a href="ReportNewProjects.action">click here</a> to find new OQ projects.</div>
+	</s:if>
 	<table class="report">
 		<thead>
 			<tr>
@@ -61,7 +64,7 @@ Span of Control = <s:property value="#jst.controlSpan" />">
 		<tbody>
 			<s:iterator value="employees" id="e">
 				<tr>
-					<td><a href="EmployeeDetail.action?employee.id=<s:property value="#e.id" />"><s:property
+					<td><a href="EmployeeDetail.action?employee=<s:property value="#e.id" />"><s:property
 						value="#e.lastName" />, <s:property value="#e.firstName" /></a></td>
 					<s:if test="!permissions.contractor">
 						<td>
@@ -80,9 +83,24 @@ Span of Control = <s:property value="#jst.controlSpan" />">
 								<td class="center">
 									<s:if test="map.get(#e, #jst) != null">
 										<s:if test="map.get(#e, #jst) == true">
-											<img alt="Qualified" src="images/okCheck.gif" title="<s:iterator value="results.get(#jst.task, #e)" var="ar"><s:property value="#ar.assessmentTest.assessmentCenter.name" />: <s:property value="#ar.assessmentTest.qualificationMethod" /> <s:property value="#ar.assessmentTest.qualificationType" /> - <s:property value="#ar.assessmentTest.description" />, <s:date name="#ar.effectiveDate" format="M/d/yyyy" /> - <s:date name="#ar.expirationDate" format="M/d/yyyy" />
-
-</s:iterator>">
+											<a href="#" class="cluetip" 
+												rel="#cluetip_<s:property value="#jst.id" />_<s:property value="#e.id" />"
+												title="<s:property value="#e.displayName" /> - <s:property value="#jst.task.name" />">
+												<img alt="Qualified" src="images/okCheck.gif">
+											</a>
+											<div id="cluetip_<s:property value="#jst.id" />_<s:property value="#e.id" />">
+												<s:iterator value="results.get(#jst.task, #e)" var="ar" status="step">
+													<s:property value="#ar.assessmentTest.assessmentCenter.name" />:
+													<s:property value="#ar.assessmentTest.qualificationMethod" />
+													<s:property value="#ar.assessmentTest.qualificationType" /> -
+													<s:property value="#ar.assessmentTest.description" />,
+													<s:date name="#ar.effectiveDate" format="M/d/yyyy" /> -
+													<s:date name="#ar.expirationDate" format="M/d/yyyy" />
+													<s:if test="!#step.last">
+														<br /><br />
+													</s:if>
+												</s:iterator>
+											</div>
 										</s:if>
 										<s:else>
 											<img alt="Expired" src="images/notOkCheck.gif">

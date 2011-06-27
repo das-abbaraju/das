@@ -26,6 +26,7 @@ import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AssessmentResult;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -73,6 +74,7 @@ public class ManageEmployees extends AccountActionSupport {
 	protected Set<JobRole> unusedJobRoles;
 	protected List<OperatorSite> oqOperators;
 	protected List<OperatorSite> hseOperators;
+	protected List<AssessmentResult> nccerResults;
 
 	private OperatorAccount op;
 	private EmployeeSite esSite = new EmployeeSite();
@@ -342,10 +344,17 @@ public class ManageEmployees extends AccountActionSupport {
 		if (permissions.isContractor()) {
 			permissions.tryPermission(OpPerms.ContractorAdmin);
 		} else {
-			permissions.tryPermission(OpPerms.ManageEmployees);
+			if (permissions.isOperatorCorporate()) {
+				id = permissions.getAccountId();
 
-			if (account != null && permissions.getAccountId() != account.getId())
-				permissions.tryPermission(OpPerms.AllOperators);
+				if (employee != null && permissions.getVisibleAccounts().contains(employee.getAccount().getId()))
+					id = employee.getAccount().getId();
+			} else {
+				permissions.tryPermission(OpPerms.ManageEmployees);
+
+				if (account != null && permissions.getAccountId() != account.getId())
+					permissions.tryPermission(OpPerms.AllOperators);
+			}
 		}
 
 		if (id > 0)
@@ -643,6 +652,24 @@ public class ManageEmployees extends AccountActionSupport {
 		return a;
 	}
 
+	public List<AssessmentResult> getNccerResults() {
+		if (nccerResults == null && employee != null) {
+			nccerResults = new ArrayList<AssessmentResult>(employee.getAssessmentResults());
+
+			Iterator<AssessmentResult> iterator = nccerResults.iterator();
+			while (iterator.hasNext()) {
+				AssessmentResult result = iterator.next();
+
+				if (!result.isCurrent() || result.getAssessmentTest().getAssessmentCenter().getId() != Account.ASSESSMENT_NCCER
+						&& result.getAssessmentTest().getQualificationMethod().contains("-old"))
+					iterator.remove();
+			}
+		}
+
+		return nccerResults;
+	}
+
+	// Notes
 	protected void addNote(String newNote) {
 		addNote(newNote, LowMedHigh.Low);
 	}
@@ -652,6 +679,7 @@ public class ManageEmployees extends AccountActionSupport {
 		super.addNote(account, newNote, noteCategory, priority, true, Account.EVERYONE, user, employee);
 	}
 
+	// Classes
 	public class OperatorSite implements Comparable<OperatorSite> {
 
 		private OperatorAccount operator;

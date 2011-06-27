@@ -41,8 +41,8 @@ $('input.ssn').mask('SSS-SS-SSSS');
 	<tbody>
 		<s:iterator value="data" status="stat" id="data">
 			<tr>
-				<td><a href="EmployeeDetail.action?employee.id=<s:property value="#data.get('id')"/>"><s:property value="#data.get('firstName')" /></a></td>
-				<td><a href="EmployeeDetail.action?employee.id=<s:property value="#data.get('id')"/>"><s:property value="#data.get('lastName')" /></a></td>
+				<td><a href="EmployeeDetail.action?employee=<s:property value="#data.get('id')"/>"><s:property value="#data.get('firstName')" /></a></td>
+				<td><a href="EmployeeDetail.action?employee=<s:property value="#data.get('id')"/>"><s:property value="#data.get('lastName')" /></a></td>
 				<td><a href="ContractorView.action?id=<s:property value="#data.get('accountID')"/>"><s:property value="#data.get('name')" /></a></td>
 				<td><s:property value="#data.get('label')" /></td>
 				<td><s:property value="#data.get('skilledValue')"/></td>

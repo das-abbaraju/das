@@ -25,12 +25,9 @@ public class ReportEmployee extends ReportActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		buildQuery();
 		run(sql);
-		
+
 		if (download || "download".equals(button))
 			return getDownload();
 
@@ -46,7 +43,20 @@ public class ReportEmployee extends ReportActionSupport {
 		sql.addField("e.firstName");
 		sql.addField("e.lastName");
 		sql.addField("e.title");
-		
+
+		if (permissions.isOperator())
+			sql.addWhere(String.format("a.id IN (SELECT subID FROM generalcontractors WHERE genID = %d) OR a.id = %d",
+					permissions.getAccountId(), permissions.getAccountId()));
+		if (permissions.isCorporate()) {
+			String where = "a.id IN (SELECT gc.subID FROM generalcontractors gc "
+					+ "JOIN facilities f ON f.opID = gc.genID AND f.corporateID = %d) OR a.id = %d "
+					+ "OR a.id IN (SELECT opID FROM facilities WHERE corporateID = %d)";
+
+			where.replaceAll("%d", permissions.getAccountIdString());
+
+			sql.addWhere(where);
+		}
+
 		addFilterToSQL();
 	}
 
@@ -79,13 +89,13 @@ public class ReportEmployee extends ReportActionSupport {
 		if (f.isLimitEmployees() && f.isShowLimitEmployees())
 			sql.addWhere("a.id = " + permissions.getAccountId());
 	}
-	
+
 	protected void addExcelColumns() {
 		excelSheet.setData(data);
-		
+
 		if (permissions.isOperatorCorporate())
 			excelSheet.addColumn(new ExcelColumn("name", "Company Name"));
-		
+
 		excelSheet.addColumn(new ExcelColumn("firstName", "Employee First Name"));
 		excelSheet.addColumn(new ExcelColumn("lastName", "Employee Last Name"));
 	}
@@ -93,15 +103,15 @@ public class ReportEmployee extends ReportActionSupport {
 	public ReportFilterEmployee getFilter() {
 		return filter;
 	}
-	
+
 	protected String getDownload() throws Exception {
 		addExcelColumns();
-		
+
 		if (Strings.isEmpty(filename)) {
 			String className = this.getClass().getName();
 			filename = className.substring(className.lastIndexOf(".") + 1);
 		}
-		
+
 		HSSFWorkbook wb = buildWorkbook(filename);
 
 		filename += ".xls";
@@ -113,7 +123,7 @@ public class ReportEmployee extends ReportActionSupport {
 		ServletActionContext.getResponse().flushBuffer();
 		return null;
 	}
-	
+
 	protected HSSFWorkbook buildWorkbook(String filename) throws Exception {
 		excelSheet.setName(filename);
 		return excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
