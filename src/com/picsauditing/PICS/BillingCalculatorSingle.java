@@ -32,6 +32,7 @@ import com.picsauditing.util.Strings;
 public class BillingCalculatorSingle {
 
 	public static final Date CONTRACT_RENEWAL_BASF = DateBean.parseDate("2012-01-01");
+	public static final Date SUNCOR_DISCOUNT_EXPIRATION = DateBean.parseDate("2011-12-01");
 
 	static public void setPayingFacilities(ContractorAccount contractor) {
 
@@ -76,6 +77,7 @@ public class BillingCalculatorSingle {
 		boolean employeeAudits = false;
 		boolean oq = false;
 		boolean hseCompetency = false;
+		boolean cor = false;
 
 		AuditTypeRuleCache ruleCache = (AuditTypeRuleCache) com.picsauditing.util.SpringUtils
 				.getBean("AuditTypeRuleCache");
@@ -96,11 +98,15 @@ public class BillingCalculatorSingle {
 				employeeAudits = true;
 			if (auditType.getId() == AuditType.HSE_COMPETENCY)
 				hseCompetency = true;
+			if (auditType.getId() == AuditType.COR)
+				cor = true;
 		}
 
 		for (ContractorOperator co : contractor.getOperators()) {
 			if (co.getOperatorAccount().isRequiresOQ())
 				oq = true;
+			if (!auditGUARD && cor && co.getOperatorAccount().isDescendantOf(OperatorAccount.SuncorEnergyServices))
+				auditGUARD = true;
 		}
 
 		if (auditGUARD) {
@@ -319,6 +325,56 @@ public class BillingCalculatorSingle {
 			invoiceItem.setDescription("5% Goods & Services Tax");
 			items.add(invoiceItem);
 		}
+
+		List<InvoiceItem> discounts = new ArrayList<InvoiceItem>();
+		// Calculating discounts
+		for (InvoiceItem item : items) {
+			// Suncor First Year Registration
+			if (item.getInvoiceFee().getFeeClass().equals(FeeClass.AuditGUARD)
+					&& contractor.getRequestedBy().isDescendantOf(OperatorAccount.SuncorEnergyServices)
+					&& Boolean.TRUE.equals(contractor.getHasCanadianCompetitor())
+					&& new Date().before(SUNCOR_DISCOUNT_EXPIRATION)) {
+				InvoiceFee suncorDiscount = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.SuncorDiscount, contractor
+						.getPayingFacilities());
+				InvoiceItem invoiceItem = new InvoiceItem();
+				invoiceItem.setInvoiceFee(suncorDiscount);
+
+				// Registration date by June 30: Discount $200
+				// Registration date by July 31: Discount $180
+				// Registration date by Aug 31: Discount $160
+				// Registration date by Sept 30: Discount $140
+				// Registration date by Oct 31: Discount $120
+				// Registration date by Nov 30: Discount $100
+
+				// Calculating discount based off the day of invoice creation
+				BigDecimal discountAmount = BigDecimal.ZERO;
+				Date today = new Date();
+
+				if (today.before(DateBean.parseDate("2011-07-01")))
+					discountAmount = discountAmount.add(new BigDecimal(-200));
+				else if (today.after(DateBean.parseDate("2011-07-01"))
+						&& today.before(DateBean.parseDate("2011-08-01")))
+					discountAmount = discountAmount.add(new BigDecimal(-180));
+				else if (today.after(DateBean.parseDate("2011-08-01"))
+						&& today.before(DateBean.parseDate("2011-09-01")))
+					discountAmount = discountAmount.add(new BigDecimal(-160));
+				else if (today.after(DateBean.parseDate("2011-09-01"))
+						&& today.before(DateBean.parseDate("2011-10-01")))
+					discountAmount = discountAmount.add(new BigDecimal(-140));
+				else if (today.after(DateBean.parseDate("2011-10-01"))
+						&& today.before(DateBean.parseDate("2011-11-01")))
+					discountAmount = discountAmount.add(new BigDecimal(-120));
+				else if (today.after(DateBean.parseDate("2011-11-01"))
+						&& today.before(DateBean.parseDate("2011-12-01")))
+					discountAmount = discountAmount.add(new BigDecimal(-100));
+
+				invoiceItem.setAmount(discountAmount);
+				invoiceItem.setDescription("Suncor Early Registration Discount");
+				discounts.add(invoiceItem);
+			}
+		}
+		
+		items.addAll(discounts);
 
 		return items;
 	}

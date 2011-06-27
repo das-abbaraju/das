@@ -86,6 +86,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Webcam webcam;
 	private boolean soleProprietor;
 	private Boolean competitorMembership;
+	private Boolean hasCanadianCompetitor;
 	private AccountLevel accountLevel = AccountLevel.Full;
 
 	private Date paymentExpires;
@@ -1315,6 +1316,14 @@ public class ContractorAccount extends Account implements JSONable {
 		return competitorMembership;
 	}
 
+	public void setHasCanadianCompetitor(Boolean hasCanadianCompetitor) {
+		this.hasCanadianCompetitor = hasCanadianCompetitor;
+	}
+
+	public Boolean getHasCanadianCompetitor() {
+		return hasCanadianCompetitor;
+	}
+
 	@Enumerated(EnumType.STRING)
 	public AccountLevel getAccountLevel() {
 		return accountLevel;
@@ -1358,5 +1367,12 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		return currentTotal;
+	}
+	
+	@Transient
+	public boolean isNeedsToIndicateCompetitor() {
+		return getRequestedBy() != null && getRequestedBy().isDescendantOf(OperatorAccount.SuncorEnergyServices)
+				&& (getCompetitorMembership() == null || getCompetitorMembership().booleanValue() == true)
+				&& getHasCanadianCompetitor() == null;
 	}
 }

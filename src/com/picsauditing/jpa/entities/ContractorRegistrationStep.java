@@ -21,7 +21,7 @@ public enum ContractorRegistrationStep {
 			return Risk;
 		if (contractor.isMaterialSupplier() && contractor.getProductRisk().equals(LowMedHigh.None))
 			return Risk;
-		if (!containsOperator(contractor.getOperators()))
+		if (!containsOperator(contractor.getOperators()) || contractor.isNeedsToIndicateCompetitor())
 			return Facilities;
 		if (!contractor.isHasFreeMembership() && !contractor.isPaymentMethodStatusValid())
 			return Payment;

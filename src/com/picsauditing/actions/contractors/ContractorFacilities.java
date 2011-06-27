@@ -52,6 +52,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 	private String msg = null;
 
 	private ContractorType type = null;
+	public Boolean competitorAnswer;
 
 	public ContractorFacilities(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			OperatorAccountDAO operatorDao, FacilityChanger facilityChanger, ContractorOperatorDAO contractorOperatorDAO) {
@@ -92,7 +93,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 			// add in tags
 			String ids = crr.getOperatorTags();
-			if (ids == null) ids = "";
+			if (ids == null)
+				ids = "";
 			StringTokenizer st = new StringTokenizer(ids, ", ");
 			while (st.hasMoreElements()) {
 				int tagId = Integer.parseInt(st.nextToken());
@@ -107,7 +109,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 					accountDao.save(contractor);
 				}
 			}
-			
+
 			BillingCalculatorSingle.calculateAnnualFees(contractor);
 			contractor.syncBalance();
 
@@ -129,6 +131,10 @@ public class ContractorFacilities extends ContractorActionSupport {
 		if (button != null) {
 			boolean recalculate = false;
 
+			if(button.equals("setCompetitorAnswer")){
+				contractor.setHasCanadianCompetitor(competitorAnswer);
+				accountDao.save(contractor);
+			}
 			if (button.equals("search")) {
 				if ((!Strings.isEmpty(operator.getName()) || !Strings.isEmpty(state))) {
 					String where = "";
@@ -326,7 +332,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 					}
 					accountDao.save(contractor);
 				}
-				return SUCCESS;
+				json.put("needsToIndicateCompetitor", contractor.isNeedsToIndicateCompetitor());
+				return JSON;
 			}
 
 			if (button.equals("SwitchToTrialAccount")) {
@@ -359,6 +366,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 					facilityChanger.setType(type);
 					contractor.setRenew(true);
 					facilityChanger.add();
+					if(contractor.getNonCorporateOperators().size() == 1)
+						contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 					BillingCalculatorSingle.calculateAnnualFees(contractor);
 					contractor.syncBalance();
 					recalculate = true;
@@ -367,11 +376,18 @@ public class ContractorFacilities extends ContractorActionSupport {
 					addActionError("The service you have selected for this operator doesn't match what "
 							+ "you selected for your company. Please choose another option.");
 				}
+				json.put("needsToIndicateCompetitor", contractor.isNeedsToIndicateCompetitor());
 			}
 
 			if (button.equals("removeOperator")) {
 				facilityChanger.remove();
+				if (contractor.getNonCorporateOperators().size() == 0)
+					contractor.setRequestedBy(null);
+				else if(contractor.getNonCorporateOperators().size() == 1)
+					contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 				recalculate = true;
+				json.put("needsToIndicateCompetitor", contractor.isNeedsToIndicateCompetitor());
+				json.put("numberOfFacilities", contractor.getNonCorporateOperators().size());
 			}
 
 			if (recalculate) {
@@ -380,6 +396,9 @@ public class ContractorFacilities extends ContractorActionSupport {
 				contractor.syncBalance();
 				accountDao.save(contractor);
 			}
+
+			if ("removeOperator".equals(button) || "addOperator".equals(button))
+				return JSON;
 		}
 
 		currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
@@ -453,6 +472,14 @@ public class ContractorFacilities extends ContractorActionSupport {
 		this.type = type;
 	}
 
+	public Boolean getCompetitorAnswer() {
+		return competitorAnswer;
+	}
+
+	public void setCompetitorAnswer(Boolean competitorAnswer) {
+		this.competitorAnswer = competitorAnswer;
+	}
+
 	public boolean isTrialContractor() {
 		// Enforcing that bid only contractors should not be associated with an
 		// operator which does not accept bid only
@@ -481,12 +508,27 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 		return count;
 	}
-	
+
 	@Override
 	public ContractorRegistrationStep getNextRegistrationStep() {
-		if (contractor.getOperators().size() > 0)
+		if (contractor.isNeedsToIndicateCompetitor())
+			return null;
+
+		if (contractor.getNonCorporateOperators().size() > 0)
 			return ContractorRegistrationStep.values()[ContractorRegistrationStep.Facilities.ordinal() + 1];
 
 		return null;
+	}
+
+	@Override
+	public String nextStep() throws Exception {
+		findContractor();
+		if (contractor.isNeedsToIndicateCompetitor()) {
+			redirect(ContractorRegistrationStep.Facilities.getUrl(contractor.getId()));
+			return SUCCESS;
+		} else {
+			redirect(getNextRegistrationStep().getUrl(contractor.getId()));
+			return SUCCESS;
+		}
 	}
 }

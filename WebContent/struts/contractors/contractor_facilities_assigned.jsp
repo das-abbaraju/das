@@ -1,6 +1,15 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-
+<s:if test="contractor.needsToIndicateCompetitor">
+	<div class="info"><p><strong>Are you a member of CanQual or ComplyWorks?</strong></p>
+		<span>
+			<a href="#" class="picsbutton positive"
+				onclick="javascript: return setCanadianCompetitorAnswer(<s:property value="contractor.id"/>,true);">Yes</a>
+			<a href="#" class="picsbutton negative"
+				onclick="javascript: return setCanadianCompetitorAnswer(<s:property value="contractor.id"/>,false);">No</a>
+		</span>
+	</div>
+</s:if>
 <s:if test="currentOperators.size() == 0">
 	<div class="alert" style="width: 80%;">This account is not linked to any operators. Use the search tool to the right to find all of the facilities at which <s:property value="contractor.name"/> works or will work. 
 	<br/>

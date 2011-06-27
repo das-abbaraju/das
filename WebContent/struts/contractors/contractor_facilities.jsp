@@ -51,7 +51,7 @@
 		var r = true;
 		
 		// Validating listed contractor and operator
-		var validationData = {id: conId, button: 'validateBidOnly', 'operator.id': opId};
+		var validationData = {id: conId, button: 'validateBidOnly', 'operator': opId};
 		$.ajax({
 			url: 'ContractorFacilityAjax.action', 
 			data: validationData,
@@ -68,39 +68,47 @@
 			return;
 
 		startThinking( {div: 'thinkingDiv', message: 'Linking contractor and operator' } );
-		var data= {id: conId, button: 'addOperator', 'operator.id': opId, type: $('#results_' + opId + ' input[name="type"]:checked').val()};
+		var data= {id: conId, button: 'addOperator', 'operator': opId, type: $('#results_' + opId + ' input[name="type"]:checked').val()};
 		$.ajax({
 			url: 'ContractorFacilityAjax.action', 
 			data: data, 
-			complete: function() {
+			dataType: "json",
+			success: function(result) {
 				stopThinking( {div: 'thinkingDiv' } );
 				reloadOperators( conId );
 				$('#facilitySearch .clearable').val('');
 				runSearch();
 				refreshNoteCategory(conId, 'OperatorChanges');
-				$('#next_button').show();
+				if(result.needsToIndicateCompetitor)
+					$('#next_button').hide();
+				else
+					$('#next_button').show();
 			}
 		});
 		return false;
 	}
 	function removeOperator( conId, opId ) {
 		startThinking( {div: 'thinkingDiv', message: 'Unlinking contractor and operator' } );
-		var data= {id: conId, button: 'removeOperator', 'operator.id': opId};
+		var data= {id: conId, button: 'removeOperator', 'operator': opId};
 		$.ajax({
 			url: 'ContractorFacilityAjax.action',
 			data: data, 
-			complete: function() {
+			dataType: "json",
+			success: function(result) {
 				stopThinking( {div: 'thinkingDiv' } );
 				$('#operator_' + opId).fadeOut();
 				$('#facilitySearch .clearable').val('');
 				runSearch();
 				reloadOperators( conId );
 				refreshNoteCategory(conId, 'OperatorChanges');
+				if(result.needsToIndicateCompetitor)
+					$('#next_button').hide();
+				else if(result.numberOfFacilities > 0)
+					$('#next_button').show();
+				else
+					$('#next_button').hide();
 			}
 		});
-		<s:if test="currentOperators.size() == 0">
-		$('#next_button').hide();
-		</s:if>
 		return false;
 	}
 	function reloadOperators( conId ) {
@@ -114,18 +122,21 @@
 	}
 	function setRequestedBy( conId, opId) {
 		startThinking( {div: 'thinkingDiv', message: 'Saving Requested Operator Account' } );
-		var data= {id: conId, button: 'request', 'operator.id': opId};
+		var data= {id: conId, button: 'request', 'operator': opId};
 		$.ajax({
 			url: 'ContractorFacilityAjax.action', 
 			data: data, 
-			complete: function() {
+			dataType: "json",
+			success: function(result) {
 				stopThinking( {div: 'thinkingDiv' } );
-				$('#next_button').show('slow');
 				reloadOperators( conId );
 				refreshNoteCategory(conId, 'OperatorChanges');
-			}
+				if(result.needsToIndicateCompetitor)
+					$('#next_button').hide();
+				else
+					$('#next_button').show();			
+				}
 		});
-		return false;
 	}
 
 	function changeToTrialAccount(conId) {
@@ -145,6 +156,22 @@
 				runSearch();
 			}
 		});
+		return false;
+	}
+	
+	function setCanadianCompetitorAnswer(conId,answer) {
+		startThinking( {div: 'thinkingDiv', message: 'Setting answer' } );
+		var data= {id: conId, button: 'setCompetitorAnswer', competitorAnswer: answer};
+		$.ajax({
+			url: 'ContractorFacilityAjax.action', 
+			data: data, 
+			complete: function() {
+				stopThinking( {div: 'thinkingDiv' } );
+				reloadOperators( conId );
+				runSearch();
+			}
+		});
+		$('#next_button').show();
 		return false;
 	}
 </script>

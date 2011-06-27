@@ -8,6 +8,10 @@ where a.status = 'Deactivated' and c.renew = 1 and a.updateDate > '2011-06-01';
 update contractor_info set productRisk=0 where productRisk is NULL;
 update contractor_info set safetyRisk=0 where safetyRisk is NULL;
 --
+-- PICS-2667
+insert into invoice_fee (`id`, `fee`, `defaultAmount`, `visible`, `feeClass`, `minFacilities`, `maxFacilities`, `qbFullName`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`, `displayOrder`) 
+values(342,'Suncor Early Registration Discount',0.00,1,'SuncorDiscount',1,10000,'SUNCORDISCOUNT',20952,20952,NOW(),NOW(),'43');
+--
 -- PICS-2480
 update accounts a
 set timezone = (
