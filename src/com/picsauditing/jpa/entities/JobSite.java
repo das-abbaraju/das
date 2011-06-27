@@ -28,6 +28,7 @@ public class JobSite extends BaseTable implements Comparable<JobSite> {
 	private Date projectStop;
 	
 	private List<JobSiteTask> tasks = new ArrayList<JobSiteTask>();
+	private List<JobContractor> contractors = new ArrayList<JobContractor>();
 
 	@ManyToOne
 	@JoinColumn(name = "opID", nullable = false, updatable = false)
@@ -109,6 +110,15 @@ public class JobSite extends BaseTable implements Comparable<JobSite> {
 		this.tasks = tasks;
 	}
 	
+	@OneToMany(mappedBy = "job")
+	public List<JobContractor> getContractors() {
+		return contractors;
+	}
+
+	public void setContractors(List<JobContractor> contractors) {
+		this.contractors = contractors;
+	}
+
 	@Transient
 	public boolean isActive(Date date) {
 		// Different locales make the same basic date fail the Date.equals method

@@ -1929,13 +1929,6 @@
 			<result name="editSite">/struts/operators/op_job_sites_edit.jsp</result>
 		</action>
 
-		<action name="ManageProjectsAjax"
-			class="com.picsauditing.actions.operators.ManageJobSites">
-			<result>/struts/operators/op_job_sites_tasks.jsp</result>
-			<result name="newTasks">/struts/operators/op_job_sites_new_tasks.jsp</result>
-			<result name="editSite">/struts/operators/op_job_sites_edit.jsp</result>
-		</action>
-
 		<action name="ManageJobTasksOperator"
 			class="com.picsauditing.actions.operators.ManageJobTasksOperator">
 			<result>struts/operators/op_manage_job_tasks.jsp</result>

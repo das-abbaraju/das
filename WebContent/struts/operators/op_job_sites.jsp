@@ -40,7 +40,7 @@ function getNewSiteTasks(siteID) {
 
 	$('#addTaskLink').fadeOut();
 	startThinking({div: 'addSiteTasks', message: 'Loading new tasks', type: 'large'});
-	$('#addSiteTasks').load('ManageProjects!newSites.action', data);
+	$('#addSiteTasks').load('ManageProjects!newTasks.action', data);
 }
 
 function addTask(siteID, taskID) {
@@ -94,6 +94,7 @@ function getStates(country) {
 
 function addCompany(conID, siteID) {
 	var data = {
+		id: <s:property value="operator.id" />,
 		conID: conID,
 		siteID: siteID
 	};
@@ -114,6 +115,13 @@ $(function() {
 		e.preventDefault();
 		var id = $(this).closest('tr').attr('id');
 		getTasks(id);
+	});
+	
+	$('#sitesTable').delegate('.cancelButton', 'click', function(e) {
+		e.preventDefault();
+		$('#addLink').show();
+		$('#addJobSite').hide();
+		$('#editJobSite').hide();
 	});
 });
 </script>
@@ -198,10 +206,10 @@ $(function() {
 								</td>
 								<s:if test="canEdit">
 									<td class="center">
-										<a href="#" onclick="editSite(<s:property value="#site.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit project" /></a>
+										<a href="#" class="edit" title="Edit Project"></a>
 									</td>
 									<td class="center">
-										<a href="#" onclick="getTasks(<s:property value="#site.id" />); return false;">View</a>
+										<a href="#" class="preview" title="View"></a>
 									</td>
 									<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
 									<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
@@ -260,9 +268,8 @@ $(function() {
 							</ol>
 						</fieldset>
 						<fieldset class="form submit">
-							<input type="submit" value="Save" class="picsbutton positive" name="button" />
-							<button onclick="$('#addLink').show(); $('#addJobSite').hide(); return false;"
-								class="picsbutton negative">Cancel</button>
+							<s:submit method="save" value="%{getText('button.Save')}" cssClass="picsbutton positive" />
+							<input type="button" class="picsbutton negative cancelButton" value="<s:text name="button.Cancel" />" />
 						</fieldset>
 					</s:form>
 				</div>

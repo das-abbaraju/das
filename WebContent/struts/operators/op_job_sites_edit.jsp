@@ -40,11 +40,10 @@ $('.datepicker').datepicker();
 		</ol>
 	</fieldset>
 	<fieldset class="form submit">
-		<input type="submit" value="Update" class="picsbutton positive" name="button" />
-		<button onclick=" $('#editJobSite').hide(); return false;"
-			class="picsbutton">Cancel</button>
-		<s:if test="siteID!=0">
-			<input type="submit" value="Remove" class="picsbutton negative" name="button" onclick="return confirm('Are you sure you want to remove this project?');" />
+		<s:submit method="update" value="Update" cssClass="picsbutton positive" />
+		<input type="button" class="picsbutton cancelButton" value="Cancel" />
+		<s:if test="siteID != 0">
+			<s:submit value="%{getText('button.Remove')}" cssClass="picsbutton negative" method="remove" id="removeSiteButton" onclick="return confirm('Are you sure you want to remove this project?');" />
 		</s:if>
 	</fieldset>
 	</div>

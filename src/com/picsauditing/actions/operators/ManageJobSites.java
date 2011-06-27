@@ -3,6 +3,7 @@ package com.picsauditing.actions.operators;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,8 +59,8 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 	protected String siteCity;
 	protected String noteSummary;
 
-	protected State state = new State();
-	protected Country siteCountry = new Country("US", "United States");
+	protected State state;
+	protected Country siteCountry;
 	protected Date siteStart;
 	protected Date siteEnd;
 	protected Date date = new Date();
@@ -98,6 +99,23 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 
 	@RequiredPermission(value = OpPerms.ManageProjects)
 	public String execute() throws Exception {
+		if ("Reactivate".equals(button)) {
+			if (siteID > 0) {
+				newSite.setProjectStart(new Date());
+
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(newSite.getProjectStart());
+				cal.add(Calendar.YEAR, 3);
+				newSite.setProjectStop(cal.getTime());
+
+				addNote(operator, "Reactivated");
+			} else {
+				addActionError("Missing project");
+			}
+			
+			return getRedirect();
+		}
+
 		return SUCCESS;
 	}
 
@@ -117,13 +135,12 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 
 			if (!Strings.isEmpty(siteCity))
 				newSite.setCity(siteCity);
-			if (!siteCountry.getIsoCode().equals("")) {
-				newSite.setCountry(siteCountry);
+			if (siteCountry != null && !Strings.isEmpty(siteCountry.getIsoCode()))
+				newSite.setCountry(null);
+			if (state != null && !Strings.isEmpty(state.getIsoCode()))
+				newSite.setState(null);
 
-				if (siteCountry.getIsoCode().equals("US") || siteCountry.getIsoCode().equals("CA"))
-					newSite.setState(state);
-			}
-
+			siteDAO.save(newSite);
 			addNote(operator, "Added new" + noteSummary);
 		} else {
 			addActionError("Please add both label and name to this project.");
@@ -149,8 +166,8 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 					newSite.setState(state);
 			}
 
-			addNote(operator, "Renamed" + noteSummary + " to label: " + newSite.getLabel() + " and project name: "
-					+ newSite.getName());
+			siteDAO.save(newSite);
+			addNote(operator, "Updated" + noteSummary);
 		} else {
 			addActionError("Please add both label and name to this project.");
 		}
@@ -162,24 +179,10 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 	public String remove() throws Exception {
 		if (siteID == 0) {
 			addActionError("Missing project");
-		}
-
-		return getRedirect();
-	}
-
-	@RequiredPermission(value = OpPerms.ManageProjects, type = OpType.Edit)
-	public String reactivate() throws Exception {
-		if (siteID > 0) {
-			newSite.setProjectStart(new Date());
-
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(newSite.getProjectStart());
-			cal.add(Calendar.YEAR, 3);
-			newSite.setProjectStop(cal.getTime());
-
-			addNote(operator, "Reactivated");
 		} else {
-			addActionError("Missing project");
+			addNote(operator, "Expired" + noteSummary);
+			newSite.setProjectStop(new Date());
+			siteDAO.save(newSite);
 		}
 
 		return getRedirect();
@@ -225,7 +228,7 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 			addActionError("Missing either project or new task");
 		}
 
-		return getRedirect();
+		return "getTasks";
 	}
 
 	@RequiredPermission(value = OpPerms.ManageProjects, type = OpType.Edit)
@@ -239,7 +242,7 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 			addActionError("Missing either project or project task");
 		}
 
-		return getRedirect();
+		return "getTasks";
 	}
 
 	public String addCompany() throws Exception {
@@ -249,7 +252,8 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 			jc.setJob(siteDAO.find(siteID));
 			siteDAO.save(jc);
 
-			addNote(operator, String.format("Added contractor '%s' to job site: %s", jc.getContractor().getName(), jc.getJob().getLabel()));
+			addNote(operator, String.format("Added contractor '%s' to job site: %s", jc.getContractor().getName(), jc
+					.getJob().getLabel()));
 		} else {
 			addActionError("Missing contractor and job site");
 		}
@@ -434,15 +438,14 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 
 	public Map<Account, List<Employee>> getSiteCompanies() {
 		if (siteCompanies == null) {
-			List<ContractorAccount> cons = siteDAO.findContractorsBySite(siteID);
+			siteCompanies = new TreeMap<Account, List<Employee>>();
+
+			for (JobContractor jc : newSite.getContractors()) {
+				siteCompanies.put(jc.getContractor(), new ArrayList<Employee>());
+			}
+
 			List<EmployeeSite> esites = employeeSiteDAO.findWhere("e.jobSite.operator.id = " + operator.getId()
 					+ " AND e.jobSite.id = " + siteID);
-
-			siteCompanies = new TreeMap<Account, List<Employee>>();
-			for (ContractorAccount c : cons) {
-				if (!siteCompanies.containsKey(c))
-					siteCompanies.put(c, new ArrayList<Employee>());
-			}
 
 			for (EmployeeSite es : esites) {
 				if (es.isCurrent() && es.getJobSite().isActive(new Date())) {
@@ -460,8 +463,16 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 
 	public List<ContractorAccount> getNewContractors() {
 		if (newContractors == null) {
-			Set<Account> working = getSiteCompanies().keySet();
+			Set<Account> working = new HashSet<Account>();
 			newContractors = new ArrayList<ContractorAccount>();
+
+			if (newSite != null) {
+				for (JobContractor jobContractor : newSite.getContractors()) {
+					working.add(jobContractor.getContractor());
+				}
+			}
+
+			working.addAll(getSiteCompanies().keySet());
 
 			for (ContractorOperator co : operator.getContractorOperators()) {
 				if (co.getContractorAccount().isRequiresOQ() && !working.contains(co.getContractorAccount()))
