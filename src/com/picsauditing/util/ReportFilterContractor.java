@@ -123,6 +123,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		temp.put(3543, "Disabled Veteran Owned");
 		temp.put(66, "Union Personnel");
 		temp.put(77, "Non-union Personnel");
+		temp.put(3283, "Aboriginal Owned");
 		temp.put(3, "All the Above");		
 		MINORITY_QUESTIONS = Collections.unmodifiableMap(temp);
 	}
