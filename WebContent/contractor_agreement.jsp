@@ -8,7 +8,7 @@
 %>
 <h1 align="center">Contractor Agreement Statement</h1>
 
-<div style="width: 740px;">
+<div>
 This is the web site of <b>PICS</b>.<br>
 <p>Our postal address is <br>
 <b>P.O. Box 51387<br>
