@@ -44,17 +44,24 @@ public class ReportEmployee extends ReportActionSupport {
 		sql.addField("e.lastName");
 		sql.addField("e.title");
 
-		if (permissions.isOperator())
-			sql.addWhere(String.format("a.id IN (SELECT subID FROM generalcontractors WHERE genID = %d) OR a.id = %d",
-					permissions.getAccountId(), permissions.getAccountId()));
-		if (permissions.isCorporate()) {
-			String where = "a.id IN (SELECT gc.subID FROM generalcontractors gc "
-					+ "JOIN facilities f ON f.opID = gc.genID AND f.corporateID = %d) OR a.id = %d "
-					+ "OR a.id IN (SELECT opID FROM facilities WHERE corporateID = %d)";
+		if (permissions.isOperatorCorporate()) {
+			sql.addWhere("a.status IN ('Active'" + (permissions.getAccountStatus().isDemo() ? ",'Demo'" : "") + ")");
 
-			where.replaceAll("%d", permissions.getAccountIdString());
+			if (permissions.isOperator()) {
+				sql.addWhere(String.format(
+						"a.id IN (SELECT subID FROM generalcontractors WHERE genID = %d) OR a.id = %d",
+						permissions.getAccountId(), permissions.getAccountId()));
+			}
 
-			sql.addWhere(where);
+			if (permissions.isCorporate()) {
+				String where = "a.id IN (SELECT gc.subID FROM generalcontractors gc "
+						+ "JOIN facilities f ON f.opID = gc.genID AND f.corporateID = %d) OR a.id = %d "
+						+ "OR a.id IN (SELECT opID FROM facilities WHERE corporateID = %d)";
+
+				where.replaceAll("%d", permissions.getAccountIdString());
+
+				sql.addWhere(where);
+			}
 		}
 
 		addFilterToSQL();
