@@ -141,7 +141,7 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 				auditBuilder.buildAudits(contractor);
 				auditPercentCalculator.percentCalculateComplete(importAudit);
 
-				addNote(contractor, "Import PQF audit and import fee created.", NoteCategory.Audits,
+				addNote(contractor, "Import PQF option selected.", NoteCategory.Audits,
 						LowMedHigh.Med, true, Account.EVERYONE, new User(permissions.getUserId()));
 			}
 
