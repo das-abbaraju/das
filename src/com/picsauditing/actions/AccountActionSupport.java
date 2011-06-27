@@ -124,7 +124,7 @@ public class AccountActionSupport extends PicsActionSupport {
 		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, null, null);
 	}
 
-	protected void addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
+	protected void addNote(Account account, String newNote, NoteCategory noteCategory, LowMedHigh priority,
 			boolean canContractorView, int viewableBy, User user) {
 		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, user, null);
 	}
