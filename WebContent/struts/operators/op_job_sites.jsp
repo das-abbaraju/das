@@ -19,13 +19,12 @@ function getTasks(siteID) {
 	$('#jobSiteTasks:hidden').slideDown();
 	$('#editProject:visible').slideUp();
 	var data = {
-		button: 'Tasks',
 		siteID: siteID,
 		id: <s:property value="operator.id" />
 	};
 
 	startThinking({div: 'jobSiteTasks', message: 'Loading tasks', type: 'large'});
-	$('#jobSiteTasks').load('ManageProjectsAjax.action', data,
+	$('#jobSiteTasks').load('ManageProjects!getTasks.action', data,
 		function() {
 			$('#addSiteTasks').empty();
 			$('#jobSiteTasks').slideDown();
@@ -35,27 +34,25 @@ function getTasks(siteID) {
 
 function getNewSiteTasks(siteID) {
 	var data = {
-		button: 'NewTasks',
 		siteID: siteID,
 		id: <s:property value="operator.id" />
 	};
 
 	$('#addTaskLink').fadeOut();
 	startThinking({div: 'addSiteTasks', message: 'Loading new tasks', type: 'large'});
-	$('#addSiteTasks').load('ManageProjectsAjax.action', data);
+	$('#addSiteTasks').load('ManageProjects!newSites.action', data);
 }
 
 function addTask(siteID, taskID) {
 	var controlSpan = $('tr#' + taskID).find('input[name="controlSpan"]').val();
 	var data = {
-		button: 'AddTask',
 		siteID: siteID,
 		taskID: taskID,
 		controlSpan: controlSpan,
 		id: <s:property value="operator.id" />
 	};
 
-	$('#jobSiteTasks').load('ManageProjectsAjax.action', data,
+	$('#jobSiteTasks').load('ManageProjects!addTask.action', data,
 		function() {
 			getNewSiteTasks(siteID);
 		}
@@ -67,13 +64,12 @@ function removeTask(siteID, siteTaskID) {
 
 	if (remove) {
 		var data = {
-			button: 'RemoveTask',
 			siteID: siteID,
 			siteTaskID: siteTaskID,
 			id: <s:property value="operator.id" />
 		};
 	
-		$('#jobSiteTasks').load('ManageProjectsAjax.action', data,
+		$('#jobSiteTasks').load('ManageProjects!removeTask.action', data,
 			function() {
 				$('#addSiteTasks').empty();
 			}
@@ -88,8 +84,8 @@ function editSite(siteID) {
 	$('#addLink:hidden').fadeIn();
 	$('#editProject:hidden').slideDown();
 	startThinking({div: 'editProject', message: 'Loading project'});
-	$('#editProject').load('ManageProjectsAjax.action',
-			{ button: 'EditSite', siteID: siteID, id: <s:property value="operator.id" /> });
+	$('#editProject').load('ManageProjects!editSite.action',
+			{ siteID: siteID, id: <s:property value="operator.id" /> });
 }
 
 function getStates(country) {
@@ -98,16 +94,27 @@ function getStates(country) {
 
 function addCompany(conID, siteID) {
 	var data = {
-		button: 'addCompany',
 		conID: conID,
 		siteID: siteID
 	};
 
-	$('#jobSiteTasks').load('ManageProjectsAjax.action', data);
+	$('#jobSiteTasks').load('ManageProjects!addCompany.action', data);
 }
 
 $(function() {
 	$('.datepicker').datepicker();
+	
+	$('#sitesTable').delegate('a.edit', 'click', function(e) {
+		e.preventDefault();
+		var id = $(this).closest('tr').attr('id');
+		editSite(id);
+	});
+	
+	$('#sitesTable').delegate('a.preview', 'click', function(e) {
+		e.preventDefault();
+		var id = $(this).closest('tr').attr('id');
+		getTasks(id);
+	});
 });
 </script>
 </head>
@@ -160,10 +167,10 @@ $(function() {
 								</td>
 								<s:if test="canEdit">
 									<td class="center">
-										<a href="#" onclick="editSite(<s:property value="#site.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit project" /></a>
+										<a href="#" class="edit" title="Edit Project"></a>
 									</td>
 									<td class="center">
-										<a href="#" onclick="getTasks(<s:property value="#site.id" />); return false;">View</a>
+										<a href="#" class="preview" title="View"></a>
 									</td>
 									<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
 									<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
