@@ -13,6 +13,9 @@ function changeState(country) {
 	$('#state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), stateString: '<s:property value="contractor.state.isoCode"/>'});
 }
 
+function changeBillingState(country) {
+	$('#billing_state_li').load('StateListAjax.action',{countryString: $('#contractorBillingCountry').val(), stateString: '<s:property value="contractor.billingState.isoCode"/>'});
+}
 function countryChanged(country) {
 	// hide taxID and zip code
 	if (country == 'AE') {
@@ -25,8 +28,19 @@ function countryChanged(country) {
 	changeState(country);
 }
 
+function billingCountryChanged(country) {
+	// hide taxID and zip code
+	if (country == 'AE') {
+		$('#billing_zip_li').hide();
+	} else {
+		$('#billing_zip_li').show();
+	}
+	changeBillingState(country);
+}
+
 $(function() {
 	changeState($("#contractorCountry").val());
+	changeBillingState($("#contractorBillingCountry").val());
 	$('.datepicker').datepicker();
 	$('.cluetip').cluetip({
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
@@ -129,6 +143,28 @@ $(function() {
 					</pics:permission>
 					</s:else>
 					</li>
+				</ol>
+				</fieldset>
+				<fieldset class="form">
+				<h2 class="formLegend"><s:text name="ContractorEdit.BillingDetails.heading"/></h2>
+				<ol>
+					<li><label><s:text name="ContractorEdit.billingAddress"/>:</label>
+						<s:textfield name="contractor.billingAddress" size="35" /><br />
+					</li>
+					<li><label><s:text name="ContractorEdit.billingCity"/>:</label>
+						<s:textfield name="contractor.billingCity" size="20" />
+					</li>
+					<li><label><s:text name="ContractorEdit.billingCountry" />:</label>
+						<s:select list="countryList"
+						name="billingCountry.isoCode" id="contractorBillingCountry"
+						listKey="isoCode" listValue="name"
+						value="contractor.billingCountry.isoCode"
+						onchange="billingCountryChanged(this.value)"
+						/></li>
+					<li id="billing_state_li"></li>
+						<li id="billing_zip_li"><label><s:text name="ContractorEdit.billingZip"/>:</label>
+							<s:textfield name="contractor.billingZip" size="7" />
+						</li>
 				</ol>
 				</fieldset>
 				<fieldset class="form">
