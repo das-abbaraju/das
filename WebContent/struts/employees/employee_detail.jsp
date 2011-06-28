@@ -307,22 +307,22 @@
 								</tr>
 							</thead>
 							<tbody>
-								<s:iterator value="jobTasks" id="quals">
+								<s:iterator value="qualification.keySet()" id="task">
 									<tr>
-										<td class="center" style="font-weight: bold;"><s:property value="#quals.task.label" /></td>
-										<td><s:property value="#quals.task.name" /></td>
+										<td class="center" style="font-weight: bold;"><s:property value="label" /></td>
+										<td><s:property value="name" /></td>
 										<td class="center">
-											<s:if test="#quals.qualified && qualification.get(#quals).size > 0">
-												<a href="#" onclick="$('#jt_<s:property value="#quals.id" />').toggle(); return false;">
+											<s:if test="qualification.get(#task).size > 0">
+												<a href="#" onclick="$('#jt_<s:property value="#task.id" />').toggle(); return false;">
 													<img src="images/okCheck.gif" alt="Qualified" />
 												</a>
 											</s:if>
 											<s:else><img src="images/notOkCheck.gif" alt="Not Qualified" /></s:else>
 										</td>
 									</tr>
-									<s:if test="#quals.qualified">
+									<s:if test="qualification.get(#task).size > 0">
 										<s:set name="qualCount" value="#qualCount + 1" />
-										<tr id="jt_<s:property value="#quals.id" />" class="assessmentResults">
+										<tr id="jt_<s:property value="#task.id" />" class="assessmentResults">
 											<td colspan="3" style="padding: 10px;">
 												<table class="report">
 													<thead>
@@ -336,7 +336,7 @@
 														</tr>
 													</thead>
 													<tbody>
-														<s:iterator value="qualification.get(#quals)" id="results">
+														<s:iterator value="qualification.get(#task)" id="results">
 															<tr>
 																<td><s:property value="#results.assessmentTest.assessmentCenter.name" /></td>
 																<td><s:property value="#results.assessmentTest.qualificationMethod" /></td>

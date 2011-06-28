@@ -213,6 +213,44 @@ public class JobTask extends BaseTable implements Comparable<JobTask> {
 		// No criteria groups we completely met
 		return false;
 	}
+	
+	/**
+	 * Same idea as isQualified, but return the assessment results that apply to all groups
+	 * @param testResults
+	 * @return
+	 */
+	@Transient
+	public List<AssessmentResult> getQualifiedResults(List<AssessmentResult> testResults) {
+		List<AssessmentResult> applicable = new ArrayList<AssessmentResult>();
+		
+		Map<AssessmentTest, AssessmentResult> resultMap = new HashMap<AssessmentTest, AssessmentResult>();
+		for (AssessmentResult results : testResults) {
+			if (results.isCurrent())
+				resultMap.put(results.getAssessmentTest(), results);
+		}
+
+		Collection<Set<JobTaskCriteria>> taskCriteria = getJobTaskCriteriaMap().values();
+		if (taskCriteria.size() == 0)
+			// No criteria exist
+			return null;
+
+		for (Set<JobTaskCriteria> group : taskCriteria) {
+			int count = 0;
+			for (JobTaskCriteria jobTaskCriteria : group) {
+				AssessmentResult testResult = resultMap.get(jobTaskCriteria.getAssessmentTest());
+				if (testResult != null) {
+					applicable.add(testResult);
+					count++;
+				}
+			}
+			
+			if (group.size() != count) {
+				applicable = applicable.subList(0, applicable.size() - count);
+			}
+		}
+		
+		return applicable;
+	}
 
 	@Transient
 	@Override

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,7 +30,6 @@ import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobTask;
-import com.picsauditing.jpa.entities.JobTaskCriteria;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
@@ -55,7 +54,7 @@ public class EmployeeDetail extends AccountActionSupport {
 	protected List<EmployeeCompetency> competencies;
 	protected List<EmployeeQualification> tasks;
 	protected List<EmployeeSite> worksAt;
-	protected Map<EmployeeQualification, List<AssessmentResult>> qualification;
+	protected Map<JobTask, List<AssessmentResult>> qualification;
 	protected DoubleMap<OperatorCompetency, JobRole, Boolean> map = new DoubleMap<OperatorCompetency, JobRole, Boolean>();
 	protected Map<JobSite, List<JobTask>> tasksByJob;
 	protected Map<JobRole, List<OperatorCompetency>> missingCompetencies;
@@ -172,33 +171,13 @@ public class EmployeeDetail extends AccountActionSupport {
 		return worksAt;
 	}
 
-	public Map<EmployeeQualification, List<AssessmentResult>> getQualification() {
+	public Map<JobTask, List<AssessmentResult>> getQualification() {
 		if (qualification == null) {
-			qualification = new HashMap<EmployeeQualification, List<AssessmentResult>>();
-
-			List<JobTask> jobTasks = taskDAO.findByEmployee(employee.getId());
-			List<AssessmentResult> results = new ArrayList<AssessmentResult>();
-
-			for (JobTask task : jobTasks) {
-				for (EmployeeQualification eq : employee.getEmployeeQualifications()) {
-					if (eq.isCurrent() && eq.getTask().equals(task)) {
-						Map<Integer, Set<JobTaskCriteria>> map = task.getJobTaskCriteriaMap();
-
-						for (Integer group : map.keySet()) {
-							results.clear();
-
-							for (JobTaskCriteria jtc : map.get(group)) {
-								for (AssessmentResult r : employee.getAssessmentResults()) {
-									if (jtc.getAssessmentTest().equals(r.getAssessmentTest()) && r.isCurrent())
-										results.add(r);
-								}
-							}
-
-							if (results.size() == map.get(group).size() && qualification.get(eq) == null)
-								qualification.put(eq, results);
-						}
-					}
-				}
+			qualification = new TreeMap<JobTask, List<AssessmentResult>>();
+			List<JobTask> tasks = taskDAO.findByEmployee(employee.getId());
+			
+			for (JobTask task : tasks) {
+				qualification.put(task, task.getQualifiedResults(employee.getAssessmentResults()));
 			}
 		}
 
