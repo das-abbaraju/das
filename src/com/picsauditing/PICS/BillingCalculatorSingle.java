@@ -337,22 +337,22 @@ public class BillingCalculatorSingle {
 				Date today = new Date();
 
 				if (today.before(DateBean.parseDate("2011-07-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-200));
+					discountAmount = discountAmount.add(new BigDecimal(-200.00));
 				else if (today.after(DateBean.parseDate("2011-07-01"))
 						&& today.before(DateBean.parseDate("2011-08-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-180));
+					discountAmount = discountAmount.add(new BigDecimal(-180.00));
 				else if (today.after(DateBean.parseDate("2011-08-01"))
 						&& today.before(DateBean.parseDate("2011-09-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-160));
+					discountAmount = discountAmount.add(new BigDecimal(-160.00));
 				else if (today.after(DateBean.parseDate("2011-09-01"))
 						&& today.before(DateBean.parseDate("2011-10-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-140));
+					discountAmount = discountAmount.add(new BigDecimal(-140.00));
 				else if (today.after(DateBean.parseDate("2011-10-01"))
 						&& today.before(DateBean.parseDate("2011-11-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-120));
+					discountAmount = discountAmount.add(new BigDecimal(-120.00));
 				else if (today.after(DateBean.parseDate("2011-11-01"))
 						&& today.before(DateBean.parseDate("2011-12-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-100));
+					discountAmount = discountAmount.add(new BigDecimal(-100.00));
 
 				invoiceItem.setAmount(discountAmount);
 				discounts.add(invoiceItem);
