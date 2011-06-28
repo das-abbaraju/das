@@ -692,11 +692,9 @@ public class ContractorCron extends PicsActionSupport {
 	private void runAssignAudit(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.AssignAudit))
 			return;
-
 		// See if the PQF is complete for manual audit auditor assignment
 		boolean pqfCompleteSafetyManualVerified = false;
 		// Save auditor for manual audit for HSE Competency Review
-		User manualAuditAuditor = null;
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (!audit.isExpired()) {
 				if (audit.getAuditType().isPqf() && audit.hasCaoStatus(AuditStatus.Complete)) {
@@ -705,15 +703,12 @@ public class ContractorCron extends PicsActionSupport {
 							pqfCompleteSafetyManualVerified = d.getDateVerified() != null;
 					}
 				}
-				// If the manual audit comes after the HSE Competency Review, we can still get the auditor here
-				if (audit.getAuditType().isDesktop() && pqfCompleteSafetyManualVerified)
-					manualAuditAuditor = audit.getAuditor();
 			}
 		}
 
 		UserAssignment ua = null;
 		for (ContractorAudit audit : contractor.getAudits()) {
-			if (!audit.isExpired()) {
+			if (!audit.isExpired() && audit.getAuditor() == null) {
 				switch (audit.getAuditType().getId()) {
 				case (AuditType.WA_STATE_VERIFICATION):
 					ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
@@ -736,25 +731,6 @@ public class ContractorCron extends PicsActionSupport {
 					if (audit.getClosingAuditor() == null && audit.getAuditor() != null
 							&& audit.hasCaoStatusAfter(AuditStatus.Pending)) {
 						audit.setClosingAuditor(new User(audit.getIndependentClosingAuditor(audit.getAuditor())));
-					}
-					break;
-				case (AuditType.SHELL_COMPETENCY_REVIEW):
-					// Reassign if given to an independent auditor
-					Integer auditorID = audit.getIndependentClosingAuditor(manualAuditAuditor);
-					User auditorReassign = null;
-
-					if (auditorID == null) {
-						ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
-
-						if (ua != null)
-							auditorReassign = ua.getUser();
-					} else if (auditorID != null && auditorID > 0) {
-						auditorReassign = new User(auditorID);
-					}
-
-					if (auditorReassign != null) {
-						audit.setAuditor(auditorReassign);
-						audit.setAssignedDate(new Date());
 					}
 					break;
 				}
