@@ -201,32 +201,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			// contractor.setNeedsIndexing(true);
 			accountDao.save(contractor);
 
-			// Check if the contractor has been checked for Other Competitor Membership
-			if (contractor.getCompetitorMembership() != null && contractor.getCompetitorMembership()) {
-				// Check if they've been charged for this audit all ready
-				boolean hasFee = false;
-				for (FeeClass feeClass : contractor.getFees().keySet()) {
-					if (feeClass.equals(FeeClass.ImportFee)) {
-						hasFee = true;
-						break;
-					}
-				}
-
-				// Now check for the audit itself
-				boolean hasAudit = false;
-				for (ContractorAudit audit : contractor.getAudits()) {
-					if (audit.getAuditType().getId() == AuditType.IMPORT_PQF) {
-						hasAudit = true;
-						break;
-					}
-				}
-
-				if (!hasFee && !hasAudit) {
-					this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId()
-							+ "&url=ContractorEdit.action?id=" + contractor.getId());
-				}
-			}
-
 			addActionMessage("Successfully modified " + contractor.getName());
 		}
 
@@ -391,6 +365,49 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return SUCCESS;
 	}
 
+	public String createImportPQF() throws Exception {
+		boolean hasFee = false;
+		for (FeeClass feeClass : contractor.getFees().keySet()) {
+			if (feeClass.equals(FeeClass.ImportFee)) {
+				hasFee = true;
+				break;
+			}
+		}
+
+		// Now check for the audit itself
+		boolean hasAudit = false;
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
+				hasAudit = true;
+				break;
+			}
+		}
+
+		if (!hasFee || !hasAudit) {
+			// Need to charge them OR create the audit if either is missing
+			this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId() + "&url=ContractorEdit.action?id="
+					+ contractor.getId());
+		}
+
+		if (hasFee)
+			addActionError("Contractor was all ready charged for the Import PQF");
+		if (hasAudit)
+			addActionError("Contractor was all ready has the Import PQF");
+
+		return SUCCESS;
+	}
+
+	public String expireImportPQF() {
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
+				audit.setExpiresDate(new Date());
+				auditDao.save(audit);
+			}
+		}
+
+		return SUCCESS;
+	}
+
 	public void setLogo(File logo) {
 		this.logo = logo;
 	}
@@ -497,6 +514,15 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			return true;
 		if (permissions.hasPermission(OpPerms.RiskRank))
 			return true;
+		return false;
+	}
+
+	public boolean isHasImportPQFAudit() {
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired())
+				return true;
+		}
+
 		return false;
 	}
 

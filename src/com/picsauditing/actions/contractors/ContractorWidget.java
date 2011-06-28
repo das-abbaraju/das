@@ -76,13 +76,15 @@ public class ContractorWidget extends ContractorActionSupport {
 			if (contractor != null
 					&& !contractor.isAgreementInEffect()
 					&& (permissions.hasPermission(OpPerms.ContractorBilling)
-							|| permissions.hasPermission(OpPerms.ContractorAdmin) || permissions.hasPermission(OpPerms.ContractorSafety))) {
+							|| permissions.hasPermission(OpPerms.ContractorAdmin) || permissions
+							.hasPermission(OpPerms.ContractorSafety))) {
 				showAgreement = true;
-				openTasks.add(getText("ContractorWidget.message.UpdatedAgreement", new Object[] { contractor.getId() }));
+				openTasks
+						.add(getText("ContractorWidget.message.UpdatedAgreement", new Object[] { contractor.getId() }));
 			}
 
 			for (ContractorAudit audit : contractor.getAudits()) {
-				if (audit.getAuditType().getId() == AuditType.IMPORT_PQF) {
+				if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
 					if (audit.hasCaoStatusBefore(AuditStatus.Submitted))
 						openTasks.add(getText("ContractorWidget.message.ImportAndSubmitPQF",
 								new Object[] { audit.getId() }));
@@ -182,7 +184,9 @@ public class ContractorWidget extends ContractorActionSupport {
 										conAudit.getId(), auditName, showAuditFor, auditFor }));
 							}
 						} else if (conAudit.getAuditType().getWorkFlow().isHasRequirements()
-								&& (conAudit.getAuditType().getId() != AuditType.WA_STATE_VERIFICATION || (conAudit.getAuditType().getId() == AuditType.WA_STATE_VERIFICATION && conAudit.hasCaoStatusAfter(AuditStatus.Pending)))) {
+								&& (conAudit.getAuditType().getId() != AuditType.WA_STATE_VERIFICATION || (conAudit
+										.getAuditType().getId() == AuditType.WA_STATE_VERIFICATION && conAudit
+										.hasCaoStatusAfter(AuditStatus.Pending)))) {
 							if (conAudit.hasCaoStatus(AuditStatus.Submitted)) {
 								// Submitted
 								if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
@@ -213,12 +217,11 @@ public class ContractorWidget extends ContractorActionSupport {
 															conAudit.getId(),
 															auditName,
 															showAuditor,
-															(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName()
-																	: "", showScheduledDate,
+															(conAudit.getAuditor() != null) ? conAudit.getAuditor()
+																	.getName() : "", showScheduledDate,
 															conAudit.getScheduledDate() });
 										} else {
-											text = getText(
-													"ContractorWidget.message.PrepareForAnUpcomingAudit",
+											text = getText("ContractorWidget.message.PrepareForAnUpcomingAudit",
 													new Object[] {
 															conAudit.getId(),
 															auditName,
@@ -227,8 +230,8 @@ public class ContractorWidget extends ContractorActionSupport {
 															showScheduledDate,
 															conAudit.getScheduledDate(),
 															showAuditor,
-															(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName()
-																	: "" });
+															(conAudit.getAuditor() != null) ? conAudit.getAuditor()
+																	.getName() : "" });
 										}
 									}
 									openTasks.add(text);
@@ -255,8 +258,8 @@ public class ContractorWidget extends ContractorActionSupport {
 
 			if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
 				if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
-					openTasks.add(getText("ContractorWidget.message.WebcamHasShipped",
-							new Object[] { contractor.getWebcam().getTrackingNumber() }));
+					openTasks.add(getText("ContractorWidget.message.WebcamHasShipped", new Object[] { contractor
+							.getWebcam().getTrackingNumber() }));
 				}
 			}
 
@@ -284,7 +287,8 @@ public class ContractorWidget extends ContractorActionSupport {
 						new Object[] { contractor.getId() }));
 			}
 			if (contractor.getTrades().size() == 0) {
-				openTasks.add(getText("ContractorWidget.message.NoTradesSelected", new Object[] { contractor.getId() }));
+				openTasks
+						.add(getText("ContractorWidget.message.NoTradesSelected", new Object[] { contractor.getId() }));
 			}
 		}
 

@@ -111,7 +111,7 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 			boolean hasImportPQFAudit = false;
 
 			for (ContractorAudit audit : contractor.getAudits()) {
-				if (audit.getAuditType().getId() == AuditType.IMPORT_PQF) {
+				if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
 					hasImportPQFAudit = true;
 					importAuditID = audit.getId();
 					break;

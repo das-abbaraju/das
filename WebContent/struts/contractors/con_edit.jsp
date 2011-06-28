@@ -49,6 +49,10 @@ $(function() {
 		local: true,
 		clickThrough: false
 	});
+	
+	$('#save').delegate('#removeImportPQFButton', 'click', function(e) {
+		return confirm('Are you sure you want to remove this audit?');
+	});
 });
 
 </script>
@@ -304,6 +308,17 @@ $(function() {
 					<li>
 						<label for="conCompetitorMembership">Has Competitor Membership:</label>
 						<s:radio id="conCompetitorMembership" theme="pics" list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" name="contractor.competitorMembership" />
+						<br />
+						<s:if test="hasImportPQFAudit">
+							<s:submit method="expireImportPQF" cssClass="picsbutton negative" id="removeImportPQFButton" value="Remove Import PQF" />
+						</s:if>
+						<s:elseif test="contractor.competitorMembership.equals(true)">
+							<s:submit method="createImportPQF" cssClass="picsbutton positive" value="Create Import PQF" />
+						</s:elseif>
+						<div class="fieldhelp">
+							<h3>Competitor Membership</h3>
+							<p>Clicking on "Remove Import PQF" will only expire any existing Import PQF. This will NOT remove the invoice/fee. Voiding the invoice/fee will have to be done manually.</p>
+						</div>
 					</li>
 					<li>
 						<label for="conCanadianCompetitor">Has Canadian Competitor:</label>
