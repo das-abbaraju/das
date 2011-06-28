@@ -44,10 +44,11 @@ public class ReportOQ extends ReportEmployee {
 		sql2.addJoin("JOIN job_site js2 ON js2.id = es2.jobSiteID" + dateRange("js2.projectStart", "js2.projectStop")
 				+ " AND js2.opID = " + permissions.getAccountId());
 		sql2.addField("e2.accountID");
+		sql2.addField("js2.id jobID");
 		sql2.addField("COUNT(*) totals");
-		sql2.addGroupBy("e2.accountID");
+		sql2.addGroupBy("e2.accountID, js2.id");
 
-		sql.addJoin(String.format("JOIN (%s) e2 ON e2.accountID = a.id", sql2.toString()));
+		sql.addJoin(String.format("JOIN (%s) e2 ON e2.accountID = a.id AND e2.jobID = js.id", sql2.toString()));
 
 		sql.addField("js.id jsID");
 		sql.addField("js.name jsName");

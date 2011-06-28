@@ -215,9 +215,13 @@ public class EmployeeDetail extends AccountActionSupport {
 	public List<AssessmentResult> getNccerData() {
 		if (nccerData == null) {
 			nccerData = new ArrayList<AssessmentResult>(employee.getAssessmentResults());
-			
+
 			Iterator<AssessmentResult> iterator = nccerData.iterator();
 			while (iterator.hasNext()) {
+				AssessmentResult result = iterator.next();
+				if (result.getAssessmentTest().getAssessmentCenter().getId() != Account.ASSESSMENT_NCCER
+						|| !result.getAssessmentTest().isCurrent())
+					iterator.remove();
 			}
 		}
 

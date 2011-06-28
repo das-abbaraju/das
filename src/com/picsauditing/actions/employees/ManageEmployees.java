@@ -661,7 +661,7 @@ public class ManageEmployees extends AccountActionSupport {
 				AssessmentResult result = iterator.next();
 
 				if (!result.isCurrent() || result.getAssessmentTest().getAssessmentCenter().getId() != Account.ASSESSMENT_NCCER
-						&& result.getAssessmentTest().getQualificationMethod().contains("-old"))
+						|| result.getAssessmentTest().getQualificationMethod().contains("-old"))
 					iterator.remove();
 			}
 		}

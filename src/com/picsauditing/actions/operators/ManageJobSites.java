@@ -189,8 +189,7 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 	}
 
 	public String getTasks() throws Exception {
-		if (siteID > 0) {
-		} else {
+		if (siteID == 0) {
 			addActionError("Missing project");
 		}
 

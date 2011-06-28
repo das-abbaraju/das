@@ -1,7 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -11,14 +9,12 @@ import javax.persistence.Transient;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "assessment_test")
-public class AssessmentTest extends BaseTable {
+public class AssessmentTest extends BaseHistory {
 
 	private Account assessmentCenter;
 	private String qualificationType;
 	private String qualificationMethod;
 	private String description;
-	private Date effectiveDate;
-	private Date expirationDate;
 	private boolean verifiable = true;
 	private int monthsToExpire = 36;
 
@@ -54,22 +50,6 @@ public class AssessmentTest extends BaseTable {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public Date getEffectiveDate() {
-		return effectiveDate;
-	}
-
-	public void setEffectiveDate(Date effectiveDate) {
-		this.effectiveDate = effectiveDate;
-	}
-
-	public Date getExpirationDate() {
-		return expirationDate;
-	}
-
-	public void setExpirationDate(Date expirationDate) {
-		this.expirationDate = expirationDate;
 	}
 
 	public boolean isVerifiable() {

@@ -168,7 +168,8 @@ $(function() {
 										<tr>
 											<th>Qualification Type</th>
 											<th>Qualification Method</th>
-											<th>More Information</th>
+											<th>Effective Date</th>
+											<th>Expiration Date</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -176,15 +177,8 @@ $(function() {
 											<tr>
 												<td><s:property value="assessmentTest.qualificationType" /></td>
 												<td><s:property value="assessmentTest.qualificationMethod" /></td>
-												<td>
-													<a href="#" rel="#cluetip_<s:property value="id" />" class="cluetip help" 
-														title="<s:property value="assessmentTest.qualificationType" /> - <s:property value="assessmentTest.qualificationMethod" />"></a>
-													<div id="cluetip_<s:property value="id" />">
-														<s:property value="assessmentTest.description" /><br />
-														Effective Date: <s:date name="effectiveDate" /><br />
-														Expiration Date: <s:date name="expirationDate" />
-													</div>
-												</td>
+												<td><s:date name="effectiveDate" /></td>
+												<td><s:date name="expirationDate" /></td>
 											</tr>
 										</s:iterator>
 									</tbody>
@@ -200,13 +194,12 @@ $(function() {
 				<s:else>
 					<fieldset class="form">
 						<h2 class="formLegend"><s:text name="%{scope}.label.EmployeeNCCERUpload" /></h2>
+						<div class="info" id="nccerUploadFieldhelp">
+							<s:text name="%{scope}.label.EmployeeNCCERUploadText" />
+						</div>
 						<ol>
 							<li>
 								<a href="#" id="employee_nccer_link" class="add"><s:text name="%{scope}.link.EmployeeNCCERUpload" /></a>
-								<div id="nccerUploadFieldhelp">
-									<h3><s:text name="%{scope}.label.EmployeeNCCERUpload" /></h3>
-									<s:text name="%{scope}.label.EmployeeNCCERUploadText" />
-								</div>
 							</li>
 						</ol>
 					</fieldset>

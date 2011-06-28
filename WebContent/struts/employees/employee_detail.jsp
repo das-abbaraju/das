@@ -365,7 +365,7 @@
 									<s:text name="%{scope}.label.NCCERAssessmentData" />
 								</div>
 								<div class="panel_content">
-									<s:iterator value="nccerData">
+									<s:iterator value="nccerData" status="stat">
 										<s:property value="assessmentTest.qualificationType" /> -
 										<s:property value="assessmentTest.qualificationMethod" /> 
 										<a href="#" rel="#cluetip_<s:property value="id" />" class="cluetip help" 
@@ -375,6 +375,7 @@
 											Effective Date: <s:date name="effectiveDate" /><br />
 											Expiration Date: <s:date name="expirationDate" />
 										</div>
+										<s:if test="!#stat.last"><br /></s:if>
 									</s:iterator>
 								</div>
 							</div>
