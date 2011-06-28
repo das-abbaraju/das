@@ -312,20 +312,6 @@ public class BillingCalculatorSingle {
 			}
 		}
 
-		// Need to change Canadian contractors a GST for all invoices
-		if (contractor.getCurrencyCode().isCanada()) {
-			BigDecimal total = BigDecimal.ZERO;
-			for (InvoiceItem ii : items)
-				total = total.add(ii.getAmount());
-
-			InvoiceFee gst = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
-			InvoiceItem invoiceItem = new InvoiceItem();
-			invoiceItem.setInvoiceFee(gst);
-			invoiceItem.setAmount(gst.getGSTSurchage(total));
-			invoiceItem.setDescription("5% Goods & Services Tax");
-			items.add(invoiceItem);
-		}
-
 		List<InvoiceItem> discounts = new ArrayList<InvoiceItem>();
 		// Calculating discounts
 		for (InvoiceItem item : items) {
@@ -369,12 +355,25 @@ public class BillingCalculatorSingle {
 					discountAmount = discountAmount.add(new BigDecimal(-100));
 
 				invoiceItem.setAmount(discountAmount);
-				invoiceItem.setDescription("Suncor Early Registration Discount");
 				discounts.add(invoiceItem);
 			}
 		}
-		
 		items.addAll(discounts);
+
+		// Taxes come last
+		// Need to change Canadian contractors a GST for all invoices
+		if (contractor.getCurrencyCode().isCanada()) {
+			BigDecimal total = BigDecimal.ZERO;
+			for (InvoiceItem ii : items)
+				total = total.add(ii.getAmount());
+
+			InvoiceFee gst = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
+			InvoiceItem invoiceItem = new InvoiceItem();
+			invoiceItem.setInvoiceFee(gst);
+			invoiceItem.setAmount(gst.getGSTSurchage(total));
+			invoiceItem.setDescription("5% Goods & Services Tax");
+			items.add(invoiceItem);
+		}
 
 		return items;
 	}
