@@ -177,7 +177,7 @@ public class PicsMenu {
 			subMenu.addChild("Audit List Compress", "ReportAuditList.action");
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			addChildAction(subMenu, "ReportCAOList");
-		if (permissions.hasPermission(OpPerms.ContractorDetails))
+		if (permissions.hasPermission(OpPerms.ContractorDetails) && !permissions.isOperator())
 			addChildAction(subMenu, "ReportCAOByStatusList");
 
 		if (permissions.hasPermission(OpPerms.AssignAudits))
