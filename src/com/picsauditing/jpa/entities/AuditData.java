@@ -276,6 +276,30 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		// return new Integer(getId()).compareTo(new Integer(other.getId()));
 		return 0;
 	}
+	
+	@Transient
+	public float getScorePercentage() {
+		float scorePercentage = 0f;
+		if (answer != null && isMultipleChoice()) {
+			for (AuditOptionValue value : question.getOption().getValues()) {
+				if (answer.equals(value.getIdentifier())) {
+					scorePercentage = value.getScorePercent();
+					break;
+				}
+			}
+		}
+		return scorePercentage;
+	}
+
+	@Transient
+	public float getScoreValue() {
+		return Math.round(getScorePercentage() * question.getScoreWeight());
+	}
+
+	@Transient
+	public boolean isScoreApplies() {
+		return getScorePercentage() >= 0;
+	}
 
 	@Override
 	public String toString() {

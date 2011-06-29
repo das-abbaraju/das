@@ -16,7 +16,6 @@ import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditOptionValue;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -119,26 +118,13 @@ public class AuditPercentCalculator {
 				if (isRequired)
 					requiredCount++;
 
-				// Always include the score count. Blank audits will receive a
-				// score of 0
-				if (catData.getAudit().getAuditType().isScoreable())
-					scoreCount += question.getScoreWeight();
-
 				if (answer != null) {
 					if (answer.isAnswered()) {
 						if (catData.getAudit().getAuditType().isScoreable()) {
-							float scorePercentage = 0.0f;
-
-							if (answer.isMultipleChoice()) {
-								for (AuditOptionValue value : question.getOption().getValues()) {
-									if (answer.getAnswer().equals(value.getIdentifier())) {
-										scorePercentage = value.getScorePercent();
-										break;
-									}
-								}
+							if (answer.isScoreApplies()) {
+								score += answer.getScoreValue();
+								scoreCount += question.getScoreWeight();
 							}
-
-							score += Math.round(question.getScoreWeight() * scorePercentage);
 						}
 
 						answeredCount++;

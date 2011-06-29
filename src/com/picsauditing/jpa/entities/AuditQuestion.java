@@ -447,10 +447,10 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	/**
 	 * The list of {@link AuditQuestionFunction}s that apply to this {@link AuditQuestion}.
-	 *
+	 * 
 	 * Note: Only the first {@link AuditQuestionFunction} with a {@link QuestionFunctionType} of "Calculation" will take
 	 * effect.
-	 *
+	 * 
 	 */
 	@OneToMany(mappedBy = "question")
 	public List<AuditQuestionFunction> getFunctions() {
@@ -464,7 +464,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	/**
 	 * This is a reference to the {@link AuditQuestionFunction}s that this {@link AuditQuestion} is required for
 	 * calcualtion.
-	 *
+	 * 
 	 */
 	@OneToMany(mappedBy = "question")
 	public List<AuditQuestionFunctionWatcher> getFunctionWatchers() {
@@ -477,7 +477,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	/**
 	 * This method runs all {@link AuditQuestionFunction} of a specific {@link QuestionFunctionType} "runType".
-	 *
+	 * 
 	 * @param runType
 	 * @param answerMap
 	 * @return Multimap of the {@link AuditQuestion} => a collection of Function Results.
@@ -496,7 +496,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	/**
 	 * This method is used to find a Set of {@link AuditQuestion}.id's that are needed by the
 	 * {@link AuditQuestionFunction}s of this {@link AuditQuestion}.
-	 *
+	 * 
 	 * This is to help create an {@link AnswerMap} of the answers that are required for calculation.
 	 */
 	@Transient
