@@ -322,7 +322,7 @@ $(function() {
 					</li>
 					<li>
 						<label for="conCanadianCompetitor">Has Canadian Competitor:</label>
-						<s:radio id="conCanadianCompetitor" theme="pics" list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" name="contractor.hasCanadianCompetitor" />
+						<s:radio id="conCanadianCompetitor" theme="pics" list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No'),'':getText('YesNo.NA')}" name="contractor.hasCanadianCompetitor" />
 					</li>
 					<li>
 						<s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />

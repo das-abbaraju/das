@@ -120,7 +120,7 @@ public class BillingCalculatorSingle {
 				if (CONTRACT_RENEWAL_BASF.after(now)) {
 					for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
 						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
-							newAmount = new BigDecimal(299);
+							newAmount = new BigDecimal(299).setScale(2);
 						}
 					}
 				}
@@ -145,7 +145,7 @@ public class BillingCalculatorSingle {
 			BigDecimal newAmount = newLevel.getAmount();
 
 			if (!hseCompetency && (employeeAudits || oq))
-				newAmount = BigDecimal.ZERO;
+				newAmount = BigDecimal.ZERO.setScale(2);
 
 			contractor.setNewFee(newLevel, newAmount);
 		} else {
@@ -216,7 +216,7 @@ public class BillingCalculatorSingle {
 				if (contractor.hasReducedActivation(fee)) {
 					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(fee);
 					fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 0);
-					fee.setAmount(new BigDecimal(reducedOperator.getActivationFee()));
+					fee.setAmount(new BigDecimal(reducedOperator.getActivationFee()).setScale(2));
 				}
 
 				// Activate effective today
@@ -275,7 +275,7 @@ public class BillingCalculatorSingle {
 			}
 
 			if (!upgrades.isEmpty()) {
-				BigDecimal upgradeAmount = BigDecimal.ZERO;
+				BigDecimal upgradeAmount = BigDecimal.ZERO.setScale(2);
 				String description = "";
 
 				// Actual prorated Upgrade
@@ -285,7 +285,7 @@ public class BillingCalculatorSingle {
 				if (daysUntilExpiration > 365)
 					daysUntilExpiration = 365.0;
 
-				BigDecimal upgradeTotal = BigDecimal.ZERO;
+				BigDecimal upgradeTotal = BigDecimal.ZERO.setScale(2);
 				for (ContractorFee upgrade : upgrades) {
 					BigDecimal upgradeAmountDifference = upgrade.getNewAmount();
 					if (contractor.getAccountLevel().isFull()) {
@@ -301,7 +301,7 @@ public class BillingCalculatorSingle {
 								+ upgrade.getCurrentAmount() + ". Prorated " + contractor.getCurrencyCode().getIcon()
 								+ upgradeAmount;
 					} else
-						upgradeAmount = BigDecimal.ZERO;
+						upgradeAmount = BigDecimal.ZERO.setScale(2);
 
 					InvoiceItem invoiceItem = new InvoiceItem();
 					invoiceItem.setInvoiceFee(upgrade.getNewLevel());
@@ -312,58 +312,13 @@ public class BillingCalculatorSingle {
 			}
 		}
 
-		List<InvoiceItem> discounts = new ArrayList<InvoiceItem>();
-		// Calculating discounts
-		for (InvoiceItem item : items) {
-			// Suncor First Year Registration
-			if (item.getInvoiceFee().getFeeClass().equals(FeeClass.AuditGUARD)
-					&& contractor.getRequestedBy().isDescendantOf(OperatorAccount.SuncorEnergyServices)
-					&& Boolean.TRUE.equals(contractor.getHasCanadianCompetitor())
-					&& new Date().before(SUNCOR_DISCOUNT_EXPIRATION)) {
-				InvoiceFee suncorDiscount = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.SuncorDiscount, contractor
-						.getPayingFacilities());
-				InvoiceItem invoiceItem = new InvoiceItem();
-				invoiceItem.setInvoiceFee(suncorDiscount);
-
-				// Registration date by June 30: Discount $200
-				// Registration date by July 31: Discount $180
-				// Registration date by Aug 31: Discount $160
-				// Registration date by Sept 30: Discount $140
-				// Registration date by Oct 31: Discount $120
-				// Registration date by Nov 30: Discount $100
-
-				// Calculating discount based off the day of invoice creation
-				BigDecimal discountAmount = BigDecimal.ZERO;
-				Date today = new Date();
-
-				if (today.before(DateBean.parseDate("2011-07-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-200.00));
-				else if (today.after(DateBean.parseDate("2011-07-01"))
-						&& today.before(DateBean.parseDate("2011-08-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-180.00));
-				else if (today.after(DateBean.parseDate("2011-08-01"))
-						&& today.before(DateBean.parseDate("2011-09-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-160.00));
-				else if (today.after(DateBean.parseDate("2011-09-01"))
-						&& today.before(DateBean.parseDate("2011-10-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-140.00));
-				else if (today.after(DateBean.parseDate("2011-10-01"))
-						&& today.before(DateBean.parseDate("2011-11-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-120.00));
-				else if (today.after(DateBean.parseDate("2011-11-01"))
-						&& today.before(DateBean.parseDate("2011-12-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-100.00));
-
-				invoiceItem.setAmount(discountAmount);
-				discounts.add(invoiceItem);
-			}
-		}
+		List<InvoiceItem> discounts = BillingCalculatorSingle.getDiscountItems(contractor, feeDAO);
 		items.addAll(discounts);
 
 		// Taxes come last
 		// Need to change Canadian contractors a GST for all invoices
 		if (contractor.getCurrencyCode().isCanada()) {
-			BigDecimal total = BigDecimal.ZERO;
+			BigDecimal total = BigDecimal.ZERO.setScale(2);
 			for (InvoiceItem ii : items)
 				total = total.add(ii.getAmount());
 
@@ -421,5 +376,54 @@ public class BillingCalculatorSingle {
 		Collections.sort(operatorsString);
 
 		return " You are listed on the following operator list(s): " + Strings.implode(operatorsString, ", ");
+	}
+	
+	public static List<InvoiceItem> getDiscountItems(ContractorAccount contractor, InvoiceFeeDAO invoiceFeeDAO){
+		List<InvoiceItem> discounts = new ArrayList<InvoiceItem>();
+
+		// Suncor First Year Registration
+		if (!contractor.getFees().get(FeeClass.AuditGUARD).getNewLevel().isFree()
+				&& contractor.getRequestedBy().isDescendantOf(OperatorAccount.SuncorEnergyServices)
+				&& Boolean.TRUE.equals(contractor.getHasCanadianCompetitor())
+				&& new Date().before(SUNCOR_DISCOUNT_EXPIRATION)) {
+			InvoiceFee suncorDiscount = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.SuncorDiscount, contractor
+					.getPayingFacilities());
+			InvoiceItem invoiceItem = new InvoiceItem();
+			invoiceItem.setInvoiceFee(suncorDiscount);
+
+			// Registration date by June 30: Discount $200
+			// Registration date by July 31: Discount $180
+			// Registration date by Aug 31: Discount $160
+			// Registration date by Sept 30: Discount $140
+			// Registration date by Oct 31: Discount $120
+			// Registration date by Nov 30: Discount $100
+
+			// Calculating discount based off the day of invoice creation
+			BigDecimal discountAmount = BigDecimal.ZERO.setScale(2);
+			Date today = new Date();
+
+			if (today.before(DateBean.parseDate("2011-07-01")))
+				discountAmount = discountAmount.add(new BigDecimal(-200.00));
+			else if (today.after(DateBean.parseDate("2011-07-01"))
+					&& today.before(DateBean.parseDate("2011-08-01")))
+				discountAmount = discountAmount.add(new BigDecimal(-180.00));
+			else if (today.after(DateBean.parseDate("2011-08-01"))
+					&& today.before(DateBean.parseDate("2011-09-01")))
+				discountAmount = discountAmount.add(new BigDecimal(-160.00));
+			else if (today.after(DateBean.parseDate("2011-09-01"))
+					&& today.before(DateBean.parseDate("2011-10-01")))
+				discountAmount = discountAmount.add(new BigDecimal(-140.00));
+			else if (today.after(DateBean.parseDate("2011-10-01"))
+					&& today.before(DateBean.parseDate("2011-11-01")))
+				discountAmount = discountAmount.add(new BigDecimal(-120.00));
+			else if (today.after(DateBean.parseDate("2011-11-01"))
+					&& today.before(DateBean.parseDate("2011-12-01")))
+				discountAmount = discountAmount.add(new BigDecimal(-100.00));
+
+			invoiceItem.setAmount(discountAmount);
+			discounts.add(invoiceItem);
+		}
+		
+		return discounts;
 	}
 }

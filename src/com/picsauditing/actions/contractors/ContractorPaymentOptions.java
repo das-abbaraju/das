@@ -7,9 +7,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
@@ -18,6 +19,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.util.BrainTree;
@@ -48,6 +50,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private InvoiceFee activationFee;
 	private InvoiceFee gstFee;
 	private InvoiceFee importFee;
+	private InvoiceFee suncorDiscount = new InvoiceFee();
+	
 	// Any time we do a get w/o an exception we set the communication status.
 	// That way we know the information switched off of in the jsp is valid
 	private boolean braintreeCommunicationError = false;
@@ -124,16 +128,24 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				if (contractor.hasReducedActivation(activationFee)) {
 					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activationFee);
 					activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 0);
-					activationFee.setAmount(new BigDecimal(reducedOperator.getActivationFee()));
+					activationFee.setAmount(new BigDecimal(reducedOperator.getActivationFee()).setScale(2));
 				}
 			} else
 				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
 						contractor.getPayingFacilities());
 		}
 
+		
+		List<InvoiceItem> discounts = BillingCalculatorSingle.getDiscountItems(contractor, invoiceFeeDAO);
+		for(InvoiceItem discount : discounts){
+			if(discount.getInvoiceFee().getFeeClass().equals(FeeClass.SuncorDiscount)){
+				suncorDiscount.setAmount(discount.getAmount());
+			}
+		}
+		
 		if (contractor.getCurrencyCode().isCanada()) {
 			gstFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
-			BigDecimal total = BigDecimal.ZERO;
+			BigDecimal total = BigDecimal.ZERO.setScale(2);
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
 				if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
 					total = total.add(contractor.getFees().get(feeClass).getNewAmount());
@@ -141,6 +153,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 			if (activationFee != null)
 				total = total.add(activationFee.getAmount());
+			total = total.add(suncorDiscount.getAmount());
 			gstFee.setAmount(gstFee.getGSTSurchage(total));
 		}
 
@@ -440,5 +453,18 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	public InvoiceFee getImportFee() {
 		return importFee;
+	}
+
+	public InvoiceFee getSuncorDiscount() {
+		return suncorDiscount;
+	}
+	
+	public boolean isEligibleForSuncorDiscount(){
+		List<InvoiceItem> discounts = BillingCalculatorSingle.getDiscountItems(contractor, invoiceFeeDAO);
+		for(InvoiceItem discount : discounts){
+			if(discount.getInvoiceFee().getFeeClass().equals(FeeClass.SuncorDiscount))
+				return true;
+		}
+		return false;
 	}
 }

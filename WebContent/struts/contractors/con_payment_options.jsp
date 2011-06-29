@@ -115,12 +115,15 @@ function updateExpDate() {
 				</s:if>
 			</s:iterator>
 			</table>
+			<s:if test="eligibleForSuncorDiscount">
+				<li><label>Suncor Early Registration Discount:</label> <s:property value="contractor.currencyCode.icon" /><s:property value="suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /></li>
+			</s:if>
 			<s:if test="contractor.currencyCode.canada">
 				<li><label>Goods & Services Tax:</label> <s:property value="contractor.currencyCode.icon" /><s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
-				<li><label>Total:</label> <s:property value="contractor.currencyCode.icon" /><s:property value="contractor.newMembershipAmount+gstFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label>Total:</label> <s:property value="contractor.currencyCode.icon" /><s:property value="contractor.newMembershipAmount+gstFee.amount+suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:if>
 			<s:else>
-				<li><label>Total:</label> <s:property value="contractor.currencyCode.icon" /><s:property value="contractor.newMembershipAmount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label>Total:</label> <s:property value="contractor.currencyCode.icon" /><s:property value="contractor.newMembershipAmount+suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:else>
 			</li>
 	</s:if>
@@ -149,12 +152,15 @@ function updateExpDate() {
 			<s:if test="contractor.accountLevel.full">
 				<li><label><s:property value="activationFee.fee"/>:</label> <s:property value="contractor.currencyCode.icon"/><s:property value="activationFee.amount"/> <s:property value="contractor.currencyCode" /></li>
 			</s:if>
+			<s:if test="eligibleForSuncorDiscount">
+				<li><label>Suncor Early Registration Discount:</label> <s:property value="contractor.currencyCode.icon" /><s:property value="suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /></li>
+			</s:if>
 			<s:if test="contractor.currencyCode.canada">
 				<li><label>Goods & Services Tax:</label> <s:property value="contractor.currencyCode.icon"/><s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
-				<li><label>Total:</label> <s:property value="contractor.currencyCode.icon"/><s:property value="activationFee.amount+contractor.newMembershipAmount+gstFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label>Total:</label> <s:property value="contractor.currencyCode.icon"/><s:property value="activationFee.amount+contractor.newMembershipAmount+gstFee.amount+suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:if>
 			<s:else>
-				<li><label>Total:</label> <s:property value="contractor.currencyCode.icon"/><s:property value="activationFee.amount+contractor.newMembershipAmount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label>Total:</label> <s:property value="contractor.currencyCode.icon"/><s:property value="activationFee.amount+contractor.newMembershipAmount+suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:else>
 		</s:else>
 	</s:else>

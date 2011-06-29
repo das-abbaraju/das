@@ -937,7 +937,7 @@ public class ContractorAccount extends Account implements JSONable {
 				if (BillingCalculatorSingle.CONTRACT_RENEWAL_BASF.after(now)) {
 					for (ContractorOperator contractorOperator : this.getNonCorporateOperators()) {
 						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
-							return new BigDecimal(299);
+							return new BigDecimal(299).setScale(2);
 						}
 					}
 				}
