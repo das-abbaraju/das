@@ -49,6 +49,8 @@ public class OperatorFlagMatrix extends ReportAccount {
 
 	public OperatorFlagMatrix(OperatorAccountDAO operatorDAO) {
 		setReportName("Contractor Operator Flag Matrix");
+		setMessageText("This matrix displays all contractors that have been flagged for a given criteria. </br> " +
+				"If a criteria is not shown, that is because there are no contractors for the given criteria who have been flagged</br>");
 		this.listType = ListType.Operator;
 		this.orderByDefault = "fc.displayOrder, fc.label";
 	}
