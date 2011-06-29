@@ -89,6 +89,12 @@
 				<label>Contractor Count:</label>
 				<s:property value="trade.contractorCount" />
 			</li>
+			<li>
+				<label>
+					Created by:
+				</label>
+				<s:set var="o" value="trade" /><s:include value="../who.jsp" />
+			</li>
 		</ol>
 	</fieldset>
 	<s:if test="trade.id > 0">
