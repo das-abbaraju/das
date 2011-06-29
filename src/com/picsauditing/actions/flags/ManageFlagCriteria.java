@@ -53,6 +53,10 @@ public class ManageFlagCriteria extends PicsActionSupport {
 				addActionError("Audit Status cannot be null when Audit Type Annual Update is selected.");
 			}
 
+			if (Strings.isEmpty(criteria.getDefaultValue())) {
+				addActionError("Default hurdle is a required field.");
+			}
+
 			if (hasActionErrors()) {
 				if (criteriaDAO.isContained(criteria))
 					criteriaDAO.refresh(criteria);
