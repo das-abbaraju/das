@@ -29,8 +29,8 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 	private int numVerified = 0;
 	private boolean override = false;
 	private boolean applies = true;
-	private float score = 0;
-	private int scoreCount = 0;
+	private float score = 0f;
+	private float scoreCount = 0f;
 	private Integer ruleID;
 
 	@ManyToOne
@@ -112,11 +112,11 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 		this.score = score;
 	}
 
-	public int getScoreCount() {
+	public float getScoreCount() {
 		return scoreCount;
 	}
 
-	public void setScoreCount(int scoreCount) {
+	public void setScoreCount(float scoreCount) {
 		this.scoreCount = scoreCount;
 	}
 
