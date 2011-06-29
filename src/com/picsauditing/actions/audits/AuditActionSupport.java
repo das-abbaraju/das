@@ -630,7 +630,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				node.category = cat;
 				node.override = getCategories().get(cat).isOverride();
 				if (conAudit.getAuditType().getClassType().isIm()) {
-					node.total = getCategories().get(cat).getScoreCount();
+					node.total = (int) getCategories().get(cat).getScorePossible();
 					node.verified = (int) (getCategories().get(cat).getScore());
 				} else {
 					node.total = getCategories().get(cat).getNumRequired();

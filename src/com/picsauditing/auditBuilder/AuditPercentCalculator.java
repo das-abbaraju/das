@@ -183,7 +183,7 @@ public class AuditPercentCalculator {
 		catData.setRequiredCompleted(requiredAnsweredCount);
 		catData.setNumVerified(verifiedCount);
 		catData.setScore(score);
-		catData.setScoreCount(scoreCount);
+		catData.setScorePossible(scoreCount);
 		// categoryDataDAO.save(catData);
 	}
 
@@ -239,9 +239,9 @@ public class AuditPercentCalculator {
 					answered += data.getRequiredCompleted();
 					verified += data.getNumVerified();
 
-					if (data.getScoreCount() > 0) {
+					if (data.getScorePossible() > 0) {
 						score += data.getScore();
-						scoreCount += data.getScoreCount();
+						scoreCount += data.getScorePossible();
 					}
 				}
 			}
