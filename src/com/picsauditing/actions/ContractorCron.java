@@ -733,6 +733,9 @@ public class ContractorCron extends PicsActionSupport {
 						audit.setClosingAuditor(new User(audit.getIndependentClosingAuditor(audit.getAuditor())));
 					}
 					break;
+				case (AuditType.WELCOME):
+					audit.setAuditor(contractor.getAuditor());
+					break;
 				}
 			}
 		}
