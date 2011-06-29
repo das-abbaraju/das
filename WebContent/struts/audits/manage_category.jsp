@@ -86,6 +86,10 @@ function showRules() {
 			<li><label>Unique Code:</label>
 				<s:textfield name="category.uniqueCode" />
 			</li>
+			<li>
+				<label>Score Weight</label>
+				<s:textfield name="category.scoreWeight"/>
+			</li>
 			<li><label># of Questions:</label>
 				<s:property value="category.numQuestions"/>
 			</li>
