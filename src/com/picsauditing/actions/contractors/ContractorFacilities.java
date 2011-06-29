@@ -175,7 +175,11 @@ public class ContractorFacilities extends ContractorActionSupport {
 					searchResults = new ArrayList<OperatorAccount>();
 					if (contractor.getCountry().getIsoCode().equals("US")
 							|| contractor.getCountry().getIsoCode().equals("CA")) {
-						List<BasicDynaBean> data = SmartFacilitySuggest.getFirstFacility(contractor);
+						String operators = null;
+						if (permissions.isCorporate()) 
+							operators = Strings.implode(permissions.getOperatorChildren());
+						
+						List<BasicDynaBean> data = SmartFacilitySuggest.getFirstFacility(contractor, operators);
 
 						for (BasicDynaBean d : data) {
 							OperatorAccount o = new OperatorAccount();

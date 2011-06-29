@@ -10,9 +10,10 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.Strings;
 
 public class SmartFacilitySuggest {
-	static public List<BasicDynaBean> getFirstFacility(ContractorAccount contractor) throws Exception, SQLException {
+	static public List<BasicDynaBean> getFirstFacility(ContractorAccount contractor, String operators) throws Exception, SQLException {
 		Calendar changedSince = Calendar.getInstance();
 		changedSince.add(Calendar.MONTH, -2);
 
@@ -33,6 +34,8 @@ public class SmartFacilitySuggest {
 				accuracyTest.addWhere("o.status in ('Active', 'Demo')");
 			else
 				accuracyTest.addWhere("o.status = 'Active'");
+			if (!Strings.isEmpty(operators))
+				accuracyTest.addWhere("o.id in (" + operators + ")");
 			accuracyTest.addField("COUNT(*) c");
 			accuracyTest.addWhere("c.zip LIKE '" + contractor.getZip().substring(0, zipLength) + "%'");
 
@@ -50,6 +53,8 @@ public class SmartFacilitySuggest {
 			inner1.addWhere("o.status in ('Active', 'Demo')");
 		else
 			inner1.addWhere("o.status = 'Active'");
+		if (!Strings.isEmpty(operators))
+			inner1.addWhere("o.id in (" + operators + ")");
 		inner1.addGroupBy("o.id");
 		inner1.addField("o.id opID");
 		addFields(inner1, "o.");
@@ -65,6 +70,8 @@ public class SmartFacilitySuggest {
 			inner2.addWhere("o.status in ('Active', 'Demo')");
 		else
 			inner2.addWhere("o.status = 'Active'");
+		if (!Strings.isEmpty(operators))
+			inner2.addWhere("o.id in (" + operators + ")");
 		inner2.addGroupBy("o.id");
 		inner2.addField("o.id opID");
 		addFields(inner2, "o.");

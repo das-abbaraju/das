@@ -9,7 +9,7 @@
 <s:else>
 	<s:if test="state == '' && operator.name == ''">
 	<div id="help">
-		Here are ten suggestions for other locations you might work at:
+		Here are some suggestions for other locations you might work at:
 	</div>
 	</s:if>
 <table class="report">
