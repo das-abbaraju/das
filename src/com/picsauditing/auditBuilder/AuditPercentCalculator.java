@@ -58,7 +58,7 @@ public class AuditPercentCalculator {
 		int answeredCount = 0;
 		int requiredCount = 0;
 		int verifiedCount = 0;
-		int scoreCount = 0;
+		float scoreWeight = 0;
 		float score = 0;
 
 		// Get a list of questions/answers for this category
@@ -123,7 +123,7 @@ public class AuditPercentCalculator {
 						if (catData.getAudit().getAuditType().isScoreable()) {
 							if (answer.isScoreApplies()) {
 								score += answer.getScoreValue();
-								scoreCount += question.getScoreWeight();
+								scoreWeight += question.getScoreWeight();
 							}
 						}
 
@@ -183,7 +183,7 @@ public class AuditPercentCalculator {
 		catData.setRequiredCompleted(requiredAnsweredCount);
 		catData.setNumVerified(verifiedCount);
 		catData.setScore(score);
-		catData.setScorePossible(scoreCount);
+		catData.setScorePossible(scoreWeight);
 		// categoryDataDAO.save(catData);
 	}
 
@@ -212,7 +212,7 @@ public class AuditPercentCalculator {
 			int answered = 0;
 			int verified = 0;
 
-			int scoreCount = 0;
+			float scoreWeight = 0;
 			float score = 0;
 
 			for (AuditCatData data : conAudit.getCategories()) {
@@ -241,16 +241,13 @@ public class AuditPercentCalculator {
 
 					if (data.getScorePossible() > 0) {
 						score += data.getScore();
-						scoreCount += data.getScorePossible();
+						scoreWeight += data.getScorePossible();
 					}
 				}
 			}
 
-			if (scoreCount > 0) {
-				if (conAudit.getAuditType().isScoreExtrapolated())
-					conAudit.setScore((int) ((score / scoreCount) * 100));
-				else
-					conAudit.setScore((int) score);
+			if (scoreWeight > 0) {
+				conAudit.setScore((int) Math.min(Math.round(score), 100L));
 			}
 
 			int percentComplete = 0;
