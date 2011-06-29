@@ -27,11 +27,15 @@
 					href="CategoryRuleTableAjax.action?comparisonRule.auditCategory.id=<s:property value="#category.id" />" 
 					rel="CategoryRuleTableAjax.action?comparisonRule.auditCategory.id=<s:property value="#category.id" />"></a>
 			</pics:permission>
-			<s:if test="permissions.developerEnvironment">
+			<pics:permission perm="DevelopmentEnvironment">
 				<span class="debug">
-					Required=<s:property value="categoryData.requiredCompleted"/>/<s:property value="categoryData.numRequired"/> Overide=<s:property value="categoryData.override"/>
+					Required=<s:property value="categoryData.requiredCompleted"/>/<s:property value="categoryData.numRequired"/>
+					<s:if test="conAudit.auditType.scoreable">
+					Score=<s:property value="categoryData.score"/>/<s:property value="categoryData.scorePossible"/>
+					</s:if>
+					Overide=<s:property value="categoryData.override"/>
 				</span>
-			</s:if>
+			</pics:permission>
 			<span class="categoryNumber"><s:property value="#category.fullNumber"/></span>
 		</h2>
 		<s:if test="#category.sha">
