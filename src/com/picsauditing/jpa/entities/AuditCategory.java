@@ -53,7 +53,7 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 	private String helpText;
 	private boolean hasHelpText;
 	private String uniqueCode;
-	private float scoreWeight;
+	private float scoreWeight = 0f;
 
 	private List<AuditCategory> subCategories = new ArrayList<AuditCategory>();
 	private List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
