@@ -290,18 +290,18 @@ public class SearchEngine {
 	public List<String> buildTerm(String check, boolean sort, boolean removeDups) {
 		if(Strings.isEmpty(check))
 			return Collections.emptyList();
-		String[] terms = check.toUpperCase().split("\\s+|@");
+		String[] terms = check.toUpperCase().split("\\W|_");
 		Collection<String> stringCollection;
 		if (removeDups)
 			stringCollection = new HashSet<String>(terms.length);
 		else
 			stringCollection = new ArrayList<String>();
 		for (int i = 0; i < terms.length; i++) {
-			stringCollection.add(terms[i].replaceAll("^(HTTP://)(W{3})|^(HTTP://)|^(W{3}.)|\\W", "").replaceAll(
+			stringCollection.add(terms[i].replaceAll("^(HTTP)|^(W{3})", "").replaceAll(
 					"[^a-zA-Z0-9\\s]", ""));
 		}
 		// remove empty strings
-		stringCollection.remove("");
+		while(stringCollection.remove(""));
 		List<String> s = new ArrayList<String>();
 		s.addAll(stringCollection);
 		if (sort)
