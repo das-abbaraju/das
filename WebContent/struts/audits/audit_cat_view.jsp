@@ -31,7 +31,7 @@
 				<span class="debug">
 					Required=<s:property value="categoryData.requiredCompleted"/>/<s:property value="categoryData.numRequired"/>
 					<s:if test="conAudit.auditType.scoreable">
-					Score=<s:property value="categoryData.score"/>/<s:property value="categoryData.scorePossible"/>
+						Score=<s:property value="categoryData.score"/>/<s:property value="categoryData.scorePossible"/>
 					</s:if>
 					Overide=<s:property value="categoryData.override"/>
 				</span>
