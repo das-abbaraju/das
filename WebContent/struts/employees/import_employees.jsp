@@ -8,7 +8,15 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
+<script type="text/javascript" src="js/jquery/jquery.min.js"></script>
 <script type="text/javascript">
+$(function() {
+	$('#content').delegate('.closeButton', 'click', function(e) {
+		e.preventDefault();
+		closePage();
+	});
+});
+
 function closePage() {
 	window.opener.location.reload();
 	self.close();
@@ -22,19 +30,29 @@ function closePage() {
 		<div id="content">
 			<h1>Import Employees</h1>
 			<s:include value="../actionMessages.jsp" />
-			<a href="resources/ImportEmployees.xls">Excel Template</a>
+			<div class="info">
+				Click on the link below to download the excel template used 
+			</div>
+			<s:if test="account.requiresCompetencyReview">
+				<a href="<s:property value="scope" />!download.action?account=<s:property value="account.id" />" target="_blank" class="excel">
+					<s:text name="%{scope}.button.DownloadExcelTemplate" />
+				</a>
+			</s:if>
+			<s:else>
+				<a href="resources/ImportEmployees.xls"><s:text name="%{scope}.button.DownloadExcelTemplate" /></a>
+			</s:else>
 			<div>
-			<s:form enctype="multipart/form-data" method="POST">
-				<s:hidden name="accountID" />
-				<div style="background-color: #F9F9F9;">
-					<div class="question">
-						<label>File:</label>
-						<s:file name="upload" value="%{upload}" size="50"></s:file><br /><br />
-						<button class="picsbutton" onclick="closePage(); return false;">Close and Return to Page</button>
-						<button class="picsbutton positive" name="button" value="Save" type="submit">Upload</button>
+				<s:form enctype="multipart/form-data" method="POST">
+					<s:hidden name="account" />
+					<div style="background-color: #F9F9F9;">
+						<div class="question">
+							<label>File:</label>
+							<s:file name="upload" size="50"></s:file><br /><br />
+							<input type="button" class="picsbutton closeButton" value="<s:text name="%{scope}.button.CloseAndReturn" />" />
+							<s:submit method="save" cssClass="picsbutton positive" value="%{getText('button.Upload')}" />
+						</div>
 					</div>
-				</div>
-			</s:form>
+				</s:form>
 			</div>
 			<br clear="all" />
 		</div>

@@ -46,7 +46,7 @@ $(function() {
 });
 
 function showExcelUpload() {
-	url = 'ManageEmployeesUpload.action?accountID=<s:property value="account.id" />';
+	url = 'ManageEmployeesUpload.action?account=<s:property value="account.id" />';
 	title = translation_uploadEmployees;
 	pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
 	fileUpload = window.open(url, title, pars);
@@ -70,7 +70,7 @@ function showExcelUpload() {
 	</s:if>
 
 	<a href="ManageEmployees!add.action?id=<s:property value="account.id" />" class="add"><s:text name="%{scope}.link.Add" /></a><br />
-	<a href="#" onclick="showExcelUpload(); return false;" class="add" id="addExcel"><s:text name="%{scope}.link.Import" /></a>
+	<a href="#" class="add" id="addExcel"><s:text name="%{scope}.link.Import" /></a>
 	<table>
 		<tr>
 			<s:if test="account.employees.size() > 0">
@@ -107,7 +107,6 @@ function showExcelUpload() {
 				<div id="employeeFormDiv">
 					<s:if test="employee != null && employee.id == 0">
 						<s:include value="manage_employees_form.jsp" />
-						<script type="text/javascript">setupEmployee();</script>
 					</s:if>
 				</div>
 			</td>

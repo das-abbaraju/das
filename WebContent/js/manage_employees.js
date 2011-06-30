@@ -57,6 +57,11 @@ function startup() {
 		e.preventDefault();
 		return confirm(translation_confirmDelete);
 	});
+	
+	$('body').delegate('#addExcel', 'click', function(e) {
+		e.preventDefault();
+		showExcelUpload();
+	});
 }
 
 function setupEmployee() {
