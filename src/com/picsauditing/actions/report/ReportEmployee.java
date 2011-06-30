@@ -44,8 +44,13 @@ public class ReportEmployee extends ReportActionSupport {
 		sql.addField("e.lastName");
 		sql.addField("e.title");
 
+		if (permissions.isContractor())
+			sql.addWhere(String.format("a.id = %d", permissions.getAccountId()));
+
 		if (permissions.isOperatorCorporate()) {
 			sql.addWhere("a.status IN ('Active'" + (permissions.getAccountStatus().isDemo() ? ",'Demo'" : "") + ")");
+			// TODO make sure we need to default this
+			sql.addWhere("e.active = 1");
 
 			if (permissions.isOperator()) {
 				sql.addWhere(String.format(

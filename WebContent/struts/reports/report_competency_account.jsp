@@ -7,8 +7,8 @@
 <script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min.js"></script>
 <script type="text/javascript">
 $(function() {
-$.mask.definitions['S']='[X0-9]';
-$('input.ssn').mask('SSS-SS-SSSS');
+	$.mask.definitions['S']='[X0-9]';
+	$('input.ssn').mask('SSS-SS-SSSS');
 });
 </script>
 </head>
