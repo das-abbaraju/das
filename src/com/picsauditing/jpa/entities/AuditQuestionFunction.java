@@ -1,9 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,14 +13,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.jpa.entities.QuestionFunction.FunctionInput;
 import com.picsauditing.util.AnswerMap;
 
 /**
  * Entity used to determine either the Answer (Calculation), Visibility and whether or not a {@link AuditQuestion} is
  * Required.
- *
+ * 
  * @author kpartridge
- *
+ * 
  */
 @SuppressWarnings("serial")
 @Entity
@@ -84,22 +83,8 @@ public final class AuditQuestionFunction extends BaseTable {
 	}
 
 	@Transient
-	private Map<String, String> getParameterMap(AnswerMap answerMap) {
-		Map<String, String> params = new HashMap<String, String>();
-		for (AuditQuestionFunctionWatcher watcher : watchers) {
-			AuditData auditData = answerMap.get(watcher.getQuestion().getId());
-			String answer = "";
-			if (auditData != null)
-				answer = auditData.getAnswer();
-			params.put(watcher.getUniqueCode(), answer);
-		}
-
-		return params;
-	}
-
-	@Transient
 	public Object calculate(AnswerMap answerMap) {
-		Object result = function.calculate(getParameterMap(answerMap));
+		Object result = function.calculate(new FunctionInput.Builder().answerMap(answerMap).watchers(watchers).build());
 		return result;
 	}
 }
