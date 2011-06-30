@@ -312,18 +312,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			String list = Strings.implode(f.getConAuditorId(), ",");
 			sql.addWhere("c.welcomeAuditor_id IN (" + list + ")");
 			setFiltered(true);
-
 		}
 
 		if (filterOn(f.getAccountLevel())) {
-			List<String> list = new ArrayList<String>();
-			for(String level : f.getAccountLevel()){
-				list.add("c.accountLevel LIKE '" + level + "'");
-			}
-			if(list.size() > 0) {
-				sql.addWhere(Strings.implode(list, " OR "));
-				setFiltered(true);
-			}
+			sql.addWhere("c.accountLevel IN (" + Strings.implodeForDB(f.getAccountLevel(), ",") + ")");
+			setFiltered(true);
 		}
 
 		if (filterOn(f.getRiskLevel())) {
@@ -338,20 +331,20 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 		if (filterOn(f.getService())) {
 			List<String> clauses = new ArrayList<String>();
-			for(String service : f.getService()){
-				if("Onsite".equals(service))
+			for (String service : f.getService()) {
+				if ("Onsite".equals(service))
 					clauses.add("a.onsiteServices = 1");
-				else if("Offsite".equals(service))
+				else if ("Offsite".equals(service))
 					clauses.add("a.offsiteServices = 1");
-				else if("Material Supplier".equals(service))
+				else if ("Material Supplier".equals(service))
 					clauses.add("a.materialSupplier = 1");
 			}
-			if(clauses.size() > 0) {
+			if (clauses.size() > 0) {
 				sql.addWhere(Strings.implode(clauses, " OR "));
 				setFiltered(true);
 			}
 		}
-		
+
 		if (f.getEmailTemplate() > 0) {
 			String emailQueueJoin = "LEFT JOIN email_queue eq on eq.conid = a.id AND eq.templateID = "
 					+ f.getEmailTemplate();
