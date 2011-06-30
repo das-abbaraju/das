@@ -1,9 +1,13 @@
 package com.picsauditing.jpa.entities;
 
+import java.text.DecimalFormat;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -70,5 +74,14 @@ public class ContractorTrade extends BaseTable implements Comparable<ContractorT
 		return getTrade().getName().toString().compareTo(o.getTrade().getName().toString());
 	}
 
-	
+	@Transient
+	public int getPercentOfTotal() {
+		Set<ContractorTrade> trades = contractor.getTrades();
+		float total = 0;
+		for (ContractorTrade c : trades) {
+			total += c.getActivityPercent();
+		}
+		DecimalFormat formatter = new DecimalFormat("###");
+		return Integer.parseInt(formatter.format(activityPercent / total * 100));
+	}
 }
