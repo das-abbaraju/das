@@ -78,7 +78,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			}
 		}
 	}
-	
+
 	public String execute() throws NoRightsException, IOException {
 		if (invoice == null) {
 			addActionError("We could not find the invoice you were looking for");
@@ -113,11 +113,16 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				List<String> changedItems = new ArrayList<String>();
 				List<InvoiceItem> removalList = new ArrayList<InvoiceItem>();
 
+				// insert|update|delete
 				for (FeeClass feeClass : contractor.getFees().keySet()) {
+					// update|delete
 					boolean found = false;
 					for (InvoiceItem item : invoice.getItems()) {
-						if (item.getInvoiceFee().equals(contractor.getFees().get(feeClass).getCurrentLevel())
-								&& !contractor.getFees().get(feeClass).getNewLevel().equals(item.getInvoiceFee())) {
+						// update current membership invoice item if different fee is due
+						if (item.getInvoiceFee().getFeeClass().equals(feeClass)
+								&& item.getInvoiceFee().isMembership()
+								&& !contractor.getFees().get(feeClass).getNewAmount().equals(
+										item.getInvoiceFee().getAmount())) {
 							found = true;
 							item.setInvoiceFee(contractor.getFees().get(feeClass).getNewLevel());
 							item.setAmount(contractor.getFees().get(feeClass).getNewAmount());
@@ -129,12 +134,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						}
 					}
 
-					// found a new fee
+					// found a new fee (insert)
 					if (!found && !contractor.getFees().get(feeClass).getNewLevel().isFree()) {
 						InvoiceItem newInvoiceItem = new InvoiceItem();
 						newInvoiceItem.setInvoiceFee(contractor.getFees().get(feeClass).getNewLevel());
-						newInvoiceItem
-								.setAmount(contractor.getFees().get(feeClass).getNewAmount());
+						newInvoiceItem.setAmount(contractor.getFees().get(feeClass).getNewAmount());
 						newInvoiceItem.setAuditColumns(new User(User.SYSTEM));
 
 						if ("Renewal".equals(contractor.getStatus()) && feeClass.isPaymentExpiresNeeded())
@@ -157,7 +161,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				contractor.syncBalance();
 				addNote("Changed invoice " + invoice.getId() + " to " + Strings.implode(changedItems), getUser());
 				message = "Changed Membership Level";
-				
+
 				String notes = "Thank you for doing business with PICS!";
 				notes += BillingCalculatorSingle.getOperatorsString(contractor);
 				invoice.setNotes(notes);
@@ -287,7 +291,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 												+ invoice.getId());
 							}
 
-							addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at " + permissions.getPicsBillingPhone() + ".");
+							addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at "
+									+ permissions.getPicsBillingPhone() + ".");
 
 							// Assuming Unpaid status per Aaron so that he can
 							// refund or void manually.
