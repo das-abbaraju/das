@@ -105,6 +105,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			if (needsUpgrades)
 				contractor.setLastUpgradeDate(new Date());
 
+			contractor.syncBalance();
 			accountDao.save(contractor);
 			addActionMessage("Successfully updated Risk Level" + (noteSummary.size() > 1 ? "s" : ""));
 		}

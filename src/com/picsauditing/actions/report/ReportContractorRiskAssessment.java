@@ -95,6 +95,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		noteDAO.save(note);
 
 		con.setAuditColumns(permissions);
+		con.syncBalance();
 		contractorAccountDAO.save(con);
 
 		auditorNotes = "";

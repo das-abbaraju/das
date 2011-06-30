@@ -112,8 +112,9 @@ public class FacilityChanger {
 		}
 
 		contractor.setLastUpgradeDate(new Date());
+		contractor.syncBalance();
 		checkOQ();
-		contractor.incrementRecalculation(10);
+		contractor.incrementRecalculation(5);
 
 		contractorAccountDAO.save(contractor);
 	}
@@ -158,7 +159,7 @@ public class FacilityChanger {
 
 					checkOQ();
 					contractor.incrementRecalculation(5);
-
+					contractor.syncBalance();
 					contractorAccountDAO.save(contractor);
 					return true;
 				}
