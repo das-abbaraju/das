@@ -154,7 +154,7 @@ function showOption() {
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
 <s:include value="../actionMessages.jsp" />
 
-<s:form id="save">
+<s:form id="save" cssClass="form">
 	<s:hidden name="id" />
 	<s:hidden name="parentID" value="%{question.category.id}"/>
 	<fieldset class="form">
@@ -228,6 +228,64 @@ function showOption() {
 		</li>
 	</ol>
 	</fieldset>
+	<s:if test="question.functions.size() > 0">
+	<fieldset>
+		<h2>Functions</h2>
+		<table class="report">
+		<thead>
+		<tr>
+			<th>Type</th>
+			<th>Function</th>
+			<th>Watchers (Operands)</th>
+		</tr>
+		</thead>
+		<s:iterator value="question.functions">
+			<tr>
+				<td><s:property value="type"/></td>
+				<td><s:property value="function"/></td>
+				<td>
+					<table class="inner">
+					<s:iterator value="watchers" var="w">
+						<tr>
+							<td><s:property value="#w.question.id"/></td>
+							<td><a href="ManageQuestion.action?id=<s:property value="#w.question.id"/>"><s:property value="#w.question.name"/></a></td>
+						</tr>
+					</s:iterator>
+					</table>
+				</td>
+			</tr>
+		</s:iterator>
+		</table>
+	</fieldset>
+	</s:if>
+	<s:if test="question.functionWatchers.size() > 0">
+	<fieldset>
+		<h2>Function Watchers</h2>
+		<table class="report">
+		<thead>
+		<tr>
+			<th>Type</th>
+			<th>Function</th>
+			<th>Affected Questions</th>
+		</tr>
+		</thead>
+		<s:iterator value="question.functionWatchers" var="w">
+			<tr>
+				<td><s:property value="#w.function.type"/></td>
+				<td><s:property value="#w.function.function"/></td>
+				<td>
+					<table class="inner">
+						<tr>
+							<td><s:property value="#w.function.question.id"/></td>
+							<td><a href="ManageQuestion.action?id=<s:property value="#w.function.question.id"/>"><s:property value="#w.function.question.name"/></a></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</s:iterator>
+		</table>
+	</fieldset>
+	</s:if>
 	<fieldset class="form">
 	<h2 class="formLegend">Additional Options</h2>
 	<ol>
