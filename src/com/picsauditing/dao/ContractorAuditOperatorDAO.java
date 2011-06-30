@@ -169,7 +169,8 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 				+ "select 1,1,Now(),Now(),cao.id,'Expired',cao.status from contractor_audit ca "
 				+ "join contractor_audit_operator cao on cao.auditid = ca.id "
 				+ "join audit_type at on at.id = ca.audittypeid "
-				+ "where cao.status != 'Expired' and ca.expiresDate < NOW() and at.renewable = 0";
+				+ "where cao.status != 'Expired' and "
+				+ "DATE_ADD(ca.expiresDate,interval 1 day) < NOW() and at.renewable = 0";
 		db.executeInsert(sql);
 
 		// post contractor audit workflow for renewable audits
@@ -177,20 +178,23 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 				+ "select 1,1,Now(),Now(),cao.id,'Pending',cao.status from contractor_audit ca "
 				+ "join contractor_audit_operator cao on cao.auditid = ca.id "
 				+ "join audit_type at on at.id = ca.audittypeid "
-				+ "where cao.status != 'Expired' and ca.expiresDate < NOW() and at.renewable = 1";
+				+ "where cao.status != 'Expired' and "
+				+ "DATE_ADD(ca.expiresDate,interval 1 day) < NOW() and at.renewable = 1";
 		db.executeInsert(sql);
 
 		// update the status for caos for non renewable audits
 		sql = "update contractor_audit_operator cao, contractor_Audit ca "
 				+ "set cao.status = 'Expired', statusChangedDate = Now() "
-				+ "where cao.auditid = ca.id and cao.status != 'Expired' and ca.expiresDate < NOW() "
+				+ "where cao.auditid = ca.id and cao.status != 'Expired' and "
+				+ "DATE_ADD(ca.expiresDate,interval 1 day) < NOW() "
 				+ "and ca.audittypeid IN (select id from audit_type where renewable= 0)";
 		db.executeUpdate(sql);
 
 		// update the status for caos for renewable audits
 		sql = "update contractor_audit_operator cao, contractor_Audit ca "
 				+ "set cao.status = 'Pending', cao.statusChangedDate = Now(), ca.expiresDate = null "
-				+ "where cao.auditid = ca.id and cao.status != 'Expired' and ca.expiresDate < NOW() "
+				+ "where cao.auditid = ca.id and cao.status != 'Expired' and "
+				+ "DATE_ADD(ca.expiresDate,interval 1 day) < NOW() "
 				+ "and ca.audittypeid IN (select id from audit_type where renewable= 1)";
 		db.executeUpdate(sql);
 

@@ -151,7 +151,7 @@ public class ReportActivityWatch extends ReportAccount {
 					"caow.creationDate",
 					"aType.id","caow.previousStatus","caow.status","(CASE WHEN ca.auditFor IS NULL OR ca.auditFor = '' THEN 0 ELSE ca.auditFor END)",
 					"CONCAT('Audit.action?auditID=', ca.id)", joins);
-			sql2.addWhere("ca.expiresDate IS NOT NULL AND ca.expiresDate < NOW()");
+			sql2.addWhere("ca.expiresDate IS NOT NULL AND DATE_ADD(ca.expiresDate,INTERVAL 1 day) < NOW()");
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
 		if (flagColorChange) {

@@ -87,7 +87,7 @@ public class ContractorAuditDAOTest {
 
 	@Test
 	public void testFindExpiredAudits() {
-		String where = "expiresDate < NOW() AND auditStatus <> 'Expired'";
+		String where = "DATE_ADD(ca.expiresDate,interval 1 day) < NOW() AND auditStatus <> 'Expired'";
 		List<ContractorAudit> conList = contractorauditDAO.findWhere(50, where, "expiresDate");
 		System.out.println(conList.size());
 	}

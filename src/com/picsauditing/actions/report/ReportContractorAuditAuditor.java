@@ -25,7 +25,7 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 		super.buildQuery();
 
 		sql.addJoin("LEFT JOIN (SELECT ca.conID, ca.auditTypeID, MAX(ca.expiresDate) expired FROM contractor_audit ca "
-				+ "WHERE ca.auditTypeID = 2 AND expiresDate < NOW() GROUP BY ca.conID "
+				+ "WHERE ca.auditTypeID = 2 AND DATE_ADD(expiresDate,INTERVAL 1 day) < NOW() GROUP BY ca.conID "
 				+ "ORDER BY ca.expiresDate DESC) ca2 ON ca2.conID = ca.conID AND ca2.auditTypeID = ca.auditTypeID");
 		sql.addField("ca2.expired");
 
