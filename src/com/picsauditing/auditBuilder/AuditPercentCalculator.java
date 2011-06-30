@@ -110,8 +110,11 @@ public class AuditPercentCalculator {
 					for (AuditQuestionFunction function : question.getFunctions()) {
 						if (function.getType() == QuestionFunctionType.Calculation) {
 							if (!target.isAnswered() || function.isOverwrite()) {
-								results = function.calculate(currentWatcherAnswers).toString();
-								break;
+								Object calculation = function.calculate(currentWatcherAnswers);
+								if (calculation != null) {
+									results = calculation.toString();
+									break;
+								}
 							}
 						}
 					}
