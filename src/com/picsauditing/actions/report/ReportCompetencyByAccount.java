@@ -1,7 +1,6 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilderEmployee;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -17,8 +16,6 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 		super.buildQuery();
 
 		sql.addJoin("LEFT JOIN job_role jr ON jr.accountID = a.id AND jr.active = 1");
-		sql.addJoin(String.format("JOIN contractor_tag ct ON ct.conID = a.id AND ct.tagID = %d",
-				OperatorTag.SHELL_COMPETENCY_REVIEW));
 		sql.addJoin(buildAuditJoin(AuditType.HSE_COMPETENCY));
 		sql.addJoin(buildAuditJoin(AuditType.SHELL_COMPETENCY_REVIEW));
 
@@ -27,6 +24,7 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 		sql.addField(buildAuditField(AuditType.HSE_COMPETENCY));
 		sql.addField(buildAuditField(AuditType.SHELL_COMPETENCY_REVIEW));
 
+		sql.addWhere("a.requiresCompetency = 1");
 		if (permissions.isCorporate()) {
 			PermissionQueryBuilderEmployee permQuery = new PermissionQueryBuilderEmployee(permissions);
 			sql.addWhere("1 " + permQuery.toString());

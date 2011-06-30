@@ -45,7 +45,7 @@ function orderBy(orderBy) {
 				<td><s:property value="get('title')"/></td>
 				<td><s:property value="get('roles')"/></td>
 				<td class="right"><s:property value="#data.get('skilled')" /> / <s:property value="#data.get('required')" /></td>
-				<td class="right"><s:property value="#data.get('percent')" />%</td>
+				<td class="right"><s:property value="#data.get('percent') > 100 ? 100 : #data.get('percent')" />%</td>
 			</tr>
 		</s:iterator>
 	</tbody>

@@ -1,6 +1,5 @@
 package com.picsauditing.actions.report;
 
-import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilderEmployee;
 import com.picsauditing.util.excel.ExcelCellType;
@@ -32,20 +31,19 @@ public class ReportCompetencyByEmployee extends ReportEmployee {
 		sql.addJoin("LEFT JOIN employee_role er ON er.employeeID = e.id");
 		sql.addJoin("LEFT JOIN job_role jr ON jr.accountID = a.id AND jr.id = er.jobRoleID AND jr.active = 1");
 		sql.addJoin("LEFT JOIN job_competency jc ON jc.jobRoleID = jr.id");
-		sql.addJoin(String.format("JOIN contractor_tag ct ON ct.conID = a.id AND ct.tagID = %d",
-				OperatorTag.SHELL_COMPETENCY_REVIEW));
 
 		sql.addField("GROUP_CONCAT(DISTINCT jr.name ORDER BY jr.name SEPARATOR ', ') roles");
 		sql.addField("IFNULL(ec.skilled, 0) skilled");
 		sql.addField("COUNT(DISTINCT jc.competencyID) required");
 		sql.addField("IFNULL(FLOOR((IFNULL(ec.skilled, 0)/COUNT(DISTINCT jc.competencyID)) * 100), 0) percent");
 
-		sql.addGroupBy("e.id");
-
+		sql.addWhere("a.requiresCompetency = 1");
 		if (permissions.isCorporate()) {
 			PermissionQueryBuilderEmployee permQuery = new PermissionQueryBuilderEmployee(permissions);
 			sql.addWhere("1 " + permQuery.toString());
 		}
+
+		sql.addGroupBy("e.id");
 	}
 
 	public String execute() throws Exception {
