@@ -265,4 +265,15 @@ public class AuditDataDAO extends PicsDAO {
 		query.setMaxResults(10);
 		return query.getResultList();
 	}
+	
+	public List<AuditData> findByCertificateID (int conID, int certID) {
+		Query query = em.createQuery("FROM AuditData d WHERE d.audit.contractorAccount.id = ? AND d.answer = ? AND d.question.questionType = 'FileCertificate'");
+		query.setParameter(1, conID);
+		query.setParameter(2, String.valueOf(certID));
+		try {
+			return query.getResultList();
+		} catch (NoResultException nre) {
+			return null;
+		}
+	}
 }

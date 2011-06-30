@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -92,6 +93,16 @@ public class ContractorAuditDAO extends PicsDAO {
 		Query query = em.createQuery("SELECT t FROM ContractorAudit t " + "WHERE t.contractorAccount.id = ? "
 				+ "ORDER BY auditTypeID");
 		query.setParameter(1, conID);
+		return query.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ContractorAudit> findByAuditType(int conID, AuditTypeClass classType) {
+		Query query = em.createQuery("SELECT t FROM ContractorAudit t " 
+				+ "WHERE t.contractorAccount.id = ? AND t.auditType.classType = '?'"
+				+ "ORDER BY auditTypeID");
+		query.setParameter(1, conID);
+		query.setParameter(2, classType.toString());
 		return query.getResultList();
 	}
 
