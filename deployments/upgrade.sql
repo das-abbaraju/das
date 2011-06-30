@@ -173,3 +173,5 @@ where timezone is null
 and country = 'GB'
 and city in ('Cheshire','London');
 --
+
+-- We need to rerun the Indexer because of PICS-2723 Trade Search Filter Doesn't Like Symbols
