@@ -424,6 +424,10 @@ public class Permissions implements Serializable {
 	public boolean isAuditor() {
 		return this.hasGroup(11);
 	}
+	
+	public boolean isIndependentAuditor() {
+		return this.hasGroup(11265);
+	}
 
 	public boolean isPicsEmployee() {
 		return (Account.PicsID == this.accountID);

@@ -1,10 +1,14 @@
 package com.picsauditing.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.picsauditing.jpa.entities.AuditStatus;
 
 @SuppressWarnings("serial")
 public class ReportFilterCAO extends ReportFilterAudit {
 
+	protected boolean showAuditorType = false;
 	protected boolean showAuditStatus = true;
 	protected boolean showPercentComplete = true;
 	protected boolean showCaoStatusChangedDate = true;
@@ -16,6 +20,7 @@ public class ReportFilterCAO extends ReportFilterAudit {
 	protected String percentComplete1;
 	protected String percentComplete2;
 	protected int[] caoOperator;
+	protected boolean auditorType = true;
 	protected boolean notRenewingContractors = false;
 	protected boolean contractorsWithPendingMembership = false;
 
@@ -113,5 +118,28 @@ public class ReportFilterCAO extends ReportFilterAudit {
 
 	public void setContractorsWithPendingMembership(boolean contractorsWithPendingMembership) {
 		this.contractorsWithPendingMembership = contractorsWithPendingMembership;
+	}
+
+	public boolean isShowAuditorType() {
+		return showAuditorType;
+	}
+
+	public void setShowAuditorType(boolean showAuditorType) {
+		this.showAuditorType = showAuditorType;
+	}
+	
+	public boolean isAuditorType() {
+		return auditorType;
+	}
+
+	public void setAuditorType(boolean auditorType) {
+		this.auditorType = auditorType;
+	}
+	
+	public Map<String, String> getAuditorTypeList() {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("false", "Closing Auditor");
+		map.put("true", "Safety Professional");
+		return map;
 	}
 }

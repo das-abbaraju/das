@@ -907,6 +907,13 @@
 				<s:radio list="filter.caowDetailList" name="filter.caowDetailLevel" />
 		</div>
 	</s:if>
+	
+	<s:if test="filter.showAuditorType && !isIndepenentAuditor()">
+		<br clear="all" />
+		<div class="filterOption">
+			<s:radio list="filter.auditorTypeList" name="filter.auditorType" />
+		</div>
+	</s:if>
 
 	<br clear="all" />
 	<div class="alphapaging">

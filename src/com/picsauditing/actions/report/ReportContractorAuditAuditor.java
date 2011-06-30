@@ -29,7 +29,11 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 				+ "ORDER BY ca.expiresDate DESC) ca2 ON ca2.conID = ca.conID AND ca2.auditTypeID = ca.auditTypeID");
 		sql.addField("ca2.expired");
 
-		sql.addWhere("ca.auditorID=" + permissions.getUserId());
+		if (getFilter().isAuditorType())
+			sql.addWhere("ca.auditorID=" + permissions.getUserId());
+		else 
+			sql.addWhere("ca.closingAuditorID=" + permissions.getUserId());
+		
 		sql.addWhere("a.status IN ('Active','Demo')");
 		if (getFilter().isNotRenewingContractors())
 			sql.addWhere("c.renew = 0");
@@ -52,6 +56,7 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 		orderByDefault = "ISNULL(ca2.expired), ca2.expired, ca.assignedDate DESC";
 
 		getFilter().setShowAuditor(false);
+		getFilter().setShowAuditorType(true);
 		getFilter().setShowStatus(false);
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
@@ -73,4 +78,9 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 				list2.add(auditType);
 		return list2;
 	}
+	
+	public boolean isIndepenentAuditor() {
+		return permissions.isIndependentAuditor();
+	}
+
 }
