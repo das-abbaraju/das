@@ -7,6 +7,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterEmployee;
@@ -18,6 +19,7 @@ public class ReportEmployee extends ReportActionSupport {
 	protected SelectSQL sql = new SelectSQL("employee e");
 	protected ReportFilterEmployee filter = new ReportFilterEmployee();
 	protected String filename;
+	protected boolean hse = false;
 
 	public ReportEmployee() {
 		orderByDefault = "a.name, e.lastName, e.firstName";
@@ -44,28 +46,37 @@ public class ReportEmployee extends ReportActionSupport {
 		sql.addField("e.lastName");
 		sql.addField("e.title");
 
+		String accountStatus = "'Active'";
+		if (permissions.isAdmin() || permissions.getAccountStatus().isDemo())
+			accountStatus += ", 'Demo'";
+		sql.addWhere(String.format("a.status IN (%s)", accountStatus));
+		// TODO make sure we need to default this
+		sql.addWhere("e.active = 1");
+		if (hse)
+			sql.addWhere("a.requiresCompetencyReview = 1");
+
 		if (permissions.isContractor())
 			sql.addWhere(String.format("a.id = %d", permissions.getAccountId()));
 
 		if (permissions.isOperatorCorporate()) {
-			sql.addWhere("a.status IN ('Active'" + (permissions.getAccountStatus().isDemo() ? ",'Demo'" : "") + ")");
-			// TODO make sure we need to default this
-			sql.addWhere("e.active = 1");
+			SelectSQL sql2 = new SelectSQL("generalcontractors gc");
 
 			if (permissions.isOperator()) {
-				sql.addWhere(String.format(
-						"a.id IN (SELECT subID FROM generalcontractors WHERE genID = %d) OR a.id = %d",
-						permissions.getAccountId(), permissions.getAccountId()));
+				if (hse) {
+					sql2.addJoin("JOIN facilities f ON f.opID = gc.genID");
+					sql2.addJoin(String.format("JOIN facilities c ON c.corporateID = f.corporateID "
+							+ "AND c.opID = %d AND c.corporateID NOT IN (%s)", permissions.getAccountId(),
+							Strings.implode(Account.PICS_CORPORATE)));
+				} else {
+					sql2.addWhere(String.format("gc.genID = %d", permissions.getAccountId()));
+				}
 			}
 
 			if (permissions.isCorporate()) {
-				String where = "a.id IN (SELECT gc.subID FROM generalcontractors gc "
-						+ "JOIN facilities f ON f.opID = gc.genID AND f.corporateID = %d) OR a.id = %d "
-						+ "OR a.id IN (SELECT opID FROM facilities WHERE corporateID = %d)";
-
-				where.replaceAll("%d", permissions.getAccountIdString());
-
-				sql.addWhere(where);
+				sql.addWhere(String.format("a.id IN (SELECT gc.subID FROM generalcontractors gc "
+						+ "JOIN facilities f ON f.opID = gc.genID AND f.corporateID = %1$d) OR a.id = %1$d "
+						+ "OR a.id IN (SELECT opID FROM facilities WHERE corporateID = %1$d)",
+						permissions.getAccountId()));
 			}
 		}
 
@@ -100,6 +111,11 @@ public class ReportEmployee extends ReportActionSupport {
 
 		if (f.isLimitEmployees() && f.isShowLimitEmployees())
 			sql.addWhere("a.id = " + permissions.getAccountId());
+
+		if (filterOn(f.getOperators())) {
+			sql.addWhere(String.format("e.id IN (SELECT es.employeeID FROM employee_site es WHERE es.opID IN (%s))",
+					Strings.implode(f.getOperators())));
+		}
 	}
 
 	protected void addExcelColumns() {

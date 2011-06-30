@@ -10,6 +10,7 @@ public class ReportCompetencyByEmployee extends ReportEmployee {
 
 	public ReportCompetencyByEmployee() {
 		orderByDefault = "a.name, e.lastName, e.firstName";
+		hse = true;
 	}
 
 	@Override
@@ -37,7 +38,6 @@ public class ReportCompetencyByEmployee extends ReportEmployee {
 		sql.addField("COUNT(DISTINCT jc.competencyID) required");
 		sql.addField("IFNULL(FLOOR((IFNULL(ec.skilled, 0)/COUNT(DISTINCT jc.competencyID)) * 100), 0) percent");
 
-		sql.addWhere("a.requiresCompetency = 1");
 		if (permissions.isCorporate()) {
 			PermissionQueryBuilderEmployee permQuery = new PermissionQueryBuilderEmployee(permissions);
 			sql.addWhere("1 " + permQuery.toString());
@@ -48,6 +48,7 @@ public class ReportCompetencyByEmployee extends ReportEmployee {
 
 	public String execute() throws Exception {
 		getFilter().setShowSsn(false);
+		getFilter().setShowOperators(true);
 
 		return super.execute();
 	}

@@ -7,11 +7,13 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.JobSiteDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.JobSite;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 
 @SuppressWarnings("serial")
@@ -31,6 +33,7 @@ public class ReportFilterEmployee extends ReportFilter {
 	protected boolean showAssessmentCenter = false;
 	protected boolean showJobRoles = false;
 	protected boolean showCompetencies = false;
+	protected boolean showOperators = false;
 
 	protected String accountName = DEFAULT_NAME;
 	protected String firstName;
@@ -42,7 +45,9 @@ public class ReportFilterEmployee extends ReportFilter {
 	protected int[] assessmentCenters;
 	protected int[] jobRoles;
 	protected int[] competencies;
+	protected int[] operators;
 
+	// Class variables
 	public void setAccountID(int accountID) {
 		this.accountID = accountID;
 	}
@@ -51,6 +56,7 @@ public class ReportFilterEmployee extends ReportFilter {
 		this.permissions = permissions;
 	}
 
+	// Show booleans
 	public boolean isShowAccountName() {
 		return showAccountName;
 	}
@@ -131,6 +137,15 @@ public class ReportFilterEmployee extends ReportFilter {
 		this.showCompetencies = showCompetencies;
 	}
 
+	public boolean isShowOperators() {
+		return showOperators;
+	}
+
+	public void setShowOperators(boolean showOperators) {
+		this.showOperators = showOperators;
+	}
+
+	// Fields
 	public String getAccountName() {
 		return accountName;
 	}
@@ -213,6 +228,14 @@ public class ReportFilterEmployee extends ReportFilter {
 		this.competencies = competencies;
 	}
 
+	public int[] getOperators() {
+		return operators;
+	}
+
+	public void setOperators(int[] operators) {
+		this.operators = operators;
+	}
+
 	// Lists
 	public List<JobSite> getProjectList() {
 		JobSiteDAO jobSiteDAO = (JobSiteDAO) SpringUtils.getBean("JobSiteDAO");
@@ -236,8 +259,12 @@ public class ReportFilterEmployee extends ReportFilter {
 	}
 
 	public List<OperatorCompetency> getCompetencyList() {
-		OperatorCompetencyDAO operatorCompetencyDAO = (OperatorCompetencyDAO) SpringUtils.getBean("OperatorCompetencyDAO");
-		
+		if (permissions == null)
+			return null;
+
+		OperatorCompetencyDAO operatorCompetencyDAO = (OperatorCompetencyDAO) SpringUtils
+				.getBean("OperatorCompetencyDAO");
+
 		if (permissions.isOperatorCorporate())
 			return operatorCompetencyDAO.findByOperator(permissions.getAccountId());
 		else if (permissions.isContractor())
@@ -245,7 +272,7 @@ public class ReportFilterEmployee extends ReportFilter {
 		else if (permissions.isAdmin()) {
 			int auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
 					.getContext().getSession().get("auditID"));
-			
+
 			if (auditID > 0) {
 				ContractorAudit audit = (ContractorAudit) operatorCompetencyDAO.find(ContractorAudit.class, auditID);
 				return operatorCompetencyDAO.findByContractor(audit.getContractorAccount().getId());
@@ -253,5 +280,13 @@ public class ReportFilterEmployee extends ReportFilter {
 		}
 
 		return null;
+	}
+
+	public List<OperatorAccount> getOperatorList() throws Exception {
+		if (permissions == null)
+			return null;
+
+		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
+		return dao.findWhere(false, "", permissions);
 	}
 }

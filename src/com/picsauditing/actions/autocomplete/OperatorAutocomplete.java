@@ -18,7 +18,8 @@ public final class OperatorAutocomplete extends AutocompleteActionSupport<Operat
 
 	@Override
 	protected Collection<OperatorAccount> getItems() {
-		if (!permissions.isAdmin() && !permissions.isCorporate()) {
+		// HSE specific -- We want operators to search for sibling operators
+		if (!permissions.isAdmin() && !permissions.isCorporate() && !permissions.isRequiresCompetencyReview()) {
 			// TODO Non admin/corporate queries not supported yet
 			return Collections.emptyList();
 		}

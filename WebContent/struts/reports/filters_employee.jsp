@@ -53,6 +53,17 @@
 	
 	<div class="clear"></div>
 	
+	<s:if test="filter.showOperators">
+		<div class="filterOption">
+			<a href="#" class="filterBox">Operators</a> =
+			<span class="q_status">ALL</span><br />
+			<span class="clearLink q_box select">
+				<s:textfield rel="Operator" name="filter.operators" cssClass="tokenAuto" />
+				<a class="clearLink" href="#">Clear</a>
+			</span>
+		</div>
+	</s:if>
+	
 	<s:if test="filter.showProjects">
 		<div class="filterOption">
 			<a href="#" onclick="toggleBox('form1_projects'); return false;">Projects</a> =

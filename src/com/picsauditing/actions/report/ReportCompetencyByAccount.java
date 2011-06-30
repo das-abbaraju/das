@@ -9,6 +9,7 @@ import com.picsauditing.util.excel.ExcelColumn;
 public class ReportCompetencyByAccount extends ReportEmployee {
 	public ReportCompetencyByAccount() {
 		orderByDefault = "name";
+		hse = true;
 	}
 
 	@Override
@@ -24,7 +25,6 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 		sql.addField(buildAuditField(AuditType.HSE_COMPETENCY));
 		sql.addField(buildAuditField(AuditType.SHELL_COMPETENCY_REVIEW));
 
-		sql.addWhere("a.requiresCompetency = 1");
 		if (permissions.isCorporate()) {
 			PermissionQueryBuilderEmployee permQuery = new PermissionQueryBuilderEmployee(permissions);
 			sql.addWhere("1 " + permQuery.toString());
@@ -32,10 +32,11 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 
 		sql.addGroupBy("a.id");
 
-		filter.setShowFirstName(false);
-		filter.setShowLastName(false);
-		filter.setShowEmail(false);
-		filter.setShowSsn(false);
+		getFilter().setShowFirstName(false);
+		getFilter().setShowLastName(false);
+		getFilter().setShowEmail(false);
+		getFilter().setShowSsn(false);
+		getFilter().setShowOperators(true);
 	}
 
 	@Override
