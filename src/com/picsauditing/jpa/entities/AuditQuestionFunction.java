@@ -32,6 +32,7 @@ public final class AuditQuestionFunction extends BaseTable {
 	private QuestionFunctionType type;
 	private QuestionFunction function;
 	private String expression;
+	private boolean overwrite;
 
 	private List<AuditQuestionFunctionWatcher> watchers = new ArrayList<AuditQuestionFunctionWatcher>();
 
@@ -71,6 +72,14 @@ public final class AuditQuestionFunction extends BaseTable {
 
 	public void setExpression(String expression) {
 		this.expression = expression;
+	}
+
+	public boolean isOverwrite() {
+		return overwrite;
+	}
+
+	public void setOverwrite(boolean overwrite) {
+		this.overwrite = overwrite;
 	}
 
 	@OneToMany(mappedBy = "function")

@@ -63,16 +63,6 @@ public class AuditPercentCalculator {
 		if (!catData.isApplies())
 			return;
 		
-		// TODO Kirk for OGP
-		
-//		Map<AuditQuestion, AuditQuestionFunction> functionsByAudit = auditQuestionDAO.findFunctionsByAudit(catData.getAudit().getAuditType());
-//		Set<AuditQuestion> watchMyFunctions = new HashSet<AuditQuestion>();
-//		Map<AuditType, ContractorAudit> myWatchedAudits = new HashMap<AuditType, ContractorAudit>();
-//		
-//		for (ContractorAudit audit : catData.getAudit().getContractorAccount().getAudits()) {
-//			myWatchedAudits.put(audit.getAuditType(), audit);
-//		}
-		
 		int requiredAnsweredCount = 0;
 		int answeredCount = 0;
 		int requiredCount = 0;
@@ -109,19 +99,30 @@ public class AuditPercentCalculator {
 			if (question.isValidQuestion(validDate) && question.getFunctions().size() > 0) {
 					AuditData target = auditDataDAO.findAnswerByAuditQuestion(catData.getAudit().getId(),question.getId());
 
-					// kirk if not overwrite and something in answer, skip
-
 					if (target == null) {
 						target = new AuditData();
 						target.setAudit(catData.getAudit());
 						target.setQuestion(question);
 					}
-					target.setAnswer(question.runFunctions(QuestionFunctionType.Calculation, currentWatcherAnswers));
-					target.setAuditColumns(new User(User.SYSTEM));
+					
+					String results = null;
+					
+					for (AuditQuestionFunction function : question.getFunctions()) {
+						if (function.getType() == QuestionFunctionType.Calculation) {
+							if (!target.isAnswered() || function.isOverwrite()) {
+								results = function.calculate(currentWatcherAnswers).toString();
+								break;
+							}
+						}
+					}
+
+					if (results != null) {
+						target.setAnswer(results);
+						target.setAuditColumns(new User(User.SYSTEM));
+					}
 					
 					if (!catData.getAudit().getData().contains(target))
 						catData.getAudit().getData().add(target);
-					
 			}
 		}
 		
