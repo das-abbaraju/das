@@ -171,28 +171,28 @@ public class AuditDataSave extends AuditActionSupport {
 			/*
 			 * Update my function questions;
 			 */
-			Multimap<AuditQuestion, Object> functionResults = auditData.getQuestion().runFunctions(
-					QuestionFunctionType.Calculation, answerMap);
-			for (Entry<AuditQuestion, Collection<Object>> entry : functionResults.asMap().entrySet()) {
-				if (entry.getValue().size() > 1) {
-					System.out.printf(
-							"Too many calculations for question %d. I will only use the first one. You need to fix this.\n",
-							entry.getKey().getId());
-				}
-				/*
-				 * Only take the first one
-				 */
-				Object result = entry.getValue().iterator().next();
-				AuditData target = auditDataDao.findAnswerByAuditQuestion(auditID, entry.getKey().getId());
-				if (target == null) {
-					target = new AuditData();
-					target.setAudit(auditData.getAudit());
-					target.setQuestion(entry.getKey());
-				}
-				target.setAnswer(result.toString());
-				target.setAuditColumns(permissions);
-				auditDataDao.save(target);
-			}
+//			Multimap<AuditQuestion, Object> functionResults = auditData.getQuestion().runFunctions(
+//					QuestionFunctionType.Calculation, answerMap);
+//			for (Entry<AuditQuestion, Collection<Object>> entry : functionResults.asMap().entrySet()) {
+//				if (entry.getValue().size() > 1) {
+//					System.out.printf(
+//							"Too many calculations for question %d. I will only use the first one. You need to fix this.\n",
+//							entry.getKey().getId());
+//				}
+//				/*
+//				 * Only take the first one
+//				 */
+//				Object result = entry.getValue().iterator().next();
+//				AuditData target = auditDataDao.findAnswerByAuditQuestion(auditID, entry.getKey().getId());
+//				if (target == null) {
+//					target = new AuditData();
+//					target.setAudit(auditData.getAudit());
+//					target.setQuestion(entry.getKey());
+//				}
+//				target.setAnswer(result.toString());
+//				target.setAuditColumns(permissions);
+//				auditDataDao.save(target);
+//			}
 
 			if (auditData.getAudit() != null) {
 				ContractorAudit tempAudit = null;

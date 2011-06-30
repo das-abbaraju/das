@@ -1,9 +1,12 @@
 package com.picsauditing.auditBuilder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +15,14 @@ import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditQuestionFunction;
+import com.picsauditing.jpa.entities.AuditQuestionFunctionWatcher;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -24,6 +30,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.QuestionFunctionType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
@@ -41,6 +48,8 @@ public class AuditPercentCalculator {
 	private AuditDataDAO auditDataDAO;
 	@Autowired
 	protected ContractorAuditOperatorDAO caoDAO;
+	@Autowired
+	protected AuditQuestionDAO auditQuestionDAO;
 
 	/**
 	 * Calculate the percent complete for all questions in this category
@@ -53,7 +62,17 @@ public class AuditPercentCalculator {
 
 		if (!catData.isApplies())
 			return;
-
+		
+		// TODO Kirk for OGP
+		
+//		Map<AuditQuestion, AuditQuestionFunction> functionsByAudit = auditQuestionDAO.findFunctionsByAudit(catData.getAudit().getAuditType());
+//		Set<AuditQuestion> watchMyFunctions = new HashSet<AuditQuestion>();
+//		Map<AuditType, ContractorAudit> myWatchedAudits = new HashMap<AuditType, ContractorAudit>();
+//		
+//		for (ContractorAudit audit : catData.getAudit().getContractorAccount().getAudits()) {
+//			myWatchedAudits.put(audit.getAuditType(), audit);
+//		}
+		
 		int requiredAnsweredCount = 0;
 		int answeredCount = 0;
 		int requiredCount = 0;
@@ -61,17 +80,51 @@ public class AuditPercentCalculator {
 		float scoreWeight = 0;
 		float score = 0;
 
+		Date validDate = catData.getAudit().getValidDate();
+
 		// Get a list of questions/answers for this category
 		Set<Integer> questionIDs = new HashSet<Integer>();
+		Collection<Integer> functionWatcherQuestionIds = new ArrayList<Integer>();
 
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 			questionIDs.add(question.getId());
+			
 			if (question.getRequiredQuestion() != null)
 				questionIDs.add(question.getRequiredQuestion().getId());
 			if (question.getVisibleQuestion() != null)
 				questionIDs.add(question.getVisibleQuestion().getId());
+			
+			if (question.isValidQuestion(validDate)) {
+				for(AuditQuestionFunction aqf: question.getFunctions())
+					for (AuditQuestionFunctionWatcher aqfw : aqf.getWatchers())
+						if (aqfw.getQuestion().isValidQuestion(validDate))
+							functionWatcherQuestionIds.add(aqfw.getQuestion().getId());
+			}
 		}
 
+		AnswerMap currentWatcherAnswers = auditDataDAO.findCurrentAnswers(catData.getAudit().getContractorAccount().getId(), functionWatcherQuestionIds);
+		
+		// Run functions to update answers
+		for (AuditQuestion question : catData.getCategory().getQuestions()) {
+			if (question.isValidQuestion(validDate) && question.getFunctions().size() > 0) {
+					AuditData target = auditDataDAO.findAnswerByAuditQuestion(catData.getAudit().getId(),question.getId());
+
+					// kirk if not overwrite and something in answer, skip
+
+					if (target == null) {
+						target = new AuditData();
+						target.setAudit(catData.getAudit());
+						target.setQuestion(question);
+					}
+					target.setAnswer(question.runFunctions(QuestionFunctionType.Calculation, currentWatcherAnswers));
+					target.setAuditColumns(new User(User.SYSTEM));
+					
+					if (!catData.getAudit().getData().contains(target))
+						catData.getAudit().getData().add(target);
+					
+			}
+		}
+		
 		// Get a map of all answers in this audit
 		List<AuditData> requiredAnswers = new ArrayList<AuditData>();
 		for (AuditData answer : catData.getAudit().getData())
@@ -79,7 +132,6 @@ public class AuditPercentCalculator {
 				requiredAnswers.add(answer);
 		AnswerMap answers = new AnswerMap(requiredAnswers);
 		// Get a list of questions/answers for this category
-		Date validDate = catData.getAudit().getValidDate();
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 			if (question.isValidQuestion(validDate)) {
 				boolean isRequired = question.isRequired();

@@ -7,9 +7,12 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -44,10 +47,22 @@ public class AuditOverride extends ContractorDocuments {
 				return SUCCESS;
 			}
 
-			if (selectedOperator != null && selectedOperator > 0) {
-				conAudit.setRequestingOpAccount(new OperatorAccount());
-				conAudit.getRequestingOpAccount().setId(selectedOperator);
+			if (selectedOperator == null || selectedOperator == 0) {
+				addActionError("You must select an operator.");
+				return SUCCESS;
 			}
+			conAudit.setRequestingOpAccount(new OperatorAccount());
+			conAudit.getRequestingOpAccount().setId(selectedOperator);
+
+			ContractorAuditOperator cao = new ContractorAuditOperator();
+			cao.setAudit(conAudit);
+			cao.setOperator(conAudit.getRequestingOpAccount());
+			cao.setAuditColumns(permissions);
+			// This is almost always Pending
+			AuditStatus firstStatus = conAudit.getAuditType().getWorkFlow().getFirstStep().getNewStatus();
+			cao.changeStatus(firstStatus, null);
+			conAudit.getOperators().add(cao);
+			conAudit.setLastRecalculation(null);
 
 			if (!Strings.isEmpty(auditFor))
 				conAudit.setAuditFor(auditFor);

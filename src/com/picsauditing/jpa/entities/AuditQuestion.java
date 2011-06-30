@@ -483,11 +483,30 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	 * @return Multimap of the {@link AuditQuestion} => a collection of Function Results.
 	 */
 	@Transient
-	public Multimap<AuditQuestion, Object> runFunctions(QuestionFunctionType runType, AnswerMap answerMap) {
+	public Multimap<AuditQuestion, Object> runWatcherFunctions(QuestionFunctionType runType, AnswerMap answerMap) {
 		Multimap<AuditQuestion, Object> results = ArrayListMultimap.create();
 		for (AuditQuestionFunctionWatcher watcher : functionWatchers) {
 			if (watcher.getFunction().getType() == runType) {
 				results.put(watcher.getFunction().getQuestion(), watcher.getFunction().calculate(answerMap));
+			}
+		}
+		return results;
+	}
+
+	/**
+	 * This method runs all {@link AuditQuestionFunction} of a specific {@link QuestionFunctionType} "runType".
+	 * 
+	 * @param runType
+	 * @param answerMap
+	 * @return result
+	 */
+	@Transient
+	public String runFunctions(QuestionFunctionType runType, AnswerMap answerMap) {
+		String results = "";
+		for (AuditQuestionFunction function : functions) {
+			if (function.getType() == runType) {
+				results = function.calculate(answerMap).toString();
+				break;
 			}
 		}
 		return results;

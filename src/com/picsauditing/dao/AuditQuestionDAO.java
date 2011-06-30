@@ -1,12 +1,18 @@
 package com.picsauditing.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditQuestionFunction;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.QuestionFunctionType;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -68,6 +74,36 @@ public class AuditQuestionDAO extends PicsDAO {
 
 	}
 
+	public Map<AuditQuestion, AuditQuestionFunction> findFunctionsByAudit(AuditType auditType) {
+		Query query = em.createQuery("SELECT t FROM AuditQuestionFunction t WHERE t.type = ? AND t.question.category.auditType = ?");
+		query.setParameter(1, QuestionFunctionType.Calculation);
+		query.setParameter(2, auditType);
+		
+		List<AuditQuestionFunction> list = query.getResultList();
+		
+		Map<AuditQuestion, AuditQuestionFunction> map = new HashMap<AuditQuestion, AuditQuestionFunction>();
+		for (AuditQuestionFunction auditQuestionFunction : list) {
+			map.put(auditQuestionFunction.getQuestion(), auditQuestionFunction);
+		}
+		
+		return map;
+	}
+	
+	public Map<AuditQuestion, AuditQuestionFunction> findFunctionsByCategory(AuditCategory category) {
+		Query query = em.createQuery("SELECT t FROM AuditQuestionFunction t WHERE t.type = ? AND t.question.category = ?");
+		query.setParameter(1, QuestionFunctionType.Calculation);
+		query.setParameter(2, category);
+		
+		List<AuditQuestionFunction> list = query.getResultList();
+		
+		Map<AuditQuestion, AuditQuestionFunction> map = new HashMap<AuditQuestion, AuditQuestionFunction>();
+		for (AuditQuestionFunction auditQuestionFunction : list) {
+			map.put(auditQuestionFunction.getQuestion(), auditQuestionFunction);
+		}
+		
+		return map;
+	}
+	
 	public List<AuditQuestion> findQuestionByOptionGroup(int optionGroupID) {
 		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE t.option.id = ? ORDER BY "
 				+ "t.category, t.number");

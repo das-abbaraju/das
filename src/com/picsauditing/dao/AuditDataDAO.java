@@ -1,6 +1,7 @@
 package com.picsauditing.dao;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -161,6 +162,16 @@ public class AuditDataDAO extends PicsDAO {
 		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id = ? AND question.id IN ("
 				+ Strings.implode(questionIds) + ") " + "ORDER BY d.creationDate");
 		query.setParameter(1, auditID);
+		return mapData(query.getResultList());
+	}
+
+	public AnswerMap findCurrentAnswers(int conId, Collection<Integer> questionIds) {
+		if (questionIds.size() == 0)
+			return new AnswerMap(Collections.<AuditData>emptyList());
+
+		Query query = em.createNativeQuery("select d.* from pqfdata d join contractor_audit ca on d.auditID = ca.id " +
+				" left join contractor_audit ca2 on ca.conID = ca2.conID and ca.auditTypeID = ca2.auditTypeID and ca.creationDate < ca2.creationDate " +
+                " where ca2.id is null and ca.conID = " + conId + " and d.questionID in (" + Strings.implode(questionIds) + ")", AuditData.class);
 		return mapData(query.getResultList());
 	}
 

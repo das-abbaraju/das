@@ -293,6 +293,12 @@ public class AuditBuilder {
 			}
 			// Where are we saving the catData??
 		}
+
+		// do for audits updated with last minute for "new" audits
+        if (conAudit.getCreationDate().getTime() > new Date().getTime() - (60 * 1000L)) {
+    		AuditPercentCalculator calculator = new AuditPercentCalculator();
+    		calculator.percentCalculateComplete(conAudit, true);        	
+        }
 	}
 
 	private boolean hasAnyCaoStatusAfterIncomplete(ContractorAudit conAudit) {
