@@ -1,7 +1,6 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 
@@ -43,10 +42,10 @@ public class AuditQuestionFunctionTest extends PicsDBTest {
 
 		AnswerMap answerMap = dataDao.findAnswers(332959, ids);
 
-		Multimap<AuditQuestion, Object> runFunctions = question.runFunctions(QuestionFunctionType.Calculation,
-				answerMap);
+		Multimap<AuditQuestion, Object> runWatcherFunctions = question.runWatcherFunctions(
+				QuestionFunctionType.Calculation, answerMap);
 
-		for (Entry<AuditQuestion, Object> entry : runFunctions.entries()) {
+		for (Entry<AuditQuestion, Object> entry : runWatcherFunctions.entries()) {
 			System.out.println("QUESTION: " + entry.getKey());
 			System.out.println("VALUE   : " + entry.getValue());
 		}
