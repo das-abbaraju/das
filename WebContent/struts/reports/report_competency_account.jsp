@@ -14,6 +14,7 @@ $(function() {
 </head>
 <body>
 <h1>HSE Competency By Account Report</h1>
+<s:include value="filters_employee.jsp" />
 <s:if test="data.size > 0">
 <div class="right">
 	<a class="excel" <s:if test="data.size > 500">onclick="return confirm('Are you sure you want to download all
@@ -22,7 +23,7 @@ $(function() {
 		title="Download all <s:property value="data.size"/> results to a CSV file">Download</a>
 </div>
 
-<table class="report" style="clear: none !important;">
+<table class="report">
 	<thead>
 		<tr>
 			<th><a href="?orderBy=name">Company</a></th>
