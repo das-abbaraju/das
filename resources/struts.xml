@@ -326,6 +326,11 @@
 			class="com.picsauditing.actions.flags.ContractorFlagChanges">
 			<result>struts/contractors/contractor_flag_changes.jsp</result>
 		</action>
+		
+		<action name="ContractorFlagChangesAjaxAddDetails"
+			class="com.picsauditing.actions.flags.ContractorFlagChangesAddDetails">
+			<result>struts/contractors/contractor_flag_changes_add_details.jsp</result>
+		</action>
 
 		<action name="OperatorFlagsCalculatorAjax"
 			class="com.picsauditing.actions.operators.OperatorFlagsCalculator">

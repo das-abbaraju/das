@@ -101,6 +101,23 @@ function resolveFlags(detail, baseline, title, gcId, id, opId) {
 		}
 	});
 }
+function addDetailsClueTips(gcID){
+	$("#add_details_" + gcID + " a").cluetip({
+		sticky : true,
+		hoverClass : 'cluetip',
+		mouseOutClose : true,
+		clickThrough : true,
+		ajaxCache : true,
+		closeText : "<img src='images/cross.png' width='16' height='16'>",
+		hoverIntent : {
+			interval : 300
+		},
+		arrows : true,
+		dropShadow : false,
+		width : 500,
+		cluetipClass : 'jtip',
+	});	
+}
 </script>
 </head>
 <body>
@@ -127,7 +144,7 @@ function resolveFlags(detail, baseline, title, gcId, id, opId) {
 			<pics:permission perm="AllContractors">
 				<th><a href="?orderBy=operator.name,a.name">Operator</a></th>
 			</pics:permission>
-			<!-- <th>Last Calc</th> -->
+			<th>Last Calc</th>
 			<!-- <th>Member Since</th> -->
 			<th>Useful Links</th>
 		</tr>
@@ -167,7 +184,16 @@ function resolveFlags(detail, baseline, title, gcId, id, opId) {
 			<pics:permission perm="AllContractors">
 				<td><s:property value="get('opName')"/></td>
 			</pics:permission>
-			<!-- <td><s:date name="get('lastRecalculation')" format="MM/dd/yyyy" /></td> -->
+			<td id="add_details_<s:property value="get('gcID')"/>">
+				<a title="Additional Details" rel="ContractorFlagChangesAjaxAddDetails.action?id=<s:property value="get('gcID')"/>">
+					<s:date name="get('lastRecalculation')" format="MM/dd/yyyy" />
+				</a>
+				<script type="text/javascript">
+					addDetailsClueTips(
+						'<s:property value="#gcID"/>'
+					);
+				</script>
+			</td>
 			<!-- <td><s:date name="get('membershipDate')" nice="true" /></td> -->
 			<td>
 				<a class="file" target="_BLANK" title="Opens in new window"
