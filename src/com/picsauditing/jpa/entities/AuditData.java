@@ -163,6 +163,8 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	public boolean isRequirementOpen() {
 		if (Strings.isEmpty(question.getOkAnswer()))
 			return false;
+		if (Strings.isEmpty(answer))
+			return false;
 		return (question.getOkAnswer().indexOf(answer) == -1);
 	}
 
@@ -174,24 +176,20 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 
 	/*
-	 * @Transient public boolean isRequired() { String isRequired =
-	 * question.getIsRequired(); if (isRequired.equals("Yes")) return true;
+	 * @Transient public boolean isRequired() { String isRequired = question.getIsRequired(); if
+	 * (isRequired.equals("Yes")) return true;
 	 * 
-	 * if (isRequired.equals("Depends")) { if (question.getr == null) return
-	 * false; String dependsOnAnswer = question.getDependsOnAnswer(); if
-	 * (dependsOnAnswer == null) return false;
+	 * if (isRequired.equals("Depends")) { if (question.getr == null) return false; String dependsOnAnswer =
+	 * question.getDependsOnAnswer(); if (dependsOnAnswer == null) return false;
 	 * 
-	 * // TODO BEFORE RELEASE! figure out some way to get the answer of a //
-	 * dependent question // dependsOnQuestion.getAnswer(); AuditData
-	 * contractorAnswer = null;
+	 * // TODO BEFORE RELEASE! figure out some way to get the answer of a // dependent question //
+	 * dependsOnQuestion.getAnswer(); AuditData contractorAnswer = null;
 	 * 
-	 * if (contractorAnswer == null) // The contractor hasn't answered this
-	 * question yet return false; // Such as "Yes" and "Yes with Office"
-	 * answers. if (dependsOnAnswer.equals("Yes*")) return
+	 * if (contractorAnswer == null) // The contractor hasn't answered this question yet return false; // Such as "Yes"
+	 * and "Yes with Office" answers. if (dependsOnAnswer.equals("Yes*")) return
 	 * contractorAnswer.getAnswer().startsWith("Yes");
 	 * 
-	 * if (dependsOnAnswer.equals(contractorAnswer.getAnswer())) return true; }
-	 * return false; }
+	 * if (dependsOnAnswer.equals(contractorAnswer.getAnswer())) return true; } return false; }
 	 */
 
 	/**
@@ -218,9 +216,8 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 
 	/**
-	 * Take a map of numerical AuditData answers and add an additional AuditData
-	 * containing an average. The new average will be verified only if all the
-	 * others are verified
+	 * Take a map of numerical AuditData answers and add an additional AuditData containing an average. The new average
+	 * will be verified only if all the others are verified
 	 */
 	public static AuditData addAverageData(Collection<AuditData> dataList) {
 		if (dataList == null || dataList.size() == 0)
@@ -276,7 +273,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		// return new Integer(getId()).compareTo(new Integer(other.getId()));
 		return 0;
 	}
-	
+
 	@Transient
 	public float getScorePercentage() {
 		float scorePercentage = 0f;
