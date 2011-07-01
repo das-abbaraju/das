@@ -45,6 +45,9 @@ public class AuditBuilder {
 	private AuditTypeRuleCache typeRuleCache;
 	@Autowired
 	private AuditCategoryRuleCache categoryRuleCache;
+	@Autowired
+	private AuditPercentCalculator auditPercentCalculator;
+	
 	private User systemUser = new User(User.SYSTEM);
 
 	public void buildAudits(ContractorAccount contractor) {
@@ -296,8 +299,7 @@ public class AuditBuilder {
 
 		// do for audits updated with last minute for "new" audits
         if (conAudit.getCreationDate().getTime() > new Date().getTime() - (60 * 1000L)) {
-    		AuditPercentCalculator calculator = new AuditPercentCalculator();
-    		calculator.percentCalculateComplete(conAudit, true);        	
+    		auditPercentCalculator.percentCalculateComplete(conAudit, true);        	
         }
 	}
 
