@@ -175,3 +175,5 @@ and city in ('Cheshire','London');
 --
 
 -- We need to rerun the Indexer because of PICS-2723 Trade Search Filter Doesn't Like Symbols
+-- PICS-2768
+update email_template set allowsVelocity = '1' WHERE id = '155';

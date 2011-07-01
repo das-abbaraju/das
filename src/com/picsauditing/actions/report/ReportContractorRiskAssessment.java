@@ -9,15 +9,20 @@ import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ReportContractorRiskAssessment extends ReportAccount {
@@ -65,15 +70,41 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		String noteMessage = type + " risk adjusted from ";
 
 		if (type.equals("Safety")) {
-			LowMedHigh safetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
+			LowMedHigh newSafetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
+			
+			LowMedHigh currentSafetyRisk = con.getSafetyRisk();
 
-			noteMessage += con.getSafetyRisk().toString() + " to " + safetyRisk.toString();
+			noteMessage += currentSafetyRisk.toString() + " to " + newSafetyRisk.toString();
 
 			// How can this happen?
-			if (safetyRisk.ordinal() > con.getSafetyRisk().ordinal())
+			if (newSafetyRisk.ordinal() > currentSafetyRisk.ordinal())
 				con.setLastUpgradeDate(new Date());
+			else if (newSafetyRisk.ordinal() < currentSafetyRisk.ordinal()) {
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setTemplate(155);
+				emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
+				emailBuilder.setToAddresses("billing@picsauditing.com");
+				emailBuilder.addToken("contractor", con);
+				emailBuilder.addToken("currentSafetyRisk", currentSafetyRisk);
+				emailBuilder.addToken("newSafetyRisk", newSafetyRisk);
 
-			con.setSafetyRisk(safetyRisk);
+				EmailQueue emailQueue;
+				try {
+					emailQueue = emailBuilder.build();
+					emailQueue.setPriority(60);
+					emailQueue.setViewableById(Account.PicsID);
+					EmailSender.send(emailQueue);
+				} catch (Exception e) {
+					PicsLogger
+							.log("Cannot send email to  "
+									+ con.getName()
+									+ " ("
+									+ con.getId()
+									+ ")");
+				}
+
+			}
+			con.setSafetyRisk(newSafetyRisk);
 		} else {
 			LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
 			LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
