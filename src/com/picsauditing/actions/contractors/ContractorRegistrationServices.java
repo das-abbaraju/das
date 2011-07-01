@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -164,9 +163,6 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 				contractor.setSafetyRisk(safety);
 				contractor.setProductRisk(product);
-
-				if (contractor.isMaterialSupplierOnly() && contractor.getProductRisk().equals(LowMedHigh.Low))
-					contractor.setAccountLevel(AccountLevel.ListOnly);
 
 				contractor.setAuditColumns(permissions);
 				accountDao.save(contractor);

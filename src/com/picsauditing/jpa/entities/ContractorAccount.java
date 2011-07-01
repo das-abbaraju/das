@@ -540,8 +540,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * Returns a list of the trades in a sorted order
-	 * This is needed for the struts iterator for the trade cloud
+	 * Returns a list of the trades in a sorted order This is needed for the struts iterator for the trade cloud
 	 */
 	@Transient
 	public List<ContractorTrade> getTradesSorted() {
@@ -1121,11 +1120,12 @@ public class ContractorAccount extends Account implements JSONable {
 				return "Reactivation";
 		}
 
-		// if any membership levels differ, amount is an upgrade
+		// if any non-bid or list membership level differs, amount is an upgrade
 		boolean upgrade = false;
 		boolean currentListOrBidOnly = false;
 		for (FeeClass feeClass : getFees().keySet()) {
-			if (!upgrade && this.getFees().get(feeClass).isUpgrade() && feeClass.isMembership())
+			if (!upgrade && this.getFees().get(feeClass).isUpgrade() && feeClass.isMembership()
+					&& !feeClass.equals(FeeClass.BidOnly) && !feeClass.equals(FeeClass.ListOnly))
 				upgrade = true;
 			if ((this.getFees().get(feeClass).getCurrentLevel().isBidonly() || this.getFees().get(feeClass)
 					.getCurrentLevel().isListonly())
@@ -1351,7 +1351,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public BigDecimal getNewMembershipAmount() {
 		BigDecimal newTotal = BigDecimal.ZERO;
 		for (ContractorFee fee : fees.values()) {
-			if(fee.getFeeClass().isMembership())
+			if (fee.getFeeClass().isMembership())
 				newTotal = newTotal.add(fee.getNewAmount());
 		}
 
@@ -1362,13 +1362,13 @@ public class ContractorAccount extends Account implements JSONable {
 	public BigDecimal getCurrentMembershipAmount() {
 		BigDecimal currentTotal = BigDecimal.ZERO;
 		for (ContractorFee fee : fees.values()) {
-			if(fee.getFeeClass().isMembership())
+			if (fee.getFeeClass().isMembership())
 				currentTotal = currentTotal.add(fee.getCurrentAmount());
 		}
 
 		return currentTotal;
 	}
-	
+
 	@Transient
 	public boolean isNeedsToIndicateCompetitor() {
 		return getRequestedBy() != null && getRequestedBy().isDescendantOf(OperatorAccount.SuncorEnergyServices)

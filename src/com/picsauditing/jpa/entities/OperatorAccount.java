@@ -214,6 +214,11 @@ public class OperatorAccount extends Account {
 		this.requiredTags = requiredTags;
 	}
 
+	@Transient
+	public boolean isAcceptsList() {
+		return this.isDescendantOf(OperatorAccount.SuncorEnergyServices);
+	}
+
 	@ManyToOne
 	@JoinColumn(name = "inheritFlagCriteria")
 	public OperatorAccount getInheritFlagCriteria() {

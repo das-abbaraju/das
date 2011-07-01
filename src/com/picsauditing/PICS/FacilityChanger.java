@@ -12,6 +12,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -21,6 +22,7 @@ import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -105,17 +107,29 @@ public class FacilityChanger {
 		}
 
 		// Need to upgrade this contractor if operator being added does not
-		// accept bid only contractors
-		if (contractor.isAcceptsBids() && !operator.isAcceptsBids()) {
-			contractor.setAcceptsBids(false);
+		// accept bid only contractors or list only contractors
+		if ((contractor.getAccountLevel().isBidOnly() && !operator.isAcceptsBids())
+				|| (contractor.getAccountLevel().isListOnly() && !operator.isAcceptsList())) {
+			contractor.setAccountLevel(AccountLevel.Full);
 			contractor.setRenew(true);
 		}
 
 		contractor.setLastUpgradeDate(new Date());
-		contractor.syncBalance();
 		checkOQ();
 		contractor.incrementRecalculation(5);
 
+		if (contractor.isMaterialSupplierOnly() && contractor.getProductRisk().equals(LowMedHigh.Low)
+				&& contractor.getStatus().isPending() && contractor.getAccountLevel().isFull()) {
+			boolean canBeListed = true;
+			for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {
+				if (!conOp.getOperatorAccount().isAcceptsList())
+					canBeListed = false;
+			}
+			if (canBeListed)
+				contractor.setAccountLevel(AccountLevel.ListOnly);
+		}
+
+		contractor.syncBalance();
 		contractorAccountDAO.save(contractor);
 	}
 
@@ -143,7 +157,7 @@ public class FacilityChanger {
 					// If user is a non-billing user, notify billing to
 					// adjust invoice
 					if (!permissions.isContractor() && !permissions.hasGroup(958)
-							&& !co.getContractorAccount().isAcceptsBids()) { // Billing/Accounting
+							&& !co.getContractorAccount().getAccountLevel().isBidOnly()) { // Billing/Accounting
 						EmailBuilder emailBuilder = new EmailBuilder();
 						emailBuilder.setTemplate(47); // Notice of Facility Rem
 						emailBuilder.setPermissions(permissions);
@@ -159,6 +173,18 @@ public class FacilityChanger {
 
 					checkOQ();
 					contractor.incrementRecalculation(5);
+
+					if (contractor.isMaterialSupplierOnly() && contractor.getProductRisk().equals(LowMedHigh.Low)
+							&& contractor.getStatus().isPending() && contractor.getAccountLevel().isFull()) {
+						boolean canBeListed = true;
+						for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {
+							if (!conOp.getOperatorAccount().isAcceptsList())
+								canBeListed = false;
+						}
+						if (canBeListed)
+							contractor.setAccountLevel(AccountLevel.ListOnly);
+					}
+
 					contractor.syncBalance();
 					contractorAccountDAO.save(contractor);
 					return true;
