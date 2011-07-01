@@ -53,6 +53,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private Invoice invoice;
 
 	private List<InvoiceFee> feeList = null;
+	
+	private String country;
 
 	AppPropertyDAO appPropDao;
 
@@ -64,6 +66,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		this.appPropDao = appPropDao;
 		this.paymentDAO = paymentDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
+		
 	}
 
 	@Override
@@ -90,6 +93,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			throw new NoRightsException("You can't view this invoice");
 		}
 
+		country = invoice.getAccount().getCountry().toString();
 		invoice.updateAmountApplied();
 		for (PaymentApplied ip : invoice.getPayments())
 			ip.getPayment().updateAmountApplied();
@@ -434,5 +438,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		}
 
 		return false;
+	}
+	public String getCountry(){
+		return country;		
 	}
 }

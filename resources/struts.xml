@@ -605,6 +605,10 @@
 			class="com.picsauditing.actions.contractors.InvoiceDetail">
 			<result>struts/contractors/invoice_detail.jsp</result>
 		</action>
+		<action name="BillingAddress"
+			class="com.picsauditing.actions.contractors.BillingAddress">
+			<result>struts/contractors/billing_address.jsp</result>
+		</action>
 		<action name="PaymentDetail"
 			class="com.picsauditing.actions.contractors.PaymentDetail">
 			<result>struts/contractors/payment_detail.jsp</result>

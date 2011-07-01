@@ -55,9 +55,18 @@ input[type=submit] {
 			<table width="100%">
 				<tr>
 					<td width="100"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></td>
-					<td style="padding: 10px;">PICS <br>
-					P.O. Box 51387 <br>
-					Irvine, CA 92619-1387</td>
+					<td style="padding: 10px;" id="billingAddress">
+						<script type="text/javascript">
+							$.ajax({
+								url: "BillingAddress.action?country=" + '<s:property value="country" />',
+								success: function(data){
+									$("#billingAddress").html(data);
+								}	
+							});
+						</script>
+					
+					</td>
+					
 					<td width="400">
 					<table width="100%" border="0" cellspacing="0" cellpadding="4" class="allborder">
 						<tr>
