@@ -9,7 +9,7 @@ import java.util.Map;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.util.Strings;
 
-public class TranslatableString implements Serializable {
+public class TranslatableString implements Comparable<TranslatableString>, Serializable {
 
 	private static final long serialVersionUID = 782714396254144725L;
 
@@ -108,6 +108,11 @@ public class TranslatableString implements Serializable {
 			return translations.get(fallback).getValue();
 		else
 			return null;
+	}
+
+	@Override
+	public int compareTo(TranslatableString o) {
+		return this.toString().compareTo(o.toString());
 	}
 
 	public String getLocale() {

@@ -10,6 +10,8 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
+
 @SuppressWarnings("unchecked")
 public class AuditTypeCache extends BaseCache 
 {
@@ -52,18 +54,26 @@ public class AuditTypeCache extends BaseCache
 		}
 	}
 
+	protected List sortList(List list) {
+		Object[] array = list.toArray();
+		Arrays.sort(array);
+		return Arrays.asList(array);
+	}
+	
 	public List<AuditType> getAuditTypes() {
 		return auditTypes;
 	}
+
 	public List<AuditType> getAuditTypes(Permissions permissions) {
 		List<AuditType> list = new ArrayList<AuditType>();
+		auditTypes = sortList(auditTypes);
 		for (AuditType aType : auditTypes) {
 			if (!aType.isAnnualAddendum() && (aType.getClassType().equals(AuditTypeClass.Audit)  || aType.getClassType().equals(AuditTypeClass.IM)) && permissions.canSeeAudit(aType))
 				list.add(aType);
 		}
 		return list;
 	}
-	
+
 	public List<AuditType> getPqfTypes(Permissions permissions) {
 		List<AuditType> list = new ArrayList<AuditType>();
 		for (AuditType aType : auditTypes) {
