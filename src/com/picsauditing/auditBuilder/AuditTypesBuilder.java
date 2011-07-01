@@ -113,9 +113,11 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 			if (DateBean.getDateDifference(contractor.getCreationDate()) < -90)
 				return false;
 		}
-		if (auditTypeRule.isManuallyAdded()) {
-			return false;
-		}
+		
+		// Based on PICS-2734, we're going to check for ManuallyAdded in AuditBuilder line 62
+		//if (auditTypeRule.isManuallyAdded())
+		//return false;
+		
 		if (auditTypeRule.getDependentAuditType() != null && auditTypeRule.getDependentAuditStatus() != null) {
 			for (ContractorAudit audit : contractor.getAudits()) {
 				if (!audit.isExpired()

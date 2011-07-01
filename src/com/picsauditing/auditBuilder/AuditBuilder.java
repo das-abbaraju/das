@@ -62,42 +62,44 @@ public class AuditBuilder {
 		/* Add audits not already there */
 		int year = DateBean.getCurrentYear();
 		for (AuditTypeDetail detail : requiredAuditTypeDetails) {
-			AuditType auditType = detail.rule.getAuditType();
-			requiredAuditTypes.add(auditType);
-			if (auditType.isAnnualAddendum()) {
-				auditType = reconnectAuditType(auditType);
-				addAnnualUpdate(contractor, year - 1, auditType);
-				addAnnualUpdate(contractor, year - 2, auditType);
-				addAnnualUpdate(contractor, year - 3, auditType);
-			} else {
-				boolean found = false;
-				for (ContractorAudit conAudit : contractor.getAudits()) {
-					if (conAudit.getAuditType().equals(auditType)) {
-						// We found a matching audit for this requirement
-						// Now determine if it will be good enough
-						if (auditType.isRenewable()) {
-							// This audit should not be renewed but we already
-							// have one
-							found = true;
-						} else if (auditType.getId() == AuditType.WELCOME) {
-							// we should never add another welcome call audit
-							found = true;
-						} else {
-							if (!conAudit.isExpired() && !conAudit.willExpireSoon())
-								// The audit is still valid for a number of days dependent on its type
+			if (!detail.rule.isManuallyAdded()) {
+				AuditType auditType = detail.rule.getAuditType();
+				requiredAuditTypes.add(auditType);
+				if (auditType.isAnnualAddendum()) {
+					auditType = reconnectAuditType(auditType);
+					addAnnualUpdate(contractor, year - 1, auditType);
+					addAnnualUpdate(contractor, year - 2, auditType);
+					addAnnualUpdate(contractor, year - 3, auditType);
+				} else {
+					boolean found = false;
+					for (ContractorAudit conAudit : contractor.getAudits()) {
+						if (conAudit.getAuditType().equals(auditType)) {
+							// We found a matching audit for this requirement
+							// Now determine if it will be good enough
+							if (auditType.isRenewable()) {
+								// This audit should not be renewed but we already
+								// have one
 								found = true;
+							} else if (auditType.getId() == AuditType.WELCOME) {
+								// we should never add another welcome call audit
+								found = true;
+							} else {
+								if (!conAudit.isExpired() && !conAudit.willExpireSoon())
+									// The audit is still valid for a number of days dependent on its type
+									found = true;
+							}
 						}
 					}
-				}
 
-				if (!found) {
-					auditType = reconnectAuditType(auditType);
+					if (!found) {
+						auditType = reconnectAuditType(auditType);
 
-					ContractorAudit audit = new ContractorAudit();
-					audit.setContractorAccount(contractor);
-					audit.setAuditType(auditType);
-					audit.setAuditColumns(systemUser);
-					contractor.getAudits().add(audit);
+						ContractorAudit audit = new ContractorAudit();
+						audit.setContractorAccount(contractor);
+						audit.setAuditType(auditType);
+						audit.setAuditColumns(systemUser);
+						contractor.getAudits().add(audit);
+					}
 				}
 			}
 		}
@@ -134,14 +136,14 @@ public class AuditBuilder {
 				 * operators)
 				 */
 				// TODO testing updating categories and caos for a manually added audit
+			} else {
+				Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, auditTypeDetail.operators);
 				if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF) {
 					// Import PQF does not have an audit type detail because it is manually added, and the audit is an
 					// exception in that the only CAO is PICS Global. The audit_cat_data need to be generated here. We
 					// need all the categories for this audit.
-					fillAuditCategories(conAudit, new HashSet<AuditCategory>(conAudit.getAuditType().getCategories()));
+					categories = new HashSet<AuditCategory>(conAudit.getAuditType().getCategories());
 				}
-			} else {
-				Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, auditTypeDetail.operators);
 				fillAuditCategories(conAudit, categories);
 				fillAuditOperators(conAudit, categoriesBuilder.getCaos());
 			}
