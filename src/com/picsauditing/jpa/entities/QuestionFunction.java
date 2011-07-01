@@ -29,7 +29,7 @@ public enum QuestionFunction {
 	 * 
 	 * Ex: {totalIncidents} / {manHours}
 	 */
-	Custom {
+	CUSTOM {
 		@Override
 		public Object calculate(FunctionInput input) {
 			Map<String, String> params = input.getParams();
@@ -60,7 +60,7 @@ public enum QuestionFunction {
 	 * 
 	 * Net Premium Rate / Industry Rate
 	 */
-	WCBSurcharge {
+	WCB_SURCHARGE {
 		@Override
 		public Object calculate(FunctionInput input) {
 			Map<String, String> params = input.getParams();
@@ -107,8 +107,11 @@ public enum QuestionFunction {
 			if ("Yes".equals(value))
 				return "D";
 			if ("No".equals(value))
-				return "A";
-			return null;
+				return "B";
+			if ("NA".equals(value))
+				return "E";
+
+			return "E";
 		}
 	};
 
@@ -157,7 +160,7 @@ public enum QuestionFunction {
 		public AnswerMap getAnswerMap() {
 			return answerMap;
 		}
-		
+
 		public Collection<AuditQuestionFunctionWatcher> getWatchers() {
 			return watchers;
 		}
