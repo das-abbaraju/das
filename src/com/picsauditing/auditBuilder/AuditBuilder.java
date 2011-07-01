@@ -254,10 +254,10 @@ public class AuditBuilder {
 
 		for (AuditCatData auditCatData : conAudit.getCategories()) {
 			if (auditCatData.getCategory().getParent() == null) {
-				if (conAudit.getAuditType().isDesktop() && hasAnyCaoStatusAfterIncomplete(conAudit)) {
+				if (hasAnyCaoStatusAfterIncomplete(conAudit)) {
 					/*
 					 * this is to ensure that we don't add new categories or remove the existing ones except the
-					 * override categories for a manual audit after is it being submitted
+					 * override categories for an audit after is it being submitted
 					 */
 					if (auditCatData.isApplies())
 						categoriesNeeded.add(auditCatData.getCategory());
