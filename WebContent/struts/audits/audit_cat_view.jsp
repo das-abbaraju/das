@@ -29,11 +29,11 @@
 			</pics:permission>
 			<pics:permission perm="DevelopmentEnvironment">
 				<span class="debug">
-					Required=<s:property value="categoryData.requiredCompleted"/>/<s:property value="categoryData.numRequired"/>
+					Required=<s:property value="categories.get(#category).requiredCompleted"/>/<s:property value="categories.get(#category).numRequired"/>
 					<s:if test="conAudit.auditType.scoreable">
-						Score=<s:property value="categoryData.score"/>/<s:property value="categoryData.scorePossible"/>
+						Score=<s:property value="categories.get(#category).score"/>/<s:property value="categories.get(#category).scorePossible"/>
 					</s:if>
-					Overide=<s:property value="categoryData.override"/>
+					Overide=<s:property value="categories.get(#category).override"/>
 				</span>
 			</pics:permission>
 			<span class="categoryNumber"><s:property value="#category.fullNumber"/></span>
