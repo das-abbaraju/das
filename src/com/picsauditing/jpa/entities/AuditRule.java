@@ -364,6 +364,11 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 			return questionComparator.equals(QuestionComparator.Empty);
 		}
+		
+		if (data.getAudit().getEffectiveDate().before(data.getQuestion().getEffectiveDate())) 
+			return false;
+		if (!data.getAudit().getEffectiveDate().before(data.getQuestion().getExpirationDate())) 
+			return false;
 
 		if (questionComparator == null)
 			return false;
