@@ -3,24 +3,21 @@ package com.picsauditing.actions.flags;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.dao.UserDAO;
 
 @SuppressWarnings("serial")
 public class ContractorFlagChangesAddDetails extends ContractorActionSupport {
 
-	private int id = 0;
-	private int priority;
-	private ContractorOperatorDAO contractorOperatorDao;
-	private UserDAO userDao;
-	private com.picsauditing.jpa.entities.ContractorOperator co;
-	private PicsDAO picsDao;
+	protected int id = 0;
+	protected int priority;
+	protected ContractorOperatorDAO contractorOperatorDao;
+	protected UserDAO userDao;
+	protected com.picsauditing.jpa.entities.ContractorOperator co;
 
 	public ContractorFlagChangesAddDetails(UserDAO userDao, ContractorOperatorDAO contractorOperatorDao,
-			ContractorAccountDAO contractorAccountDao, PicsDAO picsDao) {
+			ContractorAccountDAO contractorAccountDao) {
 		this.contractorOperatorDao = contractorOperatorDao;
 		this.userDao = userDao;
-		this.picsDao = picsDao;
 	}
 
 	@Override
@@ -29,7 +26,6 @@ public class ContractorFlagChangesAddDetails extends ContractorActionSupport {
 			return LOGIN;
 		co = contractorOperatorDao.find(id);
 		priority = co.getContractorAccount().getNeedsRecalculation();
-		
 		return SUCCESS;
 	}
 
@@ -51,12 +47,14 @@ public class ContractorFlagChangesAddDetails extends ContractorActionSupport {
 
 	public String getEta() {
 		String eta;
-		if (priority > 0)
-			eta = "Prioritized";
-		else {
-			eta = "";
-		}
-
+		if (priority > 95)
+			eta = "Soon";
+		if (priority > 63)
+			eta = "In a bit";
+		if (priority > 31)
+			eta = "In a while";
+		else
+			eta = "Don't hold your breath";
 		return eta;
 	}
 
