@@ -387,6 +387,10 @@ public class AuditPercentCalculator {
 	private float calculateWeightedScore(AuditCategory category, Map<AuditCategory, AuditCatData> catDatas) {
 		float subScore = 0f;
 		float scorePossible = 0f;
+		/*
+		 * We either collect the questions (i.e. catData.score and catData.scorePossible) or the subcategories. We
+		 * cannot do both currently, as it is comparing apples and oranges.
+		 */
 		if (category.getSubCategories().size() > 0) {
 			for (AuditCategory subCategory : category.getSubCategories()) {
 				float runningScore = calculateWeightedScore(subCategory, catDatas);
@@ -398,6 +402,9 @@ public class AuditPercentCalculator {
 					scorePossible += subCategory.getScoreWeight();
 				}
 			}
+			/*
+			 * Prevent a divide by 0. This will likely never happen
+			 */
 			if (scorePossible > 0) {
 				subScore = subScore / scorePossible;
 			}
