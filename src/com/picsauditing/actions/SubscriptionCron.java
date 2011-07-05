@@ -24,7 +24,6 @@ import com.picsauditing.mail.ContractorAddedSubscription;
 import com.picsauditing.mail.ContractorRegistrationSubscription;
 import com.picsauditing.mail.FlagChangesSubscription;
 import com.picsauditing.mail.FlagColorSubscription;
-import com.picsauditing.mail.ForcedFlagsSubscription;
 import com.picsauditing.mail.InsuranceCertificateSubscription;
 import com.picsauditing.mail.OQChangesSubscription;
 import com.picsauditing.mail.Subscription;
@@ -141,11 +140,11 @@ public class SubscriptionCron extends PicsActionSupport {
 				addActionError("Failed to find userID = " + userID);
 				return;
 			}
-
+			
 			if (!user.isActiveB()) {
 				addActionError("User is inactive");
 				return;
-			}
+			}				
 
 			if (accountID > 0) {
 				account = accountDAO.find(accountID);
@@ -157,10 +156,6 @@ public class SubscriptionCron extends PicsActionSupport {
 
 		for (Subscription subscription : subs) {
 			SubscriptionBuilder builder = null;
-
-//			if (subscription.equals(Subscription.ForcedFlags)) {
-//				builder = new ForcedFlagsSubscription(timePeriod, subscriptionDAO);
-//			}
 
 			if (subscription.equals(Subscription.FlagChanges)) {
 				builder = new FlagChangesSubscription(timePeriod, subscriptionDAO);
