@@ -127,7 +127,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public void prepare() throws Exception {
 		getPermissions();
 
-		newContractor.setDeadline(DateBean.addMonths(new Date(), 2));
 
 		requestID = getParameter("requestID");
 		if (requestID > 0)
@@ -268,14 +267,15 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			if (state == null || Strings.isEmpty(state.getIsoCode()))
 				addActionError("Please select a State");
 		}
+		if (Strings.isEmpty(newContractor.getPhone()))
+			addActionError("Please fill in the Phone Number");
 		if (Strings.isEmpty(newContractor.getEmail()) || !Strings.isValidEmail(newContractor.getEmail()))
 			addActionError("Please fill in a Valid Email Address");
+		if (newContractor.getDeadline() == null)
+			addActionError("Please select a Registration Deadline date");
 		// There are errors, just exit out
 		if (getActionErrors().size() > 0)
-			return SUCCESS;
-
-		if (newContractor.getDeadline() == null)
-			newContractor.setDeadline(DateBean.addMonths(new Date(), 2));
+			return SUCCESS;;
 		if (country != null && !country.equals(newContractor.getCountry()))
 			newContractor.setCountry(country);
 		if (state != null && !state.equals(newContractor.getState()))

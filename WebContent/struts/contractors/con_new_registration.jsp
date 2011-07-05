@@ -487,7 +487,7 @@ function getMatches(requestID) {
 		</s:if>
 		<li>
 			<s:textfield id="regDate" name="newContractor.deadline" cssClass="datepicker" size="10"
-				value="%{maskDateFormat(newContractor.deadline)}" onchange="checkDate()" theme="formhelp" />
+				 onchange="checkDate()" theme="formhelp" />
 		</li>
 	</ol>
 	</fieldset>
