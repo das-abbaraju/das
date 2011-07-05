@@ -6,7 +6,7 @@
 		<tr>
 			<th>Last Recalculation</th>
 			<th>Priority</th>
-			<th>Next Run Estimate</th>
+			<!--<th>Next Run Estimate</th>-->
 			<th>Base Line Approved</th>
 			<th>Base Line Approver</th>
 		</tr>
@@ -15,7 +15,7 @@
 		<tr>
 			<td><s:property value="lastRecalc" /></td>
 			<td><s:property value="priority"/></td>
-			<td><s:property value="eta"/></td>
+			<!--<td><s:property value="eta"/></td>-->
 			<td><s:property value="baseLineApproved"/></td>
 			<td><s:property value="baseLineApprover"/></td>
 		</tr>	
