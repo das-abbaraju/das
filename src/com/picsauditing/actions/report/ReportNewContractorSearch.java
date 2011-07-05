@@ -102,7 +102,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 	protected void buildQuery() {
 		super.buildQuery();
 
-		if (permissions.isOperator()) {
+		if (permissions.isOperatorCorporate()) {
 			// Anytime we query contractor accounts as an operator,
 			// get the flag color/status at the same time
 			sql.addJoin("LEFT JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "
@@ -268,7 +268,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 	@Override
 	protected void addExcelColumns() {
-		if (permissions.isOperator()) {
+		if (permissions.isOperatorCorporate()) {
 			calculateOverallFlags();
 
 			for (BasicDynaBean d : data) {
@@ -289,7 +289,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 	}
 
 	private void calculateOverallFlags() {
-		if (permissions.isCorporate())
+		if (!permissions.isOperatorCorporate())
 			return;
 
 		if (byConID.size() > 0)
