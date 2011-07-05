@@ -339,14 +339,6 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		return scoreType != null;
 	}
 
-	@Transient
-	public boolean isScoreExtrapolated() {
-		if (id == PQF_SUNCOR) {
-			return false;
-		}
-		return true;
-	}
-
 	@Override
 	@Transient
 	public String getAutocompleteItem() {
