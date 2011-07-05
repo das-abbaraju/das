@@ -107,9 +107,20 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 					ct.setTag(tag);
 					contractor.getOperatorTags().add(ct);
 				}
+				
+				int[] opIds = new int[1];
+				if (operator.isCorporate()) {
+					opIds = new int[operator.getOperatorFacilities().size()];
+					int index = 0;
+					for (Facility opFacility : operator.getOperatorFacilities()) {
+						opIds[index++] = opFacility.getOperator().getId();
+					}operator.getCorporateFacilities();
+				} else {
+					opIds[0] = opID;
+				}
 
 				List<FlagData> conResults = flagDataDAO.findByContractorAndOperatorAndCriteria(contractor.getId(), 
-						opID, 
+						opIds, 
 						flagCriteriaOperator.getCriteria().getId());
 				for (FlagData flagData : conResults) {
 					if (flagCriteriaOperator.getFlag().equals(flagData.getFlag())) {

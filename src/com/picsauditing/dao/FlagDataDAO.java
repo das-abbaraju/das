@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.util.Strings;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -29,13 +30,11 @@ public class FlagDataDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<FlagData> findByContractorAndOperatorAndCriteria(int conID, int opID, int critID) {
-		String q = "FROM FlagData d WHERE contractor.id = ? AND operator.id = ? AND criteria.id = ? "
+	public List<FlagData> findByContractorAndOperatorAndCriteria(int conID, int[] opIDs, int critID) {
+		String q = "FROM FlagData d WHERE contractor.id = " + conID 
+			+ " AND operator.id IN (" + Strings.implode(opIDs) + ") AND criteria.id = " + critID + " "
 			+ "ORDER BY d.criteria.displayOrder";
 		Query query = em.createQuery(q);
-		query.setParameter(1, conID);
-		query.setParameter(2, opID);
-		query.setParameter(3, critID);
 		return query.getResultList();
 	}
 
