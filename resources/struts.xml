@@ -1081,6 +1081,11 @@
 			<result>struts/reports/csr_activity.jsp</result>
 		</action>
 
+		<action name="ReportCsrContractorCount"
+			class="com.picsauditing.actions.report.ReportCsrContractorCount">
+			<result>struts/reports/csr_contractor_count.jsp</result>
+		</action>
+
 		<!-- Audits View/Edit/Verify/Copy -->
 		<action name="Audit"
 			class="com.picsauditing.actions.audits.ContractorAuditController">
