@@ -10,9 +10,12 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -27,6 +30,8 @@ public class ContractorDocuments extends ContractorActionSupport {
 	protected AuditTypeDAO auditTypeDAO;
 	protected ContractorAuditOperatorDAO caoDAO;
 	protected AuditTypeRuleCache auditTypeRuleCache;
+	@Autowired
+	AuditDecisionTableDAO auditRuleDAO;
 
 	protected Map<AuditType, List<ContractorAudit>> auditMap;
 	protected Map<DocumentTab, List<AuditType>> auditTypes;
@@ -53,6 +58,8 @@ public class ContractorDocuments extends ContractorActionSupport {
 			return LOGIN;
 
 		findContractor();
+		
+		auditTypeRuleCache.initialize(auditRuleDAO);
 
 		Map<String, List<ContractorAudit>> allIMAudits = new TreeMap<String, List<ContractorAudit>>();
 		auditMap = new TreeMap<AuditType, List<ContractorAudit>>();

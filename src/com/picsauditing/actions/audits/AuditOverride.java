@@ -1,8 +1,11 @@
 package com.picsauditing.actions.audits;
 
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.contractors.ContractorDocuments;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -12,11 +15,12 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditOverride extends ContractorDocuments {
+	@Autowired
+	AuditDecisionTableDAO auditRuleDAO;
 
 	public AuditOverride(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
 			ContractorAuditOperatorDAO caoDAO, AuditTypeRuleCache auditTypeRuleCache) {
@@ -31,6 +35,8 @@ public class AuditOverride extends ContractorDocuments {
 			return LOGIN;
 
 		this.findContractor();
+		
+		auditTypeRuleCache.initialize(auditRuleDAO);
 		
 		if (!isManuallyAddAudit()) {
 			throw new NoRightsException("Cannot Manually Add Audits");

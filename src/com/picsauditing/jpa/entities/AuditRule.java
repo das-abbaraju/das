@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -365,9 +366,10 @@ public class AuditRule extends BaseDecisionTreeRule {
 			return questionComparator.equals(QuestionComparator.Empty);
 		}
 		
-		if (data.getAudit().getEffectiveDate().before(data.getQuestion().getEffectiveDate())) 
+		Date auditEffectiveDate = (data.getAudit().getEffectiveDate() != null) ? data.getAudit().getEffectiveDate():new Date();
+		if (auditEffectiveDate.before(data.getQuestion().getEffectiveDate())) 
 			return false;
-		if (!data.getAudit().getEffectiveDate().before(data.getQuestion().getExpirationDate())) 
+		if (!auditEffectiveDate.before(data.getQuestion().getExpirationDate())) 
 			return false;
 
 		if (questionComparator == null)
