@@ -79,6 +79,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	protected List<Integer> operatorIds = new ArrayList<Integer>();
 	protected Country country;
+	protected Country billingCountry;
 	protected State state;
 	protected State billingState;
 	protected int contactID;
@@ -111,6 +112,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			String[] countryIsos = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
 			if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
 				country = getCountryDAO().find(countryIsos[0]);
+			
+			String[] billingCountryIsos = (String[]) ActionContext.getContext().getParameters().get("billingCountry.isoCode");
+			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0]))
+				billingCountry = getCountryDAO().find(billingCountryIsos[0]);
 
 			String[] stateIsos = (String[]) ActionContext.getContext().getParameters().get("state.isoCode");
 			if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
@@ -155,6 +160,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 			if (country != null && !country.equals(contractor.getCountry())) {
 				contractor.setCountry(country);
+			}
+			
+			if (billingCountry != null && !"".equals(billingCountry.getIsoCode()) && 
+					!billingCountry.equals(contractor.getBillingCountry())) {
+				contractor.setBillingCountry(billingCountry);
 			}
 
 			if (state != null && !state.equals(contractor.getState())) {
@@ -326,6 +336,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		contractor.setBillingAddress(contractor.getAddress());
 		contractor.setBillingCity(contractor.getCity());
 		contractor.setBillingState(contractor.getState());
+		contractor.setBillingCountry(contractor.getCountry());
 		contractor.setBillingZip(contractor.getZip());
 		accountDao.save(contractor);
 
@@ -467,6 +478,14 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		this.billingState = billingState;
 	}
 
+	public Country getBillingCountry() {
+		return billingCountry;
+	}
+	
+	public void setBillingCountry(Country billingCountry) {
+		this.billingCountry = billingCountry;
+	}
+	
 	public List<Invoice> getUnpaidInvoices() {
 		List<Invoice> unpaidInvoices = new ArrayList<Invoice>();
 		if (!contractor.isRenew()) {

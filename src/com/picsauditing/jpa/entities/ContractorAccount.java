@@ -69,6 +69,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private String billingAddress;
 	private String billingCity;
 	private State billingState;
+	private Country billingCountry;
 	private String billingZip;
 	private String ccEmail;
 	private Date membershipDate;
@@ -266,6 +267,16 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setBillingState(State billingState) {
 		this.billingState = billingState;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "billingCountry")
+	public Country getBillingCountry() {
+		return billingCountry;
+	}
+
+	public void setBillingCountry(Country billingCountry) {
+		this.billingCountry = billingCountry;
 	}
 
 	@Column(name = "billingZip", length = 10)

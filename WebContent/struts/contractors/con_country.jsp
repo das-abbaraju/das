@@ -10,7 +10,7 @@
 			<s:text name="ContractorAccount.state"/>:
 		</s:else>
 	</label>
-	<s:select list="getStateList(countryString)" id="state_sel" name="%{prefix}state.isoCode" 
+	<s:select list="getStateList(countryString)" id="state_sel" name="%{(prefix == null)?'state':prefix+'State'}.isoCode" 
 		listKey="isoCode" listValue="name" value="stateString"/>
 		<s:if test="stateString.length() < 1">
 			<span class="redMain" id="state_req">*</span>
