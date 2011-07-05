@@ -256,7 +256,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		if (needsExpediteFee) {
 			String notes = getText(conAudit.getAuditType().getI18nKey("name"))
-					+ " was scheduled within 7 business days, requiring an expedite fee.";
+					+ " was scheduled within 10 business days, requiring an expedite fee.";
 
 			createInvoice(expedite, notes);
 
