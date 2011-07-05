@@ -429,9 +429,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			body += "<br/>Hello " + newContractor.getRequestedByUserString() + ",<br/><br/>";
 			body += getAssignedCSR().getName() + " at PICS was unsuccessful in having " + newContractor.getName()
 					+ " to register for your prequalification program. ";
-			body += "Below, please find notes from " + getAssignedCSR().getName() + "'s interactions with "
-					+ newContractor.getContact() + " at " + newContractor.getName()
-					+ " regarding enrollment.<br /><br />";
 			body += "If you would still like to utilize the services of " + newContractor.getName()
 					+ " at your site, we request you to intervene and encourage the contractor to "
 					+ "register with PICS.<br /><br />";
