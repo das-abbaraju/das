@@ -36,6 +36,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	// /////// Filter Visibility /////////////
 	protected boolean showOperator = true;
 	protected boolean showOperatorSingle = false;
+	protected boolean showAnyOperator = false;
 	protected boolean showTrade = true;
 	protected boolean showLicensedIn = true;
 	protected boolean showWorksIn = true;
@@ -124,7 +125,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		temp.put(66, "Union Personnel");
 		temp.put(77, "Non-union Personnel");
 		temp.put(3283, "Aboriginal Owned");
-		temp.put(3, "All the Above");		
+		temp.put(3, "All the Above");
 		MINORITY_QUESTIONS = Collections.unmodifiableMap(temp);
 	}
 
@@ -143,6 +144,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowOperatorSingle(boolean showOperatorSingle) {
 		this.showOperatorSingle = showOperatorSingle;
+	}
+
+	public boolean isShowAnyOperator() {
+		return showAnyOperator;
+	}
+
+	public void setShowAnyOperator(boolean showAnyOperator) {
+		this.showAnyOperator = showAnyOperator;
 	}
 
 	public boolean isShowTrade() {
@@ -841,7 +850,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public void setAccountLevel(String[] accountLevel) {
 		this.accountLevel = accountLevel;
 	}
-	
+
 	public boolean isShowState() {
 		return showState;
 	}

@@ -280,6 +280,7 @@
 				<span class="clearLink q_box select">
 					<s:textfield rel="Operator" name="filter.operator" cssClass="tokenAuto" />
 					<a class="clearLink" href="#">Clear</a>
+					<s:radio id="anyOp" list="#{'false':'All','true':'Any'}" name="filter.showAnyOperator"/>
 				</span>
 			</s:else>
 		</div>
@@ -318,6 +319,7 @@
 			<span class="clearLink q_box select">
 				<s:textfield rel="Operator" name="filter.caoOperator" cssClass="tokenAuto" />
 				<a class="clearLink" href="#">Clear</a>
+					<s:radio id="anyOp" list="#{'false':'All','true':'Any'}" name="filter.showAnyOperator"/>
 			</span>
 		</div>
 	</s:if>

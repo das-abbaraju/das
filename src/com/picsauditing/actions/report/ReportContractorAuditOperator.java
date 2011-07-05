@@ -54,8 +54,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		sql.addField("cao.status auditStatus");
 		sql.addField("cao.statusChangedDate");
 		sql.addField("caoAccount.name caoAccountName");
-		sql.addWhere("a.status IN ('Active'" + (permissions.getAccountStatus().isDemo() ? ",'Demo'" : "")
-				+ ")");
+		sql.addWhere("a.status IN ('Active'" + (permissions.getAccountStatus().isDemo() ? ",'Demo'" : "") + ")");
 
 		if (permissions.isOperatorCorporate()) {
 			String opIDs = permissions.getAccountIdString();
@@ -109,8 +108,15 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		}
 
 		if (filterOn(f.getCaoOperator())) {
-			sql.addWhere("cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN ("
-					+ Strings.implode(f.getCaoOperator()) + "))");
+			if (f.isShowAnyOperator()) {
+				sql.addWhere("cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN ("
+						+ Strings.implode(f.getCaoOperator()) + "))");
+			} else {
+				for (int caoOpID : f.getCaoOperator()) {
+					sql.addWhere("cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID = "
+							+ caoOpID + ")");
+				}
+			}
 		}
 	}
 
@@ -120,13 +126,13 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 	}
 
 	/**
-	 * returns the proper answer(s) of the questionData, which holds
-	 * supplemental question data that is not returned in the main query
+	 * returns the proper answer(s) of the questionData, which holds supplemental question data that is not returned in
+	 * the main query
 	 * 
 	 * @param auditId
 	 * @param purpose
-	 *            - kind of like a column name. Known keys for this are:
-	 *            policyFile, aiWaiverSub, aiName, aiMatches, aiOther or limits
+	 *            - kind of like a column name. Known keys for this are: policyFile, aiWaiverSub, aiName, aiMatches,
+	 *            aiOther or limits
 	 * @return List<AuditData>
 	 */
 	public List<AuditData> getDataForAudit(int auditId, String purpose) {

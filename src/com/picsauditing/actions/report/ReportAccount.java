@@ -271,9 +271,16 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 
 		if (filterOn(f.getOperator())) {
-			for (int opID : f.getOperator()) {
-				sql.addWhere(" EXISTS (SELECT * FROM generalcontractors WHERE a.id = subID AND genID = " + opID + ")");
+			if (f.isShowAnyOperator()) {
+				sql.addWhere(" EXISTS (SELECT * FROM generalcontractors WHERE a.id = subID AND genID IN ("
+						+ Strings.implode(f.getOperator()) + "))");
+			} else {
+				for (int opID : f.getOperator()) {
+					sql.addWhere(" EXISTS (SELECT * FROM generalcontractors WHERE a.id = subID AND genID = " + opID
+							+ ")");
+				}
 			}
+
 			setFiltered(true);
 		}
 
