@@ -110,9 +110,15 @@ function showRules() {
 						<p>Check this box if the document or audit is reusable at the end of its life. For example, PQF is renewable because we don't make them fill out a whole new PQF each year. GL Policy is NOT renewable because we force them to fill out a brand new policy each time. One major drawback to renewable audit types is they don't maintain a history of past audits.</p>
 					</pics:fieldhelp>
 				</li>
-				<li><label>Is Scoreable:</label>
-					<s:checkbox name="auditType.scoreable" />
-					<pics:fieldhelp title="Is Scoreable">Check this box if this audit type should be scored</pics:fieldhelp>
+				<li><label>Score Type:</label>
+					<s:select name="auditType.scoreType" list="@com.picsauditing.jpa.entities.ScoreType@values()" headerKey="" headerValue="- Score Type -" />
+					<pics:fieldhelp title="Scoreable">
+						<p>This field is for scorable audits.</p>
+						<ol>
+							<li>RAW - score is a calcualtion of the questions only. [Calculation = SUM(question.scoreWeight * (question.option.scoreValue / question.option.maxValue) )]</li>
+							<li>WEIGHTED - score is a calculation of the questions weighted by category. [Calculation = RAW_SCORE * (category.scoreWeight / SUM(siblingCategories.scoreWeight)]</li>
+						</ol>
+					</pics:fieldhelp>
 				</li>
 				<li><label>Is Scheduled:</label>
 					<s:checkbox name="auditType.scheduled" />

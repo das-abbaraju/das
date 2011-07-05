@@ -61,6 +61,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	protected Account account;
 	protected OpPerms editPermission;
 	protected Workflow workFlow;
+	protected ScoreType scoreType;
 
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
@@ -321,15 +322,21 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		this.workFlow = workFlow;
 	}
 
-	/**
-	 * @return boolean indicating whether or not this Audit Type can be scored. Used for implementing audit score
-	 */
-	public boolean isScoreable() {
-		return scoreable;
+	@Enumerated(EnumType.STRING)
+	public ScoreType getScoreType() {
+		return scoreType;
 	}
 
-	public void setScoreable(boolean scoreable) {
-		this.scoreable = scoreable;
+	public void setScoreType(ScoreType scoreType) {
+		this.scoreType = scoreType;
+	}
+
+	/**
+	 * @return boolean indicating whether or not this Audit Type can be scored. Used for implementing audit score.
+	 */
+	@Transient
+	public boolean isScoreable() {
+		return scoreType != null;
 	}
 
 	@Transient

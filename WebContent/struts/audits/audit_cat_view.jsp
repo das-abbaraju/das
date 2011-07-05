@@ -27,17 +27,20 @@
 					href="CategoryRuleTableAjax.action?comparisonRule.auditCategory.id=<s:property value="#category.id" />" 
 					rel="CategoryRuleTableAjax.action?comparisonRule.auditCategory.id=<s:property value="#category.id" />"></a>
 			</pics:permission>
-			<pics:permission perm="DevelopmentEnvironment">
-				<span class="debug">
-					Required=<s:property value="categories.get(#category).requiredCompleted"/>/<s:property value="categories.get(#category).numRequired"/>
-					<s:if test="conAudit.auditType.scoreable">
-						Score=<s:property value="categories.get(#category).score"/>/<s:property value="categories.get(#category).scorePossible"/>
-					</s:if>
-					Overide=<s:property value="categories.get(#category).override"/>
-				</span>
-			</pics:permission>
 			<span class="categoryNumber"><s:property value="#category.fullNumber"/></span>
 		</h2>
+		<pics:permission perm="DevelopmentEnvironment">
+			<span class="debug">
+				Required=<s:property value="categories.get(#category).requiredCompleted"/>/<s:property value="categories.get(#category).numRequired"/>
+				<s:if test="conAudit.auditType.scoreable">
+					Score=<s:property value="categories.get(#category).score"/>/<s:property value="categories.get(#category).scorePossible"/>,
+					Weight=<s:property value="#category.scoreWeight"/>
+				</s:if>
+				<s:if test="categories.get(#category).override">
+				Override
+				</s:if>
+			</span>
+		</pics:permission>
 		<s:if test="#category.sha">
 			<s:include value="audit_cat_sha.jsp"></s:include>
 		</s:if>
