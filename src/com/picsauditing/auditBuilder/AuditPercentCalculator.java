@@ -1,5 +1,7 @@
 package com.picsauditing.auditBuilder;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -31,6 +33,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.QuestionFunctionType;
+import com.picsauditing.jpa.entities.ScoreType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
@@ -62,7 +65,7 @@ public class AuditPercentCalculator {
 
 		if (!catData.isApplies())
 			return;
-		
+
 		int requiredAnsweredCount = 0;
 		int answeredCount = 0;
 		int requiredCount = 0;
@@ -78,57 +81,58 @@ public class AuditPercentCalculator {
 
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 			questionIDs.add(question.getId());
-			
+
 			if (question.getRequiredQuestion() != null)
 				questionIDs.add(question.getRequiredQuestion().getId());
 			if (question.getVisibleQuestion() != null)
 				questionIDs.add(question.getVisibleQuestion().getId());
-			
+
 			if (question.isValidQuestion(validDate)) {
-				for(AuditQuestionFunction aqf: question.getFunctions())
+				for (AuditQuestionFunction aqf : question.getFunctions())
 					for (AuditQuestionFunctionWatcher aqfw : aqf.getWatchers())
 						if (aqfw.getQuestion().isValidQuestion(validDate))
 							functionWatcherQuestionIds.add(aqfw.getQuestion().getId());
 			}
 		}
 
-		AnswerMap currentWatcherAnswers = auditDataDAO.findCurrentAnswers(catData.getAudit().getContractorAccount().getId(), functionWatcherQuestionIds);
-		
+		AnswerMap currentWatcherAnswers = auditDataDAO.findCurrentAnswers(
+				catData.getAudit().getContractorAccount().getId(), functionWatcherQuestionIds);
+
 		// Run functions to update answers
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 			if (question.isValidQuestion(validDate) && question.getFunctions().size() > 0) {
-					AuditData target = auditDataDAO.findAnswerByAuditQuestion(catData.getAudit().getId(),question.getId());
+				AuditData target = auditDataDAO.findAnswerByAuditQuestion(catData.getAudit().getId(), question.getId());
 
-					if (target == null) {
-						target = new AuditData();
-						target.setAudit(catData.getAudit());
-						target.setQuestion(question);
-					}
-					
-					String results = null;
-					
-					for (AuditQuestionFunction function : question.getFunctions()) {
-						if (function.getType() == QuestionFunctionType.Calculation) {
-							if (!target.isAnswered() || function.isOverwrite()) {
-								Object calculation = function.calculate(currentWatcherAnswers);
-								if (calculation != null) {
-									results = calculation.toString();
-									break;
-								}
+				if (target == null) {
+					target = new AuditData();
+					target.setAudit(catData.getAudit());
+					target.setQuestion(question);
+				}
+
+				String results = null;
+
+				for (AuditQuestionFunction function : question.getFunctions()) {
+					if (function.getType() == QuestionFunctionType.Calculation) {
+						if (!target.isAnswered() || function.isOverwrite()) {
+							Object calculation = function.calculate(currentWatcherAnswers);
+							if (calculation != null) {
+								results = calculation.toString();
+								break;
 							}
 						}
 					}
+				}
 
-					if (results != null) {
-						target.setAnswer(results);
-						target.setAuditColumns(new User(User.SYSTEM));
-					}
-					
-					if (!catData.getAudit().getData().contains(target))
-						catData.getAudit().getData().add(target);
+				if (results != null) {
+					target.setAnswer(results);
+					target.setAuditColumns(new User(User.SYSTEM));
+				}
+
+				if (!catData.getAudit().getData().contains(target))
+					catData.getAudit().getData().add(target);
 			}
 		}
-		
+
 		// Get a map of all answers in this audit
 		List<AuditData> requiredAnswers = new ArrayList<AuditData>();
 		for (AuditData answer : catData.getAudit().getData())
@@ -295,15 +299,20 @@ public class AuditPercentCalculator {
 					answered += data.getRequiredCompleted();
 					verified += data.getNumVerified();
 
-					if (data.getScorePossible() > 0) {
-						score += data.getScore();
-						scoreWeight += data.getScorePossible();
+					if (conAudit.getAuditType().getScoreType() == ScoreType.Percent) {
+						if (data.getScorePossible() > 0) {
+							score += data.getScore();
+							scoreWeight += data.getScorePossible();
+						}
 					}
 				}
 			}
 
 			if (scoreWeight > 0) {
-				conAudit.setScore((int) Math.min(Math.round(score), 100L));
+				if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
+					conAudit.setScore((int) Math.min(Math.round(score), 100L));
+				else if (conAudit.getAuditType().getScoreType() == ScoreType.Actual)
+					conAudit.setScore((int) Math.round(score));
 			}
 
 			int percentComplete = 0;
@@ -350,6 +359,56 @@ public class AuditPercentCalculator {
 				cao.setStatusChangedDate(caoWithStatus.getStatusChangedDate());
 			}
 		}
+
+		if (conAudit.getAuditType().getScoreType() == ScoreType.Weighted) {
+			calculateWeightedScore(conAudit);
+		}
+	}
+
+	private void calculateWeightedScore(ContractorAudit ca) {
+		float subScore = 0f;
+
+		/*
+		 * Gather the category data to use in the recursive calculation.
+		 */
+		Map<AuditCategory, AuditCatData> catDatas = new HashMap<AuditCategory, AuditCatData>();
+		for (AuditCatData data : ca.getCategories()) {
+			catDatas.put(data.getCategory(), data);
+		}
+
+		/*
+		 * Iterate over the top level categories and calculate the score based on their weights
+		 */
+		for (AuditCategory category : ca.getAuditType().getTopCategories()) {
+			subScore += category.getScoreWeight() * calculateWeightedScore(category, catDatas);
+		}
+
+		ca.setScore(Math.min(Math.round(subScore), 100));
+	}
+
+	private float calculateWeightedScore(AuditCategory category, Map<AuditCategory, AuditCatData> catDatas) {
+		float subScore = 0f;
+		float scorePossible = 0f;
+		if (category.getSubCategories().size() > 0) {
+			for (AuditCategory subCategory : category.getSubCategories()) {
+				float runningScore = calculateWeightedScore(subCategory, catDatas);
+				/*
+				 * Handle the N/A Categories. Categories without a possible score should not affect the total weight.
+				 */
+				if (catDatas.get(subCategory).getScorePossible() > 0) {
+					subScore += runningScore;
+					scorePossible += subCategory.getScoreWeight();
+				}
+			}
+			if (scorePossible > 0) {
+				subScore = subScore / scorePossible;
+			}
+		} else {
+			if (catDatas.get(category).getScorePossible() > 0)
+				subScore += catDatas.get(category).getScore() / catDatas.get(category).getScorePossible();
+		}
+
+		return subScore;
 	}
 
 	private ContractorAuditOperator findCaoWithStatus(ContractorAudit conAudit, AuditStatus auditStatus) {
