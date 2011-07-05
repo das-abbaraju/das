@@ -55,7 +55,7 @@
 			</s:text>
 		</li>
 	</ol>
-	<s:submit cssClass="picsbutton positive" action="ScheduleAudit!confirm" value="%{getText(scope + '.button.ConfirmAudit')}" />
+	<s:submit cssClass="picsbutton positive" method="confirm" value="%{getText(scope + '.button.ConfirmAudit')}" />
 	</div>
 	</fieldset>
 </s:form>

@@ -65,6 +65,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	@Autowired
 	private InvoiceDAO invoiceDAO;
 	@Autowired
+	private InvoiceFeeDAO feeDAO;
+	@Autowired
 	private InvoiceItemDAO itemDAO;
 	@Autowired
 	private UserAccessDAO uaDAO;
@@ -75,11 +77,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private InvoiceFee rescheduling;
 	private InvoiceFee expedite;
 
-	public ScheduleAudit(InvoiceFeeDAO feeDAO) {
+	public ScheduleAudit() {
 		this.subHeading = "Schedule Audit";
-
-		rescheduling = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ReschedulingFee, 0);
-		expedite = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ExpediteFee, 0);
 	}
 
 	public void prepare() throws Exception {
@@ -91,6 +90,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		int auditorID = getParameter("auditor.id");
 		if (auditorID > 0)
 			auditor = getUser(auditorID);
+
+		rescheduling = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ReschedulingFee, 0);
+		expedite = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ExpediteFee, 0);
 	}
 
 	public String edit() throws Exception {
@@ -114,6 +116,12 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			addActionError("You must select an auditor when scheduling an audit");
 			return "edit";
 		}
+
+		// We're looking for a change in the safety professional.
+		// Was the auditor just set?
+		// Is the new auditor the same person as the previous auditor?
+		boolean changedAuditor = (conAudit.getAuditor() == null && auditor != null)
+				|| !conAudit.getAuditor().equals(auditor);
 
 		conAudit.setAuditor(auditor);
 		conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(auditor)));
@@ -141,12 +149,15 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 			conAudit.setScheduledDate(scheduledDateInServerTime);
 			conAudit.setContractorConfirm(null);
-			if (permissions.getUserId() != conAudit.getAuditor().getId())
-				conAudit.setAuditorConfirm(null);
-			String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
-			sendConfirmationEmail(getText(conAudit.getAuditType().getI18nKey("name")) + " Re-scheduled for "
-					+ shortScheduleDate);
 		}
+
+		// When a new auditor gets selected, that auditor should get a confirmation email
+		if (permissions.getUserId() != conAudit.getAuditor().getId() || changedAuditor)
+			conAudit.setAuditorConfirm(null);
+
+		if (conAudit.getAuditorConfirm() == null || conAudit.getContractorConfirm() == null)
+			sendConfirmationEmail(getText(conAudit.getAuditType().getI18nKey("name")) + " Re-scheduled for "
+					+ DateBean.format(conAudit.getScheduledDate(), "MMMM d"));
 
 		addActionMessage("Audit Saved Successfully");
 		// check for a time overlap here

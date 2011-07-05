@@ -74,7 +74,7 @@ li#li_availability a:hover {
 		<s:if test="permissions.admin">
 			<li>
 				<s:hidden name="auditID" />
-				<s:submit cssClass="picsbutton" action="ScheduleAudit!edit" value="%{getText(scope + '.button.EditScheduleManually')}" />
+				<s:submit cssClass="picsbutton" method="edit" value="%{getText(scope + '.button.EditScheduleManually')}" />
 			</li>
 		</s:if>
 		<li><s:text name="%{scope}.message.ChooseAvailableTime" /></li>

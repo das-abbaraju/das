@@ -179,7 +179,7 @@ function showChooseDate(override) {
 	<div id="mainThinkingDiv"></div>
 	<div>
 	<button id="verifyButton" class="picsbutton" type="button" onclick="verifyAddress()"><s:text name="%{scope}.button.VerifyAddress" /></button>
-	<s:submit cssClass="picsbutton positive" action="ScheduleAudit!save" value="%{getText('button.Save')}" />
+	<s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />
 	</div>
 	</fieldset>
 </s:form>

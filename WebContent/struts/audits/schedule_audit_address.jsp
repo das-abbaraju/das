@@ -15,6 +15,12 @@
 <s:if test="conAudit != null">
 <script type="text/javascript">
 var conID = '<s:property value="conAudit.contractorAccount.id"/>';
+$(function() {
+	$('#verifyButton').click(function(e) {
+		e.preventDefault();
+		verifyAddress();
+	});
+});
 </script>
 </s:if>
 <style type="text/css">
@@ -39,7 +45,7 @@ var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 	<ol>
 		<s:if test="permissions.admin">
 			<li>
-				<s:submit action="ScheduleAudit!edit" cssClass="picsbutton" value="%{getText(scope + '.button.EditScheduleManually')}" /> 
+				<s:submit method="edit" cssClass="picsbutton" value="%{getText(scope + '.button.EditScheduleManually')}" /> 
 			</li>
 		</s:if>
 		<li><label><s:text name="User.name" />:</label> <s:textfield name="conAudit.contractorContact" value="%{conAudit.contractorAccount.primaryContact.name}" /></li>
@@ -65,8 +71,8 @@ var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 	<fieldset class="form submit">
 	<div id="mainThinkingDiv"></div>
 	<div>
-	<button id="verifyButton" class="picsbutton" type="button" onclick="verifyAddress()"><s:text name="%{scope}.button.VerifyAddress" /></button>
-	<s:submit id="submitButton" cssStyle="display: none;" cssClass="picsbutton positive" action="ScheduleAudit!address" value="%{getText('button.Next') + ' >>'}" />
+	<button id="verifyButton" class="picsbutton" type="button"><s:text name="%{scope}.button.VerifyAddress" /></button>
+	<s:submit id="submitButton" cssStyle="display: none;" cssClass="picsbutton positive" method="address" value="%{getText('button.Next') + ' >>'}" />
 	</div>
 	</fieldset>
 	<s:hidden id="conAudit_latitude" name="conAudit.latitude" />
