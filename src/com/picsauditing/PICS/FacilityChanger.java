@@ -116,7 +116,8 @@ public class FacilityChanger {
 
 		contractor.setLastUpgradeDate(new Date());
 		checkOQ();
-		contractor.incrementRecalculation(5);
+		if (contractor.getNeedsRecalculation() < 20)
+			contractor.incrementRecalculation(5);
 		setListOnly();
 
 		contractor.syncBalance();
@@ -162,7 +163,8 @@ public class FacilityChanger {
 					}
 
 					checkOQ();
-					contractor.incrementRecalculation(5);
+					if (contractor.getNeedsRecalculation() < 20)
+						contractor.incrementRecalculation(5);
 
 					setListOnly();
 
@@ -259,7 +261,7 @@ public class FacilityChanger {
 			}
 		}
 	}
-	
+
 	private void setListOnly() {
 		if (contractor.isMaterialSupplierOnly() && contractor.getProductRisk().equals(LowMedHigh.Low)
 				&& contractor.getStatus().isPending() && contractor.getAccountLevel().isFull()) {
@@ -272,4 +274,5 @@ public class FacilityChanger {
 				contractor.setAccountLevel(AccountLevel.ListOnly);
 		}
 	}
+
 }

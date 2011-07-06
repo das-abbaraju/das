@@ -156,7 +156,7 @@ public class DateBean {
 	public static int getCurrentYear() {
 		Calendar cal = Calendar.getInstance();
 		return cal.get(Calendar.YEAR);
-	}// getCurrentYear
+	}
 
 	public static Date getNextDayMidnight(Date date) {
 		Calendar cal = Calendar.getInstance();
