@@ -37,6 +37,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showOperator = true;
 	protected boolean showOperatorSingle = false;
 	protected boolean showAnyOperator = false;
+	protected boolean showAnyCAOOperator = false;
 	protected boolean showTrade = true;
 	protected boolean showLicensedIn = true;
 	protected boolean showWorksIn = true;
@@ -152,6 +153,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowAnyOperator(boolean showAnyOperator) {
 		this.showAnyOperator = showAnyOperator;
+	}
+
+	public boolean isShowAnyCAOOperator() {
+		return showAnyCAOOperator;
+	}
+
+	public void setShowAnyCAOOperator(boolean showAnyCAOOperator) {
+		this.showAnyCAOOperator = showAnyCAOOperator;
 	}
 
 	public boolean isShowTrade() {

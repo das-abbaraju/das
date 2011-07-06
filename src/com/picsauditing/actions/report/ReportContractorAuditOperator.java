@@ -14,6 +14,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.util.ReportFilterCAO;
 import com.picsauditing.util.Strings;
@@ -108,7 +109,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		}
 
 		if (filterOn(f.getCaoOperator())) {
-			if (f.isShowAnyOperator()) {
+			if (f.isShowAnyCAOOperator()) {
 				sql.addWhere("cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN ("
 						+ Strings.implode(f.getCaoOperator()) + "))");
 			} else {
