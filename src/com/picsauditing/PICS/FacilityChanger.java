@@ -117,17 +117,7 @@ public class FacilityChanger {
 		contractor.setLastUpgradeDate(new Date());
 		checkOQ();
 		contractor.incrementRecalculation(5);
-
-		if (contractor.isMaterialSupplierOnly() && contractor.getProductRisk().equals(LowMedHigh.Low)
-				&& contractor.getStatus().isPending() && contractor.getAccountLevel().isFull()) {
-			boolean canBeListed = true;
-			for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {
-				if (!conOp.getOperatorAccount().isAcceptsList())
-					canBeListed = false;
-			}
-			if (canBeListed)
-				contractor.setAccountLevel(AccountLevel.ListOnly);
-		}
+		setListOnly();
 
 		contractor.syncBalance();
 		contractorAccountDAO.save(contractor);
@@ -174,16 +164,7 @@ public class FacilityChanger {
 					checkOQ();
 					contractor.incrementRecalculation(5);
 
-					if (contractor.isMaterialSupplierOnly() && contractor.getProductRisk().equals(LowMedHigh.Low)
-							&& contractor.getStatus().isPending() && contractor.getAccountLevel().isFull()) {
-						boolean canBeListed = true;
-						for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {
-							if (!conOp.getOperatorAccount().isAcceptsList())
-								canBeListed = false;
-						}
-						if (canBeListed)
-							contractor.setAccountLevel(AccountLevel.ListOnly);
-					}
+					setListOnly();
 
 					contractor.syncBalance();
 					contractorAccountDAO.save(contractor);
@@ -276,6 +257,19 @@ public class FacilityChanger {
 				if (tag.getTag().getId() == OperatorTag.SHELL_COMPETENCY_REVIEW)
 					contractor.setRequiresCompetencyReview(true);
 			}
+		}
+	}
+	
+	private void setListOnly() {
+		if (contractor.isMaterialSupplierOnly() && contractor.getProductRisk().equals(LowMedHigh.Low)
+				&& contractor.getStatus().isPending() && contractor.getAccountLevel().isFull()) {
+			boolean canBeListed = true;
+			for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {
+				if (!conOp.getOperatorAccount().isAcceptsList())
+					canBeListed = false;
+			}
+			if (canBeListed)
+				contractor.setAccountLevel(AccountLevel.ListOnly);
 		}
 	}
 }

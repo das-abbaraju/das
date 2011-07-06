@@ -19,6 +19,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
@@ -316,7 +317,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 			if (button.equals("validateBidOnly")) {
 				json.put("isBidOnlyOperator", operatorDao.find(operator.getId()).isAcceptsBids());
-				json.put("isBidOnlyContractor", accountDao.find(contractor.getId()).isAcceptsBids());
+				json.put("isBidOnlyContractor", accountDao.find(contractor.getId()).getAccountLevel().isBidOnly());
 				return JSON;
 			}
 
@@ -328,8 +329,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 			if ("request".equals(button)) {
 				if (operator.getId() > 0) {
 					contractor.setRequestedBy(operator);
-					if (contractor.isAcceptsBids() && !contractor.getRequestedBy().isAcceptsBids()) {
-						contractor.setAcceptsBids(false);
+					if (contractor.getAccountLevel().isBidOnly() && !contractor.getRequestedBy().isAcceptsBids()) {
+						contractor.setAccountLevel(AccountLevel.BidOnly);
 						contractor.setRenew(true);
 						BillingCalculatorSingle.calculateAnnualFees(contractor);
 						contractor.syncBalance();
@@ -341,7 +342,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 			}
 
 			if (button.equals("SwitchToTrialAccount")) {
-				contractor.setAcceptsBids(true);
+				contractor.setAccountLevel(AccountLevel.BidOnly);
 				contractor.setRenew(false);
 				BillingCalculatorSingle.calculateAnnualFees(contractor);
 				contractor.syncBalance();

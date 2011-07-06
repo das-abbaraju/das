@@ -1382,7 +1382,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean isNeedsToIndicateCompetitor() {
-		return getRequestedBy() != null && getRequestedBy().isDescendantOf(OperatorAccount.SuncorEnergyServices)
+		return getRequestedBy() != null && getRequestedBy().isDescendantOf(OperatorAccount.SUNCOR)
 				&& (getCompetitorMembership() == null || getCompetitorMembership().booleanValue() == true)
 				&& getHasCanadianCompetitor() == null;
 	}

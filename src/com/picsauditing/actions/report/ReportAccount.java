@@ -61,7 +61,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	protected void buildQuery() {
 		sql = new SelectAccount();
-		if (permissions.getTopAccountID() == OperatorAccount.SuncorEnergyServices || permissions.isAdmin())
+		if (permissions.getTopAccountID() == OperatorAccount.SUNCOR || permissions.isAdmin())
 			getFilter().setShowAccountLevel(true);
 
 		if (permissions.isAssessment())

@@ -34,7 +34,7 @@ import com.picsauditing.util.SpringUtils;
 public class OperatorAccount extends Account {
 
 	public static final int PicsConsortium = 4;
-	public static final int SuncorEnergyServices = 10566;
+	public static final int SUNCOR = 10566;
 
 	private OperatorAccount parent;
 
@@ -216,7 +216,7 @@ public class OperatorAccount extends Account {
 
 	@Transient
 	public boolean isAcceptsList() {
-		return this.isDescendantOf(OperatorAccount.SuncorEnergyServices);
+		return this.isDescendantOf(OperatorAccount.SUNCOR);
 	}
 
 	@ManyToOne

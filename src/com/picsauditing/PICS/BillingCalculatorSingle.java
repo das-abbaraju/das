@@ -105,7 +105,7 @@ public class BillingCalculatorSingle {
 		for (ContractorOperator co : contractor.getOperators()) {
 			if (co.getOperatorAccount().isRequiresOQ())
 				oq = true;
-			if (!auditGUARD && cor && co.getOperatorAccount().isDescendantOf(OperatorAccount.SuncorEnergyServices))
+			if (!auditGUARD && cor && co.getOperatorAccount().isDescendantOf(OperatorAccount.SUNCOR))
 				auditGUARD = true;
 		}
 
@@ -383,7 +383,7 @@ public class BillingCalculatorSingle {
 
 		// Suncor First Year Registration
 		if (!contractor.getFees().get(FeeClass.AuditGUARD).getNewLevel().isFree()
-				&& contractor.getRequestedBy().isDescendantOf(OperatorAccount.SuncorEnergyServices)
+				&& contractor.getRequestedBy().isDescendantOf(OperatorAccount.SUNCOR)
 				&& Boolean.TRUE.equals(contractor.getHasCanadianCompetitor())
 				&& new Date().before(SUNCOR_DISCOUNT_EXPIRATION)) {
 			InvoiceFee suncorDiscount = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.SuncorDiscount, contractor
