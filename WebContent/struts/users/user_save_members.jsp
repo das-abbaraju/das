@@ -14,7 +14,7 @@
 	<tr>
 		<td><s:property value="user.account.name"/></td>
 		<td <s:if test="user.group">style="font-weight: bold"</s:if>
-		><a href="?accountId=<s:property value="user.account.id"/>&user.id=<s:property value="user.id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
+		><a href="?accountId=<s:property value="user.account.id"/>&user=<s:property value="user.id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
 		<s:if test="!user.activeB">class="inactive"</s:if>
 			><s:property value="user.name"/></a></td>
 		<td>
@@ -34,7 +34,7 @@
 	<tr class="addableMember">
 		<td><s:property value="account.name"/></td>
 		<td <s:if test="group">style="font-weight: bold"</s:if>
-			><a href="?accountId=<s:property value="account.id"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>" style="font-style: italic; color: red;"><s:property value="name"/></a></td>
+			><a href="?accountId=<s:property value="account.id"/>&user=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>" style="font-style: italic; color: red;"><s:property value="name"/></a></td>
 		<td><a class="add" href="#" onclick="addMember(<s:property value="id"/>); return false;" 
 				style="font-style: italic; color: red;">add</a></td>
 	</tr>

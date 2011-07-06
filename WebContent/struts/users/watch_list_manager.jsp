@@ -99,7 +99,7 @@ $(function() {
 			<s:iterator value="watchLists" status="stat">
 				<tr>
 					<td class="id"><s:property value="#stat.count" /></td>
-					<td class="user"><a href="UsersManage.action?accountId=<s:property value="user.account.id" />&user.id=<s:property value="user.id" />"><s:property value="user.name" /></a></td>
+					<td class="user"><a href="UsersManage.action?accountId=<s:property value="user.account.id" />&user=<s:property value="user.id" />"><s:property value="user.name" /></a></td>
 					<td class="contractor"><a href="ContractorView.action?id=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
 					<td class="flagColor"><a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="user.account.id" />"><s:property value="%{getCoFlag(contractor.id,user.account.id).smallIcon}" escape="false"/></a></td>
 					<pics:permission perm="WatchListManager" type="Delete">

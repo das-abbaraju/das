@@ -196,7 +196,7 @@ function checkFee(activationFee, oldValue) {
 			headerValue="- Select a User -" 
 			value="%{operator.primaryContact.id}"/>
 			<s:if test="operator.primaryContact">
-				<a href="UsersManage.action?accountId=<s:property value="operator.id"/>&user.id=<s:property value="operator.primaryContact.id"/>">View</a>
+				<a href="UsersManage.action?accountId=<s:property value="operator.id"/>&user=<s:property value="operator.primaryContact.id"/>">View</a>
 			</s:if>
 			<s:else>
 				<a class="add" href="UsersManage.action?button=newUser&accountId=<s:property value="operator.id"/>&user.isGroup=No&user.isActive=Yes">Add User</a>

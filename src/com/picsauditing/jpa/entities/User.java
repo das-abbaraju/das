@@ -715,7 +715,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Transient
 	public String getViewLink() {
-		return "UsersManage.action?accountId=" + this.getAccount().getId() + "&user.id=" + this.id;
+		return "UsersManage.action?accountId=" + this.getAccount().getId() + "&user=" + this.id;
 	}
 
 	/**

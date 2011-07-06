@@ -8,7 +8,7 @@ function addPermission() {
 	var opPerm = $('#newPermissionSelect').val();
 	var data = {
 		button: 'AddPerm',
-		'user.id': currentUserID,
+		user: currentUserID,
 		opPerm: opPerm,
 		accountId: accountID
 	};
@@ -20,7 +20,7 @@ function removePermission(accessId) {
 	var data = {
 		button: 'RemovePerm',
 		accessId: accessId,
-		'user.id': currentUserID,
+		user: currentUserID,
 		accountId: accountID
 	};
 	$('#permissionReport').load('UserAccessSaveAjax.action', data);
@@ -44,7 +44,7 @@ function addGroup(groupID) {
 	var data = {
 		button: 'AddGroup',
 		groupId: groupID,
-		'user.id': currentUserID,
+		user: currentUserID,
 		accountId: accountID
 	};
 	$('#groupReport').load('UserGroupSaveAjax.action', data);
@@ -55,7 +55,7 @@ function removeGroup(userGroupID) {
 	var data = {
 		button: 'RemoveGroup',
 		userGroupId: userGroupID,
-		'user.id': currentUserID,
+		user: currentUserID,
 		accountId: accountID
 	};
 	$('#groupReport').load('UserGroupSaveAjax.action', data);
@@ -66,7 +66,7 @@ function addMember(memberId) {
 	var data = {
 		button: 'AddMember',
 		memberId: memberId,
-		'user.id': currentUserID,
+		user: currentUserID,
 		accountId: accountID
 	};
 	$('#memberReport').load('UserGroupSaveAjax.action', data);
@@ -77,7 +77,7 @@ function removeMember(userGroupID) {
 	var data = {
 		button: 'RemoveMember',
 		userGroupId: userGroupID,
-		'user.id': currentUserID,
+		user: currentUserID,
 		accountId: accountID
 	};
 	$('#memberReport').load('UserGroupSaveAjax.action', data);
@@ -100,7 +100,7 @@ function checkUsername(username) {
 function addUserSwitch(userID) {
 	var data = {
 			button: 'AddSwitchFrom',
-			'user.id': currentUserID,
+			user: currentUserID,
 			'memberId': userID,
 			'accountId':accountID
 	};
@@ -110,7 +110,7 @@ function addUserSwitch(userID) {
 function removeUserSwitch(userID) {
 	var data = {
 			button: 'RemoveSwitchFrom',
-			'user.id': currentUserID,
+			user: currentUserID,
 			'memberId': userID,
 			'accountId':accountID
 	};

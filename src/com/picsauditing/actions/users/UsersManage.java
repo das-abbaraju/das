@@ -10,15 +10,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.Vector;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -46,7 +45,7 @@ import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class UsersManage extends PicsActionSupport implements Preparable {
+public class UsersManage extends PicsActionSupport {
 
 	protected int accountId = 0;
 	protected User user;
@@ -76,58 +75,18 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	protected boolean conInsurance = false;
 	protected boolean newUser = false;
 
+	@Autowired
 	protected AccountDAO accountDAO;
+	@Autowired
 	protected OperatorAccountDAO operatorDao;
+	@Autowired
 	protected UserDAO userDAO;
+	@Autowired
 	protected UserAccessDAO userAccessDAO;
+	@Autowired
 	protected UserGroupDAO userGroupDAO;
-	
+
 	Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
-
-	public UsersManage(AccountDAO accountDAO, OperatorAccountDAO operatorDao, UserDAO userDAO,
-			UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO) {
-		this.accountDAO = accountDAO;
-		this.operatorDao = operatorDao;
-		this.userDAO = userDAO;
-		this.userAccessDAO = userAccessDAO;
-		this.userGroupDAO = userGroupDAO;
-	}
-
-	@Override
-	public void prepare() throws Exception {
-		int id = getParameter("user.id");
-		if (id > 0) {
-			user = userDAO.find(id);
-			if (user != null) {
-				account = user.getAccount();
-				for (UserAccess ua : user.getOwnedPermissions()) {
-					if (ua.getOpPerm().equals(OpPerms.ContractorAdmin)) {
-						conAdmin = true;
-					}
-					if (ua.getOpPerm().equals(OpPerms.ContractorBilling)) {
-						conBilling = true;
-					}
-					if (ua.getOpPerm().equals(OpPerms.ContractorSafety)) {
-						conSafety = true;
-					}
-					if (ua.getOpPerm().equals(OpPerms.ContractorInsurance)) {
-						conInsurance = true;
-					}
-				}
-			}
-		}
-
-		int aID = getParameter("accountId");
-		if (account == null && aID > 0)
-			account = accountDAO.find(aID);
-
-		// checking to see if primary account user is set
-		if (account != null && account.getPrimaryContact() == null)
-			setPrimaryAccount = true;
-		// Default isActive to show all for contractors
-		if (account != null && account.isContractor())
-			isActive = "All";
-	}
 
 	public String execute() throws Exception {
 		checkPermissions();
@@ -177,11 +136,40 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		// Make sure we can edit users in this account
 		if (permissions.getAccountId() != accountId)
 			permissions.tryPermission(OpPerms.AllOperators);
+
+		if (user != null) {
+			account = user.getAccount();
+			for (UserAccess ua : user.getOwnedPermissions()) {
+				if (ua.getOpPerm().equals(OpPerms.ContractorAdmin)) {
+					conAdmin = true;
+				}
+				if (ua.getOpPerm().equals(OpPerms.ContractorBilling)) {
+					conBilling = true;
+				}
+				if (ua.getOpPerm().equals(OpPerms.ContractorSafety)) {
+					conSafety = true;
+				}
+				if (ua.getOpPerm().equals(OpPerms.ContractorInsurance)) {
+					conInsurance = true;
+				}
+			}
+		}
+
+		int aID = getParameter("accountId");
+		if (account == null && aID > 0)
+			account = accountDAO.find(aID);
+
+		// checking to see if primary account user is set
+		if (account != null && account.getPrimaryContact() == null)
+			setPrimaryAccount = true;
+		// Default isActive to show all for contractors
+		if (account != null && account.isContractor())
+			isActive = "All";
 	}
 
 	public String save() throws Exception {
 		checkPermissions();
-		
+
 		// Lazy init fix for isOk method
 		user.getGroups().size();
 		if (!isOK()) {
@@ -327,14 +315,15 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		}
 
 		// CSR shadowing
+		List<UserGroup> removeUserGroups = new ArrayList<UserGroup>();
 		if (shadowID == 0 || (user.getShadowedUser() != null && user.getShadowedUser().getId() != shadowID)) {
 			// Remove all non-groups from this user's groups
 			Iterator<UserGroup> iterator = user.getGroups().iterator();
 			while (iterator.hasNext()) {
 				UserGroup ug = iterator.next();
 				if (!ug.getGroup().isGroup()) {
+					removeUserGroups.add(ug);
 					iterator.remove();
-					userGroupDAO.remove(ug);
 				}
 			}
 		}
@@ -361,7 +350,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			user.setNeedsIndexing(true);
 			user = userDAO.save(user);
 			if (!user.isGroup())
-			addActionMessage("User saved successfully.");
+				addActionMessage("User saved successfully.");
 			if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
 				user.getAccount().setPrimaryContact(user);
 		} catch (ConstraintViolationException e) {
@@ -371,6 +360,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		} finally {
 			for (UserAccess userAccess : accessToBeRemoved) {
 				userAccessDAO.remove(userAccess);
+			}
+			
+			for (UserGroup ug : removeUserGroups) {
+				userGroupDAO.remove(ug);
 			}
 		}
 
@@ -423,7 +416,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		// user.setNeedsIndexing(true);
 		userDAO.save(user);
 
-		return redirect("UsersManage.action?accountID=" + user.getAccount().getId() + "&user.id=" + user.getId()
+		return redirect("UsersManage.action?accountID=" + user.getAccount().getId() + "&user=" + user.getId()
 				+ "&msg=You have sucessfully moved " + user.getName() + " to " + user.getAccount().getName());
 	}
 
@@ -764,10 +757,6 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	}
 
 	public List<BasicDynaBean> getAccountList() throws SQLException {
-		int id = getParameter("user.id");
-		if (id > 0) {
-			user = userDAO.find(id);
-		}
 		if (user != null) {
 			if (permissions.isAdmin()) {
 				String like = (String) ((String[]) ActionContext.getContext().getParameters().get("q"))[0];
@@ -840,7 +829,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	public void setNewUser(boolean newUser) {
 		this.newUser = newUser;
 	}
-	
+
 	public void removeUserAccess(OpPerms perm) {
 		Iterator<UserAccess> permissions = user.getOwnedPermissions().iterator();
 		while (permissions.hasNext()) {

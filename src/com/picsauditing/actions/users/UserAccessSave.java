@@ -5,11 +5,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.UserAccessDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.dao.UserGroupDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
@@ -18,11 +13,6 @@ import com.picsauditing.jpa.entities.UserAccess;
 public class UserAccessSave extends UsersManage {
 	protected OpPerms opPerm;
 	protected int accessId;
-
-	public UserAccessSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO,
-			UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO) {
-		super(accountDao, operatorDao, userDAO, userAccessDAO, userGroupDAO);
-	}
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {

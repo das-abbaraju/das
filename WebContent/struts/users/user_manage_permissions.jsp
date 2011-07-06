@@ -68,7 +68,7 @@ function savePerm(userID, permType, checkbox) {
 				<tr>
 					<td><s:property value="#stat.index + 1" />.</td>
 					<td><a
-						href="UsersManage.action?accountId=<s:property value="account.id"/>&user.id=<s:property value="id"/>"
+						href="UsersManage.action?accountId=<s:property value="account.id"/>&user=<s:property value="id"/>"
 						title="<s:property value="#user.account.name" />"><s:property
 						value="name" /></a></td>
 					<s:iterator

@@ -1,10 +1,7 @@
 package com.picsauditing.actions.users;
 
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.UserAccessDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.dao.UserGroupDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
@@ -15,15 +12,8 @@ public class UserGroupSave extends UsersManage {
 	protected int memberId;
 	protected int groupId;
 	protected int userGroupId;
-	protected UserGroupDAO userGroupDAO;
+	@Autowired
 	protected UserSwitchDAO userSwitchDAO;
-
-	public UserGroupSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO,
-			UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO, UserSwitchDAO userSwitchDAO) {
-		super(accountDao, operatorDao, userDAO, userAccessDAO, userGroupDAO);
-		this.userGroupDAO = userGroupDAO;
-		this.userSwitchDAO = userSwitchDAO;
-	}
 
 	public String execute() throws Exception {
 		super.execute();

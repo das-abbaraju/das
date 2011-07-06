@@ -48,7 +48,7 @@
 	</div>
 	<div id="tabs-users">
 		<s:iterator value="operator.users">
-			<s:if test="activeB && !group">| <a href="UsersManage.action?accountId=<s:property value="account.id"/>&user.id=<s:property value="id"/>"><s:property value="name"/></a></s:if>
+			<s:if test="activeB && !group">| <a href="UsersManage.action?accountId=<s:property value="account.id"/>&user=<s:property value="id"/>"><s:property value="name"/></a></s:if>
 		</s:iterator>
 		|<br /><br />
 		<a href="UsersManage.action?accountId=<s:property value="operator.id"/>">Manage Users</a>

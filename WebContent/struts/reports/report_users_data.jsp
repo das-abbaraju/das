@@ -46,7 +46,7 @@
 					<s:property value="get('name')" />
 				</s:if>
 				<s:else>
-					<a href="UsersManage.action?accountId=<s:property value="get('accountID')"/>&user.id=<s:property value="get('id')"/>">
+					<a href="UsersManage.action?accountId=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>">
 						<s:property value="get('name')" /></a>
 				</s:else>
 			</td>

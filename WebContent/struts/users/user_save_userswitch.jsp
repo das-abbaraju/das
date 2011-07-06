@@ -14,7 +14,7 @@
 	<tbody> 
 		<s:iterator value="user.switchFroms">
 			<tr>
-				<td><a href="?accountId=<s:property value="user.account.id"/>&user.id=<s:property value="user.id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property value="user.name"/></a></td>
+				<td><a href="?accountId=<s:property value="user.account.id"/>&user=<s:property value="user.id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property value="user.name"/></a></td>
 				<td><a class="remove" href="#userSwitch" onclick="removeUserSwitch(<s:property value="user.id" />)">remove</a></td>
 			</tr>
 		</s:iterator>

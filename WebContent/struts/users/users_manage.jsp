@@ -25,7 +25,7 @@ var permTypes = new Array();
 	<s:if test="grantFlag == true">permTypes['<s:property value="opPerm"/>'] = new Array("<s:property value="opPerm.helpText"/>",<s:property value="opPerm.usesView()"/>,<s:property value="opPerm.usesEdit()"/>,<s:property value="opPerm.usesDelete()"/>);</s:if>
 </s:iterator>
 $(function(){
-	$('#accountMoveSuggest').autocomplete('UsersManageAjax.action?user.id=<s:property value="user.id"/>&button=Suggest').result(function(event, data){
+	$('#accountMoveSuggest').autocomplete('UsersManageAjax.action?user=<s:property value="user.id"/>&button=Suggest').result(function(event, data){
 		$('#moveToAccount').val(data[1])
 	});
 });
@@ -76,7 +76,7 @@ div.autocomplete ul li {
 </s:if>
 <s:if test="account.admin">PICS</s:if>
 &gt; <a href="?accountId=<s:property value="account.id"/>"><s:text name="%{scope}.title" /></a>
-<s:if test="user.id > 0">&gt; <a href="?user.id=<s:property value="user.id"/>"><s:property value="user.name" /></a>
+<s:if test="user.id > 0">&gt; <a href="?user=<s:property value="user.id"/>"><s:property value="user.name" /></a>
 </s:if>
 <s:if test="user.id == 0">&gt; NEW USER</s:if>
 
@@ -136,14 +136,14 @@ div.autocomplete ul li {
 						<s:if test="get('isGroup') == 'Yes'">
 							<td><s:text name="%{scope}.Group" /></td>
 							<td style="font-weight: bold"><a
-								href="?accountId=<s:property value="get('accountID')"/>&user.id=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
+								href="?accountId=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
 								value="get('name')" /></a></td>
 							<td><s:text name="global.NA" /></td>
 						</s:if>
 						<s:else>
 							<td><s:text name="%{scope}.User" /></td>
 							<td><a
-								href="?accountId=<s:property value="get('accountID')"/>&user.id=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
+								href="?accountId=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
 								class="userActive<s:property value="get('isActive')" />"><s:property value="get('name')" /></a></td>
 							<td>
 								<s:if test="get('lastLogin') != null">
@@ -163,7 +163,7 @@ div.autocomplete ul li {
 					<tr>
 						<td>
 							<s:if test="locked">
-								<a href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><span title="This user account is locked.<pics:permission perm="EditAccountDetails"> Click this icon to Manage this user's details.</pics:permission>"><img src="images/lock.gif" style="padding-left:5px;" width="15" height="15" alt="This user account is locked" /></span></a>
+								<a href="?accountId=<s:property value="accountId"/>&user=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><span title="This user account is locked.<pics:permission perm="EditAccountDetails"> Click this icon to Manage this user's details.</pics:permission>"><img src="images/lock.gif" style="padding-left:5px;" width="15" height="15" alt="This user account is locked" /></span></a>
 							</s:if>
 							<s:else>
 								&nbsp;
@@ -189,12 +189,12 @@ div.autocomplete ul li {
 			<div class="alert">This user account is locked.
 				<pics:permission perm="EditAccountDetails">
 					<span title="<s:text name="%{scope}.help.Unlock" />Press this button to unlock this user's account">
-						<s:submit action="UsersManage!unlock" cssClass="picsbutton negative" value="%{getText(scope + '.button.UnlockThisAccount')}" />
+						<s:submit method="unlock" cssClass="picsbutton negative" value="%{getText(scope + '.button.UnlockThisAccount')}" />
 					</span>
 				</pics:permission>
 			</div>
 		</s:if>
-		<s:hidden name="user.id" />
+		<s:hidden name="user" />
 		<s:hidden name="accountId" />
 		<s:hidden name="isGroup" />
 		<s:hidden name="isActive" />
@@ -303,12 +303,12 @@ div.autocomplete ul li {
 							<p>The name of the account you wish to move the user to.  
 							This field will autocomplete as you type.</p>
 						</pics:fieldhelp>
-						<s:submit action="UsersManage!move" cssClass="picsbutton" value="%{getText(scope + '.button.MoveUser')}" onclick="return confirm('%{getText(scope + '.confirm.Move')}');" />
+						<s:submit method="move" cssClass="picsbutton" value="%{getText(scope + '.button.MoveUser')}" onclick="return confirm('%{getText(scope + '.confirm.Move')}');" />
 					</li>
 				</s:if>
 				<s:if test="hasProfileEdit">
 					<li><label>&nbsp;</label>
-						<a class="picsbutton" href="?button=resetPassword&user.id=<s:property value="user.id"/>">Send Reset Password Email</a>
+						<a class="picsbutton" href="?button=resetPassword&user=<s:property value="user.id"/>">Send Reset Password Email</a>
 						<s:if test="!user.group">
 							<pics:permission perm="SwitchUser">
 								<a class="picsbutton" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch to this User</a>
@@ -323,10 +323,10 @@ div.autocomplete ul li {
 		</ol>
 		</fieldset>
 		<fieldset class="form submit">
-			<s:submit action="UsersManage!save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
+			<s:submit method="save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
 			<pics:permission perm="EditUsers" type="Delete">
 				<s:if test="user.id > 0 && !account.contractor">
-					<s:submit action="UsersManage!delete" cssClass="picsbutton negative" value="%{getText('button.Delete')}" onclick="return confirm('%{getText(scope + '.confirm.Delete')}');" />
+					<s:submit method="delete" cssClass="picsbutton negative" value="%{getText('button.Delete')}" onclick="return confirm('%{getText(scope + '.confirm.Delete')}');" />
 				</s:if>
 			</pics:permission>
 		</fieldset>

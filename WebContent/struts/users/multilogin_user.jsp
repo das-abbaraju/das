@@ -36,7 +36,7 @@ These Users have used more than 3 unique IP addresses to login in the past 3 mon
 		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 		<td><a href="UsersManage.action?accountId=<s:property value="get('id')"/>">
 		<s:property value="get('name')"/></td>
-		<td><a href="UsersManage.action?accountId=<s:property value="get('id')"/>&user.id=<s:property value="get('userId')"/>">
+		<td><a href="UsersManage.action?accountId=<s:property value="get('id')"/>&user=<s:property value="get('userId')"/>">
 		<s:property value="get('contact')"/></a></td>
 		<td class="center"><s:property value="get('count')"/></td>
 	</tr>
