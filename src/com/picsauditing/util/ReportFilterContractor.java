@@ -68,7 +68,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showAuditCreationFlagChanges = false;
 	protected boolean showAuditQuestionFlagChanges = false;
 	protected boolean showSoleProprietership = true;
-	protected boolean showAccountLevel = true;
+	protected boolean showAccountLevel = false;
 	protected boolean showState = false;
 
 	// /////// Parameter Values /////////////////

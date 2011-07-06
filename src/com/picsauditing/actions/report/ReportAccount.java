@@ -20,6 +20,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ListType;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
@@ -60,6 +61,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	protected void buildQuery() {
 		sql = new SelectAccount();
+		if (permissions.getTopAccountID() == OperatorAccount.SuncorEnergyServices || permissions.isAdmin())
+			getFilter().setShowAccountLevel(true);
 
 		if (permissions.isAssessment())
 			sql.addWhere("a.requiresOQ = 1");
@@ -260,7 +263,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			for (int tradeID : f.getTrade()) {
 				SelectSQL tradeSQL = new SelectSQL("contractor_trade ct");
 				tradeSQL.addJoin("JOIN ref_trade base ON ct.tradeID = base.id");
-				tradeSQL.addJoin("JOIN ref_trade related ON base.indexStart <= related.indexStart and base.indexEnd >= related.indexEnd");
+				tradeSQL
+						.addJoin("JOIN ref_trade related ON base.indexStart <= related.indexStart and base.indexEnd >= related.indexEnd");
 				tradeSQL.addWhere("a.id = ct.conID");
 				// TODO allow users to search for Self Performed, Manufacture and Activity Percent
 				tradeSQL.addWhere("ct.activityPercent > 1");
@@ -364,13 +368,13 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 
 		if (filterOn(f.getRegistrationDate1())) {
-			report.addFilter(new SelectFilterDate("registrationDate1", "a.creationDate >= '?'", DateBean.format(
-					f.getRegistrationDate1(), "M/d/yy")));
+			report.addFilter(new SelectFilterDate("registrationDate1", "a.creationDate >= '?'", DateBean.format(f
+					.getRegistrationDate1(), "M/d/yy")));
 		}
 
 		if (filterOn(f.getRegistrationDate2())) {
-			report.addFilter(new SelectFilterDate("registrationDate2", "a.creationDate < '?'", DateBean.format(
-					f.getRegistrationDate2(), "M/d/yy")));
+			report.addFilter(new SelectFilterDate("registrationDate2", "a.creationDate < '?'", DateBean.format(f
+					.getRegistrationDate2(), "M/d/yy")));
 		}
 
 		if (f.isPendingPqfAnnualUpdate()) {
@@ -411,7 +415,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 				sql.addJoin("LEFT JOIN pqfdata pd3543 on casd.id = pd3543.auditID AND pd3543.questionID = 3543");
 				sql.addJoin("LEFT JOIN pqfdata pd66 on casd.id = pd66.auditID AND pd66.questionID = 66");
 				sql.addJoin("LEFT JOIN pqfdata pd77 on casd.id = pd77.auditID AND pd77.questionID = 77");
-				sql.addWhere("pd2340.answer = 'Yes' OR pd2354.answer = 'Yes' OR pd2373.answer = 'Yes' OR pd3543.answer = 'X' OR pd66.answer = 'X' OR pd77.answer = 'X'");
+				sql
+						.addWhere("pd2340.answer = 'Yes' OR pd2354.answer = 'Yes' OR pd2373.answer = 'Yes' OR pd3543.answer = 'X' OR pd66.answer = 'X' OR pd77.answer = 'X'");
 			}
 		}
 
