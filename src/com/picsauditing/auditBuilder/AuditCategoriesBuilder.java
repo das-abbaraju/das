@@ -58,7 +58,8 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	/**
 	 * 
 	 * @param conAudit
-	 * @param auditOperators Pass the Operators (CAOP), NOT the Governing Bodies (CAO)
+	 * @param auditOperators
+	 *            Pass the Operators (CAOP), NOT the Governing Bodies (CAO)
 	 * @return
 	 */
 	public Set<AuditCategory> calculate(ContractorAudit conAudit, Collection<OperatorAccount> auditOperators) {
