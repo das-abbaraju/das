@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import org.apache.commons.beanutils.DynaBean;
 
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -15,6 +16,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.util.ReportFilterCAO;
 import com.picsauditing.util.Strings;
@@ -27,6 +29,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 	protected AuditQuestionDAO auditQuestionDao = null;
 	protected OperatorAccountDAO operatorAccountDAO = null;
 	protected AmBestDAO amBestDAO = null;
+	protected AccountDAO accountDAO = null;
 
 	/**
 	 * Map of Purpose, AuditID, then List of Answers
@@ -34,12 +37,13 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 	protected Map<String, Map<Integer, List<AuditData>>> questionData = null;
 
 	public ReportContractorAuditOperator(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
+			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO, AccountDAO accountDAO) {
 		super();
 		this.auditDataDao = auditDataDao;
 		this.auditQuestionDao = auditQuestionDao;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.amBestDAO = amBestDAO;
+		this.accountDAO = accountDAO;
 		orderByDefault = "cao.statusChangedDate DESC";
 		filter = new ReportFilterCAO();
 	}
@@ -109,14 +113,27 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		}
 
 		if (filterOn(f.getCaoOperator())) {
+			List<Integer> allChildren = new ArrayList<Integer>();
+			// combine all operators and their children into 1 list
+			for (int caoOpID : f.getCaoOperator()) {
+				List<Integer> children = new ArrayList<Integer>();
+				OperatorAccount op = (OperatorAccount) accountDAO.find(caoOpID);
+
+				children.add(op.getId());
+				for (Facility facil : op.getOperatorFacilities())
+					children.add(facil.getOperator().getId());
+
+				if (f.isShowAnyCAOOperator()) {
+					allChildren.addAll(children);
+				} else {
+					sql.addWhere("cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN ("
+							+ f.getCaoOperator() + "))");
+				}
+			}
+			
 			if (f.isShowAnyCAOOperator()) {
 				sql.addWhere("cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN ("
-						+ Strings.implode(f.getCaoOperator()) + "))");
-			} else {
-				for (int caoOpID : f.getCaoOperator()) {
-					sql.addWhere("cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID = "
-							+ caoOpID + ")");
-				}
+						+ Strings.implode(allChildren) + "))");
 			}
 		}
 	}
