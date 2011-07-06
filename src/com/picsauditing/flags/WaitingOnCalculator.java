@@ -1,0 +1,173 @@
+package com.picsauditing.flags;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.OshaOrganizer;
+import com.picsauditing.PICS.Utilities;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AmBestDAO;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.FlagCriteriaContractorDAO;
+import com.picsauditing.dao.FlagCriteriaDAO;
+import com.picsauditing.jpa.entities.AmBest;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.BaseTable;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorTag;
+import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
+import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.FlagDataOverride;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OshaRateType;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
+
+public class WaitingOnCalculator {
+
+	public WaitingOn calculateWaitingOn(ContractorOperator co) {
+
+		ContractorAccount contractor = co.getContractorAccount();
+		OperatorAccount operator = co.getOperatorAccount();
+
+		if (!contractor.isMaterialSupplierOnly() && contractor.getSafetyRisk() == null)
+			return WaitingOn.Contractor;
+
+		if (contractor.isMaterialSupplier() && contractor.getProductRisk() == null)
+			return WaitingOn.Contractor;
+
+		if (!contractor.getStatus().isActiveDemo())
+			return WaitingOn.Contractor; // This contractor is delinquent
+
+		// If Bid Only Account
+		if (contractor.getAccountLevel().isBidOnly()) {
+			return WaitingOn.Operator;
+		}
+
+		// Operator Relationship Approval
+		if (YesNo.Yes.equals(operator.getApprovesRelationships())) {
+			if (co.isWorkStatusPending())
+				// Operator needs to approve/reject this contractor
+				return WaitingOn.Operator;
+			if (co.isWorkStatusRejected())
+				// Operator has already rejected this
+				// contractor, and there's nothing else
+				// they can do
+				return WaitingOn.None;
+		}
+
+		// Billing
+		if (contractor.isPaymentOverdue())
+			return WaitingOn.Contractor; // The contractor has an unpaid
+		// invoice due
+
+		// If waiting on contractor, immediately exit, otherwise track the
+		// other parties
+		boolean waitingOnPics = false;
+		boolean waitingOnOperator = false;
+
+		Map<FlagCriteria, List<FlagCriteriaOperator>> operatorCriteria = null;
+		for (FlagCriteria key : operatorCriteria.keySet()) {
+			FlagCriteriaOperator fOperator = operatorCriteria.get(key).get(0);
+			if (!fOperator.getFlag().equals(FlagColor.Green)) {
+				for (ContractorAudit conAudit : contractor.getAudits()) {
+					if (key.getAuditType().equals(conAudit.getAuditType())) {
+						if (!conAudit.isExpired()) {
+							// There could be multiple audits for the same
+							// operator
+							for (ContractorAuditOperator cao : getCaosForOperator(conAudit, operator)) {
+								if (cao.getStatus().before(AuditStatus.Submitted)) {
+									if (conAudit.getAuditType().isCanContractorEdit())
+										return WaitingOn.Contractor;
+									OpPerms editPerm = conAudit.getAuditType().getEditPermission();
+									if (conAudit.getAuditType().getEditPermission() != null) {
+										if (editPerm.isForOperator())
+											waitingOnOperator = true;
+										else
+											waitingOnPics = true;
+									} else
+										// Assuming that a null permission means
+										// "Only PICS" can edit
+										waitingOnPics = true;
+								} else {
+									AuditStatus requiredStatus = key.getRequiredStatus();
+
+									if (cao.getStatus().before(requiredStatus)) {
+										if (cao.getStatus().isComplete()) {
+											waitingOnOperator = true;
+										} else if (conAudit.getAuditType().getId() == AuditType.OFFICE) {
+											// either needs to schedule the
+											// audit or
+											// close out RQs
+											return WaitingOn.Contractor;
+										} else if (conAudit.getAuditType().getId() == AuditType.DESKTOP
+												&& cao.getStatus().isSubmitted()) {
+											// contractor needs to close out RQs
+											return WaitingOn.Contractor;
+										} else {
+											waitingOnPics = true;
+										}
+									}
+								}
+							}
+						}
+					}
+				} // for
+			}
+		}
+		if (waitingOnPics)
+			return WaitingOn.PICS;
+		if (waitingOnOperator)
+			// only show the operator if contractor and pics are all done
+			return WaitingOn.Operator;
+
+		return WaitingOn.None;
+	}
+
+	/**
+	 * 
+	 * @param conAudit
+	 * @param operator
+	 * @return Usually just a single matching cao record for the given operator
+	 */
+	private List<ContractorAuditOperator> getCaosForOperator(ContractorAudit conAudit, OperatorAccount operator) {
+		List<ContractorAuditOperator> caos = new ArrayList<ContractorAuditOperator>();
+
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+				if (caop.getOperator().equals(operator) && cao.isVisible())
+					caos.add(cao);
+			}
+		}
+
+		if (caos.size() > 1)
+			System.out.println("WARNING: Found " + caos.size() + " matching caos for " + operator.toString()
+					+ " on auditID = " + conAudit.getId());
+
+		return caos;
+	}
+
+}
