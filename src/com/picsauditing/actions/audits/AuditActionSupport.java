@@ -51,15 +51,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditActionSupport extends ContractorActionSupport {
-
-	protected int auditID = 0;
-	protected int categoryID = 0;
-	protected String descriptionOsMs;
-	protected boolean systemEdit = false;
-	protected boolean showVerified = false;
-
-	protected ContractorAudit conAudit;
-
 	@Autowired
 	protected AuditCategoryDataDAO catDataDao;
 	@Autowired
@@ -76,6 +67,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
 	@Autowired
 	private AuditDecisionTableDAO auditRuleDAO;
+
+	protected int auditID = 0;
+	protected int categoryID = 0;
+	protected String descriptionOsMs;
+	protected boolean systemEdit = false;
+	protected boolean showVerified = false;
+
+	protected ContractorAudit conAudit;
 
 	private Map<Integer, AuditData> hasManual;
 	protected Map<AuditCategory, AuditCatData> categories = null;
@@ -162,8 +161,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (conAudit.getAuditType().getId() == AuditType.BPIISNCASEMGMT) {
 			questionID = 3477;
 		}
-		Map<Integer, AuditData> answers = auditDataDao.findAnswersForSafetyManual(conAudit.getContractorAccount()
-				.getId(), questionID);
+		Map<Integer, AuditData> answers = auditDataDao.findAnswersForSafetyManual(
+				conAudit.getContractorAccount().getId(), questionID);
 		if (answers == null || answers.size() == 0)
 			return null;
 		return answers;
@@ -241,8 +240,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 		}
 		if (!actionStatus.isEmpty()) {
-			for (Iterator<Entry<AuditStatus, Collection<Integer>>> en = actionStatus.asMap().entrySet().iterator(); en
-					.hasNext();) {
+			for (Iterator<Entry<AuditStatus, Collection<Integer>>> en = actionStatus.asMap().entrySet().iterator(); en.hasNext();) {
 				if (!(en.next().getValue().size() > 1))
 					en.remove();
 			}
@@ -360,9 +358,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 					}
 				}
 			}
-			
-			if (conAudit.hasCaoStatusAfter(AuditStatus.Pending))
-				canEdit = false;
+
+			if (type.getClassType().isAudit()) {
+				if (conAudit.hasCaoStatusAfter(AuditStatus.Pending))
+					canEdit = false;
+			}
 			
 			return canEdit;
 		}
