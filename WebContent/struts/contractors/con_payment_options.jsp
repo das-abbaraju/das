@@ -106,7 +106,7 @@ function updateExpDate() {
 	<s:if test="contractor.status.activeDemo">
 		<li><label>Next Billing Date:</label> <s:date
 			name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
-		<li><label>Next Billing Amount: <s:if test="contractor.accountLevel.full">(<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;"
+		<li><label>Next Billing Amount: <s:if test="contractor.accountLevel.full">(<a onClick="window.open('ContractorPricing.action?con=<s:property value="contractor.id" />','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;"
 				href="#" title="opens in new window">Click here to view pricing</a>)</s:if></label>
 			<table>
 			<s:iterator value="contractor.fees.keySet()" var="feeClass">
@@ -139,7 +139,7 @@ function updateExpDate() {
 			</li>
 		</s:if>
 		<s:else>
-			<li><label>Annual Membership: <s:if test="contractor.accountLevel.full">(<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;"
+			<li><label>Annual Membership: <s:if test="contractor.accountLevel.full">(<a onClick="window.open('ContractorPricing.action?con=<s:property value="contractor.id" />','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;"
 					href="#" title="opens in new window">Click here to view pricing</a>)</s:if></label>
 				<table>
 				<s:iterator value="contractor.fees.keySet()" var="feeClass">
