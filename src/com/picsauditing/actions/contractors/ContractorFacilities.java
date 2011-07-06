@@ -124,7 +124,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 			accountDao.save(contractor);
 		}
 
-		if (contractor.getNonCorporateOperators().size() == 1) {
+		if (contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending()) {
 			contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 			accountDao.save(contractor);
 		}
@@ -370,7 +370,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 					facilityChanger.setType(type);
 					contractor.setRenew(true);
 					facilityChanger.add();
-					if(contractor.getNonCorporateOperators().size() == 1)
+					if(contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending())
 						contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 					BillingCalculatorSingle.calculateAnnualFees(contractor);
 					contractor.syncBalance();
@@ -385,9 +385,9 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 			if (button.equals("removeOperator")) {
 				facilityChanger.remove();
-				if (contractor.getNonCorporateOperators().size() == 0)
+				if (contractor.getNonCorporateOperators().size() == 0 && contractor.getStatus().isPending())
 					contractor.setRequestedBy(null);
-				else if(contractor.getNonCorporateOperators().size() == 1)
+				else if(contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending())
 					contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 				recalculate = true;
 				json.put("needsToIndicateCompetitor", contractor.isNeedsToIndicateCompetitor());
