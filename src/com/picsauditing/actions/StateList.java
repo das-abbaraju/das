@@ -38,4 +38,13 @@ public class StateList extends AccountActionSupport {
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
 	}
+
+	public String getStatePrefix() {
+		if (prefix == null)
+			return "state";
+		if (prefix.contains("State"))
+			return prefix;
+
+		return prefix + "state";
+	}
 }
