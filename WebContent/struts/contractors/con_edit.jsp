@@ -14,7 +14,7 @@ function changeState(country) {
 }
 
 function changeBillingState(country) {
-	$('#billing_state_li').load('StateListAjax.action',{countryString: $('#contractorBillingCountry').val(), prefix: 'billing', stateString: '<s:property value="contractor.billingState.isoCode"/>'});
+	$('#billing_state_li').load('StateListAjax.action',{countryString: $('#contractorBillingCountry').val(), prefix: 'billingState', stateString: '<s:property value="contractor.billingState.isoCode"/>'});
 }
 function countryChanged(country) {
 	// hide taxID and zip code
