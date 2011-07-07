@@ -16,7 +16,7 @@
 <script type="text/javascript" src="js/user_manage.js?v=<s:property value="version"/>"></script>
 
 <script type="text/javascript">
-var accountID = <s:property value="accountId"/>;
+var accountID = <s:property value="account.id"/>;
 var currentUserID = 0;
 <s:if test="user.id > 0">currentUserID = <s:property value="user.id"/>;</s:if>
 
@@ -75,7 +75,7 @@ div.autocomplete ul li {
 	<a href="AssessmentCenterEdit.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
 </s:if>
 <s:if test="account.admin">PICS</s:if>
-&gt; <a href="?accountId=<s:property value="account.id"/>"><s:text name="%{scope}.title" /></a>
+&gt; <a href="?account.id=<s:property value="account.id"/>"><s:text name="%{scope}.title" /></a>
 <s:if test="user.id > 0">&gt; <a href="?user=<s:property value="user.id"/>"><s:property value="user.name" /></a>
 </s:if>
 <s:if test="user.id == 0">&gt; NEW USER</s:if>
@@ -88,7 +88,7 @@ div.autocomplete ul li {
 		<br />
 		<div class="filterOption">
 		<h4><s:text name="%{scope}.Type" />:</h4>
-		<s:hidden name="accountId" value="%{accountId}" />
+		<s:hidden name="account.id" value="%{account.id}" />
 		<s:radio name="isGroup"
 			list="#{'Yes':'Groups', 'No':'Users', '':'Both'}" value="isGroup" />
 		</div>
@@ -104,18 +104,18 @@ div.autocomplete ul li {
 <div style="margin:5px 0 5px 0; list-style: none;">
 	<s:if test="!account.contractor">
 		<a class="add"
-			href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=Yes&user.isActive=Yes"
+			href="?button=newUser&account=<s:property value="account.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=Yes&user.isActive=Yes"
 			><s:text name="%{scope}.addGroup" /></a>
 	</s:if>
 	<a class="add" 
-		href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes"
+		href="?button=newUser&account=<s:property value="account.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes"
 		><s:text name="%{scope}.addUser" /></a>
 	<s:if test="!account.contractor">
 		<a class="preview"
-			href="ReportUserPermissionMatrix.action?accountID=<s:property value="accountId"/>"><s:text name="ReportUserPermissionMatrix.title" /></a>
+			href="ReportUserPermissionMatrix.action?accountID=<s:property value="account.id"/>"><s:text name="ReportUserPermissionMatrix.title" /></a>
 	</s:if>
 	<s:if test="account.contractor && account.users.size() > 1">
-		<a class="edit" href="ManageUserPermissions.action?id=<s:property value="accountId"/>"><s:text name="ManageUserPermissions.title" /></a>
+		<a class="edit" href="ManageUserPermissions.action?id=<s:property value="account.id"/>"><s:text name="ManageUserPermissions.title" /></a>
 	</s:if>
 </div>
 
@@ -136,14 +136,14 @@ div.autocomplete ul li {
 						<s:if test="get('isGroup') == 'Yes'">
 							<td><s:text name="%{scope}.Group" /></td>
 							<td style="font-weight: bold"><a
-								href="?accountId=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
+								href="?account.id=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
 								value="get('name')" /></a></td>
 							<td><s:text name="global.NA" /></td>
 						</s:if>
 						<s:else>
 							<td><s:text name="%{scope}.User" /></td>
 							<td><a
-								href="?accountId=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
+								href="?account.id=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
 								class="userActive<s:property value="get('isActive')" />"><s:property value="get('name')" /></a></td>
 							<td>
 								<s:if test="get('lastLogin') != null">
@@ -163,7 +163,7 @@ div.autocomplete ul li {
 					<tr>
 						<td>
 							<s:if test="locked">
-								<a href="?accountId=<s:property value="accountId"/>&user=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><span title="This user account is locked.<pics:permission perm="EditAccountDetails"> Click this icon to Manage this user's details.</pics:permission>"><img src="images/lock.gif" style="padding-left:5px;" width="15" height="15" alt="This user account is locked" /></span></a>
+								<a href="?account.id=<s:property value="account.id"/>&user=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><span title="This user account is locked.<pics:permission perm="EditAccountDetails"> Click this icon to Manage this user's details.</pics:permission>"><img src="images/lock.gif" style="padding-left:5px;" width="15" height="15" alt="This user account is locked" /></span></a>
 							</s:if>
 							<s:else>
 								&nbsp;
@@ -195,7 +195,7 @@ div.autocomplete ul li {
 			</div>
 		</s:if>
 		<s:hidden name="user" />
-		<s:hidden name="accountId" />
+		<s:hidden name="account" />
 		<s:hidden name="isGroup" />
 		<s:hidden name="isActive" />
 		<s:hidden name="user.isGroup" />
