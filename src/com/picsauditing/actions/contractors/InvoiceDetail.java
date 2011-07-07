@@ -3,8 +3,11 @@ package com.picsauditing.actions.contractors;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -17,6 +20,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -42,32 +46,24 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class InvoiceDetail extends ContractorActionSupport implements Preparable {
-	private boolean edit = false;
-
+	@Autowired
 	private InvoiceDAO invoiceDAO;
+	@Autowired
+	private InvoiceItemDAO invoiceItemDAO;
+	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
 	private PaymentDAO paymentDAO;
+	@Autowired
+	private AppPropertyDAO appPropDao;
 
+	private boolean edit = false;
 	private int newFeeId;
-
 	private Invoice invoice;
-
 	private List<InvoiceFee> feeList = null;
-	
 	private String country;
 
-	AppPropertyDAO appPropDao;
-
 	private BrainTreeService paymentService = new BrainTreeService();
-
-	public InvoiceDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao, InvoiceFeeDAO invoiceFeeDAO,
-			PaymentDAO paymentDAO) {
-		this.invoiceDAO = invoiceDAO;
-		this.appPropDao = appPropDao;
-		this.paymentDAO = paymentDAO;
-		this.invoiceFeeDAO = invoiceFeeDAO;
-		
-	}
 
 	@Override
 	public void prepare() {
@@ -114,61 +110,53 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				invoice.setQbSync(true);
 			}
 			if (button.startsWith("Change to")) {
-				List<String> changedItems = new ArrayList<String>();
-				List<InvoiceItem> removalList = new ArrayList<InvoiceItem>();
+				List<String> removedItemNames = new ArrayList<String>();
+				List<String> createdItemNames = new ArrayList<String>();
 
-				// insert|update|delete
-				for (FeeClass feeClass : contractor.getFees().keySet()) {
-					// update|delete
-					boolean found = false;
-					for (InvoiceItem item : invoice.getItems()) {
-						// update current membership invoice item if different fee is due
-						if (item.getInvoiceFee().getFeeClass().equals(feeClass)
-								&& item.getInvoiceFee().isMembership()
-								&& !contractor.getFees().get(feeClass).getNewAmount().equals(
-										item.getInvoiceFee().getAmount())) {
-							found = true;
-							item.setInvoiceFee(contractor.getFees().get(feeClass).getNewLevel());
-							item.setAmount(contractor.getFees().get(feeClass).getNewAmount());
-							item.setAuditColumns(permissions);
+				Date membershipExpiration = null;
 
-							changedItems.add(contractor.getFees().get(feeClass).getNewLevel().getFee());
-							if (contractor.getFees().get(feeClass).getNewLevel().isFree())
-								removalList.add(item);
+				// Removing all Membership items
+				Iterator<InvoiceItem> iterator = invoice.getItems().iterator();
+				while (iterator.hasNext()) {
+					InvoiceItem item = iterator.next();
+					if (item.getInvoiceFee().isMembership()) {
+						if (item.getPaymentExpires() != null) {
+							membershipExpiration = item.getPaymentExpires();
 						}
+						removedItemNames.add(item.getInvoiceFee().getFee());
+						iterator.remove();
+						invoiceItemDAO.remove(item);
 					}
+				}
 
-					// found a new fee (insert)
-					if (!found && !contractor.getFees().get(feeClass).getNewLevel().isFree()) {
+				// Re-adding Membership Items
+				for (FeeClass feeClass : contractor.getFees().keySet()) {
+					if (feeClass.isMembership() && !contractor.getFees().get(feeClass).getNewLevel().isFree()) {
 						InvoiceItem newInvoiceItem = new InvoiceItem();
 						newInvoiceItem.setInvoiceFee(contractor.getFees().get(feeClass).getNewLevel());
 						newInvoiceItem.setAmount(contractor.getFees().get(feeClass).getNewAmount());
 						newInvoiceItem.setAuditColumns(new User(User.SYSTEM));
-
-						if ("Renewal".equals(contractor.getStatus()) && feeClass.isPaymentExpiresNeeded())
-							newInvoiceItem.setPaymentExpires(invoice.getCreationDate());
+						newInvoiceItem.setPaymentExpires(membershipExpiration);
+						newInvoiceItem.setAuditColumns(permissions);
 
 						newInvoiceItem.setInvoice(invoice);
 						invoice.getItems().add(newInvoiceItem);
 
-						changedItems.add(contractor.getFees().get(feeClass).getNewLevel().getFee());
+						createdItemNames.add(newInvoiceItem.getInvoiceFee().getFee());
 					}
 				}
 
-				for (Iterator<InvoiceItem> iterator = removalList.iterator(); iterator.hasNext();) {
-					InvoiceItem item = iterator.next();
-					invoice.getItems().remove(item);
-					invoiceDAO.remove(item);
-					iterator.remove();
-				}
+				invoiceDAO.save(invoice);
 
-				contractor.syncBalance();
-				addNote("Changed invoice " + invoice.getId() + " to " + Strings.implode(changedItems), getUser());
+				addNote("Changed Membership Level", "Changed invoice from " + Strings.implode(removedItemNames, ", ")
+						+ " to " + Strings.implode(createdItemNames, ", "), getUser());
 				message = "Changed Membership Level";
 
 				String notes = "Thank you for doing business with PICS!";
 				notes += BillingCalculatorSingle.getOperatorsString(contractor);
+
 				invoice.setNotes(notes);
+				contractor.syncBalance();
 			}
 
 			if (button.startsWith("Email")) {
@@ -209,7 +197,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						&& ("Renewal Overdue".equals(status) || "Reactivation".equals(status))) {
 					contractor.setStatus(AccountStatus.Deactivated);
 					contractor.setRenew(false);
-					if (contractor.isAcceptsBids())
+					if (contractor.getAccountLevel().isBidOnly())
 						contractor.setReason("Bid Only Account");
 					Note note = new Note(contractor, new User(User.SYSTEM),
 							"Automatically inactivating account based on expired membership");
@@ -354,6 +342,15 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		getNoteDao().save(note);
 	}
 
+	private void addNote(String subject, String body, User u) {
+		Note note = new Note(invoice.getAccount(), u, subject);
+		note.setBody(body);
+		note.setNoteCategory(NoteCategory.Billing);
+		note.setCanContractorView(true);
+		note.setViewableById(Account.PicsID);
+		getNoteDao().save(note);
+	}
+
 	private void addInvoiceItem(int feeId) {
 		InvoiceItem newItem = new InvoiceItem();
 		InvoiceFee newFee = invoiceFeeDAO.find(feeId);
@@ -389,9 +386,10 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		this.edit = edit;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<InvoiceFee> getFeeList() {
 		if (feeList == null)
-			feeList = invoiceFeeDAO.findAll();
+			feeList = (List<InvoiceFee>) invoiceFeeDAO.findWhere(InvoiceFee.class, "t.visible = true", 100);
 
 		return feeList;
 	}
@@ -439,7 +437,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 		return false;
 	}
-	public String getCountry(){
-		return country;		
+
+	public String getCountry() {
+		return country;
 	}
 }
