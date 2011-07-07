@@ -81,7 +81,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 				con.setLastUpgradeDate(new Date());
 			else if (newSafetyRisk.ordinal() < currentSafetyRisk.ordinal()) {
 				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(155);
+				emailBuilder.setTemplate(159);
 				emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
 				emailBuilder.setToAddresses("billing@picsauditing.com");
 				emailBuilder.addToken("contractor", con);
