@@ -360,7 +360,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 
 			if (type.getClassType().isAudit()) {
-				if (conAudit.hasCaoStatusAfter(AuditStatus.Pending))
+				if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
 					canEdit = false;
 			}
 			
