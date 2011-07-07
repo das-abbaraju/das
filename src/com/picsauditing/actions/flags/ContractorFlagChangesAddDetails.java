@@ -4,20 +4,25 @@ import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 
 @SuppressWarnings("serial")
 public class ContractorFlagChangesAddDetails extends ContractorActionSupport {
 
-	protected int id = 0;
-	protected int priority;
-	protected ContractorOperatorDAO contractorOperatorDao;
-	protected UserDAO userDao;
-	protected com.picsauditing.jpa.entities.ContractorOperator co;
+	private int id = 0;
+	private int priority;
+	private String eta;
+	private ContractorOperatorDAO contractorOperatorDao;
+	private UserDAO userDao;
+	private ContractorAccountDAO contractorAccountDao;
+	private ContractorOperator co;
 
 	public ContractorFlagChangesAddDetails(UserDAO userDao, ContractorOperatorDAO contractorOperatorDao,
 			ContractorAccountDAO contractorAccountDao) {
 		this.contractorOperatorDao = contractorOperatorDao;
 		this.userDao = userDao;
+		this.contractorAccountDao = contractorAccountDao;
 	}
 
 	@Override
@@ -26,6 +31,23 @@ public class ContractorFlagChangesAddDetails extends ContractorActionSupport {
 			return LOGIN;
 		co = contractorOperatorDao.find(id);
 		priority = co.getContractorAccount().getNeedsRecalculation();
+
+		if (priority == 0) {
+			ContractorAccount lastRun = (ContractorAccount) contractorAccountDao.findWhere(ContractorAccount.class,
+					"lastRecalculation != '(null)'", 1, "lastRecalculation DESC").get(0);
+
+			ContractorAccount oldestRun = (ContractorAccount) contractorAccountDao.findWhere(ContractorAccount.class,
+					"lastRecalculation != '(null)' AND status = 'Active'", 1, "lastRecalculation ASC").get(0);
+
+			long lastRunTime = lastRun.getLastRecalculation().getTime();
+			long oldestRunTime = oldestRun.getLastRecalculation().getTime();
+
+			double time = (lastRunTime - oldestRunTime) / 3600000;
+
+			eta = time + " hours";
+		} else
+			eta = "Prioritized";
+
 		return SUCCESS;
 	}
 
@@ -46,15 +68,6 @@ public class ContractorFlagChangesAddDetails extends ContractorActionSupport {
 	}
 
 	public String getEta() {
-		String eta;
-		if (priority > 95)
-			eta = "Soon";
-		if (priority > 63)
-			eta = "In a bit";
-		if (priority > 31)
-			eta = "In a while";
-		else
-			eta = "Don't hold your breath";
 		return eta;
 	}
 
