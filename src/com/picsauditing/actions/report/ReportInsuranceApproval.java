@@ -5,15 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.dao.AmBestDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.search.SelectSQL;
@@ -21,8 +19,11 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportInsuranceApproval extends ReportContractorAuditOperator {
-	protected ContractorAuditOperatorDAO conAuditOperatorDAO = null;
-	protected NoteDAO noteDao = null;
+	@Autowired
+	protected ContractorAuditOperatorDAO conAuditOperatorDAO;
+	@Autowired
+	protected NoteDAO noteDao;
+	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
 
 	protected Map<Integer, ContractorAuditOperator> caos = null;
@@ -31,13 +32,8 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 	protected List<String> newStatuses = null;
 	protected Set<String> updatedContractors = new HashSet<String>();
 
-	public ReportInsuranceApproval(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO, ContractorAuditOperatorDAO conAuditOperatorDAO, NoteDAO noteDao,
-			ContractorAccountDAO contractorAccountDAO, AmBestDAO amBestDAO) {
-		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
-		this.conAuditOperatorDAO = conAuditOperatorDAO;
-		this.noteDao = noteDao;
-		this.contractorAccountDAO = contractorAccountDAO;
+	public ReportInsuranceApproval() {
+		super();
 		this.report.setLimit(25);
 		orderByDefault = "cao.status DESC, cao.updateDate ASC";
 		auditTypeClass = AuditTypeClass.Policy;

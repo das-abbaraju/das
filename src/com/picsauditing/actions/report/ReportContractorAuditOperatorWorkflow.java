@@ -1,10 +1,6 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.dao.AmBestDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.search.SelectFilterDate;
 import com.picsauditing.util.ReportFilterCAOW;
 import com.picsauditing.util.Strings;
@@ -13,9 +9,8 @@ import com.picsauditing.util.excel.ExcelColumn;
 @SuppressWarnings("serial")
 public class ReportContractorAuditOperatorWorkflow extends ReportContractorAuditOperator {
 
-	public ReportContractorAuditOperatorWorkflow(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
-		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
+	public ReportContractorAuditOperatorWorkflow() {
+		super();
 		filter = new ReportFilterCAOW();
 	}
 
@@ -41,10 +36,10 @@ public class ReportContractorAuditOperatorWorkflow extends ReportContractorAudit
 		if (filterOn(caowStatusList)) {
 			sql.addWhere("caow.status IN (" + caowStatusList + ")");
 		}
-		
+
 		if (filterOn(f.getCaowUpdateDate1())) {
-			report.addFilter(new SelectFilterDate("caowUpdateDate1", "caow.updateDate >= '?'", DateBean
-					.format(f.getCaowUpdateDate1(), "M/d/yy")));
+			report.addFilter(new SelectFilterDate("caowUpdateDate1", "caow.updateDate >= '?'", DateBean.format(
+					f.getCaowUpdateDate1(), "M/d/yy")));
 		}
 
 		if (filterOn(f.getCaowUpdateDate2())) {

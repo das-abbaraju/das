@@ -1,18 +1,10 @@
 package com.picsauditing.actions.report;
 
-import com.picsauditing.dao.AmBestDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportAnnualAddendum extends ReportContractorAuditOperator {
-	public ReportAnnualAddendum(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
-		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
-	}
 
 	@Override
 	protected void buildQuery() {

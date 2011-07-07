@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.beanutils.DynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AmBestDAO;
@@ -25,25 +26,24 @@ import com.picsauditing.jpa.entities.AuditStatus;
 @SuppressWarnings("serial")
 public class ReportContractorAuditOperator extends ReportContractorAudits {
 
-	protected AuditDataDAO auditDataDao = null;
-	protected AuditQuestionDAO auditQuestionDao = null;
-	protected OperatorAccountDAO operatorAccountDAO = null;
-	protected AmBestDAO amBestDAO = null;
-	protected AccountDAO accountDAO = null;
+	@Autowired
+	protected AuditDataDAO auditDataDao;
+	@Autowired
+	protected AuditQuestionDAO auditQuestionDao;
+	@Autowired
+	protected OperatorAccountDAO operatorAccountDAO;
+	@Autowired
+	protected AmBestDAO amBestDAO;
+	@Autowired
+	protected AccountDAO accountDAO;
 
 	/**
 	 * Map of Purpose, AuditID, then List of Answers
 	 */
 	protected Map<String, Map<Integer, List<AuditData>>> questionData = null;
 
-	public ReportContractorAuditOperator(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO, AccountDAO accountDAO) {
+	public ReportContractorAuditOperator() {
 		super();
-		this.auditDataDao = auditDataDao;
-		this.auditQuestionDao = auditQuestionDao;
-		this.operatorAccountDAO = operatorAccountDAO;
-		this.amBestDAO = amBestDAO;
-		this.accountDAO = accountDAO;
 		orderByDefault = "cao.statusChangedDate DESC";
 		filter = new ReportFilterCAO();
 	}
@@ -127,10 +127,10 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 					allChildren.addAll(children);
 				} else {
 					sql.addWhere("cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN ("
-							+ f.getCaoOperator() + "))");
+							+ Strings.implode(children) + "))");
 				}
 			}
-			
+
 			if (f.isShowAnyCAOOperator()) {
 				sql.addWhere("cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN ("
 						+ Strings.implode(allChildren) + "))");

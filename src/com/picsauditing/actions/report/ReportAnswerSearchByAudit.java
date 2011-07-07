@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AmBestDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -15,11 +11,6 @@ import com.picsauditing.util.excel.ExcelColumn;
 @SuppressWarnings("serial")
 public class ReportAnswerSearchByAudit extends ReportContractorAuditOperator {
 	public List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>();
-	
-	public ReportAnswerSearchByAudit(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
-		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
-	}
 	
 	@Override
 	public void checkPermissions() throws Exception {

@@ -1,21 +1,18 @@
 package com.picsauditing.actions.report;
 
 import java.io.IOException;
+
 import org.apache.commons.beanutils.BasicDynaBean;
+
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AmBestDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 
 @SuppressWarnings("serial")
 public class ReportPolicyVerification extends ReportContractorAuditOperator {
 	private int auditID = 0;
 
-	public ReportPolicyVerification(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
-		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
+	public ReportPolicyVerification() {
+		super();
 		auditTypeClass = AuditTypeClass.Policy;
 		orderByDefault = "MIN(cao.statusChangedDate) ASC, a.name";
 	}

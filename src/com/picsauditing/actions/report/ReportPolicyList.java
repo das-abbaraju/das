@@ -1,19 +1,13 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.AmBestDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 
 @SuppressWarnings("serial")
 public class ReportPolicyList extends ReportContractorAuditOperator {
 
-	public ReportPolicyList(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO, AccountDAO accountDAO) {
-		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO, accountDAO);
+	public ReportPolicyList() {
+		super();
 		auditTypeClass = AuditTypeClass.Policy;
 	}
 

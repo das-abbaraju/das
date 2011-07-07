@@ -4,13 +4,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AmBestDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -22,33 +20,32 @@ import com.picsauditing.search.SelectContractorAudit;
 
 @SuppressWarnings("serial")
 public class ReportCompletePQF extends ReportContractorAuditOperator {
+	@Autowired
+	protected ContractorAuditDAO contractorAuditDAO;
+	@Autowired
+	protected EmailBuilder emailBuilder;
+	@Autowired
+	protected NoteDAO noteDAO;
+
 	private Date followUpDate = null;
 	private String[] sendMail = null;
-	protected ContractorAuditDAO contractorAuditDAO;
-	protected EmailBuilder emailBuilder;
-	protected NoteDAO noteDAO;
 
 	protected Map<Integer, Date> scheduledDate;
 
-	public ReportCompletePQF(ContractorAuditDAO contractorAuditDAO, EmailBuilder emailBuilder,NoteDAO noteDAO,
-			AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
-		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
+	public ReportCompletePQF() {
+		super();
 		sql = new SelectContractorAudit();
-		this.contractorAuditDAO = contractorAuditDAO;
-		this.emailBuilder = emailBuilder;
-		this.noteDAO = noteDAO;
 	}
 
 	@Override
 	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.AuditVerification);
 	}
-	
+
 	@Override
 	public void buildQuery() {
 		super.buildQuery();
-		
+
 		sql.addField("cao.percentComplete");
 		sql.addWhere("ca.auditTypeID IN (1,11)");
 		sql.addWhere("a.status IN ('Active','Demo')");
@@ -65,7 +62,7 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 		getFilter().setShowConWithPendingAudits(false);
 		getFilter().setShowCcOnFile(false);
 	}
-	
+
 	@Override
 	public String execute() throws Exception {
 		if ("SendEmail".equals(button)) {
@@ -88,7 +85,7 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 						EmailQueue email = emailBuilder.build();
 						email.setViewableById(Account.EVERYONE);
 						EmailSender.send(email);
-						
+
 						Note note = new Note();
 						note.setAccount(conAudit.getContractorAccount());
 						note.setAuditColumns(permissions);

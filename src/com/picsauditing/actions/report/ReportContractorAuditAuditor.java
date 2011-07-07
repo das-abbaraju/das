@@ -3,22 +3,13 @@ package com.picsauditing.actions.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.picsauditing.dao.AmBestDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class ReportContractorAuditAuditor extends ReportContractorAuditOperator {
-
-	public ReportContractorAuditAuditor(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
-		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
-	}
 
 	@Override
 	public void buildQuery() {
@@ -31,9 +22,9 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 
 		if (getFilter().isAuditorType())
 			sql.addWhere("ca.auditorID=" + permissions.getUserId());
-		else 
+		else
 			sql.addWhere("ca.closingAuditorID=" + permissions.getUserId());
-		
+
 		sql.addWhere("a.status IN ('Active','Demo')");
 		if (getFilter().isNotRenewingContractors())
 			sql.addWhere("c.renew = 0");
@@ -51,7 +42,7 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 					+ " and (ii.amount = invf.defaultAmount or i.totalAmount >= 450))");
 
 		}
-		
+
 		sql.addGroupBy("a.id, ca.id");
 		orderByDefault = "ISNULL(ca2.expired), ca2.expired, ca.assignedDate DESC";
 
@@ -78,7 +69,7 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 				list2.add(auditType);
 		return list2;
 	}
-	
+
 	public boolean isIndepenentAuditor() {
 		return permissions.isIndependentAuditor();
 	}
