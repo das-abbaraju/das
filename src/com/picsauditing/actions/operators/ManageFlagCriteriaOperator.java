@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -32,8 +34,11 @@ import com.picsauditing.util.Strings;
 public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private static final long serialVersionUID = 124465979749052347L;
 
+	@Autowired
 	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
+	@Autowired
 	private FlagCriteriaDAO flagCriteriaDAO;
+	@Autowired
 	private OperatorTagDAO tagDAO;
 
 	private boolean canEdit = false;
@@ -48,13 +53,8 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private List<FlagColor> addableFlags = new ArrayList<FlagColor>();
 	private List<OperatorTag> tags;
 
-	public ManageFlagCriteriaOperator(OperatorAccountDAO operatorDao, FlagCriteriaOperatorDAO opCriteriaDAO,
-			FlagCriteriaDAO flagCriteriaDAO, OperatorTagDAO tagDAO) {
+	public ManageFlagCriteriaOperator(OperatorAccountDAO operatorDao) {
 		super(operatorDao);
-		this.flagCriteriaOperatorDAO = opCriteriaDAO;
-		this.flagCriteriaDAO = flagCriteriaDAO;
-		this.tagDAO = tagDAO;
-
 		noteCategory = NoteCategory.Flags;
 	}
 
