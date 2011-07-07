@@ -15,7 +15,6 @@
 		$('#username_status').load('user_ajax.jsp', data);
 	}
 
-	<s:if test="!permissions.contractor">
 	function save(subscription, id, timeperiod) {
 	    var data = {
     	    'eu.id': id, 
@@ -43,37 +42,36 @@
 		$('#tab_permissions').hide();
 		$('#link_tab_permissions').removeClass('current');
 		<s:if test="eList.size > 0">
-		$('#tab_subscriptions').hide();
-		$('#link_tab_subscriptions').removeClass('current');
+			$('#tab_subscriptions').hide();
+			$('#link_tab_subscriptions').removeClass('current');
 		</s:if>
 		<s:if test="switchTos.size > 0">
-		$('#tab_switch').hide();
-		$('#link_tab_switch').removeClass('current');
+			$('#tab_switch').hide();
+			$('#link_tab_switch').removeClass('current');
 		</s:if>
 		
 		$('#'+tabName).show();
 		$('#link_'+tabName).addClass('current');
 	}
-	</s:if>
 </script>
 
 </head>
 <body>
 <h1><s:text name="%{scope}.title" /></h1>
-<s:if test="!permissions.contractor">
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<li><a id="link_tab_profile" href="#" class="current" onclick="showTab('tab_profile'); return false;">Edit</a></li>
 	<s:if test="switchTos.size > 0">
-	<li><a id="link_tab_switch" href="#" onclick="showTab('tab_switch'); return false;">Switch Accounts</a></li>
+		<li><a id="link_tab_switch" href="#" onclick="showTab('tab_switch'); return false;">Switch Accounts</a></li>
 	</s:if>
 	<s:if test="eList.size > 0">
 		<li><a id="link_tab_subscriptions" href="#" onclick="showTab('tab_subscriptions'); return false;">Email Subscriptions</a></li>
 	</s:if>
-	<li><a id="link_tab_permissions" href="#" onclick="showTab('tab_permissions'); return false;">Permissions</a></li>
+	<s:if test="!permissions.contractor">
+		<li><a id="link_tab_permissions" href="#" onclick="showTab('tab_permissions'); return false;">Permissions</a></li>
+	</s:if>
 </ul>
 </div>
-</s:if>
 <s:include value="../actionMessages.jsp"></s:include>
 
 <s:if test="u.forcePasswordReset">
@@ -266,7 +264,6 @@ $(function() {
  });
 </script>
 </s:if>
-<s:if test="!permissions.contractor">
 <div id="tab_subscriptions" style="display: none;">
 	<s:iterator value="eList" status="stat">
 	<div id="td<s:property value="subscription"/>" <s:if test="#stat.even">class="shaded"</s:if>>
@@ -274,7 +271,6 @@ $(function() {
 	</div>
 	</s:iterator>
 </div>
-</s:if>
 
 </body>
 </html>

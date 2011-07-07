@@ -36,7 +36,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	protected String password2;
 	protected List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
 	protected String url;
-	
+
 	private boolean goEmailSub = false;
 
 	public ProfileEdit(UserDAO dao, ContractorAccountDAO accountDao, UserSwitchDAO userSwitchDao,
@@ -146,21 +146,19 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 
 	public List<EmailSubscription> getEList() {
 		if (eList.size() == 0) {
-			if (permissions.isOperatorCorporate()) {
-				List<EmailSubscription> userEmail = emailSubscriptionDAO.findByUserId(permissions.getUserId());
-				Map<Subscription, EmailSubscription> eMap = new HashMap<Subscription, EmailSubscription>();
-				for (EmailSubscription emailSubscription : userEmail) {
-					eMap.put(emailSubscription.getSubscription(), emailSubscription);
-				}
+			List<EmailSubscription> userEmail = emailSubscriptionDAO.findByUserId(permissions.getUserId());
+			Map<Subscription, EmailSubscription> eMap = new HashMap<Subscription, EmailSubscription>();
+			for (EmailSubscription emailSubscription : userEmail) {
+				eMap.put(emailSubscription.getSubscription(), emailSubscription);
+			}
 
-				for (Subscription subscription : requiredSubscriptionList(permissions)) {
-					EmailSubscription eSubscription = eMap.get(subscription);
-					if (eSubscription == null) {
-						eSubscription = new EmailSubscription();
-						eSubscription.setSubscription(subscription);
-					}
-					eList.add(eSubscription);
+			for (Subscription subscription : requiredSubscriptionList(permissions)) {
+				EmailSubscription eSubscription = eMap.get(subscription);
+				if (eSubscription == null) {
+					eSubscription = new EmailSubscription();
+					eSubscription.setSubscription(subscription);
 				}
+				eList.add(eSubscription);
 			}
 		}
 		return eList;
