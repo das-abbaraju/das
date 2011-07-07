@@ -98,7 +98,9 @@ $(function() {
 
 <h1><s:property value="account.name" /><span class="sub"><s:text name="%{scope}.title" /></span></h1>
 <s:include value="../actionMessages.jsp" />
-
+<div class="right">
+	<a href="resources/HSECompetencyReview.pdf" title="<s:text name="%{scope}.help.QuestionReviewPDF" />"><s:text name="%{scope}.link.QuestionReviewPDF" /></a>
+</div>
 <table id="rolesTable">
 	<tr>
 		<td style="vertical-align: top; padding-right: 10px;">
