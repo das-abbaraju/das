@@ -2,100 +2,26 @@ package com.picsauditing.auditBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
-import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorType;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.Trade;
 
-public class AuditCategoryRuleCache extends AuditRuleCache {
+public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
 
-	private SafetyRisks data;
-
-	protected class Contractor extends AuditRuleCache.Contractor {
-		public Contractor(ContractorAccount contractor) {
-			super(contractor);
-		}
-	}
+	private AuditTypes data;
 
 	public List<AuditCategoryRule> getRules(ContractorAccount contractor, AuditType auditType) {
-		Contractor contractor2 = new Contractor(contractor);
-
 		List<AuditCategoryRule> rules = new ArrayList<AuditCategoryRule>();
-		for (AuditRule rule : super.getRules(contractor2)) {
-			rules.add((AuditCategoryRule) rule);
-		}
+		if (getData() == null)
+			return null;
 
-		Set<AuditType> auditTypes = new HashSet<AuditType>();
-		auditTypes.add(null);
-		if (auditType != null)
-			auditTypes.add(auditType);
+		RuleFilter contractorFilter = new RuleFilter(contractor);
+		contractorFilter.addAuditType(auditType);
 
-		for (LowMedHigh safetyRisk : contractor2.safetyRisks) {
-			// System.out.println("safetyRisk = " + safetyRisk);
-			ProductRisks data2 = getData().getData(safetyRisk);
-			if (data2 != null) {
-				for (LowMedHigh productRisk : contractor2.productRisks) {
-					// System.out.println(" productRisk = " + productRisk);
-					AccountLevels data3 = data2.getData(productRisk);
-					if (data3 != null) {
-						for (AccountLevel accountLevel : contractor2.accountLevels) {
-							// System.out.println("  accountLevel = " + accountLevel);
-							AuditTypes data7 = data3.getData(accountLevel);
-							if (data7 != null) {
-								for (AuditType auditType2 : auditTypes) {
-									// System.out.println("   auditType2 = " + auditType2);
-									ContractorTypes data4 = data7.getData(auditType2);
-									if (data4 != null) {
-										for (ContractorType conType : contractor2.contractorType) {
-											// System.out.println("    conType = " + conType);
-											SoleProprietors dataX = data4.getData(conType);
-											if (dataX != null) {
-												for (Boolean soleProprietor : contractor2.soleProprietors) {
-													// System.out.println("     soleProprietor = " + soleProprietor);
-													Trades dataY = dataX.getData(soleProprietor);
-													if (dataY != null) {
-														for (Trade trade : contractor2.trades) {
-															// System.out.println("      trade = " + trade);
-															Operators data5 = dataY.getData(trade);
-															if (data5 != null) {
-																for (OperatorAccount o : contractor2.operators) {
-																	// System.out.println("       operator = " + o);
-																	OperatorAccount operator = (o == null ? null : o);
-																	Set<AuditRule> data6 = data5.getData(operator);
-																	if (data6 != null) {
-																		for (AuditRule auditRule : data6) {
-																			// System.out.println("        rule = "
-																			// 		+ auditRule);
-																			rules.add((AuditCategoryRule) auditRule);
-																		}
-																	}
-																}
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+		rules = getData().next(contractorFilter);
 
 		Collections.sort(rules);
 		Collections.reverse(rules);
@@ -104,17 +30,16 @@ public class AuditCategoryRuleCache extends AuditRuleCache {
 	}
 
 	public void initialize(List<AuditCategoryRule> rules) {
-		data = new SafetyRisks();
+		data = new AuditTypes();
 		for (AuditCategoryRule rule : rules) {
-			rule.calculatePriority();
 			data.add(rule);
 		}
 	}
 
-	public void initialize(AuditDecisionTableDAO auditRuleDAO) {
+	public void initialize(AuditDecisionTableDAO dao) {
 		if (data == null) {
 			long startTime = System.currentTimeMillis();
-			initialize(auditRuleDAO.findCategoryRules());
+			initialize(dao.findCategoryRules());
 			long endTime = System.currentTimeMillis();
 			System.out.println("Filled AuditCategoryRuleCache in " + (endTime - startTime) + "ms");
 		}
@@ -124,147 +49,31 @@ public class AuditCategoryRuleCache extends AuditRuleCache {
 		data = null;
 	}
 
-	public SafetyRisks getData() {
+	private AuditTypes getData() {
 		if (data == null)
 			throw new RuntimeException("No rules were found. Please initialize() before getting data.");
 		return data;
 	}
 
-	private class SafetyRisks {
-
-		private Map<LowMedHigh, ProductRisks> data = new LinkedHashMap<LowMedHigh, ProductRisks>();
-
-		public ProductRisks getData(LowMedHigh value) {
-			return data.get(value);
-		}
+	private class AuditTypes extends RuleCacheLevel<AuditType, SafetyRisks, AuditCategoryRule> {
 
 		public void add(AuditCategoryRule rule) {
-			ProductRisks map = data.get(rule.getSafetyRisk());
+			SafetyRisks map = data.get(rule.getAuditType());
 			if (map == null) {
-				map = new ProductRisks();
-				data.put(rule.getSafetyRisk(), map);
-			}
-			map.add(rule);
-		}
-	}
-
-	private class ProductRisks {
-
-		private Map<LowMedHigh, AccountLevels> data = new LinkedHashMap<LowMedHigh, AccountLevels>();
-
-		public AccountLevels getData(LowMedHigh value) {
-			return data.get(value);
-		}
-
-		public void add(AuditCategoryRule rule) {
-			AccountLevels map = data.get(rule.getProductRisk());
-			if (map == null) {
-				map = new AccountLevels();
-				data.put(rule.getProductRisk(), map);
-			}
-			map.add(rule);
-		}
-	}
-
-	private class AccountLevels {
-
-		private Map<AccountLevel, AuditTypes> data = new LinkedHashMap<AccountLevel, AuditTypes>();
-
-		public AuditTypes getData(AccountLevel value) {
-			return data.get(value);
-		}
-
-		public void add(AuditCategoryRule rule) {
-			AuditTypes map = data.get(rule.getAccountLevel());
-			if (map == null) {
-				map = new AuditTypes();
-				data.put(rule.getAccountLevel(), map);
-			}
-			map.add(rule);
-		}
-	}
-
-	private class AuditTypes {
-
-		private Map<AuditType, ContractorTypes> data = new LinkedHashMap<AuditType, ContractorTypes>();
-
-		public ContractorTypes getData(AuditType value) {
-			return data.get(value);
-		}
-
-		public void add(AuditCategoryRule rule) {
-			ContractorTypes map = data.get(rule.getAuditType());
-			if (map == null) {
-				map = new ContractorTypes();
+				map = new SafetyRisks();
 				data.put(rule.getAuditType(), map);
 			}
 			map.add(rule);
 		}
-	}
 
-	private class ContractorTypes {
-
-		private Map<ContractorType, SoleProprietors> data = new LinkedHashMap<ContractorType, SoleProprietors>();
-
-		public SoleProprietors getData(ContractorType value) {
-			return data.get(value);
-		}
-
-		public void add(AuditCategoryRule rule) {
-			SoleProprietors map = data.get(rule.getContractorType());
-			if (map == null) {
-				map = new SoleProprietors();
-				data.put(rule.getContractorType(), map);
+		@Override
+		public List<AuditCategoryRule> next(RuleFilter contractor) {
+			List<AuditCategoryRule> rules = new ArrayList<AuditCategoryRule>();
+			for (AuditType auditType : contractor.auditTypes) {
+				rules.addAll(data.get(auditType).next(contractor));
 			}
-			map.add(rule);
+			return rules;
 		}
 	}
-
-	private class SoleProprietors {
-
-		private Map<Boolean, Trades> data = new LinkedHashMap<Boolean, Trades>();
-
-		public Trades getData(Boolean value) {
-			return data.get(value);
-		}
-
-		public void add(AuditCategoryRule rule) {
-			Trades map = data.get(rule.getSoleProprietor());
-			if (map == null) {
-				map = new Trades();
-				data.put(rule.getSoleProprietor(), map);
-			}
-			map.add(rule);
-		}
-	}
-
-	private class Trades {
-
-		private Map<Trade, Operators> data = new LinkedHashMap<Trade, Operators>();
-
-		public Operators getData(Trade value) {
-			Operators operator = new Operators();
-			for (Trade trade : data.keySet()) {
-				if (value != null && trade != null && (value.childOf(trade) || trade.childOf(value))) {
-					// System.out.println("         related to " + trade);
-					operator.add(data.get(trade));
-				}
-			}
-			operator.add(data.get(value));
-			return operator;
-		}
-
-		public void add(AuditCategoryRule rule) {
-			Operators map = data.get(rule.getTrade());
-			if (map == null) {
-				map = new Operators();
-				data.put(rule.getTrade(), map);
-			}
-			map.add(rule);
-		}
-	}
-
-	public String print() {
-		return "";
-	}
+	
 }
