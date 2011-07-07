@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
-<p><label>Facility Count:</label> <s:property value="operators.size" /></p>
+<p><label><s:text name="ContractorFacilitiesWidget.FacilityCount"/></label> <s:property value="operators.size" /></p>
 <table class="report">
 	<thead>
 		<tr>
@@ -17,6 +17,6 @@
 			<td class="center"><s:text name="%{waitingOn.i18nKey}"/></td>
 		</tr>
 	</s:iterator>
-	<tr><td colspan="3" class="right"><a href="ContractorFacilities.action?id=<s:property value="id" />">... add more Facilities</a></td>
+	<tr><td colspan="3" class="right"><a href="ContractorFacilities.action?id=<s:property value="id" />"><s:text name="ContractorFacilitiesWidget.AddMore"/></a></td>
 	</tr>
 </table>
