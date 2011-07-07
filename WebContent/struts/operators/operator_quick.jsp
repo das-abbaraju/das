@@ -48,10 +48,10 @@
 	</div>
 	<div id="tabs-users">
 		<s:iterator value="operator.users">
-			<s:if test="activeB && !group">| <a href="UsersManage.action?accountId=<s:property value="account.id"/>&user=<s:property value="id"/>"><s:property value="name"/></a></s:if>
+			<s:if test="activeB && !group">| <a href="UsersManage.action?account=<s:property value="account.id"/>&user=<s:property value="id"/>"><s:property value="name"/></a></s:if>
 		</s:iterator>
 		|<br /><br />
-		<a href="UsersManage.action?accountId=<s:property value="operator.id"/>">Manage Users</a>
+		<a href="UsersManage.action?account=<s:property value="operator.id"/>">Manage Users</a>
 	</div>
 	
 	<div id="tabs-description">

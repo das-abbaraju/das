@@ -366,7 +366,7 @@ function loadStatus(caoID){
 		<pics:permission perm="AuditVerification">
 			<li><a href="VerifyView.action?id=<s:property value="id" />"><span>PQF Verification</span></a></li>
 		</pics:permission>
-		<li><a href="UsersManage.action?accountId=<s:property value="id"/>">Users</a></li>
+		<li><a href="UsersManage.action?account=<s:property value="id"/>">Users</a></li>
 		<li><a href="ManageEmployees.action?id=<s:property value="id"/>">Employees</a></li>
 		<pics:permission perm="DefineRoles">
 			<li><a href="ManageJobRoles.action?id=<s:property value="id"/>">Job Roles</a></li>

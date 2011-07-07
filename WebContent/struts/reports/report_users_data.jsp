@@ -38,7 +38,7 @@
 				<s:property value="get('companyName')" />
 			</s:if>
 				<s:else>
-				<a href="UsersManage.action?accountId=<s:property value="get('accountID')"/>" class="account<s:property value="get('companyStatus')" />">
+				<a href="UsersManage.action?account=<s:property value="get('accountID')"/>" class="account<s:property value="get('companyStatus')" />">
 						<s:property value="get('companyName')" /></a>
 				</s:else>
 			</td>
@@ -46,7 +46,7 @@
 					<s:property value="get('name')" />
 				</s:if>
 				<s:else>
-					<a href="UsersManage.action?accountId=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>">
+					<a href="UsersManage.action?account=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>">
 						<s:property value="get('name')" /></a>
 				</s:else>
 			</td>

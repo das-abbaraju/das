@@ -46,8 +46,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class UsersManage extends PicsActionSupport {
-
-	protected int accountId = 0;
 	protected User user;
 	protected Account account;
 
@@ -89,7 +87,7 @@ public class UsersManage extends PicsActionSupport {
 	Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
 	public String execute() throws Exception {
-		checkPermissions();
+		startup();
 
 		if ("newUser".equalsIgnoreCase(button)) {
 			if (user.getIsGroup().isTrue())
@@ -120,55 +118,8 @@ public class UsersManage extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	private void checkPermissions() throws Exception {
-		if (permissions.isContractor())
-			permissions.tryPermission(OpPerms.ContractorAdmin);
-		else
-			permissions.tryPermission(OpPerms.EditUsers);
-
-		if (account == null) {
-			// This would happen if I'm looking at my own account, but not a
-			// user yet
-			account = accountDAO.find(permissions.getAccountId());
-		}
-		accountId = account.getId();
-
-		// Make sure we can edit users in this account
-		if (permissions.getAccountId() != accountId)
-			permissions.tryPermission(OpPerms.AllOperators);
-
-		if (user != null) {
-			account = user.getAccount();
-			for (UserAccess ua : user.getOwnedPermissions()) {
-				if (ua.getOpPerm().equals(OpPerms.ContractorAdmin)) {
-					conAdmin = true;
-				}
-				if (ua.getOpPerm().equals(OpPerms.ContractorBilling)) {
-					conBilling = true;
-				}
-				if (ua.getOpPerm().equals(OpPerms.ContractorSafety)) {
-					conSafety = true;
-				}
-				if (ua.getOpPerm().equals(OpPerms.ContractorInsurance)) {
-					conInsurance = true;
-				}
-			}
-		}
-
-		int aID = getParameter("accountId");
-		if (account == null && aID > 0)
-			account = accountDAO.find(aID);
-
-		// checking to see if primary account user is set
-		if (account != null && account.getPrimaryContact() == null)
-			setPrimaryAccount = true;
-		// Default isActive to show all for contractors
-		if (account != null && account.isContractor())
-			isActive = "All";
-	}
-
 	public String save() throws Exception {
-		checkPermissions();
+		startup();
 
 		// Lazy init fix for isOk method
 		user.getGroups().size();
@@ -215,7 +166,6 @@ public class UsersManage extends PicsActionSupport {
 		if (user.getAccount() == null) {
 			user.setAccount(new Account());
 			if (user.getId() == 0) {
-				account = accountDAO.find(accountId);
 				user.setAccount(account);
 			} else if (!permissions.hasPermission(OpPerms.AllOperators)) {
 				user.getAccount().setId(permissions.getAccountId());
@@ -368,14 +318,14 @@ public class UsersManage extends PicsActionSupport {
 		}
 
 		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
-			this.redirect("NewUserManage.action?accountId=" + accountId + "&user.id=" + user.getId());
+			this.redirect("NewUserManage.action?account=" + account.getId() + "&user=" + user.getId());
 		}
 
 		return SUCCESS;
 	}
 
 	public String unlock() throws Exception {
-		checkPermissions();
+		startup();
 
 		if (!isOK()) {
 			userDAO.clear();
@@ -388,7 +338,7 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public String move() throws Exception {
-		checkPermissions();
+		startup();
 		// accounts are different so we are moving to a new account
 		// user.setOwnedPermissions(null);
 		List<UserAccess> userAccessList = userAccessDAO.findByUser(user.getId());
@@ -416,12 +366,12 @@ public class UsersManage extends PicsActionSupport {
 		// user.setNeedsIndexing(true);
 		userDAO.save(user);
 
-		return redirect("UsersManage.action?accountID=" + user.getAccount().getId() + "&user=" + user.getId()
+		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
 				+ "&msg=You have sucessfully moved " + user.getName() + " to " + user.getAccount().getName());
 	}
 
 	public String delete() throws Exception {
-		checkPermissions();
+		startup();
 		permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
 		String message = "Cannot remove users who performed some actions in the system. Please inactivate them.";
 		if (!user.isGroup()) {
@@ -462,6 +412,48 @@ public class UsersManage extends PicsActionSupport {
 		user = null;
 
 		return SUCCESS;
+	}
+	
+
+	private void startup() throws Exception {
+		if (permissions.isContractor())
+			permissions.tryPermission(OpPerms.ContractorAdmin);
+		else
+			permissions.tryPermission(OpPerms.EditUsers);
+
+		if (account == null) {
+			// This would happen if I'm looking at my own account, but not a
+			// user yet
+			account = accountDAO.find(permissions.getAccountId());
+		}
+		// Make sure we can edit users in this account
+		if (permissions.getAccountId() != account.getId())
+			permissions.tryPermission(OpPerms.AllOperators);
+
+		if (user != null) {
+			account = user.getAccount();
+			for (UserAccess ua : user.getOwnedPermissions()) {
+				if (ua.getOpPerm().equals(OpPerms.ContractorAdmin)) {
+					conAdmin = true;
+				}
+				if (ua.getOpPerm().equals(OpPerms.ContractorBilling)) {
+					conBilling = true;
+				}
+				if (ua.getOpPerm().equals(OpPerms.ContractorSafety)) {
+					conSafety = true;
+				}
+				if (ua.getOpPerm().equals(OpPerms.ContractorInsurance)) {
+					conInsurance = true;
+				}
+			}
+		}
+
+		// checking to see if primary account user is set
+		if (account != null && account.getPrimaryContact() == null)
+			setPrimaryAccount = true;
+		// Default isActive to show all for contractors
+		if (account != null && account.isContractor())
+			isActive = "All";
 	}
 
 	private boolean isOK() throws Exception {
@@ -506,14 +498,6 @@ public class UsersManage extends PicsActionSupport {
 		}
 
 		return getActionErrors().size() == 0;
-	}
-
-	public int getAccountId() {
-		return accountId;
-	}
-
-	public void setAccountId(int accountId) {
-		this.accountId = accountId;
 	}
 
 	public String getIsGroup() {
@@ -626,7 +610,7 @@ public class UsersManage extends PicsActionSupport {
 			SelectSQL sql = new SelectSQL("users u");
 			sql.addOrderBy("isGroup");
 			sql.addOrderBy("name");
-			sql.addWhere("accountID = " + accountId);
+			sql.addWhere("accountID = " + account.getId());
 			if ("Yes".equals(isGroup) || "No".equals(isGroup))
 				sql.addWhere("isGroup = '" + isGroup + "'");
 
@@ -659,7 +643,7 @@ public class UsersManage extends PicsActionSupport {
 			return list;
 
 		// for now, just add all groups in your account to the
-		list = userDAO.findByAccountID(accountId, "Yes", "Yes");
+		list = userDAO.findByAccountID(account.getId(), "Yes", "Yes");
 		// This used to only add groups you were a member of,
 		// but this doesn't work for admins trying to add groups they aren't
 		// members of
@@ -670,7 +654,7 @@ public class UsersManage extends PicsActionSupport {
 		// }
 
 		if (user.isGroup() && permissions.hasPermission(OpPerms.AllOperators)
-				&& permissions.getAccountId() != accountId) {
+				&& permissions.getAccountId() != account.getId()) {
 			// This is an admin looking at another account (not PICS)
 			// Add the non-PICS groups too
 			List<User> nonPicsGroups = userDAO.findByAccountID(Account.PicsID, "Yes", "Yes");
@@ -699,7 +683,7 @@ public class UsersManage extends PicsActionSupport {
 		if (permissions.hasPermission(OpPerms.AllOperators) || permissions.getGroups().contains(user.getId())) {
 			// I'm an admin or I'm a member of this group
 
-			list = userDAO.findByAccountID(accountId, "Yes", "");
+			list = userDAO.findByAccountID(account.getId(), "Yes", "");
 
 			for (UserGroup userGroup : user.getMembers()) {
 				// but users, already in the group

@@ -164,7 +164,7 @@ div.filterOption input {
 	<s:iterator value="tableDisplay.rows" id="user">
 		<tr class="<s:property value="#user.id"/> userdata">
 			<td>
-				<a href="UsersManage.action?accountId=<s:property value="#user.account.id"/>&user=<s:property value="#user.id"/>"><s:property value="#user.name" /></a>
+				<a href="UsersManage.action?account=<s:property value="#user.account.id"/>&user=<s:property value="#user.id"/>"><s:property value="#user.name" /></a>
 			</td>
 			<s:iterator value="tableDisplay.cols" id="perm">
 				<td class="<s:property value="#perm"/> permdata">

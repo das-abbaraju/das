@@ -14,7 +14,7 @@ var currentUserID = 0;
 	<a href="FacilitiesEdit.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
 </s:if>
 <s:if test="account.admin">PICS</s:if>
-&gt; <a href="UsersManage.action?accountId=<s:property value="account.id"/>">Manage User Accounts</a>
+&gt; <a href="UsersManage.action?account=<s:property value="account.id"/>">Manage User Accounts</a>
 <br/>
 <s:if test="user.ownedPermissions.size() == 0 && user.groups.size() == 0">
 	<div class="alert">Please add permission to this user</div>

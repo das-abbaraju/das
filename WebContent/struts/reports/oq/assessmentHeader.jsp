@@ -13,7 +13,7 @@
 <ul id="navlist">
 	<li><a href="AssessmentCenterEdit.action?id=<s:property value="center.id"/>"
 		<s:if test="requestURI.contains('assessment_edit')">class="current"</s:if>>Edit</a></li>
-	<li><a href="UsersManage.action?accountId=<s:property value="center.id"/>"
+	<li><a href="UsersManage.action?account=<s:property value="center.id"/>"
 		<s:if test="requestURI.contains('users_manage')">class="current"</s:if>>Users</a></li>
 	<li><a class="dropdown" href="#" onclick="return false;" 
 		onmouseover="cssdropdown.dropit(this, event, 'manageSubMenu')">Management</a></li>

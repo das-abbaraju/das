@@ -14,7 +14,7 @@
 	</pics:permission>
 	<li><a href="OperatorNotes.action?id=<s:property value="operator.id"/>"
 		<s:if test="requestURI.contains('account_notes')">class="current"</s:if>>Notes</a></li>
-	<li><a href="UsersManage.action?accountId=<s:property value="operator.id"/>">Users</a></li>
+	<li><a href="UsersManage.action?account=<s:property value="operator.id"/>">Users</a></li>
 	<pics:permission perm="ManageEmployees">
 		<li><a href="ManageEmployees.action?id=<s:property value="operator.id"/>">Employees</a></li>
 	</pics:permission>
