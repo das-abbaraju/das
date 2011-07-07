@@ -46,6 +46,11 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
+/**
+ * This entire class needs a massive overhaul (throw it out and start over).
+ * I suggest we do this once we start the Flag Calculator rewrite.
+ * Trevor 7/7/2011
+ */
 public class OperatorFlagsCalculator extends PicsActionSupport {
 
 	private Database db = new Database();
@@ -250,15 +255,6 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 			cell = row.createCell(1);
 			cell.setCellValue(new HSSFRichTextString(data.getFlagData().getContractor().getName()));
 			cell.setCellStyle(normalStyle);
-
-			// If this is a number datatype, print out the number
-			if (columns > 1) {
-				cell = row.createCell(2);
-				// Double has a hard time parsing commas. Just remove them all.
-				cell.setCellValue(Double.parseDouble(data.getFlagData().getCriteriaContractor().getAnswer()
-						.replace(",", "")));
-				cell.setCellStyle(numberStyle);
-			}
 
 			if (override) {
 				// Forced Flag?
