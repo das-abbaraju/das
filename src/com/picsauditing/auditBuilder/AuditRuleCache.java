@@ -43,7 +43,9 @@ public class AuditRuleCache<R extends AuditRule> {
 		public List<R> next(RuleFilter contractor) {
 			List<R> rules = new ArrayList<R>();
 			for (LowMedHigh risk : contractor.safetyRisks) {
-				rules.addAll(data.get(risk).next(contractor));
+				ProductRisks productRisks = data.get(risk);
+				if (productRisks != null)
+					rules.addAll(productRisks.next(contractor));
 			}
 			return rules;
 		}
@@ -64,7 +66,9 @@ public class AuditRuleCache<R extends AuditRule> {
 		public List<R> next(RuleFilter contractor) {
 			List<R> rules = new ArrayList<R>();
 			for (LowMedHigh risk : contractor.productRisks) {
-				rules.addAll(data.get(risk).next(contractor));
+				AccountLevels accountLevels = data.get(risk);
+				if (accountLevels != null)
+					rules.addAll(accountLevels.next(contractor));
 			}
 			return rules;
 		}
@@ -86,7 +90,9 @@ public class AuditRuleCache<R extends AuditRule> {
 		public List<R> next(RuleFilter contractor) {
 			List<R> rules = new ArrayList<R>();
 			for (AccountLevel level : contractor.accountLevels) {
-				rules.addAll(data.get(level).next(contractor));
+				ContractorTypes contractorTypes = data.get(level);
+				if (contractorTypes != null)
+					rules.addAll(contractorTypes.next(contractor));
 			}
 			return rules;
 		}
@@ -107,7 +113,9 @@ public class AuditRuleCache<R extends AuditRule> {
 		public List<R> next(RuleFilter contractor) {
 			List<R> rules = new ArrayList<R>();
 			for (ContractorType type : contractor.contractorType) {
-				rules.addAll(data.get(type).next(contractor));
+				SoleProprietors soleProprietors = data.get(type);
+				if (soleProprietors != null)
+					rules.addAll(soleProprietors.next(contractor));
 			}
 			return rules;
 		}
@@ -128,7 +136,9 @@ public class AuditRuleCache<R extends AuditRule> {
 		public List<R> next(RuleFilter contractor) {
 			List<R> rules = new ArrayList<R>();
 			for (LowMedHigh risk : contractor.productRisks) {
-				rules.addAll(data.get(risk).next(contractor));
+				Trades trades = data.get(risk);
+				if (trades != null)
+					rules.addAll(trades.next(contractor));
 			}
 			return rules;
 		}
@@ -161,7 +171,9 @@ public class AuditRuleCache<R extends AuditRule> {
 		public List<R> next(RuleFilter contractor) {
 			List<R> rules = new ArrayList<R>();
 			for (Trade trade : contractor.trades) {
-				rules.addAll(data.get(trade).next(contractor));
+				Operators operators = data.get(trade);
+				if (operators != null)
+					rules.addAll(operators.next(contractor));
 			}
 			return rules;
 		}
@@ -202,7 +214,9 @@ public class AuditRuleCache<R extends AuditRule> {
 		public List<R> next(RuleFilter contractor) {
 			List<R> rules = new ArrayList<R>();
 			for (OperatorAccount operator : contractor.operators) {
-				rules.addAll(data.get(operator).next(contractor));
+				FilterRule filterRule = data.get(operator);
+				if (filterRule != null)
+					rules.addAll(filterRule.next(contractor));
 			}
 			return rules;
 		}

@@ -70,10 +70,12 @@ public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
 		public List<AuditCategoryRule> next(RuleFilter contractor) {
 			List<AuditCategoryRule> rules = new ArrayList<AuditCategoryRule>();
 			for (AuditType auditType : contractor.auditTypes) {
-				rules.addAll(data.get(auditType).next(contractor));
+				SafetyRisks safetyRisks = data.get(auditType);
+				if (safetyRisks != null)
+					rules.addAll(safetyRisks.next(contractor));
 			}
 			return rules;
 		}
 	}
-	
+
 }
