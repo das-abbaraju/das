@@ -64,6 +64,8 @@ public class UsersManage extends PicsActionSupport {
 
 	protected String isGroup = "";
 	protected String isActive = "Yes";
+	protected YesNo userIsGroup;
+	protected YesNo userIsActive;
 
 	protected boolean hasAllOperators = false;
 
@@ -89,17 +91,6 @@ public class UsersManage extends PicsActionSupport {
 	public String execute() throws Exception {
 		startup();
 
-		if ("newUser".equalsIgnoreCase(button)) {
-			if (user.getIsGroup().isTrue())
-				sendActivationEmail = false;
-			else {
-				sendActivationEmail = true;
-				user.setLocale(account.getLocale());
-				user.setTimezone(account.getTimezone());
-			}
-			return SUCCESS;
-		}
-
 		if (user == null)
 			return SUCCESS;
 
@@ -118,8 +109,21 @@ public class UsersManage extends PicsActionSupport {
 		return SUCCESS;
 	}
 
+	public String add() throws Exception {
+		user = new User();
+		user.setAccount(account);
+		user.setIsGroup(userIsGroup);
+		user.setActive(true);
+		userIsActive = YesNo.Yes;
+
+		return SUCCESS;
+	}
+
 	public String save() throws Exception {
 		startup();
+
+		user.setIsGroup(userIsGroup);
+		user.setIsActive(userIsActive);
 
 		// Lazy init fix for isOk method
 		user.getGroups().size();
@@ -311,7 +315,7 @@ public class UsersManage extends PicsActionSupport {
 			for (UserAccess userAccess : accessToBeRemoved) {
 				userAccessDAO.remove(userAccess);
 			}
-			
+
 			for (UserGroup ug : removeUserGroups) {
 				userGroupDAO.remove(ug);
 			}
@@ -413,7 +417,6 @@ public class UsersManage extends PicsActionSupport {
 
 		return SUCCESS;
 	}
-	
 
 	private void startup() throws Exception {
 		if (permissions.isContractor())
@@ -431,7 +434,9 @@ public class UsersManage extends PicsActionSupport {
 			permissions.tryPermission(OpPerms.AllOperators);
 
 		if (user != null) {
-			account = user.getAccount();
+			if (user.getAccount() != null)
+				account = user.getAccount();
+			
 			for (UserAccess ua : user.getOwnedPermissions()) {
 				if (ua.getOpPerm().equals(OpPerms.ContractorAdmin)) {
 					conAdmin = true;
@@ -514,6 +519,22 @@ public class UsersManage extends PicsActionSupport {
 
 	public void setIsActive(String isActive) {
 		this.isActive = isActive;
+	}
+
+	public YesNo getUserIsGroup() {
+		return userIsGroup;
+	}
+
+	public void setUserIsGroup(YesNo userIsGroup) {
+		this.userIsGroup = userIsGroup;
+	}
+
+	public YesNo getUserIsActive() {
+		return userIsActive;
+	}
+
+	public void setUserIsActive(YesNo userIsActive) {
+		this.userIsActive = userIsActive;
 	}
 
 	public User getUser() {
