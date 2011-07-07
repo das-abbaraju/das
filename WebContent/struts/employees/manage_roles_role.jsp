@@ -12,9 +12,9 @@
 	</fieldset>
 	<fieldset class="form submit">
 		<s:submit method="save" value="%{getText('button.Save')}" cssClass="picsbutton positive" />
-		<input type="button" id="cancelButton" class="picsbutton" value="<s:text name="button.Cancel" />" />
+		<input type="button" class="picsbutton cancelButton" value="<s:text name="button.Cancel" />" />
 		<s:if test="role.id != 0">
-			<s:submit method="delete" id="deleteButton" value="%{getText('button.Delete')}" cssClass="picsbutton negative" />
+			<s:submit method="delete" value="%{getText('button.Delete')}" cssClass="picsbutton negative deleteButton" />
 		</s:if>
 	</fieldset>
 </s:form>

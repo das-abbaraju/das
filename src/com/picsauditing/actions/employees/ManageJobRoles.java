@@ -1,22 +1,21 @@
 package com.picsauditing.actions.employees;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.RecordNotFoundException;
-import com.picsauditing.actions.AccountActionSupport;
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.JobCompetencyDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -28,11 +27,11 @@ import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageJobRoles extends AccountActionSupport {
+public class ManageJobRoles extends PicsActionSupport {
 	@Autowired
 	protected AccountDAO accountDAO;
 	@Autowired
-	protected EmployeeRoleDAO erDAO;
+	protected EmployeeRoleDAO employeeRoleDAO;
 	@Autowired
 	protected JobCompetencyDAO jobCompetencyDAO;
 	@Autowired
@@ -40,26 +39,44 @@ public class ManageJobRoles extends AccountActionSupport {
 	@Autowired
 	protected OperatorCompetencyDAO operatorCompetencyDAO;
 
+	protected Account account;
 	protected JobRole role;
 	protected OperatorCompetency competency;
 	protected List<JobRole> jobRoles;
-	private int competencyID = 0;
 	private int auditID;
 
-	public ManageJobRoles() {
-		subHeading = getText(getScope() + ".title");
-	}
+	@Before
+	public void startup() throws Exception {
+		if (permissions.isContractor())
+			permissions.tryPermission(OpPerms.ContractorAdmin);
+		else {
+			permissions.tryPermission(OpPerms.DefineRoles);
 
-	@Override
-	public String execute() throws Exception {
-		startup();
+			if (permissions.isOperatorCorporate() && permissions.getAccountId() != account.getId())
+				permissions.tryPermission(OpPerms.AllOperators);
+		}
 
-		return SUCCESS;
+		if (role != null && role.getAccount() != null)
+			account = role.getAccount();
+
+		if (account == null && permissions.isContractor())
+			account = accountDAO.find(permissions.getAccountId());
+
+		// Get auditID
+		if (auditID > 0) {
+			ActionContext.getContext().getSession().put("auditID", auditID);
+
+			if (permissions.isAdmin()) {
+				ContractorAudit audit = (ContractorAudit) accountDAO.find(ContractorAudit.class, auditID);
+				account = audit.getContractorAccount();
+			}
+		} else {
+			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
+					.getContext().getSession().get("auditID"));
+		}
 	}
 
 	public String get() throws Exception {
-		startup();
-
 		if (role == null)
 			role = new JobRole();
 
@@ -67,10 +84,8 @@ public class ManageJobRoles extends AccountActionSupport {
 	}
 
 	public String save() throws Exception {
-		startup();
-		if (role.getAccount() == null) {
+		if (role.getAccount() == null)
 			role.setAccount(account);
-		}
 
 		if (Strings.isEmpty(role.getName())) {
 			addActionError("Name is required");
@@ -83,8 +98,7 @@ public class ManageJobRoles extends AccountActionSupport {
 	}
 
 	public String delete() throws Exception {
-		startup();
-		List<EmployeeRole> employeeRoles = erDAO.findWhere("e.jobRole.id = " + role.getId());
+		List<EmployeeRole> employeeRoles = employeeRoleDAO.findWhere("e.jobRole.id = " + role.getId());
 
 		if (employeeRoles.size() > 0) {
 			role.setActive(false);
@@ -97,17 +111,13 @@ public class ManageJobRoles extends AccountActionSupport {
 	}
 
 	public String addCompetency() throws Exception {
-		startup();
-
-		if (competencyID > 0) {
+		if (competency != null) {
 			for (JobCompetency jc : role.getJobCompetencies()) {
-				if (jc.getCompetency().getId() == competencyID)
+				if (competency.equals(jc.getCompetency()))
 					addActionError(getText(getScope() + ".message.CompetencyExistsForRole"));
 			}
 
 			if (getActionErrors().size() == 0) {
-				OperatorCompetency competency = operatorCompetencyDAO.find(competencyID);
-
 				JobCompetency jc = new JobCompetency();
 				jc.setJobRole(role);
 				jc.setCompetency(competency);
@@ -125,14 +135,12 @@ public class ManageJobRoles extends AccountActionSupport {
 	}
 
 	public String removeCompetency() throws Exception {
-		startup();
-
-		if (competencyID > 0) {
+		if (competency != null) {
 			Iterator<JobCompetency> iterator = role.getJobCompetencies().iterator();
 			while (iterator.hasNext()) {
 				JobCompetency jc = iterator.next();
 
-				if (jc.getCompetency().getId() == competencyID) {
+				if (competency.equals(jc.getCompetency())) {
 					iterator.remove();
 					jobCompetencyDAO.remove(jc);
 				}
@@ -144,43 +152,12 @@ public class ManageJobRoles extends AccountActionSupport {
 		return "competencies";
 	}
 
-	private void startup() throws Exception {
-		if (permissions.isContractor())
-			permissions.tryPermission(OpPerms.ContractorAdmin);
-		else {
-			permissions.tryPermission(OpPerms.DefineRoles);
+	public Account getAccount() {
+		return account;
+	}
 
-			if (permissions.isOperatorCorporate() && permissions.getAccountId() != account.getId())
-				permissions.tryPermission(OpPerms.AllOperators);
-		}
-
-		if (role != null && role.getAccount() != null) {
-			account = role.getAccount();
-		} else {
-			int accountID = getParameter("id");
-			if (accountID > 0)
-				account = accountDAO.find(accountID);
-		}
-
-		if (role == null && account == null && permissions.isContractor()) {
-			account = accountDAO.find(permissions.getAccountId());
-		}
-
-		if (account == null && permissions.isContractor())
-			throw new RecordNotFoundException("account");
-
-		// Get auditID
-		if (auditID > 0) {
-			ActionContext.getContext().getSession().put("auditID", auditID);
-
-			if (permissions.isAdmin()) {
-				ContractorAudit audit = (ContractorAudit) accountDAO.find(ContractorAudit.class, auditID);
-				this.account = audit.getContractorAccount();
-			}
-		} else {
-			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
-					.getContext().getSession().get("auditID"));
-		}
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 	public JobRole getRole() {
@@ -199,14 +176,18 @@ public class ManageJobRoles extends AccountActionSupport {
 		this.competency = competency;
 	}
 
+	public int getAuditID() {
+		return auditID;
+	}
+
+	public void setAuditID(int auditID) {
+		this.auditID = auditID;
+	}
+
 	public List<JobRole> getJobRoles() {
 		if (jobRoles == null)
 			jobRoles = jobRoleDAO.findJobRolesByAccount(account.getId(), false);
 		return jobRoles;
-	}
-
-	public void setJobRoles(List<JobRole> jobRoles) {
-		this.jobRoles = jobRoles;
 	}
 
 	public int getUsedCount(JobRole jobRole) {
@@ -223,35 +204,10 @@ public class ManageJobRoles extends AccountActionSupport {
 			}
 
 			others.removeAll(exists);
-			Collections.sort(others, new Comparator<OperatorCompetency>() {
-				@Override
-				public int compare(OperatorCompetency o1, OperatorCompetency o2) {
-					if (o1.getJobCompentencyStats() == null && o2.getJobCompentencyStats() == null)
-						return 0;
-					if (o1.getJobCompentencyStats() == null)
-						return 1;
-					if (o2.getJobCompentencyStats() == null)
-						return -1;
-					return -o1.getJobCompentencyStats().getPercent()
-							.compareTo(o2.getJobCompentencyStats().getPercent());
-				}
-			});
 			return others;
 		}
 
 		return null;
-	}
-
-	public void setCompetencyID(int competencyID) {
-		this.competencyID = competencyID;
-	}
-
-	public int getAuditID() {
-		return auditID;
-	}
-
-	public void setAuditID(int auditID) {
-		this.auditID = auditID;
 	}
 
 	public List<OperatorAccount> getShellOps() {

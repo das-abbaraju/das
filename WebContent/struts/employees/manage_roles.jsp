@@ -30,20 +30,6 @@ fieldset.form label {
 <script type="text/javascript">
 var accountID = '<s:property value="account.id" />';
 
-function removeCompetency(competencyID, roleID) {
-	$("a.compEditor").hide();
-	$('#jobCompetencyList').load('ManageJobRoles!removeCompetency.action', {role: roleID, competencyID: competencyID});
-}
-
-function addCompetency(competencyID, roleID) {
-	$("a.compEditor").hide();
-	$('#jobCompetencyList').load('ManageJobRoles!addCompetency.action', {role: roleID, competencyID: competencyID});
-}
-
-function getRole(roleID) {
-	$('#roleCell').load('ManageJobRoles!get.action', { role: roleID, id: accountID });
-}
-
 $(function() {
 	$('#roleInputBox').autocomplete('RoleSuggestAjax.action',{
 		minChars: 1,
@@ -54,35 +40,42 @@ $(function() {
 	
 	$('#roleCell').delegate('.removeCompetency', 'click', function(e) {
 		e.preventDefault();
+		$("a.compEditor").hide();
+
 		var competencyID = $(this).closest('tr').attr('id');
 		var roleID = $(this).closest('table').attr('id');
-		removeCompetency(competencyID, roleID);
+		
+		$('#jobCompetencyList').load('ManageJobRoles!removeCompetency.action', {role: roleID, competency: competencyID});
 	});
 	
 	$('#roleCell').delegate('.addCompetency', 'click', function(e) {
 		e.preventDefault();
+		$("a.compEditor").hide();
+		
 		var competencyID = $(this).closest('tr').attr('id');
 		var roleID = $(this).closest('table').attr('id');
-		addCompetency(competencyID, roleID);
+		
+		$('#jobCompetencyList').load('ManageJobRoles!addCompetency.action', {role: roleID, competency: competencyID});
 	});
 	
-	$('#addLink').click(function(e) {
-		e.preventDefault();
-		$('#roleCell').load('ManageJobRoles!get.action', { role: 0 });
-	});
-	
-	$('#cancelButton').click(function(e) {
+	$('#roleCell').delegate('.cancelButton', 'click', function(e) {
 		e.preventDefault();
 		$('#roleCell').empty();
 	});
 	
-	$('#deleteButton').click(function() {
+	$('#roleCell').delegate('.deleteButton', 'click', function(e) {
 		return confirm('<s:text name="%{scope}.confirm.RemoveJobRole" />');
 	});
 	
-	$(window).bind('hashchange', function() {
+	$('#addLink').live('click', function(e) {
+		e.preventDefault();
+		$('#roleCell').load('ManageJobRoles!get.action');
+	});
+	
+	$('.roleLink').live('click', function(e) {
+		e.preventDefault();
 		startThinking({div: 'roleCell', message: '<s:text name="%{scope}.message.LoadingJobRole" />'});
-		getRole(location.hash.substring(1));
+		$('#roleCell').load('ManageJobRoles!get.action', { role: $(this).attr('id'), id: accountID });
 	});
 });
 </script>
@@ -103,8 +96,7 @@ $(function() {
 	</div>
 </s:if>
 
-<h1><s:property value="account.name" /><span class="sub"><s:property value="subHeading" escape="false" /></span></h1>
-
+<h1><s:property value="account.name" /><span class="sub"><s:text name="%{scope}.title" /></span></h1>
 <s:include value="../actionMessages.jsp" />
 
 <table id="rolesTable">
@@ -121,7 +113,7 @@ $(function() {
 					<tbody>
 						<s:iterator value="jobRoles">
 							<tr>
-								<td><a href="#<s:property value="id" />" <s:if test="!active">class="inactive"</s:if>><s:property value="name" /></a></td>
+								<td><a href="#" id="<s:property value="id" />" class="roleLink<s:if test="!active"> inactive</s:if>"><s:property value="name" /></a></td>
 								<td class="center"><s:if test="active"><s:text name="YesNo.Yes" /></s:if><s:else><s:text name="YesNo.No" /></s:else></td>
 							</tr>
 						</s:iterator>
