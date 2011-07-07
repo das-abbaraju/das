@@ -1,6 +1,8 @@
 package com.picsauditing.util;
 
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +11,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 @SuppressWarnings("unchecked")
 public class AuditTypeCache extends BaseCache 
@@ -54,12 +54,6 @@ public class AuditTypeCache extends BaseCache
 		}
 	}
 
-	protected List sortList(List list) {
-		Object[] array = list.toArray();
-		Arrays.sort(array);
-		return Arrays.asList(array);
-	}
-	
 	public List<AuditType> getAuditTypes() {
 		return auditTypes;
 	}
@@ -70,7 +64,7 @@ public class AuditTypeCache extends BaseCache
 			if (!aType.isAnnualAddendum() && (aType.getClassType().equals(AuditTypeClass.Audit)  || aType.getClassType().equals(AuditTypeClass.IM)) && permissions.canSeeAudit(aType))
 				list.add(aType);
 		}
-		list = sortList(list);
+		Collections.sort(list, null);
 		return list;
 	}
 
